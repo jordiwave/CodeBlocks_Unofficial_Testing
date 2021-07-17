@@ -10,7 +10,7 @@
     <Program name="MAKE"      value="mingw32-make.exe"/>
 
     <!-- Debugger Options -->
-    <Debugger name="executable_path"    value="gdb.exe"/>       <!-- Options: -->
+    <Debugger name="executable_path"    value="gdb32.exe"/>     <!-- Options: -->
                                                                 <!--  a) FileName of the debugger program, which uses the master path bin directory to find the file -->
                                                                 <!--  b) Fully qualified FileName including directory. If it is not in this directory then the master path is used to try and find the file -->
     <Debugger name="user_arguments"  value=""/>                 <!-- Executable arguments -->
@@ -26,4 +26,5 @@
     <Debugger name="disassembly_flavor"  value="0"/>            <!-- Options:  "System default" or "ATandT" or "Intel" or "Custom" where "System default" is "ATandT" for Windows otherwise it is "Intel"-->
     <Debugger name="instruction_set"  value=""/>                <!-- Disassembly custom instructionset -->
     
+
 </CodeBlocks_compiler_options>
