@@ -14,16 +14,27 @@
 # --> Basically you need to add stuff at 4 places! :-)              #
 #####################################################################
 # To compile this script:                                           #
+#                                                                   #
 # - adopt the PATH's to the binary / stuff to package below         #
+#                                                                   #
+# - update the following:                                           #
+#    * BUILD_TYPE for 32 or 64 bit                                  #
+#    * BUILD_TYPE for 32 or 64 bit                                  #
+#                                                                   #
 # - download and install NSIS (v3) from here:                       #
 #   http://nsis.sourceforge.net/Download                            #
-# - run NSIS using this command line                                #
+#                                                                   #
+# - download and install the Ultra-Modern UI:                       #
+#   https://github.com/SuperPat45/UltraModernUI                     #
+#                                                                   #
+# - download and install the NSIS-INetC-plugin:                     #
+#   https://github.com/DigitalMediaServer/NSIS-INetC-plugin         #
+#                                                                   #
+# - run NSIS using this command line or via the MakeNSISW.exe GUI   #
 #   C:\PATH_TO\NSIS\makensis.exe setup.nsi                          #
-# - enable the MINGW_BUNDLE switch below and run again              #
-#   (for the MinGW bundle version)                                  #
-# - enable the CB_LAUNCHER switch below and run again               #
-#   (to bundle the CBLauncher portable tool)                        #
+#                                                                   #
 # - probably adjust "RequestExecutionLevel admin/user" -> see below #
+#                                                                   #
 #####################################################################
 
 Name CodeBlocks
@@ -45,48 +56,63 @@ BrandingText "Code::Blocks"
 # (... just look quite below).                          #
 #########################################################
 
-# The following line toggles whether the installer includes the MinGW
-# compiler suite (including GDB) or not. Uncomment to include MinGW.
-#!define MINGW_BUNDLE
+# The following line defined if the build is for 32 or 64 bits
+!define BUILD_TYPE 64
 
-# The following line toggles whether the MinGw DLL's shall be included
-# in the release. These are needed, if C::B is not compiled statically.
-!define MINGW_DLLS
-
-# The following line toggles whether the installer includes the
-# CBLauncher tool for portable settings (AppData in the C::B folder).
-!define CB_LAUNCHER
+# The following line defined if the build is a nightly build and it's the SVN number
+# if not defined the version will default to YY.MM (year:month)
+!define NIGHTLY_BUILD_SVN 12487
 
 # The following line toggles the admin or user istallation package.
 # Preferred should be the admin installation package, however, for
 # non-admins the user installation packge is the only one working.
 !define CB_ADMIN_INSTALLER
 
-# Notice installer packagers:
-# Some paths are system specific and need most likely to be adjusted
-# to suite your directories. Those path's start with a comment line:
-# "Possibly required to adjust manually:" (see below).
+##################
+# Included files #
+##################
+!include LogicLib.nsh
+!include "UMUI.nsh"
+!include Sections.nsh
+!if ${BUILD_TYPE} == 64
+!include x64.nsh
+!endif
+
+# This is SLOW, but reduces the output exe by about 20% of size. 
+#SetCompressor /SOLID LZMA
 
 ###########
 # Defines #
 ###########
+# Get Current Date into CURRENT_DATESTAMP variable
+!define /date CURRENT_DATESTAMP "%d%b%Y"
+!define /date CURRENT_DATE_YEAR "%Y"
+!define /date CURRENT_DATE_YEAR_NO_CENTURY "%y"
+!define /date CURRENT_DATE_MONTH "%m"
+!define /date CURRENT_DATE_DAY "%d"
+
 !define REGKEY           "SOFTWARE\$(^Name)"
-#!define VERSION          20.03
-!define VERSION          "SVN-12487"
+!if ${NIGHTLY_BUILD_SVN} > 0
+!define VERSION          "SVN-${NIGHTLY_BUILD_SVN}"
+!else
+#!define VERSION         ${CURRENT_DATE_YEAR_NO_CENTURY}.${CURRENT_DATE_MONTH}
+!endif
 !define COMPANY          "The Code::Blocks Team"
 !define URL              http://www.codeblocks.org
 
-###########
-# Folders #
-###########
-# Possibly required to adjust manually:
-# (Folder with wxWidgets DLL - unicode, monolithic.)
-#!define WX_BASE          D:\Devel\CodeBlocks\Releases\CodeBlocks_2003
-!define WX_BASE          .\..\src\output31_64
+##################
+# Folder DEFINES #
+##################
 
-# Possibly required to adjust manually:
-# (CodeBlocks binary folder - the one where codeblocks.exe is.)
+!if ${BUILD_TYPE} == 32
+!define CB_BASE          .\..\src\output31
+!define WX_BASE          .\..\src\output31
+#!define WX_BASE          D:\Devel\CodeBlocks\Releases\CodeBlocks_2003
+!else
 !define CB_BASE          .\..\src\output31_64
+!define WX_BASE          .\..\src\output31_64
+#!define WX_BASE          D:\Devel\CodeBlocks\Releases\CodeBlocks_2003
+!endif
 !define CB_SHARE         \share
 !define CB_SHARE_CB      ${CB_SHARE}\CodeBlocks
 !define CB_DOCS          ${CB_SHARE_CB}\docs
@@ -100,10 +126,6 @@ BrandingText "Code::Blocks"
 !define CB_IMG_SETTINGS  ${CB_IMAGES}\settings
 !define CB_XML_COMPILERS ${CB_SHARE_CB}\compilers
 
-# Possibly required to adjust manually:
-# (Folder with full MinGW/GCC installation, *including* debugger.)
-!define MINGW_BASE       D:\Devel\CodeBlocks\Releases\MinGW
-
 # These are the Install source directories relative to the NSIS script
 !define CB_INSTALL_DICTIONARIES_DIR     .\Dictionaries
 !define CB_INSTALL_DOCUMENTATION_DIR    .\Documentation
@@ -111,22 +133,16 @@ BrandingText "Code::Blocks"
 !define CB_INSTALL_LICENSES_DIR         .\Licenses
 !define CB_INSTALL_URLS_DIR             .\URLS
 
-!ifdef MINGW_BUNDLE
-!define CB_MINGW         \MinGW
-!endif
-
-# Get Current Date into CURRENT_DATESTAMP variable
-!define /date CURRENT_DATESTAMP "%d-%m-%Y"
-!define /date CURRENT_DATE_YEAR "%Y"
-!define /date CURRENT_DATE_MONTH "%m"
-!define /date CURRENT_DATE_DAY "%d"
-
 #########
 # Files #
 #########
 # Possibly required to adjust manually:
 # Note: These files are only required for the installer.
+!ifdef NIGHTLY_BUILD_SVN
+!define CB_SPLASH        ${CB_INSTALL_GRAPHICS_DIR}\setup_splash_nightly.bmp
+!else
 !define CB_SPLASH        ${CB_INSTALL_GRAPHICS_DIR}\setup_splash_2003.bmp
+!endif
 !define CB_LOGO          ${CB_INSTALL_GRAPHICS_DIR}\setup_logo_2003.bmp
 # Possibly required to adjust manually:
 # Note: This file is only required for the installer.
@@ -134,13 +150,49 @@ BrandingText "Code::Blocks"
 !define CB_SM_GROUP      $(^Name)
 
 # Interface configuration (MUI defines)
-!define MUI_ICON                     "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
-!define MUI_HEADERIMAGE
-!define MUI_HEADERIMAGE_BITMAP       "${CB_LOGO}" ; optional
+!define MUI_ICON                     "${CB_INSTALL_GRAPHICS_DIR}\setup_icon.ico"
+#!define MUI_HEADERIMAGE
+#!define MUI_HEADERIMAGE_BITMAP       "${CB_LOGO}"
 !define MUI_COMPONENTSPAGE_SMALLDESC
 !define MUI_FINISHPAGE_NOAUTOCLOSE
-!define MUI_UNICON                   "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
+!define MUI_FINISHPAGE_RUN           "$INSTDIR\codeblocks.exe"
+!define MUI_FINISHPAGE_RUN_NOTCHECKED
+!define MUI_FINISHPAGE_SHOWREADME    "$INSTDIR${CB_DOCS}\manual_codeblocks_en.pdf"
+!define MUI_FINISHPAGE_SHOWREADME_TEXT   "Open Code::Blocks manual"
+!define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
+!define MUI_FINISHPAGE_LINK          "${URL}"
+!define MUI_FINISHPAGE_LINK_LOCATION "${URL}"
+!define MUI_UNICON                   "${CB_INSTALL_GRAPHICS_DIR}\setup_icon.ico"
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
+
+;Interface Settings
+!define UMUI_LEFTIMAGE_BMP "${CB_INSTALL_GRAPHICS_DIR}\setup_1.bmp"
+!define UMUI_HEADERBGIMAGE_BMP  "${CB_LOGO}"
+
+!define UMUI_SKIN "SoftBlue"
+
+!define UMUI_PARAMS_REGISTRY_ROOT HKCU
+!define UMUI_PARAMS_REGISTRY_KEY  ${REGKEY}
+
+!define UMUI_INSTALLDIR_REGISTRY_VALUENAME "InstallDir"    ;Replace the InstallDirRegKey instruction and automatically save the $INSTDIR variable
+
+!define UMUI_VERSION ${VERSION}
+!define /date UMUI_VERBUILD "${VERSION}_%Y-%m-%d HH:MM"
+
+!define UMUI_VERSION_REGISTRY_VALUENAME "Version"
+!define UMUI_VERBUILD_REGISTRY_VALUENAME "VerBuild"
+
+!define UMUI_UNINSTALLPATH_REGISTRY_VALUENAME "uninstallpath"
+!define UMUI_INSTALLERFULLPATH_REGISTRY_VALUENAME "installpath"
+!define UMUI_UNINSTALL_FULLPATH "$INSTDIR\Uninstall.exe"
+!define UMUI_PREUNINSTALL_FUNCTION preuninstall_function
+
+!define UMUI_ABORTPAGE_LINK          "${URL}"
+!define UMUI_ABORTPAGE_LINK_LOCATION "${URL}"
+
+!define  UMUI_TEXT_SETUPTYPE_MINIMAL_TITLE  "Minimal: Important plugins, important lexers"
+!define  UMUI_TEXT_SETUPTYPE_STANDARD_TITLE "Standard: Core plugins, core tools, and core lexers"
+!define  UMUI_TEXT_SETUPTYPE_COMPLETE_TITLE "Full: All plugins, all tools, just everything"
 
 #######################################################
 # Room for adjustments of most important settings END #
@@ -150,33 +202,53 @@ BrandingText "Code::Blocks"
 # Usually below here no changes are required unless adding new installer features #
 ###################################################################################
 
-# Included files
-!include MUI2.nsh
-!include Sections.nsh
-!include x64.nsh
-
 # Reserved Files
 ReserveFile "${NSISDIR}\Plugins\x86-unicode\AdvSplash.dll"
 
 # Installer pages
 !insertmacro MUI_PAGE_WELCOME
+    !define UMUI_UPDATEPAGE_REMOVE
+    !define UMUI_UPDATEPAGE_CONTINUE_SETUP
+!insertmacro UMUI_PAGE_UPDATE
 !insertmacro MUI_PAGE_LICENSE    ${CB_LICENSE}
+    !define UMUI_SETUPTYPEPAGE_MINIMAL "$(UMUI_TEXT_SETUPTYPE_MINIMAL_TITLE)"
+    !define UMUI_SETUPTYPEPAGE_STANDARD "$(UMUI_TEXT_SETUPTYPE_STANDARD_TITLE)"
+    !define UMUI_SETUPTYPEPAGE_COMPLETE "$(UMUI_TEXT_SETUPTYPE_COMPLETE_TITLE)"
+    !define UMUI_SETUPTYPEPAGE_DEFAULTCHOICE ${UMUI_COMPLETE}
+#    !define UMUI_SETUPTYPE_REGISTRY_VALUENAME "SetupType"
+!insertmacro UMUI_PAGE_SETUPTYPE
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
+
+!insertmacro UMUI_PAGE_ABORT
+
 # Un-Installer pages
+!insertmacro MUI_UNPAGE_WELCOME
+    !define UMUI_MAINTENANCEPAGE_MODIFY
+    !define UMUI_MAINTENANCEPAGE_REPAIR
+    !define UMUI_MAINTENANCEPAGE_REMOVE
+    !define UMUI_MAINTENANCEPAGE_CONTINUE_SETUP
+!insertmacro UMUI_UNPAGE_MAINTENANCE
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
-
+!insertmacro MUI_UNPAGE_FINISH
+!insertmacro UMUI_UNPAGE_ABORT
 # Installer languages
 !insertmacro MUI_LANGUAGE "English" # first language is the default language
 
 # Installer attributes (usually these do not change)
 # Note: We can't always use "Code::Blocks" as the "::" conflicts with the file system.
-OutFile           codeblocks-${VERSION}-64bit-setup-${CURRENT_DATESTAMP}.exe
-InstallDir        $PROGRAMFILES64\CodeBlocks
-Caption           "Code::Blocks Installation"
+!if ${BUILD_TYPE} == 32
+    OutFile           codeblocks-${VERSION}-32bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
+    InstallDir        $PROGRAMFILES\CodeBlocks
+!else
+    OutFile           codeblocks-${VERSION}-64bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
+    InstallDir        $PROGRAMFILES64\CodeBlocks
+!endif
+
+Caption           "Code::Blocks ${VERSION} ${CURRENT_DATE_YEAR}.${CURRENT_DATE_MONTH}.${CURRENT_DATE_DAY}.0 Installation"
 CRCCheck          on
 XPStyle           on
 ShowInstDetails   show
@@ -188,7 +260,6 @@ VIAddVersionKey   CompanyWebsite  "${URL}"
 VIAddVersionKey   FileVersion     "${VERSION}"
 VIAddVersionKey   FileDescription "Code::Blocks cross-platform IDE"
 VIAddVersionKey   LegalCopyright  "Code::Blocks Team"
-InstallDirRegKey  HKLM "${REGKEY}" Path
 UninstallCaption  "Code::Blocks Uninstallation"
 ShowUninstDetails show
 
@@ -205,6 +276,32 @@ RequestExecutionLevel admin
 RequestExecutionLevel user
 !endif
 
+############################
+# Check for Fortran plugin #
+############################
+
+; See http://nsis.sourceforge.net/Check_if_a_file_exists_at_compile_time for documentation
+!macro !defineifexist _VAR_NAME _FILE_NAME
+	!tempfile _TEMPFILE
+	!ifdef NSIS_WIN32_MAKENSIS
+		; Windows - cmd.exe
+		!system 'if exist "${_FILE_NAME}" echo !define ${_VAR_NAME} > "${_TEMPFILE}"'
+	!else
+		; Posix - sh
+		!system 'if [ -e "${_FILE_NAME}" ]; then echo "!define ${_VAR_NAME}" > "${_TEMPFILE}"; fi'
+	!endif
+	!include '${_TEMPFILE}'
+	!delfile '${_TEMPFILE}'
+	!undef _TEMPFILE
+!macroend
+!define !defineifexist "!insertmacro !defineifexist"
+
+${!defineifexist} FORTRAN_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\FortranProject.zip
+
+# ========================================================================================================================
+# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+# ========================================================================================================================
+
 ######################
 # Installer sections #
 ######################
@@ -213,10 +310,10 @@ RequestExecutionLevel user
 # They basically wrap different selections of components.
 # To use a component in section "Full" (=1) and "Edit" (=4) choose
 # "SectionIn 1 4" in the section(s) accordingly (see how it's done below).
-InstType "Full: All plugins, all tools, just everything"       # 1
-InstType "Standard: Core plugins, core tools, and core lexers" # 2
-InstType "Minimal: Important plugins, important lexers"        # 3
-InstType "Editor: Code::Blocks as editor only (all lexers)"    # 4
+InstType "$(UMUI_TEXT_SETUPTYPE_COMPLETE_TITLE)"               # 1
+InstType "$(UMUI_TEXT_SETUPTYPE_STANDARD_TITLE)"               # 2 
+InstType "$(UMUI_TEXT_SETUPTYPE_MINIMAL_TITLE)"                # 3
+InstType "Editor: Code::Blocks as editor only (all lexers)"    # 4 Select custom then this in the drop down.
 
 # Now the installer sections and section groups start.
 # They basically define the tree of components available.
@@ -231,20 +328,6 @@ SectionGroup "!Default install" SECGRP_DEFAULT
 
     Section "!Core Files (required)" SEC_CORE
         SectionIn 1 2 3 4 RO
-        # If $INSTDIR is present, ask the user if that is OK
-        IfFileExists $INSTDIR 0 doInstall
-            # It appears $INSTDIR is present (and not empty).
-            # Ask the user to probably abort installation process.
-            MessageBox MB_YESNO|MB_ICONQUESTION \
-                "The target directory does already exist. OK to continue anyways?$\r$\n(If you are unsure and want to keep the folder, click No.)" \
-                /SD IDNO IDYES continueInstall IDNO abortInstall
-abortInstall:
-            # If user selected "no" -> abort the installation
-            DetailPrint "Aborting installation."
-            Abort
-continueInstall:
-            # fall through
-doInstall:
         SetOutPath $INSTDIR
         # Verify if creating/accessing the target folder succeeded.
         # If not, issue an error message and abort installation
@@ -261,14 +344,13 @@ accessOK:
         File ${CB_BASE}\Addr2LineUI.exe
         File ${CB_BASE}\cb_console_runner.exe
         File ${CB_BASE}\CbLauncher.exe
+        File ${CB_BASE}\cctest.exe
         File ${CB_BASE}\codeblocks.dll
         File ${CB_BASE}\codeblocks.exe
-!ifdef MINGW_DLLS
         # MinGW DLL's for thread handling etc.
         File ${CB_BASE}\libgcc_s_seh-1.dll
         File ${CB_BASE}\libstdc++-6.dll
         File ${CB_BASE}\libwinpthread-1.dll
-!endif
         # crash handler
         File ${CB_BASE}\dbgcore.dll
         File ${CB_BASE}\dbghelp.dll
@@ -287,9 +369,7 @@ accessOK:
         File ${CB_INSTALL_DOCUMENTATION_DIR}\manual_codeblocks_en.pdf
         File ${CB_INSTALL_DOCUMENTATION_DIR}\manual_codeblocks_fr.chm
         File ${CB_INSTALL_DOCUMENTATION_DIR}\manual_codeblocks_fr.pdf
-        File ${CB_INSTALL_DOCUMENTATION_DIR}\manual_codeblocks_fr.pdf
         File ${CB_INSTALL_DOCUMENTATION_DIR}\Manual_wxPBGuide.pdf
-        File ${CB_INSTALL_DOCUMENTATION_DIR}\Windows_CompilerSupport.rtf
         SetOutPath $INSTDIR${CB_SCRIPTS}
         File ${CB_BASE}${CB_SCRIPTS}\*.script
         SetOutPath $INSTDIR${CB_SCTESTS}
@@ -313,6 +393,14 @@ accessOK:
             SectionIn 1 2 3 4
             SetOutPath $SMPROGRAMS\${CB_SM_GROUP}
             CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name).lnk" $INSTDIR\CodeBlocks.exe
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual English chm.lnk" $INSTDIR${CB_DOCS}\manual_codeblocks_en.chm
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual English pdf.lnk" $INSTDIR${CB_DOCS}\manual_codeblocks_en.pdf
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual French chm.lnk"  $INSTDIR${CB_DOCS}\manual_codeblocks_fr.chm
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual French pdf.lnk"  $INSTDIR${CB_DOCS}\manual_codeblocks_fr.pdf
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual wxWidget PBGuide pdf.lnk" $INSTDIR${CB_DOCS}\Manual_wxPBGuide.pdf
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Share Config.lnk" $INSTDIR\cb_share_config.exe
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Code Completion Test.lnk" $INSTDIR\cctest.exe
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Address to Line GUI.lnk" $INSTDIR\Addr2LineUI.exe
             WriteRegStr HKCU "${REGKEY}\Components" "Program Shortcut" 1
         SectionEnd
 
@@ -1287,37 +1375,39 @@ SectionGroup "Contrib Plugins" SECGRP_CONTRIB_PLUGINS
         WriteRegStr HKCU "${REGKEY}\Components" "File Manager plugin" 1
     SectionEnd
 
-    ; Section "Fortran Project plugin" SEC_FORTRANPROJECT
-        ; SectionIn 1
-        ; SetOutPath $INSTDIR${CB_SHARE_CB}
-        ; SetOverwrite on
-        ; File ${CB_BASE}${CB_SHARE_CB}\FortranProject.zip
-        ; SetOutPath $INSTDIR${CB_PLUGINS}
-        ; File ${CB_BASE}${CB_PLUGINS}\FortranProject.dll
-        ; SetOutPath $INSTDIR${CB_IMAGES}\fortranproject
-        ; File ${CB_BASE}${CB_IMAGES}\fortranproject\*.dem
-        ; File ${CB_BASE}${CB_IMAGES}\fortranproject\*.f90
-        ; File ${CB_BASE}${CB_IMAGES}\fortranproject\*.py
-        ; SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\16x16
-        ; File ${CB_BASE}${CB_IMAGES}\fortranproject\16x16\*.png
-        ; SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\20x20
-        ; File ${CB_BASE}${CB_IMAGES}\fortranproject\20x20\*.png
-        ; SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\24x24
-        ; File ${CB_BASE}${CB_IMAGES}\fortranproject\24x24\*.png
-        ; SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\28x28
-        ; File ${CB_BASE}${CB_IMAGES}\fortranproject\28x28\*.png
-        ; SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\32x32
-        ; File ${CB_BASE}${CB_IMAGES}\fortranproject\32x32\*.png
-        ; SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\40x40
-        ; File ${CB_BASE}${CB_IMAGES}\fortranproject\40x40\*.png
-        ; SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\48x48
-        ; File ${CB_BASE}${CB_IMAGES}\fortranproject\48x48\*.png
-        ; SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\56x56
-        ; File ${CB_BASE}${CB_IMAGES}\fortranproject\56x56\*.png
-        ; SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\64x64
-        ; File ${CB_BASE}${CB_IMAGES}\fortranproject\64x64\*.png
-        ; WriteRegStr HKCU "${REGKEY}\Components" "Fortran Project plugin" 1
-    ; SectionEnd
+!ifdef FORTRAN_PLUGIN_FOUND
+    Section "Fortran Project plugin" SEC_FORTRANPROJECT
+        SectionIn 1
+        SetOutPath $INSTDIR${CB_SHARE_CB}
+        SetOverwrite on
+        File ${CB_BASE}${CB_SHARE_CB}\FortranProject.zip
+        SetOutPath $INSTDIR${CB_PLUGINS}
+        File ${CB_BASE}${CB_PLUGINS}\FortranProject.dll
+        SetOutPath $INSTDIR${CB_IMAGES}\fortranproject
+        File ${CB_BASE}${CB_IMAGES}\fortranproject\*.dem
+        File ${CB_BASE}${CB_IMAGES}\fortranproject\*.f90
+        File ${CB_BASE}${CB_IMAGES}\fortranproject\*.py
+        SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\16x16
+        File ${CB_BASE}${CB_IMAGES}\fortranproject\16x16\*.png
+        SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\20x20
+        File ${CB_BASE}${CB_IMAGES}\fortranproject\20x20\*.png
+        SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\24x24
+        File ${CB_BASE}${CB_IMAGES}\fortranproject\24x24\*.png
+        SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\28x28
+        File ${CB_BASE}${CB_IMAGES}\fortranproject\28x28\*.png
+        SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\32x32
+        File ${CB_BASE}${CB_IMAGES}\fortranproject\32x32\*.png
+        SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\40x40
+        File ${CB_BASE}${CB_IMAGES}\fortranproject\40x40\*.png
+        SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\48x48
+        File ${CB_BASE}${CB_IMAGES}\fortranproject\48x48\*.png
+        SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\56x56
+        File ${CB_BASE}${CB_IMAGES}\fortranproject\56x56\*.png
+        SetOutPath $INSTDIR${CB_IMAGES}\fortranproject\64x64
+        File ${CB_BASE}${CB_IMAGES}\fortranproject\64x64\*.png
+        WriteRegStr HKCU "${REGKEY}\Components" "Fortran Project plugin" 1
+    SectionEnd
+!endif
 
     Section "HeaderFixUp plugin" SEC_HEADERFIXUP
         SectionIn 1
@@ -1606,7 +1696,6 @@ Section "C::B Share Config" SEC_SHARECONFIG
     WriteRegStr HKCU "${REGKEY}\Components" "C::B Share Config" 1
 SectionEnd
 
-!ifdef CB_LAUNCHER
 Section "C::B Launcher" SEC_LAUNCHER
     SectionIn 1
     SetOutPath $INSTDIR
@@ -1615,17 +1704,7 @@ Section "C::B Launcher" SEC_LAUNCHER
     CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) (Launcher).lnk" $INSTDIR\CbLauncher.exe
     WriteRegStr HKCU "${REGKEY}\Components" "C::B Launcher" 1
 SectionEnd
-!endif
 
-!ifdef MINGW_BUNDLE
-Section "MinGW Compiler Suite" SEC_MINGW
-    SectionIn 1 2 3
-    SetOutPath $INSTDIR${CB_MINGW}
-    SetOverwrite on
-    File /r ${MINGW_BASE}\*.*
-    WriteRegStr HKCU "${REGKEY}\Components" "MinGW Compiler Suite" 1
-SectionEnd
-!endif
 
 Section -post SEC_MISC
     WriteRegStr HKCU "${REGKEY}" Path $INSTDIR
@@ -1641,16 +1720,31 @@ Section -post SEC_MISC
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" UninstallString $INSTDIR\uninstall.exe
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoModify 1
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
+    
+    # Ask the user if they wan to download MINGW 
+    MessageBox MB_YESNO|MB_ICONQUESTION "Do you want to download and install the MingW compiler?" /SD IDNO IDYES yesInstall IDNO noInstall
+yesInstall:
+        StrCpy $2 "$TEMP\mingw-w64-install.exe"
+        inetc::get /weaksecurity /connecttimeout 30 /receivetimeout 120 https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe.download $2
+        Pop $0 ;Get the return value$0
+        StrCmp $0 success success
+        SetDetailsView show
+        DetailPrint "download failed: $0"
+        Abort
+success:
+        DetailPrint "downloaded : $2"
+        ExecWait '"$2"'
+        Delete $2
+        Pop $0 ;Get the return value $0
+        StrCmp $0 "" noInstall
+        StrCpy $INSTDIR $0
+noInstall:
 
-    MessageBox MB_YESNO|MB_ICONQUESTION \
-        "Do you want to run Code::Blocks now?" \
-        /SD IDNO IDYES yesRunCB IDNO noRunCB
-yesRunCB:
-    DetailPrint "Running Code::Blocks."
-    Exec '"$INSTDIR\codeblocks.exe"'
-noRunCB:
-    # fall through
 SectionEnd
+
+# ========================================================================================================================
+# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+# ========================================================================================================================
 
 # Macro for selecting uninstaller sections
 !macro SELECT_UNSECTION SECTION_NAME UNSECTION_ID
@@ -1673,21 +1767,11 @@ done${UNSECTION_ID}:
 # Note: Files in the uninstall section in REVERSE ORDER of the installation! #
 ##############################################################################
 
-!ifdef MINGW_BUNDLE
-Section "-un.MinGW Compiler Suite" UNSEC_MINGW
-    Delete /REBOOTOK $INSTDIR${CB_MINGW}\*.*
-    RMDir  /r /REBOOTOK $INSTDIR${CB_MINGW}
-    DeleteRegValue HKCU "${REGKEY}\Components" "MinGW Compiler Suite"
-SectionEnd
-!endif
-
-!ifdef CB_LAUNCHER
 Section "-un.C::B Launcher" UNSEC_LAUNCHER
     Delete /REBOOTOK $INSTDIR\CbLauncher.exe
     Delete /REBOOTOK "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) (Launcher).lnk"
     DeleteRegValue HKCU "${REGKEY}\Components" "C::B Launcher"
 SectionEnd
-!endif
 
 Section "-un.C::B Share Config" UNSEC_SHARECONFIG
     Delete /REBOOTOK $INSTDIR\cb_share_config.exe
@@ -1813,6 +1897,7 @@ Section "-un.File Manager plugin" UNSEC_FILEMANAGER
     DeleteRegValue HKCU "${REGKEY}\Components" "File Manager plugin"
 SectionEnd
 
+!ifdef FORTRAN_PLUGIN_FOUND
 Section /o "-un.Fortran Project plugin" UNSEC_FORTRANPROJECT
     Delete /REBOOTOK $INSTDIR${CB_IMAGES}\fortranproject\*.dem
     Delete /REBOOTOK $INSTDIR${CB_IMAGES}\fortranproject\*.f90
@@ -1840,7 +1925,7 @@ Section /o "-un.Fortran Project plugin" UNSEC_FORTRANPROJECT
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\FortranProject.zip
     DeleteRegValue HKCU "${REGKEY}\Components" "Fortran Project plugin"
 SectionEnd
-
+!endif
 Section /o "-un.HeaderFixUp plugin" UNSEC_HEADERFIXUP
     Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\headerfixup.dll
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\headerfixup.zip
@@ -2519,6 +2604,14 @@ SectionEnd
 # C::B shortcuts begin
 
 Section "-un.Program Shortcut" UNSEC_PROGRAMSHORTCUT
+    Delete "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual English chm.lnk"
+    Delete "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual English pdf.lnk"
+    Delete "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual French chm.lnk"
+    Delete "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual French pdf.lnk"
+    Delete "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual wxWidget PBGuide pdf.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Address to Line GUI.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Code Completion Test.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Share Config.lnk"
     Delete "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name).lnk"
     DeleteRegValue HKCU "${REGKEY}\Components" "Program Shortcut"
 SectionEnd
@@ -2567,9 +2660,7 @@ Section "-un.Core Files (required)" UNSEC_CORE
     Delete /REBOOTOK $INSTDIR${CB_DOCS}\manual_codeblocks_en.pdf
     Delete /REBOOTOK $INSTDIR${CB_DOCS}\manual_codeblocks_fr.chm
     Delete /REBOOTOK $INSTDIR${CB_DOCS}\manual_codeblocks_fr.pdf
-    Delete /REBOOTOK $INSTDIR${CB_DOCS}\manual_codeblocks_fr.pdf
     Delete /REBOOTOK $INSTDIR${CB_DOCS}\Manual_wxPBGuide.pdf
-    Delete /REBOOTOK $INSTDIR${CB_DOCS}\Windows_CompilerSupport.rtf
     RMDir  /REBOOTOK $INSTDIR${CB_DOCS}
     # Shared Directory
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\resources.zip
@@ -2578,12 +2669,10 @@ Section "-un.Core Files (required)" UNSEC_CORE
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\start_here.zip
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE_CB}
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE}
-!ifdef MINGW_DLLS
     # MinGW DLL's for thread handling etc.
     Delete /REBOOTOK $INSTDIR\libwinpthread-1.dll
     Delete /REBOOTOK $INSTDIR\libstdc++-6.dll
     Delete /REBOOTOK $INSTDIR\libgcc_s_seh-1.dll
-!endif
     # crash handler
     Delete /REBOOTOK $INSTDIR\symsrv.yes
     Delete /REBOOTOK $INSTDIR\symsrv.dll
@@ -2596,6 +2685,7 @@ Section "-un.Core Files (required)" UNSEC_CORE
     Delete /REBOOTOK $INSTDIR\codeblocks.dll
     Delete /REBOOTOK $INSTDIR\CbLauncher.exe
     Delete /REBOOTOK $INSTDIR\cb_console_runner.exe
+    Delete /REBOOTOK $INSTDIR\cctest.exe
     Delete /REBOOTOK $INSTDIR\Addr2LineUI.exe
     Delete /REBOOTOK $INSTDIR\wxmsw*u_gl_gcc_cb.dll
     Delete /REBOOTOK $INSTDIR\wxmsw*u_gcc_cb.dll
@@ -2618,24 +2708,41 @@ Section -un.post UNSEC_MISC
     RMDir /REBOOTOK $INSTDIR
 
     # If $INSTDIR was already removed, skip these next steps
-    IfFileExists $INSTDIR 0 instDirOperated
+    IfFileExists $INSTDIR 0 instDirAllreadyRemoved
         # It appears $INSTDIR is not empty, thus it could not be removed.
         # Ask the user to probably force the removal.
         MessageBox MB_YESNO|MB_ICONQUESTION \
             "Remove all files in your Code::Blocks directory?$\r$\n(If you have anything you created that you want to keep, click No.)" \
-            /SD IDNO IDYES yesRMDir IDNO noRMDir
-yesRMDir:
+            /SD IDNO IDYES yesRMINSTDIR IDNO noRMDINSTDIR
+yesRMINSTDIR:
         # Try to delete all remaining files and finally $INSTDIR recursively
         Delete $INSTDIR\*.*
         RMDir /r $INSTDIR
-        IfFileExists $INSTDIR 0 instDirOperated
+        IfFileExists $INSTDIR 0 instDirAllreadyRemoved
             MessageBox MB_OK|MB_ICONEXCLAMATION \
                 "Warning: $INSTDIR could not be removed.$\r$\n(Probably missing access rights?)" \
                 /SD IDOK
-noRMDir:
+noRMDINSTDIR:
         # If user selected "no" -> skip the next steps
-instDirOperated:
-    # fall through
+instDirAllreadyRemoved:
+    
+    # Check for User data and ask if the user wants to delete the data
+    IfFileExists "$APPDATA\codeblocks" 0 appDataDirAllreadyRemoved
+        MessageBox MB_YESNO|MB_ICONQUESTION  "Do you want to keep the existing configuration files?" \
+        /SD IDNO IDYES yesRMAPPDATADIR IDNO noRMAPPDATADIR
+yesRMAPPDATADIR:
+        # Try to delete all remaining files and finally $INSTDIR recursively
+        Delete "$APPDATA\codeblocks\*.*"
+        RMDir /r "$APPDATA\codeblocks"
+        IfFileExists "$APPDATA\codeblocks" 0 appDataDirAllreadyRemoved
+            MessageBox MB_OK|MB_ICONEXCLAMATION \
+                "Warning: $APPDATA\codeblocks could not be removed.$\r$\n(Probably missing access rights?)" \
+                /SD IDOK
+noRMAPPDATADIR:
+        # If user selected "no" -> skip the next steps
+    
+appDataDirAllreadyRemoved:
+    
 SectionEnd
 
 #######################
@@ -2764,7 +2871,9 @@ Function un.onInit
     !insertmacro SELECT_UNSECTION "Editor tweaks plugin"               ${UNSEC_EDITORTWEAKS}
     !insertmacro SELECT_UNSECTION "EnvVars plugin"                     ${UNSEC_ENVVARS}
     !insertmacro SELECT_UNSECTION "File Manager plugin"                ${UNSEC_FILEMANAGER}
+!ifdef FORTRAN_PLUGIN_FOUND
     !insertmacro SELECT_UNSECTION "Fortran Project plugin"             ${UNSEC_FORTRANPROJECT}
+!endif    
     !insertmacro SELECT_UNSECTION "HeaderFixUp plugin"                 ${UNSEC_HEADERFIXUP}
     !insertmacro SELECT_UNSECTION "Help plugin"                        ${UNSEC_HELP}
     !insertmacro SELECT_UNSECTION "HexEditor plugin"                   ${UNSEC_HEXEDITOR}
@@ -2788,13 +2897,8 @@ Function un.onInit
 
     !insertmacro SELECT_UNSECTION "C::B CBP2Make"                      ${UNSEC_CBP2MAKE}
     !insertmacro SELECT_UNSECTION "C::B Share Config"                  ${UNSEC_SHARECONFIG}
-
-!ifdef CB_LAUNCHER
     !insertmacro SELECT_UNSECTION "C::B Launcher"                      ${UNSEC_LAUNCHER}
-!endif
-!ifdef MINGW_BUNDLE
-    !insertmacro SELECT_UNSECTION "MinGW Compiler Suite"               ${UNSEC_MINGW}
-!endif
+
 FunctionEnd
 
 ########################
@@ -2850,7 +2954,9 @@ FunctionEnd
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DRAGSCROLL}          "Mouse drag and scroll using right or middle mouse key."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_ENVVARS}             "Sets up environment variables within the focus of Code::Blocks."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FILEMANAGER}         "Browses folders and files directly inside Code::Blocks (Explorer-like)."
+!ifdef FORTRAN_PLUGIN_FOUND
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FORTRANPROJECT}      "Extension for Code::Blocks to develop Fortran applications (compiler, CodeCompletion...)."
+!endif
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_HEADERFIXUP}         "Provides analysis of header files according a customisable setup. C::B and wxWidgets are included by default."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_HELP}                "Add a list of help/MAN files to the help menu so you can have them handy to launch."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_HEXEDITOR}           "Provides an embedded very powerful hex editor to Code::Blocks (supports large binary files, too)."
@@ -2874,11 +2980,25 @@ FunctionEnd
 
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBP2MAKE}            "Allow to convert Code::Blocks Project (*.cbp) files into Makefiles for misc. platforms."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_SHARECONFIG}         "Allows sharing of most important settings between Code::Blocks instances or different users."
-
-!ifdef CB_LAUNCHER
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LAUNCHER}            "Makes Code::Blocks portable on Windows, including config from APPDATA and alike."
-!endif
-!ifdef MINGW_BUNDLE
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_MINGW}               "Additional setup that will install the GNU compiler suite (requires additional downloads)."
-!endif
+
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
+
+# ========================================================================================================================
+# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+# ========================================================================================================================
+
+Function preuninstall_function
+
+  ; execute this function only in Modify, repair and update function
+  !insertmacro UMUI_IF_INSTALLFLAG_IS ${UMUI_MODIFY}|${UMUI_REPAIR}|${UMUI_UPDATE}
+
+    ;ADD YOUR DELETE INSTRUCTION HERE...
+  
+    Delete "$INSTDIR\Uninstall.exe"
+  
+    DeleteRegKey ${UMUI_PARAMS_REGISTRY_ROOT} "${UMUI_PARAMS_REGISTRY_KEY}"
+
+  !insertmacro UMUI_ENDIF_INSTALLFLAG
+
+FunctionEnd
