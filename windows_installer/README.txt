@@ -1,3 +1,5 @@
+
+
 The setup source file in this directory and sub directories are for use with the following two installers:
 
 * NSIS compiler (http://nsis.sourceforge.net) at least V3.6.1
@@ -26,6 +28,9 @@ NSIS Status:
 6) Added missing files that are included in the nightly build
 7) Install components appears to be okay.
 8) Easily swap between 32 and 64 bit build via one define change
+9) Need to add the following link for new C++ users:
+    http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf
+
 
 ISS Status:
 -----------
@@ -37,6 +42,8 @@ ISS Status:
 6) Added missing files that are included in the nightly build
 7) X Install components not correct.
 8) Easily swap between 32 and 64 bit build via one define change
+9) Need to add the following link for new C++ users:
+    http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf
 
 
 NSIS V ISS:
