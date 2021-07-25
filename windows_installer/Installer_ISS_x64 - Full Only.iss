@@ -104,7 +104,7 @@ Name: {group}\Links\CodeBlocks PDF Manual English;    Filename: "{app}\share\Cod
 Name: {group}\Links\CodeBlocks CHM Manual English;    Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.chm";Comment: The Code::Blocks CHM User Manual in English;
 Name: {group}\Links\CodeBlocks PDF Manual French;     Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.pdf";Comment: The Code::Blocks PDF User Manual in French;
 Name: {group}\Links\CodeBlocks CHM Manual French;     Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.chm";Comment: The Code::Blocks CHM User Manual in French;
-Name: {group}\Links\PB Guide wxWidgets;   Filename: "{app}\share\CodeBlocks\docs\Manual_wxPBGuide.pdf";    Comment: PBs GuiDe to Starting with wxWidgets with MinGW and Code::Blocks;
+Name: {group}\Links\PBs wxWidgets Guide;   Filename: "{app}\share\CodeBlocks\docs\Manual_wxPBGuide.pdf";    Comment: PBs GuiDe to Starting with wxWidgets with MinGW and Code::Blocks;
 
 Name: {group}\Links\CodeBlocks Web Site;              Filename: "http://www.codeblocks.org";                      Comment: Go to Code::Blocks IDE website;
 Name: {group}\Links\CodeBlocks Forums;                Filename: "http://forums.codeblocks.org";                   Comment: Go to Code::Blocks IDE discussion forums;

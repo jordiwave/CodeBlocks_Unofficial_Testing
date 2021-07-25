@@ -1,3 +1,5 @@
+;!define MUI_FINISHPAGE_RUN_NOTCHECKED
+#line 2736
 #####################################################################
 # The installer is divided into 5 main sections (section groups):   #
 # "Default"           -> includes C::B core and core plugins        #
@@ -75,10 +77,10 @@ BrandingText "Code::Blocks"
 !include "UMUI.nsh"
 !include Sections.nsh
 !if ${BUILD_TYPE} == 64
-!include x64.nsh
+    !include x64.nsh
 !endif
 
-# This is SLOW, but reduces the output exe by about 20% of size. 
+# This is very SLOW, but reduces the output exe by about 20% of size. 
 #SetCompressor /SOLID LZMA
 
 ###########
@@ -156,7 +158,7 @@ BrandingText "Code::Blocks"
 !define MUI_COMPONENTSPAGE_SMALLDESC
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 !define MUI_FINISHPAGE_RUN           "$INSTDIR\codeblocks.exe"
-!define MUI_FINISHPAGE_RUN_NOTCHECKED
+;!define MUI_FINISHPAGE_RUN_NOTCHECKED
 !define MUI_FINISHPAGE_SHOWREADME    "$INSTDIR${CB_DOCS}\manual_codeblocks_en.pdf"
 !define MUI_FINISHPAGE_SHOWREADME_TEXT   "Open Code::Blocks manual"
 !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
@@ -283,13 +285,16 @@ RequestExecutionLevel user
 ; See http://nsis.sourceforge.net/Check_if_a_file_exists_at_compile_time for documentation
 !macro !defineifexist _VAR_NAME _FILE_NAME
 	!tempfile _TEMPFILE
-	!ifdef NSIS_WIN32_MAKENSIS
-		; Windows - cmd.exe
-		!system 'if exist "${_FILE_NAME}" echo !define ${_VAR_NAME} > "${_TEMPFILE}"'
-	!else
-		; Posix - sh
-		!system 'if [ -e "${_FILE_NAME}" ]; then echo "!define ${_VAR_NAME}" > "${_TEMPFILE}"; fi'
-	!endif
+    !if /FileExists "${_FILE_NAME}"
+       !echo "!define ${_VAR_NAME}" > "${_TEMPFILE}"
+    !endif
+;	!ifdef NSIS_WIN32_MAKENSIS
+;		; Windows - cmd.exe
+;		!system 'if exist "${_FILE_NAME}" echo !define ${_VAR_NAME} > "${_TEMPFILE}"'
+;	!else
+;		; Posix - sh
+;		!system 'if [ -e "${_FILE_NAME}" ]; then echo "!define ${_VAR_NAME}" > "${_TEMPFILE}"; fi'
+;	!endif
 	!include '${_TEMPFILE}'
 	!delfile '${_TEMPFILE}'
 	!undef _TEMPFILE
@@ -358,6 +363,8 @@ accessOK:
         File ${CB_BASE}\mgwhelp.dll
         File ${CB_BASE}\symsrv.dll
         File ${CB_BASE}\symsrv.yes
+        File ${CB_INSTALL_LICENSES_DIR}\gpl-3.0.txt
+        File ${CB_INSTALL_LICENSES_DIR}\lgpl-3.0.txt
         SetOutPath $INSTDIR${CB_SHARE_CB}
         File ${CB_BASE}${CB_SHARE_CB}\start_here.zip
         File ${CB_BASE}${CB_SHARE_CB}\tips.txt
@@ -393,14 +400,24 @@ accessOK:
             SectionIn 1 2 3 4
             SetOutPath $SMPROGRAMS\${CB_SM_GROUP}
             CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name).lnk" $INSTDIR\CodeBlocks.exe
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual English chm.lnk" $INSTDIR${CB_DOCS}\manual_codeblocks_en.chm
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual English pdf.lnk" $INSTDIR${CB_DOCS}\manual_codeblocks_en.pdf
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual French chm.lnk"  $INSTDIR${CB_DOCS}\manual_codeblocks_fr.chm
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual French pdf.lnk"  $INSTDIR${CB_DOCS}\manual_codeblocks_fr.pdf
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual wxWidget PBGuide pdf.lnk" $INSTDIR${CB_DOCS}\Manual_wxPBGuide.pdf
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Share Config.lnk" $INSTDIR\cb_share_config.exe
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Share Config.lnk"         $INSTDIR\cb_share_config.exe
             CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Code Completion Test.lnk" $INSTDIR\cctest.exe
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Address to Line GUI.lnk" $INSTDIR\Addr2LineUI.exe
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Address to Line GUI.lnk"  $INSTDIR\Addr2LineUI.exe
+
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) PDF Manual English.lnk" $INSTDIR${CB_DOCS}\manual_codeblocks_en.pdf "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks PDF User Manual in English"
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) CHM Manual English.lnk" $INSTDIR${CB_DOCS}\manual_codeblocks_en.chm "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks CHM User Manual in English"
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) PDF Manual French.lnk"  $INSTDIR${CB_DOCS}\manual_codeblocks_fr.pdf "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks PDF User Manual in French"
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) CHM Manual French.lnk"  $INSTDIR${CB_DOCS}\manual_codeblocks_fr.chm "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks CHM User Manual in French"
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\PBs wxWidgets Guide.lnk" $INSTDIR${CB_DOCS}\Manual_wxPBGuide.pdf "" "" 0 SW_SHOWNORMAL  "" "PBs GuiDe to Starting with wxWidgets with MinGW and Code::Blocks"
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) License.lnk"                 "$INSTDIR\gpl-3.0.txt" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks license"
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) SDK License.lnk"             "$INSTDIR\lgpl-3.0.txt" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks SDK license"
+            SetOutPath $SMPROGRAMS\${CB_SM_GROUP}\Links
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) Web Site.lnk"              "http://www.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE website"
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) Forums.lnk"                "http://forums.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE discussion forums"
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) WiKi.lnk"                  "http://wiki.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE WiKi site"
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) Tickets.lnk"               "https://sourceforge.net/p/codeblocks/tickets/" "" "" 0 SW_SHOWNORMAL  "" "Report bugs/enhancements for Code::Blocks"
+            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) beginner instructions.lnk" "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks beginner install and user guide"
+
             WriteRegStr HKCU "${REGKEY}\Components" "Program Shortcut" 1
         SectionEnd
 
@@ -2604,15 +2621,23 @@ SectionEnd
 # C::B shortcuts begin
 
 Section "-un.Program Shortcut" UNSEC_PROGRAMSHORTCUT
-    Delete "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual English chm.lnk"
-    Delete "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual English pdf.lnk"
-    Delete "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual French chm.lnk"
-    Delete "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual French pdf.lnk"
-    Delete "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Manual wxWidget PBGuide pdf.lnk"
-    Delete /REBOOTOK "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Address to Line GUI.lnk"
-    Delete /REBOOTOK "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Code Completion Test.lnk"
-    Delete /REBOOTOK "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Share Config.lnk"
-    Delete "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name).lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name).lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Share Config.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Code Completion Test.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Address to Line GUI.lnk"
+
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) PDF Manual English.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) CHM Manual English.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) PDF Manual French.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) CHM Manual French.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\PBs wxWidgets Guide.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) License.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) SDK License.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) Web Site.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) Forums.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) WiKi.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) Tickets.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) beginner instructions.lnk"
     DeleteRegValue HKCU "${REGKEY}\Components" "Program Shortcut"
 SectionEnd
 
@@ -2673,6 +2698,9 @@ Section "-un.Core Files (required)" UNSEC_CORE
     Delete /REBOOTOK $INSTDIR\libwinpthread-1.dll
     Delete /REBOOTOK $INSTDIR\libstdc++-6.dll
     Delete /REBOOTOK $INSTDIR\libgcc_s_seh-1.dll
+    # Licens files
+    Delete /REBOOTOK $INSTDIR\gpl-3.0.txt
+    Delete /REBOOTOK $INSTDIR\lgpl-3.0.txt
     # crash handler
     Delete /REBOOTOK $INSTDIR\symsrv.yes
     Delete /REBOOTOK $INSTDIR\symsrv.dll
@@ -2705,6 +2733,82 @@ Section -un.post UNSEC_MISC
     DeleteRegKey /IfEmpty HKCU "${REGKEY}\Components"
     DeleteRegKey /IfEmpty HKCU "${REGKEY}"
 
+    # Start Unregister CodeBlocks associated files - see FileAssocation.cpp
+    # or check out the registry "Computer\HKEY_CURRENT_USER\SOFTWARE\Classes\CodeBlocks.*" entries.
+    
+    ${If} ${RunningX64}
+        LogText "SetRegView 64"
+        SetRegView 64
+        StrCpy $0 0 ; Registry key index
+        ; Length of "CodeBlocks" = 10
+        enumunkey64:
+            EnumRegKey $1 HKCU "SOFTWARE\Classes" $0
+            ;LogText "Read HKCU\SOFTWARE\Classes\$1"
+            IntOp $0 $0 + 1
+            StrCmp $1 "" done64
+            StrCpy $2 $1 10  0
+            ; LogText "Read 0 = $0 , 1 = $1 , 2 = $2"
+            StrCmp $2 "CodeBlocks" 0 enumunkey64
+            StrLen $3 $1
+            IntOp $3 $3 - 10    ; Includes .
+            StrCpy $4 $1 $3 10  ; Includes .
+            LogText "L2755 1 = $1 , 2 = $2 , 3 = $3 , 4 = $4"
+            StrCmp $4 "" enumunkey64
+            ReadRegStr $5 HKCU "SOFTWARE\Classes\$4" ""
+            LogText "L2758 1 = $1 , 2 = $2 , 5 = $5"
+            StrCmp $5 $1 0 DelCodeBlocksEntry64   ; If no file extension classes found then goto DelCodeBlocksEntry
+            StrCmp $5 $2 0 DelCodeBlocksEntry64   ; If file extension classes is not for codeblocks entry goto DelCodeBlocksEntry
+            LogText "TBA L2761 Found : 'SOFTWARE\Classes\$1'"
+            LogText "ReadRegStr 'SOFTWARE\Classes\$4' returned $5"
+
+            LogText "DeleteRegValue HKCU 'SOFTWARE\Classes\$4' ''"
+            DeleteRegValue HKCU "SOFTWARE\Classes\$4" ""    ; Delete default as it is codeblocks
+            LogText "DeleteRegKey /IfEmpty HKCU 'SOFTWARE\Classes\$4'"
+            DeleteRegKey /IfEmpty HKCU "SOFTWARE\Classes\$4"
+        DelCodeBlocksEntry64:
+            DeleteRegKey HKCU "SOFTWARE\Classes\$1"
+            Goto enumunkey64
+
+        done64:    
+        # Finish Unregister CodeBlocks associated files - see FileAssocation.cpp
+        SetRegView 32
+        LogText "SetRegView 32"
+    ${EndIf}
+        
+    StrCpy $0 0 ; Registry key index
+    ; Length of "CodeBlocks" = 10
+    enumunkey:
+        EnumRegKey $1 HKCU "SOFTWARE\Classes" $0
+        ;LogText "Read HKCU\SOFTWARE\Classes\$1"
+        IntOp $0 $0 + 1
+        StrCmp $1 "" done
+        StrCpy $2 $1 10  0
+        ;LogText "Read 0 = $0 , 1 = $1 , 2 = $2"
+        StrCmp $2 "CodeBlocks" 0 enumunkey
+        StrLen $3 $1
+        IntOp $3 $3 - 10    ; Includes .
+        StrCpy $4 $1 $3 10  ; Includes .
+        LogText "L2791 1 = $1 , 2 = $2 , 3 = $3 , 4 = $4"
+        StrCmp $4 "" enumunkey
+        ReadRegStr $5 HKCU "SOFTWARE\Classes\$4" ""
+        LogText "L2794 1 = $1 , 2 = $2 , 5 = $5"
+        StrCmp $5 $1 0 DelCodeBlocksEntry   ; If no file extension classes found then goto DelCodeBlocksEntry
+        StrCmp $5 $2 0 DelCodeBlocksEntry   ; If file extension classes is not for codeblocks entry goto DelCodeBlocksEntry
+        LogText "TBA L2797 Found : 'SOFTWARE\Classes\$1'"
+        LogText "ReadRegStr 'SOFTWARE\Classes\$4' returned $5"
+
+        LogText "DeleteRegValue HKCU 'SOFTWARE\Classes\$4' ''"
+        DeleteRegValue HKCU "SOFTWARE\Classes\$4" ""    ; Delete default as it is codeblocks
+        LogText "DeleteRegKey HKCU 'SOFTWARE\Classes\$4'"
+        DeleteRegKey HKCU "SOFTWARE\Classes\$4"
+    DelCodeBlocksEntry:
+        DeleteRegKey HKCU "SOFTWARE\Classes\$1"
+        Goto enumunkey
+
+    done:    
+    # Finish Unregister CodeBlocks associated files - see FileAssocation.cpp
+    
+    
     RMDir /REBOOTOK $INSTDIR
 
     # If $INSTDIR was already removed, skip these next steps
@@ -2750,6 +2854,7 @@ SectionEnd
 #######################
 
 Function .onInit
+    LogSet on
     InitPluginsDir
     Push $R1
     File /oname=$PLUGINSDIR\spltmp.bmp ${CB_SPLASH}
@@ -2763,6 +2868,7 @@ FunctionEnd
 #########################
 
 Function un.onInit
+    LogSet on
     ReadRegStr $INSTDIR HKCU "${REGKEY}" Path
     !insertmacro SELECT_UNSECTION "Core Files (required)"              ${UNSEC_CORE}
 
@@ -3002,3 +3108,15 @@ Function preuninstall_function
   !insertmacro UMUI_ENDIF_INSTALLFLAG
 
 FunctionEnd
+
+
+!macro customUnInstall
+    IfFileExists "$APPDATA\$(^Name)" FileFound done:
+    FileFound:
+        MessageBox MB_YESNO "Delete Code::Blocks application user configuration/data directory?" \
+        /SD IDNO IDNO done IDYES Accepted
+
+        Accepted:
+            RMDir /r "$APPDATA\$(^Name)"
+    done:
+!macroend

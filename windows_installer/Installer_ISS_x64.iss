@@ -23,7 +23,6 @@
 #define DOCUMENTATION_DIR =SourcePath+'Documentation'
 #define GRAPHICS_DIR      =SourcePath+'Graphics'
 #define LICENSES_DIR      =SourcePath+'Licenses'
-#define URLS_DIR          =SourcePath+'URLS'
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -62,7 +61,6 @@ VersionInfoProductVersion={#CURRENT_DATE_YEAR}.{#CURRENT_DATE_MONTH}.{#CURRENT_D
 VersionInfoProductTextVersion={#CB_VERSION}-{#CURRENT_DATE_YEAR}.{#CURRENT_DATE_MONTH}.{#CURRENT_DATE_DAY}.0
 SourceDir={#CB_BuildOutputDir}
 OutputDir={#SourcePath}
-DisableStartupPrompt=False
 DisableWelcomePage=False
 PrivilegesRequired=none
 WizardImageFile={#GRAPHICS_DIR}\setup_1.bmp
@@ -227,10 +225,15 @@ Name: Plugins\Core\ToDo; Description: To-Do list support; Types: custom full
 Name: Plugins\Core\XPManifest; Description: XP Look and Feel; Types: custom compact full
 
 [Files]
-;Source: "{#URLS_DIR}\CodeBLocks_Forums.url"; DestDir: "{app}"; Flags: ignoreversion
-;Source: "{#URLS_DIR}\CodeBLocks_ReportBugs.url"; DestDir: "{app}"; Flags: ignoreversion
-;Source: "{#URLS_DIR}\CodeBLocks_WebSite.url"; DestDir: "{app}"; Flags: ignoreversion
-;Source: "{#URLS_DIR}\CodeBLocks_Wiki.url"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#DICTIONARIES_DIR}\*"; DestDir: "{app}\share\CodeBlocks\SpellChecker"; Flags: ignoreversion createallsubdirs recursesubdirs
+Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_en.chm"; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion
+Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_en.pdf"; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion
+Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_fr.chm"; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion
+Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_fr.pdf"; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion
+Source: "{#DOCUMENTATION_DIR}\Manual_wxPBGuide.pdf"; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion
+Source: "{#LICENSES_DIR}\gpl-3.0.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#LICENSES_DIR}\lgpl-3.0.txt"; DestDir: "{app}"; Flags: ignoreversion
+
 
 Source: "codeblocks.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: ProgramFiles
 Source: "codeblocks.dll"; DestDir: "{app}"; Components: ProgramFiles
@@ -261,12 +264,6 @@ Source: "wxmsw315u_gl_gcc_cb.dll"; DestDir: "{app}"; Flags: ignoreversion; Compo
 Source: "wxsmithlib.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: ProgramFiles
 Source: "wxspeedbutton.dll"; DestDir: "{app}"; Flags: ignoreversion; Components: ProgramFiles
 Source: "symsrv.yes"; DestDir: "{app}"; Flags: ignoreversion; Components: ProgramFiles
-
-Source: {#DOCUMENTATION_DIR}\manual_codeblocks_en.chm; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion; Components: help\english
-Source: {#DOCUMENTATION_DIR}\manual_codeblocks_en.pdf; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion; Components: help\english
-Source: {#DOCUMENTATION_DIR}\manual_codeblocks_fr.chm; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion; Components: help\french
-Source: {#DOCUMENTATION_DIR}\manual_codeblocks_fr.pdf; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion; Components: help\french
-Source: {#DOCUMENTATION_DIR}\Manual_wxPBGuide.pdf;     DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion; Components: help
 
 Source: "share\CodeBlocks\tips.txt"; DestDir: "{app}\share\CodeBlocks"; Components: ProgramFiles
 
@@ -538,22 +535,30 @@ Source: share\CodeBlocks\lexers\lexer_yaml.sample; DestDir: {app}\share\CodeBloc
 ; Copy all files in sub directories below!!!
 Source: "share\CodeBlocks\compilers\*";    DestDir: "{app}\share\CodeBlocks\compilers";    Flags: ignoreversion createallsubdirs recursesubdirs; Components: ProgramFiles
 Source: "share\CodeBlocks\SpellChecker\*"; DestDir: "{app}\share\CodeBlocks\SpellChecker"; Flags: ignoreversion createallsubdirs recursesubdirs; Components: Plugins\Contrib\SpellChecker
-Source: "{#DICTIONARIES_DIR}\*";           DestDir: "{app}\share\CodeBlocks\SpellChecker"; Flags: ignoreversion createallsubdirs recursesubdirs; Components: Plugins\Contrib\SpellChecker
 Source: "share\CodeBlocks\Templates\*";    DestDir: "{app}\share\CodeBlocks\Templates";    Flags: ignoreversion createallsubdirs recursesubdirs; Components: ProgramFiles\Templates
 Source: "share\CodeBlocks\scripts\*";      DestDir: "{app}\share\CodeBlocks\scripts";      Flags: ignoreversion createallsubdirs recursesubdirs; Components: Plugins\Core\ScriptedWizard
 
 ; Source: ..\..\..\..\MinGW\*; DestDir: {app}; Components: CompilerMINGW; Flags: recursesubdirs
 
 [Icons]
-Name: {group}\{#CB_PROGRAMDIRNAME}; Filename: {app}\codeblocks.exe; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: startmenu;
-Name: {group}\{cm:UninstallProgram, codeblocks}; Filename: {uninstallexe}; Tasks: startmenu;
-Name: {userdesktop}\{#CB_PROGRAMDIRNAME}; Filename: {app}\codeblocks.exe; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: desktopicon;
+Name: {group}\{#CB_PROGRAMDIRNAME};               Filename: {app}\codeblocks.exe; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE;
+Name: {group}\{cm:UninstallProgram, codeblocks};  Filename: {uninstallexe};
+Name: {group}\CodeBlocks License;                 Filename: {app}\gpl-3.0.txt;                                     Comment: Code::Blocks license;
+Name: {group}\CodeBlocks SDK License;             Filename: {app}\lgpl-3.0.txt;                                    Comment: Code::Blocks SDK license;
+Name: {userdesktop}\{#CB_PROGRAMDIRNAME};         Filename: {app}\codeblocks.exe; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE;
 Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}; Filename: {app}\codeblocks.exe; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: quicklaunchicon;
-Name: {group}\Links\CodeBlocks on-line; Filename: {app}\CodeBLocks_WebSite.url; Comment: Go to Code::Blocks IDE website; Tasks: startmenu;
-Name: {group}\Links\CodeBlocks forums; Filename: {app}\CodeBLocks_Forums.url; Comment: Go to Code::Blocks IDE discussion forums; Tasks: startmenu;
-Name: {group}\Links\CodeBlocks WiKi; Filename: {app}\CodeBLocks_Wiki.url; Comment: Go to Code::Blocks IDE WiKi site; Tasks: startmenu;
-Name: {group}\Links\Report a bug; Filename: {app}\CodeBLocks_ReportBugs.url; Comment: Report bugs you have found in Code::Blocks; Tasks: startmenu;
-Name: {group}\Docs\License; Filename: {app}\gpl-3.0.txt; Tasks: startmenu;
+
+Name: {group}\Links\CodeBlocks PDF Manual English;    Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.pdf";Comment: The Code::Blocks PDF User Manual in English;
+Name: {group}\Links\CodeBlocks CHM Manual English;    Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.chm";Comment: The Code::Blocks CHM User Manual in English;
+Name: {group}\Links\CodeBlocks PDF Manual French;     Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.pdf";Comment: The Code::Blocks PDF User Manual in French;
+Name: {group}\Links\CodeBlocks CHM Manual French;     Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.chm";Comment: The Code::Blocks CHM User Manual in French;
+Name: {group}\Links\PB Guide wxWidgets;   Filename: "{app}\share\CodeBlocks\docs\Manual_wxPBGuide.pdf";    Comment: PBs GuiDe to Starting with wxWidgets with MinGW and Code::Blocks;
+
+Name: {group}\Links\CodeBlocks Web Site;              Filename: "http://www.codeblocks.org";                      Comment: Go to Code::Blocks IDE website;
+Name: {group}\Links\CodeBlocks Forums;                Filename: "http://forums.codeblocks.org";                   Comment: Go to Code::Blocks IDE discussion forums;
+Name: {group}\Links\CodeBlocks WiKi;                  Filename: "http://wiki.codeblocks.org";                     Comment: Go to Code::Blocks IDE WiKi site;
+Name: {group}\Links\CodeBlocks Tickets;               Filename: "https://sourceforge.net/p/codeblocks/tickets/";  Comment: Report bugs/enhancements for Code::Blocks; Tasks: startmenu;
+Name: {group}\Links\Codeblocks beginner instructions; Filename: "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf";  Comment: Code::Blocks beginner install and user guide;
 
 [Run]
 Filename: {app}\codeblocks.exe; Description: Launch Code::Blocks; Flags: nowait postinstall skipifsilent
