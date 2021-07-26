@@ -1,5 +1,3 @@
-;!define MUI_FINISHPAGE_RUN_NOTCHECKED
-#line 2736
 #####################################################################
 # The installer is divided into 5 main sections (section groups):   #
 # "Default"           -> includes C::B core and core plugins        #
@@ -17,25 +15,23 @@
 #####################################################################
 # To compile this script:                                           #
 #                                                                   #
-# - adopt the PATH's to the binary / stuff to package below         #
+# 1) Download and install NSIS (v3) from here:                      #
+#      http://nsis.sourceforge.net/Download                         #
 #                                                                   #
-# - update the following:                                           #
+# 2) Download and install the Ultra-Modern UI:                      #
+#      https://github.com/SuperPat45/UltraModernUI                  #
+#                                                                   #
+# 3) Update the following:                                          #
 #    * BUILD_TYPE for 32 or 64 bit                                  #
 #    * BUILD_TYPE for 32 or 64 bit                                  #
-#                                                                   #
-# - download and install NSIS (v3) from here:                       #
-#   http://nsis.sourceforge.net/Download                            #
-#                                                                   #
-# - download and install the Ultra-Modern UI:                       #
-#   https://github.com/SuperPat45/UltraModernUI                     #
-#                                                                   #
-# - download and install the NSIS-INetC-plugin:                     #
-#   https://github.com/DigitalMediaServer/NSIS-INetC-plugin         #
 #                                                                   #
 # - run NSIS using this command line or via the MakeNSISW.exe GUI   #
 #   C:\PATH_TO\NSIS\makensis.exe setup.nsi                          #
 #                                                                   #
 # - probably adjust "RequestExecutionLevel admin/user" -> see below #
+#                                                                   #
+# - if you want to download the latest 32 bit wget zip get it from: #
+#   https://eternallybored.org/misc/wget/                           #
 #                                                                   #
 #####################################################################
 
@@ -43,21 +39,9 @@ Name CodeBlocks
 XPStyle on
 Unicode True
 
-# Uncomment the following line to remove the
-# 'Nullsoft Install System vX.XX' String:
-BrandingText "Code::Blocks"
-# (Note that this string contains a space character.)
-
 #########################################################
 # Room for adjustments of most important settings BEGIN #
 #########################################################
-# Note: For each PC the installer needs to be adjusted  #
-# in terms of source path's for the files required by   #
-# the installer. These settings can be adjusted in      #
-# between this comment and the same with "END".         #
-# (... just look quite below).                          #
-#########################################################
-
 # The following line defined if the build is for 32 or 64 bits
 !define BUILD_TYPE 64
 
@@ -70,9 +54,23 @@ BrandingText "Code::Blocks"
 # non-admins the user installation packge is the only one working.
 !define CB_ADMIN_INSTALLER
 
-##################
-# Included files #
-##################
+# Possibly required to adjust manually:
+# Note: a) These files are only required for the installer.
+#       b) These are in the ${CB_INSTALL_GRAPHICS_DIR} directory
+!if ${NIGHTLY_BUILD_SVN} > 0
+    !define CB_SPLASH_FILENAME  setup_splash_nightly.bmp
+!else
+    !define CB_SPLASH_FILENAME  setup_splash_2003.bmp
+!endif
+!define CB_LOGO_FILENAME        setup_logo_2003.bmp
+
+#########################################################
+# Room for adjustments of most important settings END   #
+#########################################################
+
+##############################
+# Included NSIS script files #
+##############################
 !include LogicLib.nsh
 !include "UMUI.nsh"
 !include Sections.nsh
@@ -80,40 +78,20 @@ BrandingText "Code::Blocks"
     !include x64.nsh
 !endif
 
-# This is very SLOW, but reduces the output exe by about 20% of size. 
+# WARNING: This is very SLOW if enabled, but it reduces the output exe by about 20%!!
 #SetCompressor /SOLID LZMA
 
-###########
-# Defines #
-###########
-# Get Current Date into CURRENT_DATESTAMP variable
-!define /date CURRENT_DATESTAMP "%d%b%Y"
-!define /date CURRENT_DATE_YEAR "%Y"
-!define /date CURRENT_DATE_YEAR_NO_CENTURY "%y"
-!define /date CURRENT_DATE_MONTH "%m"
-!define /date CURRENT_DATE_DAY "%d"
-
-!define REGKEY           "SOFTWARE\$(^Name)"
-!if ${NIGHTLY_BUILD_SVN} > 0
-!define VERSION          "SVN-${NIGHTLY_BUILD_SVN}"
-!else
-#!define VERSION         ${CURRENT_DATE_YEAR_NO_CENTURY}.${CURRENT_DATE_MONTH}
-!endif
-!define COMPANY          "The Code::Blocks Team"
-!define URL              http://www.codeblocks.org
-
-##################
-# Folder DEFINES #
-##################
-
+###########################
+# CB BUILD Folder DEFINES #
+###########################
 !if ${BUILD_TYPE} == 32
-!define CB_BASE          .\..\src\output31
-!define WX_BASE          .\..\src\output31
-#!define WX_BASE          D:\Devel\CodeBlocks\Releases\CodeBlocks_2003
+    !define CB_BASE          .\..\src\output31
+    !define WX_BASE          .\..\src\output31
+    #!define WX_BASE          D:\Devel\CodeBlocks\Releases\CodeBlocks_2003
 !else
-!define CB_BASE          .\..\src\output31_64
-!define WX_BASE          .\..\src\output31_64
-#!define WX_BASE          D:\Devel\CodeBlocks\Releases\CodeBlocks_2003
+    !define CB_BASE          .\..\src\output31_64
+    !define WX_BASE          .\..\src\output31_64
+    #!define WX_BASE          D:\Devel\CodeBlocks\Releases\CodeBlocks_2003
 !endif
 !define CB_SHARE         \share
 !define CB_SHARE_CB      ${CB_SHARE}\CodeBlocks
@@ -128,37 +106,83 @@ BrandingText "Code::Blocks"
 !define CB_IMG_SETTINGS  ${CB_IMAGES}\settings
 !define CB_XML_COMPILERS ${CB_SHARE_CB}\compilers
 
-# These are the Install source directories relative to the NSIS script
+###########################
+#   NSIS Folder DEFINES   #
+###########################
+# These are the NSIS source directories
 !define CB_INSTALL_DICTIONARIES_DIR     .\Dictionaries
 !define CB_INSTALL_DOCUMENTATION_DIR    .\Documentation
 !define CB_INSTALL_GRAPHICS_DIR         .\Graphics
 !define CB_INSTALL_LICENSES_DIR         .\Licenses
 !define CB_INSTALL_URLS_DIR             .\URLS
 
-#########
-# Files #
-#########
-# Possibly required to adjust manually:
-# Note: These files are only required for the installer.
-!ifdef NIGHTLY_BUILD_SVN
-!define CB_SPLASH        ${CB_INSTALL_GRAPHICS_DIR}\setup_splash_nightly.bmp
+###########################
+#        BRANDING         #
+###########################
+BrandingText "Code::Blocks"
+
+###########################
+#       DATE Defines      #
+###########################
+# Get Current Date into CURRENT_DATESTAMP variable
+!define /date CURRENT_DATESTAMP "%d%b%Y"
+!define /date CURRENT_DATE_YEAR "%Y"
+!define /date CURRENT_DATE_YEAR_NO_CENTURY "%y"
+!define /date CURRENT_DATE_MONTH "%m"
+!define /date CURRENT_DATE_DAY "%d"
+
+################################################
+# CB SPECIFIC INSTALLER CONFIGURATION  Defines #
+################################################
+!define REGKEY           "SOFTWARE\$(^Name)"
+!if ${NIGHTLY_BUILD_SVN} > 0
+    !define VERSION      "SVN-${NIGHTLY_BUILD_SVN}"
 !else
-!define CB_SPLASH        ${CB_INSTALL_GRAPHICS_DIR}\setup_splash_2003.bmp
+    #!define VERSION     ${CURRENT_DATE_YEAR_NO_CENTURY}.${CURRENT_DATE_MONTH}
 !endif
-!define CB_LOGO          ${CB_INSTALL_GRAPHICS_DIR}\setup_logo_2003.bmp
-# Possibly required to adjust manually:
-# Note: This file is only required for the installer.
+!define COMPANY          "The Code::Blocks Team"
+!define URL              http://www.codeblocks.org
+!define CB_SPLASH        ${CB_INSTALL_GRAPHICS_DIR}\${CB_SPLASH_FILENAME}
+!define CB_LOGO          ${CB_INSTALL_GRAPHICS_DIR}\${CB_LOGO_FILENAME}
 !define CB_LICENSE       ${CB_INSTALL_LICENSES_DIR}\gpl-3.0.txt
 !define CB_SM_GROUP      $(^Name)
 
-# Interface configuration (MUI defines)
+# Installer attributes (usually these do not change)
+# Note: We can't always use "Code::Blocks" as the "::" conflicts with the file system.
+!if ${BUILD_TYPE} == 32
+    OutFile             codeblocks-${VERSION}-32bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
+    InstallDir          $PROGRAMFILES\CodeBlocks
+!else
+    OutFile             codeblocks-${VERSION}-64bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
+    InstallDir          $PROGRAMFILES64\CodeBlocks
+!endif
+
+Caption           "Code::Blocks ${VERSION} ${CURRENT_DATE_YEAR}.${CURRENT_DATE_MONTH}.${CURRENT_DATE_DAY}.0 Installation"
+CRCCheck          on
+XPStyle           on
+ShowInstDetails   show
+VIProductVersion  ${CURRENT_DATE_YEAR}.${CURRENT_DATE_MONTH}.${CURRENT_DATE_DAY}.0
+VIAddVersionKey   ProductName     "Code::Blocks"
+VIAddVersionKey   ProductVersion  "${VERSION}"
+VIAddVersionKey   CompanyName     "${COMPANY}"
+VIAddVersionKey   CompanyWebsite  "${URL}"
+VIAddVersionKey   FileVersion     "${VERSION}"
+VIAddVersionKey   FileDescription "Code::Blocks cross-platform IDE"
+VIAddVersionKey   LegalCopyright  "Code::Blocks Team"
+UninstallCaption  "Code::Blocks Uninstallation"
+ShowUninstDetails show
+
+###############################################################
+#   NSIS PAGE GUI Defines (SEE NSIS and Ultra-Modern UI docs) #
+###############################################################
+# Interface configuration
 !define MUI_ICON                     "${CB_INSTALL_GRAPHICS_DIR}\setup_icon.ico"
 #!define MUI_HEADERIMAGE
 #!define MUI_HEADERIMAGE_BITMAP       "${CB_LOGO}"
 !define MUI_COMPONENTSPAGE_SMALLDESC
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 !define MUI_FINISHPAGE_RUN           "$INSTDIR\codeblocks.exe"
-;!define MUI_FINISHPAGE_RUN_NOTCHECKED
+; !define MUI_FINISHPAGE_RUN_NOTCHECKED
 !define MUI_FINISHPAGE_SHOWREADME    "$INSTDIR${CB_DOCS}\manual_codeblocks_en.pdf"
 !define MUI_FINISHPAGE_SHOWREADME_TEXT   "Open Code::Blocks manual"
 !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
@@ -167,42 +191,25 @@ BrandingText "Code::Blocks"
 !define MUI_UNICON                   "${CB_INSTALL_GRAPHICS_DIR}\setup_icon.ico"
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
 
-;Interface Settings
 !define UMUI_LEFTIMAGE_BMP "${CB_INSTALL_GRAPHICS_DIR}\setup_1.bmp"
 !define UMUI_HEADERBGIMAGE_BMP  "${CB_LOGO}"
-
 !define UMUI_SKIN "SoftBlue"
-
 !define UMUI_PARAMS_REGISTRY_ROOT HKCU
 !define UMUI_PARAMS_REGISTRY_KEY  ${REGKEY}
-
 !define UMUI_INSTALLDIR_REGISTRY_VALUENAME "InstallDir"    ;Replace the InstallDirRegKey instruction and automatically save the $INSTDIR variable
-
 !define UMUI_VERSION ${VERSION}
 !define /date UMUI_VERBUILD "${VERSION}_%Y-%m-%d HH:MM"
-
 !define UMUI_VERSION_REGISTRY_VALUENAME "Version"
 !define UMUI_VERBUILD_REGISTRY_VALUENAME "VerBuild"
-
 !define UMUI_UNINSTALLPATH_REGISTRY_VALUENAME "uninstallpath"
 !define UMUI_INSTALLERFULLPATH_REGISTRY_VALUENAME "installpath"
 !define UMUI_UNINSTALL_FULLPATH "$INSTDIR\Uninstall.exe"
 !define UMUI_PREUNINSTALL_FUNCTION preuninstall_function
-
 !define UMUI_ABORTPAGE_LINK          "${URL}"
 !define UMUI_ABORTPAGE_LINK_LOCATION "${URL}"
-
-!define  UMUI_TEXT_SETUPTYPE_MINIMAL_TITLE  "Minimal: Important plugins, important lexers"
-!define  UMUI_TEXT_SETUPTYPE_STANDARD_TITLE "Standard: Core plugins, core tools, and core lexers"
-!define  UMUI_TEXT_SETUPTYPE_COMPLETE_TITLE "Full: All plugins, all tools, just everything"
-
-#######################################################
-# Room for adjustments of most important settings END #
-#######################################################
-
-###################################################################################
-# Usually below here no changes are required unless adding new installer features #
-###################################################################################
+!define UMUI_TEXT_SETUPTYPE_MINIMAL_TITLE  "Minimal: Important plugins, important lexers"
+!define UMUI_TEXT_SETUPTYPE_STANDARD_TITLE "Standard: Core plugins, core tools, and core lexers"
+!define UMUI_TEXT_SETUPTYPE_COMPLETE_TITLE "Full: All plugins, all tools, just everything"
 
 # Reserved Files
 ReserveFile "${NSISDIR}\Plugins\x86-unicode\AdvSplash.dll"
@@ -240,47 +247,32 @@ ReserveFile "${NSISDIR}\Plugins\x86-unicode\AdvSplash.dll"
 # Installer languages
 !insertmacro MUI_LANGUAGE "English" # first language is the default language
 
-# Installer attributes (usually these do not change)
-# Note: We can't always use "Code::Blocks" as the "::" conflicts with the file system.
-!if ${BUILD_TYPE} == 32
-    OutFile           codeblocks-${VERSION}-32bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
-    InstallDir        $PROGRAMFILES\CodeBlocks
-!else
-    OutFile           codeblocks-${VERSION}-64bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
-    InstallDir        $PROGRAMFILES64\CodeBlocks
-!endif
-
-Caption           "Code::Blocks ${VERSION} ${CURRENT_DATE_YEAR}.${CURRENT_DATE_MONTH}.${CURRENT_DATE_DAY}.0 Installation"
-CRCCheck          on
-XPStyle           on
-ShowInstDetails   show
-VIProductVersion  ${CURRENT_DATE_YEAR}.${CURRENT_DATE_MONTH}.${CURRENT_DATE_DAY}.0
-VIAddVersionKey   ProductName     "Code::Blocks"
-VIAddVersionKey   ProductVersion  "${VERSION}"
-VIAddVersionKey   CompanyName     "${COMPANY}"
-VIAddVersionKey   CompanyWebsite  "${URL}"
-VIAddVersionKey   FileVersion     "${VERSION}"
-VIAddVersionKey   FileDescription "Code::Blocks cross-platform IDE"
-VIAddVersionKey   LegalCopyright  "Code::Blocks Team"
-UninstallCaption  "Code::Blocks Uninstallation"
-ShowUninstDetails show
-
-# Specifies the requested execution level for Windows Vista and Windows 7.
+##########################################
+# NSIS Installer Privilege CONFIGURATION #
+##########################################
+# Specifies the requested execution level for Windows Vista, 7, 8, 10 & 11
 # The value is embedded in the installer and uninstaller's XML manifest
-# and tells Vista/7, and probably future versions of Windows, what privileges
+# and tells Vista/7/10, and probably future versions of Windows, what privileges
 # level the installer requires.
 # -> user  requests the a normal user's level with no administrative privileges
 # -> admin requests administrator level and will cause Windows to prompt the
 #    user to verify privilege escalation.
 !ifdef CB_ADMIN_INSTALLER
-RequestExecutionLevel admin
+    RequestExecutionLevel admin
 !else
-RequestExecutionLevel user
+    RequestExecutionLevel user
 !endif
 
+# ========================================================================================================================
+# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+# Changes are usually NOT required below # Changes are usually NOT required below # Changes are usually NOT required below #
+# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+# ========================================================================================================================
+
 ############################
-# Check for Fortran plugin #
+# Check for Fortran Plugin #
 ############################
+# This is required iof you are building from github instead of source forge source repo trunk/branch/tag!!
 
 ; See http://nsis.sourceforge.net/Check_if_a_file_exists_at_compile_time for documentation
 !macro !defineifexist _VAR_NAME _FILE_NAME
@@ -302,10 +294,6 @@ RequestExecutionLevel user
 !define !defineifexist "!insertmacro !defineifexist"
 
 ${!defineifexist} FORTRAN_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\FortranProject.zip
-
-# ========================================================================================================================
-# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-# ========================================================================================================================
 
 ######################
 # Installer sections #
@@ -342,52 +330,55 @@ SectionGroup "!Default install" SECGRP_DEFAULT
                 /SD IDOK
             DetailPrint "Aborting installation."
             Abort
-accessOK:
-        SetOverwrite on
-        File ${WX_BASE}\wxmsw*u_gcc_cb.dll
-        File ${WX_BASE}\wxmsw*u_gl_gcc_cb.dll
-        File ${CB_BASE}\Addr2LineUI.exe
-        File ${CB_BASE}\cb_console_runner.exe
-        File ${CB_BASE}\CbLauncher.exe
-        File ${CB_BASE}\cctest.exe
-        File ${CB_BASE}\codeblocks.dll
-        File ${CB_BASE}\codeblocks.exe
-        # MinGW DLL's for thread handling etc.
-        File ${CB_BASE}\libgcc_s_seh-1.dll
-        File ${CB_BASE}\libstdc++-6.dll
-        File ${CB_BASE}\libwinpthread-1.dll
-        # crash handler
-        File ${CB_BASE}\dbgcore.dll
-        File ${CB_BASE}\dbghelp.dll
-        File ${CB_BASE}\exchndl.dll
-        File ${CB_BASE}\mgwhelp.dll
-        File ${CB_BASE}\symsrv.dll
-        File ${CB_BASE}\symsrv.yes
-        File ${CB_INSTALL_LICENSES_DIR}\gpl-3.0.txt
-        File ${CB_INSTALL_LICENSES_DIR}\lgpl-3.0.txt
-        SetOutPath $INSTDIR${CB_SHARE_CB}
-        File ${CB_BASE}${CB_SHARE_CB}\start_here.zip
-        File ${CB_BASE}${CB_SHARE_CB}\tips.txt
-        File ${CB_BASE}${CB_SHARE_CB}\manager_resources.zip
-        File ${CB_BASE}${CB_SHARE_CB}\resources.zip
-        SetOutPath $INSTDIR${CB_DOCS}
-        File ${CB_INSTALL_DOCUMENTATION_DIR}\index.ini
-        File ${CB_INSTALL_DOCUMENTATION_DIR}\manual_codeblocks_en.chm
-        File ${CB_INSTALL_DOCUMENTATION_DIR}\manual_codeblocks_en.pdf
-        File ${CB_INSTALL_DOCUMENTATION_DIR}\manual_codeblocks_fr.chm
-        File ${CB_INSTALL_DOCUMENTATION_DIR}\manual_codeblocks_fr.pdf
-        File ${CB_INSTALL_DOCUMENTATION_DIR}\Manual_wxPBGuide.pdf
-        SetOutPath $INSTDIR${CB_SCRIPTS}
-        File ${CB_BASE}${CB_SCRIPTS}\*.script
-        SetOutPath $INSTDIR${CB_SCTESTS}
-        File ${CB_BASE}${CB_SCTESTS}\*.script
-        SetOutPath $INSTDIR${CB_TEMPLATES}
-        File ${CB_BASE}${CB_TEMPLATES}\*.*
-        SetOutPath $INSTDIR${CB_IMAGES}
-        File ${CB_BASE}${CB_IMAGES}\*.png
-        SetOutPath $INSTDIR${CB_IMG_SETTINGS}
-        File ${CB_BASE}${CB_IMG_SETTINGS}\*.png
-        WriteRegStr HKCU "${REGKEY}\Components" "Core Files (required)" 1
+        accessOK:
+            SetOverwrite on
+            File ${WX_BASE}\wxmsw*u_gcc_cb.dll
+            File ${WX_BASE}\wxmsw*u_gl_gcc_cb.dll
+            File ${CB_BASE}\Addr2LineUI.exe
+            File ${CB_BASE}\cb_console_runner.exe
+            File ${CB_BASE}\CbLauncher.exe
+            File ${CB_BASE}\cctest.exe
+            File ${CB_BASE}\codeblocks.dll
+            File ${CB_BASE}\codeblocks.exe
+            # MinGW DLL's for thread handling etc.
+            File ${CB_BASE}\libgcc_s_seh-1.dll
+            File ${CB_BASE}\libstdc++-6.dll
+            File ${CB_BASE}\libwinpthread-1.dll
+            # crash handler
+            File ${CB_BASE}\dbgcore.dll
+            File ${CB_BASE}\dbghelp.dll
+            File ${CB_BASE}\exchndl.dll
+            File ${CB_BASE}\mgwhelp.dll
+            File ${CB_BASE}\symsrv.dll
+            File ${CB_BASE}\symsrv.yes
+            # Licenses
+            File ${CB_INSTALL_LICENSES_DIR}\gpl-3.0.txt
+            File ${CB_INSTALL_LICENSES_DIR}\lgpl-3.0.txt
+            # WGET
+            File wget.exe
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            File ${CB_BASE}${CB_SHARE_CB}\start_here.zip
+            File ${CB_BASE}${CB_SHARE_CB}\tips.txt
+            File ${CB_BASE}${CB_SHARE_CB}\manager_resources.zip
+            File ${CB_BASE}${CB_SHARE_CB}\resources.zip
+            SetOutPath $INSTDIR${CB_DOCS}
+            File ${CB_INSTALL_DOCUMENTATION_DIR}\index.ini
+            File ${CB_INSTALL_DOCUMENTATION_DIR}\manual_codeblocks_en.chm
+            File ${CB_INSTALL_DOCUMENTATION_DIR}\manual_codeblocks_en.pdf
+            File ${CB_INSTALL_DOCUMENTATION_DIR}\manual_codeblocks_fr.chm
+            File ${CB_INSTALL_DOCUMENTATION_DIR}\manual_codeblocks_fr.pdf
+            File ${CB_INSTALL_DOCUMENTATION_DIR}\Manual_wxPBGuide.pdf
+            SetOutPath $INSTDIR${CB_SCRIPTS}
+            File ${CB_BASE}${CB_SCRIPTS}\*.script
+            SetOutPath $INSTDIR${CB_SCTESTS}
+            File ${CB_BASE}${CB_SCTESTS}\*.script
+            SetOutPath $INSTDIR${CB_TEMPLATES}
+            File ${CB_BASE}${CB_TEMPLATES}\*.*
+            SetOutPath $INSTDIR${CB_IMAGES}
+            File ${CB_BASE}${CB_IMAGES}\*.png
+            SetOutPath $INSTDIR${CB_IMG_SETTINGS}
+            File ${CB_BASE}${CB_IMG_SETTINGS}\*.png
+            WriteRegStr HKCU "${REGKEY}\Components" "Core Files (required)" 1
     SectionEnd
 
     # C::B core end
@@ -1729,33 +1720,41 @@ Section -post SEC_MISC
     WriteUninstaller $INSTDIR\uninstall.exe
     SetOutPath $SMPROGRAMS\${CB_SM_GROUP}
     CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
-    WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
-    WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "${VERSION}"
-    WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" Publisher "${COMPANY}"
-    WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" URLInfoAbout "${URL}"
-    WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayIcon $INSTDIR\uninstall.exe
-    WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" UninstallString $INSTDIR\uninstall.exe
+    WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
+    WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "${VERSION}"
+    WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" Publisher "${COMPANY}"
+    WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" URLInfoAbout "${URL}"
+    WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayIcon $INSTDIR\uninstall.exe
+    WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" UninstallString $INSTDIR\uninstall.exe
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoModify 1
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
     
-    # Ask the user if they wan to download MINGW 
-    MessageBox MB_YESNO|MB_ICONQUESTION "Do you want to download and install the MingW compiler?" /SD IDNO IDYES yesInstall IDNO noInstall
+    # =============================================================================================
+    # Ask the user if they want to download and run MinGW64 installer
+    StrCpy $2 "$TEMP\mingw-w64-install.exe"
+    Delete "$2"
+    MessageBox MB_YESNO|MB_ICONQUESTION "Do you want to download and run MingW-64 compiler installer?" /SD IDNO IDYES yesInstall IDNO noInstall
 yesInstall:
-        StrCpy $2 "$TEMP\mingw-w64-install.exe"
-        inetc::get /weaksecurity /connecttimeout 30 /receivetimeout 120 https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe.download $2
-        Pop $0 ;Get the return value$0
-        StrCmp $0 success success
-        SetDetailsView show
-        DetailPrint "download failed: $0"
-        Abort
+    ; Does not work for sourceforge DL - inetc::get https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe/download $2 /END
+    DetailPrint           "wget.exe https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe -O $2"
+    NSExec::exec "$INSTDIR\wget.exe https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe -O $2"
+    Pop $0 ;Get the return value in $0
+    StrCmp $0 0 success 0
+    SetDetailsView show
+    DetailPrint "Download failed : $0"
+    MessageBox MB_OK|MB_ICONEXCLAMATION \
+        "Could not download the https://sourceforge.net/projects/mingw-w64/files/Toolchains targetting Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe file.$\r$\n\
+        As such you will need to manually install MinGW by yourself." \
+        /SD IDOK
+    goto noInstall
 success:
-        DetailPrint "downloaded : $2"
-        ExecWait '"$2"'
-        Delete $2
-        Pop $0 ;Get the return value $0
-        StrCmp $0 "" noInstall
-        StrCpy $INSTDIR $0
+    DetailPrint "Successfully downloaded : $2"
+    DetailPrint "Run : $2"
+    ExecWait "$2"
+    Delete "$2"
+    DetailPrint "Delete : $2"
 noInstall:
+    # =============================================================================================
 
 SectionEnd
 
@@ -2672,13 +2671,11 @@ Section "-un.Core Files (required)" UNSEC_CORE
     Delete /REBOOTOK $INSTDIR${CB_IMAGES}\*.png
     RMDir  /REBOOTOK $INSTDIR${CB_IMAGES}
     Delete /REBOOTOK $INSTDIR${CB_TEMPLATES}\*.*
-    RMDir            $INSTDIR${CB_TEMPLATES}
+    RMDir  /REBOOTOK $INSTDIR${CB_TEMPLATES}
     Delete /REBOOTOK $INSTDIR${CB_SCTESTS}\*.script
-    RMDir            $INSTDIR${CB_SCTESTS}
+    RMDir  /REBOOTOK $INSTDIR${CB_SCTESTS}
     Delete /REBOOTOK $INSTDIR${CB_SCRIPTS}\*.script
-    RMDir            $INSTDIR${CB_SCRIPTS}
-    RMDir            $INSTDIR${CB_LEXERS}
-    RMDir            $INSTDIR${CB_PLUGINS}
+    RMDir  /REBOOTOK INSTDIR${CB_SCRIPTS}
     # Documentation
     Delete /REBOOTOK $INSTDIR${CB_DOCS}\index.ini
     Delete /REBOOTOK $INSTDIR${CB_DOCS}\manual_codeblocks_en.chm
@@ -2694,10 +2691,8 @@ Section "-un.Core Files (required)" UNSEC_CORE
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\start_here.zip
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE_CB}
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE}
-    # MinGW DLL's for thread handling etc.
-    Delete /REBOOTOK $INSTDIR\libwinpthread-1.dll
-    Delete /REBOOTOK $INSTDIR\libstdc++-6.dll
-    Delete /REBOOTOK $INSTDIR\libgcc_s_seh-1.dll
+    # WGET
+    Delete /REBOOTOK $INSTDIR\wget.exe
     # Licens files
     Delete /REBOOTOK $INSTDIR\gpl-3.0.txt
     Delete /REBOOTOK $INSTDIR\lgpl-3.0.txt
@@ -2708,30 +2703,39 @@ Section "-un.Core Files (required)" UNSEC_CORE
     Delete /REBOOTOK $INSTDIR\exchndl.dll
     Delete /REBOOTOK $INSTDIR\dbghelp.dll
     Delete /REBOOTOK $INSTDIR\dbgcore.dll
+    # MinGW DLL's for thread handling etc.
+    Delete /REBOOTOK $INSTDIR\libwinpthread-1.dll
+    Delete /REBOOTOK $INSTDIR\libstdc++-6.dll
+    Delete /REBOOTOK $INSTDIR\libgcc_s_seh-1.dll
     # CodeBlock Files
     Delete /REBOOTOK $INSTDIR\codeblocks.exe
     Delete /REBOOTOK $INSTDIR\codeblocks.dll
+    Delete /REBOOTOK $INSTDIR\cctest.exe
     Delete /REBOOTOK $INSTDIR\CbLauncher.exe
     Delete /REBOOTOK $INSTDIR\cb_console_runner.exe
-    Delete /REBOOTOK $INSTDIR\cctest.exe
     Delete /REBOOTOK $INSTDIR\Addr2LineUI.exe
     Delete /REBOOTOK $INSTDIR\wxmsw*u_gl_gcc_cb.dll
     Delete /REBOOTOK $INSTDIR\wxmsw*u_gcc_cb.dll
     DeleteRegValue HKCU "${REGKEY}\Components" "Core Files (required)"
+    
+    #JUST IN CASE something was not removed correctly!!!!
+    #RMDir  /REBOOTOK $INSTDIR${CB_LEXERS}
+    #RMDir  /REBOOTOK $INSTDIR${CB_PLUGINS}
+
 SectionEnd
 
 # C::B core end
 
 Section -un.post UNSEC_MISC
+    ; Delete start menu entries
     Delete "$SMPROGRAMS\${CB_SM_GROUP}\Uninstall $(^Name).lnk"
-    RMDir  $SMPROGRAMS\${CB_SM_GROUP}
-
-    DeleteRegKey HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
-    Delete /REBOOTOK $INSTDIR\uninstall.exe
+    RMDir /REBOOTOK $SMPROGRAMS\${CB_SM_GROUP}
 
     DeleteRegValue HKCU "${REGKEY}" Path
     DeleteRegKey /IfEmpty HKCU "${REGKEY}\Components"
     DeleteRegKey /IfEmpty HKCU "${REGKEY}"
+
+    # ===================================================================================================
 
     # Start Unregister CodeBlocks associated files - see FileAssocation.cpp
     # or check out the registry "Computer\HKEY_CURRENT_USER\SOFTWARE\Classes\CodeBlocks.*" entries.
@@ -2808,20 +2812,22 @@ Section -un.post UNSEC_MISC
     done:    
     # Finish Unregister CodeBlocks associated files - see FileAssocation.cpp
     
-    
-    RMDir /REBOOTOK $INSTDIR
+    ; Delete Uninstall Entries and uninstall.exe
+    DeleteRegKey HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
+    Delete /REBOOTOK $INSTDIR\uninstall.exe
 
+    # ===================================================================================================
+    RMDir /r /REBOOTOK $INSTDIR
     # If $INSTDIR was already removed, skip these next steps
     IfFileExists $INSTDIR 0 instDirAllreadyRemoved
         # It appears $INSTDIR is not empty, thus it could not be removed.
         # Ask the user to probably force the removal.
-        MessageBox MB_YESNO|MB_ICONQUESTION \
+        MessageBox MB_YESNO|MB_DEFBUTTON2|MB_ICONQUESTION \
             "Remove all files in your Code::Blocks directory?$\r$\n(If you have anything you created that you want to keep, click No.)" \
             /SD IDNO IDYES yesRMINSTDIR IDNO noRMDINSTDIR
 yesRMINSTDIR:
         # Try to delete all remaining files and finally $INSTDIR recursively
-        Delete $INSTDIR\*.*
-        RMDir /r $INSTDIR
+        RMDir /r /REBOOTOK $INSTDIR
         IfFileExists $INSTDIR 0 instDirAllreadyRemoved
             MessageBox MB_OK|MB_ICONEXCLAMATION \
                 "Warning: $INSTDIR could not be removed.$\r$\n(Probably missing access rights?)" \
@@ -2830,13 +2836,13 @@ noRMDINSTDIR:
         # If user selected "no" -> skip the next steps
 instDirAllreadyRemoved:
     
+    # ===================================================================================================
     # Check for User data and ask if the user wants to delete the data
     IfFileExists "$APPDATA\codeblocks" 0 appDataDirAllreadyRemoved
-        MessageBox MB_YESNO|MB_ICONQUESTION  "Do you want to keep the existing configuration files?" \
+        MessageBox MB_YESNO|MB_DEFBUTTON2|MB_ICONQUESTION  "Do you want to delete the existing configuration files and directory? ($APPDATA\codeblocks)" \
         /SD IDNO IDYES yesRMAPPDATADIR IDNO noRMAPPDATADIR
 yesRMAPPDATADIR:
-        # Try to delete all remaining files and finally $INSTDIR recursively
-        Delete "$APPDATA\codeblocks\*.*"
+        # Try to delete all APPDATA\codeblocks files and directory.
         RMDir /r "$APPDATA\codeblocks"
         IfFileExists "$APPDATA\codeblocks" 0 appDataDirAllreadyRemoved
             MessageBox MB_OK|MB_ICONEXCLAMATION \
@@ -2846,7 +2852,9 @@ noRMAPPDATADIR:
         # If user selected "no" -> skip the next steps
     
 appDataDirAllreadyRemoved:
+    # ===================================================================================================
     
+
 SectionEnd
 
 #######################
@@ -3108,15 +3116,3 @@ Function preuninstall_function
   !insertmacro UMUI_ENDIF_INSTALLFLAG
 
 FunctionEnd
-
-
-!macro customUnInstall
-    IfFileExists "$APPDATA\$(^Name)" FileFound done:
-    FileFound:
-        MessageBox MB_YESNO "Delete Code::Blocks application user configuration/data directory?" \
-        /SD IDNO IDNO done IDYES Accepted
-
-        Accepted:
-            RMDir /r "$APPDATA\$(^Name)"
-    done:
-!macroend

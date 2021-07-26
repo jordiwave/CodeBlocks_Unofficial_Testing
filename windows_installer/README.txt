@@ -1,6 +1,5 @@
 OUTSTANING:
 ===========
-1) Registry entities from src\associations.cpp (Associations::DoSetAssociation function) are NOT deleted in an uninstall!!!
 2) Full V custom/minimum/standard
 
 
@@ -25,8 +24,8 @@ The following are the ISS installer files:
 
 NSIS Status:
 ------------
-1) [X] Option to to download the mingw64-installer.exe does not work.
-2) [X] Does not remove user application data 
+1) Option to download and run the mingw64-installer.exe working.
+2) Optionally remove user application data if found.
 3) Option to un-install if already found when installing working.
 4) Optionally checks for fortan plugin and if found adds it to the installer
 5) Output filename includes date and 32 or 64 bit and version.
@@ -34,11 +33,14 @@ NSIS Status:
 7) Install components appears to be okay.
 8) Easily swap between 32 and 64 bit build via one define change
 9) Start menu added and links working
+10) [*P*] Remove registry entries installed by CB app
+        Registry entities from src\associations.cpp 
+        (Associations::DoSetAssociation function) are NOT deleted in an uninstall!!!
 
 
 ISS Status:
 -----------
-1) Option to download the mingw64-installer.exe working.
+1) Option to download and run the mingw64-installer.exe working.
 2) Optionally remove user application data if found.
 3) Option to un-install if already found when installing working
 4) Optionally checks for fortan plugin and if found adds it to the installer not implemented.
@@ -47,6 +49,9 @@ ISS Status:
 7) [X] Install components not correct.
 8) Easily swap between 32 and 64 bit build via one define change
 9) Start menu added and links working
+10) [X} Remove registry entries installed by CB app
+        Registry entities from src\associations.cpp 
+        (Associations::DoSetAssociation function) are NOT deleted in an uninstall!!!
 
 NSIS V ISS:
 -----------
