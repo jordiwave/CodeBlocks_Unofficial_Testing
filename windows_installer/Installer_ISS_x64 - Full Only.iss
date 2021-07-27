@@ -410,7 +410,7 @@ begin
     CompilerSelectionPage := CreateInputOptionPage(wpInstalling,                // AfterID
                                 'Compiler Installer Download and Run',          // ACaption
                                 '',       // ADescription
-                                'Please select compiler(s) to download the intaller and run the installer and then click Next.',  // ASubCaption
+                                'Please select compiler(s) installer to download and run. Once completed click Next.',  // ASubCaption
                                 False,                                          // Exclusive
                                 False);                                         // ListBox
     CompilerSelectionPage.Add('MinGW-W64 - supports 32 or 64 bit');

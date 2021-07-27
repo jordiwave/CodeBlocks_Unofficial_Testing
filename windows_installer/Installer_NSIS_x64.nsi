@@ -229,6 +229,7 @@ ReserveFile "${NSISDIR}\Plugins\x86-unicode\AdvSplash.dll"
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
+Page Custom CompilerDownloadPage_Show CompilerDownloadPage_Leave
 !insertmacro MUI_PAGE_FINISH
 
 !insertmacro UMUI_PAGE_ABORT
@@ -262,6 +263,12 @@ ReserveFile "${NSISDIR}\Plugins\x86-unicode\AdvSplash.dll"
 !else
     RequestExecutionLevel user
 !endif
+
+####################################################
+# NSIS CUSTOM COMPILER DOWNLOAD PAGE CONFIGURATION #
+####################################################
+ReserveFile NSIS_CompilerDownload.ini
+!insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
 
 # ========================================================================================================================
 # ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -1729,32 +1736,6 @@ Section -post SEC_MISC
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoModify 1
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
     
-    # =============================================================================================
-    # Ask the user if they want to download and run MinGW64 installer
-    StrCpy $2 "$TEMP\mingw-w64-install.exe"
-    Delete "$2"
-    MessageBox MB_YESNO|MB_ICONQUESTION "Do you want to download and run MingW-64 compiler installer?" /SD IDNO IDYES yesInstall IDNO noInstall
-yesInstall:
-    ; Does not work for sourceforge DL - inetc::get https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe/download $2 /END
-    DetailPrint           "wget.exe https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe -O $2"
-    NSExec::exec "$INSTDIR\wget.exe https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe -O $2"
-    Pop $0 ;Get the return value in $0
-    StrCmp $0 0 success 0
-    SetDetailsView show
-    DetailPrint "Download failed : $0"
-    MessageBox MB_OK|MB_ICONEXCLAMATION \
-        "Could not download the https://sourceforge.net/projects/mingw-w64/files/Toolchains targetting Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe file.$\r$\n\
-        As such you will need to manually install MinGW by yourself." \
-        /SD IDOK
-    goto noInstall
-success:
-    DetailPrint "Successfully downloaded : $2"
-    DetailPrint "Run : $2"
-    ExecWait "$2"
-    Delete "$2"
-    DetailPrint "Delete : $2"
-noInstall:
-    # =============================================================================================
 
 SectionEnd
 
@@ -2746,7 +2727,7 @@ Section -un.post UNSEC_MISC
         StrCpy $0 0 ; Registry key index
         ; Length of "CodeBlocks" = 10
         enumunkey64:
-            EnumRegKey $1 HKCU "SOFTWARE\Classes" $0
+            EnumRegKey $1 HKCU64 "SOFTWARE\Classes" $0
             ;LogText "Read HKCU\SOFTWARE\Classes\$1"
             IntOp $0 $0 + 1
             StrCmp $1 "" done64
@@ -2757,15 +2738,15 @@ Section -un.post UNSEC_MISC
             IntOp $3 $3 - 10    ; Includes .
             StrCpy $4 $1 $3 10  ; Includes .
             StrCmp $4 "" enumunkey64
-            ReadRegStr $5 HKCU "SOFTWARE\Classes\$4" ""
+            ReadRegStr $5 HKCU64 "SOFTWARE\Classes\$4" ""
             LogText "L2761 REG64 1 = $1 , 2 = $2 , 3 = $3 , 4 = $4 , 5 = $5"
             StrCmp $5 $1 0 DelCodeBlocksEntry64   ; If file extension no for Codeblocsk then goto DelCodeBlocksEntry
-            LogText "DeleteRegValue HKCU 'SOFTWARE\Classes\$4' ''"
-            DeleteRegValue HKCU "SOFTWARE\Classes\$4" ""    ; Delete default as it is codeblocks
-            LogText "DeleteRegKey /IfEmpty HKCU 'SOFTWARE\Classes\$4'"
-            DeleteRegKey /IfEmpty HKCU "SOFTWARE\Classes\$4"
+            LogText "DeleteRegValue HKCU64 'SOFTWARE\Classes\$4' ''"
+            DeleteRegValue HKCU64 "SOFTWARE\Classes\$4" ""    ; Delete default as it is codeblocks
+            LogText "DeleteRegKey /IfEmpty HKCU64 'SOFTWARE\Classes\$4'"
+            DeleteRegKey /IfEmpty HKCU64 "SOFTWARE\Classes\$4"
         DelCodeBlocksEntry64:
-            DeleteRegKey HKCU "SOFTWARE\Classes\$1"
+            DeleteRegKey HKCU64 "SOFTWARE\Classes\$1"
             Goto enumunkey64
 
         done64:    
@@ -2777,8 +2758,8 @@ Section -un.post UNSEC_MISC
     StrCpy $0 0 ; Registry key index
     ; Length of "CodeBlocks" = 10
     enumunkey:
-        EnumRegKey $1 HKCU "SOFTWARE\Classes" $0
-        ;LogText "Read HKCU\SOFTWARE\Classes\$1"
+        EnumRegKey $1 HKCU32 "SOFTWARE\Classes" $0
+        ;LogText "Read HKCU32\SOFTWARE\Classes\$1"
         IntOp $0 $0 + 1
         StrCmp $1 "" done
         StrCpy $2 $1 10  0
@@ -2788,15 +2769,15 @@ Section -un.post UNSEC_MISC
         IntOp $3 $3 - 10    ; Includes .
         StrCpy $4 $1 $3 10  ; Includes .
         StrCmp $4 "" enumunkey
-        ReadRegStr $5 HKCU "SOFTWARE\Classes\$4" ""
+        ReadRegStr $5 HKCU32 "SOFTWARE\Classes\$4" ""
         LogText "L2792 REG32   1 = $1 , 2 = $2 , 3 = $3 , 4 = $4 , 5 = $5"
         StrCmp $5 $1 0 DelCodeBlocksEntry   ; If file extension no for Codeblocsk then goto DelCodeBlocksEntry
-        LogText "DeleteRegValue HKCU 'SOFTWARE\Classes\$4' ''"
-        DeleteRegValue HKCU "SOFTWARE\Classes\$4" ""    ; Delete default as it is codeblocks
-        LogText "DeleteRegKey HKCU 'SOFTWARE\Classes\$4'"
-        DeleteRegKey HKCU "SOFTWARE\Classes\$4"
+        LogText "DeleteRegValue HKCU32 'SOFTWARE\Classes\$4' ''"
+        DeleteRegValue HKCU32 "SOFTWARE\Classes\$4" ""    ; Delete default as it is codeblocks
+        LogText "DeleteRegKey HKCU32 'SOFTWARE\Classes\$4'"
+        DeleteRegKey HKCU32 "SOFTWARE\Classes\$4"
     DelCodeBlocksEntry:
-        DeleteRegKey HKCU "SOFTWARE\Classes\$1"
+        DeleteRegKey HKCU32 "SOFTWARE\Classes\$1"
         Goto enumunkey
 
     done:    
@@ -2859,6 +2840,9 @@ Function .onInit
     advsplash::show 1000 600 400 -1 $PLUGINSDIR\spltmp
     Pop $R1
     Pop $R1
+    
+    ;File /oname=$PLUGINSDIR\NSIS_CompilerDownload.ini "NSIS_CompilerDownload.ini"
+    !insertmacro MUI_INSTALLOPTIONS_EXTRACT "NSIS_CompilerDownload.ini"
 FunctionEnd
 
 #########################
@@ -3104,5 +3088,104 @@ Function preuninstall_function
     DeleteRegKey ${UMUI_PARAMS_REGISTRY_ROOT} "${UMUI_PARAMS_REGISTRY_KEY}"
 
   !insertmacro UMUI_ENDIF_INSTALLFLAG
+
+FunctionEnd
+
+# ========================================================================================================================
+# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+# ========================================================================================================================
+
+Function CompilerInstallerDownloadRun
+    pop $R0 ; Temp Downloaded filename
+    pop $R1 ; URL of file to download
+    StrCpy $2 "$TEMP\$R0"
+    Delete "$2"
+
+    DetailPrint           "wget.exe $R1 -O $2"
+    NSExec::exec "$INSTDIR\wget.exe $R1 -O $2"
+    Pop $0 ;Get the return value in $0
+    StrCmp $0 0 0 downloadfailed
+    DetailPrint "Successfully downloaded : $2"
+    DetailPrint "Run : $2"
+    ExecWait "$2"
+    Delete "$2"
+    DetailPrint "Delete : $2"
+    goto finishedInstall
+
+downloadfailed:
+    SetDetailsView show
+    DetailPrint "Download failed : $0"
+    MessageBox MB_OK|MB_ICONEXCLAMATION \
+        "Could not download the $R1 file.$\r$\nAs such you will need to manually install MinGW by yourself." \
+        /SD IDOK
+
+finishedInstall:
+    # =============================================================================================
+FunctionEnd
+
+Function CompilerInstallerDownloadRun_MinGW
+    push "https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe"
+    push "mingw-w64-install.exe"
+    Call CompilerInstallerDownloadRun
+FunctionEnd
+
+Function CompilerInstallerDownloadRun_TDM
+    push "https://github.com/jmeubank/tdm-gcc/releases/download/v1.2105.1/tdm-gcc-webdl.exe"
+    push "tdm-gcc-webdl.exe"
+    Call CompilerInstallerDownloadRun
+    
+FunctionEnd
+
+Function CompilerInstallerDownloadRun_MSYS2
+    push "https://sourceforge.net/projects/msys2/files/Base/msys2-x86_64-latest.exe"
+    push "msys2-x86_64-latest.exe"
+    Call CompilerInstallerDownloadRun
+FunctionEnd
+
+Function CompilerInstallerDownloadRun_Cygwin
+    push "https://www.cygwin.com/setup-x86_64.exe"
+    push "cygwin_setup-x86_64.exe"
+    Call CompilerInstallerDownloadRun
+FunctionEnd
+
+Var HWND_COMPILERDLPAGE
+
+Function CompilerDownloadPage_Show
+
+  ; Does not show page if setup cancelled, required only if UMUI_PAGE_ABORT inserted
+  !insertmacro UMUI_ABORT_IF_INSTALLFLAG_IS ${UMUI_CANCELLED}
+
+  !insertmacro MUI_INSTALLOPTIONS_EXTRACT "NSIS_CompilerDownload.ini"
+  !insertmacro MUI_HEADER_TEXT "Compiler Installer Download and Run" ""
+
+  !insertmacro MUI_INSTALLOPTIONS_INITDIALOG "NSIS_CompilerDownload.ini"
+  Pop $HWND_COMPILERDLPAGE ;HWND of dialog
+
+  !insertmacro UMUI_IOPAGEBGTRANSPARENT_INIT $HWND_COMPILERDLPAGE ; set page background color
+
+  !insertmacro MUI_INSTALLOPTIONS_SHOW
+FunctionEnd
+
+Function CompilerDownloadPage_Leave
+    LogText "Leaving compiler setup page"
+
+    !insertmacro INSTALLOPTIONS_READ $R1 "NSIS_CompilerDownload.ini" "Field 1" "State"
+    !insertmacro INSTALLOPTIONS_READ $R2 "NSIS_CompilerDownload.ini" "Field 2" "State"
+    !insertmacro INSTALLOPTIONS_READ $R3 "NSIS_CompilerDownload.ini" "Field 3" "State"
+    !insertmacro INSTALLOPTIONS_READ $R4 "NSIS_CompilerDownload.ini" "Field 4" "State"
+    MessageBox MB_OK|MB_ICONINFORMATION  "Field 1: $R1 , 2: $R2 , 3: $R3 , 4: $R4"  /SD IDOK
+
+    ${If} $R1 == "1"
+        Call CompilerInstallerDownloadRun_MinGW
+    ${EndIf}
+    ${If} $R2 == "1"
+        Call CompilerInstallerDownloadRun_TDM
+    ${EndIf}
+    ${If} $R3 == "1"
+        Call CompilerInstallerDownloadRun_MSYS2
+    ${EndIf}
+    ${If} $R4 == "1"
+        Call CompilerInstallerDownloadRun_Cygwin
+    ${EndIf}
 
 FunctionEnd
