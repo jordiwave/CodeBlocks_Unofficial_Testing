@@ -140,7 +140,12 @@ Name: {group}\Links\CodeBlocks Tickets;               Filename: "https://sourcef
 Name: {group}\Links\Codeblocks beginner instructions; Filename: "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf";  Comment: Code::Blocks beginner install and user guide;
 
 [Run]
-Filename: {app}\codeblocks.exe; Description: Launch Code::Blocks; Flags: nowait postinstall skipifsilent
+Filename: {app}\codeblocks.exe; Description: Launch Code::Blocks; Flags: nowait postinstall skipifsilent unchecked runasoriginaluser 
+Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.pdf"; Description: The Code::Blocks PDF User Manual in English; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked
+Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.chm"; Description: The Code::Blocks CHM User Manual in English; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked
+Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.pdf"; Description: The Code::Blocks PDF User Manual in French; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked
+Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.chm"; Description: The Code::Blocks CHM User Manual in French; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked
+Filename: "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf"; Description: Code::Blocks beginner install and user guide; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}"
@@ -244,6 +249,7 @@ end;
 // ================================================================================================================================================================
 var
   DownloadPage: TDownloadWizardPage;
+  CompilerSelectionPage: TInputOptionWizardPage;
 
 function OnDownloadProgress(const Url, FileName: String; const Progress, ProgressMax: Int64): Boolean;
 begin
@@ -252,53 +258,95 @@ begin
   Result := True;
 end;
 
+function CompilerInstallerDownloadRun(const Url, FileName: String): Boolean;
+var
+  ResultCode: Integer;
+  TmpFileName: String;
+begin
+    DownloadPage.Clear;
+    DownloadPage.Add(Url, FileName, '');
+    DownloadPage.Show;
+    try
+      try
+        DownloadPage.Download; // This downloads the files to {tmp}
+        TmpFileName := Format('%s\%s', [ExpandConstant('{tmp}'),FileName]);
+        Result := Exec(TmpFileName, '', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
+        if not Result 
+          then begin
+            MsgBox(Format('Cannot execute %s', [FileName]), mbError, MB_OK);
+          end
+        else
+          begin
+            Result := (ResultCode = 0);
+            if not Result then
+            begin
+              MsgBox(Format('Cannot execute %s', [FileName]), mbError, MB_OK);
+            end
+        end;
+      except
+        if DownloadPage.AbortedByUser then
+          Log('Aborted by user.')
+        else
+          SuppressibleMsgBox(AddPeriod(GetExceptionMessage), mbCriticalError, MB_OK, IDOK);
+        Result := False;
+      end;
+    finally
+      DownloadPage.Hide;
+    end;
+end;
+
+function CompilerInstallerDownloadRun_MinGW(): Boolean;
+begin
+  Result := CompilerInstallerDownloadRun('https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe', 'mingw-w64-install.exe');
+end;
+
+function CompilerInstallerDownloadRun_TDM(): Boolean;
+begin
+  Result := CompilerInstallerDownloadRun('https://github.com/jmeubank/tdm-gcc/releases/download/v1.2105.1/tdm-gcc-webdl.exe', 'tdm-gcc-webdl.exe');
+end;
+
+function CompilerInstallerDownloadRun_MSYS2(): Boolean;
+begin
+  Result := CompilerInstallerDownloadRun('https://sourceforge.net/projects/msys2/files/Base/msys2-x86_64-latest.exe/', 'msys2-x86_64-latest.exe');
+end;
+
+function CompilerInstallerDownloadRun_Cygwin(): Boolean;
+begin
+  Result := CompilerInstallerDownloadRun('https://www.cygwin.com/setup-x86_64.exe', 'cygwin_setup-x86_64.exe');
+end;
+
 function NextButtonClick(CurPageID: Integer): Boolean;
 var
-  FileName: string;
-  ResultCode: Integer;
+  ResultTmp : Boolean;
 begin
-  if CurPageID = wpReady 
-  then begin
-    // Prompt the user to see if they want to download the MIngW installer, default to "No"
-    if MsgBox('Do you want to download and run MingW-64 compiler installer?', mbConfirmation, MB_YESNO or MB_DEFBUTTON1) = IDYES 
-    then begin
+  if CurPageID = CompilerSelectionPage.ID then
+  begin
+    Result := True
 
-      DownloadPage.Clear;
-      DownloadPage.Add('https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe', 'mingw-w64-install.exe', '');
-      DownloadPage.Show;
-      try
-        try
-          DownloadPage.Download; // This downloads the files to {tmp}
-          FileName := ExpandConstant('{tmp}\mingw-w64-install.exe');
-          Result := Exec(FileName, '', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
-          if not Result 
-            then begin
-              MsgBox('Cannot execute mingw-w64-install.exe', mbError, MB_OK);
-            end
-          else
-            begin
-              Result := (ResultCode = 0);
-              if not Result then
-              begin
-                MsgBox('Failed to install mingw-w64-install.exe', mbError, MB_OK);
-              end
-          end;
-        except
-          if DownloadPage.AbortedByUser then
-            Log('Aborted by user.')
-          else
-            SuppressibleMsgBox(AddPeriod(GetExceptionMessage), mbCriticalError, MB_OK, IDOK);
-          Result := False;
-        end;
-      finally
-        DownloadPage.Hide;
-      end;
-    end else
-      // User did not want to download the installer. 
-      Result := True;
+    if CompilerSelectionPage.Values[0] = True then
+      ResultTmp  := CompilerInstallerDownloadRun_MinGW();
+    if ResultTmp = False then
+      Result := False;
+
+    if CompilerSelectionPage.Values[1] = True then
+      ResultTmp  := CompilerInstallerDownloadRun_TDM();
+    if ResultTmp = False then
+      Result := False;
+
+    if CompilerSelectionPage.Values[2] = True then
+      ResultTmp  := CompilerInstallerDownloadRun_MSYS2();
+    if ResultTmp = False then
+      Result := False;
+
+    if CompilerSelectionPage.Values[3] = True then
+      ResultTmp  := CompilerInstallerDownloadRun_Cygwin();
+    if ResultTmp = False then
+      Result := False;
+
   end else
     Result := True;
 end;
+
 // ================================================================================================================================================================
 { ///////////////////////////////////////////////////////////////////// }
 function GetUninstallString(): String;
@@ -313,13 +361,11 @@ begin
   Result := sUnInstallString;
 end;
 
-
 { ///////////////////////////////////////////////////////////////////// }
 function IsUpgrade(): Boolean;
 begin
   Result := (GetUninstallString() <> '');
 end;
-
 
 { ///////////////////////////////////////////////////////////////////// }
 function UnInstallOldVersion(): Integer;
@@ -360,6 +406,24 @@ begin
     end;
 
     DownloadPage := CreateDownloadPage(SetupMessage(msgWizardPreparing), SetupMessage(msgPreparingDesc), @OnDownloadProgress);
+
+    CompilerSelectionPage := CreateInputOptionPage(wpInstalling,                // AfterID
+                                'Compiler Installer Download and Run',          // ACaption
+                                '',       // ADescription
+                                'Please select compiler(s) to download the intaller and run the installer and then click Next.',  // ASubCaption
+                                False,                                          // Exclusive
+                                False);                                         // ListBox
+    CompilerSelectionPage.Add('MinGW-W64 - supports 32 or 64 bit');
+    CompilerSelectionPage.Add('TDM GCC - supports 32 or 32 & 64 bit');
+    CompilerSelectionPage.Add('MSYS2 - 64 bit');
+    CompilerSelectionPage.Add('Cygwin - 64 bit only');
+    
+    // Set initial values (optional)
+    CompilerSelectionPage.Values[0] := False;
+    CompilerSelectionPage.Values[1] := False;
+    CompilerSelectionPage.Values[2] := False;
+    CompilerSelectionPage.Values[3] := False;
+
 end;
 
 // ================================================================================================================================================================
