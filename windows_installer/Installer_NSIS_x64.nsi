@@ -3152,18 +3152,31 @@ Var HWND_COMPILERDLPAGE
 
 Function CompilerDownloadPage_Show
 
-  ; Does not show page if setup cancelled, required only if UMUI_PAGE_ABORT inserted
-  !insertmacro UMUI_ABORT_IF_INSTALLFLAG_IS ${UMUI_CANCELLED}
+    ; Does not show page if setup cancelled, required only if UMUI_PAGE_ABORT inserted
+    !insertmacro UMUI_ABORT_IF_INSTALLFLAG_IS ${UMUI_CANCELLED}
 
-  !insertmacro MUI_INSTALLOPTIONS_EXTRACT "NSIS_CompilerDownload.ini"
-  !insertmacro MUI_HEADER_TEXT "Compiler Installer Download and Run" ""
+    !insertmacro MUI_INSTALLOPTIONS_EXTRACT "NSIS_CompilerDownload.ini"
+    !insertmacro MUI_HEADER_TEXT "Compiler Installer Download and Run" ""
 
-  !insertmacro MUI_INSTALLOPTIONS_INITDIALOG "NSIS_CompilerDownload.ini"
-  Pop $HWND_COMPILERDLPAGE ;HWND of dialog
+    !insertmacro MUI_INSTALLOPTIONS_INITDIALOG "NSIS_CompilerDownload.ini"
+    Pop $HWND_COMPILERDLPAGE ;HWND of dialog
 
-  !insertmacro UMUI_IOPAGEBGTRANSPARENT_INIT $HWND_COMPILERDLPAGE ; set page background color
+    ; Set control backgrounds to be the same as the background
+    GetDlgItem $0 $HWND_COMPILERDLPAGE 1200
+    !insertmacro UMUI_IOPAGECTLTRANSPARENT_INIT $0
+    GetDlgItem $0 $HWND_COMPILERDLPAGE 1201
+    !insertmacro UMUI_IOPAGECTLTRANSPARENT_INIT $0
+    GetDlgItem $0 $HWND_COMPILERDLPAGE 1202
+    !insertmacro UMUI_IOPAGECTLTRANSPARENT_INIT $0
+    GetDlgItem $0 $HWND_COMPILERDLPAGE 1203
+    !insertmacro UMUI_IOPAGECTLTRANSPARENT_INIT $0
+    GetDlgItem $0 $HWND_COMPILERDLPAGE 1204
+    !insertmacro UMUI_IOPAGECTLTRANSPARENT_INIT $0
 
-  !insertmacro MUI_INSTALLOPTIONS_SHOW
+    ; set page background color to be the same as the background
+    !insertmacro UMUI_IOPAGEBGTRANSPARENT_INIT $HWND_COMPILERDLPAGE
+
+    !insertmacro MUI_INSTALLOPTIONS_SHOW
 FunctionEnd
 
 Function CompilerDownloadPage_Leave
@@ -3173,7 +3186,7 @@ Function CompilerDownloadPage_Leave
     !insertmacro INSTALLOPTIONS_READ $R2 "NSIS_CompilerDownload.ini" "Field 2" "State"
     !insertmacro INSTALLOPTIONS_READ $R3 "NSIS_CompilerDownload.ini" "Field 3" "State"
     !insertmacro INSTALLOPTIONS_READ $R4 "NSIS_CompilerDownload.ini" "Field 4" "State"
-    MessageBox MB_OK|MB_ICONINFORMATION  "Field 1: $R1 , 2: $R2 , 3: $R3 , 4: $R4"  /SD IDOK
+    ; MessageBox MB_OK|MB_ICONINFORMATION  "Field 1: $R1 , 2: $R2 , 3: $R3 , 4: $R4"  /SD IDOK
 
     ${If} $R1 == "1"
         Call CompilerInstallerDownloadRun_MinGW
