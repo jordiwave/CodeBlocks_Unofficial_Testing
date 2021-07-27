@@ -4,17 +4,41 @@
 ;#########################################################
 ;# Room for adjustments of most important settings BEGIN #
 ;#########################################################
+; In the future this could be done via batch files using command line parameters
+; as defined on https://jrsoftware.org/ispphelp/index.php?topic=isppcc
+
 ; The following line defined if the build is for 32 or 64 bits
-#define BUILD_TYPE =64
+#ifdef BUILD_TYPE
+  #if BUILD_TYPE == "32"
+    #define BUILD_TYPE = 32
+  #else
+    #define BUILD_TYPE = 64
+  #endif
+#else
+  #define BUILD_TYPE = 64
+#endif
 
 ; The following line defined if the build is a nightly build and it"s the SVN number
 ; if not defined the version will default to YY.MM (year:month)
-#define NIGHTLY_BUILD_SVN =12487
+#ifndef NIGHTLY_BUILD_SVN
+  #define NIGHTLY_BUILD_SVN =12487
+#else
+  #if NIGHTLY_BUILD_SVN == "False"
+    #undef NIGHTLY_BUILD_SVN
+  #endif
+#endif
 
 ; The following line toggles the admin or user istallation package.
 ; Preferred should be the admin installation package, however, for
 ; non-admins the user installation packge is the only one working.
 ; #define CB_ADMIN_INSTALLER
+#ifdef CB_ADMIN_INSTALLER
+  #if CB_ADMIN_INSTALLER == "True"
+    #define CB_ADMIN_INSTALLER
+  #else
+    #undef CB_ADMIN_INSTALLER
+  #endif
+#endif
 
 ; Possibly required to adjust manually:
 ; Note: a) These files are only required for the installer.
@@ -60,7 +84,7 @@ AppId={{53BB99B2-5263-43B9-A46A-C92E63AAA96F}
 AppName=Code::Blocks
 AppVerName=Code::Blocks {#CB_VERSION}
 AppPublisher=Code::Blocks
-DefaultDirName={pf}\{#CB_PROGRAMDIRNAME}
+DefaultDirName={commonpf}\{#CB_PROGRAMDIRNAME}
 DefaultGroupName={#CB_PROGRAMDIRNAME}
 LicenseFile={#LICENSES_DIR}\gpl-3.0.txt
 #if BUILD_TYPE == 32
