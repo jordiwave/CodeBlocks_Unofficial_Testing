@@ -49,9 +49,9 @@ Unicode True
 # if not defined the version will default to YY.MM (year:month)
 !define NIGHTLY_BUILD_SVN 12487
 
-# The following line toggles the admin or user istallation package.
+# The following line toggles the admin or user installation package.
 # Preferred should be the admin installation package, however, for
-# non-admins the user installation packge is the only one working.
+# non-admins the user installation package is the only one working.
 !define CB_ADMIN_INSTALLER
 
 # Possibly required to adjust manually:
@@ -2751,20 +2751,15 @@ Section -un.post UNSEC_MISC
             IntOp $0 $0 + 1
             StrCmp $1 "" done64
             StrCpy $2 $1 10  0
-            ; LogText "Read 0 = $0 , 1 = $1 , 2 = $2"
+            LogText "Read32 0 = $0 , 1 = $1 , 2 = $2"
             StrCmp $2 "CodeBlocks" 0 enumunkey64
             StrLen $3 $1
             IntOp $3 $3 - 10    ; Includes .
             StrCpy $4 $1 $3 10  ; Includes .
-            LogText "L2755 1 = $1 , 2 = $2 , 3 = $3 , 4 = $4"
             StrCmp $4 "" enumunkey64
             ReadRegStr $5 HKCU "SOFTWARE\Classes\$4" ""
-            LogText "L2758 1 = $1 , 2 = $2 , 5 = $5"
-            StrCmp $5 $1 0 DelCodeBlocksEntry64   ; If no file extension classes found then goto DelCodeBlocksEntry
-            StrCmp $5 $2 0 DelCodeBlocksEntry64   ; If file extension classes is not for codeblocks entry goto DelCodeBlocksEntry
-            LogText "TBA L2761 Found : 'SOFTWARE\Classes\$1'"
-            LogText "ReadRegStr 'SOFTWARE\Classes\$4' returned $5"
-
+            LogText "L2761 REG64 1 = $1 , 2 = $2 , 3 = $3 , 4 = $4 , 5 = $5"
+            StrCmp $5 $1 0 DelCodeBlocksEntry64   ; If file extension no for Codeblocsk then goto DelCodeBlocksEntry
             LogText "DeleteRegValue HKCU 'SOFTWARE\Classes\$4' ''"
             DeleteRegValue HKCU "SOFTWARE\Classes\$4" ""    ; Delete default as it is codeblocks
             LogText "DeleteRegKey /IfEmpty HKCU 'SOFTWARE\Classes\$4'"
@@ -2775,10 +2770,10 @@ Section -un.post UNSEC_MISC
 
         done64:    
         # Finish Unregister CodeBlocks associated files - see FileAssocation.cpp
-        SetRegView 32
-        LogText "SetRegView 32"
     ${EndIf}
         
+    LogText "SetRegView 32"
+    SetRegView 32
     StrCpy $0 0 ; Registry key index
     ; Length of "CodeBlocks" = 10
     enumunkey:
@@ -2787,20 +2782,15 @@ Section -un.post UNSEC_MISC
         IntOp $0 $0 + 1
         StrCmp $1 "" done
         StrCpy $2 $1 10  0
-        ;LogText "Read 0 = $0 , 1 = $1 , 2 = $2"
+        LogText "Read32 0 = $0 , 1 = $1 , 2 = $2"
         StrCmp $2 "CodeBlocks" 0 enumunkey
         StrLen $3 $1
         IntOp $3 $3 - 10    ; Includes .
         StrCpy $4 $1 $3 10  ; Includes .
-        LogText "L2791 1 = $1 , 2 = $2 , 3 = $3 , 4 = $4"
         StrCmp $4 "" enumunkey
         ReadRegStr $5 HKCU "SOFTWARE\Classes\$4" ""
-        LogText "L2794 1 = $1 , 2 = $2 , 5 = $5"
-        StrCmp $5 $1 0 DelCodeBlocksEntry   ; If no file extension classes found then goto DelCodeBlocksEntry
-        StrCmp $5 $2 0 DelCodeBlocksEntry   ; If file extension classes is not for codeblocks entry goto DelCodeBlocksEntry
-        LogText "TBA L2797 Found : 'SOFTWARE\Classes\$1'"
-        LogText "ReadRegStr 'SOFTWARE\Classes\$4' returned $5"
-
+        LogText "L2792 REG32   1 = $1 , 2 = $2 , 3 = $3 , 4 = $4 , 5 = $5"
+        StrCmp $5 $1 0 DelCodeBlocksEntry   ; If file extension no for Codeblocsk then goto DelCodeBlocksEntry
         LogText "DeleteRegValue HKCU 'SOFTWARE\Classes\$4' ''"
         DeleteRegValue HKCU "SOFTWARE\Classes\$4" ""    ; Delete default as it is codeblocks
         LogText "DeleteRegKey HKCU 'SOFTWARE\Classes\$4'"
