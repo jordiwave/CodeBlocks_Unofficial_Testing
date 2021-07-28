@@ -31,13 +31,16 @@
 ; The following line toggles the admin or user istallation package.
 ; Preferred should be the admin installation package, however, for
 ; non-admins the user installation packge is the only one working.
-; #define CB_ADMIN_INSTALLER
 #ifdef CB_ADMIN_INSTALLER
   #if CB_ADMIN_INSTALLER == "True"
+    #undef CB_ADMIN_INSTALLER
     #define CB_ADMIN_INSTALLER
   #else
     #undef CB_ADMIN_INSTALLER
   #endif
+#else
+  #undef CB_ADMIN_INSTALLER
+  #define CB_ADMIN_INSTALLER
 #endif
 
 ; Possibly required to adjust manually:
@@ -58,7 +61,7 @@
 #else
   #define CB_BuildOutputDir = SourcePath+"\..\src\output31_64"
 #endif
-#define CB_PROGRAMDIRNAME   = "CodeBlocks_TEST"
+#define CB_PROGRAMDIRNAME   = "CodeBlocks"
 #define CURRENT_DATE        = GetDateTimeString("ddmmmyyyy", "", "")
 #define CURRENT_DATE_YEAR   = GetDateTimeString("yyyy", "", "")
 #define CURRENT_DATE_MONTH  = GetDateTimeString("mm", "", "")
@@ -113,7 +116,11 @@ VersionInfoProductTextVersion={#CB_VERSION}-{#CURRENT_DATE_YEAR}.{#CURRENT_DATE_
 SourceDir={#CB_BuildOutputDir}
 OutputDir={#SourcePath}
 DisableWelcomePage=False
-PrivilegesRequired=none
+#ifdef CB_ADMIN_INSTALLER
+  PrivilegesRequired=admin
+#else
+  PrivilegesRequired=lowest
+#endif
 WizardImageFile={#GRAPHICS_DIR}\setup_1.bmp
 WizardSmallImageFile={#GRAPHICS_DIR}\{#CB_LOGO_FILENAME}
 WizardImageStretch=yes
@@ -127,10 +134,10 @@ SetupIconFile={#GRAPHICS_DIR}\setup_icon.ico
 
 [Tasks]
 Name: startmenu;          Description: "Create a &startmenu entry";   GroupDescription: "Additional icons:";
-Name: desktopicon;        Description: "Create a &desktop icon";      GroupDescription: "Additional icons:"; Flags: exclusive
-Name: desktopicon\common; Description: "For all users";               GroupDescription: "Additional icons:"; Flags: exclusive
-Name: desktopicon\user;   Description: "For the current user only";   GroupDescription: "Additional icons:"; Flags: exclusive unchecked
-Name: quicklaunchicon;    Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:"; Flags: exclusive
+Name: desktopicon;        Description: "Create a &desktop icon";      GroupDescription: "Additional icons:"; Flags: checkablealone
+Name: desktopicon\common; Description: "For all users";               GroupDescription: "Additional icons:"; 
+Name: desktopicon\user;   Description: "For the current user only";   GroupDescription: "Additional icons:"; Flags: unchecked 
+Name: quicklaunchicon;    Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:";
 
 [Files]
 Source: "*"; Excludes: "*.a"; DestDir: "{app}"; Flags: ignoreversion createallsubdirs recursesubdirs;
@@ -164,20 +171,22 @@ Name: {group}\Links\CodeBlocks Tickets;               Filename: "https://sourcef
 Name: {group}\Links\Codeblocks beginner instructions; Filename: "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf";  Comment: Code::Blocks beginner install and user guide;
 
 [Run]
-Filename: {app}\codeblocks.exe; Description: Launch Code::Blocks; Flags: nowait postinstall skipifsilent unchecked runasoriginaluser 
-Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.pdf"; Description: The Code::Blocks PDF User Manual in English; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked
-Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.chm"; Description: The Code::Blocks CHM User Manual in English; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked
-Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.pdf"; Description: The Code::Blocks PDF User Manual in French; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked
-Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.chm"; Description: The Code::Blocks CHM User Manual in French; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked
-Filename: "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf"; Description: Code::Blocks beginner install and user guide; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked
+Filename: {app}\codeblocks.exe; Description: Launch Code::Blocks; Flags: nowait postinstall skipifsilent runasoriginaluser;
+Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.pdf"; Description: The Code::Blocks PDF User Manual in English; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked; 
+Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.chm"; Description: The Code::Blocks CHM User Manual in English; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked;
+Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.pdf"; Description: The Code::Blocks PDF User Manual in French; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked;
+Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.chm"; Description: The Code::Blocks CHM User Manual in French; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked;
+Filename: "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf"; Description: Code::Blocks beginner install and user guide; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked;
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}"
 Type: files;          Name: {userdesktop}\{#CB_PROGRAMDIRNAME}
 Type: files;          Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}
 
+
 [Code]
 // ================================================================================================================================================================
+{ ///////////////////////////////////////////////////////////////////// }
 // Uninstall
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
@@ -343,10 +352,11 @@ function NextButtonClick(CurPageID: Integer): Boolean;
 var
   ResultTmp : Boolean;
 begin
+  Result := True
+  ResultTmp := True
+
   if CurPageID = CompilerSelectionPage.ID then
   begin
-    Result := True
-
     if CompilerSelectionPage.Values[0] = True then
       ResultTmp  := CompilerInstallerDownloadRun_MinGW();
     if ResultTmp = False then
@@ -372,63 +382,9 @@ begin
 end;
 
 // ================================================================================================================================================================
-{ ///////////////////////////////////////////////////////////////////// }
-function GetUninstallString(): String;
-var
-  sUnInstPath: String;
-  sUnInstallString: String;
-begin
-  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
-  sUnInstallString := '';
-  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
-    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
-  Result := sUnInstallString;
-end;
 
-{ ///////////////////////////////////////////////////////////////////// }
-function IsUpgrade(): Boolean;
-begin
-  Result := (GetUninstallString() <> '');
-end;
-
-{ ///////////////////////////////////////////////////////////////////// }
-function UnInstallOldVersion(): Integer;
-var
-  sUnInstallString: String;
-  iResultCode: Integer;
-begin
-{ Return Values: }
-{ 1 - uninstall string is empty }
-{ 2 - error executing the UnInstallString }
-{ 3 - successfully executed the UnInstallString }
-
-  { default return value }
-  Result := 0;
-
-  { get the uninstall string of the old app }
-  sUnInstallString := GetUninstallString();
-  if sUnInstallString <> '' then begin
-    sUnInstallString := RemoveQuotes(sUnInstallString);
-    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
-      Result := 3
-    else
-      Result := 2;
-  end else
-    Result := 1;
-end;
-
-// ================================================================================================================================================================
 procedure InitializeWizard();
 begin
-    if (IsUpgrade()) then
-    begin
-      // Prompt the user to see if they want to download the MingW installer, default to "No"
-      if MsgBox('Would you like to uninstall the previous Code::Blocks installed version before installing this new version?', mbConfirmation, MB_YESNO or MB_DEFBUTTON1) = IDYES 
-      then begin
-        UnInstallOldVersion();
-      end;
-    end;
-
     DownloadPage := CreateDownloadPage(SetupMessage(msgWizardPreparing), SetupMessage(msgPreparingDesc), @OnDownloadProgress);
 
     CompilerSelectionPage := CreateInputOptionPage(wpInstalling,                // AfterID
