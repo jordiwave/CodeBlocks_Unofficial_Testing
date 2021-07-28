@@ -21,19 +21,21 @@
 # 2) Download and install the Ultra-Modern UI:                      #
 #      https://github.com/SuperPat45/UltraModernUI                  #
 #                                                                   #
-# 3) Update the following:                                          #
+# 3) Update the following or check out the Build_NSIS_64bit.bat     #
+#       file:                                                       #
 #    * BUILD_TYPE for 32 or 64 bit                                  #
 #    * BUILD_TYPE for 32 or 64 bit                                  #
 #                                                                   #
-# - run NSIS using this command line or via the MakeNSISW.exe GUI   #
+# 4) run NSIS using this command line or via the MakeNSISW.exe GUI  #
 #   C:\PATH_TO\NSIS\makensis.exe setup.nsi                          #
-#                                                                   #
-# - probably adjust "RequestExecutionLevel admin/user" -> see below #
-#                                                                   #
-# - if you want to download the latest 32 bit wget zip get it from: #
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  #
+# You may also need to adjust "RequestExecutionLevel admin/user" ,  #
+# see below.                                                        #
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  #
+# NOTE: The latest 32 bit wget zip is available from :              #
 #   https://eternallybored.org/misc/wget/                           #
-#                                                                   #
 #####################################################################
+
 
 Name CodeBlocks
 XPStyle on
@@ -43,16 +45,42 @@ Unicode True
 # Room for adjustments of most important settings BEGIN #
 #########################################################
 # The following line defined if the build is for 32 or 64 bits
-!define BUILD_TYPE 64
+!ifdef BUILD_TYPE
+  !if BUILD_TYPE == "32"
+    !undef BUILD_TYPE
+    !define BUILD_TYPE 32
+  !else
+    !undef BUILD_TYPE
+    !define BUILD_TYPE 64
+  !endif
+!else
+  !define BUILD_TYPE 64
+!endif
+
 
 # The following line defined if the build is a nightly build and it's the SVN number
 # if not defined the version will default to YY.MM (year:month)
-!define NIGHTLY_BUILD_SVN 12487
+!ifdef NIGHTLY_BUILD_SVN
+  !if NIGHTLY_BUILD_SVN == "False"
+    !undef NIGHTLY_BUILD_SVN
+  !endif
+!else
+  !define NIGHTLY_BUILD_SVN 12487
+!endif
 
 # The following line toggles the admin or user installation package.
 # Preferred should be the admin installation package, however, for
 # non-admins the user installation package is the only one working.
-!define CB_ADMIN_INSTALLER
+!ifdef CB_ADMIN_INSTALLER
+  !if CB_ADMIN_INSTALLER == "True"
+    !undef CB_ADMIN_INSTALLER
+    !define CB_ADMIN_INSTALLER
+  !else
+    !undef CB_ADMIN_INSTALLER
+  !endif
+!else
+  !define CB_ADMIN_INSTALLER
+!endif
 
 # Possibly required to adjust manually:
 # Note: a) These files are only required for the installer.
@@ -77,6 +105,7 @@ Unicode True
 !if ${BUILD_TYPE} == 64
     !include x64.nsh
 !endif
+# UMUI - Ultra Modern UI
 
 # WARNING: This is very SLOW if enabled, but it reduces the output exe by about 20%!!
 #SetCompressor /SOLID LZMA
@@ -145,7 +174,6 @@ BrandingText "Code::Blocks"
 !define CB_SPLASH        ${CB_INSTALL_GRAPHICS_DIR}\${CB_SPLASH_FILENAME}
 !define CB_LOGO          ${CB_INSTALL_GRAPHICS_DIR}\${CB_LOGO_FILENAME}
 !define CB_LICENSE       ${CB_INSTALL_LICENSES_DIR}\gpl-3.0.txt
-!define CB_SM_GROUP      $(^Name)
 
 # Installer attributes (usually these do not change)
 # Note: We can't always use "Code::Blocks" as the "::" conflicts with the file system.
@@ -180,6 +208,11 @@ ShowUninstDetails show
 #!define MUI_HEADERIMAGE
 #!define MUI_HEADERIMAGE_BITMAP       "${CB_LOGO}"
 !define MUI_COMPONENTSPAGE_SMALLDESC
+!define MUI_ABORTWARNING
+!define MUI_UNABORTWARNING
+!define UMUI_USE_INSTALLOPTIONSEX
+
+
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 !define MUI_FINISHPAGE_RUN           "$INSTDIR\codeblocks.exe"
 ; !define MUI_FINISHPAGE_RUN_NOTCHECKED
@@ -215,6 +248,10 @@ ShowUninstDetails show
 ReserveFile "${NSISDIR}\Plugins\x86-unicode\AdvSplash.dll"
 
 # Installer pages
+Var STARTMENU_FOLDER_INSTALL
+Var STARTMENU_FOLDER_UNINSTALL
+
+
 !insertmacro MUI_PAGE_WELCOME
     !define UMUI_UPDATEPAGE_REMOVE
     !define UMUI_UPDATEPAGE_CONTINUE_SETUP
@@ -227,7 +264,18 @@ ReserveFile "${NSISDIR}\Plugins\x86-unicode\AdvSplash.dll"
 #    !define UMUI_SETUPTYPE_REGISTRY_VALUENAME "SetupType"
 !insertmacro UMUI_PAGE_SETUPTYPE
 !insertmacro MUI_PAGE_COMPONENTS
+
 !insertmacro MUI_PAGE_DIRECTORY
+
+    ; DO NOT USE !define UMUI_ALTERNATIVESTARTMENUPAGE_USE_TREEVIEW
+    !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
+    !define UMUI_ALTERNATIVESTARTMENUPAGE_SETSHELLVARCONTEXT
+    !define MUI_STARTMENUPAGE_DEFAULTFOLDER $(^Name)
+!insertmacro UMUI_PAGE_ALTERNATIVESTARTMENU Application $STARTMENU_FOLDER_INSTALL
+
+  !define UMUI_CONFIRMPAGE_TEXTBOX confirm_function
+!insertmacro UMUI_PAGE_CONFIRM
+
 !insertmacro MUI_PAGE_INSTFILES
 Page Custom CompilerDownloadPage_Show CompilerDownloadPage_Leave
 !insertmacro MUI_PAGE_FINISH
@@ -240,6 +288,7 @@ Page Custom CompilerDownloadPage_Show CompilerDownloadPage_Leave
     !define UMUI_MAINTENANCEPAGE_REPAIR
     !define UMUI_MAINTENANCEPAGE_REMOVE
     !define UMUI_MAINTENANCEPAGE_CONTINUE_SETUP
+    !define UMUI_MAINTENANCEPAGE_DEFAULTCHOICE ${UMUI_REMOVE}
 !insertmacro UMUI_UNPAGE_MAINTENANCE
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
@@ -396,25 +445,25 @@ SectionGroup "!Default install" SECGRP_DEFAULT
 
         Section "Program Shortcut" SEC_PROGRAMSHORTCUT
             SectionIn 1 2 3 4
-            SetOutPath $SMPROGRAMS\${CB_SM_GROUP}
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name).lnk" $INSTDIR\CodeBlocks.exe
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Share Config.lnk"         $INSTDIR\cb_share_config.exe
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Code Completion Test.lnk" $INSTDIR\cctest.exe
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Address to Line GUI.lnk"  $INSTDIR\Addr2LineUI.exe
+            SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name).lnk" $INSTDIR\CodeBlocks.exe
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Share Config.lnk"         $INSTDIR\cb_share_config.exe
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Code Completion Test.lnk" $INSTDIR\cctest.exe
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Address to Line GUI.lnk"  $INSTDIR\Addr2LineUI.exe
 
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) PDF Manual English.lnk" $INSTDIR${CB_DOCS}\manual_codeblocks_en.pdf "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks PDF User Manual in English"
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) CHM Manual English.lnk" $INSTDIR${CB_DOCS}\manual_codeblocks_en.chm "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks CHM User Manual in English"
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) PDF Manual French.lnk"  $INSTDIR${CB_DOCS}\manual_codeblocks_fr.pdf "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks PDF User Manual in French"
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) CHM Manual French.lnk"  $INSTDIR${CB_DOCS}\manual_codeblocks_fr.chm "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks CHM User Manual in French"
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\PBs wxWidgets Guide.lnk" $INSTDIR${CB_DOCS}\Manual_wxPBGuide.pdf "" "" 0 SW_SHOWNORMAL  "" "PBs GuiDe to Starting with wxWidgets with MinGW and Code::Blocks"
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) License.lnk"                 "$INSTDIR\gpl-3.0.txt" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks license"
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) SDK License.lnk"             "$INSTDIR\lgpl-3.0.txt" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks SDK license"
-            SetOutPath $SMPROGRAMS\${CB_SM_GROUP}\Links
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) Web Site.lnk"              "http://www.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE website"
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) Forums.lnk"                "http://forums.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE discussion forums"
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) WiKi.lnk"                  "http://wiki.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE WiKi site"
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) Tickets.lnk"               "https://sourceforge.net/p/codeblocks/tickets/" "" "" 0 SW_SHOWNORMAL  "" "Report bugs/enhancements for Code::Blocks"
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) beginner instructions.lnk" "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks beginner install and user guide"
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) PDF Manual English.lnk" $INSTDIR${CB_DOCS}\manual_codeblocks_en.pdf "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks PDF User Manual in English"
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) CHM Manual English.lnk" $INSTDIR${CB_DOCS}\manual_codeblocks_en.chm "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks CHM User Manual in English"
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) PDF Manual French.lnk"  $INSTDIR${CB_DOCS}\manual_codeblocks_fr.pdf "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks PDF User Manual in French"
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) CHM Manual French.lnk"  $INSTDIR${CB_DOCS}\manual_codeblocks_fr.chm "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks CHM User Manual in French"
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\PBs wxWidgets Guide.lnk" $INSTDIR${CB_DOCS}\Manual_wxPBGuide.pdf "" "" 0 SW_SHOWNORMAL  "" "PBs GuiDe to Starting with wxWidgets with MinGW and Code::Blocks"
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) License.lnk"                 "$INSTDIR\gpl-3.0.txt" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks license"
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) SDK License.lnk"             "$INSTDIR\lgpl-3.0.txt" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks SDK license"
+            SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) Web Site.lnk"              "http://www.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE website"
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) Forums.lnk"                "http://forums.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE discussion forums"
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) WiKi.lnk"                  "http://wiki.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE WiKi site"
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) Tickets.lnk"               "https://sourceforge.net/p/codeblocks/tickets/" "" "" 0 SW_SHOWNORMAL  "" "Report bugs/enhancements for Code::Blocks"
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) beginner instructions.lnk" "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks beginner install and user guide"
 
             WriteRegStr HKCU "${REGKEY}\Components" "Program Shortcut" 1
         SectionEnd
@@ -423,8 +472,8 @@ SectionGroup "!Default install" SECGRP_DEFAULT
         Section "Program Shortcut All Users" SEC_PROGRAMSHORTCUT_ALL
             SectionIn 1 2 3 4
             SetShellVarContext all
-            SetOutPath $SMPROGRAMS\${CB_SM_GROUP}
-            CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name).lnk" $INSTDIR\CodeBlocks.exe
+            SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name).lnk" $INSTDIR\CodeBlocks.exe
             # Verify if that succeeded. If not, issue an error message
             IfErrors 0 +2
                 MessageBox MB_OK|MB_ICONEXCLAMATION \
@@ -1696,8 +1745,8 @@ Section "C::B CBP2Make" SEC_CBP2MAKE
     SetOutPath $INSTDIR
     SetOverwrite on
     File ${CB_BASE}\cbp2make.exe
-    SetOutPath $SMPROGRAMS\${CB_SM_GROUP}
-    CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) CBP2Make.lnk" $INSTDIR\cbp2make.exe
+    SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
+    CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) CBP2Make.lnk" $INSTDIR\cbp2make.exe
     WriteRegStr HKCU "${REGKEY}\Components" "C::B CBP2Make" 1
 SectionEnd
 
@@ -1706,8 +1755,8 @@ Section "C::B Share Config" SEC_SHARECONFIG
     SetOutPath $INSTDIR
     SetOverwrite on
     File ${CB_BASE}\cb_share_config.exe
-    SetOutPath $SMPROGRAMS\${CB_SM_GROUP}
-    CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Share Config.lnk" $INSTDIR\cb_share_config.exe
+    SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
+    CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Share Config.lnk" $INSTDIR\cb_share_config.exe
     WriteRegStr HKCU "${REGKEY}\Components" "C::B Share Config" 1
 SectionEnd
 
@@ -1716,7 +1765,7 @@ Section "C::B Launcher" SEC_LAUNCHER
     SetOutPath $INSTDIR
     SetOverwrite on
     File ${CB_BASE}\CbLauncher.exe
-    CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) (Launcher).lnk" $INSTDIR\CbLauncher.exe
+    CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) (Launcher).lnk" $INSTDIR\CbLauncher.exe
     WriteRegStr HKCU "${REGKEY}\Components" "C::B Launcher" 1
 SectionEnd
 
@@ -1725,8 +1774,8 @@ Section -post SEC_MISC
     WriteRegStr HKCU "${REGKEY}" Path $INSTDIR
     SetOutPath $INSTDIR
     WriteUninstaller $INSTDIR\uninstall.exe
-    SetOutPath $SMPROGRAMS\${CB_SM_GROUP}
-    CreateShortcut "$SMPROGRAMS\${CB_SM_GROUP}\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
+    SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
+    CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
     WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
     WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "${VERSION}"
     WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" Publisher "${COMPANY}"
@@ -1766,19 +1815,19 @@ done${UNSECTION_ID}:
 
 Section "-un.C::B Launcher" UNSEC_LAUNCHER
     Delete /REBOOTOK $INSTDIR\CbLauncher.exe
-    Delete /REBOOTOK "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) (Launcher).lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) (Launcher).lnk"
     DeleteRegValue HKCU "${REGKEY}\Components" "C::B Launcher"
 SectionEnd
 
 Section "-un.C::B Share Config" UNSEC_SHARECONFIG
     Delete /REBOOTOK $INSTDIR\cb_share_config.exe
-    Delete /REBOOTOK "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Share Config.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) Share Config.lnk"
     DeleteRegValue HKCU "${REGKEY}\Components" "C::B Share Config"
 SectionEnd
 
 Section "-un.C::B CBP2Make" UNSEC_CBP2MAKE
     Delete /REBOOTOK $INSTDIR\cbp2make.exe
-    Delete /REBOOTOK "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) CBP2Make.lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) CBP2Make.lnk"
     DeleteRegValue HKCU "${REGKEY}\Components" "C::B CBP2Make"
 SectionEnd
 
@@ -2601,30 +2650,31 @@ SectionEnd
 # C::B shortcuts begin
 
 Section "-un.Program Shortcut" UNSEC_PROGRAMSHORTCUT
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name).lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Share Config.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Code Completion Test.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) Address to Line GUI.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name).lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) Share Config.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) Code Completion Test.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) Address to Line GUI.lnk"
 
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) PDF Manual English.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) CHM Manual English.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) PDF Manual French.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) CHM Manual French.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\PBs wxWidgets Guide.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) License.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name) SDK License.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) Web Site.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) Forums.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) WiKi.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) Tickets.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\${CB_SM_GROUP}\Links\$(^Name) beginner instructions.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) PDF Manual English.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) CHM Manual English.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) PDF Manual French.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) CHM Manual French.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\PBs wxWidgets Guide.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) License.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) SDK License.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Links\$(^Name) Web Site.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Links\$(^Name) Forums.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Links\$(^Name) WiKi.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Links\$(^Name) Tickets.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Links\$(^Name) beginner instructions.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Links"
     DeleteRegValue HKCU "${REGKEY}\Components" "Program Shortcut"
 SectionEnd
 
 !ifdef CB_ADMIN_INSTALLER
 Section "-un.Program Shortcut All Users" UNSEC_PROGRAMSHORTCUT_ALL
     SetShellVarContext all
-    Delete "$SMPROGRAMS\${CB_SM_GROUP}\$(^Name).lnk"
+    Delete "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name).lnk"
     SetShellVarContext current
     DeleteRegValue HKCU "${REGKEY}\Components" "Program Shortcut All Users"
 SectionEnd
@@ -2699,18 +2749,13 @@ Section "-un.Core Files (required)" UNSEC_CORE
     Delete /REBOOTOK $INSTDIR\wxmsw*u_gcc_cb.dll
     DeleteRegValue HKCU "${REGKEY}\Components" "Core Files (required)"
     
-    #JUST IN CASE something was not removed correctly!!!!
-    #RMDir  /REBOOTOK $INSTDIR${CB_LEXERS}
-    #RMDir  /REBOOTOK $INSTDIR${CB_PLUGINS}
-
 SectionEnd
 
 # C::B core end
 
 Section -un.post UNSEC_MISC
-    ; Delete start menu entries
-    Delete "$SMPROGRAMS\${CB_SM_GROUP}\Uninstall $(^Name).lnk"
-    RMDir /REBOOTOK $SMPROGRAMS\${CB_SM_GROUP}
+    Delete "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Uninstall $(^Name).lnk"
+    RMDir /REBOOTOK "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL"
 
     DeleteRegValue HKCU "${REGKEY}" Path
     DeleteRegKey /IfEmpty HKCU "${REGKEY}\Components"
@@ -2833,7 +2878,7 @@ SectionEnd
 #######################
 
 Function .onInit
-    LogSet on
+    LogSet off
     InitPluginsDir
     Push $R1
     File /oname=$PLUGINSDIR\spltmp.bmp ${CB_SPLASH}
@@ -2841,7 +2886,6 @@ Function .onInit
     Pop $R1
     Pop $R1
     
-    ;File /oname=$PLUGINSDIR\NSIS_CompilerDownload.ini "NSIS_CompilerDownload.ini"
     !insertmacro MUI_INSTALLOPTIONS_EXTRACT "NSIS_CompilerDownload.ini"
 FunctionEnd
 
@@ -2850,7 +2894,13 @@ FunctionEnd
 #########################
 
 Function un.onInit
-    LogSet on
+    LogSet off
+    ; Delete start menu entries
+    !insertmacro MUI_STARTMENU_GETFOLDER Application $STARTMENU_FOLDER_UNINSTALL
+
+    LogText "SMPROGRAMS : $SMPROGRAMS"
+    LogText "STARTMENU_FOLDER_UNINSTALL : $STARTMENU_FOLDER_UNINSTALL"
+    
     ReadRegStr $INSTDIR HKCU "${REGKEY}" Path
     !insertmacro SELECT_UNSECTION "Core Files (required)"              ${UNSEC_CORE}
 
@@ -3072,6 +3122,35 @@ FunctionEnd
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
+# ========================================================================================================================
+# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+# ========================================================================================================================
+Function confirm_function
+  !insertmacro UMUI_CONFIRMPAGE_TEXTBOX_ADDLINE ""
+  !insertmacro UMUI_CONFIRMPAGE_TEXTBOX_ADDLINE "$(UMUI_TEXT_INSTCONFIRM_TEXTBOX_DESTINATION_LOCATION)"
+  !insertmacro UMUI_CONFIRMPAGE_TEXTBOX_ADDLINE "      $INSTDIR"
+  !insertmacro UMUI_CONFIRMPAGE_TEXTBOX_ADDLINE ""
+  
+  ;Only if StartMenu Folder is selected
+  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+    !insertmacro UMUI_CONFIRMPAGE_TEXTBOX_ADDLINE "$(UMUI_TEXT_INSTCONFIRM_TEXTBOX_START_MENU_FOLDER)"
+    !insertmacro UMUI_CONFIRMPAGE_TEXTBOX_ADDLINE "      $STARTMENU_FOLDER_INSTALL"
+    !insertmacro UMUI_CONFIRMPAGE_TEXTBOX_ADDLINE ""
+
+    ;ShellVarContext
+    !insertmacro UMUI_CONFIRMPAGE_TEXTBOX_ADDLINE "$(UMUI_TEXT_SHELL_VAR_CONTEXT)"
+    !insertmacro UMUI_GETSHELLVARCONTEXT
+    Pop $1
+    StrCmp $1 "all" 0 current
+      !insertmacro UMUI_CONFIRMPAGE_TEXTBOX_ADDLINE "      $(UMUI_TEXT_SHELL_VAR_CONTEXT_FOR_ALL_USERS)"
+      Goto endsvc
+    current:
+      !insertmacro UMUI_CONFIRMPAGE_TEXTBOX_ADDLINE "      $(UMUI_TEXT_SHELL_VAR_CONTEXT_ONLY_FOR_CURRENT_USER)"
+    endsvc:
+    !insertmacro UMUI_CONFIRMPAGE_TEXTBOX_ADDLINE ""
+
+  !insertmacro MUI_STARTMENU_WRITE_END
+FunctionEnd
 # ========================================================================================================================
 # ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 # ========================================================================================================================
