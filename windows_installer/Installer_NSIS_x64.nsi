@@ -2758,8 +2758,8 @@ Section -un.post UNSEC_MISC
     RMDir /REBOOTOK "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL"
 
     DeleteRegValue HKCU "${REGKEY}" Path
-    DeleteRegKey /IfEmpty HKCU "${REGKEY}\Components"
-    DeleteRegKey /IfEmpty HKCU "${REGKEY}"
+    DeleteRegKey HKCU "${REGKEY}\Components"
+    DeleteRegKey HKCU "${REGKEY}"
 
     # ===================================================================================================
 
