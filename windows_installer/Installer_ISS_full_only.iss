@@ -32,14 +32,10 @@
 ; Preferred should be the admin installation package, however, for
 ; non-admins the user installation packge is the only one working.
 #ifdef CB_ADMIN_INSTALLER
-  #if CB_ADMIN_INSTALLER == "True"
-    #undef CB_ADMIN_INSTALLER
-    #define CB_ADMIN_INSTALLER
-  #else
+  #if CB_ADMIN_INSTALLER == "False"
     #undef CB_ADMIN_INSTALLER
   #endif
 #else
-  #undef CB_ADMIN_INSTALLER
   #define CB_ADMIN_INSTALLER
 #endif
 
@@ -117,7 +113,8 @@ SourceDir={#CB_BuildOutputDir}
 OutputDir={#SourcePath}
 DisableWelcomePage=False
 #ifdef CB_ADMIN_INSTALLER
-  PrivilegesRequired=admin
+  PrivilegesRequired=lowest
+;  PrivilegesRequired=admin
 #else
   PrivilegesRequired=lowest
 #endif
@@ -140,7 +137,7 @@ Name: desktopicon\user;   Description: "For the current user only";   GroupDescr
 Name: quicklaunchicon;    Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:";
 
 [Files]
-Source: "*"; Excludes: "*.a"; DestDir: "{app}"; Flags: ignoreversion createallsubdirs recursesubdirs;
+Source: "*"; Excludes: "*.a,cctest.exe,wxmsw315ud*gcc_cb.dll"; DestDir: "{app}"; Flags: ignoreversion createallsubdirs recursesubdirs;
 Source: "{#DICTIONARIES_DIR}\*"; DestDir: "{app}\share\CodeBlocks\SpellChecker"; Flags: ignoreversion createallsubdirs recursesubdirs
 Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_en.chm"; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion
 Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_en.pdf"; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion
