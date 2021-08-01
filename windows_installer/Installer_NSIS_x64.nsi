@@ -41,6 +41,9 @@ Name CodeBlocks
 XPStyle on
 Unicode True
 
+# Enable logging when using the NSIS special build
+#!define ENABLE_LOGGING
+
 #########################################################
 # Room for adjustments of most important settings BEGIN #
 #########################################################
@@ -351,6 +354,22 @@ ReserveFile NSIS_CompilerDownload.ini
 
 ${!defineifexist} FORTRAN_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\FortranProject.zip
 
+################################################################################
+# Logging macro - from https://nsis.sourceforge.io/Logging:Enable_Logs_Quickly #
+################################################################################
+!define LogSet "!insertmacro LogSetMacro"
+!macro LogSetMacro SETTING
+  !ifdef ENABLE_LOGGING
+    LogSet ${SETTING}
+  !endif
+!macroend
+ 
+!define LogText "!insertmacro LogTextMacro"
+!macro LogTextMacro INPUT_TEXT
+  !ifdef ENABLE_LOGGING
+    LogText ${INPUT_TEXT}
+  !endif
+!macroend
 ######################
 # Installer sections #
 ######################
@@ -2767,28 +2786,28 @@ Section -un.post UNSEC_MISC
     # or check out the registry "Computer\HKEY_CURRENT_USER\SOFTWARE\Classes\CodeBlocks.*" entries.
     
     ${If} ${RunningX64}
-        LogText "SetRegView 64"
+        ${LogText} "SetRegView 64"
         SetRegView 64
         StrCpy $0 0 ; Registry key index
         ; Length of "CodeBlocks" = 10
         enumunkey64:
             EnumRegKey $1 HKCU64 "SOFTWARE\Classes" $0
-            ;LogText "Read HKCU\SOFTWARE\Classes\$1"
+            ;${LogText} "Read HKCU\SOFTWARE\Classes\$1"
             IntOp $0 $0 + 1
             StrCmp $1 "" done64
             StrCpy $2 $1 10  0
-            LogText "Read32 0 = $0 , 1 = $1 , 2 = $2"
+            ${LogText} "Read32 0 = $0 , 1 = $1 , 2 = $2"
             StrCmp $2 "CodeBlocks" 0 enumunkey64
             StrLen $3 $1
             IntOp $3 $3 - 10    ; Includes .
             StrCpy $4 $1 $3 10  ; Includes .
             StrCmp $4 "" enumunkey64
             ReadRegStr $5 HKCU64 "SOFTWARE\Classes\$4" ""
-            LogText "L2761 REG64 1 = $1 , 2 = $2 , 3 = $3 , 4 = $4 , 5 = $5"
+            ${LogText} "L2761 REG64 1 = $1 , 2 = $2 , 3 = $3 , 4 = $4 , 5 = $5"
             StrCmp $5 $1 0 DelCodeBlocksEntry64   ; If file extension no for Codeblocsk then goto DelCodeBlocksEntry
-            LogText "DeleteRegValue HKCU64 'SOFTWARE\Classes\$4' ''"
+            ${LogText} "DeleteRegValue HKCU64 'SOFTWARE\Classes\$4' ''"
             DeleteRegValue HKCU64 "SOFTWARE\Classes\$4" ""    ; Delete default as it is codeblocks
-            LogText "DeleteRegKey /IfEmpty HKCU64 'SOFTWARE\Classes\$4'"
+            ${LogText} "DeleteRegKey /IfEmpty HKCU64 'SOFTWARE\Classes\$4'"
             DeleteRegKey /IfEmpty HKCU64 "SOFTWARE\Classes\$4"
         DelCodeBlocksEntry64:
             DeleteRegKey HKCU64 "SOFTWARE\Classes\$1"
@@ -2798,28 +2817,28 @@ Section -un.post UNSEC_MISC
         # Finish Unregister CodeBlocks associated files - see FileAssocation.cpp
     ${EndIf}
         
-    LogText "SetRegView 32"
+    ${LogText} "SetRegView 32"
     SetRegView 32
     StrCpy $0 0 ; Registry key index
     ; Length of "CodeBlocks" = 10
     enumunkey:
         EnumRegKey $1 HKCU32 "SOFTWARE\Classes" $0
-        ;LogText "Read HKCU32\SOFTWARE\Classes\$1"
+        ;${LogText} "Read HKCU32\SOFTWARE\Classes\$1"
         IntOp $0 $0 + 1
         StrCmp $1 "" done
         StrCpy $2 $1 10  0
-        LogText "Read32 0 = $0 , 1 = $1 , 2 = $2"
+        ${LogText} "Read32 0 = $0 , 1 = $1 , 2 = $2"
         StrCmp $2 "CodeBlocks" 0 enumunkey
         StrLen $3 $1
         IntOp $3 $3 - 10    ; Includes .
         StrCpy $4 $1 $3 10  ; Includes .
         StrCmp $4 "" enumunkey
         ReadRegStr $5 HKCU32 "SOFTWARE\Classes\$4" ""
-        LogText "L2792 REG32   1 = $1 , 2 = $2 , 3 = $3 , 4 = $4 , 5 = $5"
+        ${LogText} "L2792 REG32   1 = $1 , 2 = $2 , 3 = $3 , 4 = $4 , 5 = $5"
         StrCmp $5 $1 0 DelCodeBlocksEntry   ; If file extension no for Codeblocsk then goto DelCodeBlocksEntry
-        LogText "DeleteRegValue HKCU32 'SOFTWARE\Classes\$4' ''"
+        ${LogText} "DeleteRegValue HKCU32 'SOFTWARE\Classes\$4' ''"
         DeleteRegValue HKCU32 "SOFTWARE\Classes\$4" ""    ; Delete default as it is codeblocks
-        LogText "DeleteRegKey HKCU32 'SOFTWARE\Classes\$4'"
+        ${LogText} "DeleteRegKey HKCU32 'SOFTWARE\Classes\$4'"
         DeleteRegKey HKCU32 "SOFTWARE\Classes\$4"
     DelCodeBlocksEntry:
         DeleteRegKey HKCU32 "SOFTWARE\Classes\$1"
@@ -2878,7 +2897,7 @@ SectionEnd
 #######################
 
 Function .onInit
-    LogSet off
+    ${LogSet} on
     InitPluginsDir
     Push $R1
     File /oname=$PLUGINSDIR\spltmp.bmp ${CB_SPLASH}
@@ -2894,12 +2913,12 @@ FunctionEnd
 #########################
 
 Function un.onInit
-    LogSet off
+    ${LogSet} on
     ; Delete start menu entries
     !insertmacro MUI_STARTMENU_GETFOLDER Application $STARTMENU_FOLDER_UNINSTALL
 
-    LogText "SMPROGRAMS : $SMPROGRAMS"
-    LogText "STARTMENU_FOLDER_UNINSTALL : $STARTMENU_FOLDER_UNINSTALL"
+    ${LogText} "SMPROGRAMS : $SMPROGRAMS"
+    ${LogText} "STARTMENU_FOLDER_UNINSTALL : $STARTMENU_FOLDER_UNINSTALL"
     
     ReadRegStr $INSTDIR HKCU "${REGKEY}" Path
     !insertmacro SELECT_UNSECTION "Core Files (required)"              ${UNSEC_CORE}
@@ -3259,7 +3278,7 @@ Function CompilerDownloadPage_Show
 FunctionEnd
 
 Function CompilerDownloadPage_Leave
-    LogText "Leaving compiler setup page"
+    ${LogText} "Leaving compiler setup page"
 
     !insertmacro INSTALLOPTIONS_READ $R1 "NSIS_CompilerDownload.ini" "Field 1" "State"
     !insertmacro INSTALLOPTIONS_READ $R2 "NSIS_CompilerDownload.ini" "Field 2" "State"
