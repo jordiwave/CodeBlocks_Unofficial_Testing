@@ -49,7 +49,7 @@ Unicode True
 #########################################################
 # The following line defined if the build is for 32 or 64 bits
 !ifdef BUILD_TYPE
-  !if BUILD_TYPE == "32"
+  !if ${BUILD_TYPE} == 32
     !undef BUILD_TYPE
     !define BUILD_TYPE 32
   !else
@@ -57,14 +57,14 @@ Unicode True
     !define BUILD_TYPE 64
   !endif
 !else
-  !define BUILD_TYPE 64
+    !define BUILD_TYPE 64
 !endif
 
 
 # The following line defined if the build is a nightly build and it's the SVN number
 # if not defined the version will default to YY.MM (year:month)
 !ifdef NIGHTLY_BUILD_SVN
-  !if NIGHTLY_BUILD_SVN == "False"
+  !if ${NIGHTLY_BUILD_SVN} == "False"
     !undef NIGHTLY_BUILD_SVN
   !endif
 !else
@@ -75,7 +75,7 @@ Unicode True
 # Preferred should be the admin installation package, however, for
 # non-admins the user installation package is the only one working.
 !ifdef CB_ADMIN_INSTALLER
-  !if CB_ADMIN_INSTALLER == "True"
+  !if ${CB_ADMIN_INSTALLER} == "True"
     !undef CB_ADMIN_INSTALLER
     !define CB_ADMIN_INSTALLER
   !else
@@ -105,9 +105,7 @@ Unicode True
 !include LogicLib.nsh
 !include "UMUI.nsh"
 !include Sections.nsh
-!if ${BUILD_TYPE} == 64
-    !include x64.nsh
-!endif
+!include x64.nsh
 # UMUI - Ultra Modern UI
 
 # WARNING: This is very SLOW if enabled, but it reduces the output exe by about 20%!!
@@ -412,11 +410,15 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             File ${CB_BASE}\Addr2LineUI.exe
             File ${CB_BASE}\cb_console_runner.exe
             File ${CB_BASE}\CbLauncher.exe
-            File ${CB_BASE}\cctest.exe
+            #File ${CB_BASE}\cctest.exe   # CB developer testing only
             File ${CB_BASE}\codeblocks.dll
             File ${CB_BASE}\codeblocks.exe
             # MinGW DLL's for thread handling etc.
+!if ${BUILD_TYPE} == 64
             File ${CB_BASE}\libgcc_s_seh-1.dll
+!else
+            File ${CB_BASE}\libgcc_s_dw2-1.dll
+!endif
             File ${CB_BASE}\libstdc++-6.dll
             File ${CB_BASE}\libwinpthread-1.dll
             # crash handler
@@ -467,7 +469,7 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
             CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name).lnk" $INSTDIR\CodeBlocks.exe
             CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Share Config.lnk"         $INSTDIR\cb_share_config.exe
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Code Completion Test.lnk" $INSTDIR\cctest.exe
+            #CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Code Completion Test.lnk" $INSTDIR\cctest.exe # CB developer testing only
             CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Address to Line GUI.lnk"  $INSTDIR\Addr2LineUI.exe
 
             CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) PDF Manual English.lnk" $INSTDIR${CB_DOCS}\manual_codeblocks_en.pdf "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks PDF User Manual in English"
@@ -2756,11 +2758,15 @@ Section "-un.Core Files (required)" UNSEC_CORE
     # MinGW DLL's for thread handling etc.
     Delete /REBOOTOK $INSTDIR\libwinpthread-1.dll
     Delete /REBOOTOK $INSTDIR\libstdc++-6.dll
+!if ${BUILD_TYPE} == 64
     Delete /REBOOTOK $INSTDIR\libgcc_s_seh-1.dll
+!else
+    Delete /REBOOTOK $INSTDIR\libgcc_s_dw2-1.dll
+!endif
     # CodeBlock Files
     Delete /REBOOTOK $INSTDIR\codeblocks.exe
     Delete /REBOOTOK $INSTDIR\codeblocks.dll
-    Delete /REBOOTOK $INSTDIR\cctest.exe
+    #Delete /REBOOTOK $INSTDIR\cctest.exe # CB developer testing only
     Delete /REBOOTOK $INSTDIR\CbLauncher.exe
     Delete /REBOOTOK $INSTDIR\cb_console_runner.exe
     Delete /REBOOTOK $INSTDIR\Addr2LineUI.exe
