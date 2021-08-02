@@ -13,7 +13,6 @@
     #include <wx/string.h>
     #if defined(__WXMSW__)
         #include <wx/msw/wrapwin.h>     // Wraps windows.h
-        #include <wx/msw/registry.h>    // for Registry detection of Cygwin
     #endif // defined(__WXMSW__)
 
     #include "cbproject.h"
@@ -22,6 +21,9 @@
 
     #include <map>
 #endif
+#if defined(__WXMSW__)
+    #include <wx/msw/registry.h>    // for Registry detection of Cygwin
+#endif // defined(__WXMSW__)
 
 #include "cygwin.h"
 
