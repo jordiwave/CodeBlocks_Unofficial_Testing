@@ -36,7 +36,6 @@
 #   https://eternallybored.org/misc/wget/                           #
 #####################################################################
 
-
 Name CodeBlocks
 XPStyle on
 Unicode True
@@ -88,7 +87,7 @@ Unicode True
 # Possibly required to adjust manually:
 # Note: a) These files are only required for the installer.
 #       b) These are in the ${CB_INSTALL_GRAPHICS_DIR} directory
-!if ${NIGHTLY_BUILD_SVN} > 0
+!ifdef NIGHTLY_BUILD_SVN
     !define CB_SPLASH_FILENAME  setup_splash_nightly.bmp
 !else
     !define CB_SPLASH_FILENAME  setup_splash_2003.bmp
@@ -165,7 +164,7 @@ BrandingText "Code::Blocks"
 # CB SPECIFIC INSTALLER CONFIGURATION  Defines #
 ################################################
 !define REGKEY           "SOFTWARE\$(^Name)"
-!if ${NIGHTLY_BUILD_SVN} > 0
+!ifdef NIGHTLY_BUILD_SVN
     !define VERSION      "SVN-${NIGHTLY_BUILD_SVN}"
 !else
     #!define VERSION     ${CURRENT_DATE_YEAR_NO_CENTURY}.${CURRENT_DATE_MONTH}
