@@ -114,8 +114,8 @@ SourceDir={#CB_BuildOutputDir}
 OutputDir={#SourcePath}
 DisableWelcomePage=False
 #ifdef CB_ADMIN_INSTALLER
-  PrivilegesRequired=lowest
-;  PrivilegesRequired=admin
+  ;PrivilegesRequired=lowest
+  PrivilegesRequired=admin
 #else
   PrivilegesRequired=lowest
 #endif
