@@ -105,9 +105,11 @@ bool cbIsDetectedCygwinCompiler(void)
     //  https://github.com/mirror/newlib-cygwin/blob/30782f7de4936bbc4c2e666cbaf587039c895fd3/winsup/utils/path.cc
     //  for RegQueryValueExW (...)
 
-    wxString masterPath("C:\\cygwin64");
     bool present = false; // Assume not found as starting point
+
 #if defined(__WXMSW__)
+
+    wxString masterPath("C:\\cygwin64");
     wxRegKey key; // defaults to HKCR
     key.SetName(_T("HKEY_LOCAL_MACHINE\\Software\\Cygwin\\setup"));
     if (key.Exists() && key.Open(wxRegKey::Read))
@@ -128,11 +130,17 @@ bool cbIsDetectedCygwinCompiler(void)
                 present = true;
         }
     }
-#endif // defined(__WXMSW__)
-    if (present)
+
+    // Found registry keys or the default path is valid
+    if (present || wxDirExists(masterPath + wxFILE_SEP_PATH + _T("bin")))
         g_CygwinCompilerPathRoot = masterPath; // convert to wxString type for later use
     else
-        g_CygwinCompilerPathRoot = wxString();
+    {
+        g_CygwinCompilerPathRoot = wxEmptyString;
+    }
+
+#endif // defined(__WXMSW__)
+
     return present;
 }
 
