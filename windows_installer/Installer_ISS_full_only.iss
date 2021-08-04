@@ -1,11 +1,11 @@
-;#define BUILD_TYPE "64"
-;#define NIGHTLY_BUILD_SVN "12487_PLUS"
+;#define BUILD_TYPE = "64"
+;#define NIGHTLY_BUILD_SVN = "12487_PLUS"
 ;#define CB_ADMIN_INSTALLER
 
 ;#########################################################
 ;# Room for adjustments of most important settings BEGIN #
 ;#########################################################
-; In the future this could be done via batch files using command line parameters
+; This can be done via batch files using command line parameters
 ; as defined on https://jrsoftware.org/ispphelp/index.php?topic=isppcc
 
 ; The following line defined if the build is for 32 or 64 bits
@@ -22,7 +22,7 @@
 ; The following line defined if the build is a nightly build and it"s the SVN number
 ; if not defined the version will default to YY.MM (year:month)
 #ifndef NIGHTLY_BUILD_SVN
-  #define NIGHTLY_BUILD_SVN =12487
+  #define NIGHTLY_BUILD_SVN ="12487"
 #else
   #if NIGHTLY_BUILD_SVN == "False"
     #undef NIGHTLY_BUILD_SVN
@@ -119,6 +119,7 @@ DisableWelcomePage=False
 #else
   PrivilegesRequired=lowest
 #endif
+PrivilegesRequiredOverridesAllowed=dialog
 WizardImageFile={#GRAPHICS_DIR}\setup_1.bmp
 WizardSmallImageFile={#GRAPHICS_DIR}\{#CB_LOGO_FILENAME}
 WizardImageStretch=yes
@@ -200,6 +201,7 @@ begin
       begin
         //RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open With CodeBlocks');  // Taken from https://github.com/eranif/codelite/blob/master/InnoSetup/codelite64_mingw.iss
 
+#if BUILD_TYPE == 64
         if RegGetSubkeyNames(HKCU64, 'SOFTWARE\Classes', Subkeys) then 
         begin
           for I := 0 to GetArrayLength(Subkeys) - 1 do
@@ -227,6 +229,7 @@ begin
             end;
           end;
         end;
+#endif
 
         if RegGetSubkeyNames(HKCU32, 'SOFTWARE\Classes', Subkeys) then 
         begin

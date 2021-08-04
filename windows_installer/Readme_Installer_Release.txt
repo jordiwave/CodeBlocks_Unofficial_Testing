@@ -8,6 +8,24 @@ Installer download link:
 ========================
 https://sourceforge.net/projects/unofficial-cb-installers/
 
+CB Sourceforge Tickets 
+======================
+The release includes code to hopefully resolve or implement the following CB sourceforge tickets:
+    1) 909 - Fix Cygwin compiler support
+    2) 374 - Additional Windows compiler support via XML files 
+                - GCC MSYS2 - MinGW-w32
+                - GCC MSYS2 - MinGW-W64
+                - GCC TDM-32
+                - GCC TDM-64
+                - GCC MinGW-w32
+                - GCC MinGW-w64
+                - GCC LLVM Clang MinGW-W64
+                - Other MinGW w32 or w64 compilers like winlib or gytx
+    3) 1117 - Auto-detect compiler dialog startup changes
+    4) 1111 - Compiler dialog changes for detected compilers and bug fixes
+    5) 1119 - Windows installer updates
+    6) 1114 - Initial windows install GDB auto detect and configure
+    7) 04-Aug-21 Ticket 808 - Updated the default compiler background color to red if invalid. With 1117 this should resolve 808.
 
 Installer changed highlights:
 =============================
@@ -23,16 +41,17 @@ Installer changed highlights:
     6) Added missing files that are included in the nightly build
     7) Inno setup only does a full install.
     9) Updated start menu links
-    10) Ability to specify the start menu directory
-    11) Ability to specify the install directory
-    12) On an uninstall allot more registry entries are removed (NSIS still leaves a few). Not all entries are removed.
-    13) To many other changes to mention.... 
-    14) Check out the https://sourceforge.net/projects/unofficial-cb-installers/files/Installer_Pages.odt file for the installer pages.
-    15) Now installs Code::Blocks in the "C:\Program Files" directory for the 64 bit installer.
-    16) Inno installer uses InnoSetup Compiler(ISS) (http://www.jrsoftware.org) aka ISS V6.2.0
-    17) NSIS installer uses NSIS compiler (http://nsis.sourceforge.net) V3.7.0
-    18) Inno installer script file is Installer_NSIS_wx31_64bit.nsi
-    18) NSIS installer script file is Installer_ISS_x64 - Full Only.iss
+    8) Ability to specify the start menu directory
+    9) Ability to specify the install directory
+    10) On an un-install allot more registry entries are removed (NSIS still leaves a few). Not all entries are removed.
+    11) To many other changes to mention.... 
+    12) Check out the https://sourceforge.net/projects/unofficial-cb-installers/files/Installer_Pages.odt file for the installer pages.
+    13) Now installs Code::Blocks in the "C:\Program Files" directory for the 64 bit installer.
+    14) Inno installer uses InnoSetup Compiler(ISS) (http://www.jrsoftware.org) aka ISS V6.2.0
+    15) NSIS installer uses NSIS compiler (http://nsis.sourceforge.net) V3.7.0
+    16) Inno installer script file is "Installer_ISS_full_only.iss"
+    17) NSIS installer script file is "Installer_NSIS.nsi"
+    18) 04-AUG-21 Updated auto detect compiler startup dialog to show the default compiler in red if it is not detected. 
 
 
 C::B exe/dll changed/update highlights:
@@ -49,13 +68,15 @@ C::B exe/dll changed/update highlights:
         tdm-32
         tdm-64
     5) Cygwin compiler now detected correctly
-    6) Built with MSYS2 mingw64 GCC 10.3 using the latest MSYS 2 release (okay I update it at least once a week).
-    7) Installer code is not a separate repo, but a directory in the C::B source tree.
-    8) Massive NSIS changes (Including updating parts to the new NSIS 3 way of working)
-    9) Inno Setup installer created and tested
-    10) Graphics changes included in the installers (I am not a graphical arteist if you get it!)
-    11) Installer script files support 32 and 64 bit in the one script now
-    11) Can build the installer(s) from a batch file now
+    6) 64bit built with MSYS2 mingw64 GCC 10.3 using the latest MSYS 2 release (okay I update it at least once a week).
+    7) 32bit built with MingGW-64 installer using "GCC 8.1.0 , i686, posix threading, dwarf exception hading and 0 build revision" configuration.
+    8) Installer code is not a separate repo, but a directory in the C::B GitHub source repo tree.
+    9) Massive NSIS changes (Including updating parts to the new NSIS 3 way of working)
+    10) Inno Setup installer created and tested
+    11) Graphics changes included in the installers (I am not a graphical arteist if you get it!)
+    12) Installer script files support both 32 and 64 bit in the one script file.
+    13) Can build the installer(s) from a batch file now
+    14) On Windows initial install auto detect GDB installation and configure it for use.
 
 SOURCE:
 =======
@@ -64,8 +85,7 @@ The source code used to produce the installers is currently (until the repo is n
 
 NOTES:
 ======
-1) 32 bit installers have not been built or tested, apart from testing that the scripts can be configured for 32 bit usage and do run.
-2) When editing the ISS install file you can use the "Inno Script Studio" V2.5.1 or later from https://www.kymoto.org/products/inno-script-studio 
+1) When editing the ISS install file you can use the "Inno Script Studio" V2.5.1 or later from https://www.kymoto.org/products/inno-script-studio 
 to make the editing easier and it also allows you to compiler, debug and test the script within the application.
 
 
