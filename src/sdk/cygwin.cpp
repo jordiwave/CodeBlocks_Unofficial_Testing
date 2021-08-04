@@ -133,7 +133,10 @@ bool cbIsDetectedCygwinCompiler(void)
 
     // Found registry keys or the default path is valid
     if (present || wxDirExists(masterPath + wxFILE_SEP_PATH + _T("bin")))
+    {
+        present = true;
         g_CygwinCompilerPathRoot = masterPath; // convert to wxString type for later use
+    }
     else
     {
         g_CygwinCompilerPathRoot = wxEmptyString;
