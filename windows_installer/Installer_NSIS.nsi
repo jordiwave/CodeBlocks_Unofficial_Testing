@@ -102,10 +102,10 @@ Unicode True
 # Included NSIS script files #
 ##############################
 !include LogicLib.nsh
-!include "UMUI.nsh"
+!include "UMUI.nsh"             # UMUI - Ultra Modern UI
 !include Sections.nsh
 !include x64.nsh
-# UMUI - Ultra Modern UI
+!include WinVer.nsh
 
 # WARNING: This is very SLOW if enabled, but it reduces the output exe by about 20%!!
 #SetCompressor /SOLID LZMA
@@ -420,13 +420,32 @@ SectionGroup "!Default install" SECGRP_DEFAULT
 !endif
             File ${CB_BASE}\libstdc++-6.dll
             File ${CB_BASE}\libwinpthread-1.dll
-            # crash handler
-            File ${CB_BASE}\dbgcore.dll
-            File ${CB_BASE}\dbghelp.dll
-            File ${CB_BASE}\exchndl.dll
-            File ${CB_BASE}\mgwhelp.dll
-            File ${CB_BASE}\symsrv.dll
-            File ${CB_BASE}\symsrv.yes
+            
+            ${If} ${IsWinXP}
+                # crash handler for Windows XP!!!!
+                ; File ${CB_BASE}\dbgcore.dll - N/A for XP
+                !if ${BUILD_TYPE} == 64
+                    File exchndl_xp\win64\dbghelp.dll
+                    File exchndl_xp\win64\exchndl.dll
+                    File exchndl_xp\win64\mgwhelp.dll
+                    File exchndl_xp\win64\symsrv.dll
+                    File exchndl_xp\win64\symsrv.yes
+                !else
+                    File exchndl_xp\win32\dbghelp.dll
+                    File exchndl_xp\win32\exchndl.dll
+                    File exchndl_xp\win32\mgwhelp.dll
+                    File exchndl_xp\win32\symsrv.dll
+                    File exchndl_xp\win32\symsrv.yes
+                !endif
+            ${Else}
+                # crash handler for Win 7+  (fails on XP!!!!)
+                File ${CB_BASE}\dbgcore.dll
+                File ${CB_BASE}\dbghelp.dll
+                File ${CB_BASE}\exchndl.dll
+                File ${CB_BASE}\mgwhelp.dll
+                File ${CB_BASE}\symsrv.dll
+                File ${CB_BASE}\symsrv.yes
+            ${EndIf}
             # Licenses
             File ${CB_INSTALL_LICENSES_DIR}\gpl-3.0.txt
             File ${CB_INSTALL_LICENSES_DIR}\lgpl-3.0.txt
@@ -2748,12 +2767,23 @@ Section "-un.Core Files (required)" UNSEC_CORE
     Delete /REBOOTOK $INSTDIR\gpl-3.0.txt
     Delete /REBOOTOK $INSTDIR\lgpl-3.0.txt
     # crash handler
-    Delete /REBOOTOK $INSTDIR\symsrv.yes
-    Delete /REBOOTOK $INSTDIR\symsrv.dll
-    Delete /REBOOTOK $INSTDIR\mgwhelp.dll
-    Delete /REBOOTOK $INSTDIR\exchndl.dll
-    Delete /REBOOTOK $INSTDIR\dbghelp.dll
-    Delete /REBOOTOK $INSTDIR\dbgcore.dll
+    ${If} ${IsWinXP}
+        # crash handler for Windows XP!!!!
+        Delete /REBOOTOK $INSTDIR\symsrv.yes
+        Delete /REBOOTOK $INSTDIR\symsrv.dll
+        Delete /REBOOTOK $INSTDIR\mgwhelp.dll
+        Delete /REBOOTOK $INSTDIR\exchndl.dll
+        Delete /REBOOTOK $INSTDIR\dbghelp.dll
+        ; Delete /REBOOTOK $INSTDIR\dbgcore.dll - N/A for XP
+    ${Else}
+        # crash handler for Win 7+  (fails on XP!!!!)
+        Delete /REBOOTOK $INSTDIR\symsrv.yes
+        Delete /REBOOTOK $INSTDIR\symsrv.dll
+        Delete /REBOOTOK $INSTDIR\mgwhelp.dll
+        Delete /REBOOTOK $INSTDIR\exchndl.dll
+        Delete /REBOOTOK $INSTDIR\dbghelp.dll
+        Delete /REBOOTOK $INSTDIR\dbgcore.dll
+    ${EndIf}
     # MinGW DLL's for thread handling etc.
     Delete /REBOOTOK $INSTDIR\libwinpthread-1.dll
     Delete /REBOOTOK $INSTDIR\libstdc++-6.dll
