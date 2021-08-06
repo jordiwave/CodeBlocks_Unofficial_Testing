@@ -54,7 +54,7 @@ Installer changed highlights:
     15) NSIS installer uses NSIS compiler (http://nsis.sourceforge.net) V3.7.0
     16) Inno installer script file is "Installer_ISS_full_only.iss"
     17) NSIS installer script file is "Installer_NSIS.nsi"
-    18) NSIS only - Added XP SP 3 x86 and x64 support - different set of files from https://sourceforge.net/p/codeblocks/code/11196/tree/trunk/src/exchndl /win32/bin and /win64/bin.. NOTE: Inno setup 6 does not support XP anymore
+    18) 06-AUG-21 NSIS only - Added XP SP 3 x86 and x64 support - different set of files from https://sourceforge.net/p/codeblocks/code/11196/tree/trunk/src/exchndl /win32/bin and /win64/bin.. NOTE: Inno setup 6 does not support XP anymore
         - Needs to be tested as I do not have XP anymore!!!!
 
 
@@ -84,7 +84,7 @@ C::B exe/dll changed/update highlights:
     15) 05-AUG-21 Moved Help->About->Information to Help->"System Information" and added allot of extra info on the CB and PC setup. Added copy to clipboard button that anonymize's the data when copied to the clipboard
     16) 05-AUG-21 Added extra help plugin menu items for the updated documentation included in the installation. These appear as sub menu items in the Help menu.
     17) 05-AUG-21 In Help->"System Information" copy to clipboard button now anonymize's the data when copied to the clipboard and shows the spinning cursor while the data is being worked on.
-    17) 06-AUG-21 Added missing INNO installer shortcuts that were in the NSIS installer.
+    18) 06-AUG-21 Added missing INNO installer shortcuts that were in the NSIS installer.
 
 SOURCE:
 =======
@@ -104,9 +104,9 @@ This installer contains binaries that include code changes that are *NOT* includ
 
 Outstanding Issues to be investigated:
 ======================================
-1) Ticket 654 - Copy Debug Watch variable content to clipboard. Investigate the report to see if it can be fixed.
-2) Ticket 1020 - GDB issue - later MINGW release - investigate replacement GDB.exe or modify installer to show  extra details to the end user.
-3) Modify the installers for use by a non admin user. Also add in support for C::B portable mode (see post as per https://forums.codeblocks.org/index.php/topic,24592.msg167882.html#msg167882)
+1) 06-AUG-21 Ticket 654 - Copy Debug Watch variable content to clipboard. Investigate the report to see if it can be fixed.
+2) 06-AUG-21 Ticket 1020 - GDB issue - later MINGW release - investigate replacement GDB.exe or modify installer to show  extra details to the end user.
+3) 06-AUG-21 Modify the installers for use by a non admin user. Also add in support for C::B portable mode (see post as per https://forums.codeblocks.org/index.php/topic,24592.msg167882.html#msg167882)
 4) Other installer issues....  Please post ticket reference on the https://forums.codeblocks.org/index.php/topic,24592.0.html thread.
 5) Other Windows CB installation or configuration issues with the initial installation... Please post ticket reference on the https://forums.codeblocks.org/index.php/topic,24592.0.html thread.
 
