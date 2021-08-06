@@ -75,6 +75,7 @@
     #define CB_VERSION    = CURRENT_DATE_YEAR+"."+CURRENT_DATE_MONTH
 #endif
 
+
 [Setup]
 SetupLogging=yes
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -133,54 +134,60 @@ SetupIconFile={#GRAPHICS_DIR}\setup_icon.ico
 
 [Tasks]
 Name: startmenu;          Description: "Create a &startmenu entry";   GroupDescription: "Additional icons:";
-Name: desktopicon;        Description: "Create a &desktop icon";      GroupDescription: "Additional icons:"; Flags: checkablealone
+Name: desktopicon;        Description: "Create a &desktop icon";      GroupDescription: "Additional icons:"; Flags: checkablealone;
 Name: desktopicon\common; Description: "For all users";               GroupDescription: "Additional icons:"; 
-Name: desktopicon\user;   Description: "For the current user only";   GroupDescription: "Additional icons:"; Flags: unchecked 
+Name: desktopicon\user;   Description: "For the current user only";   GroupDescription: "Additional icons:"; Flags: unchecked ;
 Name: quicklaunchicon;    Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:";
 
 [Files]
-Source: "*"; Excludes: "*.a,cctest.exe,wxmsw315ud*gcc_cb.dll"; DestDir: "{app}"; Flags: ignoreversion createallsubdirs recursesubdirs;
-Source: "{#DICTIONARIES_DIR}\*"; DestDir: "{app}\share\CodeBlocks\SpellChecker"; Flags: ignoreversion createallsubdirs recursesubdirs
-Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_en.chm"; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion
-Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_en.pdf"; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion
-Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_fr.chm"; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion
-Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_fr.pdf"; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion
-Source: "{#DOCUMENTATION_DIR}\Manual_wxPBGuide.pdf"; DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion
-Source: "{#LICENSES_DIR}\gpl-3.0.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#LICENSES_DIR}\lgpl-3.0.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "*"; Excludes: "*.a,cctest.exe,wxmsw315ud*gcc_cb.dll";  DestDir: "{app}";                       Flags: ignoreversion createallsubdirs recursesubdirs;
+Source: "{#DICTIONARIES_DIR}\*";                                DestDir: "{app}\share\CodeBlocks\SpellChecker"; Flags: ignoreversion createallsubdirs recursesubdirs;
+Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_en.chm";        DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion;
+Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_en.pdf";        DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion;
+Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_fr.chm";        DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion;
+Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_fr.pdf";        DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion;
+Source: "{#DOCUMENTATION_DIR}\Manual_wxPBGuide.pdf";            DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion;
+Source: "{#LICENSES_DIR}\gpl-3.0.txt";                          DestDir: "{app}";                       Flags: ignoreversion;
+Source: "{#LICENSES_DIR}\lgpl-3.0.txt";                         DestDir: "{app}";                       Flags: ignoreversion;
 
 [Icons]
-Name: {group}\{#CB_PROGRAMDIRNAME};               Filename: {app}\codeblocks.exe; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE;
-Name: {group}\{cm:UninstallProgram, codeblocks};  Filename: {uninstallexe};
-Name: {group}\CodeBlocks License;                 Filename: {app}\gpl-3.0.txt;                                     Comment: Code::Blocks license;
-Name: {group}\CodeBlocks SDK License;             Filename: {app}\lgpl-3.0.txt;                                    Comment: Code::Blocks SDK license;
-Name: {userdesktop}\{#CB_PROGRAMDIRNAME};         Filename: {app}\codeblocks.exe; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE;
-Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}; Filename: {app}\codeblocks.exe; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: quicklaunchicon;
+Name: "{group}\{#CB_PROGRAMDIRNAME}";               Filename: "{app}\codeblocks.exe";       IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE;
+Name: "{group}\{cm:UninstallProgram, CodeBlocks}";  Filename: "{uninstallexe}";
+Name: "{userdesktop}\{#CB_PROGRAMDIRNAME}";         Filename: "{app}\codeblocks.exe";       IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE;
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}"; Filename: "{app}\codeblocks.exe"; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: quicklaunchicon;
 
-Name: {group}\Links\CodeBlocks PDF Manual English;    Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.pdf";Comment: The Code::Blocks PDF User Manual in English;
-Name: {group}\Links\CodeBlocks CHM Manual English;    Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.chm";Comment: The Code::Blocks CHM User Manual in English;
-Name: {group}\Links\CodeBlocks PDF Manual French;     Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.pdf";Comment: The Code::Blocks PDF User Manual in French;
-Name: {group}\Links\CodeBlocks CHM Manual French;     Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.chm";Comment: The Code::Blocks CHM User Manual in French;
-Name: {group}\Links\PBs wxWidgets Guide;   Filename: "{app}\share\CodeBlocks\docs\Manual_wxPBGuide.pdf";    Comment: PBs GuiDe to Starting with wxWidgets with MinGW and Code::Blocks;
+Name: "{group}\CodeBlocks Share Config.lnk";         Filename: "{app}\cb_share_config.exe"; IconIndex: 0; WorkingDir: {app};
+Name: "{group}\CodeBlocks Address to Line GUI.lnk";  Filename: "{app}\Addr2LineUI.exe";     IconIndex: 0; WorkingDir: {app};
+Name: "{group}\CodeBlocks CBP2Make.lnk";             Filename: "{app}\cbp2make.exe";        IconIndex: 0; WorkingDir: {app};
+Name: "{group}\CodeBlocks Share Config.lnk";         Filename: "{app}\cb_share_config.exe"; IconIndex: 0; WorkingDir: {app};
+Name: "{group}\CodeBlocks Launcher.lnk";             Filename: "{app}\CbLauncher.exe";      IconIndex: 0; WorkingDir: {app};
 
-Name: {group}\Links\CodeBlocks Web Site;              Filename: "http://www.codeblocks.org";                      Comment: Go to Code::Blocks IDE website;
-Name: {group}\Links\CodeBlocks Forums;                Filename: "http://forums.codeblocks.org";                   Comment: Go to Code::Blocks IDE discussion forums;
-Name: {group}\Links\CodeBlocks WiKi;                  Filename: "http://wiki.codeblocks.org";                     Comment: Go to Code::Blocks IDE WiKi site;
-Name: {group}\Links\CodeBlocks Tickets;               Filename: "https://sourceforge.net/p/codeblocks/tickets/";  Comment: Report bugs/enhancements for Code::Blocks; Tasks: startmenu;
-Name: {group}\Links\Codeblocks beginner instructions; Filename: "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf";  Comment: Code::Blocks beginner install and user guide;
+Name: "{group}\Documentation\CodeBlocks License";               Filename: "{app}\gpl-3.0.txt";                                   Comment: "Code::Blocks license";
+Name: "{group}\Documentation\CodeBlocks SDK License";           Filename: "{app}\lgpl-3.0.txt";                                  Comment: "Code::Blocks SDK license";
+Name: "{group}\Documentation\CodeBlocks PDF Manual English";    Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.pdf";Comment: "The Code::Blocks PDF User Manual in English";
+Name: "{group}\Documentation\CodeBlocks CHM Manual English";    Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.chm";Comment: "The Code::Blocks CHM User Manual in English";
+Name: "{group}\Documentation\CodeBlocks PDF Manual French";     Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.pdf";Comment: "The Code::Blocks PDF User Manual in French";
+Name: "{group}\Documentation\CodeBlocks CHM Manual French";     Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.chm";Comment: "The Code::Blocks CHM User Manual in French";
+Name: "{group}\Documentation\PBs wxWidgets Guide";              Filename: "{app}\share\CodeBlocks\docs\Manual_wxPBGuide.pdf";    Comment: "PBs GuiDe to Starting with wxWidgets with MinGW and Code::Blocks";
+Name: "{group}\Documentation\Codeblocks beginner instructions"; Filename: "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf";  Comment: "Code::Blocks beginner install and user guide";
+
+Name: "{group}\CodeBlocks Web Site";                      Filename: "http://www.codeblocks.org";                      Comment: "Open Code::Blocks IDE website";
+Name: "{group}\WebSite\CodeBlocks Forums";                Filename: "http://forums.codeblocks.org";                   Comment: "Open Code::Blocks IDE discussion forums";
+Name: "{group}\WebSite\CodeBlocks WiKi";                  Filename: "http://wiki.codeblocks.org";                     Comment: "Open Code::Blocks IDE WiKi site";
+Name: "{group}\WebSite\CodeBlocks Tickets";               Filename: "https://sourceforge.net/p/codeblocks/tickets/";  Comment: "Report bugs/enhancements for Code::Blocks"; Tasks: startmenu;
 
 [Run]
-Filename: {app}\codeblocks.exe; Description: Launch Code::Blocks; Flags: nowait postinstall skipifsilent runasoriginaluser;
-Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.pdf"; Description: The Code::Blocks PDF User Manual in English; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked; 
-Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.chm"; Description: The Code::Blocks CHM User Manual in English; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked;
-Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.pdf"; Description: The Code::Blocks PDF User Manual in French; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked;
-Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.chm"; Description: The Code::Blocks CHM User Manual in French; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked;
-Filename: "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf"; Description: Code::Blocks beginner install and user guide; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked;
+Filename: "{app}\codeblocks.exe";                                 Description: "Launch Code::Blocks";                         Flags: nowait postinstall skipifsilent runasoriginaluser;
+Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.pdf"; Description: "The Code::Blocks PDF User Manual in English"; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked; 
+Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.chm"; Description: "The Code::Blocks CHM User Manual in English"; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked;
+Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.pdf"; Description: "The Code::Blocks PDF User Manual in French";  Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked;
+Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.chm"; Description: "The Code::Blocks CHM User Manual in French";  Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked;
+Filename: "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf"; Description: "Code::Blocks beginner install and user guide"; Flags: nowait postinstall skipifsilent  shellexec runasoriginaluser unchecked;
 
 [UninstallDelete]
-Type: filesandordirs; Name: "{app}"
-Type: files;          Name: {userdesktop}\{#CB_PROGRAMDIRNAME}
-Type: files;          Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}
+Type: filesandordirs; Name: "{app}";
+Type: files;          Name: "{userdesktop}\{#CB_PROGRAMDIRNAME}";
+Type: files;          Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}";
 
 
 [Code]

@@ -1,3 +1,5 @@
+Updated for the release on 05-Aug-2021.
+
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
 The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official installer.
 
@@ -26,6 +28,7 @@ The release includes code to hopefully resolve or implement the following CB sou
     5) 1119 - Windows installer updates
     6) 1114 - Initial windows install GDB auto detect and configure
     7) 04-Aug-21 Ticket 808 - Updated the default compiler background color to red if invalid. With 1117 this should resolve 808.
+    8) 05/06-Aug-21 Ticket 748 - Moved Help->About->Information to Help->"System Information" and added allot of extra info on the CB and PC setup for helping with issues and bugs.
 
 Installer changed highlights:
 =============================
@@ -51,15 +54,14 @@ Installer changed highlights:
     15) NSIS installer uses NSIS compiler (http://nsis.sourceforge.net) V3.7.0
     16) Inno installer script file is "Installer_ISS_full_only.iss"
     17) NSIS installer script file is "Installer_NSIS.nsi"
-    18) 04-AUG-21 Updated auto detect compiler startup dialog to show the default compiler in red if it is not detected. 
 
 
 C::B exe/dll changed/update highlights:
 =======================================
-    1) Autodetect POP up condition on startup has changed. After initial install will only pop up if the default compiler has issues.
-    2) Autodetect compiler dialog has the option to show the installed or all the compilers
+    1) Auto-detect POP up condition on startup has changed. After initial install will only pop up if the default compiler has issues.
+    2) Auto-detect compiler dialog has the option to show the installed or all the compilers
     3) The compiler selection dialog has the option of showing the detected or all the compilers.
-    3) The compiler selction dialog has a number of bug fixes 
+    3) The compiler selection dialog has a number of bug fixes 
     4) Added support for the following compilers via the XML files:
         mingw32
         mingw64
@@ -77,6 +79,10 @@ C::B exe/dll changed/update highlights:
     12) Installer script files support both 32 and 64 bit in the one script file.
     13) Can build the installer(s) from a batch file now
     14) On Windows initial install auto detect GDB installation and configure it for use.
+    15) 05-AUG-21 Moved Help->About->Information to Help->"System Information" and added allot of extra info on the CB and PC setup. Added copy to clipboard button that anonymize's the data when copied to the clipboard
+    16) 05-AUG-21 Added extra help plugin menu items for the updated documentation included in the installation. These appear as sub menu items in the Help menu.
+    17) 05-AUG-21 In Help->"System Information" copy to clipboard button now anonymize's the data when copied to the clipboard and shows the spinning cursor while the data is being worked on.
+    17) 06-AUG-21 Added missing INNO installer shortcuts that were in the NSIS installer.
 
 SOURCE:
 =======
@@ -92,3 +98,16 @@ to make the editing easier and it also allows you to compiler, debug and test th
 Disclaimer: 
 ===========
 This installer contains binaries that include code changes that are *NOT* included in the Code::Blocks official SVN repository. These installers and the code changes are *not* endorsed by the Code::Blocks Team themselves, so any incorrect behavior you may find therein should be tested for in the official release and nightly versions before you decide to report any bugs.
+
+
+Outstanding Issues to be investigated:
+======================================
+1) XP SP 3 support - different set of files from https://sourceforge.net/p/codeblocks/code/11196/tree/trunk/src/exchndl /win32/bin and /win64/bin
+2) Ticket 1020 - GDB issue - later MINGW release - investigate replacement GDB.exe or modify installer to show  extra details to the end user.
+3) Ticket 764 - Slashes in Makefile path converted to local filesystem style. Investigate the report to see if it can be fixed.
+4) Ticket 654 - Copy Debug Watch variable content to clipboard. Investigate the report to see if it can be fixed.
+5) Modify the installers for use by a non admin user.
+6) Other installer issues....  Please post ticket reference on the https://forums.codeblocks.org/index.php/topic,24592.0.html thread.
+7) Other Windows CB installation or configuration issues with the initial installation... Please post ticket reference on the https://forums.codeblocks.org/index.php/topic,24592.0.html thread.
+
+
