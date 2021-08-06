@@ -1,4 +1,4 @@
-Updated for the release on 05-Aug-2021.
+Updated for the release on 06-Aug-2021.
 
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
 The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official installer.
@@ -54,6 +54,8 @@ Installer changed highlights:
     15) NSIS installer uses NSIS compiler (http://nsis.sourceforge.net) V3.7.0
     16) Inno installer script file is "Installer_ISS_full_only.iss"
     17) NSIS installer script file is "Installer_NSIS.nsi"
+    18) NSIS only - Added XP SP 3 x86 and x64 support - different set of files from https://sourceforge.net/p/codeblocks/code/11196/tree/trunk/src/exchndl /win32/bin and /win64/bin.. NOTE: Inno setup 6 does not support XP anymore
+        - Needs to be tested as I do not have XP anymore!!!!
 
 
 C::B exe/dll changed/update highlights:
@@ -102,12 +104,10 @@ This installer contains binaries that include code changes that are *NOT* includ
 
 Outstanding Issues to be investigated:
 ======================================
-1) XP SP 3 support - different set of files from https://sourceforge.net/p/codeblocks/code/11196/tree/trunk/src/exchndl /win32/bin and /win64/bin
+1) Ticket 654 - Copy Debug Watch variable content to clipboard. Investigate the report to see if it can be fixed.
 2) Ticket 1020 - GDB issue - later MINGW release - investigate replacement GDB.exe or modify installer to show  extra details to the end user.
-3) Ticket 764 - Slashes in Makefile path converted to local filesystem style. Investigate the report to see if it can be fixed.
-4) Ticket 654 - Copy Debug Watch variable content to clipboard. Investigate the report to see if it can be fixed.
-5) Modify the installers for use by a non admin user.
-6) Other installer issues....  Please post ticket reference on the https://forums.codeblocks.org/index.php/topic,24592.0.html thread.
-7) Other Windows CB installation or configuration issues with the initial installation... Please post ticket reference on the https://forums.codeblocks.org/index.php/topic,24592.0.html thread.
+3) Modify the installers for use by a non admin user. Also add in support for C::B portable mode (see post as per https://forums.codeblocks.org/index.php/topic,24592.msg167882.html#msg167882)
+4) Other installer issues....  Please post ticket reference on the https://forums.codeblocks.org/index.php/topic,24592.0.html thread.
+5) Other Windows CB installation or configuration issues with the initial installation... Please post ticket reference on the https://forums.codeblocks.org/index.php/topic,24592.0.html thread.
 
 
