@@ -1,3 +1,7 @@
+# Debugging:
+#!define BUILD_TYPE 64
+#!define NIGHTLY_BUILD_SVN 12492_PLUS
+
 #####################################################################
 # The installer is divided into 5 main sections (section groups):   #
 # "Default"           -> includes C::B core and core plugins        #
@@ -41,7 +45,7 @@ XPStyle on
 Unicode True
 
 # Enable logging when using the NSIS special build
-#!define ENABLE_LOGGING
+!define ENABLE_LOGGING
 
 #########################################################
 # Room for adjustments of most important settings BEGIN #
@@ -67,21 +71,7 @@ Unicode True
     !undef NIGHTLY_BUILD_SVN
   !endif
 !else
-  !define NIGHTLY_BUILD_SVN 12487
-!endif
-
-# The following line toggles the admin or user installation package.
-# Preferred should be the admin installation package, however, for
-# non-admins the user installation package is the only one working.
-!ifdef CB_ADMIN_INSTALLER
-  !if ${CB_ADMIN_INSTALLER} == "True"
-    !undef CB_ADMIN_INSTALLER
-    !define CB_ADMIN_INSTALLER
-  !else
-    !undef CB_ADMIN_INSTALLER
-  !endif
-!else
-  !define CB_ADMIN_INSTALLER
+  !define NIGHTLY_BUILD_SVN 12492
 !endif
 
 # Possibly required to adjust manually:
@@ -178,11 +168,9 @@ BrandingText "Code::Blocks"
 # Installer attributes (usually these do not change)
 # Note: We can't always use "Code::Blocks" as the "::" conflicts with the file system.
 !if ${BUILD_TYPE} == 32
-    OutFile             codeblocks-${VERSION}-32bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
-    InstallDir          $PROGRAMFILES\CodeBlocks
+    OutFile             CodeBlocks-${VERSION}-32bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
 !else
-    OutFile             codeblocks-${VERSION}-64bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
-    InstallDir          $PROGRAMFILES64\CodeBlocks
+    OutFile             CodeBlocks-${VERSION}-64bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
 !endif
 
 Caption           "Code::Blocks ${VERSION} ${CURRENT_DATE_YEAR}.${CURRENT_DATE_MONTH}.${CURRENT_DATE_DAY}.0 Installation"
@@ -244,6 +232,18 @@ ShowUninstDetails show
 !define UMUI_TEXT_SETUPTYPE_STANDARD_TITLE "Standard: Core plugins, core tools, and core lexers"
 !define UMUI_TEXT_SETUPTYPE_COMPLETE_TITLE "Full: All plugins, all tools, just everything"
 
+# Multiuser mode defines
+!define MULTIUSER_INSTALLMODE_INSTDIR "$(^Name)"
+!define MULTIUSER_EXECUTIONLEVEL Highest
+!define MULTIUSER_INSTALLMODE_FUNCTION onMultiUserModeChanged
+#!define MULTIUSER_INSTALLMODE_UNFUNCTION  onMultiUserModeChanged
+!define MULTIUSER_MUI
+!define MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY ${REGKEY}
+!define MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME "MultiUserInstallMode"
+#!define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY ${REGKEY}
+#!define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_VALUENAME "MultiUserInstallMode"
+!include MultiUser.nsh
+
 # Reserved Files
 ReserveFile "${NSISDIR}\Plugins\x86-unicode\AdvSplash.dll"
 
@@ -251,7 +251,7 @@ ReserveFile "${NSISDIR}\Plugins\x86-unicode\AdvSplash.dll"
 Var STARTMENU_FOLDER_INSTALL
 Var STARTMENU_FOLDER_UNINSTALL
 
-
+!insertmacro MULTIUSER_PAGE_INSTALLMODE
 !insertmacro MUI_PAGE_WELCOME
     !define UMUI_UPDATEPAGE_REMOVE
     !define UMUI_UPDATEPAGE_CONTINUE_SETUP
@@ -307,11 +307,7 @@ Page Custom CompilerDownloadPage_Show CompilerDownloadPage_Leave
 # -> user  requests the a normal user's level with no administrative privileges
 # -> admin requests administrator level and will cause Windows to prompt the
 #    user to verify privilege escalation.
-!ifdef CB_ADMIN_INSTALLER
-    RequestExecutionLevel admin
-!else
-    RequestExecutionLevel user
-!endif
+RequestExecutionLevel user
 
 ####################################################
 # NSIS CUSTOM COMPILER DOWNLOAD PAGE CONFIGURATION #
@@ -506,22 +502,6 @@ SectionGroup "!Default install" SECGRP_DEFAULT
 
             WriteRegStr HKCU "${REGKEY}\Components" "Program Shortcut" 1
         SectionEnd
-
-!ifdef CB_ADMIN_INSTALLER
-        Section "Program Shortcut All Users" SEC_PROGRAMSHORTCUT_ALL
-            SectionIn 1 2 3 4
-            SetShellVarContext all
-            SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name).lnk" $INSTDIR\CodeBlocks.exe
-            # Verify if that succeeded. If not, issue an error message
-            IfErrors 0 +2
-                MessageBox MB_OK|MB_ICONEXCLAMATION \
-                    "Cannot create shortcut for all users.$\r$\n(Probably missing admin rights?)" \
-                    /SD IDOK
-            SetShellVarContext current
-            WriteRegStr HKCU "${REGKEY}\Components" "Program Shortcut All Users" 1
-        SectionEnd
-!endif
 
         Section "Desktop Shortcut" SEC_DESKTOPSHORTCUT
             SectionIn 1
@@ -1824,7 +1804,16 @@ Section -post SEC_MISC
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoModify 1
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
     
+    LogText "SEC_MISC"
+    LogText "MultiUser.InstallMode : $MultiUser.InstallMode"
+    LogText "SMPROGRAMS : $SMPROGRAMS"
+    LogText "STARTMENU_FOLDER_UNINSTALL : $STARTMENU_FOLDER_UNINSTALL"
 
+    ${If} $MultiUser.InstallMode == AllUsers
+        WriteRegStr HKLM "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY}" "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}" $MultiUser.InstallMode 
+    ${Else}
+        WriteRegStr HKCU "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY}" "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}" $MultiUser.InstallMode 
+    ${EndIf}
 SectionEnd
 
 # ========================================================================================================================
@@ -2706,18 +2695,10 @@ Section "-un.Program Shortcut" UNSEC_PROGRAMSHORTCUT
     Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Links\$(^Name) WiKi.lnk"
     Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Links\$(^Name) Tickets.lnk"
     Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Links\$(^Name) beginner instructions.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Links"
+    RMDir  /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Links"
+    RMDir  /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL"
     DeleteRegValue HKCU "${REGKEY}\Components" "Program Shortcut"
 SectionEnd
-
-!ifdef CB_ADMIN_INSTALLER
-Section "-un.Program Shortcut All Users" UNSEC_PROGRAMSHORTCUT_ALL
-    SetShellVarContext all
-    Delete "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name).lnk"
-    SetShellVarContext current
-    DeleteRegValue HKCU "${REGKEY}\Components" "Program Shortcut All Users"
-SectionEnd
-!endif
 
 Section "-un.Desktop Shortcut" UNSEC_DESKTOPSHORTCUT
     Delete /REBOOTOK "$DESKTOP\$(^Name).lnk"
@@ -2811,9 +2792,22 @@ Section -un.post UNSEC_MISC
     Delete "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Uninstall $(^Name).lnk"
     RMDir /REBOOTOK "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL"
 
+    ${If} $MultiUser.InstallMode == AllUsers
+        DeleteRegKey HKLM "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY}\{MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}"
+    ${Else}
+        DeleteRegKey HKCU "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY}\${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}"
+    ${EndIf}
+
     DeleteRegValue HKCU "${REGKEY}" Path
     DeleteRegKey HKCU "${REGKEY}\Components"
     DeleteRegKey HKCU "${REGKEY}"
+
+
+    LogText "un.onUninstSuccess"
+    LogText "MultiUser.InstallMode : $MultiUser.InstallMode"
+    LogText "SMPROGRAMS : $SMPROGRAMS"
+    LogText "STARTMENU_FOLDER_UNINSTALL : $STARTMENU_FOLDER_UNINSTALL"
+
 
     # ===================================================================================================
 
@@ -2821,7 +2815,7 @@ Section -un.post UNSEC_MISC
     # or check out the registry "Computer\HKEY_CURRENT_USER\SOFTWARE\Classes\CodeBlocks.*" entries.
     
     ${If} ${RunningX64}
-        ${LogText} "SetRegView 64"
+        ; ${LogText} "SetRegView 64"
         SetRegView 64
         StrCpy $0 0 ; Registry key index
         ; Length of "CodeBlocks" = 10
@@ -2831,18 +2825,18 @@ Section -un.post UNSEC_MISC
             IntOp $0 $0 + 1
             StrCmp $1 "" done64
             StrCpy $2 $1 10  0
-            ${LogText} "Read32 0 = $0 , 1 = $1 , 2 = $2"
+            ;${LogText} "Read32 0 = $0 , 1 = $1 , 2 = $2"
             StrCmp $2 "CodeBlocks" 0 enumunkey64
             StrLen $3 $1
             IntOp $3 $3 - 10    ; Includes .
             StrCpy $4 $1 $3 10  ; Includes .
             StrCmp $4 "" enumunkey64
             ReadRegStr $5 HKCU64 "SOFTWARE\Classes\$4" ""
-            ${LogText} "L2761 REG64 1 = $1 , 2 = $2 , 3 = $3 , 4 = $4 , 5 = $5"
+            ;${LogText} "L2761 REG64 1 = $1 , 2 = $2 , 3 = $3 , 4 = $4 , 5 = $5"
             StrCmp $5 $1 0 DelCodeBlocksEntry64   ; If file extension no for Codeblocsk then goto DelCodeBlocksEntry
-            ${LogText} "DeleteRegValue HKCU64 'SOFTWARE\Classes\$4' ''"
+            ;${LogText} "DeleteRegValue HKCU64 'SOFTWARE\Classes\$4' ''"
             DeleteRegValue HKCU64 "SOFTWARE\Classes\$4" ""    ; Delete default as it is codeblocks
-            ${LogText} "DeleteRegKey /IfEmpty HKCU64 'SOFTWARE\Classes\$4'"
+            ;${LogText} "DeleteRegKey /IfEmpty HKCU64 'SOFTWARE\Classes\$4'"
             DeleteRegKey /IfEmpty HKCU64 "SOFTWARE\Classes\$4"
         DelCodeBlocksEntry64:
             DeleteRegKey HKCU64 "SOFTWARE\Classes\$1"
@@ -2852,7 +2846,7 @@ Section -un.post UNSEC_MISC
         # Finish Unregister CodeBlocks associated files - see FileAssocation.cpp
     ${EndIf}
         
-    ${LogText} "SetRegView 32"
+    ;${LogText} "SetRegView 32"
     SetRegView 32
     StrCpy $0 0 ; Registry key index
     ; Length of "CodeBlocks" = 10
@@ -2862,18 +2856,18 @@ Section -un.post UNSEC_MISC
         IntOp $0 $0 + 1
         StrCmp $1 "" done
         StrCpy $2 $1 10  0
-        ${LogText} "Read32 0 = $0 , 1 = $1 , 2 = $2"
+        ;${LogText} "Read32 0 = $0 , 1 = $1 , 2 = $2"
         StrCmp $2 "CodeBlocks" 0 enumunkey
         StrLen $3 $1
         IntOp $3 $3 - 10    ; Includes .
         StrCpy $4 $1 $3 10  ; Includes .
         StrCmp $4 "" enumunkey
         ReadRegStr $5 HKCU32 "SOFTWARE\Classes\$4" ""
-        ${LogText} "L2792 REG32   1 = $1 , 2 = $2 , 3 = $3 , 4 = $4 , 5 = $5"
+        ;${LogText} "L2792 REG32   1 = $1 , 2 = $2 , 3 = $3 , 4 = $4 , 5 = $5"
         StrCmp $5 $1 0 DelCodeBlocksEntry   ; If file extension no for Codeblocsk then goto DelCodeBlocksEntry
-        ${LogText} "DeleteRegValue HKCU32 'SOFTWARE\Classes\$4' ''"
+        ;${LogText} "DeleteRegValue HKCU32 'SOFTWARE\Classes\$4' ''"
         DeleteRegValue HKCU32 "SOFTWARE\Classes\$4" ""    ; Delete default as it is codeblocks
-        ${LogText} "DeleteRegKey HKCU32 'SOFTWARE\Classes\$4'"
+        ;${LogText} "DeleteRegKey HKCU32 'SOFTWARE\Classes\$4'"
         DeleteRegKey HKCU32 "SOFTWARE\Classes\$4"
     DelCodeBlocksEntry:
         DeleteRegKey HKCU32 "SOFTWARE\Classes\$1"
@@ -2932,36 +2926,45 @@ SectionEnd
 #######################
 
 Function .onInit
-    ${LogSet} on
+    LogSet on
+    LogText "HERE"
+    ;${LogSet} on
     InitPluginsDir
     Push $R1
     File /oname=$PLUGINSDIR\spltmp.bmp ${CB_SPLASH}
     advsplash::show 1000 600 400 -1 $PLUGINSDIR\spltmp
     Pop $R1
     Pop $R1
-    
+
+    !insertmacro MULTIUSER_INIT    
     !insertmacro MUI_INSTALLOPTIONS_EXTRACT "NSIS_CompilerDownload.ini"
+
 FunctionEnd
+
 
 #########################
 # Uninstaller functions #
 #########################
 
 Function un.onInit
-    ${LogSet} on
+    LogSet on
+    
+    ; Load multiuser data. NOTE:  keep the .onInstSuccess WriteRegStr...
+    !insertmacro MULTIUSER_UNINIT
+
     ; Delete start menu entries
     !insertmacro MUI_STARTMENU_GETFOLDER Application $STARTMENU_FOLDER_UNINSTALL
 
-    ${LogText} "SMPROGRAMS : $SMPROGRAMS"
-    ${LogText} "STARTMENU_FOLDER_UNINSTALL : $STARTMENU_FOLDER_UNINSTALL"
+    LogText "un.onInit after "
+    LogText "MultiUser.InstallMode : $MultiUser.InstallMode"
+    LogText "SMPROGRAMS : $SMPROGRAMS"
+    LogText "STARTMENU_FOLDER_UNINSTALL : $STARTMENU_FOLDER_UNINSTALL"
+    LogText "INSTDIR : $INSTDIR"
     
     ReadRegStr $INSTDIR HKCU "${REGKEY}" Path
     !insertmacro SELECT_UNSECTION "Core Files (required)"              ${UNSEC_CORE}
 
     !insertmacro SELECT_UNSECTION "Program Shortcut"                   ${UNSEC_PROGRAMSHORTCUT}
-!ifdef CB_ADMIN_INSTALLER
-    !insertmacro SELECT_UNSECTION "Program Shortcut All Users"         ${UNSEC_PROGRAMSHORTCUT_ALL}
-!endif
     !insertmacro SELECT_UNSECTION "Desktop Shortcut"                   ${UNSEC_DESKTOPSHORTCUT}
     !insertmacro SELECT_UNSECTION "Quick Launch Shortcut"              ${UNSEC_QUICKLAUNCHSHORTCUT}
 
@@ -3104,9 +3107,6 @@ FunctionEnd
 
 !insertmacro MUI_DESCRIPTION_TEXT ${SECGRP_SHORTCUTS}        "Shortcuts to be created."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_PROGRAMSHORTCUT}     "Creates a shortcut to Code::Blocks in the startmenu."
-!ifdef CB_ADMIN_INSTALLER
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_PROGRAMSHORTCUT_ALL} "Creates a shortcut to Code::Blocks in the startmenu for all users (requires admins rights)."
-!endif
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DESKTOPSHORTCUT}     "Creates a shortcut to Code::Blocks on the desktop."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_QUICKLAUNCHSHORTCUT} "Creates a shortcut to Code::Blocks in the quick lauch bar."
 
@@ -3313,7 +3313,7 @@ Function CompilerDownloadPage_Show
 FunctionEnd
 
 Function CompilerDownloadPage_Leave
-    ${LogText} "Leaving compiler setup page"
+    ;${LogText} "Leaving compiler setup page"
 
     !insertmacro INSTALLOPTIONS_READ $R1 "NSIS_CompilerDownload.ini" "Field 1" "State"
     !insertmacro INSTALLOPTIONS_READ $R2 "NSIS_CompilerDownload.ini" "Field 2" "State"
@@ -3334,4 +3334,17 @@ Function CompilerDownloadPage_Leave
         Call CompilerInstallerDownloadRun_Cygwin
     ${EndIf}
 
+FunctionEnd
+
+
+Function onMultiUserModeChanged
+    ${If} $MultiUser.InstallMode == "CurrentUser"
+        StrCpy $InstDir "$LocalAppdata\Programs\${MULTIUSER_INSTALLMODE_INSTDIR}"
+    ${Else}
+        !if ${BUILD_TYPE} == 32
+            StrCpy $InstDir "$PROGRAMFILES\${MULTIUSER_INSTALLMODE_INSTDIR}"
+        !else
+            StrCpy $InstDir "$PROGRAMFILES64\${MULTIUSER_INSTALLMODE_INSTDIR}"
+        !endif
+    ${EndIf}
 FunctionEnd

@@ -5,7 +5,7 @@
 #define BUILD_TYPE = 64
 
 ; The following line defined if the build is a nightly build and it's the SVN number
-#define CB_VERSION        ='SVN-12487'
+#define CB_VERSION        ='SVN-12492'
 
 #define CB_SrcDir         =SourcePath+'\..'
 #if BUILD_TYPE == 32

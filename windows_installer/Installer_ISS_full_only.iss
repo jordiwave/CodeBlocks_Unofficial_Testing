@@ -1,6 +1,6 @@
+; Debugging:
 ;#define BUILD_TYPE = "64"
-;#define NIGHTLY_BUILD_SVN = "12487_PLUS"
-;#define CB_ADMIN_INSTALLER
+;#define NIGHTLY_BUILD_SVN = "12492_PLUS"
 
 ;#########################################################
 ;# Room for adjustments of most important settings BEGIN #
@@ -22,22 +22,11 @@
 ; The following line defined if the build is a nightly build and it"s the SVN number
 ; if not defined the version will default to YY.MM (year:month)
 #ifndef NIGHTLY_BUILD_SVN
-  #define NIGHTLY_BUILD_SVN ="12487"
+  #define NIGHTLY_BUILD_SVN ="12492"
 #else
   #if NIGHTLY_BUILD_SVN == "False"
     #undef NIGHTLY_BUILD_SVN
   #endif
-#endif
-
-; The following line toggles the admin or user istallation package.
-; Preferred should be the admin installation package, however, for
-; non-admins the user installation packge is the only one working.
-#ifdef CB_ADMIN_INSTALLER
-  #if CB_ADMIN_INSTALLER == "False"
-    #undef CB_ADMIN_INSTALLER
-  #endif
-#else
-  #define CB_ADMIN_INSTALLER
 #endif
 
 ; Possibly required to adjust manually:
@@ -85,59 +74,57 @@ AppId={{53BB99B2-5263-43B9-A46A-C92E63AAA96F}
 AppName=Code::Blocks
 AppVerName=Code::Blocks {#CB_VERSION}
 AppPublisher=Code::Blocks
-DefaultDirName={commonpf}\{#CB_PROGRAMDIRNAME}
-DefaultGroupName={#CB_PROGRAMDIRNAME}
-LicenseFile={#LICENSES_DIR}\gpl-3.0.txt
-#if BUILD_TYPE == 32
-OutputBaseFilename=CodeBlocks-{#CB_VERSION}-32bit-setup-{#CURRENT_DATE}-ISS-FULLONLY
-#else
-OutputBaseFilename=CodeBlocks-{#CB_VERSION}-64bit-setup-{#CURRENT_DATE}-ISS-FULLONLY
-#endif
 AppPublisherURL=www.codeblocks.org
 AppVersion={#CB_VERSION}-{#CURRENT_DATE_YEAR}.{#CURRENT_DATE_MONTH}.{#CURRENT_DATE_DAY}.0
-UninstallDisplayIcon={app}\codeblocks.exe
-UninstallDisplayName=Code::Blocks
-ShowLanguageDialog=no
 AppSupportURL=www.codeblocks.org
 AppUpdatesURL=www.codeblocks.org
-InternalCompressLevel=ultra
-SolidCompression=true
-Compression=lzma/ultra
-InfoBeforeFile=
-;VersionInfoVersion={#CB_VERSION}
-VersionInfoCompany=Code::Blocks
-VersionInfoCopyright=(C) Code::Blocks
-VersionInfoDescription=Code::Blocks IDE
-VersionInfoProductName=Code::Blocks IDE
-VersionInfoProductVersion={#CURRENT_DATE_YEAR}.{#CURRENT_DATE_MONTH}.{#CURRENT_DATE_DAY}.0
-VersionInfoProductTextVersion={#CB_VERSION}-{#CURRENT_DATE_YEAR}.{#CURRENT_DATE_MONTH}.{#CURRENT_DATE_DAY}.0
-SourceDir={#CB_BuildOutputDir}
-OutputDir={#SourcePath}
-DisableWelcomePage=False
-#ifdef CB_ADMIN_INSTALLER
-  ;PrivilegesRequired=lowest
-  PrivilegesRequired=admin
-#else
-  PrivilegesRequired=lowest
-#endif
-PrivilegesRequiredOverridesAllowed=dialog
-WizardImageFile={#GRAPHICS_DIR}\setup_1.bmp
-WizardSmallImageFile={#GRAPHICS_DIR}\{#CB_LOGO_FILENAME}
-WizardImageStretch=yes
-SetupIconFile={#GRAPHICS_DIR}\setup_icon.ico
 #if BUILD_TYPE == 64
   ; "ArchitecturesAllowed=x64" specifies that Setup cannot run on anything but x64.
   ArchitecturesAllowed=x64
   ; "ArchitecturesInstallIn64BitMode=x64" requests that the install be done in "64-bit mode" on x64, meaning it should use the native 64-bit Program Files directory and the 64-bit view of the registry.
   ArchitecturesInstallIn64BitMode=x64
 #endif
+Compression=lzma/ultra
+DefaultDirName={autopf}\{#CB_PROGRAMDIRNAME}
+DefaultGroupName={#CB_PROGRAMDIRNAME}
+DisableWelcomePage=False
+InternalCompressLevel=ultra
+InfoBeforeFile=
+LicenseFile={#LICENSES_DIR}\gpl-3.0.txt
+#if BUILD_TYPE == 32
+OutputBaseFilename=CodeBlocks-{#CB_VERSION}-32bit-setup-{#CURRENT_DATE}-ISS-FULLONLY
+#else
+OutputBaseFilename=CodeBlocks-{#CB_VERSION}-64bit-setup-{#CURRENT_DATE}-ISS-FULLONLY
+#endif
+OutputDir={#SourcePath}
+PrivilegesRequired=lowest
+PrivilegesRequiredOverridesAllowed=dialog
+SetupIconFile={#GRAPHICS_DIR}\setup_icon.ico
+ShowLanguageDialog=no
+SolidCompression=true
+;VersionInfoVersion={#CB_VERSION}
+SourceDir={#CB_BuildOutputDir}
+UninstallDisplayIcon={app}\codeblocks.exe
+UninstallDisplayName=Code::Blocks
+VersionInfoCompany=Code::Blocks
+VersionInfoCopyright=(C) Code::Blocks
+VersionInfoDescription=Code::Blocks IDE
+VersionInfoProductName=Code::Blocks IDE
+VersionInfoProductVersion={#CURRENT_DATE_YEAR}.{#CURRENT_DATE_MONTH}.{#CURRENT_DATE_DAY}.0
+VersionInfoProductTextVersion={#CB_VERSION}-{#CURRENT_DATE_YEAR}.{#CURRENT_DATE_MONTH}.{#CURRENT_DATE_DAY}.0
+WizardImageFile={#GRAPHICS_DIR}\setup_1.bmp
+WizardImageStretch=yes
+WizardSmallImageFile={#GRAPHICS_DIR}\{#CB_LOGO_FILENAME}
+WizardStyle=modern
 
 [Tasks]
 Name: startmenu;          Description: "Create a &startmenu entry";   GroupDescription: "Additional icons:";
-Name: desktopicon;        Description: "Create a &desktop icon";      GroupDescription: "Additional icons:"; Flags: checkablealone;
-Name: desktopicon\common; Description: "For all users";               GroupDescription: "Additional icons:"; 
-Name: desktopicon\user;   Description: "For the current user only";   GroupDescription: "Additional icons:"; Flags: unchecked ;
-Name: quicklaunchicon;    Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:";
+Name: desktopicon;        Description: "Create a &desktop icon";      GroupDescription: "Additional icons:";
+Name: desktopicon\common; Description: "For all users";               GroupDescription: "Additional icons:"; Check: IsAdminInstallMode
+Name: desktopicon\user;   Description: "For the current user only";   GroupDescription: "Additional icons:";
+Name: quicklaunchicon;          Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:";
+Name: quicklaunchicon\common;   Description: "For all users";               GroupDescription: "Additional icons:"; Check: IsAdminInstallMode
+Name: quicklaunchicon\user;     Description: "For the current user only";   GroupDescription: "Additional icons:";
 
 [Files]
 Source: "*"; Excludes: "*.a,cctest.exe,wxmsw315ud*gcc_cb.dll";  DestDir: "{app}";                       Flags: ignoreversion createallsubdirs recursesubdirs;
@@ -151,29 +138,31 @@ Source: "{#LICENSES_DIR}\gpl-3.0.txt";                          DestDir: "{app}"
 Source: "{#LICENSES_DIR}\lgpl-3.0.txt";                         DestDir: "{app}";                       Flags: ignoreversion;
 
 [Icons]
-Name: "{group}\{#CB_PROGRAMDIRNAME}";               Filename: "{app}\codeblocks.exe";       IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE;
-Name: "{group}\{cm:UninstallProgram, CodeBlocks}";  Filename: "{uninstallexe}";
-Name: "{userdesktop}\{#CB_PROGRAMDIRNAME}";         Filename: "{app}\codeblocks.exe";       IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE;
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}"; Filename: "{app}\codeblocks.exe"; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: quicklaunchicon;
+Name: "{group}\{#CB_PROGRAMDIRNAME}";               Filename: "{app}\codeblocks.exe"; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE;  Tasks: startmenu;
+Name: "{group}\{cm:UninstallProgram, CodeBlocks}";  Filename: "{uninstallexe}"; Tasks: startmenu;
+Name: "{commondesktop}\{#CB_PROGRAMDIRNAME}"; Filename: "{app}\codeblocks.exe";   IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: desktopicon\common;
+Name: "{userdesktop}\{#CB_PROGRAMDIRNAME}";   Filename: "{app}\codeblocks.exe";   IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: desktopicon\user
+Name: "{commonappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}";  Filename: "{app}\codeblocks.exe"; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: quicklaunchicon\common;
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}";    Filename: "{app}\codeblocks.exe"; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: quicklaunchicon\user
 
-Name: "{group}\CodeBlocks Share Config.lnk";         Filename: "{app}\cb_share_config.exe"; IconIndex: 0; WorkingDir: {app};
-Name: "{group}\CodeBlocks Address to Line GUI.lnk";  Filename: "{app}\Addr2LineUI.exe";     IconIndex: 0; WorkingDir: {app};
-Name: "{group}\CodeBlocks CBP2Make.lnk";             Filename: "{app}\cbp2make.exe";        IconIndex: 0; WorkingDir: {app};
-Name: "{group}\CodeBlocks Share Config.lnk";         Filename: "{app}\cb_share_config.exe"; IconIndex: 0; WorkingDir: {app};
-Name: "{group}\CodeBlocks Launcher.lnk";             Filename: "{app}\CbLauncher.exe";      IconIndex: 0; WorkingDir: {app};
+Name: "{group}\CodeBlocks Share Config.lnk";         Filename: "{app}\cb_share_config.exe"; IconIndex: 0; WorkingDir: {app}; Tasks: startmenu;
+Name: "{group}\CodeBlocks Address to Line GUI.lnk";  Filename: "{app}\Addr2LineUI.exe";     IconIndex: 0; WorkingDir: {app}; Tasks: startmenu;
+Name: "{group}\CodeBlocks CBP2Make.lnk";             Filename: "{app}\cbp2make.exe";        IconIndex: 0; WorkingDir: {app}; Tasks: startmenu;
+Name: "{group}\CodeBlocks Share Config.lnk";         Filename: "{app}\cb_share_config.exe"; IconIndex: 0; WorkingDir: {app}; Tasks: startmenu;
+Name: "{group}\CodeBlocks Launcher.lnk";             Filename: "{app}\CbLauncher.exe";      IconIndex: 0; WorkingDir: {app}; Tasks: startmenu;
 
-Name: "{group}\Documentation\CodeBlocks License";               Filename: "{app}\gpl-3.0.txt";                                   Comment: "Code::Blocks license";
-Name: "{group}\Documentation\CodeBlocks SDK License";           Filename: "{app}\lgpl-3.0.txt";                                  Comment: "Code::Blocks SDK license";
-Name: "{group}\Documentation\CodeBlocks PDF Manual English";    Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.pdf";Comment: "The Code::Blocks PDF User Manual in English";
-Name: "{group}\Documentation\CodeBlocks CHM Manual English";    Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.chm";Comment: "The Code::Blocks CHM User Manual in English";
-Name: "{group}\Documentation\CodeBlocks PDF Manual French";     Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.pdf";Comment: "The Code::Blocks PDF User Manual in French";
-Name: "{group}\Documentation\CodeBlocks CHM Manual French";     Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.chm";Comment: "The Code::Blocks CHM User Manual in French";
-Name: "{group}\Documentation\PBs wxWidgets Guide";              Filename: "{app}\share\CodeBlocks\docs\Manual_wxPBGuide.pdf";    Comment: "PBs GuiDe to Starting with wxWidgets with MinGW and Code::Blocks";
-Name: "{group}\Documentation\Codeblocks beginner instructions"; Filename: "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf";  Comment: "Code::Blocks beginner install and user guide";
+Name: "{group}\Documentation\CodeBlocks License";               Filename: "{app}\gpl-3.0.txt";                                   Comment: "Code::Blocks license"; Tasks: startmenu;
+Name: "{group}\Documentation\CodeBlocks SDK License";           Filename: "{app}\lgpl-3.0.txt";                                  Comment: "Code::Blocks SDK license"; Tasks: startmenu;
+Name: "{group}\Documentation\CodeBlocks PDF Manual English";    Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.pdf";Comment: "The Code::Blocks PDF User Manual in English"; Tasks: startmenu;
+Name: "{group}\Documentation\CodeBlocks CHM Manual English";    Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_en.chm";Comment: "The Code::Blocks CHM User Manual in English"; Tasks: startmenu;
+Name: "{group}\Documentation\CodeBlocks PDF Manual French";     Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.pdf";Comment: "The Code::Blocks PDF User Manual in French"; Tasks: startmenu;
+Name: "{group}\Documentation\CodeBlocks CHM Manual French";     Filename: "{app}\share\CodeBlocks\docs\manual_codeblocks_fr.chm";Comment: "The Code::Blocks CHM User Manual in French"; Tasks: startmenu;
+Name: "{group}\Documentation\PBs wxWidgets Guide";              Filename: "{app}\share\CodeBlocks\docs\Manual_wxPBGuide.pdf";    Comment: "PBs GuiDe to Starting with wxWidgets with MinGW and Code::Blocks"; Tasks: startmenu;
+Name: "{group}\Documentation\Codeblocks beginner instructions"; Filename: "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf";  Comment: "Code::Blocks beginner install and user guide"; Tasks: startmenu;
 
-Name: "{group}\CodeBlocks Web Site";                      Filename: "http://www.codeblocks.org";                      Comment: "Open Code::Blocks IDE website";
-Name: "{group}\WebSite\CodeBlocks Forums";                Filename: "http://forums.codeblocks.org";                   Comment: "Open Code::Blocks IDE discussion forums";
-Name: "{group}\WebSite\CodeBlocks WiKi";                  Filename: "http://wiki.codeblocks.org";                     Comment: "Open Code::Blocks IDE WiKi site";
+Name: "{group}\CodeBlocks Web Site";                      Filename: "http://www.codeblocks.org";                      Comment: "Open Code::Blocks IDE website"; Tasks: startmenu;
+Name: "{group}\WebSite\CodeBlocks Forums";                Filename: "http://forums.codeblocks.org";                   Comment: "Open Code::Blocks IDE discussion forums"; Tasks: startmenu;
+Name: "{group}\WebSite\CodeBlocks WiKi";                  Filename: "http://wiki.codeblocks.org";                     Comment: "Open Code::Blocks IDE WiKi site"; Tasks: startmenu;
 Name: "{group}\WebSite\CodeBlocks Tickets";               Filename: "https://sourceforge.net/p/codeblocks/tickets/";  Comment: "Report bugs/enhancements for Code::Blocks"; Tasks: startmenu;
 
 [Run]
@@ -186,12 +175,41 @@ Filename: "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instruc
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}";
-Type: files;          Name: "{userdesktop}\{#CB_PROGRAMDIRNAME}";
-Type: files;          Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}";
+Type: files;          Name: "{autodesktop}\{#CB_PROGRAMDIRNAME}";
+Type: files;          Name: "{autoappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}";
 
 
 [Code]
 // ================================================================================================================================================================
+
+{ ///////////////////////////////////////////////////////////////////// }
+// Uninstall
+procedure CurPageChanged(CurPageID: Integer);
+begin
+  if CurPageID = wpSelectTasks then
+  begin
+    if IsAdminInstallMode then
+      begin
+        WizardForm.TasksList.Checked[2] := False;   // desktopicon
+        WizardForm.TasksList.Checked[3] := True;    // desktopicon\common
+        WizardForm.TasksList.Checked[4] := False;   // desktopicon\user
+
+        WizardForm.TasksList.Checked[5] := False;   // quicklaunchicon
+        WizardForm.TasksList.Checked[6] := True;    // quicklaunchicon\common
+        WizardForm.TasksList.Checked[7] := False;   // quicklaunchicon\user
+      end
+    else
+      begin
+        WizardForm.TasksList.Checked[2] := True;    // desktopicon
+        // NOT SHOWN WizardForm.TasksList.Checked[3] := False;   // desktopicon\common
+        WizardForm.TasksList.Checked[3] := True;    // desktopicon\user
+
+        WizardForm.TasksList.Checked[4] := True;    // quicklaunchicon
+        // NOT SHOWN WizardForm.TasksList.Checked[6] := False;   // quicklaunchicon\common
+        WizardForm.TasksList.Checked[5] := True;    // quicklaunchicon\user
+      end
+  end;
+end;
 { ///////////////////////////////////////////////////////////////////// }
 // Uninstall
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
