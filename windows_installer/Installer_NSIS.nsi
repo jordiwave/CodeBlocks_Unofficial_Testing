@@ -1,6 +1,6 @@
 # Debugging:
-#!define BUILD_TYPE 64
-#!define NIGHTLY_BUILD_SVN 12492_PLUS
+;!define BUILD_TYPE 64
+;!define NIGHTLY_BUILD_SVN 12492_PLUS
 
 #####################################################################
 # The installer is divided into 5 main sections (section groups):   #
@@ -3319,18 +3319,24 @@ Function CompilerDownloadPage_Leave
     !insertmacro INSTALLOPTIONS_READ $R2 "NSIS_CompilerDownload.ini" "Field 2" "State"
     !insertmacro INSTALLOPTIONS_READ $R3 "NSIS_CompilerDownload.ini" "Field 3" "State"
     !insertmacro INSTALLOPTIONS_READ $R4 "NSIS_CompilerDownload.ini" "Field 4" "State"
-    ; MessageBox MB_OK|MB_ICONINFORMATION  "Field 1: $R1 , 2: $R2 , 3: $R3 , 4: $R4"  /SD IDOK
+    !insertmacro INSTALLOPTIONS_READ $R5 "NSIS_CompilerDownload.ini" "Field 5" "State"
+    ; "Field 5IS A 
+    ; MessageBox MB_OK|MB_ICONINFORMATION  "Field 1: $R1 , 2: $R2 , 3: $R3 , 4: $R4" , 5: $R5  /SD IDOK
 
     ${If} $R1 == "1"
         Call CompilerInstallerDownloadRun_MinGW
     ${EndIf}
-    ${If} $R2 == "1"
+        ${If} $R2 == "1"
+            ExecShell "open" "https://github.com/ssbssa/gdb/releases" SW_SHOWNORMAL
+        ${EndIf}
+
+    ${If} $R3 == "1"
         Call CompilerInstallerDownloadRun_TDM
     ${EndIf}
-    ${If} $R3 == "1"
+    ${If} $R4 == "1"
         Call CompilerInstallerDownloadRun_MSYS2
     ${EndIf}
-    ${If} $R4 == "1"
+    ${If} $R5 == "1"
         Call CompilerInstallerDownloadRun_Cygwin
     ${EndIf}
 

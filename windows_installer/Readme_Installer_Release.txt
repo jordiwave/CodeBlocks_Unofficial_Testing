@@ -1,4 +1,4 @@
-Updated for the release on 08-Aug-2021.
+Updated for the release on 09-Aug-2021.
 
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
 The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official installer.
@@ -32,6 +32,9 @@ The release includes code to hopefully resolve or implement the following CB sou
     9. 07-AUG-21 Ticket 654 - Copy Debug Watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree.
     10. 08-Aug-21 Ticket 1122 - pull upstream changes.  Fix compilation with wx-master
     11. 08-Aug-21 Ticket 1113 - pull upstream changes.  Linux: xfce4 and gnome terminal can not be terminated 
+    12. 09-Aug-21 Ticket 1125 - Only show valid compilers in the Compiler Selection dialog (if you load a project with invalid compiler and go to the build options). The function is CompilerFactory::SelectCompilerUI(msg).
+    13. 09-Aug-21 Ticket 1126 - Add compiler validation checking when loading a project.
+    14. 09-Aug-21 Potentially Ticket 1020 - Both Installer can optionally open the https://github.com/ssbssa/gdb/releases web page as a sub check box in the compiler install page under the MINGW check box. This allows the user to manually install a later GDB for MINGW that works.
 
 Installer changed highlights:
 =============================
@@ -58,7 +61,8 @@ Installer changed highlights:
     17. Inno installer script file is "Installer_ISS_full_only.iss"
     18. NSIS installer script file is "Installer_NSIS.nsi"
     19. 06-AUG-21 NSIS only - Added XP SP 3 x86 and x64 support - different set of files from https://sourceforge.net/p/codeblocks/code/11196/tree/trunk/src/exchndl /win32/bin and /win64/bin.. NOTE: Inno setup 6 does not support XP anymore. x66 works, but x64 has issue with mscrt.dll function missing.
-    20. 08-Aug-21 Inno ans NSIS Installer can install using non admin (user) account. Admin is needed to install in the C:\Program file.... directory. If you run normally you install as a user, but if you run as admin you are asked which type of intallation you want.
+    20. 08-Aug-21 Both Installer can install using non admin (user) account. Admin is needed to install in the C:\Program file.... directory. If you run normally you install as a user, but if you run as admin you are asked which type of installation  you want.
+    21. 09-Aug-21 Potentially ticket 1020 Both Installer can optionally open the https://github.com/ssbssa/gdb/releases web page as a sub checkbox in the compiler install page under the MINGW checkbox. This qallows the user to manually install a later GDB for MINGW that works.
 
 C::B exe/dll changed/update highlights:
 =======================================
@@ -92,6 +96,8 @@ C::B exe/dll changed/update highlights:
     21. 08-Aug-21 Ticket 1113 - pull upstream changes, so incorporated this change to fix Linux: xfce4 and gnome terminal can not be terminated 
     22. 08-Aug-21 no ticket ref# - pull upstream changes, so incorporated this change for scripting change to Print more information when someone calls a native function from squirrel incorrectly.
     23. 08-Aug-21 Updated the Installer_Pages.odt for installer user install changes.
+    24. 09-Aug-21 Ticket 1125 - Only show valid compilers in the Compiler Selection dialog (if you load a project with invalid compiler and go to the build options). The function is CompilerFactory::SelectCompilerUI(msg).
+    25. 09-Aug-21 Ticket 1126 - Add compiler validation checking when loading a project.
 
 SOURCE:
 =======
@@ -112,13 +118,8 @@ This installer contains binaries that include code changes that are *NOT* includ
 
 Outstanding Issues to be investigated:
 ======================================
-1. 06-AUG-21 Ticket 1020 - GDB issue - later MINGW32 release - investigate replacement GDB.exe or modify installer to show  extra details to the end user.
-    FAILS due to MSYS2 dependencies: https://packages.msys2.org/package/mingw-w64-i686-gdb => https://mirror.msys2.org/mingw/mingw32/mingw-w64-i686-gdb-10.2-2-any.pkg.tar.zst
-    RUNS: https://github.com/ssbssa/gdb/releases  ==> https://github.com/ssbssa/gdb/releases/download/gdb-10.2.90.20210425/gdb-10.2.90.20210425-i686.7z the python version has issues with the default mingw32 install
-    NOTE: 
-2. 08-Aug-2021 Investigate issue where C::B project compiler is not available, but no messages pop up or are displayed to indicate an issue.
-3. 08-AUG-21 Topic: [Proposal] Move the custom variables WX_SUFFIX... to global variables. https://forums.codeblocks.org/index.php/topic,21696.msg147584.html#msg147584  / https://github.com/bluehazzard/codeblocks_sf/tree/rework/move_global_var_diag_to_src/1
-4. Other installer issues....  Please post ticket reference on the https://forums.codeblocks.org/index.php/topic,24592.0.html thread.
-5. Other Windows CB installation or configuration issues with the initial installation... Please post ticket reference on the https://forums.codeblocks.org/index.php/topic,24592.0.html thread.
+1. 08-AUG-21 Topic: [Proposal] Move the custom variables WX_SUFFIX... to global variables. https://forums.codeblocks.org/index.php/topic,21696.msg147584.html#msg147584  / https://github.com/bluehazzard/codeblocks_sf/tree/rework/move_global_var_diag_to_src/1
+2. Other installer issues....  Please post ticket reference on the https://forums.codeblocks.org/index.php/topic,24592.0.html thread.
+3. Other Windows CB installation or configuration issues with the initial installation... Please post ticket reference on the https://forums.codeblocks.org/index.php/topic,24592.0.html thread.
 
 

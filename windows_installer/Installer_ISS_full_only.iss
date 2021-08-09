@@ -1,6 +1,6 @@
 ; Debugging:
-; #define BUILD_TYPE = "64"
-; #define NIGHTLY_BUILD_SVN = "12492_PLUS"
+;#define BUILD_TYPE = "64"
+;#define NIGHTLY_BUILD_SVN = "12492_PLUS"
 
 ;#########################################################
 ;# Room for adjustments of most important settings BEGIN #
@@ -120,6 +120,9 @@ ShowTasksTreeLines=True
 AlwaysShowGroupOnReadyPage=True
 AlwaysShowDirOnReadyPage=True
 UsePreviousPrivileges=False
+UsePreviousSetupType=False
+UsePreviousTasks=False
+UsePreviousLanguage=False
 
 [Tasks]
 Name: startmenu;          Description: "Create a &startmenu entry";   GroupDescription: "Additional icons:";
@@ -144,9 +147,9 @@ Source: "{#LICENSES_DIR}\lgpl-3.0.txt";                         DestDir: "{app}"
 [Icons]
 Name: "{group}\{#CB_PROGRAMDIRNAME}";               Filename: "{app}\codeblocks.exe"; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE;  Tasks: startmenu;
 Name: "{group}\{cm:UninstallProgram, CodeBlocks}";  Filename: "{uninstallexe}"; Tasks: startmenu;
-;Name: "{commondesktop}\{#CB_PROGRAMDIRNAME}"; Filename: "{app}\codeblocks.exe";   IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: desktopicon\common;  Check: IsAdminInstallMode
+Name: "{commondesktop}\{#CB_PROGRAMDIRNAME}"; Filename: "{app}\codeblocks.exe";   IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: desktopicon\common;  Check: IsAdminInstallMode
 Name: "{userdesktop}\{#CB_PROGRAMDIRNAME}";   Filename: "{app}\codeblocks.exe";   IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: desktopicon\user
-;Name: "{autoappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}";   Filename: "{app}\codeblocks.exe"; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: quicklaunchicon\common or quicklaunchicon\user;  Check: IsAdminInstallMode
+Name: "{autoappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}";   Filename: "{app}\codeblocks.exe"; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: quicklaunchicon\common or quicklaunchicon\user;  Check: IsAdminInstallMode
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}";   Filename: "{app}\codeblocks.exe"; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: quicklaunchicon\user
 
 Name: "{group}\CodeBlocks Share Config.lnk";         Filename: "{app}\cb_share_config.exe"; IconIndex: 0; WorkingDir: {app}; Tasks: startmenu;
