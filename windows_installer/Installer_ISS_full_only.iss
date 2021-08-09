@@ -1,6 +1,6 @@
 ; Debugging:
-;#define BUILD_TYPE = "64"
-;#define NIGHTLY_BUILD_SVN = "12492_PLUS"
+; #define BUILD_TYPE = "64"
+; #define NIGHTLY_BUILD_SVN = "12492_PLUS"
 
 ;#########################################################
 ;# Room for adjustments of most important settings BEGIN #
@@ -116,6 +116,10 @@ WizardImageFile={#GRAPHICS_DIR}\setup_1.bmp
 WizardImageStretch=yes
 WizardSmallImageFile={#GRAPHICS_DIR}\{#CB_LOGO_FILENAME}
 WizardStyle=modern
+ShowTasksTreeLines=True
+AlwaysShowGroupOnReadyPage=True
+AlwaysShowDirOnReadyPage=True
+UsePreviousPrivileges=False
 
 [Tasks]
 Name: startmenu;          Description: "Create a &startmenu entry";   GroupDescription: "Additional icons:";
@@ -140,10 +144,10 @@ Source: "{#LICENSES_DIR}\lgpl-3.0.txt";                         DestDir: "{app}"
 [Icons]
 Name: "{group}\{#CB_PROGRAMDIRNAME}";               Filename: "{app}\codeblocks.exe"; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE;  Tasks: startmenu;
 Name: "{group}\{cm:UninstallProgram, CodeBlocks}";  Filename: "{uninstallexe}"; Tasks: startmenu;
-Name: "{commondesktop}\{#CB_PROGRAMDIRNAME}"; Filename: "{app}\codeblocks.exe";   IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: desktopicon\common;
+;Name: "{commondesktop}\{#CB_PROGRAMDIRNAME}"; Filename: "{app}\codeblocks.exe";   IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: desktopicon\common;  Check: IsAdminInstallMode
 Name: "{userdesktop}\{#CB_PROGRAMDIRNAME}";   Filename: "{app}\codeblocks.exe";   IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: desktopicon\user
-Name: "{commonappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}";  Filename: "{app}\codeblocks.exe"; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: quicklaunchicon\common;
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}";    Filename: "{app}\codeblocks.exe"; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: quicklaunchicon\user
+;Name: "{autoappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}";   Filename: "{app}\codeblocks.exe"; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: quicklaunchicon\common or quicklaunchicon\user;  Check: IsAdminInstallMode
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}";   Filename: "{app}\codeblocks.exe"; IconIndex: 0; WorkingDir: {app}; Comment: Code::Blocks IDE; Tasks: quicklaunchicon\user
 
 Name: "{group}\CodeBlocks Share Config.lnk";         Filename: "{app}\cb_share_config.exe"; IconIndex: 0; WorkingDir: {app}; Tasks: startmenu;
 Name: "{group}\CodeBlocks Address to Line GUI.lnk";  Filename: "{app}\Addr2LineUI.exe";     IconIndex: 0; WorkingDir: {app}; Tasks: startmenu;
@@ -175,8 +179,10 @@ Filename: "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instruc
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}";
-Type: files;          Name: "{autodesktop}\{#CB_PROGRAMDIRNAME}";
-Type: files;          Name: "{autoappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}";
+Type: files;          Name: "{commondesktop}\{#CB_PROGRAMDIRNAME}"; Check: IsAdminInstallMode
+Type: files;          Name: "{userdesktop}\{#CB_PROGRAMDIRNAME}";
+Type: files;          Name: "{autoappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}"; Check: IsAdminInstallMode
+Type: files;          Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#CB_PROGRAMDIRNAME}";
 
 
 [Code]
@@ -328,7 +334,7 @@ begin
     try
       try
         DownloadPage.Download; // This downloads the files to {tmp}
-        TmpFileName := Format('%s\%s', [ExpandConstant('{tmp}'),FileName]);
+        TmpFileName := Format('%s\%s', [ExpandConstant('{tmp}'), FileName]);
         Result := Exec(TmpFileName, '', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
         if not Result 
           then begin
@@ -377,6 +383,7 @@ end;
 function NextButtonClick(CurPageID: Integer): Boolean;
 var
   ResultTmp : Boolean;
+  ErrorCode: Integer;
 begin
   Result := True
   ResultTmp := True
@@ -389,16 +396,19 @@ begin
       Result := False;
 
     if CompilerSelectionPage.Values[1] = True then
+      ShellExecAsOriginalUser('', 'https://github.com/ssbssa/gdb/releases', '', '', SW_SHOW, ewNoWait, ErrorCode);
+
+    if CompilerSelectionPage.Values[2] = True then
       ResultTmp  := CompilerInstallerDownloadRun_TDM();
     if ResultTmp = False then
       Result := False;
 
-    if CompilerSelectionPage.Values[2] = True then
+    if CompilerSelectionPage.Values[3] = True then
       ResultTmp  := CompilerInstallerDownloadRun_MSYS2();
     if ResultTmp = False then
       Result := False;
 
-    if CompilerSelectionPage.Values[3] = True then
+    if CompilerSelectionPage.Values[4] = True then
       ResultTmp  := CompilerInstallerDownloadRun_Cygwin();
     if ResultTmp = False then
       Result := False;
@@ -413,15 +423,16 @@ procedure InitializeWizard();
 begin
     DownloadPage := CreateDownloadPage(SetupMessage(msgWizardPreparing), SetupMessage(msgPreparingDesc), @OnDownloadProgress);
 
-    CompilerSelectionPage := CreateInputOptionPage(wpInstalling,                // AfterID
+    CompilerSelectionPage := CreateInputOptionPage(wpInstalling ,                // AfterID use wpWelcome when testing.
                                 'Compiler Installer Download and Run',          // ACaption
-                                '',       // ADescription
+                                '',                                             // ADescription
                                 'Please select compiler(s) installer to download and run. Once completed click Next.',  // ASubCaption
                                 False,                                          // Exclusive
                                 False);                                         // ListBox
     CompilerSelectionPage.Add('MinGW-W64 - supports 32 or 64 bit');
+    CompilerSelectionPage.AddEx('Open GDB web download page so you can upgrade GDB to resolve MinGW GDB issues.',1, False);
     CompilerSelectionPage.Add('TDM GCC - supports 32 or 32 & 64 bit');
-    CompilerSelectionPage.Add('MSYS2 - 64 bit');
+    CompilerSelectionPage.Add('MSYS2 - supports 32 and 64 bit');
     CompilerSelectionPage.Add('Cygwin - 64 bit only');
     
     // Set initial values (optional)
@@ -429,6 +440,7 @@ begin
     CompilerSelectionPage.Values[1] := False;
     CompilerSelectionPage.Values[2] := False;
     CompilerSelectionPage.Values[3] := False;
+    CompilerSelectionPage.Values[4] := False;
 
 end;
 
