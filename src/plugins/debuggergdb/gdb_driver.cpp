@@ -1024,9 +1024,7 @@ void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak_in, wxString line)
             {
                 m_Cursor.file = reBreak_in.GetMatch(line, 1) + reBreak_in.GetMatch(line, 2);
                 if (m_CygwinPresent)
-                {
                     cbGetWindowsPathFromCygwinPath(m_Cursor.file);
-                }
             }
             else
             {

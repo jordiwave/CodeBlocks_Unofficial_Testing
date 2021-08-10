@@ -22,14 +22,16 @@
     #include <map>
 #endif
 #if defined(__WXMSW__)
+    // Included here for WIN32 build
     #include <wx/msw/registry.h>    // for Registry detection of Cygwin
 #endif // defined(__WXMSW__)
 
 #include "cygwin.h"
 
 // Keep a cache of all file paths converted from
-// Cygwin path into native path . Only applicable if under Windows and using Cygwin!
-static std::map<wxString, wxString> g_FileCache;
+// Cygwin path into native path. Only applicable if under Windows and using Cygwin!
+static std::map<wxString, wxString> g_WindowsFileCache;
+static std::map<wxString, wxString> g_CygwinFileCache;
 
 static bool g_CygwinPresent = false; // Assume not found until Cygwin has been found
 static wxString g_CygwinCompilerPathRoot; // Assume no directory until Cygwin has been found
@@ -61,26 +63,27 @@ bool cbIsDetectedCygwinCompiler(void)
         ActiveBuildTarget = pProject->GetBuildTarget(sActiveBuildTarget);
 
         wxString compilerID;
-        pMsg->DebugLog(wxString::Format(wxT("sActiveBuildTarget : %s"), sActiveBuildTarget));
+        pMsg->DebugLog(wxString::Format("sActiveBuildTarget : %s", sActiveBuildTarget));
         if (ActiveBuildTarget)
         {
-            pMsg->DebugLog(wxString::Format(wxT("ActiveBuildTarget->GetTitle() : %s"), ActiveBuildTarget->GetTitle()));
+            pMsg->DebugLog(wxString::Format("ActiveBuildTarget->GetTitle() : %s",
+                                            ActiveBuildTarget->GetTitle()));
             compilerID = ActiveBuildTarget->GetCompilerID();
-            if (!compilerID.IsSameAs(_T("cygwin")))
+            if (!compilerID.IsSameAs("cygwin"))
             {
-                pMsg->DebugLog(wxString::Format(wxT("ActiveBuildTarget->GetCompilerID().IsSameAs(_T(cygwin) is FALSE!")));
-                g_CygwinCompilerPathRoot = wxString();
+                pMsg->DebugLog("ActiveBuildTarget->GetCompilerID().IsSameAs(cygwin) is FALSE!");
+                g_CygwinCompilerPathRoot = wxEmptyString;
                 return false;
             }
         }
         else
         {
-            pMsg->DebugLog(wxString::Format(wxT("pProject->GetTitle() : %s"), pProject->GetTitle()));
+            pMsg->DebugLog(wxString::Format("pProject->GetTitle() : %s", pProject->GetTitle()));
             compilerID = pProject->GetCompilerID();
-            if (!compilerID.IsSameAs(_T("cygwin")))
+            if (!compilerID.IsSameAs("cygwin"))
             {
-                pMsg->DebugLog(wxString::Format(wxT("pProject->GetCompilerID().IsSameAs(_T(cygwin) is FALSE!")));
-                g_CygwinCompilerPathRoot = wxString();
+                pMsg->DebugLog("pProject->GetCompilerID().IsSameAs(cygwin) is FALSE!");
+                g_CygwinCompilerPathRoot = wxEmptyString;
                 return false;
             }
         }
@@ -89,8 +92,8 @@ bool cbIsDetectedCygwinCompiler(void)
         Compiler *actualCompiler = CompilerFactory::GetCompiler(compilerID);
         if (!actualCompiler)
         {
-            pMsg->DebugLog(wxString::Format(wxT("Could not find actual CygWin compiler!!!")));
-            g_CygwinCompilerPathRoot = wxString();
+            pMsg->DebugLog("Could not find actual CygWin compiler!!!");
+            g_CygwinCompilerPathRoot = wxEmptyString;
             return false;
         }
     }
@@ -108,57 +111,53 @@ bool cbIsDetectedCygwinCompiler(void)
     bool present = false; // Assume not found as starting point
 
 #if defined(__WXMSW__)
-
     wxString masterPath("C:\\cygwin64");
     wxRegKey key; // defaults to HKCR
-    key.SetName(_T("HKEY_LOCAL_MACHINE\\Software\\Cygwin\\setup"));
+    key.SetName("HKEY_LOCAL_MACHINE\\Software\\Cygwin\\setup");
     if (key.Exists() && key.Open(wxRegKey::Read))
     {
         // found CygWin version 1.7 or newer; read it
-        key.QueryValue(_T("rootdir"), masterPath);
-        if (wxDirExists(masterPath + wxFILE_SEP_PATH + _T("bin")))
+        key.QueryValue("rootdir", masterPath);
+        if (wxDirExists(masterPath + wxFILE_SEP_PATH + "bin"))
             present = true;
     }
     if (!present)
     {
-        key.SetName(_T("HKEY_LOCAL_MACHINE\\Software\\Cygnus Solutions\\Cygwin\\mounts v2\\/"));
+        key.SetName("HKEY_LOCAL_MACHINE\\Software\\Cygnus Solutions\\Cygwin\\mounts v2\\/");
         if (key.Exists() && key.Open(wxRegKey::Read))
         {
             // found CygWin version 1.5 or older; read it
-            key.QueryValue(_T("native"), masterPath);
-            if (wxDirExists(masterPath + wxFILE_SEP_PATH + _T("bin")))
+            key.QueryValue("native", masterPath);
+            if (wxDirExists(masterPath + wxFILE_SEP_PATH + "bin"))
                 present = true;
         }
     }
 
     // Found registry keys or the default path is valid
-    if (present || wxDirExists(masterPath + wxFILE_SEP_PATH + _T("bin")))
+    if (present || wxDirExists(masterPath + wxFILE_SEP_PATH + "bin"))
     {
-        present = true;
+        present = true;  // Set to true in case no registry found, but default directory exists.
         g_CygwinCompilerPathRoot = masterPath; // convert to wxString type for later use
     }
     else
     {
         g_CygwinCompilerPathRoot = wxEmptyString;
     }
-
+#else
+    g_CygwinCompilerPathRoot = wxEmptyString;
 #endif // defined(__WXMSW__)
 
     return present;
 }
 
-static void GetCygwinPath(wxString& path, bool bWindowsPath)
+static wxString GetCygwinPath(const wxString& path, bool windowsPath)
 {
-    // Append search type to the path for use in the g_FileCache cache
-    wxString cacheSearchPath = wxString::Format(_T("%s:%s"), path, bWindowsPath?"Windows":"Cygwin");
+    std::map<wxString, wxString> &fileCache = (windowsPath ? g_WindowsFileCache : g_CygwinFileCache);
 
     // Check if we already have the file cached before
-    std::map<wxString, wxString>::const_iterator it = g_FileCache.find(cacheSearchPath);
-    if (it != g_FileCache.end())
-    {
-        path = it->second;
-        return;
-    }
+    std::map<wxString, wxString>::const_iterator it = fileCache.find(path);
+    if (it != fileCache.end())
+        return it->second;
 
     wxString resultPath = path;
 
@@ -182,21 +181,21 @@ static void GetCygwinPath(wxString& path, bool bWindowsPath)
     // But if the path does not then check if the path/file exists and if it does then use it,
     // otherwise we check if it is a cygwin path starting with '/' and if it is then we call cygpath.exe
     // if we have not already seen the path and if we have not then later we add the path to the cache
-    if ((resultPath.StartsWith(wxT("/cygdrive/"))) || (resultPath.StartsWith(wxT("\\cygdrive\\"))))
+    if ((resultPath.StartsWith("/cygdrive/")) || (resultPath.StartsWith("\\cygdrive\\")))
     {
         // Needed if debugging a Cygwin build app in codeblocks. Convert GDB cygwin filename to mingw filename!!!!
         // /cygdrive/x/... to c:/...
-        resultPath = wxString::Format(_T("%c:%s"), path[10], path.Mid(11));
+        resultPath = wxString::Format("%c:%s", path[10], path.Mid(11));
     }
     else
     {
         // Check if path or file exists on the disk
-        if (((!wxDirExists(resultPath)) && (!wxFileName::FileExists(resultPath))) || !bWindowsPath)
+        if (((!wxDirExists(resultPath)) && (!wxFileName::FileExists(resultPath))) || !windowsPath)
         {
             // Double check that starts with a forward slash "/" and if it is
             // then assume it is a special Cygwin path that cygpath.exe can resolve
             // to a valid Windows path.
-            if (resultPath.StartsWith(wxT("/")) || !bWindowsPath)
+            if (resultPath.StartsWith("/") || !windowsPath)
             {
                 // file attribute also contains cygwin path
                 wxString cygwinConvertCMD = g_CygwinCompilerPathRoot + "\\bin\\cygpath.exe";
@@ -204,14 +203,15 @@ static void GetCygwinPath(wxString& path, bool bWindowsPath)
                 {
                     cygwinConvertCMD.Trim().Trim(false);
                     // we got a conversion command from the user, use it
-                    if (bWindowsPath)
-                        cygwinConvertCMD.Append(wxT(" -w "));
+                    if (windowsPath)
+                        cygwinConvertCMD.Append(" -w ");
                     else
-                        cygwinConvertCMD.Append(wxT(" -u "));
-                    cygwinConvertCMD.Append(wxString::Format(wxT("%s"), resultPath.c_str()));
+                        cygwinConvertCMD.Append(" -u ");
+                    cygwinConvertCMD.Append(resultPath);
 
                     wxArrayString cmdOutput;
-                    const long resExecute = wxExecute(_T("cmd /c ") + cygwinConvertCMD, cmdOutput, wxEXEC_SYNC, NULL );
+                    const long resExecute = wxExecute("cmd /c " + cygwinConvertCMD, cmdOutput,
+                                                      wxEXEC_SYNC, nullptr);
                     if ((resExecute== 0) && (!cmdOutput.IsEmpty()))
                     {
                         cmdOutput.Item(0).Trim().Trim(false);
@@ -220,31 +220,35 @@ static void GetCygwinPath(wxString& path, bool bWindowsPath)
                         // Check if path or file exists on the disk
                         if ((wxDirExists(outputPath)) || (wxFileName::FileExists(outputPath)))
                             resultPath = outputPath;
-                        else if (!bWindowsPath)
+                        else if (!windowsPath)
                             resultPath = outputPath;
                     }
                     else
-                        Manager::Get()->GetLogManager()->DebugLog(wxString::Format(wxT("cygwinConvertCMD error: %d"), resExecute));
+                    {
+                        const wxString msg = wxString::Format("cygwinConvertCMD error: %d",
+                                                              resExecute);
+                        Manager::Get()->GetLogManager()->DebugLog(msg);
+                    }
                 }
             }
         }
     }
 
-    if (bWindowsPath)
+    if (windowsPath)
     {
         // Convert Unix filenames to Windows
-        resultPath.Replace(wxT("/"), wxT("\\"));
+        resultPath.Replace("/", "\\");
     }
 
-    path = resultPath;
-    g_FileCache[cacheSearchPath] = resultPath;
+    fileCache.insert(std::map<wxString, wxString>::value_type(path, resultPath));
+    return resultPath;
 }
 
 void cbGetWindowsPathFromCygwinPath(wxString& path)
 {
-    GetCygwinPath(path, true);
+    path = GetCygwinPath(path, true);
 }
 void cbGetCygwinPathFromWindowsPath(wxString& path)
 {
-    GetCygwinPath(path, false);
+    path = GetCygwinPath(path, false);
 }
