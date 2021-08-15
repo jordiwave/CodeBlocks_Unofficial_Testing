@@ -1804,11 +1804,6 @@ Section -post SEC_MISC
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoModify 1
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
     
-    LogText "SEC_MISC"
-    LogText "MultiUser.InstallMode : $MultiUser.InstallMode"
-    LogText "SMPROGRAMS : $SMPROGRAMS"
-    LogText "STARTMENU_FOLDER_UNINSTALL : $STARTMENU_FOLDER_UNINSTALL"
-
     ${If} $MultiUser.InstallMode == AllUsers
         WriteRegStr HKLM "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY}" "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}" $MultiUser.InstallMode 
     ${Else}
@@ -2803,11 +2798,6 @@ Section -un.post UNSEC_MISC
     DeleteRegKey HKCU "${REGKEY}"
 
 
-    LogText "un.onUninstSuccess"
-    LogText "MultiUser.InstallMode : $MultiUser.InstallMode"
-    LogText "SMPROGRAMS : $SMPROGRAMS"
-    LogText "STARTMENU_FOLDER_UNINSTALL : $STARTMENU_FOLDER_UNINSTALL"
-
 
     # ===================================================================================================
 
@@ -2926,8 +2916,6 @@ SectionEnd
 #######################
 
 Function .onInit
-    LogSet on
-    LogText "HERE"
     ;${LogSet} on
     InitPluginsDir
     Push $R1
@@ -2947,20 +2935,14 @@ FunctionEnd
 #########################
 
 Function un.onInit
-    LogSet on
+    ;${LogSet} on
     
     ; Load multiuser data. NOTE:  keep the .onInstSuccess WriteRegStr...
     !insertmacro MULTIUSER_UNINIT
 
     ; Delete start menu entries
     !insertmacro MUI_STARTMENU_GETFOLDER Application $STARTMENU_FOLDER_UNINSTALL
-
-    LogText "un.onInit after "
-    LogText "MultiUser.InstallMode : $MultiUser.InstallMode"
-    LogText "SMPROGRAMS : $SMPROGRAMS"
-    LogText "STARTMENU_FOLDER_UNINSTALL : $STARTMENU_FOLDER_UNINSTALL"
-    LogText "INSTDIR : $INSTDIR"
-    
+   
     ReadRegStr $INSTDIR HKCU "${REGKEY}" Path
     !insertmacro SELECT_UNSECTION "Core Files (required)"              ${UNSEC_CORE}
 
