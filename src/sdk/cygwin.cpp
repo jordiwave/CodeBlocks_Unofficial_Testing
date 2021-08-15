@@ -11,19 +11,14 @@
 
 #ifndef CB_PRECOMP
     #include <wx/string.h>
-    #if defined(__WXMSW__)
-        #include <wx/msw/wrapwin.h>     // Wraps windows.h
-    #endif // defined(__WXMSW__)
-
     #include "cbproject.h"
     #include "compilerfactory.h"
     #include "logmanager.h"
-
     #include <map>
 #endif
+
 #if defined(__WXMSW__)
-    // Included here for WIN32 build
-    #include <wx/msw/registry.h>    // for Registry detection of Cygwin
+    #include <wx/msw/registry.h>
 #endif // defined(__WXMSW__)
 
 #include "cygwin.h"
@@ -72,7 +67,7 @@ bool cbIsDetectedCygwinCompiler(void)
             if (!compilerID.IsSameAs("cygwin"))
             {
                 pMsg->DebugLog("ActiveBuildTarget->GetCompilerID().IsSameAs(cygwin) is FALSE!");
-                g_CygwinCompilerPathRoot = wxEmptyString;
+                g_CygwinCompilerPathRoot = wxString();
                 return false;
             }
         }
@@ -83,7 +78,7 @@ bool cbIsDetectedCygwinCompiler(void)
             if (!compilerID.IsSameAs("cygwin"))
             {
                 pMsg->DebugLog("pProject->GetCompilerID().IsSameAs(cygwin) is FALSE!");
-                g_CygwinCompilerPathRoot = wxEmptyString;
+                g_CygwinCompilerPathRoot = wxString();
                 return false;
             }
         }
@@ -93,7 +88,7 @@ bool cbIsDetectedCygwinCompiler(void)
         if (!actualCompiler)
         {
             pMsg->DebugLog("Could not find actual CygWin compiler!!!");
-            g_CygwinCompilerPathRoot = wxEmptyString;
+            g_CygwinCompilerPathRoot = wxString();
             return false;
         }
     }
@@ -141,10 +136,10 @@ bool cbIsDetectedCygwinCompiler(void)
     }
     else
     {
-        g_CygwinCompilerPathRoot = wxEmptyString;
+        g_CygwinCompilerPathRoot = wxString();
     }
 #else
-    g_CygwinCompilerPathRoot = wxEmptyString;
+    g_CygwinCompilerPathRoot = wxString();
 #endif // defined(__WXMSW__)
 
     return present;
