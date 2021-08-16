@@ -27,6 +27,7 @@
 #include <map>
 #include <algorithm>
 
+#include <wx/clipbrd.h>
 #include <wx/display.h>
 #include <wx/propgrid/editors.h>
 #include <wx/propgrid/propgrid.h>
