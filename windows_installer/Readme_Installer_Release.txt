@@ -1,4 +1,4 @@
-Updated for the release on 09-Aug-2021.
+Updated for the release on 16-Aug-2021.
 
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
 The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official installer.
@@ -35,6 +35,12 @@ The release includes code to hopefully resolve or implement the following CB sou
     12. 09-Aug-21 Ticket 1125 - Only show valid compilers in the Compiler Selection dialog (if you load a project with invalid compiler and go to the build options). The function is CompilerFactory::SelectCompilerUI(msg).
     13. 09-Aug-21 Ticket 1126 - Add compiler validation checking when loading a project.
     14. 09-Aug-21 Potentially Ticket 1020 - Both Installer can optionally open the https://github.com/ssbssa/gdb/releases web page as a sub check box in the compiler install page under the MINGW check box. This allows the user to manually install a later GDB for MINGW that works.
+	15. 16-Aug-21 Ticket 854 - Batch build stalls when window is not active
+	16. SF Cathcup - Ticket 1124 	Fix regular expressions and operation of the rndgen plugin, applied 2021-08-06
+	17. SF Cathcup - Ticket 1123 	Fix Regular Expression Testbed output, applied 2021-08-05
+	18. SF Cathcup - Ticket 1122 	two build errors under linux, fixed 2021-08-04
+	19. SF Cathcup - Ticket 1120 	Check regex validity using wxCHECK_RET() instead of assert(), fixed 2021-08-02
+
 
 Installer changed highlights:
 =============================
@@ -98,6 +104,11 @@ C::B exe/dll changed/update highlights:
     23. 08-Aug-21 Updated the Installer_Pages.odt for installer user install changes.
     24. 09-Aug-21 Ticket 1125 - Only show valid compilers in the Compiler Selection dialog (if you load a project with invalid compiler and go to the build options). The function is CompilerFactory::SelectCompilerUI(msg).
     25. 09-Aug-21 Ticket 1126 - Add compiler validation checking when loading a project.
+	26. 16-Aug-21 Ticket 854 - Batch build stalls when window is not active
+	27. SF Cathcup - Ticket 1124 	Fix regular expressions and operation of the rndgen plugin, applied 2021-08-06
+	28. SF Cathcup - Ticket 1123 	Fix Regular Expression Testbed output, applied 2021-08-05
+	29. SF Cathcup - Ticket 1122 	two build errors under linux, fixed 2021-08-04
+	30. SF Cathcup - Ticket 1120 	Check regex validity using wxCHECK_RET() instead of assert(), fixed 2021-08-02
 
 SOURCE:
 =======
@@ -121,5 +132,3 @@ Outstanding Issues to be investigated:
 1. 08-AUG-21 Topic: [Proposal] Move the custom variables WX_SUFFIX... to global variables. https://forums.codeblocks.org/index.php/topic,21696.msg147584.html#msg147584  / https://github.com/bluehazzard/codeblocks_sf/tree/rework/move_global_var_diag_to_src/1
 2. Other installer issues....  Please post ticket reference on the https://forums.codeblocks.org/index.php/topic,24592.0.html thread.
 3. Other Windows CB installation or configuration issues with the initial installation... Please post ticket reference on the https://forums.codeblocks.org/index.php/topic,24592.0.html thread.
-
-
