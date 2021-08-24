@@ -19,15 +19,15 @@
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />
-					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
 					<Add directory="../../../devel31" />
-					<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)" />
+					<Add directory="$(#WX31.lib)/gcc_dll$(#WX31.WX_CFG)" />
 				</Linker>
 			</Target>
 			<Environment>
-				<Variable name="WX_CFG" value="" />
-				<Variable name="WX_SUFFIX" value="u" />
-				<Variable name="WX_VERSION" value="31" />
+				<!-- Variable name="WX_CFG" value="" / -->
+				<!-- Variable name="WX_SUFFIX" value="u" / -->
+				<!-- Variable name="WX_VERSION" value="31" / -->
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -51,7 +51,7 @@
 			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="$(#WX31.include)" />
-			<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX31.lib)/gcc_dll$(#WX31.WX_CFG)/msw$(#WX31.WX_SUFFIX)" />
 		</Compiler>
 		<ExtraCommands>
 			<Add after="zip -j9 ..\..\..\devel31\share\codeblocks\FileManager.zip manifest.xml Resources\fileexplorersettings.xrc Resources\CommitBrowser.xrc" />

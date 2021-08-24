@@ -27,7 +27,7 @@
 				<Option compiler="gcc" />
 				<Linker>
 					<Add library="wxPdfDocument" />
-					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
 					<Add directory="../../../devel31" />
 				</Linker>
 			</Target>
@@ -39,7 +39,7 @@
 				<Option compiler="gcc" />
 				<Linker>
 					<Add library="wxPdfDocument" />
-					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
 					<Add directory="../../../devel31" />
 				</Linker>
 			</Target>
@@ -51,7 +51,7 @@
 				<Option compiler="gcc" />
 				<Linker>
 					<Add library="wxPdfDocument" />
-					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
 					<Add directory="../../../devel31" />
 				</Linker>
 			</Target>
@@ -76,7 +76,7 @@
 				<Linker>
 					<Add library="codeblocks" />
 					<Add library="wxPdfDocument" />
-					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
 					<Add library="gdi32" />
 					<Add directory="../../../devel31" />
 				</Linker>
@@ -86,9 +86,9 @@
 				</ExtraCommands>
 			</Target>
 			<Environment>
-				<Variable name="WX_CFG" value="" />
-				<Variable name="WX_SUFFIX" value="u" />
-				<Variable name="WX_VERSION" value="31" />
+				<!-- Variable name="WX_CFG" value="" / -->
+				<!-- Variable name="WX_SUFFIX" value="u" / -->
+				<!-- Variable name="WX_VERSION" value="31" / -->
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -107,7 +107,7 @@
 			<Add option="-DWXMAKINGDLL_PDFDOC" />
 			<Add option="-DwxPDF_USE_WXMODULE=0" />
 			<Add directory="$(#WX31.include)" />
-			<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX31.lib)/gcc_dll$(#WX31.WX_CFG)/msw$(#WX31.WX_SUFFIX)" />
 			<Add directory="wxPdfDocument/include" />
 		</Compiler>
 		<ResourceCompiler>
@@ -116,7 +116,7 @@
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />
-			<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)" />
+			<Add directory="$(#WX31.lib)/gcc_dll$(#WX31.WX_CFG)" />
 		</Linker>
 		<Unit filename="BaseExporter.cpp">
 			<Option target="default" />

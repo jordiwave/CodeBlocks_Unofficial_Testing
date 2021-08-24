@@ -3,7 +3,6 @@ Updated for the release on 22-Aug-2021.
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
 The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official installer.
 
-
 Installer download link:
 ========================
 https://sourceforge.net/projects/unofficial-cb-installers/
@@ -35,7 +34,7 @@ C::B exe/dll changed/update highlights compared to the nightly 12516 release:
     15. Added extra help plugin menu items for the updated documentation included in the installation. These appear as sub menu items in the Help menu.
     16. Copy Debug Watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
 
-Updated Installer highlights compard to the C::B 20.03 NSIS installer:
+Updated installer highlights compard to the C::B 20.03 NSIS installer:
 =======================================================================
     1. Option to download and run the following compiler installers from the internet:
             MinGW-W64
