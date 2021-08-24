@@ -400,8 +400,8 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             Abort
         accessOK:
             SetOverwrite on
-            File ${WX_BASE}\wxmsw*u_gcc_cb.dll
-            File ${WX_BASE}\wxmsw*u_gl_gcc_cb.dll
+            File ${WX_BASE}\wxmsw*_gcc_cb.dll
+            File ${WX_BASE}\wxmsw*_gl_gcc_cb.dll
             File ${CB_BASE}\Addr2LineUI.exe
             File ${CB_BASE}\cb_console_runner.exe
             File ${CB_BASE}\CbLauncher.exe
