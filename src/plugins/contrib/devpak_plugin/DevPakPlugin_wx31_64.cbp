@@ -48,10 +48,10 @@
 				<Linker>
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
-					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
 					<Add library="bz2_devpak" />
 					<Add directory="../../../devel31_64" />
-					<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)" />
+					<Add directory="$(#WX31_64.lib)/gcc_dll$(#WX31.WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip ..\..\..\devel31_64\share\CodeBlocks\devpakupdater.zip manifest.xml *.xrc" />
@@ -59,9 +59,9 @@
 				</ExtraCommands>
 			</Target>
 			<Environment>
-				<Variable name="WX_CFG" value="" />
-				<Variable name="WX_SUFFIX" value="u" />
-				<Variable name="WX_VERSION" value="31" />
+				<!-- Variable name="WX_CFG" value="" / -->
+				<!-- Variable name="WX_SUFFIX" value="u" / -->
+				<!-- Variable name="WX_VERSION" value="31" / -->
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -71,7 +71,7 @@
 			<Add option="-std=gnu++11" />
 			<Add directory="bzip2" />
 			<Add directory="$(#WX31_64.include)" />
-			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX31_64.lib)/gcc_dll$(#WX31.WX_CFG)/msw$(#WX31.WX_SUFFIX)" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX31_64.include)" />

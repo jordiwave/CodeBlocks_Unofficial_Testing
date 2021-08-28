@@ -134,7 +134,7 @@ Name: quicklaunchicon\common;   Description: "For all users";               Grou
 Name: quicklaunchicon\user;     Description: "For the current user only";   GroupDescription: "Additional icons:";
 
 [Files]
-Source: "*"; Excludes: "*.a,cctest.exe,wxmsw315ud*gcc_cb.dll";  DestDir: "{app}";                       Flags: ignoreversion createallsubdirs recursesubdirs;
+Source: "*"; Excludes: "*.a,cctest.exe";                        DestDir: "{app}";                       Flags: ignoreversion createallsubdirs recursesubdirs;
 Source: "{#DICTIONARIES_DIR}\*";                                DestDir: "{app}\share\CodeBlocks\SpellChecker"; Flags: ignoreversion createallsubdirs recursesubdirs;
 Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_en.chm";        DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion;
 Source: "{#DOCUMENTATION_DIR}\manual_codeblocks_en.pdf";        DestDir: "{app}\share\CodeBlocks\docs"; Flags: ignoreversion;

@@ -167,11 +167,32 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
         proj = proj->NextSiblingElement("Project");
     }
 
+    #if 0
+    if (failedProjectCount > 0)
+    {
+        cbMessageBox(wxString::Format(_("%d projects could not be loaded.\nPlease see the Log window for details"), failedProjectCount),
+                     _("Opening WorkSpace"), wxICON_WARNING);
+    }
+    #else
     if (failedProjectCount > 0)
     {
         wxString sMessage = wxString::Format(_("%d projects could not be loaded.\nPlease see the Log window for details.\nThe failed projects are: %s"), failedProjectCount, failedProjectNames);
-        cbMessageBox(sMessage, "Opening WorkSpace", wxICON_WARNING);
+        if (    (failedProjectCount == 1) &&
+                failedProjectNames.Contains("FortranProject") &&
+                (
+                    filename.Contains("CodeBlocks_wx31_64.workspace") ||
+                    filename.Contains("CodeBlocks_wx31.workspace")
+                )
+           )
+        {
+            GetpMsg()->LogError(sMessage);
+        }
+        else
+        {
+            cbMessageBox(sMessage, _("Opening WorkSpace"), wxICON_WARNING);
+        }
     }
+    #endif
 
     return true;
 }
