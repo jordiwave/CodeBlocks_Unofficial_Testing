@@ -91,7 +91,6 @@ class MainFrame : public wxFrame
         // event handlers
 
         void OnEraseBackground(wxEraseEvent& event);
-        void OnSize(wxSizeEvent& event);
         void OnApplicationClose(wxCloseEvent& event);
         void OnStartHereLink(wxCommandEvent& event);
 
@@ -338,7 +337,6 @@ class MainFrame : public wxFrame
         bool DoOpenFile(const wxString& filename, bool addToHistory = true);
         void DoOnFileOpen(bool bProject = false);
 
-        void DoCreateStatusBar();
         void DoUpdateStatusBar();
         void DoUpdateAppTitle();
         void DoUpdateLayout();
@@ -407,7 +405,6 @@ class MainFrame : public wxFrame
         MenuIDToLanguage m_MapMenuIDToLanguage;
 
         wxScrollingDialog* m_pBatchBuildDialog;
-        wxButton*          m_pHighlightButton;
 
         DebuggerMenuHandler*    m_debuggerMenuHandler;
         DebuggerToolbarHandler* m_debuggerToolbarHandler;
