@@ -1,6 +1,6 @@
 # Debugging:
-;!define BUILD_TYPE 64
-;!define NIGHTLY_BUILD_SVN 12492_PLUS
+!define BUILD_TYPE 64
+!define NIGHTLY_BUILD_SVN 12492_PLUS
 
 #####################################################################
 # The installer is divided into 5 main sections (section groups):   #
@@ -25,12 +25,16 @@
 # 2) Download and install the Ultra-Modern UI:                      #
 #      https://github.com/SuperPat45/UltraModernUI                  #
 #                                                                   #
-# 3) Update the following or check out the Build_NSIS_64bit.bat     #
+# 3) Download and install the Nsis7z_plug-in:                       #
+#      https://nsis.sourceforge.io/Nsis7z_plug-in                   #
+#(https://nsis.sourceforge.io/mediawiki/images/6/69/Nsis7z_19.00.7z)#
+#                                                                   #
+# 4) Update the following or check out the Build_NSIS_64bit.bat     #
 #       file:                                                       #
 #    * BUILD_TYPE for 32 or 64 bit                                  #
 #    * BUILD_TYPE for 32 or 64 bit                                  #
 #                                                                   #
-# 4) run NSIS using this command line or via the MakeNSISW.exe GUI  #
+# 5) run NSIS using this command line or via the MakeNSISW.exe GUI  #
 #   C:\PATH_TO\NSIS\makensis.exe setup.nsi                          #
 # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  #
 # You may also need to adjust "RequestExecutionLevel admin/user" ,  #
@@ -45,7 +49,7 @@ XPStyle on
 Unicode True
 
 # Enable logging when using the NSIS special build
-!define ENABLE_LOGGING
+#!define ENABLE_LOGGING
 
 #########################################################
 # Room for adjustments of most important settings BEGIN #
@@ -213,7 +217,7 @@ ShowUninstDetails show
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
 
 !define UMUI_LEFTIMAGE_BMP "${CB_INSTALL_GRAPHICS_DIR}\setup_1.bmp"
-!define UMUI_HEADERBGIMAGE_BMP  "${CB_LOGO}"
+#!define UMUI_HEADERBGIMAGE_BMP  "${CB_LOGO}"
 !define UMUI_SKIN "SoftBlue"
 !define UMUI_PARAMS_REGISTRY_ROOT HKCU
 !define UMUI_PARAMS_REGISTRY_KEY  ${REGKEY}
@@ -240,8 +244,8 @@ ShowUninstDetails show
 !define MULTIUSER_MUI
 !define MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY ${REGKEY}
 !define MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME "MultiUserInstallMode"
-#!define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY ${REGKEY}
-#!define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_VALUENAME "MultiUserInstallMode"
+;!define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY ${REGKEY}
+;!define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_VALUENAME "MultiUserInstallModeDirectory"
 !include MultiUser.nsh
 
 # Reserved Files
@@ -277,6 +281,7 @@ Var STARTMENU_FOLDER_UNINSTALL
 !insertmacro UMUI_PAGE_CONFIRM
 
 !insertmacro MUI_PAGE_INSTFILES
+Page Custom CompilerLocalInstallPage_Show CompilerLocalInstallPage_Leave
 Page Custom CompilerDownloadPage_Show CompilerDownloadPage_Leave
 !insertmacro MUI_PAGE_FINISH
 
@@ -315,11 +320,11 @@ RequestExecutionLevel user
 ReserveFile NSIS_CompilerDownload.ini
 !insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
 
-# ========================================================================================================================
-# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+# ==========================================================================================================================
+# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 # Changes are usually NOT required below # Changes are usually NOT required below # Changes are usually NOT required below #
-# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-# ========================================================================================================================
+# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+# ==========================================================================================================================
 
 ############################
 # Check for Fortran Plugin #
@@ -363,6 +368,8 @@ ${!defineifexist} FORTRAN_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\FortranProject.z
     LogText ${INPUT_TEXT}
   !endif
 !macroend
+
+
 ######################
 # Installer sections #
 ######################
@@ -445,8 +452,9 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             # Licenses
             File ${CB_INSTALL_LICENSES_DIR}\gpl-3.0.txt
             File ${CB_INSTALL_LICENSES_DIR}\lgpl-3.0.txt
-            # WGET
+            # wget & &za.exe support files 
             File wget.exe
+            File 7za.exe
             SetOutPath $INSTDIR${CB_SHARE_CB}
             File ${CB_BASE}${CB_SHARE_CB}\start_here.zip
             File ${CB_BASE}${CB_SHARE_CB}\tips.txt
@@ -480,38 +488,44 @@ SectionGroup "!Default install" SECGRP_DEFAULT
 
         Section "Program Shortcut" SEC_PROGRAMSHORTCUT
             SectionIn 1 2 3 4
-            SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name).lnk" $INSTDIR\CodeBlocks.exe
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Share Config.lnk"         $INSTDIR\cb_share_config.exe
-            #CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Code Completion Test.lnk" $INSTDIR\cctest.exe # CB developer testing only
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Address to Line GUI.lnk"  $INSTDIR\Addr2LineUI.exe
-
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) PDF Manual English.lnk" $INSTDIR${CB_DOCS}\manual_codeblocks_en.pdf "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks PDF User Manual in English"
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) CHM Manual English.lnk" $INSTDIR${CB_DOCS}\manual_codeblocks_en.chm "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks CHM User Manual in English"
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) PDF Manual French.lnk"  $INSTDIR${CB_DOCS}\manual_codeblocks_fr.pdf "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks PDF User Manual in French"
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) CHM Manual French.lnk"  $INSTDIR${CB_DOCS}\manual_codeblocks_fr.chm "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks CHM User Manual in French"
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\PBs wxWidgets Guide.lnk" $INSTDIR${CB_DOCS}\Manual_wxPBGuide.pdf "" "" 0 SW_SHOWNORMAL  "" "PBs GuiDe to Starting with wxWidgets with MinGW and Code::Blocks"
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) License.lnk"                 "$INSTDIR\gpl-3.0.txt" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks license"
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) SDK License.lnk"             "$INSTDIR\lgpl-3.0.txt" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks SDK license"
-            SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) Web Site.lnk"              "http://www.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE website"
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) Forums.lnk"                "http://forums.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE discussion forums"
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) WiKi.lnk"                  "http://wiki.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE WiKi site"
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) Tickets.lnk"               "https://sourceforge.net/p/codeblocks/tickets/" "" "" 0 SW_SHOWNORMAL  "" "Report bugs/enhancements for Code::Blocks"
-            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) beginner instructions.lnk" "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks beginner install and user guide"
+            !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+                SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name).lnk" $INSTDIR\CodeBlocks.exe
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Share Config.lnk"         $INSTDIR\cb_share_config.exe
+                #CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Code Completion Test.lnk" $INSTDIR\cctest.exe # CB developer testing only
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Address to Line GUI.lnk"  $INSTDIR\Addr2LineUI.exe
+                SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Documentation
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Documentation\$(^Name) PDF Manual English.lnk" $INSTDIR${CB_DOCS}\manual_codeblocks_en.pdf "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks PDF User Manual in English"
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Documentation\$(^Name) CHM Manual English.lnk" $INSTDIR${CB_DOCS}\manual_codeblocks_en.chm "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks CHM User Manual in English"
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Documentation\$(^Name) PDF Manual French.lnk"  $INSTDIR${CB_DOCS}\manual_codeblocks_fr.pdf "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks PDF User Manual in French"
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Documentation\$(^Name) CHM Manual French.lnk"  $INSTDIR${CB_DOCS}\manual_codeblocks_fr.chm "" "" 0 SW_SHOWNORMAL  "" "The Code::Blocks CHM User Manual in French"
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Documentation\PBs wxWidgets Guide.lnk" $INSTDIR${CB_DOCS}\Manual_wxPBGuide.pdf "" "" 0 SW_SHOWNORMAL  "" "PBs GuiDe to Starting with wxWidgets with MinGW and Code::Blocks"
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Documentation\$(^Name) License.lnk"                 "$INSTDIR\gpl-3.0.txt" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks license"
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Documentation\$(^Name) SDK License.lnk"             "$INSTDIR\lgpl-3.0.txt" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks SDK license"
+                SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) Web Site.lnk"              "http://www.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE website"
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) Forums.lnk"                "http://forums.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE discussion forums"
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) WiKi.lnk"                  "http://wiki.codeblocks.org" "" "" 0 SW_SHOWNORMAL  "" "Go to Code::Blocks IDE WiKi site"
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) Tickets.lnk"               "https://sourceforge.net/p/codeblocks/tickets/" "" "" 0 SW_SHOWNORMAL  "" "Report bugs/enhancements for Code::Blocks"
+                CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Links\$(^Name) beginner instructions.lnk" "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf" "" "" 0 SW_SHOWNORMAL  "" "Code::Blocks beginner install and user guide"
+            !insertmacro MUI_STARTMENU_WRITE_END
 
             WriteRegStr HKCU "${REGKEY}\Components" "Program Shortcut" 1
         SectionEnd
 
         Section "Desktop Shortcut" SEC_DESKTOPSHORTCUT
             SectionIn 1
-            CreateShortCut "$DESKTOP\$(^Name).lnk" $INSTDIR\CodeBlocks.exe
+            !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+                CreateShortCut "$DESKTOP\$(^Name).lnk" $INSTDIR\CodeBlocks.exe
+            !insertmacro MUI_STARTMENU_WRITE_END
             WriteRegStr HKCU "${REGKEY}\Components" "Desktop Shortcut" 1
         SectionEnd
 
         Section "Quick Launch Shortcut" SEC_QUICKLAUNCHSHORTCUT
             SectionIn 1
-            CreateShortCut "$QUICKLAUNCH\$(^Name).lnk" $INSTDIR\CodeBlocks.exe
+            !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+                CreateShortCut "$QUICKLAUNCH\$(^Name).lnk" $INSTDIR\CodeBlocks.exe
+            !insertmacro MUI_STARTMENU_WRITE_END
             WriteRegStr HKCU "${REGKEY}\Components" "Quick Launch Shortcut" 1
         SectionEnd
 
@@ -1764,8 +1778,12 @@ Section "C::B CBP2Make" SEC_CBP2MAKE
     SetOutPath $INSTDIR
     SetOverwrite on
     File ${CB_BASE}\cbp2make.exe
-    SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
-    CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) CBP2Make.lnk" $INSTDIR\cbp2make.exe
+    !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+        ${If} ${SectionIsSelected} ${SEC_PROGRAMSHORTCUT}
+            SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) CBP2Make.lnk" $INSTDIR\cbp2make.exe
+        ${EndIf}
+    !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKCU "${REGKEY}\Components" "C::B CBP2Make" 1
 SectionEnd
 
@@ -1774,8 +1792,12 @@ Section "C::B Share Config" SEC_SHARECONFIG
     SetOutPath $INSTDIR
     SetOverwrite on
     File ${CB_BASE}\cb_share_config.exe
-    SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
-    CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Share Config.lnk" $INSTDIR\cb_share_config.exe
+    !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+        ${If} ${SectionIsSelected} ${SEC_PROGRAMSHORTCUT}
+            SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) Share Config.lnk" $INSTDIR\cb_share_config.exe
+        ${EndIf}
+    !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKCU "${REGKEY}\Components" "C::B Share Config" 1
 SectionEnd
 
@@ -1784,7 +1806,12 @@ Section "C::B Launcher" SEC_LAUNCHER
     SetOutPath $INSTDIR
     SetOverwrite on
     File ${CB_BASE}\CbLauncher.exe
-    CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) (Launcher).lnk" $INSTDIR\CbLauncher.exe
+    !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+        ${If} ${SectionIsSelected} ${SEC_PROGRAMSHORTCUT}
+            SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\$(^Name) (Launcher).lnk" $INSTDIR\CbLauncher.exe
+        ${EndIf}
+    !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKCU "${REGKEY}\Components" "C::B Launcher" 1
 SectionEnd
 
@@ -1793,21 +1820,33 @@ Section -post SEC_MISC
     WriteRegStr HKCU "${REGKEY}" Path $INSTDIR
     SetOutPath $INSTDIR
     WriteUninstaller $INSTDIR\uninstall.exe
-    SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
-    CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
-    WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
-    WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "${VERSION}"
-    WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" Publisher "${COMPANY}"
-    WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" URLInfoAbout "${URL}"
-    WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayIcon $INSTDIR\uninstall.exe
-    WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" UninstallString $INSTDIR\uninstall.exe
-    WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoModify 1
-    WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
+    !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+        ${If} ${SectionIsSelected} ${SEC_PROGRAMSHORTCUT}
+            SetOutPath $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL
+            CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER_INSTALL\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
+        ${EndIf}
+    !insertmacro MUI_STARTMENU_WRITE_END
     
     ${If} $MultiUser.InstallMode == AllUsers
-        WriteRegStr HKLM "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY}" "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}" $MultiUser.InstallMode 
+        WriteRegStr   HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
+        WriteRegStr   HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "${VERSION}"
+        WriteRegStr   HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" Publisher "${COMPANY}"
+        WriteRegStr   HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" URLInfoAbout "${URL}"
+        WriteRegStr   HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayIcon $INSTDIR\uninstall.exe
+        WriteRegStr   HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" UninstallString $INSTDIR\uninstall.exe
+        WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoModify 1
+        WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
+        WriteRegStr   HKLM "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY}" "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}" $MultiUser.InstallMode 
     ${Else}
-        WriteRegStr HKCU "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY}" "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}" $MultiUser.InstallMode 
+        WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
+        WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "${VERSION}"
+        WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" Publisher "${COMPANY}"
+        WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" URLInfoAbout "${URL}"
+        WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayIcon $INSTDIR\uninstall.exe
+        WriteRegStr   HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" UninstallString $INSTDIR\uninstall.exe
+        WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoModify 1
+        WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
+        WriteRegStr   HKCU "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY}" "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}" $MultiUser.InstallMode 
     ${EndIf}
 SectionEnd
 
@@ -2678,13 +2717,13 @@ Section "-un.Program Shortcut" UNSEC_PROGRAMSHORTCUT
     Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) Code Completion Test.lnk"
     Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) Address to Line GUI.lnk"
 
-    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) PDF Manual English.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) CHM Manual English.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) PDF Manual French.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) CHM Manual French.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\PBs wxWidgets Guide.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) License.lnk"
-    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\$(^Name) SDK License.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Documentation\$(^Name) PDF Manual English.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Documentation\$(^Name) CHM Manual English.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Documentation\$(^Name) PDF Manual French.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Documentation\$(^Name) CHM Manual French.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Documentation\PBs wxWidgets Guide.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Documentation\$(^Name) License.lnk"
+    Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Documentation\$(^Name) SDK License.lnk"
     Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Links\$(^Name) Web Site.lnk"
     Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Links\$(^Name) Forums.lnk"
     Delete /REBOOTOK  "$SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL\Links\$(^Name) WiKi.lnk"
@@ -2739,6 +2778,7 @@ Section "-un.Core Files (required)" UNSEC_CORE
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE}
     # WGET
     Delete /REBOOTOK $INSTDIR\wget.exe
+    Delete /REBOOTOK $INSTDIR\7za.exe
     # Licens files
     Delete /REBOOTOK $INSTDIR\gpl-3.0.txt
     Delete /REBOOTOK $INSTDIR\lgpl-3.0.txt
@@ -2794,10 +2834,8 @@ Section -un.post UNSEC_MISC
     ${EndIf}
 
     DeleteRegValue HKCU "${REGKEY}" Path
-    DeleteRegKey HKCU "${REGKEY}\Components"
-    DeleteRegKey HKCU "${REGKEY}"
-
-
+    DeleteRegKey   HKCU "${REGKEY}\Components"
+    DeleteRegKey   HKCU "${REGKEY}"
 
     # ===================================================================================================
 
@@ -2864,10 +2902,15 @@ Section -un.post UNSEC_MISC
         Goto enumunkey
 
     done:    
+
     # Finish Unregister CodeBlocks associated files - see FileAssocation.cpp
     
     ; Delete Uninstall Entries and uninstall.exe
-    DeleteRegKey HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
+    ${If} $MultiUser.InstallMode == AllUsers
+        DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
+    ${Else}
+        DeleteRegKey HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
+    ${EndIf}
     Delete /REBOOTOK $INSTDIR\uninstall.exe
 
     # ===================================================================================================
@@ -2914,11 +2957,17 @@ SectionEnd
 #######################
 # Installer functions #
 #######################
+Var PROGRAM_FOLDER_UINSTALLDIR
 
 Function .onInit
-    ;${LogSet} on
+    SetOutPath $INSTDIR
+    ;LogSet on
+    ;LogText ".onInit"
+    ;LogText "STARTMENU: $SMPROGRAMS\$STARTMENU_FOLDER_INSTALL"
+
     InitPluginsDir
     Push $R1
+    IfSilent +3
     File /oname=$PLUGINSDIR\spltmp.bmp ${CB_SPLASH}
     advsplash::show 1000 600 400 -1 $PLUGINSDIR\spltmp
     Pop $R1
@@ -2926,6 +2975,54 @@ Function .onInit
 
     !insertmacro MULTIUSER_INIT    
     !insertmacro MUI_INSTALLOPTIONS_EXTRACT "NSIS_CompilerDownload.ini"
+
+    ;Check earlier installation
+    StrCpy $PROGRAM_FOLDER_UINSTALLDIR $INSTDIR
+
+    ClearErrors
+    UserInfo::GetAccountType
+    pop $R2
+
+; checkOldNSISProgramFilesInstall:
+    !if ${BUILD_TYPE} == 64
+        ; check old NSIS installer where C::B was installed in C:\program files  on 64 bit systems  
+        ${If} ${FileExists} "$PROGRAMFILES32\$(^Name)\uninstall.exe"
+            StrCpy $PROGRAM_FOLDER_UINSTALLDIR "$PROGRAMFILES32\$(^Name)"
+            StrCpy $R3 "$PROGRAMFILES32\$(^Name)\uninstall.exe"
+            StrCmp $R2 "Admin" onInit_uninst_ask
+            MessageBox MB_OK|MB_ICONEXCLAMATION "$(^Name) was installed using admin rights on your system.$\nPlease re-run the install with admin rights or uninstall before running the installer?" \
+                /SD IDOK
+            SetErrorLevel 740 ; ERROR_ELEVATION_REQUIRED
+            Quit
+        ${EndIf}
+    !endif
+        
+; checkAllUsersInstall:    
+    ReadRegStr $R3 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" UninstallString
+    StrCmp $R3 "" checkCurrentUserInstall
+	StrCmp $R2 "Admin" onInit_uninst_ask 
+    MessageBox MB_OK|MB_ICONEXCLAMATION "$(^Name) was installed using admin rights on your system.$\nPlease re-run the install with admin rights or uninstall before running the installer?" \
+        /SD IDOK
+    SetErrorLevel 740 ; ERROR_ELEVATION_REQUIRED
+    Quit
+    
+checkCurrentUserInstall:    
+    ReadRegStr $R3 HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" UninstallString
+    StrCmp $R3 "" onInit_Continue
+	StrCmp $R2 "Admin" 0 onInit_uninst_ask 
+    MessageBox MB_OK|MB_ICONEXCLAMATION "$(^Name) was installed using user rights on your system.$\nPlease re-run the install with user rights or uninstall before running the installer?" \
+        /SD IDOK
+    SetErrorLevel 741
+    Quit
+
+onInit_uninst_ask:
+    MessageBox MB_YESNO|MB_ICONQUESTION "$(^Name) is already installed on your system.$\nWould you like to proceed with the uninstalling the previous version?" \
+        /SD IDYES IDYES onInit_uninstaller IDNO onInit_Continue
+    Quit
+onInit_uninstaller:
+    ;Run the uninstaller
+    ExecWait '$R3'
+onInit_Continue:
 
 FunctionEnd
 
@@ -2935,14 +3032,44 @@ FunctionEnd
 #########################
 
 Function un.onInit
-    ;${LogSet} on
+    SetOutPath $INSTDIR
+    ;LogSet on
+    ;LogText "un.onInit"
     
     ; Load multiuser data. NOTE:  keep the .onInstSuccess WriteRegStr...
     !insertmacro MULTIUSER_UNINIT
 
+    ; HACK HACK - got to be a better way!!!!!
+    ReadRegStr $R0 HKLM "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY}" "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}" 
+    ; MessageBox MB_OK|MB_ICONEXCLAMATION "HKLM $R0 LINE 2952"
+    StrCmp $R0 "" tryHKCU
+    StrCmp $R0 "AllUsers" CheckAllUsers
+    
+tryHKCU:    
+    ReadRegStr $R0 HKCU "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY}" "${MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME}" 
+    ; MessageBox MB_OK|MB_ICONEXCLAMATION "HKLM $R0 LINE 2958"
+    StrCmp $R0 "" CheckUserTypeDone
+    StrCmp $R0 "AllUsers" CheckAllUsers CheckUserTypeDone
+
+CheckAllUsers:
+    ;MessageBox MB_OK|MB_ICONEXCLAMATION "CheckAllUsers LINE 2963"
+
+    UserInfo::GetAccountType
+    pop $0
+    ${If} $0 != "admin"
+        MessageBox MB_OK|MB_ICONSTOP "To uninstall you need to run the uninstaller with administrator rights as it was installed with admin rights!" \
+                    /SD IDOK
+        SetErrorLevel 740 ;ERROR_ELEVATION_REQUIRED
+        Quit
+    ${EndIf}
+
+CheckUserTypeDone:
+
     ; Delete start menu entries
     !insertmacro MUI_STARTMENU_GETFOLDER Application $STARTMENU_FOLDER_UNINSTALL
-   
+
+    ;LogText "un.onInit START MENU FOLDER: $SMPROGRAMS\$STARTMENU_FOLDER_UNINSTALL"
+
     ReadRegStr $INSTDIR HKCU "${REGKEY}" Path
     !insertmacro SELECT_UNSECTION "Core Files (required)"              ${UNSEC_CORE}
 
@@ -3161,6 +3288,7 @@ FunctionEnd
 # ========================================================================================================================
 # ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 # ========================================================================================================================
+
 Function confirm_function
   !insertmacro UMUI_CONFIRMPAGE_TEXTBOX_ADDLINE ""
   !insertmacro UMUI_CONFIRMPAGE_TEXTBOX_ADDLINE "$(UMUI_TEXT_INSTCONFIRM_TEXTBOX_DESTINATION_LOCATION)"
@@ -3193,8 +3321,8 @@ FunctionEnd
 
 Function preuninstall_function
 
-  ; execute this function only in Modify, repair and update function
-  !insertmacro UMUI_IF_INSTALLFLAG_IS ${UMUI_MODIFY}|${UMUI_REPAIR}|${UMUI_UPDATE}
+    ; execute this function only in Modify, repair and update function
+    !insertmacro UMUI_IF_INSTALLFLAG_IS ${UMUI_MODIFY}|${UMUI_REPAIR}|${UMUI_UPDATE}
 
     ;ADD YOUR DELETE INSTRUCTION HERE...
   
@@ -3202,7 +3330,7 @@ Function preuninstall_function
   
     DeleteRegKey ${UMUI_PARAMS_REGISTRY_ROOT} "${UMUI_PARAMS_REGISTRY_KEY}"
 
-  !insertmacro UMUI_ENDIF_INSTALLFLAG
+    !insertmacro UMUI_ENDIF_INSTALLFLAG
 
 FunctionEnd
 
@@ -3267,6 +3395,12 @@ Var HWND_COMPILERDLPAGE
 
 Function CompilerDownloadPage_Show
 
+    Dialer::GetConnectedState
+    Pop $R0
+    StrCmp $R0 "online" connected 
+    return
+
+connected:
     ; Does not show page if setup cancelled, required only if UMUI_PAGE_ABORT inserted
     !insertmacro UMUI_ABORT_IF_INSTALLFLAG_IS ${UMUI_CANCELLED}
 
@@ -3292,6 +3426,7 @@ Function CompilerDownloadPage_Show
     !insertmacro UMUI_IOPAGEBGTRANSPARENT_INIT $HWND_COMPILERDLPAGE
 
     !insertmacro MUI_INSTALLOPTIONS_SHOW
+    
 FunctionEnd
 
 Function CompilerDownloadPage_Leave
@@ -3323,8 +3458,109 @@ Function CompilerDownloadPage_Leave
     ${EndIf}
 
 FunctionEnd
+# ========================================================================================================================
+# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+# ========================================================================================================================
+Var HWND_CompilerLocalInstallPage
+Var HWND_Label_Heading
+Var HWND_Checkbox_1
+Var HWND_CompilerLocalInstallDirectoryLabel
+Var HWND_CompilerLocalInstallDirectory
+Var HWND_CompilerLocalInstallDirectoryBrowse
+Var HWND_Checkbox_2
+Var Checkbox_State_1
+Var Checkbox_State_2
+Var CompilerLocalInstallDirectory
 
+Function CompilerLocalInstallPage_Show
 
+    ${If} ${FileExists} "$EXEDIR\i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z"
+    ${OrIf} ${FileExists} "$EXEDIR\i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z"
+
+        ; Does not show page if setup cancelled, required only if UMUI_PAGE_ABORT inserted
+        !insertmacro UMUI_ABORT_IF_INSTALLFLAG_IS ${UMUI_CANCELLED}
+        !insertmacro MUI_HEADER_TEXT "Local Compiler Installer" ""
+
+        nsDialogs::Create 1018
+        Pop $HWND_CompilerLocalInstallPage
+
+        ${If} $HWND_CompilerLocalInstallPage == error
+            Abort
+        ${EndIf}
+
+        ${NSD_CreateLabel} 0 0 100% 20u "Please select the MinGW you want to install."
+        Pop $HWND_Label_Heading
+
+        ${If} ${FileExists} "$EXEDIR\i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z"
+            ${NSD_CreateCheckbox} 0 60u 100% 10u "Mingw64  -  i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z"
+            Pop $HWND_Checkbox_1
+        ${EndIf}
+        ${NSD_SetState} $HWND_Checkbox_1 $Checkbox_State_1
+
+        ${If} ${FileExists} "$EXEDIR\x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z"
+            ${NSD_CreateCheckbox} 0 80u 100% 10u "Mingw32  -  x86_64-8.1.0-release-posix-seh-rt_v6-rev00.7z"
+            Pop $HWND_Checkbox_2
+        ${EndIf}
+        ${NSD_SetState} $HWND_Checkbox_2 $Checkbox_State_2
+
+        ${NSD_CreateLabel} 0 120u 100% 10u "Compiler install root directory:"
+        Pop $HWND_CompilerLocalInstallDirectoryLabel
+        ${NSD_CreateText} 0 130u 90% 10u "D:\"
+        Pop $HWND_CompilerLocalInstallDirectory
+        ${NSD_CreateBrowseButton} 90% 130u 10% 10u "Browse"
+        Pop $HWND_CompilerLocalInstallDirectoryBrowse
+        ${NSD_OnClick} $HWND_CompilerLocalInstallDirectoryBrowse CompilerLocalInstallDirectoryBrowse
+   
+        nsDialogs::Show
+        ;!insertmacro MUI_INSTALLOPTIONS_SHOW
+    ${EndIf}
+FunctionEnd
+
+Function CompilerLocalInstallDirectoryBrowse
+    ${NSD_GetText} $HWND_CompilerLocalInstallDirectory $0
+    nsDialogs::SelectFolderDialog "Select compiler install folder" "$0"
+    Pop $0
+    ${If} $0 != error
+        ${NSD_SetText} $HWND_CompilerLocalInstallDirectory "$0"
+    ${EndIf}
+FunctionEnd
+
+Function CompilerLocalInstallPage_Leave
+    SetOutPath $INSTDIR
+    SetOverwrite on
+    File 7za.exe
+
+	${NSD_GetState} $HWND_Checkbox_1 $Checkbox_State_1
+	${NSD_GetState} $HWND_Checkbox_2 $Checkbox_State_2
+    ${NSD_GetText}  $HWND_CompilerLocalInstallDirectory $CompilerLocalInstallDirectory
+
+;process_1:
+    ${If} $Checkbox_State_1 = "1"
+        NSExec::exec '"$INSTDIR\7za.exe" x -y "$EXEDIR\i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z" -o$CompilerLocalInstallDirectory'
+        Pop $0 ;Get the return value in $0
+        StrCmp $0 0 process_2 0
+        MessageBox MB_OK|MB_ICONEXCLAMATION \
+            "Could not install $EXEDIR\i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z.$\r$\nAs such you will need to manually install MinGW-W64 by yourself." \
+            /SD IDOK
+    ${EndIf}
+
+process_2:
+    ${If} $Checkbox_State_2 = "1"
+        NSExec::exec '"$INSTDIR\7za.exe" x -y "$EXEDIR\x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z" -o$CompilerLocalInstallDirectory'
+        Pop $0 ;Get the return value in $0
+        StrCmp $0 0 finishedInstall 0
+        MessageBox MB_OK|MB_ICONEXCLAMATION \
+            "Could not install $EXEDIR\x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z.$\r$\nAs such you will need to manually install MinGW-w32 by yourself." \
+            /SD IDOK
+    ${EndIf}
+   
+finishedInstall:
+   
+FunctionEnd
+
+# ========================================================================================================================
+# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+# ========================================================================================================================
 Function onMultiUserModeChanged
     ${If} $MultiUser.InstallMode == "CurrentUser"
         StrCpy $InstDir "$LocalAppdata\Programs\${MULTIUSER_INSTALLMODE_INSTDIR}"
