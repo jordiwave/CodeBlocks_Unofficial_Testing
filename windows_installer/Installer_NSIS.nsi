@@ -3495,13 +3495,13 @@ Function CompilerLocalInstallPage_Show
             ${NSD_CreateCheckbox} 0 60u 100% 10u "Mingw64  -  i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z"
             Pop $HWND_Checkbox_1
         ${EndIf}
-        ${NSD_SetState} $HWND_Checkbox_1 $Checkbox_State_1
+        ${NSD_SetState} $HWND_Checkbox_1 "1"
 
         ${If} ${FileExists} "$EXEDIR\x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z"
             ${NSD_CreateCheckbox} 0 80u 100% 10u "Mingw32  -  x86_64-8.1.0-release-posix-seh-rt_v6-rev00.7z"
             Pop $HWND_Checkbox_2
         ${EndIf}
-        ${NSD_SetState} $HWND_Checkbox_2 $Checkbox_State_2
+        ${NSD_SetState} $HWND_Checkbox_2 "1"
 
         ${NSD_CreateLabel} 0 120u 100% 10u "Compiler install root directory:"
         Pop $HWND_CompilerLocalInstallDirectoryLabel
