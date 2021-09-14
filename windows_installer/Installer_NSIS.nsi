@@ -1,6 +1,6 @@
 # Debugging:
-!define BUILD_TYPE 64
-!define NIGHTLY_BUILD_SVN 12492_PLUS
+#!define BUILD_TYPE 64
+#!define NIGHTLY_BUILD_SVN 12529_PLUS
 
 #####################################################################
 # The installer is divided into 5 main sections (section groups):   #
@@ -25,16 +25,12 @@
 # 2) Download and install the Ultra-Modern UI:                      #
 #      https://github.com/SuperPat45/UltraModernUI                  #
 #                                                                   #
-# 3) Download and install the Nsis7z_plug-in:                       #
-#      https://nsis.sourceforge.io/Nsis7z_plug-in                   #
-#(https://nsis.sourceforge.io/mediawiki/images/6/69/Nsis7z_19.00.7z)#
-#                                                                   #
-# 4) Update the following or check out the Build_NSIS_64bit.bat     #
+# 3) Update the following or check out the Build_NSIS_64bit.bat     #
 #       file:                                                       #
 #    * BUILD_TYPE for 32 or 64 bit                                  #
 #    * BUILD_TYPE for 32 or 64 bit                                  #
 #                                                                   #
-# 5) run NSIS using this command line or via the MakeNSISW.exe GUI  #
+# 4) run NSIS using this command line or via the MakeNSISW.exe GUI  #
 #   C:\PATH_TO\NSIS\makensis.exe setup.nsi                          #
 # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  #
 # You may also need to adjust "RequestExecutionLevel admin/user" ,  #
@@ -454,7 +450,6 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             File ${CB_INSTALL_LICENSES_DIR}\lgpl-3.0.txt
             # wget & &za.exe support files 
             File wget.exe
-            File 7za.exe
             SetOutPath $INSTDIR${CB_SHARE_CB}
             File ${CB_BASE}${CB_SHARE_CB}\start_here.zip
             File ${CB_BASE}${CB_SHARE_CB}\tips.txt
@@ -2778,7 +2773,6 @@ Section "-un.Core Files (required)" UNSEC_CORE
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE}
     # WGET
     Delete /REBOOTOK $INSTDIR\wget.exe
-    Delete /REBOOTOK $INSTDIR\7za.exe
     # Licens files
     Delete /REBOOTOK $INSTDIR\gpl-3.0.txt
     Delete /REBOOTOK $INSTDIR\lgpl-3.0.txt
@@ -3495,13 +3489,13 @@ Function CompilerLocalInstallPage_Show
             ${NSD_CreateCheckbox} 0 60u 100% 10u "Mingw64  -  i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z"
             Pop $HWND_Checkbox_1
         ${EndIf}
-        ${NSD_SetState} $HWND_Checkbox_1 "1"
+        ${NSD_SetState} $HWND_Checkbox_1 1
 
         ${If} ${FileExists} "$EXEDIR\x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z"
             ${NSD_CreateCheckbox} 0 80u 100% 10u "Mingw32  -  x86_64-8.1.0-release-posix-seh-rt_v6-rev00.7z"
             Pop $HWND_Checkbox_2
         ${EndIf}
-        ${NSD_SetState} $HWND_Checkbox_2 "1"
+        ${NSD_SetState} $HWND_Checkbox_2 1
 
         ${NSD_CreateLabel} 0 120u 100% 10u "Compiler install root directory:"
         Pop $HWND_CompilerLocalInstallDirectoryLabel
@@ -3526,7 +3520,7 @@ Function CompilerLocalInstallDirectoryBrowse
 FunctionEnd
 
 Function CompilerLocalInstallPage_Leave
-    SetOutPath $INSTDIR
+    SetOutPath $PLUGINSDIR 
     SetOverwrite on
     File 7za.exe
 
@@ -3536,7 +3530,7 @@ Function CompilerLocalInstallPage_Leave
 
 ;process_1:
     ${If} $Checkbox_State_1 = "1"
-        NSExec::exec '"$INSTDIR\7za.exe" x -y "$EXEDIR\i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z" -o$CompilerLocalInstallDirectory'
+        NSExec::exec '"$PLUGINSDIR \7za.exe" x -y "$EXEDIR\i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z" -o$CompilerLocalInstallDirectory'
         Pop $0 ;Get the return value in $0
         StrCmp $0 0 process_2 0
         MessageBox MB_OK|MB_ICONEXCLAMATION \
@@ -3546,7 +3540,7 @@ Function CompilerLocalInstallPage_Leave
 
 process_2:
     ${If} $Checkbox_State_2 = "1"
-        NSExec::exec '"$INSTDIR\7za.exe" x -y "$EXEDIR\x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z" -o$CompilerLocalInstallDirectory'
+        NSExec::exec '"$PLUGINSDIR \7za.exe" x -y "$EXEDIR\x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z" -o$CompilerLocalInstallDirectory'
         Pop $0 ;Get the return value in $0
         StrCmp $0 0 finishedInstall 0
         MessageBox MB_OK|MB_ICONEXCLAMATION \
@@ -3555,7 +3549,8 @@ process_2:
     ${EndIf}
    
 finishedInstall:
-   
+    Delete $PLUGINSDIR\7za.exe
+
 FunctionEnd
 
 # ========================================================================================================================

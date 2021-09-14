@@ -23,17 +23,11 @@ C::B exe/dll changed/update highlights compared to the last nightly SVN 12516 re
                 - Other MinGW w32 or w64 compilers like winlib or gytx
     5. 64bit built with MSYS2 mingw64 GCC 10.3 using the latest MSYS 2 release.
     6. 32bit built with MingGW-64 installer using "GCC 8.1.0 , i686, posix threading, dwarf exception hading and 0 build revision" configuration.
-    7. Installer code is not a separate repo, but a directory in the C::B GitHub source repo tree. (SF Ticket 1119)
-    8. Massive NSIS changes (Including updating parts to the new NSIS 3 way of working) (SF Ticket 1119)
-    9. Inno Setup installer created and tested (SF Ticket 1119)
-    10. Graphics changes included in the installers (I am not a graphical arteist if you get it!) (SF Ticket 1119)
-    11. Installer script files support both 32 and 64 bit in the one script file. (SF Ticket 1119)
-    12. Can build the installer(s) from a batch file now. (SF Ticket 1119)
-    13. On Windows initial install auto detect GDB installation and configure it for use. (SF Ticket 1114)
-    14. Moved Help->About->Information to Help->"System Information" and added allot of extra info on the CB and PC setup. Added copy to clipboard button that anonymize's the data when copied to the clipboard. (SF Ticket 748)
-    15. Added extra help plugin menu items for the updated documentation included in the installation. These appear as sub menu items in the Help menu.
-    16. Copy Debug Watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
-    17. Incorporated SVN changes up to SVN 12529. See https://sourceforge.net/p/codeblocks/code/12529/log/ for change info.
+    7. Moved Help->About->Information to Help->"System Information" and added allot of extra info on the CB and PC setup. Added copy to clipboard button that anonymize's the data when copied to the clipboard. (SF Ticket 748)
+    8. Added extra help plugin menu items for the updated documentation included in the installation. These appear as sub menu items in the Help menu.
+    9. Copy Debug Watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
+    10. Incorporated SVN changes up to SVN 12529. See https://sourceforge.net/p/codeblocks/code/12529/log/ for change info.
+    11. Incorporated SF ticket 1135 to fix open a WXS or XRC file containing a wxStdDialogButtonSizer (p.e. src\sdk\resources\auto_detect_compilers.xrc) in wxSmith's editor wxWidgets shows an assert.
 
 Updated installer highlights compard to the C::B 20.03 NSIS installer:
 =======================================================================
@@ -62,6 +56,19 @@ Updated installer highlights compard to the C::B 20.03 NSIS installer:
     19. NSIS only - Added XP SP 3 x86 and x64 support - different set of files from https://sourceforge.net/p/codeblocks/code/11196/tree/trunk/src/exchndl /win32/bin and /win64/bin.. NOTE: Inno setup 6 does not support XP anymore. x66 works, but x64 has issue with mscrt.dll function missing.
     20. Both Installer can install using non admin (user) account. Admin is needed to install in the C:\Program file.... directory. If you run normally you install as a user, but if you run as admin you are asked which type of installation  you want.
     21. Both Installer can optionally open the https://github.com/ssbssa/gdb/releases web page as a sub checkbox in the compiler install page under the MINGW checkbox. This qallows the user to manually install a later GDB for MINGW that works. (SF ticket 1020)
+    22. Installer code is not a separate repo, but a directory in the C::B GitHub source repo tree. (SF Ticket 1119)
+    23. Massive NSIS changes (Including updating parts to the new NSIS 3 way of working) (SF Ticket 1119)
+    24. Inno Setup installer created and tested (SF Ticket 1119)
+    25. Graphics changes included in the installers (I am not a graphical arteist if you get it!) (SF Ticket 1119)
+    26. Installer script files support both 32 and 64 bit in the one script file. (SF Ticket 1119)
+    27. Can build the installer(s) from a batch file now. (SF Ticket 1119)
+    28. On Windows initial install auto detect GDB installation and configure it for use. (SF Ticket 1114)
+    29. Asks if you want to ubninstall previopus version before installing new version.
+    30. Install and uninstall checks to see you are running as admin or normal user so the install/uninstall uses the same priveleges as last one.
+    31. Modified nsi to not show the download compiler page if there is no internet connection.
+    32. Modified nsi to support installing the following if they are in the same directory as the installer:
+            * i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z
+            * x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z
 
 
 SOURCE:
