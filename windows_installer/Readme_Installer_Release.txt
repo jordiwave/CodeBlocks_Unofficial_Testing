@@ -1,4 +1,4 @@
-Updated for the release on 5-Sep-2021.
+Updated for the release on 15-Sep-2021.
 
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
 The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official installer.
@@ -63,12 +63,13 @@ Updated installer highlights compard to the C::B 20.03 NSIS installer:
     26. Installer script files support both 32 and 64 bit in the one script file. (SF Ticket 1119)
     27. Can build the installer(s) from a batch file now. (SF Ticket 1119)
     28. On Windows initial install auto detect GDB installation and configure it for use. (SF Ticket 1114)
-    29. Asks if you want to ubninstall previopus version before installing new version.
+    29. Asks if you want to uninstall previopus version before installing new version.
     30. Install and uninstall checks to see you are running as admin or normal user so the install/uninstall uses the same priveleges as last one.
-    31. Modified nsi to not show the download compiler page if there is no internet connection.
+    31. Modified nsi to only show the download compiler page if an internet connection is detected.
     32. Modified nsi to support installing the following if they are in the same directory as the installer:
             * i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z
             * x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z
+          These can be downloaded from https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/8.1.0/
 
 
 SOURCE:
