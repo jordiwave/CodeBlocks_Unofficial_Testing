@@ -3682,7 +3682,7 @@ Function InstallFinishPage_Show
     EnableWindow  $HWND_FinishPage.OpenBeginnerGuidePDF 0
 
 connected:
-    ;${if} ${RebootFlag}
+    ${if} ${RebootFlag}
         ;Radio buttons for reboot page
         ${NSD_CreateRadioButton} 10u 160u 100% 10u "$(MUI_TEXT_FINISH_REBOOTNOW)"
         Pop $HWND_FinishPage.RebootNow
@@ -3693,7 +3693,7 @@ connected:
         Pop $HWND_FinishPage.RebootLater
         ${NSD_SetState} $HWND_FinishPage.RebootLater 1
         SetCtlColors $HWND_FinishPage.RebootLater "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
-    ;${endif}
+    ${endif}
 
  
     ;Link
