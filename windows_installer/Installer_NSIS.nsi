@@ -257,28 +257,25 @@ Var STARTMENU_FOLDER_UNINSTALL
 !insertmacro MUI_PAGE_WELCOME
     !define UMUI_UPDATEPAGE_REMOVE
     !define UMUI_UPDATEPAGE_CONTINUE_SETUP
-!insertmacro UMUI_PAGE_UPDATE
 !insertmacro MUI_PAGE_LICENSE    ${CB_LICENSE}
-    !define UMUI_SETUPTYPEPAGE_MINIMAL "$(UMUI_TEXT_SETUPTYPE_MINIMAL_TITLE)"
-    !define UMUI_SETUPTYPEPAGE_STANDARD "$(UMUI_TEXT_SETUPTYPE_STANDARD_TITLE)"
-    !define UMUI_SETUPTYPEPAGE_COMPLETE "$(UMUI_TEXT_SETUPTYPE_COMPLETE_TITLE)"
-    !define UMUI_SETUPTYPEPAGE_DEFAULTCHOICE ${UMUI_COMPLETE}
-#    !define UMUI_SETUPTYPE_REGISTRY_VALUENAME "SetupType"
+!define MULTIUSER_PAGE_CUSTOMFUNCTION_SHOW onMultiUserModeColorOverRide
 !insertmacro MULTIUSER_PAGE_INSTALLMODE
+!insertmacro UMUI_PAGE_UPDATE
+!define UMUI_SETUPTYPEPAGE_MINIMAL "$(UMUI_TEXT_SETUPTYPE_MINIMAL_TITLE)"
+!define UMUI_SETUPTYPEPAGE_STANDARD "$(UMUI_TEXT_SETUPTYPE_STANDARD_TITLE)"
+!define UMUI_SETUPTYPEPAGE_COMPLETE "$(UMUI_TEXT_SETUPTYPE_COMPLETE_TITLE)"
+!define UMUI_SETUPTYPEPAGE_DEFAULTCHOICE ${UMUI_COMPLETE}
+#    !define UMUI_SETUPTYPE_REGISTRY_VALUENAME "SetupType"
 !insertmacro UMUI_PAGE_SETUPTYPE
 !insertmacro MUI_PAGE_COMPONENTS
-
 !insertmacro MUI_PAGE_DIRECTORY
-
     ; DO NOT USE !define UMUI_ALTERNATIVESTARTMENUPAGE_USE_TREEVIEW
     !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
     !define UMUI_ALTERNATIVESTARTMENUPAGE_SETSHELLVARCONTEXT
     !define MUI_STARTMENUPAGE_DEFAULTFOLDER $(^Name)
 !insertmacro UMUI_PAGE_ALTERNATIVESTARTMENU Application $STARTMENU_FOLDER_INSTALL
-
   !define UMUI_CONFIRMPAGE_TEXTBOX confirm_function
 !insertmacro UMUI_PAGE_CONFIRM
-
 !insertmacro MUI_PAGE_INSTFILES
 Page Custom CompilerLocalInstallPage_Show CompilerLocalInstallPage_Leave
 Page Custom CompilerDownloadPage_Show CompilerDownloadPage_Leave
@@ -3748,6 +3745,16 @@ FunctionEnd
 # ========================================================================================================================
 # ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 # ========================================================================================================================
+
+Function onMultiUserModeColorOverRide
+!ifdef MUI_BGCOLOR & MUI_TEXTCOLOR
+    SetCtlColors $MultiUser.InstallModePage "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+    SetCtlColors $MultiUser.InstallModePage.Text "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+    SetCtlColors $MultiUser.InstallModePage.AllUsers "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+    SetCtlColors $MultiUser.InstallModePage.CurrentUser "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+!endif
+FunctionEnd
+
 Function onMultiUserModeChanged
     ${If} $MultiUser.InstallMode == "CurrentUser"
         StrCpy $InstDir "$LocalAppdata\Programs\${MULTIUSER_INSTALLMODE_INSTDIR}"
