@@ -38,6 +38,16 @@
 # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  #
 # NOTE: The latest 32 bit wget zip is available from :              #
 #   https://eternallybored.org/misc/wget/                           #
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  #
+#                                                                   #
+# To fix the background color issue in NSIS Multi user page modify  #
+# the "Function "${PRE}"" in the MultiUser.nsh the code to add the  #
+# following 4 lines that go after the appropriate pops:             #
+# SetCtlColors $MultiUser.InstallModePage "" "${MUI_BGCOLOR}"                             #
+# SetCtlColors $MultiUser.InstallModePage.Text "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"        #
+# SetCtlColors $MultiUser.InstallModePage.AllUsers "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"    #
+# SetCtlColors $MultiUser.InstallModePage.CurrentUser "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}" #
+#                                                                   #
 #####################################################################
 
 Name CodeBlocks
@@ -71,7 +81,7 @@ Unicode True
     !undef NIGHTLY_BUILD_SVN
   !endif
 !else
-  !define NIGHTLY_BUILD_SVN 12492
+  !define NIGHTLY_BUILD_SVN 12529_PLUS
 !endif
 
 # Possibly required to adjust manually:
@@ -201,16 +211,7 @@ ShowUninstDetails show
 !define UMUI_USE_INSTALLOPTIONSEX
 
 
-!define MUI_FINISHPAGE_NOAUTOCLOSE
-!define MUI_FINISHPAGE_RUN           "$INSTDIR\codeblocks.exe"
-; !define MUI_FINISHPAGE_RUN_NOTCHECKED
-!define MUI_FINISHPAGE_SHOWREADME    "$INSTDIR${CB_DOCS}\manual_codeblocks_en.pdf"
-!define MUI_FINISHPAGE_SHOWREADME_TEXT   "Open Code::Blocks manual"
-!define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
-!define MUI_FINISHPAGE_LINK          "${URL}"
-!define MUI_FINISHPAGE_LINK_LOCATION "${URL}"
 !define MUI_UNICON                   "${CB_INSTALL_GRAPHICS_DIR}\setup_icon.ico"
-!define MUI_UNFINISHPAGE_NOAUTOCLOSE
 
 !define UMUI_LEFTIMAGE_BMP "${CB_INSTALL_GRAPHICS_DIR}\setup_1.bmp"
 #!define UMUI_HEADERBGIMAGE_BMP  "${CB_LOGO}"
@@ -238,10 +239,12 @@ ShowUninstDetails show
 !define MULTIUSER_INSTALLMODE_FUNCTION onMultiUserModeChanged
 #!define MULTIUSER_INSTALLMODE_UNFUNCTION  onMultiUserModeChanged
 !define MULTIUSER_MUI
+!define MULTIUSER_INSTALLMODE_COMMANDLINE
 !define MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_KEY ${REGKEY}
 !define MULTIUSER_INSTALLMODE_DEFAULT_REGISTRY_VALUENAME "MultiUserInstallMode"
 ;!define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY ${REGKEY}
 ;!define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_VALUENAME "MultiUserInstallModeDirectory"
+!define MULTIUSER_INSTALLMODEPAGE_SHOWUSERNAME
 !include MultiUser.nsh
 
 # Reserved Files
@@ -251,7 +254,6 @@ ReserveFile "${NSISDIR}\Plugins\x86-unicode\AdvSplash.dll"
 Var STARTMENU_FOLDER_INSTALL
 Var STARTMENU_FOLDER_UNINSTALL
 
-!insertmacro MULTIUSER_PAGE_INSTALLMODE
 !insertmacro MUI_PAGE_WELCOME
     !define UMUI_UPDATEPAGE_REMOVE
     !define UMUI_UPDATEPAGE_CONTINUE_SETUP
@@ -262,6 +264,7 @@ Var STARTMENU_FOLDER_UNINSTALL
     !define UMUI_SETUPTYPEPAGE_COMPLETE "$(UMUI_TEXT_SETUPTYPE_COMPLETE_TITLE)"
     !define UMUI_SETUPTYPEPAGE_DEFAULTCHOICE ${UMUI_COMPLETE}
 #    !define UMUI_SETUPTYPE_REGISTRY_VALUENAME "SetupType"
+!insertmacro MULTIUSER_PAGE_INSTALLMODE
 !insertmacro UMUI_PAGE_SETUPTYPE
 !insertmacro MUI_PAGE_COMPONENTS
 
@@ -279,7 +282,8 @@ Var STARTMENU_FOLDER_UNINSTALL
 !insertmacro MUI_PAGE_INSTFILES
 Page Custom CompilerLocalInstallPage_Show CompilerLocalInstallPage_Leave
 Page Custom CompilerDownloadPage_Show CompilerDownloadPage_Leave
-!insertmacro MUI_PAGE_FINISH
+Page Custom InstallFinishPage_Show InstallFinishPage_Leave
+;!insertmacro MUI_PAGE_FINISH
 
 !insertmacro UMUI_PAGE_ABORT
 
@@ -309,12 +313,6 @@ Page Custom CompilerDownloadPage_Show CompilerDownloadPage_Leave
 # -> admin requests administrator level and will cause Windows to prompt the
 #    user to verify privilege escalation.
 RequestExecutionLevel user
-
-####################################################
-# NSIS CUSTOM COMPILER DOWNLOAD PAGE CONFIGURATION #
-####################################################
-ReserveFile NSIS_CompilerDownload.ini
-!insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
 
 # ==========================================================================================================================
 # ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -2968,7 +2966,6 @@ Function .onInit
     Pop $R1
 
     !insertmacro MULTIUSER_INIT    
-    !insertmacro MUI_INSTALLOPTIONS_EXTRACT "NSIS_CompilerDownload.ini"
 
     ;Check earlier installation
     StrCpy $PROGRAM_FOLDER_UINSTALLDIR $INSTDIR
@@ -3385,7 +3382,20 @@ Function CompilerInstallerDownloadRun_Cygwin
     Call CompilerInstallerDownloadRun
 FunctionEnd
 
-Var HWND_COMPILERDLPAGE
+Var HWND_CompilerDownloadPage
+Var HWND_CompilerDownloadPage.Heading
+Var HWND_CompilerDownloadPage.Checkbox_Mingw_GCC
+Var HWND_CompilerDownloadPage.Checkbox_Mingw_GDBFix
+Var HWND_CompilerDownloadPage.Checkbox_TDM_GCC
+Var HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC
+Var HWND_CompilerDownloadPage.Checkbox_CYGWIN_GCC
+
+Var CompilerDownloadPage.Checkbox_Mingw_GCC
+Var CompilerDownloadPage.Checkbox_Mingw_GDBFix
+Var CompilerDownloadPage.Checkbox_TDM_GCC
+Var CompilerDownloadPage.Checkbox_MSYS2_GCC
+Var CompilerDownloadPage.Checkbox_CYGWIN_GCC
+
 
 Function CompilerDownloadPage_Show
 
@@ -3397,57 +3407,68 @@ Function CompilerDownloadPage_Show
 connected:
     ; Does not show page if setup cancelled, required only if UMUI_PAGE_ABORT inserted
     !insertmacro UMUI_ABORT_IF_INSTALLFLAG_IS ${UMUI_CANCELLED}
+    !insertmacro MUI_HEADER_TEXT "Internet Download Compiler Installation" ""
 
-    !insertmacro MUI_INSTALLOPTIONS_EXTRACT "NSIS_CompilerDownload.ini"
-    !insertmacro MUI_HEADER_TEXT "Compiler Installer Download and Run" ""
-
-    !insertmacro MUI_INSTALLOPTIONS_INITDIALOG "NSIS_CompilerDownload.ini"
-    Pop $HWND_COMPILERDLPAGE ;HWND of dialog
-
-    ; Set control backgrounds to be the same as the background
-    GetDlgItem $0 $HWND_COMPILERDLPAGE 1200
-    !insertmacro UMUI_IOPAGECTLTRANSPARENT_INIT $0
-    GetDlgItem $0 $HWND_COMPILERDLPAGE 1201
-    !insertmacro UMUI_IOPAGECTLTRANSPARENT_INIT $0
-    GetDlgItem $0 $HWND_COMPILERDLPAGE 1202
-    !insertmacro UMUI_IOPAGECTLTRANSPARENT_INIT $0
-    GetDlgItem $0 $HWND_COMPILERDLPAGE 1203
-    !insertmacro UMUI_IOPAGECTLTRANSPARENT_INIT $0
-    GetDlgItem $0 $HWND_COMPILERDLPAGE 1204
-    !insertmacro UMUI_IOPAGECTLTRANSPARENT_INIT $0
+    nsDialogs::Create 1018
+    Pop $HWND_CompilerDownloadPage
+    SetCtlColors $HWND_CompilerDownloadPage "" "${MUI_BGCOLOR}"
 
     ; set page background color to be the same as the background
-    !insertmacro UMUI_IOPAGEBGTRANSPARENT_INIT $HWND_COMPILERDLPAGE
+    !insertmacro UMUI_IOPAGEBGTRANSPARENT_INIT $HWND_CompilerDownloadPage
 
-    !insertmacro MUI_INSTALLOPTIONS_SHOW
-    
+    ${If} $HWND_CompilerDownloadPage == error
+        Abort
+    ${EndIf}
+
+    ${NSD_CreateLabel} 0 0 100% 20u "Please select compiler(s) to download the installer and run it.$\r$\nOnce you have selected the options you want click Next."
+    Pop $HWND_CompilerDownloadPage.Heading
+    SetCtlColors $HWND_CompilerDownloadPage.Heading "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+
+    ${NSD_CreateCheckbox}  0 50u 100% 10u "MinGW-W64 - supports 32 or 64 bit"
+    Pop $HWND_CompilerDownloadPage.Checkbox_Mingw_GCC
+    SetCtlColors $HWND_CompilerDownloadPage.Checkbox_Mingw_GCC "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+
+    ${NSD_CreateCheckbox} 20 65u 100% 10u "Open GDB web download page so you can upgrade GDB to resolve MinGW GDB issues."
+    Pop $HWND_CompilerDownloadPage.Checkbox_Mingw_GDBFix
+    SetCtlColors $HWND_CompilerDownloadPage.Checkbox_Mingw_GDBFix "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+
+    ${NSD_CreateCheckbox} 0 90u 100% 10u "TDM GCC - supports 32 or 32 & 64 bit"
+    Pop $HWND_CompilerDownloadPage.Checkbox_TDM_GCC
+    SetCtlColors $HWND_CompilerDownloadPage.Checkbox_TDM_GCC "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+
+    ${NSD_CreateCheckbox} 0 130u 100% 10u "MSYS2 - supports 32 and 64 bit"
+    Pop $HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC
+    SetCtlColors $HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+
+    ${NSD_CreateCheckbox} 0 170u 100% 10u "Cygwin - supports 64 bit only"
+    Pop $HWND_CompilerDownloadPage.Checkbox_CYGWIN_GCC
+    SetCtlColors $HWND_CompilerDownloadPage.Checkbox_CYGWIN_GCC "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+
+    nsDialogs::Show
+   
 FunctionEnd
 
 Function CompilerDownloadPage_Leave
-    ;${LogText} "Leaving compiler setup page"
+	${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_Mingw_GCC    $CompilerDownloadPage.Checkbox_Mingw_GCC
+	${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_Mingw_GDBFix $CompilerDownloadPage.Checkbox_Mingw_GDBFix
+    ${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_TDM_GCC      $CompilerDownloadPage.Checkbox_TDM_GCC
+    ${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_MSYS2_GCC    $CompilerDownloadPage.Checkbox_MSYS2_GCC
+    ${NSD_GetState} $HWND_CompilerDownloadPage.Checkbox_CYGWIN_GCC   $CompilerDownloadPage.Checkbox_CYGWIN_GCC
 
-    !insertmacro INSTALLOPTIONS_READ $R1 "NSIS_CompilerDownload.ini" "Field 1" "State"
-    !insertmacro INSTALLOPTIONS_READ $R2 "NSIS_CompilerDownload.ini" "Field 2" "State"
-    !insertmacro INSTALLOPTIONS_READ $R3 "NSIS_CompilerDownload.ini" "Field 3" "State"
-    !insertmacro INSTALLOPTIONS_READ $R4 "NSIS_CompilerDownload.ini" "Field 4" "State"
-    !insertmacro INSTALLOPTIONS_READ $R5 "NSIS_CompilerDownload.ini" "Field 5" "State"
-    ; "Field 5IS A 
-    ; MessageBox MB_OK|MB_ICONINFORMATION  "Field 1: $R1 , 2: $R2 , 3: $R3 , 4: $R4" , 5: $R5  /SD IDOK
-
-    ${If} $R1 == "1"
+    ${If} $CompilerDownloadPage.Checkbox_Mingw_GCC == "1"
         Call CompilerInstallerDownloadRun_MinGW
     ${EndIf}
-        ${If} $R2 == "1"
-            ExecShell "open" "https://github.com/ssbssa/gdb/releases" SW_SHOWNORMAL
-        ${EndIf}
+    ${If} $CompilerDownloadPage.Checkbox_Mingw_GDBFix == "1"
+        ExecShell "open" "https://github.com/ssbssa/gdb/releases" SW_SHOWNORMAL
+    ${EndIf}
 
-    ${If} $R3 == "1"
+    ${If} $CompilerDownloadPage.Checkbox_TDM_GCC == "1"
         Call CompilerInstallerDownloadRun_TDM
     ${EndIf}
-    ${If} $R4 == "1"
+    ${If} $CompilerDownloadPage.Checkbox_MSYS2_GCC == "1"
         Call CompilerInstallerDownloadRun_MSYS2
     ${EndIf}
-    ${If} $R5 == "1"
+    ${If} $CompilerDownloadPage.Checkbox_CYGWIN_GCC == "1"
         Call CompilerInstallerDownloadRun_Cygwin
     ${EndIf}
 
@@ -3456,18 +3477,17 @@ FunctionEnd
 # ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 # ========================================================================================================================
 Var HWND_CompilerLocalInstallPage
-Var HWND_Label_Heading
-Var HWND_Checkbox_1
-Var HWND_CompilerLocalInstallDirectoryLabel
-Var HWND_CompilerLocalInstallDirectory
-Var HWND_CompilerLocalInstallDirectoryBrowse
-Var HWND_Checkbox_2
-Var Checkbox_State_1
-Var Checkbox_State_2
-Var CompilerLocalInstallDirectory
+Var HWND_CompilerLocalInstallPage.Heading
+Var HWND_CompilerLocalInstallPage.Checkbox_1
+Var HWND_CompilerLocalInstallPage.Checkbox_2
+Var HWND_CompilerLocalInstallPage.DirectoryLabel
+Var HWND_CompilerLocalInstallPage.Directory
+Var HWND_CompilerLocalInstallPage.DirectoryBrowse
+Var CheckboxLocalInstall.State_1
+Var CheckboxLocalInstall.State_2
+Var CompilerLocalInstall.Directory
 
 Function CompilerLocalInstallPage_Show
-
     ${If} ${FileExists} "$EXEDIR\i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z"
     ${OrIf} ${FileExists} "$EXEDIR\i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z"
 
@@ -3477,33 +3497,41 @@ Function CompilerLocalInstallPage_Show
 
         nsDialogs::Create 1018
         Pop $HWND_CompilerLocalInstallPage
+        SetCtlColors $HWND_CompilerLocalInstallPage "" "${MUI_BGCOLOR}"
 
         ${If} $HWND_CompilerLocalInstallPage == error
             Abort
         ${EndIf}
 
         ${NSD_CreateLabel} 0 0 100% 20u "Please select the MinGW you want to install."
-        Pop $HWND_Label_Heading
+        Pop $HWND_CompilerLocalInstallPage.Heading
+        SetCtlColors $HWND_CompilerLocalInstallPage.Heading "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
 
         ${If} ${FileExists} "$EXEDIR\i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z"
             ${NSD_CreateCheckbox} 0 60u 100% 10u "Mingw64  -  i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z"
-            Pop $HWND_Checkbox_1
+            Pop $HWND_CompilerLocalInstallPage.Checkbox_1
+            SetCtlColors $HWND_CompilerLocalInstallPage.Checkbox_1 "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
         ${EndIf}
-        ${NSD_SetState} $HWND_Checkbox_1 1
+        ${NSD_SetState} $HWND_CompilerLocalInstallPage.Checkbox_1 1
 
         ${If} ${FileExists} "$EXEDIR\x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z"
             ${NSD_CreateCheckbox} 0 80u 100% 10u "Mingw32  -  x86_64-8.1.0-release-posix-seh-rt_v6-rev00.7z"
-            Pop $HWND_Checkbox_2
+            Pop $HWND_CompilerLocalInstallPage.Checkbox_2
+            SetCtlColors $HWND_CompilerLocalInstallPage.Checkbox_2 "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
         ${EndIf}
-        ${NSD_SetState} $HWND_Checkbox_2 1
+        ${NSD_SetState} $HWND_CompilerLocalInstallPage.Checkbox_2 1
 
         ${NSD_CreateLabel} 0 120u 100% 10u "Compiler install root directory:"
-        Pop $HWND_CompilerLocalInstallDirectoryLabel
-        ${NSD_CreateText} 0 130u 90% 10u "D:\"
-        Pop $HWND_CompilerLocalInstallDirectory
+        Pop $HWND_CompilerLocalInstallPage.DirectoryLabel
+        SetCtlColors $HWND_CompilerLocalInstallPage.DirectoryLabel "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+
+        ${NSD_CreateText} 0 130u 90% 10u "C:\"
+        Pop $HWND_CompilerLocalInstallPage.Directory
+        ;SetCtlColors $HWND_CompilerLocalInstallPage.Directory "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+
         ${NSD_CreateBrowseButton} 90% 130u 10% 10u "Browse"
-        Pop $HWND_CompilerLocalInstallDirectoryBrowse
-        ${NSD_OnClick} $HWND_CompilerLocalInstallDirectoryBrowse CompilerLocalInstallDirectoryBrowse
+        Pop $HWND_CompilerLocalInstallPage.DirectoryBrowse
+        ${NSD_OnClick} $HWND_CompilerLocalInstallPage.DirectoryBrowse CompilerLocalInstallDirectoryBrowse
    
         nsDialogs::Show
         ;!insertmacro MUI_INSTALLOPTIONS_SHOW
@@ -3511,26 +3539,27 @@ Function CompilerLocalInstallPage_Show
 FunctionEnd
 
 Function CompilerLocalInstallDirectoryBrowse
-    ${NSD_GetText} $HWND_CompilerLocalInstallDirectory $0
+    ${NSD_GetText} $HWND_CompilerLocalInstallPage.Directory $0
     nsDialogs::SelectFolderDialog "Select compiler install folder" "$0"
     Pop $0
     ${If} $0 != error
-        ${NSD_SetText} $HWND_CompilerLocalInstallDirectory "$0"
+        ${NSD_SetText} $HWND_CompilerLocalInstallPage.Directory "$0"
     ${EndIf}
 FunctionEnd
 
 Function CompilerLocalInstallPage_Leave
+
     SetOutPath $PLUGINSDIR 
     SetOverwrite on
     File 7za.exe
 
-	${NSD_GetState} $HWND_Checkbox_1 $Checkbox_State_1
-	${NSD_GetState} $HWND_Checkbox_2 $Checkbox_State_2
-    ${NSD_GetText}  $HWND_CompilerLocalInstallDirectory $CompilerLocalInstallDirectory
+	${NSD_GetState} $HWND_CompilerLocalInstallPage.Checkbox_1 $CheckboxLocalInstall.State_1
+	${NSD_GetState} $HWND_CompilerLocalInstallPage.Checkbox_2 $CheckboxLocalInstall.State_2
+    ${NSD_GetText}  $HWND_CompilerLocalInstallPage.Directory  $CompilerLocalInstall.Directory
 
 ;process_1:
-    ${If} $Checkbox_State_1 = "1"
-        NSExec::exec '"$PLUGINSDIR \7za.exe" x -y "$EXEDIR\i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z" -o$CompilerLocalInstallDirectory'
+    ${If} $CheckboxLocalInstall.State_1 = "1"
+        NSExec::exec '"$PLUGINSDIR\7za.exe" x -y "$EXEDIR\i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z" -o$CompilerLocalInstall.Directory'
         Pop $0 ;Get the return value in $0
         StrCmp $0 0 process_2 0
         MessageBox MB_OK|MB_ICONEXCLAMATION \
@@ -3539,8 +3568,8 @@ Function CompilerLocalInstallPage_Leave
     ${EndIf}
 
 process_2:
-    ${If} $Checkbox_State_2 = "1"
-        NSExec::exec '"$PLUGINSDIR \7za.exe" x -y "$EXEDIR\x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z" -o$CompilerLocalInstallDirectory'
+    ${If} $CheckboxLocalInstall.State_2 = "1"
+        NSExec::exec '"$PLUGINSDIR\7za.exe" x -y "$EXEDIR\x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z" -o$CompilerLocalInstall.Directory'
         Pop $0 ;Get the return value in $0
         StrCmp $0 0 finishedInstall 0
         MessageBox MB_OK|MB_ICONEXCLAMATION \
@@ -3550,6 +3579,169 @@ process_2:
    
 finishedInstall:
     Delete $PLUGINSDIR\7za.exe
+
+FunctionEnd
+
+# ========================================================================================================================
+# ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+# ========================================================================================================================
+Var HWND_FinishPage
+Var HWND_FinishPage.Button.Next
+Var HWND_FinishPage.Button.Cancel
+Var HWND_FinishPage.Button.Back
+Var HWND_FinishPage.Title
+Var HWND_FinishPage.Title.Font
+Var HWND_FinishPage.Text
+
+Var HWND_FinishPage.RunCodeBlocks
+Var HWND_FinishPage.OpenManualEnglishPDF
+Var HWND_FinishPage.OpenManualEnglishCHM
+Var HWND_FinishPage.OpenManualFrenchPDF
+Var HWND_FinishPage.OpenManualFrenchCHM
+Var HWND_FinishPage.OpenBeginnerGuidePDF
+Var HWND_FinishPage.CodeBlocksLink
+
+Var HWND_FinishPage.RebootNow
+Var HWND_FinishPage.RebootLater
+
+Function OpenFinishPageLink
+    ${NSD_GetText} $HWND_FinishPage.CodeBlocksLink $0
+    ExecShell open "$0"
+FunctionEnd
+
+Function InstallFinishPage_Show
+
+    ; Does not show page if setup cancelled, required only if UMUI_PAGE_ABORT inserted
+    !insertmacro UMUI_ABORT_IF_INSTALLFLAG_IS ${UMUI_CANCELLED}
+
+    !insertmacro MUI_HEADER_TEXT "Code::Blocks Install Finish page" ""
+
+    ;Create dialog
+    nsDialogs::Create 1044
+    Pop $HWND_FinishPage
+    nsDialogs::SetRTL $(^RTL)
+    SetCtlColors $HWND_FinishPage "" "${MUI_BGCOLOR}"
+
+    ;Buttons
+    GetDlgItem $HWND_FinishPage.Button.Next     $HWNDPARENT 1
+    GetDlgItem $HWND_FinishPage.Button.Cancel   $HWNDPARENT 2
+    GetDlgItem $HWND_FinishPage.Button.Back     $HWNDPARENT 3
+
+    ;Update buttons
+    SendMessage  $HWND_FinishPage.Button.Next ${WM_SETTEXT} 0 "STR:$(MUI_BUTTONTEXT_FINISH)"
+    ShowWindow  $HWND_FinishPage.Button.Cancel ${SW_HIDE}
+    ShowWindow  $HWND_FinishPage.Button.Back   ${SW_HIDE}
+    
+    ;Title text
+    ${NSD_CreateLabel} 10u 0u 100% 25u "Completing Code::Blocks Setup"
+    Pop $HWND_FinishPage.Title
+    SetCtlColors $HWND_FinishPage.Title "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+    CreateFont $HWND_FinishPage.Title.Font "$(^Font)" "18" "700"
+    SendMessage $HWND_FinishPage.Title ${WM_SETFONT} $HWND_FinishPage.Title.Font 0
+
+    ;Finish text
+    ${NSD_CreateLabel} 10u 20u 100% 25u "Code::Blocks has been installed on your computer.$\r$\nClick Finish to close Setup."
+    Pop $HWND_FinishPage.Text
+    SetCtlColors $HWND_FinishPage.Text "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+
+    ;Checkboxes
+    ${NSD_CreateCheckbox} 10u 50u 100% 10u "&Run $(^NameDA)"
+    Pop $HWND_FinishPage.RunCodeBlocks
+    SetCtlColors $HWND_FinishPage.RunCodeBlocks "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+    ${NSD_SetState} $HWND_FinishPage.RunCodeBlocks 1
+
+    ${NSD_CreateCheckbox} 10u 70u 100% 10u "Open Code::Blocks PDF User Manual in English"
+    Pop $HWND_FinishPage.OpenManualEnglishPDF
+    SetCtlColors $HWND_FinishPage.OpenManualEnglishPDF "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+    ${NSD_SetState} $HWND_FinishPage.OpenManualEnglishPDF 0
+
+    ${NSD_CreateCheckbox} 10u 85u 100% 10u "Open Code::Blocks CHM User Manual in English"
+    Pop $HWND_FinishPage.OpenManualEnglishCHM
+    SetCtlColors $HWND_FinishPage.OpenManualEnglishCHM "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+    ${NSD_SetState} $HWND_FinishPage.OpenManualEnglishCHM 0
+
+    ${NSD_CreateCheckbox} 10u 100u 100% 10u "Open Code::Blocks PDF User Manual in French"
+    Pop $HWND_FinishPage.OpenManualFrenchPDF
+    SetCtlColors $HWND_FinishPage.OpenManualFrenchPDF "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+    ${NSD_SetState} $HWND_FinishPage.OpenManualFrenchPDF 0
+
+    ${NSD_CreateCheckbox} 10u 115u 100% 10u "Open Code::Blocks CHM User Manual in French"
+    Pop $HWND_FinishPage.OpenManualFrenchCHM
+    SetCtlColors $HWND_FinishPage.OpenManualFrenchCHM "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+    ${NSD_SetState} $HWND_FinishPage.OpenManualFrenchCHM 0
+
+    ${NSD_CreateCheckbox} 10u 130u 100% 10u "Open Code::Blocks beginner guide (opens third party internet link)"
+    Pop $HWND_FinishPage.OpenBeginnerGuidePDF
+    SetCtlColors $HWND_FinishPage.OpenBeginnerGuidePDF "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+    ${NSD_SetState} $HWND_FinishPage.OpenBeginnerGuidePDF 0
+
+    ; Check for internet conection 
+    Dialer::GetConnectedState
+    Pop $R0
+    StrCmp $R0 "online" connected 0 
+    EnableWindow  $HWND_FinishPage.OpenBeginnerGuidePDF 0
+
+connected:
+    ;${if} ${RebootFlag}
+        ;Radio buttons for reboot page
+        ${NSD_CreateRadioButton} 10u 160u 100% 10u "$(MUI_TEXT_FINISH_REBOOTNOW)"
+        Pop $HWND_FinishPage.RebootNow
+        ${NSD_SetState} $HWND_FinishPage.RebootNow 0
+        SetCtlColors $HWND_FinishPage.RebootNow "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"        
+
+        ${NSD_CreateRadioButton} 10u 170u 100% 10u "$(MUI_TEXT_FINISH_REBOOTLATER)"
+        Pop $HWND_FinishPage.RebootLater
+        ${NSD_SetState} $HWND_FinishPage.RebootLater 1
+        SetCtlColors $HWND_FinishPage.RebootLater "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"
+    ;${endif}
+
+ 
+    ;Link
+    ${NSD_CreateLink} 10u 190u 100% 10u "${URL}"
+    Pop $HWND_FinishPage.CodeBlocksLink
+    SetCtlColors $HWND_FinishPage.CodeBlocksLink "${MUI_FINISHPAGE_LINK_COLOR}" "${MUI_BGCOLOR}"
+    ${NSD_OnClick} $HWND_FinishPage.CodeBlocksLink OpenFinishPageLink
+        
+    ;Show page
+    !insertmacro MUI_PAGE_FUNCTION_CUSTOM SHOW
+    nsDialogs::Show
+    !insertmacro MUI_PAGE_FUNCTION_CUSTOM DESTROYED
+
+FunctionEnd
+
+Var HWND_FinishPage.RunCodeBlocks_State
+Var HWND_FinishPage.OpenManualEnglishPDF_State
+Var HWND_FinishPage.OpenManualEnglishCHM_State
+Var HWND_FinishPage.OpenManualFrenchPDF_State
+Var HWND_FinishPage.OpenManualFrenchCHM_State
+Var HWND_FinishPage.OpenBeginnerGuidePDF_State
+
+Function InstallFinishPage_Leave
+    ${NSD_GetState}  $HWND_FinishPage.RunCodeBlocks         $HWND_FinishPage.RunCodeBlocks_State
+    ${NSD_GetState}  $HWND_FinishPage.OpenManualEnglishPDF  $HWND_FinishPage.OpenManualEnglishPDF_State
+    ${NSD_GetState}  $HWND_FinishPage.OpenManualEnglishCHM  $HWND_FinishPage.OpenManualEnglishCHM_State
+    ${NSD_GetState}  $HWND_FinishPage.OpenManualFrenchPDF   $HWND_FinishPage.OpenManualFrenchPDF_State
+    ${NSD_GetState}  $HWND_FinishPage.OpenManualFrenchCHM   $HWND_FinishPage.OpenManualFrenchCHM_State
+    ${NSD_GetState}  $HWND_FinishPage.OpenBeginnerGuidePDF  $HWND_FinishPage.OpenBeginnerGuidePDF_State
+
+    ${If} $HWND_FinishPage.RunCodeBlocks_State = "1"
+        ExecShell open "$INSTDIR\codeblocks.exe"
+    ${EndIf}
+    ${If} $HWND_FinishPage.OpenManualEnglishPDF_State = "1"
+        ExecShell open "$INSTDIR${CB_DOCS}\manual_codeblocks_en.pdf"
+    ${EndIf}
+    ${If} $HWND_FinishPage.OpenManualEnglishCHM_State = "1"
+        ExecShell open "$INSTDIR${CB_DOCS}\manual_codeblocks_en.chm"
+    ${EndIf}
+    ${If} $HWND_FinishPage.OpenManualFrenchPDF_State = "1"
+        ExecShell open "$INSTDIR${CB_DOCS}\manual_codeblocks_fr.pdf"
+    ${EndIf}
+    ${If} $HWND_FinishPage.OpenManualFrenchCHM_State = "1"
+        ExecShell open "$INSTDIR${CB_DOCS}\manual_codeblocks_fr.chm"
+    ${EndIf}
+    ${If} $HWND_FinishPage.OpenBeginnerGuidePDF_State = "1"
+        ExecShell open "http://www.sci.brooklyn.cuny.edu/~goetz/codeblocks/codeblocks-instructions.pdf"
+    ${EndIf}
 
 FunctionEnd
 
