@@ -1866,6 +1866,7 @@ void EditorManager::OnAppStartShutdown(wxCommandEvent& event)
 void EditorManager::OnCheckForModifiedFiles(cb_unused wxCommandEvent& event)
 {
     CheckForExternallyModifiedFiles();
+    event.Skip(); // allow others to process it too
 }
 
 void EditorManager::HideNotebook()

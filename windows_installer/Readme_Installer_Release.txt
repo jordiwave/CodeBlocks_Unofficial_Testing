@@ -1,4 +1,4 @@
-Updated for the release on 15-Sep-2021.
+Updated for the release on 6-Oct-2021.
 
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
 The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official installer.
@@ -28,6 +28,7 @@ C::B exe/dll changed/update highlights compared to the last nightly SVN 12516 re
     9. Copy Debug Watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
     10. Incorporated SVN changes up to SVN 12529. See https://sourceforge.net/p/codeblocks/code/12529/log/ for change info.
     11. Incorporated SF ticket 1135 to fix open a WXS or XRC file containing a wxStdDialogButtonSizer (p.e. src\sdk\resources\auto_detect_compilers.xrc) in wxSmith's editor wxWidgets shows an assert.
+    12. Incorporated SF ticket 1108 fix. See https://forums.codeblocks.org/index.php?action=post;topic=24659.0;last_msg=168241 for patch.
 
 Updated installer highlights compard to the C::B 20.03 NSIS installer:
 =======================================================================

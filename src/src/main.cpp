@@ -3127,6 +3127,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
 
     Manager::SetAppShuttingDown(true);
 
+    // This does not call OnRelease() for the plugins. It's just a notify...
     Manager::Get()->GetLogManager()->DebugLog(_T("Deinitializing plugins..."));
     CodeBlocksEvent evtShutdown(cbEVT_APP_START_SHUTDOWN);
     Manager::Get()->ProcessEvent(evtShutdown);
@@ -3148,8 +3149,19 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     while (GetEventHandler() != this)
         PopEventHandler(false);
 
+     #if   defined ( __WIN32__ ) || defined ( _WIN64 )
+    // Hide() causes crashes and hangs on windows when floating windows are shown //(ph 2021/10/4)
+    // Hide the window
+    //-Hide();
+    // Move the window off the screen instead of Hide()
+    wxDisplay display(wxDisplay::GetFromWindow(this));
+    wxRect screen = display.GetClientArea();
+    wxWindow* pWindow = Manager::Get()->GetAppWindow();
+    pWindow->Move(screen.GetX()+screen.GetWidth(), screen.GetY());
+    #else
     // Hide the window
     Hide();
+    #endif
 
     if (!Manager::IsBatchBuild())
     {
@@ -3169,6 +3181,17 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
             cbAssert(result);
         }
     }
+
+    #if   defined ( __WIN32__ ) || defined ( _WIN64 )
+    // Close shown floating windows before shutdown or get occasional crashes
+    wxAuiPaneInfoArray& all_panes = m_LayoutManager.GetAllPanes();
+    for(size_t ii = 0; ii < all_panes.Count(); ++ii)
+    {
+        wxAuiPaneInfo paneInfo = all_panes[ii];
+        if (paneInfo.IsShown() and paneInfo.IsFloating())
+            m_LayoutManager.ClosePane(paneInfo);
+    }
+    #endif
 
     Manager::Shutdown(); // Shutdown() is not Free(), Manager is automatically destroyed at exit
 
