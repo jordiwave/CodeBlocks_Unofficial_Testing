@@ -229,8 +229,8 @@ wxString nsEnvVars::GetSetPathByName(const wxString& set_name, bool check_exists
     set_path.Empty();
 
   ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));
-  if (!cfg || set_path.IsEmpty())
-    return set_path;
+  if (!cfg)
+    return wxString();
 
   if (!check_exists)
     return _T("/sets/")+set_name;

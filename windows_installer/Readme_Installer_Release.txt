@@ -1,4 +1,4 @@
-Updated for the release on 6-Oct-2021.
+Updated for the release on 11-Oct-2021.
 
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
 The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official installer.
@@ -7,8 +7,8 @@ Installer download link:
 ========================
 https://sourceforge.net/projects/unofficial-cb-installers/
 
-C::B exe/dll changed/update highlights compared to the last nightly SVN 12516 release:
-======================================================================================
+C::B exe/dll changed/update highlights compared to the last nightly SVN 12535 release (10-Oct-2021):
+====================================================================================================
     1. Auto-detect POP up condition on startup has changed. After initial install will only pop up if the default compiler has issues. (SF Ticket 1117)
     2. Auto-detect compiler dialog has the option to show the installed or all the compilers. (SF Ticket 1117). Reworked and simplified the code in the 4-Sep-2021 release.
     3. The compiler selection dialog has the option of showing the detected compilers or all the compilers. Fix a number of compiler selection dialog bugs. (SF Ticket 1111)
@@ -26,10 +26,11 @@ C::B exe/dll changed/update highlights compared to the last nightly SVN 12516 re
     7. Moved Help->About->Information to Help->"System Information" and added allot of extra info on the CB and PC setup. Added copy to clipboard button that anonymize's the data when copied to the clipboard. (SF Ticket 748)
     8. Added extra help plugin menu items for the updated documentation included in the installation. These appear as sub menu items in the Help menu.
     9. Copy Debug Watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
-    10. Incorporated SVN changes up to SVN 12529. See https://sourceforge.net/p/codeblocks/code/12529/log/ for change info.
-    11. Incorporated SF ticket 1135 to fix open a WXS or XRC file containing a wxStdDialogButtonSizer (p.e. src\sdk\resources\auto_detect_compilers.xrc) in wxSmith's editor wxWidgets shows an assert.
-    12. Incorporated SF ticket 1108 fix. See https://forums.codeblocks.org/index.php?action=post;topic=24659.0;last_msg=168241 for patch.
-
+    10. Incorporated SVN changes up to SVN 12535. See https://sourceforge.net/p/codeblocks/code/12535/log/ for change info.
+    11. 9-Oct-2021: Manually incorporated fix for "EnvVars Plugin Warning" as per https://forums.codeblocks.org/index.php/topic,24664.msg168270/topicseen.html#msg168270
+    
+    
+    
 Updated installer highlights compard to the C::B 20.03 NSIS installer:
 =======================================================================
     1. Option to download and run the following compiler installers from the internet:
@@ -51,7 +52,7 @@ Updated installer highlights compard to the C::B 20.03 NSIS installer:
     13. Check out the https://sourceforge.net/projects/unofficial-cb-installers/files/Installer_Pages.odt file for the installer pages.
     14. Now installs Code::Blocks in the "C:\Program Files" directory for the 64 bit installer.
     15. Inno installer uses InnoSetup Compiler(ISS) (http://www.jrsoftware.org) aka ISS V6.2.0
-    16. NSIS installer uses NSIS compiler (http://nsis.sourceforge.net) V3.7.0
+    16. NSIS installer uses NSIS compiler (http://nsis.sourceforge.net) V3.0.8 (3.0.8 from 7-Oct-2021)
     17. Inno installer script file is "Installer_ISS_full_only.iss"
     18. NSIS installer script file is "Installer_NSIS.nsi"
     19. NSIS only - Added XP SP 3 x86 and x64 support - different set of files from https://sourceforge.net/p/codeblocks/code/11196/tree/trunk/src/exchndl /win32/bin and /win64/bin.. NOTE: Inno setup 6 does not support XP anymore. x66 works, but x64 has issue with mscrt.dll function missing.
