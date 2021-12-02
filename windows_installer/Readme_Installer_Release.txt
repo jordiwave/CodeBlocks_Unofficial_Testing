@@ -1,4 +1,4 @@
-Updated for the release on 11-Oct-2021.
+Updated for the release on 02-Dec-2021.
 
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
 The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official installer.
@@ -7,7 +7,7 @@ Installer download link:
 ========================
 https://sourceforge.net/projects/unofficial-cb-installers/
 
-C::B exe/dll changed/update highlights compared to the last nightly SVN 12535 release (10-Oct-2021):
+C::B exe/dll changed/update highlights compared to the last nightly SVN 12537 release (11-Nov-2021):
 ====================================================================================================
     1. Auto-detect POP up condition on startup has changed. After initial install will only pop up if the default compiler has issues. (SF Ticket 1117)
     2. Auto-detect compiler dialog has the option to show the installed or all the compilers. (SF Ticket 1117). Reworked and simplified the code in the 4-Sep-2021 release.
@@ -21,15 +21,12 @@ C::B exe/dll changed/update highlights compared to the last nightly SVN 12535 re
                 - GCC MinGW-w64
                 - GCC LLVM Clang MinGW-W64
                 - Other MinGW w32 or w64 compilers like winlib or gytx
-    5. 64bit built with MSYS2 mingw64 GCC 10.3 using the latest MSYS 2 release.
-    6. 32bit built with MingGW-64 installer using "GCC 8.1.0 , i686, posix threading, dwarf exception hading and 0 build revision" configuration.
+    5. 24-Oct-2021 x64 built with MSYS2 mingw64 GCC 11.2 using the latest MSYS 2 release (GCC 10.3 => 11.2 ON 24Oct2021)
+    6. x86 built with MingGW-32 installer using "GCC 8.1.0 , i686, posix threading, dwarf exception hading and 0 build revision" configuration.
     7. Moved Help->About->Information to Help->"System Information" and added allot of extra info on the CB and PC setup. Added copy to clipboard button that anonymize's the data when copied to the clipboard. (SF Ticket 748)
     8. Added extra help plugin menu items for the updated documentation included in the installation. These appear as sub menu items in the Help menu.
     9. Copy Debug Watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
-    10. Incorporated SVN changes up to SVN 12535. See https://sourceforge.net/p/codeblocks/code/12535/log/ for change info.
-    11. 9-Oct-2021: Manually incorporated fix for "EnvVars Plugin Warning" as per https://forums.codeblocks.org/index.php/topic,24664.msg168270/topicseen.html#msg168270
-    
-    
+    10. Incorporated SVN changes up to and including SVN 12542. See https://sourceforge.net/p/codeblocks/code/12542/log/ for change info.
     
 Updated installer highlights compard to the C::B 20.03 NSIS installer:
 =======================================================================
@@ -67,8 +64,8 @@ Updated installer highlights compard to the C::B 20.03 NSIS installer:
     28. On Windows initial install auto detect GDB installation and configure it for use. (SF Ticket 1114)
     29. Asks if you want to uninstall previopus version before installing new version.
     30. Install and uninstall checks to see you are running as admin or normal user so the install/uninstall uses the same priveleges as last one.
-    31. Modified nsi to only show the download compiler page if an internet connection is detected.
-    32. Modified nsi to support installing the following if they are in the same directory as the installer:
+    31. Modified NSI installer script to only show the download compiler page if an internet connection is detected.
+    32. Modified NSI installer script to support installing the following if they are in the same directory as the installer:
             * i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z
             * x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z
           These can be downloaded from https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/8.1.0/
@@ -76,7 +73,7 @@ Updated installer highlights compard to the C::B 20.03 NSIS installer:
 
 SOURCE:
 =======
-The source code used to produce the installers is currently (until the repo is no longer required or supported):
+The source code repo used to produce the installers is currently:
     https://github.com/acotty/codeblocks_sf/tree/AC-WindowsInstaller
 
 NOTES:

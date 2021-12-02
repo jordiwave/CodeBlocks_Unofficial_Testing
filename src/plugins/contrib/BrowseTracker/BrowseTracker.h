@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id$
+// RCS-ID: $Id: BrowseTracker.h 12539 2021-11-27 22:53:18Z pecanh $
 
 
 #ifndef BROWSETRACKER_H_INCLUDED
@@ -282,10 +282,8 @@ class BrowseTracker : public cbPlugin
         void MarkerPrevious(cbStyledTextCtrl* pControl);
         void MarkLine(cbStyledTextCtrl* pControl, int line);
         void MarkRemove(cbStyledTextCtrl* pControl, int line);
-        BrowseMarks* HashAddBrowse_Marks( const wxString fullPath);
+        BrowseMarks* HashAddBrowse_Marks( const EditorBase* pEdBase);
         void SetBrowseMarksStyle( int userStyle);
-        //-int  GetBrowseMarkerId(){return gBrowse_MarkerId;}
-        //-int  GetBrowseMarkerStyle(){return gBrowse_MarkerStyle;}
 
         BrowseMarks* GetBrowse_MarksFromHash( EditorBase* eb);
         BrowseMarks* GetBrowse_MarksFromHash( wxString filePath);
@@ -309,11 +307,9 @@ class BrowseTracker : public cbPlugin
         wxToolBar*      m_pToolBar;
 
         wxString        m_ConfigFolder;
-        //-wxString        m_ExecuteFolder;
         wxString        m_AppName;
         wxString        TrackerCfgFullPath;
         bool            m_bProjectIsLoading;
-        //-cbProject*      m_pLoadingProject;
 
         wxString        m_LoadingProjectFilename;
         int             m_ProjectHookId; // project loader hook ID

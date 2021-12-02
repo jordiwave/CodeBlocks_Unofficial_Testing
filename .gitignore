@@ -1,6 +1,7 @@
 /src/.objs*
 /src/devel*
 /src/output*
+/src/*.log
 *.layout
 *.depend
 autorevision.h
@@ -23,3 +24,5 @@ Makefile.in
 /config.sub
 *.cbTemp
 windows_installer/codeblocks*.exe
+windows_installer/*.7z
+windows_installer/*.7z.*

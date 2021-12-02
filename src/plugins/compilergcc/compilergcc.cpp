@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12542 $
+ * $Id: compilergcc.cpp 12542 2021-12-01 08:57:03Z wh11204 $
+ * $HeadURL: file:///svn/p/codeblocks/code/trunk/src/plugins/compilergcc/compilergcc.cpp $
  */
 
 #include <sdk.h>
@@ -2652,8 +2652,9 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
         if (!prj->SupportsCurrentPlatform())
         {
             wxString msg;
-            msg.Printf(_T("\"%s\" does not support the current platform. Skipping..."),
-                        prj->GetTitle().wx_str());
+            msg.Printf("\"%s\" does not support the current platform. Skipping...",
+                       prj->GetTitle());
+
             Manager::Get()->GetLogManager()->LogWarning(msg, m_PageIndex);
             continue;
         }
@@ -2661,24 +2662,32 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
         ExpandTargets(prj, targetName, tlist);
 
         if (tlist.GetCount() == 0)
-            Manager::Get()->GetLogManager()->LogWarning(F(_T("Warning: No target named '%s' in project '%s'. Project will not be built..."), targetName.wx_str(), prj->GetTitle().wx_str()));
+        {
+            wxString msg;
+            msg.Printf("Warning: No target named '%s' in project '%s'. Project will not be built...",
+                       targetName, prj->GetTitle());
+
+            Manager::Get()->GetLogManager()->LogWarning(msg);
+        }
 
         // add all matching targets in the job list
         for (size_t x = 0; x < tlist.GetCount(); ++x)
         {
             ProjectBuildTarget* tgt = prj->GetBuildTarget(tlist[x]);
+            if (!tgt->SupportsCurrentPlatform())
+            {
+                wxString msg;
+                msg.Printf("\"%s - %s\" does not support the current platform. Skipping...",
+                           prj->GetTitle(), tlist[x]);
+
+                Manager::Get()->GetLogManager()->LogWarning(msg, m_PageIndex);
+                continue;
+            }
+
             CompilerValidResult result = CompilerValid(tgt);
             if (!result.isValid)
             {
-                PrintInvalidCompiler(tgt, result.compiler, _T("Skipping..."));
-                continue;
-            }
-            else if (!tgt->SupportsCurrentPlatform())
-            {
-                wxString msg;
-                msg.Printf(_T("\"%s - %s\" does not support the current platform. Skipping..."),
-                            prj->GetTitle().wx_str(), tlist[x].wx_str());
-                Manager::Get()->GetLogManager()->LogWarning(msg, m_PageIndex);
+                PrintInvalidCompiler(tgt, result.compiler, "Skipping...");
                 continue;
             }
             BuildJobTarget bjt;

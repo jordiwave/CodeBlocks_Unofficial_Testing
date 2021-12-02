@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12540 $
+ * $Id: cbeditor.cpp 12540 2021-12-01 08:42:52Z wh11204 $
+ * $HeadURL: file:///svn/p/codeblocks/code/trunk/src/sdk/cbeditor.cpp $
  */
 
 #include "sdk_precomp.h"
@@ -1186,8 +1186,14 @@ void cbEditor::Split(cbEditor::SplitType split)
     m_pSplitter = new wxSplitterWindow(this, wxNewId(), wxDefaultPosition, wxDefaultSize, wxSP_NOBORDER | wxSP_LIVE_UPDATE);
     m_pSplitter->SetMinimumPaneSize(32);
 
+    // save current encoding
+    const wxFontEncoding currentEncoding(m_pData->m_encoding);
+
     // create the right control
     m_pControl2 = CreateEditor();
+
+    // restore encoding
+    m_pData->m_encoding = currentEncoding;
 
     // update controls' look'n'feel
     // do it here (before) document is attached, speeds up syntaxhighlighting

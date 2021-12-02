@@ -299,20 +299,14 @@ void CompilerFactory::LoadSettings()
 
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
-Manager::Get()->GetLogManager()->Log(wxString::Format("L 303 The master path (%s) of compiler ID \"%s\" does not exist -> triggers auto-detection.", Compilers[i]->GetMasterPath(), Compilers[i]->GetID()));
-
         wxString baseKey = Compilers[i]->GetParentID().IsEmpty() ? _T("/sets") : _T("/user_sets");
         Compilers[i]->LoadSettings(baseKey);
-
-Manager::Get()->GetLogManager()->Log(wxString::Format("L 307 The master path (%s) of compiler ID \"%s\" does not exist -> triggers auto-detection.", Compilers[i]->GetMasterPath(), Compilers[i]->GetID()));
 
         CodeBlocksEvent event(cbEVT_COMPILER_SETTINGS_CHANGED);
         event.SetString(Compilers[i]->GetID());
         event.SetInt(static_cast<int>(i));
         event.SetClientData(static_cast<void*>(Compilers[i]));
         Manager::Get()->ProcessEvent(event);
-
-Manager::Get()->GetLogManager()->Log(wxString::Format("L 315 The master path (%s) of compiler ID \"%s\" does not exist -> triggers auto-detection.", Compilers[i]->GetMasterPath(), Compilers[i]->GetID()));
 
         if (    (Compilers[i]->GetMasterPath().IsEmpty() || !wxFileName::DirExists(Compilers[i]->GetMasterPath()))
                 &&

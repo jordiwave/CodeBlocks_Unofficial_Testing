@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id$
+// RCS-ID: $Id: Version.cpp 12539 2021-11-27 22:53:18Z pecanh $
 
 #include "Version.h"
 
@@ -279,7 +279,11 @@ AppVersion::~AppVersion()
 //  1.2.111  2021/06/19
 //           Implemented EditorManager's stack based switching into BrowseTracker
 //           Linux support, support for stack based editor switching
-//
+// 1.2.112   2021/11/27
+//           Fixed crash when using the EditorManager to get the EditorBase* in OnEditorActivated().
+//           Something has changed such that the EditorManager no longer knows the EditorBase* with:
+//           ProjectManager::GetEditor(filename) during the Editor activated event.
+//           Cf., https://forums.codeblocks.org/index.php?topic=24716.msg168611#msg168611
 // ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //      01) Requires CB to be restarted after Install before Alt-Left/Right work.
