@@ -643,7 +643,8 @@
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DNOPCH" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DCB_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-D_WIN64" />
 			<Add directory="$(#WX31_64.include)" />

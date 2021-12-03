@@ -57,6 +57,7 @@
 		<Unit filename="manifest.xml" />
 		<Unit filename="regexdlg.cpp" />
 		<Unit filename="regexdlg.h" />
+		<Unit filename="regexdlg.xrc" />
 		<Unit filename="wxsmith/RegExDlg.wxs" />
 		<Extensions>
 			<code_completion />
