@@ -1,4 +1,4 @@
-Updated for the release on 03-Dec-2021.
+Updated for the release on 04-Dec-2021.
 
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
 The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official installer.

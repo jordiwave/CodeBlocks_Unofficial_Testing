@@ -987,6 +987,7 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/sdk.h">
+			<Option compile="1" />
 			<Option weight="1" />
 			<Option target="src" />
 		</Unit>
@@ -997,6 +998,7 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/sdk_precomp.h">
+			<Option compile="1" />
 			<Option weight="0" />
 			<Option target="sdk" />
 		</Unit>
