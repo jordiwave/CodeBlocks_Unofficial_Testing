@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12553 $
+* $Id: wxsboolproperty.h 12553 2021-12-05 10:59:43Z wh11204 $
+* $HeadURL: file:///svn/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/properties/wxsboolproperty.h $
 */
 
 #ifndef WXSBOOLPROPERTY_H
@@ -82,10 +82,33 @@ class wxsBoolProperty: public wxsProperty
     { static wxsBoolProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Default,Priority); \
       Property(_Property); }
 
+/** \brief Macro automatically declaring boolean property with help string (tooltip)
+ *  \param ClassName name of class holding this property
+ *  \param VarName name of variable inside class
+ *  \param PGName name used in property grid
+ *  \param DataName name used in Xml / Data Streams
+ *  \param Default value applied on read errors / validation failures
+ *  \param HelpString string to show in the tooltip
+ */
+#define WXS_BOOL_T(ClassName,VarName,PGName,DataName,Default,HelpString) \
+    { static wxsBoolProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Default); \
+      _Property.SetHelpString(HelpString); \
+      Property(_Property); }
+
+/** \brief Macro automatically declaring boolean property with custom priority and help string (tooltip)
+ *  \param ClassName name of class holding this property
+ *  \param VarName name of variable inside class
+ *  \param PGName name used in property grid
+ *  \param DataName name used in Xml / Data Streams
+ *  \param Default value applied on read errors / validation failures
+ *  \param Priority priority of this property
+ *  \param HelpString string to show in the tooltip
+ */
 #define WXS_BOOL_PT(ClassName,VarName,PGName,DataName,Default,Priority,HelpString) \
     { static wxsBoolProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Default,Priority); \
       _Property.SetHelpString(HelpString); \
       Property(_Property); }
+
 /** \} */
 
 #endif

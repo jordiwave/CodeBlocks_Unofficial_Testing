@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12553 $
+* $Id: wxslongproperty.cpp 12553 2021-12-05 10:59:43Z wh11204 $
+* $HeadURL: file:///svn/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/properties/wxslongproperty.cpp $
 */
 
 #include "wxslongproperty.h"
@@ -37,7 +37,10 @@ wxsLongProperty::wxsLongProperty(const wxString& PGName, const wxString& DataNam
 
 void wxsLongProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
 {
-    PGRegister(Object,Grid,Grid->AppendIn(Parent,new wxIntProperty(GetPGName(),wxPG_LABEL,VALUE)));
+    wxIntProperty* Property = new wxIntProperty(GetPGName(), wxPG_LABEL,VALUE);
+    Property->SetHelpString(m_HelpString);
+    wxPGId ID = Grid->AppendIn(Parent, Property);
+    PGRegister(Object, Grid, ID);
 }
 
 bool wxsLongProperty::PGRead(wxsPropertyContainer* Object, wxPropertyGridManager* Grid,
