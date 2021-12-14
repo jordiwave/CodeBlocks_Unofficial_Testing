@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12575 $
+* $Id: wxscustomwidget.cpp 12575 2021-12-12 09:48:33Z wh11204 $
+* $HeadURL: file:///svn/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxscustomwidget.cpp $
 */
 
 #include "wxscustomwidget.h"
@@ -45,8 +45,8 @@ namespace
 
 wxsCustomWidget::wxsCustomWidget(wxsItemResData* Data):
     wxsWidget(Data,&Reg.Info,wxsCustomWidgetEvents),
-    m_CreatingCode(_T("$(THIS) = new $(CLASS)($(PARENT),$(ID),$(POS),$(SIZE),$(STYLE),wxDefaultValidator,$(NAME));")),
-    m_Style(_T("0")),
+    m_CreatingCode("$(THIS) = new $(CLASS)($(PARENT),$(ID),$(POS),$(SIZE),$(STYLE),$(VALIDATOR),$(NAME));"),
+    m_Style("0"),
     m_IncludeIsLocal(false)
 {
     SetUserClass(_("CustomClass"));
@@ -54,41 +54,49 @@ wxsCustomWidget::wxsCustomWidget(wxsItemResData* Data):
 
 void wxsCustomWidget::OnBuildCreatingCode()
 {
-    if ( GetCoderFlags() & flSource )
+    if (GetCoderFlags() & flSource)
     {
-        if ( !m_IncludeFile.IsEmpty() )
+        if (!m_IncludeFile.empty())
         {
-            if ( m_IncludeIsLocal ) AddHeader(_T("\"") + m_IncludeFile + _T("\""), GetUserClass(), 0);
-            else                    AddHeader(_T("<")  + m_IncludeFile + _T(">"),  GetUserClass(), 0);
+            if (m_IncludeIsLocal)
+                AddHeader("\"" + m_IncludeFile + "\"", GetUserClass(), 0);
+            else
+                AddHeader("<"  + m_IncludeFile + ">",  GetUserClass(), 0);
         }
     }
 
     wxString Result = m_CreatingCode;
-    Result.Replace(_T("$(POS)"),Codef(GetCoderContext(),_T("%P")));
-    Result.Replace(_T("$(SIZE)"),Codef(GetCoderContext(),_T("%S")));
-    Result.Replace(_T("$(STYLE)"),m_Style);
-    Result.Replace(_T("$(ID)"),GetIdName());
-    Result.Replace(_T("$(THIS)"),GetVarName());
-    Result.Replace(_T("$(PARENT)"),GetCoderContext()->m_WindowParent);
-    Result.Replace(_T("$(NAME)"),Codef(GetCoderContext(),_T("%N")));
-    Result.Replace(_T("$(CLASS)"),GetUserClass());
+    wxString Style = m_Style;
+    if (Style.empty())
+        Style = "0";
 
-    AddBuildingCode(Result+_T("\n"));
+    Result.Replace("$(POS)",       Codef(GetCoderContext(), _T("%P")));
+    Result.Replace("$(SIZE)",      Codef(GetCoderContext(), _T("%S")));
+    Result.Replace("$(STYLE)",     Style);
+    Result.Replace("$(ID)",        GetIdName());
+    Result.Replace("$(THIS)",      GetVarName());
+    Result.Replace("$(PARENT)",    GetCoderContext()->m_WindowParent);
+    Result.Replace("$(NAME)",      Codef(GetCoderContext(), _T("%N")));
+    Result.Replace("$(CLASS)",     GetUserClass());
+    Result.Replace("$(VALIDATOR)", Codef(GetCoderContext(), _T("%V")));
+    AddBuildingCode(Result+"\n");
+    BuildSetupWindowCode();
 }
 
-wxObject* wxsCustomWidget::OnBuildPreview(wxWindow* Parent,cb_unused long Flags)
+wxObject* wxsCustomWidget::OnBuildPreview(wxWindow* Parent, cb_unused long Flags)
 {
-    wxPanel* Background = new wxPanel(Parent,-1,Pos(Parent),wxDefaultSize);
-    wxStaticText* Wnd = new wxStaticText(Background,-1,_T("???"),
-        wxDefaultPosition,Size(Parent),wxST_NO_AUTORESIZE|wxALIGN_CENTRE);
+    wxPanel* Background = new wxPanel(Parent, wxID_ANY, Pos(Parent), wxDefaultSize);
+    const wxString Label(GetUserClass().empty() ? wxString("???") : GetUserClass());
+    wxStaticText* Wnd = new wxStaticText(Background, wxID_ANY, Label, wxDefaultPosition,
+                                         Size(Parent), wxST_NO_AUTORESIZE|wxALIGN_CENTRE);
     wxSizer* Sizer = new wxBoxSizer(wxHORIZONTAL);
-    Sizer->Add(Wnd,1,wxEXPAND,0);
+    Sizer->Add(Wnd, 1, wxEXPAND, 0);
     Background->SetSizer(Sizer);
     Sizer->SetSizeHints(Background);
-    Wnd->SetBackgroundColour(wxColour(0,0,0));
-    Wnd->SetForegroundColour(wxColour(0xFF,0xFF,0xFF));
-    Background->SetBackgroundColour(wxColour(0,0,0));
-    Background->SetForegroundColour(wxColour(0xFF,0xFF,0xFF));
+    Wnd->SetBackgroundColour(wxColour(0, 0, 0));
+    Wnd->SetForegroundColour(wxColour(0xFF, 0xFF, 0xFF));
+    Background->SetBackgroundColour(wxColour(0, 0, 0));
+    Background->SetForegroundColour(wxColour(0xFF, 0xFF, 0xFF));
     return Background;
 }
 
@@ -97,19 +105,19 @@ void wxsCustomWidget::OnEnumWidgetProperties(long Flags)
     wxString XmlDataInit = m_XmlData;
     if ( GetPropertiesFlags() & flSource )
     {
-        WXS_STRING(wxsCustomWidget,m_CreatingCode,_("Creating code"),_T("creating_code"),_T(""),true);
-        WXS_SHORT_STRING(wxsCustomWidget,m_IncludeFile,_("Include file"), _T("include_file"), _T(""),false);
-        WXS_BOOL(wxsCustomWidget,m_IncludeIsLocal,_(" Use \"\" for include (instead of <>)"), _T("local_include"), false);
+        WXS_STRING(wxsCustomWidget, m_CreatingCode, _("Creating code"), "creating_code", "", true);
+        WXS_SHORT_STRING(wxsCustomWidget, m_IncludeFile, _("Include file"), "include_file", "", false);
+        WXS_BOOL(wxsCustomWidget, m_IncludeIsLocal, _(" Use \"\" for include (instead of <>)"), "local_include", false);
     }
     else
     {
         if ( !(Flags&flXml) )
         {
-            WXS_STRING(wxsCustomWidget,m_XmlData,_("Xml Data"),_T(""),_T(""),false);
+            WXS_STRING(wxsCustomWidget, m_XmlData, _("Xml Data"), "", "", false);
         }
     }
 
-    WXS_SHORT_STRING(wxsCustomWidget,m_Style,_("Style"),_T("style"),_T("0"),false);
+    WXS_SHORT_STRING(wxsCustomWidget, m_Style, _("Style"), "style", "0", false);
 
     if ( Flags&flPropGrid )
     {
@@ -136,16 +144,16 @@ bool wxsCustomWidget::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
             {
                 // Skipping all standard elements
                 wxString Name = cbC2U(Child->Value());
-                if ( Name != _T("pos") &&
-                     Name != _T("size") &&
-                     Name != _T("style") &&
-                     Name != _T("enabled") &&
-                     Name != _T("focused") &&
-                     Name != _T("hidden") &&
-                     Name != _T("fg") &&
-                     Name != _T("bg") &&
-                     Name != _T("font") &&
-                     Name != _T("handler") )
+                if ( Name != "pos" &&
+                     Name != "size" &&
+                     Name != "style" &&
+                     Name != "enabled" &&
+                     Name != "focused" &&
+                     Name != "hidden" &&
+                     Name != "fg" &&
+                     Name != "bg" &&
+                     Name != "font" &&
+                     Name != "handler" )
                 {
                     m_XmlDataDoc.InsertEndChild(*Child);
                 }
@@ -173,16 +181,16 @@ bool wxsCustomWidget::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
             {
                 // Skipping all standard elements
                 wxString Name = cbC2U(Child->Value());
-                if ( Name != _T("pos") &&
-                     Name != _T("size") &&
-                     Name != _T("style") &&
-                     Name != _T("enabled") &&
-                     Name != _T("focused") &&
-                     Name != _T("hidden") &&
-                     Name != _T("fg") &&
-                     Name != _T("bg") &&
-                     Name != _T("font") &&
-                     Name != _T("handler") )
+                if ( Name != "pos" &&
+                     Name != "size" &&
+                     Name != "style" &&
+                     Name != "enabled" &&
+                     Name != "focused" &&
+                     Name != "hidden" &&
+                     Name != "fg" &&
+                     Name != "bg" &&
+                     Name != "font" &&
+                     Name != "handler" )
                 {
                     Element->InsertEndChild(*Child);
                 }
@@ -209,9 +217,10 @@ bool wxsCustomWidget::RebuildXmlDataDoc()
     {
         wxMessageBox(
             wxString::Format(
-            _("Invalid Xml structure.\nError at line %d, column %d:\n\t\"%s\""),
+                _("Invalid Xml structure.\nError at line %d, column %d:\n\t\"%s\""),
                 m_XmlDataDoc.ErrorRow(),m_XmlDataDoc.ErrorCol(),
                 wxGetTranslation(cbC2U(m_XmlDataDoc.ErrorDesc()).wx_str())));
+
         return false;
     }
 

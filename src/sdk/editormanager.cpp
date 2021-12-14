@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12541 $
- * $Id: editormanager.cpp 12541 2021-12-01 08:49:50Z wh11204 $
+ * $Revision: 12558 $
+ * $Id: editormanager.cpp 12558 2021-12-08 08:19:45Z wh11204 $
  * $HeadURL: file:///svn/p/codeblocks/code/trunk/src/sdk/editormanager.cpp $
  */
 
@@ -172,7 +172,9 @@ EditorManager::EditorManager()
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,           new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
     Manager::Get()->RegisterEventSink(cbEVT_WORKSPACE_LOADING_COMPLETE, new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
 
-    ColourManager *colours = Manager::Get()->GetColourManager();
+    ColourManager* colours = Manager::Get()->GetColourManager();
+    colours->RegisterColour(_("Editor"), _("Changebar (unsaved lines)"), wxT("changebar_unsaved"), wxColour(0xFF, 0xE6, 0x04));
+    colours->RegisterColour(_("Editor"), _("Changebar (saved lines)"),   wxT("changebar_saved"),   wxColour(0x04, 0xFF, 0x50));
     colours->RegisterColour(_("Editor"), _("Caret"), wxT("editor_caret"), *wxBLACK);
     colours->RegisterColour(_("Editor"), _("Right margin"), wxT("editor_gutter"), *wxLIGHT_GREY);
     colours->RegisterColour(_("Editor"), _("Line numbers foreground colour"), wxT("editor_linenumbers_fg"),
@@ -1869,7 +1871,6 @@ void EditorManager::OnAppStartShutdown(wxCommandEvent& event)
 void EditorManager::OnCheckForModifiedFiles(cb_unused wxCommandEvent& event)
 {
     CheckForExternallyModifiedFiles();
-    event.Skip(); // allow others to process it too
 }
 
 void EditorManager::HideNotebook()

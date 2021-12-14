@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12561 $
+* $Id: wxsitemeditor.cpp 12561 2021-12-08 10:41:22Z wh11204 $
+* $HeadURL: file:///svn/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxsitemeditor.cpp $
 */
 
 #include <wx/dcmemory.h>
@@ -598,8 +598,8 @@ void wxsItemEditor::RebuildInsTypeIcons()
 
 void wxsItemEditor::BuildInsTypeIcon(wxBitmapButton* Btn,const wxImage& Original,int ButtonType)
 {
-    bool Selected = (m_InsType & ButtonType) != 0;
-    bool Enabled = (m_InsTypeMask & ButtonType) != 0;
+    const bool Selected = (m_InsType & ButtonType) != 0;
+    const bool Enabled = (m_InsTypeMask & ButtonType) != 0;
 
     if ( !Enabled || !Selected )
     {
@@ -607,10 +607,11 @@ void wxsItemEditor::BuildInsTypeIcon(wxBitmapButton* Btn,const wxImage& Original
     }
     else
     {
-        wxBitmap Copy = Original;
+        wxBitmap Copy(Original);
         wxMemoryDC DC;
         DC.SelectObject(Copy);
-        DC.DrawBitmap(m_SelectedImg,0,0);
+        DC.DrawBitmap(m_SelectedImg, 0, 0);
+        DC.SelectObject(wxNullBitmap);
         Btn->SetBitmapLabel(Copy);
     }
 

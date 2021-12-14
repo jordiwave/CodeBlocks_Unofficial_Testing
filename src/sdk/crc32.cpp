@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12578 $
+ * $Id: crc32.cpp 12578 2021-12-14 08:57:56Z wh11204 $
+ * $HeadURL: file:///svn/p/codeblocks/code/trunk/src/sdk/crc32.cpp $
  */
 
 /*
@@ -78,11 +78,7 @@ wxUint32 wxCrc32::FromString(const wxString& text)
             // Calculate the checksum
             crc = 0xFFFFFFFFUL;
             while (text[i])
-            #if wxCHECK_VERSION(3, 0, 0)
                 { crc = (crc>>8) ^ crc_table[ (crc^(text[i++].GetValue())) & 0xFF ]; }
-            #else
-                { crc = (crc>>8) ^ crc_table[ (crc^(text[i++])) & 0xFF ]; }
-            #endif
 
             crc ^= 0xFFFFFFFFUL ;
         }

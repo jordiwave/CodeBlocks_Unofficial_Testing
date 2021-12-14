@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12540 $
- * $Id: cbeditor.cpp 12540 2021-12-01 08:42:52Z wh11204 $
+ * $Revision: 12558 $
+ * $Id: cbeditor.cpp 12558 2021-12-08 08:19:45Z wh11204 $
  * $HeadURL: file:///svn/p/codeblocks/code/trunk/src/sdk/cbeditor.cpp $
  */
 
@@ -1623,9 +1623,9 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
                                | (1 << wxSCI_MARKNUM_CHANGESAVED) );
 
         control->MarkerDefine(wxSCI_MARKNUM_CHANGEUNSAVED, wxSCI_MARK_FULLRECT);
-        control->MarkerSetBackground(wxSCI_MARKNUM_CHANGEUNSAVED, wxColour(0xFF, 0xE6, 0x04));
+        control->MarkerSetBackground(wxSCI_MARKNUM_CHANGEUNSAVED, Manager::Get()->GetColourManager()->GetColour(wxT("changebar_unsaved")));
         control->MarkerDefine(wxSCI_MARKNUM_CHANGESAVED, wxSCI_MARK_FULLRECT);
-        control->MarkerSetBackground(wxSCI_MARKNUM_CHANGESAVED,   wxColour(0x04, 0xFF, 0x50));
+        control->MarkerSetBackground(wxSCI_MARKNUM_CHANGESAVED, Manager::Get()->GetColourManager()->GetColour(wxT("changebar_saved")));
     }
     else
         control->SetMarginWidth(C_CHANGEBAR_MARGIN, 0);

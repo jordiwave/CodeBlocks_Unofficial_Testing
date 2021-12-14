@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12536 $
- * $Id: environmentsettingsdlg.cpp 12536 2021-10-13 22:32:01Z bluehazzard $
+ * $Revision: 12560 $
+ * $Id: environmentsettingsdlg.cpp 12560 2021-12-08 09:52:23Z wh11204 $
  * $HeadURL: file:///svn/p/codeblocks/code/trunk/src/src/environmentsettingsdlg.cpp $
  */
 
@@ -210,9 +210,10 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
         control->SetSelection(selection);
     }
 
-    XRCCTRL(*this, "chSettingsIconsSize",     wxChoice)->SetSelection(cfg->ReadInt(_T("/environment/settings_size"), 0));
-    XRCCTRL(*this, "chkShowStartPage",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/start_here_page"), true));
-    XRCCTRL(*this, "spnLogFontSize",          wxSpinCtrl)->SetValue(mcfg->ReadInt(_T("/log_font_size"), (platform::macosx ? 10 : 8)));
+    XRCCTRL(*this, "chSettingsIconsSize", wxChoice)->SetSelection(cfg->ReadInt(_T("/environment/settings_size"), 0));
+    XRCCTRL(*this, "chkShowStartPage",    wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/start_here_page"), true));
+    XRCCTRL(*this, "spnLogFontSize",      wxSpinCtrl)->SetValue(mcfg->ReadInt(_T("/log_font_size"), (platform::macosx ? 10 : 8)));
+
 
     bool en = mcfg->ReadBool(_T("/auto_hide"), false);
     XRCCTRL(*this, "chkAutoHideMessages",         wxCheckBox)->SetValue(en);
@@ -654,7 +655,8 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         else
             cfg->Write(_T("/locale/language"), wxEmptyString);
 
-        mcfg->Write(_T("/log_font_size"),                    (int)  XRCCTRL(*this, "spnLogFontSize",          wxSpinCtrl)->GetValue());
+        mcfg->Write(_T("/log_font_size"), (int)  XRCCTRL(*this, "spnLogFontSize", wxSpinCtrl)->GetValue());
+
 
         {
             // Keep in sync with the code in cbGetChildWindowPlacement.
@@ -783,7 +785,7 @@ static void CreateAndSetBitmap(wxStaticBitmap &control, const wxColour &colour)
     dc.SetPen(*wxBLACK_PEN);
     dc.SetBrush(wxBrush(colour));
     dc.DrawRectangle(wxRect(0, 0, width, height));
-
+    dc.SelectObject(wxNullBitmap);
     control.SetBitmap(bmp);
 }
 
@@ -823,13 +825,15 @@ void EnvironmentSettingsDlg::FillApplicationColours()
             categories->Append(*it);
     }
 
-    wxCommandEvent tempEvent;
     if (list->GetCount() > 0)
     {
         list->SetSelection(0);
-        tempEvent.SetClientObject(list->GetClientObject(0));
+        DoChooseAppColourItem(0);
     }
-    OnChooseAppColourItem(tempEvent);
+    else
+    {
+        DoChooseAppColourItem(-1);
+    }
 }
 
 void EnvironmentSettingsDlg::OnChooseAppColourCategory(cb_unused wxCommandEvent &event)
@@ -837,14 +841,19 @@ void EnvironmentSettingsDlg::OnChooseAppColourCategory(cb_unused wxCommandEvent 
     FillApplicationColours();
 }
 
-
 void EnvironmentSettingsDlg::OnChooseAppColourItem(wxCommandEvent &event)
+{
+    DoChooseAppColourItem(event.GetSelection());
+}
+
+void EnvironmentSettingsDlg::DoChooseAppColourItem(int index)
 {
     wxColourPickerCtrl *picker = XRCCTRL(*this, "colourPicker", wxColourPickerCtrl);
     wxButton *btnDefault = XRCCTRL(*this, "btnDefaultColour", wxButton);
     wxStaticBitmap *bmpDefaultColour = XRCCTRL(*this, "bmpDefaultColour", wxStaticBitmap);
+    wxListBox *list = XRCCTRL(*this, "lstColours", wxListBox);
 
-    const AppColoursClientData *data = static_cast<AppColoursClientData*>(event.GetClientObject());
+    const AppColoursClientData *data = (index < 0) ? nullptr : static_cast <AppColoursClientData *> (list->GetClientObject(index));
     if (!data)
     {
         picker->SetColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
@@ -864,6 +873,7 @@ void EnvironmentSettingsDlg::OnChooseAppColourItem(wxCommandEvent &event)
             activeColour = colourIt->second;
         else
             activeColour = it->second.value;
+
         picker->SetColour(activeColour);
         picker->Enable(true);
 
