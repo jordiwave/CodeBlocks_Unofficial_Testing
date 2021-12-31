@@ -333,6 +333,10 @@ void CompilerFactory::LoadSettings()
 
 Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxString& preselectedID)
 {
+    const size_t compCount = Compilers.GetCount();
+    if (!compCount)
+        return nullptr;
+
     int selected = -1;
     const wxString lid = preselectedID.Lower();
 
@@ -371,6 +375,10 @@ Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxStr
             }
         }
     }
+
+    // sort it alphabetically
+    compilerChoices.Sort();
+
     // now display a choice dialog
     wxSingleChoiceDialog dlg(nullptr,
                              message,

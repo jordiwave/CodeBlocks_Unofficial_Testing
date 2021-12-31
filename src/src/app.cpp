@@ -450,7 +450,7 @@ void CodeBlocksApp::InitDebugConsole()
     COORD co = {80,2000};
     SetConsoleScreenBufferSize(myhandle, co);
     fprintf(stdout,"CONSOLE DEBUG ACTIVATED\n");
-    // wxLogWindow *myerr = new wxLogWindow(NULL,"debug");
+    // wxLogWindow *myerr = new wxLogWindow(nullptr,"debug");
     #endif
 #endif
 }
@@ -712,7 +712,7 @@ bool CodeBlocksApp::OnInit()
         m_Frame = frame;
 
         {
-            const double scalingFactor = frame->GetContentScaleFactor();
+            const double scalingFactor = cbGetContentScaleFactor(*frame);
             const double actualScalingFactor = cbGetActualContentScaleFactor(*frame);
             log->Log(wxString::Format("Initial scaling factor is %.3f (actual: %.3f)",
                                       scalingFactor, actualScalingFactor));
@@ -1137,7 +1137,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine
                 // Really important so that two same files with different names are not loaded
                 // twice. Use the CurrentWorkingDirectory of the client instance to restore the
                 // absolute path to the file.
-                fn.Normalize(wxPATH_NORM_ALL, CWD);
+                fn.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT, CWD);
                 const wxString &paramFullPath = fn.GetFullPath();
 
                 // Is it a project/workspace?
@@ -1275,7 +1275,8 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
         if (!filePart.empty())
         {
             wxFileName fn(filePart);
-            fn.Normalize(); // really important so that two same files with different names are not loaded twice
+            // really important so that two same files with different names are not loaded twice
+            fn.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT);
             if (frame->Open(fn.GetFullPath(), false))
             {
                 EditorBase* eb = Manager::Get()->GetEditorManager()->GetEditor(fn.GetFullPath());

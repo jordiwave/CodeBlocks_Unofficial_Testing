@@ -101,7 +101,7 @@ class BuildLogger : public TextCtrlLogger
 public:
     wxGauge* progress;
 
-    BuildLogger() : TextCtrlLogger(true), panel(0), sizer(0), progress(0) {}
+    BuildLogger() : TextCtrlLogger(true), panel(nullptr), sizer(nullptr), progress(nullptr) {}
 
     void UpdateSettings() override
     {
@@ -288,23 +288,23 @@ CompilerGCC::CompilerGCC() :
     m_RealTargetIndex(0),
     m_PageIndex(-1),
     m_ListPageIndex(-1),
-    m_Menu(0L),
-    m_TargetMenu(0L),
+    m_Menu(nullptr),
+    m_TargetMenu(nullptr),
     m_TargetIndex(-1),
-    m_pErrorsMenu(0L),
-    m_pProject(0L),
-    m_pTbar(0L),
-    m_pLog(0L),
-    m_pListLog(0L),
-    m_pToolTarget(0L),
+    m_pErrorsMenu(nullptr),
+    m_pProject(nullptr),
+    m_pTbar(nullptr),
+    m_pLog(nullptr),
+    m_pListLog(nullptr),
+    m_pToolTarget(nullptr),
     m_RunAfterCompile(false),
     m_LastExitCode(0),
     m_NotifiedMaxErrors(false),
-    m_pBuildingProject(0),
+    m_pBuildingProject(nullptr),
     m_BuildJob(bjIdle),
     m_NextBuildState(bsNone),
-    m_pLastBuildingProject(0),
-    m_pLastBuildingTarget(0),
+    m_pLastBuildingProject(nullptr),
+    m_pLastBuildingTarget(nullptr),
     m_Clean(false),
     m_Build(false),
     m_LastBuildStep(true),
@@ -329,23 +329,23 @@ void CompilerGCC::OnAttach()
     m_RealTargetIndex = 0;
     m_PageIndex = -1;
     m_ListPageIndex = -1;
-    m_Menu = 0L;
-    m_TargetMenu = 0L;
+    m_Menu = nullptr;
+    m_TargetMenu = nullptr;
     m_TargetIndex = -1;
-    m_pErrorsMenu = 0L;
-    m_pProject = 0L;
-    m_pTbar = 0L;
-    m_pLog = 0L;
-    m_pListLog = 0L;
-    m_pToolTarget = 0L;
+    m_pErrorsMenu = nullptr;
+    m_pProject = nullptr;
+    m_pTbar = nullptr;
+    m_pLog = nullptr;
+    m_pListLog = nullptr;
+    m_pToolTarget = nullptr;
     m_RunAfterCompile = false;
     m_LastExitCode = 0;
     m_NotifiedMaxErrors = false;
-    m_pBuildingProject = 0;
+    m_pBuildingProject = nullptr;
     m_BuildJob = bjIdle;
     m_NextBuildState = bsNone;
-    m_pLastBuildingProject = 0;
-    m_pLastBuildingTarget = 0;
+    m_pLastBuildingProject = nullptr;
+    m_pLastBuildingTarget = nullptr;
     m_RunTargetPostBuild = false;
     m_RunProjectPostBuild = false;
     m_Clean = false;
@@ -553,7 +553,7 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
     m_Menu = Manager::Get()->LoadMenu(_T("compiler_menu"),true);
 
     // target selection menu
-    wxMenuItem *tmpitem=m_Menu->FindItem(idMenuSelectTarget,NULL);
+    wxMenuItem* tmpitem=m_Menu->FindItem(idMenuSelectTarget, nullptr);
     m_TargetMenu = tmpitem ? tmpitem->GetSubMenu() : new wxMenu(_T(""));
     DoRecreateTargetMenu();
     //m_Menu->Append(idMenuSelectTarget, _("Select target..."), m_TargetMenu);
@@ -722,7 +722,7 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
         OnConfig(event);
 
     // Return focus to current editor
-    cbEditor* ed = 0;
+    cbEditor* ed = nullptr;
     if ( (ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()) )
         ed->GetControl()->SetFocus();
 }
@@ -1067,7 +1067,7 @@ bool CompilerGCC::CheckProject()
     else if (!m_pProject && m_CompilerId != CompilerFactory::GetDefaultCompilerID())
         SwitchCompiler(CompilerFactory::GetDefaultCompilerID());
 
-    return (m_pProject != 0L);
+    return (m_pProject != nullptr);
 }
 
 void CompilerGCC::AskForActiveProject()
@@ -1142,7 +1142,7 @@ FileTreeData* CompilerGCC::DoSwitchProjectTemporarily()
 
 void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
 {
-    ProjectBuildTarget* bt = m_pBuildingProject ? m_pBuildingProject->GetBuildTarget(GetTargetIndexFromName(m_pBuildingProject, m_BuildingTargetName)) : 0;
+    ProjectBuildTarget* bt = m_pBuildingProject ? m_pBuildingProject->GetBuildTarget(GetTargetIndexFromName(m_pBuildingProject, m_BuildingTargetName)) : nullptr;
     m_CurrentProgress = 0;
     m_MaxProgress = 0;
     bool isLink = false;
@@ -1676,7 +1676,7 @@ void CompilerGCC::NotifyCleanWorkspace()
 ProjectBuildTarget* CompilerGCC::DoAskForTarget()
 {
     if (!CheckProject())
-        return 0L;
+        return nullptr;
 
     return m_pProject->GetBuildTarget(m_RealTargetIndex);
 }
@@ -3077,7 +3077,7 @@ int CompilerGCC::CompileFile(const wxString& file)
     DoClearErrors();
     DoPrepareQueue(false);
 
-    ProjectFile* pf = m_pProject ? m_pProject->GetFileByFilename(file, true, false) : 0;
+    ProjectFile* pf = m_pProject ? m_pProject->GetFileByFilename(file, true, false) : nullptr;
     ProjectBuildTarget* bt = GetBuildTargetForFile(pf);
 
     PrintBanner(baBuildFile, m_pProject, bt);
@@ -3168,7 +3168,7 @@ void CompilerGCC::OnRun(cb_unused wxCommandEvent& event)
 
 void CompilerGCC::OnCompileAndRun(cb_unused wxCommandEvent& event)
 {
-    ProjectBuildTarget* target = 0;
+    ProjectBuildTarget* target = nullptr;
     m_RunAfterCompile = true;
     Build(target);
 }
@@ -3182,7 +3182,7 @@ void CompilerGCC::OnCompile(wxCommandEvent& event)
         // let's check the selected project...
         DoSwitchProjectTemporarily();
     }
-    ProjectBuildTarget* target = 0;
+    ProjectBuildTarget* target = nullptr;
     Build(target);
     m_RealTargetIndex = bak;
 }
@@ -3216,7 +3216,7 @@ void CompilerGCC::OnCleanFile(wxCommandEvent& event)
         if (!compiler)
             return;
 
-        if ( !CheckProject() ) // ensures m_pProject is not NULL
+        if (!CheckProject()) // ensures m_pProject is not nullptr
           return;
 
         wxSetWorkingDirectory(m_pProject->GetBasePath());
@@ -3260,7 +3260,7 @@ void CompilerGCC::OnRebuild(wxCommandEvent& event)
         // let's check the selected project...
         DoSwitchProjectTemporarily();
     }
-    ProjectBuildTarget* target = 0;
+    ProjectBuildTarget* target = nullptr;
     Rebuild(target);
     m_RealTargetIndex = bak;
 }
@@ -3330,7 +3330,7 @@ void CompilerGCC::OnClean(wxCommandEvent& event)
         // let's check the selected project...
         DoSwitchProjectTemporarily();
     }
-    ProjectBuildTarget* target = 0;
+    ProjectBuildTarget* target = nullptr;
     Clean(target);
     m_RealTargetIndex = bak;
 }
@@ -3340,15 +3340,15 @@ void CompilerGCC::OnProjectCompilerOptions(cb_unused wxCommandEvent& event)
     ProjectManager* manager = Manager::Get()->GetProjectManager();
     wxTreeCtrl* tree = manager->GetUI().GetTree();
     wxTreeItemId sel = manager->GetUI().GetTreeSelection();
-    FileTreeData* ftd = sel.IsOk() ? (FileTreeData*)tree->GetItemData(sel) : 0;
+    FileTreeData* ftd = sel.IsOk() ? (FileTreeData*)tree->GetItemData(sel) : nullptr;
     if (ftd)
     {
         // 'configure' selected target, if other than 'All'
         ProjectBuildTarget* target = nullptr;
         cbProject *currentProject = ftd->GetProject();
-        if (m_RealTargetIndex != -1 && !m_Targets.empty())
+        if (m_TargetIndex != -1 && !m_Targets.empty())
         {
-            const wxString &targetName = m_Targets[m_RealTargetIndex];
+            const wxString &targetName = m_Targets[m_TargetIndex];
             if (currentProject == m_pProject)
             {
                 target = m_pProject->GetBuildTarget(targetName);
@@ -3384,7 +3384,7 @@ void CompilerGCC::OnTargetCompilerOptions(cb_unused wxCommandEvent& event)
     // let's check the selected project...
     DoSwitchProjectTemporarily();
 
-    ProjectBuildTarget* target = 0;
+    ProjectBuildTarget* target = nullptr;
     m_RealTargetIndex = bak;
     Configure(m_pProject, target, Manager::Get()->GetAppWindow());
 }
@@ -3549,7 +3549,7 @@ void CompilerGCC::OnCompileFileRequest(CodeBlocksEvent& event)
         return;
     }
 
-    ProjectBuildTarget* bt = 0;
+    ProjectBuildTarget* bt = nullptr;
     if (pf->buildTargets.GetCount() == 1)
         bt = prj->GetBuildTarget(pf->buildTargets[0]);
     else // belongs to two or more build targets, but maybe a valid virtual target is selected

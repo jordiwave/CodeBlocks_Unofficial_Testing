@@ -936,7 +936,7 @@ wxMenu* DebuggerManager::GetMenu()
 {
     wxMenuBar *menuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
     cbAssert(menuBar);
-    wxMenu *menu = NULL;
+    wxMenu *menu = nullptr;
 
     int menu_pos = menuBar->FindMenu(_("&Debug"));
 
@@ -1191,7 +1191,7 @@ cbDebuggerPlugin* DebuggerManager::GetDebuggerHavingWatch(cb::shared_ptr<cbWatch
         if (it->first->HasWatch(watch))
             return it->first;
     }
-    return NULL;
+    return nullptr;
 }
 
 bool DebuggerManager::ShowValueTooltip(const cb::shared_ptr<cbWatch> &watch, const wxRect &rect)

@@ -30,13 +30,22 @@ Compiler * CompilerCYGWIN::CreateCopy()
 
 AutoDetectResult CompilerCYGWIN::AutoDetectInstallationDir()
 {
-    if (platform::windows && cbIsDetectedCygwinCompiler())
+    if (platform::windows)
     {
-        m_MasterPath = cbGetCygwinCompilerPathRoot();
-        return adrDetected;
+        if (cbIsDetectedCygwinCompiler())
+        {
+            m_MasterPath = cbGetCygwinCompilerPathRoot();
+            return adrDetected;
+        }
+        else
+        {
+            m_MasterPath = "C:\\cygwin64";
+            return adrGuessed;
+        }
     }
     else
     {
+        m_MasterPath = cbGetCygwinCompilerPathRoot();
         return adrGuessed;
     }
 }

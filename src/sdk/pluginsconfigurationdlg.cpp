@@ -65,11 +65,7 @@ static wxString GetInitialInfo()
     return initialInfo;
 }
 
-#if wxCHECK_VERSION(3, 0, 0)
 inline int wxCALLBACK sortByTitle(wxIntPtr item1, wxIntPtr item2, cb_unused wxIntPtr sortData)
-#else
-inline int wxCALLBACK sortByTitle(long item1, long item2, cb_unused long sortData)
-#endif
 {
     const PluginElement* elem1 = (const PluginElement*)item1;
     const PluginElement* elem2 = (const PluginElement*)item2;
@@ -189,7 +185,7 @@ void PluginsConfigurationDlg::OnToggle(wxCommandEvent& event)
     wxBusyCursor busy;
 
     wxProgressDialog pd(wxString::Format(_("%s plugin(s)"), isEnable ? _("Enabling") : _("Disabling")),
-                        _T("A description wide enough for the dialog ;)"),
+                        wxString(L'\u00a0', 150),
                         list->GetSelectedItemCount(),
                         this,
                         wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
@@ -317,7 +313,7 @@ void PluginsConfigurationDlg::OnExport(cb_unused wxCommandEvent& event)
 
     wxBusyCursor busy;
     wxProgressDialog pd(_("Exporting plugin(s)"),
-                        _T("A description wide enough for the dialog ;)"),
+                        wxString(L'\u00a0', 150),
                         list->GetSelectedItemCount(),
                         this,
                         wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT |

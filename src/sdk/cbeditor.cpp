@@ -1223,13 +1223,13 @@ void cbEditor::Split(cbEditor::SplitType split)
     m_pControl2->SetDocPointer(m_pControl->GetDocPointer());
 
     // on wxGTK > 2.9 we need to thaw before reparent and refreeze the editor here or the whole app stays frozen
-    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(3, 0, 0)
+    #if defined ( __WXGTK__ )
     Thaw();
     #endif
     // parent both controls under the splitter
     m_pControl->Reparent(m_pSplitter);
     m_pControl2->Reparent(m_pSplitter);
-    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(3, 0, 0)
+    #if defined ( __WXGTK__ )
     Freeze();
     #endif
 
@@ -1289,12 +1289,12 @@ void cbEditor::Unsplit()
     m_pSizer->Detach(m_pSplitter);
 
     // on wxGTK > 2.9 we need to thaw before reparent and refreeze the editor here or the whole app stays frozen
-    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(3, 0, 0)
+    #if defined ( __WXGTK__ )
     Thaw();
     #endif
     // parent the left control under this
     m_pControl->Reparent(this);
-    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(3, 0, 0)
+    #if defined ( __WXGTK__ )
     Freeze();
     #endif
     // add it in the sizer
@@ -2716,10 +2716,10 @@ void cbEditor::GotoMatchingBrace()
     // else look for a matching preprocessor command
     if (matchingBrace == wxSCI_INVALID_POSITION)
     {
-        wxRegEx ppIf(wxT("^[ \t]*#[ \t]*if"));
-        wxRegEx ppElse(wxT("^[ \t]*#[ \t]*el"));
-        wxRegEx ppEnd(wxT("^[ \t]*#[ \t]*endif"));
-        wxRegEx pp(wxT("^[ \t]*#[ \t]*[a-z]*")); // generic match to get length
+        wxRegEx ppIf("^[[:blank:]]*#[[:blank:]]*if");
+        wxRegEx ppElse("^[[:blank:]]*#[[:blank:]]*el");
+        wxRegEx ppEnd("^[[:blank:]]*#[[:blank:]]*endif");
+        wxRegEx pp("^[[:blank:]]*#[[:blank:]]*[a-z]*"); // generic match to get length
         if (ppIf.Matches(control->GetCurLine()) || ppElse.Matches(control->GetCurLine()))
         {
             int depth = 1; // search forwards

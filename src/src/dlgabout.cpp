@@ -15,10 +15,12 @@
     #endif //__WXMAC__
     #include <wx/button.h>    // wxImage
     #include <wx/image.h>    // wxImage
+    #include <wx/intl.h>
     #include <wx/stattext.h>
     #include <wx/string.h>
     #include <wx/textctrl.h>
     #include <wx/xrc/xmlres.h>
+    #include <wx/versioninfo.h>
 
     #include "licenses.h"
     #include "configmanager.h"
@@ -27,11 +29,15 @@
 
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>    // wxMemoryDC
+#include <wx/display.h>
 #include <wx/statbmp.h>
 
 #include "appglobals.h"
 #include "dlgabout.h" // class's header file
+#include "configmanager.h"
 #include "splashscreen.h"
+
+// class constructor
 
 dlgAbout::dlgAbout(wxWindow* parent)
 {
@@ -95,6 +101,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Damien Moore        : Developer\n"
         "Micah Ng            : Developer\n"
         "BlueHazzard         : Developer\n"
+        "Miguel Gimenez      : Developer\n"
         "Ricardo Garcia      : All-hands person\n"
         "Paul A. Jimenez     : Help and AStyle plugins\n"
         "Thomas Lorblanches  : CodeStat and Profiler plugins\n"
@@ -126,14 +133,13 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Alexandr Efremo     : Providing OpenSuSe packages\n"
         "Huki                : Misc. Code-Completion improvements\n"
         "stahta01            : Misc. patches for several enhancements\n"
-        "Miguel Gimenez      : Misc. patches for several enhancements\n"
         "\n"
         "All contributors that provided patches.\n"
-        "The wxWidgets project (http://www.wxwidgets.org).\n"
-        "wxScintilla (http://sourceforge.net/projects/wxscintilla).\n"
+        "The wxWidgets project (https://www.wxwidgets.org).\n"
+        "wxScintilla (https://sourceforge.net/projects/wxscintilla).\n"
         "TinyXML parser (http://www.grinninglizard.com/tinyxml).\n"
         "Squirrel scripting language (http://www.squirrel-lang.org).\n"
-        "The GNU Software Foundation (http://www.gnu.org).\n"
+        "The GNU Software Foundation (https://www.gnu.org).\n"
         "Last, but not least, the open-source community."));
     wxTextCtrl *txtLicense = XRCCTRL(*this, "txtLicense", wxTextCtrl);
     txtLicense->SetValue(LICENSE_GPL);

@@ -36,7 +36,7 @@ wxArrayString Compiler::m_CompilerIDs; // map to guarantee unique IDs
 // common regex that can be used by the different compiler for matching compiler output
 // it can be used in the patterns for warnings, errors, ...
 // NOTE : it is an approximation (for example the ':' can appear anywhere and several times)
-const wxString Compiler::FilePathWithSpaces = _T("[][{}() \t#%$~[:alnum:]&_:+/\\.-]+");
+const wxString Compiler::FilePathWithSpaces = _T("[][{}()[:blank:]#%$~[:alnum:]!&_:+/\\.-]+");
 
 // version of compiler settings
 // when this is different from what is saved in the config, a message appears
@@ -167,7 +167,7 @@ Compiler::Compiler(const Compiler& other) :
     m_Valid = other.m_Valid;
     m_NeedValidityCheck = other.m_NeedValidityCheck;
 
-    m_DebuggerInitialConfiguation.validData                  = false;\
+    m_DebuggerInitialConfiguation.validData                  = false;
     m_DebuggerInitialConfiguation.compilerMasterPath         = "";
     m_DebuggerInitialConfiguation.compilerIDName             = m_ID;
     m_DebuggerInitialConfiguation.executablePath             = "gdb.exe";
@@ -943,7 +943,7 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
                 m_Programs.LD = cfg->Read(cmpKey + wxT("/linker"), value);
                 m_Mirror.Programs.LD = value;
             }
-            else if ((prog == "DBGconfig") && (recursion == 0))
+            else if ((prog == wxT("DBGconfig")) && (recursion == 0))
             {
                 // Check if the DBGconfig is of the format <plugin name>:<debugger config name>
                 if (value.Find(':') == wxNOT_FOUND)
@@ -1140,7 +1140,7 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
         {
             LoadDefaultOptions(wxT("common_") + node->GetAttribute(wxT("name"), wxString()), recursion + 1);
         }
-        else if (node->GetName() == "Debugger")
+        else if (node->GetName() == wxT("Debugger"))
         {
             wxString debugName = node->GetAttribute("name", wxString());
             if (debugName == "executable_path")
@@ -1594,7 +1594,7 @@ wxString Compiler::GetExecName(const wxString& name)
 class ExecProcess : public wxProcess
 {
     public:
-          ExecProcess(cb_unused wxEvtHandler *parent = NULL, cb_unused int id = -1)
+          ExecProcess(cb_unused wxEvtHandler *parent = nullptr, cb_unused int id = -1)
           {
               m_status = 0;
           }
@@ -1639,11 +1639,7 @@ long Compiler::Execute(const wxString &cmd, wxArrayString &output)
     // Loads the wxArrayString with the task output (returned in a wxInputStream)
     wxInputStream *inputStream = process.GetInputStream();
     wxTextInputStream text(*inputStream);
-#if wxCHECK_VERSION(3, 0, 0)
     while (!text.GetInputStream().Eof())
-#else
-    while (!inputStream->Eof())
-#endif
     {
         output.Add(text.ReadLine());
     }
@@ -1658,13 +1654,9 @@ long Compiler::Execute(const wxString &cmd, wxArrayString &output)
 {
     wxLogNull logNo; // do not warn if execution fails
     int flags = wxEXEC_SYNC;
-    #if wxCHECK_VERSION(3, 0, 0)
-        // Stop event-loop while wxExecute runs, to avoid a deadlock on startup,
-        // that occurs from time to time on wx3
-        flags |= wxEXEC_NOEVENTS;
-    #else
-        flags |= wxEXEC_NODISABLE;
-    #endif
+    // Stop event-loop while wxExecute runs, to avoid a deadlock on startup,
+    // that occurs from time to time on wx3
+    flags |= wxEXEC_NOEVENTS;
     return wxExecute(cmd, output, flags);
 }
 #endif // __WXMSW__
