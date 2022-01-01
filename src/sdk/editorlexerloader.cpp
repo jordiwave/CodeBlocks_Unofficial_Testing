@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12578 $
- * $Id: editorlexerloader.cpp 12578 2021-12-14 08:57:56Z wh11204 $
- * $HeadURL: file:///svn/p/codeblocks/code/trunk/src/sdk/editorlexerloader.cpp $
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 #include "sdk_precomp.h"

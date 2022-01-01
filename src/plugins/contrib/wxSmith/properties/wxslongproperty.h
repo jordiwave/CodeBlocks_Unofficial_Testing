@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12553 $
-* $Id: wxslongproperty.h 12553 2021-12-05 10:59:43Z wh11204 $
-* $HeadURL: file:///svn/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/properties/wxslongproperty.h $
+* $Revision$
+* $Id$
+* $HeadURL$
 */
 
 #ifndef WXSLONGPROPERTY_H

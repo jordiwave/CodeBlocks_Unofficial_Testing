@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12579 $
- * $Id: app.cpp 12579 2021-12-14 09:27:57Z wh11204 $
- * $HeadURL: file:///svn/p/codeblocks/code/trunk/src/src/app.cpp $
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 #include <sdk.h>
@@ -556,6 +556,8 @@ void CodeBlocksApp::InitLocale()
 
 bool CodeBlocksApp::OnInit()
 {
+    m_AppStartupTimer.Start();
+
 #ifdef __WXMSW__
     InitCommonControls();
 #endif
@@ -869,6 +871,13 @@ int CodeBlocksApp::OnRun()
     EnableLFH();
     try
     {
+        long startuptime = m_AppStartupTimer.Time();
+        LogManager *log = Manager::Get()->GetLogManager();
+        log->Log(wxString::Format(_("============> CodeBlocksApp::OnRun() startup duration is %ld.%03ld seconds <============"),
+                                                    startuptime/1000,
+                                                    startuptime%1000
+                                  ));
+
         int retval = wxApp::OnRun();
         // wx 2.6.3 docs says that OnRun() function's return value is used as exit code
         return m_Batch ? m_BatchExitCode : retval;

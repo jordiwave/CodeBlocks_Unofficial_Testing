@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12534 $
- * $Id: filemanager.cpp 12534 2021-10-06 22:35:21Z bluehazzard $
- * $HeadURL: file:///svn/p/codeblocks/code/trunk/src/sdk/filemanager.cpp $
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 #include "sdk_precomp.h"

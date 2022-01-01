@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12563 $
- * $Id: editorconfigurationdlg.cpp 12563 2021-12-09 06:59:17Z wh11204 $
- * $HeadURL: file:///svn/p/codeblocks/code/trunk/src/src/editorconfigurationdlg.cpp $
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 #include "sdk.h"

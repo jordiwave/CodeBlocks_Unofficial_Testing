@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12535 $
-* $Id: wxsstddialogbuttonsizer.cpp 12535 2021-10-06 22:43:02Z bluehazzard $
-* $HeadURL: file:///svn/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsstddialogbuttonsizer.cpp $
+* $Revision$
+* $Id$
+* $HeadURL$
 */
 
 #include "wxsstddialogbuttonsizer.h"

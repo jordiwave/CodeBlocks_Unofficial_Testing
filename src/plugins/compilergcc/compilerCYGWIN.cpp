@@ -13,7 +13,7 @@
 #include "cygwin.h"
 
 CompilerCYGWIN::CompilerCYGWIN()
-    : CompilerMINGW(_("Cygwin GCC"), _T("cygwin"))
+    : CompilerMINGW(_("Cygwin GCC"), "cygwin")
 {
     m_Weight = 32;
     Reset();

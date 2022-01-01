@@ -1,13 +1,13 @@
-Updated for the release on 31-Dec-2021.
+Updated for the release on 01-Jan-2022.
 
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
-The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official installer.
+The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official C::B 20.03 installers.
 
 Installer download link:
 ========================
 https://sourceforge.net/projects/unofficial-cb-installers/
 
-C::B exe/dll changed/update highlights compared to the last nightly SVN 12596 release (20-Dec-2021):
+C::B exe/dll changed/update highlights compared to the last nightly SVN 12618 release (31-Dec-2021):
 ====================================================================================================
     1. Does not include the CBFortan Plugin or other plugins that are SVN externals.
     2. Auto-detect POP up condition on startup has changed. After initial install will only pop up if the default compiler has issues. (SF Ticket 1117)
@@ -25,8 +25,7 @@ C::B exe/dll changed/update highlights compared to the last nightly SVN 12596 re
     6. Moved Help->About->Information to Help->"System Information" and added allot of extra info on the CB and PC setup. Added copy to clipboard button that anonymizes the data when copied to the clipboard. (SF Ticket 748)
     7. Added extra help plugin menu items for the updated documentation included in the installation. These appear as sub menu items in the Help menu.
     8. Copy Debug Watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
-    9. Fix Cygwin masterpath setting that causes the compielr auto detect to show Cygwin as invalid. (Ticket 1171)
-    10. Incorporated SVN changes up to and including SVN 12615. See https://sourceforge.net/p/codeblocks/code/12615/log/ for change info.
+    9. Incorporated SVN changes up to and including SVN 12618. See https://sourceforge.net/p/codeblocks/code/12618/log/ for change info.
     
 Updated installer highlights compared to the C::B 20.03 NSIS installer:
 =======================================================================

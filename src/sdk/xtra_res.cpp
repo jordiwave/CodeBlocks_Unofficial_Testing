@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12579 $
- * $Id: xtra_res.cpp 12579 2021-12-14 09:27:57Z wh11204 $
- * $HeadURL: file:///svn/p/codeblocks/code/trunk/src/sdk/xtra_res.cpp $
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 #include "sdk_precomp.h"
@@ -23,7 +23,7 @@
 // Purpose:     XRC resource for wxBoxSizer
 // Author:      Vaclav Slavik
 // Created:     2000/08/11
-// RCS-ID:      $Id: xtra_res.cpp 12579 2021-12-14 09:27:57Z wh11204 $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
