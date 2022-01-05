@@ -1130,7 +1130,7 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             WriteRegStr HKCU "${REGKEY}\Components" "Class Wizard plugin" 1
         SectionEnd
 
-        Section "Code Completion plugin" SEC_CODECOMPLETION
+        Section "Code Completion plugin"  SEC_CODECOMPLETION
             SectionIn 1 2
             SetOutPath $INSTDIR${CB_SHARE_CB}
             SetOverwrite on
@@ -1141,6 +1141,16 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             File ${CB_BASE}${CB_IMG_SETTINGS}\codecompletion.png
             File ${CB_BASE}${CB_IMG_SETTINGS}\codecompletion-off.png
             WriteRegStr HKCU "${REGKEY}\Components" "Code Completion plugin" 1
+        SectionEnd
+
+        Section "Clangd Client plugin" SEC_CLANGD_CLIENT
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\clangd_client.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\clangd_client.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "Clangd Client plugin" 1
         SectionEnd
 
         Section "Compiler plugin" SEC_COMPILER
@@ -2239,6 +2249,12 @@ Section "-un.Code Completion plugin" UNSEC_CODECOMPLETION
     DeleteRegValue HKCU "${REGKEY}\Components" "Code Completion plugin"
 SectionEnd
 
+Section "-un.Clangd Client plugin" UNSEC_CLANGD_CLIENT
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\clangd_client.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\clangd_client.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "Code Completion plugin"
+SectionEnd
+
 Section "-un.Compiler plugin" UNSEC_COMPILER
     Delete /REBOOTOK $INSTDIR${CB_IMG_SETTINGS}\compiler-off.png
     Delete /REBOOTOK $INSTDIR${CB_IMG_SETTINGS}\compiler.png
@@ -3136,6 +3152,7 @@ CheckUserTypeDone:
     !insertmacro SELECT_UNSECTION "Autosave plugin"                    ${UNSEC_AUTOSAVE}
     !insertmacro SELECT_UNSECTION "Class Wizard plugin"                ${UNSEC_CLASSWIZARD}
     !insertmacro SELECT_UNSECTION "Code Completion plugin"             ${UNSEC_CODECOMPLETION}
+    !insertmacro SELECT_UNSECTION "Clangd Client plugin"               ${UNSEC_CLANGD_CLIENT}
     !insertmacro SELECT_UNSECTION "Compiler plugin"                    ${UNSEC_COMPILER}
     !insertmacro SELECT_UNSECTION "Debugger plugin"                    ${UNSEC_DEBUGGER}
     !insertmacro SELECT_UNSECTION "MIME Handler plugin"                ${UNSEC_MIMEHANDLER}
@@ -3215,6 +3232,7 @@ FunctionEnd
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_AUTOSAVE}            "Saves your work in regular intervals."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CLASSWIZARD}         "Provides an easy way to create a new C++ class file pair."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CODECOMPLETION}      "Provides a symbols browser for your projects and code-completion inside the editor."
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_CLANGD_CLIENT}       "Provides a ClangD client  browser for your projects and code-completion inside the editor. Currently only C++."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_COMPILER}            "Provides an interface to various compilers, including GNU compiler suite, Microsoft, Borland, etc."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DEBUGGER}            "Provides interfaces to the GNU GDB and MS CDB debuggers."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MIMEHANDLER}         "Provides a (default) files extension handler."

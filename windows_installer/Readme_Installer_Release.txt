@@ -1,4 +1,4 @@
-Updated for the release on 01-Jan-2022.
+Updated for the release on 05-Jan-2022.
 
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
 The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official C::B 20.03 installers.
@@ -25,8 +25,9 @@ C::B exe/dll changed/update highlights compared to the last nightly SVN 12618 re
     6. Moved Help->About->Information to Help->"System Information" and added allot of extra info on the CB and PC setup. Added copy to clipboard button that anonymizes the data when copied to the clipboard. (SF Ticket 748)
     7. Added extra help plugin menu items for the updated documentation included in the installation. These appear as sub menu items in the Help menu.
     8. Copy Debug Watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
-    9. Incorporated SVN changes up to and including SVN 12618. See https://sourceforge.net/p/codeblocks/code/12618/log/ for change info.
+    9. Incorporated SVN changes up to and including SVN 12634. See https://sourceforge.net/p/codeblocks/code/12634/log/ for change info.
     10. Includes temporary code to show the C::B startup time in the log. This is to help track down a slow startup issue that I have not seen.
+    11. Added Pecvan's experimental CB-clangd_client pluginm for testing.
     
 Updated installer highlights compared to the C::B 20.03 NSIS installer:
 =======================================================================
