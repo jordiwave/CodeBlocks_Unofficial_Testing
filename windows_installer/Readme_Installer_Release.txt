@@ -27,7 +27,17 @@ C::B exe/dll changed/update highlights compared to the last nightly SVN 12618 re
     8. Copy Debug Watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
     9. Incorporated SVN changes up to and including SVN 12634. See https://sourceforge.net/p/codeblocks/code/12634/log/ for change info.
     10. Includes temporary code to show the C::B startup time in the log. This is to help track down a slow startup issue that I have not seen.
-    11. Added Pecvan's experimental CB-clangd_client pluginm for testing.
+    11. Added Pecan's experimental CB-clangd_client plugin for testing.
+            Configure clangd_client:
+                1) In the Plugin manager:
+                    a) disble the code completion plugin
+                    b) enable the clangd_client plugin
+                    c) Re-start C::B
+                2) MSYS 2 
+                    pacman -S mingw-w64-clang-x86_64-toolchain
+                3) Settings->editor then selct Clangd_Client settings.
+                    In the C/C++ parser tab change the LLVM directory to:
+                    C:\msys64\clang64\bin
     
 Updated installer highlights compared to the C::B 20.03 NSIS installer:
 =======================================================================
