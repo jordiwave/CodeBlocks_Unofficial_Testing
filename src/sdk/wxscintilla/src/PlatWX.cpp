@@ -2022,6 +2022,7 @@ void Window::SetCursor(Cursor curs) {
     case cursorHand:
         cursorId = wxCURSOR_HAND;
         break;
+    case cursorInvalid: // fall-through
     default:
         cursorId = wxCURSOR_ARROW;
         break;

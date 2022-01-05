@@ -2346,7 +2346,7 @@ void ProjectManagerUI::OnUpdateUI(wxUpdateUIEvent& event)
     if (event.GetId() == idMenuFileProperties)
     {
         EditorManager *editorManager = Manager::Get()->GetEditorManager();
-        bool enableProperties;
+        bool enableProperties = false;
         if (editorManager)
         {
             EditorBase *editor = editorManager->GetActiveEditor();
@@ -2356,8 +2356,6 @@ void ProjectManagerUI::OnUpdateUI(wxUpdateUIEvent& event)
             if (enableProperties)
                 enableProperties = !cbHasRunningCompilers(Manager::Get()->GetPluginManager());
         }
-        else
-            enableProperties = false;
 
         event.Enable(enableProperties);
     }
@@ -2376,10 +2374,7 @@ void ProjectManagerUI::OnUpdateUI(wxUpdateUIEvent& event)
             if (!project)
                 event.Enable(false);
             else
-            {
-                bool enable = !cbHasRunningCompilers(Manager::Get()->GetPluginManager());
-                event.Enable(enable);
-            }
+                event.Enable(!cbHasRunningCompilers(Manager::Get()->GetPluginManager()));
         }
     }
     else
