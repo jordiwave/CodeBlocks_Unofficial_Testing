@@ -46,15 +46,15 @@ namespace
         public:
             wxsSpacerPreview(wxWindow* Parent,const wxSize& Size):
                 wxPanel(Parent,-1,wxDefaultPosition,Size)
-            {}
+            {
+            }
 
         private:
-
             void OnPaint(cb_unused wxPaintEvent& event)
             {
                 wxPaintDC DC(this);
-                DC.SetBrush(wxBrush(wxColour(0,0,0),wxBRUSHSTYLE_CROSSDIAG_HATCH));
-                DC.SetPen(wxPen(wxColour(0,0,0),1));
+                DC.SetBrush(wxBrush(*wxBLACK, wxBRUSHSTYLE_CROSSDIAG_HATCH));
+                DC.SetPen(wxPen(*wxBLACK, 1));
                 DC.DrawRectangle(0,0,GetSize().GetWidth(),GetSize().GetHeight());
             }
 
@@ -68,27 +68,31 @@ namespace
 }
 
 wxsSpacer::wxsSpacer(wxsItemResData* Data): wxsItem(Data,&Reg.Info,flSize,0,0)
-{}
+{
+}
 
 void wxsSpacer::OnEnumItemProperties(cb_unused long Flags)
-{}
+{
+}
 
 wxObject* wxsSpacer::OnBuildPreview(wxWindow* Parent,long Flags)
 {
-    if ( Flags & pfExact )
-    {
-        wxSize Sz = GetBaseProps()->m_Size.GetSize(Parent);
-        return new wxSizerItem(Sz.GetWidth(),Sz.GetHeight(),0,0,0,0);
-    }
-    return new wxsSpacerPreview(Parent,GetBaseProps()->m_Size.GetSize(Parent));
+    wxSize Sz = GetBaseProps()->m_Size.GetSize(Parent);
+    // Set a minimum display size, otherwise you will get a lot of asserts about zero width bitmaps
+    // if you hover over the spacer while inserting a widget (in a verticaL sizer)
+    Sz.IncTo(wxSize(8, 8));
+    if (Flags & pfExact)
+        return new wxSizerItem(Sz.GetWidth(), Sz.GetHeight(), 0, 0, 0, 0);
+
+    return new wxsSpacerPreview(Parent, Sz);
 }
 
 void wxsSpacer::OnBuildCreatingCode()
 {
-    int Index = GetParent()->GetChildIndex(this);
+    const int Index = GetParent()->GetChildIndex(this);
     wxsSizerExtra* Extra = (wxsSizerExtra*) GetParent()->GetChildExtra(Index);
-
-    if ( Extra == 0 ) return;
+    if (!Extra)
+        return;
 
     switch ( GetLanguage() )
     {
@@ -99,7 +103,7 @@ void wxsSpacer::OnBuildCreatingCode()
             {
                 // We use 'SpacerSizes' extra variable to keep count of currently added spacer sizes
                 // length of this extra string indicates current spacer size number
-                wxString SizeName = GetCoderContext()->GetUniqueName(_T("__SpacerSize"));
+                const wxString SizeName = GetCoderContext()->GetUniqueName(_T("__SpacerSize"));
 
                 Codef(_T("wxSize %s = %z;\n")
                       _T("%MAdd(%s.GetWidth(),%s.GetHeight(),%s);\n"),

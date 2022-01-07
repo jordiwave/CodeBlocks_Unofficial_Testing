@@ -1,4 +1,4 @@
-Updated for the release on 05-Jan-2022.
+Updated for the release on 07-Jan-2022.
 
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
 The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official C::B 20.03 installers.
@@ -9,11 +9,12 @@ https://sourceforge.net/projects/unofficial-cb-installers/
 
 C::B exe/dll changed/update highlights compared to the last nightly SVN 12618 release (31-Dec-2021):
 ====================================================================================================
-    1. Does not include the CBFortan Plugin or other plugins that are SVN externals.
-    2. Auto-detect POP up condition on startup has changed. After initial install will only pop up if the default compiler has issues. (SF Ticket 1117)
-    3. Auto-detect compiler dialog has the option to show the installed or all the compilers. (SF Ticket 1117). Reworked and simplified the code in the 4-Sep-2021 release.
-    4. The compiler selection dialog has the option of showing the detected compilers or all the compilers. Fix a number of compiler selection dialog bugs. (SF Ticket 1111)
-    5. Added support for the following Windows compilers via the XML files (Ticket 374)
+    1. Incorporated SVN changes up to and including SVN 12639. See https://sourceforge.net/p/codeblocks/code/12639/log/ for change info.
+    2. Does not include the CBFortan Plugin or other plugins that are SVN externals.
+    3. Auto-detect POP up condition on startup has changed. After initial install will only pop up if the default compiler has issues. (SF Ticket 1117)
+    4. Auto-detect compiler dialog has the option to show the installed or all the compilers. (SF Ticket 1117). Reworked and simplified the code in the 4-Sep-2021 release.
+    5. The compiler selection dialog has the option of showing the detected compilers or all the compilers. Fix a number of compiler selection dialog bugs. (SF Ticket 1111)
+    6. Added support for the following Windows compilers via the XML files (Ticket 374)
                 - GCC MSYS2 - MinGW-w32
                 - GCC MSYS2 - MinGW-W64
                 - GCC TDM-32
@@ -22,10 +23,9 @@ C::B exe/dll changed/update highlights compared to the last nightly SVN 12618 re
                 - GCC MinGW-w64
                 - GCC LLVM Clang MinGW-W64
                 - Other MinGW w32 or w64 compilers like winlib or gytx
-    6. Moved Help->About->Information to Help->"System Information" and added allot of extra info on the CB and PC setup. Added copy to clipboard button that anonymizes the data when copied to the clipboard. (SF Ticket 748)
-    7. Added extra help plugin menu items for the updated documentation included in the installation. These appear as sub menu items in the Help menu.
-    8. Copy Debug Watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
-    9. Incorporated SVN changes up to and including SVN 12634. See https://sourceforge.net/p/codeblocks/code/12634/log/ for change info.
+    7. Moved Help->About->Information to Help->"System Information" and added allot of extra info on the CB and PC setup. Added copy to clipboard button that anonymizes the data when copied to the clipboard. (SF Ticket 748)
+    8. Added extra help plugin menu items for the updated documentation included in the installation. These appear as sub menu items in the Help menu.
+    9. Copy Debug Watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
     10. Includes temporary code to show the C::B startup time in the log. This is to help track down a slow startup issue that I have not seen.
     11. Added Pecan's experimental CB-clangd_client plugin for testing.
             Configure clangd_client:

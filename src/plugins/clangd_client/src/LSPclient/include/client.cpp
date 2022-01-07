@@ -7,21 +7,25 @@
 #include <tuple>
 #include <chrono>
 
-#include <wx/gauge.h>
-#include <wx/sizer.h>
-#include "wx/xrc/xmlres.h"
-#include "wx/textfile.h"        //(ph 2021/01/21) to modify .Clangd file
-#include <wx/event.h>
-#include <wx/debug.h>
-#include <wx/utils.h>
+#include "sdk_precomp.h"
 
-#include "logmanager.h"
-#include "compilerfactory.h" //(ph 2020/12/2)
-#include "compilercommandgenerator.h" //(ph 2020/12/2)
-#include "loggers.h"
-#include <configmanager.h>      //LSP diagnostics log
-#include "loggers.h"
-#include "encodingdetector.h"   //(ph 2021/04/10)
+#ifndef CB_PRECOMP
+    #include <wx/gauge.h>
+    #include <wx/sizer.h>
+    #include "wx/xrc/xmlres.h"
+    #include "wx/textfile.h"        //(ph 2021/01/21) to modify .Clangd file
+    #include <wx/event.h>
+    #include <wx/debug.h>
+    #include <wx/utils.h>
+
+    #include "logmanager.h"
+    #include "compilerfactory.h" //(ph 2020/12/2)
+    #include "compilercommandgenerator.h" //(ph 2020/12/2)
+    #include "loggers.h"
+    #include <configmanager.h>      //LSP diagnostics log
+    #include "loggers.h"
+    #include "encodingdetector.h"   //(ph 2021/04/10)
+#endif
 
 #include <../lspdiagresultslog.h>   //(ph 2020/10/25) LSP diagnostics log
 #include "../asyncprocess\procutils.h" //(ph 2021/02/12) GetProcessNameByPid(pid)

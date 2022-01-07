@@ -2,8 +2,10 @@
 /src/devel*
 /src/output*
 /src/*.log
+/src/compile_commands.json
 *.layout
 *.depend
+*.cache
 autorevision.h
 *.bmarks
 Makefile.in

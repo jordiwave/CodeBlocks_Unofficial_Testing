@@ -7,9 +7,6 @@
 		<Project filename="tools/CBLauncher/CbLauncher_wx31_64.cbp" />
 		<Project filename="tools/cbp2make/cbp2make_wx31_64.cbp" />
 		<Project filename="plugins/codecompletion/cctest_wx31_64.cbp" />
-		<Project filename="plugins/clangd_client/ClangdClient_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
 		<Project filename="plugins/contrib/wxContribItems/wxContribItems_wx31_64.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith_wx31_64.cbp">
 			<Depends filename="CodeBlocks_wx31_64.cbp" />
