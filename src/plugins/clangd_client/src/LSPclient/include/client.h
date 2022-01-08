@@ -9,28 +9,38 @@
 
 #include "transport.h"
 #include "protocol.h"
+#include <thread>
 
 //#include "windows.h"
 #include "wx/event.h"
 #include "wx/string.h"
 #include <wx/app.h>                 // wxWakeUpIdle
 
-#include "globals.h"        //(ph 2020/09/23)
-#include "sdk_events.h"     //(ph 2020/09/23)
-#include "asyncprocess.h"          // cl asyncProcess
-#include "processreaderthread.h"   // cl asyncProcess
-#include "cl_command_event.h"      // cl asyncProcess
-#include "winprocess_impl.h"       // cl asyncProcess
+#include "globals.h"
+#include "sdk_events.h"
+
+#if defined(_WIN32)
+    #include "winprocess/asyncprocess/asyncprocess.h"          // cl asyncProcess
+    #include "winprocess/asyncprocess/processreaderthread.h"   // cl asyncProcess
+    #include "winprocess/asyncprocess/winprocess_impl.h"       // cl asyncProcess
+#else //unix
+    #include "unixprocess/asyncprocess/asyncprocess.h"
+    #include "unixprocess/asyncprocess/UnixProcess.h"
+#endif //_WIN32
+
 
 #include "editormanager.h"
 #include "cbeditor.h"
-#include "editorbase.h"     //(ph 2021/04/10)
+#include "editorbase.h"
 #include "cbstyledtextctrl.h"
 #include "cbproject.h"
-#include "..\lspdiagresultslog.h"
+#include "lspdiagresultslog.h"
 #include "logmanager.h"
 #include "configmanager.h"
 #include "encodingdetector.h"
+
+#include "fileutils.h" // FilePath{From/To}URI();
+
 
 class TextCtrlLogger;
 
@@ -40,12 +50,16 @@ class LanguageClient : public JsonTransport
 {
     public:
         virtual ~LanguageClient() = default;
-        const char STX = '\u0002'; //(ph 2021/03/17)
+        const char STX = '\u0002';  //start of text indicator to separate items in the header
 
     public:
         RequestID Initialize(option<DocumentUri> rootUri = {}) {
             InitializeParams params;
+            #if defined(_WIN32)
             params.processId = GetCurrentProcessId();
+            #else
+            params.processId = getpid();
+            #endif
             params.rootUri = rootUri;
             return SendRequest("initialize", params);
         }
@@ -84,7 +98,7 @@ class LanguageClient : public JsonTransport
             SendNotify("textDocument/didClose", params);
         }
 
-        void DidSave(DocumentUri uri) {                 //(ph 2020/11/21)
+        void DidSave(DocumentUri uri) {
             DidCloseTextDocumentParams params;
             params.textDocument.uri = std::move(uri);
             SendNotify("textDocument/didSave", params);
@@ -296,7 +310,7 @@ class LanguageClient : public JsonTransport
             return id;
         }
 
-        RequestID SendRequestByID(string_ref method, string_ref reqID, value params = json()) //(ph 2021/03/12)
+        RequestID SendRequestByID(string_ref method, string_ref reqID, value params = json())
         {
             RequestID id = method.str();
             if (reqID.size())
@@ -317,15 +331,19 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
         //        HANDLE fReadOut = nullptr, fWriteOut = nullptr;
         //        PROCESS_INFORMATION fProcess = {nullptr};
     private:
-        //(ph 2020/09/23)
-        IProcess*       pServerProcess = nullptr;
+
         long            processServerPID = 0;
-        int             idLSP_Process = wxNewId(); //event id for this client instance
-        wxString        LSP_IncomingStr;
-        bool            terminateLSP = false;
-        wxString        fromLSP_data;                   //data sent back from LSP
-        int             LSP_UserEventID = -1;
-        wxString        LSP_rootURI = wxEmptyString;
+
+        #if defined(_WIN32)
+        IProcess*       m_pServerProcess = nullptr;
+        #else
+        UnixProcess*    m_pServerProcess = nullptr;
+        #endif
+
+        int             m_idLSP_Process = wxNewId(); //event id for this client instance
+        std::string     m_std_LSP_IncomingStr;
+        bool            m_terminateLSP = false;
+        int             m_LSP_UserEventID = -1;
         cbProject*      m_pCBProject;
 
         std::map<cbEditor*, int> m_FileLinesHistory;
@@ -372,8 +390,8 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
                 return false;
             }
 
-        MapMessageHandler MapMsgHndlr; //LSP output to our input thread
-        std::thread* pInputThread = nullptr;
+        MapMessageHandler m_MapMsgHndlr; //LSP output to our input thread
+        std::thread* m_pInputThread = nullptr;
 
         int  GetCompilationDatabaseEntry(wxArrayString& returnArray, cbProject* pProject, wxString filename);
         void UpdateCompilationDatabase(cbProject* pProject, wxString filename);
@@ -414,7 +432,11 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
         bool GetLSP_Initialized() {return m_LSP_initialized;}
         void SetLSP_Initialized(bool trueOrFalse) {m_LSP_initialized = trueOrFalse;}
         // Return ptr to server process for this client instance
-        IProcess*  GetLSP_Server(){return pServerProcess;}
+        #if defined(_WIN32)
+        IProcess*  GetLSP_Server(){return m_pServerProcess;}
+        #else
+        UnixProcess* GetLSP_Server() {return m_pServerProcess;}
+        #endif
 
         /* Get the Request/Response id number from the LSP message header*/
         wxString GetRRIDvalue(wxString& lspHdrString);
@@ -429,14 +451,27 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
 
     private:
         std::map<wxString,int> m_LSP_CurrBackgroundFilesParsing;
+
+        //-#if not defined(_WIN32)
+        FileUtils fileUtils;
+        //-#endif
+
     public:
-        void LSP_AddToServerFilesParsing(wxString filename)
-            { m_LSP_CurrBackgroundFilesParsing[filename] = GetNowMilliSeconds(); }
-        void LSP_RemoveFromServerFilesParsing(wxString filename)
-            {   m_LSP_CurrBackgroundFilesParsing.erase(filename); }
+        void LSP_AddToServerFilesParsing(wxString fname)
+            {   wxString filename = fname;
+                filename.Replace("\\", "/");
+                m_LSP_CurrBackgroundFilesParsing[filename] = GetNowMilliSeconds();
+            }
+        void LSP_RemoveFromServerFilesParsing(wxString fname)
+            {   wxString filename = fname;
+                filename.Replace("\\", "/");
+                m_LSP_CurrBackgroundFilesParsing.erase(filename);
+            }
         size_t LSP_GetServerFilesParsingCount(){return m_LSP_CurrBackgroundFilesParsing.size();}
-        int LSP_GetServerFilesParsingStartTime(wxString filename)
-            {
+
+        int LSP_GetServerFilesParsingStartTime(wxString fname)
+            {   wxString filename = fname;
+                filename.Replace("\\", "/");
                 std::map<wxString,int>::iterator it;
                 if ( m_LSP_CurrBackgroundFilesParsing.find(filename) == m_LSP_CurrBackgroundFilesParsing.end())
                     return 0;
@@ -448,8 +483,9 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
             if (not startTime) return 0;
             return GetDurationMilliSeconds(startTime);
         }
-        bool IsServerFilesParsing(wxString filename)
-        {
+        bool IsServerFilesParsing(wxString fname)
+        {   wxString filename = fname;
+            filename.Replace("\\", "/");
             if ( m_LSP_CurrBackgroundFilesParsing.find(filename) != m_LSP_CurrBackgroundFilesParsing.end())
                 return true;
             return false;
@@ -462,25 +498,33 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
         // Return PID of the server process
         long       GetLSP_Server_PID(){return processServerPID;}
 
+        #if defined(_WIN32)
+        bool IsAlive() {return m_pServerProcess->IsAlive();}
+        #else
+        bool IsAlive() {return ( kill(GetLSP_Server_PID(), 0)) == 0;}
+        #endif
+
         // Used as the event id for this client
-        int        GetLSP_EventID(){return idLSP_Process;}
+        int        GetLSP_EventID(){return m_idLSP_Process;}
+
         // true when the client for this project has received the initialize response
         bool       GetLSP_Initialized(cbProject* pProject)
                     { return GetLSP_Initialized(); }
+
         // true when the editor/project has received the first LSP response
         bool       GetLSP_Initialized(cbEditor* pEditor)
                     { return GetLSP_Initialized(); }
+
         // ptr to the server error/diagnostics log for this client
         LSPDiagnosticsResultsLog* LSP_GetLog() { return m_pDiagnosticsLog;}
+
         // ID to use when defining clinet/server events
-        void       SetLSP_UserEventID(int id) {LSP_UserEventID = id;}
-        int        GetLSP_UserEventID() {return LSP_UserEventID;}
+        void       SetLSP_UserEventID(int id) {m_LSP_UserEventID = id;}
+        int        GetLSP_UserEventID() {return m_LSP_UserEventID;}
+
         // The project respresented by this client/server
         void       SetCBProject(cbProject* pProject) {m_pCBProject = pProject;}
         cbProject* GetCBProject(){return m_pCBProject;}
-
-        // ptr to this client instance
-        ProcessLanguageClient* pLSPClient;
 
         // For this project, a map containing cbEditor*(key), value: tuple<LSP serverFileOpenStatus, caretPosition, isParsed>
         #define EDITOR_STATUS_IS_OPEN 0         // editors file is open in server
@@ -495,7 +539,9 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
         LSP_EditorStatusTuple GetLSP_EditorStatus(cbEditor* pEditor)
         // ----------------------------------------------------------------------------
         {
+            #if defined(cbDEBUG)
             cbAssertNonFatal(pEditor && "GetLSP_EditorStatus():null pEditor parm");
+            #endif
             if (not pEditor) return emptyEditorStatus;
             if (m_LSP_EditorStatusMap.find(pEditor) != m_LSP_EditorStatusMap.end())
                 return m_LSP_EditorStatusMap[pEditor];
@@ -506,7 +552,9 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
         void SetLSP_EditorStatus(cbEditor* pEditor, LSP_EditorStatusTuple LSPeditorStatus)
         // ----------------------------------------------------------------------------
         {
+            #if defined(cbDEBUG)
             cbAssertNonFatal(pEditor && "null pEditor");
+            #endif
             if (not pEditor) return;
             // Only new "didOPen" editors are added to the map
             //if ((m_LSP_EditorStatusMap.find(pEditor) != m_LSP_EditorStatusMap.end())
@@ -518,7 +566,9 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
         void SetLSP_EditorRemove(cbEditor* pEditor)
         // ----------------------------------------------------------------------------
         {
+            #if defined(cbDEBUG)
             cbAssertNonFatal(pEditor && "null pEditor");
+            #endif
             if (not pEditor) return;
             if (m_LSP_EditorStatusMap.find(pEditor) != m_LSP_EditorStatusMap.end())
                 m_LSP_EditorStatusMap.erase(pEditor);
@@ -527,7 +577,9 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
         bool GetLSP_IsEditorModified(cbEditor* pEditor)
         // ----------------------------------------------------------------------------
         {
+            #if defined(cbDEBUG)
             cbAssertNonFatal(pEditor && "null pEditor");
+            #endif
             if (not pEditor) return false;
             LSP_EditorStatusTuple edStatus = GetLSP_EditorStatus(pEditor);
             if ( std::get<EDITOR_STATUS_MODIFIED>(edStatus) == true )
@@ -538,7 +590,9 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
         void SetLSP_EditorModified(cbEditor* pEditor, bool trueOrFalse)
         // ----------------------------------------------------------------------------
         {
+            #if defined(cbDEBUG)
             cbAssertNonFatal(pEditor && "null pEditor");
+            #endif
             if (not pEditor) return;
             LSP_EditorStatusTuple edStatus = GetLSP_EditorStatus(pEditor);
             std::get<EDITOR_STATUS_MODIFIED>(edStatus) = trueOrFalse;
@@ -548,7 +602,9 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
         bool GetLSP_IsEditorParsed(cbEditor* pEditor)
         // ----------------------------------------------------------------------------
         {
+            #if defined(cbDEBUG)
             cbAssertNonFatal(pEditor && "null pEditor");
+            #endif
             if (not pEditor) return false;
             LSP_EditorStatusTuple edStatus = GetLSP_EditorStatus(pEditor);
             if ( std::get<EDITOR_STATUS_READY>(edStatus) == true )
@@ -559,7 +615,9 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
         void SetLSP_EditorIsParsed(cbEditor* pEditor, bool trueOrFalse)
         // ----------------------------------------------------------------------------
         {
+            #if defined(cbDEBUG)
             cbAssertNonFatal(pEditor && "null pEditor");
+            #endif
             if (not pEditor) return;
             LSP_EditorStatusTuple edStatus = GetLSP_EditorStatus(pEditor);
             std::get<EDITOR_STATUS_READY>(edStatus) = trueOrFalse;
@@ -569,7 +627,9 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
         void SetLSP_EditorIsOpen(cbEditor* pEditor, bool trueOrFalse)
         // ----------------------------------------------------------------------------
         {
+            #if defined(cbDEBUG)
             cbAssertNonFatal(pEditor && "null pEditor");
+            #endif
             if (not pEditor) return;
             LSP_EditorStatusTuple edStatus = GetLSP_EditorStatus(pEditor);
             std::get<EDITOR_STATUS_IS_OPEN>(edStatus) = trueOrFalse;
@@ -579,7 +639,9 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
         bool GetLSP_EditorIsOpen(cbEditor* pEditor)
         // ----------------------------------------------------------------------------
         {
+            #if defined(cbDEBUG)
             cbAssertNonFatal(pEditor && "null pEditor");
+            #endif
             if (not pEditor) return false;
             LSP_EditorStatusTuple edStatus = GetLSP_EditorStatus(pEditor);
             if (std::get<EDITOR_STATUS_IS_OPEN>(edStatus) )
@@ -613,13 +675,13 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
             ~ProcessLanguageClient() override;
 
     bool Has_LSPServerProcess();
-    void OnLSP_stderr(clProcessEvent& event);
-    void OnLSP_ResponseStdOut(clProcessEvent& event);
-    void OnLSP_Terminated(wxCommandEvent& event_pipedprocess_terminated);
-    void SkipLine();
-    void SkipToJsonData();
+    void OnClangd_stderr(wxThreadEvent& event);
+    void OnClangd_stdout(wxThreadEvent& event);
+    void OnLSP_Terminated(wxThreadEvent& event_pipedprocess_terminated);
+    int  SkipLine();
+    int  SkipToJsonData();
     int  ReadLSPinputLength();
-    void ReadLSPinput(int length, std::string &out);
+    void ReadLSPinput(int dataPosn, int length, std::string &out);
     bool WriteHdr(const std::string &in);
     bool readJson(json &json) override;
     bool writeJson(json &json) override;

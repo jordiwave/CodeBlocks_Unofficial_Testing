@@ -12,6 +12,12 @@
 #include "wx/window.h"
 #include "manager.h"
 
+#ifdef HAVE_OVERRIDE
+    #define wxOVERRIDE override
+#else /*  !HAVE_OVERRIDE */
+    #define wxOVERRIDE
+#endif /*  HAVE_OVERRIDE */
+
 // This is a base class used to process all method calls.
 // ----------------------------------------------------------------------------
 class AsyncMethodCallEvent : public wxEvent

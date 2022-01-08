@@ -42,23 +42,23 @@ CCTreeCtrlExpandedItemData::CCTreeCtrlExpandedItemData(const CCTreeCtrlData* dat
 {
 }
 
-// class CCTreeCtrl
+// class CCTreeCntrl
 
-IMPLEMENT_DYNAMIC_CLASS(CCTreeCtrl, wxTreeCtrl)
+IMPLEMENT_DYNAMIC_CLASS(CCTreeCntrl, wxTreeCtrl)
 
-CCTreeCtrl::CCTreeCtrl()
+CCTreeCntrl::CCTreeCntrl()
 {
    Compare = &CBNoCompare;
 }
 
-CCTreeCtrl::CCTreeCtrl(wxWindow *parent, const wxWindowID id,
+CCTreeCntrl::CCTreeCntrl(wxWindow *parent, const wxWindowID id,
                        const wxPoint& pos, const wxSize& size, long style) :
     wxTreeCtrl(parent, id, pos, size, style)
 {
    Compare = &CBNoCompare;
 }
 
-void CCTreeCtrl::SetCompareFunction(const BrowserSortType type)
+void CCTreeCntrl::SetCompareFunction(const BrowserSortType type)
 {
     switch (type)
     {
@@ -82,12 +82,12 @@ void CCTreeCtrl::SetCompareFunction(const BrowserSortType type)
 
 }
 
-int CCTreeCtrl::OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2)
+int CCTreeCntrl::OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2)
 {
     return Compare((CCTreeCtrlData*)GetItemData(item1), (CCTreeCtrlData*)GetItemData(item2));
 }
 
-int CCTreeCtrl::CBAlphabetCompare (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
+int CCTreeCntrl::CBAlphabetCompare (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
 {
     if (!lhs || !rhs)
         return 1;
@@ -98,7 +98,7 @@ int CCTreeCtrl::CBAlphabetCompare (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
     return wxStricmp(lhs->m_Token->m_Name, rhs->m_Token->m_Name);
 }
 
-int CCTreeCtrl::CBKindCompare(CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
+int CCTreeCntrl::CBKindCompare(CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
 {
     if (!lhs || !rhs)
         return 1;
@@ -110,7 +110,7 @@ int CCTreeCtrl::CBKindCompare(CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
     return lhs->m_TokenKind - rhs->m_TokenKind;
 }
 
-int CCTreeCtrl::CBScopeCompare(CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
+int CCTreeCntrl::CBScopeCompare(CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
 {
     if (!lhs || !rhs)
         return 1;
@@ -123,7 +123,7 @@ int CCTreeCtrl::CBScopeCompare(CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
     return rhs->m_Token->m_Scope - lhs->m_Token->m_Scope;
 }
 
-int CCTreeCtrl::CBLineCompare (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
+int CCTreeCntrl::CBLineCompare (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
 {
     if (!lhs || !rhs)
         return 1;
@@ -141,7 +141,7 @@ int CCTreeCtrl::CBLineCompare (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
     }
 }
 
-int CCTreeCtrl::CBNoCompare(cb_unused CCTreeCtrlData* lhs, cb_unused CCTreeCtrlData* rhs)
+int CCTreeCntrl::CBNoCompare(cb_unused CCTreeCtrlData* lhs, cb_unused CCTreeCtrlData* rhs)
 {
     return 0;
 }
@@ -149,7 +149,7 @@ int CCTreeCtrl::CBNoCompare(cb_unused CCTreeCtrlData* lhs, cb_unused CCTreeCtrlD
 // This does not really do what it says !
 // It only removes doubles, if they are neighbours, so the tree should be sorted !!
 // The last one (after sorting) remains.
-void CCTreeCtrl::RemoveDoubles(const wxTreeItemId& parent)
+void CCTreeCntrl::RemoveDoubles(const wxTreeItemId& parent)
 {
     if (Manager::IsAppShuttingDown() || (!(parent.IsOk())))
         return;

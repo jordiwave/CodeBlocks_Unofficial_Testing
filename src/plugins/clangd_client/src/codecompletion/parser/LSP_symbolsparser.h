@@ -23,6 +23,12 @@
 #include "token.h"
 #include "tokentree.h"
 
+#if defined(_WIN32)
+#include "winprocess/misc/fileutils.h"      //(ph 2021/12/21)
+#else
+#include "unixprocess/fileutils.h"      //(ph 2021/12/21)
+#endif //_WIN32
+
 #include "json.hpp" //nlohmann json lib
 #include "json.hpp" //nlohmann json lib
 using json = nlohmann::json;
@@ -525,6 +531,7 @@ private:
 //    #define stMODIFIER  4 //position of semantic token type modifier
 //    typedef std::tuple<size_t,size_t,size_t,size_t,size_t> LSP_SemanticToken;
 //    std::vector<LSP_SemanticToken> semanticTokensVec;
+    FileUtils fileUtils;
     private:
     wxString DoHandleSemanticTokenFunction();
     wxString DoGetDocumentSymbolFunctionArgs(wxString& txtLine, int start, int length);

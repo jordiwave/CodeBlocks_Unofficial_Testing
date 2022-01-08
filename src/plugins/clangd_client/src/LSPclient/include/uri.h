@@ -133,7 +133,8 @@ struct URIForFile {
                 result += hexs[ch & 0xF];
             }
         }
-        return std::move(result);
+        //-return std::move(result); Gets warning message about moves in returns.
+        return (result);
     }
     explicit operator bool() const { return !file.empty(); }
     friend bool operator==(const URIForFile &LHS, const URIForFile &RHS) {
@@ -146,7 +147,7 @@ struct URIForFile {
         return LHS.file < RHS.file;
     }
     void from(string_ref path) {
-        file = "file:///" + UriEncode(path);
+        file = "file://" + UriEncode(path);
     }
     explicit URIForFile(const char *str) : file(str) {}
     URIForFile() = default;

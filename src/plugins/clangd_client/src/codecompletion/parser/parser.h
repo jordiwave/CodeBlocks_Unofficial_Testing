@@ -21,10 +21,15 @@
 #include <cbplugin.h>
 #include "searchresultslog.h"
 
-//-#include "parserthread.h" //(ph 2021/07/27)
 #include "LSP_symbolsparser.h" //(ph 2021/07/27)
 #include "parser_base.h"
 #include "../IdleCallbackHandler.h"    //(ph 2021/09/25)
+
+#if defined(_WIN32)
+#include "winprocess/misc/fileutils.h"                 //(ph 2021/12/21)
+#else
+#include "fileutils.h"                 //(ph 2021/12/21)
+#endif //_WIN32
 
 // defines for the icon/resource images
 #define PARSER_IMG_NONE                        -2
@@ -203,6 +208,8 @@ public:
     void OnLSP_GoToNextFunctionResponse(wxCommandEvent& event);
     void OnLSP_GoToFunctionResponse(wxCommandEvent& event); //unused
 
+    FileUtils fileUtils;
+
 protected:
 
     /** A timer is used to optimized the event handling for parsing, e.g. several files/projects
@@ -260,7 +267,7 @@ private:
     std::unique_ptr<IdleCallbackHandler> pIdleCallbacks;
     //(ph 2021/10/23)
     wxArrayString* m_pReferenceValues = nullptr;
-    size_t reportedBadFileReference = 0;
+    int reportedBadFileReference = 0;
     wxString m_LogFileBase = wxString();
 
   public:
@@ -295,13 +302,20 @@ private:
             pauseCounts += it->second;
         return pauseCounts;
     }
+
     int PauseParsingCount(wxString reason)
     {
         wxString the_reason = reason.MakeLower();
         if ( m_PauseParsingMap.find(the_reason) == m_PauseParsingMap.end() )
+        {
+            #if defined(cbDEBUG)
             cbAssertNonFatal(the_reason=="Does not exist");
+            #endif
+            return 0;
+        }
         return m_PauseParsingMap[the_reason];
     }
+
     bool PauseParsingExists(wxString reason)
     {
         wxString the_reason = reason.MakeLower();
@@ -325,7 +339,9 @@ private:
         }
         else if (not PauseParsingExists(the_reason) and (increment==false))
         {    //decrement but doesnt exist, is an error
+            #if defined (cbDEBUG)
             cbAssertNonFatal(reason=="reason does not exist");
+            #endif
             CCLogger::Get()->DebugLogError(wxString::Format("PauseParsing request Error:%s", reason));
             return false;
         }

@@ -105,7 +105,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, ParseManager* np, CodeCompletion* c
     // Handle all options that are being directly applied from config
     // -----------------------------------------------------------------------
 
-    // Page "Clangd_Client"
+    // Page "clangd_client"
     XRCCTRL(*this, "chkNoSemantic",         wxCheckBox)->SetValue(!cfg->ReadBool(_T("/semantic_keywords"),   false));
     XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_add_parentheses"), true));
     XRCCTRL(*this, "chkDetectImpl",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/detect_implementation"),false));
@@ -152,7 +152,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, ParseManager* np, CodeCompletion* c
     // Handle all options that are being handled by m_Parser
     // -----------------------------------------------------------------------
 
-    // Page "Clangd_Client"
+    // Page "clangd_client"
     XRCCTRL(*this, "chkUseSmartSense",      wxCheckBox)->SetValue(!m_Parser.Options().useSmartSense);
     XRCCTRL(*this, "chkWhileTyping",        wxCheckBox)->SetValue(m_Parser.Options().whileTyping);
 
@@ -200,7 +200,7 @@ void CCOptionsDlg::OnApply()
     // Handle all options that are being directly applied / written from UI:
     // -----------------------------------------------------------------------
 
-    // Page "Clangd_Client"
+    // Page "clangd_client"
     cfg->Write(_T("/semantic_keywords"),    (bool)!XRCCTRL(*this, "chkNoSemantic",         wxCheckBox)->GetValue());
     cfg->Write(_T("/use_SmartSense"),       (bool) XRCCTRL(*this, "chkUseSmartSense",      wxCheckBox)->GetValue());
     cfg->Write(_T("/while_typing"),         (bool) XRCCTRL(*this, "chkWhileTyping",        wxCheckBox)->GetValue());
@@ -263,7 +263,7 @@ void CCOptionsDlg::OnApply()
     // Also don't forget to update the Parser option according UI!
     m_Parser.ReadOptions();
 
-    // Page "Clangd_Client"
+    // Page "clangd_client"
     m_Parser.Options().useSmartSense = !XRCCTRL(*this, "chkUseSmartSense",    wxCheckBox)->GetValue();
     m_Parser.Options().whileTyping   =  XRCCTRL(*this, "chkWhileTyping",      wxCheckBox)->GetValue();
 
@@ -330,7 +330,7 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     bool en = ccmcfg->ReadBool(_T("/code_completion"), false); //<==  CCManagers  main setting, NOT clangd_client's
     bool aap = XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->GetValue();
 
-    // Page "Clangd_Client"
+    // Page "clangd_client"
     XRCCTRL(*this, "chkUseSmartSense",              wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkWhileTyping",                wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkAutoAddParentheses",         wxCheckBox)->Enable(en);
@@ -460,7 +460,8 @@ void CCOptionsDlg::OnLLVM_AutoDetect(cb_unused wxCommandEvent& event)       //(p
     ClangLocator clangLocator;
     wxString clangLocation = clangLocator.Locate_Clang();           // clang.exe usually in \LLVM\bin
     wxString clangdLocation = clangLocator.Locate_Clangd();         // clangd (note the 'd')
-    wxString clangResourceDir = clangLocator.Locate_ResourceDir();
+    wxFileName fnClangResourceDir(clangdLocation); //its empty
+    wxString clangResourceDir = clangLocator.Locate_ResourceDir(fnClangResourceDir);
 
     if (clangLocation.empty())
     {
@@ -477,8 +478,12 @@ void CCOptionsDlg::OnLLVM_AutoDetect(cb_unused wxCommandEvent& event)       //(p
 
     // Verify clangd version is above 12
     wxChar dirSep = wxFILE_SEP_PATH;
+    #if defined(_WIN32)
     wxString clangdVersion = clangLocator.GetClangVersion(clangdLocation + dirSep + "clangd.exe");
-    //eg., clangd version 10.0,0
+    #else
+    wxString clangdVersion = clangLocator.GetClangVersion(clangdLocation + dirSep + "clangd");
+    #endif
+    //eg., clangd version 13.0,0
     clangdVersion = clangdVersion.BeforeFirst('.').AfterLast(' ');
     int versionNum = std::stoi(clangdVersion.ToStdString());
     if (versionNum < 13)
@@ -508,10 +513,12 @@ void CCOptionsDlg::OnFindDirLLVM_Dlg(wxCommandEvent& event)                //(ph
     if (platform::windows)
         file_selection = _("Executable files (*.exe)|*.exe");
     wxFileDialog dlg(this,
-                     _("Select file"),
-                     XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue() + _T("/bin"),
-                     obj->GetValue(),
-                     file_selection,
+                     _("Select clangd executable file"),
+                     #if defined(__WXGTK__)
+                     "/", "", "*",
+                     #else
+                     "","","*.*",
+                     #endif
                      wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly );
     dlg.SetFilterIndex(0);
 
@@ -519,11 +526,21 @@ void CCOptionsDlg::OnFindDirLLVM_Dlg(wxCommandEvent& event)                //(ph
     if (dlg.ShowModal() != wxID_OK)
         return;
 
-    wxChar dirSep = wxFILE_SEP_PATH;
-    wxFileName fname(dlg.GetPath());
-    wxString dir = fname.GetPath();
-    if (dir.EndsWith("bin"))
-        dir = dir.BeforeLast(dirSep);
-    obj->SetValue(dir);
+    //-wxChar dirSep = wxFILE_SEP_PATH;
+    wxString fullPath = dlg.GetPath();
+    wxFileName fname(fullPath);
+    if (not fullPath.Contains("clangd"))
+    {
+        wxString msg = "Failed to select the clangd executable.";
+        cbMessageBox(msg,"ERROR");
+        fname.Clear();
+
+    }
+    //(ph 2021/12/18) save full path in order to get other config items (like resource dir)
+    //-wxString dir = fname.GetPath();
+    //-if (dir.EndsWith("bin"))
+    //-    dir = dir.BeforeLast(dirSep);
+    //-obj->SetValue(dir);
+    obj->SetValue(fname.GetFullPath());
 
 } // OnSelectProgramClick

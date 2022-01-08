@@ -2183,7 +2183,7 @@ bool LSP_Tokenizer::LSP_ConvertSemanticTokens(json* pJson)
     // lineNum is relative to the previous linenumber (except for the first)
     // colNum is relative to the previous column if line number is zero
     // Example:
-    // {"id":"textDocument/semanticTokens/full\u0002file:///F:/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","jsonrpc":"2.0",
+    // {"id":"textDocument/semanticTokens/full\u0002file://F:/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","jsonrpc":"2.0",
     //   "result":{"data":[9,0,18,19,0, 1,0,20,19,0, 0,2,7,19,0, 0,10,8,14,0, 2,4,8,8,0, 0,9,5,0,0,4,5,17,9,0,1,4,7,10,0,...
     // (note: spaces in the above line added for emphasis. Data mangled to show interpretation.)
     // 1st  token:  line:9  col:0  tokenLength:18 type:19 typeModifier: 0   //9,0,18,19,0

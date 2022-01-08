@@ -29,8 +29,6 @@
     #include <wx/utils.h>
     #include <wx/xrc/xmlres.h>
     #include <wx/wxscintilla.h>
-    #include <wx/uri.h>         //(ph 2020/12/4)
-    #include <wx/textfile.h>    //(ph 2021/02/3)
 
     #include <cbeditor.h>
     #include <configmanager.h>
@@ -44,6 +42,7 @@
     #include <sdk_events.h>
 #endif
 
+#include <wx/textfile.h>    //(ph 2021/02/3)
 #include <wx/tokenzr.h>
 #include <wx/html/htmlwin.h>
 #include <wx/app.h>             //(ph 2021/02/1) wxWakeUpIdle()
@@ -74,7 +73,14 @@
 #include <encodingdetector.h>       //(ph 2020/10/26)
 #include "infowindow.h"             //(ph 2020/11/22)
 #include "lspdiagresultslog.h"      //(ph 2020/10/25) LSP
-#include "asyncprocess\procutils.h" //(ph 2020/10/25) LSP
+
+#if defined(_WIN32)
+#include "winprocess/asyncprocess/procutils.h" //(ph 2020/10/25) LSP
+#else
+#include "procutils.h"
+#endif //_Win32
+
+
 #include "LSPEventCallbackHandler.h" //(ph 2021/10/22)
 
 #define CC_CODECOMPLETION_DEBUG_OUTPUT 0
@@ -114,12 +120,12 @@ namespace
 // ----------------------------------------------------------------------------
 {
     // this auto-registers the plugin
-    PluginRegistrant<CodeCompletion> reg(_T("Clangd_Client"));
+    PluginRegistrant<CodeCompletion> reg(_T("clangd_client"));
 
     const char STX = '\u0002';
 
     // LSP_Symbol identifiers
-    #include "..\LSP_SymbolKind.h"
+    #include "../LSP_SymbolKind.h"
 
     bool wxFound(int result){return result != wxNOT_FOUND;}
     bool shutTFU = wxFound(0); //shutup 'not used' compiler err msg when wxFound not used
@@ -422,11 +428,52 @@ CodeCompletion::CodeCompletion() :
     m_CCEnablePlatformCheck(true),
     m_DocHelper(this)
 {
+    // We cannot run if the old CodeCompletion is enabled
+     bool oldCC_enabled = Manager::Get()->GetConfigManager(_T("plugins"))->ReadBool(_T("/CODECOMPLETION"), false );
+    if (oldCC_enabled)
+    {
+        return;
+    }
     // ccmanager's config
     ConfigManager* ccmcfg = Manager::Get()->GetConfigManager(_T("ccmanager"));
     m_CodeCompletionEnabled = ccmcfg->ReadBool(_T("/code_completion"), false);
-
+    // Main settings CodeCompletion must be enabled, else we exit.
     if (not m_CodeCompletionEnabled) return;
+
+    // get top window to use as cbMessage parent, else message boxes will hide behind dialog and main window
+    wxWindow* topWindow = wxFindWindowByName("Manage plugins");
+    if (not topWindow) topWindow = Manager::Get()->GetAppWindow();
+
+    // For LSP client
+    // If old "CodeCompletion" plugin is attached, exit with message
+    PluginManager* pPlgnMgr = Manager::Get()->GetPluginManager();
+    const PluginInfo* pCCinfo = pPlgnMgr->GetPluginInfo("CodeCompletion");
+    if (pCCinfo)
+    {
+        // Old CodeCompletion is loaded?
+        // Is it disabled...
+        wxString baseKey;
+        baseKey << _T("/") << "CodeCompletion";
+        bool loadIt = Manager::Get()->GetConfigManager(_T("plugins"))->ReadBool(baseKey,true);
+        if (loadIt)
+        {
+            wxString msg = "The Clangd client plugin cannot run while the \"Code completion\" plugin is enabled.";
+            msg += "\nClangd client plugin will now disable itself. :-(";
+            cbMessageBox(msg, "Clangd client", wxOK, topWindow);
+            m_IsAttached = false;
+            wxWindow* window = Manager::Get()->GetAppWindow();
+            if (window)
+            {
+                // remove ourself from the application's event handling chain...
+                // which cbPlugin.cpp just placed before calling OnAttach()
+                // Else an attempt to re-enable this plugin will cause a hang.
+                if (GetParseManager()->FindEventHandler(this))
+                    window->RemoveEventHandler(this);
+            }
+            m_PluginNeedsAppRestart = true;
+            return;
+        }
+    }
 
     // create Idle time CallbackHandler     //(ph 2021/09/27)
     LSPEventCallbackHandler* pNewLSPEventSinkHandler = new LSPEventCallbackHandler();
@@ -440,8 +487,8 @@ CodeCompletion::CodeCompletion() :
     // it is the CodeCompletion plugin ifself.
     CCLogger::Get()->Init(this, g_idCCLogger, g_idCCDebugLogger, g_idCCDebugErrorLogger);
 
-    if (!Manager::LoadResource(_T("Clangd_Client.zip")))
-        NotifyMissingFile(_T("Clangd_Client.zip"));
+    if (!Manager::LoadResource(_T("clangd_client.zip")))
+        NotifyMissingFile(_T("clangd_client.zip"));
 
     // handling events send from CCLogger
     Connect(g_idCCLogger,                wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnCCLogger)     );
@@ -475,7 +522,7 @@ void CodeCompletion::OnAttach()
 // ----------------------------------------------------------------------------
 {
     AppVersion appVersion;
-    appVersion.m_AppName = "Clangd_Client";
+    appVersion.m_AppName = "clangd_client";
     // Set current plugin version
 	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
 	pInfo->version = appVersion.GetVersion();
@@ -595,6 +642,11 @@ void CodeCompletion::OnAttach()
 
     pm->RegisterEventSink(cbEVT_DEBUGGER_STARTED,      new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnDebuggerStarting));
     pm->RegisterEventSink(cbEVT_DEBUGGER_FINISHED,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnDebuggerFinished));
+
+    pm->RegisterEventSink(cbEVT_PLUGIN_ATTACHED,        new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnPluginAttached));
+    //m->RegisterEventSink(cbEVT_PLUGIN_RELEASED,        new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginReleased));
+    // m->RegisterEventSink(cbEVT_PLUGIN_INSTALLED,       new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginInstalled));
+    //m->RegisterEventSink(cbEVT_PLUGIN_UNINSTALLED,     new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginUninstalled));
 
     m_DocHelper.OnAttach();
 }
@@ -955,6 +1007,26 @@ bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 
     return true;
 }
+// --------------------------------------------------------------
+void CodeCompletion::OnPluginAttached(CodeBlocksEvent& event)
+// --------------------------------------------------------------
+{
+    // What shall we do if old CodeCompletion gets loaded ?
+    cbPlugin* plug = event.GetPlugin();
+    if (plug)
+    {
+        //DoAddPlugin(plug);
+        const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(plug);
+        wxString msg = info ? info->title : wxString(_("<Unknown plugin>"));
+        if (info->name == "CodeCompletion")
+        {
+            wxString msg = "You should not enable 'CodeCompletion' plugin when 'clangd_client' is running.";
+            msg << "\nThey are not compatible with one another.";
+            cbMessageBox(msg, "ERROR");
+        }
+        //Manager::Get()->GetLogManager()->DebugLog(F(_T("%s plugin activated"), msg.wx_str()));
+    }
+}
 // ----------------------------------------------------------------------------
 void CodeCompletion::OnIdle(wxIdleEvent& event) //(ph 2020/10/24)
 // ----------------------------------------------------------------------------
@@ -1238,7 +1310,7 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetTokenAt(int pos, cbEdito
     if (m_HoverTokens.size() )
     {
         tokens.clear();
-        wxString hoverMsg = wxString::Format("GetTokenAt() sees %d tokens.\n", m_HoverTokens.size());
+        wxString hoverMsg = wxString::Format("GetTokenAt() sees %d tokens.\n", int(m_HoverTokens.size()));
         CCLogger::Get()->DebugLog(hoverMsg);
         for(size_t ii=0; ii<m_HoverTokens.size(); ++ii)
         {
@@ -2008,8 +2080,9 @@ void CodeCompletion::OnRenameSymbols(cb_unused wxCommandEvent& event)
                                              targetText,
                                              Manager::Get()->GetAppWindow());
 
-    if (!replaceText.IsEmpty() && (replaceText != targetText) )
+    if (not replaceText.IsEmpty() && (replaceText != targetText) )
     {
+        GetParseManager()->SetRenameSymbolToChange(targetText);
         GetLSPclient(pEditor)->LSP_RequestRename(pEditor, pos, replaceText);
     }
 }
@@ -2329,7 +2402,7 @@ void CodeCompletion::OnLSP_EditorFileReparse(wxCommandEvent& event)
             // if file is not open in editor do a didOpen()/didClose() sequence
             //      to cause a background parse.
             wxString filename = pf->file.GetFullPath();
-            if (pEditor) pClient->LSP_DidSave(pEditor);
+            if (pEditor and pClient and pClient->GetLSP_IsEditorParsed(pEditor)) pClient->LSP_DidSave(pEditor); //(ph 2021/12/21)
             else {
                 // do a background didOpen(). It will be didClose()ed in OnLSP_RequestedSymbolsResponse();
                 // If its a header file, OnLSP_DiagnosticsResponse() will do the LSP idClose().
@@ -2609,7 +2682,9 @@ void CodeCompletion::OnLSP_ProcessTerminated(wxCommandEvent& event)     //(ph 20
 // ----------------------------------------------------------------------------
 {
     cbProject* pProject = (cbProject*)event.GetEventObject();
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pProject && "Entered with null project ptr.")
+    #endif
     if (not pProject) return;
     m_LSP_Clients[pProject] = nullptr;
     return;
@@ -2618,7 +2693,9 @@ void CodeCompletion::OnLSP_ProcessTerminated(wxCommandEvent& event)     //(ph 20
 ProcessLanguageClient* CodeCompletion::CreateNewLanguageServiceProcess(cbProject* pcbProject)                                     //(ph 2020/11/4)
 // ----------------------------------------------------------------------------
 {
+    #if defined(cbDEBUG)
     cbAssertNonFatal(pcbProject && "CreateNewLanguageServiceProcess requires a project");
+    #endif
     if (not pcbProject) return nullptr;
 
     // Don't allow a second process to write to the current clangd symbol caches
@@ -2827,7 +2904,7 @@ void CodeCompletion::OnLSP_Event(wxCommandEvent& event)
     // a CB "find implementation == Clangd/Clangd "definition"
     // this event.string contains type of eventType:result or error
     // example:
-    // {"jsonrpc":"2.0","id":"textDocument/definition","result":[{"uri":"file:///F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","range":{"start":{"line":89,"character":24},"end":{"line":89,"character":30}}}]}
+    // {"jsonrpc":"2.0","id":"textDocument/definition","result":[{"uri":"file://F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","range":{"start":{"line":89,"character":24},"end":{"line":89,"character":30}}}]}
 
     bool isDecl = false; bool isImpl = false;
     if (evtString.StartsWith("textDocument/declaration") )
@@ -2916,19 +2993,14 @@ void CodeCompletion::OnLSP_SemanticTokenResponse(wxCommandEvent& event)  //(ph 2
     json* pJson = (json*)event.GetClientData();
     wxString idStr = event.GetString();
 
-    // event string looks like: "textDocument/semanticTokens/full\002file:///f:/somefile.xxx\0002id:method"
+    // event string looks like: "textDocument/semanticTokens/full\002file://f:/somefile.xxx\0002id:method"
     // \00002 == utf-8 STX (start of text)
     // the "\00002id:method"  may be missing
 
     wxString URI = idStr.AfterFirst(STX);
     if (URI.Contains(STX))
         URI = URI.BeforeFirst(STX); //filename
-    wxString uriFilename = URI.Mid(8); // jump over file:/// prefix
-    wxURI uriFile(uriFilename);
-    uriFilename = uriFile.BuildUnescapedURI();
-    if (platform::windows)
-        uriFilename.Replace("/","\\");
-
+    wxString uriFilename = fileUtils.FilePathFromURI(URI);
     cbEditor* pEditor =  nullptr;
     EditorManager* pEdMgr = Manager::Get()->GetEditorManager();
     EditorBase* pEdBase = pEdMgr->IsOpen(uriFilename);
@@ -3003,10 +3075,16 @@ void CodeCompletion::ShutdownLSPclient(cbProject* pProject)
             pClient = nullptr;
 
             // The clangd process is probably already terminated by LSP_Shutdown above.
-            while(ProcUtils::GetProcessNameByPid(closing_pid).Length())
+            // but it sometimes gets stuck waiting for cput access
+            int waitLimit = 40; //40*50mils = 2 seconds max wait for clangd to terminate
+            while(waitLimit > 0)
             {
+                wxString cmdLine = ProcUtils::GetProcessNameByPid(closing_pid);
+                if (cmdLine.empty()) break;
+                if (cmdLine.Contains("defunct")) break; //Linux
                 Manager::Yield(); //give time for process to shutdown
                 wxMilliSleep(50);
+                waitLimit -= 1;
             }
 
             // The event project just got deleted, see if there's another project we can use
@@ -3278,9 +3356,21 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
             // We need the project and base project .cbp file location
             // to do a didOpen() on a file belonging to a non-active project.
             cbProject* pActiveProject = Manager::Get()->GetProjectManager()->GetActiveProject();
-            if (not pActiveProject)
-                return;
+            if (not pActiveProject) return;
             ProjectFile* pProjectFile = pEd->GetProjectFile();
+            if (not pProjectFile)
+            {
+                // The ProjectFile* has not yet been entered into the cbEditor object
+                // Will there ever be a ProjectFile*
+                Manager::Get()->GetProjectManager()->FindProjectForFile(pEd->GetFilename(), &pProjectFile, false, false);
+                if (pProjectFile)
+                {
+                    // Callback when it has been entered into the cbProject.
+                    m_OnEditorOpenEventOccured = true;
+                    GetIdleCallbackHandler()->QueueCallback(this, &CodeCompletion::OnEditorActivated, event);
+                    return;
+                }
+            }
             if (not pProjectFile) return;
             cbProject* pEdProject = pProjectFile->GetParentProject();
             if (not pEdProject) return;
@@ -4051,8 +4141,8 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
             m_LastFile = filename;
         }
 
-        TRACE(wxString::Format("%s(): m_Scope[%d] m_FunctionScope[%d]", __PRETTY_FUNCTION__, m_ScopeMarks.size(), m_FunctionsScope.size() ));
-        //- **debugging** CCLogger::Get()->DebugLog(wxString::Format("%s(): m_Scope[%d] m_FunctionScope[%d]", __PRETTY_FUNCTION__, m_ScopeMarks.size(), m_FunctionsScope.size() ));
+        TRACE(wxString::Format("%s(): m_Scope[%d] m_FunctionScope[%d]", __PRETTY_FUNCTION__, int(m_ScopeMarks.size()), int(m_FunctionsScope.size()) ));
+        //- **debugging** CCLogger::Get()->DebugLog(wxString::Format("%s(): m_Scope[%d] m_FunctionScope[%d]", __PRETTY_FUNCTION__, m_ScopeMarks.size(), int(m_FunctionsScope.size()) ));
 
         // ...and refresh the toolbars.
         m_Function->Clear();
@@ -4484,7 +4574,7 @@ void CodeCompletion::OnDebuggerStarting(CodeBlocksEvent& event)                 
     ProcessLanguageClient* pClient = GetLSPclient(pProject);
     if (not pClient) return;
 
-    PluginElement* pPlugElements = pPlugMgr->FindElementByName("Clangd_Client");
+    PluginElement* pPlugElements = pPlugMgr->FindElementByName("clangd_client");
     wxFileName pluginLibName = pPlugElements->fileName;
 
     // if projects filename matches the LSP client/server dll,

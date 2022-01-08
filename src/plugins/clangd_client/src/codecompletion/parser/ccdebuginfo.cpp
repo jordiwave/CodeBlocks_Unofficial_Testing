@@ -78,7 +78,7 @@ namespace CCDebugInfoHelper
         if (dlg.ShowModal() != wxID_OK)
             return;
 
-        // Opening the file migth have failed, verify:
+        // Opening the file might have failed, verify:
         wxFile f(dlg.GetPath(), wxFile::write);
         if (f.IsOpened())
         {

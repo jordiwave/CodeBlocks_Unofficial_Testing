@@ -21,7 +21,7 @@ public:
     CCOptionsDlg(wxWindow* parent, ParseManager* np, CodeCompletion* cc, DocumentationHelper* dh);
     ~CCOptionsDlg() override;
 
-    wxString GetTitle() const override { return _("Clangd_Client"); }
+    wxString GetTitle() const override { return _("clangd_client"); }
     wxString GetBitmapBaseName() const override { return _T("codecompletion"); }
     void OnApply() override;
     void OnCancel() override {}

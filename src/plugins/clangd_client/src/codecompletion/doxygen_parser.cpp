@@ -648,9 +648,9 @@ DocumentationHelper::DocumentationHelper(CodeCompletion* cc) :
     m_Enabled(true)
 {
     ColourManager *colours = Manager::Get()->GetColourManager();
-    colours->RegisterColour(_("Clangd_Client"), _("Documentation popup background"), wxT("cc_docs_back"), *wxWHITE);
-    colours->RegisterColour(_("Clangd_Client"), _("Documentation popup text"), wxT("cc_docs_fore"), *wxBLACK);
-    colours->RegisterColour(_("Clangd_Client"), _("Documentation popup link"), wxT("cc_docs_link"), *wxBLUE);
+    colours->RegisterColour(_("clangd_client"), _("Documentation popup background"), wxT("cc_docs_back"), *wxWHITE);
+    colours->RegisterColour(_("clangd_client"), _("Documentation popup text"), wxT("cc_docs_fore"), *wxBLACK);
+    colours->RegisterColour(_("clangd_client"), _("Documentation popup link"), wxT("cc_docs_link"), *wxBLUE);
 }
 
 DocumentationHelper::~DocumentationHelper()

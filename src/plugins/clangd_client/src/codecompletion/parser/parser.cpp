@@ -32,7 +32,12 @@
 #include <wx/tokenzr.h>
 #include <cbstyledtextctrl.h>
 #include <wx/xrc/xmlres.h> //XRCID //(ph 2021/03/15)
-#include "wx/uri.h"
+
+#if defined(_WIN32)
+#include "winprocess/misc/fileutils.h"      //(ph 2021/12/20) fix the URI intrpretation problem
+#else
+#include "unixprocess/fileutils.h"
+#endif
 
 #include "parser.h"
 //-deprecated- #include "parserthreadedtask.h"
@@ -117,7 +122,7 @@ namespace
 // ----------------------------------------------------------------------------
 {
     // LSP_Symbol identifiers
-    #include "..\LSP_SymbolKind.h"
+    #include "../LSP_SymbolKind.h"
 
     const char STX = '\u0002'; //(ph 2021/03/17)
     int prevDocumentSymbolsFilesProcessed = 0;
@@ -445,11 +450,7 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent& event) //(ph 2021/03/15)
         wxString URI = idValue.AfterFirst(STX);
         if (URI.Contains(STX))
             URI = URI.BeforeFirst(STX); //filename
-        wxString filename = URI.Mid(8); // jump over file:/// prefix
-        wxURI uriFile(filename);
-        filename = uriFile.BuildUnescapedURI();
-        if (platform::windows)
-            filename.Replace("/","\\");
+        wxString filename = fileUtils.FilePathFromURI(URI);
 
         // Verify client, project and files are still legitimate
         ProcessLanguageClient* pClient = GetLSPClient();
@@ -588,7 +589,7 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent& event) //(ph 2021/03/15)
 
         // Time to insert textDocument/documentSymbols
         size_t durationMillis = m_pParseManager->GetDurationMilliSeconds(startMillis);
-        // **debugging** CCLogger::Get()->DebugLog(wxString::Format("%s() processed %s (%d msec)", __FUNCTION__, wxFileName(filename).GetFullName(), durationMillis));
+        // **debugging** CCLogger::Get()->DebugLog(wxString::Format("%s() processed %s (%zu msec)", __FUNCTION__, wxFileName(filename).GetFullName(), durationMillis));
         wxUnusedVar(durationMillis);
     }//while entries in queue
 
@@ -925,12 +926,12 @@ void Parser::OnLSP_BatchTimer(cb_unused wxTimerEvent& event)            //(ph 20
         if (ok)
         {
             pClient->LSP_AddToServerFilesParsing(filename);
-            wxString msg = wxString::Format("LSP background parse started for %s (%zu more)",filename, numEntries-1);
+            wxString msg = wxString::Format("LSP background parse started for %s (%d more)",filename, int(numEntries-1));
             pLogMgr->DebugLog(msg);
         }
         else
         {
-            wxString msg = wxString::Format("LSP background parse FAILED for %s (%d more)",filename, numEntries-1);
+            wxString msg = wxString::Format("LSP background parse FAILED for %s (%d more)",filename, int(numEntries-1));
             pLogMgr->DebugLog(msg);
             pLogMgr->Log(msg);
         }
@@ -996,7 +997,7 @@ void Parser::ReadOptions()
         cfg->Write(_T("/platform_check"),                true);
     }
 
-    // Page "Clangd_Client"
+    // Page "clangd_client"
     m_Options.useSmartSense        = cfg->ReadBool(_T("/use_SmartSense"),                true);
     m_Options.whileTyping          = cfg->ReadBool(_T("/while_typing"),                  true);
 
@@ -1042,7 +1043,7 @@ void Parser::WriteOptions()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
 
-    // Page "Clangd_Client"
+    // Page "clangd_client"
     cfg->Write(_T("/use_SmartSense"),                m_Options.useSmartSense);
     cfg->Write(_T("/while_typing"),                  m_Options.whileTyping);
 
@@ -1103,11 +1104,8 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent& event)
     wxString cbFilename;
     if (uri.Length())
     {
-        cbFilename = uri.Mid(8);
-        wxURI uriFile(cbFilename);
-        cbFilename = uriFile.BuildUnescapedURI();
-        if (platform::windows)
-            cbFilename.Replace("/","\\");
+        cbFilename = fileUtils.FilePathFromURI(uri); //(ph 2021/12/21)
+
         // Find the editor matching this files diagnostics
         EditorBase* pEdBase = pEdMgr->GetEditor(cbFilename);
         if ( pEdBase)
@@ -1244,11 +1242,7 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent& event)
             //json Info = diagnostics[ii]["relatedInformation"]; //json array of info usually empty
             wxUnusedVar(diagCode);
 
-            wxString cbFilename = uri.Mid(8);
-            wxURI uriFile(cbFilename);
-            cbFilename = uriFile.BuildUnescapedURI();
-            if (platform::windows)
-                cbFilename.Replace("/","\\");
+            wxString cbFilename = fileUtils.FilePathFromURI(uri);
             wxString severity;
             switch (diagSeverity)
             {
@@ -1417,7 +1411,7 @@ void Parser::OnLSP_ReferencesResponse(wxCommandEvent& event)
         try
         {
             // Example data:
-            // {"jsonrpc":"2.0","id":"textDocument/references","result":[{"uri":"file:///F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","range":{"start":{"line":49,"character":45},"end":{"line":49,"character":52}}},{"uri":"file:///F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","range":{"start":{"line":89,"character":4},"end":{"line":89,"character":11}}}]}
+            // {"jsonrpc":"2.0","id":"textDocument/references","result":[{"uri":"file://F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","range":{"start":{"line":49,"character":45},"end":{"line":49,"character":52}}},{"uri":"file://F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","range":{"start":{"line":89,"character":4},"end":{"line":89,"character":11}}}]}
             // {"jsonrpc":"2.0","id":"textDocument/references","error":{"code":-32600,"message":"F:/usr/Proj/HelloWxWorld/HelloWxWorldMain.h is not opened"}}
 
             json valueResult = pJson->at("result");
@@ -1446,11 +1440,7 @@ void Parser::OnLSP_ReferencesResponse(wxCommandEvent& event)
             for (size_t ii=0; ii < entryCount; ++ii)
             {
                 wxString URI = valueResult[ii].at("uri").get<std::string>();
-                URI = URI.Mid(8);           //remove "file:///"
-                wxURI uriFile(URI);
-                URI = uriFile.BuildUnescapedURI();
-                if (platform::windows)
-                    URI.Replace("/", "\\");
+                URI = fileUtils.FilePathFromURI(URI);   //(ph 2021/12/21)
                 wxFileName curFn = URI;
                 wxString absFilename = curFn.GetFullPath();
                 if (not wxFileExists(absFilename))
@@ -1586,11 +1576,7 @@ void Parser::OnLSP_ReferencesResponse(wxCommandEvent& event)
             for (size_t ii=0; ii < entryCount; ++ii)
             {
                 wxString URI = valueResult[ii].at("uri").get<std::string>();
-                URI = URI.Mid(8);           //remove "file:///"
-                wxURI uriFile(URI);
-                URI = uriFile.BuildUnescapedURI();
-                if (platform::windows)
-                    URI.Replace("/", "\\");
+                URI = fileUtils.FilePathFromURI(URI);   //(ph 2021/12/21)
                 wxFileName curFn = URI;
                 wxString absFilename = curFn.GetFullPath();
                 if (not wxFileExists(absFilename))
@@ -1720,7 +1706,7 @@ void Parser::OnLSP_DeclDefResponse(wxCommandEvent& event)
     // a CB "find implementation == Clangd/Clangd "definition"
     // this event.string contains type of eventType:result or error
     // example:
-    // {"jsonrpc":"2.0","id":"textDocument/definition","result":[{"uri":"file:///F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","range":{"start":{"line":89,"character":24},"end":{"line":89,"character":30}}}]}
+    // {"jsonrpc":"2.0","id":"textDocument/definition","result":[{"uri":"file://F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","range":{"start":{"line":89,"character":24},"end":{"line":89,"character":30}}}]}
 
     // GetClientData() contains ptr to json object
     // dont free it, OnLSP_Event will free it as a unique_ptr
@@ -1760,7 +1746,7 @@ void Parser::OnLSP_DeclDefResponse(wxCommandEvent& event)
 
         for (size_t resultIdx=0; resultIdx<resultKnt; ++resultIdx) //only one result usually but "like a box of chocolate" ...
         {
-            // "result":[{"uri":"file:///F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.h","range":{"start":{"line":26,"character":12},"end":{"line":26,"character":22}}}]}
+            // "result":[{"uri":"file://F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.h","range":{"start":{"line":26,"character":12},"end":{"line":26,"character":22}}}]}
             json resultObj = resultValue[resultIdx]; //position to uri results
             #if defined(LOGGING)
                 std::string see = resultValue.dump(); //debugging
@@ -1769,9 +1755,12 @@ void Parser::OnLSP_DeclDefResponse(wxCommandEvent& event)
             int linenum  = resultObj["range"]["start"]["line"].get<int>();;
             int charPosn = resultObj["range"]["start"]["character"].get<int>();
 
-            filenameStr = filenameStr.Mid(8); //remove uri sig "file:///"
-            filenameStr.Replace("%3A", ":");
-            filenameStr.Replace("/", "\\");
+            // jump over 'file://' prefix
+////            if (platform::windows) filenameStr = filenameStr.Mid(8); else filenameStr = filenameStr.Mid(6);
+////            filenameStr.Replace("%3A", ":");
+////            if (platform::windows)
+////                filenameStr.Replace("/", "\\");
+            filenameStr = fileUtils.FilePathFromURI(filenameStr);   //(ph 2021/12/21)
             EditorManager* pEdMgr = Manager::Get()->GetEditorManager();
 
             if (resultKnt == 1)
@@ -1857,12 +1846,8 @@ void Parser::OnLSP_RequestedSymbolsResponse(wxCommandEvent& event)  //(ph 2021/0
     wxString URI = idStr.AfterFirst(STX);
     if (URI.Contains(STX))
         URI = URI.BeforeFirst(STX); //filename
-    wxString uriFilename = URI.Mid(8); // jump over file:/// prefix
-    wxURI uriFile(uriFilename);
-    uriFilename = uriFile.BuildUnescapedURI();
-    if (platform::windows)
-        uriFilename.Replace("/","\\");
 
+    wxString uriFilename = fileUtils.FilePathFromURI(URI);      //(ph 2021/12/21)
     cbEditor*  pEditor =  nullptr;
     cbProject* pProject = nullptr;
     EditorManager* pEdMgr = Manager::Get()->GetEditorManager();
@@ -1894,10 +1879,11 @@ void Parser::OnLSP_RequestedSymbolsResponse(wxCommandEvent& event)  //(ph 2021/0
         // This must be a background parsed file. Issue didClose() to the server
         // Note: this will cause an empty textDocument/publishDiagnostic response from the idiot server.
         pClient->LSP_DidClose(uriFilename, pProject);
-        // Didnt we already remove the file in publishDiagnostics response event?
-        // But just in case we didnt get here from there...
-        pClient->LSP_RemoveFromServerFilesParsing(uriFilename);
     }
+
+    // Didnt we already remove the file in publishDiagnostics response event?
+    // But just in case we didnt get here from there...
+    pClient->LSP_RemoveFromServerFilesParsing(uriFilename);
 
     return;
 }//end OnLSP_RequestedSymbolsResponse()
@@ -1963,7 +1949,9 @@ void Parser::OnLSP_CompletionResponse(wxCommandEvent& event, std::vector<cbCodeC
             Token* pTreeToken = pParser->GetTokenInFile(filename, labelValue);
             if (pTreeToken)
                 cctoken.id = pTreeToken->m_Index;
-            cctoken.category = 0; //used by CB for image index
+            cctoken.category = 0;  //used by CB for image index
+            cctoken.category = -1; //used by CB for image index //(ph 2021/12/31)
+            //FIXME: #ph setting category = 0 causes wxWidgets to assert (nullptr image error) and crash in AutoComplete::SeetList(...)
             cctoken.weight = 5;
             cctoken.displayName = labelValue;
             cctoken.name = labelValue;
@@ -2177,7 +2165,7 @@ void Parser::OnLSP_SignatureHelpResponse(wxCommandEvent& event, std::vector<cbCo
             for(size_t itemidx=0; itemidx<v_SignatureTokens.size(); ++itemidx)
             {
                 cbCodeCompletionPlugin::CCCallTip tkn = v_SignatureTokens[itemidx] ;
-                wxString logMsg(wxString::Format("%d:%s", itemidx, tkn.tip  ));
+                wxString logMsg(wxString::Format("%d:%s", int(itemidx), tkn.tip  ));
                 CCLogger::Get()->DebugLog(logMsg);
             }
             Manager::Get()->ProcessEvent(evt);
@@ -2222,14 +2210,14 @@ void Parser::OnLSP_RenameResponse(wxCommandEvent& event)
             // Example data: (note: there are no carriage returns in the real data)
             // {"id":"textDocument/rename","jsonrpc":"2.0","result":
             //    {"changes":
-            //        {"file:///F:/usr/Proj/HelloWxWorld/HelloWxWorldAddition.cpp":
+            //        {"file://F:/usr/Proj/HelloWxWorld/HelloWxWorldAddition.cpp":
             //            [
             //                {"newText":"HelloWxWorldAdditionRenamed","range":{"end":{"character":20,"line":42},"start":{"character":0,"line":42}}},
             //                {"newText":"HelloWxWorldAdditionRenamed","range":{"end":{"character":42,"line":42},"start":{"character":22,"line":42}}},
             //                {"newText":"HelloWxWorldAdditionRenamed","range":{"end":{"character":20,"line":46},"start":{"character":0,"line":46}}},
             //                {"newText":"HelloWxWorldAdditionRenamed","range":{"end":{"character":43,"line":46},"start":{"character":23,"line":46}}}
             //            ],
-            //         "file:///F:/usr/Proj/HelloWxWorld/HelloWxWorldAddition.h":
+            //         "file://F:/usr/Proj/HelloWxWorld/HelloWxWorldAddition.h":
             //             [
             //                {"newText":"HelloWxWorldAdditionRenamed","range":{"end":{"character":26,"line":18},"start":{"character":6,"line":18}}},
             //                {"newText":"HelloWxWorldAdditionRenamed","range":{"end":{"character":28,"line":21},"start":{"character":8,"line":21}}},
@@ -2245,9 +2233,10 @@ void Parser::OnLSP_RenameResponse(wxCommandEvent& event)
 
         wxString newText;
         int rangeStartLine;
-        int rangeEndLine ;
-        int rangeStartCol;
-        int rangeEndCol ;
+        // **Debugging**
+        // int rangeEndLine ;
+        // int rangeStartCol;
+        // int rangeEndCol ;
 
         try
         {
@@ -2259,13 +2248,7 @@ void Parser::OnLSP_RenameResponse(wxCommandEvent& event)
             {
                 wxString URI = item.first;
                 json fileChanges = item.second;
-
-                URI = URI.Mid(8);           //remove "file:///"
-                wxURI uriFile(URI);
-                URI = uriFile.BuildUnescapedURI();
-                if (platform::windows)
-                    URI.Replace("/", "\\");
-                wxFileName curFn = URI;
+                wxFileName curFn = fileUtils.FilePathFromURI(URI);  //(ph 2021/12/21)
                 wxString absFilename = curFn.GetFullPath();
                 if (not wxFileExists(absFilename))
                     return;
@@ -2289,18 +2272,35 @@ void Parser::OnLSP_RenameResponse(wxCommandEvent& event)
                 {
                     newText = fileChanges[ii].at("newText").get<std::string>();
                     rangeStartLine = fileChanges[ii].at("range").at("start").at("line").get<int>();
-                    rangeEndLine = fileChanges[ii].at("range").at("end").at("line").get<int>();
-                    rangeStartCol = fileChanges[ii].at("range").at("start").at("character").get<int>();
-                    rangeEndCol = fileChanges[ii].at("range").at("end").at("character").get<int>();
+                    // **Debugging** rangeEndLine = fileChanges[ii].at("range").at("end").at("line").get<int>();
+                    // **Debugging** rangeStartCol = fileChanges[ii].at("range").at("start").at("character").get<int>();
+                    // **Debugging** rangeEndCol = fileChanges[ii].at("range").at("end").at("character").get<int>();
 
                     curFn.MakeRelativeTo(editorBasePath);
 
                     // 2) Make the change to the file
-                    int pos = control->PositionFromLine(rangeStartLine) + rangeStartCol;
-                    control->SetTargetStart(pos);
-                    control->SetTargetEnd(control->PositionFromLine(rangeEndLine) + rangeEndCol);
-                    control->ReplaceTarget(newText);
 
+                    // The following does not work well when there are two or more occurances of the original data on the same line.
+                    // Changing the first occurance will shift the line data, invalidating the clangd range data
+                    // for subsequent occurances.
+                    // Example: if (( token == '/n') or (token == '\n'))
+                    //      changing 'token" to 'm_token" will result in
+                    //      if (( m_token == '/n') orm_tokentoken == '\n'))
+                    //    int pos = control->PositionFromLine(rangeStartLine) + rangeStartCol;
+                    //    control->SetTargetStart(pos);
+                    //    control->SetTargetEnd(control->PositionFromLine(rangeEndLine) + rangeEndCol);
+                    //    control->ReplaceTarget(newText);
+
+                    int pos = control->PositionFromLine(rangeStartLine);  //begining of line
+                    int lth = control->LineLength(rangeStartLine);
+                    control->SetTargetStart(pos);       // set search to start of line
+                    control->SetTargetEnd(pos+lth-1);   // set search to end of line
+                    // symboToChange was saved during the initial request dialog CodeCompletion::OnRenameSymbols()
+                    wxString symbolToChange = GetParseManager()->GetRenameSymbolToChange();
+                    control->SetSearchFlags(wxSCI_FIND_MATCHCASE | wxSCI_FIND_WHOLEWORD | wxSCI_FIND_WORDSTART);
+                    int tgtStart = control->SearchInTarget(symbolToChange);
+                    if (tgtStart > -1)
+                        control->ReplaceTarget(newText);
 
                 }//endfor file changes
 

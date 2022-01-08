@@ -23,7 +23,6 @@
 #endif
 
 #include <wx/tokenzr.h>
-#include <wx/uri.h>        //(ph 2021/03/24)
 
 #include "editormanager.h"
 #include "cbproject.h"
@@ -762,12 +761,7 @@ bool LSP_SymbolsParser::DoParseDocumentSymbols(json* pJson, cbProject* pProject)
         return false;
     }
     URI = URI.AfterFirst(STX);
-    URI = URI.Mid(8);           //remove "file:///"
-    wxURI uriFile(URI);
-    URI = uriFile.BuildUnescapedURI();
-    if (platform::windows)
-        URI.Replace("/", "\\");
-    wxFileName fnFilename = URI;
+    wxFileName fnFilename = fileUtils.FilePathFromURI(URI);
     wxString filename = fnFilename.GetFullPath();
     if (not wxFileExists(filename))
         return false;
@@ -1555,7 +1549,9 @@ Token* LSP_SymbolsParser::DoAddToken(TokenKind       kind,
 
 void LSP_SymbolsParser::HandleIncludes()
 {
+    #if defined(cbDEBUG)
     cbAssertNonFatal(0 && "LSP_SymbolsParser::HandleIncludes() shouldnt be here!");
+    #endif
     return;
 
     //wxString filename;
@@ -1940,7 +1936,9 @@ Token* LSP_SymbolsParser::DoHandleClass(EClassType ct, int lineNumber, int lastL
             newToken->m_ImplLineStart = m_Tokenizer.GetLineNumber();
 
             newToken->m_IsAnonymous = true;
+            #if defined(cbDEBUG)
             cbAssertNonFatal(wxString::Format("Trying to DoParse recursion in %s():%d", __PRETTY_FUNCTION__, __LINE__));
+            #endif
             break; //(ph 2021/10/13)
             /// DoParse(); // recursion
 
@@ -4214,7 +4212,9 @@ void LSP_SymbolsParser::DoParse()
 // ----------------------------------------------------------------------------
 {
     /// deprecated - not used for LSP clangd
+    #if defined(cbDEBUG)
     cbAssertNonFatal(0 && "This DoParse() is deprecated.");
+    #endif
     return ;
 
     //// need to reset tokenizer's behaviour

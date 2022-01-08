@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <wx/string.h>
+#include <wx/filename.h>
 
 class wxArrayString;
 
@@ -14,7 +15,7 @@ class ClangLocator
 
         wxString Locate_Clang();
         wxString Locate_Clangd();
-        wxString Locate_ResourceDir(wxString clangDir="");
+        wxString Locate_ResourceDir(wxFileName fnClangd);
 
         wxString MSWLocate();
         wxArrayString GetEnvPaths() const;

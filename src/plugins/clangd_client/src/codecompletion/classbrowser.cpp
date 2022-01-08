@@ -140,15 +140,15 @@ ClassBrowser::ClassBrowser(wxWindow* parent, ParseManager* np) :
     m_ClassBrowserSemaphore(0, 1),  // initial count, max count
     m_ClassBrowserBuilderThread(nullptr)
 {
-    wxXmlResource::Get()->LoadPanel(this, parent, "pnlCB"); // panel class browser -> pnlCB
+    wxXmlResource::Get()->LoadPanel(this, parent, "pnlClassBrowser"); // panel class browser -> pnlCB
     m_Search = XRCCTRL(*this, "cmbSearch", wxComboBox);
 
     if (platform::windows)
         m_Search->SetWindowStyle(wxTE_PROCESS_ENTER); // it's a must on windows to catch EVT_TEXT_ENTER
 
     // Subclassed in XRC file, for reference see here: http://wiki.wxwidgets.org/Resource_Files
-    m_CCTreeCtrl       = XRCCTRL(*this, "treeAll",     CCTreeCtrl);
-    m_CCTreeCtrlBottom = XRCCTRL(*this, "treeMembers", CCTreeCtrl);
+    m_CCTreeCtrl       = XRCCTRL(*this, "treeAll",     CCTreeCntrl);
+    m_CCTreeCtrlBottom = XRCCTRL(*this, "treeMembers", CCTreeCntrl);
 
     // Registration of images
     m_CCTreeCtrl->SetImageList(m_ParseManager->GetImageList(16));
@@ -1139,7 +1139,7 @@ void ClassBrowser::BuildTreeStartOrStop(bool start)
     else
     {
         size_t durationMillis = m_ParseManager->GetDurationMilliSeconds(startMillis);
-        CCLogger::Get()->DebugLog(wxString::Format("Class browser updated (%d msec)", durationMillis));
+        CCLogger::Get()->DebugLog(wxString::Format("Class browser updated (%zu msec)", durationMillis));
     }
 }
 

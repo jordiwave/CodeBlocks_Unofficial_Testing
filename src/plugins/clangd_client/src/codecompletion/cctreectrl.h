@@ -91,11 +91,11 @@ private:
 typedef std::deque<CCTreeCtrlExpandedItemData> ExpandedItemVect;
 typedef std::deque<CCTreeCtrlData>             SelectedItemPath;
 
-class CCTreeCtrl : public wxTreeCtrl
+class CCTreeCntrl : public wxTreeCtrl
 {
 public:
-    CCTreeCtrl();
-    CCTreeCtrl(wxWindow* parent, const wxWindowID id, const wxPoint& pos,
+    CCTreeCntrl();
+    CCTreeCntrl(wxWindow* parent, const wxWindowID id, const wxPoint& pos,
                const wxSize& size, long style);
 
     void SetCompareFunction(const BrowserSortType type);
@@ -111,7 +111,7 @@ protected:
     int OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2) override;
     int (*Compare)(CCTreeCtrlData* lhs, CCTreeCtrlData* rhs);
 
-    DECLARE_DYNAMIC_CLASS(CCTreeCtrl)
+    DECLARE_DYNAMIC_CLASS(CCTreeCntrl)
 };
 
 #endif // CCTREECTRL

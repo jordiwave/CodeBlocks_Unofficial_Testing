@@ -8,7 +8,7 @@
 #include <wx/event.h> //(ph 2020/10/1)
 #include <wx/frame.h> //(ph 2020/10/1)
 
-#include "uri.h"
+#include "uri.h" // this is local uri.h not system or wx uri.h
 #include <functional>
 #include <utility>
 
@@ -31,12 +31,12 @@ public:
     void* clientID = nullptr;
     int   GetLSP_EventID() {return id;}
     void  SetLSP_EventID(int _id) {id = _id;}
-    void* GetLSP_ClientID() {return clientID;}
-    void  SetLSP_ClientID(void* ID) {clientID = ID;}
+    //void* GetLSP_ClientID() {return clientID;}
+    //-void  SetLSP_ClientID(void* ID) {clientID = ID;}
     // Termination control from ProcessLanguageClient //(ph 2021/07/8)
-    bool m_LSP_TerminateFlag = false;
-    bool GetLSP_TerminateFlag(){ return m_LSP_TerminateFlag;}
-    void SetLSP_TerminateFlag(bool terminateFlag){m_LSP_TerminateFlag = terminateFlag;}
+    int m_LSP_TerminateFlag = 0;
+    int GetLSP_TerminateFlag(){ return m_LSP_TerminateFlag;}
+    void SetLSP_TerminateFlag(int terminateFlag){m_LSP_TerminateFlag = terminateFlag;}
 };
 // ----------------------------------------------------------------------------
 class MapMessageHandler : public MessageHandler
@@ -204,7 +204,7 @@ class JsonTransport : public Transport
                             //{"jsonrpc":"2.0","method":"$/progress","params":{"token":"index","value":{"kind":"report","message":"5/6","percentage":83.33333333333333}}}
                             if (methodValue.StartsWith("$/progress"))
                                 continue;
-                            //{"jsonrpc":"2.0","method":"$Clangd/publishSemanticHighlight","params":{"uri":"file:///F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","symbols":[{"id":16045,"parentKind":1
+                            //{"jsonrpc":"2.0","method":"$Clangd/publishSemanticHighlight","params":{"uri":"file://F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","symbols":[{"id":16045,"parentKind":1
                             if (methodValue.StartsWith("$Clangd/publishSemanticHighlight"))
                                 continue;
 
@@ -235,6 +235,7 @@ class JsonTransport : public Transport
                 // This code is in a thread. How to write the message to CB?
             }
         }
+        handler.SetLSP_TerminateFlag(2); //report that thread has exited
         return 0;
     }
     // ----------------------------------------------------------------------------

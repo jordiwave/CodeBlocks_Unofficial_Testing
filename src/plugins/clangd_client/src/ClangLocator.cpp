@@ -8,13 +8,20 @@
 #include <wx/utils.h>
 #include <wx/regex.h>
 #include <wx/tokenzr.h>
-#include <wx/msw/registry.h>
-
+#if defined(__WXMSW__)
+    #include <wx/msw/registry.h>
+#endif // __WXMSW__
 #include "globals.h"
 #include "manager.h"
 #include "logmanager.h"
 #include "configmanager.h"
-#include "asyncprocess\procutils.h"
+
+#if defined(_WIN32)
+#include "winprocess/asyncprocess/procutils.h"
+#else
+#include "procutils.h"
+#endif
+
 
 // ----------------------------------------------------------------------------
 namespace   //anonymous
@@ -51,7 +58,12 @@ wxString ClangLocator::Locate_Clang()
         wxArrayString envPaths = GetEnvPaths();
         for (wxString path : envPaths)
         {
+            wxLogNull nolog; //turn off 'not found' messages
+            #if defined(_WIN32)
             size_t cnt = ScanForFiles(path, clangLocations, "clang.exe");
+            #else
+            size_t cnt = ScanForFiles(path, clangLocations, "clang");
+            #endif
             for (size_t ii=0; ii<cnt; ++ii)
             {
                 if (wxFileExists(clangLocations[ii]))
@@ -80,25 +92,58 @@ wxString ClangLocator::Locate_Clang()
     return location;
 }
 // ----------------------------------------------------------------------------
-wxString ClangLocator::Locate_ResourceDir(wxString clangDir)
+wxString ClangLocator::Locate_ResourceDir(wxFileName fnClangd)
 // ----------------------------------------------------------------------------
 {
     wxString location;
-    wxString clangLocation = clangDir;
     wxString dirSep = wxFILE_SEP_PATH;
-
+    wxString clangDir = fnClangd.GetPath();
+    wxString clangExecutable = fnClangd.GetFullName();
+    if (clangExecutable.Contains("clangd")) clangExecutable.Replace("clangd", "clang");
     if (clangDir.empty())
-        clangLocation = Locate_Clang();
+        clangExecutable = Locate_Clang();
 
-    if (clangLocation.empty())
+    if (clangExecutable.empty())
         return wxEmptyString;
-    if (clangLocation.EndsWith(dirSep + "bin"))
-        clangLocation.Replace(dirSep + "bin", "");
-    clangLocation += fileSep + "lib\\clang";
-    wxString dirname = wxFindFirstFile(clangLocation + dirSep + "*", wxDIR);
-    if (dirname.Length() )
-        location = dirname;
-    else location = wxEmptyString;
+
+    // Get the version of this clang, we need to match it with the same resources dir
+    wxString clangVersion;
+    wxString cmdLine = fnClangd.GetFullPath();
+    // Use clangd to get the clang version
+    cmdLine.Append (" --version");
+    wxArrayString clangResponse;
+    wxExecute(cmdLine, clangResponse);
+    if (clangResponse.Count()) //tease out the version number
+    {
+        cmdLine = clangResponse[0]; //usually "clangd version 13.0.1" followed by a space or -+whatever
+        Manager::Get()->GetLogManager()->DebugLog("Using Clangd version: " + clangResponse[0]);
+        size_t sBgn = cmdLine.find("version ");
+        if (sBgn) sBgn += 8; //jump over "verson"
+        size_t sEnd = sBgn;
+        for( ; sEnd < cmdLine.length(); ++sEnd)
+        {
+            if ( ((cmdLine[sEnd] >= '0') and (cmdLine[sEnd] <= '9')) or (cmdLine[sEnd] == '.') )
+                continue;
+            break;
+        }
+        if (sBgn and sEnd)
+            clangVersion = cmdLine.SubString(sBgn, sEnd-1);
+    }
+
+
+    wxFileName fnClangExecutablePath(clangDir,clangExecutable);
+    if (fnClangExecutablePath.GetPath().EndsWith(dirSep + "bin"))
+    {
+        fnClangExecutablePath.RemoveLastDir();
+        fnClangExecutablePath.AppendDir("lib");
+        fnClangExecutablePath.AppendDir("clang");
+        fnClangExecutablePath.AppendDir(clangVersion);
+    }
+    fnClangExecutablePath.SetName(wxString("clang") << "-" << clangVersion);
+    wxString resource = fnClangExecutablePath.GetFullPath(); // **Debugging**
+    if (fnClangExecutablePath.DirExists())
+        location = fnClangExecutablePath.GetPath();
+    else location = wxString();
 
     return location;
 }
@@ -112,7 +157,11 @@ wxString ClangLocator::Locate_Clangd()
     // See if executable dir contains ...lsp/clangd.*
     ConfigManager* pCfgMgr = Manager::Get()->GetConfigManager("app");
     wxString execDir = pCfgMgr->GetExecutableFolder();
+    #if defined(_WIN32)
     if (wxFileExists(execDir + fileSep + "lsp" + fileSep + "clangd.exe"))
+    #else
+    if (wxFileExists(execDir + fileSep + "lsp" + fileSep + "clangd"))
+    #endif
         return execDir + fileSep + "lsp";
 
     // Try to find clang from the registry
@@ -124,6 +173,7 @@ wxString ClangLocator::Locate_Clangd()
         wxArrayString envPaths = GetEnvPaths();
         for (wxString path : envPaths)
         {
+            wxLogNull nolog; // turn off 'not found' messages
             size_t cnt = ScanForFiles(path, clangLocations, "clang.exe");
             for (size_t ii=0; ii<cnt; ++ii)
             {
@@ -139,23 +189,35 @@ wxString ClangLocator::Locate_Clangd()
     if (location.Length())
     {
         location << fileSep << "bin";
-        location.Replace("\\\\","\\");
+        location.Replace("\\\\","\\");  //remove double back slashes
         location.Replace("//","/");
+        #if defined(_WIN32)
         if (not wxFileExists(location + fileSep + "clangd.exe"))
+        #else
+        if (not wxFileExists(location + fileSep + "clangd"))
+        #endif
             location = wxEmptyString;
     }
-    // clangd must be version 13 or above
-    // Version 12 crashes when changing lines at bottom of .h files
-    wxString executable = location + fileSep + "clangd.exe";
-    wxString version = GetClangVersion(executable);
-    //eg., clangd version 10.0,0
-    version = version.BeforeFirst('.').AfterLast(' ');
-    int versionNum = std::stoi(version.ToStdString());
-    if (versionNum < 13)
+    if (location.Length())
     {
-        cbMessageBox("clangd version must be 13 or above.", "Error");
-        return wxEmptyString;
+        // clangd must be version 13 or above
+        // Version 12 crashes when changing lines at bottom of .h files
+        #if defined(_WIN32)
+        wxString executable = location + fileSep + "clangd.exe";
+        #else
+        wxString executable = location + fileSep + "clangd";
+        #endif
+        wxString version = GetClangVersion(executable);
+        //eg., clangd version 10.0,0
+        version = version.BeforeFirst('.').AfterLast(' ');
+        int versionNum = std::stoi(version.ToStdString());
+        if (versionNum < 13)
+        {
+            cbMessageBox("clangd version must be 13 or above.", "Error");
+            return wxEmptyString;
+        }
     }
+
     return location;
 }
 // ----------------------------------------------------------------------------
@@ -201,6 +263,26 @@ wxArrayString ClangLocator::GetEnvPaths() const
 size_t ClangLocator::ScanForFiles(wxString path, wxArrayString& foundFiles, wxString mask)
 // ----------------------------------------------------------------------------
 {
+    #if defined(__WXGTK__)
+        // Windows sublayer for unix places the entire windows path into the Linux $PATH environment as mount points
+        // like:
+        //    /mnt/c/Program Files/WindowsApps/Microsoft.WindowsTerminal_1.11.2921.0_x64__8wekyb3d8bbwe:
+        //    /mnt/f/User/Programs/VMWare/bin/:
+        //    /mnt/c/usr/bin:
+        //    /mnt/c/Program Files (x86)/Intel/iCLS Client/:
+        //    /mnt/c/Program Files/Intel/iCLS Client/:
+        //    /mnt/c/WINDOWS/system32:
+        //        ,,, nmany, many more ...
+        //    /mnt/c/Users/Pecan/AppData/Local/Microsoft/WindowsApps:
+        //    /mnt/f/user/Programs/LLVM/bin:
+        //    /mnt/c/usr/bin:/snap/bin
+
+    // Eliminate WSL windows mount points, else the search takes forever..
+    if (path.Matches("/mnt/?/*")) return 0; //eliminate massive number of wsl windows paths //(ph 2021/12/18)
+    #endif
+
+    if (not wxDirExists(path)) return 0; //(ph 2021/12/18))
+
     wxString filename = wxFindFirstFile(path + wxFILE_SEP_PATH + mask, wxFILE);
     while(filename.Length())
     {

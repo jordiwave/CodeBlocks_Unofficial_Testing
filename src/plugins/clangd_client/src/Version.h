@@ -38,7 +38,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.0.20 2021/11/19")
+#define VERSION wxT("0.2.03 2022/01/7")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -63,6 +63,20 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
+//0.2.03
+//          2022/01/7
+//          Always return the length of a LSP record in the incoming buffer.
+//              else it gets stuck there forever.
+//          Fix bad length in headers because of LSP invalid utf8 chars
+//          Fix json assets because of LSP invalid utf8 chars
+//          2022/01/3
+//          Fix bad symbol rename in Parser::OnLSP_RenameResponse( )
+//          Fix bad string_ref/wxString translation in LSP_RequestRename()
+//          Switch from using wxString on incoming clangd data to std::string
+//          2021/12/22
+//          Modifications to run on Linux
+//          2021/12/14
+//          Contains untested unix support
 //0.0.20
 //          2021/11/19
 //          Moved clangd-cache lock into the .cache directory

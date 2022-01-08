@@ -276,6 +276,10 @@ public:
     ParserOptions&  GetSavedOptions()        {return m_OptionsSaved;}
     BrowserOptions& GetSavedBrowserOptions() {return m_BrowserOptionsSaved;}
 
+    wxString m_RenameSymbolToChange;
+    void SetRenameSymbolToChange(wxString sysmbolToChange){m_RenameSymbolToChange = sysmbolToChange;}
+    wxString GetRenameSymbolToChange(){return m_RenameSymbolToChange;}
+
     // ----------------------------------------------------------------------------
     wxEvtHandler* FindEventHandler(wxEvtHandler* pEvtHdlr)
     // ----------------------------------------------------------------------------

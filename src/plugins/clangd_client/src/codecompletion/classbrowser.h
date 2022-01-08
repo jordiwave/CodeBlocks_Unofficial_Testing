@@ -209,13 +209,13 @@ private:
     ParseManager*              m_ParseManager;
 
     /** the top(main) level tree control, see above diagram for details */
-    CCTreeCtrl*                m_CCTreeCtrl;
+    CCTreeCntrl*                m_CCTreeCtrl;
 
     /** the bottom tree control, mainly used to show the member variable and member functions */
-    CCTreeCtrl*                m_CCTreeCtrlBottom;
+    CCTreeCntrl*                m_CCTreeCtrlBottom;
 
     /** current target for the worker thread */
-    CCTreeCtrl*                m_targetTreeCtrl;
+    CCTreeCntrl*                m_targetTreeCtrl;
 
     /** current node for the worker thread */
     wxTreeItemId               m_targetNode;

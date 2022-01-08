@@ -21,6 +21,12 @@
 #include "client.h"                  //(ph 2020/10/2)
 #include "LSPEventCallbackHandler.h" //(ph 2021/10/23)
 
+#if defined(_WIN32)
+    #include "fileutils.h"               //(ph 2021/12/21)
+#else
+    #include "fileutils.h"
+#endif //_Win32
+
 #include <wx/arrstr.h>
 #include <wx/listctrl.h>
 #include <wx/string.h>
@@ -492,11 +498,14 @@ private:
     bool m_PluginNeedsAppRestart = false;
     int  m_HoverLastPosition = 0;
     bool m_HoverIsActive = false;
+    FileUtils fileUtils;
 
     // project pointers and their associated LSP client pointers
     typedef std::map<cbProject*, ProcessLanguageClient*> LSPClientsMapType;
     LSPClientsMapType m_LSP_Clients; //map of all LSP clients by project*
 
+    wxString m_RenameSymbolToReplace; //Holds original target of RenameSymbols()
+    wxString GetRenameSymbolToReplace() {return m_RenameSymbolToReplace;}
 
     // LSP legends for textDocument/semanticTokens
     std::vector<std::string> m_SemanticTokensTypes;
@@ -565,7 +574,9 @@ private:
     void OnLSP_Event(wxCommandEvent& event);
     void OnLSP_ProcessTerminated(wxCommandEvent& event);     //(ph 2021/06/28)
     void OnIdle(wxIdleEvent& event);
-     //
+    void OnPluginAttached(CodeBlocksEvent& event);    //(ph 2021/12/22)
+
+
     // Handle responses from LSPserver
     void OnLSP_ProjectFileAdded(cbProject* pProject, wxString filename);
     void OnLSP_SemanticTokenResponse(wxCommandEvent& event);                  //(ph 2021/03/16)
