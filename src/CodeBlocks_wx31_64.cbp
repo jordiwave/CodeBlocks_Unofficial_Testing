@@ -674,7 +674,6 @@
 		<Compiler>
 			<Add option="-Wall" />
             <Add option="-std=gnu++17" />
-			<!-- Add option="-std=gnu++11" / -->
 			<Add option="-m64" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-pipe" />
