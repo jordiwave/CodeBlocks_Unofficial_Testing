@@ -1,4 +1,4 @@
-Updated for the release on 07-Jan-2022.
+Updated for the release on 09-Jan-2022.
 
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
 The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official C::B 20.03 installers.
@@ -27,7 +27,7 @@ C::B exe/dll changed/update highlights compared to the last nightly SVN 12618 re
     8. Added extra help plugin menu items for the updated documentation included in the installation. These appear as sub menu items in the Help menu.
     9. Copy Debug Watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
     10. Includes temporary code to show the C::B startup time in the log. This is to help track down a slow startup issue that I have not seen.
-    11. Added Pecan's experimental CB-clangd_client plugin for testing.
+    11. Added Pecan's experimental CB-clangd_client (08-Jan-2022 SVN r8) plugin for testing.
             Configure clangd_client:
                 1) In the Plugin manager:
                     a) disble the code completion plugin
@@ -37,7 +37,7 @@ C::B exe/dll changed/update highlights compared to the last nightly SVN 12618 re
                     pacman -S mingw-w64-clang-x86_64-toolchain
                 3) Settings->editor then selct Clangd_Client settings.
                     In the C/C++ parser tab change the LLVM directory to:
-                    C:\msys64\clang64\bin
+                        C:\msys64\clang64\bin\clangd.exe 
     
 Updated installer highlights compared to the C::B 20.03 NSIS installer:
 =======================================================================
