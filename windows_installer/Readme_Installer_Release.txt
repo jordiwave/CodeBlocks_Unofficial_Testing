@@ -7,7 +7,7 @@ Installer download link:
 ========================
 https://sourceforge.net/projects/unofficial-cb-installers/
 
-C::B exe/dll changed/update highlights compared to the last nightly SVN 12618 release (31-Dec-2021):
+C::B exe/dll changed/update highlights compared to the last nightly SVN 12639 release (09-Jan-2021):
 ====================================================================================================
     1. Incorporated SVN changes up to and including SVN 12639. See https://sourceforge.net/p/codeblocks/code/12639/log/ for change info.
     2. Does not include the CBFortan Plugin or other plugins that are SVN externals.

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="clangd_client-unix30" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="to_codeblocks_wx30">
+				<Option output="./devel30/clangd_client" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="./devel30" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance --no-splash-screen --verbose -p debug --no-ipc " />
+				<Option host_application="$(#cb)/devel30/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="`wx-config --cflags  --version=3.0`" />
+					<Add directory="$(#cb)/include" />
+					<Add directory="$(#cb)/sdk/wxscintilla/include" />
+					<Add directory="$(#cb)/include/tinyxml" />
+					<Add directory="src" />
+					<Add directory="src/LSPclient/include" />
+					<Add directory="src/LSPclient" />
+					<Add directory="src/codecompletion" />
+					<Add directory="src/unixprocess" />
+				</Compiler>
+				<Linker>
+					<Add option="`wx-config --libs  --version=3.0`" />
+					<Add option="`$(WX_CONFIG) --libs std,aui,propgrid`" />
+					<Add option="-Wl,--no-undefined" />
+					<Add library="codeblocks" />
+					<Add library="util" />
+					<Add library="wx_gtk3u_aui-3.0" />
+					<Add directory="$(#cb)/devel30" />
+				</Linker>
+				<ExtraCommands>
+					<Add before="echo $(CODEBLOCKS)/.." />
+					<Add after="./zipResources.sh  $(CODEBLOCKS)/.." />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="to_codeblocks_wx30;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fPIC" />
+			<Add option="-g" />
+			<Add option="-std=c++14" />
+		</Compiler>
+		<Unit filename="src/ClangLocator.cpp" />
+		<Unit filename="src/ClangLocator.h" />
+		<Unit filename="src/LSP_SymbolKind.h" />
+		<Unit filename="src/LSPclient/include/client.h" />
+		<Unit filename="src/LSPclient/include/json.hpp" />
+		<Unit filename="src/LSPclient/include/protocol.h" />
+		<Unit filename="src/LSPclient/include/transport.h" />
+		<Unit filename="src/LSPclient/include/uri.h" />
+		<Unit filename="src/LSPclient/lspdiagresultslog.cpp" />
+		<Unit filename="src/LSPclient/lspdiagresultslog.h" />
+		<Unit filename="src/LSPclient/src/client.cpp" />
+		<Unit filename="src/Version.h" />
+		<Unit filename="src/codecompletion/IdleCallbackHandler.h" />
+		<Unit filename="src/codecompletion/LSPEventCallbackHandler.h" />
+		<Unit filename="src/codecompletion/ccoptionsdlg.cpp" />
+		<Unit filename="src/codecompletion/ccoptionsdlg.h" />
+		<Unit filename="src/codecompletion/ccoptionsprjdlg.cpp" />
+		<Unit filename="src/codecompletion/ccoptionsprjdlg.h" />
+		<Unit filename="src/codecompletion/cctreectrl.cpp" />
+		<Unit filename="src/codecompletion/cctreectrl.h" />
+		<Unit filename="src/codecompletion/classbrowser.cpp" />
+		<Unit filename="src/codecompletion/classbrowser.h" />
+		<Unit filename="src/codecompletion/classbrowserbuilderthread.cpp" />
+		<Unit filename="src/codecompletion/classbrowserbuilderthread.h" />
+		<Unit filename="src/codecompletion/codecompletion.cpp" />
+		<Unit filename="src/codecompletion/codecompletion.h" />
+		<Unit filename="src/codecompletion/coderefactoring.cpp" />
+		<Unit filename="src/codecompletion/coderefactoring.h" />
+		<Unit filename="src/codecompletion/doxygen_parser.cpp" />
+		<Unit filename="src/codecompletion/doxygen_parser.h" />
+		<Unit filename="src/codecompletion/gotofunctiondlg.cpp" />
+		<Unit filename="src/codecompletion/gotofunctiondlg.h" />
+		<Unit filename="src/codecompletion/insertclassmethoddlg.cpp" />
+		<Unit filename="src/codecompletion/insertclassmethoddlg.h" />
+		<Unit filename="src/codecompletion/parsemanager.cpp" />
+		<Unit filename="src/codecompletion/parsemanager.h" />
+		<Unit filename="src/codecompletion/parsemanager_base.cpp" />
+		<Unit filename="src/codecompletion/parsemanager_base.h" />
+		<Unit filename="src/codecompletion/parser/LSP_symbolsparser.cpp" />
+		<Unit filename="src/codecompletion/parser/LSP_symbolsparser.h" />
+		<Unit filename="src/codecompletion/parser/LSP_tokenizer.cpp" />
+		<Unit filename="src/codecompletion/parser/LSP_tokenizer.h" />
+		<Unit filename="src/codecompletion/parser/ccdebuginfo.cpp" />
+		<Unit filename="src/codecompletion/parser/ccdebuginfo.h" />
+		<Unit filename="src/codecompletion/parser/cclogger.cpp" />
+		<Unit filename="src/codecompletion/parser/cclogger.h" />
+		<Unit filename="src/codecompletion/parser/expression.cpp" />
+		<Unit filename="src/codecompletion/parser/expression.h" />
+		<Unit filename="src/codecompletion/parser/parser.cpp" />
+		<Unit filename="src/codecompletion/parser/parser.h" />
+		<Unit filename="src/codecompletion/parser/parser_base.cpp" />
+		<Unit filename="src/codecompletion/parser/parser_base.h" />
+		<Unit filename="src/codecompletion/parser/profiletimer.cpp" />
+		<Unit filename="src/codecompletion/parser/profiletimer.h" />
+		<Unit filename="src/codecompletion/parser/searchtree.cpp" />
+		<Unit filename="src/codecompletion/parser/searchtree.h" />
+		<Unit filename="src/codecompletion/parser/token.cpp" />
+		<Unit filename="src/codecompletion/parser/token.h" />
+		<Unit filename="src/codecompletion/parser/tokenizer.cpp" />
+		<Unit filename="src/codecompletion/parser/tokenizer.h" />
+		<Unit filename="src/codecompletion/parser/tokentree.cpp" />
+		<Unit filename="src/codecompletion/parser/tokentree.h" />
+		<Unit filename="src/codecompletion/selectincludefile.cpp" />
+		<Unit filename="src/codecompletion/selectincludefile.h" />
+		<Unit filename="src/codecompletion/wxsmith/CCTestFrame.wxs" />
+		<Unit filename="src/codecompletion/wxsmith/goto_function.wxs" />
+		<Unit filename="src/resources/clclassbrowser.xrc" />
+		<Unit filename="src/resources/clcodecompletion_toolbar.xrc" />
+		<Unit filename="src/resources/clinsert_class_method.xrc" />
+		<Unit filename="src/resources/clproject_settings.xrc" />
+		<Unit filename="src/resources/clselectincludefile.xrc" />
+		<Unit filename="src/resources/clsettings.xrc" />
+		<Unit filename="src/resources/manifest.xml" />
+		<Unit filename="src/unixprocess/StringUtils.cpp" />
+		<Unit filename="src/unixprocess/StringUtils.h" />
+		<Unit filename="src/unixprocess/asyncThreadTypes.cpp" />
+		<Unit filename="src/unixprocess/asyncThreadTypes.h" />
+		<Unit filename="src/unixprocess/asyncprocess/UnixProcess.cpp" />
+		<Unit filename="src/unixprocess/asyncprocess/UnixProcess.h" />
+		<Unit filename="src/unixprocess/fileutils.cpp" />
+		<Unit filename="src/unixprocess/fileutils.h" />
+		<Unit filename="src/unixprocess/procutils.cpp" />
+		<Unit filename="src/unixprocess/procutils.h" />
+		<Unit filename="zipResources.sh" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

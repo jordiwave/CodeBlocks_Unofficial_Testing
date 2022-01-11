@@ -25,6 +25,7 @@
     #include "encodingdetector.h"
     #include "globals.h"
 #endif
+
 #include "compilercommandgenerator.h"
 #include "wx/textfile.h"        //to modify .Clangd file containing log and cache file lock
 

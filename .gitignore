@@ -28,3 +28,4 @@ Makefile.in
 windows_installer/codeblocks*.exe
 windows_installer/*.7z
 windows_installer/*.7z.*
+src/plugins/contrib/BrowseTracker/compile_commands.json

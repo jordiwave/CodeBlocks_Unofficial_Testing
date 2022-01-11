@@ -1357,27 +1357,6 @@
 		<Unit filename="plugins/clangd_client/src/codecompletion/parser/tokentree.h">
 			<Option target="Clangd-Client" />
 		</Unit>
-		<Unit filename="plugins/clangd_client/src/codecompletion/resources/classbrowser.xrc">
-			<Option target="Clangd-Client" />
-		</Unit>
-		<Unit filename="plugins/clangd_client/src/codecompletion/resources/codecompletion_toolbar.xrc">
-			<Option target="Clangd-Client" />
-		</Unit>
-		<Unit filename="plugins/clangd_client/src/codecompletion/resources/insert_class_method.xrc">
-			<Option target="Clangd-Client" />
-		</Unit>
-		<Unit filename="plugins/clangd_client/src/codecompletion/resources/manifest.xml">
-			<Option target="Clangd-Client" />
-		</Unit>
-		<Unit filename="plugins/clangd_client/src/codecompletion/resources/project_settings.xrc">
-			<Option target="Clangd-Client" />
-		</Unit>
-		<Unit filename="plugins/clangd_client/src/codecompletion/resources/selectincludefile.xrc">
-			<Option target="Clangd-Client" />
-		</Unit>
-		<Unit filename="plugins/clangd_client/src/codecompletion/resources/settings.xrc">
-			<Option target="Clangd-Client" />
-		</Unit>
 		<Unit filename="plugins/clangd_client/src/codecompletion/selectincludefile.cpp">
 			<Option target="Clangd-Client" />
 		</Unit>

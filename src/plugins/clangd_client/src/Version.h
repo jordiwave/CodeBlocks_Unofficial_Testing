@@ -38,7 +38,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.03 2022/01/7")
+#define VERSION wxT("0.2.04 2022/01/10")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -63,6 +63,16 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
+//0.2.04
+//          2022/01/10
+//              Removed old codecompletion xrc files.
+//              Fix compilation when -DCB_PRECOMP is specified (needd later when part of C::B truck)
+//              Sync version between this file and the plugin manifext.xml file.
+//              Remove old codecompletion XRC files as per ticket 13. Also renamed the project files.
+//              Sync version in manifest.xml and version.h (ticket 18)
+//              Change plugin name back to show as Clangd_Client (camel case) in the plugin manager (ticket 16)
+//              Add support for building "third" party plug to be installed via plugin manager (ticket 20)
+//              Change clsettings.xrc to change the Clangd executable wxStaticBoxSizer text from "clangd's installation location" to "Specify clangd executable to use" (ticket 11)
 //0.2.03
 //          2022/01/7
 //          Always return the length of a LSP record in the incoming buffer.

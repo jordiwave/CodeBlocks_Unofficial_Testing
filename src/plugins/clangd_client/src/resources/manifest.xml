@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_plugin_manifest_file>
-    <SdkVersion major="1" minor="10" release="0" />
+    <SdkVersion major="2" minor="0" release="0" />
     <Plugin name="clangd_client">
-        <Value title="clangd_client" />
-        <Value version="1.0" />
+        <Value title="Clangd_Client" />
+        <Value version="0.2.4" />
         <Value description="This plugin provides a symbols browser for your projects and code-completion inside the editor.
 Note: Only C/C++ language is supported by this plugin (currently)..." />
         <Value author="Yiannis An. Mandravellos\nModified for clangd by Pecan" />
