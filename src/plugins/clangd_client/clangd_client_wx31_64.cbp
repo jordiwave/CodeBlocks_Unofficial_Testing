@@ -50,11 +50,12 @@
 					<Add before="cmd /c @echo CODEBLOCKS: $(CODEBLOCKS)" />
 					<Add before="cmd /c @echo TARGET_DEVEL_DIR: $(TARGET_DEVEL_DIR)" />
 					<Add before="g++ --version" />
-					<!-- Add after="cmd /c  zipResources.bat  $(TARGET_DEVEL_DIR)" / -->
 					<Add after="zip -jq9 clangd_client.zip src/resources/manifest.xml src/resources/*.xrc" />
-					<Add after="zip -r9 clangd_client.zip src/resources/images" />
+					<Add after="zip -r9  clangd_client.zip src/resources/images" />
 					<Add after="strip bin/clangd_client.dll" />
-					<Add after="zip -j9 clangd_client.cbplugin bin/clangd_client.dll clangd_client.zip" />
+					<Add after="zip -j9 clangd_client_tmp.zip bin/clangd_client.dll clangd_client.zip documentation-install/*.txt" />
+					<Add after="cmd /c del clangd_client.zip" />
+					<Add after="cmd /c ren clangd_client_tmp.zip clangd_client.zip" />
 					<Mode after="always" />
 				</ExtraCommands>
 				<Environment>
@@ -98,7 +99,6 @@
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)" />
 		</Linker>
-		<Unit filename="../CBClangd_Todo.txt" />
 		<Unit filename="src/ClangLocator.cpp" />
 		<Unit filename="src/ClangLocator.h" />
 		<Unit filename="src/LSP_SymbolKind.h" />
@@ -187,7 +187,6 @@
 		<Unit filename="src/winprocess/misc/fileutils.cpp" />
 		<Unit filename="src/winprocess/misc/fileutils.h" />
 		<Unit filename="src/winprocess/misc/wxStringHash.h" />
-		<Unit filename="zipResources.bat" />
 		<Extensions>
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />

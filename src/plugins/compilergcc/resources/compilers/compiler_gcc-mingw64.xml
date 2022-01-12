@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0"?>
 <!DOCTYPE CodeBlocks_compiler>
-<CodeBlocks_compiler name="GNU GCC MingW64 Compiler"
+<CodeBlocks_compiler name="GNU GCC MinGW64 Compiler"
                      id="gcc-mingw64"
                      weight="60"
                      platform="windows">

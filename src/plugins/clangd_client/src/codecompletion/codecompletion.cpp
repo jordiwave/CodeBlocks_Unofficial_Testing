@@ -1264,6 +1264,7 @@ std::vector<CodeCompletion::CCCallTip> CodeCompletion::GetCallTips(int pos, int 
     // the m_SignatureTokens.
     if (0 == m_SignatureTokens.size())
     {
+        if (not GetLSPclient(ed)) return tips; //empty tips
         GetLSPclient(ed)->LSP_SignatureHelp(ed, pos);
         return tips; //empty tips
     }

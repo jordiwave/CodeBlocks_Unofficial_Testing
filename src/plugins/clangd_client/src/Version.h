@@ -18,7 +18,6 @@
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 // ----------------------------------------------------------------------------
-// RCS-ID: $Id: Version.h 12254 2020-12-23 19:11:14Z pecanh $
 
 #ifndef VERSION_H
 #define VERSION_H
@@ -38,7 +37,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.04 2022/01/10")
+#define VERSION wxT("0.2.05 2022/01/12")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
