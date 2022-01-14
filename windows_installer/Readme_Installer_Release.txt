@@ -1,43 +1,24 @@
-Updated for the release on 09-Jan-2022.
+Updated for the release on 14-Jan-2022.
 
+The installers include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official C::B 20.03 or nightly builds.
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
-The installers do, however include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official C::B 20.03 installers.
 
 Installer download link:
 ========================
 https://sourceforge.net/projects/unofficial-cb-installers/
 
-C::B exe/dll changed/update highlights compared to the last nightly SVN 12639 release (09-Jan-2021):
+C::B exe/dll changed/update highlights compared to the last nightly SVN 12641 release (11-Jan-2021):
 ====================================================================================================
-    1. Incorporated SVN changes up to and including SVN 12639. See https://sourceforge.net/p/codeblocks/code/12639/log/ for change info.
+    1. Incorporated SVN changes up to and including SVN 12648. See https://sourceforge.net/p/codeblocks/code/12648/log/ for change info.
     2. Does not include the CBFortan Plugin or other plugins that are SVN externals.
-    3. Auto-detect POP up condition on startup has changed. After initial install will only pop up if the default compiler has issues. (SF Ticket 1117)
-    4. Auto-detect compiler dialog has the option to show the installed or all the compilers. (SF Ticket 1117). Reworked and simplified the code in the 4-Sep-2021 release.
-    5. The compiler selection dialog has the option of showing the detected compilers or all the compilers. Fix a number of compiler selection dialog bugs. (SF Ticket 1111)
-    6. Added support for the following Windows compilers via the XML files (Ticket 374)
-                - GCC MSYS2 - MinGW-w32
-                - GCC MSYS2 - MinGW-W64
-                - GCC TDM-32
-                - GCC TDM-64
-                - GCC MinGW-w32
-                - GCC MinGW-w64
-                - GCC LLVM Clang MinGW-W64
-                - Other MinGW w32 or w64 compilers like winlib or gytx
+    3. Has auto-detect/auto add GDB support when options*.xml include GDB info. (SF Ticket 1114)
+    4. Auto-detect POP up condition on startup has changed. After initial install will only pop up if the default compiler has issues. (SF Ticket 1117)
+    5. Auto-detect compiler dialog has the option to show the installed or all the compilers. (SF Ticket 1117).
+    6. The compiler selection dialog has the option of showing the detected compilers or all the compilers. Fix a number of compiler selection dialog bugs. (SF Ticket 1111)
     7. Moved Help->About->Information to Help->"System Information" and added allot of extra info on the CB and PC setup. Added copy to clipboard button that anonymizes the data when copied to the clipboard. (SF Ticket 748)
-    8. Added extra help plugin menu items for the updated documentation included in the installation. These appear as sub menu items in the Help menu.
-    9. Copy Debug Watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
-    10. Includes temporary code to show the C::B startup time in the log. This is to help track down a slow startup issue that I have not seen.
-    11. Added Pecan's experimental CB-clangd_client (08-Jan-2022 SVN r8) plugin for testing.
-            Configure clangd_client:
-                1) In the Plugin manager:
-                    a) disble the code completion plugin
-                    b) enable the clangd_client plugin
-                    c) Re-start C::B
-                2) MSYS 2 
-                    pacman -S mingw-w64-clang-x86_64-toolchain
-                3) Settings->editor then selct Clangd_Client settings.
-                    In the C/C++ parser tab change the LLVM directory to:
-                        C:\msys64\clang64\bin\clangd.exe 
+    8. Add ability to copy debug watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
+    9. Includes temporary code to show the C::B startup time in the log. This is to help track down a slow startup issue that I have not seen.
+    10. Added Pecan's experimental CB-clangd_client. See https://sourceforge.net/projects/cb-clangd-client
     
 Updated installer highlights compared to the C::B 20.03 NSIS installer:
 =======================================================================
@@ -86,7 +67,7 @@ SOURCE/Compiler Info:
 =====================
 1. The source code repo used to produce the installers is currently:
     https://github.com/acotty/codeblocks_sf/tree/AC-WindowsInstaller
-2. C::B x64 built with MSYS2 mingw64 GCC 11.2 using the latest MSYS 2 release (GCC 10.3 => 11.2 ON 24Oct2021)
+2. C::B x64 built with MSYS2 mingw64 GCC 11.2 using the latest MSYS 2 release at the time of the build.
 3. C::B x86 built with MingGW-32 installer using "GCC 8.1.0 , i686, posix threading, dwarf exception hading and 0 build revision" configuration.
 
 NOTES:

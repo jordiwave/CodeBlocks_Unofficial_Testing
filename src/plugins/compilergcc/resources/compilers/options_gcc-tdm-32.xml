@@ -25,6 +25,5 @@
     <Debugger name="do_not_run_debuggee"  value="false"/>       <!-- If enabled, the debugger will not a send a run/continue command -->
     <Debugger name="disassembly_flavor"  value="0"/>            <!-- Options:  "System default" or "ATandT" or "Intel" or "Custom" where "System default" is "ATandT" for Windows otherwise it is "Intel"-->
     <Debugger name="instruction_set"  value=""/>                <!-- Disassembly custom instructionset -->
-    
 
 </CodeBlocks_compiler_options>

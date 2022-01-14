@@ -42,7 +42,7 @@ END_EVENT_TABLE()
 AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
 {
     //ctor
-    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAutoDetectCompilers"),_T("wxScrollingDialog"));
+    wxXmlResource::Get()->LoadObject(this, parent, "dlgAutoDetectCompilers", "wxScrollingDialog");
     XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
     Bind(wxEVT_BUTTON, &AutoDetectCompilers::OnCloseClicked, this, wxID_OK);
 
@@ -53,7 +53,8 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
         list->Connect(wxEVT_MOTION, wxMouseEventHandler(AutoDetectCompilers::OnMouseMotion));
 
         Manager::Get()->GetLogManager()->Log("AutoDetectCompilers info follows:");
-        for (size_t i = 0; i < CompilerFactory::GetCompilersCount(); ++i)
+        const size_t count = CompilerFactory::GetCompilersCount();
+        for (size_t i = 0; i < count; ++i)
         {
             Compiler* compiler = CompilerFactory::GetCompiler(i);
             if (!compiler)
@@ -74,8 +75,8 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                 wxString masterPathNoMacros = masterPath;
                 Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPathNoMacros);
 
-                bool detectedDirectory = wxFileName::DirExists(masterPathNoMacros);
-                bool compilerIsDefault = defaultCompilerID.IsSameAs(currentCompilerID);
+                const bool detectedDirectory = wxFileName::DirExists(masterPathNoMacros);
+                const bool compilerIsDefault = defaultCompilerID.IsSameAs(currentCompilerID);
                 // bool compilerSetConfigured = Manager::Get()->GetConfigManager("compiler")->Exists("/sets/" + compiler->GetID() + "/name");
 
                 Manager::Get()->GetLogManager()->Log(wxString::Format("CompilerName : '%s'   , masterPathNoMacros : '%s'", compilerListItem.compilerName, masterPathNoMacros));
@@ -93,7 +94,7 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                 else
                 {
                     // Path is invalid. Try auto-detection
-                    bool detectedAutoDetect = compiler->AutoDetectInstallationDir() == adrDetected;
+                    const bool detectedAutoDetect = compiler->AutoDetectInstallationDir() == adrDetected;
                     wxString pathDetected = compiler->GetMasterPath();
                     wxString pathDetectedNoMacros = pathDetected;
                     Manager::Get()->GetMacrosManager()->ReplaceMacros(pathDetectedNoMacros);
@@ -123,7 +124,7 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                         }
                         else
                         {
-                            if (compiler->GetParentID().IsEmpty()) // built-in compiler
+                            if (compiler->GetParentID().empty()) // built-in compiler
                                 compilerListItem.status = "Detected";
                             else
                                 compilerListItem.status = "User defined detected";
@@ -138,7 +139,7 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                         compilerListItem.detected = false;
                         if (compilerIsDefault)
                         {
-                            if (compiler->GetParentID().IsEmpty()) // built-in compiler
+                            if (compiler->GetParentID().empty()) // built-in compiler
                                 compilerListItem.status = "Default compiler not detected";
                             else
                                 compilerListItem.status = "Default compiler user defined not detected";
@@ -147,7 +148,7 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                         }
                         else
                         {
-                            if (compiler->GetParentID().IsEmpty()) // built-in compiler
+                            if (compiler->GetParentID().empty()) // built-in compiler
                                 compilerListItem.status = "Not detected";
                             else
                                 compilerListItem.status = "User defined not detected";
@@ -282,8 +283,8 @@ void AutoDetectCompilers::UpdateCompilerDisplayList()
             if (bShowAllCompilerOptions && !it->detected)
                 continue;
 
-            int idx = list->GetItemCount();
-            list->InsertItem(idx, it->compilerName);
+            // It is a sorted list, so we must use the returned index
+            const int idx = list->InsertItem(idx, it->compilerName);
             list->SetItem(idx, ccnStatusColumn, it->status);
             list->SetItem(idx, ccnDetectedPathColumn, it->compilerPath);
 
@@ -339,7 +340,7 @@ void AutoDetectCompilers::OnMouseMotion(wxMouseEvent& event)
         if (list->GetItem(itm))
             txt = itm.m_text;
     }
-    if (txt == wxT("Detected") || txt == wxT("User-defined"))
+    if (txt == _("Detected") || txt == _("User-defined"))
     {
         wxListItem itm;
         itm.m_itemId = idx;

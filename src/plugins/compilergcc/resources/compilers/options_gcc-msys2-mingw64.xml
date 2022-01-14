@@ -4,7 +4,7 @@
     <Program name="C"         value="gcc.exe"/>
     <Program name="CPP"       value="g++.exe"/>
     <Program name="LD"        value="g++.exe"/>
-    <Program name="DBGconfig" value="gdb_debugger"/>
+    <Program name="DBGconfig" value="gdb_debugger:gcc-msys2-mingw64"/>
     <Program name="LIB"       value="ar.exe"/>
     <Program name="WINDRES"   value="windres.exe"/>
     <Program name="MAKE"      value="mingw32-make.exe"/>
@@ -25,5 +25,5 @@
     <Debugger name="do_not_run_debuggee"  value="false"/>       <!-- If enabled, the debugger will not a send a run/continue command -->
     <Debugger name="disassembly_flavor"  value="0"/>            <!-- Options:  "System default" or "ATandT" or "Intel" or "Custom" where "System default" is "ATandT" for Windows otherwise it is "Intel"-->
     <Debugger name="instruction_set"  value=""/>                <!-- Disassembly custom instructionset -->
-    
+
 </CodeBlocks_compiler_options>

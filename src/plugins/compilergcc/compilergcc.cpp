@@ -461,6 +461,9 @@ log->Log(wxString::Format(_("============> CompilerGCC::OnAttach() L 376 %ld.%03
             ScriptBindings::gBuildLogId = -1;
     }
 
+    // Complete any compiler set-up that requires access to virtual functions
+    CompilerFactory::PostRegisterCompilerSetup();
+
     // register event sink
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,         new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectActivated));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN,             new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectLoaded));
@@ -502,12 +505,12 @@ void CompilerGCC::OnRelease(bool appShutDown)
             slot.icon = nullptr;
         }
 
-        m_pLog = 0;
+        m_pLog = nullptr;
 
         CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pListLog);
         m_pListLog->DestroyControls();
         Manager::Get()->ProcessEvent(evt);
-        m_pListLog = 0;
+        m_pListLog = nullptr;
     }
 
     // let wx handle this on shutdown ( if we return here Valgrind will be sad :'( )
@@ -1421,8 +1424,8 @@ int CompilerGCC::DoRunQueue()
         // piping and other shell features can be evaluated.
         if (!platform::windows)
         {
-            wxString shell = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
-            cmd->command = shell + _T(" '") + cmd->command + _T("'");
+            const wxString shell(Manager::Get()->GetConfigManager("app")->Read("/console_shell", DEFAULT_CONSOLE_SHELL));
+            cmd->command = shell + " '" + cmd->command + "'";
         }
     }
 
@@ -2203,10 +2206,11 @@ bool CompilerGCC::DoCleanWithMake(ProjectBuildTarget* bt)
                    cltError);
         return false;
     }
+
     Compiler* tgtCompiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
     if (!tgtCompiler)
     {
-        const wxString &message = F(_("Invalid compiler selected for target '%s'!"), getBuildTargetName(bt).wx_str());
+        const wxString message = wxString::Format(_("Invalid compiler selected for target '%s'!"), getBuildTargetName(bt));
 
         LogMessage(COMPILER_ERROR_LOG + message, cltError);
         return false;
@@ -2218,8 +2222,16 @@ bool CompilerGCC::DoCleanWithMake(ProjectBuildTarget* bt)
     wxSetWorkingDirectory(m_pBuildingProject->GetExecutionDir());
 
     cbExpandBackticks(cmd);
+
+    // Run the clean command in the same shell used for building
+    if (!platform::windows)
+    {
+        const wxString shell(Manager::Get()->GetConfigManager("app")->Read("/console_shell", DEFAULT_CONSOLE_SHELL));
+        cmd = shell + " '" + cmd + "'";
+    }
+
     if (showOutput)
-        LogMessage(F(_("Executing clean command: %s"), cmd.wx_str()), cltNormal);
+        LogMessage(wxString::Format(_("Executing clean command: %s"), cmd), cltNormal);
 
     long result = wxExecute(cmd, output, errors, wxEXEC_SYNC);
     if (showOutput)
@@ -2275,9 +2287,9 @@ void CompilerGCC::InitBuildState(BuildJob job, const wxString& target)
     m_BuildJob             = job;
     m_BuildState           = bsNone;
     m_NextBuildState       = bsProjectPreBuild;
-    m_pBuildingProject     = 0;
-    m_pLastBuildingProject = 0;
-    m_pLastBuildingTarget  = 0;
+    m_pBuildingProject     = nullptr;
+    m_pLastBuildingProject = nullptr;
+    m_pLastBuildingTarget  = nullptr;
     m_BuildingTargetName   = target;
     m_CommandQueue.Clear();
 }
@@ -2293,11 +2305,11 @@ void CompilerGCC::ResetBuildState()
     m_BuildJob = bjIdle;
     m_BuildState = bsNone;
     m_NextBuildState = bsNone;
-    m_pBuildingProject = 0;
+    m_pBuildingProject = nullptr;
     m_BuildingTargetName.Clear();
 
-    m_pLastBuildingProject = 0;
-    m_pLastBuildingTarget = 0;
+    m_pLastBuildingProject = nullptr;
+    m_pLastBuildingTarget = nullptr;
 
     m_CommandQueue.Clear();
 
@@ -2613,14 +2625,14 @@ void CompilerGCC::BuildStateManagement()
             if (m_RunProjectPostBuild || m_pBuildingProject->GetAlwaysRunPostBuildSteps())
                 cmds = dc.GetPostBuildCommands(0);
             // reset
-            m_pLastBuildingTarget = 0;
+            m_pLastBuildingTarget = nullptr;
             m_RunProjectPostBuild = false;
             break;
         }
 
         case bsProjectDone:
         {
-            m_pLastBuildingProject = 0;
+            m_pLastBuildingProject = nullptr;
             break;
         }
 
@@ -3546,7 +3558,7 @@ void CompilerGCC::OnProjectUnloaded(CodeBlocksEvent& event)
 {
     // just make sure we don't keep an invalid pointer around
     if (m_pProject == event.GetProject())
-        m_pProject = 0;
+        m_pProject = nullptr;
 }
 
 void CompilerGCC::OnWorkspaceClosed(cb_unused CodeBlocksEvent& event)

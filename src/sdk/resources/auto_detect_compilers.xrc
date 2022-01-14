@@ -3,7 +3,7 @@
 	<object class="wxScrollingDialog" name="dlgAutoDetectCompilers">
 		<title>Compilers auto-detection</title>
 		<centered>1</centered>
-		<style>wxCAPTION|wxRESIZE_BORDER|wxCLOSE_BOX|wxMAXIMIZE_BOX</style>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
@@ -22,7 +22,7 @@
 					<growablerows>0</growablerows>
 					<object class="sizeritem">
 						<object class="wxListCtrl" name="lcCompilers">
-							<style>wxLC_REPORT|wxLC_SINGLE_SEL|wxVSCROLL|wxHSCROLL</style>
+							<style>wxLC_REPORT|wxLC_SINGLE_SEL|wxLC_SORT_ASCENDING</style>
 						</object>
 						<flag>wxEXPAND</flag>
 					</object>

@@ -1518,5 +1518,7 @@ void DebuggerManager::SaveDebuggerConfigOptions(CompilerDebuggerOptions & cdoCon
         config->Write(pathDebuggerEntry + "/values/do_not_run",             cdoConfiguation.doNoRunDebuggee?"true":"false");
         config->Write(pathDebuggerEntry + "/values/disassembly_flavor",     cdoConfiguation.disassemblyFlavor);
         config->Write(pathDebuggerEntry + "/values/instruction_set",        cdoConfiguation.instructionSet);
+
+        config->Flush();
     }
 }

@@ -194,14 +194,33 @@ Compiler::~Compiler()
 
 void Compiler::PostRegisterCompilerSetup()
 {
+    // Only proceed if the options*.xml file for the compiler includes the debugger default config info
     if (m_DebuggerInitialConfiguation.validData == true)
     {
+        bool detected = IsValid();
         if (m_MasterPath.IsEmpty())
         {
-            AutoDetectInstallationDir();
+            // Try to detect the compiler masterpath
+            detected = (AutoDetectInstallationDir() == adrDetected);
         }
-        m_DebuggerInitialConfiguation.compilerMasterPath = m_MasterPath;
-        Manager::Get()->GetDebuggerManager()->SaveDebuggerConfigOptions(m_DebuggerInitialConfiguation);
+        // Only proceed if the compiler has been found.
+        if (detected)
+        {
+            // masterpath detected, so save masterpath just in case!!!!
+            m_DebuggerInitialConfiguation.compilerMasterPath = m_MasterPath;
+
+            // Only proceed if the debuger has not been setup.
+            if (
+                    (m_Programs.DBGconfig.StartsWith(_("gdb_debugger:"), NULL)) ||
+                    (m_Programs.DBGconfig.StartsWith(_("NoPlugin:"), NULL))
+                )
+            {
+                // Save update config file
+                Manager::Get()->GetDebuggerManager()->SaveDebuggerConfigOptions(m_DebuggerInitialConfiguation);
+                wxString baseKey = GetParentID().IsEmpty() ? _T("/sets") : _T("/user_sets");
+                SaveSettings(baseKey);
+            }
+        }
     }
 }
 
@@ -456,7 +475,9 @@ void Compiler::SaveSettings(const wxString& baseKey)
     tmp.Printf(_T("%s/set%3.3d"), baseKey.c_str(), CompilerFactory::GetCompilerIndex(this) + 1);
     cfg->DeleteSubPath(tmp);
 
+    // delete old keys before saving
     tmp.Printf(_T("%s/%s"), baseKey.c_str(), m_ID.c_str());
+    cfg->DeleteSubPath(tmp);
 
     cfg->Write(tmp + _T("/name"),   m_Name);
     cfg->Write(tmp + _T("/parent"), m_ParentID, true);
@@ -630,6 +651,8 @@ void Compiler::SaveSettings(const wxString& baseKey)
     const StringHash& v = GetAllVars();
     for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
         cfg->Write(configpath + it->first, it->second);
+
+    cfg->Flush();
 }
 
 void Compiler::LoadSettings(const wxString& baseKey)
@@ -637,7 +660,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
     // before loading any compiler settings, keep the current settings safe
     // so we can compare them when saving: this way we can only save what's
     // different from the defaults
-    MirrorCurrentSettings();
+    // MirrorCurrentSettings();
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("compiler"));
 
@@ -943,7 +966,7 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
                 m_Programs.LD = cfg->Read(cmpKey + wxT("/linker"), value);
                 m_Mirror.Programs.LD = value;
             }
-            else if ((prog == wxT("DBGconfig")) && (recursion == 0))
+            else if ((prog == "DBGconfig") && (recursion == 0))
             {
                 // Check if the DBGconfig is of the format <plugin name>:<debugger config name>
                 if (value.Find(':') == wxNOT_FOUND)
@@ -1140,7 +1163,7 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
         {
             LoadDefaultOptions(wxT("common_") + node->GetAttribute(wxT("name"), wxString()), recursion + 1);
         }
-        else if (node->GetName() == wxT("Debugger"))
+        else if (node->GetName() == "Debugger")
         {
             wxString debugName = node->GetAttribute("name", wxString());
             if (debugName == "executable_path")

@@ -275,20 +275,20 @@ void CompilerFactory::SetDefaultCompiler(Compiler* compiler)
 
 void CompilerFactory::SaveSettings()
 {
-    // clear old keys before saving
-    Manager::Get()->GetConfigManager(_T("compiler"))->DeleteSubPath(_T("/sets"));
-    Manager::Get()->GetConfigManager(_T("compiler"))->DeleteSubPath(_T("/user_sets"));
-
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
-        wxString baseKey = Compilers[i]->GetParentID().IsEmpty() ? _T("/sets") : _T("/user_sets");
-        Compilers[i]->SaveSettings(baseKey);
+        if (Compilers[i]->IsValid())
+        {
+            // Only save valid compiler configuration settings
+            wxString baseKey = Compilers[i]->GetParentID().IsEmpty() ? _T("/sets") : _T("/user_sets");
+            Compilers[i]->SaveSettings(baseKey);
 
-        CodeBlocksEvent event(cbEVT_COMPILER_SETTINGS_CHANGED);
-        event.SetString(Compilers[i]->GetID());
-        event.SetInt(static_cast<int>(i));
-        event.SetClientData(static_cast<void*>(Compilers[i]));
-        Manager::Get()->ProcessEvent(event);
+            CodeBlocksEvent event(cbEVT_COMPILER_SETTINGS_CHANGED);
+            event.SetString(Compilers[i]->GetID());
+            event.SetInt(static_cast<int>(i));
+            event.SetClientData(static_cast<void*>(Compilers[i]));
+            Manager::Get()->ProcessEvent(event);
+        }
     }
 }
 
