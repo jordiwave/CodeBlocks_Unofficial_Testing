@@ -16,7 +16,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="-Wextra" />
-					<Add option="-Wall" />
+					<Add option="-w" />  <!-- was -Wall , but slows the build down -->
 					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="`$(WX_CONFIG) --cflags`" />
 					<Add option="-fexceptions" />
@@ -48,7 +48,7 @@
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="-std=c++11" />
+			<Add option="-std=c++17" />
 			<Add option="-fPIC" />
 		</Compiler>
 		<Unit filename="MouseSap.cpp" />

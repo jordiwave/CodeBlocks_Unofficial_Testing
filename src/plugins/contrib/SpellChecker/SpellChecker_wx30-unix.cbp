@@ -83,8 +83,8 @@
 			<Add alias="All" targets="wxSpellChecker;plugin;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="-Wall" />
-			<Add option="-std=c++11" />
+			<Add option="-w" />  <!-- was -Wall , but slows the build down -->
+			<Add option="-std=c++17" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--no-undefined" />

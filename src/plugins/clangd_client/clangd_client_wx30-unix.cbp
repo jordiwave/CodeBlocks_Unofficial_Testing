@@ -53,7 +53,7 @@
 			<Add alias="All" targets="clangd_client;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="-Wall" />
+			<Add option="-w" />  <!-- was -Wall , but slows the build down -->
 			<Add option="-fPIC" />
 			<Add option="-g" />
 			<Add option="-std=c++17" />

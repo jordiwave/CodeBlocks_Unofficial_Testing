@@ -24,7 +24,7 @@
 			<Add alias="All" targets="Plugin-unix;App-unix;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="-Wall" />
+			<Add option="-w" />  <!-- was -Wall , but slows the build down -->
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="`$(WX_CONFIG) --cflags`" />
 			<Add option="-fexceptions" />
@@ -32,7 +32,7 @@
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
-			<Add option="-std=c++11" />
+			<Add option="-std=c++17" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
