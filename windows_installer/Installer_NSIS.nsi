@@ -343,6 +343,7 @@ RequestExecutionLevel user
 
 ${!defineifexist} FORTRAN_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\FortranProject.zip
 ${!defineifexist} CLANGD_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\clangd_client.zip
+${!defineifexist} DISPLAYEVENTS_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\DisplayEvents.zip
 
 ################################################################################
 # Logging macro - from https://nsis.sourceforge.io/Logging:Enable_Logs_Quickly #
@@ -1153,6 +1154,18 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             SetOutPath $INSTDIR${CB_PLUGINS}
             File ${CB_BASE}${CB_PLUGINS}\clangd_client.dll
             WriteRegStr HKCU "${REGKEY}\Components" "Clangd Client plugin" 1
+        SectionEnd
+!endif
+
+!ifdef DISPLAYEVENTS_PLUGIN_FOUND
+        Section "Display Events plugin" SEC_DISPLAYEVENTS_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\DisplayEvents.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\DisplayEvents.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "Display Events plugin" 1
         SectionEnd
 !endif
 
@@ -2260,6 +2273,14 @@ Section "-un.Clangd Client plugin" UNSEC_CLANGD_CLIENT
 SectionEnd
 !endif
 
+!ifdef DISPLAYEVENTS_PLUGIN_FOUND
+Section "-un.Display Eventst plugin" UNSEC_DISPLAYEVENTS_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\DisplayEvents.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\DisplayEvents.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "Display Events plugin"
+SectionEnd
+!endif
+
 Section "-un.Compiler plugin" UNSEC_COMPILER
     Delete /REBOOTOK $INSTDIR${CB_IMG_SETTINGS}\compiler-off.png
     Delete /REBOOTOK $INSTDIR${CB_IMG_SETTINGS}\compiler.png
@@ -3160,6 +3181,9 @@ CheckUserTypeDone:
 !ifdef CLANGD_PLUGIN_FOUND
     !insertmacro SELECT_UNSECTION "Clangd Client plugin"               ${UNSEC_CLANGD_CLIENT}
 !endif
+!ifdef DISPLAYEVENTS_PLUGIN_FOUND
+    !insertmacro SELECT_UNSECTION "Display Events plugin"              ${UNSEC_DISPLAYEVENTS_PLUGIN}
+!endif
     !insertmacro SELECT_UNSECTION "Compiler plugin"                    ${UNSEC_COMPILER}
     !insertmacro SELECT_UNSECTION "Debugger plugin"                    ${UNSEC_DEBUGGER}
     !insertmacro SELECT_UNSECTION "MIME Handler plugin"                ${UNSEC_MIMEHANDLER}
@@ -3241,6 +3265,9 @@ FunctionEnd
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CODECOMPLETION}      "Provides a symbols browser for your projects and code-completion inside the editor."
 !ifdef CLANGD_PLUGIN_FOUND
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CLANGD_CLIENT}       "Provides a ClangD client  browser for your projects and code-completion inside the editor. Currently only C++."
+!endif
+!ifdef DISPLAYEVENTS_PLUGIN_FOUND
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_DISPLAYEVENTS_PLUGIN} "Provides a C::B developer display event in the log."
 !endif
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_COMPILER}            "Provides an interface to various compilers, including GNU compiler suite, Microsoft, Borland, etc."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DEBUGGER}            "Provides interfaces to the GNU GDB and MS CDB debuggers."

@@ -68,11 +68,17 @@ void wxsAuiToolBarItem::OnEnumItemProperties(long Flags)
           wxITEM_CHECK,
           wxITEM_RADIO,
           0 };
+
+#pragma push_macro("_")
+#undef _
+#define _(x)   L##x
     static const wxChar* ItemKindNames[]  =
         { _("Normal"),
           _("Check"),
           _("Radio"),
-          0 };
+          nullptr };
+#pragma pop_macro("_")
+
     WXS_ENUM(wxsAuiToolBarItem, m_ItemKind, _("Item kind"), _T("itemkind"), ItemKindValues, ItemKindNames, wxITEM_NORMAL)
 
     WXS_BOOL(wxsAuiToolBarItem,m_DropDown,_("DropDown"),_T("dropdown"),false);

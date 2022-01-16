@@ -6,6 +6,7 @@
 		<Project filename="tools/cb_share_config/cb_share_config_wx31_64.cbp" />
 		<Project filename="tools/CBLauncher/CbLauncher_wx31_64.cbp" />
 		<Project filename="tools/cbp2make/cbp2make_wx31_64.cbp" />
+		<Project filename="plugins/displayevents/cbDisplayEvents_wx31_64.cbp" />
 		<Project filename="plugins/codecompletion/cctest_wx31_64.cbp" />
 		<Project filename="plugins/contrib/wxContribItems/wxContribItems_wx31_64.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith_wx31_64.cbp">
