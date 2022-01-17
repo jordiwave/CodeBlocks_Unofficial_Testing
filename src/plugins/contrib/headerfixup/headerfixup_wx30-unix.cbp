@@ -49,7 +49,7 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wextra" />
-			<Add option="-w" />  <!-- was -Wall , but slows the build down -->
+			<Add option="-Wall" />
 			<Add option="-std=c++17" />
 		</Compiler>
 		<Unit filename="bindings.cpp" />

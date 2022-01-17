@@ -31,7 +31,7 @@ if [ -e $CB_APP ]; then
   if [ -d $CB_SRC ]; then
     export CB_PARAMS="--batch-build-notify --no-batch-window-close --multiple-instance --verbose"
     export CB_TARGET="--target=All"
-    export CB_CMD="--build $CB_SRC/$CB_ProjectFileName"
+    export CB_CMD="--rebuild $CB_SRC/$CB_ProjectFileName"
 
     echo $CB_APP $CB_PARAMS $CB_TARGET $CB_CMD
     $CB_APP $CB_PARAMS $CB_TARGET $CB_CMD

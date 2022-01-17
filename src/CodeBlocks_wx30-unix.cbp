@@ -462,7 +462,7 @@
 			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;scintilla;Compiler depslib;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="-w" />  <!-- was -Wall , but slows the build down -->
+			<Add option="-Wall" />
 			<Add option="-fPIC" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-fmessage-length=0" />

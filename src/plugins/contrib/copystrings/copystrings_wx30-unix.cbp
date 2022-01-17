@@ -24,7 +24,7 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wextra" />
-			<Add option="-w" />  <!-- was -Wall , but slows the build down -->
+			<Add option="-Wall" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="`$(WX_CONFIG) --cflags`" />
 			<Add option="-Winvalid-pch" />

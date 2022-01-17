@@ -23,7 +23,7 @@
 			</Environment>
 		</Build>
 		<Compiler>
-			<Add option="-w" />  <!-- was -Wall , but slows the build down -->
+			<Add option="-Wall" />
 			<Add option="`$(WX_CONFIG) --cflags`" />
 			<Add directory="fuzzer" />
 		</Compiler>
