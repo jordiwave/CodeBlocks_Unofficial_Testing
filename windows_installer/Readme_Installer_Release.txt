@@ -1,4 +1,4 @@
-Updated for the release on 16-Jan-2022.
+Updated for the release on 17-Jan-2022.
 
 The installers include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official C::B 20.03 or nightly builds.
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
@@ -7,9 +7,9 @@ Installer download link:
 ========================
 https://sourceforge.net/projects/unofficial-cb-installers/
 
-C::B exe/dll changed/update highlights compared to the last nightly SVN 12641 release (11-Jan-2021):
+C::B exe/dll changed/update highlights compared to the last nightly SVN 12655 release (16-Jan-2021):
 ====================================================================================================
-    1. Incorporated SVN changes up to and including SVN 12655. See https://sourceforge.net/p/codeblocks/code/12655/log/ for change info.
+    1. Incorporated SVN changes up to and including SVN 12659. See https://sourceforge.net/p/codeblocks/code/12659/log/ for change info.
     2. Does not include the CBFortan Plugin or other plugins that are SVN externals.
     3. Has auto-detect/auto add GDB support when options*.xml include GDB info. (SF Ticket 1114)
     4. Auto-detect POP up condition on startup has changed. After initial install will only pop up if the default compiler has issues. (SF Ticket 1117)
