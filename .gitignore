@@ -33,3 +33,5 @@ src/plugins/clangd_client/compile_commands.json
 src/plugins/clangd_client/clangd_client.cbplugin
 src/plugins/clangd_client/clangd_client.zip
 src/plugins/clangd_client/bin/Clangd_Client.dll
+src/plugins/clangd_client/clangd_client/clangd_client.dll
+src/plugins/clangd_client/clangd_client/clangd_client.zip

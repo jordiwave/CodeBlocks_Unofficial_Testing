@@ -425,14 +425,14 @@
 
 					<!-- Create the clangd_client.zip file -->
 					<Add after="cmd /c if exist plugins\clangd_client\clangd_client.zip   del plugins\clangd_client\clangd_client.zip" />
-                    <Add after='cmd /c &quot;cd plugins\clangd_client\src\resources &amp; zip -jq9 ..\..\clangd_client.zip manifest.xml *.xrc &quot;' />
-                    <Add after='cmd /c &quot;cd plugins\clangd_client\src\resources &amp; zip -rq9 ..\..\clangd_client.zip images &quot;' />
+					<Add after='cmd /c &quot;cd plugins\clangd_client\src\resources &amp; zip -jq9 ..\..\clangd_client.zip manifest.xml *.xrc &quot;' />
+					<Add after='cmd /c &quot;cd plugins\clangd_client\src\resources &amp; zip -rq9 ..\..\clangd_client.zip images &quot;' />
 					<Add after="cmd /c copy plugins\clangd_client\clangd_client.zip devel31_64\share\CodeBlocks" />
 
 					<!-- Create the clangd_client.cbplugin file using the stripped dll -->
-                    <Add after='cmd /c &quot;cd plugins\clangd_client &amp; copy bin\clangd_client.dll . &quot;' />
+					<Add after='cmd /c &quot;cd plugins\clangd_client &amp; copy bin\clangd_client.dll . &quot;' />
 					<Add after="strip plugins\clangd_client\clangd_client.dll" />
-                    <Add after='cmd /c &quot;cd plugins\clangd_client &amp; zip -jq9 clangd_client.cbplugin clangd_client.dll  clangd_client.zip  documentation-install\*.txt &quot;' />
+					<Add after='cmd /c &quot;cd plugins\clangd_client &amp; zip -jq9 clangd_client.cbplugin clangd_client.dll  clangd_client.zip  documentation-install\*.txt &quot;' />
 					<Add after="cmd /c del plugins\clangd_client\clangd_client.dll" />
 
 					<Mode after="always" />
