@@ -103,7 +103,6 @@
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)" />
 		</Linker>
-		<Unit filename="../CBClangd_Todo.txt" />
 		<Unit filename="src/ClangLocator.cpp" />
 		<Unit filename="src/ClangLocator.h" />
 		<Unit filename="src/LSP_SymbolKind.h" />

@@ -291,19 +291,19 @@
 					<!-- debugging - <Add before="echo PROJECT_TOPDIRECTORY: $(PROJECT_TOPDIRECTORY)" /> -->
 					<!-- debugging - <Add before="echo PLUGINS: $(PLUGINS)" /> -->
 					<!-- debugging - <Add before="g++ version" /> -->
-					<Mode before="always" />
+					<!-- debugging - <Mode before="always" /> -->
 
 					<Add after="mkdir -p devel30/share/codeblocks" />
 					
-					
 					<!-- Create the clangd_client.zip file -->
-					<Add after='[ -f %PROJECTDIR%plugins/clangd_client/clangd_client.zip ] &amp;&amp;  rm %PROJECTDIR%plugins/clangd_client/clangd_client.zip;' />
+					<Add after='if [ -e %PROJECTDIR%plugins/clangd_client/clangd_client.zip ] ; then  rm %PROJECTDIR%plugins/clangd_client/clangd_client.zip; fi;' />
 					<Add after='zip -jq9 %PROJECTDIR%plugins/clangd_client/clangd_client.zip %PROJECTDIR%plugins/clangd_client/src/resources/manifest.xml' />
 					<Add after='zip -jq9 %PROJECTDIR%plugins/clangd_client/clangd_client.zip %PROJECTDIR%plugins/clangd_client/src/resources/*.xrc' />
-					<Add after='zip -Rq %PROJECTDIR%plugins/clangd_client/clangd_client.zip %PROJECTDIR%plugins/clangd_client/src/resources/images %PROJECTDIR%plugins/clangd_client/src/resources/images/*.png' />
-					<Add after='cp %PROJECTDIR%plugins/clangd_client/clangd_client.zip devel30/share/codeblocks' />
+				    <Add after='cd %PROJECTDIR%plugins/clangd_client/src/resources &amp;&amp; zip -rq9 ../../clangd_client.zip images;' />
+					<Add after='cp %PROJECTDIR%plugins/clangd_client/clangd_client.zip devel30/share/codeblocks' /> -->
 
 					<!-- Create the clangd_client.cbplugin file using the stripped dll -->
+					<Add after='if [ -e %PROJECTDIR%plugins/clangd_client/clangd_client.cbplugin ] ; then  rm %PROJECTDIR%plugins/clangd_client/clangd_client.cbplugin; fi;'/>
 					<Add after='cp devel30/share/codeblocks/plugins/libclangd_client.so %PROJECTDIR%plugins/clangd_client' />
 					<Add after='strip %PROJECTDIR%plugins/clangd_client/libclangd_client.so' />
 					<Add after='zip -jq9 %PROJECTDIR%plugins/clangd_client/clangd_client.cbplugin %PROJECTDIR%plugins/clangd_client/libclangd_client.so' />

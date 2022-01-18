@@ -17,9 +17,6 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
-					<Add option="-Wall" />
-					<Add option="-std=gnu++17" />
-					<Add option="-g" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add option="-DCC_NO_COLLAPSE_ITEM" />
 					<Add option="-DLOGGING" />
@@ -30,7 +27,6 @@
 					<Add directory="$(TARGET_DEVEL_DIR)/src/include/tinyxml/" />
 					<Add directory="$(PROJECT_DIR)/src/LSPclient/include" />
 					<Add directory="$(PROJECT_DIR)/src" />
-					<Add directory="include" />
 					<Add directory="src/LSPclient" />
 					<Add directory="src/winprocess" />
 					<Add directory="src/winprocess/asyncprocess" />
@@ -77,7 +73,8 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-std=gnu++11" />
+			<Add option="-std=c++17" />
+			<Add option="-g" />
 			<Add option="-m64" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-pipe" />

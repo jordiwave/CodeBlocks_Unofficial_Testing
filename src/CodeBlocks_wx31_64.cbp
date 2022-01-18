@@ -413,11 +413,11 @@
 					<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
 				</Linker>
 				<ExtraCommands>
-					<!-- debugging - <Add before="cmd /c echo CODEBLOCKS: $(CODEBLOCKS)" /> -->
-					<!-- debugging - <Add before="cmd /c echo TARGET_DEVEL_DIR: $(TARGET_DEVEL_DIR)" /> -->
-					<!-- debugging - <Add before="cmd /c echo PROJECT_DIR: $(PROJECT_DIR)" /> -->
-					<!-- debugging - <Add before="cmd /c echo PROJECT_TOPDIRECTORY: $(PROJECT_TOPDIRECTORY)" /> -->
-					<!-- debugging - <Add before="cmd /c echo PLUGINS: $(PLUGINS)" /> -->
+					<!-- debugging - <Add before="cmd /c @echo CODEBLOCKS: $(CODEBLOCKS)" /> -->
+					<!-- debugging - <Add before="cmd /c @echo TARGET_DEVEL_DIR: $(TARGET_DEVEL_DIR)" /> -->
+					<!-- debugging - <Add before="cmd /c @echo PROJECT_DIR: $(PROJECT_DIR)" /> -->
+					<!-- debugging - <Add before="cmd /c @echo PROJECT_TOPDIRECTORY: $(PROJECT_TOPDIRECTORY)" /> -->
+					<!-- debugging - <Add before="cmd /c @echo PLUGINS: $(PLUGINS)" /> -->
 					<!-- debugging - <Add before="g++ --version" /> -->
 					<Mode before="always" />
 
