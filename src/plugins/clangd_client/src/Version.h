@@ -37,7 +37,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.05 2022/01/12")
+#define VERSION wxT("0.2.08 2022/01/14")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -62,6 +62,23 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
+//0.2.08
+//          2022/01/14
+//          Code to removed invalid utf8 chars from clangd responses responses
+//          cf:client.cpp DoValidateUTF8data()
+//0.2.07
+//          2022/01/13
+//          ReadJson() clear illegal utf8 and show in debug log
+//          Change project title of clangd_client-uw to clangd_client-wx31_64
+//          Add MakeRepoUpload.bat to preserve clangd_client.zip and to avoid stripping the dll
+//0.2.06
+//          2022/01/13
+//          Doc typo fixed
+//          Plugin zip file is deleted on before extra command in the project file to stop recursive zip file creation..
+//0.2.05
+//          2022/01/12
+//              Updated the way the plugin was built
+//              Major doc update
 //0.2.04
 //          2022/01/10
 //              Removed old codecompletion xrc files.

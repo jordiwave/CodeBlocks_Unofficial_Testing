@@ -413,9 +413,28 @@
 					<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel31_64/share/CodeBlocks mkdir ../../devel31_64/share/CodeBlocks" />
-					<Add after="zip -jq9 devel31_64/share/CodeBlocks/clangd_client.zip plugins/clangd_client/src/resources/manifest.xml plugins/clangd_client/src/resources/*.xrc" />
-					<Add after="zip -r9  devel31_64/share/CodeBlocks/clangd_client.zip plugins/clangd_client/src/resources/images" />
+					<!-- debugging - <Add before="cmd /c echo CODEBLOCKS: $(CODEBLOCKS)" /> -->
+					<!-- debugging - <Add before="cmd /c echo TARGET_DEVEL_DIR: $(TARGET_DEVEL_DIR)" /> -->
+					<!-- debugging - <Add before="cmd /c echo PROJECT_DIR: $(PROJECT_DIR)" /> -->
+					<!-- debugging - <Add before="cmd /c echo PROJECT_TOPDIRECTORY: $(PROJECT_TOPDIRECTORY)" /> -->
+					<!-- debugging - <Add before="cmd /c echo PLUGINS: $(PLUGINS)" /> -->
+					<!-- debugging - <Add before="g++ --version" /> -->
+					<Mode before="always" />
+
+					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
+
+					<!-- Create the clangd_client.zip file -->
+					<Add after="cmd /c if exist plugins\clangd_client\clangd_client.zip   del plugins\clangd_client\clangd_client.zip" />
+					<Add after="zip -jq9 plugins\clangd_client\clangd_client.zip plugins\clangd_client\src\resources\manifest.xml plugins\clangd_client\src\resources\*.xrc" />
+					<Add after="zip -rq9 plugins\clangd_client\clangd_client.zip plugins\clangd_client\src\resources\images" />
+					<Add after="cmd /c copy plugins\clangd_client\clangd_client.zip devel31_64\share\CodeBlocks" />
+
+					<!-- Create the clangd_client.cbplugin file using the stripped dll -->
+					<Add after="cmd /c copy plugins\clangd_client\bin\clangd_client.dll plugins\clangd_client" />
+					<Add after="strip plugins\clangd_client\clangd_client.dll" />
+					<Add after="zip -jq9 plugins\clangd_client\clangd_client.cbplugin plugins\clangd_client\bin\clangd_client.dll  plugins\clangd_client\clangd_client.zip  plugins\clangd_client\documentation-install\*.txt" />
+					<Add after="cmd /c del plugins\clangd_client\clangd_client.dll" />
+
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

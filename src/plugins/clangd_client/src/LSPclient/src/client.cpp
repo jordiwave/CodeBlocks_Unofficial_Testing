@@ -924,6 +924,14 @@ bool ProcessLanguageClient::readJson(json &json)
     if (inputbuf.size())
         writeClientLog(wxString::Format(">>> readJson() len:%d:\n%s", length, inputbuf.c_str()) );
 
+    // remove any illegal utf8 chars
+    bool validData = DoValidateUTF8data(inputbuf);
+    if (not validData)
+    {
+        //message to log that data had illegal utf8 already written
+
+    }
+
     int retryCount = 0;
     while (++retryCount)
     {
@@ -935,7 +943,8 @@ bool ProcessLanguageClient::readJson(json &json)
         {
             wxString msg = wxString::Format(" >>> readJson() error:%s", e.what()) ;
             #if defined(cb_DEBUG)
-                Manager::Get()->GetLogManager()->DebugLogError(msg);
+                //-Manager::Get()->GetLogManager()->DebugLogError(msg);
+                Manager::Get()->GetLogManager()->DebugLog(msg);
             #endif
             if (retryCount == 1) // do only once
                 msg << "\n" << inputbuf;
@@ -1025,6 +1034,32 @@ bool ProcessLanguageClient::WriteHdr(const std::string &in)
     #endif
     return true;
 }//end WriteHdr()
+// ----------------------------------------------------------------------------
+bool ProcessLanguageClient::DoValidateUTF8data(std::string& data)
+// ----------------------------------------------------------------------------
+{
+    // convert string data to vector
+    //eg., const std::vector<int> charvect(json_str.begin(), json_str.end());
+    std::vector<int>utf8Vector(data.begin(), data.end());
+
+    vector<int>invalidLocs;
+    ValidateUTF8vector validateUTF8;
+    bool result = validateUTF8.validUtf8(utf8Vector,invalidLocs);
+    if (invalidLocs.size())
+    {
+        for (unsigned ii=0; ii<invalidLocs.size(); ++ii)
+        {
+            int invloc = invalidLocs[ii];
+            char invChar = data[invloc]; // **debugging**
+            data[invloc] = ' '; //clear the invalid utf8 char
+            wxString msg = "Error: Removed clangd response invalid utf8 char:";
+            msg << "\'" << invChar << "\'";
+            Manager::Get()->GetLogManager()->DebugLog(msg);
+        }
+    }
+    return result;
+
+}//end DoValidateUTF8data
 // ----------------------------------------------------------------------------
 void ProcessLanguageClient::OnLSP_Response(wxThreadEvent& threadEvent)
 // ----------------------------------------------------------------------------
@@ -2407,7 +2442,8 @@ void ProcessLanguageClient::LSP_DidChange(cbEditor* pEd)
     }
 
     // Assure text is UTF8 before handing to DidChange()
-    didChangeEvent.text = edText.ToUTF8();
+    didChangeEvent.text = edText;
+    // didChangeEvent.text = edText.ToUTF8(); Trying to find bad utf8 problem
     std::vector<TextDocumentContentChangeEvent> tdcce{didChangeEvent};
     DocumentUri docuri = DocumentUri(fileURI.c_str());
     // **debugging**

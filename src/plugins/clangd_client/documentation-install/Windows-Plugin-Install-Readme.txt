@@ -11,7 +11,7 @@ Windows Clangd-Client Plugin install process:
 3) Install the Clangd-Client Plugin using one of the following options, which are documneted later in this readme file:
     a) Install via the Plugin Manager
     b) Manaully install the plugin files
-3) Configure the Clangd-Client Plugin for use as follows:
+4) Configure the Clangd-Client Plugin for use as follows:
     a) Select the "MainMenu=>Settings->Editor..." menu
     b) In the list on the left click/select the "clangd_client" option.
     c) In the "C/C++ parser" tab change the "Specify clangd executable to use" to reference the clangd.exe you installed via step 1) above. 
@@ -26,21 +26,22 @@ Install Clangd-Client Plugin via the Plugin Manager
 1) Open the Plugin manager via the Code::Blocks "MainMenu=>Plugins=>Manage plugins..." menu
 2) In the Manage Plugin dialog do the following:
     a) Press the "Install new" button on the left
-    b) Specifiy the plugin "clangd_client.zip" that you downloaded
+    b) Specify the plugin "clangd_client.cbplugin"
     c) Once then plugin has installed you need to restart Code::Blocks for the Code::Blocks to work correctly with the plugin otherwise
        you may experience a crash when trying to configure the plugin.
 
 
 Manually Install Clangd-Client Plugin
 -------------------------------------
-1) Navigate to the downloaded file (clangd_client.zip) and unzip it to a temporary folder. DO NOT UNZIP in the same directory!!!
-2) Copy the unziped clangd_client.zip file to the Code::Blocks ...\share\CodeBlocks folder.
-3) Copy the unziped clangd_client.dll file to the Code::Blocks ...\share\Codeblocks\plugins folder
-4) Restart Code::Blocks.
+1) Make sure Code::Blocks is not running.
+2) Navigate to the directory where the downloaded file "clangd_client.cbplugin" is and unzip it to a temporary folder. DO NOT UNZIP in the same directory!!!
+3) Copy the unziped "clangd_client.zip" file to the Code::Blocks ...\share\CodeBlocks folder.
+4) Copy the unziped "clangd_client.dll" file to the Code::Blocks ...\share\Codeblocks\plugins folder
+5) Start Code::Blocks.
 
 Remove Clangd-Client Plugin via the Plugin Manager
 --------------------------------------------------
-1) Close any openned project or workspace's otherwise you may encounter a crash.
+1) Close any opened project or workspace's otherwise you may encounter a crash.
 2) Open the Plugin manager via the Code::Blocks "MainMenu=>Plugins=>Manage plugins..." menu
 3) In the Manage Plugin dialog do the following:
     a) In the plugin list select the "Clangd_Client" row

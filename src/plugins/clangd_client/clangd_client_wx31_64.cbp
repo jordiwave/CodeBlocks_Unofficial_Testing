@@ -2,14 +2,14 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Clangd_Client-uw (x64)" />
+		<Option title="Clangd_Client-wx31_64" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Clangd_Client-uw">
+			<Target title="Clangd_Client-wx31_64">
 				<Option output="bin/Clangd_Client" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="bin31_64" />
 				<Option object_output=".objs31_64" />
-				<Option external_deps="$(CODEBLOCKS)/libcodeblocks.a;" />
+				<Option external_deps="$(TARGET_DEVEL_DIR)/src/devel31_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose  /p cbDebug315" />
@@ -44,22 +44,28 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="$(TARGET_DEVEL_DIR)/src/output31_64" />
+					<Add directory="$(TARGET_DEVEL_DIR)/src/devel31_64" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="cmd /c @echo CODEBLOCKS: $(CODEBLOCKS)" />
-					<Add before="cmd /c @echo TARGET_DEVEL_DIR: $(TARGET_DEVEL_DIR)" />
-					<Add before="g++ --version" />
+					<!-- debugging - <Add before="cmd /c echo CODEBLOCKS: $(CODEBLOCKS)" /> -->
+					<!-- debugging - <Add before="cmd /c echo TARGET_DEVEL_DIR: $(TARGET_DEVEL_DIR)" /> -->
+					<!-- debugging - <Add before="cmd /c echo PROJECT_DIR: $(PROJECT_DIR)" /> -->
+					<!-- debugging - <Add before="g++ --version" /> -->
+
+					<!-- Create the clangd_client.zip file -->
+					<Add after="cmd /c if exist clangd_client.zip   del clangd_client.zip" />
 					<Add after="zip -jq9 clangd_client.zip src/resources/manifest.xml src/resources/*.xrc" />
-					<Add after="zip -r9  clangd_client.zip src/resources/images" />
-					<Add after="strip bin/clangd_client.dll" />
-					<Add after="zip -j9 clangd_client_tmp.zip bin/clangd_client.dll clangd_client.zip documentation-install/*.txt" />
-					<Add after="cmd /c del clangd_client.zip" />
-					<Add after="cmd /c ren clangd_client_tmp.zip clangd_client.zip" />
+					<Add after="zip -rq9 clangd_client.zip src/resources/images" />
+
+					<!-- Create the clangd_client.cbplugin file using the stripped dll -->
+					<Add after="cmd /c copy bin\clangd_client.dll" />
+					<Add after="strip clangd_client.dll" />
+					<Add after="zip -jq9 clangd_client.cbplugin clangd_client.dll  clangd_client.zip  documentation-install/*.txt" />
+					<Add after="cmd /c del clangd_client.dll" />
 					<Mode after="always" />
 				</ExtraCommands>
 				<Environment>
-					<Variable name="TARGET_DEVEL_DIR" value="D:\Andrew_Development\WorkingOnThese\AC-WindowsInstaller" />
+					<Variable name="TARGET_DEVEL_DIR" value="D:\Andrew_Development\Work_Installers\AC-WindowsInstaller" />
 					<Variable name="TARGET_DEVEL_DIR_PECAN" value="$(CODEBLOCKS)\..\.." />
 				</Environment>
 			</Target>

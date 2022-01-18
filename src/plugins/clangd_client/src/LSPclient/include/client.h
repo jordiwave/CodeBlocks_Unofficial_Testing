@@ -685,6 +685,7 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
     bool WriteHdr(const std::string &in);
     bool readJson(json &json) override;
     bool writeJson(json &json) override;
+    bool DoValidateUTF8data(std::string& buffer);
     //-void OnLSP_Response(wxCommandEvent& event);
     void OnLSP_Response(wxThreadEvent& event);
     void OnIDMethod(wxCommandEvent& event);
@@ -763,4 +764,86 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
     }
 
 };
+// ----------------------------------------------------------------------------
+class ValidateUTF8vector
+// ----------------------------------------------------------------------------
+{
+    public:
+    ValidateUTF8vector(){;}
+
+    bool validUtf8(std::vector<int>& data, vector<int>&badLocs)
+    {
+        for (int i = 0; i < int(data.size()); ++ i) {
+            // 0xxxxxxx
+            int bit1 = (data[i] >> 7) & 1;
+            if (bit1 == 0) continue;
+            // 110xxxxx 10xxxxxx
+            int bit2 = (data[i] >> 6) & 1;
+            if (bit2 == 0) /*return false;*/
+                {badLocs.push_back(i); continue;}
+            // 11
+            int bit3 = (data[i] >> 5) & 1;
+            if (bit3 == 0)
+            {
+                // 110xxxxx 10xxxxxx
+                if ((++ i) < int(data.size()))
+                {
+                    if (is10x(data[i]))
+                    {
+                        continue;
+                    }
+                    //return false;
+                    {badLocs.push_back(i); continue;}
+                }
+                else
+                {
+                    /*return false;*/
+                    badLocs.push_back(i); continue;
+                }
+            }
+            int bit4 = (data[i] >> 4) & 1;
+            if (bit4 == 0) {
+                // 1110xxxx 10xxxxxx 10xxxxxx
+                if (i + 2 < int(data.size())) {
+                    if (is10x(data[i + 1]) && is10x(data[i + 2])) {
+                        i += 2;
+                        continue;
+                    }
+                    /*return false;*/
+                    {badLocs.push_back(i); continue;}
+
+                }
+                else {
+                    /*return false;*/{badLocs.push_back(i); continue;}
+                }
+            }
+            int bit5 = (data[i] >> 3) & 1;
+            if (bit5 == 1) /*return false;*/{badLocs.push_back(i); continue;}
+
+            if (i + 3 < int(data.size()))
+            {
+                if (is10x(data[i + 1]) && is10x(data[i + 2]) && is10x(data[i + 3]))
+                {
+                    i += 3;
+                    continue;
+                }
+                /*return false;*/
+                {badLocs.push_back(i); continue;}
+            }
+            else
+            {
+                /*return false;*/badLocs.push_back(i); continue;
+            }
+        }
+        return true;
+    }//end validUtf8
+
+    private:
+    inline bool is10x(int a) {
+        int bit1 = (a >> 7) & 1;
+        int bit2 = (a >> 6) & 1;
+        return (bit1 == 1) && (bit2 == 0);
+    }
+}; //endClass ValidateUTF8vector
+
 #endif //LSP_CLIENT_H

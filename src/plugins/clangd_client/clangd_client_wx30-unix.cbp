@@ -39,6 +39,8 @@
 				</Linker>
 				<ExtraCommands>
 					<Add before="echo $(CODEBLOCKS)/.." />
+					<Add after="[ -e clangd_client.zip ] && rm clangd_client.zip" />
+					<Add after="[ -e cclangd_client.cbplugin ] && rm clangd_client.cbplugin" />
 					<Add after="zip -jq9 clangd_client.zip src/resources/manifest.xml src/resources/*.xrc" />
 					<Add after="zip -r9  clangd_client.zip src/resources/images" />
 					<Add after="zip -j9  clangd_client.cbplugin $(TARGET_OUTPUT_FILE) clangd_client.zip documentation-install/*.txt" />

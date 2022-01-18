@@ -2,7 +2,7 @@
 /src/devel*
 /src/output*
 /src/*.log
-/src/compile_commands.json
+compile_commands.json
 *.layout
 *.depend
 *.cache
@@ -29,3 +29,7 @@ windows_installer/codeblocks*.exe
 windows_installer/*.7z
 windows_installer/*.7z.*
 src/plugins/contrib/BrowseTracker/compile_commands.json
+src/plugins/clangd_client/compile_commands.json
+src/plugins/clangd_client/clangd_client.cbplugin
+src/plugins/clangd_client/clangd_client.zip
+src/plugins/clangd_client/bin/Clangd_Client.dll

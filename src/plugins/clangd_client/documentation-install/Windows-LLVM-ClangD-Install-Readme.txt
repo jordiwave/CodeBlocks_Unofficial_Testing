@@ -46,16 +46,50 @@ Windows Compiler Clangd/LLVM Pacakage Installer
 Due to the number of different compilers available for Windows not all of the compilers will have either/both the Clang or LLVM required files.
 
 If you want to install the specific package(s) for the Windows compiler you are using in order to use it's clangd.exe file please follow the 
-instructions below for the specific compiler you haev installed:
+instructions below for the specific compiler you have installed:
 
 MSYS2 Compiler - MinGW64
 -------------------------
-a) Install MSYS 2 clang packages via the msys2.exe bash shell:
+There are two main options to install the clangd.exe as follows:
+    1) The first option in order to  minimise disk space is to install the Clang extra tools using one of the following packages:
+        +------------------------------------------+------------------------+
+        |               Package                    | Clangd executable      |
+        +------------------------------------------+------------------------+
+        | mingw-w64-clang-x86_64-clang-tools-extra | clang64/bin/clangd.exe |
+        | mingw-w64-x86_64-clang-tools-extra       | mingw64/bin/clangd.exe |
+        +------------------------------------------+------------------------+
+
+       To intall the package do the following:
+        a)  Open the msys2.exe bash shell 
+        b) Run the following command:
+               pacman -S <Package name in the table above>
+    
+ OR
+    2) The second option is to intall the full Clang tool chain as follows:
+        a)  Open the msys2.exe bash shell 
+        b) Run the following command:
     pacman -S mingw-w64-clang-x86_64-toolchain
 
 MSYS2 Compiler - MinGW32
 -------------------------
-a) Install MSYS 2 clang packages via the msys2.exe bash shell:
+There are two main options to install the clangd.exe as follows:
+    1) The first option in order to  minimise disk space is to install the Clang extra tools using one of the following packages:
+        +------------------------------------------+------------------------+
+        |               Package                    | Clangd executable      |
+        +------------------------------------------+------------------------+
+        | mingw-w64-clang-i686-clang-tools-extra   | clang32/bin/clangd.exe |
+        | mingw-w64-i686-clang-tools-extra         | mingw32/bin/clangd.exe |
+        +------------------------------------------+------------------------+
+
+       To intall the package do the following:
+        a)  Open the msys2.exe bash shell 
+        b) Run the following command:
+               pacman -S <Package name in the table above>
+    
+ OR
+    2) The second option is to intall the full Clang tool chain as follows:
+        a)  Open the msys2.exe bash shell 
+        b) Run the following command:
     pacman -S mingw-w64-clang-i686-toolchain
 
 CYGWIN Compiler
