@@ -3,11 +3,11 @@ THESE INSTRUCTIONS NEED TO BE:
     2) CHECKED FOR INTERPRETATION AND READABILITY to ensure thAT THEY ARE EASY TO FOLLOW!!!!
 
 
-These notes are for developers wishing to build Code::Blocks from source on Unix/Linux without having 
-to install Code::Blocks.
+These notes are for developers wishing to build the Code::Blocks Debian deb files from source on Debian or a Debian based Linux OS 
+from source files without having to install Code::Blocks. 
 
-If you want to build Code::Blocks using the workspace/project files please use the Readme_Build_Linux_by_Workspace.txt file.
-If you want to build Code::Blocks Debian deb files please use the Readme_Build_Debian_deb_packages.txt file.
+If you want to build Code::Blocks using a make file please use the Readme_Build_Linux_by_Makefile.txt file.
+If you want to build Code::Blocks using the workspace/project files please use the Readme_Build_Linux_by_Workspace.txt
 
 Code::Blocks build instructions:
 --------------------------------
@@ -23,7 +23,7 @@ Requirements:
     7) Hunspell development environment
     8) Gamin development environment
     9) Optional: SVN and/or GIT.
-    10) Optional packages needed for building Debian deb files
+    10) Packages needed for building Debian deb files
     
     DO NOT USE ANY SNAP PACKAGES as the installed packages are sandboxed by default.
 
@@ -40,7 +40,7 @@ Requirements:
         sudo apt install -y libboost-dev libhunspell-dev libgamin-dev 
         # Optional step 9:
         sudo apt install -y subversion git
-        # Optional step 10:
+        # step 10:
         sudo apt install -y libbz2-dev debhelper cdbs
 
  
@@ -50,42 +50,19 @@ To build Code::Blocks:
     2) Make sure the source code directory does not have spaces or any non ASCII characters.
     3) In a terminal (e.g. bash) go to the top level folder you fetched the sources from SVN or GIT or the 
          directory you uncompressed the snapshot into.
+TBA: ./update_revision.sh          
     4) Run the following to configure the project files for your environment:
         ./bootstrap
 
         NOTE: This only needs to be done once.
-    5) Run the following to produce the makefile's for your environment:
-        ./configure --with-contrib-plugins=all
-        NOTE: This also only needs to be done once or if you make change to the build files used by the configure process.
-    6) Run the following to build Code::Blocks
-        make
-    7) Run the following to copy all of the relevant files into the install directory structure:
-        make install
-       
-       Note: depending on how you have configured the system you may need to run "make install" as root (sudo).
+    5) To configure for building the debian deb packages run the following script:
+        ./debian/setup_control.sh
+    6) Run the following to build Code::Blocks and create teh Debain deb files:
+        dpkg-buildpackage -us -uc
 
-
-    Other build options are:
-
-        ./configure --prefix=/usr --with-contrib-plugins=all,-help
-        make
-        make install
-
-        Where:
-            "--prefix=/usr" is where the "make install" will install the files. Use this with extreme caution.
-            "all" compiles all contrib plugins
-            "all,-help" compiles all contrib plugins except the help plugin
-            By default, no contrib plugins are compiled
-            Plugin names are (this list may be out of date, so you may need to lookup the plugin names manually) :
-                AutoVersioning, BrowseTracker, byogames, Cccc, CppCheck, cbkoders, codesnippets, codestat,
-                copystrings, Cscope, DoxyBlocks, dragscroll, EditorConfig, EditorTweaks, envvars, FileManager,
-                headerfixup, help, hexeditor, incsearch, keybinder, libfinder, MouseSap, NassiShneiderman,
-                ProjectOptionsManipulator, profiler, regex, ReopenEditor, rndgen, exporter, symtab,
-                ThreadSearch, ToolsPlus, Valgrind, wxsmith, wxsmithcontrib,wxsmithaui
 
     To rebuild Code::Blocks run the following commands:
-        make clean
-        make
+        TBA - unknown , please supply if known 
 
 NOTES:
 1) If the NassiShneiderman-plugin fails to build with a boost error then try the following:
@@ -122,5 +99,6 @@ In a command prompt, create or go to the folder you want the Code::Blocks SVN re
 
 
 OTHER PAGES:
---------------
+------------
 https://github.com/bluehazzard/codeblocks_sf/wiki/build_linux_mint_18
+https://forums.codeblocks.org/index.php/topic,23689.msg161532.html#msg161532

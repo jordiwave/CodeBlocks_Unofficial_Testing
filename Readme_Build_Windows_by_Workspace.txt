@@ -99,3 +99,7 @@ In a command prompt, create or go to the folder you want the Code::Blocks SVN re
     svn checkout https://svn.code.sf.net/p/codeblocks/code/trunk codeblocks-code
 
     git svn checkout http://svn.code.sf.net/p/codeblocks/code/trunk codeblocks-code
+
+OTHER PAGES:
+--------------
+https://github.com/bluehazzard/codeblocks_sf/wiki/build_windows_mingw64

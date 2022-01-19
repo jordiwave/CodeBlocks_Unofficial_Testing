@@ -49,7 +49,7 @@
 				<Variable name="WX_CONFIG" value="wx-config --toolkit=gtk3" />
 				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_VERSION" value="30" />
-				<!-- Examples for GTK2 and GTK3 are blow.
+				<!-- Examples for GTK2 and GTK3 are below.
 				<Variable name="WX_CONFIG__GTK2" value="wx-config --version=2.0 --toolkit=gtk2" />
 				<Variable name="PKG_CONFIG_GTK_VERSION__GTK2" value="2.0" />
 				<Variable name="WX_CONFIG__GTK3" value="wx-config --version=3.0 --toolkit=gtk3" />

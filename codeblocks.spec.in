@@ -273,7 +273,8 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 
 %files
 %defattr(-,root,root)
-%doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
+# Originally: %doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
+%doc Readme_Build_Debian_deb_packages.txt Readme_Build_Linux_by_Makefile.txt Readme_Build_Linux_by_Workspace.txt Readme_Build_Windows_by_Workspace.txt Readme_License_GPL3.TXT README_Release_Checklist.txt
 
 %{_bindir}/codeblocks
 %{_bindir}/cb_console_runner
@@ -327,7 +328,8 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %files libs
 %defattr(-,root,root)
 %{_libdir}/libcodeblocks.so.*
-%doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
+# Originally: %doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
+%doc Readme_Build_Debian_deb_packages.txt Readme_Build_Linux_by_Makefile.txt Readme_Build_Linux_by_Workspace.txt Readme_Build_Windows_by_Workspace.txt Readme_License_GPL3.TXT README_Release_Checklist.txt
 
 %files contrib
 %defattr(-,root,root)
@@ -425,14 +427,16 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{pkgdatadir}/SpellChecker/*
 %endif
 %{_mandir}/man1/*snippets*
-%doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
+# Originally: %doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
+%doc Readme_Build_Debian_deb_packages.txt Readme_Build_Linux_by_Makefile.txt Readme_Build_Linux_by_Workspace.txt Readme_Build_Windows_by_Workspace.txt Readme_License_GPL3.TXT README_Release_Checklist.txt
 %{_datadir}/metainfo/codeblocks-contrib.metainfo.xml
 
 %files contrib-libs
 %defattr(-,root,root)
 %{_libdir}/libwxsmithlib.so.*
 %{pkglibdir}/wxContribItems/*.so.*
-%doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
+# Originally: %doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
+%doc Readme_Build_Debian_deb_packages.txt Readme_Build_Linux_by_Makefile.txt Readme_Build_Linux_by_Workspace.txt Readme_Build_Windows_by_Workspace.txt Readme_License_GPL3.TXT README_Release_Checklist.txt
 
 %files devel
 %defattr(-,root,root)

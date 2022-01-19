@@ -7,6 +7,7 @@ These notes are for developers wishing to build Code::Blocks from source on Unix
 Code::Blocks workspace using an existing installed version of Code::Blocks.
 
 If you want to build Code::Blocks using a make file please use the Readme_Build_Linux_by_Makefile.txt file.
+If you want to build Code::Blocks Debian deb files please use the Readme_Build_Debian_deb_packages.txt file.
 
 Code::Blocks build instructions:
 --------------------------------
@@ -22,10 +23,12 @@ Requirements:
     7) Hunspell development environment
     8) Gamin development environment
     9) Optional: SVN and/or GIT.
+    10) Optional packages needed for building Debian deb files
+
     
     DO NOT USE ANY SNAP PACKAGES as the installed packages are sandboxed by default.
 
-    To install items 2 through 7 required packages the following are the Ubuntu/Linux Mint commands to run:
+    To install the items above the following are the commands to use for Ubuntu/Xubuntu/Linux Mint:
         # Step 2:
         sudo apt install -y wx3.0-headers wx-common libwxgtk3.0-gtk3-0v5 libwxgtk3.0-gtk3-dev libwxbase3.0-dev
         # Step 3:
@@ -36,8 +39,12 @@ Requirements:
         sudo apt install -y libgtk-3-dev
         # Step 6,7 & 8:
         sudo apt install -y libboost-dev libhunspell-dev libgamin-dev 
-        # Optional  step 9:
+        # Optional step 9:
         sudo apt install -y subversion git
+        # Optional step 10:
+        sudo apt install -y libbz2-dev debhelper cdbs
+        sudo apt install -y 
+
 
 To build Code::Blocks:
     1) Grab the source code from https://sourceforge.net/p/codeblocks/code/HEAD/tree/ via SVN or via GIT or by downloading a snapshot.
@@ -54,7 +61,16 @@ To build Code::Blocks:
         If you cannot find it press F2 to open or close the "Logs & others" view. Once it is open select the 
         "Build Log" tab, but if it is not available then right clock on an existing tab and then goto toggle \
         in the pop up context menu and click on "Build log"
-    
+   
+    NOTES:
+    1) If the NassiShneiderman-plugin fails to build with a boost error then try the following:
+        a) Check you have install the libboost-dev package by running the following command:
+            dpkg -l | grep libboost | grep dev
+
+        b) Explicitly set the boost-libdirby adding the following line to the configure-line above:
+            "--with-boost-libdir=LIB_DIR"
+           NOTE: Depending on your system, LIB_DIR might be "/usr/lib" or "/usr/lib64".
+
 Update Code::Blocks Build directories:
     Once you have successfully built Code::Blocks you will need to run a script file to update the devel and output 
       directories to copy the needed files. To do this run the file below from the src directory:
