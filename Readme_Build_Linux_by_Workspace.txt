@@ -42,9 +42,7 @@ Requirements:
         # Optional step 9:
         sudo apt install -y subversion git
         # Optional step 10:
-        sudo apt install -y libbz2-dev debhelper cdbs
-        sudo apt install -y 
-
+        sudo apt install -y libbz2-dev debhelper cdbs  xsltproc
 
 To build Code::Blocks:
     1) Grab the source code from https://sourceforge.net/p/codeblocks/code/HEAD/tree/ via SVN or via GIT or by downloading a snapshot.
