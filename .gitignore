@@ -25,6 +25,7 @@ Makefile.in
 /config.guess
 /config.sub
 *.cbTemp
+*.o
 windows_installer/codeblocks*.exe
 windows_installer/*.7z
 windows_installer/*.7z.*
