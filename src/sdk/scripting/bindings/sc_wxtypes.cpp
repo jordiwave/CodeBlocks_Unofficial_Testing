@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12491 $
+ * $Id: sc_wxtypes.cpp 12491 2021-08-05 23:50:26Z fuscated $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/scripting/bindings/sc_wxtypes.cpp $
  */
 
 #include "sdk_precomp.h"

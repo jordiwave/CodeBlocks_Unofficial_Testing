@@ -20691,7 +20691,7 @@ svn1961:  Changed enabled state for a checkbox.
 
 2006-02-07 13:36  thomasdenk
 
-svn1960:  Added $HeadURL: file:///svn/p/codeblocks/code/trunk/ChangeLog $ substitution to svn:keywords property
+svn1960:  Added $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/ChangeLog $ substitution to svn:keywords property
 
 2006-02-07 13:15  thomasdenk
 
@@ -20788,7 +20788,7 @@ svn1940:  Comment fix.
 
 2006-02-03 15:51  thomasdenk
 
-svn1939:  Removed $Date: 2011-11-20 10:44:50 +0000 (Sun, 20 Nov 2011) $ keyword, added standard copyright header
+svn1939:  Removed $Date: 2011-11-20 21:44:50 +1100 (Sun, 20 Nov 2011) $ keyword, added standard copyright header
 	  where it was missing.
 
 2006-02-03 09:46  mandrav

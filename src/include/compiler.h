@@ -283,6 +283,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         virtual void PostRegisterCompilerSetup() ;
         /** @brief Check if the compiler is actually valid (installed). */
         virtual bool IsValid();
+
         /** @brief Check if the supplied string is a compiler warning/error */
         virtual CompilerLineType CheckForWarningsAndErrors(const wxString& line);
         /** @brief Returns warning/error filename. Use it after a call to CheckForWarningsAndErrors() */

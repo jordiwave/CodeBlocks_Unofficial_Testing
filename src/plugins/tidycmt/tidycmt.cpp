@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12279 $
+ * $Id: tidycmt.cpp 12279 2020-12-28 16:57:04Z mortenmacfly $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/tidycmt/tidycmt.cpp $
  */
 
 #include <sdk.h> // Code::Blocks SDK

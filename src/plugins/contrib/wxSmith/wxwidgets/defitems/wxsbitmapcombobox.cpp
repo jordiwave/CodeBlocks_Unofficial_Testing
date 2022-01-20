@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12656 $
+* $Id: wxsbitmapcombobox.cpp 12656 2022-01-16 09:56:14Z wh11204 $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsbitmapcombobox.cpp $
 */
 
 
@@ -289,7 +289,7 @@ wxString    ss, tt;
 
 // a "," separates the image index from the text of the item
 
-    i = ss.Find(_(","));
+    i = ss.Find(",");
 
 // if a "," was found, parse the index from the text
 // if no ",", then no index and the entire string is text

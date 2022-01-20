@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12662 $
+ * $Id: compilergcc.cpp 12662 2022-01-19 21:23:32Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/compilergcc/compilergcc.cpp $
  */
 
 #include <sdk.h>
@@ -322,17 +322,8 @@ CompilerGCC::~CompilerGCC()
 {
 }
 
-wxStopWatch m_AppStartupTimerCompilerGCC;
 void CompilerGCC::OnAttach()
 {
-LogManager *log = Manager::Get()->GetLogManager();
-
-long startuptime = m_AppStartupTimerCompilerGCC.Time();
-log->Log(wxString::Format(_("============> CompilerGCC::OnAttach() L 331 %ld.%03ld seconds <============"),
-                                        startuptime/1000,
-                                        startuptime%1000
-                      ));
-
     // reset all vars
     m_RealTargetsStartIndex = 0;
     m_RealTargetIndex = 0;
@@ -367,13 +358,7 @@ log->Log(wxString::Format(_("============> CompilerGCC::OnAttach() L 331 %ld.%03
     for (int i = 0; i < maxTargetInMenus; ++i)
         idMenuSelectTargetOther[i] = wxNewId();
 
-startuptime = m_AppStartupTimerCompilerGCC.Time();
-log->Log(wxString::Format(_("============> CompilerGCC::OnAttach() L 371 %ld.%03ld seconds <============"), startuptime/1000, startuptime%1000));
-
     DoRegisterCompilers();
-
-startuptime = m_AppStartupTimerCompilerGCC.Time();
-log->Log(wxString::Format(_("============> CompilerGCC::OnAttach() L 376 %ld.%03ld seconds <============"), startuptime/1000, startuptime%1000));
 
     AllocProcesses();
 
@@ -461,9 +446,6 @@ log->Log(wxString::Format(_("============> CompilerGCC::OnAttach() L 376 %ld.%03
             ScriptBindings::gBuildLogId = -1;
     }
 
-    // Complete any compiler set-up that requires access to virtual functions
-    CompilerFactory::PostRegisterCompilerSetup();
-
     // register event sink
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,         new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectActivated));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN,             new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectLoaded));
@@ -472,9 +454,6 @@ log->Log(wxString::Format(_("============> CompilerGCC::OnAttach() L 376 %ld.%03
     Manager::Get()->RegisterEventSink(cbEVT_WORKSPACE_CLOSING_COMPLETE, new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnWorkspaceClosed));
 
     Manager::Get()->RegisterEventSink(cbEVT_COMPILE_FILE_REQUEST,     new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnCompileFileRequest));
-
-startuptime = m_AppStartupTimerCompilerGCC.Time();
-log->Log(wxString::Format(_("============> CompilerGCC::OnAttach() L 474 %ld.%03ld seconds <============"), startuptime/1000, startuptime%1000));
 }
 
 void CompilerGCC::OnRelease(bool appShutDown)
@@ -945,10 +924,6 @@ void CompilerGCC::DoRegisterCompilers()
     if (platform::windows || platform::Linux || nonPlatComp)
         CompilerFactory::RegisterCompiler(new CompilerGNUARM);
 
-LogManager *log = Manager::Get()->GetLogManager();
-long startuptime = m_AppStartupTimerCompilerGCC.Time();
-log->Log(wxString::Format(_("============> CompilerGCC::DoRegisterCompilers() L 946 %ld.%03ld seconds <============"), startuptime/1000, startuptime%1000));
-
     // register pure XML compilers
     // user paths first
     wxDir dir;
@@ -984,9 +959,6 @@ log->Log(wxString::Format(_("============> CompilerGCC::DoRegisterCompilers() L 
             ok = dir.GetNext(&filename);
         }
     }
-startuptime = m_AppStartupTimerCompilerGCC.Time();
-log->Log(wxString::Format(_("============> CompilerGCC::DoRegisterCompilers() L 983 %ld.%03ld seconds <============"), startuptime/1000, startuptime%1000));
-
     for (size_t i = 0; i < compilers.GetCount(); ++i)
     {
         wxXmlDocument compiler;
@@ -1018,28 +990,15 @@ log->Log(wxString::Format(_("============> CompilerGCC::DoRegisterCompilers() L 
                     val = platform::Unix;
             }
             if (val)
-            {
-startuptime = m_AppStartupTimerCompilerGCC.Time();
-log->Log(wxString::Format(_("============> CompilerGCC::DoRegisterCompilers() L 1019 %ld.%03ld seconds for %s <============"), startuptime/1000, startuptime%1000,compiler.GetRoot()->GetAttribute(wxT("name")) ));
-
                 CompilerFactory::RegisterCompiler(
                                    new CompilerXML(compiler.GetRoot()->GetAttribute(wxT("name"), wxEmptyString),
                                                    compiler.GetRoot()->GetAttribute(wxT("id"), wxEmptyString),
                                                    compilers[i]));
             }
         }
-    }
-startuptime = m_AppStartupTimerCompilerGCC.Time();
-log->Log(wxString::Format(_("============> CompilerGCC::DoRegisterCompilers() L 1029 %ld.%03ld seconds <============"), startuptime/1000, startuptime%1000));
 
     // register (if any) user-copies of built-in compilers
     CompilerFactory::RegisterUserCompilers();
-
-    // Complete any compiler set-up that requires access to virtual functions
-    CompilerFactory::PostRegisterCompilerSetup();
-
-startuptime = m_AppStartupTimerCompilerGCC.Time();
-log->Log(wxString::Format(_("============> CompilerGCC::DoRegisterCompilers() L 1035 %ld.%03ld seconds <============"), startuptime/1000, startuptime%1000));
 }
 
 const wxString& CompilerGCC::GetCurrentCompilerID()
@@ -1661,6 +1620,7 @@ void CompilerGCC::UpdateProjectTargets(cbProject* project)
 
     // actually rebuild menu and combo
     DoRecreateTargetMenu();
+    m_pTbar->Fit();
 }
 
 wxString CompilerGCC::GetTargetString(int index)

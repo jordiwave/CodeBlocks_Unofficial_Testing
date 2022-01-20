@@ -5,7 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (C) 2006, Paolo Gava
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: chartpoints.h 7947 2012-04-28 10:01:45Z mortenmacfly $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

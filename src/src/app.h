@@ -179,7 +179,6 @@ class CodeBlocksApp : public wxApp
 #endif
         int m_BatchExitCode;
 
-        wxStopWatch m_AppStartupTimer;
         DECLARE_EVENT_TABLE()
 };
 

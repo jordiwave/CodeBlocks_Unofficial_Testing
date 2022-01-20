@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12640 $
+ * $Id: pluginmanager.cpp 12640 2022-01-10 22:46:54Z pecanh $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/pluginmanager.cpp $
  */
 
 #include "sdk_precomp.h"

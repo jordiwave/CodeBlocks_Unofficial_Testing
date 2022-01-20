@@ -8,7 +8,7 @@
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: keybinder.cpp 12304 2021-03-16 23:28:31Z fuscated $
 
 // Modified Keybinder for CodeBlocks KeyBnder v2.0 2019/04/8
 

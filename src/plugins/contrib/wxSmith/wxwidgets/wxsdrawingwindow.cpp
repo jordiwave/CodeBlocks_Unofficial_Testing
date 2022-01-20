@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 11086 $
+* $Id: wxsdrawingwindow.cpp 11086 2017-06-06 22:41:44Z fuscated $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxsdrawingwindow.cpp $
 */
 
 #include "wxsdrawingwindow.h"

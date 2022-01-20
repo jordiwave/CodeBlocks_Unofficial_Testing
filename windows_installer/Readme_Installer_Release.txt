@@ -9,7 +9,7 @@ https://sourceforge.net/projects/unofficial-cb-installers/
 
 C::B exe/dll changed/update highlights compared to the last nightly SVN 12655 release (16-Jan-2021):
 ====================================================================================================
-    1. Incorporated SVN changes up to and including SVN 12661. See https://sourceforge.net/p/codeblocks/code/12661/log/ for change info.
+    1. Incorporated SVN changes up to and including SVN 12664. See https://sourceforge.net/p/codeblocks/code/12664/log/ for change info.
     2. Does not include the CBFortan Plugin or other plugins that are SVN externals.
     3. Has auto-detect/auto add GDB support when options*.xml include GDB info. (SF Ticket 1114)
     4. Auto-detect POP up condition on startup has changed. After initial install will only pop up if the default compiler has issues. (SF Ticket 1117)

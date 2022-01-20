@@ -62,7 +62,6 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="`$(WX_CONFIG) --cflags`" />
 					<Add option="`pkg-config gdk-$(PKG_CONFIG_GTK_VERSION) --cflags`" />
 					<Add option="-D__WX__" />
 					<Add option="-DGTK" />
@@ -492,14 +491,16 @@
 			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;scintilla;Compiler depslib;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="-Wall" />  <!-- was -Wall , but slows the build down -->
+			<Add option="-Wall" />
+			<Add option="-std=c90" />
 			<Add option="-fPIC" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
 			<Add option="`$(WX_CONFIG) --cflags`" />
-			<Add option="-std=c++17" />
+			<Add option="`pkg-config --cflags gtk+-$(PKG_CONFIG_GTK_VERSION)`" />
+			<Add option="-std=c++11" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
 			<Add directory="sdk/wxscintilla/include" />
@@ -507,6 +508,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs std,aui,propgrid`" />
+			<Add option="`pkg-config --libs gtk+-$(PKG_CONFIG_GTK_VERSION)`" />
 			<Add option="-Wl,--no-undefined" />
 			<Add directory="devel30" />
 		</Linker>
@@ -1700,18 +1702,6 @@
 		<Unit filename="plugins/compilergcc/resources/compilers/compiler_dmd.xml">
 			<Option target="Compiler" />
 		</Unit>
-		<Unit filename="plugins/compilergcc/resources/compilers/compiler_gcc-TDM-32.xml">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/resources/compilers/compiler_gcc-TDM-64.xml">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/resources/compilers/compiler_gcc-mingw32.xml">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/resources/compilers/compiler_gcc-mingw64.xml">
-			<Option target="Compiler" />
-		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/compiler_ldc.xml">
 			<Option target="Compiler" />
 		</Unit>
@@ -1818,18 +1808,6 @@
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_g95.xml">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/resources/compilers/options_gcc-TDM-32.xml">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/resources/compilers/options_gcc-TDM-64.xml">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/resources/compilers/options_gcc-mingw32.xml">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/resources/compilers/options_gcc-mingw64.xml">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_gcc.xml">

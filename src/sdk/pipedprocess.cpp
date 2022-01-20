@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12516 $
+ * $Id: pipedprocess.cpp 12516 2021-08-15 16:35:46Z bluehazzard $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/pipedprocess.cpp $
  */
 
 #include "sdk_precomp.h"

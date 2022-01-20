@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id$
+// RCS-ID: $Id: snippetitemdata.cpp 10362 2015-07-26 08:13:33Z jenslody $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"

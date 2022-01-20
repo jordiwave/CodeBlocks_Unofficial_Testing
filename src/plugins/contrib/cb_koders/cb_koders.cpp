@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12655 $
+ * $Id: cb_koders.cpp 12655 2022-01-15 20:46:32Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/cb_koders/cb_koders.cpp $
  */
 
 #include "sdk.h" // Code::Blocks SDK

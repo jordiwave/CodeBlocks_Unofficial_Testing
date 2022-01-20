@@ -7,7 +7,7 @@
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: keybinder.h 12165 2020-06-01 15:58:11Z pecanh $
 
 // Modified Keybinder for CodeBlocks KeyBnder v2.0 2019/04/8
 

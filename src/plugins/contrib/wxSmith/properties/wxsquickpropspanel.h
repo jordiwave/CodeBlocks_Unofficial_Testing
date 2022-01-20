@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 11383 $
+* $Id: wxsquickpropspanel.h 11383 2018-04-29 15:36:24Z fuscated $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/properties/wxsquickpropspanel.h $
 */
 
 #ifndef WXSQUICKPROPSPANEL_H

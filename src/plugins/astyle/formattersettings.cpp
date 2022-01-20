@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 11443 $
+ * $Id: formattersettings.cpp 11443 2018-08-12 06:23:37Z ollydbg $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/astyle/formattersettings.cpp $
  */
 
 #include <sdk.h>

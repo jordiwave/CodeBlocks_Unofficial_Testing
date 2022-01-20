@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 10927 $
+ * $Id: mainframe.cpp 10927 2016-12-04 06:14:19Z mortenmacfly $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/tools/cb_share_config/mainframe.cpp $
  */
 
 #include "mainframe.h"

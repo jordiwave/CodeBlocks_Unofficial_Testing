@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with HexEditor. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12602 $
+* $Id: HexEditLineBuffer.cpp 12602 2021-12-21 07:26:04Z wh11204 $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/HexEditor/HexEditLineBuffer.cpp $
 */
 
 #include "HexEditLineBuffer.h"

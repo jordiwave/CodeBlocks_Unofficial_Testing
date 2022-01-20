@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by: Jens Lody
 // Created:     2007-12-11
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: scrollingdialog.cpp 12582 2021-12-15 09:28:38Z wh11204 $
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////

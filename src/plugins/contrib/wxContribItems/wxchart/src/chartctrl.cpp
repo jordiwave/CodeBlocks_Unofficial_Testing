@@ -5,7 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (C) 2006, Paolo Gava
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: chartctrl.cpp 12250 2020-12-22 14:39:11Z fuscated $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

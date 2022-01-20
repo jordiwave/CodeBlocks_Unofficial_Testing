@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id$
+// RCS-ID: $Id: BrowseTracker.h 12539 2021-11-27 22:53:18Z pecanh $
 
 
 #ifndef BROWSETRACKER_H_INCLUDED
