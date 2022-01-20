@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12660 $
- * $Id: projectmanagerui.h 12660 2022-01-17 23:47:00Z bluehazzard $
+ * $Revision: 12665 $
+ * $Id: projectmanagerui.h 12665 2022-01-20 21:47:40Z bluehazzard $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/projectmanagerui.h $
  */
 
@@ -21,13 +21,17 @@ class ProjectManagerUI;
  */
 class TreeDNDObject : public wxDataObjectSimple
 {
-
+    // Data object to store current running codeblocks PID
     struct DNDData {
         wxThreadIdType m_mainPID;
     };
 
     public:
-    TreeDNDObject() : wxDataObjectSimple(wxDataFormat("ProjectTreeObject"))
+
+    // With c++17 we could use inline... But this should be fine too for a "fake" static member variable
+    static wxDataFormat GetDnDDataFormat() { static wxDataFormat format("ProjectTreeObject"); return format; }
+
+    TreeDNDObject() : wxDataObjectSimple(GetDnDDataFormat())
     {
 
     }
