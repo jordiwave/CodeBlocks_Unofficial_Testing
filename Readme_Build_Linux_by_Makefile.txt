@@ -37,7 +37,7 @@ Requirements:
         # Step 5:
         sudo apt install -y libgtk-3-dev
         # Step 6,7 & 8:
-        sudo apt install -y libboost-dev libhunspell-dev libgamin-dev 
+        sudo apt install -y libboost-dev libboost-system-dev libhunspell-dev libgamin-dev 
         # Optional step 9:
         sudo apt install -y subversion git
         # Optional step 10:
