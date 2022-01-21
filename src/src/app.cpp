@@ -556,8 +556,6 @@ void CodeBlocksApp::InitLocale()
 
 bool CodeBlocksApp::OnInit()
 {
-    m_AppStartupTimer.Start();
-
 #ifdef __WXMSW__
     InitCommonControls();
 #endif

@@ -1,4 +1,4 @@
-Updated for the release on 19-Jan-2022.
+Updated for the release on 21-Jan-2022.
 
 The installers include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official C::B 20.03 or nightly builds.
 The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
