@@ -92,13 +92,32 @@ have not build wxWidget correctly or built the version you need/want (USE WITH E
 
 Fetch Code::Blocks Source Code
 ------------------------------
-In a command prompt, create or go to the folder you want the Code::Blocks SVN repository installed in and run one of the following command:
+In a command prompt, create or go to the folder you want the Code::Blocks SVN repository installed in 
+and run the following command:
     svn checkout https://svn.code.sf.net/p/codeblocks/code/trunk codeblocks-code
 
-    git svn checkout http://svn.code.sf.net/p/codeblocks/code/trunk codeblocks-code
+
+NOTES:
+1) If you use the svn command above on Windows and want to use the files on Linux then you will need to
+    edit the appropriate file in the list  below for your SVN installation as follows:
+        a) Remove the # comment at the beginning of the following option:
+            enable-auto-props = yes
+        b) Add the following line in the [auto-props] section:
+            * = svn:eol-style=AS-IS
+    Potential files:
+        C:\msys64\home\<username>\.subversion\config
+        C:\Users\<username>\.subversion\config
+        C:\Users\<username>\AppData\Roaming\Subversion\config
+2) I do not recommend the following as you may encounter issues with EOL if you transfer the files to Linux or if you 
+    compare against the SF soruce snapshot as the SVN keywords are not expanded:
+       git svn checkout http://svn.code.sf.net/p/codeblocks/code/trunk codeblocks-code
+    
+3) I also do NOT recommend using TortoiseSVN on Windows to do the initial checkout as you may encounter issues with 
+     EOL if you transfer the files to Linux
 
 
-OTHER PAGES:
-------------
+
+WIP OTHER PAGES:
+----------------
 https://github.com/bluehazzard/codeblocks_sf/wiki/build_linux_mint_18
 https://forums.codeblocks.org/index.php/topic,23689.msg161532.html#msg161532
