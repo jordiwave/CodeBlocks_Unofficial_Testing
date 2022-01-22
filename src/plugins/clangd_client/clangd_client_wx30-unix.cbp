@@ -40,6 +40,18 @@
 					<Add after="zip -jq9 clangd_client.zip src/resources/manifest.xml src/resources/*.xrc" />
 					<Add after="zip -rq9 clangd_client.zip src/resources/images" />
 					<Add after="zip -jq9 clangd_client.cbplugin $(TARGET_OUTPUT_FILE) clangd_client.zip documentation-install/*.txt" />
+                    
+					<!-- Create the clangd_client.cbplugin file using the stripped dll -->
+					<!-- clangd_client.cbplugin is NOT BUILT BY DEFAULT as requested by PECAN
+						<Add after='if [ -e clangd_client.cbplugin ] ; then  rm clangd_client.cbplugin; fi;'/>
+						<Add after='cp $(TARGET_OUTPUT_FILE) .' />
+						<Add after='strip libclangd_client.so' />
+						<Add after='zip -jq9 clangd_client.cbplugin libclangd_client.so' />
+						<Add after='zip -jq9 clangd_client.cbplugin clangd_client.zip' />
+						<Add after='zip -jq9 clangd_client.cbplugin documentation-install/*.txt' />
+						<Add after='rm libclangd_client.so' />
+					-->
+                    
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

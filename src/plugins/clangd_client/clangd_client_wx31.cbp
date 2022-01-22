@@ -58,11 +58,14 @@
 					<Add after='cmd /c "cd src\resources &amp;&amp; zip -rq9 ..\..\clangd_client.zip images"' />
 
 					<!-- Create the clangd_client.cbplugin file using the stripped dll -->
-					<Add after="cmd /c if exist clangd_client.cbplugin del clangd_client.cbplugin" />
-					<Add after="cmd /c copy bin\clangd_client.dll" />
-					<Add after="strip clangd_client.dll" />
-					<Add after="zip -jq9 clangd_client.cbplugin clangd_client.dll  clangd_client.zip  documentation-install/*.txt" />
-					<Add after="cmd /c del clangd_client.dll" />
+					<!-- clangd_client.cbplugin is NOT BUILT BY DEFAULT as requested by PECAN
+						<Add after="cmd /c if exist clangd_client.cbplugin del clangd_client.cbplugin" />
+						<Add after="cmd /c copy bin\clangd_client.dll" />
+						<Add after="strip clangd_client.dll" />
+						<Add after="zip -jq9 clangd_client.cbplugin clangd_client.dll  clangd_client.zip  documentation-install/*.txt" />
+						<Add after="cmd /c del clangd_client.dll" />
+					-->
+
 					<Mode after="always" />
 				</ExtraCommands>
 				<Environment>
