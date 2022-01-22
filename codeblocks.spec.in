@@ -282,6 +282,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{plugindir}/libabbreviations.so
 %{plugindir}/libAstyle.so
 %{plugindir}/libautosave.so
+%{plugindir}/libclangdclient.so
 %{plugindir}/libclasswizard.so
 %{plugindir}/libcodecompletion.so
 %{plugindir}/libcompiler.so
@@ -311,6 +312,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{pkgdatadir}/Astyle.zip
 %{pkgdatadir}/abbreviations.zip
 %{pkgdatadir}/autosave.zip
+%{pkgdatadir}/clangdclient.zip
 %{pkgdatadir}/classwizard.zip
 %{pkgdatadir}/codecompletion.zip
 %{pkgdatadir}/compiler.zip
