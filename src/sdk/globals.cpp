@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12607 $
- * $Id: globals.cpp 12607 2021-12-23 08:50:04Z wh11204 $
+ * $Revision: 12671 $
+ * $Id: globals.cpp 12671 2022-01-21 12:34:25Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/globals.cpp $
  */
 
@@ -1531,42 +1531,54 @@ namespace platform
     windows_version_t cb_get_os()
     {
         if (!platform::windows)
-        {
             return winver_NotWindows;
-        }
-        else
+
+        windows_version_t version = winver_UnknownWindows;
+
+        int Major = 0;
+        int Minor = 0;
+        int Micro = 0;
+#if wxCHECK_VERSION(3, 1, 1)
+        switch (wxGetOsVersion(&Major, &Minor, &Micro))
+#else
+        switch (wxGetOsVersion(&Major, &Minor))
+#endif
         {
+            case wxOS_WINDOWS_9X:
+                version = winver_Windows9598ME;
+            break;
+            case wxOS_WINDOWS_NT:
+                switch (Major)
+                {
+                case 5:
+                    if (Minor == 0)
+                        version = winver_WindowsNT2000;
+                    else if (Minor == 1)
+                        version = winver_WindowsXP;
+                    else if (Minor == 2)
+                        version = winver_WindowsServer2003;
 
-            int famWin95 = wxOS_WINDOWS_9X;
-            int famWinNT = wxOS_WINDOWS_NT;
+                break;
+                case 6:
+                    if (Minor == 0)
+                        version = winver_WindowsVista;
+                    else if (Minor == 1)
+                        version = winver_Windows7;
+                    else if ((Minor == 2) || (Minor == 3))
+                        version = winver_Windows8;
 
-            int Major = 0;
-            int Minor = 0;
-            int family = wxGetOsVersion(&Major, &Minor);
+                break;
+                case 10:
+                    if (Minor == 0)
+                        version = (Micro < 22000) ? winver_Windows10 : winver_Windows11;
+                }
 
-            if (family == famWin95)
-                 return winver_Windows9598ME;
-
-            if (family == famWinNT)
-            {
-                if (Major == 5 && Minor == 0)
-                    return winver_WindowsNT2000;
-
-                if (Major == 5 && Minor == 1)
-                    return winver_WindowsXP;
-
-                if (Major == 5 && Minor == 2)
-                    return winver_WindowsServer2003;
-
-                if (Major == 6 && Minor == 0)
-                    return winver_WindowsVista;
-
-                if (Major == 6 && Minor == 1)
-                    return winver_Windows7;
-            }
-
-            return winver_UnknownWindows;
+            break;
+            default:
+                ;
         }
+
+        return version;
     }
 
     windows_version_t WindowsVersion()

@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12663 $
- * $Id: compiler.cpp 12663 2022-01-20 12:30:00Z wh11204 $
+ * $Revision: 12667 $
+ * $Id: compiler.cpp 12667 2022-01-21 09:42:17Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/compiler.cpp $
  */
 
@@ -1643,11 +1643,9 @@ class ExecProcess : public wxProcess
 
 // Emulates wxExecute() in synchronous mode using asynchronous mode
 
-long Compiler::Execute(const wxString &cmd, wxArrayString &output)
+long Compiler::Execute(const wxString& cmd, wxArrayString& output)
 {
     wxLogNull logNo; // do not warn if execution fails
-
-    output.Clear();
 
     ExecProcess process;
     process.Redirect(); // capture task input/output streams
@@ -1679,7 +1677,7 @@ long Compiler::Execute(const wxString &cmd, wxArrayString &output)
 
 #else // __WXMSW__
 
-long Compiler::Execute(const wxString &cmd, wxArrayString &output)
+long Compiler::Execute(const wxString& cmd, wxArrayString& output)
 {
     wxLogNull logNo; // do not warn if execution fails
     int flags = wxEXEC_SYNC;

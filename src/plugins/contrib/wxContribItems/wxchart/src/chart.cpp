@@ -5,7 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (C) 2006, Paolo Gava
-// RCS-ID:      $Id: chart.cpp 9270 2013-08-18 05:22:02Z mortenmacfly $
+// RCS-ID:      $Id: chart.cpp 12668 2022-01-21 10:28:31Z wh11204 $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -119,7 +119,7 @@ ChartValue wxChart::GetMaxX() const
     if ( valRes == 0 )
         valRes = 10;
 
-	return ( valRes );
+    return valRes;
 }
 
 //+++-S-cf-------------------------------------------------------------------

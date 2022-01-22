@@ -405,6 +405,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/astyle/Makefile
 	src/plugins/astyle/resources/Makefile
 	src/plugins/autosave/Makefile
+	src/plugins/clangd_client/Makefile
+	src/plugins/clangd_client/src/resources/Makefile
 	src/plugins/classwizard/Makefile
 	src/plugins/classwizard/resources/Makefile
 	src/plugins/codecompletion/Makefile
