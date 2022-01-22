@@ -413,24 +413,13 @@
 					<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
 				</Linker>
 				<ExtraCommands>
-					<!-- debugging - <Add before="cmd /c @echo CODEBLOCKS: $(CODEBLOCKS)" /> -->
-					<!-- debugging - <Add before="cmd /c @echo TARGET_OUTPUT_BASENAME: $(TARGET_OUTPUT_BASENAME)" /> -->
-					<!-- debugging - <Add before="cmd /c @echo TARGET_DEVEL_DIR: $(TARGET_DEVEL_DIR)" /> -->
-					<!-- debugging - <Add before="cmd /c @echo Clangd_Client_OUTPUT_DIR: $(Clangd_Client_OUTPUT_DIR)" /> -->
-					<!-- debugging - <Add before="cmd /c @echo TARGET_OUTPUT_FILE: $(TARGET_OUTPUT_FILE)" /> -->
-					<!-- debugging - <Add before="cmd /c @echo PROJECT_DIR: $(PROJECT_DIR)" /> -->
-					<!-- debugging - <Add before="cmd /c @echo PROJECT_TOPDIRECTORY: $(PROJECT_TOPDIRECTORY)" /> -->
-					<Add before="cmd /c @echo PLUGINS: $(PLUGINS)" />
-					<!-- debugging - <Add before="g++ --version" /> -->
-					<Mode before="always" />
-
-					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
+					<Add after="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
 					<!-- Create the clangd_client.zip file -->
 					<Add after="cmd /c if exist plugins\clangd_client\clangd_client.zip   del plugins\clangd_client\clangd_client.zip" />
 					<Add after='cmd /c &quot;cd plugins\clangd_client\src\resources &amp; zip -jq9 ..\..\clangd_client.zip manifest.xml *.xrc &quot;' />
 					<Add after='cmd /c &quot;cd plugins\clangd_client\src\resources &amp; zip -rq9 ..\..\clangd_client.zip images &quot;' />
-					<Add after='cmd /c &quot;copy plugins\clangd_client\clangd_client.zip devel31_64\share\CodeBlocks &quot;' />
+					<Add after='cmd /c &quot;copy plugins\clangd_client\clangd_client.zip $(TARGET_OUTPUT_DIR).. &quot;' />
 
 					<!-- Create the clangd_client.cbplugin file using the stripped dll -->
 					<!-- clangd_client.cbplugin is NOT BUILT BY DEFAULT as requested by PECAN

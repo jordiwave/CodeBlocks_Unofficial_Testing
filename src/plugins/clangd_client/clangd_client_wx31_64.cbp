@@ -43,10 +43,13 @@
 					<Add directory="$(TARGET_DEVEL_DIR)/src/devel31_64" />
 				</Linker>
 				<ExtraCommands>
+					<!-- <Add before="cmd /c @echo TARGET_OUTPUT_DIR: $(TARGET_OUTPUT_DIR)" /> -->
 					<!-- debugging - <Add before="cmd /c echo CODEBLOCKS: $(CODEBLOCKS)" /> -->
 					<!-- debugging - <Add before="cmd /c echo TARGET_DEVEL_DIR: $(TARGET_DEVEL_DIR)" /> -->
 					<!-- debugging - <Add before="cmd /c echo PROJECT_DIR: $(PROJECT_DIR)" /> -->
 					<!-- debugging - <Add before="g++ --version" /> -->
+
+					<Add after="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
 
 					<!-- Create the clangd_client.zip file -->
 					<Add after="cmd /c if exist clangd_client.zip del clangd_client.zip" />
