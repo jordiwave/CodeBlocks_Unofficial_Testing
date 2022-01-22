@@ -37,7 +37,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.08 2022/01/14")
+#define VERSION wxT("0.2.09 2022/01/22")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -62,6 +62,10 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
+//0.2.09
+//          2022/01/22
+//          Update project files to comment building clangd_client.cbplugin.
+//          Update clangd_client_wx31_64.cbp from clangd_client_wx31_64.cbp changes.
 //0.2.08
 //          2022/01/14
 //          Code to removed invalid utf8 chars from clangd responses responses
