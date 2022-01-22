@@ -1,4 +1,4 @@
-pkgdata_DATA = clangdclient.zip
+pkgdata_DATA = clangd_client.zip
 CLEANFILES = $(pkgdata_DATA)
 
 resources_forZIP = \
@@ -472,5 +472,5 @@ resources_forZIP = \
 EXTRA_DIST = \
 	$(resources_forZIP)
 
-clangdclient.zip: $(resources_forZIP)
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/clangdclient.zip $(resources_forZIP) > /dev/null
+clangd_client.zip: $(resources_forZIP)
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/clangd_client.zip $(resources_forZIP) > /dev/null

@@ -12,17 +12,17 @@ AM_CPPFLAGS = $(WX_CXXFLAGS) \
 
 pluginlibdir = $(pkglibdir)/plugins
 
-pluginlib_LTLIBRARIES = libclangdclient.la
+pluginlib_LTLIBRARIES = libclangd_client.la
 
-libclangdclient_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
+libclangd_client_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
-libclangdclient_la_LIBADD = \
+libclangd_client_la_LIBADD = \
 	../../sdk/libcodeblocks.la \
 	-lutil \
 	$(WX_LIBS) \
 	$(CB_TINYXML_LIBS)
 
-libclangdclient_la_SOURCES = \
+libclangd_client_la_SOURCES = \
 	src/ClangLocator.cpp \
 	src/codecompletion/ccoptionsdlg.cpp \
 	src/codecompletion/ccoptionsprjdlg.cpp \

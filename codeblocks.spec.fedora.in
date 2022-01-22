@@ -180,7 +180,7 @@ fi
 %{plugindir}/libAstyle.so
 %{plugindir}/libabbreviations.so
 %{plugindir}/libautosave.so
-%{plugindir}/libclangdclient.so
+%{plugindir}/libclangd_client.so
 %{plugindir}/libclasswizard.so
 %{plugindir}/libcodecompletion.so
 %{plugindir}/libcompiler.so
@@ -210,7 +210,7 @@ fi
 %{pkgdatadir}/Astyle.zip
 %{pkgdatadir}/abbreviations.zip
 %{pkgdatadir}/autosave.zip
-%{pkgdatadir}/clangdclient.zip
+%{pkgdatadir}/clangd_client.zip
 %{pkgdatadir}/classwizard.zip
 %{pkgdatadir}/codecompletion.zip
 %{pkgdatadir}/compiler.zip
