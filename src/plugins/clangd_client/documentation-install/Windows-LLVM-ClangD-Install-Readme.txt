@@ -68,7 +68,10 @@ There are two main options to install the clangd.exe as follows:
     2) The second option is to intall the full Clang tool chain as follows:
         a)  Open the msys2.exe bash shell 
         b) Run the following command:
-    pacman -S mingw-w64-clang-x86_64-toolchain
+               pacman -S mingw-w64-clang-x86_64-toolchain
+
+
+
 
 MSYS2 Compiler - MinGW32
 -------------------------
@@ -90,7 +93,9 @@ There are two main options to install the clangd.exe as follows:
     2) The second option is to intall the full Clang tool chain as follows:
         a)  Open the msys2.exe bash shell 
         b) Run the following command:
-    pacman -S mingw-w64-clang-i686-toolchain
+               pacman -S mingw-w64-clang-i686-toolchain
+
+
 
 CYGWIN Compiler
 ---------------

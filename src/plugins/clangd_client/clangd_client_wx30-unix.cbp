@@ -65,7 +65,7 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-std=c++11" />
+			<Add option="-std=c++17" />
 			<Add option="-g" />
 			<Add option="-fPIC" />
 			<Add option="`$(WX_CONFIG) --cflags`" />
