@@ -10,6 +10,10 @@ if BUILD_AUTOSAVE
 MAYBE_AUTOSAVE=autosave
 endif
 
+if BUILD_CLANGDCLIENT
+MAYBE_CLANGDCLIENT=clangd_client
+endif
+
 if BUILD_CLASSWIZARD
 MAYBE_CLASSWIZARD=classwizard
 endif
@@ -60,40 +64,42 @@ endif
 
 SUBDIRS=$(MAYBE_ABBREVIATIONS) \
     $(MAYBE_ASTYLE) \
-		$(MAYBE_AUTOSAVE) \
-		$(MAYBE_CLASSWIZARD) \
-		$(MAYBE_CODECOMPLETION) \
-		$(MAYBE_COMPILER) \
-		$(MAYBE_DEBUGGER) \
-		$(MAYBE_DISPLAYEVENTS) \
-		$(MAYBE_MIMEHANDLER) \
-		$(MAYBE_SCRIPTEDWIZARD) \
-		$(MAYBE_PROJECTSIMPORTER) \
-		$(MAYBE_OPENFILESLIST) \
-		$(MAYBE_OCCURRENCESHIGHLIGHTING) \
-		$(MAYBE_TODO) \
-		$(MAYBE_MANIFEST) \
-		contrib
+    $(MAYBE_AUTOSAVE) \
+    $(MAYBE_CLANGDCLIENT) \
+    $(MAYBE_CLASSWIZARD) \
+    $(MAYBE_CODECOMPLETION) \
+    $(MAYBE_COMPILER) \
+    $(MAYBE_DEBUGGER) \
+    $(MAYBE_DISPLAYEVENTS) \
+    $(MAYBE_MIMEHANDLER) \
+    $(MAYBE_SCRIPTEDWIZARD) \
+    $(MAYBE_PROJECTSIMPORTER) \
+    $(MAYBE_OPENFILESLIST) \
+    $(MAYBE_OCCURRENCESHIGHLIGHTING) \
+    $(MAYBE_TODO) \
+    $(MAYBE_MANIFEST) \
+    contrib
 # the 'contrib' subdir contains its own filtering
 
 DIST_SUBDIRS = abbreviations \
-		astyle \
-		autosave \
-		classwizard \
-		codecompletion \
-		compilergcc \
-		debuggergdb \
-		defaultmimehandler \
-		displayevents \
-		openfileslist \
-		occurrenceshighlighting \
-		projectsimporter \
-		scriptedwizard \
-		todo \
-		xpmanifest \
-		contrib
+    astyle \
+    autosave \
+    clangd_client \
+    classwizard \
+    codecompletion \
+    compilergcc \
+    debuggergdb \
+    defaultmimehandler \
+    displayevents \
+    openfileslist \
+    occurrenceshighlighting \
+    projectsimporter \
+    scriptedwizard \
+    todo \
+    xpmanifest \
+    contrib
 
 EXTRA_DIST = headerguard \
-		loghacker \
-		modpoller \
-		tidycmt
+    loghacker \
+    modpoller \
+    tidycmt
