@@ -69,6 +69,7 @@
 				</ExtraCommands>
 				<Environment>
 					<Variable name="TARGET_DEVEL_DIR" value="D:\Andrew_Development\Work_Installers\AC-WindowsInstaller" />
+					<Variable name="TARGET_DEVEL_DIR_AC" value="D:\Andrew_Development\Work_Installers\AC-WindowsInstaller" />
 					<Variable name="TARGET_DEVEL_DIR_PECAN" value="$(CODEBLOCKS)\..\.." />
 				</Environment>
 			</Target>
