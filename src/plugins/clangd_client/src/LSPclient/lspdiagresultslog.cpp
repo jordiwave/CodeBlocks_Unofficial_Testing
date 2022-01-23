@@ -7,7 +7,7 @@
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/searchresultslog.cpp $
  */
 
-#include "sdk_precomp.h"
+//#include "sdk_precomp.h" get  not used because `EXPORT_LIB' not defined [-Winvalid-pch] error
 
 #ifndef CB_PRECOMP
     #include <wx/arrstr.h>

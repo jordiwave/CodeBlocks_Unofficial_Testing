@@ -8,9 +8,11 @@ Windows Clangd-Client Plugin install process:
        i) Find and select the "Code completion" plugin via it's title 
        ii) Press the "Disable" button on the right near the top
        iii) If you get any errors please try again.
+	   
 3) Install the Clangd-Client Plugin using one of the following options, which are documneted later in this readme file:
     a) Install via the Plugin Manager
     b) Manaully install the plugin files
+	
 4) Configure the Clangd-Client Plugin for use as follows:
     a) Select the "MainMenu=>Settings->Editor..." menu
     b) In the list on the left click/select the "clangd_client" option.
@@ -41,7 +43,7 @@ Manually Install Clangd-Client Plugin
 
 Remove Clangd-Client Plugin via the Plugin Manager
 --------------------------------------------------
-1) Close any opened project or workspace's otherwise you may encounter a crash.
+1) Close any opened project or workspaces otherwise you may encounter a crash.
 2) Open the Plugin manager via the Code::Blocks "MainMenu=>Plugins=>Manage plugins..." menu
 3) In the Manage Plugin dialog do the following:
     a) In the plugin list select the "Clangd_Client" row
@@ -59,4 +61,4 @@ Manually Remove Clangd-Client Plugin
     b) If installed via the Plugin manager then you can delete the files with the following commands:
         i)  del %APPDATA%\CodeBlocks\share\codeblocks\plugins\clangd_client.dll
         ii) del %APPDATA%\CodeBlocks\share\codeblocks\clangd_client.zip
-3) If you want to use code completion rememner to re-enable the plugin
+3) If you want to reuse older code completion remember to re-enable the plugin

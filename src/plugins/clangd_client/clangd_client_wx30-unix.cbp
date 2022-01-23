@@ -68,8 +68,9 @@
 				<Variable name="PKG_CONFIG_GTK_VERSION__GTK3" value="3.0" />
 				-->
 
-				<Variable name="TARGET_DEVEL_DIR" value="\home\mint\code\AC-WindowsInstaller" />
+				<Variable name="TARGET_DEVEL_DIR_AC" value="\home\mint\code\AC-WindowsInstaller" />
 				<Variable name="TARGET_DEVEL_DIR_PECAN" value="$(CODEBLOCKS)\..\.." />
+				<Variable name="TARGET_DEVEL_DIR" value="$(CODEBLOCKS)\..\.." />
 			</Environment>
 		</Build>
 		<VirtualTargets>

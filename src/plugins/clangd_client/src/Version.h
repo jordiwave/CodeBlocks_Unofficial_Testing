@@ -37,7 +37,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.09 2022/01/22")
+#define VERSION wxT("0.2.10 2022/01/22")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -62,37 +62,53 @@ class AppVersion
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
+//0.2.10
+//          2022/01/22 ph
+//          Assure image folder is in first level of clangd_client.zip file
+//          Remove some wxSafeShowMessage() that were used for debugging
+//          Add more info to 'invalid utf8' msg (thanks ollydbg)
+//          Implemented some ollydbg suggestions https://forums.codeblocks.org/index.php/topic,24357.0.html
+//          Clean out preamble-*.{tmp|pch} left in temp directory
+//          Remove LSP:Hover results debugging msgs
+//          ProcessLanguageClient dtor: allow time for pipe/ReadJson threads to terminate
+//          Linux lsof: code to avoid dumb "No such file in directory" msg
+//          Locks: Record current owner of lock for use in error msgs
 //0.2.09
-//          2022/01/22
+//          2022/01/22 ac
 //          Update project files to comment building clangd_client.cbplugin.
 //          Update clangd_client_wx31_64.cbp from clangd_client_wx31_64.cbp changes.
+//          2022/01/15 ph
+//          Removed accidental use of older CodeCompletion image files.
+//          Moved image files in clangd_client.zip to the first level.
+//          Reworked the repo upload files to accomodate the above two changes
+//          Remove .cbPlugin file. It borked my system three time. Your out!
 //0.2.08
-//          2022/01/14
+//          2022/01/14 ph
 //          Code to removed invalid utf8 chars from clangd responses responses
 //          cf:client.cpp DoValidateUTF8data()
 //0.2.07
-//          2022/01/13
+//          2022/01/13 ph
 //          ReadJson() clear illegal utf8 and show in debug log
 //          Change project title of clangd_client-uw to clangd_client-wx31_64
 //          Add MakeRepoUpload.bat to preserve clangd_client.zip and to avoid stripping the dll
 //0.2.06
-//          2022/01/13
+//          2022/01/13 AC
 //          Doc typo fixed
 //          Plugin zip file is deleted on before extra command in the project file to stop recursive zip file creation..
 //0.2.05
 //          2022/01/12
-//              Updated the way the plugin was built
-//              Major doc update
+//          Updated the way the plugin was built
+//          Major doc update
 //0.2.04
 //          2022/01/10
-//              Removed old codecompletion xrc files.
-//              Fix compilation when -DCB_PRECOMP is specified (needd later when part of C::B truck)
-//              Sync version between this file and the plugin manifext.xml file.
-//              Remove old codecompletion XRC files as per ticket 13. Also renamed the project files.
-//              Sync version in manifest.xml and version.h (ticket 18)
-//              Change plugin name back to show as Clangd_Client (camel case) in the plugin manager (ticket 16)
-//              Add support for building "third" party plug to be installed via plugin manager (ticket 20)
-//              Change clsettings.xrc to change the Clangd executable wxStaticBoxSizer text from "clangd's installation location" to "Specify clangd executable to use" (ticket 11)
+//          Removed old codecompletion xrc files.
+//          Fix compilation when -DCB_PRECOMP is specified (needd later when part of C::B truck)
+//          Sync version between this file and the plugin manifext.xml file.
+//          Remove old codecompletion XRC files as per ticket 13. Also renamed the project files.
+//          Sync version in manifest.xml and version.h (ticket 18)
+//          Change plugin name back to show as Clangd_Client (camel case) in the plugin manager (ticket 16)
+//          Add support for building "third" party plug to be installed via plugin manager (ticket 20)
+//          Change clsettings.xrc to change the Clangd executable wxStaticBoxSizer text from "clangd's installation location" to "Specify clangd executable to use" (ticket 11)
 //0.2.03
 //          2022/01/7
 //          Always return the length of a LSP record in the incoming buffer.

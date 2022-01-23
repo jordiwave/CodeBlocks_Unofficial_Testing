@@ -398,7 +398,7 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject* pProject, const ch
     // The GUI thread gets it's jason data from a wxThreadEvent issued by this
     // MapMsgHndlr thread via transport.h
     m_MapMsgHndlr.SetLSP_EventID(GetLSP_EventID());
-    m_pInputThread = new std::thread([&] {
+    m_pJsonReadThread = new std::thread([&] {
         loop(m_MapMsgHndlr);
     });
 
@@ -457,20 +457,36 @@ ProcessLanguageClient::~ProcessLanguageClient()
         m_pDiagnosticsLog = nullptr; //LSPDiagnosticsLog was deleted by ProcessEvent()
     }
 
-
-    if (m_pServerProcess and IsAlive()) {
+     if (m_pServerProcess and IsAlive()) {
         writeClientLog("~ProcessLanguageClient: Teminate process error!\n");
     }
-    if ( m_pInputThread and (m_MapMsgHndlr.GetLSP_TerminateFlag() < 2) )
+    int jsonTerminationThreadRC = m_MapMsgHndlr.GetLSP_TerminateFlag();
+    if ( m_pJsonReadThread and (jsonTerminationThreadRC < 2) )
     {
-        // return should have been 2
-        m_pInputThread->join();
-        printf("terminate read thread error\n");
+        // This occurs when this dtor executes before ReadJson() can process the clangd shutdown command.
+        // Give the pipe (producer) and jsonRead (consumer) threads a chance to terminate
+        for (int ii=10; (ii > 0) and (jsonTerminationThreadRC < 2); --ii)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            jsonTerminationThreadRC = m_MapMsgHndlr.GetLSP_TerminateFlag();
+        }
+    }
+    if ( m_pJsonReadThread and (jsonTerminationThreadRC < 2) )
+    {
+        // return should have been 2 //0=running; 1=terminateRequested; 2=Terminated
+        m_pJsonReadThread->join();
+        wxString msg = wxString::Format("%s() Json read thread termination error rc:%d\n", __FUNCTION__, int(jsonTerminationThreadRC) );
+        Manager::Get()->GetLogManager()->DebugLogError(msg);
     }
 
     // setting terminateLSP above should have already caused read thread to exit.
-    if (m_pInputThread and m_pInputThread->joinable() )
-        m_pInputThread->join();
+    if (m_pJsonReadThread and m_pJsonReadThread->joinable() )
+        m_pJsonReadThread->join();
+    if (m_pJsonReadThread)
+    {
+        delete m_pJsonReadThread;
+        m_pJsonReadThread = nullptr;
+    }
 
     if (m_pServerProcess)
     {
@@ -796,9 +812,9 @@ int ProcessLanguageClient::ReadLSPinputLength()
                 wxString msg(wxString::Format("ERROR:%s(): buffLength (%d): Position of content header %d.\n",
                              __FUNCTION__, int(m_std_LSP_IncomingStr.length()), int(hdrPosn)) );
                 msg += "Buffer contents written to client log.";
-                #if defined(cb_DEBUG)
-                    wxSafeShowMessage("Input Buffer error",msg);
-                #endif
+                //#if defined(cb_DEBUG)
+                //    wxSafeShowMessage("Input Buffer error",msg);
+                //#endif
                 msg += "LSP_IncomingStrBuf:\n" + m_std_LSP_IncomingStr + "\n";
                 writeClientLog(msg);
                 // adjust the data buf to get clangd header at buff beginning
@@ -892,10 +908,10 @@ bool ProcessLanguageClient::readJson(json &json)
     if (lockerr != wxMUTEX_NO_ERROR)
     {
         wxString msg = wxString::Format("LSP data loss. %s() Failed to obtain input buffer lock", __FUNCTION__);
-        wxSafeShowMessage("Lock failed, lost data", msg);
+        //-wxSafeShowMessage("Lock failed, lost data", msg); // **Debugging**
         Manager::Get()->GetLogManager()->DebugLogError(msg);
         writeClientLog(msg);
-        wxMilliSleep(1000);
+        wxMilliSleep(500); //let pipe thread do its thing
         return false;
     }
 
@@ -1050,11 +1066,37 @@ bool ProcessLanguageClient::DoValidateUTF8data(std::string& data)
         for (unsigned ii=0; ii<invalidLocs.size(); ++ii)
         {
             int invloc = invalidLocs[ii];
-            char invChar = data[invloc]; // **debugging**
-            data[invloc] = ' '; //clear the invalid utf8 char
+            std::string invStr(&data[invloc], 1);
+            //unsigned int invInt = (unsigned int)data[invloc];
+            unsigned char invChar(invStr[0]);
+            wxUniChar uniChar(invChar);
+
+            // clangd response:
+            // {"id":"textDocument/completion","jsonrpc":"2.0","result":{
+            // a URI is not always included in the response
+            //  "textDocument":{"uri":"file:///F:/usr/Proj/Clangd_Client-uw/clone/src/LSPclient/src/client.cpp"}
+            std::string respID;
+            std::string respURI;
+            int respIDposn = data.find("textDocument/");
+            int respURIposn = data.find("{\"uri\":\"file://");
+            if (stdFound(respIDposn))
+                respID = data.substr(respIDposn, 24);
+            if (stdFound(respURIposn))
+            {
+                int uriend = data.find("\"}", respURIposn);
+                if (wxFound(uriend))
+                    respURI = data.substr(respURIposn+7, uriend);
+            }
             wxString msg = "Error: Removed clangd response invalid utf8 char:";
-            msg << "\'" << invChar << "\'";
+            msg += wxString::Format("position(%d), hex(%02hhX), U(%x), \'%s\'", invloc, (unsigned int)invChar, uniChar.GetValue(), invStr );
+            if (respID.size())
+                msg += wxString::Format(" ResponseID:%s", respID);
+            if (respURI.size())
+                msg += wxString::Format(" URI(%s)", respURI);
             Manager::Get()->GetLogManager()->DebugLog(msg);
+            writeClientLog(msg);
+
+            data[invloc] = ' '; //clear the invalid utf8 char
         }
     }
     return result;
@@ -1178,7 +1220,7 @@ void ProcessLanguageClient::OnIDResult(wxCommandEvent& event)
             m_LSP_initialized = false;
             // Terminate the input thread
             m_terminateLSP = true; //tell the read thread to terminate //(ph 2021/01/15)
-            m_MapMsgHndlr.SetLSP_TerminateFlag(true); //(ph 2021/07/8)
+            m_MapMsgHndlr.SetLSP_TerminateFlag(1); //(ph 2021/07/8)
             lspevt.SetString("LSP_Initialized:false");
         }
 
@@ -1562,7 +1604,8 @@ bool ProcessLanguageClient::LSP_DidOpen(cbEditor* pcbEd)
     m_FileLinesHistory[pcbEd] = pCntl->GetLineCount();
 
     wxString strText = pCntl->GetText();
-    const char* pText = strText.mb_str();           //works
+    //-const char* pText = strText.mb_str();        //works //(ph 2022/01/17)
+    const char* pText = strText.ToUTF8();           //ollydbg  220115 did not solve illegal utf8char
 
     writeClientLog(wxString::Format("<<< LSP_DidOpen:%s", docuri.c_str()) );
 

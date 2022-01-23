@@ -2,10 +2,10 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12660 $
- * $Id: main.cpp 12660 2022-01-17 23:47:00Z bluehazzard $
+ * $Revision: 12673 $
+ * $Id: main.cpp 12673 2022-01-22 10:42:09Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/main.cpp $
-*/
+ */
 
 #include <sdk.h>
 
@@ -2338,6 +2338,10 @@ bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
     cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename, true);
     if (prj)
     {
+        // Target selection wxChoice may be wider than before, fit the toolbars so the compiler
+        // toolbar does not cover the one on the right
+        FitToolbars(m_LayoutManager, this);
+        DoUpdateLayout();
         if (addToHistory)
             m_projectsHistory.AddToHistory(prj->GetFilename());
         return true;

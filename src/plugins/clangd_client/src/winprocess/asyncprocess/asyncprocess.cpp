@@ -28,7 +28,7 @@ static bool shell_is_cmd = true;
 #include "winprocess_impl.h"
 #else
 static bool shell_is_cmd = false;
-//#include "unixprocess_impl.h"
+#include "unixprocess_impl.h"
 #endif
 class __AsyncCallback : public wxEvtHandler
 {

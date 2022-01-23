@@ -429,16 +429,16 @@ CodeCompletion::CodeCompletion() :
     m_DocHelper(this)
 {
     // We cannot run if the old CodeCompletion is enabled
-     bool oldCC_enabled = Manager::Get()->GetConfigManager(_T("plugins"))->ReadBool(_T("/CODECOMPLETION"), false );
+    bool oldCC_enabled = Manager::Get()->GetConfigManager(_T("plugins"))->ReadBool(_T("/CODECOMPLETION"), false );
     if (oldCC_enabled)
     {
         return;
     }
-    // ccmanager's config
+    // ccmanager's config Settings/Editor/Code completion checkbox
     ConfigManager* ccmcfg = Manager::Get()->GetConfigManager(_T("ccmanager"));
-    m_CodeCompletionEnabled = ccmcfg->ReadBool(_T("/code_completion"), false);
+    m_SettingsEditorCodeCompletionEnabled = ccmcfg->ReadBool(_T("/code_completion"), false);
     // Main settings CodeCompletion must be enabled, else we exit.
-    if (not m_CodeCompletionEnabled) return;
+    if (not m_SettingsEditorCodeCompletionEnabled) return;
 
     // get top window to use as cbMessage parent, else message boxes will hide behind dialog and main window
     wxWindow* topWindow = wxFindWindowByName("Manage plugins");
@@ -528,11 +528,13 @@ void CodeCompletion::OnAttach()
 	pInfo->version = appVersion.GetVersion();
 
     // ccmanager's config obtained from Menu=>Settings=>Editor=>Code Completion (sub panel)
-    // Get the CB config item that enables CodeCompletion
+    // Get the CB config item that enables CodeCompletion Settings/Editor/Code completion
     ConfigManager* ccmcfg = Manager::Get()->GetConfigManager(_T("ccmanager"));
-    m_CodeCompletionEnabled = ccmcfg->ReadBool(_T("/code_completion"), false);
-    if (not m_CodeCompletionEnabled)
+    m_SettingsEditorCodeCompletionEnabled = ccmcfg->ReadBool(_T("/code_completion"), false);
+    if (not m_SettingsEditorCodeCompletionEnabled)
     {
+        // Settings/Editor/Code completion is unchecked.
+        // show cland_client plugin as inactive in plugins manage Plugins window
         pInfo->version = pInfo->version.BeforeFirst(' ') + " Inactive";
         return;
     }
@@ -654,7 +656,7 @@ void CodeCompletion::OnAttach()
 bool CodeCompletion::CanDetach() const
 // ----------------------------------------------------------------------------
 {
-    if (not m_CodeCompletionEnabled) return true;
+    if (not m_SettingsEditorCodeCompletionEnabled) return true;
 
     int prjCount = Manager::Get()->GetProjectManager()->GetProjects()->GetCount();
     if (prjCount)
@@ -679,7 +681,7 @@ void CodeCompletion::OnRelease(bool appShutDown)
     // into the sdk allows us to ask the user to close the project before uninstalling
     // this plugin.
 
-    if (not m_CodeCompletionEnabled) return;
+    if (not m_SettingsEditorCodeCompletionEnabled) return;
 
     cbProject* pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
 
@@ -751,7 +753,7 @@ void CodeCompletion::OnRelease(bool appShutDown)
 cbConfigurationPanel* CodeCompletion::GetConfigurationPanel(wxWindow* parent)
 // ----------------------------------------------------------------------------
 {
-    if (not m_CodeCompletionEnabled) return nullptr;
+    if (not m_SettingsEditorCodeCompletionEnabled) return nullptr;
 
     return new CCOptionsDlg(parent, GetParseManager(), this, &m_DocHelper);
 }
@@ -759,7 +761,7 @@ cbConfigurationPanel* CodeCompletion::GetConfigurationPanel(wxWindow* parent)
 cbConfigurationPanel* CodeCompletion::GetProjectConfigurationPanel(wxWindow* parent, cbProject* project)
 // ----------------------------------------------------------------------------
 {
-    if (not m_CodeCompletionEnabled) return nullptr;
+    if (not m_SettingsEditorCodeCompletionEnabled) return nullptr;
 
     return new CCOptionsProjectDlg(parent, project, GetParseManager());
 }
@@ -776,7 +778,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
         return;
     }
 
-    if (not m_CodeCompletionEnabled) return;
+    if (not m_SettingsEditorCodeCompletionEnabled) return;
 
     int pos = menuBar->FindMenu(_("&Edit"));
     if (pos != wxNOT_FOUND)
@@ -868,7 +870,7 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
         return;
 
     // User must specifically enable Code completion
-    if (not m_CodeCompletionEnabled) return;
+    if (not m_SettingsEditorCodeCompletionEnabled) return;
 
     if (type == mtEditorManager)
     {
@@ -989,7 +991,7 @@ bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 // ----------------------------------------------------------------------------
 {
     // User must specifically enable Code completion
-    if (not m_CodeCompletionEnabled) return false;
+    if (not m_SettingsEditorCodeCompletionEnabled) return false;
 
     // load the toolbar resource
     Manager::Get()->AddonToolBar(toolBar,_T("codecompletion_toolbar"));
@@ -1034,7 +1036,7 @@ void CodeCompletion::OnIdle(wxIdleEvent& event) //(ph 2020/10/24)
     event.Skip(); //always event.Skip() to allow others use of idle events
 
     // User must specifically enable Code completion
-    if (not m_CodeCompletionEnabled) return;
+    if (not m_SettingsEditorCodeCompletionEnabled) return;
 
     if (ProjectManager::IsBusy() or (not IsAttached()) or (not m_InitDone) )
         return;
@@ -1053,7 +1055,7 @@ CodeCompletion::CCProviderStatus CodeCompletion::GetProviderStatusFor(cbEditor* 
 // ----------------------------------------------------------------------------
 {
     // User must specifically enable Code completion
-    if (not m_CodeCompletionEnabled) return ccpsInactive;
+    if (not m_SettingsEditorCodeCompletionEnabled) return ccpsInactive;
 
     EditorColourSet *colour_set = ed->GetColourSet();
     if (colour_set && ed->GetLanguage() == colour_set->GetHighlightLanguage(wxT("C/C++")))
@@ -3157,6 +3159,84 @@ void CodeCompletion::CleanUpLSPLogs()
     }//end switch
 }//end CleanUpLSPLogs()
 // ----------------------------------------------------------------------------
+void CodeCompletion::CleanOutClangdTempFiles()
+// ----------------------------------------------------------------------------
+{ //(ph 2022/01/18)
+    // clangd can leave behind a bunch of .pch and .tmp files with a pattern
+    // of "preamble-*.pch" and "preamble-*.tmp"
+    //Linux is allowing the removal of open files. So we trod carefully.
+// --------------------------------------------------------------
+//          Windows
+// --------------------------------------------------------------
+#if defined(_WIN32)
+     wxLogNull NoLog;   //avoid windows "not allowed" message boxes
+    // Get a list of temporary preamble-*.tmp files.
+    wxString tempDir = wxFileName::GetTempDir();
+    wxArrayString tmpFiles;
+    wxDir::GetAllFiles(tempDir, &tmpFiles, "preamble-*.tmp", wxDIR_FILES);
+    for (size_t ii=0; ii<tmpFiles.GetCount(); ++ii)
+        wxRemoveFile(tmpFiles[ii]);
+    // Get a list of temporary preamble-*.pch files
+    tmpFiles.Clear();
+    wxDir::GetAllFiles(tempDir, &tmpFiles, "preamble-*.pch", wxDIR_FILES);
+    for (size_t ii=0; ii<tmpFiles.GetCount(); ++ii)
+        wxRemoveFile(tmpFiles[ii]);
+#endif //end _WIN32
+// --------------------------------------------------------------
+//          Linux
+// --------------------------------------------------------------
+#if not defined(_WIN32)
+     wxLogNull NoLog;   //avoid message boxes of errors
+    // Get a list of temporary preamble-*.tmp files.
+    wxString tempDir = wxFileName::GetTempDir();
+    ProcUtils procUtils;
+
+    // Get list of clangd temp files
+    wxArrayString tmpFiles;
+    wxArrayString lsofList;
+    wxString cmd;
+
+    wxDir::GetAllFiles(tempDir, &tmpFiles, "preamble-*.tmp", wxDIR_FILES);
+    if (tmpFiles.GetCount())
+    {
+        // Get a list of open preamble-*.tmp files
+        lsofList.Clear();
+        cmd = "/usr/bin/lsof /tmp/preamble-*.tmp";
+        procUtils.ExecuteCommand(cmd, lsofList);
+        // Remove clangd temp files not currently open
+        for (size_t ii=0; ii<tmpFiles.GetCount(); ++ii)
+        {
+            bool doDelete = true;
+            for (size_t jj=0; jj<lsofList.GetCount(); ++jj)
+                if (lsofList[jj].Contains(tmpFiles[ii])) doDelete=false;
+            if (doDelete)
+                wxRemoveFile(tmpFiles[ii]);
+        }
+    }
+
+    tmpFiles.Clear();
+    // Get a list of /tmp/preamble-*.pch files
+    wxDir::GetAllFiles(tempDir, &tmpFiles, "preamble-*.pch", wxDIR_FILES);
+    if (tmpFiles.GetCount())
+    {
+        // Get a list of open preamble-*.tmp files
+        lsofList.Clear();
+        cmd = "/usr/bin/lsof /tmp/preamble-*.pch";
+        procUtils.ExecuteCommand(cmd, lsofList);
+        // Remove any closed /tmp/preamble-*.pch files
+        for (size_t ii=0; ii<tmpFiles.GetCount(); ++ii)
+        {
+            bool doDelete = true;
+            for (size_t jj=0; jj<lsofList.GetCount(); ++jj)
+                if (lsofList[jj].Contains(tmpFiles[ii])) doDelete=false;
+            if (doDelete)
+                wxRemoveFile(tmpFiles[ii]);
+        }
+    }//endif
+
+#endif // NOT windows
+}
+// ----------------------------------------------------------------------------
 void CodeCompletion::OnProjectClosed(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
@@ -3177,6 +3257,7 @@ void CodeCompletion::OnProjectClosed(CodeBlocksEvent& event)
             // MS Windows had a lock on closed clangd logs until the project was closed.
             CleanUpLSPLogs();
             DoUnlockClangd_CacheAccess(project);
+            CleanOutClangdTempFiles();
 
         }//endif m_pLSPclient
 
@@ -4395,7 +4476,7 @@ void CodeCompletion::OnToolbarTimer(wxCommandEvent& event)
 {
     // Allow others to call OnToolbarTimer() via event.     //(ph 2021/09/11)
     // Invoked by Parser::OnLSP_ParseDocumentSymbols() to update the scope toolbar
-    if (not m_CodeCompletionEnabled) return;
+    if (not m_SettingsEditorCodeCompletionEnabled) return;
 
     m_ToolbarNeedReparse = true;
     m_ToolbarNeedRefresh = true;
@@ -4469,7 +4550,7 @@ wxBitmap CodeCompletion::GetImage(ImageId::Id id, int fontSize) //unused
     if (it == m_images.end())
     {
         const wxString prefix = ConfigManager::GetDataFolder()
-                              + wxString::Format(_T("/codecompletion.zip#zip:images/%dx%d/"), size,
+                              + wxString::Format(_T("/clangd_client.zip#zip:images/%dx%d/"), size, //(ph 2022/01/15)
                                                  size);
 
         wxString filename;

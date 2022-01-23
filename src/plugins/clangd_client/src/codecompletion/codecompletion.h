@@ -422,7 +422,7 @@ private:
     /** Do not run Clangd_client plugin if Code completion is unchecked
      ** In MainMenu/Settings/Editor/Code completion checkbox
      */
-    bool                    m_CodeCompletionEnabled;            //(ph 2021/10/11)
+    bool                    m_SettingsEditorCodeCompletionEnabled;            //(ph 2021/10/11)
 
     /** map to record all re-parsing files
      *
@@ -586,6 +586,7 @@ private:
     bool DoUnlockClangd_CacheAccess(cbProject* pcbProject);    //(ph 2021/03/13)
     void ShutdownLSPclient(cbProject* pProject);
     void CleanUpLSPLogs();
+    void CleanOutClangdTempFiles();
     IdleCallbackHandler* GetIdleCallbackHandler(cbProject* pProjectParm = nullptr)
     {
         cbProject* pProject = pProjectParm;

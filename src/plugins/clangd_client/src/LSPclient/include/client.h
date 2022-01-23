@@ -391,7 +391,7 @@ class ProcessLanguageClient : public wxEvtHandler, private LanguageClient
             }
 
         MapMessageHandler m_MapMsgHndlr; //LSP output to our input thread
-        std::thread* m_pInputThread = nullptr;
+        std::thread* m_pJsonReadThread = nullptr;
 
         int  GetCompilationDatabaseEntry(wxArrayString& returnArray, cbProject* pProject, wxString filename);
         void UpdateCompilationDatabase(cbProject* pProject, wxString filename);

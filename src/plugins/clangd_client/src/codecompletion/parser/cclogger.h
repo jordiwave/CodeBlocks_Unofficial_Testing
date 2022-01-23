@@ -182,7 +182,6 @@ private:
 #elif defined CC_ENABLE_LOCKER_ASSERT
     #define CC_LOCKER_TRACK_CS_ENTER(CS)     CS.Enter();
     #define CC_LOCKER_TRACK_CS_LEAVE(CS)     CS.Leave();
-    //(ph 2021/09/5)
 
     // ----------------------------------------------------------------------------
     //  UNUSED -- 2021/09/8
@@ -209,7 +208,7 @@ private:
                 wxString err; \
                 err.Printf(_T("LockTimeout() failed in %s at %s:%d \n\t%s"), cbC2U(__PRETTY_FUNCTION__).wx_str(), cbC2U(__FILE__).c_str(), __LINE__, cbC2U(err1st).c_str()); \
                 CCLogger::Get()->DebugLogError(wxString("Lock error") + err);  \
-                wxSafeShowMessage(_T("Assertion error"), err);  \
+                /* wxSafeShowMessage(_T("Assertion error"), err); */  \
                 locker_result = M.Lock(); /* block anyway*/ \
                 cbAssert(locker_result==wxMUTEX_NO_ERROR); /*assert if blocking lock fails*/ \
                 M##_Owner = wxString::Format("%s %d",__PRETTY_FUNCTION__, __LINE__); /*record owner*/  \
@@ -246,7 +245,21 @@ private:
     #define CC_LOCKER_TRACK_CS_ENTER(CS)     CS.Enter();
     #define CC_LOCKER_TRACK_CS_LEAVE(CS)     CS.Leave();
 
-    #define CC_LOCKER_TRACK_TT_MTX_LOCK(M)   M.LockTimeout(250);
+    //#define CC_LOCKER_TRACK_TT_MTX_LOCK(M)   M.LockTimeout(250);
+    //#define CC_LOCKER_TRACK_TT_MTX_LOCK(M)   M.Lock();
+    #define CC_LOCKER_TRACK_TT_MTX_LOCK(M)      \
+        do {                                    \
+            auto locker_result = M.Lock();   \
+            if (locker_result != wxMUTEX_NO_ERROR)  \
+            {   wxString err1st = wxString::Format("Owner: %s", M##_Owner); \
+                wxString err; \
+                err.Printf(_T("Lock() failed in %s at %s:%d \n\t%s"), cbC2U(__PRETTY_FUNCTION__).wx_str(), cbC2U(__FILE__).c_str(), __LINE__, cbC2U(err1st).c_str()); \
+                CCLogger::Get()->DebugLogError(wxString("Lock error") + err);  \
+            } \
+            else /*lock succeeded, record new owner*/ \
+                M##_Owner = wxString::Format("%s %d",__PRETTY_FUNCTION__, __LINE__); \
+        } while (false);
+
     #define CC_LOCKER_TRACK_TT_MTX_UNLOCK(M) M.Unlock();
     #define CC_LOCKER_TRACK_CBBT_MTX_LOCK    CC_LOCKER_TRACK_TT_MTX_LOCK
     #define CC_LOCKER_TRACK_CBBT_MTX_UNLOCK  CC_LOCKER_TRACK_TT_MTX_UNLOCK

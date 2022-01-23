@@ -1946,6 +1946,8 @@ void Parser::OnLSP_CompletionResponse(wxCommandEvent& event, std::vector<cbCodeC
             int labelKind = valueItems[itemNdx].at("kind").get<int>();
             cbCodeCompletionPlugin::CCToken cctoken(labelKind, labelValue);
             cctoken.id = -1;
+            // GetTokenInFile() can fail locking the token tree
+            // If so, it returns a null token ptr
             Token* pTreeToken = pParser->GetTokenInFile(filename, labelValue);
             if (pTreeToken)
                 cctoken.id = pTreeToken->m_Index;
@@ -2063,13 +2065,14 @@ void Parser::OnLSP_HoverResponse(wxCommandEvent& event, std::vector<cbCodeComple
             evt.SetExtraLong(0);
             evt.SetString(wxT("evt from menu"));
 
-            CCLogger::Get()->DebugLog("---------------LSP:Hover Results:-----------");
-            for(size_t itemidx=0; itemidx<v_HoverTokens.size(); ++itemidx)
-            {
-                cbCodeCompletionPlugin::CCToken tkn = v_HoverTokens[itemidx] ;
-                wxString logMsg(wxString::Format("%d:%s", tkn.id, tkn.displayName  ));
-                CCLogger::Get()->DebugLog(logMsg);
-            }
+            // **Debugging**
+            //CCLogger::Get()->DebugLog("---------------LSP:Hover Results:-----------");
+            //for(size_t itemidx=0; itemidx<v_HoverTokens.size(); ++itemidx)
+            //{
+            //    cbCodeCompletionPlugin::CCToken tkn = v_HoverTokens[itemidx] ;
+            //    wxString logMsg(wxString::Format("%d:%s", tkn.id, tkn.displayName  ));
+            //    CCLogger::Get()->DebugLog(logMsg);
+            //}
 
             Manager::Get()->ProcessEvent(evt);
         }//endif HoverTokens

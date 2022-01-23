@@ -447,6 +447,8 @@ Token* ParserBase::GetTokenInFile(wxString filename, wxString requestedDisplayNa
 // ----------------------------------------------------------------------------
 {
     // Get a specific token from a specified file.
+    // This is called from OnLSPCompletionResponse to get the token index
+    // If the lock fails, the token will be skipped.
 
     TokenTree* tree = nullptr;
     Token* pFoundToken = nullptr;
@@ -459,9 +461,11 @@ Token* ParserBase::GetTokenInFile(wxString filename, wxString requestedDisplayNa
     if (locker_result != wxMUTEX_NO_ERROR)
     {
         // lock failed, do not block the UI thread
-        // Note: This function called from a UI/clangd event, so it's extreemly unlikely that
+        // Note: This function called from a UI/clangd event, so it's extremely unlikely that
         // any other thread has the lock, unless the user is fast enough
         // the refresh the ClassBrowser while this event is running.
+        wxString msg = wxString::Format("Error: Lock failed: %s", __FUNCTION__);
+        Manager::Get()->GetLogManager()->DebugLog(msg);
         return nullptr;
     }
     else /*lock succeeded*/
