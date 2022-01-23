@@ -2,12 +2,15 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12665 $
- * $Id: projectmanagerui.h 12665 2022-01-20 21:47:40Z bluehazzard $
+ * $Revision: 12675 $
+ * $Id: projectmanagerui.h 12675 2022-01-23 21:02:56Z bluehazzard $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/projectmanagerui.h $
  */
 
 #include "projectmanager.h"
+
+#include <wx/dnd.h>
+#include <wx/dataobj.h>
 
 class cbProject;
 class cbAuiNotebook;
