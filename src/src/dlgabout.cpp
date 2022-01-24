@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12593 $
+ * $Id: dlgabout.cpp 12593 2021-12-18 08:32:34Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/dlgabout.cpp $
  */
 
 #include "sdk.h"
@@ -20,9 +20,7 @@
     #include <wx/string.h>
     #include <wx/textctrl.h>
     #include <wx/xrc/xmlres.h>
-    #if wxCHECK_VERSION(3, 0, 0)
-        #include <wx/versioninfo.h>
-    #endif // wxCHECK_VERSION
+    #include <wx/versioninfo.h>
 
     #include "licenses.h"
     #include "configmanager.h"
@@ -103,6 +101,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Damien Moore        : Developer\n"
         "Micah Ng            : Developer\n"
         "BlueHazzard         : Developer\n"
+        "Miguel Gimenez      : Developer\n"
         "Ricardo Garcia      : All-hands person\n"
         "Paul A. Jimenez     : Help and AStyle plugins\n"
         "Thomas Lorblanches  : CodeStat and Profiler plugins\n"
@@ -134,96 +133,16 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Alexandr Efremo     : Providing OpenSuSe packages\n"
         "Huki                : Misc. Code-Completion improvements\n"
         "stahta01            : Misc. patches for several enhancements\n"
-        "Miguel Gimenez      : Misc. patches for several enhancements\n"
         "\n"
         "All contributors that provided patches.\n"
-        "The wxWidgets project (http://www.wxwidgets.org).\n"
-        "wxScintilla (http://sourceforge.net/projects/wxscintilla).\n"
+        "The wxWidgets project (https://www.wxwidgets.org).\n"
+        "wxScintilla (https://sourceforge.net/projects/wxscintilla).\n"
         "TinyXML parser (http://www.grinninglizard.com/tinyxml).\n"
         "Squirrel scripting language (http://www.squirrel-lang.org).\n"
-        "The GNU Software Foundation (http://www.gnu.org).\n"
+        "The GNU Software Foundation (https://www.gnu.org).\n"
         "Last, but not least, the open-source community."));
     wxTextCtrl *txtLicense = XRCCTRL(*this, "txtLicense", wxTextCtrl);
     txtLicense->SetValue(LICENSE_GPL);
-
-#if wxCHECK_VERSION(3, 0, 0)
-    const wxVersionInfo scintillaVersion = wxScintilla::GetLibraryVersionInfo();
-    const wxString scintillaStr = wxString::Format(wxT("%d.%d.%d"),
-                                                   scintillaVersion.GetMajor(),
-                                                   scintillaVersion.GetMinor(),
-                                                   scintillaVersion.GetMicro());
-#else
-    const wxString scintillaStr = wxSCINTILLA_VERSION;
-#endif // wxCHECK_VERSION
-
-    struct Item
-    {
-        wxString name, value;
-    };
-    std::vector<Item> items;
-    items.push_back({_("Name"), appglobals::AppName});
-    items.push_back({_("Version"), appglobals::AppActualVersion});
-    items.push_back({_("SDK Version"), appglobals::AppSDKVersion});
-    items.push_back({_("Scintilla Version"), scintillaStr});
-
-    items.push_back({_("Author"), _("The Code::Blocks Team")});
-    items.push_back({_("E-mail"), appglobals::AppContactEmail});
-    items.push_back({_("Website"), appglobals::AppUrl});
-
-    const wxPlatformInfo &platform = wxPlatformInfo::Get();
-
-    items.push_back({_("OS"), platform.GetOperatingSystemDescription()});
-    const wxString desktopEnv = platform.GetDesktopEnvironment();
-    if (!desktopEnv.empty())
-        items.push_back({_("Desktop environment"), desktopEnv });
-
-    items.push_back({_("Scaling factor"), wxString::Format("%f", GetContentScaleFactor())});
-    items.push_back({_("Detected scaling factor"),
-                     wxString::Format("%f", cbGetActualContentScaleFactor(*this))});
-    const wxSize displayPPI = wxGetDisplayPPI();
-    items.push_back({_("Display PPI"), wxString::Format("%dx%d", displayPPI.x, displayPPI.y)});
-
-    unsigned displays = wxDisplay::GetCount();
-    items.push_back({_("Display count"), wxString::Format("%u", displays)});
-
-    for (unsigned ii = 0; ii < displays; ++ii)
-    {
-        wxDisplay display(ii);
-
-        Item item;
-        item.name = wxString::Format(_("Display %u"), ii);
-
-        const wxString &name = display.GetName();
-        if (!name.empty())
-            item.name += " (" + name + ")";
-
-        const wxRect geometry = display.GetGeometry();
-        item.value= wxString::Format(_("XY=[%d,%d]; Size=[%d,%d]; %s"), geometry.GetLeft(),
-                                     geometry.GetTop(), geometry.GetWidth(), geometry.GetHeight(),
-                                     (display.IsPrimary() ? _("Primary") : wxString()));
-        items.push_back(item);
-    }
-
-    int maxNameLength = 0;
-    for (const Item &item : items)
-    {
-        maxNameLength = std::max(maxNameLength, int(item.name.length()));
-    }
-
-    wxString information;
-    for (const Item &item : items)
-    {
-        information += item.name;
-        information += wxString(wxT(' '), maxNameLength - int(item.name.length()));
-        information += wxT(": ") + item.value + wxT("\n");
-    }
-
-#if wxCHECK_VERSION(3, 0, 0)
-    information += wxT("\n") + wxGetLibraryVersionInfo().GetDescription();
-#endif // wxCHECK_VERSION(3, 0, 0)
-
-    wxTextCtrl *txtInformation = XRCCTRL(*this, "txtInformation", wxTextCtrl);
-    txtInformation->SetValue(information);
 
 #ifdef __WXMAC__
     // Courier 8 point is not readable on Mac OS X, increase font size:
@@ -234,10 +153,6 @@ dlgAbout::dlgAbout(wxWindow* parent)
     wxFont font2 = txtLicense->GetFont();
     font2.SetPointSize(10);
     txtLicense->SetFont(font2);
-
-    wxFont font3 = txtInformation->GetFont();
-    font3.SetPointSize(10);
-    txtInformation->SetFont(font3);
 #endif
 
     Fit();

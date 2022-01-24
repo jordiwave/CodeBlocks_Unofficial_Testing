@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="CodeBlocks Workspace wx3.0.x (Unix)">
-		<Project filename="CodeBlocks_wx30-unix.cbp" />
-		<Project filename="tools/cb_share_config/cb_share_config_wx30-unix.cbp" />
-		<Project filename="plugins/codecompletion/cctest_wx30-unix.cbp" />
-		<Project filename="plugins/contrib/wxContribItems/wxContribItems_wx30-unix.cbp" />
+		<Project filename="CodeBlocks_wx30-unix.cbp" active="1"  />
+		<!-- Windows only Project filename="tools/Addr2LineUI/Addr2LineUI_wx30-unix.cbp" -->
+		<Project filename="tools/cb_share_config/cb_share_config_wx30-unix.cbp" >
+			<Depends filename="CodeBlocks_wx30-unix.cbp" />
+		</Project>
+		<!-- Windows only Project filename="tools/CBLauncher/CbLauncher_wx30-unix.cbp" -->
+		<Project filename="tools/cbp2make/cbp2make_wx30-unix.cbp" >
+			<Depends filename="CodeBlocks_wx30-unix.cbp" />
+		</Project>
+		<Project filename="plugins/displayevents/cbDisplayEvents_wx30-unix.cbp" >
+			<Depends filename="CodeBlocks_wx30-unix.cbp" />
+		</Project>
+		<Project filename="plugins/codecompletion/cctest_wx30-unix.cbp" >
+			<Depends filename="CodeBlocks_wx30-unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxContribItems/wxContribItems_wx30-unix.cbp" >
+			<Depends filename="CodeBlocks_wx30-unix.cbp" />
+		</Project>
 		<Project filename="plugins/contrib/wxSmith/wxSmith_wx30-unix.cbp">
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>
@@ -15,13 +29,35 @@
 		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui_wx30-unix.cbp">
 			<Depends filename="plugins/contrib/wxSmith/wxSmith_wx30-unix.cbp" />
 		</Project>
+		<!-- NOT built by default >
+			<Project filename="plugins/headerguard/headerguard_wx30-unix.cbp">
+				<Depends filename="CodeBlocks_wx30-unix.cbp" />
+			</Project>
+		< -->
+		<!-- NOT built by default >
+			<Project filename="plugins/loghacker/loghacker_wx30-unix.cbp">
+				<Depends filename="CodeBlocks_wx30-unix.cbp" />
+			</Project>
+		< -->
+		<!-- NOT built by default >
+			<Project filename="plugins/ModPoller/ModPoller_wx30-unix.cbp">
+				<Depends filename="CodeBlocks_wx30-unix.cbp" />
+			</Project>
+		< -->
+		<!-- NOT built by default >
+			<Project filename="plugins/tidycmt/tidycmt_wx30-unix.cbp">
+				<Depends filename="CodeBlocks_wx30-unix.cbp" />
+			</Project>
+		< -->
 		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning_wx30-unix.cbp">
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker_wx30-unix.cbp">
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>
-		<Project filename="plugins/contrib/byogames/byogames_wx30-unix.cbp" />
+		<Project filename="plugins/contrib/byogames/byogames_wx30-unix.cbp">
+			<Depends filename="CodeBlocks_wx30-unix.cbp" />
+		</Project>
 		<Project filename="plugins/contrib/cb_koders/cb_koders_wx30-unix.cbp">
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>
@@ -43,6 +79,11 @@
 		<Project filename="plugins/contrib/Cscope/Cscope_wx30-unix.cbp">
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>
+		<!-- NOT built by default >
+			<Project filename="plugins/contrib/devpak_plugin/DevPakPlugin_wx30-unix.cbp">
+				<Depends filename="CodeBlocks_wx30-unix.cbp" />
+			</Project>
+		< -->
 		<Project filename="plugins/contrib/DoxyBlocks/DoxyBlocks_wx30-unix.cbp">
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>
@@ -61,6 +102,11 @@
 		<Project filename="plugins/contrib/FileManager/FileManager_wx30-unix.cbp">
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>
+        <!-->
+ 		<Project filename="plugins/contrib/FortranProject/FortranProject_cbsvn_wx30-unix.cbp">
+			<Depends filename="CodeBlocks_wx30-unix.cbp" />
+		</Project>    
+        <-->
 		<Project filename="plugins/contrib/headerfixup/headerfixup_wx30-unix.cbp">
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>
@@ -101,10 +147,13 @@
 		<Project filename="plugins/contrib/rndgen/rndgen_wx30-unix.cbp">
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>
-		<Project filename="plugins/contrib/SpellChecker/SpellChecker_wx30-unix.cbp">
+		<Project filename="plugins/contrib/SmartIndent/SmartIndent_wx30-unix.cbp">
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/source_exporter/Exporter_wx30-unix.cbp">
+			<Depends filename="CodeBlocks_wx30-unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/SpellChecker/SpellChecker_wx30-unix.cbp">
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/symtab/symtab_wx30-unix.cbp">

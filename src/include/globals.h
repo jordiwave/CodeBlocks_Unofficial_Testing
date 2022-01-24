@@ -441,11 +441,7 @@ extern DLLIMPORT wxArrayInt cbGetMultiChoiceDialog(const wxString& message, cons
                                      const wxSize& size = wxSize(300, 300),
                                      const wxArrayInt& initialSelection = wxArrayInt());
 
-#if wxCHECK_VERSION(3, 0, 0)
 extern DLLIMPORT const char *cbGetTextFromUserPromptStr;
-#else
-extern DLLIMPORT const wxChar *cbGetTextFromUserPromptStr;
-#endif // wxCHECK_VERSION
 
 extern DLLIMPORT wxString cbGetTextFromUser(const wxString &message,
                                             const wxString &caption = cbGetTextFromUserPromptStr,
@@ -488,7 +484,8 @@ namespace platform
         winver_WindowsVista,
         winver_Windows7,
         winver_Windows8,
-        winver_Windows10
+        winver_Windows10,
+        winver_Windows11
     } windows_version_t;
 
     extern DLLIMPORT windows_version_t WindowsVersion();

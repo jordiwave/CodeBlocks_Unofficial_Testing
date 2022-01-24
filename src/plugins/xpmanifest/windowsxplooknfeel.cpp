@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12607 $
+ * $Id: windowsxplooknfeel.cpp 12607 2021-12-23 08:50:04Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/xpmanifest/windowsxplooknfeel.cpp $
  */
 
 #include <sdk.h>
@@ -54,7 +54,7 @@ int WindowsXPLookNFeel::Execute()
 	}
 
 	wxArrayString targetNames;
-	ProjectBuildTarget* target = 0L;
+	ProjectBuildTarget* target = nullptr;
 	for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
 	{
 		ProjectBuildTarget* tgt = project->GetBuildTarget(i);
@@ -79,7 +79,7 @@ int WindowsXPLookNFeel::Execute()
 	else if (targetNames.GetCount() > 1)
 	{
 		// more than one executable target... ask...
-		target = 0L;
+		target = nullptr;
 		int targetIndex = project->SelectTarget(-1, true);
 		if (targetIndex > -1)
 			target = project->GetBuildTarget(targetIndex);
@@ -95,7 +95,7 @@ int WindowsXPLookNFeel::Execute()
 		wxString filename = target->GetOutputFilename();
 		filename << _T(".Manifest");
 		wxFileName fname(filename);
-		fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, project->GetBasePath());
+		fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT, project->GetBasePath());
 		filename = fname.GetFullPath();
 		Manager::Get()->GetLogManager()->DebugLog(F(_T("WindowsXPLookNFeel: Creating Manifest '%s'"), filename.wx_str()));
 

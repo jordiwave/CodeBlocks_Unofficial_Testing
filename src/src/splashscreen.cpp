@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 11394 $
+ * $Id: splashscreen.cpp 11394 2018-05-01 15:38:22Z fuscated $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/splashscreen.cpp $
  */
 
 #include "splashscreen.h"

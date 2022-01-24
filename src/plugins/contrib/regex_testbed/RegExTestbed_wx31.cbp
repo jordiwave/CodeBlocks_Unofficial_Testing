@@ -25,9 +25,9 @@
 				</ExtraCommands>
 			</Target>
 			<Environment>
-				<Variable name="WX_CFG" value="" />
-				<Variable name="WX_SUFFIX" value="u" />
-				<Variable name="WX_VERSION" value="31" />
+				<!-- Variable name="WX_CFG" value="" / -->
+				<!-- Variable name="WX_SUFFIX" value="u" / -->
+				<!-- Variable name="WX_VERSION" value="31" / -->
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -49,7 +49,7 @@
 			<Add option="-DSUPPORT_UTF8" />
 			<Add option="-std=gnu++11" />
 			<Add directory="$(#WX31.include)" />
-			<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX31.lib)/gcc_dll$(#WX31.WX_CFG)/msw$(#WX31.WX_SUFFIX)" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
@@ -61,9 +61,9 @@
 			<Add option="-Wl,--enable-auto-image-base" />
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-mthreads" />
-			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
 			<Add library="codeblocks" />
-			<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)" />
+			<Add directory="$(#WX31.lib)/gcc_dll$(#WX31.WX_CFG)" />
 			<Add directory="../../../devel31" />
 		</Linker>
 		<Unit filename="RegExTestbed.cpp" />
@@ -71,6 +71,8 @@
 		<Unit filename="manifest.xml" />
 		<Unit filename="regexdlg.cpp" />
 		<Unit filename="regexdlg.h" />
+		<Unit filename="regexdlg.xrc" />
+		<Unit filename="wxsmith/RegExDlg.wxs" />
 		<Extensions>
 			<code_completion />
 			<wxsmith version="1">

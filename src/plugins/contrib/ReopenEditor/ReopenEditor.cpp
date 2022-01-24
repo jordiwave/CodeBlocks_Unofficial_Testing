@@ -4,9 +4,9 @@
  *
  * Copyright: 2010 Jens Lody
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12329 $
+ * $Id: ReopenEditor.cpp 12329 2021-05-08 12:17:24Z fuscated $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/ReopenEditor/ReopenEditor.cpp $
  */
 
 #include "sdk.h"

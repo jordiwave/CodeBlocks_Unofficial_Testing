@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12459 $
+* $Id: wxssettings.h 12459 2021-06-07 20:09:43Z bluehazzard $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxssettings.h $
 */
 
 #ifndef WXSSETTINGS_H

@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12417 $
+* $Id: wxsmith.cpp 12417 2021-05-09 12:50:17Z fuscated $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxsmith.cpp $
 */
 
 #include "wxsmith.h"
@@ -341,8 +341,13 @@ void wxSmith::OnProjectOpened(CodeBlocksEvent& event)
 {
     cbProject* Proj = event.GetProject();
     wxsProject* wxsProj = GetSmithProject(Proj);
+    bool projModifiedDuringLoad = wxsProj->GetWasModifiedDuringLoad();
     wxsProj->UpdateName();
-    Proj->SetModified(wxsProj->GetWasModifiedDuringLoad());
+    if (projModifiedDuringLoad)
+    {
+        // Do NOT clear any previous modifications on a project load!!!
+        Proj->SetModified(projModifiedDuringLoad);
+    }
     event.Skip();
 }
 

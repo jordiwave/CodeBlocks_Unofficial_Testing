@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12328 $
+* $Id: wxscodercontext.h 12328 2021-05-08 12:17:19Z fuscated $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxscodercontext.h $
 */
 
 #ifndef WXSCODERCONTEXT_H

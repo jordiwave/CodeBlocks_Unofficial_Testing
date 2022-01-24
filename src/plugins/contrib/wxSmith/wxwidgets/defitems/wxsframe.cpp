@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12548 $
+* $Id: wxsframe.cpp 12548 2021-12-02 08:48:39Z wh11204 $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsframe.cpp $
 */
 
 #include <wx/app.h>        // wxTheApp
@@ -54,6 +54,10 @@ namespace
     WXS_EV_BEGIN(wxsFrameEvents)
         WXS_EVI(EVT_CLOSE,wxEVT_CLOSE_WINDOW,wxCloseEvent,Close)
         WXS_EVI(EVT_ACTIVATE,wxEVT_ACTIVATE,wxActivateEvent,Activate)
+        WXS_EVI(EVT_ICONIZE,wxEVT_ICONIZE,wxIconizeEvent,Iconize)
+        WXS_EVI(EVT_MENU_OPEN,wxEVT_MENU_OPEN,wxMenuEvent,MenuOpen)
+        WXS_EVI(EVT_MENU_CLOSE,wxEVT_MENU_CLOSE,wxMenuEvent,MenuClose)
+        WXS_EVI(EVT_MENU_HIGHLIGHT_ALL,wxEVT_MENU_HIGHLIGHT,wxMenuEvent,MenuHighlightAll)
         WXS_EV_DEFAULTS()
     WXS_EV_END()
 

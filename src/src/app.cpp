@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12619 $
+ * $Id: app.cpp 12619 2022-01-01 11:07:35Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/app.cpp $
  */
 
 #include <sdk.h>
@@ -94,12 +94,8 @@ class DDEConnection : public wxConnection
 {
     public:
         DDEConnection(MainFrame* frame) : m_Frame(frame) { ; }
-#if wxCHECK_VERSION(3, 0, 0)
         bool OnExecute(const wxString& topic, const void *data, size_t size,
                        wxIPCFormat format) override;
-#else
-        bool OnExecute(const wxString& topic, wxChar *data, int size, wxIPCFormat format) override;
-#endif
         bool OnDisconnect() override;
     private:
         MainFrame* m_Frame;
@@ -110,17 +106,10 @@ wxConnectionBase* DDEServer::OnAcceptConnection(const wxString& topic)
     return topic == DDE_TOPIC ? new DDEConnection(m_Frame) : nullptr;
 }
 
-#if wxCHECK_VERSION(3, 0, 0)
 bool DDEConnection::OnExecute(cb_unused const wxString& topic, const void *data, size_t size,
                               wxIPCFormat format)
 {
     const wxString strData = wxConnection::GetTextFromData(data, size, format);
-#else
-bool DDEConnection::OnExecute(cb_unused const wxString& topic, wxChar *data, int size,
-                              wxIPCFormat format)
-{
-    const wxString strData((wxChar*)data);
-#endif
 
     if (strData.StartsWith(_T("[IfExec_Open(\"")))
         return false; // let Shell Open handle the request as we *know* that we have registered the Shell Open command, too
@@ -220,11 +209,7 @@ class DDEClient: public wxClient {
 };
 
 #if wxUSE_CMDLINE_PARSER
-#if wxCHECK_VERSION(3, 0, 0)
 #define CMD_ENTRY(X) X
-#else
-#define CMD_ENTRY(X) _T(X)
-#endif
 const wxCmdLineEntryDesc cmdLineDesc[] =
 {
     { wxCMD_LINE_SWITCH, CMD_ENTRY("h"),  CMD_ENTRY("help"),                  CMD_ENTRY("show this help message"),
@@ -330,21 +315,10 @@ class cbMessageOutputNull : public wxMessageOutput
 {
 public:
 
-#if wxCHECK_VERSION(3, 0, 0)
     virtual void Output(const wxString &str) override;
-#else
-    #ifdef WX_ATTRIBUTE_PRINTF
-    virtual void Printf(const wxChar* format, ...)  WX_ATTRIBUTE_PRINTF_2;
-    #else
-    void Printf(const wxChar* format, ...) override  ATTRIBUTE_PRINTF_2;
-    #endif
-#endif // wxCHECK_VERSION
 };
-#if wxCHECK_VERSION(3, 0, 0)
+
 void cbMessageOutputNull::Output(cb_unused const wxString &str){}
-#else
-void cbMessageOutputNull::Printf(cb_unused const wxChar* format, ...){}
-#endif
 } // namespace
 
 IMPLEMENT_APP(CodeBlocksApp) // TODO: This gives a "redundant declaration" warning, though I think it's false. Dig through macro and check.
@@ -355,11 +329,7 @@ BEGIN_EVENT_TABLE(CodeBlocksApp, wxApp)
 END_EVENT_TABLE()
 
 #ifdef __WXMAC__
-#if wxCHECK_VERSION(3, 0, 0)
 #include "wx/osx/core/cfstring.h"
-#else
-#include "wx/mac/corefoundation/cfstring.h"
-#endif
 #include "wx/intl.h"
 
 #include <CoreFoundation/CFBundle.h>
@@ -374,11 +344,7 @@ static wxString GetResourcesDir()
     CFRelease(resourcesURL);
     CFStringRef cfStrPath = CFURLCopyFileSystemPath(absoluteURL,kCFURLPOSIXPathStyle);
     CFRelease(absoluteURL);
-    #if wxCHECK_VERSION(3, 0, 0)
       return wxCFStringRef(cfStrPath).AsString(wxLocale::GetSystemEncoding());
-    #else
-      return wxMacCFStringHolder(cfStrPath).AsString(wxLocale::GetSystemEncoding());
-    #endif
 }
 #endif
 
@@ -484,7 +450,7 @@ void CodeBlocksApp::InitDebugConsole()
     COORD co = {80,2000};
     SetConsoleScreenBufferSize(myhandle, co);
     fprintf(stdout,"CONSOLE DEBUG ACTIVATED\n");
-    // wxLogWindow *myerr = new wxLogWindow(NULL,"debug");
+    // wxLogWindow *myerr = new wxLogWindow(nullptr,"debug");
     #endif
 #endif
 }
@@ -610,6 +576,7 @@ bool CodeBlocksApp::OnInit()
     m_HasWorkSpace         = false;
     m_SafeMode             = false;
     m_BatchWindowAutoClose = true;
+    m_pSingleInstance      = nullptr;
 
     wxTheClipboard->Flush();
 
@@ -697,6 +664,7 @@ bool CodeBlocksApp::OnInit()
                 // On Linux, C::B has to be raised explicitly if it's wanted
                 if (appCfg->ReadBool("/environment/raise_via_ipc", true))
                     connection->Execute("[Raise]");
+
                 connection->Disconnect();
                 delete connection;
                 delete client;
@@ -706,17 +674,11 @@ bool CodeBlocksApp::OnInit()
                 // return false to end the application
                 return false;
             }
+
             // free memory DDE-/IPC-clients, if we are here connection could not be established and there is no need to free it
             delete client;
         }
-        // Now we can start the DDE-/IPC-Server, if we did it earlier we would connect to ourselves
-        if (m_DDE && !m_Batch)
-        {
-            g_DDEServer = new DDEServer(nullptr);
-            g_DDEServer->Create(F(DDE_SERVICE, wxGetUserId().wx_str()));
-        }
 
-        m_pSingleInstance = nullptr;
         if (appCfg->ReadBool("/environment/single_instance", true)
             && !parser.Found("multiple-instance"))
         {
@@ -733,6 +695,13 @@ bool CodeBlocksApp::OnInit()
             }
         }
 
+        // Now we can start the DDE-/IPC-Server, if we did it earlier we would connect to ourselves
+        if (m_DDE && !m_Batch)
+        {
+            g_DDEServer = new DDEServer(nullptr);
+            g_DDEServer->Create(wxString::Format(DDE_SERVICE, wxGetUserId()));
+        }
+
         // Splash screen moved to this place, otherwise it would be short visible, even if we only pass filenames via DDE/IPC
         // we also don't need it, if only a single instance is allowed
         Splash splash(!m_Batch && m_Script.IsEmpty() && m_Splash &&
@@ -746,7 +715,7 @@ bool CodeBlocksApp::OnInit()
         m_Frame = frame;
 
         {
-            const double scalingFactor = frame->GetContentScaleFactor();
+            const double scalingFactor = cbGetContentScaleFactor(*frame);
             const double actualScalingFactor = cbGetActualContentScaleFactor(*frame);
             log->Log(wxString::Format("Initial scaling factor is %.3f (actual: %.3f)",
                                       scalingFactor, actualScalingFactor));
@@ -1171,7 +1140,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine
                 // Really important so that two same files with different names are not loaded
                 // twice. Use the CurrentWorkingDirectory of the client instance to restore the
                 // absolute path to the file.
-                fn.Normalize(wxPATH_NORM_ALL, CWD);
+                fn.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT, CWD);
                 const wxString &paramFullPath = fn.GetFullPath();
 
                 // Is it a project/workspace?
@@ -1309,7 +1278,8 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
         if (!filePart.empty())
         {
             wxFileName fn(filePart);
-            fn.Normalize(); // really important so that two same files with different names are not loaded twice
+            // really important so that two same files with different names are not loaded twice
+            fn.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT);
             if (frame->Open(fn.GetFullPath(), false))
             {
                 EditorBase* eb = Manager::Get()->GetEditorManager()->GetEditor(fn.GetFullPath());

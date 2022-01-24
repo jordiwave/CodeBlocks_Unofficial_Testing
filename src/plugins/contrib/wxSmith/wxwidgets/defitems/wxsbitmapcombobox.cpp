@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12656 $
+* $Id: wxsbitmapcombobox.cpp 12656 2022-01-16 09:56:14Z wh11204 $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsbitmapcombobox.cpp $
 */
 
 
@@ -180,22 +180,24 @@ void wxsBitmapComboBox::OnEnumWidgetProperties(cb_unused long Flags) {
     static wxString         sImageNames[128];
     static const wxChar    *pImageNames[128];
 
-    int                     i,n;
     wxString                ss, tt;
     wxArrayString           aa;
 
 // find available image lists and store them in our local static arrays
 
     FindAllImageLists(aa);
-    n = aa.GetCount();
-    if (n > 127) n = 127;
+    int n = aa.GetCount();
+    if (n > 127)
+        n = 127;
 
-    for(i=0; i<n; i++) {
+    for (int i = 0; i < n; ++i)
+    {
         ss = aa.Item(i);
         sImageNames[i] = ss;
-        pImageNames[i] = (const wxChar *) sImageNames[i];
-    };
-    pImageNames[n] = NULL;
+        pImageNames[i] = sImageNames[i].wx_str();
+    }
+
+    pImageNames[n] = nullptr;
 
     WXS_EDITENUM(wxsBitmapComboBox, mImageList, _("Image List"), _("mImageList"), pImageNames, _("<none>"))
 
@@ -287,7 +289,7 @@ wxString    ss, tt;
 
 // a "," separates the image index from the text of the item
 
-    i = ss.Find(_(","));
+    i = ss.Find(",");
 
 // if a "," was found, parse the index from the text
 // if no ",", then no index and the entire string is text

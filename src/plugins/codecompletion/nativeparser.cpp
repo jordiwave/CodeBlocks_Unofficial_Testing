@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12607 $
+ * $Id: nativeparser.cpp 12607 2021-12-23 08:50:04Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/codecompletion/nativeparser.cpp $
  */
 
 #include <sdk.h>
@@ -2285,7 +2285,7 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString& cpp_path, 
         }
 
         wxFileName fname(path, wxEmptyString);
-        fname.Normalize();
+        fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT);
         fname.SetVolume(fname.GetVolume().MakeUpper());
         if (!fname.DirExists())
             break;

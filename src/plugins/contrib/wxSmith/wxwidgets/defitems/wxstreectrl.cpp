@@ -19,9 +19,9 @@
 * This code is based in part on wxsimagecombobox from the wxSmithImage plug-in,
 * copyright Ron Collins and released under the GPL.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12649 $
+* $Id: wxstreectrl.cpp 12649 2022-01-14 08:40:00Z wh11204 $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxstreectrl.cpp $
 */
 
 #include "wxstreectrl.h"
@@ -327,25 +327,23 @@ void wxsTreeCtrl::OnEnumWidgetProperties(cb_unused long Flags)
     static wxString     sImageNames[128];
     static const wxChar *pImageNames[128];
 
-    int                 i, n;
     wxString            ss, tt;
     wxArrayString       aa;
 
     // find available image lists and store them in our local static arrays
     FindAllImageLists(aa);
-    n = aa.GetCount();
+    int n = aa.GetCount();
     if(n > 127)
-    {
         n = 127;
-    }
 
-    for(i = 0; i < n; i++)
+    for (int i = 0; i < n; ++i)
     {
         ss = aa.Item(i);
         sImageNames[i] = ss;
-        pImageNames[i] = (const wxChar *) sImageNames[i];
+        pImageNames[i] = sImageNames[i].wx_str();
     }
-    pImageNames[n] = NULL;
+
+    pImageNames[n] = nullptr;
 
     WXS_EDITENUM(wxsTreeCtrl, m_sImageList, _("Image List"), _T("image_list"), pImageNames, _("<none>"))
 

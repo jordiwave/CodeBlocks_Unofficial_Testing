@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12673 $
+ * $Id: main.cpp 12673 2022-01-22 10:42:09Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/main.cpp $
  */
 
 #include <sdk.h>
@@ -20,6 +20,7 @@
 #include "dlgabout.h"
 #include "dlgaboutplugin.h"
 #include "environmentsettingsdlg.h"
+#include "dlghelpsysteminformation.h"
 #include "infopane.h"
 #include "infowindow.h"
 #include "main.h"
@@ -449,8 +450,9 @@ int idSettingsDebugger       = XRCID("idSettingsDebugger");
 int idPluginsManagePlugins   = XRCID("idPluginsManagePlugins");
 int idSettingsScripting      = XRCID("idSettingsScripting");
 
-int idHelpTips    = XRCID("idHelpTips");
-int idHelpPlugins = XRCID("idHelpPlugins");
+int idHelpTips                  = XRCID("idHelpTips");
+int idHelpSystemInformation     = XRCID("idHelpSystemInformation");
+int idHelpPlugins               = XRCID("idHelpPlugins");
 
 int idLeftSash              = XRCID("idLeftSash");
 int idBottomSash            = XRCID("idBottomSash");
@@ -694,10 +696,11 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idPluginsManagePlugins,   MainFrame::OnSettingsPlugins)
     EVT_MENU(idSettingsScripting,      MainFrame::OnSettingsScripting)
 
-    EVT_MENU(wxID_ABOUT, MainFrame::OnHelpAbout)
-    EVT_MENU(idHelpTips, MainFrame::OnHelpTips)
+    EVT_MENU(idHelpTips,                MainFrame::OnHelpTips)
+    EVT_MENU(idHelpSystemInformation,   MainFrame::OnHelpSystemInformation)
+    EVT_MENU(wxID_ABOUT,                MainFrame::OnHelpAbout)
 
-    EVT_MENU(idStartHerePageLink,     MainFrame::OnStartHereLink)
+    EVT_MENU(idStartHerePageLink,       MainFrame::OnStartHereLink)
 
     EVT_CBAUIBOOK_LEFT_DCLICK(ID_NBEditorManager, MainFrame::OnNotebookDoubleClick)
     EVT_NOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, MainFrame::OnPageChanged)
@@ -1035,8 +1038,6 @@ void MainFrame::CreateIDE()
     DoUpdateEditorStyle();
 
     m_pEdMan->GetNotebook()->SetDropTarget(new cbFileDropTarget(this));
-    if (m_pPrjManUI->GetNotebook())
-        m_pPrjManUI->GetNotebook()->SetDropTarget(new cbFileDropTarget(this));
 
     Manager::Get()->GetColourManager()->Load();
 }
@@ -1414,12 +1415,12 @@ void MainFrame::CreateToolbars()
     m_pToolbar->Realize();
 
     // Right click on the main toolbar will popup a context menu
-    m_pToolbar->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick), NULL, this);
+    m_pToolbar->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick), nullptr, this);
 
     m_pToolbar->SetInitialSize();
 
     // Right click on the debugger toolbar will popup a context menu
-    m_debuggerToolbarHandler->GetToolbar()->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick), NULL, this );
+    m_debuggerToolbarHandler->GetToolbar()->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick), nullptr, this );
 
     std::vector<ToolbarInfo> toolbars;
 
@@ -1441,7 +1442,7 @@ void MainFrame::CreateToolbars()
                 toolbars.push_back(info);
                 // support showing context menu of the plugins' toolbar
                 info.toolbar->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED,
-                                      wxCommandEventHandler(MainFrame::OnToolBarRightClick), NULL, this );
+                                      wxCommandEventHandler(MainFrame::OnToolBarRightClick), nullptr, this );
             }
         }
     }
@@ -2075,11 +2076,7 @@ void MainFrame::DoSelectLayout(const wxString& name)
         {
             if (!items[i]->IsCheckable())
                 continue;
-#if wxCHECK_VERSION(3, 0, 0)
             items[i]->Check(items[i]->GetItemLabel().IsSameAs(name));
-#else
-            items[i]->Check(items[i]->GetText().IsSameAs(name));
-#endif
         }
 
         if (!m_LastLayoutIsTemp)
@@ -2203,7 +2200,7 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
                 m_LayoutManager.AddPane(toolbarInfo.toolbar, paneInfo. ToolbarPane().Top().Row(row).Position(position));
                 // Add the event handler for mouse right click
                 toolbarInfo.toolbar->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED,
-                                             wxCommandEventHandler(MainFrame::OnToolBarRightClick), NULL, this);
+                                             wxCommandEventHandler(MainFrame::OnToolBarRightClick), nullptr, this);
 
                 DoUpdateLayout();
             }
@@ -2215,7 +2212,8 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
 bool MainFrame::Open(const wxString& filename, bool addToHistory)
 {
     wxFileName fn(filename);
-    fn.Normalize(); // really important so that two same files with different names are not loaded twice
+    // really important so that two same files with different names are not loaded twice
+    fn.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT);
     wxString name = fn.GetFullPath();
     LogManager *logger = Manager::Get()->GetLogManager();
     logger->DebugLog(_T("Opening file ") + name);
@@ -2340,6 +2338,10 @@ bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
     cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename, true);
     if (prj)
     {
+        // Target selection wxChoice may be wider than before, fit the toolbars so the compiler
+        // toolbar does not cover the one on the right
+        FitToolbars(m_LayoutManager, this);
+        DoUpdateLayout();
         if (addToHistory)
             m_projectsHistory.AddToHistory(prj->GetFilename());
         return true;
@@ -2401,12 +2403,7 @@ void MainFrame::DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefi
             break;
 
         default: // default style
-            #if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(3, 0, 0)
-            target->SetArtProvider(new NbStyleGTK());
-            #else
             target->SetArtProvider(new wxAuiDefaultTabArt());
-            #endif
-            break;
     }
 
     target->SetTabCtrlHeight(-1);
@@ -2474,6 +2471,10 @@ void MainFrame::DoUpdateLayoutColours()
     art->SetColour(wxAUI_DOCKART_INACTIVE_CAPTION_COLOUR,          cfg->ReadColour(_T("/environment/aui/inactive_caption_colour"), art->GetColour(wxAUI_DOCKART_INACTIVE_CAPTION_COLOUR)));
     art->SetColour(wxAUI_DOCKART_INACTIVE_CAPTION_GRADIENT_COLOUR, cfg->ReadColour(_T("/environment/aui/inactive_caption_gradient_colour"), art->GetColour(wxAUI_DOCKART_INACTIVE_CAPTION_GRADIENT_COLOUR)));
     art->SetColour(wxAUI_DOCKART_INACTIVE_CAPTION_TEXT_COLOUR,     cfg->ReadColour(_T("/environment/aui/inactive_caption_text_colour"), art->GetColour(wxAUI_DOCKART_INACTIVE_CAPTION_TEXT_COLOUR)));
+
+    wxFont font = art->GetFont(wxAUI_DOCKART_CAPTION_FONT);
+    font.SetPointSize(cfg->ReadInt(_T("/environment/aui/header_font_size"), art->GetFont(wxAUI_DOCKART_CAPTION_FONT).GetPointSize()));
+    art->SetFont(wxAUI_DOCKART_CAPTION_FONT, font);
 
     DoUpdateLayout();
 }
@@ -2633,7 +2634,7 @@ void MainFrame::TerminateRecentFilesHistory()
 wxString MainFrame::GetEditorDescription(EditorBase* eb)
 {
     wxString descr = wxEmptyString;
-    cbProject* prj = NULL;
+    cbProject* prj = nullptr;
     if (eb && eb->IsBuiltinEditor())
     {
         ProjectFile* prjf = ((cbEditor*)eb)->GetProjectFile();
@@ -3086,10 +3087,10 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
 
     {
         // Check if any compiler plugin is building and ask the user if he/she wants to stop it.
-        bool hasRunning = cbHasRunningCompilers(Manager::Get()->GetPluginManager());
-        if (hasRunning)
+        if (cbHasRunningCompilers(Manager::Get()->GetPluginManager()))
         {
-            int result = cbMessageBox(_("Currently compiling. Stop compilation and exit?"),
+            int result = cbMessageBox(_("Code::Blocks is currently compiling or running an application.\n"
+                                        "Do you want to stop the action and exit?"),
                                       _("Question"), wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION,
                                       this);
             if (result == wxID_YES)
@@ -3144,6 +3145,18 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     // this stops it from crashing, when no plugins are loaded
     while (GetEventHandler() != this)
         PopEventHandler(false);
+
+    #if   defined ( __WIN32__ ) || defined ( _WIN64 )
+    // For Windows, close shown floating windows before shutdown to avoid hangs in Hide() and
+    // crashes in Manager::Shutdown();
+    wxAuiPaneInfoArray& all_panes = m_LayoutManager.GetAllPanes();
+    for(size_t ii = 0; ii < all_panes.Count(); ++ii)
+    {
+        wxAuiPaneInfo paneInfo = all_panes[ii];
+        if (paneInfo.IsShown() and paneInfo.IsFloating())
+            m_LayoutManager.ClosePane(paneInfo);
+    }
+    #endif
 
     // Hide the window
     Hide();
@@ -4457,6 +4470,13 @@ void MainFrame::OnHelpTips(cb_unused wxCommandEvent& event)
     ShowTips(true);
 }
 
+void MainFrame::OnHelpSystemInformation(cb_unused wxCommandEvent& event)
+{
+    dlgHelpSystemInformation dlg(this);
+    PlaceWindow(&dlg, pdlHead);
+    dlg.ShowModal();
+}
+
 void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
 {
     if (Manager::IsAppShuttingDown())
@@ -4785,13 +4805,9 @@ void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
 
     if (Manager::Get()->GetEditorManager() && event.GetEditor() == Manager::Get()->GetEditorManager()->GetActiveEditor())
     {
-#if wxCHECK_VERSION(3, 0, 0)
         // Execute the code to update the status bar outside of the paint event for scintilla.
         // Executing this function directly in the event handler causes redraw problems on Windows.
         CallAfter(&MainFrame::DoUpdateStatusBar);
-#else
-        DoUpdateStatusBar();
-#endif // defined(__wxMSW__) && wxCHECK_VERSION(3, 0, 0)
     }
 
     event.Skip();
@@ -4923,7 +4939,7 @@ void MainFrame::OnSwitchTabs(cb_unused wxCommandEvent& event)
     {   // Switch tabs editor with last used order
         int index = 0;
         cbNotebookStack* body;
-        for (body = Manager::Get()->GetEditorManager()->GetNotebookStack(); body != NULL; body = body->next)
+        for (body = Manager::Get()->GetEditorManager()->GetNotebookStack(); body != nullptr; body = body->next)
         {
             index = nb->GetPageIndex(body->window);
             if (index == wxNOT_FOUND)
@@ -4968,7 +4984,7 @@ void MainFrame::OnToggleStartPage(cb_unused wxCommandEvent& event)
 {
 
     int toggle=-1;
-    if(Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle)==NULL)
+    if(Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle)==nullptr)
     {
         toggle=1;
     }

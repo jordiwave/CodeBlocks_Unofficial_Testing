@@ -18,9 +18,9 @@
 				<Option projectResourceIncludeDirsRelation="0" />
 			</Target>
 			<Environment>
-				<Variable name="WX_CFG" value="" />
-				<Variable name="WX_SUFFIX" value="u" />
-				<Variable name="WX_VERSION" value="31" />
+				<!-- Variable name="WX_CFG" value="" / -->
+				<!-- Variable name="WX_SUFFIX" value="u" / -->
+				<!-- Variable name="WX_VERSION" value="31" / -->
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -34,7 +34,8 @@
 			<Add option="-fexceptions" />
 			<Add option="-mthreads" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DNOPCH" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DCB_PRECOMP" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-D_WIN64" />
@@ -43,7 +44,7 @@
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-std=gnu++11" />
 			<Add directory="$(#WX31_64.include)" />
-			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX31_64.lib)/gcc_dll$(#WX31.WX_CFG)/msw$(#WX31.WX_SUFFIX)" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
@@ -57,9 +58,9 @@
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-mthreads" />
 			<Add library="wxflatnotebook" />
-			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
 			<Add library="codeblocks" />
-			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)" />
+			<Add directory="$(#WX31_64.lib)/gcc_dll$(#WX31.WX_CFG)" />
 			<Add directory="../../../devel31_64" />
 		</Linker>
 		<ExtraCommands>

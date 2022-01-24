@@ -157,6 +157,17 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING(whether to build the clangd client plugin)
+clangdclient_default="yes"
+AC_ARG_ENABLE(clangd-client, [AC_HELP_STRING([--enable-clangd-client], [build the clangd client plugin (default YES)])],,
+                       enable_clangdclient=$clangdclient_default)
+AM_CONDITIONAL([BUILD_CLANGDCLIENT], [test "x$enable_clangdclient" = "xyes"])
+if test "x$enable_clangdclient" = "xyes"; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
 AC_MSG_CHECKING(whether to build the class wizard plugin)
 cw_default="yes"
 AC_ARG_ENABLE(class-wizard, [AC_HELP_STRING([--enable-class-wizard], [build the class wizard plugin (default YES)])],,
@@ -207,6 +218,17 @@ AC_ARG_ENABLE(mime-handler, [AC_HELP_STRING([--enable-mime-handler], [build the 
                        enable_mime=$mime_default)
 AM_CONDITIONAL([BUILD_MIMEHANDLER], [test "x$enable_mime" = "xyes"])
 if test "x$enable_mime" = "xyes"; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING(whether to build the displayevents plugin)
+dsplayevents_default="yes"
+AC_ARG_ENABLE(displayevents, [AC_HELP_STRING([--enable-displayevents], [build the displayevents plugin (default YES)])],,
+                       enable_displayevents=$displayevents_default)
+AM_CONDITIONAL([BUILD_DISPLAYEVENTS], [test "x$enable_displayevents" = "xyes"])
+if test "x$enable_displayevents" = "xyes"; then
 	AC_MSG_RESULT(yes)
 else
 	AC_MSG_RESULT(no)

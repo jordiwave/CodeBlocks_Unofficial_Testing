@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12606 $
+ * $Id: editorcolourset.cpp 12606 2021-12-22 09:25:39Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/editorcolourset.cpp $
  */
 
 #include "sdk_precomp.h"
@@ -430,7 +430,7 @@ HighlightLanguage EditorColourSet::GetLanguageForFilename(const wxString& filena
             line = text.ReadLine();
         if (!line.IsEmpty())
         {
-            wxRegEx reSheBang(wxT("#![ \t]*([a-zA-Z/]+)[ \t]*([a-zA-Z/]*)"));
+            wxRegEx reSheBang("#![[:blank:]]*([a-zA-Z/]+)[[:blank:]]*([a-zA-Z/]*)");
             if (reSheBang.Matches(line))
             {
                 wxString prog = reSheBang.GetMatch(line, 1);
@@ -835,11 +835,7 @@ void EditorColourSet::SetKeywords(HighlightLanguage lang, int idx, const wxStrin
         wxString tmp(_T(' '), keywords.length()); // faster than using Alloc()
 
         const wxChar *src = keywords.c_str();
-        #if wxCHECK_VERSION(3, 0, 0)
         wxStringCharType *dst = const_cast<wxStringCharType*>(tmp.wx_str());
-        #else
-        wxChar *dst = (wxChar *) tmp.c_str();
-        #endif
         wxChar c;
         size_t len = 0;
 

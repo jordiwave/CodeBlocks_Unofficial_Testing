@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12628 $
+ * $Id: startherepage.cpp 12628 2022-01-02 20:05:36Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/startherepage.cpp $
  */
 
 #include <sdk.h>
@@ -133,6 +133,15 @@ void ReplaceRecentProjectFiles(wxString &buf, const wxFileHistory &projects, con
     buf.Replace(_T("CB_TXT_VISIT_FORUMS"), _("Visit the Code::Blocks forums"));
     buf.Replace(_T("CB_TXT_BUG_FEATURE"), _("Report a bug or request a new feature"));
     buf.Replace(_T("CB_TXT_TIP_OF_THE_DAY"), _("Tip of the Day"));
+}
+
+void CopyToClipboard(const wxString& text)
+{
+    if (wxTheClipboard->Open())
+    {
+        wxTheClipboard->SetData(new wxTextDataObject(text));
+        wxTheClipboard->Close();
+    }
 }
 
 } // anonymous namespace
@@ -276,11 +285,12 @@ bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)
     //If it's already loading something, stop here
     if (Manager::Get()->GetProjectManager()->IsLoading())
         return true;
+
     if (!m_pOwner)
         return true;
 
     wxString href = link.GetHref();
-    if (href.StartsWith(_T("CB_CMD_")))
+    if (href.StartsWith("CB_CMD_"))
     {
         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idStartHerePageLink);
         evt.SetString(link.GetHref());
@@ -288,25 +298,16 @@ bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)
         return true;
     }
 
-    if (   href.IsSameAs(_T("http://www.codeblocks.org/"))
-        || href.StartsWith(_T("https://sourceforge.net/p/codeblocks/tickets")) )
+    if (   href.IsSameAs("https://www.codeblocks.org/")
+        || href.StartsWith("https://sourceforge.net/p/codeblocks/tickets"))
     {
-        wxTextDataObject* data = new wxTextDataObject(revInfo);
-        if (wxTheClipboard->Open())
-        {
-            wxTheClipboard->SetData(data);
-            wxTheClipboard->Close();
-        }
+        CopyToClipboard(revInfo);
+        return false;
     }
 
-    if(href.IsSameAs(_T("rev")))
+    if (href.IsSameAs("rev"))
     {
-        wxTextDataObject *data = new wxTextDataObject(revInfo);
-        if (wxTheClipboard->Open())
-        {
-            wxTheClipboard->SetData(data);
-            wxTheClipboard->Close();
-        }
+        CopyToClipboard(revInfo);
         return true;
     }
 

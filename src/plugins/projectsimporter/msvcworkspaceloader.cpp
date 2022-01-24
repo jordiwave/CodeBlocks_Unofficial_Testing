@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12607 $
+ * $Id: msvcworkspaceloader.cpp 12607 2021-12-23 08:50:04Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/projectsimporter/msvcworkspaceloader.cpp $
  */
 
 #include "sdk.h"
@@ -119,7 +119,7 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename, wxString& Title)
     cbProject* project = 0;
     cbProject* firstproject = 0;
     wxFileName wfname = filename;
-    wfname.Normalize();
+    wfname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT);
     Manager::Get()->GetLogManager()->DebugLog(_T("Workspace dir: ") + wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
 
     while (!file.Eof())
@@ -180,7 +180,8 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename, wxString& Title)
             }
 
             wxFileName fname(UnixFilename(prjFile));
-            fname.Normalize(wxPATH_NORM_ALL, wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
+            fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT,
+                            wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
             if (!fname.FileExists())
             {
                 Manager::Get()->GetLogManager()->DebugLog(F(_T("Project '%s' from '%s' not found."), prjTitle.wx_str(), fname.GetFullPath().wx_str()));

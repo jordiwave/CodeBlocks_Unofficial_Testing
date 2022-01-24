@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with HexEditor. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12233 $
+* $Id: HexEditor.cpp 12233 2020-11-02 00:18:32Z d_anselmi $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/HexEditor/HexEditor.cpp $
 */
 
 #include <sdk.h>

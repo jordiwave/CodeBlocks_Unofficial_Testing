@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 10268 $
+ * $Id: EmbeddedHtmlPanel.cpp 10268 2015-05-15 10:56:55Z jenslody $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/defaultmimehandler/EmbeddedHtmlPanel.cpp $
  */
 
 #include "sdk.h"

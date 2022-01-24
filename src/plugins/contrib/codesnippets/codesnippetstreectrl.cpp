@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id$
+// RCS-ID: $Id: codesnippetstreectrl.cpp 12655 2022-01-15 20:46:32Z wh11204 $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -87,7 +87,7 @@ CodeSnippetsTreeCtrl::CodeSnippetsTreeCtrl(wxWindow *parent, const wxWindowID id
 {
     m_fileChanged = false;
     m_bMouseExitedWindow = false;
-    m_pPropertiesDialog = 0;
+    m_pPropertiesDialog = nullptr;
     m_bShutDown = false;
     m_mimeDatabase = 0;
     m_bBeginInternalDrag = false;
@@ -1816,7 +1816,7 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(SnippetProperty* pdlg, wxSemaphore& wait
         if ( GetConfig()->IsPlugin() )
             GetConfig()->GetMenuBar()->Enable(idViewSnippets, true);
 
-        m_pPropertiesDialog = 0;
+        m_pPropertiesDialog = nullptr;
 
         return retcode;
 }
@@ -1928,7 +1928,7 @@ void CodeSnippetsTreeCtrl::OnIdle()
         // avoid excessive refresh
         wxString currentValue = GetItemText(GetRootItem());
         if (currentValue != nameOnly)
-            SetItemText( GetRootItem(), wxString::Format(_("%s"), nameOnly.GetData()));
+            SetItemText( GetRootItem(), wxString::Format("%s", nameOnly.GetData()));
     }
 
     ////event.Skip(); this routine is called from another OnIdle which does the

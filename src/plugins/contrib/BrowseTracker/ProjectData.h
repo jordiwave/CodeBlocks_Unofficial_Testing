@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id$
+// RCS-ID: $Id: ProjectData.h 11347 2018-03-26 14:24:13Z pecanh $
 #ifndef PROJECTDATA_H
 #define PROJECTDATA_H
 

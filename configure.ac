@@ -405,6 +405,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/astyle/Makefile
 	src/plugins/astyle/resources/Makefile
 	src/plugins/autosave/Makefile
+	src/plugins/clangd_client/Makefile
+	src/plugins/clangd_client/src/resources/Makefile
 	src/plugins/classwizard/Makefile
 	src/plugins/classwizard/resources/Makefile
 	src/plugins/codecompletion/Makefile
@@ -417,6 +419,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/debuggergdb/resources/Makefile
 	src/plugins/defaultmimehandler/Makefile
 	src/plugins/defaultmimehandler/resources/Makefile
+	src/plugins/displayevents/Makefile
 	src/plugins/openfileslist/Makefile
 	src/plugins/occurrenceshighlighting/Makefile
 	src/plugins/occurrenceshighlighting/resources/Makefile

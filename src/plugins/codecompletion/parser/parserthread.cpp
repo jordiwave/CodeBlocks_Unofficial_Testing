@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12598 $
+ * $Id: parserthread.cpp 12598 2021-12-20 19:38:25Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/codecompletion/parser/parserthread.cpp $
  */
 
 #include <sdk.h>
@@ -618,7 +618,7 @@ void ParserThread::DoParse()
 
             case ParserConsts::clbrace_chr:
                 {
-                    m_LastParent = 0L;
+                    m_LastParent = nullptr;
                     m_LastScope = tsUndefined;
                     m_Str.Clear();
                     // the only time we get to find a } is when recursively called by e.g. HandleClass
@@ -815,7 +815,7 @@ void ParserThread::DoParse()
                             break;
                     }
                     if (    !m_Str.IsEmpty()
-                         && m_LastParent != 0L
+                         && m_LastParent != nullptr
                          && m_LastParent->m_Index != -1
                          && m_LastParent->m_TokenKind == tkNamespace )
                     {
@@ -2709,7 +2709,7 @@ void ParserThread::HandleEnum()
     }
 
     // the token is now the expected enum name
-    Token* newEnum = 0L;
+    Token* newEnum = nullptr;
     unsigned int level = 0;
     if (   wxIsalpha(token.GetChar(0))
         || (token.GetChar(0) == ParserConsts::underscore_chr) )

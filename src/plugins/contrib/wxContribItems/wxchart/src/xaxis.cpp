@@ -5,7 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (C) 2006, Paolo Gava
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: xaxis.cpp 10024 2014-11-06 09:23:26Z jenslody $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

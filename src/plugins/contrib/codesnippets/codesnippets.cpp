@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// $Id$
+// $Id: codesnippets.cpp 12282 2021-01-01 06:41:09Z mortenmacfly $
 
 #include <cstring>
 #include "sdk.h"

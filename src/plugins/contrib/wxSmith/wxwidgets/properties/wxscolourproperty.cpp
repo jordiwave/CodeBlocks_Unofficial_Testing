@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12649 $
+* $Id: wxscolourproperty.cpp 12649 2022-01-14 08:40:00Z wh11204 $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/properties/wxscolourproperty.cpp $
 */
 
 #include "wxscolourproperty.h"
@@ -39,9 +39,14 @@ using namespace wxsFlags;
 
 namespace
 {
+#pragma push_macro("_")
+#undef _
+
 #if wxCHECK_VERSION(3, 1, 0)
+#define _(x)   x
     static const char* wxsColourLabels[] = {
 #else
+#define _(x)   L##x
     static const wxChar* wxsColourLabels[] = {
 #endif // wxCHECK_VERSION
         _("Default"),
@@ -74,13 +79,13 @@ namespace
         _("Listbox"),
         _("Hot light"),
         _("Gradient of active caption"),
-        _("Gradnent of inactive caption"),
+        _("Gradient of inactive caption"),
         _("Selected menu item"),
         _("Menu bar"),
-        0
+        nullptr
     };
 
-    const int wxsColourCount = (sizeof(wxsColourLabels) / sizeof(wxsColourLabels[0])) - 1;
+#pragma pop_macro("_")
 
     static const long wxsColourValues[] = {
         wxsCOLOUR_DEFAULT,

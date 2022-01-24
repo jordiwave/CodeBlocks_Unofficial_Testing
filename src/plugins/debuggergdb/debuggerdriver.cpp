@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 11830 $
+ * $Id: debuggerdriver.cpp 11830 2019-08-28 22:59:36Z pecanh $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/debuggergdb/debuggerdriver.cpp $
  */
 
 #include <sdk.h>

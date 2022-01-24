@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12610 $
+ * $Id: fileanalysis.cpp 12610 2021-12-23 19:56:19Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/headerfixup/fileanalysis.cpp $
  */
 
 #include <sdk.h>
@@ -23,8 +23,8 @@
 #include "cbstyledtextctrl.h"
 #include "fileanalysis.h"
 
-const wxString reInclude = _T("^[ \t]*#[ \t]*include[ \t]+[\"<]([^\">]+)[\">]");
-const wxString reFwdDecl = _T("class[ \\t]*([A-Za-z]+[A-Za-z0-9_]*);");
+const wxString reInclude = _T("^[[:blank:]]*#[[:blank:]]*include[[:blank:]]+[\"<]([^\">]+)[\">]");
+const wxString reFwdDecl = _T("class[[:blank:]]*([A-Za-z]+[A-Za-z0-9_]*);");
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 

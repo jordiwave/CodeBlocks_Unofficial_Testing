@@ -62,7 +62,7 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="`pkg-config gdk-2.0 --cflags`" />
+					<Add option="`pkg-config gdk-$(PKG_CONFIG_GTK_VERSION) --cflags`" />
 					<Add option="-D__WX__" />
 					<Add option="-DGTK" />
 					<Add option="-DLINK_LEXERS" />
@@ -103,7 +103,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-lwxscintilla_cb" />
-					<Add option="`pkg-config glib-2.0 gdk-2.0 --libs`" />
+					<Add option="`pkg-config glib-2.0 gdk-$(PKG_CONFIG_GTK_VERSION) --libs`" />
 					<Add library="txml" />
 					<Add library="squirrel" />
 				</Linker>
@@ -260,6 +260,61 @@
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 				</Linker>
+			</Target>
+			<Target title="Clangd_Client">
+				<Option output="devel30/share/codeblocks/plugins/clangd_client" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance --no-splash-screen --verbose -p debug --no-ipc " />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add directory="include" />
+					<Add directory="plugins/clangd_client/src" />
+					<Add directory="plugins/clangd_client/src/LSPclient" />
+					<Add directory="plugins/clangd_client/src/LSPclient/include" />
+					<Add directory="plugins/clangd_client/src/unixprocess" />
+				</Compiler>
+				<Linker>
+					<Add option="`$(WX_CONFIG) --libs std,aui,propgrid`" />
+					<Add option="-Wl,--no-undefined" />
+					<Add library="codeblocks" />
+				</Linker>
+				<ExtraCommands>
+					<!-- debugging - <Add before="echo CODEBLOCKS: $(CODEBLOCKS)" /> -->
+					<!-- debugging - <Add before="echo TARGET_DEVEL_DIR: $(TARGET_DEVEL_DIR)" /> -->
+					<!-- debugging - <Add before="echo PROJECT_DIR: $(PROJECT_DIR)" /> -->
+					<!-- debugging - <Add before="echo PROJECT_TOPDIRECTORY: $(PROJECT_TOPDIRECTORY)" /> -->
+					<!-- debugging - <Add before="echo PLUGINS: $(PLUGINS)" /> -->
+					<!-- debugging - <Add before="g++ version" /> -->
+					<!-- debugging - <Mode before="always" /> -->
+
+					<Add after="mkdir -p devel30/share/codeblocks" />
+					
+					<!-- Create the clangd_client.zip file -->
+					<Add after='if [ -e %PROJECTDIR%plugins/clangd_client/clangd_client.zip ] ; then  rm %PROJECTDIR%plugins/clangd_client/clangd_client.zip; fi;' />
+					<Add after='zip -jq9 %PROJECTDIR%plugins/clangd_client/clangd_client.zip %PROJECTDIR%plugins/clangd_client/src/resources/manifest.xml' />
+					<Add after='zip -jq9 %PROJECTDIR%plugins/clangd_client/clangd_client.zip %PROJECTDIR%plugins/clangd_client/src/resources/*.xrc' />
+				    <Add after='cd %PROJECTDIR%plugins/clangd_client/src/resources &amp;&amp; zip -rq9 ../../clangd_client.zip images;' />
+					<Add after='cp %PROJECTDIR%plugins/clangd_client/clangd_client.zip devel30/share/codeblocks' /> -->
+
+					<!-- Create the clangd_client.cbplugin file using the stripped dll -->
+					<!-- clangd_client.cbplugin is NOT BUILT BY DEFAULT as requested by PECAN
+						<Add after='if [ -e %PROJECTDIR%plugins/clangd_client/clangd_client.cbplugin ] ; then  rm %PROJECTDIR%plugins/clangd_client/clangd_client.cbplugin; fi;'/>
+						<Add after='cp devel30/share/codeblocks/plugins/libclangd_client.so %PROJECTDIR%plugins/clangd_client' />
+						<Add after='strip %PROJECTDIR%plugins/clangd_client/libclangd_client.so' />
+						<Add after='zip -jq9 %PROJECTDIR%plugins/clangd_client/clangd_client.cbplugin %PROJECTDIR%plugins/clangd_client/libclangd_client.so' />
+						<Add after='zip -jq9 %PROJECTDIR%plugins/clangd_client/clangd_client.cbplugin %PROJECTDIR%plugins/clangd_client/clangd_client.zip' />
+						<Add after='zip -jq9 %PROJECTDIR%plugins/clangd_client/clangd_client.cbplugin %PROJECTDIR%plugins/clangd_client/documentation-install/*.txt' />
+						<Add after='rm %PROJECTDIR%plugins/clangd_client/libclangd_client.so' />
+					-->
+
+					<Mode after="always" />
+
+				</ExtraCommands>
 			</Target>
 			<Target title="Class wizard">
 				<Option output="devel30/share/codeblocks/plugins/classwizard" prefix_auto="1" extension_auto="1" />
@@ -419,34 +474,43 @@
 				</Linker>
 			</Target>
 			<Environment>
+				<Variable name="PKG_CONFIG_GTK_VERSION" value="3.0" />
 				<Variable name="WX_CFG" value="" />
-				<Variable name="WX_CONFIG" value="wx-config --version=3.0" />
+				<Variable name="WX_CONFIG" value="wx-config --toolkit=gtk3" />
 				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_VERSION" value="30" />
+				<!-- Examples for GTK2 and GTK3 are blow.
+				<Variable name="WX_CONFIG__GTK2" value="wx-config --version=2.0 --toolkit=gtk2" />
+				<Variable name="PKG_CONFIG_GTK_VERSION__GTK2" value="2.0" />
+				<Variable name="WX_CONFIG__GTK3" value="wx-config --version=3.0 --toolkit=gtk3" />
+				<Variable name="PKG_CONFIG_GTK_VERSION__GTK3" value="3.0" />
+				-->
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;scintilla;sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;" />
-			<Add alias="Core app &amp; plugins" targets="sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;" />
+			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;scintilla;sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Clangd_Client;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;" />
+			<Add alias="Core app &amp; plugins" targets="sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Clangd_Client;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;" />
 			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;scintilla;Compiler depslib;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-std=c90" />
+			<Add option="-fPIC" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
-			<Add option="-fPIC" />
 			<Add option="`$(WX_CONFIG) --cflags`" />
+			<Add option="`pkg-config --cflags gtk+-$(PKG_CONFIG_GTK_VERSION)`" />
+			<Add option="-std=c++11" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
-			<Add option="-std=c++11" />
 			<Add directory="sdk/wxscintilla/include" />
 			<Add directory="include/tinyxml" />
 		</Compiler>
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs std,aui,propgrid`" />
+			<Add option="`pkg-config --libs gtk+-$(PKG_CONFIG_GTK_VERSION)`" />
 			<Add option="-Wl,--no-undefined" />
 			<Add directory="devel30" />
 		</Linker>
@@ -915,6 +979,249 @@
 		<Unit filename="plugins/autosave/manifest.xml">
 			<Option target="Autosave" />
 		</Unit>
+		<Unit filename="plugins/clangd_client/src/ClangLocator.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/ClangLocator.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/LSP_SymbolKind.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/LSPclient/include/client.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/LSPclient/include/json.hpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/LSPclient/include/protocol.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/LSPclient/include/transport.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/LSPclient/include/uri.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/LSPclient/lspdiagresultslog.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/LSPclient/lspdiagresultslog.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/LSPclient/src/client.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/Version.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/IdleCallbackHandler.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/LSPEventCallbackHandler.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/ccoptionsdlg.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/ccoptionsdlg.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/ccoptionsprjdlg.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/ccoptionsprjdlg.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/cctreectrl.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/cctreectrl.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/classbrowser.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/classbrowser.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/classbrowserbuilderthread.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/classbrowserbuilderthread.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/codecompletion.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/codecompletion.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/coderefactoring.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/coderefactoring.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/doxygen_parser.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/doxygen_parser.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/gotofunctiondlg.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/gotofunctiondlg.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/insertclassmethoddlg.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/insertclassmethoddlg.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parsemanager.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parsemanager.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parsemanager_base.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parsemanager_base.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/LSP_symbolsparser.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/LSP_symbolsparser.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/LSP_tokenizer.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/LSP_tokenizer.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/ccdebuginfo.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/ccdebuginfo.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/cclogger.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/cclogger.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/expression.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/expression.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/parser.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/parser.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/parser_base.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/parser_base.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/profiletimer.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/profiletimer.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/searchtree.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/searchtree.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/token.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/token.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/tokenizer.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/tokenizer.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/tokentree.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/parser/tokentree.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/selectincludefile.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/selectincludefile.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/codecompletion/wxsmith/goto_function.wxs">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/resources/clclassbrowser.xrc">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/resources/clcodecompletion_toolbar.xrc">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/resources/clinsert_class_method.xrc">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/resources/clproject_settings.xrc">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/resources/clselectincludefile.xrc">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/resources/clsettings.xrc">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/unixprocess/StringUtils.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/unixprocess/StringUtils.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/unixprocess/asyncThreadTypes.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/unixprocess/asyncThreadTypes.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/unixprocess/asyncprocess/UnixProcess.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/unixprocess/asyncprocess/UnixProcess.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/unixprocess/fileutils.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/unixprocess/fileutils.h">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/unixprocess/procutils.cpp">
+			<Option target="Clangd_Client" />
+		</Unit>
+		<Unit filename="plugins/clangd_client/src/unixprocess/procutils.h">
+			<Option target="Clangd_Client" />
+		</Unit>
 		<Unit filename="plugins/classwizard/classwizard.cpp">
 			<Option target="Class wizard" />
 		</Unit>
@@ -1376,10 +1683,16 @@
 		<Unit filename="plugins/compilergcc/resources/compiler_toolbar.xrc">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/compiler_android-gcc.xml">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/compiler_avr-gcc.xml">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/compiler_bcc.xml">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/compiler_bfin-elf-gcc.xml">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/compiler_clang.xml">
@@ -1394,13 +1707,25 @@
 		<Unit filename="plugins/compilergcc/resources/compilers/compiler_ldc.xml">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/compiler_lm32-gcc.xml">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/compiler_lm8-gcc.xml">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/compiler_msp430-gcc.xml">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/compiler_mw.xml">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/compiler_null.xml">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/compiler_pgifortran.xml">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/compiler_powerpc-eabi.xml">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/compiler_ppc-gcc.xml">
@@ -1415,6 +1740,12 @@
 		<Unit filename="plugins/compilergcc/resources/compilers/compiler_tricore-gcc.xml">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/compiler_zpu-gcc.xml">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/options_android-gcc.xml">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_arm-elf-gcc.xml">
 			<Option target="Compiler" />
 		</Unit>
@@ -1422,6 +1753,9 @@
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_bcc.xml">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/options_bfin-elf-gcc.xml">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_clang.xml">
@@ -1508,6 +1842,12 @@
 		<Unit filename="plugins/compilergcc/resources/compilers/options_ldc.xml">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/options_lm32-gcc.xml">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/options_lm8-gcc.xml">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_msp430-gcc.xml">
 			<Option target="Compiler" />
 		</Unit>
@@ -1520,6 +1860,9 @@
 		<Unit filename="plugins/compilergcc/resources/compilers/options_msvctk.xml">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/options_mw.xml">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_null.xml">
 			<Option target="Compiler" />
 		</Unit>
@@ -1527,6 +1870,9 @@
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_pgifortran.xml">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/options_powerpc-eabi.xml">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_ppc-gcc.xml">
@@ -1539,6 +1885,9 @@
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_tricore-gcc.xml">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/options_zpu-gcc.xml">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/manifest.xml">
@@ -3791,6 +4140,12 @@
 		<Unit filename="src/dlgaboutplugin.h">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/dlghelpsysteminformation.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/dlghelpsysteminformation.h">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/editkeywordsdlg.cpp">
 			<Option target="src" />
 		</Unit>
@@ -3894,6 +4249,9 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/dlg_about_plugin.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/resources/dlg_about_system_information.xrc">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/edit_keywords.xrc">
@@ -4044,8 +4402,6 @@
 			<Option target="src" />
 		</Unit>
 		<Extensions>
-			<code_completion />
-			<envvars />
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>
@@ -4068,7 +4424,6 @@
 					<wxDialog wxs="plugins/codecompletion/wxsmith/goto_function.wxs" src="plugins/codecompletion/gotofunctiondlg.cpp" hdr="plugins/codecompletion/gotofunctiondlg.h" fwddecl="1" i18n="1" name="GotoFunctionDlg" language="CPP" />
 				</resources>
 			</wxsmith>
-			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

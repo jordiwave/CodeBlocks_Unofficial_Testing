@@ -5,7 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (C) 2006, Paolo Gava
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: wxchart.cpp 9270 2013-08-18 05:22:02Z mortenmacfly $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

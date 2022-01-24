@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12579 $
+ * $Id: sc_globals.cpp 12579 2021-12-14 09:27:57Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/scripting/bindings/sc_globals.cpp $
  */
 
 #include <sdk_precomp.h>
@@ -303,15 +303,7 @@ namespace ScriptBindings
                     if (id != wxNOT_FOUND)
                     {
                         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, id);
-                        #if wxCHECK_VERSION(3, 0, 0)
                         mbar->GetEventHandler()->ProcessEvent(evt);
-                        #else
-                        if ( !mbar->ProcessEvent(evt) )
-                        {
-                            wxString msg; msg.Printf(_("Calling the menu '%s' with ID %d failed."), menuPath.wx_str(), id);
-                            cbMessageBox(msg, _("Script error"), wxICON_WARNING);
-                        }
-                        #endif
                         // done
                     }
                     break;

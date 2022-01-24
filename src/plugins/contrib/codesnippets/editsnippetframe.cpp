@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id$
+// RCS-ID: $Id: editsnippetframe.cpp 12304 2021-03-16 23:28:31Z fuscated $
 
 #include "editsnippetframe.h"
 

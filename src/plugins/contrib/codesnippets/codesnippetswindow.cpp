@@ -17,7 +17,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id$
+// RCS-ID: $Id: codesnippetswindow.cpp 12304 2021-03-16 23:28:31Z fuscated $
 
 #ifdef WX_PRECOMP //
     #include "wx_pch.h"

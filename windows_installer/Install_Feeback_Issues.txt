@@ -1,0 +1,70 @@
+So, I had a quick look into the files you've provided. Its looking good in general, but 
+here are some comments you need to consider (and I am unsure if you did consequently):
+
+- We only use NSIS, there is no need for an ISS based installer, we won't ship both. The ISS script is a relict from very old times
+    - I suggest that not looking at ISS as NSIS was superior 10 years ago not a very good reason as ISS has improved a hack of allot 
+         and is easier to use and understand than NSIS is. There are ISS IDE and GUI's to make it easier to create the script. Be aware that 
+         both are not very good for creating a new GUI from scratch, but ISS has a bunch of templates you can use that make it a bit easier.
+    - NSIS scripting language is not very modern and looks to be stack based as it uses alot of pushing and poping everywhere. Trying to find out how to do things in NSIS is a PITA.
+    - ISS uses pascal and is allot easier to use and find examples now days.
+
+- The logo is from CodeBlocks Version 1 which is around 20 years ago...?! :-) So it should be updated
+    Fixed: rotated the current logo and cropped it and moved some of the text arround, added www.codeblocks.org text.
+
+- Did you try to run the installer in an unattended mode w/o GUI? this must work.
+    C::B 20.03 - silently pops up splash screen
+    Fixed/Updated: 
+        1) Installs in C:\Users\andrew\AppData\Local\Programs\CodeBlocks if run as normal user with /S, but now does not pop up the spash dialog
+        2) Fixed admin unattended install for C:\program files.
+
+- It would be nice if one could skip the creation of shortcut (but its not a must)
+    Fixed:
+        This is in the custom setup like in the 20.03 installer from what I can see. It is not easy to find. 
+        Updated script for newly added shortcuts from missing apps.
+    Fixed:
+        In the new installer if you run the custom install you can also select on the "Choose Start Menu Folder" there is a tickbox for "[ ] Do not create shortcuts" under the start menu folder list.
+        Updated script for mising macros.
+    
+- Under additional icons: If I un-select all, what is actually created in that case? For me its nothing, so why are these on the "Additional" page?
+
+- The Un-installer did not work well for me. It left tons of files, including all plugins and the executable.
+    Problem:
+        If you install as admin for all users and then run the installer as a user the files are shown as to be removed on reboot, but they are not.
+    Fix/workarround:
+        If you install for all users then you need to run the uninstaller as admin otherwise it will pop up and tell you to run the uninstall again with admin rights.
+        Added support for detecting if C::B was allready installed and by privelege in order to either ask the user to uninstall the previous version or run the installer as admin or as a normal user. 
+        Added support for uninstalling 20.03 before installing update on x64 system as they are in different directories and may use different registry uninstall kys (HKLM or HKCU depending on install rights used)
+        
+Besides, I like the installer for the compiler. 
+
+But, for people w/o internet connection (and these are many) there should also be a 
+package that has our default compiler bundled. This is also related to running in 
+unattended mode for admins and alike.
+
+    > I think it would be better to have links to the downloads on the following page and get the end user to install it:
+        https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/8.1.0/
+        
+      Bundling seems to cause more problems than it fixes as the install directory is c:\program files.... , which allows 
+       newbies to create project within this directory.
+      Another issue is that as the compiler is bundled with C::B newbies think that C::B is a compiler.... and ask compiler questions
+       on the forum, which is not right.
+      Another issue is that bundling indicates that C::B prefers one compiler over another, but this is not the case based on what I have seen.
+      Another option is to split the compiler out into another installer that people w/o internet connection can download and this way
+       it can be upgraded independently of C::B or another option is to include instructions with the C::B installer on how to install 
+       Mingw-w64 both 32bit and 64bit when offline.
+
+    The way MINGW is bundles is not documented w.r.t. what goes into the "\MinGW" directory that the 20.03 nsi script uses. To get some consistency it would be 
+     better to include one of the files directory downloaded from thw SF link above and bundle 7za.exe and use 7zip to uncompress the file into the 
+     required directory (C:\mingw32 or C:\mingw64).
+
+    All of the devs I know all have local admin on their machines, so can install almost any software they need to install (there are some exceptions as they 
+    do not have the ability to register Windows DLL's, but can install apps in C:\program files....)
+    
+    FIX:
+        Modified nsi to not show the download compiler page if there is no internet connection.
+        Modified nsi to support installing the following if they are in the same directory as the installer:
+            * i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z
+            * x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z
+            
+          They files are availabele from:
+            https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/8.1.0/

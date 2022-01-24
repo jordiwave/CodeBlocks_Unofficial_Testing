@@ -108,15 +108,21 @@ namespace
 void wxsAuiPaneInfoExtra::OnEnumProperties(long /*Flags*/)
 {
     //Name
-    WXS_SHORT_STRING_P(wxsAuiPaneInfoExtra,m_Name,_("AUI Name"),_T("name"),_(""),false,1002);
+    WXS_SHORT_STRING_P(wxsAuiPaneInfoExtra,m_Name,_("AUI Name"),_T("name"),wxString(),false,1002);
 
     //Standard pane type
     static const long    StandardPaneValues[] = { 0, DefaultPane, CenterPane, ToolbarPane, 0 };
-    static const wxChar* StandardPaneNames[]  = { _("None"), _("Default"), _("Center"), _("Toolbar"), 0 };
+
+#pragma push_macro("_")
+#undef _
+#define _(x)   L##x
+    static const wxChar* StandardPaneNames[]  = { _("None"), _("Default"), _("Center"), _("Toolbar"), nullptr };
+#pragma pop_macro("_")
+
     WXS_ENUM_P(wxsAuiPaneInfoExtra,m_StandardPane,_("AUI Standard pane type"),_T("standardpanetype"),StandardPaneValues,StandardPaneNames,0,1001)
 
     //Caption and caption bar buttons
-    WXS_SHORT_STRING_P(wxsAuiPaneInfoExtra,m_Caption,_("AUI Caption"),_T("caption"),_(""),false,1000)
+    WXS_SHORT_STRING_P(wxsAuiPaneInfoExtra,m_Caption,_("AUI Caption"),_T("caption"),wxString(),false,1000)
     WXS_BOOL_P(wxsAuiPaneInfoExtra,m_CaptionVisible,_("AUI Caption Visible"),_T("captionvisible"),true,990)
     WXS_BOOL_P(wxsAuiPaneInfoExtra,m_MinimizeButton,_("AUI Minimize button"),_T("minimizebutton"),true,989)
     WXS_BOOL_P(wxsAuiPaneInfoExtra,m_MaximizeButton,_("AUI Maximize button"),_T("maximizebutton"),true,988)
@@ -139,13 +145,19 @@ void wxsAuiPaneInfoExtra::OnEnumProperties(long /*Flags*/)
           wxAUI_DOCK_RIGHT,
           wxAUI_DOCK_CENTER,
           0 };
+
+#pragma push_macro("_")
+#undef _
+#define _(x)   L##x
     static const wxChar* DockNames[]  =
         { _("Top"),
           _("Bottom"),
           _("Left"),
           _("Right"),
           _("Center"),
-          0 };
+          nullptr };
+#pragma pop_macro("_")
+
     WXS_ENUM_P(wxsAuiPaneInfoExtra,m_DockDirection,_("AUI Dock Direction"),_T("dockdirection"),DockValues,DockNames,wxAUI_DOCK_TOP,970)
 
     //Dock Fixed
@@ -169,7 +181,13 @@ void wxsAuiPaneInfoExtra::OnEnumProperties(long /*Flags*/)
 
     //Gripper
     static const long    GripperValues[] = { 0, wxLEFT, wxTOP, 0 };
-    static const wxChar* GripperNames[]  = { _("None"), _("Default"), _("Top"), 0 };
+
+#pragma push_macro("_")
+#undef _
+#define _(x)   L##x
+    static const wxChar* GripperNames[]  = { _("None"), _("Default"), _("Top"), nullptr };
+#pragma pop_macro("_")
+
     WXS_ENUM_P(wxsAuiPaneInfoExtra,m_Gripper,_("AUI Gripper"),_T("gripper"),GripperValues,GripperNames,0,920)
 
     //Pane Border

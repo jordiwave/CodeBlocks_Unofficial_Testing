@@ -18,9 +18,9 @@
 				<Option projectResourceIncludeDirsRelation="0" />
 			</Target>
 			<Environment>
-				<Variable name="WX_CFG" value="" />
-				<Variable name="WX_SUFFIX" value="u" />
-				<Variable name="WX_VERSION" value="31" />
+				<!-- Variable name="WX_CFG" value="" / -->
+				<!-- Variable name="WX_SUFFIX" value="u" / -->
+				<!-- Variable name="WX_VERSION" value="31" / -->
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -42,7 +42,7 @@
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-std=gnu++11" />
 			<Add directory="$(#WX31.include)" />
-			<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX31.lib)/gcc_dll$(#WX31.WX_CFG)/msw$(#WX31.WX_SUFFIX)" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
@@ -53,9 +53,9 @@
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-mthreads" />
-			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
 			<Add library="codeblocks" />
-			<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)" />
+			<Add directory="$(#WX31.lib)/gcc_dll$(#WX31.WX_CFG)" />
 			<Add directory="../../../devel31" />
 		</Linker>
 		<ExtraCommands>

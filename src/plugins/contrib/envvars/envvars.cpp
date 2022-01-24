@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12537 $
+ * $Id: envvars.cpp 12537 2021-10-24 22:27:25Z bluehazzard $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/envvars/envvars.cpp $
  */
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -43,7 +43,7 @@
 // Register the plugin
 namespace
 {
-  PluginRegistrant<EnvVars> reg(_T("EnvVars"));
+    PluginRegistrant<EnvVars> reg("EnvVars");
 };
 
 BEGIN_EVENT_TABLE(EnvVars, cbPlugin)
@@ -74,9 +74,9 @@ wxString EnvVars::ParseProjectEnvvarSet(const cbProject *project)
     return result;
 }
 
-void EnvVars::SaveProjectEnvvarSet(cbProject &project, const wxString& envvar_set)
+void EnvVars::SaveProjectEnvvarSet(cbProject* project, const wxString& envvar_set)
 {
-    TiXmlNode *extNode = project.GetExtensionsNode();
+    TiXmlNode *extNode = project->GetExtensionsNode();
     if (!extNode)
         return;
     TiXmlElement* elem = extNode->ToElement();
@@ -100,28 +100,30 @@ void EnvVars::SaveProjectEnvvarSet(cbProject &project, const wxString& envvar_se
 
 void EnvVars::DoProjectActivate(cbProject* project)
 {
-    const wxString prj_envvar_set = ParseProjectEnvvarSet(project);
-    if (prj_envvar_set.IsEmpty())  // There is no envvar set to apply...
+    const wxString prj_envvar_set(ParseProjectEnvvarSet(project));
+    if (prj_envvar_set.empty())  // There is no envvar set to apply...
+    {
       // Apply default envvar set (but only, if not already active)
+        EV_DBGLOG("Setting up '%s' envvars set.", nsEnvVars::EnvVarsDefault);
       nsEnvVars::EnvvarSetApply(wxEmptyString, false);
+    }
     else                           // ...there is an envvar set setup to apply.
     {
       if (nsEnvVars::EnvvarSetExists(prj_envvar_set))
       {
-        EV_DBGLOG(_T("EnvVars: Discarding envvars set '")
-                 +nsEnvVars::GetActiveSetName()+_T("'."));
+            EV_DBGLOG("Discarding envvars set '%s'.", nsEnvVars::GetActiveSetName());
+
         nsEnvVars::EnvvarSetDiscard(wxEmptyString); // Remove currently active envvars
-        if (prj_envvar_set.IsEmpty())
-          EV_DBGLOG(_T("EnvVars: Setting up default envvars set."));
-        else
-          EV_DBGLOG(_T("EnvVars: Setting up envvars set '")+prj_envvar_set
-                   +_T("' for activated project."));
+            EV_DBGLOG("Setting up envvars set '%s' for activated project.", prj_envvar_set);
+
         // Apply envvar set always (as the old one has been discarded above)
         nsEnvVars::EnvvarSetApply(prj_envvar_set, true);
       }
       else
+        {
         EnvvarSetWarning(prj_envvar_set);
     }
+}
 }
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -129,7 +131,7 @@ void EnvVars::DoProjectActivate(cbProject* project)
 void EnvVars::OnProjectActivated(CodeBlocksEvent& event)
 {
 #if defined(TRACE_ENVVARS)
-  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnProjectActivated")));
+    Manager::Get()->GetLogManager()->DebugLog("OnProjectActivated");
 #endif
 
   if (IsAttached())
@@ -143,24 +145,21 @@ void EnvVars::OnProjectActivated(CodeBlocksEvent& event)
 void EnvVars::OnProjectClosed(CodeBlocksEvent& event)
 {
 #if defined(TRACE_ENVVARS)
-  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnProjectClosed")));
+    Manager::Get()->GetLogManager()->DebugLog("OnProjectClosed");
 #endif
 
-  wxString prj_envvar_set = wxEmptyString;
-
+    wxString prj_envvar_set;
   if (IsAttached())
   {
     prj_envvar_set = ParseProjectEnvvarSet(event.GetProject());
 
     // If there is an envvar set connected to this project...
-    if (!prj_envvar_set.IsEmpty())
-      // ...make sure it's being discarded
+        if (!prj_envvar_set.empty()) // ...make sure it's being discarded
       nsEnvVars::EnvvarSetDiscard(prj_envvar_set);
   }
 
   // Apply default envvar set (but only, if not already active)
-  nsEnvVars::EnvvarSetApply(wxEmptyString,
-                            prj_envvar_set.IsEmpty() ? false : true);
+    nsEnvVars::EnvvarSetApply(wxString(), !prj_envvar_set.empty());
 
   event.Skip(); // Propagate the event to other listeners
 }// OnProjectClosed
@@ -257,14 +256,14 @@ SQInteger EnvvarDiscard(HSQUIRRELVM v)
 void EnvVars::OnAttach()
 {
 #if defined(TRACE_ENVVARS)
-  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnAttach")));
+    Manager::Get()->GetLogManager()->DebugLog("OnAttach");
 #endif
 
-  if (!Manager::LoadResource(_T("envvars.zip")))
-    NotifyMissingFile(_T("envvars.zip"));
+    if (!Manager::LoadResource("envvars.zip"))
+        NotifyMissingFile("envvars.zip");
 
   // load and apply configuration (to application only)
-  ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));
+    ConfigManager *cfg = Manager::Get()->GetConfigManager("envvars");
   if (!cfg)
     return;
 
@@ -351,20 +350,15 @@ void EnvVars::OnRelease(bool /*appShutDown*/)
 
 cbConfigurationPanel* EnvVars::GetConfigurationPanel(wxWindow* parent)
 {
-  EnvVarsConfigDlg* dlg = new EnvVarsConfigDlg(parent, this);
-  // deleted by the caller
-
+    EnvVarsConfigDlg* dlg = new EnvVarsConfigDlg(parent, this);  // deleted by the caller
   return dlg;
 }// GetConfigurationPanel
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-cbConfigurationPanel* EnvVars::GetProjectConfigurationPanel(wxWindow* parent,
-                                                            cbProject* project)
+cbConfigurationPanel* EnvVars::GetProjectConfigurationPanel(wxWindow* parent, cbProject* project)
 {
-  EnvVarsProjectOptionsDlg* dlg = new EnvVarsProjectOptionsDlg(parent, project);
-  // deleted by the caller
-
+    EnvVarsProjectOptionsDlg* dlg = new EnvVarsProjectOptionsDlg(parent, project);  // deleted by the caller
   return dlg;
 }// GetProjectConfigurationPanel
 
@@ -373,11 +367,11 @@ cbConfigurationPanel* EnvVars::GetProjectConfigurationPanel(wxWindow* parent,
 void EnvVars::EnvvarSetWarning(const wxString& envvar_set)
 {
 #if defined(TRACE_ENVVARS)
-  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarSetWarning")));
+    Manager::Get()->GetLogManager()->DebugLog("EnvvarSetWarning");
 #endif
 
   wxString warning_msg;
   warning_msg.Printf(_("Warning: The project contained a reference to an envvar set\n"
-                       "('%s') that could not be found."), envvar_set.wx_str());
+                         "('%s') that could not be found."), envvar_set);
   cbMessageBox(warning_msg, _("EnvVars Plugin Warning"), wxICON_WARNING);
 }// EnvvarSetWarning

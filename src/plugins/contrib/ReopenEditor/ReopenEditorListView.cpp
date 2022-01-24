@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12461 $
+ * $Id: ReopenEditorListView.cpp 12461 2021-06-19 19:44:42Z fuscated $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/ReopenEditor/ReopenEditorListView.cpp $
  */
 
 #include "sdk.h"

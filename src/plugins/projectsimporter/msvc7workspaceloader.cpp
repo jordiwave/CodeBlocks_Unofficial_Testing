@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12607 $
+ * $Id: msvc7workspaceloader.cpp 12607 2021-12-23 08:50:04Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/projectsimporter/msvc7workspaceloader.cpp $
  */
 
 #include "sdk.h"
@@ -148,7 +148,7 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
     bool projConfSection = false; // ProjectConfiguration section?
     bool global = false;  // global section or project section?
     wxFileName wfname = filename;
-    wfname.Normalize();
+    wfname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT);
     g_WorkspacePath = wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     Manager::Get()->GetLogManager()->DebugLog(_T("Workspace dir: ") + g_WorkspacePath);
     wxArrayString sUUIDArray;       // store the project UUID which has dependencies
@@ -201,7 +201,8 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
 
             ++count;
             wxFileName fname(UnixFilename(prjFile));
-            fname.Normalize(wxPATH_NORM_ALL, wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
+            fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT,
+                            wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Found project '%s' in '%s'"), prjTitle.wx_str(), fname.GetFullPath().wx_str()));
 
             int percentage = ((int)file.TellI())*100 / (int)(file.GetLength());

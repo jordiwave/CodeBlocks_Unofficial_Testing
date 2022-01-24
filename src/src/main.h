@@ -70,7 +70,7 @@ class MainFrame : public wxFrame
                                         bool checkSelection=false);
     public:
 
-        MainFrame(wxWindow* parent = (wxWindow*)NULL);
+        MainFrame(wxWindow* parent = nullptr);
         ~MainFrame();
 
         bool Open(const wxString& filename, bool addToHistory = true);
@@ -223,6 +223,7 @@ class MainFrame : public wxFrame
 
         void OnHelpAbout(wxCommandEvent& event);
         void OnHelpTips(wxCommandEvent& event);
+        void OnHelpSystemInformation(wxCommandEvent& event);
         void OnHelpPluginMenu(wxCommandEvent& event);
 
         void OnViewToolbarsFit(wxCommandEvent& event);

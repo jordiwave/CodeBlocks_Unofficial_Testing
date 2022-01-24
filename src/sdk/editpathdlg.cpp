@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 11963 $
+ * $Id: editpathdlg.cpp 11963 2020-02-19 09:57:04Z fuscated $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/editpathdlg.cpp $
  */
 
 #include "sdk_precomp.h"

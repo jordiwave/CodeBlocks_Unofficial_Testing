@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12640 $
+ * $Id: pluginmanager.cpp 12640 2022-01-10 22:46:54Z pecanh $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/pluginmanager.cpp $
  */
 
 #include "sdk_precomp.h"
@@ -272,7 +272,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
         resourceDir = ConfigManager::GetFolder(sdDataUser);
     }
 
-    wxProgressDialog pd(_("Installing: ") + basename, _T("A description wide enough for the dialog ;)"), 5);
+    wxProgressDialog pd(_("Installing: ") + basename, wxString(L'\u00a0', 150), 5);
 
     wxString localName = basename + FileFilters::DYNAMICLIB_DOT_EXT;
     wxString resourceName = basename + _T(".zip");
@@ -370,6 +370,9 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
     wxString settingsOffFilename;
     wxArrayString extrafiles;
 
+    if (not plugin->CanDetach())
+        return false;
+
     // find the plugin element
     for (size_t i = 0; i < m_Plugins.GetCount(); ++i)
     {
@@ -417,7 +420,7 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("Plugin resources: ") + resourceFilename));
 
     wxProgressDialog pd(wxString::Format(_("Uninstalling %s"), title.c_str()),
-                        _T("A description wide enough for the dialog ;)"), 3);
+                        wxString(L'\u00a0', 150), 3);
 
     pd.Update(1, _("Detaching plugin"));
     DetachPlugin(plugin);
@@ -1536,9 +1539,9 @@ void PluginManager::NotifyPlugins(CodeBlocksLayoutEvent& event)
 
 bool cbHasRunningCompilers(const PluginManager *manager)
 {
-    for (const cbCompilerPlugin *p : manager->GetCompilerPlugins())
+    for (const cbCompilerPlugin *compiler : manager->GetCompilerPlugins())
     {
-        if (p && p->IsRunning())
+        if (compiler && compiler->IsRunning())
             return true;
     }
     return false;

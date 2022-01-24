@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12598 $
+ * $Id: todolistview.cpp 12598 2021-12-20 19:38:25Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/todo/todolistview.cpp $
  */
 
 #include "sdk.h"
@@ -58,9 +58,9 @@ END_EVENT_TABLE()
 
 ToDoListView::ToDoListView(const wxArrayString& titles_in, const wxArrayInt& widths_in, const wxArrayString& Types) :
     ListCtrlLogger(titles_in, widths_in, false),
-    m_pPanel(0),
-    m_pSource(0L),
-    m_pUser(0L),
+    m_pPanel(nullptr),
+    m_pSource(nullptr),
+    m_pUser(nullptr),
     m_pTotal(nullptr),
     m_Types(Types),
     m_LastFile(wxEmptyString),
@@ -114,7 +114,7 @@ wxWindow* ToDoListView::CreateControl(wxWindow* parent)
 
     hbs->Add(new wxStaticText(m_pPanel, wxID_ANY, _("User:")), 0, wxTOP, 4);
 
-    m_pUser = new wxComboBox(m_pPanel, idUser, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0L, wxCB_READONLY);
+    m_pUser = new wxComboBox(m_pPanel, idUser, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, nullptr, wxCB_READONLY);
     m_pUser->Append(_("<All users>"));
     m_pUser->SetSelection(0);
     hbs->Add(m_pUser, 0, wxLEFT, 4);

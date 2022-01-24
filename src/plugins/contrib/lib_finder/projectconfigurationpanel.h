@@ -16,9 +16,9 @@
 * along with wxSmith; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 10290 $
+* $Id: projectconfigurationpanel.h 10290 2015-05-15 10:58:40Z jenslody $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/lib_finder/projectconfigurationpanel.h $
 */
 
 #ifndef PROJECTCONFIGURATIONPANEL_H

@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with HexEditor. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12655 $
+* $Id: ExpressionTester.cpp 12655 2022-01-15 20:46:32Z wh11204 $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/HexEditor/ExpressionTester.cpp $
 */
 
 #include "ExpressionTester.h"
@@ -164,7 +164,7 @@ void ExpressionTester::OnButton1Click(wxCommandEvent& /*event*/)
             }
             else
             {
-                m_Result->SetLabel( _("???") );
+                m_Result->SetLabel("???");
             }
         }
         else

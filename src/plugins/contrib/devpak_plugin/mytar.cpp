@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12648 $
+ * $Id: mytar.cpp 12648 2022-01-13 20:06:39Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/devpak_plugin/mytar.cpp $
  */
 
 #include "mytar.h"
@@ -15,7 +15,7 @@
 WX_DEFINE_OBJARRAY(ReplacersArray);
 
 TAR::TAR(const wxString& filename)
-    : m_pFile(0),
+    : m_pFile(nullptr),
     m_SkipBytes(0),
     m_Size(0)
 {
@@ -48,8 +48,11 @@ bool TAR::Open(const wxString& filename)
 void TAR::Close()
 {
     if (m_pFile)
+    {
         fclose(m_pFile);
-    m_pFile = 0;
+        m_pFile = nullptr;
+    }
+
     Reset();
     m_Size = 0;
 }

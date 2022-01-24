@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 10655 $
+ * $Id: databreakpointdlg.cpp 10655 2016-01-17 13:58:05Z fuscated $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/debuggergdb/databreakpointdlg.cpp $
  */
 
 #include "databreakpointdlg.h"

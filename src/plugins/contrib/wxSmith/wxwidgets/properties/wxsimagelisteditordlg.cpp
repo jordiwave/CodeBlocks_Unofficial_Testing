@@ -449,10 +449,11 @@ bool wxsImageListEditorDlg::Execute(wxString &inName, wxArrayString &aImageData)
     wxString    ss;
 
     // need default sizes?
-    if(aImageData.GetCount() < 2){
+    if(aImageData.GetCount() < 2)
+    {
         aImageData.Clear();
-        aImageData.Add(_("16"));
-        aImageData.Add(_("16"));
+        aImageData.Add("16");
+        aImageData.Add("16");
     }
 
     // read image data into list
@@ -985,7 +986,7 @@ void wxsImageListEditorDlg::OnPanel12Paint(cb_unused wxPaintEvent &event)
             bmp = m_ImageList.GetBitmap(m_PreviewSelect);
 
     // the label
-    ss.Printf(_("%d"), m_PreviewSelect);
+    ss.Printf("%d", m_PreviewSelect);
     StaticText28->SetLabel(ss);
 
     // draw it
@@ -1101,44 +1102,36 @@ void wxsImageListEditorDlg::OnbSaveClick(cb_unused wxCommandEvent &event)
  */
 void wxsImageListEditorDlg::OnbSaveListClick(cb_unused wxCommandEvent& event)
 {
-    int         i, n;
     int         w, h;
     wxMemoryDC  dc;
-    wxBitmap    *bmp;
-    wxString    ss;
 
-    n = m_ImageList.GetImageCount();
+    const int n = m_ImageList.GetImageCount();
 
     // anything to save
-    if(n == 0){
+    if (n == 0)
         return;
-    }
 
     // size of each image
     m_ImageList.GetSize(0, w, h);
 
     // make a bitmap and a drawing context
-    bmp = new wxBitmap(n * w, h);
-    dc.SelectObject(*bmp);
+    wxBitmap bmp(n * w, h);
+    dc.SelectObject(bmp);
 
     // default background
     dc.SetBackground(*wxWHITE_BRUSH);
     dc.Clear();
 
     // draw each object into the bitmap
-    for(i = 0; i < n; i++){
+    for (int i = 0; i < n; ++i)
         m_ImageList.Draw(i, dc, i * w, 0, wxIMAGELIST_DRAW_NORMAL, true);
-    }
+
+    // release it
+    dc.SelectObject(wxNullBitmap);
 
     // save it
-    n = FileDialog1->ShowModal();
-    if(n == wxID_OK){
-        ss = FileDialog1->GetPath();
-        bmp->SaveFile(ss, wxBITMAP_TYPE_BMP);
-    }
-
-    // done
-    delete bmp;
+    if (FileDialog1->ShowModal() == wxID_OK)
+        bmp.SaveFile(FileDialog1->GetPath(), wxBITMAP_TYPE_BMP);
 }
 
 /*! \brief Paint a panel.

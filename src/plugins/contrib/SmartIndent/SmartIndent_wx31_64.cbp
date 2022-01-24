@@ -154,9 +154,9 @@
 				</ExtraCommands>
 			</Target>
 			<Environment>
-				<Variable name="WX_CFG" value="" />
-				<Variable name="WX_SUFFIX" value="u" />
-				<Variable name="WX_VERSION" value="31" />
+				<!-- Variable name="WX_CFG" value="" / -->
+				<!-- Variable name="WX_SUFFIX" value="u" / -->
+				<!-- Variable name="WX_VERSION" value="31" / -->
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -172,21 +172,21 @@
 			<Add option="-D_WIN64" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DNOPCH" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DCB_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
-			<Add option="-DNOPCH" />
 			<Add option="-std=gnu++11" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="$(#WX31_64.include)" />
-			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX31_64.lib)/gcc_dll$(#WX31.WX_CFG)/msw$(#WX31.WX_SUFFIX)" />
 		</Compiler>
 		<Linker>
 			<Add library="codeblocks" />
-			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
 			<Add directory="../../../devel31_64" />
-			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)" />
+			<Add directory="$(#WX31_64.lib)/gcc_dll$(#WX31.WX_CFG)" />
 		</Linker>
 		<Unit filename="SmartIndentCpp.cpp">
 			<Option target="SmartIndentCpp" />

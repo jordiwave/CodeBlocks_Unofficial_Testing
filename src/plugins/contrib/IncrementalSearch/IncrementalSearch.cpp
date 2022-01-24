@@ -4,9 +4,9 @@
  *
  * Copyright: 2008 Jens Lody
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12648 $
+ * $Id: IncrementalSearch.cpp 12648 2022-01-13 20:06:39Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/IncrementalSearch/IncrementalSearch.cpp $
  */
 
 #include "sdk.h"
@@ -149,9 +149,9 @@ END_EVENT_TABLE()
 IncrementalSearch::IncrementalSearch():
         m_SearchText(wxEmptyString),
         m_textCtrlBG_Default( wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW) ),
-        m_pToolbar(0l),
-        m_pTextCtrl(0l),
-        m_pEditor(0l),
+        m_pToolbar(nullptr),
+        m_pTextCtrl(nullptr),
+        m_pEditor(nullptr),
         m_NewPos(-1),
         m_OldPos(-1),
         m_SelStart(-1),

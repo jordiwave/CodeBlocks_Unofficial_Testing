@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12667 $
+ * $Id: compiler.cpp 12667 2022-01-21 09:42:17Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/compiler.cpp $
  */
 
 #include "sdk_precomp.h"
@@ -36,7 +36,7 @@ wxArrayString Compiler::m_CompilerIDs; // map to guarantee unique IDs
 // common regex that can be used by the different compiler for matching compiler output
 // it can be used in the patterns for warnings, errors, ...
 // NOTE : it is an approximation (for example the ':' can appear anywhere and several times)
-const wxString Compiler::FilePathWithSpaces = _T("[][{}() \t#%$~[:alnum:]&_:+/\\.-]+");
+const wxString Compiler::FilePathWithSpaces = _T("[][{}()[:blank:]#%$~[:alnum:]!&_:+/\\.-]+");
 
 // version of compiler settings
 // when this is different from what is saved in the config, a message appears
@@ -106,6 +106,24 @@ Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& par
     m_VersionString = wxString();
     m_Weight = weight;
     m_RegExes.reserve(100);
+
+    m_DebuggerInitialConfiguation.validData                  = false;
+    m_DebuggerInitialConfiguation.compilerMasterPath         = "";
+    m_DebuggerInitialConfiguation.compilerIDName             = m_ID;
+    m_DebuggerInitialConfiguation.executablePath             = "gdb.exe";
+    m_DebuggerInitialConfiguation.userArguments              = "";
+    m_DebuggerInitialConfiguation.type                       = "GDB";
+    m_DebuggerInitialConfiguation.initCommands               = "";
+    m_DebuggerInitialConfiguation.disableInit                = true;
+    m_DebuggerInitialConfiguation.watchArgs                  = true;
+    m_DebuggerInitialConfiguation.watchLocals                = true;
+    m_DebuggerInitialConfiguation.catchExceptions            = true;
+    m_DebuggerInitialConfiguation.evalExpressionAsTooltip    = false;
+    m_DebuggerInitialConfiguation.addOtherSearchDirs         = false;
+    m_DebuggerInitialConfiguation.doNoRunDebuggee            = false;
+    m_DebuggerInitialConfiguation.disassemblyFlavor          = "System default";
+    m_DebuggerInitialConfiguation.instructionSet             = "";
+
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Added compiler \"%s\""), m_Name.wx_str()));
 }
 
@@ -148,11 +166,62 @@ Compiler::Compiler(const Compiler& other) :
 
     m_Valid = other.m_Valid;
     m_NeedValidityCheck = other.m_NeedValidityCheck;
+
+    m_DebuggerInitialConfiguation.validData                  = false;
+    m_DebuggerInitialConfiguation.compilerMasterPath         = "";
+    m_DebuggerInitialConfiguation.compilerIDName             = m_ID;
+    m_DebuggerInitialConfiguation.executablePath             = "gdb.exe";
+    m_DebuggerInitialConfiguation.userArguments              = "";
+    m_DebuggerInitialConfiguation.type                       = "GDB";
+    m_DebuggerInitialConfiguation.initCommands               = "";
+    m_DebuggerInitialConfiguation.disableInit                = true;
+    m_DebuggerInitialConfiguation.watchArgs                  = true;
+    m_DebuggerInitialConfiguation.watchLocals                = true;
+    m_DebuggerInitialConfiguation.catchExceptions            = true;
+    m_DebuggerInitialConfiguation.evalExpressionAsTooltip    = false;
+    m_DebuggerInitialConfiguation.addOtherSearchDirs         = false;
+    m_DebuggerInitialConfiguation.doNoRunDebuggee            = false;
+    m_DebuggerInitialConfiguation.disassemblyFlavor          = "System default";
+    m_DebuggerInitialConfiguation.instructionSet             = "";
+
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Added compiler \"%s\""), m_Name.wx_str()));
 }
 
 Compiler::~Compiler()
 {
     //dtor
+}
+
+void Compiler::PostRegisterCompilerSetup()
+{
+    // Only proceed if the options*.xml file for the compiler includes the debugger default config info
+    if (m_DebuggerInitialConfiguation.validData == true)
+    {
+        bool detected = IsValid();
+        if (m_MasterPath.IsEmpty())
+        {
+            // Try to detect the compiler masterpath
+            detected = (AutoDetectInstallationDir() == adrDetected);
+        }
+        // Only proceed if the compiler has been found.
+        if (detected)
+        {
+            // masterpath detected, so save masterpath just in case!!!!
+            m_DebuggerInitialConfiguation.compilerMasterPath = m_MasterPath;
+
+            // Only proceed if the debuger has not been setup.
+            if (
+                    (m_Programs.DBGconfig.StartsWith(_("gdb_debugger:"), NULL)) ||
+                    (m_Programs.DBGconfig.StartsWith(_("NoPlugin:"), NULL))
+                )
+            {
+                // Save update config file
+                Manager::Get()->GetDebuggerManager()->SaveDebuggerConfigOptions(m_DebuggerInitialConfiguation);
+                wxString baseKey = GetParentID().IsEmpty() ? _T("/sets") : _T("/user_sets");
+                SaveSettings(baseKey);
+            }
+        }
+    }
 }
 
 void Compiler::Reset()
@@ -406,7 +475,9 @@ void Compiler::SaveSettings(const wxString& baseKey)
     tmp.Printf(_T("%s/set%3.3d"), baseKey.c_str(), CompilerFactory::GetCompilerIndex(this) + 1);
     cfg->DeleteSubPath(tmp);
 
+    // delete old keys before saving
     tmp.Printf(_T("%s/%s"), baseKey.c_str(), m_ID.c_str());
+    cfg->DeleteSubPath(tmp);
 
     cfg->Write(tmp + _T("/name"),   m_Name);
     cfg->Write(tmp + _T("/parent"), m_ParentID, true);
@@ -580,6 +651,8 @@ void Compiler::SaveSettings(const wxString& baseKey)
     const StringHash& v = GetAllVars();
     for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
         cfg->Write(configpath + it->first, it->second);
+
+    cfg->Flush();
 }
 
 void Compiler::LoadSettings(const wxString& baseKey)
@@ -587,7 +660,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
     // before loading any compiler settings, keep the current settings safe
     // so we can compare them when saving: this way we can only save what's
     // different from the defaults
-    MirrorCurrentSettings();
+    // MirrorCurrentSettings();
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("compiler"));
 
@@ -893,8 +966,27 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
                 m_Programs.LD = cfg->Read(cmpKey + wxT("/linker"), value);
                 m_Mirror.Programs.LD = value;
             }
-            else if (prog == wxT("DBGconfig"))
-                m_Programs.DBGconfig = value;
+            else if ((prog == "DBGconfig") && (recursion == 0))
+            {
+                // Check if the DBGconfig is of the format <plugin name>:<debugger config name>
+                if (value.Find(':') == wxNOT_FOUND)
+                {
+                    if (value.IsEmpty())
+                    {
+                        m_Programs.DBGconfig = wxString::Format(_("NoPlugin:%s"), m_DebuggerInitialConfiguation.compilerIDName);;
+                    }
+                    else
+                    {
+                        m_Programs.DBGconfig = wxString::Format(_("%s:%s"),value, m_DebuggerInitialConfiguation.compilerIDName);;
+                    }
+                    m_DebuggerInitialConfiguation.debuggerConfigurationName = m_Programs.DBGconfig;
+                }
+                else
+                {
+                    m_Programs.DBGconfig = value;
+                    m_DebuggerInitialConfiguation.debuggerConfigurationName = value;
+                }
+            }
             else if (prog == wxT("LIB"))
             {
                 m_Programs.LIB = cfg->Read(cmpKey + wxT("/lib_linker"), value);
@@ -1070,6 +1162,39 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
         else if (node->GetName() == wxT("Common"))
         {
             LoadDefaultOptions(wxT("common_") + node->GetAttribute(wxT("name"), wxString()), recursion + 1);
+        }
+        else if (node->GetName() == "Debugger")
+        {
+            wxString debugName = node->GetAttribute("name", wxString());
+            if (debugName == "executable_path")
+            {
+                m_DebuggerInitialConfiguation.validData = true;
+                m_DebuggerInitialConfiguation.executablePath = value;
+            }
+            else if (debugName == "user_arguments")
+                m_DebuggerInitialConfiguation.userArguments = value;
+            else if (debugName == "type")
+                m_DebuggerInitialConfiguation.type = value;
+            else if (debugName == "init_commands")
+                m_DebuggerInitialConfiguation.initCommands = value;
+            else if (debugName == "disable_init")
+                m_DebuggerInitialConfiguation.disableInit = (value == "true");
+            else if (debugName == "watch_args")
+                m_DebuggerInitialConfiguation.watchArgs = (value == "true");
+            else if (debugName == "watch_locals")
+                m_DebuggerInitialConfiguation.watchLocals = (value == "true");
+            else if (debugName == "catch_exceptions")
+                m_DebuggerInitialConfiguation.catchExceptions = (value == "true");
+            else if (debugName == "eval_expression_as_tooltip")
+                m_DebuggerInitialConfiguation.evalExpressionAsTooltip = (value == "true");
+            else if (debugName == "add_other_search_dirs")
+                m_DebuggerInitialConfiguation.addOtherSearchDirs = (value == "true");
+            else if (debugName == "do_not_run_debuggee")
+                m_DebuggerInitialConfiguation.doNoRunDebuggee = (value == "true");
+            else if (debugName == "disassembly_flavor")
+                m_DebuggerInitialConfiguation.disassemblyFlavor = value;
+            else if (debugName == "instruction_set")
+                m_DebuggerInitialConfiguation.instructionSet = value;
         }
         while (!node->GetNext() && depth > 0)
         {
@@ -1312,42 +1437,41 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
     }
     else if (node->GetAttribute(wxT("exec"), &test))
     {
-        wxArrayString cmd = GetArrayFromString(test, wxT(" "));
+        wxArrayString cmd = GetArrayFromString(test, " ");
         if (cmd.IsEmpty())
             return false;
-        wxString path;
-        wxGetEnv(wxT("PATH"), &path);
-        const wxString origPath = path;
+
+        wxString masterPath;
+        wxArrayString extraPaths;
+        ConfigManager* cfg = Manager::Get()->GetConfigManager("compiler");
+        const wxString loc((m_ParentID.empty() ? "/sets/" : "/user_sets/") + m_ID);
+        if (cfg->Exists(loc + "/name"))
         {
-            ConfigManager* cfg = Manager::Get()->GetConfigManager(wxT("compiler"));
-            wxString masterPath;
-            wxString loc = (m_ParentID.IsEmpty() ? wxT("/sets/") : wxT("/user_sets/")) + m_ID;
-            wxArrayString extraPaths;
-            if (cfg->Exists(loc + wxT("/name")))
-            {
-                masterPath = cfg->Read(loc + wxT("/master_path"), wxString());
-                extraPaths = MakeUniqueArray(GetArrayFromString(cfg->Read(loc + wxT("/extra_paths"),
-                                                                          wxString())),
-                                             true);
-            }
-
-            for (size_t i = 0; i < extraPaths.GetCount(); ++i)
-                path.Prepend(extraPaths[i] + wxPATH_SEP);
-
-            if (!masterPath.IsEmpty())
-                path.Prepend(masterPath + wxPATH_SEP + masterPath + wxFILE_SEP_PATH + wxT("bin") + wxPATH_SEP);
+            masterPath = cfg->Read(loc + "/master_path", wxString());
+            extraPaths = MakeUniqueArray(GetArrayFromString(cfg->Read(loc + "/extra_paths", wxString())), true);
         }
-        wxSetEnv(wxT("PATH"), path);
+
+        wxString path;
+        if (!masterPath.empty())
+            path = masterPath + wxPATH_SEP + masterPath + wxFILE_SEP_PATH + "bin" + wxPATH_SEP;
+
+        for (size_t i = 0; i < extraPaths.GetCount(); ++i)
+            path << extraPaths[i] << wxPATH_SEP;
+
+        wxString origPath;
+        wxGetEnv("PATH", &origPath);  // save path
+        wxSetEnv("PATH", path);       // change path
         cmd[0] = GetExecName(cmd[0]);
 
         long ret = -1;
-        if (!cmd[0].IsEmpty()) // should never be empty
-            ret = Execute(GetStringFromArray(cmd, wxT(" "), false), cmd);
+        wxArrayString output;
+        if (!cmd[0].empty()) // should never be empty
+            ret = Execute(GetStringFromArray(cmd, " ", false), output);
 
-        wxSetEnv(wxT("PATH"), origPath); // restore path
+        wxSetEnv("PATH", origPath); // restore path
 
         if (ret != 0) // execution failed
-            return (node->GetAttribute(wxT("default"), wxString()) == wxT("true"));
+            return (node->GetAttribute("default", wxString()) == "true");
 
         // If multiple tests are specified they will be ANDed; as soon as one fails the loop ends
         val = true;
@@ -1365,14 +1489,15 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
                 if (re.Compile(attr->GetValue()))
                 {
                     bool found = false;
-                    for (size_t i = 0; i < cmd.GetCount(); ++i)
+                    for (size_t i = 0; i < output.GetCount(); ++i)
                     {
-                        if (re.Matches(cmd[i]))
+                        if (re.Matches(output[i]))
                         {
                             found = true;
                             break;
                         }
                     }
+
                     val = found;
                 }
                 else
@@ -1391,60 +1516,66 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
                 if (name == "version_greater")
                 {
                     int check;
-                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                    if (CmpVersion(check, output[0], attr->GetValue()))
                         val = (check > 0);
                     else
                         val = false;
+
                     continue;
                 }
 
                 if (name == "version_greater_equal")
                 {
                     int check;
-                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                    if (CmpVersion(check, output[0], attr->GetValue()))
                         val = (check >= 0);
                     else
                         val = false;
+
                     continue;
                 }
 
                 if (name == "version_equal")
                 {
                     int check;
-                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                    if (CmpVersion(check, output[0], attr->GetValue()))
                         val = (check == 0);
                     else
                         val = false;
+
                     continue;
                 }
 
                 if (name == "version_not_equal")
                 {
                     int check;
-                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                    if (CmpVersion(check, output[0], attr->GetValue()))
                         val = (check != 0);
                     else
                         val = false;
+
                     continue;
                 }
 
                 if (name == "version_less_equal")
                 {
                     int check;
-                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                    if (CmpVersion(check, output[0], attr->GetValue()))
                         val = (check <= 0);
                     else
                         val = false;
+
                     continue;
                 }
 
                 if (name == "version_less")
                 {
                     int check;
-                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                    if (CmpVersion(check, output[0], attr->GetValue()))
                         val = (check < 0);
                     else
                         val = false;
+
                     continue;
                 }
             }
@@ -1492,7 +1623,7 @@ wxString Compiler::GetExecName(const wxString& name)
 class ExecProcess : public wxProcess
 {
     public:
-          ExecProcess(cb_unused wxEvtHandler *parent = NULL, cb_unused int id = -1)
+          ExecProcess(cb_unused wxEvtHandler *parent = nullptr, cb_unused int id = -1)
           {
               m_status = 0;
           }
@@ -1512,11 +1643,9 @@ class ExecProcess : public wxProcess
 
 // Emulates wxExecute() in synchronous mode using asynchronous mode
 
-long Compiler::Execute(const wxString &cmd, wxArrayString &output)
+long Compiler::Execute(const wxString& cmd, wxArrayString& output)
 {
     wxLogNull logNo; // do not warn if execution fails
-
-    output.Clear();
 
     ExecProcess process;
     process.Redirect(); // capture task input/output streams
@@ -1537,11 +1666,7 @@ long Compiler::Execute(const wxString &cmd, wxArrayString &output)
     // Loads the wxArrayString with the task output (returned in a wxInputStream)
     wxInputStream *inputStream = process.GetInputStream();
     wxTextInputStream text(*inputStream);
-#if wxCHECK_VERSION(3, 0, 0)
     while (!text.GetInputStream().Eof())
-#else
-    while (!inputStream->Eof())
-#endif
     {
         output.Add(text.ReadLine());
     }
@@ -1552,17 +1677,13 @@ long Compiler::Execute(const wxString &cmd, wxArrayString &output)
 
 #else // __WXMSW__
 
-long Compiler::Execute(const wxString &cmd, wxArrayString &output)
+long Compiler::Execute(const wxString& cmd, wxArrayString& output)
 {
     wxLogNull logNo; // do not warn if execution fails
     int flags = wxEXEC_SYNC;
-    #if wxCHECK_VERSION(3, 0, 0)
-        // Stop event-loop while wxExecute runs, to avoid a deadlock on startup,
-        // that occurs from time to time on wx3
-        flags |= wxEXEC_NOEVENTS;
-    #else
-        flags |= wxEXEC_NODISABLE;
-    #endif
+    // Stop event-loop while wxExecute runs, to avoid a deadlock on startup,
+    // that occurs from time to time on wx3
+    flags |= wxEXEC_NOEVENTS;
     return wxExecute(cmd, output, flags);
 }
 #endif // __WXMSW__

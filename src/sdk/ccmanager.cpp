@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12616 $
+ * $Id: ccmanager.cpp 12616 2021-12-31 10:15:17Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/ccmanager.cpp $
  */
 
 #include "sdk_precomp.h"
@@ -229,10 +229,10 @@ void UnfocusablePopupWindow::DoSetSize(int x, int y,
 {
     // convert coords to screen coords since we're a top-level window
     if (x != wxDefaultCoord)
-        GetParent()->ClientToScreen(&x, NULL);
+        GetParent()->ClientToScreen(&x, nullptr);
 
     if (y != wxDefaultCoord)
-        GetParent()->ClientToScreen(NULL, &y);
+        GetParent()->ClientToScreen(nullptr, &y);
 
     BaseClass::DoSetSize(x, y, width, height, sizeFlags);
 }
@@ -1110,6 +1110,12 @@ void CCManager::OnDeferredCallTipCancel(wxCommandEvent& WXUNUSED(event))
 #ifdef __WXMSW__
 void CCManager::OnPopupScroll(wxMouseEvent& event)
 {
+    if (!m_pLastEditor)
+    {
+        event.Skip();
+        return;
+    }
+
     const wxPoint& pos = m_pLastEditor->GetControl()->ClientToScreen(event.GetPosition());
     if (m_pPopup->GetScreenRect().Contains(pos))
         m_pHtml->GetEventHandler()->ProcessEvent(event);

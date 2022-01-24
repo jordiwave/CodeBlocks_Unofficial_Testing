@@ -4,9 +4,9 @@
  *
  * Copyright: 2008 Jens Lody
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 11790 $
+ * $Id: IncrementalSearch.h 11790 2019-07-14 15:03:15Z fuscated $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/IncrementalSearch/IncrementalSearch.h $
  */
 
 #ifndef INCREMENTAL_SEARCH_H_INCLUDED

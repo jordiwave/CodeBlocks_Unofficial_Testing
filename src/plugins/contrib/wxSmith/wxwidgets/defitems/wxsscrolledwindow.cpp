@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12072 $
+* $Id: wxsscrolledwindow.cpp 12072 2020-04-22 22:27:12Z bluehazzard $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsscrolledwindow.cpp $
 */
 
 #include "wxsscrolledwindow.h"

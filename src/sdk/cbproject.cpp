@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12605 $
+ * $Id: cbproject.cpp 12605 2021-12-22 08:53:19Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/cbproject.cpp $
  */
 
 #include "sdk_precomp.h"
@@ -1157,7 +1157,7 @@ ProjectFile* cbProject::GetFile(int index)
     }
 
     if (index < 0 || index >= static_cast<int>(m_Files.size()))
-        return NULL;
+        return nullptr;
 
     return m_FileArray.Item(index);
 }

@@ -29,7 +29,7 @@ class EnvVars : public cbPlugin
 {
 public:
   static wxString ParseProjectEnvvarSet(const cbProject *project);
-  static void SaveProjectEnvvarSet(cbProject &project, const wxString& envvar_set);
+  static void SaveProjectEnvvarSet(cbProject* project, const wxString& envvar_set);
 
 protected:
   /// fires when a project is being activated

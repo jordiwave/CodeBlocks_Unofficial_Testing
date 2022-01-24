@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12579 $
+ * $Id: newfromtemplatedlg.cpp 12579 2021-12-14 09:27:57Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/newfromtemplatedlg.cpp $
  */
 
 #include "sdk_precomp.h"
@@ -195,11 +195,7 @@ void NewFromTemplateDlg::BuildCategoriesFor(TemplateOutputType otype, wxChoice* 
     cat->SetSelection(0);
 }
 
-#if wxCHECK_VERSION(3, 0, 0)
 inline int wxCALLBACK SortTemplates(wxIntPtr item1, wxIntPtr item2, cb_unused wxIntPtr sortData)
-#else
-inline int wxCALLBACK SortTemplates(long item1, long item2, cb_unused long sortData)
-#endif
 {
     ListItemData* data1 = reinterpret_cast<ListItemData*>(item1);
     ListItemData* data2 = reinterpret_cast<ListItemData*>(item2);

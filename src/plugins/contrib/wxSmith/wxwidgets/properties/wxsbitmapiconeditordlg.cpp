@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 12310 $
+* $Id: wxsbitmapiconeditordlg.cpp 12310 2021-04-03 05:08:35Z mortenmacfly $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/properties/wxsbitmapiconeditordlg.cpp $
 */
 
 #include "wxsbitmapiconeditordlg.h"

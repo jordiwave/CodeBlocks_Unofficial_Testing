@@ -5,7 +5,7 @@
 // Modified by:
 // Created:
 // Copyright:   (C) 2006, Paolo Gava
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: label.cpp 12237 2020-11-21 16:35:54Z fuscated $
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

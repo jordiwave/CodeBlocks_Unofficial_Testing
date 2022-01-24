@@ -180,11 +180,13 @@ fi
 %{plugindir}/libAstyle.so
 %{plugindir}/libabbreviations.so
 %{plugindir}/libautosave.so
+%{plugindir}/libclangd_client.so
 %{plugindir}/libclasswizard.so
 %{plugindir}/libcodecompletion.so
 %{plugindir}/libcompiler.so
 %{plugindir}/libdebugger.so
 %{plugindir}/libdefaultmimehandler.so
+%{plugindir}/libDisplayEvents.so
 %{plugindir}/liboccurrenceshighlighting.so
 %{plugindir}/libopenfileslist.so
 %{plugindir}/libprojectsimporter.so
@@ -208,11 +210,13 @@ fi
 %{pkgdatadir}/Astyle.zip
 %{pkgdatadir}/abbreviations.zip
 %{pkgdatadir}/autosave.zip
+%{pkgdatadir}/clangd_client.zip
 %{pkgdatadir}/classwizard.zip
 %{pkgdatadir}/codecompletion.zip
 %{pkgdatadir}/compiler.zip
 %{pkgdatadir}/debugger.zip
 %{pkgdatadir}/defaultmimehandler.zip
+%{pkgdatadir}/DisplayEvents.zip
 %{pkgdatadir}/manager_resources.zip
 %{pkgdatadir}/occurrenceshighlighting.zip
 %{pkgdatadir}/openfileslist.zip

@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12607 $
+ * $Id: cbprofiler.cpp 12607 2021-12-23 08:50:04Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/profiler/cbprofiler.cpp $
  */
 
 #include "sdk.h"
@@ -97,7 +97,7 @@ int CBProfiler::Execute()
         return -1;
     }
 
-    ProjectBuildTarget* target = 0L;
+    ProjectBuildTarget* target = nullptr;
     if (project->GetBuildTargetsCount() > 1)
     {
         // more than one executable target? ask...
@@ -149,7 +149,7 @@ int CBProfiler::Execute()
         exename = target->GetOutputFilename();
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(exename);
         wxFileName ename(exename);
-        ename.Normalize(wxPATH_NORM_ALL, project->GetBasePath());
+        ename.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT, project->GetBasePath());
         exename = ename.GetFullPath();
 
         wxChar separator = wxFileName::GetPathSeparator();
@@ -179,7 +179,8 @@ int CBProfiler::Execute()
             wxString workname = target->GetWorkingDir();
             Manager::Get()->GetMacrosManager()->ReplaceEnvVars(workname);
             wxFileName wname(workname);
-            wname.Normalize(wxPATH_NORM_ALL, project->GetBasePath());
+            wname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT,
+                            project->GetBasePath());
             workname = wname.GetFullPath();
 
             dataname=workname.BeforeLast(separator);

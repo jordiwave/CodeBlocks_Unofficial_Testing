@@ -4,9 +4,9 @@
  *
  * Copyright: 2010 Jens Lody
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 11477 $
+ * $Id: ReopenEditor.h 11477 2018-09-29 07:42:08Z fuscated $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/ReopenEditor/ReopenEditor.h $
  */
 
 #ifndef REOPEN_EDITOR_H_INCLUDED

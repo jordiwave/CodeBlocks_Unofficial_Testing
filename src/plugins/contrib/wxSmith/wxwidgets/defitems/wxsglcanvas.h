@@ -36,6 +36,9 @@ class wxsGLCanvas: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
 
+        void FillNewAttributes(const wxString& aname);
+        void FillOldAttributes(const wxString& aname);
+
         bool        mRGBA;
         int         mBufferSize;
         int         mLevel;
@@ -52,6 +55,8 @@ class wxsGLCanvas: public wxsWidget
         int         mMinAccumGreen;
         int         mMinAccumBlue;
         int         mMinAccumAlpha;
+        int         mSampleBuffers;
+        int         mSamples;
 
 };
 

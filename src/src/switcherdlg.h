@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     2007-08-19
-// RCS-ID:      $Id$
+// RCS-ID:      $Id: switcherdlg.h 12190 2020-07-29 21:09:40Z fuscated $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////

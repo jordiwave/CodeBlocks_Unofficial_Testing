@@ -1,7 +1,6 @@
-AUTHORS
-BUGS
-BUILD
-COMPILERS
-NEWS
-README
-TODO
+Readme_Build_Debian_deb_packages.txt
+Readme_Build_Linux_by_Makefile.txt
+Readme_Build_Linux_by_Workspace.txt
+Readme_Build_Windows_by_Workspace.txt
+Readme_License_GPL3.TXT
+README_Release_Checklist.txt

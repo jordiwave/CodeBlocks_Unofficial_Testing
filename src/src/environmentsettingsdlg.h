@@ -48,8 +48,11 @@ class EnvironmentSettingsDlg : public wxScrollingDialog, public cbConfigurationP
         void OnChooseAppColourItem(wxCommandEvent &event);
         void OnClickAppColour(wxColourPickerEvent &event);
         void OnClickAppColourDefault(wxCommandEvent &event);
+        void OnClickAppResetAll(wxCommandEvent &event);
+
     private:
         void AddPluginPanels();
+        void DoChooseAppColourItem(int index);
         void LoadListbookImages();
         void UpdateListbookImages();
 
@@ -57,6 +60,7 @@ class EnvironmentSettingsDlg : public wxScrollingDialog, public cbConfigurationP
         void WriteApplicationColours();
         wxString AnnoyingDlgReturnToString(const wxString& caption);
         wxString StringToAnnoyingDlgReturn(const wxString& caption);
+
     private:
         wxAuiDockArt* m_pArt;
         ConfigurationPanelsArray m_PluginPanels;

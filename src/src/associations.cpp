@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12580 $
+ * $Id: associations.cpp 12580 2021-12-15 08:28:41Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/associations.cpp $
  */
 
 #include <sdk.h>
@@ -201,11 +201,7 @@ void Associations::DoClearAssociation(const wxString& ext)
     if (key.Exists())
     {
         wxString s;
-        #if wxCHECK_VERSION(3, 0, 0)
         if (key.QueryValue(wxEmptyString, s) && s.StartsWith(_T("CodeBlocks")))
-        #else
-        if (key.QueryValue(NULL, s) && s.StartsWith(_T("CodeBlocks")))
-        #endif
             key.DeleteSelf();
     }
 

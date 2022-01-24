@@ -23,7 +23,8 @@
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />
 					<Add option="-DBUILDING_PLUGIN" />
-					<Add option="-DNOPCH" />
+                    <Add option="-Winvalid-pch" />
+                    <Add option="-DCB_PRECOMP" />
 					<Add option="-DHAVE_W32API_H" />
 					<Add option="-D__WXMSW__" />
 					<Add option="-D_WIN64" />
@@ -31,26 +32,26 @@
 					<Add option="-DcbDEBUG" />
 					<Add option="-DwxUSE_UNICODE" />
 					<Add directory="$(#WX31_64.include)" />
-					<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+					<Add directory="$(#WX31_64.lib)/gcc_dll$(#WX31.WX_CFG)/msw$(#WX31.WX_SUFFIX)" />
 					<Add directory="../../../include" />
 					<Add directory="../../../include/tinyxml" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-mthreads" />
-					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
 					<Add library="codeblocks" />
 					<Add directory="../../../devel31_64" />
-					<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)" />
+					<Add directory="$(#WX31_64.lib)/gcc_dll$(#WX31.WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel31_64\share\CodeBlocks\MouseSap.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 				<Environment>
-					<Variable name="WX_CFG" value="" />
-					<Variable name="WX_SUFFIX" value="u" />
-					<Variable name="WX_VERSION" value="31" />
+					<!-- Variable name="WX_CFG" value="" / -->
+					<!-- Variable name="WX_SUFFIX" value="u" / -->
+					<!-- Variable name="WX_VERSION" value="31" / -->
 				</Environment>
 			</Target>
 		</Build>

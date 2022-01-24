@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12607 $
+ * $Id: editormanager.cpp 12607 2021-12-23 08:50:04Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/editormanager.cpp $
  */
 
 #include "sdk_precomp.h"
@@ -172,7 +172,9 @@ EditorManager::EditorManager()
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,           new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
     Manager::Get()->RegisterEventSink(cbEVT_WORKSPACE_LOADING_COMPLETE, new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
 
-    ColourManager *colours = Manager::Get()->GetColourManager();
+    ColourManager* colours = Manager::Get()->GetColourManager();
+    colours->RegisterColour(_("Editor"), _("Changebar (unsaved lines)"), wxT("changebar_unsaved"), wxColour(0xFF, 0xE6, 0x04));
+    colours->RegisterColour(_("Editor"), _("Changebar (saved lines)"),   wxT("changebar_saved"),   wxColour(0x04, 0xFF, 0x50));
     colours->RegisterColour(_("Editor"), _("Caret"), wxT("editor_caret"), *wxBLACK);
     colours->RegisterColour(_("Editor"), _("Right margin"), wxT("editor_gutter"), *wxLIGHT_GREY);
     colours->RegisterColour(_("Editor"), _("Line numbers foreground colour"), wxT("editor_linenumbers_fg"),
@@ -212,7 +214,7 @@ cbNotebookStack* EditorManager::GetNotebookStack()
             {
                 wnd = m_pNotebook->GetPage(i);
                 found = false;
-                for (body = m_pNotebookStackHead->next; body != NULL; body = body->next)
+                for (body = m_pNotebookStackHead->next; body != nullptr; body = body->next)
                 {
                     if (wnd == body->window)
                     {
@@ -230,7 +232,7 @@ cbNotebookStack* EditorManager::GetNotebookStack()
         }
         if (m_nNotebookStackSize > m_pNotebook->GetPageCount())
         {
-            for (prev_body = m_pNotebookStackHead, body = prev_body->next; body != NULL; prev_body = body, body = body->next)
+            for (prev_body = m_pNotebookStackHead, body = prev_body->next; body != nullptr; prev_body = body, body = body->next)
             {
                 if (m_pNotebook->GetPageIndex(body->window) == wxNOT_FOUND)
                 {
@@ -278,12 +280,15 @@ void EditorManager::RecreateOpenEditorStyles()
         cbEditor* ed = InternalGetBuiltinEditor(i);
         if (ed)
         {
-            bool saveSuccess = ed->SaveFoldState(); //First Save the old fold levels
+            const wxFontEncoding currentEncoding(ed->GetEncoding()); //Second save current encoding
+            const bool saveSuccess = ed->SaveFoldState(); //First save the old fold levels
             ed->SetEditorStyle();
             if (saveSuccess)
-            {
                 ed->FixFoldState(); //Compare old fold levels with new and change the bugs
-            }
+
+            const bool wasModified = ed->GetModified();
+            ed->SetEncoding(currentEncoding); //Restore encoding, may set modified flag
+            ed->SetModified(wasModified);
         }
     }
 }
@@ -1393,7 +1398,7 @@ bool EditorManager::SwapActiveHeaderSource()
             wxFileName dname(dir);
             if (!dname.IsAbsolute())
             {
-                dname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, project->GetBasePath());
+                dname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT, project->GetBasePath());
     //            Manager::Get()->GetLogManager()->DebugLog(F(_T("Normalizing dir to '%s'."), dname.GetFullPath().c_str()));
             }
 

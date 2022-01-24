@@ -30,7 +30,7 @@
  *          Addison-Wesley, 1983. ISBN 0-201-06672-6.
  */
 
-/* @(#) $Id$ */
+/* @(#) $Id: trees.c 10135 2015-03-09 07:14:12Z mortenmacfly $ */
 
 /* #define GEN_TREES_H */
 

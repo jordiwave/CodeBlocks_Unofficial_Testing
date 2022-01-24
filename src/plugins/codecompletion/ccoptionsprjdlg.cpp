@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 11862 $
+ * $Id: ccoptionsprjdlg.cpp 11862 2019-09-29 12:54:26Z fuscated $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/codecompletion/ccoptionsprjdlg.cpp $
  */
 
 #include <sdk.h>

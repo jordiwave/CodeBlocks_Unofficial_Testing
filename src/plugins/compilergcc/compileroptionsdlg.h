@@ -28,7 +28,7 @@ class wxUpdateUIEvent;
 class CompilerOptionsDlg : public cbConfigurationPanel
 {
     public:
-        CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, cbProject* project = 0L, ProjectBuildTarget* target = 0L);
+        CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, cbProject* project = nullptr, ProjectBuildTarget* target = nullptr);
         ~CompilerOptionsDlg() override;
 
         wxString GetTitle() const override { return _("Global compiler settings"); }
@@ -49,9 +49,19 @@ class CompilerOptionsDlg : public cbConfigurationPanel
             wxString            m_Key;
             wxString            m_KeyValue;
         };
+
+        struct CompilerItem
+        {
+            wxString compilerName;
+            bool detected;
+        };
+
         void TextToOptions();
         void OptionsToText();
+        int  GetSelectedCompilerListCompilerID();
+        void DoFillCompilerList();
         void DoFillCompilerSets(int compilerIdx);
+        void OnShowCompilerDetectedOnlyClick(cb_unused wxCommandEvent& event);
         void DoFillCompilerPrograms();
         void DoFillVars();
         void DoFillOthers();
@@ -70,6 +80,8 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         wxListBox* GetDirsListBox();
         CompileOptionsBase* GetVarsOwner();
         void ProjectTargetCompilerAdjust(); //!< checks if compiler changed for project/target and takes actions accordingly
+        void SwapItems(wxListBox* listBox, int a, int b);
+        void Reselect(wxListBox* listBox, const wxArrayInt& selected, int offset);
 
         void OnRealApply(); // user clicked the "Apply" button (so not the Ok button !!!)
         void OnTreeSelectionChange(wxTreeEvent& event);
@@ -135,6 +147,8 @@ class CompilerOptionsDlg : public cbConfigurationPanel
 
         bool                         m_BuildingTree;                 //!< flag to ignore tree changing events while building it
         static int                   m_MenuOption;
+
+        std::vector<CompilerItem>    m_CompilerList;
 
         DECLARE_EVENT_TABLE()
 };

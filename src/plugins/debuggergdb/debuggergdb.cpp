@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12656 $
+ * $Id: debuggergdb.cpp 12656 2022-01-16 09:56:14Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/debuggergdb/debuggergdb.cpp $
  */
 
 #include <sdk.h>
@@ -158,13 +158,13 @@ END_EVENT_TABLE()
 DebuggerGDB::DebuggerGDB() :
     cbDebuggerPlugin(wxT("GDB/CDB debugger"), wxT("gdb_debugger")),
     m_State(this),
-    m_pProcess(0L),
+    m_pProcess(nullptr),
     m_LastExitCode(0),
     m_Pid(0),
     m_PidToAttach(0),
     m_NoDebugInfo(false),
     m_StoppedOnSignal(false),
-    m_pProject(0),
+    m_pProject(nullptr),
     m_bIsConsole(false),
     m_stopDebuggerConsoleClosed(false),
     m_nConsolePid(0),
@@ -554,7 +554,6 @@ int DebuggerGDB::LaunchProcessWithShell(const wxString &cmd, wxProcess *process,
                                         const wxString &cwd)
 {
     wxString shell = GetShellString();
-#if wxCHECK_VERSION(3, 0, 0)
     wxExecuteEnv execEnv;
     execEnv.cwd = cwd;
     // Read the current environment variables and then make changes to them.
@@ -565,15 +564,6 @@ int DebuggerGDB::LaunchProcessWithShell(const wxString &cmd, wxProcess *process,
         execEnv.env["SHELL"] = shell;
     }
     return wxExecute(cmd, wxEXEC_ASYNC, process, &execEnv);
-#else
-    if (!shell.empty())
-    {
-        Log(wxString::Format(wxT("Setting SHELL to '%s'"), shell.wx_str()));
-        wxSetEnv(wxT("SHELL"), shell);
-    }
-    (void)cwd;
-    return wxExecute(cmd, wxEXEC_ASYNC, process);
-#endif // !wxCHECK_VERSION(3, 0, 0)
 }
 
 int DebuggerGDB::LaunchProcess(const wxString& cmd, const wxString& cwd)
@@ -630,28 +620,28 @@ int DebuggerGDB::LaunchProcess(const wxString& cmd, const wxString& cwd)
     if (!m_Pid)
     {
         delete m_pProcess;
-        m_pProcess = 0;
+        m_pProcess = nullptr;
         Log(_("failed"), Logger::error);
         return -1;
     }
     else if (!m_pProcess->GetOutputStream())
     {
         delete m_pProcess;
-        m_pProcess = 0;
+        m_pProcess = nullptr;
         Log(_("failed (to get debugger's stdin)"), Logger::error);
         return -2;
     }
     else if (!m_pProcess->GetInputStream())
     {
         delete m_pProcess;
-        m_pProcess = 0;
+        m_pProcess = nullptr;
         Log(_("failed (to get debugger's stdout)"), Logger::error);
         return -2;
     }
     else if (!m_pProcess->GetErrorStream())
     {
         delete m_pProcess;
-        m_pProcess = 0;
+        m_pProcess = nullptr;
         Log(_("failed (to get debugger's stderr)"), Logger::error);
         return -2;
     }
@@ -676,7 +666,7 @@ bool DebuggerGDB::Debug(bool breakOnEntry)
     if (m_pProcess || WaitingCompilerToFinish())
         return false;
 
-    m_pProject = 0;
+    m_pProject = nullptr;
     m_NoDebugInfo = false;
 
     // can only debug projects or attach to processes
@@ -720,8 +710,8 @@ int DebuggerGDB::DoDebug(bool breakOnEntry)
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
 
     // select the build target to debug
-    ProjectBuildTarget* target = 0;
-    Compiler* actualCompiler = 0;
+    ProjectBuildTarget* target = nullptr;
+    Compiler* actualCompiler = nullptr;
     if ( (m_PidToAttach == 0) && m_pProject)
     {
         Log(_("Selecting target: "));
@@ -1829,9 +1819,9 @@ void DebuggerGDB::SetupToolsMenu(wxMenu &menu)
     wxMenu *menuPrint = new wxMenu;
     menuPrint->AppendRadioItem(idMenuInfoPrintElementsUnlimited, _("Unlimited"),
                                _("The full arrays are printed (could lead to lock-ups if uninitialised data is printed)"));
-    menuPrint->AppendRadioItem(idMenuInfoPrintElements20, _("20"));
-    menuPrint->AppendRadioItem(idMenuInfoPrintElements50, _("50"));
-    menuPrint->AppendRadioItem(idMenuInfoPrintElements100, _("100"));
+    menuPrint->AppendRadioItem(idMenuInfoPrintElements20, "20");
+    menuPrint->AppendRadioItem(idMenuInfoPrintElements50, "50");
+    menuPrint->AppendRadioItem(idMenuInfoPrintElements100, "100");
     menuPrint->AppendRadioItem(idMenuInfoPrintElements200, _("200 (default)"));
     menu.AppendSubMenu(menuPrint, _("Print Elements"), _("Set limit on string chars or array elements to print"));
     menu.AppendCheckItem(idMenuInfoCatchThrow, _("Catch throw"),
@@ -1936,7 +1926,7 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
     m_TimerPollDebugger.Stop();
     m_LastExitCode = event.GetInt();
     //the process deletes itself
-//    m_pProcess = 0L;
+//    m_pProcess = nullptr;
 
     ClearActiveMarkFromAllEditors();
     m_State.StopDriver();

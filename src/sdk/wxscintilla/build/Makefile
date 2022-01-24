@@ -3,7 +3,7 @@
 ## Purpose:     wxScintilla
 ## Maintainer:  Otto Wyss
 ## Created:     2004-09-19
-## RCS-ID:      $Id$
+## RCS-ID:      $Id: Makefile 10065 2015-01-17 20:07:46Z mortenmacfly $
 ## Copyright:   (c) 2004 wxCode
 ## Licence:     wxWindows
 ##############################################################################

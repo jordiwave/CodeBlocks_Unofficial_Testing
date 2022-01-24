@@ -21,6 +21,7 @@
 					<Add option="-DPIC" />
 					<Add option="-DNO_LOGGING" />
 					<Add option="-DCB_PRECOMP" />
+					<Add option="-DcbDEBUG" />
 					<Add directory="../../../include" />
 					<Add directory="../../../include/tinyxml" />
 					<Add directory="../../../sdk/wxscintilla/include" />
@@ -45,7 +46,6 @@
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
 		</Compiler>
@@ -72,13 +72,9 @@
 		<Unit filename="ProjectData.h" />
 		<Unit filename="Version.cpp" />
 		<Unit filename="Version.h" />
-		<Unit filename="manifest.xml" />
 		<Unit filename="btswitcherdlg.cpp" />
 		<Unit filename="btswitcherdlg.h" />
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-		</Extensions>
+		<Unit filename="manifest.xml" />
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

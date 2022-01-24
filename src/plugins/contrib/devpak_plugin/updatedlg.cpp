@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12643 $
+ * $Id: updatedlg.cpp 12643 2022-01-12 19:40:38Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/devpak_plugin/updatedlg.cpp $
  */
 
 #include "updatedlg.h"
@@ -132,10 +132,10 @@ void UpdateDlg::SetListColumnText(int idx, int col, const wxString& text)
     wxListCtrl* lst = XRCCTRL(*this, "lvFiles", wxListCtrl);
     int index = idx == -1 ? lst->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED) : idx;
     wxListItem it;
-    it.m_itemId = index;
-    it.m_col = col;
-    it.m_mask = wxLIST_MASK_TEXT;
-    it.m_text = text;
+    it.SetId(index);
+    it.SetColumn(col);
+    it.SetMask(wxLIST_MASK_TEXT);
+    it.SetText(text);
     lst->SetItem(it);
 }
 

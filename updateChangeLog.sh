@@ -4,9 +4,9 @@
 # This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
 # http://www.gnu.org/licenses/gpl-3.0.html
 #
-# $Revision$
-# $Id$
-# $HeadURL$
+# $Revision: 8917 $
+# $Id: updateChangeLog.sh 8917 2013-03-24 04:46:09Z biplab $
+# $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/updateChangeLog.sh $
 #
 
 REV_TO=${1:-"HEAD"}

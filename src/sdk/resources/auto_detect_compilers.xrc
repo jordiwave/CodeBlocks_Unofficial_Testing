@@ -8,7 +8,7 @@
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
 				<object class="wxStaticText" name="ID_STATICTEXT2">
-					<label>Note: After auto-detection, at least one compiler&apos;s master path is still empty and therefore invalid.&#x0A;Inspect the list below and change the compiler&apos;s master path later in the compiler options.&#x0A;Select you favourite default compiler here:</label>
+					<label>Note: After auto-detection either the default compiler was not detected or the path to it was empty.&#x0A;In the compiler list below select another compiler if it was found or select an invalid compiler.&#x0A;If you select an invalid compiler you will need to change it&apos;s path later in the compiler options,&#x0A;which is done via the Settings-&gt;Compiler... menu selection.&#x0A;If you have not setup a compiler please select the &quot;*No Compiler*&quot; option.&#x0A;&#x0A;Select your default compiler from the list below:</label>
 				</object>
 				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
@@ -22,16 +22,39 @@
 					<growablerows>0</growablerows>
 					<object class="sizeritem">
 						<object class="wxListCtrl" name="lcCompilers">
-							<style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
+							<style>wxLC_REPORT|wxLC_SINGLE_SEL|wxLC_SORT_ASCENDING</style>
 						</object>
 						<flag>wxEXPAND</flag>
-						<minsize>460,240</minsize>
 					</object>
 					<object class="sizeritem">
-						<object class="wxButton" name="btnDefault">
-							<label>Set as default</label>
+						<object class="wxGridSizer">
+							<cols>1</cols>
+							<rows>3</rows>
+							<object class="sizeritem">
+								<object class="wxButton" name="btnSetDefaultCompiler">
+									<label>Set as default</label>
+									<pos>-1,-1</pos>
+									<size>-1,-1</size>
+								</object>
+								<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxRadioBox" name="rbCompilerShowOptions">
+									<label>Show</label>
+									<content>
+										<item>All</item>
+										<item>Detected</item>
+									</content>
+									<default>1</default>
+								</object>
+								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
 						</object>
-						<flag>wxALIGN_TOP</flag>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
 					</object>
 				</object>
 				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>

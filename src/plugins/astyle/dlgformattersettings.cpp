@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12490 $
+ * $Id: dlgformattersettings.cpp 12490 2021-08-05 23:50:23Z fuscated $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/astyle/dlgformattersettings.cpp $
  */
 
 #include "dlgformattersettings.h"

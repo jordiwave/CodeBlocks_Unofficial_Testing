@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12643 $
+ * $Id: loggers.cpp 12643 2022-01-12 19:40:38Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/loggers.cpp $
  */
 
 #include "sdk_precomp.h"
@@ -293,14 +293,14 @@ wxString ListCtrlLogger::GetItemAsText(long item) const
     wxString text;
 
     wxListItem li_info;
-    li_info.m_itemId = item;
-    li_info.m_mask = wxLIST_MASK_TEXT;
+    li_info.SetId(item);
+    li_info.SetMask(wxLIST_MASK_TEXT);
 
     for (size_t i = 0; i < titles.GetCount(); ++i)
     {
-        li_info.m_col = i;
+        li_info.SetColumn(i);
         control->GetItem(li_info);
-        text << li_info.m_text << _T('|');
+        text << li_info.GetText() << _T('|');
     }
     return text;
 } // end of GetItemAsText

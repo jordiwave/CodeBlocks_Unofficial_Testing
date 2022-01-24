@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12648 $
+ * $Id: devpakinstaller.cpp 12648 2022-01-13 20:06:39Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/devpak_plugin/devpakinstaller.cpp $
  */
 
 #include "devpakinstaller.h"
@@ -16,7 +16,7 @@
 #include <wx/msgdlg.h>
 
 DevPakInstaller::DevPakInstaller()
-    : m_pDlg(0)
+    : m_pDlg(nullptr)
 {
 	//ctor
 }
@@ -39,7 +39,7 @@ void DevPakInstaller::EndProgressDialog()
 {
 	if (m_pDlg)
         m_pDlg->Destroy();
-    m_pDlg = 0;
+    m_pDlg = nullptr;
 }
 
 void DevPakInstaller::UpdateProgress(int val, const wxString& newtext)
@@ -179,7 +179,7 @@ bool DevPakInstaller::Decompress(const wxString& filename, const wxString& tmpfi
 
     // open BZIP2 stream
     int bzerror;
-    BZFILE* bz = BZ2_bzReadOpen(&bzerror, f, 0, 0, 0L, 0);
+    BZFILE* bz = BZ2_bzReadOpen(&bzerror, f, 0, 0, nullptr, 0);
     if (!bz || bzerror != BZ_OK)
     {
         m_Status = _("Can't read compressed stream!");

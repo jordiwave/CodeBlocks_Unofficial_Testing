@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12618 $
+ * $Id: compilerCYGWIN.cpp 12618 2021-12-31 12:59:50Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/compilergcc/compilerCYGWIN.cpp $
  */
 
 #include <sdk.h>
@@ -13,7 +13,7 @@
 #include "cygwin.h"
 
 CompilerCYGWIN::CompilerCYGWIN()
-    : CompilerMINGW(_("Cygwin GCC"), _T("cygwin"))
+    : CompilerMINGW(_("Cygwin GCC"), "cygwin")
 {
     m_Weight = 32;
     Reset();
@@ -30,13 +30,22 @@ Compiler * CompilerCYGWIN::CreateCopy()
 
 AutoDetectResult CompilerCYGWIN::AutoDetectInstallationDir()
 {
-    if (platform::windows && cbIsDetectedCygwinCompiler())
+    if (platform::windows)
     {
-        m_MasterPath = cbGetCygwinCompilerPathRoot();
-        return adrDetected;
+        if (cbIsDetectedCygwinCompiler())
+        {
+            m_MasterPath = cbGetCygwinCompilerPathRoot();
+            return adrDetected;
+        }
+        else
+        {
+            m_MasterPath = "C:\\cygwin64";
+            return adrGuessed;
+        }
     }
     else
     {
+        m_MasterPath = cbGetCygwinCompilerPathRoot();
         return adrGuessed;
     }
 }

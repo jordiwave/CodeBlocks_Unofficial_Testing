@@ -15,6 +15,7 @@
 #include <wx/regex.h>
 #include "compileoptionsbase.h"
 #include "compileroptions.h"
+#include "debuggermanager.h"
 
 class CompilerCommandGenerator;
 class cbProject;
@@ -278,6 +279,8 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         Compiler(const wxString& name, const wxString& ID, const wxString& parentID = wxEmptyString, int weight = 50);
         ~Compiler() override;
 
+        /** @brief Complete any compiler set-up that requires access to virtual functions. */
+        virtual void PostRegisterCompilerSetup() ;
         /** @brief Check if the compiler is actually valid (installed). */
         virtual bool IsValid();
 
@@ -415,6 +418,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         CompilerPrograms    m_Programs;
         CompilerSwitches    m_Switches;
         CompilerOptions     m_Options;
+        DebuggerManager::CompilerDebuggerOptions m_DebuggerInitialConfiguation;
         RegExArray          m_RegExes;
         wxString            m_ErrorFilename;
         wxString            m_ErrorLine;

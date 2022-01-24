@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 12601 $
+ * $Id: compilerfactory.cpp 12601 2021-12-20 20:05:33Z wh11204 $
+ * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/compilerfactory.cpp $
  */
 
 #include "sdk_precomp.h"
@@ -159,6 +159,14 @@ void CompilerFactory::RegisterUserCompilers()
     }
 }
 
+void CompilerFactory::PostRegisterCompilerSetup()
+{
+    for (size_t i = 0; i < Compilers.GetCount(); ++i)
+    {
+        Compilers[i]->PostRegisterCompilerSetup();
+    }
+}
+
 Compiler* CompilerFactory::CreateCompilerCopy(Compiler* compiler, const wxString& newName)
 {
     if (!compiler)
@@ -186,6 +194,27 @@ Compiler* CompilerFactory::CreateCompilerCopy(Compiler* compiler, const wxString
     newC->LoadSettings(_T("/user_sets"));
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Added compiler \"%s\""), newC->GetName().wx_str()));
     return newC; // return the index for the new compiler
+}
+
+bool CompilerFactory::RenameCompiler(Compiler* compiler, const wxString& newName)
+{
+    if (!compiler || newName.IsEmpty())
+        return false;
+
+    // abort if an existing compiler with the same name exists
+    // this also avoids the possibility of throwing an exception
+    // in the compiler->CreateCopy() call below...
+    for (size_t i = 0; i < Compilers.GetCount(); ++i)
+    {
+        if (Compilers[i]->GetName() == newName)
+            return false;
+    }
+
+    Compiler::m_CompilerIDs.Remove(compiler->GetID());
+    compiler->SetName(newName);
+    compiler->m_ID = newName;
+    compiler->MakeValidID();
+    return true;
 }
 
 void CompilerFactory::RemoveCompiler(Compiler* compiler)
@@ -246,26 +275,28 @@ void CompilerFactory::SetDefaultCompiler(Compiler* compiler)
 
 void CompilerFactory::SaveSettings()
 {
-    // clear old keys before saving
-    Manager::Get()->GetConfigManager(_T("compiler"))->DeleteSubPath(_T("/sets"));
-    Manager::Get()->GetConfigManager(_T("compiler"))->DeleteSubPath(_T("/user_sets"));
-
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
-        wxString baseKey = Compilers[i]->GetParentID().IsEmpty() ? _T("/sets") : _T("/user_sets");
-        Compilers[i]->SaveSettings(baseKey);
+        if (Compilers[i]->IsValid())
+        {
+            // Only save valid compiler configuration settings
+            wxString baseKey = Compilers[i]->GetParentID().IsEmpty() ? _T("/sets") : _T("/user_sets");
+            Compilers[i]->SaveSettings(baseKey);
 
-        CodeBlocksEvent event(cbEVT_COMPILER_SETTINGS_CHANGED);
-        event.SetString(Compilers[i]->GetID());
-        event.SetInt(static_cast<int>(i));
-        event.SetClientData(static_cast<void*>(Compilers[i]));
-        Manager::Get()->ProcessEvent(event);
+            CodeBlocksEvent event(cbEVT_COMPILER_SETTINGS_CHANGED);
+            event.SetString(Compilers[i]->GetID());
+            event.SetInt(static_cast<int>(i));
+            event.SetClientData(static_cast<void*>(Compilers[i]));
+            Manager::Get()->ProcessEvent(event);
+        }
     }
 }
 
 void CompilerFactory::LoadSettings()
 {
     bool needAutoDetection = false;
+    wxString defaultCompilerID = CompilerFactory::GetDefaultCompilerID();
+
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
         wxString baseKey = Compilers[i]->GetParentID().IsEmpty() ? _T("/sets") : _T("/user_sets");
@@ -277,9 +308,15 @@ void CompilerFactory::LoadSettings()
         event.SetClientData(static_cast<void*>(Compilers[i]));
         Manager::Get()->ProcessEvent(event);
 
-        if (Compilers[i]->GetMasterPath().IsEmpty())
+        if (    (Compilers[i]->GetMasterPath().IsEmpty() || !wxFileName::DirExists(Compilers[i]->GetMasterPath()))
+                &&
+                Compilers[i]->GetID().IsSameAs(defaultCompilerID)
+           )
         {
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Master path of compiler ID \"%s\" is empty -> triggers auto-detection."), Compilers[i]->GetID().wx_str()));
+            if (Compilers[i]->GetMasterPath().IsEmpty())
+                Manager::Get()->GetLogManager()->Log(wxString::Format("The master path of compiler ID \"%s\" is empty -> triggers auto-detection.", Compilers[i]->GetID()));
+            if (!wxFileName::DirExists(Compilers[i]->GetMasterPath()))
+                Manager::Get()->GetLogManager()->Log(wxString::Format("The master path (%s) of compiler ID \"%s\" does not exist -> triggers auto-detection.", Compilers[i]->GetMasterPath(), Compilers[i]->GetID()));
             needAutoDetection = true;
         }
     }
@@ -296,39 +333,79 @@ void CompilerFactory::LoadSettings()
 
 Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxString& preselectedID)
 {
+    const size_t compCount = Compilers.GetCount();
+    if (!compCount)
+        return nullptr;
+
     int selected = -1;
     const wxString lid = preselectedID.Lower();
 
     // first build a list of available compilers
-    std::unique_ptr<wxString[]> comps(new wxString[Compilers.GetCount()]);
+    wxArrayString compilerChoices;
 
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
-        comps[i] = Compilers[i]->GetName();
-        if (selected == -1)
+        Compiler* compiler = CompilerFactory::GetCompiler(i);
+        if (!compiler)
+            continue;
+        wxString currentCompilerID = compiler->GetID();
+
+        // Only check if an actual compiler, ignore "NO compiler"
+        if (!currentCompilerID.IsSameAs("null"))
         {
-            if (lid.IsEmpty())
+            wxString path = compiler->GetMasterPath();
+
+            if ( !path.IsEmpty() && wxFileName::DirExists(path))
             {
-                if (Compilers[i] == s_DefaultCompiler)
-                    selected = i;
+                compilerChoices.Add(Compilers[i]->GetName());
             }
-            else
+
+            if (selected == -1)
             {
-                if (Compilers[i]->GetID().IsSameAs(lid))
-                    selected = i;
+                if (lid.IsEmpty())
+                {
+                    if (Compilers[i] == s_DefaultCompiler)
+                        selected = i;
+                }
+                else
+                {
+                    if (Compilers[i]->GetID().IsSameAs(lid))
+                        selected = i;
+                }
             }
         }
     }
+
+    // sort it alphabetically
+    compilerChoices.Sort();
+
     // now display a choice dialog
     wxSingleChoiceDialog dlg(nullptr,
                              message,
                              _("Compiler selection"),
-                             CompilerFactory::Compilers.GetCount(),
-                             comps.get());
+                             compilerChoices);
     dlg.SetSelection(selected);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
-        return Compilers[dlg.GetSelection()];
+    {
+        wxString selectedCompiler = compilerChoices.Item(dlg.GetSelection());
+        for (size_t i = 0; i < Compilers.GetCount(); ++i)
+        {
+            Compiler* compiler = CompilerFactory::GetCompiler(i);
+            if (!compiler)
+                continue;
+            wxString currentCompilerID = compiler->GetID();
+
+            // Only check if an actual compiler, ignore "NO compiler"
+            if (!currentCompilerID.IsSameAs("null"))
+            {
+                if (selectedCompiler.IsSameAs(Compilers[i]->GetName()))
+                {
+                    return Compilers[i];
+                }
+            }
+        }
+    }
     return nullptr;
 }
 

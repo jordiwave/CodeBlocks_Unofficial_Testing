@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id$
+// RCS-ID: $Id: codesnippetstreectrl.h 12648 2022-01-13 20:06:39Z wh11204 $
 
 #ifndef CODESNIPPETSTREECTRL_H
 #define CODESNIPPETSTREECTRL_H
@@ -174,7 +174,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         bool     IsFileLinkSnippet (wxTreeItemId treeItemId  );
         wxString GetFileLinkExt (wxTreeItemId treeItemId  );
 
-        bool IsTreeBusy(){return (m_pPropertiesDialog != 0);}
+        bool IsTreeBusy(){return (m_pPropertiesDialog != nullptr);}
 
         void            SetSnippetImage(wxTreeItemId itemId);
         wxTreeItemId    GetAssociatedItemID(){return m_MnuAssociatedItemID;}

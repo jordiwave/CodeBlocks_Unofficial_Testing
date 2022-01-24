@@ -1,9 +1,17 @@
+if BUILD_ABBREVIATIONS
+MAYBE_ABBREVIATIONS=abbreviations
+endif
+
 if BUILD_ASTYLE
 MAYBE_ASTYLE=astyle
 endif
 
 if BUILD_AUTOSAVE
 MAYBE_AUTOSAVE=autosave
+endif
+
+if BUILD_CLANGDCLIENT
+MAYBE_CLANGDCLIENT=clangd_client
 endif
 
 if BUILD_CLASSWIZARD
@@ -26,6 +34,10 @@ if BUILD_MIMEHANDLER
 MAYBE_MIMEHANDLER=defaultmimehandler
 endif
 
+if BUILD_DISPLAYEVENTS
+MAYBE_DISPLAYEVENTS=displayevents
+endif
+
 if BUILD_OPENFILESLIST
 MAYBE_OPENFILESLIST=openfileslist
 endif
@@ -46,48 +58,48 @@ if BUILD_TODO
 MAYBE_TODO=todo
 endif
 
-if BUILD_ABBREVIATIONS
-MAYBE_ABBREVIATIONS=abbreviations
-endif
-
 if BUILD_MANIFEST
 MAYBE_MANIFEST=xpmanifest
 endif
 
-SUBDIRS=$(MAYBE_ASTYLE) \
-		$(MAYBE_AUTOSAVE) \
-		$(MAYBE_CLASSWIZARD) \
-		$(MAYBE_CODECOMPLETION) \
-		$(MAYBE_COMPILER) \
-		$(MAYBE_DEBUGGER) \
-		$(MAYBE_MIMEHANDLER) \
-		$(MAYBE_SCRIPTEDWIZARD) \
-		$(MAYBE_PROJECTSIMPORTER) \
-		$(MAYBE_OPENFILESLIST) \
-		$(MAYBE_OCCURRENCESHIGHLIGHTING) \
-		$(MAYBE_TODO) \
-		$(MAYBE_ABBREVIATIONS) \
-		$(MAYBE_MANIFEST) \
-		contrib
+SUBDIRS=$(MAYBE_ABBREVIATIONS) \
+    $(MAYBE_ASTYLE) \
+    $(MAYBE_AUTOSAVE) \
+    $(MAYBE_CLANGDCLIENT) \
+    $(MAYBE_CLASSWIZARD) \
+    $(MAYBE_CODECOMPLETION) \
+    $(MAYBE_COMPILER) \
+    $(MAYBE_DEBUGGER) \
+    $(MAYBE_DISPLAYEVENTS) \
+    $(MAYBE_MIMEHANDLER) \
+    $(MAYBE_SCRIPTEDWIZARD) \
+    $(MAYBE_PROJECTSIMPORTER) \
+    $(MAYBE_OPENFILESLIST) \
+    $(MAYBE_OCCURRENCESHIGHLIGHTING) \
+    $(MAYBE_TODO) \
+    $(MAYBE_MANIFEST) \
+    contrib
 # the 'contrib' subdir contains its own filtering
 
 DIST_SUBDIRS = abbreviations \
-		astyle \
-		autosave \
-		classwizard \
-		codecompletion \
-		compilergcc \
-		debuggergdb \
-		defaultmimehandler \
-		openfileslist \
-		occurrenceshighlighting \
-		projectsimporter \
-		scriptedwizard \
-		todo \
-		xpmanifest \
-		contrib
+    astyle \
+    autosave \
+    clangd_client \
+    classwizard \
+    codecompletion \
+    compilergcc \
+    debuggergdb \
+    defaultmimehandler \
+    displayevents \
+    openfileslist \
+    occurrenceshighlighting \
+    projectsimporter \
+    scriptedwizard \
+    todo \
+    xpmanifest \
+    contrib
 
 EXTRA_DIST = headerguard \
-		loghacker \
-		modpoller \
-		tidycmt
+    loghacker \
+    modpoller \
+    tidycmt

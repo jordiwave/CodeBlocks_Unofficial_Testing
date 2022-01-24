@@ -77,7 +77,7 @@ wxsSpeedButton::wxsSpeedButton(wxsItemResData* Data):
 
 // start with a clean slate
 
-    mLabel      = _("");
+    mLabel      = wxString();
     mGlyphCount = 0;
     mMargin     = 2;
     mUseInclude = true;
@@ -147,7 +147,7 @@ wxString    s,v;
 
 // make a name for the bitmap
 
-    v = GetVarName() + _("_BMP");
+    v = GetVarName() + "_BMP";
 
 // no image
 
@@ -165,8 +165,8 @@ wxString    s,v;
 
     else if ((IsImageXPM(mGlyph)) && (mUseInclude)) {
         s = mGlyph.FileName;
-        s.Replace(_("\\"), _("/"), true);
-        s = _T("\"") + s + _T("\"");
+        s.Replace("\\", "/", true);
+        s = "\"" + s + "\"";
         AddHeader(s, GetInfo().ClassName, 0);
 
         s = GetXPMName(mGlyph);
@@ -177,7 +177,7 @@ wxString    s,v;
 
     else if (! mGlyph.FileName.IsEmpty()) {
         s = mGlyph.FileName;
-        s.Replace(_("\\"), _("/"), true);
+        s.Replace("\\", "/", true);
 
         Codef(_T("wxBitmap %s(%t, wxBITMAP_TYPE_ANY);\n"), v.wx_str(), s.wx_str());
     }

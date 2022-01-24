@@ -142,9 +142,9 @@ bool ThreadSearchLoggerList::GetFileLineFromListEvent(wxListEvent& /*event*/, wx
 
         // First, gets file dir
         wxString filedir;
-        listItem.m_itemId = index;
-        listItem.m_col    = ListColumns::FilePath;
-        listItem.m_mask   = wxLIST_MASK_TEXT;
+        listItem.SetId(index);
+        listItem.SetColumn(ListColumns::FilePath);
+        listItem.SetMask(wxLIST_MASK_TEXT);
 
         if ( m_pListLog->GetItem(listItem) == false ) break;
 
@@ -178,14 +178,14 @@ bool ThreadSearchLoggerList::IsLineResultLine(long index /* -1 */)
 
         // First, gets file dir
         wxString filedir;
-        listItem.m_itemId = index;
-        listItem.m_col    = ListColumns::FilePath;
-        listItem.m_mask   = wxLIST_MASK_TEXT;
+        listItem.SetId(index);
+        listItem.SetColumn(ListColumns::FilePath);
+        listItem.SetMask(wxLIST_MASK_TEXT);
 
         if ( m_pListLog->GetItem(listItem) == false ) break;
 
         filedir = listItem.GetText();
-        isResultLine = !filedir.StartsWith(_("=>"));
+        isResultLine = !filedir.StartsWith("=>");
     } while ( 0 );
 
     return isResultLine;
@@ -439,7 +439,7 @@ void ThreadSearchLoggerList::OnSearchBegin(const ThreadSearchFindData& findData)
     {
         m_IndexManager.Reset();
         long index = m_pListLog->GetItemCount();
-        m_pListLog->InsertItem(index, wxString::Format(_("=> %s"), findData.GetFindText().c_str()));
+        m_pListLog->InsertItem(index, wxString::Format("=> %s", findData.GetFindText().c_str()));
         m_pListLog->SetItem(index, ListColumns::Line, _("==="));
         m_pListLog->SetItem(index, ListColumns::Text, _("============"));
         m_pListLog->SetItemData(index, 1);

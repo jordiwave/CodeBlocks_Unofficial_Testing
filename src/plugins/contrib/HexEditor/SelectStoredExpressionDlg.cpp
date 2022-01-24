@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with HexEditor. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision$
-* $Id$
-* $HeadURL$
+* $Revision: 11996 $
+* $Id: SelectStoredExpressionDlg.cpp 11996 2020-03-26 21:04:41Z fuscated $
+* $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/HexEditor/SelectStoredExpressionDlg.cpp $
 */
 
 #include "SelectStoredExpressionDlg.h"

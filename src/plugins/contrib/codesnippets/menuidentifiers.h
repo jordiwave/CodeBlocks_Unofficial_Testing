@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-// RCS-ID: $Id$
+// RCS-ID: $Id: menuidentifiers.h 10362 2015-07-26 08:13:33Z jenslody $
 
 #ifndef MENUIDENTIFIERS_H_INCLUDED
 #define MENUIDENTIFIERS_H_INCLUDED
