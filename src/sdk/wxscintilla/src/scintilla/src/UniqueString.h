@@ -10,21 +10,24 @@
 #define UNIQUESTRING_H
 
 #ifdef SCI_NAMESPACE
-namespace Scintilla {
+namespace Scintilla
+{
 #endif
 
 using UniqueString = std::unique_ptr<const char[]>;
 
 /// Equivalent to strdup but produces a std::unique_ptr<const char[]> allocation to go
 /// into collections.
-inline UniqueString UniqueStringCopy(const char *text) {
-	if (!text) {
-		return UniqueString();
-	}
-	const size_t len = strlen(text);
-	char *sNew = new char[len + 1];
-	std::copy(text, text + len + 1, sNew);
-	return UniqueString(sNew);
+inline UniqueString UniqueStringCopy(const char *text)
+{
+    if (!text)
+    {
+        return UniqueString();
+    }
+    const size_t len = strlen(text);
+    char *sNew = new char[len + 1];
+    std::copy(text, text + len + 1, sNew);
+    return UniqueString(sNew);
 }
 
 #ifdef SCI_NAMESPACE

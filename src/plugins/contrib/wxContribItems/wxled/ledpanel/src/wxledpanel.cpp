@@ -15,7 +15,7 @@
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <wx/dcbuffer.h>
@@ -42,8 +42,8 @@ wxLEDPanel::wxLEDPanel() :
 }
 
 wxLEDPanel::wxLEDPanel(wxWindow* parent, wxWindowID id, const wxSize& ledsize,
-                    const wxSize& fieldsize, int padding, const wxPoint& pos,
-                    long style, const wxValidator& validator) :
+                       const wxSize& fieldsize, int padding, const wxPoint& pos,
+                       long style, const wxValidator& validator) :
     m_align(wxALIGN_LEFT|wxALIGN_TOP),
     m_padLeft(1),
     m_padRight(1),
@@ -61,8 +61,8 @@ wxLEDPanel::~wxLEDPanel()
 }
 
 bool wxLEDPanel::Create(wxWindow* parent, wxWindowID id, const wxSize& ledsize,
-                    const wxSize& fieldsize, int padding, const wxPoint& pos,
-                    long style, const wxValidator& validator)
+                        const wxSize& fieldsize, int padding, const wxPoint& pos,
+                        long style, const wxValidator& validator)
 {
     // save in member
     m_ledsize=ledsize;
@@ -201,8 +201,8 @@ bool wxLEDPanel::SetBackgroundColour(const wxColour& colour)
 {
     if (wxWindow::SetBackgroundColour(colour))
     {
-      PrepareBackground();
-      return true;
+        PrepareBackground();
+        return true;
     }
 
     return false;
@@ -462,7 +462,7 @@ void wxLEDPanel::DrawField(wxDC& dc, bool backgroundMode)
     int l = m_field.GetLength();
     int fw = m_field.GetWidth();
     const char* field = m_field.GetData();
-    for(int i=0;i<l;++i)
+    for(int i=0; i<l; ++i)
     {
         // Koordinaten
         point.x=x*w+m_padding;
@@ -480,7 +480,11 @@ void wxLEDPanel::DrawField(wxDC& dc, bool backgroundMode)
 
         // hochzählen
         ++x;
-        if(x==fw) {++y; x=0;}
+        if(x==fw)
+        {
+            ++y;
+            x=0;
+        }
     }
 }
 
@@ -520,7 +524,7 @@ void wxLEDPanel::ShiftLeft()
 
     // TODO check bounds!
     // data for the new line
-    for(int i=0;i<m_content_mo.GetHeight();++i)
+    for(int i=0; i<m_content_mo.GetHeight(); ++i)
     {
         char d=m_content_mo.GetDataFrom(abs(m_pos.x-m_field.GetWidth()+1),i);
         if(d>0) m_field.SetDataAt(m_field.GetWidth()-1,m_pos.y+i,d);
@@ -544,7 +548,7 @@ void wxLEDPanel::ShiftRight()
     // TODO check bounds!
     // TODO at first run -> false y-pos!
     // data for the new line
-    for(int i=0;i<m_content_mo.GetHeight();++i)
+    for(int i=0; i<m_content_mo.GetHeight(); ++i)
     {
         char d=m_content_mo.GetDataFrom(abs(m_pos.x-m_field.GetWidth()+1),i);
         if(d>0) m_field.SetDataAt(0,m_pos.y+i,d);
@@ -592,12 +596,22 @@ void wxLEDPanel::OnScrollTimer(wxTimerEvent& event)
         // Scroll
         switch(m_scrolldirection)
         {
-            case wxALL: return;
-            case wxLEFT: this->ShiftLeft(); break;
-            case wxRIGHT: this->ShiftRight(); break;
-            case wxDOWN: this->ShiftDown(); break;
-            case wxUP: this->ShiftUp(); break;
-            default: return;
+        case wxALL:
+            return;
+        case wxLEFT:
+            this->ShiftLeft();
+            break;
+        case wxRIGHT:
+            this->ShiftRight();
+            break;
+        case wxDOWN:
+            this->ShiftDown();
+            break;
+        case wxUP:
+            this->ShiftUp();
+            break;
+        default:
+            return;
         }
     }
     else
@@ -674,21 +688,29 @@ void wxLEDPanel::PrepareBackground()
 
 // Red, Green, Blue, Yellow, Magenta, Cyan, Grey
 const wxColour wxLEDPanel::s_colour[7]=
-    {    wxColour(255,0,0), wxColour(0,255,0), wxColour(0,0,255),
-        wxColour(255,255,0), wxColour(255,0,255), wxColour(0,255,255),
-        wxColour(128,128,128) };
+{
+    wxColour(255,0,0), wxColour(0,255,0), wxColour(0,0,255),
+    wxColour(255,255,0), wxColour(255,0,255), wxColour(0,255,255),
+    wxColour(128,128,128)
+};
 
 const wxColour wxLEDPanel::s_colour_dark[7]=
-    {    wxColour(128,0,0), wxColour(0,128,0), wxColour(0,0,128),
-        wxColour(128,128,0), wxColour(128,0,128), wxColour(0,128,128),
-        wxColour(64,64,64) };
+{
+    wxColour(128,0,0), wxColour(0,128,0), wxColour(0,0,128),
+    wxColour(128,128,0), wxColour(128,0,128), wxColour(0,128,128),
+    wxColour(64,64,64)
+};
 
 const wxColour wxLEDPanel::s_colour_verydark[7]=
-    {    wxColour(64,0,0), wxColour(0,64,0), wxColour(0,0,64),
-        wxColour(64,64,0), wxColour(64,0,64), wxColour(0,64,64),
-        wxColour(32,32,32) };
+{
+    wxColour(64,0,0), wxColour(0,64,0), wxColour(0,0,64),
+    wxColour(64,64,0), wxColour(64,0,64), wxColour(0,64,64),
+    wxColour(32,32,32)
+};
 
 const wxColour wxLEDPanel::s_colour_light[7]=
-    {    wxColour(255,128,128), wxColour(128,255,128), wxColour(128,128,255),
-        wxColour(255,255,128), wxColour(255,128,255), wxColour(128,255,255),
-        wxColour(192,192,192) };
+{
+    wxColour(255,128,128), wxColour(128,255,128), wxColour(128,128,255),
+    wxColour(255,255,128), wxColour(255,128,255), wxColour(128,255,255),
+    wxColour(192,192,192)
+};

@@ -29,34 +29,34 @@ class ProjectFile;
 
 class HexEditor : public cbPlugin
 {
-    public:
+public:
 
-        HexEditor();
-        virtual ~HexEditor();
+    HexEditor();
+    virtual ~HexEditor();
 
-        void NotifyEditorOpened( EditorBase* );
+    void NotifyEditorOpened( EditorBase* );
 
-    protected:
+protected:
 
-        virtual void BuildMenu(wxMenuBar* menuBar);
-        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
-        virtual bool BuildToolBar(wxToolBar* toolBar);
-        virtual void OnAttach();
-        virtual void OnRelease(bool appShutDown);
+    virtual void BuildMenu(wxMenuBar* menuBar);
+    virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
+    virtual bool BuildToolBar(wxToolBar* toolBar);
+    virtual void OnAttach();
+    virtual void OnRelease(bool appShutDown);
 
-        void OnOpenHexEdit( wxCommandEvent& event );
-        void OnOpenHexEditFileBrowser( wxCommandEvent& event );
-        void OnOpenWithHE ( wxCommandEvent& event );
-        void CloseMyEditors();
+    void OnOpenHexEdit( wxCommandEvent& event );
+    void OnOpenHexEditFileBrowser( wxCommandEvent& event );
+    void OnOpenWithHE ( wxCommandEvent& event );
+    void CloseMyEditors();
 
-        void OpenProjectFile( ProjectFile* file );
-        void OpenFileFromName( const wxString& fileName );
+    void OpenProjectFile( ProjectFile* file );
+    void OpenFileFromName( const wxString& fileName );
 
-        ProjectFile* FindProjectFile( const wxString& fileName );
+    ProjectFile* FindProjectFile( const wxString& fileName );
 
-        wxString m_browserselectedfile;
+    wxString m_browserselectedfile;
 
-        DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 

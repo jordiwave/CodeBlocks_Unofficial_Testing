@@ -27,21 +27,21 @@
 
 namespace
 {
-    wxsRegisterItem<wxsRadioBox> Reg(_T("RadioBox"),wxsTWidget,_T("Standard"),180);
+wxsRegisterItem<wxsRadioBox> Reg(_T("RadioBox"),wxsTWidget,_T("Standard"),180);
 
-    WXS_ST_BEGIN(wxsRadioBoxStyles,_T(""))
-        WXS_ST_CATEGORY("wxRadioBox")
-        WXS_ST(wxRA_SPECIFY_COLS)
-        WXS_ST(wxRA_HORIZONTAL)
-        WXS_ST(wxRA_SPECIFY_ROWS)
-        WXS_ST(wxRA_VERTICAL)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsRadioBoxStyles,_T(""))
+WXS_ST_CATEGORY("wxRadioBox")
+WXS_ST(wxRA_SPECIFY_COLS)
+WXS_ST(wxRA_HORIZONTAL)
+WXS_ST(wxRA_SPECIFY_ROWS)
+WXS_ST(wxRA_VERTICAL)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsRadioBoxEvents)
-        WXS_EVI(EVT_RADIOBOX,wxEVT_COMMAND_RADIOBOX_SELECTED,wxCommandEvent,Select)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsRadioBoxEvents)
+WXS_EVI(EVT_RADIOBOX,wxEVT_COMMAND_RADIOBOX_SELECTED,wxCommandEvent,Select)
+WXS_EV_END()
 }
 
 wxsRadioBox::wxsRadioBox(wxsItemResData* Data):
@@ -60,44 +60,44 @@ void wxsRadioBox::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/radiobox.h>"),GetInfo().ClassName,hfInPCH);
+
+        // wxRadioBox does not have Append Function , therefore , have to build a wxString[]
+        // to pass in to the ctor
+        wxString ChoicesName;
+        if ( ArrayChoices.GetCount() > 0 )
         {
-            AddHeader(_T("<wx/radiobox.h>"),GetInfo().ClassName,hfInPCH);
-
-            // wxRadioBox does not have Append Function , therefore , have to build a wxString[]
-            // to pass in to the ctor
-            wxString ChoicesName;
-            if ( ArrayChoices.GetCount() > 0 )
+            ChoicesName = GetCoderContext()->GetUniqueName(_T("__wxRadioBoxChoices"));
+            Codef(_T("wxString %s[%d] = \n{\n"),ChoicesName.wx_str(),(int)ArrayChoices.GetCount());
+            for ( size_t i = 0; i < ArrayChoices.GetCount(); ++i )
             {
-                ChoicesName = GetCoderContext()->GetUniqueName(_T("__wxRadioBoxChoices"));
-                Codef(_T("wxString %s[%d] = \n{\n"),ChoicesName.wx_str(),(int)ArrayChoices.GetCount());
-                for ( size_t i = 0; i < ArrayChoices.GetCount(); ++i )
-                {
-                    Codef(_T("\t%t%s\n"),ArrayChoices[i].wx_str(),((i!=ArrayChoices.GetCount()-1)?_T(","):_T("")));
-                }
-                Codef(_T("};\n"));
+                Codef(_T("\t%t%s\n"),ArrayChoices[i].wx_str(),((i!=ArrayChoices.GetCount()-1)?_T(","):_T("")));
             }
-
-            if ( Dimension < 1 ) Dimension = 1;
-
-            Codef(_T("%C(%W, %I, %t, %P, %S, %d, %s, %d, %T, %V, %N);\n"),
-                  Label.wx_str(),ArrayChoices.GetCount(),
-                  (ArrayChoices.IsEmpty()?_T("0"):ChoicesName.wx_str()),
-                  Dimension);
-
-            if ( DefaultSelection >= 0 && DefaultSelection < (int)ArrayChoices.GetCount() )
-            {
-                Codef( _T("%ASetSelection(%d);\n"), DefaultSelection);
-            }
-            BuildSetupWindowCode();
-            return;
+            Codef(_T("};\n"));
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
+        if ( Dimension < 1 ) Dimension = 1;
+
+        Codef(_T("%C(%W, %I, %t, %P, %S, %d, %s, %d, %T, %V, %N);\n"),
+              Label.wx_str(),ArrayChoices.GetCount(),
+              (ArrayChoices.IsEmpty()?_T("0"):ChoicesName.wx_str()),
+              Dimension);
+
+        if ( DefaultSelection >= 0 && DefaultSelection < (int)ArrayChoices.GetCount() )
         {
-            wxsCodeMarks::Unknown(_T("wxsRadioBox::OnBuildCreatingCode"),GetLanguage());
+            Codef( _T("%ASetSelection(%d);\n"), DefaultSelection);
         }
+        BuildSetupWindowCode();
+        return;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsRadioBox::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

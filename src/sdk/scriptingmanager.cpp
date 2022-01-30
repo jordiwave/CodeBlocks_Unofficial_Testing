@@ -10,20 +10,20 @@
 #include <sdk_precomp.h>
 
 #ifndef CB_PRECOMP
-    #include "scriptingmanager.h"
-    #include "cbeditor.h"
-    #include "cbexception.h"
-    #include "configmanager.h"
-    #include "editormanager.h"
-    #include "globals.h"
-    #include "logmanager.h"
-    #include "manager.h"
+#include "scriptingmanager.h"
+#include "cbeditor.h"
+#include "cbexception.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "globals.h"
+#include "logmanager.h"
+#include "manager.h"
 
-    #include <settings.h>
-    #include <wx/msgdlg.h>
-    #include <wx/file.h>
-    #include <wx/filename.h>
-    #include <wx/regex.h>
+#include <settings.h>
+#include <wx/msgdlg.h>
+#include <wx/file.h>
+#include <wx/filename.h>
+#include <wx/regex.h>
 #endif
 
 #include <map>
@@ -219,8 +219,8 @@ SQInteger ConstantsSet(HSQUIRRELVM v)
 
 namespace ScriptBindings
 {
-    void RegisterBindings(HSQUIRRELVM vm, ScriptingManager *manager);
-    void UnregisterBindings();
+void RegisterBindings(HSQUIRRELVM vm, ScriptingManager *manager);
+void UnregisterBindings();
 } // namespace ScriptBindings
 
 ScriptingManager::ScriptingManager() : m_data(new Data(this))
@@ -365,8 +365,8 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
     {
         const wxString errorMsg = ScriptBindings::ExtractLastSquirrelError(m_data->m_vm, false);
         const wxString fullMessage = wxString::Format("LoadBuffer failed\n  Filename: %s\n  Error: %s\n  Details: %s",
-                                                      debugName.wx_str(), errorMsg.wx_str(),
-                                                      s_ScriptErrors.wx_str());
+                                     debugName.wx_str(), errorMsg.wx_str(),
+                                     s_ScriptErrors.wx_str());
         Manager::Get()->GetLogManager()->LogError(fullMessage);
         m_data->m_IncludeSet.erase(incName);
         return false;
@@ -377,8 +377,8 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
     {
         const wxString errorMsg = ScriptBindings::ExtractLastSquirrelError(m_data->m_vm, false);
         const wxString fullMessage = wxString::Format("LoadBuffer failed\n  Filename: %s\n  Error: %s\n  Details: %s",
-                                                      debugName.wx_str(), errorMsg.wx_str(),
-                                                      s_ScriptErrors.wx_str());
+                                     debugName.wx_str(), errorMsg.wx_str(),
+                                     s_ScriptErrors.wx_str());
         Manager::Get()->GetLogManager()->LogError(fullMessage);
 
         m_data->m_IncludeSet.erase(incName);
@@ -439,13 +439,13 @@ void ScriptingManager::DisplayErrors(bool clearErrors)
     if (!msg.IsEmpty())
     {
         if (cbMessageBox(_("Script errors have occured...\nPress 'Yes' to see the exact errors."),
-                            _("Script errors"),
-                            wxICON_ERROR | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
+                         _("Script errors"),
+                         wxICON_ERROR | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
         {
             GenericMultiLineNotesDlg dlg(Manager::Get()->GetAppWindow(),
-                                        _("Script errors"),
-                                        msg,
-                                        true);
+                                         _("Script errors"),
+                                         msg,
+                                         true);
             PlaceWindow(&dlg);
             dlg.ShowModal();
         }
@@ -476,7 +476,7 @@ bool ScriptingManager::RegisterScriptPlugin(const wxString& /*name*/, const wxAr
 }
 
 bool ScriptingManager::RegisterScriptMenu(const wxString& menuPath, const wxString& scriptOrFunc,
-                                          bool isFunction)
+        bool isFunction)
 {
     // attach this event handler in the main window (one-time run)
     if (!m_data->m_AttachedToMainWindow)
@@ -585,8 +585,8 @@ bool ScriptingManager::IsScriptTrusted(const wxString& script)
     if (crc == it->second.crc)
         return true;
     cbMessageBox(script + _T("\n\n") + _("The script was marked as \"trusted\" but it has been modified "
-                    "since then.\nScript not trusted anymore."),
-                _("Warning"), wxICON_WARNING);
+                                         "since then.\nScript not trusted anymore."),
+                 _("Warning"), wxICON_WARNING);
     m_data->m_TrustedScripts.erase(it);
     return false;
 }

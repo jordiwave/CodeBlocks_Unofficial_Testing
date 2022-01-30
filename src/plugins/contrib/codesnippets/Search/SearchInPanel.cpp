@@ -20,8 +20,8 @@
 #endif
 
 #ifndef CB_PRECOMP
-	#include <wx/checkbox.h>
-	#include <wx/sizer.h>
+#include <wx/checkbox.h>
+#include <wx/sizer.h>
 #endif
 
 #include "SearchInPanel.h"
@@ -62,8 +62,8 @@ void SearchInPanel::OnChkClickEvent(wxCommandEvent &event)
 
 void SearchInPanel::OnChkSearchSnippetFilesClick(wxCommandEvent &event)
 {
-	// If project scope checkbox becomes checked, we uncheck if necessary workspace
-	// checkbox because project is included in workspace.
+    // If project scope checkbox becomes checked, we uncheck if necessary workspace
+    // checkbox because project is included in workspace.
     ////if ( (event.IsChecked() == true) && (m_pChkSearchWorkspaceFiles->IsChecked() == true) )
     ////{
     ////    m_pChkSearchWorkspaceFiles->SetValue(false);
@@ -71,22 +71,22 @@ void SearchInPanel::OnChkSearchSnippetFilesClick(wxCommandEvent &event)
     ////    ChkEvent.SetInt(0);
     ////    ProcessEvent(ChkEvent);
     ////}
-	event.Skip();
+    event.Skip();
 }
 
 
 void SearchInPanel::OnChkSearchWorkspaceFilesClick(wxCommandEvent &event)
 {
-	// If worspace scope checkbox becomes checked, we uncheck if necessary project
-	// checkbox because project is included in workspace.
-	if ( (event.IsChecked()) == true && (m_pChkSearchSnippetFiles->IsChecked() == true) )
-	{
-		m_pChkSearchSnippetFiles->SetValue(false);
-		wxCommandEvent ChkEvent(wxEVT_COMMAND_CHECKBOX_CLICKED, idChkSearchSnippetFiles);
-		ChkEvent.SetInt(0);
-		ProcessEvent(ChkEvent);
-	}
-	event.Skip();
+    // If worspace scope checkbox becomes checked, we uncheck if necessary project
+    // checkbox because project is included in workspace.
+    if ( (event.IsChecked()) == true && (m_pChkSearchSnippetFiles->IsChecked() == true) )
+    {
+        m_pChkSearchSnippetFiles->SetValue(false);
+        wxCommandEvent ChkEvent(wxEVT_COMMAND_CHECKBOX_CLICKED, idChkSearchSnippetFiles);
+        ChkEvent.SetInt(0);
+        ProcessEvent(ChkEvent);
+    }
+    event.Skip();
 }
 
 
@@ -124,13 +124,31 @@ void SearchInPanel::do_layout()
 
 
 // Getters
-bool SearchInPanel::GetSearchInOpenFiles()      const                       {return m_pChkSearchOpenFiles->IsChecked();}
-bool SearchInPanel::GetSearchInSnippetFiles()   const                       {return m_pChkSearchSnippetFiles->IsChecked();}
+bool SearchInPanel::GetSearchInOpenFiles()      const
+{
+    return m_pChkSearchOpenFiles->IsChecked();
+}
+bool SearchInPanel::GetSearchInSnippetFiles()   const
+{
+    return m_pChkSearchSnippetFiles->IsChecked();
+}
 //-bool SearchInPanel::GetSearchInWorkspaceFiles() const                       {return m_pChkSearchWorkspaceFiles->IsChecked();}
-bool SearchInPanel::GetSearchInDirectory()      const                       {return m_pChkSearchDir->IsChecked();}
+bool SearchInPanel::GetSearchInDirectory()      const
+{
+    return m_pChkSearchDir->IsChecked();
+}
 
 // Setters
-void SearchInPanel::SetSearchInOpenFiles     (bool bSearchInOpenFiles)      {m_pChkSearchOpenFiles->SetValue(bSearchInOpenFiles);}
-void SearchInPanel::SetSearchInSnippetFiles  (bool bSearchInSnippetFiles)   {m_pChkSearchSnippetFiles->SetValue(bSearchInSnippetFiles);}
+void SearchInPanel::SetSearchInOpenFiles     (bool bSearchInOpenFiles)
+{
+    m_pChkSearchOpenFiles->SetValue(bSearchInOpenFiles);
+}
+void SearchInPanel::SetSearchInSnippetFiles  (bool bSearchInSnippetFiles)
+{
+    m_pChkSearchSnippetFiles->SetValue(bSearchInSnippetFiles);
+}
 //-void SearchInPanel::SetSearchInWorkspaceFiles(bool bSearchInWorkspaceFiles) {m_pChkSearchWorkspaceFiles->SetValue(bSearchInWorkspaceFiles);}
-void SearchInPanel::SetSearchInDirectory     (bool bSearchInDirectory)      {m_pChkSearchDir->SetValue(bSearchInDirectory);}
+void SearchInPanel::SetSearchInDirectory     (bool bSearchInDirectory)
+{
+    m_pChkSearchDir->SetValue(bSearchInDirectory);
+}

@@ -94,35 +94,35 @@ wxString wxsStyleSet::GetString(long Bits,bool IsExtra,wxsCodingLang Language) c
 {
     switch ( Language )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        wxString Result;
+        const wxArrayString& NamesArray = IsExtra ? ExStyleNames : StyleNames;
+        const wxArrayLong& BitsArray = IsExtra ? ExStyleBits : StyleBits;
+        size_t Cnt = BitsArray.Count();
+        for ( size_t i=0; i<Cnt; i++ )
         {
-            wxString Result;
-            const wxArrayString& NamesArray = IsExtra ? ExStyleNames : StyleNames;
-            const wxArrayLong& BitsArray = IsExtra ? ExStyleBits : StyleBits;
-            size_t Cnt = BitsArray.Count();
-            for ( size_t i=0; i<Cnt; i++ )
+            if ( Bits & BitsArray[i] )
             {
-                if ( Bits & BitsArray[i] )
-                {
-                    Result.Append(NamesArray[i]);
-                    Result.Append(_T('|'));
-                }
+                Result.Append(NamesArray[i]);
+                Result.Append(_T('|'));
             }
-
-            if ( Result.empty() )
-            {
-                return _T("0");
-            }
-
-            Result.RemoveLast();
-            return Result;
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
+        if ( Result.empty() )
         {
-            wxsCodeMarks::Unknown(_T("wxsStyleSet::BitsToString"),Language);
+            return _T("0");
         }
+
+        Result.RemoveLast();
+        return Result;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsStyleSet::BitsToString"),Language);
+    }
     }
     return wxEmptyString;
 }

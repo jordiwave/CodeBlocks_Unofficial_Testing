@@ -20,18 +20,18 @@ void IPC::Send(const wxString& in)
         cbThrow(_T("Input exceeds shared memory size (error 0x0000cde0)."));
 
     if (shm.Lock(SharedMemory::writer) == 0)
-        {
-            // If locking failed here, this means the semaphore (and hence the shared memory, and the server process) was destroyed
-            // after we *just* checked that it exists (a few nanoseconds ago). This is a funny race condition
-            // which should be really, really rare, but which is of course nevertheless possible.
-            // We should consequently turn this process into a server, after seeing that the semaphore died, but this is really awful,
-            // so... we're not doing that... for now. The worst thing to happen is that double-clicking a file does not do anything once in a million times.
-            //
-            // Let's just throw and see how often we see this exception in normal everyday use.
-            // If it never happens, then simply ignoring the issue is a perfectly acceptable solution.
-            //
-            cbThrow(_T("Congrats, you managed to kill process 1 within nanoseconds after launching process 2, which is quite hard to do.\n\nPlease inform the Code::Blocks team of your achievement."));
-        }
+    {
+        // If locking failed here, this means the semaphore (and hence the shared memory, and the server process) was destroyed
+        // after we *just* checked that it exists (a few nanoseconds ago). This is a funny race condition
+        // which should be really, really rare, but which is of course nevertheless possible.
+        // We should consequently turn this process into a server, after seeing that the semaphore died, but this is really awful,
+        // so... we're not doing that... for now. The worst thing to happen is that double-clicking a file does not do anything once in a million times.
+        //
+        // Let's just throw and see how often we see this exception in normal everyday use.
+        // If it never happens, then simply ignoring the issue is a perfectly acceptable solution.
+        //
+        cbThrow(_T("Congrats, you managed to kill process 1 within nanoseconds after launching process 2, which is quite hard to do.\n\nPlease inform the Code::Blocks team of your achievement."));
+    }
 
     memcpy(shm.BasePointer(), in.c_str(), (in.length()+1) * sizeof(wxChar));
     shm.Unlock(SharedMemory::writer);
@@ -107,7 +107,7 @@ bool SharedMemory::Lock(rw_t rw)
     if (rw == reader)
     {
         return WaitForSingleObject(sem[reader], INFINITE) == WAIT_OBJECT_0
-            && WaitForSingleObject(sem[writer], INFINITE) == WAIT_OBJECT_0;
+               && WaitForSingleObject(sem[writer], INFINITE) == WAIT_OBJECT_0;
     }
     else  // if (rw == writer)
     {

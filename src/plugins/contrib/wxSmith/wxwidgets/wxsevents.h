@@ -137,42 +137,54 @@ struct wxsEventDesc
  */
 class wxsEvents
 {
-    public:
+public:
 
-        /** \brief Ctor */
-        wxsEvents(const wxsEventDesc* Events,wxsItem* Item);
+    /** \brief Ctor */
+    wxsEvents(const wxsEventDesc* Events,wxsItem* Item);
 
-        /** \brief Getting number of events */
-        inline int GetCount() { return m_Count; }
+    /** \brief Getting number of events */
+    inline int GetCount()
+    {
+        return m_Count;
+    }
 
-        /** \brief Getting event description */
-        inline const wxsEventDesc* GetDesc(int Index) { return &m_EventArray[Index]; }
+    /** \brief Getting event description */
+    inline const wxsEventDesc* GetDesc(int Index)
+    {
+        return &m_EventArray[Index];
+    }
 
-        /** \brief Getting event handler name */
-        inline const wxString& GetHandler(int Index) { return m_Functions[Index]; }
+    /** \brief Getting event handler name */
+    inline const wxString& GetHandler(int Index)
+    {
+        return m_Functions[Index];
+    }
 
-        /** \brief Setting event handler name */
-        inline void SetHandler(int Index,const wxString& Name) { m_Functions[Index] = Name; }
+    /** \brief Setting event handler name */
+    inline void SetHandler(int Index,const wxString& Name)
+    {
+        m_Functions[Index] = Name;
+    }
 
-        /** \brief Function generating code which binds events with main resource class
-         *
-         * Connecting events is done through wxsEvtHandler::Connect function.
-         * Event table is not used because not all events could be processed.
-         */
-        void GenerateBindingCode(wxsCoderContext* Context,const wxString& IdString,const wxString& VarNameString);
+    /** \brief Function generating code which binds events with main resource class
+     *
+     * Connecting events is done through wxsEvtHandler::Connect function.
+     * Event table is not used because not all events could be processed.
+     */
+    void GenerateBindingCode(wxsCoderContext* Context,const wxString& IdString,const wxString& VarNameString);
 
-        /** \brief Function loading associated function names from Xml node. */
-        void XmlLoadFunctions(TiXmlElement* Element);
+    /** \brief Function loading associated function names from Xml node. */
+    void XmlLoadFunctions(TiXmlElement* Element);
 
-        /** \brief Function adding handlers to given Xml element */
-        void XmlSaveFunctions(TiXmlElement* Element);
+    /** \brief Function adding handlers to given Xml element */
+    void XmlSaveFunctions(TiXmlElement* Element);
 
-    private:
+private:
 
-        wxsItem* m_Item;                      ///< Item whose events are managed
-        const wxsEventDesc* m_EventArray;     ///< Array of events fetched from item
-        wxArrayString m_Functions;            ///< Array of function names used for each entry item
-        int m_Count;                          ///< Number of events
+    wxsItem* m_Item;                      ///< Item whose events are managed
+    const wxsEventDesc* m_EventArray;     ///< Array of events fetched from item
+    wxArrayString m_Functions;            ///< Array of function names used for each entry item
+    int m_Count;                          ///< Number of events
 };
 
 #endif

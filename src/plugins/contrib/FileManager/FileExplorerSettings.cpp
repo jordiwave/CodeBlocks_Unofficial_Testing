@@ -2,11 +2,11 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-  #include <wx/xrc/xmlres.h>
-  #include <wx/checkbox.h>
-  #include <wx/choice.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/checkbox.h>
+#include <wx/choice.h>
 
-  #include "cbproject.h"
+#include "cbproject.h"
 #endif
 
 
@@ -16,15 +16,15 @@ WX_DEFINE_OBJARRAY(FavoriteDirs);
 ///////////////////////////////////////////////////////////////////////////
 
 BEGIN_EVENT_TABLE(FileBrowserSettings, wxDialog)
-  EVT_BUTTON(XRCID("idnew"), FileBrowserSettings::New)
-  EVT_BUTTON(XRCID("iddelete"), FileBrowserSettings::Delete)
-  EVT_BUTTON(XRCID("idup"), FileBrowserSettings::OnUp)
-  EVT_BUTTON(XRCID("iddown"), FileBrowserSettings::OnDown)
-  EVT_BUTTON(XRCID("idbrowsepath"), FileBrowserSettings::OnBrowse)
-  EVT_BUTTON(wxID_OK, FileBrowserSettings::OnOk)
+    EVT_BUTTON(XRCID("idnew"), FileBrowserSettings::New)
+    EVT_BUTTON(XRCID("iddelete"), FileBrowserSettings::Delete)
+    EVT_BUTTON(XRCID("idup"), FileBrowserSettings::OnUp)
+    EVT_BUTTON(XRCID("iddown"), FileBrowserSettings::OnDown)
+    EVT_BUTTON(XRCID("idbrowsepath"), FileBrowserSettings::OnBrowse)
+    EVT_BUTTON(wxID_OK, FileBrowserSettings::OnOk)
 //  EVT_BUTTON(XRCID("idcancel"), FileBrowserSettings::OnCancel)
-  EVT_LISTBOX(XRCID("idfavlist"), FileBrowserSettings::ChangeSelection)
-  EVT_TEXT(XRCID("idalias"), FileBrowserSettings::NameChange)
+    EVT_LISTBOX(XRCID("idfavlist"), FileBrowserSettings::ChangeSelection)
+    EVT_TEXT(XRCID("idalias"), FileBrowserSettings::NameChange)
 END_EVENT_TABLE()
 
 
@@ -43,7 +43,7 @@ FileBrowserSettings::FileBrowserSettings( const FavoriteDirs &favdirs, wxWindow*
 //    idcancel=XRCCTRL(*this,"idcancel",wxButton);
 
     m_favdirs=favdirs;
-    for(size_t i=0;i<favdirs.GetCount();i++)
+    for(size_t i=0; i<favdirs.GetCount(); i++)
         idfavlist->Append(favdirs[i].alias);
     m_selected=-1;
     if(m_favdirs.GetCount()>0)

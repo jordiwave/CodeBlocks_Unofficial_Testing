@@ -19,20 +19,54 @@ class kwxAngularMeter : public wxWindow
 {
 public:
     kwxAngularMeter(wxWindow *parent, const wxWindowID id = -1, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
-    kwxAngularMeter(){};
+    kwxAngularMeter() {};
 
     virtual ~kwxAngularMeter();
     void SetSectorColor(int nSector, wxColour colour) ;
-    void SetNumSectors(int nSector) { m_nSec = nSector ; m_bNeedRedrawBackground = true;};
-    void SetNumTick(int nTick) { m_nTick = nTick ; m_bNeedRedrawBackground = true;};
-    void SetRange(int min, int max) { m_nRangeStart = min ; m_nRangeEnd = max ; m_bNeedRedrawBackground = true;} ;
-    void SetAngle(int min, int max) { m_nAngleStart = min ; m_nAngleEnd = max ; m_bNeedRedrawBackground = true;} ;
+    void SetNumSectors(int nSector)
+    {
+        m_nSec = nSector ;
+        m_bNeedRedrawBackground = true;
+    };
+    void SetNumTick(int nTick)
+    {
+        m_nTick = nTick ;
+        m_bNeedRedrawBackground = true;
+    };
+    void SetRange(int min, int max)
+    {
+        m_nRangeStart = min ;
+        m_nRangeEnd = max ;
+        m_bNeedRedrawBackground = true;
+    } ;
+    void SetAngle(int min, int max)
+    {
+        m_nAngleStart = min ;
+        m_nAngleEnd = max ;
+        m_bNeedRedrawBackground = true;
+    } ;
     void SetValue(int val);
-    void SetNeedleColour(wxColour colour) { m_cNeedleColour = colour ; } ;
-    void SetBackColour(wxColour colour) { m_cBackColour = colour ; m_bNeedRedrawBackground = true;} ;
-    void SetBorderColour(wxColour colour) { m_cBorderColour = colour ; } ;
-    void SetTxtFont(wxFont &font) { m_Font = font ; } ;
-    void DrawCurrent(bool state) { m_bDrawCurrent = state ; } ;
+    void SetNeedleColour(wxColour colour)
+    {
+        m_cNeedleColour = colour ;
+    } ;
+    void SetBackColour(wxColour colour)
+    {
+        m_cBackColour = colour ;
+        m_bNeedRedrawBackground = true;
+    } ;
+    void SetBorderColour(wxColour colour)
+    {
+        m_cBorderColour = colour ;
+    } ;
+    void SetTxtFont(wxFont &font)
+    {
+        m_Font = font ;
+    } ;
+    void DrawCurrent(bool state)
+    {
+        m_bDrawCurrent = state ;
+    } ;
     void ConstructBackground();
 
 
@@ -45,7 +79,10 @@ private:
     void    DrawTicks(wxDC &dc) ;
     void    DrawNeedle(wxDC &dc) ;
     void    DrawSectors(wxDC &dc) ;
-    wxWindowID     GetID() { return m_id ; } ;
+    wxWindowID     GetID()
+    {
+        return m_id ;
+    } ;
 
 private:
     wxWindowID m_id;

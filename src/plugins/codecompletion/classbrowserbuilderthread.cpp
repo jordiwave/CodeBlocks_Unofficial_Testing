@@ -10,20 +10,20 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <algorithm>
+#include <algorithm>
 
-    #include <wx/settings.h>
+#include <wx/settings.h>
 #ifdef CC_BUILDTREE_MEASURING
-    #include <wx/stopwatch.h>
+#include <wx/stopwatch.h>
 #endif
-    #include <wx/utils.h>
+#include <wx/utils.h>
 
-    #include <cbproject.h>
-    #include <cbstyledtextctrl.h>
-    #include <globals.h>
-    #include <logmanager.h>
-    #include <manager.h>
-    #include <projectmanager.h>
+#include <cbproject.h>
+#include <cbstyledtextctrl.h>
+#include <globals.h>
+#include <logmanager.h>
+#include <manager.h>
+#include <projectmanager.h>
 #endif
 
 #include "classbrowserbuilderthread.h"
@@ -36,32 +36,32 @@
 #define CC_BUILDERTHREAD_DEBUG_OUTPUT 0
 
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
-    #if CC_GLOBAL_DEBUG_OUTPUT == 1
-        #undef CC_BUILDERTHREAD_DEBUG_OUTPUT
-        #define CC_BUILDERTHREAD_DEBUG_OUTPUT 1
-    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
-        #undef CC_BUILDERTHREAD_DEBUG_OUTPUT
-        #define CC_BUILDERTHREAD_DEBUG_OUTPUT 2
-    #endif
+#if CC_GLOBAL_DEBUG_OUTPUT == 1
+#undef CC_BUILDERTHREAD_DEBUG_OUTPUT
+#define CC_BUILDERTHREAD_DEBUG_OUTPUT 1
+#elif CC_GLOBAL_DEBUG_OUTPUT == 2
+#undef CC_BUILDERTHREAD_DEBUG_OUTPUT
+#define CC_BUILDERTHREAD_DEBUG_OUTPUT 2
+#endif
 #endif
 
 #if CC_BUILDERTHREAD_DEBUG_OUTPUT == 1
-    #define TRACE(format, args...) \
+#define TRACE(format, args...) \
         CCLogger::Get()->DebugLog(F(format, ##args))
-    #define TRACE2(format, args...)
+#define TRACE2(format, args...)
 #elif CC_BUILDERTHREAD_DEBUG_OUTPUT == 2
-    #define TRACE(format, args...)                                              \
+#define TRACE(format, args...)                                              \
         do                                                                      \
         {                                                                       \
             if (g_EnableDebugTrace)                                             \
                 CCLogger::Get()->DebugLog(F(format, ##args));                   \
         }                                                                       \
         while (false)
-    #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
         CCLogger::Get()->DebugLog(F(format, ##args))
 #else
-    #define TRACE(format, args...)
-    #define TRACE2(format, args...)
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
 #endif
 
 ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxEvtHandler* evtHandler, wxSemaphore& sem) :
@@ -117,7 +117,7 @@ void ClassBrowserBuilderThread::Init(NativeParser*         np,
 
     // fill filter set for current-file-filter
     if (   m_BrowserOptions.displayFilter == bdfFile
-        && !m_ActiveFilename.IsEmpty() )
+            && !m_ActiveFilename.IsEmpty() )
     {
         // m_ActiveFilename is the full filename up to the extension dot. No extension though.
         // get all filenames' indices matching our mask
@@ -137,13 +137,13 @@ void ClassBrowserBuilderThread::Init(NativeParser*         np,
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
     }
     else if (   m_BrowserOptions.displayFilter == bdfProject
-             && m_UserData )
+                && m_UserData )
     {
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
         cbProject* prj = static_cast <cbProject*> (m_UserData);
         for (FilesList::const_iterator fl_it = prj->GetFilesList().begin();
-                                       fl_it != prj->GetFilesList().end(); ++fl_it)
+                fl_it != prj->GetFilesList().end(); ++fl_it)
         {
             ProjectFile* curFile = *fl_it;
             if (!curFile)
@@ -213,20 +213,20 @@ void* ClassBrowserBuilderThread::Entry()
 
         // The thread can do many jobs:
         switch (m_nextJob)
-          {
-          case JobBuildTree:  // build internal trees and transfer to GUI ones
-              BuildTree();
-              break;
-          case JobSelectTree: // fill the bottom tree with data relative to the selected item
-              SelectGUIItem();
-              FillGUITree(false);
-              break;
-          case JobExpandItem: // add child items on the fly
-              ExpandGUIItem();
-              break;
-          default:
-              ;
-          }
+        {
+        case JobBuildTree:  // build internal trees and transfer to GUI ones
+            BuildTree();
+            break;
+        case JobSelectTree: // fill the bottom tree with data relative to the selected item
+            SelectGUIItem();
+            FillGUITree(false);
+            break;
+        case JobExpandItem: // add child items on the fly
+            ExpandGUIItem();
+            break;
+        default:
+            ;
+        }
 
         m_Busy = false;
     }
@@ -275,69 +275,73 @@ void ClassBrowserBuilderThread::ExpandItem(CCTreeItem* item)
     {
         switch (data->m_SpecialFolder)
         {
-            case sfRoot:
+        case sfRoot:
+        {
+            CreateSpecialFolders(m_CCTreeTop, item);
+            if( !(   m_BrowserOptions.displayFilter == bdfFile
+                     && m_ActiveFilename.IsEmpty() ) )
+                AddChildrenOf(m_CCTreeTop, item, -1, ~(tkFunction | tkVariable | tkMacroDef | tkTypedef | tkMacroUse));
+            break;
+        }
+        case sfBase:
+            AddAncestorsOf(m_CCTreeTop, item, data->m_Token->m_Index);
+            break;
+        case sfDerived:
+            AddDescendantsOf(m_CCTreeTop, item, data->m_Token->m_Index, false);
+            break;
+        case sfToken:
+        {
+            short int kind = 0;
+            switch (data->m_Token->m_TokenKind)
             {
-                CreateSpecialFolders(m_CCTreeTop, item);
-                if( !(   m_BrowserOptions.displayFilter == bdfFile
-                      && m_ActiveFilename.IsEmpty() ) )
-                    AddChildrenOf(m_CCTreeTop, item, -1, ~(tkFunction | tkVariable | tkMacroDef | tkTypedef | tkMacroUse));
-                break;
-            }
-            case sfBase:    AddAncestorsOf(m_CCTreeTop, item, data->m_Token->m_Index); break;
-            case sfDerived: AddDescendantsOf(m_CCTreeTop, item, data->m_Token->m_Index, false); break;
-            case sfToken:
+            case tkClass:
             {
-                short int kind = 0;
-                switch (data->m_Token->m_TokenKind)
+                // add base and derived classes folders
+                if (m_BrowserOptions.showInheritance)
                 {
-                    case tkClass:
-                    {
-                        // add base and derived classes folders
-                        if (m_BrowserOptions.showInheritance)
-                        {
-                            CCTreeItem* base = m_CCTreeTop->AppendItem(item, _("Base classes"),
-                                               PARSER_IMG_CLASS_FOLDER, PARSER_IMG_CLASS_FOLDER,
-                                               new CCTreeCtrlData(sfBase, data->m_Token, tkClass, data->m_Token->m_Index));
-                            if (!data->m_Token->m_DirectAncestors.empty())
-                                m_CCTreeTop->SetItemHasChildren(base);
-                            CCTreeItem* derived = m_CCTreeTop->AppendItem(item, _("Derived classes"),
-                                                  PARSER_IMG_CLASS_FOLDER, PARSER_IMG_CLASS_FOLDER,
-                                                  new CCTreeCtrlData(sfDerived, data->m_Token, tkClass, data->m_Token->m_Index));
-                            if (!data->m_Token->m_Descendants.empty())
-                                m_CCTreeTop->SetItemHasChildren(derived);
-                        }
-                        kind = tkClass | tkEnum;
-                        break;
-                    }
-                    case tkNamespace:
-                        kind = tkNamespace | tkClass | tkEnum;
-                        break;
-                    case tkEnum:
-                    case tkTypedef:
-                    case tkConstructor:
-                    case tkDestructor:
-                    case tkFunction:
-                    case tkVariable:
-                    case tkEnumerator:
-                    case tkMacroDef:
-                    case tkMacroUse:
-                    case tkAnyContainer:
-                    case tkAnyFunction:
-                    case tkUndefined:
-                    default:
-                        break;
+                    CCTreeItem* base = m_CCTreeTop->AppendItem(item, _("Base classes"),
+                                       PARSER_IMG_CLASS_FOLDER, PARSER_IMG_CLASS_FOLDER,
+                                       new CCTreeCtrlData(sfBase, data->m_Token, tkClass, data->m_Token->m_Index));
+                    if (!data->m_Token->m_DirectAncestors.empty())
+                        m_CCTreeTop->SetItemHasChildren(base);
+                    CCTreeItem* derived = m_CCTreeTop->AppendItem(item, _("Derived classes"),
+                                          PARSER_IMG_CLASS_FOLDER, PARSER_IMG_CLASS_FOLDER,
+                                          new CCTreeCtrlData(sfDerived, data->m_Token, tkClass, data->m_Token->m_Index));
+                    if (!data->m_Token->m_Descendants.empty())
+                        m_CCTreeTop->SetItemHasChildren(derived);
                 }
-                if (kind != 0)
-                    AddChildrenOf(m_CCTreeTop, item, data->m_Token->m_Index, kind);
+                kind = tkClass | tkEnum;
                 break;
             }
-            case sfGFuncs:
-            case sfGVars:
-            case sfPreproc:
-            case sfTypedef:
-            case sfMacro:
+            case tkNamespace:
+                kind = tkNamespace | tkClass | tkEnum;
+                break;
+            case tkEnum:
+            case tkTypedef:
+            case tkConstructor:
+            case tkDestructor:
+            case tkFunction:
+            case tkVariable:
+            case tkEnumerator:
+            case tkMacroDef:
+            case tkMacroUse:
+            case tkAnyContainer:
+            case tkAnyFunction:
+            case tkUndefined:
             default:
                 break;
+            }
+            if (kind != 0)
+                AddChildrenOf(m_CCTreeTop, item, data->m_Token->m_Index, kind);
+            break;
+        }
+        case sfGFuncs:
+        case sfGVars:
+        case sfPreproc:
+        case sfTypedef:
+        case sfMacro:
+        default:
+            break;
         }
     }
 
@@ -350,7 +354,7 @@ void ClassBrowserBuilderThread::ExpandItem(CCTreeItem* item)
 
     if (locked)
         CC_LOCKER_TRACK_CBBT_MTX_UNLOCK(m_ClassBrowserBuilderThreadMutex)
-}
+    }
 
 void ClassBrowserBuilderThread::SelectGUIItem()
 {
@@ -367,7 +371,7 @@ void ClassBrowserBuilderThread::SelectGUIItem()
 
     CCTree* tree = (m_BrowserOptions.treeMembers) ? m_CCTreeBottom : m_CCTreeTop;
     if ( !(   m_BrowserOptions.displayFilter == bdfFile
-           && m_ActiveFilename.IsEmpty() ) )
+              && m_ActiveFilename.IsEmpty() ) )
         AddMembersOf(tree, m_targetItem);
 
 #ifdef CC_BUILDTREE_MEASURING
@@ -507,8 +511,8 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CCTree* tree, CCTreeItem* par
                 CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
             }
             if (    token != data->m_Token
-                || (data->m_Ticket && data->m_Ticket != data->m_Token->GetTicket())
-                || !TokenMatchesFilter(data->m_Token) )
+                    || (data->m_Ticket && data->m_Ticket != data->m_Token->GetTicket())
+                    || !TokenMatchesFilter(data->m_Token) )
             {
                 removeCurrent = true;
             }
@@ -551,8 +555,8 @@ void ClassBrowserBuilderThread::ExpandNamespaces(CCTreeItem* node, TokenKind tok
     {
         CCTreeCtrlData* data = m_CCTreeTop->GetItemData(existing);
         if (   data
-            && data->m_Token
-            && (data->m_Token->m_TokenKind == tokenKind) )
+                && data->m_Token
+                && (data->m_Token->m_TokenKind == tokenKind) )
         {
             TRACE(F("Auto-expanding: " + data->m_Token->m_Name));
             ExpandItem(existing);
@@ -571,7 +575,7 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CCTree* tree, CCTreeItem* p
     bool hasGP = false;     // has global  macro definition
     bool hasTD = false;     // has type defines
     bool hasGM = false;     // has macro usage, note that this kind of tokens does not exits in the
-                            //   token tree, so we don't show such special folder
+    //   token tree, so we don't show such special folder
 
     // loop all tokens in global namespace and see if we have matches
     TokenTree* tt = m_NativeParser->GetParser().GetTokenTree();
@@ -603,15 +607,15 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CCTree* tree, CCTreeItem* p
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     CCTreeItem* gfuncs  = AddNodeIfNotThere(m_CCTreeTop, parent, _("Global functions"),
-                          PARSER_IMG_FUNCS_FOLDER,   new CCTreeCtrlData(sfGFuncs,    0, tkFunction, -1));
+                                            PARSER_IMG_FUNCS_FOLDER,   new CCTreeCtrlData(sfGFuncs,    0, tkFunction, -1));
     CCTreeItem* tdef    = AddNodeIfNotThere(m_CCTreeTop, parent, _("Global typedefs"),
-                          PARSER_IMG_TYPEDEF_FOLDER, new CCTreeCtrlData(sfTypedef,   0, tkTypedef,  -1));
+                                            PARSER_IMG_TYPEDEF_FOLDER, new CCTreeCtrlData(sfTypedef,   0, tkTypedef,  -1));
     CCTreeItem* gvars   = AddNodeIfNotThere(m_CCTreeTop, parent, _("Global variables"),
-                          PARSER_IMG_VARS_FOLDER,    new CCTreeCtrlData(sfGVars,     0, tkVariable, -1));
+                                            PARSER_IMG_VARS_FOLDER,    new CCTreeCtrlData(sfGVars,     0, tkVariable, -1));
     CCTreeItem* preproc = AddNodeIfNotThere(m_CCTreeTop, parent, _("Macro definitions"),
-                          PARSER_IMG_MACRO_DEF_FOLDER, new CCTreeCtrlData(sfPreproc, 0, tkMacroDef, -1));
+                                            PARSER_IMG_MACRO_DEF_FOLDER, new CCTreeCtrlData(sfPreproc, 0, tkMacroDef, -1));
     CCTreeItem* gmacro  = AddNodeIfNotThere(m_CCTreeTop, parent, _("Macro usages"),
-                          PARSER_IMG_MACRO_USE_FOLDER,   new CCTreeCtrlData(sfMacro, 0, tkMacroUse, -1));
+                                            PARSER_IMG_MACRO_USE_FOLDER,   new CCTreeCtrlData(sfMacro, 0, tkMacroUse, -1));
 
     // the logic here is: if the treeMembers option is on, then all the child members will be shownn
     // in the bottom, for example, if we have some global functions for the current file, then the
@@ -668,10 +672,10 @@ CCTreeItem* ClassBrowserBuilderThread::AddNodeIfNotThere(CCTree* tree, CCTreeIte
 }
 
 bool ClassBrowserBuilderThread::AddChildrenOf(CCTree* tree,
-                                              CCTreeItem* parent,
-                                              int parentTokenIdx,
-                                              short int tokenKindMask,
-                                              int tokenScopeMask)
+        CCTreeItem* parent,
+        int parentTokenIdx,
+        short int tokenKindMask,
+        int tokenScopeMask)
 {
     TRACE("ClassBrowserBuilderThread::AddChildrenOf");
 
@@ -687,7 +691,7 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CCTree* tree,
     if (parentTokenIdx == -1)
     {
         if (   m_BrowserOptions.displayFilter == bdfWorkspace
-            || m_BrowserOptions.displayFilter == bdfEverything )
+                || m_BrowserOptions.displayFilter == bdfEverything )
             tokens =  m_TokenTree->GetGlobalNameSpaces();
         else
             tokens = &m_CurrentGlobalTokensSet;
@@ -789,83 +793,93 @@ void ClassBrowserBuilderThread::AddMembersOf(CCTree* tree, CCTreeItem* node)
     {
         switch (data->m_SpecialFolder)
         {
-            case sfGFuncs  : AddChildrenOf(tree, node, -1, tkFunction, false); break;
-            case sfGVars   : AddChildrenOf(tree, node, -1, tkVariable, false); break;
-            case sfPreproc : AddChildrenOf(tree, node, -1, tkMacroDef, false); break;
-            case sfTypedef : AddChildrenOf(tree, node, -1, tkTypedef,  false); break;
-            case sfMacro   : AddChildrenOf(tree, node, -1, tkMacroUse, false); break;
-            case sfToken:
+        case sfGFuncs  :
+            AddChildrenOf(tree, node, -1, tkFunction, false);
+            break;
+        case sfGVars   :
+            AddChildrenOf(tree, node, -1, tkVariable, false);
+            break;
+        case sfPreproc :
+            AddChildrenOf(tree, node, -1, tkMacroDef, false);
+            break;
+        case sfTypedef :
+            AddChildrenOf(tree, node, -1, tkTypedef,  false);
+            break;
+        case sfMacro   :
+            AddChildrenOf(tree, node, -1, tkMacroUse, false);
+            break;
+        case sfToken:
+        {
+            if (bottom)
             {
-                if (bottom)
-                {
-                    if (   m_BrowserOptions.sortType == bstKind
+                if (   m_BrowserOptions.sortType == bstKind
                         && !(data->m_Token->m_TokenKind & tkEnum))
-                    {
-                        CCTreeItem* rootCtorDtor = tree->AppendItem(node, _("Ctors & Dtors"), PARSER_IMG_CLASS_FOLDER);
-                        CCTreeItem* rootFuncs    = tree->AppendItem(node, _("Functions"), PARSER_IMG_FUNCS_FOLDER);
-                        CCTreeItem* rootVars     = tree->AppendItem(node, _("Variables"), PARSER_IMG_VARS_FOLDER);
-                        CCTreeItem* rootMacro    = tree->AppendItem(node, _("Macros"), PARSER_IMG_MACRO_USE_FOLDER);
-                        CCTreeItem* rootOthers   = tree->AppendItem(node, _("Others"), PARSER_IMG_OTHERS_FOLDER);
+                {
+                    CCTreeItem* rootCtorDtor = tree->AppendItem(node, _("Ctors & Dtors"), PARSER_IMG_CLASS_FOLDER);
+                    CCTreeItem* rootFuncs    = tree->AppendItem(node, _("Functions"), PARSER_IMG_FUNCS_FOLDER);
+                    CCTreeItem* rootVars     = tree->AppendItem(node, _("Variables"), PARSER_IMG_VARS_FOLDER);
+                    CCTreeItem* rootMacro    = tree->AppendItem(node, _("Macros"), PARSER_IMG_MACRO_USE_FOLDER);
+                    CCTreeItem* rootOthers   = tree->AppendItem(node, _("Others"), PARSER_IMG_OTHERS_FOLDER);
 
-                        AddChildrenOf(tree, rootCtorDtor, data->m_Token->m_Index, tkConstructor | tkDestructor);
-                        AddChildrenOf(tree, rootFuncs,    data->m_Token->m_Index, tkFunction);
-                        AddChildrenOf(tree, rootVars,     data->m_Token->m_Index, tkVariable);
-                        AddChildrenOf(tree, rootMacro,    data->m_Token->m_Index, tkMacroUse);
-                        AddChildrenOf(tree, rootOthers,   data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum | tkAnyFunction | tkVariable | tkMacroUse));
-                    }
-                    else if (   m_BrowserOptions.sortType == bstScope
-                             && data->m_Token->m_TokenKind & tkClass )
-                    {
-                        CCTreeItem* rootPublic    = tree->AppendItem(node, _("Public"), PARSER_IMG_CLASS_FOLDER);
-                        CCTreeItem* rootProtected = tree->AppendItem(node, _("Protected"), PARSER_IMG_FUNCS_FOLDER);
-                        CCTreeItem* rootPrivate   = tree->AppendItem(node, _("Private"), PARSER_IMG_VARS_FOLDER);
+                    AddChildrenOf(tree, rootCtorDtor, data->m_Token->m_Index, tkConstructor | tkDestructor);
+                    AddChildrenOf(tree, rootFuncs,    data->m_Token->m_Index, tkFunction);
+                    AddChildrenOf(tree, rootVars,     data->m_Token->m_Index, tkVariable);
+                    AddChildrenOf(tree, rootMacro,    data->m_Token->m_Index, tkMacroUse);
+                    AddChildrenOf(tree, rootOthers,   data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum | tkAnyFunction | tkVariable | tkMacroUse));
+                }
+                else if (   m_BrowserOptions.sortType == bstScope
+                            && data->m_Token->m_TokenKind & tkClass )
+                {
+                    CCTreeItem* rootPublic    = tree->AppendItem(node, _("Public"), PARSER_IMG_CLASS_FOLDER);
+                    CCTreeItem* rootProtected = tree->AppendItem(node, _("Protected"), PARSER_IMG_FUNCS_FOLDER);
+                    CCTreeItem* rootPrivate   = tree->AppendItem(node, _("Private"), PARSER_IMG_VARS_FOLDER);
 
-                        AddChildrenOf(tree, rootPublic,    data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum), tsPublic);
-                        AddChildrenOf(tree, rootProtected, data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum), tsProtected);
-                        AddChildrenOf(tree, rootPrivate,   data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum), tsPrivate);
+                    AddChildrenOf(tree, rootPublic,    data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum), tsPublic);
+                    AddChildrenOf(tree, rootProtected, data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum), tsProtected);
+                    AddChildrenOf(tree, rootPrivate,   data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum), tsPrivate);
+                }
+                else
+                {
+                    AddChildrenOf(tree, node, data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum));
+                    break;
+                }
+
+                CCTreeItem* existing = tree->GetLastChild(tree->GetRootItem());
+                while (existing)
+                {
+                    CCTreeItem* next = tree->GetPrevSibling(existing);
+
+                    if (tree->GetChildrenCount(existing) > 0)
+                    {
+                        tree->SetItemBold(existing, true);
                     }
                     else
                     {
-                        AddChildrenOf(tree, node, data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum));
-                        break;
+                        tree->Delete(existing);
+                        existing = next;
+                        continue;
                     }
-
-                    CCTreeItem* existing = tree->GetLastChild(tree->GetRootItem());
-                    while (existing)
-                    {
-                        CCTreeItem* next = tree->GetPrevSibling(existing);
-
-                        if (tree->GetChildrenCount(existing) > 0)
-                        {
-                            tree->SetItemBold(existing, true);
-                        }
-                        else
-                        {
-                            tree->Delete(existing);
-                            existing = next;
-                            continue;
-                        }
-                        existing = tree->GetPrevSibling(existing);
-                    }
+                    existing = tree->GetPrevSibling(existing);
                 }
-                else
-                    AddChildrenOf(tree, node, data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum));
-
-                // add all children, except containers
-                // AddChildrenOf(tree, node, data->m_Token->GetSelf(), ~(tkNamespace | tkClass | tkEnum));
-                break;
             }
-            case sfRoot:
-            case sfBase:
-            case sfDerived:
-            default:
-                break;
+            else
+                AddChildrenOf(tree, node, data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum));
+
+            // add all children, except containers
+            // AddChildrenOf(tree, node, data->m_Token->GetSelf(), ~(tkNamespace | tkClass | tkEnum));
+            break;
+        }
+        case sfRoot:
+        case sfBase:
+        case sfDerived:
+        default:
+            break;
         }
     }
 }
 
 bool ClassBrowserBuilderThread::AddNodes(CCTree* tree, CCTreeItem* parent, const TokenIdxSet* tokens,
-                                         short int tokenKindMask, int tokenScopeMask, bool allowGlobals)
+        short int tokenKindMask, int tokenScopeMask, bool allowGlobals)
 {
     TRACE("ClassBrowserBuilderThread::AddNodes");
 
@@ -897,22 +911,22 @@ bool ClassBrowserBuilderThread::AddNodes(CCTree* tree, CCTreeItem* parent, const
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
         if (    token
-            && (token->m_TokenKind & tokenKindMask)
-            && (tokenScopeMask == 0 || token->m_Scope == tokenScopeMask)
-            && (allowGlobals || token->m_IsLocal || TokenMatchesFilter(token)) )
+                && (token->m_TokenKind & tokenKindMask)
+                && (tokenScopeMask == 0 || token->m_Scope == tokenScopeMask)
+                && (allowGlobals || token->m_IsLocal || TokenMatchesFilter(token)) )
         {
             if (   tree == m_CCTreeTop
-                && tickets.find(token->GetTicket()) != tickets.end() )
+                    && tickets.find(token->GetTicket()) != tickets.end() )
                 continue; // duplicate node
             ++count;
             int img = m_NativeParser->GetTokenKindImage(token);
 
             wxString str = token->m_Name;
             if (   (token->m_TokenKind == tkFunction)
-                || (token->m_TokenKind == tkConstructor)
-                || (token->m_TokenKind == tkDestructor)
-                || (token->m_TokenKind == tkMacroUse)
-                || (token->m_TokenKind == tkClass) )
+                    || (token->m_TokenKind == tkConstructor)
+                    || (token->m_TokenKind == tkDestructor)
+                    || (token->m_TokenKind == tkMacroUse)
+                    || (token->m_TokenKind == tkClass) )
             {
                 str << token->GetFormattedArgs();
             }
@@ -954,7 +968,7 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(const Token* token, bool lock
         return false;
 
     if (    m_BrowserOptions.displayFilter == bdfEverything
-        || (m_BrowserOptions.displayFilter == bdfWorkspace && token->m_IsLocal) )
+            || (m_BrowserOptions.displayFilter == bdfWorkspace && token->m_IsLocal) )
         return true;
 
     if (m_BrowserOptions.displayFilter == bdfFile && !m_CurrentTokenSet.empty())
@@ -966,19 +980,19 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(const Token* token, bool lock
         // to see if any of them matches the filter...
         // tis_it -> token index set iterator
         for (TokenIdxSet::const_iterator tis_it = token->m_Children.begin();
-             tis_it != token->m_Children.end();
-             ++tis_it)
+                tis_it != token->m_Children.end();
+                ++tis_it)
         {
             if (!locked)
                 CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-            const Token* curr_token = m_TokenTree->at(*tis_it);
+                const Token* curr_token = m_TokenTree->at(*tis_it);
 
             if (!locked)
                 CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
-            if (!curr_token)
-                break;
+                if (!curr_token)
+                    break;
 
             if (TokenMatchesFilter(curr_token, locked))
                 return true;
@@ -1050,9 +1064,9 @@ void ClassBrowserBuilderThread::ExpandSavedItems(CCTree* tree, CCTreeItem* paren
         CCTreeCtrlExpandedItemData saved = m_ExpandedVect.front();
 
         if (   level == saved.GetLevel()
-            && wxStrcmp(data->m_TokenName, saved.GetData().m_TokenName) == 0
-            && data->m_TokenKind == saved.GetData().m_TokenKind
-            && data->m_SpecialFolder == saved.GetData().m_SpecialFolder )
+                && wxStrcmp(data->m_TokenName, saved.GetData().m_TokenName) == 0
+                && data->m_TokenKind == saved.GetData().m_TokenKind
+                && data->m_SpecialFolder == saved.GetData().m_SpecialFolder )
         {
             ExpandItem(existing);
             m_ExpandedVect.pop_front();
@@ -1310,10 +1324,10 @@ void CCTree::QuickSort(CCTreeItem* first, CCTreeItem* last)
 
         // Divide & conquer
         if (bound != first)
-          QuickSort(first, bound->m_prevSibling);
+            QuickSort(first, bound->m_prevSibling);
 
         if (bound != last)
-          QuickSort(bound->m_nextSibling, last);
+            QuickSort(bound->m_nextSibling, last);
     }
 }
 
@@ -1325,38 +1339,38 @@ int CCTree::CompareFunction(const CCTreeCtrlData* lhs, const CCTreeCtrlData* rhs
     {
         switch (m_compare)
         {
-            case bstAlphabet:
-                if (lhs->m_SpecialFolder != sfToken || rhs->m_SpecialFolder != sfToken)
-                    return -1;
-                if (!lhs->m_Token || !rhs->m_Token)
-                    return 1;
-                return wxStricmp(lhs->m_Token->m_Name, rhs->m_Token->m_Name);
-                break;
-            case bstKind:
-                if (lhs->m_SpecialFolder != sfToken || rhs->m_SpecialFolder != sfToken)
-                    return -1;
-                if (lhs->m_TokenKind == rhs->m_TokenKind)
-                    return AlphabetCompare(lhs, rhs);
-                return lhs->m_TokenKind - rhs->m_TokenKind;
-                break;
-            case bstScope:
-                if (lhs->m_SpecialFolder != sfToken || rhs->m_SpecialFolder != sfToken)
-                    return -1;
-                if (lhs->m_Token->m_Scope == rhs->m_Token->m_Scope)
-                    return KindCompare(lhs, rhs);
-                return rhs->m_Token->m_Scope - lhs->m_Token->m_Scope;
-                break;
-            case bstLine:
-                if (lhs->m_SpecialFolder != sfToken || rhs->m_SpecialFolder != sfToken)
-                    return -1;
-                if (!lhs->m_Token || !rhs->m_Token)
-                    return 1;
-                if (lhs->m_Token->m_FileIdx == rhs->m_Token->m_FileIdx)
-                    return (lhs->m_Token->m_Line > rhs->m_Token->m_Line) * 2 - 1; // from 0,1 to -1,1
-                return (lhs->m_Token->m_FileIdx > rhs->m_Token->m_FileIdx) * 2 - 1;
-                break;
-            default:
-                return 0;
+        case bstAlphabet:
+            if (lhs->m_SpecialFolder != sfToken || rhs->m_SpecialFolder != sfToken)
+                return -1;
+            if (!lhs->m_Token || !rhs->m_Token)
+                return 1;
+            return wxStricmp(lhs->m_Token->m_Name, rhs->m_Token->m_Name);
+            break;
+        case bstKind:
+            if (lhs->m_SpecialFolder != sfToken || rhs->m_SpecialFolder != sfToken)
+                return -1;
+            if (lhs->m_TokenKind == rhs->m_TokenKind)
+                return AlphabetCompare(lhs, rhs);
+            return lhs->m_TokenKind - rhs->m_TokenKind;
+            break;
+        case bstScope:
+            if (lhs->m_SpecialFolder != sfToken || rhs->m_SpecialFolder != sfToken)
+                return -1;
+            if (lhs->m_Token->m_Scope == rhs->m_Token->m_Scope)
+                return KindCompare(lhs, rhs);
+            return rhs->m_Token->m_Scope - lhs->m_Token->m_Scope;
+            break;
+        case bstLine:
+            if (lhs->m_SpecialFolder != sfToken || rhs->m_SpecialFolder != sfToken)
+                return -1;
+            if (!lhs->m_Token || !rhs->m_Token)
+                return 1;
+            if (lhs->m_Token->m_FileIdx == rhs->m_Token->m_FileIdx)
+                return (lhs->m_Token->m_Line > rhs->m_Token->m_Line) * 2 - 1; // from 0,1 to -1,1
+            return (lhs->m_Token->m_FileIdx > rhs->m_Token->m_FileIdx) * 2 - 1;
+            break;
+        default:
+            return 0;
         }
     }
 

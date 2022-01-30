@@ -5,7 +5,7 @@
 <assemblyIdentity
     name="Code::Blocks.src.App"
     processorArchitecture="x86"
-    version="1.0.0.12673"
+    version="1.0.0.12680"
     type="win32"/>
 <description>Executable</description>
 <dependency>

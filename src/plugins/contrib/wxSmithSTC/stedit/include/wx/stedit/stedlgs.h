@@ -74,7 +74,9 @@ class WXDLLIMPEXP_STEDIT wxSTEditorPrefPageData : public wxObject
 public:
     wxSTEditorPrefPageData();
     wxSTEditorPrefPageData(const wxSTEditorPrefPageData& prefData) : wxObject()
-        { Ref(prefData); }
+    {
+        Ref(prefData);
+    }
     wxSTEditorPrefPageData(const wxSTEditorPrefs& prefs,
                            const wxSTEditorStyles& styles,
                            const wxSTEditorLangs& langs,
@@ -94,7 +96,10 @@ public:
     void SetEditor(wxSTEditor* editor);
     /// Get the options this was created with, enum STE_PrefPageTypes.
     int  GetOptions() const;
-    bool HasOption(int option) const { return (GetOptions() & option) != 0; }
+    bool HasOption(int option) const
+    {
+        return (GetOptions() & option) != 0;
+    }
     void SetOptions(int options);
 
     // operators
@@ -106,9 +111,13 @@ public:
     }
 
     bool operator == (const wxSTEditorPrefPageData& other) const
-        { return m_refData == other.m_refData; }
+    {
+        return m_refData == other.m_refData;
+    }
     bool operator != (const wxSTEditorPrefPageData& other) const
-        { return m_refData != other.m_refData; }
+    {
+        return m_refData != other.m_refData;
+    }
 };
 
 //-----------------------------------------------------------------------------
@@ -126,9 +135,9 @@ public:
                                   const wxSTEditorPrefPageData& prefData,
                                   wxWindow *parent,
                                   wxWindowID winid = wxID_ANY )
-                            : wxPanel(parent, winid),
-                              m_editorPrefData(editorPrefData),
-                              m_prefData(prefData) {}
+        : wxPanel(parent, winid),
+          m_editorPrefData(editorPrefData),
+          m_prefData(prefData) {}
 
     virtual ~wxSTEditorPrefDialogPageBase() {}
 
@@ -137,18 +146,33 @@ public:
     virtual void Apply() = 0;            ///< Apply values from GUI to prefs.
     virtual void Reset() = 0;            ///< Reset GUI values to pref defaults.
 
-    virtual bool IsModified() { return true; } ///< Is it currently modified.
+    virtual bool IsModified()
+    {
+        return true;    ///< Is it currently modified.
+    }
 
     /// Get the pref data that will be modified by the GUI.
-    wxSTEditorPrefPageData GetPrefData() const { return m_prefData; }
+    wxSTEditorPrefPageData GetPrefData() const
+    {
+        return m_prefData;
+    }
     /// Get the original pref data that was used to init with.
     /// Typically when Apply is called, the GetPrefData() is pushed onto the
     ///   GetEditorPrefData() setting the values for the editor.
-    wxSTEditorPrefPageData GetEditorPrefData() const { return m_editorPrefData; }
+    wxSTEditorPrefPageData GetEditorPrefData() const
+    {
+        return m_editorPrefData;
+    }
 
     // implementation
-    void OnApply(wxCommandEvent& ) { Apply(); } // wxID_APPLY, wxID_OK
-    void OnReset(wxCommandEvent& ) { Reset(); } // wxID_RESET
+    void OnApply(wxCommandEvent& )
+    {
+        Apply();    // wxID_APPLY, wxID_OK
+    }
+    void OnReset(wxCommandEvent& )
+    {
+        Reset();    // wxID_RESET
+    }
 
 protected:
     wxSTEditorPrefPageData m_editorPrefData;
@@ -242,19 +266,19 @@ public:
     wxChoice *m_langChoice;
 
     wxCheckBox *m_fontCheckBox;
-        wxButton *m_fontButton;
-        wxChoice *m_fontChoice;
+    wxButton *m_fontButton;
+    wxChoice *m_fontChoice;
     wxCheckBox *m_fontSizeCheckBox;
-        wxSpinCtrl *m_fontSizeSpin;
+    wxSpinCtrl *m_fontSizeSpin;
     wxCheckBox *m_attribCheckBox;
-        wxCheckBox *m_boldCheckBox;
-        wxCheckBox *m_italicsCheckBox;
-        wxCheckBox *m_underlineCheckBox;
-        wxCheckBox *m_eolFillCheckBox;
+    wxCheckBox *m_boldCheckBox;
+    wxCheckBox *m_italicsCheckBox;
+    wxCheckBox *m_underlineCheckBox;
+    wxCheckBox *m_eolFillCheckBox;
     wxCheckBox *m_fontForeCheckBox;
-        wxButton *m_fontForeButton;
+    wxButton *m_fontForeButton;
     wxCheckBox *m_fontBackCheckBox;
-        wxButton *m_fontBackButton;
+    wxButton *m_fontBackButton;
 
     static wxString sm_helpString; // the text to show in the help editor
 
@@ -330,7 +354,10 @@ private:
 class WXDLLIMPEXP_STEDIT wxSTEditorPrefDialog : public wxDialog
 {
 public:
-    wxSTEditorPrefDialog() : wxDialog() { Init(); }
+    wxSTEditorPrefDialog() : wxDialog()
+    {
+        Init();
+    }
     wxSTEditorPrefDialog( const wxSTEditorPrefPageData& editorPrefData,
                           wxWindow *parent, wxWindowID win_id = wxID_ANY,
                           long style = wxDEFAULT_DIALOG_STYLE_RESIZE,
@@ -347,9 +374,15 @@ public:
     virtual ~wxSTEditorPrefDialog();
 
     /// Get the data that they set
-    wxSTEditorPrefPageData GetPrefData() const       { return m_prefData; }
+    wxSTEditorPrefPageData GetPrefData() const
+    {
+        return m_prefData;
+    }
     /// Get the data originally sent in
-    wxSTEditorPrefPageData GetEditorPrefData() const { return m_editorPrefData; }
+    wxSTEditorPrefPageData GetEditorPrefData() const
+    {
+        return m_editorPrefData;
+    }
 
     // -----------------------------------------------------------------------
     // implementation
@@ -392,7 +425,10 @@ public:
 
     virtual bool TransferDataFromWindow();
 
-    bool IsEditable() const { return m_editor->IsEditable(); }
+    bool IsEditable() const
+    {
+        return m_editor->IsEditable();
+    }
 
 private:
     wxSTEditor* m_editor;
@@ -510,7 +546,10 @@ public:
     };
 
     /// Get the column to insert the text at.
-    int GetColumn() const { return m_column-1; }
+    int GetColumn() const
+    {
+        return m_column-1;
+    }
 
     /// Set the text to display to the user to be formatted.
     void SetText(const wxString& text);
@@ -567,7 +606,10 @@ private:
 class WXDLLIMPEXP_STEDIT wxSTEditorColumnizeDialog : public wxDialog
 {
 public:
-    wxSTEditorColumnizeDialog() : wxDialog() { Init(); }
+    wxSTEditorColumnizeDialog() : wxDialog()
+    {
+        Init();
+    }
     wxSTEditorColumnizeDialog(wxWindow* parent,
                               long style = wxDEFAULT_DIALOG_STYLE_RESIZE|wxMAXIMIZE_BOX) : wxDialog()
     {
@@ -585,7 +627,10 @@ public:
     /// Format the text that you sent in with SetText() using values in the gui.
     void FormatText();
 
-    wxSTEditor* GetTestEditor() { return m_testEditor; }
+    wxSTEditor* GetTestEditor()
+    {
+        return m_testEditor;
+    }
 
     // -----------------------------------------------------------------------
     // implementation
@@ -618,10 +663,10 @@ private:
 //-----------------------------------------------------------------------------
 
 #if (wxVERSION_NUMBER >= 2903)
-  //#define STE_FILEOPENEXTRA 1 // trac.wxwidgets.org/ticket/13611
-    #define STE_FILEOPENEXTRA 0
+//#define STE_FILEOPENEXTRA 1 // trac.wxwidgets.org/ticket/13611
+#define STE_FILEOPENEXTRA 0
 #else
-    #define STE_FILEOPENEXTRA 0
+#define STE_FILEOPENEXTRA 0
 #endif
 
 class WXDLLIMPEXP_STEDIT wxSTEditorFileDialog : public wxFileDialog

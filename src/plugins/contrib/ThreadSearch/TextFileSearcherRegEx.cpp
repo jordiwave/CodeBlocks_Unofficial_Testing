@@ -10,16 +10,16 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    // Required extra includes
-    #include <wx/intl.h>
-    #include <wx/string.h>
+// Required extra includes
+#include <wx/intl.h>
+#include <wx/string.h>
 #endif
 
 #include "TextFileSearcherRegEx.h"
 
 
 TextFileSearcherRegEx::TextFileSearcherRegEx(const wxString& searchText, bool matchCase,
-                                             bool matchWordBegin, bool matchWord) :
+        bool matchWordBegin, bool matchWord) :
     TextFileSearcher(searchText, matchCase, matchWordBegin, matchWord)
 {
 #ifdef wxHAS_REGEX_ADVANCED

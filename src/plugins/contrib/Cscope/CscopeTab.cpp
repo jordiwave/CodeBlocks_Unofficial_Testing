@@ -14,40 +14,40 @@ CscopeTab::CscopeTab( wxWindow* parent, CscopeConfig *cfg )
 {
 
     wxBoxSizer* mainSizer;
-	mainSizer = new wxBoxSizer( wxVERTICAL );
+    mainSizer = new wxBoxSizer( wxVERTICAL );
 
     m_pListCtrl = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,  wxLC_REPORT | wxLC_VRULES |wxLC_SINGLE_SEL);
     mainSizer->Add( m_pListCtrl, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer3;
-	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
+    wxBoxSizer* bSizer3;
+    bSizer3 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_statusMessage = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_statusMessage->Wrap( -1 );
-	bSizer3->Add( m_statusMessage, 1, wxEXPAND|wxALL, 5 );
+    m_statusMessage = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+    m_statusMessage->Wrap( -1 );
+    bSizer3->Add( m_statusMessage, 1, wxEXPAND|wxALL, 5 );
 
-	m_gauge = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxSize( -1,15 ), wxGA_HORIZONTAL|wxGA_SMOOTH );
-	m_gauge->SetValue( 0 );
-	bSizer3->Add( m_gauge, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 0 );
+    m_gauge = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxSize( -1,15 ), wxGA_HORIZONTAL|wxGA_SMOOTH );
+    m_gauge->SetValue( 0 );
+    bSizer3->Add( m_gauge, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 0 );
 
-	mainSizer->Add( bSizer3, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
+    mainSizer->Add( bSizer3, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
-	this->SetSizer( mainSizer );
-	this->Layout();
+    this->SetSizer( mainSizer );
+    this->Layout();
 
-	// Connect Events
-	m_pListCtrl->Connect(wxEVT_COMMAND_LIST_ITEM_ACTIVATED,wxListEventHandler(CscopeTab::OnListItemActivated),NULL,this);
+    // Connect Events
+    m_pListCtrl->Connect(wxEVT_COMMAND_LIST_ITEM_ACTIVATED,wxListEventHandler(CscopeTab::OnListItemActivated),NULL,this);
 
     Clear();
 
-	SetMessage(_T("Ready"), 0);
+    SetMessage(_T("Ready"), 0);
 }
 
 CscopeTab::~CscopeTab()
 {
     // Disconnect Events
-	m_pListCtrl->Disconnect(wxEVT_COMMAND_LIST_ITEM_ACTIVATED,wxListEventHandler(CscopeTab::OnListItemActivated),NULL,this);
-	if ( m_table )
+    m_pListCtrl->Disconnect(wxEVT_COMMAND_LIST_ITEM_ACTIVATED,wxListEventHandler(CscopeTab::OnListItemActivated),NULL,this);
+    if ( m_table )
         delete m_table;
     m_table = NULL;
 }
@@ -59,7 +59,7 @@ void CscopeTab::Clear()
         delete m_table;
     m_table = NULL;
 
-	m_pListCtrl->ClearAll();
+    m_pListCtrl->ClearAll();
     m_pListCtrl->InsertColumn(0,_T("File"),wxLIST_FORMAT_LEFT, 100);
     m_pListCtrl->InsertColumn(1,_T("Line"),wxLIST_FORMAT_CENTER, 50);
     m_pListCtrl->InsertColumn(2,_T("Scope"),wxLIST_FORMAT_LEFT, 50);
@@ -68,23 +68,23 @@ void CscopeTab::Clear()
 
 void CscopeTab::BuildTable(CscopeResultTable *table)
 {
-	if ( !table ) return;
-	Clear();
-	m_table = table;
+    if ( !table ) return;
+    Clear();
+    m_table = table;
 
-	CscopeResultTable::iterator iter = table->begin();
+    CscopeResultTable::iterator iter = table->begin();
     unsigned int i = 0;
-	for (; iter != table->end(); iter++, i++ )
-	{
-	    long idx = m_pListCtrl->InsertItem(i, iter->GetFile() );
-	    m_pListCtrl->SetItem(idx, 1, wxString::Format(_T("%d"),iter->GetLine()));
-	    m_pListCtrl->SetItem(idx, 2, iter->GetScope() );
-	    m_pListCtrl->SetItem(idx, 3, iter->GetPattern() );
-	}
+    for (; iter != table->end(); iter++, i++ )
+    {
+        long idx = m_pListCtrl->InsertItem(i, iter->GetFile() );
+        m_pListCtrl->SetItem(idx, 1, wxString::Format(_T("%d"),iter->GetLine()));
+        m_pListCtrl->SetItem(idx, 2, iter->GetScope() );
+        m_pListCtrl->SetItem(idx, 3, iter->GetPattern() );
+    }
 
-	//
-	for ( i = 0 ; i < 4; ++i )
-	    m_pListCtrl->SetColumnWidth(i, wxLIST_AUTOSIZE );
+    //
+    for ( i = 0 ; i < 4; ++i )
+        m_pListCtrl->SetColumnWidth(i, wxLIST_AUTOSIZE );
 }
 
 void CscopeTab::OnListItemActivated(wxListEvent &event)
@@ -131,11 +131,11 @@ void CscopeTab::CopyContentsToClipboard(bool selectionOnly)
 
 void CscopeTab::SetMessage(const wxString &msg, int percent)
 {
-	m_statusMessage->SetLabel(msg);
-	m_gauge->SetValue(percent);
+    m_statusMessage->SetLabel(msg);
+    m_gauge->SetValue(percent);
 }
 void CscopeTab::ClearResults(void)
 {
     SetMessage(wxT("Ready"), 0);
-	Clear();
+    Clear();
 }

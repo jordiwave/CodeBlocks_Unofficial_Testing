@@ -49,8 +49,9 @@ static  wxArrayPtrVoid  sbgArray;               // list of defined buttones
 
 //------------------------------------------------------------------------------
 
-wxSpeedButton::~wxSpeedButton() {
-int         n;
+wxSpeedButton::~wxSpeedButton()
+{
+    int         n;
 
 // release the mouse
 
@@ -67,18 +68,19 @@ int         n;
 // the basic contructor
 
 wxSpeedButton::wxSpeedButton( wxWindow     *inParent,           // parent window
-                            wxWindowID      inID,               // id of this button
-                            const wxString &inLabel,            // button text
-                            const wxBitmap &inGlyph,            // bitmaps displayed on button
-                            int             inGlyphCount,       // number of images in inGlyph
-                            int             inMargin,           // area around image and tex
-                            int             inGroupIndex,       // ident of a group of buttons
-                            bool            inAllowAllUp,       // allow all buttons up
-                            const wxPoint  &inPos,              // button position
-                            const wxSize   &inSize,             // button size
-                            long            inStyle,            // border styles
-                            const wxValidator &inVal,           // validator
-                            const wxString &inName) {           // name of button
+                              wxWindowID      inID,               // id of this button
+                              const wxString &inLabel,            // button text
+                              const wxBitmap &inGlyph,            // bitmaps displayed on button
+                              int             inGlyphCount,       // number of images in inGlyph
+                              int             inMargin,           // area around image and tex
+                              int             inGroupIndex,       // ident of a group of buttons
+                              bool            inAllowAllUp,       // allow all buttons up
+                              const wxPoint  &inPos,              // button position
+                              const wxSize   &inSize,             // button size
+                              long            inStyle,            // border styles
+                              const wxValidator &inVal,           // validator
+                              const wxString &inName)             // name of button
+{
 
     Create( inParent, inID,
             inLabel,
@@ -91,19 +93,20 @@ wxSpeedButton::wxSpeedButton( wxWindow     *inParent,           // parent window
 // a constructor that creates a bitmap from a filename
 
 wxSpeedButton::wxSpeedButton( wxWindow     *inParent,           // parent window
-                            wxWindowID      inID,               // id of this button
-                            const wxString &inLabel,            // button text
-                            const wxString &inGlyphFile,        // bitmaps displayed on button
-                            int             inGlyphCount,       // number of images in inGlyph
-                            int             inMargin,           // area around image and tex
-                            int             inGroupIndex,       // ident of a group of buttons
-                            bool            inAllowAllUp,       // allow all buttons up
-                            const wxPoint  &inPos,              // button position
-                            const wxSize   &inSize,             // button size
-                            long            inStyle,            // border styles
-                            const wxValidator &inVal,           // validator
-                            const wxString &inName) {           // name of button
-wxBitmap    bmp(inGlyphFile, wxBITMAP_TYPE_ANY );
+                              wxWindowID      inID,               // id of this button
+                              const wxString &inLabel,            // button text
+                              const wxString &inGlyphFile,        // bitmaps displayed on button
+                              int             inGlyphCount,       // number of images in inGlyph
+                              int             inMargin,           // area around image and tex
+                              int             inGroupIndex,       // ident of a group of buttons
+                              bool            inAllowAllUp,       // allow all buttons up
+                              const wxPoint  &inPos,              // button position
+                              const wxSize   &inSize,             // button size
+                              long            inStyle,            // border styles
+                              const wxValidator &inVal,           // validator
+                              const wxString &inName)             // name of button
+{
+    wxBitmap    bmp(inGlyphFile, wxBITMAP_TYPE_ANY );
 
     Create( inParent, inID,
             inLabel,
@@ -128,13 +131,14 @@ bool wxSpeedButton::Create( wxWindow       *inParent,           // parent window
                             const wxSize   &inSize,             // button size
                             long            inStyle,            // border styles
                             const wxValidator &inVal,           // validator
-                            const wxString &inName) {           // name of button
+                            const wxString &inName)             // name of button
+{
 
-int         n;
-wxString    name;
-wxPoint     pos;
-wxSize      size;
-wxString    s;
+    int         n;
+    wxString    name;
+    wxPoint     pos;
+    wxSize      size;
+    wxString    s;
 
 // make sure we can load images
 
@@ -171,10 +175,10 @@ wxString    s;
     n = n | wxCLIP_CHILDREN;
 
     if (((n & wxBU_LEFT)   == 0) &&
-        ((n & wxBU_TOP)    == 0) &&
-        ((n & wxBU_RIGHT)  == 0) &&
-        ((n & wxBU_BOTTOM) == 0))
-            n = n | wxBU_LEFT;
+            ((n & wxBU_TOP)    == 0) &&
+            ((n & wxBU_RIGHT)  == 0) &&
+            ((n & wxBU_BOTTOM) == 0))
+        n = n | wxBU_LEFT;
 
 // make the control, make sure we clip children
 
@@ -243,13 +247,14 @@ wxString    s;
 // with 2 images, the first image is UP and DOWN glyphs, the 2nd image is DISABLED glyph
 // with 3 images, each image is a glyph
 
-void wxSpeedButton::SplitGlyphs(const wxBitmap &inBitmap, int inCount) {
-int         n;
-int         bw,bh;
-int         sw,sh;
-wxRect      rr;
-wxImage     img;
-wxBitmap    *bmp;
+void wxSpeedButton::SplitGlyphs(const wxBitmap &inBitmap, int inCount)
+{
+    int         n;
+    int         bw,bh;
+    int         sw,sh;
+    wxRect      rr;
+    wxImage     img;
+    wxBitmap    *bmp;
 
 // no images yet
 
@@ -277,7 +282,8 @@ wxBitmap    *bmp;
 
 // extract sub-images, either vertically or horizontally
 
-    if (n == 1) {
+    if (n == 1)
+    {
         mGlyphUp   = inBitmap;
         mGlyphDown = inBitmap;
 
@@ -286,7 +292,8 @@ wxBitmap    *bmp;
         bmp = new wxBitmap(img);
         mGlyphDisabled = *bmp;
     }
-    else if ((n == 2) && (bw >= bh)) {
+    else if ((n == 2) && (bw >= bh))
+    {
         sw = (int) bw / n;
         sh = bh;
 
@@ -299,7 +306,8 @@ wxBitmap    *bmp;
         rr.SetX(sw);
         mGlyphDisabled = inBitmap.GetSubBitmap(rr);
     }
-    else if ((n == 2) && (bh > bw)) {
+    else if ((n == 2) && (bh > bw))
+    {
         sw = bw;
         sh = (int) bh / n;
 
@@ -312,7 +320,8 @@ wxBitmap    *bmp;
         rr.SetY(sh);
         mGlyphDisabled = inBitmap.GetSubBitmap(rr);
     }
-    else if ((n >= 3) && (bw >= bh)) {
+    else if ((n >= 3) && (bw >= bh))
+    {
         sw = (int) bw / n;
         sh = bh;
 
@@ -326,7 +335,8 @@ wxBitmap    *bmp;
         rr.SetX(sw+sw);
         mGlyphDisabled = inBitmap.GetSubBitmap(rr);
     }
-    else { // (n >= 3) && (bh > bw)
+    else   // (n >= 3) && (bh > bw)
+    {
         sw = bw;
         sh = (int) bh / n;
 
@@ -351,11 +361,12 @@ wxBitmap    *bmp;
 //------------------------------------------------------------------------------
 // make sure a bitmap has a transparency mask
 
-void wxSpeedButton::MakeTransparent(wxBitmap &inBitmap) {
-int         h;
-int         r,g,b;
-wxImage     img;
-wxBitmap    *bmp;
+void wxSpeedButton::MakeTransparent(wxBitmap &inBitmap)
+{
+    int         h;
+    int         r,g,b;
+    wxImage     img;
+    wxBitmap    *bmp;
 
 // not a good image?
 
@@ -385,13 +396,16 @@ wxBitmap    *bmp;
 
 //------------------------------------------------------------------------------
 
-void wxSpeedButton::GetGlyphSize(wxBitmap &inGlyph, int &outWidth, int &outHeight) {
+void wxSpeedButton::GetGlyphSize(wxBitmap &inGlyph, int &outWidth, int &outHeight)
+{
 
-    if (inGlyph.Ok()) {
+    if (inGlyph.Ok())
+    {
         outWidth  = inGlyph.GetWidth();
         outHeight = inGlyph.GetHeight();
     }
-    else {
+    else
+    {
         outWidth  = 0;
         outHeight = 0;
     };
@@ -402,27 +416,28 @@ void wxSpeedButton::GetGlyphSize(wxBitmap &inGlyph, int &outWidth, int &outHeigh
 // calc best size for button,
 // fills in mGlyphSize, mLabelSize, mBestSize
 
-wxSize wxSpeedButton::DoGetBestSize(void) {
-int         i,n;
-int         w,h;
-int         bn;
-int         bw, bh;
-int         gw, gh;
-int         lw, lh;
+wxSize wxSpeedButton::DoGetBestSize(void)
+{
+    int         i,n;
+    int         w,h;
+    int         bn;
+    int         bw, bh;
+    int         gw, gh;
+    int         lw, lh;
 
 // max size of the bitmaps
 
     bw = 0;
     bh = 0;
     GetGlyphSize(mGlyphUp, gw, gh);
-        if (gw > bw) bw = gw;
-        if (gh > bh) bh = gh;
+    if (gw > bw) bw = gw;
+    if (gh > bh) bh = gh;
     GetGlyphSize(mGlyphDown, gw, gh);
-        if (gw > bw) bw = gw;
-        if (gh > bh) bh = gh;
+    if (gw > bw) bw = gw;
+    if (gh > bh) bh = gh;
     GetGlyphSize(mGlyphDisabled, gw, gh);
-        if (gw > bw) bw = gw;
-        if (gh > bh) bh = gh;
+    if (gw > bw) bw = gw;
+    if (gh > bh) bh = gh;
 
     mGlyphSize.Set(bw, bh);
 
@@ -443,17 +458,20 @@ int         lw, lh;
 
     i = GetWindowStyleFlag();
 
-    if (((i & wxBU_LEFT) != 0) || ((i & wxBU_RIGHT) != 0)) {
+    if (((i & wxBU_LEFT) != 0) || ((i & wxBU_RIGHT) != 0))
+    {
         w = bn + mMargin + bw + mMargin + lw + mMargin + bn;
         n = (bh > lh) ? bh : lh;
         h = bn + mMargin + n + mMargin + bn;
     }
-    else if (((i & wxBU_TOP) != 0) || ((i & wxBU_BOTTOM) != 0)) {
+    else if (((i & wxBU_TOP) != 0) || ((i & wxBU_BOTTOM) != 0))
+    {
         n = (bw > lw) ? bw : lw;
         w = bn + mMargin + n + mMargin + bn;
         h = bn + mMargin + bh + mMargin + lh + mMargin + bn;
     }
-    else { // assume BU_LEFT
+    else   // assume BU_LEFT
+    {
         w = bn + mMargin + bw + mMargin + lw + mMargin + bn;
         n = (bh > lh) ? bh : lh;
         h = bn + mMargin + n + mMargin + bn;
@@ -470,13 +488,14 @@ int         lw, lh;
 // calculate the position of the bitmap and the label
 // fills in mGlyphPos, mLabelPos, mCurrentSize
 
-void wxSpeedButton::CalcLayout(bool inRefresh) {
-int         i;
-int         bn;
-int         w, h;
-bool        gz, lz;
-int         gx, gy;
-int         lx, ly;
+void wxSpeedButton::CalcLayout(bool inRefresh)
+{
+    int         i;
+    int         bn;
+    int         w, h;
+    bool        gz, lz;
+    int         gx, gy;
+    int         lx, ly;
 
 // no recursive calls
 
@@ -506,49 +525,57 @@ int         lx, ly;
 
     i = GetWindowStyleFlag();
 
-    if (gz && lz) {                 // no glyph, no label
+    if (gz && lz)                   // no glyph, no label
+    {
         gx = 0;
         gy = 0;
         lx = 0;
         ly = 0;
     }
-    else if (gz) {                  // no glyph, only label
+    else if (gz)                    // no glyph, only label
+    {
         gx = 0;
         gy = 0;
         lx = (mCurrentSize.GetWidth()  - mLabelSize.GetWidth())  / 2;
         ly = (mCurrentSize.GetHeight() - mLabelSize.GetHeight()) / 2;
     }
-    else if (lz) {                  // no label, glyph only
+    else if (lz)                    // no label, glyph only
+    {
         gx = (mCurrentSize.GetWidth()  - mGlyphSize.GetWidth())  / 2;
         gy = (mCurrentSize.GetHeight() - mGlyphSize.GetHeight()) / 2;
         lx = 0;
         ly = 0;
     }
-    else if ((i & wxBU_LEFT) != 0) {
+    else if ((i & wxBU_LEFT) != 0)
+    {
         gx = bn + mMargin;
         lx = gx + mGlyphSize.GetWidth() + mMargin;
         gy = (mCurrentSize.GetHeight() - mGlyphSize.GetHeight()) / 2;
         ly = (mCurrentSize.GetHeight() - mLabelSize.GetHeight()) / 2;
     }
-    else if ((i & wxBU_RIGHT) != 0) {
+    else if ((i & wxBU_RIGHT) != 0)
+    {
         gx = mCurrentSize.GetWidth() - (mGlyphSize.GetWidth() + mMargin + bn);
         lx = gx - (mLabelSize.GetWidth() + mMargin);
         gy = (mCurrentSize.GetHeight() - mGlyphSize.GetHeight()) / 2;
         ly = (mCurrentSize.GetHeight() - mLabelSize.GetHeight()) / 2;
     }
-    else if ((i & wxBU_TOP) != 0) {
+    else if ((i & wxBU_TOP) != 0)
+    {
         gx = (mCurrentSize.GetWidth()  - mGlyphSize.GetWidth())  / 2;
         lx = (mCurrentSize.GetWidth()  - mLabelSize.GetWidth())  / 2;
         gy = bn + mMargin;
         ly = gy + mMargin + mGlyphSize.GetHeight();
     }
-    else if ((i & wxBU_BOTTOM) != 0) {
+    else if ((i & wxBU_BOTTOM) != 0)
+    {
         gx = (mCurrentSize.GetWidth()  - mGlyphSize.GetWidth())  / 2;
         lx = (mCurrentSize.GetWidth()  - mLabelSize.GetWidth())  / 2;
         gy = mCurrentSize.GetHeight() - (bn + mMargin + mGlyphSize.GetHeight());
         ly = gy - (mLabelSize.GetHeight() + mMargin);
     }
-    else { // unknown
+    else   // unknown
+    {
         gx = 0;
         gy = 0;
         lx = 0;
@@ -577,46 +604,53 @@ int         lx, ly;
 
 //------------------------------------------------------------------------------
 
-void wxSpeedButton::SetLabel(wxString &inLabel) {
+void wxSpeedButton::SetLabel(wxString &inLabel)
+{
     wxControl::SetLabel(inLabel);
     Refresh(false);
 }
 
 //------------------------------------------------------------------------------
 
-void    wxSpeedButton::SetGlyphUp(wxBitmap &inBitmap) {
+void    wxSpeedButton::SetGlyphUp(wxBitmap &inBitmap)
+{
 
     mGlyphUp = inBitmap;
     Refresh(false);
 }
 
-wxBitmap    &wxSpeedButton::GetGlyphUp(void) {
+wxBitmap    &wxSpeedButton::GetGlyphUp(void)
+{
 
     return mGlyphUp;
 }
 
 //------------------------------------------------------------------------------
 
-void    wxSpeedButton::SetGlyphDown(wxBitmap &inBitmap) {
+void    wxSpeedButton::SetGlyphDown(wxBitmap &inBitmap)
+{
 
     mGlyphDown = inBitmap;
     Refresh(false);
 }
 
-wxBitmap    &wxSpeedButton::GetGlyphDown(void) {
+wxBitmap    &wxSpeedButton::GetGlyphDown(void)
+{
 
     return mGlyphDown;
 }
 
 //------------------------------------------------------------------------------
 
-void    wxSpeedButton::SetGlyphDisabled(wxBitmap &inBitmap) {
+void    wxSpeedButton::SetGlyphDisabled(wxBitmap &inBitmap)
+{
 
     mGlyphDisabled = inBitmap;
     Refresh(false);
 }
 
-wxBitmap    &wxSpeedButton::GetGlyphDisabled(void) {
+wxBitmap    &wxSpeedButton::GetGlyphDisabled(void)
+{
 
     return mGlyphDisabled;
 }
@@ -626,8 +660,9 @@ wxBitmap    &wxSpeedButton::GetGlyphDisabled(void) {
 
 //------------------------------------------------------------------------------
 
-void    wxSpeedButton::SetAlign(int inAlign) {
-int     i,n;
+void    wxSpeedButton::SetAlign(int inAlign)
+{
+    int     i,n;
 
 // make sure a valid alignment
 
@@ -655,8 +690,9 @@ int     i,n;
     Refresh(false);
 }
 
-int     wxSpeedButton::GetAlign(void) {
-int     i;
+int     wxSpeedButton::GetAlign(void)
+{
+    int     i;
 
     i = GetWindowStyleFlag();
     i = i & wxBU_ALIGN_MASK;
@@ -666,26 +702,30 @@ int     i;
 
 //------------------------------------------------------------------------------
 
-void    wxSpeedButton::SetMargin(int inMargin) {
+void    wxSpeedButton::SetMargin(int inMargin)
+{
 
     mMargin = inMargin;
     Refresh(false);
 }
 
-int     wxSpeedButton::GetMargin(void) {
+int     wxSpeedButton::GetMargin(void)
+{
 
     return mMargin;
 }
 
 //------------------------------------------------------------------------------
 
-void    wxSpeedButton::SetGroupIndex(bool inIndex) {
+void    wxSpeedButton::SetGroupIndex(bool inIndex)
+{
 
     mGroupIndex = inIndex;
     Refresh(false);
 }
 
-int     wxSpeedButton::GetGroupIndex(void) {
+int     wxSpeedButton::GetGroupIndex(void)
+{
 
     return mGroupIndex;
 }
@@ -694,23 +734,27 @@ int     wxSpeedButton::GetGroupIndex(void) {
 
 //------------------------------------------------------------------------------
 
-void    wxSpeedButton::SetDown(bool inDown) {
+void    wxSpeedButton::SetDown(bool inDown)
+{
 
 // a simple button never goes DOWN, it always reports as UP
 
-    if (mGroupIndex == 0) {
+    if (mGroupIndex == 0)
+    {
         mButtonDown = false;
     }
 
 // a sime toggle button goes UP and DOWN
 
-    else if (mGroupIndex == -1) {
+    else if (mGroupIndex == -1)
+    {
         mButtonDown = inDown;
     }
 
 // a group toggle button, grouped by immediate parent
 
-    else if (mGroupIndex == -2) {
+    else if (mGroupIndex == -2)
+    {
         SetAllUp(this);
         if ((! inDown) && (mAllowAllUp)) mButtonDown = false;
         else                             mButtonDown = true;
@@ -718,7 +762,8 @@ void    wxSpeedButton::SetDown(bool inDown) {
 
 // all else is a group toggle button, grouped by index and top-level parent
 
-    else {
+    else
+    {
         SetAllUp(this);
         if ((! inDown) && (mAllowAllUp)) mButtonDown = false;
         else                             mButtonDown = true;
@@ -729,14 +774,16 @@ void    wxSpeedButton::SetDown(bool inDown) {
     Refresh(false);
 }
 
-bool    wxSpeedButton::GetDown(void) {
+bool    wxSpeedButton::GetDown(void)
+{
 
     return mButtonDown;
 }
 
-void    wxSpeedButton::SetAllUp(wxSpeedButton *inButton) {
-int             i,n;
-wxSpeedButton   *b;
+void    wxSpeedButton::SetAllUp(wxSpeedButton *inButton)
+{
+    int             i,n;
+    wxSpeedButton   *b;
 
 // no button?
 
@@ -744,25 +791,30 @@ wxSpeedButton   *b;
 
 // simple button
 
-    if (inButton->mGroupIndex == 0) {
+    if (inButton->mGroupIndex == 0)
+    {
         inButton->mButtonDown = false;
         inButton->Refresh(false);
     }
 
 // toggle button
 
-    else if (inButton->mGroupIndex == -1) {
+    else if (inButton->mGroupIndex == -1)
+    {
         inButton->mButtonDown = false;
         inButton->Refresh(false);
     }
 
 // group button, grouped by immediate parent
 
-    else if (inButton->mGroupIndex == -2) {
+    else if (inButton->mGroupIndex == -2)
+    {
         n = sbgArray.GetCount();
-        for(i=0; i<n; i++) {
+        for(i=0; i<n; i++)
+        {
             b = (wxSpeedButton *) sbgArray.Item(i);
-            if (b->mParent == inButton->mParent) {
+            if (b->mParent == inButton->mParent)
+            {
                 b->mButtonDown = false;
                 b->Refresh(false);
             };
@@ -771,11 +823,14 @@ wxSpeedButton   *b;
 
 // all else is a group toggle button, grouped by index and top-level parent
 
-    else {
+    else
+    {
         n = sbgArray.GetCount();
-        for(i=0; i<n; i++) {
+        for(i=0; i<n; i++)
+        {
             b = (wxSpeedButton *) sbgArray.Item(i);
-            if ((b->mGroupIndex == inButton->mGroupIndex) && (b->mTopParent == inButton->mTopParent)) {
+            if ((b->mGroupIndex == inButton->mGroupIndex) && (b->mTopParent == inButton->mTopParent))
+            {
                 b->mButtonDown = false;
                 b->Refresh(false);
             };
@@ -785,37 +840,43 @@ wxSpeedButton   *b;
 
 }
 
-void    wxSpeedButton::SetValue(bool inDown) {
+void    wxSpeedButton::SetValue(bool inDown)
+{
 
     SetDown(inDown);
 }
 
-bool    wxSpeedButton::GetValue(void) {
+bool    wxSpeedButton::GetValue(void)
+{
 
     return GetDown();
 }
 
 //------------------------------------------------------------------------------
 
-void    wxSpeedButton::SetAllowAllUp(bool inAllUp) {
+void    wxSpeedButton::SetAllowAllUp(bool inAllUp)
+{
 
     mAllowAllUp = inAllUp;
     Refresh(false);
 }
 
-bool    wxSpeedButton::GetAllowAllUp(void) {
+bool    wxSpeedButton::GetAllowAllUp(void)
+{
 
     return mAllowAllUp;
 }
 
 //------------------------------------------------------------------------------
 
-void    wxSpeedButton::SetUserData(long inData) {
+void    wxSpeedButton::SetUserData(long inData)
+{
 
     mUserData = inData;
 }
 
-long    wxSpeedButton::GetUserData(void) {
+long    wxSpeedButton::GetUserData(void)
+{
 
     return mUserData;
 }
@@ -829,8 +890,9 @@ long    wxSpeedButton::GetUserData(void) {
 
 // sequence of events in GTK is up, dclick, up.
 
-void wxSpeedButton::OnMouseEvents(wxMouseEvent& event) {
-wxWindow    *win;
+void wxSpeedButton::OnMouseEvents(wxMouseEvent& event)
+{
+    wxWindow    *win;
 
 // our underlying window
 
@@ -838,8 +900,9 @@ wxWindow    *win;
 
 // any mouse button down
 
-    if (event.LeftDown() || event.RightDown()) {
-       if (!HasCapture()) CaptureMouse();
+    if (event.LeftDown() || event.RightDown())
+    {
+        if (!HasCapture()) CaptureMouse();
         mMouseDown = true;
         mButtonFocused = true;
         win->SetFocus();
@@ -849,7 +912,8 @@ wxWindow    *win;
 // any mouse button up
 // this is where we send a click event
 
-    else if (event.LeftUp() || event.RightUp()) {
+    else if (event.LeftUp() || event.RightUp())
+    {
         if (HasCapture()) ReleaseMouse();
         mMouseDown = false;
         mButtonFocused = true;
@@ -861,11 +925,13 @@ wxWindow    *win;
 
 // mouse over
 
-    else if (event.Entering()) {
+    else if (event.Entering())
+    {
         mMouseOver = true;
         Redraw();
     }
-    else if (event.Leaving()) {
+    else if (event.Leaving())
+    {
         mMouseOver = false;
         Redraw();
     };
@@ -874,7 +940,8 @@ wxWindow    *win;
 //------------------------------------------------------------------------------
 // cake a mouse click
 
-void wxSpeedButton::DoClick(bool inLeft) {
+void wxSpeedButton::DoClick(bool inLeft)
+{
 
     SetDown(! mButtonDown);
     SendEvent(inLeft);
@@ -885,10 +952,11 @@ void wxSpeedButton::DoClick(bool inLeft) {
 //------------------------------------------------------------------------------
 // send a command click-event for the left or right buttons
 
-void wxSpeedButton::SendEvent(bool inLeft) {
-int                 n;
-long                now;
-wxCommandEvent      event;
+void wxSpeedButton::SendEvent(bool inLeft)
+{
+    int                 n;
+    long                now;
+    wxCommandEvent      event;
 
 // set command type and window ID of caller
 
@@ -938,18 +1006,19 @@ void wxSpeedButton::Redraw()
 // drawing up, down, flat
 // optional hot, transparent
 
-void    wxSpeedButton::Paint( wxDC &dc ) {
-int         n;
-int         w,h;
-wxColour    cf;                     // foreground color
-wxColour    cb;                     // background color
-wxColour    cg;                     // gray text
-wxColour    cy;                     // yellow
-wxBrush     bb;                     // background brush
-wxPen       pp;                     // line-drawing pen
-wxBitmap    bmp;
-wxString    s;
-wxRect      rr;
+void    wxSpeedButton::Paint( wxDC &dc )
+{
+    int         n;
+    int         w,h;
+    wxColour    cf;                     // foreground color
+    wxColour    cb;                     // background color
+    wxColour    cg;                     // gray text
+    wxColour    cy;                     // yellow
+    wxBrush     bb;                     // background brush
+    wxPen       pp;                     // line-drawing pen
+    wxBitmap    bmp;
+    wxString    s;
+    wxRect      rr;
 
 // get size and layout
 
@@ -984,7 +1053,8 @@ wxRect      rr;
     pp.SetColour(cy);
 //  pp.SetStyle(wxDOT);
     dc.SetPen(pp);
-    if (mMouseOver) {
+    if (mMouseOver)
+    {
         n = 2;
         dc.DrawLine(  n,   n, w-n,   n);
         dc.DrawLine(w-n,   n, w-n, h-n);
@@ -1003,7 +1073,8 @@ wxRect      rr;
 // the text label
 
     s = GetLabelText();
-    if (! s.IsEmpty()) {
+    if (! s.IsEmpty())
+    {
         dc.SetFont(GetFont());
         dc.SetBackgroundMode(wxTRANSPARENT);
         if (! IsEnabled()) dc.SetTextForeground(cg);
@@ -1024,7 +1095,8 @@ void wxSpeedButton::OnSize( wxSizeEvent &event )
 
 //------------------------------------------------------------------------------
 
-void wxSpeedButton::OnSetFocus(wxFocusEvent& event) {
+void wxSpeedButton::OnSetFocus(wxFocusEvent& event)
+{
 
     mButtonFocused = true;
     Redraw();
@@ -1033,7 +1105,8 @@ void wxSpeedButton::OnSetFocus(wxFocusEvent& event) {
 
 //------------------------------------------------------------------------------
 
-void wxSpeedButton::OnKillFocus(wxFocusEvent& event) {
+void wxSpeedButton::OnKillFocus(wxFocusEvent& event)
+{
 
     mButtonFocused = false;
     Redraw();
@@ -1042,12 +1115,14 @@ void wxSpeedButton::OnKillFocus(wxFocusEvent& event) {
 
 //------------------------------------------------------------------------------
 
-void wxSpeedButton::OnKey(wxKeyEvent& event) {
-int         n;
-wxString    s;
+void wxSpeedButton::OnKey(wxKeyEvent& event)
+{
+    int         n;
+    wxString    s;
 
     n = event.GetKeyCode();
-    if ((n == '\n') || ( n == '\r') || (n == ' ')) {
+    if ((n == '\n') || ( n == '\r') || (n == ' '))
+    {
         mButtonFocused = true;
         SetDown(! mButtonDown);
         SendEvent(true);

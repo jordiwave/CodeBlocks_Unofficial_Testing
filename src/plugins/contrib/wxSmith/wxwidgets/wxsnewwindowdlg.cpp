@@ -43,31 +43,31 @@
 
 namespace
 {
-    // Don't want to use wxFileName since it breaks slashes/backslashes stuff
+// Don't want to use wxFileName since it breaks slashes/backslashes stuff
 
-    wxString GetPathPart(const wxString& FileName)
+wxString GetPathPart(const wxString& FileName)
+{
+    for ( size_t i=FileName.Length(); i-->0; )
     {
-        for ( size_t i=FileName.Length(); i-->0; )
-        {
-            if ( FileName[i] == _T('/') || FileName[i] == _T('\\') )
-                return FileName.Mid(0,i+1);
-        }
-
-        return wxEmptyString;
+        if ( FileName[i] == _T('/') || FileName[i] == _T('\\') )
+            return FileName.Mid(0,i+1);
     }
 
-    wxString GetNoExt(const wxString& FileName)
-    {
-        for ( size_t i=FileName.Length(); i-->0; )
-        {
-            if ( FileName[i] == _T('/') || FileName[i] == _T('\\') )
-                return FileName;
+    return wxEmptyString;
+}
 
-            if ( FileName[i] == _T('.') )
-                return FileName.Mid(0,i);
-        }
-        return FileName;
+wxString GetNoExt(const wxString& FileName)
+{
+    for ( size_t i=FileName.Length(); i-->0; )
+    {
+        if ( FileName[i] == _T('/') || FileName[i] == _T('\\') )
+            return FileName;
+
+        if ( FileName[i] == _T('.') )
+            return FileName.Mid(0,i);
     }
+    return FileName;
+}
 }
 
 //(*IdInit(wxsNewWindowDlg)
@@ -431,14 +431,19 @@ void wxsNewWindowDlg::OnCreate(cb_unused wxCommandEvent& event)
     if ( wxFileName::FileExists(ProjectPrefix+Params.Hdr) )
     {
         switch ( wxMessageBox(wxString::Format(
-            _("File '%s' already exists. Overwrite it ?"),Params.Hdr.c_str()),
-            _("File exists"),
-            wxYES_NO|wxCANCEL|wxICON_ERROR) )
+                                  _("File '%s' already exists. Overwrite it ?"),Params.Hdr.c_str()),
+                              _("File exists"),
+                              wxYES_NO|wxCANCEL|wxICON_ERROR) )
         {
-            case wxCANCEL: return;
-            case wxNO: Params.GenHdr = false; break;
-            case wxYES: break;
-            default: return; // Should never come here
+        case wxCANCEL:
+            return;
+        case wxNO:
+            Params.GenHdr = false;
+            break;
+        case wxYES:
+            break;
+        default:
+            return; // Should never come here
         }
     }
 
@@ -446,13 +451,18 @@ void wxsNewWindowDlg::OnCreate(cb_unused wxCommandEvent& event)
     if ( wxFileName::FileExists(ProjectPrefix+Params.Src) )
     {
         switch ( wxMessageBox(wxString::Format(
-            _("File '%s' already exists. Overwrite it ?"),Params.Src.c_str()),
-            _("File exists"),wxYES_NO|wxCANCEL|wxICON_ERROR) )
+                                  _("File '%s' already exists. Overwrite it ?"),Params.Src.c_str()),
+                              _("File exists"),wxYES_NO|wxCANCEL|wxICON_ERROR) )
         {
-            case wxCANCEL: return;
-            case wxNO: Params.GenSrc = false; break;
-            case wxYES: break;
-            default: return; // Should never come here
+        case wxCANCEL:
+            return;
+        case wxNO:
+            Params.GenSrc = false;
+            break;
+        case wxYES:
+            break;
+        default:
+            return; // Should never come here
         }
     }
 
@@ -824,10 +834,16 @@ void wxsNewWindowDlg::OnScopeIdsClick(cb_unused wxCommandEvent& event)
 {
     switch ( m_ScopeIdsVal )
     {
-        case wxsItemRes::NewResourceParams::Public:    m_ScopeIdsVal = wxsItemRes::NewResourceParams::Protected; break;
-        case wxsItemRes::NewResourceParams::Protected: m_ScopeIdsVal = wxsItemRes::NewResourceParams::Private; break;
-        case wxsItemRes::NewResourceParams::Private: // fall-through
-        default:                                       m_ScopeIdsVal = wxsItemRes::NewResourceParams::Public; break;
+    case wxsItemRes::NewResourceParams::Public:
+        m_ScopeIdsVal = wxsItemRes::NewResourceParams::Protected;
+        break;
+    case wxsItemRes::NewResourceParams::Protected:
+        m_ScopeIdsVal = wxsItemRes::NewResourceParams::Private;
+        break;
+    case wxsItemRes::NewResourceParams::Private: // fall-through
+    default:
+        m_ScopeIdsVal = wxsItemRes::NewResourceParams::Public;
+        break;
     }
     UpdateScopeButtons();
 }
@@ -836,10 +852,16 @@ void wxsNewWindowDlg::OnScopeMembersClick(cb_unused wxCommandEvent& event)
 {
     switch ( m_ScopeMembersVal )
     {
-        case wxsItemRes::NewResourceParams::Public:    m_ScopeMembersVal = wxsItemRes::NewResourceParams::Protected; break;
-        case wxsItemRes::NewResourceParams::Protected: m_ScopeMembersVal = wxsItemRes::NewResourceParams::Private; break;
-        case wxsItemRes::NewResourceParams::Private: // fall-through
-        default:                                       m_ScopeMembersVal = wxsItemRes::NewResourceParams::Public; break;
+    case wxsItemRes::NewResourceParams::Public:
+        m_ScopeMembersVal = wxsItemRes::NewResourceParams::Protected;
+        break;
+    case wxsItemRes::NewResourceParams::Protected:
+        m_ScopeMembersVal = wxsItemRes::NewResourceParams::Private;
+        break;
+    case wxsItemRes::NewResourceParams::Private: // fall-through
+    default:
+        m_ScopeMembersVal = wxsItemRes::NewResourceParams::Public;
+        break;
     }
     UpdateScopeButtons();
 }
@@ -848,10 +870,16 @@ void wxsNewWindowDlg::OnScopeHandlersClick(cb_unused wxCommandEvent& event)
 {
     switch ( m_ScopeHandlersVal )
     {
-        case wxsItemRes::NewResourceParams::Public:    m_ScopeHandlersVal = wxsItemRes::NewResourceParams::Protected; break;
-        case wxsItemRes::NewResourceParams::Protected: m_ScopeHandlersVal = wxsItemRes::NewResourceParams::Private; break;
-        case wxsItemRes::NewResourceParams::Private: // fall-through
-        default:                                       m_ScopeHandlersVal = wxsItemRes::NewResourceParams::Public; break;
+    case wxsItemRes::NewResourceParams::Public:
+        m_ScopeHandlersVal = wxsItemRes::NewResourceParams::Protected;
+        break;
+    case wxsItemRes::NewResourceParams::Protected:
+        m_ScopeHandlersVal = wxsItemRes::NewResourceParams::Private;
+        break;
+    case wxsItemRes::NewResourceParams::Private: // fall-through
+    default:
+        m_ScopeHandlersVal = wxsItemRes::NewResourceParams::Public;
+        break;
     }
     UpdateScopeButtons();
 }
@@ -860,23 +888,41 @@ void wxsNewWindowDlg::UpdateScopeButtons()
 {
     switch ( m_ScopeIdsVal )
     {
-        case wxsItemRes::NewResourceParams::Public:    m_ScopeIds->SetLabel(_T("Public")); break;
-        case wxsItemRes::NewResourceParams::Protected: m_ScopeIds->SetLabel(_T("Protected")); break;
-        case wxsItemRes::NewResourceParams::Private: // fall-through
-        default:                                       m_ScopeIds->SetLabel(_T("Private")); break;
+    case wxsItemRes::NewResourceParams::Public:
+        m_ScopeIds->SetLabel(_T("Public"));
+        break;
+    case wxsItemRes::NewResourceParams::Protected:
+        m_ScopeIds->SetLabel(_T("Protected"));
+        break;
+    case wxsItemRes::NewResourceParams::Private: // fall-through
+    default:
+        m_ScopeIds->SetLabel(_T("Private"));
+        break;
     }
     switch ( m_ScopeMembersVal )
     {
-        case wxsItemRes::NewResourceParams::Public:    m_ScopeMembers->SetLabel(_T("Public")); break;
-        case wxsItemRes::NewResourceParams::Protected: m_ScopeMembers->SetLabel(_T("Protected")); break;
-        case wxsItemRes::NewResourceParams::Private: // fall-through
-        default:                                       m_ScopeMembers->SetLabel(_T("Private")); break;
+    case wxsItemRes::NewResourceParams::Public:
+        m_ScopeMembers->SetLabel(_T("Public"));
+        break;
+    case wxsItemRes::NewResourceParams::Protected:
+        m_ScopeMembers->SetLabel(_T("Protected"));
+        break;
+    case wxsItemRes::NewResourceParams::Private: // fall-through
+    default:
+        m_ScopeMembers->SetLabel(_T("Private"));
+        break;
     }
     switch ( m_ScopeHandlersVal )
     {
-        case wxsItemRes::NewResourceParams::Public:    m_ScopeHandlers->SetLabel(_T("Public")); break;
-        case wxsItemRes::NewResourceParams::Protected: m_ScopeHandlers->SetLabel(_T("Protected")); break;
-        case wxsItemRes::NewResourceParams::Private: // fall-through
-        default:                                       m_ScopeHandlers->SetLabel(_T("Private")); break;
+    case wxsItemRes::NewResourceParams::Public:
+        m_ScopeHandlers->SetLabel(_T("Public"));
+        break;
+    case wxsItemRes::NewResourceParams::Protected:
+        m_ScopeHandlers->SetLabel(_T("Protected"));
+        break;
+    case wxsItemRes::NewResourceParams::Private: // fall-through
+    default:
+        m_ScopeHandlers->SetLabel(_T("Private"));
+        break;
     }
 }

@@ -7,22 +7,22 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 // END Interface Dependencies -----------------------------------------
 
 class HooverDrawlet
 {
-  public:
-		HooverDrawlet();
-		virtual ~HooverDrawlet();
+public:
+    HooverDrawlet();
+    virtual ~HooverDrawlet();
 
 
-		virtual bool Draw(wxDC &dc);
-        virtual void UnDraw(wxDC &dc) = 0;
+    virtual bool Draw(wxDC &dc);
+    virtual void UnDraw(wxDC &dc) = 0;
 
-	private:
+private:
 };
 
 #endif

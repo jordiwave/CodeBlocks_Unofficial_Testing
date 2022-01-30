@@ -32,32 +32,32 @@
  */
 class wxsImageList : public wxsTool
 {
-    public:
+public:
 
-        wxsImageList(wxsItemResData* Data);
+    wxsImageList(wxsItemResData* Data);
 
-        int                 GetCount(void);
-        wxBitmap  GetPreview(int inIndex);
-        void            GetImageList(wxImageList &aImageList);
-        void            DoBuild(void);
+    int                 GetCount(void);
+    wxBitmap  GetPreview(int inIndex);
+    void            GetImageList(wxImageList &aImageList);
+    void            DoBuild(void);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual void OnEnumToolProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual void OnEnumToolProperties(long Flags);
 
-        void StoreXpmData(void);
+    void StoreXpmData(void);
 
-        bool                            m_IsBuilt;                 //!<  Only build the code once.
-        wxsCoderContext     *m_Context;                //!< Coder context.
-        wxArrayString           m_ImageData;         //!< Store all images as XPMs.
-        long                            m_Width;                    //!< Image width.
-        long                            m_Height;                    //!< Image height.
-        long                            m_Count;                    //!< Image count .
-        bool                            m_Include;                //!< Save as #include file?
-        wxString                    m_Base;                    //!< Base file name of source and include files.
-        wxString                    m_IDir;                       //!< The absolute path to the image include directory.
-        wxString                    m_RDir;                     //!< Relative directory specified for image files.
+    bool                            m_IsBuilt;                 //!<  Only build the code once.
+    wxsCoderContext     *m_Context;                //!< Coder context.
+    wxArrayString           m_ImageData;         //!< Store all images as XPMs.
+    long                            m_Width;                    //!< Image width.
+    long                            m_Height;                    //!< Image height.
+    long                            m_Count;                    //!< Image count .
+    bool                            m_Include;                //!< Save as #include file?
+    wxString                    m_Base;                    //!< Base file name of source and include files.
+    wxString                    m_IDir;                       //!< The absolute path to the image include directory.
+    wxString                    m_RDir;                     //!< Relative directory specified for image files.
 };
 
 

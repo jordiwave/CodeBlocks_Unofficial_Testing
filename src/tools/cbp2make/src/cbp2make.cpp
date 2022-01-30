@@ -209,79 +209,99 @@ CString CProcessingMachine::ConfigurationName(void)
 
 void CProcessingMachine::ConfigureToolchain(CToolChain *ToolChain)
 {
- (void)ToolChain;
-  /*
-  CToolChain *tc = ToolChain;
-  if (PSC().VarDefined("-"))
-  {
-   tc-> = PSC().VarNamed("-");
-  }
-  */
+    (void)ToolChain;
+    /*
+    CToolChain *tc = ToolChain;
+    if (PSC().VarDefined("-"))
+    {
+     tc-> = PSC().VarNamed("-");
+    }
+    */
 }
 
 void CProcessingMachine::ConfigureBuildTool(CBuildTool *BuildTool)
 {
     CBuildTool *bt = BuildTool;
-    if (PSC().VarDefined("-desc")) {
+    if (PSC().VarDefined("-desc"))
+    {
         bt->Description() = PSC().VarNamed("-desc").GetString();
     }
-    if (PSC().VarDefined("-program")) {
+    if (PSC().VarDefined("-program"))
+    {
         bt->Program() = PSC().VarNamed("-program").GetString();
     }
-    if (PSC().VarDefined("-command")) {
+    if (PSC().VarDefined("-command"))
+    {
         bt->CommandTemplate() = PSC().VarNamed("-command").GetString();
     }
-    if (PSC().VarDefined("-mkv")) {
+    if (PSC().VarDefined("-mkv"))
+    {
         bt->MakeVariable() = PSC().VarNamed("-mkv").GetString();
     }
-    if (PSC().VarDefined("-srcext")) {
+    if (PSC().VarDefined("-srcext"))
+    {
         ParseStr(PSC().VarNamed("-srcext").GetString(),' ',bt->SourceExtensions());
         bt->SourceExtensions().RemoveDuplicates();
         bt->SourceExtensions().RemoveEmpty();
     }
-    if (PSC().VarDefined("-outext")) {
+    if (PSC().VarDefined("-outext"))
+    {
         bt->TargetExtension() = PSC().VarNamed("-outext").GetString();
     }
-    if (PSC().VarDefined("-quotepath")) {
+    if (PSC().VarDefined("-quotepath"))
+    {
         bt->NeedQuotedPath() = PSC().VarNamed("-quotepath").GetBoolean();
     }
-    if (PSC().VarDefined("-fullpath")) {
+    if (PSC().VarDefined("-fullpath"))
+    {
         bt->NeedFullPath() = PSC().VarNamed("-fullpath").GetBoolean();
     }
-    if (PSC().VarDefined("-unixpath")) {
+    if (PSC().VarDefined("-unixpath"))
+    {
         bt->NeedUnixPath() = PSC().VarNamed("-unixpath").GetBoolean();
     }
     CCompiler *cc = dynamic_cast<CCompiler *>(BuildTool);
-    if (0!=cc) {
-        if (PSC().VarDefined("-incsw")) {
+    if (0!=cc)
+    {
+        if (PSC().VarDefined("-incsw"))
+        {
             cc->IncludeDirSwitch() = PSC().VarNamed("-incsw").GetString();
         }
-        if (PSC().VarDefined("-defsw")) {
+        if (PSC().VarDefined("-defsw"))
+        {
             cc->DefineSwitch() = PSC().VarNamed("-defsw").GetString();
         }
-        if (PSC().VarDefined("-deps")) {
+        if (PSC().VarDefined("-deps"))
+        {
             cc->NeedDependencies() = PSC().VarNamed("-deps").GetBoolean();
         }
     }
     CLinker *ln = dynamic_cast<CLinker *>(BuildTool);
-    if (0!=ln) {
-        if (PSC().VarDefined("-ldsw")) {
+    if (0!=ln)
+    {
+        if (PSC().VarDefined("-ldsw"))
+        {
             ln->LibraryDirSwitch() = PSC().VarNamed("-ldsw").GetString();
         }
-        if (PSC().VarDefined("-llsw")) {
+        if (PSC().VarDefined("-llsw"))
+        {
             ln->LinkLibrarySwitch() = PSC().VarNamed("-llsw").GetString();
         }
-        if (PSC().VarDefined("-lpfx")) {
+        if (PSC().VarDefined("-lpfx"))
+        {
             ln->LibraryPrefix() = PSC().VarNamed("-lpfx").GetString();
             ln->NeedLibraryPrefix() = !(ln->LibraryPrefix().IsEmpty());
         }
-        if (PSC().VarDefined("-lext")) {
+        if (PSC().VarDefined("-lext"))
+        {
             ln->LibraryExtension() = PSC().VarNamed("-lext").GetString();
         }
-        if (PSC().VarDefined("-objext")) {
+        if (PSC().VarDefined("-objext"))
+        {
             ln->ObjectExtension() = PSC().VarNamed("-objext").GetString();
         }
-        if (PSC().VarDefined("-lflat")) {
+        if (PSC().VarDefined("-lflat"))
+        {
             ln->NeedFlatObjects() = PSC().VarNamed("-lflat").GetBoolean();
         }
     }
@@ -290,25 +310,32 @@ void CProcessingMachine::ConfigureBuildTool(CBuildTool *BuildTool)
 void CProcessingMachine::ConfigurePlatform(CPlatform *Platform)
 {
     CPlatform *p = Platform;
-    if (PSC().VarDefined("-make")) {
+    if (PSC().VarDefined("-make"))
+    {
         p->Cmd_Make() = PSC().VarNamed("-make").GetString();
     }
-    if (PSC().VarDefined("-pwd")) {
+    if (PSC().VarDefined("-pwd"))
+    {
         p->Cmd_PrintWorkDir() = PSC().VarNamed("-pwd").GetString();
     }
-    if (PSC().VarDefined("-wd")) {
+    if (PSC().VarDefined("-wd"))
+    {
         p->Cmd_EvalWorkDir() = PSC().VarNamed("-wd").GetString();
     }
-    if (PSC().VarDefined("-cd")) {
+    if (PSC().VarDefined("-cd"))
+    {
         p->Cmd_ChangeDir() = PSC().VarNamed("-cd").GetString();
     }
-    if (PSC().VarDefined("-rm")) {
+    if (PSC().VarDefined("-rm"))
+    {
         p->Cmd_RemoveFile() = PSC().VarNamed("-rm").GetString();
     }
-    if (PSC().VarDefined("-rmf")) {
+    if (PSC().VarDefined("-rmf"))
+    {
         p->Cmd_ForceRemoveFile() = PSC().VarNamed("-rmf").GetString();
     }
-    if (PSC().VarDefined("-rmd")) {
+    if (PSC().VarDefined("-rmd"))
+    {
         p->Cmd_RemoveDir() = PSC().VarNamed("-rmd").GetString();
     }
     /*
@@ -321,33 +348,40 @@ void CProcessingMachine::ConfigurePlatform(CPlatform *Platform)
      p->Cmd_TestDir() = PSC().VarNamed("-td").GetString();
     }
     */
-    if (PSC().VarDefined("-cp")) {
+    if (PSC().VarDefined("-cp"))
+    {
         p->Cmd_Copy() = PSC().VarNamed("-cp").GetString();
     }
-    if (PSC().VarDefined("-mv")) {
+    if (PSC().VarDefined("-mv"))
+    {
         p->Cmd_Move() = PSC().VarNamed("-mv").GetString();
     }
-    if (PSC().VarDefined("-md")) {
+    if (PSC().VarDefined("-md"))
+    {
         p->Cmd_MakeDir() = PSC().VarNamed("-md").GetString();
     }
-    if (PSC().VarDefined("-mdf")) {
+    if (PSC().VarDefined("-mdf"))
+    {
         p->Cmd_ForceMakeDir() = PSC().VarNamed("-mdf").GetString();
     }
 }
 
 bool CProcessingMachine::Configure(const CString& FileName)
 {
-   (void)FileName;
+    (void)FileName;
     CGenericProcessingMachine::Configure(""/*FileName*/);
-    if (DoShowHelp()) {
+    if (DoShowHelp())
+    {
         DisplayHelpMessage();
         return false;
     }
-    if (BeVerbose()) {
+    if (BeVerbose())
+    {
         std::cout<<"Command line parameters:"<<std::endl;
         PSC().Print(std::cout);
     }
-    if (PSC().VarDefined("--version")) {
+    if (PSC().VarDefined("--version"))
+    {
         std::cout<<"cbp2make rev."<<REVISION_NUMBER<<std::endl;
         return false;
     }
@@ -366,31 +400,39 @@ bool CProcessingMachine::Configure(const CString& FileName)
 //     if it is not possible, fallback to current directory.
     if (!PSC().VarDefined(GPM_VAR_NAME_CFG) &&
             ((!FileExists(cfg_name) && !PSC().VarDefined("--local")) ||
-             PSC().VarDefined("--global"))) {
+             PSC().VarDefined("--global")))
+    {
         CString cfg_path = JoinPaths(HomeDirPath(),".cbp2make");
-        if (!DirExists(cfg_path)) {
+        if (!DirExists(cfg_path))
+        {
             MakeDir(cfg_path);
         }
-        if (DirExists(cfg_path)) {
+        if (DirExists(cfg_path))
+        {
             cfg_name = JoinPaths(cfg_path,DefaultConfigurationName());
         }
     }
-    if (FileExists(cfg_name)) {
+    if (FileExists(cfg_name))
+    {
         if (!BeQuiet()) std::cout<<"Using configuration: "<<cfg_name.GetCString()<<std::endl;
         m_BuildManager.Config().Load(cfg_name);
         m_BuildManager.Config().BeQuiet() = BeQuiet();
         m_BuildManager.Config().BeVerbose() = BeVerbose();
-    } else {
+    }
+    else
+    {
         if (!BeQuiet()) std::cout<<"Using default configuration."<<std::endl;
         m_BuildManager.Config().Platforms().AddDefault();
         m_BuildManager.Config().ToolChains().AddDefault();
         //do not create configuration file unless explicitly instructed to do so
         //m_BuildManager.Config().Save(cfg_name);
     }
-    if (PSC().VarDefined("--default-options")) {
+    if (PSC().VarDefined("--default-options"))
+    {
         m_BuildManager.Config().DefaultOptions() = PSC().VarNamed("--default-options").GetString();
     }
-    if (!m_BuildManager.Config().DefaultOptions().IsEmpty()) {
+    if (!m_BuildManager.Config().DefaultOptions().IsEmpty())
+    {
         PS().AddParameters(m_BuildManager.Config().DefaultOptions());
         PSC().ProcessParameters(PS());
         CGenericProcessingMachine::Configure("");
@@ -411,43 +453,55 @@ bool CProcessingMachine::Configure(const CString& FileName)
     else os_any = false;
 // configure
     m_BuildManager.Config().Platforms().AddDefault();
-    if (PSC().VarDefined("--config")) {
+    if (PSC().VarDefined("--config"))
+    {
         CString config_item_str = PSC().VarNamed("--config").GetString();
         int config_item = GuessStr(config_item_str,"toolchain tool platform variable options inherit",
                                    config_item_str,true);
-        if (0==config_item) {
+        if (0==config_item)
+        {
             CString chain_name = PSC().VarNamed("-chain").GetString();
-            if (PSC().VarDefined("--add")) {
-                if (PSC().VarDefined("-chain")) {
+            if (PSC().VarDefined("--add"))
+            {
+                if (PSC().VarDefined("-chain"))
+                {
                     CToolChain *tc = m_BuildManager.ToolChains().Find(os_type,chain_name);
-                    if (0==tc) {
+                    if (0==tc)
+                    {
                         tc = m_BuildManager.ToolChains().Add(os_type,chain_name);
                     }
                     if (0==tc) return false;
                     ConfigureToolchain(tc);
                 }
             } // add-toolchain
-            else if (PSC().VarDefined("--remove")&&PSC().VarDefined("-chain")&&os_any) {
+            else if (PSC().VarDefined("--remove")&&PSC().VarDefined("-chain")&&os_any)
+            {
                 m_BuildManager.ToolChains().Remove(os_type,chain_name);
             }
         }
-        if (1==config_item) {
+        if (1==config_item)
+        {
             CString chain_name = PSC().VarNamed("-chain").GetString();
-            if (PSC().VarDefined("--add")) {
-                if (PSC().VarDefined("-chain")) {
+            if (PSC().VarDefined("--add"))
+            {
+                if (PSC().VarDefined("-chain"))
+                {
                     CToolChain *tc = m_BuildManager.ToolChains().Find(os_type,chain_name);
-                    if (0==tc) {
+                    if (0==tc)
+                    {
                         tc = m_BuildManager.ToolChains().Add(os_type,chain_name);
                     }
                     if (0==tc) return false;
-                    if (PSC().VarDefined("-tool")&&PSC().VarDefined("-type")) {
+                    if (PSC().VarDefined("-tool")&&PSC().VarDefined("-type"))
+                    {
                         CString tool_type_str = PSC().VarNamed("-type").GetString();
                         int tool_type_int = GuessStr(tool_type_str,"other pp as cc rc sl dl el nl count",
                                                      tool_type_str,false);
                         CBuildTool::ToolType tool_type = (CBuildTool::ToolType)tool_type_int;
                         CString tool_name = PSC().VarNamed("-tool").GetString();
                         CBuildTool *bt = tc->FindBuildToolByName(tool_name);
-                        if (0==bt) {
+                        if (0==bt)
+                        {
                             bt = tc->CreateBuildTool(tool_type);
                             bt->Alias() = tool_name;
                         }
@@ -456,60 +510,78 @@ bool CProcessingMachine::Configure(const CString& FileName)
                     }
                 }
             } // add-tool
-            else if (PSC().VarDefined("--remove")&&PSC().VarDefined("-chain")&&PSC().VarDefined("-tool")&&os_any) {
+            else if (PSC().VarDefined("--remove")&&PSC().VarDefined("-chain")&&PSC().VarDefined("-tool")&&os_any)
+            {
                 CToolChain *tc = m_BuildManager.ToolChains().Find(os_type,chain_name);
-                if (0!=tc) {
+                if (0!=tc)
+                {
                     return tc->RemoveToolByName(PSC().VarNamed("-tool").GetString());
                 }
             }
         }
-        if (2==config_item) {
-            if (os_any) {
+        if (2==config_item)
+        {
+            if (os_any)
+            {
                 CPlatform *p = m_BuildManager.Platforms().Find(os_type);
                 if (0==p) return false;
                 ConfigurePlatform(p);
             }
         }
-        if (3==config_item) {
-            if (PSC().VarDefined("--add")) {
+        if (3==config_item)
+        {
+            if (PSC().VarDefined("--add"))
+            {
                 CString set_name = PSC().VarNamed("-set").GetString();
-                if (PSC().VarDefined("-name") && PSC().VarDefined("-value")) {
+                if (PSC().VarDefined("-name") && PSC().VarDefined("-value"))
+                {
                     CString var_name = PSC().VarNamed("-name").GetString();
                     CGlobalVariableSet *vset = m_BuildManager.Config().GlobalVariables().Add(set_name);
                     CGlobalVariable *var = vset->Add(var_name);
-                    if (PSC().VarDefined("-desc")) {
+                    if (PSC().VarDefined("-desc"))
+                    {
                         var->Description() = PSC().VarNamed("-desc").GetString();
                     }
-                    if (PSC().VarDefined("-value")) {
+                    if (PSC().VarDefined("-value"))
+                    {
                         var->Add(PSC().VarNamed("-field").GetString(),
                                  PSC().VarNamed("-value").GetString());
                     }
                 }
             } // add variable
-            else if (PSC().VarDefined("--remove")) {
+            else if (PSC().VarDefined("--remove"))
+            {
                 CString set_name = PSC().VarNamed("-set").GetString();
-                if (PSC().VarDefined("-name")) {
+                if (PSC().VarDefined("-name"))
+                {
                     CString var_name = PSC().VarNamed("-name").GetString();
                     CGlobalVariableSet *vset = m_BuildManager.Config().GlobalVariables().Add(set_name);
                     CGlobalVariable *var = vset->Add(var_name);
-                    if (PSC().VarDefined("-field")) {
+                    if (PSC().VarDefined("-field"))
+                    {
                         // if both variable and field names are defined, remove the field
                         var->Remove(PSC().VarNamed("-field").GetString());
-                    } else {
+                    }
+                    else
+                    {
                         // if variable name is defined, but field name is not, remove the variable
                         vset->Remove(var_name);
                     }
-                } else {
+                }
+                else
+                {
                     // if both variable and field names are not defined,
                     // but set name is defined, remove the entire set
-                    if (PSC().VarDefined("-set")) {
+                    if (PSC().VarDefined("-set"))
+                    {
                         m_BuildManager.Config().GlobalVariables().Remove(set_name);
                     }
                 }
             } // remove variable
         } // config variable
 
-        if (5 == config_item) {
+        if (5 == config_item)
+        {
             /* Inherit */
             cfg_name = ConfigurationName();
         }
@@ -526,7 +598,8 @@ bool CProcessingMachine::Configure(const CString& FileName)
     os_windows = os_windows || os_all;
     os_mac = os_mac || os_all;
     bool os_none = !os_all && !os_unix && !os_windows && !os_mac &&!os_msys;
-    if (os_none) {
+    if (os_none)
+    {
 #ifdef OS_UNIX
         os_unix = true;
 #endif
@@ -537,19 +610,23 @@ bool CProcessingMachine::Configure(const CString& FileName)
         os_mac = true;
 #endif
     }
-    if (os_unix) {
+    if (os_unix)
+    {
         CPlatform *p = m_BuildManager.Config().Platforms().Find(CPlatform::OS_Unix);
         if (p) p->Active() = true;
     }
-    if (os_msys) {
+    if (os_msys)
+    {
         CPlatform *p = m_BuildManager.Config().Platforms().Find(CPlatform::OS_MSys);
         if (p) p->Active() = true;
     }
-    if (os_windows) {
+    if (os_windows)
+    {
         CPlatform *p = m_BuildManager.Config().Platforms().Find(CPlatform::OS_Windows);
         if (p) p->Active() = true;
     }
-    if (os_mac) {
+    if (os_mac)
+    {
         CPlatform *p = m_BuildManager.Config().Platforms().Find(CPlatform::OS_Mac);
         if (p) p->Active() = true;
     }
@@ -557,7 +634,8 @@ bool CProcessingMachine::Configure(const CString& FileName)
     {
         CString vset_name = PSC().VarNamed("-set").GetString();
         CGlobalVariableSet *vset = m_BuildManager.Config().GlobalVariables().Find(vset_name);
-        if (0!=vset) {
+        if (0!=vset)
+        {
             vset->Active() = true;
         }
     }
@@ -596,7 +674,7 @@ bool CProcessingMachine::Configure(const CString& FileName)
 
 CString CProcessingMachine::TargetName(const int FileIndex, const CString& SourceFileName)
 {
-   (void)FileIndex;
+    (void)FileIndex;
     return SourceFileName+".mak";//ChangeFileExt(SourceFileName,".mak");
 }
 
@@ -606,9 +684,12 @@ bool CProcessingMachine::ProcessFile(const CString& SourceFileName, CString& Tar
     if (!BeQuiet()) std::cout<<"Loading file '"
                                  <<SourceFileName.GetString()<<"': "<<std::flush;
     result = m_BuildManager.LoadProjectOrWorkspace(SourceFileName);
-    if (result) {
+    if (result)
+    {
         if (!BeQuiet()) std::cout<<"[DONE]"<<std::endl<<std::flush;
-    } else {
+    }
+    else
+    {
         if (!BeQuiet()) std::cout<<"[FAILED]"<<std::endl<<std::flush;
     }
 //

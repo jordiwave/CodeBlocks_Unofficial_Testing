@@ -41,7 +41,7 @@
 // will produce this everywhere.  Must disable at beginning of stdafx.h because it doesn't work if
 // placed elsewhere.
 #ifdef __VISUALC__
-  #pragma warning(disable:4786)
+#pragma warning(disable:4786)
 #endif
 class Hunspell;
 class HunspellInterface : public wxSpellCheckEngineInterface
@@ -51,7 +51,10 @@ public:
     ~HunspellInterface();
 
     // Spell Checker functions
-    virtual wxString GetSpellCheckEngineName() { return _T("Hunspell"); }
+    virtual wxString GetSpellCheckEngineName()
+    {
+        return _T("Hunspell");
+    }
     virtual int InitializeSpellCheckEngine();
     virtual int UninitializeSpellCheckEngine();
     virtual int SetOption(SpellCheckEngineOption& Option);
@@ -64,9 +67,15 @@ public:
     virtual int RemoveWordFromDictionary(const wxString& strWord);
     virtual wxArrayString GetWordListAsArray();
     void OpenPersonalDictionary(const wxString& strPersonalDictionaryFile);
-    PersonalDictionary* GetPersonalDictionary() { return &m_PersonalDictionary; }
+    PersonalDictionary* GetPersonalDictionary()
+    {
+        return &m_PersonalDictionary;
+    }
     void AddCustomMySpellDictionary(const wxString& strDictionaryName, const wxString& strDictionaryFileRoot);
-    void CleanCustomMySpellDictionaries() { m_CustomMySpellDictionaryMap.clear(); }
+    void CleanCustomMySpellDictionaries()
+    {
+        m_CustomMySpellDictionaryMap.clear();
+    }
 
     virtual wxString GetCharacterEncoding();
 

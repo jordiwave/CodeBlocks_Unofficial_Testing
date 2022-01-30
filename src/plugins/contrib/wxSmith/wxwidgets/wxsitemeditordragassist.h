@@ -31,51 +31,51 @@
 /** \brief Class drawing additional data to help dragging */
 class wxsItemEditorDragAssist
 {
-    public:
+public:
 
-        enum DragAssistType
-        {
-            dtNone,
-            dtOutline,
-            dtColourMix
-        };
+    enum DragAssistType
+    {
+        dtNone,
+        dtOutline,
+        dtColourMix
+    };
 
-        /** \brief Ctor */
-        wxsItemEditorDragAssist(wxsItemEditorContent* Content);
+    /** \brief Ctor */
+    wxsItemEditorDragAssist(wxsItemEditorContent* Content);
 
-        /** \brief Dctor */
-        ~wxsItemEditorDragAssist();
+    /** \brief Dctor */
+    ~wxsItemEditorDragAssist();
 
-        /** \brief Function starting new dragging process */
-        void NewDragging();
+    /** \brief Function starting new dragging process */
+    void NewDragging();
 
-        /** \brief Function draging additional stuff */
-        void DrawExtra(wxsItem* Target,wxsItem* Parent,bool AddAfter,wxDC* DC);
+    /** \brief Function draging additional stuff */
+    void DrawExtra(wxsItem* Target,wxsItem* Parent,bool AddAfter,wxDC* DC);
 
-    private:
+private:
 
-        wxsItem* m_PreviousTarget;
-        wxsItem* m_PreviousParent;
-        bool m_PreviousAddAfter;
+    wxsItem* m_PreviousTarget;
+    wxsItem* m_PreviousParent;
+    bool m_PreviousAddAfter;
 
-        wxBitmap* m_TargetBitmap;
-        wxRect    m_TargetRect;
-        bool      m_IsTarget;
+    wxBitmap* m_TargetBitmap;
+    wxRect    m_TargetRect;
+    bool      m_IsTarget;
 
-        wxBitmap* m_ParentBitmap;
-        wxRect    m_ParentRect;
-        bool      m_IsParent;
+    wxBitmap* m_ParentBitmap;
+    wxRect    m_ParentRect;
+    bool      m_IsParent;
 
-        wxsItemEditorContent* m_Content;
+    wxsItemEditorContent* m_Content;
 
-        void UpdateAssist(wxsItem* NewTarget,wxsItem* NewParent,bool NewAddAfter);
-        void RebuildParentAssist();
-        void RebuildTargetAssist();
-        inline DragAssistType AssistType();
-        inline wxColour TargetColour();
-        inline wxColour ParentColour();
-        void ColourMix(wxImage& Image,const wxColour& Colour);
-        void UpdateRect(wxRect& Rect,const wxBitmap& bmp);
+    void UpdateAssist(wxsItem* NewTarget,wxsItem* NewParent,bool NewAddAfter);
+    void RebuildParentAssist();
+    void RebuildTargetAssist();
+    inline DragAssistType AssistType();
+    inline wxColour TargetColour();
+    inline wxColour ParentColour();
+    void ColourMix(wxImage& Image,const wxColour& Colour);
+    void UpdateRect(wxRect& Rect,const wxBitmap& bmp);
 };
 
 #endif

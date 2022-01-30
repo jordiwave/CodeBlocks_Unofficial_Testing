@@ -14,7 +14,7 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 #include "wx/things/genergdi.h"
@@ -262,9 +262,9 @@ class wxGenericPenRefData : public wxObjectRefData
 public:
     wxGenericPenRefData(int width = 1, wxPenStyle style = wxPENSTYLE_SOLID,
                         wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND)
-          : wxObjectRefData(), m_width(width), m_style(style),
-                               m_cap(cap), m_join(join),
-                               m_dash_count(0), m_dash(NULL) {}
+        : wxObjectRefData(), m_width(width), m_style(style),
+          m_cap(cap), m_join(join),
+          m_dash_count(0), m_dash(NULL) {}
 
     wxGenericPenRefData(const wxGenericPenRefData& data) : wxObjectRefData(),
         m_colour(data.m_colour), m_width(data.m_width), m_style(data.m_style),
@@ -278,7 +278,10 @@ public:
         }
     }
 
-    ~wxGenericPenRefData() { if (m_dash) free(m_dash); }
+    ~wxGenericPenRefData()
+    {
+        if (m_dash) free(m_dash);
+    }
 
     wxGenericColour m_colour;
     int m_width;
@@ -476,8 +479,8 @@ bool wxGenericPen::IsSameAs(const wxGenericPen &pen) const
     wxGenericPenRefData *pData = (wxGenericPenRefData*)pen.GetRefData();
 
     if ((M_GPENDATA->m_colour != pData->m_colour) || (M_GPENDATA->m_width != pData->m_width) ||
-        (M_GPENDATA->m_style != pData->m_style) || (M_GPENDATA->m_cap != pData->m_cap) ||
-        (M_GPENDATA->m_join != pData->m_join) || (M_GPENDATA->m_dash_count != pen.GetDashCount()))
+            (M_GPENDATA->m_style != pData->m_style) || (M_GPENDATA->m_cap != pData->m_cap) ||
+            (M_GPENDATA->m_join != pData->m_join) || (M_GPENDATA->m_dash_count != pen.GetDashCount()))
         return false;
 
     if (M_GPENDATA->m_dash_count > 0)
@@ -567,7 +570,7 @@ class wxGenericBrushRefData : public wxObjectRefData
 public:
     wxGenericBrushRefData(const wxGenericColour& c = wxNullGenericColour,
                           int style = wxSOLID) : wxObjectRefData(),
-                          m_colour(c), m_style(style) {}
+        m_colour(c), m_style(style) {}
 
     wxGenericBrushRefData(const wxGenericBrushRefData& data) : wxObjectRefData(),
         m_colour(data.m_colour), m_style(data.m_style), m_stipple(data.m_stipple) {}

@@ -7,13 +7,13 @@
 #define __WDR_stedlgs_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "stedlgs_wdr.h"
+#pragma interface "stedlgs_wdr.h"
 #endif
 
 // Include wxWidgets' headers
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <wx/image.h>

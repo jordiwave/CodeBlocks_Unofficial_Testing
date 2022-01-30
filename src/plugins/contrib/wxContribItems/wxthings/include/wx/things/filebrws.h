@@ -18,9 +18,9 @@
 #include <wx/textdlg.h>
 
 #if wxCHECK_VERSION(3, 0, 0)
-    #include <wx/generic/filectrlg.h>
+#include <wx/generic/filectrlg.h>
 #else // 2.8
-    #include <wx/generic/filedlgg.h>
+#include <wx/generic/filedlgg.h>
 #endif
 
 class WXDLLIMPEXP_FWD_BASE wxConfigBase;
@@ -65,10 +65,10 @@ public:
 // wxEVT_FILEBROWSER_DIR_ACTIVATED  - a dir has been double clicked or enter pressed
 
 BEGIN_DECLARE_EVENT_TYPES()
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_THINGS, wxEVT_FILEBROWSER_FILE_SELECTED,  wxEVT_USER_FIRST + 1000)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_THINGS, wxEVT_FILEBROWSER_FILE_ACTIVATED, wxEVT_USER_FIRST + 1001)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_THINGS, wxEVT_FILEBROWSER_DIR_SELECTED,   wxEVT_USER_FIRST + 1002)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_THINGS, wxEVT_FILEBROWSER_DIR_ACTIVATED,  wxEVT_USER_FIRST + 1003)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_THINGS, wxEVT_FILEBROWSER_FILE_SELECTED,  wxEVT_USER_FIRST + 1000)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_THINGS, wxEVT_FILEBROWSER_FILE_ACTIVATED, wxEVT_USER_FIRST + 1001)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_THINGS, wxEVT_FILEBROWSER_DIR_SELECTED,   wxEVT_USER_FIRST + 1002)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_THINGS, wxEVT_FILEBROWSER_DIR_ACTIVATED,  wxEVT_USER_FIRST + 1003)
 END_DECLARE_EVENT_TYPES()
 
 class WXDLLIMPEXP_THINGS wxFileBrowserEvent : public wxCommandEvent
@@ -81,10 +81,19 @@ public:
     wxFileBrowserEvent( const wxFileBrowserEvent &event ) : wxCommandEvent(event) {}
 
     // Get the full path + filename
-    wxString GetFilePath() const { return GetString(); }
-    void SetFilePath(const wxString &filepath) { SetString(filepath); }
+    wxString GetFilePath() const
+    {
+        return GetString();
+    }
+    void SetFilePath(const wxString &filepath)
+    {
+        SetString(filepath);
+    }
 
-    virtual wxEvent *Clone() const { return new wxFileBrowserEvent(*this); }
+    virtual wxEvent *Clone() const
+    {
+        return new wxFileBrowserEvent(*this);
+    }
 
 private:
     DECLARE_ABSTRACT_CLASS(wxFileBrowserEvent)
@@ -118,10 +127,10 @@ enum wxFileBrowserStyles_Type
     wxFILEBROWSER_PREVIEW    = wxLC_SORT_ASCENDING,   // NOT implemented
 
     wxFILEBROWSER_SPLIT_VERTICAL = wxLC_NO_HEADER,    // tree and listctrl are
-                                                      // split vertically else horizontal
+    // split vertically else horizontal
 
     wxFILEBROWSER_SHOW_FOLDERS = wxLC_NO_SORT_HEADER, // when showing listview also show
-                                                      // the folders in the treectrl
+    // the folders in the treectrl
 
     wxFILEBROWSER_SINGLE_SELECTION = wxLC_SINGLE_SEL, // Single file/dir selection (as opposed to multiple)
 
@@ -134,7 +143,10 @@ enum wxFileBrowserStyles_Type
 class WXDLLIMPEXP_THINGS wxFileBrowser : public wxControl
 {
 public :
-    wxFileBrowser() : wxControl() { Init(); }
+    wxFileBrowser() : wxControl()
+    {
+        Init();
+    }
 
     wxFileBrowser( wxWindow* parent, const wxWindowID id,
                    const wxString& dir = wxDirDialogDefaultFolderStr,
@@ -207,27 +219,48 @@ public :
     // Add or set the file filter, "All Files (*)|*", it must have a "|" in it
     bool AddFilter(const wxString &filter);
     // Get the current file filter
-    wxString GetFilter() const { return m_filter; }
+    wxString GetFilter() const
+    {
+        return m_filter;
+    }
     // Get the wild card used for the filter
-    wxString GetWild() const { return m_filter.AfterLast(wxT('|')); }
+    wxString GetWild() const
+    {
+        return m_filter.AfterLast(wxT('|'));
+    }
 
     // Set how the files are displayed - see enum wxFileBrowserStyles_Type
     void SetBrowserStyle(long style);
-    long GetBrowserStyle() const { return m_browser_style; }
-    bool HasBrowserStyle(int style_mask) const { return (m_browser_style & style_mask) != 0; }
+    long GetBrowserStyle() const
+    {
+        return m_browser_style;
+    }
+    bool HasBrowserStyle(int style_mask) const
+    {
+        return (m_browser_style & style_mask) != 0;
+    }
 
     // Show or hide hidden files
     void ShowHidden(bool show_hidden);
-    bool GetShowHidden() const { return m_show_hidden; }
+    bool GetShowHidden() const
+    {
+        return m_show_hidden;
+    }
 
     // When showing the files in a listctrl also show the folders in the treectrl
     //   also don't let them unsplit it
     void ShowFolders(bool show_folders);
-    bool GetShowFolders() const { return HasBrowserStyle(wxFILEBROWSER_SHOW_FOLDERS); }
+    bool GetShowFolders() const
+    {
+        return HasBrowserStyle(wxFILEBROWSER_SHOW_FOLDERS);
+    }
 
     // When splitting, split vertically or horizontally
     void SplitVertical(bool split_vertically);
-    bool GetSplitVertical() const { return HasBrowserStyle(wxFILEBROWSER_SPLIT_VERTICAL); }
+    bool GetSplitVertical() const
+    {
+        return HasBrowserStyle(wxFILEBROWSER_SPLIT_VERTICAL);
+    }
 
     // -----------------------------------------------------------------------
     // implementation
@@ -259,11 +292,17 @@ public :
     wxString GetOpenWithFileCmd(wxFileData* fd) const;
 
     // Get a pointer to the path history combo, can change its contents
-    wxComboBox *GetPathCombo() const { return m_pathCombo; }
+    wxComboBox *GetPathCombo() const
+    {
+        return m_pathCombo;
+    }
     // Get a pointer to the filter combo
     //   don't delete selections less than the # of filters passed in
     //   ie. check for items with GetClientData() !NULL
-    wxComboBox *GetFilterCombo() const { return m_filterCombo; }
+    wxComboBox *GetFilterCombo() const
+    {
+        return m_filterCombo;
+    }
 
     // Can this file be read/opened?
     bool CanRead(const wxString& filePath) const;

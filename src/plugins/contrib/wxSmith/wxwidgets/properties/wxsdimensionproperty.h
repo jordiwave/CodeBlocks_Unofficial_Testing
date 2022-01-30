@@ -42,8 +42,8 @@ struct wxsDimensionData
     inline long GetPixels(wxWindow* Parent)
     {
         return DialogUnits ?
-            wxDLG_UNIT(Parent,wxSize(Value,0)).GetWidth() :
-            Value;
+               wxDLG_UNIT(Parent,wxSize(Value,0)).GetWidth() :
+               Value;
     }
 
     /** \brief Function converting pixel units to dialog ones
@@ -54,8 +54,8 @@ struct wxsDimensionData
     inline long GetDialogUnits(wxWindow* Parent)
     {
         return !DialogUnits ?
-            Parent->ConvertPixelsToDialog(wxSize(Value,0)).GetWidth() :
-            Value;
+               Parent->ConvertPixelsToDialog(wxSize(Value,0)).GetWidth() :
+               Value;
     }
 
     /** \brief Function getting code returning valid value in pixels
@@ -76,45 +76,48 @@ struct wxsDimensionData
 /** \brief Dimension property (long integer value which may be in pixel or dialog units) */
 class wxsDimensionProperty: public wxsProperty
 {
-    public:
+public:
 
-        /** \brief Ctor
-         *  \param PGName               name of property in Property Grid
-         *  \param PGDUName             name of "use dialog units" property
-         *  \param DataName             name of property in data stuctures
-         *  \param Offset               offset of wxsDimensionData value (taken from wxsOFFSET macro)
-         *  \param DefaultValue         default value applied on read errors
-         *  \param DefaultDialogUnits   default value applied for pixel / dialog units switch on read errors
-         *  \param Priority             priority of this property
-         */
-        wxsDimensionProperty(
-            const wxString& PGName,
-            const wxString& PGDUName,
-            const wxString& DataName,
-            long Offset,
-            long DefaultValue=0,
-            bool DefaultDialogUnits=false,
-            int Priority=100);
+    /** \brief Ctor
+     *  \param PGName               name of property in Property Grid
+     *  \param PGDUName             name of "use dialog units" property
+     *  \param DataName             name of property in data stuctures
+     *  \param Offset               offset of wxsDimensionData value (taken from wxsOFFSET macro)
+     *  \param DefaultValue         default value applied on read errors
+     *  \param DefaultDialogUnits   default value applied for pixel / dialog units switch on read errors
+     *  \param Priority             priority of this property
+     */
+    wxsDimensionProperty(
+        const wxString& PGName,
+        const wxString& PGDUName,
+        const wxString& DataName,
+        long Offset,
+        long DefaultValue=0,
+        bool DefaultDialogUnits=false,
+        int Priority=100);
 
-        /** \brief Returning type name */
-        virtual const wxString GetTypeName() { return _T("wxsDimension"); }
+    /** \brief Returning type name */
+    virtual const wxString GetTypeName()
+    {
+        return _T("wxsDimension");
+    }
 
-    protected:
+protected:
 
-        virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
-        virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-        virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-        virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-        virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
+    virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
+    virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
+    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-    private:
-        long Offset;
-        long DefaultValue;
-        bool DefaultDialogUnits;
+private:
+    long Offset;
+    long DefaultValue;
+    bool DefaultDialogUnits;
 
-        wxString PGDUName;
+    wxString PGDUName;
 };
 
 /** \addtogroup ext_properties_macros

@@ -23,9 +23,9 @@ bool TestPlotApp::OnInit()
     wxInitAllImageHandlers();
     if ( wxsOK )
     {
-    	TestPlotFrame* Frame = new TestPlotFrame(0);
-    	Frame->Show();
-    	SetTopWindow(Frame);
+        TestPlotFrame* Frame = new TestPlotFrame(0);
+        Frame->Show();
+        SetTopWindow(Frame);
     }
     //*)
     return wxsOK;

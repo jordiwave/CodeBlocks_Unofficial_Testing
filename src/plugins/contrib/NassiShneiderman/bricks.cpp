@@ -22,7 +22,8 @@
 #include "NassiBrickVisitor.h"
 
 
-enum {
+enum
+{
     NASSI_BRICK_SELECT      =   0,
     NASSI_BRICK_INSTRUCTION =   1,
     NASSI_BRICK_CONTINUE    =   2,
@@ -49,7 +50,7 @@ NassiBrick::NassiBrick():
 
 NassiBrick::~NassiBrick()
 {
-	delete mNext;
+    delete mNext;
 }
 
 NassiBrick *NassiBrick::SetNext(NassiBrick *nex)
@@ -81,7 +82,7 @@ NassiBrick *NassiBrick::SetParent(NassiBrick *par)
 
 NassiBrick *NassiBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
 {
-	delete brick;
+    delete brick;
     return 0;
 }
 
@@ -130,39 +131,39 @@ NassiBrick *NassiBrick::SetData(wxInputStream &stream)
     inp >> n;
     switch ( n )
     {
-        case NASSI_BRICK_INSTRUCTION:
-            brick = new NassiInstructionBrick();
-            break;
-        case NASSI_BRICK_CONTINUE:
-            brick = new NassiContinueBrick();
-            break;
-        case NASSI_BRICK_BREAK:
-            brick = new NassiBreakBrick();
-            break;
-        case NASSI_BRICK_RETURN:
-            brick = new NassiReturnBrick();
-            break;
-        case NASSI_BRICK_WHILE:
-            brick = new NassiWhileBrick();
-            break;
-        case NASSI_BRICK_DOWHILE:
-            brick = new NassiDoWhileBrick();
-            break;
-        case NASSI_BRICK_FOR:
-            brick = new NassiForBrick();
-            break;
-        case NASSI_BRICK_BLOCK:
-            brick = new NassiBlockBrick();
-            break;
-        case NASSI_BRICK_IF:
-            brick = new NassiIfBrick();
-            break;
-        case NASSI_BRICK_SWITCH:
-            brick = new NassiSwitchBrick();
-            break;
-        case NASSI_BRICK_ESC:
-        default:
-            brick = nullptr;
+    case NASSI_BRICK_INSTRUCTION:
+        brick = new NassiInstructionBrick();
+        break;
+    case NASSI_BRICK_CONTINUE:
+        brick = new NassiContinueBrick();
+        break;
+    case NASSI_BRICK_BREAK:
+        brick = new NassiBreakBrick();
+        break;
+    case NASSI_BRICK_RETURN:
+        brick = new NassiReturnBrick();
+        break;
+    case NASSI_BRICK_WHILE:
+        brick = new NassiWhileBrick();
+        break;
+    case NASSI_BRICK_DOWHILE:
+        brick = new NassiDoWhileBrick();
+        break;
+    case NASSI_BRICK_FOR:
+        brick = new NassiForBrick();
+        break;
+    case NASSI_BRICK_BLOCK:
+        brick = new NassiBlockBrick();
+        break;
+    case NASSI_BRICK_IF:
+        brick = new NassiIfBrick();
+        break;
+    case NASSI_BRICK_SWITCH:
+        brick = new NassiSwitchBrick();
+        break;
+    case NASSI_BRICK_ESC:
+    default:
+        brick = nullptr;
     }
     if ( brick )
         brick->Deserialize(stream);
@@ -299,7 +300,7 @@ NassiBreakBrick::NassiBreakBrick(const NassiBreakBrick &rhs):
         SetNext( rhs.GetNext()->Clone()  );
 }
 
-NassiBreakBrick::~NassiBreakBrick(){}
+NassiBreakBrick::~NassiBreakBrick() {}
 
 NassiBrick *NassiBreakBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
 {
@@ -568,22 +569,22 @@ void NassiIfBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
 {
     switch ( n )
     {
-        case 0:
+    case 0:
         Comment = str;
         break;
-        case 1:
+    case 1:
         Source = str;
         break;
-        case 2:
+    case 2:
         TrueCommentText = str;
         break;
-        case 3:
+    case 3:
         TrueSourceText = str;
         break;
-        case 4:
+    case 4:
         FalseCommentText = str;
         break;
-        default:
+    default:
         FalseSourceText = str;
     }
 }
@@ -592,23 +593,23 @@ const wxString *NassiIfBrick::GetTextByNumber(wxUint32 n)const
 {
     switch ( n )
     {
-        case 0:
-            return &Comment;
-            break;
-        case 1:
-            return &Source;
-            break;
-        case 2:
-            return &TrueCommentText;
-            break;
-        case 3:
-            return &TrueSourceText;
-            break;
-        case 4:
-            return &FalseCommentText;
-            break;
-        default:
-            return &FalseSourceText;
+    case 0:
+        return &Comment;
+        break;
+    case 1:
+        return &Source;
+        break;
+    case 2:
+        return &TrueCommentText;
+        break;
+    case 3:
+        return &TrueSourceText;
+        break;
+    case 4:
+        return &FalseCommentText;
+        break;
+    default:
+        return &FalseSourceText;
     }
 }
 
@@ -710,22 +711,22 @@ void NassiForBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
 {
     switch ( n )
     {
-        case 0:
+    case 0:
         Comment = str;
         break;
-        case 1:
+    case 1:
         Source = str;
         break;
-        case 2:
+    case 2:
         InitCommentText = str;
         break;
-        case 3:
+    case 3:
         InitSourceText = str;
         break;
-        case 4:
+    case 4:
         InstCommentText = str;
         break;
-        default:
+    default:
         InstSourceText = str;
     }
 }
@@ -734,22 +735,22 @@ const wxString *NassiForBrick::GetTextByNumber(wxUint32 n)const
 {
     switch ( n )
     {
-        case 0:
+    case 0:
         return &Comment;
         break;
-        case 1:
+    case 1:
         return &Source;
         break;
-        case 2:
+    case 2:
         return &InitCommentText;
         break;
-        case 3:
+    case 3:
         return &InitSourceText;
         break;
-        case 4:
+    case 4:
         return &InstCommentText;
         break;
-        default:
+    default:
         return &InstSourceText;
     }
 }
@@ -801,7 +802,7 @@ NassiBlockBrick::NassiBlockBrick():
 {}
 
 NassiBlockBrick::NassiBlockBrick(const NassiBlockBrick &rhs):
-        NassiBrick()
+    NassiBrick()
 {
     Child = ( NassiBrick * ) 0;
 
@@ -1115,7 +1116,7 @@ NassiSwitchBrick::NassiSwitchBrick(const NassiSwitchBrick &rhs):
     {
         AddChild(k);
         if ( rhs.GetChild(k) )
-            SetChild( rhs.GetChild(k)->Clone()  , k);
+            SetChild( rhs.GetChild(k)->Clone(), k);
     }
     for ( wxUint32 n = 0 ; n < 2 + 2*rhs.GetChildCount() ; n++ )
         SetTextByNumber(*(rhs.GetTextByNumber(n)), n);

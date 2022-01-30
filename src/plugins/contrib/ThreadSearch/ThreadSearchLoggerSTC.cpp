@@ -5,14 +5,14 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-    #include <algorithm>
+#include <algorithm>
 
-    #include <wx/menu.h>
-    #include <wx/settings.h>
-    #include <wx/wxscintilla.h>
+#include <wx/menu.h>
+#include <wx/settings.h>
+#include <wx/wxscintilla.h>
 
-    #include <cbeditor.h>
-    #include <configmanager.h>
+#include <cbeditor.h>
+#include <configmanager.h>
 #endif
 
 #include "cbcolourmanager.h"
@@ -70,9 +70,9 @@ BEGIN_EVENT_TABLE(STCList, wxScintilla)
 END_EVENT_TABLE()
 
 ThreadSearchLoggerSTC::ThreadSearchLoggerSTC(ThreadSearchView& threadSearchView,
-                                             ThreadSearch& threadSearchPlugin,
-                                             InsertIndexManager::eFileSorting fileSorting,
-                                             wxWindow* parent, long id) :
+        ThreadSearch& threadSearchPlugin,
+        InsertIndexManager::eFileSorting fileSorting,
+        wxWindow* parent, long id) :
     ThreadSearchLoggerBase(parent, threadSearchView, threadSearchPlugin, fileSorting)
 {
     m_stc = new STCList(this, id);
@@ -496,7 +496,7 @@ void ThreadSearchLoggerSTC::DisconnectEvents()
 
     // Handle clicking/selection change events
     Disconnect(stcId, wxEVT_SCI_UPDATEUI,
-            wxScintillaEventHandler(ThreadSearchLoggerSTC::OnSTCUpdateUI));
+               wxScintillaEventHandler(ThreadSearchLoggerSTC::OnSTCUpdateUI));
     Disconnect(stcId, wxEVT_SCI_DOUBLECLICK,
                wxScintillaEventHandler(ThreadSearchLoggerSTC::OnDoubleClick));
 
@@ -614,7 +614,7 @@ void ThreadSearchLoggerSTC::OnStyleNeeded(wxScintillaEvent &event)
     startPosition = m_stc->PositionFromLine(startLine);
 
     StyleItemVector::const_iterator first = std::lower_bound(m_styles.cbegin(), m_styles.cend(),
-                                                             StyleItem::make(startPosition));
+                                            StyleItem::make(startPosition));
     const int lastPosition = event.GetPosition();
     if (first != m_styles.end())
     {
@@ -695,13 +695,13 @@ void ThreadSearchLoggerSTC::OnMarginClick(wxScintillaEvent &event)
 {
     switch (event.GetMargin())
     {
-        case C_FOLDING_MARGIN: // folding margin
-        {
-            const int lineYpix = event.GetPosition();
-            const int line = m_stc->LineFromPosition(lineYpix);
-            m_stc->ToggleFold(line);
-            break;
-        }
+    case C_FOLDING_MARGIN: // folding margin
+    {
+        const int lineYpix = event.GetPosition();
+        const int line = m_stc->LineFromPosition(lineYpix);
+        m_stc->ToggleFold(line);
+        break;
+    }
     }
 }
 
@@ -857,10 +857,10 @@ void ThreadSearchLoggerSTC::OnMenuDelete(cb_unused wxCommandEvent &event)
 
         // First is pointing to the first item in the deleted search.
         StyleItemVector::iterator first = std::lower_bound(m_styles.begin(), m_styles.end(),
-                                                           StyleItem::make(startPosition));
+                                          StyleItem::make(startPosition));
         // Last is pointing to the first item after the deleted search.
         StyleItemVector::iterator last = std::lower_bound(first, m_styles.end(),
-                                                          StyleItem::make(endPosition));
+                                         StyleItem::make(endPosition));
 
         // We have to adjust the start positions of all style items for the text after the deleted
         // block.
@@ -922,7 +922,7 @@ static WordRange FindWordForLineNumber(wxScintilla *stc, int lineStart)
 }
 
 void ThreadSearchLoggerSTC::EditorLinesAddedOrRemoved(cbEditor *editor, int startLine,
-                                                      int linesAdded)
+        int linesAdded)
 {
     m_stc->SetReadOnly(false);
 
@@ -963,7 +963,7 @@ void ThreadSearchLoggerSTC::EditorLinesAddedOrRemoved(cbEditor *editor, int star
 
                     const WordRange word = FindWordForLineNumber(m_stc, lineStartPosition);
                     const wxString &lineNumberText = m_stc->GetTextRange(word.start,
-                                                                         word.end);
+                                                     word.end);
 
                     long value;
                     if (lineNumberText.ToLong(&value))

@@ -45,8 +45,14 @@ public:
     virtual ~wxsSettings();
 
 protected:
-    wxString GetTitle() const { return _("wxSmith settings"); }
-    wxString GetBitmapBaseName() const { return _T("wxsmith"); }
+    wxString GetTitle() const
+    {
+        return _("wxSmith settings");
+    }
+    wxString GetBitmapBaseName() const
+    {
+        return _T("wxsmith");
+    }
 
     //(*Handlers(wxsSettings)
     void OnDragTargetColClick(wxCommandEvent& event);

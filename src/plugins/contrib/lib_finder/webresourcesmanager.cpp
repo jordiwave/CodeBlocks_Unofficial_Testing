@@ -51,8 +51,8 @@ bool WebResourcesManager::LoadDetectionConfigurations(const wxArrayString& baseU
                 {
                     TiXmlElement* root = doc.RootElement();
                     for ( TiXmlElement* lib = root->FirstChildElement("library");
-                          lib;
-                          lib = lib->NextSiblingElement("library") )
+                            lib;
+                            lib = lib->NextSiblingElement("library") )
                     {
                         wxString ShortCode = wxString( lib->Attribute("short_code"), wxConvUTF8 );
                         wxString FileName  = wxString( lib->Attribute("file_name"),  wxConvUTF8 );

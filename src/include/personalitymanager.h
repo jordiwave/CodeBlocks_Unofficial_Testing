@@ -30,25 +30,25 @@
   */
 class DLLIMPORT PersonalityManager : public Mgr<PersonalityManager>
 {
-        PersonalityManager();
+    PersonalityManager();
 
-	public:
-        friend class Mgr<PersonalityManager>;
-        friend class Manager; // give Manager access to our private members
+public:
+    friend class Mgr<PersonalityManager>;
+    friend class Manager; // give Manager access to our private members
 
-        /// Use this once, on program startup to set the working personality
-        void SetPersonality(const wxString& personality, bool createIfNotExist = false);
-        /// Get the working personality string
-        const wxString GetPersonality();
-        /// Get a list of all the known personalities
-        const wxArrayString GetPersonalitiesList();
-        /// This is only supposed to be called by the main application and marks the manager as
-        /// ready to be queried. Calling GetPersonality before this call is an error and if asserts
-        /// are enabled it will lead to assertion!
-        void MarkAsReady();
-    private:
-        wxString m_pers;
-        bool m_ready;
+    /// Use this once, on program startup to set the working personality
+    void SetPersonality(const wxString& personality, bool createIfNotExist = false);
+    /// Get the working personality string
+    const wxString GetPersonality();
+    /// Get a list of all the known personalities
+    const wxArrayString GetPersonalitiesList();
+    /// This is only supposed to be called by the main application and marks the manager as
+    /// ready to be queried. Calling GetPersonality before this call is an error and if asserts
+    /// are enabled it will lead to assertion!
+    void MarkAsReady();
+private:
+    wxString m_pers;
+    bool m_ready;
 };
 
 #endif // PERSONALITYMANAGER_H

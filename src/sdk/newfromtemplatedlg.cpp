@@ -10,22 +10,22 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/choice.h>
-    #include <wx/imaglist.h>
-    #include <wx/intl.h>
-    #include <wx/listbox.h>
-    #include <wx/listctrl.h>
-    #include <wx/menu.h>
-    #include <wx/string.h>
-    #include <wx/settings.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/choice.h>
+#include <wx/imaglist.h>
+#include <wx/intl.h>
+#include <wx/listbox.h>
+#include <wx/listctrl.h>
+#include <wx/menu.h>
+#include <wx/string.h>
+#include <wx/settings.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "cbeditor.h"
-    #include "configmanager.h"
-    #include "editormanager.h"
-    #include "globals.h"
-    #include "manager.h"
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "globals.h"
+#include "manager.h"
 #endif
 #include "cbstyledtextctrl.h"
 
@@ -83,8 +83,8 @@ END_EVENT_TABLE()
 
 NewFromTemplateDlg::NewFromTemplateDlg(TemplateOutputType initial, const wxArrayString& user_templates)
     : m_Template(nullptr),
-    m_pWizard(nullptr),
-    m_WizardIndex(-1)
+      m_pWizard(nullptr),
+      m_WizardIndex(-1)
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, nullptr, _T("dlgNewFromTemplate"),_T("wxScrollingDialog"));
@@ -277,11 +277,16 @@ wxListCtrl* NewFromTemplateDlg::GetVisibleListCtrl()
 
     switch (page)
     {
-        case 0: return XRCCTRL(*this, "listProjects", wxListCtrl); // projects
-        case 1: return XRCCTRL(*this, "listTargets", wxListCtrl); // targets
-        case 2: return XRCCTRL(*this, "listFiles", wxListCtrl); // files
-        case 3: return XRCCTRL(*this, "listCustoms", wxListCtrl); // workspaces
-        default: return nullptr;
+    case 0:
+        return XRCCTRL(*this, "listProjects", wxListCtrl); // projects
+    case 1:
+        return XRCCTRL(*this, "listTargets", wxListCtrl); // targets
+    case 2:
+        return XRCCTRL(*this, "listFiles", wxListCtrl); // files
+    case 3:
+        return XRCCTRL(*this, "listCustoms", wxListCtrl); // workspaces
+    default:
+        return nullptr;
     }
 }
 
@@ -292,11 +297,16 @@ wxChoice* NewFromTemplateDlg::GetVisibleCategory()
 
     switch (page)
     {
-        case 0: return XRCCTRL(*this, "cmbProjectCategories", wxChoice); // projects
-        case 1: return XRCCTRL(*this, "cmbTargetCategories", wxChoice); // targets
-        case 2: return XRCCTRL(*this, "cmbFileCategories", wxChoice); // files
-        case 3: return XRCCTRL(*this, "cmbCustomCategories", wxChoice); // workspaces
-        default: return nullptr;
+    case 0:
+        return XRCCTRL(*this, "cmbProjectCategories", wxChoice); // projects
+    case 1:
+        return XRCCTRL(*this, "cmbTargetCategories", wxChoice); // targets
+    case 2:
+        return XRCCTRL(*this, "cmbFileCategories", wxChoice); // files
+    case 3:
+        return XRCCTRL(*this, "cmbCustomCategories", wxChoice); // workspaces
+    default:
+        return nullptr;
     }
 }
 
@@ -307,11 +317,16 @@ TemplateOutputType NewFromTemplateDlg::GetVisibleOutputType() const
 
     switch (page)
     {
-        case 0: return totProject;
-        case 1: return totTarget;
-        case 2: return totFiles;
-        case 3: return totCustom;
-        default: return totProject;
+    case 0:
+        return totProject;
+    case 1:
+        return totTarget;
+    case 2:
+        return totFiles;
+    case 3:
+        return totCustom;
+    default:
+        return totProject;
     }
 }
 
@@ -462,7 +477,7 @@ void NewFromTemplateDlg::OnDiscardScript(cb_unused wxCommandEvent& event)
     if (wxFileExists(script))
     {
         if (cbMessageBox(_("Are you sure you want to discard all local modifications to this script?"),
-                        _("Confirmation"), wxICON_QUESTION | wxYES_NO, this) == wxID_YES)
+                         _("Confirmation"), wxICON_QUESTION | wxYES_NO, this) == wxID_YES)
         {
             if (wxRemoveFile(script))
                 list->SetItemTextColour(index, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
@@ -473,8 +488,8 @@ void NewFromTemplateDlg::OnDiscardScript(cb_unused wxCommandEvent& event)
 void NewFromTemplateDlg::OnEditGlobalScript(cb_unused wxCommandEvent& event)
 {
     cbMessageBox(_("Any changes you make to the global wizard registration script will "
-                    "take effect after you restart Code::Blocks."),
-                    _("Information"), wxICON_INFORMATION, this);
+                   "take effect after you restart Code::Blocks."),
+                 _("Information"), wxICON_INFORMATION, this);
     EditScript(_T("config.script"));
 }
 
@@ -486,19 +501,19 @@ void NewFromTemplateDlg::OnViewChange(cb_unused wxCommandEvent& event)
 void NewFromTemplateDlg::OnHelp(cb_unused wxCommandEvent& event)
 {
     cbMessageBox(_("When you edit a wizard's script, you actually edit a copy of it which "
-                    "is automatically placed inside your user configuration directory.\n"
-                    "This means that if a new version of the script is released, Code::Blocks "
-                    "will still use your customized script, not the globally installed version.\n\n"
-                    "These customized wizard scripts are coloured red just to remind you "
-                    "that they are exactly that: customized scripts.\n"
-                    "So, if you update your Code::Blocks copy and find that an updated wizard's "
-                    "behaviour doesn't change, check if you have customized it. If you have, "
-                    "the only way to re-enable the globally installed script is to remove "
-                    "the customized one.\n\n"
-                    "On this computer, the customized scripts are located under:\n") +
-                    ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/"),
-                    _("Help"),
-                    wxICON_INFORMATION, this);
+                   "is automatically placed inside your user configuration directory.\n"
+                   "This means that if a new version of the script is released, Code::Blocks "
+                   "will still use your customized script, not the globally installed version.\n\n"
+                   "These customized wizard scripts are coloured red just to remind you "
+                   "that they are exactly that: customized scripts.\n"
+                   "So, if you update your Code::Blocks copy and find that an updated wizard's "
+                   "behaviour doesn't change, check if you have customized it. If you have, "
+                   "the only way to re-enable the globally installed script is to remove "
+                   "the customized one.\n\n"
+                   "On this computer, the customized scripts are located under:\n") +
+                 ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/"),
+                 _("Help"),
+                 wxICON_INFORMATION, this);
 }
 
 void NewFromTemplateDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)

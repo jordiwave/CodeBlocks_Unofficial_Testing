@@ -25,19 +25,19 @@
 /** \brief Class for wxAnimationCtrl widget */
 class wxsAnimationCtrl: public wxsWidget
 {
-    public:
+public:
 
-        wxsAnimationCtrl(wxsItemResData* Data);
+    wxsAnimationCtrl(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        wxString             m_sAnimation;            //!< The animation file.
-        wxsBitmapData    m_bmpInactive;            //!< The inactivity bitmap.
-        bool                    m_bPlay;                    //!< Play the animation.
+    wxString             m_sAnimation;            //!< The animation file.
+    wxsBitmapData    m_bmpInactive;            //!< The inactivity bitmap.
+    bool                    m_bPlay;                    //!< Play the animation.
 };
 
 #endif // WXSANIMATIONCTRL_H

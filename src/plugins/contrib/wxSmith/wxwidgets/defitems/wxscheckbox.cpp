@@ -25,20 +25,20 @@
 
 namespace
 {
-    wxsRegisterItem<wxsCheckBox> Reg(_T("CheckBox"),wxsTWidget,_T("Standard"),330);
+wxsRegisterItem<wxsCheckBox> Reg(_T("CheckBox"),wxsTWidget,_T("Standard"),330);
 
-    WXS_ST_BEGIN(wxsCheckBoxStyles,_T(""))
-        WXS_ST_CATEGORY("wxCheckBox")
-        WXS_ST(wxCHK_2STATE)
-        WXS_ST(wxCHK_3STATE)
-        WXS_ST(wxCHK_ALLOW_3RD_STATE_FOR_USER)
-        WXS_ST(wxALIGN_RIGHT)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsCheckBoxStyles,_T(""))
+WXS_ST_CATEGORY("wxCheckBox")
+WXS_ST(wxCHK_2STATE)
+WXS_ST(wxCHK_3STATE)
+WXS_ST(wxCHK_ALLOW_3RD_STATE_FOR_USER)
+WXS_ST(wxALIGN_RIGHT)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsCheckBoxEvents)
-        WXS_EVI(EVT_CHECKBOX,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEvent,Click)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsCheckBoxEvents)
+WXS_EVI(EVT_CHECKBOX,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEvent,Click)
+WXS_EV_END()
 }
 
 wxsCheckBox::wxsCheckBox(wxsItemResData* Data):
@@ -56,20 +56,20 @@ void wxsCheckBox::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/checkbox.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.wx_str());
-            Codef(_T("%ASetValue(%b);\n"),IsChecked);
-            BuildSetupWindowCode();
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/checkbox.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.wx_str());
+        Codef(_T("%ASetValue(%b);\n"),IsChecked);
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsCheckBox::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsCheckBox::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

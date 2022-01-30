@@ -24,7 +24,7 @@
 
 namespace
 {
-    wxString Empty = wxEmptyString;
+wxString Empty = wxEmptyString;
 }
 
 wxsItemUndoBuffer::wxsItemUndoBuffer(int MaxEnteries):

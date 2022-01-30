@@ -132,13 +132,14 @@ public:
  * A macro, NS_ALIGNMENT_OF(t_) that determines the alignment
  * requirements of a type.
  */
-namespace mozilla {
-  template <class T>
-  struct AlignmentTestStruct
-  {
+namespace mozilla
+{
+template <class T>
+struct AlignmentTestStruct
+{
     char c;
     T t;
-  };
+};
 }
 
 #define NS_ALIGNMENT_OF(t_) \
@@ -147,7 +148,8 @@ namespace mozilla {
 /**
  * An enumeration type used to represent a method of assignment.
  */
-enum nsAssignmentType {
+enum nsAssignmentType
+{
     NS_ASSIGNMENT_COPY,   // copy by value
     NS_ASSIGNMENT_DEPEND, // copy by reference
     NS_ASSIGNMENT_ADOPT   // copy by reference (take ownership of resource)

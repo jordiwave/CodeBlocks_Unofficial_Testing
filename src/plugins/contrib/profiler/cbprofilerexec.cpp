@@ -9,17 +9,17 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/event.h>
-    #include <wx/font.h>
-    #include <wx/intl.h>
-    #include <wx/listctrl.h>
-    #include <wx/notebook.h>
-    #include <wx/textctrl.h>
-    #include <wx/utils.h>
-    #include <wx/xrc/xmlres.h>
-    #include "globals.h"
-    #include "manager.h"
-    #include "logmanager.h"
+#include <wx/event.h>
+#include <wx/font.h>
+#include <wx/intl.h>
+#include <wx/listctrl.h>
+#include <wx/notebook.h>
+#include <wx/textctrl.h>
+#include <wx/utils.h>
+#include <wx/xrc/xmlres.h>
+#include "globals.h"
+#include "manager.h"
+#include "logmanager.h"
 #endif
 #include <wx/busyinfo.h>
 #include <wx/colour.h>
@@ -57,8 +57,9 @@ int CBProfilerExecDlg::Execute(wxString exename, wxString dataname, struct_confi
 
     int exitCode;
 
-    { // begin lifetime of wxBusyInfo
-      wxBusyInfo wait(_("Please wait, while running gprof..."), parent);
+    {
+        // begin lifetime of wxBusyInfo
+        wxBusyInfo wait(_("Please wait, while running gprof..."), parent);
         Manager::Get()->GetLogManager()->DebugLog(wxString::Format("Profiler: Running command %s", cmd));
         exitCode = wxExecute(cmd, gprof_output, gprof_errors);
     } // end lifetime of wxBusyInfo
@@ -73,20 +74,20 @@ int CBProfilerExecDlg::Execute(wxString exename, wxString dataname, struct_confi
     }
 
     wxXmlResource::Get()->LoadObject(this, parent, "dlgCBProfilerExec", "wxScrollingDialog");
-        wxFont font(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-        outputFlatProfileArea     = XRCCTRL(*this, "lstFlatProfile",     wxListCtrl);
-        outputHelpFlatProfileArea = XRCCTRL(*this, "txtHelpFlatProfile", wxTextCtrl);
-        outputHelpFlatProfileArea->SetFont(font);
-        outputCallGraphArea       = XRCCTRL(*this, "lstCallGraph",       wxListCtrl);
-        outputHelpCallGraphArea   = XRCCTRL(*this, "txtHelpCallGraph",   wxTextCtrl);
-        outputHelpCallGraphArea->SetFont(font);
-        outputMiscArea            = XRCCTRL(*this, "txtMisc",            wxTextCtrl);
-        outputMiscArea->SetFont(font);
+    wxFont font(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+    outputFlatProfileArea     = XRCCTRL(*this, "lstFlatProfile",     wxListCtrl);
+    outputHelpFlatProfileArea = XRCCTRL(*this, "txtHelpFlatProfile", wxTextCtrl);
+    outputHelpFlatProfileArea->SetFont(font);
+    outputCallGraphArea       = XRCCTRL(*this, "lstCallGraph",       wxListCtrl);
+    outputHelpCallGraphArea   = XRCCTRL(*this, "txtHelpCallGraph",   wxTextCtrl);
+    outputHelpCallGraphArea->SetFont(font);
+    outputMiscArea            = XRCCTRL(*this, "txtMisc",            wxTextCtrl);
+    outputMiscArea->SetFont(font);
 
-        if(!gprof_output.IsEmpty())
-            ShowOutput(gprof_output, false);
-        else
-            ShowOutput(gprof_errors, true);
+    if(!gprof_output.IsEmpty())
+        ShowOutput(gprof_output, false);
+    else
+        ShowOutput(gprof_errors, true);
 
     return 0;
 }
@@ -157,10 +158,10 @@ int wxCALLBACK SortFunction(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
     // All the columns are composed with numbers except the last one
     if (col == 6)
     {
-       if (dialog->GetsortAscending())
-           return wxStrcmp(listItem1.GetText(), listItem2.GetText());
-       else
-           return wxStrcmp(listItem2.GetText(), listItem1.GetText());
+        if (dialog->GetsortAscending())
+            return wxStrcmp(listItem1.GetText(), listItem2.GetText());
+        else
+            return wxStrcmp(listItem2.GetText(), listItem1.GetText());
     }
     else
     {
@@ -338,7 +339,8 @@ void CBProfilerExecDlg::ParseFlatProfile(const wxArrayString& msg, wxProgressDia
         long item = outputFlatProfileArea->InsertItem(next,_T(""));
         outputFlatProfileArea->SetItemData(item, next);
         // check that we have spaces where spaces are supposed to be
-        if (TOKEN.Len() > spacePos[5]) {
+        if (TOKEN.Len() > spacePos[5])
+        {
             bool need_parsing = false;
             for (int i=0; i<6; ++i)
             {
@@ -352,8 +354,11 @@ void CBProfilerExecDlg::ParseFlatProfile(const wxArrayString& msg, wxProgressDia
             // manually parse for space positions
             if (need_parsing)
             {
-                int cnt=0; int i=0; int len = TOKEN.Len();
-                while (i < len && cnt < 6) {
+                int cnt=0;
+                int i=0;
+                int len = TOKEN.Len();
+                while (i < len && cnt < 6)
+                {
                     // we start with spaces
                     while (TOKEN[i] == ' ' && ++i < len);
                     if (i>=len) break;
@@ -371,15 +376,15 @@ void CBProfilerExecDlg::ParseFlatProfile(const wxArrayString& msg, wxProgressDia
             outputFlatProfileArea->SetItem(next, i,((TOKEN.Mid(spacePos[i-1],spacePos[i] - spacePos[i-1])).Trim(true)).Trim(false));
         outputFlatProfileArea->SetItem(next, 6, ((TOKEN.Mid(spacePos[5])).Trim(true)).Trim(false));
 
-/*
-        outputFlatProfileArea->SetItem(next, 0, ((TOKEN.Mid(0,6)).Trim(true)).Trim(false));
-        outputFlatProfileArea->SetItem(next, 1, ((TOKEN.Mid(6,10)).Trim(true)).Trim(false));
-        outputFlatProfileArea->SetItem(next, 2, ((TOKEN.Mid(16,9)).Trim(true)).Trim(false));
-        outputFlatProfileArea->SetItem(next, 3, ((TOKEN.Mid(25,9)).Trim(true)).Trim(false));
-        outputFlatProfileArea->SetItem(next, 4, ((TOKEN.Mid(34,9)).Trim(true)).Trim(false));
-        outputFlatProfileArea->SetItem(next, 5, ((TOKEN.Mid(43,9)).Trim(true)).Trim(false));
-        outputFlatProfileArea->SetItem(next, 6, ((TOKEN.Mid(52)).Trim(true)).Trim(false));
-*/
+        /*
+                outputFlatProfileArea->SetItem(next, 0, ((TOKEN.Mid(0,6)).Trim(true)).Trim(false));
+                outputFlatProfileArea->SetItem(next, 1, ((TOKEN.Mid(6,10)).Trim(true)).Trim(false));
+                outputFlatProfileArea->SetItem(next, 2, ((TOKEN.Mid(16,9)).Trim(true)).Trim(false));
+                outputFlatProfileArea->SetItem(next, 3, ((TOKEN.Mid(25,9)).Trim(true)).Trim(false));
+                outputFlatProfileArea->SetItem(next, 4, ((TOKEN.Mid(34,9)).Trim(true)).Trim(false));
+                outputFlatProfileArea->SetItem(next, 5, ((TOKEN.Mid(43,9)).Trim(true)).Trim(false));
+                outputFlatProfileArea->SetItem(next, 6, ((TOKEN.Mid(52)).Trim(true)).Trim(false));
+        */
         ++next;
     }
 

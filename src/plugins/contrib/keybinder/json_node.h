@@ -47,12 +47,30 @@ public:
 
     // Setters
     ////////////////////////////////////////////////
-    void setName(const wxString& _name) { this->_name = _name; }
-    void setType(int _type) { this->_type = _type; }
-    int getType() const { return _type; }
-    const wxString& getName() const { return _name; }
-    const wxVariant& getValue() const { return _value; }
-    void setValue(const wxVariant& _value) { this->_value = _value; }
+    void setName(const wxString& _name)
+    {
+        this->_name = _name;
+    }
+    void setType(int _type)
+    {
+        this->_type = _type;
+    }
+    int getType() const
+    {
+        return _type;
+    }
+    const wxString& getName() const
+    {
+        return _name;
+    }
+    const wxVariant& getValue() const
+    {
+        return _value;
+    }
+    void setValue(const wxVariant& _value)
+    {
+        this->_value = _value;
+    }
     // Readers
     ////////////////////////////////////////////////
     JSONElement namedObject(const wxString& name) const;
@@ -107,7 +125,10 @@ public:
 
     JSONElement& addProperty(const wxString& name, const wxString& value);
     JSONElement& addProperty(const wxString& name, const wxChar* value);
-    JSONElement& addProperty(const wxString& name, int value) { return addProperty(name, (long)value); }
+    JSONElement& addProperty(const wxString& name, int value)
+    {
+        return addProperty(name, (long)value);
+    }
     JSONElement& addProperty(const wxString& name, long value);
     JSONElement& addProperty(const wxString& name, size_t value);
     JSONElement& addProperty(const wxString& name, bool value);
@@ -136,10 +157,13 @@ public:
     void arrayAppend(const JSONElement& element);
     void arrayAppend(const wxString& value);
 
-    bool isOk() const { return _json != NULL; }
+    bool isOk() const
+    {
+        return _json != NULL;
+    }
 
     // serialize font into wxString
-     wxString ToString(const wxFont& font);             //(2019/04/3)
+    wxString ToString(const wxFont& font);             //(2019/04/3)
     // unserialize and construct a wxFont from
     wxFont FromString(const wxString& str) const;       //(2019/04/3)
 };
@@ -160,7 +184,10 @@ public:
 
     void save(const wxFileName& fn) const;
     wxString errorString() const;
-    bool isOk() const { return _json != NULL; }
+    bool isOk() const
+    {
+        return _json != NULL;
+    }
 
     JSONElement toElement() const;
 

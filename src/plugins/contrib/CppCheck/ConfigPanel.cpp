@@ -132,12 +132,12 @@ ConfigPanel::ConfigPanel(wxWindow* parent)
     if (cfg)
     {
         txtCppCheckApp->SetValue( cfg->Read(_T("cppcheck_app"),
-                                  GetDefaultCppCheckExecutableName()) );
+                                            GetDefaultCppCheckExecutableName()) );
         txtCppCheckArgs->SetValue( cfg->Read(_T("cppcheck_args"),
-                                   _T("--verbose --enable=all --enable=style --xml")) );
+                                             _T("--verbose --enable=all --enable=style --xml")) );
 
         txtVeraApp->SetValue( cfg->Read(_T("vera_app"),
-                                  GetDefaultVeraExecutableName()) );
+                                        GetDefaultVeraExecutableName()) );
         txtVeraArgs->SetValue( cfg->Read(_T("vera_args"), wxEmptyString) );
 
         choOperation->SetSelection( cfg->ReadInt(_T("operation"), 0) );
@@ -161,7 +161,7 @@ void ConfigPanel::OnCppCheckApp(cb_unused wxCommandEvent& event)
 #else
                          _("Executable files (*)|*"),
 #endif
-                        wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+                         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     PlaceWindow(&dialog);
     if (dialog.ShowModal() == wxID_OK)
         txtCppCheckApp->SetValue(dialog.GetPath());
@@ -179,7 +179,7 @@ void ConfigPanel::OnVeraApp(cb_unused wxCommandEvent& event)
 #else
                          _("Executable files (*)|*"),
 #endif
-                        wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+                         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     PlaceWindow(&dialog);
     if (dialog.ShowModal() == wxID_OK)
         txtVeraApp->SetValue(dialog.GetPath());

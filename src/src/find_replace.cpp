@@ -3,15 +3,15 @@
 #include "find_replace.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/dir.h>
-    #include <wx/regex.h>
+#include <wx/dir.h>
+#include <wx/regex.h>
 
-    #include "cbauibook.h"
-    #include "cbeditor.h"
-    #include "cbproject.h"
-    #include "editormanager.h"
-    #include "infowindow.h"
-    #include "projectfile.h"
+#include "cbauibook.h"
+#include "cbeditor.h"
+#include "cbproject.h"
+#include "editormanager.h"
+#include "infowindow.h"
+#include "projectfile.h"
 #endif
 
 #include <wx/progdlg.h>
@@ -80,15 +80,25 @@ void cbFindReplaceData::ConvertEOLs(int newmode)
         const wxChar* eol_to = eol_lf;
         switch(eolMode)
         {
-            case wxSCI_EOL_CR: eol_from = eol_cr; break;
-            case wxSCI_EOL_CRLF: eol_from = eol_crlf; break;
-            default: ;
+        case wxSCI_EOL_CR:
+            eol_from = eol_cr;
+            break;
+        case wxSCI_EOL_CRLF:
+            eol_from = eol_crlf;
+            break;
+        default:
+            ;
         }
         switch(newmode)
         {
-            case wxSCI_EOL_CR: eol_to = eol_cr; break;
-            case wxSCI_EOL_CRLF: eol_to = eol_crlf; break;
-            default: newmode = wxSCI_EOL_LF;
+        case wxSCI_EOL_CR:
+            eol_to = eol_cr;
+            break;
+        case wxSCI_EOL_CRLF:
+            eol_to = eol_crlf;
+            break;
+        default:
+            newmode = wxSCI_EOL_LF;
         }
         findText.Replace(eol_from, eol_to, true);
         replaceText.Replace(eol_from, eol_to, true);
@@ -131,8 +141,8 @@ void FindReplace::CreateSearchLog()
     const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
     const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
     const wxString imgFile = ConfigManager::GetDataFolder()
-                          + wxString::Format(_T("/resources.zip#zip:/images/%dx%d/filefind.png"),
-                                             uiSize, uiSize);
+                             + wxString::Format(_T("/resources.zip#zip:/images/%dx%d/filefind.png"),
+                                     uiSize, uiSize);
     wxBitmap * bmp = new wxBitmap(cbLoadBitmapScaled(imgFile, wxBITMAP_TYPE_PNG, uiScaleFactor));
 
     m_pSearchLog = new cbSearchResultsLog(titles, widths);
@@ -189,7 +199,7 @@ int FindReplace::ShowFindDialog(bool replace, bool explicitly_find_in_files)
         phraseAtCursor = control->GetSelectedText();
         // if selected text is part of a single line, don't suggest "search in selection"
         if (control->LineFromPosition(control->GetSelectionStart())
-            == control->LineFromPosition(control->GetSelectionEnd()))
+                == control->LineFromPosition(control->GetSelectionEnd()))
             hasSelection = false;
 
         if ( phraseAtCursor.IsEmpty())
@@ -204,7 +214,7 @@ int FindReplace::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     }
 
     FindReplaceBase* dlg = new FindReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection,
-                                              !replace, !ed, explicitly_find_in_files);
+            !replace, !ed, explicitly_find_in_files);
 
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_CANCEL)
@@ -255,7 +265,8 @@ int FindReplace::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     m_LastFindReplaceData->NewSearch = true;
 
     if (control)
-    {   // if editor : store the selection start/end
+    {
+        // if editor : store the selection start/end
         // only use this in case of !findInFiles and scope==1 (search in selection)
         m_LastFindReplaceData->SearchInSelectionStart = control->GetSelectionStart();
         m_LastFindReplaceData->SearchInSelectionEnd = control->GetSelectionEnd();
@@ -351,8 +362,8 @@ void FindReplace::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFind
 
         // selected text, if user has deslected since last, then change scope
         if (data->scope == 1 &&
-            control->GetSelectionStart()==control->GetSelectionEnd())
-                data->scope = 0; // global
+                control->GetSelectionStart()==control->GetSelectionEnd())
+            data->scope = 0; // global
 
         if (data->scope == 1) // selected text
         {
@@ -370,12 +381,14 @@ void FindReplace::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFind
                 }
             }
             else
-            {   // this is the result of a next/previous search
+            {
+                // this is the result of a next/previous search
                 // rebase depending on the cursor position
                 ssta = data->SearchInSelectionStart;
                 send = data->SearchInSelectionEnd;
                 if (cpos < ssta || cpos > send)
-                {   // regular reset (this also provide some sort of wrap around) (other editors also did it like that)
+                {
+                    // regular reset (this also provide some sort of wrap around) (other editors also did it like that)
                     data->start = ssta;
                     data->end = send;
                 }
@@ -388,7 +401,8 @@ void FindReplace::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFind
         }
     }
     else        // FindInFiles
-    {           // searching direction down, entire scope
+    {
+        // searching direction down, entire scope
         //Replace needs the entire scope, while find can wrap around.
         data->start = ( replace ? 0 : control->GetCurrentPos() );
         data->end   = control->GetLength();
@@ -443,13 +457,13 @@ int FindReplace::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
         flags |= wxSCI_FIND_REGEXP;
         if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_posix_style_regexes"), false))
             flags |= wxSCI_FIND_POSIX;
-        #ifdef wxHAS_REGEX_ADVANCED
+#ifdef wxHAS_REGEX_ADVANCED
         advRegex = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
-        #endif
+#endif
     }
 
     wxRegEx re;
-    #ifdef wxHAS_REGEX_ADVANCED
+#ifdef wxHAS_REGEX_ADVANCED
     if (advRegex)
     {
         if (data->matchCase)
@@ -457,7 +471,7 @@ int FindReplace::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
         else
             re.Compile(data->findText,wxRE_ADVANCED|(wxRE_NEWLINE*advRegexNewLinePolicy)|wxRE_ICASE);
     }
-    #endif
+#endif
 
     int pos = -1;
     bool replace = false;
@@ -494,10 +508,12 @@ int FindReplace::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
                         re.GetMatch(&start, &len, 0);
                         pos = start+data->start + 1;
                         lengthFound = len;
-                    } else
+                    }
+                    else
                         pos=-1;
                 }
-            } else
+            }
+            else
                 pos=-1;
         }
 
@@ -634,9 +650,9 @@ int FindReplace::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 else
                 {
                     if (data->end < diff)
-                       data->end = 0;
+                        data->end = 0;
                     else
-                       data->end -= diff;
+                        data->end -= diff;
                 }
             }
             else
@@ -793,13 +809,13 @@ int FindReplace::ReplaceInFiles(cbFindReplaceData* data)
         flags |= wxSCI_FIND_REGEXP;
         if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_posix_style_regexes"), false))
             flags |= wxSCI_FIND_POSIX;
-        #ifdef wxHAS_REGEX_ADVANCED
+#ifdef wxHAS_REGEX_ADVANCED
         advRegex = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
-        #endif
+#endif
     }
 
     wxRegEx re;
-    #ifdef wxHAS_REGEX_ADVANCED
+#ifdef wxHAS_REGEX_ADVANCED
     if (advRegex)
     {
         if (data->matchCase)
@@ -807,7 +823,7 @@ int FindReplace::ReplaceInFiles(cbFindReplaceData* data)
         else
             re.Compile(data->findText,wxRE_ADVANCED|(wxRE_NEWLINE*advRegexNewLinePolicy)|wxRE_ICASE);
     }
-    #endif
+#endif
 
 
     bool replace = false;
@@ -868,7 +884,8 @@ int FindReplace::ReplaceInFiles(cbFindReplaceData* data)
             {
                 if (!re.Matches(fileContents))
                     continue;
-            } else
+            }
+            else
             {
                 int pos_str;
                 if (!data->matchCase)
@@ -954,10 +971,12 @@ int FindReplace::ReplaceInFiles(cbFindReplaceData* data)
                             re.GetMatch(&start, &len, 0);
                             pos = start + data->start + 1;
                             lengthFound = len;
-                        } else
+                        }
+                        else
                             pos = -1;
                     }
-                } else
+                }
+                else
                     pos = -1;
             }
 
@@ -999,41 +1018,41 @@ int FindReplace::ReplaceInFiles(cbFindReplaceData* data)
                 HaveLastDlgPosition = true;
                 switch (ans)
                 {
-                    case crYes:
-                        replace = true;
-                        break;
-                    case crNo:
-                        replace = false;
-                        break;
-                    case crAllInFile:
-                        confirm   = false;
-                        replace   = true;
-                        wholeFile = true;
-                        break;
-                    case crSkipFile:
-                        confirm   = false;
-                        replace   = false;
-                        wholeFile = true;
-                        break;
-                    case crAll:
-                        replace = true;
-                        confirm = false;
-                        all     = true;
-                        // let's create a progress dialog because it might take some time depending on the files count
-                        progress = new wxProgressDialog(_("Replace in files"),
-                                     _("Please wait while replacing in files..."),
-                                     filesCount,
-                                     Manager::Get()->GetAppWindow(),
-                                     wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
-                        PlaceWindow(progress);
-                        // now that we need no confirmation, freeze the app window
-                        Manager::Get()->GetAppWindow()->Freeze();
-                        break;
-                    case crCancel:
-                        stop = true;
-                        break;
-                    default:
-                        break;
+                case crYes:
+                    replace = true;
+                    break;
+                case crNo:
+                    replace = false;
+                    break;
+                case crAllInFile:
+                    confirm   = false;
+                    replace   = true;
+                    wholeFile = true;
+                    break;
+                case crSkipFile:
+                    confirm   = false;
+                    replace   = false;
+                    wholeFile = true;
+                    break;
+                case crAll:
+                    replace = true;
+                    confirm = false;
+                    all     = true;
+                    // let's create a progress dialog because it might take some time depending on the files count
+                    progress = new wxProgressDialog(_("Replace in files"),
+                                                    _("Please wait while replacing in files..."),
+                                                    filesCount,
+                                                    Manager::Get()->GetAppWindow(),
+                                                    wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
+                    PlaceWindow(progress);
+                    // now that we need no confirmation, freeze the app window
+                    Manager::Get()->GetAppWindow()->Freeze();
+                    break;
+                case crCancel:
+                    stop = true;
+                    break;
+                default:
+                    break;
                 }
             }// if
 
@@ -1134,13 +1153,13 @@ int FindReplace::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
         flags |= wxSCI_FIND_REGEXP;
         if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_posix_style_regexes"), false))
             flags |= wxSCI_FIND_POSIX;
-        #ifdef wxHAS_REGEX_ADVANCED
+#ifdef wxHAS_REGEX_ADVANCED
         advRegex = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
-        #endif
+#endif
     }
 
     wxRegEx re;
-    #ifdef wxHAS_REGEX_ADVANCED
+#ifdef wxHAS_REGEX_ADVANCED
     if (advRegex)
     {
         if (data->matchCase)
@@ -1148,7 +1167,7 @@ int FindReplace::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
         else
             re.Compile(data->findText,wxRE_ADVANCED|(wxRE_NEWLINE*advRegexNewLinePolicy)|wxRE_ICASE);
     }
-    #endif
+#endif
 
     int pos = -1;
     // avoid infinite loop when wrapping search around, eventually crashing WinLogon O.O
@@ -1213,7 +1232,7 @@ int FindReplace::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
         else if (!wrapAround && !data->findInFiles) // for "find in files" we don't want to show messages
         {
             if (   (data->directionDown && data->start != StartPos)
-                || (!data->directionDown && data->start != EndPos) )
+                    || (!data->directionDown && data->start != EndPos) )
             {
                 wxString msg;
                 if (data->scope == 1) // selected text
@@ -1431,10 +1450,10 @@ int FindReplace::FindInFiles(cbFindReplaceData* data)
 
     // let's create a progress dialog because it might take some time depending on the files count
     wxProgressDialog* progress = new wxProgressDialog(_("Find in files"),
-                                 _("Please wait while searching inside the files..."),
-                                 filesList.GetCount(),
-                                 Manager::Get()->GetAppWindow(),
-                                 wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
+            _("Please wait while searching inside the files..."),
+            filesList.GetCount(),
+            Manager::Get()->GetAppWindow(),
+            wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
 
     PlaceWindow(progress);
 
@@ -1612,13 +1631,15 @@ int FindReplace::FindNext(bool goingDown, cbStyledTextCtrl* control, cbFindRepla
         wxString phraseAtCursor = control->GetSelectedText();
 
         if (!data->findUsesSelectedText && !selected)
-        {   // The mandrav find behavior
+        {
+            // The mandrav find behavior
             // change findText to selected text (if any text is selected and no search text was set before)
             if (!phraseAtCursor.IsEmpty() && data->findText.IsEmpty())
                 data->findText = phraseAtCursor;
         }
         else
-        {   // The tiwag find behavior
+        {
+            // The tiwag find behavior
             // change findText to selected text (if any text is selected)
             if (!phraseAtCursor.IsEmpty())
             {

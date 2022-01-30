@@ -11,24 +11,24 @@
 
 #include "disassemblydlg.h"
 #ifndef CB_PRECOMP
-    #include <wx/wxscintilla.h>
-    #include <wx/intl.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/textctrl.h>
-    #include <wx/button.h>
-    #include <wx/listctrl.h>
-    #include <wx/wfstream.h>
-    #include <wx/fontutil.h>
-    #include <wx/stattext.h>
-    #include <wx/filedlg.h>
+#include <wx/wxscintilla.h>
+#include <wx/intl.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/textctrl.h>
+#include <wx/button.h>
+#include <wx/listctrl.h>
+#include <wx/wfstream.h>
+#include <wx/fontutil.h>
+#include <wx/stattext.h>
+#include <wx/filedlg.h>
 
-    #include "cbproject.h"
-    #include "configmanager.h"
-    #include "editorcolourset.h"
-    #include "editormanager.h"
-    #include "globals.h"
-    #include "manager.h"
-    #include "projectmanager.h"
+#include "cbproject.h"
+#include "configmanager.h"
+#include "editorcolourset.h"
+#include "editormanager.h"
+#include "globals.h"
+#include "manager.h"
+#include "projectmanager.h"
 #endif
 
 #include "debuggermanager.h"

@@ -31,24 +31,24 @@
 int
 attachment(bool testMode)
 {
-  int rc = 0;
-  if (wxFileName::IsFileReadable(wxS("attached.txt")))
-  {
-    wxPdfDocument pdf;
-    if (testMode)
+    int rc = 0;
+    if (wxFileName::IsFileReadable(wxS("attached.txt")))
     {
-      pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
-      pdf.SetCompression(false);
+        wxPdfDocument pdf;
+        if (testMode)
+        {
+            pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
+            pdf.SetCompression(false);
+        }
+        pdf.AttachFile(wxS("attached.txt"), wxS(""), wxS("A simple text file"));
+        pdf.AddPage();
+        pdf.SetFont(wxS("Helvetica"),wxS(""),14);
+        pdf.Write(5,wxS("This PDF contains an attached file."));
+        pdf.SaveAsFile(wxS("attachment.pdf"));
     }
-    pdf.AttachFile(wxS("attached.txt"), wxS(""), wxS("A simple text file"));
-    pdf.AddPage();
-    pdf.SetFont(wxS("Helvetica"),wxS(""),14);
-    pdf.Write(5,wxS("This PDF contains an attached file."));
-    pdf.SaveAsFile(wxS("attachment.pdf"));
-  }
-  else
-  {
-    rc = 1;
-  }
-  return rc;
+    else
+    {
+        rc = 1;
+    }
+    return rc;
 }

@@ -21,21 +21,21 @@
 #if defined(CB_PRECOMP)
 #include "sdk.h"
 #else
-	#include "sdk_events.h"
-	#include "manager.h"
-	#include "editormanager.h"
-	#include "editorbase.h"
-	#include "cbeditor.h"
-	#include "cbproject.h"
+#include "sdk_events.h"
+#include "manager.h"
+#include "editormanager.h"
+#include "editorbase.h"
+#include "cbeditor.h"
+#include "cbproject.h"
 #endif
 
-    #include <wx/dynarray.h> //for wxArray and wxSortedArray
-    #include <projectloader_hooks.h>
-    #include <editor_hooks.h>
-    #include "personalitymanager.h"
-	#include <wx/stdpaths.h>
-	#include <wx/app.h>
-	#include <wx/menu.h>
+#include <wx/dynarray.h> //for wxArray and wxSortedArray
+#include <projectloader_hooks.h>
+#include <editor_hooks.h>
+#include "personalitymanager.h"
+#include <wx/stdpaths.h>
+#include <wx/app.h>
+#include <wx/menu.h>
 
 #include "Version.h"
 #include "BrowseMarks.h"
@@ -54,9 +54,9 @@ ProjectData::ProjectData(cbProject* pcbProject)
 // ----------------------------------------------------------------------------
 {
     //ctor
-    #if defined(LOGGING)
+#if defined(LOGGING)
     if (not pcbProject) asm("int3"); /*trap*/;
-    #endif
+#endif
     if (not pcbProject) return;
     m_pCBProject = pcbProject;
     m_ProjectFilename = pcbProject->GetFilename();
@@ -92,7 +92,7 @@ void ProjectData::IncrementActivationCount()
 int ProjectData::GetActivationCount()
 // ----------------------------------------------------------------------------
 {
-     return m_ActivationCount++;
+    return m_ActivationCount++;
 }
 // ----------------------------------------------------------------------------
 wxString ProjectData::GetProjectFilename()
@@ -124,7 +124,8 @@ bool ProjectData::FindFilename( const wxString filePath)
 
     FileBrowse_MarksHash& hash = m_FileBrowse_MarksArchive;
     FileBrowse_MarksHash::iterator it = hash.find(filePath);
-    if ( it == hash.end() ) {
+    if ( it == hash.end() )
+    {
         //DumpHash(wxT("BrowseMarks"));
         return false;
     }
@@ -148,7 +149,10 @@ BrowseMarks* ProjectData::GetPointerToBrowse_MarksArray(FileBrowse_MarksHash& ha
     for (FileBrowse_MarksHash::iterator it = hash.begin(); it != hash.end(); it++)
     {
         BrowseMarks* p = it->second;
-        if ( p->GetFilePath() == filePath ) {return p;}
+        if ( p->GetFilePath() == filePath )
+        {
+            return p;
+        }
     }
 
     return 0;
@@ -161,9 +165,9 @@ BrowseMarks* ProjectData::HashAddBrowse_Marks( const wxString fullPath )
     //EditorBase* eb = Manager::Get()->GetEditorManager()->GetEditor(filename);
 
     EditorBase* eb = m_pEdMgr->GetEditor(fullPath);
-    #if defined(LOGGING)
-        if(not eb) asm("int3"); /*trap*/
-    #endif
+#if defined(LOGGING)
+    if(not eb) asm("int3"); /*trap*/
+#endif
     if(not eb) return 0;
     wxString filePath = eb->GetFilename();
     if (filePath.IsEmpty()) return 0;
@@ -180,9 +184,9 @@ void ProjectData::LoadLayout()
 // ----------------------------------------------------------------------------
 {
     // Load a layout file for this project
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("ProjectData::LoadLayout()for[%s]"),m_ProjectFilename.c_str() );
-    #endif
+#endif
 
     if (m_ProjectFilename.IsEmpty())
         return ;
@@ -198,9 +202,9 @@ void ProjectData::SaveLayout()
 // ----------------------------------------------------------------------------
 {
     // Write a layout file for this project
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("ProjectData::SAVELayout()") );
-    #endif
+#endif
 
     if (m_ProjectFilename.IsEmpty())
         return ;
@@ -233,19 +237,19 @@ void ProjectData::SaveLayout()
 // ----------------------------------------------------------------------------
 void ProjectData::DumpHash( const wxString
 #if defined(LOGGING)
-	hashType
+                            hashType
 #endif
-)
+                          )
 // ----------------------------------------------------------------------------
 {
 
-    #if defined(LOGGING)
+#if defined(LOGGING)
 
     FileBrowse_MarksHash* phash = &m_FileBrowse_MarksArchive;
     FileBrowse_MarksHash& hash = *phash;
 
     LOGIT( _T("--- DumpProjectHash ---[%s]Count[%lu]Name[%s]"), hashType.wx_str(),
-          static_cast<unsigned long>(hash.size()), m_ProjectFilename.wx_str() );
+           static_cast<unsigned long>(hash.size()), m_ProjectFilename.wx_str() );
     for (FileBrowse_MarksHash::iterator it = hash.begin(); it != hash.end(); it++)
     {
         wxString filename = it->first; //an Editor filename withing this project
@@ -253,18 +257,18 @@ void ProjectData::DumpHash( const wxString
         LOGIT( _T("filename[%s]BrowseMark*[%p]name[%s]"), filename.c_str(), p, p->GetFilePath().c_str() );
     }
 
-    #endif
+#endif
 }
 
 // ----------------------------------------------------------------------------
 void ProjectData::DumpBrowse_Marks( const wxString
 #if defined(LOGGING)
-	hashType
+                                    hashType
 #endif
-)
+                                  )
 // ----------------------------------------------------------------------------
 {
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("--- DumpBrowseData ---[%s]"), hashType.c_str()  );
 
     FileBrowse_MarksHash* phash = &m_FileBrowse_MarksArchive;
@@ -277,7 +281,7 @@ void ProjectData::DumpBrowse_Marks( const wxString
         wxString filename = it->first;
         BrowseMarks* p = it->second;
         LOGIT( _T("Filename[%s]%s*[%p]name[%s]"), filename.c_str(), hashType.c_str(), p,
-              (p ? p->GetFilePath().c_str() : ""));
+               (p ? p->GetFilePath().c_str() : ""));
         if (p)
         {
             //dump the browse marks
@@ -285,7 +289,7 @@ void ProjectData::DumpBrowse_Marks( const wxString
         }
     }
 
-    #endif
+#endif
 }
 // ----------------------------------------------------------------------------
 // 2008/01/23 MortenMacFly

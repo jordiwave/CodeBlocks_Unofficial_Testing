@@ -2,9 +2,9 @@
 #include "CscopeTab.h"
 
 CscopeView::CscopeView(CscopeConfig *cfg)
-:Logger(),
-m_pPanel(0),
-m_cfg(cfg)
+    :Logger(),
+     m_pPanel(0),
+     m_cfg(cfg)
 {
 }
 
@@ -21,7 +21,10 @@ wxWindow* CscopeView::CreateControl(wxWindow* parent)
 }
 
 
-CscopeTab* CscopeView::GetWindow(){ return m_pPanel; }
+CscopeTab* CscopeView::GetWindow()
+{
+    return m_pPanel;
+}
 
 void CscopeView::Append( const wxString &  /*msg*/,  Logger::level  /*lv*/)
 {}

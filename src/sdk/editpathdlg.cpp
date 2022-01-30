@@ -10,16 +10,16 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/intl.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/textctrl.h>
-    #include <wx/button.h>
-    #include <wx/filename.h>
-    #include <wx/stattext.h>
-    #include "globals.h"
-    #include "manager.h"
-    #include "macrosmanager.h"
-    #include "uservarmanager.h"
+#include <wx/intl.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/textctrl.h>
+#include <wx/button.h>
+#include <wx/filename.h>
+#include <wx/stattext.h>
+#include "globals.h"
+#include "manager.h"
+#include "macrosmanager.h"
+#include "uservarmanager.h"
 #endif
 
 #include "editpathdlg.h"
@@ -37,13 +37,13 @@ BEGIN_EVENT_TABLE(EditPathDlg, wxScrollingDialog)
 END_EVENT_TABLE()
 
 EditPathDlg::EditPathDlg(wxWindow* parent,
-        const wxString& path,
-        const wxString& basepath,
-        const wxString& title,
-        const wxString& message,
-        const bool wantDir,
-        const bool allowMultiSel,
-        const wxString& filter)
+                         const wxString& path,
+                         const wxString& basepath,
+                         const wxString& title,
+                         const wxString& message,
+                         const bool wantDir,
+                         const bool allowMultiSel,
+                         const wxString& filter)
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditPath"),_T("wxScrollingDialog"));
@@ -53,7 +53,8 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
 
     XRCCTRL(*this, "dlgEditPath", wxScrollingDialog)->SetTitle(title);
 
-    if (!wantDir) {
+    if (!wantDir)
+    {
         XRCCTRL(*this, "lblText", wxStaticText)->SetLabel(_("File:"));
     }
 
@@ -112,7 +113,7 @@ void EditPathDlg::OnBrowse(cb_unused wxCommandEvent& event)
         m_Path = fname.GetFullPath();
 
         path = ChooseDirectory(this, m_Message, (m_Path.IsEmpty() ? s_LastPath : m_Path),
-                m_Basepath, false, m_ShowCreateDirButton);
+                               m_Basepath, false, m_ShowCreateDirButton);
 
         if (path.GetFullPath().IsEmpty())
             return;
@@ -132,7 +133,7 @@ void EditPathDlg::OnBrowse(cb_unused wxCommandEvent& event)
     else
     {
         wxFileDialog dlg(this, m_Message, (fname.GetPath().IsEmpty() ? s_LastPath : fname.GetPath()),
-                fname.GetFullName(), m_Filter, wxFD_CHANGE_DIR | (m_AllowMultiSel ? wxFD_MULTIPLE : 0) );
+                         fname.GetFullName(), m_Filter, wxFD_CHANGE_DIR | (m_AllowMultiSel ? wxFD_MULTIPLE : 0) );
 
         PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_OK)
@@ -156,8 +157,8 @@ void EditPathDlg::OnBrowse(cb_unused wxCommandEvent& event)
     {
         // ask the user if he wants it to be kept as relative
         if (cbMessageBox(_("Keep this as a relative path?"),
-                        _("Question"),
-                        wxICON_QUESTION | wxYES_NO, this) == wxID_YES)
+                         _("Question"),
+                         wxICON_QUESTION | wxYES_NO, this) == wxID_YES)
         {
             if (m_AllowMultiSel)
             {

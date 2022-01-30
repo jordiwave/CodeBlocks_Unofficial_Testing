@@ -35,17 +35,17 @@
  */
 class wxsPredefinedIDs
 {
-    public:
+public:
 
-        /** \brief Function checking if identifier is predefined
-         * \return true Id is predefined, false otherwise
-         */
-        static bool Check(const wxString& Name);
+    /** \brief Function checking if identifier is predefined
+     * \return true Id is predefined, false otherwise
+     */
+    static bool Check(const wxString& Name);
 
-        /** \brief Getting value of predefined id
-         * \return id value or wxID_ANY if it's not predefined id
-         */
-        static wxWindowID Value(const wxString& Name);
+    /** \brief Getting value of predefined id
+     * \return id value or wxID_ANY if it's not predefined id
+     */
+    static wxWindowID Value(const wxString& Name);
 
 };
 

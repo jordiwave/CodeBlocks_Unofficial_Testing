@@ -28,37 +28,40 @@
 /** \brief Base string property (working on wxString class) */
 class wxsStringProperty: public wxsProperty
 {
-    public:
+public:
 
-        /** \brief Ctor
-         *  \param PGName           name of property in Property Grid
-         *  \param DataName         name of property in data stuctures
-         *  \param Offset           offset of value (returned from wxsOFFSET macro)
-         *  \param IsLongString     if true, long string editor will be used (used for multiline strings)
-         *  \param XmlStoreEmpty    if true, string will be also stored when it's value is equal to default one
-         *  \param Default          default value applied on read errors
-         *  \param Priority         priority of this property
-         */
-        wxsStringProperty(const wxString& PGName,const wxString& DataName,long Offset,bool IsLongString=true,bool XmlStoreEmpty=false,const wxString& Default=wxEmptyString,int Priority=100);
+    /** \brief Ctor
+     *  \param PGName           name of property in Property Grid
+     *  \param DataName         name of property in data stuctures
+     *  \param Offset           offset of value (returned from wxsOFFSET macro)
+     *  \param IsLongString     if true, long string editor will be used (used for multiline strings)
+     *  \param XmlStoreEmpty    if true, string will be also stored when it's value is equal to default one
+     *  \param Default          default value applied on read errors
+     *  \param Priority         priority of this property
+     */
+    wxsStringProperty(const wxString& PGName,const wxString& DataName,long Offset,bool IsLongString=true,bool XmlStoreEmpty=false,const wxString& Default=wxEmptyString,int Priority=100);
 
-        /** \brief Returning type name */
-        virtual const wxString GetTypeName() { return _T("wxString"); }
+    /** \brief Returning type name */
+    virtual const wxString GetTypeName()
+    {
+        return _T("wxString");
+    }
 
-    protected:
+protected:
 
-        virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
-        virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-        virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-        virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-        virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
+    virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
+    virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
+    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-    private:
-        long Offset;
-        bool IsLongString;
-        bool XmlStoreEmpty;
-        wxString Default;
+private:
+    long Offset;
+    bool IsLongString;
+    bool XmlStoreEmpty;
+    wxString Default;
 };
 
 /** \addtogroup properties_macros

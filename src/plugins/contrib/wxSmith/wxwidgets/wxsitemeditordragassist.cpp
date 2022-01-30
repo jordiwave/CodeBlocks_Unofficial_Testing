@@ -70,18 +70,18 @@ void wxsItemEditorDragAssist::DrawExtra(wxsItem* Target,wxsItem* Parent,bool Add
     {
         switch ( AssistType() )
         {
-            case dtOutline:
-                DC->SetPen(wxPen(ParentColour(),2,wxPENSTYLE_SOLID));
-                DC->DrawRectangle(m_ParentRect.x,m_ParentRect.y,m_ParentRect.width,m_ParentRect.height);
-                break;
+        case dtOutline:
+            DC->SetPen(wxPen(ParentColour(),2,wxPENSTYLE_SOLID));
+            DC->DrawRectangle(m_ParentRect.x,m_ParentRect.y,m_ParentRect.width,m_ParentRect.height);
+            break;
 
-            case dtColourMix:
-                DC->DrawBitmap(*m_ParentBitmap,m_ParentRect.x,m_ParentRect.y);
-                break;
+        case dtColourMix:
+            DC->DrawBitmap(*m_ParentBitmap,m_ParentRect.x,m_ParentRect.y);
+            break;
 
-            case dtNone: // fall-through
-            default:
-                break;
+        case dtNone: // fall-through
+        default:
+            break;
         }
     }
 
@@ -89,18 +89,18 @@ void wxsItemEditorDragAssist::DrawExtra(wxsItem* Target,wxsItem* Parent,bool Add
     {
         switch ( AssistType() )
         {
-            case dtOutline:
-                DC->SetPen(wxPen(TargetColour(),2,wxPENSTYLE_SOLID));
-                DC->DrawRectangle(m_TargetRect.x,m_TargetRect.y,m_TargetRect.width,m_TargetRect.height);
-                break;
+        case dtOutline:
+            DC->SetPen(wxPen(TargetColour(),2,wxPENSTYLE_SOLID));
+            DC->DrawRectangle(m_TargetRect.x,m_TargetRect.y,m_TargetRect.width,m_TargetRect.height);
+            break;
 
-            case dtColourMix:
-                DC->DrawBitmap(*m_TargetBitmap,m_TargetRect.x,m_TargetRect.y);
-                break;
+        case dtColourMix:
+            DC->DrawBitmap(*m_TargetBitmap,m_TargetRect.x,m_TargetRect.y);
+            break;
 
-            case dtNone: // fall-through
-            default:
-                break;
+        case dtNone: // fall-through
+        default:
+            break;
         }
     }
 }
@@ -140,20 +140,20 @@ void wxsItemEditorDragAssist::RebuildParentAssist()
 
         switch ( AssistType() )
         {
-            case dtColourMix:
-                {
-                    const wxBitmap& Bmp = m_Content->GetBitmap();
-                    UpdateRect(m_ParentRect,Bmp);
-                    wxImage ParentImg = Bmp.GetSubBitmap(m_ParentRect).ConvertToImage();
-                    ColourMix(ParentImg,ParentColour());
-                    m_ParentBitmap = new wxBitmap(ParentImg);
-                }
-                break;
+        case dtColourMix:
+        {
+            const wxBitmap& Bmp = m_Content->GetBitmap();
+            UpdateRect(m_ParentRect,Bmp);
+            wxImage ParentImg = Bmp.GetSubBitmap(m_ParentRect).ConvertToImage();
+            ColourMix(ParentImg,ParentColour());
+            m_ParentBitmap = new wxBitmap(ParentImg);
+        }
+        break;
 
-            case dtOutline: // fall-through
-            case dtNone:    // fall-through
-            default:
-                break;
+        case dtOutline: // fall-through
+        case dtNone:    // fall-through
+        default:
+            break;
         }
 
         m_IsParent = true;
@@ -191,20 +191,20 @@ void wxsItemEditorDragAssist::RebuildTargetAssist()
 
         switch ( AssistType() )
         {
-            case dtColourMix:
-                {
-                    const wxBitmap& Bmp = m_Content->GetBitmap();
-                    UpdateRect(m_TargetRect,Bmp);
-                    wxImage TargetImg = Bmp.GetSubBitmap(m_TargetRect).ConvertToImage();
-                    ColourMix(TargetImg,TargetColour());
-                    m_TargetBitmap = new wxBitmap(TargetImg);
-                }
-                break;
+        case dtColourMix:
+        {
+            const wxBitmap& Bmp = m_Content->GetBitmap();
+            UpdateRect(m_TargetRect,Bmp);
+            wxImage TargetImg = Bmp.GetSubBitmap(m_TargetRect).ConvertToImage();
+            ColourMix(TargetImg,TargetColour());
+            m_TargetBitmap = new wxBitmap(TargetImg);
+        }
+        break;
 
-            case dtOutline: // fall-through
-            case dtNone:    // fall-through
-            default:
-                break;
+        case dtOutline: // fall-through
+        case dtNone:    // fall-through
+        default:
+            break;
         }
 
         m_IsTarget = true;
@@ -246,9 +246,9 @@ void wxsItemEditorDragAssist::ColourMix(wxImage& Image,const wxColour& Col)
         for ( int x = Image.GetWidth(); x-->0; )
         {
             Image.SetRGB(x,y,
-                ((int)Image.GetRed(x,y)   + R ) / 2,
-                ((int)Image.GetGreen(x,y) + G ) / 2,
-                ((int)Image.GetBlue(x,y)  + B ) / 2);
+                         ((int)Image.GetRed(x,y)   + R ) / 2,
+                         ((int)Image.GetGreen(x,y) + G ) / 2,
+                         ((int)Image.GetBlue(x,y)  + B ) / 2);
         }
 }
 

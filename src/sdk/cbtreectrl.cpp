@@ -10,14 +10,14 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/event.h>
-    #include <wx/filename.h>
-    #include <wx/gdicmn.h> // wxPoint
-    #include <wx/string.h>
-    #include <wx/treebase.h> // wxTreeItemId
+#include <wx/event.h>
+#include <wx/filename.h>
+#include <wx/gdicmn.h> // wxPoint
+#include <wx/string.h>
+#include <wx/treebase.h> // wxTreeItemId
 
-    #include "cbproject.h" // FileTreeData
-    #include "projectfile.h"
+#include "cbproject.h" // FileTreeData
+#include "projectfile.h"
 #endif
 
 IMPLEMENT_DYNAMIC_CLASS(cbTreeCtrl, wxTreeCtrl)
@@ -120,15 +120,15 @@ void cbTreeCtrl::OnKeyDown(wxKeyEvent& event)
 
     switch (keycode)
     {
-        case WXK_RETURN:
-        case WXK_NUMPAD_ENTER:
-        {
-            wxTreeEvent te = wxTreeEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, this, itemId);
-            wxPostEvent(this, te);
-            break;
-        }
-        default:
-            event.Skip();
+    case WXK_RETURN:
+    case WXK_NUMPAD_ENTER:
+    {
+        wxTreeEvent te = wxTreeEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, this, itemId);
+        wxPostEvent(this, te);
+        break;
+    }
+    default:
+        event.Skip();
     }
 }
 

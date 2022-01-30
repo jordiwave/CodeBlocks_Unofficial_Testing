@@ -13,11 +13,11 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/utils.h>
+#include <wx/utils.h>
 #endif // WX_PRECOMP
 
 #include "wx/things/range.h"
@@ -44,13 +44,29 @@ bool wxRangeInt::Combine(int i, bool only_if_touching)
 {
     if (only_if_touching)
     {
-        if      (i == m_min-1) { m_min = i; return true; }
-        else if (i == m_max+1) { m_max = i; return true; }
+        if      (i == m_min-1)
+        {
+            m_min = i;
+            return true;
+        }
+        else if (i == m_max+1)
+        {
+            m_max = i;
+            return true;
+        }
     }
     else
     {
-        if      (i < m_min) { m_min = i; return true; }
-        else if (i > m_max) { m_max = i; return true; }
+        if      (i < m_min)
+        {
+            m_min = i;
+            return true;
+        }
+        else if (i > m_max)
+        {
+            m_max = i;
+            return true;
+        }
     }
     return false;
 }
@@ -68,8 +84,16 @@ bool wxRangeInt::Combine( const wxRangeInt &r, bool only_if_touching )
     else if (!IsEmpty() && !r.IsEmpty())
     {
         bool added = false;
-        if (r.m_min < m_min) { m_min = r.m_min; added = true; }
-        if (r.m_max > m_max) { m_max = r.m_max; added = true; }
+        if (r.m_min < m_min)
+        {
+            m_min = r.m_min;
+            added = true;
+        }
+        if (r.m_max > m_max)
+        {
+            m_max = r.m_max;
+            added = true;
+        }
         return added;
     }
     return false;
@@ -349,8 +373,16 @@ bool wxRangeIntSelection::BoundRanges(const wxRangeInt& range)
 
 bool wxRangeDouble::Combine(double i)
 {
-    if      (i < m_min) { m_min = i; return true; }
-    else if (i > m_max) { m_max = i; return true; }
+    if      (i < m_min)
+    {
+        m_min = i;
+        return true;
+    }
+    else if (i > m_max)
+    {
+        m_max = i;
+        return true;
+    }
     return false;
 }
 
@@ -367,8 +399,16 @@ bool wxRangeDouble::Combine( const wxRangeDouble &r, bool only_if_touching )
     else if (!IsEmpty() && !r.IsEmpty())
     {
         bool added = false;
-        if (r.m_min < m_min) { m_min = r.m_min; added = true; }
-        if (r.m_max > m_max) { m_max = r.m_max; added = true; }
+        if (r.m_min < m_min)
+        {
+            m_min = r.m_min;
+            added = true;
+        }
+        if (r.m_max > m_max)
+        {
+            m_max = r.m_max;
+            added = true;
+        }
         return added;
     }
     return false;
@@ -447,12 +487,12 @@ int wxRangeDoubleSelection::Index( wxDouble i ) const
 
     return wxNOT_FOUND;
 
-/*
-    for (int j = 0; j < count; j++)
-    {
-        if (m_ranges[j].Contains(i)) return j;
-    }
-*/
+    /*
+        for (int j = 0; j < count; j++)
+        {
+            if (m_ranges[j].Contains(i)) return j;
+        }
+    */
 }
 
 int wxRangeDoubleSelection::Index( const wxRangeDouble &r ) const

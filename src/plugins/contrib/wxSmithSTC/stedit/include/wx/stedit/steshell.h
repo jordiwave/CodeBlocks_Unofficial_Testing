@@ -20,8 +20,8 @@
 enum STE_ShellStyle_Type
 {
     STE_SHELL_SINGLELINE = wxCB_SIMPLE ///< Make the shell single line only.
-                                       ///< Pass this to the constructor as the style
-                                       ///< use Get/SetWindowStyleFlag() to access.
+                           ///< Pass this to the constructor as the style
+                           ///< use Get/SetWindowStyleFlag() to access.
 };
 
 /// Set what to do with the cursor for the function wxSTEShell::CaretOnPromptLine().
@@ -48,7 +48,10 @@ enum STE_CaretPos_Type
 class WXDLLIMPEXP_STEDIT wxSTEditorShell : public wxSTEditor
 {
 public :
-    wxSTEditorShell() : wxSTEditor() { Init(); }
+    wxSTEditorShell() : wxSTEditor()
+    {
+        Init();
+    }
 
     wxSTEditorShell( wxWindow *parent, wxWindowID id = wxID_ANY,
                      const wxPoint& pos = wxDefaultPosition,
@@ -109,11 +112,20 @@ public :
     /// line is the current string at the cursor for comparison.
     wxString GetNextHistoryLine(bool fowards, const wxString &line);
     /// Get the current index into the prompt history
-    size_t GetHistoryIndex() const { return m_line_history_index; }
+    size_t GetHistoryIndex() const
+    {
+        return m_line_history_index;
+    }
     /// Get the total number of history items
-    size_t GetHistoryCount() const { return m_lineHistoryArray.GetCount(); }
+    size_t GetHistoryCount() const
+    {
+        return m_lineHistoryArray.GetCount();
+    }
     /// Get the maximum number of history lines to store, < 0 means unlimited.
-    int  GetMaxHistoryLines() const { return m_max_history_lines; }
+    int  GetMaxHistoryLines() const
+    {
+        return m_max_history_lines;
+    }
     /// Set the maximum number of history lines to store, < 0 means unlimited.
     void SetMaxHistoryLines(int max_lines);
     /// Add a line to the history lines, checks for duplicates.
@@ -127,8 +139,14 @@ public :
     ///     If overflow_lines = 0 then only max_lines are allowed which can make
     ///     continuously appending lines once you reach max_lines slow.
     bool SetMaxLines(int max_lines, int overflow_lines = 2000);
-    int  GetMaxLines() const { return m_max_lines; }
-    int  GetOverflowLines() const { return m_overflow_lines; }
+    int  GetMaxLines() const
+    {
+        return m_max_lines;
+    }
+    int  GetOverflowLines() const
+    {
+        return m_overflow_lines;
+    }
 
     // implementation
 

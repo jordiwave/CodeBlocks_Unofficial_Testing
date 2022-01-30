@@ -36,7 +36,10 @@ public:
             if ( ! cmds[n]->Undo() ) return false;
         return true;
     }
-    void Add(wxCommand *cmd){cmds.push_back(cmd);}
+    void Add(wxCommand *cmd)
+    {
+        cmds.push_back(cmd);
+    }
 protected:
     std::vector<wxCommand *> cmds;
 };
@@ -102,7 +105,7 @@ void EditTextTask::OnMouseLeftDown(wxMouseEvent &event, const wxPoint &position)
 //            this->ShowCaret();
 //        }
 //        else
-            CloseTask();
+        CloseTask();
     }
 }
 HooverDrawlet *EditTextTask::OnMouseMove(wxMouseEvent &event, const wxPoint &position)
@@ -134,11 +137,10 @@ void EditTextTask::OnKeyDown(wxKeyEvent &event)
     {
         if ( HasSelection() )
             DeleteSelection();
+        else if ( code == WXK_BACK )
+            DeleteBack();
         else
-            if ( code == WXK_BACK )
-                DeleteBack();
-            else
-                Delete();
+            Delete();
         event.Skip(false);
     }
     if ( code == WXK_RETURN || code == WXK_NUMPAD_ENTER )
@@ -208,7 +210,7 @@ void EditTextTask::OnMouseRightUp(wxMouseEvent& event, const wxPoint &position)
 {
     CloseTask();
 }
-void EditTextTask::OnMouseLeftUp(wxMouseEvent &event, const wxPoint &position){}
+void EditTextTask::OnMouseLeftUp(wxMouseEvent &event, const wxPoint &position) {}
 bool EditTextTask::HasSelection()
 {
     return m_textgraph && m_posa != m_posb;
@@ -241,7 +243,8 @@ void EditTextTask::DeleteSelection()
         posa = m_posb;
         posb = m_posa;
     }
-    do{
+    do
+    {
         pos = s.Find('\n');
         wxString te = s;
         if ( pos != -1 )
@@ -297,7 +300,8 @@ wxString EditTextTask::GetSelectedText()
 
     wxInt32 pos;
     wxUint32 line = 0;
-    do{
+    do
+    {
         pos = s.Find('\n');
         wxString te = s;
         if ( pos != -1 )
@@ -356,7 +360,8 @@ void EditTextTask::InsertText(const wxString &str) ///
 
     wxInt32 pos;
     wxUint32 line = 0;
-    do{
+    do
+    {
         pos = s.Find('\n');
         wxString te = s;
         if ( pos != -1 )
@@ -401,11 +406,11 @@ void EditTextTask::InsertText(const wxString &str) ///
     m_posb = m_posa;
 
     m_nfc->GetCommandProcessor()->Submit( new NassiEditTextCommand(
-        m_nfc,
-        m_textgraph->m_brick,
-        text,
-        m_textgraph->m_nmbr
-    ));
+            m_nfc,
+            m_textgraph->m_brick,
+            text,
+            m_textgraph->m_nmbr
+                                          ));
 }
 void EditTextTask::Copy()
 {
@@ -447,7 +452,7 @@ EditTextTask::EditPosition EditTextTask::GetEditPosition(const wxPoint &pos)
         wxPoint offset = m_textgraph->lineoffsets[n] + m_textgraph->offset;
         wxPoint size = m_textgraph->linesizes[n];
         if ( pos.x > offset.x && pos.x < offset.x + size.x &&
-             pos.y > offset.y && pos.y < offset.y + size.y )
+                pos.y > offset.y && pos.y < offset.y + size.y )
         {
             wxArrayInt widths = m_textgraph->linewidths[n];
             wxUint32 k;
@@ -489,6 +494,12 @@ void EditTextTask::HideCaret()
     if ( m_view->IsCaretVisible() )
         m_view->ShowCaret(false);
 }
-bool EditTextTask::CanCopy(){ return false; }
-bool EditTextTask::CanCut(){ return false; }
-void EditTextTask::Cut(){}
+bool EditTextTask::CanCopy()
+{
+    return false;
+}
+bool EditTextTask::CanCut()
+{
+    return false;
+}
+void EditTextTask::Cut() {}

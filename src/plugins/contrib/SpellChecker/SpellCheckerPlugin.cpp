@@ -754,9 +754,9 @@ void SpellCheckerPlugin::OnEditorTooltip(CodeBlocksEvent& event)
     int wordend = stc->WordEndPosition(wordstart, true);
     int tipWidth = 0;
     if ( wordend > 0 &&
-         m_sccfg->GetEnableSpellTooltips() &&
-         m_pSpellChecker->IsInitialized() &&
-         stc->IndicatorValueAt(m_pOnlineChecker->GetIndicator(), pos))
+            m_sccfg->GetEnableSpellTooltips() &&
+            m_pSpellChecker->IsInitialized() &&
+            stc->IndicatorValueAt(m_pOnlineChecker->GetIndicator(), pos))
     {
         // indicator is on -> check if we can find a suggestion
         wxString misspelledWord = stc->GetTextRange(wordstart, wordend);

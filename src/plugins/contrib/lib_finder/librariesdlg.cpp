@@ -401,9 +401,14 @@ void LibrariesDlg::RecreateLibrariesList(const wxString& Selection)
         bool Include = true;
         switch ( i )
         {
-            case rtPredefined: Include = ShowPredefined; break;
-            case rtPkgConfig:  Include = ShowPkgConfig; break;
-            default: break;
+        case rtPredefined:
+            Include = ShowPredefined;
+            break;
+        case rtPkgConfig:
+            Include = ShowPkgConfig;
+            break;
+        default:
+            break;
         }
 
         if ( Include )
@@ -566,23 +571,23 @@ void LibrariesDlg::SelectConfiguration(LibraryResult* Configuration)
     bool DisableAll = true;
     switch ( Configuration->Type )
     {
-        case rtDetected:
-            m_Type->SetLabel(_("Custom"));
-            DisableAll = false;
-            break;
+    case rtDetected:
+        m_Type->SetLabel(_("Custom"));
+        DisableAll = false;
+        break;
 
-        case rtPredefined:
-            m_Type->SetLabel(_("Predefined"));
-            break;
+    case rtPredefined:
+        m_Type->SetLabel(_("Predefined"));
+        break;
 
-        case rtPkgConfig:
-            m_Type->SetLabel(_("Pkg-Config"));
-            break;
+    case rtPkgConfig:
+        m_Type->SetLabel(_("Pkg-Config"));
+        break;
 
-        case rtCount:
-        case rtUnknown:
-        default:
-            break;
+    case rtCount:
+    case rtUnknown:
+    default:
+        break;
     }
 
     m_Name->SetValue(Configuration->LibraryName);
@@ -648,12 +653,17 @@ wxString LibrariesDlg::GetDesc(LibraryResult* Configuration)
     wxString ret;
     switch ( Configuration->Type )
     {
-        case rtPkgConfig:  ret += _("Pkg-Config: "); break;
-        case rtPredefined: ret += _("Predefined: "); break;
-        case rtDetected:
-        case rtCount:
-        case rtUnknown:
-        default: break;
+    case rtPkgConfig:
+        ret += _("Pkg-Config: ");
+        break;
+    case rtPredefined:
+        ret += _("Predefined: ");
+        break;
+    case rtDetected:
+    case rtCount:
+    case rtUnknown:
+    default:
+        break;
     }
 
     if ( Configuration->LibraryName.IsEmpty() )
@@ -878,25 +888,25 @@ void LibrariesDlg::OnButton2Click(wxCommandEvent& /*event*/)
             wxString Cpt;
             switch ( i )
             {
-                case rtPkgConfig:
-                    Msg = _( "This library has configuration in pkg-config database\n"
-                             "which can not be cleared.\n"
-                             "Do you want to delete custom resuls only ?" );
-                    Cpt = _("Pkg-config settings available");
-                    break;
+            case rtPkgConfig:
+                Msg = _( "This library has configuration in pkg-config database\n"
+                         "which can not be cleared.\n"
+                         "Do you want to delete custom resuls only ?" );
+                Cpt = _("Pkg-config settings available");
+                break;
 
-                case rtPredefined:
-                    Msg = _( "This library has predefined configuration\n"
-                             "which can not be cleared.\n"
-                             "Do you want to delete custom resuls only ?" );
-                    Cpt = _("Predefined settings available");
-                    break;
+            case rtPredefined:
+                Msg = _( "This library has predefined configuration\n"
+                         "which can not be cleared.\n"
+                         "Do you want to delete custom resuls only ?" );
+                Cpt = _("Predefined settings available");
+                break;
 
-                default:
-                    Msg = _( "This library has static configuration\n"
-                             "which can not be cleared.\n"
-                             "Do you want to delete custom resuls only ?" );
-                    Cpt = _("Static settings available");
+            default:
+                Msg = _( "This library has static configuration\n"
+                         "which can not be cleared.\n"
+                         "Do you want to delete custom resuls only ?" );
+                Cpt = _("Static settings available");
             }
 
             if ( cbMessageBox( Msg, Cpt, wxYES_NO, this ) != wxID_YES )

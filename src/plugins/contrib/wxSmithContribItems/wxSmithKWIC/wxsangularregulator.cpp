@@ -27,31 +27,31 @@
 
 namespace
 {
-    // Loading images from xpm files
+// Loading images from xpm files
 #include "images/angreg16.xpm"
 #include "images/angreg32.xpm"
 
-    // This code provides basic informations about item and register
-    // it inside wxSmith
-    wxsRegisterItem<wxsAngularRegulator> Reg(
-        _T("kwxAngularRegulator"),                                 // Class name
-        wxsTWidget,                                                            // Item type
-        _T("KWIC License"),                                           // License
-        _T("Andrea V. & Marco Cavallini"),                   // Author
-        _T("m.cavallini@koansoftware.com"),              // Author's email
-        _T("http://www.koansoftware.com/kwic/"),        // Item's homepage
-        _T("KWIC"),                                                             // Category in palette
-        90,                                                                            // Priority in palette
-        _T("AngularRegulator"),                                       // Base part of names for new items
-        wxsCPP,                                                                // List of coding languages supported by this item
-        1, 0,                                                                          // Version
-        wxBitmap(angreg32_xpm),                               // 32x32 bitmap
-        wxBitmap(angreg16_xpm),                               // 16x16 bitmap
-        true);                                                                        // We do not allow this item inside XRC files
+// This code provides basic informations about item and register
+// it inside wxSmith
+wxsRegisterItem<wxsAngularRegulator> Reg(
+    _T("kwxAngularRegulator"),                                 // Class name
+    wxsTWidget,                                                            // Item type
+    _T("KWIC License"),                                           // License
+    _T("Andrea V. & Marco Cavallini"),                   // Author
+    _T("m.cavallini@koansoftware.com"),              // Author's email
+    _T("http://www.koansoftware.com/kwic/"),        // Item's homepage
+    _T("KWIC"),                                                             // Category in palette
+    90,                                                                            // Priority in palette
+    _T("AngularRegulator"),                                       // Base part of names for new items
+    wxsCPP,                                                                // List of coding languages supported by this item
+    1, 0,                                                                          // Version
+    wxBitmap(angreg32_xpm),                               // 32x32 bitmap
+    wxBitmap(angreg16_xpm),                               // 16x16 bitmap
+    true);                                                                        // We do not allow this item inside XRC files
 
-    WXS_EV_BEGIN(wxsAngularRegulatorEvents)
-        WXS_EVI(EVT_ANGULARREG_CHANGED, kwxEVT_ANGREG_CHANGE, wxCommandEvent, Changed)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsAngularRegulatorEvents)
+WXS_EVI(EVT_ANGULARREG_CHANGED, kwxEVT_ANGREG_CHANGE, wxCommandEvent, Changed)
+WXS_EV_END()
 }
 
 /*! \brief Constructor.
@@ -78,7 +78,8 @@ wxsAngularRegulator::wxsAngularRegulator(wxsItemResData *Data) :
  */
 wxsAngularRegulator::~wxsAngularRegulator()
 {
-    for(size_t i = 0;i < m_arrTags.Count();i++){
+    for(size_t i = 0; i < m_arrTags.Count(); i++)
+    {
         delete m_arrTags[i];
     }
     m_arrTags.Clear();
@@ -93,40 +94,41 @@ void wxsAngularRegulator::OnBuildCreatingCode()
 {
     switch(GetLanguage())
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("\"wx/KWIC/AngularRegulator.h\""), GetInfo().ClassName);
+        Codef(_T("%C(%W,%I,%P,%S, %s);\n"), wxT("wxBORDER_NONE"));
+
+        Codef(_T("%ASetRange(%d, %d);\n"), static_cast<int>(m_iRangeMin), static_cast<int>(m_iRangeMax));
+        Codef(_T("%ASetAngle(%d, %d);\n"), static_cast<int>(m_iAngleMin), static_cast<int>(m_iAngleMax));
+        wxString ss = m_cdExternalCircleColour.BuildCode(GetCoderContext());
+        if(!ss.IsEmpty()) Codef(_T("%ASetExtCircleColour(%s);\n"), ss.wx_str());
+        ss = m_cdInternalCircleColour.BuildCode(GetCoderContext());
+        if(!ss.IsEmpty()) Codef(_T("%ASetIntCircleColour(%s);\n"), ss.wx_str());
+        ss = m_cdKnobBorderColour.BuildCode(GetCoderContext());
+        if(!ss.IsEmpty()) Codef(_T("%ASetKnobBorderColour(%s);\n"), ss.wx_str());
+        ss = m_cdKnobColour.BuildCode(GetCoderContext());
+        if(!ss.IsEmpty()) Codef(_T("%ASetKnobColour(%s);\n"), ss.wx_str());
+        ss = m_cdLimitTextColour.BuildCode(GetCoderContext());
+        if(!ss.IsEmpty()) Codef(_T("%ASetLimitsColour(%s);\n"), ss.wx_str());
+        ss = m_cdTagColour.BuildCode(GetCoderContext());
+        if(!ss.IsEmpty()) Codef(_T("%ASetTagsColour(%s);\n"), ss.wx_str());
+        for(size_t i = 0; i < m_arrTags.Count(); i++)
         {
-            AddHeader(_T("\"wx/KWIC/AngularRegulator.h\""), GetInfo().ClassName);
-            Codef(_T("%C(%W,%I,%P,%S, %s);\n"), wxT("wxBORDER_NONE"));
-
-            Codef(_T("%ASetRange(%d, %d);\n"), static_cast<int>(m_iRangeMin), static_cast<int>(m_iRangeMax));
-            Codef(_T("%ASetAngle(%d, %d);\n"), static_cast<int>(m_iAngleMin), static_cast<int>(m_iAngleMax));
-            wxString ss = m_cdExternalCircleColour.BuildCode(GetCoderContext());
-            if(!ss.IsEmpty()) Codef(_T("%ASetExtCircleColour(%s);\n"), ss.wx_str());
-            ss = m_cdInternalCircleColour.BuildCode(GetCoderContext());
-            if(!ss.IsEmpty()) Codef(_T("%ASetIntCircleColour(%s);\n"), ss.wx_str());
-            ss = m_cdKnobBorderColour.BuildCode(GetCoderContext());
-            if(!ss.IsEmpty()) Codef(_T("%ASetKnobBorderColour(%s);\n"), ss.wx_str());
-            ss = m_cdKnobColour.BuildCode(GetCoderContext());
-            if(!ss.IsEmpty()) Codef(_T("%ASetKnobColour(%s);\n"), ss.wx_str());
-            ss = m_cdLimitTextColour.BuildCode(GetCoderContext());
-            if(!ss.IsEmpty()) Codef(_T("%ASetLimitsColour(%s);\n"), ss.wx_str());
-            ss = m_cdTagColour.BuildCode(GetCoderContext());
-            if(!ss.IsEmpty()) Codef(_T("%ASetTagsColour(%s);\n"), ss.wx_str());
-            for(size_t i = 0; i < m_arrTags.Count(); i++){
-                TagDesc *Desc = m_arrTags[i];
-                Codef(_T("\t%AAddTag(%d);\n"), Desc->val);
-            }
-            // Value needs to be set after other params for correct display and, in this case,
-            // should always be set to ensure that the knob is drawn at the correct location.
-            // If the value is not set the knob is drawn in the centre of the control.
-            Codef(_T("%ASetValue(%d);\n"), static_cast<int>(m_iValue));
-
-            BuildSetupWindowCode();
-            break;
+            TagDesc *Desc = m_arrTags[i];
+            Codef(_T("\t%AAddTag(%d);\n"), Desc->val);
         }
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsAngularRegulator::OnBuildCreatingCode"), GetLanguage());
+        // Value needs to be set after other params for correct display and, in this case,
+        // should always be set to ensure that the knob is drawn at the correct location.
+        // If the value is not set the knob is drawn in the centre of the control.
+        Codef(_T("%ASetValue(%d);\n"), static_cast<int>(m_iValue));
+
+        BuildSetupWindowCode();
+        break;
+    }
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsAngularRegulator::OnBuildCreatingCode"), GetLanguage());
     }
 }
 
@@ -144,30 +146,37 @@ wxObject *wxsAngularRegulator::OnBuildPreview(wxWindow *parent, long flags)
     preview->SetRange(m_iRangeMin, m_iRangeMax);
     preview->SetAngle(m_iAngleMin, m_iAngleMax);
     wxColour clr = m_cdExternalCircleColour.GetColour();
-    if(clr.IsOk()){
+    if(clr.IsOk())
+    {
         preview->SetExtCircleColour(clr);
     }
     clr = m_cdInternalCircleColour.GetColour();
-    if(clr.IsOk()){
+    if(clr.IsOk())
+    {
         preview->SetIntCircleColour(clr);
     }
     clr = m_cdKnobBorderColour.GetColour();
-    if(clr.IsOk()){
+    if(clr.IsOk())
+    {
         preview->SetKnobBorderColour(clr);
     }
     clr = m_cdKnobColour.GetColour();
-    if(clr.IsOk()){
+    if(clr.IsOk())
+    {
         preview->SetKnobColour(clr);
     }
     clr = m_cdLimitTextColour.GetColour();
-    if(clr.IsOk()){
+    if(clr.IsOk())
+    {
         preview->SetLimitsColour(clr);
     }
     clr = m_cdTagColour.GetColour();
-    if(clr.IsOk()){
+    if(clr.IsOk())
+    {
         preview->SetTagsColour(clr);
     }
-    for(size_t i = 0; i < m_arrTags.Count(); i++){
+    for(size_t i = 0; i < m_arrTags.Count(); i++)
+    {
         TagDesc *Desc = m_arrTags[i];
         preview->AddTag(Desc->val);
     }
@@ -212,7 +221,8 @@ void wxsAngularRegulator::OnAddExtraProperties(wxsPropertyGridManager *Grid)
 {
     Grid->SelectPage(0);
     m_TagCountId = Grid->GetGrid()->Insert(_("External Circle Colour"), new wxIntProperty(_("Number Of Tags"), wxPG_LABEL, (int)m_arrTags.Count()));
-    for(int i = 0;i < (int)m_arrTags.Count();i++){
+    for(int i = 0; i < (int)m_arrTags.Count(); i++)
+    {
         InsertPropertyForTag(Grid, i);
     }
     wxsWidget::OnAddExtraProperties(Grid);
@@ -228,25 +238,31 @@ void wxsAngularRegulator::OnAddExtraProperties(wxsPropertyGridManager *Grid)
 void wxsAngularRegulator::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId id)
 {
     Grid->SelectPage(0);
-    if(id == m_TagCountId){
+    if(id == m_TagCountId)
+    {
         int OldValue = (int)m_arrTags.Count();
         int NewValue = Grid->GetPropertyValueAsInt(id);
 
-        if(NewValue < 0){
+        if(NewValue < 0)
+        {
             NewValue = 0;
             Grid->SetPropertyValue(id, NewValue);
         }
 
-        if(NewValue > OldValue){
+        if(NewValue > OldValue)
+        {
             // We have to generate new entries
-            for(int i = OldValue;i < NewValue;i++){
+            for(int i = OldValue; i < NewValue; i++)
+            {
                 m_arrTags.Add(new TagDesc());
                 InsertPropertyForTag(Grid, i);
             }
         }
-        else if(NewValue < OldValue){
+        else if(NewValue < OldValue)
+        {
             // We have to remove some entries
-            for(int i = NewValue;i < OldValue;i++){
+            for(int i = NewValue; i < OldValue; i++)
+            {
                 Grid->DeleteProperty(m_arrTags[i]->id);
                 delete m_arrTags[i];
             }
@@ -258,7 +274,8 @@ void wxsAngularRegulator::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, w
         return;
     }
 
-    for(int i = 0;i < (int)m_arrTags.Count();i++){
+    for(int i = 0; i < (int)m_arrTags.Count(); i++)
+    {
         if(HandleChangeInTag(Grid, id, i)) return;
     }
     wxsWidget::OnExtraPropertyChanged(Grid, id);
@@ -274,16 +291,19 @@ void wxsAngularRegulator::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, w
  */
 bool wxsAngularRegulator::OnXmlRead(TiXmlElement *Element, bool IsXRC, bool IsExtra)
 {
-    for(size_t i = 0;i < m_arrTags.Count();i++){
+    for(size_t i = 0; i < m_arrTags.Count(); i++)
+    {
         delete m_arrTags[i];
     }
     m_arrTags.Clear();
 
     int i = 1;
-    while(1){
+    while(1)
+    {
         wxString s = wxString::Format(wxT("tag_%d_value"), i);
         TiXmlElement *TagElem = Element->FirstChildElement(s.mb_str());
-        if(!TagElem){
+        if(!TagElem)
+        {
             break;
         }
 
@@ -309,7 +329,8 @@ bool wxsAngularRegulator::OnXmlRead(TiXmlElement *Element, bool IsXRC, bool IsEx
  */
 bool wxsAngularRegulator::OnXmlWrite(TiXmlElement *Element, bool IsXRC, bool IsExtra)
 {
-    for(size_t i = 0;i < m_arrTags.Count();i++){
+    for(size_t i = 0; i < m_arrTags.Count(); i++)
+    {
         TagDesc *Desc = m_arrTags[i];
         wxString s = wxString::Format(wxT("tag_%lu_value"), static_cast<unsigned long>(i + 1));
         TiXmlElement *msg = new TiXmlElement(s.mb_str());
@@ -350,12 +371,14 @@ bool wxsAngularRegulator::HandleChangeInTag(wxsPropertyGridManager *Grid, wxPGId
 //    bool Global = id == Desc->id;
 
 //    if(Global)
-    if(Desc->id == id){
+    if(Desc->id == id)
+    {
         Desc->val = Grid->GetPropertyValueAsInt(id);
         Changed = true;
     }
 
-    if(Changed){
+    if(Changed)
+    {
         NotifyPropertyChange(true);
         return true;
     }

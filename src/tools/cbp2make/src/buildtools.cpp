@@ -77,9 +77,11 @@ void CBuildTool::Clear(void)
 
 CBuildTool::ToolType CBuildTool::Type(const CString& Name)
 {
-    for (int i = btOther; i < btCount; i++) {
+    for (int i = btOther; i < btCount; i++)
+    {
         CBuildTool::ToolType tt = (CBuildTool::ToolType)i;
-        if ((Name==XMLFriendly(TypeName(tt)))||(Name==TypeName(tt))||(Name==AbbrevTypeName(tt))) {
+        if ((Name==XMLFriendly(TypeName(tt)))||(Name==TypeName(tt))||(Name==AbbrevTypeName(tt)))
+        {
             return tt;
         }
     }
@@ -88,35 +90,45 @@ CBuildTool::ToolType CBuildTool::Type(const CString& Name)
 
 CString CBuildTool::TypeName(const CBuildTool::ToolType Type)
 {
-    switch (Type) {
+    switch (Type)
+    {
     default:
     case CBuildTool::btCount:
-    case CBuildTool::btOther:            {
+    case CBuildTool::btOther:
+    {
         return "Other";
     }
-    case CBuildTool::btPreprocessor:     {
+    case CBuildTool::btPreprocessor:
+    {
         return "Preprocessor";
     }
-    case CBuildTool::btAssembler:        {
+    case CBuildTool::btAssembler:
+    {
         return "Assembler";
     }
-    case CBuildTool::btCompiler:         {
+    case CBuildTool::btCompiler:
+    {
         return "Compiler";
     }
-    case CBuildTool::btResourceCompiler: {
+    case CBuildTool::btResourceCompiler:
+    {
         return "Resource compiler";
     }
-    case CBuildTool::btStaticLinker:     {
+    case CBuildTool::btStaticLinker:
+    {
         return "Static library linker";
     }
-    case CBuildTool::btDynamicLinker:    {
+    case CBuildTool::btDynamicLinker:
+    {
         return "Dynamic library linker";
     }
-    case CBuildTool::btExecutableLinker: {
+    case CBuildTool::btExecutableLinker:
+    {
         return "Executable binary linker";
     }
     //case CBuildTool::btConsoleExecutableLinker: { return "Console executable binary linker"; }
-    case CBuildTool::btNativeLinker: {
+    case CBuildTool::btNativeLinker:
+    {
         return "Native binary linker";
     }
 
@@ -127,35 +139,45 @@ CString CBuildTool::TypeName(const CBuildTool::ToolType Type)
 
 CString CBuildTool::AbbrevTypeName(const CBuildTool::ToolType Type)
 {
-    switch (Type) {
+    switch (Type)
+    {
     default:
     case CBuildTool::btCount:
-    case CBuildTool::btOther:            {
+    case CBuildTool::btOther:
+    {
         return "bt";
     }
-    case CBuildTool::btPreprocessor:     {
+    case CBuildTool::btPreprocessor:
+    {
         return "pp";
     }
-    case CBuildTool::btAssembler:        {
+    case CBuildTool::btAssembler:
+    {
         return "as";
     }
-    case CBuildTool::btCompiler:         {
+    case CBuildTool::btCompiler:
+    {
         return "cc";
     }
-    case CBuildTool::btResourceCompiler: {
+    case CBuildTool::btResourceCompiler:
+    {
         return "rc";
     }
-    case CBuildTool::btStaticLinker:     {
+    case CBuildTool::btStaticLinker:
+    {
         return "sl";
     }
-    case CBuildTool::btDynamicLinker:    {
+    case CBuildTool::btDynamicLinker:
+    {
         return "dl";
     }
-    case CBuildTool::btExecutableLinker: {
+    case CBuildTool::btExecutableLinker:
+    {
         return "el";
     }
     //case CBuildTool::btConsoleExecutableLinker: { return "cl"; }
-    case CBuildTool::btNativeLinker:     {
+    case CBuildTool::btNativeLinker:
+    {
         return "nl";
     }
 
@@ -172,7 +194,8 @@ CString CBuildTool::TypeName(void) const
 CString CBuildTool::MakeCommand(const CString& CommandTemplate, CConfiguration& Arguments)
 {
     CString result = CommandTemplate;
-    for (int i = 0; i < Arguments.GetCount(); i++) {
+    for (int i = 0; i < Arguments.GetCount(); i++)
+    {
         CVariable& v = Arguments.Variable(i);
         result = FindReplaceStr(result,v.GetName(),v.GetString());
     }
@@ -207,12 +230,15 @@ bool CBuildTool::Supports(const CPlatform::OS_Type OS)
 void CBuildTool::Read(const TiXmlElement *Root, const CString& Name, CString& Value)
 {
     TiXmlNode *_option = (TiXmlNode *)Root->FirstChild("option");
-    while (0!=_option) {
+    while (0!=_option)
+    {
         TiXmlElement* option = _option->ToElement();
         //if (strcmp(option->Value(),"option")!=0) break;
-        if (0!=option) {
+        if (0!=option)
+        {
             char *value = 0;
-            if ((value = (char *)option->Attribute(Name.GetCString()))) {
+            if ((value = (char *)option->Attribute(Name.GetCString())))
+            {
                 Value = value;
                 break;
             }
@@ -232,11 +258,13 @@ void CBuildTool::Read(const TiXmlElement *BuildToolRoot)
 {
     char *value = 0;
     CString type_name;
-    if ((value = (char *)BuildToolRoot->Attribute("type"))) {
+    if ((value = (char *)BuildToolRoot->Attribute("type")))
+    {
         type_name = value;
         if (CBuildTool::btOther==m_Type) m_Type = Type(type_name);
     }
-    if ((value = (char *)BuildToolRoot->Attribute("alias"))) {
+    if ((value = (char *)BuildToolRoot->Attribute("alias")))
+    {
         m_Alias = XMLFriendly(value);
     }
     /*{
@@ -579,21 +607,26 @@ CDynamicLinker::CDynamicLinker(void)
 void CDynamicLinker::Reset(const CPlatform::OS_Type OS)
 {
     CLinker::Reset(OS);
-    switch (OS) {
+    switch (OS)
+    {
     default:
-    case CPlatform::OS_Unix: {
+    case CPlatform::OS_Unix:
+    {
         m_LibraryExtension = "so";
         break;
     }
-    case CPlatform::OS_MSys: {
+    case CPlatform::OS_MSys:
+    {
         m_LibraryExtension = "dll";
         break;
     }
-    case CPlatform::OS_Windows: {
+    case CPlatform::OS_Windows:
+    {
         m_LibraryExtension = "dll";
         break;
     }
-    case CPlatform::OS_Mac: {
+    case CPlatform::OS_Mac:
+    {
         m_LibraryExtension = "dylib";
         break;
     }
@@ -878,7 +911,8 @@ void CGNUWindowsResourceCompiler::Reset(const CPlatform::OS_Type OS)
     if (CPlatform::OS_Windows==OS) m_Program = "windres.exe";
     else m_Program = "windres";
 
-    if (!Supports(OS)) {
+    if (!Supports(OS))
+    {
         /* Generate fake resource file */
         m_Program = "";
         m_CommandTemplate = "gcc -x c -c -o $resource_output /dev/null";
@@ -937,10 +971,13 @@ void CGNUDynamicLinker::Reset(const CPlatform::OS_Type OS)
     m_MakeVariable = "LD";
     m_CommandTemplate = "$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs";
     m_SourceExtensions.Clear()<<"o"<<"obj";
-    if (CPlatform::OS_Windows==OS || CPlatform::OS_MSys==OS) {
+    if (CPlatform::OS_Windows==OS || CPlatform::OS_MSys==OS)
+    {
         m_Program = "g++.exe";
         m_TargetExtension = "dll";
-    } else {
+    }
+    else
+    {
         m_Program = "g++";
         m_TargetExtension = "so";
     }
@@ -967,16 +1004,20 @@ void CGNUExecutableLinker::Reset(const CPlatform::OS_Type OS)
     m_MakeVariable = "LD";
     m_CommandTemplate = "$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs";
     m_SourceExtensions.Clear()<<"o"<<"obj";
-    if (CPlatform::OS_MSys == OS) {
+    if (CPlatform::OS_MSys == OS)
+    {
         m_Program = "g++.exe";
         m_TargetExtension = "exe";
         m_Option_WinGUI = "-mwindows";
-    } else
-    if (CPlatform::OS_Windows == OS) {
+    }
+    else if (CPlatform::OS_Windows == OS)
+    {
         m_Program = "g++.exe";
         m_TargetExtension = "exe";
         m_Option_WinGUI = "-mwindows";
-    } else {
+    }
+    else
+    {
         m_Program = "g++";
         //m_TargetExtension = "";s
     }
@@ -1090,11 +1131,14 @@ void CGNUAVRDynamicLinker::Reset(const CPlatform::OS_Type OS)
     m_Description = "GNU AVR Dynamic Library Linker";
     m_MakeVariable = "LD";
     m_SourceExtensions.Clear()<<"o"<<"obj";
-    if (CPlatform::OS_Windows==OS) {
+    if (CPlatform::OS_Windows==OS)
+    {
         m_Program = "avr-g++.exe";
         m_TargetExtension = "dll";
         m_CommandTemplate = "$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs";
-    } else {
+    }
+    else
+    {
         m_Program = "avr-g++";
         m_TargetExtension = "so";
         m_CommandTemplate = "$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs";
@@ -1121,12 +1165,15 @@ void CGNUAVRExecutableLinker::Reset(const CPlatform::OS_Type OS)
     m_Description = "GNU AVR Executable Binary Linker";
     m_MakeVariable = "LD";
     m_SourceExtensions.Clear()<<"o"<<"obj";
-    if (CPlatform::OS_Windows==OS) {
+    if (CPlatform::OS_Windows==OS)
+    {
         m_Program = "avr-g++.exe";
         m_TargetExtension = "exe";
         m_CommandTemplate = "$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs";
         m_Option_WinGUI = "-mwindows";
-    } else {
+    }
+    else
+    {
         m_Program = "avr-g++";
         //m_TargetExtension = "";
         m_CommandTemplate = "$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs";
@@ -1154,10 +1201,13 @@ void CGNUAVRDependencyGenerator::Reset(const CPlatform::OS_Type OS)
     m_MakeVariable = "MD";
     m_CommandTemplate = "$compiler -MM $options -MF $dep_object -MT $object $includes $file";
     m_SourceExtensions.Clear()<<"c"<<"cpp"<<"h"<<"hpp";;
-    if (CPlatform::OS_Windows==OS) {
+    if (CPlatform::OS_Windows==OS)
+    {
         m_Program = "avr-g++.exe";
         m_TargetExtension = "dep";
-    } else {
+    }
+    else
+    {
         m_Program = "avr-g++";
         //m_TargetExtension = "";
     }
@@ -1271,11 +1321,14 @@ void CGNUARMDynamicLinker::Reset(const CPlatform::OS_Type OS)
     m_Description = "GNU ARM Dynamic Library Linker";
     m_MakeVariable = "LD";
     m_SourceExtensions.Clear()<<"o"<<"obj";
-    if (CPlatform::OS_Windows==OS) {
+    if (CPlatform::OS_Windows==OS)
+    {
         m_Program = "arm-g++.exe";
         m_TargetExtension = "dll";
         m_CommandTemplate = "$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs";
-    } else {
+    }
+    else
+    {
         m_Program = "arm-g++";
         m_TargetExtension = "so";
         m_CommandTemplate = "$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs";
@@ -1302,12 +1355,15 @@ void CGNUARMExecutableLinker::Reset(const CPlatform::OS_Type OS)
     m_Description = "GNU ARM Executable Binary Linker";
     m_MakeVariable = "LD";
     m_SourceExtensions.Clear()<<"o"<<"obj";
-    if (CPlatform::OS_Windows==OS) {
+    if (CPlatform::OS_Windows==OS)
+    {
         m_Program = "arm-g++.exe";
         m_TargetExtension = "exe";
         m_CommandTemplate = "$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs";
         m_Option_WinGUI = "-mwindows";
-    } else {
+    }
+    else
+    {
         m_Program = "arm-g++";
         //m_TargetExtension = "";
         m_CommandTemplate = "$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs";
@@ -1581,7 +1637,8 @@ void CIntelCCompiler::Reset(const CPlatform::OS_Type OS)
     m_Description = "Intel C Compiler";
     m_MakeVariable = "CC";
     m_SourceExtensions.Clear()<<"c"<<"cc";
-    if (CPlatform::OS_Windows==OS) {
+    if (CPlatform::OS_Windows==OS)
+    {
         m_Program = "icl.exe";
         m_CommandTemplate = "$compiler /nologo $options $includes /c $file /Fo$object";
         m_GenericSwitch = "/";
@@ -1589,7 +1646,9 @@ void CIntelCCompiler::Reset(const CPlatform::OS_Type OS)
         m_DefineSwitch = "/D";
         m_TargetExtension = "obj";
         m_NeedDependencies = false;
-    } else {
+    }
+    else
+    {
         m_Program = "icc";
         m_CommandTemplate = "$compiler $options $includes -c $file -o $object";
         m_GenericSwitch = "-";
@@ -1625,7 +1684,8 @@ void CIntelCppCompiler::Reset(const CPlatform::OS_Type OS)
     m_Description = "Intel C++ Compiler";
     m_MakeVariable = "CXX";
     m_SourceExtensions.Clear()<<"cpp"<<"cxx";
-    if (CPlatform::OS_Windows==OS) {
+    if (CPlatform::OS_Windows==OS)
+    {
         m_Program = "icl.exe";
         m_CommandTemplate = "$compiler /nologo $options $includes /c $file /Fo$object";
         m_GenericSwitch = "/";
@@ -1633,7 +1693,9 @@ void CIntelCppCompiler::Reset(const CPlatform::OS_Type OS)
         m_DefineSwitch = "/D";
         m_TargetExtension = "obj";
         m_NeedDependencies = false;
-    } else {
+    }
+    else
+    {
         m_Program = "icpc";
         m_CommandTemplate = "$compiler $options $includes -c $file -o $object";
         m_GenericSwitch = "-";
@@ -1665,7 +1727,8 @@ void CIntelStaticLinker::Reset(const CPlatform::OS_Type OS)
     m_MakeVariable = "AR";
     m_SourceExtensions.Clear()<<"o"<<"obj";
     m_TargetExtension = "a";
-    if (CPlatform::OS_Windows==OS) {
+    if (CPlatform::OS_Windows==OS)
+    {
         m_Program = "xilink.exe";
         m_CommandTemplate = "$lib_linker /lib /nologo $libdirs /output:$static_output $libs $link_objects $link_resobjects $link_options";
 
@@ -1673,7 +1736,9 @@ void CIntelStaticLinker::Reset(const CPlatform::OS_Type OS)
         m_LibraryExtension = "lib";
         m_NeedLibraryPrefix = false;
         m_NeedLibraryExtension = true;
-    } else {
+    }
+    else
+    {
         m_Program = "ar";
         m_CommandTemplate = "$lib_linker rcs $static_output $link_objects";
         m_LibraryPrefix = "lib";
@@ -1703,7 +1768,8 @@ void CIntelDynamicLinker::Reset(const CPlatform::OS_Type OS)
     m_Description = "Intel Dynamic Library Linker";
     m_MakeVariable = "LD";
     m_SourceExtensions.Clear()<<"o"<<"obj";
-    if (CPlatform::OS_Windows==OS) {
+    if (CPlatform::OS_Windows==OS)
+    {
         m_Program = "xilink.exe";
         m_CommandTemplate = "$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options";
         m_GenericSwitch = "/";
@@ -1715,7 +1781,9 @@ void CIntelDynamicLinker::Reset(const CPlatform::OS_Type OS)
         m_NeedLibraryPrefix = false;
         m_NeedLibraryExtension = true;
         m_TargetExtension = "dll";
-    } else {
+    }
+    else
+    {
         m_Program = "icpc";
         m_CommandTemplate = "$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs";
         m_GenericSwitch = "-";
@@ -1752,7 +1820,8 @@ void CIntelExecutableLinker::Reset(const CPlatform::OS_Type OS)
     m_MakeVariable = "LD";
     m_CommandTemplate = "$linker $link_options $libdirs $link_objects $libs -o $exe_output";
     m_SourceExtensions.Clear()<<"o"<<"obj";
-    if (CPlatform::OS_Windows==OS) {
+    if (CPlatform::OS_Windows==OS)
+    {
         m_Program = "xilink.exe";
         m_CommandTemplate = "$linker /nologo /subsystem:windows $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options";
         m_GenericSwitch = "/";
@@ -1764,7 +1833,9 @@ void CIntelExecutableLinker::Reset(const CPlatform::OS_Type OS)
         m_NeedLibraryPrefix = false;
         m_NeedLibraryExtension = true;
         m_TargetExtension = "exe";
-    } else {
+    }
+    else
+    {
         m_Program = "icpc";
         m_CommandTemplate = "$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs";
         m_GenericSwitch = "-";

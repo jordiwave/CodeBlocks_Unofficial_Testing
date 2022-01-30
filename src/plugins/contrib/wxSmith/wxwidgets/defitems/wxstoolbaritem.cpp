@@ -24,41 +24,41 @@
 
 namespace
 {
-    class InfoHandler: public wxsItemInfo
+class InfoHandler: public wxsItemInfo
+{
+public:
+
+    InfoHandler(): m_TreeImage(_T("images/wxsmith/wxToolBarItem16.png"),true)
     {
-        public:
+        ClassName      = _T("wxToolBarToolBase");
+        Type           = wxsTTool;
+        License        = _("wxWidgets license");
+        Author         = _("wxWidgets team");
+        Email          = _T("");
+        Site           = _T("www.wxwidgets.org");
+        Category       = _T("");
+        Priority       = 0;
+        DefaultVarName = _T("ToolBarItem");
+        Languages      = wxsCPP;
+        VerHi          = 2;
+        VerLo          = 8;
+        AllowInXRC     = true;
 
-            InfoHandler(): m_TreeImage(_T("images/wxsmith/wxToolBarItem16.png"),true)
-            {
-                ClassName      = _T("wxToolBarToolBase");
-                Type           = wxsTTool;
-                License        = _("wxWidgets license");
-                Author         = _("wxWidgets team");
-                Email          = _T("");
-                Site           = _T("www.wxwidgets.org");
-                Category       = _T("");
-                Priority       = 0;
-                DefaultVarName = _T("ToolBarItem");
-                Languages      = wxsCPP;
-                VerHi          = 2;
-                VerLo          = 8;
-                AllowInXRC     = true;
+        // TODO: This code should be more generic since it may quickly
+        //       become invalid
+        wxString DataPath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
+        Icon32.LoadFile(DataPath+_T("wxToolBarItem32.png"),wxBITMAP_TYPE_PNG);
+        Icon16.LoadFile(DataPath+_T("wxToolBarItem16.png"),wxBITMAP_TYPE_PNG);
+        TreeIconId = m_TreeImage.GetIndex();
+    };
 
-                // TODO: This code should be more generic since it may quickly
-                //       become invalid
-                wxString DataPath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
-                Icon32.LoadFile(DataPath+_T("wxToolBarItem32.png"),wxBITMAP_TYPE_PNG);
-                Icon16.LoadFile(DataPath+_T("wxToolBarItem16.png"),wxBITMAP_TYPE_PNG);
-                TreeIconId = m_TreeImage.GetIndex();
-            };
+    wxsAutoResourceTreeImage m_TreeImage;
+} Info;
 
-            wxsAutoResourceTreeImage m_TreeImage;
-    } Info;
-
-    WXS_EV_BEGIN(wxsToolBarItemEvents)
-        WXS_EVI(EVT_TOOL,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEvent,Clicked)
-        WXS_EVI(EVT_TOOL_RCLICKED,wxEVT_COMMAND_TOOL_RCLICKED,wxCommandEvent,RClicked)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsToolBarItemEvents)
+WXS_EVI(EVT_TOOL,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEvent,Clicked)
+WXS_EVI(EVT_TOOL_RCLICKED,wxEVT_COMMAND_TOOL_RCLICKED,wxCommandEvent,RClicked)
+WXS_EV_END()
 }
 
 
@@ -78,67 +78,67 @@ void wxsToolBarItem::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
 
+        switch ( m_Type )
+        {
+        case Normal:
+        case Radio:
+        case Check:
+        {
+            const wxChar* ItemType;
             switch ( m_Type )
             {
-                case Normal:
-                case Radio:
-                case Check:
-                {
-                    const wxChar* ItemType;
-                    switch ( m_Type )
-                    {
-                        case Normal:
-                            ItemType = _T("wxITEM_NORMAL");
-                            break;
-                        case Radio:
-                            ItemType = _T("wxITEM_RADIO");
-                            break;
-                        case Check:
-                        case Separator:
-                        case Stretchable: // fall-through
-                        default:
-                            ItemType = _T("wxITEM_CHECK");
-                    }
-
-                    wxString BitmapCode  = m_Bitmap.BuildCode(true,_T(""),GetCoderContext(),_T("wxART_TOOLBAR"));
-                    wxString Bitmap2Code = m_Bitmap2.BuildCode(true,_T(""),GetCoderContext(),_T("wxART_TOOLBAR"));
-                    if ( BitmapCode.IsEmpty() )  BitmapCode  = _T("wxNullBitmap");
-                    if ( Bitmap2Code.IsEmpty() ) Bitmap2Code = _T("wxNullBitmap");
-
-                    Codef(_T("%v = %MAddTool(%I, %t, %i, %i, %s, %t, %t);\n"),
-                          GetVarName().wx_str(),
-                          m_Label.wx_str(),
-                          &m_Bitmap,_T("wxART_TOOLBAR"),
-                          &m_Bitmap2,_T("wxART_TOOLBAR"),
-                          ItemType,
-                          m_ToolTip.wx_str(),
-                          m_HelpText.wx_str());
-                    break;
-                }
-
-                case Separator:
-                {
-                    Codef(_T("%MAddSeparator();\n"));
-                    break;
-                }
-
-                case Stretchable:
-                {
-                    Codef(_T("%MAddStretchableSpace();\n"));
-                    break;
-                }
-
-                default:
-                    break;
-
+            case Normal:
+                ItemType = _T("wxITEM_NORMAL");
+                break;
+            case Radio:
+                ItemType = _T("wxITEM_RADIO");
+                break;
+            case Check:
+            case Separator:
+            case Stretchable: // fall-through
+            default:
+                ItemType = _T("wxITEM_CHECK");
             }
+
+            wxString BitmapCode  = m_Bitmap.BuildCode(true,_T(""),GetCoderContext(),_T("wxART_TOOLBAR"));
+            wxString Bitmap2Code = m_Bitmap2.BuildCode(true,_T(""),GetCoderContext(),_T("wxART_TOOLBAR"));
+            if ( BitmapCode.IsEmpty() )  BitmapCode  = _T("wxNullBitmap");
+            if ( Bitmap2Code.IsEmpty() ) Bitmap2Code = _T("wxNullBitmap");
+
+            Codef(_T("%v = %MAddTool(%I, %t, %i, %i, %s, %t, %t);\n"),
+                  GetVarName().wx_str(),
+                  m_Label.wx_str(),
+                  &m_Bitmap,_T("wxART_TOOLBAR"),
+                  &m_Bitmap2,_T("wxART_TOOLBAR"),
+                  ItemType,
+                  m_ToolTip.wx_str(),
+                  m_HelpText.wx_str());
+            break;
+        }
+
+        case Separator:
+        {
+            Codef(_T("%MAddSeparator();\n"));
+            break;
+        }
+
+        case Stretchable:
+        {
+            Codef(_T("%MAddStretchableSpace();\n"));
+            break;
+        }
+
+        default:
             break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsToolBarItem::OnBuildCreatingCode"),GetLanguage());
+        }
+        break;
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsToolBarItem::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
@@ -147,20 +147,20 @@ void wxsToolBarItem::OnEnumToolProperties(cb_unused long Flags)
 
     switch ( m_Type )
     {
-        case Normal:
-        case Radio:
-        case Check:
-            WXS_SHORT_STRING(wxsToolBarItem,m_Label,_("Label"),_T("label"),_T(""),true);
-            WXS_BITMAP(wxsToolBarItem,m_Bitmap,_("Bitmap"),_T("bitmap"),_T("wxART_TOOLBAR"));
-            WXS_BITMAP(wxsToolBarItem,m_Bitmap2,_("Disabled bitmap"),_T("bitmap2"),_T("wxART_TOOLBAR"));
-            WXS_STRING(wxsToolBarItem,m_ToolTip,_("Tooltip"),_T("tooltip"),_T(""),false);
-            WXS_STRING(wxsToolBarItem,m_HelpText,_("Help text"),_T("longhelp"),_T(""),false);
-            break;
+    case Normal:
+    case Radio:
+    case Check:
+        WXS_SHORT_STRING(wxsToolBarItem,m_Label,_("Label"),_T("label"),_T(""),true);
+        WXS_BITMAP(wxsToolBarItem,m_Bitmap,_("Bitmap"),_T("bitmap"),_T("wxART_TOOLBAR"));
+        WXS_BITMAP(wxsToolBarItem,m_Bitmap2,_("Disabled bitmap"),_T("bitmap2"),_T("wxART_TOOLBAR"));
+        WXS_STRING(wxsToolBarItem,m_ToolTip,_("Tooltip"),_T("tooltip"),_T(""),false);
+        WXS_STRING(wxsToolBarItem,m_HelpText,_("Help text"),_T("longhelp"),_T(""),false);
+        break;
 
-        case Separator: // fall-through
-        case Stretchable: // fall-through
-        default:
-            break;
+    case Separator: // fall-through
+    case Stretchable: // fall-through
+    default:
+        break;
     }
 }
 
@@ -174,25 +174,25 @@ bool wxsToolBarItem::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
 
         switch ( m_Type )
         {
-            case Separator:
-                Element->SetAttribute("class", "separator");
-                break;
+        case Separator:
+            Element->SetAttribute("class", "separator");
+            break;
 
-            case Stretchable:
-                Element->SetAttribute("class", "stretchable");
-                break;
+        case Stretchable:
+            Element->SetAttribute("class", "stretchable");
+            break;
 
-            case Radio:
-                Element->InsertEndChild(TiXmlElement("radio"))->ToElement()->InsertEndChild(TiXmlText("1"));
-                break;
+        case Radio:
+            Element->InsertEndChild(TiXmlElement("radio"))->ToElement()->InsertEndChild(TiXmlText("1"));
+            break;
 
-            case Check:
-                Element->InsertEndChild(TiXmlElement("check"))->ToElement()->InsertEndChild(TiXmlText("1"));
-                break;
+        case Check:
+            Element->InsertEndChild(TiXmlElement("check"))->ToElement()->InsertEndChild(TiXmlText("1"));
+            break;
 
-            case Normal: // fall-through
-            default:
-                break;
+        case Normal: // fall-through
+        default:
+            break;
         }
     }
 
@@ -254,17 +254,17 @@ wxString wxsToolBarItem::OnGetTreeLabel(cb_unused int& Image)
 {
     switch ( m_Type )
     {
-        case Separator:
-            return _T("--------");
+    case Separator:
+        return _T("--------");
 
-        case Stretchable:
-            return _T("<------>");
+    case Stretchable:
+        return _T("<------>");
 
-        case Radio:  // fall-through
-        case Check:  // fall-through
-        case Normal: // fall-through
-        default:
-            return _("Item: ") + m_Label;
+    case Radio:  // fall-through
+    case Check:  // fall-through
+    case Normal: // fall-through
+    default:
+        return _("Item: ") + m_Label;
     }
 }
 

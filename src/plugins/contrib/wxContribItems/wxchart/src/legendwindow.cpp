@@ -26,7 +26,7 @@
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include "wx/legendwindow.h"
@@ -34,10 +34,10 @@
 IMPLEMENT_DYNAMIC_CLASS(wxLegendWindow, wxWindow)
 
 BEGIN_EVENT_TABLE(wxLegendWindow, wxWindow)
-  EVT_PAINT(        wxLegendWindow::OnPaint)
-  EVT_LEFT_DOWN(    wxLegendWindow::OnMouse)
-  EVT_LEFT_DCLICK(  wxLegendWindow::OnMouse)
-  EVT_MOTION(       wxLegendWindow::OnMouseMove)
+    EVT_PAINT(        wxLegendWindow::OnPaint)
+    EVT_LEFT_DOWN(    wxLegendWindow::OnMouse)
+    EVT_LEFT_DCLICK(  wxLegendWindow::OnMouse)
+    EVT_MOTION(       wxLegendWindow::OnMouseMove)
 END_EVENT_TABLE()
 
 
@@ -48,12 +48,12 @@ END_EVENT_TABLE()
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 wxLegendWindow::wxLegendWindow(
-	 wxWindow *parent
+    wxWindow *parent
 ):  wxWindow(parent, -1, wxDefaultPosition,
-			 wxSize(LEGEND_WIDTH, LEGEND_HEIGHT)/*, wxSIMPLE_BORDER*/),
-	m_WinParent(parent)
+                 wxSize(LEGEND_WIDTH, LEGEND_HEIGHT)/*, wxSIMPLE_BORDER*/),
+    m_WinParent(parent)
 {
-	SetBackgroundColour( *wxWHITE );
+    SetBackgroundColour( *wxWHITE );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -64,11 +64,11 @@ wxLegendWindow::wxLegendWindow(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxLegendWindow::Add(
-	const wxString &lbl,
-	const ChartColor &col
+    const wxString &lbl,
+    const ChartColor &col
 )
 {
-	m_Legend.Add( lbl, col );
+    m_Legend.Add( lbl, col );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -79,7 +79,7 @@ void wxLegendWindow::Add(
 //----------------------------------------------------------------------E-+++
 void wxLegendWindow::Clear()
 {
-	m_Legend.Clear();
+    m_Legend.Clear();
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -90,7 +90,7 @@ void wxLegendWindow::Clear()
 //----------------------------------------------------------------------E-+++
 int wxLegendWindow::GetCount() const
 {
-	return ( m_Legend.GetCount() );
+    return ( m_Legend.GetCount() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -100,10 +100,10 @@ int wxLegendWindow::GetCount() const
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 ChartColor wxLegendWindow::GetColor(
-	int n
+    int n
 ) const
 {
-	return ( m_Legend.GetColor(n) );
+    return ( m_Legend.GetColor(n) );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -113,10 +113,10 @@ ChartColor wxLegendWindow::GetColor(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 wxString wxLegendWindow::GetLabel(
-	int n
+    int n
 ) const
 {
-	return ( m_Legend.GetLabel(n) );
+    return ( m_Legend.GetLabel(n) );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -128,23 +128,25 @@ wxString wxLegendWindow::GetLabel(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxLegendWindow::Draw(
-	CHART_HPAINT hp,
-	int x,
-	int y
+    CHART_HPAINT hp,
+    int x,
+    int y
 )
 {
-	//-----------------------------------------------------------------------
-	// Get window information
-	//-----------------------------------------------------------------------
-	CHART_RECT r;
-	r.x = x; r.y = y;
-	r.xscroll = 0; r.yscroll = 0;
-	GetClientSize( &r.w, &r.h );
+    //-----------------------------------------------------------------------
+    // Get window information
+    //-----------------------------------------------------------------------
+    CHART_RECT r;
+    r.x = x;
+    r.y = y;
+    r.xscroll = 0;
+    r.yscroll = 0;
+    GetClientSize( &r.w, &r.h );
 
-	//-----------------------------------------------------------------------
-	// Draw legend
-	//-----------------------------------------------------------------------
-	m_Legend.Draw( hp, &r );
+    //-----------------------------------------------------------------------
+    // Draw legend
+    //-----------------------------------------------------------------------
+    m_Legend.Draw( hp, &r );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -154,15 +156,15 @@ void wxLegendWindow::Draw(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxLegendWindow::OnPaint(
-	wxPaintEvent &WXUNUSED(event)
+    wxPaintEvent &WXUNUSED(event)
 )
 {
-	wxPaintDC dc( this );
+    wxPaintDC dc( this );
 
-	//-----------------------------------------------------------------------
-	// Draw legend window
-	//-----------------------------------------------------------------------
-	Draw( &dc );
+    //-----------------------------------------------------------------------
+    // Draw legend window
+    //-----------------------------------------------------------------------
+    Draw( &dc );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -172,21 +174,21 @@ void wxLegendWindow::OnPaint(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxLegendWindow::OnMouse(
-	wxMouseEvent &event
+    wxMouseEvent &event
 )
 {
-	wxPoint p = event.GetPosition();
+    wxPoint p = event.GetPosition();
 
-	if ( m_Legend.IsInArrowDown(p.x, p.y) )
-	{
-		m_Legend.DecPage();
-		Refresh();
-	}
-	else if ( m_Legend.IsInArrowUp(p.x, p.y) )
-	{
-		m_Legend.IncPage();
-		Refresh();
-	}
+    if ( m_Legend.IsInArrowDown(p.x, p.y) )
+    {
+        m_Legend.DecPage();
+        Refresh();
+    }
+    else if ( m_Legend.IsInArrowUp(p.x, p.y) )
+    {
+        m_Legend.IncPage();
+        Refresh();
+    }
 }
 
 //+++-S-cf-------------------------------------------------------------------

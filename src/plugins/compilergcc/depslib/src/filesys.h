@@ -9,7 +9,7 @@
  * This file is part of jam.
  *
  * License is hereby granted to use this software and distribute it
- * freely, as long as this copyright notice is retained and modifications 
+ * freely, as long as this copyright notice is retained and modifications
  * are clearly marked.
  *
  * ALL WARRANTIES ARE HEREBY DISCLAIMED.
@@ -22,7 +22,7 @@
  */
 
 /*
- * filesys.h - OS specific file routines 
+ * filesys.h - OS specific file routines
  *
  * 11/04/02 (seiwald) - const-ing for string literals
  */

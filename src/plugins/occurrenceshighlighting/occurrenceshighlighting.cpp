@@ -10,11 +10,11 @@
 #include <sdk.h> // Code::Blocks SDK
 
 #ifndef CB_PRECOMP
-    #include <algorithm>
-    #include <wx/listctrl.h>
-    #include <configmanager.h>
-    #include <cbeditor.h>
-    #include <editormanager.h>
+#include <algorithm>
+#include <wx/listctrl.h>
+#include <configmanager.h>
+#include <cbeditor.h>
+#include <editormanager.h>
 #endif
 
 #include <configurationpanel.h>
@@ -33,12 +33,12 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<OccurrencesHighlighting> reg(_T("OccurrencesHighlighting"));
+PluginRegistrant<OccurrencesHighlighting> reg(_T("OccurrencesHighlighting"));
 
-    const int idViewOccurencesPanel               = wxNewId();
-    const int idMenuEntryPermanent                = wxNewId();
-    const int idMenuEntryRemove                   = wxNewId();
-    const int idContextRemove                     = wxNewId();
+const int idViewOccurencesPanel               = wxNewId();
+const int idMenuEntryPermanent                = wxNewId();
+const int idMenuEntryRemove                   = wxNewId();
+const int idContextRemove                     = wxNewId();
 }
 
 
@@ -231,11 +231,11 @@ void OccurrencesHighlighting::OnListKeyDown(wxListEvent &event)
 {
     switch ( event.GetKeyCode() )
     {
-        case WXK_DELETE:
-            RemoveSelected();
-            break;
+    case WXK_DELETE:
+        RemoveSelected();
+        break;
 
-        case WXK_INSERT:
+    case WXK_INSERT:
 //            if ( GetWindowStyle() & wxLC_REPORT )
 //            {
 //                if ( GetWindowStyle() & wxLC_VIRTUAL )
@@ -247,11 +247,11 @@ void OccurrencesHighlighting::OnListKeyDown(wxListEvent &event)
 //                    InsertItemInReportView(event.GetIndex());
 //                }
 //            }
-            //else: fall through
+    //else: fall through
 
-        default:
+    default:
 
-            event.Skip();
+        event.Skip();
     }
 }
 
@@ -267,7 +267,7 @@ wxString OccurrencesHighlighting::GetWordAtCaret()const
             wxString selectedText = control->GetSelectedText();
 
             if ( selectedText.IsEmpty() ||
-                 selectedText.Contains(_T(" ")) ||selectedText.Contains(_T("\t")) )
+                    selectedText.Contains(_T(" ")) ||selectedText.Contains(_T("\t")) )
             {
                 const int pos = control->GetCurrentPos();
                 const int ws = control->WordStartPosition(pos, true);
@@ -342,7 +342,7 @@ void OccurrencesHighlighting::RemoveSelected()
 
         // -1 because the indices were shifted by DeleteItem()
         item = m_pPanel->GetListCtrl()->GetNextItem(item - 1,
-                           wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+                wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     }
     m_pHighlighter->TextsChanged();
 }

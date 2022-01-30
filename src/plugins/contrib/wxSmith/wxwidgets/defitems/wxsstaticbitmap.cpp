@@ -27,17 +27,17 @@
 
 namespace
 {
-    wxsRegisterItem<wxsStaticBitmap> Reg(_T("StaticBitmap"),wxsTWidget,_T("Standard"),80);
+wxsRegisterItem<wxsStaticBitmap> Reg(_T("StaticBitmap"),wxsTWidget,_T("Standard"),80);
 
-    // Cryogen 25/3/10 Bug #15354. Default to wxSIMPLE_BORDER.
-    WXS_ST_BEGIN(wxsStaticBitmapStyles,_T("wxSIMPLE_BORDER"))
-        WXS_ST_CATEGORY("wxStaticBitmap")
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+// Cryogen 25/3/10 Bug #15354. Default to wxSIMPLE_BORDER.
+WXS_ST_BEGIN(wxsStaticBitmapStyles,_T("wxSIMPLE_BORDER"))
+WXS_ST_CATEGORY("wxStaticBitmap")
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsStaticBitmapEvents)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsStaticBitmapEvents)
+WXS_EV_END()
 
 // Cryogen 24/3/10 Bug #15354. Removed class Background.
 }
@@ -54,26 +54,26 @@ void wxsStaticBitmap::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/statbmp.h>"),GetInfo().ClassName,hfInPCH);
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/statbmp.h>"),GetInfo().ClassName,hfInPCH);
 
-            // Can not use %i in Codef because it doesn't take size into consideration
-            wxsSizeData& SizeData = GetBaseProps()->m_Size;
-            bool DontResize = SizeData.IsDefault;
-            wxString SizeCodeStr = SizeData.GetSizeCode(GetCoderContext());
-            wxString BmpCode = Bitmap.IsEmpty() ? _T("wxNullBitmap") : Bitmap.BuildCode(DontResize,SizeCodeStr,GetCoderContext(),_T("wxART_OTHER"));
+        // Can not use %i in Codef because it doesn't take size into consideration
+        wxsSizeData& SizeData = GetBaseProps()->m_Size;
+        bool DontResize = SizeData.IsDefault;
+        wxString SizeCodeStr = SizeData.GetSizeCode(GetCoderContext());
+        wxString BmpCode = Bitmap.IsEmpty() ? _T("wxNullBitmap") : Bitmap.BuildCode(DontResize,SizeCodeStr,GetCoderContext(),_T("wxART_OTHER"));
 
-            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %N);\n"),BmpCode.wx_str());
-            BuildSetupWindowCode();
-            return;
-        }
+        Codef(_T("%C(%W, %I, %s, %P, %S, %T, %N);\n"),BmpCode.wx_str());
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsStaticBitmap::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsStaticBitmap::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 
@@ -88,6 +88,6 @@ wxObject* wxsStaticBitmap::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsStaticBitmap::OnEnumWidgetProperties(cb_unused long Flags)
 {
-   WXS_BITMAP(wxsStaticBitmap,Bitmap,_("Bitmap"),_T("bitmap"),_T("wxART_OTHER"))
+    WXS_BITMAP(wxsStaticBitmap,Bitmap,_("Bitmap"),_T("bitmap"),_T("wxART_OTHER"))
 }
 

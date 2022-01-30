@@ -32,15 +32,15 @@
 #include <wx/mstream.h>
 #include <wx/image.h>
 #if wxUSE_FFILE
-    #include <wx/ffile.h>
+#include <wx/ffile.h>
 #elif wxUSE_FILE
-    #include <wx/file.h>
+#include <wx/file.h>
 #endif
 #include <wx/log.h>      // C::B wxSafeShowMessage
 #include <wx/textctrl.h> // C::B wxTEXT_TYPE_ANY
 #include <wx/dcclient.h> // C::B wxPaintDC
 #ifdef __WXGTK__
-    #include <wx/dcbuffer.h>
+#include <wx/dcbuffer.h>
 #endif
 
 #include "ScintillaWX.h"
@@ -61,13 +61,15 @@ const wxChar wxSCINameStr[] = wxT("SCIwindow");
 #define MAKELONG(a, b) ((a) | ((b) << 16))
 
 
-static long wxColourAsLong(const wxColour& co) {
+static long wxColourAsLong(const wxColour& co)
+{
     return (((long)co.Blue()  << 16) |
             ((long)co.Green() <<  8) |
             ((long)co.Red()));
 }
 
-static wxColour wxColourFromLong(long c) {
+static wxColour wxColourFromLong(long c)
+{
     wxColour clr;
     clr.Set((unsigned char)(c & 0xff),
             (unsigned char)((c >> 8) & 0xff),
@@ -76,9 +78,11 @@ static wxColour wxColourFromLong(long c) {
 }
 
 
-static wxColour wxColourFromSpec(const wxString& spec) {
+static wxColour wxColourFromSpec(const wxString& spec)
+{
     // spec should be a colour name or "#RRGGBB"
-    if (spec.GetChar(0) == wxT('#')) {
+    if (spec.GetChar(0) == wxT('#'))
+    {
 
         long red, green, blue;
         red = green = blue = 0;
@@ -173,11 +177,11 @@ int Scintilla_LinkLexers();
 // Constructor and Destructor
 
 wxScintilla::wxScintilla(wxWindow *parent,
-                          wxWindowID id,
-                          const wxPoint& pos,
-                          const wxSize& size,
-                          long style,
-                          const wxString& name)
+                         wxWindowID id,
+                         const wxPoint& pos,
+                         const wxSize& size,
+                         long style,
+                         const wxString& name)
 {
     m_swx = NULL;
     Create(parent, id, pos, size, style, name);
@@ -213,21 +217,21 @@ bool wxScintilla::Create(wxWindow *parent,
     SetInitialSize(size);
 
     // Reduces flicker on GTK+/X11
-/* C::B begin */
-    #if wxCHECK_VERSION(3, 0, 0)
-        SetBackgroundStyle(wxBG_STYLE_PAINT);
-    #else
-        SetBackgroundStyle(wxBG_STYLE_CUSTOM);
-    #endif
-/* C::B end */
+    /* C::B begin */
+#if wxCHECK_VERSION(3, 0, 0)
+    SetBackgroundStyle(wxBG_STYLE_PAINT);
+#else
+    SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+#endif
+    /* C::B end */
 
 
     // Make sure it can take the focus
-/* C::B begin */
+    /* C::B begin */
 #if wxCHECK_VERSION(3, 0, 0)
     SetCanFocus(true);
 #endif
-/* C::B end */
+    /* C::B end */
 
     // STC doesn't support RTL languages at all
     SetLayoutDirection(wxLayout_LeftToRight);
@@ -248,7 +252,8 @@ bool wxScintilla::Create(wxWindow *parent,
 }
 
 
-wxScintilla::~wxScintilla() {
+wxScintilla::~wxScintilla()
+{
     delete m_swx;
 }
 
@@ -263,9 +268,11 @@ wxIntPtr wxScintilla::SendMsg(int msg, wxUIntPtr wp, wxIntPtr lp) const
 //----------------------------------------------------------------------
 
 // Set the vertical scrollbar to use instead of the one that's built-in.
-void wxScintilla::SetVScrollBar(wxScrollBar* bar)  {
+void wxScintilla::SetVScrollBar(wxScrollBar* bar)
+{
     m_vScrollBar = bar;
-    if (bar != NULL) {
+    if (bar != NULL)
+    {
         // ensure that the built-in scrollbar is not visible
         SetScrollbar(wxVERTICAL, 0, 0, 0);
     }
@@ -273,9 +280,11 @@ void wxScintilla::SetVScrollBar(wxScrollBar* bar)  {
 
 
 // Set the horizontal scrollbar to use instead of the one that's built-in.
-void wxScintilla::SetHScrollBar(wxScrollBar* bar)  {
+void wxScintilla::SetHScrollBar(wxScrollBar* bar)
+{
     m_hScrollBar = bar;
-    if (bar != NULL) {
+    if (bar != NULL)
+    {
         // ensure that the built-in scrollbar is not visible
         SetScrollbar(wxHORIZONTAL, 0, 0, 0);
     }
@@ -286,14 +295,16 @@ void wxScintilla::SetHScrollBar(wxScrollBar* bar)  {
 
 
 // Add text to the document at current position.
-void wxScintilla::AddText(const wxString& text) {
+void wxScintilla::AddText(const wxString& text)
+{
     const wxWX2MBbuf buf = wx2sci(text);
     SendMsg(SCI_ADDTEXT, wx2scilen(text, buf), (sptr_t)(const char*)buf);
 }
 
 // Add array of cells to document.
-void wxScintilla::AddStyledText(const wxMemoryBuffer& data) {
-                          SendMsg(SCI_ADDSTYLEDTEXT, data.GetDataLen(), (sptr_t)data.GetData());
+void wxScintilla::AddStyledText(const wxMemoryBuffer& data)
+{
+    SendMsg(SCI_ADDSTYLEDTEXT, data.GetDataLen(), (sptr_t)data.GetData());
 }
 
 // Insert string at a position.
@@ -333,8 +344,9 @@ int wxScintilla::GetLength() const
 }
 
 // Returns the character byte at the position.
-int wxScintilla::GetCharAt(int pos) const {
-         return (unsigned char)SendMsg(SCI_GETCHARAT, pos, 0);
+int wxScintilla::GetCharAt(int pos) const
+{
+    return (unsigned char)SendMsg(SCI_GETCHARAT, pos, 0);
 }
 
 // Returns the position of the caret.
@@ -350,8 +362,9 @@ int wxScintilla::GetAnchor() const
 }
 
 // Returns the style byte at the position.
-int wxScintilla::GetStyleAt(int pos) const {
-         return (unsigned char)SendMsg(SCI_GETSTYLEAT, pos, 0);
+int wxScintilla::GetStyleAt(int pos) const
+{
+    return (unsigned char)SendMsg(SCI_GETSTYLEAT, pos, 0);
 }
 
 // Redoes the next action on the undo history.
@@ -396,22 +409,24 @@ void wxScintilla::SetSavePoint()
 }
 
 // Retrieve a buffer of cells.
-wxMemoryBuffer wxScintilla::GetStyledText(int startPos, int endPos) {
-        wxMemoryBuffer buf;
-        if (endPos < startPos) {
-/* C::B begin */
-            std::swap(startPos, endPos);
-/* C::B end */
-        }
-        int len = endPos - startPos;
-        if (!len) return buf;
-        Sci_TextRange tr;
-        tr.lpstrText = (char*)buf.GetWriteBuf(len*2+1);
-        tr.chrg.cpMin = startPos;
-        tr.chrg.cpMax = endPos;
-        len = SendMsg(SCI_GETSTYLEDTEXT, 0, (sptr_t)&tr);
-        buf.UngetWriteBuf(len);
-        return buf;
+wxMemoryBuffer wxScintilla::GetStyledText(int startPos, int endPos)
+{
+    wxMemoryBuffer buf;
+    if (endPos < startPos)
+    {
+        /* C::B begin */
+        std::swap(startPos, endPos);
+        /* C::B end */
+    }
+    int len = endPos - startPos;
+    if (!len) return buf;
+    Sci_TextRange tr;
+    tr.lpstrText = (char*)buf.GetWriteBuf(len*2+1);
+    tr.chrg.cpMin = startPos;
+    tr.chrg.cpMax = endPos;
+    len = SendMsg(SCI_GETSTYLEDTEXT, 0, (sptr_t)&tr);
+    buf.UngetWriteBuf(len);
+    return buf;
 }
 
 // Are there any redoable actions in the undo history?
@@ -465,8 +480,9 @@ void wxScintilla::SetTabDrawMode(int tabDrawMode)
 }
 
 // Find the position from a point within the window.
-int wxScintilla::PositionFromPoint(wxPoint pt) const {
-        return SendMsg(SCI_POSITIONFROMPOINT, pt.x, pt.y);
+int wxScintilla::PositionFromPoint(wxPoint pt) const
+{
+    return SendMsg(SCI_POSITIONFROMPOINT, pt.x, pt.y);
 }
 
 // Find the position from a point within the window but return
@@ -496,17 +512,19 @@ void wxScintilla::SetAnchor(int anchor)
 }
 
 // Retrieve the text of the line containing the caret.
-wxString wxScintilla::GetCurLine(int* linePos) {
-        int len = LineLength(GetCurrentLine());
-        if (!len) {
-            if (linePos)  *linePos = 0;
-            return wxEmptyString;
-        }
+wxString wxScintilla::GetCurLine(int* linePos)
+{
+    int len = LineLength(GetCurrentLine());
+    if (!len)
+    {
+        if (linePos)  *linePos = 0;
+        return wxEmptyString;
+    }
 
-        wxCharBuffer buf(len);
-        int pos = SendMsg(SCI_GETCURLINE, len+1, (sptr_t)buf.data());
-        if (linePos)  *linePos = pos;
-        return sci2wx(buf);
+    wxCharBuffer buf(len);
+    int pos = SendMsg(SCI_GETCURLINE, len+1, (sptr_t)buf.data());
+    if (linePos)  *linePos = pos;
+    return sci2wx(buf);
 }
 
 // Retrieve the position of the last correctly styled character.
@@ -534,8 +552,9 @@ void wxScintilla::SetEOLMode(int eolMode)
 }
 
 // Set the current styling position to start.
-void wxScintilla::StartStyling(int start) {
-        SendMsg(SCI_STARTSTYLING, start, 0);
+void wxScintilla::StartStyling(int start)
+{
+    SendMsg(SCI_STARTSTYLING, start, 0);
 }
 
 // Change style from current styling position for length characters to a style
@@ -589,7 +608,8 @@ int wxScintilla::GetNextTabStop(int line, int x)
 }
 
 // Set the code page used to interpret the bytes of the document as characters.
-void wxScintilla::SetCodePage(int codePage) {
+void wxScintilla::SetCodePage(int codePage)
+{
 #if wxUSE_UNICODE
     wxASSERT_MSG(codePage == wxSCI_CP_UTF8,
                  wxT("Only wxSCI_CP_UTF8 may be used when wxUSE_UNICODE is on."));
@@ -615,14 +635,15 @@ void wxScintilla::SetIMEInteraction(int imeInteraction)
 // Set the symbol used for a particular marker number,
 // and optionally the fore and background colours.
 void wxScintilla::MarkerDefine(int markerNumber, int markerSymbol,
-                const wxColour& foreground,
-                const wxColour& background) {
+                               const wxColour& foreground,
+                               const wxColour& background)
+{
 
-                SendMsg(SCI_MARKERDEFINE, markerNumber, markerSymbol);
-                if (foreground.IsOk())
-                    MarkerSetForeground(markerNumber, foreground);
-                if (background.IsOk())
-                    MarkerSetBackground(markerNumber, background);
+    SendMsg(SCI_MARKERDEFINE, markerNumber, markerSymbol);
+    if (foreground.IsOk())
+        MarkerSetForeground(markerNumber, foreground);
+    if (background.IsOk())
+        MarkerSetBackground(markerNumber, background);
 }
 
 // Set the foreground colour used for a particular marker number.
@@ -687,8 +708,9 @@ int wxScintilla::MarkerPrevious(int lineStart, int markerMask)
 }
 
 // Define a marker from a bitmap
-void wxScintilla::MarkerDefinePixmap(int markerNumber, const char* const* xpmData) {
-        SendMsg(SCI_MARKERDEFINEPIXMAP, markerNumber, (sptr_t)xpmData);
+void wxScintilla::MarkerDefinePixmap(int markerNumber, const char* const* xpmData)
+{
+    SendMsg(SCI_MARKERDEFINEPIXMAP, markerNumber, (sptr_t)xpmData);
 }
 
 // Add a set of markers to a line.
@@ -881,14 +903,15 @@ int wxScintilla::StyleGetSize(int style) const
 }
 
 // Get the font facename of a style
-wxString wxScintilla::StyleGetFaceName(int style) {
-         const int msg = SCI_STYLEGETFONT;
-         long len = SendMsg(msg, style, 0);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::StyleGetFaceName(int style)
+{
+    const int msg = SCI_STYLEGETFONT;
+    long len = SendMsg(msg, style, 0);
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         SendMsg(msg, style, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(msg, style, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // Get is a style to have its end of line filled or not.
@@ -965,100 +988,102 @@ int wxScintilla::StyleGetWeight(int style) const
 }
 
 // Set the character set of the font in a style.
-void wxScintilla::StyleSetCharacterSet(int style, int characterSet) {
-        wxFontEncoding encoding;
+void wxScintilla::StyleSetCharacterSet(int style, int characterSet)
+{
+    wxFontEncoding encoding;
 
-        // Translate the Scintilla characterSet to a wxFontEncoding
-        switch (characterSet) {
-            default:
-            case wxSCI_CHARSET_ANSI:
-            case wxSCI_CHARSET_DEFAULT:
-                encoding = wxFONTENCODING_DEFAULT;
-                break;
+    // Translate the Scintilla characterSet to a wxFontEncoding
+    switch (characterSet)
+    {
+    default:
+    case wxSCI_CHARSET_ANSI:
+    case wxSCI_CHARSET_DEFAULT:
+        encoding = wxFONTENCODING_DEFAULT;
+        break;
 
-            case wxSCI_CHARSET_BALTIC:
-                encoding = wxFONTENCODING_ISO8859_13;
-                break;
+    case wxSCI_CHARSET_BALTIC:
+        encoding = wxFONTENCODING_ISO8859_13;
+        break;
 
-            case wxSCI_CHARSET_CHINESEBIG5:
-                encoding = wxFONTENCODING_CP950;
-                break;
+    case wxSCI_CHARSET_CHINESEBIG5:
+        encoding = wxFONTENCODING_CP950;
+        break;
 
-            case wxSCI_CHARSET_EASTEUROPE:
-                encoding = wxFONTENCODING_ISO8859_2;
-                break;
+    case wxSCI_CHARSET_EASTEUROPE:
+        encoding = wxFONTENCODING_ISO8859_2;
+        break;
 
-            case wxSCI_CHARSET_GB2312:
-                encoding = wxFONTENCODING_CP936;
-                break;
+    case wxSCI_CHARSET_GB2312:
+        encoding = wxFONTENCODING_CP936;
+        break;
 
-            case wxSCI_CHARSET_GREEK:
-                encoding = wxFONTENCODING_ISO8859_7;
-                break;
+    case wxSCI_CHARSET_GREEK:
+        encoding = wxFONTENCODING_ISO8859_7;
+        break;
 
-            case wxSCI_CHARSET_HANGUL:
-                encoding = wxFONTENCODING_CP949;
-                break;
+    case wxSCI_CHARSET_HANGUL:
+        encoding = wxFONTENCODING_CP949;
+        break;
 
-            case wxSCI_CHARSET_MAC:
-                encoding = wxFONTENCODING_DEFAULT;
-                break;
+    case wxSCI_CHARSET_MAC:
+        encoding = wxFONTENCODING_DEFAULT;
+        break;
 
-            case wxSCI_CHARSET_OEM:
-                encoding = wxFONTENCODING_DEFAULT;
-                break;
+    case wxSCI_CHARSET_OEM:
+        encoding = wxFONTENCODING_DEFAULT;
+        break;
 
-            case wxSCI_CHARSET_RUSSIAN:
-                encoding = wxFONTENCODING_KOI8;
-                break;
+    case wxSCI_CHARSET_RUSSIAN:
+        encoding = wxFONTENCODING_KOI8;
+        break;
 
-            case wxSCI_CHARSET_SHIFTJIS:
-                encoding = wxFONTENCODING_CP932;
-                break;
+    case wxSCI_CHARSET_SHIFTJIS:
+        encoding = wxFONTENCODING_CP932;
+        break;
 
-            case wxSCI_CHARSET_SYMBOL:
-                encoding = wxFONTENCODING_DEFAULT;
-                break;
+    case wxSCI_CHARSET_SYMBOL:
+        encoding = wxFONTENCODING_DEFAULT;
+        break;
 
-            case wxSCI_CHARSET_TURKISH:
-                encoding = wxFONTENCODING_ISO8859_9;
-                break;
+    case wxSCI_CHARSET_TURKISH:
+        encoding = wxFONTENCODING_ISO8859_9;
+        break;
 
-            case wxSCI_CHARSET_JOHAB:
-                encoding = wxFONTENCODING_DEFAULT;
-                break;
+    case wxSCI_CHARSET_JOHAB:
+        encoding = wxFONTENCODING_DEFAULT;
+        break;
 
-            case wxSCI_CHARSET_HEBREW:
-                encoding = wxFONTENCODING_ISO8859_8;
-                break;
+    case wxSCI_CHARSET_HEBREW:
+        encoding = wxFONTENCODING_ISO8859_8;
+        break;
 
-            case wxSCI_CHARSET_ARABIC:
-                encoding = wxFONTENCODING_ISO8859_6;
-                break;
+    case wxSCI_CHARSET_ARABIC:
+        encoding = wxFONTENCODING_ISO8859_6;
+        break;
 
-            case wxSCI_CHARSET_VIETNAMESE:
-                encoding = wxFONTENCODING_DEFAULT;
-                break;
+    case wxSCI_CHARSET_VIETNAMESE:
+        encoding = wxFONTENCODING_DEFAULT;
+        break;
 
-            case wxSCI_CHARSET_THAI:
-                encoding = wxFONTENCODING_ISO8859_11;
-                break;
+    case wxSCI_CHARSET_THAI:
+        encoding = wxFONTENCODING_ISO8859_11;
+        break;
 
-            case wxSCI_CHARSET_CYRILLIC:
-                encoding = wxFONTENCODING_ISO8859_5;
-                break;
+    case wxSCI_CHARSET_CYRILLIC:
+        encoding = wxFONTENCODING_ISO8859_5;
+        break;
 
-            case wxSCI_CHARSET_8859_15:
-                encoding = wxFONTENCODING_ISO8859_15;
-                break;
-        }
+    case wxSCI_CHARSET_8859_15:
+        encoding = wxFONTENCODING_ISO8859_15;
+        break;
+    }
 
-        // We just have Scintilla track the wxFontEncoding for us.  It gets used
-        // in Font::Create in PlatWX.cpp.  We add one to the value so that the
-        // effective wxFONENCODING_DEFAULT == SC_SHARSET_DEFAULT and so when
-        // Scintilla internally uses SC_CHARSET_DEFAULT we will translate it back
-        // to wxFONENCODING_DEFAULT in Font::Create.
-        SendMsg(SCI_STYLESETCHARACTERSET, style, encoding+1);
+    // We just have Scintilla track the wxFontEncoding for us.  It gets used
+    // in Font::Create in PlatWX.cpp.  We add one to the value so that the
+    // effective wxFONENCODING_DEFAULT == SC_SHARSET_DEFAULT and so when
+    // Scintilla internally uses SC_CHARSET_DEFAULT we will translate it back
+    // to wxFONENCODING_DEFAULT in Font::Create.
+    SendMsg(SCI_STYLESETCHARACTERSET, style, encoding+1);
 }
 
 // Set a style to be a hotspot or not.
@@ -1110,13 +1135,15 @@ void wxScintilla::SetCaretForeground(const wxColour& fore)
 }
 
 // When key+modifier combination keyDefinition is pressed perform sciCommand.
-void wxScintilla::CmdKeyAssign(int key, int modifiers, int cmd) {
-         SendMsg(SCI_ASSIGNCMDKEY, MAKELONG(key, modifiers), cmd);
+void wxScintilla::CmdKeyAssign(int key, int modifiers, int cmd)
+{
+    SendMsg(SCI_ASSIGNCMDKEY, MAKELONG(key, modifiers), cmd);
 }
 
 // When key+modifier combination keyDefinition is pressed do nothing.
-void wxScintilla::CmdKeyClear(int key, int modifiers) {
-         SendMsg(SCI_CLEARCMDKEY, MAKELONG(key, modifiers));
+void wxScintilla::CmdKeyClear(int key, int modifiers)
+{
+    SendMsg(SCI_CLEARCMDKEY, MAKELONG(key, modifiers));
 }
 
 // Drop all key mappings.
@@ -1126,8 +1153,9 @@ void wxScintilla::CmdKeyClearAll()
 }
 
 // Set the styles for a segment of the document.
-void wxScintilla::SetStyleBytes(int length, char* styleBytes) {
-        SendMsg(SCI_SETSTYLINGEX, length, (sptr_t)styleBytes);
+void wxScintilla::SetStyleBytes(int length, char* styleBytes)
+{
+    SendMsg(SCI_SETSTYLINGEX, length, (sptr_t)styleBytes);
 }
 
 // Set a style to be visible or not.
@@ -1156,17 +1184,18 @@ void wxScintilla::SetWordChars(const wxString& characters)
 }
 
 // Get the set of characters making up words for when moving or selecting by word.
-wxString wxScintilla::GetWordChars() const {
-         const int msg = SCI_GETWORDCHARS;
-         int len = SendMsg(msg, 0, (sptr_t)NULL);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::GetWordChars() const
+{
+    const int msg = SCI_GETWORDCHARS;
+    int len = SendMsg(msg, 0, (sptr_t)NULL);
+    if (!len) return wxEmptyString;
 
-         wxMemoryBuffer mbuf(len+1);
-         char* buf = (char*)mbuf.GetWriteBuf(len+1);
-         SendMsg(msg, 0, (sptr_t)buf);
-         mbuf.UngetWriteBuf(len);
-         mbuf.AppendByte(0);
-         return sci2wx(buf);
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(msg, 0, (sptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
 }
 
 // Start a sequence of actions that is undone and redone as a unit.
@@ -1478,8 +1507,9 @@ bool wxScintilla::AutoCompGetDropRestOfWord() const
 }
 
 // Register an image for use in autocompletion lists.
-void wxScintilla::RegisterImage(int type, const char* const* xpmData) {
-        SendMsg(SCI_REGISTERIMAGE, type, (sptr_t)xpmData);
+void wxScintilla::RegisterImage(int type, const char* const* xpmData)
+{
+    SendMsg(SCI_REGISTERIMAGE, type, (sptr_t)xpmData);
 }
 
 // Clear all the registered images.
@@ -1706,47 +1736,50 @@ int wxScintilla::GetPrintColourMode() const
 
 // Find some text in the document.
 int wxScintilla::FindText(int minPos, int maxPos, const wxString& text,
-                               int flags, int* findEnd) {
-            Sci_TextToFind  ft;
-            ft.chrg.cpMin = minPos;
-            ft.chrg.cpMax = maxPos;
-            const wxWX2MBbuf buf = wx2sci(text);
-            ft.lpstrText = (char*)(const char*)buf;
+                          int flags, int* findEnd)
+{
+    Sci_TextToFind  ft;
+    ft.chrg.cpMin = minPos;
+    ft.chrg.cpMax = maxPos;
+    const wxWX2MBbuf buf = wx2sci(text);
+    ft.lpstrText = (char*)(const char*)buf;
 
-            int pos = SendMsg(SCI_FINDTEXT, flags, (sptr_t)&ft);
-            if (findEnd) *findEnd=(pos==-1?wxSCI_INVALID_POSITION:ft.chrgText.cpMax);
-            return pos;
+    int pos = SendMsg(SCI_FINDTEXT, flags, (sptr_t)&ft);
+    if (findEnd) *findEnd=(pos==-1?wxSCI_INVALID_POSITION:ft.chrgText.cpMax);
+    return pos;
 }
 
 // On Windows, will draw the document into a display context such as a printer.
- int wxScintilla::FormatRange(bool   doDraw,
-                int    startPos,
-                int    endPos,
-                wxDC*  draw,
-                wxDC*  target,
-                wxRect renderRect,
-                wxRect pageRect) {
-             Sci_RangeToFormat fr;
+int wxScintilla::FormatRange(bool   doDraw,
+                             int    startPos,
+                             int    endPos,
+                             wxDC*  draw,
+                             wxDC*  target,
+                             wxRect renderRect,
+                             wxRect pageRect)
+{
+    Sci_RangeToFormat fr;
 
-             if (endPos < startPos) {
-/* C::B begin */
-                 std::swap(startPos, endPos);
-/* C::B end */
-             }
-             fr.hdc = draw;
-             fr.hdcTarget = target;
-             fr.rc.top = renderRect.GetTop();
-             fr.rc.left = renderRect.GetLeft();
-             fr.rc.right = renderRect.GetRight();
-             fr.rc.bottom = renderRect.GetBottom();
-             fr.rcPage.top = pageRect.GetTop();
-             fr.rcPage.left = pageRect.GetLeft();
-             fr.rcPage.right = pageRect.GetRight();
-             fr.rcPage.bottom = pageRect.GetBottom();
-             fr.chrg.cpMin = startPos;
-             fr.chrg.cpMax = endPos;
+    if (endPos < startPos)
+    {
+        /* C::B begin */
+        std::swap(startPos, endPos);
+        /* C::B end */
+    }
+    fr.hdc = draw;
+    fr.hdcTarget = target;
+    fr.rc.top = renderRect.GetTop();
+    fr.rc.left = renderRect.GetLeft();
+    fr.rc.right = renderRect.GetRight();
+    fr.rc.bottom = renderRect.GetBottom();
+    fr.rcPage.top = pageRect.GetTop();
+    fr.rcPage.left = pageRect.GetLeft();
+    fr.rcPage.right = pageRect.GetRight();
+    fr.rcPage.bottom = pageRect.GetBottom();
+    fr.chrg.cpMin = startPos;
+    fr.chrg.cpMax = endPos;
 
-             return SendMsg(SCI_FORMATRANGE, doDraw, (sptr_t)&fr);
+    return SendMsg(SCI_FORMATRANGE, doDraw, (sptr_t)&fr);
 }
 
 // Retrieve the display line at the top of the display.
@@ -1756,13 +1789,14 @@ int wxScintilla::GetFirstVisibleLine() const
 }
 
 // Retrieve the contents of a line.
-wxString wxScintilla::GetLine(int line) const {
-         int len = LineLength(line);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::GetLine(int line) const
+{
+    int len = LineLength(line);
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         SendMsg(SCI_GETLINE, line, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(SCI_GETLINE, line, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // Returns the number of lines in the document. There is always at least one.
@@ -1802,34 +1836,37 @@ bool wxScintilla::GetModify() const
 }
 
 // Retrieve the selected text.
-wxString wxScintilla::GetSelectedText() {
-         const int msg = SCI_GETSELTEXT;
-         long len = SendMsg(msg, 0, (sptr_t)0);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::GetSelectedText()
+{
+    const int msg = SCI_GETSELTEXT;
+    long len = SendMsg(msg, 0, (sptr_t)0);
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         SendMsg(msg, 0, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(msg, 0, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // Retrieve a range of text.
-wxString wxScintilla::GetTextRange(int startPos, int endPos) {
-         if (endPos < startPos) {
-/* C::B begin */
-             std::swap(startPos, endPos);
-/* C::B end */
-         }
-         int len = endPos - startPos;
-         if (!len) return wxEmptyString;
+wxString wxScintilla::GetTextRange(int startPos, int endPos)
+{
+    if (endPos < startPos)
+    {
+        /* C::B begin */
+        std::swap(startPos, endPos);
+        /* C::B end */
+    }
+    int len = endPos - startPos;
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         Sci_TextRange tr;
-         tr.lpstrText = buf.data();
-         tr.chrg.cpMin = startPos;
-         tr.chrg.cpMax = endPos;
-         tr.lpstrText[0] = '\0'; // initialize with 0 in case the range is invalid
-         SendMsg(SCI_GETTEXTRANGE, 0, (sptr_t)&tr);
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    Sci_TextRange tr;
+    tr.lpstrText = buf.data();
+    tr.chrg.cpMin = startPos;
+    tr.chrg.cpMax = endPos;
+    tr.lpstrText[0] = '\0'; // initialize with 0 in case the range is invalid
+    SendMsg(SCI_GETTEXTRANGE, 0, (sptr_t)&tr);
+    return sci2wx(buf);
 }
 
 // Draw the selection in normal style or with selection highlighted.
@@ -1839,10 +1876,11 @@ void wxScintilla::HideSelection(bool hide)
 }
 
 // Retrieve the point in the window where a position is displayed.
-wxPoint wxScintilla::PointFromPosition(int pos) {
-         int x = SendMsg(SCI_POINTXFROMPOSITION, 0, pos);
-         int y = SendMsg(SCI_POINTYFROMPOSITION, 0, pos);
-         return wxPoint(x, y);
+wxPoint wxScintilla::PointFromPosition(int pos)
+{
+    int x = SendMsg(SCI_POINTXFROMPOSITION, 0, pos);
+    int y = SendMsg(SCI_POINTYFROMPOSITION, 0, pos);
+    return wxPoint(x, y);
 }
 
 // Retrieve the line containing a position.
@@ -1946,13 +1984,14 @@ void wxScintilla::SetText(const wxString& text)
 }
 
 // Retrieve all the text in the document.
-wxString wxScintilla::GetText() const {
-         int len = GetTextLength();
-         if (!len) return wxEmptyString;
+wxString wxScintilla::GetText() const
+{
+    int len = GetTextLength();
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         SendMsg(SCI_GETTEXT, len+1, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(SCI_GETTEXT, len+1, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // Retrieve the number of characters in the document.
@@ -1962,14 +2001,16 @@ int wxScintilla::GetTextLength() const
 }
 
 // Retrieve a pointer to a function that processes messages for this Scintilla.
-void* wxScintilla::GetDirectFunction() const {
-         return (void*)SendMsg(SCI_GETDIRECTFUNCTION);
+void* wxScintilla::GetDirectFunction() const
+{
+    return (void*)SendMsg(SCI_GETDIRECTFUNCTION);
 }
 
 // Retrieve a pointer value to use as the first argument when calling
 // the function returned by GetDirectFunction.
-void* wxScintilla::GetDirectPointer() const {
-         return (void*)SendMsg(SCI_GETDIRECTPOINTER);
+void* wxScintilla::GetDirectPointer() const
+{
+    return (void*)SendMsg(SCI_GETDIRECTPOINTER);
 }
 
 // Set to overtype (true) or insert mode.
@@ -2029,11 +2070,12 @@ void wxScintilla::SetTargetRange(int start, int end)
 }
 
 // Retrieve the text in the target.
-wxString wxScintilla::GetTargetText() const {
-         int len = GetTargetEnd() - GetTargetStart();
-         wxCharBuffer buf(len);
-         SendMsg(SCI_GETTARGETTEXT, 0, (sptr_t)buf.data());
-         return sci2wx(buf);
+wxString wxScintilla::GetTargetText() const
+{
+    int len = GetTargetEnd() - GetTargetStart();
+    wxCharBuffer buf(len);
+    SendMsg(SCI_GETTARGETTEXT, 0, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // Make the target range start and end be the same as the selection range start and end.
@@ -2052,9 +2094,10 @@ void wxScintilla::TargetWholeDocument()
 // Text is counted so it can contain NULs.
 // Returns the length of the replacement text.
 
-     int wxScintilla::ReplaceTarget(const wxString& text) {
-         const wxWX2MBbuf buf = wx2sci(text);
-         return SendMsg(SCI_REPLACETARGET, wx2scilen(text, buf), (sptr_t)(const char*)buf);
+int wxScintilla::ReplaceTarget(const wxString& text)
+{
+    const wxWX2MBbuf buf = wx2sci(text);
+    return SendMsg(SCI_REPLACETARGET, wx2scilen(text, buf), (sptr_t)(const char*)buf);
 }
 
 // Replace the target text with the argument text after \\d processing.
@@ -2064,18 +2107,20 @@ void wxScintilla::TargetWholeDocument()
 // Returns the length of the replacement text including any change
 // caused by processing the \\d patterns.
 
-     int wxScintilla::ReplaceTargetRE(const wxString& text) {
-         const wxWX2MBbuf buf = wx2sci(text);
-         return SendMsg(SCI_REPLACETARGETRE, wx2scilen(text, buf), (sptr_t)(const char*)buf);
+int wxScintilla::ReplaceTargetRE(const wxString& text)
+{
+    const wxWX2MBbuf buf = wx2sci(text);
+    return SendMsg(SCI_REPLACETARGETRE, wx2scilen(text, buf), (sptr_t)(const char*)buf);
 }
 
 // Search for a counted string in the target and set the target to the found
 // range. Text is counted so it can contain NULs.
 // Returns length of range or -1 for failure in which case target is not moved.
 
-     int wxScintilla::SearchInTarget(const wxString& text) {
-         const wxWX2MBbuf buf = wx2sci(text);
-         return SendMsg(SCI_SEARCHINTARGET, wx2scilen(text, buf), (sptr_t)(const char*)buf);
+int wxScintilla::SearchInTarget(const wxString& text)
+{
+    const wxWX2MBbuf buf = wx2sci(text);
+    return SendMsg(SCI_SEARCHINTARGET, wx2scilen(text, buf), (sptr_t)(const char*)buf);
 }
 
 // Set the search flags used by SearchInTarget.
@@ -2512,9 +2557,10 @@ bool wxScintilla::GetUseVerticalScrollBar() const
 }
 
 // Append a string to the end of the document without changing the selection.
-void wxScintilla::AppendText(const wxString& text) {
-                    const wxWX2MBbuf buf = wx2sci(text);
-                    SendMsg(SCI_APPENDTEXT, wx2scilen(text, buf), (sptr_t)(const char*)buf);
+void wxScintilla::AppendText(const wxString& text)
+{
+    const wxWX2MBbuf buf = wx2sci(text);
+    SendMsg(SCI_APPENDTEXT, wx2scilen(text, buf), (sptr_t)(const char*)buf);
 }
 
 // Is drawing done in two phases with backgrounds drawn before foregrounds?
@@ -2576,14 +2622,15 @@ int wxScintilla::GetMultiPaste() const
 }
 
 // Retrieve the value of a tag from a regular expression search.
-wxString wxScintilla::GetTag(int tagNumber) const {
-         const int msg = SCI_GETTAG;
-         long len = SendMsg(msg, tagNumber, (sptr_t)NULL);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::GetTag(int tagNumber) const
+{
+    const int msg = SCI_GETTAG;
+    long len = SendMsg(msg, tagNumber, (sptr_t)NULL);
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         SendMsg(msg, tagNumber, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(msg, tagNumber, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // Join the lines in the target.
@@ -3008,11 +3055,12 @@ void wxScintilla::BraceBadLightIndicator(bool useSetting, int indicator)
 
 // Find the position of a matching brace or wxSCI_INVALID_POSITION if no match.
 // The maxReStyle must be 0 for now. It may be defined in a future release.
-int wxScintilla::BraceMatch(int pos, int maxReStyle){
-        wxASSERT_MSG(maxReStyle==0,
-                     wxT("The second argument passed to BraceMatch should be 0"));
+int wxScintilla::BraceMatch(int pos, int maxReStyle)
+{
+    wxASSERT_MSG(maxReStyle==0,
+                 wxT("The second argument passed to BraceMatch should be 0"));
 
-        return SendMsg(SCI_BRACEMATCH, pos, maxReStyle);
+    return SendMsg(SCI_BRACEMATCH, pos, maxReStyle);
 }
 
 // Are the end of line characters visible?
@@ -3028,13 +3076,15 @@ void wxScintilla::SetViewEOL(bool visible)
 }
 
 // Retrieve a pointer to the document object.
-void* wxScintilla::GetDocPointer() {
-         return (void*)SendMsg(SCI_GETDOCPOINTER);
+void* wxScintilla::GetDocPointer()
+{
+    return (void*)SendMsg(SCI_GETDOCPOINTER);
 }
 
 // Change the document object used.
-void wxScintilla::SetDocPointer(void* docPointer) {
-         SendMsg(SCI_SETDOCPOINTER, 0, (sptr_t)docPointer);
+void wxScintilla::SetDocPointer(void* docPointer)
+{
+    SendMsg(SCI_SETDOCPOINTER, 0, (sptr_t)docPointer);
 }
 
 // Set which document modification events are sent to the container.
@@ -3148,18 +3198,21 @@ int wxScintilla::GetZoom() const
 
 // Create a new document object.
 // Starts with reference count of 1 and not selected into editor.
-void* wxScintilla::CreateDocument() {
-         return (void*)SendMsg(SCI_CREATEDOCUMENT);
+void* wxScintilla::CreateDocument()
+{
+    return (void*)SendMsg(SCI_CREATEDOCUMENT);
 }
 
 // Extend life of document.
-void wxScintilla::AddRefDocument(void* docPointer) {
-         SendMsg(SCI_ADDREFDOCUMENT, 0, (sptr_t)docPointer);
+void wxScintilla::AddRefDocument(void* docPointer)
+{
+    SendMsg(SCI_ADDREFDOCUMENT, 0, (sptr_t)docPointer);
 }
 
 // Release a reference to the document, deleting document if it fades to black.
-void wxScintilla::ReleaseDocument(void* docPointer) {
-         SendMsg(SCI_RELEASEDOCUMENT, 0, (sptr_t)docPointer);
+void wxScintilla::ReleaseDocument(void* docPointer)
+{
+    SendMsg(SCI_RELEASEDOCUMENT, 0, (sptr_t)docPointer);
 }
 
 // Get which document modification events are sent to the container.
@@ -3574,17 +3627,18 @@ void wxScintilla::SetWhitespaceChars(const wxString& characters)
 }
 
 // Get the set of characters making up whitespace for when moving or selecting by word.
-wxString wxScintilla::GetWhitespaceChars() const {
-         const int msg = SCI_GETWHITESPACECHARS;
-         int len = SendMsg(msg, 0, (sptr_t)NULL);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::GetWhitespaceChars() const
+{
+    const int msg = SCI_GETWHITESPACECHARS;
+    int len = SendMsg(msg, 0, (sptr_t)NULL);
+    if (!len) return wxEmptyString;
 
-         wxMemoryBuffer mbuf(len+1);
-         char* buf = (char*)mbuf.GetWriteBuf(len+1);
-         SendMsg(msg, 0, (sptr_t)buf);
-         mbuf.UngetWriteBuf(len);
-         mbuf.AppendByte(0);
-         return sci2wx(buf);
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(msg, 0, (sptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
 }
 
 // Set the set of characters making up punctuation characters
@@ -3595,17 +3649,18 @@ void wxScintilla::SetPunctuationChars(const wxString& characters)
 }
 
 // Get the set of characters making up punctuation characters
-wxString wxScintilla::GetPunctuationChars() const {
-         const int msg = SCI_GETPUNCTUATIONCHARS;
-         int len = SendMsg(msg, 0, (sptr_t)NULL);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::GetPunctuationChars() const
+{
+    const int msg = SCI_GETPUNCTUATIONCHARS;
+    int len = SendMsg(msg, 0, (sptr_t)NULL);
+    if (!len) return wxEmptyString;
 
-         wxMemoryBuffer mbuf(len+1);
-         char* buf = (char*)mbuf.GetWriteBuf(len+1);
-         SendMsg(msg, 0, (sptr_t)buf);
-         mbuf.UngetWriteBuf(len);
-         mbuf.AppendByte(0);
-         return sci2wx(buf);
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(msg, 0, (sptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
 }
 
 // Reset the set of characters for whitespace and word characters to the defaults.
@@ -3621,14 +3676,15 @@ int wxScintilla::AutoCompGetCurrent() const
 }
 
 // Get currently selected item text in the auto-completion list
-wxString wxScintilla::AutoCompGetCurrentText() const {
-         const int msg = SCI_AUTOCGETCURRENTTEXT;
-         long len = SendMsg(msg, 0, 0);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::AutoCompGetCurrentText() const
+{
+    const int msg = SCI_AUTOCGETCURRENTTEXT;
+    long len = SendMsg(msg, 0, 0);
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         SendMsg(msg, 0, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(msg, 0, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // Set auto-completion case insensitive behaviour to either prefer case-sensitive matches or have no preference.
@@ -3833,7 +3889,8 @@ const char* wxScintilla::GetCharacterPointer() const
 // Return a read-only pointer to a range of characters in the document.
 // May move the gap so that the range is contiguous, but will only move up
 // to lengthRange bytes.
-const char* wxScintilla::GetRangePointer(int position, int rangeLength) const {
+const char* wxScintilla::GetRangePointer(int position, int rangeLength) const
+{
     return (const char*)SendMsg(SCI_GETRANGEPOINTER, position, rangeLength);
 }
 
@@ -3905,13 +3962,14 @@ void wxScintilla::MarginSetText(int line, const wxString& text)
 }
 
 // Get the text in the text margin for a line
-wxString wxScintilla::MarginGetText(int line) const {
-         const int msg = SCI_MARGINGETTEXT;
-         long len = SendMsg(msg, line, 0);
+wxString wxScintilla::MarginGetText(int line) const
+{
+    const int msg = SCI_MARGINGETTEXT;
+    long len = SendMsg(msg, line, 0);
 
-         wxCharBuffer buf(len);
-         SendMsg(msg, line, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(msg, line, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // Set the style number for the text margin for a line
@@ -3933,16 +3991,17 @@ void wxScintilla::MarginSetStyles(int line, const wxString& styles)
 }
 
 // Get the styles in the text margin for a line
-wxString wxScintilla::MarginGetStyles(int line) const {
-         const int msg = SCI_MARGINGETSTYLES;
-         long len = SendMsg(msg, line, 0);
+wxString wxScintilla::MarginGetStyles(int line) const
+{
+    const int msg = SCI_MARGINGETSTYLES;
+    long len = SendMsg(msg, line, 0);
 
-         wxMemoryBuffer mbuf(len+1);
-         char* buf = (char*)mbuf.GetWriteBuf(len+1);
-         SendMsg(msg, line, (sptr_t)buf);
-         mbuf.UngetWriteBuf(len);
-         mbuf.AppendByte(0);
-         return sci2wx(buf);
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(msg, line, (sptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
 }
 
 // Clear the margin text on all lines
@@ -3982,14 +4041,15 @@ void wxScintilla::AnnotationSetText(int line, const wxString& text)
 }
 
 // Get the annotation text for a line
-wxString wxScintilla::AnnotationGetText(int line) const {
-         const int msg = SCI_ANNOTATIONGETTEXT;
-         long len = SendMsg(msg, line, 0);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::AnnotationGetText(int line) const
+{
+    const int msg = SCI_ANNOTATIONGETTEXT;
+    long len = SendMsg(msg, line, 0);
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         SendMsg(msg, line, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(msg, line, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // Set the style number for the annotations for a line
@@ -4011,16 +4071,17 @@ void wxScintilla::AnnotationSetStyles(int line, const wxString& styles)
 }
 
 // Get the annotation styles for a line
-wxString wxScintilla::AnnotationGetStyles(int line) const {
-         const int msg = SCI_ANNOTATIONGETSTYLES;
-         long len = SendMsg(msg, line, 0);
+wxString wxScintilla::AnnotationGetStyles(int line) const
+{
+    const int msg = SCI_ANNOTATIONGETSTYLES;
+    long len = SendMsg(msg, line, 0);
 
-         wxMemoryBuffer mbuf(len+1);
-         char* buf = (char*)mbuf.GetWriteBuf(len+1);
-         SendMsg(msg, line, (sptr_t)buf);
-         mbuf.UngetWriteBuf(len);
-         mbuf.AppendByte(0);
-         return sci2wx(buf);
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(msg, line, (sptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
 }
 
 // Get the number of annotation lines for a line
@@ -4482,14 +4543,16 @@ void wxScintilla::RGBAImageSetScale(int scalePercent)
 
 // Define a marker from RGBA data.
 // It has the width and height from RGBAImageSetWidth/Height
-void wxScintilla::MarkerDefineRGBAImage(int markerNumber, const unsigned char* pixels) {
-           SendMsg(SCI_MARKERDEFINERGBAIMAGE, markerNumber, (sptr_t)pixels);
+void wxScintilla::MarkerDefineRGBAImage(int markerNumber, const unsigned char* pixels)
+{
+    SendMsg(SCI_MARKERDEFINERGBAIMAGE, markerNumber, (sptr_t)pixels);
 }
 
 // Register an RGBA image for use in autocompletion lists.
 // It has the width and height from RGBAImageSetWidth/Height
-void wxScintilla::RegisterRGBAImage(int type, const unsigned char* pixels) {
-           SendMsg(SCI_REGISTERRGBAIMAGE, type, (sptr_t)pixels);
+void wxScintilla::RegisterRGBAImage(int type, const unsigned char* pixels)
+{
+    SendMsg(SCI_REGISTERRGBAIMAGE, type, (sptr_t)pixels);
 }
 
 // Scroll to start of document.
@@ -4517,8 +4580,9 @@ int wxScintilla::GetTechnology() const
 }
 
 // Create an ILoader*.
-void* wxScintilla::CreateLoader(int bytes) const {
-         return (void*)(sptr_t)SendMsg(SCI_CREATELOADER, bytes);
+void* wxScintilla::CreateLoader(int bytes) const
+{
+    return (void*)(sptr_t)SendMsg(SCI_CREATELOADER, bytes);
 }
 
 // Move caret to before first visible character on display line.
@@ -4571,15 +4635,16 @@ void wxScintilla::SetRepresentation(const wxString& encodedCharacter, const wxSt
 }
 
 // Set the way a character is drawn.
-wxString wxScintilla::GetRepresentation(const wxString& encodedCharacter) const {
-         const int msg = SCI_GETREPRESENTATION;
-         const wxWX2MBbuf encCharBuf = wx2sci(encodedCharacter);
-         long len = SendMsg(msg, (sptr_t)(const char*)encCharBuf, (sptr_t)NULL);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::GetRepresentation(const wxString& encodedCharacter) const
+{
+    const int msg = SCI_GETREPRESENTATION;
+    const wxWX2MBbuf encCharBuf = wx2sci(encodedCharacter);
+    long len = SendMsg(msg, (sptr_t)(const char*)encCharBuf, (sptr_t)NULL);
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         SendMsg(msg, (sptr_t)(const char*)encCharBuf, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(msg, (sptr_t)(const char*)encCharBuf, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // Remove a character representation.
@@ -4643,34 +4708,37 @@ void wxScintilla::LoadLexerLibrary(const wxString& path)
 }
 
 // Retrieve a "property" value previously set with SetProperty.
-wxString wxScintilla::GetProperty(const wxString& key) {
-         const int msg = SCI_GETPROPERTY;
-         const wxWX2MBbuf keyBuf = wx2sci(key);
-         long len = SendMsg(msg, (uptr_t)(const char*)keyBuf, 0);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::GetProperty(const wxString& key)
+{
+    const int msg = SCI_GETPROPERTY;
+    const wxWX2MBbuf keyBuf = wx2sci(key);
+    long len = SendMsg(msg, (uptr_t)(const char*)keyBuf, 0);
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         SendMsg(msg, (uptr_t)(const char*)keyBuf, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(msg, (uptr_t)(const char*)keyBuf, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // Retrieve a "property" value previously set with SetProperty,
 // with "$()" variable replacement on returned buffer.
-wxString wxScintilla::GetPropertyExpanded(const wxString& key) {
-         const int msg = SCI_GETPROPERTYEXPANDED;
-         const wxWX2MBbuf keyBuf = wx2sci(key);
-         long len = SendMsg(msg, (uptr_t)(const char*)keyBuf, 0);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::GetPropertyExpanded(const wxString& key)
+{
+    const int msg = SCI_GETPROPERTYEXPANDED;
+    const wxWX2MBbuf keyBuf = wx2sci(key);
+    long len = SendMsg(msg, (uptr_t)(const char*)keyBuf, 0);
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         SendMsg(msg, (uptr_t)(const char*)keyBuf, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(msg, (uptr_t)(const char*)keyBuf, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // Retrieve a "property" value previously set with SetProperty,
 // interpreted as an int AFTER any "$()" variable replacement.
-int wxScintilla::GetPropertyInt(const wxString &key, int defaultValue) const {
-        return SendMsg(SCI_GETPROPERTYINT, (uptr_t)(const char*)wx2sci(key), defaultValue);
+int wxScintilla::GetPropertyInt(const wxString &key, int defaultValue) const
+{
+    return SendMsg(SCI_GETPROPERTYINT, (uptr_t)(const char*)wx2sci(key), defaultValue);
 }
 
 // Retrieve the number of bits the current lexer needs for styling.
@@ -4680,30 +4748,33 @@ int wxScintilla::GetStyleBitsNeeded() const
 }
 
 // Retrieve the lexing language of the document.
-wxString wxScintilla::GetLexerLanguage() const {
-         const int msg = SCI_GETLEXERLANGUAGE;
-         int len = SendMsg(msg, 0, (sptr_t)NULL);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::GetLexerLanguage() const
+{
+    const int msg = SCI_GETLEXERLANGUAGE;
+    int len = SendMsg(msg, 0, (sptr_t)NULL);
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         SendMsg(msg, 0, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(msg, 0, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // For private communication between an application and a known lexer.
-void* wxScintilla::PrivateLexerCall(int operation, void* pointer) {
-           return (void*)(sptr_t)SendMsg(SCI_PRIVATELEXERCALL, operation, (sptr_t)pointer);
+void* wxScintilla::PrivateLexerCall(int operation, void* pointer)
+{
+    return (void*)(sptr_t)SendMsg(SCI_PRIVATELEXERCALL, operation, (sptr_t)pointer);
 }
 
 // Retrieve a '\\n' separated list of properties understood by the current lexer.
-wxString wxScintilla::PropertyNames() const {
-         const int msg = SCI_PROPERTYNAMES;
-         long len = SendMsg(msg, 0, (sptr_t)NULL);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::PropertyNames() const
+{
+    const int msg = SCI_PROPERTYNAMES;
+    long len = SendMsg(msg, 0, (sptr_t)NULL);
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         SendMsg(msg, 0, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(msg, 0, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // Retrieve the type of a property.
@@ -4713,26 +4784,28 @@ int wxScintilla::PropertyType(const wxString& name)
 }
 
 // Describe a property.
-wxString wxScintilla::DescribeProperty(const wxString& name) const {
-         const int msg = SCI_DESCRIBEPROPERTY;
-         const wxWX2MBbuf nameBuf = wx2sci(name);
-         long len = SendMsg(msg, (uptr_t)(const char*)nameBuf, (sptr_t)NULL);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::DescribeProperty(const wxString& name) const
+{
+    const int msg = SCI_DESCRIBEPROPERTY;
+    const wxWX2MBbuf nameBuf = wx2sci(name);
+    long len = SendMsg(msg, (uptr_t)(const char*)nameBuf, (sptr_t)NULL);
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         SendMsg(msg, (uptr_t)(const char*)nameBuf, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(msg, (uptr_t)(const char*)nameBuf, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // Retrieve a '\\n' separated list of descriptions of the keyword sets understood by the current lexer.
-wxString wxScintilla::DescribeKeyWordSets() const {
-         const int msg = SCI_DESCRIBEKEYWORDSETS;
-         long len = SendMsg(msg, 0, (sptr_t)NULL);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::DescribeKeyWordSets() const
+{
+    const int msg = SCI_DESCRIBEKEYWORDSETS;
+    long len = SendMsg(msg, 0, (sptr_t)NULL);
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         SendMsg(msg, 0, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(msg, 0, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 // Bit set of LineEndType enumertion for which line ends beyond the standard
@@ -4792,14 +4865,15 @@ int wxScintilla::DistanceToSecondaryStyles() const
 }
 
 // Get the set of base styles that can be extended with sub styles
-wxString wxScintilla::GetSubStyleBases() const {
-         const int msg = SCI_GETSUBSTYLEBASES;
-         long len = SendMsg(msg, 0, (sptr_t)NULL);
-         if (!len) return wxEmptyString;
+wxString wxScintilla::GetSubStyleBases() const
+{
+    const int msg = SCI_GETSUBSTYLEBASES;
+    long len = SendMsg(msg, 0, (sptr_t)NULL);
+    if (!len) return wxEmptyString;
 
-         wxCharBuffer buf(len);
-         SendMsg(msg, 0, (sptr_t)buf.data());
-         return sci2wx(buf);
+    wxCharBuffer buf(len);
+    SendMsg(msg, 0, (sptr_t)buf.data());
+    return sci2wx(buf);
 }
 
 //}}}
@@ -4807,7 +4881,8 @@ wxString wxScintilla::GetSubStyleBases() const {
 
 
 // Returns the line number of the line with the caret.
-int wxScintilla::GetCurrentLine() {
+int wxScintilla::GetCurrentLine()
+{
     int line = LineFromPosition(GetCurrentPos());
     return line;
 }
@@ -4825,10 +4900,12 @@ int wxScintilla::GetCurrentLine() {
 //      eol                     turns on eol filling
 //      underline               turns on underlining
 //
-void wxScintilla::StyleSetSpec(int styleNum, const wxString& spec) {
+void wxScintilla::StyleSetSpec(int styleNum, const wxString& spec)
+{
 
     wxStringTokenizer tkz(spec, wxT(","));
-    while (tkz.HasMoreTokens()) {
+    while (tkz.HasMoreTokens())
+    {
         wxString token = tkz.GetNextToken();
 
         wxString option = token.BeforeFirst(':');
@@ -4846,7 +4923,8 @@ void wxScintilla::StyleSetSpec(int styleNum, const wxString& spec) {
         else if (option == wxT("eol"))
             StyleSetEOLFilled(styleNum, true);
 
-        else if (option == wxT("size")) {
+        else if (option == wxT("size"))
+        {
             long points;
             if (val.ToLong(&points))
                 StyleSetSize(styleNum, points);
@@ -4865,7 +4943,8 @@ void wxScintilla::StyleSetSpec(int styleNum, const wxString& spec) {
 
 
 // Get the font of a style
-wxFont wxScintilla::StyleGetFont(int style) {
+wxFont wxScintilla::StyleGetFont(int style)
+{
     wxFont font;
     font.SetPointSize(StyleGetSize(style));
     font.SetFaceName(StyleGetFaceName(style));
@@ -4885,7 +4964,8 @@ wxFont wxScintilla::StyleGetFont(int style) {
 
 // Set style size, face, bold, italic, and underline attributes from
 // a wxFont's attributes.
-void wxScintilla::StyleSetFont(int styleNum, const wxFont& font) {
+void wxScintilla::StyleSetFont(int styleNum, const wxFont& font)
+{
 #ifdef __WXGTK__
     // Ensure that the native font is initialized
     int x, y;
@@ -4894,9 +4974,9 @@ void wxScintilla::StyleSetFont(int styleNum, const wxFont& font) {
     int            size     = font.GetPointSize();
     wxString       faceName = font.GetFaceName();
     bool           bold     = font.GetWeight() == wxFONTWEIGHT_BOLD;
-/* C::B begin */
+    /* C::B begin */
     bool           italic   = font.GetStyle() == wxFONTSTYLE_ITALIC;
-/* C::B end */
+    /* C::B end */
     bool           under    = font.GetUnderlined();
     wxFontEncoding encoding = font.GetEncoding();
 
@@ -4905,10 +4985,11 @@ void wxScintilla::StyleSetFont(int styleNum, const wxFont& font) {
 
 // Set all font style attributes at once.
 void wxScintilla::StyleSetFontAttr(int styleNum, int size,
-                                        const wxString& faceName,
-                                        bool bold, bool italic,
-                                        bool underline,
-                                        wxFontEncoding encoding) {
+                                   const wxString& faceName,
+                                   bool bold, bool italic,
+                                   bool underline,
+                                   wxFontEncoding encoding)
+{
     StyleSetSize(styleNum, size);
     StyleSetFaceName(styleNum, faceName);
     StyleSetBold(styleNum, bold);
@@ -4926,38 +5007,42 @@ void wxScintilla::StyleSetFontEncoding(int style, wxFontEncoding encoding)
 
 
 // Perform one of the operations defined by the wxSCI_CMD_* constants.
-void wxScintilla::CmdKeyExecute(int cmd) {
+void wxScintilla::CmdKeyExecute(int cmd)
+{
     SendMsg(cmd);
 }
 
 
 // Set the left and right margin in the edit area, measured in pixels.
-void wxScintilla::SetMargins(int left, int right) {
+void wxScintilla::SetMargins(int left, int right)
+{
     SetMarginLeft(left);
     SetMarginRight(right);
 }
 
 
 // Scroll enough to make the given line visible
-void wxScintilla::ScrollToLine(int line) {
+void wxScintilla::ScrollToLine(int line)
+{
     m_swx->DoScrollToLine(line);
 }
 
 
 // Scroll enough to make the given column visible
-void wxScintilla::ScrollToColumn(int column) {
+void wxScintilla::ScrollToColumn(int column)
+{
     m_swx->DoScrollToColumn(column);
 }
 
 
 void wxScintilla::DoSetValue(const wxString& value, int flags)
 {
-/* C::B begin */
+    /* C::B begin */
 //    if ( flags & SetValue_SelectionOnly )
 //        ReplaceSelection(value);
 //    else
     wxUnusedVar(flags);
-/* C::B end */
+    /* C::B end */
     SetText(value);
 
     // We don't send wxEVT_TEXT anyhow, so ignore the
@@ -5036,7 +5121,7 @@ wxScintilla::DoLoadFile(const wxString& filename, int WXUNUSED(fileType))
     }
 #endif // !wxUSE_FFILE && !wxUSE_FILE
 
-   return false;
+    return false;
 }
 
 // If we don't derive from wxTextAreaBase, we need to implement these methods
@@ -5066,38 +5151,46 @@ bool wxScintilla::LoadFile(const wxString& filename)
 /* C::B end */
 
 #if wxUSE_DRAG_AND_DROP
-wxDragResult wxScintilla::DoDragEnter(wxCoord x, wxCoord y, wxDragResult def) {
+wxDragResult wxScintilla::DoDragEnter(wxCoord x, wxCoord y, wxDragResult def)
+{
     return m_swx->DoDragEnter(x, y, def);
 }
 
-wxDragResult wxScintilla::DoDragOver(wxCoord x, wxCoord y, wxDragResult def) {
+wxDragResult wxScintilla::DoDragOver(wxCoord x, wxCoord y, wxDragResult def)
+{
     return m_swx->DoDragOver(x, y, def);
 }
 
-void wxScintilla::DoDragLeave() {
+void wxScintilla::DoDragLeave()
+{
     m_swx->DoDragLeave();
 }
 
-bool wxScintilla::DoDropText(long x, long y, const wxString& data) {
+bool wxScintilla::DoDropText(long x, long y, const wxString& data)
+{
     return m_swx->DoDropText(x, y, data);
 }
 #endif
 
 
-void wxScintilla::SetUseAntiAliasing(bool useAA) {
+void wxScintilla::SetUseAntiAliasing(bool useAA)
+{
     m_swx->SetUseAntiAliasing(useAA);
 }
 
-bool wxScintilla::GetUseAntiAliasing() {
+bool wxScintilla::GetUseAntiAliasing()
+{
     return m_swx->GetUseAntiAliasing();
 }
 
-void wxScintilla::AnnotationClearLine(int line) {
+void wxScintilla::AnnotationClearLine(int line)
+{
     SendMsg(SCI_ANNOTATIONSETTEXT, line, (sptr_t)NULL);
 }
 
 void wxScintilla::MarkerDefineBitmap(int markerNumber,
-                                     const wxBitmap& bmp) {
+                                     const wxBitmap& bmp)
+{
     m_swx->DoMarkerDefineBitmap(markerNumber, bmp);
 }
 
@@ -5124,7 +5217,8 @@ void wxScintilla::InsertTextRaw(int pos, const char* text)
 wxCharBuffer wxScintilla::GetCurLineRaw(int* linePos)
 {
     int len = LineLength(GetCurrentLine());
-    if (!len) {
+    if (!len)
+    {
         if (linePos)  *linePos = 0;
         wxCharBuffer empty;
         return empty;
@@ -5139,7 +5233,8 @@ wxCharBuffer wxScintilla::GetCurLineRaw(int* linePos)
 wxCharBuffer wxScintilla::GetLineRaw(int line)
 {
     int len = LineLength(line);
-    if (!len) {
+    if (!len)
+    {
         wxCharBuffer empty;
         return empty;
     }
@@ -5173,13 +5268,15 @@ wxCharBuffer wxScintilla::GetTargetTextRaw()
 
 wxCharBuffer wxScintilla::GetTextRangeRaw(int startPos, int endPos)
 {
-    if (endPos < startPos) {
-/* C::B begin */
+    if (endPos < startPos)
+    {
+        /* C::B begin */
         std::swap(startPos, endPos);
-/* C::B end */
+        /* C::B end */
     }
     int len  = endPos - startPos;
-    if (!len) {
+    if (!len)
+    {
         wxCharBuffer empty;
         return empty;
     }
@@ -5229,21 +5326,25 @@ bool wxScintilla::HaveMouseCapture() const
 //----------------------------------------------------------------------
 // Event handlers
 
-void wxScintilla::OnPaint(wxPaintEvent& WXUNUSED(evt)) {
+void wxScintilla::OnPaint(wxPaintEvent& WXUNUSED(evt))
+{
     wxPaintDC dc(this);
     m_swx->DoPaint(&dc, GetUpdateRegion().GetBox());
 }
 
-void wxScintilla::OnScrollWin(wxScrollWinEvent& evt) {
+void wxScintilla::OnScrollWin(wxScrollWinEvent& evt)
+{
     if (evt.GetOrientation() == wxHORIZONTAL)
         m_swx->DoHScroll(evt.GetEventType(), evt.GetPosition());
     else
         m_swx->DoVScroll(evt.GetEventType(), evt.GetPosition());
 }
 
-void wxScintilla::OnScroll(wxScrollEvent& evt) {
+void wxScintilla::OnScroll(wxScrollEvent& evt)
+{
     wxScrollBar* sb = wxDynamicCast(evt.GetEventObject(), wxScrollBar);
-    if (sb) {
+    if (sb)
+    {
         if (sb->IsVertical())
             m_swx->DoVScroll(evt.GetEventType(), evt.GetPosition());
         else
@@ -5251,53 +5352,62 @@ void wxScintilla::OnScroll(wxScrollEvent& evt) {
     }
 }
 
-void wxScintilla::OnSize(wxSizeEvent& WXUNUSED(evt)) {
-    if (m_swx) {
+void wxScintilla::OnSize(wxSizeEvent& WXUNUSED(evt))
+{
+    if (m_swx)
+    {
         wxSize sz = GetClientSize();
         m_swx->DoSize(sz.x, sz.y);
     }
 }
 
-void wxScintilla::OnMouseLeftDown(wxMouseEvent& evt) {
+void wxScintilla::OnMouseLeftDown(wxMouseEvent& evt)
+{
     SetFocus();
     wxPoint pt = evt.GetPosition();
     m_swx->DoLeftButtonDown(Point(pt.x, pt.y), m_stopWatch.Time(),
-                      evt.ShiftDown(), evt.ControlDown(), evt.AltDown());
+                            evt.ShiftDown(), evt.ControlDown(), evt.AltDown());
 }
 
-void wxScintilla::OnMouseRightDown(wxMouseEvent& evt) {
+void wxScintilla::OnMouseRightDown(wxMouseEvent& evt)
+{
     SetFocus();
     wxPoint pt = evt.GetPosition();
     m_swx->DoRightButtonDown(Point(pt.x, pt.y), m_stopWatch.Time(),
-                      evt.ShiftDown(), evt.ControlDown(), evt.AltDown());
+                             evt.ShiftDown(), evt.ControlDown(), evt.AltDown());
     // We need to call evt.Skip() to allow generating EVT_CONTEXT_MENU
     evt.Skip();
 }
 
-void wxScintilla::OnMouseMove(wxMouseEvent& evt) {
+void wxScintilla::OnMouseMove(wxMouseEvent& evt)
+{
     wxPoint pt = evt.GetPosition();
     m_swx->DoLeftButtonMove(Point(pt.x, pt.y));
 }
 
-void wxScintilla::OnMouseLeftUp(wxMouseEvent& evt) {
+void wxScintilla::OnMouseLeftUp(wxMouseEvent& evt)
+{
     wxPoint pt = evt.GetPosition();
     m_swx->DoLeftButtonUp(Point(pt.x, pt.y), m_stopWatch.Time(),
-                      evt.ControlDown());
+                          evt.ControlDown());
 }
 
 
-void wxScintilla::OnMouseRightUp(wxMouseEvent& evt) {
+void wxScintilla::OnMouseRightUp(wxMouseEvent& evt)
+{
     wxPoint pt = evt.GetPosition();
     m_swx->DoContextMenu(Point(pt.x, pt.y));
 }
 
 
-void wxScintilla::OnMouseMiddleUp(wxMouseEvent& evt) {
+void wxScintilla::OnMouseMiddleUp(wxMouseEvent& evt)
+{
     wxPoint pt = evt.GetPosition();
     m_swx->DoMiddleButtonUp(Point(pt.x, pt.y));
 }
 
-void wxScintilla::OnContextMenu(wxContextMenuEvent& evt) {
+void wxScintilla::OnContextMenu(wxContextMenuEvent& evt)
+{
     wxPoint pt = evt.GetPosition();
     ScreenToClient(&pt.x, &pt.y);
     /*
@@ -5305,7 +5415,8 @@ void wxScintilla::OnContextMenu(wxContextMenuEvent& evt) {
       or at caret location if not
     */
     wxHitTest ht = this->HitTest(pt);
-    if (ht != wxHT_WINDOW_INSIDE) {
+    if (ht != wxHT_WINDOW_INSIDE)
+    {
         pt = this->PointFromPosition(this->GetCurrentPos());
     }
     if ( !m_swx->DoContextMenu(Point(pt.x, pt.y)) )
@@ -5318,12 +5429,15 @@ void wxScintilla::OnMouseWheel(wxMouseEvent& evt)
     // if the mouse wheel is not captured, test if the mouse
     // pointer is over the editor window and if not, don't
     // handle the message but pass it on.
-    if ( !GetMouseWheelCaptures() ) {
-        if ( !GetRect().Contains(evt.GetPosition()) ) {
+    if ( !GetMouseWheelCaptures() )
+    {
+        if ( !GetRect().Contains(evt.GetPosition()) )
+        {
             wxWindow* parent = GetParent();
-            if (parent != NULL) {
+            if (parent != NULL)
+            {
                 wxMouseEvent newevt(evt);
-/* C::B begin */
+                /* C::B begin */
                 wxPoint newpos = parent->ScreenToClient(ClientToScreen(evt.GetPosition()));
 #if wxCHECK_VERSION(3, 0, 0)
                 newevt.SetPosition(newpos);
@@ -5333,35 +5447,36 @@ void wxScintilla::OnMouseWheel(wxMouseEvent& evt)
                 newevt.m_y = newpos.y;
                 GetEventHandler()->ProcessEvent(newevt);
 #endif // wxCHECK_VERSION
-/* C::B end */
+                /* C::B end */
             }
             return;
         }
     }
 
-/* C::B begin */
+    /* C::B begin */
 #if wxCHECK_VERSION(3, 0, 0)
     m_swx->DoMouseWheel(evt.GetWheelAxis(),
 #else
     m_swx->DoMouseWheel(ScintillaWX::wxMOUSE_WHEEL_VERTICAL,
 #endif
-/* C::B end */
+                        /* C::B end */
                         evt.GetWheelRotation(),
                         evt.GetWheelDelta(),
                         evt.GetLinesPerAction(),
-/* C::B begin */
+                        /* C::B begin */
 #if wxCHECK_VERSION(3, 0, 0)
                         evt.GetColumnsPerAction(),
 #else
                         1,
 #endif
-/* C::B end */
+                        /* C::B end */
                         evt.ControlDown(),
                         evt.IsPageScroll());
 }
 
 
-void wxScintilla::OnChar(wxKeyEvent& evt) {
+void wxScintilla::OnChar(wxKeyEvent& evt)
+{
     // On (some?) non-US PC keyboards the AltGr key is required to enter some
     // common characters.  It comes to us as both Alt and Ctrl down so we need
     // to let the char through in that case, otherwise if only ctrl or only
@@ -5384,7 +5499,8 @@ void wxScintilla::OnChar(wxKeyEvent& evt) {
         m_lastKeyDownConsumed = false;
 #endif
 
-    if (!m_lastKeyDownConsumed && !skip) {
+    if (!m_lastKeyDownConsumed && !skip)
+    {
 #if wxUSE_UNICODE
         int key = evt.GetUnicodeKey();
         bool keyOk = true;
@@ -5393,17 +5509,20 @@ void wxScintilla::OnChar(wxKeyEvent& evt) {
         // be a function key or etc., the platforms appear to always give us a
         // small value in this case) then fallback to the ascii key code but
         // don't do anything for function keys or etc.
-        if (key <= 127) {
+        if (key <= 127)
+        {
             key = evt.GetKeyCode();
             keyOk = (key <= 127);
         }
-        if (keyOk) {
+        if (keyOk)
+        {
             m_swx->DoAddChar(key);
             return;
         }
 #else
         int key = evt.GetKeyCode();
-        if (key < WXK_START) {
+        if (key < WXK_START)
+        {
             m_swx->DoAddChar(key);
             return;
         }
@@ -5414,52 +5533,61 @@ void wxScintilla::OnChar(wxKeyEvent& evt) {
 }
 
 
-void wxScintilla::OnKeyDown(wxKeyEvent& evt) {
+void wxScintilla::OnKeyDown(wxKeyEvent& evt)
+{
     int processed = m_swx->DoKeyDown(evt, &m_lastKeyDownConsumed);
     if (!processed && !m_lastKeyDownConsumed)
         evt.Skip();
 }
 
 
-void wxScintilla::OnLoseFocus(wxFocusEvent& evt) {
+void wxScintilla::OnLoseFocus(wxFocusEvent& evt)
+{
     m_swx->DoLoseFocus();
     evt.Skip();
 }
 
 
-void wxScintilla::OnGainFocus(wxFocusEvent& evt) {
+void wxScintilla::OnGainFocus(wxFocusEvent& evt)
+{
     m_swx->DoGainFocus();
     evt.Skip();
 }
 
 
-void wxScintilla::OnSysColourChanged(wxSysColourChangedEvent& WXUNUSED(evt)) {
+void wxScintilla::OnSysColourChanged(wxSysColourChangedEvent& WXUNUSED(evt))
+{
     m_swx->DoSysColourChange();
 }
 
 
-void wxScintilla::OnEraseBackground(wxEraseEvent& WXUNUSED(evt)) {
+void wxScintilla::OnEraseBackground(wxEraseEvent& WXUNUSED(evt))
+{
     // do nothing to help avoid flashing
 }
 
 
 
-void wxScintilla::OnMenu(wxCommandEvent& evt) {
+void wxScintilla::OnMenu(wxCommandEvent& evt)
+{
     m_swx->DoCommand(evt.GetId());
 }
 
 
-void wxScintilla::OnListBox(wxCommandEvent& WXUNUSED(evt)) {
+void wxScintilla::OnListBox(wxCommandEvent& WXUNUSED(evt))
+{
     m_swx->DoOnListBox();
 }
 
 
-void wxScintilla::OnIdle(wxIdleEvent& evt) {
+void wxScintilla::OnIdle(wxIdleEvent& evt)
+{
     m_swx->DoOnIdle(evt);
 }
 
 
-void wxScintilla::OnMouseCaptureLost(wxMouseCaptureLostEvent& WXUNUSED(evt)) {
+void wxScintilla::OnMouseCaptureLost(wxMouseCaptureLostEvent& WXUNUSED(evt))
+{
     m_swx->DoMouseCaptureLost();
 }
 
@@ -5476,7 +5604,8 @@ wxSize wxScintilla::DoGetBestSize() const
 // Turn notifications from Scintilla into events
 
 
-void wxScintilla::NotifyChange() {
+void wxScintilla::NotifyChange()
+{
     wxScintillaEvent evt(wxEVT_SCI_CHANGE, GetId());
     evt.SetEventObject(this);
     GetEventHandler()->ProcessEvent(evt);
@@ -5484,14 +5613,16 @@ void wxScintilla::NotifyChange() {
 
 
 static void SetEventText(wxScintillaEvent& evt, const char* text,
-                         size_t length) {
+                         size_t length)
+{
     if(!text) return;
 
     evt.SetString(sci2wx(text, length));
 }
 
 
-void wxScintilla::NotifyParent(SCNotification* _scn) {
+void wxScintilla::NotifyParent(SCNotification* _scn)
+{
     SCNotification& scn = *_scn;
     wxScintillaEvent evt(0, GetId());
 
@@ -5500,7 +5631,8 @@ void wxScintilla::NotifyParent(SCNotification* _scn) {
     evt.SetKey(scn.ch);
     evt.SetModifiers(scn.modifiers);
 
-    switch (scn.nmhdr.code) {
+    switch (scn.nmhdr.code)
+    {
     case SCN_STYLENEEDED:
         evt.SetEventType(wxEVT_SCI_STYLENEEDED);
         break;
@@ -5684,13 +5816,22 @@ wxScintillaEvent::wxScintillaEvent(wxEventType commandType, int id)
 #endif
 }
 
-bool wxScintillaEvent::GetShift() const { return (m_modifiers & SCI_SHIFT) != 0; }
-bool wxScintillaEvent::GetControl() const { return (m_modifiers & SCI_CTRL) != 0; }
-bool wxScintillaEvent::GetAlt() const { return (m_modifiers & SCI_ALT) != 0; }
+bool wxScintillaEvent::GetShift() const
+{
+    return (m_modifiers & SCI_SHIFT) != 0;
+}
+bool wxScintillaEvent::GetControl() const
+{
+    return (m_modifiers & SCI_CTRL) != 0;
+}
+bool wxScintillaEvent::GetAlt() const
+{
+    return (m_modifiers & SCI_ALT) != 0;
+}
 
 
 wxScintillaEvent::wxScintillaEvent(const wxScintillaEvent& event):
-  wxCommandEvent(event)
+    wxCommandEvent(event)
 {
     m_position =      event.m_position;
     m_key =           event.m_key;

@@ -20,9 +20,9 @@
 
 #include "Version.h"
 
-   #if LOGGING
-	wxLogWindow*    m_pLog;
-   #endif
+#if LOGGING
+wxLogWindow*    m_pLog;
+#endif
 
 // ----------------------------------------------------------------------------
 AppVersion::AppVersion()

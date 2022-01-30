@@ -59,15 +59,15 @@ LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
     switch( msg )
     {
-        case WM_DESTROY:
-            Cleanup();
-            PostQuitMessage( 0 );
-            return 0;
+    case WM_DESTROY:
+        Cleanup();
+        PostQuitMessage( 0 );
+        return 0;
 
-        case WM_PAINT:
-            Render();
-            ValidateRect( hWnd, NULL );
-            return 0;
+    case WM_PAINT:
+        Render();
+        ValidateRect( hWnd, NULL );
+        return 0;
     }
 
     return DefWindowProc( hWnd, msg, wParam, lParam );

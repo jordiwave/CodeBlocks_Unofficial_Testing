@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12310 $
-* $Id: wxsbitmapiconeditordlg.cpp 12310 2021-04-03 05:08:35Z mortenmacfly $
+* $Revision: 12676 $
+* $Id: wxsbitmapiconeditordlg.cpp 12676 2022-01-24 19:39:58Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/properties/wxsbitmapiconeditordlg.cpp $
 */
 
@@ -90,7 +90,10 @@ static const wxChar* PredefinedIds[] =
     _T("wxART_FULL_SCREEN"),
     _T("wxART_EDIT"),
 #endif
-    0
+#if wxCHECK_VERSION(3, 1, 6)
+    _T("wxART_WX_LOGO"),
+#endif
+    nullptr
 };
 
 static const wxChar* PredefinedClients[] =
@@ -103,7 +106,7 @@ static const wxChar* PredefinedClients[] =
     _T("wxART_HELP_BROWSER"),
     _T("wxART_MESSAGE_BOX"),
     _T("wxART_OTHER"),
-    0
+    nullptr
 };
 
 
@@ -130,7 +133,7 @@ BEGIN_EVENT_TABLE(wxsBitmapIconEditorDlg,wxScrollingDialog)
 END_EVENT_TABLE()
 
 wxsBitmapIconEditorDlg::wxsBitmapIconEditorDlg(wxWindow* parent,wxsBitmapIconData& _Data,const wxString& _DefaultClient):
-    Timer1(0),
+    Timer1(nullptr),
     DefaultClient(_DefaultClient),
     Data(_Data)
 {

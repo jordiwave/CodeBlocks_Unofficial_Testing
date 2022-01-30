@@ -14,7 +14,7 @@
 #include <wx/regex.h>
 #include <wx/config.h>
 #ifdef __WXMSW__
-    #include <wx/msw/registry.h>
+#include <wx/msw/registry.h>
 #endif // __WXMSW__
 
 CompilerMSVC8::CompilerMSVC8()
@@ -103,7 +103,8 @@ AutoDetectResult CompilerMSVC8::AutoDetectInstallationDir()
 
         // try to detect Platform SDK (newer versions)
         wxString msPsdkKeyName[2] = { _T("HKEY_CURRENT_USER\\Software\\Microsoft\\MicrosoftSDK\\InstalledSDKs"),
-                                      _T("HKEY_CURRENT_USER\\Software\\Microsoft\\Microsoft SDKs\\Windows") };
+                                      _T("HKEY_CURRENT_USER\\Software\\Microsoft\\Microsoft SDKs\\Windows")
+                                    };
         wxString msPsdkKeyValue[2] = { _T("Install Dir"), _T("InstallationFolder") };
         for (int i = 0; i < 2; ++i)
         {
@@ -119,8 +120,8 @@ AutoDetectResult CompilerMSVC8::AutoDetectInstallationDir()
                     wxRegKey subkey(key.GetName(), name);
 
                     if (subkey.Open(wxRegKey::Read) &&
-                        (subkey.QueryValue(msPsdkKeyValue[i], dir), !dir.IsEmpty()) &&
-                        wxDirExists(dir))
+                            (subkey.QueryValue(msPsdkKeyValue[i], dir), !dir.IsEmpty()) &&
+                            wxDirExists(dir))
                     {
                         sdkfound = true;
                         cont = false;

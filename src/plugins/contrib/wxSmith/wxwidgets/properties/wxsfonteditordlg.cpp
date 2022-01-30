@@ -369,15 +369,28 @@ void wxsFontEditorDlg::ReadData(wxsFontData& _Data)
         FamUse->SetValue(true);
         switch ( _Data.Family )
         {
-            case wxFONTFAMILY_DECORATIVE: FamVal->SetSelection(FFAM_DECORATIVE); break;
-            case wxFONTFAMILY_ROMAN:      FamVal->SetSelection(FFAM_ROMAN); break;
-            case wxFONTFAMILY_SCRIPT:     FamVal->SetSelection(FFAM_SCRIPT); break;
-            case wxFONTFAMILY_SWISS:      FamVal->SetSelection(FFAM_SWISS); break;
-            case wxFONTFAMILY_MODERN:     FamVal->SetSelection(FFAM_MODERN); break;
-            case wxFONTFAMILY_TELETYPE:   FamVal->SetSelection(FFAM_TELETYPE); break;
-            case wxFONTFAMILY_DEFAULT: // fall-though
-            case wxFONTFAMILY_UNKNOWN: // fall-though
-            default:                      FamUse->SetValue(false);
+        case wxFONTFAMILY_DECORATIVE:
+            FamVal->SetSelection(FFAM_DECORATIVE);
+            break;
+        case wxFONTFAMILY_ROMAN:
+            FamVal->SetSelection(FFAM_ROMAN);
+            break;
+        case wxFONTFAMILY_SCRIPT:
+            FamVal->SetSelection(FFAM_SCRIPT);
+            break;
+        case wxFONTFAMILY_SWISS:
+            FamVal->SetSelection(FFAM_SWISS);
+            break;
+        case wxFONTFAMILY_MODERN:
+            FamVal->SetSelection(FFAM_MODERN);
+            break;
+        case wxFONTFAMILY_TELETYPE:
+            FamVal->SetSelection(FFAM_TELETYPE);
+            break;
+        case wxFONTFAMILY_DEFAULT: // fall-though
+        case wxFONTFAMILY_UNKNOWN: // fall-though
+        default:
+            FamUse->SetValue(false);
         }
     }
 
@@ -465,13 +478,26 @@ void wxsFontEditorDlg::StoreData(wxsFontData& _Data)
     {
         switch ( FamVal->GetSelection() )
         {
-            case FFAM_DECORATIVE: Data.Family = wxFONTFAMILY_DECORATIVE; break;
-            case FFAM_ROMAN:      Data.Family = wxFONTFAMILY_ROMAN;      break;
-            case FFAM_SCRIPT:     Data.Family = wxFONTFAMILY_SCRIPT;     break;
-            case FFAM_SWISS:      Data.Family = wxFONTFAMILY_SWISS;      break;
-            case FFAM_MODERN:     Data.Family = wxFONTFAMILY_MODERN;     break;
-            case FFAM_TELETYPE:   Data.Family = wxFONTFAMILY_TELETYPE;   break;
-            default:              Data.HasFamily = false;
+        case FFAM_DECORATIVE:
+            Data.Family = wxFONTFAMILY_DECORATIVE;
+            break;
+        case FFAM_ROMAN:
+            Data.Family = wxFONTFAMILY_ROMAN;
+            break;
+        case FFAM_SCRIPT:
+            Data.Family = wxFONTFAMILY_SCRIPT;
+            break;
+        case FFAM_SWISS:
+            Data.Family = wxFONTFAMILY_SWISS;
+            break;
+        case FFAM_MODERN:
+            Data.Family = wxFONTFAMILY_MODERN;
+            break;
+        case FFAM_TELETYPE:
+            Data.Family = wxFONTFAMILY_TELETYPE;
+            break;
+        default:
+            Data.HasFamily = false;
         }
     }
 
@@ -542,13 +568,26 @@ void wxsFontEditorDlg::OnButton1Click1(cb_unused wxCommandEvent& event)
     FamUse->SetValue(true);
     switch ( Font.GetFamily() )
     {
-        case wxFONTFAMILY_DECORATIVE: FamVal->SetSelection(FFAM_DECORATIVE); break;
-        case wxFONTFAMILY_ROMAN:      FamVal->SetSelection(FFAM_ROMAN); break;
-        case wxFONTFAMILY_SCRIPT:     FamVal->SetSelection(FFAM_SCRIPT); break;
-        case wxFONTFAMILY_SWISS:      FamVal->SetSelection(FFAM_SWISS); break;
-        case wxFONTFAMILY_MODERN:     FamVal->SetSelection(FFAM_MODERN); break;
-        case wxFONTFAMILY_TELETYPE:   FamVal->SetSelection(FFAM_TELETYPE); break;
-        default:                      FamUse->SetValue(false);
+    case wxFONTFAMILY_DECORATIVE:
+        FamVal->SetSelection(FFAM_DECORATIVE);
+        break;
+    case wxFONTFAMILY_ROMAN:
+        FamVal->SetSelection(FFAM_ROMAN);
+        break;
+    case wxFONTFAMILY_SCRIPT:
+        FamVal->SetSelection(FFAM_SCRIPT);
+        break;
+    case wxFONTFAMILY_SWISS:
+        FamVal->SetSelection(FFAM_SWISS);
+        break;
+    case wxFONTFAMILY_MODERN:
+        FamVal->SetSelection(FFAM_MODERN);
+        break;
+    case wxFONTFAMILY_TELETYPE:
+        FamVal->SetSelection(FFAM_TELETYPE);
+        break;
+    default:
+        FamUse->SetValue(false);
     }
 
     EncodUse->SetValue(false);

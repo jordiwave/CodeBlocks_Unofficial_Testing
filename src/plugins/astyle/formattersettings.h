@@ -10,11 +10,11 @@
 
 class FormatterSettings
 {
-	public:
-		FormatterSettings();
-		virtual ~FormatterSettings();
+public:
+    FormatterSettings();
+    virtual ~FormatterSettings();
 
-		void ApplyTo(astyle::ASFormatter& formatter);
+    void ApplyTo(astyle::ASFormatter& formatter);
 };
 
 #endif // FORMATTERSETTINGS_H

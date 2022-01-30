@@ -13,13 +13,13 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWidgets headers)
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <wx/buffer.h>
@@ -36,48 +36,50 @@
 #include "wx/things/range.h"
 
 /* XPM */
-static const char *mondrian_xpm[] = {
-/* columns rows colors chars-per-pixel */
-"32 32 6 1",
-"  c Black",
-". c Blue",
-"X c #00bf00",
-"o c Red",
-"O c Yellow",
-"+ c Gray100",
-/* pixels */
-"                                ",
-" oooooo +++++++++++++++++++++++ ",
-" oooooo +++++++++++++++++++++++ ",
-" oooooo +++++++++++++++++++++++ ",
-" oooooo +++++++++++++++++++++++ ",
-" oooooo +++++++++++++++++++++++ ",
-" oooooo +++++++++++++++++++++++ ",
-" oooooo +++++++++++++++++++++++ ",
-"                                ",
-" ++++++ ++++++++++++++++++ .... ",
-" ++++++ ++++++++++++++++++ .... ",
-" ++++++ ++++++++++++++++++ .... ",
-" ++++++ ++++++++++++++++++ .... ",
-" ++++++ ++++++++++++++++++ .... ",
-" ++++++ ++++++++++++++++++      ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++                    ++++ ",
-" ++++++ OOOOOOOOOOOO XXXXX ++++ ",
-" ++++++ OOOOOOOOOOOO XXXXX ++++ ",
-" ++++++ OOOOOOOOOOOO XXXXX ++++ ",
-" ++++++ OOOOOOOOOOOO XXXXX ++++ ",
-" ++++++ OOOOOOOOOOOO XXXXX ++++ ",
-" ++++++ OOOOOOOOOOOO XXXXX ++++ ",
-"                                "};
+static const char *mondrian_xpm[] =
+{
+    /* columns rows colors chars-per-pixel */
+    "32 32 6 1",
+    "  c Black",
+    ". c Blue",
+    "X c #00bf00",
+    "o c Red",
+    "O c Yellow",
+    "+ c Gray100",
+    /* pixels */
+    "                                ",
+    " oooooo +++++++++++++++++++++++ ",
+    " oooooo +++++++++++++++++++++++ ",
+    " oooooo +++++++++++++++++++++++ ",
+    " oooooo +++++++++++++++++++++++ ",
+    " oooooo +++++++++++++++++++++++ ",
+    " oooooo +++++++++++++++++++++++ ",
+    " oooooo +++++++++++++++++++++++ ",
+    "                                ",
+    " ++++++ ++++++++++++++++++ .... ",
+    " ++++++ ++++++++++++++++++ .... ",
+    " ++++++ ++++++++++++++++++ .... ",
+    " ++++++ ++++++++++++++++++ .... ",
+    " ++++++ ++++++++++++++++++ .... ",
+    " ++++++ ++++++++++++++++++      ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++                    ++++ ",
+    " ++++++ OOOOOOOOOOOO XXXXX ++++ ",
+    " ++++++ OOOOOOOOOOOO XXXXX ++++ ",
+    " ++++++ OOOOOOOOOOOO XXXXX ++++ ",
+    " ++++++ OOOOOOOOOOOO XXXXX ++++ ",
+    " ++++++ OOOOOOOOOOOO XXXXX ++++ ",
+    " ++++++ OOOOOOOOOOOO XXXXX ++++ ",
+    "                                "
+};
 
 // ----------------------------------------------------------------------------
 // constants
@@ -108,7 +110,10 @@ public:
 
     void OnTestMatrix(wxCommandEvent& event);
     void OnTestRange(wxCommandEvent& event);
-    void OnQuit(wxCommandEvent& WXUNUSED(event)) { Close(true); }
+    void OnQuit(wxCommandEvent& WXUNUSED(event))
+    {
+        Close(true);
+    }
     void OnAbout(wxCommandEvent& event);
 
     void OnSpin(wxSpinEvent &event);
@@ -177,7 +182,7 @@ IMPLEMENT_APP(MyApp)
 // ----------------------------------------------------------------------------
 
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size, long style)
-        :wxFrame(NULL, wxID_ANY, title, pos, size, style)
+    :wxFrame(NULL, wxID_ANY, title, pos, size, style)
 {
     m_notebook   = NULL;
     m_textCtrl   = NULL;
@@ -327,41 +332,42 @@ wxScrolledWindow *MyFrame::CreateButtonPage(wxWindow *parent)
     dmenu->AppendRadioItem(ID++, wxT("Large icon view"));
     dmenu->AppendRadioItem(ID++, wxT("Image preview view"));
     menubtn->AssignMenu(dmenu);
-/*
-    wxArrayBitmap bitmaps;
-    bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(6,6)));
-    bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(10,10)));
-    bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(12,12)));
-    bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(14,14)));
-    bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(16,16)));
-    bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(18,18)));
-    bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(20,20)));
-    bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(24,24)));
-    bitmaps.Add(mondrian);
+    /*
+        wxArrayBitmap bitmaps;
+        bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(6,6)));
+        bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(10,10)));
+        bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(12,12)));
+        bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(14,14)));
+        bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(16,16)));
+        bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(18,18)));
+        bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(20,20)));
+        bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(24,24)));
+        bitmaps.Add(mondrian);
 
-    wxArrayString labels;
-    labels.Add(wxT("Hello"));
-    labels.Add(wxT("Hello 1"));
-    labels.Add(wxT("H"));
-    labels.Add(wxT("Hello 3"));
-    labels.Add(wxT("Hello 4 "));
-    labels.Add(wxT("Hello 5"));
-    labels.Add(wxT("Hello 7 "));
-    labels.Add(wxT("Hello     9"));
-    labels.Add(wxT("Hello 10asdasda"));
+        wxArrayString labels;
+        labels.Add(wxT("Hello"));
+        labels.Add(wxT("Hello 1"));
+        labels.Add(wxT("H"));
+        labels.Add(wxT("Hello 3"));
+        labels.Add(wxT("Hello 4 "));
+        labels.Add(wxT("Hello 5"));
+        labels.Add(wxT("Hello 7 "));
+        labels.Add(wxT("Hello     9"));
+        labels.Add(wxT("Hello 10asdasda"));
 
-    wxBmpComboBox *bmpcombo = new wxBmpComboBox(panel, ID++, labels, bitmaps);
-    item0->Add( bmpcombo, 0, wxALIGN_CENTRE|wxALL, 5 );
+        wxBmpComboBox *bmpcombo = new wxBmpComboBox(panel, ID++, labels, bitmaps);
+        item0->Add( bmpcombo, 0, wxALIGN_CENTRE|wxALL, 5 );
 
-    bitmaps.Clear();
-    bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(16,16)), 9);
-    bmpcombo = new wxBmpComboBox(panel, ID++, labels, bitmaps);
-    item0->Add( bmpcombo, 0, wxALIGN_CENTRE|wxALL, 5 );
-*/
+        bitmaps.Clear();
+        bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(16,16)), 9);
+        bmpcombo = new wxBmpComboBox(panel, ID++, labels, bitmaps);
+        item0->Add( bmpcombo, 0, wxALIGN_CENTRE|wxALL, 5 );
+    */
 
 #define BMPCOMBO_LABEL_COUNT 9
 
-    wxString labels[BMPCOMBO_LABEL_COUNT] = {
+    wxString labels[BMPCOMBO_LABEL_COUNT] =
+    {
         wxT("Hello"),
         wxT("Hello 1"),
         wxT("H"),
@@ -370,15 +376,16 @@ wxScrolledWindow *MyFrame::CreateButtonPage(wxWindow *parent)
         wxT("Hello 5"),
         wxT("Hello 7 "),
         wxT("Hello     9"),
-        wxT("Hello 10asdasda") };
+        wxT("Hello 10asdasda")
+    };
 
     wxBmpComboBox *bmpcombo1 = new wxBmpComboBox(panel, ID++,
-                                    wxEmptyString, wxDefaultPosition, wxDefaultSize,
-                                    BMPCOMBO_LABEL_COUNT, labels);
+            wxEmptyString, wxDefaultPosition, wxDefaultSize,
+            BMPCOMBO_LABEL_COUNT, labels);
 
     wxBmpComboBox *bmpcombo2 = new wxBmpComboBox(panel, ID++,
-                                    wxEmptyString, wxDefaultPosition, wxDefaultSize,
-                                    BMPCOMBO_LABEL_COUNT, labels);
+            wxEmptyString, wxDefaultPosition, wxDefaultSize,
+            BMPCOMBO_LABEL_COUNT, labels);
 
     // freeze while adding items
     bmpcombo1->Freeze();
@@ -438,7 +445,7 @@ void MyFrame::OnButton(wxCommandEvent &event)
 void MyFrame::OnMenu(wxCommandEvent &event)
 {
     //if (CheckControlId(event.GetId()))
-        m_textCtrl->AppendText(wxString::Format(wxT("%s EVT_MENU(id %d) val %d\n"), wxNow().c_str(), event.GetId(), event.GetInt()));
+    m_textCtrl->AppendText(wxString::Format(wxT("%s EVT_MENU(id %d) val %d\n"), wxNow().c_str(), event.GetId(), event.GetInt()));
 }
 void MyFrame::OnComboBox(wxCommandEvent &event)
 {
@@ -521,7 +528,8 @@ void MyFrame::OnTestMatrix(wxCommandEvent& WXUNUSED(event))
     DisplayMatrix(textCtrl, matrix4x2.SubCols(1, 1), wxT("matrix4x2.SubCols(1, 1)"), wxT("2\n6"));
     DisplayMatrix(textCtrl, matrix4x2.SubCols(2, 3), wxT("matrix4x2.SubCols(2, 3)"), wxT("3 4\n7 8"));
 
-    wxthings::wxMatrix2D matrix2x4(matrix4x2, true); matrix2x4.Reshape(2, 4);
+    wxthings::wxMatrix2D matrix2x4(matrix4x2, true);
+    matrix2x4.Reshape(2, 4);
     DisplayMatrix(textCtrl, matrix2x4, wxT("matrix4x2.Reshape(2, 4)"), wxT("1 2\n3 4\n5 6\n7 8"));
 
     wxthings::wxMatrix2D matrix4x2neg(matrix4x2.Mult(-1), true);
@@ -552,7 +560,8 @@ void MyFrame::OnTestMatrix(wxCommandEvent& WXUNUSED(event))
     DisplayMatrix(textCtrl, matrix5x5.RotateSquare45(true), wxT("matrix5x5.RotateSquare45(true)"), wxT("11 6 1 2 3\n16 12 7 8 4\n21 17 13 9 5\n22 18 19 14 10\n23 24 25 20 15"));
     DisplayMatrix(textCtrl, matrix5x5.RotateSquare45(false), wxT("matrix5x5.RotateSquare45(false)"), wxT("3 4 5 10 15\n2 8 9 14 20\n1 7 13 19 25\n6 12 17 18 24\n11 16 21 22 23"));
 
-    wxthings::wxMatrix2D identMatrix5x5; identMatrix5x5.CreateIdentity(5);
+    wxthings::wxMatrix2D identMatrix5x5;
+    identMatrix5x5.CreateIdentity(5);
     DisplayMatrix(textCtrl, matrix5x5.Mult(identMatrix5x5), wxT("matrix5x5.Mult(identMatrix5x5 from CreateIdentity(5))"), wxT("1 2 3 4 5\n6 7 8 9 10\n11 12 13 14 15\n16 17 18 19 20\n21 22 23 24 25"));
 
     textCtrl->AppendText(wxString::Format(wxT("\n\nTests that Failed : %d\n"), bad_matrix_tests));
@@ -568,7 +577,7 @@ void DisplayRangeInt(wxTextCtrl* textCtrl, const wxRangeInt& range, const wxStri
 
     textCtrl->AppendText(prepend +
                          wxString::Format(wxT(" : Ok %d : (%d %d)=%d\n\n"),
-                         test, range.GetMin(), range.GetMax(), range.GetRange()));
+                                          test, range.GetMin(), range.GetMax(), range.GetRange()));
 }
 
 void MyFrame::OnTestRange(wxCommandEvent& WXUNUSED(event))
@@ -587,66 +596,136 @@ void MyFrame::OnTestRange(wxCommandEvent& WXUNUSED(event))
     wxRangeInt range2_8(2, 8);
     DisplayRangeInt(textCtrl, range2_8, wxT("Initial wxRangeInt(2, 8)"), range2_8.GetRange() == 7);
 
-    ans = range2_8.Position(1); DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Position(1) = %d"), ans), ans == -1);
-    ans = range2_8.Position(2); DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Position(2) = %d"), ans), ans == 0);
-    ans = range2_8.Position(8); DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Position(8) = %d"), ans), ans == 0);
-    ans = range2_8.Position(9); DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Position(9) = %d"), ans), ans == 1);
+    ans = range2_8.Position(1);
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Position(1) = %d"), ans), ans == -1);
+    ans = range2_8.Position(2);
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Position(2) = %d"), ans), ans == 0);
+    ans = range2_8.Position(8);
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Position(8) = %d"), ans), ans == 0);
+    ans = range2_8.Position(9);
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Position(9) = %d"), ans), ans == 1);
 
-    ans = range2_8.Contains(wxRangeInt(0,1));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(0,1)) = %d"), ans), ans == 0);
-    ans = range2_8.Contains(wxRangeInt(1,2));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(1,2)) = %d"), ans), ans == 0);
-    ans = range2_8.Contains(wxRangeInt(3,-2));  DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(3,-2)) = %d"), ans), ans == 0);
-    ans = range2_8.Contains(wxRangeInt(12,-2)); DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(12,-2)) = %d"), ans), ans == 0);
-    ans = range2_8.Contains(wxRangeInt(3,4));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(3,4)) = %d"), ans), ans != 0);
-    ans = range2_8.Contains(wxRangeInt(2,8));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(2,8)) = %d"), ans), ans != 0);
-    ans = range2_8.Contains(wxRangeInt(8,9));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(8,9)) = %d"), ans), ans == 0);
-    ans = range2_8.Contains(wxRangeInt(1,9));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(1,9)) = %d"), ans), ans == 0);
+    ans = range2_8.Contains(wxRangeInt(0,1));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(0,1)) = %d"), ans), ans == 0);
+    ans = range2_8.Contains(wxRangeInt(1,2));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(1,2)) = %d"), ans), ans == 0);
+    ans = range2_8.Contains(wxRangeInt(3,-2));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(3,-2)) = %d"), ans), ans == 0);
+    ans = range2_8.Contains(wxRangeInt(12,-2));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(12,-2)) = %d"), ans), ans == 0);
+    ans = range2_8.Contains(wxRangeInt(3,4));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(3,4)) = %d"), ans), ans != 0);
+    ans = range2_8.Contains(wxRangeInt(2,8));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(2,8)) = %d"), ans), ans != 0);
+    ans = range2_8.Contains(wxRangeInt(8,9));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(8,9)) = %d"), ans), ans == 0);
+    ans = range2_8.Contains(wxRangeInt(1,9));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(1,9)) = %d"), ans), ans == 0);
 
     wxRangeInt range2_8_i;
-    range2_8_i = range2_8.Intersect(wxRangeInt(0,1));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(0,1))")), range2_8_i.IsEmpty());
-    range2_8_i = range2_8.Intersect(wxRangeInt(1,2));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(1,2))")), range2_8_i == wxRangeInt(2,2));
-    range2_8_i = range2_8.Intersect(wxRangeInt(3,-2));  DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(3,-2))")), range2_8_i.IsEmpty());
-    range2_8_i = range2_8.Intersect(wxRangeInt(12,-2)); DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(12,-2))")), range2_8_i.IsEmpty());
-    range2_8_i = range2_8.Intersect(wxRangeInt(3,4));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(3,4))")), range2_8_i == wxRangeInt(3,4));
-    range2_8_i = range2_8.Intersect(wxRangeInt(2,8));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(2,8))")), range2_8_i == wxRangeInt(2,8));
-    range2_8_i = range2_8.Intersect(wxRangeInt(8,9));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(8,9))")), range2_8_i == wxRangeInt(8,8));
-    range2_8_i = range2_8.Intersect(wxRangeInt(1,9));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(1,9))")), range2_8_i == wxRangeInt(2,8));
+    range2_8_i = range2_8.Intersect(wxRangeInt(0,1));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(0,1))")), range2_8_i.IsEmpty());
+    range2_8_i = range2_8.Intersect(wxRangeInt(1,2));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(1,2))")), range2_8_i == wxRangeInt(2,2));
+    range2_8_i = range2_8.Intersect(wxRangeInt(3,-2));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(3,-2))")), range2_8_i.IsEmpty());
+    range2_8_i = range2_8.Intersect(wxRangeInt(12,-2));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(12,-2))")), range2_8_i.IsEmpty());
+    range2_8_i = range2_8.Intersect(wxRangeInt(3,4));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(3,4))")), range2_8_i == wxRangeInt(3,4));
+    range2_8_i = range2_8.Intersect(wxRangeInt(2,8));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(2,8))")), range2_8_i == wxRangeInt(2,8));
+    range2_8_i = range2_8.Intersect(wxRangeInt(8,9));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(8,9))")), range2_8_i == wxRangeInt(8,8));
+    range2_8_i = range2_8.Intersect(wxRangeInt(1,9));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(1,9))")), range2_8_i == wxRangeInt(2,8));
 
-    range2_8_i = range2_8.Union(wxRangeInt(0,1));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(0,1))")), range2_8_i == wxRangeInt(0,8));
-    range2_8_i = range2_8.Union(wxRangeInt(1,2));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(1,2))")), range2_8_i == wxRangeInt(1,8));
-    range2_8_i = range2_8.Union(wxRangeInt(3,-2));  DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(3,-2))")), range2_8_i.IsEmpty());
-    range2_8_i = range2_8.Union(wxRangeInt(12,-2)); DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(12,-2))")), range2_8_i.IsEmpty());
-    range2_8_i = range2_8.Union(wxRangeInt(3,4));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(3,4))")), range2_8_i == wxRangeInt(2,8));
-    range2_8_i = range2_8.Union(wxRangeInt(2,8));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(2,8))")), range2_8_i == wxRangeInt(2,8));
-    range2_8_i = range2_8.Union(wxRangeInt(8,9));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(8,9))")), range2_8_i == wxRangeInt(2,9));
-    range2_8_i = range2_8.Union(wxRangeInt(1,9));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(1,9))")), range2_8_i == wxRangeInt(1,9));
+    range2_8_i = range2_8.Union(wxRangeInt(0,1));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(0,1))")), range2_8_i == wxRangeInt(0,8));
+    range2_8_i = range2_8.Union(wxRangeInt(1,2));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(1,2))")), range2_8_i == wxRangeInt(1,8));
+    range2_8_i = range2_8.Union(wxRangeInt(3,-2));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(3,-2))")), range2_8_i.IsEmpty());
+    range2_8_i = range2_8.Union(wxRangeInt(12,-2));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(12,-2))")), range2_8_i.IsEmpty());
+    range2_8_i = range2_8.Union(wxRangeInt(3,4));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(3,4))")), range2_8_i == wxRangeInt(2,8));
+    range2_8_i = range2_8.Union(wxRangeInt(2,8));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(2,8))")), range2_8_i == wxRangeInt(2,8));
+    range2_8_i = range2_8.Union(wxRangeInt(8,9));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(8,9))")), range2_8_i == wxRangeInt(2,9));
+    range2_8_i = range2_8.Union(wxRangeInt(1,9));
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(1,9))")), range2_8_i == wxRangeInt(1,9));
 
-    ans = range2_8.Touches(wxRangeInt(0,1));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(0,1)) = %d"), ans), ans != 0);
-    ans = range2_8.Touches(wxRangeInt(1,2));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(1,2)) = %d"), ans), ans != 0);
-    ans = range2_8.Touches(wxRangeInt(3,-2));  DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(3,-2)) = %d"), ans), ans == 0);
-    ans = range2_8.Touches(wxRangeInt(12,-2)); DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(12,-2)) = %d"), ans), ans == 0);
-    ans = range2_8.Touches(wxRangeInt(3,4));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(3,4)) = %d"), ans), ans != 0);
-    ans = range2_8.Touches(wxRangeInt(2,8));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(2,8)) = %d"), ans), ans != 0);
-    ans = range2_8.Touches(wxRangeInt(8,9));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(8,9)) = %d"), ans), ans != 0);
-    ans = range2_8.Touches(wxRangeInt(1,9));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(1,9)) = %d"), ans), ans != 0);
+    ans = range2_8.Touches(wxRangeInt(0,1));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(0,1)) = %d"), ans), ans != 0);
+    ans = range2_8.Touches(wxRangeInt(1,2));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(1,2)) = %d"), ans), ans != 0);
+    ans = range2_8.Touches(wxRangeInt(3,-2));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(3,-2)) = %d"), ans), ans == 0);
+    ans = range2_8.Touches(wxRangeInt(12,-2));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(12,-2)) = %d"), ans), ans == 0);
+    ans = range2_8.Touches(wxRangeInt(3,4));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(3,4)) = %d"), ans), ans != 0);
+    ans = range2_8.Touches(wxRangeInt(2,8));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(2,8)) = %d"), ans), ans != 0);
+    ans = range2_8.Touches(wxRangeInt(8,9));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(8,9)) = %d"), ans), ans != 0);
+    ans = range2_8.Touches(wxRangeInt(1,9));
+    DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(1,9)) = %d"), ans), ans != 0);
 
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(0,1), false);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(0,1), false) = %d"), ans), range2_8_i == wxRangeInt(0,8));
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(1,2), false);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(1,2), false) = %d"), ans), range2_8_i == wxRangeInt(1,8));
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(3,-2), false);  DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(3,-2), false) = %d"), ans), range2_8_i == wxRangeInt(2,8));
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(12,-2), false); DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(12,-2), false) = %d"), ans), range2_8_i == wxRangeInt(2,8));
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(3,4), false);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(3,4), false) = %d"), ans), range2_8_i == wxRangeInt(2,8));
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(2,8), false);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(2,8), false) = %d"), ans), range2_8_i == wxRangeInt(2,8));
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(8,9), false);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(8,9), false) = %d"), ans), range2_8_i == wxRangeInt(2,9));
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(1,9), false);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(1,9), false) = %d"), ans), range2_8_i == wxRangeInt(1,9));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(0,1), false);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(0,1), false) = %d"), ans), range2_8_i == wxRangeInt(0,8));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(1,2), false);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(1,2), false) = %d"), ans), range2_8_i == wxRangeInt(1,8));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(3,-2), false);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(3,-2), false) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(12,-2), false);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(12,-2), false) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(3,4), false);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(3,4), false) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(2,8), false);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(2,8), false) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(8,9), false);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(8,9), false) = %d"), ans), range2_8_i == wxRangeInt(2,9));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(1,9), false);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(1,9), false) = %d"), ans), range2_8_i == wxRangeInt(1,9));
 
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(0,0), true);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(0,0), true) = %d"), ans), range2_8_i == wxRangeInt(2,8));
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(0,1), true);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(0,1), true) = %d"), ans), range2_8_i == wxRangeInt(0,8));
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(1,2), true);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(1,2), true) = %d"), ans), range2_8_i == wxRangeInt(1,8));
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(3,-2), true);  DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(3,-2), true) = %d"), ans), range2_8_i == wxRangeInt(2,8));
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(12,-2), true); DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(12,-2), true) = %d"), ans), range2_8_i == wxRangeInt(2,8));
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(3,4), true);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(3,4), true) = %d"), ans), range2_8_i == wxRangeInt(2,8));
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(2,8), true);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(2,8), true) = %d"), ans), range2_8_i == wxRangeInt(2,8));
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(8,9), true);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(8,9), true) = %d"), ans), range2_8_i == wxRangeInt(2,9));
-    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(1,9), true);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(1,9), true) = %d"), ans), range2_8_i == wxRangeInt(1,9));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(0,0), true);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(0,0), true) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(0,1), true);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(0,1), true) = %d"), ans), range2_8_i == wxRangeInt(0,8));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(1,2), true);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(1,2), true) = %d"), ans), range2_8_i == wxRangeInt(1,8));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(3,-2), true);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(3,-2), true) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(12,-2), true);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(12,-2), true) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(3,4), true);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(3,4), true) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(2,8), true);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(2,8), true) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(8,9), true);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(8,9), true) = %d"), ans), range2_8_i == wxRangeInt(2,9));
+    range2_8_i.Set(2,8);
+    ans = range2_8_i.Combine(wxRangeInt(1,9), true);
+    DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(1,9), true) = %d"), ans), range2_8_i == wxRangeInt(1,9));
 
     textCtrl->AppendText(wxString::Format(wxT("\n\nTests that Failed : %d\n"), bad_range_tests));
 

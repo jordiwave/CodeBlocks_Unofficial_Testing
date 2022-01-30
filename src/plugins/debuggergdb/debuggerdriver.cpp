@@ -16,11 +16,11 @@
 
 DebuggerDriver::DebuggerDriver(DebuggerGDB* plugin)
     : m_pDBG(plugin),
-    m_ProgramIsStopped(true),
-    m_ChildPID(0),
-    m_QueueBusy(false),
-    m_currentFrameNo(0),
-    m_userSelectedFrameNo(-1)
+      m_ProgramIsStopped(true),
+      m_ChildPID(0),
+      m_QueueBusy(false),
+      m_currentFrameNo(0),
+      m_userSelectedFrameNo(-1)
 {
     //ctor
 }

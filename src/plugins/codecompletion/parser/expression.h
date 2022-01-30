@@ -42,13 +42,28 @@ public:
     ExpressionNode();
     void Initialize(wxString token);
 
-    ExpressionNodeType GetType() const { return m_Type; }
+    ExpressionNodeType GetType() const
+    {
+        return m_Type;
+    }
 
-    bool IsUnaryOperator() const { return m_UnaryOperator; }
-    void SetUnaryOperator(bool unary = true) { m_UnaryOperator = unary; }
+    bool IsUnaryOperator() const
+    {
+        return m_UnaryOperator;
+    }
+    void SetUnaryOperator(bool unary = true)
+    {
+        m_UnaryOperator = unary;
+    }
 
-    long GetPriority() const { return m_Priority; }
-    wxString GetToken() const { return m_Token; }
+    long GetPriority() const
+    {
+        return m_Priority;
+    }
+    wxString GetToken() const
+    {
+        return m_Token;
+    }
     long GetTokenValue() const
     {
         long r;
@@ -84,8 +99,14 @@ public:
     void AddToInfixExpression(wxString token);
     void ConvertInfixToPostfix();
     bool CalcPostfix();
-    long GetResult() const { return m_Result; }
-    bool GetStatus() const { return m_Status; }
+    long GetResult() const
+    {
+        return m_Result;
+    }
+    bool GetStatus() const
+    {
+        return m_Status;
+    }
     void Clear();
 
 private:

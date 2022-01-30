@@ -1,12 +1,12 @@
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-    #include <wx/process.h>
+#include <wx/process.h>
 
-    #include "cbeditor.h"
-    #include "cbproject.h"
-    #include "editormanager.h"
-    #include "logmanager.h"
-    #include "projectmanager.h"
+#include "cbeditor.h"
+#include "cbproject.h"
+#include "editormanager.h"
+#include "logmanager.h"
+#include "projectmanager.h"
 #endif
 #include <configurationpanel.h>
 #include <configmanager.h>
@@ -24,10 +24,10 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<CscopePlugin> reg(_T("Cscope"));
+PluginRegistrant<CscopePlugin> reg(_T("Cscope"));
 
-    const int idOnFindFunctionsCallingThisFunction = wxNewId();
-    const int idOnFindFunctionsCalledByThisFuncion = wxNewId();
+const int idOnFindFunctionsCallingThisFunction = wxNewId();
+const int idOnFindFunctionsCalledByThisFuncion = wxNewId();
 }
 
 
@@ -38,9 +38,9 @@ END_EVENT_TABLE()
 
 // constructor
 CscopePlugin::CscopePlugin()
-:m_cfg(0),
-m_pProcess(0),
-m_thrd(0)
+    :m_cfg(0),
+     m_pProcess(0),
+     m_thrd(0)
 {
     m_cfg = new CscopeConfig();
 }
@@ -73,12 +73,12 @@ void CscopePlugin::OnAttach()
 //	  Connect(idOnFindSymbol, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CscopePlugin::OnCscopeUI), NULL, (wxEvtHandler*)this);
 //	  Connect(idOnFindGlobalDefinition, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CscopePlugin::OnFind), NULL, (wxEvtHandler*)this);
 //	  Connect(idOnFindGlobalDefinition, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CscopePlugin::OnCscopeUI), NULL, (wxEvtHandler*)this);
-	Connect(idOnFindFunctionsCalledByThisFuncion, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CscopePlugin::OnFind), NULL, (wxEvtHandler*)this);
-	Connect(idOnFindFunctionsCalledByThisFuncion, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CscopePlugin::OnCscopeUI), NULL, (wxEvtHandler*)this);
-	Connect(idOnFindFunctionsCallingThisFunction, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CscopePlugin::OnFind), NULL, (wxEvtHandler*)this);
+    Connect(idOnFindFunctionsCalledByThisFuncion, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CscopePlugin::OnFind), NULL, (wxEvtHandler*)this);
+    Connect(idOnFindFunctionsCalledByThisFuncion, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CscopePlugin::OnCscopeUI), NULL, (wxEvtHandler*)this);
+    Connect(idOnFindFunctionsCallingThisFunction, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CscopePlugin::OnFind), NULL, (wxEvtHandler*)this);
     Connect(idOnFindFunctionsCallingThisFunction, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CscopePlugin::OnCscopeUI), NULL, (wxEvtHandler*)this);
 
-	Connect(wxEVT_END_PROCESS, wxProcessEventHandler(CscopePlugin::OnCscopeReturned), NULL, this);
+    Connect(wxEVT_END_PROCESS, wxProcessEventHandler(CscopePlugin::OnCscopeReturned), NULL, this);
     Connect(wxEVT_IDLE, wxIdleEventHandler(CscopePlugin::OnIdle), NULL, this);
 
     Connect(wxEVT_CSCOPE_THREAD_DONE, wxCommandEventHandler(CscopePlugin::OnParserThreadEnded), NULL, this);
@@ -102,9 +102,9 @@ void CscopePlugin::OnRelease(bool appShutDown)
 //	  Disconnect(idOnFindSymbol, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CscopePlugin::OnCscopeUI), NULL, (wxEvtHandler*)this);
 //	  Disconnect(idOnFindGlobalDefinition, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CscopePlugin::OnFind), NULL, (wxEvtHandler*)this);
 //	  Disconnect(idOnFindGlobalDefinition, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CscopePlugin::OnCscopeUI), NULL, (wxEvtHandler*)this);
-	Disconnect(idOnFindFunctionsCalledByThisFuncion, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CscopePlugin::OnFind), NULL, (wxEvtHandler*)this);
-	Disconnect(idOnFindFunctionsCalledByThisFuncion, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CscopePlugin::OnCscopeUI), NULL, (wxEvtHandler*)this);
-	Disconnect(idOnFindFunctionsCallingThisFunction, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CscopePlugin::OnFind), NULL, (wxEvtHandler*)this);
+    Disconnect(idOnFindFunctionsCalledByThisFuncion, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CscopePlugin::OnFind), NULL, (wxEvtHandler*)this);
+    Disconnect(idOnFindFunctionsCalledByThisFuncion, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CscopePlugin::OnCscopeUI), NULL, (wxEvtHandler*)this);
+    Disconnect(idOnFindFunctionsCallingThisFunction, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CscopePlugin::OnFind), NULL, (wxEvtHandler*)this);
     Disconnect(idOnFindFunctionsCallingThisFunction, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CscopePlugin::OnCscopeUI), NULL, (wxEvtHandler*)this);
 
     Disconnect(wxEVT_END_PROCESS, wxProcessEventHandler(CscopePlugin::OnCscopeReturned), NULL, this);
@@ -194,34 +194,34 @@ bool CscopePlugin::CreateListFile(wxString &list_file)
             files.push_back(fn);
     }
 
-	//create temporary file and save the file-list there
-	wxFileName projectfilename(prj->GetFilename());
+    //create temporary file and save the file-list there
+    wxFileName projectfilename(prj->GetFilename());
 
-	list_file = prj->GetBasePath() + projectfilename.GetName() + _T(".cscope_file_list");
+    list_file = prj->GetBasePath() + projectfilename.GetName() + _T(".cscope_file_list");
 
-	wxFFile file(list_file, _T("w+b"));
-	if (!file.IsOpened())
-	{
-		wxLogMessage(_("Failed to open temporary file ") + list_file);
-		list_file.Empty();
-		return false;
-	}
+    wxFFile file(list_file, _T("w+b"));
+    if (!file.IsOpened())
+    {
+        wxLogMessage(_("Failed to open temporary file ") + list_file);
+        list_file.Empty();
+        return false;
+    }
 
-	//write the content of the files into the temporary file
-	wxString content;
-	for (size_t i=0; i< files.size(); i++)
-		content << _T("\"") + files[i].GetFullPath() << _T("\"\n");
+    //write the content of the files into the temporary file
+    wxString content;
+    for (size_t i=0; i< files.size(); i++)
+        content << _T("\"") + files[i].GetFullPath() << _T("\"\n");
 
-	file.Write( content );
-	file.Flush();
-	file.Close();
-	return true;
+    file.Write( content );
+    file.Flush();
+    file.Close();
+    return true;
 }
 void CscopePlugin::DoCscopeCommand(const wxString &cmd, const wxString &endMsg)
 {
     ClearOutputWindow();
-	MakeOutputPaneVisible();
-	m_CscouptOutput.clear();
+    MakeOutputPaneVisible();
+    m_CscouptOutput.clear();
 
     cbProject * prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     wxString path;
@@ -235,13 +235,13 @@ void CscopePlugin::DoCscopeCommand(const wxString &cmd, const wxString &endMsg)
 
 
     wxString curDir = wxGetCwd();
-	wxSetWorkingDirectory(path);
+    wxSetWorkingDirectory(path);
     //set environment variables for cscope
-	wxSetEnv(_T("TMPDIR"), _T("."));
+    wxSetEnv(_T("TMPDIR"), _T("."));
 
     m_view->GetWindow()->SetMessage(_T("Executing cscope..."), 10);
 
-	m_pProcess = new CscopeProcess(this);
+    m_pProcess = new CscopeProcess(this);
     if ( !wxExecute(cmd, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER, m_pProcess) )
     {
         delete m_pProcess;
@@ -281,26 +281,26 @@ void CscopePlugin::OnParserThreadEnded(wxCommandEvent &event)
 
     m_thrd = NULL;
 
-	CscopeResultTable *result = (CscopeResultTable*)event.GetClientData();
-	m_view->GetWindow()->SetMessage(m_EndMsg, 100);
-	m_view->GetWindow()->BuildTable( result );
+    CscopeResultTable *result = (CscopeResultTable*)event.GetClientData();
+    m_view->GetWindow()->SetMessage(m_EndMsg, 100);
+    m_view->GetWindow()->BuildTable( result );
 }
 wxString CscopePlugin::GetWordAtCaret()
 {
     cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
-	if ( ed )
-	{
-	    cbStyledTextCtrl *control = ed->GetControl();
-	    if (control)
-	    {
+    if ( ed )
+    {
+        cbStyledTextCtrl *control = ed->GetControl();
+        if (control)
+        {
             const int pos = control->GetCurrentPos();
             const int ws = control->WordStartPosition(pos, true);
             const int we = control->WordEndPosition(pos, true);
 
             return control->GetTextRange(ws, we);
-	    }
-	}
+        }
+    }
     return wxEmptyString;
 }
 void CscopePlugin::OnFind(wxCommandEvent &event)
@@ -343,28 +343,28 @@ wxString CscopePlugin::GetCscopeBinaryName()
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("cscope"));
     if (cfg)
     {
-       return cfg->Read(_T("cscope_app"), _T("cscope"));
+        return cfg->Read(_T("cscope_app"), _T("cscope"));
     }
 
     Manager::Get()->GetLogManager()->LogError(_T("cscope: Could not load config manager for cscope! Could not lookup for executable name."));
-	return _T("cscope");
+    return _T("cscope");
 }
 void CscopePlugin::OnCscopeUI(wxUpdateUIEvent &event)
 {
-	bool isEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() ? true : false;
-	bool HasProjectsInWorkspace = Manager::Get()->GetProjectManager()->GetActiveProject() ? true : false;
-	event.Enable(HasProjectsInWorkspace && isEditor && !m_pProcess);
+    bool isEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() ? true : false;
+    bool HasProjectsInWorkspace = Manager::Get()->GetProjectManager()->GetActiveProject() ? true : false;
+    event.Enable(HasProjectsInWorkspace && isEditor && !m_pProcess);
 }
 
 
 //when program idle, read the output
 void CscopePlugin::OnIdle(wxIdleEvent& event)
 {
-  if ( m_pProcess && m_pProcess->ReadProcessOutput() )
-  {
-    event.RequestMore();
-  }
-  event.Skip();
+    if ( m_pProcess && m_pProcess->ReadProcessOutput() )
+    {
+        event.RequestMore();
+    }
+    event.Skip();
 }
 
 void CscopePlugin::OnProcessGeneratedOutputLine(const wxString &line)

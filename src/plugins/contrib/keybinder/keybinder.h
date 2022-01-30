@@ -36,8 +36,8 @@
 #define wxCMD_MAX_SHORTCUTS                2
 
 #ifndef wxID_INVALID
-    // A value used to represent an invalid id...
-    #define wxID_INVALID -1
+// A value used to represent an invalid id...
+#define wxID_INVALID -1
 #endif
 // -----------------------2006/12/29------
 //  defines for wxWidgets 2.8.0
@@ -83,19 +83,23 @@ protected:
 
 public:
 
-    wxKeyBind() {
+    wxKeyBind()
+    {
         m_nKeyCode = m_nFlags = -1;
     }
 
-    wxKeyBind(int flags, int keycode) {
+    wxKeyBind(int flags, int keycode)
+    {
         Set(flags, keycode);
     }
 
-    wxKeyBind(const wxKeyBind &tocopy) {
+    wxKeyBind(const wxKeyBind &tocopy)
+    {
         DeepCopy(tocopy);
     }
 
-    wxKeyBind(const wxString &key) {
+    wxKeyBind(const wxString &key)
+    {
         m_nFlags = StringToKeyModifier(key);
         //Handle Ctrl-- and Ctrl-+ keys
         if (!key.IsEmpty() && key.Last() == '-')
@@ -106,7 +110,8 @@ public:
             m_nKeyCode = StringToKeyCode(key.AfterLast('+').AfterLast('-'));
     }
 
-    virtual void DeepCopy(const wxKeyBind &p) {
+    virtual void DeepCopy(const wxKeyBind &p)
+    {
         m_nFlags = p.m_nFlags;
         m_nKeyCode = p.m_nKeyCode;
     }
@@ -114,7 +119,8 @@ public:
     virtual ~wxKeyBind() {}
 
     // Compare two wxKeyBinds       //v0.4.13
-    bool operator==(const wxKeyBind& tocomp) {
+    bool operator==(const wxKeyBind& tocomp)
+    {
         if ( m_nFlags   != tocomp.m_nFlags   )
             return false;
         if ( m_nKeyCode != tocomp.m_nKeyCode )
@@ -126,7 +132,8 @@ public:
 public:
 
     //! Sets the key binding keycode and flags.
-    void Set(int flags, int keycode) {
+    void Set(int flags, int keycode)
+    {
         m_nFlags = flags;
         m_nKeyCode = keycode;
     }
@@ -135,7 +142,8 @@ public:
     //! \note This function is like #DeepCopy but uses a reference instead
     //!       of a pointer allowing such syntaxes:
     //!                mybind->Set(wxKeyBind("CTRL+ENTER"));
-    void Set(const wxKeyBind &key) {
+    void Set(const wxKeyBind &key)
+    {
         m_nFlags = key.m_nFlags;
         m_nKeyCode = key.m_nKeyCode;
     }
@@ -144,7 +152,8 @@ public:
     bool MatchKey(const wxKeyEvent &key) const;
 
     //! Returns TRUE if the given wxKeyBind object is equivalent to this.
-    bool Match(const wxKeyBind &key) const {
+    bool Match(const wxKeyBind &key) const
+    {
         if (m_nFlags == key.m_nFlags && m_nKeyCode == key.m_nKeyCode)
             return TRUE;
         return FALSE;
@@ -155,21 +164,25 @@ public:
     // Getters
     // ------------------
 
-    int GetKeyCode() const {
+    int GetKeyCode() const
+    {
         return m_nKeyCode;
     }
 
-    int GetModifiers() const {
+    int GetModifiers() const
+    {
         return m_nFlags;
     }
 
     // Returns the string which describes this key combination.
-    wxString GetStr() const {
+    wxString GetStr() const
+    {
         return KeyModifierToString(m_nFlags) +
-            KeyCodeToString(m_nKeyCode);
+               KeyCodeToString(m_nKeyCode);
     }
 
-    wxAcceleratorEntry GetAccelerator(int cmdId) const {
+    wxAcceleratorEntry GetAccelerator(int cmdId) const
+    {
         return wxAcceleratorEntry(GetModifiers(), GetKeyCode(), cmdId);
     }
 
@@ -238,7 +251,8 @@ protected:        // static
     typedef wxCmd *(*wxCmdCreationFnc)(wxString cmdName, int id);
 
     //! A registered type of wxCmd-derived class.
-    typedef struct {
+    typedef struct
+    {
         int type;
         wxCmdCreationFnc cmdCreateFnc;
     } wxCmdType;
@@ -267,8 +281,9 @@ public:        // static
 public:
 
     wxCmd(const wxKeyBind &first, int id,
-        const wxString &name = wxEmptyString,
-        const wxString &desc = wxEmptyString) {
+          const wxString &name = wxEmptyString,
+          const wxString &desc = wxEmptyString)
+    {
         m_strName = name;
         m_strDescription = desc;
         m_nShortcuts = 1;
@@ -277,15 +292,17 @@ public:
     }
 
     wxCmd(int id = wxID_INVALID,
-        const wxString &name = wxEmptyString,
-        const wxString &desc = wxEmptyString) {
+          const wxString &name = wxEmptyString,
+          const wxString &desc = wxEmptyString)
+    {
         m_strName = name;
         m_strDescription = desc;
         m_nId = id;
         m_nShortcuts = 0;
     }
 
-    virtual void DeepCopy(const wxCmd *cmd) {
+    virtual void DeepCopy(const wxCmd *cmd)
+    {
         m_strName = cmd->m_strName;
         m_strDescription = cmd->m_strDescription;
         m_nId = cmd->m_nId;
@@ -301,7 +318,8 @@ public:
     virtual ~wxCmd() {}
 
     // Compare two wxCmds       //v0.4.13
-    bool operator==(const wxCmd& tocomp) {
+    bool operator==(const wxCmd& tocomp)
+    {
         if ( m_strName != tocomp.m_strName)
             return false;
         if ( m_strDescription != tocomp.m_strDescription )
@@ -313,7 +331,7 @@ public:
         for (int i=0; i < m_nShortcuts; i++)
             if ( m_keyShortcut[i] == tocomp.m_keyShortcut[i] )
                 continue;
-        else return false;
+            else return false;
         return true;
     }
 
@@ -323,14 +341,16 @@ public:
     // ----------------------------
 
     //! Adds the given key binding to this command.
-    void AddShortcut(const wxKeyBind &key, bool updateMnu=true) {
+    void AddShortcut(const wxKeyBind &key, bool updateMnu=true)
+    {
         if (m_nShortcuts >= wxCMD_MAX_SHORTCUTS) return;
         m_keyShortcut[m_nShortcuts++] = key;
         if (updateMnu) Update();
     }
 
     //! Builds and adds a key binding to this command.
-    void AddShortcut(int flags, int keycode, bool updateMnu=true) {
+    void AddShortcut(int flags, int keycode, bool updateMnu=true)
+    {
         if (m_nShortcuts >= wxCMD_MAX_SHORTCUTS) return;
         wxKeyBind key(flags, keycode);
         AddShortcut(key, updateMnu);
@@ -339,7 +359,8 @@ public:
 
     //! Builds and adds a key binding to this command using the
     //! given key description.
-    void AddShortcut(const wxString &key, bool updateMnu=true) {
+    void AddShortcut(const wxString &key, bool updateMnu=true)
+    {
         if (m_nShortcuts >= wxCMD_MAX_SHORTCUTS) return;
         if (key.IsEmpty()) return;
         //-v0.1- m_keyShortcut[m_nShortcuts++] = wxKeyBind(key);
@@ -349,17 +370,19 @@ public:
     }
 
     //! Removes the n-th key shortcut associated to this command.
-    void RemoveShortcut(int n, bool updateMnu=true) {
+    void RemoveShortcut(int n, bool updateMnu=true)
+    {
         //-for (int i=n; i < m_nShortcuts; i++)    // shift array left
         //pecan 2006/03/25 fix next stmt, avoid array overflow
         for (int i=n; i < (m_nShortcuts-1); i++)    // shift array left //pecan 2006/03/25
-                m_keyShortcut[i] = m_keyShortcut[i+1];
+            m_keyShortcut[i] = m_keyShortcut[i+1];
         m_nShortcuts--;
         if (updateMnu) Update();
     }
 
     //! Removes all the shortcuts associates to this command.
-    void RemoveAllShortcuts(bool updateMnu=true) {
+    void RemoveAllShortcuts(bool updateMnu=true)
+    {
         m_nShortcuts=0;
         if (updateMnu) Update();
     }
@@ -371,7 +394,8 @@ public:
 
     //! Returns TRUE if at least one of the key bindings matches
     //! the given key event.
-    bool MatchKey(const wxKeyEvent &ev) const {
+    bool MatchKey(const wxKeyEvent &ev) const
+    {
         for (int i=0; i < m_nShortcuts; i++)
             if (m_keyShortcut[i].MatchKey(ev))
                 return TRUE;
@@ -384,9 +408,12 @@ public:
     //! which contains the given shortcut key (if there is such
     //! a shortcut registered in this class); otherwise it is
     //! left untouched.
-    bool IsBindTo(const wxKeyBind &key, int *n = NULL) const {
-        for (int i=0; i < m_nShortcuts; i++) {
-            if (m_keyShortcut[i].Match(key)) {
+    bool IsBindTo(const wxKeyBind &key, int *n = NULL) const
+    {
+        for (int i=0; i < m_nShortcuts; i++)
+        {
+            if (m_keyShortcut[i].Match(key))
+            {
                 if (n) *n = i;
                 return TRUE;
             }
@@ -410,31 +437,41 @@ public:
     // ---------------------
 
     wxKeyBind *GetShortcut(int n)
-                     { return &m_keyShortcut[n]; }
+    {
+        return &m_keyShortcut[n];
+    }
     const wxKeyBind *GetShortcut(int n)    const
-                     { return &m_keyShortcut[n]; }
+    {
+        return &m_keyShortcut[n];
+    }
 
-    wxAcceleratorEntry GetAccelerator(int n) const {
+    wxAcceleratorEntry GetAccelerator(int n) const
+    {
         return GetShortcut(n)->GetAccelerator(m_nId);
     }
 
-    int GetId() const {
+    int GetId() const
+    {
         return m_nId;
     }
 
-    int GetShortcutCount() const {
+    int GetShortcutCount() const
+    {
         return m_nShortcuts;
     }
 
-    wxString GetDescription() const {
+    wxString GetDescription() const
+    {
         return m_strDescription;
     }
 
-    wxString GetName() const {
+    wxString GetName() const
+    {
         return m_strName;
     }
 
-    wxArrayString GetShortcutsList() const {
+    wxArrayString GetShortcutsList() const
+    {
         wxArrayString arr;
         for (int i=0; i < m_nShortcuts; i++)
             arr.Add(m_keyShortcut[i].GetStr());
@@ -475,20 +512,29 @@ class wxCmdArray
 
 public:
     wxCmdArray() {}
-    wxCmdArray(const wxCmdArray &tocopy) { DeepCopy(tocopy); }
-    virtual ~wxCmdArray() { Clear(); }
+    wxCmdArray(const wxCmdArray &tocopy)
+    {
+        DeepCopy(tocopy);
+    }
+    virtual ~wxCmdArray()
+    {
+        Clear();
+    }
 
-    void DeepCopy(const wxCmdArray &arr) {
+    void DeepCopy(const wxCmdArray &arr)
+    {
         Clear();
         for (int i=0; i < arr.GetCount(); i++)
             Add(arr.Item(i)->Clone());
     }
 
-    wxCmdArray &operator=(const wxCmdArray &tocopy) {
+    wxCmdArray &operator=(const wxCmdArray &tocopy)
+    {
         DeepCopy(tocopy);
         return *this;
     }
-    bool operator==(const wxCmdArray &tocomp) { //v0.4.13
+    bool operator==(const wxCmdArray &tocomp)   //v0.4.13
+    {
         if ( (not m_arr.GetCount()) || (not tocomp.m_arr.GetCount()) )
             return false;
         if ( m_arr.GetCount() != tocomp.m_arr.GetCount() )
@@ -496,16 +542,25 @@ public:
         for (size_t i=0; i < m_arr.GetCount(); i++)
             if ( *((wxCmd*)m_arr.Item(i)) == *((wxCmd*)tocomp.m_arr.Item(i)) )
                 continue;
-        else return false;
+            else return false;
         return true;
     }
 
-    void Add(wxCmd *p)            { m_arr.Add(p); }
+    void Add(wxCmd *p)
+    {
+        m_arr.Add(p);
+    }
     void Remove(int n);
     void Clear();
 
-    int GetCount() const        { return m_arr.GetCount(); }
-    wxCmd *Item(int n) const    { return (wxCmd *)m_arr.Item(n); }
+    int GetCount() const
+    {
+        return m_arr.GetCount();
+    }
+    wxCmd *Item(int n) const
+    {
+        return (wxCmd *)m_arr.Item(n);
+    }
 
 };//wxCmdArray
 
@@ -517,17 +572,17 @@ class wxKeyBinder;
 // block of the windows which want to use the wxKeyBinder facilities
 #ifdef __WXMSW__
 
-    // This is a virtual function used in wxMSW which can be used to allow
-    // or disable the message preprocessing and thus the preprocessing of
-    // keyshortcuts; to add keybinder support, the preprocessing must be
-    // disabled: wxKeyBinder will care of checking the keypresses for
-    // eventual hotkeys...
-    #define wxADD_KEYBINDER_SUPPORT()                                        \
+// This is a virtual function used in wxMSW which can be used to allow
+// or disable the message preprocessing and thus the preprocessing of
+// keyshortcuts; to add keybinder support, the preprocessing must be
+// disabled: wxKeyBinder will care of checking the keypresses for
+// eventual hotkeys...
+#define wxADD_KEYBINDER_SUPPORT()                                        \
         virtual bool MSWShouldPreProcessMessage(WXMSG*) { return FALSE; }
 #else
 
-    // the other ports doesn't use MSWShouldPreProcessMessage...
-    #define wxADD_KEYBINDER_SUPPORT()            /* expand to nothing */
+// the other ports doesn't use MSWShouldPreProcessMessage...
+#define wxADD_KEYBINDER_SUPPORT()            /* expand to nothing */
 
 #endif
 
@@ -539,9 +594,9 @@ class wxKeyBinder;
 class wxKeyBinder : public wxObject
 // ----------------------------------------------------------------------------
 {
-    public:
+public:
 
-    protected:
+protected:
 
     //! The array of wxCmd-derived classes.
     wxCmdArray m_arrCmd;
@@ -550,7 +605,8 @@ protected:
 
 
     //! Returns the index of the first command with the given ID.
-    int FindCmd(int id) const {
+    int FindCmd(int id) const
+    {
         for (int i=0; i < (int)m_arrCmd.GetCount(); i++)
             if (id == m_arrCmd.Item(i)->GetId())
                 return i;
@@ -559,7 +615,8 @@ protected:
 
     //! Returns the index of the first command that contains the
     //! given key binding.
-    int FindCmdBindTo(const wxKeyBind &key, int *n = NULL) const {
+    int FindCmdBindTo(const wxKeyBind &key, int *n = NULL) const
+    {
         for (int i=0; i < (int)m_arrCmd.GetCount(); i++)
             if (m_arrCmd.Item(i)->IsBindTo(key, n))
                 return i;
@@ -568,7 +625,8 @@ protected:
 
     //! Returns the index of the first command which matches the
     //! given key event.
-    int FindMatchingCmd(const wxKeyEvent &key) const {
+    int FindMatchingCmd(const wxKeyEvent &key) const
+    {
         for (int i=0; i < (int)m_arrCmd.GetCount(); i++)
             if (m_arrCmd.Item(i)->MatchKey(key))
                 return i;
@@ -578,11 +636,11 @@ protected:
     int FindMatchingName(wxString menuItemLabel)
     {
         wxCmdArray* pCmdArray = GetArray();
-         //LOGIT( _T("menuItemLabel[%s]"),menuItemLabel.c_str() );
+        //LOGIT( _T("menuItemLabel[%s]"),menuItemLabel.c_str() );
         for (int i=0; i < GetCmdCount(); i++)
         {
             wxCmd* pCmd = pCmdArray->Item(i);
-             //LOGIT( _T("pCmd->Getname()[%s]"),pCmd->GetName().c_str() );
+            //LOGIT( _T("pCmd->Getname()[%s]"),pCmd->GetName().c_str() );
             if (pCmd->GetName() == menuItemLabel)
                 return i;
         }
@@ -594,15 +652,16 @@ public:
     wxKeyBinder() {}
     wxKeyBinder(const wxKeyBinder &tocopy) : wxObject(tocopy)
     {
-    	DeepCopy(tocopy);
-	}
+        DeepCopy(tocopy);
+    }
 
     virtual ~wxKeyBinder() {}
 
 public:        // miscellaneous
 
     //! Deep copies the given object.
-    void DeepCopy(const wxKeyBinder &p) {
+    void DeepCopy(const wxKeyBinder &p)
+    {
         m_arrCmd.DeepCopy(p.m_arrCmd);
 
         // NEVER COPY THE ARRAY OF THE ATTACHED WINDOWs:
@@ -610,12 +669,14 @@ public:        // miscellaneous
         // m_arrAttachedWnd = p->m_arrAttachedWnd;
     }
 
-    wxKeyBinder &operator=(const wxKeyBinder &tocopy) {
+    wxKeyBinder &operator=(const wxKeyBinder &tocopy)
+    {
         DeepCopy(tocopy);
         return *this;
     }
     //v0.4.13 compare two wxCmd arrays        //v0.4.13
-    bool operator==(const wxKeyBinder &tocomp) {
+    bool operator==(const wxKeyBinder &tocomp)
+    {
         for (int i=0; i < (int)m_arrCmd.GetCount(); i++)
             if (*m_arrCmd.Item(i) == *tocomp.m_arrCmd.Item(i))
                 continue;
@@ -624,7 +685,8 @@ public:        // miscellaneous
     }
 
     //! Resets everything associated with this class.
-    void Reset() {
+    void Reset()
+    {
         m_arrCmd.Clear();
     }
     // Recursively update sub menu items
@@ -656,16 +718,19 @@ public:        // miscellaneous
     // Add functions
     // -------------------
 
-    void AddCmd(wxCmd *p) {
+    void AddCmd(wxCmd *p)
+    {
         m_arrCmd.Add(p);
     }
 
-    void AddShortcut(int id, const wxString &key, bool updateMnu=true) {
+    void AddShortcut(int id, const wxString &key, bool updateMnu=true)
+    {
         wxCmd *p = GetCmd(id);
         if (p) p->AddShortcut(key, updateMnu);
     }
 
-    void AddShortcut(int id, const wxKeyBind &key, bool updateMnu=true) {
+    void AddShortcut(int id, const wxKeyBind &key, bool updateMnu=true)
+    {
         wxCmd *p = GetCmd(id);
         if (p) p->AddShortcut(key,updateMnu);
     }
@@ -673,7 +738,8 @@ public:        // miscellaneous
     // Remove functions
     // -------------------
 
-    void RemoveCmd(wxCmd *p) {                              //v0.4.25
+    void RemoveCmd(wxCmd *p)                                //v0.4.25
+    {
         m_arrCmd.Remove(FindCmd(p->GetId()));
     }
 
@@ -681,51 +747,64 @@ public:        // miscellaneous
     // Getters
     // -------------------
 
-    int GetCmdCount() const {
+    int GetCmdCount() const
+    {
         return m_arrCmd.GetCount();
     }
 
-    wxCmd *GetMatchingCmd(const wxKeyEvent &key) const {
+    wxCmd *GetMatchingCmd(const wxKeyEvent &key) const
+    {
         int i = FindMatchingCmd(key);
         if (i != -1)
             return m_arrCmd.Item(i);
         return NULL;
     }
 
-    wxCmd *GetCmd(int id) const {
+    wxCmd *GetCmd(int id) const
+    {
         int i = FindCmd(id);
         if (i != -1)
             return m_arrCmd.Item(i);
         return NULL;
     }
 
-    wxCmd *GetCmdBindTo(const wxString &key, int *n = NULL) const {
+    wxCmd *GetCmdBindTo(const wxString &key, int *n = NULL) const
+    {
         int i = FindCmdBindTo(wxKeyBind(key), n);
         if (i != -1)
             return m_arrCmd.Item(i);
         return NULL;
     }
 
-    wxKeyBind *GetShortcut(int id, int n) const {
+    wxKeyBind *GetShortcut(int id, int n) const
+    {
         wxCmd *p = GetCmd(id);
         if (p) return p->GetShortcut(n);
         return NULL;
     }
 
-    wxString GetShortcutStr(int id, int n) const {
+    wxString GetShortcutStr(int id, int n) const
+    {
         wxKeyBind *p = GetShortcut(id, n);
         if (p) return p->GetStr();
         return wxEmptyString;
     }
 
-    wxArrayString GetShortcutsList(int id) const {
+    wxArrayString GetShortcutsList(int id) const
+    {
         wxCmd *p = GetCmd(id);
         if (p) return p->GetShortcutsList();
         return wxArrayString();
     }
 
-    wxCmdArray *GetArray()                    { return &m_arrCmd;    }
-    const wxCmdArray *GetArray() const        { return &m_arrCmd; }
+    wxCmdArray *GetArray()
+    {
+        return &m_arrCmd;
+    }
+    const wxCmdArray *GetArray() const
+    {
+        return &m_arrCmd;
+    }
 
     // returns True if window actually exists
     wxWindow* winExists(wxWindow*);
@@ -733,7 +812,7 @@ public:        // miscellaneous
     void      GetMenuItemAccStr(wxMenuItem* pMenuItem, wxString& MenuItemKeyStr);
 
 
-  private:
+private:
     DECLARE_CLASS(wxKeyBinder)
 
 };//wxKeyBinder
@@ -761,30 +840,33 @@ protected:
 
 public:
     wxKeyProfile(const wxString &name = wxEmptyString,
-                const wxString &desc = wxEmptyString)
+                 const wxString &desc = wxEmptyString)
         : wxKeyBinder(), m_strName(name), m_strDescription(desc) {}
 
     wxKeyProfile(const wxKeyProfile &tocopy) : wxKeyBinder(tocopy)
-	{
-		DeepCopy(tocopy);
-	}
+    {
+        DeepCopy(tocopy);
+    }
 
     virtual ~wxKeyProfile() {}
 
 
-    void DeepCopy(const wxKeyProfile &p) {
+    void DeepCopy(const wxKeyProfile &p)
+    {
         wxKeyBinder::DeepCopy(p);
         m_strName = p.m_strName;
         m_strDescription = p.m_strDescription;
     }
 
-    wxKeyProfile &operator=(const wxKeyProfile &tocopy) {
+    wxKeyProfile &operator=(const wxKeyProfile &tocopy)
+    {
         DeepCopy(tocopy);
         return *this;
     }
 
     //v0.4.13 compare two keyprofile array contents     //v0.4.13
-    bool operator==(const wxKeyProfile& tocomp) {
+    bool operator==(const wxKeyProfile& tocomp)
+    {
         if (m_strName != tocomp.m_strName)
             return false;
         if (m_strDescription != tocomp.m_strDescription)
@@ -797,11 +879,23 @@ public:
 
 public:        // miscellaneous
 
-    void SetName(const wxString &name) { m_strName=name; }
-    void SetDesc(const wxString &str)  { m_strDescription=str; }
+    void SetName(const wxString &name)
+    {
+        m_strName=name;
+    }
+    void SetDesc(const wxString &str)
+    {
+        m_strDescription=str;
+    }
 
-    wxString GetName() const        { return m_strName; }
-    wxString GetDesc() const        { return m_strDescription; }
+    wxString GetName() const
+    {
+        return m_strName;
+    }
+    wxString GetDesc() const
+    {
+        return m_strDescription;
+    }
 
     bool Save(wxConfigBase *p, const wxString &key = wxEmptyString, bool bCleanOld = FALSE) const;
     bool Load(wxConfigBase *p, const wxString &key = wxEmptyString);
@@ -847,9 +941,18 @@ class wxKeyProfileArray
     int m_nSelected;
 
 public:
-    wxKeyProfileArray() { m_nSelected=-1;}
-    wxKeyProfileArray(const wxKeyProfileArray &tocopy) { DeepCopy(tocopy); }
-    virtual ~wxKeyProfileArray() { Cleanup(); }
+    wxKeyProfileArray()
+    {
+        m_nSelected=-1;
+    }
+    wxKeyProfileArray(const wxKeyProfileArray &tocopy)
+    {
+        DeepCopy(tocopy);
+    }
+    virtual ~wxKeyProfileArray()
+    {
+        Cleanup();
+    }
 
 
     //! \name wxArray-like functions.
@@ -857,38 +960,82 @@ public:
     //! a virtual destructor) and so we are forced to re-implement the
     //! wxArray functions... @{
 
-    int GetCount() const            { return m_arr.GetCount(); }
-    int GetSelProfileIdx() const    { return m_nSelected; }
-    wxKeyProfile *Item(int n)        { return (wxKeyProfile*)m_arr.Item(n); }
-    wxKeyProfile *GetSelProfile()    { wxASSERT(m_nSelected >= 0 && m_nSelected < GetCount()); return Item(m_nSelected); }
-    void Add(wxKeyProfile *p)        { m_arr.Add(p); }
-    void Clear()                     { m_arr.Clear(); }
-    void Remove(wxKeyProfile *p)    { m_arr.Remove(p); }
-    void SetSelProfile(int n)        { wxASSERT(n < GetCount()); m_nSelected = n; }
-    bool IsEmpty() const             { return m_arr.IsEmpty(); }
+    int GetCount() const
+    {
+        return m_arr.GetCount();
+    }
+    int GetSelProfileIdx() const
+    {
+        return m_nSelected;
+    }
+    wxKeyProfile *Item(int n)
+    {
+        return (wxKeyProfile*)m_arr.Item(n);
+    }
+    wxKeyProfile *GetSelProfile()
+    {
+        wxASSERT(m_nSelected >= 0 && m_nSelected < GetCount());
+        return Item(m_nSelected);
+    }
+    void Add(wxKeyProfile *p)
+    {
+        m_arr.Add(p);
+    }
+    void Clear()
+    {
+        m_arr.Clear();
+    }
+    void Remove(wxKeyProfile *p)
+    {
+        m_arr.Remove(p);
+    }
+    void SetSelProfile(int n)
+    {
+        wxASSERT(n < GetCount());
+        m_nSelected = n;
+    }
+    bool IsEmpty() const
+    {
+        return m_arr.IsEmpty();
+    }
 
-     const wxKeyProfile *Item(int n) const            { return (wxKeyProfile*)m_arr.Item(n); }
-     const wxKeyProfile *GetSelProfile() const        { return Item(m_nSelected); }
-    void RemoveAt(size_t i, size_t count = 1)        { m_arr.RemoveAt(i, count); }
-    void Insert(wxKeyProfile *p, int n)             { m_arr.Insert(p, n); }
+    const wxKeyProfile *Item(int n) const
+    {
+        return (wxKeyProfile*)m_arr.Item(n);
+    }
+    const wxKeyProfile *GetSelProfile() const
+    {
+        return Item(m_nSelected);
+    }
+    void RemoveAt(size_t i, size_t count = 1)
+    {
+        m_arr.RemoveAt(i, count);
+    }
+    void Insert(wxKeyProfile *p, int n)
+    {
+        m_arr.Insert(p, n);
+    }
 
     //@}
 
 
     //! Copies the given array.
-    void DeepCopy(const wxKeyProfileArray &p) {
+    void DeepCopy(const wxKeyProfileArray &p)
+    {
         Cleanup();
         for (int i=0; i < p.GetCount(); i++)
             Add(new wxKeyProfile(*p.Item(i)));
         m_nSelected = p.m_nSelected;
     }
 
-    wxKeyProfileArray &operator=(const wxKeyProfileArray &tocopy) {
+    wxKeyProfileArray &operator=(const wxKeyProfileArray &tocopy)
+    {
         DeepCopy(tocopy);
         return *this;
     }
     //v0.4.13 compare two wxKeyProfileArray contents        ///v0.4.13
-    bool operator==(const wxKeyProfileArray &tocomp) {
+    bool operator==(const wxKeyProfileArray &tocomp)
+    {
         if  ( (not GetCount()) || (not tocomp.GetCount()) )
             return false;
         const wxKeyProfile* p1 = Item(0);
@@ -901,14 +1048,16 @@ public:
     //! Deletes all the objects of the array.
     //! Unlike #Clear() this function also deletes the objects and
     //! does not only detach them from this array.
-    void Cleanup() {
+    void Cleanup()
+    {
         for (int i=0; i < GetCount(); i++)
             delete Item(i);
         Clear();
     }
 
     //! Updates all the wxCmds contained.
-    void UpdateAllCmd(wxMenuBar* pMnuBar) {
+    void UpdateAllCmd(wxMenuBar* pMnuBar)
+    {
         for (int i=0; i<GetCount(); i++)
             Item(i)->UpdateAllCmd(pMnuBar);
     }
@@ -924,7 +1073,8 @@ public:
     //! prefix string.
     bool Load(wxConfigBase *p, const wxString &key = wxEmptyString);
 
-    int MergeDynamicMenuItems(wxMenuBar* pMnuBar) {
+    int MergeDynamicMenuItems(wxMenuBar* pMnuBar)
+    {
         int changed = 0;
         for (int i=0; i<GetCount(); i++)
             changed += Item(i)->MergeDynamicMenuItems(pMnuBar);
@@ -958,7 +1108,9 @@ public:
         const wxValidator& validator = wxDefaultValidator,
         const wxString& name = wxTextCtrlNameStr) :
         wxTextCtrl(parent, id, value, pos, size, style, validator, name)
-        { validCmdPrefixes = wxT("Ctrl-XCtrl-Alt-Shift-");}
+    {
+        validCmdPrefixes = wxT("Ctrl-XCtrl-Alt-Shift-");
+    }
 
     virtual ~wxKeyMonitorTextCtrl() {}
 
@@ -969,7 +1121,8 @@ public:
     void OnKey(wxKeyEvent &);
 
     //! Returns TRUE if this window contains a valid key combination.
-    bool IsValidKeyComb() const {
+    bool IsValidKeyComb() const
+    {
         //-return !GetValue().IsEmpty() && GetValue().Last() != '+';
         if (GetValue().IsEmpty())
             return false;
@@ -1104,12 +1257,12 @@ public:
 
     //! Constructs this panel and links it with the given key binder.
     wxKeyConfigPanel(wxWindow* parent,
-        int buildMode = wxKEYBINDER_DEFAULT_BUILDMODE,
-        wxWindowID id = -1,
-        const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxDefaultSize,
-        long style = wxTAB_TRAVERSAL,
-        const wxString& name = wxT("wxKeyConfigPanel"));
+                     int buildMode = wxKEYBINDER_DEFAULT_BUILDMODE,
+                     wxWindowID id = -1,
+                     const wxPoint& pos = wxDefaultPosition,
+                     const wxSize& size = wxDefaultSize,
+                     long style = wxTAB_TRAVERSAL,
+                     const wxString& name = wxT("wxKeyConfigPanel"));
 
     virtual ~wxKeyConfigPanel();
     wxButton* m_pOK; // the OK button
@@ -1127,7 +1280,7 @@ public:
     //! of the ImportXXXX functions have been called yet), this
     //! function creates it with the "rootname" label.
     virtual void ImportMenuBarCmd(wxMenuBar *menuitems,
-                                const wxString &rootname = wxT("Menu bar"));
+                                  const wxString &rootname = wxT("Menu bar"));
 
     //! Adds to the tree of user-editable commands, the raw list of
     //! the commmands contained in the n-th key profile.
@@ -1136,7 +1289,7 @@ public:
     //! commands contained in the key binder since a wxKeyBinder does
     //! not contain hierarchical info about the keybindings.
     virtual void ImportKeyProfileCmd(const wxKeyProfile &toimport,
-                                const wxString &rootname = wxT("Commands"));
+                                     const wxString &rootname = wxT("Commands"));
 
 
 public:
@@ -1165,12 +1318,18 @@ public:        // output-access utilities (to call AFTER ShowModal)
 
     //! Returns the n-th key profile of the profile combo box.
     wxKeyProfile *GetProfile(int n) const
-        { wxASSERT(m_pKeyProfiles); return (wxKeyProfile *)m_pKeyProfiles->GetClientData(n); }
+    {
+        wxASSERT(m_pKeyProfiles);
+        return (wxKeyProfile *)m_pKeyProfiles->GetClientData(n);
+    }
 
     //! Returns the currently selected key profile using #GetSelProfileIdx().
     //! This is the profile owned by the profile combo box.
     wxKeyProfile *GetSelProfile() const
-        { int n=GetSelProfileIdx(); return (n >= 0 ? GetProfile(n) : NULL); }
+    {
+        int n=GetSelProfileIdx();
+        return (n >= 0 ? GetProfile(n) : NULL);
+    }
 
     //! Returns the index of the currently selected key profile.
     //! The currently selected key profile is the profile which is currently
@@ -1180,7 +1339,10 @@ public:        // output-access utilities (to call AFTER ShowModal)
     //!       when the label of the key profile has been edited, the function
     //!       returns always -1... we will use the #m_nCurrentProf variable.
     int GetSelProfileIdx() const
-        { wxASSERT(m_pKeyProfiles); return m_nCurrentProf; }
+    {
+        wxASSERT(m_pKeyProfiles);
+        return m_nCurrentProf;
+    }
 
     //! Returns an array containing the pointers to the keyprofiles edited
     //! by this dialog. This function is typically used after the ShowModal()
@@ -1208,7 +1370,9 @@ public:        // miscellaneous
     //! Disables the key profiles combo box.
     //! The profile used will be the first given.
     void DisableKeyProfiles()
-        { EnableKeyProfiles(FALSE); }
+    {
+        EnableKeyProfiles(FALSE);
+    }
 
 
 protected:        // event handlers
@@ -1236,7 +1400,7 @@ protected:        // event handlers
 
 
 protected:      // build functions; these ones can be overridden to
-                // customize wxKeyConfigPanel appearances
+    // customize wxKeyConfigPanel appearances
 
     virtual void BuildCtrls();
     virtual wxSizer *BuildColumn1();
@@ -1262,7 +1426,9 @@ protected:        // utilities
     //! Returns TRUE if the #m_pCommandsTree control is being used.
     //! Returns FALSE if the #m_pCommandsList and #m_pCategories are being used.
     bool IsUsingTreeCtrl() const
-        { return (m_nBuildMode & wxKEYBINDER_USE_TREECTRL) != 0; }
+    {
+        return (m_nBuildMode & wxKEYBINDER_USE_TREECTRL) != 0;
+    }
 
     //! Returns TRUE if the currently selected command is valid.
     bool IsSelectedValidCmd() const;
@@ -1274,7 +1440,7 @@ protected:        // utilities
     wxCmd *GetSelCmd() const;
 
     //! Hides/Shows the given sizer detaching it from the main sizer
-     //! of this window or prepending it to the main sizer.
+    //! of this window or prepending it to the main sizer.
     virtual void ShowSizer(wxSizer *toshow, bool show);
 
 

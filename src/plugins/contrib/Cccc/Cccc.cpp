@@ -30,7 +30,7 @@
 // Register the plugin
 namespace
 {
-    PluginRegistrant<Cccc> reg(_T("Cccc"));
+PluginRegistrant<Cccc> reg(_T("Cccc"));
 };
 
 Cccc::Cccc()

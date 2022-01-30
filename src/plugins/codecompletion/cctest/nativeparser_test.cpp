@@ -13,55 +13,55 @@
 #define CC_NATIVEPARSERTEST_DEBUG_OUTPUT 0
 
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
-    #if CC_GLOBAL_DEBUG_OUTPUT == 1
-        #undef CC_NATIVEPARSERTEST_DEBUG_OUTPUT
-        #define CC_NATIVEPARSERTEST_DEBUG_OUTPUT 1
-    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
-        #undef CC_NATIVEPARSERTEST_DEBUG_OUTPUT
-        #define CC_NATIVEPARSERTEST_DEBUG_OUTPUT 2
-    #endif
+#if CC_GLOBAL_DEBUG_OUTPUT == 1
+#undef CC_NATIVEPARSERTEST_DEBUG_OUTPUT
+#define CC_NATIVEPARSERTEST_DEBUG_OUTPUT 1
+#elif CC_GLOBAL_DEBUG_OUTPUT == 2
+#undef CC_NATIVEPARSERTEST_DEBUG_OUTPUT
+#define CC_NATIVEPARSERTEST_DEBUG_OUTPUT 2
+#endif
 #endif
 
 #ifdef CC_PARSER_TEST
-    #define ADDTOKEN(format, args...) \
+#define ADDTOKEN(format, args...) \
             wxLogMessage(F(format, ##args))
-    #define TRACE(format, args...) \
+#define TRACE(format, args...) \
             wxLogMessage(F(format, ##args))
-    #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
             wxLogMessage(F(format, ##args))
 #else
-    #if CC_NATIVEPARSERTEST_DEBUG_OUTPUT == 1
-        #define ADDTOKEN(format, args...) \
+#if CC_NATIVEPARSERTEST_DEBUG_OUTPUT == 1
+#define ADDTOKEN(format, args...) \
                 CCLogger::Get()->AddToken(F(format, ##args))
-        #define TRACE(format, args...) \
+#define TRACE(format, args...) \
             CCLogger::Get()->DebugLog(F(format, ##args))
-        #define TRACE2(format, args...)
-    #elif CC_NATIVEPARSERTEST_DEBUG_OUTPUT == 2
-        #define ADDTOKEN(format, args...) \
+#define TRACE2(format, args...)
+#elif CC_NATIVEPARSERTEST_DEBUG_OUTPUT == 2
+#define ADDTOKEN(format, args...) \
                 CCLogger::Get()->AddToken(F(format, ##args))
-        #define TRACE(format, args...)                                              \
+#define TRACE(format, args...)                                              \
             do                                                                      \
             {                                                                       \
                 if (g_EnableDebugTrace)                                             \
                     CCLogger::Get()->DebugLog(F(format, ##args));                   \
             }                                                                       \
             while (false)
-        #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
             CCLogger::Get()->DebugLog(F(format, ##args))
-    #else
-        #define ADDTOKEN(format, args...)
-        #define TRACE(format, args...)
-        #define TRACE2(format, args...)
-    #endif
+#else
+#define ADDTOKEN(format, args...)
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
+#endif
 #endif
 
 bool s_DebugSmartSense = false; // if true, then cclogger will log many debug messages
 
 namespace CCTestAppGlobal
 {
-    extern wxArrayString s_includeDirs;
-    extern wxArrayString s_fileQueue;
-    extern wxArrayString s_filesParsed;
+extern wxArrayString s_includeDirs;
+extern wxArrayString s_fileQueue;
+extern wxArrayString s_filesParsed;
 }// CCTestAppGlobal
 
 NativeParserTest::NativeParserTest()
@@ -151,9 +151,9 @@ void NativeParserTest::PrintTree()
         Token* token = (*it);
         if (token)
         {
-          Token* parent = m_Parser.GetTokenTree()->at(token->m_ParentIndex);
-          if (!parent)
-              PrintTokenTree(token);
+            Token* parent = m_Parser.GetTokenTree()->at(token->m_ParentIndex);
+            if (!parent)
+                PrintTokenTree(token);
         }
     }
 }
@@ -216,8 +216,8 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
         source.Open(filename);
         wxString str;
         for ( str = source.GetFirstLine();
-              source.GetCurrentLine() < source.GetLineCount();
-              str = source.GetNextLine() )
+                source.GetCurrentLine() < source.GetLineCount();
+                str = source.GetNextLine() )
         {
             allLines.push_back(str);
         }
@@ -297,8 +297,8 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
                 wxString element = suggestList[s];
                 bool pass = false; // pass the test?
                 for (TokenIdxSet::const_iterator it = result.begin();
-                     it != result.end();
-                     ++it)
+                        it != result.end();
+                        ++it)
                 {
                     const Token* token = m_Parser.GetTokenTree()->at(*it);
                     if (!token || token->m_Name.IsEmpty())
@@ -319,8 +319,8 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
                         {
                             // check whether doxygen documents are matched
                             if (token->m_Doc.Contains(match_doc)
-                            || (match_doc[0] == '*' && match_doc.Len() == 1 && !token->m_Doc.IsEmpty())
-                            || (match_doc[0] == '-' && match_doc.Len() == 1 && token->m_Doc.IsEmpty()))
+                                    || (match_doc[0] == '*' && match_doc.Len() == 1 && !token->m_Doc.IsEmpty())
+                                    || (match_doc[0] == '-' && match_doc.Len() == 1 && token->m_Doc.IsEmpty()))
                             {
                                 message = wxString::Format(_T("+ PASS: %s  %s  \"%s\""), expression.wx_str(), token->m_Name.wx_str(), match_doc.wx_str());
                                 testResult << message << wxT("\n");

@@ -7,36 +7,41 @@
 #define nsPkgInt_h__
 #include "nscore.h"
 
-typedef enum {
-  eIdxSft4bits  = 3,
-  eIdxSft8bits  = 2,
-  eIdxSft16bits = 1
-} nsIdxSft; 
+typedef enum
+{
+    eIdxSft4bits  = 3,
+    eIdxSft8bits  = 2,
+    eIdxSft16bits = 1
+} nsIdxSft;
 
-typedef enum {
-  eSftMsk4bits  = 7,
-  eSftMsk8bits  = 3,
-  eSftMsk16bits = 1
-} nsSftMsk; 
+typedef enum
+{
+    eSftMsk4bits  = 7,
+    eSftMsk8bits  = 3,
+    eSftMsk16bits = 1
+} nsSftMsk;
 
-typedef enum {
-  eBitSft4bits  = 2,
-  eBitSft8bits  = 3,
-  eBitSft16bits = 4
-} nsBitSft; 
+typedef enum
+{
+    eBitSft4bits  = 2,
+    eBitSft8bits  = 3,
+    eBitSft16bits = 4
+} nsBitSft;
 
-typedef enum {
-  eUnitMsk4bits  = 0x0000000FL,
-  eUnitMsk8bits  = 0x000000FFL,
-  eUnitMsk16bits = 0x0000FFFFL
-} nsUnitMsk; 
+typedef enum
+{
+    eUnitMsk4bits  = 0x0000000FL,
+    eUnitMsk8bits  = 0x000000FFL,
+    eUnitMsk16bits = 0x0000FFFFL
+} nsUnitMsk;
 
-typedef struct nsPkgInt {
-  nsIdxSft  idxsft;
-  nsSftMsk  sftmsk;
-  nsBitSft  bitsft;
-  nsUnitMsk unitmsk;
-  const uint32_t* const data;
+typedef struct nsPkgInt
+{
+    nsIdxSft  idxsft;
+    nsSftMsk  sftmsk;
+    nsBitSft  bitsft;
+    nsUnitMsk unitmsk;
+    const uint32_t* const data;
 } nsPkgInt;
 
 

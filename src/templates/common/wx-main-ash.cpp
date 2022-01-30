@@ -1,8 +1,10 @@
 #include "main.h"
 
 //helper functions
-enum wxbuildinfoformat {
-    short_f, long_f };
+enum wxbuildinfoformat
+{
+    short_f, long_f
+};
 
 wxString wxbuildinfo(wxbuildinfoformat format)
 {

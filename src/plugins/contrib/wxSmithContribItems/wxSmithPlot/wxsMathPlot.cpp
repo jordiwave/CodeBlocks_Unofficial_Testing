@@ -25,34 +25,34 @@ namespace
 {
 // Loading images from xpm files
 
-    #include "images/plot16.xpm"
-    #include "images/plot32.xpm"
+#include "images/plot16.xpm"
+#include "images/plot32.xpm"
 
-    wxsRegisterItem<wxsMathPlot> Reg(
-        _T("mpWindow"),                 // Class name
-        wxsTContainer,                  // Item type
-        _T("wxWindows"),                // License
-        _T("Ron Collins"),              // Author
-        _T("rcoll@theriver.com"),       // Author's email
-        _T(""),                         // Item's homepage
-        _T("MathPlot"),                 // Category in palette
-        90,                             // Priority in palette
-        _T("MathPlot"),                 // Base part of names for new items
-        wxsCPP,                         // List of coding languages supported by this item
-        1, 0,                           // Version
-        wxBitmap(plot32_xpm),           // 32x32 bitmap
-        wxBitmap(plot16_xpm),           // 16x16 bitmap
-        false);                         // We do not allow this item inside XRC files
+wxsRegisterItem<wxsMathPlot> Reg(
+    _T("mpWindow"),                 // Class name
+    wxsTContainer,                  // Item type
+    _T("wxWindows"),                // License
+    _T("Ron Collins"),              // Author
+    _T("rcoll@theriver.com"),       // Author's email
+    _T(""),                         // Item's homepage
+    _T("MathPlot"),                 // Category in palette
+    90,                             // Priority in palette
+    _T("MathPlot"),                 // Base part of names for new items
+    wxsCPP,                         // List of coding languages supported by this item
+    1, 0,                           // Version
+    wxBitmap(plot32_xpm),           // 32x32 bitmap
+    wxBitmap(plot16_xpm),           // 16x16 bitmap
+    false);                         // We do not allow this item inside XRC files
 
 
-    WXS_ST_BEGIN(wxsMathPlotStyles,_T("wxRAISED_BORDER|wxTAB_TRAVERSAL"))
-        WXS_ST_CATEGORY("wxMathPlot")
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsMathPlotStyles,_T("wxRAISED_BORDER|wxTAB_TRAVERSAL"))
+WXS_ST_CATEGORY("wxMathPlot")
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsMathPlotEvents)
-        WXS_EV_DEFAULTS()
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsMathPlotEvents)
+WXS_EV_DEFAULTS()
+WXS_EV_END()
 }
 
 //------------------------------------------------------------------------------
@@ -77,10 +77,10 @@ wxsMathPlot::wxsMathPlot(wxsItemResData* Data):
 
 void wxsMathPlot::OnBuildCreatingCode()
 {
-wxString    inc;
-wxString    vname;
-wxString    aname;
-wxString    cname;
+    wxString    inc;
+    wxString    vname;
+    wxString    aname;
+    wxString    cname;
 
 // we only know C++ language
 
@@ -113,7 +113,7 @@ wxString    cname;
 
 wxObject* wxsMathPlot::OnBuildPreview(wxWindow* Parent, long Flags)
 {
-mpWindow        *mp;
+    mpWindow        *mp;
 
 // make a panel
 
@@ -146,18 +146,18 @@ void wxsMathPlot::OnEnumContainerProperties(cb_unused long Flags)
 bool wxsMathPlot::OnCanAddChild(cb_unused wxsItem* Item, cb_unused bool ShowMessage)
 {
 
-/**
-    b = (Item->GetClassName() == _("mpFXYVector")) ||
-        (Item->GetClassName() == _("mpScaleX")) ||
-        (Item->GetClassName() == _("mpScaleY")) ||
-        (Item->GetClassName() == _("wxButton"));
+    /**
+        b = (Item->GetClassName() == _("mpFXYVector")) ||
+            (Item->GetClassName() == _("mpScaleX")) ||
+            (Item->GetClassName() == _("mpScaleY")) ||
+            (Item->GetClassName() == _("wxButton"));
 
-    if ( !b)
-    {
-        if ( ShowMessage ) wxMessageBox(_("May only add MathPlot components to this surface"));
-        return false;
-    };
-**/
+        if ( !b)
+        {
+            if ( ShowMessage ) wxMessageBox(_("May only add MathPlot components to this surface"));
+            return false;
+        };
+    **/
 
     return true;
 }

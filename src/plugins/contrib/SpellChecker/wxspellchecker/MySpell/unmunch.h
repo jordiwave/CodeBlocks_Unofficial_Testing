@@ -5,9 +5,9 @@
 #define MAX_PREFIXES  256
 #define MAX_SUFFIXES  256
 #define MAX_WORDS     5000
- 
+
 #define ROTATE_LEN      5
- 
+
 #define ROTATE(v,q) \
    (v) = ((v) << (q)) | (((v) >> (32 - q)) & ((1 << (q))-1));
 
@@ -24,7 +24,7 @@ struct affent
     short   appndl;
     short   stripl;
     char    achar;
-    char    xpflg;   
+    char    xpflg;
     short   numconds;
     char    conds[SET_SIZE];
 };
@@ -50,8 +50,8 @@ struct affixptr          stable[MAX_SUFFIXES];
 int    numwords;	          /* number of words found */
 struct dwords
 {
-  char * word;
-  int pallow;
+    char * word;
+    int pallow;
 };
 
 struct dwords  wlist[MAX_WORDS]; /* list words found */

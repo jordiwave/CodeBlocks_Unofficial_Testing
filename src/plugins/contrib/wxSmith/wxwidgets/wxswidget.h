@@ -46,63 +46,63 @@ using namespace wxsFlags;
  */
 class wxsWidget: public wxsItem
 {
-    public:
+public:
 
-        /** \brief Ctor
-         *  \param Data data management object handling this item
-         *  \param PropertiesFlags flags filtering set base properties
-         *         (see wxsBaseProperties for details)
-         *  \param Info pointer to static widget info
-         *  \param EventArray pointer to static set of events
-         *  \param StyleSet set of used styles, if 0, this widget won't
-         *         provide styles by default
-         */
-        wxsWidget(
-            wxsItemResData*     Data,
-            const wxsItemInfo*  Info,
-            const wxsEventDesc* EventArray = 0,
-            const wxsStyleSet*  StyleSet = 0,
-            long                PropertiesFlags = flWidget);
+    /** \brief Ctor
+     *  \param Data data management object handling this item
+     *  \param PropertiesFlags flags filtering set base properties
+     *         (see wxsBaseProperties for details)
+     *  \param Info pointer to static widget info
+     *  \param EventArray pointer to static set of events
+     *  \param StyleSet set of used styles, if 0, this widget won't
+     *         provide styles by default
+     */
+    wxsWidget(
+        wxsItemResData*     Data,
+        const wxsItemInfo*  Info,
+        const wxsEventDesc* EventArray = 0,
+        const wxsStyleSet*  StyleSet = 0,
+        long                PropertiesFlags = flWidget);
 
-    protected:
+protected:
 
-        /** \brief Function enumerating properties for this widget only
-         *
-         * This function should enumerate all extra properties
-         * required by item (extra means not enumerated in base properties
-         * not id or variable name).
-         * These properties will be placed at the beginning, right after
-         * there will be Variable name and identifier and at the end, all
-         * required base properties.
-         */
-        virtual void OnEnumWidgetProperties(long Flags) = 0;
+    /** \brief Function enumerating properties for this widget only
+     *
+     * This function should enumerate all extra properties
+     * required by item (extra means not enumerated in base properties
+     * not id or variable name).
+     * These properties will be placed at the beginning, right after
+     * there will be Variable name and identifier and at the end, all
+     * required base properties.
+     */
+    virtual void OnEnumWidgetProperties(long Flags) = 0;
 
-        /** \brief Function which adds new items to QPP
-         *
-         * This function may be used to add special quick properties for
-         * this item.
-         *
-         * All QPPChild panels will be added before additional panels
-         * added by widget.
-         */
-        virtual void OnAddWidgetQPP(cb_unused wxsAdvQPP* QPP) { }
+    /** \brief Function which adds new items to QPP
+     *
+     * This function may be used to add special quick properties for
+     * this item.
+     *
+     * All QPPChild panels will be added before additional panels
+     * added by widget.
+     */
+    virtual void OnAddWidgetQPP(cb_unused wxsAdvQPP* QPP) { }
 
-    private:
+private:
 
-        /** \brief Function enumerating properties with default ones
-         *
-         * Function enumerating item properties. The implementation
-         * does call EnumContainerProperties() and adds all default properties.
-         */
-        virtual void OnEnumItemProperties(long Flags);
+    /** \brief Function enumerating properties with default ones
+     *
+     * Function enumerating item properties. The implementation
+     * does call EnumContainerProperties() and adds all default properties.
+     */
+    virtual void OnEnumItemProperties(long Flags);
 
-        /** \brief Function Adding QPPChild panels for base properties of this
-         *         container.
-         *
-         * This function calls internally AddContainerQPP to add any additional
-         * QPPChild panels.
-         */
-        virtual void OnAddItemQPP(wxsAdvQPP* QPP);
+    /** \brief Function Adding QPPChild panels for base properties of this
+     *         container.
+     *
+     * This function calls internally AddContainerQPP to add any additional
+     * QPPChild panels.
+     */
+    virtual void OnAddItemQPP(wxsAdvQPP* QPP);
 
 };
 

@@ -11,7 +11,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<DisplayEvents> reg("DisplayEvents");
+PluginRegistrant<DisplayEvents> reg("DisplayEvents");
 }
 
 // constructor

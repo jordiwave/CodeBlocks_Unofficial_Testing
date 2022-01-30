@@ -8,10 +8,10 @@
 
 HooverLine::HooverLine(wxPoint start, wxPoint stop)
     :HooverDrawlet(),
-    m_start(start),
-    m_stop(stop)
+     m_start(start),
+     m_stop(stop)
 {}
-HooverLine::~HooverLine(){}
+HooverLine::~HooverLine() {}
 
 
 bool HooverLine::Draw(wxDC &dc)

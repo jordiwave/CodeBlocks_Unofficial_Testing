@@ -28,28 +28,31 @@
 /** \brief handler for menus */
 class wxsMenu: public wxsTool
 {
-    public:
+public:
 
-        wxsMenu(wxsItemResData* Data);
+    wxsMenu(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual void OnEnumToolProperties(long Flags);
-        virtual bool OnIsPointer();
-        virtual bool OnCanAddToResource(wxsItemResData* /*Data*/, bool /*ShowMessage*/) { return true; }
-        virtual bool OnMouseDClick(wxWindow* Preview,int PosX,int PosY);
-        virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
-        virtual bool OnCanAddToParent(wxsParent* Item,bool ShowMessage);
-        virtual bool OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra);
-        virtual wxString OnGetTreeLabel(int& Image);
+    virtual void OnBuildCreatingCode();
+    virtual void OnEnumToolProperties(long Flags);
+    virtual bool OnIsPointer();
+    virtual bool OnCanAddToResource(wxsItemResData* /*Data*/, bool /*ShowMessage*/)
+    {
+        return true;
+    }
+    virtual bool OnMouseDClick(wxWindow* Preview,int PosX,int PosY);
+    virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
+    virtual bool OnCanAddToParent(wxsParent* Item,bool ShowMessage);
+    virtual bool OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra);
+    virtual wxString OnGetTreeLabel(int& Image);
 
 //        wxSize CalculateSize(wxArrayInt* Cols = 0); ///< \brief Getting size of this item requied by editor
 //        void   Draw(wxDC* DC,int BegX,int BegY);    ///< \brief Drawing preview of this menu in some DC
 
-        wxString m_Label;                           ///< \brief Main label
+    wxString m_Label;                           ///< \brief Main label
 
-        friend class wxsMenuEditor;
+    friend class wxsMenuEditor;
 };
 
 #endif

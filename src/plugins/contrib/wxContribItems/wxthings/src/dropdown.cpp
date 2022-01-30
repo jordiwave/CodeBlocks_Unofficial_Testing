@@ -15,12 +15,12 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/control.h>
-    #include <wx/bitmap.h>
+#include <wx/control.h>
+#include <wx/bitmap.h>
 #endif // WX_PRECOMP
 
 #include <wx/timer.h>
@@ -31,16 +31,18 @@
 #if wxUSE_POPUPWIN
 
 /* XPM */
-static const char *down_arrow_xpm_data[] = {
-/* columns rows colors chars-per-pixel */
-"7 4 2 1",
-"  c None",
-"a c Black",
-/* pixels */
-"aaaaaaa",
-" aaaaa ",
-"  aaa  ",
-"   a   "};
+static const char *down_arrow_xpm_data[] =
+{
+    /* columns rows colors chars-per-pixel */
+    "7 4 2 1",
+    "  c None",
+    "a c Black",
+    /* pixels */
+    "aaaaaaa",
+    " aaaaa ",
+    "  aaa  ",
+    "   a   "
+};
 
 #define IDD_DROPDOWN_BUTTON 100
 
@@ -200,7 +202,7 @@ void DropDownPopup::Popup(wxWindow *focus)
 
 #if USE_POPUP_IDLE
     Connect(wxID_ANY, wxEVT_IDLE,
-           (wxObjectEventFunction)(wxEventFunction)(wxIdleEventFunction)
+            (wxObjectEventFunction)(wxEventFunction)(wxIdleEventFunction)
             &DropDownPopup::OnIdle, 0, this);
 #endif //USE_POPUP_IDLE
 
@@ -304,15 +306,15 @@ bool DropDownBase::Create( wxWindow* parent, wxWindowID id,
 void DropDownBase::OnSize( wxSizeEvent& event )
 {
     event.Skip();
-/*
-    if (!m_dropdownButton) return;
+    /*
+        if (!m_dropdownButton) return;
 
-    wxSize size = GetClientSize();
-    wxPrintf(wxT("DropDownBase %d %d\n"), size.x, size.y);
+        wxSize size = GetClientSize();
+        wxPrintf(wxT("DropDownBase %d %d\n"), size.x, size.y);
 
-    wxSize dropSize = m_dropdownButton->GetSize();
-    m_dropdownButton->SetSize(size.x-dropSize.x, 0, dropSize.x, size.y);
-*/
+        wxSize dropSize = m_dropdownButton->GetSize();
+        m_dropdownButton->SetSize(size.x-dropSize.x, 0, dropSize.x, size.y);
+    */
 }
 
 void DropDownBase::DoSetSize(int x, int y, int width, int height, int sizeFlags)

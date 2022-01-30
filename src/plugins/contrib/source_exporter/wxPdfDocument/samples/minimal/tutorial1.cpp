@@ -59,27 +59,27 @@
 int
 tutorial1(bool testMode)
 {
-  wxPdfDocument pdf;
-  if (testMode)
-  {
-    pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
-    pdf.SetCompression(false);
-  }
+    wxPdfDocument pdf;
+    if (testMode)
+    {
+        pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
+        pdf.SetCompression(false);
+    }
 //  pdf.AddPage();
-  pdf.AddPage(wxPORTRAIT,wxPAPER_A4);
-  pdf.SetFont(wxS("Helvetica"),wxS("B"),16);
-  pdf.Cell(40,10,wxS("Hello World!"));
-  pdf.AddPage(wxLANDSCAPE,wxPAPER_A4);
-  pdf.SetFont(wxS("Helvetica"),wxS("B"),16);
-  pdf.Cell(40,10,wxS("Hello World!"));
-  pdf.AddPage(wxPORTRAIT,wxPAPER_A3);
-  pdf.SetFont(wxS("Helvetica"),wxS("B"),16);
-  pdf.Cell(40,10,wxS("Hello World!"));
-  pdf.AddPage(wxLANDSCAPE,wxPAPER_A3);
-  pdf.SetFont(wxS("Helvetica"),wxS("B"),16);
-  pdf.Cell(40,10,wxS("Hello World!"));
-  pdf.SaveAsFile(wxS("tutorial1.pdf"));
+    pdf.AddPage(wxPORTRAIT,wxPAPER_A4);
+    pdf.SetFont(wxS("Helvetica"),wxS("B"),16);
+    pdf.Cell(40,10,wxS("Hello World!"));
+    pdf.AddPage(wxLANDSCAPE,wxPAPER_A4);
+    pdf.SetFont(wxS("Helvetica"),wxS("B"),16);
+    pdf.Cell(40,10,wxS("Hello World!"));
+    pdf.AddPage(wxPORTRAIT,wxPAPER_A3);
+    pdf.SetFont(wxS("Helvetica"),wxS("B"),16);
+    pdf.Cell(40,10,wxS("Hello World!"));
+    pdf.AddPage(wxLANDSCAPE,wxPAPER_A3);
+    pdf.SetFont(wxS("Helvetica"),wxS("B"),16);
+    pdf.Cell(40,10,wxS("Hello World!"));
+    pdf.SaveAsFile(wxS("tutorial1.pdf"));
 
-  return 0;
+    return 0;
 }
 

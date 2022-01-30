@@ -55,8 +55,10 @@ void CToolChain::Clear(void)
 
 CString CToolChain::sw(const CString& ASwitch) const
 {
-    if (!ASwitch.IsEmpty()) {
-        if (LeftStr(ASwitch,m_GenericSwitch.GetLength())==m_GenericSwitch) {
+    if (!ASwitch.IsEmpty())
+    {
+        if (LeftStr(ASwitch,m_GenericSwitch.GetLength())==m_GenericSwitch)
+        {
             return m_GenericSwitch+ASwitch;
         }
     }
@@ -65,49 +67,58 @@ CString CToolChain::sw(const CString& ASwitch) const
 
 CBuildTool *CToolChain::CreateBuildTool(const CBuildTool::ToolType Type)
 {
-    switch (Type) {
+    switch (Type)
+    {
     default:
     case CBuildTool::btCount:
-    case CBuildTool::btOther: {
+    case CBuildTool::btOther:
+    {
         return 0; //break;
     }
-    case CBuildTool::btPreprocessor: {
+    case CBuildTool::btPreprocessor:
+    {
         CPreprocessor *bt = new CPreprocessor;
         m_Preprocessors.push_back(bt);
         m_BuildTools.push_back(bt);
         return bt; //break;
     }
-    case CBuildTool::btCompiler: {
+    case CBuildTool::btCompiler:
+    {
         CCompiler *bt = new CCompiler;
         m_Compilers.push_back(bt);
         m_BuildTools.push_back(bt);
         return bt; //break;
     }
-    case CBuildTool::btAssembler: {
+    case CBuildTool::btAssembler:
+    {
         CAssembler *bt = new CAssembler;
         m_Assemblers.push_back(bt);
         m_BuildTools.push_back(bt);
         return bt; //break;
     }
-    case CBuildTool::btStaticLinker: {
+    case CBuildTool::btStaticLinker:
+    {
         CStaticLinker *bt = new CStaticLinker;
         m_StaticLinkers.push_back(bt);
         m_BuildTools.push_back(bt);
         return bt; //break;
     }
-    case CBuildTool::btDynamicLinker: {
+    case CBuildTool::btDynamicLinker:
+    {
         CDynamicLinker *bt = new CDynamicLinker;
         m_DynamicLinkers.push_back(bt);
         m_BuildTools.push_back(bt);
         return bt; //break;
     }
-    case CBuildTool::btExecutableLinker: {
+    case CBuildTool::btExecutableLinker:
+    {
         CExecutableLinker *bt = new CExecutableLinker;
         m_ExecutableLinkers.push_back(bt);
         m_BuildTools.push_back(bt);
         return bt; //break;
     }
-    case CBuildTool::btResourceCompiler: {
+    case CBuildTool::btResourceCompiler:
+    {
         CResourceCompiler *bt = new CResourceCompiler;
         m_ResourceCompilers.push_back(bt);
         m_BuildTools.push_back(bt);
@@ -128,25 +139,32 @@ void CToolChain::Assign(const CToolChain& ToolChain)
     m_LibraryDirSwitch  = ToolChain.m_LibraryDirSwitch;
     m_LinkLibrarySwitch = ToolChain.m_LinkLibrarySwitch;
 
-    for (size_t i = 0; i < ToolChain.m_Preprocessors.size(); i++) {
+    for (size_t i = 0; i < ToolChain.m_Preprocessors.size(); i++)
+    {
         m_Preprocessors.push_back(ToolChain.m_Preprocessors[i]->CreateInstance());
     }
-    for (size_t i = 0; i < ToolChain.m_Assemblers.size(); i++) {
+    for (size_t i = 0; i < ToolChain.m_Assemblers.size(); i++)
+    {
         m_Assemblers.push_back(ToolChain.m_Assemblers[i]->CreateInstance());
     }
-    for (size_t i = 0; i < ToolChain.m_Compilers.size(); i++) {
+    for (size_t i = 0; i < ToolChain.m_Compilers.size(); i++)
+    {
         m_Compilers.push_back(ToolChain.m_Compilers[i]->CreateInstance());
     }
-    for (size_t i = 0; i < ToolChain.m_ResourceCompilers.size(); i++) {
+    for (size_t i = 0; i < ToolChain.m_ResourceCompilers.size(); i++)
+    {
         m_ResourceCompilers.push_back(ToolChain.m_ResourceCompilers[i]->CreateInstance());
     }
-    for (size_t i = 0; i < ToolChain.m_StaticLinkers.size(); i++) {
+    for (size_t i = 0; i < ToolChain.m_StaticLinkers.size(); i++)
+    {
         m_StaticLinkers.push_back(ToolChain.m_StaticLinkers[i]->CreateInstance());
     }
-    for (size_t i = 0; i < ToolChain.m_DynamicLinkers.size(); i++) {
+    for (size_t i = 0; i < ToolChain.m_DynamicLinkers.size(); i++)
+    {
         m_DynamicLinkers.push_back(ToolChain.m_DynamicLinkers[i]->CreateInstance());
     }
-    for (size_t i = 0; i < ToolChain.m_ExecutableLinkers.size(); i++) {
+    for (size_t i = 0; i < ToolChain.m_ExecutableLinkers.size(); i++)
+    {
         m_ExecutableLinkers.push_back(ToolChain.m_ExecutableLinkers[i]->CreateInstance());
     }
     GatherBuildTools();
@@ -161,7 +179,8 @@ void CToolChain::Reset(const CPlatform::OS_Type OS)
 {
     if (Supports(OS)) m_Platform = OS;
     else m_Platform = CPlatform::OS_Other;
-    for (size_t i = 0; i < m_BuildTools.size(); i++) {
+    for (size_t i = 0; i < m_BuildTools.size(); i++)
+    {
         CBuildTool *bt = m_BuildTools[i];
         //bt->Show();
         bt->Reset(OS);
@@ -179,12 +198,15 @@ bool CToolChain::Supports(const CPlatform::OS_Type OS) const
 void CToolChain::Read(const TiXmlElement *Root, const CString& Name, CString& Value)
 {
     TiXmlNode *_option = (TiXmlNode *)Root->FirstChild("option");
-    while (0!=_option) {
+    while (0!=_option)
+    {
         TiXmlElement* option = _option->ToElement();
         //if (strcmp(option->Value(),"option")!=0) break;
-        if (0!=option) {
+        if (0!=option)
+        {
             char *value = 0;
-            if ((value = (char *)option->Attribute(Name.GetCString()))) {
+            if ((value = (char *)option->Attribute(Name.GetCString())))
+            {
                 Value = value;
                 break;
             }
@@ -203,10 +225,12 @@ void CToolChain::Read(const TiXmlElement *Root, const CString& Name, bool& Value
 void CToolChain::Read(const TiXmlElement *ToolChainRoot)
 {
     char *value = 0;
-    if ((value = (char *)ToolChainRoot->Attribute("alias"))) {
+    if ((value = (char *)ToolChainRoot->Attribute("alias")))
+    {
         m_Alias = value;
     }
-    if ((value = (char *)ToolChainRoot->Attribute("platform"))) {
+    if ((value = (char *)ToolChainRoot->Attribute("platform")))
+    {
         CString platform = value;
         m_Platform = CPlatform::OS(platform);
     }
@@ -217,15 +241,19 @@ void CToolChain::Read(const TiXmlElement *ToolChainRoot)
     }
     */
     TiXmlNode *_tool_root = (TiXmlNode *)(ToolChainRoot->FirstChild("tool"));
-    while (0!=_tool_root) {
+    while (0!=_tool_root)
+    {
         const TiXmlElement *tool_root = _tool_root->ToElement();
-        if (0!=tool_root) {
+        if (0!=tool_root)
+        {
             char *value = 0;
             CString type_name, alias;
-            if ((value = (char *)tool_root->Attribute("type"))) {
+            if ((value = (char *)tool_root->Attribute("type")))
+            {
                 type_name = value;
             }
-            if ((value = (char *)tool_root->Attribute("alias"))) {
+            if ((value = (char *)tool_root->Attribute("alias")))
+            {
                 alias = value;
             }
             Read(ToolChainRoot, "generic_switch", m_GenericSwitch);
@@ -235,19 +263,24 @@ void CToolChain::Read(const TiXmlElement *ToolChainRoot)
             Read(ToolChainRoot, "link_library_switch", m_LinkLibrarySwitch);
 
             bool custom_tool = true;
-            for (size_t i = 0; i < m_BuildTools.size(); i++) {
+            for (size_t i = 0; i < m_BuildTools.size(); i++)
+            {
                 CBuildTool *bt = m_BuildTools[i];
-                if (bt->Supports(m_Platform)) {
-                    if (bt->Alias() == alias) {
+                if (bt->Supports(m_Platform))
+                {
+                    if (bt->Alias() == alias)
+                    {
                         bt->Read(tool_root);
                         custom_tool = false;
                     }
                 }
             }
-            if (custom_tool) {
+            if (custom_tool)
+            {
                 CBuildTool::ToolType tool_type = CBuildTool::Type(type_name);
                 CBuildTool *bt = CreateBuildTool(tool_type);
-                if (0!=bt) {
+                if (0!=bt)
+                {
                     bt->Read(tool_root);
                 }
             }
@@ -280,9 +313,11 @@ void CToolChain::Write(TiXmlElement *ToolChainRoot)
     Write(ToolChainRoot, "library_dir_switch", m_LibraryDirSwitch);
     Write(ToolChainRoot, "link_library_switch", m_LinkLibrarySwitch);
     //ToolChainRoot->SetAttribute("",m_.GetCString());
-    for (size_t i = 0; i < m_BuildTools.size(); i++) {
+    for (size_t i = 0; i < m_BuildTools.size(); i++)
+    {
         CBuildTool *bt = m_BuildTools[i];
-        if (bt->Supports(m_Platform)) {
+        if (bt->Supports(m_Platform))
+        {
             TiXmlElement *bt_root = new TiXmlElement("tool");
             bt->Write(bt_root);
             ToolChainRoot->LinkEndChild(bt_root);
@@ -314,14 +349,17 @@ void CToolChain::Show(void)
 
 //std::cout<<": "<<m_.GetString()<<std::endl;
     int bt_count = 0;
-    for (size_t i = 0; i < m_BuildTools.size(); i++) {
+    for (size_t i = 0; i < m_BuildTools.size(); i++)
+    {
         CBuildTool *bt = m_BuildTools[i];
         if (bt->Supports(m_Platform)) bt_count++;
     }
     std::cout<<"Toolchain has "<<bt_count<<" configured build tool(s)."<<std::endl;
-    for (size_t i = 0, j = 0; i < m_BuildTools.size(); i++) {
+    for (size_t i = 0, j = 0; i < m_BuildTools.size(); i++)
+    {
         CBuildTool *bt = m_BuildTools[i];
-        if (bt->Supports(m_Platform)) {
+        if (bt->Supports(m_Platform))
+        {
             std::cout<<"Build tool #"<<++j<<std::endl;
             bt->Show();
         }
@@ -332,7 +370,8 @@ void CToolChain::Show(void)
 void CToolChain::GatherBuildTools(std::vector<CBuildTool *>* Source,
                                   std::vector<CBuildTool *>* Target)
 {
-    for (size_t i = 0; i < Source->size(); i++) {
+    for (size_t i = 0; i < Source->size(); i++)
+    {
         Target->push_back(Source->at(i));
     }
 }
@@ -352,7 +391,8 @@ void CToolChain::GatherBuildTools(void)
 CBuildTool *CToolChain::FindBuildTool(const CString& FileExtension,
                                       const std::vector<CBuildTool *>* Tools)
 {
-    for (size_t i = 0; i < Tools->size(); i++) {
+    for (size_t i = 0; i < Tools->size(); i++)
+    {
         CBuildTool *bt = Tools->at(i);
         if (bt->ExpectedSourceExtension(FileExtension)) return bt;
     }
@@ -361,7 +401,8 @@ CBuildTool *CToolChain::FindBuildTool(const CString& FileExtension,
 
 std::vector<CBuildTool *>* CToolChain::GetTools(const CBuildTool::ToolType Type)
 {
-    switch (Type) {
+    switch (Type)
+    {
     case CBuildTool::btPreprocessor:
         return (std::vector<CBuildTool *>*)&m_Preprocessors;
     case CBuildTool::btAssembler:
@@ -393,7 +434,8 @@ size_t CToolChain::ToolsCount(const CBuildTool::ToolType Type)
 CBuildTool *CToolChain::GetBuildTool(const size_t index, const CBuildTool::ToolType Type)
 {
     std::vector<CBuildTool *>* tools = GetTools(Type);
-    if (index<tools->size()) {
+    if (index<tools->size())
+    {
         return tools->at(index);
     }
     return 0;
@@ -401,7 +443,8 @@ CBuildTool *CToolChain::GetBuildTool(const size_t index, const CBuildTool::ToolT
 
 CBuildTool *CToolChain::FindBuildToolByName(const CString& ToolName)
 {
-    for (size_t i = 0; i < m_BuildTools.size(); i++) {
+    for (size_t i = 0; i < m_BuildTools.size(); i++)
+    {
         CBuildTool *bt = m_BuildTools[i];
         if (bt->Alias()==ToolName) return bt;
     }
@@ -453,9 +496,11 @@ void CToolChain::RemoveTool(const CBuildTool* BuildTool)
 
 bool CToolChain::RemoveToolByName(const CString& ToolName)
 {
-    for (size_t i = 0; i < m_BuildTools.size(); i++) {
+    for (size_t i = 0; i < m_BuildTools.size(); i++)
+    {
         CBuildTool *bt = m_BuildTools[i];
-        if (bt->Alias()==ToolName) {
+        if (bt->Alias()==ToolName)
+        {
             RemoveTool(bt);
             return true;
         }
@@ -556,13 +601,16 @@ CToolChain *CIntelToolChain::CreateInstance(void) const
 void CIntelToolChain::Reset(const CPlatform::OS_Type OS)
 {
     CToolChain::Reset(OS);
-    if (CPlatform::OS_Windows==OS) {
+    if (CPlatform::OS_Windows==OS)
+    {
         m_GenericSwitch = "/";
         m_DefineSwitch = "/D";
         m_IncludeDirSwitch = "/I";
         m_LibraryDirSwitch = "/LIBPATH:";
         m_LinkLibrarySwitch = "";
-    } else {
+    }
+    else
+    {
         m_GenericSwitch = "-";
         m_DefineSwitch = "-D";
         m_IncludeDirSwitch = "-I";
@@ -647,8 +695,10 @@ void CToolChainSet::Unlock(void)
 void CToolChainSet::Clear(void)
 {
     if (m_Locked) return;
-    for (size_t i = 0; i < m_ToolChains.size(); i++) {
-        for (size_t j = 0; j < m_ToolChains[i].size(); j++) {
+    for (size_t i = 0; i < m_ToolChains.size(); i++)
+    {
+        for (size_t j = 0; j < m_ToolChains[i].size(); j++)
+        {
             //std::cout<<"delete "<<m_ToolChains[i][j]<<std::endl<<std::flush;
             delete m_ToolChains[i][j];
         }
@@ -666,16 +716,20 @@ size_t CToolChainSet::GetCount(const CPlatform::OS_Type OS) const
 
 CToolChain *CToolChainSet::ToolChain(const CPlatform::OS_Type OS, const size_t Index) const
 {
-    if ((OS!=CPlatform::OS_Count)&&Index<m_ToolChains[OS].size()) {
+    if ((OS!=CPlatform::OS_Count)&&Index<m_ToolChains[OS].size())
+    {
         return m_ToolChains[OS][Index];
-    } else {
+    }
+    else
+    {
         return 0;
     }
 }
 
 CToolChain *CToolChainSet::Find(const CPlatform::OS_Type OS, const CString& Alias)
 {
-    if (OS!=CPlatform::OS_Count) for (int i = 0, n = m_ToolChains[OS].size(); i < n; i++) {
+    if (OS!=CPlatform::OS_Count) for (int i = 0, n = m_ToolChains[OS].size(); i < n; i++)
+        {
             CToolChain *tc = m_ToolChains[OS][i];
             if ((tc->Alias() == Alias)&&(tc->OS() == OS)) return tc;
         }
@@ -685,10 +739,13 @@ CToolChain *CToolChainSet::Find(const CPlatform::OS_Type OS, const CString& Alia
 void CToolChainSet::AddToolChain(const CToolChain *AToolChain)
 {
     CToolChain *tc = (CToolChain *)AToolChain;
-    for (int i = (int)CPlatform::OS_Other; i < (int)CPlatform::OS_Count; i++) {
+    for (int i = (int)CPlatform::OS_Other; i < (int)CPlatform::OS_Count; i++)
+    {
         CPlatform::OS_Type os_type = (CPlatform::OS_Type)i;
-        if (AToolChain->Supports(os_type)) {
-            if (0==tc) {
+        if (AToolChain->Supports(os_type))
+        {
+            if (0==tc)
+            {
                 tc = AToolChain->CreateInstance();
             }
             tc->Reset(os_type);
@@ -723,7 +780,8 @@ void CToolChainSet::Remove(const CPlatform::OS_Type OS, const CString& Alias)
 {
     if (m_Locked || (OS==CPlatform::OS_Count)) return;
     CToolChain *tc = Find(OS,Alias);
-    if (0!=tc) {
+    if (0!=tc)
+    {
         m_ToolChains[OS].erase(std::find(m_ToolChains[OS].begin(),m_ToolChains[OS].end(),tc));
         delete tc;
     }
@@ -732,18 +790,22 @@ void CToolChainSet::Remove(const CPlatform::OS_Type OS, const CString& Alias)
 void CToolChainSet::Read(const TiXmlElement *ConfigRoot)
 {
     TiXmlNode *_tool_chain = (TiXmlNode *)ConfigRoot->FirstChild("toolchain");
-    while (0!=_tool_chain) {
+    while (0!=_tool_chain)
+    {
         TiXmlElement* tool_chain = _tool_chain->ToElement();
-        if (0!=tool_chain) {
+        if (0!=tool_chain)
+        {
             if (strcmp(tool_chain->Value(),"toolchain")!=0) break;
             //
             char *value = 0;
             CString alias, platform_name;
             CPlatform::OS_Type platform = CPlatform::OS_Other;
-            if ((value = (char *)tool_chain->Attribute("alias"))) {
+            if ((value = (char *)tool_chain->Attribute("alias")))
+            {
                 alias = value;
             }
-            if ((value = (char *)tool_chain->Attribute("platform"))) {
+            if ((value = (char *)tool_chain->Attribute("platform")))
+            {
                 platform_name = value;
                 platform = CPlatform::OS(platform_name);
             }
@@ -752,11 +814,13 @@ void CToolChainSet::Read(const TiXmlElement *ConfigRoot)
             //
             //CToolChain *tc = new CToolChain("other");
             bool custom_toolchain = (0==tc);
-            if (custom_toolchain) {
+            if (custom_toolchain)
+            {
                 tc = new CToolChain("other");
             }
             tc->Read(tool_chain);
-            if (custom_toolchain) {
+            if (custom_toolchain)
+            {
                 m_ToolChains[tc->OS()].push_back(tc);
             }
         }
@@ -766,8 +830,10 @@ void CToolChainSet::Read(const TiXmlElement *ConfigRoot)
 
 void CToolChainSet::Write(TiXmlElement *ConfigRoot)
 {
-    for (int i = 0, n = m_ToolChains.size(); i < n; i++) {
-        for (int j = 0, m = m_ToolChains[i].size(); j < m; j++) {
+    for (int i = 0, n = m_ToolChains.size(); i < n; i++)
+    {
+        for (int j = 0, m = m_ToolChains[i].size(); j < m; j++)
+        {
             CToolChain *tc = m_ToolChains[i][j];
             TiXmlElement *tc_root = new TiXmlElement("toolchain");
             tc->Write(tc_root);
@@ -805,17 +871,22 @@ bool CToolChainSet::Save(const CString& FileName)
 
 void CToolChainSet::Show(void)
 {
-    if (m_ToolChains.size()) {
+    if (m_ToolChains.size())
+    {
         int pl_count = 0, tc_count = 0;
-        for (int i = 0, n = m_ToolChains.size(); i < n; i++) {
-            if (m_ToolChains[i].size()>0) {
+        for (int i = 0, n = m_ToolChains.size(); i < n; i++)
+        {
+            if (m_ToolChains[i].size()>0)
+            {
                 tc_count += m_ToolChains[i].size();
                 pl_count++;
             }
         }
         std::cout<<"Configued "<<tc_count<<" toolchain(s) for "<<pl_count<<" platform(s):"<<std::endl;
-        for (int i = 0, n = m_ToolChains.size(); i < n; i++) {
-            for (int j = 0, m = m_ToolChains[i].size(); j < m; j++) {
+        for (int i = 0, n = m_ToolChains.size(); i < n; i++)
+        {
+            for (int j = 0, m = m_ToolChains[i].size(); j < m; j++)
+            {
                 std::cout<<CPlatform::Name((CPlatform::OS_Type)i).GetCString()
                          <<" Toolchain #"<<(j+1)<<": "<<std::endl;
                 CToolChain *tc = m_ToolChains[i][j];
@@ -823,7 +894,9 @@ void CToolChainSet::Show(void)
                 std::cout<<std::endl;
             }
         }
-    } else {
+    }
+    else
+    {
         std::cout<<"No toolchains configured"<<std::endl;
     }
 }

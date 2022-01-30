@@ -12,17 +12,17 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 #include "wx/things/matrix2d.h"
 
 #ifndef WX_PRECOMP
-    #include <wx/object.h>
-    #include <wx/string.h>
-    #include <wx/dynarray.h>    // for wxArrayInt
-    #include <wx/utils.h>
-    #include <wx/msgdlg.h>
+#include <wx/object.h>
+#include <wx/string.h>
+#include <wx/dynarray.h>    // for wxArrayInt
+#include <wx/utils.h>
+#include <wx/msgdlg.h>
 #endif
 
 #include <wx/file.h>
@@ -34,7 +34,8 @@
 #include <string.h>
 #include <stdio.h>
 
-namespace wxthings {
+namespace wxthings
+{
 
 //----------------------------------------------------------------------------
 //  wxMatrix2DRefData
@@ -174,7 +175,7 @@ bool wxMatrix2D::Copy( const wxMatrix2D &matrix )
     wxCHECK_MSG(matrix.Ok(), false, wxT("Invalid matrix"));
 
     if (!Ok() || (M_MATRIXDATA->m_width  != matrix.GetWidth()) ||
-                 (M_MATRIXDATA->m_height != matrix.GetHeight()))
+            (M_MATRIXDATA->m_height != matrix.GetHeight()))
     {
         Create(matrix.GetWidth(), matrix.GetHeight());
         if (!Ok()) return false;
@@ -883,7 +884,8 @@ bool wxMatrix2D::LoadFile( const wxString &filename, const wxArrayInt *cols )
 
                     if ( num_str.ToDouble(&point) )
                     {
-                        printf("i%d pts%d cols%d rows%d pos%d pt%lf \n", i, num_points, num_cols, num_rows, pos, point); fflush(stdout);
+                        printf("i%d pts%d cols%d rows%d pos%d pt%lf \n", i, num_points, num_cols, num_rows, pos, point);
+                        fflush(stdout);
                         //data[i] = point;
                         ++num_cols;
                         line_str = line_str.Right( line_str.Len() - num_str.Len() );
@@ -917,7 +919,8 @@ bool wxMatrix2D::LoadFile( const wxString &filename, const wxArrayInt *cols )
 
                     if ( num_str.ToDouble(&point) )
                     {
-                        printf("i%d pts%d cols%d rows%d pos%d pt%lf \n", i, num_points, num_cols, num_rows, pos, point); fflush(stdout);
+                        printf("i%d pts%d cols%d rows%d pos%d pt%lf \n", i, num_points, num_cols, num_rows, pos, point);
+                        fflush(stdout);
                         //data[numpoints*numcolumns + i] = point;
                         line_str = line_str.Right( line_str.Len() - num_str.Len() );
                         ++num_points;

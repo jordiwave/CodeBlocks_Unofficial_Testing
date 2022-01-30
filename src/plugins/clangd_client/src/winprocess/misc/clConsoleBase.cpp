@@ -32,7 +32,10 @@ public:
     {
     }
 
-    virtual ~ConsoleProcess() { m_sink = NULL; }
+    virtual ~ConsoleProcess()
+    {
+        m_sink = NULL;
+    }
     void OnTerminate(int pid, int status)
     {
         clProcessEvent terminateEvent(wxEVT_TERMINAL_EXIT);
@@ -77,12 +80,16 @@ clConsoleBase::Ptr_t clConsoleBase::GetTerminal()
 ////        terminal.reset(new clConsoleGnomeTerminal());
 ////    }
 #else
-    if(terminalName.CmpNoCase("codelite-terminal") == 0) {
+    if(terminalName.CmpNoCase("codelite-terminal") == 0)
+    {
         terminal.reset(new clConsoleCodeLiteTerminal());
-    } else {
+    }
+    else
+    {
         clConsoleOSXTerminal* t = new clConsoleOSXTerminal();
         terminal.reset(t);
-        if(terminalName.CmpNoCase("iTerm2") == 0) {
+        if(terminalName.CmpNoCase("iTerm2") == 0)
+        {
             t->SetTerminalApp("iTerm");
         }
     }
@@ -121,7 +128,10 @@ wxString clConsoleBase::GetEnvironmentPrefix() const
 {
     wxString strline;
     std::for_each(m_environment.begin(), m_environment.end(),
-                  [&](const wxStringMap_t::value_type& vt) { strline << vt.first << "=" << vt.second << " "; });
+                  [&](const wxStringMap_t::value_type& vt)
+    {
+        strline << vt.first << "=" << vt.second << " ";
+    });
     return strline;
 }
 
@@ -129,7 +139,8 @@ wxString clConsoleBase::WrapWithQuotesIfNeeded(const wxString& s) const
 {
     wxString strimmed = s;
     strimmed.Trim().Trim(false);
-    if(strimmed.Contains(" ")) {
+    if(strimmed.Contains(" "))
+    {
         strimmed.Prepend("\"").Append("\"");
     }
     return strimmed;
@@ -145,10 +156,13 @@ wxString clConsoleBase::EscapeString(const wxString& str, const wxString& c) con
 bool clConsoleBase::StartProcess(const wxString& command)
 {
     wxProcess* callback = nullptr;
-    if(m_callback) {
+    if(m_callback)
+    {
         // user provided callback
         callback = m_callback;
-    } else if(m_sink) {
+    }
+    else if(m_sink)
+    {
         // using events. This object will get deleted when the process exits
         callback = new ConsoleProcess(m_sink, m_callbackUID);
     }
@@ -166,7 +180,8 @@ wxString clConsoleBase::GetSelectedTerminalName()
     //wxString terminalName = clConfig::Get().Read("Terminal", wxString());
     ConfigManager* cfg = Manager::Get()->GetConfigManager("app");
     wxString terminalName = cfg->Read("/console_shell");
-    if(terminalName.IsEmpty()) {
+    if(terminalName.IsEmpty())
+    {
 #ifdef __WXGTK__
         wxFileName file;
         terminalName = FileUtils::FindExe("gnome-terminal", file) ? "gnome-terminal" : "codelite-terminal";
@@ -181,7 +196,10 @@ wxString clConsoleBase::GetSelectedTerminalName()
 
 clConsoleEnvironment::clConsoleEnvironment() {}
 
-clConsoleEnvironment::~clConsoleEnvironment() { UnApply(); }
+clConsoleEnvironment::~clConsoleEnvironment()
+{
+    UnApply();
+}
 
 void clConsoleEnvironment::Add(const wxString& name, const wxString& value)
 {
@@ -205,7 +223,8 @@ void clConsoleEnvironment::Apply()
 
     // keep a copy of the old environment before we apply the new values
     m_oldEnvironment.clear();
-    std::for_each(m_environment.begin(), m_environment.end(), [&](const wxStringMap_t::value_type& vt) {
+    std::for_each(m_environment.begin(), m_environment.end(), [&](const wxStringMap_t::value_type& vt)
+    {
         wxString envvalue;
         if(::wxGetEnv(vt.first, &envvalue))
         {
@@ -221,13 +240,18 @@ void clConsoleEnvironment::Apply()
 
 void clConsoleEnvironment::UnApply()
 {
-    if(m_oldEnvironment.empty()) {
+    if(m_oldEnvironment.empty())
+    {
         return;
     }
-    std::for_each(m_oldEnvironment.begin(), m_oldEnvironment.end(), [&](const wxStringMap_t::value_type& vt) {
-        if(vt.second == "__no_such_env__") {
+    std::for_each(m_oldEnvironment.begin(), m_oldEnvironment.end(), [&](const wxStringMap_t::value_type& vt)
+    {
+        if(vt.second == "__no_such_env__")
+        {
             ::wxUnsetEnv(vt.second);
-        } else {
+        }
+        else
+        {
             ::wxSetEnv(vt.first, vt.second);
         }
     });
@@ -257,16 +281,23 @@ wxArrayString clConsoleBase::SplitArguments(const wxString& args)
     wxArrayString outputArr;
     wxString curtoken;
     wxChar prevChar = 0;
-    for(size_t i = 0; i < args.size(); ++i) {
+    for(size_t i = 0; i < args.size(); ++i)
+    {
         wxChar ch = args[i];
-        switch(state) {
-        case STATE_NORMAL: {
-            switch(ch) {
+        switch(state)
+        {
+        case STATE_NORMAL:
+        {
+            switch(ch)
+            {
             case ' ':
             case '\t':
-                if(prevChar == '\\') {
+                if(prevChar == '\\')
+                {
                     curtoken << ch;
-                } else {
+                }
+                else
+                {
                     ADD_CURRENT_TOKEN();
                 }
                 break;
@@ -279,14 +310,20 @@ wxArrayString clConsoleBase::SplitArguments(const wxString& args)
                 curtoken << ch;
                 break;
             }
-        } break;
-        case STATE_STRING: {
-            switch(ch) {
+        }
+        break;
+        case STATE_STRING:
+        {
+            switch(ch)
+            {
             case '"':
             case '\'':
-                if(prevChar == '\\') {
+                if(prevChar == '\\')
+                {
                     curtoken << ch;
-                } else {
+                }
+                else
+                {
                     // we dont want to keep the string markers
                     state = STATE_NORMAL;
                 }
@@ -295,7 +332,8 @@ wxArrayString clConsoleBase::SplitArguments(const wxString& args)
                 curtoken << ch;
                 break;
             }
-        } break;
+        }
+        break;
         default:
             break;
         }

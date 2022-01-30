@@ -29,23 +29,32 @@
 #include "macros.h"
 #include "wxstringhash.h"   //required for wxWidgets < wx3100
 
-struct  MenuItemData {
+struct  MenuItemData
+{
     wxString resourceID;
     wxString accel;
     wxString action;
     wxString parentMenu; // For display purposes
 
-    struct ClearParentMenu {
-        void operator()(std::pair<const int, MenuItemData>& iter) { iter.second.parentMenu.Clear(); }
+    struct ClearParentMenu
+    {
+        void operator()(std::pair<const int, MenuItemData>& iter)
+        {
+            iter.second.parentMenu.Clear();
+        }
     };
 
-    struct PrependPrefix {
+    struct PrependPrefix
+    {
         wxString m_prefix;
         PrependPrefix(const wxString& prefix)
             : m_prefix(prefix)
         {
         }
-        void operator()(std::pair<const int, MenuItemData>& iter) { iter.second.action.Prepend(m_prefix); }
+        void operator()(std::pair<const int, MenuItemData>& iter)
+        {
+            iter.second.action.Prepend(m_prefix);
+        }
     };
 };
 
@@ -54,7 +63,8 @@ struct  MenuItemData {
 typedef std::unordered_multimap<wxString, MenuItemData> MenuItemDataMap_t;  //(2019/02/26)
 typedef std::unordered_multimap<int, MenuItemData> MenuItemDataIntMap_t;    //(2019/02/26)
 
-struct  clKeyboardShortcut {
+struct  clKeyboardShortcut
+{
     bool m_ctrl;
     bool m_alt;
     bool m_shift;
@@ -191,8 +201,8 @@ public:
         return fnTempKeyMnuAccels.GetFullPath();
     }
 
-    private:
-        DECLARE_EVENT_TABLE()
+private:
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // KEYBOARDMANAGER_H

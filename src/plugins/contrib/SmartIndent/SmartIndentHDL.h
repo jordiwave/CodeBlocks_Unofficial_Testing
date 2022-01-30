@@ -5,7 +5,7 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-    #include <wx/string.h>
+#include <wx/string.h>
 #endif
 
 #include <cbplugin.h> // for "class cbSmartIndentPlugin"
@@ -15,14 +15,14 @@ class wxScintillaEvent;
 
 class SmartIndentHDL : public cbSmartIndentPlugin
 {
-    public:
-        virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
-        virtual void OnCCDone(cbEditor *ed);
-    private:
-        int FindBlockStartVHDL(cbEditor* ed, int position, wxString block) const;
+public:
+    virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
+    virtual void OnCCDone(cbEditor *ed);
+private:
+    int FindBlockStartVHDL(cbEditor* ed, int position, wxString block) const;
 
-        void DoIndent  (cbEditor* ed, const wxString& langname) const;
-        void DoUnIndent(cbEditor* ed, const wxString& langname) const;
+    void DoIndent  (cbEditor* ed, const wxString& langname) const;
+    void DoUnIndent(cbEditor* ed, const wxString& langname) const;
 };
 
 #endif // SMARTINDENTHDL_H_INCLUDED

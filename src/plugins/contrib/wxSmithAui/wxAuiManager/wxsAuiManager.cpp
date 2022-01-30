@@ -31,78 +31,78 @@ using namespace wxsFlags;
 
 namespace
 {
-    #include "../images/wxsAuiManager16.xpm"
-    #include "../images/wxsAuiManager32.xpm"
+#include "../images/wxsAuiManager16.xpm"
+#include "../images/wxsAuiManager32.xpm"
 
-    wxsRegisterItem<wxsAuiManager> Reg(
-        _T("wxAuiManager"),                 // Class name
-        wxsTContainer,                      // Item type
-        _T("wxWindows"),                    // License
-        _T("Benjamin I. Williams"),         // Author
-        _T(""),                             // Author's email
-        _T(""),                             // Item's homepage
-        _T("Aui"),                          // Category in palette
-        60,                                 // Priority in palette
-        _T("AuiManager"),                   // Base part of names for new items
-        wxsCPP,                             // List of coding languages supported by this item
-        2, 8,                               // Version
-        wxBitmap(wxsAuiManager32_xpm),      // 32x32 bitmap
-        wxBitmap(wxsAuiManager16_xpm),      // 16x16 bitmap
-        false);                             // Allow in XRC
+wxsRegisterItem<wxsAuiManager> Reg(
+    _T("wxAuiManager"),                 // Class name
+    wxsTContainer,                      // Item type
+    _T("wxWindows"),                    // License
+    _T("Benjamin I. Williams"),         // Author
+    _T(""),                             // Author's email
+    _T(""),                             // Item's homepage
+    _T("Aui"),                          // Category in palette
+    60,                                 // Priority in palette
+    _T("AuiManager"),                   // Base part of names for new items
+    wxsCPP,                             // List of coding languages supported by this item
+    2, 8,                               // Version
+    wxBitmap(wxsAuiManager32_xpm),      // 32x32 bitmap
+    wxBitmap(wxsAuiManager16_xpm),      // 16x16 bitmap
+    false);                             // Allow in XRC
 
-    class wxsAuiManagerPreview: public wxPanel
+class wxsAuiManagerPreview: public wxPanel
+{
+public:
+    wxsAuiManagerPreview(wxWindow* Parent): wxPanel(Parent,-1,wxDefaultPosition,wxDefaultSize, wxTAB_TRAVERSAL)
     {
-        public:
-            wxsAuiManagerPreview(wxWindow* Parent): wxPanel(Parent,-1,wxDefaultPosition,wxDefaultSize, wxTAB_TRAVERSAL)
-            {
-                InheritAttributes();
-                Connect(wxID_ANY,wxEVT_PAINT,(wxObjectEventFunction)&wxsAuiManagerPreview::OnPaint);
-            }
+        InheritAttributes();
+        Connect(wxID_ANY,wxEVT_PAINT,(wxObjectEventFunction)&wxsAuiManagerPreview::OnPaint);
+    }
 
-            void SetAuiManager(wxSmithAuiManager* AuiManagerIn)
-            {
-                Disconnect(wxID_ANY,wxEVT_PAINT,(wxObjectEventFunction)&wxsAuiManagerPreview::OnPaint);
-                AuiManager = AuiManagerIn;
-            }
+    void SetAuiManager(wxSmithAuiManager* AuiManagerIn)
+    {
+        Disconnect(wxID_ANY,wxEVT_PAINT,(wxObjectEventFunction)&wxsAuiManagerPreview::OnPaint);
+        AuiManager = AuiManagerIn;
+    }
 
-        private:
+private:
 
-            void OnPaint(wxPaintEvent& /*event*/)
-            {
-                // Drawing additional border around te panel
-                wxPaintDC DC(this);
-                int W, H;
-                GetSize(&W,&H);
-                DC.SetBrush(*wxTRANSPARENT_BRUSH);
-                DC.SetPen(*wxGREEN_PEN);
-                DC.DrawRectangle(0,0,W,H);
-            }
+    void OnPaint(wxPaintEvent& /*event*/)
+    {
+        // Drawing additional border around te panel
+        wxPaintDC DC(this);
+        int W, H;
+        GetSize(&W,&H);
+        DC.SetBrush(*wxTRANSPARENT_BRUSH);
+        DC.SetPen(*wxGREEN_PEN);
+        DC.DrawRectangle(0,0,W,H);
+    }
 
-            wxSmithAuiManager* AuiManager;
-    };
+    wxSmithAuiManager* AuiManager;
+};
 
-    WXS_ST_BEGIN(wxsAuiMangagerStyles,_T("wxAUI_MGR_DEFAULT"))
-        WXS_ST_CATEGORY("wxAuiManager")
-        WXS_ST(wxAUI_MGR_ALLOW_FLOATING)
-        WXS_ST(wxAUI_MGR_ALLOW_ACTIVE_PANE)
-        WXS_ST(wxAUI_MGR_TRANSPARENT_DRAG)
-        WXS_ST(wxAUI_MGR_TRANSPARENT_HINT)
-        WXS_ST(wxAUI_MGR_VENETIAN_BLINDS_HINT)
-        WXS_ST(wxAUI_MGR_RECTANGLE_HINT)
-        WXS_ST(wxAUI_MGR_HINT_FADE)
-        WXS_ST(wxAUI_MGR_NO_VENETIAN_BLINDS_FADE)
-        WXS_ST(wxAUI_MGR_DEFAULT)
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsAuiMangagerStyles,_T("wxAUI_MGR_DEFAULT"))
+WXS_ST_CATEGORY("wxAuiManager")
+WXS_ST(wxAUI_MGR_ALLOW_FLOATING)
+WXS_ST(wxAUI_MGR_ALLOW_ACTIVE_PANE)
+WXS_ST(wxAUI_MGR_TRANSPARENT_DRAG)
+WXS_ST(wxAUI_MGR_TRANSPARENT_HINT)
+WXS_ST(wxAUI_MGR_VENETIAN_BLINDS_HINT)
+WXS_ST(wxAUI_MGR_RECTANGLE_HINT)
+WXS_ST(wxAUI_MGR_HINT_FADE)
+WXS_ST(wxAUI_MGR_NO_VENETIAN_BLINDS_FADE)
+WXS_ST(wxAUI_MGR_DEFAULT)
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsAuiManagerEvents)
-        WXS_EV(EVT_AUI_PANE_ACTIVATED,wxEVT_AUI_PANE_ACTIVATED,wxAuiManagerEvent,Activated)  // added in 3.0
-        WXS_EV(EVT_AUI_PANE_BUTTON,wxEVT_AUI_PANE_BUTTON,wxAuiManagerEvent,PaneButton)
-        WXS_EV(EVT_AUI_PANE_CLOSE,wxEVT_AUI_PANE_CLOSE,wxAuiManagerEvent,PaneClose)
-        WXS_EV(EVT_AUI_PANE_MAXIMIZE,wxEVT_AUI_PANE_MAXIMIZE,wxAuiManagerEvent,PaneMaximize)
-        WXS_EV(EVT_AUI_PANE_RESTORE,wxEVT_AUI_PANE_RESTORE,wxAuiManagerEvent,PaneRestore)
-        WXS_EV(EVT_AUI_RENDER,wxEVT_AUI_RENDER,wxAuiManagerEvent,Render)
-        WXS_EV(EVT_AUI_FIND_MANAGER,wxEVT_AUI_FIND_MANAGER,wxAuiManagerEvent,FindManager)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsAuiManagerEvents)
+WXS_EV(EVT_AUI_PANE_ACTIVATED,wxEVT_AUI_PANE_ACTIVATED,wxAuiManagerEvent,Activated)  // added in 3.0
+WXS_EV(EVT_AUI_PANE_BUTTON,wxEVT_AUI_PANE_BUTTON,wxAuiManagerEvent,PaneButton)
+WXS_EV(EVT_AUI_PANE_CLOSE,wxEVT_AUI_PANE_CLOSE,wxAuiManagerEvent,PaneClose)
+WXS_EV(EVT_AUI_PANE_MAXIMIZE,wxEVT_AUI_PANE_MAXIMIZE,wxAuiManagerEvent,PaneMaximize)
+WXS_EV(EVT_AUI_PANE_RESTORE,wxEVT_AUI_PANE_RESTORE,wxAuiManagerEvent,PaneRestore)
+WXS_EV(EVT_AUI_RENDER,wxEVT_AUI_RENDER,wxAuiManagerEvent,Render)
+WXS_EV(EVT_AUI_FIND_MANAGER,wxEVT_AUI_FIND_MANAGER,wxAuiManagerEvent,FindManager)
+WXS_EV_END()
 }
 
 void wxsAuiPaneInfoExtra::OnEnumProperties(long /*Flags*/)
@@ -139,23 +139,27 @@ void wxsAuiPaneInfoExtra::OnEnumProperties(long /*Flags*/)
 
     //Dock Direction
     static const long    DockValues[] =
-        { wxAUI_DOCK_TOP,
-          wxAUI_DOCK_BOTTOM,
-          wxAUI_DOCK_LEFT,
-          wxAUI_DOCK_RIGHT,
-          wxAUI_DOCK_CENTER,
-          0 };
+    {
+        wxAUI_DOCK_TOP,
+        wxAUI_DOCK_BOTTOM,
+        wxAUI_DOCK_LEFT,
+        wxAUI_DOCK_RIGHT,
+        wxAUI_DOCK_CENTER,
+        0
+    };
 
 #pragma push_macro("_")
 #undef _
 #define _(x)   L##x
     static const wxChar* DockNames[]  =
-        { _("Top"),
-          _("Bottom"),
-          _("Left"),
-          _("Right"),
-          _("Center"),
-          nullptr };
+    {
+        _("Top"),
+        _("Bottom"),
+        _("Left"),
+        _("Right"),
+        _("Center"),
+        nullptr
+    };
 #pragma pop_macro("_")
 
     WXS_ENUM_P(wxsAuiPaneInfoExtra,m_DockDirection,_("AUI Dock Direction"),_T("dockdirection"),DockValues,DockNames,wxAUI_DOCK_TOP,970)
@@ -218,28 +222,28 @@ void wxsAuiPaneInfoExtra::OnPropertyChanged()
 
         switch ( m_DockDirection )
         {
-            case wxAUI_DOCK_TOP:
-                m_DockableFlags |= wxsAuiDockableProperty::TopDockable;
-                break;
+        case wxAUI_DOCK_TOP:
+            m_DockableFlags |= wxsAuiDockableProperty::TopDockable;
+            break;
 
-            case wxAUI_DOCK_BOTTOM:
-                m_DockableFlags |= wxsAuiDockableProperty::BottomDockable;
-                break;
+        case wxAUI_DOCK_BOTTOM:
+            m_DockableFlags |= wxsAuiDockableProperty::BottomDockable;
+            break;
 
-            case wxAUI_DOCK_LEFT:
-                m_DockableFlags |= wxsAuiDockableProperty::LeftDockable;
-                break;
+        case wxAUI_DOCK_LEFT:
+            m_DockableFlags |= wxsAuiDockableProperty::LeftDockable;
+            break;
 
-            case wxAUI_DOCK_RIGHT:
-                m_DockableFlags |= wxsAuiDockableProperty::RightDockable;
-                break;
+        case wxAUI_DOCK_RIGHT:
+            m_DockableFlags |= wxsAuiDockableProperty::RightDockable;
+            break;
 
-            case wxAUI_DOCK_CENTER:
-                m_DockableFlags |= wxsAuiDockableProperty::Dockable;
-                break;
+        case wxAUI_DOCK_CENTER:
+            m_DockableFlags |= wxsAuiDockableProperty::Dockable;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
 
@@ -248,49 +252,49 @@ void wxsAuiPaneInfoExtra::OnPropertyChanged()
         m_LastStandardPane = m_StandardPane;
         switch ( m_StandardPane )
         {
-            case DefaultPane:
-                m_DockableFlags  = wxsAuiDockableProperty::Dockable;
-                m_Floatable      = true;
-                m_Movable        = true;
-                m_Resizable      = true;
-                m_CaptionVisible = true;
-                m_PaneBorder     = true;
-                m_CloseButton    = true;
-                break;
+        case DefaultPane:
+            m_DockableFlags  = wxsAuiDockableProperty::Dockable;
+            m_Floatable      = true;
+            m_Movable        = true;
+            m_Resizable      = true;
+            m_CaptionVisible = true;
+            m_PaneBorder     = true;
+            m_CloseButton    = true;
+            break;
 
-            case CenterPane:
-                m_Docked         = true;
-                m_Visible        = true;
-                m_DockableFlags  = wxsAuiDockableProperty::Dockable;
-                m_Floatable      = false;
-                m_Movable        = false;
-                m_Resizable      = true;
-                m_PaneBorder     = true;
-                m_CaptionVisible = false;
-                m_Gripper        = 0;
-                m_DestroyOnClose = false;
-                m_DockFixed      = false;
-                m_CloseButton    = false;
-                m_MaximizeButton = false;
-                m_MinimizeButton = false;
-                m_PinButton      = false;
-                m_DockDirection  = wxAUI_DOCK_CENTER;
-                break;
+        case CenterPane:
+            m_Docked         = true;
+            m_Visible        = true;
+            m_DockableFlags  = wxsAuiDockableProperty::Dockable;
+            m_Floatable      = false;
+            m_Movable        = false;
+            m_Resizable      = true;
+            m_PaneBorder     = true;
+            m_CaptionVisible = false;
+            m_Gripper        = 0;
+            m_DestroyOnClose = false;
+            m_DockFixed      = false;
+            m_CloseButton    = false;
+            m_MaximizeButton = false;
+            m_MinimizeButton = false;
+            m_PinButton      = false;
+            m_DockDirection  = wxAUI_DOCK_CENTER;
+            break;
 
-            case ToolbarPane:
-                m_DockableFlags  = wxsAuiDockableProperty::Dockable;
-                m_Floatable      = true;
-                m_Movable        = true;
-                m_Resizable      = false;
-                m_CaptionVisible = false;
-                m_PaneBorder     = true;
-                m_CloseButton    = true;
-                m_Gripper        = wxLEFT;
-                if ( m_Layer == 0 ) m_Layer = 10;
-                break;
+        case ToolbarPane:
+            m_DockableFlags  = wxsAuiDockableProperty::Dockable;
+            m_Floatable      = true;
+            m_Movable        = true;
+            m_Resizable      = false;
+            m_CaptionVisible = false;
+            m_PaneBorder     = true;
+            m_CloseButton    = true;
+            m_Gripper        = wxLEFT;
+            if ( m_Layer == 0 ) m_Layer = 10;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
 
@@ -304,99 +308,99 @@ wxString wxsAuiPaneInfoExtra::AllParamsCode(wxsCoderContext* Ctx,wxsItem* ChildP
 
     switch ( Ctx->m_Language )
     {
-        case wxsCPP:
-            //Caption and caption bar buttons
-            if ( m_Name != wxEmptyString ) str << _T(".Name(_T(\"") << m_Name << _T("\"))");
+    case wxsCPP:
+        //Caption and caption bar buttons
+        if ( m_Name != wxEmptyString ) str << _T(".Name(_T(\"") << m_Name << _T("\"))");
 
-            //Standard pane type
-            switch ( m_StandardPane )
-            {
-                case CenterPane:
-                    str << _T(".CenterPane()");
-                    break;
+        //Standard pane type
+        switch ( m_StandardPane )
+        {
+        case CenterPane:
+            str << _T(".CenterPane()");
+            break;
 
-                case ToolbarPane:
-                    str << _T(".ToolbarPane()");
-                    break;
+        case ToolbarPane:
+            str << _T(".ToolbarPane()");
+            break;
 
-                case DefaultPane: // fall-though
-                default:
-                    str << _T(".DefaultPane()");
-                    break;
-            }
-
-            //Caption and caption bar buttons
-            if ( m_Caption != wxEmptyString ) str << _T(".Caption(_(\"") << m_Caption << _T("\"))");
-            if ( m_CaptionVisible && !(m_StandardPane == DefaultPane) ) str << _T(".CaptionVisible()");
-            if ( !m_CaptionVisible && !(m_StandardPane == CenterPane) && !(m_StandardPane == ToolbarPane) )
-                str << _T(".CaptionVisible(false)");
-
-            if ( m_MinimizeButton ) str << _T(".MinimizeButton()");
-            if ( m_MaximizeButton ) str << _T(".MaximizeButton()");
-            if ( m_PinButton      ) str << _T(".PinButton()");
-                 if (  m_CloseButton &&  (m_StandardPane == CenterPane) ) str << _T(".CloseButton()");
-            else if ( !m_CloseButton && !(m_StandardPane == CenterPane) ) str << _T(".CloseButton(false)");
-
-            //Layer, row and position
-            if ( m_Layer > 0    ) str << wxString::Format(_T(".Layer(%ld)"),m_Layer);
-            if ( m_Row > 0      ) str << wxString::Format(_T(".Row(%ld)"),m_Row);
-            if ( m_Position != 0 ) str << wxString::Format(_T(".Position(%ld)"),m_Position);
-
-            //Dock or Float
-            if ( !m_Docked ) str << _T(".Float()");
-
-            //Dock Direction
-                 if ( m_DockDirection == wxAUI_DOCK_TOP    ) str << _T(".Top()");
-            else if ( m_DockDirection == wxAUI_DOCK_BOTTOM ) str << _T(".Bottom()");
-            else if ( m_DockDirection == wxAUI_DOCK_LEFT   ) str << _T(".Left()");
-            else if ( m_DockDirection == wxAUI_DOCK_RIGHT  ) str << _T(".Right()");
-            else if ( m_DockDirection == wxAUI_DOCK_CENTER && !(m_StandardPane == CenterPane) )
-                str << _T(".Center()");
-
-            //DockFixed
-            if ( m_DockFixed ) str << _T(".DockFixed()");
-
-            //Available Dockable places
-            str << wxsAuiDockableProperty::GetString(m_DockableFlags);
-
-            //Floatable
-                 if (  m_Floatable &&  (m_StandardPane == CenterPane) ) str << _T(".Floatable()");
-            else if ( !m_Floatable && !(m_StandardPane == CenterPane) ) str << _T(".Floatable(false)");
-
-            //Floating properties
-            if ( !m_FloatingPosition.IsDefault ) str << _T(".FloatingPosition(") << m_FloatingPosition.GetPositionCode(Ctx) << _T(")");
-            if ( !m_FloatingSize.IsDefault     ) str << _T(".FloatingSize("    ) << m_FloatingSize.GetSizeCode(Ctx        ) << _T(")");
-
-            //Resizable
-                 if (  m_Resizable &&  (m_StandardPane == ToolbarPane) ) str << _T(".Resizable()");
-            else if ( !m_Resizable && !(m_StandardPane == ToolbarPane) ) str << _T(".Resizable(false)");
-
-            //Size properties
-            if ( !BaseProps->m_Size.IsDefault     ) str << _T(".BestSize(") << BaseProps->m_Size.   GetSizeCode(Ctx ) << _T(")");
-            if ( !BaseProps->m_MinSize.IsDefault  ) str << _T(".MinSize(" ) << BaseProps->m_MinSize.GetSizeCode(Ctx ) << _T(")");
-            if ( !BaseProps->m_MaxSize.IsDefault  ) str << _T(".MaxSize(" ) << BaseProps->m_MaxSize.GetSizeCode(Ctx ) << _T(")");
-
-            //Movable
-                 if (  m_Movable &&  (m_StandardPane == CenterPane) ) str << _T(".Movable(false)");
-            else if ( !m_Movable && !(m_StandardPane == CenterPane) ) str << _T(".Movable(false)");
-
-            //Gripper
-                 if ( m_Gripper == 0 && (m_StandardPane == ToolbarPane) ) str << _T(".Gripper(false)");
-            else if ( m_Gripper == wxLEFT                               ) str << _T(".Gripper()");
-            else if ( m_Gripper == wxTOP                                ) str << _T(".Gripper().GripperTop()");
-
-            //Pane border
-            if ( !m_PaneBorder ) str << _T(".PaneBorder(false)");
-
-            //Visible
-            if ( !m_Visible ) str << _T(".Hide()");
-
-            //Destroy on close
-            if ( m_DestroyOnClose ) str << _T(".DestroyOnClose()");
-
-        case wxsUnknownLanguage: // fall-through
+        case DefaultPane: // fall-though
         default:
-            wxsCodeMarks::Unknown(_T("wxsAuiManagerExtra::AllParamsCode"),Ctx->m_Language);
+            str << _T(".DefaultPane()");
+            break;
+        }
+
+        //Caption and caption bar buttons
+        if ( m_Caption != wxEmptyString ) str << _T(".Caption(_(\"") << m_Caption << _T("\"))");
+        if ( m_CaptionVisible && !(m_StandardPane == DefaultPane) ) str << _T(".CaptionVisible()");
+        if ( !m_CaptionVisible && !(m_StandardPane == CenterPane) && !(m_StandardPane == ToolbarPane) )
+            str << _T(".CaptionVisible(false)");
+
+        if ( m_MinimizeButton ) str << _T(".MinimizeButton()");
+        if ( m_MaximizeButton ) str << _T(".MaximizeButton()");
+        if ( m_PinButton      ) str << _T(".PinButton()");
+        if (  m_CloseButton &&  (m_StandardPane == CenterPane) ) str << _T(".CloseButton()");
+        else if ( !m_CloseButton && !(m_StandardPane == CenterPane) ) str << _T(".CloseButton(false)");
+
+        //Layer, row and position
+        if ( m_Layer > 0    ) str << wxString::Format(_T(".Layer(%ld)"),m_Layer);
+        if ( m_Row > 0      ) str << wxString::Format(_T(".Row(%ld)"),m_Row);
+        if ( m_Position != 0 ) str << wxString::Format(_T(".Position(%ld)"),m_Position);
+
+        //Dock or Float
+        if ( !m_Docked ) str << _T(".Float()");
+
+        //Dock Direction
+        if ( m_DockDirection == wxAUI_DOCK_TOP    ) str << _T(".Top()");
+        else if ( m_DockDirection == wxAUI_DOCK_BOTTOM ) str << _T(".Bottom()");
+        else if ( m_DockDirection == wxAUI_DOCK_LEFT   ) str << _T(".Left()");
+        else if ( m_DockDirection == wxAUI_DOCK_RIGHT  ) str << _T(".Right()");
+        else if ( m_DockDirection == wxAUI_DOCK_CENTER && !(m_StandardPane == CenterPane) )
+            str << _T(".Center()");
+
+        //DockFixed
+        if ( m_DockFixed ) str << _T(".DockFixed()");
+
+        //Available Dockable places
+        str << wxsAuiDockableProperty::GetString(m_DockableFlags);
+
+        //Floatable
+        if (  m_Floatable &&  (m_StandardPane == CenterPane) ) str << _T(".Floatable()");
+        else if ( !m_Floatable && !(m_StandardPane == CenterPane) ) str << _T(".Floatable(false)");
+
+        //Floating properties
+        if ( !m_FloatingPosition.IsDefault ) str << _T(".FloatingPosition(") << m_FloatingPosition.GetPositionCode(Ctx) << _T(")");
+        if ( !m_FloatingSize.IsDefault     ) str << _T(".FloatingSize("    ) << m_FloatingSize.GetSizeCode(Ctx        ) << _T(")");
+
+        //Resizable
+        if (  m_Resizable &&  (m_StandardPane == ToolbarPane) ) str << _T(".Resizable()");
+        else if ( !m_Resizable && !(m_StandardPane == ToolbarPane) ) str << _T(".Resizable(false)");
+
+        //Size properties
+        if ( !BaseProps->m_Size.IsDefault     ) str << _T(".BestSize(") << BaseProps->m_Size.   GetSizeCode(Ctx ) << _T(")");
+        if ( !BaseProps->m_MinSize.IsDefault  ) str << _T(".MinSize(" ) << BaseProps->m_MinSize.GetSizeCode(Ctx ) << _T(")");
+        if ( !BaseProps->m_MaxSize.IsDefault  ) str << _T(".MaxSize(" ) << BaseProps->m_MaxSize.GetSizeCode(Ctx ) << _T(")");
+
+        //Movable
+        if (  m_Movable &&  (m_StandardPane == CenterPane) ) str << _T(".Movable(false)");
+        else if ( !m_Movable && !(m_StandardPane == CenterPane) ) str << _T(".Movable(false)");
+
+        //Gripper
+        if ( m_Gripper == 0 && (m_StandardPane == ToolbarPane) ) str << _T(".Gripper(false)");
+        else if ( m_Gripper == wxLEFT                               ) str << _T(".Gripper()");
+        else if ( m_Gripper == wxTOP                                ) str << _T(".Gripper().GripperTop()");
+
+        //Pane border
+        if ( !m_PaneBorder ) str << _T(".PaneBorder(false)");
+
+        //Visible
+        if ( !m_Visible ) str << _T(".Hide()");
+
+        //Destroy on close
+        if ( m_DestroyOnClose ) str << _T(".DestroyOnClose()");
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsAuiManagerExtra::AllParamsCode"),Ctx->m_Language);
     }
 
     return str;
@@ -410,18 +414,18 @@ wxAuiPaneInfo wxsAuiPaneInfoExtra::GetPaneInfoFlags(wxWindow* Parent,wxsItem* Ch
     //Standard pane type
     switch ( m_StandardPane )
     {
-        case CenterPane:
-            PaneInfo.CenterPane();
-            break;
+    case CenterPane:
+        PaneInfo.CenterPane();
+        break;
 
-        case ToolbarPane:
-            PaneInfo.ToolbarPane();
-            break;
+    case ToolbarPane:
+        PaneInfo.ToolbarPane();
+        break;
 
-        case DefaultPane: // fall-though
-        default:
-            PaneInfo.DefaultPane();
-            break;
+    case DefaultPane: // fall-though
+    default:
+        PaneInfo.DefaultPane();
+        break;
     }
 
     //Caption and caption bar buttons
@@ -441,7 +445,7 @@ wxAuiPaneInfo wxsAuiPaneInfoExtra::GetPaneInfoFlags(wxWindow* Parent,wxsItem* Ch
     if ( Exact && !m_Docked ) PaneInfo.Float();
 
     //Dock Direction
-         if ( m_DockDirection == wxAUI_DOCK_TOP    ) PaneInfo.Top();
+    if ( m_DockDirection == wxAUI_DOCK_TOP    ) PaneInfo.Top();
     else if ( m_DockDirection == wxAUI_DOCK_BOTTOM ) PaneInfo.Bottom();
     else if ( m_DockDirection == wxAUI_DOCK_LEFT   ) PaneInfo.Left();
     else if ( m_DockDirection == wxAUI_DOCK_RIGHT  ) PaneInfo.Right();
@@ -472,9 +476,9 @@ wxAuiPaneInfo wxsAuiPaneInfoExtra::GetPaneInfoFlags(wxWindow* Parent,wxsItem* Ch
     if ( !m_Movable ) PaneInfo.Movable(false);
 
     //Gripper
-             if ( m_Gripper == 0      ) PaneInfo.Gripper(false);
-        else if ( m_Gripper == wxLEFT ) PaneInfo.Gripper();
-        else if ( m_Gripper == wxTOP  ) PaneInfo.Gripper().GripperTop();
+    if ( m_Gripper == 0      ) PaneInfo.Gripper(false);
+    else if ( m_Gripper == wxLEFT ) PaneInfo.Gripper();
+    else if ( m_Gripper == wxTOP  ) PaneInfo.Gripper().GripperTop();
 
     //Pane border
     if ( !m_PaneBorder ) PaneInfo.PaneBorder(false);
@@ -494,19 +498,19 @@ void wxsAuiManager::OnBuildAuiManagerCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/aui/aui.h>"),GetInfo().ClassName,0);
-            AddHeader(_T("<wx/aui/aui.h>"),_T("wxAuiManagerEvent"),0);
-            Codef(_T("%C(%W, %T);\n"));
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/aui/aui.h>"),GetInfo().ClassName,0);
+        AddHeader(_T("<wx/aui/aui.h>"),_T("wxAuiManagerEvent"),0);
+        Codef(_T("%C(%W, %T);\n"));
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsAuiManager::OnBuildAuiManagerCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsAuiManager::OnBuildAuiManagerCreatingCode"),GetLanguage());
+    }
     }
 }
 
@@ -528,26 +532,26 @@ void wxsAuiManager::OnBuildCreatingCode()
 
         switch ( Child->GetType() )
         {
-            case wxsTWidget:
-            case wxsTContainer:
-                switch ( GetLanguage() )
-                {
-                    case wxsCPP:
-                    {
-                        Codef(_T("%AAddPane(%o, wxAuiPaneInfo()%s);\n"),i,ANBExtra->AllParamsCode(GetCoderContext(),Child).wx_str());
-                        break;
-                    }
-
-                    case wxsUnknownLanguage: // fall-through
-                    default:
-                    {
-                        UnknownLang = true;
-                    }
-                }
+        case wxsTWidget:
+        case wxsTContainer:
+            switch ( GetLanguage() )
+            {
+            case wxsCPP:
+            {
+                Codef(_T("%AAddPane(%o, wxAuiPaneInfo()%s);\n"),i,ANBExtra->AllParamsCode(GetCoderContext(),Child).wx_str());
                 break;
+            }
 
+            case wxsUnknownLanguage: // fall-through
             default:
-                break;
+            {
+                UnknownLang = true;
+            }
+            }
+            break;
+
+        default:
+            break;
         }
     }
 
@@ -661,7 +665,10 @@ bool wxsAuiManager::OnCanAddToParent(wxsParent* Parent,bool ShowMessage)
         return false;
     }
     std::unique_ptr<wxFrame, std::function<void(wxFrame*)>> shortLiveFrame(new wxFrame(nullptr, wxID_ANY, wxEmptyString),
-                                                                           [](wxFrame* frame){ frame->Destroy(); });  // deleter
+            [](wxFrame* frame)
+    {
+        frame->Destroy();
+    });  // deleter
     if ( !wxDynamicCast(Parent->BuildPreview(shortLiveFrame.get(),0),wxWindow) )
     {
         if ( ShowMessage )
@@ -693,7 +700,10 @@ void wxsAuiManager::OnAddChildQPP(wxsItem* Child,wxsAdvQPP* QPP)
         ChildExtra->m_Name = ChildExtra->m_Name + wxString::Format(wxT("%d"), Index);
 
         std::unique_ptr<wxFrame, std::function<void(wxFrame*)>> shortLiveFrame(new wxFrame(nullptr, wxID_ANY, wxEmptyString),
-                                                                               [](wxFrame* frame){ frame->Destroy(); });  // deleter
+                [](wxFrame* frame)
+        {
+            frame->Destroy();
+        });  // deleter
         if ( wxDynamicCast(Child->BuildPreview(shortLiveFrame.get(),0),wxAuiToolBar) )
         {
             ChildExtra->m_StandardPane = wxsAuiPaneInfoExtra::ToolbarPane;

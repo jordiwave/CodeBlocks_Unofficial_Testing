@@ -10,29 +10,29 @@ struct CompOption;
 
 class CompilerFlagDlg: public wxDialog
 {
-    public:
+public:
 
-        CompilerFlagDlg(wxWindow* parent, CompOption* opt, wxArrayString& categ, const wxString &selectedCategory);
-        virtual ~CompilerFlagDlg() override;
+    CompilerFlagDlg(wxWindow* parent, CompOption* opt, wxArrayString& categ, const wxString &selectedCategory);
+    virtual ~CompilerFlagDlg() override;
 
-        void EndModal(int retCode) override;
+    void EndModal(int retCode) override;
 
-    protected:
+protected:
 
-    private:
+private:
 
-        void OnAdvancedOption(wxCommandEvent& event);
+    void OnAdvancedOption(wxCommandEvent& event);
 
-        wxTextCtrl* NameText;
-        wxTextCtrl* CompilerText;
-        wxTextCtrl* LinkerText;
-        wxComboBox* CategoryCombo;
-        wxTextCtrl* AgainstText;
-        wxTextCtrl* MessageText;
-        wxTextCtrl* SupersedeText;
-        wxToggleButton* ExclusiveToggle;
+    wxTextCtrl* NameText;
+    wxTextCtrl* CompilerText;
+    wxTextCtrl* LinkerText;
+    wxComboBox* CategoryCombo;
+    wxTextCtrl* AgainstText;
+    wxTextCtrl* MessageText;
+    wxTextCtrl* SupersedeText;
+    wxToggleButton* ExclusiveToggle;
 
-        CompOption* copt;
+    CompOption* copt;
 };
 
 #endif

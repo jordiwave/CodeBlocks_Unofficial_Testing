@@ -17,11 +17,11 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/bitmap.h>
-    #include <wx/bmpbuttn.h>
-    #include <wx/checkbox.h>
-    #include <wx/sizer.h>
-    #include "configmanager.h"
+#include <wx/bitmap.h>
+#include <wx/bmpbuttn.h>
+#include <wx/checkbox.h>
+#include <wx/sizer.h>
+#include "configmanager.h"
 #endif
 
 #include "wx/things/toggle.h"
@@ -42,58 +42,58 @@ SearchInPanel::SearchInPanel(wxWindow* parent, int id, const wxPoint& pos, const
     // wxCustomButton does not do that properly
     // we have to force this size as MinSize to make it work
     wxBitmapButton dummyBtn(this, wxID_ANY, cbLoadBitmapScaled(prefix + wxT("openfiles.png"),
-                                                               wxBITMAP_TYPE_PNG, scaleFactor));
+                            wxBITMAP_TYPE_PNG, scaleFactor));
     wxSize dummySize = dummyBtn.GetSize();
 
     m_pBtnSearchOpenFiles = new wxCustomButton(this,
-                                               controlIDs.Get(ControlIDs::idBtnSearchOpenFiles),
-                                               cbLoadBitmapScaled(prefix + wxT("openfiles.png"),
-                                                                  wxBITMAP_TYPE_PNG, scaleFactor),
-                                               wxDefaultPosition, dummySize);
+            controlIDs.Get(ControlIDs::idBtnSearchOpenFiles),
+            cbLoadBitmapScaled(prefix + wxT("openfiles.png"),
+                               wxBITMAP_TYPE_PNG, scaleFactor),
+            wxDefaultPosition, dummySize);
     m_pBtnSearchOpenFiles->SetBitmapDisabled(cbLoadBitmapScaled(prefix + wxT("openfilesdisabled.png"),
-                                                                wxBITMAP_TYPE_PNG, scaleFactor));
+            wxBITMAP_TYPE_PNG, scaleFactor));
     m_pBtnSearchOpenFiles->SetBitmapSelected(cbLoadBitmapScaled(prefix + wxT("openfilesselected.png"),
-                                                                wxBITMAP_TYPE_PNG, scaleFactor));
+            wxBITMAP_TYPE_PNG, scaleFactor));
     m_pBtnSearchOpenFiles->SetMinSize(dummySize);
     m_pBtnSearchTargetFiles = new wxCustomButton(this, controlIDs.Get(ControlIDs::idBtnSearchTargetFiles),
-                                                 cbLoadBitmapScaled(prefix + wxT("target.png"),
-                                                                    wxBITMAP_TYPE_PNG, scaleFactor),
-                                                 wxDefaultPosition, dummySize);
+            cbLoadBitmapScaled(prefix + wxT("target.png"),
+                               wxBITMAP_TYPE_PNG, scaleFactor),
+            wxDefaultPosition, dummySize);
     m_pBtnSearchTargetFiles->SetBitmapDisabled(cbLoadBitmapScaled(prefix + wxT("targetdisabled.png"),
-                                                                  wxBITMAP_TYPE_PNG, scaleFactor));
+            wxBITMAP_TYPE_PNG, scaleFactor));
     m_pBtnSearchTargetFiles->SetBitmapSelected(cbLoadBitmapScaled(prefix + wxT("targetselected.png"),
-                                                                  wxBITMAP_TYPE_PNG, scaleFactor));
+            wxBITMAP_TYPE_PNG, scaleFactor));
     m_pBtnSearchTargetFiles->SetMinSize(dummySize);
     m_pBtnSearchProjectFiles = new wxCustomButton(this, controlIDs.Get(ControlIDs::idBtnSearchProjectFiles),
-                                                  cbLoadBitmapScaled(prefix + wxT("project.png"),
-                                                                     wxBITMAP_TYPE_PNG,
-                                                                     scaleFactor),
-                                                  wxDefaultPosition, dummySize);
+            cbLoadBitmapScaled(prefix + wxT("project.png"),
+                               wxBITMAP_TYPE_PNG,
+                               scaleFactor),
+            wxDefaultPosition, dummySize);
     m_pBtnSearchProjectFiles->SetBitmapDisabled(cbLoadBitmapScaled(prefix + wxT("projectdisabled.png"),
-                                                                   wxBITMAP_TYPE_PNG, scaleFactor));
+            wxBITMAP_TYPE_PNG, scaleFactor));
     m_pBtnSearchProjectFiles->SetBitmapSelected(cbLoadBitmapScaled(prefix + wxT("projectselected.png"),
-                                                                   wxBITMAP_TYPE_PNG, scaleFactor));
+            wxBITMAP_TYPE_PNG, scaleFactor));
     m_pBtnSearchProjectFiles->SetMinSize(dummySize);
     m_pBtnSearchWorkspaceFiles = new wxCustomButton(this, controlIDs.Get(ControlIDs::idBtnSearchWorkspaceFiles),
-                                                    cbLoadBitmapScaled(prefix + wxT("workspace.png"),
-                                                                       wxBITMAP_TYPE_PNG,
-                                                                       scaleFactor),
-                                                    wxDefaultPosition, dummySize);
+            cbLoadBitmapScaled(prefix + wxT("workspace.png"),
+                               wxBITMAP_TYPE_PNG,
+                               scaleFactor),
+            wxDefaultPosition, dummySize);
     m_pBtnSearchWorkspaceFiles->SetBitmapDisabled(cbLoadBitmapScaled(prefix + wxT("workspacedisabled.png"),
-                                                                     wxBITMAP_TYPE_PNG,
-                                                                     scaleFactor));
+            wxBITMAP_TYPE_PNG,
+            scaleFactor));
     m_pBtnSearchWorkspaceFiles->SetBitmapSelected(cbLoadBitmapScaled(prefix + wxT("workspaceselected.png"),
-                                                                     wxBITMAP_TYPE_PNG,
-                                                                     scaleFactor));
+            wxBITMAP_TYPE_PNG,
+            scaleFactor));
     m_pBtnSearchWorkspaceFiles->SetMinSize(dummySize);
     m_pBtnSearchDir = new wxCustomButton(this, controlIDs.Get(ControlIDs::idBtnSearchDirectoryFiles),
                                          cbLoadBitmapScaled(prefix + wxT("folder.png"),
-                                                            wxBITMAP_TYPE_PNG, scaleFactor),
+                                                 wxBITMAP_TYPE_PNG, scaleFactor),
                                          wxDefaultPosition, dummySize);
     m_pBtnSearchDir->SetBitmapDisabled(cbLoadBitmapScaled(prefix + wxT("folderdisabled.png"),
-                                                          wxBITMAP_TYPE_PNG, scaleFactor));
+                                       wxBITMAP_TYPE_PNG, scaleFactor));
     m_pBtnSearchDir->SetBitmapSelected(cbLoadBitmapScaled(prefix + wxT("folderselected.png"),
-                                                          wxBITMAP_TYPE_PNG, scaleFactor));
+                                       wxBITMAP_TYPE_PNG, scaleFactor));
     m_pBtnSearchDir->SetMinSize(dummySize);
 
     set_properties();
@@ -191,11 +191,26 @@ void SearchInPanel::do_layout()
 
 
 //{ Getters
-bool SearchInPanel::GetSearchInOpenFiles()      const {return m_pBtnSearchOpenFiles->GetValue();}
-bool SearchInPanel::GetSearchInTargetFiles()    const {return m_pBtnSearchTargetFiles->GetValue();}
-bool SearchInPanel::GetSearchInProjectFiles()   const {return m_pBtnSearchProjectFiles->GetValue();}
-bool SearchInPanel::GetSearchInWorkspaceFiles() const {return m_pBtnSearchWorkspaceFiles->GetValue();}
-bool SearchInPanel::GetSearchInDirectory()      const {return m_pBtnSearchDir->GetValue();}
+bool SearchInPanel::GetSearchInOpenFiles()      const
+{
+    return m_pBtnSearchOpenFiles->GetValue();
+}
+bool SearchInPanel::GetSearchInTargetFiles()    const
+{
+    return m_pBtnSearchTargetFiles->GetValue();
+}
+bool SearchInPanel::GetSearchInProjectFiles()   const
+{
+    return m_pBtnSearchProjectFiles->GetValue();
+}
+bool SearchInPanel::GetSearchInWorkspaceFiles() const
+{
+    return m_pBtnSearchWorkspaceFiles->GetValue();
+}
+bool SearchInPanel::GetSearchInDirectory()      const
+{
+    return m_pBtnSearchDir->GetValue();
+}
 //}
 
 //{ Setters

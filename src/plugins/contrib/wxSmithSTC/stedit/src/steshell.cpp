@@ -66,7 +66,7 @@ void wxSTEditorShell::AppendText(const wxString &text)
     SetMaxLines(m_max_lines, m_overflow_lines); // check for line count overflow
     GotoPos(GetLength());               // put cursor at end
     EmptyUndoBuffer();                  // don't let them undo what you wrote!
-                                        //   but they can undo their own typing
+    //   but they can undo their own typing
 
     EndWriteable();                     // end the writeable state
 }
@@ -194,7 +194,7 @@ wxString wxSTEditorShell::GetNextHistoryLine(bool forwards, const wxString &line
 
     // return current one if it's different
     if ((m_line_history_index >= 0) && (m_line_history_index < count) &&
-        (line != m_lineHistoryArray[m_line_history_index]))
+            (line != m_lineHistoryArray[m_line_history_index]))
         return m_lineHistoryArray[m_line_history_index];
 
     if (forwards)
@@ -292,116 +292,125 @@ void wxSTEditorShell::OnKeyDown(wxKeyEvent &event)
 
     switch (event.GetKeyCode())
     {
-        case WXK_UP : case WXK_NUMPAD_UP :
-        {
-            // you can scroll up through multiline entry
-            int current_line = GetCurrentLine();
-            int prompt_line  = GetPromptLine();
-            if ((current_line < prompt_line) || (current_line > prompt_line))
-                break;
-
-            // up/down arrows go through the history buffer
-            wxString promptText = GetPromptText();
-            SetPromptText(GetNextHistoryLine(false, promptText));
-            return;
-        }
-        case WXK_DOWN : case WXK_NUMPAD_DOWN :
-        {
-            // you can scroll down through multiline entry
-            int total_lines  = GetLineCount();
-            total_lines      = wxMax(0, total_lines - 1);
-            int current_line = GetCurrentLine();
-            if (current_line < total_lines)
-                break;
-
-            // up/down arrows go through the history buffer
-            wxString promptText = GetPromptText();
-            SetPromptText(GetNextHistoryLine(true, promptText));
-            return;
-        }
-        case WXK_LEFT : case WXK_NUMPAD_LEFT :
-        {
-            int current_line = GetCurrentLine();
-            int prompt_line  = GetPromptLine();
-            if (current_line >= prompt_line)
-            {
-                int caret_pos = 0;
-                GetCurLine(&caret_pos);
-                if (caret_pos < 1)
-                    return;
-            }
+    case WXK_UP :
+    case WXK_NUMPAD_UP :
+    {
+        // you can scroll up through multiline entry
+        int current_line = GetCurrentLine();
+        int prompt_line  = GetPromptLine();
+        if ((current_line < prompt_line) || (current_line > prompt_line))
             break;
-        }
 
-        case WXK_PAGEUP   : case WXK_NUMPAD_PAGEUP   :
-        case WXK_PAGEDOWN : case WXK_NUMPAD_PAGEDOWN :
-        case WXK_END      : case WXK_NUMPAD_END   :
-        case WXK_HOME     : case WXK_NUMPAD_HOME  :
-        case WXK_RIGHT    : case WXK_NUMPAD_RIGHT :
+        // up/down arrows go through the history buffer
+        wxString promptText = GetPromptText();
+        SetPromptText(GetNextHistoryLine(false, promptText));
+        return;
+    }
+    case WXK_DOWN :
+    case WXK_NUMPAD_DOWN :
+    {
+        // you can scroll down through multiline entry
+        int total_lines  = GetLineCount();
+        total_lines      = wxMax(0, total_lines - 1);
+        int current_line = GetCurrentLine();
+        if (current_line < total_lines)
+            break;
 
-        case WXK_SHIFT   :
-        case WXK_CONTROL :
-        case WXK_ALT     :
+        // up/down arrows go through the history buffer
+        wxString promptText = GetPromptText();
+        SetPromptText(GetNextHistoryLine(true, promptText));
+        return;
+    }
+    case WXK_LEFT :
+    case WXK_NUMPAD_LEFT :
+    {
+        int current_line = GetCurrentLine();
+        int prompt_line  = GetPromptLine();
+        if (current_line >= prompt_line)
         {
-            // default processing for these keys
-            event.Skip();
-            return;
-        }
-
-        case WXK_RETURN : case WXK_NUMPAD_ENTER :
-        {
-            // put cursor at end if not already on the last line
-            if (!CaretOnPromptLine(STE_CARET_MOVE_NONE))
-            {
-                GotoPos(GetLength());
-                return;
-            }
-
-            int current_line = GetCurrentLine();
-            int prompt_line  = GetPromptLine();
-
-            // allow multiline entry for shift+enter
-            if ((current_line >= prompt_line) && event.ShiftDown())
-            {
-                event.Skip();
-                return;
-            }
-
-            wxString promptText = GetPromptText();
-
-            // goto the end of the line and store the line for the history
-            LineEnd();
-            if (promptText.Length())
-                AddHistoryLine(promptText, true);
-
-            // just send the event, the receiver can do what they like
-            SendEvent(wxEVT_STESHELL_ENTER, 0, GetState(), promptText);
-            return;
-        }
-        case WXK_BACK :
-        {
-            // go to the end of the last line if not on last line
-            if (!CaretOnPromptLine(STE_CARET_MOVE_NONE))
-            {
-                GotoPos(GetLength());
-                return;
-            }
-            // don't let them backspace into previous line
             int caret_pos = 0;
             GetCurLine(&caret_pos);
             if (caret_pos < 1)
                 return;
-
-            break;
         }
-        default : // move cursor to end if not already there
+        break;
+    }
+
+    case WXK_PAGEUP   :
+    case WXK_NUMPAD_PAGEUP   :
+    case WXK_PAGEDOWN :
+    case WXK_NUMPAD_PAGEDOWN :
+    case WXK_END      :
+    case WXK_NUMPAD_END   :
+    case WXK_HOME     :
+    case WXK_NUMPAD_HOME  :
+    case WXK_RIGHT    :
+    case WXK_NUMPAD_RIGHT :
+
+    case WXK_SHIFT   :
+    case WXK_CONTROL :
+    case WXK_ALT     :
+    {
+        // default processing for these keys
+        event.Skip();
+        return;
+    }
+
+    case WXK_RETURN :
+    case WXK_NUMPAD_ENTER :
+    {
+        // put cursor at end if not already on the last line
+        if (!CaretOnPromptLine(STE_CARET_MOVE_NONE))
         {
-            // reset history to start at most recent again
-            m_line_history_index = (int)(m_lineHistoryArray.GetCount() - 1);
-
-            CaretOnPromptLine(STE_CARET_MOVE_ENDTEXT);
-            break;
+            GotoPos(GetLength());
+            return;
         }
+
+        int current_line = GetCurrentLine();
+        int prompt_line  = GetPromptLine();
+
+        // allow multiline entry for shift+enter
+        if ((current_line >= prompt_line) && event.ShiftDown())
+        {
+            event.Skip();
+            return;
+        }
+
+        wxString promptText = GetPromptText();
+
+        // goto the end of the line and store the line for the history
+        LineEnd();
+        if (promptText.Length())
+            AddHistoryLine(promptText, true);
+
+        // just send the event, the receiver can do what they like
+        SendEvent(wxEVT_STESHELL_ENTER, 0, GetState(), promptText);
+        return;
+    }
+    case WXK_BACK :
+    {
+        // go to the end of the last line if not on last line
+        if (!CaretOnPromptLine(STE_CARET_MOVE_NONE))
+        {
+            GotoPos(GetLength());
+            return;
+        }
+        // don't let them backspace into previous line
+        int caret_pos = 0;
+        GetCurLine(&caret_pos);
+        if (caret_pos < 1)
+            return;
+
+        break;
+    }
+    default : // move cursor to end if not already there
+    {
+        // reset history to start at most recent again
+        m_line_history_index = (int)(m_lineHistoryArray.GetCount() - 1);
+
+        CaretOnPromptLine(STE_CARET_MOVE_ENDTEXT);
+        break;
+    }
     }
 
     event.Skip();

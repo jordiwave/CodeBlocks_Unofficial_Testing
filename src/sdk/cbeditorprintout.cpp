@@ -10,11 +10,11 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/dc.h>
+#include <wx/dc.h>
 
-    #include "manager.h"
-    #include "logmanager.h"
-    #include "cbeditor.h"
+#include "manager.h"
+#include "logmanager.h"
+#include "cbeditor.h"
 #endif
 #include "cbstyledtextctrl.h"
 
@@ -23,8 +23,8 @@
 #include <wx/paper.h>
 
 cbEditorPrintout::cbEditorPrintout(const wxString& title, cbStyledTextCtrl* control, bool selectionOnly)
-        : wxPrintout(title),
-        m_TextControl(control)
+    : wxPrintout(title),
+      m_TextControl(control)
 {
     // ctor
     m_SelStart = 0;
@@ -144,7 +144,7 @@ void cbEditorPrintout::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom,
         {
             //Manager::Get()->GetLogManager()->DebugLog(_T("CountPages: PageCount %d , m_printed %d"), m_pPageSelStart->GetCount(), m_printed);
             m_printed = m_TextControl->FormatRange (0, m_printed, m_SelEnd,
-                                             dc, dc, m_printRect, m_pageRect);
+                                                    dc, dc, m_printRect, m_pageRect);
             m_pPageSelStart->Add(m_printed);
             *maxPage += 1;
         }
@@ -182,14 +182,16 @@ bool cbEditorPrintout::ScaleDC(wxDC *dc)
     wxSize ppiScr;
     GetPPIScreen (&ppiScr.x, &ppiScr.y);
     if (ppiScr.x == 0)
-    { // most possible guess 96 dpi
+    {
+        // most possible guess 96 dpi
         ppiScr.x = 96;
         ppiScr.y = 96;
     }
     wxSize ppiPrt;
     GetPPIPrinter (&ppiPrt.x, &ppiPrt.y);
     if (ppiPrt.x == 0)
-    { // scaling factor to 1
+    {
+        // scaling factor to 1
         ppiPrt.x = ppiScr.x;
         ppiPrt.y = ppiScr.y;
     }

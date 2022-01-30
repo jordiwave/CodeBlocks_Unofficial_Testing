@@ -28,7 +28,7 @@ const int id_logger = wxNewId();
 
 namespace
 {
-    PluginRegistrant<LogHacker> reg(_T("LogHacker"));
+PluginRegistrant<LogHacker> reg(_T("LogHacker"));
 }
 
 
@@ -62,11 +62,17 @@ public:
 
     void Create(wxWindow* parent);
 
-    virtual wxString GetTitle() const { return _T("Log Hacker"); };
-    virtual wxString GetBitmapBaseName() const { return _T(""); };
+    virtual wxString GetTitle() const
+    {
+        return _T("Log Hacker");
+    };
+    virtual wxString GetBitmapBaseName() const
+    {
+        return _T("");
+    };
 
     virtual void OnApply();
-    virtual void OnCancel(){};
+    virtual void OnCancel() {};
 
     virtual void Change();
 };

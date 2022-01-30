@@ -106,7 +106,7 @@ bool wxsEditEnumProperty::PGWrite(cb_unused wxsPropertyContainer *Object,
     wxString Fixed = VALUE;
 
     Fixed.Replace(_T("\n"), _T("\\n"));
-   if ( UpdateEntries )
+    if ( UpdateEntries )
     {
         wxPGChoices(Id->GetChoices()).Set(Names,Values);
     }
@@ -149,21 +149,21 @@ bool wxsEditEnumProperty::XmlRead(cb_unused wxsPropertyContainer *Object,
         {
             switch(*++Ch)
             {
-                case _T('n'):
-                    Result << _T('\n');
-                    break;
-                case _T('r'):
-                    Result << _T('\r');
-                    break;
-                case _T('t'):
-                    Result << _T('\t');
-                    break;
-                case _T('\\'):
-                    Result << _T('\\');
-                    break;
-                default:
-                    Result << _T('\\') << *Ch;
-                    break;
+            case _T('n'):
+                Result << _T('\n');
+                break;
+            case _T('r'):
+                Result << _T('\r');
+                break;
+            case _T('t'):
+                Result << _T('\t');
+                break;
+            case _T('\\'):
+                Result << _T('\\');
+                break;
+            default:
+                Result << _T('\\') << *Ch;
+                break;
             }
         }
         else
@@ -193,17 +193,17 @@ bool wxsEditEnumProperty::XmlWrite(cb_unused wxsPropertyContainer *Object,
         {
             switch(*Ch)
             {
-                case _T('_'):
-                    Result << _T("__");
-                    break;       // TODO: This is NOT compatible with xrc file when there's no version entry or version is less than 2.3.0.1
-                    //case _T('&'):  Result << _T('_');  break;     // We could leave this to be translated into &amp; but this looks nicer ;)
-                case _T('\\'):
-                    Result << _T("\\\\");
-                    break;
-                    // We could handle \n and \r here too but this is not necessary since XRC loading
-                    // routines also handle \n and \r chars
-                default:
-                    Result << *Ch;
+            case _T('_'):
+                Result << _T("__");
+                break;       // TODO: This is NOT compatible with xrc file when there's no version entry or version is less than 2.3.0.1
+            //case _T('&'):  Result << _T('_');  break;     // We could leave this to be translated into &amp; but this looks nicer ;)
+            case _T('\\'):
+                Result << _T("\\\\");
+                break;
+            // We could handle \n and \r here too but this is not necessary since XRC loading
+            // routines also handle \n and \r chars
+            default:
+                Result << *Ch;
             }
         }
         // TODO: Use proper encoding
@@ -221,7 +221,7 @@ bool wxsEditEnumProperty::XmlWrite(cb_unused wxsPropertyContainer *Object,
  *
  */
 bool wxsEditEnumProperty::PropStreamRead(cb_unused wxsPropertyContainer *Object,
-                                         wxsPropertyStream *Stream)
+        wxsPropertyStream *Stream)
 {
     return Stream->GetString(GetDataName(), VALUE, Default);
 }
@@ -234,7 +234,7 @@ bool wxsEditEnumProperty::PropStreamRead(cb_unused wxsPropertyContainer *Object,
  *
  */
 bool wxsEditEnumProperty::PropStreamWrite(cb_unused wxsPropertyContainer *Object,
-                                          wxsPropertyStream *Stream)
+        wxsPropertyStream *Stream)
 {
     return Stream->PutString(GetDataName(), VALUE, Default);
 }

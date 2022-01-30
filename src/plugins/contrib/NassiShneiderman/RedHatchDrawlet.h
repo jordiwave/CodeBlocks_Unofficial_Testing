@@ -6,15 +6,15 @@
 
 class RedHatchDrawlet : public HooverDrawlet
 {
-    public:
-        RedHatchDrawlet(wxRect rect);
-        virtual ~RedHatchDrawlet();
+public:
+    RedHatchDrawlet(wxRect rect);
+    virtual ~RedHatchDrawlet();
 
-        bool Draw(wxDC &dc);
-        void UnDraw(wxDC &dc);
-    protected:
-    private:
-        wxRect m_rect;
+    bool Draw(wxDC &dc);
+    void UnDraw(wxDC &dc);
+protected:
+private:
+    wxRect m_rect;
 };
 
 #endif // REDHATCHDRAWLET_H

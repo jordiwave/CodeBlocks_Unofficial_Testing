@@ -28,29 +28,29 @@
 namespace
 {
 
-    wxsRegisterItem<wxsSashLayoutWindow> Reg(
-        _T("SashLayoutWindow"),
-        wxsTContainer,
-        _T("Layout"),
-        50,
-        false);
+wxsRegisterItem<wxsSashLayoutWindow> Reg(
+    _T("SashLayoutWindow"),
+    wxsTContainer,
+    _T("Layout"),
+    50,
+    false);
 
 
-    WXS_ST_BEGIN(wxsSashLayoutWindowStyles,_T("wxSW_3D|wxCLIP_CHILDREN"))
-        WXS_ST_CATEGORY("wxSashLayoutWindow")
-        WXS_ST(wxSW_3D)
-        WXS_ST(wxSW_3DSASH)
-        WXS_ST(wxSW_3DBORDER)
-        WXS_ST(wxSW_BORDER)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsSashLayoutWindowStyles,_T("wxSW_3D|wxCLIP_CHILDREN"))
+WXS_ST_CATEGORY("wxSashLayoutWindow")
+WXS_ST(wxSW_3D)
+WXS_ST(wxSW_3DSASH)
+WXS_ST(wxSW_3DBORDER)
+WXS_ST(wxSW_BORDER)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsSashLayoutWindowEvents)
-        WXS_EVI(EVT_SASH_DRAGGED,      wxEVT_SASH_DRAGGED,      wxSashEvent, SashDragged)
-        WXS_EVI(EVT_QUERY_LAYOUT_INFO, wxEVT_QUERY_LAYOUT_INFO, wxQueryLayoutInfoEvent, SashQueryLayout)
-        WXS_EVI(EVT_CALCULATE_LAYOUT,  wxEVT_CALCULATE_LAYOUT,  wxCalculateLayoutEvent, SashCalculateLayout)
-        WXS_EV_DEFAULTS()
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsSashLayoutWindowEvents)
+WXS_EVI(EVT_SASH_DRAGGED,      wxEVT_SASH_DRAGGED,      wxSashEvent, SashDragged)
+WXS_EVI(EVT_QUERY_LAYOUT_INFO, wxEVT_QUERY_LAYOUT_INFO, wxQueryLayoutInfoEvent, SashQueryLayout)
+WXS_EVI(EVT_CALCULATE_LAYOUT,  wxEVT_CALCULATE_LAYOUT,  wxCalculateLayoutEvent, SashCalculateLayout)
+WXS_EV_DEFAULTS()
+WXS_EV_END()
 }
 
 //------------------------------------------------------------------------------
@@ -109,32 +109,32 @@ void wxsSashLayoutWindow::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-            AddHeader(_T("<wx/sashwin.h>"),GetInfo().ClassName, 0);
-            AddHeader(_T("<wx/laywin.h>"), GetInfo().ClassName, 0);
+    case wxsCPP:
+        AddHeader(_T("<wx/sashwin.h>"),GetInfo().ClassName, 0);
+        AddHeader(_T("<wx/laywin.h>"), GetInfo().ClassName, 0);
 
-            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-            BuildSetupWindowCode();
-            AddChildrenCode();
+        Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+        BuildSetupWindowCode();
+        AddChildrenCode();
 
-            Codef( _T("%ASetSashVisible(wxSASH_TOP,    %b);\n"), mTop);
-            Codef( _T("%ASetSashVisible(wxSASH_BOTTOM, %b);\n"), mBottom);
-            Codef( _T("%ASetSashVisible(wxSASH_LEFT,   %b);\n"), mLeft);
-            Codef( _T("%ASetSashVisible(wxSASH_RIGHT,  %b);\n"), mRight);
+        Codef( _T("%ASetSashVisible(wxSASH_TOP,    %b);\n"), mTop);
+        Codef( _T("%ASetSashVisible(wxSASH_BOTTOM, %b);\n"), mBottom);
+        Codef( _T("%ASetSashVisible(wxSASH_LEFT,   %b);\n"), mLeft);
+        Codef( _T("%ASetSashVisible(wxSASH_RIGHT,  %b);\n"), mRight);
 
-            if      (mAlign == wxLAYOUT_TOP)    Codef( _T("%ASetAlignment(wxLAYOUT_TOP);\n"));
-            else if (mAlign == wxLAYOUT_BOTTOM) Codef( _T("%ASetAlignment(wxLAYOUT_BOTTOM);\n"));
-            else if (mAlign == wxLAYOUT_LEFT)   Codef( _T("%ASetAlignment(wxLAYOUT_LEFT);\n"));
-            else if (mAlign == wxLAYOUT_RIGHT)  Codef( _T("%ASetAlignment(wxLAYOUT_RIGHT);\n"));
+        if      (mAlign == wxLAYOUT_TOP)    Codef( _T("%ASetAlignment(wxLAYOUT_TOP);\n"));
+        else if (mAlign == wxLAYOUT_BOTTOM) Codef( _T("%ASetAlignment(wxLAYOUT_BOTTOM);\n"));
+        else if (mAlign == wxLAYOUT_LEFT)   Codef( _T("%ASetAlignment(wxLAYOUT_LEFT);\n"));
+        else if (mAlign == wxLAYOUT_RIGHT)  Codef( _T("%ASetAlignment(wxLAYOUT_RIGHT);\n"));
 
-            if (mOrient == wxLAYOUT_HORIZONTAL) Codef(_T("%ASetOrientation(wxLAYOUT_HORIZONTAL);\n"));
-            else                                Codef(_T("%ASetOrientation(wxLAYOUT_VERTICAL);\n"));
+        if (mOrient == wxLAYOUT_HORIZONTAL) Codef(_T("%ASetOrientation(wxLAYOUT_HORIZONTAL);\n"));
+        else                                Codef(_T("%ASetOrientation(wxLAYOUT_VERTICAL);\n"));
 
-            break;
+        break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsSashLayoutWindow::OnBuildCreatingCode"),GetLanguage());
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsSashLayoutWindow::OnBuildCreatingCode"),GetLanguage());
     }
 }
 

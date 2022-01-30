@@ -29,18 +29,18 @@
 class wxWidgetsRes: public wxsResource
 {
     DECLARE_CLASS(wxWidgetsRes)
-    public:
+public:
 
-        /** \brief Ctor */
-        wxWidgetsRes(wxsProject* Owner,const wxString& ResourceType):
-            wxsResource(Owner,ResourceType,_T("wxWidgets"))
-        {}
+    /** \brief Ctor */
+    wxWidgetsRes(wxsProject* Owner,const wxString& ResourceType):
+        wxsResource(Owner,ResourceType,_T("wxWidgets"))
+    {}
 
-        /** \brief Checking if this resource does use XRC */
-        virtual bool OnGetUsingXRC() = 0;
+    /** \brief Checking if this resource does use XRC */
+    virtual bool OnGetUsingXRC() = 0;
 
-        /** \brief Checking if this resource can be main resource in app */
-        virtual bool OnGetCanBeMain() = 0;
+    /** \brief Checking if this resource can be main resource in app */
+    virtual bool OnGetCanBeMain() = 0;
 
 };
 

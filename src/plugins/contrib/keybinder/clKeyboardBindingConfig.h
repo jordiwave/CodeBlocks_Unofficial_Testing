@@ -31,14 +31,15 @@ public:
     clKeyboardBindingConfig& Save();
     bool SortBindings( std::vector<MenuItemDataMap_t::iterator>& sortedIters);
 
-    bool Exists() const {
+    bool Exists() const
+    {
         wxFileName fn(ConfigManager::GetConfigFolder(), _T("cbKeyBinder20.conf"));
         wxString personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
         fn.SetName(personality + _T(".") + fn.GetName());
 
-        #if defined(LOGGING)
-            wxString look = fn.GetFullPath(); ;
-        #endif
+#if defined(LOGGING)
+        wxString look = fn.GetFullPath(); ;
+#endif
         return fn.FileExists();
     }
 
@@ -48,7 +49,10 @@ public:
         this->m_bindings.insert(globals.begin(), globals.end());
         return *this;
     }
-    const MenuItemDataMap_t& GetBindings() const { return m_bindings; }
+    const MenuItemDataMap_t& GetBindings() const
+    {
+        return m_bindings;
+    }
 
 };
 

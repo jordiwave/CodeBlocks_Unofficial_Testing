@@ -13,9 +13,9 @@
 #include "manager.h"
 
 #ifdef HAVE_OVERRIDE
-    #define wxOVERRIDE override
+#define wxOVERRIDE override
 #else /*  !HAVE_OVERRIDE */
-    #define wxOVERRIDE
+#define wxOVERRIDE
 #endif /*  HAVE_OVERRIDE */
 
 // This is a base class used to process all method calls.
@@ -48,7 +48,7 @@ public:
     typedef void (ObjectType::*MethodType)();
 
     AsyncMethodCallEvent0(ObjectType* object,
-                            MethodType method)
+                          MethodType method)
         : AsyncMethodCallEvent(object),
           m_object(object),
           m_method(method)
@@ -88,8 +88,8 @@ public:
     typedef typename wxRemoveRef<T1>::type ParamType1;
 
     AsyncMethodCallEvent1(ObjectType* object,
-                            MethodType method,
-                            const ParamType1& x1)
+                          MethodType method,
+                          const ParamType1& x1)
         : AsyncMethodCallEvent(object),
           m_object(object),
           m_method(method),
@@ -134,9 +134,9 @@ public:
     typedef typename wxRemoveRef<T2>::type ParamType2;
 
     AsyncMethodCallEvent2(ObjectType* object,
-                            MethodType method,
-                            const ParamType1& x1,
-                            const ParamType2& x2)
+                          MethodType method,
+                          const ParamType1& x1,
+                          const ParamType2& x2)
         : AsyncMethodCallEvent(object),
           m_object(object),
           m_method(method),
@@ -211,7 +211,7 @@ private:
 class IdleCallbackHandler: public wxEvtHandler
 // ----------------------------------------------------------------------------
 {
-  private:
+private:
     std::deque<AsyncMethodCallEvent*> m_AsyncMethodCallQueue;
 
     // ----------------------------------------------------------------------------
@@ -233,7 +233,7 @@ class IdleCallbackHandler: public wxEvtHandler
         }
     }
 
-  public:
+public:
 
     // Verify that an event handler is still in the chain of event handlers
     wxEvtHandler* FindEventHandler(wxEvtHandler* pEvtHdlr)
@@ -265,13 +265,15 @@ class IdleCallbackHandler: public wxEvtHandler
         //dtor
         Unbind(wxEVT_IDLE, &IdleCallbackHandler::OnIdle, this);
         if (FindEventHandler(this))
-                Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+            Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
     }
 
     // GetIdleCallackQueue ptr
     // ----------------------------------------------------------------------------
     std::deque<AsyncMethodCallEvent*>* GetIdleCallbackQueue()
-        { return &m_AsyncMethodCallQueue; }
+    {
+        return &m_AsyncMethodCallQueue;
+    }
     // ----------------------------------------------------------------------------
 
     // ----------------------------------------------------------------------------
@@ -291,7 +293,7 @@ class IdleCallbackHandler: public wxEvtHandler
         //-                static_cast<T*>(this), method, x1)
         //-        );
         AsyncMethodCallEvent* pCallBackEvent = new AsyncMethodCallEvent0<T>(
-                                                    static_cast<T*>(thisptr), method) ;
+            static_cast<T*>(thisptr), method) ;
         m_AsyncMethodCallQueue.push_back(pCallBackEvent);
     }
 
@@ -310,7 +312,7 @@ class IdleCallbackHandler: public wxEvtHandler
         //                static_cast<T*>(this), method, x1)
         //        );
         AsyncMethodCallEvent* pCallBackEvent = new AsyncMethodCallEvent1<T, T1>(
-                                                    static_cast<TP*>(thisptr), method, x1) ;
+            static_cast<TP*>(thisptr), method, x1) ;
         m_AsyncMethodCallQueue.push_back(pCallBackEvent);
     }
     // ----------------------------------------------------------------------------
@@ -320,7 +322,7 @@ class IdleCallbackHandler: public wxEvtHandler
     void QueueCallback(TP* thisptr, void (T::*method)(T1 x1, T2 x2), P1 x1, P2 x2)
     {
         AsyncMethodCallEvent* pCallBackEvent = new AsyncMethodCallEvent2<T, T1, T2>(
-                                                    static_cast<T*>(thisptr), method, x1, x2);
+            static_cast<T*>(thisptr), method, x1, x2);
         m_AsyncMethodCallQueue.push_back(pCallBackEvent);
     }
 //    // ----------------------------------------------------------------------------

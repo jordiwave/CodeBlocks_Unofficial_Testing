@@ -28,18 +28,18 @@
 /** \brief Class for wxsGauge widget */
 class wxsGauge: public wxsWidget
 {
-    public:
+public:
 
-        wxsGauge(wxsItemResData* Data);
+    wxsGauge(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        long Range;
-        long Value;
+    long Range;
+    long Value;
 };
 
 #endif

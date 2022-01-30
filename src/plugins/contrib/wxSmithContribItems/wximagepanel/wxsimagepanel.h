@@ -27,19 +27,19 @@
 
 class wxsImagePanel : public wxsContainer
 {
-    public:
+public:
 
-        wxsImagePanel(wxsItemResData* Data);
-        ~wxsImagePanel();
+    wxsImagePanel(wxsItemResData* Data);
+    ~wxsImagePanel();
 
-    protected:
+protected:
 
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnBuildCreatingCode();
-        virtual void OnEnumContainerProperties(long Flags);
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual void OnEnumContainerProperties(long Flags);
 
-        wxString mImage;   // wxsImage info
-        bool     mStretch; // fit image to panel
+    wxString mImage;   // wxsImage info
+    bool     mStretch; // fit image to panel
 };
 
 #endif      // wxsIMAGEPANEL_H

@@ -24,16 +24,16 @@
 
 namespace
 {
-    wxsRegisterItem<wxsScrolledWindow> Reg(_T("ScrolledWindow"),wxsTContainer, _T("Standard"), 140);
+wxsRegisterItem<wxsScrolledWindow> Reg(_T("ScrolledWindow"),wxsTContainer, _T("Standard"), 140);
 
-    WXS_ST_BEGIN(wxsScrolledWindowStyles,_T("wxHSCROLL|wxVSCROLL"))
-        WXS_ST_CATEGORY("wxScrolledWindow")
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsScrolledWindowStyles,_T("wxHSCROLL|wxVSCROLL"))
+WXS_ST_CATEGORY("wxScrolledWindow")
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsScrolledWindowEvents)
-        WXS_EV_DEFAULTS()
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsScrolledWindowEvents)
+WXS_EV_DEFAULTS()
+WXS_EV_END()
 }
 
 wxsScrolledWindow::wxsScrolledWindow(wxsItemResData* Data):
@@ -48,24 +48,24 @@ void wxsScrolledWindow::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/scrolwin.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+        BuildSetupWindowCode();
+        AddChildrenCode();
+        if(!m_scrollRate.DefValue)
         {
-            AddHeader(_T("<wx/scrolwin.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-            BuildSetupWindowCode();
-            AddChildrenCode();
-            if(!m_scrollRate.DefValue)
-            {
-                Codef(_T("%ASetScrollRate(%d,%d);\n"), m_scrollRate.GetValue1(), m_scrollRate.GetValue2() );
-            }
-            return;
+            Codef(_T("%ASetScrollRate(%d,%d);\n"), m_scrollRate.GetValue1(), m_scrollRate.GetValue2() );
         }
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsScrolledWindow::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsScrolledWindow::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

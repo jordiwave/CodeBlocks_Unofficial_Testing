@@ -29,124 +29,139 @@ public:
     virtual void onRequest(string_ref method, value &params, value &ID) {}
     int id = -1;
     void* clientID = nullptr;
-    int   GetLSP_EventID() {return id;}
-    void  SetLSP_EventID(int _id) {id = _id;}
+    int   GetLSP_EventID()
+    {
+        return id;
+    }
+    void  SetLSP_EventID(int _id)
+    {
+        id = _id;
+    }
     //void* GetLSP_ClientID() {return clientID;}
     //-void  SetLSP_ClientID(void* ID) {clientID = ID;}
     // Termination control from ProcessLanguageClient //(ph 2021/07/8)
     int m_LSP_TerminateFlag = 0;
-    int GetLSP_TerminateFlag(){ return m_LSP_TerminateFlag;}
-    void SetLSP_TerminateFlag(int terminateFlag){m_LSP_TerminateFlag = terminateFlag;}
+    int GetLSP_TerminateFlag()
+    {
+        return m_LSP_TerminateFlag;
+    }
+    void SetLSP_TerminateFlag(int terminateFlag)
+    {
+        m_LSP_TerminateFlag = terminateFlag;
+    }
 };
 // ----------------------------------------------------------------------------
 class MapMessageHandler : public MessageHandler
 // ----------------------------------------------------------------------------
 {
-    public:
-        std::map<std::string, std::function<void(value &, RequestID)>> m_calls;
-        std::map<std::string, std::function<void(value &)>> m_notify;
-        std::vector<std::pair<RequestID, std::function<void(value &)>>> m_requests;
-        MapMessageHandler() = default;
-        void SetLSP_EventID(int _id) { MessageHandler::SetLSP_EventID(_id); }
+public:
+    std::map<std::string, std::function<void(value &, RequestID)>> m_calls;
+    std::map<std::string, std::function<void(value &)>> m_notify;
+    std::vector<std::pair<RequestID, std::function<void(value &)>>> m_requests;
+    MapMessageHandler() = default;
+    void SetLSP_EventID(int _id)
+    {
+        MessageHandler::SetLSP_EventID(_id);
+    }
 
-        template<typename Param>
-        // ----------------------------------------------------------------------------
-        void bindRequest(const char *method, std::function<void(Param &, RequestID)> func)
-        // ----------------------------------------------------------------------------
+    template<typename Param>
+    // ----------------------------------------------------------------------------
+    void bindRequest(const char *method, std::function<void(Param &, RequestID)> func)
+    // ----------------------------------------------------------------------------
+    {
+        m_calls[method] = [=](json &params, json &id)
         {
-            m_calls[method] = [=](json &params, json &id)
+            Param param = params.get<Param>();
+            func(param, id.get<RequestID>());
+        };
+    }
+    // ----------------------------------------------------------------------------
+    void bindRequest(const char *method, std::function<void(value &, RequestID)> func)
+    // ----------------------------------------------------------------------------
+    {
+        m_calls[method] = std::move(func);
+    }
+    // ----------------------------------------------------------------------------
+    template<typename Param>
+    void bindNotify(const char *method, std::function<void(Param &)> func)
+    // ----------------------------------------------------------------------------
+    {
+        m_notify[method] = [=](json &params)
+        {
+            Param param = params.get<Param>();
+            func(param);
+        };
+    }
+    // ----------------------------------------------------------------------------
+    void bindNotify(const char *method, std::function<void(value &)> func)
+    // ----------------------------------------------------------------------------
+    {
+        m_notify[method] = std::move(func);
+    }
+    // ----------------------------------------------------------------------------
+    void bindResponse(RequestID id, std::function<void(value &)>func)
+    // ----------------------------------------------------------------------------
+    {
+        m_requests.emplace_back(id, std::move(func));
+    }
+    // ----------------------------------------------------------------------------
+    void onNotify(string_ref method, value &params) override
+    // ----------------------------------------------------------------------------
+    {
+        std::string str = method.str();
+        if (m_notify.count(str))
+        {
+            m_notify[str](params);
+        }
+    }
+    // ----------------------------------------------------------------------------
+    void onResponse(value &ID, value &result) override
+    // ----------------------------------------------------------------------------
+    {
+        //-for (int i = 0; i < m_requests.size(); ++i) { //(ph 2020/08/19)  .size is "size_t" not int
+        for (size_t i = 0; i < m_requests.size(); ++i)
+        {
+            if (ID == m_requests[i].first)
             {
-                Param param = params.get<Param>();
-                func(param, id.get<RequestID>());
-            };
-        }
-        // ----------------------------------------------------------------------------
-        void bindRequest(const char *method, std::function<void(value &, RequestID)> func)
-        // ----------------------------------------------------------------------------
-        {
-            m_calls[method] = std::move(func);
-        }
-        // ----------------------------------------------------------------------------
-        template<typename Param>
-        void bindNotify(const char *method, std::function<void(Param &)> func)
-        // ----------------------------------------------------------------------------
-        {
-            m_notify[method] = [=](json &params)
-            {
-                Param param = params.get<Param>();
-                func(param);
-            };
-        }
-        // ----------------------------------------------------------------------------
-        void bindNotify(const char *method, std::function<void(value &)> func)
-        // ----------------------------------------------------------------------------
-        {
-            m_notify[method] = std::move(func);
-        }
-        // ----------------------------------------------------------------------------
-        void bindResponse(RequestID id, std::function<void(value &)>func)
-        // ----------------------------------------------------------------------------
-        {
-            m_requests.emplace_back(id, std::move(func));
-        }
-        // ----------------------------------------------------------------------------
-        void onNotify(string_ref method, value &params) override
-        // ----------------------------------------------------------------------------
-        {
-            std::string str = method.str();
-            if (m_notify.count(str))
-            {
-                m_notify[str](params);
+                m_requests[i].second(result);
+                m_requests.erase(m_requests.begin() + i);
+                return;
             }
         }
-        // ----------------------------------------------------------------------------
-        void onResponse(value &ID, value &result) override
-        // ----------------------------------------------------------------------------
-        {
-            //-for (int i = 0; i < m_requests.size(); ++i) { //(ph 2020/08/19)  .size is "size_t" not int
-            for (size_t i = 0; i < m_requests.size(); ++i)
-            {
-                if (ID == m_requests[i].first)
-                {
-                    m_requests[i].second(result);
-                    m_requests.erase(m_requests.begin() + i);
-                    return;
-                }
-            }
-        }
-        // ----------------------------------------------------------------------------
-        void onError(value &ID, value &error) override
-        // ----------------------------------------------------------------------------
-        {
+    }
+    // ----------------------------------------------------------------------------
+    void onError(value &ID, value &error) override
+    // ----------------------------------------------------------------------------
+    {
 
-        }
-        // ----------------------------------------------------------------------------
-        void onRequest(string_ref method, value &params, value &ID) override
-        // ----------------------------------------------------------------------------
+    }
+    // ----------------------------------------------------------------------------
+    void onRequest(string_ref method, value &params, value &ID) override
+    // ----------------------------------------------------------------------------
+    {
+        std::string string = method.str();
+        if (m_calls.count(string))
         {
-            std::string string = method.str();
-            if (m_calls.count(string))
-            {
-                m_calls[string](params, ID);
-            }
+            m_calls[string](params, ID);
         }
+    }
 };
 
 // ----------------------------------------------------------------------------
 class Transport
 // ----------------------------------------------------------------------------
 {
-    public:
-        virtual void notify(string_ref method, value &params) = 0;
-        virtual void request(string_ref method, value &params, RequestID &id) = 0;
-        virtual int loop(MessageHandler &) = 0;
+public:
+    virtual void notify(string_ref method, value &params) = 0;
+    virtual void request(string_ref method, value &params, RequestID &id) = 0;
+    virtual int loop(MessageHandler &) = 0;
 };
 
 // ----------------------------------------------------------------------------
 class JsonTransport : public Transport
 // ----------------------------------------------------------------------------
 {
-  public:
+public:
     const char *jsonrpc = "2.0";
 
     // ----------------------------------------------------------------------------

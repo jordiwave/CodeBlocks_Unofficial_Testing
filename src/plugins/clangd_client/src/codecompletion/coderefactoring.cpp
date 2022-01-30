@@ -10,18 +10,18 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/artprov.h>
-    #include <wx/button.h>
-    #include <wx/image.h>
-    #include <wx/sizer.h>
-    #include <wx/statbmp.h>
-    #include <wx/stattext.h>
+#include <wx/artprov.h>
+#include <wx/button.h>
+#include <wx/image.h>
+#include <wx/sizer.h>
+#include <wx/statbmp.h>
+#include <wx/stattext.h>
 
-    #include <cbeditor.h>
-    #include <cbproject.h>
-    #include <editorcolourset.h>
-    #include <editormanager.h>
-    #include <logmanager.h>
+#include <cbeditor.h>
+#include <cbproject.h>
+#include <editorcolourset.h>
+#include <editormanager.h>
+#include <logmanager.h>
 #endif
 
 #include <wx/progdlg.h>
@@ -37,32 +37,32 @@
 #define CC_CODEREFACTORING_DEBUG_OUTPUT 0
 
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
-    #if CC_GLOBAL_DEBUG_OUTPUT == 1
-        #undef CC_CODEREFACTORING_DEBUG_OUTPUT
-        #define CC_CODEREFACTORING_DEBUG_OUTPUT 1
-    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
-        #undef CC_CODEREFACTORING_DEBUG_OUTPUT
-        #define CC_CODEREFACTORING_DEBUG_OUTPUT 2
-    #endif
+#if CC_GLOBAL_DEBUG_OUTPUT == 1
+#undef CC_CODEREFACTORING_DEBUG_OUTPUT
+#define CC_CODEREFACTORING_DEBUG_OUTPUT 1
+#elif CC_GLOBAL_DEBUG_OUTPUT == 2
+#undef CC_CODEREFACTORING_DEBUG_OUTPUT
+#define CC_CODEREFACTORING_DEBUG_OUTPUT 2
+#endif
 #endif
 
 #if CC_CODEREFACTORING_DEBUG_OUTPUT == 1
-    #define TRACE(format, args...) \
+#define TRACE(format, args...) \
         CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-    #define TRACE2(format, args...)
+#define TRACE2(format, args...)
 #elif CC_CODEREFACTORING_DEBUG_OUTPUT == 2
-    #define TRACE(format, args...)                                              \
+#define TRACE(format, args...)                                              \
         do                                                                      \
         {                                                                       \
             if (g_EnableDebugTrace)                                             \
                 CCLogger::Get()->DebugLog(wxString::Format(format, ##args));                   \
         }                                                                       \
         while (false)
-    #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
         CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
 #else
-    #define TRACE(format, args...)
-    #define TRACE2(format, args...)
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
 #endif
 
 // ----------------------------------------------------------------------------
@@ -77,8 +77,8 @@ public:
         wxBoxSizer* infoSizer = new wxBoxSizer(wxHORIZONTAL);
         const wxBitmap iconBmp = wxArtProvider::GetBitmap(wxT("core/find"), wxART_BUTTON);
         wxStaticBitmap* findIco = new wxStaticBitmap(this, wxID_ANY, iconBmp, wxDefaultPosition,
-                                                     wxSize(iconBmp.GetWidth(),
-                                                            iconBmp.GetHeight()));
+                wxSize(iconBmp.GetWidth(),
+                       iconBmp.GetHeight()));
         infoSizer->Add(findIco, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
         wxStaticText* scopeText = new wxStaticText(this, wxID_ANY, _("Please choose the find scope for search tokens"));
         infoSizer->Add(scopeText, 1, wxALL | wxALIGN_CENTER_VERTICAL,
@@ -93,7 +93,7 @@ public:
                                       wxDefaultSize, 0, wxDefaultValidator, _T("ID_PROJECT_FILES"));
         btnSizer->Add(m_ProjectFiles, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
         wxButton *closeButton = new wxButton(this, wxID_CANCEL, _("&Cancel"), wxDefaultPosition,
-                                      wxDefaultSize);
+                                             wxDefaultSize);
         btnSizer->Add(closeButton, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
         sizer->Add(btnSizer, 1, wxBOTTOM | wxLEFT | wxRIGHT | wxALIGN_CENTER_HORIZONTAL, 5);
         SetSizer(sizer);
@@ -111,9 +111,18 @@ public:
     static const long ID_PROJECT_FILES;
 
 private:
-    void OnClose(cb_unused wxCloseEvent& event) { EndDialog(wxID_CLOSE); }
-    void OnOpenFilesClick(cb_unused wxCommandEvent& event) { EndDialog(ID_OPEN_FILES);}
-    void OnProjectFilesClick(cb_unused wxCommandEvent& event) { EndDialog(ID_PROJECT_FILES); }
+    void OnClose(cb_unused wxCloseEvent& event)
+    {
+        EndDialog(wxID_CLOSE);
+    }
+    void OnOpenFilesClick(cb_unused wxCommandEvent& event)
+    {
+        EndDialog(ID_OPEN_FILES);
+    }
+    void OnProjectFilesClick(cb_unused wxCommandEvent& event)
+    {
+        EndDialog(ID_PROJECT_FILES);
+    }
 
     wxButton* m_OpenFiles;
     wxButton* m_ProjectFiles;
@@ -260,10 +269,10 @@ size_t CodeRefactoring::SearchInFiles(const wxArrayString& files, const wxString
 
     // let's create a progress dialog because it might take some time depending on the files count
     wxProgressDialog* progress = new wxProgressDialog(_("Code Refactoring"),
-                                                      _("Please wait while searching inside the project..."),
-                                                      files.GetCount(),
-                                                      Manager::Get()->GetAppWindow(),
-                                                      wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
+            _("Please wait while searching inside the project..."),
+            files.GetCount(),
+            Manager::Get()->GetAppWindow(),
+            wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
     PlaceWindow(progress);
 
     for (size_t i = 0; i < files.GetCount(); ++i)
@@ -471,7 +480,7 @@ void CodeRefactoring::Find(cbStyledTextCtrl* control, const wxString& file, cons
 void CodeRefactoring::DoFindReferences()
 // ----------------------------------------------------------------------------
 {
-     /// Unused for clangd
+    /// Unused for clangd
 
     cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!editor)
@@ -562,7 +571,7 @@ void CodeRefactoring::GetAllProjectFiles(wxArrayString& files, cbProject* projec
 
     // fill the search list with all the project files
     for (FilesList::const_iterator it = project->GetFilesList().begin();
-                                   it != project->GetFilesList().end(); ++it)
+            it != project->GetFilesList().end(); ++it)
     {
         ProjectFile* pf = *it;
         if (!pf)

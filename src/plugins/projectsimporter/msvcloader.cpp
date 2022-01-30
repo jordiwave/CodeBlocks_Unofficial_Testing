@@ -10,22 +10,22 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/confbase.h>
-    #include <wx/fileconf.h>
-    #include <wx/msgdlg.h>
-    #include <wx/intl.h>
-    #include <wx/filename.h>
-    #include <wx/txtstrm.h>
-    #include <wx/dynarray.h>
-    #include <wx/wfstream.h>
+#include <wx/confbase.h>
+#include <wx/fileconf.h>
+#include <wx/msgdlg.h>
+#include <wx/intl.h>
+#include <wx/filename.h>
+#include <wx/txtstrm.h>
+#include <wx/dynarray.h>
+#include <wx/wfstream.h>
 
-    #include "manager.h"
-    #include "projectmanager.h"
-    #include "logmanager.h"
-    #include "cbproject.h"
-    #include "globals.h"
-    #include "compilerfactory.h"
-    #include "compiler.h"
+#include "manager.h"
+#include "projectmanager.h"
+#include "logmanager.h"
+#include "cbproject.h"
+#include "globals.h"
+#include "compilerfactory.h"
+#include "compiler.h"
 #endif
 
 #include <wx/stream.h>
@@ -440,7 +440,7 @@ bool MSVCLoader::ParseSourceFiles()
                             {
                                 pf->RemoveBuildTarget(CurCFG);
                                 Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_T("Buid target %s has been excluded from %s"),
-																		CurCFG.c_str(), LastProcessedFile.c_str()));
+                                        CurCFG.c_str(), LastProcessedFile.c_str()));
                             }
                         }
                     }
@@ -524,7 +524,8 @@ void MSVCLoader::ProcessCompilerOptions(ProjectBuildTarget* target, const wxStri
                         ProcessCompilerOptions(target, options[j]);
                 }
                 else
-                { // Fallback: Remember GCC will process Pre-processor macros only
+                {
+                    // Fallback: Remember GCC will process Pre-processor macros only
                     Manager::Get()->GetLogManager()->DebugLog(_T("Can't open ") + m_pProject->GetBasePath() + opt.Mid(1) + _T(" for parsing"));
                     target->AddCompilerOption(_T("-imacros ") + opt.Mid(1));
                 }
@@ -691,11 +692,11 @@ void MSVCLoader::ProcessPostBuildCommand(ProjectBuildTarget* target, const wxStr
 {
     wxString post_build_cmd = cmd;
 
-/*
-     remove "line continues", like in:
-     PostBuild_Cmds=if NOT exist ..\binary\*.* mkdir ..\binary	\
-     copy $(OutDir)\NetHackW.exe ..\binary
-*/
+    /*
+         remove "line continues", like in:
+         PostBuild_Cmds=if NOT exist ..\binary\*.* mkdir ..\binary	\
+         copy $(OutDir)\NetHackW.exe ..\binary
+    */
     if (post_build_cmd.EndsWith(_T("\\")))
         post_build_cmd.RemoveLast(1).Trim(true).Trim(false);
 

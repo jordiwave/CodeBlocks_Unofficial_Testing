@@ -47,28 +47,28 @@
 #include "wx/pdfprint.h"
 
 #if wxTEST_POSTSCRIPT_IN_MSW
-  #include "wx/generic/printps.h"
-  #include "wx/generic/prntdlgg.h"
+#include "wx/generic/printps.h"
+#include "wx/generic/prntdlgg.h"
 #endif
 
 #ifdef __WXMAC__
-  #if wxMAJOR_VERSION > 2 || (wxMAJOR_VERSION == 2 && wxMINOR_VERSION == 9)
-    #include <wx/osx/printdlg.h>
-  #else
-    #include <wx/mac/carbon/printdlg.h>
-  #endif
+#if wxMAJOR_VERSION > 2 || (wxMAJOR_VERSION == 2 && wxMINOR_VERSION == 9)
+#include <wx/osx/printdlg.h>
+#else
+#include <wx/mac/carbon/printdlg.h>
+#endif
 #endif
 
 #if wxUSE_RICHTEXT
-  #include "wx/richtext/richtextctrl.h"
-  #include "wx/richtext/richtextstyles.h"
-  #include "wx/richtext/richtextprint.h"
-  #include "zebra.xpm"
-  #include "smiley.xpm"
+#include "wx/richtext/richtextctrl.h"
+#include "wx/richtext/richtextstyles.h"
+#include "wx/richtext/richtextprint.h"
+#include "zebra.xpm"
+#include "smiley.xpm"
 #endif
 
 #if wxUSE_HTML
-  #include <wx/html/htmprint.h>
+#include <wx/html/htmprint.h>
 #endif
 
 #include "printing.h"
@@ -106,72 +106,72 @@ bool WritePageHeader(wxPrintout* printout, wxDC* dc, const wxStringCharType* tex
 
 static const wxCmdLineEntryDesc cmdLineDesc[] =
 {
-  { wxCMD_LINE_OPTION, "s", "sampledir", "wxPdfDocument samples directory",  wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-  { wxCMD_LINE_OPTION, "f", "fontdir",   "wxPdfDocument font directory",     wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-  { wxCMD_LINE_SWITCH, "h", "help",      "Display help",                     wxCMD_LINE_VAL_NONE,   wxCMD_LINE_OPTION_HELP },
-  { wxCMD_LINE_NONE }
+    { wxCMD_LINE_OPTION, "s", "sampledir", "wxPdfDocument samples directory",  wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_OPTION, "f", "fontdir",   "wxPdfDocument font directory",     wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, "h", "help",      "Display help",                     wxCMD_LINE_VAL_NONE,   wxCMD_LINE_OPTION_HELP },
+    { wxCMD_LINE_NONE }
 };
 
 bool MyApp::OnInit(void)
 {
-  wxInitAllImageHandlers();
+    wxInitAllImageHandlers();
 
-  wxCmdLineParser parser(cmdLineDesc, argc, argv);
-  wxString logo = wxS("wxPdfDocument Minimal Sample\n");
-  parser.SetLogo(logo);
-  bool ok = parser.Parse() == 0;
-  if (ok)
-  {
-    parser.Found(wxS("sampledir"), &m_workDirectory);
-    parser.Found(wxS("fontdir"), &m_fontDirectory);
-    m_rc = 0;
-  }
-  else
-  {
-    parser.Usage();
-    m_rc = -1;
-  }
-
-  if (ok)
-  {
-    // Set the font path and working directory
-    if (!m_workDirectory.IsEmpty())
+    wxCmdLineParser parser(cmdLineDesc, argc, argv);
+    wxString logo = wxS("wxPdfDocument Minimal Sample\n");
+    parser.SetLogo(logo);
+    bool ok = parser.Parse() == 0;
+    if (ok)
     {
-      wxSetWorkingDirectory(m_workDirectory);
+        parser.Found(wxS("sampledir"), &m_workDirectory);
+        parser.Found(wxS("fontdir"), &m_fontDirectory);
+        m_rc = 0;
     }
-    m_workDirectory = wxGetCwd();
-
-    if (m_fontDirectory.IsEmpty())
+    else
     {
-      m_fontDirectory = wxS("../../lib/fonts");
-    }
-    wxPdfFontManager::GetFontManager()->AddSearchPath(m_fontDirectory);
-
-    // Check directories
-    if (!wxFileName::IsFileReadable(wxS("smile.jpg")))
-    {
-      wxLogError(wxS("The working directory seems not to be the directory of wxPdfDocument's printing sample."));
-      m_rc = -2;
-      ok = false;
+        parser.Usage();
+        m_rc = -1;
     }
 
-    wxPathList fontPaths;
-    fontPaths.Add(m_fontDirectory);
-    fontPaths.AddEnvList(wxS("WXPDF_FONTPATH"));
-    wxString testFontFileName = fontPaths.FindValidPath(wxS("big5.xml"));
-    wxFileName testFont(testFontFileName);
-    if (testFontFileName.IsEmpty() || !testFont.IsOk() || !testFont.IsFileReadable())
+    if (ok)
     {
-      wxLogError(wxS("The font directory of wxPdfDocument seems not to be accessible."));
-      m_rc = -3;
-      ok = false;
-    }
-  }
+        // Set the font path and working directory
+        if (!m_workDirectory.IsEmpty())
+        {
+            wxSetWorkingDirectory(m_workDirectory);
+        }
+        m_workDirectory = wxGetCwd();
 
-  if (!ok)
-  {
-    return false;
-  }
+        if (m_fontDirectory.IsEmpty())
+        {
+            m_fontDirectory = wxS("../../lib/fonts");
+        }
+        wxPdfFontManager::GetFontManager()->AddSearchPath(m_fontDirectory);
+
+        // Check directories
+        if (!wxFileName::IsFileReadable(wxS("smile.jpg")))
+        {
+            wxLogError(wxS("The working directory seems not to be the directory of wxPdfDocument's printing sample."));
+            m_rc = -2;
+            ok = false;
+        }
+
+        wxPathList fontPaths;
+        fontPaths.Add(m_fontDirectory);
+        fontPaths.AddEnvList(wxS("WXPDF_FONTPATH"));
+        wxString testFontFileName = fontPaths.FindValidPath(wxS("big5.xml"));
+        wxFileName testFont(testFontFileName);
+        if (testFontFileName.IsEmpty() || !testFont.IsOk() || !testFont.IsFileReadable())
+        {
+            wxLogError(wxS("The font directory of wxPdfDocument seems not to be accessible."));
+            m_rc = -3;
+            ok = false;
+        }
+    }
+
+    if (!ok)
+    {
+        return false;
+    }
 
     m_testFont.Create(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxS("Arial"));
 
@@ -189,7 +189,7 @@ bool MyApp::OnInit(void)
 
     // Create the main frame window
     frame = new MyFrame((wxFrame *) NULL, _T("wxWidgets Printing Demo"),
-        wxPoint(0, 0), wxSize(400, 400));
+                        wxPoint(0, 0), wxSize(400, 400));
 
 #if wxUSE_STATUSBAR
     // Give it a status line
@@ -289,40 +289,40 @@ int MyApp::OnExit()
 }
 
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
-EVT_MENU(WXPRINT_QUIT, MyFrame::OnExit)
-EVT_MENU(WXPRINT_PRINT, MyFrame::OnPrint)
-EVT_MENU(WXPRINT_PDF, MyFrame::OnPDF)
-EVT_MENU(WXPRINT_PDF_TPL, MyFrame::OnPDFTemplate)
-EVT_MENU(WXPRINT_PREVIEW, MyFrame::OnPrintPreview)
-EVT_MENU(WXPRINT_PAGE_SETUP, MyFrame::OnPageSetup)
-EVT_MENU(WXPRINT_ABOUT, MyFrame::OnPrintAbout)
+    EVT_MENU(WXPRINT_QUIT, MyFrame::OnExit)
+    EVT_MENU(WXPRINT_PRINT, MyFrame::OnPrint)
+    EVT_MENU(WXPRINT_PDF, MyFrame::OnPDF)
+    EVT_MENU(WXPRINT_PDF_TPL, MyFrame::OnPDFTemplate)
+    EVT_MENU(WXPRINT_PREVIEW, MyFrame::OnPrintPreview)
+    EVT_MENU(WXPRINT_PAGE_SETUP, MyFrame::OnPageSetup)
+    EVT_MENU(WXPRINT_ABOUT, MyFrame::OnPrintAbout)
 #if defined(__WXMSW__) && wxTEST_POSTSCRIPT_IN_MSW
-EVT_MENU(WXPRINT_PRINT_PS, MyFrame::OnPrintPS)
-EVT_MENU(WXPRINT_PREVIEW_PS, MyFrame::OnPrintPreviewPS)
-EVT_MENU(WXPRINT_PAGE_SETUP_PS, MyFrame::OnPageSetupPS)
+    EVT_MENU(WXPRINT_PRINT_PS, MyFrame::OnPrintPS)
+    EVT_MENU(WXPRINT_PREVIEW_PS, MyFrame::OnPrintPreviewPS)
+    EVT_MENU(WXPRINT_PAGE_SETUP_PS, MyFrame::OnPageSetupPS)
 #endif
 #ifdef __WXMAC__
-EVT_MENU(WXPRINT_PAGE_MARGINS, MyFrame::OnPageMargins)
+    EVT_MENU(WXPRINT_PAGE_MARGINS, MyFrame::OnPageMargins)
 #endif
-EVT_MENU(WXPRINT_ANGLEUP, MyFrame::OnAngleUp)
-EVT_MENU(WXPRINT_ANGLEDOWN, MyFrame::OnAngleDown)
-EVT_MENU(WXPDFPRINT_PAGE_SETUP_ALL, MyFrame::OnPdfPageSetupAll)
-EVT_MENU(WXPDFPRINT_PAGE_SETUP_MINIMAL, MyFrame::OnPdfPageSetupMinimal)
-EVT_MENU(WXPDFPRINT_PRINT_DIALOG_ALL, MyFrame::OnPdfPrintDialogAll)
-EVT_MENU(WXPDFPRINT_PRINT_DIALOG_MINIMAL, MyFrame::OnPdfPrintDialogMinimal)
+    EVT_MENU(WXPRINT_ANGLEUP, MyFrame::OnAngleUp)
+    EVT_MENU(WXPRINT_ANGLEDOWN, MyFrame::OnAngleDown)
+    EVT_MENU(WXPDFPRINT_PAGE_SETUP_ALL, MyFrame::OnPdfPageSetupAll)
+    EVT_MENU(WXPDFPRINT_PAGE_SETUP_MINIMAL, MyFrame::OnPdfPageSetupMinimal)
+    EVT_MENU(WXPDFPRINT_PRINT_DIALOG_ALL, MyFrame::OnPdfPrintDialogAll)
+    EVT_MENU(WXPDFPRINT_PRINT_DIALOG_MINIMAL, MyFrame::OnPdfPrintDialogMinimal)
 #if wxUSE_RICHTEXT
-EVT_MENU(WXPDFPRINT_RICHTEXT_PRINT, MyFrame::OnPdfRichTextPrint)
-EVT_MENU(WXPDFPRINT_RICHTEXT_PREVIEW, MyFrame::OnPdfRichTextPreview)
+    EVT_MENU(WXPDFPRINT_RICHTEXT_PRINT, MyFrame::OnPdfRichTextPrint)
+    EVT_MENU(WXPDFPRINT_RICHTEXT_PREVIEW, MyFrame::OnPdfRichTextPreview)
 #endif
 #if wxUSE_HTML
-EVT_MENU(WXPDFPRINT_HTML_PRINT, MyFrame::OnPdfHtmlPrint)
-EVT_MENU(WXPDFPRINT_HTML_PREVIEW, MyFrame::OnPdfHtmlPreview)
+    EVT_MENU(WXPDFPRINT_HTML_PRINT, MyFrame::OnPdfHtmlPrint)
+    EVT_MENU(WXPDFPRINT_HTML_PREVIEW, MyFrame::OnPdfHtmlPreview)
 #endif
 END_EVENT_TABLE()
 
 // Define my frame constructor
 MyFrame::MyFrame(wxFrame *frame, const wxString& title, const wxPoint& pos, const wxSize& size):
-wxFrame(frame, wxID_ANY, title, pos, size)
+    wxFrame(frame, wxID_ANY, title, pos, size)
 {
 #ifdef __WXMAC__
     wxString rscPath = wxStandardPaths::Get().GetResourcesDir() + wxFileName::GetPathSeparator();
@@ -334,13 +334,13 @@ wxFrame(frame, wxID_ANY, title, pos, size)
     wxImage image(rscPath + wxS("smile.jpg"));
     if (image.IsOk())
     {
-      image.SetAlpha();
-      int i,j;
-      for (i = 0; i < image.GetWidth(); i++)
-        for (j = 0; j < image.GetHeight(); j++)
-          image.SetAlpha( i, j, 50 );
-      m_bitmap = wxBitmap(image);
-      m_imgUp.LoadFile(rscPath + wxS("up.gif"));
+        image.SetAlpha();
+        int i,j;
+        for (i = 0; i < image.GetWidth(); i++)
+            for (j = 0; j < image.GetHeight(); j++)
+                image.SetAlpha( i, j, 50 );
+        m_bitmap = wxBitmap(image);
+        m_imgUp.LoadFile(rscPath + wxS("up.gif"));
     }
 #if wxUSE_RICHTEXT
     m_richtext = new wxRichTextCtrl(this, wxID_ANY, wxEmptyString);
@@ -353,7 +353,7 @@ wxFrame(frame, wxID_ANY, title, pos, size)
 MyFrame::~MyFrame()
 {
 #if wxUSE_RICHTEXT
-  delete m_richtextPrinting;
+    delete m_richtextPrinting;
 #endif
 }
 
@@ -383,83 +383,83 @@ void MyFrame::OnPrint(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnPDF(wxCommandEvent& WXUNUSED(event))
 {
-  wxFileName fileName;
-  fileName.SetPath(wxGetCwd());
-  fileName.SetFullName(wxS("default.pdf"));
-  wxPrintData printData;
-  printData.SetOrientation(wxPORTRAIT);
-  printData.SetPaperId(wxPAPER_A4);
-  printData.SetFilename(fileName.GetFullPath());
-  {
-    wxPdfDC dc(printData);
-    // set wxPdfDC mapping mode style so
-    // we can scale fonts and graphics
-    // coords with a single setting
-    dc.SetMapModeStyle(wxPDF_MAPMODESTYLE_PDF);
-    dc.SetMapMode(wxMM_POINTS);
-    bool ok = dc.StartDoc(_("Printing ..."));
-    if (ok)
+    wxFileName fileName;
+    fileName.SetPath(wxGetCwd());
+    fileName.SetFullName(wxS("default.pdf"));
+    wxPrintData printData;
+    printData.SetOrientation(wxPORTRAIT);
+    printData.SetPaperId(wxPAPER_A4);
+    printData.SetFilename(fileName.GetFullPath());
     {
-      dc.StartPage();
-      Draw(dc);
-      dc.EndPage();
-      dc.EndDoc();
+        wxPdfDC dc(printData);
+        // set wxPdfDC mapping mode style so
+        // we can scale fonts and graphics
+        // coords with a single setting
+        dc.SetMapModeStyle(wxPDF_MAPMODESTYLE_PDF);
+        dc.SetMapMode(wxMM_POINTS);
+        bool ok = dc.StartDoc(_("Printing ..."));
+        if (ok)
+        {
+            dc.StartPage();
+            Draw(dc);
+            dc.EndPage();
+            dc.EndDoc();
+        }
     }
-  }
 
-  wxFileType* fileType = wxTheMimeTypesManager->GetFileTypeFromExtension(wxS("pdf"));
-  if (fileType != NULL)
-  {
-    wxString cmd = fileType->GetOpenCommand(fileName.GetFullPath());
-    if (!cmd.IsEmpty())
+    wxFileType* fileType = wxTheMimeTypesManager->GetFileTypeFromExtension(wxS("pdf"));
+    if (fileType != NULL)
     {
-      wxExecute(cmd);
+        wxString cmd = fileType->GetOpenCommand(fileName.GetFullPath());
+        if (!cmd.IsEmpty())
+        {
+            wxExecute(cmd);
+        }
+        delete fileType;
     }
-    delete fileType;
-  }
 }
 
 void MyFrame::OnPDFTemplate(wxCommandEvent& WXUNUSED(event))
 {
-  wxFileName fileName;
-  fileName.SetPath(wxGetCwd());
-  fileName.SetFullName(wxS("template.pdf"));
+    wxFileName fileName;
+    fileName.SetPath(wxGetCwd());
+    fileName.SetFullName(wxS("template.pdf"));
 
-  wxPdfDocument pdf;
-  pdf.AddPage();
-  pdf.SetFont(wxS("Helvetica"),wxS("B"),16);
-  pdf.Cell(40,10,wxS("Hello World!"));
-  double w = /*350*/ 125;
-  double h = /*350*/ 125;
-  int tpl = pdf.BeginTemplate(0, 0, w, h);
+    wxPdfDocument pdf;
+    pdf.AddPage();
+    pdf.SetFont(wxS("Helvetica"),wxS("B"),16);
+    pdf.Cell(40,10,wxS("Hello World!"));
+    double w = /*350*/ 125;
+    double h = /*350*/ 125;
+    int tpl = pdf.BeginTemplate(0, 0, w, h);
 
-  {
-    wxPdfDC dc(&pdf, w, h);
-    //dc.SetMapMode(wxMM_METRIC);
-    //dc.SetResolution(720);
-    bool ok = dc.StartDoc(_("Printing ..."));
-    if (ok)
     {
-      dc.StartPage();
-      Draw(dc);
-      dc.EndPage();
-      dc.EndDoc();
+        wxPdfDC dc(&pdf, w, h);
+        //dc.SetMapMode(wxMM_METRIC);
+        //dc.SetResolution(720);
+        bool ok = dc.StartDoc(_("Printing ..."));
+        if (ok)
+        {
+            dc.StartPage();
+            Draw(dc);
+            dc.EndPage();
+            dc.EndDoc();
+        }
     }
-  }
-  pdf.EndTemplate();
-  pdf.UseTemplate(tpl, 40, 30, 75);
-  pdf.SaveAsFile(fileName.GetFullPath());
+    pdf.EndTemplate();
+    pdf.UseTemplate(tpl, 40, 30, 75);
+    pdf.SaveAsFile(fileName.GetFullPath());
 
-  wxFileType* fileType = wxTheMimeTypesManager->GetFileTypeFromExtension(wxS("pdf"));
-  if (fileType != NULL)
-  {
-    wxString cmd = fileType->GetOpenCommand(fileName.GetFullPath());
-    if (!cmd.IsEmpty())
+    wxFileType* fileType = wxTheMimeTypesManager->GetFileTypeFromExtension(wxS("pdf"));
+    if (fileType != NULL)
     {
-      wxExecute(cmd);
+        wxString cmd = fileType->GetOpenCommand(fileName.GetFullPath());
+        if (!cmd.IsEmpty())
+        {
+            wxExecute(cmd);
+        }
+        delete fileType;
     }
-    delete fileType;
-  }
 }
 
 void MyFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event))
@@ -542,7 +542,7 @@ void MyFrame::OnPageMargins(wxCommandEvent& WXUNUSED(event))
 void MyFrame::OnPrintAbout(wxCommandEvent& WXUNUSED(event))
 {
     (void)wxMessageBox(_T("wxWidgets printing demo\nAuthor: Julian Smart"),
-        _T("About wxWidgets printing demo"), wxOK|wxCENTRE);
+                       _T("About wxWidgets printing demo"), wxOK|wxCENTRE);
 }
 
 void MyFrame::OnAngleUp(wxCommandEvent& WXUNUSED(event))
@@ -569,35 +569,35 @@ void MyFrame::Draw(wxDC& dc)
 
     wxClassInfo *cinfo = wxClassInfo::FindClass(wxS("wxPdfDC"));
     if ((cinfo != NULL) &&
-        (dc.GetClassInfo()->IsKindOf(cinfo)) &&
-        (((wxPdfDC*) &dc)->GetMapModeStyle() == wxPDF_MAPMODESTYLE_PDF))
+            (dc.GetClassInfo()->IsKindOf(cinfo)) &&
+            (((wxPdfDC*) &dc)->GetMapModeStyle() == wxPDF_MAPMODESTYLE_PDF))
     {
-      // We are in a special wxPdfDC mode where everything
-      // is mapped correctly using SetMapMode so we make
-      // all scaling factors effectively noops
-      fontScaleX = fontScaleY = coordScaleX = txtPosScaleX = txtPosScaleY = coordScaleY = ( 1.0 * baseScaleX );
+        // We are in a special wxPdfDC mode where everything
+        // is mapped correctly using SetMapMode so we make
+        // all scaling factors effectively noops
+        fontScaleX = fontScaleY = coordScaleX = txtPosScaleX = txtPosScaleY = coordScaleY = ( 1.0 * baseScaleX );
     }
     else
     {
-      // We need to use the base user scale to account for any
-      // zoom factor that may have been set before a call here.
-      // Our coords are in points
-      wxSize devicePPI = dc.GetPPI();
-      coordScaleX = baseScaleX * (double) devicePPI.GetWidth()  / 72.0;
-      coordScaleY = baseScaleY * (double) devicePPI.GetHeight() / 72.0;
+        // We need to use the base user scale to account for any
+        // zoom factor that may have been set before a call here.
+        // Our coords are in points
+        wxSize devicePPI = dc.GetPPI();
+        coordScaleX = baseScaleX * (double) devicePPI.GetWidth()  / 72.0;
+        coordScaleY = baseScaleY * (double) devicePPI.GetHeight() / 72.0;
 
-      // The font size will be scaled by the dc to screenres / 72.0
-      // we want the font size to be scaled back to points and be
-      // the correct size relative to our coord scale
-      // Note: wxGetScreenPPI returns the wrong number on wxMSW at least
-      wxScreenDC sdc;
-      fontScaleX = baseScaleX * (double) devicePPI.GetWidth()  / (double) sdc.GetPPI().GetWidth();
-      fontScaleY = baseScaleY * (double) devicePPI.GetHeight() / (double) sdc.GetPPI().GetHeight();
+        // The font size will be scaled by the dc to screenres / 72.0
+        // we want the font size to be scaled back to points and be
+        // the correct size relative to our coord scale
+        // Note: wxGetScreenPPI returns the wrong number on wxMSW at least
+        wxScreenDC sdc;
+        fontScaleX = baseScaleX * (double) devicePPI.GetWidth()  / (double) sdc.GetPPI().GetWidth();
+        fontScaleY = baseScaleY * (double) devicePPI.GetHeight() / (double) sdc.GetPPI().GetHeight();
 
-      // When using draw text functions we will be using fontScale, but the x y pos needs
-      // to be in coord scale
-      txtPosScaleX = coordScaleX / fontScaleX;
-      txtPosScaleY = coordScaleY / fontScaleY;
+        // When using draw text functions we will be using fontScale, but the x y pos needs
+        // to be in coord scale
+        txtPosScaleX = coordScaleX / fontScaleX;
+        txtPosScaleY = coordScaleY / fontScaleY;
     }
     dc.SetUserScale(coordScaleX, coordScaleY);
 
@@ -688,77 +688,77 @@ void MyFrame::Draw(wxDC& dc)
 
     if (m_bitmap.Ok())
     {
-      dc.DrawBitmap(m_bitmap, 10, 25);
+        dc.DrawBitmap(m_bitmap, 10, 25);
     }
     if (m_imgUp.Ok())
     {
-      dc.DrawBitmap(m_imgUp, 300, 200);
-      dc.DrawBitmap(m_imgUp, 300, 250, true);
+        dc.DrawBitmap(m_imgUp, 300, 200);
+        dc.DrawBitmap(m_imgUp, 300, 250, true);
     }
     dc.SetUserScale(baseScaleX, baseScaleY);
 }
 
 void MyFrame::OnPdfPageSetupAll(wxCommandEvent&  WXUNUSED(event) )
 {
-   wxPageSetupDialogData* dialogData = new wxPageSetupDialogData;
-   dialogData->SetMarginTopLeft(wxPoint(25,25));
-   dialogData->SetMarginBottomRight(wxPoint(25,25));
-   dialogData->EnableMargins(true);
-   dialogData->EnablePaper(true);
-   dialogData->EnableOrientation(true);
+    wxPageSetupDialogData* dialogData = new wxPageSetupDialogData;
+    dialogData->SetMarginTopLeft(wxPoint(25,25));
+    dialogData->SetMarginBottomRight(wxPoint(25,25));
+    dialogData->EnableMargins(true);
+    dialogData->EnablePaper(true);
+    dialogData->EnableOrientation(true);
 
-   wxPdfPageSetupDialog* dialog = new wxPdfPageSetupDialog(this, dialogData);
-   if( dialog->ShowModal() == wxID_OK )
-   {
-     // dialogData now has user choices
-   }
+    wxPdfPageSetupDialog* dialog = new wxPdfPageSetupDialog(this, dialogData);
+    if( dialog->ShowModal() == wxID_OK )
+    {
+        // dialogData now has user choices
+    }
 
-   delete dialog;
-   delete dialogData;
+    delete dialog;
+    delete dialogData;
 }
 
 void MyFrame::OnPdfPageSetupMinimal(wxCommandEvent&  WXUNUSED(event) )
 {
-   wxPageSetupDialogData* dialogData = new wxPageSetupDialogData;
-   dialogData->SetMarginTopLeft(wxPoint(25,25));
-   dialogData->SetMarginBottomRight(wxPoint(25,25));
-   dialogData->EnableMargins(false);
-   dialogData->EnablePaper(true);
-   dialogData->EnableOrientation(false);
+    wxPageSetupDialogData* dialogData = new wxPageSetupDialogData;
+    dialogData->SetMarginTopLeft(wxPoint(25,25));
+    dialogData->SetMarginBottomRight(wxPoint(25,25));
+    dialogData->EnableMargins(false);
+    dialogData->EnablePaper(true);
+    dialogData->EnableOrientation(false);
 
-   wxPdfPageSetupDialog* dialog = new wxPdfPageSetupDialog(this, dialogData, _T("Minimal PDF Page Setup"));
-   if( dialog->ShowModal() == wxID_OK )
-   {
-     // dialogData now has user choices
-   }
+    wxPdfPageSetupDialog* dialog = new wxPdfPageSetupDialog(this, dialogData, _T("Minimal PDF Page Setup"));
+    if( dialog->ShowModal() == wxID_OK )
+    {
+        // dialogData now has user choices
+    }
 
-   delete dialog;
-   delete dialogData;
+    delete dialog;
+    delete dialogData;
 }
 
 void MyFrame::OnPdfPrintDialogAll(wxCommandEvent&  WXUNUSED(event) )
 {
-   wxPageSetupDialogData* dialogData = new wxPageSetupDialogData;
-   dialogData->SetMarginTopLeft(wxPoint(25,25));
-   dialogData->SetMarginBottomRight(wxPoint(25,25));
-   dialogData->EnableMargins(true);
-   dialogData->EnablePaper(true);
-   dialogData->EnableOrientation(true);
+    wxPageSetupDialogData* dialogData = new wxPageSetupDialogData;
+    dialogData->SetMarginTopLeft(wxPoint(25,25));
+    dialogData->SetMarginBottomRight(wxPoint(25,25));
+    dialogData->EnableMargins(true);
+    dialogData->EnablePaper(true);
+    dialogData->EnableOrientation(true);
 
-   wxPdfPageSetupDialog* dialog = new wxPdfPageSetupDialog(this, dialogData);
-   if( dialog->ShowModal() == wxID_OK )
-   {
-      wxPdfPrintData* printData = new wxPdfPrintData( dialogData );
-      wxPdfPrintDialog* printDialog =  new wxPdfPrintDialog(this, printData );
-      if( printDialog->ShowModal() == wxID_OK )
-      {
-       // printData now has user info
-      }
-      delete printDialog;
-      delete printData;
-   }
-   delete dialog;
-   delete dialogData;
+    wxPdfPageSetupDialog* dialog = new wxPdfPageSetupDialog(this, dialogData);
+    if( dialog->ShowModal() == wxID_OK )
+    {
+        wxPdfPrintData* printData = new wxPdfPrintData( dialogData );
+        wxPdfPrintDialog* printDialog =  new wxPdfPrintDialog(this, printData );
+        if( printDialog->ShowModal() == wxID_OK )
+        {
+            // printData now has user info
+        }
+        delete printDialog;
+        delete printData;
+    }
+    delete dialog;
+    delete dialogData;
 }
 
 void MyFrame::OnPdfPrintDialogMinimal(wxCommandEvent&  WXUNUSED(event) )
@@ -769,122 +769,122 @@ void MyFrame::OnPdfPrintDialogMinimal(wxCommandEvent&  WXUNUSED(event) )
     wxPdfPrintDialog* printDialog =  new wxPdfPrintDialog(this, printData );
     if( printDialog->ShowModal() == wxID_OK )
     {
-      // printData now has user info
+        // printData now has user info
     }
     delete printDialog;
-   delete printData;
+    delete printData;
 }
 
 #if wxUSE_RICHTEXT
 void MyFrame::OnPdfRichTextPrint(wxCommandEvent&  WXUNUSED(event) )
 {
-   wxPageSetupDialogData dialogData = wxPageSetupDialogData();
-   dialogData.SetMarginTopLeft(wxPoint(25,25));
-   dialogData.SetMarginBottomRight(wxPoint(25,25));
-   dialogData.EnableMargins(true);
-   dialogData.EnablePaper(true);
-   dialogData.EnableOrientation(true);
+    wxPageSetupDialogData dialogData = wxPageSetupDialogData();
+    dialogData.SetMarginTopLeft(wxPoint(25,25));
+    dialogData.SetMarginBottomRight(wxPoint(25,25));
+    dialogData.EnableMargins(true);
+    dialogData.EnablePaper(true);
+    dialogData.EnableOrientation(true);
 
-   wxPdfPageSetupDialog* dialog = new wxPdfPageSetupDialog(this, &dialogData);
-   if( dialog->ShowModal() == wxID_OK )
-   {
-      dialogData = dialog->GetPageSetupData();
-      wxPdfPrintData printData = wxPdfPrintData( &dialogData );
+    wxPdfPageSetupDialog* dialog = new wxPdfPageSetupDialog(this, &dialogData);
+    if( dialog->ShowModal() == wxID_OK )
+    {
+        dialogData = dialog->GetPageSetupData();
+        wxPdfPrintData printData = wxPdfPrintData( &dialogData );
 
-      wxPdfPrintDialog *printDialog =  new wxPdfPrintDialog(this, &printData );
-      if( printDialog->ShowModal() == wxID_OK )
-      {
-        printData = printDialog->GetPdfPrintData();
-        // printData now has user info.
+        wxPdfPrintDialog *printDialog =  new wxPdfPrintDialog(this, &printData );
+        if( printDialog->ShowModal() == wxID_OK )
+        {
+            printData = printDialog->GetPdfPrintData();
+            // printData now has user info.
+            // We will use richtextprinting as a convenient storage container for
+            // the copy richtext buffers. If we did not do this, we would need to handle
+            // deletion of the buffers in our code.
+            m_richtextPrinting->SetRichTextBufferPrinting(
+                new wxRichTextBuffer(m_richtext->GetBuffer())
+            );
+
+            wxRichTextPrintout *printPrintout = new wxRichTextPrintout(wxS("Demo PDF Printing"));
+            // richtext printout accepts margins in tenths of mm
+            printPrintout->SetMargins(
+                10 * dialogData.GetMarginTopLeft().y,
+                10 * dialogData.GetMarginBottomRight().y,
+                10 * dialogData.GetMarginTopLeft().x,
+                10 * dialogData.GetMarginBottomRight().x
+            );
+
+            printPrintout->SetRichTextBuffer(  m_richtextPrinting->GetRichTextBufferPrinting() );
+
+            wxPdfPrinter *printer = new wxPdfPrinter( &printData );
+            // don't show a print dialog again - we have already done so
+            printer->Print(this, printPrintout, false);
+            delete printer;
+            delete printPrintout;
+        }
+        delete printDialog;
+    }
+    delete dialog;
+}
+
+void MyFrame::OnPdfRichTextPreview(wxCommandEvent&  WXUNUSED(event) )
+{
+    wxPageSetupDialogData dialogData = wxPageSetupDialogData();
+    dialogData.SetMarginTopLeft(wxPoint(25,25));
+    dialogData.SetMarginBottomRight(wxPoint(25,25));
+    dialogData.EnableMargins(true);
+    dialogData.EnablePaper(true);
+    dialogData.EnableOrientation(true);
+
+    wxPdfPageSetupDialog* dialog = new wxPdfPageSetupDialog(this, &dialogData);
+    if( dialog->ShowModal() == wxID_OK )
+    {
+        dialogData = dialog->GetPageSetupData();
+        wxPdfPrintData printData = wxPdfPrintData( &dialogData );
         // We will use richtextprinting as a convenient storage container for
         // the copy richtext buffers. If we did not do this, we would need to handle
         // deletion of the buffers in our code.
         m_richtextPrinting->SetRichTextBufferPrinting(
             new wxRichTextBuffer(m_richtext->GetBuffer())
-            );
+        );
+
+        m_richtextPrinting->SetRichTextBufferPreview(
+            new wxRichTextBuffer(m_richtext->GetBuffer())
+        );
 
         wxRichTextPrintout *printPrintout = new wxRichTextPrintout(wxS("Demo PDF Printing"));
         // richtext printout accepts margins in tenths of mm
         printPrintout->SetMargins(
-                      10 * dialogData.GetMarginTopLeft().y,
-                      10 * dialogData.GetMarginBottomRight().y,
-                      10 * dialogData.GetMarginTopLeft().x,
-                      10 * dialogData.GetMarginBottomRight().x
-                      );
-
+            10 * dialogData.GetMarginTopLeft().y,
+            10 * dialogData.GetMarginBottomRight().y,
+            10 * dialogData.GetMarginTopLeft().x,
+            10 * dialogData.GetMarginBottomRight().x
+        );
         printPrintout->SetRichTextBuffer(  m_richtextPrinting->GetRichTextBufferPrinting() );
 
-        wxPdfPrinter *printer = new wxPdfPrinter( &printData );
-        // don't show a print dialog again - we have already done so
-        printer->Print(this, printPrintout, false);
-        delete printer;
-        delete printPrintout;
-      }
-      delete printDialog;
-   }
-   delete dialog;
-}
+        wxRichTextPrintout *previewPrintout = new wxRichTextPrintout(wxS("Demo PDF Printing"));
+        // richtext printout accepts margins in tenths of mm
+        previewPrintout->SetMargins(
+            10 * dialogData.GetMarginTopLeft().y,
+            10 * dialogData.GetMarginBottomRight().y,
+            10 * dialogData.GetMarginTopLeft().x,
+            10 * dialogData.GetMarginBottomRight().x
+        );
+        previewPrintout->SetRichTextBuffer(  m_richtextPrinting->GetRichTextBufferPreview() );
 
-void MyFrame::OnPdfRichTextPreview(wxCommandEvent&  WXUNUSED(event) )
-{
-   wxPageSetupDialogData dialogData = wxPageSetupDialogData();
-   dialogData.SetMarginTopLeft(wxPoint(25,25));
-   dialogData.SetMarginBottomRight(wxPoint(25,25));
-   dialogData.EnableMargins(true);
-   dialogData.EnablePaper(true);
-   dialogData.EnableOrientation(true);
-
-   wxPdfPageSetupDialog* dialog = new wxPdfPageSetupDialog(this, &dialogData);
-   if( dialog->ShowModal() == wxID_OK )
-   {
-      dialogData = dialog->GetPageSetupData();
-      wxPdfPrintData printData = wxPdfPrintData( &dialogData );
-      // We will use richtextprinting as a convenient storage container for
-      // the copy richtext buffers. If we did not do this, we would need to handle
-      // deletion of the buffers in our code.
-      m_richtextPrinting->SetRichTextBufferPrinting(
-        new wxRichTextBuffer(m_richtext->GetBuffer())
-      );
-
-      m_richtextPrinting->SetRichTextBufferPreview(
-        new wxRichTextBuffer(m_richtext->GetBuffer())
-      );
-
-      wxRichTextPrintout *printPrintout = new wxRichTextPrintout(wxS("Demo PDF Printing"));
-      // richtext printout accepts margins in tenths of mm
-      printPrintout->SetMargins(
-                      10 * dialogData.GetMarginTopLeft().y,
-                      10 * dialogData.GetMarginBottomRight().y,
-                      10 * dialogData.GetMarginTopLeft().x,
-                      10 * dialogData.GetMarginBottomRight().x
-                      );
-      printPrintout->SetRichTextBuffer(  m_richtextPrinting->GetRichTextBufferPrinting() );
-
-      wxRichTextPrintout *previewPrintout = new wxRichTextPrintout(wxS("Demo PDF Printing"));
-      // richtext printout accepts margins in tenths of mm
-      previewPrintout->SetMargins(
-                      10 * dialogData.GetMarginTopLeft().y,
-                      10 * dialogData.GetMarginBottomRight().y,
-                      10 * dialogData.GetMarginTopLeft().x,
-                      10 * dialogData.GetMarginBottomRight().x
-                      );
-      previewPrintout->SetRichTextBuffer(  m_richtextPrinting->GetRichTextBufferPreview() );
-
-      wxPdfPrintPreview *preview = new wxPdfPrintPreview(previewPrintout, printPrintout, &printData);
-      if (preview->IsOk())
-      {
-        wxPreviewFrame *frame = new wxPreviewFrame(preview, this,
-                _("PDF Document RichText Preview"), wxDefaultPosition, wxSize(600,600));
-        frame->Centre(wxBOTH);
-        frame->Initialize();
-        frame->Show(true);
-      }
-      else
-      {
-        delete preview;
-      }
-   }
-   delete dialog;
+        wxPdfPrintPreview *preview = new wxPdfPrintPreview(previewPrintout, printPrintout, &printData);
+        if (preview->IsOk())
+        {
+            wxPreviewFrame *frame = new wxPreviewFrame(preview, this,
+                    _("PDF Document RichText Preview"), wxDefaultPosition, wxSize(600,600));
+            frame->Centre(wxBOTH);
+            frame->Initialize();
+            frame->Show(true);
+        }
+        else
+        {
+            delete preview;
+        }
+    }
+    delete dialog;
 }
 
 void MyFrame::WriteRichTextBuffer()
@@ -1118,60 +1118,60 @@ void MyFrame::WriteRichTextBuffer()
     if (1)
     {
 
-      r.Newline();
+        r.Newline();
 
-      wxRichTextAttr attr;
-      attr.GetTextBoxAttr().GetMargins().GetLeft().SetValue(20, wxTEXT_ATTR_UNITS_PIXELS);
-      attr.GetTextBoxAttr().GetMargins().GetTop().SetValue(20, wxTEXT_ATTR_UNITS_PIXELS);
-      attr.GetTextBoxAttr().GetMargins().GetRight().SetValue(20, wxTEXT_ATTR_UNITS_PIXELS);
-      attr.GetTextBoxAttr().GetMargins().GetBottom().SetValue(20, wxTEXT_ATTR_UNITS_PIXELS);
+        wxRichTextAttr attr;
+        attr.GetTextBoxAttr().GetMargins().GetLeft().SetValue(20, wxTEXT_ATTR_UNITS_PIXELS);
+        attr.GetTextBoxAttr().GetMargins().GetTop().SetValue(20, wxTEXT_ATTR_UNITS_PIXELS);
+        attr.GetTextBoxAttr().GetMargins().GetRight().SetValue(20, wxTEXT_ATTR_UNITS_PIXELS);
+        attr.GetTextBoxAttr().GetMargins().GetBottom().SetValue(20, wxTEXT_ATTR_UNITS_PIXELS);
 
-      attr.GetTextBoxAttr().GetBorder().SetColour(*wxBLACK);
-      attr.GetTextBoxAttr().GetBorder().SetWidth(1, wxTEXT_ATTR_UNITS_PIXELS);
-      attr.GetTextBoxAttr().GetBorder().SetStyle(wxTEXT_BOX_ATTR_BORDER_SOLID);
+        attr.GetTextBoxAttr().GetBorder().SetColour(*wxBLACK);
+        attr.GetTextBoxAttr().GetBorder().SetWidth(1, wxTEXT_ATTR_UNITS_PIXELS);
+        attr.GetTextBoxAttr().GetBorder().SetStyle(wxTEXT_BOX_ATTR_BORDER_SOLID);
 
-      wxRichTextBox* textBox = r.WriteTextBox(attr);
-      r.SetFocusObject(textBox);
+        wxRichTextBox* textBox = r.WriteTextBox(attr);
+        r.SetFocusObject(textBox);
 
-      r.WriteText(wxS("This is a text box. Just testing! Once more unto the breach, dear friends, once more..."));
+        r.WriteText(wxS("This is a text box. Just testing! Once more unto the breach, dear friends, once more..."));
 
-      r.SetFocusObject(NULL); // Set the focus back to the main buffer
-      r.SetInsertionPointEnd();
+        r.SetFocusObject(NULL); // Set the focus back to the main buffer
+        r.SetInsertionPointEnd();
     }
     if(1)
     {
-      // Add a table
+        // Add a table
 
-      r.Newline();
+        r.Newline();
 
-      wxRichTextAttr attr;
-      attr.GetTextBoxAttr().GetMargins().GetLeft().SetValue(5, wxTEXT_ATTR_UNITS_PIXELS);
-      attr.GetTextBoxAttr().GetMargins().GetTop().SetValue(5, wxTEXT_ATTR_UNITS_PIXELS);
-      attr.GetTextBoxAttr().GetMargins().GetRight().SetValue(5, wxTEXT_ATTR_UNITS_PIXELS);
-      attr.GetTextBoxAttr().GetMargins().GetBottom().SetValue(5, wxTEXT_ATTR_UNITS_PIXELS);
-      attr.GetTextBoxAttr().GetPadding() = attr.GetTextBoxAttr().GetMargins();
+        wxRichTextAttr attr;
+        attr.GetTextBoxAttr().GetMargins().GetLeft().SetValue(5, wxTEXT_ATTR_UNITS_PIXELS);
+        attr.GetTextBoxAttr().GetMargins().GetTop().SetValue(5, wxTEXT_ATTR_UNITS_PIXELS);
+        attr.GetTextBoxAttr().GetMargins().GetRight().SetValue(5, wxTEXT_ATTR_UNITS_PIXELS);
+        attr.GetTextBoxAttr().GetMargins().GetBottom().SetValue(5, wxTEXT_ATTR_UNITS_PIXELS);
+        attr.GetTextBoxAttr().GetPadding() = attr.GetTextBoxAttr().GetMargins();
 
-      attr.GetTextBoxAttr().GetBorder().SetColour(*wxBLACK);
-      attr.GetTextBoxAttr().GetBorder().SetWidth(1, wxTEXT_ATTR_UNITS_PIXELS);
-      attr.GetTextBoxAttr().GetBorder().SetStyle(wxTEXT_BOX_ATTR_BORDER_SOLID);
+        attr.GetTextBoxAttr().GetBorder().SetColour(*wxBLACK);
+        attr.GetTextBoxAttr().GetBorder().SetWidth(1, wxTEXT_ATTR_UNITS_PIXELS);
+        attr.GetTextBoxAttr().GetBorder().SetStyle(wxTEXT_BOX_ATTR_BORDER_SOLID);
 
-      wxRichTextAttr cellAttr = attr;
-      cellAttr.GetTextBoxAttr().GetWidth().SetValue(200, wxTEXT_ATTR_UNITS_PIXELS);
-      cellAttr.GetTextBoxAttr().GetHeight().SetValue(150, wxTEXT_ATTR_UNITS_PIXELS);
+        wxRichTextAttr cellAttr = attr;
+        cellAttr.GetTextBoxAttr().GetWidth().SetValue(200, wxTEXT_ATTR_UNITS_PIXELS);
+        cellAttr.GetTextBoxAttr().GetHeight().SetValue(150, wxTEXT_ATTR_UNITS_PIXELS);
 
-      wxRichTextTable* table = r.WriteTable(3, 2, attr, cellAttr);
-      int i, j;
-      for (j = 0; j < table->GetRowCount(); j++)
-      {
-          for (i = 0; i < table->GetColumnCount(); i++)
-          {
-              wxString msg = wxString::Format(wxS("This is cell %d, %d"), (j+1), (i+1));
-              r.SetFocusObject(table->GetCell(j, i));
-              r.WriteText(msg);
-          }
-      }
-      r.SetFocusObject(NULL); // Set the focus back to the main buffer
-      r.SetInsertionPointEnd();
+        wxRichTextTable* table = r.WriteTable(3, 2, attr, cellAttr);
+        int i, j;
+        for (j = 0; j < table->GetRowCount(); j++)
+        {
+            for (i = 0; i < table->GetColumnCount(); i++)
+            {
+                wxString msg = wxString::Format(wxS("This is cell %d, %d"), (j+1), (i+1));
+                r.SetFocusObject(table->GetCell(j, i));
+                r.WriteText(msg);
+            }
+        }
+        r.SetFocusObject(NULL); // Set the focus back to the main buffer
+        r.SetInsertionPointEnd();
     }
 
     r.Thaw();
@@ -1184,99 +1184,99 @@ void MyFrame::WriteRichTextBuffer()
 #if wxUSE_HTML
 void MyFrame::OnPdfHtmlPrint(wxCommandEvent&  WXUNUSED(event) )
 {
-  wxPageSetupDialogData dialogData = wxPageSetupDialogData();
-  dialogData.SetMarginTopLeft(wxPoint(25,25));
-  dialogData.SetMarginBottomRight(wxPoint(25,25));
-  dialogData.EnableMargins(false);
-  dialogData.EnablePaper(true);
-  dialogData.EnableOrientation(true);
+    wxPageSetupDialogData dialogData = wxPageSetupDialogData();
+    dialogData.SetMarginTopLeft(wxPoint(25,25));
+    dialogData.SetMarginBottomRight(wxPoint(25,25));
+    dialogData.EnableMargins(false);
+    dialogData.EnablePaper(true);
+    dialogData.EnableOrientation(true);
 
-  wxPdfPageSetupDialog* dialog = new wxPdfPageSetupDialog(this, &dialogData);
-  if( dialog->ShowModal() == wxID_OK )
-  {
-      dialogData = dialog->GetPageSetupData();
-      wxPdfPrintData printData = wxPdfPrintData( &dialogData );
+    wxPdfPageSetupDialog* dialog = new wxPdfPageSetupDialog(this, &dialogData);
+    if( dialog->ShowModal() == wxID_OK )
+    {
+        dialogData = dialog->GetPageSetupData();
+        wxPdfPrintData printData = wxPdfPrintData( &dialogData );
 
-      // restrict user choices in printdialog
-      printData.SetPrintDialogFlags( wxPDF_PRINTDIALOG_OPENDOC|wxPDF_PRINTDIALOG_FILEPATH );
-      // set launchviewer default to true
-      printData.SetLaunchDocumentViewer(true);
+        // restrict user choices in printdialog
+        printData.SetPrintDialogFlags( wxPDF_PRINTDIALOG_OPENDOC|wxPDF_PRINTDIALOG_FILEPATH );
+        // set launchviewer default to true
+        printData.SetLaunchDocumentViewer(true);
 
-      wxPdfPrintDialog *printDialog =  new wxPdfPrintDialog(this, &printData );
-      if( printDialog->ShowModal() == wxID_OK )
-      {
-        printData = printDialog->GetPdfPrintData();
+        wxPdfPrintDialog *printDialog =  new wxPdfPrintDialog(this, &printData );
+        if( printDialog->ShowModal() == wxID_OK )
+        {
+            printData = printDialog->GetPdfPrintData();
 
-        wxHtmlPrintout *printPrintout = new wxHtmlPrintout(wxS("Demo PDF Printing"));
-        printPrintout->SetMargins(
-                        dialogData.GetMarginTopLeft().y,
-                        dialogData.GetMarginBottomRight().y,
-                        dialogData.GetMarginTopLeft().x,
-                        dialogData.GetMarginBottomRight().x
-                        );
-        printPrintout->SetHtmlFile(wxS("test.html"));
-        printPrintout->SetStandardFonts(10, wxS("Arial"), wxS("Courier New"));
-        wxPdfPrinter *printer = new wxPdfPrinter( &printData );
-        // don't show a print dialog again - we have already done so
-        printer->Print(this, printPrintout, false);
-        delete printer;
-        delete printPrintout;
-      }
-      delete printDialog;
-  }
-  delete dialog;
+            wxHtmlPrintout *printPrintout = new wxHtmlPrintout(wxS("Demo PDF Printing"));
+            printPrintout->SetMargins(
+                dialogData.GetMarginTopLeft().y,
+                dialogData.GetMarginBottomRight().y,
+                dialogData.GetMarginTopLeft().x,
+                dialogData.GetMarginBottomRight().x
+            );
+            printPrintout->SetHtmlFile(wxS("test.html"));
+            printPrintout->SetStandardFonts(10, wxS("Arial"), wxS("Courier New"));
+            wxPdfPrinter *printer = new wxPdfPrinter( &printData );
+            // don't show a print dialog again - we have already done so
+            printer->Print(this, printPrintout, false);
+            delete printer;
+            delete printPrintout;
+        }
+        delete printDialog;
+    }
+    delete dialog;
 }
 
 void MyFrame::OnPdfHtmlPreview(wxCommandEvent&  WXUNUSED(event) )
 {
-  wxPageSetupDialogData dialogData = wxPageSetupDialogData();
-  dialogData.SetMarginTopLeft(wxPoint(25,25));
-  dialogData.SetMarginBottomRight(wxPoint(25,25));
-  dialogData.EnableMargins(true);
-  dialogData.EnablePaper(true);
-  dialogData.EnableOrientation(true);
+    wxPageSetupDialogData dialogData = wxPageSetupDialogData();
+    dialogData.SetMarginTopLeft(wxPoint(25,25));
+    dialogData.SetMarginBottomRight(wxPoint(25,25));
+    dialogData.EnableMargins(true);
+    dialogData.EnablePaper(true);
+    dialogData.EnableOrientation(true);
 
-  wxPdfPageSetupDialog* dialog = new wxPdfPageSetupDialog(this, &dialogData);
-  if( dialog->ShowModal() == wxID_OK )
-  {
-      dialogData = dialog->GetPageSetupData();
-      wxPdfPrintData printData = wxPdfPrintData( &dialogData );
+    wxPdfPageSetupDialog* dialog = new wxPdfPageSetupDialog(this, &dialogData);
+    if( dialog->ShowModal() == wxID_OK )
+    {
+        dialogData = dialog->GetPageSetupData();
+        wxPdfPrintData printData = wxPdfPrintData( &dialogData );
 
-      wxHtmlPrintout *printPrintout = new wxHtmlPrintout(wxS("Demo PDF Printing"));
-      printPrintout->SetMargins(
-                      dialogData.GetMarginTopLeft().y,
-                      dialogData.GetMarginBottomRight().y,
-                      dialogData.GetMarginTopLeft().x,
-                      dialogData.GetMarginBottomRight().x
-                      );
-      printPrintout->SetHtmlFile(wxS("test.html"));
-      printPrintout->SetStandardFonts(10, wxS("Arial"), wxS("Courier New"));
+        wxHtmlPrintout *printPrintout = new wxHtmlPrintout(wxS("Demo PDF Printing"));
+        printPrintout->SetMargins(
+            dialogData.GetMarginTopLeft().y,
+            dialogData.GetMarginBottomRight().y,
+            dialogData.GetMarginTopLeft().x,
+            dialogData.GetMarginBottomRight().x
+        );
+        printPrintout->SetHtmlFile(wxS("test.html"));
+        printPrintout->SetStandardFonts(10, wxS("Arial"), wxS("Courier New"));
 
-      wxHtmlPrintout *previewPrintout = new wxHtmlPrintout(wxS("Demo PDF Printing"));
-      previewPrintout->SetMargins(
-                      dialogData.GetMarginTopLeft().y,
-                      dialogData.GetMarginBottomRight().y,
-                      dialogData.GetMarginTopLeft().x,
-                      dialogData.GetMarginBottomRight().x
-                      );
-      previewPrintout->SetHtmlFile(wxS("test.html"));
-      previewPrintout->SetStandardFonts(10, wxS("Arial"), wxS("Courier New"));
+        wxHtmlPrintout *previewPrintout = new wxHtmlPrintout(wxS("Demo PDF Printing"));
+        previewPrintout->SetMargins(
+            dialogData.GetMarginTopLeft().y,
+            dialogData.GetMarginBottomRight().y,
+            dialogData.GetMarginTopLeft().x,
+            dialogData.GetMarginBottomRight().x
+        );
+        previewPrintout->SetHtmlFile(wxS("test.html"));
+        previewPrintout->SetStandardFonts(10, wxS("Arial"), wxS("Courier New"));
 
-      wxPdfPrintPreview *preview = new wxPdfPrintPreview(previewPrintout, printPrintout, &printData);
-      if (preview->IsOk())
-      {
-        wxPreviewFrame *frame = new wxPreviewFrame(preview, this,
-                _("PDF Document Html Preview"), wxDefaultPosition, wxSize(600,600));
-        frame->Centre(wxBOTH);
-        frame->Initialize();
-        frame->Show(true);
-      }
-      else
-      {
-        delete preview;
-      }
-  }
-  delete dialog;
+        wxPdfPrintPreview *preview = new wxPdfPrintPreview(previewPrintout, printPrintout, &printData);
+        if (preview->IsOk())
+        {
+            wxPreviewFrame *frame = new wxPreviewFrame(preview, this,
+                    _("PDF Document Html Preview"), wxDefaultPosition, wxSize(600,600));
+            frame->Centre(wxBOTH);
+            frame->Initialize();
+            frame->Show(true);
+        }
+        else
+        {
+            delete preview;
+        }
+    }
+    delete dialog;
 }
 #endif
 
@@ -1286,7 +1286,7 @@ void MyFrame::OnSize(wxSizeEvent& event )
 }
 
 BEGIN_EVENT_TABLE(MyCanvas, wxScrolledWindow)
-EVT_MOUSE_EVENTS(MyCanvas::OnEvent)
+    EVT_MOUSE_EVENTS(MyCanvas::OnEvent)
 END_EVENT_TABLE()
 
 MyCanvas::MyCanvas(wxFrame *frame, const wxPoint& pos, const wxSize& size, long style):
@@ -1475,7 +1475,8 @@ void MyPrintout::DrawPageTwo()
     dc->SetBackgroundMode(wxTRANSPARENT);
     dc->SetBrush(*wxTRANSPARENT_BRUSH);
 
-    { // GetTextExtent demo:
+    {
+        // GetTextExtent demo:
         wxString words[7] = {_T("This "), _T("is "), _T("GetTextExtent "), _T("testing "), _T("string. "), _T("Enjoy "), _T("it!")};
         wxCoord w, h;
         wxCoord x = 200, y= 250;
@@ -1517,9 +1518,9 @@ void MyPrintout::DrawPageTwo()
 
     dc->SetPen(* wxRED_PEN);
     dc->DrawLine( (long)leftMarginLogical, (long)topMarginLogical,
-        (long)rightMarginLogical, (long)topMarginLogical);
+                  (long)rightMarginLogical, (long)topMarginLogical);
     dc->DrawLine( (long)leftMarginLogical, (long)bottomMarginLogical,
-        (long)rightMarginLogical,  (long)bottomMarginLogical);
+                  (long)rightMarginLogical,  (long)bottomMarginLogical);
 
     WritePageHeader(this, dc, _T("A header"), logUnitsFactor);
 }
@@ -1527,14 +1528,14 @@ void MyPrintout::DrawPageTwo()
 // Writes a header on a page. Margin units are in millimetres.
 bool WritePageHeader(wxPrintout* printout, wxDC* dc, const wxStringCharType* text, float mmToLogical)
 {
-/*
-static wxFont *headerFont = (wxFont *) NULL;
-if (!headerFont)
-{
-headerFont = wxTheFontList->FindOrCreateFont(16, wxSWISS, wxNORMAL, wxBOLD);
-}
-dc->SetFont(headerFont);
-    */
+    /*
+    static wxFont *headerFont = (wxFont *) NULL;
+    if (!headerFont)
+    {
+    headerFont = wxTheFontList->FindOrCreateFont(16, wxSWISS, wxNORMAL, wxBOLD);
+    }
+    dc->SetFont(headerFont);
+        */
 
     int pageWidthMM, pageHeightMM;
 
@@ -1556,7 +1557,7 @@ dc->SetFont(headerFont);
 
     dc->SetPen(* wxBLACK_PEN);
     dc->DrawLine( (long)leftMarginLogical, (long)(topMarginLogical+yExtent),
-        (long)rightMarginLogical, (long)topMarginLogical+yExtent );
+                  (long)rightMarginLogical, (long)topMarginLogical+yExtent );
 
     return true;
 }

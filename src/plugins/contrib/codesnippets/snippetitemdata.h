@@ -26,78 +26,120 @@
 #include <wx/string.h>
 
 //-#if defined(BUILDING_PLUGIN)
-    #include "macrosmanager.h"
+#include "macrosmanager.h"
 //-#endif
 
 // ----------------------------------------------------------------------------
 class SnippetTreeItemData : public wxTreeItemData
 // ----------------------------------------------------------------------------
 {
-	public:
-		enum SnippetItemType
-		{
-			TYPE_ROOT,		// The root node
-			TYPE_CATEGORY,	// All category nodes
-			TYPE_SNIPPET	// The actual snippet node
-		};
-        #define SnippetItemID long
+public:
+    enum SnippetItemType
+    {
+        TYPE_ROOT,		// The root node
+        TYPE_CATEGORY,	// All category nodes
+        TYPE_SNIPPET	// The actual snippet node
+    };
+#define SnippetItemID long
 
-		SnippetTreeItemData(SnippetItemType type, long ID = 0);
-		SnippetTreeItemData(SnippetItemType type, wxString snippet, long ID = 0);
-		~SnippetTreeItemData();
+    SnippetTreeItemData(SnippetItemType type, long ID = 0);
+    SnippetTreeItemData(SnippetItemType type, wxString snippet, long ID = 0);
+    ~SnippetTreeItemData();
 
-		SnippetItemType GetType() const { return m_Type; }
-		void            SetType(SnippetItemType type){ m_Type = type;}
-		SnippetItemID   GetID()   const { return m_ID; }
-		wxString        GetSnippetIDStr() const { return wxString::Format(_T("%ld"),m_ID); }
-		void            SetID(SnippetItemID ID){ m_ID = ID;}
-		wxString        GetSnippetString() const { return m_Snippet; }
-		void            SetSnippetString(wxString snippet){ m_Snippet = snippet;}
+    SnippetItemType GetType() const
+    {
+        return m_Type;
+    }
+    void            SetType(SnippetItemType type)
+    {
+        m_Type = type;
+    }
+    SnippetItemID   GetID()   const
+    {
+        return m_ID;
+    }
+    wxString        GetSnippetIDStr() const
+    {
+        return wxString::Format(_T("%ld"),m_ID);
+    }
+    void            SetID(SnippetItemID ID)
+    {
+        m_ID = ID;
+    }
+    wxString        GetSnippetString() const
+    {
+        return m_Snippet;
+    }
+    void            SetSnippetString(wxString snippet)
+    {
+        m_Snippet = snippet;
+    }
 
-        bool IsCategory(){ return (GetType() == SnippetTreeItemData::TYPE_CATEGORY); }
-        bool IsSnippet(){ return (GetType() == SnippetTreeItemData::TYPE_SNIPPET); }
-        bool IsSnippetFile()
-            {	// verify snippet is file type snippet
-                if (not IsSnippet() ) return false ;
-                if ( GetSnippetFileLink() not_eq wxEmptyString )
-                    return true;
-                return false;
-            }
-        wxString GetSnippetFileLink()
-            {	// if FileLink, return the filename
-                if (not IsSnippet() ) return wxEmptyString ;
-                wxString FileName = GetSnippetString().BeforeFirst('\r');
-                         FileName = FileName.BeforeFirst('\n');
-                //-#if defined(BUILDING_PLUGIN)
-                static const wxString delim(_T("$%["));
-                if( FileName.find_first_of(delim) != wxString::npos )
-                    Manager::Get()->GetMacrosManager()->ReplaceMacros(FileName);
-                //-#endif
-                if (FileName.Length() > 128)
-                    return wxEmptyString ;
-                if ( (FileName.IsEmpty())
-                    || (not ::wxFileExists( FileName)) )
-                    return wxEmptyString;
-                return FileName;
-            }
+    bool IsCategory()
+    {
+        return (GetType() == SnippetTreeItemData::TYPE_CATEGORY);
+    }
+    bool IsSnippet()
+    {
+        return (GetType() == SnippetTreeItemData::TYPE_SNIPPET);
+    }
+    bool IsSnippetFile()
+    {
+        // verify snippet is file type snippet
+        if (not IsSnippet() ) return false ;
+        if ( GetSnippetFileLink() not_eq wxEmptyString )
+            return true;
+        return false;
+    }
+    wxString GetSnippetFileLink()
+    {
+        // if FileLink, return the filename
+        if (not IsSnippet() ) return wxEmptyString ;
+        wxString FileName = GetSnippetString().BeforeFirst('\r');
+        FileName = FileName.BeforeFirst('\n');
+        //-#if defined(BUILDING_PLUGIN)
+        static const wxString delim(_T("$%["));
+        if( FileName.find_first_of(delim) != wxString::npos )
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(FileName);
+        //-#endif
+        if (FileName.Length() > 128)
+            return wxEmptyString ;
+        if ( (FileName.IsEmpty())
+                || (not ::wxFileExists( FileName)) )
+            return wxEmptyString;
+        return FileName;
+    }
 
-        long        GetNewID(){return ++m_HighestSnippetID;}
-        static void SetHighestSnippetID( long value){ m_HighestSnippetID = value;}
-        long        UpdateHighestSnippetID(long ID)
-                    { m_HighestSnippetID = (m_HighestSnippetID<ID) ? ID : m_HighestSnippetID;
-                      return m_HighestSnippetID;
-                    }
-        static unsigned GetSnippetsItemsChangedCount(){return m_itemsChangedCount;}
-        static void     SetSnippetsItemsChangedCount(unsigned count){m_itemsChangedCount = count;}
+    long        GetNewID()
+    {
+        return ++m_HighestSnippetID;
+    }
+    static void SetHighestSnippetID( long value)
+    {
+        m_HighestSnippetID = value;
+    }
+    long        UpdateHighestSnippetID(long ID)
+    {
+        m_HighestSnippetID = (m_HighestSnippetID<ID) ? ID : m_HighestSnippetID;
+        return m_HighestSnippetID;
+    }
+    static unsigned GetSnippetsItemsChangedCount()
+    {
+        return m_itemsChangedCount;
+    }
+    static void     SetSnippetsItemsChangedCount(unsigned count)
+    {
+        m_itemsChangedCount = count;
+    }
 
-	private:
-        void     InitializeItem(SnippetItemID oldID);
+private:
+    void     InitializeItem(SnippetItemID oldID);
 
-		SnippetItemType m_Type;
-		wxString        m_Snippet;
-		SnippetItemID   m_ID;
-		static unsigned m_itemsChangedCount;
-		static long     m_HighestSnippetID;
+    SnippetItemType m_Type;
+    wxString        m_Snippet;
+    SnippetItemID   m_ID;
+    static unsigned m_itemsChangedCount;
+    static long     m_HighestSnippetID;
 };
 
 #endif // SNIPPETITEMDATA_H

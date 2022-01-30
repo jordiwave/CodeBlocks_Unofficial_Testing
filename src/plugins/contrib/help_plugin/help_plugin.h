@@ -14,7 +14,7 @@
 
 class HelpPlugin : public cbPlugin
 {
-  public:
+public:
     HelpPlugin();
     ~HelpPlugin();
     virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
@@ -27,7 +27,7 @@ class HelpPlugin : public cbPlugin
     void Reload(); // called after the settings have been applied
     void OnUpdateUI(wxUpdateUIEvent& event); // called when showing View menu
 
-  protected:
+protected:
     void OnViewMANViewer(wxCommandEvent &event);
     void ShowMANViewer(bool show = true);
     void OnFindItem(wxCommandEvent &event);
@@ -40,7 +40,7 @@ class HelpPlugin : public cbPlugin
     void LaunchHelp(const wxString &helpfile, bool isExecutable, bool openEmbeddedViewer, HelpCommon::StringCase keyCase = HelpCommon::Preserve, const wxString &defkeyword = wxEmptyString, const wxString &keyword = wxEmptyString);
     void SetManPageDirs(MANFrame *manFrame);
 
-  private:
+private:
     wxMenuBar *m_pMenuBar;
     HelpCommon::HelpFilesVector m_Vector;
     int m_LastId;

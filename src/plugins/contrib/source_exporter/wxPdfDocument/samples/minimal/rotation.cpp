@@ -31,25 +31,25 @@
 int
 rotation(bool testMode)
 {
-  int rc = 0;
-  if (wxFileName::IsFileReadable(wxS("circle.png")))
-  {
-    wxPdfDocument pdf;
-    if (testMode)
+    int rc = 0;
+    if (wxFileName::IsFileReadable(wxS("circle.png")))
     {
-      pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
-      pdf.SetCompression(false);
+        wxPdfDocument pdf;
+        if (testMode)
+        {
+            pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
+            pdf.SetCompression(false);
+        }
+        pdf.AddPage();
+        pdf.SetFont(wxS("Helvetica"),wxS(""),20);
+        pdf.RotatedImage(wxS("circle.png"),85,60,40,16,45);
+        pdf.RotatedText(100,60,wxS("Hello!"),45);
+        pdf.SaveAsFile(wxS("rotation.pdf"));
     }
-    pdf.AddPage();
-    pdf.SetFont(wxS("Helvetica"),wxS(""),20);
-    pdf.RotatedImage(wxS("circle.png"),85,60,40,16,45);
-    pdf.RotatedText(100,60,wxS("Hello!"),45);
-    pdf.SaveAsFile(wxS("rotation.pdf"));
-  }
-  else
-  {
-    rc = 1;
-  }
-  return rc;
+    else
+    {
+        rc = 1;
+    }
+    return rc;
 }
 

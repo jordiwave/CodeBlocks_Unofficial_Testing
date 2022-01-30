@@ -10,31 +10,31 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/checkbox.h>
-    #include <wx/choice.h>
-    #include <wx/colordlg.h>
-    #include <wx/imaglist.h>
-    #include <wx/listbox.h>
-    #include <wx/listctrl.h>
-    #include <wx/menu.h>
-    #include <wx/radiobox.h>
-    #include <wx/regex.h>
-    #include <wx/settings.h>
-    #include <wx/slider.h>
-    #include <wx/spinctrl.h>
-    #include <wx/stattext.h>
-    #include <wx/textdlg.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/choice.h>
+#include <wx/colordlg.h>
+#include <wx/imaglist.h>
+#include <wx/listbox.h>
+#include <wx/listctrl.h>
+#include <wx/menu.h>
+#include <wx/radiobox.h>
+#include <wx/regex.h>
+#include <wx/settings.h>
+#include <wx/slider.h>
+#include <wx/spinctrl.h>
+#include <wx/stattext.h>
+#include <wx/textdlg.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "manager.h"
-    #include "cbauibook.h"
-    #include "cbeditor.h"
-    #include "cbplugin.h" // cgEditor
-    #include "configmanager.h"
-    #include "editormanager.h"
-    #include "globals.h"
-    #include "pluginmanager.h"
+#include "manager.h"
+#include "cbauibook.h"
+#include "cbeditor.h"
+#include "cbplugin.h" // cgEditor
+#include "configmanager.h"
+#include "editormanager.h"
+#include "globals.h"
+#include "pluginmanager.h"
 #endif
 #include "cbstyledtextctrl.h"
 #include "cbcolourmanager.h"
@@ -103,12 +103,12 @@ END_EVENT_TABLE()
 
 EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     : m_TextColourControl(nullptr),
-    m_Theme(nullptr),
-    m_Lang(HL_NONE),
-    m_DefCodeFileType(0),
-    m_ThemeModified(false),
-    m_EnableChangebar(false),
-    m_pImageList(nullptr)
+      m_Theme(nullptr),
+      m_Lang(HL_NONE),
+      m_DefCodeFileType(0),
+      m_ThemeModified(false),
+      m_EnableChangebar(false),
+      m_pImageList(nullptr)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgConfigureEditor"),_T("wxScrollingDialog"));
     XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
@@ -142,12 +142,12 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "chkWordWrap",                 wxCheckBox)->SetValue(cfg->ReadBool(_T("/word_wrap"),                  false));
     XRCCTRL(*this, "chkWordWrapStyleHomeEnd",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/word_wrap_style_home_end"),   true));
     XRCCTRL(*this, "chkPosixRegex",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_posix_style_regexes"),    false));
-    #ifdef wxHAS_REGEX_ADVANCED
+#ifdef wxHAS_REGEX_ADVANCED
     XRCCTRL(*this, "chkAdvancedRegex",            wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_advanced_regexes"),       false));
-    #else
+#else
     XRCCTRL(*this, "chkAdvancedRegex",            wxCheckBox)->SetValue(false);
     XRCCTRL(*this, "chkAdvancedRegex",            wxCheckBox)->Enable(false);
-    #endif
+#endif
     XRCCTRL(*this, "chkShowLineNumbers",          wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_line_numbers"),          true));
     XRCCTRL(*this, "chkHighlightCaretLine",       wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_caret_line"),       false));
     XRCCTRL(*this, "chkSimplifiedHome",           wxCheckBox)->SetValue(cfg->ReadBool(_T("/simplified_home"),            false));
@@ -328,7 +328,7 @@ void EditorConfigurationDlg::AddPluginPanels()
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     // get all configuration panels which are about the editor.
     Manager::Get()->GetPluginManager()->GetConfigurationPanels(cgEditor, lb, m_PluginPanels,
-                                                               nullptr);
+            nullptr);
 
     for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
     {
@@ -498,7 +498,7 @@ void EditorConfigurationDlg::ReadColours()
     if (m_Theme)
     {
         wxListBox* colours = XRCCTRL(*this, "lstComponents", wxListBox);
-/* TODO (mandrav#1#): FIXME!!! */
+        /* TODO (mandrav#1#): FIXME!!! */
         OptionColour* opt = m_Theme->GetOptionByName(m_Lang, colours->GetStringSelection());
         UpdateColourControls(opt);
     }
@@ -551,7 +551,7 @@ void EditorConfigurationDlg::WriteColours()
     if (m_Theme)
     {
         wxListBox* colours = XRCCTRL(*this, "lstComponents", wxListBox);
-/* TODO (mandrav#1#): FIXME!!! */
+        /* TODO (mandrav#1#): FIXME!!! */
         OptionColour* opt = m_Theme->GetOptionByName(m_Lang, colours->GetStringSelection());
         if (opt)
         {
@@ -641,14 +641,17 @@ bool EditorConfigurationDlg::AskToSaveTheme()
         int ret = cbMessageBox(msg, _("Save"), wxYES_NO | wxCANCEL, this);
         switch (ret)
         {
-            case wxID_YES: m_Theme->Save(); break;
-            case wxID_CANCEL:
-            {
-                int idx = cmbThemes->FindString(m_Theme->GetName());
-                cmbThemes->SetSelection(idx);
-                return false;
-            }
-            default: break;
+        case wxID_YES:
+            m_Theme->Save();
+            break;
+        case wxID_CANCEL:
+        {
+            int idx = cmbThemes->FindString(m_Theme->GetName());
+            cmbThemes->SetSelection(idx);
+            return false;
+        }
+        default:
+            break;
         }
     }
     return true;
@@ -814,7 +817,7 @@ void EditorConfigurationDlg::OnEditFilemasks(cb_unused wxCommandEvent& event)
         wxString masks = cbGetTextFromUser(_("Edit filemasks (use commas to separate them - case insensitive):"),
                                            m_Theme->GetLanguageName(m_Lang),
                                            GetStringFromArray(m_Theme->GetFileMasks(m_Lang),
-                                                              _T(",")),
+                                                   _T(",")),
                                            this);
         if (!masks.IsEmpty())
             m_Theme->SetFileMasks(m_Lang, masks);
@@ -827,7 +830,7 @@ void EditorConfigurationDlg::OnColoursReset(cb_unused wxCommandEvent& event)
     {
         wxString tmp;
         tmp.Printf(_("Are you sure you want to reset all settings to defaults for \"%s\"?"),
-                    m_Theme->GetLanguageName(m_Lang).c_str());
+                   m_Theme->GetLanguageName(m_Lang).c_str());
         if (cbMessageBox(tmp, _("Confirmation"), wxICON_QUESTION | wxYES_NO, this) == wxID_YES)
         {
             m_Theme->Reset(m_Lang);
@@ -870,8 +873,8 @@ void EditorConfigurationDlg::OnColoursCopyFrom(cb_unused wxCommandEvent &event)
     PopupMenu(&menu);
 
     for (MenuIDToLanguageOption::const_iterator it = m_MenuIDToLanguageOption.begin();
-         it != m_MenuIDToLanguageOption.end();
-         ++it)
+            it != m_MenuIDToLanguageOption.end();
+            ++it)
     {
         Disconnect(it->first, wxEVT_COMMAND_MENU_SELECTED,
                    wxCommandEventHandler(EditorConfigurationDlg::OnMenuColoursCopyFrom));
@@ -928,8 +931,8 @@ void EditorConfigurationDlg::OnColoursCopyAllFrom(cb_unused wxCommandEvent &even
     PopupMenu(&menu);
 
     for (MenuIDToLanguageOption::const_iterator it = m_MenuIDToLanguageOption.begin();
-         it != m_MenuIDToLanguageOption.end();
-         ++it)
+            it != m_MenuIDToLanguageOption.end();
+            ++it)
     {
         Disconnect(it->first, wxEVT_COMMAND_MENU_SELECTED,
                    wxCommandEventHandler(EditorConfigurationDlg::OnMenuColoursCopyAllFrom));
@@ -984,7 +987,8 @@ void EditorConfigurationDlg::OnChangeDefCodeFileType(cb_unused wxCommandEvent& e
 {
     int sel = XRCCTRL(*this, "cmbDefCodeFileType", wxChoice)->GetSelection();
     if (sel != m_DefCodeFileType)
-    {   // update array for previous selected and show the code for the newly selected
+    {
+        // update array for previous selected and show the code for the newly selected
         m_DefaultCode[m_DefCodeFileType] = XRCCTRL(*this, "txtDefCode", wxTextCtrl)->GetValue();
         m_DefCodeFileType = sel;
         XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetValue(m_DefaultCode[m_DefCodeFileType]);
@@ -1007,7 +1011,7 @@ void EditorConfigurationDlg::OnChooseColour(wxCommandEvent& event)
     }
 
     if (event.GetId() == XRCID("btnColoursFore") ||
-        event.GetId() == XRCID("btnColoursBack"))
+            event.GetId() == XRCID("btnColoursBack"))
         WriteColours();
 }
 
@@ -1073,9 +1077,9 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/word_wrap"),                           XRCCTRL(*this, "chkWordWrap",                 wxCheckBox)->GetValue());
         cfg->Write(_T("/word_wrap_style_home_end"),            XRCCTRL(*this, "chkWordWrapStyleHomeEnd",     wxCheckBox)->GetValue());
         cfg->Write(_T("/use_posix_style_regexes"),             XRCCTRL(*this, "chkPosixRegex",               wxCheckBox)->GetValue());
-        #ifdef wxHAS_REGEX_ADVANCED
+#ifdef wxHAS_REGEX_ADVANCED
         cfg->Write(_T("/use_advanced_regexes"),                XRCCTRL(*this, "chkAdvancedRegex",            wxCheckBox)->GetValue());
-        #endif
+#endif
 
         cfg->Write(_T("/show_line_numbers"),                   XRCCTRL(*this, "chkShowLineNumbers",    wxCheckBox)->GetValue());
         cfg->Write(_T("/highlight_caret_line"),                XRCCTRL(*this, "chkHighlightCaretLine", wxCheckBox)->GetValue());
@@ -1107,8 +1111,8 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/caret_buffer"), XRCCTRL(*this, "cmbCaretBuffer", wxChoice)->GetSelection());
 
 #if defined(__WXMSW__) && wxCHECK_VERSION(3, 1, 0)
-    cfg->Write(_T("/technology"), XRCCTRL(*this, "cmbTechnology", wxChoice)->GetSelection());
-    cfg->Write(_T("/font_quality"), XRCCTRL(*this, "cmbFontQuality", wxChoice)->GetSelection());
+        cfg->Write(_T("/technology"), XRCCTRL(*this, "cmbTechnology", wxChoice)->GetSelection());
+        cfg->Write(_T("/font_quality"), XRCCTRL(*this, "cmbFontQuality", wxChoice)->GetSelection());
 #endif // defined(__WXMSW__) && wxCHECK_VERSION(3, 1, 0)
 
         cfg->Write(_T("/tab_text_relative"),                   XRCCTRL(*this, "rbTabText",                            wxRadioBox)->GetSelection() ? true : false);
@@ -1192,8 +1196,8 @@ void EditorConfigurationDlg::EndModal(int retCode)
                     // if we enable changeCollection, we also have to empty Undo-Buffer, to avoid inconsistences,
                     // if we disable it, there is no need to do that
                     enableChangebar?
-                        ed->ClearHistory():
-                        ed->SetChangeCollection(false);
+                    ed->ClearHistory():
+                    ed->SetChangeCollection(false);
                 }
             }
         }

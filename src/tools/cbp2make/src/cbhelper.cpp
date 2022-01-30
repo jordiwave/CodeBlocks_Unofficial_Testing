@@ -26,7 +26,8 @@ void ShowStringList(const CString& Title, const CString& LinePrefix,
                     const CStringList& StringList)
 {
     std::cout<<Title.GetCString()<<": "<<StringList.GetCount()<<std::endl;
-    for (int i = 0, n = StringList.GetCount(); i < n; i++) {
+    for (int i = 0, n = StringList.GetCount(); i < n; i++)
+    {
         std::cout<<LinePrefix.GetCString()<<" #"<<(i+1)<<": "<<StringList[i].GetString()<<std::endl;
     }
 }
@@ -35,7 +36,8 @@ CString MakefileFriendly(const CString& AString)
 {
     CString result = AString;
     CCharset c("01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_");
-    for (int i = 0; i < result.GetLength(); i++) {
+    for (int i = 0; i < result.GetLength(); i++)
+    {
         if (!c.Isset(result[i])) result[i] = '_';
     }
     return result;//UpperCase(result);

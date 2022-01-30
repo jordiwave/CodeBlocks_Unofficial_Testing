@@ -27,18 +27,21 @@
 
 class wxsTimer: public wxsTool
 {
-    public:
+public:
 
-        wxsTimer(wxsItemResData* Data);
+    wxsTimer(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual void OnEnumToolProperties(long Flags);
-        virtual bool OnIsPointer() { return false; }
+    virtual void OnBuildCreatingCode();
+    virtual void OnEnumToolProperties(long Flags);
+    virtual bool OnIsPointer()
+    {
+        return false;
+    }
 
-        long m_Interval;
-        bool m_OneShot;
+    long m_Interval;
+    bool m_OneShot;
 };
 
 #endif

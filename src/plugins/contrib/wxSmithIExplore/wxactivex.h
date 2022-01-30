@@ -24,91 +24,103 @@ using namespace std;
 // - Can query for other interfaces
 template <class I> class wxAutoOleInterface
 {
-	protected:
+protected:
     I *m_interface;
 
-	public:
-	// takes ownership of an existing interface
-	// Assumed to already have a AddRef() applied
+public:
+    // takes ownership of an existing interface
+    // Assumed to already have a AddRef() applied
     explicit wxAutoOleInterface(I *pInterface = NULL) : m_interface(pInterface) {}
 
-	// queries for an interface 
+    // queries for an interface
     wxAutoOleInterface(REFIID riid, IUnknown *pUnk) : m_interface(NULL)
-	{
-		QueryInterface(riid, pUnk);
-	};
-	// queries for an interface 
+    {
+        QueryInterface(riid, pUnk);
+    };
+    // queries for an interface
     wxAutoOleInterface(REFIID riid, IDispatch *pDispatch) : m_interface(NULL)
-	{
-		QueryInterface(riid, pDispatch);
-	};
+    {
+        QueryInterface(riid, pDispatch);
+    };
 
-	// Creates an Interface
-	wxAutoOleInterface(REFCLSID clsid, REFIID riid) : m_interface(NULL)
-	{
-		CreateInstance(clsid, riid);
-	};
+    // Creates an Interface
+    wxAutoOleInterface(REFCLSID clsid, REFIID riid) : m_interface(NULL)
+    {
+        CreateInstance(clsid, riid);
+    };
 
-	// copy constructor
+    // copy constructor
     wxAutoOleInterface(const wxAutoOleInterface<I>& ti) : m_interface(NULL)
     {
-		operator = (ti);
+        operator = (ti);
     }
 
-	// assignment operator
+    // assignment operator
     wxAutoOleInterface<I>& operator = (const wxAutoOleInterface<I>& ti)
     {
-		if (ti.m_interface)
-			ti.m_interface->AddRef();
-    	Free();
+        if (ti.m_interface)
+            ti.m_interface->AddRef();
+        Free();
         m_interface = ti.m_interface;
         return *this;
     }
 
-	// takes ownership of an existing interface
-	// Assumed to already have a AddRef() applied
+    // takes ownership of an existing interface
+    // Assumed to already have a AddRef() applied
     wxAutoOleInterface<I>& operator = (I *&ti)
     {
-    	Free();
+        Free();
         m_interface = ti;
         return *this;
     }
 
     ~wxAutoOleInterface()
     {
-    	Free();
+        Free();
     };
 
 
     inline void Free()
     {
-    	if (m_interface)
-        	m_interface->Release();
+        if (m_interface)
+            m_interface->Release();
         m_interface = NULL;
     };
 
-	// queries for an interface 
+    // queries for an interface
     HRESULT QueryInterface(REFIID riid, IUnknown *pUnk)
-	{
-		Free();
-		wxASSERT(pUnk != NULL);
-	    return pUnk->QueryInterface(riid, (void **) &m_interface);
-	};
+    {
+        Free();
+        wxASSERT(pUnk != NULL);
+        return pUnk->QueryInterface(riid, (void **) &m_interface);
+    };
 
-	// Create a Interface instance
+    // Create a Interface instance
     HRESULT CreateInstance(REFCLSID clsid, REFIID riid)
     {
-		Free();
-	    return CoCreateInstance(clsid, NULL, CLSCTX_ALL, riid, (void **) &m_interface);
+        Free();
+        return CoCreateInstance(clsid, NULL, CLSCTX_ALL, riid, (void **) &m_interface);
     };
 
 
 
-    inline operator I *() const {return m_interface;}
-    inline I* operator ->() {return m_interface;}
-	inline I** GetRef()	{return &m_interface;}
+    inline operator I *() const
+    {
+        return m_interface;
+    }
+    inline I* operator ->()
+    {
+        return m_interface;
+    }
+    inline I** GetRef()
+    {
+        return &m_interface;
+    }
 
-	inline bool Ok() const	{return m_interface != NULL;}
+    inline bool Ok() const
+    {
+        return m_interface != NULL;
+    }
 };
 
 
@@ -119,15 +131,15 @@ wxString GetIIDName(REFIID riid);
 
 
 #ifdef __WXOLEDEBUG
-    #define WXOLE_TRACE(str) {OutputDebugString(str);OutputDebugString("\r\n");}
-    #define WXOLE_TRACEOUT(stuff)\
+#define WXOLE_TRACE(str) {OutputDebugString(str);OutputDebugString("\r\n");}
+#define WXOLE_TRACEOUT(stuff)\
     {\
         ostringstream os;\
         os << stuff << ends;\
         WXOLE_TRACE(os.str().c_str());\
     }
 
-    #define WXOLE_WARN(__hr,msg)\
+#define WXOLE_WARN(__hr,msg)\
     {\
         if (__hr != S_OK)\
         {\
@@ -138,15 +150,15 @@ wxString GetIIDName(REFIID riid);
         }\
     }
 #else
-    #define WXOLE_TRACE(str)
-    #define WXOLE_TRACEOUT(stuff)
-    #define WXOLE_WARN(_proc,msg) {_proc;}
+#define WXOLE_TRACE(str)
+#define WXOLE_TRACEOUT(stuff)
+#define WXOLE_WARN(_proc,msg) {_proc;}
 #endif
 
 // Auto Initialisation
 class wxOleInit
 {
-	public:
+public:
     static IMalloc *GetIMalloc();
 
     wxOleInit();
@@ -259,94 +271,107 @@ class wxOleInit
 
 
 
-class wxActiveX : public wxWindow {
+class wxActiveX : public wxWindow
+{
 public:
     ////////////////////////////////////////
     // type stuff
-	class ParamX // refer to ELEMDESC, IDLDESC in MSDN
-	{
-	public:
-		USHORT	    flags;
+    class ParamX // refer to ELEMDESC, IDLDESC in MSDN
+    {
+    public:
+        USHORT	    flags;
         bool isPtr, isSafeArray;
-		VARTYPE	    vt;
+        VARTYPE	    vt;
         wxString    name;
 
-		inline bool IsIn() const		{return (flags & IDLFLAG_FIN) != 0;}
-		inline bool IsOut() const		{return (flags & IDLFLAG_FOUT) != 0;}
-		inline bool IsRetVal() const	{return (flags & IDLFLAG_FRETVAL) != 0;}
-	};
+        inline bool IsIn() const
+        {
+            return (flags & IDLFLAG_FIN) != 0;
+        }
+        inline bool IsOut() const
+        {
+            return (flags & IDLFLAG_FOUT) != 0;
+        }
+        inline bool IsRetVal() const
+        {
+            return (flags & IDLFLAG_FRETVAL) != 0;
+        }
+    };
 
-	typedef vector<ParamX>	ParamXArray;
+    typedef vector<ParamX>	ParamXArray;
 
     class FuncX // refer to FUNCDESC in MSDN
     {
     public:
         wxString    name;
         MEMBERID    memid;
-		bool		hasOut;
+        bool		hasOut;
 
-		ParamXArray	params;
+        ParamXArray	params;
     };
 
     typedef vector<FuncX> FuncXArray;
     typedef map<MEMBERID, int>  MemberIdList;
 
     wxActiveX(wxWindow * parent, REFCLSID clsid, wxWindowID id = -1,
-        const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxDefaultSize,
-        long style = 0,
-        const wxString& name = wxPanelNameStr);
+              const wxPoint& pos = wxDefaultPosition,
+              const wxSize& size = wxDefaultSize,
+              long style = 0,
+              const wxString& name = wxPanelNameStr);
     wxActiveX(wxWindow * parent, wxString progId, wxWindowID id = -1,
-        const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxDefaultSize,
-        long style = 0,
-        const wxString& name = wxPanelNameStr);
-	virtual ~wxActiveX();
+              const wxPoint& pos = wxDefaultPosition,
+              const wxSize& size = wxDefaultSize,
+              long style = 0,
+              const wxString& name = wxPanelNameStr);
+    virtual ~wxActiveX();
 
-	void CreateActiveX(REFCLSID clsid);
+    void CreateActiveX(REFCLSID clsid);
     void CreateActiveX(LPOLESTR progId);
 
     // expose type info
-    inline int GetEventCount() const {return m_events.size();}
+    inline int GetEventCount() const
+    {
+        return m_events.size();
+    }
     const FuncX& GetEvent(int idx) const;
 
-	HRESULT ConnectAdvise(REFIID riid, IUnknown *eventSink);
+    HRESULT ConnectAdvise(REFIID riid, IUnknown *eventSink);
 
-	void OnSize(wxSizeEvent&);
+    void OnSize(wxSizeEvent&);
     void OnPaint(wxPaintEvent& event);
     void OnMouse(wxMouseEvent& event);
 
-	void OnSetFocus(wxFocusEvent&);
+    void OnSetFocus(wxFocusEvent&);
     void OnKillFocus(wxFocusEvent&);
 
-	DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 
 protected:
     friend class FrameSite;
     friend class wxActiveXEvents;
 
-	typedef wxAutoOleInterface<IConnectionPoint>	wxOleConnectionPoint;
-	typedef pair<wxOleConnectionPoint, DWORD>		wxOleConnection;
-	typedef vector<wxOleConnection>					wxOleConnectionArray;
+    typedef wxAutoOleInterface<IConnectionPoint>	wxOleConnectionPoint;
+    typedef pair<wxOleConnectionPoint, DWORD>		wxOleConnection;
+    typedef vector<wxOleConnection>					wxOleConnectionArray;
 
     wxAutoOleInterface<IOleClientSite>      m_clientSite;
     wxAutoOleInterface<IUnknown>            m_ActiveX;
-	wxAutoOleInterface<IOleObject>			m_oleObject;
-	wxAutoOleInterface<IOleInPlaceObject>	m_oleInPlaceObject;
+    wxAutoOleInterface<IOleObject>			m_oleObject;
+    wxAutoOleInterface<IOleInPlaceObject>	m_oleInPlaceObject;
     wxAutoOleInterface<IOleInPlaceActiveObject>
 
-                                            m_oleInPlaceActiveObject;
+    m_oleInPlaceActiveObject;
     wxAutoOleInterface<IOleDocumentView>	m_docView;
     wxAutoOleInterface<IViewObject>	        m_viewObject;
-	HWND m_oleObjectHWND;
+    HWND m_oleObjectHWND;
     bool m_bAmbientUserMode;
     DWORD m_docAdviseCookie;
-	wxOleConnectionArray					m_connections;
+    wxOleConnectionArray					m_connections;
 
     HRESULT AmbientPropertyChanged(DISPID dispid);
 
-	void GetTypeInfo();
-	void GetTypeInfo(ITypeInfo *ti, bool defEventSink);
+    void GetTypeInfo();
+    void GetTypeInfo(ITypeInfo *ti, bool defEventSink);
 
 
     // events
@@ -367,7 +392,10 @@ private:
 
 public:
 
-    virtual wxEvent *Clone() const { return new wxActiveXEvent(*this); }
+    virtual wxEvent *Clone() const
+    {
+        return new wxActiveXEvent(*this);
+    }
 
     wxString EventName();
     int ParamCount() const;

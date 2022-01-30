@@ -9,12 +9,12 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include "cbeditor.h"
-    #include "cbproject.h"
-    #include "editormanager.h"
-    #include "manager.h"
-    #include "projectfile.h"
-    #include "projectmanager.h"
+#include "cbeditor.h"
+#include "cbproject.h"
+#include "editormanager.h"
+#include "manager.h"
+#include "projectfile.h"
+#include "projectmanager.h"
 #endif
 #include "compilererrors.h"
 #include <wx/arrimpl.cpp>
@@ -124,7 +124,7 @@ void CompilerErrors::DoAddError(const CompileError& error)
 //            m_Errors[index].errors.Add(error.errors[i]);
 //    }
 //    else
-        m_Errors.Add(error);
+    m_Errors.Add(error);
 }
 
 int CompilerErrors::ErrorLineHasMore(const wxString& filename, long int line) const
@@ -132,7 +132,7 @@ int CompilerErrors::ErrorLineHasMore(const wxString& filename, long int line) co
     for (unsigned int i = 0; i < m_Errors.GetCount(); ++i)
     {
         if (m_Errors[i].filename.Matches(filename) &&
-            m_Errors[i].line == line)
+                m_Errors[i].line == line)
             return i;
     }
     return -1;
@@ -149,8 +149,8 @@ void CompilerErrors::DoGotoError(const CompileError& error)
     {
         wxString filename = error.filename;
         bool isAbsolute = (filename.Length() > 1 && filename.GetChar(1) == ':') ||
-                           filename.StartsWith(_T("/")) ||
-                           filename.StartsWith(_T("\\"));
+                          filename.StartsWith(_T("/")) ||
+                          filename.StartsWith(_T("\\"));
         ProjectFile* f = project->GetFileByFilename(error.filename, !isAbsolute, true);
         if (f)
         {

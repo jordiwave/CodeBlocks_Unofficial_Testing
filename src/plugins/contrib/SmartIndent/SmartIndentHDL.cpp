@@ -3,11 +3,11 @@
 #include <sdk.h> // Code::Blocks SDK
 
 #ifndef CB_PRECOMP
-    #include <cbeditor.h>
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <editorcolourset.h>
-    #include <manager.h>
+#include <cbeditor.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <editorcolourset.h>
+#include <manager.h>
 #endif
 
 #include <cbstyledtextctrl.h>
@@ -16,7 +16,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<SmartIndentHDL> reg(wxT("SmartIndentHDL"));
+PluginRegistrant<SmartIndentHDL> reg(wxT("SmartIndentHDL"));
 }
 
 void SmartIndentHDL::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
@@ -143,23 +143,23 @@ void SmartIndentHDL::DoIndent(cbEditor* ed, const wxString& langname) const
             wxString lc = GetLastNonWhitespaceChars(ed, -1, 2);
             if (
                 lw == wxT("is")                  || // architecture/entity ... is
-                                                   // case ... is
-                                                   // block ... is
+                // case ... is
+                // block ... is
                 lw == wxT("block")               ||
                 lw == wxT("begin")               || // body of architecture
-               (lw == wxT("if") && !IsEnd)       || // indent the following condition
+                (lw == wxT("if") && !IsEnd)       || // indent the following condition
                 lw == wxT("elsif")               || // indent the following condition
                 //lw == wxT("case")                 || // indent the following condition
                 lw == wxT("then")                || // if/elsif ... then
                 lw == wxT("else")                || // indent body
-               (lw == wxT("loop") && !IsEnd)     || // indent body of loop
+                (lw == wxT("loop") && !IsEnd)     || // indent body of loop
                 lw == wxT("for")                 || // indent condition
                 lw == wxT("while")               || // indent condition
 
                 lw == wxT("with")                || // indent expression
                 lw == wxT("select")              || // indent target <= waveform
-               (lw == wxT("generate") && !IsEnd) ||
-               (lw == wxT("process") && !IsEnd)  ||
+                (lw == wxT("generate") && !IsEnd) ||
+                (lw == wxT("process") && !IsEnd)  ||
 
                 lw == wxT("block")               ||
                 lw == wxT("entity")              ||

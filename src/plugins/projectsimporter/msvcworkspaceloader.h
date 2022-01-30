@@ -11,12 +11,12 @@
 
 class MSVCWorkspaceLoader : public IBaseWorkspaceLoader, public MSVCWorkspaceBase
 {
-    public:
-		MSVCWorkspaceLoader();
-		~MSVCWorkspaceLoader() override;
+public:
+    MSVCWorkspaceLoader();
+    ~MSVCWorkspaceLoader() override;
 
-        bool Open(const wxString& filename, wxString& Title) override;
-        bool Save(const wxString& title, const wxString& filename) override;
+    bool Open(const wxString& filename, wxString& Title) override;
+    bool Save(const wxString& title, const wxString& filename) override;
 };
 
 #endif // MSVCWORKSPACELOADER_H

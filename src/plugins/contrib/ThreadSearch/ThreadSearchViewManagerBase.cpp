@@ -13,9 +13,9 @@
 #include "ThreadSearchViewManagerLayout.h"
 
 ThreadSearchViewManagerBase* ThreadSearchViewManagerBase::BuildThreadSearchViewManagerBase(
-                                                                            ThreadSearchView* pView,
-                                                                            bool              addViewToManager,
-                                                                            eManagerTypes     managerType)
+    ThreadSearchView* pView,
+    bool              addViewToManager,
+    eManagerTypes     managerType)
 {
     ThreadSearchViewManagerBase* pMgr = 0;
 

@@ -15,31 +15,31 @@
 #include "macrosmanager.h"
 
 ThreadSearchFindData::ThreadSearchFindData()
-                     :m_FindText(wxEmptyString)
-                     ,m_MatchWord(true)
-                     ,m_StartWord(false)
-                     ,m_MatchCase(true)
-                     ,m_RegEx(false)
-                     ,m_Scope(ScopeProjectFiles)
-                     ,m_SearchPath(wxT("."))
-                     ,m_SearchMask(wxT("*.cpp;*.c;*.h"))
-                     ,m_RecursiveSearch(true)
-                     ,m_HiddenSearch(true)
+    :m_FindText(wxEmptyString)
+    ,m_MatchWord(true)
+    ,m_StartWord(false)
+    ,m_MatchCase(true)
+    ,m_RegEx(false)
+    ,m_Scope(ScopeProjectFiles)
+    ,m_SearchPath(wxT("."))
+    ,m_SearchMask(wxT("*.cpp;*.c;*.h"))
+    ,m_RecursiveSearch(true)
+    ,m_HiddenSearch(true)
 {
 }
 
 
 ThreadSearchFindData::ThreadSearchFindData(const ThreadSearchFindData& findData)
-                     :m_FindText       (findData.m_FindText)
-                     ,m_MatchWord      (findData.m_MatchWord)
-                     ,m_StartWord      (findData.m_StartWord)
-                     ,m_MatchCase      (findData.m_MatchCase)
-                     ,m_RegEx          (findData.m_RegEx)
-                     ,m_Scope          (findData.m_Scope)
-                     ,m_SearchPath     (findData.m_SearchPath)
-                     ,m_SearchMask     (findData.m_SearchMask)
-                     ,m_RecursiveSearch(findData.m_RecursiveSearch)
-                     ,m_HiddenSearch   (findData.m_HiddenSearch)
+    :m_FindText       (findData.m_FindText)
+    ,m_MatchWord      (findData.m_MatchWord)
+    ,m_StartWord      (findData.m_StartWord)
+    ,m_MatchCase      (findData.m_MatchCase)
+    ,m_RegEx          (findData.m_RegEx)
+    ,m_Scope          (findData.m_Scope)
+    ,m_SearchPath     (findData.m_SearchPath)
+    ,m_SearchMask     (findData.m_SearchMask)
+    ,m_RecursiveSearch(findData.m_RecursiveSearch)
+    ,m_HiddenSearch   (findData.m_HiddenSearch)
 {
 }
 

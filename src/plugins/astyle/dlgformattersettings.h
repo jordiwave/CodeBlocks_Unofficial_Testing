@@ -16,14 +16,14 @@ class wxWindow;
 
 class DlgFormatterSettings
 {
-  private:
+private:
     wxWindow *m_dlg;
 
-	public:
-		DlgFormatterSettings(wxWindow *dlg);
-		virtual ~DlgFormatterSettings();
+public:
+    DlgFormatterSettings(wxWindow *dlg);
+    virtual ~DlgFormatterSettings();
 
-		void ApplyTo(astyle::ASFormatter& formatter);
+    void ApplyTo(astyle::ASFormatter& formatter);
 };
 
 #endif // DLGFORMATTERSETTINGS_H

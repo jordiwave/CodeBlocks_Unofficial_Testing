@@ -26,7 +26,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<wxsSmithSTC> reg(_T("wxsSmithSTC"));
+PluginRegistrant<wxsSmithSTC> reg(_T("wxsSmithSTC"));
 }
 
 
@@ -52,19 +52,19 @@ wxsSmithSTC::~wxsSmithSTC()
 
 void wxsSmithSTC::OnAttach()
 {
-	// do whatever initialization you need for your plugin
-	// NOTE: after this function, the inherited member variable
-	// m_IsAttached will be TRUE...
-	// You should check for it in other functions, because if it
-	// is FALSE, it means that the application did *not* "load"
-	// (see: does not need) this plugin...
+    // do whatever initialization you need for your plugin
+    // NOTE: after this function, the inherited member variable
+    // m_IsAttached will be TRUE...
+    // You should check for it in other functions, because if it
+    // is FALSE, it means that the application did *not* "load"
+    // (see: does not need) this plugin...
 }
 
 void wxsSmithSTC::OnRelease(bool appShutDown)
 {
-	// do de-initialization for your plugin
-	// if appShutDown is true, the plugin is unloaded because Code::Blocks is being shut down,
-	// which means you must not use any of the SDK Managers
-	// NOTE: after this function, the inherited member variable
-	// m_IsAttached will be FALSE...
+    // do de-initialization for your plugin
+    // if appShutDown is true, the plugin is unloaded because Code::Blocks is being shut down,
+    // which means you must not use any of the SDK Managers
+    // NOTE: after this function, the inherited member variable
+    // m_IsAttached will be FALSE...
 }

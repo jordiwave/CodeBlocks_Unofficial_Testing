@@ -16,31 +16,31 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-    #include <wx/dynarray.h>
-    #include <wx/intl.h>
-    #include <wx/log.h>
-    #include <wx/sizer.h>
-    #include <wx/stdpaths.h>
+#include <wx/dynarray.h>
+#include <wx/intl.h>
+#include <wx/log.h>
+#include <wx/sizer.h>
+#include <wx/stdpaths.h>
 
-    #include "cbeditor.h"
-    #include "configmanager.h"
-    #include "editormanager.h"
-    #include "manager.h"
-    #include "pluginmanager.h"
-    #include "personalitymanager.h"
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "manager.h"
+#include "pluginmanager.h"
+#include "personalitymanager.h"
 #endif
 
 #include <wx/xrc/xmlres.h>
 #include <wx/fileconf.h>
 #include <wx/event.h>
 #if defined(__WXMSW__)
-    #include <wx/msw/private/keyboard.h>
+#include <wx/msw/private/keyboard.h>
 #endif
 #include <wx/listbook.h>
 
 #include "logmanager.h"
 #if defined(LOGGING)
-    #include "debugging.h"
+#include "debugging.h"
 #endif
 #include "menuutils.h"
 #include "cbkeybinder.h"
@@ -53,14 +53,17 @@
 // ----------------------------------------------------------------------------
 namespace
 {
-    PluginRegistrant<cbKeyBinder> reg(_T("cbKeyBinder"));
+PluginRegistrant<cbKeyBinder> reg(_T("cbKeyBinder"));
 
-    #if wxVERSION_NUMBER < 3000
-    int wxEVT_LISTBOOK_PAGE_CHANGED = wxEVT_COMMAND_LISTBOOK_PAGE_CHANGED; //wx2.8
-    #endif // wxVERSION_NUMBER
-    int idKeyBinderRefresh = XRCID("idKeyBinderRefresh");
-    wxString sep = wxFileName::GetPathSeparator();
-    inline bool wxFound(int result){return result != wxNOT_FOUND;}
+#if wxVERSION_NUMBER < 3000
+int wxEVT_LISTBOOK_PAGE_CHANGED = wxEVT_COMMAND_LISTBOOK_PAGE_CHANGED; //wx2.8
+#endif // wxVERSION_NUMBER
+int idKeyBinderRefresh = XRCID("idKeyBinderRefresh");
+wxString sep = wxFileName::GetPathSeparator();
+inline bool wxFound(int result)
+{
+    return result != wxNOT_FOUND;
+}
 };
 // ----------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(cbKeyBinder, cbPlugin)
@@ -109,21 +112,21 @@ void cbKeyBinder::OnAttach()
     m_pKBMgr  = clKeyboardManager::Get();
 
 
-    #if LOGGING
-        // allocate wxLogWindow in the header
-        //  wxLogWindow* pMyLog;
-        // #define LOGIT wxLogMessage
-        /* wxLogWindow* */
-        wxLog::EnableLogging(true);
-        m_pMyLog = new wxLogWindow(pcbWindow,wxT("KeyBinder"),true,false);
-        wxLog::SetActiveTarget(m_pMyLog);
-        wxRect logRect = m_pMyLog->GetFrame()->GetSize();
-        logRect.width = logRect.width << 1;
-        m_pMyLog->GetFrame()->SetSize(logRect);
-        LOGIT(_T("keybinder v2.0 log open"));
-        m_pMyLog->Flush();
-        m_pMyLog->GetFrame()->Move(20,20);
-    #endif
+#if LOGGING
+    // allocate wxLogWindow in the header
+    //  wxLogWindow* pMyLog;
+    // #define LOGIT wxLogMessage
+    /* wxLogWindow* */
+    wxLog::EnableLogging(true);
+    m_pMyLog = new wxLogWindow(pcbWindow,wxT("KeyBinder"),true,false);
+    wxLog::SetActiveTarget(m_pMyLog);
+    wxRect logRect = m_pMyLog->GetFrame()->GetSize();
+    logRect.width = logRect.width << 1;
+    m_pMyLog->GetFrame()->SetSize(logRect);
+    LOGIT(_T("keybinder v2.0 log open"));
+    m_pMyLog->Flush();
+    m_pMyLog->GetFrame()->Move(20,20);
+#endif
 
     m_bAppShutDown = false;
 
@@ -164,7 +167,10 @@ cbConfigurationPanel* cbKeyBinder::GetConfigurationPanel(wxWindow* parent)
     // See OnPageChanging().
 
     //create and display the configuration dialog for your plugin
-    if(not IsAttached()) { return nullptr;}
+    if(not IsAttached())
+    {
+        return nullptr;
+    }
 
     // Create a Configurtion panel and return it to CodeBlocks
     // The commented lines below are from the original wxKeyBinder
@@ -200,16 +206,19 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
     //NB: Be careful in here... The application's menubar is at your disposal.
     //-NotImplemented(_T("cbKeyBinder::OfferMenuSpace()"));
 
-    if(not IsAttached()) { return; }
+    if(not IsAttached())
+    {
+        return;
+    }
 
     // This routine may be called when another plugin modifies the menu.
     // or codeblocks disables another plugin and rebuilds the menu bar
     if ( m_menuPreviouslyBuilt )
     {
-        #if defined(LOGGING)
-         LOGIT( _T("KeyBinder re-entered at BuildMenu") );
-         LOGIT( _T("OldMenuBar[%p] NewMenuBar[%p]"), m_pMenuBar, menuBar );
-        #endif
+#if defined(LOGGING)
+        LOGIT( _T("KeyBinder re-entered at BuildMenu") );
+        LOGIT( _T("OldMenuBar[%p] NewMenuBar[%p]"), m_pMenuBar, menuBar );
+#endif
     }
     m_menuPreviouslyBuilt = true;
 
@@ -226,9 +235,9 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
 
     // get the CodeBlocks "personality" argument
     m_UserPersonality = Manager::Get()->GetPersonalityManager()->GetPersonality();
-    #if defined(LOGGING)
-        LOGIT( _T("m_UserPersonality is[%s]"), m_UserPersonality.GetData() );
-    #endif
+#if defined(LOGGING)
+    LOGIT( _T("m_UserPersonality is[%s]"), m_UserPersonality.GetData() );
+#endif
 
     m_OldKeyBinderFullFilePath = ConfigManager::GetConfigFolder();
     m_OldKeyBinderFullFilePath = m_OldKeyBinderFullFilePath + wxFILE_SEP_PATH;
@@ -241,7 +250,8 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
         m_OldKeyBinderFullFilePath = ConfigManager::GetConfigFolder() + sep + wxT("cbKeyBinder10.ini") ; //keyBindings before personalities existed
         // prepend personality to copy of ancient cbKeybinder10.ini
         if (wxFileExists(m_OldKeyBinderFullFilePath))
-        {   wxFileName personalityKeyBinderFile(m_OldKeyBinderFullFilePath);
+        {
+            wxFileName personalityKeyBinderFile(m_OldKeyBinderFullFilePath);
             personalityKeyBinderFile.SetName(m_UserPersonality + _T(".") + personalityKeyBinderFile.GetName());
             wxCopyFile(m_OldKeyBinderFullFilePath, personalityKeyBinderFile.GetFullPath());
             m_OldKeyBinderFullFilePath = personalityKeyBinderFile.GetFullPath();
@@ -250,10 +260,10 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
             m_OldKeyBinderFullFilePath = wxEmptyString;
     }
 
-    #if LOGGING
-        if (m_OldKeyBinderFullFilePath.Len())
-            LOGIT(_T("cbKB:BuildMenu:OldKeyBinderFile:%s"),m_OldKeyBinderFullFilePath.GetData());
-    #endif
+#if LOGGING
+    if (m_OldKeyBinderFullFilePath.Len())
+        LOGIT(_T("cbKB:BuildMenu:OldKeyBinderFile:%s"),m_OldKeyBinderFullFilePath.GetData());
+#endif
 
     return ;
 
@@ -267,7 +277,10 @@ void cbKeyBinder::BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, c
     //and append any items you need in the menu...
     //TIP: for consistency, add a separator as the first item...
     //-v0.1--NotImplemented(_T("cbKeyBinder::OfferModuleMenuSpace()"));
-    if(not IsAttached()) { return; }
+    if(not IsAttached())
+    {
+        return;
+    }
     return;
 }
 // ----------------------------------------------------------------------------
@@ -279,7 +292,10 @@ bool cbKeyBinder::BuildToolBar(wxToolBar* /*toolBar*/)
     //Append any items you need on the toolbar...
     //NotImplemented(_T("cbKeyBinder::BuildToolBar()"));
     // return true if you add toolbar items
-    if(not IsAttached()) { return false; }
+    if(not IsAttached())
+    {
+        return false;
+    }
     return false;
 }
 // ----------------------------------------------------------------------------
@@ -314,15 +330,15 @@ void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
     m_AppStartupDone = true;
     m_KeyBinderRefreshRequested = false;
 
-    #if not defined(LOGGING) //remove menu scan file when not debugging //(2019/10/28)
-        wxString scanFile = GetTempOldFmtMnuScanFilename(); //(2020/02/25)
-        if (wxFileExists(scanFile) )
-            wxRemoveFile(scanFile);
-        // remove temp Accelerator .conf file //(pecan 2020/02/24)
-        wxFileName fnTempKeyMnuAccels(clKeyboardManager::Get()->GetTempKeyMnuAccelsFilename()); //(2020/02/25)
-        if (fnTempKeyMnuAccels.FileExists())
-            wxRemoveFile(fnTempKeyMnuAccels.GetFullPath());
-    #endif
+#if not defined(LOGGING) //remove menu scan file when not debugging //(2019/10/28)
+    wxString scanFile = GetTempOldFmtMnuScanFilename(); //(2020/02/25)
+    if (wxFileExists(scanFile) )
+        wxRemoveFile(scanFile);
+    // remove temp Accelerator .conf file //(pecan 2020/02/24)
+    wxFileName fnTempKeyMnuAccels(clKeyboardManager::Get()->GetTempKeyMnuAccelsFilename()); //(2020/02/25)
+    if (fnTempKeyMnuAccels.FileExists())
+        wxRemoveFile(fnTempKeyMnuAccels.GetFullPath());
+#endif
     return;
 }
 // ----------------------------------------------------------------------------
@@ -333,9 +349,9 @@ void cbKeyBinder::OnAppStartShutdown(CodeBlocksEvent& event)
     // and never called. Another sdk gotcha! And another reason to avoid it.
 
     wxUnusedVar(event);
-    #if defined(LOGGING)
-     LOGIT( _T("OnAppStartShutdown") );
-    #endif
+#if defined(LOGGING)
+    LOGIT( _T("OnAppStartShutdown") );
+#endif
 }
 // ----------------------------------------------------------------------------
 void cbKeyBinder::OnKeyBinderRefreshRequested(wxCommandEvent& event)
@@ -409,15 +425,15 @@ bool cbKeyBinder::CreateKeyBindDefaultFile(bool refresh)
     wxFileName fnNewcbKeyBinderConf(ConfigManager::GetConfigFolder(), _T("cbKeyBinder20.conf"));
     fnNewcbKeyBinderConf.SetName(GetUserPersonality() + _T(".") +fnNewcbKeyBinderConf.GetName());
 
-    #if defined(LOGGING)
-        LOGIT( _T("fnTempKeyMnuAccels[%s]"),   fnTempKeyMnuAccels.GetFullPath().wx_str());
-        LOGIT( _T("fnNewcbKeyBinderConf[%s]"), fnNewcbKeyBinderConf.GetFullPath().wx_str());
-    #endif
+#if defined(LOGGING)
+    LOGIT( _T("fnTempKeyMnuAccels[%s]"),   fnTempKeyMnuAccels.GetFullPath().wx_str());
+    LOGIT( _T("fnNewcbKeyBinderConf[%s]"), fnNewcbKeyBinderConf.GetFullPath().wx_str());
+#endif
 
-    #if defined(LOGGING) //debugging
-        wxString look = fnTempKeyMnuAccels.GetFullPath();
-        LOGIT( _T("CreateKeyBindDefaultFile()[%s]"), look.wx_str());
-    #endif
+#if defined(LOGGING) //debugging
+    wxString look = fnTempKeyMnuAccels.GetFullPath();
+    LOGIT( _T("CreateKeyBindDefaultFile()[%s]"), look.wx_str());
+#endif
 
     bool ok = false;
 
@@ -440,8 +456,8 @@ bool cbKeyBinder::CreateKeyBindDefaultFile(bool refresh)
         wxKeyProfile* pPrimary = new wxKeyProfile(_("Primary"), _("Primary keyprofile"));
 
         // remove keyprofiles from our array
-        for (int i=0; i<pKeyProfileArray->GetCount();i++)
-          pKeyProfileArray->Remove(pKeyProfileArray->Item(i));
+        for (int i=0; i<pKeyProfileArray->GetCount(); i++)
+            pKeyProfileArray->Remove(pKeyProfileArray->Item(i));
         // clear out old array
         pKeyProfileArray->Cleanup();
 
@@ -472,7 +488,8 @@ bool cbKeyBinder::CreateKeyBindDefaultFile(bool refresh)
     if ( (not fnNewcbKeyBinderConf.FileExists()) and (not refresh) )
     {
         wxString plgnVersionString = GetPluginVersion();
-        long plgnVersionNum; plgnVersionString.ToLong(&plgnVersionNum);
+        long plgnVersionNum;
+        plgnVersionString.ToLong(&plgnVersionNum);
         int oldPlgnVersionNum = plgnVersionNum - 10;
 
         wxString oldVersionFile = wxString::Format(_T("cbKeyBinder%d.ini"), oldPlgnVersionNum);
@@ -481,7 +498,8 @@ bool cbKeyBinder::CreateKeyBindDefaultFile(bool refresh)
 
         ok = fnOldVersionKeyBindings.FileExists();
         if (ok)
-        {   //convert a copy of cbKeybinder??.ini to temp\<personality>.keyMnuAccels.conf
+        {
+            //convert a copy of cbKeybinder??.ini to temp\<personality>.keyMnuAccels.conf
             ok = wxCopyFile(fnTempOldFmtMnuScan.GetFullPath(), fnTempKeyMnuAccels.GetFullPath());
             if (ok)
             {
@@ -497,9 +515,9 @@ bool cbKeyBinder::CreateKeyBindDefaultFile(bool refresh)
     if ( (not ok) or (missingMenuItems != 0) )
     {
         wxString msg = _("Preserving older key bindings failed.\nWill create key bindings from current menu structure.");
-        #if defined(LOGGING)
-            LOGIT( msg );
-        #endif
+#if defined(LOGGING)
+        LOGIT( msg );
+#endif
         Manager::Get()->GetLogManager()->LogWarning(msg);
     }
     // ----------------------------------------------------
@@ -537,21 +555,21 @@ bool cbKeyBinder::OnSaveKbOldFormatCfgFile(wxKeyProfileArray* pKeyProfArr, wxStr
     //                 long style = 0, wxMBConv& conv = wxConvUTF8)
 
     wxFileConfig* cfg = new wxFileConfig(wxEmptyString, wxEmptyString,
-                             m_KeyBinderCfgFilename, m_KeyBinderCfgFilename
-                             );
+                                         m_KeyBinderCfgFilename, m_KeyBinderCfgFilename
+                                        );
     bool ok = false;
     if ((ok = pKeyProfArr->Save(cfg, wxEmptyString, TRUE)))
-     {
+    {
         // get the cmd count
         int total = 0;
         for (int i=0; i<pKeyProfArr->GetCount(); i++)
             total += pKeyProfArr->Item(i)->GetCmdCount();
         cfg->Flush();
-        #if defined(LOGGING)
-            LOGIT(wxString::Format(wxT("All the [%d] keyprofiles ([%d] commands ")
-            wxT("in total) have been saved in \n") + fnKeyBinderCfg.GetFullPath(),
-              pKeyProfArr->GetCount(), total) );
-        #endif
+#if defined(LOGGING)
+        LOGIT(wxString::Format(wxT("All the [%d] keyprofiles ([%d] commands ")
+                               wxT("in total) have been saved in \n") + fnKeyBinderCfg.GetFullPath(),
+                               pKeyProfArr->GetCount(), total) );
+#endif
 
     }//endif Save
     else
@@ -616,24 +634,25 @@ int cbKeyBinder::ConvertMenuScanToKeyMnuAcceratorsConf(wxString keybinderFile, w
         lineTxt.Replace(_T("\\"), _T(":"));
         lineItems.Empty();
         lineItems = GetArrayFromStrings(lineTxt, _T("|"), true);
-        #if defined(LOGGING)
-            wxString look = GetStringsFromArray(lineItems, _T("|"), false);
-            LOGIT( _T("ConvertkbToAcc[%s]"), look.wx_str());
-        #endif
+#if defined(LOGGING)
+        wxString look = GetStringsFromArray(lineItems, _T("|"), false);
+        LOGIT( _T("ConvertkbToAcc[%s]"), look.wx_str());
+#endif
         // Dont pass subMenu place holders to the KeyMnuAccels.conf file.
         // Dont pass menu items that no longer exist.
         if (lineItems[0].IsNumber() )
         {
-            long itemID; lineItems[0].ToLong(&itemID);
+            long itemID;
+            lineItems[0].ToLong(&itemID);
             wxMenuItem* pMnuItem = m_pMenuBar->FindItem(itemID);
             if (pMnuItem and pMnuItem->GetSubMenu())
                 continue;
             if (not pMnuItem)
             {
                 ++missingMenuItems;
-                #if defined(LOGGING)
+#if defined(LOGGING)
                 LOGIT( _T("MissingOldMenuItem[%s]"), lineTxt.wx_str());
-                #endif
+#endif
                 continue;
             }
             txtacc.AddLine(GetStringsFromArray(lineItems,_T("|"), true));
@@ -652,9 +671,9 @@ int cbKeyBinder::ConvertMenuScanToKeyMnuAcceratorsConf(wxString keybinderFile, w
     if (missingMenuItems)
     {
         wxString msg = wxString::Format(_("Convert found %u unmatched menu items."), (unsigned)missingMenuItems);
-        #if defined(LOGGING)
-            //cbMessageBox(msg, _("Converter"), wxOK, Manager::Get()->GetAppWindow());
-        #endif
+#if defined(LOGGING)
+        //cbMessageBox(msg, _("Converter"), wxOK, Manager::Get()->GetAppWindow());
+#endif
         return missingMenuItems;
     }
 
@@ -701,14 +720,14 @@ int cbKeyBinder::ConvertOldKeybinderIniToAcceratorsConf(wxString oldKeybinderFil
         return -1;
     }
 
-    #if defined(LOGGING)
+#if defined(LOGGING)
     {
         size_t lineKnt = txtkb.GetLineCount();
         LOGIT( _T("ConvertKeybinderIni Open input txtKB[%s]Lines[%u]"), fncbkb.GetFullPath().wx_str(), (unsigned)lineKnt);
         lineKnt = txtacc.GetLineCount();
         LOGIT( _T("ConvertKeybinderIni Open output txtACC[%s] Lines[%u]"), fnclaccconf.GetFullPath().wx_str(), (unsigned)lineKnt);
     }
-    #endif
+#endif
 
     size_t lineKnt = txtkb.GetLineCount();
     if (not lineKnt) return false;
@@ -722,15 +741,16 @@ int cbKeyBinder::ConvertOldKeybinderIniToAcceratorsConf(wxString oldKeybinderFil
         kbLineTxt.Replace(_T("-type4660="), _T("|")); //remove type
         lineItems.Empty();
         lineItems = GetArrayFromStrings(kbLineTxt, _T("|"), true);
-        #if defined(LOGGING)
-            wxString look = GetStringsFromArray(lineItems, _T("|"), false);
-            LOGIT( _T("ConvertOldKBToAcc[%s]"), look.wx_str());
-        #endif
+#if defined(LOGGING)
+        wxString look = GetStringsFromArray(lineItems, _T("|"), false);
+        LOGIT( _T("ConvertOldKBToAcc[%s]"), look.wx_str());
+#endif
         // Dont pass subMenu place holders to the KeyMnuAccels.conf file
         // Dont pass menu items that no longer exist
         if (lineItems[0].IsNumber() )
         {
-            long itemID; lineItems[0].ToLong(&itemID);
+            long itemID;
+            lineItems[0].ToLong(&itemID);
             size_t parts = lineItems.GetCount();
             wxString kbParentMenu =  (parts > 1) ? lineItems[1] : _T("");
             wxString kbDescription = (parts > 2) ? lineItems[2] : _T("");
@@ -740,10 +760,11 @@ int cbKeyBinder::ConvertOldKeybinderIniToAcceratorsConf(wxString oldKeybinderFil
             // and replace its shortcuts with the users old version shortcuts
             int  accMnuLineNum = FindLineInFileContaining(txtacc, kbParentMenu);
             if (accMnuLineNum == wxNOT_FOUND)
-            {   ++missingMenuItems;
-                #if defined(LOGGING)
-                    LOGIT( _T("MissingOldMenuItem[%s]"), kbLineTxt.wx_str());
-                #endif
+            {
+                ++missingMenuItems;
+#if defined(LOGGING)
+                LOGIT( _T("MissingOldMenuItem[%s]"), kbLineTxt.wx_str());
+#endif
                 continue;
             }
             // Skip oldKB MnuLines which represent submenu anchors or no longer exist
@@ -752,7 +773,8 @@ int cbKeyBinder::ConvertOldKeybinderIniToAcceratorsConf(wxString oldKeybinderFil
             if (not wxFound(nPos)) continue;
             wxString accMnuIDstr = accMnuLine.Mid(0,nPos); //get 'bind'+menuID
             accMnuIDstr = accMnuIDstr.Mid(4);              //remove 'bind'
-            long accMnuID; accMnuIDstr.ToLong(&accMnuID);
+            long accMnuID;
+            accMnuIDstr.ToLong(&accMnuID);
             wxMenuItem* pMnuItem = m_pMenuBar->FindItem(accMnuID);
             if (not pMnuItem) continue;
             if (pMnuItem->GetSubMenu()) continue;
@@ -808,12 +830,12 @@ int cbKeyBinder::ConvertOldKeybinderIniToAcceratorsConf(wxString oldKeybinderFil
         txtacc[lineNo] = lineTxt;
     }
 
-    #if defined(LOGGING)
+#if defined(LOGGING)
     lineKnt = txtkb.GetLineCount();
     LOGIT( _T("Closing txtKB Lines[%u]"), (unsigned)lineKnt);
     lineKnt = txtacc.GetLineCount();
     LOGIT( _T("Closing txtACC Lines[%u]"), (unsigned)lineKnt);
-    #endif
+#endif
 
     if (txtkb.IsOpened())
         txtkb.Close();
@@ -827,9 +849,9 @@ int cbKeyBinder::ConvertOldKeybinderIniToAcceratorsConf(wxString oldKeybinderFil
     if (missingMenuItems)
     {
         wxString msg = wxString::Format(_T("KeyBinder Convert found %u unmatched menu items."), (unsigned)missingMenuItems);
-        #if defined(LOGGING)
-            LOGIT( _T("[%s]"), msg.wx_str());
-        #endif
+#if defined(LOGGING)
+        LOGIT( _T("[%s]"), msg.wx_str());
+#endif
         //-return missingMenuItems; deprecated; ok if some items missing
     }
 
@@ -858,16 +880,16 @@ bool cbKeyBinder::MergeAcceleratorTable(wxTextFile& textOutFile)
     wxTheApp->GetTopWindow()->GetEventHandler()->ProcessEvent(getGlobalAccels);
     int accelCount = globalAccels.size();
 
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("MergeAcceleratorTable() found %d global accelerators."), accelCount);
-    #endif
+#endif
 
     if (not accelCount) return false;
 
     // Format each global accelerator to be acceptable by clKeyboardManager.
     for (int ii = 0; ii<accelCount; ++ii)
     {
-        #if defined(LOGGING)
+#if defined(LOGGING)
         wxString vFlags;
         if (globalAccels[ii].GetFlags() & wxACCEL_CTRL)
             vFlags += _T("Ctrl-");
@@ -876,12 +898,12 @@ bool cbKeyBinder::MergeAcceleratorTable(wxTextFile& textOutFile)
         if (globalAccels[ii].GetFlags() & wxACCEL_SHIFT)
             vFlags += _T("Shift-");
         LOGIT( _T("global accelEntry[%d]flags[%s]code[%s],id[%d]"),
-                    ii,
-                    vFlags.wx_str(),
-                    m_pKBMgr->KeyCodeToString(globalAccels[ii].GetKeyCode()).wx_str(),
-                    globalAccels[ii].GetCommand()
-                  );
-        #endif
+               ii,
+               vFlags.wx_str(),
+               m_pKBMgr->KeyCodeToString(globalAccels[ii].GetKeyCode()).wx_str(),
+               globalAccels[ii].GetCommand()
+             );
+#endif
 
         // Add an accelerator table entry to KeyMnuAccels.conf file
         wxMenuItem* pMenuItem = m_pMenuBar->FindItem(globalAccels[ii].GetCommand());
@@ -930,14 +952,16 @@ int cbKeyBinder::RemoveKeyBindingsFor(const wxString& strKeyCode, wxKeyProfile* 
 {
     int knt = 0;
     wxCmd* p_wxCmd = 0;
-    do{
+    do
+    {
         p_wxCmd = pKeyprofile->GetCmdBindTo(strKeyCode);
         if (p_wxCmd)
         {
             ++knt;
             pKeyprofile->RemoveCmd(p_wxCmd);
         }
-    }while(p_wxCmd);
+    }
+    while(p_wxCmd);
     return knt;
 }
 // ----------------------------------------------------------------------------
@@ -1040,20 +1064,22 @@ wxString cbKeyBinder::FindAppPath(const wxString& argv0, const wxString& cwd, co
 #endif
 
     wxString argv0Str = argv0;
-    #if defined(__WXMSW__)
-        do{
-            if (argv0Str.Contains(wxT(".exe")) ) break;
-            if (argv0Str.Contains(wxT(".bat")) ) break;
-            if (argv0Str.Contains(wxT(".cmd")) ) break;
-            argv0Str.Append(wxT(".exe"));
-        }while(0);
-    #endif
+#if defined(__WXMSW__)
+    do
+    {
+        if (argv0Str.Contains(wxT(".exe")) ) break;
+        if (argv0Str.Contains(wxT(".bat")) ) break;
+        if (argv0Str.Contains(wxT(".cmd")) ) break;
+        argv0Str.Append(wxT(".exe"));
+    }
+    while(0);
+#endif
 
     if (wxIsAbsolutePath(argv0Str))
     {
-        #if defined(LOGGING)
+#if defined(LOGGING)
         LOGIT( _T("FindAppPath: AbsolutePath[%s]"), wxPathOnly(argv0Str).GetData() );
-        #endif
+#endif
         return wxPathOnly(argv0Str);
     }
     else
@@ -1066,9 +1092,9 @@ wxString cbKeyBinder::FindAppPath(const wxString& argv0, const wxString& cwd, co
         str = currentDir + argv0Str;
         if (wxFileExists(str))
         {
-            #if defined(LOGGING)
+#if defined(LOGGING)
             LOGIT( _T("FindAppPath: RelativePath[%s]"), wxPathOnly(str).GetData() );
-            #endif
+#endif
             return wxPathOnly(str);
         }
     }
@@ -1081,16 +1107,16 @@ wxString cbKeyBinder::FindAppPath(const wxString& argv0, const wxString& cwd, co
     str = pathList.FindAbsoluteValidPath(argv0Str);
     if (!str.IsEmpty())
     {
-        #if defined(LOGGING)
+#if defined(LOGGING)
         LOGIT( _T("FindAppPath: SearchPath[%s]"), wxPathOnly(str).GetData() );
-        #endif
+#endif
         return wxPathOnly(str);
     }
 
     // Failed
-     #if defined(LOGGING)
-     LOGIT(  _T("FindAppPath: Failed, returning cwd") );
-     #endif
+#if defined(LOGGING)
+    LOGIT(  _T("FindAppPath: Failed, returning cwd") );
+#endif
     return wxEmptyString;
     //return cwd;
 }
@@ -1137,7 +1163,7 @@ wxArrayString cbKeyBinder::GetArrayFromStrings(const wxString& text, const wxStr
             part.Trim(true);
         }
         //-if (!part.IsEmpty()) keybinder needs the empty strings
-            out.Add(part);
+        out.Add(part);
     }
     return out;
 }

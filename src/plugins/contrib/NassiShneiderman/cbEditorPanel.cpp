@@ -88,11 +88,11 @@ bool cbEditorPanel::SaveAs()
         Path = mgr->Read(_T("/file_dialogs/save_file_as/directory"), Path);
 
     wxFileDialog dlg(Manager::Get()->GetAppWindow(),
-                      _("Save file"),
-                      Path,
-                      fname.GetFullName(),
-                      m_filecontent->GetWildcard(),
-                      wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+                     _("Save file"),
+                     Path,
+                     fname.GetFullName(),
+                     m_filecontent->GetWildcard(),
+                     wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK) // cancelled out
     {

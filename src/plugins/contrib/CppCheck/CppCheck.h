@@ -38,9 +38,9 @@ private:
     //{ CppCheck
     struct SCppCheckAttribs
     {
-      wxString InputFileName;
-      wxString IncludeList;
-      wxString DefineList;
+        wxString InputFileName;
+        wxString IncludeList;
+        wxString DefineList;
     };
     typedef struct SCppCheckAttribs TCppCheckAttribs;
 

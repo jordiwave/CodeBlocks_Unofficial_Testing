@@ -20,7 +20,8 @@
 //----------------------------------------------------------------------------
 // Consts
 //----------------------------------------------------------------------------
-enum {
+enum
+{
     wxCHART_NOCOLOR      = 0x00UL,
     wxCHART_BLACK        = 0x000000UL,
     wxCHART_RED          = 0x0000FFUL,
@@ -60,15 +61,15 @@ class WXDLLIMPEXP_CHART wxChartColors
 {
 
 public:
-	static ChartColor GetColor();
+    static ChartColor GetColor();
 
     // Get shadow Color for 3D part of chart
     //--------------------------------------
     static ChartColor GetDarkColor(ChartColor c, int step);
 
 private:
-	static ChartColor vColors[];
-	static size_t colPos;
+    static ChartColor vColors[];
+    static size_t colPos;
 };
 
 

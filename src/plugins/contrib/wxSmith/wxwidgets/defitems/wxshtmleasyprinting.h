@@ -25,19 +25,19 @@
 /** \brief Class for wxHyperlinkCtrl widget */
 class wxsHtmlEasyPrinting: public wxsTool
 {
-    public:
+public:
 
-        wxsHtmlEasyPrinting(wxsItemResData* Data);
+    wxsHtmlEasyPrinting(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual void OnEnumToolProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual void OnEnumToolProperties(long Flags);
 
-        wxString     m_sHeader;                    //!< The header text.
-        wxString     m_sFooter;                    //!< The footer text.
-        long            m_iHeaderPages;        //!< The pages on which the header should appear.
-        long            m_iFooterPages;        //!< The pages on which the footer should appear.
+    wxString     m_sHeader;                    //!< The header text.
+    wxString     m_sFooter;                    //!< The footer text.
+    long            m_iHeaderPages;        //!< The pages on which the header should appear.
+    long            m_iFooterPages;        //!< The pages on which the footer should appear.
 };
 
 

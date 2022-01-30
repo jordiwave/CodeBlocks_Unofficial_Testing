@@ -28,26 +28,29 @@
 /** \brief Class represening wxToolBar */
 class wxsToolBar: public wxsTool
 {
-    public:
+public:
 
-        wxsToolBar(wxsItemResData* Data);
+    wxsToolBar(wxsItemResData* Data);
 
-    protected:
+protected:
 
-        virtual void OnBuildCreatingCode();
-        virtual void OnEnumToolProperties(long Flags);
-        virtual bool OnIsPointer() { return true; }
-        virtual bool OnCanAddToResource(wxsItemResData* Data,bool ShowMessage);
-        virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
-        virtual bool OnMouseDClick(wxWindow* Preview,int PosX,int PosY);
-        virtual bool OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra);
+    virtual void OnBuildCreatingCode();
+    virtual void OnEnumToolProperties(long Flags);
+    virtual bool OnIsPointer()
+    {
+        return true;
+    }
+    virtual bool OnCanAddToResource(wxsItemResData* Data,bool ShowMessage);
+    virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
+    virtual bool OnMouseDClick(wxWindow* Preview,int PosX,int PosY);
+    virtual bool OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra);
 
-        wxsSizeData m_BitmapSize;
-        wxsSizeData m_Margins;
-        long        m_Packing;
-        long        m_Separation;
+    wxsSizeData m_BitmapSize;
+    wxsSizeData m_Margins;
+    long        m_Packing;
+    long        m_Separation;
 
-        friend class wxsToolBarEditor;
+    friend class wxsToolBarEditor;
 };
 
 

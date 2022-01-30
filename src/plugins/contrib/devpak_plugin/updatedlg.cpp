@@ -54,25 +54,25 @@ END_EVENT_TABLE()
 
 UpdateDlg::UpdateDlg(wxWindow* parent)
     : m_Recs(0),
-    m_RecsCount(0),
-    m_CurrFileSize(0),
-    m_LastBlockSize(0),
-    m_HasUpdated(false),
-    m_FirstTimeCheck(true),
-    m_Net(this, idNet, _T("http://devpaks.sourceforge.net/"))
+      m_RecsCount(0),
+      m_CurrFileSize(0),
+      m_LastBlockSize(0),
+      m_HasUpdated(false),
+      m_FirstTimeCheck(true),
+      m_Net(this, idNet, _T("http://devpaks.sourceforge.net/"))
 {
-	//ctor
-	wxXmlResource::Get()->LoadObject(this, parent, _T("MainFrame"),_T("wxScrollingDialog"));
-	CreateListColumns();
+    //ctor
+    wxXmlResource::Get()->LoadObject(this, parent, _T("MainFrame"),_T("wxScrollingDialog"));
+    CreateListColumns();
     FillServers();
-	UpdateStatus(_("Ready"), 0);
+    UpdateStatus(_("Ready"), 0);
 }
 
 UpdateDlg::~UpdateDlg()
 {
-	//dtor
-	delete[] m_Recs;
-	m_RecsCount = 0;
+    //dtor
+    delete[] m_Recs;
+    m_RecsCount = 0;
 }
 
 void UpdateDlg::EndModal(int retCode)
@@ -116,7 +116,8 @@ void UpdateDlg::AddRecordToList(UpdateRec* rec)
     lst->SetItem(idx, 4, rec->revision);
 }
 
-wxString UpdateDlg::GetListColumnText(int idx, int col) {
+wxString UpdateDlg::GetListColumnText(int idx, int col)
+{
     wxListCtrl* lst = XRCCTRL(*this, "lvFiles", wxListCtrl);
     int index = idx == -1 ? lst->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED) : idx;
     wxListItem info;
@@ -370,23 +371,23 @@ bool UpdateDlg::FilterRec(UpdateRec* rec)
     wxComboBox* cmb = XRCCTRL(*this, "cmbFilter", wxComboBox);
     switch (cmb->GetSelection())
     {
-        case 0: // All
-            return true;
+    case 0: // All
+        return true;
 
-        case 1: // Installed
-            return rec->installed;
+    case 1: // Installed
+        return rec->installed;
 
-        case 2: // installed with update available
-            return rec->installed && rec->version != rec->installed_version;
+    case 2: // installed with update available
+        return rec->installed && rec->version != rec->installed_version;
 
-        case 3: // downloaded but not installed
-            return rec->downloaded && !rec->installed;
+    case 3: // downloaded but not installed
+        return rec->downloaded && !rec->installed;
 
-        case 4: // not installed
-            return !rec->downloaded && !rec->installed;
+    case 4: // not installed
+        return !rec->downloaded && !rec->installed;
 
-        default:
-            return false;
+    default:
+        return false;
     }
     return false; // doesn't reach here
 }
@@ -438,7 +439,7 @@ void UpdateDlg::DownloadFile(bool dontInstall)
     if (wxFileExists(GetPackagePath() + rec->local_file))
     {
         if (wxMessageBox(_("This file already exists!\nAre you sure you want to download it again?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO &&
-            rec->installable)
+                rec->installable)
         {
             if (!dontInstall && wxMessageBox(_("Do you want to force-install it?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxYES)
                 InstallFile();
@@ -709,12 +710,12 @@ void UpdateDlg::OnDownloadEnded(wxCommandEvent& event)
         {
             if (rec->bytes != m_CurrFileSize)
                 wxMessageBox(_("File size mismatch for ") + event.GetString() + _("!\n\n"
-                            "This, usually, means one of three things:\n"
-                            "1) The reported size in the update list is wrong. The DevPak might still be valid.\n"
-                            "2) The file's location returned a web error-page. Invalid DevPak...\n"
-                            "3) The file is corrupt...\n\n"
-                            "You can try to install it anyway. If it is not a valid DevPak, the operation will fail."),
-                            _("Warning"), wxICON_WARNING);
+                             "This, usually, means one of three things:\n"
+                             "1) The reported size in the update list is wrong. The DevPak might still be valid.\n"
+                             "2) The file's location returned a web error-page. Invalid DevPak...\n"
+                             "3) The file is corrupt...\n\n"
+                             "You can try to install it anyway. If it is not a valid DevPak, the operation will fail."),
+                             _("Warning"), wxICON_WARNING);
         }
         if (rec && rec->installable && wxMessageBox(_("Do you want to install ") + event.GetString() + _(" now?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxYES)
             InstallFile();

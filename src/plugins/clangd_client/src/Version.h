@@ -30,14 +30,14 @@
 
 #define LOGIT wxLogDebug
 #if defined(LOGGING)
- #define LOGGING 1
- #undef LOGIT
- #define LOGIT wxLogMessage
- #define TRAP asm("int3")
+#define LOGGING 1
+#undef LOGIT
+#define LOGIT wxLogMessage
+#define TRAP asm("int3")
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.10 2022/01/22")
+#define VERSION wxT("0.2.99 2022/01/28")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -46,23 +46,52 @@
 class AppVersion
 // ----------------------------------------------------------------------------
 {
-    public:
-        AppVersion() { m_version = VERSION;}
-       ~AppVersion(){};
+public:
+    AppVersion()
+    {
+        m_version = VERSION;
+    }
+    ~AppVersion() {};
 
-    wxString GetVersion(){return m_version;}
+    wxString GetVersion()
+    {
+        return m_version;
+    }
 
     wxString m_version;
     wxString m_AppName;
-    protected:
-    private:
+protected:
+private:
 };
 
 #endif // VERSION_H
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
+//0.2.99     2022/01/26 ac
+//          Major refactor of code arround the clang/clangd/clang.exe/clangd.exe usage
+//          Fix bugs with auto detection and refactor some areas to simplify the code
+//          Allow spaces in paths in clangx executables
+//          Refactor clangx version checking to move it into ClangLocator.h
+//          Update clangd_client_wx31_64.cbp to have two targers, one for the dll & zip and the other for the zip & dll & cbplugin. The
+//              default is the target for the dll & zip only.
+//          Modified the clsettings.xrc to split the clang.exe and clangd.exe to have their own entry.
+//          Modified the clsettings.xrc to add a auto detect button to detect both clang.exe and clangd.exe.
+//0.2.11    2022/01/26 ph
+//          Add code to check for libcodecompletion.so existence in IsOldCC_Enabled()
+//          clangd_client_wx30-unix.cbp for image zipping to:
+//              <Add after="cd src/resources && zip -rq9 ../../clangd_client.zip images && cd ../.." />
+//              Thanks Andrew.
+//          Remove usage/dependency on ccmanager's Settings/Editor/Code Completion checkbox.
+//          Beef up verification that old CodeCompletion plugin is loaded/missing/enabled/disabled
+//              code in ctor and OnAttach() function. This solves the "enable clangd_client" crash
+//              when old CodeCompletion is already enabled or enabled after clangd_client is enabled.
+//              Particles cannot possess the same space at the same time. And, it seems, that's also true
+//              of information.
 //0.2.10
+//          2022/01/24 ph
+//          Dont output wxUniChar in wxString::Format causing assert in DoValidateUTF8data()
+//              when internationalization is enabled.
 //          2022/01/22 ph
 //          Assure image folder is in first level of clangd_client.zip file
 //          Remove some wxSafeShowMessage() that were used for debugging
@@ -412,5 +441,5 @@ class AppVersion
 //          One-Clangd-per-project implementation
 //          LSP messages log implementation
 //  0.0.04  2021/01/9
-//          Optimized UpdateCompileCommands to only write when file is changed.
+//          Optimized UpdateCompileCommands.json file to only update when file is changed.
 //          Fixed LSP diagnostics log to not interfere with Search results log

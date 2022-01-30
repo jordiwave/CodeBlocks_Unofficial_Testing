@@ -2,113 +2,113 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Clangd_Client-wx31_64" />
+		<Option title="Clangd_Client-wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+		<Option default_target="Clangd_Client-wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Clangd_Client-wx31_64">
-				<Option output="bin/Clangd_Client" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="bin31_64" />
-				<Option object_output=".objs31_64" />
-				<Option external_deps="$(TARGET_DEVEL_DIR)/src/devel31_64/libcodeblocks.a;" />
+			<Target title="Clangd_Client-wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)">
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/clangd_client" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/clangd_client" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose  /p cbDebug315" />
-				<Option host_application="$(TARGET_DEVEL_DIR)/src/devel31_64/codeblocks.exe" />
+				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
-				<Option projectLinkerOptionsRelation="1" />
-				<Compiler>
-					<Add option="-DBUILDING_PLUGIN" />
-					<Add option="-DCC_NO_COLLAPSE_ITEM" />
-					<Add option="-DLOGGING" />
-					<Add option="-DDONT_SHOW_SERVER_CONSOLE" />
-					<Add option="-Dcb_DEBUG" />
-					<Add directory="$(TARGET_DEVEL_DIR)/src/include" />
-					<Add directory="$(TARGET_DEVEL_DIR)/src/sdk/wxscintilla/include/" />
-					<Add directory="$(TARGET_DEVEL_DIR)/src/include/tinyxml/" />
-					<Add directory="$(PROJECT_DIR)/src/LSPclient/include" />
-					<Add directory="$(PROJECT_DIR)/src" />
-					<Add directory="src/LSPclient" />
-					<Add directory="src/winprocess" />
-					<Add directory="src/winprocess/asyncprocess" />
-					<Add directory="src/winprocess/misc" />
-				</Compiler>
-				<Linker>
-					<Add option="-Wl,--enable-auto-image-base" />
-					<Add option="-Wl,--add-stdcall-alias" />
-					<Add option="-Wl,--enable-auto-import" />
-					<Add option="-Wl,--no-undefined" />
-					<Add option="-mthreads" />
-					<Add library="codeblocks" />
-					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="$(TARGET_DEVEL_DIR)/src/devel31_64" />
-				</Linker>
 				<ExtraCommands>
-					<!-- <Add before="cmd /c @echo TARGET_OUTPUT_DIR: $(TARGET_OUTPUT_DIR)" /> -->
-					<!-- debugging - <Add before="cmd /c echo CODEBLOCKS: $(CODEBLOCKS)" /> -->
-					<!-- debugging - <Add before="cmd /c echo TARGET_DEVEL_DIR: $(TARGET_DEVEL_DIR)" /> -->
-					<!-- debugging - <Add before="cmd /c echo PROJECT_DIR: $(PROJECT_DIR)" /> -->
-					<!-- debugging - <Add before="g++ --version" /> -->
+					<!-- Create output director and delete output file -->
+					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
+					<Add before="cmd /c if exist $(TARGET_OUTPUT_FILE) del $(TARGET_OUTPUT_FILE)" />
 
-					<Add after="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-
-					<!-- Create the clangd_client.zip file -->
-					<Add after="cmd /c if exist clangd_client.zip del clangd_client.zip" />
-					<Add after="zip -jq9 clangd_client.zip src\resources\manifest.xml src/resources/*.xrc" />
-					<Add after='cmd /c "cd src\resources &amp;&amp; zip -rq9 ..\..\clangd_client.zip images"' />
-
-					<!-- Create the clangd_client.cbplugin file using the stripped dll -->
-					<!-- clangd_client.cbplugin is NOT BUILT BY DEFAULT as requested by PECAN
-						<Add after="cmd /c if exist clangd_client.cbplugin del clangd_client.cbplugin" />
-						<Add after="cmd /c copy bin\clangd_client.dll" />
-						<Add after="strip clangd_client.dll" />
-						<Add after="zip -jq9 clangd_client.cbplugin clangd_client.dll  clangd_client.zip  documentation-install/*.txt" />
-						<Add after="cmd /c del clangd_client.dll" />
-					-->
+					<!-- the following three lines are common between the two targets -->
+					<Add after="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\clangd_client.zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\clangd_client.zip" />
+					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\clangd_client.zip src\resources\manifest.xml src/resources/*.xrc" />
+					<Add after='cmd /c &quot;cd src\resources &amp;&amp; zip -rq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\clangd_client.zip images&quot;' />
 
 					<Mode after="always" />
 				</ExtraCommands>
-				<Environment>
-					<Variable name="TARGET_DEVEL_DIR" value="D:\Andrew_Development\Work_Installers\AC-WindowsInstaller" />
-					<Variable name="TARGET_DEVEL_DIR_AC" value="D:\Andrew_Development\Work_Installers\AC-WindowsInstaller" />
-					<Variable name="TARGET_DEVEL_DIR_PECAN" value="$(CODEBLOCKS)\..\.." />
-				</Environment>
 			</Target>
-			<Environment>
-				<Variable name="WX_CFG" value="" />
-				<Variable name="WX_SUFFIX" value="u" />
-				<Variable name="WX_VERSION" value="31" />
-			</Environment>
+			<Target title="Clangd_Client-wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS) and cbplugin">
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/clangd_client" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/clangd_client" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose  /p cbDebug315" />
+				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<ExtraCommands>
+					<!-- Create output director and delete output file -->
+					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
+					<Add before="cmd /c if exist $(TARGET_OUTPUT_FILE) del $(TARGET_OUTPUT_FILE)" />
+
+					<!-- the following three lines are common between the two targets -->
+					<Add after="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\clangd_client.zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\clangd_client.zip" />
+					<Add after="zip -jq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\clangd_client.zip src\resources\manifest.xml src/resources/*.xrc" />
+					<Add after='cmd /c &quot;cd src\resources &amp;&amp; zip -rq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\clangd_client.zip images&quot;' />
+
+					<!-- the following lines are specific to build the cbplugin -->
+					<Add after="cmd /c if exist clangd_client.cbplugin del clangd_client.cbplugin" />
+					<Add after="cmd /c if exist $(TARGET_OUTPUT_FILENAME) del $(TARGET_OUTPUT_FILENAME)" />
+					<Add after="cmd /c copy $(TARGET_OUTPUT_FILE) ." />
+					<Add after="strip clangd_client.dll" />
+					<Add after="zip -jq9 clangd_client.cbplugin clangd_client.dll  clangd_client.zip  documentation-install/*.txt" />
+
+					<!-- cleanup intermediate files -->
+					<Add after="cmd /c if exist clangd_client.zip del clangd_client.zip" />
+					<Add after="cmd /c if exist $(TARGET_OUTPUT_FILENAME) del $(TARGET_OUTPUT_FILENAME)" />
+
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="Clangd_Client-wx$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS);" />
+		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-std=c++17" />
-			<Add option="-g" />
-			<Add option="-m64" />
-			<Add option="$(#CB_RELEASE_TYPE)" />
+			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add option="-m$(#CB_BUILD.OSBITS)" />
+			<Add option="$(#CB_BUILD.CFLAGS)" />
 			<Add option="-pipe" />
-			<Add option="-mthreads" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
+			<Add option="-mthreads" />
+			<Add option="-fno-keep-inline-dllexport" />
+			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DNOPCH" />
 			<Add option="-DwxUSE_UNICODE" />
-			<Add option="-D_WIN64" />
-			<Add directory="$(#WX31_64.include)" />
-			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
-			<Add directory="sdk/wxscintilla/include" />
-			<Add directory="include/tinyxml" />
+			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
+			<Add directory="$(PROJECT_DIR)/src/LSPclient/include" />
+			<Add directory="$(PROJECT_DIR)/src" />
+			<Add directory="$(PROJECT_DIR)/src/LSPclient" />
+			<Add directory="$(PROJECT_DIR)/src/winprocess" />
+			<Add directory="$(PROJECT_DIR)/src/winprocess/asyncprocess" />
+			<Add directory="$(PROJECT_DIR)/src/winprocess/misc" />
+			<Add directory="$(#CB_BUILD)/include" />
+			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include/" />
+			<Add directory="$(#CB_BUILD)/include/tinyxml/" />
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(#WX31_64.include)" />
-			<Add directory="$(#WX31_64)/lib/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
 		</ResourceCompiler>
 		<Linker>
-			<Add option="-m64" />
-			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)" />
+			<Add option="-m$(#CB_BUILD.OSBITS)" />
+			<Add option="-mthreads" />
+			<Add option="-Wl,--enable-auto-image-base" />
+			<Add option="-Wl,--add-stdcall-alias" />
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-Wl,--no-undefined" />
+			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add library="codeblocks" />
+			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
 		</Linker>
 		<Unit filename="src/ClangLocator.cpp" />
 		<Unit filename="src/ClangLocator.h" />

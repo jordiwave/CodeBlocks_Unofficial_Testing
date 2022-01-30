@@ -28,29 +28,29 @@ wxString wxsTwoLongData::GetLongCode(wxsCoderContext* Context)
 {
     switch ( Context->m_Language )
     {
-        case wxsCPP:
-        {
-            return wxString::Format(_T("%ld, %ld"), Value1, Value2);
-        }
+    case wxsCPP:
+    {
+        return wxString::Format(_T("%ld, %ld"), Value1, Value2);
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsTwoLongData::GetLongCode"),Context->m_Language);
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsTwoLongData::GetLongCode"),Context->m_Language);
+    }
     }
     return wxEmptyString;
 }
 
 namespace
 {
-    // Some helper values to create compound properties
-    enum
-    {
-        DIM_DEF    = 1,
-        DIM_VALUE1 = 2,
-        DIM_VALUE2 = 3,
-    };
+// Some helper values to create compound properties
+enum
+{
+    DIM_DEF    = 1,
+    DIM_VALUE1 = 2,
+    DIM_VALUE2 = 3,
+};
 }
 
 
@@ -62,20 +62,20 @@ namespace
 
 
 wxsTwoLongProperty::wxsTwoLongProperty(
-            const wxString& PGName,
-            const wxString& PGValue1Name,
-            const wxString& PGValue2Name,
-            const wxString& DataName,
-            long _Offset,
-            long _DefaultValue1,
-            long _DefaultValue2,
-            int Priority) :
-        wxsProperty(PGName,DataName,Priority),
-        Offset(_Offset),
-        DefaultValue1(_DefaultValue1),
-        DefaultValue2(_DefaultValue2),
-        Value1Name(PGValue1Name),
-        Value2Name(PGValue2Name)
+    const wxString& PGName,
+    const wxString& PGValue1Name,
+    const wxString& PGValue2Name,
+    const wxString& DataName,
+    long _Offset,
+    long _DefaultValue1,
+    long _DefaultValue2,
+    int Priority) :
+    wxsProperty(PGName,DataName,Priority),
+    Offset(_Offset),
+    DefaultValue1(_DefaultValue1),
+    DefaultValue2(_DefaultValue2),
+    Value1Name(PGValue1Name),
+    Value2Name(PGValue2Name)
 {}
 
 
@@ -103,20 +103,20 @@ bool wxsTwoLongProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManag
 {
     switch ( Index )
     {
-        case DIM_DEF:
-            DEFVALUE = Grid->GetPropertyValue(Id).GetBool();
-            break;
+    case DIM_DEF:
+        DEFVALUE = Grid->GetPropertyValue(Id).GetBool();
+        break;
 
-        case DIM_VALUE1:
-            VALUE1 = Grid->GetPropertyValue(Id).GetLong();
-            break;
+    case DIM_VALUE1:
+        VALUE1 = Grid->GetPropertyValue(Id).GetLong();
+        break;
 
-        case DIM_VALUE2:
-            VALUE2 = Grid->GetPropertyValue(Id).GetLong();
-            break;
+    case DIM_VALUE2:
+        VALUE2 = Grid->GetPropertyValue(Id).GetLong();
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     return true;
@@ -126,36 +126,36 @@ bool wxsTwoLongProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridMana
 {
     switch ( Index )
     {
-        case DIM_DEF:
-            Grid->SetPropertyValue(Id,DEFVALUE);
-            break;
+    case DIM_DEF:
+        Grid->SetPropertyValue(Id,DEFVALUE);
+        break;
 
-        case DIM_VALUE1:
-            if ( DEFVALUE )
-            {
-                Grid->DisableProperty(Id);
-            }
-            else
-            {
-                Grid->EnableProperty(Id);
-            }
-            Grid->SetPropertyValue(Id,VALUE1);
-            break;
+    case DIM_VALUE1:
+        if ( DEFVALUE )
+        {
+            Grid->DisableProperty(Id);
+        }
+        else
+        {
+            Grid->EnableProperty(Id);
+        }
+        Grid->SetPropertyValue(Id,VALUE1);
+        break;
 
-        case DIM_VALUE2:
-            if ( DEFVALUE )
-            {
-                Grid->DisableProperty(Id);
-            }
-            else
-            {
-                Grid->EnableProperty(Id);
-            }
-            Grid->SetPropertyValue(Id,VALUE2);
-            break;
+    case DIM_VALUE2:
+        if ( DEFVALUE )
+        {
+            Grid->DisableProperty(Id);
+        }
+        else
+        {
+            Grid->EnableProperty(Id);
+        }
+        Grid->SetPropertyValue(Id,VALUE2);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
     return true;
 }
@@ -183,7 +183,7 @@ bool wxsTwoLongProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Elem
     wxString Str = cbC2U(Text);
 
     if ( !Str.BeforeFirst(_T(',')).ToLong(&VALUE1) ||
-         !Str.AfterLast(_T(',')).ToLong(&VALUE2) )
+            !Str.AfterLast(_T(',')).ToLong(&VALUE2) )
     {
         DEFVALUE = true;
         VALUE1 = -1;

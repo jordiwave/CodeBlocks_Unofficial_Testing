@@ -26,13 +26,19 @@ public: //Constructor and Destructor
     ~AutoVersioning();
 
     //Functions
-    int Configure(){ return -1; }
+    int Configure()
+    {
+        return -1;
+    }
     void BuildMenu(wxMenuBar* menuBar);
-    void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/ = 0){}
-    bool BuildToolBar(wxToolBar* /*toolBar*/){return false;}
+    void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/ = 0) {}
+    bool BuildToolBar(wxToolBar* /*toolBar*/)
+    {
+        return false;
+    }
     void UpdateVersionHeader();
     // GJH 03/03/10 Added manifest updating.
-	void UpdateManifest();
+    void UpdateManifest();
 
     //Events
     void OnAttach();

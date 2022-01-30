@@ -11,33 +11,33 @@ using std::pair;
 
 class HelpCommon
 {
-  public:
+public:
 
     // Patch by Yorgos Pagles: Add keyword case choises
     enum StringCase {Preserve=0,UpperCase,LowerCase};
 
     struct HelpFileAttrib
     {
-      wxString name;
-      bool isExecutable;
-      bool openEmbeddedViewer;
-      bool readFromIni;
-      // Patch by Yorgos Pagles: Add keyword case and default
-      // keyword substitution attributes in Help file attributes
-      StringCase keywordCase;
-      wxString defaultKeyword;
+        wxString name;
+        bool isExecutable;
+        bool openEmbeddedViewer;
+        bool readFromIni;
+        // Patch by Yorgos Pagles: Add keyword case and default
+        // keyword substitution attributes in Help file attributes
+        StringCase keywordCase;
+        wxString defaultKeyword;
 
-      HelpFileAttrib() : isExecutable(false), openEmbeddedViewer(false), readFromIni(false) { }
+        HelpFileAttrib() : isExecutable(false), openEmbeddedViewer(false), readFromIni(false) { }
     };
 
     typedef pair<wxString, HelpFileAttrib> wxStringPair;
     typedef vector<wxStringPair> HelpFilesVector;
 
-  private:
+private:
     static int m_DefaultHelpIndex;
     static int m_NumReadFromIni;
 
-  public:
+public:
     static int getDefaultHelpIndex();
     static void setDefaultHelpIndex(int index);
     static int getNumReadFromIni();
@@ -45,8 +45,8 @@ class HelpCommon
     static void LoadHelpFilesVector(HelpFilesVector &vect);
     static void SaveHelpFilesVector(HelpFilesVector &vect);
 
-	private:
-	  // Block instantiation
+private:
+    // Block instantiation
     HelpCommon();
     ~HelpCommon();
 };
@@ -55,27 +55,27 @@ class HelpCommon
 
 inline int HelpCommon::getDefaultHelpIndex()
 {
-	return m_DefaultHelpIndex;
+    return m_DefaultHelpIndex;
 }
 
 inline void HelpCommon::setDefaultHelpIndex(int index)
 {
-	m_DefaultHelpIndex = index;
+    m_DefaultHelpIndex = index;
 }
 
 inline int HelpCommon::getNumReadFromIni()
 {
-	return m_NumReadFromIni;
+    return m_NumReadFromIni;
 }
 
 inline void HelpCommon::setNumReadFromIni(int num)
 {
-	m_NumReadFromIni = num;
+    m_NumReadFromIni = num;
 }
 
 inline bool operator == (const HelpCommon::wxStringPair &str_pair, const wxString &value)
 {
-	return str_pair.first.CmpNoCase(value) == 0;
+    return str_pair.first.CmpNoCase(value) == 0;
 }
 
 #endif // HELP_COMMON_H

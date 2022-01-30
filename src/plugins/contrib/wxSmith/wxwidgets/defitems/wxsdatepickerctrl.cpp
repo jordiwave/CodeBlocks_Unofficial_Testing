@@ -26,22 +26,22 @@
 
 namespace
 {
-    wxsRegisterItem<wxsDatePickerCtrl> Reg(_T("DatePickerCtrl"),wxsTWidget,_T("Advanced"),130);
+wxsRegisterItem<wxsDatePickerCtrl> Reg(_T("DatePickerCtrl"),wxsTWidget,_T("Advanced"),130);
 
-    WXS_ST_BEGIN(wxsDatePickerCtrlStyles,_T("wxDP_DEFAULT|wxDP_SHOWCENTURY"))
-        WXS_ST_CATEGORY("wxDatePickerCtrl")
-        WXS_ST(wxDP_DEFAULT)
-        WXS_ST(wxDP_SPIN)
-        WXS_ST(wxDP_DROPDOWN)
-        WXS_ST(wxDP_ALLOWNONE)
-        WXS_ST(wxDP_SHOWCENTURY)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsDatePickerCtrlStyles,_T("wxDP_DEFAULT|wxDP_SHOWCENTURY"))
+WXS_ST_CATEGORY("wxDatePickerCtrl")
+WXS_ST(wxDP_DEFAULT)
+WXS_ST(wxDP_SPIN)
+WXS_ST(wxDP_DROPDOWN)
+WXS_ST(wxDP_ALLOWNONE)
+WXS_ST(wxDP_SHOWCENTURY)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsDatePickerCtrlEvents)
-        WXS_EVI(EVT_DATE_CHANGED,wxEVT_DATE_CHANGED,wxDateEvent,Changed)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsDatePickerCtrlEvents)
+WXS_EVI(EVT_DATE_CHANGED,wxEVT_DATE_CHANGED,wxDateEvent,Changed)
+WXS_EV_END()
 }
 
 /*! \brief Ctor
@@ -66,20 +66,20 @@ void wxsDatePickerCtrl::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/datectrl.h>"),GetInfo().ClassName,0);
-            AddHeader(_T("<wx/dateevt.h>"),_T("wxDateEvent"),0);
-            Codef(_T("%C(%W, %I, wxDefaultDateTime, %P, %S, %T, %V, %N);\n"));
-            BuildSetupWindowCode();
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/datectrl.h>"),GetInfo().ClassName,0);
+        AddHeader(_T("<wx/dateevt.h>"),_T("wxDateEvent"),0);
+        Codef(_T("%C(%W, %I, wxDefaultDateTime, %P, %S, %T, %V, %N);\n"));
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsDatePickerCtrl::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsDatePickerCtrl::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

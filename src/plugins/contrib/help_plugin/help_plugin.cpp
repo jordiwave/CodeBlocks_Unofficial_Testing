@@ -9,22 +9,22 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-  #include <wx/filename.h>
-  #include <wx/fs_zip.h>
-  #include <wx/intl.h>
-  #include <wx/menu.h>
-  #include <wx/process.h>
-  #include <wx/xrc/xmlres.h>
-  #include "cbeditor.h"
-  #include "cbproject.h"
-  #include "configmanager.h"
-  #include "editormanager.h"
-  #include "globals.h"
-  #include "logmanager.h"
-  #include "macrosmanager.h"
-  #include "manager.h"
-  #include "projectmanager.h"
-  #include "scriptingmanager.h"
+#include <wx/filename.h>
+#include <wx/fs_zip.h>
+#include <wx/intl.h>
+#include <wx/menu.h>
+#include <wx/process.h>
+#include <wx/xrc/xmlres.h>
+#include "cbeditor.h"
+#include "cbproject.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "globals.h"
+#include "logmanager.h"
+#include "macrosmanager.h"
+#include "manager.h"
+#include "projectmanager.h"
+#include "scriptingmanager.h"
 #endif
 
 #include <vector>
@@ -56,8 +56,8 @@ int idHelpMenus[MAX_HELP_ITEMS];
 // Register the plugin
 namespace
 {
-    PluginRegistrant<HelpPlugin> reg(_T("HelpPlugin"));
-    int idViewMANViewer = wxNewId();
+PluginRegistrant<HelpPlugin> reg(_T("HelpPlugin"));
+int idViewMANViewer = wxNewId();
 };
 
 BEGIN_EVENT_TABLE(HelpPlugin, cbPlugin)
@@ -68,53 +68,53 @@ END_EVENT_TABLE()
 #ifdef __WXMSW__
 namespace
 {
-  // This little class helps to fix a problem when the help file is CHM and the
-  // keyword throws many results
-  class LaunchCHMThread : public wxThread
-  {
-    private:
-      wxCHMHelpController m_helpctl;
-      wxString m_filename;
-      wxString m_keyword;
+// This little class helps to fix a problem when the help file is CHM and the
+// keyword throws many results
+class LaunchCHMThread : public wxThread
+{
+private:
+    wxCHMHelpController m_helpctl;
+    wxString m_filename;
+    wxString m_keyword;
 
-    public:
-      LaunchCHMThread(const wxString &file, const wxString &keyword);
-      ExitCode Entry();
-  };
+public:
+    LaunchCHMThread(const wxString &file, const wxString &keyword);
+    ExitCode Entry();
+};
 
-  LaunchCHMThread::LaunchCHMThread(const wxString &file, const wxString &keyword)
-  : m_filename(file), m_keyword(keyword)
-  {
+LaunchCHMThread::LaunchCHMThread(const wxString &file, const wxString &keyword)
+    : m_filename(file), m_keyword(keyword)
+{
     m_helpctl.Initialize(file);
-  }
+}
 
-  wxThread::ExitCode LaunchCHMThread::Entry()
-  {
+wxThread::ExitCode LaunchCHMThread::Entry()
+{
     m_helpctl.KeywordSearch(m_keyword);
     return 0;
-  }
+}
 }
 #endif
 
 HelpPlugin::HelpPlugin()
-: m_pMenuBar(0), m_LastId(0), m_manFrame(0)
+    : m_pMenuBar(0), m_LastId(0), m_manFrame(0)
 {
-  //ctor
-  if (!Manager::LoadResource(_T("help_plugin.zip")))
-    NotifyMissingFile(_T("help_plugin.zip"));
+    //ctor
+    if (!Manager::LoadResource(_T("help_plugin.zip")))
+        NotifyMissingFile(_T("help_plugin.zip"));
 
-  // initialize IDs for Help and popup menu
-  for (int i = 0; i < MAX_HELP_ITEMS; ++i)
-  {
-    idHelpMenus[i] = wxNewId();
+    // initialize IDs for Help and popup menu
+    for (int i = 0; i < MAX_HELP_ITEMS; ++i)
+    {
+        idHelpMenus[i] = wxNewId();
 
-    // dynamically connect the events
-    Connect(idHelpMenus[i], -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &HelpPlugin::OnFindItem);
-  }
+        // dynamically connect the events
+        Connect(idHelpMenus[i], -1, wxEVT_COMMAND_MENU_SELECTED,
+                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                &HelpPlugin::OnFindItem);
+    }
 
-  m_LastId = idHelpMenus[0];
+    m_LastId = idHelpMenus[0];
 }
 
 HelpPlugin::~HelpPlugin()
@@ -149,12 +149,12 @@ void HelpPlugin::OnAttach()
     const double uiScale = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::Main);
 
     const wxString bmpPrefix = ConfigManager::GetDataFolder()
-                             + wxString::Format(wxT("/help_plugin.zip#zip:/images/%dx%d/"),
-                                                imageSize, imageSize);
+                               + wxString::Format(wxT("/help_plugin.zip#zip:/images/%dx%d/"),
+                                       imageSize, imageSize);
     wxBitmap zoominbmp = cbLoadBitmapScaled(bmpPrefix + wxT("zoomin.png"), wxBITMAP_TYPE_PNG,
                                             uiScale);
     wxBitmap zoomoutbmp = cbLoadBitmapScaled(bmpPrefix + wxT("zoomout.png"), wxBITMAP_TYPE_PNG,
-                                             uiScale);
+                          uiScale);
 
     m_manFrame = new MANFrame(Manager::Get()->GetAppWindow(), wxID_ANY, zoominbmp, zoomoutbmp);
     SetManPageDirs(m_manFrame);
@@ -179,7 +179,7 @@ void HelpPlugin::OnAttach()
 
 cbConfigurationPanel* HelpPlugin::GetConfigurationPanel(wxWindow* parent)
 {
-  return new HelpConfigDialog(parent, this);
+    return new HelpConfigDialog(parent, this);
 }
 
 void HelpPlugin::Reload()
@@ -189,7 +189,7 @@ void HelpPlugin::Reload()
     HelpCommon::HelpFilesVector::iterator it;
 
     for (it = m_Vector.begin(); it != m_Vector.end(); ++it)
-      RemoveFromHelpMenu(idHelpMenus[--counter], it->first);
+        RemoveFromHelpMenu(idHelpMenus[--counter], it->first);
 
     // reload configuration (saved in the config dialog)
     HelpCommon::LoadHelpFilesVector(m_Vector);
@@ -254,26 +254,26 @@ void HelpPlugin::BuildMenu(wxMenuBar *menuBar)
 
 void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const FileTreeData* /*data*/)
 {
-  if (!menu || !IsAttached() || !m_Vector.size())
-    return;
+    if (!menu || !IsAttached() || !m_Vector.size())
+        return;
 
-  if (type == mtEditorManager)
-  {
-    // add entries in popup menu
-    int counter = 0;
-    HelpCommon::HelpFilesVector::iterator it;
-    wxMenu *sub_menu = new wxMenu;
+    if (type == mtEditorManager)
+    {
+        // add entries in popup menu
+        int counter = 0;
+        HelpCommon::HelpFilesVector::iterator it;
+        wxMenu *sub_menu = new wxMenu;
 
-    for (it = m_Vector.begin(); it != m_Vector.end(); ++it)
-      AddToPopupMenu(sub_menu, idHelpMenus[counter++], it->first, it->second.readFromIni);
+        for (it = m_Vector.begin(); it != m_Vector.end(); ++it)
+            AddToPopupMenu(sub_menu, idHelpMenus[counter++], it->first, it->second.readFromIni);
 
-    const wxString label = _("&Locate in");
-    wxMenuItem *locate_in_menu = new wxMenuItem(0, wxID_ANY, label, _T(""), wxITEM_NORMAL);
-    locate_in_menu->SetSubMenu(sub_menu);
+        const wxString label = _("&Locate in");
+        wxMenuItem *locate_in_menu = new wxMenuItem(0, wxID_ANY, label, _T(""), wxITEM_NORMAL);
+        locate_in_menu->SetSubMenu(sub_menu);
 
-    const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
-    menu->Insert(position, locate_in_menu);
-  }
+        const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
+        menu->Insert(position, locate_in_menu);
+    }
 }
 
 bool HelpPlugin::BuildToolBar(wxToolBar * /*toolBar*/)
@@ -299,65 +299,65 @@ void HelpPlugin::AddToHelpMenu(int id, const wxString &help, cb_unused bool from
 
 void HelpPlugin::RemoveFromHelpMenu(int id, const wxString & /*help*/)
 {
-  if (!m_pMenuBar)
-    return;
+    if (!m_pMenuBar)
+        return;
 
-  int pos = m_pMenuBar->FindMenu(_("&Help"));
+    int pos = m_pMenuBar->FindMenu(_("&Help"));
 
-  if (pos != wxNOT_FOUND)
-  {
-    wxMenu *helpMenu = m_pMenuBar->GetMenu(pos);
-    wxMenuItem *mi = helpMenu->Remove(id);
-
-    if (id)
-      delete mi;
-
-    // remove separator too (if it's the last thing left)
-    mi = helpMenu->FindItemByPosition(helpMenu->GetMenuItemCount() - 1);
-
-    if (mi && (mi->GetKind() == wxITEM_SEPARATOR || mi->GetItemLabelText().IsEmpty()))
+    if (pos != wxNOT_FOUND)
     {
-      helpMenu->Remove(mi);
-      delete mi;
+        wxMenu *helpMenu = m_pMenuBar->GetMenu(pos);
+        wxMenuItem *mi = helpMenu->Remove(id);
+
+        if (id)
+            delete mi;
+
+        // remove separator too (if it's the last thing left)
+        mi = helpMenu->FindItemByPosition(helpMenu->GetMenuItemCount() - 1);
+
+        if (mi && (mi->GetKind() == wxITEM_SEPARATOR || mi->GetItemLabelText().IsEmpty()))
+        {
+            helpMenu->Remove(mi);
+            delete mi;
+        }
     }
-  }
 }
 
 void HelpPlugin::AddToPopupMenu(wxMenu *menu, int id, const wxString &help, bool
 #ifdef __WXMSW__
-    fromIni
+                                fromIni
 #endif
-)
+                               )
 {
-  if (!help.IsEmpty())
-  {
-#ifdef __WXMSW__
-    if (fromIni)
+    if (!help.IsEmpty())
     {
-      wxMenuItem *mitem = new wxMenuItem(0, id, help);
-      wxFont &font = mitem->GetFont();
-      font.SetWeight(wxFONTWEIGHT_BOLD);
-      mitem->SetFont(font);
-      menu->Append(mitem);
-    }
-    else
+#ifdef __WXMSW__
+        if (fromIni)
+        {
+            wxMenuItem *mitem = new wxMenuItem(0, id, help);
+            wxFont &font = mitem->GetFont();
+            font.SetWeight(wxFONTWEIGHT_BOLD);
+            mitem->SetFont(font);
+            menu->Append(mitem);
+        }
+        else
 #endif
-      menu->Append(id, help);
-  }
+            menu->Append(id, help);
+    }
 }
 
 HelpCommon::HelpFileAttrib HelpPlugin::HelpFileFromId(int id)
 {
-  int counter = 0;
-  HelpCommon::HelpFilesVector::iterator it;
+    int counter = 0;
+    HelpCommon::HelpFilesVector::iterator it;
 
-  for (it = m_Vector.begin(); it != m_Vector.end(); ++it, ++counter)
-  {
-    if (idHelpMenus[counter] == id)
-      return it->second;
-  }
+    for (it = m_Vector.begin(); it != m_Vector.end(); ++it, ++counter)
+    {
+        if (idHelpMenus[counter] == id)
+            return it->second;
+    }
 
-  return HelpCommon::HelpFileAttrib();
+    return HelpCommon::HelpFileAttrib();
 }
 
 void HelpPlugin::OnViewMANViewer(wxCommandEvent &event)
@@ -388,162 +388,162 @@ void HelpPlugin::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 
 void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool openEmbeddedViewer, HelpCommon::StringCase keyCase, const wxString &defkeyword, const wxString &c_keyword)
 {
-  const static wxString http_prefix(_T("http://"));
-  const static wxString man_prefix(_T("man:"));
-  wxString helpfile(c_helpfile);
+    const static wxString http_prefix(_T("http://"));
+    const static wxString man_prefix(_T("man:"));
+    wxString helpfile(c_helpfile);
 
-  // Patch by Yorgos Pagles: Use the new attributes to calculate the keyword
-  wxString keyword = c_keyword.IsEmpty() ? defkeyword : c_keyword;
+    // Patch by Yorgos Pagles: Use the new attributes to calculate the keyword
+    wxString keyword = c_keyword.IsEmpty() ? defkeyword : c_keyword;
 
-  if (keyCase == HelpCommon::UpperCase)
-    keyword.MakeUpper();
-  else if (keyCase == HelpCommon::LowerCase)
-    keyword.MakeLower();
+    if (keyCase == HelpCommon::UpperCase)
+        keyword.MakeUpper();
+    else if (keyCase == HelpCommon::LowerCase)
+        keyword.MakeLower();
 
-  helpfile.Replace(_T("$(keyword)"), keyword);
-  Manager::Get()->GetMacrosManager()->ReplaceMacros(helpfile);
+    helpfile.Replace(_T("$(keyword)"), keyword);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(helpfile);
 
-  if (isExecutable)
-  {
-    Manager::Get()->GetLogManager()->DebugLog(_T("Executing ") + helpfile);
-    wxExecute(helpfile);
-    return;
-  }
-
-  // Support C::B scripts
-  if (wxFileName(helpfile).GetExt() == _T("script"))
-  {
-    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
-    if (scriptMgr->LoadScript(helpfile))
+    if (isExecutable)
     {
-      // help scripts must contain a function with the following signature:
-      // function SearchHelp(keyword)
-      ScriptBindings::Caller caller(scriptMgr->GetVM());
-      if (!caller.CallByName1(_SC("SearchHelp"), &keyword))
-        scriptMgr->DisplayErrors(true);
+        Manager::Get()->GetLogManager()->DebugLog(_T("Executing ") + helpfile);
+        wxExecute(helpfile);
+        return;
     }
-    else
-      Manager::Get()->GetLogManager()->DebugLog(_T("Couldn't run script"));
 
-    return;
-  }
-
-  // Operate on help html file links inside embedded viewer
-  if (openEmbeddedViewer && wxFileName(helpfile).GetExt().Mid(0, 3).CmpNoCase(_T("htm")) == 0)
-  {
-    Manager::Get()->GetLogManager()->DebugLog(_T("Launching ") + helpfile);
-    cbMimePlugin* p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(helpfile);
-    if (p)
-      p->OpenFile(helpfile);
-    else
+    // Support C::B scripts
+    if (wxFileName(helpfile).GetExt() == _T("script"))
     {
-      reinterpret_cast<MANFrame *>(m_manFrame)->LoadPage(helpfile);
-      ShowMANViewer();
+        ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+        if (scriptMgr->LoadScript(helpfile))
+        {
+            // help scripts must contain a function with the following signature:
+            // function SearchHelp(keyword)
+            ScriptBindings::Caller caller(scriptMgr->GetVM());
+            if (!caller.CallByName1(_SC("SearchHelp"), &keyword))
+                scriptMgr->DisplayErrors(true);
+        }
+        else
+            Manager::Get()->GetLogManager()->DebugLog(_T("Couldn't run script"));
+
+        return;
     }
-    return;
-  }
 
-  // Operate on help http (web) links
-  if (helpfile.Mid(0, http_prefix.size()).CmpNoCase(http_prefix) == 0)
-  {
-    Manager::Get()->GetLogManager()->DebugLog(_T("Launching ") + helpfile);
-    wxLaunchDefaultBrowser(helpfile);
-    return;
-  }
+    // Operate on help html file links inside embedded viewer
+    if (openEmbeddedViewer && wxFileName(helpfile).GetExt().Mid(0, 3).CmpNoCase(_T("htm")) == 0)
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_T("Launching ") + helpfile);
+        cbMimePlugin* p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(helpfile);
+        if (p)
+            p->OpenFile(helpfile);
+        else
+        {
+            reinterpret_cast<MANFrame *>(m_manFrame)->LoadPage(helpfile);
+            ShowMANViewer();
+        }
+        return;
+    }
 
-  // Operate on man pages
-  if (helpfile.Mid(0, man_prefix.size()).CmpNoCase(man_prefix) == 0)
-  {
-    if (reinterpret_cast<MANFrame *>(m_manFrame)->SearchManPage(keyword))
-      Manager::Get()->GetLogManager()->DebugLog(_T("Couldn't find man page"));
-    else
-      Manager::Get()->GetLogManager()->DebugLog(_T("Launching man page"));
+    // Operate on help http (web) links
+    if (helpfile.Mid(0, http_prefix.size()).CmpNoCase(http_prefix) == 0)
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_T("Launching ") + helpfile);
+        wxLaunchDefaultBrowser(helpfile);
+        return;
+    }
 
-    ShowMANViewer();
-    return;
-  }
+    // Operate on man pages
+    if (helpfile.Mid(0, man_prefix.size()).CmpNoCase(man_prefix) == 0)
+    {
+        if (reinterpret_cast<MANFrame *>(m_manFrame)->SearchManPage(keyword))
+            Manager::Get()->GetLogManager()->DebugLog(_T("Couldn't find man page"));
+        else
+            Manager::Get()->GetLogManager()->DebugLog(_T("Launching man page"));
+
+        ShowMANViewer();
+        return;
+    }
 
 #ifdef __WXMSW__
-  if (helpfile.StartsWith(_T("ms-xhelp:///")))
-  {
-    Manager::Get()->GetLogManager()->DebugLog(_T("Launching ") + helpfile);
-    ShellExecute(0, 0, helpfile.c_str(), 0, 0, SW_SHOWDEFAULT);
-    return;
-  }
+    if (helpfile.StartsWith(_T("ms-xhelp:///")))
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_T("Launching ") + helpfile);
+        ShellExecute(0, 0, helpfile.c_str(), 0, 0, SW_SHOWDEFAULT);
+        return;
+    }
 #endif // __WXMSW__
 
-  wxFileName the_helpfile = wxFileName(helpfile);
-  Manager::Get()->GetLogManager()->DebugLog(_T("Help File is ") + helpfile);
+    wxFileName the_helpfile = wxFileName(helpfile);
+    Manager::Get()->GetLogManager()->DebugLog(_T("Help File is ") + helpfile);
 
-  if (!(the_helpfile.FileExists()))
-  {
-    wxString msg;
-    msg << _("Couldn't find the help file:\n")
-        << the_helpfile.GetFullPath() << _("\n")
-        << _("Do you want to run the associated program anyway?");
-    if (!(cbMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO | wxNO_DEFAULT) == wxID_YES))
-        return;
-  }
+    if (!(the_helpfile.FileExists()))
+    {
+        wxString msg;
+        msg << _("Couldn't find the help file:\n")
+            << the_helpfile.GetFullPath() << _("\n")
+            << _("Do you want to run the associated program anyway?");
+        if (!(cbMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO | wxNO_DEFAULT) == wxID_YES))
+            return;
+    }
 
-  wxString ext = the_helpfile.GetExt();
+    wxString ext = the_helpfile.GetExt();
 
 #ifdef __WXMSW__
-  // Operate on help files with keyword search (windows only)
-  if (!keyword.IsEmpty())
-  {
-    if (ext.CmpNoCase(_T("hlp")) == 0)
+    // Operate on help files with keyword search (windows only)
+    if (!keyword.IsEmpty())
     {
-      wxWinHelpController HelpCtl;
-      HelpCtl.Initialize(helpfile);
-      HelpCtl.KeywordSearch(keyword);
-      return;
-    }
+        if (ext.CmpNoCase(_T("hlp")) == 0)
+        {
+            wxWinHelpController HelpCtl;
+            HelpCtl.Initialize(helpfile);
+            HelpCtl.KeywordSearch(keyword);
+            return;
+        }
 
-    if ((ext.CmpNoCase(_T("chm")) == 0) || (ext.CmpNoCase(_T("col")) == 0))
-    {
-      LaunchCHMThread *p_thread = new LaunchCHMThread(helpfile, keyword);
-      p_thread->Create();
-      p_thread->Run();
-      return;
+        if ((ext.CmpNoCase(_T("chm")) == 0) || (ext.CmpNoCase(_T("col")) == 0))
+        {
+            LaunchCHMThread *p_thread = new LaunchCHMThread(helpfile, keyword);
+            p_thread->Create();
+            p_thread->Run();
+            return;
+        }
     }
-  }
 #endif
 
-  // Just call it with the associated program
-  wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension(ext);
+    // Just call it with the associated program
+    wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension(ext);
 
-  if (!filetype)
-  {
-    cbMessageBox(_("Couldn't find an associated program to open:\n") +
-      the_helpfile.GetFullPath(), _("Warning"), wxOK | wxICON_EXCLAMATION);
-    return;
-  }
+    if (!filetype)
+    {
+        cbMessageBox(_("Couldn't find an associated program to open:\n") +
+                     the_helpfile.GetFullPath(), _("Warning"), wxOK | wxICON_EXCLAMATION);
+        return;
+    }
 
-  wxExecute(filetype->GetOpenCommand(helpfile));
-  delete filetype;
+    wxExecute(filetype->GetOpenCommand(helpfile));
+    delete filetype;
 }
 
 void HelpPlugin::OnFindItem(wxCommandEvent &event)
 {
-  wxString text; // save here the word to lookup... if any
-  cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    wxString text; // save here the word to lookup... if any
+    cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
-  if (ed)
-  {
-    cbStyledTextCtrl *control = ed->GetControl();
-    text = control->GetSelectedText();
-
-    if (text.IsEmpty())
+    if (ed)
     {
-      int origPos = control->GetCurrentPos();
-      int start = control->WordStartPosition(origPos, true);
-      int end = control->WordEndPosition(origPos, true);
-      text = control->GetTextRange(start, end);
-    }
-  }
+        cbStyledTextCtrl *control = ed->GetControl();
+        text = control->GetSelectedText();
 
-  int id = event.GetId();
-  HelpCommon::HelpFileAttrib hfa = HelpFileFromId(id);
-  // Patch by Yorgos Pagles: Use the new keyword calculation
-  LaunchHelp(hfa.name, hfa.isExecutable, hfa.openEmbeddedViewer, hfa.keywordCase, hfa.defaultKeyword, text);
+        if (text.IsEmpty())
+        {
+            int origPos = control->GetCurrentPos();
+            int start = control->WordStartPosition(origPos, true);
+            int end = control->WordEndPosition(origPos, true);
+            text = control->GetTextRange(start, end);
+        }
+    }
+
+    int id = event.GetId();
+    HelpCommon::HelpFileAttrib hfa = HelpFileFromId(id);
+    // Patch by Yorgos Pagles: Use the new keyword calculation
+    LaunchHelp(hfa.name, hfa.isExecutable, hfa.openEmbeddedViewer, hfa.keywordCase, hfa.defaultKeyword, text);
 }

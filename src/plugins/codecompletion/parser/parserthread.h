@@ -62,7 +62,7 @@ struct ParserThreadOptions
         storeDocumentation(false),
 
         loader(nullptr)
-        {}
+    {}
 
     /** useBuffer specifies that we're not parsing a file,  but a temporary
      *  buffer. The resulting tokens will be temporary, too,
@@ -174,7 +174,10 @@ public:
       */
     bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);
 
-    wxString GetFilename() { return m_Buffer; } // used in TRACE for debug only
+    wxString GetFilename()
+    {
+        return m_Buffer;    // used in TRACE for debug only
+    }
 
 protected:
     /** specify which "class like type" we are handling: struct or class or union*/

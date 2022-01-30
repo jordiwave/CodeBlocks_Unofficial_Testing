@@ -319,11 +319,20 @@ wxsSettings::wxsSettings(wxWindow* parent,cb_unused wxWindowID id)
     m_UseI18N->SetValue(cfg->ReadBool(_T("/useI18N"),true));
     switch (cfg->ReadInt(_T("/noneI18N"),0))
     {
-      case 0: m_NoneI18N_T->SetValue(true);  break;
-      case 1: m_NoneI18NwxT->SetValue(true); break;
-      case 2: m_NoneI18N->SetValue(true);    break;
-      case 3: m_NoneI18NwxS->SetValue(true); break;
-      default:                               break;
+    case 0:
+        m_NoneI18N_T->SetValue(true);
+        break;
+    case 1:
+        m_NoneI18NwxT->SetValue(true);
+        break;
+    case 2:
+        m_NoneI18N->SetValue(true);
+        break;
+    case 3:
+        m_NoneI18NwxS->SetValue(true);
+        break;
+    default:
+        break;
     }
 
     // Creating wxsSizerExtra structure which will be filled with used data
@@ -457,25 +466,44 @@ void wxsSettings::OnApply()
 
     switch ( m_Placement->GetSelection() )
     {
-        case 0: Flags |= wxsSizerFlagsProperty::AlignLeft |
-                         wxsSizerFlagsProperty::AlignTop; break;
-        case 1: Flags |= wxsSizerFlagsProperty::AlignCenterHorizontal |
-                         wxsSizerFlagsProperty::AlignTop; break;
-        case 2: Flags |= wxsSizerFlagsProperty::AlignRight |
-                         wxsSizerFlagsProperty::AlignTop; break;
-        case 3: Flags |= wxsSizerFlagsProperty::AlignLeft |
-                         wxsSizerFlagsProperty::AlignCenterVertical; break;
-        case 4: Flags |= wxsSizerFlagsProperty::AlignCenterHorizontal |
-                         wxsSizerFlagsProperty::AlignCenterVertical; break;
-        case 5: Flags |= wxsSizerFlagsProperty::AlignRight |
-                         wxsSizerFlagsProperty::AlignCenterVertical; break;
-        case 6: Flags |= wxsSizerFlagsProperty::AlignLeft |
-                         wxsSizerFlagsProperty::AlignBottom; break;
-        case 7: Flags |= wxsSizerFlagsProperty::AlignCenterHorizontal |
-                         wxsSizerFlagsProperty::AlignBottom; break;
-        case 8: Flags |= wxsSizerFlagsProperty::AlignRight |
-                         wxsSizerFlagsProperty::AlignBottom; break;
-        default: break;
+    case 0:
+        Flags |= wxsSizerFlagsProperty::AlignLeft |
+                 wxsSizerFlagsProperty::AlignTop;
+        break;
+    case 1:
+        Flags |= wxsSizerFlagsProperty::AlignCenterHorizontal |
+                 wxsSizerFlagsProperty::AlignTop;
+        break;
+    case 2:
+        Flags |= wxsSizerFlagsProperty::AlignRight |
+                 wxsSizerFlagsProperty::AlignTop;
+        break;
+    case 3:
+        Flags |= wxsSizerFlagsProperty::AlignLeft |
+                 wxsSizerFlagsProperty::AlignCenterVertical;
+        break;
+    case 4:
+        Flags |= wxsSizerFlagsProperty::AlignCenterHorizontal |
+                 wxsSizerFlagsProperty::AlignCenterVertical;
+        break;
+    case 5:
+        Flags |= wxsSizerFlagsProperty::AlignRight |
+                 wxsSizerFlagsProperty::AlignCenterVertical;
+        break;
+    case 6:
+        Flags |= wxsSizerFlagsProperty::AlignLeft |
+                 wxsSizerFlagsProperty::AlignBottom;
+        break;
+    case 7:
+        Flags |= wxsSizerFlagsProperty::AlignCenterHorizontal |
+                 wxsSizerFlagsProperty::AlignBottom;
+        break;
+    case 8:
+        Flags |= wxsSizerFlagsProperty::AlignRight |
+                 wxsSizerFlagsProperty::AlignBottom;
+        break;
+    default:
+        break;
     }
 
     cfg->Write(_T("/defsizer/proportion"), (int)m_Proportion->GetValue());

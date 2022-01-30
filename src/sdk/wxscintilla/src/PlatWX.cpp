@@ -8,13 +8,13 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 #ifndef WX_PRECOMP
-    #include <wx/menu.h>
-    #include <wx/menu.h>
-    #include <wx/dcmemory.h>
-    #include <wx/settings.h>
+#include <wx/menu.h>
+#include <wx/menu.h>
+#include <wx/dcmemory.h>
+#include <wx/settings.h>
 #endif // WX_PRECOMP
 
 #include <ctype.h>
@@ -31,14 +31,14 @@
 #include <wx/tokenzr.h>
 #include <wx/dynlib.h>
 #if wxCHECK_VERSION(3, 0, 0)
-    #include <wx/scopedarray.h>
+#include <wx/scopedarray.h>
 #endif // wxCHECK_VERSION(3, 0, 0)
 
 /* C::B begin wx2.8 */
 // wxWidgets team has changed the names of this define. To minimize the needed changes later. I
 // just define the correct one if the old one is defined.
 #if defined(wxHAVE_RAW_BITMAP) && !defined(wxHAS_RAW_BITMAP)
-    #define wxHAS_RAW_BITMAP
+#define wxHAS_RAW_BITMAP
 #endif // defined(wxHAVE_RAW_BITMAP) && !defined(wxHAS_RAW_BITMAP)
 /* C::B end wx2.8 */
 
@@ -46,7 +46,7 @@
 #include <wx/rawbmp.h>
 #endif
 #if wxUSE_GRAPHICS_CONTEXT
-    #include <wx/dcgraph.h>
+#include <wx/dcgraph.h>
 #endif
 
 #include "Platform.h"
@@ -56,14 +56,14 @@
 #endif
 
 #if wxCHECK_VERSION(3, 1, 0) && defined(__WXMSW__) && !defined(HAVE_DIRECTWRITE_TECHNOLOGY)
-    // You need a build of wxWidgets with enabled Direct2D rendering support.
-    // Unfortunately wxWidgets doesn't enable this by default when using non-Visual studio
-    // compilers, so you have to enable it manually. To do so you have to edit the file
-    // <wxWidgets-root>/include/wx/msw/setup.h.
-    // Change "#define wxUSE_GRAPHICS_DIRECT2D 0" to "#define wxUSE_GRAPHICS_DIRECT2D wxUSE_GRAPHICS_CONTEXT".
-    // If you're rebuilding wxWidgets you might also have to edit the file
-    // <wxWidgets-root>/lib/gcc_dll/mswu/wx/setup.h.
-    #error "You need to have Direct2D capable wxWidget build to build Code::Blocks. We want to support fonts with ligatures!!!"
+// You need a build of wxWidgets with enabled Direct2D rendering support.
+// Unfortunately wxWidgets doesn't enable this by default when using non-Visual studio
+// compilers, so you have to enable it manually. To do so you have to edit the file
+// <wxWidgets-root>/include/wx/msw/setup.h.
+// Change "#define wxUSE_GRAPHICS_DIRECT2D 0" to "#define wxUSE_GRAPHICS_DIRECT2D wxUSE_GRAPHICS_CONTEXT".
+// If you're rebuilding wxWidgets you might also have to edit the file
+// <wxWidgets-root>/lib/gcc_dll/mswu/wx/setup.h.
+#error "You need to have Direct2D capable wxWidget build to build Code::Blocks. We want to support fonts with ligatures!!!"
 #endif // wxCHECK_VERSION(3, 1, 0) && defined(__WXMSW__) && !defined(HAVE_DIRECTWRITE_TECHNOLOGY)
 
 #ifdef HAVE_DIRECTWRITE_TECHNOLOGY
@@ -77,8 +77,8 @@
 #include "wx/wxscintilla.h"
 
 #ifdef __WXMSW__
-    #include <windows.h> // for GetDoubleClickTime
-    #include <wx/msw/winundef.h>
+#include <windows.h> // for GetDoubleClickTime
+#include <wx/msw/winundef.h>
 #endif
 
 /* C::B begin */
@@ -89,28 +89,33 @@ namespace Scintilla
 /* C::B end */
 #endif
 
-Point Point::FromLong(long lpoint) {
+Point Point::FromLong(long lpoint)
+{
     return Point(lpoint & 0xFFFF, lpoint >> 16);
 }
 
-wxRect wxRectFromPRectangle(PRectangle prc) {
+wxRect wxRectFromPRectangle(PRectangle prc)
+{
     wxRect r(wxRound(prc.left), wxRound(prc.top),
              wxRound(prc.Width()), wxRound(prc.Height()));
     return r;
 }
 
-PRectangle PRectangleFromwxRect(wxRect rc) {
+PRectangle PRectangleFromwxRect(wxRect rc)
+{
     return PRectangle(rc.GetLeft(), rc.GetTop(),
                       rc.GetRight()+1, rc.GetBottom()+1);
 }
 
-wxColour wxColourFromCD(ColourDesired& cd) {
+wxColour wxColourFromCD(ColourDesired& cd)
+{
     return wxColour((unsigned char)cd.GetRed(),
                     (unsigned char)cd.GetGreen(),
                     (unsigned char)cd.GetBlue());
 }
 
-wxColour wxColourFromCDandAlpha(ColourDesired& cd, int alpha) {
+wxColour wxColourFromCDandAlpha(ColourDesired& cd, int alpha)
+{
     return wxColour((unsigned char)cd.GetRed(),
                     (unsigned char)cd.GetGreen(),
                     (unsigned char)cd.GetBlue(),
@@ -143,11 +148,23 @@ public:
         return static_cast<wxFontWithAscent*>(fid);
     }
 
-    void SetAscent(int ascent) { m_ascent = ascent; }
-    int GetAscent() const { return m_ascent; }
+    void SetAscent(int ascent)
+    {
+        m_ascent = ascent;
+    }
+    int GetAscent() const
+    {
+        return m_ascent;
+    }
 
-    SurfaceData* GetSurfaceFontData() const { return m_surfaceFontData; }
-    void SetSurfaceFontData(SurfaceData* data) { m_surfaceFontData=data; }
+    SurfaceData* GetSurfaceFontData() const
+    {
+        return m_surfaceFontData;
+    }
+    void SetSurfaceFontData(SurfaceData* data)
+    {
+        m_surfaceFontData=data;
+    }
 
 private:
     int m_ascent;
@@ -166,14 +183,17 @@ int GetAscent(Font& f)
 
 } // anonymous namespace
 
-Font::Font() {
+Font::Font()
+{
     fid = 0;
 }
 
-Font::~Font() {
+Font::~Font()
+{
 }
 
-void Font::Create(const FontParameters &fp) {
+void Font::Create(const FontParameters &fp)
+{
     Release();
 
     // The minus one is done because since Scintilla uses SC_CHARSET_DEFAULT
@@ -195,24 +215,26 @@ void Font::Create(const FontParameters &fp) {
         weight = wxFONTWEIGHT_NORMAL;
 
     wxFont font(wxRound(fp.size),
-        wxFONTFAMILY_DEFAULT,
-        fp.italic ? wxFONTSTYLE_ITALIC :  wxFONTSTYLE_NORMAL,
-        weight,
-        false,
-        sci2wx(fp.faceName),
-        encoding);
+                wxFONTFAMILY_DEFAULT,
+                fp.italic ? wxFONTSTYLE_ITALIC :  wxFONTSTYLE_NORMAL,
+                weight,
+                false,
+                sci2wx(fp.faceName),
+                encoding);
     wxFontWithAscent* newFont = new wxFontWithAscent(font);
     fid = newFont;
 
 #ifdef HAVE_DIRECTWRITE_TECHNOLOGY
-    if ( fp.technology == wxSCI_TECHNOLOGY_DIRECTWRITE ) {
+    if ( fp.technology == wxSCI_TECHNOLOGY_DIRECTWRITE )
+    {
         newFont->SetSurfaceFontData(new SurfaceFontDataD2D(fp));
     }
 #endif // HAVE_DIRECTWRITE_TECHNOLOGY
 }
 
 
-void Font::Release() {
+void Font::Release()
+{
     if (fid)
         delete wxFontWithAscent::FromFID(fid);
     fid = 0;
@@ -220,7 +242,8 @@ void Font::Release() {
 
 //----------------------------------------------------------------------
 
-class SurfaceImpl : public Surface {
+class SurfaceImpl : public Surface
+{
 private:
     wxDC*       hdc;
     bool        hdcOwned;
@@ -286,11 +309,13 @@ SurfaceImpl::SurfaceImpl() :
     x(0), y(0), unicodeMode(0)
 {}
 
-SurfaceImpl::~SurfaceImpl() {
+SurfaceImpl::~SurfaceImpl()
+{
     Release();
 }
 
-void SurfaceImpl::Init(WindowID wid) {
+void SurfaceImpl::Init(WindowID wid)
+{
 #if 0
     Release();
     hdc = new wxMemoryDC();
@@ -303,12 +328,14 @@ void SurfaceImpl::Init(WindowID wid) {
 #endif
 }
 
-void SurfaceImpl::Init(SurfaceID hdc_, WindowID) {
+void SurfaceImpl::Init(SurfaceID hdc_, WindowID)
+{
     Release();
     hdc = (wxDC*)hdc_;
 }
 
-void SurfaceImpl::InitPixMap(int width, int height, Surface *surface, WindowID winid) {
+void SurfaceImpl::InitPixMap(int width, int height, Surface *surface, WindowID winid)
+{
     Release();
     if (surface)
         hdc = new wxMemoryDC(static_cast<SurfaceImpl*>(surface)->hdc);
@@ -321,26 +348,29 @@ void SurfaceImpl::InitPixMap(int width, int height, Surface *surface, WindowID w
     bitmap = new wxBitmap(width, height);
     wxUnusedVar(winid);
 #else
-/* C::B begin */
+    /* C::B begin */
 #if wxCHECK_VERSION(3, 0, 0)
     bitmap = new wxBitmap();
     bitmap->CreateScaled(width, height,wxBITMAP_SCREEN_DEPTH,((wxWindow*)winid)->GetContentScaleFactor());
 #else
     bitmap = new wxBitmap(width, height);
 #endif // wxCHECK_VERSION
-/* C::B end */
+    /* C::B end */
 #endif // __WXMSW__
     ((wxMemoryDC*)hdc)->SelectObject(*bitmap);
 }
 
 
-void SurfaceImpl::Release() {
-    if (bitmap) {
+void SurfaceImpl::Release()
+{
+    if (bitmap)
+    {
         ((wxMemoryDC*)hdc)->SelectObject(wxNullBitmap);
         delete bitmap;
         bitmap = 0;
     }
-    if (hdcOwned) {
+    if (hdcOwned)
+    {
         delete hdc;
         hdc = 0;
         hdcOwned = false;
@@ -348,50 +378,61 @@ void SurfaceImpl::Release() {
 }
 
 
-bool SurfaceImpl::Initialised() {
+bool SurfaceImpl::Initialised()
+{
     return hdc != 0;
 }
 
 
-void SurfaceImpl::PenColour(ColourDesired fore) {
+void SurfaceImpl::PenColour(ColourDesired fore)
+{
     hdc->SetPen(wxPen(wxColourFromCD(fore)));
 }
 
-void SurfaceImpl::BrushColour(ColourDesired back) {
+void SurfaceImpl::BrushColour(ColourDesired back)
+{
     hdc->SetBrush(wxBrush(wxColourFromCD(back)));
 }
 
-void SurfaceImpl::SetFont(Font &font_) {
-  if (font_.GetID()) {
-      hdc->SetFont(*((wxFont*)font_.GetID()));
+void SurfaceImpl::SetFont(Font &font_)
+{
+    if (font_.GetID())
+    {
+        hdc->SetFont(*((wxFont*)font_.GetID()));
     }
 }
 
-int SurfaceImpl::LogPixelsY() {
+int SurfaceImpl::LogPixelsY()
+{
     return hdc->GetPPI().y;
 }
 
-int SurfaceImpl::DeviceHeightFont(int points) {
+int SurfaceImpl::DeviceHeightFont(int points)
+{
     return points;
 }
 
-void SurfaceImpl::MoveTo(int x_, int y_) {
+void SurfaceImpl::MoveTo(int x_, int y_)
+{
     x = x_;
     y = y_;
 }
 
-void SurfaceImpl::LineTo(int x_, int y_) {
+void SurfaceImpl::LineTo(int x_, int y_)
+{
     hdc->DrawLine(x,y, x_,y_);
     x = x_;
     y = y_;
 }
 
-void SurfaceImpl::Polygon(Point *pts, int npts, ColourDesired fore, ColourDesired back) {
+void SurfaceImpl::Polygon(Point *pts, int npts, ColourDesired fore, ColourDesired back)
+{
     PenColour(fore);
     BrushColour(back);
     wxPoint *p = new wxPoint[npts];
 
-    for (int i=0; i<npts; i++) {
+    for (int i=0; i<npts; i++)
+    {
         p[i].x = wxRound(pts[i].x);
         p[i].y = wxRound(pts[i].y);
     }
@@ -399,19 +440,22 @@ void SurfaceImpl::Polygon(Point *pts, int npts, ColourDesired fore, ColourDesire
     delete [] p;
 }
 
-void SurfaceImpl::RectangleDraw(PRectangle rc, ColourDesired fore, ColourDesired back) {
+void SurfaceImpl::RectangleDraw(PRectangle rc, ColourDesired fore, ColourDesired back)
+{
     PenColour(fore);
     BrushColour(back);
     hdc->DrawRectangle(wxRectFromPRectangle(rc));
 }
 
-void SurfaceImpl::FillRectangle(PRectangle rc, ColourDesired back) {
+void SurfaceImpl::FillRectangle(PRectangle rc, ColourDesired back)
+{
     BrushColour(back);
     hdc->SetPen(*wxTRANSPARENT_PEN);
     hdc->DrawRectangle(wxRectFromPRectangle(rc));
 }
 
-void SurfaceImpl::FillRectangle(PRectangle rc, Surface &surfacePattern) {
+void SurfaceImpl::FillRectangle(PRectangle rc, Surface &surfacePattern)
+{
     wxBrush br;
     if (((SurfaceImpl&)surfacePattern).bitmap)
         br = wxBrush(*((SurfaceImpl&)surfacePattern).bitmap);
@@ -422,7 +466,8 @@ void SurfaceImpl::FillRectangle(PRectangle rc, Surface &surfacePattern) {
     hdc->DrawRectangle(wxRectFromPRectangle(rc));
 }
 
-void SurfaceImpl::RoundedRectangle(PRectangle rc, ColourDesired fore, ColourDesired back) {
+void SurfaceImpl::RoundedRectangle(PRectangle rc, ColourDesired fore, ColourDesired back)
+{
     PenColour(fore);
     BrushColour(back);
     hdc->DrawRoundedRectangle(wxRectFromPRectangle(rc), 4);
@@ -437,7 +482,8 @@ void SurfaceImpl::RoundedRectangle(PRectangle rc, ColourDesired fore, ColourDesi
 void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
                                  ColourDesired fill, int alphaFill,
                                  ColourDesired outline, int alphaOutline,
-                                 int /*flags*/) {
+                                 int /*flags*/)
+{
 #if wxUSE_GRAPHICS_CONTEXT
     wxGCDC dc(*(wxMemoryDC*)hdc);
     wxColour penColour(wxColourFromCDandAlpha(outline, alphaOutline));
@@ -461,12 +507,12 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     {
         int px, py;
         wxAlphaPixelData pixData(bmp);
-/* C::B begin wx2.8 */
+        /* C::B begin wx2.8 */
 #if !wxCHECK_VERSION(3, 0, 0)
         // Required when building with wx2.8 on windows.
         pixData.UseAlpha();
 #endif
-/* C::B end wx2.8 */
+        /* C::B end wx2.8 */
 
         // Set the fill pixels
         ColourDesired cdf(fill.AsLong());
@@ -475,9 +521,11 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
         int blue  = cdf.GetBlue();
 
         wxAlphaPixelData::Iterator p(pixData);
-        for (py=0; py<r.height; py++) {
+        for (py=0; py<r.height; py++)
+        {
             p.MoveTo(pixData, 0, py);
-            for (px=0; px<r.width; px++) {
+            for (px=0; px<r.width; px++)
+            {
                 p.Red()   = wxPy_premultiply(red,   alphaFill);
                 p.Green() = wxPy_premultiply(green, alphaFill);
                 p.Blue()  = wxPy_premultiply(blue,  alphaFill);
@@ -491,7 +539,8 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
         red   = cdo.GetRed();
         green = cdo.GetGreen();
         blue  = cdo.GetBlue();
-        for (px=0; px<r.width; px++) {
+        for (px=0; px<r.width; px++)
+        {
             p.MoveTo(pixData, px, 0);
             p.Red()   = wxPy_premultiply(red,   alphaOutline);
             p.Green() = wxPy_premultiply(green, alphaOutline);
@@ -504,7 +553,8 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
             p.Alpha() = alphaOutline;
         }
 
-        for (py=0; py<r.height; py++) {
+        for (py=0; py<r.height; py++)
+        {
             p.MoveTo(pixData, 0, py);
             p.Red()   = wxPy_premultiply(red,   alphaOutline);
             p.Green() = wxPy_premultiply(green, alphaOutline);
@@ -538,9 +588,11 @@ wxBitmap BitmapFromRGBAImage(int width, int height, const unsigned char *pixelsI
     wxAlphaPixelData pixData(bmp);
 
     wxAlphaPixelData::Iterator p(pixData);
-    for (y=0; y<height; y++) {
+    for (y=0; y<height; y++)
+    {
         p.MoveTo(pixData, 0, y);
-        for (x=0; x<width; x++) {
+        for (x=0; x<width; x++)
+        {
             unsigned char red   = *pixelsImage++;
             unsigned char green = *pixelsImage++;
             unsigned char blue  = *pixelsImage++;
@@ -588,13 +640,15 @@ void SurfaceImpl::DrawRGBAImage(PRectangle rc, int width, int height,
 }
 
 
-void SurfaceImpl::Ellipse(PRectangle rc, ColourDesired fore, ColourDesired back) {
+void SurfaceImpl::Ellipse(PRectangle rc, ColourDesired fore, ColourDesired back)
+{
     PenColour(fore);
     BrushColour(back);
     hdc->DrawEllipse(wxRectFromPRectangle(rc));
 }
 
-void SurfaceImpl::Copy(PRectangle rc, Point from, Surface &surfaceSource) {
+void SurfaceImpl::Copy(PRectangle rc, Point from, Surface &surfaceSource)
+{
     wxRect r = wxRectFromPRectangle(rc);
     hdc->Blit(r.x, r.y, r.width, r.height,
               ((SurfaceImpl&)surfaceSource).hdc,
@@ -603,7 +657,8 @@ void SurfaceImpl::Copy(PRectangle rc, Point from, Surface &surfaceSource) {
 
 void SurfaceImpl::DrawTextNoClip(PRectangle rc, Font &font, XYPOSITION ybase,
                                  const char *s, int len,
-                                 ColourDesired fore, ColourDesired back) {
+                                 ColourDesired fore, ColourDesired back)
+{
     SetFont(font);
     hdc->SetTextForeground(wxColourFromCD(fore));
     hdc->SetTextBackground(wxColourFromCD(back));
@@ -616,7 +671,8 @@ void SurfaceImpl::DrawTextNoClip(PRectangle rc, Font &font, XYPOSITION ybase,
 
 void SurfaceImpl::DrawTextClipped(PRectangle rc, Font &font, XYPOSITION ybase,
                                   const char *s, int len,
-                                  ColourDesired fore, ColourDesired back) {
+                                  ColourDesired fore, ColourDesired back)
+{
     SetFont(font);
     hdc->SetTextForeground(wxColourFromCD(fore));
     hdc->SetTextBackground(wxColourFromCD(back));
@@ -631,33 +687,35 @@ void SurfaceImpl::DrawTextClipped(PRectangle rc, Font &font, XYPOSITION ybase,
 
 void SurfaceImpl::DrawTextTransparent(PRectangle rc, Font &font, XYPOSITION ybase,
                                       const char *s, int len,
-                                      ColourDesired fore) {
+                                      ColourDesired fore)
+{
 
     SetFont(font);
     hdc->SetTextForeground(wxColourFromCD(fore));
-/* C::B begin */
+    /* C::B begin */
 #if wxCHECK_VERSION(3, 0, 0)
     hdc->SetBackgroundMode(wxBRUSHSTYLE_TRANSPARENT);
 #else
     hdc->SetBackgroundMode(wxTRANSPARENT);
 #endif
-/* C::B end */
+    /* C::B end */
 
     // ybase is where the baseline should be, but wxWin uses the upper left
     // corner, so I need to calculate the real position for the text...
     hdc->DrawText(sci2wx(s, len), wxRound(rc.left), wxRound(ybase - GetAscent(font)));
 
-/* C::B begin */
+    /* C::B begin */
 #if wxCHECK_VERSION(3, 0, 0)
     hdc->SetBackgroundMode(wxBRUSHSTYLE_SOLID);
 #else
     hdc->SetBackgroundMode(wxSOLID);
 #endif
-/* C::B end */
+    /* C::B end */
 }
 
 
-void SurfaceImpl::MeasureWidths(Font &font, const char *s, int len, XYPOSITION *positions) {
+void SurfaceImpl::MeasureWidths(Font &font, const char *s, int len, XYPOSITION *positions)
+{
 
     wxString   str = sci2wx(s, len);
     wxArrayInt tpos;
@@ -673,13 +731,15 @@ void SurfaceImpl::MeasureWidths(Font &font, const char *s, int len, XYPOSITION *
 #if wxUSE_UNICODE
     // Map the widths back to the UTF-8 input string
     size_t utf8i = 0;
-    for (size_t wxi = 0; wxi < str.size(); ++wxi) {
+    for (size_t wxi = 0; wxi < str.size(); ++wxi)
+    {
         wxUniChar c = str[wxi];
 
 #if SIZEOF_WCHAR_T == 2
         // For surrogate pairs, the position for the lead surrogate is garbage
         // and we need to use the position of the trail surrogate for all four bytes
-        if (c >= 0xD800 && c < 0xE000 && wxi + 1 < str.size()) {
+        if (c >= 0xD800 && c < 0xE000 && wxi + 1 < str.size())
+        {
             ++wxi;
             positions[utf8i++] = tpos[wxi];
             positions[utf8i++] = tpos[wxi];
@@ -699,14 +759,16 @@ void SurfaceImpl::MeasureWidths(Font &font, const char *s, int len, XYPOSITION *
     }
 #else // !wxUSE_UNICODE
     // If not unicode then just use the widths we have
-    for (int i = 0; i < len; i++) {
+    for (int i = 0; i < len; i++)
+    {
         positions[i] = tpos[i];
     }
 #endif // wxUSE_UNICODE/!wxUSE_UNICODE
 }
 
 
-XYPOSITION SurfaceImpl::WidthText(Font &font, const char *s, int len) {
+XYPOSITION SurfaceImpl::WidthText(Font &font, const char *s, int len)
+{
     SetFont(font);
     int w;
     int h;
@@ -716,7 +778,8 @@ XYPOSITION SurfaceImpl::WidthText(Font &font, const char *s, int len) {
 }
 
 
-XYPOSITION SurfaceImpl::WidthChar(Font &font, char ch) {
+XYPOSITION SurfaceImpl::WidthChar(Font &font, char ch)
+{
     SetFont(font);
     int w;
     int h;
@@ -728,7 +791,8 @@ XYPOSITION SurfaceImpl::WidthChar(Font &font, char ch) {
 
 #define EXTENT_TEST wxT(" `~!@#$%^&*()-_=+\\|[]{};:\"\'<,>.?/1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
-XYPOSITION SurfaceImpl::Ascent(Font &font) {
+XYPOSITION SurfaceImpl::Ascent(Font &font)
+{
     SetFont(font);
     int w, h, d, e;
     hdc->GetTextExtent(EXTENT_TEST, &w, &h, &d, &e);
@@ -737,46 +801,55 @@ XYPOSITION SurfaceImpl::Ascent(Font &font) {
     return ascent;
 }
 
-XYPOSITION SurfaceImpl::Descent(Font &font) {
+XYPOSITION SurfaceImpl::Descent(Font &font)
+{
     SetFont(font);
     int w, h, d, e;
     hdc->GetTextExtent(EXTENT_TEST, &w, &h, &d, &e);
     return d;
 }
 
-XYPOSITION SurfaceImpl::InternalLeading(Font &WXUNUSED(font)) {
+XYPOSITION SurfaceImpl::InternalLeading(Font &WXUNUSED(font))
+{
     return 0;
 }
 
-XYPOSITION SurfaceImpl::ExternalLeading(Font &font) {
+XYPOSITION SurfaceImpl::ExternalLeading(Font &font)
+{
     SetFont(font);
     int w, h, d, e;
     hdc->GetTextExtent(EXTENT_TEST, &w, &h, &d, &e);
     return e;
 }
 
-XYPOSITION SurfaceImpl::Height(Font &font) {
+XYPOSITION SurfaceImpl::Height(Font &font)
+{
     SetFont(font);
     return hdc->GetCharHeight() + 1;
 }
 
-XYPOSITION SurfaceImpl::AverageCharWidth(Font &font) {
+XYPOSITION SurfaceImpl::AverageCharWidth(Font &font)
+{
     SetFont(font);
     return hdc->GetCharWidth();
 }
 
-void SurfaceImpl::SetClip(PRectangle rc) {
+void SurfaceImpl::SetClip(PRectangle rc)
+{
     hdc->SetClippingRegion(wxRectFromPRectangle(rc));
 }
 
-void SurfaceImpl::FlushCachedState() {
+void SurfaceImpl::FlushCachedState()
+{
 }
 
-void SurfaceImpl::SetUnicodeMode(bool unicodeMode_) {
+void SurfaceImpl::SetUnicodeMode(bool unicodeMode_)
+{
     unicodeMode=unicodeMode_;
 }
 
-void SurfaceImpl::SetDBCSMode(int WXUNUSED(codePage)) {
+void SurfaceImpl::SetDBCSMode(int WXUNUSED(codePage))
+{
     // dbcsMode = codePage == SC_CP_DBCS;
 }
 
@@ -805,23 +878,23 @@ SurfaceFontDataD2D::SurfaceFontDataD2D(const FontParameters& fp)
         fontStyle = fp.italic?DWRITE_FONT_STYLE_ITALIC:DWRITE_FONT_STYLE_NORMAL;
 
         hr = pDWriteFactory->CreateTextFormat(
-            faceName.wc_str(),
-            NULL,
-            static_cast<DWRITE_FONT_WEIGHT>(fp.weight),
-            fontStyle,
-            DWRITE_FONT_STRETCH_NORMAL,
-            fp.size,
-            L"en-us", //locale
-            &m_pTextFormat
-            );
+                 faceName.wc_str(),
+                 NULL,
+                 static_cast<DWRITE_FONT_WEIGHT>(fp.weight),
+                 fontStyle,
+                 DWRITE_FONT_STRETCH_NORMAL,
+                 fp.size,
+                 L"en-us", //locale
+                 &m_pTextFormat
+             );
 
         if ( SUCCEEDED(hr) )
         {
             m_pTextFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
 
             hr = pDWriteFactory->CreateTextLayout(extentTest.wc_str(),
-                extentTest.Length(), m_pTextFormat, FLT_MAX, FLT_MAX,
-                &pTextLayout);
+                                                  extentTest.Length(), m_pTextFormat, FLT_MAX, FLT_MAX,
+                                                  &pTextLayout);
         }
 
         if ( SUCCEEDED(hr) )
@@ -848,22 +921,22 @@ SurfaceFontDataD2D::SurfaceFontDataD2D(const FontParameters& fp)
 
             switch ( fp.extraFontFlag & wxSCI_EFF_QUALITY_MASK )
             {
-                case wxSCI_EFF_QUALITY_NON_ANTIALIASED:
-                    m_aaMode = D2D1_TEXT_ANTIALIAS_MODE_ALIASED;
-                    break;
-                case wxSCI_EFF_QUALITY_ANTIALIASED:
-                    m_aaMode = D2D1_TEXT_ANTIALIAS_MODE_GRAYSCALE;
-                    break;
-                case wxSCI_EFF_QUALITY_LCD_OPTIMIZED:
-                    m_aaMode = D2D1_TEXT_ANTIALIAS_MODE_CLEARTYPE;
-                    break;
-                default:
-                    m_aaMode = D2D1_TEXT_ANTIALIAS_MODE_DEFAULT;
-                    break;
+            case wxSCI_EFF_QUALITY_NON_ANTIALIASED:
+                m_aaMode = D2D1_TEXT_ANTIALIAS_MODE_ALIASED;
+                break;
+            case wxSCI_EFF_QUALITY_ANTIALIASED:
+                m_aaMode = D2D1_TEXT_ANTIALIAS_MODE_GRAYSCALE;
+                break;
+            case wxSCI_EFF_QUALITY_LCD_OPTIMIZED:
+                m_aaMode = D2D1_TEXT_ANTIALIAS_MODE_CLEARTYPE;
+                break;
+            default:
+                m_aaMode = D2D1_TEXT_ANTIALIAS_MODE_DEFAULT;
+                break;
             }
 
             m_pTextFormat->SetLineSpacing(DWRITE_LINE_SPACING_METHOD_UNIFORM,
-                lineMetrics[0].height, m_ascent);
+                                          lineMetrics[0].height, m_ascent);
         }
         else
         {
@@ -894,7 +967,7 @@ SurfaceDataD2D::SurfaceDataD2D(ScintillaWX* editor)
         {
             unsigned int clearTypeContrast;
             if ( ::SystemParametersInfo(SPI_GETFONTSMOOTHINGCONTRAST, 0,
-                    &clearTypeContrast, 0) )
+                                        &clearTypeContrast, 0) )
             {
                 FLOAT gamma;
                 if (clearTypeContrast >= 1000 && clearTypeContrast <= 2200)
@@ -935,11 +1008,11 @@ HRESULT SurfaceDataD2D::CreateGraphicsResources()
             D2D1::RenderTargetProperties(
                 D2D1_RENDER_TARGET_TYPE_DEFAULT,
                 D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM,
-                    D2D1_ALPHA_MODE_PREMULTIPLIED));
+                                  D2D1_ALPHA_MODE_PREMULTIPLIED));
 
         hr = m_pD2DFactory->CreateDCRenderTarget(
-            &renderTargetProperties,
-            &m_pRenderTarget);
+                 &renderTargetProperties,
+                 &m_pRenderTarget);
 
         if ( SUCCEEDED(hr) )
         {
@@ -951,8 +1024,8 @@ HRESULT SurfaceDataD2D::CreateGraphicsResources()
         {
             D2D1_BITMAP_BRUSH_PROPERTIES brushProperties =
                 D2D1::BitmapBrushProperties(D2D1_EXTEND_MODE_WRAP,
-                    D2D1_EXTEND_MODE_WRAP,
-                    D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR);
+                                            D2D1_EXTEND_MODE_WRAP,
+                                            D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR);
 
             wxCOMPtr<ID2D1Bitmap> bitmap;
 
@@ -1127,7 +1200,7 @@ void SurfaceD2D::Init(SurfaceID sid, WindowID wid)
         const wxSize sz = dc->GetSize();
         SetScale(dc);
         ScintillaWX* const
-            sciwx = reinterpret_cast<ScintillaWX*>(stc->GetDirectPointer());
+        sciwx = reinterpret_cast<ScintillaWX*>(stc->GetDirectPointer());
         m_surfaceData = static_cast<SurfaceDataD2D*>(sciwx->GetSurfaceData());
         HRESULT hr = m_surfaceData->CreateGraphicsResources();
 
@@ -1136,7 +1209,7 @@ void SurfaceD2D::Init(SurfaceID sid, WindowID wid)
             RECT rc;
             ::SetRect(&rc,0,0,sz.GetWidth(),sz.GetHeight());
             hr = m_surfaceData->GetRenderTarget()
-                ->BindDC(reinterpret_cast<HDC>(dc->GetHandle()),&rc);
+                 ->BindDC(reinterpret_cast<HDC>(dc->GetHandle()),&rc);
         }
 
         if ( SUCCEEDED(hr) )
@@ -1156,7 +1229,7 @@ void SurfaceD2D::InitPixMap(int width, int height, Surface *surface_, WindowID)
     SurfaceD2D *psurfOther = static_cast<SurfaceD2D *>(surface_);
     wxCOMPtr<ID2D1BitmapRenderTarget> pCompatibleRenderTarget;
     D2D1_SIZE_F desiredSize = D2D1::SizeF(static_cast<float>(width),
-        static_cast<float>(height));
+                                          static_cast<float>(height));
     D2D1_PIXEL_FORMAT desiredFormat;
 
 #ifdef __MINGW32__
@@ -1167,8 +1240,8 @@ void SurfaceD2D::InitPixMap(int width, int height, Surface *surface_, WindowID)
 
     desiredFormat.alphaMode = D2D1_ALPHA_MODE_IGNORE;
     HRESULT hr = psurfOther->m_pRenderTarget->CreateCompatibleRenderTarget(
-        &desiredSize, NULL, &desiredFormat,
-        D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS_NONE, &pCompatibleRenderTarget);
+                     &desiredSize, NULL, &desiredFormat,
+                     D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS_NONE, &pCompatibleRenderTarget);
     if ( SUCCEEDED(hr) )
     {
         m_pRenderTarget = pCompatibleRenderTarget;
@@ -1265,22 +1338,22 @@ void SurfaceD2D::LineTo(int x_, int y_)
             int top = Platform::Minimum(m_y, yEnd);
             int height = abs(m_y - yEnd) + 1;
             D2D1_RECT_F rectangle1 = D2D1::RectF(static_cast<float>(left),
-                static_cast<float>(top), static_cast<float>(left+width),
-                static_cast<float>(top+height));
+                                                 static_cast<float>(top), static_cast<float>(left+width),
+                                                 static_cast<float>(top+height));
             m_pRenderTarget->FillRectangle(&rectangle1, m_pSolidBrush);
         }
         else if ( (abs(xDiff) == abs(yDiff)) )
         {
             // 45 degree slope
             m_pRenderTarget->DrawLine(D2D1::Point2F(m_x + 0.5f, m_y + 0.5f),
-                D2D1::Point2F(x_ + 0.5f - xDelta, y_ + 0.5f - yDelta),
-                m_pSolidBrush);
+                                      D2D1::Point2F(x_ + 0.5f - xDelta, y_ + 0.5f - yDelta),
+                                      m_pSolidBrush);
         }
         else
         {
             // Line has a different slope so difficult to avoid last pixel
             m_pRenderTarget->DrawLine(D2D1::Point2F(m_x + 0.5f, m_y + 0.5f),
-                D2D1::Point2F(x_ + 0.5f, y_ + 0.5f), m_pSolidBrush);
+                                      D2D1::Point2F(x_ + 0.5f, y_ + 0.5f), m_pSolidBrush);
         }
         m_x = x_;
         m_y = y_;
@@ -1307,7 +1380,7 @@ void SurfaceD2D::Polygon(Point *pts, int npts, ColourDesired fore,
         if ( SUCCEEDED(hr) )
         {
             sink->BeginFigure(D2D1::Point2F(pts[0].x + 0.5f, pts[0].y + 0.5f),
-                D2D1_FIGURE_BEGIN_FILLED);
+                              D2D1_FIGURE_BEGIN_FILLED);
             for ( size_t i=1; i<static_cast<size_t>(npts); i++ )
             {
                 sink->AddLine(D2D1::Point2F(pts[i].x + 0.5f, pts[i].y + 0.5f));
@@ -1329,7 +1402,7 @@ void SurfaceD2D::RectangleDraw(PRectangle rc, ColourDesired fore,
     if ( m_pRenderTarget.get() )
     {
         D2D1_RECT_F rectangle1 = D2D1::RectF(RoundFloat(rc.left) + 0.5f,
-            rc.top+0.5f, RoundFloat(rc.right) - 0.5f, rc.bottom-0.5f);
+                                             rc.top+0.5f, RoundFloat(rc.right) - 0.5f, rc.bottom-0.5f);
         D2DPenColour(back);
         m_pRenderTarget->FillRectangle(&rectangle1, m_pSolidBrush);
         D2DPenColour(fore);
@@ -1343,7 +1416,7 @@ void SurfaceD2D::FillRectangle(PRectangle rc, ColourDesired back)
     {
         D2DPenColour(back);
         D2D1_RECT_F rectangle1 = D2D1::RectF(RoundFloat(rc.left), rc.top,
-            RoundFloat(rc.right), rc.bottom);
+                                             RoundFloat(rc.right), rc.bottom);
         m_pRenderTarget->FillRectangle(&rectangle1, m_pSolidBrush);
     }
 }
@@ -1370,11 +1443,11 @@ void SurfaceD2D::FillRectangle(PRectangle rc, Surface &surfacePattern)
         {
             D2D1_BITMAP_BRUSH_PROPERTIES brushProperties =
                 D2D1::BitmapBrushProperties(D2D1_EXTEND_MODE_WRAP,
-                    D2D1_EXTEND_MODE_WRAP,
-                    D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR);
+                                            D2D1_EXTEND_MODE_WRAP,
+                                            D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR);
 
             hr = m_pRenderTarget->CreateBitmapBrush(pBitmap, brushProperties,
-                &m_pPatternBrush);
+                                                    &m_pPatternBrush);
         }
     }
 
@@ -1391,15 +1464,19 @@ void SurfaceD2D::RoundedRectangle(PRectangle rc, ColourDesired fore,
 {
     if ( m_pRenderTarget.get() )
     {
-        D2D1_ROUNDED_RECT roundedRectFill = {
+        D2D1_ROUNDED_RECT roundedRectFill =
+        {
             D2D1::RectF(rc.left+1.0f, rc.top+1.0f, rc.right-1.0f, rc.bottom-1.0f),
-            4, 4};
+            4, 4
+        };
         D2DPenColour(back);
         m_pRenderTarget->FillRoundedRectangle(roundedRectFill, m_pSolidBrush);
 
-        D2D1_ROUNDED_RECT roundedRect = {
+        D2D1_ROUNDED_RECT roundedRect =
+        {
             D2D1::RectF(rc.left + 0.5f, rc.top+0.5f, rc.right - 0.5f, rc.bottom-0.5f),
-            4, 4};
+            4, 4
+        };
         D2DPenColour(fore);
         m_pRenderTarget->DrawRoundedRectangle(roundedRect, m_pSolidBrush);
     }
@@ -1417,29 +1494,33 @@ void SurfaceD2D::AlphaRectangle(PRectangle rc, int cornerSize,
             // When corner size is zero, draw square rectangle to prevent
             // blurry pixels at corners
             D2D1_RECT_F rectFill = D2D1::RectF(RoundFloat(rc.left) + 1.0f,
-                rc.top + 1.0f, RoundFloat(rc.right) - 1.0f, rc.bottom - 1.0f);
+                                               rc.top + 1.0f, RoundFloat(rc.right) - 1.0f, rc.bottom - 1.0f);
             D2DPenColour(fill, alphaFill);
             m_pRenderTarget->FillRectangle(rectFill, m_pSolidBrush);
 
             D2D1_RECT_F rectOutline = D2D1::RectF(RoundFloat(rc.left) + 0.5f,
-                rc.top + 0.5f, RoundFloat(rc.right) - 0.5f, rc.bottom - 0.5f);
+                                                  rc.top + 0.5f, RoundFloat(rc.right) - 0.5f, rc.bottom - 0.5f);
             D2DPenColour(outline, alphaOutline);
             m_pRenderTarget->DrawRectangle(rectOutline, m_pSolidBrush);
         }
         else
         {
             const float cornerSizeF = static_cast<float>(cornerSize);
-            D2D1_ROUNDED_RECT roundedRectFill = {
+            D2D1_ROUNDED_RECT roundedRectFill =
+            {
                 D2D1::RectF(RoundFloat(rc.left) + 1.0f, rc.top + 1.0f,
-                    RoundFloat(rc.right) - 1.0f, rc.bottom - 1.0f),
-                cornerSizeF, cornerSizeF};
+                            RoundFloat(rc.right) - 1.0f, rc.bottom - 1.0f),
+                cornerSizeF, cornerSizeF
+            };
             D2DPenColour(fill, alphaFill);
             m_pRenderTarget->FillRoundedRectangle(roundedRectFill, m_pSolidBrush);
 
-            D2D1_ROUNDED_RECT roundedRect = {
+            D2D1_ROUNDED_RECT roundedRect =
+            {
                 D2D1::RectF(RoundFloat(rc.left) + 0.5f, rc.top + 0.5f,
-                    RoundFloat(rc.right) - 0.5f, rc.bottom - 0.5f),
-                cornerSizeF, cornerSizeF};
+                            RoundFloat(rc.right) - 0.5f, rc.bottom - 0.5f),
+                cornerSizeF, cornerSizeF
+            };
             D2DPenColour(outline, alphaOutline);
             m_pRenderTarget->DrawRoundedRectangle(roundedRect, m_pSolidBrush);
         }
@@ -1475,10 +1556,13 @@ void SurfaceD2D::DrawRGBAImage(PRectangle rc, int width, int height,
 
         wxCOMPtr<ID2D1Bitmap> bitmap;
         D2D1_SIZE_U size = D2D1::SizeU(width, height);
-        D2D1_BITMAP_PROPERTIES props = {{DXGI_FORMAT_B8G8R8A8_UNORM,
-            D2D1_ALPHA_MODE_PREMULTIPLIED}, 72.0, 72.0};
+        D2D1_BITMAP_PROPERTIES props = {{
+                DXGI_FORMAT_B8G8R8A8_UNORM,
+                D2D1_ALPHA_MODE_PREMULTIPLIED
+            }, 72.0, 72.0
+        };
         HRESULT hr = m_pRenderTarget->CreateBitmap(size, &image[0],
-                  width * 4, &props, &bitmap);
+                     width * 4, &props, &bitmap);
 
         if ( SUCCEEDED(hr) )
         {
@@ -1493,10 +1577,12 @@ void SurfaceD2D::Ellipse(PRectangle rc, ColourDesired fore, ColourDesired back)
     if ( m_pRenderTarget.get() )
     {
         FLOAT radius = rc.Width() / 2.0f;
-        D2D1_ELLIPSE ellipse = {
+        D2D1_ELLIPSE ellipse =
+        {
             D2D1::Point2F((rc.left + rc.right) / 2.0f,
-                (rc.top + rc.bottom) / 2.0f),
-            radius, radius};
+                          (rc.top + rc.bottom) / 2.0f),
+            radius, radius
+        };
 
         PenColour(back);
         m_pRenderTarget->FillEllipse(ellipse, m_pSolidBrush);
@@ -1505,7 +1591,8 @@ void SurfaceD2D::Ellipse(PRectangle rc, ColourDesired fore, ColourDesired back)
     }
 }
 
-void SurfaceD2D::Copy(PRectangle rc, Point from, Surface &surfaceSource) {
+void SurfaceD2D::Copy(PRectangle rc, Point from, Surface &surfaceSource)
+{
     SurfaceD2D &surfOther = static_cast<SurfaceD2D &>(surfaceSource);
     surfOther.FlushDrawing();
 
@@ -1519,9 +1606,9 @@ void SurfaceD2D::Copy(PRectangle rc, Point from, Surface &surfaceSource) {
     {
         D2D1_RECT_F rcDestination = {rc.left, rc.top, rc.right, rc.bottom};
         D2D1_RECT_F rcSource =
-            {from.x, from.y, from.x + rc.Width(), from.y + rc.Height()};
+        {from.x, from.y, from.x + rc.Width(), from.y + rc.Height()};
         m_pRenderTarget->DrawBitmap(pBitmap, rcDestination, 1.0f,
-            D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR, rcSource);
+                                    D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR, rcSource);
 
         hr = m_pRenderTarget->Flush();
         if ( FAILED(hr) )
@@ -1586,7 +1673,7 @@ XYPOSITION SurfaceD2D::WidthText(Font &font_, const char *s, int len)
         DWRITE_TEXT_METRICS textMetrics = {0,0,0,0,0,0,0,0,0};
 
         HRESULT hr = m_pDWriteFactory->CreateTextLayout(tbuf.wc_str(),
-            tbuf.Length(), m_pTextFormat, FLT_MAX, FLT_MAX, &pTextLayout);
+                     tbuf.Length(), m_pTextFormat, FLT_MAX, FLT_MAX, &pTextLayout);
 
         if ( SUCCEEDED(hr) )
         {
@@ -1621,7 +1708,7 @@ void SurfaceD2D::MeasureWidths(Font &font_, const char *s, int len,
         wxCOMPtr<IDWriteTextLayout> pTextLayout;
 
         HRESULT hr = m_pDWriteFactory->CreateTextLayout(tbuf.wc_str(),
-            tbuf.Length(), m_pTextFormat, FLT_MAX, FLT_MAX, &pTextLayout);
+                     tbuf.Length(), m_pTextFormat, FLT_MAX, FLT_MAX, &pTextLayout);
         if ( !SUCCEEDED(hr) )
             return;
 
@@ -1636,11 +1723,11 @@ void SurfaceD2D::MeasureWidths(Font &font_, const char *s, int len,
         for ( size_t ci=0; ci<count; ci++ )
         {
             for ( size_t inCluster=0; inCluster<clusterMetrics[ci].length;
-                inCluster++)
+                    inCluster++)
             {
                 poses[ti++] =
                     position + clusterMetrics[ci].width * (inCluster + 1) /
-                        clusterMetrics[ci].length;
+                    clusterMetrics[ci].length;
             }
             position += clusterMetrics[ci].width;
         }
@@ -1706,7 +1793,7 @@ XYPOSITION SurfaceD2D::WidthChar(Font &font_, char ch)
         wxCOMPtr<IDWriteTextLayout> pTextLayout;
         const WCHAR wch = ch;
         HRESULT hr = m_pDWriteFactory->CreateTextLayout(&wch, 1, m_pTextFormat,
-            1000.0, 1000.0, &pTextLayout);
+                     1000.0, 1000.0, &pTextLayout);
 
         if ( SUCCEEDED(hr) )
         {
@@ -1871,17 +1958,17 @@ void SurfaceD2D::DrawTextCommon(PRectangle rc, Font &font_, XYPOSITION ybase,
         {
             D2D1_RECT_F rcClip = {rc.left, rc.top, rc.right, rc.bottom};
             m_pRenderTarget->PushAxisAlignedClip(rcClip,
-                D2D1_ANTIALIAS_MODE_ALIASED);
+                                                 D2D1_ANTIALIAS_MODE_ALIASED);
         }
 
         hr = m_pDWriteFactory->CreateTextLayout(tbuf.wc_str(), tbuf.Length(),
-            m_pTextFormat, rc.Width(), rc.Height(), &pTextLayout);
+                                                m_pTextFormat, rc.Width(), rc.Height(), &pTextLayout);
 
         if ( SUCCEEDED(hr) )
         {
             D2D1_POINT_2F origin = {rc.left, ybase-m_yAscent};
             m_pRenderTarget->DrawTextLayout(origin, pTextLayout, m_pSolidBrush,
-                D2D1_DRAW_TEXT_OPTIONS_NONE);
+                                            D2D1_DRAW_TEXT_OPTIONS_NONE);
         }
 
         if ( fuOptions & ETO_CLIPPED )
@@ -1893,11 +1980,13 @@ void SurfaceD2D::DrawTextCommon(PRectangle rc, Font &font_, XYPOSITION ybase,
 
 #endif // HAVE_DIRECTWRITE_TECHNOLOGY
 
-Surface *Surface::Allocate(int technology) {
+Surface *Surface::Allocate(int technology)
+{
     wxUnusedVar(technology);
 
 #ifdef HAVE_DIRECTWRITE_TECHNOLOGY
-    if ( technology == wxSCI_TECHNOLOGY_DIRECTWRITE ) {
+    if ( technology == wxSCI_TECHNOLOGY_DIRECTWRITE )
+    {
         return new SurfaceD2D;
     }
 #endif // HAVE_DIRECTWRITE_TECHNOLOGY
@@ -1908,35 +1997,45 @@ Surface *Surface::Allocate(int technology) {
 //----------------------------------------------------------------------
 
 
-inline wxWindow* GETWIN(WindowID id) { return (wxWindow*)id; }
-
-Window::~Window() {
+inline wxWindow* GETWIN(WindowID id)
+{
+    return (wxWindow*)id;
 }
 
-void Window::Destroy() {
-    if (wid) {
+Window::~Window()
+{
+}
+
+void Window::Destroy()
+{
+    if (wid)
+    {
         Show(false);
         GETWIN(wid)->Destroy();
     }
     wid = 0;
 }
 
-bool Window::HasFocus() {
+bool Window::HasFocus()
+{
     return wxWindow::FindFocus() == GETWIN(wid);
 }
 
-PRectangle Window::GetPosition() {
+PRectangle Window::GetPosition()
+{
     if (! wid) return PRectangle();
     wxRect rc(GETWIN(wid)->GetPosition(), GETWIN(wid)->GetSize());
     return PRectangleFromwxRect(rc);
 }
 
-void Window::SetPosition(PRectangle rc) {
+void Window::SetPosition(PRectangle rc)
+{
     wxRect r = wxRectFromPRectangle(rc);
     GETWIN(wid)->SetSize(r);
 }
 
-void Window::SetPositionRelative(PRectangle rc, Window relativeTo) {
+void Window::SetPositionRelative(PRectangle rc, Window relativeTo)
+{
     wxWindow *relativeWin = GETWIN(relativeTo.wid);
 
     wxPoint position = relativeWin->GetScreenPosition();
@@ -1971,33 +2070,40 @@ void Window::SetPositionRelative(PRectangle rc, Window relativeTo) {
     window->SetSize(position.x, position.y, width, height);
 }
 
-PRectangle Window::GetClientPosition() {
+PRectangle Window::GetClientPosition()
+{
     if (! wid) return PRectangle();
     wxSize sz = GETWIN(wid)->GetClientSize();
     return  PRectangle(0, 0, sz.x, sz.y);
 }
 
-void Window::Show(bool show) {
+void Window::Show(bool show)
+{
     GETWIN(wid)->Show(show);
 }
 
-void Window::InvalidateAll() {
+void Window::InvalidateAll()
+{
     GETWIN(wid)->Refresh(false);
 }
 
-void Window::InvalidateRectangle(PRectangle rc) {
+void Window::InvalidateRectangle(PRectangle rc)
+{
     wxRect r = wxRectFromPRectangle(rc);
     GETWIN(wid)->Refresh(false, &r);
 }
 
-void Window::SetFont(Font &font) {
+void Window::SetFont(Font &font)
+{
     GETWIN(wid)->SetFont(*((wxFont*)font.GetID()));
 }
 
-void Window::SetCursor(Cursor curs) {
+void Window::SetCursor(Cursor curs)
+{
     wxStockCursor cursorId;
 
-    switch (curs) {
+    switch (curs)
+    {
     case cursorText:
         cursorId = wxCURSOR_IBEAM;
         break;
@@ -2037,13 +2143,15 @@ void Window::SetCursor(Cursor curs) {
 }
 
 
-void Window::SetTitle(const char *s) {
+void Window::SetTitle(const char *s)
+{
     GETWIN(wid)->SetLabel(sci2wx(s));
 }
 
 
 // Returns rectangle of monitor pt is on
-PRectangle Window::GetMonitorRect(Point pt) {
+PRectangle Window::GetMonitorRect(Point pt)
+{
     if (! wid) return PRectangle();
     // Get the display the point is found on
     int n = wxDisplay::GetFromPoint(wxPoint(wxRound(pt.x), wxRound(pt.y)));
@@ -2057,7 +2165,8 @@ PRectangle Window::GetMonitorRect(Point pt) {
 
 // This is a simple subclass of wxListView that just resets focus to the
 // parent when it gets it.
-class wxSCIListBox : public wxListView {
+class wxSCIListBox : public wxListView
+{
 public:
     wxSCIListBox(wxWindow* parent, wxWindowID id,
                  const wxPoint& pos, const wxSize& size,
@@ -2071,12 +2180,14 @@ public:
     }
 
 
-    void OnFocus(wxFocusEvent& event) {
+    void OnFocus(wxFocusEvent& event)
+    {
         GetParent()->SetFocus();
         event.Skip();
     }
 
-    void OnKillFocus(wxFocusEvent& WXUNUSED(event)) {
+    void OnKillFocus(wxFocusEvent& WXUNUSED(event))
+    {
         // Do nothing.  Prevents base class from resetting the colors...
     }
 
@@ -2084,15 +2195,18 @@ public:
     // For some reason I don't understand yet the focus doesn't really leave
     // the listbox like it should, so if we get any events feed them back to
     // the wxScintilla
-    void OnKeyDown(wxKeyEvent& event) {
+    void OnKeyDown(wxKeyEvent& event)
+    {
         GetGrandParent()->GetEventHandler()->ProcessEvent(event);
     }
-    void OnChar(wxKeyEvent& event) {
+    void OnChar(wxKeyEvent& event)
+    {
         GetGrandParent()->GetEventHandler()->ProcessEvent(event);
     }
 
     // And we need to force the focus back when being destroyed
-    ~wxSCIListBox() {
+    ~wxSCIListBox()
+    {
         GetGrandParent()->SetFocus();
     }
 #endif
@@ -2126,12 +2240,12 @@ public:
     wxSCIListBoxWin(wxWindow* parent, wxWindowID id, Point WXUNUSED(location)) :
         wxPopupWindow(parent, wxBORDER_SIMPLE)
     {
-        
-/* C::B begin */
+
+        /* C::B begin */
 #ifdef __WXMSW__
         SetExtraStyle(GetExtraStyle() & ~wxWS_EX_BLOCK_EVENTS);
 #endif // __WXMSW__
-/* C::B end */
+        /* C::B end */
 
         lv = new wxSCIListBox(parent, id, wxPoint(-50,-50), wxDefaultSize,
                               wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxBORDER_NONE);
@@ -2160,18 +2274,22 @@ public:
     // Set position in client coords
     virtual void DoSetSize(int x, int y,
                            int width, int height,
-                           int sizeFlags = wxSIZE_AUTO) wxOVERRIDE {
-        if (x != wxDefaultCoord) {
+                           int sizeFlags = wxSIZE_AUTO) wxOVERRIDE
+    {
+        if (x != wxDefaultCoord)
+        {
             GetParent()->ClientToScreen(&x, NULL);
         }
-        if (y != wxDefaultCoord) {
+        if (y != wxDefaultCoord)
+        {
             GetParent()->ClientToScreen(NULL, &y);
         }
         wxPopupWindow::DoSetSize(x, y, width, height, sizeFlags);
     }
 
     // return position as if it were in client coords
-    virtual void DoGetPosition( int *x, int *y ) const wxOVERRIDE {
+    virtual void DoGetPosition( int *x, int *y ) const wxOVERRIDE
+    {
         int sx, sy;
         wxPopupWindow::DoGetPosition(&sx, &sy);
         GetParent()->ScreenToClient(&sx, &sy);
@@ -2180,16 +2298,19 @@ public:
     }
 
 
-    bool Destroy() wxOVERRIDE {
+    bool Destroy() wxOVERRIDE
+    {
         if ( !wxPendingDelete.Member(this) )
             wxPendingDelete.Append(this);
         return true;
     }
 
 
-    int IconWidth() {
+    int IconWidth()
+    {
         wxImageList* il = lv->GetImageList(wxIMAGE_LIST_SMALL);
-        if (il != NULL) {
+        if (il != NULL)
+        {
             int w, h;
             il->GetSize(0, w, h);
             return w;
@@ -2198,18 +2319,21 @@ public:
     }
 
 
-    void SetDoubleClickAction(CallBackAction action, void *data) {
+    void SetDoubleClickAction(CallBackAction action, void *data)
+    {
         doubleClickAction = action;
         doubleClickActionData = data;
     }
 
 
-    void OnFocus(wxFocusEvent& event) {
+    void OnFocus(wxFocusEvent& event)
+    {
         GetParent()->SetFocus();
         event.Skip();
     }
 
-    void OnSize(wxSizeEvent& event) {
+    void OnSize(wxSizeEvent& event)
+    {
         // resize the child to fill the popup
         wxSize sz = GetClientSize();
         int x, y, w, h;
@@ -2230,11 +2354,15 @@ public:
         event.Skip();
     }
 
-    void OnActivate(wxListEvent& WXUNUSED(event)) {
+    void OnActivate(wxListEvent& WXUNUSED(event))
+    {
         doubleClickAction(doubleClickActionData);
     }
 
-    wxListView* GetLB() { return lv; }
+    wxListView* GetLB()
+    {
+        return lv;
+    }
 
 private:
     DECLARE_EVENT_TABLE();
@@ -2254,7 +2382,8 @@ END_EVENT_TABLE()
 
 // A normal window to place the wxSCIListBox upon, but make it behave as much
 // like a wxPopupWindow as possible
-class wxSCIListBoxWin : public wxFrame {
+class wxSCIListBoxWin : public wxFrame
+{
 private:
     wxListView*         lv;
     CallBackAction      doubleClickAction;
@@ -2270,7 +2399,7 @@ public:
 #else
                 | wxSIMPLE_BORDER
 #endif
-            )
+               )
     {
 
         lv = new wxSCIListBox(this, id, wxDefaultPosition, wxDefaultSize,
@@ -2310,7 +2439,8 @@ public:
     int IconWidth()
     {
         wxImageList* il = lv->GetImageList(wxIMAGE_LIST_SMALL);
-        if (il != NULL) {
+        if (il != NULL)
+        {
             int w, h;
             il->GetSize(0, w, h);
             return w;
@@ -2350,7 +2480,7 @@ public:
         // Although we're a frame, we always want the parent to be active, so
         // raise it whenever we get shown, focused, etc.
         wxTopLevelWindow *frame = wxDynamicCast(
-            wxGetTopLevelParent(GetParent()), wxTopLevelWindow);
+                                      wxGetTopLevelParent(GetParent()), wxTopLevelWindow);
         if (frame)
             frame->Raise();
     }
@@ -2361,10 +2491,12 @@ public:
                            int sizeFlags = wxSIZE_AUTO)
     {
         // convert coords to screen coords since we're a top-level window
-        if (x != wxDefaultCoord) {
+        if (x != wxDefaultCoord)
+        {
             GetParent()->ClientToScreen(&x, NULL);
         }
-        if (y != wxDefaultCoord) {
+        if (y != wxDefaultCoord)
+        {
             GetParent()->ClientToScreen(NULL, &y);
         }
         wxFrame::DoSetSize(x, y, width, height, sizeFlags);
@@ -2386,7 +2518,10 @@ public:
         doubleClickAction(doubleClickActionData);
     }
 
-    wxListView* GetLB() { return lv; }
+    wxListView* GetLB()
+    {
+        return lv;
+    }
 
 private:
     wxDECLARE_EVENT_TABLE();
@@ -2402,11 +2537,13 @@ wxEND_EVENT_TABLE()
 #endif // wxUSE_POPUPWIN -----------------------------------
 
 
-inline wxSCIListBoxWin* GETLBW(WindowID win) {
+inline wxSCIListBoxWin* GETLBW(WindowID win)
+{
     return ((wxSCIListBoxWin*)win);
 }
 
-inline wxListView* GETLB(WindowID win) {
+inline wxListView* GETLB(WindowID win)
+{
     return GETLBW(win)->GetLB();
 }
 
@@ -2419,18 +2556,21 @@ ListBoxImpl::ListBoxImpl()
 {
 }
 
-ListBoxImpl::~ListBoxImpl() {
+ListBoxImpl::~ListBoxImpl()
+{
     wxDELETE(imgList);
     wxDELETE(imgTypeMap);
 }
 
 
-void ListBoxImpl::SetFont(Font &font) {
+void ListBoxImpl::SetFont(Font &font)
+{
     GETLB(wid)->SetFont(*((wxFont*)font.GetID()));
 }
 
 
-void ListBoxImpl::Create(Window &parent, int ctrlID, Point location_, int lineHeight_, bool unicodeMode_, int WXUNUSED(technology_)) {
+void ListBoxImpl::Create(Window &parent, int ctrlID, Point location_, int lineHeight_, bool unicodeMode_, int WXUNUSED(technology_))
+{
     location = location_;
     lineHeight =  lineHeight_;
     unicodeMode = unicodeMode_;
@@ -2441,25 +2581,29 @@ void ListBoxImpl::Create(Window &parent, int ctrlID, Point location_, int lineHe
 }
 
 
-void ListBoxImpl::SetAverageCharWidth(int width) {
+void ListBoxImpl::SetAverageCharWidth(int width)
+{
     aveCharWidth = width;
 }
 
 
-void ListBoxImpl::SetVisibleRows(int rows) {
+void ListBoxImpl::SetVisibleRows(int rows)
+{
     desiredVisibleRows = rows;
 }
 
 
-int ListBoxImpl::GetVisibleRows() const {
+int ListBoxImpl::GetVisibleRows() const
+{
     return desiredVisibleRows;
 }
 
-PRectangle ListBoxImpl::GetDesiredRect() {
-/* C::B begin */
+PRectangle ListBoxImpl::GetDesiredRect()
+{
+    /* C::B begin */
     // maximum width of listbox:
     static const int cMaxWidth = 1000;
-/* C::B end */
+    /* C::B end */
 
     // wxListCtrl doesn't have a DoGetBestSize, so instead we kept track of
     // the max size in Append and calculate it here...
@@ -2470,21 +2614,22 @@ PRectangle ListBoxImpl::GetDesiredRect() {
     if (maxw == 0) maxw = 100;
     maxw += aveCharWidth * 3 +
             GETLBW(wid)->IconWidth() + wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
-/* C::B begin */
+    /* C::B begin */
     if (maxw > cMaxWidth)
         maxw = cMaxWidth;
-/* C::B end */
+    /* C::B end */
 
     // estimate a desired height
     int count = GETLB(wid)->GetItemCount();
-    if (count) {
+    if (count)
+    {
         wxRect rect;
         GETLB(wid)->GetItemRect(0, rect);
         maxh = count * rect.GetHeight();
-/* C::B begin */
+        /* C::B begin */
         if (maxh > desiredVisibleRows*lineHeight)
             maxh = desiredVisibleRows*lineHeight;
-/* C::B end */
+        /* C::B end */
 
         // Try to make the size an exact multiple of some number of lines
         int lines = maxh / rect.GetHeight();
@@ -2502,42 +2647,50 @@ PRectangle ListBoxImpl::GetDesiredRect() {
 }
 
 
-int ListBoxImpl::CaretFromEdge() {
+int ListBoxImpl::CaretFromEdge()
+{
     return 4 + GETLBW(wid)->IconWidth();
 }
 
 
-void ListBoxImpl::Clear() {
+void ListBoxImpl::Clear()
+{
     GETLB(wid)->DeleteAllItems();
 }
 
 
-void ListBoxImpl::Append(char *s, int type) {
+void ListBoxImpl::Append(char *s, int type)
+{
     Append(sci2wx(s), type);
 }
 
-void ListBoxImpl::Append(const wxString& text, int type) {
+void ListBoxImpl::Append(const wxString& text, int type)
+{
     long count  = GETLB(wid)->GetItemCount();
     long itemID  = GETLB(wid)->InsertItem(count, wxEmptyString);
     long idx = -1;
     GETLB(wid)->SetItem(itemID, 1, text);
     maxStrWidth = wxMax(maxStrWidth, text.length());
-    if (type != -1) {
+    if (type != -1)
+    {
         wxCHECK_RET(imgTypeMap, wxT("Unexpected NULL imgTypeMap"));
         idx = imgTypeMap->Item(type);
     }
     GETLB(wid)->SetItemImage(itemID, idx, idx);
 }
 
-void ListBoxImpl::SetList(const char* list, char separator, char typesep) {
+void ListBoxImpl::SetList(const char* list, char separator, char typesep)
+{
     GETLB(wid)->Freeze();
     Clear();
     wxStringTokenizer tkzr(sci2wx(list), (wxChar)separator);
-    while ( tkzr.HasMoreTokens() ) {
+    while ( tkzr.HasMoreTokens() )
+    {
         wxString token = tkzr.GetNextToken();
         long type = -1;
         int pos = token.Find(typesep);
-        if (pos != -1) {
+        if (pos != -1)
+        {
             token.Mid(pos+1).ToLong(&type);
             token.Truncate(pos);
         }
@@ -2547,14 +2700,17 @@ void ListBoxImpl::SetList(const char* list, char separator, char typesep) {
 }
 
 
-int ListBoxImpl::Length() {
+int ListBoxImpl::Length()
+{
     return GETLB(wid)->GetItemCount();
 }
 
 
-void ListBoxImpl::Select(int n) {
+void ListBoxImpl::Select(int n)
+{
     bool select = true;
-    if (n == -1) {
+    if (n == -1)
+    {
         n = 0;
         select = false;
     }
@@ -2563,18 +2719,21 @@ void ListBoxImpl::Select(int n) {
 }
 
 
-int ListBoxImpl::GetSelection() {
+int ListBoxImpl::GetSelection()
+{
     return GETLB(wid)->GetFirstSelected();
 }
 
 
-int ListBoxImpl::Find(const char *WXUNUSED(prefix)) {
+int ListBoxImpl::Find(const char *WXUNUSED(prefix))
+{
     // No longer used
     return wxNOT_FOUND;
 }
 
 
-void ListBoxImpl::GetValue(int n, char *value, int len) {
+void ListBoxImpl::GetValue(int n, char *value, int len)
+{
     wxListItem item;
     item.SetId(n);
     item.SetColumn(1);
@@ -2586,7 +2745,8 @@ void ListBoxImpl::GetValue(int n, char *value, int len) {
 
 void ListBoxImpl::RegisterImageHelper(int type, const wxBitmap& bmp)
 {
-    if (! imgList) {
+    if (! imgList)
+    {
         // assumes all images are the same size
         imgList = new wxImageList(bmp.GetWidth(), bmp.GetHeight(), true);
         imgTypeMap = new wxArrayInt;
@@ -2603,7 +2763,8 @@ void ListBoxImpl::RegisterImageHelper(int type, const wxBitmap& bmp)
     itm[type] = idx;
 }
 
-void ListBoxImpl::RegisterImage(int type, const char *xpm_data) {
+void ListBoxImpl::RegisterImage(int type, const char *xpm_data)
+{
     wxXPMDecoder dec;
     wxImage img;
 
@@ -2611,7 +2772,7 @@ void ListBoxImpl::RegisterImage(int type, const char *xpm_data) {
     // Test done is two parts to avoid possibility of overstepping the memory
     // if memcmp implemented strangely. Must be 4 bytes at least at destination.
     if ( (0 == memcmp(xpm_data, "/* X", 4)) &&
-         (0 == memcmp(xpm_data, "/* XPM */", 9)) )
+            (0 == memcmp(xpm_data, "/* XPM */", 9)) )
     {
         wxMemoryInputStream stream(xpm_data, strlen(xpm_data)+1);
         img = dec.ReadFile(stream);
@@ -2632,7 +2793,8 @@ void ListBoxImpl::RegisterRGBAImage(int type, int width, int height,
 }
 
 
-void ListBoxImpl::ClearRegisteredImages() {
+void ListBoxImpl::ClearRegisteredImages()
+{
     wxDELETE(imgList);
     wxDELETE(imgTypeMap);
     if (wid)
@@ -2640,53 +2802,65 @@ void ListBoxImpl::ClearRegisteredImages() {
 }
 
 
-void ListBoxImpl::SetDoubleClickAction(CallBackAction action, void *data) {
+void ListBoxImpl::SetDoubleClickAction(CallBackAction action, void *data)
+{
     GETLBW(wid)->SetDoubleClickAction(action, data);
 }
 
 
-ListBox::ListBox() {
+ListBox::ListBox()
+{
 }
 
-ListBox::~ListBox() {
+ListBox::~ListBox()
+{
 }
 
-ListBox *ListBox::Allocate() {
+ListBox *ListBox::Allocate()
+{
     return new ListBoxImpl();
 }
 
 //----------------------------------------------------------------------
 
-Menu::Menu() : mid(0) {
+Menu::Menu() : mid(0)
+{
 }
 
-void Menu::CreatePopUp() {
+void Menu::CreatePopUp()
+{
     Destroy();
     mid = new wxMenu();
 }
 
-void Menu::Destroy() {
+void Menu::Destroy()
+{
     if (mid)
         delete (wxMenu*)mid;
     mid = 0;
 }
 
-void Menu::Show(Point pt, Window &w) {
+void Menu::Show(Point pt, Window &w)
+{
     GETWIN(w.GetID())->PopupMenu((wxMenu*)mid, wxRound(pt.x - 4), wxRound(pt.y));
     Destroy();
 }
 
 //----------------------------------------------------------------------
 
-class DynamicLibraryImpl : public DynamicLibrary {
+class DynamicLibraryImpl : public DynamicLibrary
+{
 public:
     explicit DynamicLibraryImpl(const char *modulePath)
-        : m_dynlib(wxString::FromUTF8(modulePath), wxDL_LAZY) {
+        : m_dynlib(wxString::FromUTF8(modulePath), wxDL_LAZY)
+    {
     }
 
     // Use GetSymbol to get a pointer to the relevant function.
-    virtual Function FindFunction(const char *name) wxOVERRIDE {
-        if (m_dynlib.IsLoaded()) {
+    virtual Function FindFunction(const char *name) wxOVERRIDE
+    {
+        if (m_dynlib.IsLoaded())
+        {
             bool status;
             void* fn_address = m_dynlib.GetSymbol(wxString::FromUTF8(name),
                                                   &status);
@@ -2699,7 +2873,8 @@ public:
             return NULL;
     }
 
-    virtual bool IsValid() wxOVERRIDE {
+    virtual bool IsValid() wxOVERRIDE
+    {
         return m_dynlib.IsLoaded();
     }
 
@@ -2707,19 +2882,22 @@ private:
     wxDynamicLibrary m_dynlib;
 };
 
-DynamicLibrary *DynamicLibrary::Load(const char *modulePath) {
+DynamicLibrary *DynamicLibrary::Load(const char *modulePath)
+{
     return static_cast<DynamicLibrary *>( new DynamicLibraryImpl(modulePath) );
 }
 
 //----------------------------------------------------------------------
 
-ColourDesired Platform::Chrome() {
+ColourDesired Platform::Chrome()
+{
     wxColour c;
     c = wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE);
     return ColourDesired(c.Red(), c.Green(), c.Blue());
 }
 
-ColourDesired Platform::ChromeHighlight() {
+ColourDesired Platform::ChromeHighlight()
+{
     wxColour c;
     c = wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT);
     return ColourDesired(c.Red(), c.Green(), c.Blue());
@@ -2750,32 +2928,38 @@ inline size_t wxStrlcpy(char *dest, const char *src, size_t n)
 #endif
 /* C::B end */
 
-const char *Platform::DefaultFont() {
+const char *Platform::DefaultFont()
+{
     static char buf[128];
     wxStrlcpy(buf, wxNORMAL_FONT->GetFaceName().mbc_str(), WXSIZEOF(buf));
     return buf;
 }
 
-int Platform::DefaultFontSize() {
+int Platform::DefaultFontSize()
+{
     return wxNORMAL_FONT->GetPointSize();
 }
 
-unsigned int Platform::DoubleClickTime() {
+unsigned int Platform::DoubleClickTime()
+{
     return 500;   // **** ::GetDoubleClickTime();
 }
 
-bool Platform::MouseButtonBounce() {
+bool Platform::MouseButtonBounce()
+{
     return false;
 }
 
-bool Platform::IsKeyDown(int WXUNUSED(key)) {
+bool Platform::IsKeyDown(int WXUNUSED(key))
+{
     return false;  // I don't think we'll need this.
 }
 
 long Platform::SendScintilla(WindowID w,
                              unsigned int msg,
                              unsigned long wParam,
-                             long lParam) {
+                             long lParam)
+{
 
     wxScintilla* stc = (wxScintilla*)w;
     return stc->SendMsg(msg, wParam, lParam);
@@ -2784,7 +2968,8 @@ long Platform::SendScintilla(WindowID w,
 long Platform::SendScintillaPointer(WindowID w,
                                     unsigned int msg,
                                     unsigned long wParam,
-                                    void *lParam) {
+                                    void *lParam)
+{
 
     wxScintilla* stc = (wxScintilla*)w;
     return stc->SendMsg(msg, wParam, (wxIntPtr)lParam);
@@ -2793,14 +2978,16 @@ long Platform::SendScintillaPointer(WindowID w,
 
 // These are utility functions not really tied to a platform
 
-int Platform::Minimum(int a, int b) {
+int Platform::Minimum(int a, int b)
+{
     if (a < b)
         return a;
     else
         return b;
 }
 
-int Platform::Maximum(int a, int b) {
+int Platform::Maximum(int a, int b)
+{
     if (a > b)
         return a;
     else
@@ -2809,7 +2996,8 @@ int Platform::Maximum(int a, int b) {
 
 //#define TRACE
 
-void Platform::DebugDisplay(const char *s) {
+void Platform::DebugDisplay(const char *s)
+{
 #ifdef TRACE
     wxLogDebug(sci2wx(s));
 #else
@@ -2817,7 +3005,8 @@ void Platform::DebugDisplay(const char *s) {
 #endif
 }
 
-void Platform::DebugPrintf(const char *format, ...) {
+void Platform::DebugPrintf(const char *format, ...)
+{
 #ifdef TRACE
     char buffer[2000];
     va_list pArguments;
@@ -2833,22 +3022,27 @@ void Platform::DebugPrintf(const char *format, ...) {
 
 static bool assertionPopUps = true;
 
-bool Platform::ShowAssertionPopUps(bool assertionPopUps_) {
+bool Platform::ShowAssertionPopUps(bool assertionPopUps_)
+{
     bool ret = assertionPopUps;
     assertionPopUps = assertionPopUps_;
     return ret;
 }
 
-void Platform::Assert(const char *c, const char *file, int line) {
+void Platform::Assert(const char *c, const char *file, int line)
+{
 #ifdef TRACE
     char buffer[2000];
     sprintf(buffer, "Assertion [%s] failed at %s %d", c, file, line);
-    if (assertionPopUps) {
+    if (assertionPopUps)
+    {
         /*int idButton = */
         wxMessageBox(sci2wx(buffer),
                      wxT("Assertion failure"),
                      wxICON_HAND | wxOK);
-    } else {
+    }
+    else
+    {
         strcat(buffer, "\r\n");
         Platform::DebugDisplay(buffer);
         abort();
@@ -2861,7 +3055,8 @@ void Platform::Assert(const char *c, const char *file, int line) {
 }
 
 
-int Platform::Clamp(int val, int minVal, int maxVal) {
+int Platform::Clamp(int val, int minVal, int maxVal)
+{
     if (val > maxVal)
         val = maxVal;
     if (val < minVal)
@@ -2870,31 +3065,37 @@ int Platform::Clamp(int val, int minVal, int maxVal) {
 }
 
 
-bool Platform::IsDBCSLeadByte(int WXUNUSED(codePage), char WXUNUSED(ch)) {
+bool Platform::IsDBCSLeadByte(int WXUNUSED(codePage), char WXUNUSED(ch))
+{
     return false;
 }
 
-int Platform::DBCSCharLength(int WXUNUSED(codePage), const char *WXUNUSED(s)) {
+int Platform::DBCSCharLength(int WXUNUSED(codePage), const char *WXUNUSED(s))
+{
     return 1;
 }
 
-int Platform::DBCSCharMaxLength() {
+int Platform::DBCSCharMaxLength()
+{
     return 1;
 }
 
 
 //----------------------------------------------------------------------
 
-ElapsedTime::ElapsedTime() {
+ElapsedTime::ElapsedTime()
+{
     wxLongLong localTime = wxGetLocalTimeMillis();
     littleBit = localTime.GetLo();
     bigBit = localTime.GetHi();
 }
 
-double ElapsedTime::Duration(bool reset) {
+double ElapsedTime::Duration(bool reset)
+{
     wxLongLong prevTime(bigBit, littleBit);
     wxLongLong localTime = wxGetLocalTimeMillis();
-    if(reset) {
+    if(reset)
+    {
         littleBit = localTime.GetLo();
         bigBit = localTime.GetHi();
     }

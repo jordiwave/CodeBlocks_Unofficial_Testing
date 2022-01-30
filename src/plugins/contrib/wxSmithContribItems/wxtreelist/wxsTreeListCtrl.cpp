@@ -232,19 +232,28 @@ void wxsTreeListCtrl::BuildItemCode (void)
 
 // enuough columns?
 
-    if (m_ColCount < 1) { m_ColCount = 1; }
+    if (m_ColCount < 1)
+    {
+        m_ColCount = 1;
+    }
 
 // add all the col info
 
     n = 0;
     for (i=0; i < (int)m_ColTitles.GetCount(); i++)
     {
-        if (n >= m_ColCount) { break; }
+        if (n >= m_ColCount)
+        {
+            break;
+        }
 
         ss = m_ColTitles.Item (i);
         ss.Trim (true);
         ss.Trim (false);
-        if (ss[0] == '!') { continue; }
+        if (ss[0] == '!')
+        {
+            continue;
+        }
 
         Codef (_ ("%AAddColumn(%t, %d);\n"), ss.wx_str(), static_cast<int>(m_ColWidth));
         n += 1;
@@ -256,8 +265,14 @@ void wxsTreeListCtrl::BuildItemCode (void)
     for (i=0; i < (int)m_TreeData.GetCount(); i++)
     {
         ss = m_TreeData.Item (i);
-        if (ss.Len() == 0) { continue; }
-        if (ss[0] == '!') { continue; }
+        if (ss.Len() == 0)
+        {
+            continue;
+        }
+        if (ss[0] == '!')
+        {
+            continue;
+        }
 
         n += 1;
     };
@@ -275,7 +290,10 @@ void wxsTreeListCtrl::BuildItemCode (void)
 
 // make sure there is no false readings
 
-    for (i=0; i < kLMAX; i++) { id[i] = 0; }
+    for (i=0; i < kLMAX; i++)
+    {
+        id[i] = 0;
+    }
 
 // make our own root item
 
@@ -294,13 +312,22 @@ void wxsTreeListCtrl::BuildItemCode (void)
 
 // some lines are skipped over
 
-        if (ss.Len() == 0) { continue; }
-        if (ss[0] == '!') { continue; }
+        if (ss.Len() == 0)
+        {
+            continue;
+        }
+        if (ss[0] == '!')
+        {
+            continue;
+        }
 
 // get the level and the label texts
 
         ParseItems (ss, n, items);
-        if (n <= 0) { n = 1; }
+        if (n <= 0)
+        {
+            n = 1;
+        }
 
 // ID of the new item
 
@@ -315,8 +342,14 @@ void wxsTreeListCtrl::BuildItemCode (void)
 
 // base text of the new item
 
-        if (items.GetCount() == 0) { tt = _ (""); }
-        else { tt = items.Item (0); }
+        if (items.GetCount() == 0)
+        {
+            tt = _ ("");
+        }
+        else
+        {
+            tt = items.Item (0);
+        }
 
 // make the base item
 
@@ -326,7 +359,10 @@ void wxsTreeListCtrl::BuildItemCode (void)
 
         for (j=1; j < (int)items.GetCount(); j++)
         {
-            if (j >= m_ColCount) { break; }
+            if (j >= m_ColCount)
+            {
+                break;
+            }
             tt = items.Item (j);
             Codef (_ ("%ASetItemText(%s, %d, %t);\n"), ss.wx_str(), j, tt.wx_str() );
         };
@@ -358,19 +394,28 @@ void wxsTreeListCtrl::PreviewItemCode (wxTreeListCtrl* inPreview)
 
 // enuough columns?
 
-    if (m_ColCount < 1) { m_ColCount = 1; }
+    if (m_ColCount < 1)
+    {
+        m_ColCount = 1;
+    }
 
 // add all the col info
 
     n = 0;
     for (i=0; i < (int)m_ColTitles.GetCount(); i++)
     {
-        if (n >= m_ColCount) { break; }
+        if (n >= m_ColCount)
+        {
+            break;
+        }
 
         ss = m_ColTitles.Item (i);
         ss.Trim (true);
         ss.Trim (false);
-        if (ss[0] == '!') { continue; }
+        if (ss[0] == '!')
+        {
+            continue;
+        }
 
         inPreview->AddColumn (ss, m_ColWidth);
         n += 1;
@@ -378,7 +423,10 @@ void wxsTreeListCtrl::PreviewItemCode (wxTreeListCtrl* inPreview)
 
 // make sure there is no false readings
 
-    for (i=0; i < kLMAX; i++) { id[i].Unset(); }
+    for (i=0; i < kLMAX; i++)
+    {
+        id[i].Unset();
+    }
 
 // make our own root item
 
@@ -395,20 +443,38 @@ void wxsTreeListCtrl::PreviewItemCode (wxTreeListCtrl* inPreview)
 
 // some lines are skipped over
 
-        if (ss.Len() == 0) { continue; }
-        if (ss[0] == '!') { continue; }
+        if (ss.Len() == 0)
+        {
+            continue;
+        }
+        if (ss[0] == '!')
+        {
+            continue;
+        }
 
 // get the level and the label texts
 
         ParseItems (ss, n, items);
-        if (n <= 0) { n = 1; }
+        if (n <= 0)
+        {
+            n = 1;
+        }
 
 // make a new item, checking for valid parent
 
-        if (! id[n-1].IsOk() ) { return; }
+        if (! id[n-1].IsOk() )
+        {
+            return;
+        }
 
-        if (items.GetCount() == 0) { tt = _ (""); }
-        else { tt = items.Item (0); }
+        if (items.GetCount() == 0)
+        {
+            tt = _ ("");
+        }
+        else
+        {
+            tt = items.Item (0);
+        }
 
         id[n] = inPreview->AppendItem (id[n-1], tt);
 
@@ -416,7 +482,10 @@ void wxsTreeListCtrl::PreviewItemCode (wxTreeListCtrl* inPreview)
 
         for (j=1; j < (int)items.GetCount(); j++)
         {
-            if (j >= m_ColCount) { break; }
+            if (j >= m_ColCount)
+            {
+                break;
+            }
             tt = items.Item (j);
             inPreview->SetItemText (id[n], j, tt);
         };
@@ -445,10 +514,22 @@ void wxsTreeListCtrl::ParseItems (wxString inSource, int& outLevel, wxArrayStrin
 
 // the correct tab char
 
-    if      (m_TabChar == 0) { tab = '\t'; }
-    else if (m_TabChar == 1) { tab = '+'; }
-    else if (m_TabChar == 2) { tab = '>'; }
-    else { tab = '\t'; }
+    if      (m_TabChar == 0)
+    {
+        tab = '\t';
+    }
+    else if (m_TabChar == 1)
+    {
+        tab = '+';
+    }
+    else if (m_TabChar == 2)
+    {
+        tab = '>';
+    }
+    else
+    {
+        tab = '\t';
+    }
 
 // working copy
 
@@ -474,9 +555,15 @@ void wxsTreeListCtrl::ParseItems (wxString inSource, int& outLevel, wxArrayStrin
     while (i < (int)ss.Len() )
     {
         tt = _ ("");
-        while ( (i < (int)ss.Len() ) && (ss[i] != tab) ) { tt += ss[i++]; }
+        while ( (i < (int)ss.Len() ) && (ss[i] != tab) )
+        {
+            tt += ss[i++];
+        }
         outItems.Add (tt);
-        if (i < (int)ss.Len() ) { i += 1; }
+        if (i < (int)ss.Len() )
+        {
+            i += 1;
+        }
     };
 
 // and the last item

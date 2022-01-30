@@ -11,14 +11,14 @@
 #include "abbreviationsconfigpanel.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/xrc/xmlres.h>
-    #include <wx/fontutil.h>
-    #include <wx/choicdlg.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/fontutil.h>
+#include <wx/choicdlg.h>
 
-    #include <configmanager.h>
-    #include <editorcolourset.h>
-    #include <editormanager.h>
-    #include <logmanager.h>
+#include <configmanager.h>
+#include <editorcolourset.h>
+#include <editormanager.h>
+#include <logmanager.h>
 #endif
 
 #include "cbcolourmanager.h"
@@ -171,7 +171,7 @@ void AbbreviationsConfigPanel::OnAutoCompDelete(cb_unused wxCommandEvent& event)
 void AbbreviationsConfigPanel::OnAutoCompKeyword(cb_unused wxCommandEvent& event)
 {
     if (   m_LastAutoCompKeyword.IsSameAs(m_Keyword->GetStringSelection())
-        && m_LastAutoCompLanguage.IsSameAs(m_LanguageCmb->GetValue()))
+            && m_LastAutoCompLanguage.IsSameAs(m_LanguageCmb->GetValue()))
         return;
 
     AutoCompUpdate(m_LastAutoCompKeyword, m_LastAutoCompLanguage);
@@ -200,12 +200,12 @@ void AbbreviationsConfigPanel::OnCancel()
 
 wxString AbbreviationsConfigPanel::GetTitle() const
 {
-  return _("Abbreviations");
+    return _("Abbreviations");
 }
 
 wxString AbbreviationsConfigPanel::GetBitmapBaseName() const
 {
-  return _T("abbrev");
+    return _T("abbrev");
 }
 
 void AbbreviationsConfigPanel::FillLangugages()
@@ -274,7 +274,7 @@ int AbbreviationsConfigPanel::LanguageAdd()
     for (unsigned int i = 0; i < langs.GetCount(); ++i)
     {
         if (m_Plugin->m_AutoCompLanguageMap.find(langs[i]) == m_Plugin->m_AutoCompLanguageMap.end() &&
-            !langs[i].IsSameAs(_T("Fortran77")))
+                !langs[i].IsSameAs(_T("Fortran77")))
             newLangs.Add(langs[i]);
     }
     newLangs.Sort();

@@ -75,7 +75,10 @@ public:
         ParserTokenType tokenType;          /// type
         OperatorType    tokenOperatorType;  /// operator type
 
-        ParserComponent() { Clear(); }
+        ParserComponent()
+        {
+            Clear();
+        }
         void Clear()
         {
             component         = wxEmptyString;
@@ -488,9 +491,9 @@ protected:
     static bool InsideToken(int startAt, const wxString& line)
     {
         return (   (startAt >= 0)
-                && ((size_t)startAt < line.Len())
-                && (   (wxIsalnum(line.GetChar(startAt)))
-                    || (line.GetChar(startAt) == '_') ) );
+                   && ((size_t)startAt < line.Len())
+                   && (   (wxIsalnum(line.GetChar(startAt)))
+                          || (line.GetChar(startAt) == '_') ) );
     }
 
     /** go to the first character of the identifier, e.g
@@ -503,18 +506,18 @@ protected:
     static int BeginOfToken(int startAt, const wxString& line)
     {
         while (   (startAt >= 0)
-               && ((size_t)startAt < line.Len())
-               && (   (wxIsalnum(line.GetChar(startAt)))
-                   || (line.GetChar(startAt) == '_') ) )
+                  && ((size_t)startAt < line.Len())
+                  && (   (wxIsalnum(line.GetChar(startAt)))
+                         || (line.GetChar(startAt) == '_') ) )
             --startAt;
         return startAt;
     }
     static int BeforeToken(int startAt, const wxString& line)
     {
         if (   (startAt > 0)
-            && ((size_t)startAt < line.Len() + 1)
-            && (   (wxIsalnum(line.GetChar(startAt - 1)))
-                || (line.GetChar(startAt - 1) == '_') ) )
+                && ((size_t)startAt < line.Len() + 1)
+                && (   (wxIsalnum(line.GetChar(startAt - 1)))
+                       || (line.GetChar(startAt - 1) == '_') ) )
             --startAt;
         return startAt;
     }
@@ -530,38 +533,38 @@ protected:
     static bool IsOperatorEnd(int startAt, const wxString& line)
     {
         return (   (startAt > 0)
-                && ((size_t)startAt < line.Len())
-                && (   (   (line.GetChar(startAt) == '>')
-                        && (line.GetChar(startAt - 1) == '-') )
-                    || (   (line.GetChar(startAt) == ':')
-                        && (line.GetChar(startAt - 1) == ':') ) ) );
+                   && ((size_t)startAt < line.Len())
+                   && (   (   (line.GetChar(startAt) == '>')
+                              && (line.GetChar(startAt - 1) == '-') )
+                          || (   (line.GetChar(startAt) == ':')
+                                 && (line.GetChar(startAt - 1) == ':') ) ) );
     }
     static bool IsOperatorPointer(int startAt, const wxString& line)
     {
         return (   (startAt > 0)
-            && ((size_t)startAt < line.Len())
-            && (   (   (line.GetChar(startAt) == '>')
-                    && (line.GetChar(startAt - 1) == '-') )));
+                   && ((size_t)startAt < line.Len())
+                   && (   (   (line.GetChar(startAt) == '>')
+                              && (line.GetChar(startAt - 1) == '-') )));
     }
 
     /** check if startAt point to "->" or "::" operator */
-     // FIXME (ollydbg#1#): should be startAt+1 < line.Len()?
+    // FIXME (ollydbg#1#): should be startAt+1 < line.Len()?
     static bool IsOperatorBegin(int startAt, const wxString& line)
     {
         return (   (startAt >= 0)
-                && ((size_t)startAt < line.Len())
-                && (   (   (line.GetChar(startAt ) == '-')
-                        && (line.GetChar(startAt + 1) == '>') )
-                    || (   (line.GetChar(startAt) == ':')
-                        && (line.GetChar(startAt + 1) == ':') ) ) );
+                   && ((size_t)startAt < line.Len())
+                   && (   (   (line.GetChar(startAt ) == '-')
+                              && (line.GetChar(startAt + 1) == '>') )
+                          || (   (line.GetChar(startAt) == ':')
+                                 && (line.GetChar(startAt + 1) == ':') ) ) );
     }
 
     /** check whether line[startAt] is a dot character */
     static bool IsOperatorDot(int startAt, const wxString& line)
     {
         return (   (startAt >= 0)
-                && ((size_t)startAt < line.Len())
-                && (line.GetChar(startAt) == '.') );
+                   && ((size_t)startAt < line.Len())
+                   && (line.GetChar(startAt) == '.') );
     }
 
     /** move to the char before whitespace and tabs, e.g.
@@ -578,9 +581,9 @@ protected:
     static int BeforeWhitespace(int startAt, const wxString& line)
     {
         while (   (startAt >= 0)
-               && ((size_t)startAt < line.Len())
-               && (   (line.GetChar(startAt) == ' ')
-                   || (line.GetChar(startAt) == '\t') ) )
+                  && ((size_t)startAt < line.Len())
+                  && (   (line.GetChar(startAt) == ' ')
+                         || (line.GetChar(startAt) == '\t') ) )
             --startAt;
         return startAt;
     }
@@ -599,8 +602,8 @@ protected:
         if (startAt < 0)
             startAt = 0;
         while (   ((size_t)startAt < line.Len())
-               && (   (line.GetChar(startAt) == ' ')
-                   || (line.GetChar(startAt) == '\t') ) )
+                  && (   (line.GetChar(startAt) == ' ')
+                         || (line.GetChar(startAt) == '\t') ) )
             ++startAt;
         return startAt;
     }
@@ -612,16 +615,16 @@ protected:
     static bool IsOpeningBracket(int startAt, const wxString& line)
     {
         return (   ((size_t)startAt < line.Len())
-                && (   (line.GetChar(startAt) == '(')
-                    || (line.GetChar(startAt) == '[') ) );
+                   && (   (line.GetChar(startAt) == '(')
+                          || (line.GetChar(startAt) == '[') ) );
     }
 
     /** check the current char (line[startAt]) is either ')' or ']'  */
     static bool IsClosingBracket(int startAt, const wxString& line)
     {
         return (   (startAt >= 0)
-                && (   (line.GetChar(startAt) == ')')
-                    || (line.GetChar(startAt) == ']') ) );
+                   && (   (line.GetChar(startAt) == ')')
+                          || (line.GetChar(startAt) == ']') ) );
     }
 
 protected:
@@ -642,15 +645,15 @@ private:
     bool AddChildrenOfUnnamed(TokenTree* tree, const Token* parent, TokenIdxSet& result)
     {
         if (  ( (parent->m_TokenKind & (tkClass | tkEnum)) != 0 )
-            && parent->m_IsAnonymous == true )
+                && parent->m_IsAnonymous == true )
         {
             // add all its children
             for (TokenIdxSet::const_iterator it = parent->m_Children.begin();
-                                             it != parent->m_Children.end(); ++it)
+                    it != parent->m_Children.end(); ++it)
             {
                 Token* tokenChild = tree->at(*it);
                 if (    tokenChild
-                    && (parent->m_TokenKind == tkClass || tokenChild->m_Scope != tsPrivate) )
+                        && (parent->m_TokenKind == tkClass || tokenChild->m_Scope != tsPrivate) )
                 {
                     // NOTE: recurse (eg: class A contains struct contains union or enum)
                     if ( !AddChildrenOfUnnamed(tree, tokenChild, result) )
@@ -671,7 +674,7 @@ private:
         {
             // add all its children
             for (TokenIdxSet::const_iterator it = parent->m_Children.begin();
-                                             it != parent->m_Children.end(); ++it)
+                    it != parent->m_Children.end(); ++it)
             {
                 Token* tokenChild = tree->at(*it);
                 if (tokenChild && tokenChild->m_Scope != tsPrivate)
@@ -703,13 +706,13 @@ private:
         {
             // loop all children of the parent token
             for (TokenIdxSet::const_iterator it = parent->m_Children.begin();
-                                             it != parent->m_Children.end(); ++it)
+                    it != parent->m_Children.end(); ++it)
             {
                 Token* token = tree->at(*it);
                 // an unnamed class is much similar like the enum
                 if (token && (((token->m_TokenKind & tkClass)
-                                && (token->m_IsAnonymous == true))
-                             || (token->m_TokenKind & tkEnum)))
+                               && (token->m_IsAnonymous == true))
+                              || (token->m_TokenKind & tkEnum)))
                 {
                     // if target token matches on child, we can return success
                     // other wise, we try to see the target token matches child's child.

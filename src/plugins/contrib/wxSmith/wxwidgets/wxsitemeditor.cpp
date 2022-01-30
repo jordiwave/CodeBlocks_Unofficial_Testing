@@ -34,16 +34,22 @@
 
 namespace
 {
-    const long wxsInsPointId   = wxNewId();
-    const long wxsInsIntoId    = wxNewId();
-    const long wxsInsBeforeId  = wxNewId();
-    const long wxsInsAfterId   = wxNewId();
-    const long wxsDelId        = wxNewId();
-    const long wxsPreviewId    = wxNewId();
-    const long wxsQuickPropsId = wxNewId();
+const long wxsInsPointId   = wxNewId();
+const long wxsInsIntoId    = wxNewId();
+const long wxsInsBeforeId  = wxNewId();
+const long wxsInsAfterId   = wxNewId();
+const long wxsDelId        = wxNewId();
+const long wxsPreviewId    = wxNewId();
+const long wxsQuickPropsId = wxNewId();
 
-    inline int ToolIconSize() { return Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/tooliconsize"),32L); }
-    inline int PalIconSize()  { return Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/paletteiconsize"),16L); }
+inline int ToolIconSize()
+{
+    return Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/tooliconsize"),32L);
+}
+inline int PalIconSize()
+{
+    return Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/paletteiconsize"),16L);
+}
 }
 
 wxsItemEditor::wxsItemEditor(wxWindow* parent,wxsItemRes* Resource):
@@ -261,7 +267,7 @@ void wxsItemEditor::UpdateSelection()
             // When sizer is added into non-sizer parent, no other items can be added to
             // this parent
             if ( Item->GetType() != wxsTSizer ||
-                 Item->GetParent()->GetType() == wxsTSizer )
+                    Item->GetParent()->GetType() == wxsTSizer )
             {
                 itMask |= itBefore | itAfter;
             }
@@ -366,17 +372,17 @@ void wxsItemEditor::Paste()
 
     switch ( m_InsType )
     {
-        case itAfter:
-            RefIndex++;
-            break;
+    case itAfter:
+        RefIndex++;
+        break;
 
-        case itInto:
-            Parent = Reference->ConvertToParent();
-            RefIndex = Parent ? Parent->GetChildCount() : 0;
-            break;
+    case itInto:
+        Parent = Reference->ConvertToParent();
+        RefIndex = Parent ? Parent->GetChildCount() : 0;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     m_Data->Paste(Parent,RefIndex);
@@ -414,53 +420,18 @@ void wxsItemEditor::InsertRequest(const wxString& Name)
 
     switch ( m_InsType )
     {
-        case itAfter:
-            RefIndex++;
-            // We don't break here - continuing on itBefore code
+    case itAfter:
+        RefIndex++;
+    // We don't break here - continuing on itBefore code
 
-        case itBefore:
-            if ( Parent )
-            {
-                // Checking if this is tool, tools can be added
-                // into other tools or into resource only
-                if ( IsTool &&
-                     ( !Parent->ConvertToTool() ||
-                       !New->CanAddToParent(Parent,false)) )
-                {
-                    // Trying to add to resource
-                    if ( !New->ConvertToTool()->CanAddToResource(m_Data,true) )
-                    {
-                        delete New;
-                    }
-                    else
-                    {
-                        if ( m_Data->InsertNewTool(New->ConvertToTool()) )
-                        {
-                            m_Data->SelectItem(New,true);
-                        }
-                    }
-                }
-                else
-                {
-                    if ( m_Data->InsertNew(New,Parent,RefIndex) )
-                    {
-                        m_Data->SelectItem(New,true);
-                    }
-                }
-
-            }
-            else
-            {
-                delete New;
-            }
-            break;
-
-        case itInto:
-        case itPoint:       // This will cover tools when itPoint is used
+    case itBefore:
+        if ( Parent )
         {
+            // Checking if this is tool, tools can be added
+            // into other tools or into resource only
             if ( IsTool &&
-                 (!Reference->ConvertToTool() ||
-                  !New->CanAddToParent(Reference->ConvertToParent(),false)) )
+                    ( !Parent->ConvertToTool() ||
+                      !New->CanAddToParent(Parent,false)) )
             {
                 // Trying to add to resource
                 if ( !New->ConvertToTool()->CanAddToResource(m_Data,true) )
@@ -477,18 +448,53 @@ void wxsItemEditor::InsertRequest(const wxString& Name)
             }
             else
             {
-                if ( m_Data->InsertNew(New,Reference->ConvertToParent(),-1) )
+                if ( m_Data->InsertNew(New,Parent,RefIndex) )
                 {
                     m_Data->SelectItem(New,true);
                 }
             }
-            break;
-        }
 
-        default:
+        }
+        else
         {
             delete New;
         }
+        break;
+
+    case itInto:
+    case itPoint:       // This will cover tools when itPoint is used
+    {
+        if ( IsTool &&
+                (!Reference->ConvertToTool() ||
+                 !New->CanAddToParent(Reference->ConvertToParent(),false)) )
+        {
+            // Trying to add to resource
+            if ( !New->ConvertToTool()->CanAddToResource(m_Data,true) )
+            {
+                delete New;
+            }
+            else
+            {
+                if ( m_Data->InsertNewTool(New->ConvertToTool()) )
+                {
+                    m_Data->SelectItem(New,true);
+                }
+            }
+        }
+        else
+        {
+            if ( m_Data->InsertNew(New,Reference->ConvertToParent(),-1) )
+            {
+                m_Data->SelectItem(New,true);
+            }
+        }
+        break;
+    }
+
+    default:
+    {
+        delete New;
+    }
 
     }
     m_Data->EndChange();
@@ -636,26 +642,26 @@ void wxsItemEditor::RebuildIcons()
 
 namespace
 {
-    int PrioritySort(const wxsItemInfo** it1,const wxsItemInfo** it2)
-    {
-        return (*it1)->Priority - (*it2)->Priority;
-    }
+int PrioritySort(const wxsItemInfo** it1,const wxsItemInfo** it2)
+{
+    return (*it1)->Priority - (*it2)->Priority;
+}
 
-    WX_DEFINE_ARRAY(const wxsItemInfo*,ItemsT);
+WX_DEFINE_ARRAY(const wxsItemInfo*,ItemsT);
 
-    int CategorySort(ItemsT* it1, ItemsT* it2)
-    {
-        if (it1->Item(0)->Category.IsSameAs(_T("Standard")))
-            return -1;
+int CategorySort(ItemsT* it1, ItemsT* it2)
+{
+    if (it1->Item(0)->Category.IsSameAs(_T("Standard")))
+        return -1;
 
-        if (it2->Item(0)->Category.IsSameAs(_T("Standard")))
-            return 1;
+    if (it2->Item(0)->Category.IsSameAs(_T("Standard")))
+        return 1;
 
-        return wxStrcmp(it1->Item(0)->Category, it2->Item(0)->Category);
-    }
+    return wxStrcmp(it1->Item(0)->Category, it2->Item(0)->Category);
+}
 
-    WX_DECLARE_STRING_HASH_MAP(ItemsT,MapT);
-    WX_DEFINE_SORTED_ARRAY(ItemsT*,ArrayOfItemsT);
+WX_DECLARE_STRING_HASH_MAP(ItemsT,MapT);
+WX_DEFINE_SORTED_ARRAY(ItemsT*,ArrayOfItemsT);
 }
 
 void wxsItemEditor::BuildPalette(wxNotebook* Palette)
@@ -701,15 +707,15 @@ void wxsItemEditor::BuildPalette(wxNotebook* Palette)
                 if ( Icon.Ok() )
                 {
                     Btn = new wxBitmapButton(CurrentPanel,-1,Icon,
-                              wxDefaultPosition,wxDefaultSize,wxBU_AUTODRAW,
-                              wxDefaultValidator, Info->ClassName);
+                                             wxDefaultPosition,wxDefaultSize,wxBU_AUTODRAW,
+                                             wxDefaultValidator, Info->ClassName);
                     RowSizer->Add(Btn,0,wxALIGN_CENTER);
                 }
                 else
                 {
                     Btn = new wxButton(CurrentPanel,-1,Info->ClassName,
-                              wxDefaultPosition,wxDefaultSize,0,
-                              wxDefaultValidator,Info->ClassName);
+                                       wxDefaultPosition,wxDefaultSize,0,
+                                       wxDefaultValidator,Info->ClassName);
                     RowSizer->Add(Btn,0,wxGROW);
                 }
                 Btn->SetToolTip(Info->ClassName);
@@ -819,8 +825,8 @@ wxsItem* wxsItemEditor::GetReferenceItem(int& InsertionType)
         Reference = m_Data->GetRootItem();
         wxsParent* AsParent = Reference->ConvertToParent();
         if ( AsParent &&
-             AsParent->GetChildCount() == 1 &&
-             AsParent->GetChild(0)->GetType() == wxsTSizer )
+                AsParent->GetChildCount() == 1 &&
+                AsParent->GetChild(0)->GetType() == wxsTSizer )
         {
             Reference = AsParent->GetChild(0);
         }
@@ -832,15 +838,15 @@ void wxsItemEditor::OnKeyDown(wxKeyEvent& event)
 {
     switch ( event.GetKeyCode() )
     {
-        case WXK_DELETE:
-            if ( !m_Data ) break;
-            m_Data->BeginChange();
-            m_Data->DeleteSelected();
-            m_Data->EndChange();
-            break;
+    case WXK_DELETE:
+        if ( !m_Data ) break;
+        m_Data->BeginChange();
+        m_Data->DeleteSelected();
+        m_Data->EndChange();
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 

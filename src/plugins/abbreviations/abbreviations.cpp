@@ -10,15 +10,15 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include "cbeditor.h"
-    #include "cbstyledtextctrl.h"
-    #include "configmanager.h"
-    #include "configurationpanel.h"
-    #include "editorcolourset.h"
-    #include "editormanager.h"
-    #include "logmanager.h"
-    #include "macrosmanager.h"
-    #include "scriptingmanager.h"
+#include "cbeditor.h"
+#include "cbstyledtextctrl.h"
+#include "configmanager.h"
+#include "configurationpanel.h"
+#include "editorcolourset.h"
+#include "editormanager.h"
+#include "logmanager.h"
+#include "macrosmanager.h"
+#include "scriptingmanager.h"
 #endif
 
 #include "abbreviations.h"
@@ -32,8 +32,8 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<Abbreviations> reg(_T("Abbreviations"));
-    const int idEditAutoComplete = wxNewId();
+PluginRegistrant<Abbreviations> reg(_T("Abbreviations"));
+const int idEditAutoComplete = wxNewId();
 }
 
 Abbreviations* Abbreviations::m_Singleton = nullptr;
@@ -108,28 +108,28 @@ void Abbreviations::OnRelease(cb_unused bool appShutDown)
 
 namespace ScriptBindings
 {
-    /** Try to auto-complete the current word.
-      *
-      * This has nothing to do with code-completion plugins. Editor auto-completion
-      * is a feature that saves typing common blocks of code, e.g.
-      *
-      * If you have typed "forb" (no quotes) and select auto-complete, then
-      * it will convert "forb" to "for ( ; ; ){ }".
-      * If the word up to the caret position is an unknown keyword, nothing happens.
-      *
-      * These keywords/code pairs can be edited in the editor configuration
-      * dialog.
-      */
-    SQInteger CallDoAutoComplete(HSQUIRRELVM v)
-    {
-        // this, ed
-        ExtractParams2<SkipParam, cbEditor *> extractor(v);
-        if (!extractor.Process("Abbreviations::AutoComplete"))
-                return extractor.ErrorMessage();
-        if (Abbreviations::Get())
-            Abbreviations::Get()->DoAutoComplete(extractor.p1);
-        return 0;
-    }
+/** Try to auto-complete the current word.
+  *
+  * This has nothing to do with code-completion plugins. Editor auto-completion
+  * is a feature that saves typing common blocks of code, e.g.
+  *
+  * If you have typed "forb" (no quotes) and select auto-complete, then
+  * it will convert "forb" to "for ( ; ; ){ }".
+  * If the word up to the caret position is an unknown keyword, nothing happens.
+  *
+  * These keywords/code pairs can be edited in the editor configuration
+  * dialog.
+  */
+SQInteger CallDoAutoComplete(HSQUIRRELVM v)
+{
+    // this, ed
+    ExtractParams2<SkipParam, cbEditor *> extractor(v);
+    if (!extractor.Process("Abbreviations::AutoComplete"))
+        return extractor.ErrorMessage();
+    if (Abbreviations::Get())
+        Abbreviations::Get()->DoAutoComplete(extractor.p1);
+    return 0;
+}
 } // namespace ScriptBindings
 
 void Abbreviations::RegisterScripting()
@@ -224,7 +224,7 @@ void Abbreviations::OnEditAutoComplete(cb_unused wxCommandEvent& event)
                 const int size = cbFindMinSize16to64(fontSize);
 
                 const wxString prefix = ConfigManager::GetDataFolder()
-                      + wxString::Format(_T("/abbreviations.zip#zip:images/%dx%d/"), size, size);
+                                        + wxString::Format(_T("/abbreviations.zip#zip:images/%dx%d/"), size, size);
 
                 control->RegisterImage(0, cbLoadBitmap(prefix + wxT("arrow.png")));
             }
@@ -532,12 +532,13 @@ void Abbreviations::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
         event.SetEventType(wxEVT_NULL);
     }
     else // here should be: else if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_CANCELLED)
-    {    // but is this event doesn't occur.
+    {
+        // but is this event doesn't occur.
         m_IsAutoCompVisible = control->AutoCompActive();
     }
 
     if (!m_IsAutoCompVisible)
-      event.Skip(); // allow others to handle this event
+        event.Skip(); // allow others to handle this event
 }
 
 cbConfigurationPanel* Abbreviations::GetConfigurationPanel(wxWindow* parent)

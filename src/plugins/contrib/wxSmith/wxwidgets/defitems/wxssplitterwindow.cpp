@@ -26,33 +26,33 @@
 
 namespace
 {
-    wxsRegisterItem<wxsSplitterWindow> Reg(_T("SplitterWindow"),wxsTContainer,_T("Layout"),30);
+wxsRegisterItem<wxsSplitterWindow> Reg(_T("SplitterWindow"),wxsTContainer,_T("Layout"),30);
 
-    WXS_ST_BEGIN(wxsSplitterWindowStyles,_T("wxSP_3D"))
-        WXS_ST_CATEGORY("wxSplitterWindow")
-        WXS_ST(wxSP_3D)
-        WXS_ST(wxSP_3DSASH)
-        WXS_ST(wxSP_3DBORDER)
-        WXS_ST(wxSP_BORDER)
-        WXS_ST(wxSP_NOBORDER)
-        WXS_ST(wxSP_PERMIT_UNSPLIT)
-        WXS_ST(wxSP_LIVE_UPDATE)
-        WXS_ST(wxSP_NO_XP_THEME)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsSplitterWindowStyles,_T("wxSP_3D"))
+WXS_ST_CATEGORY("wxSplitterWindow")
+WXS_ST(wxSP_3D)
+WXS_ST(wxSP_3DSASH)
+WXS_ST(wxSP_3DBORDER)
+WXS_ST(wxSP_BORDER)
+WXS_ST(wxSP_NOBORDER)
+WXS_ST(wxSP_PERMIT_UNSPLIT)
+WXS_ST(wxSP_LIVE_UPDATE)
+WXS_ST(wxSP_NO_XP_THEME)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsSplitterWindowEvents)
-        WXS_EVI(EVT_SPLITTER_SASH_POS_CHANGING,wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGING,wxSplitterEvent,SashPosChanging)
-        WXS_EVI(EVT_SPLITTER_SASH_POS_CHANGED,wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGED,wxSplitterEvent,SashPosChanged)
-        WXS_EVI(EVT_SPLITTER_UNSPLIT,wxEVT_COMMAND_SPLITTER_UNSPLIT,wxSplitterEvent,Unsplit)
-        WXS_EVI(EVT_SPLITTER_DCLICK,wxEVT_COMMAND_SPLITTER_DOUBLECLICKED,wxSplitterEvent,DClick)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsSplitterWindowEvents)
+WXS_EVI(EVT_SPLITTER_SASH_POS_CHANGING,wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGING,wxSplitterEvent,SashPosChanging)
+WXS_EVI(EVT_SPLITTER_SASH_POS_CHANGED,wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGED,wxSplitterEvent,SashPosChanged)
+WXS_EVI(EVT_SPLITTER_UNSPLIT,wxEVT_COMMAND_SPLITTER_UNSPLIT,wxSplitterEvent,Unsplit)
+WXS_EVI(EVT_SPLITTER_DCLICK,wxEVT_COMMAND_SPLITTER_DOUBLECLICKED,wxSplitterEvent,DClick)
+WXS_EV_END()
 }
 
 wxsSplitterWindow::wxsSplitterWindow(wxsItemResData* Data):
     wxsContainer(Data,&Reg.Info,wxsSplitterWindowEvents,wxsSplitterWindowStyles),
     SashPos(0),
-    MinPaneSize(10),
+    MinPaneSize (10),
     Orientation(wxHORIZONTAL),
     SashGravity(0.5f)
 {
@@ -62,9 +62,9 @@ wxObject* wxsSplitterWindow::OnBuildPreview(wxWindow* Parent,long Flags)
 {
     wxSplitterWindow* Splitter = new wxSplitterWindow(Parent,GetId(),Pos(Parent),Size(Parent),Style());
     SetupWindow(Splitter,Flags);
-    if ( MinPaneSize != -1 )
+    if ( MinPaneSize  != -1 )
     {
-        Splitter->SetMinimumPaneSize(MinPaneSize);
+        Splitter->SetMinimumPaneSize(MinPaneSize );
     }
     AddChildrenPreview(Splitter,Flags);
     if ( GetChildCount() == 0 )
@@ -103,35 +103,35 @@ void wxsSplitterWindow::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/splitter.h>"),GetInfo().ClassName,0);
+        AddHeader(_T("<wx/splitter.h>"),_T("wxSplitterEvent"),0);
+        Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+        BuildSetupWindowCode();
+        if ( MinPaneSize  != -1 ) Codef(_T("%ASetMinimumPaneSize(%d);\n"),MinPaneSize );
+        Codef(_T("%ASetSashGravity(%f);\n"),SashGravity);
+        AddChildrenCode();
+        if ( GetChildCount() == 0 )
         {
-            AddHeader(_T("<wx/splitter.h>"),GetInfo().ClassName,0);
-            AddHeader(_T("<wx/splitter.h>"),_T("wxSplitterEvent"),0);
-            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-            BuildSetupWindowCode();
-            if ( MinPaneSize != -1 ) Codef(_T("%ASetMinimumPaneSize(%d);\n"),MinPaneSize);
-            Codef(_T("%ASetSashGravity(%f);\n"),SashGravity);
-            AddChildrenCode();
-            if ( GetChildCount() == 0 )
-            {
-            }
-            else if ( GetChildCount() == 1 )
-            {
-                Codef(_T("%AInitialize(%o);\n"),0);
-            }
-            else
-            {
-                Codef(_T("%ASplit%s(%o, %o);\n"),((Orientation==wxHORIZONTAL) ? _T("Horizontally") : _T("Vertically")),0,1);
-                if ( SashPos != 0 ) Codef(_T("%ASetSashPosition(%d);\n"),SashPos);
-            }
-            break;
         }
+        else if ( GetChildCount() == 1 )
+        {
+            Codef(_T("%AInitialize(%o);\n"),0);
+        }
+        else
+        {
+            Codef(_T("%ASplit%s(%o, %o);\n"),((Orientation==wxHORIZONTAL) ? _T("Horizontally") : _T("Vertically")),0,1);
+            if ( SashPos != 0 ) Codef(_T("%ASetSashPosition(%d);\n"),SashPos);
+        }
+        break;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsSplitterWindow::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsSplitterWindow::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 
@@ -142,7 +142,7 @@ void wxsSplitterWindow::OnEnumContainerProperties(cb_unused long Flags)
 
     WXS_LONG(wxsSplitterWindow,SashPos,_("Sash position"),_T("sashpos"),0);
     WXS_FLOAT(wxsSplitterWindow,SashGravity,_("Sash gravity"), _T("sashgravity"), 0.5);
-    WXS_LONG(wxsSplitterWindow,MinPaneSize,_("Min. pane size"),_T("minpanesize"),-1);
+    WXS_LONG(wxsSplitterWindow,MinPaneSize,_("Min. pane size"),_T("minsize"),-1);
     WXS_ENUM(wxsSplitterWindow,Orientation,_("Orientation"),_T("orientation"),OrientValues,OrientNames,wxHORIZONTAL);
 }
 

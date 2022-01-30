@@ -15,22 +15,22 @@
 
 wxString STE_DefaultFileName( wxT("untitled.txt") );
 wxString STE_DefaultFileExtensions(
-                                    wxT("All Files|")wxALL_FILES_PATTERN wxT("|")
-                                #if !STE_FILEOPENEXTRA
-                                    wxT("UTF8 Text Files|")wxALL_FILES_PATTERN wxT("|")
-                                    wxT("Unicode Text Files|")wxALL_FILES_PATTERN wxT("|")
-                                #ifdef __WXMSW__
-                                    wxT("OEM Text Files|")wxALL_FILES_PATTERN wxT("|")
-                                #endif
-                                #endif
-                                    wxT("Text Files (txt text)|*.txt;*.text")wxT("|")
-                                    wxT("C/C++ Files (c cpp cxx)|*.c;*.cpp;*.cxx")wxT("|")
-                                    wxT("H Files (h)|*.h")wxT("|")
-                                    wxT("Html Files (htm html)|*.htm;*.html")wxT("|")
-                                    wxT("XML Files (xml)|*.xml")wxT("|")
-                                    wxT("Lua Files (lua)|*.lua")wxT("|")
-                                    wxT("Python Files (py)|*.py")//wxT("|")
-                                    );
+    wxT("All Files|")wxALL_FILES_PATTERN wxT("|")
+#if !STE_FILEOPENEXTRA
+    wxT("UTF8 Text Files|")wxALL_FILES_PATTERN wxT("|")
+    wxT("Unicode Text Files|")wxALL_FILES_PATTERN wxT("|")
+#ifdef __WXMSW__
+    wxT("OEM Text Files|")wxALL_FILES_PATTERN wxT("|")
+#endif
+#endif
+    wxT("Text Files (txt text)|*.txt;*.text")wxT("|")
+    wxT("C/C++ Files (c cpp cxx)|*.c;*.cpp;*.cxx")wxT("|")
+    wxT("H Files (h)|*.h")wxT("|")
+    wxT("Html Files (htm html)|*.htm;*.html")wxT("|")
+    wxT("XML Files (xml)|*.xml")wxT("|")
+    wxT("Lua Files (lua)|*.lua")wxT("|")
+    wxT("Python Files (py)|*.py")//wxT("|")
+);
 
 //-----------------------------------------------------------------------------
 // wxSTEditorOptions
@@ -39,22 +39,22 @@ class wxSTEditorOptions_RefData : public wxObjectRefData, public wxClientDataCon
 {
 public:
     wxSTEditorOptions_RefData() :
-                                    m_steFRData(&wxSTEditorFindReplaceData::sm_findReplaceData),
-                                    m_steFRData_static(true),
-                                    m_steMM(NULL),
-                                    m_steMM_static(false),
-                                    m_fileHistory(NULL),
-                                    m_fileHistory_static(false),
-                                    m_menuBar(NULL),
-                                    m_toolBar(NULL),
-                                    m_statusBar(NULL),
-                                    m_editorPopupMenu(NULL),
-                                    m_splitterPopupMenu(NULL),
-                                    m_notebookPopupMenu(NULL),
-                                    m_editorPopupMenu_static(false),
-                                    m_splitterPopupMenu_static(false),
-                                    m_notebookPopupMenu_static(false),
-                                    m_displayPathSeparator(wxPATH_NATIVE)
+        m_steFRData(&wxSTEditorFindReplaceData::sm_findReplaceData),
+        m_steFRData_static(true),
+        m_steMM(NULL),
+        m_steMM_static(false),
+        m_fileHistory(NULL),
+        m_fileHistory_static(false),
+        m_menuBar(NULL),
+        m_toolBar(NULL),
+        m_statusBar(NULL),
+        m_editorPopupMenu(NULL),
+        m_splitterPopupMenu(NULL),
+        m_notebookPopupMenu(NULL),
+        m_editorPopupMenu_static(false),
+        m_splitterPopupMenu_static(false),
+        m_notebookPopupMenu_static(false),
+        m_displayPathSeparator(wxPATH_NATIVE)
     {
         m_optionNames.Alloc(STE_OPTION__MAX);
         m_optionNames.Add(wxT("STE_OPTION_EDITOR"));
@@ -199,12 +199,30 @@ size_t wxSTEditorOptions::AddOption(const wxString& name, const wxString& value)
     return STEO_REFDATA->m_optionValues.GetCount() - 1;
 }
 
-wxSTEditorPrefs&  wxSTEditorOptions::GetEditorPrefs() const             { return STEO_REFDATA->m_prefs; }
-wxSTEditorStyles& wxSTEditorOptions::GetEditorStyles() const            { return STEO_REFDATA->m_styles; }
-wxSTEditorLangs&  wxSTEditorOptions::GetEditorLangs() const             { return STEO_REFDATA->m_langs; }
-void wxSTEditorOptions::SetEditorPrefs(const wxSTEditorPrefs& prefs)    { STEO_REFDATA->m_prefs  = prefs; }
-void wxSTEditorOptions::SetEditorStyles(const wxSTEditorStyles& styles) { STEO_REFDATA->m_styles = styles; }
-void wxSTEditorOptions::SetEditorLangs(const wxSTEditorLangs& langs)    { STEO_REFDATA->m_langs  = langs; }
+wxSTEditorPrefs&  wxSTEditorOptions::GetEditorPrefs() const
+{
+    return STEO_REFDATA->m_prefs;
+}
+wxSTEditorStyles& wxSTEditorOptions::GetEditorStyles() const
+{
+    return STEO_REFDATA->m_styles;
+}
+wxSTEditorLangs&  wxSTEditorOptions::GetEditorLangs() const
+{
+    return STEO_REFDATA->m_langs;
+}
+void wxSTEditorOptions::SetEditorPrefs(const wxSTEditorPrefs& prefs)
+{
+    STEO_REFDATA->m_prefs  = prefs;
+}
+void wxSTEditorOptions::SetEditorStyles(const wxSTEditorStyles& styles)
+{
+    STEO_REFDATA->m_styles = styles;
+}
+void wxSTEditorOptions::SetEditorLangs(const wxSTEditorLangs& langs)
+{
+    STEO_REFDATA->m_langs  = langs;
+}
 void wxSTEditorOptions::SetUseGlobalPrefsStylesLangs()
 {
     STEO_REFDATA->m_prefs  = wxSTEditorPrefs::GetGlobalEditorPrefs();
@@ -251,14 +269,38 @@ void wxSTEditorOptions::SetFileHistory(wxFileHistory* fileHistory, bool is_stati
     STEO_REFDATA->m_fileHistory_static = is_static;
 }
 
-wxMenuBar* wxSTEditorOptions::GetMenuBar() const        { return STEO_REFDATA->m_menuBar; }
-wxToolBar* wxSTEditorOptions::GetToolBar() const        { return STEO_REFDATA->m_toolBar; }
-wxStatusBar* wxSTEditorOptions::GetStatusBar() const    { return STEO_REFDATA->m_statusBar; }
-wxMenu* wxSTEditorOptions::GetEditorPopupMenu() const   { return STEO_REFDATA->m_editorPopupMenu; }
-wxMenu* wxSTEditorOptions::GetSplitterPopupMenu() const { return STEO_REFDATA->m_splitterPopupMenu; }
-wxMenu* wxSTEditorOptions::GetNotebookPopupMenu() const { return STEO_REFDATA->m_notebookPopupMenu; }
-wxPathFormat wxSTEditorOptions::GetDisplayPathSeparator() const  { return STEO_REFDATA->m_displayPathSeparator; } // maybe use GetOptionInt() instead
-void wxSTEditorOptions::SetDisplayPathSeparator(wxPathFormat display_fmt) { STEO_REFDATA->m_displayPathSeparator = display_fmt; } // maybe use SetOptionInt() instead
+wxMenuBar* wxSTEditorOptions::GetMenuBar() const
+{
+    return STEO_REFDATA->m_menuBar;
+}
+wxToolBar* wxSTEditorOptions::GetToolBar() const
+{
+    return STEO_REFDATA->m_toolBar;
+}
+wxStatusBar* wxSTEditorOptions::GetStatusBar() const
+{
+    return STEO_REFDATA->m_statusBar;
+}
+wxMenu* wxSTEditorOptions::GetEditorPopupMenu() const
+{
+    return STEO_REFDATA->m_editorPopupMenu;
+}
+wxMenu* wxSTEditorOptions::GetSplitterPopupMenu() const
+{
+    return STEO_REFDATA->m_splitterPopupMenu;
+}
+wxMenu* wxSTEditorOptions::GetNotebookPopupMenu() const
+{
+    return STEO_REFDATA->m_notebookPopupMenu;
+}
+wxPathFormat wxSTEditorOptions::GetDisplayPathSeparator() const
+{
+    return STEO_REFDATA->m_displayPathSeparator;    // maybe use GetOptionInt() instead
+}
+void wxSTEditorOptions::SetDisplayPathSeparator(wxPathFormat display_fmt)
+{
+    STEO_REFDATA->m_displayPathSeparator = display_fmt;    // maybe use SetOptionInt() instead
+}
 
 void wxSTEditorOptions::SetMenuBar(wxMenuBar* menuBar)
 {
@@ -272,8 +314,14 @@ void wxSTEditorOptions::SetMenuBar(wxMenuBar* menuBar)
 
     STEO_REFDATA->m_menuBar = menuBar;
 }
-void wxSTEditorOptions::SetToolBar(wxToolBar* toolBar)       { STEO_REFDATA->m_toolBar = toolBar; }
-void wxSTEditorOptions::SetStatusBar(wxStatusBar* statusBar) { STEO_REFDATA->m_statusBar = statusBar; }
+void wxSTEditorOptions::SetToolBar(wxToolBar* toolBar)
+{
+    STEO_REFDATA->m_toolBar = toolBar;
+}
+void wxSTEditorOptions::SetStatusBar(wxStatusBar* statusBar)
+{
+    STEO_REFDATA->m_statusBar = statusBar;
+}
 void wxSTEditorOptions::SetEditorPopupMenu(wxMenu* menu, bool is_static)
 {
     if (STEO_REFDATA->m_editorPopupMenu && STEO_REFDATA->m_fileHistory)
@@ -332,14 +380,26 @@ void *wxSTEditorOptions::GetClientData() const
 }
 
 // static
-wxString wxSTEditorOptions::GetGlobalDefaultFileName() { return STE_DefaultFileName; }
+wxString wxSTEditorOptions::GetGlobalDefaultFileName()
+{
+    return STE_DefaultFileName;
+}
 // static
-void wxSTEditorOptions::SetGlobalDefaultFileName(const wxString& fileName) { STE_DefaultFileName = fileName; }
+void wxSTEditorOptions::SetGlobalDefaultFileName(const wxString& fileName)
+{
+    STE_DefaultFileName = fileName;
+}
 
 // static
-wxString wxSTEditorOptions::GetGlobalDefaultExtensions() { return STE_DefaultFileExtensions; }
+wxString wxSTEditorOptions::GetGlobalDefaultExtensions()
+{
+    return STE_DefaultFileExtensions;
+}
 // static
-void wxSTEditorOptions::SetGlobalDefaultFileExtensions(const wxString& fileExt) { STE_DefaultFileExtensions = fileExt; }
+void wxSTEditorOptions::SetGlobalDefaultFileExtensions(const wxString& fileExt)
+{
+    STE_DefaultFileExtensions = fileExt;
+}
 
 wxString wxSTEditorOptions::GetConfigPath(size_t path_option_n) const
 {

@@ -38,8 +38,8 @@ bool wxSmithMime::CanHandleFile(const wxString& FileName) const
 
     // Scanning for projects using this file
     for ( wxSmith::ProjectMapI i = wxsPlugin()->m_ProjectMap.begin();
-          i!=wxsPlugin()->m_ProjectMap.end();
-          ++i )
+            i!=wxsPlugin()->m_ProjectMap.end();
+            ++i )
     {
         wxsProject* Proj = (*i).second;
         if ( Proj->CanOpenEditor(FileName) )
@@ -62,8 +62,8 @@ int wxSmithMime::OpenFile(const wxString& FileName)
 
     // Scanning for projects using this file
     for ( wxSmith::ProjectMapI i = wxsPlugin()->m_ProjectMap.begin();
-          i!=wxsPlugin()->m_ProjectMap.end();
-          ++i )
+            i!=wxsPlugin()->m_ProjectMap.end();
+            ++i )
     {
         wxsProject* Proj = (*i).second;
         if ( Proj->TryOpenEditor(FileName) )

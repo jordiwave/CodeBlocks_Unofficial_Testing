@@ -11,19 +11,25 @@ class HelpPlugin;
 
 class HelpConfigDialog : public cbConfigurationPanel
 {
-  private:
+private:
     HelpCommon::HelpFilesVector m_Vector;
     int m_LastSel;
 
-  public:
+public:
     HelpConfigDialog(wxWindow* parent, HelpPlugin* plugin);
     virtual ~HelpConfigDialog();
 
-    virtual wxString GetTitle() const { return _("Help files"); }
-    virtual wxString GetBitmapBaseName() const { return _T("help-plugin"); }
+    virtual wxString GetTitle() const
+    {
+        return _("Help files");
+    }
+    virtual wxString GetBitmapBaseName() const
+    {
+        return _T("help-plugin");
+    }
     virtual void OnApply();
-    virtual void OnCancel(){}
-  protected:
+    virtual void OnCancel() {}
+protected:
     void Add(wxCommandEvent &event);
     void Rename(wxCommandEvent &event);
     void Delete(wxCommandEvent &event);
@@ -39,7 +45,7 @@ class HelpConfigDialog : public cbConfigurationPanel
     void OnCaseChoice(wxCommandEvent &event);
     void UpdateUI(wxUpdateUIEvent &event);
 
-  private:
+private:
     void UpdateEntry(int index);
     void ChooseFile();
     HelpPlugin* m_pPlugin;

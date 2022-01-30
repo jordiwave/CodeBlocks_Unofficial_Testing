@@ -12,8 +12,8 @@
 
 
 TextFileSearcherText::TextFileSearcherText(const wxString& searchText, bool matchCase, bool matchWordBegin,
-                                           bool matchWord)
-                     :TextFileSearcher(searchText, matchCase, matchWordBegin, matchWord)
+        bool matchWord)
+    :TextFileSearcher(searchText, matchCase, matchWordBegin, matchWord)
 {
     if ( matchCase == false )
     {
@@ -81,7 +81,8 @@ bool TextFileSearcherText::MatchLine(std::vector<int> *outMatchedPositions,
         outMatchedPositions->push_back(m_SearchText.length());
 
         start = pos + m_SearchText.length();
-    } while (1);
+    }
+    while (1);
 
     if (count > 0)
     {

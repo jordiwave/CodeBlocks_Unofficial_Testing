@@ -1,6 +1,7 @@
 #include <stdio>
 
-enum ENUM {
+enum ENUM
+{
     VAR1 = 0, ///< Var1 \sa ENUM
     VAR2, /**< Var2 \sa ENUM */
     /** Var3 \sa ENUM */
@@ -16,7 +17,8 @@ enum ENUM {
 /// Def4
 #define DEF4 1
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
     puts("Hello World!");
     return 0;
 }

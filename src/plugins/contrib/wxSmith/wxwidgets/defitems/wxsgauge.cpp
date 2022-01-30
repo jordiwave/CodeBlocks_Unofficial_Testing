@@ -25,18 +25,18 @@
 
 namespace
 {
-    wxsRegisterItem<wxsGauge> Reg(_T("Gauge"),wxsTWidget,_T("Standard"),270);
+wxsRegisterItem<wxsGauge> Reg(_T("Gauge"),wxsTWidget,_T("Standard"),270);
 
-    WXS_ST_BEGIN(wxsGaugeStyles,_T(""))
-        WXS_ST(wxGA_HORIZONTAL)
-        WXS_ST(wxGA_VERTICAL)
-        WXS_ST(wxGA_SMOOTH)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsGaugeStyles,_T(""))
+WXS_ST(wxGA_HORIZONTAL)
+WXS_ST(wxGA_VERTICAL)
+WXS_ST(wxGA_SMOOTH)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsGaugeEvents)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsGaugeEvents)
+WXS_EV_END()
 }
 
 wxsGauge::wxsGauge(wxsItemResData* Data):
@@ -55,20 +55,20 @@ void wxsGauge::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/gauge.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%W, %I, %d, %P, %S, %T, %V, %N);\n"),Range);
-            if ( Value )  Codef(_T("%ASetValue(%d);\n"),Value);
-            BuildSetupWindowCode();
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/gauge.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%W, %I, %d, %P, %S, %T, %V, %N);\n"),Range);
+        if ( Value )  Codef(_T("%ASetValue(%d);\n"),Value);
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsGauge::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsGauge::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

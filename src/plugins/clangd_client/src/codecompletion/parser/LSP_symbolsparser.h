@@ -64,7 +64,8 @@ struct LSP_SymbolsParserOptions
         platformCheck(true),
         logClangdClientCheck(false),
         logClangdServerCheck(false),
-        LLVM_MasterPath(""),
+        LLVM_ClangDaemonMasterPath(""),
+        LLVM_ClangMasterPath(""),
         handleFunctions(true),
         handleVars(true),
         handleClasses(true),
@@ -74,7 +75,7 @@ struct LSP_SymbolsParserOptions
         storeDocumentation(false),
 
         loader(nullptr)
-        {}
+    {}
 
     /** useBuffer specifies that we're not parsing a file,  but a temporary
      *  buffer. The resulting tokens will be temporary, too,
@@ -125,8 +126,10 @@ struct LSP_SymbolsParserOptions
     /** clangd server logging  */
     bool        logClangdServerCheck;
 
-    /** path to LLVM */
-    wxString    LLVM_MasterPath; //(ph 2021/11/7)
+    /** path to LLVM clangd executable*/
+    wxString    LLVM_ClangDaemonMasterPath;
+    /** path to LLVM clang executable*/
+    wxString    LLVM_ClangMasterPath;
 
     /** whether to parse the functions */
     bool        handleFunctions;
@@ -169,10 +172,10 @@ public:
       * @param tokenTree it is the tree structure holding all the tokens, LSP_SymbolsParser will add every token when it parsed.
       */
     LSP_SymbolsParser(ParserBase*          parent,
-                 const wxString&      bufferOrFilename,
-                 bool                 isLocal,
-                 LSP_SymbolsParserOptions& LSP_SymbolsParserOptions,
-                 TokenTree*           tokenTree);
+                      const wxString&      bufferOrFilename,
+                      bool                 isLocal,
+                      LSP_SymbolsParserOptions& LSP_SymbolsParserOptions,
+                      TokenTree*           tokenTree);
 
     /** LSP_SymbolsParser destructor.*/
     virtual ~LSP_SymbolsParser();
@@ -197,7 +200,10 @@ public:
       */
     bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);
 
-    wxString GetFilename() { return m_Buffer; } // used in TRACE for debug only
+    wxString GetFilename()
+    {
+        return m_Buffer;    // used in TRACE for debug only
+    }
 
 protected:
     /** specify which "class like type" we are handling: struct or class or union*/
@@ -514,7 +520,7 @@ private:
     // ----------------------------------------------------------------------------
     // LSP properties
     // ----------------------------------------------------------------------------
-    public:
+public:
     json* m_pJson = nullptr;  //json containing  textDocument/semanticTokens results
     // LSP legends for textDocument/semanticTokens
     std::vector<std::string> m_SemanticTokensTypes;
@@ -532,7 +538,7 @@ private:
 //    typedef std::tuple<size_t,size_t,size_t,size_t,size_t> LSP_SemanticToken;
 //    std::vector<LSP_SemanticToken> semanticTokensVec;
     FileUtils fileUtils;
-    private:
+private:
     wxString DoHandleSemanticTokenFunction();
     wxString DoGetDocumentSymbolFunctionArgs(wxString& txtLine, int start, int length);
     TokenKind ConvertDocSymbolKindToCCTokenKind(int docSymKind);

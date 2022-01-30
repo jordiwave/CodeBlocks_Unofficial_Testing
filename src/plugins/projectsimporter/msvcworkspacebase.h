@@ -14,7 +14,8 @@ class cbProject;
 
 // common features for MSVC importers, version 6, 7 etc.
 // note that there's no workspace config in MSVC6...
-class MSVCWorkspaceBase {
+class MSVCWorkspaceBase
+{
 public:
     MSVCWorkspaceBase();
     virtual ~MSVCWorkspaceBase();
@@ -35,7 +36,8 @@ private:
     // hash for configurations matchings
     WX_DECLARE_STRING_HASH_MAP(wxString, ConfigurationMatchings);
     // project record while parsing
-    struct ProjectRecord {
+    struct ProjectRecord
+    {
         // current project data structure
         cbProject* _project;
         // list of the IDs of projects that the current project depend on

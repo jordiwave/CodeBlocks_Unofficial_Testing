@@ -39,38 +39,39 @@ UpdateRec* ReadConf(const IniParser& ini, int* recCount, const wxString& current
     UpdateRec* list = new UpdateRec[ini.GetGroupsCount()];
     for (int i = 0; i < groupsCount; ++i)
     {
-    	UpdateRec& rec = list[i];
+        UpdateRec& rec = list[i];
 
-    	rec.title = ini.GetGroupName(i);
+        rec.title = ini.GetGroupName(i);
 
-    	// fix title
-    	// devpaks.org has changed the title to contain some extra info
+        // fix title
+        // devpaks.org has changed the title to contain some extra info
         // e.g.: [libunicows   Library version: 1.1.1   Devpak revision: 1sid]
-    	int pos = rec.title.Lower().Find(_T("library version:"));
-    	if (pos != -1)
-    	{
+        int pos = rec.title.Lower().Find(_T("library version:"));
+        if (pos != -1)
+        {
             int revpos = rec.title.Lower().Find(_T("devpak revision:"));
-            if (revpos != -1) {
+            if (revpos != -1)
+            {
                 rec.revision = rec.title.Mid(revpos).AfterFirst(_T(':')).Trim(false);
                 rec.revision.Replace(_T("\t"), _T(" "));
                 rec.revision = rec.revision.BeforeFirst(_T(' '));
             }
 
-    		rec.title.Truncate(pos);
-    		rec.title = rec.title.Trim(false);
-    		rec.title = rec.title.Trim(true);
-    	}
+            rec.title.Truncate(pos);
+            rec.title = rec.title.Trim(false);
+            rec.title = rec.title.Trim(true);
+        }
 
-    	rec.name = ini.GetKeyValue(i, _T("Name"));
-    	rec.desc = ini.GetKeyValue(i, _T("Description"));
-    	rec.remote_file = ini.GetKeyValue(i, _T("RemoteFilename"));
-    	rec.local_file = ini.GetKeyValue(i, _T("LocalFilename"));
-    	rec.groups = GetArrayFromString(ini.GetKeyValue(i, _T("Group")), _T(","));
-    	rec.install_path = ini.GetKeyValue(i, _T("InstallPath"));
-    	rec.version = ini.GetKeyValue(i, _T("Version"));
+        rec.name = ini.GetKeyValue(i, _T("Name"));
+        rec.desc = ini.GetKeyValue(i, _T("Description"));
+        rec.remote_file = ini.GetKeyValue(i, _T("RemoteFilename"));
+        rec.local_file = ini.GetKeyValue(i, _T("LocalFilename"));
+        rec.groups = GetArrayFromString(ini.GetKeyValue(i, _T("Group")), _T(","));
+        rec.install_path = ini.GetKeyValue(i, _T("InstallPath"));
+        rec.version = ini.GetKeyValue(i, _T("Version"));
         ini.GetKeyValue(i, _T("Size")).ToLong(&rec.bytes);
-    	rec.date = ini.GetKeyValue(i, _T("Date"));
-    	rec.installable = ini.GetKeyValue(i, _T("Execute")) == _T("1");
+        rec.date = ini.GetKeyValue(i, _T("Date"));
+        rec.installable = ini.GetKeyValue(i, _T("Execute")) == _T("1");
 
         // read .entry file (if exists)
         rec.entry = (!rec.name.IsEmpty() ? rec.name : wxFileName(rec.local_file).GetName()) + _T(".entry");
@@ -109,11 +110,15 @@ UpdateRec* FindRec(const wxString& title, const wxString& version, const wxStrin
 {
     for (int i = 0; i < count; ++i)
     {
-        if (list[i].title == title && list[i].version == version) {
-            if (revision.IsEmpty()) {
+        if (list[i].title == title && list[i].version == version)
+        {
+            if (revision.IsEmpty())
+            {
                 return &list[i];
-            } else if (list[i].revision == revision) {
-                    return &list[i];
+            }
+            else if (list[i].revision == revision)
+            {
+                return &list[i];
             }
         }
     }

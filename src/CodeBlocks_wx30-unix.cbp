@@ -103,7 +103,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-lwxscintilla_cb" />
-					<Add option="`pkg-config glib-2.0 gdk-$(PKG_CONFIG_GTK_VERSION) --libs`" />
+					<Add option="`pkg-config glib-2.0 gdk-$(GTK_VERSION) --libs`" />
 					<Add library="txml" />
 					<Add library="squirrel" />
 				</Linker>
@@ -474,17 +474,12 @@
 				</Linker>
 			</Target>
 			<Environment>
+				<Variable name="GTK_VERSION" value="gtk+-3.0" />
 				<Variable name="PKG_CONFIG_GTK_VERSION" value="3.0" />
 				<Variable name="WX_CFG" value="" />
 				<Variable name="WX_CONFIG" value="wx-config --toolkit=gtk3" />
 				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_VERSION" value="30" />
-				<!-- Examples for GTK2 and GTK3 are blow.
-				<Variable name="WX_CONFIG__GTK2" value="wx-config --version=2.0 --toolkit=gtk2" />
-				<Variable name="PKG_CONFIG_GTK_VERSION__GTK2" value="2.0" />
-				<Variable name="WX_CONFIG__GTK3" value="wx-config --version=3.0 --toolkit=gtk3" />
-				<Variable name="PKG_CONFIG_GTK_VERSION__GTK3" value="3.0" />
-				-->
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -494,6 +489,7 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c++11" />
 			<Add option="-std=c90" />
 			<Add option="-fPIC" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
@@ -501,8 +497,7 @@
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
 			<Add option="`$(WX_CONFIG) --cflags`" />
-			<Add option="`pkg-config --cflags gtk+-$(PKG_CONFIG_GTK_VERSION)`" />
-			<Add option="-std=c++11" />
+			<Add option="`pkg-config --cflags $(GTK_VERSION)`" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
 			<Add directory="sdk/wxscintilla/include" />
@@ -510,7 +505,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs std,aui,propgrid`" />
-			<Add option="`pkg-config --libs gtk+-$(PKG_CONFIG_GTK_VERSION)`" />
+			<Add option="`pkg-config --libs $(GTK_VERSION)`" />
 			<Add option="-Wl,--no-undefined" />
 			<Add directory="devel30" />
 		</Linker>

@@ -18,12 +18,12 @@
 #include "sdk.h"
 #endif
 #ifndef CB_PRECOMP
-    #include <wx/textctrl.h>
-    #include <wx/button.h>
-    #include <wx/checkbox.h>
-    #include <wx/dirdlg.h>
-    #include <wx/sizer.h>
-    #include <wx/stattext.h>
+#include <wx/textctrl.h>
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/dirdlg.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
 #endif
 
 #include "DirectoryParamsPanel.h"
@@ -118,13 +118,37 @@ void DirectoryParamsPanel::do_layout()
 }
 
 // Getters
-wxString DirectoryParamsPanel::GetSearchDirPath()        const {return m_pTxtSearchDirPath->GetValue();}
-bool     DirectoryParamsPanel::GetSearchDirRecursively() const {return m_pChkSearchDirRecursively->IsChecked();}
-bool     DirectoryParamsPanel::GetSearchDirHidden()      const {return m_pChkSearchDirHiddenFiles->IsChecked();}
-wxString DirectoryParamsPanel::GetSearchMask()           const {return m_pTxtMask->GetValue();}
+wxString DirectoryParamsPanel::GetSearchDirPath()        const
+{
+    return m_pTxtSearchDirPath->GetValue();
+}
+bool     DirectoryParamsPanel::GetSearchDirRecursively() const
+{
+    return m_pChkSearchDirRecursively->IsChecked();
+}
+bool     DirectoryParamsPanel::GetSearchDirHidden()      const
+{
+    return m_pChkSearchDirHiddenFiles->IsChecked();
+}
+wxString DirectoryParamsPanel::GetSearchMask()           const
+{
+    return m_pTxtMask->GetValue();
+}
 
 // Setters
-void     DirectoryParamsPanel::SetSearchDirPath(const wxString& sDirPath) {m_pTxtSearchDirPath->SetValue(sDirPath);}
-void     DirectoryParamsPanel::SetSearchDirRecursively(bool bRecurse)     {m_pChkSearchDirRecursively->SetValue(bRecurse);}
-void     DirectoryParamsPanel::SetSearchDirHidden(bool bSearchHidden)     {m_pChkSearchDirHiddenFiles->SetValue(bSearchHidden);}
-void     DirectoryParamsPanel::SetSearchMask(const wxString& sMask)       {m_pTxtMask->SetValue(sMask);}
+void     DirectoryParamsPanel::SetSearchDirPath(const wxString& sDirPath)
+{
+    m_pTxtSearchDirPath->SetValue(sDirPath);
+}
+void     DirectoryParamsPanel::SetSearchDirRecursively(bool bRecurse)
+{
+    m_pChkSearchDirRecursively->SetValue(bRecurse);
+}
+void     DirectoryParamsPanel::SetSearchDirHidden(bool bSearchHidden)
+{
+    m_pChkSearchDirHiddenFiles->SetValue(bSearchHidden);
+}
+void     DirectoryParamsPanel::SetSearchMask(const wxString& sMask)
+{
+    m_pTxtMask->SetValue(sMask);
+}

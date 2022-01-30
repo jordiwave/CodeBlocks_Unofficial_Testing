@@ -10,11 +10,11 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "filemanager.h"
-    #include "safedelete.h"
-    #include "cbeditor.h"
-    #include "editormanager.h"
-    #include "infowindow.h"
+#include "filemanager.h"
+#include "safedelete.h"
+#include "cbeditor.h"
+#include "editormanager.h"
+#include "infowindow.h"
 #endif
 #include "cbstyledtextctrl.h"
 
@@ -121,8 +121,8 @@ void URLLoader::operator()()
 // ***** class: FileManager *****
 FileManager::FileManager()
     : fileLoaderThread(false),
-    uncLoaderThread(false),
-    urlLoaderThread(false)
+      uncLoaderThread(false),
+      urlLoaderThread(false)
 {
 }
 
@@ -181,10 +181,10 @@ LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
 
 namespace platform
 {
-    inline bool move(wxString const& old_name, wxString const& new_name)
-    {
-        return ::wxRenameFile(old_name, new_name, true);
-    };
+inline bool move(wxString const& old_name, wxString const& new_name)
+{
+    return ::wxRenameFile(old_name, new_name, true);
+};
 }
 
 
@@ -418,7 +418,7 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
         }
         delete[] tmp;
     }
-     // if conversion to chosen encoding succeeded, we write the file to disk
+    // if conversion to chosen encoding succeeded, we write the file to disk
     if (outlen > 0)
         return f.Write(mbBuff, outlen) == outlen;
 

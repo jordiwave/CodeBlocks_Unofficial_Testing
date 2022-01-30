@@ -10,13 +10,13 @@
 #include "sdk_precomp.h"
 #include "cbstyledtextctrl.h"
 #ifndef CB_PRECOMP
-    #include <wx/gdicmn.h> // for wxPoint
-    #include <wx/string.h>
-    #include <wx/timer.h>
+#include <wx/gdicmn.h> // for wxPoint
+#include <wx/string.h>
+#include <wx/timer.h>
 
-    #include "editorbase.h" // DisplayContextMenu
-    #include "editormanager.h"
-    #include "pluginmanager.h"
+#include "editorbase.h" // DisplayContextMenu
+#include "editormanager.h"
+#include "pluginmanager.h"
 #endif
 
 #include "cbdebugger_interfaces.h"
@@ -112,7 +112,10 @@ void cbStyledTextCtrl::OnMouseMiddleDown(wxMouseEvent& event)
     if (platform::gtk == false) // only if OnMouseMiddleDown is not already implemented by the OS
     {
         if (not Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/enable_middle_mouse_paste"), false))
-            {event.Skip(); return;}
+        {
+            event.Skip();
+            return;
+        }
 
         int pos = PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
 
@@ -142,84 +145,85 @@ void cbStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
 
     switch ( event.GetKeyCode() )
     {
-        case _T('I'):
-        {
-            // todo: this feature is undocumented and unexpected, remove?
-            if (event.GetModifiers() == wxMOD_ALT)
-                m_braceShortcutState = true;
-            break;
-        }
+    case _T('I'):
+    {
+        // todo: this feature is undocumented and unexpected, remove?
+        if (event.GetModifiers() == wxMOD_ALT)
+            m_braceShortcutState = true;
+        break;
+    }
 
-        case WXK_TAB:
+    case WXK_TAB:
+    {
+        if (m_tabSmartJump && event.GetModifiers() == wxMOD_NONE)
         {
-            if (m_tabSmartJump && event.GetModifiers() == wxMOD_NONE)
+            if (!AutoCompActive() && m_bracePosition != wxSCI_INVALID_POSITION)
             {
-                if (!AutoCompActive() && m_bracePosition != wxSCI_INVALID_POSITION)
-                {
-                    m_lastPosition = GetCurrentPos();
-                    GotoPos(m_bracePosition);
+                m_lastPosition = GetCurrentPos();
+                GotoPos(m_bracePosition);
 
-                    // Need judge if it's the final brace
-                    HighlightRightBrace();
-                    if (!m_tabSmartJump && CallTipActive())
-                        CallTipCancel();
-                    return;
-                }
+                // Need judge if it's the final brace
+                HighlightRightBrace();
+                if (!m_tabSmartJump && CallTipActive())
+                    CallTipCancel();
+                return;
             }
         }
-        break;
+    }
+    break;
 
-        case WXK_BACK:
+    case WXK_BACK:
+    {
+        if (m_tabSmartJump)
         {
-            if (m_tabSmartJump)
+            if (!(event.ControlDown() || event.ShiftDown() || event.AltDown()))
             {
-                if (!(event.ControlDown() || event.ShiftDown() || event.AltDown()))
+                const int pos = GetCurrentPos();
+                const int index = s_leftBrace.Find((wxChar)GetCharAt(pos - 1));
+                if (index != wxNOT_FOUND && (wxChar)GetCharAt(pos) == s_rightBrace.GetChar(index))
                 {
-                    const int pos = GetCurrentPos();
-                    const int index = s_leftBrace.Find((wxChar)GetCharAt(pos - 1));
-                    if (index != wxNOT_FOUND && (wxChar)GetCharAt(pos) == s_rightBrace.GetChar(index))
-                    {
-                        CharRight();
-                        DeleteBack();
-                    }
-                }
-                else if (m_lastPosition != wxSCI_INVALID_POSITION && event.ControlDown())
-                {
-                    GotoPos(m_lastPosition);
-                    m_lastPosition = wxSCI_INVALID_POSITION;
-                    return;
+                    CharRight();
+                    DeleteBack();
                 }
             }
-        }
-        break;
-
-        case WXK_RETURN:
-        case WXK_NUMPAD_ENTER:
-        case WXK_ESCAPE:
-        {
-            if (m_tabSmartJump)
-                m_tabSmartJump = false;
-        }
-        break;
-
-        case WXK_CONTROL:
-        {
-            EmulateDwellStart();
-            emulateDwellStart = true;
-        }
-        break;
-
-        case WXK_UP:
-        case WXK_DOWN:
-        {
-            if (event.GetModifiers() == wxMOD_NONE)
+            else if (m_lastPosition != wxSCI_INVALID_POSITION && event.ControlDown())
             {
-                if (Manager::Get()->GetCCManager()->ProcessArrow(event.GetKeyCode()))
-                    return;
+                GotoPos(m_lastPosition);
+                m_lastPosition = wxSCI_INVALID_POSITION;
+                return;
             }
         }
+    }
+    break;
+
+    case WXK_RETURN:
+    case WXK_NUMPAD_ENTER:
+    case WXK_ESCAPE:
+    {
+        if (m_tabSmartJump)
+            m_tabSmartJump = false;
+    }
+    break;
+
+    case WXK_CONTROL:
+    {
+        EmulateDwellStart();
+        emulateDwellStart = true;
+    }
+    break;
+
+    case WXK_UP:
+    case WXK_DOWN:
+    {
+        if (event.GetModifiers() == wxMOD_NONE)
+        {
+            if (Manager::Get()->GetCCManager()->ProcessArrow(event.GetKeyCode()))
+                return;
+        }
+    }
+    break;
+    default:
         break;
-        default: break;
     }
 
     if (event.ControlDown() && !emulateDwellStart)
@@ -233,58 +237,59 @@ void cbStyledTextCtrl::OnKeyUp(wxKeyEvent& event)
     const int keyCode = event.GetKeyCode();
     switch (keyCode)
     {
-        case _T('['):   // [ {
-        case _T('\''):  // ' "
+    case _T('['):   // [ {
+    case _T('\''):  // ' "
 #ifdef __WXMSW__
-        case _T('9'):   // ( for wxMSW
+    case _T('9'):   // ( for wxMSW
 #else
-        case _T('('):   // ( for wxGTK
+    case _T('('):   // ( for wxGTK
 #endif
+    {
+        if ( !AllowTabSmartJump() )
+            break;
+
+        wxChar ch = keyCode;
+        if (event.ShiftDown())
         {
-            if ( !AllowTabSmartJump() )
-                break;
-
-            wxChar ch = keyCode;
-            if (event.ShiftDown())
-            {
-                if (keyCode == _T('\''))
-                    ch = _T('"');
-                else if (keyCode == _T('9'))
-                    ch = _T('(');
-                else if (keyCode == _T('['))
-                    ch = _T('{');
-            }
-
-            int index = s_leftBrace.Find(ch);
-            if (index != wxNOT_FOUND && (wxChar)GetCharAt(GetCurrentPos()) == s_rightBrace.GetChar(index))
-            {
-                const int pos = GetCurrentPos();
-                if (pos != wxSCI_INVALID_POSITION)
-                {
-                    m_tabSmartJump = true;
-                    m_bracePosition = pos;
-                }
-            }
-            else if (keyCode == _T('\'')) // ' "
-                m_tabSmartJump = false;
+            if (keyCode == _T('\''))
+                ch = _T('"');
+            else if (keyCode == _T('9'))
+                ch = _T('(');
+            else if (keyCode == _T('['))
+                ch = _T('{');
         }
-        break;
 
-        case _T(']'):   // ] }
-#ifdef __WXMSW__
-        case _T('0'):   // ) for wxMSW
-#else
-        case _T(')'):   // ) for wxGTK
-#endif
+        int index = s_leftBrace.Find(ch);
+        if (index != wxNOT_FOUND && (wxChar)GetCharAt(GetCurrentPos()) == s_rightBrace.GetChar(index))
         {
-            if (!AllowTabSmartJump())
-                break;
-            if (keyCode == _T('0') && !event.ShiftDown())
-                break;
+            const int pos = GetCurrentPos();
+            if (pos != wxSCI_INVALID_POSITION)
+            {
+                m_tabSmartJump = true;
+                m_bracePosition = pos;
+            }
+        }
+        else if (keyCode == _T('\'')) // ' "
             m_tabSmartJump = false;
-        }
+    }
+    break;
+
+    case _T(']'):   // ] }
+#ifdef __WXMSW__
+    case _T('0'):   // ) for wxMSW
+#else
+    case _T(')'):   // ) for wxGTK
+#endif
+    {
+        if (!AllowTabSmartJump())
+            break;
+        if (keyCode == _T('0') && !event.ShiftDown())
+            break;
+        m_tabSmartJump = false;
+    }
+    break;
+    default:
         break;
-        default: break;
     }
 
     HighlightRightBrace();
@@ -351,8 +356,10 @@ void cbStyledTextCtrl::DoBraceCompletion(const wxChar& ch)
     if (IsString(style) || IsCharacter(style))
         return; // do nothing
 
-    const wxString opBraces(wxT("([{")); const int opBraceIdx = opBraces.Find(ch);
-    const wxString clBraces(wxT(")]}")); const int clBraceIdx = clBraces.Find(ch);
+    const wxString opBraces(wxT("([{"));
+    const int opBraceIdx = opBraces.Find(ch);
+    const wxString clBraces(wxT(")]}"));
+    const int clBraceIdx = clBraces.Find(ch);
     if ( (opBraceIdx != wxNOT_FOUND) || (clBraceIdx != wxNOT_FOUND) )
     {
         if ( GetCharAt(pos) == ch )
@@ -367,7 +374,7 @@ void cbStyledTextCtrl::DoBraceCompletion(const wxChar& ch)
                 ++nextPos;
 
             if (   ((wxChar)GetCharAt(nextPos) != clBraces[opBraceIdx])
-                || (BraceMatch(nextPos)        != wxNOT_FOUND) )
+                    || (BraceMatch(nextPos)        != wxNOT_FOUND) )
             {
                 InsertText(pos, clBraces[opBraceIdx]);
             }

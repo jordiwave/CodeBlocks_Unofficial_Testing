@@ -147,7 +147,7 @@ void PipedProcessCtrl::KillProcess()
 }
 
 wxString PipedProcessCtrl::LinkRegexDefault=
-_T("[\"']?((?:\\w\\:)?[^'\",\\s:;*?]+?)[\"']?[\\s]*(\\:|\\(|\\[|\\,?\\s*[Ll]ine)?\\s*(\\d*)");
+    _T("[\"']?((?:\\w\\:)?[^'\",\\s:;*?]+?)[\"']?[\\s]*(\\:|\\(|\\[|\\,?\\s*[Ll]ine)?\\s*(\\d*)");
 //           a:         \path\to\file              line 300
 void PipedProcessCtrl::SyncOutput(int maxchars)
 {
@@ -163,7 +163,7 @@ void PipedProcessCtrl::SyncOutput(int maxchars)
     while(m_proc->IsInputAvailable())
     {
         char buf0[maxchars+1];
-        for(int i=0;i<maxchars+1;i++)
+        for(int i=0; i<maxchars+1; i++)
             buf0[i]=0;
         m_istream->Read(buf0,maxchars);
         wxString m_latest=wxString::FromAscii(buf0);
@@ -176,7 +176,7 @@ void PipedProcessCtrl::SyncOutput(int maxchars)
         m_textctrl->AppendText(m_latest);
         if(move_caret)
         {
-                m_textctrl->GotoLine(m_textctrl->GetLineCount());
+            m_textctrl->GotoLine(m_textctrl->GetLineCount());
 //                m_textctrl->SetSelectionStart(-1);
 //                m_textctrl->SetSelectionEnd(-1);
         }
@@ -188,7 +188,7 @@ void PipedProcessCtrl::SyncOutput(int maxchars)
         while(m_proc->IsErrorAvailable())
         {
             char buf0[maxchars+1];
-            for(int i=0;i<maxchars+1;i++)
+            for(int i=0; i<maxchars+1; i++)
                 buf0[i]=0;
             m_estream->Read(buf0,maxchars);
             wxString m_latest=wxString::FromAscii(buf0);
@@ -272,7 +272,7 @@ void PipedProcessCtrl::OnUserInput(wxKeyEvent& ke)
     wxString buf(kc2);
     if (!ke.ControlDown() && !ke.AltDown())
         if (ke.GetKeyCode()<WXK_START ||
-           ke.GetKeyCode()>WXK_COMMAND)
+                ke.GetKeyCode()>WXK_COMMAND)
         {
             m_ostream->Write(&kc1,1);
             m_textctrl->AppendText(kc2);

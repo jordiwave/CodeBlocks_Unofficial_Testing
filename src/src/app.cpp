@@ -50,29 +50,32 @@
 #include "splashscreen.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
-    #include <sys/param.h>
-    #include <mach-o/dyld.h>
+#include <sys/param.h>
+#include <mach-o/dyld.h>
 #endif
 
 #ifndef CB_PRECOMP
-    #include <wx/dir.h>
-    #include "xtra_res.h"
-    #include "filemanager.h" // LoaderBase
-    #include "cbproject.h"
+#include <wx/dir.h>
+#include "xtra_res.h"
+#include "filemanager.h" // LoaderBase
+#include "cbproject.h"
 #endif
 
 #ifndef APP_PREFIX
-    #define APP_PREFIX ""
+#define APP_PREFIX ""
 #endif
 
 #ifdef __WXMSW__
-    #include "exchndl.h"         // Crash handler DLL -> includes windows.h, therefore
-    #include <wx/msw/winundef.h> // ...include this header file on the NEXT LINE (wxWidgets docs say so)
-    #include <commctrl.h>
+#include "exchndl.h"         // Crash handler DLL -> includes windows.h, therefore
+#include <wx/msw/winundef.h> // ...include this header file on the NEXT LINE (wxWidgets docs say so)
+#include <commctrl.h>
 #endif
 
 #ifndef __WXMAC__
-inline wxString GetResourcesDir(){ return wxEmptyString; }
+inline wxString GetResourcesDir()
+{
+    return wxEmptyString;
+}
 #endif
 
 namespace
@@ -81,24 +84,30 @@ bool s_Loading = false;
 
 class DDEServer : public wxServer
 {
-    public:
-        DDEServer(MainFrame* frame) : m_Frame(frame) { ; }
-        wxConnectionBase *OnAcceptConnection(const wxString& topic) override;
-        MainFrame* GetFrame()                 { return m_Frame;  }
-        void       SetFrame(MainFrame* frame) { m_Frame = frame; }
-    private:
-        MainFrame* m_Frame;
+public:
+    DDEServer(MainFrame* frame) : m_Frame(frame) { ; }
+    wxConnectionBase *OnAcceptConnection(const wxString& topic) override;
+    MainFrame* GetFrame()
+    {
+        return m_Frame;
+    }
+    void       SetFrame(MainFrame* frame)
+    {
+        m_Frame = frame;
+    }
+private:
+    MainFrame* m_Frame;
 };
 
 class DDEConnection : public wxConnection
 {
-    public:
-        DDEConnection(MainFrame* frame) : m_Frame(frame) { ; }
-        bool OnExecute(const wxString& topic, const void *data, size_t size,
-                       wxIPCFormat format) override;
-        bool OnDisconnect() override;
-    private:
-        MainFrame* m_Frame;
+public:
+    DDEConnection(MainFrame* frame) : m_Frame(frame) { ; }
+    bool OnExecute(const wxString& topic, const void *data, size_t size,
+                   wxIPCFormat format) override;
+    bool OnDisconnect() override;
+private:
+    MainFrame* m_Frame;
 };
 
 wxConnectionBase* DDEServer::OnAcceptConnection(const wxString& topic)
@@ -202,113 +211,175 @@ bool DDEConnection::OnDisconnect()
 
 DDEServer* g_DDEServer = nullptr;
 
-class DDEClient: public wxClient {
-    public:
-        DDEClient(void) {}
-        wxConnectionBase *OnMakeConnection(void) override { return new DDEConnection(nullptr); }
+class DDEClient: public wxClient
+{
+public:
+    DDEClient(void) {}
+    wxConnectionBase *OnMakeConnection(void) override
+    {
+        return new DDEConnection(nullptr);
+    }
 };
 
 #if wxUSE_CMDLINE_PARSER
 #define CMD_ENTRY(X) X
 const wxCmdLineEntryDesc cmdLineDesc[] =
 {
-    { wxCMD_LINE_SWITCH, CMD_ENTRY("h"),  CMD_ENTRY("help"),                  CMD_ENTRY("show this help message"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY("?"),  CMD_ENTRY("?"),                     CMD_ENTRY("show this help message (alias for help)"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("safe-mode"),             CMD_ENTRY("load in safe mode (all plugins will be disabled)"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY("h"),  CMD_ENTRY("help"),                  CMD_ENTRY("show this help message"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY("?"),  CMD_ENTRY("?"),                     CMD_ENTRY("show this help message (alias for help)"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("safe-mode"),             CMD_ENTRY("load in safe mode (all plugins will be disabled)"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
 #ifdef __WXMSW__
-    { wxCMD_LINE_SWITCH, CMD_ENTRY("na"), CMD_ENTRY("no-check-associations"), CMD_ENTRY("don't perform any association checks"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY("nd"), CMD_ENTRY("no-dde"),                CMD_ENTRY("don't start a DDE server"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY("na"), CMD_ENTRY("no-check-associations"), CMD_ENTRY("don't perform any association checks"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY("nd"), CMD_ENTRY("no-dde"),                CMD_ENTRY("don't start a DDE server"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
 #endif
 #ifndef __WXMSW__
-    { wxCMD_LINE_SWITCH, CMD_ENTRY("ni"), CMD_ENTRY("no-ipc"),                CMD_ENTRY("don't start an IPC server"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY("ni"), CMD_ENTRY("no-ipc"),                CMD_ENTRY("don't start an IPC server"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
 #endif
-    { wxCMD_LINE_SWITCH, CMD_ENTRY("ns"), CMD_ENTRY("no-splash-screen"),      CMD_ENTRY("don't display a splash screen while loading"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("multiple-instance"),     CMD_ENTRY("allow running multiple instances"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY("d"),  CMD_ENTRY("debug-log"),             CMD_ENTRY("display application's debug log"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY("nc"), CMD_ENTRY("no-crash-handler"),      CMD_ENTRY("don't use the crash handler (useful for debugging C::B)"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY("v"),  CMD_ENTRY("verbose"),               CMD_ENTRY("show more debugging messages"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("prefix"),                CMD_ENTRY("the shared data dir prefix"),
-      wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("user-data-dir"),         CMD_ENTRY("set a custom location for user settings and plugins"),
-      wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_OPTION, CMD_ENTRY("p"),  CMD_ENTRY("personality"),           CMD_ENTRY("the personality to use: \"ask\" or <personality-name>"),
-      wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("no-log"),                CMD_ENTRY("turn off the application log"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("log-to-file"),           CMD_ENTRY("redirect application log to a file"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("debug-log-to-file"),     CMD_ENTRY("redirect application debug log to a file"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("profile"),               CMD_ENTRY("synonym to personality"),
-      wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("rebuild"),               CMD_ENTRY("clean and then build the project/workspace"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("build"),                 CMD_ENTRY("just build the project/workspace"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("clean"),                 CMD_ENTRY("clean the project/workspace"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("target"),                CMD_ENTRY("the target for the batch build"),
-      wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("no-batch-window-close"), CMD_ENTRY("do not auto-close log window when batch build is done"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("batch-build-notify"),    CMD_ENTRY("show message when batch build is done"),
-      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("script"),                CMD_ENTRY("execute script file"),
-      wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("file"),                  CMD_ENTRY("open file and optionally jump to specific line (file[:line])"),
-      wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("dbg-config"),            CMD_ENTRY("selects the debugger config used for attaching (uses the current selected target if omitted) "),
-      wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("dbg-attach"),            CMD_ENTRY("string passed to the debugger plugin which is used for attaching to a process"),
-      wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_PARAM,  CMD_ENTRY(""),   CMD_ENTRY(""),                      CMD_ENTRY("filename(s)"),
-      wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY("ns"), CMD_ENTRY("no-splash-screen"),      CMD_ENTRY("don't display a splash screen while loading"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("multiple-instance"),     CMD_ENTRY("allow running multiple instances"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY("d"),  CMD_ENTRY("debug-log"),             CMD_ENTRY("display application's debug log"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY("nc"), CMD_ENTRY("no-crash-handler"),      CMD_ENTRY("don't use the crash handler (useful for debugging C::B)"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY("v"),  CMD_ENTRY("verbose"),               CMD_ENTRY("show more debugging messages"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
+    {
+        wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("prefix"),                CMD_ENTRY("the shared data dir prefix"),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR
+    },
+    {
+        wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("user-data-dir"),         CMD_ENTRY("set a custom location for user settings and plugins"),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR
+    },
+    {
+        wxCMD_LINE_OPTION, CMD_ENTRY("p"),  CMD_ENTRY("personality"),           CMD_ENTRY("the personality to use: \"ask\" or <personality-name>"),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("no-log"),                CMD_ENTRY("turn off the application log"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("log-to-file"),           CMD_ENTRY("redirect application log to a file"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("debug-log-to-file"),     CMD_ENTRY("redirect application debug log to a file"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
+    {
+        wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("profile"),               CMD_ENTRY("synonym to personality"),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("rebuild"),               CMD_ENTRY("clean and then build the project/workspace"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("build"),                 CMD_ENTRY("just build the project/workspace"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("clean"),                 CMD_ENTRY("clean the project/workspace"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
+    {
+        wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("target"),                CMD_ENTRY("the target for the batch build"),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("no-batch-window-close"), CMD_ENTRY("do not auto-close log window when batch build is done"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("batch-build-notify"),    CMD_ENTRY("show message when batch build is done"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
+    {
+        wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("script"),                CMD_ENTRY("execute script file"),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR
+    },
+    {
+        wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("file"),                  CMD_ENTRY("open file and optionally jump to specific line (file[:line])"),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR
+    },
+    {
+        wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("dbg-config"),            CMD_ENTRY("selects the debugger config used for attaching (uses the current selected target if omitted) "),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_NEEDS_SEPARATOR
+    },
+    {
+        wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("dbg-attach"),            CMD_ENTRY("string passed to the debugger plugin which is used for attaching to a process"),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_NEEDS_SEPARATOR
+    },
+    {
+        wxCMD_LINE_PARAM,  CMD_ENTRY(""),   CMD_ENTRY(""),                      CMD_ENTRY("filename(s)"),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE
+    },
     { wxCMD_LINE_NONE }
 };
 #endif // wxUSE_CMDLINE_PARSER
 
 class Splash
 {
-    public:
-        Splash(const bool show) : m_pSplash(nullptr)
+public:
+    Splash(const bool show) : m_pSplash(nullptr)
+    {
+        if (show)
         {
-            if (show)
-            {
-                wxBitmap bmp = cbLoadBitmap(ConfigManager::ReadDataPath() + _T("/images/splash_1312.png"));
-                wxMemoryDC dc;
-                dc.SelectObject(bmp);
-                cbSplashScreen::DrawReleaseInfo(dc);
-                dc.SelectObject(wxNullBitmap);
-                m_pSplash = new cbSplashScreen(bmp);
-                Manager::Yield();
-            }
+            wxBitmap bmp = cbLoadBitmap(ConfigManager::ReadDataPath() + _T("/images/splash_1312.png"));
+            wxMemoryDC dc;
+            dc.SelectObject(bmp);
+            cbSplashScreen::DrawReleaseInfo(dc);
+            dc.SelectObject(wxNullBitmap);
+            m_pSplash = new cbSplashScreen(bmp);
+            Manager::Yield();
         }
-        ~Splash()
+    }
+    ~Splash()
+    {
+        Hide();
+    }
+    void Hide()
+    {
+        if (m_pSplash)
         {
-            Hide();
+            m_pSplash->Destroy();
+            m_pSplash = nullptr;
         }
-        void Hide()
-        {
-            if (m_pSplash)
-            {
-                m_pSplash->Destroy();
-                m_pSplash = nullptr;
-            }
-        }
+    }
 
-    private:
-        cbSplashScreen* m_pSplash;
+private:
+    cbSplashScreen* m_pSplash;
 };
 
 class cbMessageOutputNull : public wxMessageOutput
@@ -318,7 +389,7 @@ public:
     virtual void Output(const wxString &str) override;
 };
 
-void cbMessageOutputNull::Output(cb_unused const wxString &str){}
+void cbMessageOutputNull::Output(cb_unused const wxString &str) {}
 } // namespace
 
 IMPLEMENT_APP(CodeBlocksApp) // TODO: This gives a "redundant declaration" warning, though I think it's false. Dig through macro and check.
@@ -344,7 +415,7 @@ static wxString GetResourcesDir()
     CFRelease(resourcesURL);
     CFStringRef cfStrPath = CFURLCopyFileSystemPath(absoluteURL,kCFURLPOSIXPathStyle);
     CFRelease(absoluteURL);
-      return wxCFStringRef(cfStrPath).AsString(wxLocale::GetSystemEncoding());
+    return wxCFStringRef(cfStrPath).AsString(wxLocale::GetSystemEncoding());
 }
 #endif
 
@@ -443,7 +514,7 @@ void CodeBlocksApp::InitAssociations()
 void CodeBlocksApp::InitDebugConsole()
 {
 #ifdef __WXMSW__
-    #ifdef __CBDEBUG__
+#ifdef __CBDEBUG__
     // Remember to compile as a console application!
     AllocConsole();
     HANDLE myhandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -451,7 +522,7 @@ void CodeBlocksApp::InitDebugConsole()
     SetConsoleScreenBufferSize(myhandle, co);
     fprintf(stdout,"CONSOLE DEBUG ACTIVATED\n");
     // wxLogWindow *myerr = new wxLogWindow(nullptr,"debug");
-    #endif
+#endif
 #endif
 }
 
@@ -550,7 +621,8 @@ void CodeBlocksApp::InitLocale()
         do
         {
             m_locale.AddCatalog(moName);
-        } while (dir.GetNext(&moName));
+        }
+        while (dir.GetNext(&moName));
     }
 }
 
@@ -605,9 +677,9 @@ bool CodeBlocksApp::OnInit()
 
     try
     {
-    #if (wxUSE_ON_FATAL_EXCEPTION == 1)
+#if (wxUSE_ON_FATAL_EXCEPTION == 1)
         wxHandleFatalExceptions(true);
-    #endif
+#endif
 
         InitExceptionHandler();
 
@@ -643,9 +715,9 @@ bool CodeBlocksApp::OnInit()
             DDEConnection* connection = nullptr;
             wxLogNull ln; // own error checking implemented -> avoid debug warnings
             connection = (DDEConnection *)client->MakeConnection("localhost",
-                                                                 wxString::Format(DDE_SERVICE,
-                                                                                  wxGetUserId()),
-                                                                 DDE_TOPIC);
+                         wxString::Format(DDE_SERVICE,
+                                          wxGetUserId()),
+                         DDE_TOPIC);
             if (connection)
             {
                 // don't eval here just forward the whole command line to the other instance
@@ -680,7 +752,7 @@ bool CodeBlocksApp::OnInit()
         }
 
         if (appCfg->ReadBool("/environment/single_instance", true)
-            && !parser.Found("multiple-instance"))
+                && !parser.Found("multiple-instance"))
         {
             const wxString name = wxString::Format("Code::Blocks-%s", wxGetUserId());
 
@@ -748,7 +820,10 @@ bool CodeBlocksApp::OnInit()
             // CallAfter will queue the function at the end of the event loop, so
             // OnInit is finished before the build process is started.
             // Starting the build process here will lead to crashes on linux
-            CallAfter([this]() { this->BatchJob(); });
+            CallAfter([this]()
+            {
+                this->BatchJob();
+            });
 
             return true;
         }
@@ -770,7 +845,7 @@ bool CodeBlocksApp::OnInit()
 
         // run startup script
         const wxString startup = ConfigManager::LocateDataFile("startup.script",
-                                                               sdScriptsUser | sdScriptsGlobal);
+                                 sdScriptsUser | sdScriptsGlobal);
         if (!startup.empty())
         {
             ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
@@ -840,31 +915,31 @@ int CodeBlocksApp::OnExit()
 }
 
 #ifdef __WXMSW__
-    inline void EnableLFH()
+inline void EnableLFH()
+{
+    typedef BOOL  (WINAPI *HeapSetInformation_t)(HANDLE, HEAP_INFORMATION_CLASS, PVOID, SIZE_T);
+    typedef DWORD (WINAPI *GetProcessHeaps_t)(DWORD, PHANDLE);
+
+    HINSTANCE kh = GetModuleHandle(TEXT("kernel32.dll"));
+    HeapSetInformation_t  HeapSetInformation_func = (HeapSetInformation_t)  GetProcAddress(kh, "HeapSetInformation");
+    GetProcessHeaps_t     GetProcessHeaps_func    = (GetProcessHeaps_t)     GetProcAddress(kh, "GetProcessHeaps");
+
+    if (GetProcessHeaps_func && HeapSetInformation_func)
     {
-        typedef BOOL  (WINAPI *HeapSetInformation_t)(HANDLE, HEAP_INFORMATION_CLASS, PVOID, SIZE_T);
-        typedef DWORD (WINAPI *GetProcessHeaps_t)(DWORD, PHANDLE);
+        ULONG  HeapFragValue = 2;
 
-        HINSTANCE kh = GetModuleHandle(TEXT("kernel32.dll"));
-        HeapSetInformation_t  HeapSetInformation_func = (HeapSetInformation_t)  GetProcAddress(kh, "HeapSetInformation");
-        GetProcessHeaps_t     GetProcessHeaps_func    = (GetProcessHeaps_t)     GetProcAddress(kh, "GetProcessHeaps");
+        int n = GetProcessHeaps_func(0, 0);
+        HANDLE *h = new HANDLE[n];
+        GetProcessHeaps_func(n, h);
 
-        if (GetProcessHeaps_func && HeapSetInformation_func)
-        {
-            ULONG  HeapFragValue = 2;
+        for (int i = 0; i < n; ++i)
+            HeapSetInformation_func(h[i], HeapCompatibilityInformation, &HeapFragValue, sizeof(HeapFragValue));
 
-            int n = GetProcessHeaps_func(0, 0);
-            HANDLE *h = new HANDLE[n];
-            GetProcessHeaps_func(n, h);
-
-            for (int i = 0; i < n; ++i)
-                HeapSetInformation_func(h[i], HeapCompatibilityInformation, &HeapFragValue, sizeof(HeapFragValue));
-
-            delete[] h;
-        }
+        delete[] h;
     }
+}
 #else
-    inline void EnableLFH() {}
+inline void EnableLFH() {}
 #endif
 
 int CodeBlocksApp::OnRun()
@@ -954,12 +1029,12 @@ int CodeBlocksApp::BatchJob()
     wxString title = _("Building '") + wxFileNameFromPath(wxString(argv[argc-1])) + _("' (target '")  + m_BatchTarget + _T("')");
     wxTaskBarIcon* tbIcon = new wxTaskBarIcon();
     tbIcon->SetIcon(
-            #ifdef __WXMSW__
-                wxICON(A_MAIN_ICON),
-            #else
-                wxIcon(app_xpm),
-            #endif // __WXMSW__
-                title);
+#ifdef __WXMSW__
+        wxICON(A_MAIN_ICON),
+#else
+        wxIcon(app_xpm),
+#endif // __WXMSW__
+        title);
 
     wxString bb_title = m_pBatchBuildDialog->GetTitle();
     m_pBatchBuildDialog->SetTitle(bb_title + _T(" - ") + title);
@@ -1049,7 +1124,10 @@ void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
     // of the event loop with CallAfter. So the compiler plugin can finish its
     // work and we close the window afterwards.
     if (m_pBatchBuildDialog && m_BatchWindowAutoClose)
-        CallAfter([this]() { m_pBatchBuildDialog->Close(); });
+        CallAfter([this]()
+    {
+        m_pBatchBuildDialog->Close();
+    });
 
 }
 
@@ -1188,7 +1266,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine
             wxLog::EnableLogging(parser.Found(_T("verbose")));
 
             if (   parser.Found(_T("personality"), &val)
-                || parser.Found(_T("profile"),     &val) )
+                    || parser.Found(_T("profile"),     &val) )
             {
                 SetupPersonality(val);
             }
@@ -1232,8 +1310,8 @@ void CodeBlocksApp::SetupPersonality(const wxString& personality)
         const wxArrayString items(personalityMgr->GetPersonalitiesList());
 
         wxSingleChoiceDialog dlg(nullptr, _("Please choose which personality (profile) to load:"),
-                                          _("Personalities (profiles)"),
-                                          items);
+                                 _("Personalities (profiles)"),
+                                 items);
         if (dlg.ShowModal() == wxID_OK)
             personalityMgr->SetPersonality(dlg.GetStringSelection());
     }
@@ -1436,8 +1514,8 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
 
     // fix for bug #18007: In batch build mode the following is not needed
     if (  !m_Batch
-        && Manager::Get()->GetEditorManager()
-        && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/check_modified_files"), true))
+            && Manager::Get()->GetEditorManager()
+            && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/check_modified_files"), true))
     {
         // for some reason a mouse up event doesn't make it into scintilla (scintilla bug)
         // therefore the workaround is not to directly call the editorManager, but
@@ -1456,7 +1534,7 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
             static_cast<ProjectManagerUI*>(prjManUI)->CheckForExternallyModifiedProjects();
     }
     cbEditor* ed = Manager::Get()->GetEditorManager()
-                 ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() : nullptr;
+                   ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() : nullptr;
     if (ed)
     {
         // hack for linux: without it, the editor loses the caret every second activate o.O

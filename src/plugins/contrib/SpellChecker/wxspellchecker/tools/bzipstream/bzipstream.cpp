@@ -23,12 +23,12 @@
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWindows headers
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+#include "wx/wx.h"
 #endif
 
 
 #ifdef __BORLANDC__
-  #pragma hdrstop
+#pragma hdrstop
 #endif
 
 #if wxUSE_STREAMS
@@ -50,7 +50,7 @@
 //===========================================================================
 
 /*
-typedef 
+typedef
    struct {
       char *next_in;
       unsigned int avail_in;
@@ -67,7 +67,7 @@ typedef
       void *(*bzalloc)(void *,int,int);
       void (*bzfree)(void *,void *);
       void *opaque;
-   } 
+   }
    bz_stream;
 */
 
@@ -75,98 +75,98 @@ typedef
 // wxBZipInputStream
 // ----------------------------------------------------------------------------
 
-wxBZipInputStream::wxBZipInputStream(wxInputStream& Stream, 
-									 bool bLessMemory) : wxFilterInputStream(Stream),
-														 nBufferPos(0)
+wxBZipInputStream::wxBZipInputStream(wxInputStream& Stream,
+                                     bool bLessMemory) : wxFilterInputStream(Stream),
+    nBufferPos(0)
 {
-	hZip = new bz_stream;
-	if (hZip == NULL)
-	{
-		wxLogSysError(wxT("OUT OF MEMORY!"));
-		return;
-	}
+    hZip = new bz_stream;
+    if (hZip == NULL)
+    {
+        wxLogSysError(wxT("OUT OF MEMORY!"));
+        return;
+    }
 
-	((bz_stream*&)hZip)->bzalloc = NULL;
-	((bz_stream*&)hZip)->bzfree = NULL;
-	((bz_stream*&)hZip)->opaque = NULL;
+    ((bz_stream*&)hZip)->bzalloc = NULL;
+    ((bz_stream*&)hZip)->bzfree = NULL;
+    ((bz_stream*&)hZip)->opaque = NULL;
 
-	//param 2 - verbosity = 0-4, 4 more stuff to stdio
-	//param 3 - small = non-zero means less memory and more time
-	if (BZ2_bzDecompressInit((bz_stream*&)hZip, 0, bLessMemory)!= BZ_OK)
-	{
-		delete (bz_stream*&) hZip;
-		wxLogSysError(wxT("Could not initialize bzip decompression engine!"));
-	}
+    //param 2 - verbosity = 0-4, 4 more stuff to stdio
+    //param 3 - small = non-zero means less memory and more time
+    if (BZ2_bzDecompressInit((bz_stream*&)hZip, 0, bLessMemory)!= BZ_OK)
+    {
+        delete (bz_stream*&) hZip;
+        wxLogSysError(wxT("Could not initialize bzip decompression engine!"));
+    }
 }
 
 wxBZipInputStream::~wxBZipInputStream()
 {
-	BZ2_bzDecompressEnd((bz_stream*&)hZip);
-	delete (bz_stream*&) hZip;
+    BZ2_bzDecompressEnd((bz_stream*&)hZip);
+    delete (bz_stream*&) hZip;
 }
 
 wxInputStream& wxBZipInputStream::ReadRaw(void* pBuffer, size_t size)
 {
-	return m_parent_i_stream->Read(pBuffer, size);
+    return m_parent_i_stream->Read(pBuffer, size);
 }
 
 off_t wxBZipInputStream::TellRawI()
 {
-	return m_parent_i_stream->TellI();
+    return m_parent_i_stream->TellI();
 }
 
 off_t wxBZipInputStream::SeekRawI(off_t pos, wxSeekMode sm)
 {
-	return 0;
+    return 0;
 }
 
 size_t wxBZipInputStream::OnSysRead(void* buffer, size_t bufsize)
 {
-	wxInt32 nRead = 0;
+    wxInt32 nRead = 0;
 
-	((bz_stream*&)hZip)->next_out = &(((char*&)buffer)[nRead]);
-	((bz_stream*&)hZip)->avail_out = bufsize - nRead;
+    ((bz_stream*&)hZip)->next_out = &(((char*&)buffer)[nRead]);
+    ((bz_stream*&)hZip)->avail_out = bufsize - nRead;
 
-	while (((bz_stream*&)hZip)->avail_out != 0)
-	{
-		//wxMessageBox(wxString::Format("%i %i", nRead, ((bz_stream*&)hZip)->avail_out));
+    while (((bz_stream*&)hZip)->avail_out != 0)
+    {
+        //wxMessageBox(wxString::Format("%i %i", nRead, ((bz_stream*&)hZip)->avail_out));
 
-		if (nBufferPos == 0 || nBufferPos == WXBZBS)
-		{
-			ReadRaw(pBuffer, WXBZBS);
-			nBufferPos = 0;
-			((bz_stream*&)hZip)->next_in = &pBuffer[nBufferPos];
-			((bz_stream*&)hZip)->avail_in = WXBZBS - nBufferPos;
-			if (m_parent_i_stream->LastRead() != WXBZBS)
-			{
-				((bz_stream*&)hZip)->avail_in = m_parent_i_stream->LastRead();
+        if (nBufferPos == 0 || nBufferPos == WXBZBS)
+        {
+            ReadRaw(pBuffer, WXBZBS);
+            nBufferPos = 0;
+            ((bz_stream*&)hZip)->next_in = &pBuffer[nBufferPos];
+            ((bz_stream*&)hZip)->avail_in = WXBZBS - nBufferPos;
+            if (m_parent_i_stream->LastRead() != WXBZBS)
+            {
+                ((bz_stream*&)hZip)->avail_in = m_parent_i_stream->LastRead();
 
-				int nRet = BZ2_bzDecompress((bz_stream*&)hZip);
+                int nRet = BZ2_bzDecompress((bz_stream*&)hZip);
 
-				if (nRet == BZ_OK || nRet == BZ_STREAM_END)
-					return bufsize - ((bz_stream*&)hZip)->avail_out;
-				else
-					return 0;
-			}
-		}
-		((bz_stream*&)hZip)->next_in = &pBuffer[nBufferPos];
-		((bz_stream*&)hZip)->avail_in = WXBZBS - nBufferPos;
+                if (nRet == BZ_OK || nRet == BZ_STREAM_END)
+                    return bufsize - ((bz_stream*&)hZip)->avail_out;
+                else
+                    return 0;
+            }
+        }
+        ((bz_stream*&)hZip)->next_in = &pBuffer[nBufferPos];
+        ((bz_stream*&)hZip)->avail_in = WXBZBS - nBufferPos;
 
-		int nRet = BZ2_bzDecompress((bz_stream*&)hZip);
+        int nRet = BZ2_bzDecompress((bz_stream*&)hZip);
 
-		if (nRet == BZ_OK)	
-		{
-			nBufferPos += -(nRead - (
-			nRead += (WXBZBS - nBufferPos - ((bz_stream*&)hZip)->avail_in)
-			));
-		}
-		else if(nRet == BZ_STREAM_END)
-			return bufsize - ((bz_stream*&)hZip)->avail_out;
-		else
-			return 0;	
-	}
- 
-	return bufsize - ((bz_stream*&)hZip)->avail_out;	
+        if (nRet == BZ_OK)
+        {
+            nBufferPos += -(nRead - (
+                                nRead += (WXBZBS - nBufferPos - ((bz_stream*&)hZip)->avail_in)
+                            ));
+        }
+        else if(nRet == BZ_STREAM_END)
+            return bufsize - ((bz_stream*&)hZip)->avail_out;
+        else
+            return 0;
+    }
+
+    return bufsize - ((bz_stream*&)hZip)->avail_out;
 }
 
 // ----------------------------------------------------------------------------
@@ -174,135 +174,137 @@ size_t wxBZipInputStream::OnSysRead(void* buffer, size_t bufsize)
 // ----------------------------------------------------------------------------
 
 wxBZipOutputStream::wxBZipOutputStream(wxOutputStream& Stream,
-									   wxInt32 nCompressionFactor) : 
-																wxFilterOutputStream(Stream)
+                                       wxInt32 nCompressionFactor) :
+    wxFilterOutputStream(Stream)
 {
-	hZip = new bz_stream;
-	if (hZip == NULL)
-	{
-		wxLogSysError(wxT("OUT OF MEMORY!"));
-		return;
-	}
+    hZip = new bz_stream;
+    if (hZip == NULL)
+    {
+        wxLogSysError(wxT("OUT OF MEMORY!"));
+        return;
+    }
 
-	((bz_stream*&)hZip)->bzalloc = NULL;
-	((bz_stream*&)hZip)->bzfree = NULL;
-	((bz_stream*&)hZip)->opaque = NULL;
+    ((bz_stream*&)hZip)->bzalloc = NULL;
+    ((bz_stream*&)hZip)->bzfree = NULL;
+    ((bz_stream*&)hZip)->opaque = NULL;
 
-	//param 2 - compression factor = 1-9 9 more compression but slower
-	//param 3 - verbosity = 0-4, 4 more stuff to stdio (ignored)
-	//param 4 - workfactor = reliance on standard comp alg, 0-250, 0==30 default
-	if (BZ2_bzCompressInit((bz_stream*&)hZip, nCompressionFactor, 0, 0)!= BZ_OK)
-	{
-		delete (bz_stream*&) hZip;
-		wxLogSysError(wxT("Could not initialize bzip compression engine!"));
-	}
+    //param 2 - compression factor = 1-9 9 more compression but slower
+    //param 3 - verbosity = 0-4, 4 more stuff to stdio (ignored)
+    //param 4 - workfactor = reliance on standard comp alg, 0-250, 0==30 default
+    if (BZ2_bzCompressInit((bz_stream*&)hZip, nCompressionFactor, 0, 0)!= BZ_OK)
+    {
+        delete (bz_stream*&) hZip;
+        wxLogSysError(wxT("Could not initialize bzip compression engine!"));
+    }
 }
 
 wxBZipOutputStream::~wxBZipOutputStream()
 {
-	BZ2_bzCompressEnd((bz_stream*&)hZip);
-	delete (bz_stream*&) hZip;
+    BZ2_bzCompressEnd((bz_stream*&)hZip);
+    delete (bz_stream*&) hZip;
 }
 
 wxOutputStream& wxBZipOutputStream::WriteRaw(void* pBuffer, size_t size)
 {
-	return m_parent_o_stream->Write(pBuffer, size);
+    return m_parent_o_stream->Write(pBuffer, size);
 }
 
 off_t wxBZipOutputStream::TellRawO()
 {
-	return m_parent_o_stream->TellO();
+    return m_parent_o_stream->TellO();
 }
 
 off_t wxBZipOutputStream::SeekRawO(off_t pos, wxSeekMode sm)
 {
-	return 0;
+    return 0;
 }
 
 size_t wxBZipOutputStream::OnSysWrite(const void* buffer, size_t bufsize)
 {
-	size_t nWrote = 0;
-	int n;
-
-	
-	((bz_stream*&)hZip)->next_in = &(((char*&)buffer)[nWrote]);
-	((bz_stream*&)hZip)->avail_in = bufsize - nWrote;
-	((bz_stream*&)hZip)->next_out = &pBuffer[0];
-	((bz_stream*&)hZip)->avail_out = WXBZBS;
-
-	do {
-	if ((n=BZ2_bzCompress((bz_stream*&)hZip, BZ_RUN)) != BZ_RUN_OK)
-	{
-
-		wxMessageBox(wxString::Format("BrokeC %i", n));
-		break;
-	}
-	if (((bz_stream*&)hZip)->avail_out < WXBZBS)
-	{
-		((bz_stream*&)hZip)->next_out = &pBuffer[0];
-		((bz_stream*&)hZip)->avail_out = WXBZBS;
-		size_t nCurWrite = WXBZBS - ((bz_stream*&)hZip)->avail_out;
-	//	wxMessageBox(wxString::Format("%i", nCurWrite));
-		WriteRaw(pBuffer, nCurWrite);
-		nWrote += m_parent_o_stream->LastWrite();
+    size_t nWrote = 0;
+    int n;
 
 
-		if (m_parent_o_stream->LastWrite() != nCurWrite)
-		{
-			wxMessageBox("Broke");
-			break;
-		}
-	}
-	} while(((bz_stream*&)hZip)->avail_in != 0);
+    ((bz_stream*&)hZip)->next_in = &(((char*&)buffer)[nWrote]);
+    ((bz_stream*&)hZip)->avail_in = bufsize - nWrote;
+    ((bz_stream*&)hZip)->next_out = &pBuffer[0];
+    ((bz_stream*&)hZip)->avail_out = WXBZBS;
 
-	while (nWrote != bufsize)
-	{
-		((bz_stream*&)hZip)->next_out = &pBuffer[0];
-		((bz_stream*&)hZip)->avail_out = WXBZBS;
+    do
+    {
+        if ((n=BZ2_bzCompress((bz_stream*&)hZip, BZ_RUN)) != BZ_RUN_OK)
+        {
 
-		int nRet = BZ2_bzCompress((bz_stream*&)hZip, BZ_FINISH);
-		
-		if (nRet != BZ_FINISH_OK && nRet != BZ_STREAM_END)
-		{
-			wxMessageBox("ErrorFK");
-			break;
-		}
-
-		
-		size_t nCurWrite = WXBZBS - ((bz_stream*&)hZip)->avail_out;
-	//	wxMessageBox(wxString::Format("%i", nCurWrite));
-		if (nCurWrite != 0)
-		{
-			WriteRaw(pBuffer, nCurWrite);
-			nWrote += m_parent_o_stream->LastWrite();
+            wxMessageBox(wxString::Format("BrokeC %i", n));
+            break;
+        }
+        if (((bz_stream*&)hZip)->avail_out < WXBZBS)
+        {
+            ((bz_stream*&)hZip)->next_out = &pBuffer[0];
+            ((bz_stream*&)hZip)->avail_out = WXBZBS;
+            size_t nCurWrite = WXBZBS - ((bz_stream*&)hZip)->avail_out;
+            //	wxMessageBox(wxString::Format("%i", nCurWrite));
+            WriteRaw(pBuffer, nCurWrite);
+            nWrote += m_parent_o_stream->LastWrite();
 
 
-			if (m_parent_o_stream->LastWrite() != nCurWrite)
-			{
-				wxMessageBox("Broke");
-				break;
-			}
-		}
+            if (m_parent_o_stream->LastWrite() != nCurWrite)
+            {
+                wxMessageBox("Broke");
+                break;
+            }
+        }
+    }
+    while(((bz_stream*&)hZip)->avail_in != 0);
 
-		if (nRet == BZ_STREAM_END)
-		{
-			wxMessageBox("GOOD");
-			break;
-		}
+    while (nWrote != bufsize)
+    {
+        ((bz_stream*&)hZip)->next_out = &pBuffer[0];
+        ((bz_stream*&)hZip)->avail_out = WXBZBS;
 
-	}
- 
+        int nRet = BZ2_bzCompress((bz_stream*&)hZip, BZ_FINISH);
+
+        if (nRet != BZ_FINISH_OK && nRet != BZ_STREAM_END)
+        {
+            wxMessageBox("ErrorFK");
+            break;
+        }
+
+
+        size_t nCurWrite = WXBZBS - ((bz_stream*&)hZip)->avail_out;
+        //	wxMessageBox(wxString::Format("%i", nCurWrite));
+        if (nCurWrite != 0)
+        {
+            WriteRaw(pBuffer, nCurWrite);
+            nWrote += m_parent_o_stream->LastWrite();
+
+
+            if (m_parent_o_stream->LastWrite() != nCurWrite)
+            {
+                wxMessageBox("Broke");
+                break;
+            }
+        }
+
+        if (nRet == BZ_STREAM_END)
+        {
+            wxMessageBox("GOOD");
+            break;
+        }
+
+    }
+
 //	wxMessageBox(wxString::Format("%i %i", nWrote, bufsize);
-	return nWrote;	
+    return nWrote;
 }
 
 // ----------------------------------------------------------------------------
 // wxBZipStream
 // ----------------------------------------------------------------------------
 
-wxBZipStream::wxBZipStream(wxInputStream& i, wxOutputStream& o) : 
-	wxBZipInputStream(i), wxBZipOutputStream(o) {}
+wxBZipStream::wxBZipStream(wxInputStream& i, wxOutputStream& o) :
+    wxBZipInputStream(i), wxBZipOutputStream(o) {}
 
-wxBZipStream::~wxBZipStream(){}
+wxBZipStream::~wxBZipStream() {}
 
 #endif  //wxUSE_ZLIB && wxUSE_STREAMS

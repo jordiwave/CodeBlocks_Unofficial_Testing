@@ -18,12 +18,12 @@
 DevPakInstaller::DevPakInstaller()
     : m_pDlg(nullptr)
 {
-	//ctor
+    //ctor
 }
 
 DevPakInstaller::~DevPakInstaller()
 {
-	//dtor
+    //dtor
     EndProgressDialog();
 }
 
@@ -37,7 +37,7 @@ void DevPakInstaller::CreateProgressDialog(int max)
 
 void DevPakInstaller::EndProgressDialog()
 {
-	if (m_pDlg)
+    if (m_pDlg)
         m_pDlg->Destroy();
     m_pDlg = nullptr;
 }
@@ -249,7 +249,7 @@ bool DevPakInstaller::Untar(const wxString& controlFile, const wxString& filenam
         }
 
         // add replacers (with user's permission) for DLLs
-        #ifdef __WXMSW__
+#ifdef __WXMSW__
         TAR::Record* r = t.FindFile(_T("*.dll"));
         if (!r)
             r = t.FindFile(_T("*.DLL"));
@@ -263,7 +263,7 @@ bool DevPakInstaller::Untar(const wxString& controlFile, const wxString& filenam
             }
             wxYield();
         }
-        #endif
+#endif
     }
 
     bool ret = t.ExtractAll(dirname.c_str(), m_Status, files);

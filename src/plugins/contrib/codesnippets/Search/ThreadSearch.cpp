@@ -9,18 +9,18 @@
  **************************************************************/
 
 #if defined(CB_PRECOMP)
-    #include "sdk.h"
+#include "sdk.h"
 #endif
 
 #ifndef CB_PRECOMP
-    #include <wx/bmpbuttn.h>
-    #include <wx/combobox.h>
-    #include <wx/menu.h>
-    #include <wx/toolbar.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/bmpbuttn.h>
+#include <wx/combobox.h>
+#include <wx/menu.h>
+#include <wx/toolbar.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "configmanager.h"
-    #include "sdk_events.h"
+#include "configmanager.h"
+#include "sdk_events.h"
 #endif
 
 #include "prep.h"
@@ -44,11 +44,11 @@
 namespace
 {
 #if !wxCHECK_VERSION(3, 0, 0)
-    // SashSize can not be changed in wx>=2.9
-    int m_nSashSize = 2;
+// SashSize can not be changed in wx>=2.9
+int m_nSashSize = 2;
 #endif
-    // -- next stmt commented because we're only emulating a plugin --
-    //-PluginRegistrant<ThreadSearch> reg(_T("ThreadSearch"));
+// -- next stmt commented because we're only emulating a plugin --
+//-PluginRegistrant<ThreadSearch> reg(_T("ThreadSearch"));
 }
 
 // ----------------------------------------------------------------------------
@@ -151,21 +151,21 @@ END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 ThreadSearch::ThreadSearch(wxWindow* parent)
 // ----------------------------------------------------------------------------
-             :m_SearchedWord(wxEmptyString),
-              m_pThreadSearchView(NULL),
-              m_pViewManager(NULL),
-              m_pToolbar(NULL),
-              m_CtxMenuIntegration(true),
-              m_UseDefValsForThreadSearch(true),
-              m_ShowSearchControls(true),
-              m_ShowDirControls(false),
-              m_ShowCodePreview(true),
-              m_LoggerType(ThreadSearchLoggerBase::TypeList),
-              m_DisplayLogHeaders(true),
-              m_DrawLogLines(false),
-              m_pCboSearchExpr(0),
-              m_SplitterMode(wxSPLIT_VERTICAL),
-              m_FileSorting(InsertIndexManager::SortByFilePath)
+    :m_SearchedWord(wxEmptyString),
+     m_pThreadSearchView(NULL),
+     m_pViewManager(NULL),
+     m_pToolbar(NULL),
+     m_CtxMenuIntegration(true),
+     m_UseDefValsForThreadSearch(true),
+     m_ShowSearchControls(true),
+     m_ShowDirControls(false),
+     m_ShowCodePreview(true),
+     m_LoggerType(ThreadSearchLoggerBase::TypeList),
+     m_DisplayLogHeaders(true),
+     m_DrawLogLines(false),
+     m_pCboSearchExpr(0),
+     m_SplitterMode(wxSPLIT_VERTICAL),
+     m_FileSorting(InsertIndexManager::SortByFilePath)
 {
     // -- following removed-- because We're only emulating a plugin
     // Make sure our resources are available.
@@ -207,9 +207,9 @@ void ThreadSearch::OnAttach()
     //-m_pAppWindow = Manager::Get()->GetAppWindow();
     //-if ( not m_pAppWindow ) m_pAppWindow = wxTheApp->GetTopWindow();
 
-    #if LOGGING
-     LOGIT( _T("SnippetsSearch (ThreadSearch) Plugin Logging Started"));
-    #endif
+#if LOGGING
+    LOGIT( _T("SnippetsSearch (ThreadSearch) Plugin Logging Started"));
+#endif
 
     bool showPanel;
     int  sashPosition;
@@ -286,13 +286,13 @@ void ThreadSearch::OnAttach()
     // deprected in wx2.9 and does nothing atall (at least there)
     m_pMainPanel->m_pSplitterWindow->SetSashSize(m_nSashSize);
 #endif
-        ////// nogo on the sash size adjustment
-        ////m_pMainPanel->m_pSplitterWindow->Connect(wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGED,
-        ////            (wxObjectEventFunction)(wxEventFunction)(wxSplitterEventFunction)
-        ////            &ThreadSearch::OnSashPositionChanged, NULL, this);
-        ////m_pMainPanel->m_pSplitterWindow->Connect(wxEVT_IDLE,
-        ////            (wxObjectEventFunction)(wxEventFunction)(wxIdleEventFunction)
-        ////            &ThreadSearch::OnIdle, NULL, this);
+    ////// nogo on the sash size adjustment
+    ////m_pMainPanel->m_pSplitterWindow->Connect(wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGED,
+    ////            (wxObjectEventFunction)(wxEventFunction)(wxSplitterEventFunction)
+    ////            &ThreadSearch::OnSashPositionChanged, NULL, this);
+    ////m_pMainPanel->m_pSplitterWindow->Connect(wxEVT_IDLE,
+    ////            (wxObjectEventFunction)(wxEventFunction)(wxIdleEventFunction)
+    ////            &ThreadSearch::OnIdle, NULL, this);
     m_pMainPanel->m_pSplitterWindow->Unsplit();
 
     //(pecan 2008/3/05)
@@ -316,15 +316,15 @@ void ThreadSearch::OnAttach()
     bool fixedPitchFont = true; //<= temporary hack
     wxFont default_font(size, fixedPitchFont ? wxFONTFAMILY_MODERN : wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     m_Conf_font = default_font;
-        // unused for now
-        //wxFont bold_font(default_font);
-        //wxFont italic_font(default_font);
-        //bold_font.SetWeight(wxFONTWEIGHT_BOLD);
-        //wxFont bigger_font(bold_font);
-        //bigger_font.SetPointSize(size + 2);
-        //wxFont small_font(default_font);
-        //small_font.SetPointSize(size - 4);
-        //italic_font.SetStyle(wxFONTSTYLE_ITALIC);
+    // unused for now
+    //wxFont bold_font(default_font);
+    //wxFont italic_font(default_font);
+    //bold_font.SetWeight(wxFONTWEIGHT_BOLD);
+    //wxFont bigger_font(bold_font);
+    //bigger_font.SetPointSize(size + 2);
+    //wxFont small_font(default_font);
+    //small_font.SetPointSize(size - 4);
+    //italic_font.SetStyle(wxFONTSTYLE_ITALIC);
     //(pecan 2008/3/06)
 
     // true if it enters in OnRelease for the first time
@@ -423,7 +423,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
                 //-menu->InsertCheckItem(i, idMenuViewThreadSearch, wxT("Snippets search"),
                 //-                      wxT("Toggle displaying the 'Snippets search' panel"));
                 menu->Insert(i, idMenuViewThreadSearch, wxT("Snippets search"),
-                                      wxT("Toggle displaying the 'Snippets search' panel"));
+                             wxT("Toggle displaying the 'Snippets search' panel"));
                 break;
             }
         }
@@ -434,7 +434,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
             //-menu->AppendCheckItem(idMenuViewThreadSearch, wxT("Snippets search"),
             //-                      wxT("Toggle displaying the 'Snippets search' panel"));
             menu->Append(idMenuViewThreadSearch, wxT("Snippets search"),
-                                  wxT("Toggle displaying the 'Snippets search' panel"));
+                         wxT("Toggle displaying the 'Snippets search' panel"));
         }
     }
 
@@ -574,7 +574,8 @@ void ThreadSearch::BuildModuleMenu(const ModuleType type, wxMenu* pMenu, const F
     {
         // Gets current word
         if ( GetCursorWord(m_SearchedWord) == true )
-        {   //(pecan 2008/2/23)
+        {
+            //(pecan 2008/2/23)
             wxString srchString = m_SearchedWord.Mid(0,16);
             if ( m_SearchedWord.Length() > 16 ) srchString << _T("...");
             //-wxString sText = wxT("Find occurrences of: '") + m_SearchedWord + wxT("'");
@@ -612,11 +613,11 @@ int ThreadSearch::GetInsertionMenuIndex(const wxMenu* const pCtxMenu)
     const wxMenuItemList ItemsList = pCtxMenu->GetMenuItems();
     for (int i = 0; i < (int)ItemsList.GetCount(); ++i)
     {
-        #if wxCHECK_VERSION(3, 0, 0)
+#if wxCHECK_VERSION(3, 0, 0)
         if (ItemsList[i]->GetItemLabelText().StartsWith(_T("Find implementation of:")) )
-        #else
+#else
         if (ItemsList[i]->GetLabel().StartsWith(_T("Find implementation of:")) )
-        #endif
+#endif
         {
             return ++i;
         }
@@ -727,8 +728,8 @@ void ThreadSearch::LoadConfig(bool& showPanel, int& sashPosition,
 }
 // ----------------------------------------------------------------------------
 void ThreadSearch::SaveConfig(bool showPanel, int sashPosition,
-                          ThreadSearchViewManagerBase::eManagerTypes /*mgrType*/,
-                          const wxArrayString& searchPatterns)
+                              ThreadSearchViewManagerBase::eManagerTypes /*mgrType*/,
+                              const wxArrayString& searchPatterns)
 // ----------------------------------------------------------------------------
 {
     ConfigManager* pCfg = Manager::Get()->GetConfigManager(_T("SnippetsSearch"));
@@ -946,7 +947,7 @@ bool ThreadSearch::GetCursorWord(wxString& sWord)
 
 void ThreadSearch::OnMnuEditCopy(wxCommandEvent& event)
 {
-       if ( !IsAttached() )
+    if ( !IsAttached() )
     {
         event.Skip();
         return;
@@ -990,7 +991,8 @@ void ThreadSearch::OnMnuEditCopyUpdateUI(wxUpdateUIEvent& event)
 {
     if ( !IsAttached() )
     {
-        event.Skip(); return;
+        event.Skip();
+        return;
     }
 
     wxWindow* pFocused = wxWindow::FindFocus();
@@ -1045,28 +1047,42 @@ void ThreadSearch::OnMnuEditPaste(wxCommandEvent& event)
     //      If the window isn't one of ours, we'll event.Skip();
     // ----------------------------------------------------------------
 
-       if ( !IsAttached() )
-        { event.Skip(); return; }
+    if ( !IsAttached() )
+    {
+        event.Skip();
+        return;
+    }
 
-    if (not m_IsAttached) {event.Skip(); return;}
+    if (not m_IsAttached)
+    {
+        event.Skip();
+        return;
+    }
 
     wxWindow* pFocused = wxWindow::FindFocus();
-    if (not pFocused) { event.Skip(); return; }
+    if (not pFocused)
+    {
+        event.Skip();
+        return;
+    }
 
     wxString focusedStr = pFocused->GetName();
 //    DBGLOG(wxT("OnMnuEditPaste:Focused[%p][%s]"), pFocused, focusedStr.c_str());
 
     // don't allow paste when the following windows have the focus
     if ( (pFocused == m_pThreadSearchView->m_pSearchPreview) ||
-         (pFocused == (wxWindow*)m_pThreadSearchView->m_pLogger) )
+            (pFocused == (wxWindow*)m_pThreadSearchView->m_pLogger) )
     {
         return;
     }
 
     // if the following window have the focus, own the paste.
     if ( (pFocused != m_pCboSearchExpr)
-        && (pFocused != m_pThreadSearchView->m_pCboSearchExpr) )
-        { event.Skip(); return;}
+            && (pFocused != m_pThreadSearchView->m_pCboSearchExpr) )
+    {
+        event.Skip();
+        return;
+    }
 
     if (pFocused == m_pCboSearchExpr)
         m_pCboSearchExpr->Paste();
@@ -1110,18 +1126,18 @@ void ThreadSearch::UserResizingWindow(wxSizeEvent & WXUNUSED(event))
     // placed it. Here we set a flag to say that thats what's happening
     // OnSashPositionchanged will compensate.
 
-    #if defined(LOGGING)
+#if defined(LOGGING)
     //LOGIT( _T("ThreadSearch::OnSizeWindow"));
-    #endif
+#endif
     if (m_pMainPanel && m_pMainPanel->m_pSplitterWindow && m_pThreadSearchView && m_pEdNotebook)
-    if (m_pMainPanel->m_pSplitterWindow->IsSplit())
-    {
-        #if defined(LOGGING)
-        //LOGIT( _T("UserResizingWindow:Sash@[%d]"), m_pMainPanel->m_pSplitterWindow->GetSashPosition() );
-        #endif
-        m_bSashWindowResizing = true;
-        //-GetConfig()->GetThreadSearchPlugin()->ResetNotebookSashPosition();
-    }
+        if (m_pMainPanel->m_pSplitterWindow->IsSplit())
+        {
+#if defined(LOGGING)
+            //LOGIT( _T("UserResizingWindow:Sash@[%d]"), m_pMainPanel->m_pSplitterWindow->GetSashPosition() );
+#endif
+            m_bSashWindowResizing = true;
+            //-GetConfig()->GetThreadSearchPlugin()->ResetNotebookSashPosition();
+        }
     return;
 }
 // ----------------------------------------------------------------------------
@@ -1138,17 +1154,19 @@ void ThreadSearch::OnSashPositionChanged(wxSplitterEvent& event)
     // Put the sash back to the user placed position after frame resizing set it
     // to the middle of the frame.
 
-    #if defined(LOGGING)
-     //LOGIT( _T("OnSashPositionChanged:New[%d]"), event.GetSashPosition() );
-    #endif
+#if defined(LOGGING)
+    //LOGIT( _T("OnSashPositionChanged:New[%d]"), event.GetSashPosition() );
+#endif
     if (not m_bSashWindowResizing)
-    {   // If not resizing, remember where user placed the sash
+    {
+        // If not resizing, remember where user placed the sash
         m_EdNotebookSashPosition = event.GetSashPosition();
         event.Skip();
     }
 
     if ( m_bSashWindowResizing)
-    {   // if resizing frame, put the sash back to where user placed it.
+    {
+        // if resizing frame, put the sash back to where user placed it.
         m_bSashWindowResizing = false;
         ResetNotebookSashPosition();
     }
@@ -1169,9 +1187,9 @@ void ThreadSearch::OnIdle(wxIdleEvent& event)
 #endif
         m_pMainPanel->m_pSplitterWindow->Refresh();
         m_bSashPositionChanged = false;
-        #if defined(LOGGING)
+#if defined(LOGGING)
         LOGIT( _T("ThreadSearch:OnIdle:") );
-        #endif
+#endif
     }
     event.Skip();
 }
@@ -1182,9 +1200,11 @@ void ThreadSearch::OnCodeSnippetsNewIndex(CodeSnippetsEvent& event)
     // EVT_CODESNIPPETS_NEW_INDEX user loaded new xml index file
 
     wxString newIndex = event.GetSnippetString();
-    do{
+    do
+    {
         if ( newIndex.IsEmpty() ) break;
-        if ( not m_CodeSnippetsIndexFilename.IsEmpty() ){
+        if ( not m_CodeSnippetsIndexFilename.IsEmpty() )
+        {
             //-Manager::Get()->GetEditorManager()->Close( m_CodeSnippetsIndexFilename );
             GetConfig()->GetEditorManager(m_pParent)->Close( m_CodeSnippetsIndexFilename );
             m_pThreadSearchView->Clear();
@@ -1193,17 +1213,19 @@ void ThreadSearch::OnCodeSnippetsNewIndex(CodeSnippetsEvent& event)
 
         // Tell CodeSnippetsTreeCtrl to fill global fileLink array with FileLinks
         if ( m_FindData.MustSearchInCodeSnippetsTree() == true )
-        {   // Tell CodeSnippetsTreeCtrl to fill global fileLink array with FileLinks
+        {
+            // Tell CodeSnippetsTreeCtrl to fill global fileLink array with FileLinks
             CodeSnippetsEvent evt(wxEVT_CODESNIPPETS_GETFILELINKS, 0);
             evt.SetSnippetString(_T("Testing GetFileLinks"));
             evt.ProcessCodeSnippetsEvent(evt);
         }
         else
             GetConfig()->ClearFileLinksMapArray();
-        #if defined(LOGGING)
+#if defined(LOGGING)
         LOGIT( _T("ThreadSearch::OnCodeSnippetsNewIndex[%s]"), m_CodeSnippetsIndexFilename.c_str());
-        #endif
-    }while(false);
+#endif
+    }
+    while(false);
 
     event.Skip();
     return;
@@ -1213,25 +1235,26 @@ void ThreadSearch::SplitThreadSearchWindow()
 // ----------------------------------------------------------------------------
 {
     if (m_pMainPanel && m_pMainPanel->m_pSplitterWindow && m_pThreadSearchView && m_pEdNotebook)
-    if ( not m_pMainPanel->m_pSplitterWindow->IsSplit())
-    {//(pecan 2008/3/11)
-        m_pMainPanel->m_pSplitterWindow->SplitHorizontally(
-                m_pThreadSearchView, (wxWindow*)m_pEdNotebook  );
-        //int width, height; //resize window by another half for some extra viewing
-        //m_ThreadSearchPlugin.m_pParent->GetSize( &width, &height);
-        //wxSize winSize(width,int((height>>1)+height));
-        //m_ThreadSearchPlugin.m_pParent->SetSize( winSize);
-        if (m_EdNotebookSashPosition)
-            m_pMainPanel->m_pSplitterWindow->SetSashPosition( m_EdNotebookSashPosition );
-        else // read last sash position from config file
+        if ( not m_pMainPanel->m_pSplitterWindow->IsSplit())
         {
-            int sashPosn = m_pMainPanel->m_pSplitterWindow->GetSashPosition();
-            ConfigManager* pCfg = Manager::Get()->GetConfigManager(_T("SnippetsSearch"));
-            m_EdNotebookSashPosition = pCfg->ReadInt( wxT("/EdNotebookSashPosn"), sashPosn);
-            m_pMainPanel->m_pSplitterWindow->SetSashPosition( m_EdNotebookSashPosition );
+            //(pecan 2008/3/11)
+            m_pMainPanel->m_pSplitterWindow->SplitHorizontally(
+                m_pThreadSearchView, (wxWindow*)m_pEdNotebook  );
+            //int width, height; //resize window by another half for some extra viewing
+            //m_ThreadSearchPlugin.m_pParent->GetSize( &width, &height);
+            //wxSize winSize(width,int((height>>1)+height));
+            //m_ThreadSearchPlugin.m_pParent->SetSize( winSize);
+            if (m_EdNotebookSashPosition)
+                m_pMainPanel->m_pSplitterWindow->SetSashPosition( m_EdNotebookSashPosition );
+            else // read last sash position from config file
+            {
+                int sashPosn = m_pMainPanel->m_pSplitterWindow->GetSashPosition();
+                ConfigManager* pCfg = Manager::Get()->GetConfigManager(_T("SnippetsSearch"));
+                m_EdNotebookSashPosition = pCfg->ReadInt( wxT("/EdNotebookSashPosn"), sashPosn);
+                m_pMainPanel->m_pSplitterWindow->SetSashPosition( m_EdNotebookSashPosition );
 
-        }//else
-    }//if MainPanel
+            }//else
+        }//if MainPanel
 
 }
 // ----------------------------------------------------------------------------
@@ -1239,27 +1262,29 @@ void ThreadSearch::ResetNotebookSashPosition()
 // ----------------------------------------------------------------------------
 {
     if (m_pMainPanel && m_pMainPanel->m_pSplitterWindow && m_pThreadSearchView && m_pEdNotebook)
-    if ( m_pMainPanel->m_pSplitterWindow->IsSplit())
-    {//(pecan 2008/3/11)
-        //m_pMainPanel->m_pSplitterWindow->SplitHorizontally(
-        //        m_pThreadSearchView, (wxWindow*)m_pEdNotebook  );
-        if (m_EdNotebookSashPosition)
-            m_pMainPanel->m_pSplitterWindow->SetSashPosition( m_EdNotebookSashPosition );
-    }
+        if ( m_pMainPanel->m_pSplitterWindow->IsSplit())
+        {
+            //(pecan 2008/3/11)
+            //m_pMainPanel->m_pSplitterWindow->SplitHorizontally(
+            //        m_pThreadSearchView, (wxWindow*)m_pEdNotebook  );
+            if (m_EdNotebookSashPosition)
+                m_pMainPanel->m_pSplitterWindow->SetSashPosition( m_EdNotebookSashPosition );
+        }
 }
 // ----------------------------------------------------------------------------
 void ThreadSearch::UnsplitThreadSearchWindow()
 // ----------------------------------------------------------------------------
 {
     if (m_pMainPanel && m_pMainPanel->m_pSplitterWindow && m_pThreadSearchView && m_pEdNotebook)
-    if ( m_pMainPanel->m_pSplitterWindow->IsSplit())
-    {  //(pecan 2008/4/26)
-        // record current position of split
-        m_EdNotebookSashPosition = m_pMainPanel->m_pSplitterWindow->GetSashPosition();
-        ConfigManager* pCfg = Manager::Get()->GetConfigManager(_T("SnippetsSearch"));
-        pCfg->Write( wxT("/EdNotebookSashPosn"), m_EdNotebookSashPosition);
-        m_pMainPanel->m_pSplitterWindow->Unsplit();
-    }
+        if ( m_pMainPanel->m_pSplitterWindow->IsSplit())
+        {
+            //(pecan 2008/4/26)
+            // record current position of split
+            m_EdNotebookSashPosition = m_pMainPanel->m_pSplitterWindow->GetSashPosition();
+            ConfigManager* pCfg = Manager::Get()->GetConfigManager(_T("SnippetsSearch"));
+            pCfg->Write( wxT("/EdNotebookSashPosn"), m_EdNotebookSashPosition);
+            m_pMainPanel->m_pSplitterWindow->Unsplit();
+        }
 }
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------

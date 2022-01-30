@@ -26,18 +26,18 @@
 /** \brief Class for wxsDirPickerCtrl widget */
 class wxsDirPickerCtrl: public wxsWidget
 {
-    public:
+public:
 
-        wxsDirPickerCtrl(wxsItemResData* Data);
+    wxsDirPickerCtrl(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        wxString    m_sMessage;        //!< The dialogue message.
-        wxString    m_sPath;                //!< The directory path.
+    wxString    m_sMessage;        //!< The dialogue message.
+    wxString    m_sPath;                //!< The directory path.
 };
 
 #endif

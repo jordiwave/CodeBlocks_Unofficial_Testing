@@ -25,19 +25,22 @@
 
 namespace
 {
-    class wxSmithWindow : public wxWindow
+class wxSmithWindow : public wxWindow
+{
+public:
+    wxSmithWindow(wxWindow *parent,
+                  const wxPoint& pos = wxDefaultPosition,
+                  const wxSize& size = wxDefaultSize)
+        : wxWindow(parent,-1,pos,size)
     {
-        public:
-            wxSmithWindow(wxWindow *parent,
-                    const wxPoint& pos = wxDefaultPosition,
-                    const wxSize& size = wxDefaultSize)
-                : wxWindow(parent,-1,pos,size)
-            {
-                Show(false);
-            }
+        Show(false);
+    }
 
-            virtual bool IsShown() const { return true; }
-    };
+    virtual bool IsShown() const
+    {
+        return true;
+    }
+};
 }
 
 wxObject* wxsAuiToolBarItemBase::OnBuildPreview(wxWindow* Parent,long Flags)
@@ -72,5 +75,5 @@ bool wxsAuiToolBarItemBase::OnCanAddToParent(wxsParent* Parent,bool ShowMessage)
         return false;
     }
 
-	return true;
+    return true;
 }

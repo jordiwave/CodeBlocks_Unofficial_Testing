@@ -12,9 +12,9 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-    #include "globals.h"
-    #include "manager.h"
-    #include "sdk_events.h"
+#include "globals.h"
+#include "manager.h"
+#include "sdk_events.h"
 #endif
 
 #include "ThreadSearchViewManagerLayout.h"

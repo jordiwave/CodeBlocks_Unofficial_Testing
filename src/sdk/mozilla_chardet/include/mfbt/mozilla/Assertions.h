@@ -17,20 +17,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef WIN32
-   /*
-    * TerminateProcess and GetCurrentProcess are defined in <winbase.h>, which
-    * further depends on <windef.h>.  We hardcode these few definitions manually
-    * because those headers clutter the global namespace with a significant
-    * number of undesired macros and symbols.
-    */
+/*
+ * TerminateProcess and GetCurrentProcess are defined in <winbase.h>, which
+ * further depends on <windef.h>.  We hardcode these few definitions manually
+ * because those headers clutter the global namespace with a significant
+ * number of undesired macros and symbols.
+ */
 #  ifdef __cplusplus
-   extern "C" {
+extern "C" {
 #  endif
-   __declspec(dllimport) int __stdcall
-   TerminateProcess(void* hProcess, unsigned int uExitCode);
-   __declspec(dllimport) void* __stdcall GetCurrentProcess(void);
+__declspec(dllimport) int __stdcall
+TerminateProcess(void* hProcess, unsigned int uExitCode);
+__declspec(dllimport) void* __stdcall GetCurrentProcess(void);
 #  ifdef __cplusplus
-   }
+}
 #  endif
 #else
 #  include <signal.h>
@@ -58,11 +58,11 @@
  * typedef could be used.
  */
 #ifndef __cplusplus
-   /*
-    * Some of the definitions below create an otherwise-unused typedef.  This
-    * triggers compiler warnings with some versions of gcc, so mark the typedefs
-    * as permissibly-unused to disable the warnings.
-    */
+/*
+ * Some of the definitions below create an otherwise-unused typedef.  This
+ * triggers compiler warnings with some versions of gcc, so mark the typedefs
+ * as permissibly-unused to disable the warnings.
+ */
 #  if defined(__GNUC__)
 #    define MOZ_STATIC_ASSERT_UNUSED_ATTRIBUTE __attribute__((unused))
 #  else
@@ -71,34 +71,34 @@
 #  define MOZ_STATIC_ASSERT_GLUE1(x, y)          x##y
 #  define MOZ_STATIC_ASSERT_GLUE(x, y)           MOZ_STATIC_ASSERT_GLUE1(x, y)
 #  if defined(__SUNPRO_CC)
-     /*
-      * The Sun Studio C++ compiler is buggy when declaring, inside a function,
-      * another extern'd function with an array argument whose length contains a
-      * sizeof, triggering the error message "sizeof expression not accepted as
-      * size of array parameter".  This bug (6688515, not public yet) would hit
-      * defining moz_static_assert as a function, so we always define an extern
-      * array for Sun Studio.
-      *
-      * We include the line number in the symbol name in a best-effort attempt
-      * to avoid conflicts (see below).
-      */
+/*
+ * The Sun Studio C++ compiler is buggy when declaring, inside a function,
+ * another extern'd function with an array argument whose length contains a
+ * sizeof, triggering the error message "sizeof expression not accepted as
+ * size of array parameter".  This bug (6688515, not public yet) would hit
+ * defining moz_static_assert as a function, so we always define an extern
+ * array for Sun Studio.
+ *
+ * We include the line number in the symbol name in a best-effort attempt
+ * to avoid conflicts (see below).
+ */
 #    define MOZ_STATIC_ASSERT(cond, reason) \
        extern char MOZ_STATIC_ASSERT_GLUE(moz_static_assert, __LINE__)[(cond) ? 1 : -1]
 #  elif defined(__COUNTER__)
-     /*
-      * If there was no preferred alternative, use a compiler-agnostic version.
-      *
-      * Note that the non-__COUNTER__ version has a bug in C++: it can't be used
-      * in both |extern "C"| and normal C++ in the same translation unit.  (Alas
-      * |extern "C"| isn't allowed in a function.)  The only affected compiler
-      * we really care about is gcc 4.2.  For that compiler and others like it,
-      * we include the line number in the function name to do the best we can to
-      * avoid conflicts.  These should be rare: a conflict would require use of
-      * MOZ_STATIC_ASSERT on the same line in separate files in the same
-      * translation unit, *and* the uses would have to be in code with
-      * different linkage, *and* the first observed use must be in C++-linkage
-      * code.
-      */
+/*
+ * If there was no preferred alternative, use a compiler-agnostic version.
+ *
+ * Note that the non-__COUNTER__ version has a bug in C++: it can't be used
+ * in both |extern "C"| and normal C++ in the same translation unit.  (Alas
+ * |extern "C"| isn't allowed in a function.)  The only affected compiler
+ * we really care about is gcc 4.2.  For that compiler and others like it,
+ * we include the line number in the function name to do the best we can to
+ * avoid conflicts.  These should be rare: a conflict would require use of
+ * MOZ_STATIC_ASSERT on the same line in separate files in the same
+ * translation unit, *and* the uses would have to be in code with
+ * different linkage, *and* the first observed use must be in C++-linkage
+ * code.
+ */
 #    define MOZ_STATIC_ASSERT(cond, reason) \
        typedef int MOZ_STATIC_ASSERT_GLUE(moz_static_assert, __COUNTER__)[(cond) ? 1 : -1] MOZ_STATIC_ASSERT_UNUSED_ATTRIBUTE
 #  else
@@ -127,11 +127,11 @@ static MOZ_ALWAYS_INLINE void
 MOZ_ReportAssertionFailure(const char* s, const char* file, int ln)
 {
 #ifdef ANDROID
-  __android_log_print(ANDROID_LOG_FATAL, "MOZ_Assert",
-                      "Assertion failure: %s, at %s:%d\n", s, file, ln);
+    __android_log_print(ANDROID_LOG_FATAL, "MOZ_Assert",
+                        "Assertion failure: %s, at %s:%d\n", s, file, ln);
 #else
-  fprintf(stderr, "Assertion failure: %s, at %s:%d\n", s, file, ln);
-  fflush(stderr);
+    fprintf(stderr, "Assertion failure: %s, at %s:%d\n", s, file, ln);
+    fflush(stderr);
 #endif
 }
 
@@ -142,8 +142,8 @@ MOZ_ReportCrash(const char* s, const char* file, int ln)
     __android_log_print(ANDROID_LOG_FATAL, "MOZ_CRASH",
                         "Hit MOZ_CRASH(%s) at %s:%d\n", s, file, ln);
 #else
-  fprintf(stderr, "Hit MOZ_CRASH(%s) at %s:%d\n", s, file, ln);
-  fflush(stderr);
+    fprintf(stderr, "Hit MOZ_CRASH(%s) at %s:%d\n", s, file, ln);
+    fflush(stderr);
 #endif
 }
 
@@ -152,28 +152,28 @@ MOZ_ReportCrash(const char* s, const char* file, int ln)
  * call MOZ_CRASH instead.
  */
 #if defined(_MSC_VER)
-   /*
-    * On MSVC use the __debugbreak compiler intrinsic, which produces an inline
-    * (not nested in a system function) breakpoint.  This distinctively invokes
-    * Breakpad without requiring system library symbols on all stack-processing
-    * machines, as a nested breakpoint would require.
-    *
-    * We use TerminateProcess with the exit code aborting would generate
-    * because we don't want to invoke atexit handlers, destructors, library
-    * unload handlers, and so on when our process might be in a compromised
-    * state.
-    *
-    * We don't use abort() because it'd cause Windows to annoyingly pop up the
-    * process error dialog multiple times.  See bug 345118 and bug 426163.
-    *
-    * We follow TerminateProcess() with a call to MOZ_NoReturn() so that the
-    * compiler doesn't hassle us to provide a return statement after a
-    * MOZ_REALLY_CRASH() call.
-    *
-    * (Technically these are Windows requirements, not MSVC requirements.  But
-    * practically you need MSVC for debugging, and we only ship builds created
-    * by MSVC, so doing it this way reduces complexity.)
-    */
+/*
+ * On MSVC use the __debugbreak compiler intrinsic, which produces an inline
+ * (not nested in a system function) breakpoint.  This distinctively invokes
+ * Breakpad without requiring system library symbols on all stack-processing
+ * machines, as a nested breakpoint would require.
+ *
+ * We use TerminateProcess with the exit code aborting would generate
+ * because we don't want to invoke atexit handlers, destructors, library
+ * unload handlers, and so on when our process might be in a compromised
+ * state.
+ *
+ * We don't use abort() because it'd cause Windows to annoyingly pop up the
+ * process error dialog multiple times.  See bug 345118 and bug 426163.
+ *
+ * We follow TerminateProcess() with a call to MOZ_NoReturn() so that the
+ * compiler doesn't hassle us to provide a return statement after a
+ * MOZ_REALLY_CRASH() call.
+ *
+ * (Technically these are Windows requirements, not MSVC requirements.  But
+ * practically you need MSVC for debugging, and we only ship builds created
+ * by MSVC, so doing it this way reduces complexity.)
+ */
 
 __declspec(noreturn) __inline void MOZ_NoReturn() {}
 
@@ -278,7 +278,7 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
  * *only* during debugging, not "in the field".
  */
 #ifdef DEBUG
-   /* First the single-argument form. */
+/* First the single-argument form. */
 #  define MOZ_ASSERT_HELPER1(expr) \
      do { \
        if (MOZ_UNLIKELY(!(expr))) { \
@@ -286,7 +286,7 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
          MOZ_REALLY_CRASH(); \
        } \
      } while (0)
-   /* Now the two-argument form. */
+/* Now the two-argument form. */
 #  define MOZ_ASSERT_HELPER2(expr, explain) \
      do { \
        if (MOZ_UNLIKELY(!(expr))) { \
@@ -294,26 +294,26 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
          MOZ_REALLY_CRASH(); \
        } \
      } while (0)
-   /* And now, helper macrology up the wazoo. */
-   /*
-    * Count the number of arguments passed to MOZ_ASSERT, very carefully
-    * tiptoeing around an MSVC bug where it improperly expands __VA_ARGS__ as a
-    * single token in argument lists.  See these URLs for details:
-    *
-    *   http://connect.microsoft.com/VisualStudio/feedback/details/380090/variadic-macro-replacement
-    *   http://cplusplus.co.il/2010/07/17/variadic-macro-to-count-number-of-arguments/#comment-644
-    */
+/* And now, helper macrology up the wazoo. */
+/*
+ * Count the number of arguments passed to MOZ_ASSERT, very carefully
+ * tiptoeing around an MSVC bug where it improperly expands __VA_ARGS__ as a
+ * single token in argument lists.  See these URLs for details:
+ *
+ *   http://connect.microsoft.com/VisualStudio/feedback/details/380090/variadic-macro-replacement
+ *   http://cplusplus.co.il/2010/07/17/variadic-macro-to-count-number-of-arguments/#comment-644
+ */
 #  define MOZ_COUNT_ASSERT_ARGS_IMPL2(_1, _2, count, ...) \
      count
 #  define MOZ_COUNT_ASSERT_ARGS_IMPL(args) \
 	 MOZ_COUNT_ASSERT_ARGS_IMPL2 args
 #  define MOZ_COUNT_ASSERT_ARGS(...) \
      MOZ_COUNT_ASSERT_ARGS_IMPL((__VA_ARGS__, 2, 1, 0))
-   /* Pick the right helper macro to invoke. */
+/* Pick the right helper macro to invoke. */
 #  define MOZ_ASSERT_CHOOSE_HELPER2(count) MOZ_ASSERT_HELPER##count
 #  define MOZ_ASSERT_CHOOSE_HELPER1(count) MOZ_ASSERT_CHOOSE_HELPER2(count)
 #  define MOZ_ASSERT_CHOOSE_HELPER(count) MOZ_ASSERT_CHOOSE_HELPER1(count)
-   /* The actual macro. */
+/* The actual macro. */
 #  define MOZ_ASSERT_GLUE(x, y) x y
 #  define MOZ_ASSERT(...) \
      MOZ_ASSERT_GLUE(MOZ_ASSERT_CHOOSE_HELPER(MOZ_COUNT_ASSERT_ARGS(__VA_ARGS__)), \
@@ -351,11 +351,11 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
 #if defined(__clang__)
 #  define MOZ_ASSUME_UNREACHABLE_MARKER() __builtin_unreachable()
 #elif defined(__GNUC__)
-   /*
-    * __builtin_unreachable() was implemented in gcc 4.5.  If we don't have
-    * that, call a noreturn function; abort() will do nicely.  Qualify the call
-    * in C++ in case there's another abort() visible in local scope.
-    */
+/*
+ * __builtin_unreachable() was implemented in gcc 4.5.  If we don't have
+ * that, call a noreturn function; abort() will do nicely.  Qualify the call
+ * in C++ in case there's another abort() visible in local scope.
+ */
 #  if MOZ_GCC_VERSION_AT_LEAST(4, 5, 0)
 #    define MOZ_ASSUME_UNREACHABLE_MARKER() __builtin_unreachable()
 #  else

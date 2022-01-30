@@ -9,9 +9,9 @@
 #include "scrollingdialog.h"
 
 #ifdef __WXMSW__
-    #define DDE_SERVICE "CODEBLOCKS"
+#define DDE_SERVICE "CODEBLOCKS"
 #else
-    #define DDE_SERVICE "/tmp/CODEBLOCKS%s.socket"
+#define DDE_SERVICE "/tmp/CODEBLOCKS%s.socket"
 #endif
 #define DDE_TOPIC "CodeBlocksDDEServer"
 
@@ -22,42 +22,42 @@ class wxWindow;
 
 namespace Associations
 {
-    struct Assoc
-    {
+struct Assoc
+{
     wxString ext;
     wxString descr;
     int index;
-    };
+};
 
-    unsigned int CountAssocs();
+unsigned int CountAssocs();
 
-    void SetCore();
-    void SetAll();
-    void ClearAll();
-    void SetBatchBuildOnly();
-    bool Check();
+void SetCore();
+void SetAll();
+void ClearAll();
+void SetBatchBuildOnly();
+bool Check();
 
-    void DoSetAssociation(const wxString& ext, const wxString& descr, const wxString& exe, int icoNum);
-    bool DoCheckAssociation(const wxString& ext, const wxString& descr, const wxString& exe, int icoNum);  // TODO: descriptions are not checked at all, and actually it's not necessary
-                                                                                                           //       (extension + executable is actually enough)
-                                                                                                           //        ---> decide whether to remove parameter from "Check" function or implement
-    void DoClearAssociation(const wxString& ext);
+void DoSetAssociation(const wxString& ext, const wxString& descr, const wxString& exe, int icoNum);
+bool DoCheckAssociation(const wxString& ext, const wxString& descr, const wxString& exe, int icoNum);  // TODO: descriptions are not checked at all, and actually it's not necessary
+//       (extension + executable is actually enough)
+//        ---> decide whether to remove parameter from "Check" function or implement
+void DoClearAssociation(const wxString& ext);
 
-    void UpdateChanges();
+void UpdateChanges();
 }
 
 class ManageAssocsDialog : public wxScrollingDialog
 {
     wxCheckListBox* list;
 
-    public:
-        ManageAssocsDialog(wxWindow* parent);
-    protected:
-        void OnApply(wxCommandEvent& event);
-        void OnCancel(wxCommandEvent& event);
-        void OnClearAll(wxCommandEvent& event);
-    private:
-        DECLARE_EVENT_TABLE()
+public:
+    ManageAssocsDialog(wxWindow* parent);
+protected:
+    void OnApply(wxCommandEvent& event);
+    void OnCancel(wxCommandEvent& event);
+    void OnClearAll(wxCommandEvent& event);
+private:
+    DECLARE_EVENT_TABLE()
 };
 
 #define ASC_ASSOC_DLG_NO_DONT_ASK       0
@@ -67,14 +67,14 @@ class ManageAssocsDialog : public wxScrollingDialog
 
 class AskAssocDialog : public wxScrollingDialog
 {
-    public:
-        AskAssocDialog(wxWindow* parent);
-    protected:
-        void OnOK(wxCommandEvent& event);
-        void OnESC(wxCommandEvent& event);
-        void OnCharHook(wxKeyEvent& event);
-    private:
-        DECLARE_EVENT_TABLE()
+public:
+    AskAssocDialog(wxWindow* parent);
+protected:
+    void OnOK(wxCommandEvent& event);
+    void OnESC(wxCommandEvent& event);
+    void OnCharHook(wxKeyEvent& event);
+private:
+    DECLARE_EVENT_TABLE()
 };
 
 

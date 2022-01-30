@@ -16,8 +16,8 @@ WX_DEFINE_OBJARRAY(ReplacersArray);
 
 TAR::TAR(const wxString& filename)
     : m_pFile(nullptr),
-    m_SkipBytes(0),
-    m_Size(0)
+      m_SkipBytes(0),
+      m_Size(0)
 {
     if (!filename.IsEmpty())
         Open(filename);
@@ -66,8 +66,8 @@ void TAR::Reset()
 
 int TAR::OctToInt(const char* oct)
 {
-	int i = 0;
-	if (sscanf(oct, "%o", &i) != 1)
+    int i = 0;
+    if (sscanf(oct, "%o", &i) != 1)
         i = 0;
 //        return 1;
     return i;
@@ -129,35 +129,58 @@ bool TAR::Next(TAR::Record* rec)
 
     switch (buffer.typeflag)
     {
-        case 0:
-        case _T('0'): rec->ft = ftNormal; break;
-        case _T('1'): rec->ft = ftLink; break;
-        case _T('2'): rec->ft = ftSymbolicLink; break;
-        case _T('3'): rec->ft = ftCharacter; break;
-        case _T('4'): rec->ft = ftBlock; break;
-        case _T('5'): rec->ft = ftDirectory; break;
-        case _T('6'): rec->ft = ftFifo; break;
-        case _T('7'): rec->ft = ftContiguous; break;
-        case _T('D'): rec->ft = ftDumpDir; break;
-        case _T('M'): rec->ft = ftMultiVolume; break;
-        case _T('V'): rec->ft = ftVolumeHeader; break;
+    case 0:
+    case _T('0'):
+        rec->ft = ftNormal;
+        break;
+    case _T('1'):
+        rec->ft = ftLink;
+        break;
+    case _T('2'):
+        rec->ft = ftSymbolicLink;
+        break;
+    case _T('3'):
+        rec->ft = ftCharacter;
+        break;
+    case _T('4'):
+        rec->ft = ftBlock;
+        break;
+    case _T('5'):
+        rec->ft = ftDirectory;
+        break;
+    case _T('6'):
+        rec->ft = ftFifo;
+        break;
+    case _T('7'):
+        rec->ft = ftContiguous;
+        break;
+    case _T('D'):
+        rec->ft = ftDumpDir;
+        break;
+    case _T('M'):
+        rec->ft = ftMultiVolume;
+        break;
+    case _T('V'):
+        rec->ft = ftVolumeHeader;
+        break;
 //        case _T('L'): rec.ft = ftLongName; break;
 //        case _T('K'): rec.ft = ftLongLink; break;
-        default: break;
+    default:
+        break;
     }
 
     switch (rec->ft)
     {
-        case ftLink:
-        case ftSymbolicLink:
-        case ftDirectory:
-        case ftFifo:
-        case ftVolumeHeader:
-            m_SkipBytes = 0;
-            break;
-        default:
-            m_SkipBytes = rec->size;
-            break;
+    case ftLink:
+    case ftSymbolicLink:
+    case ftDirectory:
+    case ftFifo:
+    case ftVolumeHeader:
+        m_SkipBytes = 0;
+        break;
+    default:
+        m_SkipBytes = rec->size;
+        break;
     }
     return true;
 }
@@ -238,41 +261,42 @@ bool TAR::ExtractFile(Record* rec, const wxString& dirname, wxString& status, wx
 
     switch (rec->ft)
     {
-        case ftNormal:
-        {
-            CreateDirRecursively(path);
-            status << _("Unpacking ") << path << _T('\n');
-            if (convertedFile)
-                *convertedFile = path;
+    case ftNormal:
+    {
+        CreateDirRecursively(path);
+        status << _("Unpacking ") << path << _T('\n');
+        if (convertedFile)
+            *convertedFile = path;
 
-            FILE* out = fopen(path.mb_str(), "wb");
-            if (!out)
+        FILE* out = fopen(path.mb_str(), "wb");
+        if (!out)
+        {
+            status << wxString(_("Can't open file ")) << path << _T("\n");
+            return false;
+        }
+        if (rec->size > 0)
+        {
+            size_t oldpos = ftell(m_pFile);
+            char* buffer = new char[rec->size];
+            memset(buffer, 0, rec->size);
+            if (fread(buffer, rec->size, 1, m_pFile) != 1)
             {
-                status << wxString(_("Can't open file ")) << path << _T("\n");
+                delete[] buffer;
+                fclose(out);
+                fseek(m_pFile, oldpos, SEEK_SET);
+                status << _("Failure reading file ") << path << _T("\n");
                 return false;
             }
-            if (rec->size > 0)
-            {
-                size_t oldpos = ftell(m_pFile);
-                char* buffer = new char[rec->size];
-                memset(buffer, 0, rec->size);
-                if (fread(buffer, rec->size, 1, m_pFile) != 1)
-                {
-                    delete[] buffer;
-                    fclose(out);
-                    fseek(m_pFile, oldpos, SEEK_SET);
-                    status << _("Failure reading file ") << path << _T("\n");
-                    return false;
-                }
-                fwrite(buffer, rec->size, 1, out);
-                delete[] buffer;
-                fseek(m_pFile, oldpos, SEEK_SET);
-            }
-            fclose(out);
-            break;
+            fwrite(buffer, rec->size, 1, out);
+            delete[] buffer;
+            fseek(m_pFile, oldpos, SEEK_SET);
         }
+        fclose(out);
+        break;
+    }
 
-        default: break;
+    default:
+        break;
     }
 
     return true;
@@ -287,7 +311,7 @@ TAR::Record* TAR::FindFile(const wxString& filename)
     while (Next(&r))
     {
         if (r.name.CmpNoCase(filename) == 0 ||
-            r.name.Matches(filename)) // support wildcards
+                r.name.Matches(filename)) // support wildcards
         {
             return &r;
         }

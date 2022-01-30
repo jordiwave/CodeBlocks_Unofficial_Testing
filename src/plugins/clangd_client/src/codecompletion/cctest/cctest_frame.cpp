@@ -11,8 +11,8 @@
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
-    #include <wx/file.h>
+#include <wx/wx.h>
+#include <wx/file.h>
 #endif
 
 #include "ccdebuginfo.h"
@@ -49,9 +49,9 @@ const long CCTestFrame::wxID_TOKEN = wxNewId();
 
 namespace CCTestAppGlobal
 {
-    extern wxArrayString s_includeDirs;
-    extern wxArrayString s_fileQueue;
-    extern wxArrayString s_filesParsed;
+extern wxArrayString s_includeDirs;
+extern wxArrayString s_fileQueue;
+extern wxArrayString s_filesParsed;
 }// CCTestAppGlobal
 
 int idCCLogger   = wxNewId();
@@ -423,24 +423,24 @@ void CCTestFrame::InitControl()
     m_Control->StyleSetFontAttr  (wxSCI_C_PREPROCESSORCOMMENT, 10, wxT("Courier New"), false, false, false);
 
     const wxString kw(wxT(
-    "_Char16_t _Char32_t align_union alignof asm auto bool break case catch char class const "
-    "const_cast constexpr continue decltype default delete do double dynamic_cast else enum "
-    "explicit export extern false final float for friend goto if import inline int long "
-    "mutable namespace new nullptr operator override private protected public register "
-    "reinterpret_cast return short signed sizeof static static_cast struct switch template "
-    "this throw true try typedef typeid typename union unsigned using virtual void volatile "
-    "wchar_t while static_assert int8_t uint8_t int16_t uint16_t int32_t uint32_t int64_t "
-    "uint64_t int_least8_t uint_least8_t int_least16_t uint_least16_t int_least32_t "
-    "uint_least32_t int_least64_t uint_least64_t int_fast8_t uint_fast8_t int_fast16_t "
-    "uint_fast16_t int_fast32_t uint_fast32_t int_fast64_t uint_fast64_t intptr_t uintptr_t "
-    "intmax_t uintmax_t wint_t wchar_t wctrans_t wctype_t size_t time_t and and_eq bitand "
-    "bitor compl not not_eq or or_eq xor xor_eq"));
+                          "_Char16_t _Char32_t align_union alignof asm auto bool break case catch char class const "
+                          "const_cast constexpr continue decltype default delete do double dynamic_cast else enum "
+                          "explicit export extern false final float for friend goto if import inline int long "
+                          "mutable namespace new nullptr operator override private protected public register "
+                          "reinterpret_cast return short signed sizeof static static_cast struct switch template "
+                          "this throw true try typedef typeid typename union unsigned using virtual void volatile "
+                          "wchar_t while static_assert int8_t uint8_t int16_t uint16_t int32_t uint32_t int64_t "
+                          "uint64_t int_least8_t uint_least8_t int_least16_t uint_least16_t int_least32_t "
+                          "uint_least32_t int_least64_t uint_least64_t int_fast8_t uint_fast8_t int_fast16_t "
+                          "uint_fast16_t int_fast32_t uint_fast32_t int_fast64_t uint_fast64_t intptr_t uintptr_t "
+                          "intmax_t uintmax_t wint_t wchar_t wctrans_t wctype_t size_t time_t and and_eq bitand "
+                          "bitor compl not not_eq or or_eq xor xor_eq"));
 
     m_Control->SetKeyWords(0, kw);
 
     const wxString kwStl(wxT(
-    "basic_string bitset deque hash_map hash_multimap hash_multiset hash_set list map multimap "
-    "multiset pair priority_queue queue set stack std string valarray vector"));
+                             "basic_string bitset deque hash_map hash_multimap hash_multiset hash_set list map multimap "
+                             "multiset pair priority_queue queue set stack std string valarray vector"));
 
     m_Control->SetKeyWords(1, kwStl);
 
@@ -457,8 +457,8 @@ void CCTestFrame::InitControl()
     m_Control->SetMarginMask(C_FOLDING_MARGIN,
                              m_Control->GetMarginMask(C_FOLDING_MARGIN)
                              | (  wxSCI_MASK_FOLDERS
-                                - (  (1 << wxSCI_MARKNUM_CHANGEUNSAVED)
-                                   | (1 << wxSCI_MARKNUM_CHANGESAVED))) );
+                                  - (  (1 << wxSCI_MARKNUM_CHANGEUNSAVED)
+                                       | (1 << wxSCI_MARKNUM_CHANGESAVED))) );
     m_Control->SetMarginSensitive(C_FOLDING_MARGIN, 1);
 
     wxColor f(0xff, 0xff, 0xff); // foreground colour
@@ -726,7 +726,11 @@ void CCTestFrame::OnPrintTree(cb_unused wxCommandEvent& event)
         Thaw();
     }
 
-    if (m_ProgDlg) { delete m_ProgDlg; m_ProgDlg = 0; }
+    if (m_ProgDlg)
+    {
+        delete m_ProgDlg;
+        m_ProgDlg = 0;
+    }
 
     if ( !IsShown() ) Show();
 

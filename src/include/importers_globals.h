@@ -28,12 +28,12 @@
   */
 namespace ImportersGlobals
 {
-    // reset all flags to defaults
-    extern DLLIMPORT void ResetDefaults();
-    // ask which compiler to use for the imported project?
-    extern DLLIMPORT bool UseDefaultCompiler;
-    // ask which targets to import?
-    extern DLLIMPORT bool ImportAllTargets;
+// reset all flags to defaults
+extern DLLIMPORT void ResetDefaults();
+// ask which compiler to use for the imported project?
+extern DLLIMPORT bool UseDefaultCompiler;
+// ask which targets to import?
+extern DLLIMPORT bool ImportAllTargets;
 }
 
 #endif // IMPORTERS_GLOBALS_H

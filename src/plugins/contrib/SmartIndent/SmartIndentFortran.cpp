@@ -3,11 +3,11 @@
 #include <sdk.h> // Code::Blocks SDK
 
 #ifndef CB_PRECOMP
-    #include <cbeditor.h>
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <editorcolourset.h>
-    #include <manager.h>
+#include <cbeditor.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <editorcolourset.h>
+#include <manager.h>
 #endif
 
 #include <cbstyledtextctrl.h>
@@ -16,7 +16,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<SmartIndentFortran> reg(wxT("SmartIndentFortran"));
+PluginRegistrant<SmartIndentFortran> reg(wxT("SmartIndentFortran"));
 }
 
 void SmartIndentFortran::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
@@ -75,30 +75,30 @@ void SmartIndentFortran::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) con
             wxString lastText = lineText.AfterLast(')').Trim().Trim(false);
             wxString secText = lineText.Trim(false).Mid(text.Length()).Trim(false);
             if (  (text == _T("if") && lastText == _T("then"))
-                || text == _T("else")
-                || text == _T("elseif")
-                || text == _T("enum")
-                ||(text == _T("where") && lastText.IsEmpty())
-                || text == _T("elsewhere")
-                || text == _T("block")
-                || text == _T("blockdata")
-                ||(text == _T("forall") && lastText.IsEmpty())
-                || text == _T("while")
-                || text == _T("case")
-                || text == _T("associate")
-                || text == _T("block")
-                || text == _T("critical")
-                || text == _T("do")
-                ||(text == _T("type") && !secText.StartsWith(_T("(")))
-                || text == _T("program")
-                || text == _T("function")
-                || text == _T("subroutine")
-                || text == _T("interface")
-                ||(    text == _T("module")
-                   && !secText.StartsWith(_T("procedure "))
-                   && !secText.StartsWith(_T("procedure:")) )
-                ||(    text == _T("change")
-                   && (secText.StartsWith(_T("team ")) || secText.StartsWith(_T("team("))) )
+                    || text == _T("else")
+                    || text == _T("elseif")
+                    || text == _T("enum")
+                    ||(text == _T("where") && lastText.IsEmpty())
+                    || text == _T("elsewhere")
+                    || text == _T("block")
+                    || text == _T("blockdata")
+                    ||(text == _T("forall") && lastText.IsEmpty())
+                    || text == _T("while")
+                    || text == _T("case")
+                    || text == _T("associate")
+                    || text == _T("block")
+                    || text == _T("critical")
+                    || text == _T("do")
+                    ||(text == _T("type") && !secText.StartsWith(_T("(")))
+                    || text == _T("program")
+                    || text == _T("function")
+                    || text == _T("subroutine")
+                    || text == _T("interface")
+                    ||(    text == _T("module")
+                           && !secText.StartsWith(_T("procedure "))
+                           && !secText.StartsWith(_T("procedure:")) )
+                    ||(    text == _T("change")
+                           && (secText.StartsWith(_T("team ")) || secText.StartsWith(_T("team("))) )
                )
             {
                 stc->Tab();
@@ -176,7 +176,7 @@ void SmartIndentFortran::DoBraceCompletion(cbStyledTextCtrl* control, const wxCh
     const wxString unWant(");\n\r\t\b ");
     const wxChar nextChar = control->GetCharAt(pos);
     if ((index != wxNOT_FOUND)
-        && ((unWant.Find(wxUniChar(nextChar)) != wxNOT_FOUND) || (pos == control->GetLength())))
+            && ((unWant.Find(wxUniChar(nextChar)) != wxNOT_FOUND) || (pos == control->GetLength())))
     {
         // add closing brace
         control->AddText(rightBrace.GetChar(index));

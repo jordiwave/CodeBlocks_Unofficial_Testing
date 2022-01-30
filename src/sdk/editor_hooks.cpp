@@ -10,18 +10,18 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "cbeditor.h"
-    #include "cbplugin.h"
+#include "cbeditor.h"
+#include "cbplugin.h"
 #endif
 
 
 #include "editor_hooks.h"
 
 #ifdef EDITOR_HOOK_PERFORMANCE_MEASURE
-    //put these include directive after #include "editor_hooks.h", as the macro may
-    //defined in the header file
-    #include <cxxabi.h>  // demangle C++ names
-    #include <cstdlib>   // free the memory created by abi::__cxa_demangle
+//put these include directive after #include "editor_hooks.h", as the macro may
+//defined in the header file
+#include <cxxabi.h>  // demangle C++ names
+#include <cstdlib>   // free the memory created by abi::__cxa_demangle
 #endif // EDITOR_HOOK_PERFORMANCE_MEASURE
 
 #include "wx/wxscintilla.h"
@@ -70,9 +70,9 @@ static wxString GetScintillaEventName(wxEventType type)
 
 namespace EditorHooks
 {
-    typedef std::map<int, HookFunctorBase*> HookFunctorsMap;
-    static HookFunctorsMap s_HookFunctorsMap;
-    static int             s_UniqueID = 0;
+typedef std::map<int, HookFunctorBase*> HookFunctorsMap;
+static HookFunctorsMap s_HookFunctorsMap;
+static int             s_UniqueID = 0;
 }
 
 int EditorHooks::RegisterHook(EditorHooks::HookFunctorBase* functor)
@@ -150,11 +150,11 @@ void EditorHooks::CallHooks(cbEditor* editor, wxScintillaEvent& event)
 
 namespace EditorHooks
 {
-    cbSmartIndentEditorHookFunctor::cbSmartIndentEditorHookFunctor(cbSmartIndentPlugin *plugin):
-    m_plugin(plugin){}
+cbSmartIndentEditorHookFunctor::cbSmartIndentEditorHookFunctor(cbSmartIndentPlugin *plugin):
+    m_plugin(plugin) {}
 
-    void cbSmartIndentEditorHookFunctor::Call(cbEditor *editor, wxScintillaEvent &event) const
-    {
-        m_plugin->OnEditorHook(editor, event);
-    }
+void cbSmartIndentEditorHookFunctor::Call(cbEditor *editor, wxScintillaEvent &event) const
+{
+    m_plugin->OnEditorHook(editor, event);
+}
 }

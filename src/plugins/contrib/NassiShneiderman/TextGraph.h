@@ -5,7 +5,7 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <vector>
@@ -31,8 +31,14 @@ public:
     void SetOffset(wxPoint off);
     bool HasPoint(const wxPoint &pos);
     const wxString *GetStringPtr();
-    bool IsUsed(){ return m_used; }
-    void SetUsed(bool used = true){ m_used = used; }
+    bool IsUsed()
+    {
+        return m_used;
+    }
+    void SetUsed(bool used = true)
+    {
+        m_used = used;
+    }
     void SetNumber(wxUint32 nmbr);
 private:
     TextGraph &operator=(const TextGraph &rhs);

@@ -474,7 +474,8 @@ bool wxsImageListEditorDlg::Execute(wxString &inName, wxArrayString &aImageData)
     n = ShowModal();
 
     // save new data?
-    if(n == wxID_OK){
+    if(n == wxID_OK)
+    {
         ImageListToArray(m_ImageList, aImageData);
     }
 
@@ -497,7 +498,8 @@ void wxsImageListEditorDlg::OnbAddClick(cb_unused wxCommandEvent &event)
     wxString    ss;
 
     // no image?
-    if(!m_ImportImage.IsOk()){
+    if(!m_ImportImage.IsOk())
+    {
         return;
     }
 
@@ -508,19 +510,23 @@ void wxsImageListEditorDlg::OnbAddClick(cb_unused wxCommandEvent &event)
     bw = m_ImportImage.GetWidth();
     bh = m_ImportImage.GetHeight();
 
-    if(n > 0 && ((bw > iw) || (bh > ih))){
+    if(n > 0 && ((bw > iw) || (bh > ih)))
+    {
         n = ::wxMessageBox(_("The image is larger than the size allowed for the list;\nDivide the image into multiple entries?"), _("Add Image"), wxYES_NO);
-        if(n != wxYES){
+        if(n != wxYES)
+        {
             return;
         }
     }
 
     // add the bitmap
     bmp = new wxBitmap(m_ImportImage);
-    if(cxTransparent->GetValue()){
+    if(cxTransparent->GetValue())
+    {
         m_ImageList.Add(*bmp, m_ImportMask);
     }
-    else{
+    else
+    {
         m_ImageList.Add(*bmp);
     }
     delete bmp;
@@ -548,7 +554,8 @@ void wxsImageListEditorDlg::OnbReadClick(cb_unused wxCommandEvent &event)
 
     // show the image select dialog
     n = m_ImageDialog->ShowModal();
-    if(n != wxID_OK){
+    if(n != wxID_OK)
+    {
         return;
     }
 
@@ -584,7 +591,8 @@ void wxsImageListEditorDlg::PreviewList(void)
 {
     int     i;
 
-    for(i = 0;i < 10;i++){
+    for(i = 0; i < 10; i++)
+    {
         m_PreviewPanel[i]->Refresh();
     }
 }
@@ -602,7 +610,8 @@ void wxsImageListEditorDlg::OnPanel1Paint(cb_unused wxPaintEvent &event)
     wxString    ss;
 
     // no image
-    if(!m_ImportImage.IsOk()){
+    if(!m_ImportImage.IsOk())
+    {
         return;
     }
 
@@ -610,7 +619,8 @@ void wxsImageListEditorDlg::OnPanel1Paint(cb_unused wxPaintEvent &event)
     wxImage img(m_ImportImage);
 
     // apply the mask color
-    if(cxTransparent->GetValue()){
+    if(cxTransparent->GetValue())
+    {
         img.SetMaskColour(m_ImportMask.Red(), m_ImportMask.Green(), m_ImportMask.Blue());
     }
 
@@ -640,13 +650,15 @@ void wxsImageListEditorDlg::OnbColorClick(cb_unused wxCommandEvent &event)
     wxColour        cc;
 
     // not allowed?
-    if(!cxTransparent->GetValue()){
+    if(!cxTransparent->GetValue())
+    {
         return;
     }
 
     // show the dialog
     n = ColourDialog1->ShowModal();
-    if(n != wxID_OK){
+    if(n != wxID_OK)
+    {
         return;
     }
 
@@ -677,7 +689,8 @@ void wxsImageListEditorDlg::OnPanel1LeftUp(wxMouseEvent &event)
     wxColour    cc;
 
     // not allowed?
-    if(!cxTransparent->GetValue()){
+    if(!cxTransparent->GetValue())
+    {
         return;
     }
 
@@ -786,8 +799,10 @@ void wxsImageListEditorDlg::PaintPreviewPanel(wxPaintEvent &event)
     // which panel?
     ip = 0;
     pnl = (wxPanel *) event.GetEventObject();
-    for(i = 0; i < 10; i++){
-        if(pnl == m_PreviewPanel[i]){
+    for(i = 0; i < 10; i++)
+    {
+        if(pnl == m_PreviewPanel[i])
+        {
             ip = i;
         }
     };
@@ -982,8 +997,8 @@ void wxsImageListEditorDlg::OnPanel12Paint(cb_unused wxPaintEvent &event)
 
     // a copy of the selected bitmap
     if ((m_PreviewSelect >= 0) &&
-        (m_ImageList.GetImageCount() > 0))
-            bmp = m_ImageList.GetBitmap(m_PreviewSelect);
+            (m_ImageList.GetImageCount() > 0))
+        bmp = m_ImageList.GetBitmap(m_PreviewSelect);
 
     // the label
     ss.Printf("%d", m_PreviewSelect);
@@ -1021,7 +1036,8 @@ void wxsImageListEditorDlg::OnbDelClick(cb_unused wxCommandEvent &event)
     // are you sure?
     ss.Printf(_("Delete Image %d; Are You Sure?"), m_PreviewSelect);
     n = ::wxMessageBox(ss, _("Delete Image"), wxYES_NO);
-    if(n != wxYES){
+    if(n != wxYES)
+    {
         return;
     }
 
@@ -1049,7 +1065,8 @@ void wxsImageListEditorDlg::OnbClearClick(cb_unused wxCommandEvent &event)
     // are you sure?
     ss.Printf(_("Delete All Images. Are You Sure?"));
     n = ::wxMessageBox(ss, _("Delete Image"), wxYES_NO);
-    if(n != wxYES){
+    if(n != wxYES)
+    {
         return;
     }
 
@@ -1078,7 +1095,8 @@ void wxsImageListEditorDlg::OnbSaveClick(cb_unused wxCommandEvent &event)
     n = m_ImageList.GetImageCount();
 
     // anything to save
-    if(n == 0){
+    if(n == 0)
+    {
         return;
     }
 
@@ -1088,7 +1106,8 @@ void wxsImageListEditorDlg::OnbSaveClick(cb_unused wxCommandEvent &event)
     bmp = m_ImageList.GetBitmap(m_PreviewSelect);
     // save it
     n = FileDialog1->ShowModal();
-    if(n == wxID_OK){
+    if(n == wxID_OK)
+    {
         ss = FileDialog1->GetPath();
         bmp.SaveFile(ss, wxBITMAP_TYPE_BMP);
     }
@@ -1153,15 +1172,18 @@ void wxsImageListEditorDlg::PaintPanel(wxPaintDC &aDC, wxPanel *aPanel, wxBitmap
     wxString    ss, tt;
 
     // nothing to do?
-    if(aPanel == NULL){
+    if(aPanel == NULL)
+    {
         return;
     }
 
     // default background
-    if(aHot){
+    if(aHot)
+    {
         aDC.SetBackground(*wxBLUE_BRUSH);
     }
-    else{
+    else
+    {
         aDC.SetBackground(*wxWHITE_BRUSH);
     }
 
@@ -1172,7 +1194,8 @@ void wxsImageListEditorDlg::PaintPanel(wxPaintDC &aDC, wxPanel *aPanel, wxBitmap
     // image and panel sizes
     iw = aBitmap.GetWidth();
     ih = aBitmap.GetHeight();
-    if((iw < 0) || (ih < 0)){
+    if((iw < 0) || (ih < 0))
+    {
         return;
     }
 
@@ -1181,15 +1204,18 @@ void wxsImageListEditorDlg::PaintPanel(wxPaintDC &aDC, wxPanel *aPanel, wxBitmap
     // set scale to fit in panel
     sw = 1.0;
     sh = 1.0;
-    while(((((int)(sw * iw)) > pw) || (((int)(sh * ih)) > ph)) && (sw > 0.01) && (sh > 0.01)){
+    while(((((int)(sw * iw)) > pw) || (((int)(sh * ih)) > ph)) && (sw > 0.01) && (sh > 0.01))
+    {
         sw -= 0.01;
         sh -= 0.01;
     };
 
-    while(((int)(sw * iw)) < 8){
+    while(((int)(sw * iw)) < 8)
+    {
         sw += 0.01;
     }
-    while(((int)(sh * ih)) < 8){
+    while(((int)(sh * ih)) < 8)
+    {
         sh += 0.01;
     }
 
@@ -1232,7 +1258,8 @@ void wxsImageListEditorDlg::ImageToArray(wxImage &inImage, wxArrayString &outArr
     // to preserve white space with a minimum of expanded data size, we convert
     // all data lines (all except the first line of the array) to base-64
     tkz.SetString(ss, _T("\r\n"));
-    while(tkz.HasMoreTokens()) {
+    while(tkz.HasMoreTokens())
+    {
         tt = tkz.GetNextToken();
         tt.Trim(true);
         tt.Trim(false);
@@ -1266,11 +1293,13 @@ void wxsImageListEditorDlg::ArrayToImage(wxArrayString &inArray, wxImage &outIma
 
     tt.Alloc(n + 64);
 
-    for(i = 0; i < (int)inArray.GetCount(); i++){
+    for(i = 0; i < (int)inArray.GetCount(); i++)
+    {
         ss = inArray.Item(i);
         n = ss.Length();
 
-        if(n == 0){
+        if(n == 0)
+        {
             continue;
         }
 
@@ -1349,12 +1378,14 @@ void wxsImageListEditorDlg::ImageListToArray(wxImageList &inList, wxArrayString 
     outArray.Add(ss);
 
     // get each bitmap from the list and add to outArray
-    for(i = 0; i < n; i++){
+    for(i = 0; i < n; i++)
+    {
         bmp = inList.GetBitmap(i);
         BitmapToArray(bmp, aa);
 
         k = aa.GetCount();
-        for(j = 0; j < k; j++){
+        for(j = 0; j < k; j++)
+        {
             ss = aa.Item(j);
             outArray.Add(ss);
         }
@@ -1379,17 +1410,21 @@ void wxsImageListEditorDlg::ArrayToImageList(wxArrayString &inArray, wxImageList
 
     // get the size of the image list
     w = 16;
-    if(inArray.GetCount() >= 1){
+    if(inArray.GetCount() >= 1)
+    {
         ss = inArray.Item(0);
-        if(ss.ToLong(&ll)){
+        if(ss.ToLong(&ll))
+        {
             w = ll;
         }
     }
 
     h = 16;
-    if(inArray.GetCount() >= 2){
+    if(inArray.GetCount() >= 2)
+    {
         ss = inArray.Item(1);
-        if(ss.ToLong(&ll)){
+        if(ss.ToLong(&ll))
+        {
             h = ll;
         }
     }
@@ -1400,22 +1435,27 @@ void wxsImageListEditorDlg::ArrayToImageList(wxArrayString &inArray, wxImageList
     // extract sub-arrays from the big array and make pictures out of them
     aa.Clear();
     i = 2;
-    while(i < (int)inArray.GetCount()){
+    while(i < (int)inArray.GetCount())
+    {
         ss = inArray.Item(i);
         i += 1;
         ss.Trim(true);
         ss.Trim(false);
 
-        if(ss.Length() == 0){                      // empty string
+        if(ss.Length() == 0)                       // empty string
+        {
             // ignore this line
         }
-        else if(ss.Find(_T("xpm_data")) < 0){       // not the end of previous XPM data block
+        else if(ss.Find(_T("xpm_data")) < 0)        // not the end of previous XPM data block
+        {
             aa.Add(ss);
         }
-        else if(aa.GetCount() == 0){               // previous data block was empty
+        else if(aa.GetCount() == 0)                // previous data block was empty
+        {
             // do nothing
         }
-        else{                                      // end of XPM data; start next block of data
+        else                                       // end of XPM data; start next block of data
+        {
             ArrayToBitmap(aa, bmp);
             outList.Add(bmp);
             aa.Clear();
@@ -1424,7 +1464,8 @@ void wxsImageListEditorDlg::ArrayToImageList(wxArrayString &inArray, wxImageList
     }
 
     // any left-over data?
-    if(aa.GetCount() > 0){
+    if(aa.GetCount() > 0)
+    {
         ArrayToBitmap(aa, bmp);
         outList.Add(bmp);
         aa.Clear();
@@ -1455,7 +1496,8 @@ void wxsImageListEditorDlg::CopyImageList(wxImageList &inList, wxImageList &outL
     outList.Create(w, h, n);
 
     // copy it
-    for(i = 0; i < n; i++){
+    for(i = 0; i < n; i++)
+    {
         bmp = inList.GetBitmap(i);
         outList.Add(bmp);
     }
@@ -1481,12 +1523,14 @@ wxsItem     *wxsImageListEditorDlg::FindTool(wxsItem *inItem, wxString inName)
     static wxsItem  *last_item;
 
     // keep track of last item used, for those cases where we cannot pass in an item
-    if(inItem != NULL){
+    if(inItem != NULL)
+    {
         last_item = inItem;
     }
 
     // still nothing?
-    if(last_item == NULL){
+    if(last_item == NULL)
+    {
         return NULL;
     }
 
@@ -1498,10 +1542,12 @@ wxsItem     *wxsImageListEditorDlg::FindTool(wxsItem *inItem, wxString inName)
 
     // scan all the tools and check the names
     n = res->GetToolsCount();
-    for(i = 0; i < n; i++){
+    for(i = 0; i < n; i++)
+    {
         tool = res->GetTool(i);
         ss = tool->GetVarName();
-        if(ss == inName){
+        if(ss == inName)
+        {
             found = tool;
         }
     }
@@ -1521,7 +1567,8 @@ int     wxsImageListEditorDlg::CalcArraySize(wxArrayString &inArray)
     int     i, n;
 
     n = 0;
-    for(i = 0; i < (int)inArray.GetCount(); i++){
+    for(i = 0; i < (int)inArray.GetCount(); i++)
+    {
         n += inArray.Item(i).Length() + 1;
     }
 
@@ -1553,7 +1600,8 @@ bool wxsImageListEditorDlg::SaveXPM(wxImage *image, wxOutputStream &stream)
     int cols = int(image->ComputeHistogram(histogram));
 
     int chars_per_pixel = 1;
-    for(k = MaxCixels; cols > k; k *= MaxCixels){
+    for(k = MaxCixels; cols > k; k *= MaxCixels)
+    {
         chars_per_pixel++;
     }
 
@@ -1566,10 +1614,12 @@ bool wxsImageListEditorDlg::SaveXPM(wxImage *image, wxOutputStream &stream)
         sName << wxT("_xpm");
     }
 
-    if(!sName.empty()){
+    if(!sName.empty())
+    {
         sName = wxString(wxT("/* XPM */\nstatic const char *")) + sName;
     }
-    else{
+    else
+    {
         sName = wxT("/* XPM */\nstatic const char *xpm_data");
     }
     stream.Write((const char *) sName.ToAscii(), sName.Len());

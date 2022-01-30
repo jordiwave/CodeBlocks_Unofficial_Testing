@@ -18,7 +18,7 @@
 #include <wx/msgdlg.h>
 
 #ifdef __WXMSW__
-    #include <wx/msw/registry.h>
+#include <wx/msw/registry.h>
 #endif // __WXMSW__
 
 CompilerLCC::CompilerLCC() :
@@ -57,7 +57,8 @@ void CompilerLCC::Reset()
 
 AutoDetectResult CompilerLCC::AutoDetectInstallationDir()
 {
-    wxString compiler; compiler << wxFILE_SEP_PATH << _T("bin") << wxFILE_SEP_PATH << m_Programs.C;
+    wxString compiler;
+    compiler << wxFILE_SEP_PATH << _T("bin") << wxFILE_SEP_PATH << m_Programs.C;
 
 #ifdef __WXMSW__
     wxRegKey key; // defaults to HKCR
@@ -96,8 +97,8 @@ AutoDetectResult CompilerLCC::AutoDetectInstallationDir()
         key.QueryValue(_T("libpath"), mpLccLnk);
         wxString lib_path = _T("\\lib");
         if (   !mpLccLnk.IsEmpty()
-            && (mpLccLnk.Length()>lib_path.Length())
-            && (mpLccLnk.Lower().EndsWith(lib_path)) )
+                && (mpLccLnk.Length()>lib_path.Length())
+                && (mpLccLnk.Lower().EndsWith(lib_path)) )
         {
             // Remove the lib path to point to the LCC root folder
             mpLccLnk.Remove( (mpLccLnk.Length()-lib_path.Length()), lib_path.Length() );
@@ -111,8 +112,8 @@ AutoDetectResult CompilerLCC::AutoDetectInstallationDir()
         key.QueryValue(_T("includepath"), mpCompiler);
         wxString inc_path = _T("\\include");
         if (   !mpCompiler.IsEmpty()
-            && (mpCompiler.Length()>inc_path.Length())
-            && (mpCompiler.Lower().EndsWith(inc_path)) )
+                && (mpCompiler.Length()>inc_path.Length())
+                && (mpCompiler.Lower().EndsWith(inc_path)) )
         {
             // Remove the include path to point to the LCC root folder
             mpCompiler.Remove( (mpCompiler.Length()-inc_path.Length()), inc_path.Length() );
@@ -152,7 +153,7 @@ bool CompilerLCC::IsValid()
     if (!m_RegistryUpdated)
     {
         wxString compiler = m_MasterPath + wxFILE_SEP_PATH
-                          + _T("bin") + wxFILE_SEP_PATH + m_Programs.C;
+                            + _T("bin") + wxFILE_SEP_PATH + m_Programs.C;
 
         if (wxFileExists(compiler))
         {

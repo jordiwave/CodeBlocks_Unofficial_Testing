@@ -10,23 +10,23 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <algorithm>
-    #include <sstream>
-    #include <string>
-    #include <vector>
+#include <algorithm>
+#include <sstream>
+#include <string>
+#include <vector>
 
-    #include <wx/msgdlg.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/fs_zip.h>
-    #include <wx/strconv.h>
+#include <wx/msgdlg.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/fs_zip.h>
+#include <wx/strconv.h>
 
-    #include <cbeditor.h>
-    #include <cbexception.h>
-    #include <cbproject.h>
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <manager.h>
-    #include <projectmanager.h>
+#include <cbeditor.h>
+#include <cbexception.h>
+#include <cbproject.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <manager.h>
+#include <projectmanager.h>
 #endif
 
 #include <wx/progdlg.h>
@@ -42,8 +42,8 @@ using std::string;
 
 namespace
 {
-    const int idCodeFormatterActiveFile = wxNewId();
-    const int idCodeFormatterProject = wxNewId();
+const int idCodeFormatterActiveFile = wxNewId();
+const int idCodeFormatterProject = wxNewId();
 }
 
 BEGIN_EVENT_TABLE( AStylePlugin, cbPlugin )
@@ -55,7 +55,7 @@ END_EVENT_TABLE()
 
 namespace
 {
-    PluginRegistrant<AStylePlugin> reg(_T("AStylePlugin"));
+PluginRegistrant<AStylePlugin> reg(_T("AStylePlugin"));
 }
 
 AStylePlugin::AStylePlugin()
@@ -87,36 +87,36 @@ void AStylePlugin::BuildModuleMenu( const ModuleType type, wxMenu* menu, const F
 
     switch ( type )
     {
-        case mtEditorManager:
-        {
-            const wxString label = _("Format use AStyle");
-            const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
+    case mtEditorManager:
+    {
+        const wxString label = _("Format use AStyle");
+        const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
 
-            menu->Insert(position, idCodeFormatterActiveFile, label, _( "Format the selected source code (selected line) in the current file" ) );
-            break;
-        }
+        menu->Insert(position, idCodeFormatterActiveFile, label, _( "Format the selected source code (selected line) in the current file" ) );
+        break;
+    }
 
-        case mtProjectManager:
-            if ( data ) switch ( data->GetKind() )
-                {
-                    case FileTreeData::ftdkProject:
-                        menu->AppendSeparator();
-                        menu->Append( idCodeFormatterProject, _( "Format this project (AStyle)" ), _( "Format the source code in this project" ) );
-                        break;
+    case mtProjectManager:
+        if ( data ) switch ( data->GetKind() )
+            {
+            case FileTreeData::ftdkProject:
+                menu->AppendSeparator();
+                menu->Append( idCodeFormatterProject, _( "Format this project (AStyle)" ), _( "Format the source code in this project" ) );
+                break;
 
-                    case FileTreeData::ftdkFile:
-                        menu->AppendSeparator();
-                        menu->Append( idCodeFormatterProject, _( "Format this file (AStyle)" ), _( "Format the source code in this file" ) );
-                        break;
+            case FileTreeData::ftdkFile:
+                menu->AppendSeparator();
+                menu->Append( idCodeFormatterProject, _( "Format this file (AStyle)" ), _( "Format the source code in this file" ) );
+                break;
 
-                    default:
-                        // Do nothing.
-                        break;
-                }
-            break;
+            default:
+                // Do nothing.
+                break;
+            }
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -140,44 +140,44 @@ void AStylePlugin::OnFormatProject( wxCommandEvent& /*event*/ )
 
     switch ( data->GetKind() )
     {
-        case FileTreeData::ftdkProject:
+    case FileTreeData::ftdkProject:
+    {
+        cbProject* prj = data->GetProject();
+        wxProgressDialog progressDlg(_("Please wait"), _("Formatting..."), prj->GetFilesCount(), 0, wxPD_CAN_ABORT|wxPD_AUTO_HIDE|wxPD_SMOOTH );
+        progressDlg.Show();
+        int i = 0;
+        for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
+        {
+            ProjectFile* pf = *it;
+            wxString filename = pf->file.GetFullPath();
+
+            FileType fileType = FileTypeOf( filename );
+            if ( fileType == ftSource || fileType == ftHeader || fileType == ftTemplateSource )
             {
-                cbProject* prj = data->GetProject();
-                wxProgressDialog progressDlg(_("Please wait"), _("Formatting..."), prj->GetFilesCount(), 0, wxPD_CAN_ABORT|wxPD_AUTO_HIDE|wxPD_SMOOTH );
-                progressDlg.Show();
-                int i = 0;
-                for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
-                {
-                    ProjectFile* pf = *it;
-                    wxString filename = pf->file.GetFullPath();
-
-                    FileType fileType = FileTypeOf( filename );
-                    if ( fileType == ftSource || fileType == ftHeader || fileType == ftTemplateSource )
-                    {
-                        FormatFile( filename );
-                        if ( false == progressDlg.Update( i++, wxString(_("Formatting ")) + pf->relativeFilename ) )
-                            break;
-                    }
-                }
+                FormatFile( filename );
+                if ( false == progressDlg.Update( i++, wxString(_("Formatting ")) + pf->relativeFilename ) )
+                    break;
             }
-            break;
+        }
+    }
+    break;
 
-        case FileTreeData::ftdkFile:
-            {
-                ProjectFile* f = data->GetProjectFile();
-                if ( f )
-                    FormatFile( f->file.GetFullPath() );
-            }
-            break;
+    case FileTreeData::ftdkFile:
+    {
+        ProjectFile* f = data->GetProjectFile();
+        if ( f )
+            FormatFile( f->file.GetFullPath() );
+    }
+    break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
 void AStylePlugin::OnFormatActiveFile( wxCommandEvent& /*event*/ )
 {
-        Execute();
+    Execute();
 }
 
 int AStylePlugin::Execute()
@@ -306,17 +306,17 @@ bool AStylePlugin::FormatEditor( cbEditor *ed )
             if (lexer == wxSCI_LEX_CPP)
             {
                 if (   style == wxSCI_C_COMMENT           || style == wxSCI_C_COMMENTDOC
-                    || style == wxSCI_C_COMMENTDOCKEYWORD || style == wxSCI_C_COMMENTDOCKEYWORDERROR
-                    || style == wxSCI_C_COMMENTLINE       || style == wxSCI_C_COMMENTLINEDOC
-                    || style == wxSCI_C_STRING            || style == wxSCI_C_CHARACTER)
+                        || style == wxSCI_C_COMMENTDOCKEYWORD || style == wxSCI_C_COMMENTDOCKEYWORDERROR
+                        || style == wxSCI_C_COMMENTLINE       || style == wxSCI_C_COMMENTLINEDOC
+                        || style == wxSCI_C_STRING            || style == wxSCI_C_CHARACTER)
                     continue;
             }
             else if (lexer == wxSCI_LEX_D)
             {
                 if (   style == wxSCI_D_COMMENT           || style == wxSCI_D_COMMENTDOC
-                    || style == wxSCI_D_COMMENTDOCKEYWORD || style == wxSCI_D_COMMENTDOCKEYWORDERROR
-                    || style == wxSCI_D_COMMENTLINE       || style == wxSCI_D_COMMENTLINEDOC
-                    || style == wxSCI_D_STRING            || style == wxSCI_D_CHARACTER)
+                        || style == wxSCI_D_COMMENTDOCKEYWORD || style == wxSCI_D_COMMENTDOCKEYWORDERROR
+                        || style == wxSCI_D_COMMENTLINE       || style == wxSCI_D_COMMENTLINEDOC
+                        || style == wxSCI_D_STRING            || style == wxSCI_D_CHARACTER)
                     continue;
             }
 

@@ -10,10 +10,10 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/xrc/xmlres.h>
-    #include <wx/intl.h>
-    #include <wx/button.h>
-    #include <wx/listbox.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/intl.h>
+#include <wx/button.h>
+#include <wx/listbox.h>
 #endif
 
 #include "editarrayorderdlg.h" // class's header file

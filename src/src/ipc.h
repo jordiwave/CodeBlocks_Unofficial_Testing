@@ -14,28 +14,28 @@
 
 #ifdef __WIN32__
 
-    #define WIN32_LEAN_AND_MEAN
-    #define NOGDI
-    #include <windows.h>
-    typedef HANDLE shm_handle_t;
-    typedef HANDLE semaphore_t;
+#define WIN32_LEAN_AND_MEAN
+#define NOGDI
+#include <windows.h>
+typedef HANDLE shm_handle_t;
+typedef HANDLE semaphore_t;
 
 #else
 
-    #include <fcntl.h>
-    #include <errno.h>
-    #include <sys/types.h>
-    #include <sys/sem.h>
-    #include <sys/ipc.h>
-    #include <sys/shm.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/sem.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
 
-    #if defined(__APPLE__) && defined(__MACH__)
-        typedef int shm_handle_t;
-        typedef mach_port_t semaphore_t;
-    #else
-        typedef int shm_handle_t;
-        typedef int semaphore_t;
-    #endif
+#if defined(__APPLE__) && defined(__MACH__)
+typedef int shm_handle_t;
+typedef mach_port_t semaphore_t;
+#else
+typedef int shm_handle_t;
+typedef int semaphore_t;
+#endif
 
 #endif
 
@@ -58,18 +58,33 @@ class SharedMemory
 
 public:
 
-    enum rw_t{ reader, writer };
+    enum rw_t { reader, writer };
 
     SharedMemory();
     ~SharedMemory();
 
-    bool OK() const { return ok; };
+    bool OK() const
+    {
+        return ok;
+    };
 
-    void* BasePointer() const { return shared; };
-    size_t Size() const { return ipc_buf_size; };
+    void* BasePointer() const
+    {
+        return shared;
+    };
+    size_t Size() const
+    {
+        return ipc_buf_size;
+    };
 
-    bool Server() const { return server; };
-    bool Client() const { return !server; };
+    bool Server() const
+    {
+        return server;
+    };
+    bool Client() const
+    {
+        return !server;
+    };
 
 
     /*
@@ -102,7 +117,10 @@ public:
 
     virtual ExitCode Entry();
 
-    bool Server() const { return shm.Server(); };
+    bool Server() const
+    {
+        return shm.Server();
+    };
 
     void Shutdown();
 

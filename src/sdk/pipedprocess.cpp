@@ -10,94 +10,94 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/app.h>         // wxWakeUpIdle
-    #include "pipedprocess.h" // class' header file
-    #include "sdk_events.h"
-    #include "globals.h"
+#include <wx/app.h>         // wxWakeUpIdle
+#include "pipedprocess.h" // class' header file
+#include "sdk_events.h"
+#include "globals.h"
 #endif
 
 // The following class is created to override wxTextStream::ReadLine()
 class cbTextInputStream : public wxTextInputStream
 {
-    protected:
-        bool m_allowMBconversion;
-    public:
+protected:
+    bool m_allowMBconversion;
+public:
 #if wxUSE_UNICODE
-        cbTextInputStream(wxInputStream& s, const wxString &sep=wxT(" \t"), wxMBConv& conv = wxConvLocal )
-            : wxTextInputStream(s, sep, conv),
-            m_allowMBconversion(true)
-        {
-            memset((void*)m_lastBytes, 0, 10);
-        }
+    cbTextInputStream(wxInputStream& s, const wxString &sep=wxT(" \t"), wxMBConv& conv = wxConvLocal )
+        : wxTextInputStream(s, sep, conv),
+          m_allowMBconversion(true)
+    {
+        memset((void*)m_lastBytes, 0, 10);
+    }
 #else
-        cbTextInputStream(wxInputStream& s, const wxString &sep=wxT(" \t") )
-            : wxTextInputStream(s, sep)
-        {
-            memset((void*)m_lastBytes, 0, 10);
-        }
+    cbTextInputStream(wxInputStream& s, const wxString &sep=wxT(" \t") )
+        : wxTextInputStream(s, sep)
+    {
+        memset((void*)m_lastBytes, 0, 10);
+    }
 #endif
-        ~cbTextInputStream(){}
+    ~cbTextInputStream() {}
 
 
-        // The following function was copied verbatim from wxTextStream::NextChar()
-        // The only change, is the removal of the MB2WC function
-        // With PipedProcess we work with compilers/debuggers which (usually) don't
-        // send us unicode (at least GDB).
-        wxChar NextChar()
+    // The following function was copied verbatim from wxTextStream::NextChar()
+    // The only change, is the removal of the MB2WC function
+    // With PipedProcess we work with compilers/debuggers which (usually) don't
+    // send us unicode (at least GDB).
+    wxChar NextChar()
+    {
+#if wxUSE_UNICODE
+        wxChar wbuf[2];
+        memset((void*)m_lastBytes, 0, 10);
+        for (size_t inlen = 0; inlen < 9; inlen++)
         {
-        #if wxUSE_UNICODE
-            wxChar wbuf[2];
-            memset((void*)m_lastBytes, 0, 10);
-            for (size_t inlen = 0; inlen < 9; inlen++)
-            {
-                // actually read the next character
-                m_lastBytes[inlen] = m_input.GetC();
-
-                if (m_input.LastRead() <= 0)
-                    return wxEOT;
-                if (m_allowMBconversion)
-                {
-                    int retlen = (int) m_conv->MB2WC(wbuf, m_lastBytes, 2); // returns -1 for failure
-                    if (retlen >= 0) // res == 0 could happen for '\0' char
-                        return wbuf[0];
-                }
-                else
-                    return m_lastBytes[inlen]; // C::B fix (?)
-            }
-            // there should be no encoding which requires more than nine bytes for one character...
-            return wxEOT;
-        #else
-            m_lastBytes[0] = m_input.GetC();
+            // actually read the next character
+            m_lastBytes[inlen] = m_input.GetC();
 
             if (m_input.LastRead() <= 0)
                 return wxEOT;
-
-            return m_lastBytes[0];
-        #endif
-        }
-
-        // The following function was copied verbatim from wxTextStream::ReadLine()
-        // The only change, is the addition of m_input.CanRead() in the while()
-        wxString ReadLine()
-        {
-            wxString line;
-
-            while ( m_input.CanRead() && !m_input.Eof() )
+            if (m_allowMBconversion)
             {
-                wxChar c = NextChar();
-                if (m_input.LastRead() <= 0)
-                    break;
-
-                if ( !m_input )
-                    break;
-
-                if (EatEOL(c))
-                    break;
-
-                line += c;
+                int retlen = (int) m_conv->MB2WC(wbuf, m_lastBytes, 2); // returns -1 for failure
+                if (retlen >= 0) // res == 0 could happen for '\0' char
+                    return wbuf[0];
             }
-            return line;
+            else
+                return m_lastBytes[inlen]; // C::B fix (?)
         }
+        // there should be no encoding which requires more than nine bytes for one character...
+        return wxEOT;
+#else
+        m_lastBytes[0] = m_input.GetC();
+
+        if (m_input.LastRead() <= 0)
+            return wxEOT;
+
+        return m_lastBytes[0];
+#endif
+    }
+
+    // The following function was copied verbatim from wxTextStream::ReadLine()
+    // The only change, is the addition of m_input.CanRead() in the while()
+    wxString ReadLine()
+    {
+        wxString line;
+
+        while ( m_input.CanRead() && !m_input.Eof() )
+        {
+            wxChar c = NextChar();
+            if (m_input.LastRead() <= 0)
+                break;
+
+            if ( !m_input )
+                break;
+
+            if (EatEOL(c))
+                break;
+
+            line += c;
+        }
+        return line;
+    }
 };
 
 int idTimerPollProcess = wxNewId();
@@ -111,12 +111,12 @@ END_EVENT_TABLE()
 PipedProcess::PipedProcess(PipedProcess** pvThis, wxEvtHandler* parent, int id, bool pipe,
                            const wxString& dir, int index)
     : wxProcess(parent, id),
-    m_Parent(parent),
-    m_Id(id),
-    m_Pid(0),
-    m_Index(index),
-    m_Stopped(false),
-    m_pvThis(pvThis)
+      m_Parent(parent),
+      m_Id(id),
+      m_Pid(0),
+      m_Index(index),
+      m_Stopped(false),
+      m_pvThis(pvThis)
 {
     const wxString &unixDir = UnixFilename(dir);
     if (!unixDir.empty())

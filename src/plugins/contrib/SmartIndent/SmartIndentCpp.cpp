@@ -3,11 +3,11 @@
 #include <sdk.h> // Code::Blocks SDK
 
 #ifndef CB_PRECOMP
-    #include <cbeditor.h>
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <editorcolourset.h>
-    #include <manager.h>
+#include <cbeditor.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <editorcolourset.h>
+#include <manager.h>
 #endif
 
 #include <cbstyledtextctrl.h>
@@ -18,7 +18,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<SmartIndentCpp> reg(_T("SmartIndentCpp"));
+PluginRegistrant<SmartIndentCpp> reg(_T("SmartIndentCpp"));
 }
 void SmartIndentCpp::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
@@ -181,10 +181,10 @@ void SmartIndentCpp::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
                 const int ind_pos = stc->GetLineIndentPosition(currLine - 1);
                 const wxString text = stc->GetTextRange(ind_pos, stc->WordEndPosition(ind_pos, true));
                 if (   text == _T("if")
-                    || text == _T("else")
-                    || text == _T("for")
-                    || text == _T("while")
-                    || text == _T("do") )
+                        || text == _T("else")
+                        || text == _T("for")
+                        || text == _T("while")
+                        || text == _T("do") )
                 {
                     const wxChar non_ws_ch = GetLastNonWhitespaceChar(ed);
                     if (non_ws_ch != _T(';') && non_ws_ch != _T('}'))
@@ -223,10 +223,10 @@ void SmartIndentCpp::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
                         const wxString last = stc->GetTextRange(start, end);
 
                         if (   last == _T("if")
-                            || last == _T("else")
-                            || last == _T("for")
-                            || last == _T("while")
-                            || last == _T("do") )
+                                || last == _T("else")
+                                || last == _T("for")
+                                || last == _T("while")
+                                || last == _T("do") )
                         {
                             const wxString text = stc->GetTextRange(lineIndentPos + last.Len(), pos);
                             int level = 0;
@@ -236,8 +236,8 @@ void SmartIndentCpp::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
                                 {
                                     const int style = stc->GetStyleAt(pos - text.Len() + i);
                                     if (   stc->IsString(style)
-                                        || stc->IsCharacter(style)
-                                        || stc->IsComment(style) )
+                                            || stc->IsCharacter(style)
+                                            || stc->IsComment(style) )
                                     {
                                         continue;
                                     }
@@ -247,8 +247,8 @@ void SmartIndentCpp::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
                                 {
                                     const int style = stc->GetStyleAt(pos - text.Len() + i);
                                     if (   stc->IsString(style)
-                                        || stc->IsCharacter(style)
-                                        || stc->IsComment(style) )
+                                            || stc->IsCharacter(style)
+                                            || stc->IsComment(style) )
                                     {
                                         continue;
                                     }
@@ -386,10 +386,10 @@ void SmartIndentCpp::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
             const int li_pos = stc->GetLineIndentPosition(curLine);
             const wxString text = stc->GetTextRange(li_pos, stc->WordEndPosition(li_pos, true));
             if (   text == _T("public")
-                || text == _T("protected")
-                || text == _T("private")
-                || text == _T("case")
-                || text == _T("default") )
+                    || text == _T("protected")
+                    || text == _T("private")
+                    || text == _T("case")
+                    || text == _T("default") )
             {
                 const bool isSwitch = (text == _T("case") || text == _T("default"));
                 int lastLine = curLine;
@@ -417,8 +417,8 @@ void SmartIndentCpp::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
                     else
                     {
                         if (   last == _T("public")
-                            || last == _T("protected")
-                            || last == _T("private") )
+                                || last == _T("protected")
+                                || last == _T("private") )
                         {
                             lastLineIndent = stc->GetLineIndentation(lastLine);
                             break;
@@ -479,79 +479,80 @@ void SmartIndentCpp::DoSelectionBraceCompletion(cbStyledTextCtrl* control, const
         wxString selectedText = control->GetLastSelectedText();
         switch (ch)
         {
-            case _T('\''):
+        case _T('\''):
+        {
+            control->BeginUndoAction();
+            control->DeleteBack();
+            selectedText.Replace(wxT("\\'"), wxT("'"));
+            selectedText.Replace(wxT("'"), wxT("\\'"));
+            control->AddText(wxT("'") + selectedText + wxT("'"));
+            control->EndUndoAction();
+            return;
+        }
+        case _T('"'):
+        {
+            control->BeginUndoAction();
+            control->DeleteBack();
+            selectedText.Replace(wxT("\\\""), wxT("\""));
+            selectedText.Replace(wxT("\""), wxT("\\\""));
+            control->AddText(wxT("\"") + selectedText + wxT("\""));
+            control->SetSelectionVoid(pos - 1, pos + selectedText.Length() + 1);
+            int startLine = control->LineFromPosition(control->GetSelectionStart());
+            int endLine = control->LineFromPosition(control->GetSelectionEnd());
+            if (startLine != endLine)
             {
-                control->BeginUndoAction();
-                control->DeleteBack();
-                selectedText.Replace(wxT("\\'"), wxT("'"));
-                selectedText.Replace(wxT("'"), wxT("\\'"));
-                control->AddText(wxT("'") + selectedText + wxT("'"));
-                control->EndUndoAction();
-                return;
-            }
-            case _T('"'):
-            {
-                control->BeginUndoAction();
-                control->DeleteBack();
-                selectedText.Replace(wxT("\\\""), wxT("\""));
-                selectedText.Replace(wxT("\""), wxT("\\\""));
-                control->AddText(wxT("\"") + selectedText + wxT("\""));
-                control->SetSelectionVoid(pos - 1, pos + selectedText.Length() + 1);
-                int startLine = control->LineFromPosition(control->GetSelectionStart());
-                int endLine = control->LineFromPosition(control->GetSelectionEnd());
-                if (startLine != endLine)
+                int selectionEnd = pos + selectedText.Length() + 1;
+                for (int i = endLine; i > startLine; i--)
                 {
-                    int selectionEnd = pos + selectedText.Length() + 1;
-                    for (int i = endLine; i > startLine; i--)
-                    {
-                        control->Home();
-                        for (int j = control->GetCurrentPos(); control->GetCharAt(j) == _T(' ') || control->GetCharAt(j) == _T('\t'); j++)
-                            control->CharRight();
-                        control->AddText(wxT("\""));
-                        control->SetEmptySelection(control->GetLineEndPosition(i - 1));
-                        control->AddText(wxT("\""));
-                        selectionEnd += control->GetIndent() + 2;
-                    }
-                    control->SetSelectionVoid(pos - 1, selectionEnd);
-                }
-                control->EndUndoAction();
-                return;
-            }
-            case _T('('):
-            case _T(')'):
-            case _T('['):
-            case _T(']'):
-            case _T('<'):
-            case _T('>'):
-            {
-                control->DoSelectionBraceCompletion(ch);
-                return;
-            }
-            case _T('{'):
-            case _T('}'):
-            {
-                control->BeginUndoAction();
-                control->DeleteBack();
-                control->AddText(selectedText);
-                control->SetSelectionVoid(pos - 1, pos + selectedText.Length() - 1);
-                int startLine = control->LineFromPosition(control->GetSelectionStart());
-                int endLine = control->LineFromPosition(control->GetSelectionEnd());
-                if (startLine == endLine)
                     control->Home();
-                control->Tab();
-                control->SetEmptySelection(control->GetLineEndPosition(endLine));
-                control->NewLine();
-                control->BackTab();
-                control->AddText(wxT("}"));
-                control->SetEmptySelection(control->GetLineEndPosition(startLine - 1));
-                control->NewLine();
-                control->InsertText(control->GetCurrentPos(), wxT("{"));
-                if (ch == _T('}'))
-                    control->SetEmptySelection(control->GetLineEndPosition(endLine + 2));
-                control->EndUndoAction();
-                return;
+                    for (int j = control->GetCurrentPos(); control->GetCharAt(j) == _T(' ') || control->GetCharAt(j) == _T('\t'); j++)
+                        control->CharRight();
+                    control->AddText(wxT("\""));
+                    control->SetEmptySelection(control->GetLineEndPosition(i - 1));
+                    control->AddText(wxT("\""));
+                    selectionEnd += control->GetIndent() + 2;
+                }
+                control->SetSelectionVoid(pos - 1, selectionEnd);
             }
-            default: return;
+            control->EndUndoAction();
+            return;
+        }
+        case _T('('):
+        case _T(')'):
+        case _T('['):
+        case _T(']'):
+        case _T('<'):
+        case _T('>'):
+        {
+            control->DoSelectionBraceCompletion(ch);
+            return;
+        }
+        case _T('{'):
+        case _T('}'):
+        {
+            control->BeginUndoAction();
+            control->DeleteBack();
+            control->AddText(selectedText);
+            control->SetSelectionVoid(pos - 1, pos + selectedText.Length() - 1);
+            int startLine = control->LineFromPosition(control->GetSelectionStart());
+            int endLine = control->LineFromPosition(control->GetSelectionEnd());
+            if (startLine == endLine)
+                control->Home();
+            control->Tab();
+            control->SetEmptySelection(control->GetLineEndPosition(endLine));
+            control->NewLine();
+            control->BackTab();
+            control->AddText(wxT("}"));
+            control->SetEmptySelection(control->GetLineEndPosition(startLine - 1));
+            control->NewLine();
+            control->InsertText(control->GetCurrentPos(), wxT("{"));
+            if (ch == _T('}'))
+                control->SetEmptySelection(control->GetLineEndPosition(endLine + 2));
+            control->EndUndoAction();
+            return;
+        }
+        default:
+            return;
         }
     } // SelectionBraceCompletion
 }
@@ -612,7 +613,7 @@ void SmartIndentCpp::DoBraceCompletion(cbStyledTextCtrl* control, const wxChar& 
     if ((ch == '\'') || (ch == '"'))
     {
         if (   (control->GetCharAt(pos) == ch)
-            && (control->GetCharAt(pos - 2) != '\\') )
+                && (control->GetCharAt(pos - 2) != '\\') )
         {
             control->DeleteBack();
             control->GotoPos(pos);
@@ -622,13 +623,13 @@ void SmartIndentCpp::DoBraceCompletion(cbStyledTextCtrl* control, const wxChar& 
             const wxChar left = control->GetCharAt(pos - 2);
             const wxChar right = control->GetCharAt(pos);
             if (   control->IsCharacter(style)
-                || control->IsString(style)
-                || (left == '\\')
-                || (   (left > ' ')
-                    && (left != '(')
-                    && (left != '=') )
-                || (   (right > ' ')
-                    && (right != ')') ) )
+                    || control->IsString(style)
+                    || (left == '\\')
+                    || (   (left > ' ')
+                           && (left != '(')
+                           && (left != '=') )
+                    || (   (right > ' ')
+                           && (right != ')') ) )
             {
                 return;
             }
@@ -679,8 +680,8 @@ void SmartIndentCpp::DoBraceCompletion(cbStyledTextCtrl* control, const wxChar& 
                 text = control->GetTextRange(start, end);
             }
             while (   (text.IsEmpty() || text == "public" || text == "protected" || text == "private")
-                   && (text != _T("namespace"))
-                   && (--keyLine >= 0) );
+                      && (text != _T("namespace"))
+                      && (--keyLine >= 0) );
 
             if (text == "class" || text == "struct" || text == "enum" || text == "union")
                 control->InsertText(control->GetLineEndPosition(curLine), ";");

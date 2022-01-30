@@ -47,30 +47,33 @@ wxObject *kwxLinearMeterHandler::DoCreateResource()
     XRC_MAKE_INSTANCE(control, kwxLinearMeter)
 
     control->Create(m_parentAsWindow, GetID(), GetPosition(), GetSize());
-   	control->ShowCurrent(GetBool(wxT("show_value"), true));
+    control->ShowCurrent(GetBool(wxT("show_value"), true));
     control->SetRangeVal(GetLong(wxT("range_min"), 0), GetLong(wxT("range_max"), 100));
-   	control->ShowLimits(GetBool(wxT("show_limit_value"), true));
-   	control->SetOrizDirection(GetBool(wxT("horizontal"), true));
+    control->ShowLimits(GetBool(wxT("show_limit_value"), true));
+    control->SetOrizDirection(GetBool(wxT("horizontal"), true));
     control->SetActiveBarColour(GetColour(wxT("bar_colour"), *wxLIGHT_GREY));
     control->SetPassiveBarColour(GetColour(wxT("background_colour"), *wxLIGHT_GREY));
     control->SetBorderColour(GetColour(wxT("border_colour"), *wxBLACK));
     control->SetTxtLimitColour(GetColour(wxT("range_text_colour"), *wxLIGHT_GREY));
     control->SetTxtValueColour(GetColour(wxT("value_text_colour"), *wxBLACK));
     control->SetTagsColour(GetColour(wxT("tag_colour"), *wxBLACK));
-	int i = 1;
-	while(1){
-		wxString s = wxString::Format(wxT("tag_%d_value"), i);
-		if(!HasParam(s)){
-			break;
-		}
-		control->AddTag(GetLong(s));
-		i++;
-	}
-	// Avoid error if the font node isn't present.
-	if(HasParam(wxT("font"))){
-		wxFont font = GetFont();
-		control->SetTxtFont(font);
-	}
+    int i = 1;
+    while(1)
+    {
+        wxString s = wxString::Format(wxT("tag_%d_value"), i);
+        if(!HasParam(s))
+        {
+            break;
+        }
+        control->AddTag(GetLong(s));
+        i++;
+    }
+    // Avoid error if the font node isn't present.
+    if(HasParam(wxT("font")))
+    {
+        wxFont font = GetFont();
+        control->SetTxtFont(font);
+    }
     control->SetValue(GetLong(wxT("value"), 0));
 
     SetupWindow(control);

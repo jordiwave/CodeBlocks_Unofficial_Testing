@@ -197,12 +197,12 @@ bool wxWidgetsGUIAppAdoptingDlg::ScanFile(ProjectFile* File)
 void wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick(cb_unused wxCommandEvent& event)
 {
     wxString FileName = ::wxFileSelector(
-        _("Select file with implementation of application class"),
-        _T(""),
-        _T(""),
-        _T(""),
-        _("C++ sources (*.cpp)|*.cpp|All files|*.*"),
-        wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly);
+                            _("Select file with implementation of application class"),
+                            _T(""),
+                            _T(""),
+                            _T(""),
+                            _("C++ sources (*.cpp)|*.cpp|All files|*.*"),
+                            wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly);
     if ( FileName.empty() )
     {
         return;
@@ -230,12 +230,12 @@ void wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick(cb_unused wxCommandEvent& even
 void wxWidgetsGUIAppAdoptingDlg::OnCreateBtnClick(cb_unused wxCommandEvent& event)
 {
     wxString FileName = ::wxFileSelector(
-        _("Please select cpp file where application class should be created"),
-        m_GUI->GetProjectPath(),
-        _T("myapp.cpp"),
-        _T("cpp"),
-        _T("C++ source files|*.cpp|All files|*"),
-        wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+                            _("Please select cpp file where application class should be created"),
+                            m_GUI->GetProjectPath(),
+                            _T("myapp.cpp"),
+                            _T("cpp"),
+                            _T("C++ source files|*.cpp|All files|*"),
+                            wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 
     if ( FileName.empty() ) return;
 

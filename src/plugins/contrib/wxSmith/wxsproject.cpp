@@ -33,8 +33,8 @@
 
 namespace
 {
-    const int CurrentVersion = 1;
-    const char* CurrentVersionStr = "1";
+const int CurrentVersion = 1;
+const char* CurrentVersionStr = "1";
 }
 
 wxsProject::wxsProject(cbProject* Project):

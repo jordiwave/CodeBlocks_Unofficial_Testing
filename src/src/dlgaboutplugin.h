@@ -15,11 +15,11 @@ class wxWindow;
  */
 class dlgAboutPlugin : public wxScrollingDialog
 {
-	public:
-		// class constructor
-		dlgAboutPlugin(wxWindow* parent, const PluginInfo* pi);
-		// class destructor
-		~dlgAboutPlugin();
+public:
+    // class constructor
+    dlgAboutPlugin(wxWindow* parent, const PluginInfo* pi);
+    // class destructor
+    ~dlgAboutPlugin();
 };
 
 #endif // DLGABOUTPLUGIN_H

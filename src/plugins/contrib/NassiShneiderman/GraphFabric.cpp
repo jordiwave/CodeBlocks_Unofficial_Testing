@@ -20,7 +20,7 @@ GraphNassiBrick *GraphFabric::CreateGraphBrick(NassiBrick *brick)
     return 0;
 }
 
-GraphFabric::~GraphFabric(){}
+GraphFabric::~GraphFabric() {}
 
 void GraphFabric::Visit(NassiInstructionBrick *brick)
 {

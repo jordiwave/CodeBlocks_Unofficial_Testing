@@ -5,13 +5,13 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif  //__BORLANDC__
 
 #ifndef WX_PRECOMP
-    #include "wx/dcclient.h"
-    #include "wx/dcmemory.h"
-    #include "wx/intl.h"
+#include "wx/dcclient.h"
+#include "wx/dcmemory.h"
+#include "wx/intl.h"
 #endif
 
 #include "wx/gizmos/ledctrl.h"
@@ -58,13 +58,13 @@ const int DIGITALL = -1;
 // ============================================================================
 
 wxLEDNumberCtrl::wxLEDNumberCtrl()
-:   m_Alignment(wxLED_ALIGN_LEFT),
-    m_LineMargin(-1),
-    m_DigitMargin(-1),
-    m_LineLength(-1),
-    m_LineWidth(-1),
-    m_DrawFaded(false),
-    m_LeftStartPos(-1)
+    :   m_Alignment(wxLED_ALIGN_LEFT),
+        m_LineMargin(-1),
+        m_DigitMargin(-1),
+        m_LineLength(-1),
+        m_LineWidth(-1),
+        m_DrawFaded(false),
+        m_LeftStartPos(-1)
 {
 }
 
@@ -72,21 +72,21 @@ wxLEDNumberCtrl::wxLEDNumberCtrl()
 wxLEDNumberCtrl::wxLEDNumberCtrl(wxWindow *parent, wxWindowID id,
                                  const wxPoint& pos, const wxSize& size,
                                  long style)
-:   m_Alignment(wxLED_ALIGN_LEFT),
-    m_LineMargin(-1),
-    m_DigitMargin(-1),
-    m_LineLength(-1),
-    m_LineWidth(-1),
-    m_DrawFaded(false),
-    m_LeftStartPos(-1)
+    :   m_Alignment(wxLED_ALIGN_LEFT),
+        m_LineMargin(-1),
+        m_DigitMargin(-1),
+        m_LineLength(-1),
+        m_LineWidth(-1),
+        m_DrawFaded(false),
+        m_LeftStartPos(-1)
 {
     Create(parent, id, pos, size, style);
 }
 
 
 bool wxLEDNumberCtrl::Create(wxWindow *parent, wxWindowID id,
-                                 const wxPoint& pos, const wxSize& size,
-                                 long style)
+                             const wxPoint& pos, const wxSize& size,
+                             long style)
 {
     bool RetVal = wxControl::Create(parent, id, pos, size, style);
 
@@ -134,7 +134,8 @@ void wxLEDNumberCtrl::SetValue(wxString const &Value, bool Redraw)
 #ifdef __WXDEBUG__
         if (!Value.empty())
         {
-            for(size_t i=0; i<Value.Length(); i++) {
+            for(size_t i=0; i<Value.Length(); i++)
+            {
                 wxChar ch = Value[i];
                 wxASSERT_MSG((ch>='0' && ch<='9') || ch=='-' || ch==' ' || ch=='.',
                              wxT("wxLEDNumberCtrl can only display numeric string values."));
@@ -193,50 +194,50 @@ void wxLEDNumberCtrl::OnPaint(wxPaintEvent &WXUNUSED(event))
         // Draw the digits.
         switch (c)
         {
-            case _T('0') :
-                DrawDigit(MemDc, DIGIT0, i);
-                break;
-            case _T('1') :
-                DrawDigit(MemDc, DIGIT1, i);
-                break;
-            case _T('2') :
-                DrawDigit(MemDc, DIGIT2, i);
-                break;
-            case _T('3') :
-                DrawDigit(MemDc, DIGIT3, i);
-                break;
-            case _T('4') :
-                DrawDigit(MemDc, DIGIT4, i);
-                break;
-            case _T('5') :
-                DrawDigit(MemDc, DIGIT5, i);
-                break;
-            case _T('6') :
-                DrawDigit(MemDc, DIGIT6, i);
-                break;
-            case _T('7') :
-                DrawDigit(MemDc, DIGIT7, i);
-                break;
-            case _T('8') :
-                DrawDigit(MemDc, DIGIT8, i);
-                break;
-            case _T('9') :
-                DrawDigit(MemDc, DIGIT9, i);
-                break;
-            case _T('-') :
-                DrawDigit(MemDc, DASH, i);
-                break;
-            case _T('.') :
-                // Display the decimal in the previous segment
-                i--;
-                DrawDigit(MemDc, DECIMALSIGN, i);
-                break;
-            case _T(' ') :
-                // just skip it
-                break;
-            default :
-                wxFAIL_MSG(wxT("Unknown digit value"));
-                break;
+        case _T('0') :
+            DrawDigit(MemDc, DIGIT0, i);
+            break;
+        case _T('1') :
+            DrawDigit(MemDc, DIGIT1, i);
+            break;
+        case _T('2') :
+            DrawDigit(MemDc, DIGIT2, i);
+            break;
+        case _T('3') :
+            DrawDigit(MemDc, DIGIT3, i);
+            break;
+        case _T('4') :
+            DrawDigit(MemDc, DIGIT4, i);
+            break;
+        case _T('5') :
+            DrawDigit(MemDc, DIGIT5, i);
+            break;
+        case _T('6') :
+            DrawDigit(MemDc, DIGIT6, i);
+            break;
+        case _T('7') :
+            DrawDigit(MemDc, DIGIT7, i);
+            break;
+        case _T('8') :
+            DrawDigit(MemDc, DIGIT8, i);
+            break;
+        case _T('9') :
+            DrawDigit(MemDc, DIGIT9, i);
+            break;
+        case _T('-') :
+            DrawDigit(MemDc, DASH, i);
+            break;
+        case _T('.') :
+            // Display the decimal in the previous segment
+            i--;
+            DrawDigit(MemDc, DECIMALSIGN, i);
+            break;
+        case _T(' ') :
+            // just skip it
+            break;
+        default :
+            wxFAIL_MSG(wxT("Unknown digit value"));
+            break;
         }
     }
 
@@ -268,49 +269,49 @@ void wxLEDNumberCtrl::DrawDigit(wxDC &Dc, int Digit, int Column)
     if ((Digit & LINE1))
     {
         Dc.DrawLine(XPos + m_LineMargin*2, m_LineMargin,
-            XPos + m_LineLength + m_LineMargin*2, m_LineMargin);
+                    XPos + m_LineLength + m_LineMargin*2, m_LineMargin);
     }
 
     if (Digit & LINE2)
     {
         Dc.DrawLine(XPos + m_LineLength + m_LineMargin*3, m_LineMargin*2,
-            XPos + m_LineLength + m_LineMargin*3, m_LineLength + (m_LineMargin*2));
+                    XPos + m_LineLength + m_LineMargin*3, m_LineLength + (m_LineMargin*2));
     }
 
     if (Digit & LINE3)
     {
         Dc.DrawLine(XPos + m_LineLength + m_LineMargin*3, m_LineLength + (m_LineMargin*4),
-            XPos + m_LineLength + m_LineMargin*3, m_LineLength*2 + (m_LineMargin*4));
+                    XPos + m_LineLength + m_LineMargin*3, m_LineLength*2 + (m_LineMargin*4));
     }
 
     if (Digit & LINE4)
     {
         Dc.DrawLine(XPos + m_LineMargin*2, m_LineLength*2 + (m_LineMargin*5),
-            XPos + m_LineLength + m_LineMargin*2, m_LineLength*2 + (m_LineMargin*5));
+                    XPos + m_LineLength + m_LineMargin*2, m_LineLength*2 + (m_LineMargin*5));
     }
 
     if (Digit & LINE5)
     {
         Dc.DrawLine(XPos + m_LineMargin, m_LineLength + (m_LineMargin*4),
-            XPos + m_LineMargin, m_LineLength*2 + (m_LineMargin*4));
+                    XPos + m_LineMargin, m_LineLength*2 + (m_LineMargin*4));
     }
 
     if (Digit & LINE6)
     {
         Dc.DrawLine(XPos + m_LineMargin, m_LineMargin*2,
-            XPos + m_LineMargin, m_LineLength + (m_LineMargin*2));
+                    XPos + m_LineMargin, m_LineLength + (m_LineMargin*2));
     }
 
     if (Digit & LINE7)
     {
         Dc.DrawLine(XPos + m_LineMargin*2, m_LineLength + (m_LineMargin*3),
-            XPos + m_LineMargin*2 + m_LineLength, m_LineLength + (m_LineMargin*3));
+                    XPos + m_LineMargin*2 + m_LineLength, m_LineLength + (m_LineMargin*3));
     }
 
     if (Digit & DECIMALSIGN)
     {
         Dc.DrawLine(XPos + m_LineLength + m_LineMargin*4, m_LineLength*2 + (m_LineMargin*5),
-            XPos + m_LineLength + m_LineMargin*4, m_LineLength*2 + (m_LineMargin*5));
+                    XPos + m_LineLength + m_LineMargin*4, m_LineLength*2 + (m_LineMargin*5));
     }
 
     Dc.SetPen(wxNullPen);
@@ -368,21 +369,21 @@ void wxLEDNumberCtrl::RecalcInternals(const wxSize &CurrentSize)
 
     switch (m_Alignment)
     {
-        case wxLED_ALIGN_LEFT :
-            m_LeftStartPos = m_LineMargin;
-            break;
-        case wxLED_ALIGN_RIGHT :
-            m_LeftStartPos = ClientWidth - ValueWidth - m_LineMargin;
-            break;
-        case wxLED_ALIGN_CENTER : // fall-through
+    case wxLED_ALIGN_LEFT :
+        m_LeftStartPos = m_LineMargin;
+        break;
+    case wxLED_ALIGN_RIGHT :
+        m_LeftStartPos = ClientWidth - ValueWidth - m_LineMargin;
+        break;
+    case wxLED_ALIGN_CENTER : // fall-through
 #if wxLED_ALIGN_CENTER != wxLED_ALIGN_MASK
-        case wxLED_ALIGN_MASK :
+    case wxLED_ALIGN_MASK :
 #endif
-            m_LeftStartPos = (ClientWidth - ValueWidth) / 2;
-            break;
-        default :
-            wxFAIL_MSG(wxT("Unknown alignment value for wxLEDNumberCtrl."));
-            break;
+        m_LeftStartPos = (ClientWidth - ValueWidth) / 2;
+        break;
+    default :
+        wxFAIL_MSG(wxT("Unknown alignment value for wxLEDNumberCtrl."));
+        break;
     }
 }
 

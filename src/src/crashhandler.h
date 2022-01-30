@@ -28,8 +28,8 @@ public:
 class CrashHandler
 {
 public:
-    CrashHandler(cb_unused bool bDisabled){};
-    ~CrashHandler(){};
+    CrashHandler(cb_unused bool bDisabled) {};
+    ~CrashHandler() {};
 };
 
 #endif

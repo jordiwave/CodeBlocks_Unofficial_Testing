@@ -45,7 +45,10 @@ class wxDirectoryMonitorEvent: public wxNotifyEvent
 public:
     wxDirectoryMonitorEvent(const wxString &mon_dir, int event_type, const wxString &uri);
     wxDirectoryMonitorEvent(const wxDirectoryMonitorEvent& c);
-    wxEvent *Clone() const { return new wxDirectoryMonitorEvent(*this); }
+    wxEvent *Clone() const
+    {
+        return new wxDirectoryMonitorEvent(*this);
+    }
     ~wxDirectoryMonitorEvent() {}
     wxString m_mon_dir;
     int m_event_type;

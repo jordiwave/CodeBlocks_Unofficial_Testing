@@ -20,10 +20,10 @@ void wxsCoderContext::AddHeader(const wxString& Header,const wxString& DeclaredC
 
     // Check if we can use forward declatarion
     if ( (m_Flags&flFwdDeclar) &&
-         (m_Flags&flPointer) &&
-         !ForbidFwd &&
-         !IsLocal &&
-         !(m_Flags&flRoot) )
+            (m_Flags&flPointer) &&
+            !ForbidFwd &&
+            !IsLocal &&
+            !(m_Flags&flRoot) )
     {
         // We put header in local cpp file when using forward declaration
         IsLocal = true;

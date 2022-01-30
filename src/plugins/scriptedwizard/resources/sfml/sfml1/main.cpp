@@ -11,7 +11,7 @@ int main()
         return EXIT_FAILURE;
     sf::Sprite Sprite(Image);
 
-	// Start the game loop
+    // Start the game loop
     while (App.IsOpened())
     {
         // Process events

@@ -68,18 +68,22 @@ wxWindow* DoxyBlocksLogger::CreateControl(wxWindow* parent)
  */
 void DoxyBlocksLogger::OpenLink(long urlStart, long urlEnd, bool bUseInternalViewer)
 {
-    if(!control){
+    if(!control)
+    {
         return;
     }
     wxString url = control->GetRange(urlStart, urlEnd);
-    if (platform::windows && url.StartsWith(_T("file://"))){
+    if (platform::windows && url.StartsWith(_T("file://")))
+    {
         url.Remove(0, 7);
     }
-    if(bUseInternalViewer){
+    if(bUseInternalViewer)
+    {
         cbMimePlugin* p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(url);
         p->OpenFile(url);
     }
-    else{
+    else
+    {
         wxLaunchDefaultBrowser(url);
     }
 }

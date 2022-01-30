@@ -24,28 +24,28 @@
 
 namespace
 {
-    wxsRegisterItem<wxsFilePickerCtrl> Reg(_T("FilePickerCtrl"), wxsTWidget, _T("Advanced"), 110);
+wxsRegisterItem<wxsFilePickerCtrl> Reg(_T("FilePickerCtrl"), wxsTWidget, _T("Advanced"), 110);
 
 #ifdef __WXGTK__
-    // GTK apps usually don't have a textctrl next to the picker
-    WXS_ST_BEGIN(wxsFilePickerCtrlStyles,_T("wxFLP_OPEN|wxFLP_FILE_MUST_EXIST"))
+// GTK apps usually don't have a textctrl next to the picker
+WXS_ST_BEGIN(wxsFilePickerCtrlStyles,_T("wxFLP_OPEN|wxFLP_FILE_MUST_EXIST"))
 #else
-    WXS_ST_BEGIN(wxsFilePickerCtrlStyles,_T("wxFLP_USE_TEXTCTRL|wxFLP_OPEN|wxFLP_FILE_MUST_EXIST"))
+WXS_ST_BEGIN(wxsFilePickerCtrlStyles,_T("wxFLP_USE_TEXTCTRL|wxFLP_OPEN|wxFLP_FILE_MUST_EXIST"))
 #endif
-        WXS_ST_CATEGORY("wxFilePickerCtrl")
-        WXS_ST(wxFLP_CHANGE_DIR)
-        WXS_ST(wxFLP_FILE_MUST_EXIST)
-        WXS_ST(wxFLP_OPEN)
-        WXS_ST(wxFLP_OVERWRITE_PROMPT)
-        WXS_ST(wxFLP_SAVE)
-        WXS_ST(wxFLP_USE_TEXTCTRL)
-        WXS_ST(wxFLP_SMALL)
-    WXS_ST_END()
+WXS_ST_CATEGORY("wxFilePickerCtrl")
+WXS_ST(wxFLP_CHANGE_DIR)
+WXS_ST(wxFLP_FILE_MUST_EXIST)
+WXS_ST(wxFLP_OPEN)
+WXS_ST(wxFLP_OVERWRITE_PROMPT)
+WXS_ST(wxFLP_SAVE)
+WXS_ST(wxFLP_USE_TEXTCTRL)
+WXS_ST(wxFLP_SMALL)
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsFilePickerCtrlEvents)
-        WXS_EVI(EVT_FILEPICKER_CHANGED, wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEvent , FileChanged)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsFilePickerCtrlEvents)
+WXS_EVI(EVT_FILEPICKER_CHANGED, wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEvent, FileChanged)
+WXS_EV_END()
 }
 
 /*! \brief Ctor
@@ -59,9 +59,9 @@ wxsFilePickerCtrl::wxsFilePickerCtrl(wxsItemResData* Data):
         &Reg.Info,
         wxsFilePickerCtrlEvents,
         wxsFilePickerCtrlStyles),
-        m_sMessage(wxFileSelectorPromptStr),
-        m_sPath(wxEmptyString),
-        m_sWildcard(wxFileSelectorDefaultWildcardStr)
+    m_sMessage(wxFileSelectorPromptStr),
+    m_sPath(wxEmptyString),
+    m_sWildcard(wxFileSelectorDefaultWildcardStr)
 {}
 
 /*! \brief Create the initial control.
@@ -73,19 +73,19 @@ void wxsFilePickerCtrl::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/filepicker.h>"),GetInfo().ClassName,0);
-            Codef(_T("%C(%W, %I, %n, %t, %n, %P, %S, %T, %V, %N);\n"), m_sPath.wx_str(), m_sMessage.wx_str(), m_sWildcard.wx_str());
-            BuildSetupWindowCode();
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/filepicker.h>"),GetInfo().ClassName,0);
+        Codef(_T("%C(%W, %I, %n, %t, %n, %P, %S, %T, %V, %N);\n"), m_sPath.wx_str(), m_sMessage.wx_str(), m_sWildcard.wx_str());
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsFilePickerCtrl::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsFilePickerCtrl::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

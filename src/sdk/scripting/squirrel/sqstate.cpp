@@ -43,32 +43,74 @@ bool CompileTypemask(SQIntVec &res,const SQChar *typemask)
     SQInteger i = 0;
 
     SQInteger mask = 0;
-    while(typemask[i] != 0) {
+    while(typemask[i] != 0)
+    {
 
-        switch(typemask[i]){
-                case 'o': mask |= _RT_NULL; break;
-                case 'i': mask |= _RT_INTEGER; break;
-                case 'f': mask |= _RT_FLOAT; break;
-                case 'n': mask |= (_RT_FLOAT | _RT_INTEGER); break;
-                case 's': mask |= _RT_STRING; break;
-                case 't': mask |= _RT_TABLE; break;
-                case 'a': mask |= _RT_ARRAY; break;
-                case 'u': mask |= _RT_USERDATA; break;
-                case 'c': mask |= (_RT_CLOSURE | _RT_NATIVECLOSURE); break;
-                case 'b': mask |= _RT_BOOL; break;
-                case 'g': mask |= _RT_GENERATOR; break;
-                case 'p': mask |= _RT_USERPOINTER; break;
-                case 'v': mask |= _RT_THREAD; break;
-                case 'x': mask |= _RT_INSTANCE; break;
-                case 'y': mask |= _RT_CLASS; break;
-                case 'r': mask |= _RT_WEAKREF; break;
-                case '.': mask = -1; res.push_back(mask); i++; mask = 0; continue;
-                case ' ': i++; continue; //ignores spaces
-                default:
-                    return false;
+        switch(typemask[i])
+        {
+        case 'o':
+            mask |= _RT_NULL;
+            break;
+        case 'i':
+            mask |= _RT_INTEGER;
+            break;
+        case 'f':
+            mask |= _RT_FLOAT;
+            break;
+        case 'n':
+            mask |= (_RT_FLOAT | _RT_INTEGER);
+            break;
+        case 's':
+            mask |= _RT_STRING;
+            break;
+        case 't':
+            mask |= _RT_TABLE;
+            break;
+        case 'a':
+            mask |= _RT_ARRAY;
+            break;
+        case 'u':
+            mask |= _RT_USERDATA;
+            break;
+        case 'c':
+            mask |= (_RT_CLOSURE | _RT_NATIVECLOSURE);
+            break;
+        case 'b':
+            mask |= _RT_BOOL;
+            break;
+        case 'g':
+            mask |= _RT_GENERATOR;
+            break;
+        case 'p':
+            mask |= _RT_USERPOINTER;
+            break;
+        case 'v':
+            mask |= _RT_THREAD;
+            break;
+        case 'x':
+            mask |= _RT_INSTANCE;
+            break;
+        case 'y':
+            mask |= _RT_CLASS;
+            break;
+        case 'r':
+            mask |= _RT_WEAKREF;
+            break;
+        case '.':
+            mask = -1;
+            res.push_back(mask);
+            i++;
+            mask = 0;
+            continue;
+        case ' ':
+            i++;
+            continue; //ignores spaces
+        default:
+            return false;
         }
         i++;
-        if(typemask[i] == '|') {
+        if(typemask[i] == '|')
+        {
             i++;
             if(typemask[i] == 0)
                 return false;
@@ -85,7 +127,8 @@ SQTable *CreateDefaultDelegate(SQSharedState *ss,const SQRegFunction *funcz)
 {
     SQInteger i=0;
     SQTable *t=SQTable::Create(ss,0);
-    while(funcz[i].name!=0){
+    while(funcz[i].name!=0)
+    {
         SQNativeClosure *nc = SQNativeClosure::Create(ss,funcz[i].f,0);
         nc->_nparamscheck = funcz[i].nparamscheck;
         nc->_name = SQString::Create(ss,funcz[i].name);
@@ -165,7 +208,11 @@ void SQSharedState::Init()
 
 SQSharedState::~SQSharedState()
 {
-    if(_releasehook) { _releasehook(_foreignptr,0); _releasehook = NULL; }
+    if(_releasehook)
+    {
+        _releasehook(_foreignptr,0);
+        _releasehook = NULL;
+    }
     _constructoridx.Null();
     _table(_registry)->Finalize();
     _table(_consts)->Finalize();
@@ -173,7 +220,8 @@ SQSharedState::~SQSharedState()
     _registry.Null();
     _consts.Null();
     _metamethodsmap.Null();
-    while(!_systemstrings->empty()) {
+    while(!_systemstrings->empty())
+    {
         _systemstrings->back().Null();
         _systemstrings->pop_back();
     }
@@ -193,9 +241,11 @@ SQSharedState::~SQSharedState()
 #ifndef NO_GARBAGE_COLLECTOR
     SQCollectable *t = _gc_chain;
     SQCollectable *nx = NULL;
-    if(t) {
+    if(t)
+    {
         t->_uiRef++;
-        while(t) {
+        while(t)
+        {
             t->Finalize();
             nx = t->_next;
             if(nx) nx->_uiRef++;
@@ -205,7 +255,8 @@ SQSharedState::~SQSharedState()
         }
     }
     assert(_gc_chain==NULL); //just to proove a theory
-    while(_gc_chain){
+    while(_gc_chain)
+    {
         _gc_chain->_uiRef++;
         _gc_chain->Release();
     }
@@ -224,7 +275,8 @@ SQInteger SQSharedState::GetMetaMethodIdxByName(const SQObjectPtr &name)
     if(sq_type(name) != OT_STRING)
         return -1;
     SQObjectPtr ret;
-    if(_table(_metamethodsmap)->Get(name,ret)) {
+    if(_table(_metamethodsmap)->Get(name,ret))
+    {
         return _integer(ret);
     }
     return -1;
@@ -234,19 +286,43 @@ SQInteger SQSharedState::GetMetaMethodIdxByName(const SQObjectPtr &name)
 
 void SQSharedState::MarkObject(SQObjectPtr &o,SQCollectable **chain)
 {
-    switch(sq_type(o)){
-    case OT_TABLE:_table(o)->Mark(chain);break;
-    case OT_ARRAY:_array(o)->Mark(chain);break;
-    case OT_USERDATA:_userdata(o)->Mark(chain);break;
-    case OT_CLOSURE:_closure(o)->Mark(chain);break;
-    case OT_NATIVECLOSURE:_nativeclosure(o)->Mark(chain);break;
-    case OT_GENERATOR:_generator(o)->Mark(chain);break;
-    case OT_THREAD:_thread(o)->Mark(chain);break;
-    case OT_CLASS:_class(o)->Mark(chain);break;
-    case OT_INSTANCE:_instance(o)->Mark(chain);break;
-    case OT_OUTER:_outer(o)->Mark(chain);break;
-    case OT_FUNCPROTO:_funcproto(o)->Mark(chain);break;
-    default: break; //shutup compiler
+    switch(sq_type(o))
+    {
+    case OT_TABLE:
+        _table(o)->Mark(chain);
+        break;
+    case OT_ARRAY:
+        _array(o)->Mark(chain);
+        break;
+    case OT_USERDATA:
+        _userdata(o)->Mark(chain);
+        break;
+    case OT_CLOSURE:
+        _closure(o)->Mark(chain);
+        break;
+    case OT_NATIVECLOSURE:
+        _nativeclosure(o)->Mark(chain);
+        break;
+    case OT_GENERATOR:
+        _generator(o)->Mark(chain);
+        break;
+    case OT_THREAD:
+        _thread(o)->Mark(chain);
+        break;
+    case OT_CLASS:
+        _class(o)->Mark(chain);
+        break;
+    case OT_INSTANCE:
+        _instance(o)->Mark(chain);
+        break;
+    case OT_OUTER:
+        _outer(o)->Mark(chain);
+        break;
+    case OT_FUNCPROTO:
+        _funcproto(o)->Mark(chain);
+        break;
+    default:
+        break; //shutup compiler
     }
 }
 
@@ -287,13 +363,16 @@ SQInteger SQSharedState::ResurrectUnreachable(SQVM *vm)
     _gc_chain = tchain;
 
     SQArray *ret = NULL;
-    if(resurrected) {
+    if(resurrected)
+    {
         ret = SQArray::Create(this,0);
         SQCollectable *rlast = NULL;
-        while(t) {
+        while(t)
+        {
             rlast = t;
             SQObjectType type = t->GetType();
-            if(type != OT_FUNCPROTO && type != OT_OUTER) {
+            if(type != OT_FUNCPROTO && type != OT_OUTER)
+            {
                 SQObject sqo;
                 sqo._type = type;
                 sqo._unVal.pRefCounted = t;
@@ -313,16 +392,19 @@ SQInteger SQSharedState::ResurrectUnreachable(SQVM *vm)
     }
 
     t = _gc_chain;
-    while(t) {
+    while(t)
+    {
         t->UnMark();
         t = t->_next;
     }
 
-    if(ret) {
+    if(ret)
+    {
         SQObjectPtr temp = ret;
         vm->Push(temp);
     }
-    else {
+    else
+    {
         vm->PushNull();
     }
     return n;
@@ -337,9 +419,11 @@ SQInteger SQSharedState::CollectGarbage(SQVM *vm)
 
     SQCollectable *t = _gc_chain;
     SQCollectable *nx = NULL;
-    if(t) {
+    if(t)
+    {
         t->_uiRef++;
-        while(t) {
+        while(t)
+        {
             t->Finalize();
             nx = t->_next;
             if(nx) nx->_uiRef++;
@@ -351,7 +435,8 @@ SQInteger SQSharedState::CollectGarbage(SQVM *vm)
     }
 
     t = tchain;
-    while(t) {
+    while(t)
+    {
         t->UnMark();
         t = t->_next;
     }
@@ -384,13 +469,17 @@ void SQCollectable::RemoveFromChain(SQCollectable **chain,SQCollectable *c)
 SQChar* SQSharedState::GetScratchPad(SQInteger size)
 {
     SQInteger newsize;
-    if(size>0) {
-        if(_scratchpadsize < size) {
+    if(size>0)
+    {
+        if(_scratchpadsize < size)
+        {
             newsize = size + (size>>1);
             _scratchpad = (SQChar *)SQ_REALLOC(_scratchpad,_scratchpadsize,newsize);
             _scratchpadsize = newsize;
 
-        }else if(_scratchpadsize >= (size<<5)) {
+        }
+        else if(_scratchpadsize >= (size<<5))
+        {
             newsize = _scratchpadsize >> 1;
             _scratchpad = (SQChar *)SQ_REALLOC(_scratchpad,_scratchpadsize,newsize);
             _scratchpadsize = newsize;
@@ -407,7 +496,8 @@ RefTable::RefTable()
 void RefTable::Finalize()
 {
     RefNode *nodes = _nodes;
-    for(SQUnsignedInteger n = 0; n < _numofslots; n++) {
+    for(SQUnsignedInteger n = 0; n < _numofslots; n++)
+    {
         nodes->obj.Null();
         nodes++;
     }
@@ -422,8 +512,10 @@ RefTable::~RefTable()
 void RefTable::Mark(SQCollectable **chain)
 {
     RefNode *nodes = (RefNode *)_nodes;
-    for(SQUnsignedInteger n = 0; n < _numofslots; n++) {
-        if(sq_type(nodes->obj) != OT_NULL) {
+    for(SQUnsignedInteger n = 0; n < _numofslots; n++)
+    {
+        if(sq_type(nodes->obj) != OT_NULL)
+        {
             SQSharedState::MarkObject(nodes->obj,chain);
         }
         nodes++;
@@ -441,10 +533,10 @@ void RefTable::AddRef(SQObject &obj)
 
 SQUnsignedInteger RefTable::GetRefCount(SQObject &obj)
 {
-     SQHash mainpos;
-     RefNode *prev;
-     RefNode *ref = Get(obj,mainpos,&prev,true);
-     return ref->refs;
+    SQHash mainpos;
+    RefNode *prev;
+    RefNode *ref = Get(obj,mainpos,&prev,true);
+    return ref->refs;
 }
 
 
@@ -453,13 +545,17 @@ SQBool RefTable::Release(SQObject &obj)
     SQHash mainpos;
     RefNode *prev;
     RefNode *ref = Get(obj,mainpos,&prev,false);
-    if(ref) {
-        if(--ref->refs == 0) {
+    if(ref)
+    {
+        if(--ref->refs == 0)
+        {
             SQObjectPtr o = ref->obj;
-            if(prev) {
+            if(prev)
+            {
                 prev->next = ref->next;
             }
-            else {
+            else
+            {
                 _buckets[mainpos] = ref->next;
             }
             ref->next = _freelist;
@@ -470,7 +566,8 @@ SQBool RefTable::Release(SQObject &obj)
             return SQTrue;
         }
     }
-    else {
+    else
+    {
         assert(0);
     }
     return SQFalse;
@@ -484,8 +581,10 @@ void RefTable::Resize(SQUnsignedInteger size)
     AllocNodes(size);
     //rehash
     SQUnsignedInteger nfound = 0;
-    for(SQUnsignedInteger n = 0; n < oldnumofslots; n++) {
-        if(sq_type(t->obj) != OT_NULL) {
+    for(SQUnsignedInteger n = 0; n < oldnumofslots; n++)
+    {
+        if(sq_type(t->obj) != OT_NULL)
+        {
             //add back;
             assert(t->refs != 0);
             RefNode *nn = Add(::HashObj(t->obj)&(_numofslots-1),t->obj);
@@ -517,14 +616,17 @@ RefTable::RefNode *RefTable::Get(SQObject &obj,SQHash &mainpos,RefNode **prev,bo
     RefNode *ref;
     mainpos = ::HashObj(obj)&(_numofslots-1);
     *prev = NULL;
-    for (ref = _buckets[mainpos]; ref; ) {
+    for (ref = _buckets[mainpos]; ref; )
+    {
         if(_rawval(ref->obj) == _rawval(obj) && sq_type(ref->obj) == sq_type(obj))
             break;
         *prev = ref;
         ref = ref->next;
     }
-    if(ref == NULL && add) {
-        if(_numofslots == _slotused) {
+    if(ref == NULL && add)
+    {
+        if(_numofslots == _slotused)
+        {
             assert(_freelist == 0);
             Resize(_numofslots*2);
             mainpos = ::HashObj(obj)&(_numofslots-1);
@@ -542,7 +644,8 @@ void RefTable::AllocNodes(SQUnsignedInteger size)
     nodes = (RefNode *)&bucks[size];
     RefNode *temp = nodes;
     SQUnsignedInteger n;
-    for(n = 0; n < size - 1; n++) {
+    for(n = 0; n < size - 1; n++)
+    {
         bucks[n] = NULL;
         temp->refs = 0;
         new (&temp->obj) SQObjectPtr;
@@ -594,7 +697,8 @@ SQString *SQStringTable::Add(const SQChar *news,SQInteger len)
     SQHash newhash = ::_hashstr(news,len);
     SQHash h = newhash&(_numofslots-1);
     SQString *s;
-    for (s = _strings[h]; s; s = s->_next){
+    for (s = _strings[h]; s; s = s->_next)
+    {
         if(s->_len == len && (!memcmp(news,s->_val,sq_rsl(len))))
             return s; //found
     }
@@ -619,9 +723,11 @@ void SQStringTable::Resize(SQInteger size)
     SQInteger oldsize=_numofslots;
     SQString **oldtable=_strings;
     AllocNodes(size);
-    for (SQInteger i=0; i<oldsize; i++){
+    for (SQInteger i=0; i<oldsize; i++)
+    {
         SQString *p = oldtable[i];
-        while(p){
+        while(p)
+        {
             SQString *next = p->_next;
             SQHash h = p->_hash&(_numofslots-1);
             p->_next = _strings[h];
@@ -638,8 +744,10 @@ void SQStringTable::Remove(SQString *bs)
     SQString *prev=NULL;
     SQHash h = bs->_hash&(_numofslots - 1);
 
-    for (s = _strings[h]; s; ){
-        if(s == bs){
+    for (s = _strings[h]; s; )
+    {
+        if(s == bs)
+        {
             if(prev)
                 prev->_next = s->_next;
             else

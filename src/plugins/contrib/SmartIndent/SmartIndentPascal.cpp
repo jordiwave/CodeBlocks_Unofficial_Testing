@@ -3,11 +3,11 @@
 #include <sdk.h> // Code::Blocks SDK
 
 #ifndef CB_PRECOMP
-    #include <cbeditor.h>
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <editorcolourset.h>
-    #include <manager.h>
+#include <cbeditor.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <editorcolourset.h>
+#include <manager.h>
 #endif
 
 #include <cbstyledtextctrl.h>
@@ -16,7 +16,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<SmartIndentPascal> reg(wxT("SmartIndentPascal"));
+PluginRegistrant<SmartIndentPascal> reg(wxT("SmartIndentPascal"));
 }
 
 void SmartIndentPascal::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const

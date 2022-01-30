@@ -14,31 +14,34 @@ class wxCommandEvent;
 
 class CompilerMessages : public wxEvtHandler, public ListCtrlLogger
 {
-    public:
-        CompilerMessages(const wxArrayString& titles, const wxArrayInt& widths);
-        virtual ~CompilerMessages();
-        virtual void SetCompilerErrors(CompilerErrors* errors){ m_pErrors = errors; }
-        virtual void FocusError(int nr);
+public:
+    CompilerMessages(const wxArrayString& titles, const wxArrayInt& widths);
+    virtual ~CompilerMessages();
+    virtual void SetCompilerErrors(CompilerErrors* errors)
+    {
+        m_pErrors = errors;
+    }
+    virtual void FocusError(int nr);
 
-        void AutoFitColumns(int column) override;
+    void AutoFitColumns(int column) override;
 
-        wxWindow* CreateControl(wxWindow* parent) override;
-        void DestroyControls();
+    wxWindow* CreateControl(wxWindow* parent) override;
+    void DestroyControls();
 
-        bool HasFeature(Feature::Enum feature) const override;
-        void AppendAdditionalMenuItems(wxMenu &menu) override;
-    private:
-        void OnClick(wxCommandEvent& event);
-        void OnDoubleClick(wxCommandEvent& event);
-        void OnFit(wxCommandEvent& event);
-        void OnAutoFit(wxCommandEvent& event);
+    bool HasFeature(Feature::Enum feature) const override;
+    void AppendAdditionalMenuItems(wxMenu &menu) override;
+private:
+    void OnClick(wxCommandEvent& event);
+    void OnDoubleClick(wxCommandEvent& event);
+    void OnFit(wxCommandEvent& event);
+    void OnAutoFit(wxCommandEvent& event);
 
-        void FitColumns();
+    void FitColumns();
 
-        CompilerErrors* m_pErrors;
-        bool m_autoFit;
+    CompilerErrors* m_pErrors;
+    bool m_autoFit;
 
-        DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // COMPILERMESSAGES_H

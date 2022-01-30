@@ -9,14 +9,14 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/intl.h>
-    #include <wx/listctrl.h>
-    #include <wx/menu.h>
-    #include <wx/string.h>
-    #include <wx/utils.h>
-    #include "globals.h"
-    #include "manager.h"
-    #include "configmanager.h"
+#include <wx/intl.h>
+#include <wx/listctrl.h>
+#include <wx/menu.h>
+#include <wx/string.h>
+#include <wx/utils.h>
+#include "globals.h"
+#include "manager.h"
+#include "configmanager.h"
 #endif
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
@@ -26,9 +26,9 @@
 
 namespace
 {
-    int idList = wxNewId();
-    int idMenuFit = wxNewId();
-    int idMenuAutoFit = wxNewId();
+int idList = wxNewId();
+int idMenuFit = wxNewId();
+int idMenuAutoFit = wxNewId();
 }
 
 BEGIN_EVENT_TABLE(CompilerMessages, wxEvtHandler)
@@ -43,19 +43,19 @@ CompilerMessages::CompilerMessages(const wxArrayString& titles_in, const wxArray
 
 CompilerMessages::~CompilerMessages()
 {
-	//dtor
-	Disconnect(idList, -1, wxEVT_COMMAND_LIST_ITEM_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &CompilerMessages::OnClick);
+    //dtor
+    Disconnect(idList, -1, wxEVT_COMMAND_LIST_ITEM_SELECTED,
+               (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+               &CompilerMessages::OnClick);
     Disconnect(idList, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &CompilerMessages::OnDoubleClick);
+               (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+               &CompilerMessages::OnDoubleClick);
     Disconnect(idMenuFit, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &CompilerMessages::OnFit);
+               (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+               &CompilerMessages::OnFit);
     Disconnect(idMenuAutoFit, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &CompilerMessages::OnAutoFit);
+               (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+               &CompilerMessages::OnAutoFit);
 }
 
 wxWindow* CompilerMessages::CreateControl(wxWindow* parent)

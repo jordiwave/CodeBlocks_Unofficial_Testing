@@ -27,28 +27,28 @@
 
 namespace
 {
-    wxsRegisterItem<wxsGrid> Reg(_T("Grid"),wxsTWidget,_T("Advanced"),70);
+wxsRegisterItem<wxsGrid> Reg(_T("Grid"),wxsTWidget,_T("Advanced"),70);
 
-    WXS_ST_BEGIN(wxsGridStyles,_T(""))
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsGridStyles,_T(""))
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsGridEvents)
-        WXS_EVI(EVT_CMD_GRID_CELL_LEFT_CLICK,wxEVT_GRID_CELL_LEFT_CLICK,wxGridEvent,CellLeftClick)
-        WXS_EVI(EVT_CMD_GRID_CELL_RIGHT_CLICK,wxEVT_GRID_CELL_RIGHT_CLICK,wxGridEvent,CellRightClick)
-        WXS_EVI(EVT_CMD_GRID_CELL_LEFT_DCLICK,wxEVT_GRID_CELL_LEFT_DCLICK,wxGridEvent,CellLeftDClick)
-        WXS_EVI(EVT_CMD_GRID_CELL_RIGHT_DCLICK,wxEVT_GRID_CELL_RIGHT_DCLICK,wxGridEvent,CellRightDClick)
-        WXS_EVI(EVT_CMD_GRID_LABEL_LEFT_CLICK,wxEVT_GRID_LABEL_LEFT_CLICK,wxGridEvent,LabelLeftClick)
-        WXS_EVI(EVT_CMD_GRID_LABEL_RIGHT_CLICK,wxEVT_GRID_LABEL_RIGHT_CLICK,wxGridEvent,LabelRightClick)
-        WXS_EVI(EVT_CMD_GRID_LABEL_LEFT_DCLICK,wxEVT_GRID_LABEL_LEFT_DCLICK,wxGridEvent,LabelLeftDClick)
-        WXS_EVI(EVT_CMD_GRID_LABEL_RIGHT_DCLICK,wxEVT_GRID_LABEL_RIGHT_DCLICK,wxGridEvent,LabelRightDClick)
-        WXS_EVI(EVT_CMD_GRID_CELL_CHANGED,wxEVT_GRID_CELL_CHANGED,wxGridEvent,CellChanged)     // added in 3.0
-        WXS_EVI(EVT_CMD_GRID_CELL_CHANGING,wxEVT_GRID_CELL_CHANGING,wxGridEvent,CellChanging)  // added in 3.0
-        WXS_EVI(EVT_CMD_GRID_SELECT_CELL,wxEVT_GRID_SELECT_CELL,wxGridEvent,CellSelect)
-        WXS_EVI(EVT_CMD_GRID_EDITOR_HIDDEN,wxEVT_GRID_EDITOR_HIDDEN,wxGridEvent,EditorHidden)
-        WXS_EVI(EVT_CMD_GRID_EDITOR_SHOWN,wxEVT_GRID_EDITOR_SHOWN,wxGridEvent,EditorShown)
-        WXS_EV_DEFAULTS()
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsGridEvents)
+WXS_EVI(EVT_CMD_GRID_CELL_LEFT_CLICK,wxEVT_GRID_CELL_LEFT_CLICK,wxGridEvent,CellLeftClick)
+WXS_EVI(EVT_CMD_GRID_CELL_RIGHT_CLICK,wxEVT_GRID_CELL_RIGHT_CLICK,wxGridEvent,CellRightClick)
+WXS_EVI(EVT_CMD_GRID_CELL_LEFT_DCLICK,wxEVT_GRID_CELL_LEFT_DCLICK,wxGridEvent,CellLeftDClick)
+WXS_EVI(EVT_CMD_GRID_CELL_RIGHT_DCLICK,wxEVT_GRID_CELL_RIGHT_DCLICK,wxGridEvent,CellRightDClick)
+WXS_EVI(EVT_CMD_GRID_LABEL_LEFT_CLICK,wxEVT_GRID_LABEL_LEFT_CLICK,wxGridEvent,LabelLeftClick)
+WXS_EVI(EVT_CMD_GRID_LABEL_RIGHT_CLICK,wxEVT_GRID_LABEL_RIGHT_CLICK,wxGridEvent,LabelRightClick)
+WXS_EVI(EVT_CMD_GRID_LABEL_LEFT_DCLICK,wxEVT_GRID_LABEL_LEFT_DCLICK,wxGridEvent,LabelLeftDClick)
+WXS_EVI(EVT_CMD_GRID_LABEL_RIGHT_DCLICK,wxEVT_GRID_LABEL_RIGHT_DCLICK,wxGridEvent,LabelRightDClick)
+WXS_EVI(EVT_CMD_GRID_CELL_CHANGED,wxEVT_GRID_CELL_CHANGED,wxGridEvent,CellChanged)     // added in 3.0
+WXS_EVI(EVT_CMD_GRID_CELL_CHANGING,wxEVT_GRID_CELL_CHANGING,wxGridEvent,CellChanging)  // added in 3.0
+WXS_EVI(EVT_CMD_GRID_SELECT_CELL,wxEVT_GRID_SELECT_CELL,wxGridEvent,CellSelect)
+WXS_EVI(EVT_CMD_GRID_EDITOR_HIDDEN,wxEVT_GRID_EDITOR_HIDDEN,wxGridEvent,EditorHidden)
+WXS_EVI(EVT_CMD_GRID_EDITOR_SHOWN,wxEVT_GRID_EDITOR_SHOWN,wxGridEvent,EditorShown)
+WXS_EV_DEFAULTS()
+WXS_EV_END()
 
 }
 
@@ -77,79 +77,79 @@ void wxsGrid::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/grid.h>"),GetInfo().ClassName,0);
+        AddHeader(_T("<wx/grid.h>"),_T("wxGridEvent"),0);
+
+        Codef( _T("%C(%W, %I, %P, %S, %T, %N);\n") );
+
+        if ( GetPropertiesFlags() & flSource )
         {
-            AddHeader(_T("<wx/grid.h>"),GetInfo().ClassName,0);
-            AddHeader(_T("<wx/grid.h>"),_T("wxGridEvent"),0);
-
-            Codef( _T("%C(%W, %I, %P, %S, %T, %N);\n") );
-
-            if ( GetPropertiesFlags() & flSource )
+            if ( m_ColsCount>=0 && m_RowsCount>=0 && (m_ColsCount>0 || m_RowsCount>0) )
             {
-                if ( m_ColsCount>=0 && m_RowsCount>=0 && (m_ColsCount>0 || m_RowsCount>0) )
+                Codef( _T("%ACreateGrid(%d,%d);\n"), m_RowsCount, m_ColsCount );
+                BuildSetupWindowCode();
+
+                Codef( _T("%AEnableEditing(%b);\n"),  !m_ReadOnly);
+                Codef( _T("%AEnableGridLines(%b);\n"), m_GridLines);
+
+                if (m_LabelRowHeight > 0) Codef(_T("%ASetColLabelSize(%d);\n"), m_LabelRowHeight);
+                if (m_LabelColWidth  > 0) Codef(_T("%ASetRowLabelSize(%d);\n"), m_LabelColWidth);
+
+                if (m_DefaultRowSize  > 0) Codef(_T("%ASetDefaultRowSize(%d, %b);\n"), m_DefaultRowSize, true);
+                if (m_DefaultColSize  > 0) Codef(_T("%ASetDefaultColSize(%d, %b);\n"), m_DefaultColSize, true);
+
+                wxString ss = m_LabelTextColour.BuildCode( GetCoderContext() );
+                if (ss.Len() > 0) Codef(_T("%ASetLabelTextColour(%s);\n"), ss.wx_str());
+
+                ss = GetCoderContext()->GetUniqueName( _T("GridLabelFont") );
+                wxString tt = m_LabelFont.BuildFontCode(ss, GetCoderContext());
+                if (tt.Len() > 0)
                 {
-                    Codef( _T("%ACreateGrid(%d,%d);\n"), m_RowsCount, m_ColsCount );
-                    BuildSetupWindowCode();
-
-                    Codef( _T("%AEnableEditing(%b);\n"),  !m_ReadOnly);
-                    Codef( _T("%AEnableGridLines(%b);\n"), m_GridLines);
-
-                    if (m_LabelRowHeight > 0) Codef(_T("%ASetColLabelSize(%d);\n"), m_LabelRowHeight);
-                    if (m_LabelColWidth  > 0) Codef(_T("%ASetRowLabelSize(%d);\n"), m_LabelColWidth);
-
-                    if (m_DefaultRowSize  > 0) Codef(_T("%ASetDefaultRowSize(%d, %b);\n"), m_DefaultRowSize, true);
-                    if (m_DefaultColSize  > 0) Codef(_T("%ASetDefaultColSize(%d, %b);\n"), m_DefaultColSize, true);
-
-                    wxString ss = m_LabelTextColour.BuildCode( GetCoderContext() );
-                    if (ss.Len() > 0) Codef(_T("%ASetLabelTextColour(%s);\n"), ss.wx_str());
-
-                    ss = GetCoderContext()->GetUniqueName( _T("GridLabelFont") );
-                    wxString tt = m_LabelFont.BuildFontCode(ss, GetCoderContext());
-                    if (tt.Len() > 0)
-                    {
-                        Codef(_T("%s"), tt.wx_str());
-                        Codef(_T("%ASetLabelFont(%s);\n"), ss.wx_str());
-                    }
-
-                    int n = wxMin( (int)m_ColLabels.GetCount(), m_ColsCount );
-                    for ( int i=0; i<n; i++ )
-                    {
-                        Codef(_T("%ASetColLabelValue(%d, %t);\n"), i, m_ColLabels[i].wx_str());
-                    }
-
-                    n = wxMin( (int)m_RowLabels.GetCount(), m_RowsCount );
-                    for ( int i=0; i<n; i++)
-                    {
-                        Codef(_T("%ASetRowLabelValue(%d, %t);\n"), i, m_RowLabels[i].wx_str());
-                    }
-
-                    n = (int)m_CellText.GetCount();
-                    int i = 0;
-                    for ( int j=0; j<m_RowsCount && i<n; j++ )
-                    {
-                        for ( int k=0; k<m_ColsCount && i<n; k++, i++ )
-                        {
-                            Codef( _T("%ASetCellValue(%d, %d, %t);\n"), j, k, m_CellText[i].wx_str());
-                        }
-                    }
-
-                    // default cell font and text colour
-
-                    Codef(_T("%ASetDefaultCellFont( %AGetFont() );\n"));
-
-                    Codef(_T("%ASetDefaultCellTextColour( %AGetForegroundColour() );\n"));
-
+                    Codef(_T("%s"), tt.wx_str());
+                    Codef(_T("%ASetLabelFont(%s);\n"), ss.wx_str());
                 }
+
+                int n = wxMin( (int)m_ColLabels.GetCount(), m_ColsCount );
+                for ( int i=0; i<n; i++ )
+                {
+                    Codef(_T("%ASetColLabelValue(%d, %t);\n"), i, m_ColLabels[i].wx_str());
+                }
+
+                n = wxMin( (int)m_RowLabels.GetCount(), m_RowsCount );
+                for ( int i=0; i<n; i++)
+                {
+                    Codef(_T("%ASetRowLabelValue(%d, %t);\n"), i, m_RowLabels[i].wx_str());
+                }
+
+                n = (int)m_CellText.GetCount();
+                int i = 0;
+                for ( int j=0; j<m_RowsCount && i<n; j++ )
+                {
+                    for ( int k=0; k<m_ColsCount && i<n; k++, i++ )
+                    {
+                        Codef( _T("%ASetCellValue(%d, %d, %t);\n"), j, k, m_CellText[i].wx_str());
+                    }
+                }
+
+                // default cell font and text colour
+
+                Codef(_T("%ASetDefaultCellFont( %AGetFont() );\n"));
+
+                Codef(_T("%ASetDefaultCellTextColour( %AGetForegroundColour() );\n"));
+
             }
-
-            return;
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsGrid::OnBuildCreatingCode"),GetLanguage());
-        }
+        return;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsGrid::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

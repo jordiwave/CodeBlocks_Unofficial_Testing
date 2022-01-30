@@ -29,46 +29,46 @@ static int idFileExportPDF = wxNewId();
 // Register the plugin
 namespace
 {
-    PluginRegistrant<Exporter> reg(_T("Exporter"));
+PluginRegistrant<Exporter> reg(_T("Exporter"));
 };
 
 BEGIN_EVENT_TABLE(Exporter, cbPlugin)
-  EVT_MENU(idFileExportHTML, Exporter::OnExportHTML)
-  EVT_MENU(idFileExportRTF, Exporter::OnExportRTF)
-  EVT_MENU(idFileExportODT, Exporter::OnExportODT)
-  EVT_MENU(idFileExportPDF, Exporter::OnExportPDF)
-  EVT_UPDATE_UI(idFileExportHTML, Exporter::OnUpdateUI)
-  EVT_UPDATE_UI(idFileExportRTF, Exporter::OnUpdateUI)
-  EVT_UPDATE_UI(idFileExportODT, Exporter::OnUpdateUI)
+    EVT_MENU(idFileExportHTML, Exporter::OnExportHTML)
+    EVT_MENU(idFileExportRTF, Exporter::OnExportRTF)
+    EVT_MENU(idFileExportODT, Exporter::OnExportODT)
+    EVT_MENU(idFileExportPDF, Exporter::OnExportPDF)
+    EVT_UPDATE_UI(idFileExportHTML, Exporter::OnUpdateUI)
+    EVT_UPDATE_UI(idFileExportRTF, Exporter::OnUpdateUI)
+    EVT_UPDATE_UI(idFileExportODT, Exporter::OnUpdateUI)
 END_EVENT_TABLE()
 
 Exporter::Exporter()
 {
-  //ctor
+    //ctor
 }
 
 Exporter::~Exporter()
 {
-  //dtor
+    //dtor
 }
 
 void Exporter::OnAttach()
 {
-  // do whatever initialization you need for your plugin
-  // NOTE: after this function, the inherited member variable
-  // IsAttached() will be TRUE...
-  // You should check for it in other functions, because if it
-  // is FALSE, it means that the application did *not* "load"
-  // (see: does not need) this plugin...
+    // do whatever initialization you need for your plugin
+    // NOTE: after this function, the inherited member variable
+    // IsAttached() will be TRUE...
+    // You should check for it in other functions, because if it
+    // is FALSE, it means that the application did *not* "load"
+    // (see: does not need) this plugin...
 }
 
 void Exporter::OnRelease(bool /*appShutDown*/)
 {
-  // do de-initialization for your plugin
-  // if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,
-  // which means you must not use any of the SDK Managers
-  // NOTE: after this function, the inherited member variable
-  // IsAttached() will be FALSE...
+    // do de-initialization for your plugin
+    // if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,
+    // which means you must not use any of the SDK Managers
+    // NOTE: after this function, the inherited member variable
+    // IsAttached() will be FALSE...
 }
 
 static wxMenu* FindOrInsertExportMenu(wxMenuBar *menuBar)
@@ -125,79 +125,79 @@ void Exporter::BuildMenu(wxMenuBar *menuBar)
 
 void Exporter::OnUpdateUI(wxUpdateUIEvent &event)
 {
-  if (Manager::IsAppShuttingDown())
-  {
+    if (Manager::IsAppShuttingDown())
+    {
+        event.Skip();
+        return;
+    }
+
+    wxMenuBar *mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
+
+    if (mbar)
+    {
+        EditorManager *em = Manager::Get()->GetEditorManager();
+
+        // Enabled if there's a source file opened (be sure it isn't the "Start here" page)
+        bool disable = !em || !em->GetActiveEditor() || !em->GetBuiltinActiveEditor();
+        mbar->Enable(idFileExportHTML, !disable);
+        mbar->Enable(idFileExportRTF, !disable);
+        mbar->Enable(idFileExportODT, !disable);
+        mbar->Enable(idFileExportPDF, !disable);
+    }
+
     event.Skip();
-    return;
-  }
-
-  wxMenuBar *mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
-
-  if (mbar)
-  {
-    EditorManager *em = Manager::Get()->GetEditorManager();
-
-    // Enabled if there's a source file opened (be sure it isn't the "Start here" page)
-    bool disable = !em || !em->GetActiveEditor() || !em->GetBuiltinActiveEditor();
-    mbar->Enable(idFileExportHTML, !disable);
-    mbar->Enable(idFileExportRTF, !disable);
-    mbar->Enable(idFileExportODT, !disable);
-    mbar->Enable(idFileExportPDF, !disable);
-  }
-
-  event.Skip();
 }
 
 void Exporter::OnExportHTML(wxCommandEvent & /*event*/)
 {
-  HTMLExporter exp;
-  ExportFile(&exp, _T("html"), _("HTML files|*.html;*.htm"));
+    HTMLExporter exp;
+    ExportFile(&exp, _T("html"), _("HTML files|*.html;*.htm"));
 }
 
 void Exporter::OnExportRTF(wxCommandEvent & /*event*/)
 {
-  RTFExporter exp;
-  ExportFile(&exp, _T("rtf"), _("RTF files|*.rtf"));
+    RTFExporter exp;
+    ExportFile(&exp, _T("rtf"), _("RTF files|*.rtf"));
 }
 
 
 void Exporter::OnExportODT(wxCommandEvent & /*event*/)
 {
-  ODTExporter exp;
-  ExportFile(&exp, _T("odt"), _("ODT files|*.odt"));
+    ODTExporter exp;
+    ExportFile(&exp, _T("odt"), _("ODT files|*.odt"));
 }
 
 void Exporter::OnExportPDF(wxCommandEvent & /*event*/)
 {
-  PDFExporter exp;
-  ExportFile(&exp, _T("pdf"), _("PDF files|*.pdf"));
+    PDFExporter exp;
+    ExportFile(&exp, _T("pdf"), _("PDF files|*.pdf"));
 }
 
 void Exporter::ExportFile(BaseExporter *exp, const wxString &default_extension, const wxString &wildcard)
 {
-  if (!IsAttached())
-  {
-    return;
-  }
+    if (!IsAttached())
+    {
+        return;
+    }
 
-  EditorManager* em = Manager::Get()->GetEditorManager();
-  cbEditor*      cb = em->GetBuiltinActiveEditor();
+    EditorManager* em = Manager::Get()->GetEditorManager();
+    cbEditor*      cb = em->GetBuiltinActiveEditor();
 
-  wxString filename = wxFileSelector(_("Choose the filename"), _T(""), wxFileName(cb->GetFilename()).GetName() + _T(".") + default_extension, default_extension, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-  if (filename.IsEmpty())
-  {
-    return;
-  }
+    wxString filename = wxFileSelector(_("Choose the filename"), _T(""), wxFileName(cb->GetFilename()).GetName() + _T(".") + default_extension, default_extension, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (filename.IsEmpty())
+    {
+        return;
+    }
 
-  cbStyledTextCtrl* stc = cb->GetControl();
-  if (!stc)
-      return;
+    cbStyledTextCtrl* stc = cb->GetControl();
+    if (!stc)
+        return;
 
-  int lineCount = -1;
-  if (wxMessageBox(_("Would you like to have the line numbers printed in the exported file?"), _("Export line numbers"), wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION) == wxYES)
-  {
-    lineCount = stc->GetLineCount();
-  }
+    int lineCount = -1;
+    if (wxMessageBox(_("Would you like to have the line numbers printed in the exported file?"), _("Export line numbers"), wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION) == wxYES)
+    {
+        lineCount = stc->GetLineCount();
+    }
 
-  exp->Export(filename, cb->GetFilename(), stc->GetStyledText(0, stc->GetLength() - 1), cb->GetColourSet(), lineCount, stc->GetTabWidth());
+    exp->Export(filename, cb->GetFilename(), stc->GetStyledText(0, stc->GetLength() - 1), cb->GetColourSet(), lineCount, stc->GetTabWidth());
 }

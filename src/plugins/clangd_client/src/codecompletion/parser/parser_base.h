@@ -45,19 +45,19 @@ typedef std::list<wxString> StringList;
 namespace ParserCommon
 // ----------------------------------------------------------------------------
 {
-    /** the enum type of the file type */
-    enum EFileType
-    {
-        ftHeader,
-        ftSource,
-        ftOther
-    };
+/** the enum type of the file type */
+enum EFileType
+{
+    ftHeader,
+    ftSource,
+    ftOther
+};
 
-    /** return a file type, which can be either header files or implementation files or other files
-     *  @param filename the input file name
-     *  @param force_refresh read the user's option of file extension to classify the file type
-     */
-    EFileType FileType(const wxString& filename, bool force_refresh = false);
+/** return a file type, which can be either header files or implementation files or other files
+ *  @param filename the input file name
+ *  @param force_refresh read the user's option of file extension to classify the file type
+ */
+EFileType FileType(const wxString& filename, bool force_refresh = false);
 }// namespace ParserCommon
 
 /** specify the scope of the shown symbols */
@@ -135,7 +135,8 @@ struct ParserOptions
         platformCheck(true),
         logClangdClientCheck(false),
         logClangdServerCheck(false),
-        LLVM_MasterPath(""),        //(ph 2021/11/7)
+        LLVM_ClangDaemonMasterPath(""),
+        LLVM_ClangMasterPath(""),
         storeDocumentation(true)
     {}
 
@@ -149,7 +150,8 @@ struct ParserOptions
     bool platformCheck;        /// this will check for the platform of the project/target when adding include folders to the parser
     bool logClangdClientCheck; /// this will check for user enabled clangd client logging
     bool logClangdServerCheck; /// this will check for user enabled clangd server logging
-    wxString LLVM_MasterPath;  /// Path to LLVM install directory //(ph 2021/11/7)
+    wxString LLVM_ClangDaemonMasterPath;/// Path to LLVM install directory for Clangd execytable
+    wxString LLVM_ClangMasterPath;      /// Path to LLVM install directory for clang executable
     bool storeDocumentation;   /// should tokenizer detect and store doxygen documentation?
 
 };
@@ -170,7 +172,10 @@ public:
     virtual void AddBatchParse(cb_unused const StringList& filenames)           { ; }
     virtual void AddParse(cb_unused const wxString& filename)                   { ; }
 ////    virtual void AddPredefinedMacros(cb_unused const wxString& defs)            { ; }
-    virtual bool UpdateParsingProject(cb_unused cbProject* project)             { return false; }
+    virtual bool UpdateParsingProject(cb_unused cbProject* project)
+    {
+        return false;
+    }
 
 ////    virtual bool ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks = false,
 ////                             bool isTemp = false, const wxString& filename = wxEmptyString,
@@ -181,21 +186,45 @@ public:
 ////                                              cb_unused bool bufferSkipBlocks = true)                       { return false; }
 
 ////    virtual bool Reparse(cb_unused const wxString& filename, cb_unused bool isLocal = true);     // allow other implementations of derived (dummy) classes
-    virtual bool AddFile(cb_unused const wxString& filename, cb_unused cbProject* project, cb_unused bool isLocal = true) { return false; }
-    virtual void RemoveFile(cb_unused const wxString& filename) { return; }
-    virtual bool IsFileParsed(cb_unused const wxString& filename) { return false; }
+    virtual bool AddFile(cb_unused const wxString& filename, cb_unused cbProject* project, cb_unused bool isLocal = true)
+    {
+        return false;
+    }
+    virtual void RemoveFile(cb_unused const wxString& filename)
+    {
+        return;
+    }
+    virtual bool IsFileParsed(cb_unused const wxString& filename)
+    {
+        return false;
+    }
 
-    virtual bool     Done()          { return true; }
-    virtual wxString NotDoneReason() { return wxEmptyString; }
+    virtual bool     Done()
+    {
+        return true;
+    }
+    virtual wxString NotDoneReason()
+    {
+        return wxEmptyString;
+    }
 
     virtual TokenTree* GetTokenTree() const; // allow other implementations of derived (dummy) classes
-    TokenTree* GetTempTokenTree()    { return m_TempTokenTree; } // -unused-
+    TokenTree* GetTempTokenTree()
+    {
+        return m_TempTokenTree;    // -unused-
+    }
 
-    virtual const wxString GetPredefinedMacros() const { return wxEmptyString; } // allow other implementations of derived (dummy) classes
+    virtual const wxString GetPredefinedMacros() const
+    {
+        return wxEmptyString;    // allow other implementations of derived (dummy) classes
+    }
 
     /** add a directory to the Parser's include path database */
     void                 AddIncludeDir(const wxString& dir);
-    const wxArrayString& GetIncludeDirs() const { return m_IncludeDirs; }
+    const wxArrayString& GetIncludeDirs() const
+    {
+        return m_IncludeDirs;
+    }
     wxString             GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal);
 
     /** it mimics what a compiler does to find an include header files, if the firstonly option is
@@ -210,8 +239,14 @@ public:
     virtual void            WriteOptions() {}
 
     // make them virtual, so Parser class can overwrite then!
-    virtual ParserOptions&  Options()             { return m_Options;        }
-    virtual BrowserOptions& ClassBrowserOptions() { return m_BrowserOptions; }
+    virtual ParserOptions&  Options()
+    {
+        return m_Options;
+    }
+    virtual BrowserOptions& ClassBrowserOptions()
+    {
+        return m_BrowserOptions;
+    }
 
     /** Get tokens from the token tree associated with this filename
       * Caller must own TokenTree Lock before calling this function
@@ -259,13 +294,19 @@ private:
     // ----------------------------------------------------------------
     // LSP Parser properties
     // ----------------------------------------------------------------
-    public:
+public:
     // LSP legends for textDocument/semanticTokens
     std::vector<std::string> m_SemanticTokensTypes;
     std::vector<std::string> m_SemanticTokensModifiers;
     ProcessLanguageClient* m_pLSP_Client;                         //(ph 2021/03/23)
-    void SetLSP_Client(ProcessLanguageClient* pLSPclient) {m_pLSP_Client = pLSPclient;}
-    ProcessLanguageClient* GetLSPClient() {return m_pLSP_Client;}   //(ph 2021/04/10)
+    void SetLSP_Client(ProcessLanguageClient* pLSPclient)
+    {
+        m_pLSP_Client = pLSPclient;
+    }
+    ProcessLanguageClient* GetLSPClient()
+    {
+        return m_pLSP_Client;   //(ph 2021/04/10)
+    }
 
 };
 

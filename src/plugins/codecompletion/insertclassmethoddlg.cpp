@@ -10,16 +10,16 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/checkbox.h>
-    #include <wx/checklst.h>
-    #include <wx/intl.h>
-    #include <wx/listbox.h>
-    #include <wx/radiobox.h>
-    #include <wx/xrc/xmlres.h>
-    #include "globals.h"
-    #include "manager.h"
-    #include "logmanager.h"
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/checklst.h>
+#include <wx/intl.h>
+#include <wx/listbox.h>
+#include <wx/radiobox.h>
+#include <wx/xrc/xmlres.h>
+#include "globals.h"
+#include "manager.h"
+#include "logmanager.h"
 #endif
 
 #include "insertclassmethoddlg.h"
@@ -28,57 +28,57 @@
 
 namespace InsertClassMethodDlgHelper
 {
-    inline void DoFillMethodsFor(wxCheckListBox* clb, Token* parentToken, const wxString& ns, bool includePrivate,
-                                 bool includeProtected, bool includePublic)
+inline void DoFillMethodsFor(wxCheckListBox* clb, Token* parentToken, const wxString& ns, bool includePrivate,
+                             bool includeProtected, bool includePublic)
+{
+    if (!parentToken)
+        return;
+    TokenTree* tree = parentToken->GetTree();
+    if (!tree)
+        return;
+
+    // loop ascending the inheritance tree
+    tree->RecalcInheritanceChain(parentToken);
+
+    for (TokenIdxSet::const_iterator it = parentToken->m_Children.begin(); it != parentToken->m_Children.end(); ++it)
     {
-        if (!parentToken)
-            return;
-        TokenTree* tree = parentToken->GetTree();
-        if (!tree)
-            return;
+        int idx = *it;
+        const Token* token = tree->at(idx);
+        if (!token)
+            continue;
 
-        // loop ascending the inheritance tree
-        tree->RecalcInheritanceChain(parentToken);
-
-        for (TokenIdxSet::const_iterator it = parentToken->m_Children.begin(); it != parentToken->m_Children.end(); ++it)
+        const bool valid =    token->m_TokenKind & (tkFunction | tkConstructor | tkDestructor)
+                              && (   (includePrivate && token->m_Scope == tsPrivate)
+                                     || (includeProtected && token->m_Scope == tsProtected)
+                                     || (includePublic && token->m_Scope == tsPublic) );
+        if (valid)
         {
-            int idx = *it;
-            const Token* token = tree->at(idx);
-            if (!token)
-                continue;
-
-            const bool valid =    token->m_TokenKind & (tkFunction | tkConstructor | tkDestructor)
-                               && (   (includePrivate && token->m_Scope == tsPrivate)
-                                   || (includeProtected && token->m_Scope == tsProtected)
-                                   || (includePublic && token->m_Scope == tsPublic) );
-            if (valid)
-            {
-                wxString str;
-                str << token->m_FullType << _T(" ") << ns << token->m_Name << token->GetFormattedArgs();
-                str.Replace(_T("&"), _T("&&"));
-                if (clb->FindString(str) == wxNOT_FOUND)
-                    clb->Append(str);
-            }
-        }
-
-        // inheritance
-        for (TokenIdxSet::const_iterator it = parentToken->m_DirectAncestors.begin();
-             it != parentToken->m_DirectAncestors.end();
-             ++it)
-        {
-            int idx = *it;
-            Token* token = tree->at(idx);
-            if (!token)
-                continue;
-            InsertClassMethodDlgHelper::DoFillMethodsFor(
-                clb,
-                token,
-                ns,
-                includePrivate,
-                includeProtected,
-                includePublic);
+            wxString str;
+            str << token->m_FullType << _T(" ") << ns << token->m_Name << token->GetFormattedArgs();
+            str.Replace(_T("&"), _T("&&"));
+            if (clb->FindString(str) == wxNOT_FOUND)
+                clb->Append(str);
         }
     }
+
+    // inheritance
+    for (TokenIdxSet::const_iterator it = parentToken->m_DirectAncestors.begin();
+            it != parentToken->m_DirectAncestors.end();
+            ++it)
+    {
+        int idx = *it;
+        Token* token = tree->at(idx);
+        if (!token)
+            continue;
+        InsertClassMethodDlgHelper::DoFillMethodsFor(
+            clb,
+            token,
+            ns,
+            includePrivate,
+            includeProtected,
+            includePublic);
+    }
+}
 }// namespace InsertClassMethodDlgHelper
 
 BEGIN_EVENT_TABLE(InsertClassMethodDlg, wxScrollingDialog)

@@ -14,11 +14,11 @@
 #if defined(__cplusplus)
 
 #if defined(__clang__)
-   /*
-    * Per Clang documentation, "Note that marketing version numbers should not
-    * be used to check for language features, as different vendors use different
-    * numbering schemes. Instead, use the feature checking macros."
-    */
+/*
+ * Per Clang documentation, "Note that marketing version numbers should not
+ * be used to check for language features, as different vendors use different
+ * numbering schemes. Instead, use the feature checking macros."
+ */
 #  ifndef __has_extension
 #    define __has_extension __has_feature /* compatibility, for older versions of clang */
 #  endif
@@ -109,65 +109,65 @@
  *   MOZ_FINISH_NESTED_ENUM_CLASS(FooBar::Enum)
  */
 #if defined(MOZ_HAVE_CXX11_STRONG_ENUMS)
-  /*
-   * All compilers that support strong enums also support an explicit
-   * underlying type, so no extra check is needed.
-   */
+/*
+ * All compilers that support strong enums also support an explicit
+ * underlying type, so no extra check is needed.
+ */
 
-   /* Single-argument form. */
+/* Single-argument form. */
 #  define MOZ_BEGIN_NESTED_ENUM_CLASS_HELPER1(Name) \
      enum class Name {
-   /* Two-argument form. */
+/* Two-argument form. */
 #  define MOZ_BEGIN_NESTED_ENUM_CLASS_HELPER2(Name, type) \
      enum class Name : type {
 #  define MOZ_END_NESTED_ENUM_CLASS(Name) \
      };
 #  define MOZ_FINISH_NESTED_ENUM_CLASS(Name) /* nothing */
 #else
-   /**
-    * We need Name to both name a type, and scope the provided enumerator
-    * names.  Namespaces and classes both provide scoping, but namespaces
-    * aren't types, so we need to use a class that wraps the enum values.  We
-    * have an implicit conversion from the inner enum type to the class, so
-    * statements like
-    *
-    *   Enum x = Enum::A;
-    *
-    * will still work.  We need to define an implicit conversion from the class
-    * to the inner enum as well, so that (for instance) switch statements will
-    * work.  This means that the class can be implicitly converted to a numeric
-    * value as well via the enum type, since C++ allows an implicit
-    * user-defined conversion followed by a standard conversion to still be
-    * implicit.
-    *
-    * We have an explicit constructor from int defined, so that casts like
-    * (Enum)7 will still work.  We also have a zero-argument constructor with
-    * no arguments, so declaration without initialization (like "Enum foo;")
-    * will work.
-    *
-    * Additionally, we'll delete as many operators as possible for the inner
-    * enum type, so statements like this will still fail:
-    *
-    *   f(5 + Enum::B); // deleted operator+
-    *
-    * But we can't prevent things like this, because C++ doesn't allow
-    * overriding conversions or assignment operators for enums:
-    *
-    *   int x = Enum::A;
-    *   int f()
-    *   {
-    *     return Enum::A;
-    *   }
-    */
+/**
+ * We need Name to both name a type, and scope the provided enumerator
+ * names.  Namespaces and classes both provide scoping, but namespaces
+ * aren't types, so we need to use a class that wraps the enum values.  We
+ * have an implicit conversion from the inner enum type to the class, so
+ * statements like
+ *
+ *   Enum x = Enum::A;
+ *
+ * will still work.  We need to define an implicit conversion from the class
+ * to the inner enum as well, so that (for instance) switch statements will
+ * work.  This means that the class can be implicitly converted to a numeric
+ * value as well via the enum type, since C++ allows an implicit
+ * user-defined conversion followed by a standard conversion to still be
+ * implicit.
+ *
+ * We have an explicit constructor from int defined, so that casts like
+ * (Enum)7 will still work.  We also have a zero-argument constructor with
+ * no arguments, so declaration without initialization (like "Enum foo;")
+ * will work.
+ *
+ * Additionally, we'll delete as many operators as possible for the inner
+ * enum type, so statements like this will still fail:
+ *
+ *   f(5 + Enum::B); // deleted operator+
+ *
+ * But we can't prevent things like this, because C++ doesn't allow
+ * overriding conversions or assignment operators for enums:
+ *
+ *   int x = Enum::A;
+ *   int f()
+ *   {
+ *     return Enum::A;
+ *   }
+ */
 
-   /* Single-argument form. */
+/* Single-argument form. */
 #  define MOZ_BEGIN_NESTED_ENUM_CLASS_HELPER1(Name) \
      class Name \
      { \
        public: \
          enum Enum \
          {
-   /* Two-argument form. */
+/* Two-argument form. */
 #  define MOZ_BEGIN_NESTED_ENUM_CLASS_HELPER2(Name, type) \
      class Name \
      { \
@@ -240,29 +240,29 @@
      inline int& operator>>=(int&, const Name::Enum&) MOZ_DELETE;
 #endif
 
-   /*
-    * Count the number of arguments passed to MOZ_COUNT_BEGIN_ENUM_CLASS_ARGS,
-    * very carefully tiptoeing around an MSVC bug where it improperly expands
-    * __VA_ARGS__ as a single token in argument lists. See these URLs for
-    * details:
-    *
-    *   http://connect.microsoft.com/VisualStudio/feedback/details/380090/variadic-macro-replacement
-    *   http://cplusplus.co.il/2010/07/17/variadic-macro-to-count-number-of-arguments/#comment-644
-    */
+/*
+ * Count the number of arguments passed to MOZ_COUNT_BEGIN_ENUM_CLASS_ARGS,
+ * very carefully tiptoeing around an MSVC bug where it improperly expands
+ * __VA_ARGS__ as a single token in argument lists. See these URLs for
+ * details:
+ *
+ *   http://connect.microsoft.com/VisualStudio/feedback/details/380090/variadic-macro-replacement
+ *   http://cplusplus.co.il/2010/07/17/variadic-macro-to-count-number-of-arguments/#comment-644
+ */
 #  define MOZ_COUNT_BEGIN_ENUM_CLASS_ARGS_IMPL2(_1, _2, count, ...) \
      count
 #  define MOZ_COUNT_BEGIN_ENUM_CLASS_ARGS_IMPL(args) \
      MOZ_COUNT_BEGIN_ENUM_CLASS_ARGS_IMPL2 args
 #  define MOZ_COUNT_BEGIN_ENUM_CLASS_ARGS(...) \
      MOZ_COUNT_BEGIN_ENUM_CLASS_ARGS_IMPL((__VA_ARGS__, 2, 1, 0))
-   /* Pick the right helper macro to invoke. */
+/* Pick the right helper macro to invoke. */
 #  define MOZ_BEGIN_NESTED_ENUM_CLASS_CHOOSE_HELPER2(count) \
     MOZ_BEGIN_NESTED_ENUM_CLASS_HELPER##count
 #  define MOZ_BEGIN_NESTED_ENUM_CLASS_CHOOSE_HELPER1(count) \
      MOZ_BEGIN_NESTED_ENUM_CLASS_CHOOSE_HELPER2(count)
 #  define MOZ_BEGIN_NESTED_ENUM_CLASS_CHOOSE_HELPER(count) \
      MOZ_BEGIN_NESTED_ENUM_CLASS_CHOOSE_HELPER1(count)
-   /* The actual macro. */
+/* The actual macro. */
 #  define MOZ_BEGIN_NESTED_ENUM_CLASS_GLUE(x, y) x y
 #  define MOZ_BEGIN_NESTED_ENUM_CLASS(...) \
      MOZ_BEGIN_NESTED_ENUM_CLASS_GLUE(MOZ_BEGIN_NESTED_ENUM_CLASS_CHOOSE_HELPER(MOZ_COUNT_BEGIN_ENUM_CLASS_ARGS(__VA_ARGS__)), \

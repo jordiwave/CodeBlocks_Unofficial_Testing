@@ -26,12 +26,12 @@
 namespace
 {
 
-    wxsRegisterItem<wxsStopWatch> Reg(
-        _T("StopWatch"),                // Class base name
-        wxsTTool,                       // Item type
-        _T("Tools"),                    // Category in palette
-        30,                             // Priority in palette
-        false);                         // We do not allow this item inside XRC files
+wxsRegisterItem<wxsStopWatch> Reg(
+    _T("StopWatch"),                // Class base name
+    wxsTTool,                       // Item type
+    _T("Tools"),                    // Category in palette
+    30,                             // Priority in palette
+    false);                         // We do not allow this item inside XRC files
 
 
 
@@ -54,14 +54,14 @@ void wxsStopWatch::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-            AddHeader(_T("<wx/stopwatch.h>"),GetInfo().ClassName, 0);
-            BuildSetupWindowCode();
-            break;
+    case wxsCPP:
+        AddHeader(_T("<wx/stopwatch.h>"),GetInfo().ClassName, 0);
+        BuildSetupWindowCode();
+        break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsStopWatch::OnBuildCreatingCode"),GetLanguage());
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsStopWatch::OnBuildCreatingCode"),GetLanguage());
     }
 }
 

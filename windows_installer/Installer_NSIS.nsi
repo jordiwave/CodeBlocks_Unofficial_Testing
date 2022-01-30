@@ -1,6 +1,6 @@
 # Debugging:
 #!define BUILD_TYPE 64
-#!define NIGHTLY_BUILD_SVN 12529_PLUS
+#!define NIGHTLY_BUILD_SVN 12680_EXPERIMENTAL_PLUS
 
 #####################################################################
 # The installer is divided into 5 main sections (section groups):   #
@@ -38,19 +38,20 @@
 # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  #
 # NOTE: The latest 32 bit wget zip is available from :              #
 #   https://eternallybored.org/misc/wget/                           #
-# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  #
-#                                                                   #
-# To fix the background color issue in NSIS Multi user page modify  #
-# the "Function "${PRE}"" in the MultiUser.nsh the code to add the  #
-# following 4 lines that go after the appropriate pops:             #
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  #######################
+#                                                                                         #
+# To fix the background color issue in NSIS Multi user page modify                        #
+# the "Function "${PRE}"" in the MultiUser.nsh the code to add the                        #
+# following 4 lines that go after the appropriate pops:                                   #
 # SetCtlColors $MultiUser.InstallModePage "" "${MUI_BGCOLOR}"                             #
 # SetCtlColors $MultiUser.InstallModePage.Text "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"        #
 # SetCtlColors $MultiUser.InstallModePage.AllUsers "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}"    #
 # SetCtlColors $MultiUser.InstallModePage.CurrentUser "${MUI_TEXTCOLOR}" "${MUI_BGCOLOR}" #
-#                                                                   #
-#####################################################################
+#                                                                                         #
+###########################################################################################
 
-Name CodeBlocks
+#Use "#Name CodeBlocks" for official nightly or release build
+Name CodeBlocks_Experimental
 XPStyle on
 Unicode True
 
@@ -81,14 +82,15 @@ Unicode True
     !undef NIGHTLY_BUILD_SVN
   !endif
 !else
-  !define NIGHTLY_BUILD_SVN 12529_PLUS
+  !define NIGHTLY_BUILD_SVN 12680_PLUS
 !endif
 
 # Possibly required to adjust manually:
 # Note: a) These files are only required for the installer.
 #       b) These are in the ${CB_INSTALL_GRAPHICS_DIR} directory
 !ifdef NIGHTLY_BUILD_SVN
-    !define CB_SPLASH_FILENAME  setup_splash_nightly.bmp
+    !define CB_SPLASH_FILENAME  setup_splash_experimental.bmp
+    # !define CB_SPLASH_FILENAME  setup_splash_nightly.bmp
 !else
     !define CB_SPLASH_FILENAME  setup_splash_2003.bmp
 !endif
@@ -134,6 +136,7 @@ Unicode True
 !define CB_IMAGES        ${CB_SHARE_CB}\images
 !define CB_IMG_SETTINGS  ${CB_IMAGES}\settings
 !define CB_XML_COMPILERS ${CB_SHARE_CB}\compilers
+!define CB_GDB_PRETTYPRINTERS  ${CB_SHARE_CB}\gdb_pretty_printers
 
 ###########################
 #   NSIS Folder DEFINES   #
@@ -144,6 +147,7 @@ Unicode True
 !define CB_INSTALL_GRAPHICS_DIR         .\Graphics
 !define CB_INSTALL_LICENSES_DIR         .\Licenses
 !define CB_INSTALL_URLS_DIR             .\URLS
+!define CB_INSTALL_CLANGD_DIR           .\ClangD
 
 ###########################
 #        BRANDING         #
@@ -341,9 +345,22 @@ RequestExecutionLevel user
 !macroend
 !define !defineifexist "!insertmacro !defineifexist"
 
-${!defineifexist} FORTRAN_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\FortranProject.zip
-${!defineifexist} CLANGD_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\clangd_client.zip
+${!defineifexist} FORTRAN_PLUGIN_FOUND      ${CB_BASE}${CB_SHARE_CB}\FortranProject.zip
+${!defineifexist} CBKODERS_PLUGIN_FOUND     ${CB_BASE}${CB_SHARE_CB}\cb_koders.zip
+
+${!defineifexist} CLANGD_PLUGIN_FOUND       ${CB_BASE}${CB_SHARE_CB}\clangd_client.zip
 ${!defineifexist} DISPLAYEVENTS_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\DisplayEvents.zip
+
+${!defineifexist} CBBUILDTOOLS_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\cbBuildTools.zip
+${!defineifexist} CBMARKDOWN_PLUGIN_FOUND   ${CB_BASE}${CB_SHARE_CB}\cbMarkdown.zip
+${!defineifexist} CBMEMORYVIEW_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\cbMemoryView.zip
+${!defineifexist} CBSYSTEMVIEW_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\cbSystemView.zip
+
+${!defineifexist} CBDIFF_PLUGIN_FOUND       ${CB_BASE}${CB_SHARE_CB}\cbDiff.zip
+${!defineifexist} GITBLOCKS_PLUGIN_FOUND    ${CB_BASE}${CB_SHARE_CB}\GitBlocks.zip
+${!defineifexist} CBTORTOISESVN_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\CBTortoiseSVN.zip
+${!defineifexist} CBINNO_PLUGIN_FOUND       ${CB_BASE}${CB_SHARE_CB}\cbInno.zip
+${!defineifexist} CBNSIS_PLUGIN_FOUND       ${CB_BASE}${CB_SHARE_CB}\cbNSIS.zip
 
 ################################################################################
 # Logging macro - from https://nsis.sourceforge.io/Logging:Enable_Logs_Quickly #
@@ -389,6 +406,7 @@ SectionGroup "!Default install" SECGRP_DEFAULT
 
     Section "!Core Files (required)" SEC_CORE
         SectionIn 1 2 3 4 RO
+        # ----------------------- NEW OUTPUT PATH -----------------------
         SetOutPath $INSTDIR
         # Verify if creating/accessing the target folder succeeded.
         # If not, issue an error message and abort installation
@@ -447,11 +465,18 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             File ${CB_INSTALL_LICENSES_DIR}\lgpl-3.0.txt
             # wget & &za.exe support files 
             File wget.exe
+            # ClangD for use with ClangD_Cleint core plugin
+            File ${CB_BASE}\clangd.exe
+            # ----------------------- NEW OUTPUT PATH -----------------------
+            SetOutPath $INSTDIR${CB_GDB_PRETTYPRINTERS}
+            File ${CB_BASE}${CB_GDB_PRETTYPRINTERS}\*.*
+            # ----------------------- NEW OUTPUT PATH -----------------------
             SetOutPath $INSTDIR${CB_SHARE_CB}
             File ${CB_BASE}${CB_SHARE_CB}\start_here.zip
             File ${CB_BASE}${CB_SHARE_CB}\tips.txt
             File ${CB_BASE}${CB_SHARE_CB}\manager_resources.zip
             File ${CB_BASE}${CB_SHARE_CB}\resources.zip
+            # ----------------------- NEW OUTPUT PATH -----------------------
             SetOutPath $INSTDIR${CB_DOCS}
             File ${CB_INSTALL_DOCUMENTATION_DIR}\index.ini
             File ${CB_INSTALL_DOCUMENTATION_DIR}\manual_codeblocks_en.chm
@@ -459,23 +484,28 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             File ${CB_INSTALL_DOCUMENTATION_DIR}\manual_codeblocks_fr.chm
             File ${CB_INSTALL_DOCUMENTATION_DIR}\manual_codeblocks_fr.pdf
             File ${CB_INSTALL_DOCUMENTATION_DIR}\Manual_wxPBGuide.pdf
+            # ----------------------- NEW OUTPUT PATH -----------------------
             SetOutPath $INSTDIR${CB_SCRIPTS}
             File ${CB_BASE}${CB_SCRIPTS}\*.script
+            # ----------------------- NEW OUTPUT PATH -----------------------
             SetOutPath $INSTDIR${CB_SCTESTS}
             File ${CB_BASE}${CB_SCTESTS}\*.script
+            # ----------------------- NEW OUTPUT PATH -----------------------
             SetOutPath $INSTDIR${CB_TEMPLATES}
             File ${CB_BASE}${CB_TEMPLATES}\*.*
+            # ----------------------- NEW OUTPUT PATH -----------------------
             SetOutPath $INSTDIR${CB_IMAGES}
             File ${CB_BASE}${CB_IMAGES}\*.png
+            # ----------------------- NEW OUTPUT PATH -----------------------
             SetOutPath $INSTDIR${CB_IMG_SETTINGS}
             File ${CB_BASE}${CB_IMG_SETTINGS}\*.png
+            # ---------------------------------------------------------------
             WriteRegStr HKCU "${REGKEY}\Components" "Core Files (required)" 1
     SectionEnd
-
     # C::B core end
 
-    # C::B shortcuts begin
 
+    # C::B shortcuts begin
     SectionGroup "Shortcuts" SECGRP_SHORTCUTS
 
         Section "Program Shortcut" SEC_PROGRAMSHORTCUT
@@ -1169,6 +1199,152 @@ SectionGroup "!Default install" SECGRP_DEFAULT
         SectionEnd
 !endif
 
+!ifdef CBBUILDTOOLS_PLUGIN_FOUND
+        Section "cbBuildTools plugin" SEC_CBBUILDTOOLS_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\cbBuildTools.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\cbBuildTools.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "cbBuildTools plugin" 1
+        SectionEnd
+!endif
+
+!ifdef CBMARKDOWN_PLUGIN_FOUND
+        Section "cbMarkdown plugin" SEC_CBMARKDOWN_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\cbMarkdown.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\cbMarkdown.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "cbMarkdown plugin" 1
+        SectionEnd
+!endif
+
+!ifdef CBMEMORYVIEW_PLUGIN_FOUND
+        Section "cbMemoryView plugin" SEC_CBMEMORYVIEW_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\cbMemoryView.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\cbMemoryView.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "cbMemoryView plugin" 1
+        SectionEnd
+!endif
+
+!ifdef CBSYSTEMVIEW_PLUGIN_FOUND
+        Section "cbSystemView plugin" SEC_CBSYSTEMVIEW_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\cbSystemView.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\cbSystemView.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "cbSystemView plugin" 1
+        SectionEnd
+!endif
+
+!ifdef CBDIFF_PLUGIN_FOUND
+        Section "cbDiff plugin" SEC_CBDIFF_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\cbDiff.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\cbDiff.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "cbDiff plugin" 1
+        SectionEnd
+!endif
+
+!ifdef GITBLOCKS_PLUGIN_FOUND
+        Section "GitBlocks plugin" SEC_GITBLOCKS_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\GitBlocks.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\GitBlocks.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "GitBlocks plugin" 1
+        SectionEnd
+!endif
+
+!ifdef CBTORTOISESVN_PLUGIN_FOUND
+        Section "CBTortoiseSVN plugin" SEC_CBTORTOISESVN_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\CBTortoiseSVN.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\CBTortoiseSVN.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "CBTortoiseSVN plugin" 1
+        SectionEnd
+!endif
+!ifdef CBINNO_PLUGIN_FOUND
+        Section "cbInno plugin" SEC_CBINNO_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\cbInno.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\cbInno.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "cbInno plugin" 1
+        SectionEnd
+!endif
+!ifdef CBNSIS_PLUGIN_FOUND
+        Section "cbNSIS plugin" SEC_CBNSIS_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\cbNSIS.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\cbNSIS.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "cbNSIS plugin" 1
+        SectionEnd
+!endif
+
+        Section "headerguard plugin" SEC_HEADERGUARD_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\headerguard.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\headerguard.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "tidycmt plugin" 1
+        SectionEnd
+
+        Section "loghacker plugin" SEC_LOGHACKER_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\loghacker.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\loghacker.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "tidycmt plugin" 1
+        SectionEnd
+
+        Section "ModPoller plugin" SEC_MODPOLLER_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\ModPoller.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\ModPoller.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "tidycmt plugin" 1
+        SectionEnd
+
+        Section "tidycmt plugin" SEC_TIDYCMT_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\tidycmt.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\tidycmt.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "tidycmt plugin" 1
+        SectionEnd
+
         Section "Compiler plugin" SEC_COMPILER
             SectionIn 1 2 3
             SetOutPath $INSTDIR${CB_SHARE_CB}
@@ -1578,6 +1754,7 @@ SectionGroup "Contrib Plugins" SECGRP_CONTRIB_PLUGINS
         WriteRegStr HKCU "${REGKEY}\Components" "Key Binder plugin" 1
     SectionEnd
 
+!ifdef CBKODERS_PLUGIN_FOUND
     Section "Koders plugin" SEC_KODERS
         SectionIn 1
         SetOutPath $INSTDIR${CB_SHARE_CB}
@@ -1587,6 +1764,7 @@ SectionGroup "Contrib Plugins" SECGRP_CONTRIB_PLUGINS
         File ${CB_BASE}${CB_PLUGINS}\cb_koders.dll
         WriteRegStr HKCU "${REGKEY}\Components" "Koders plugin" 1
     SectionEnd
+!endif
 
     Section "Lib Finder plugin" SEC_LIBFINDER
         SectionIn 1
@@ -2084,11 +2262,13 @@ Section "-un.Key Binder plugin" UNSEC_KEYBINDER
     DeleteRegValue HKCU "${REGKEY}\Components" "Key Binder plugin"
 SectionEnd
 
+!ifdef CBKODERS_PLUGIN_FOUND
 Section "-un.Koders plugin" UNSEC_KODERS
     Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\cb_koders.dll
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\cb_koders.zip
     DeleteRegValue HKCU "${REGKEY}\Components" "Koders plugin"
 SectionEnd
+!endif
 
 Section "-un.Lib Finder plugin" UNSEC_LIBFINDER
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\lib_finder\*.xml
@@ -2280,6 +2460,102 @@ Section "-un.Display Eventst plugin" UNSEC_DISPLAYEVENTS_PLUGIN
     DeleteRegValue HKCU "${REGKEY}\Components" "Display Events plugin"
 SectionEnd
 !endif
+
+!ifdef CBBUILDTOOLS_PLUGIN_FOUND
+Section "-un.cbBuildTools plugin" UNSEC_CBBUILDTOOLS_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\cbBuildTools.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\cbBuildTools.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "cbBuildTools plugin"
+SectionEnd
+!endif
+
+!ifdef CBMARKDOWN_PLUGIN_FOUND
+Section "-un.cbMarkdown plugin" UNSEC_CBMARKDOWN_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\cbMarkdown.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\cbMarkdown.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "cbMarkdown plugin"
+SectionEnd
+!endif
+
+!ifdef CBMEMORYVIEW_PLUGIN_FOUND
+Section "-un.cbMemoryView plugin" UNSEC_CBMEMORYVIEW_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\cbMemoryView.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\cbMemoryView.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "cbMemoryView plugin"
+SectionEnd
+!endif
+
+!ifdef CBSYSTEMVIEW_PLUGIN_FOUND
+Section "-un.cbSystemView plugin" UNSEC_CBSYSTEMVIEW_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\cbSystemView.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\cbSystemView.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "cbSystemView plugin"
+SectionEnd
+!endif
+
+!ifdef CBDIFF_PLUGIN_FOUND
+Section "-un.cbDiff plugin" UNSEC_CBDIFF_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\cbDiff.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\cbDiff.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "cbDiff plugin"
+SectionEnd
+!endif
+
+!ifdef GITBLOCKS_PLUGIN_FOUND
+Section "-un.GitBlocks plugin" UNSEC_GITBLOCKS_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\GitBlocks.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\GitBlocks.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "GitBlocks plugin"
+SectionEnd
+!endif
+
+!ifdef CBTORTOISESVN_PLUGIN_FOUND
+Section "-un.CBTortoiseSVN plugin" UNSEC_CBTORTOISESVN_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\CBTortoiseSVN.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\CBTortoiseSVN.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "CBTortoiseSVN plugin"
+SectionEnd
+!endif
+
+!ifdef CBINNO_PLUGIN_FOUND
+Section "-un.cbInno plugin" UNSEC_CBINNO_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\cbInno.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\cbInno.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "cbInno plugin"
+SectionEnd
+!endif
+
+!ifdef CBNSIS_PLUGIN_FOUND
+Section "-un.cbNSIS plugin" UNSEC_CBNSIS_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\cbNSIS.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\cbNSIS.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "cbNSIS plugin"
+SectionEnd
+!endif
+
+Section "-un.headerguard plugin" UNSEC_HEADERGUARD_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\headerguard.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\headerguard.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "headerguard plugin"
+SectionEnd
+
+Section "-un.loghacker plugin" UNSEC_LOGHACKER_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\loghacker.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\loghacker.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "loghacker plugin"
+SectionEnd
+
+Section "-un.ModPoller plugin" UNSEC_MODPOLLER_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\ModPoller.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\ModPoller.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "ModPoller plugin"
+SectionEnd
+
+Section "-un.tidycmt plugin" UNSEC_TIDYCMT_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\tidycmt.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\tidycmt.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "tidycmt plugin"
+SectionEnd
 
 Section "-un.Compiler plugin" UNSEC_COMPILER
     Delete /REBOOTOK $INSTDIR${CB_IMG_SETTINGS}\compiler-off.png
@@ -2808,11 +3084,15 @@ Section "-un.Core Files (required)" UNSEC_CORE
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\start_here.zip
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE_CB}
     RMDir  /REBOOTOK $INSTDIR${CB_SHARE}
-    # WGET
-    Delete /REBOOTOK $INSTDIR\wget.exe
-    # Licens files
+    # ----------------------- GDB PRETTY PRINTERS -----------------------
+    Delete /REBOOTOK $INSTDIR\$INSTDIR${CB_GDB_PRETTYPRINTERS}\*.*
+    # ----------------------- License files -----------------------
     Delete /REBOOTOK $INSTDIR\gpl-3.0.txt
     Delete /REBOOTOK $INSTDIR\lgpl-3.0.txt
+    # ClangD for use with ClangD_Cleint core plugin
+    Delete /REBOOTOK $INSTDIR\clangd.exe
+    # WGET
+    Delete /REBOOTOK $INSTDIR\wget.exe
     # crash handler
     ${If} ${IsWinXP}
         # crash handler for Windows XP!!!!
@@ -2848,6 +3128,7 @@ Section "-un.Core Files (required)" UNSEC_CORE
     Delete /REBOOTOK $INSTDIR\Addr2LineUI.exe
     Delete /REBOOTOK $INSTDIR\wxmsw*u_gl_gcc_cb.dll
     Delete /REBOOTOK $INSTDIR\wxmsw*u_gcc_cb.dll
+    # ---------------------------------------------------------------
     DeleteRegValue HKCU "${REGKEY}\Components" "Core Files (required)"
     
 SectionEnd
@@ -3184,16 +3465,48 @@ CheckUserTypeDone:
 !ifdef DISPLAYEVENTS_PLUGIN_FOUND
     !insertmacro SELECT_UNSECTION "Display Events plugin"              ${UNSEC_DISPLAYEVENTS_PLUGIN}
 !endif
-    !insertmacro SELECT_UNSECTION "Compiler plugin"                    ${UNSEC_COMPILER}
-    !insertmacro SELECT_UNSECTION "Debugger plugin"                    ${UNSEC_DEBUGGER}
-    !insertmacro SELECT_UNSECTION "MIME Handler plugin"                ${UNSEC_MIMEHANDLER}
-    !insertmacro SELECT_UNSECTION "Open Files List plugin"             ${UNSEC_OPENFILESLIST}
-    !insertmacro SELECT_UNSECTION "Projects Importer plugin"           ${UNSEC_PROJECTSIMPORTER}
-    !insertmacro SELECT_UNSECTION "SmartIndent plugin"                 ${UNSEC_SMARTINDENT}
-    !insertmacro SELECT_UNSECTION "Scripted Wizard plugin"             ${UNSEC_SCRIPTEDWIZARD}
-    !insertmacro SELECT_UNSECTION "RND Generator plugin"               ${UNSEC_RNDGEN}
-    !insertmacro SELECT_UNSECTION "ToDo List plugin"                   ${UNSEC_TODOLIST}
-    !insertmacro SELECT_UNSECTION "XP Look And Feel plugin"            ${UNSEC_XPLOOKANDFEEL}
+!ifdef CBBUILDTOOLS_PLUGIN_FOUND
+    !insertmacro SELECT_UNSECTION "cbBuildTools plugin"                ${UNSEC_CBBUILDTOOLS_PLUGIN}
+!endif
+!ifdef CBMARKDOWN_PLUGIN_FOUND
+    !insertmacro SELECT_UNSECTION "cbMarkdown plugin"                  ${UNSEC_CBMARKDOWN_PLUGIN}
+!endif
+!ifdef CBMEMORYVIEW_PLUGIN_FOUND
+    !insertmacro SELECT_UNSECTION "cbMemoryView plugin"                ${UNSEC_CBMEMORYVIEW_PLUGIN}
+!endif
+!ifdef CBSYSTEMVIEW_PLUGIN_FOUND
+    !insertmacro SELECT_UNSECTION "cbSystemView plugin"                ${UNSEC_CBSYSTEMVIEW_PLUGIN}
+!endif
+!ifdef CBDIFF_PLUGIN_FOUND
+    !insertmacro SELECT_UNSECTION "cbDiff plugin"                       ${UNSEC_CBDIFF_PLUGIN}
+!endif
+!ifdef GITBLOCKS_PLUGIN_FOUND
+    !insertmacro SELECT_UNSECTION "GitBlocks plugin"                    ${UNSEC_GITBLOCKS_PLUGIN}
+!endif
+!ifdef CBTORTOISESVN_PLUGIN_FOUND
+    !insertmacro SELECT_UNSECTION "CBTortoiseSVN plugin"                ${UNSEC_CBTORTOISESVN_PLUGIN}
+!endif
+!ifdef CBINNO_PLUGIN_FOUND
+    !insertmacro SELECT_UNSECTION "cbInno plugin"                       ${UNSEC_CBINNO_PLUGIN}
+!endif
+!ifdef CBNSIS_PLUGIN_FOUND
+    !insertmacro SELECT_UNSECTION "cbNSIS plugin"                       ${UNSEC_CBNSIS_PLUGIN}
+!endif
+    !insertmacro SELECT_UNSECTION "headerguard plugin"                  ${UNSEC_HEADERGUARD_PLUGIN}
+    !insertmacro SELECT_UNSECTION "loghacker plugin"                    ${UNSEC_LOGHACKER_PLUGIN}
+    !insertmacro SELECT_UNSECTION "ModPoller plugin"                    ${UNSEC_MODPOLLER_PLUGIN}
+    !insertmacro SELECT_UNSECTION "tidycmt plugin"                      ${UNSEC_TIDYCMT_PLUGIN}
+
+    !insertmacro SELECT_UNSECTION "Compiler plugin"                     ${UNSEC_COMPILER}
+    !insertmacro SELECT_UNSECTION "Debugger plugin"                     ${UNSEC_DEBUGGER}
+    !insertmacro SELECT_UNSECTION "MIME Handler plugin"                 ${UNSEC_MIMEHANDLER}
+    !insertmacro SELECT_UNSECTION "Open Files List plugin"              ${UNSEC_OPENFILESLIST}
+    !insertmacro SELECT_UNSECTION "Projects Importer plugin"            ${UNSEC_PROJECTSIMPORTER}
+    !insertmacro SELECT_UNSECTION "SmartIndent plugin"                  ${UNSEC_SMARTINDENT}
+    !insertmacro SELECT_UNSECTION "Scripted Wizard plugin"              ${UNSEC_SCRIPTEDWIZARD}
+    !insertmacro SELECT_UNSECTION "RND Generator plugin"                ${UNSEC_RNDGEN}
+    !insertmacro SELECT_UNSECTION "ToDo List plugin"                    ${UNSEC_TODOLIST}
+    !insertmacro SELECT_UNSECTION "XP Look And Feel plugin"             ${UNSEC_XPLOOKANDFEEL}
 
     !insertmacro SELECT_UNSECTION "Auto Versioning plugin"             ${UNSEC_AUTOVERSIONING}
     !insertmacro SELECT_UNSECTION "Browse Tracker plugin"              ${UNSEC_BROWSETRACKER}
@@ -3219,7 +3532,9 @@ CheckUserTypeDone:
     !insertmacro SELECT_UNSECTION "HexEditor plugin"                   ${UNSEC_HEXEDITOR}
     !insertmacro SELECT_UNSECTION "IncrementalSearch plugin"           ${UNSEC_INCREMENTALSEARCH}
     !insertmacro SELECT_UNSECTION "Key Binder plugin"                  ${UNSEC_KEYBINDER}
+!ifdef CBKODERS_PLUGIN_FOUND
     !insertmacro SELECT_UNSECTION "Koders plugin"                      ${UNSEC_KODERS}
+!endif
     !insertmacro SELECT_UNSECTION "Lib Finder plugin"                  ${UNSEC_LIBFINDER}
     !insertmacro SELECT_UNSECTION "MouseSap plugin"                    ${UNSEC_MOUSESAP}
     !insertmacro SELECT_UNSECTION "Nassi Shneiderman plugin"           ${UNSEC_NASSI}
@@ -3264,11 +3579,43 @@ FunctionEnd
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CLASSWIZARD}         "Provides an easy way to create a new C++ class file pair."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CODECOMPLETION}      "Provides a symbols browser for your projects and code-completion inside the editor."
 !ifdef CLANGD_PLUGIN_FOUND
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_CLANGD_CLIENT}       "Provides a ClangD client  browser for your projects and code-completion inside the editor. Currently only C++."
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CLANGD_CLIENT}          "Provides a ClangD client  browser for your projects and code-completion inside the editor. Currently only C++."
 !endif
 !ifdef DISPLAYEVENTS_PLUGIN_FOUND
-!insertmacro MUI_DESCRIPTION_TEXT ${SEC_DISPLAYEVENTS_PLUGIN} "Provides a C::B developer display event in the log."
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DISPLAYEVENTS_PLUGIN}   "Provides a C::B developer display event in the log."
 !endif
+!ifdef CBBUILDTOOLS_PLUGIN_FOUND
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBBUILDTOOLS_PLUGIN}    "cbBuildTools plugin"
+!endif
+!ifdef CBMARKDOWN_PLUGIN_FOUND
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBMARKDOWN_PLUGIN}      "cbMarkdown plugin"
+!endif
+!ifdef CBMEMORYVIEW_PLUGIN_FOUND
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBMEMORYVIEW_PLUGIN}    "cbMemoryView plugin"
+!endif
+!ifdef CBSYSTEMVIEW_PLUGIN_FOUND
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBSYSTEMVIEW_PLUGIN}    "cbSystemView plugin"
+!endif
+!ifdef CBDIFF_PLUGIN_FOUND
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBDIFF_PLUGIN}          "cbDiff plugin"
+!endif
+!ifdef GITBLOCKS_PLUGIN_FOUND
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_GITBLOCKS_PLUGIN}       "GitBlocks plugin"
+!endif
+!ifdef CBTORTOISESVN_PLUGIN_FOUND
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBTORTOISESVN_PLUGIN}       "CBTortoiseSVN plugin"
+!endif
+!ifdef CBINNO_PLUGIN_FOUND
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBINNO_PLUGIN}       "cbInno plugin"
+!endif
+!ifdef CBNSIS_PLUGIN_FOUND
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBNSIS_PLUGIN}       "cbNSIS plugin"
+!endif
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_HEADERGUARD_PLUGIN}  "headerguard plugin"
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_LOGHACKER_PLUGIN}    "loghacker plugin"
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_MODPOLLER_PLUGIN}    "ModPoller plugin"
+!insertmacro MUI_DESCRIPTION_TEXT ${SEC_TIDYCMT_PLUGIN}      "tidycmt plugin"
+
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_COMPILER}            "Provides an interface to various compilers, including GNU compiler suite, Microsoft, Borland, etc."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DEBUGGER}            "Provides interfaces to the GNU GDB and MS CDB debuggers."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MIMEHANDLER}         "Provides a (default) files extension handler."
@@ -3305,7 +3652,9 @@ FunctionEnd
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_HEXEDITOR}           "Provides an embedded very powerful hex editor to Code::Blocks (supports large binary files, too)."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_INCREMENTALSEARCH}   "Searches and highlights a marked text incrementally within the open editor."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_KEYBINDER}           "Provides the user an ability to bind custom key combinations to the menu items."
+!ifdef CBKODERS_PLUGIN_FOUND
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_KODERS}              "Provides an interface to search for code snippets at the Koders webpage."
+!endif
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LIBFINDER}           "Tool which automatically searches for installed libraries and adds them to global variables and projects."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_MOUSESAP}            "Plugin to provide middle mouse select and paste functionality."
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_NASSI}               "Generate and use source code with Nassi Shneiderman diagrams."

@@ -10,11 +10,11 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <cbplugin.h> // the base class we 're inheriting
@@ -22,10 +22,13 @@
 
 class AStylePlugin : public cbToolPlugin
 {
-  public:
+public:
     AStylePlugin();
     ~AStylePlugin();
-    int GetConfigurationGroup() const { return cgEditor; }
+    int GetConfigurationGroup() const
+    {
+        return cgEditor;
+    }
     cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
     void BuildModuleMenu( const ModuleType type, wxMenu* menu, const FileTreeData* data = 0 );
     int Execute();

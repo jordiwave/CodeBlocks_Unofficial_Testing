@@ -78,7 +78,7 @@ public:
 private:
     // Creating process related handles
     HANDLE hChildStdinRd, hChildStdinWr, hChildStdinWrDup, hChildStdoutRd, hChildStdoutWr, hChildStdoutRdDup,
-        hChildStderrRd, hChildStderrWr, hChildStderrRdDup, hSaveStdin, hSaveStdout, hSaveStderr;
+           hChildStderrRd, hChildStderrWr, hChildStderrRdDup, hSaveStdin, hSaveStdout, hSaveStderr;
 
     // Child process id & information
     DWORD dwProcessId;

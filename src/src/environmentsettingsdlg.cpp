@@ -10,35 +10,35 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/menu.h>
-    #include <wx/radiobut.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/intl.h>
-    #include <wx/listctrl.h>
-    #include <wx/combobox.h>
-    #include <wx/choice.h>
-    #include <wx/checkbox.h>
-    #include <wx/checklst.h>
-    #include <wx/radiobox.h>
-    #include <wx/spinctrl.h>
-    #include <wx/colordlg.h>
-    #include <wx/msgdlg.h>
-    #include <wx/imaglist.h>
-    #include <wx/settings.h>
-    #include <wx/statbmp.h>
-    #include <wx/stattext.h>
-    #include <wx/dcmemory.h>
+#include <wx/button.h>
+#include <wx/menu.h>
+#include <wx/radiobut.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/intl.h>
+#include <wx/listctrl.h>
+#include <wx/combobox.h>
+#include <wx/choice.h>
+#include <wx/checkbox.h>
+#include <wx/checklst.h>
+#include <wx/radiobox.h>
+#include <wx/spinctrl.h>
+#include <wx/colordlg.h>
+#include <wx/msgdlg.h>
+#include <wx/imaglist.h>
+#include <wx/settings.h>
+#include <wx/statbmp.h>
+#include <wx/stattext.h>
+#include <wx/dcmemory.h>
 
-    #include <manager.h>
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <pluginmanager.h>
-    #include <logmanager.h>
-    #include "appglobals.h"
-    #include "globals.h"
-    #include "associations.h"
-    #include "cbauibook.h"
+#include <manager.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <pluginmanager.h>
+#include <logmanager.h>
+#include "appglobals.h"
+#include "globals.h"
+#include "associations.h"
+#include "cbauibook.h"
 #endif
 
 #include <wx/aui/aui.h>
@@ -52,12 +52,12 @@
 #include "cbcolourmanager.h"
 
 #ifdef __WXMSW__
-    #include "associations.h"
+#include "associations.h"
 #endif
 
 #ifndef CB_PRECOMP
-    #include <wx/dir.h>
-    #include "cbplugin.h" // cgCompiler...
+#include <wx/dir.h>
+#include "cbplugin.h" // cgCompiler...
 #endif
 
 // images by order of pages
@@ -105,7 +105,7 @@ END_EVENT_TABLE()
 
 EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* art)
     : m_pArt(art),
-    m_pImageList(nullptr)
+      m_pImageList(nullptr)
 {
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
     ConfigManager *pcfg = Manager::Get()->GetConfigManager(_T("project_manager"));
@@ -229,7 +229,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "chkSaveSelectionChangeInMP", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/save_selection_change_in_mp"), true));
 
     en = cfg->ReadBool(_T("/environment/view/dbl_clk_maximize"), true);
-     XRCCTRL(*this, "chkDblClkMaximizes", wxCheckBox)->SetValue(en);
+    XRCCTRL(*this, "chkDblClkMaximizes", wxCheckBox)->SetValue(en);
     int idx = Manager::Get()->GetAppFrame()->GetMenuBar()->FindMenu(_("&View"));
     if (idx != wxNOT_FOUND)
     {
@@ -268,7 +268,8 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
                 const wxLanguageInfo* info = wxLocale::FindLanguageInfo(locFName);
                 if (info)
                     XRCCTRL(*this, "choLanguage", wxChoice)->Append(info->Description);
-            } while ( locDir.GetNext(&locFName) );
+            }
+            while ( locDir.GetNext(&locFName) );
         }
     }
 
@@ -376,7 +377,7 @@ void EnvironmentSettingsDlg::AddPluginPanels()
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     // get all configuration panels which are *not* about compiler and editor.
     Manager::Get()->GetPluginManager()->GetConfigurationPanels(~(cgCompiler | cgEditor), lb,
-                                                               m_PluginPanels, this);
+            m_PluginPanels, this);
 
     for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
     {
@@ -896,7 +897,7 @@ static bool GetColourDefinitionFromList(wxString* id, ColourManager::ColourDef* 
     {
         index = list->GetSelection();
         if (index == wxNOT_FOUND)
-        return false;
+            return false;
     }
 
     const AppColoursClientData *data;
@@ -974,8 +975,8 @@ void EnvironmentSettingsDlg::WriteApplicationColours()
 
     ColourManager *manager = Manager::Get()->GetColourManager();
     for (std::map<wxString, wxColour>::const_iterator it = m_ChangedAppColours.begin();
-         it != m_ChangedAppColours.end();
-         ++it)
+            it != m_ChangedAppColours.end();
+            ++it)
     {
         manager->SetColour(it->first, it->second);
     }
@@ -1000,7 +1001,7 @@ wxString EnvironmentSettingsDlg::AnnoyingDlgReturnToString(const wxString& capti
 wxString EnvironmentSettingsDlg::StringToAnnoyingDlgReturn(const wxString& caption)
 {
     for (std::map<wxString, wxString>::const_iterator it = m_AnnoyingDlgReturnMap.begin();
-         it != m_AnnoyingDlgReturnMap.end(); ++it)
+            it != m_AnnoyingDlgReturnMap.end(); ++it)
     {
         if (caption.AfterLast(wxT(':')) == it->second)
             return caption.BeforeLast(wxT(':')) + wxT(':') + it->first;

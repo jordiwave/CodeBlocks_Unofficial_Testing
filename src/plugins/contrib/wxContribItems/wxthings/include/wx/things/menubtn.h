@@ -51,7 +51,10 @@ class WXDLLIMPEXP_THINGS wxMenuButton : public wxControl
 {
 public:
 
-    wxMenuButton() : wxControl() { Init(); }
+    wxMenuButton() : wxControl()
+    {
+        Init();
+    }
 
     // Use this constructor if you need one compatible with a wxButton
     //   setup the button later with AssignMenu
@@ -63,7 +66,7 @@ public:
                   long style = 0,
                   const wxValidator& val = wxDefaultValidator,
                   const wxString& name = wxT("wxMenuButton"))
-                  : wxControl()
+        : wxControl()
     {
         Init();
         Create(parent,id,label,wxNullBitmap,pos,size,style,val,name);
@@ -78,7 +81,7 @@ public:
                   long style = 0,
                   const wxValidator& val = wxDefaultValidator,
                   const wxString& name = wxT("wxMenuButton"))
-                  : wxControl()
+        : wxControl()
     {
         Init();
         Create(parent,id,wxEmptyString,bitmap,pos,size,style,val,name);
@@ -93,9 +96,10 @@ public:
                   long style = 0,
                   const wxValidator& val = wxDefaultValidator,
                   const wxString& name = wxT("wxMenuButton"))
-                  : wxControl()
+        : wxControl()
     {
-        n = n; choices = choices; // get rid of unused warning
+        n = n;
+        choices = choices; // get rid of unused warning
         Init();
         Create(parent, id, value, wxNullBitmap, pos, size, style, val, name);
     }
@@ -109,7 +113,7 @@ public:
                   long style = 0,
                   const wxValidator& val = wxDefaultValidator,
                   const wxString& name = wxT("wxMenuButton"))
-                  : wxControl()
+        : wxControl()
     {
         Init();
         AssignMenu(menu, static_menu);
@@ -135,11 +139,20 @@ public:
     //   if static_menu is false it will be deleted when the buttton is destroyed.
     void AssignMenu(wxMenu *menu, bool static_menu = false);
 
-    wxMenu *GetMenu() const { return m_menu; }
+    wxMenu *GetMenu() const
+    {
+        return m_menu;
+    }
 
     // get a pointer to the label button, for turning it into a toggle perhaps
-    wxCustomButton *GetLabelButton() const { return m_labelButton; }
-    wxCustomButton *GetDropDownButton() const { return m_dropdownButton; }
+    wxCustomButton *GetLabelButton() const
+    {
+        return m_labelButton;
+    }
+    wxCustomButton *GetDropDownButton() const
+    {
+        return m_dropdownButton;
+    }
 
     void SetToolTip(const wxString &tip);
     void SetToolTip(wxToolTip *tip);
@@ -180,7 +193,7 @@ private:
 //-----------------------------------------------------------------------------
 
 BEGIN_DECLARE_EVENT_TYPES()
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_THINGS, wxEVT_MENUBUTTON_OPEN, 0)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_THINGS, wxEVT_MENUBUTTON_OPEN, 0)
 END_DECLARE_EVENT_TYPES()
 
 #define EVT_MENUBUTTON_OPEN(id, fn) DECLARE_EVENT_TABLE_ENTRY(wxEVT_MENUBUTTON_OPEN, id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) & fn, (wxObject *) NULL ),

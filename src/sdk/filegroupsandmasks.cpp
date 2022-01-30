@@ -10,12 +10,12 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/intl.h>
+#include <wx/intl.h>
 
-    #include "globals.h" // GetArrayFromString
-    #include "configmanager.h"
-    #include "manager.h"
-    #include "logmanager.h"
+#include "globals.h" // GetArrayFromString
+#include "configmanager.h"
+#include "manager.h"
+#include "logmanager.h"
 #endif
 
 #include "filegroupsandmasks.h"

@@ -10,7 +10,7 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "cbproject.h"
+#include "cbproject.h"
 #endif
 
 #include "projectloader_hooks.h"
@@ -20,9 +20,9 @@
 
 namespace ProjectLoaderHooks
 {
-    typedef std::map<int, HookFunctorBase*> HookFunctorsMap;
-    static HookFunctorsMap s_HookFunctorsMap;
-    static int             s_UniqueID = 0;
+typedef std::map<int, HookFunctorBase*> HookFunctorsMap;
+static HookFunctorsMap s_HookFunctorsMap;
+static int             s_UniqueID = 0;
 }
 
 int ProjectLoaderHooks::RegisterHook(ProjectLoaderHooks::HookFunctorBase* functor)

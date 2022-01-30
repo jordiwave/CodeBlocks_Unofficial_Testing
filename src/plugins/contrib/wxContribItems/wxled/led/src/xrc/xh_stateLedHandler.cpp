@@ -3,7 +3,7 @@
 #include <wx/xml/xml.h> // wxXmlNode
 
 // Register with wxWidgets' dynamic class subsystem.
-IMPLEMENT_DYNAMIC_CLASS(wxStateLedXmlHandler , wxXmlResourceHandler)
+IMPLEMENT_DYNAMIC_CLASS(wxStateLedXmlHandler, wxXmlResourceHandler)
 
 wxStateLedXmlHandler ::wxStateLedXmlHandler ()
 {

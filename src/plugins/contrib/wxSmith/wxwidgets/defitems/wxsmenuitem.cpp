@@ -26,40 +26,40 @@
 
 namespace
 {
-    class InfoHandler: public wxsItemInfo
+class InfoHandler: public wxsItemInfo
+{
+public:
+
+    InfoHandler(): m_TreeImage(_T("images/wxsmith/wxMenuItem16.png"),true)
     {
-        public:
+        ClassName      = _T("wxMenuItem");
+        Type           = wxsTTool;
+        License        = _("wxWidgets license");
+        Author         = _("wxWidgets team");
+        Email          = _T("");
+        Site           = _T("www.wxwidgets.org");
+        Category       = _T("");
+        Priority       = 0;
+        DefaultVarName = _T("MenuItem");
+        Languages      = wxsCPP;
+        VerHi          = 2;
+        VerLo          = 8;
+        AllowInXRC     = true;
 
-            InfoHandler(): m_TreeImage(_T("images/wxsmith/wxMenuItem16.png"),true)
-            {
-                ClassName      = _T("wxMenuItem");
-                Type           = wxsTTool;
-                License        = _("wxWidgets license");
-                Author         = _("wxWidgets team");
-                Email          = _T("");
-                Site           = _T("www.wxwidgets.org");
-                Category       = _T("");
-                Priority       = 0;
-                DefaultVarName = _T("MenuItem");
-                Languages      = wxsCPP;
-                VerHi          = 2;
-                VerLo          = 8;
-                AllowInXRC     = true;
+        // TODO: This code should be more generic since it may quickly
+        //       become invalid
+        wxString DataPath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
+        Icon32.LoadFile(DataPath+_T("wxMenuItem32.png"),wxBITMAP_TYPE_PNG);
+        Icon16.LoadFile(DataPath+_T("wxMenuItem16.png"),wxBITMAP_TYPE_PNG);
+        TreeIconId = m_TreeImage.GetIndex();
+    };
 
-                // TODO: This code should be more generic since it may quickly
-                //       become invalid
-                wxString DataPath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
-                Icon32.LoadFile(DataPath+_T("wxMenuItem32.png"),wxBITMAP_TYPE_PNG);
-                Icon16.LoadFile(DataPath+_T("wxMenuItem16.png"),wxBITMAP_TYPE_PNG);
-                TreeIconId = m_TreeImage.GetIndex();
-            };
+    wxsAutoResourceTreeImage m_TreeImage;
+} Info;
 
-            wxsAutoResourceTreeImage m_TreeImage;
-    } Info;
-
-    WXS_EV_BEGIN(wxsMenuItemEvents)
-        WXS_EVI(EVT_MENU,wxEVT_COMMAND_MENU_SELECTED,wxCommandEvent,Selected)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsMenuItemEvents)
+WXS_EVI(EVT_MENU,wxEVT_COMMAND_MENU_SELECTED,wxCommandEvent,Selected)
+WXS_EV_END()
 }
 
 wxsMenuItem::wxsMenuItem(wxsItemResData* Data,bool BreakOrSeparator):
@@ -79,100 +79,106 @@ void wxsMenuItem::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
 
+        switch ( m_Type )
+        {
+        case Normal:
+        {
+            if ( GetChildCount() )
+            {
+                // Creating new wxMenu
+                if ( IsPointer() )
+                {
+                    Codef(_T("%C();\n"));
+                }
+                for ( int i=0; i<GetChildCount(); i++ )
+                {
+                    GetChild(i)->BuildCode(GetCoderContext());
+                }
+                // Many parameters are passed in wxMenu::Append, so we call this function
+                // here, not in wxMenu
+                Codef(_T("%MAppend(%I, %t, %O, %t)%s;\n"),
+                      m_Label.wx_str(),
+                      m_Help.wx_str(),
+                      m_Enabled?_T(""):_T("->Enable(false)"));
+                break;
+            }
+        }
+        // Fall through
+
+        /* case Normal: */
+        case Radio:
+        case Check:
+        {
+            wxString Text = m_Label;
+            if ( !m_Accelerator.IsEmpty() )
+            {
+                Text.Append(_T('\t'));
+                Text.Append(m_Accelerator);
+            }
+
+            const wxChar* ItemType;
             switch ( m_Type )
             {
-                case Normal:
-                {
-                    if ( GetChildCount() )
-                    {
-                        // Creating new wxMenu
-                        if ( IsPointer() )
-                        {
-                            Codef(_T("%C();\n"));
-                        }
-                        for ( int i=0; i<GetChildCount(); i++ )
-                        {
-                            GetChild(i)->BuildCode(GetCoderContext());
-                        }
-                        // Many parameters are passed in wxMenu::Append, so we call this function
-                        // here, not in wxMenu
-                        Codef(_T("%MAppend(%I, %t, %O, %t)%s;\n"),
-                              m_Label.wx_str(),
-                              m_Help.wx_str(),
-                              m_Enabled?_T(""):_T("->Enable(false)"));
-                        break;
-                    }
-                }
-                // Fall through
-
-             /* case Normal: */
-                case Radio:
-                case Check:
-                {
-                    wxString Text = m_Label;
-                    if ( !m_Accelerator.IsEmpty() )
-                    {
-                        Text.Append(_T('\t'));
-                        Text.Append(m_Accelerator);
-                    }
-
-                    const wxChar* ItemType;
-                    switch ( m_Type )
-                    {
-                        case Normal: ItemType = _T("wxITEM_NORMAL"); break;
-                        case Radio:  ItemType = _T("wxITEM_RADIO");  break;
-                        case Break:     // fall-through
-                        case Check:     // fall-through
-                        case Separator: // fall-through
-                        default:     ItemType = _T("wxITEM_CHECK");  break;
-                    }
-
-                    Codef(_T("%C(%E, %I, %t, %t, %s);\n"),
-                          Text.wx_str(),
-                          m_Help.wx_str(),
-                          ItemType);
-
-                    if ( !m_Bitmap.IsEmpty() )
-                    {
-                        Codef(_T("%ASetBitmap(%i);\n"), &m_Bitmap, _T("wxART_OTHER"));
-                    }
-
-                    Codef(_T("%MAppend(%O);\n"));
-                    if ( !m_Enabled )
-                    {
-                        Codef(_T("%AEnable(false);\n"));
-                    }
-                    if ( m_Checked && (m_Type==Check) )
-                    {
-                        Codef(_T("%ACheck(true);\n"));
-                    }
-                    break;
-                }
-
-
-                case Separator:
-                {
-                    Codef(_T("%MAppendSeparator();\n"));
-                    break;
-                }
-
-                case Break:
-                {
-                    Codef(_T("%MBreak();\n"));
-                    break;
-                }
-
-                default:
-                    break;
+            case Normal:
+                ItemType = _T("wxITEM_NORMAL");
+                break;
+            case Radio:
+                ItemType = _T("wxITEM_RADIO");
+                break;
+            case Break:     // fall-through
+            case Check:     // fall-through
+            case Separator: // fall-through
+            default:
+                ItemType = _T("wxITEM_CHECK");
+                break;
             }
-            BuildSetupWindowCode();
-            break;
 
-        case wxsUnknownLanguage: // fall-through
+            Codef(_T("%C(%E, %I, %t, %t, %s);\n"),
+                  Text.wx_str(),
+                  m_Help.wx_str(),
+                  ItemType);
+
+            if ( !m_Bitmap.IsEmpty() )
+            {
+                Codef(_T("%ASetBitmap(%i);\n"), &m_Bitmap, _T("wxART_OTHER"));
+            }
+
+            Codef(_T("%MAppend(%O);\n"));
+            if ( !m_Enabled )
+            {
+                Codef(_T("%AEnable(false);\n"));
+            }
+            if ( m_Checked && (m_Type==Check) )
+            {
+                Codef(_T("%ACheck(true);\n"));
+            }
+            break;
+        }
+
+
+        case Separator:
+        {
+            Codef(_T("%MAppendSeparator();\n"));
+            break;
+        }
+
+        case Break:
+        {
+            Codef(_T("%MBreak();\n"));
+            break;
+        }
+
         default:
-            wxsCodeMarks::Unknown(_T("wxsMenuItem::OnBuildCreatingCode"),GetLanguage());
+            break;
+        }
+        BuildSetupWindowCode();
+        break;
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsMenuItem::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
@@ -181,35 +187,38 @@ void wxsMenuItem::OnEnumToolProperties(cb_unused long Flags)
 
     switch ( m_Type )
     {
-        case Normal:
-            if ( GetChildCount() )
-            {
-                // When there are children (wxMenuItem maps to wxMenu class),
-                // only these properties are enabled
-                WXS_SHORT_STRING(wxsMenuItem,m_Label,_("Label"),_T("label"),_T(""),true);
-                WXS_SHORT_STRING(wxsMenuItem,m_Help,_T("Help text"),_T("help"),_T(""),false);
-                WXS_BOOL(wxsMenuItem,m_Enabled,_T("Enabled"),_T("enabled"),true);
-                break;
-            }
-            // When there are no children, we threat this item as wxMenuItem
-
-        case Radio:
-        case Check:
+    case Normal:
+        if ( GetChildCount() )
+        {
+            // When there are children (wxMenuItem maps to wxMenu class),
+            // only these properties are enabled
             WXS_SHORT_STRING(wxsMenuItem,m_Label,_("Label"),_T("label"),_T(""),true);
-            WXS_SHORT_STRING(wxsMenuItem,m_Accelerator,_("Accelerator"),_T("accel"),_T(""),false);
             WXS_SHORT_STRING(wxsMenuItem,m_Help,_T("Help text"),_T("help"),_T(""),false);
             WXS_BOOL(wxsMenuItem,m_Enabled,_T("Enabled"),_T("enabled"),true);
-            if ( m_Type == Check ) { WXS_BOOL(wxsMenuItem,m_Checked,_T("Checked"),_T("checked"),false); }
-            if ( m_Type == Normal )
-            {
-                WXS_BITMAP(wxsMenuItem,m_Bitmap,_("Bitmap"),_T("bitmap"),_T("wxART_OTHER"))
-            }
             break;
+        }
+    // When there are no children, we threat this item as wxMenuItem
 
-        case Separator: // fall-through
-        case Break:     // fall-through
-        default:
-            break;
+    case Radio:
+    case Check:
+        WXS_SHORT_STRING(wxsMenuItem,m_Label,_("Label"),_T("label"),_T(""),true);
+        WXS_SHORT_STRING(wxsMenuItem,m_Accelerator,_("Accelerator"),_T("accel"),_T(""),false);
+        WXS_SHORT_STRING(wxsMenuItem,m_Help,_T("Help text"),_T("help"),_T(""),false);
+        WXS_BOOL(wxsMenuItem,m_Enabled,_T("Enabled"),_T("enabled"),true);
+        if ( m_Type == Check )
+        {
+            WXS_BOOL(wxsMenuItem,m_Checked,_T("Checked"),_T("checked"),false);
+        }
+        if ( m_Type == Normal )
+        {
+            WXS_BITMAP(wxsMenuItem,m_Bitmap,_("Bitmap"),_T("bitmap"),_T("wxART_OTHER"))
+        }
+        break;
+
+    case Separator: // fall-through
+    case Break:     // fall-through
+    default:
+        break;
     }
 }
 
@@ -222,27 +231,27 @@ bool wxsMenuItem::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
         // Type information is stored differently
         switch ( m_Type )
         {
-            case Separator:
-                Element->SetAttribute("class","separator");
-                break;
+        case Separator:
+            Element->SetAttribute("class","separator");
+            break;
 
-            case Break:
-                Element->SetAttribute("class","break");
-                break;
+        case Break:
+            Element->SetAttribute("class","break");
+            break;
 
-            case Radio:
-                Element->InsertEndChild(TiXmlElement("radio"))->ToElement()->InsertEndChild(TiXmlText("1"));
-                break;
+        case Radio:
+            Element->InsertEndChild(TiXmlElement("radio"))->ToElement()->InsertEndChild(TiXmlText("1"));
+            break;
 
-            case Check:
-                Element->InsertEndChild(TiXmlElement("checkable"))->ToElement()->InsertEndChild(TiXmlText("1"));
-                break;
+        case Check:
+            Element->InsertEndChild(TiXmlElement("checkable"))->ToElement()->InsertEndChild(TiXmlText("1"));
+            break;
 
-            case Normal:
-                break;
+        case Normal:
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
 
@@ -302,7 +311,7 @@ bool wxsMenuItem::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
 bool wxsMenuItem::OnCanAddToParent(wxsParent* Parent,bool ShowMessage)
 {
     if ( Parent->GetClassName() != _T("wxMenu") &&
-         Parent->GetClassName() != _T("wxMenuItem") )
+            Parent->GetClassName() != _T("wxMenuItem") )
     {
         if ( ShowMessage )
         {
@@ -340,17 +349,17 @@ wxString wxsMenuItem::OnGetTreeLabel(cb_unused int& Image)
 {
     switch ( m_Type )
     {
-        case Separator:
-            return _T("--------");
+    case Separator:
+        return _T("--------");
 
-        case Break:
-            return _("** BREAK **");
+    case Break:
+        return _("** BREAK **");
 
-        case Normal: // fall-through
-        case Radio:  // fall-through
-        case Check:  // fall-through
-        default:
-            return m_Label;
+    case Normal: // fall-through
+    case Radio:  // fall-through
+    case Check:  // fall-through
+    default:
+        return m_Label;
     }
 }
 
@@ -360,15 +369,15 @@ void wxsMenuItem::OnBuildDeclarationsCode()
     {
         switch ( m_Type )
         {
-            case Break:
-            case Separator:
-                return;
+        case Break:
+        case Separator:
+            return;
 
-            case Normal: // fall-through
-            case Radio:  // fall-through
-            case Check:  // fall-through
-            default:
-                break;
+        case Normal: // fall-through
+        case Radio:  // fall-through
+        case Check:  // fall-through
+        default:
+            break;
         }
     }
 

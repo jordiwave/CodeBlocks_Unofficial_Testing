@@ -27,7 +27,7 @@
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/dynarray.h>
+#include <wx/dynarray.h>
 #endif
 
 #include "wx/charttypes.h"
@@ -84,11 +84,11 @@ public:
     // ctor
     //-----
     wxLegend();
-	~wxLegend();
+    ~wxLegend();
 
-	// Draw legend area
-	//-----------------
-	void Draw(CHART_HPAINT hp, CHART_HRECT hr);
+    // Draw legend area
+    //-----------------
+    void Draw(CHART_HPAINT hp, CHART_HRECT hr);
 
     // Redraw arraw whne mouse over
     //-----------------------------
@@ -103,16 +103,16 @@ public:
     bool IsInArrowUp(int x, int y);
     bool IsInArrowDown(int x, int y);
 
-	// List descriptos utilities
-	//--------------------------
+    // List descriptos utilities
+    //--------------------------
     void Add(const wxString &lbl, const ChartColor &col);
-	void Clear();
-	int GetCount() const;
-	ChartColor GetColor(int n) const;
+    void Clear();
+    int GetCount() const;
+    ChartColor GetColor(int n) const;
     wxString GetLabel(int n) const;
 
 private:
-	ListLegendDesc m_lDescs;
+    ListLegendDesc m_lDescs;
     int m_Page;
     ArrowDescriptor m_ArrowUp;
     ArrowDescriptor m_ArrowDown;

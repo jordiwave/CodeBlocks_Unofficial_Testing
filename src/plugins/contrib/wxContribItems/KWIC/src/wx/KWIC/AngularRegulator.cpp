@@ -19,7 +19,7 @@
 // ----------------------------------------------------------------------------
 
 #ifndef WX_PRECOMP
-	#include "wx/wx.h"
+#include "wx/wx.h"
 #endif
 
 #include <math.h>
@@ -29,275 +29,275 @@
 IMPLEMENT_DYNAMIC_CLASS(kwxAngularRegulator, wxControl)
 
 BEGIN_EVENT_TABLE(kwxAngularRegulator,wxControl)
-	EVT_MOUSE_EVENTS(kwxAngularRegulator::OnMouse)
-	EVT_PAINT(kwxAngularRegulator::OnPaint)
+    EVT_MOUSE_EVENTS(kwxAngularRegulator::OnMouse)
+    EVT_PAINT(kwxAngularRegulator::OnPaint)
 END_EVENT_TABLE()
 
 
 kwxAngularRegulator::kwxAngularRegulator(wxWindow* parent, const wxWindowID id, const wxPoint& pos, const wxSize& size, const long int style)
 {
-	Create(parent, id, pos, size, style);
+    Create(parent, id, pos, size, style);
 }
 
 bool kwxAngularRegulator::Create(wxWindow* parent, const wxWindowID id, const wxPoint& pos, const wxSize& size, const long int style)
 {
-	if(!wxWindow::Create(parent, id, pos, size, style))
-		return false;
+    if(!wxWindow::Create(parent, id, pos, size, style))
+        return false;
 
-	if (parent)
-		SetBackgroundColour(parent->GetBackgroundColour());
-	else
-		SetBackgroundColour(*wxLIGHT_GREY);
+    if (parent)
+        SetBackgroundColour(parent->GetBackgroundColour());
+    else
+        SetBackgroundColour(*wxLIGHT_GREY);
 
     SetAutoLayout(TRUE);
-	Refresh();
+    Refresh();
 
-	m_nClientWidth = size.GetWidth() ;
-	m_nClientHeight = size.GetHeight() ;
+    m_nClientWidth = size.GetWidth() ;
+    m_nClientHeight = size.GetHeight() ;
 
-	m_nStato = 0 ;
-	m_nRealVal = 0 ;
-	m_nScaledVal = 0 ;
-	m_nTags = 0 ;
+    m_nStato = 0 ;
+    m_nRealVal = 0 ;
+    m_nScaledVal = 0 ;
+    m_nTags = 0 ;
 
-	m_cExtCircle = *wxLIGHT_GREY ;
-	m_cIntCircle = *wxLIGHT_GREY ;
+    m_cExtCircle = *wxLIGHT_GREY ;
+    m_cIntCircle = *wxLIGHT_GREY ;
 
-	m_cLimitsColour = *wxBLACK ;
+    m_cLimitsColour = *wxBLACK ;
 
-	m_cKnobBorderColour = *wxBLACK ;
-	m_cKnobColour = *wxLIGHT_GREY ;
+    m_cKnobBorderColour = *wxBLACK ;
+    m_cKnobColour = *wxLIGHT_GREY ;
 
-	m_cTagsColour = *wxBLACK ;
+    m_cTagsColour = *wxBLACK ;
 
-	membitmap = new wxBitmap(size.GetWidth(), size.GetHeight()) ;
-	return true;
+    membitmap = new wxBitmap(size.GetWidth(), size.GetHeight()) ;
+    return true;
 }
 
 kwxAngularRegulator::~kwxAngularRegulator()
 {
-	delete membitmap;
+    delete membitmap;
 }
 
 void kwxAngularRegulator::OnPaint(wxPaintEvent& WXUNUSED(event))
 {
-	wxPaintDC dc(this);
+    wxPaintDC dc(this);
 
-	// Create a memory DC
-	wxMemoryDC temp_dc;
-	temp_dc.SelectObject(*membitmap);
+    // Create a memory DC
+    wxMemoryDC temp_dc;
+    temp_dc.SelectObject(*membitmap);
 
-	temp_dc.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
-	temp_dc.Clear();
+    temp_dc.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
+    temp_dc.Clear();
 
 //////////////////////////////////////////////////////
-	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxPENSTYLE_SOLID));
-	temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cExtCircle, wxBRUSHSTYLE_SOLID));
+    temp_dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxPENSTYLE_SOLID));
+    temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cExtCircle, wxBRUSHSTYLE_SOLID));
 
 
-	temp_dc.DrawCircle(m_nClientWidth / 2, m_nClientHeight / 2, m_nClientHeight / 2) ;
+    temp_dc.DrawCircle(m_nClientWidth / 2, m_nClientHeight / 2, m_nClientHeight / 2) ;
 //////////////////////////////////////////////////////
-	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxPENSTYLE_SOLID));
-	temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cIntCircle, wxBRUSHSTYLE_SOLID));
+    temp_dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxPENSTYLE_SOLID));
+    temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cIntCircle, wxBRUSHSTYLE_SOLID));
 
-	temp_dc.DrawCircle(m_nClientWidth / 2, m_nClientHeight / 2, m_nClientHeight / 2 - 10) ;
+    temp_dc.DrawCircle(m_nClientWidth / 2, m_nClientHeight / 2, m_nClientHeight / 2 - 10) ;
 
-	DrawLimit(temp_dc) ;	//limiti
+    DrawLimit(temp_dc) ;	//limiti
 
-	if (m_nTags >0 )
-		DrawTags(temp_dc);	//tags
+    if (m_nTags >0 )
+        DrawTags(temp_dc);	//tags
 
-	DrawKnob(temp_dc) ;		//knob
+    DrawKnob(temp_dc) ;		//knob
 
 
-	// We can now draw into the memory DC...
-	// Copy from this DC to another DC.
-	dc.Blit(0, 0, m_nClientWidth, m_nClientHeight, &temp_dc, 0, 0);
+    // We can now draw into the memory DC...
+    // Copy from this DC to another DC.
+    dc.Blit(0, 0, m_nClientWidth, m_nClientHeight, &temp_dc, 0, 0);
 }
 
 void kwxAngularRegulator::SetValue(int val)
 {
-	int deltaRange = m_nMax - m_nMin;
-	int deltaAngle = m_nAngleEnd - m_nAngleStart;
+    int deltaRange = m_nMax - m_nMin;
+    int deltaAngle = m_nAngleEnd - m_nAngleStart;
 
-	double coeff = (double)deltaAngle / (double)deltaRange;
+    double coeff = (double)deltaAngle / (double)deltaRange;
 
-	double ang = 360 + ((val * coeff) + m_nAngleStart);
+    double ang = 360 + ((val * coeff) + m_nAngleStart);
 
-	ang = (ang * PGRECO) / 180;
-	m_dxi = cos(ang) * ((m_nClientHeight / 2) - 22) ; //coordinate centro knob
-	m_dyi = sin(ang) * ((m_nClientHeight / 2) - 22) ;
+    ang = (ang * PGRECO) / 180;
+    m_dxi = cos(ang) * ((m_nClientHeight / 2) - 22) ; //coordinate centro knob
+    m_dyi = sin(ang) * ((m_nClientHeight / 2) - 22) ;
 
-	Refresh();
+    Refresh();
 }
 
 void kwxAngularRegulator::OnMouse(wxMouseEvent& event)
 {
-	if (m_nStato == 0 && event.Entering())	//dentro nel controllo
-		m_nStato = 1 ;
-	else if (m_nStato >= 1 && event.Leaving())	//fuori dal controllo
-		m_nStato = 0 ;
-	else if (m_nStato == 1 && event.LeftDown())	//click o inizio trascinamento
-	{
-		m_nStato = 2 ;
-		m_mousePosition = event.GetPosition();
-		SetPosition() ;
-	}
-	else if (m_nStato == 2 && event.LeftIsDown())	//trascinamento
-	{
-		m_mousePosition = event.GetPosition();
-		SetPosition() ;
-	}
-	else if (m_nStato == 2 && event.LeftUp())	//fine trascinamento o rilascio click
-		m_nStato = 1 ;
+    if (m_nStato == 0 && event.Entering())	//dentro nel controllo
+        m_nStato = 1 ;
+    else if (m_nStato >= 1 && event.Leaving())	//fuori dal controllo
+        m_nStato = 0 ;
+    else if (m_nStato == 1 && event.LeftDown())	//click o inizio trascinamento
+    {
+        m_nStato = 2 ;
+        m_mousePosition = event.GetPosition();
+        SetPosition() ;
+    }
+    else if (m_nStato == 2 && event.LeftIsDown())	//trascinamento
+    {
+        m_mousePosition = event.GetPosition();
+        SetPosition() ;
+    }
+    else if (m_nStato == 2 && event.LeftUp())	//fine trascinamento o rilascio click
+        m_nStato = 1 ;
 }
 
 void kwxAngularRegulator::DrawKnob(wxDC &temp_dc)
 {
-	double x, y ;
+    double x, y ;
 
-	x = (m_nClientHeight / 2) - m_dxi ;
-	y = (m_nClientHeight / 2) - m_dyi ;
+    x = (m_nClientHeight / 2) - m_dxi ;
+    y = (m_nClientHeight / 2) - m_dyi ;
 
 
-	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cKnobBorderColour, 1, wxPENSTYLE_SOLID));
-	temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cKnobColour, wxBRUSHSTYLE_SOLID));
+    temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cKnobBorderColour, 1, wxPENSTYLE_SOLID));
+    temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cKnobColour, wxBRUSHSTYLE_SOLID));
 
-	temp_dc.DrawCircle(x, y, 5) ;
+    temp_dc.DrawCircle(x, y, 5) ;
 }
 
 void kwxAngularRegulator::DrawLimit(wxDC &temp_dc)
 {
-	double ang ;
+    double ang ;
 
-	int anglestart = m_nAngleStart ;
-	//Start
-	if (anglestart < 0 )
-		anglestart = 360 + anglestart ;
+    int anglestart = m_nAngleStart ;
+    //Start
+    if (anglestart < 0 )
+        anglestart = 360 + anglestart ;
 
-	ang = (anglestart * PGRECO) / 180 ; //radianti parametro angolo
+    ang = (anglestart * PGRECO) / 180 ; //radianti parametro angolo
 
-	double sx = cos(ang) * ((m_nClientHeight / 2) ) ; //coordinate limite start
-	double sy = sin(ang) * ((m_nClientHeight / 2) ) ;
+    double sx = cos(ang) * ((m_nClientHeight / 2) ) ; //coordinate limite start
+    double sy = sin(ang) * ((m_nClientHeight / 2) ) ;
 
-	double dx = cos(ang) * ((m_nClientHeight / 2) - 7) ; //coordinate limite start
-	double dy = sin(ang) * ((m_nClientHeight / 2) - 7) ;
+    double dx = cos(ang) * ((m_nClientHeight / 2) - 7) ; //coordinate limite start
+    double dy = sin(ang) * ((m_nClientHeight / 2) - 7) ;
 
 
-	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cLimitsColour, 2, wxPENSTYLE_SOLID));
+    temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cLimitsColour, 2, wxPENSTYLE_SOLID));
 
-	temp_dc.DrawLine((m_nClientHeight / 2) - sx,(m_nClientHeight / 2) - sy, (m_nClientHeight / 2) - dx , (m_nClientHeight / 2) - dy ) ;
+    temp_dc.DrawLine((m_nClientHeight / 2) - sx,(m_nClientHeight / 2) - sy, (m_nClientHeight / 2) - dx, (m_nClientHeight / 2) - dy ) ;
 
-	ang = (m_nAngleEnd * PGRECO) / 180 ; //radianti parametro angolo
+    ang = (m_nAngleEnd * PGRECO) / 180 ; //radianti parametro angolo
 
-	sx = cos(ang) * ((m_nClientHeight / 2) ) ; //coordinate limite start
-	sy = sin(ang) * ((m_nClientHeight / 2) ) ;
+    sx = cos(ang) * ((m_nClientHeight / 2) ) ; //coordinate limite start
+    sy = sin(ang) * ((m_nClientHeight / 2) ) ;
 
-	dx = cos(ang) * ((m_nClientHeight / 2) - 7) ; //coordinate limite start
-	dy = sin(ang) * ((m_nClientHeight / 2) - 7) ;
+    dx = cos(ang) * ((m_nClientHeight / 2) - 7) ; //coordinate limite start
+    dy = sin(ang) * ((m_nClientHeight / 2) - 7) ;
 
-	temp_dc.DrawLine((m_nClientHeight / 2) - sx,(m_nClientHeight / 2) - sy, (m_nClientHeight / 2) - dx , (m_nClientHeight / 2) - dy ) ;
+    temp_dc.DrawLine((m_nClientHeight / 2) - sx,(m_nClientHeight / 2) - sy, (m_nClientHeight / 2) - dx, (m_nClientHeight / 2) - dy ) ;
 }
 
 void kwxAngularRegulator::DrawTags(wxDC &temp_dc)
 {
-	int tagCount ;
+    int tagCount ;
 
-	int deltaRange = m_nMax - m_nMin;
-	int deltaAngle = m_nAngleEnd - m_nAngleStart;
+    int deltaRange = m_nMax - m_nMin;
+    int deltaAngle = m_nAngleEnd - m_nAngleStart;
 
-	int sxi, syi ;
-	int dxi, dyi ;
+    int sxi, syi ;
+    int dxi, dyi ;
 
-	double coeff = (double)deltaAngle / (double)deltaRange;
+    double coeff = (double)deltaAngle / (double)deltaRange;
 
-	double angle ;
+    double angle ;
 
-	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cTagsColour, 1, wxPENSTYLE_SOLID));
+    temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cTagsColour, 1, wxPENSTYLE_SOLID));
 
-	for (tagCount = 0 ; tagCount < m_nTags ; tagCount++)
-	{
-		angle = 360 + ((m_nTagsValue[tagCount] * coeff) + m_nAngleStart);
-		angle = (angle * PGRECO) / 180;
+    for (tagCount = 0 ; tagCount < m_nTags ; tagCount++)
+    {
+        angle = 360 + ((m_nTagsValue[tagCount] * coeff) + m_nAngleStart);
+        angle = (angle * PGRECO) / 180;
 
-		sxi = cos(angle) * (m_nClientHeight / 2) ;
-		syi = sin(angle) * (m_nClientHeight / 2) ;
+        sxi = cos(angle) * (m_nClientHeight / 2) ;
+        syi = sin(angle) * (m_nClientHeight / 2) ;
 
-		dxi = cos(angle) * ((m_nClientHeight / 2) - 7) ;
-		dyi = sin(angle) * ((m_nClientHeight / 2) - 7);
+        dxi = cos(angle) * ((m_nClientHeight / 2) - 7) ;
+        dyi = sin(angle) * ((m_nClientHeight / 2) - 7);
 
-		temp_dc.DrawLine((m_nClientHeight / 2) - sxi,(m_nClientHeight / 2) - syi, (m_nClientHeight / 2) - dxi , (m_nClientHeight / 2) - dyi ) ;
-	}
+        temp_dc.DrawLine((m_nClientHeight / 2) - sxi,(m_nClientHeight / 2) - syi, (m_nClientHeight / 2) - dxi, (m_nClientHeight / 2) - dyi ) ;
+    }
 }
 
 void kwxAngularRegulator::SetPosition()
 {
-	int x, y ;
-	double ang ;
-	int deltaRange, deltaAngle ;
-	double val ;
+    int x, y ;
+    double ang ;
+    int deltaRange, deltaAngle ;
+    double val ;
 
-	x = m_mousePosition.x ;
-	y = m_mousePosition.y ;
+    x = m_mousePosition.x ;
+    y = m_mousePosition.y ;
 
-	ang = GetAngleFromCord(x, y) ; //IN RADIANTI
+    ang = GetAngleFromCord(x, y) ; //IN RADIANTI
 
-	val = (ang * 180) / PGRECO; //radianti parametro angolo
+    val = (ang * 180) / PGRECO; //radianti parametro angolo
 
-	deltaRange = m_nMax - m_nMin;
-	deltaAngle = m_nAngleEnd - m_nAngleStart;
+    deltaRange = m_nMax - m_nMin;
+    deltaAngle = m_nAngleEnd - m_nAngleStart;
 
-	double coeff = (double)deltaAngle / (double)deltaRange;
+    double coeff = (double)deltaAngle / (double)deltaRange;
 
-	//OK
-	if( m_nAngleStart < 0 && val >= (360 + m_nAngleStart) )
-		m_nScaledVal = (double)(val  - (360 + m_nAngleStart)) / coeff;
-	else
-		m_nScaledVal = (double)(val  - m_nAngleStart) / coeff;
+    //OK
+    if( m_nAngleStart < 0 && val >= (360 + m_nAngleStart) )
+        m_nScaledVal = (double)(val  - (360 + m_nAngleStart)) / coeff;
+    else
+        m_nScaledVal = (double)(val  - m_nAngleStart) / coeff;
 
 
-	//vale sempre fuori dall'intervallo ma non si sa da dove si arriva
-	//salviamo ultima posizione e ricarichiamo
-	if(m_nScaledVal > m_nMax || m_nScaledVal < m_nMin)
-		ang = old_ang ;
-	else
-	{
-		m_nRealVal = (int)(ceil(m_nScaledVal)) ;
-		wxCommandEvent event(kwxEVT_ANGREG_CHANGE, GetId());	//evento
-		event.SetEventObject(this);
+    //vale sempre fuori dall'intervallo ma non si sa da dove si arriva
+    //salviamo ultima posizione e ricarichiamo
+    if(m_nScaledVal > m_nMax || m_nScaledVal < m_nMin)
+        ang = old_ang ;
+    else
+    {
+        m_nRealVal = (int)(ceil(m_nScaledVal)) ;
+        wxCommandEvent event(kwxEVT_ANGREG_CHANGE, GetId());	//evento
+        event.SetEventObject(this);
 //		ProcessCommand(event) ;
-		GetEventHandler()->ProcessEvent(event);
-	}
+        GetEventHandler()->ProcessEvent(event);
+    }
 
-	m_dxi = cos(ang) * ((m_nClientHeight / 2) - 22) ; //coordinate centro knob
-	m_dyi = sin(ang) * ((m_nClientHeight / 2) - 22) ;
+    m_dxi = cos(ang) * ((m_nClientHeight / 2) - 22) ; //coordinate centro knob
+    m_dyi = sin(ang) * ((m_nClientHeight / 2) - 22) ;
 
 //	wxLogTrace("angolo: %f scalato: %f",val, m_nScaledVal);
 
-	old_ang = ang ;
+    old_ang = ang ;
 
-	Refresh() ;
+    Refresh() ;
 }
 
 //Ritorna l'angolo in radianti della posizione del mouse
 double kwxAngularRegulator::GetAngleFromCord(int cx, int cy)
 {
 
-	double x, y, ang = 0 ;
+    double x, y, ang = 0 ;
 
-	y = ((m_nClientHeight / 2) - (double)cy)  / (m_nClientHeight / 2);
-	x = ((double)cx - (m_nClientWidth / 2)) / (m_nClientHeight / 2);
+    y = ((m_nClientHeight / 2) - (double)cy)  / (m_nClientHeight / 2);
+    x = ((double)cx - (m_nClientWidth / 2)) / (m_nClientHeight / 2);
 
-	ang -= (atan2(-y, -x)) ; // IN RADIANTI
+    ang -= (atan2(-y, -x)) ; // IN RADIANTI
 
-	if (ang < 0 )
-		ang += 2 * PGRECO ;
+    if (ang < 0 )
+        ang += 2 * PGRECO ;
 
-	return  ang ;
+    return  ang ;
 }
 
 void kwxAngularRegulator::AddTag(int value)
 {
-	m_nTagsValue[m_nTags++] = value;
+    m_nTagsValue[m_nTags++] = value;
 }
 

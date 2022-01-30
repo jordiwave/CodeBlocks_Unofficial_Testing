@@ -22,9 +22,9 @@
 #include "LSPEventCallbackHandler.h" //(ph 2021/10/23)
 
 #if defined(_WIN32)
-    #include "fileutils.h"               //(ph 2021/12/21)
+#include "fileutils.h"               //(ph 2021/12/21)
 #else
-    #include "fileutils.h"
+#include "fileutils.h"
 #endif //_Win32
 
 #include <wx/arrstr.h>
@@ -100,7 +100,10 @@ public:
     // the function below were virtual functions from the base class
     void OnAttach() override;
     void OnRelease(bool appShutDown) override;
-    int  GetConfigurationGroup() const override { return cgEditor; }
+    int  GetConfigurationGroup() const override
+    {
+        return cgEditor;
+    }
     bool CanDetach() const override;
 
     /** CC's config dialog */
@@ -114,7 +117,10 @@ public:
     /** build CC Toolbar */
     bool BuildToolBar(wxToolBar* toolBar) override;
     /** toolbar priority value */
-    int GetToolBarPriority() override { return 10; }
+    int GetToolBarPriority() override
+    {
+        return 10;
+    }
 
     // override virtual functions in cbCodeCompletionPlugin class (cbplugin.h calls from ccmanager)
     CCProviderStatus       GetProviderStatusFor(cbEditor* ed) override;
@@ -303,7 +309,10 @@ private:
     wxMenu*                 m_ProjectMenu;
 
     std::unique_ptr<ParseManager> m_pParseManager;
-    ParseManager* GetParseManager(){return m_pParseManager.get();}
+    ParseManager* GetParseManager()
+    {
+        return m_pParseManager.get();
+    }
 
     /** code re-factoring tool */
     CodeRefactoring*           m_pCodeRefactoring;
@@ -419,11 +428,6 @@ private:
      */
     bool                    m_CCEnablePlatformCheck;
 
-    /** Do not run Clangd_client plugin if Code completion is unchecked
-     ** In MainMenu/Settings/Editor/Code completion checkbox
-     */
-    bool                    m_SettingsEditorCodeCompletionEnabled;            //(ph 2021/10/11)
-
     /** map to record all re-parsing files
      *
      * Here is an example how the ReparsingMap is used. Suppose you have two cbp opened:
@@ -505,7 +509,10 @@ private:
     LSPClientsMapType m_LSP_Clients; //map of all LSP clients by project*
 
     wxString m_RenameSymbolToReplace; //Holds original target of RenameSymbols()
-    wxString GetRenameSymbolToReplace() {return m_RenameSymbolToReplace;}
+    wxString GetRenameSymbolToReplace()
+    {
+        return m_RenameSymbolToReplace;
+    }
 
     // LSP legends for textDocument/semanticTokens
     std::vector<std::string> m_SemanticTokensTypes;
@@ -602,7 +609,10 @@ private:
     // LSPEventCallbackHandler pointer
     std::unique_ptr<LSPEventCallbackHandler> pLSPEventSinkHandler;    //(ph 2021/10/23)
     // Get pointer to LSP event callbacks
-    LSPEventCallbackHandler* GetLSPEventSinkHandler(){return pLSPEventSinkHandler.get();}
+    LSPEventCallbackHandler* GetLSPEventSinkHandler()
+    {
+        return pLSPEventSinkHandler.get();
+    }
 
     void OnSelectedPauseParsing(wxCommandEvent& event); //(ph 2021/07/28)
 
@@ -619,6 +629,25 @@ private:
     wxString GetTargetsOutFilename(cbProject* pProject);                  //(ph 2021/05/11)
     // Check if allowable files parsing are maxed out.
     bool ParsingIsVeryBusy();
+
+    // This is set to false if ctor completes.
+    // Forces CB restart when clangd_client first enabled
+    bool m_CC_initDeferred = true;
+    // Set to true when the old CodeCompletion plugin is enabled
+    bool m_OldCC_enabled = true;
+    bool IsOldCC_Enabled()
+    {
+        m_OldCC_enabled = Manager::Get()->GetConfigManager(_T("plugins"))->ReadBool(_T("/CODECOMPLETION"), false );
+        // check if the CodeCompletion.dll actually exists.
+        wxString pluginDir = ConfigManager::GetPluginsFolder(true);
+        // Sometimes the .conf says yes and reality says no.
+#if defined(_WIN32)
+        if (not wxFileExists(pluginDir + wxFILE_SEP_PATH + "codecompletion.dll")) m_OldCC_enabled = false;
+#else
+        if (not wxFileExists(pluginDir + wxFILE_SEP_PATH + "libcodecompletion.so")) m_OldCC_enabled = false;
+#endif
+        return m_OldCC_enabled;
+    }
 
     DECLARE_EVENT_TABLE()
 };

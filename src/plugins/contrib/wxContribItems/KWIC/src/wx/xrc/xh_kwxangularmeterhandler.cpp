@@ -49,27 +49,30 @@ wxObject *kwxAngularMeterHandler::DoCreateResource()
     control->Create(m_parentAsWindow, GetID(), GetPosition(), GetSize());
     control->SetNumTick(GetLong(wxT("num_ticks")));
     control->SetRange(GetLong(wxT("range_min"), 0), GetLong(wxT("range_max"), 220));
-	control->SetAngle(GetLong(wxT("angle_min"), -20), GetLong(wxT("angle_max"), 200));
-	int i = 1;
-	while(1){
-		wxString s = wxString::Format(wxT("sector_%d_colour"), i);
-		if(!HasParam(s)){
-			break;
-		}
+    control->SetAngle(GetLong(wxT("angle_min"), -20), GetLong(wxT("angle_max"), 200));
+    int i = 1;
+    while(1)
+    {
+        wxString s = wxString::Format(wxT("sector_%d_colour"), i);
+        if(!HasParam(s))
+        {
+            break;
+        }
         // Setting the number of sectors each time around is not ideal but the alternative is to pre-process the XML.
         control->SetNumSectors(i);
-		control->SetSectorColor(i - 1, GetColour(s, *wxWHITE));
-		i++;
-	}
-   	control->DrawCurrent(GetBool(wxT("show_value"), true));
+        control->SetSectorColor(i - 1, GetColour(s, *wxWHITE));
+        i++;
+    }
+    control->DrawCurrent(GetBool(wxT("show_value"), true));
     control->SetNeedleColour(GetColour(wxT("needle_colour"), *wxRED));
     control->SetBackColour(GetColour(wxT("background_colour"), control->GetBackgroundColour()));
-	control->SetBorderColour(GetColour(wxT("border_colour"), control->GetBackgroundColour()));
-	// Avoid error if the font node isn't present.
-	if(HasParam(wxT("font"))){
-		wxFont font = GetFont();
-		control->SetTxtFont(font);
-	}
+    control->SetBorderColour(GetColour(wxT("border_colour"), control->GetBackgroundColour()));
+    // Avoid error if the font node isn't present.
+    if(HasParam(wxT("font")))
+    {
+        wxFont font = GetFont();
+        control->SetTxtFont(font);
+    }
     control->SetValue(GetLong(wxT("value"), 0));
 
     SetupWindow(control);

@@ -209,6 +209,11 @@ if exist "%CB_DEVEL_RESDIR%\SpellChecker" (
     call:copyImageFiles "%CB_DEVEL_RESDIR%\SpellChecker" "%CB_OUTPUT_RESDIR%\SpellChecker"
 )
 
+if exist "%CB_DEVEL_RESDIR%\gdb_pretty_printers" (
+    call:mkdirSilent "%CB_OUTPUT_RESDIR%\gdb_pretty_printers"
+    xcopy /D /y "%CB_DEVEL_RESDIR%\gdb_pretty_printers\*.*" "%CB_OUTPUT_RESDIR%\gdb_pretty_printers\" > nul
+)
+
 REM misc. contrib plugin settings:
 echo Copying files of several contrib plugins settings
 xcopy /D /y "%CB_DEVEL_RESDIR%\images\settings\*.png" "%CB_OUTPUT_RESDIR%\images\settings" > nul

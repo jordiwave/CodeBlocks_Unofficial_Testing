@@ -9,7 +9,8 @@
 #define ACCESSOR_H
 
 #ifdef SCI_NAMESPACE
-namespace Scintilla {
+namespace Scintilla
+{
 #endif
 
 enum { wsSpace=1, wsTab=2, wsSpaceTab=4, wsInconsistent=8 };
@@ -20,12 +21,13 @@ class PropSetSimple;
 
 typedef bool (*PFNIsCommentLeader)(Accessor &styler, Sci_Position pos, Sci_Position len);
 
-class Accessor : public LexAccessor {
+class Accessor : public LexAccessor
+{
 public:
-	PropSetSimple *pprops;
-	Accessor(IDocument *pAccess_, PropSetSimple *pprops_);
-	int GetPropertyInt(const char *, int defaultValue=0) const;
-	int IndentAmount(Sci_Position line, int *flags, PFNIsCommentLeader pfnIsCommentLeader = 0);
+    PropSetSimple *pprops;
+    Accessor(IDocument *pAccess_, PropSetSimple *pprops_);
+    int GetPropertyInt(const char *, int defaultValue=0) const;
+    int IndentAmount(Sci_Position line, int *flags, PFNIsCommentLeader pfnIsCommentLeader = 0);
 };
 
 #ifdef SCI_NAMESPACE

@@ -24,20 +24,20 @@
 
 namespace
 {
-    wxsRegisterItem<wxsHyperlinkCtrl> Reg(_T("HyperlinkCtrl"),wxsTWidget,_T("Standard"),260);
+wxsRegisterItem<wxsHyperlinkCtrl> Reg(_T("HyperlinkCtrl"),wxsTWidget,_T("Standard"),260);
 
-    WXS_ST_BEGIN(wxsHyperlinkCtrlStyles,_T("wxHL_CONTEXTMENU|wxNO_BORDER|wxHL_ALIGN_CENTRE"))
-        WXS_ST_CATEGORY("wxHyperlinkCtrl")
-        WXS_ST(wxHL_CONTEXTMENU)
-        WXS_ST(wxHL_ALIGN_LEFT)
-        WXS_ST(wxHL_ALIGN_RIGHT)
-        WXS_ST(wxHL_ALIGN_CENTRE)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsHyperlinkCtrlStyles,_T("wxHL_CONTEXTMENU|wxNO_BORDER|wxHL_ALIGN_CENTRE"))
+WXS_ST_CATEGORY("wxHyperlinkCtrl")
+WXS_ST(wxHL_CONTEXTMENU)
+WXS_ST(wxHL_ALIGN_LEFT)
+WXS_ST(wxHL_ALIGN_RIGHT)
+WXS_ST(wxHL_ALIGN_CENTRE)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsHyperlinkCtrlEvents)
-        WXS_EVI(EVT_HYPERLINK,wxEVT_COMMAND_HYPERLINK,wxCommandEvent,Click)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsHyperlinkCtrlEvents)
+WXS_EVI(EVT_HYPERLINK,wxEVT_COMMAND_HYPERLINK,wxCommandEvent,Click)
+WXS_EV_END()
 }
 
 /*! \brief Ctor
@@ -51,7 +51,7 @@ wxsHyperlinkCtrl::wxsHyperlinkCtrl(wxsItemResData* Data):
         &Reg.Info,
         wxsHyperlinkCtrlEvents,
         wxsHyperlinkCtrlStyles),
-        m_Label(wxT("http://www.codeblocks.org"))
+    m_Label(wxT("http://www.codeblocks.org"))
 {}
 
 /*! \brief Create the initial control.
@@ -63,30 +63,30 @@ void wxsHyperlinkCtrl::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/hyperlink.h>"),GetInfo().ClassName,hfInPCH);
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/hyperlink.h>"),GetInfo().ClassName,hfInPCH);
 
-            Codef(_T("%C(%W, %I, %t, %t, %P, %S, %T, %N);\n"),m_Label.wx_str(), m_URL.wx_str());
+        Codef(_T("%C(%W, %I, %t, %t, %P, %S, %T, %N);\n"),m_Label.wx_str(), m_URL.wx_str());
 
-            wxString ss = m_NormalColour.BuildCode( GetCoderContext() );
-            if (!ss.IsEmpty()) Codef(_T("%ASetNormalColour(%s);\n"), ss.wx_str());
+        wxString ss = m_NormalColour.BuildCode( GetCoderContext() );
+        if (!ss.IsEmpty()) Codef(_T("%ASetNormalColour(%s);\n"), ss.wx_str());
 
-            ss = m_HoverColour.BuildCode( GetCoderContext() );
-            if (!ss.IsEmpty()) Codef(_T("%ASetHoverColour(%s);\n"), ss.wx_str());
+        ss = m_HoverColour.BuildCode( GetCoderContext() );
+        if (!ss.IsEmpty()) Codef(_T("%ASetHoverColour(%s);\n"), ss.wx_str());
 
-            ss = m_VisitedColour.BuildCode( GetCoderContext() );
-            if (!ss.IsEmpty()) Codef(_T("%ASetVisitedColour(%s);\n"), ss.wx_str());
+        ss = m_VisitedColour.BuildCode( GetCoderContext() );
+        if (!ss.IsEmpty()) Codef(_T("%ASetVisitedColour(%s);\n"), ss.wx_str());
 
-            BuildSetupWindowCode();
-            return;
-        }
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsHyperlinkCtrl::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsHyperlinkCtrl::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

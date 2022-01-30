@@ -34,27 +34,30 @@
  */
 class wxsCustomWidget: public wxsWidget
 {
-    public:
-        wxsCustomWidget(wxsItemResData* Data);
+public:
+    wxsCustomWidget(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
-        virtual bool OnIsPointer() { return true; }
-        virtual bool OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra);
-        virtual bool OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
+    virtual bool OnIsPointer()
+    {
+        return true;
+    }
+    virtual bool OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra);
+    virtual bool OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra);
 
-        void RebuildXmlData();
-        bool RebuildXmlDataDoc();
+    void RebuildXmlData();
+    bool RebuildXmlDataDoc();
 
-        wxString m_CreatingCode;
-        wxString m_Style;
-        wxString m_XmlData;
-        TiXmlDocument m_XmlDataDoc;
-        wxString m_IncludeFile;
-        bool m_IncludeIsLocal;
+    wxString m_CreatingCode;
+    wxString m_Style;
+    wxString m_XmlData;
+    TiXmlDocument m_XmlDataDoc;
+    wxString m_IncludeFile;
+    bool m_IncludeIsLocal;
 
 };
 

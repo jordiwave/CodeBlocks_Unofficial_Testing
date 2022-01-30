@@ -10,21 +10,21 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/intl.h>
-    #include <wx/menu.h>
-    #include <wx/filename.h>
-    #include <wx/msgdlg.h>
-    #include <wx/dir.h>
+#include <wx/intl.h>
+#include <wx/menu.h>
+#include <wx/filename.h>
+#include <wx/msgdlg.h>
+#include <wx/dir.h>
 
-    #include "templatemanager.h"
-    #include "manager.h"
-    #include "configmanager.h"
-    #include "logmanager.h"
-    #include "projectmanager.h"
-    #include "cbproject.h"
-    #include "globals.h"
-    #include "compilerfactory.h"
-    #include "cbplugin.h"
+#include "templatemanager.h"
+#include "manager.h"
+#include "configmanager.h"
+#include "logmanager.h"
+#include "projectmanager.h"
+#include "cbproject.h"
+#include "globals.h"
+#include "compilerfactory.h"
+#include "cbplugin.h"
 #endif
 
 #include <wx/filedlg.h>
@@ -108,12 +108,15 @@ cbProject* TemplateManager::NewFromTemplate(NewFromTemplateDlg& dlg, wxString* p
         CompileTargetBase* ret = wiz->Launch(dlg.GetWizardIndex(), pFilename);
         switch (wiz->GetOutputType(dlg.GetWizardIndex()))
         {
-            case totProject: prj = dynamic_cast<cbProject*>(ret); break;
-            case totTarget: // fall-though
-            case totFiles:  // fall-though
-            case totCustom: // fall-though
-            case totUser:   // fall-though
-            default: break;
+        case totProject:
+            prj = dynamic_cast<cbProject*>(ret);
+            break;
+        case totTarget: // fall-though
+        case totFiles:  // fall-though
+        case totCustom: // fall-though
+        case totUser:   // fall-though
+        default:
+            break;
         }
     }
     return prj;
@@ -132,7 +135,7 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
     wxString sep = wxFileName::GetPathSeparator();
     // select directory to copy user template files
     path = ChooseDirectory(nullptr, _("Choose a directory to create the new project"),
-                        path, _T(""), false, true);
+                           path, _T(""), false, true);
     if (path.IsEmpty())
         return nullptr;
     else if (path.Mid(path.Length() - 1) == wxFILE_SEP_PATH)
@@ -147,7 +150,7 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
             if (cbMessageBox(path + _(" already contains other files.\n"
                                       "If you continue, files with the same names WILL BE OVERWRITTEN.\n"
                                       "Are you sure you want to continue?"),
-                                    _("Files exist in directory"), wxICON_EXCLAMATION | wxYES_NO | wxNO_DEFAULT) != wxID_YES)
+                             _("Files exist in directory"), wxICON_EXCLAMATION | wxYES_NO | wxNO_DEFAULT) != wxID_YES)
             {
                 return nullptr;
             }
@@ -244,7 +247,7 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
 
     // save project & all files
     if (!prj->SaveAllFiles() ||
-        !prj->Save())
+            !prj->Save())
     {
         cbMessageBox(_("Could not save project and/or all its files. Aborting..."), _("Error"), wxICON_ERROR);
         return;

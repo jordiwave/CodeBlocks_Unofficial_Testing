@@ -34,12 +34,12 @@ class WXDLLIMPEXP_CHART wxYAxis : public wxAxis
 {
 
 public:
-	wxYAxis(ChartValue max = 0, ChartValue min = 0);
-	~wxYAxis() {};
+    wxYAxis(ChartValue max = 0, ChartValue min = 0);
+    ~wxYAxis() {};
 
-	// Draw xaxis area
-	//-----------------
-	void Draw(CHART_HPAINT hp, CHART_HRECT hr);
+    // Draw xaxis area
+    //-----------------
+    void Draw(CHART_HPAINT hp, CHART_HRECT hr);
 };
 
 #endif // __WXXAXIS_H__

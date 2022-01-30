@@ -10,15 +10,15 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/intl.h>
-    #include <wx/msgdlg.h>
+#include <wx/intl.h>
+#include <wx/msgdlg.h>
 
-    #include "manager.h"
-    #include "logmanager.h"
-    #include "cbproject.h"
-    #include "globals.h"
-    #include "compilerfactory.h"
-    #include "compiler.h"
+#include "manager.h"
+#include "logmanager.h"
+#include "cbproject.h"
+#include "globals.h"
+#include "compilerfactory.h"
+#include "compiler.h"
 #endif
 
 #include <wx/choicdlg.h>
@@ -70,7 +70,8 @@ bool MSVC10Loader::Open(const wxString& filename)
     m_ProjectName = wxFileName(filename).GetName();
     if (!MSVC7WorkspaceLoader::g_WorkspacePath.IsEmpty())
     {
-        wxFileName tmp(MSVC7WorkspaceLoader::g_WorkspacePath); tmp.MakeRelativeTo(m_pProject->GetBasePath());
+        wxFileName tmp(MSVC7WorkspaceLoader::g_WorkspacePath);
+        tmp.MakeRelativeTo(m_pProject->GetBasePath());
         m_WorkspacePath = tmp.GetPathWithSep();
     }
 
@@ -100,7 +101,7 @@ bool MSVC10Loader::Open(const wxString& filename)
     }
 
     bool bResult = GetProjectGlobals(root)         // get project name & type
-                && GetProjectConfigurations(root); // get the project list of configuration => 1 configuration = 1 build target in CodeBlocks
+                   && GetProjectConfigurations(root); // get the project list of configuration => 1 configuration = 1 build target in CodeBlocks
 
     if (!bResult)
     {
@@ -118,8 +119,8 @@ bool MSVC10Loader::Open(const wxString& filename)
     }
 
     bResult = GetProjectConfigurationFiles(root) // get the project list of files and add them to the targets
-           && GetProjectIncludes(root)           // get the project/target list of includes and add them to the targets
-           && GetTargetSpecific(root);           // get the project/target specific settings
+              && GetProjectIncludes(root)           // get the project/target list of includes and add them to the targets
+              && GetTargetSpecific(root);           // get the project/target specific settings
 
     return bResult;
 }
@@ -158,7 +159,7 @@ bool MSVC10Loader::GetProjectGlobals(const TiXmlElement* root)
 
             // logging
             pMsg->DebugLog(wxString::Format(_("Project global properties: GUID=%s, Type=%s, Name=%s"),
-                                             m_ProjectGUID.wx_str(), m_ProjectType.wx_str(), m_ProjectName.wx_str()));
+                                            m_ProjectGUID.wx_str(), m_ProjectType.wx_str(), m_ProjectName.wx_str()));
 
             bResult = true; // got everything we need
             break; // exit loop
@@ -209,7 +210,8 @@ bool MSVC10Loader::GetProjectConfigurations(const TiXmlElement* root)
                     SProjectConfiguration pc;
                     pc.bt           = NULL;
                     // ProjectConfiguration
-                    pc.sName        = cbC2U(name); pc.sName.Replace(_T("|"), _T(" "));
+                    pc.sName        = cbC2U(name);
+                    pc.sName.Replace(_T("|"), _T(" "));
                     pc.sConf        = GetText(cfg);
                     pc.sPlatform    = GetText(plat);
                     // PropertyGroup
@@ -316,7 +318,7 @@ void MSVC10Loader::SetConfigurationValuesPath(const TiXmlElement* root, const ch
     for (const TiXmlElement* e=root->FirstChildElement(key); e; e=e->NextSiblingElement(key))
     {
         if (!GetConfigurationName(e,config,defconfig))
-          continue;
+            continue;
 
         wxString* value;
         if (config.IsEmpty())
@@ -672,7 +674,9 @@ bool MSVC10Loader::GetTargetSpecific(const TiXmlElement* root)
                     {
                         wxString val = GetText(copt);
                         if (val.IsSameAs(_T("Level1"),false))
-                        {   if (!m_ConvertSwitches) bt->AddCompilerOption(_T("/W1")); }
+                        {
+                            if (!m_ConvertSwitches) bt->AddCompilerOption(_T("/W1"));
+                        }
                         else if (val.IsSameAs(_T("Level2"),false))
                             bt->AddCompilerOption(!m_ConvertSwitches ? _T("/W2") : _T("-Wall"));
                         else if (val.IsSameAs(_T("Level3"),false))
@@ -923,7 +927,8 @@ void MSVC10Loader::HandleFilesAndExcludes(const TiXmlElement* e, ProjectFile* pf
                 const char* cond = excl->Attribute("Condition");
                 if (cond)
                 {
-                    wxString sName = cbC2U(cond); sName = SubstituteConfigMacros(sName);
+                    wxString sName = cbC2U(cond);
+                    sName = SubstituteConfigMacros(sName);
                     pf->RemoveBuildTarget(sName);
                 }
             }
@@ -970,7 +975,8 @@ wxArrayString MSVC10Loader::GetArray(const TiXmlElement* e, wxString delim)
         val.Replace(_T("%(PreprocessorDefinitions)"), wxEmptyString); // not supported
         val.Replace(_T("%(AdditionalOptions)"), wxEmptyString); // not supported
         val.Replace(_T("%(DisableSpecificWarnings)"), wxEmptyString); // not supported
-        if (!val.IsEmpty()){
+        if (!val.IsEmpty())
+        {
             wxArrayString aVal = GetArrayFromString(val, delim);
             for (size_t i=0; i<aVal.Count(); ++i)
             {

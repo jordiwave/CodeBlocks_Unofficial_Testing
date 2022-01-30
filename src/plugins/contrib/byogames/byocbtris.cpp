@@ -15,51 +15,65 @@
 
 namespace
 {
-    const int Chunks[][16] =
+const int Chunks[][16] =
+{
     {
-        { 1,1,1,1,
-          0,0,0,0,
-          0,0,0,0,
-          0,0,0,0 },
+        1,1,1,1,
+        0,0,0,0,
+        0,0,0,0,
+        0,0,0,0
+    },
 
-        { 1,1,0,0,
+    {
+        1,1,0,0,
 
-          1,1,0,0,
-          0,0,0,0,
-          0,0,0,0 },
+        1,1,0,0,
+        0,0,0,0,
+        0,0,0,0
+    },
 
-        { 1,1,1,0,
-          1,0,0,0,
-          0,0,0,0,
-          0,0,0,0 },
+    {
+        1,1,1,0,
+        1,0,0,0,
+        0,0,0,0,
+        0,0,0,0
+    },
 
-        { 1,1,1,0,
-          0,0,1,0,
-          0,0,0,0,
-          0,0,0,0 },
+    {
+        1,1,1,0,
+        0,0,1,0,
+        0,0,0,0,
+        0,0,0,0
+    },
 
-        { 0,1,1,0,
-          1,1,0,0,
-          0,0,0,0,
-          0,0,0,0 },
+    {
+        0,1,1,0,
+        1,1,0,0,
+        0,0,0,0,
+        0,0,0,0
+    },
 
-        { 1,1,0,0,
-          0,1,1,0,
-          0,0,0,0,
-          0,0,0,0 },
+    {
+        1,1,0,0,
+        0,1,1,0,
+        0,0,0,0,
+        0,0,0,0
+    },
 
-        { 1,1,1,0,
-          0,1,0,0,
-          0,0,0,0,
-          0,0,0,0 },
-    };
+    {
+        1,1,1,0,
+        0,1,0,0,
+        0,0,0,0,
+        0,0,0,0
+    },
+};
 
-    const int ChunkTypes = sizeof(Chunks)/sizeof(Chunks[0]);
+const int ChunkTypes = sizeof(Chunks)/sizeof(Chunks[0]);
 
-    const int SpeedTimerId = wxNewId();
-    const int LeftRightTimerId = wxNewId();
-    const int UpTimerId = wxNewId();
-    const int DownTimerId = wxNewId();
+const int SpeedTimerId = wxNewId();
+const int LeftRightTimerId = wxNewId();
+const int UpTimerId = wxNewId();
+const int DownTimerId = wxNewId();
 }
 
 

@@ -25,18 +25,18 @@
 
 namespace
 {
-    wxsRegisterItem<wxsChoice> Reg(_T("Choice"),wxsTWidget,_T("Standard"),310);
+wxsRegisterItem<wxsChoice> Reg(_T("Choice"),wxsTWidget,_T("Standard"),310);
 
-    WXS_ST_BEGIN(wxsChoiceStyles,_T(""))
-        WXS_ST_CATEGORY("wxChoice")
-        WXS_ST(wxCB_SORT)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsChoiceStyles,_T(""))
+WXS_ST_CATEGORY("wxChoice")
+WXS_ST(wxCB_SORT)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsChoiceEvents)
-        WXS_EVI(EVT_CHOICE,wxEVT_COMMAND_CHOICE_SELECTED,wxCommandEvent,Select)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsChoiceEvents)
+WXS_EVI(EVT_CHOICE,wxEVT_COMMAND_CHOICE_SELECTED,wxCommandEvent,Select)
+WXS_EV_END()
 }
 
 wxsChoice::wxsChoice(wxsItemResData* Data):
@@ -53,34 +53,34 @@ void wxsChoice::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/choice.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/choice.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
 
-            for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
+        for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
+        {
+            if ( DefaultSelection == (int)i )
             {
-                if ( DefaultSelection == (int)i )
-                {
-                    Codef(_T("%ASetSelection( "));
-                }
-                Codef(_T("%AAppend(%t)"),ArrayChoices[i].wx_str());
-                if ( DefaultSelection == (int)i )
-                {
-                    Codef(_T(" )"));
-                }
-                Codef(_T(";\n"));
+                Codef(_T("%ASetSelection( "));
             }
-
-            BuildSetupWindowCode();
-            return;
+            Codef(_T("%AAppend(%t)"),ArrayChoices[i].wx_str());
+            if ( DefaultSelection == (int)i )
+            {
+                Codef(_T(" )"));
+            }
+            Codef(_T(";\n"));
         }
 
-        case wxsUnknownLanguage: // fall through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsChoice::OnBuildCreatingCode"),GetLanguage());
-        }
+        BuildSetupWindowCode();
+        return;
+    }
+
+    case wxsUnknownLanguage: // fall through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsChoice::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

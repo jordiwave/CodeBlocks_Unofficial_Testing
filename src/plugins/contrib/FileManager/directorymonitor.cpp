@@ -83,12 +83,14 @@ struct MonDescriptors
         if (fc == nullptr)
             return -1;
         int result;
-        do {
-           FD_ZERO(&readset);
-           FD_SET(famfd(), &readset);
-           FD_SET(read_pipe, &readset);
-           result = select(nfds(), &readset, NULL, NULL, NULL);
-        } while (false);//result == -1 && errno == EINTR);
+        do
+        {
+            FD_ZERO(&readset);
+            FD_SET(famfd(), &readset);
+            FD_SET(read_pipe, &readset);
+            result = select(nfds(), &readset, NULL, NULL, NULL);
+        }
+        while (false);  //result == -1 && errno == EINTR);
         if(result>0)
         {
             if (FD_ISSET(famfd(), &readset))
@@ -117,7 +119,7 @@ public:
         m_waittime=waittime_ms;
         m_subtree=subtree;
         m_singleshot=singleshot;
-        for(unsigned int i=0;i<pathnames.GetCount();i++)
+        for(unsigned int i=0; i<pathnames.GetCount(); i++)
             m_pathnames.Add(pathnames[i].c_str());
         m_notifyfilter=notifyfilter;
         int pipehandles[2];
@@ -129,7 +131,7 @@ public:
     void UpdatePathsThread(MonDescriptors &fd)
     {
         std::vector<FAMRequest *> new_h(m_update_paths.GetCount(),NULL); //TODO: initialize vector size
-        for(size_t i=0;i<m_pathnames.GetCount();i++) //delete monitors that aren't needed
+        for(size_t i=0; i<m_pathnames.GetCount(); i++) //delete monitors that aren't needed
         {
             int index=m_update_paths.Index(m_pathnames[i]);
             if(index==wxNOT_FOUND)
@@ -142,7 +144,7 @@ public:
                 }
             }
         }
-        for(size_t i=0;i<m_update_paths.GetCount();i++) // copy existing monitors and add new ones
+        for(size_t i=0; i<m_update_paths.GetCount(); i++) // copy existing monitors and add new ones
         {
             int index=m_pathnames.Index(m_update_paths[i]);
             if(index!=wxNOT_FOUND)
@@ -156,7 +158,8 @@ public:
                 {
                     new_h[i]=fr;
                     m_active_count++;
-                } else
+                }
+                else
                     delete fr;
             }
         }
@@ -202,31 +205,31 @@ public:
                         int action=0;
                         switch(fe.code)
                         {
-                            //TODO: Not handling FAMStartExecuting, FAMStopExecuting, FAMAcknowledge
-                            case FAMChanged:
-                                action=MONITOR_FILE_CHANGED;
-                                break;
-                            case FAMDeleted:
-                            case FAMMoved:
-                                action=MONITOR_FILE_DELETED;
-                                break;
-                            case FAMCreated:
-                                action=MONITOR_FILE_CREATED;
-                                break;
-                            case FAMEndExist:
-                            case FAMExists:
-                                break;
-                            case FAMAcknowledge:
-                                if(fe.userdata)
-                                {
-                                    delete (wxString*)fe.userdata;
-                                }
-                                m_active_count--;
-                                break;
-                            case FAMStartExecuting:
-                            case FAMStopExecuting:
-                            default:
-                                break;
+                        //TODO: Not handling FAMStartExecuting, FAMStopExecuting, FAMAcknowledge
+                        case FAMChanged:
+                            action=MONITOR_FILE_CHANGED;
+                            break;
+                        case FAMDeleted:
+                        case FAMMoved:
+                            action=MONITOR_FILE_DELETED;
+                            break;
+                        case FAMCreated:
+                            action=MONITOR_FILE_CREATED;
+                            break;
+                        case FAMEndExist:
+                        case FAMExists:
+                            break;
+                        case FAMAcknowledge:
+                            if(fe.userdata)
+                            {
+                                delete (wxString*)fe.userdata;
+                            }
+                            m_active_count--;
+                            break;
+                        case FAMStartExecuting:
+                        case FAMStopExecuting:
+                        default:
+                            break;
 //                            case ?????:
 //                                action=MONITOR_FILE_ATTRIBUTES;
 //                                break;
@@ -246,19 +249,19 @@ public:
                 read(m_msg_rcv, &c, 1);
                 switch(c)
                 {
-                    case 'm':
-                        UpdatePathsThread(fd);
-                        break;
-                    case 'q':
-                        quit=true;
-                        m_interrupt_mutex.Lock();
-                        m_active=false;
-                        m_update_paths.Empty();
-                        m_interrupt_mutex.Unlock();
-                        UpdatePathsThread(fd);
-                        break;
-                    default:
-                        break;
+                case 'm':
+                    UpdatePathsThread(fd);
+                    break;
+                case 'q':
+                    quit=true;
+                    m_interrupt_mutex.Lock();
+                    m_active=false;
+                    m_update_paths.Empty();
+                    m_interrupt_mutex.Unlock();
+                    UpdatePathsThread(fd);
+                    break;
+                default:
+                    break;
                 }
             }
         }
@@ -287,7 +290,7 @@ public:
             return;
         }
         m_update_paths.Empty();
-        for(unsigned int i=0;i<paths.GetCount();i++)
+        for(unsigned int i=0; i<paths.GetCount(); i++)
             m_update_paths.Add(paths[i].c_str());
         char m='m';
         write(m_msg_send,&m,1);
@@ -356,7 +359,7 @@ public:
         m_waittime=waittime_ms;
         m_subtree=subtree;
         m_singleshot=singleshot;
-        for(unsigned int i=0;i<pathnames.GetCount();i++)
+        for(unsigned int i=0; i<pathnames.GetCount(); i++)
             m_update_paths.Add(pathnames[i].c_str());
         m_notifyfilter=notifyfilter;
         return;
@@ -370,7 +373,7 @@ public:
     {
         m_interrupt_mutex2.Lock();
         m_update_paths.Empty();
-        for(unsigned int i=0;i<paths.GetCount();i++)
+        for(unsigned int i=0; i<paths.GetCount(); i++)
             m_update_paths.Add(paths[i].c_str());
         m_update_paths=paths;
         SetEvent(m_interrupt_event[0]);
@@ -380,10 +383,10 @@ public:
     {
         m_interrupt_mutex2.Lock();
         wxArrayString update_paths;
-        for(unsigned int i=0;i<m_update_paths.GetCount();i++)
+        for(unsigned int i=0; i<m_update_paths.GetCount(); i++)
             update_paths.Add(m_update_paths[i].c_str());
 
-        for(MonMap::iterator it=m_monmap.begin();it!=m_monmap.end();)
+        for(MonMap::iterator it=m_monmap.begin(); it!=m_monmap.end();)
         {
             int index=update_paths.Index(it->first);
             if(index==wxNOT_FOUND)
@@ -398,7 +401,7 @@ public:
             }
             ++it;
         }
-        for(size_t i=0;i<update_paths.GetCount();i++)
+        for(size_t i=0; i<update_paths.GetCount(); i++)
         {
             MonMap::iterator it=m_monmap.find(update_paths[i]);
             if(it==m_monmap.end())
@@ -427,7 +430,7 @@ public:
             if(result==WAIT_OBJECT_0+1 && !kill_request)
             {
                 kill_request=true;
-                for(MonMap::iterator it=m_monmap.begin();it!=m_monmap.end();)
+                for(MonMap::iterator it=m_monmap.begin(); it!=m_monmap.end();)
                 {
                     it->second->ReadCancel();
                     if(it->second->m_fail)
@@ -484,13 +487,13 @@ public:
         }
         PFILE_NOTIFY_INFORMATION chptr=&mondata->m_changedata[i];
         if(dwNumberOfBytesTransfered>0)
-        do
-        {
-            DWORD a=chptr->Action;
-            //TODO: Convert to the MONITOR_FILE_XXX action types, filtering those that aren't wanted
-            int action=0;
-            switch(a)
+            do
             {
+                DWORD a=chptr->Action;
+                //TODO: Convert to the MONITOR_FILE_XXX action types, filtering those that aren't wanted
+                int action=0;
+                switch(a)
+                {
                 case FILE_ACTION_ADDED:
                 case FILE_ACTION_RENAMED_NEW_NAME:
                     action=MONITOR_FILE_CREATED;
@@ -503,17 +506,18 @@ public:
                     action=MONITOR_FILE_CHANGED;
                     break;
                 default:
-                  break;
+                    break;
+                }
+                if(action&m_notifyfilter)
+                {
+                    wxString filename(chptr->FileName,chptr->FileNameLength/2); //TODO: check the div by 2
+                    wxDirectoryMonitorEvent e(mondata->m_path,action,filename);
+                    m_parent->AddPendingEvent(e);
+                }
+                off=chptr->NextEntryOffset;
+                chptr=(PFILE_NOTIFY_INFORMATION)((char*)chptr+off);
             }
-            if(action&m_notifyfilter)
-            {
-                wxString filename(chptr->FileName,chptr->FileNameLength/2); //TODO: check the div by 2
-                wxDirectoryMonitorEvent e(mondata->m_path,action,filename);
-                m_parent->AddPendingEvent(e);
-            }
-            off=chptr->NextEntryOffset;
-            chptr=(PFILE_NOTIFY_INFORMATION)((char*)chptr+off);
-        } while(off>0);
+            while(off>0);
         else
         {
             //too many changes, tell parent to manually read the directory
@@ -563,7 +567,8 @@ MonData::MonData(DirMonitorThread *monitor, const wxString &path, bool subtree)
         m_overlapped=new_overlapped();
         m_changedata=(PFILE_NOTIFY_INFORMATION)(new char[4096]);
         ReadRequest(subtree);
-    } else
+    }
+    else
     {
         wxMessageBox(_("WARNING: Failed to open handle for ")+m_path);
         m_handle=NULL;

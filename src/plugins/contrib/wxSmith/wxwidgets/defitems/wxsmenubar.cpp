@@ -31,37 +31,37 @@
 
 namespace
 {
-    wxsRegisterItem<wxsMenuBar> Reg(_T("MenuBar"),wxsTTool,_T("Tools"),60);
+wxsRegisterItem<wxsMenuBar> Reg(_T("MenuBar"),wxsTTool,_T("Tools"),60);
 
-    class MenuEditorDialog: public wxScrollingDialog
+class MenuEditorDialog: public wxScrollingDialog
+{
+public:
+
+    wxsMenuEditor* Editor;
+
+    MenuEditorDialog(wxsMenuBar* MenuBar):
+        wxScrollingDialog(0,-1,_("MenuBar editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
     {
-        public:
+        wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
+        Sizer->Add(Editor = new wxsMenuEditor(this,MenuBar),1,wxEXPAND,0);
+        Sizer->Add(CreateButtonSizer(wxOK|wxCANCEL),0,wxEXPAND,15);
+        SetSizer(Sizer);
+        Sizer->SetSizeHints(this);
+        PlaceWindow(this,pdlCentre,true);
+    }
 
-            wxsMenuEditor* Editor;
+    void OnOK(cb_unused wxCommandEvent& event)
+    {
+        Editor->ApplyChanges();
+        EndModal(wxID_OK);
+    }
 
-            MenuEditorDialog(wxsMenuBar* MenuBar):
-                wxScrollingDialog(0,-1,_("MenuBar editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
-            {
-                wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
-                Sizer->Add(Editor = new wxsMenuEditor(this,MenuBar),1,wxEXPAND,0);
-                Sizer->Add(CreateButtonSizer(wxOK|wxCANCEL),0,wxEXPAND,15);
-                SetSizer(Sizer);
-                Sizer->SetSizeHints(this);
-                PlaceWindow(this,pdlCentre,true);
-            }
+    DECLARE_EVENT_TABLE()
+};
 
-            void OnOK(cb_unused wxCommandEvent& event)
-            {
-                Editor->ApplyChanges();
-                EndModal(wxID_OK);
-            }
-
-            DECLARE_EVENT_TABLE()
-    };
-
-    BEGIN_EVENT_TABLE(MenuEditorDialog,wxScrollingDialog)
-        EVT_BUTTON(wxID_OK,MenuEditorDialog::OnOK)
-    END_EVENT_TABLE()
+BEGIN_EVENT_TABLE(MenuEditorDialog,wxScrollingDialog)
+    EVT_BUTTON(wxID_OK,MenuEditorDialog::OnOK)
+END_EVENT_TABLE()
 }
 
 wxsMenuBar::wxsMenuBar(wxsItemResData* Data):
@@ -78,20 +78,20 @@ void wxsMenuBar::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-            AddHeader(_T("<wx/menu.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C();\n"));
-            for ( int i=0; i<GetChildCount(); i++ )
-            {
-                GetChild(i)->BuildCode(GetCoderContext());
-            }
-            Codef(_T("%MSetMenuBar(%O);\n"));
-            BuildSetupWindowCode();
-            break;
+    case wxsCPP:
+        AddHeader(_T("<wx/menu.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C();\n"));
+        for ( int i=0; i<GetChildCount(); i++ )
+        {
+            GetChild(i)->BuildCode(GetCoderContext());
+        }
+        Codef(_T("%MSetMenuBar(%O);\n"));
+        BuildSetupWindowCode();
+        break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsMenuBar::OnBuildCreatingCode"),GetLanguage());
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsMenuBar::OnBuildCreatingCode"),GetLanguage());
     }
 }
 

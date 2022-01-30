@@ -10,7 +10,7 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-    #include <globals.h>
+#include <globals.h>
 #endif
 
 #include "encodingdetector.h"
@@ -23,10 +23,10 @@
 
 
 TextFileSearcher* TextFileSearcher::BuildTextFileSearcher(const wxString& searchText,
-                                                          bool matchCase,
-                                                          bool matchWordBegin,
-                                                          bool matchWord,
-                                                          bool regEx)
+        bool matchCase,
+        bool matchWordBegin,
+        bool matchWord,
+        bool regEx)
 {
     TextFileSearcher* pFileSearcher = NULL;
     if ( regEx == true )
@@ -51,8 +51,8 @@ TextFileSearcher* TextFileSearcher::BuildTextFileSearcher(const wxString& search
 
 
 TextFileSearcher::eFileSearcherReturn TextFileSearcher::FindInFile(const wxString& filePath,
-                                                                   wxArrayString &foundLines,
-                                                                   std::vector<int> &matchedPositions)
+        wxArrayString &foundLines,
+        std::vector<int> &matchedPositions)
 {
     eFileSearcherReturn success=idStringNotFound;
     wxString line;
@@ -73,7 +73,7 @@ TextFileSearcher::eFileSearcherReturn TextFileSearcher::FindInFile(const wxStrin
         EncodingDetector enc(filePath, false);
         if( !enc.IsOK())
         {
-    //        return idFileOpenError;
+            //        return idFileOpenError;
             return idFileNotFound;
         }
         wxFontEncoding fe =  enc.GetFontEncoding();

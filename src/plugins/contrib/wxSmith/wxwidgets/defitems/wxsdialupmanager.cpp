@@ -23,12 +23,12 @@
 
 namespace
 {
-    wxsRegisterItem<wxsDialUpManager> Reg(_T("DialUpManager"), wxsTTool, _T("Tools"), 80, false);
+wxsRegisterItem<wxsDialUpManager> Reg(_T("DialUpManager"), wxsTTool, _T("Tools"), 80, false);
 
-    WXS_EV_BEGIN(wxsDialUpManagerEvents)
-        WXS_EVI(EVT_DIALUP_CONNECTED, wxEVT_DIALUP_CONNECTED, wxDialUpEvent, Connected)
-        WXS_EVI(EVT_DIALUP_DISCONNECTED, wxEVT_DIALUP_DISCONNECTED, wxDialUpEvent, Disconnected)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsDialUpManagerEvents)
+WXS_EVI(EVT_DIALUP_CONNECTED, wxEVT_DIALUP_CONNECTED, wxDialUpEvent, Connected)
+WXS_EVI(EVT_DIALUP_DISCONNECTED, wxEVT_DIALUP_DISCONNECTED, wxDialUpEvent, Disconnected)
+WXS_EV_END()
 }
 
 /*! \brief Ctor
@@ -36,27 +36,27 @@ namespace
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
- wxsDialUpManager::wxsDialUpManager(wxsItemResData* Data):
+wxsDialUpManager::wxsDialUpManager(wxsItemResData* Data):
     wxsTool(
         Data,
         &Reg.Info,
         wxsDialUpManagerEvents,
         NULL,
         flVariable|flId|flSubclass|flExtraCode),
-        m_iAutoCheckInterval(60)
+    m_iAutoCheckInterval(60)
 #ifndef __WXMSW__
-        ,
-        m_sWellKnownHost(wxT("www.yahoo.com")),
-        m_iPortNo(80),
-        m_sDialCommand(wxT("/usr/bin/pon")),
-        m_sHangUpCommand(wxT("/usr/bin/poff"))
+    ,
+    m_sWellKnownHost(wxT("www.yahoo.com")),
+    m_iPortNo(80),
+    m_sDialCommand(wxT("/usr/bin/pon")),
+    m_sHangUpCommand(wxT("/usr/bin/poff"))
 #endif
 {
     // AutoCheckOnlineStatus defaults to ON on Windows and OFF on Linux.
 #ifdef __WXMSW__
-        m_bAutoCheckOnlineStatus = true;
+    m_bAutoCheckOnlineStatus = true;
 #else
-        m_bAutoCheckOnlineStatus = false;
+    m_bAutoCheckOnlineStatus = false;
 #endif
 }
 
@@ -69,44 +69,49 @@ void wxsDialUpManager::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/dialup.h>"),GetInfo().ClassName,hfInPCH);
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/dialup.h>"),GetInfo().ClassName,hfInPCH);
 
-            Codef(wxT("%O = wxDialUpManager::Create();\n"));
+        Codef(wxT("%O = wxDialUpManager::Create();\n"));
 
 #ifdef __WXMSW__
-            // AutoCheckOnlineStatus defaults to ON on Windows and OFF on Linux.
-            if(!m_bAutoCheckOnlineStatus){
-                Codef(_T("%ADisableAutoCheckOnlineStatus();\n"));
-            }
+        // AutoCheckOnlineStatus defaults to ON on Windows and OFF on Linux.
+        if(!m_bAutoCheckOnlineStatus)
+        {
+            Codef(_T("%ADisableAutoCheckOnlineStatus();\n"));
+        }
 #else
-            if(m_bAutoCheckOnlineStatus){
-                if(m_iAutoCheckInterval != 60){
-                    Codef(_T("%AEnableAutoCheckOnlineStatus(%d);\n"), m_iAutoCheckInterval);
-                }
-                else{
-                    Codef(_T("%AEnableAutoCheckOnlineStatus();\n"));
-                }
+        if(m_bAutoCheckOnlineStatus)
+        {
+            if(m_iAutoCheckInterval != 60)
+            {
+                Codef(_T("%AEnableAutoCheckOnlineStatus(%d);\n"), m_iAutoCheckInterval);
             }
-            // These functions are only used on Unix.
-            if(!m_sWellKnownHost.IsSameAs(wxT("www.yahoo.com")) || m_iPortNo != 80){
-                Codef(_T("%ASetWellKnownHost(%n, %d);\n"), m_sWellKnownHost.wx_str(), m_iPortNo);
+            else
+            {
+                Codef(_T("%AEnableAutoCheckOnlineStatus();\n"));
             }
+        }
+        // These functions are only used on Unix.
+        if(!m_sWellKnownHost.IsSameAs(wxT("www.yahoo.com")) || m_iPortNo != 80)
+        {
+            Codef(_T("%ASetWellKnownHost(%n, %d);\n"), m_sWellKnownHost.wx_str(), m_iPortNo);
+        }
 
-            if(!m_sDialCommand.IsSameAs(wxT("/usr/bin/pon")) || !m_sHangUpCommand.IsSameAs(wxT("/usr/bin/poff")))
-                Codef(_T("%ASetConnectCommand(%n);\n"), m_sDialCommand.wx_str(), m_sHangUpCommand.wx_str());
+        if(!m_sDialCommand.IsSameAs(wxT("/usr/bin/pon")) || !m_sHangUpCommand.IsSameAs(wxT("/usr/bin/poff")))
+            Codef(_T("%ASetConnectCommand(%n);\n"), m_sDialCommand.wx_str(), m_sHangUpCommand.wx_str());
 #endif
 
-            BuildSetupWindowCode();
-            return;
-        }
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsDialUpManager::OnBuildCreatingCode"), GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsDialUpManager::OnBuildCreatingCode"), GetLanguage());
+    }
     }
 }
 

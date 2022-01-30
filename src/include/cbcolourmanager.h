@@ -13,32 +13,32 @@
 
 class DLLIMPORT ColourManager : public Mgr<ColourManager>
 {
-        friend class Mgr<ColourManager>;
-        friend class Manager;
-    public:
-        void Load();
-        void Save();
-        void RegisterColour(const wxString &category, const wxString &name,
-                            const wxString &id, const wxColour &defaultColour);
-        wxColour GetColour(const wxString &id) const;
-        wxColour GetDefaultColour(const wxString &id) const;
-        void SetColour(const wxString &id, const wxColour &colour);
-    public:
-        struct ColourDef
+    friend class Mgr<ColourManager>;
+    friend class Manager;
+public:
+    void Load();
+    void Save();
+    void RegisterColour(const wxString &category, const wxString &name,
+                        const wxString &id, const wxColour &defaultColour);
+    wxColour GetColour(const wxString &id) const;
+    wxColour GetDefaultColour(const wxString &id) const;
+    void SetColour(const wxString &id, const wxColour &colour);
+public:
+    struct ColourDef
+    {
+        wxString category, name;
+        wxColour value, defaultValue;
+
+        bool IsValid() const
         {
-            wxString category, name;
-            wxColour value, defaultValue;
+            return !name.empty() && !category.empty();
+        }
+    };
+    typedef std::map<wxString, ColourDef> ColourDefMap;
 
-            bool IsValid() const
-            {
-                return !name.empty() && !category.empty();
-            }
-        };
-        typedef std::map<wxString, ColourDef> ColourDefMap;
-
-        const ColourDefMap& GetColourDefinitions() const;
-    private:
-        ColourDefMap m_colours;
+    const ColourDefMap& GetColourDefinitions() const;
+private:
+    ColourDefMap m_colours;
 };
 
 #endif // X_COLOURMANAGER_H

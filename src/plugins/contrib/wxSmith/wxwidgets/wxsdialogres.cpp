@@ -29,55 +29,55 @@ using namespace wxsFlags;
 
 namespace
 {
-    class wxsDialogResPreview: public wxDialog
+class wxsDialogResPreview: public wxDialog
+{
+public:
+
+    wxsDialogResPreview(cb_unused wxWindow* Parent,wxsItemResData* Data): m_Data(Data)
     {
-        public:
+        m_Data->GetRootItem()->BuildPreview(this,pfExact);
+        wxAcceleratorEntry Acc[1];
+        Acc[0].Set(wxACCEL_NORMAL,WXK_ESCAPE,wxID_EXIT);
+        wxAcceleratorTable Table(1,Acc);
+        SetAcceleratorTable(Table);
+    }
 
-            wxsDialogResPreview(cb_unused wxWindow* Parent,wxsItemResData* Data): m_Data(Data)
-            {
-                m_Data->GetRootItem()->BuildPreview(this,pfExact);
-                wxAcceleratorEntry Acc[1];
-                Acc[0].Set(wxACCEL_NORMAL,WXK_ESCAPE,wxID_EXIT);
-                wxAcceleratorTable Table(1,Acc);
-                SetAcceleratorTable(Table);
-            }
+    ~wxsDialogResPreview()
+    {
+        m_Data->NotifyPreviewClosed();
+    }
 
-            ~wxsDialogResPreview()
-            {
-                m_Data->NotifyPreviewClosed();
-            }
+    void OnEscape(cb_unused wxCommandEvent& event)
+    {
+        Close();
+    }
 
-            void OnEscape(cb_unused wxCommandEvent& event)
-            {
-                Close();
-            }
+    void OnClose(cb_unused wxCloseEvent& event)
+    {
+        Destroy();
+    }
 
-            void OnClose(cb_unused wxCloseEvent& event)
-            {
-                Destroy();
-            }
+    void OnButton(wxCommandEvent& event)
+    {
+        wxWindowID Id = event.GetId();
+        if ( Id == wxID_OK  ||
+                Id == wxID_APPLY ||
+                Id == wxID_CANCEL )
+        {
+            Close();
+        }
+    }
 
-            void OnButton(wxCommandEvent& event)
-            {
-                wxWindowID Id = event.GetId();
-                if ( Id == wxID_OK  ||
-                     Id == wxID_APPLY ||
-                     Id == wxID_CANCEL )
-                {
-                    Close();
-                }
-            }
+    wxsItemResData* m_Data;
 
-            wxsItemResData* m_Data;
+    DECLARE_EVENT_TABLE()
+};
 
-            DECLARE_EVENT_TABLE()
-    };
-
-    BEGIN_EVENT_TABLE(wxsDialogResPreview,wxDialog)
-        EVT_BUTTON(wxID_ANY,wxsDialogResPreview::OnButton)
-        EVT_MENU(wxID_EXIT,wxsDialogResPreview::OnEscape)
-        EVT_CLOSE(wxsDialogResPreview::OnClose)
-    END_EVENT_TABLE()
+BEGIN_EVENT_TABLE(wxsDialogResPreview,wxDialog)
+    EVT_BUTTON(wxID_ANY,wxsDialogResPreview::OnButton)
+    EVT_MENU(wxID_EXIT,wxsDialogResPreview::OnEscape)
+    EVT_CLOSE(wxsDialogResPreview::OnClose)
+END_EVENT_TABLE()
 }
 
 const wxString wxsDialogRes::ResType = _T("wxDialog");
@@ -85,11 +85,11 @@ const wxString wxsDialogRes::ResType = _T("wxDialog");
 wxString wxsDialogRes::OnGetAppBuildingCode()
 {
     return wxString::Format(
-        _T("\t%s Dlg(0);\n")
-        _T("\tSetTopWindow(&Dlg);\n")
-        _T("\tDlg.ShowModal();\n")
-        _T("\twxsOK = false;\n"),
-            GetResourceName().c_str());
+               _T("\t%s Dlg(0);\n")
+               _T("\tSetTopWindow(&Dlg);\n")
+               _T("\tDlg.ShowModal();\n")
+               _T("\twxsOK = false;\n"),
+               GetResourceName().c_str());
 }
 
 wxWindow* wxsDialogRes::OnBuildExactPreview(wxWindow* Parent,wxsItemResData* Data)

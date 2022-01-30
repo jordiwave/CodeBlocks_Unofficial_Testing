@@ -30,8 +30,8 @@ public:
       * @return ThreadSearchViewManagerBase*
       */
     static ThreadSearchViewManagerBase* BuildThreadSearchViewManagerBase(ThreadSearchView* pView,
-                                                                         bool              addViewToManager,
-                                                                         eManagerTypes     managerType);
+            bool              addViewToManager,
+            eManagerTypes     managerType);
 
     /** Destructor. */
     virtual ~ThreadSearchViewManagerBase() {}

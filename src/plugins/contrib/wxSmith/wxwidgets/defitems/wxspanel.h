@@ -27,15 +27,15 @@
 
 class wxsPanel : public wxsContainer
 {
-    public:
+public:
 
-        wxsPanel(wxsItemResData* Data);
+    wxsPanel(wxsItemResData* Data);
 
-    protected:
+protected:
 
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnBuildCreatingCode();
-        virtual void OnEnumContainerProperties(long Flags);
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual void OnEnumContainerProperties(long Flags);
 };
 
 #endif

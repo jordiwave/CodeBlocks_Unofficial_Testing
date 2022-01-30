@@ -20,46 +20,46 @@
 #define CC_ParseManagerBASE_DEBUG_OUTPUT 0
 
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
-    #if CC_GLOBAL_DEBUG_OUTPUT == 1
-        #undef CC_ParseManagerBASE_DEBUG_OUTPUT
-        #define CC_ParseManagerBASE_DEBUG_OUTPUT 1
-    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
-        #undef CC_ParseManagerBASE_DEBUG_OUTPUT
-        #define CC_ParseManagerBASE_DEBUG_OUTPUT 2
-    #endif
+#if CC_GLOBAL_DEBUG_OUTPUT == 1
+#undef CC_ParseManagerBASE_DEBUG_OUTPUT
+#define CC_ParseManagerBASE_DEBUG_OUTPUT 1
+#elif CC_GLOBAL_DEBUG_OUTPUT == 2
+#undef CC_ParseManagerBASE_DEBUG_OUTPUT
+#define CC_ParseManagerBASE_DEBUG_OUTPUT 2
+#endif
 #endif
 
 #ifdef CC_PARSER_TEST
-    #define ADDTOKEN(format, args...) \
+#define ADDTOKEN(format, args...) \
             CCLogger::Get()->AddToken(F(format, ##args))
-    #define TRACE(format, args...) \
+#define TRACE(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-    #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
 #else
-    #if CC_ParseManagerBASE_DEBUG_OUTPUT == 1
-        #define ADDTOKEN(format, args...) \
+#if CC_ParseManagerBASE_DEBUG_OUTPUT == 1
+#define ADDTOKEN(format, args...) \
                 CCLogger::Get()->AddToken(F(format, ##args))
-        #define TRACE(format, args...) \
+#define TRACE(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-        #define TRACE2(format, args...)
-    #elif CC_ParseManagerBASE_DEBUG_OUTPUT == 2
-        #define ADDTOKEN(format, args...) \
+#define TRACE2(format, args...)
+#elif CC_ParseManagerBASE_DEBUG_OUTPUT == 2
+#define ADDTOKEN(format, args...) \
                 CCLogger::Get()->AddToken(F(format, ##args))
-        #define TRACE(format, args...)                                              \
+#define TRACE(format, args...)                                              \
             do                                                                      \
             {                                                                       \
                 if (g_EnableDebugTrace)                                             \
                     CCLogger::Get()->DebugLog(wxString::Format(format, ##args));                   \
             }                                                                       \
             while (false)
-        #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-    #else
-        #define ADDTOKEN(format, args...)
-        #define TRACE(format, args...)
-        #define TRACE2(format, args...)
-    #endif
+#else
+#define ADDTOKEN(format, args...)
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
+#endif
 #endif
 
 ParseManagerBase::ParseManagerBase()
@@ -124,7 +124,7 @@ size_t ParseManagerBase::FindAIMatches(TokenTree*                  tree,
 
     if (s_DebugSmartSense)
         CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Search for %s, isLast = %d"),
-                                    searchtext.wx_str(), isLastComponent?1:0));
+                                  searchtext.wx_str(), isLastComponent?1:0));
 
     // get a set of matches for the current token
     TokenIdxSet local_result;
@@ -135,7 +135,7 @@ size_t ParseManagerBase::FindAIMatches(TokenTree*                  tree,
 
     if (s_DebugSmartSense)
         CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Looping %lu results"),
-                                    static_cast<unsigned long>(local_result.size())));
+                                  static_cast<unsigned long>(local_result.size())));
 
     // loop all matches, and recurse
     for (TokenIdxSet::const_iterator it = local_result.begin(); it != local_result.end(); it++)
@@ -163,8 +163,8 @@ size_t ParseManagerBase::FindAIMatches(TokenTree*                  tree,
 
             // insert enumerators
             for (TokenIdxSet::const_iterator tis_it = token->m_Children.begin();
-                 tis_it != token->m_Children.end();
-                 tis_it++)
+                    tis_it != token->m_Children.end();
+                    tis_it++)
                 result.insert(*tis_it);
 
             continue; // done with this token
@@ -172,13 +172,13 @@ size_t ParseManagerBase::FindAIMatches(TokenTree*                  tree,
 
         if (s_DebugSmartSense)
             CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Match: '%s' (ID='%d') : type='%s'"),
-                                        token->m_Name.wx_str(), id, token->m_BaseType.wx_str()));
+                                      token->m_Name.wx_str(), id, token->m_BaseType.wx_str()));
 
 
         // is the token a function or variable (i.e. is not a type)
         if (    !searchtext.IsEmpty()
-             && (parser_component.tokenType != pttSearchText)
-             && !token->m_BaseType.IsEmpty() )
+                && (parser_component.tokenType != pttSearchText)
+                && !token->m_BaseType.IsEmpty() )
         {
             // the token is not a type
             // find its type's ID and use this as parent instead of (*it)
@@ -194,8 +194,8 @@ size_t ParseManagerBase::FindAIMatches(TokenTree*                  tree,
 
             if (s_DebugSmartSense)
                 CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Looking for type: '%s' (%lu components)"),
-                                            actual.wx_str(),
-                                            static_cast<unsigned long>(type_components.size())));
+                                          actual.wx_str(),
+                                          static_cast<unsigned long>(type_components.size())));
 
             // search under all search-scope namespaces too
             TokenIdxSet temp_search_scope;
@@ -229,7 +229,7 @@ size_t ParseManagerBase::FindAIMatches(TokenTree*                  tree,
 
                 if (s_DebugSmartSense)
                     CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Now looking under '%s'"),
-                                                parent ? parent->m_Name.wx_str() : wxString(_("Global namespace")).wx_str()));
+                                              parent ? parent->m_Name.wx_str() : wxString(_("Global namespace")).wx_str()));
 
                 do
                 {
@@ -248,7 +248,8 @@ size_t ParseManagerBase::FindAIMatches(TokenTree*                  tree,
                     if (!parent)
                         break;
                     parent = tree->at(parent->m_ParentIndex);
-                } while (true);
+                }
+                while (true);
                 ++itsearch;
             }
 
@@ -278,8 +279,8 @@ size_t ParseManagerBase::FindAIMatches(TokenTree*                  tree,
                     CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Type: '%s' (%d)"), tree->at(id)->m_Name.wx_str(), id));
                     if (type_result.size() > 1)
                         CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Multiple types matched for '%s': %lu results"),
-                                                    token->m_BaseType.wx_str(),
-                                                    static_cast<unsigned long>(type_result.size())));
+                                                  token->m_BaseType.wx_str(),
+                                                  static_cast<unsigned long>(type_result.size())));
                 }
             }
             else if (s_DebugSmartSense)
@@ -362,9 +363,9 @@ size_t ParseManagerBase::FindAIMatches(TokenTree*                  tree,
 
 // Set start and end for the calltip highlight region.
 void ParseManagerBase::GetCallTipHighlight(const wxString& calltip,
-                                           int*            start,
-                                           int*            end,
-                                           int             typedCommas)
+        int*            start,
+        int*            end,
+        int             typedCommas)
 {
     TRACE(_T("ParseManagerBase::GetCallTipHighlight()"));
 
@@ -420,7 +421,7 @@ int ParseManagerBase::FindFunctionOpenParenthesis(const wxString& calltip)
         {
             --nest;
             if (nest == 0)
-            return i - 1;
+                return i - 1;
         }
         else if (c == wxT(')'))
             ++nest;
@@ -466,8 +467,8 @@ wxString ParseManagerBase::GetCCToken(wxString&        line,
         else if (IsOperatorEnd(startAt, line))
         {
             if (    IsOperatorPointer(startAt, line)
-                 && !res.IsEmpty()
-                 && tokenOperatorType != otOperatorSquare)
+                    && !res.IsEmpty()
+                    && tokenOperatorType != otOperatorSquare)
                 tokenOperatorType = otOperatorPointer;
             if (line.GetChar(startAt) == ':')
                 tokenType = pttNamespace;
@@ -529,17 +530,23 @@ unsigned int ParseManagerBase::FindCCTokenStart(const wxString& line)
             {
                 ++nest;
                 while (   (--startAt >= 0)
-                       && (nest != 0) )
+                          && (nest != 0) )
                 {
                     switch (line.GetChar(startAt).GetValue())
                     {
-                        case ']':
-                        case ')': ++nest; --startAt; break;
+                    case ']':
+                    case ')':
+                        ++nest;
+                        --startAt;
+                        break;
 
-                        case '[':
-                        case '(': --nest; --startAt; break;
-                        default:
-                            break;
+                    case '[':
+                    case '(':
+                        --nest;
+                        --startAt;
+                        break;
+                    default:
+                        break;
                     }
 
                     startAt = BeforeWhitespace(startAt, line);
@@ -564,19 +571,19 @@ unsigned int ParseManagerBase::FindCCTokenStart(const wxString& line)
 }
 
 wxString ParseManagerBase::GetNextCCToken(const wxString& line,
-                                          unsigned int&   startAt,
-                                          OperatorType&   tokenOperatorType)
+        unsigned int&   startAt,
+        OperatorType&   tokenOperatorType)
 {
     wxString res;
     int nest = 0;
 
     if (   (startAt < line.Len())
-        && (line.GetChar(startAt) == '(') )
+            && (line.GetChar(startAt) == '(') )
     {
         while (   (startAt < line.Len())
-               && (   (line.GetChar(startAt) == '*')
-                   || (line.GetChar(startAt) == '&')
-                   || (line.GetChar(startAt) == '(') ) )
+                  && (   (line.GetChar(startAt) == '*')
+                         || (line.GetChar(startAt) == '&')
+                         || (line.GetChar(startAt) == '(') ) )
         {
             if (line.GetChar(startAt) == '(')
                 ++nest;
@@ -594,7 +601,7 @@ wxString ParseManagerBase::GetNextCCToken(const wxString& line,
         ++startAt;
     }
     while (   (nest > 0)
-           && (startAt < line.Len()) )
+              && (startAt < line.Len()) )
     {
         // TODO: handle nested scope resolution (A::getC()).|
         if (line.GetChar(startAt) == '(')
@@ -615,18 +622,25 @@ wxString ParseManagerBase::GetNextCCToken(const wxString& line,
             tokenOperatorType = otOperatorSquare;
         ++nest;
         while (   (startAt < line.Len()-1)
-               && (nest != 0) )
+                  && (nest != 0) )
         {
             ++startAt;
             switch (line.GetChar(startAt).GetValue())
             {
-                case ']':
-                case ')': --nest; ++startAt; break;
+            case ']':
+            case ')':
+                --nest;
+                ++startAt;
+                break;
 
-                case '[':tokenOperatorType = otOperatorSquare;
-                case '(': ++nest; ++startAt; break;
-                default:
-                    break;
+            case '[':
+                tokenOperatorType = otOperatorSquare;
+            case '(':
+                ++nest;
+                ++startAt;
+                break;
+            default:
+                break;
             }
 
             startAt = AfterWhitespace(startAt, line);
@@ -653,7 +667,7 @@ wxString ParseManagerBase::GetNextCCToken(const wxString& line,
 }
 // ----------------------------------------------------------------------------
 void ParseManagerBase::RemoveLastFunctionChildren(TokenTree* tree,
-                                                  int& lastFuncTokenIdx)
+        int& lastFuncTokenIdx)
 // ----------------------------------------------------------------------------
 {
     // a new parser activated, so remove the old parser's local variable tokens.
@@ -703,7 +717,7 @@ void ParseManagerBase::RemoveLastFunctionChildren(TokenTree* tree,
 //
 // It also classifies each component as a pttClass, pttNamespace, pttFunction, pttSearchText
 size_t ParseManagerBase::BreakUpComponents(const wxString&              actual,
-                                           std::queue<ParserComponent>& components)
+        std::queue<ParserComponent>& components)
 {
     ParserTokenType tokenType;
     wxString statement = actual;
@@ -727,20 +741,34 @@ size_t ParseManagerBase::BreakUpComponents(const wxString&              actual,
             wxString tokenTypeString;
             switch (tokenType)
             {
-                case (pttFunction):
-                {   tokenTypeString = _T("Function");   break; }
-                case (pttClass):
-                {   tokenTypeString = _T("Class");      break; }
-                case (pttNamespace):
-                {   tokenTypeString = _T("Namespace");  break; }
-                case (pttSearchText):
-                {   tokenTypeString = _T("SearchText"); break; }
-                case (pttUndefined):
-                default:
-                {   tokenTypeString = _T("Undefined");         }
+            case (pttFunction):
+            {
+                tokenTypeString = _T("Function");
+                break;
+            }
+            case (pttClass):
+            {
+                tokenTypeString = _T("Class");
+                break;
+            }
+            case (pttNamespace):
+            {
+                tokenTypeString = _T("Namespace");
+                break;
+            }
+            case (pttSearchText):
+            {
+                tokenTypeString = _T("SearchText");
+                break;
+            }
+            case (pttUndefined):
+            default:
+            {
+                tokenTypeString = _T("Undefined");
+            }
             }
             CCLogger::Get()->DebugLog(wxString::Format(_T("BreakUpComponents() Found component: '%s' (%s)"),
-                                        tok.wx_str(), tokenTypeString.wx_str()));
+                                      tok.wx_str(), tokenTypeString.wx_str()));
         }
 
         // Support global namespace like ::MessageBoxA
@@ -1003,13 +1031,13 @@ void ParseManagerBase::AddConstructors(TokenTree *tree, const TokenIdxSet& sourc
         {
             // loop on its children, add its public constructors
             for (TokenIdxSet::iterator chIt = token->m_Children.begin();
-                 chIt != token->m_Children.end();
-                 ++chIt)
+                    chIt != token->m_Children.end();
+                    ++chIt)
             {
                 const Token* tk = tree->at(*chIt);
                 if (   tk && (   tk->m_TokenKind == tkConstructor
-                              || (tk->m_IsOperator && tk->m_Name.EndsWith(wxT("()"))) )
-                    && (tk->m_Scope == tsPublic || tk->m_Scope == tsUndefined) )
+                                 || (tk->m_IsOperator && tk->m_Name.EndsWith(wxT("()"))) )
+                        && (tk->m_Scope == tsPublic || tk->m_Scope == tsUndefined) )
                 {
                     dest.insert(*chIt);
                 }
@@ -1245,23 +1273,23 @@ void ParseManagerBase::AddConstructors(TokenTree *tree, const TokenIdxSet& sourc
 // Note that parentIdx could be the global namespace
 // Some kinds of Token types, such as Enum or Namespaces could be handled specially
 size_t ParseManagerBase::GenerateResultSet(TokenTree*      tree,
-                                           const wxString& target,
-                                           int             parentIdx,
-                                           TokenIdxSet&    result,
-                                           bool            caseSens,
-                                           bool            isPrefix,
-                                           short int       kindMask)
+        const wxString& target,
+        int             parentIdx,
+        TokenIdxSet&    result,
+        bool            caseSens,
+        bool            isPrefix,
+        short int       kindMask)
 {
     TRACE(_T("ParseManagerBase::GenerateResultSet_1()"));
 
     Token* parent = tree->at(parentIdx);
     if (s_DebugSmartSense)
         CCLogger::Get()->DebugLog(wxString::Format(_("GenerateResultSet() search '%s', parent='%s (id:%d, type:%s), isPrefix=%d'"),
-                                    target.wx_str(),
-                                    parent ? parent->m_Name.wx_str() : wxString(_T("Global namespace")).wx_str(),
-                                    parent ? parent->m_Index : 0,
-                                    parent ? parent->GetTokenKindString().wx_str() : 0,
-                                    isPrefix ? 1 : 0));
+                                  target.wx_str(),
+                                  parent ? parent->m_Name.wx_str() : wxString(_T("Global namespace")).wx_str(),
+                                  parent ? parent->m_Index : 0,
+                                  parent ? parent->GetTokenKindString().wx_str() : 0,
+                                  isPrefix ? 1 : 0));
 
     // parent == null means we are searching in the global scope
     if (parent)
@@ -1424,12 +1452,12 @@ size_t ParseManagerBase::GenerateResultSet(TokenTree*      tree,
  * It was an ok sacrifice to make for cleaner, maintainable code.
  */
 size_t ParseManagerBase::GenerateResultSet(TokenTree*          tree,
-                                           const wxString&     target,
-                                           const TokenIdxSet&  parentSet,
-                                           TokenIdxSet&        result,
-                                           bool                caseSens,
-                                           bool                isPrefix,
-                                           cb_unused short int kindMask)
+        const wxString&     target,
+        const TokenIdxSet&  parentSet,
+        TokenIdxSet&        result,
+        bool                caseSens,
+        bool                isPrefix,
+        cb_unused short int kindMask)
 {
     if (!tree) return 0;
 
@@ -1445,8 +1473,8 @@ size_t ParseManagerBase::GenerateResultSet(TokenTree*          tree,
                 continue;
 
             for (TokenIdxSet::const_iterator it = parent->m_Children.begin();
-                 it != parent->m_Children.end();
-                 ++it)
+                    it != parent->m_Children.end();
+                    ++it)
             {
                 const Token* token = tree->at(*it);
                 if (!token)
@@ -1461,15 +1489,15 @@ size_t ParseManagerBase::GenerateResultSet(TokenTree*          tree,
             tree->RecalcInheritanceChain(parent);
 
             for (TokenIdxSet::const_iterator it = parent->m_Ancestors.begin();
-                 it != parent->m_Ancestors.end();
-                 ++it)
+                    it != parent->m_Ancestors.end();
+                    ++it)
             {
                 const Token* ancestor = tree->at(*it);
                 if (!ancestor)
                     continue;
                 for (TokenIdxSet::const_iterator it2 = ancestor->m_Children.begin();
-                     it2 != ancestor->m_Children.end();
-                     ++it2)
+                        it2 != ancestor->m_Children.end();
+                        ++it2)
                 {
                     const Token* token = tree->at(*it2);
                     if (!token)
@@ -1508,8 +1536,8 @@ size_t ParseManagerBase::GenerateResultSet(TokenTree*          tree,
             // only interests those under the search scope, here the search scope is the parentSet,
             // So, the outer loop is the parentSet, which is the search scope
             for (TokenIdxSet::const_iterator parentIterator = parentSet.begin();
-                 parentIterator != parentSet.end();
-                 ++parentIterator)
+                    parentIterator != parentSet.end();
+                    ++parentIterator)
             {
                 // to make it clear, parentIdx stands for search scope. (Token Idx)
                 // (*it) stand for matched item id.
@@ -1517,8 +1545,8 @@ size_t ParseManagerBase::GenerateResultSet(TokenTree*          tree,
 
                 // The inner loop is the textMatchSet
                 for (TokenIdxSet::const_iterator it = textMatchSet.begin();
-                     it != textMatchSet.end();
-                     ++it)
+                        it != textMatchSet.end();
+                        ++it)
                 {
                     const Token* token = tree->at(*it);
                     // check whether its under the parentIdx
@@ -1531,7 +1559,7 @@ size_t ParseManagerBase::GenerateResultSet(TokenTree*          tree,
                     // and match with token->m_ParentIndex. Thus if we confirm that 'token' is a
                     // child of unnamed or enum(i.e., m_ParentIndex), we add the token to result.
                     if (token && ((token->m_ParentIndex == parentIdx)
-                              || IsChildOfUnnamedOrEnum(tree, token->m_ParentIndex, parentIdx)))
+                                  || IsChildOfUnnamedOrEnum(tree, token->m_ParentIndex, parentIdx)))
                         result.insert(*it);
 
                     // "result" will become the search scope for the next loop, so
@@ -1554,12 +1582,12 @@ size_t ParseManagerBase::GenerateResultSet(TokenTree*          tree,
 
                             // Add tk's ancestors
                             for ( TokenIdxSet::const_iterator ancestorIterator = tokenParent->m_Ancestors.begin();
-                                  ancestorIterator != tokenParent->m_Ancestors.end();
-                                  ++ancestorIterator )
+                                    ancestorIterator != tokenParent->m_Ancestors.end();
+                                    ++ancestorIterator )
                             {
                                 // NOTE: check for unnamed or enum inside class (see note above).
                                 if (token && ((token->m_ParentIndex == (*ancestorIterator)) //matched
-                                          || IsChildOfUnnamedOrEnum(tree, token->m_ParentIndex, (*ancestorIterator))))
+                                              || IsChildOfUnnamedOrEnum(tree, token->m_ParentIndex, (*ancestorIterator))))
                                     result.insert(*it);
                             }
                         }
@@ -1584,7 +1612,7 @@ size_t ParseManagerBase::GenerateResultSet(TokenTree*          tree,
                     // Here, parentIdx == "back()", which is a child of the allocator dependent class, vector.
                     // So we add (*it) to the search scope if it is an allocator token.
                     if (token && IsAllocator(tree, token->m_ParentIndex)
-                              && DependsOnAllocator(tree, parentIdx))
+                            && DependsOnAllocator(tree, parentIdx))
                         result.insert(*it);
                 }
             }
@@ -1635,7 +1663,7 @@ bool ParseManagerBase::IsAllocator(TokenTree*   tree,
 //
 // Currently, this function only identifies STL containers dependent on allocator.
 bool ParseManagerBase::DependsOnAllocator(TokenTree*    tree,
-                                          const int&    id)
+        const int&    id)
 {
     if (!tree)
         return false;
@@ -1690,9 +1718,9 @@ bool ParseManagerBase::DependsOnAllocator(TokenTree*    tree,
 // No critical section needed in this recursive function!
 // All functions that call this function, should already entered a critical section.
 int ParseManagerBase::GetTokenFromCurrentLine(TokenTree*         tree,
-                                              const TokenIdxSet& tokens,
-                                              size_t             curLine,
-                                              const wxString&    file)
+        const TokenIdxSet& tokens,
+        size_t             curLine,
+        const wxString&    file)
 {
     TRACE(_T("ParseManagerBase::GetTokenFromCurrentLine()"));
 
@@ -1714,20 +1742,20 @@ int ParseManagerBase::GetTokenFromCurrentLine(TokenTree*         tree,
               token->m_ImplLineStart, token->m_ImplLineEnd);
 
         if (   token->m_TokenKind & tkAnyFunction
-            && token->m_ImplFileIdx == fileIdx
-            && token->m_ImplLine    <= curLine
-            && token->m_ImplLineEnd >= curLine)
+                && token->m_ImplFileIdx == fileIdx
+                && token->m_ImplLine    <= curLine
+                && token->m_ImplLineEnd >= curLine)
         {
             TRACE(_T("GetTokenFromCurrentLine() tkAnyFunction : tN='%s', tF='%s', tStart=%u, tEnd=%u"),
-                   token->DisplayName().wx_str(), token->GetFilename().wx_str(),
-                   token->m_ImplLineStart, token->m_ImplLineEnd);
+                  token->DisplayName().wx_str(), token->GetFilename().wx_str(),
+                  token->m_ImplLineStart, token->m_ImplLineEnd);
             result = token->m_Index;
             found = true;
         }
         else if (   token->m_TokenKind == tkConstructor
-                 && token->m_ImplFileIdx == fileIdx
-                 && token->m_ImplLine <= curLine
-                 && token->m_ImplLineStart >= curLine)
+                    && token->m_ImplFileIdx == fileIdx
+                    && token->m_ImplLine <= curLine
+                    && token->m_ImplLineStart >= curLine)
         {
             TRACE(_T("GetTokenFromCurrentLine() tkConstructor : tN='%s', tF='%s', tStart=%u, tEnd=%u"),
                   token->DisplayName().wx_str(), token->GetFilename().wx_str(),
@@ -1736,8 +1764,8 @@ int ParseManagerBase::GetTokenFromCurrentLine(TokenTree*         tree,
             found = true;
         }
         else if (   token->m_TokenKind == tkClass
-                 && token->m_ImplLineStart <= curLine
-                 && token->m_ImplLineEnd >= curLine)
+                    && token->m_ImplLineStart <= curLine
+                    && token->m_ImplLineEnd >= curLine)
         {
             TRACE(_T("GetTokenFromCurrentLine() tkClass : tN='%s', tF='%s', tStart=%u, tEnd=%u"),
                   token->DisplayName().wx_str(), token->GetFilename().wx_str(),
@@ -1874,7 +1902,7 @@ bool ParseManagerBase::PrettyPrintToken(TokenTree*   tree,
     // if the token has parents and the token is a container or a function,
     // then pretty print the parent of the token->
     if (   (token->m_ParentIndex != -1)
-        && (token->m_TokenKind & (tkAnyContainer | tkAnyFunction)) )
+            && (token->m_TokenKind & (tkAnyContainer | tkAnyFunction)) )
     {
         const Token* parentToken = tree->at(token->m_ParentIndex);
         if (!parentToken || !PrettyPrintToken(tree, parentToken, result, false))
@@ -1883,45 +1911,45 @@ bool ParseManagerBase::PrettyPrintToken(TokenTree*   tree,
 
     switch (token->m_TokenKind)
     {
-        case tkConstructor:
-            result = result + token->m_Name + token->GetFormattedArgs();
-            return true;
+    case tkConstructor:
+        result = result + token->m_Name + token->GetFormattedArgs();
+        return true;
 
-        case tkFunction:
-            result = token->m_FullType + wxT(" ") + result + token->m_Name + token->GetFormattedArgs();
-            if (token->m_IsConst)
-                result += wxT(" const");
-            if (token->m_IsNoExcept)
-                result += wxT(" noexcept");
-            return true;
+    case tkFunction:
+        result = token->m_FullType + wxT(" ") + result + token->m_Name + token->GetFormattedArgs();
+        if (token->m_IsConst)
+            result += wxT(" const");
+        if (token->m_IsNoExcept)
+            result += wxT(" noexcept");
+        return true;
 
-        case tkClass:
-        case tkNamespace:
-            if (isRoot)
-                result += token->m_Name;
-            else
-                result += token->m_Name + wxT("::");
-            return true;
+    case tkClass:
+    case tkNamespace:
+        if (isRoot)
+            result += token->m_Name;
+        else
+            result += token->m_Name + wxT("::");
+        return true;
 
-        case tkMacroDef:
-            if (!token->GetFormattedArgs().IsEmpty())
-                result = wxT("#define ") + token->m_Name + token->GetFormattedArgs();
-            return true;
+    case tkMacroDef:
+        if (!token->GetFormattedArgs().IsEmpty())
+            result = wxT("#define ") + token->m_Name + token->GetFormattedArgs();
+        return true;
 
-        case tkTypedef:
-            result = token->m_BaseType + wxT(" ") + result + name + token->GetFormattedArgs();
-            return true;
+    case tkTypedef:
+        result = token->m_BaseType + wxT(" ") + result + name + token->GetFormattedArgs();
+        return true;
 
-        case tkEnum:
-        case tkDestructor:
-        case tkVariable:
-        case tkEnumerator:
-        case tkMacroUse:
-        case tkAnyContainer:
-        case tkAnyFunction:
-        case tkUndefined:
-        default:
-            break;
+    case tkEnum:
+    case tkDestructor:
+    case tkVariable:
+    case tkEnumerator:
+    case tkMacroUse:
+    case tkAnyContainer:
+    case tkAnyFunction:
+    case tkUndefined:
+    default:
+        break;
     }
     return true;
 }

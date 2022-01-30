@@ -13,7 +13,7 @@
  **************************/
 
 LRESULT CALLBACK WndProc (HWND hWnd, UINT message,
-WPARAM wParam, LPARAM lParam);
+                          WPARAM wParam, LPARAM lParam);
 void EnableOpenGL (HWND hWnd, HDC *hDC, HGLRC *hRC);
 void DisableOpenGL (HWND hWnd, HDC hDC, HGLRC hRC);
 
@@ -23,7 +23,7 @@ void DisableOpenGL (HWND hWnd, HDC hDC, HGLRC hRC);
  *
  **************************/
 
-int WINAPI 
+int WINAPI
 WinMain (HINSTANCE hInstance,
          HINSTANCE hPrevInstance,
          LPSTR lpCmdLine,
@@ -32,7 +32,7 @@ WinMain (HINSTANCE hInstance,
     WNDCLASS wc;
     HWND hWnd;
     HDC hDC;
-    HGLRC hRC;        
+    HGLRC hRC;
     MSG msg;
     BOOL bQuit = FALSE;
     float theta = 0.0f;
@@ -52,10 +52,10 @@ WinMain (HINSTANCE hInstance,
 
     /* create main window */
     hWnd = CreateWindow (
-      "GLSample", "OpenGL Sample", 
-      WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE,
-      0, 0, 256, 256,
-      NULL, NULL, hInstance, NULL);
+               "GLSample", "OpenGL Sample",
+               WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE,
+               0, 0, 256, 256,
+               NULL, NULL, hInstance, NULL);
 
     /* enable OpenGL for the window */
     EnableOpenGL (hWnd, &hDC, &hRC);
@@ -87,9 +87,12 @@ WinMain (HINSTANCE hInstance,
             glPushMatrix ();
             glRotatef (theta, 0.0f, 0.0f, 1.0f);
             glBegin (GL_TRIANGLES);
-            glColor3f (1.0f, 0.0f, 0.0f);   glVertex2f (0.0f, 1.0f);
-            glColor3f (0.0f, 1.0f, 0.0f);   glVertex2f (0.87f, -0.5f);
-            glColor3f (0.0f, 0.0f, 1.0f);   glVertex2f (-0.87f, -0.5f);
+            glColor3f (1.0f, 0.0f, 0.0f);
+            glVertex2f (0.0f, 1.0f);
+            glColor3f (0.0f, 1.0f, 0.0f);
+            glVertex2f (0.87f, -0.5f);
+            glColor3f (0.0f, 0.0f, 1.0f);
+            glVertex2f (-0.87f, -0.5f);
             glEnd ();
             glPopMatrix ();
 
@@ -115,7 +118,7 @@ WinMain (HINSTANCE hInstance,
  *
  ********************/
 
-LRESULT CALLBACK 
+LRESULT CALLBACK
 WndProc (HWND hWnd, UINT message,
          WPARAM wParam, LPARAM lParam)
 {
@@ -164,8 +167,8 @@ EnableOpenGL (HWND hWnd, HDC *hDC, HGLRC *hRC)
     ZeroMemory (&pfd, sizeof (pfd));
     pfd.nSize = sizeof (pfd);
     pfd.nVersion = 1;
-    pfd.dwFlags = PFD_DRAW_TO_WINDOW | 
-      PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+    pfd.dwFlags = PFD_DRAW_TO_WINDOW |
+                  PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
     pfd.iPixelType = PFD_TYPE_RGBA;
     pfd.cColorBits = 24;
     pfd.cDepthBits = 16;

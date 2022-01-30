@@ -71,9 +71,18 @@
 class ClassTreeData : public wxTreeItemData
 {
 public:
-    ClassTreeData(Token* token)   { m_Token = token; }
-    Token* GetToken()             { return m_Token;  }
-    void   SetToken(Token* token) { m_Token = token; }
+    ClassTreeData(Token* token)
+    {
+        m_Token = token;
+    }
+    Token* GetToken()
+    {
+        return m_Token;
+    }
+    void   SetToken(Token* token)
+    {
+        m_Token = token;
+    }
 private:
     Token* m_Token;
 };
@@ -82,27 +91,27 @@ class ClassBrowser;
 
 namespace ParserCommon
 {
-    extern int idParserStart;
-    extern int idParserEnd;
+extern int idParserStart;
+extern int idParserEnd;
 
-    enum ParserState
-    {
-        /** the Parser object is newly created, and we are parsing the predefined macro buffer, the
-         * source files, and finally mark the project's tokens as local
-         */
-        ptCreateParser    = 1,
+enum ParserState
+{
+    /** the Parser object is newly created, and we are parsing the predefined macro buffer, the
+     * source files, and finally mark the project's tokens as local
+     */
+    ptCreateParser    = 1,
 
-        /** some files are changed by the user, so we are parsing the changed files */
-        ptReparseFile     = 2,
+    /** some files are changed by the user, so we are parsing the changed files */
+    ptReparseFile     = 2,
 
-        /** the user has add some files to the cbproject, so we are parsing the new added files */
-        ptAddFileToParser = 3,
+    /** the user has add some files to the cbproject, so we are parsing the new added files */
+    ptAddFileToParser = 3,
 
-        /** non of the above three status, this means our Parser has finish all the jobs, and it is
-         * in idle mode
-         */
-        ptUndefined       = 4
-    };
+    /** non of the above three status, this means our Parser has finish all the jobs, and it is
+     * in idle mode
+     */
+    ptUndefined       = 4
+};
 }
 
 /** @brief Parser class holds all the tokens of a C::B project
@@ -212,10 +221,16 @@ protected:
     /** Node: Currently, the max. concurrent ParserThread number should be ONE, CC does not support
      * multiply threads parsing.
      */
-    unsigned int GetMaxThreads() const { return m_Pool.GetConcurrentThreads(); }
+    unsigned int GetMaxThreads() const
+    {
+        return m_Pool.GetConcurrentThreads();
+    }
 
     /** Not used, because the ThreadPool only support running ONE ParserThread concurrently */
-    void SetMaxThreads(unsigned int max) { m_Pool.SetConcurrentThreads(max); }
+    void SetMaxThreads(unsigned int max)
+    {
+        m_Pool.SetConcurrentThreads(max);
+    }
 
     /** parse the file, either immediately or delayed.
      * @param isLocal true if the file belong to a C::B project

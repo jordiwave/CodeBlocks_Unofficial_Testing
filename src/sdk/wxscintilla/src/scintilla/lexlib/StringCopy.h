@@ -10,7 +10,8 @@
 #define STRINGCOPY_H
 
 #ifdef SCI_NAMESPACE
-namespace Scintilla {
+namespace Scintilla
+{
 #endif
 
 // Safer version of string copy functions like strcpy, wcsncpy, etc.
@@ -18,13 +19,15 @@ namespace Scintilla {
 // May truncate if source doesn't fit into dest with room for NUL.
 
 template <typename T, size_t count>
-void StringCopy(T (&dest)[count], const T* source) {
-	for (size_t i=0; i<count; i++) {
-		dest[i] = source[i];
-		if (!source[i])
-			break;
-	}
-	dest[count-1] = 0;
+void StringCopy(T (&dest)[count], const T* source)
+{
+    for (size_t i=0; i<count; i++)
+    {
+        dest[i] = source[i];
+        if (!source[i])
+            break;
+    }
+    dest[count-1] = 0;
 }
 
 #define ELEMENTS(a) (sizeof(a) / sizeof(a[0]))

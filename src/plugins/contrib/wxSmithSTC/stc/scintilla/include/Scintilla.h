@@ -700,20 +700,23 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 // CHARRANGE, TEXTRANGE, FINDTEXTEX, FORMATRANGE, and NMHDR structs.
 // So older code that treats Scintilla as a RichEdit will work.
 
-struct CharacterRange {
-	long cpMin;
-	long cpMax;
+struct CharacterRange
+{
+    long cpMin;
+    long cpMax;
 };
 
-struct TextRange {
-	struct CharacterRange chrg;
-	char *lpstrText;
+struct TextRange
+{
+    struct CharacterRange chrg;
+    char *lpstrText;
 };
 
-struct TextToFind {
-	struct CharacterRange chrg;
-	char *lpstrText;
-	struct CharacterRange chrgText;
+struct TextToFind
+{
+    struct CharacterRange chrg;
+    char *lpstrText;
+    struct CharacterRange chrgText;
 };
 
 #ifdef PLATFORM_H
@@ -721,44 +724,47 @@ struct TextToFind {
 // This structure is used in printing and requires some of the graphics types
 // from Platform.h.  Not needed by most client code.
 
-struct RangeToFormat {
-	SurfaceID hdc;
-	SurfaceID hdcTarget;
-	PRectangle rc;
-	PRectangle rcPage;
-	CharacterRange chrg;
+struct RangeToFormat
+{
+    SurfaceID hdc;
+    SurfaceID hdcTarget;
+    PRectangle rc;
+    PRectangle rcPage;
+    CharacterRange chrg;
 };
 
 #endif
 
-struct NotifyHeader {
-	// Compatible with Windows NMHDR.
-	// hwndFrom is really an environment specific window handle or pointer
-	// but most clients of Scintilla.h do not have this type visible.
-	void *hwndFrom;
-	uptr_t idFrom;
-	unsigned int code;
+struct NotifyHeader
+{
+    // Compatible with Windows NMHDR.
+    // hwndFrom is really an environment specific window handle or pointer
+    // but most clients of Scintilla.h do not have this type visible.
+    void *hwndFrom;
+    uptr_t idFrom;
+    unsigned int code;
 };
 
-struct SCNotification {
-	struct NotifyHeader nmhdr;
-	int position;	// SCN_STYLENEEDED, SCN_MODIFIED, SCN_DWELLSTART, SCN_DWELLEND
-	int ch;		// SCN_CHARADDED, SCN_KEY
-	int modifiers;	// SCN_KEY
-	int modificationType;	// SCN_MODIFIED
-	const char *text;	// SCN_MODIFIED, SCN_USERLISTSELECTION, SCN_AUTOCSELECTION
-	int length;		// SCN_MODIFIED
-	int linesAdded;	// SCN_MODIFIED
-	int message;	// SCN_MACRORECORD
-	uptr_t wParam;	// SCN_MACRORECORD
-	sptr_t lParam;	// SCN_MACRORECORD
-	int line;		// SCN_MODIFIED
-	int foldLevelNow;	// SCN_MODIFIED
-	int foldLevelPrev;	// SCN_MODIFIED
-	int margin;		// SCN_MARGINCLICK
-	int listType;	// SCN_USERLISTSELECTION
-	int x;			// SCN_DWELLSTART, SCN_DWELLEND
-	int y;		// SCN_DWELLSTART, SCN_DWELLEND
+struct SCNotification
+{
+    struct NotifyHeader nmhdr;
+    int position;	// SCN_STYLENEEDED, SCN_MODIFIED, SCN_DWELLSTART, SCN_DWELLEND
+    int ch;		// SCN_CHARADDED, SCN_KEY
+    int modifiers;	// SCN_KEY
+    int modificationType;	// SCN_MODIFIED
+    const char *text;	// SCN_MODIFIED, SCN_USERLISTSELECTION, SCN_AUTOCSELECTION
+    int length;		// SCN_MODIFIED
+    int linesAdded;	// SCN_MODIFIED
+    int message;	// SCN_MACRORECORD
+    uptr_t wParam;	// SCN_MACRORECORD
+    sptr_t lParam;	// SCN_MACRORECORD
+    int line;		// SCN_MODIFIED
+    int foldLevelNow;	// SCN_MODIFIED
+    int foldLevelPrev;	// SCN_MODIFIED
+    int margin;		// SCN_MARGINCLICK
+    int listType;	// SCN_USERLISTSELECTION
+    int x;			// SCN_DWELLSTART, SCN_DWELLEND
+    int y;		// SCN_DWELLSTART, SCN_DWELLEND
 };
 
 // Deprecation section listing all API features that are deprecated and will

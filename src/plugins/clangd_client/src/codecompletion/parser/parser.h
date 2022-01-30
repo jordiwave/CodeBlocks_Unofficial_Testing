@@ -83,9 +83,18 @@ class ClassTreeData : public wxTreeItemData
 // ----------------------------------------------------------------------------
 {
 public:
-    ClassTreeData(Token* token)   { m_Token = token; }
-    Token* GetToken()             { return m_Token;  }
-    void   SetToken(Token* token) { m_Token = token; }
+    ClassTreeData(Token* token)
+    {
+        m_Token = token;
+    }
+    Token* GetToken()
+    {
+        return m_Token;
+    }
+    void   SetToken(Token* token)
+    {
+        m_Token = token;
+    }
 private:
     Token* m_Token;
 };
@@ -98,24 +107,24 @@ class ParseManager;     //(ph 2021/08/20)
 namespace ParserCommon
 // ----------------------------------------------------------------------------
 {
-    enum ParserState
-    {
-        /** the Parser object is newly created, and we are parsing the predefined macro buffer, the
-         * source files, and finally mark the project's tokens as local
-         */
-        ptCreateParser    = 1,
+enum ParserState
+{
+    /** the Parser object is newly created, and we are parsing the predefined macro buffer, the
+     * source files, and finally mark the project's tokens as local
+     */
+    ptCreateParser    = 1,
 
-        /** some files are changed by the user, so we are parsing the changed files */
-        ptReparseFile     = 2,
+    /** some files are changed by the user, so we are parsing the changed files */
+    ptReparseFile     = 2,
 
-        /** the user has add some files to the cbproject, so we are parsing the new added files */
-        ptAddFileToParser = 3,
+    /** the user has add some files to the cbproject, so we are parsing the new added files */
+    ptAddFileToParser = 3,
 
-        /** non of the above three status, this means our Parser has finish all the jobs, and it is
-         * in idle mode
-         */
-        ptUndefined       = 4
-    };
+    /** non of the above three status, this means our Parser has finish all the jobs, and it is
+     * in idle mode
+     */
+    ptUndefined       = 4
+};
 }
 
 /** @brief Parser class holds all the tokens of a C::B project
@@ -186,7 +195,10 @@ public:
      * as already parsed.
      */
     bool IsFileParsed(const wxString& filename) override;
-    void SetFileParsed(wxString filename) {m_FilesParsed.insert(filename);}
+    void SetFileParsed(wxString filename)
+    {
+        m_FilesParsed.insert(filename);
+    }
 
     /** check to see whether Parser is in Idle mode, there is no work need to be done in the Parser*/
     bool Done() override;
@@ -194,7 +206,10 @@ public:
     /** if the Parser is not in Idle mode, show which need to be done */
     wxString NotDoneReason() override;
 
-    ParseManager* GetParseManager(){return m_pParseManager;}    //(ph 2021/08/20)
+    ParseManager* GetParseManager()
+    {
+        return m_pParseManager;   //(ph 2021/08/20)
+    }
     //(ph 2021/10/23)
     void OnLSP_ReferencesResponse(wxCommandEvent& event);
     void OnLSP_DeclDefResponse(wxCommandEvent& event);
@@ -270,29 +285,32 @@ private:
     int reportedBadFileReference = 0;
     wxString m_LogFileBase = wxString();
 
-  public:
+public:
     size_t GetFilesRemainingToParse()
-        { return m_BatchParseFiles.size(); }
+    {
+        return m_BatchParseFiles.size();
+    }
 
     bool GetUserParsingPaused()
-        {   if (PauseParsingExists("UserPausedParsing")
+    {
+        if (PauseParsingExists("UserPausedParsing")
                 and PauseParsingCount("UserPausedParsing") )
-                return true;
-            return false;
-        }
+            return true;
+        return false;
+    }
     void SetUserParsingPaused(bool newStatus)
-        {
-            PauseParsingForReason("UserPausedParsing", newStatus);
-        }
+    {
+        PauseParsingForReason("UserPausedParsing", newStatus);
+    }
 
     /** stops the batch parse timer and clears the list of waiting files to be parsed */
     void ClearBatchParse();
 
-    private:
+private:
     // map of reasons to pause parsing <reason, count>
     typedef std::map<wxString, int> PauseReasonType;
     PauseReasonType m_PauseParsingMap; //map of pauseReason and count
-    public:
+public:
     int PauseParsingCount()
     {
         if (not m_PauseParsingMap.size())
@@ -308,9 +326,9 @@ private:
         wxString the_reason = reason.MakeLower();
         if ( m_PauseParsingMap.find(the_reason) == m_PauseParsingMap.end() )
         {
-            #if defined(cbDEBUG)
+#if defined(cbDEBUG)
             cbAssertNonFatal(the_reason=="Does not exist");
-            #endif
+#endif
             return 0;
         }
         return m_PauseParsingMap[the_reason];
@@ -327,26 +345,30 @@ private:
     {
         wxString the_reason = reason.MakeLower();
         if (PauseParsingExists(the_reason) and increment)
-        {   ++m_PauseParsingMap[the_reason];
+        {
+            ++m_PauseParsingMap[the_reason];
             wxString reasonMsg = wxString::Format("Pausing parser for reason %s(%d)", reason, m_PauseParsingMap[the_reason]);
             CCLogger::Get()->DebugLog(reasonMsg);
             return true;
         }
         else  if (increment) //doesnt exist and increment, creat it
-        {   m_PauseParsingMap[the_reason] = 1;
+        {
+            m_PauseParsingMap[the_reason] = 1;
             CCLogger::Get()->DebugLog("Pausing parser for " + reason);
             return true;
         }
         else if (not PauseParsingExists(the_reason) and (increment==false))
-        {    //decrement but doesnt exist, is an error
-            #if defined (cbDEBUG)
+        {
+            //decrement but doesnt exist, is an error
+#if defined (cbDEBUG)
             cbAssertNonFatal(reason=="reason does not exist");
-            #endif
+#endif
             CCLogger::Get()->DebugLogError(wxString::Format("PauseParsing request Error:%s", reason));
             return false;
         }
         else
-        {   // decrement the pause reason
+        {
+            // decrement the pause reason
             --m_PauseParsingMap[the_reason];
             wxString reasonMsg = wxString::Format("Un-pausing parser for reason %s(%d)", reason, m_PauseParsingMap[the_reason]);
             CCLogger::Get()->DebugLog(reasonMsg);
@@ -361,12 +383,21 @@ private:
     }
 
     /** Remember and return the base dir for the SearchLog */
-    void SetLogFileBase(wxString filebase){m_LogFileBase = filebase;}
-    wxString GetLogFileBase(){return m_LogFileBase;}
+    void SetLogFileBase(wxString filebase)
+    {
+        m_LogFileBase = filebase;
+    }
+    wxString GetLogFileBase()
+    {
+        return m_LogFileBase;
+    }
 
     //(ph 2021/10/23)
     // Get pointer to Idle callbacks
-    IdleCallbackHandler* GetIdleCallbackHandler(){return pIdleCallbacks.get();}
+    IdleCallbackHandler* GetIdleCallbackHandler()
+    {
+        return pIdleCallbacks.get();
+    }
     wxString GetLineTextFromFile(const wxString& file, const int lineNum); //(ph 2020/10/26)
     bool FindDuplicateEntry(wxArrayString* pArray, wxString fullPath, wxString& lineNum, wxString& text); //(ph 2021/02/1)
 

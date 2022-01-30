@@ -11,22 +11,22 @@
 #include "autodetectcompilers.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/checkbox.h>
-    #include <wx/filename.h>
-    #include <wx/intl.h>
-    #include <wx/listctrl.h>
-    #include <wx/radiobox.h>
-    #include <wx/stattext.h>
-    #include <wx/string.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/filename.h>
+#include <wx/intl.h>
+#include <wx/listctrl.h>
+#include <wx/radiobox.h>
+#include <wx/stattext.h>
+#include <wx/string.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "compiler.h"
-    #include "compilerfactory.h"
-    #include "configmanager.h"
-    #include "logmanager.h"
-    #include "manager.h"
-    #include "macrosmanager.h"
+#include "compiler.h"
+#include "compilerfactory.h"
+#include "configmanager.h"
+#include "logmanager.h"
+#include "manager.h"
+#include "macrosmanager.h"
 #endif
 #include <wx/tooltip.h>
 
@@ -80,8 +80,8 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                 // bool compilerSetConfigured = Manager::Get()->GetConfigManager("compiler")->Exists("/sets/" + compiler->GetID() + "/name");
 
                 Manager::Get()->GetLogManager()->Log(wxString::Format("CompilerName : '%s'   , masterPathNoMacros : '%s'", compilerListItem.compilerName, masterPathNoMacros));
-                Manager::Get()->GetLogManager()->Log(wxString::Format("Manager::Get()->GetConfigManager(\"compiler\")->Exists('%s') : %s", "/sets/" + compiler->GetID() + "/name" ,
-                Manager::Get()->GetConfigManager("compiler")->Exists("/sets/" + compiler->GetID() + "/name")?"True":"False"));
+                Manager::Get()->GetLogManager()->Log(wxString::Format("Manager::Get()->GetConfigManager(\"compiler\")->Exists('%s') : %s", "/sets/" + compiler->GetID() + "/name",
+                                                     Manager::Get()->GetConfigManager("compiler")->Exists("/sets/" + compiler->GetID() + "/name")?"True":"False"));
 
 
                 if (detectedDirectory)
@@ -183,10 +183,10 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
             }
 
             Manager::Get()->GetLogManager()->Log(wxString::Format("Compiler '%s' , status: '%s' , compilerPath: '%s' , detected: %s",
-                                                                  compilerListItem.compilerName,
-                                                                  compilerListItem.status,
-                                                                  compilerListItem.compilerPath,
-                                                                  compilerListItem.detected?"True":"False"
+                                                 compilerListItem.compilerName,
+                                                 compilerListItem.status,
+                                                 compilerListItem.compilerPath,
+                                                 compilerListItem.detected?"True":"False"
                                                                  ));
             m_CompilerList.push_back(compilerListItem);
         }
@@ -293,26 +293,26 @@ void AutoDetectCompilers::UpdateCompilerDisplayList()
             switch(it->colorHighlight)
             {
             case CompilerHighlightColor::colorHighlightGrey:
-                    colourText  = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
-                    colourText  = wxColour(*wxLIGHT_GREY);
-                    break;
-                case CompilerHighlightColor::colorHighlightGreen:
-                    colourText  = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
-                    colourBackground  = wxColour(*wxGREEN);
-                    break;
-                case CompilerHighlightColor::colorHighlightRed:
-                    colourText  = wxColour(*wxWHITE);
-                    colourBackground  = wxColour(*wxRED);
-                    break;
-                case CompilerHighlightColor::colorHighlightYellow:
-                    colourText  = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
-                    colourBackground  = wxColour(*wxYELLOW);
-                    break;
-                case CompilerHighlightColor::colorHighlightNone:
-                default:
-                    // colourText = wxNullColour;
-                    // colourBackground = wxNullColour;
-                    break;
+                colourText  = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
+                colourText  = wxColour(*wxLIGHT_GREY);
+                break;
+            case CompilerHighlightColor::colorHighlightGreen:
+                colourText  = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
+                colourBackground  = wxColour(*wxGREEN);
+                break;
+            case CompilerHighlightColor::colorHighlightRed:
+                colourText  = wxColour(*wxWHITE);
+                colourBackground  = wxColour(*wxRED);
+                break;
+            case CompilerHighlightColor::colorHighlightYellow:
+                colourText  = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
+                colourBackground  = wxColour(*wxYELLOW);
+                break;
+            case CompilerHighlightColor::colorHighlightNone:
+            default:
+                // colourText = wxNullColour;
+                // colourBackground = wxNullColour;
+                break;
             }
             list->SetItemTextColour(idx, colourText);
             list->SetItemBackgroundColour(idx, colourBackground);

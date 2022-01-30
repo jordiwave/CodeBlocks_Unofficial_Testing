@@ -10,22 +10,22 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/confbase.h>
-    #include <wx/fileconf.h>
-    #include <wx/intl.h>
-    #include <wx/string.h>
+#include <wx/confbase.h>
+#include <wx/fileconf.h>
+#include <wx/intl.h>
+#include <wx/string.h>
 
-    #include "workspaceloader.h"
+#include "workspaceloader.h"
 
-    #include "manager.h"
-    #include "configmanager.h"
-    #include "projectmanager.h"
-    #include "logmanager.h"
-    #include "cbproject.h"
-    #include "globals.h"
-    #include "cbworkspace.h"
-    #include "editormanager.h"
-    #include "cbauibook.h"
+#include "manager.h"
+#include "configmanager.h"
+#include "projectmanager.h"
+#include "logmanager.h"
+#include "cbproject.h"
+#include "globals.h"
+#include "cbworkspace.h"
+#include "editormanager.h"
+#include "cbauibook.h"
 #endif
 
 
@@ -44,8 +44,14 @@ WorkspaceLoader::~WorkspaceLoader()
     //dtor
 }
 
-inline ProjectManager* GetpMan() { return Manager::Get()->GetProjectManager(); }
-inline LogManager* GetpMsg() { return Manager::Get()->GetLogManager(); }
+inline ProjectManager* GetpMan()
+{
+    return Manager::Get()->GetProjectManager();
+}
+inline LogManager* GetpMsg()
+{
+    return Manager::Get()->GetLogManager();
+}
 
 #include <wx/intl.h>
 
@@ -117,8 +123,8 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
             if (!pProject)
             {
                 GetpMsg()->LogError(wxString::Format(_("Unable to open \"%s\" during opening workspace \"%s\" "),
-                                                       projectFilename.c_str(),
-                                                       filename.c_str()));
+                                                     projectFilename.c_str(),
+                                                     filename.c_str()));
                 // Only display a max of 10 failed projects!!!
                 if (failedProjectCount < 10)
                 {
@@ -167,13 +173,13 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
         proj = proj->NextSiblingElement("Project");
     }
 
-    #if 0
+#if 0
     if (failedProjectCount > 0)
     {
         cbMessageBox(wxString::Format(_("%d projects could not be loaded.\nPlease see the Log window for details"), failedProjectCount),
                      _("Opening WorkSpace"), wxICON_WARNING);
     }
-    #else
+#else
     if (failedProjectCount > 0)
     {
         wxString sMessage = wxString::Format(_("%d projects could not be loaded.\nPlease see the Log window for details.\nThe failed projects are: %s"), failedProjectCount, failedProjectNames);
@@ -192,7 +198,7 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
             cbMessageBox(sMessage, _("Opening WorkSpace"), wxICON_WARNING);
         }
     }
-    #endif
+#endif
 
     return true;
 }
@@ -329,11 +335,11 @@ bool WorkspaceLoader::LoadLayout(const wxString& filename)
         {
             GetpMsg()->DebugLog(F(_T("Workspace layout file version is > %d.%d. Trying to load..."), WORKSPACE_LAYOUT_FILE_VERSION_MAJOR, WORKSPACE_LAYOUT_FILE_VERSION_MINOR));
             AnnoyingDialog dlg(_("Workspace layout file format is newer/unknown"),
-                                F(_("This workspace layout file was saved with a newer version of Code::Blocks.\n"
-                                "Will try to load, but you might see unexpected results.\n"
-                                "In this case close the workspace, delete %s and reopen the workspace."),filename.wx_str()),
-                                wxART_WARNING,
-                                AnnoyingDialog::OK);
+                               F(_("This workspace layout file was saved with a newer version of Code::Blocks.\n"
+                                   "Will try to load, but you might see unexpected results.\n"
+                                   "In this case close the workspace, delete %s and reopen the workspace."),filename.wx_str()),
+                               wxART_WARNING,
+                               AnnoyingDialog::OK);
             dlg.ShowModal();
         }
         else
@@ -352,20 +358,20 @@ bool WorkspaceLoader::LoadLayout(const wxString& filename)
             if (!msg.IsEmpty())
             {
                 msg.Prepend(wxString::Format(_("Workspace layout file format is older (%d.%d) than the current format (%d.%d).\n"
-                                                "The file will automatically be upgraded on close.\n"
-                                                "But please read the following list of changes, as some of them\n"
-                                                "might not automatically convert existing (old) settings.\n"
-                                                "If you don't understand what a change means, you probably don't\n"
-                                                "use that feature so you don't have to worry about it.\n\n"
-                                                "List of changes:\n"),
-                                            major,
-                                            minor,
-                                            WORKSPACE_LAYOUT_FILE_VERSION_MAJOR,
-                                            WORKSPACE_LAYOUT_FILE_VERSION_MINOR));
+                                               "The file will automatically be upgraded on close.\n"
+                                               "But please read the following list of changes, as some of them\n"
+                                               "might not automatically convert existing (old) settings.\n"
+                                               "If you don't understand what a change means, you probably don't\n"
+                                               "use that feature so you don't have to worry about it.\n\n"
+                                               "List of changes:\n"),
+                                             major,
+                                             minor,
+                                             WORKSPACE_LAYOUT_FILE_VERSION_MAJOR,
+                                             WORKSPACE_LAYOUT_FILE_VERSION_MINOR));
                 AnnoyingDialog dlg(_("Workspace layout file format changed"),
-                                    msg,
-                                    wxART_INFORMATION,
-                                    AnnoyingDialog::OK);
+                                   msg,
+                                   wxART_INFORMATION,
+                                   AnnoyingDialog::OK);
                 dlg.ShowModal();
             }
 
@@ -373,9 +379,9 @@ bool WorkspaceLoader::LoadLayout(const wxString& filename)
             {
                 warn_msg.Prepend(_("!!! WARNING !!!\n\n"));
                 AnnoyingDialog dlg(_("Workspace layout file upgrade warning"),
-                                    warn_msg,
-                                    wxART_WARNING,
-                                    AnnoyingDialog::OK);
+                                   warn_msg,
+                                   wxART_WARNING,
+                                   AnnoyingDialog::OK);
                 dlg.ShowModal();
             }
         }
@@ -409,7 +415,7 @@ bool WorkspaceLoader::LoadLayout(const wxString& filename)
     // else XML element 'PreferredTarget' not found?!
 
     if (   (major >= 1)
-        && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), false)) )
+            && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), false)) )
     {
         if (TiXmlElement* el = root->FirstChildElement("EditorTabsLayout"))
         {

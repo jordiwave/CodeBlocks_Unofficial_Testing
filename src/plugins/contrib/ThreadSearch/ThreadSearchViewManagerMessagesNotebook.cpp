@@ -12,8 +12,8 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-    #include "configmanager.h"
-    #include "manager.h"
+#include "configmanager.h"
+#include "manager.h"
 #endif
 
 #include "ThreadSearchView.h"
@@ -34,10 +34,10 @@ void ThreadSearchViewManagerMessagesNotebook::AddViewToManager()
         const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
         const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
         const wxString imgFile = ConfigManager::GetDataFolder()
-                               + wxString::Format(_T("/resources.zip#zip:/images/%dx%d/findf.png"),
-                                                  uiSize, uiSize);
+                                 + wxString::Format(_T("/resources.zip#zip:/images/%dx%d/findf.png"),
+                                         uiSize, uiSize);
         m_Bitmap = new wxBitmap(cbLoadBitmapScaled(imgFile, wxBITMAP_TYPE_PNG,
-                                                         uiScaleFactor));
+                                uiScaleFactor));
 
         // Adds log to C::B Messages notebook
         CodeBlocksLogEvent evtShow(cbEVT_ADD_LOG_WINDOW, m_pThreadSearchView,

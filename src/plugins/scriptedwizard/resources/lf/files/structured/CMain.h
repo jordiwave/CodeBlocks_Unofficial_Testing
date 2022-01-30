@@ -2,22 +2,22 @@
 
 class CMain : public lf::input::IKeyListener
 {
-    public:
-        CMain(lf::render::IRenderWindow* win);
-        ~CMain();
+public:
+    CMain(lf::render::IRenderWindow* win);
+    ~CMain();
 
-        void run();
-        void setupScene();
-        void keyPressed(lf::input::CKeyEvent& event);
+    void run();
+    void setupScene();
+    void keyPressed(lf::input::CKeyEvent& event);
 
-    private:
+private:
 
-        lf::render::IRenderWindow* rwin;
-        lf::render::CRenderLayer3D* rl3d;
-        lf::scene::CSceneManager* smgr;
+    lf::render::IRenderWindow* rwin;
+    lf::render::CRenderLayer3D* rl3d;
+    lf::scene::CSceneManager* smgr;
 
-        lf::scene::C3DCamera *cam;
-        lf::scene::CSceneNodeController *camController;
-        
-        bool quitNow;
+    lf::scene::C3DCamera *cam;
+    lf::scene::CSceneNodeController *camController;
+
+    bool quitNow;
 };

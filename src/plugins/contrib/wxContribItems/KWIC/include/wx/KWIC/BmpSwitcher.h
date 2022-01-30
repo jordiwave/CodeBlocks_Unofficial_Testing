@@ -18,36 +18,39 @@ WX_DECLARE_LIST(wxBitmap, CBmpList);
 class kwxBmpSwitcher : public wxWindow
 {
 public:
-	kwxBmpSwitcher(wxWindow *parent,
-				const wxWindowID id         = -1,
-				const wxPoint&   pos        = wxDefaultPosition,
-				const wxSize&    size       = wxDefaultSize);
+    kwxBmpSwitcher(wxWindow *parent,
+                   const wxWindowID id         = -1,
+                   const wxPoint&   pos        = wxDefaultPosition,
+                   const wxSize&    size       = wxDefaultSize);
 
-	virtual ~kwxBmpSwitcher();
+    virtual ~kwxBmpSwitcher();
 
-	//Incrementa stato di avanzamento
-	void IncState() ;
-	//Imposta stato di avanzamento
-	void SetState(int state) ;
+    //Incrementa stato di avanzamento
+    void IncState() ;
+    //Imposta stato di avanzamento
+    void SetState(int state) ;
 
-	int GetState() { return m_nState ; } ;
-	//Aggiunge una bitmap alla lista
-	void AddBitmap(wxBitmap *bitmap) ;
+    int GetState()
+    {
+        return m_nState ;
+    } ;
+    //Aggiunge una bitmap alla lista
+    void AddBitmap(wxBitmap *bitmap) ;
 
-	CBmpList m_bmplist;
+    CBmpList m_bmplist;
 
-	wxBitmap *m_pCurrent ;
+    wxBitmap *m_pCurrent ;
 
 private:
     // any class wishing to process wxWindows events must use this macro
     DECLARE_EVENT_TABLE()
 
-	void    OnPaint(wxPaintEvent& event);
+    void    OnPaint(wxPaintEvent& event);
 
-	wxBitmap *membitmap ;
+    wxBitmap *membitmap ;
 
-	int m_nCount ;
-	int m_nState ;
+    int m_nCount ;
+    int m_nState ;
 
 } ;
 

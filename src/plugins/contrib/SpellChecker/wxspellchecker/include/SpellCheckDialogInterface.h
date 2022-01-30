@@ -16,11 +16,11 @@
 class wxSpellCheckDialogInterface : public wxDialog, public wxSpellCheckUserInterface
 {
 public:
-  wxSpellCheckDialogInterface(wxWindow *parent, wxSpellCheckEngineInterface* SpellChecker = NULL);
-	virtual ~wxSpellCheckDialogInterface();
+    wxSpellCheckDialogInterface(wxWindow *parent, wxSpellCheckEngineInterface* SpellChecker = NULL);
+    virtual ~wxSpellCheckDialogInterface();
 
 public:
-	virtual int PresentSpellCheckUserInterface(const wxString& strMisspelling);
+    virtual int PresentSpellCheckUserInterface(const wxString& strMisspelling);
 };
 
 #endif  // __SPELL_CHECK_DIALOG_INTERFACE__

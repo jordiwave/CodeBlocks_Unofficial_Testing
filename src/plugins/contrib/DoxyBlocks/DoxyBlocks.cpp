@@ -24,18 +24,18 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-    #include <wx/menu.h>
-    #include <wx/process.h>
-    #include <wx/toolbar.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/menu.h>
+#include <wx/process.h>
+#include <wx/toolbar.h>
+#include <wx/xrc/xmlres.h>
 
-    #include <cbeditor.h>
-    #include <cbproject.h>
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <logmanager.h>
-    #include <macrosmanager.h>
-    #include <projectmanager.h>
+#include <cbeditor.h>
+#include <cbproject.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <logmanager.h>
+#include <macrosmanager.h>
+#include <projectmanager.h>
 #endif
 #include <cbstyledtextctrl.h>
 #include <configurationpanel.h>
@@ -52,7 +52,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<DoxyBlocks> reg(wxT("DoxyBlocks"));
+PluginRegistrant<DoxyBlocks> reg(wxT("DoxyBlocks"));
 }
 
 /*! \brief Toolbar control IDs
@@ -125,13 +125,14 @@ void DoxyBlocks::OnAttach()
     // is FALSE, it means that the application did *not* "load"
     // (see: does not need) this plugin...
 
-     // register event sinks
+    // register event sinks
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<DoxyBlocks, CodeBlocksEvent>(this, &DoxyBlocks::OnProjectActivate));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<DoxyBlocks, CodeBlocksEvent>(this, &DoxyBlocks::OnEditorOpen));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<DoxyBlocks, CodeBlocksEvent>(this, &DoxyBlocks::OnEditorClose));
 
     // Create a new log window.
-    if(LogManager *LogMan = Manager::Get()->GetLogManager()){
+    if(LogManager *LogMan = Manager::Get()->GetLogManager())
+    {
         m_DoxyBlocksLog = new DoxyBlocksLogger();
         m_LogPageIndex = LogMan->SetLog(m_DoxyBlocksLog);
         LogMan->Slot(m_LogPageIndex).title = wxT("DoxyBlocks");
@@ -150,8 +151,10 @@ void DoxyBlocks::OnAttach()
  */
 void DoxyBlocks::OnProjectActivate(CodeBlocksEvent& WXUNUSED(event))
 {
-    if(IsAttached()){
-        if(m_pConfig != NULL){
+    if(IsAttached())
+    {
+        if(m_pConfig != NULL)
+        {
             wxDELETE(m_pConfig);
             wxASSERT(!m_pConfig);
         }
@@ -160,7 +163,7 @@ void DoxyBlocks::OnProjectActivate(CodeBlocksEvent& WXUNUSED(event))
         LoadSettings();
     }
 
-       // Enable the menu and toolbar...
+    // Enable the menu and toolbar...
     m_pToolbar->Enable(true);
     wxMenuBar *menuBar =  Manager::Get()->GetAppFrame()->GetMenuBar();
     menuBar->FindItem(ID_MENU_DOXYWIZARD)->Enable(true);
@@ -171,11 +174,13 @@ void DoxyBlocks::OnProjectActivate(CodeBlocksEvent& WXUNUSED(event))
     menuBar->FindItem(ID_MENU_LOAD_TEMPLATE)->Enable(true);
     menuBar->FindItem(ID_MENU_SAVE_TEMPLATE)->Enable(true);
     // ...but disable the comment controls if there are no editors open.
-    if(Manager::Get()->GetEditorManager()->GetEditorsCount() > 0){
+    if(Manager::Get()->GetEditorManager()->GetEditorsCount() > 0)
+    {
         menuBar->FindItem(ID_MENU_BLOCKCOMMENT)->Enable(true);
         menuBar->FindItem(ID_MENU_LINECOMMENT)->Enable(true);
     }
-    else{
+    else
+    {
         m_pToolbar->EnableTool(ID_TB_BLOCKCOMMENT, false);
         m_pToolbar->EnableTool(ID_TB_LINECOMMENT, false);
         menuBar->FindItem(ID_MENU_BLOCKCOMMENT)->Enable(false);
@@ -192,10 +197,12 @@ void DoxyBlocks::OnProjectActivate(CodeBlocksEvent& WXUNUSED(event))
  */
 void DoxyBlocks::OnEditorOpen(CodeBlocksEvent& WXUNUSED(event))
 {
-    if(IsAttached()){
+    if(IsAttached())
+    {
         // Only restore the menu and toolbar when the first editor window is opened to avoid
         // needlessly doing so for every window.
-        if(Manager::Get()->GetEditorManager()->GetEditorsCount() == 1){
+        if(Manager::Get()->GetEditorManager()->GetEditorsCount() == 1)
+        {
             m_pToolbar->EnableTool(ID_TB_BLOCKCOMMENT, true);
             m_pToolbar->EnableTool(ID_TB_LINECOMMENT, true);
             wxMenuBar *menuBar =  Manager::Get()->GetAppFrame()->GetMenuBar();
@@ -214,8 +221,10 @@ void DoxyBlocks::OnEditorOpen(CodeBlocksEvent& WXUNUSED(event))
  */
 void DoxyBlocks::OnEditorClose(CodeBlocksEvent& WXUNUSED(event))
 {
-    if(IsAttached()){
-        if(Manager::Get()->GetEditorManager()->GetEditorsCount() == 0){
+    if(IsAttached())
+    {
+        if(Manager::Get()->GetEditorManager()->GetEditorsCount() == 0)
+        {
             m_pToolbar->EnableTool(ID_TB_BLOCKCOMMENT, false);
             m_pToolbar->EnableTool(ID_TB_LINECOMMENT, false);
             wxMenuBar *menuBar =  Manager::Get()->GetAppFrame()->GetMenuBar();
@@ -260,8 +269,10 @@ void DoxyBlocks::OnRelease(bool /*appShutDown*/)
     // m_IsAttached will be FALSE...
 
     // Remove the log window.
-    if(Manager::Get()->GetLogManager()){
-        if(m_DoxyBlocksLog){
+    if(Manager::Get()->GetLogManager())
+    {
+        if(m_DoxyBlocksLog)
+        {
             CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_DoxyBlocksLog);
             Manager::Get()->ProcessEvent(evt);
         }
@@ -279,9 +290,11 @@ cbConfigurationPanel* DoxyBlocks::GetConfigurationPanel(wxWindow *parent)
 
     // Get the version string before instantiating the panel so that it is recorded before
     // LoadSettings() is run in the constructor.
-    if(m_bAutoVersioning){
+    if(m_bAutoVersioning)
+    {
         // If we're using autoversion for docs, get the value.
-        if(m_pConfig->GetUseAutoVersion()){
+        if(m_pConfig->GetUseAutoVersion())
+        {
             m_sAutoVersion = GetAutoVersion();
             m_pConfig->SetProjectNumber(m_sAutoVersion);
         }
@@ -362,7 +375,8 @@ int DoxyBlocks::Configure()
     //create and display the configuration dialog for your plugin
     cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, _("DoxyBlocks"));
     cbConfigurationPanel *panel = GetConfigurationPanel(&dlg);
-    if(panel){
+    if(panel)
+    {
         dlg.AttachConfigurationPanel(panel);
         PlaceWindow(&dlg);
         return dlg.ShowModal() == wxID_OK ? 0 : -1;
@@ -518,12 +532,14 @@ void DoxyBlocks::OnDialogueDone(ConfigPanel* pDlg)
     if (dirty)
     {
         cbProject *prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-        if(prj){
+        if(prj)
+        {
             SaveSettings();
             // Update the config object and save the project so prefs don't get lost if a problem occurs before closing the project.
             prj->Save();
         }
-        else{
+        else
+        {
             AppendToLog(_("No active project found. Settings not saved."), LOG_WARNING);
         }
     }
@@ -538,51 +554,52 @@ void DoxyBlocks::BuildMenu(wxMenuBar *menuBar)
 //    NotImplemented(wxT("DoxyBlocks::BuildMenu()"));
 
     int idx = menuBar->FindMenu(_("P&lugins"));
-    if(idx != wxNOT_FOUND){
+    if(idx != wxNOT_FOUND)
+    {
         wxMenu *submenu = new wxMenu;
         const wxString sDataFolder(ConfigManager::GetDataFolder());
         const int imageSize = Manager::Get()->GetImageSize(Manager::UIComponent::Menus);
         const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::Menus);
         const wxString prefix = sDataFolder
-                              + wxString::Format(wxT("/DoxyBlocks.zip#zip:images/%dx%d/"),
-                                                 imageSize, imageSize);
+                                + wxString::Format(wxT("/DoxyBlocks.zip#zip:images/%dx%d/"),
+                                        imageSize, imageSize);
 
         wxMenuItem *MenuItemDoxywizard = new wxMenuItem(submenu, ID_MENU_DOXYWIZARD, _("&Doxywizard...\tCtrl-Shift-D"), _("Run doxywizard."));
         MenuItemDoxywizard->SetBitmap(cbLoadBitmapScaled(prefix + wxT("doxywizard.png"),
-                                                         wxBITMAP_TYPE_PNG, uiScaleFactor));
+                                      wxBITMAP_TYPE_PNG, uiScaleFactor));
         submenu->Append(MenuItemDoxywizard);
 
         wxMenuItem *MenuItemExtract = new wxMenuItem(submenu, ID_MENU_EXTRACTPROJECT, _("&Extract documentation"), _("Extract documentation for the current project."));
         MenuItemExtract->SetBitmap(cbLoadBitmapScaled(prefix + wxT("extract.png"),
-                                                      wxBITMAP_TYPE_PNG, uiScaleFactor));
+                                   wxBITMAP_TYPE_PNG, uiScaleFactor));
         submenu->Append(MenuItemExtract);
         submenu->AppendSeparator();
 
         wxMenuItem *MenuItemBlockComment = new wxMenuItem(submenu, ID_MENU_BLOCKCOMMENT, _("&Block comment"), _("Insert a comment block at the current line."));
         MenuItemBlockComment->SetBitmap(cbLoadBitmapScaled(prefix + wxT("comment_block.png"),
-                                                           wxBITMAP_TYPE_PNG, uiScaleFactor));
+                                        wxBITMAP_TYPE_PNG, uiScaleFactor));
         submenu->Append(MenuItemBlockComment);
 
         wxMenuItem *MenuItemLineComment = new wxMenuItem(submenu, ID_MENU_LINECOMMENT, _("&Line comment"), _("Insert a line comment at the current cursor position."));
         MenuItemLineComment->SetBitmap(cbLoadBitmapScaled(prefix + wxT("comment_line.png"),
-                                                          wxBITMAP_TYPE_PNG, uiScaleFactor));
+                                       wxBITMAP_TYPE_PNG, uiScaleFactor));
         submenu->Append(MenuItemLineComment);
         submenu->AppendSeparator();
 
         wxMenuItem *MenuItemRunHTML = new wxMenuItem(submenu, ID_MENU_RUNHTML, _("Run &HTML\tCtrl-Shift-H"), _("Run HTML documentation."));
         MenuItemRunHTML->SetBitmap(cbLoadBitmapScaled(prefix + wxT("html.png"),
-                                                      wxBITMAP_TYPE_PNG, uiScaleFactor));
+                                   wxBITMAP_TYPE_PNG, uiScaleFactor));
         submenu->Append(MenuItemRunHTML);
 
         wxMenuItem *MenuItemRunCHM = new wxMenuItem(submenu, ID_MENU_RUNCHM, _("Run &CHM"), _("Run CHM documentation."));
         MenuItemRunCHM->SetBitmap(cbLoadBitmapScaled(prefix + wxT("chm.png"), wxBITMAP_TYPE_PNG,
-                                                     uiScaleFactor));
+                                  uiScaleFactor));
         submenu->Append(MenuItemRunCHM);
         submenu->AppendSeparator();
 
         wxMenuItem *MenuItemConfig = new wxMenuItem(submenu, ID_MENU_CONFIG, _("Open &preferences..."), _("Open DoxyBlocks' preferences."));
         MenuItemConfig->SetBitmap(cbLoadBitmapScaled(prefix + wxT("configure.png"),
-                                                     wxBITMAP_TYPE_PNG, uiScaleFactor));
+                                  wxBITMAP_TYPE_PNG, uiScaleFactor));
         submenu->Append(MenuItemConfig);
         submenu->AppendSeparator();
 
@@ -618,21 +635,22 @@ void DoxyBlocks::BuildModuleMenu(const ModuleType type, wxMenu *menu, const File
     //TIP: for consistency, add a separator as the first item...
 
     // Add the comment functions to the editor's context-sensitive menu.
-    if(type == mtEditorManager){
+    if(type == mtEditorManager)
+    {
         wxMenu *submenu = new wxMenu;
         const int imageSize = Manager::Get()->GetImageSize(Manager::UIComponent::Menus);
         const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::Menus);
         const wxString prefix = ConfigManager::GetDataFolder()
-                              + wxString::Format(wxT("/DoxyBlocks.zip#zip:images/%dx%d/"),
-                                                 imageSize, imageSize);
+                                + wxString::Format(wxT("/DoxyBlocks.zip#zip:images/%dx%d/"),
+                                        imageSize, imageSize);
 
         wxMenuItem *MenuItemBlockComment = new wxMenuItem(submenu, ID_MENU_BLOCKCOMMENT, _("&Block Comment"), _("Insert a comment block at the current line."));
         MenuItemBlockComment->SetBitmap(cbLoadBitmapScaled(prefix + wxT("comment_block.png"),
-                                                           wxBITMAP_TYPE_PNG, uiScaleFactor));
+                                        wxBITMAP_TYPE_PNG, uiScaleFactor));
         submenu->Append(MenuItemBlockComment);
         wxMenuItem *MenuItemLineComment = new wxMenuItem(submenu, ID_MENU_LINECOMMENT, _("&Line Comment"), _("Insert a line comment at the current cursor position."));
         MenuItemLineComment->SetBitmap(cbLoadBitmapScaled(prefix + wxT("comment_line.png"),
-                                                          wxBITMAP_TYPE_PNG, uiScaleFactor));
+                                       wxBITMAP_TYPE_PNG, uiScaleFactor));
         submenu->Append(MenuItemLineComment);
 
         const wxString label = wxT("Do&xyBlocks");
@@ -650,8 +668,8 @@ bool DoxyBlocks::BuildToolBar(wxToolBar *toolBar)
     m_pToolbar = toolBar;
     const int toolbarSize = Manager::Get()->GetImageSize(Manager::UIComponent::Toolbars);
     const wxString prefix = ConfigManager::GetDataFolder()
-                          + wxString::Format(wxT("/DoxyBlocks.zip#zip:images/%dx%d/"),
-                                             toolbarSize, toolbarSize);
+                            + wxString::Format(wxT("/DoxyBlocks.zip#zip:images/%dx%d/"),
+                                    toolbarSize, toolbarSize);
 
     const double scalingFactor = cbGetContentScaleFactor(*m_pToolbar);
 
@@ -718,7 +736,8 @@ void DoxyBlocks::OnRunDoxywizard(wxCommandEvent & WXUNUSED(event))
  */
 bool DoxyBlocks::DoRunDoxywizard()
 {
-    if(!IsProjectOpen()){
+    if(!IsProjectOpen())
+    {
         return false;
     }
 
@@ -727,19 +746,22 @@ bool DoxyBlocks::DoRunDoxywizard()
     wxString cmd = wxT("doxywizard");
     // If a path is configured, use that instead.
     wxString sDoxywizardPath = Manager::Get()->GetMacrosManager()->ReplaceMacros(m_pConfig->GetPathDoxywizard());
-    if(!sDoxywizardPath.IsEmpty()){
+    if(!sDoxywizardPath.IsEmpty())
+    {
         cmd = sDoxywizardPath;
     }
     // Get the doxyfile path.
     wxString sPathDoxyfile = wxT("doxygen");
     wxString sOutputDir =  m_pConfig->GetOutputDirectory();
-    if(!sOutputDir.IsEmpty()){
+    if(!sOutputDir.IsEmpty())
+    {
         sPathDoxyfile = sPathDoxyfile + wxT("/") + sOutputDir;
     }
     wxString sCfgBaseFile = wxT("doxyfile");
     wxFileName fnDoxyfile(sPathDoxyfile + wxFileName::GetPathSeparator() + sCfgBaseFile);
     fnDoxyfile.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT);
-    if(!sPathDoxyfile.IsEmpty()){
+    if(!sPathDoxyfile.IsEmpty())
+    {
         wxString fullpath = fnDoxyfile.GetFullPath();
         QuoteStringIfNeeded(fullpath);
         cmd.Append(wxT(" ") + fullpath);
@@ -748,13 +770,15 @@ bool DoxyBlocks::DoRunDoxywizard()
     wxProcess *process = new wxProcess(this);
     // the PID of the last process we launched asynchronously
     long pid = wxExecute(cmd, wxEXEC_ASYNC, process);
-    if(!pid){
+    if(!pid)
+    {
         AppendToLog(wxString::Format(_("Execution of '%s' failed."), cmd.c_str()), LOG_ERROR);
         AppendToLog(_("Please ensure that the doxygen 'bin' directory is in your path or provide the specific path in DoxyBlocks' preferences.\n"));
 
         delete process;
     }
-    else{
+    else
+    {
         AppendToLog(wxString::Format(_("Process %ld (%s) launched."), pid, cmd.c_str()));
     }
     return true;
@@ -773,28 +797,32 @@ bool DoxyBlocks::DoRunDoxywizard()
  */
 void DoxyBlocks::AppendToLog(const wxString &sText, eLogLevel flag /*  = LOG_NORMAL */, bool bReturnFocus /* = true */) const
 {
-    if(LogManager *LogMan = Manager::Get()->GetLogManager()){
+    if(LogManager *LogMan = Manager::Get()->GetLogManager())
+    {
         CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_DoxyBlocksLog);
         Manager::Get()->ProcessEvent(evtSwitch);
-        switch(flag){
-            case LOG_NORMAL:
-                LogMan->Log(sText, m_LogPageIndex);
-                break;
-            case LOG_WARNING:
-                LogMan->LogWarning(sText, m_LogPageIndex);
-                break;
-            case LOG_ERROR:
-                LogMan->LogError(sText, m_LogPageIndex);
-                break;
-            default:
-                break;
+        switch(flag)
+        {
+        case LOG_NORMAL:
+            LogMan->Log(sText, m_LogPageIndex);
+            break;
+        case LOG_WARNING:
+            LogMan->LogWarning(sText, m_LogPageIndex);
+            break;
+        case LOG_ERROR:
+            LogMan->LogError(sText, m_LogPageIndex);
+            break;
+        default:
+            break;
         }
 
         // Stop the log window stealing the focus so that the caret remains positioned for comment entry...
-        if(bReturnFocus){
+        if(bReturnFocus)
+        {
             // ...but only do so if there are editor windows open.
             cbEditor *cbEd = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-            if(cbEd){
+            if(cbEd)
+            {
                 cbEd->GetControl()->SetFocus();
             }
         }
@@ -830,12 +858,14 @@ void DoxyBlocks::OnRunHTML(wxCommandEvent & WXUNUSED(event))
  */
 void DoxyBlocks::DoRunHTML()
 {
-    if(!IsProjectOpen()){
+    if(!IsProjectOpen())
+    {
         return;
     }
 
     wxString sDocPath = GetDocPath();
-    if(sDocPath.IsEmpty()){
+    if(sDocPath.IsEmpty())
+    {
         AppendToLog(_("Unable to get the doxygen document path."), LOG_ERROR);
         return;
     }
@@ -843,27 +873,35 @@ void DoxyBlocks::DoRunHTML()
     wxString sPath(sDocPath + wxT("html/index.html"));
     wxString sURL = wxT("file://") + sPath;
     bool bUseInternalViewer = m_pConfig->GetUseInternalViewer();
-    if(wxFile::Exists(sPath)){
-        if(bUseInternalViewer){
+    if(wxFile::Exists(sPath))
+    {
+        if(bUseInternalViewer)
+        {
             // View HTML with the internal viewer.
-            if(cbMimePlugin* p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(sPath)){
+            if(cbMimePlugin* p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(sPath))
+            {
                 p->OpenFile(sPath);
                 AppendToLog(_("Internal viewer launched with path ") + sPath + wxT("."));
             }
-            else{
+            else
+            {
                 AppendToLog(_("Error getting MIME handler for ") + sPath, LOG_ERROR);
             }
         }
-        else{
-            if(!wxLaunchDefaultBrowser(sURL)){
+        else
+        {
+            if(!wxLaunchDefaultBrowser(sURL))
+            {
                 AppendToLog(_("Unable to launch the default browser."), LOG_WARNING);
             }
-            else{
+            else
+            {
                 AppendToLog(_("Default browser launched with URL ") + sURL + wxT("."));
             }
         }
     }
-    else{
+    else
+    {
         AppendToLog(_("Index.html not found at ") + sPath + wxT("."), LOG_WARNING);
     }
 }
@@ -877,7 +915,8 @@ void DoxyBlocks::OnRunCHM(wxCommandEvent & WXUNUSED(event))
  */
 void DoxyBlocks::DoRunCHM()
 {
-    if(!IsProjectOpen()){
+    if(!IsProjectOpen())
+    {
         return;
     }
 
@@ -906,32 +945,40 @@ void DoxyBlocks::RunCompiledHelp(wxString sDocPath, wxString sPrjName)
 {
     // Path to doc.
     wxString sPathCHM = sDocPath + sPrjName + wxT(".chm");
-    if(wxFile::Exists(sPathCHM)){
+    if(wxFile::Exists(sPathCHM))
+    {
         wxString cmdCHM;
         wxString sCHMViewer = Manager::Get()->GetMacrosManager()->ReplaceMacros(m_pConfig->GetPathCHMViewer());
-        if(sCHMViewer.IsEmpty()){
+        if(sCHMViewer.IsEmpty())
+        {
             // No CHM viewer entered.
-            if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
+            if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
+            {
                 // On Windows, use the OS built-in capability.
                 // Running this way avoids opening a command window.
                 cmdCHM = wxT("CMD /C ") + sPathCHM;
             }
-            else{
+            else
+            {
                 cmdCHM = sPathCHM;
             }
         }
-        else{
+        else
+        {
             cmdCHM = sCHMViewer + wxT(" ") + sPathCHM;
         }
         wxProcess *proc = wxProcess::Open(cmdCHM);
-        if(proc == NULL){
+        if(proc == NULL)
+        {
             AppendToLog(wxString::Format(_("Execution of '%s' failed."), cmdCHM.c_str()), LOG_ERROR);
         }
-        else{
+        else
+        {
             AppendToLog(wxString::Format(_("Process %ld (%s) launched."), proc->GetPid(), cmdCHM.c_str()));
         }
     }
-    else{
+    else
+    {
         AppendToLog(_("HTML Help not found at ") + sPathCHM + wxT("."), LOG_WARNING);
     }
 }
@@ -995,19 +1042,24 @@ void DoxyBlocks::CheckForAutoVersioning()
     m_sVersionHeader = wxEmptyString;
     cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
     TiXmlNode *node, *child;
-    if(project){
+    if(project)
+    {
         node = project->GetExtensionsNode();
         child = 0;
-        while((child = node->IterateChildren(child))){
+        while((child = node->IterateChildren(child)))
+        {
             wxString sNodeValue = wxString(child->Value(), wxConvUTF8);
-            if(sNodeValue.Cmp(wxT("AutoVersioning")) == 0){
+            if(sNodeValue.Cmp(wxT("AutoVersioning")) == 0)
+            {
                 m_bAutoVersioning = true;
                 // Get the version header path while we're here.
                 TiXmlHandle Handle(child);
-                if(const TiXmlElement* pElem = Handle.FirstChildElement("Settings").ToElement()){
+                if(const TiXmlElement* pElem = Handle.FirstChildElement("Settings").ToElement())
+                {
                     m_sVersionHeader = wxString(pElem->Attribute("header_path"), wxConvUTF8);
                 }
-                else{
+                else
+                {
                     AppendToLog(_("Unable to get the AutoVersion header path."), LOG_ERROR);
                 }
                 break;
@@ -1027,16 +1079,20 @@ wxString DoxyBlocks::GetAutoVersion()
 
     wxFileName fnVersionH(Manager::Get()->GetProjectManager()->GetActiveProject()->GetCommonTopLevelPath() + m_sVersionHeader);
     wxString sPathVersionH(fnVersionH.GetFullPath());
-    if(wxFile::Exists(sPathVersionH)){
+    if(wxFile::Exists(sPathVersionH))
+    {
         wxTextFile fileVersionH(sPathVersionH);
         fileVersionH.Open();
-        if(fileVersionH.IsOpened()){
+        if(fileVersionH.IsOpened())
+        {
             fileVersionH.GetFirstLine();
             wxString sLine;
-            while(!fileVersionH.Eof()){
+            while(!fileVersionH.Eof())
+            {
                 sLine = fileVersionH.GetNextLine();
                 // Go straight to the full version string.
-                if(sLine.Find(wxT("FULLVERSION_STRING")) != wxNOT_FOUND){
+                if(sLine.Find(wxT("FULLVERSION_STRING")) != wxNOT_FOUND)
+                {
                     // Get the text after the first double quote.
                     sLine = sLine.AfterFirst('"');
                     // Get the text before the last decimal point.
@@ -1045,11 +1101,13 @@ wxString DoxyBlocks::GetAutoVersion()
                 }
             }
         }
-        else{
+        else
+        {
             AppendToLog(_("Unable to open the version header."), LOG_ERROR);
         }
     }
-    else{
+    else
+    {
         AppendToLog(_("Version header ") + sPathVersionH + _(" not found."), LOG_ERROR);
     }
     return sAutoVersion;
@@ -1065,121 +1123,162 @@ void DoxyBlocks::LoadSettings()
     ConfigManager* cfg = Manager::Get()->GetConfigManager(wxT("editor"));
     int val = 0;
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-    if(prj){
+    if(prj)
+    {
         TiXmlElement *elem = prj->GetExtensionsNode()->ToElement();
         const TiXmlElement* node = elem->FirstChildElement("DoxyBlocks");
-        if(node){
+        if(node)
+        {
             TiXmlHandle handle(const_cast<TiXmlElement*>(node));
-            if(const TiXmlElement* pElem = handle.FirstChildElement("comment_style").ToElement()){
-                if(pElem->QueryIntAttribute("block", &val) == TIXML_SUCCESS){
+            if(const TiXmlElement* pElem = handle.FirstChildElement("comment_style").ToElement())
+            {
+                if(pElem->QueryIntAttribute("block", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetBlockComment(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("line", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("line", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetLineComment(static_cast<long>(val));
                 }
             }
-            if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_project").ToElement()){
+            if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_project").ToElement())
+            {
                 wxString s = wxString(pElem->Attribute("project_number", &val), wxConvUTF8);
-                if(!s.IsEmpty()){
+                if(!s.IsEmpty())
+                {
                     m_pConfig->SetProjectNumber(s);
                 }
                 s = wxString(pElem->Attribute("output_directory", &val), wxConvUTF8);
-                if(!s.IsEmpty()){
+                if(!s.IsEmpty())
+                {
                     m_pConfig->SetOutputDirectory(s);
                 }
                 s = wxString(pElem->Attribute("output_language", &val), wxConvUTF8);
-                if(!s.IsEmpty()){
+                if(!s.IsEmpty())
+                {
                     m_pConfig->SetOutputLanguage(s);
                 }
-                if(pElem->QueryIntAttribute("use_auto_version", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("use_auto_version", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetUseAutoVersion(static_cast<long>(val));
                 }
             }
-            if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_build").ToElement()){
-                if(pElem->QueryIntAttribute("extract_all", &val) == TIXML_SUCCESS){
+            if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_build").ToElement())
+            {
+                if(pElem->QueryIntAttribute("extract_all", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetExtractAll(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("extract_private", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("extract_private", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetExtractPrivate(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("extract_static", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("extract_static", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetExtractStatic(static_cast<long>(val));
                 }
             }
-            if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_warnings").ToElement()){
-                if(pElem->QueryIntAttribute("warnings", &val) == TIXML_SUCCESS){
+            if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_warnings").ToElement())
+            {
+                if(pElem->QueryIntAttribute("warnings", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetWarnings(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("warn_if_doc_error", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("warn_if_doc_error", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetWarnIfDocError(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("warn_if_undocumented", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("warn_if_undocumented", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetWarnIfUndocumented(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("warn_no_param_doc", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("warn_no_param_doc", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetWarnNoParamdoc(static_cast<long>(val));
                 }
             }
-            if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_alpha_index").ToElement()){
-                if(pElem->QueryIntAttribute("alphabetical_index", &val) == TIXML_SUCCESS){
+            if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_alpha_index").ToElement())
+            {
+                if(pElem->QueryIntAttribute("alphabetical_index", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetAlphabeticalIndex(static_cast<long>(val));
                 }
             }
-            if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_output").ToElement()){
-                if(pElem->QueryIntAttribute("html", &val) == TIXML_SUCCESS){
+            if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_output").ToElement())
+            {
+                if(pElem->QueryIntAttribute("html", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetGenerateHTML(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("html_help", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("html_help", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetGenerateHTMLHelp(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("chi", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("chi", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetGenerateCHI(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("binary_toc", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("binary_toc", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetBinaryTOC(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("latex", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("latex", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetGenerateLatex(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("rtf", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("rtf", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetGenerateRTF(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("man", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("man", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetGenerateMan(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("xml", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("xml", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetGenerateXML(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("autogen_def", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("autogen_def", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetGenerateAutogenDef(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("perl_mod", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("perl_mod", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetGeneratePerlMod(static_cast<long>(val));
                 }
             }
-            if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_preprocessor").ToElement()){
-                if(pElem->QueryIntAttribute("enable_preprocessing", &val) == TIXML_SUCCESS){
+            if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_preprocessor").ToElement())
+            {
+                if(pElem->QueryIntAttribute("enable_preprocessing", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetEnablePreprocessing(static_cast<long>(val));
                 }
             }
-            if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_dot").ToElement()){
-                if(pElem->QueryIntAttribute("class_diagrams", &val) == TIXML_SUCCESS){
+            if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_dot").ToElement())
+            {
+                if(pElem->QueryIntAttribute("class_diagrams", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetClassDiagrams(static_cast<long>(val));
                 }
-                if(pElem->QueryIntAttribute("have_dot", &val) == TIXML_SUCCESS){
+                if(pElem->QueryIntAttribute("have_dot", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetHaveDot(static_cast<long>(val));
                 }
             }
-            if(const TiXmlElement* pElem = handle.FirstChildElement("general").ToElement()){
-                if(pElem->QueryIntAttribute("use_at_in_tags", &val) == TIXML_SUCCESS){
+            if(const TiXmlElement* pElem = handle.FirstChildElement("general").ToElement())
+            {
+                if(pElem->QueryIntAttribute("use_at_in_tags", &val) == TIXML_SUCCESS)
+                {
                     m_pConfig->SetUseAtInTags(static_cast<long>(val));
                 }
             }
         }
-        else{
+        else
+        {
             // If the DoxyBlocks entry doesn't exist in the project file and "Load Settings Template If No Saved Settings Exist" is set,
             // try loading saved template settings.
-            if(cfg->ReadBool(wxT("doxyblocks/load_template"))){
+            if(cfg->ReadBool(wxT("doxyblocks/load_template")))
+            {
                 DoReadPrefsTemplate();
             }
         }
@@ -1211,7 +1310,7 @@ void DoxyBlocks::SaveSettings()
     wxString    s;
     bool         bVal;
     ConfigManager* cfg = Manager::Get()->GetConfigManager(wxT("editor"));
-   // since rev4332, the project keeps a copy of the <Extensions> element
+    // since rev4332, the project keeps a copy of the <Extensions> element
     // and re-uses it when saving the project (so to avoid losing entries in it
     // if plugins that use that element are not loaded atm).
     // so, instead of blindly inserting the element, we must first check it's
@@ -1220,7 +1319,8 @@ void DoxyBlocks::SaveSettings()
 
     TiXmlElement *elem = prj->GetExtensionsNode()->ToElement();
     TiXmlElement* node = elem->FirstChildElement("DoxyBlocks");
-    if(!node){
+    if(!node)
+    {
         node = elem->InsertEndChild(TiXmlElement("DoxyBlocks"))->ToElement();
     }
     node->Clear();
@@ -1231,56 +1331,68 @@ void DoxyBlocks::SaveSettings()
     node->InsertEndChild(Comment);
     TiXmlElement DoxyfileProject("doxyfile_project");
     s = m_pConfig->GetProjectNumber();
-    if(!s.IsEmpty()){
+    if(!s.IsEmpty())
+    {
         DoxyfileProject.SetAttribute("project_number", s.mb_str());
     }
     s = m_pConfig->GetOutputDirectory();
-    if(!s.IsEmpty()){
+    if(!s.IsEmpty())
+    {
         DoxyfileProject.SetAttribute("output_directory", s.mb_str());
     }
     s = m_pConfig->GetOutputLanguage();
-    if(!s.IsSameAs(wxT("English"))){
+    if(!s.IsSameAs(wxT("English")))
+    {
         DoxyfileProject.SetAttribute("output_language", s.mb_str());
     }
     bVal = m_pConfig->GetUseAutoVersion();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileProject.SetAttribute("use_auto_version", bVal);
     }
     node->InsertEndChild(DoxyfileProject);
     TiXmlElement DoxyfileBuild("doxyfile_build");
     bVal = m_pConfig->GetExtractAll();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileBuild.SetAttribute("extract_all", bVal);
     }
     bVal = m_pConfig->GetExtractPrivate();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileBuild.SetAttribute("extract_private", bVal);
     }
     bVal = m_pConfig->GetExtractStatic();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileBuild.SetAttribute("extract_static", bVal);
     }
     node->InsertEndChild(DoxyfileBuild);
     TiXmlElement DoxyfileWarnings("doxyfile_warnings");
     bVal = m_pConfig->GetWarnings();
-    if(!bVal){
+    if(!bVal)
+    {
         DoxyfileWarnings.SetAttribute("warnings", bVal);
         bVal = m_pConfig->GetWarnIfDocError();
     }
-    if(!bVal){
+    if(!bVal)
+    {
         DoxyfileWarnings.SetAttribute("warn_if_doc_error", bVal);
     }
     bVal = m_pConfig->GetWarnIfUndocumented();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileWarnings.SetAttribute("warn_if_undocumented", bVal);
     }
     bVal = m_pConfig->GetWarnNoParamdoc();
-    if(!bVal){
+    if(!bVal)
+    {
         DoxyfileWarnings.SetAttribute("warn_no_param_doc", bVal);
     }
     node->InsertEndChild(DoxyfileWarnings);
     bVal = m_pConfig->GetAlphabeticalIndex();
-    if(!bVal){
+    if(!bVal)
+    {
         // Don't insert the node if using the default setting.
         TiXmlElement DoxyfileAlphaIndex("doxyfile_alpha_index");
         DoxyfileAlphaIndex.SetAttribute("alphabetical_index", bVal);
@@ -1288,48 +1400,59 @@ void DoxyBlocks::SaveSettings()
     }
     TiXmlElement DoxyfileOutput("doxyfile_output");
     bVal = m_pConfig->GetGenerateHTML();
-    if(!bVal){
+    if(!bVal)
+    {
         DoxyfileOutput.SetAttribute("html", bVal);
     }
     bVal = m_pConfig->GetGenerateHTMLHelp();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileOutput.SetAttribute("html_help", bVal);
     }
     bVal = m_pConfig->GetGenerateCHI();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileOutput.SetAttribute("chi", bVal);
     }
     bVal = m_pConfig->GetBinaryTOC();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileOutput.SetAttribute("binary_toc", bVal);
     }
     bVal = m_pConfig->GetGenerateLatex();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileOutput.SetAttribute("latex", bVal);
     }
     bVal = m_pConfig->GetGenerateRTF();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileOutput.SetAttribute("rtf", bVal);
     }
     bVal = m_pConfig->GetGenerateMan();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileOutput.SetAttribute("man", bVal);
     }
     bVal = m_pConfig->GetGenerateXML();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileOutput.SetAttribute("xml", bVal);
     }
     bVal = m_pConfig->GetGenerateAutogenDef();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileOutput.SetAttribute("autogen_def", bVal);
     }
     bVal = m_pConfig->GetGeneratePerlMod();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileOutput.SetAttribute("perl_mod", bVal);
     }
     node->InsertEndChild(DoxyfileOutput);
     bVal = m_pConfig->GetEnablePreprocessing();
-    if(!bVal){
+    if(!bVal)
+    {
         // Don't insert the node if using the default setting.
         TiXmlElement DoxyfilePreprocessor("doxyfile_preprocessor");
         DoxyfilePreprocessor.SetAttribute("enable_preprocessing", bVal);
@@ -1337,11 +1460,13 @@ void DoxyBlocks::SaveSettings()
     }
     TiXmlElement DoxyfileDot("doxyfile_dot");
     bVal = m_pConfig->GetClassDiagrams();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileDot.SetAttribute("class_diagrams", bVal);
     }
     bVal = m_pConfig->GetHaveDot();
-    if(bVal){
+    if(bVal)
+    {
         DoxyfileDot.SetAttribute("have_dot", bVal);
     }
     node->InsertEndChild(DoxyfileDot);
@@ -1356,7 +1481,8 @@ void DoxyBlocks::SaveSettings()
     cfg->Write(wxT("doxyblocks/overwrite_doxyfile"), m_pConfig->GetOverwriteDoxyfile());
     cfg->Write(wxT("doxyblocks/prompt_before_overwriting"), m_pConfig->GetPromptBeforeOverwriting());
     bVal = m_pConfig->GetUseAtInTags();
-    if(bVal){
+    if(bVal)
+    {
         General.SetAttribute("use_at_in_tags", bVal);
     }
     cfg->Write(wxT("doxyblocks/load_template"), m_pConfig->GetLoadTemplate());
@@ -1378,7 +1504,8 @@ wxString DoxyBlocks::ValidateRelativePath(wxString path)
     path.Replace(wxT("~"), wxT(""), true);
     wxFileName fn(path, wxEmptyString);
     path = fn.GetPath(0);
-    if(path.StartsWith(wxT("/")) || path.StartsWith(wxT("\\"))){
+    if(path.StartsWith(wxT("/")) || path.StartsWith(wxT("\\")))
+    {
         path.Remove(0, 1);
     }
 
@@ -1393,10 +1520,12 @@ wxString DoxyBlocks::ValidateRelativePath(wxString path)
  */
 void DoxyBlocks::OnTextURL(wxTextUrlEvent& event)
 {
-    if (event.GetId() == ID_LOG_DOXYBLOCKS && event.GetMouseEvent().ButtonDown(wxMOUSE_BTN_LEFT)){
+    if (event.GetId() == ID_LOG_DOXYBLOCKS && event.GetMouseEvent().ButtonDown(wxMOUSE_BTN_LEFT))
+    {
         m_DoxyBlocksLog->OpenLink(event.GetURLStart(), event.GetURLEnd(), m_pConfig->GetUseInternalViewer());
     }
-    else{
+    else
+    {
         event.Skip();
     }
 }
@@ -1413,10 +1542,12 @@ void DoxyBlocks::OnWritePrefsTemplate(wxCommandEvent & WXUNUSED(event))
  */
 void DoxyBlocks::DoWritePrefsTemplate()
 {
-    if(m_pConfig->WritePrefsTemplate()){
+    if(m_pConfig->WritePrefsTemplate())
+    {
         AppendToLog(_("Settings template saved."));
     }
-    else{
+    else
+    {
         AppendToLog(_("Error savings settings template."), LOG_ERROR);
     }
 }
@@ -1433,10 +1564,12 @@ void DoxyBlocks::OnReadPrefsTemplate(wxCommandEvent & WXUNUSED(event))
  */
 void DoxyBlocks::DoReadPrefsTemplate()
 {
-    if(m_pConfig->ReadPrefsTemplate()){
+    if(m_pConfig->ReadPrefsTemplate())
+    {
         AppendToLog(_("Settings template loaded."));
     }
-    else{
+    else
+    {
         AppendToLog(_("Settings template not found."), LOG_WARNING);
     }
 }

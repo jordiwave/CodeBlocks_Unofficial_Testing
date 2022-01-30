@@ -38,10 +38,10 @@ public:
 
     void Update(const void* Buffer, size_t Length)
     {
-      const uint8_t *p = static_cast <const uint8_t *> (Buffer);
+        const uint8_t *p = static_cast <const uint8_t *> (Buffer);
 
-      for (size_t n = 0; n < Length; ++n, ++p)
-          Update(*p);
+        for (size_t n = 0; n < Length; ++n, ++p)
+            Update(*p);
     }
 
     uint32_t GetCrc() const
@@ -70,7 +70,11 @@ class CCTreeItem
 public:
     CCTreeItem(CCTreeItem* parent, const wxString& text, int image = -1, int selImage = -1, CCTreeCtrlData* data = nullptr);
     virtual ~CCTreeItem();
-    void DeleteChildren() {while (m_firstChild) delete m_firstChild; m_hasChildren = false;}
+    void DeleteChildren()
+    {
+        while (m_firstChild) delete m_firstChild;
+        m_hasChildren = false;
+    }
     static void Swap(CCTreeItem* a, CCTreeItem* b);
 
     CCTreeItem* m_parent;
@@ -92,8 +96,14 @@ class CCCookie
 {
 public:
     CCCookie() : m_current(nullptr) {}
-    CCTreeItem* GetCurrent() const {return m_current;}
-    void SetCurrent(CCTreeItem* Node) {m_current = Node;}
+    CCTreeItem* GetCurrent() const
+    {
+        return m_current;
+    }
+    void SetCurrent(CCTreeItem* Node)
+    {
+        m_current = Node;
+    }
 
 private:
     CCTreeItem* m_current;
@@ -105,40 +115,117 @@ class CCTree
 {
 public:
     CCTree() : m_root(nullptr), m_compare(bstNone) {}
-    virtual ~CCTree() {DeleteAllItems();}
+    virtual ~CCTree()
+    {
+        DeleteAllItems();
+    }
 
     CCTreeItem*     AddRoot(const wxString& text, int image = -1, int selImage = -1, CCTreeCtrlData* data = nullptr);
     CCTreeItem*     AppendItem(CCTreeItem* parent, const wxString& text, int image = -1, int selImage = -1, CCTreeCtrlData* data = nullptr);
-    void            Delete(CCTreeItem* item) {if (item) {delete item; if (item == m_root) m_root = nullptr;}}
-    void            DeleteAllItems() {Delete(m_root);}
-    void            DeleteChildren(CCTreeItem* item) {if (item) item->DeleteChildren();}
+    void            Delete(CCTreeItem* item)
+    {
+        if (item)
+        {
+            delete item;
+            if (item == m_root) m_root = nullptr;
+        }
+    }
+    void            DeleteAllItems()
+    {
+        Delete(m_root);
+    }
+    void            DeleteChildren(CCTreeItem* item)
+    {
+        if (item) item->DeleteChildren();
+    }
     size_t          GetChildrenCount(CCTreeItem* item, bool recursively = true) const;
-    size_t          GetCount() const {return m_root ? 1+GetChildrenCount(m_root) : 0;}
+    size_t          GetCount() const
+    {
+        return m_root ? 1+GetChildrenCount(m_root) : 0;
+    }
     CCTreeItem*     GetFirstChild(CCTreeItem* item, CCCookie& cookie) const;
-    CCTreeCtrlData* GetItemData(CCTreeItem* item) const {return item ? item->m_data : nullptr;}
-    int             GetItemImage(CCTreeItem* item, wxTreeItemIcon which = wxTreeItemIcon_Normal) const  {return item ? item->m_image[which] : -1;}
-    CCTreeItem*     GetItemParent(CCTreeItem* item) const {return item ? item->m_parent : nullptr;}
-    wxString        GetItemText(CCTreeItem* item) const {return item ? item->m_text : wxString();}
-    wxColour        GetItemTextColour(CCTreeItem* item) const {return item ? item->m_colour : wxNullColour;}
+    CCTreeCtrlData* GetItemData(CCTreeItem* item) const
+    {
+        return item ? item->m_data : nullptr;
+    }
+    int             GetItemImage(CCTreeItem* item, wxTreeItemIcon which = wxTreeItemIcon_Normal) const
+    {
+        return item ? item->m_image[which] : -1;
+    }
+    CCTreeItem*     GetItemParent(CCTreeItem* item) const
+    {
+        return item ? item->m_parent : nullptr;
+    }
+    wxString        GetItemText(CCTreeItem* item) const
+    {
+        return item ? item->m_text : wxString();
+    }
+    wxColour        GetItemTextColour(CCTreeItem* item) const
+    {
+        return item ? item->m_colour : wxNullColour;
+    }
     CCTreeItem*     GetLastChild(CCTreeItem* item) const;
     CCTreeItem*     GetNextChild(CCTreeItem* item, CCCookie& cookie) const;
-    CCTreeItem*     GetNextSibling(CCTreeItem* item) const {return item ? item->m_nextSibling : nullptr;}
-    CCTreeItem*     GetPrevSibling(CCTreeItem* item) const {return item ? item->m_prevSibling : nullptr;}
-    CCTreeItem*     GetRootItem() const {return m_root;}
+    CCTreeItem*     GetNextSibling(CCTreeItem* item) const
+    {
+        return item ? item->m_nextSibling : nullptr;
+    }
+    CCTreeItem*     GetPrevSibling(CCTreeItem* item) const
+    {
+        return item ? item->m_prevSibling : nullptr;
+    }
+    CCTreeItem*     GetRootItem() const
+    {
+        return m_root;
+    }
     CCTreeItem*     InsertItem(CCTreeItem* parent, CCTreeItem* idPrevious, const wxString& text, int image = -1, int selImage = -1, CCTreeCtrlData* data = nullptr);  // after
     CCTreeItem*     InsertItem(CCTreeItem* parent, size_t pos, const wxString& text, int image = -1, int selImage = -1, CCTreeCtrlData* data = nullptr);              // before
-    bool            IsBold(CCTreeItem* item) const {return item ? item->m_bold : false;}
-    bool            IsEmpty() const {return m_root == nullptr;}
-    bool            ItemHasChildren(CCTreeItem* item) const {return item ? (item->m_firstChild != nullptr) : false;}
+    bool            IsBold(CCTreeItem* item) const
+    {
+        return item ? item->m_bold : false;
+    }
+    bool            IsEmpty() const
+    {
+        return m_root == nullptr;
+    }
+    bool            ItemHasChildren(CCTreeItem* item) const
+    {
+        return item ? (item->m_firstChild != nullptr) : false;
+    }
     CCTreeItem*     PrependItem(CCTreeItem* parent, const wxString& text, int image = -1, int selImage = -1, CCTreeCtrlData* data = nullptr);
-    void            SetCompareFunction(BrowserSortType type) {m_compare = type;}
-    void            SetItemBold(CCTreeItem* item, bool bold = true) {if (item) item->m_bold = bold;}
-    void            SetItemData(CCTreeItem* item, CCTreeCtrlData* data) {if (item) item->m_data = data;}
-    void            SetItemHasChildren(CCTreeItem* item, bool has = true) {if (item) item->m_hasChildren = has;}
-    void            SetItemImage(CCTreeItem* item, int image, wxTreeItemIcon which = wxTreeItemIcon_Normal) {if (item) item->m_image[which] = image;}
-    void            SetItemText(CCTreeItem* item, const wxString& text) {if (item) item->m_text = text;}
-    void            SetItemTextColour(CCTreeItem* item, const wxColour& col) {if (item) item->m_colour = col;}
-    void            SortChildren(CCTreeItem* parent) {CCCookie cookie; QuickSort(GetFirstChild(parent, cookie), GetLastChild(parent));}
+    void            SetCompareFunction(BrowserSortType type)
+    {
+        m_compare = type;
+    }
+    void            SetItemBold(CCTreeItem* item, bool bold = true)
+    {
+        if (item) item->m_bold = bold;
+    }
+    void            SetItemData(CCTreeItem* item, CCTreeCtrlData* data)
+    {
+        if (item) item->m_data = data;
+    }
+    void            SetItemHasChildren(CCTreeItem* item, bool has = true)
+    {
+        if (item) item->m_hasChildren = has;
+    }
+    void            SetItemImage(CCTreeItem* item, int image, wxTreeItemIcon which = wxTreeItemIcon_Normal)
+    {
+        if (item) item->m_image[which] = image;
+    }
+    void            SetItemText(CCTreeItem* item, const wxString& text)
+    {
+        if (item) item->m_text = text;
+    }
+    void            SetItemTextColour(CCTreeItem* item, const wxColour& col)
+    {
+        if (item) item->m_colour = col;
+    }
+    void            SortChildren(CCTreeItem* parent)
+    {
+        CCCookie cookie;
+        QuickSort(GetFirstChild(parent, cookie), GetLastChild(parent));
+    }
 
     // Calculate CRC32 of the tree to detect changes
     uint32_t        GetCrc32() const;
@@ -152,7 +239,10 @@ private:
     CCTreeItem*     DoInsertAfter(CCTreeItem* parent, CCTreeItem* hInsertAfter, const wxString& text, int image = -1, int selectedImage = -1, CCTreeCtrlData* data = nullptr);
     CCTreeItem*     DoInsertItem(CCTreeItem* parent, size_t index, const wxString& text, int image = -1, int selectedImage = -1, CCTreeCtrlData* data = nullptr);
     int             KindCompare(const CCTreeCtrlData* lhs, const CCTreeCtrlData* rhs) const;
-    bool            LessThan(const CCTreeItem* lhs, const CCTreeItem* rhs) const {return CompareFunction(lhs->m_data, rhs->m_data) < 0;}
+    bool            LessThan(const CCTreeItem* lhs, const CCTreeItem* rhs) const
+    {
+        return CompareFunction(lhs->m_data, rhs->m_data) < 0;
+    }
     void            QuickSort(CCTreeItem* first, CCTreeItem* last);
 
     CCTreeItem*     m_root;
@@ -187,22 +277,32 @@ public:
     /** Ask the worker thread to die
      *  Called from external: when the class browser window get destroyed
      */
-    void RequestTermination(bool terminate = true) {m_TerminationRequested = terminate;}
+    void RequestTermination(bool terminate = true)
+    {
+        m_TerminationRequested = terminate;
+    }
 
     /** Select what should do the worker thread when awaked
      *  Called before posting the semaphore
      * @param job What the thread should do when the semaphore is released
      * @param itemId Identifier of the item (if applicable)
      */
-    void SetNextJob(EThreadJob job, CCTreeItem *item = nullptr) {m_nextJob = job; m_targetItem = item;}
+    void SetNextJob(EThreadJob job, CCTreeItem *item = nullptr)
+    {
+        m_nextJob = job;
+        m_targetItem = item;
+    }
 
     /** Check if the thread is busy
      * @return @a true if busy
      */
-    bool IsBusy() const {return m_Busy;}
+    bool IsBusy() const
+    {
+        return m_Busy;
+    }
 
 protected:
-     void* Entry() override;
+    void* Entry() override;
 
     /** Creates the tree
      * @note Called from Entry()

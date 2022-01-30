@@ -10,7 +10,8 @@
 #define FONTQUALITY_H
 
 #ifdef SCI_NAMESPACE
-namespace Scintilla {
+namespace Scintilla
+{
 #endif
 
 // These definitions match Scintilla.h

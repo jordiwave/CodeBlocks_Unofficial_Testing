@@ -125,26 +125,86 @@ public:
         this->m_command = command;
         this->m_commandArgs = args;
     }
-    void SetEnvironment(const wxStringMap_t& environment) { this->m_environment = environment; }
-    void SetPid(long pid) { this->m_pid = pid; }
-    void SetRealPts(const wxString& realPts) { this->m_realPts = realPts; }
-    void SetTty(const wxString& tty) { this->m_tty = tty; }
-    void SetWaitWhenDone(bool waitWhenDone) { this->m_waitWhenDone = waitWhenDone; }
-    void SetWorkingDirectory(const wxString& workingDirectory) { this->m_workingDirectory = workingDirectory; }
-    const wxString& GetCommand() const { return m_command; }
-    const wxString& GetCommandArgs() const { return m_commandArgs; }
-    const wxStringMap_t& GetEnvironment() const { return m_environment; }
-    long GetPid() const { return m_pid; }
-    const wxString& GetRealPts() const { return m_realPts; }
-    const wxString& GetTty() const { return m_tty; }
-    bool IsWaitWhenDone() const { return m_waitWhenDone; }
-    const wxString& GetWorkingDirectory() const { return m_workingDirectory; }
-    void SetExecExtraFlags(int execExtraFlags) { this->m_execExtraFlags = execExtraFlags; }
-    int GetExecExtraFlags() const { return m_execExtraFlags; }
-    void SetAutoTerminate(bool autoTerminate) { this->m_autoTerminate = autoTerminate; }
-    void SetTerminalNeeded(bool terminalNeeded) { this->m_terminalNeeded = terminalNeeded; }
-    bool IsAutoTerminate() const { return m_autoTerminate; }
-    bool IsTerminalNeeded() const { return m_terminalNeeded; }
+    void SetEnvironment(const wxStringMap_t& environment)
+    {
+        this->m_environment = environment;
+    }
+    void SetPid(long pid)
+    {
+        this->m_pid = pid;
+    }
+    void SetRealPts(const wxString& realPts)
+    {
+        this->m_realPts = realPts;
+    }
+    void SetTty(const wxString& tty)
+    {
+        this->m_tty = tty;
+    }
+    void SetWaitWhenDone(bool waitWhenDone)
+    {
+        this->m_waitWhenDone = waitWhenDone;
+    }
+    void SetWorkingDirectory(const wxString& workingDirectory)
+    {
+        this->m_workingDirectory = workingDirectory;
+    }
+    const wxString& GetCommand() const
+    {
+        return m_command;
+    }
+    const wxString& GetCommandArgs() const
+    {
+        return m_commandArgs;
+    }
+    const wxStringMap_t& GetEnvironment() const
+    {
+        return m_environment;
+    }
+    long GetPid() const
+    {
+        return m_pid;
+    }
+    const wxString& GetRealPts() const
+    {
+        return m_realPts;
+    }
+    const wxString& GetTty() const
+    {
+        return m_tty;
+    }
+    bool IsWaitWhenDone() const
+    {
+        return m_waitWhenDone;
+    }
+    const wxString& GetWorkingDirectory() const
+    {
+        return m_workingDirectory;
+    }
+    void SetExecExtraFlags(int execExtraFlags)
+    {
+        this->m_execExtraFlags = execExtraFlags;
+    }
+    int GetExecExtraFlags() const
+    {
+        return m_execExtraFlags;
+    }
+    void SetAutoTerminate(bool autoTerminate)
+    {
+        this->m_autoTerminate = autoTerminate;
+    }
+    void SetTerminalNeeded(bool terminalNeeded)
+    {
+        this->m_terminalNeeded = terminalNeeded;
+    }
+    bool IsAutoTerminate() const
+    {
+        return m_autoTerminate;
+    }
+    bool IsTerminalNeeded() const
+    {
+        return m_terminalNeeded;
+    }
     void SetCallback(wxProcess* callback)
     {
         wxDELETE(m_callback);

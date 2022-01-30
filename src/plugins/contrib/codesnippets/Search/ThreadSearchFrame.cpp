@@ -46,7 +46,7 @@ class wxMyFileDropTarget : public wxFileDropTarget
 // ----------------------------------------------------------------------------
 {
 public:
-    wxMyFileDropTarget(ThreadSearchFrame *frame):m_frame(frame){}
+    wxMyFileDropTarget(ThreadSearchFrame *frame):m_frame(frame) {}
     virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
     {
         if(!m_frame) return false;
@@ -60,44 +60,46 @@ private:
 namespace
 // ----------------------------------------------------------------------------
 {
-    //helper functions
-    enum wxbuildinfoformat {
-        short_f, long_f };
+//helper functions
+enum wxbuildinfoformat
+{
+    short_f, long_f
+};
 
-    wxString wxbuildinfo(wxbuildinfoformat format)
+wxString wxbuildinfo(wxbuildinfoformat format)
+{
+    wxString wxbuild(wxVERSION_STRING);
+
+    if (format == long_f )
     {
-        wxString wxbuild(wxVERSION_STRING);
+#if defined(__WXMSW__)
+        wxbuild << _T("-Windows");
+#elif defined(__WXMAC__)
+        wxbuild << _T("-Mac");
+#elif defined(__UNIX__)
+        wxbuild << _T("-Linux");
+#endif
 
-        if (format == long_f )
-        {
-            #if defined(__WXMSW__)
-                    wxbuild << _T("-Windows");
-            #elif defined(__WXMAC__)
-                    wxbuild << _T("-Mac");
-            #elif defined(__UNIX__)
-                    wxbuild << _T("-Linux");
-            #endif
-
-            #if wxUSE_UNICODE
-                    wxbuild << _T("-Unicode build");
-            #else
-                    wxbuild << _T("-ANSI build");
-            #endif // wxUSE_UNICODE
-        }
-
-        return wxbuild;
+#if wxUSE_UNICODE
+        wxbuild << _T("-Unicode build");
+#else
+        wxbuild << _T("-ANSI build");
+#endif // wxUSE_UNICODE
     }
 
-    int wxID_FILE10 = wxNewId();
-    int wxID_FILE11 = wxNewId();
-    int wxID_FILE12 = wxNewId();
-    int wxID_FILE13 = wxNewId();
-    int wxID_FILE14 = wxNewId();
-    int wxID_FILE15 = wxNewId();
-    int wxID_FILE16 = wxNewId();
-    int wxID_FILE17 = wxNewId();
-    int wxID_FILE18 = wxNewId();
-    int wxID_FILE19 = wxNewId();
+    return wxbuild;
+}
+
+int wxID_FILE10 = wxNewId();
+int wxID_FILE11 = wxNewId();
+int wxID_FILE12 = wxNewId();
+int wxID_FILE13 = wxNewId();
+int wxID_FILE14 = wxNewId();
+int wxID_FILE15 = wxNewId();
+int wxID_FILE16 = wxNewId();
+int wxID_FILE17 = wxNewId();
+int wxID_FILE18 = wxNewId();
+int wxID_FILE19 = wxNewId();
 
 ////    int idToolNew = XRCID("idToolNew");
 ////    int idFileNew = XRCID("idFileNew");
@@ -107,10 +109,10 @@ namespace
 ////    int idFileNewFile = XRCID("idFileNewFile");
 ////    int idFileNewCustom = XRCID("idFileNewCustom");
 ////    int idFileNewUser = XRCID("idFileNewUser");
-    int idFileOpen = XRCID("idFileOpen");
+int idFileOpen = XRCID("idFileOpen");
 ////    int idFileReopen = XRCID("idFileReopen");
-    int idFileOpenRecentFileClearHistory = XRCID("idFileOpenRecentFileClearHistory");
-    int idFileOpenRecentProjectClearHistory = XRCID("idFileOpenRecentProjectClearHistory");
+int idFileOpenRecentFileClearHistory = XRCID("idFileOpenRecentFileClearHistory");
+int idFileOpenRecentProjectClearHistory = XRCID("idFileOpenRecentProjectClearHistory");
 ////    int idFileImportProjectDevCpp = XRCID("idFileImportProjectDevCpp");
 ////    int idFileImportProjectMSVC = XRCID("idFileImportProjectMSVC");
 ////    int idFileImportProjectMSVCWksp = XRCID("idFileImportProjectMSVCWksp");
@@ -207,10 +209,10 @@ namespace
 ////    int idEditBoxCommentSelected = XRCID("idEditBoxCommentSelected");
 ////    int idEditAutoComplete = XRCID("idEditAutoComplete");
 ////
-    int idSearchFind = XRCID("idSearchFind");
-    int idSearchFindInFiles = XRCID("idSearchFindInFiles");
-    int idSearchFindNext = XRCID("idSearchFindNext");
-    int idSearchFindPrevious = XRCID("idSearchFindPrevious");
+int idSearchFind = XRCID("idSearchFind");
+int idSearchFindInFiles = XRCID("idSearchFindInFiles");
+int idSearchFindNext = XRCID("idSearchFindNext");
+int idSearchFindPrevious = XRCID("idSearchFindPrevious");
 ////    int idSearchReplace = XRCID("idSearchReplace");
 ////    int idSearchReplaceInFiles = XRCID("idSearchReplaceInFiles");
 ////    int idSearchGotoLine = XRCID("idSearchGotoLine");
@@ -244,10 +246,10 @@ END_EVENT_TABLE()
 ThreadSearchFrame::ThreadSearchFrame(wxFrame* appFrame, const wxString& title)
 // ----------------------------------------------------------------------------
     : wxFrame(appFrame, -1, title)
-      ,m_pFilesHistory(0)
-      ,m_pProjectsHistory(0)
-      ,m_bOnActivateBusy(0)
-      ,m_pThreadSearch(0)
+    ,m_pFilesHistory(0)
+    ,m_pProjectsHistory(0)
+    ,m_bOnActivateBusy(0)
+    ,m_pThreadSearch(0)
 {
     bool ok = InitThreadSearchFrame( appFrame, title);
     wxUnusedVar(ok);
@@ -278,50 +280,52 @@ bool ThreadSearchFrame::InitThreadSearchFrame(wxFrame* appFrame, const wxString&
     // create ThreadSearch and alter its menu items
     m_pThreadSearch = new ThreadSearch( this );
     if (  m_pThreadSearch ) do
-    {
-        m_pThreadSearch->ThreadSearch::m_IsAttached = true;
-        m_pThreadSearch->OnAttach();
-        PushEventHandler(m_pThreadSearch);
-        m_pThreadSearch->SetEvtHandlerEnabled( true );
+        {
+            m_pThreadSearch->ThreadSearch::m_IsAttached = true;
+            m_pThreadSearch->OnAttach();
+            PushEventHandler(m_pThreadSearch);
+            m_pThreadSearch->SetEvtHandlerEnabled( true );
 
-        // add View and Search menu items
-        wxMenuBar* pMenuBar = this->GetMenuBar();
-        wxMenu* pMenuView = new wxMenu();
-        //-wxMenu* pMenuSearch = pMenuBar->GetMenu( pMenuBar->FindMenu(_T("Search")));
-        pMenuBar->Insert( 1, pMenuView, _("&View"));
-        //-pMenuBar->Insert( 2, pMenuSearch, _T("Search"));
-        m_pThreadSearch->BuildMenu( pMenuBar );
-        // Change 'View/ThreadSearch' to 'View/Options'
-        int idOptionsThreadSearch = pMenuBar->FindMenuItem(_("&View"),_("Snippets search"));
-        if (idOptionsThreadSearch not_eq wxNOT_FOUND)
-        {   pMenuBar->SetLabel( idOptionsThreadSearch, _T("Options...") );
-            m_pThreadSearch->Connect(idOptionsThreadSearch, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(ThreadSearchFrame::OnMenuOptions), NULL, this);
+            // add View and Search menu items
+            wxMenuBar* pMenuBar = this->GetMenuBar();
+            wxMenu* pMenuView = new wxMenu();
+            //-wxMenu* pMenuSearch = pMenuBar->GetMenu( pMenuBar->FindMenu(_T("Search")));
+            pMenuBar->Insert( 1, pMenuView, _("&View"));
+            //-pMenuBar->Insert( 2, pMenuSearch, _T("Search"));
+            m_pThreadSearch->BuildMenu( pMenuBar );
+            // Change 'View/ThreadSearch' to 'View/Options'
+            int idOptionsThreadSearch = pMenuBar->FindMenuItem(_("&View"),_("Snippets search"));
+            if (idOptionsThreadSearch not_eq wxNOT_FOUND)
+            {
+                pMenuBar->SetLabel( idOptionsThreadSearch, _T("Options...") );
+                m_pThreadSearch->Connect(idOptionsThreadSearch, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(ThreadSearchFrame::OnMenuOptions), NULL, this);
+            }
+
+            // create tool bar and hide it (avoids bar reference crashes)
+            wxToolBar* pToolBar = new wxToolBar(this, -1);
+            if (  m_pThreadSearch )
+                m_pThreadSearch->BuildToolBar( pToolBar );
+            pToolBar->Hide();
+
+            // move frame to last know frame position
+            ConfigManager* pCfg = Manager::Get()->GetConfigManager(_T("SnippetsSearch"));
+            int xPos = pCfg->ReadInt( wxT("/FramePosX"), 120);
+            int yPos = pCfg->ReadInt( wxT("/FramePosY"), 60);
+            int width = pCfg->ReadInt( wxT("/FrameWidth"), 120);
+            int height = pCfg->ReadInt( wxT("/FrameHeight"), 60);
+            SetSize( xPos, yPos, width, height);
+
+            // Catch Destroyed windows
+            Connect( wxEVT_DESTROY,
+                     (wxObjectEventFunction) (wxEventFunction)
+                     (wxCommandEventFunction) &ThreadSearchFrame::OnWindowDestroy);
+
+            // Allow filenames to be dropped/opened on ThreadSearchFrame
+            SetDropTarget(new wxMyFileDropTarget(this));
+            GetConfig()->GetEditorManager(this)->GetNotebook()->SetDropTarget(new wxMyFileDropTarget(this));
+
         }
-
-        // create tool bar and hide it (avoids bar reference crashes)
-        wxToolBar* pToolBar = new wxToolBar(this, -1);
-        if (  m_pThreadSearch )
-            m_pThreadSearch->BuildToolBar( pToolBar );
-        pToolBar->Hide();
-
-        // move frame to last know frame position
-        ConfigManager* pCfg = Manager::Get()->GetConfigManager(_T("SnippetsSearch"));
-        int xPos = pCfg->ReadInt( wxT("/FramePosX"), 120);
-        int yPos = pCfg->ReadInt( wxT("/FramePosY"), 60);
-        int width = pCfg->ReadInt( wxT("/FrameWidth"), 120);
-        int height = pCfg->ReadInt( wxT("/FrameHeight"), 60);
-        SetSize( xPos, yPos, width, height);
-
-        // Catch Destroyed windows
-        Connect( wxEVT_DESTROY,
-            (wxObjectEventFunction) (wxEventFunction)
-            (wxCommandEventFunction) &ThreadSearchFrame::OnWindowDestroy);
-
-        // Allow filenames to be dropped/opened on ThreadSearchFrame
-        SetDropTarget(new wxMyFileDropTarget(this));
-        GetConfig()->GetEditorManager(this)->GetNotebook()->SetDropTarget(new wxMyFileDropTarget(this));
-
-    }while(false);//if m_pThreadSearch do
+        while(false); //if m_pThreadSearch do
 
     return m_pThreadSearch;
 
@@ -332,8 +336,8 @@ ThreadSearchFrame::~ThreadSearchFrame()
 {
     //dtor
     Disconnect( wxEVT_DESTROY,
-        (wxObjectEventFunction) (wxEventFunction)
-        (wxCommandEventFunction) &ThreadSearchFrame::OnWindowDestroy);
+                (wxObjectEventFunction) (wxEventFunction)
+                (wxCommandEventFunction) &ThreadSearchFrame::OnWindowDestroy);
 
     GetConfig()->SetThreadSearchFrame(0);
 }
@@ -361,13 +365,15 @@ void ThreadSearchFrame::OnClose(wxCloseEvent &event)
     pCfg->Write(wxT("/FrameHeight"), height);
 
     //-if (GetConfig()->IsApplication())
-    {   // we have to close all open editors or we'll crash
+    {
+        // we have to close all open editors or we'll crash
         // in wxAuiNoteBook::GetPageCount(). EditoManager call wxAuiNotebook
         // to close 'em, but wxAuiNotebook has alread been deleted by
         // wxWidgets Destory().
         SEditorManager* pEdMan = GetConfig()->GetEditorManager(this);
         if (pEdMan)
-        {   ScbEditor* ed;
+        {
+            ScbEditor* ed;
             int knt = pEdMan->GetEditorsCount();
             for ( int i=knt; i>0; --i )
             {
@@ -378,7 +384,8 @@ void ThreadSearchFrame::OnClose(wxCloseEvent &event)
     }//if
 
     // reverse splitterwindow switches and reparenting
-    if (m_pThreadSearch){
+    if (m_pThreadSearch)
+    {
         RemoveEventHandler(m_pThreadSearch);
         m_pThreadSearch->OnRelease(true);
     }
@@ -392,7 +399,8 @@ void ThreadSearchFrame::OnClose(wxCloseEvent &event)
         GetConfig()->RemoveEditorManager((wxFrame*)this);
     }
     // free ThreadSearch plugin/evtHandler
-    if ( m_pThreadSearch ){
+    if ( m_pThreadSearch )
+    {
         delete m_pThreadSearch; // deletes ThreadSearch wxEvtHandler object
         m_pThreadSearch = 0;
     }
@@ -420,13 +428,13 @@ void ThreadSearchFrame::OnAbout(wxCommandEvent &event)
     wxString msg = wxbuildinfo(long_f);
     msg << _T("\n\n");
     msg << _T("Original ThreadSearch code by Jerome Antoine \n");
-	msg << _T("Ported to CodeSnippets by Pecan Heber \n");
+    msg << _T("Ported to CodeSnippets by Pecan Heber \n");
     msg << _T("\n");
-	msg << _T("Click Log item once to display snippet in preview window. \n");
-	msg << _T("Double click Log item to display in editor window. \n");
+    msg << _T("Click Log item once to display snippet in preview window. \n");
+    msg << _T("Double click Log item to display in editor window. \n");
     msg << _T("\n");
-	msg << _T("Double clicking a CodeSnippets \"Category\" log item \n");
-	msg << _T("simple highlights the item in the index (tree) window. \n");
+    msg << _T("Double clicking a CodeSnippets \"Category\" log item \n");
+    msg << _T("simple highlights the item in the index (tree) window. \n");
 
     wxMessageBox(msg, _("Welcome to..."));
 }
@@ -437,9 +445,9 @@ void ThreadSearchFrame::OnSizeWindow(wxSizeEvent &event)
     // On the first resizing of the frame, the editor notebook splitter sash
     // is getting put back in the middle of the window, not where the user
     // placed it.
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("ThreadSearchFrame::OnSizeWindow"));
-    #endif
+#endif
 
     event.Skip();
     if (not GetConfig()->GetThreadSearchPlugin() ) return;
@@ -490,10 +498,10 @@ bool ThreadSearchFrame::InitXRCStuff()
 // ----------------------------------------------------------------------------
 {
     if (!Manager::LoadResource(_T("resources.zip")))
-	{
-		ComplainBadInstall();
-		return false;
-	}
+    {
+        ComplainBadInstall();
+        return false;
+    }
     return true;
 }
 // ----------------------------------------------------------------------------
@@ -502,14 +510,14 @@ void ThreadSearchFrame::ComplainBadInstall()
 {
     wxString msg;
     msg.Printf(_T("Cannot find resources...\n"
-        "%s was configured to be installed in '%s'.\n"
-        "Please use the command-line switch '--prefix' or "
-        "set the CODEBLOCKS_DATA_DIR environment variable "
-        "to point where %s is installed,\n"
-        "or try re-installing the application..."),
-        _T("CodeSnippetsApp"),
-        ConfigManager::ReadDataPath().c_str(),
-        wxTheApp->GetAppName().c_str());
+                  "%s was configured to be installed in '%s'.\n"
+                  "Please use the command-line switch '--prefix' or "
+                  "set the CODEBLOCKS_DATA_DIR environment variable "
+                  "to point where %s is installed,\n"
+                  "or try re-installing the application..."),
+               _T("CodeSnippetsApp"),
+               ConfigManager::ReadDataPath().c_str(),
+               wxTheApp->GetAppName().c_str());
     cbMessageBox(msg);
 }
 // ----------------------------------------------------------------------------
@@ -579,11 +587,11 @@ void ThreadSearchFrame::DoOnFileOpen(bool bProject)
         }
     }
     wxFileDialog* dlg = new wxFileDialog(this,
-                            _("Open file"),
-                            Path,
-                            wxEmptyString,
-                            Filters,
-                            wxFD_OPEN | wxFD_MULTIPLE | compatibility::wxHideReadonly);
+                                         _("Open file"),
+                                         Path,
+                                         wxEmptyString,
+                                         Filters,
+                                         wxFD_OPEN | wxFD_MULTIPLE | compatibility::wxHideReadonly);
     dlg->SetFilterIndex(StoredIndex);
 
     PlaceWindow(dlg);
@@ -628,7 +636,7 @@ bool ThreadSearchFrame::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& f
     }
 
     if (!foundWorkspace.IsEmpty())
-      success &= OpenGeneric(foundWorkspace);
+        success &= OpenGeneric(foundWorkspace);
     else
     {
         wxBusyCursor useless;
@@ -637,7 +645,7 @@ bool ThreadSearchFrame::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& f
 
         Freeze();
         for (unsigned int i = 0; i < files.GetCount(); ++i)
-          success &= OpenGeneric(files[i]);
+            success &= OpenGeneric(files[i]);
         Thaw();
     }
     return success;
@@ -658,74 +666,74 @@ bool ThreadSearchFrame::OpenGeneric(const wxString& filename, bool addToHistory)
     fname.SetExt(_T("cbp"));
     switch(FileTypeOf(filename))
     {
-        //
-        // Workspace
-        //
-        ////case ftCodeBlocksWorkspace:
-        ////    // verify that it's not the same as the one already open
-        ////    if (filename != Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename() &&
-        ////        DoCloseCurrentWorkspace())
-        ////    {
-        ////        wxBusyCursor wait; // loading a worspace can take some time -> showhourglass
-        ////        bool ret = Manager::Get()->GetProjectManager()->LoadWorkspace(filename);
-        ////        if (ret && addToHistory)
-        ////            AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename());
-        ////        return ret;
-        ////    }
-        ////    else
-        ////        return false;
-        ////    break;
+    //
+    // Workspace
+    //
+    ////case ftCodeBlocksWorkspace:
+    ////    // verify that it's not the same as the one already open
+    ////    if (filename != Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename() &&
+    ////        DoCloseCurrentWorkspace())
+    ////    {
+    ////        wxBusyCursor wait; // loading a worspace can take some time -> showhourglass
+    ////        bool ret = Manager::Get()->GetProjectManager()->LoadWorkspace(filename);
+    ////        if (ret && addToHistory)
+    ////            AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename());
+    ////        return ret;
+    ////    }
+    ////    else
+    ////        return false;
+    ////    break;
 
-        //
-        // Project
-        //
-        ////case ftCodeBlocksProject:
+    //
+    // Project
+    //
+    ////case ftCodeBlocksProject:
+    ////{
+    ////    // Make a check whether the project exists in current workspace
+    ////    cbProject* prj = Manager::Get()->GetProjectManager()->IsOpen(fname.GetFullPath());
+    ////    if (!prj)
+    ////    {
+    ////        wxBusyCursor wait; // loading a worspace can take some time -> showhourglass
+    ////        return DoOpenProject(filename, addToHistory);
+    ////    }
+    ////    else
+    ////    {
+    ////        // NOTE (Morten#1#): A message here will prevent batch-builds from working and is shown sometimes even if correct
+    ////        Manager::Get()->GetProjectManager()->SetProject(prj, false);
+    ////        return true;
+    ////    }
+    ////}
+
+    //
+    // Source files
+    //
+    case ftHeader:
+    // fallthrough
+
+    case ftSource:
+    // fallthrough
+    case ftResource:
+        return DoOpenFile(filename, addToHistory);
+    //
+    // For all other files, ask MIME plugin for a suitable handler
+    //
+    default:
+    {
+        ////cbMimePlugin* plugin = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(filename);
+        ////// warn user that "Files extension handler" is disabled
+        ////if (!plugin)
         ////{
-        ////    // Make a check whether the project exists in current workspace
-        ////    cbProject* prj = Manager::Get()->GetProjectManager()->IsOpen(fname.GetFullPath());
-        ////    if (!prj)
-        ////    {
-        ////        wxBusyCursor wait; // loading a worspace can take some time -> showhourglass
-        ////        return DoOpenProject(filename, addToHistory);
-        ////    }
-        ////    else
-        ////    {
-        ////        // NOTE (Morten#1#): A message here will prevent batch-builds from working and is shown sometimes even if correct
-        ////        Manager::Get()->GetProjectManager()->SetProject(prj, false);
-        ////        return true;
-        ////    }
+        ////    cbMessageBox(_("Could not open file ") + filename + _(",\nbecause no extension handler could be found."), _("Error"), wxICON_ERROR);
+        ////    return false;
         ////}
-
-        //
-        // Source files
-        //
-        case ftHeader:
-            // fallthrough
-
-        case ftSource:
-            // fallthrough
-        case ftResource:
-            return DoOpenFile(filename, addToHistory);
-        //
-        // For all other files, ask MIME plugin for a suitable handler
-        //
-        default:
-        {
-            ////cbMimePlugin* plugin = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(filename);
-            ////// warn user that "Files extension handler" is disabled
-            ////if (!plugin)
-            ////{
-            ////    cbMessageBox(_("Could not open file ") + filename + _(",\nbecause no extension handler could be found."), _("Error"), wxICON_ERROR);
-            ////    return false;
-            ////}
-            ////if (plugin->OpenFile(filename) == 0)
-            ////{
-            ////    AddToRecentFilesHistory(filename);
-            ////    return true;
-            ////}
-            ////return false;
-            return DoOpenFile(filename, addToHistory); //(pecan 2008/3/15)
-        }//default
+        ////if (plugin->OpenFile(filename) == 0)
+        ////{
+        ////    AddToRecentFilesHistory(filename);
+        ////    return true;
+        ////}
+        ////return false;
+        return DoOpenFile(filename, addToHistory); //(pecan 2008/3/15)
+    }//default
     }
     return true;
 }
@@ -754,7 +762,8 @@ void ThreadSearchFrame::AddToRecentFilesHistory(const wxString& FileName)
     for (size_t i = 0; i < m_pFilesHistory->GetCount(); ++i)
     {
         if (low == m_pFilesHistory->GetHistoryFile(i).Lower())
-        {    // it exists, set filename to the existing name, so it can become
+        {
+            // it exists, set filename to the existing name, so it can become
             // the most recent one
             filename = m_pFilesHistory->GetHistoryFile(i);
             break;
@@ -921,9 +930,9 @@ void ThreadSearchFrame::TerminateRecentFilesHistory()
 void ThreadSearchFrame::OnCodeSnippetsNewIndex(CodeSnippetsEvent& event)
 // ----------------------------------------------------------------------------
 {
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("ThreadSearchFrame::OnCodeSnippetsNewIndex id[%d]str[%s]"), event.GetSnippetID(), event.GetSnippetString().c_str());
-    #endif
+#endif
 
     event.Skip();
     return;
@@ -938,9 +947,9 @@ void ThreadSearchFrame::OnWindowDestroy(wxEvent& event)
 
     if ( (pWindow) && (pWindow->GetName() == _T("SCIwindow")))
     {
-        #ifdef LOGGING
-         LOGIT( _T("ThreadSearchFrame::OnWindowDestroy [%p]"), pWindow);
-        #endif //LOGGING
+#ifdef LOGGING
+        LOGIT( _T("ThreadSearchFrame::OnWindowDestroy [%p]"), pWindow);
+#endif //LOGGING
         int count = GetConfig()->GetEditorManager(this)->GetEditorsCount();
         if (count == 1) //closing last window
             GetConfig()->GetThreadSearchPlugin()->UnsplitThreadSearchWindow();
@@ -953,25 +962,30 @@ void ThreadSearchFrame::OnFrameActivated(wxActivateEvent& event)
 {
     // This frame has been activated
 
-    if ( m_bOnActivateBusy ) {event.Skip();return;}
+    if ( m_bOnActivateBusy )
+    {
+        event.Skip();
+        return;
+    }
     ++m_bOnActivateBusy;
 
     // Check that it's us that got activated
     if ( event.GetActive() )
-      do { //only once
+        do   //only once
+        {
 
-        // Check that CodeSnippets actually has a file open
-        if (not GetConfig()->GetSnippetsWindow() )  break;
-        if (not GetConfig()->GetSnippetsTreeCtrl() ) break;
+            // Check that CodeSnippets actually has a file open
+            if (not GetConfig()->GetSnippetsWindow() )  break;
+            if (not GetConfig()->GetSnippetsTreeCtrl() ) break;
 
-        #if defined(LOGGING)
-        LOGIT( _T("ThreadSearchFrame::OnAppActivate"));
-        #endif
-        //-if  ( (GetConfig()->GetEditorManagerCount() ) <--causes loop betwn ThreadSearchFrame and EditSnippetFrame
-        if  ( (GetConfig()->GetEditorManager(this) )
-              && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/check_modified_files"), true))
-            )
-            //-for (int i = 0; i < GetConfig()->GetEditorManagerCount(); ++i) <--causes loop betwn ThreadSearchFrame and EditSnippetFrame
+#if defined(LOGGING)
+            LOGIT( _T("ThreadSearchFrame::OnAppActivate"));
+#endif
+            //-if  ( (GetConfig()->GetEditorManagerCount() ) <--causes loop betwn ThreadSearchFrame and EditSnippetFrame
+            if  ( (GetConfig()->GetEditorManager(this) )
+                    && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/check_modified_files"), true))
+                )
+                //-for (int i = 0; i < GetConfig()->GetEditorManagerCount(); ++i) <--causes loop betwn ThreadSearchFrame and EditSnippetFrame
             {
                 // for some reason a mouse up event doesnt make it into scintilla (scintilla bug)
                 // therefor the workaournd is not to directly call the editorManager, but
@@ -987,7 +1001,8 @@ void ThreadSearchFrame::OnFrameActivated(wxActivateEvent& event)
                 wxPostEvent(GetConfig()->GetEditorManager(this), evt);
                 //-GetConfig()->GetEditorManager(i)->ProcessEvent( evt);
             }
-    }while(0); //do only once
+        }
+        while(0);  //do only once
 
     m_bOnActivateBusy = 0;
     event.Skip();

@@ -150,10 +150,15 @@ void wxsSimpleFontEditorDlg::UpdateFontDescription()
             Description << _("Weight: ");
             switch ( m_WorkingCopy.Weight )
             {
-                case wxFONTWEIGHT_BOLD:  Description << _("Bold\n"); break;
-                case wxFONTWEIGHT_LIGHT: Description << _("Light\n"); break;
-                case wxFONTWEIGHT_NORMAL: // fall-through
-                default:                 Description << _("Normal\n");
+            case wxFONTWEIGHT_BOLD:
+                Description << _("Bold\n");
+                break;
+            case wxFONTWEIGHT_LIGHT:
+                Description << _("Light\n");
+                break;
+            case wxFONTWEIGHT_NORMAL: // fall-through
+            default:
+                Description << _("Normal\n");
             }
         }
 
@@ -162,10 +167,15 @@ void wxsSimpleFontEditorDlg::UpdateFontDescription()
             Description << _("Style: ");
             switch ( m_WorkingCopy.Style )
             {
-                case wxFONTSTYLE_ITALIC: Description << _("Italic\n"); break;
-                case wxFONTSTYLE_SLANT:  Description << _("Slant\n"); break;
-                case wxFONTSTYLE_NORMAL: // fall-through
-                default:                 Description << _("Normal\n");
+            case wxFONTSTYLE_ITALIC:
+                Description << _("Italic\n");
+                break;
+            case wxFONTSTYLE_SLANT:
+                Description << _("Slant\n");
+                break;
+            case wxFONTSTYLE_NORMAL: // fall-through
+            default:
+                Description << _("Normal\n");
             }
         }
 

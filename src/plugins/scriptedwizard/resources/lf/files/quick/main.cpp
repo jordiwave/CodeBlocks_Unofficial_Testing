@@ -7,8 +7,8 @@ render::IRenderWindow* rwin;
 class MyKeyListener : public input::IKeyListener
 {
 public:
-    MyKeyListener(){}
-    
+    MyKeyListener() {}
+
     void keyPressed(input::CKeyEvent& event)
     {
         if (event.getKey() == input::KEY_ESCAPE)
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 {
     // the engine
     initLF();
-    
+
     // the render window
     rwin = CLFRender::getInstance().createRenderWindow(
                core::vector2di(0, 0),
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
                render::EAAF_NONE);
     rwin->setWindowCaption(L"Lightfeather 3D project");
     rwin->setVisible(true);
-    
+
     // listen to key events
     MyKeyListener listener;
     rwin->addKeyListener(&listener);
@@ -45,6 +45,6 @@ int main(int argc, char *argv[])
 
     // clean up
     deinitLF();
-    
+
     return 0;
 }

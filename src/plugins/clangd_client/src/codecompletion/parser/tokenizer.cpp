@@ -26,63 +26,63 @@
 #define CC_TOKENIZER_DEBUG_OUTPUT 0
 
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
-    #if CC_GLOBAL_DEBUG_OUTPUT == 1
-        #undef CC_TOKENIZER_DEBUG_OUTPUT
-        #define CC_TOKENIZER_DEBUG_OUTPUT 1
-    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
-        #undef CC_TOKENIZER_DEBUG_OUTPUT
-        #define CC_TOKENIZER_DEBUG_OUTPUT 2
-    #endif
+#if CC_GLOBAL_DEBUG_OUTPUT == 1
+#undef CC_TOKENIZER_DEBUG_OUTPUT
+#define CC_TOKENIZER_DEBUG_OUTPUT 1
+#elif CC_GLOBAL_DEBUG_OUTPUT == 2
+#undef CC_TOKENIZER_DEBUG_OUTPUT
+#define CC_TOKENIZER_DEBUG_OUTPUT 2
+#endif
 #endif
 
 #ifdef CC_PARSER_TEST
-    #define TRACE(format, args...) \
+#define TRACE(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-    #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-    #define TRACE2_SET_FLAG(traceFile)
+#define TRACE2_SET_FLAG(traceFile)
 #else
-    #if CC_TOKENIZER_DEBUG_OUTPUT == 1
-        #define TRACE(format, args...) \
+#if CC_TOKENIZER_DEBUG_OUTPUT == 1
+#define TRACE(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-        #define TRACE2(format, args...)
-        #define TRACE2_SET_FLAG(traceFile)
-    #elif CC_TOKENIZER_DEBUG_OUTPUT == 2
-        #define TRACE(format, args...)                                              \
+#define TRACE2(format, args...)
+#define TRACE2_SET_FLAG(traceFile)
+#elif CC_TOKENIZER_DEBUG_OUTPUT == 2
+#define TRACE(format, args...)                                              \
             do                                                                      \
             {                                                                       \
                 if (g_EnableDebugTrace)                                             \
                     CCLogger::Get()->DebugLog(wxString::Format(format, ##args));                   \
             }                                                                       \
             while (false)
-        #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-        #define TRACE2_SET_FLAG(traceFile) \
+#define TRACE2_SET_FLAG(traceFile) \
             g_EnableDebugTrace = !g_DebugTraceFile.IsEmpty() && traceFile.EndsWith(g_DebugTraceFile)
-    #else
-        #define TRACE(format, args...)
-        #define TRACE2(format, args...)
-        #define TRACE2_SET_FLAG(traceFile)
-    #endif
+#else
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
+#define TRACE2_SET_FLAG(traceFile)
+#endif
 #endif
 
 namespace TokenizerConsts
 {
-    const wxString colon        (_T(":"));
-    const wxString colon_colon  (_T("::"));
-    const wxString equal        (_T("="));
-    const wxString kw_if        (_T("if"));
-    const wxString kw_ifdef     (_T("ifdef"));
-    const wxString kw_ifndef    (_T("ifndef"));
-    const wxString kw_elif      (_T("elif"));
-    const wxString kw_elifdef   (_T("elifdef"));
-    const wxString kw_elifndef  (_T("elifndef"));
-    const wxString kw_else      (_T("else"));
-    const wxString kw_endif     (_T("endif"));
-    const wxString hash         (_T("#"));
-    const wxString tabcrlf      (_T("\t\n\r"));
-    const wxString kw_define    (_T("define"));
-    const wxString kw_undef     (_T("undef"));
+const wxString colon        (_T(":"));
+const wxString colon_colon  (_T("::"));
+const wxString equal        (_T("="));
+const wxString kw_if        (_T("if"));
+const wxString kw_ifdef     (_T("ifdef"));
+const wxString kw_ifndef    (_T("ifndef"));
+const wxString kw_elif      (_T("elif"));
+const wxString kw_elifdef   (_T("elifdef"));
+const wxString kw_elifndef  (_T("elifndef"));
+const wxString kw_else      (_T("else"));
+const wxString kw_endif     (_T("endif"));
+const wxString hash         (_T("#"));
+const wxString tabcrlf      (_T("\t\n\r"));
+const wxString kw_define    (_T("define"));
+const wxString kw_undef     (_T("undef"));
 }// namespace TokenizerConsts
 
 // maximum macro replacement stack size
@@ -301,8 +301,8 @@ bool Tokenizer::IsEscapedChar()
         // check for multiple backslashes, e.g. "\\"
         unsigned int numBackslash = 2; // for sure we have at least two at this point
         while (   m_TokenIndex >= numBackslash
-               && ((m_TokenIndex - numBackslash) <= m_BufferLen)
-               && (m_Buffer.GetChar(m_TokenIndex - numBackslash) == '\\') )
+                  && ((m_TokenIndex - numBackslash) <= m_BufferLen)
+                  && (m_Buffer.GetChar(m_TokenIndex - numBackslash) == '\\') )
             ++numBackslash; // another one...
 
         if ( (numBackslash%2) == 1) // number of backslashes (including current char) is odd
@@ -441,7 +441,8 @@ wxString Tokenizer::ReadToEOL(bool stripUnneeded)
                 // handle string literals, directly put the content to the output str.
                 if (ch == _T('"') || ch == _T('\''))
                 {
-                    if (p > buffer) {
+                    if (p > buffer)
+                    {
                         str.Append(buffer, p - buffer);
                         p = buffer;
                     }
@@ -550,8 +551,8 @@ void Tokenizer::ReadParentheses(wxString& str)
             wxChar nextChar = token[0];
             wxChar lastChar = str.Last();
             if (   (wxIsalpha(nextChar) || nextChar == _T('_'))
-                && (   wxIsalnum(lastChar) || lastChar == _T('_')
-                    || lastChar == _T('*') || lastChar == _T('&') || lastChar == _T(')')))
+                    && (   wxIsalnum(lastChar) || lastChar == _T('_')
+                           || lastChar == _T('*') || lastChar == _T('&') || lastChar == _T(')')))
             {
                 str << _T(" ") << token;
             }
@@ -716,7 +717,8 @@ bool Tokenizer::SkipComment()
         int lineToAppend = -1;
 
         if (c == _T('<'))
-        {  // documentation for already added token - //!< or /*!< or something like this
+        {
+            // documentation for already added token - //!< or /*!< or something like this
             MoveToNextChar();
             c = CurrentChar();
             lineToAppend = m_LineNumber;
@@ -989,7 +991,7 @@ bool Tokenizer::Lex()
 
         // operator== is cheaper than wxIsalnum, also MoveToNextChar already includes IsEOF
         while (    ( (c == '_') || (wxIsalnum(c)) )
-               &&  MoveToNextChar() )
+                   &&  MoveToNextChar() )
             c = CurrentChar(); // repeat
 
         if (IsEOF())
@@ -1146,7 +1148,7 @@ bool Tokenizer::CalcConditionExpression()
         // unknown tokens are pushed to Infix express, and later they will be seen as 0.
 
         if(token.Len() > 0
-           && (token[0] == _T('_') || wxIsalnum(token[0]))) // identifier like token
+                && (token[0] == _T('_') || wxIsalnum(token[0]))) // identifier like token
         {
 
             if (token == _T("defined"))
@@ -1306,46 +1308,46 @@ PreprocessorType Tokenizer::GetPreprocessorType()
 
     switch (token.Len())
     {
-        case 2:
-            if (token == TokenizerConsts::kw_if)
-                return ptIf;
-            break;
+    case 2:
+        if (token == TokenizerConsts::kw_if)
+            return ptIf;
+        break;
 
-        case 4:
-            if (token == TokenizerConsts::kw_else)
-                return ptElse;
-            else if (token == TokenizerConsts::kw_elif)
-                return ptElif;
-            break;
+    case 4:
+        if (token == TokenizerConsts::kw_else)
+            return ptElse;
+        else if (token == TokenizerConsts::kw_elif)
+            return ptElif;
+        break;
 
-        case 5:
-            if (token == TokenizerConsts::kw_ifdef)
-                return ptIfdef;
-            else if (token == TokenizerConsts::kw_endif)
-                return ptEndif;
-            else if (token == TokenizerConsts::kw_undef)
-                return ptUndef;
-            break;
+    case 5:
+        if (token == TokenizerConsts::kw_ifdef)
+            return ptIfdef;
+        else if (token == TokenizerConsts::kw_endif)
+            return ptEndif;
+        else if (token == TokenizerConsts::kw_undef)
+            return ptUndef;
+        break;
 
-        case 6:
-            if (token == TokenizerConsts::kw_ifndef)
-                return ptIfndef;
-            else if (token == TokenizerConsts::kw_define)
-                return ptDefine;
-            break;
+    case 6:
+        if (token == TokenizerConsts::kw_ifndef)
+            return ptIfndef;
+        else if (token == TokenizerConsts::kw_define)
+            return ptDefine;
+        break;
 
-        case 7:
-            if (token == TokenizerConsts::kw_elifdef)
-                return ptElifdef;
-            break;
+    case 7:
+        if (token == TokenizerConsts::kw_elifdef)
+            return ptElifdef;
+        break;
 
-        case 8:
-            if (token == TokenizerConsts::kw_elifndef)
-                return ptElifndef;
-            break;
+    case 8:
+        if (token == TokenizerConsts::kw_elifndef)
+            return ptElifndef;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     // only rewind m_TokenIndex for ptOthers
@@ -1359,140 +1361,140 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
 {
     switch (type)
     {
-        case ptIf:
+    case ptIf:
+    {
+        TRACE(_T("HandleConditionPreprocessor() : #if at line = %u"), m_LineNumber);
+        bool result;
+        if (m_TokenizerOptions.wantPreprocessor)
+            result = CalcConditionExpression();
+        else
         {
-            TRACE(_T("HandleConditionPreprocessor() : #if at line = %u"), m_LineNumber);
-            bool result;
-            if (m_TokenizerOptions.wantPreprocessor)
-                result = CalcConditionExpression();
-            else
-            {
-                SkipToEOL();
-                result = true;
-            }
-
-            m_ExpressionResult.push(result);
-            if (!result)
-               SkipToNextConditionPreprocessor();
-        }
-        break;
-
-        case ptIfdef:
-        {
-            TRACE(_T("HandleConditionPreprocessor() : #ifdef at line = %u"), m_LineNumber);
-            bool result;
-            if (m_TokenizerOptions.wantPreprocessor)
-                result = IsMacroDefined();
-            else
-                result = true; // default value
-
             SkipToEOL();
-            m_ExpressionResult.push(result);
-            if (!result)
-               SkipToNextConditionPreprocessor();
+            result = true;
         }
-        break;
 
-        case ptIfndef:
+        m_ExpressionResult.push(result);
+        if (!result)
+            SkipToNextConditionPreprocessor();
+    }
+    break;
+
+    case ptIfdef:
+    {
+        TRACE(_T("HandleConditionPreprocessor() : #ifdef at line = %u"), m_LineNumber);
+        bool result;
+        if (m_TokenizerOptions.wantPreprocessor)
+            result = IsMacroDefined();
+        else
+            result = true; // default value
+
+        SkipToEOL();
+        m_ExpressionResult.push(result);
+        if (!result)
+            SkipToNextConditionPreprocessor();
+    }
+    break;
+
+    case ptIfndef:
+    {
+        TRACE(_T("HandleConditionPreprocessor() : #ifndef at line = %u"), m_LineNumber);
+        bool result;
+        if (m_TokenizerOptions.wantPreprocessor)
+            result = !IsMacroDefined();
+        else
+            result = true; // default value
+
+        SkipToEOL();
+        m_ExpressionResult.push(result);
+        if (!result)
+            SkipToNextConditionPreprocessor();
+    }
+    break;
+
+    case ptElif:
+    {
+        TRACE(_T("HandleConditionPreprocessor() : #elif at line = %u"), m_LineNumber);
+        bool result = false;
+        if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
+            result = CalcConditionExpression();
+        if (result)
+            m_ExpressionResult.top() = true;
+        else
+            SkipToNextConditionPreprocessor();
+    }
+    break;
+
+    case ptElifdef:
+    {
+        TRACE(_T("HandleConditionPreprocessor() : #elifdef at line = %u"), m_LineNumber);
+        bool result = false;
+        if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
         {
-            TRACE(_T("HandleConditionPreprocessor() : #ifndef at line = %u"), m_LineNumber);
-            bool result;
-            if (m_TokenizerOptions.wantPreprocessor)
-                result = !IsMacroDefined();
-            else
-                result = true; // default value
-
+            result = IsMacroDefined();
             SkipToEOL();
-            m_ExpressionResult.push(result);
-            if (!result)
-               SkipToNextConditionPreprocessor();
         }
-        break;
 
-        case ptElif:
+        if (result)
+            m_ExpressionResult.top() = true;
+        else
+            SkipToNextConditionPreprocessor();
+    }
+    break;
+
+    case ptElifndef:
+    {
+        TRACE(_T("HandleConditionPreprocessor() : #elifndef at line = %u"), m_LineNumber);
+        bool result = false;
+        if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
         {
-            TRACE(_T("HandleConditionPreprocessor() : #elif at line = %u"), m_LineNumber);
-            bool result = false;
-            if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
-                result = CalcConditionExpression();
-            if (result)
-                m_ExpressionResult.top() = true;
-            else
-                SkipToNextConditionPreprocessor();
-        }
-        break;
-
-        case ptElifdef:
-        {
-            TRACE(_T("HandleConditionPreprocessor() : #elifdef at line = %u"), m_LineNumber);
-            bool result = false;
-            if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
-            {
-                result = IsMacroDefined();
-                SkipToEOL();
-            }
-
-            if (result)
-                m_ExpressionResult.top() = true;
-            else
-                SkipToNextConditionPreprocessor();
-        }
-        break;
-
-        case ptElifndef:
-        {
-            TRACE(_T("HandleConditionPreprocessor() : #elifndef at line = %u"), m_LineNumber);
-            bool result = false;
-            if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
-            {
-                result = !IsMacroDefined();
-                SkipToEOL();
-            }
-
-            if (result)
-                m_ExpressionResult.top() = true;
-            else
-                SkipToNextConditionPreprocessor();
-        }
-        break;
-
-        case ptElse:
-        {
-            TRACE(_T("HandleConditionPreprocessor() : #else at line = %u"), m_LineNumber);
-            if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
-                SkipToEOL();
-            else
-                SkipToEndConditionPreprocessor();
-        }
-        break;
-
-        case ptEndif:
-        {
-            TRACE(_T("HandleConditionPreprocessor() : #endif at line = %u"), m_LineNumber);
+            result = !IsMacroDefined();
             SkipToEOL();
-            if (!m_ExpressionResult.empty())
-                m_ExpressionResult.pop();
         }
-        break;
 
-        case ptDefine:
-        {
-            TRACE(_T("HandleConditionPreprocessor() : #define at line = %u"), m_LineNumber);
-            HandleDefines();
-        }
-        break;
+        if (result)
+            m_ExpressionResult.top() = true;
+        else
+            SkipToNextConditionPreprocessor();
+    }
+    break;
 
-        case ptUndef:
-        {
-            TRACE(_T("HandleConditionPreprocessor() : #undef at line = %u"), m_LineNumber);
-            HandleUndefs();
-        }
-        break;
+    case ptElse:
+    {
+        TRACE(_T("HandleConditionPreprocessor() : #else at line = %u"), m_LineNumber);
+        if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
+            SkipToEOL();
+        else
+            SkipToEndConditionPreprocessor();
+    }
+    break;
 
-        case ptOthers:
-            // ptOthers won't happens here, because it was excluded before calling this function
-        default:
-            break;
+    case ptEndif:
+    {
+        TRACE(_T("HandleConditionPreprocessor() : #endif at line = %u"), m_LineNumber);
+        SkipToEOL();
+        if (!m_ExpressionResult.empty())
+            m_ExpressionResult.pop();
+    }
+    break;
+
+    case ptDefine:
+    {
+        TRACE(_T("HandleConditionPreprocessor() : #define at line = %u"), m_LineNumber);
+        HandleDefines();
+    }
+    break;
+
+    case ptUndef:
+    {
+        TRACE(_T("HandleConditionPreprocessor() : #undef at line = %u"), m_LineNumber);
+        HandleUndefs();
+    }
+    break;
+
+    case ptOthers:
+    // ptOthers won't happens here, because it was excluded before calling this function
+    default:
+        break;
     }
 
     // reset undo token
@@ -1596,13 +1598,13 @@ bool Tokenizer::ReplaceBufferText(const wxString& target, const Token* macro)
     {
         switch ((wxChar)substitute.GetChar(i))
         {
-            case _T('\\'):
-            case _T('\r'):
-            case _T('\n'):
-                substitute.SetChar(i, _T(' '));
-                break;
-            default:
-                break;
+        case _T('\\'):
+        case _T('\r'):
+        case _T('\n'):
+            substitute.SetChar(i, _T(' '));
+            break;
+        default:
+            break;
         }
     }
 
@@ -1617,8 +1619,8 @@ bool Tokenizer::ReplaceBufferText(const wxString& target, const Token* macro)
         m_TokenIndex += diffLen;
         // loop the macro expansion stack and adjust them
         for (std::list<ExpandedMacro>::iterator i = m_ExpandedMacros.begin();
-             i != m_ExpandedMacros.end();
-             ++i)
+                i != m_ExpandedMacros.end();
+                ++i)
         {
             (*i).m_Begin += diffLen;
             (*i).m_End += diffLen;
@@ -1654,8 +1656,8 @@ bool Tokenizer::ReplaceMacroUsage(const Token* tk)
 {
     // loop on the m_ExpandedMacros to see the macro is already used
     for (std::list<ExpandedMacro>::iterator i = m_ExpandedMacros.begin();
-         i != m_ExpandedMacros.end();
-         ++i)
+            i != m_ExpandedMacros.end();
+            ++i)
     {
         if (tk == (*i).m_Macro)
             return false; // this macro is already used
@@ -1860,8 +1862,8 @@ bool Tokenizer::GetMacroExpandedText(const Token* tk, wxString& expandedText)
 
     // 4. handling operator ## which concatenates two tokens leaving no blank spaces between them
     for (int pos = expandedText.Find(_T("##"));
-         pos != wxNOT_FOUND;
-         pos = expandedText.Find(_T("##")))
+            pos != wxNOT_FOUND;
+            pos = expandedText.Find(_T("##")))
     {
         int beginPos = pos;
         int length = expandedText.size();
@@ -1876,8 +1878,8 @@ bool Tokenizer::GetMacroExpandedText(const Token* tk, wxString& expandedText)
 
     // 5. handling stringizing operator #
     for (int pos = expandedText.Find(_T("#"));
-         pos != wxNOT_FOUND;
-         pos = expandedText.Find(_T("#")))
+            pos != wxNOT_FOUND;
+            pos = expandedText.Find(_T("#")))
     {
         // here, we may have spaces between the # and the next token (a macro argument)
         // we need to locate the next token's position, here the next token is xxxxxxxxxxxxxx

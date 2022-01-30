@@ -10,20 +10,20 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/string.h>
-    #include <wx/intl.h>
-    #include <wx/txtstrm.h>
-    #include <wx/dynarray.h>
-    #include <wx/filename.h>
-    #include <wx/msgdlg.h>
-    #include <wx/wfstream.h>
+#include <wx/string.h>
+#include <wx/intl.h>
+#include <wx/txtstrm.h>
+#include <wx/dynarray.h>
+#include <wx/filename.h>
+#include <wx/msgdlg.h>
+#include <wx/wfstream.h>
 
-    #include "globals.h"
-    #include "manager.h"
-    #include "logmanager.h"
-    #include "projectmanager.h"
-    #include "compilerfactory.h"
-    #include "compiler.h"
+#include "globals.h"
+#include "manager.h"
+#include "logmanager.h"
+#include "projectmanager.h"
+#include "compilerfactory.h"
+#include "compiler.h"
 #endif
 
 #include <wx/stream.h>
@@ -55,28 +55,30 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
                            "(If you answer No, you will be asked for each and every project"
                            " which compiler to use...)"), _("Question"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
     {
-        case wxID_YES:
-            askForCompiler = false; break;
-        case wxID_NO:
-            askForCompiler = true; break;
-        case wxID_CANCEL: // fall through
-        default:
-            return false;
+    case wxID_YES:
+        askForCompiler = false;
+        break;
+    case wxID_NO:
+        askForCompiler = true;
+        break;
+    case wxID_CANCEL: // fall through
+    default:
+        return false;
     }
     switch (cbMessageBox(_("Do you want to import all configurations (e.g. Debug/Release) from the "
                            "imported projects?\n"
                            "(If you answer No, you will be asked for each and every project"
                            " which configurations to import...)"), _("Question"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
     {
-        case wxID_YES:
-            askForTargets = false;
-            break;
-        case wxID_NO:
-            askForTargets = true;
-            break;
-        case wxID_CANCEL: // fall through
-        default:
-            return false;
+    case wxID_YES:
+        askForTargets = false;
+        break;
+    case wxID_NO:
+        askForTargets = true;
+        break;
+    case wxID_CANCEL: // fall through
+    default:
+        return false;
     }
 
     wxFileInputStream file(filename);
@@ -121,11 +123,11 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
         line.Trim(false);
         wxString _version = line.AfterLast(' '); // want the version number
         if (   (_version != _T("7.00"))
-            && (_version != _T("8.00"))
-            && (_version != _T("9.00"))
-            && (_version != _T("10.00"))
-            && (_version != _T("11.00"))
-            && (_version != _T("12.00")) )
+                && (_version != _T("8.00"))
+                && (_version != _T("9.00"))
+                && (_version != _T("10.00"))
+                && (_version != _T("11.00"))
+                && (_version != _T("12.00")) )
         {
             Manager::Get()->GetLogManager()->DebugLog(_T("Version not recognized. Will try to parse though..."));
         }
@@ -253,7 +255,8 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
             // start reading a dependency
             keyvalue = GetArrayFromString(line, _T("="));
             if (keyvalue.GetCount() != 2) continue;
-            if (global) {
+            if (global)
+            {
                 // {31635C8-67BF-4808-A918-0FBF822771BD}.0 = {658BFA12-8417-49E5-872A-33F0973544DC}
                 // i.e. project on the left of '=' depend on the project on the right
                 keyvalue[0]= keyvalue[0].BeforeFirst(_T('.'));

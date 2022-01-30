@@ -36,45 +36,62 @@ ProcessReaderThread::ProcessReaderThread()
 }
 
 // --------------------------------------------------------------
-ProcessReaderThread::~ProcessReaderThread() { m_notifiedWindow = NULL; }
+ProcessReaderThread::~ProcessReaderThread()
+{
+    m_notifiedWindow = NULL;
+}
 // --------------------------------------------------------------
 
 // --------------------------------------------------------------
 void* ProcessReaderThread::Entry()
 // --------------------------------------------------------------
 {
-    while(true) {
+    while(true)
+    {
         // Did we get a request to terminate?
-        if(TestDestroy()) {
+        if(TestDestroy())
+        {
             break;
         }
 
-        if(m_suspend.load() && (m_is_suspended.load() == false)) {
+        if(m_suspend.load() && (m_is_suspended.load() == false))
+        {
             // request to suspend thread, but the status is not suspended
             m_is_suspended.store(true);
-        } else if(m_is_suspended.load() && m_suspend.load() == false) {
+        }
+        else if(m_is_suspended.load() && m_suspend.load() == false)
+        {
             // request to resume thread but the status is suspended
             m_is_suspended.store(false);
         }
 
-        if(m_is_suspended.load()) {
+        if(m_is_suspended.load())
+        {
             wxThread::Sleep(5);
             continue;
         }
 
-        if(m_process) {
+        if(m_process)
+        {
             wxString buff;
             wxString buffErr;
-            if(m_process->IsRedirect()) {
-                if(m_process->Read(buff, buffErr)) {
-                    if(!buff.IsEmpty() || !buffErr.IsEmpty()) {
+            if(m_process->IsRedirect())
+            {
+                if(m_process->Read(buff, buffErr))
+                {
+                    if(!buff.IsEmpty() || !buffErr.IsEmpty())
+                    {
                         // If we got a callback object, use it
-                        if(m_process && m_process->GetCallback()) {
+                        if(m_process && m_process->GetCallback())
+                        {
                             m_process->GetCallback()->CallAfter(&IProcessCallback::OnProcessOutput, buff);
 
-                        } else {
+                        }
+                        else
+                        {
                             // We fire an event per data (stderr/stdout)
-                            if(!buff.IsEmpty() && m_notifiedWindow) {
+                            if(!buff.IsEmpty() && m_notifiedWindow)
+                            {
                                 // fallback to the event system
                                 // we got some data, send event to parent
                                 //clProcessEvent e(wxEVT_ASYNC_PROCESS_OUTPUT);
@@ -87,7 +104,8 @@ void* ProcessReaderThread::Entry()
                                 e.SetPayload<std::string*>(&stdstr);
                                 m_notifiedWindow->ProcessEvent(e);
                             }
-                            if(!buffErr.IsEmpty() && m_notifiedWindow) {
+                            if(!buffErr.IsEmpty() && m_notifiedWindow)
+                            {
                                 // we got some data, send event to parent
                                 //clProcessEvent e(wxEVT_ASYNC_PROCESS_STDERR);
                                 wxThreadEvent e(wxEVT_ASYNC_PROCESS_STDERR);
@@ -101,24 +119,33 @@ void* ProcessReaderThread::Entry()
                             }
                         }
                     }
-                } else {
+                }
+                else
+                {
 
                     // Process terminated, exit
                     // If we got a callback object, use it
                     NotifyTerminated();
                     break;
                 }
-            } else {
+            }
+            else
+            {
                 // Check if the process is alive
-                if(!m_process->IsAlive()) {
+                if(!m_process->IsAlive())
+                {
                     // Notify about termination
                     NotifyTerminated();
                     break;
-                } else {
+                }
+                else
+                {
                     wxThread::Sleep(5);
                 }
             }
-        } else {
+        }
+        else
+        {
             // No process??
             break;
         }
@@ -131,9 +158,12 @@ void ProcessReaderThread::Stop()
 {
     // Notify the thread to exit and
     // wait for it
-    if(IsAlive()) {
+    if(IsAlive())
+    {
         Delete(NULL, wxTHREAD_WAIT_BLOCK);
-    } else {
+    }
+    else
+    {
         Wait(wxTHREAD_WAIT_BLOCK);
     }
 }
@@ -153,15 +183,19 @@ void ProcessReaderThread::NotifyTerminated()
 {
     // Process terminated, exit
     // If we got a callback object, use it
-    if(m_process && m_process->GetCallback()) {
+    if(m_process && m_process->GetCallback())
+    {
         m_process->GetCallback()->CallAfter(&IProcessCallback::OnProcessTerminated);
 
-    } else {
+    }
+    else
+    {
         // fallback to the event system
         //clProcessEvent e(wxEVT_ASYNC_PROCESS_TERMINATED);
         wxThreadEvent e(wxEVT_ASYNC_PROCESS_TERMINATED);
         //e.SetProcess(m_process);
-        if(m_notifiedWindow) {
+        if(m_notifiedWindow)
+        {
             //m_notifiedWindow->AddPendingEvent(e);
             m_notifiedWindow->ProcessEvent(e);
         }
@@ -172,8 +206,10 @@ void ProcessReaderThread::Suspend()
 {
     m_suspend.store(true);
     // wait until we make sure that the reader thread is suspended
-    while(true) {
-        if(m_is_suspended.load()) {
+    while(true)
+    {
+        if(m_is_suspended.load())
+        {
             break;
         }
         wxThread::Sleep(1);
@@ -184,8 +220,10 @@ void ProcessReaderThread::Resume()
 {
     m_suspend.store(false);
     // wait until we make sure that the reader thread is resumed
-    while(true) {
-        if(!m_is_suspended.load()) {
+    while(true)
+    {
+        if(!m_is_suspended.load())
+        {
             break;
         }
         wxThread::Sleep(1);

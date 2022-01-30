@@ -10,22 +10,22 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/menu.h>
+#include <wx/menu.h>
 
-    #include "cbworkspace.h"
-    #include "projectmanager.h"
-    #include "editormanager.h"
-    #include "logmanager.h"
-    #include "macrosmanager.h"
-    #include "scriptingmanager.h"
-    #include "manager.h"
-    #include "cbproject.h"
-    #include "cbeditor.h"
-    #include "uservarmanager.h"
-    #include "configmanager.h"
-    #include "globals.h"
-    #include "compilerfactory.h"
-    #include "compiler.h"
+#include "cbworkspace.h"
+#include "projectmanager.h"
+#include "editormanager.h"
+#include "logmanager.h"
+#include "macrosmanager.h"
+#include "scriptingmanager.h"
+#include "manager.h"
+#include "cbproject.h"
+#include "cbeditor.h"
+#include "uservarmanager.h"
+#include "configmanager.h"
+#include "globals.h"
+#include "compilerfactory.h"
+#include "compiler.h"
 #endif
 
 #include <wx/stdpaths.h> // wxStandardPaths
@@ -246,24 +246,24 @@ void MacrosManager::RecalcVars(const cbProject* project, EditorBase* editor, con
 
     if (editor)
     {
-      // don't use pointer to editor here, because this might be the same,
-      // even after closing one file and opening a new one
-      if (editor->GetFilename() != m_ActiveEditorFilename)
-          m_ActiveEditorFilename = editor->GetFilename();
+        // don't use pointer to editor here, because this might be the same,
+        // even after closing one file and opening a new one
+        if (editor->GetFilename() != m_ActiveEditorFilename)
+            m_ActiveEditorFilename = editor->GetFilename();
 
-      // (re-) compute column and line but only in case it's a builtin-editor
-      if (editor->IsBuiltinEditor())
-      {
-          cbEditor*         cbEd  = static_cast<cbEditor*>(editor);
-          cbStyledTextCtrl* cbSTC = cbEd->GetControl();
-          if (cbSTC)
-          {
-              m_ActiveEditorLine = cbSTC->GetCurrentLine() + 1;
-              int pos = cbSTC->GetCurrentPos();
-              if (pos!=-1)
-                  m_ActiveEditorColumn = cbSTC->GetColumn(pos) + 1;
-          }
-      }
+        // (re-) compute column and line but only in case it's a builtin-editor
+        if (editor->IsBuiltinEditor())
+        {
+            cbEditor*         cbEd  = static_cast<cbEditor*>(editor);
+            cbStyledTextCtrl* cbSTC = cbEd->GetControl();
+            if (cbSTC)
+            {
+                m_ActiveEditorLine = cbSTC->GetCurrentLine() + 1;
+                int pos = cbSTC->GetCurrentPos();
+                if (pos!=-1)
+                    m_ActiveEditorColumn = cbSTC->GetColumn(pos) + 1;
+            }
+        }
     }
 
     if (!project)
@@ -294,9 +294,9 @@ void MacrosManager::RecalcVars(const cbProject* project, EditorBase* editor, con
         m_Macros[_T("ALL_PROJECT_FILES")]    = wxEmptyString;
     }
     else if ( (project != m_LastProject) || (project->GetTitle() != m_ProjectName)
-                || (UnixFilename(project->GetBasePath()) != m_ProjectDir)
-                || (UnixFilename(m_ProjectWxFileName.GetFullName()) != m_ProjectFilename)
-             )
+              || (UnixFilename(project->GetBasePath()) != m_ProjectDir)
+              || (UnixFilename(m_ProjectWxFileName.GetFullName()) != m_ProjectFilename)
+            )
     {
         m_LastTarget      = nullptr; // reset last target when project changes
         m_ProjectWxFileName.Assign(project->GetFilename());
@@ -471,7 +471,7 @@ void MacrosManager::RecalcVars(const cbProject* project, EditorBase* editor, con
  *
  */
 static wxString ExtractStringBetweenParentheses(const wxString& input, size_t& pos,
-                                                const wxChar& openSymbol, const wxChar& closeSymbol)
+        const wxChar& openSymbol, const wxChar& closeSymbol)
 {
     if (pos == wxString::npos || pos >= input.size())
         return wxEmptyString;
@@ -485,7 +485,7 @@ static wxString ExtractStringBetweenParentheses(const wxString& input, size_t& p
     {
         // We have to ignore potential strings
         if ((input[i] == '\"' && input[i-1] != '\\') || // Normal squirrel string
-            (input[i] == '\'' && input[i-1] != '\''))   // In Bash you can also use ' for strings
+                (input[i] == '\'' && input[i-1] != '\''))   // In Bash you can also use ' for strings
         {
             // invert the is string variable because we either enter a string,
             // or leave the string
@@ -495,9 +495,9 @@ static wxString ExtractStringBetweenParentheses(const wxString& input, size_t& p
         {
             if (input[i] == openSymbol)
             {
-               countParentheses++;
-               if(startPos < 0)
-                   startPos = i + 1;    // The string begins one character after the opening symbol
+                countParentheses++;
+                if(startPos < 0)
+                    startPos = i + 1;    // The string begins one character after the opening symbol
             }
             else if (input[i] == closeSymbol)
                 countParentheses--;
@@ -562,8 +562,8 @@ void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* ta
         return;
 
     const cbProject* project = target
-                             ? target->GetParentProject()
-                             : Manager::Get()->GetProjectManager()->GetActiveProject();
+                               ? target->GetParentProject()
+                               : Manager::Get()->GetProjectManager()->GetActiveProject();
     EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
 
     if (!target)
@@ -579,9 +579,9 @@ void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* ta
         }
     }
     if (project != m_LastProject || target != m_LastTarget || (editor && (editor->GetFilename() != m_ActiveEditorFilename))
-                    || (project && (UnixFilename(project->GetBasePath()) != m_ProjectDir))
-                    || (UnixFilename(m_ProjectWxFileName.GetFullName()) != m_ProjectFilename)
-                    || (target && (target->GetTitle() != m_TargetName)) )
+            || (project && (UnixFilename(project->GetBasePath()) != m_ProjectDir))
+            || (UnixFilename(m_ProjectWxFileName.GetFullName()) != m_ProjectFilename)
+            || (target && (target->GetTitle() != m_TargetName)) )
         RecalcVars(project, editor, target);
 
     wxString search;

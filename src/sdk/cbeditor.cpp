@@ -10,32 +10,32 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/app.h>
-    #include <wx/filedlg.h>
-    #include <wx/filename.h>
-    #include <wx/menu.h>
-    #include <wx/notebook.h>
-    #include <wx/wfstream.h>
+#include <wx/app.h>
+#include <wx/filedlg.h>
+#include <wx/filename.h>
+#include <wx/menu.h>
+#include <wx/notebook.h>
+#include <wx/wfstream.h>
 
-    #include "cbeditor.h" // class's header file
+#include "cbeditor.h" // class's header file
 
-    #include "cbauibook.h"
-    #include "cbplugin.h"
-    #include "cbproject.h"
-    #include "configmanager.h"
-    #include "debuggermanager.h"
-    #include "editorcolourset.h"
-    #include "editormanager.h"
-    #include "globals.h"
-    #include "infowindow.h"
-    #include "logmanager.h"
-    #include "macrosmanager.h" // ReplaceMacros
-    #include "manager.h"
-    #include "pluginmanager.h"
-    #include "projectbuildtarget.h"
-    #include "projectfile.h"
-    #include "projectmanager.h"
-    #include "sdk_events.h"
+#include "cbauibook.h"
+#include "cbplugin.h"
+#include "cbproject.h"
+#include "configmanager.h"
+#include "debuggermanager.h"
+#include "editorcolourset.h"
+#include "editormanager.h"
+#include "globals.h"
+#include "infowindow.h"
+#include "logmanager.h"
+#include "macrosmanager.h" // ReplaceMacros
+#include "manager.h"
+#include "pluginmanager.h"
+#include "projectbuildtarget.h"
+#include "projectfile.h"
+#include "projectmanager.h"
+#include "sdk_events.h"
 #endif
 #include "cbstyledtextctrl.h"
 #include "cbcolourmanager.h"
@@ -103,16 +103,16 @@ struct cbEditorInternalData
 
     cbEditorInternalData(cbEditor* owner, LoaderBase* fileLoader = nullptr)
         : m_pOwner(owner),
-        m_strip_trailing_spaces(true),
-        m_ensure_final_line_end(false),
-        m_ensure_consistent_line_ends(true),
-        m_LastMarginMenuLine(-1),
-        m_LastDebugLine(-1),
-        m_useByteOrderMark(false),
-        m_byteOrderMarkLength(0),
-        m_lineNumbersWidth(0),
-        m_lineNumbersWidth2(0),
-        m_pFileLoader(fileLoader)
+          m_strip_trailing_spaces(true),
+          m_ensure_final_line_end(false),
+          m_ensure_consistent_line_ends(true),
+          m_LastMarginMenuLine(-1),
+          m_LastDebugLine(-1),
+          m_useByteOrderMark(false),
+          m_byteOrderMarkLength(0),
+          m_lineNumbersWidth(0),
+          m_lineNumbersWidth2(0),
+          m_pFileLoader(fileLoader)
     {
         m_encoding = wxLocale::GetSystemEncoding();
 
@@ -391,15 +391,15 @@ struct cbEditorInternalData
             return wxEmptyString;
 
         wxRegEx reUrl(wxT("***:("
-                                "((ht|f)tp(s?)\\:\\/\\/)"
-                                "|(www\\.)"
-                              ")"
-                              "("
-                                "([\\w\\-]+(\\.[\\w\\-]+)+)"
-                                "|localhost"
-                              ")"
-                              "(\\/?)([\\w\\-\\.\\?\\,\\'\\/\\\\\\+&amp;%\\$#]*)?"
-                              "([\\d\\w\\.\\/\\%\\+\\-\\=\\&amp;\\?\\:\\\\\\&quot;\\'\\,\\|\\~\\;]*)"));
+                          "((ht|f)tp(s?)\\:\\/\\/)"
+                          "|(www\\.)"
+                          ")"
+                          "("
+                          "([\\w\\-]+(\\.[\\w\\-]+)+)"
+                          "|localhost"
+                          ")"
+                          "(\\/?)([\\w\\-\\.\\?\\,\\'\\/\\\\\\+&amp;%\\$#]*)?"
+                          "([\\d\\w\\.\\/\\%\\+\\-\\=\\&amp;\\?\\:\\\\\\&quot;\\'\\,\\|\\~\\;]*)"));
         wxString url = control->GetSelectedText();
         // Is the URL selected?
         if (reUrl.Matches(url))
@@ -428,8 +428,8 @@ struct cbEditorInternalData
 
         url = control->GetTextRange(startPos, endPos);
         if (    (control->GetLexer() == wxSCI_LEX_CPP)
-            &&  (   (control->GetStyleAt(control->GetCurrentPos()) == wxSCI_C_STRING)
-                 || (control->GetStyleAt(control->GetCurrentPos()) == wxSCI_C_STRINGEOL) ) )
+                &&  (   (control->GetStyleAt(control->GetCurrentPos()) == wxSCI_C_STRING)
+                        || (control->GetStyleAt(control->GetCurrentPos()) == wxSCI_C_STRINGEOL) ) )
         {
             url.Replace(wxT("\\n"), wxT("\n"));
             url.Replace(wxT("\\r"), wxT("\r"));
@@ -440,7 +440,7 @@ struct cbEditorInternalData
         {
             wxString match = reUrl.GetMatch(url);
             if (   (url.Find(match) + startPos                       < control->GetCurrentPos())
-                && (url.Find(match) + startPos + (int)match.Length() > control->GetCurrentPos()) )
+                    && (url.Find(match) + startPos + (int)match.Length() > control->GetCurrentPos()) )
             {
                 url = match(0, match.find_last_not_of(wxT(",.")) + 1); // trim trailing
             }
@@ -456,8 +456,8 @@ struct cbEditorInternalData
     static wxString GetLineIndentString(int line, cbStyledTextCtrl* stc)
     {
         int currLine = (line == -1)
-                        ? stc->LineFromPosition(stc->GetCurrentPos())
-                        : line;
+                       ? stc->LineFromPosition(stc->GetCurrentPos())
+                       : line;
         wxString text = stc->GetLine(currLine);
         unsigned int len = text.Length();
         wxString indent;
@@ -528,35 +528,35 @@ struct cbEditorInternalData
 
         switch (tabSize)
         {
-            case 2:
-                if ((lineCount[2] - lineCount[6]) / total < 0.1)
-                    return 6;
-                if (   lineCount[2] > lineCount[4] * 1.8
-                    || lineCount[4] / total < 0.5 )
-                    return 2;
-                // fall through
-            case 4:
-                if (   lineCount[4] > lineCount[8] * 1.8
-                    || lineCount[8] / total < 0.5 )
-                    return 4;
-                // fall through
-            case 8:
-                if (lineCount[8] / total < 0.6)
-                    return -1; // not sure -> use defaults
-                return 8;
-
-            case 3:
-                if (   lineCount[3] > lineCount[6] * 1.8
-                    || lineCount[6] / total < 0.5 )
-                    return 3;
-                if (lineCount[6] / total < 0.6)
-                    return -1; // not sure -> use defaults
+        case 2:
+            if ((lineCount[2] - lineCount[6]) / total < 0.1)
                 return 6;
+            if (   lineCount[2] > lineCount[4] * 1.8
+                    || lineCount[4] / total < 0.5 )
+                return 2;
+        // fall through
+        case 4:
+            if (   lineCount[4] > lineCount[8] * 1.8
+                    || lineCount[8] / total < 0.5 )
+                return 4;
+        // fall through
+        case 8:
+            if (lineCount[8] / total < 0.6)
+                return -1; // not sure -> use defaults
+            return 8;
 
-            default:
-                if (lineCount[tabSize] / total < 0.7)
-                    return -1; // not sure -> use defaults
-                return tabSize;
+        case 3:
+            if (   lineCount[3] > lineCount[6] * 1.8
+                    || lineCount[6] / total < 0.5 )
+                return 3;
+            if (lineCount[6] / total < 0.6)
+                return -1; // not sure -> use defaults
+            return 6;
+
+        default:
+            if (lineCount[tabSize] / total < 0.7)
+                return -1; // not sure -> use defaults
+            return tabSize;
         }
     }
 
@@ -756,8 +756,8 @@ static int DetectLineEnds(cbStyledTextCtrl* control)
 
     unsigned int delay = 2000;
     if (  ( (linesCR>0) && (linesCRLF>0) )
-       || ( (linesLF>0) && (linesCRLF>0) )
-       || ( (linesCR>0) && (linesLF>0) ) )
+            || ( (linesLF>0) && (linesCRLF>0) )
+            || ( (linesCR>0) && (linesLF>0) ) )
     {
         //In mixed EOL file, give the user a beep and InfoWindow notification.
         wxBell();
@@ -769,17 +769,17 @@ static int DetectLineEnds(cbStyledTextCtrl* control)
 // class constructor
 cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* theme)
     : EditorBase(parent, filename, false),
-    m_pSplitter(nullptr),
-    m_pSizer(nullptr),
-    m_pControl(nullptr),
-    m_pControl2(nullptr),
-    m_foldBackup(nullptr),
-    m_SplitType(stNoSplit),
-    m_Modified(false),
-    m_Index(-1),
-    m_pProjectFile(nullptr),
-    m_pTheme(theme),
-    m_lang(HL_AUTO)
+      m_pSplitter(nullptr),
+      m_pSizer(nullptr),
+      m_pControl(nullptr),
+      m_pControl2(nullptr),
+      m_foldBackup(nullptr),
+      m_SplitType(stNoSplit),
+      m_Modified(false),
+      m_Index(-1),
+      m_pProjectFile(nullptr),
+      m_pTheme(theme),
+      m_lang(HL_AUTO)
 {
     DoInitializations(filename);
 }
@@ -787,17 +787,17 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
 // class constructor
 cbEditor::cbEditor(wxWindow* parent, LoaderBase* fileLdr, const wxString& filename, EditorColourSet* theme)
     : EditorBase(parent, filename, false),
-    m_pSplitter(nullptr),
-    m_pSizer(nullptr),
-    m_pControl(nullptr),
-    m_pControl2(nullptr),
-    m_foldBackup(nullptr),
-    m_SplitType(stNoSplit),
-    m_Modified(false),
-    m_Index(-1),
-    m_pProjectFile(nullptr),
-    m_pTheme(theme),
-    m_lang(HL_AUTO)
+      m_pSplitter(nullptr),
+      m_pSizer(nullptr),
+      m_pControl(nullptr),
+      m_pControl2(nullptr),
+      m_foldBackup(nullptr),
+      m_SplitType(stNoSplit),
+      m_Modified(false),
+      m_Index(-1),
+      m_pProjectFile(nullptr),
+      m_pTheme(theme),
+      m_lang(HL_AUTO)
 {
     DoInitializations(filename, fileLdr);
 }
@@ -1301,15 +1301,15 @@ void cbEditor::Split(cbEditor::SplitType split)
     m_pControl2->SetDocPointer(m_pControl->GetDocPointer());
 
     // on wxGTK > 2.9 we need to thaw before reparent and refreeze the editor here or the whole app stays frozen
-    #if defined ( __WXGTK__ )
+#if defined ( __WXGTK__ )
     Thaw();
-    #endif
+#endif
     // parent both controls under the splitter
     m_pControl->Reparent(m_pSplitter);
     m_pControl2->Reparent(m_pSplitter);
-    #if defined ( __WXGTK__ )
+#if defined ( __WXGTK__ )
     Freeze();
-    #endif
+#endif
 
     // add the splitter in the sizer
     m_pSizer->SetDimension(0, 0, GetSize().x, GetSize().y);
@@ -1320,17 +1320,17 @@ void cbEditor::Split(cbEditor::SplitType split)
     // split as needed
     switch (m_SplitType)
     {
-        case stHorizontal:
-            m_pSplitter->SplitHorizontally(m_pControl, m_pControl2, 0);
-            break;
+    case stHorizontal:
+        m_pSplitter->SplitHorizontally(m_pControl, m_pControl2, 0);
+        break;
 
-        case stVertical:
-            m_pSplitter->SplitVertically(m_pControl, m_pControl2, 0);
-            break;
+    case stVertical:
+        m_pSplitter->SplitVertically(m_pControl, m_pControl2, 0);
+        break;
 
-        case stNoSplit: // fall-trough
-        default:
-            break;
+    case stNoSplit: // fall-trough
+    default:
+        break;
     }
 
     SetEditorStyleAfterFileOpen();
@@ -1367,14 +1367,14 @@ void cbEditor::Unsplit()
     m_pSizer->Detach(m_pSplitter);
 
     // on wxGTK > 2.9 we need to thaw before reparent and refreeze the editor here or the whole app stays frozen
-    #if defined ( __WXGTK__ )
+#if defined ( __WXGTK__ )
     Thaw();
-    #endif
+#endif
     // parent the left control under this
     m_pControl->Reparent(this);
-    #if defined ( __WXGTK__ )
+#if defined ( __WXGTK__ )
     Freeze();
-    #endif
+#endif
     // add it in the sizer
     m_pSizer->Add(m_pControl, 1, wxEXPAND);
     // notify the plugin when the right splitter window is not destroyed and the left window is reparented to cbEditor
@@ -1407,15 +1407,15 @@ inline void OverrideUseTabsPerLanguage(cbStyledTextCtrl *control)
     int lexer = control->GetLexer();
     switch (lexer)
     {
-        case wxSCI_LEX_PYTHON:
-        case wxSCI_LEX_YAML:
-            control->SetUseTabs(false);
-            break;
-        case wxSCI_LEX_MAKEFILE:
-            control->SetUseTabs(true);
-            break;
-        default:
-            break;
+    case wxSCI_LEX_PYTHON:
+    case wxSCI_LEX_YAML:
+        control->SetUseTabs(false);
+        break;
+    case wxSCI_LEX_MAKEFILE:
+        control->SetUseTabs(true);
+        break;
+    default:
+        break;
     }
 }
 
@@ -1605,7 +1605,8 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         }
     }
     else
-    {   // in word wrap mode, home/end keys goto start/end of the entire line. alt+home/end goes to wrap points
+    {
+        // in word wrap mode, home/end keys goto start/end of the entire line. alt+home/end goes to wrap points
         control->CmdKeyAssign(wxSCI_KEY_END,  wxSCI_KEYMOD_ALT,                   wxSCI_CMD_LINEENDWRAP);
         control->CmdKeyAssign(wxSCI_KEY_END,  wxSCI_KEYMOD_SHIFT|wxSCI_KEYMOD_ALT, wxSCI_CMD_LINEENDWRAPEXTEND);
 
@@ -1771,10 +1772,10 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
         control->SetMarginWidth(C_FOLDING_MARGIN, foldingMarginBaseWidth);
         // use "|" here or we might break plugins that use the margin (none at the moment)
         control->SetMarginMask(C_FOLDING_MARGIN,
-                                 control->GetMarginMask(C_FOLDING_MARGIN)
+                               control->GetMarginMask(C_FOLDING_MARGIN)
                                | (  wxSCI_MASK_FOLDERS
-                                  - (  (1 << wxSCI_MARKNUM_CHANGEUNSAVED)
-                                     | (1 << wxSCI_MARKNUM_CHANGESAVED))) );
+                                    - (  (1 << wxSCI_MARKNUM_CHANGEUNSAVED)
+                                         | (1 << wxSCI_MARKNUM_CHANGESAVED))) );
         control->SetMarginSensitive(C_FOLDING_MARGIN, 1);
     }
     else
@@ -2035,7 +2036,8 @@ bool cbEditor::SaveAs()
     wxString Extension = fname.GetExt();
     wxString Filter;
     if (!Extension.IsEmpty())
-    {    // use the current extension as the filter
+    {
+        // use the current extension as the filter
         // Select filter belonging to this file type:
         Extension.Prepend(_T("."));
         Filter = FileFilters::GetFilterString(Extension);
@@ -2067,7 +2069,8 @@ bool cbEditor::SaveAs()
     dlg.SetFilterIndex(StoredIndex);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
-    {  // cancelled out
+    {
+        // cancelled out
         return false;
     }
     m_Filename = dlg.GetPath();
@@ -2866,7 +2869,7 @@ void cbEditor::HighlightBraces()
     }
     wxChar ch = control->GetCharAt(currPos);
     if (ch == _T('{') || ch == _T('[') || ch == _T('(') ||
-        ch == _T('}') || ch == _T(']') || ch == _T(')'))
+            ch == _T('}') || ch == _T(']') || ch == _T(')'))
     {
         if (newPos != wxSCI_INVALID_POSITION)
         {
@@ -2890,8 +2893,8 @@ int cbEditor::GetLineIndentInSpaces(int line) const
 {
     cbStyledTextCtrl* control = GetControl();
     int currLine = (line == -1)
-                    ? control->LineFromPosition(control->GetCurrentPos())
-                    : line;
+                   ? control->LineFromPosition(control->GetCurrentPos())
+                   : line;
     wxString text = control->GetLine(currLine);
     unsigned int len = text.Length();
     int spaceCount = 0;
@@ -3130,7 +3133,7 @@ bool cbEditor::OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type
         // this re-enables 1-click "Find declaration of..."
         // but avoids losing selection for cut/copy
         if (control->GetSelectionStart() > pos ||
-           control->GetSelectionEnd() < pos)
+                control->GetSelectionEnd() < pos)
         {
             control->GotoPos(pos);
         }
@@ -3173,20 +3176,20 @@ void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
 
     switch (pcm)
     {
-        case pcmAsIs:
-            control->SetPrintColourMode(wxSCI_PRINT_NORMAL);
-            break;
-        case pcmBlackAndWhite:
-            control->SetPrintColourMode(wxSCI_PRINT_BLACKONWHITE);
-            break;
-        case pcmColourOnWhite:
-            control->SetPrintColourMode(wxSCI_PRINT_COLOURONWHITE);
-            break;
-        case pcmInvertColours:
-            control->SetPrintColourMode(wxSCI_PRINT_INVERTLIGHT);
-            break;
-        default:
-            break;
+    case pcmAsIs:
+        control->SetPrintColourMode(wxSCI_PRINT_NORMAL);
+        break;
+    case pcmBlackAndWhite:
+        control->SetPrintColourMode(wxSCI_PRINT_BLACKONWHITE);
+        break;
+    case pcmColourOnWhite:
+        control->SetPrintColourMode(wxSCI_PRINT_COLOURONWHITE);
+        break;
+    case pcmInvertColours:
+        control->SetPrintColourMode(wxSCI_PRINT_INVERTLIGHT);
+        break;
+    default:
+        break;
     }
     InitPrinting();
     cbEditorPrintout printout(m_Filename, control, selectionOnly);
@@ -3195,7 +3198,7 @@ void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
         if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
         {
             cbMessageBox(_("There was a problem printing.\n"
-                            "Perhaps your current printer is not set correctly?"), _("Printing"), wxICON_ERROR);
+                           "Perhaps your current printer is not set correctly?"), _("Printing"), wxICON_ERROR);
             DeInitPrinting();
         }
     }
@@ -3354,24 +3357,24 @@ void cbEditor::OnMarginClick(wxScintillaEvent& event)
 {
     switch (event.GetMargin())
     {
-        case C_MARKER_MARGIN: // bookmarks and breakpoints margin
-        {
-            int lineYpix = event.GetPosition();
-            int line = GetControl()->LineFromPosition(lineYpix);
+    case C_MARKER_MARGIN: // bookmarks and breakpoints margin
+    {
+        int lineYpix = event.GetPosition();
+        int line = GetControl()->LineFromPosition(lineYpix);
 
-            ToggleBreakpoint(line);
-            break;
-        }
-        case C_FOLDING_MARGIN: // folding margin
-        {
-            int lineYpix = event.GetPosition();
-            int line = GetControl()->LineFromPosition(lineYpix);
+        ToggleBreakpoint(line);
+        break;
+    }
+    case C_FOLDING_MARGIN: // folding margin
+    {
+        int lineYpix = event.GetPosition();
+        int line = GetControl()->LineFromPosition(lineYpix);
 
-            GetControl()->ToggleFold(line);
-            break;
-        }
-        default:
-            break;
+        GetControl()->ToggleFold(line);
+        break;
+    }
+    default:
+        break;
     }
     OnScintillaEvent(event);
 }
@@ -3443,14 +3446,14 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
         // selection brace completion
         bool braceCompleted = false;
         if (   Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/selection_brace_completion"), false)
-            || control->IsBraceShortcutActive() )
+                || control->IsBraceShortcutActive() )
         {
             braceCompleted = control->DoSelectionBraceCompletion(ch);
         }
 
         // brace completion
         if (  !braceCompleted
-            && Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/brace_completion"), true) )
+                && Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/brace_completion"), true) )
         {
             control->DoBraceCompletion(ch);
         }
@@ -3478,7 +3481,7 @@ void cbEditor::OnEditorDwellStart(wxScintillaEvent& event)
     wxPoint ptClient = control->ScreenToClient(ptScreen);
 
     double distance = sqrt(  (ptScreen.x - ptEvent.x) * (ptScreen.x - ptEvent.x)
-                           + (ptScreen.y - ptEvent.y) * (ptScreen.y - ptEvent.y) );
+                             + (ptScreen.y - ptEvent.y) * (ptScreen.y - ptEvent.y) );
     if (!screenRect.Contains(ptScreen) || distance > 10)
         return;
 
@@ -3538,8 +3541,8 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
             const DebuggerManager::RegisteredPlugins &plugins = debuggerManager->GetAllDebuggers();
             cbDebuggerPlugin *active = debuggerManager->GetActiveDebugger();
             for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin();
-                 it != plugins.end();
-                 ++it)
+                    it != plugins.end();
+                    ++it)
             {
                 if (it->first != active)
                     it->first->EditorLinesAddedOrRemoved(this, startline + 1, linesAdded);
@@ -3558,7 +3561,7 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
     // we have to make the hidden lines visible, otherwise, they
     // will no longer be reachable, until the editor is closed and reopened again
     if (   (event.GetModificationType() & wxSCI_MOD_CHANGEFOLD)
-        && (event.GetFoldLevelPrev() & wxSCI_FOLDLEVELHEADERFLAG) )
+            && (event.GetFoldLevelPrev() & wxSCI_FOLDLEVELHEADERFLAG) )
     {
         cbStyledTextCtrl* control = GetControl();
         int line = event.GetLine();

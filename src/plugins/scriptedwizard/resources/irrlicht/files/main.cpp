@@ -68,7 +68,7 @@ int main(int argc, char** argv)
 
     IrrlichtDevice *device =
         createDevice(EDT_SOFTWARE, dimension2d<s32>(640, 480), 16,
-            false, false, false, 0);
+                     false, false, false, 0);
 
     /*
     Set the caption of the window to some nice text. Note that there is
@@ -91,7 +91,7 @@ int main(int argc, char** argv)
     We add a hello world label to the window, using the GUI environment.
     */
     guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!",
-        rect<int>(10,10,200,22), true);
+                          rect<int>(10,10,200,22), true);
 
     /*
     To display something interesting, we load a Quake 2 model

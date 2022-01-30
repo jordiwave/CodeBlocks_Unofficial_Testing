@@ -22,18 +22,18 @@
 
 namespace
 {
-    wxsRegisterItem<wxsContextHelpButton> Reg(_T("ContextHelpButton"),wxsTWidget,_T("Standard"), 280);
+wxsRegisterItem<wxsContextHelpButton> Reg(_T("ContextHelpButton"),wxsTWidget,_T("Standard"), 280);
 
-    WXS_ST_BEGIN(wxsContextHelpButtonStyles, wxT("wxBU_AUTODRAW"))
-        WXS_ST_CATEGORY("wxContextHelpButton")
-         WXS_ST(wxBU_AUTODRAW)
-         WXS_ST(wxBU_BOTTOM)
-         WXS_ST(wxBU_LEFT)
-         WXS_ST(wxBU_RIGHT)
-         WXS_ST(wxBU_TOP)
-         WXS_ST(wxBU_EXACTFIT)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsContextHelpButtonStyles, wxT("wxBU_AUTODRAW"))
+WXS_ST_CATEGORY("wxContextHelpButton")
+WXS_ST(wxBU_AUTODRAW)
+WXS_ST(wxBU_BOTTOM)
+WXS_ST(wxBU_LEFT)
+WXS_ST(wxBU_RIGHT)
+WXS_ST(wxBU_TOP)
+WXS_ST(wxBU_EXACTFIT)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 }
 
 /*! \brief Ctor
@@ -61,21 +61,21 @@ void wxsContextHelpButton::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/cshelp.h>"), GetInfo().ClassName, hfInPCH);
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/cshelp.h>"), GetInfo().ClassName, hfInPCH);
 
-            Codef(_T("%C(%W, wxID_CONTEXT_HELP, %P, %S, %T);\n"));
+        Codef(_T("%C(%W, wxID_CONTEXT_HELP, %P, %S, %T);\n"));
 
-            BuildSetupWindowCode();
-            return;
-        }
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsContextHelpButton::OnBuildCreatingCode"), GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsContextHelpButton::OnBuildCreatingCode"), GetLanguage());
+    }
     }
 }
 

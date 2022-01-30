@@ -10,17 +10,17 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/filename.h>
-    #include <wx/notebook.h>
-    #include <wx/menu.h>
-    #include "manager.h"
-    #include "editorbase.h"
-    #include "cbeditor.h"
-    #include "editormanager.h"
-    #include "pluginmanager.h"
-    #include "cbproject.h" // FileTreeData
-    #include "projectmanager.h" // ProjectsArray
-    #include <wx/wfstream.h>
+#include <wx/filename.h>
+#include <wx/notebook.h>
+#include <wx/menu.h>
+#include "manager.h"
+#include "editorbase.h"
+#include "cbeditor.h"
+#include "editormanager.h"
+#include "pluginmanager.h"
+#include "cbproject.h" // FileTreeData
+#include "projectmanager.h" // ProjectsArray
+#include <wx/wfstream.h>
 #endif
 
 #include "cbauibook.h"
@@ -38,8 +38,8 @@ struct EditorBaseInternalData
 {
     EditorBaseInternalData(EditorBase* owner)
         : m_pOwner(owner),
-        m_DisplayingPopupMenu(false),
-        m_CloseMe(false)
+          m_DisplayingPopupMenu(false),
+          m_CloseMe(false)
     {}
 
     EditorBase* m_pOwner;
@@ -113,9 +113,9 @@ wxString EditorBase::CreateUniqueFilename()
 }
 
 EditorBase::EditorBase(wxWindow* parent, const wxString& filename, bool addCustomEditor)
-        : wxPanel(parent, -1),
-        m_IsBuiltinEditor(false),
-        m_WinTitle(filename)
+    : wxPanel(parent, -1),
+      m_IsBuiltinEditor(false),
+      m_WinTitle(filename)
 {
     m_pData = new EditorBaseInternalData(this);
 
@@ -184,15 +184,15 @@ bool EditorBase::QueryClose()
         msg.Printf(_("File %s is modified...\nDo you want to save the changes?"), GetFilename().c_str());
         switch (cbMessageBox(msg, _("Save file"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
         {
-            case wxID_YES:
-                if (!Save())
-                    return false;
-                break;
-            case wxID_NO:
-                break;
-            case wxID_CANCEL:
-            default:
+        case wxID_YES:
+            if (!Save())
                 return false;
+            break;
+        case wxID_NO:
+            break;
+        case wxID_CANCEL:
+        default:
+            return false;
         }
         SetModified(false);
     }
@@ -245,19 +245,19 @@ void EditorBase::BasicAddToContextMenu(wxMenu* popup, ModuleType type)
 {
     if (type == mtOpenFilesList)
     {
-      popup->Append(idCloseMe, _("Close"));
-      popup->Append(idCloseAll, _("Close all"));
-      popup->Append(idCloseAllOthers, _("Close all others"));
-      popup->AppendSeparator();
-      popup->Append(idSaveMe, _("Save"));
-      popup->Append(idSaveAll, _("Save all"));
-      popup->AppendSeparator();
-      // enable/disable some items, based on state
-      popup->Enable(idSaveMe, GetModified());
+        popup->Append(idCloseMe, _("Close"));
+        popup->Append(idCloseAll, _("Close all"));
+        popup->Append(idCloseAllOthers, _("Close all others"));
+        popup->AppendSeparator();
+        popup->Append(idSaveMe, _("Save"));
+        popup->Append(idSaveAll, _("Save all"));
+        popup->AppendSeparator();
+        // enable/disable some items, based on state
+        popup->Enable(idSaveMe, GetModified());
 
-      bool hasOthers = ThereAreOthers();
-      popup->Enable(idCloseAll, hasOthers);
-      popup->Enable(idCloseAllOthers, hasOthers);
+        bool hasOthers = ThereAreOthers();
+        popup->Enable(idCloseAll, hasOthers);
+        popup->Enable(idCloseAllOthers, hasOthers);
     }
     if (type != mtEditorManager) // no editor
     {
@@ -312,7 +312,8 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type, wx
         }
     }
     else if (!noeditor && wxGetKeyState(WXK_ALT))
-    { // run a script
+    {
+        // run a script
     }
     else
     {

@@ -24,16 +24,16 @@
 /** \brief Class for wxsAuiToolBarLabel widget */
 class wxsAuiToolBarLabel: public wxsAuiToolBarItemBase
 {
-    public:
+public:
 
-        bool m_IsDefault;
-        long m_Width;
+    bool m_IsDefault;
+    long m_Width;
 
-        wxsAuiToolBarLabel(wxsItemResData* Data);
+    wxsAuiToolBarLabel(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnEnumItemProperties(long Flags);
+    virtual void OnEnumItemProperties(long Flags);
 };
 
 #endif

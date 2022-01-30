@@ -9,14 +9,14 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-	#include <wx/intl.h>
-	#include <wx/msgdlg.h>
-	#include <wx/regex.h>
+#include <wx/intl.h>
+#include <wx/msgdlg.h>
+#include <wx/regex.h>
 
-	#include "compilerfactory.h"
-	#include "logmanager.h"
-	#include "manager.h"
-	#include "macrosmanager.h"
+#include "compilerfactory.h"
+#include "logmanager.h"
+#include "manager.h"
+#include "macrosmanager.h"
 #endif // CB_PRECOMP
 
 #include <wx/config.h>
@@ -26,30 +26,30 @@
 
 class wxIccDirTraverser : public wxDirTraverser
 {
-    public:
-        wxIccDirTraverser(wxArrayString& folders) : m_Dirs(folders)
-        {
-            m_SepChar = (platform::windows == 1) ? _T('\\') : _T('/');
-        }
+public:
+    wxIccDirTraverser(wxArrayString& folders) : m_Dirs(folders)
+    {
+        m_SepChar = (platform::windows == 1) ? _T('\\') : _T('/');
+    }
 
-        wxDirTraverseResult OnFile(const wxString& WXUNUSED(filename)) override
-        {
-            return wxDIR_CONTINUE;
-        }
+    wxDirTraverseResult OnFile(const wxString& WXUNUSED(filename)) override
+    {
+        return wxDIR_CONTINUE;
+    }
 
-        wxDirTraverseResult OnDir(const wxString& dirname) override
-        {
-            if (m_Dirs.Index(dirname) == wxNOT_FOUND &&
+    wxDirTraverseResult OnDir(const wxString& dirname) override
+    {
+        if (m_Dirs.Index(dirname) == wxNOT_FOUND &&
                 dirname.AfterLast(m_SepChar).Contains(_T(".")))
-            {
-                m_Dirs.Add(dirname);
-            }
-            return wxDIR_CONTINUE;
+        {
+            m_Dirs.Add(dirname);
         }
+        return wxDIR_CONTINUE;
+    }
 
-    private:
-        wxArrayString& m_Dirs;
-        wxChar m_SepChar;
+private:
+    wxArrayString& m_Dirs;
+    wxChar m_SepChar;
 };
 
 CompilerICC::CompilerICC()
@@ -121,7 +121,8 @@ AutoDetectResult CompilerICC::AutoDetectInstallationDir()
         const wxString msvcIds[4] = { _T("msvc6"),
                                       _T("msvctk"),
                                       _T("msvc8"),
-                                      _T("msvc10") };
+                                      _T("msvc10")
+                                    };
         bool msvcFound = false;
         for (unsigned int which_msvc = 0; which_msvc < array_size(msvcIds); ++which_msvc)
         {
@@ -132,14 +133,14 @@ AutoDetectResult CompilerICC::AutoDetectInstallationDir()
             wxString vcMasterNoMacros = vcComp->GetMasterPath();
             Manager::Get()->GetMacrosManager()->ReplaceMacros(vcMasterNoMacros);
             if (   !wxFileExists(vcMasterNoMacros + sep + wxT("bin") + sep + vcComp->GetPrograms().C)
-                && !wxFileExists(vcMasterNoMacros + sep + vcComp->GetPrograms().C) )
+                    && !wxFileExists(vcMasterNoMacros + sep + vcComp->GetPrograms().C) )
                 continue; // this MSVC is not installed; try next one
 
             const wxString& vcMasterPath = vcComp->GetMasterPath();
             if (m_ExtraPaths.Index(vcMasterPath) == wxNOT_FOUND)
                 m_ExtraPaths.Add(vcMasterPath);
             if (  !vcMasterPath.EndsWith(wxT("bin"))
-                && m_ExtraPaths.Index(vcMasterPath + sep + wxT("bin")) == wxNOT_FOUND )
+                    && m_ExtraPaths.Index(vcMasterPath + sep + wxT("bin")) == wxNOT_FOUND )
             {
                 m_ExtraPaths.Add(vcMasterPath + sep + wxT("bin"));
             }
@@ -151,7 +152,7 @@ AutoDetectResult CompilerICC::AutoDetectInstallationDir()
             for (size_t i = 0; i < vcExtraPaths.GetCount(); ++i)
             {
                 if (   m_ExtraPaths.Index(vcExtraPaths[i]) == wxNOT_FOUND
-                    && wxDirExists(vcExtraPaths[i]) )
+                        && wxDirExists(vcExtraPaths[i]) )
                 {
                     m_ExtraPaths.Add(vcExtraPaths[i]);
                 }
@@ -172,7 +173,7 @@ AutoDetectResult CompilerICC::AutoDetectInstallationDir()
             for (size_t i = 0; i < vcLibDirs.GetCount(); ++i)
             {
                 if (   m_LibDirs.Index(vcLibDirs[i]) == wxNOT_FOUND
-                    && wxDirExists(vcLibDirs[i]) )
+                        && wxDirExists(vcLibDirs[i]) )
                 {
                     AddLibDir(vcLibDirs[i]);
                 }

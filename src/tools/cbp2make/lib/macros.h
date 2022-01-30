@@ -40,18 +40,19 @@
 
 #ifndef NOMINMAX
 #define NOMINMAX
-namespace std {
+namespace std
+{
 
 template <typename T1, typename T2>
 inline T1 const& min (T1 const& a, T2 const& b)
 {
- return (((a)<(b))?(a):(b));
+    return (((a)<(b))?(a):(b));
 }
 
 template <typename T1, typename T2>
 inline T1 const& max (T1 const& a, T2 const& b)
 {
- return (((a)>(b))?(a):(b));
+    return (((a)>(b))?(a):(b));
 }
 
 }

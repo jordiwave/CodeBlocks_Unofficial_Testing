@@ -12,10 +12,10 @@
 #if !defined(__clang__) && defined(__GNUC__)
 
 #define MOZ_IS_GCC 1
-   /*
-    * This macro should simplify gcc version checking. For example, to check
-    * for gcc 4.5.1 or later, check `#ifdef MOZ_GCC_VERSION_AT_LEAST(4, 5, 1)`.
-    */
+/*
+ * This macro should simplify gcc version checking. For example, to check
+ * for gcc 4.5.1 or later, check `#ifdef MOZ_GCC_VERSION_AT_LEAST(4, 5, 1)`.
+ */
 #  define MOZ_GCC_VERSION_AT_LEAST(major, minor, patchlevel)          \
      ((__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) \
       >= ((major) * 10000 + (minor) * 100 + (patchlevel)))
@@ -48,21 +48,21 @@
 #    define MOZ_STLPORT_VERSION_AT_LEAST(major, minor, patch) \
        (_STLPORT_VERSION >= ((major) << 8 | (minor) << 4 | (patch)))
 #  elif defined(_LIBCPP_VERSION)
-   /*
-    * libc++, unfortunately, doesn't appear to have useful versioning macros.
-    * Hopefully, the recommendations of N3694 with respect to standard libraries
-    * will get applied instead and we won't need to worry about version numbers
-    * here.
-    */
+/*
+ * libc++, unfortunately, doesn't appear to have useful versioning macros.
+ * Hopefully, the recommendations of N3694 with respect to standard libraries
+ * will get applied instead and we won't need to worry about version numbers
+ * here.
+ */
 #    define MOZ_USING_LIBCXX 1
 #  elif defined(__GLIBCXX__)
 #    define MOZ_USING_LIBSTDCXX 1
-   /*
-    * libstdc++ is also annoying and doesn't give us useful versioning macros
-    * for the library. If we're using gcc, then assume that libstdc++ matches
-    * the compiler version. If we're using clang, we're going to have to fake
-    * major/minor combinations by looking for newly-defined config macros.
-    */
+/*
+ * libstdc++ is also annoying and doesn't give us useful versioning macros
+ * for the library. If we're using gcc, then assume that libstdc++ matches
+ * the compiler version. If we're using clang, we're going to have to fake
+ * major/minor combinations by looking for newly-defined config macros.
+ */
 #    if MOZ_IS_GCC
 #      define MOZ_LIBSTDCXX_VERSION_AT_LEAST(major, minor, patch) \
           MOZ_GCC_VERSION_AT_LEAST(major, minor, patch)
@@ -92,7 +92,7 @@
 #    endif
 #  endif
 
-   // Flesh out the defines for everyone else
+// Flesh out the defines for everyone else
 #  ifndef MOZ_USING_STLPORT
 #    define MOZ_USING_STLPORT 0
 #    define MOZ_STLPORT_VERSION_AT_LEAST(major, minor, patch) 0

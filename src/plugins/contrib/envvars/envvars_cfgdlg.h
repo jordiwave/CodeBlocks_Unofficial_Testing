@@ -21,71 +21,77 @@ class wxChoice;
 class EnvVarsConfigDlg : public cbConfigurationPanel
 {
 public:
-  /// Ctor
-  EnvVarsConfigDlg(wxWindow* parent, EnvVars* plugin);
+    /// Ctor
+    EnvVarsConfigDlg(wxWindow* parent, EnvVars* plugin);
 
-  /// Dtor
-  virtual ~EnvVarsConfigDlg();
+    /// Dtor
+    virtual ~EnvVarsConfigDlg();
 
-  /// returns the title of the plugin configuration panel
-  virtual wxString GetTitle() const
-  { return _("Environment variables"); }
+    /// returns the title of the plugin configuration panel
+    virtual wxString GetTitle() const
+    {
+        return _("Environment variables");
+    }
 
-  /// returns the title of the plugin's bitmap to use for configuration dialog
-  virtual wxString GetBitmapBaseName() const
-  { return _T("envvars"); }
+    /// returns the title of the plugin's bitmap to use for configuration dialog
+    virtual wxString GetBitmapBaseName() const
+    {
+        return _T("envvars");
+    }
 
 protected:
-  /// Fires if the UI is being updated (wx event)
-  void OnUpdateUI         (wxUpdateUIEvent& event);
+    /// Fires if the UI is being updated (wx event)
+    void OnUpdateUI         (wxUpdateUIEvent& event);
 
 private:
-  /// Fires if the "apply" button is pressed inside C::B settings
-  virtual void OnApply()
-  { SaveSettings(); }
+    /// Fires if the "apply" button is pressed inside C::B settings
+    virtual void OnApply()
+    {
+        SaveSettings();
+    }
 
-  /// Fires if the "cancel" button is pressed inside C::B settings
-  virtual void OnCancel()
-  { ; }
+    /// Fires if the "cancel" button is pressed inside C::B settings
+    virtual void OnCancel()
+    { ; }
 
-  /// Load all settings (envvar sets) from global C::B config
-  void LoadSettings();
-  /// Save all settings (envvar sets) from selected set to global C::B config
-  void SaveSettings();
-  /// Save all settings (envvar sets) from specified set to global C::B config
-  void SaveSettings(const wxString& active_set);
-  /// Save active set to global C::B config
-  void SaveSettingsActiveSet(wxString active_set);
+    /// Load all settings (envvar sets) from global C::B config
+    void LoadSettings();
+    /// Save all settings (envvar sets) from selected set to global C::B config
+    void SaveSettings();
+    /// Save all settings (envvar sets) from specified set to global C::B config
+    void SaveSettings(const wxString& active_set);
+    /// Save active set to global C::B config
+    void SaveSettingsActiveSet(wxString active_set);
 
-  /// Fires when a (new) envvar set is selected
-  void OnSetClick         (wxCommandEvent&  event);
-  /// Fires when the button to create an envvar set is pressed
-  void OnCreateSetClick   (wxCommandEvent&  event);
-  /// Fires when the button to clone an envvar set is pressed
-  void OnCloneSetClick    (wxCommandEvent&  event);
-  /// Fires when the button to remove an envvar set is pressed
-  void OnRemoveSetClick   (wxCommandEvent&  event);
+    /// Fires when a (new) envvar set is selected
+    void OnSetClick         (wxCommandEvent&  event);
+    /// Fires when the button to create an envvar set is pressed
+    void OnCreateSetClick   (wxCommandEvent&  event);
+    /// Fires when the button to clone an envvar set is pressed
+    void OnCloneSetClick    (wxCommandEvent&  event);
+    /// Fires when the button to remove an envvar set is pressed
+    void OnRemoveSetClick   (wxCommandEvent&  event);
 
-  /// Fires when the checkbox to toggle an envvar is changed
-  void OnToggleEnvVarClick(wxCommandEvent&  event);
-  /// Fires when the button to add an envvar is pressed
-  void OnAddEnvVarClick   (wxCommandEvent&  event);
-  /// Fires when the button to edit an envvar is pressed
-  void OnEditEnvVarClick  (wxCommandEvent&  event);
-  /// Fires when the button to delete an envvar is pressed
-  void OnDeleteEnvVarClick(wxCommandEvent&  event);
-  /// Fires when the button to clear all envvars is pressed
-  void OnClearEnvVarsClick(wxCommandEvent&  event);
-  /// Fires when the button to set all envvars is pressed
-  void OnSetEnvVarsClick  (wxCommandEvent&  event);
+    /// Fires when the checkbox to toggle an envvar is changed
+    void OnToggleEnvVarClick(wxCommandEvent&  event);
+    /// Fires when the button to add an envvar is pressed
+    void OnAddEnvVarClick   (wxCommandEvent&  event);
+    /// Fires when the button to edit an envvar is pressed
+    void OnEditEnvVarClick  (wxCommandEvent&  event);
+    /// Fires when the button to delete an envvar is pressed
+    void OnDeleteEnvVarClick(wxCommandEvent&  event);
+    /// Fires when the button to clear all envvars is pressed
+    void OnClearEnvVarsClick(wxCommandEvent&  event);
+    /// Fires when the button to set all envvars is pressed
+    void OnSetEnvVarsClick  (wxCommandEvent&  event);
 
-  /// Verifies that an envvar set is unique
-  bool VerifySetUnique(const wxChoice* choSet, wxString set);
+    /// Verifies that an envvar set is unique
+    bool VerifySetUnique(const wxChoice* choSet, wxString set);
 
-  EnvVars* m_plugin;
-  wxString m_active_set;
+    EnvVars* m_plugin;
+    wxString m_active_set;
 
-  DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // ENVVARS_CFGDLG_H

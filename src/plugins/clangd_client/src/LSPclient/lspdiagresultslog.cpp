@@ -10,12 +10,12 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/arrstr.h>
-    #include <wx/filename.h>
-    #include <wx/listctrl.h>
-    #include "manager.h"
-    #include "editormanager.h"
-    #include "cbeditor.h"
+#include <wx/arrstr.h>
+#include <wx/filename.h>
+#include <wx/listctrl.h>
+#include "manager.h"
+#include "editormanager.h"
+#include "cbeditor.h"
 #endif
 #include <wx/menu.h>
 #include <wx/checklst.h>
@@ -30,8 +30,8 @@
 
 namespace
 {
-    const int ID_List = wxNewId();
-    const int idMenuIgnoredMsgs = wxNewId();
+const int ID_List = wxNewId();
+const int idMenuIgnoredMsgs = wxNewId();
 }
 
 BEGIN_EVENT_TABLE(LSPDiagnosticsResultsLog, wxEvtHandler)
@@ -71,8 +71,8 @@ LSPDiagnosticsResultsLog::~LSPDiagnosticsResultsLog()
 {
     //dtor
     Disconnect(idMenuIgnoredMsgs, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &LSPDiagnosticsResultsLog::OnSetIgnoredMsgs);
+               (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+               &LSPDiagnosticsResultsLog::OnSetIgnoredMsgs);
     if (FindEventHandler(this))
         Manager::Get()->GetAppWindow()->RemoveEventHandler(this);   //(ph 2021/04/17)
 }
@@ -145,7 +145,8 @@ void LSPDiagnosticsResultsLog::SyncEditor(int selIndex)
     ed->Activate();
     ed->GotoLine(line);
 
-    if (cbStyledTextCtrl* ctrl = ed->GetControl()) {
+    if (cbStyledTextCtrl* ctrl = ed->GetControl())
+    {
         ctrl->EnsureVisible(line);
     }
 }

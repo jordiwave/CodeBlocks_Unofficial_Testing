@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        
-// Purpose:     
-// Author:      
-// Modified by: 
+// Name:
+// Purpose:
+// Author:
+// Modified by:
 // Created:     Mon 10 May 2004 10:44:57 PM EDT
-// RCS-ID:      
-// Copyright:   
-// Licence:     
+// RCS-ID:
+// Copyright:
+// Licence:
 /////////////////////////////////////////////////////////////////////////////
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -57,7 +57,7 @@ END_EVENT_TABLE()
 
 DictionaryWizard::DictionaryWizard( )
 {
-  m_pDownloader = NULL;
+    m_pDownloader = NULL;
 }
 
 DictionaryWizard::DictionaryWizard( wxWindow* parent, wxWindowID id, const wxPoint& pos )
@@ -90,7 +90,7 @@ bool DictionaryWizard::Create( wxWindow* parent, wxWindowID id, const wxPoint& p
  */
 
 void DictionaryWizard::CreateControls()
-{    
+{
 ////@begin DictionaryWizard content construction
 
     wxWizard* item1 = this;
@@ -132,21 +132,21 @@ void DictionaryWizard::PopulateDictionariesToDownload()
     WizardPage1* pWizardPage = wxDynamicCast(GetChildren().GetFirst()->GetData(), WizardPage1);
     if (pWizardPage)
     {
-      wxCheckListBox* pCheckListBox = (wxCheckListBox*)(pWizardPage->FindWindow(CheckListBoxDictionaries));
-      if (pCheckListBox == NULL)
-      {
-        ::wxMessageBox("Unable to find available dictionary checklistbox");
-      }
-      else
-      {
-        // Iterate through the items in wxCheckListBox and add the checked ones to the list
-        int nItemCount = pCheckListBox->GetCount();
-        for (int i=0; i<nItemCount; i++)
+        wxCheckListBox* pCheckListBox = (wxCheckListBox*)(pWizardPage->FindWindow(CheckListBoxDictionaries));
+        if (pCheckListBox == NULL)
         {
-          if (pCheckListBox->IsChecked(i))
-            m_DictionariesToDownload.Add(pCheckListBox->GetString(i));
+            ::wxMessageBox("Unable to find available dictionary checklistbox");
         }
-      }
+        else
+        {
+            // Iterate through the items in wxCheckListBox and add the checked ones to the list
+            int nItemCount = pCheckListBox->GetCount();
+            for (int i=0; i<nItemCount; i++)
+            {
+                if (pCheckListBox->IsChecked(i))
+                    m_DictionariesToDownload.Add(pCheckListBox->GetString(i));
+            }
+        }
     }
 }
 
@@ -164,7 +164,7 @@ BEGIN_EVENT_TABLE( WizardPage1, wxWizardPageSimple )
 
 ////@begin WizardPage1 event table entries
 ////@end WizardPage1 event table entries
-  EVT_BUTTON(ButtonDownloadList, WizardPage1::OnButtonDownloadListClick)
+    EVT_BUTTON(ButtonDownloadList, WizardPage1::OnButtonDownloadListClick)
 
 END_EVENT_TABLE()
 
@@ -205,7 +205,7 @@ bool WizardPage1::Create( wxWizard* parent )
  */
 
 void WizardPage1::CreateControls()
-{    
+{
 ////@begin WizardPage1 content construction
 
     WizardPage1* item5 = this;
@@ -255,31 +255,31 @@ bool WizardPage1::ShowToolTips()
 
 void WizardPage1::OnButtonDownloadListClick( wxCommandEvent& event )
 {
-  // Try to give some feedback that we're doing something
-  wxWindowDisabler Disabler;
-  wxBusyCursor Busy;
-  
-  if (GetParent())
-  {
-    EngineDictionaryDownloader* pDownloader = ((DictionaryWizard*)GetParent())->GetEngineDownloader();
-    if (pDownloader)
+    // Try to give some feedback that we're doing something
+    wxWindowDisabler Disabler;
+    wxBusyCursor Busy;
+
+    if (GetParent())
     {
-      wxCheckListBox* pCheckListBox = (wxCheckListBox*)FindWindow(CheckListBoxDictionaries);
-      if (pCheckListBox == NULL)
-      {
-        ::wxMessageBox("Unable to find available dictionary checklistbox");
-        return;
-      }
-      wxArrayString DictionaryArray;
-      pDownloader->RetrieveDictionaryList(DictionaryArray);
-      for (unsigned int i=0; i<DictionaryArray.GetCount(); i++)
-      {
-        wxString DictionaryListEntry = DictionaryArray[i];
-        if (DictionaryListEntry != "")
-          pCheckListBox->Append(DictionaryListEntry);
-      }
+        EngineDictionaryDownloader* pDownloader = ((DictionaryWizard*)GetParent())->GetEngineDownloader();
+        if (pDownloader)
+        {
+            wxCheckListBox* pCheckListBox = (wxCheckListBox*)FindWindow(CheckListBoxDictionaries);
+            if (pCheckListBox == NULL)
+            {
+                ::wxMessageBox("Unable to find available dictionary checklistbox");
+                return;
+            }
+            wxArrayString DictionaryArray;
+            pDownloader->RetrieveDictionaryList(DictionaryArray);
+            for (unsigned int i=0; i<DictionaryArray.GetCount(); i++)
+            {
+                wxString DictionaryListEntry = DictionaryArray[i];
+                if (DictionaryListEntry != "")
+                    pCheckListBox->Append(DictionaryListEntry);
+            }
+        }
     }
-  }
 }
 
 /*!
@@ -296,8 +296,8 @@ BEGIN_EVENT_TABLE( WizardPage2, wxWizardPageSimple )
 
 ////@begin WizardPage2 event table entries
 ////@end WizardPage2 event table entries
-  EVT_WIZARD_PAGE_CHANGED(-1, WizardPage2::OnPageChanged )
-  EVT_BUTTON( ButtonDownload, WizardPage2::OnButtonDownloadClick )
+    EVT_WIZARD_PAGE_CHANGED(-1, WizardPage2::OnPageChanged )
+    EVT_BUTTON( ButtonDownload, WizardPage2::OnButtonDownloadClick )
 END_EVENT_TABLE()
 
 /*!
@@ -337,7 +337,7 @@ bool WizardPage2::Create( wxWizard* parent )
  */
 
 void WizardPage2::CreateControls()
-{    
+{
 ////@begin WizardPage2 content construction
 
     WizardPage2* item15 = this;
@@ -390,56 +390,56 @@ bool WizardPage2::ShowToolTips()
 
 void WizardPage2::OnPageChanged(wxWizardEvent& event)
 {
-  wxTextCtrl* pSummary = (wxTextCtrl*)FindWindow(TextCtrlSummary);
-  ((DictionaryWizard*)GetParent())->PopulateDictionariesToDownload();
-  if (pSummary)
-    pSummary->SetValue(GenerateDictionarySummary());
+    wxTextCtrl* pSummary = (wxTextCtrl*)FindWindow(TextCtrlSummary);
+    ((DictionaryWizard*)GetParent())->PopulateDictionariesToDownload();
+    if (pSummary)
+        pSummary->SetValue(GenerateDictionarySummary());
 }
 
 void WizardPage2::OnButtonDownloadClick( wxCommandEvent& event )
 {
-  // Try to give some feedback that we're doing something
-  wxWindowDisabler Disabler;
-  wxBusyCursor Busy;
+    // Try to give some feedback that we're doing something
+    wxWindowDisabler Disabler;
+    wxBusyCursor Busy;
 
-  // Loop through all the dictionaries selected for download
-  // Get a directory list for that dictionaries FTP directory
-  // Put a list of the files in that directory into a wxArrayString
-  // Ask the EngineDictionaryDownloader class which file to download
-  // Download that file and have the EngineDictionaryDownloader class
-  //  install that dictionary
-  DictionaryWizard* pWizard = (DictionaryWizard*)GetParent();
-  if (pWizard)
-  {
-    wxArrayString* pDictionaryArray = pWizard->GetDictionariesToDownload();
-    EngineDictionaryDownloader* pDownloader = pWizard->GetEngineDownloader();
-    if (pDictionaryArray)
+    // Loop through all the dictionaries selected for download
+    // Get a directory list for that dictionaries FTP directory
+    // Put a list of the files in that directory into a wxArrayString
+    // Ask the EngineDictionaryDownloader class which file to download
+    // Download that file and have the EngineDictionaryDownloader class
+    //  install that dictionary
+    DictionaryWizard* pWizard = (DictionaryWizard*)GetParent();
+    if (pWizard)
     {
-      for (unsigned int i=0; i<pDictionaryArray->GetCount(); i++)
-      {
-        wxString strCurrentDictionary = pDictionaryArray->Item(i);
-        wxString strDownloadedFileName = pDownloader->DownloadDictionary(strCurrentDictionary);
-        if (strDownloadedFileName != wxEmptyString)
+        wxArrayString* pDictionaryArray = pWizard->GetDictionariesToDownload();
+        EngineDictionaryDownloader* pDownloader = pWizard->GetEngineDownloader();
+        if (pDictionaryArray)
         {
-          pDownloader->InstallDictionary(strDownloadedFileName);
+            for (unsigned int i=0; i<pDictionaryArray->GetCount(); i++)
+            {
+                wxString strCurrentDictionary = pDictionaryArray->Item(i);
+                wxString strDownloadedFileName = pDownloader->DownloadDictionary(strCurrentDictionary);
+                if (strDownloadedFileName != wxEmptyString)
+                {
+                    pDownloader->InstallDictionary(strDownloadedFileName);
+                }
+            }
         }
-      }
     }
-  }
 }
 
 wxString WizardPage2::GenerateDictionarySummary()
 {
-  wxString strReturn = "";
-  DictionaryWizard* pWizard = (DictionaryWizard*)GetParent();
-  if (pWizard)
-  {
-    wxArrayString* pDictionaryArray = pWizard->GetDictionariesToDownload();
-    if (pDictionaryArray)
+    wxString strReturn = "";
+    DictionaryWizard* pWizard = (DictionaryWizard*)GetParent();
+    if (pWizard)
     {
-      for (unsigned int i=0; i<pDictionaryArray->GetCount(); i++)
-        strReturn += pDictionaryArray->Item(i) + _("\n");
+        wxArrayString* pDictionaryArray = pWizard->GetDictionariesToDownload();
+        if (pDictionaryArray)
+        {
+            for (unsigned int i=0; i<pDictionaryArray->GetCount(); i++)
+                strReturn += pDictionaryArray->Item(i) + _("\n");
+        }
     }
-  }
-  return strReturn;
+    return strReturn;
 }

@@ -18,30 +18,33 @@ class wxWindow;
 
 class BacktraceDlg : public wxPanel, public cbBacktraceDlg
 {
-    public:
-        BacktraceDlg(wxWindow* parent);
+public:
+    BacktraceDlg(wxWindow* parent);
 
-        wxWindow* GetWindow() override { return this; }
+    wxWindow* GetWindow() override
+    {
+        return this;
+    }
 
-        void Reload() override;
-        void EnableWindow(bool enable) override;
-    private:
-        void OnListRightClick(wxListEvent& event);
-        void OnDoubleClick(wxListEvent& event);
-        void OnJump(wxCommandEvent& event);
-        void OnSwitchFrame(wxCommandEvent& event);
-        void OnSave(wxCommandEvent& event);
-        void OnCopyToClipboard(wxCommandEvent& event);
+    void Reload() override;
+    void EnableWindow(bool enable) override;
+private:
+    void OnListRightClick(wxListEvent& event);
+    void OnDoubleClick(wxListEvent& event);
+    void OnJump(wxCommandEvent& event);
+    void OnSwitchFrame(wxCommandEvent& event);
+    void OnSave(wxCommandEvent& event);
+    void OnCopyToClipboard(wxCommandEvent& event);
 
-        void OnSettingJumpDefault(wxCommandEvent& event);
-        void OnSettingSwitchDefault(wxCommandEvent& event);
+    void OnSettingJumpDefault(wxCommandEvent& event);
+    void OnSettingSwitchDefault(wxCommandEvent& event);
 
-        void OnUpdateUI(wxUpdateUIEvent &event);
-        bool IsSwitchFrameEnabled() const;
-    private:
-        DECLARE_EVENT_TABLE();
-    private:
-        wxListCtrl *m_list;
+    void OnUpdateUI(wxUpdateUIEvent &event);
+    bool IsSwitchFrameEnabled() const;
+private:
+    DECLARE_EVENT_TABLE();
+private:
+    wxListCtrl *m_list;
 };
 
 #endif // CB_BACKTRACEDLG_H

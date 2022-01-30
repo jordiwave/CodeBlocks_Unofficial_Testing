@@ -37,8 +37,8 @@
 #define FIXEDIND    0x07
 
 wxsSizerFlagsProperty::wxsSizerFlagsProperty(long _Offset,int Priority):
-        wxsProperty(_("Borders"),_T("flag"),Priority),
-        Offset(_Offset)
+    wxsProperty(_("Borders"),_T("flag"),Priority),
+    Offset(_Offset)
 {
 }
 
@@ -106,90 +106,90 @@ bool wxsSizerFlagsProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridMa
 {
     switch ( Index )
     {
-        case BORDERIND:
+    case BORDERIND:
+    {
+        long NewVal = Grid->GetPropertyValue(Id).GetLong();
+        bool ThisAll = (NewVal&BorderAll) != 0;
+        bool PrevAll = (FLAGS&BorderPrevAll) != 0;
+        // Checking if "all" flag has changed
+        if ( ThisAll != PrevAll )
+        {
+            if ( ThisAll )
             {
-                long NewVal = Grid->GetPropertyValue(Id).GetLong();
-                bool ThisAll = (NewVal&BorderAll) != 0;
-                bool PrevAll = (FLAGS&BorderPrevAll) != 0;
-                // Checking if "all" flag has changed
-                if ( ThisAll != PrevAll )
-                {
-                    if ( ThisAll )
-                    {
-                        FLAGS |= BorderMask | BorderAll | BorderPrevAll;
-                    }
-                    else
-                    {
-                        FLAGS &= ~BorderMask & ~BorderAll & ~BorderPrevAll;
-                    }
-                }
-                else
-                {
-                    NewVal &= BorderMask;
-                    FLAGS &= ~BorderMask;
-                    FLAGS |= NewVal;
-                    if ( NewVal == BorderMask )
-                    {
-                        FLAGS |= BorderAll | BorderPrevAll;
-                    }
-                    else
-                    {
-                        FLAGS &= ~BorderAll & ~BorderPrevAll;
-                    }
-                }
-            }
-            break;
-
-        case ALIGNHIND:
-            FLAGS &= ~AlignHMask;
-            FLAGS |= (Grid->GetPropertyValue(Id).GetLong() & AlignHMask);
-            break;
-
-        case ALIGNVIND:
-            FLAGS &= ~AlignVMask;
-            FLAGS |= (Grid->GetPropertyValue(Id).GetLong() & AlignVMask);
-            break;
-
-        case ALIGNCIND:
-            FLAGS &= ~AlignCMask;
-            FLAGS |= (Grid->GetPropertyValue(Id).GetLong() & AlignCMask);
-            break;
-
-        case EXPANDIND:
-            if ( Grid->GetPropertyValue(Id).GetBool() )
-            {
-                FLAGS |= Expand;
+                FLAGS |= BorderMask | BorderAll | BorderPrevAll;
             }
             else
             {
-                FLAGS &= ~Expand;
+                FLAGS &= ~BorderMask & ~BorderAll & ~BorderPrevAll;
             }
-            break;
-
-        case SHAPEDIND:
-            if ( Grid->GetPropertyValue(Id).GetBool() )
+        }
+        else
+        {
+            NewVal &= BorderMask;
+            FLAGS &= ~BorderMask;
+            FLAGS |= NewVal;
+            if ( NewVal == BorderMask )
             {
-                FLAGS |= Shaped;
+                FLAGS |= BorderAll | BorderPrevAll;
             }
             else
             {
-                FLAGS &= ~Shaped;
+                FLAGS &= ~BorderAll & ~BorderPrevAll;
             }
-            break;
+        }
+    }
+    break;
 
-        case FIXEDIND:
-            if ( Grid->GetPropertyValue(Id).GetBool() )
-            {
-                FLAGS |= FixedMinSize;
-            }
-            else
-            {
-                FLAGS &= ~FixedMinSize;
-            }
-            break;
+    case ALIGNHIND:
+        FLAGS &= ~AlignHMask;
+        FLAGS |= (Grid->GetPropertyValue(Id).GetLong() & AlignHMask);
+        break;
 
-        default:
-            return false;
+    case ALIGNVIND:
+        FLAGS &= ~AlignVMask;
+        FLAGS |= (Grid->GetPropertyValue(Id).GetLong() & AlignVMask);
+        break;
+
+    case ALIGNCIND:
+        FLAGS &= ~AlignCMask;
+        FLAGS |= (Grid->GetPropertyValue(Id).GetLong() & AlignCMask);
+        break;
+
+    case EXPANDIND:
+        if ( Grid->GetPropertyValue(Id).GetBool() )
+        {
+            FLAGS |= Expand;
+        }
+        else
+        {
+            FLAGS &= ~Expand;
+        }
+        break;
+
+    case SHAPEDIND:
+        if ( Grid->GetPropertyValue(Id).GetBool() )
+        {
+            FLAGS |= Shaped;
+        }
+        else
+        {
+            FLAGS &= ~Shaped;
+        }
+        break;
+
+    case FIXEDIND:
+        if ( Grid->GetPropertyValue(Id).GetBool() )
+        {
+            FLAGS |= FixedMinSize;
+        }
+        else
+        {
+            FLAGS &= ~FixedMinSize;
+        }
+        break;
+
+    default:
+        return false;
     }
 
     return true;
@@ -200,44 +200,44 @@ bool wxsSizerFlagsProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridM
     FixFlags(FLAGS);
     switch ( Index )
     {
-        case BORDERIND:
-            if ( (FLAGS & BorderMask) == BorderMask )
-            {
-                FLAGS |= BorderAll | BorderPrevAll;
-            }
-            else
-            {
-                FLAGS &= ~BorderAll & ~BorderPrevAll;
-            }
-            Grid->SetPropertyValue(Id,FLAGS&(BorderMask|BorderAll));
-            break;
+    case BORDERIND:
+        if ( (FLAGS & BorderMask) == BorderMask )
+        {
+            FLAGS |= BorderAll | BorderPrevAll;
+        }
+        else
+        {
+            FLAGS &= ~BorderAll & ~BorderPrevAll;
+        }
+        Grid->SetPropertyValue(Id,FLAGS&(BorderMask|BorderAll));
+        break;
 
-        case ALIGNHIND:
-            Grid->SetPropertyValue(Id,FLAGS&AlignHMask);
-            break;
+    case ALIGNHIND:
+        Grid->SetPropertyValue(Id,FLAGS&AlignHMask);
+        break;
 
-        case ALIGNVIND:
-            Grid->SetPropertyValue(Id,FLAGS&AlignVMask);
-            break;
+    case ALIGNVIND:
+        Grid->SetPropertyValue(Id,FLAGS&AlignVMask);
+        break;
 
-        case ALIGNCIND:
-            Grid->SetPropertyValue(Id,FLAGS&AlignCMask);
-            break;
+    case ALIGNCIND:
+        Grid->SetPropertyValue(Id,FLAGS&AlignCMask);
+        break;
 
-        case EXPANDIND:
-            Grid->SetPropertyValue(Id,(FLAGS&Expand)!=0);
-            break;
+    case EXPANDIND:
+        Grid->SetPropertyValue(Id,(FLAGS&Expand)!=0);
+        break;
 
-        case SHAPEDIND:
-            Grid->SetPropertyValue(Id,(FLAGS&Shaped)!=0);
-            break;
+    case SHAPEDIND:
+        Grid->SetPropertyValue(Id,(FLAGS&Shaped)!=0);
+        break;
 
-        case FIXEDIND:
-            Grid->SetPropertyValue(Id,(FLAGS&FixedMinSize)!=0);
-            break;
+    case FIXEDIND:
+        Grid->SetPropertyValue(Id,(FLAGS&FixedMinSize)!=0);
+        break;
 
-        default:
-            return false;
+    default:
+        return false;
     }
     return true;
 }
@@ -324,7 +324,7 @@ long wxsSizerFlagsProperty::ParseString(const wxString& String)
     while ( Tkn.HasMoreTokens() )
     {
         wxString Flag = Tkn.GetNextToken();
-             if ( Flag == _T("wxTOP")           ) Flags |= BorderTop;
+        if ( Flag == _T("wxTOP")           ) Flags |= BorderTop;
         else if ( Flag == _T("wxNORTH")         ) Flags |= BorderTop;
         else if ( Flag == _T("wxBOTTOM")        ) Flags |= BorderBottom;
         else if ( Flag == _T("wxSOUTH")         ) Flags |= BorderBottom;

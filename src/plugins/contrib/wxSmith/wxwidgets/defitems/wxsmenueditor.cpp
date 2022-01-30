@@ -363,13 +363,16 @@ wxString wxsMenuEditor::GetItemTreeName(MenuItem* Item)
 {
     switch ( Item->m_Type )
     {
-        case wxsMenuItem::Separator: return _T("--------");
-        case wxsMenuItem::Break:     return _("** BREAK **");
+    case wxsMenuItem::Separator:
+        return _T("--------");
+    case wxsMenuItem::Break:
+        return _("** BREAK **");
 
-        case wxsMenuItem::Normal: // fall-through
-        case wxsMenuItem::Radio:  // fall-through
-        case wxsMenuItem::Check:  // fall-through
-        default:                     return Item->m_Label;
+    case wxsMenuItem::Normal: // fall-through
+    case wxsMenuItem::Radio:  // fall-through
+    case wxsMenuItem::Check:  // fall-through
+    default:
+        return Item->m_Label;
     }
 }
 
@@ -420,37 +423,37 @@ void wxsMenuEditor::SelectItem(MenuItem* NewSelection)
         bool UseChecked = false;
         switch ( CorrectType(m_Selected,UseId,UseLabel,UseAccelerator,UseHelp,UseEnabled,UseChecked) )
         {
-            case wxsMenuItem::Normal:
-                m_TypeNormal->SetValue(true);
-                // If item has children, can not change type to anything else
-                // Same goes for children of wxMenuBar
-                if ( m_Selected->m_Child || (!m_Selected->m_Parent && m_MenuBar) )
-                {
-                    m_TypeCheck->Disable();
-                    m_TypeRadio->Disable();
-                    m_TypeBreak->Disable();
-                    m_TypeSeparator->Disable();
-                }
-                break;
+        case wxsMenuItem::Normal:
+            m_TypeNormal->SetValue(true);
+            // If item has children, can not change type to anything else
+            // Same goes for children of wxMenuBar
+            if ( m_Selected->m_Child || (!m_Selected->m_Parent && m_MenuBar) )
+            {
+                m_TypeCheck->Disable();
+                m_TypeRadio->Disable();
+                m_TypeBreak->Disable();
+                m_TypeSeparator->Disable();
+            }
+            break;
 
-            case wxsMenuItem::Radio:
-                m_TypeRadio->SetValue(true);
-                break;
+        case wxsMenuItem::Radio:
+            m_TypeRadio->SetValue(true);
+            break;
 
-            case wxsMenuItem::Check:
-                m_TypeCheck->SetValue(true);
-                break;
+        case wxsMenuItem::Check:
+            m_TypeCheck->SetValue(true);
+            break;
 
-            case wxsMenuItem::Separator:
-                m_TypeSeparator->SetValue(true);
-                break;
+        case wxsMenuItem::Separator:
+            m_TypeSeparator->SetValue(true);
+            break;
 
-            case wxsMenuItem::Break:
-                m_TypeBreak->SetValue(true);
-                break;
+        case wxsMenuItem::Break:
+            m_TypeBreak->SetValue(true);
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
 
         m_Id->Enable(UseId);
@@ -628,25 +631,26 @@ wxsMenuEditor::Type wxsMenuEditor::CorrectType(MenuItem* Item,bool& UseId,bool& 
 
     switch ( Item->m_Type )
     {
-        case wxsMenuItem::Separator:
-            return wxsMenuItem::Separator;
+    case wxsMenuItem::Separator:
+        return wxsMenuItem::Separator;
 
-        case wxsMenuItem::Break:
-            return wxsMenuItem::Break;
+    case wxsMenuItem::Break:
+        return wxsMenuItem::Break;
 
-        case wxsMenuItem::Check:
-            UseChecked = true;
-            // Fall through
-        case wxsMenuItem::Radio:
-        case wxsMenuItem::Normal:
-            UseId = true;
-            UseLabel = true;
-            UseAccelerator = true;
-            UseHelp = true;
-            UseEnabled = true;
-            return Item->m_Type;
+    case wxsMenuItem::Check:
+        UseChecked = true;
+    // Fall through
+    case wxsMenuItem::Radio:
+    case wxsMenuItem::Normal:
+        UseId = true;
+        UseLabel = true;
+        UseAccelerator = true;
+        UseHelp = true;
+        UseEnabled = true;
+        return Item->m_Type;
 
-        default:;
+    default:
+        ;
     }
 
     return wxsMenuItem::Normal;
@@ -813,10 +817,10 @@ void wxsMenuEditor::OnButtonDelClick(cb_unused wxCommandEvent& event)
     if ( !m_Selected ) return;
 
     if ( cbMessageBox(
-        _("Are you sure to delete this menu item ?\n"
-          "(It will delete all sub menus too)"),
-        _("Delete menu"),
-        wxYES_NO) != wxID_YES ) return;
+                _("Are you sure to delete this menu item ?\n"
+                  "(It will delete all sub menus too)"),
+                _("Delete menu"),
+                wxYES_NO) != wxID_YES ) return;
 
     MenuItem* Previous = GetPrevious(m_Selected);
     MenuItem* Parent = m_Selected->m_Parent;

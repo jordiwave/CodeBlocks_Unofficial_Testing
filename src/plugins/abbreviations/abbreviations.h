@@ -34,13 +34,19 @@ public:
       * in configuration dialogs. Lower numbers mean the plugin's
       * configuration is put higher in the list.
       */
-    int GetConfigurationPriority() const override { return 50; }
+    int GetConfigurationPriority() const override
+    {
+        return 50;
+    }
 
     /** Return the configuration group for this plugin. Default is cgUnknown.
       * Notice that you can logically OR more than one configuration groups,
       * so you could set it, for example, as "cgCompiler | cgContribPlugin".
       */
-    int GetConfigurationGroup() const override { return cgEditor; }
+    int GetConfigurationGroup() const override
+    {
+        return cgEditor;
+    }
 
     /** Return plugin's configuration panel.
       * @param parent The parent window.
@@ -86,7 +92,10 @@ public:
     static void ExchangeTabAndSpaces(AutoCompleteMap& map);
 
     /** \brief Function returing singleton instance */
-    static Abbreviations* Get() { return m_Singleton; }
+    static Abbreviations* Get()
+    {
+        return m_Singleton;
+    }
 
     void DoAutoComplete(cbEditor* ed);
 private:

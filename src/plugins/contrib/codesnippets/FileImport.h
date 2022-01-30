@@ -31,7 +31,8 @@ public:
                 //wxPrintf(_T("ctor Dir create[%s]\n"), newDirectory.c_str());
                 int rc = ::wxMkdir (newDirectory);
                 if (not rc)
-                {   //wxPrintf(_T("Mkdir failed for[%s]"), newDirectory.c_str());
+                {
+                    //wxPrintf(_T("Mkdir failed for[%s]"), newDirectory.c_str());
                     break;
                 }
             }
@@ -56,7 +57,8 @@ public:
             //wxPrintf(_T("OnDir create[%s]\n"), newDirectory.c_str());
             int rc = ::wxMkdir (newDirectory);
             if (not rc)
-            {   //wxPrintf(_T("Mkdir failed for[%s]"), newDirectory.c_str());
+            {
+                //wxPrintf(_T("Mkdir failed for[%s]"), newDirectory.c_str());
                 return wxDIR_STOP;
             }
         }

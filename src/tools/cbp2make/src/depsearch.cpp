@@ -54,22 +54,30 @@ void CDependencyRecord::Clear(void)
 void CDependencyRecord::Show(void)
 {
     std::cout<<"Unit: "<<m_Name.GetCString()<<std::endl;
-    if (m_Dependencies.size() > 0) {
+    if (m_Dependencies.size() > 0)
+    {
         std::cout<<"Unit dependens on "<<m_Dependencies.size()<<" other units."<<std::endl;
-        for (size_t i = 0; i < m_Dependencies.size(); i++) {
+        for (size_t i = 0; i < m_Dependencies.size(); i++)
+        {
             CDependencyRecord *r = m_Dependencies[i];
             std::cout<<"Dependency #"<<(i+1)<<": "<<r->GetName().GetCString()<<std::endl;
         }
-    } else {
+    }
+    else
+    {
         std::cout<<"Unit has no dependencies."<<std::endl;
     }
-    if (m_CrossReferences.size() > 0) {
+    if (m_CrossReferences.size() > 0)
+    {
         std::cout<<"Unit is used by"<<m_CrossReferences.size()<<" other units."<<std::endl;
-        for (size_t i = 0; i < m_CrossReferences.size(); i++) {
+        for (size_t i = 0; i < m_CrossReferences.size(); i++)
+        {
             CDependencyRecord *r = m_CrossReferences[i];
             std::cout<<"Cross reference #"<<(i+1)<<": "<<r->GetName().GetCString()<<std::endl;
         }
-    } else {
+    }
+    else
+    {
         std::cout<<"Unit is not used by any other unit."<<std::endl;
     }
 }
@@ -81,7 +89,8 @@ size_t CDependencyRecord::DependenciesCount(void) const
 
 CDependencyRecord *CDependencyRecord::Dependency(const size_t Index) const
 {
-    if (Index<m_Dependencies.size()) {
+    if (Index<m_Dependencies.size())
+    {
         return m_Dependencies[Index];
     }
     return 0;
@@ -89,7 +98,8 @@ CDependencyRecord *CDependencyRecord::Dependency(const size_t Index) const
 
 void CDependencyRecord::AddDependency(const CDependencyRecord *Record)
 {
-    for (size_t i = 0; i < m_Dependencies.size(); i++) {
+    for (size_t i = 0; i < m_Dependencies.size(); i++)
+    {
         if (Record == m_Dependencies[i]) return;
     }
     m_Dependencies.push_back((CDependencyRecord *)Record);
@@ -102,7 +112,8 @@ size_t CDependencyRecord::CrossReferencesCount(void) const
 
 CDependencyRecord *CDependencyRecord::CrossReference(const size_t Index) const
 {
-    if (Index<m_CrossReferences.size()) {
+    if (Index<m_CrossReferences.size())
+    {
         return m_CrossReferences[Index];
     }
     return 0;
@@ -110,7 +121,8 @@ CDependencyRecord *CDependencyRecord::CrossReference(const size_t Index) const
 
 void CDependencyRecord::AddCrossReference(const CDependencyRecord *Record)
 {
-    for (size_t i = 0; i < m_CrossReferences.size(); i++) {
+    for (size_t i = 0; i < m_CrossReferences.size(); i++)
+    {
         if (Record == m_CrossReferences[i]) return;
     }
     m_CrossReferences.push_back((CDependencyRecord *)Record);
@@ -130,7 +142,8 @@ CDependencyInfo::~CDependencyInfo(void)
 
 void CDependencyInfo::Clear(void)
 {
-    for (size_t i = 0; i < m_Records.size(); i++) {
+    for (size_t i = 0; i < m_Records.size(); i++)
+    {
         delete m_Records[i];
     }
     m_Records.clear();
@@ -139,11 +152,13 @@ void CDependencyInfo::Clear(void)
 
 void CDependencyInfo::Show(void)
 {
-    if (m_Records.size() > 0) {
+    if (m_Records.size() > 0)
+    {
         std::cout<<"Dependency info collected for "<<m_Records.size()<<" units."<<std::endl;
         std::cout<<"Unit Dependencies: Direct\tIndirect\tAll\t"
                  <<"XRefs: Direct\tIndirect\tAll\tPath"<<std::endl;
-        for (size_t i = 0; i < m_Records.size(); i++) {
+        for (size_t i = 0; i < m_Records.size(); i++)
+        {
             CDependencyRecord *r = m_Records[i];
             /*
             std::cout<<"Unit #"<<(i+1)<<" '"<<r->GetName().GetCString()<<"' has "
@@ -158,7 +173,9 @@ void CDependencyInfo::Show(void)
             std::cout<<"\t\t"<<IndirectCrossReferencesCount(i)<<"\t\t"
                      <<AllCrossReferencesCount(i)<<"\t"<<r->GetName().GetCString()<<std::endl;
         }
-    } else {
+    }
+    else
+    {
         std::cout<<"Dependency information is not available."<<std::endl;
     }
 }
@@ -166,15 +183,18 @@ void CDependencyInfo::Show(void)
 CString CDependencyInfo::OneLineReport(const size_t Index, const bool Deps, const bool XRefs)
 {
     CString result;
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         CDependencyRecord *r = m_Records[Index];
-        if (Deps) {
+        if (Deps)
+        {
             result += "Deps ["+IntegerToString(r->DependenciesCount())
                       + "/"+IntegerToString(IndirectDependenciesCount(Index))
                       + "/"+IntegerToString(AllDependenciesCount(Index)) + "]";
         }
         if (Deps && XRefs) result += " ";
-        if (XRefs) {
+        if (XRefs)
+        {
             result += " XRefs ["+IntegerToString(r->CrossReferencesCount())
                       + "/"+IntegerToString(IndirectCrossReferencesCount(Index))
                       + "/"+IntegerToString(AllCrossReferencesCount(Index))+"]";
@@ -186,7 +206,8 @@ CString CDependencyInfo::OneLineReport(const size_t Index, const bool Deps, cons
 
 void CDependencyInfo::ResetMarkers(void)
 {
-    for (size_t i = 0; i < m_Records.size(); i++) {
+    for (size_t i = 0; i < m_Records.size(); i++)
+    {
         m_Records[i]->Marker() = 0;
     }
 }
@@ -194,12 +215,15 @@ void CDependencyInfo::ResetMarkers(void)
 size_t CDependencyInfo::DependenciesCount(CDependencyRecord *Record)
 {
     size_t result = 0;
-    if (0!=Record) {
+    if (0!=Record)
+    {
         //ResetMarkers();
         result += Record->DependenciesCount();
         Record->Marker()++;
-        for (size_t i = 0, n = Record->DependenciesCount(); i < n; i++) {
-            if (0==Record->Dependency(i)->Marker()) {
+        for (size_t i = 0, n = Record->DependenciesCount(); i < n; i++)
+        {
+            if (0==Record->Dependency(i)->Marker())
+            {
                 result += DependenciesCount(Record->Dependency(i));
                 Record->Dependency(i)->Marker()++;
             }
@@ -211,12 +235,15 @@ size_t CDependencyInfo::DependenciesCount(CDependencyRecord *Record)
 CStringList CDependencyInfo::Dependencies(CDependencyRecord *Record)
 {
     CStringList result;
-    if (0!=Record) {
+    if (0!=Record)
+    {
         //ResetMarkers();
         result.Insert(Record->GetName());
         Record->Marker()++;
-        for (size_t i = 0, n = Record->DependenciesCount(); i < n; i++) {
-            if (0==Record->Dependency(i)->Marker()) {
+        for (size_t i = 0, n = Record->DependenciesCount(); i < n; i++)
+        {
+            if (0==Record->Dependency(i)->Marker())
+            {
                 result.Insert(Dependencies(Record->Dependency(i)));
                 Record->Dependency(i)->Marker()++;
             }
@@ -228,12 +255,15 @@ CStringList CDependencyInfo::Dependencies(CDependencyRecord *Record)
 size_t CDependencyInfo::CrossReferencesCount(CDependencyRecord *Record)
 {
     size_t result = 0;
-    if (0!=Record) {
+    if (0!=Record)
+    {
         //ResetMarkers();
         result += Record->CrossReferencesCount();
         Record->Marker()++;
-        for (size_t i = 0, n = Record->CrossReferencesCount(); i < n; i++) {
-            if (0==Record->CrossReference(i)->Marker()) {
+        for (size_t i = 0, n = Record->CrossReferencesCount(); i < n; i++)
+        {
+            if (0==Record->CrossReference(i)->Marker())
+            {
                 result += CrossReferencesCount(Record->CrossReference(i));
                 Record->CrossReference(i)->Marker()++;
             }
@@ -245,12 +275,15 @@ size_t CDependencyInfo::CrossReferencesCount(CDependencyRecord *Record)
 CStringList CDependencyInfo::CrossReferences(CDependencyRecord *Record)
 {
     CStringList result;
-    if (0!=Record) {
+    if (0!=Record)
+    {
         //ResetMarkers();
         result.Insert(Record->GetName());
         Record->Marker()++;
-        for (size_t i = 0, n = Record->CrossReferencesCount(); i < n; i++) {
-            if (0==Record->CrossReference(i)->Marker()) {
+        for (size_t i = 0, n = Record->CrossReferencesCount(); i < n; i++)
+        {
+            if (0==Record->CrossReference(i)->Marker())
+            {
                 result.Insert(CrossReferences(Record->CrossReference(i)));
                 Record->CrossReference(i)->Marker()++;
             }
@@ -267,7 +300,8 @@ size_t CDependencyInfo::RecordsCount(void) const
 size_t CDependencyInfo::DirectDependenciesCount(const size_t Index) const
 {
     size_t result = 0;
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         result += m_Records[Index]->DependenciesCount();
     }
     return result;
@@ -276,10 +310,12 @@ size_t CDependencyInfo::DirectDependenciesCount(const size_t Index) const
 size_t CDependencyInfo::IndirectDependenciesCount(const size_t Index)
 {
     size_t result = 0;
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         ResetMarkers();
         const CDependencyRecord *r = m_Records[Index];
-        for (size_t i = 0, n = r->DependenciesCount(); i < n; i++) {
+        for (size_t i = 0, n = r->DependenciesCount(); i < n; i++)
+        {
             result += DependenciesCount(r->Dependency(i));
         }
     }
@@ -289,7 +325,8 @@ size_t CDependencyInfo::IndirectDependenciesCount(const size_t Index)
 size_t CDependencyInfo::AllDependenciesCount(const size_t Index)
 {
     size_t result = 0;
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         ResetMarkers();
         return DependenciesCount(m_Records[Index]);
     }
@@ -298,7 +335,8 @@ size_t CDependencyInfo::AllDependenciesCount(const size_t Index)
 
 CString CDependencyInfo::Name(const size_t Index) const
 {
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         return m_Records[Index]->GetName();
     }
     return "";
@@ -307,9 +345,11 @@ CString CDependencyInfo::Name(const size_t Index) const
 CStringList CDependencyInfo::DirectDependencies(const size_t Index) const
 {
     CStringList result;
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         const CDependencyRecord *r = m_Records[Index];
-        for (size_t i = 0, n = r->DependenciesCount(); i < n; i++) {
+        for (size_t i = 0, n = r->DependenciesCount(); i < n; i++)
+        {
             result.Insert(r->Dependency(i)->GetName());
         }
     }
@@ -319,12 +359,15 @@ CStringList CDependencyInfo::DirectDependencies(const size_t Index) const
 CStringList CDependencyInfo::IndirectDependencies(const size_t Index)
 {
     CStringList result;
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         ResetMarkers();
         const CDependencyRecord *r = m_Records[Index];
-        for (size_t i = 0, n = r->DependenciesCount(); i < n; i++) {
+        for (size_t i = 0, n = r->DependenciesCount(); i < n; i++)
+        {
             const CDependencyRecord *rr = r->Dependency(i);
-            for (size_t j = 0, m = rr->DependenciesCount(); j < m; j++) {
+            for (size_t j = 0, m = rr->DependenciesCount(); j < m; j++)
+            {
                 result.Insert(Dependencies(rr->Dependency(j)));
             }
         }
@@ -335,10 +378,12 @@ CStringList CDependencyInfo::IndirectDependencies(const size_t Index)
 CStringList CDependencyInfo::AllDependencies(const size_t Index)
 {
     CStringList result;
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         ResetMarkers();
         const CDependencyRecord *r = m_Records[Index];
-        for (size_t i = 0, n = r->DependenciesCount(); i < n; i++) {
+        for (size_t i = 0, n = r->DependenciesCount(); i < n; i++)
+        {
             result.Insert(Dependencies(r->Dependency(i)));
         }
     }
@@ -348,7 +393,8 @@ CStringList CDependencyInfo::AllDependencies(const size_t Index)
 size_t CDependencyInfo::DirectCrossReferencesCount(const size_t Index) const
 {
     size_t result = 0;
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         result += m_Records[Index]->CrossReferencesCount();
     }
     return result;
@@ -357,10 +403,12 @@ size_t CDependencyInfo::DirectCrossReferencesCount(const size_t Index) const
 size_t CDependencyInfo::IndirectCrossReferencesCount(const size_t Index)
 {
     size_t result = 0;
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         ResetMarkers();
         const CDependencyRecord *r = m_Records[Index];
-        for (size_t i = 0, n = r->CrossReferencesCount(); i < n; i++) {
+        for (size_t i = 0, n = r->CrossReferencesCount(); i < n; i++)
+        {
             result += CrossReferencesCount(r->CrossReference(i));
         }
     }
@@ -370,7 +418,8 @@ size_t CDependencyInfo::IndirectCrossReferencesCount(const size_t Index)
 size_t CDependencyInfo::AllCrossReferencesCount(const size_t Index)
 {
     size_t result = 0;
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         ResetMarkers();
         return CrossReferencesCount(m_Records[Index]);
     }
@@ -380,9 +429,11 @@ size_t CDependencyInfo::AllCrossReferencesCount(const size_t Index)
 CStringList CDependencyInfo::DirectCrossReferences(const size_t Index) const
 {
     CStringList result;
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         const CDependencyRecord *r = m_Records[Index];
-        for (size_t i = 0, n = r->CrossReferencesCount(); i < n; i++) {
+        for (size_t i = 0, n = r->CrossReferencesCount(); i < n; i++)
+        {
             result.Insert(r->CrossReference(i)->GetName());
         }
     }
@@ -392,12 +443,15 @@ CStringList CDependencyInfo::DirectCrossReferences(const size_t Index) const
 CStringList CDependencyInfo::IndirectCrossReferences(const size_t Index)
 {
     CStringList result;
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         ResetMarkers();
         const CDependencyRecord *r = m_Records[Index];
-        for (size_t i = 0, n = r->CrossReferencesCount(); i < n; i++) {
+        for (size_t i = 0, n = r->CrossReferencesCount(); i < n; i++)
+        {
             const CDependencyRecord *rr = r->CrossReference(i);
-            for (size_t j = 0, m = rr->CrossReferencesCount(); j < m; j++) {
+            for (size_t j = 0, m = rr->CrossReferencesCount(); j < m; j++)
+            {
                 result.Insert(CrossReferences(rr->CrossReference(j)));
             }
         }
@@ -408,10 +462,12 @@ CStringList CDependencyInfo::IndirectCrossReferences(const size_t Index)
 CStringList CDependencyInfo::AllCrossReferences(const size_t Index)
 {
     CStringList result;
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         ResetMarkers();
         const CDependencyRecord *r = m_Records[Index];
-        for (size_t i = 0, n = r->CrossReferencesCount(); i < n; i++) {
+        for (size_t i = 0, n = r->CrossReferencesCount(); i < n; i++)
+        {
             result.Insert(CrossReferences(r->CrossReference(i)));
         }
     }
@@ -420,7 +476,8 @@ CStringList CDependencyInfo::AllCrossReferences(const size_t Index)
 
 bool CDependencyInfo::AreDependenciesComplete(const size_t Index)
 {
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         return m_Records[Index]->DependenciesComplete();
     }
     return false;
@@ -428,7 +485,8 @@ bool CDependencyInfo::AreDependenciesComplete(const size_t Index)
 
 bool CDependencyInfo::AreCrossReferencesComplete(const size_t Index)
 {
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         return m_Records[Index]->CrossReferencesComplete();
     }
     return false;
@@ -436,14 +494,16 @@ bool CDependencyInfo::AreCrossReferencesComplete(const size_t Index)
 
 void CDependencyInfo::SetDependenciesComplete(const size_t Index, const bool State)
 {
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         m_Records[Index]->DependenciesComplete() = State;
     }
 }
 
 void CDependencyInfo::SetCrossReferencesComplete(const size_t Index, const bool State)
 {
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         m_Records[Index]->CrossReferencesComplete() = State;
     }
 }
@@ -451,10 +511,13 @@ void CDependencyInfo::SetCrossReferencesComplete(const size_t Index, const bool 
 int CDependencyInfo::FindRecord(const CString& Name)
 {
     const hash_t h = sdbm_hash((unsigned char *)Name.GetCString(),Name.GetLength());
-    for (size_t i = 0; i < m_Records.size(); i++) {
+    for (size_t i = 0; i < m_Records.size(); i++)
+    {
         CDependencyRecord *r = m_Records[i];
-        if (r->Hash() == h) {
-            if (r->GetName() == Name) {
+        if (r->Hash() == h)
+        {
+            if (r->GetName() == Name)
+            {
                 return i;
             }
         }
@@ -465,9 +528,12 @@ int CDependencyInfo::FindRecord(const CString& Name)
 size_t CDependencyInfo::AddRecord(const CString& Name)
 {
     int Index = FindRecord(Name);
-    if (Index>=0) {
+    if (Index>=0)
+    {
         return Index;
-    } else {
+    }
+    else
+    {
         CDependencyRecord *r = new CDependencyRecord;
         r->SetName(Name);
         m_Records.push_back(r);
@@ -478,7 +544,8 @@ size_t CDependencyInfo::AddRecord(const CString& Name)
 
 bool CDependencyInfo::AddDependency(const size_t Index, const CString& DependencyName)
 {
-    if (Index<m_Records.size()) {
+    if (Index<m_Records.size())
+    {
         size_t dep_index = AddRecord(DependencyName);
         CDependencyRecord *r = m_Records[Index];
         CDependencyRecord *d = m_Records[dep_index];
@@ -502,14 +569,17 @@ size_t CDependencyInfo::AddDependency(const CString& Name, const CString& Depend
 
 void CDependencyInfo::MakeRules(CMakefile& Makefile, const int Section, const bool Multiline)
 {
-    for (size_t i = 0; i < m_Records.size(); i++) {
+    for (size_t i = 0; i < m_Records.size(); i++)
+    {
         const CDependencyRecord *r = m_Records[i];
         CStringList deps(DirectDependencies(i));
-        if (deps.GetCount() > 0) {
+        if (deps.GetCount() > 0)
+        {
             deps.RemoveDuplicates();
             CMakefileRule& rule = Makefile.AddRule(Platform().Pd(r->GetName()),Section);
             rule.Multiline() = Multiline;
-            for (int j = 0; j < deps.GetCount(); j++) {
+            for (int j = 0; j < deps.GetCount(); j++)
+            {
                 rule.Dependencies().Insert(Platform().Pd(deps[j]));
             }
         }
@@ -552,13 +622,15 @@ void CIncludeSearchFilter::Assign(const CIncludeSearchFilter& Filter)
 
 bool CIncludeSearchFilter::Execute(const CString& FileName, CStringList& Includes)
 {
-   (void)FileName;(void)Includes;
+    (void)FileName;
+    (void)Includes;
     return false;
 }
 
 bool CIncludeSearchFilter::Execute(const CString& FileName, CDependencyInfo& Dependencies)
 {
-   (void)FileName;(void)Dependencies;
+    (void)FileName;
+    (void)Dependencies;
     return false;
 }
 
@@ -591,16 +663,19 @@ CString CIncludeSearchFilter::ResolveIncludePath(const CString& IncludeName)
     CString path = IncludeTrailingPathDelimiter(MakeNativePath(cwd));
     CString pathname = path+name;
 //std::cout<<"checking "<<pathname.GetCString()<<std::endl;
-    if (FileExists(pathname)) {
+    if (FileExists(pathname))
+    {
         //std::cout<<"found "<<pathname.GetCString()<<std::endl;
         return name;
     }
 //
-    for (int i = 0; i < m_IncludeDirectories.GetCount(); i++) {
+    for (int i = 0; i < m_IncludeDirectories.GetCount(); i++)
+    {
         path = IncludeTrailingPathDelimiter(MakeNativePath(m_IncludeDirectories[i]));
         pathname = path+name;
         //std::cout<<"checking "<<pathname.GetCString()<<std::endl;
-        if (FileExists(pathname)) {
+        if (FileExists(pathname))
+        {
             //std::cout<<"found "<<pathname.GetCString()<<std::endl;
             return pathname;
         }
@@ -617,7 +692,7 @@ CCppIncludeSearchFilter::CCppIncludeSearchFilter(void)
 }
 
 CCppIncludeSearchFilter::CCppIncludeSearchFilter(const CCppIncludeSearchFilter& Filter) :
-  CIncludeSearchFilter()
+    CIncludeSearchFilter()
 {
     Assign(Filter);
 }
@@ -629,7 +704,7 @@ CCppIncludeSearchFilter::~CCppIncludeSearchFilter(void)
 
 void CCppIncludeSearchFilter::Assign(const CCppIncludeSearchFilter& Filter)
 {
-   (void)Filter;
+    (void)Filter;
 }
 
 bool CCppIncludeSearchFilter::Execute(const CString& FileName, CStringList& Includes)
@@ -656,132 +731,169 @@ bool CCppIncludeSearchFilter::Execute(const CString& FileName, CStringList& Incl
 //
     CString include_filename;
     CStringList local_includes;
-    for (int l = 0; l < source.GetCount(); l++) {
+    for (int l = 0; l < source.GetCount(); l++)
+    {
         CString line(source.GetString(l));
         CStringIterator it(&line);
         int state = STATE_UNDEFINED;
         bool eol = false;
         //while (state!=STATE_END_OF_INPUT)
-        while (!eol) {
-            switch (state) {
+        while (!eol)
+        {
+            switch (state)
+            {
             default:
-            case STATE_UNDEFINED: {
+            case STATE_UNDEFINED:
+            {
                 //if (it.This()=='\0') { state = STATE_END_OF_INPUT; break; }
-                if (it.This()=='/') {
+                if (it.This()=='/')
+                {
                     state = STATE_ENTER_COMMENT;
                     break;
                 }
-                if (it.This()=='\'') {
+                if (it.This()=='\'')
+                {
                     state = STATE_CHAR;
                     break;
                 }
-                if (it.This()=='"') {
+                if (it.This()=='"')
+                {
                     state = STATE_STRING;
                     break;
                 }
-                if (it.This()=='#') {
+                if (it.This()=='#')
+                {
                     state = STATE_BEGIN_DIRECTIVE;
                     break;
                 }
                 break;
             }
-            case STATE_ENTER_COMMENT: {
-                if (it.This()=='/') {
+            case STATE_ENTER_COMMENT:
+            {
+                if (it.This()=='/')
+                {
                     state = STATE_ONELINE_COMMENT;
                     break;
                 }
-                if (it.This()=='*') {
+                if (it.This()=='*')
+                {
                     state = STATE_MULTILINE_COMMENT;
                     break;
                 }
                 break;
             }
-            case STATE_ONELINE_COMMENT: {
-                if (it.This()=='\0') {
+            case STATE_ONELINE_COMMENT:
+            {
+                if (it.This()=='\0')
+                {
                     state = STATE_UNDEFINED;
                     break;
                 }
                 break;
             }
-            case STATE_MULTILINE_COMMENT: {
-                if (it.This()=='*') {
+            case STATE_MULTILINE_COMMENT:
+            {
+                if (it.This()=='*')
+                {
                     state = STATE_EXIT_COMMENT;
                     break;
                 }
                 break;
             }
-            case STATE_EXIT_COMMENT: {
-                if (it.This()=='/') {
+            case STATE_EXIT_COMMENT:
+            {
+                if (it.This()=='/')
+                {
                     state = STATE_UNDEFINED;
                     break;
                 }
                 state = STATE_MULTILINE_COMMENT;
                 break;
             }
-            case STATE_CHAR: {
-                if (it.This()=='\\') {
+            case STATE_CHAR:
+            {
+                if (it.This()=='\\')
+                {
                     state = STATE_CHAR_ESC_SEQ;
                     break;
                 }
-                if (it.This()=='\'') {
+                if (it.This()=='\'')
+                {
                     state = STATE_UNDEFINED;
                     break;
                 }
                 break;
             }
-            case STATE_CHAR_ESC_SEQ: {
+            case STATE_CHAR_ESC_SEQ:
+            {
                 state = STATE_CHAR;
                 break;
             }
-            case STATE_STRING: {
-                if (it.This()=='\\') {
+            case STATE_STRING:
+            {
+                if (it.This()=='\\')
+                {
                     state = STATE_STRING_ESC_SEQ;
                     break;
                 }
-                if (it.This()=='"') {
+                if (it.This()=='"')
+                {
                     state = STATE_UNDEFINED;
                     break;
                 }
                 break;
             }
-            case STATE_STRING_ESC_SEQ: {
+            case STATE_STRING_ESC_SEQ:
+            {
                 state = STATE_STRING;
                 break;
             }
-            case STATE_BEGIN_DIRECTIVE: {
-                if (it.Match("include",true)) {
+            case STATE_BEGIN_DIRECTIVE:
+            {
+                if (it.Match("include",true))
+                {
                     state = STATE_INCLUDE_DIRECTIVE;
                     break;
                 }
                 break;
             }
-            case STATE_INCLUDE_DIRECTIVE: {
-                if (it.This()=='<') {
+            case STATE_INCLUDE_DIRECTIVE:
+            {
+                if (it.This()=='<')
+                {
                     state = STATE_INCLUDE_FILENAME;
                     break;
                 }
-                if (it.This()=='"') {
+                if (it.This()=='"')
+                {
                     state = STATE_INCLUDE_FILENAME;
                     break;
                 }
                 break;
             }
-            case STATE_INCLUDE_FILENAME: {
-                if (it.This()=='>') {
+            case STATE_INCLUDE_FILENAME:
+            {
+                if (it.This()=='>')
+                {
                     state = STATE_UNDEFINED;
                 }
-                if (it.This()=='"') {
+                if (it.This()=='"')
+                {
                     state = STATE_UNDEFINED;
                 }
-                if (state == STATE_INCLUDE_FILENAME) {
+                if (state == STATE_INCLUDE_FILENAME)
+                {
                     include_filename.Append(it.This());
-                } else {
+                }
+                else
+                {
                     local_includes.Insert(include_filename);
                     include_filename.Clear();
                 }
                 break;
             }
-            case STATE_END_OF_INPUT: {
+            case STATE_END_OF_INPUT:
+            {
                 break;
             }
             }
@@ -791,10 +903,13 @@ bool CCppIncludeSearchFilter::Execute(const CString& FileName, CStringList& Incl
     }
     bool result = true;
 //ShowStringList("Local includes","include",local_includes);
-    for (int i = 0; i < local_includes.GetCount(); i++) {
+    for (int i = 0; i < local_includes.GetCount(); i++)
+    {
         CString resolved_include = ResolveIncludePath(local_includes[i]);
-        if (!resolved_include.IsEmpty()) {
-            if (INVALID_INDEX==Includes.FindString(resolved_include)) {
+        if (!resolved_include.IsEmpty())
+        {
+            if (INVALID_INDEX==Includes.FindString(resolved_include))
+            {
                 Includes.Insert(resolved_include);
                 result = result && Execute(resolved_include,Includes);
             }
@@ -826,7 +941,8 @@ bool CCppIncludeSearchFilter::Execute(const CString& FileName, CDependencyInfo& 
     bool scan_unit = true;
     const size_t unit_index = Dependencies.AddRecord(file_name);
     scan_unit = !Dependencies.AreDependenciesComplete(unit_index);
-    if (scan_unit) {
+    if (scan_unit)
+    {
         CStringList source;
         if (!source.LoadFromFile(file_name)) return false;
         if (source.GetCount()==0) return false;
@@ -837,132 +953,169 @@ bool CCppIncludeSearchFilter::Execute(const CString& FileName, CDependencyInfo& 
         //
         CString include_filename;
         CStringList direct_includes;
-        for (int l = 0; l < source.GetCount(); l++) {
+        for (int l = 0; l < source.GetCount(); l++)
+        {
             CString line(source.GetString(l));
             CStringIterator it(&line);
             int state = STATE_UNDEFINED;
             bool eol = false;
             //while (state!=STATE_END_OF_INPUT)
-            while (!eol) {
-                switch (state) {
+            while (!eol)
+            {
+                switch (state)
+                {
                 default:
-                case STATE_UNDEFINED: {
+                case STATE_UNDEFINED:
+                {
                     //if (it.This()=='\0') { state = STATE_END_OF_INPUT; break; }
-                    if (it.This()=='/') {
+                    if (it.This()=='/')
+                    {
                         state = STATE_ENTER_COMMENT;
                         break;
                     }
-                    if (it.This()=='\'') {
+                    if (it.This()=='\'')
+                    {
                         state = STATE_CHAR;
                         break;
                     }
-                    if (it.This()=='"') {
+                    if (it.This()=='"')
+                    {
                         state = STATE_STRING;
                         break;
                     }
-                    if (it.This()=='#') {
+                    if (it.This()=='#')
+                    {
                         state = STATE_BEGIN_DIRECTIVE;
                         break;
                     }
                     break;
                 }
-                case STATE_ENTER_COMMENT: {
-                    if (it.This()=='/') {
+                case STATE_ENTER_COMMENT:
+                {
+                    if (it.This()=='/')
+                    {
                         state = STATE_ONELINE_COMMENT;
                         break;
                     }
-                    if (it.This()=='*') {
+                    if (it.This()=='*')
+                    {
                         state = STATE_MULTILINE_COMMENT;
                         break;
                     }
                     break;
                 }
-                case STATE_ONELINE_COMMENT: {
-                    if (it.This()=='\0') {
+                case STATE_ONELINE_COMMENT:
+                {
+                    if (it.This()=='\0')
+                    {
                         state = STATE_UNDEFINED;
                         break;
                     }
                     break;
                 }
-                case STATE_MULTILINE_COMMENT: {
-                    if (it.This()=='*') {
+                case STATE_MULTILINE_COMMENT:
+                {
+                    if (it.This()=='*')
+                    {
                         state = STATE_EXIT_COMMENT;
                         break;
                     }
                     break;
                 }
-                case STATE_EXIT_COMMENT: {
-                    if (it.This()=='/') {
+                case STATE_EXIT_COMMENT:
+                {
+                    if (it.This()=='/')
+                    {
                         state = STATE_UNDEFINED;
                         break;
                     }
                     state = STATE_MULTILINE_COMMENT;
                     break;
                 }
-                case STATE_CHAR: {
-                    if (it.This()=='\\') {
+                case STATE_CHAR:
+                {
+                    if (it.This()=='\\')
+                    {
                         state = STATE_CHAR_ESC_SEQ;
                         break;
                     }
-                    if (it.This()=='\'') {
+                    if (it.This()=='\'')
+                    {
                         state = STATE_UNDEFINED;
                         break;
                     }
                     break;
                 }
-                case STATE_CHAR_ESC_SEQ: {
+                case STATE_CHAR_ESC_SEQ:
+                {
                     state = STATE_CHAR;
                     break;
                 }
-                case STATE_STRING: {
-                    if (it.This()=='\\') {
+                case STATE_STRING:
+                {
+                    if (it.This()=='\\')
+                    {
                         state = STATE_STRING_ESC_SEQ;
                         break;
                     }
-                    if (it.This()=='"') {
+                    if (it.This()=='"')
+                    {
                         state = STATE_UNDEFINED;
                         break;
                     }
                     break;
                 }
-                case STATE_STRING_ESC_SEQ: {
+                case STATE_STRING_ESC_SEQ:
+                {
                     state = STATE_STRING;
                     break;
                 }
-                case STATE_BEGIN_DIRECTIVE: {
-                    if (it.Match("include",true)) {
+                case STATE_BEGIN_DIRECTIVE:
+                {
+                    if (it.Match("include",true))
+                    {
                         state = STATE_INCLUDE_DIRECTIVE;
                         break;
                     }
                     break;
                 }
-                case STATE_INCLUDE_DIRECTIVE: {
-                    if (it.This()=='<') {
+                case STATE_INCLUDE_DIRECTIVE:
+                {
+                    if (it.This()=='<')
+                    {
                         state = STATE_INCLUDE_FILENAME;
                         break;
                     }
-                    if (it.This()=='"') {
+                    if (it.This()=='"')
+                    {
                         state = STATE_INCLUDE_FILENAME;
                         break;
                     }
                     break;
                 }
-                case STATE_INCLUDE_FILENAME: {
-                    if (it.This()=='>') {
+                case STATE_INCLUDE_FILENAME:
+                {
+                    if (it.This()=='>')
+                    {
                         state = STATE_UNDEFINED;
                     }
-                    if (it.This()=='"') {
+                    if (it.This()=='"')
+                    {
                         state = STATE_UNDEFINED;
                     }
-                    if (state == STATE_INCLUDE_FILENAME) {
+                    if (state == STATE_INCLUDE_FILENAME)
+                    {
                         include_filename.Append(it.This());
-                    } else {
+                    }
+                    else
+                    {
                         direct_includes.Insert(include_filename);
                         include_filename.Clear();
                     }
                     break;
                 }
-                case STATE_END_OF_INPUT: {
+                case STATE_END_OF_INPUT:
+                {
                     break;
                 }
                 }
@@ -974,14 +1127,17 @@ bool CCppIncludeSearchFilter::Execute(const CString& FileName, CDependencyInfo& 
         //ShowStringList("Direct includes","include",direct_includes);//debug
         Dependencies.SetDependenciesComplete(unit_index);
         int resolved_count = 0;
-        for (int i = 0; i < direct_includes.GetCount(); i++) {
+        for (int i = 0; i < direct_includes.GetCount(); i++)
+        {
             CString resolved_include = ResolveIncludePath(direct_includes[i]);
             //std::cout<<direct_includes[i].GetCString()<<" -> "<<resolved_include.GetCString()<<std::endl;
-            if (!resolved_include.IsEmpty()) {
+            if (!resolved_include.IsEmpty())
+            {
                 Dependencies.AddDependency(unit_index,resolved_include);
                 resolved_count++;
                 int resolved_index = Dependencies.FindRecord(resolved_include);
-                if (!Dependencies.AreDependenciesComplete(resolved_index)) {
+                if (!Dependencies.AreDependenciesComplete(resolved_index))
+                {
                     result = result && Execute(resolved_include,Dependencies);
                 }
             }

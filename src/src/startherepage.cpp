@@ -10,19 +10,19 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/dataobj.h>
-    #include <wx/intl.h>
-    #include <wx/utils.h>
-    #include <wx/sizer.h>
-    #include <wx/settings.h>
+#include <wx/dataobj.h>
+#include <wx/intl.h>
+#include <wx/utils.h>
+#include <wx/sizer.h>
+#include <wx/settings.h>
 
-    #include <manager.h>
-    #include <logmanager.h>
-    #include <projectmanager.h>
-    #include <templatemanager.h>
-    #include <pluginmanager.h>
-    #include <editormanager.h>
-    #include <configmanager.h>
+#include <manager.h>
+#include <logmanager.h>
+#include <projectmanager.h>
+#include <templatemanager.h>
+#include <pluginmanager.h>
+#include <editormanager.h>
+#include <configmanager.h>
 #endif
 
 #include "startherepage.h"
@@ -40,23 +40,23 @@ int idWin = wxNewId();
 
 class MyHtmlWin : public wxHtmlWindow
 {
-    public:
-        MyHtmlWin(StartHerePage* parent, int id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxHW_SCROLLBAR_AUTO)
-            : wxHtmlWindow(parent, id, pos, size, style),
-            m_pOwner(parent)
-        {
-        }
+public:
+    MyHtmlWin(StartHerePage* parent, int id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxHW_SCROLLBAR_AUTO)
+        : wxHtmlWindow(parent, id, pos, size, style),
+          m_pOwner(parent)
+    {
+    }
 
-        void OnLinkClicked(const wxHtmlLinkInfo& link) override
+    void OnLinkClicked(const wxHtmlLinkInfo& link) override
+    {
+        if (m_pOwner)
         {
-            if (m_pOwner)
-            {
-                if (!m_pOwner->LinkClicked(link))
-                    wxLaunchDefaultBrowser(link.GetHref());
-            }
+            if (!m_pOwner->LinkClicked(link))
+                wxLaunchDefaultBrowser(link.GetHref());
         }
-    private:
-        StartHerePage* m_pOwner;
+    }
+private:
+    StartHerePage* m_pOwner;
 };
 
 BEGIN_EVENT_TABLE(StartHerePage, EditorBase)
@@ -149,9 +149,9 @@ void CopyToClipboard(const wxString& text)
 StartHerePage::StartHerePage(wxEvtHandler* owner, const RecentItemsList &projects,
                              const RecentItemsList &files, wxWindow* parent)
     : EditorBase(parent, g_StartHereTitle, true),
-    m_pOwner(owner),
-    m_projects(projects),
-    m_files(files)
+      m_pOwner(owner),
+      m_projects(projects),
+      m_files(files)
 {
     RegisterColours();
 
@@ -299,7 +299,7 @@ bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)
     }
 
     if (   href.IsSameAs("https://www.codeblocks.org/")
-        || href.StartsWith("https://sourceforge.net/p/codeblocks/tickets"))
+            || href.StartsWith("https://sourceforge.net/p/codeblocks/tickets"))
     {
         CopyToClipboard(revInfo);
         return false;

@@ -51,44 +51,50 @@
 
 class FileContentDisk::DiskModificationData: public FileContentBase::ModificationData
 {
-    public:
+public:
 
-        typedef FileContentBase::OffsetT OffsetT;
+    typedef FileContentBase::OffsetT OffsetT;
 
-        DiskModificationData( FileContentDisk* fcd, OffsetT start )
-            : m_Fcd( fcd )
-            , m_Start( start )
-        {}
+    DiskModificationData( FileContentDisk* fcd, OffsetT start )
+        : m_Fcd( fcd )
+        , m_Start( start )
+    {}
 
-        /** \brief Apply the modification */
-        virtual void Apply()
-        {
-            m_Fcd->SetBlock( &m_DataAfter[0], m_Start, m_DataBefore.size(), m_DataAfter.size() );
-        }
+    /** \brief Apply the modification */
+    virtual void Apply()
+    {
+        m_Fcd->SetBlock( &m_DataAfter[0], m_Start, m_DataBefore.size(), m_DataAfter.size() );
+    }
 
-        /** \brief Revert the modification */
-        virtual void Revert()
-        {
-            m_Fcd->SetBlock( &m_DataBefore[0], m_Start, m_DataAfter.size(), m_DataBefore.size() );
-        }
+    /** \brief Revert the modification */
+    virtual void Revert()
+    {
+        m_Fcd->SetBlock( &m_DataBefore[0], m_Start, m_DataAfter.size(), m_DataBefore.size() );
+    }
 
-        /** \brief Get the length of modification */
-        virtual OffsetT Length()
-        {
-            return wxMax( m_DataBefore.size(), m_DataAfter.size() );
-        }
+    /** \brief Get the length of modification */
+    virtual OffsetT Length()
+    {
+        return wxMax( m_DataBefore.size(), m_DataAfter.size() );
+    }
 
-        inline std::vector< char >& GetDataBefore() { return m_DataBefore; }
-        inline std::vector< char >& GetDataAfter()  { return m_DataAfter; }
+    inline std::vector< char >& GetDataBefore()
+    {
+        return m_DataBefore;
+    }
+    inline std::vector< char >& GetDataAfter()
+    {
+        return m_DataAfter;
+    }
 
-    private:
+private:
 
-        FileContentDisk* m_Fcd;
+    FileContentDisk* m_Fcd;
 
-        OffsetT m_Start;        ///< \brief Beginning position of the modification
+    OffsetT m_Start;        ///< \brief Beginning position of the modification
 
-        std::vector< char > m_DataBefore;    ///< \brief Data of the replaced region
-        std::vector< char > m_DataAfter;     ///< \brief Data of the replacing region
+    std::vector< char > m_DataBefore;    ///< \brief Data of the replaced region
+    std::vector< char > m_DataAfter;     ///< \brief Data of the replacing region
 };
 
 
@@ -211,11 +217,11 @@ bool FileContentDisk::WriteFile(const wxString& fileName)
     if ( !wxGetDiskSpace( wxPathOnly( fileName ), 0, &diskFree ) )
     {
         if ( cbMessageBox(
-            _("An error occurred while querying for disk free space.\n"
-              "This may result in save failure. Do you still want to\n"
-              "save the file?" ),
-            _("Error while querying for free space"),
-            wxYES_NO ) != wxID_YES )
+                    _("An error occurred while querying for disk free space.\n"
+                      "This may result in save failure. Do you still want to\n"
+                      "save the file?" ),
+                    _("Error while querying for free space"),
+                    wxYES_NO ) != wxID_YES )
         {
             return false;
         }
@@ -226,11 +232,11 @@ bool FileContentDisk::WriteFile(const wxString& fileName)
         if ( noExtraFilesNeeded )
         {
             if ( cbMessageBox(
-                _("There's not enough free space on the drive to save the file using safe methods.\n"
-                  "We can still try to save file but any power or system failure during the save\n"
-                  "will corrupt the file. Do you want to use the unsafe method ?"),
-                _("Not enough free space"),
-                wxYES_NO ) != wxID_YES )
+                        _("There's not enough free space on the drive to save the file using safe methods.\n"
+                          "We can still try to save file but any power or system failure during the save\n"
+                          "will corrupt the file. Do you want to use the unsafe method ?"),
+                        _("Not enough free space"),
+                        wxYES_NO ) != wxID_YES )
             {
                 return false;
             }
@@ -256,9 +262,9 @@ bool FileContentDisk::WriteFile(const wxString& fileName)
     if ( size > 16 * 1024 * 1024 )
     {
         if ( AnnoyingDialog(
-            _("HexEdit: Save may take long time"),
-            _("Saving the file may take long time.\n"
-              "Do you want to continue?\n") ).ShowModal() != AnnoyingDialog::rtYES )
+                    _("HexEdit: Save may take long time"),
+                    _("Saving the file may take long time.\n"
+                      "Do you want to continue?\n") ).ShowModal() != AnnoyingDialog::rtYES )
         {
             return false;
         }
@@ -715,8 +721,8 @@ bool FileContentDisk::WriteFileEasiest( )
 
     std::unique_ptr< wxProgressDialog > dlg(
         m_TestMode ? 0 : new wxProgressDialog( _("Saving the file"), _("Please wait, saving file..."), maxProgress,
-                    Manager::Get()->GetAppWindow(),
-                    wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME ) );
+                Manager::Get()->GetAppWindow(),
+                wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME ) );
 
     if ( dlg.get() ) dlg->Update( 0 );
 
@@ -869,8 +875,8 @@ bool FileContentDisk::WriteToFile(wxFile& file)
 
     std::unique_ptr< wxProgressDialog > dlg(
         m_TestMode ? 0 : new wxProgressDialog( _("Saving the file"), _("Please wait, saving file..."), maxProgress,
-                    Manager::Get()->GetAppWindow(),
-                    wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME ) );
+                Manager::Get()->GetAppWindow(),
+                wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME ) );
 
     if ( dlg.get() ) dlg->Update( 0 );
 
@@ -950,158 +956,164 @@ void FileContentDisk::ResetBlocks()
 
 class FileContentDisk::TestData
 {
-    public:
+public:
 
-        TestData()
+    TestData()
+    {
+        m_Content.m_TestMode = true;
+        // Open temporary file to make sure we won't harm anybody
+        OpenTempFile();
+    }
+
+    ~TestData()
+    {
+        CloseTempFile();
+    }
+
+    void Reset( int initialSize = 1 )
+    {
+        CloseTempFile();
+        OpenTempFile( initialSize );
+    }
+
+    /** \brief Check if the mirrored data is the same as the original one */
+    bool MirrorCheck()
+    {
+        char Buff[0x1000];
+
+        if ( m_ContentMirror.size() != m_Content.GetSize() )
         {
-            m_Content.m_TestMode = true;
-            // Open temporary file to make sure we won't harm anybody
-            OpenTempFile();
+            return false;
         }
 
-        ~TestData()
+        OffsetT pos = 0;
+        for ( size_t left = m_ContentMirror.size(); left > 0; )
         {
-            CloseTempFile();
-        }
+            size_t thisBlock = wxMin( left, sizeof(Buff) );
+            if ( m_Content.Read( Buff, pos, thisBlock ) != thisBlock )
+            {
+                return false;
+            }
+            char* ptr1 = Buff;
+            char* ptr2 = &m_ContentMirror[ pos ];
 
-        void Reset( int initialSize = 1 )
-        {
-            CloseTempFile();
-            OpenTempFile( initialSize );
-        }
-
-        /** \brief Check if the mirrored data is the same as the original one */
-        bool MirrorCheck()
-        {
-            char Buff[0x1000];
-
-            if ( m_ContentMirror.size() != m_Content.GetSize() )
+            if ( memcmp( ptr1, ptr2, thisBlock ) )
             {
                 return false;
             }
 
-            OffsetT pos = 0;
-            for ( size_t left = m_ContentMirror.size(); left > 0; )
+            left -= thisBlock;
+            pos  += thisBlock;
+        }
+
+        return true;
+    }
+
+    /** \brief Write random data at given position with given length */
+    bool Write( OffsetT position, OffsetT length )
+    {
+        std::vector< char > buff = TempBuff( (int)length );
+
+        if ( m_Content.Write( ExtraUndoData(), &buff[0], position, length ) != length )
+        {
+            return false;
+        }
+
+        for ( size_t i=0; i<buff.size(); ++i )
+        {
+            if ( position + i < m_ContentMirror.size() )
             {
-                size_t thisBlock = wxMin( left, sizeof(Buff) );
-                if ( m_Content.Read( Buff, pos, thisBlock ) != thisBlock )
-                {
-                    return false;
-                }
-                char* ptr1 = Buff;
-                char* ptr2 = &m_ContentMirror[ pos ];
-
-                if ( memcmp( ptr1, ptr2, thisBlock ) )
-                {
-                    return false;
-                }
-
-                left -= thisBlock;
-                pos  += thisBlock;
+                m_ContentMirror[ position+i ] = buff [ i ];
             }
-
-            return true;
         }
 
-        /** \brief Write random data at given position with given length */
-        bool Write( OffsetT position, OffsetT length )
+        return MirrorCheck();
+    }
+
+    /** \brief Remove given block of data */
+    bool Remove( OffsetT position, OffsetT length )
+    {
+        if ( m_Content.Remove( ExtraUndoData(), position, length ) != length ) return false;
+
+        if ( position < m_ContentMirror.size() )
         {
-            std::vector< char > buff = TempBuff( (int)length );
-
-            if ( m_Content.Write( ExtraUndoData(), &buff[0], position, length ) != length )
-            {
-                return false;
-            }
-
-            for ( size_t i=0; i<buff.size(); ++i )
-            {
-                if ( position + i < m_ContentMirror.size() )
-                {
-                    m_ContentMirror[ position+i ] = buff [ i ];
-                }
-            }
-
-            return MirrorCheck();
+            m_ContentMirror.erase(
+                m_ContentMirror.begin() + position,
+                m_ContentMirror.begin() + wxMin( m_ContentMirror.size(), position + length ) );
         }
 
-        /** \brief Remove given block of data */
-        bool Remove( OffsetT position, OffsetT length )
+        return MirrorCheck();
+    }
+
+    /** \brief Add new block of data */
+    bool Add( OffsetT position, OffsetT length )
+    {
+        std::vector< char > buff = TempBuff( (int)length );
+
+        if ( m_Content.Add( ExtraUndoData(), position, length, &buff[0] ) != length )
         {
-            if ( m_Content.Remove( ExtraUndoData(), position, length ) != length ) return false;
-
-            if ( position < m_ContentMirror.size() )
-            {
-                m_ContentMirror.erase(
-                    m_ContentMirror.begin() + position,
-                    m_ContentMirror.begin() + wxMin( m_ContentMirror.size(), position + length ) );
-            }
-
-            return MirrorCheck();
+            return false;
         }
 
-        /** \brief Add new block of data */
-        bool Add( OffsetT position, OffsetT length )
+        if ( position <= m_ContentMirror.size() )
         {
-            std::vector< char > buff = TempBuff( (int)length );
-
-            if ( m_Content.Add( ExtraUndoData(), position, length, &buff[0] ) != length )
-            {
-                return false;
-            }
-
-            if ( position <= m_ContentMirror.size() )
-            {
-                m_ContentMirror.insert( m_ContentMirror.begin() + position, buff.begin(), buff.end() );
-            }
-
-            return MirrorCheck();
+            m_ContentMirror.insert( m_ContentMirror.begin() + position, buff.begin(), buff.end() );
         }
 
-        /** \brief Save the file */
-        bool Save()
-        {
-            m_Content.WriteFile( m_Content.m_FileName );
-            return MirrorCheck();
-        }
+        return MirrorCheck();
+    }
 
-    protected:
+    /** \brief Save the file */
+    bool Save()
+    {
+        m_Content.WriteFile( m_Content.m_FileName );
+        return MirrorCheck();
+    }
 
-        size_t Size() { return m_ContentMirror.size(); }
-        void   ResetBlocks() { m_Content.ResetBlocks(); }
+protected:
 
-    private:
+    size_t Size()
+    {
+        return m_ContentMirror.size();
+    }
+    void   ResetBlocks()
+    {
+        m_Content.ResetBlocks();
+    }
 
-        std::vector< char > TempBuff( int length )
-        {
-            std::vector< char > buff( length );
-            for ( size_t i=0; i<buff.size(); ++i ) buff[ i ] = (char)( rand() );
-            return buff;
-        }
+private:
 
-        /** \brief Open temporary file in the filecontent object */
-        void OpenTempFile( int initialSize = 1 )
-        {
-            m_Content.m_FileName = wxFileName::CreateTempFileName( wxEmptyString, &m_Content.m_File );
+    std::vector< char > TempBuff( int length )
+    {
+        std::vector< char > buff( length );
+        for ( size_t i=0; i<buff.size(); ++i ) buff[ i ] = (char)( rand() );
+        return buff;
+    }
 
-            std::vector< char > buff = TempBuff( initialSize );
-            m_Content.m_File.Write( &buff[0], initialSize );
+    /** \brief Open temporary file in the filecontent object */
+    void OpenTempFile( int initialSize = 1 )
+    {
+        m_Content.m_FileName = wxFileName::CreateTempFileName( wxEmptyString, &m_Content.m_File );
 
-            m_Content.ResetBlocks();
-            m_ContentMirror.clear();
-            m_ContentMirror.swap( buff );
-        }
+        std::vector< char > buff = TempBuff( initialSize );
+        m_Content.m_File.Write( &buff[0], initialSize );
 
-        /** \brief Close temporary fileif it has been openeed */
-        void CloseTempFile()
-        {
-            // Close and erase the file we were working on
-            m_Content.m_File.Close();
-            wxRemoveFile( m_Content.m_FileName );
-        }
+        m_Content.ResetBlocks();
+        m_ContentMirror.clear();
+        m_ContentMirror.swap( buff );
+    }
+
+    /** \brief Close temporary fileif it has been openeed */
+    void CloseTempFile()
+    {
+        // Close and erase the file we were working on
+        m_Content.m_File.Close();
+        wxRemoveFile( m_Content.m_FileName );
+    }
 
 
-        FileContentDisk m_Content;
-        std::vector< char > m_ContentMirror;
+    FileContentDisk m_Content;
+    std::vector< char > m_ContentMirror;
 };
 
 typedef TestCasesHelper< FileContentDisk::TestData > TestCases;
@@ -1164,38 +1176,38 @@ void TestCases::Test<4>()
 
         switch ( rand() % 10 )
         {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            {
-                size_t pos  = rand() % ( Size() );
-                size_t size = rand() % ( Size() - pos );
-                Ensure( Write( pos, size ), _T("Stress test over 1MB initial file size - write" ) );
-                break;
-            }
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        {
+            size_t pos  = rand() % ( Size() );
+            size_t size = rand() % ( Size() - pos );
+            Ensure( Write( pos, size ), _T("Stress test over 1MB initial file size - write" ) );
+            break;
+        }
 
-            case 6:
-            case 7:
-            {
-                size_t pos  = rand() % ( Size() );
-                size_t size = 100;
-                Ensure( Add( pos, size ), _T("Stress test over 1MB initial file size - add" ) );
-                break;
-            }
+        case 6:
+        case 7:
+        {
+            size_t pos  = rand() % ( Size() );
+            size_t size = 100;
+            Ensure( Add( pos, size ), _T("Stress test over 1MB initial file size - add" ) );
+            break;
+        }
 
-            case 8:
-            case 9:
-            {
-                size_t pos  = rand() % ( Size() - 100 );
-                size_t size = 100;
-                Ensure( Remove( pos, size ), _T("Stress test over 1MB initial file size - remove" ) );
-                break;
-            }
-            default:
-                break;
+        case 8:
+        case 9:
+        {
+            size_t pos  = rand() % ( Size() - 100 );
+            size_t size = 100;
+            Ensure( Remove( pos, size ), _T("Stress test over 1MB initial file size - remove" ) );
+            break;
+        }
+        default:
+            break;
         }
     }
 

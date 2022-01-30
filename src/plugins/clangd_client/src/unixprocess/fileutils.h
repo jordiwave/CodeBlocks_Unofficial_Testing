@@ -47,7 +47,8 @@ public:
 
         ~Deleter()
         {
-            if(m_filename.Exists()) {
+            if(m_filename.Exists())
+            {
                 clRemoveFile(m_filename);
             }
         }
@@ -180,7 +181,10 @@ public:
     /**
      * @brief return true if filename is a symlink
      */
-    static bool IsSymlink(const wxFileName& filename) { return IsSymlink(filename.GetFullPath()); }
+    static bool IsSymlink(const wxFileName& filename)
+    {
+        return IsSymlink(filename.GetFullPath());
+    }
     /**
      * @brief return true if filename is a symlink
      */
@@ -189,7 +193,10 @@ public:
     /**
      * @brief return true if filename is a symlink
      */
-    static bool IsDirectory(const wxFileName& filename) { return IsDirectory(filename.GetFullPath()); }
+    static bool IsDirectory(const wxFileName& filename)
+    {
+        return IsDirectory(filename.GetFullPath());
+    }
     /**
      * @brief return true if filename is a symlink
      */

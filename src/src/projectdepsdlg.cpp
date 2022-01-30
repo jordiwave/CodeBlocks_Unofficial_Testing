@@ -10,15 +10,15 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include "cbproject.h"
-    #include "manager.h"
-    #include "projectmanager.h"
-    #include <wx/button.h>
-    #include <wx/intl.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/choice.h>
-    #include <wx/msgdlg.h>
-    #include <wx/checklst.h>
+#include "cbproject.h"
+#include "manager.h"
+#include "projectmanager.h"
+#include <wx/button.h>
+#include <wx/intl.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/choice.h>
+#include <wx/msgdlg.h>
+#include <wx/checklst.h>
 #endif
 
 #include "projectdepsdlg.h"
@@ -97,8 +97,8 @@ bool ProjectDepsDlg::SaveList()
         {
             cbMessageBox(wxString::Format(_("Cannot add project '%s' as a dependency to '%s' because this "
                                             "would cause a circular dependency error..."),
-                                            thisprj->GetTitle().c_str(), prj->GetTitle().c_str()),
-                        _("Error"), wxICON_ERROR, this);
+                                          thisprj->GetTitle().c_str(), prj->GetTitle().c_str()),
+                         _("Error"), wxICON_ERROR, this);
             return false;
         }
     }

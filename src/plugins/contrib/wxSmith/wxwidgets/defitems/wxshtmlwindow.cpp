@@ -26,18 +26,18 @@
 
 namespace
 {
-    wxsRegisterItem<wxsHtmlWindow> Reg(_T("HtmlWindow"),wxsTWidget,_T("Advanced"),60);
+wxsRegisterItem<wxsHtmlWindow> Reg(_T("HtmlWindow"),wxsTWidget,_T("Advanced"),60);
 
-    WXS_ST_BEGIN(wxsHtmlWindowStyles,_T("wxHW_SCROLLBAR_AUTO"))
-        WXS_ST_CATEGORY("wxHtmlWindow")
-        WXS_ST(wxHW_SCROLLBAR_NEVER)
-        WXS_ST(wxHW_SCROLLBAR_AUTO)
-        WXS_ST(wxHW_NO_SELECTION)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsHtmlWindowStyles,_T("wxHW_SCROLLBAR_AUTO"))
+WXS_ST_CATEGORY("wxHtmlWindow")
+WXS_ST(wxHW_SCROLLBAR_NEVER)
+WXS_ST(wxHW_SCROLLBAR_AUTO)
+WXS_ST(wxHW_NO_SELECTION)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsHtmlWindowEvents)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsHtmlWindowEvents)
+WXS_EV_END()
 }
 
 wxsHtmlWindow::wxsHtmlWindow(wxsItemResData* Data):
@@ -53,27 +53,27 @@ void wxsHtmlWindow::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/html/htmlwin.h>"),GetInfo().ClassName,0);
-            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-            if ( Borders.Value )
-                Codef(_T("%ASetBorders(%s);\n"),Borders.GetPixelsCode(GetCoderContext()).wx_str());
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/html/htmlwin.h>"),GetInfo().ClassName,0);
+        Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+        if ( Borders.Value )
+            Codef(_T("%ASetBorders(%s);\n"),Borders.GetPixelsCode(GetCoderContext()).wx_str());
 
-            if ( !Url.empty() )
-                Codef(_T("%ALoadPage(%t);\n"),Url.wx_str());
-            else if ( !HtmlCode.empty() )
-                Codef(_T("%ASetPage(%t);\n"),HtmlCode.wx_str());
+        if ( !Url.empty() )
+            Codef(_T("%ALoadPage(%t);\n"),Url.wx_str());
+        else if ( !HtmlCode.empty() )
+            Codef(_T("%ASetPage(%t);\n"),HtmlCode.wx_str());
 
-            BuildSetupWindowCode();
-            break;
-        }
+        BuildSetupWindowCode();
+        break;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsHtmlWindow::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsHtmlWindow::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

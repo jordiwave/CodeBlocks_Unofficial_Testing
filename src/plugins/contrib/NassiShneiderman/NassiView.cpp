@@ -18,7 +18,7 @@
 #include <wx/wfstream.h>
 
 #if wxUSE_POSTSCRIPT
-    #include <wx/dcps.h>
+#include <wx/dcps.h>
 #endif
 #include <wx/textfile.h>
 
@@ -171,13 +171,15 @@ void NassiView::ZoomOut()
 }
 
 const wxInt16 NassiView::FontSizes[] =
-    { 6,  7,  8,  9, 10, 11,
-     12, 14, 16, 18, 20, 22,
-     24, 28, 32, 36, 40, 44,
-     48, 56, 64, 72, 80, 88,
-     96,112,128,144,160,176,
+{
+    6,  7,  8,  9, 10, 11,
+    12, 14, 16, 18, 20, 22,
+    24, 28, 32, 36, 40, 44,
+    48, 56, 64, 72, 80, 88,
+    96,112,128,144,160,176,
     192,224,256,288,320,352,
-    384,416};
+    384,416
+};
 
 void NassiView::DeleteSelection()
 {
@@ -310,9 +312,8 @@ void NassiView::CopyBricks()
         wxTheClipboard->SetData( ndo );
         wxTheClipboard->Close();
     }
-    else
-        if ( ndo )
-            delete ndo;
+    else if ( ndo )
+        delete ndo;
 }
 
 void NassiView::Paste()
@@ -501,10 +502,10 @@ void NassiView::DrawDiagram(wxDC *dc)
     }
     else
     {
-        for ( BricksMap::iterator it = m_GraphBricks.begin();it != m_GraphBricks.end(); it++)
+        for ( BricksMap::iterator it = m_GraphBricks.begin(); it != m_GraphBricks.end(); it++)
             it->second->Draw(dc);
         // mark active bricks
-        for ( BricksMap::iterator it = m_GraphBricks.begin();it != m_GraphBricks.end(); it++)
+        for ( BricksMap::iterator it = m_GraphBricks.begin(); it != m_GraphBricks.end(); it++)
             it->second->DrawActive(dc);
     }
 }
@@ -531,7 +532,7 @@ HooverDrawlet *NassiView::OnMouseMove(wxMouseEvent &event, const wxPoint &pos)
     if ( DragPossible )
     {
         if ( (pos.x - DragStartPoint.x)*(pos.x - DragStartPoint.x) +
-             (pos.y - DragStartPoint.y)*(pos.y - DragStartPoint.y) > 9 )
+                (pos.y - DragStartPoint.y)*(pos.y - DragStartPoint.y) > 9 )
         {
             DragPossible = false;
             DragStart();
@@ -588,8 +589,7 @@ void NassiView::OnMouseLeftDown(wxMouseEvent &event, const wxPoint &pos)
         {
             SelectChildIndicator(gbrick, childN);
         }
-        else
-            if ( !clickedIsActive ) SelectFirst( gbrick );
+        else if ( !clickedIsActive ) SelectFirst( gbrick );
     }
 }
 
@@ -918,7 +918,8 @@ void NassiView::Select(GraphNassiBrick *gfirst, GraphNassiBrick *glast)
             else
                 first = 0;
 
-        }while ( first );
+        }
+        while ( first );
 
     }
     m_diagramwindow->Refresh();
@@ -993,56 +994,56 @@ NassiBrick *NassiView::GenerateNewBrick(NassiTools tool)
     NassiBrick *brick;
     switch ( tool )
     {
-        case NASSI_TOOL_CONTINUE:
-            brick = new NassiContinueBrick();
-            brick->SetTextByNumber( _T("..."), 0);
-            break;
-        case NASSI_TOOL_BREAK:
-            brick = new NassiBreakBrick();
-            brick->SetTextByNumber( _T("..."), 0);
-            break;
-        case NASSI_TOOL_RETURN:
-            brick = new NassiReturnBrick();
-            brick->SetTextByNumber( _("returning 0"), 0);
-            brick->SetTextByNumber( "NULL", 1);
-            break;
-        case NASSI_TOOL_WHILE:
-            brick = new NassiWhileBrick();
-            brick->SetTextByNumber( _("as long as"), 0);
-            brick->SetTextByNumber( _("condition"), 1);
-            break;
-        case NASSI_TOOL_DOWHILE:
-            brick = new NassiDoWhileBrick();
-            brick->SetTextByNumber( _("as long as"), 0);
-            brick->SetTextByNumber( _("condition"), 1);
-            break;
-        case NASSI_TOOL_FOR:
-            brick = new NassiForBrick();
-            brick->SetTextByNumber( _("every element in vec"), 0);
-            brick->SetTextByNumber( _T("uint i = 0 ; i < vec.size() ; i++"), 1);
-            break;
-        case NASSI_TOOL_BLOCK:
-            brick = new NassiBlockBrick();
-            break;
-        case NASSI_TOOL_IF:
-            brick = new NassiIfBrick();
-            brick->SetTextByNumber( _("check that ..."), 0);
-            brick->SetTextByNumber( _("condition"), 1);
-            break;
-        case NASSI_TOOL_SWITCH:
-            brick = new NassiSwitchBrick();
-            brick->SetTextByNumber( _("switch to"), 0);
-            brick->SetTextByNumber( _("expression"), 1);
-            break;
-        default:
-        case NassiView::NASSI_TOOL_ESC:
-        case NassiView::NASSI_TOOL_SELECT:
-        case NassiView::NASSI_TOOL_PASTE:
-        case NASSI_TOOL_INSTRUCTION:
-            brick = new NassiInstructionBrick();
-            brick->SetTextByNumber( _T("..."), 0);
-            brick->SetTextByNumber( _T("foo();"), 1);
-            break;
+    case NASSI_TOOL_CONTINUE:
+        brick = new NassiContinueBrick();
+        brick->SetTextByNumber( _T("..."), 0);
+        break;
+    case NASSI_TOOL_BREAK:
+        brick = new NassiBreakBrick();
+        brick->SetTextByNumber( _T("..."), 0);
+        break;
+    case NASSI_TOOL_RETURN:
+        brick = new NassiReturnBrick();
+        brick->SetTextByNumber( _("returning 0"), 0);
+        brick->SetTextByNumber( "NULL", 1);
+        break;
+    case NASSI_TOOL_WHILE:
+        brick = new NassiWhileBrick();
+        brick->SetTextByNumber( _("as long as"), 0);
+        brick->SetTextByNumber( _("condition"), 1);
+        break;
+    case NASSI_TOOL_DOWHILE:
+        brick = new NassiDoWhileBrick();
+        brick->SetTextByNumber( _("as long as"), 0);
+        brick->SetTextByNumber( _("condition"), 1);
+        break;
+    case NASSI_TOOL_FOR:
+        brick = new NassiForBrick();
+        brick->SetTextByNumber( _("every element in vec"), 0);
+        brick->SetTextByNumber( _T("uint i = 0 ; i < vec.size() ; i++"), 1);
+        break;
+    case NASSI_TOOL_BLOCK:
+        brick = new NassiBlockBrick();
+        break;
+    case NASSI_TOOL_IF:
+        brick = new NassiIfBrick();
+        brick->SetTextByNumber( _("check that ..."), 0);
+        brick->SetTextByNumber( _("condition"), 1);
+        break;
+    case NASSI_TOOL_SWITCH:
+        brick = new NassiSwitchBrick();
+        brick->SetTextByNumber( _("switch to"), 0);
+        brick->SetTextByNumber( _("expression"), 1);
+        break;
+    default:
+    case NassiView::NASSI_TOOL_ESC:
+    case NassiView::NASSI_TOOL_SELECT:
+    case NassiView::NASSI_TOOL_PASTE:
+    case NASSI_TOOL_INSTRUCTION:
+        brick = new NassiInstructionBrick();
+        brick->SetTextByNumber( _T("..."), 0);
+        brick->SetTextByNumber( _T("foo();"), 1);
+        break;
     }
     return brick;
 }
@@ -1097,15 +1098,15 @@ void NassiView::DragStart()
 
     if ( dataptr )
     {
-        #if defined(__WXMSW__) || defined(__WXMAC__)
-            wxCursor copycursor(dnd_copy_cur_xpm);
-            wxCursor movecursor(dnd_move_cur_xpm);
-            wxCursor nonecursor(dnd_none_cur_xpm);
-        #else
-            wxIcon copycursor(dnd_copy_cur_xpm);
-            wxIcon movecursor(dnd_move_cur_xpm);
-            wxIcon nonecursor(dnd_none_cur_xpm);
-        #endif
+#if defined(__WXMSW__) || defined(__WXMAC__)
+        wxCursor copycursor(dnd_copy_cur_xpm);
+        wxCursor movecursor(dnd_move_cur_xpm);
+        wxCursor nonecursor(dnd_none_cur_xpm);
+#else
+        wxIcon copycursor(dnd_copy_cur_xpm);
+        wxIcon movecursor(dnd_move_cur_xpm);
+        wxIcon nonecursor(dnd_none_cur_xpm);
+#endif
         //wxDragResult result;
 
         wxDropSource dndSource(m_diagramwindow, copycursor, movecursor, nonecursor);
@@ -1153,9 +1154,9 @@ wxDragResult NassiView::OnDrop(const wxPoint &pos, NassiBrick *brick, wxString s
             {
                 wxUint32 ChildAddNumber = p.number;
                 if ( ThisIsDnDSource && def == wxDragMove && gbrick->HasActiveChildIndicator() &&
-                     ChildAddNumber < gbrick->ActiveChildIndicator()
+                        ChildAddNumber < gbrick->ActiveChildIndicator()
                    )
-                        SelectChildIndicator(gbrick, gbrick->ActiveChildIndicator() + 1);
+                    SelectChildIndicator(gbrick, gbrick->ActiveChildIndicator() + 1);
                 addcmd = new NassiAddChildIndicatorCommand(m_nfc, gbrick->GetBrick(), brick, ChildAddNumber, strc, strs);
             }
             else
@@ -1174,7 +1175,7 @@ wxDragResult NassiView::OnDrop(const wxPoint &pos, NassiBrick *brick, wxString s
         ClearSelection();
     }
     else if ( addcmd )
-         m_nfc->GetCommandProcessor()->Submit( addcmd );
+        m_nfc->GetCommandProcessor()->Submit( addcmd );
 
     if ( def == wxDragError && ThisIsDnDSource )
         ClearSelection();
@@ -1213,7 +1214,7 @@ HooverDrawlet *NassiView::OnDragOver(const wxPoint &pos, wxDragResult &def, bool
 void NassiView::ExportCSource()
 {
     wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"), _T(""), _T(""),
-                     _("C sources (*.c)|*.c"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+                      _("C sources (*.c)|*.c"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     PlaceWindow(&dlg);
     if ( dlg.ShowModal() != wxID_OK ) return;
     wxString filename = dlg.GetPath();
@@ -1271,12 +1272,12 @@ bool NassiView::ExportCSource(wxTextOutputStream &text_stream, wxUint32 n)
     return true;
 }
 
-void NassiView::ExportVHDLSource(){}
+void NassiView::ExportVHDLSource() {}
 
 void NassiView::ExportStrukTeX()
 {
     wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"), _T(""), _T(""),
-                     _("LaTeX files (*.tex)|*.tex"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
+                      _("LaTeX files (*.tex)|*.tex"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
     PlaceWindow(&dlg);
     if ( dlg.ShowModal() != wxID_OK ) return;
     wxString filename = dlg.GetPath();
@@ -1351,7 +1352,7 @@ void NassiView::ExportStrukTeX()
 void NassiView::ExportPS()
 {
     wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"), _T(""), _T(""),
-                     _("PostScript files (*.ps)|*.ps"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+                      _("PostScript files (*.ps)|*.ps"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     PlaceWindow(&dlg);
     if ( dlg.ShowModal() != wxID_OK ) return;
     wxString filename = dlg.GetPath();
@@ -1440,7 +1441,7 @@ void NassiView::ExportPS()
 void NassiView::ExportSVG()
 {
     wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"),_T(""),_T(""),
-                     _("SVG files (*.SVG)|*.SVG"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
+                      _("SVG files (*.SVG)|*.SVG"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
     PlaceWindow(&dlg);
     if ( dlg.ShowModal() != wxID_OK ) return;
     wxString filename = dlg.GetPath();
@@ -1524,7 +1525,7 @@ void NassiView::ExportSVG()
 void NassiView::ExportBitmap()
 {
     wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"),_T(""),_T(""),
-                     _("PNG files (*.png)|*.png"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
+                      _("PNG files (*.png)|*.png"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
     PlaceWindow(&dlg);
     if ( dlg.ShowModal() != wxID_OK ) return;
     wxString filename = dlg.GetPath();

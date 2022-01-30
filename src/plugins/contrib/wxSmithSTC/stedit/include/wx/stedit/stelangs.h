@@ -59,15 +59,27 @@ struct WXDLLIMPEXP_STEDIT STE_Language;
 class WXDLLIMPEXP_STEDIT wxSTEditorLangs : public wxSTEditorPrefBase
 {
 public:
-    wxSTEditorLangs(bool create = false) { if (create) Create(); }
-    wxSTEditorLangs(const wxSTEditorLangs &langs) { Create(langs); }
+    wxSTEditorLangs(bool create = false)
+    {
+        if (create) Create();
+    }
+    wxSTEditorLangs(const wxSTEditorLangs &langs)
+    {
+        Create(langs);
+    }
     virtual ~wxSTEditorLangs() {}
-    bool IsOk() const { return m_refData != NULL; }
+    bool IsOk() const
+    {
+        return m_refData != NULL;
+    }
     bool Create();                                ///< (Re)create as new.
     bool Create(const wxSTEditorLangs &other);    ///< Make a Refed copy of other.
     void Copy(const wxSTEditorLangs &other);      ///< Make a full copy.
     void Reset();                                 ///< Reset to default values.
-    void Destroy() { UnRef(); }
+    void Destroy()
+    {
+        UnRef();
+    }
 
     /// Do these two langs have the same values.
     bool IsEqualTo(const wxSTEditorLangs &langs) const;
@@ -87,7 +99,10 @@ public:
     int FindLanguageByFilename(const wxFileName&) const;
 
     /// Is this language set (else it's NULL), lang_n is enum STE_LangTypes.
-    bool HasLanguage(size_t lang_n) const { return GetLanguage(lang_n) != NULL; }
+    bool HasLanguage(size_t lang_n) const
+    {
+        return GetLanguage(lang_n) != NULL;
+    }
 
     /// Get the name of the language.
     wxString GetName(size_t lang_n) const;
@@ -155,7 +170,10 @@ public:
 
     /// You can turn off the "availability" of languages by setting the
     ///   flag STE_LANG_FLAG_DONTUSE.
-    bool GetUseLanguage(size_t lang_n) const { return HasLanguage(lang_n) && ((GetFlags(lang_n) & STE_LANG_FLAG_DONTUSE) == 0); }
+    bool GetUseLanguage(size_t lang_n) const
+    {
+        return HasLanguage(lang_n) && ((GetFlags(lang_n) & STE_LANG_FLAG_DONTUSE) == 0);
+    }
 
     // ------------------------------------------------------------------------
 
@@ -213,9 +231,13 @@ public:
     }
 
     bool operator == (const wxSTEditorLangs& langs) const
-        { return m_refData == langs.m_refData; }
+    {
+        return m_refData == langs.m_refData;
+    }
     bool operator != (const wxSTEditorLangs& langs) const
-        { return m_refData != langs.m_refData; }
+    {
+        return m_refData != langs.m_refData;
+    }
     /// @}
 
 private:

@@ -34,11 +34,11 @@ WX_DECLARE_OBJARRAY_WITH_DECL(wxGenericBrush,  wxArrayGenericBrush,  class WXDLL
 
 #if !wxCHECK_VERSION(3, 0, 0)
 
-    typedef int wxPenStyle;
-    typedef int wxPenCap;
-    typedef int wxPenJoin;
+typedef int wxPenStyle;
+typedef int wxPenCap;
+typedef int wxPenJoin;
 
-    #define wxPENSTYLE_SOLID wxSOLID
+#define wxPENSTYLE_SOLID wxSOLID
 
 #endif
 
@@ -51,25 +51,51 @@ class WXDLLIMPEXP_THINGS wxGenericColour : public wxObject
 {
 public:
     wxGenericColour() {}
-    wxGenericColour( const wxGenericColour& c ) : wxObject() { Create(c); }
-    wxGenericColour( const wxColour& c ) : wxObject() { Create(c); }
+    wxGenericColour( const wxGenericColour& c ) : wxObject()
+    {
+        Create(c);
+    }
+    wxGenericColour( const wxColour& c ) : wxObject()
+    {
+        Create(c);
+    }
     wxGenericColour( unsigned char red,  unsigned char green,
                      unsigned char blue, unsigned char alpha=255 ) : wxObject()
-                     { Create(red, green, blue, alpha); }
-    wxGenericColour( unsigned long colABGR ) : wxObject() { CreateABGR(colABGR); }
+    {
+        Create(red, green, blue, alpha);
+    }
+    wxGenericColour( unsigned long colABGR ) : wxObject()
+    {
+        CreateABGR(colABGR);
+    }
 
     // Implicit conversion from the colour name
-    wxGenericColour( const wxString &colourName ) { Create(colourName); }
-    wxGenericColour( const char *colourName )     { Create(wxString::FromAscii(colourName)); }
+    wxGenericColour( const wxString &colourName )
+    {
+        Create(colourName);
+    }
+    wxGenericColour( const char *colourName )
+    {
+        Create(wxString::FromAscii(colourName));
+    }
 #if wxUSE_UNICODE
-    wxGenericColour( const wxChar *colourName )   { Create(wxString(colourName)); }
+    wxGenericColour( const wxChar *colourName )
+    {
+        Create(wxString(colourName));
+    }
 #endif
 
     virtual ~wxGenericColour() {}
     // Destroy the refed data
-    void Destroy() { UnRef(); }
+    void Destroy()
+    {
+        UnRef();
+    }
     // Is this colour valid, has refed data
-    bool Ok() const { return m_refData != NULL; }
+    bool Ok() const
+    {
+        return m_refData != NULL;
+    }
 
     // -----------------------------------------------------------------------
     // (re)Create this colour, unrefing this colour first.
@@ -100,7 +126,10 @@ public:
 
     // -----------------------------------------------------------------------
     // Get the colour values
-    inline wxColour GetColour() const { return wxColour(GetRed(), GetGreen(), GetBlue(), GetAlpha()); }
+    inline wxColour GetColour() const
+    {
+        return wxColour(GetRed(), GetGreen(), GetBlue(), GetAlpha());
+    }
 
     unsigned char GetRed() const;
     unsigned char GetGreen() const;
@@ -108,10 +137,22 @@ public:
     unsigned char GetAlpha() const;
 
     // wxWidgets wxColour compatibility functions
-    unsigned char Red() const   { return GetRed(); }
-    unsigned char Green() const { return GetGreen(); }
-    unsigned char Blue() const  { return GetBlue(); }
-    unsigned char Alpha() const { return GetAlpha(); }
+    unsigned char Red() const
+    {
+        return GetRed();
+    }
+    unsigned char Green() const
+    {
+        return GetGreen();
+    }
+    unsigned char Blue() const
+    {
+        return GetBlue();
+    }
+    unsigned char Alpha() const
+    {
+        return GetAlpha();
+    }
 
     // -----------------------------------------------------------------------
     // Equivalency tests
@@ -126,8 +167,14 @@ public:
     //bool ReadString(const wxString& str, const wxString& format = wxT("%d,%d,%d,%d"));
 
     // operators
-    bool operator == (const wxGenericColour& c) const { return m_refData == c.m_refData; }
-    bool operator != (const wxGenericColour& c) const { return m_refData != c.m_refData; }
+    bool operator == (const wxGenericColour& c) const
+    {
+        return m_refData == c.m_refData;
+    }
+    bool operator != (const wxGenericColour& c) const
+    {
+        return m_refData != c.m_refData;
+    }
 
     wxGenericColour& operator = (const wxGenericColour& c)
     {
@@ -135,7 +182,11 @@ public:
             Ref(c);
         return *this;
     }
-    wxGenericColour& operator = ( const wxColour& c ) { Create(c); return *this; }
+    wxGenericColour& operator = ( const wxColour& c )
+    {
+        Create(c);
+        return *this;
+    }
 
 private:
     // ref counting code
@@ -154,20 +205,36 @@ class WXDLLIMPEXP_THINGS wxGenericPen : public wxObject
 {
 public:
     wxGenericPen() : wxObject() {}
-    wxGenericPen( const wxGenericPen &pen ) : wxObject() { Create(pen); }
-    wxGenericPen( const wxPen &pen ) : wxObject() { Create(pen); }
+    wxGenericPen( const wxGenericPen &pen ) : wxObject()
+    {
+        Create(pen);
+    }
+    wxGenericPen( const wxPen &pen ) : wxObject()
+    {
+        Create(pen);
+    }
     wxGenericPen( const wxGenericColour &colour, int width = 1, wxPenStyle style = wxPENSTYLE_SOLID,
                   wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND ) : wxObject()
-                    { Create(colour, width, style, cap, join); }
+    {
+        Create(colour, width, style, cap, join);
+    }
     wxGenericPen( const wxColour &colour, int width = 1, wxPenStyle style = wxPENSTYLE_SOLID,
                   wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND ) : wxObject()
-                    { Create(colour, width, style, cap, join); }
+    {
+        Create(colour, width, style, cap, join);
+    }
 
     virtual ~wxGenericPen() {}
     // Destroy the refed data
-    void Destroy() { UnRef(); }
+    void Destroy()
+    {
+        UnRef();
+    }
     // Is this colour valid, has refed data
-    bool Ok() const { return m_refData != NULL; }
+    bool Ok() const
+    {
+        return m_refData != NULL;
+    }
 
     // -----------------------------------------------------------------------
     // (re)Create this pen, unrefing this pen first.
@@ -175,9 +242,9 @@ public:
     void Create( const wxGenericPen &pen );
     void Create( const wxPen &pen );
     void Create( const wxGenericColour &colour, int width = 1, wxPenStyle style = wxPENSTYLE_SOLID,
-                wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND );
+                 wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND );
     void Create( const wxColour &colour, int width = 1, wxPenStyle style = wxPENSTYLE_SOLID,
-                wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND );
+                 wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND );
 
     // -----------------------------------------------------------------------
     // Set the values of the refed data.
@@ -217,8 +284,14 @@ public:
     //bool ReadString(const wxString& str);
 
     // operators
-    bool operator == (const wxGenericPen& pen) const { return m_refData == pen.m_refData; }
-    bool operator != (const wxGenericPen& pen) const { return m_refData != pen.m_refData; }
+    bool operator == (const wxGenericPen& pen) const
+    {
+        return m_refData == pen.m_refData;
+    }
+    bool operator != (const wxGenericPen& pen) const
+    {
+        return m_refData != pen.m_refData;
+    }
 
     wxGenericPen& operator = (const wxGenericPen& pen)
     {
@@ -226,7 +299,11 @@ public:
             Ref(pen);
         return *this;
     }
-    wxGenericPen& operator = ( const wxPen& pen ) { Create(pen); return *this; }
+    wxGenericPen& operator = ( const wxPen& pen )
+    {
+        Create(pen);
+        return *this;
+    }
 
 private:
     // ref counting code
@@ -245,17 +322,38 @@ class WXDLLIMPEXP_THINGS wxGenericBrush : public wxObject
 {
 public:
     wxGenericBrush() : wxObject() {}
-    wxGenericBrush( const wxGenericBrush &brush ) : wxObject() { Create(brush); }
-    wxGenericBrush( const wxBrush &brush )        : wxObject() { Create(brush); }
-    wxGenericBrush( const wxGenericColour &colour, int style = wxSOLID) : wxObject() { Create(colour, style); }
-    wxGenericBrush( const wxColour &colour, int style = wxSOLID) : wxObject() { Create(colour, style); }
-    wxGenericBrush( const wxBitmap& stipple ) : wxObject() { Create(stipple); }
+    wxGenericBrush( const wxGenericBrush &brush ) : wxObject()
+    {
+        Create(brush);
+    }
+    wxGenericBrush( const wxBrush &brush )        : wxObject()
+    {
+        Create(brush);
+    }
+    wxGenericBrush( const wxGenericColour &colour, int style = wxSOLID) : wxObject()
+    {
+        Create(colour, style);
+    }
+    wxGenericBrush( const wxColour &colour, int style = wxSOLID) : wxObject()
+    {
+        Create(colour, style);
+    }
+    wxGenericBrush( const wxBitmap& stipple ) : wxObject()
+    {
+        Create(stipple);
+    }
 
     virtual ~wxGenericBrush() {}
     // Destroy the refed data
-    void Destroy() { UnRef(); }
+    void Destroy()
+    {
+        UnRef();
+    }
     // Is this colour valid, has refed data
-    bool Ok() const { return m_refData != NULL; }
+    bool Ok() const
+    {
+        return m_refData != NULL;
+    }
 
     // -----------------------------------------------------------------------
     // (re)Create this brush, unrefing this pen first.
@@ -287,7 +385,9 @@ public:
     wxBitmap* GetStipple() const;
 
     bool IsHatch() const
-        { return (GetStyle()>=wxFIRST_HATCH) && (GetStyle()<=wxLAST_HATCH); }
+    {
+        return (GetStyle()>=wxFIRST_HATCH) && (GetStyle()<=wxLAST_HATCH);
+    }
 
     // -----------------------------------------------------------------------
     // Equivalency tests
@@ -295,8 +395,14 @@ public:
     bool IsSameAs(const wxBrush& brush) const;
 
     // operators
-    bool operator == (const wxGenericBrush& brush) const { return m_refData == brush.m_refData; }
-    bool operator != (const wxGenericBrush& brush) const { return m_refData != brush.m_refData; }
+    bool operator == (const wxGenericBrush& brush) const
+    {
+        return m_refData == brush.m_refData;
+    }
+    bool operator != (const wxGenericBrush& brush) const
+    {
+        return m_refData != brush.m_refData;
+    }
 
     wxGenericBrush& operator = (const wxGenericBrush& brush)
     {
@@ -304,7 +410,11 @@ public:
             Ref(brush);
         return *this;
     }
-    wxGenericBrush& operator = ( const wxBrush& brush ) { Create(brush); return *this; }
+    wxGenericBrush& operator = ( const wxBrush& brush )
+    {
+        Create(brush);
+        return *this;
+    }
 
 private:
     // ref counting code

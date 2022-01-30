@@ -84,7 +84,7 @@ class Token
 // ----------------------------------------------------------------------------
 {
     friend class TokenTree;
-    public:
+public:
 
     /** constructor
      *  @param name token's name, this can be a search key in the tokentree
@@ -112,7 +112,10 @@ class Token
     /** check if the token has any child tokens.
      * @return true if it does have some child.
      */
-    bool HasChildren() const { return !m_Children.empty(); }
+    bool HasChildren() const
+    {
+        return !m_Children.empty();
+    }
 
     /** @brief get a literal string presentation of the namespace.
      *
@@ -160,7 +163,10 @@ class Token
     wxString GetStrippedArgs() const;
 
     /** get the ticket value of the current token */
-    size_t GetTicket() const { return m_Ticket; }
+    size_t GetTicket() const
+    {
+        return m_Ticket;
+    }
 
     /** see whether the current token belong to any files in the file set, both m_FileIdx and
      * m_ImplFileIdx is considered
@@ -172,7 +178,10 @@ class Token
     /** get the TokenTree associated with the current Token
      * @return TokenTree pointer
      */
-    TokenTree* GetTree() const { return m_TokenTree; }
+    TokenTree* GetTree() const
+    {
+        return m_TokenTree;
+    }
 
     /** built in types are not valid ancestors for a type define token
      * @param ancestor testing type string

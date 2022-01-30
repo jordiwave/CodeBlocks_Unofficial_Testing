@@ -54,65 +54,65 @@ const char* STE_CharsNumeric = "0123456789";
 
 #if STE_USE_LANG_PYTHON
 static const char* STE_WordList1_STE_LANG_PYTHON =
-       "and assert break class continue def del elif "
-       "else except exec finally for from global if import in is lambda None "
-       "not or pass print raise return try while yield";
+    "and assert break class continue def del elif "
+    "else except exec finally for from global if import in is lambda None "
+    "not or pass print raise return try while yield";
 #endif //STE_USE_LANG_PYTHON
 
 #if STE_USE_LANG_CPP || STE_USE_LANG_CPPNOCASE
 static const char* STE_WordList1_STE_LANG_CPP =
-       "and and_eq asm auto bitand bitor bool break case catch char class "
-       "compl const const_cast continue default delete do double "
-       "dynamic_cast else enum explicit export extern false float "
-       "for friend goto if inline int long mutable namespace new not "
-       "not_eq operator or or_eq private protected public register "
-       "reinterpret_cast return short signed sizeof static static_cast "
-       "struct switch template this throw true try typedef typeid "
-       "typename union unsigned using virtual void volatile wchar_t while "
-       "xor xor_eq";
+    "and and_eq asm auto bitand bitor bool break case catch char class "
+    "compl const const_cast continue default delete do double "
+    "dynamic_cast else enum explicit export extern false float "
+    "for friend goto if inline int long mutable namespace new not "
+    "not_eq operator or or_eq private protected public register "
+    "reinterpret_cast return short signed sizeof static static_cast "
+    "struct switch template this throw true try typedef typeid "
+    "typename union unsigned using virtual void volatile wchar_t while "
+    "xor xor_eq";
 static const char* STE_WordList2_STE_LANG_CPP = // user defined keywords
-       "file";
+    "file";
 static const char* STE_WordList3_STE_LANG_CPP =
-       "a addindex addtogroup anchor arg attention author b brief bug c "
-       "class code date def defgroup deprecated dontinclude e em endcode "
-       "endhtmlonly endif endlatexonly endlink endverbatim enum example "
-       "exception f$ f[ f] file fn hideinitializer htmlinclude htmlonly "
-       "if image include ingroup internal invariant interface latexonly "
-       "li line link mainpage name namespace nosubgrouping note overload "
-       "p page par param post pre ref relates remarks return retval sa "
-       "section see showinitializer since skip skipline struct subsection "
-       "test throw todo typedef union until var verbatim verbinclude "
-       "version warning weakgroup $ @ \\ & < > # { }";
+    "a addindex addtogroup anchor arg attention author b brief bug c "
+    "class code date def defgroup deprecated dontinclude e em endcode "
+    "endhtmlonly endif endlatexonly endlink endverbatim enum example "
+    "exception f$ f[ f] file fn hideinitializer htmlinclude htmlonly "
+    "if image include ingroup internal invariant interface latexonly "
+    "li line link mainpage name namespace nosubgrouping note overload "
+    "p page par param post pre ref relates remarks return retval sa "
+    "section see showinitializer since skip skipline struct subsection "
+    "test throw todo typedef union until var verbatim verbinclude "
+    "version warning weakgroup $ @ \\ & < > # { }";
 #endif //STE_USE_LANG_CPP || STE_USE_LANG_CPPNOCASE
 
 #if STE_USE_LANG_HTML
 static const char* STE_WordList1_STE_LANG_HTML =
     // hypertext.elements
-       "a abbr acronym address applet area b base basefont bdo big "
-       "blockquote body br button caption center cite code col colgroup "
-       "dd del dfn dir div dl dt em fieldset font form frame frameset h1 "
-       "h2 h3 h4 h5 h6 head hr html i iframe img input ins isindex kbd "
-       "label legend li link map menu meta noframes noscript object ol "
-       "optgroup option p param pre q s samp script select small span "
-       "strike strong style sub sup table tbody td textarea tfoot th "
-       "thead title tr tt u ul var xml xmlns "
+    "a abbr acronym address applet area b base basefont bdo big "
+    "blockquote body br button caption center cite code col colgroup "
+    "dd del dfn dir div dl dt em fieldset font form frame frameset h1 "
+    "h2 h3 h4 h5 h6 head hr html i iframe img input ins isindex kbd "
+    "label legend li link map menu meta noframes noscript object ol "
+    "optgroup option p param pre q s samp script select small span "
+    "strike strong style sub sup table tbody td textarea tfoot th "
+    "thead title tr tt u ul var xml xmlns "
     // hypertext.attributes
-       "abbr accept-charset accept accesskey action align alink alt "
-       "archive axis background bgcolor border cellpadding cellspacing "
-       "char charoff charset checked cite class classid clear codebase "
-       "codetype color cols colspan compact content coords data datafld "
-       "dataformatas datapagesize datasrc datetime declare defer dir "
-       "disabled enctype event face for frame frameborder headers height "
-       "href hreflang hspace http-equiv id ismap label lang language "
-       "leftmargin link longdesc marginwidth marginheight maxlength media "
-       "method multiple name nohref noresize noshade nowrap object onblur "
-       "onchange onclick ondblclick onfocus onkeydown onkeypress onkeyup "
-       "onload onmousedown onmousemove onmouseover onmouseout onmouseup "
-       "onreset onselect onsubmit onunload profile prompt readonly rel "
-       "rev rows rowspan rules scheme scope selected shape size span src "
-       "standby start style summary tabindex target text title topmargin "
-       "type usemap valign value valuetype version vlink vspace width "
-       "text password checkbox radio submit reset file hidden image "
+    "abbr accept-charset accept accesskey action align alink alt "
+    "archive axis background bgcolor border cellpadding cellspacing "
+    "char charoff charset checked cite class classid clear codebase "
+    "codetype color cols colspan compact content coords data datafld "
+    "dataformatas datapagesize datasrc datetime declare defer dir "
+    "disabled enctype event face for frame frameborder headers height "
+    "href hreflang hspace http-equiv id ismap label lang language "
+    "leftmargin link longdesc marginwidth marginheight maxlength media "
+    "method multiple name nohref noresize noshade nowrap object onblur "
+    "onchange onclick ondblclick onfocus onkeydown onkeypress onkeyup "
+    "onload onmousedown onmousemove onmouseover onmouseout onmouseup "
+    "onreset onselect onsubmit onunload profile prompt readonly rel "
+    "rev rows rowspan rules scheme scope selected shape size span src "
+    "standby start style summary tabindex target text title topmargin "
+    "type usemap valign value valuetype version vlink vspace width "
+    "text password checkbox radio submit reset file hidden image "
     // html5.elements
     "article aside calendar canvas card command commandset datagrid datatree "
     "footer gauge header m menubar menulabel nav progress section switch tabbox "
@@ -157,55 +157,55 @@ static const char* STE_WordList1_STE_LANG_PERL = // 1.65
 
 #if STE_USE_LANG_SQL
 static const char* STE_WordList1_STE_LANG_SQL =
-       "absolute action add admin after aggregate alias all allocate alter and any "
-       "are array as asc assertion at authorization before begin binary bit blob "
-       "boolean both breadth by call cascade cascaded case cast catalog char "
-       "character check class clob close collate collation column commit completion "
-       "connect connection constraint constraints constructor continue corresponding "
-       "create cross cube current current_date current_path current_role "
-       "current_time current_timestamp current_user cursor cycle data date day "
-       "deallocate dec decimal declare default deferrable deferred delete depth "
-       "deref desc describe descriptor destroy destructor deterministic dictionary "
-       "diagnostics disconnect distinct domain double drop dynamic each else end "
-       "end-exec equals escape every except exception exec execute external false "
-       "fetch first float for foreign found from free full function general get "
-       "global go goto grant group grouping having host hour identity if ignore "
-       "immediate in indicator initialize initially inner inout input insert int "
-       "integer intersect interval into is isolation iterate join key language "
-       "large last lateral leading left less level like limit local localtime "
-       "localtimestamp locator map match minute modifies modify module month names "
-       "national natural nchar nclob new next no none not null numeric object of "
-       "off old on only open operation option or order ordinality out outer output "
-       "pad parameter parameters partial path postfix precision prefix preorder "
-       "prepare preserve primary prior privileges procedure public read reads real "
-       "recursive ref references referencing relative restrict result return returns "
-       "revoke right role rollback rollup routine row rows savepoint schema scroll "
-       "scope search second section select sequence session session_user set sets "
-       "size smallint some| space specific specifictype sql sqlexception sqlstate "
-       "sqlwarning start state statement static structure system_user table "
-       "temporary terminate than then time timestamp timezone_hour timezone_minute "
-       "to trailing transaction translation treat trigger true under union unique "
-       "unknown unnest update usage user using value values varchar variable varying "
-       "view when whenever where with without work write year zone";
+    "absolute action add admin after aggregate alias all allocate alter and any "
+    "are array as asc assertion at authorization before begin binary bit blob "
+    "boolean both breadth by call cascade cascaded case cast catalog char "
+    "character check class clob close collate collation column commit completion "
+    "connect connection constraint constraints constructor continue corresponding "
+    "create cross cube current current_date current_path current_role "
+    "current_time current_timestamp current_user cursor cycle data date day "
+    "deallocate dec decimal declare default deferrable deferred delete depth "
+    "deref desc describe descriptor destroy destructor deterministic dictionary "
+    "diagnostics disconnect distinct domain double drop dynamic each else end "
+    "end-exec equals escape every except exception exec execute external false "
+    "fetch first float for foreign found from free full function general get "
+    "global go goto grant group grouping having host hour identity if ignore "
+    "immediate in indicator initialize initially inner inout input insert int "
+    "integer intersect interval into is isolation iterate join key language "
+    "large last lateral leading left less level like limit local localtime "
+    "localtimestamp locator map match minute modifies modify module month names "
+    "national natural nchar nclob new next no none not null numeric object of "
+    "off old on only open operation option or order ordinality out outer output "
+    "pad parameter parameters partial path postfix precision prefix preorder "
+    "prepare preserve primary prior privileges procedure public read reads real "
+    "recursive ref references referencing relative restrict result return returns "
+    "revoke right role rollback rollup routine row rows savepoint schema scroll "
+    "scope search second section select sequence session session_user set sets "
+    "size smallint some| space specific specifictype sql sqlexception sqlstate "
+    "sqlwarning start state statement static structure system_user table "
+    "temporary terminate than then time timestamp timezone_hour timezone_minute "
+    "to trailing transaction translation treat trigger true under union unique "
+    "unknown unnest update usage user using value values varchar variable varying "
+    "view when whenever where with without work write year zone";
 #endif //STE_USE_LANG_SQL
 
 #if STE_USE_LANG_VB || STE_USE_LANG_HTML
 static const char* STE_WordList1_STE_LANG_VB =
-       "addhandler addressof andalso alias and ansi as assembly auto "
-       "boolean byref byte byval call case catch cbool cbyte cchar cdate "
-       "cdec cdbl char cint class clng cobj const cshort csng cstr ctype "
-       "date decimal declare default delegate dim do double each else "
-       "elseif end enum erase error event exit false finally for friend "
-       "function get gettype goto  handles if implements imports in "
-       "inherits integer interface is let lib like long loop me mod "
-       "module mustinherit mustoverride mybase myclass namespace new next "
-       "not nothing notinheritable notoverridable object on option "
-       "optional or orelse overloads overridable overrides paramarray "
-       "preserve private property protected public raiseevent readonly "
-       "redim rem removehandler resume return select set shadows shared "
-       "short single static step stop string structure sub synclock then "
-       "throw to true try typeof unicode until variant when while with "
-       "withevents writeonly xor";
+    "addhandler addressof andalso alias and ansi as assembly auto "
+    "boolean byref byte byval call case catch cbool cbyte cchar cdate "
+    "cdec cdbl char cint class clng cobj const cshort csng cstr ctype "
+    "date decimal declare default delegate dim do double each else "
+    "elseif end enum erase error event exit false finally for friend "
+    "function get gettype goto  handles if implements imports in "
+    "inherits integer interface is let lib like long loop me mod "
+    "module mustinherit mustoverride mybase myclass namespace new next "
+    "not nothing notinheritable notoverridable object on option "
+    "optional or orelse overloads overridable overrides paramarray "
+    "preserve private property protected public raiseevent readonly "
+    "redim rem removehandler resume return select set shadows shared "
+    "short single static step stop string structure sub synclock then "
+    "throw to true try typeof unicode until variant when while with "
+    "withevents writeonly xor";
 #endif //STE_USE_LANG_VB || STE_USE_LANG_HTML
 
 //static const char* STE_WordList1_STE_LANG_PROPERTIES
@@ -216,11 +216,11 @@ static const char* STE_WordList1_STE_LANG_VB =
 
 #if STE_USE_LANG_BATCH
 static const char* STE_WordList1_STE_LANG_BATCH =
-       "rem set if exist errorlevel for in do break call chcp cd chdir "
-       "choice cls country ctty date del erase dir echo exit goto loadfix "
-       "loadhigh mkdir md move path pause prompt rename ren rmdir rd shift "
-       "time type ver verify vol com con lpt nul "
-       "color copy defined else not start";
+    "rem set if exist errorlevel for in do break call chcp cd chdir "
+    "choice cls country ctty date del erase dir echo exit goto loadfix "
+    "loadhigh mkdir md move path pause prompt rename ren rmdir rd shift "
+    "time type ver verify vol com con lpt nul "
+    "color copy defined else not start";
 #endif //STE_USE_LANG_BATCH
 
 //static const char* STE_WordList1_STE_LANG_XCODE
@@ -364,31 +364,31 @@ static const char* STE_WordList1_STE_LANG_LATEX =
 
 #if STE_USE_LANG_LUA
 static const char* STE_WordList1_STE_LANG_LUA =
-       "and break do else elseif end false for function if "
-       "in local nil not or repeat return then true until while";
+    "and break do else elseif end false for function if "
+    "in local nil not or repeat return then true until while";
 static const char* STE_WordList2_STE_LANG_LUA =
-       "_VERSION assert collectgarbage dofile error gcinfo loadfile loadstring "
-       "print tonumber tostring type unpack "
-       "_G getfenv getmetatable ipairs loadlib next pairs pcall rawequal rawget "
-       "rawset require setfenv setmetatable xpcall string table math coroutine "
-       "io os debug";
+    "_VERSION assert collectgarbage dofile error gcinfo loadfile loadstring "
+    "print tonumber tostring type unpack "
+    "_G getfenv getmetatable ipairs loadlib next pairs pcall rawequal rawget "
+    "rawset require setfenv setmetatable xpcall string table math coroutine "
+    "io os debug";
 static const char* STE_WordList3_STE_LANG_LUA =
-       "string.byte string.char string.dump string.find string.len "
-       "string.lower string.rep string.sub string.upper string.format "
-       "string.gfind string.gsub table.concat table.foreach table.foreachi "
-       "table.getn table.sort table.insert table.remove table.setn math.abs "
-       "math.acos math.asin math.atan math.atan2 math.ceil math.cos math.deg "
-       "math.exp math.floor math.frexp math.ldexp math.log math.log10 math.max "
-       "math.min math.mod math.pi math.pow math.rad math.random math.randomseed "
-       "math.sin math.sqrt math.tan";
+    "string.byte string.char string.dump string.find string.len "
+    "string.lower string.rep string.sub string.upper string.format "
+    "string.gfind string.gsub table.concat table.foreach table.foreachi "
+    "table.getn table.sort table.insert table.remove table.setn math.abs "
+    "math.acos math.asin math.atan math.atan2 math.ceil math.cos math.deg "
+    "math.exp math.floor math.frexp math.ldexp math.log math.log10 math.max "
+    "math.min math.mod math.pi math.pow math.rad math.random math.randomseed "
+    "math.sin math.sqrt math.tan";
 static const char* STE_WordList4_STE_LANG_LUA =
-       "coroutine.create coroutine.resume coroutine.status coroutine.wrap "
-       "coroutine.yield io.close io.flush io.input io.lines io.open io.output "
-       "io.read io.tmpfile io.type io.write io.stdin io.stdout io.stderr "
-       "os.clock os.date os.difftime os.execute os.exit os.getenv os.remove "
-       "os.rename os.setlocale os.time os.tmpname "
-       "coroutine.running package.cpath package.loaded package.loadlib package.path "
-       "package.preload package.seeall io.popen";
+    "coroutine.create coroutine.resume coroutine.status coroutine.wrap "
+    "coroutine.yield io.close io.flush io.input io.lines io.open io.output "
+    "io.read io.tmpfile io.type io.write io.stdin io.stdout io.stderr "
+    "os.clock os.date os.difftime os.execute os.exit os.getenv os.remove "
+    "os.rename os.setlocale os.time os.tmpname "
+    "coroutine.running package.cpath package.loaded package.loadlib package.path "
+    "package.preload package.seeall io.popen";
 
 // lua 4
 //       "_ALERT _ERRORMESSAGE _INPUT _PROMPT _OUTPUT _STDERR _STDIN _STDOUT "
@@ -531,237 +531,237 @@ static const char* STE_WordList1_STE_LANG_CONF =  // actually Apache
     "virtualscriptalias virtualscriptaliasip "
     "win32disableacceptex xbithack";
 static const char* STE_WordList2_STE_LANG_CONF =
-       "on off standalone inetd force-response-1.0 downgrade-1.0 "
-       "nokeepalive indexes includes followsymlinks none "
-       "x-compress x-gzip";
+    "on off standalone inetd force-response-1.0 downgrade-1.0 "
+    "nokeepalive indexes includes followsymlinks none "
+    "x-compress x-gzip";
 #endif //STE_USE_LANG_CONF
 
 #if STE_USE_LANG_PASCAL
 static const char* STE_WordList1_STE_LANG_PASCAL =
-       "program const type var begin end array set packed record string "
-       "if then else while for to downto do with repeat until case of "
-       "goto exit label procedure function nil file and or not xor div "
-       "mod unit uses implementation interface external asm inline object "
-       "constructor destructor virtual far assembler near inherited "
-       "stdcall cdecl library export exports end. class ansistring raise "
-       "try except on index name finally resourcestring false true "
-       "initialization finalization override overload";
+    "program const type var begin end array set packed record string "
+    "if then else while for to downto do with repeat until case of "
+    "goto exit label procedure function nil file and or not xor div "
+    "mod unit uses implementation interface external asm inline object "
+    "constructor destructor virtual far assembler near inherited "
+    "stdcall cdecl library export exports end. class ansistring raise "
+    "try except on index name finally resourcestring false true "
+    "initialization finalization override overload";
 #endif //STE_USE_LANG_PASCAL
 
 #if STE_USE_LANG_AVE
 static const char* STE_WordList1_STE_LANG_AVE =
-       "nil true false else for if while then elseif end av self in exit";
+    "nil true false else for if while then elseif end av self in exit";
 #endif //STE_USE_LANG_AVE
 
 #if STE_USE_LANG_ADA
 static const char* STE_WordList1_STE_LANG_ADA =
-       "abort abstract accept access aliased all array at begin body case "
-       "constant declare delay delta digits do else elsif end entry "
-       "exception exit for function generic goto if in is limited loop "
-       "new null of others out package pragma private procedure protected "
-       "raise range record renames requeue return reverse select separate "
-       "subtype tagged task terminate then type until use when while with "
-       "abs and mod not or rem xor";
+    "abort abstract accept access aliased all array at begin body case "
+    "constant declare delay delta digits do else elsif end entry "
+    "exception exit for function generic goto if in is limited loop "
+    "new null of others out package pragma private procedure protected "
+    "raise range record renames requeue return reverse select separate "
+    "subtype tagged task terminate then type until use when while with "
+    "abs and mod not or rem xor";
 #endif //STE_USE_LANG_ADA
 
 #if STE_USE_LANG_LISP
 static const char* STE_WordList1_STE_LANG_LISP =
-       "not defun + - * / = < > <= >= princ eval apply funcall quote "
-       "identity function complement backquote lambda set setq setf defun "
-       "defmacro gensym make symbol intern symbol name symbol value "
-       "symbol plist get getf putprop remprop hash make array aref car "
-       "cdr caar cadr cdar cddr caaar caadr cadar caddr cdaar cdadr cddar "
-       "cdddr caaaar caaadr caadar caaddr cadaar cadadr caddar cadddr "
-       "cdaaar cdaadr cdadar cdaddr cddaar cddadr cdddar cddddr cons list "
-       "append reverse last nth nthcdr member assoc subst sublis nsubst "
-       "nsublis remove length list length mapc mapcar mapl maplist mapcan "
-       "mapcon rplaca rplacd nconc delete atom symbolp numberp boundp "
-       "null listp consp minusp zerop plusp evenp oddp eq eql equal cond "
-       "case and or let l if prog prog1 prog2 progn go return do dolist "
-       "dotimes catch throw error cerror break continue errset baktrace "
-       "evalhook truncate float rem min max abs sin cos tan expt exp sqrt "
-       "random logand logior logxor lognot bignums logeqv lognand lognor "
-       "logorc2 logtest logbitp logcount integer length nil";
+    "not defun + - * / = < > <= >= princ eval apply funcall quote "
+    "identity function complement backquote lambda set setq setf defun "
+    "defmacro gensym make symbol intern symbol name symbol value "
+    "symbol plist get getf putprop remprop hash make array aref car "
+    "cdr caar cadr cdar cddr caaar caadr cadar caddr cdaar cdadr cddar "
+    "cdddr caaaar caaadr caadar caaddr cadaar cadadr caddar cadddr "
+    "cdaaar cdaadr cdadar cdaddr cddaar cddadr cdddar cddddr cons list "
+    "append reverse last nth nthcdr member assoc subst sublis nsubst "
+    "nsublis remove length list length mapc mapcar mapl maplist mapcan "
+    "mapcon rplaca rplacd nconc delete atom symbolp numberp boundp "
+    "null listp consp minusp zerop plusp evenp oddp eq eql equal cond "
+    "case and or let l if prog prog1 prog2 progn go return do dolist "
+    "dotimes catch throw error cerror break continue errset baktrace "
+    "evalhook truncate float rem min max abs sin cos tan expt exp sqrt "
+    "random logand logior logxor lognot bignums logeqv lognand lognor "
+    "logorc2 logtest logbitp logcount integer length nil";
 #endif //STE_USE_LANG_LISP
 
 #if STE_USE_LANG_RUBY
 static const char* STE_WordList1_STE_LANG_RUBY =
-       "__FILE__ and def end in or self unless __LINE__ begin defined? "
-       "ensure module redo super until BEGIN break do false next rescue "
-       "then when END case else for nil retry true while alias class "
-       "elsif if not return undef yield";
+    "__FILE__ and def end in or self unless __LINE__ begin defined? "
+    "ensure module redo super until BEGIN break do false next rescue "
+    "then when END case else for nil retry true while alias class "
+    "elsif if not return undef yield";
 #endif //STE_USE_LANG_RUBY
 
 #if STE_USE_LANG_EIFFEL || STE_USE_LANG_EIFFELKW
 static const char* STE_WordList1_STE_LANG_EIFFEL =
-       "alias all and any as bit boolean check class character clone "
-       "create creation current debug deferred div do double else elseif "
-       "end ensure equal expanded export external false feature forget "
-       "from frozen general if implies indexing infix inherit inspect "
-       "integer invariant is language like local loop mod name nochange "
-       "none not obsolete old once or platform pointer prefix precursor "
-       "real redefine rename require rescue result retry select separate "
-       "string strip then true undefine unique until variant void when "
-       "xor";
+    "alias all and any as bit boolean check class character clone "
+    "create creation current debug deferred div do double else elseif "
+    "end ensure equal expanded export external false feature forget "
+    "from frozen general if implies indexing infix inherit inspect "
+    "integer invariant is language like local loop mod name nochange "
+    "none not obsolete old once or platform pointer prefix precursor "
+    "real redefine rename require rescue result retry select separate "
+    "string strip then true undefine unique until variant void when "
+    "xor";
 
 //static const char* STE_WordList1_STE_LANG_EIFFELKW uses EIFFEL
 #endif //STE_USE_LANG_EIFFEL || STE_USE_LANG_EIFFELKW
 
 #if STE_USE_LANG_TCL
 static const char* STE_WordList1_STE_LANG_TCL =
-       // keywordclass.tcl
-       "after append array auto_execok "
-       "auto_import auto_load auto_load_index auto_qualify "
-       "beep bgerror binary break case catch cd clock "
-       "close concat continue dde default echo else elseif "
-       "encoding eof error eval exec exit expr fblocked "
-       "fconfigure fcopy file fileevent flush for foreach format "
-       "gets glob global history http if incr info "
-       "interp join lappend lindex linsert list llength load "
-       "loadTk lrange lreplace lsearch lset lsort memory msgcat "
-       "namespace open package pid pkg::create pkg_mkIndex Platform-specific proc "
-       "puts pwd re_syntax read regexp registry regsub rename "
-       "resource return scan seek set socket source split "
-       "string subst switch tclLog tclMacPkgSearch tclPkgSetup tclPkgUnknown tell "
-       "time trace unknown unset update uplevel upvar variable "
-       "vwait while "
-       // keywordclass.tk
-       "bell bind bindtags bitmap button canvas checkbutton clipboard "
-       "colors console cursors destroy entry event focus font "
-       "frame grab grid image Inter-client keysyms label labelframe "
-       "listbox lower menu menubutton message option options pack "
-       "panedwindow photo place radiobutton raise scale scrollbar selection "
-       "send spinbox text tk tk_chooseColor tk_chooseDirectory tk_dialog tk_focusNext "
-       "tk_getOpenFile tk_messageBox tk_optionMenu tk_popup tk_setPalette tkerror tkvars tkwait "
-       "toplevel winfo wish wm "
-       // keywordclass.itcl
-       //"@scope body class code common component configbody "
-       //"constructor define destructor hull import inherit itcl itk itk_component "
-       //"itk_initialize itk_interior itk_option iwidgets keep method "
-       //"private protected public "
-       // keywordclass.TkCommands
-        "tk_bisque tk_chooseColor tk_dialog tk_focusFollowsMouse tk_focusNext "
-        "tk_focusPrev tk_getOpenFile tk_getSaveFile tk_messageBox tk_optionMenu "
-        "tk_popup tk_setPalette tk_textCopy tk_textCut tk_textPaste "
-        "tkButtonAutoInvoke tkButtonDown tkButtonEnter tkButtonInvoke tkButtonLeave "
-        "tkButtonUp tkCancelRepeat tkCheckRadioDown tkCheckRadioEnter tkCheckRadioInvoke "
-        "tkColorDialog tkColorDialog_BuildDialog tkColorDialog_CancelCmd tkColorDialog_Config tkColorDialog_CreateSelector "
-        "tkColorDialog_DrawColorScale tkColorDialog_EnterColorBar tkColorDialog_HandleRGBEntry tkColorDialog_HandleSelEntry tkColorDialog_InitValues "
-        "tkColorDialog_LeaveColorBar tkColorDialog_MoveSelector tkColorDialog_OkCmd tkColorDialog_RedrawColorBars tkColorDialog_RedrawFinalColor "
-        "tkColorDialog_ReleaseMouse tkColorDialog_ResizeColorBars tkColorDialog_RgbToX tkColorDialog_SetRGBValue tkColorDialog_StartMove "
-        "tkColorDialog_XToRgb tkConsoleAbout tkConsoleBind tkConsoleExit tkConsoleHistory "
-        "tkConsoleInit tkConsoleInsert tkConsoleInvoke tkConsoleOutput tkConsolePrompt "
-        "tkConsoleSource tkDarken tkEntryAutoScan tkEntryBackspace tkEntryButton1 "
-        "tkEntryClosestGap tkEntryGetSelection tkEntryInsert tkEntryKeySelect tkEntryMouseSelect "
-        "tkEntryNextWord tkEntryPaste tkEntryPreviousWord tkEntrySeeInsert tkEntrySetCursor "
-        "tkEntryTranspose tkEventMotifBindings tkFDGetFileTypes tkFirstMenu tkFocusGroup_BindIn "
-        "tkFocusGroup_BindOut tkFocusGroup_Create tkFocusGroup_Destroy tkFocusGroup_In tkFocusGroup_Out "
-        "tkFocusOK tkGenerateMenuSelect tkIconList tkIconList_Add tkIconList_Arrange "
-        "tkIconList_AutoScan tkIconList_Btn1 tkIconList_Config tkIconList_Create tkIconList_CtrlBtn1 "
-        "tkIconList_Curselection tkIconList_DeleteAll tkIconList_Double1 tkIconList_DrawSelection tkIconList_FocusIn "
-        "tkIconList_FocusOut tkIconList_Get tkIconList_Goto tkIconList_Index tkIconList_Invoke "
-        "tkIconList_KeyPress tkIconList_Leave1 tkIconList_LeftRight tkIconList_Motion1 tkIconList_Reset "
-        "tkIconList_ReturnKey tkIconList_See tkIconList_Select tkIconList_Selection tkIconList_ShiftBtn1 "
-        "tkIconList_UpDown tkListbox tkListboxAutoScan tkListboxBeginExtend tkListboxBeginSelect "
-        "tkListboxBeginToggle tkListboxCancel tkListboxDataExtend tkListboxExtendUpDown tkListboxKeyAccel_Goto "
-        "tkListboxKeyAccel_Key tkListboxKeyAccel_Reset tkListboxKeyAccel_Set tkListboxKeyAccel_Unset tkListboxMotion "
-        "tkListboxSelectAll tkListboxUpDown tkMbButtonUp tkMbEnter tkMbLeave "
-        "tkMbMotion tkMbPost tkMenuButtonDown tkMenuDownArrow tkMenuDup "
-        "tkMenuEscape tkMenuFind tkMenuFindName tkMenuFirstEntry tkMenuInvoke "
-        "tkMenuLeave tkMenuLeftArrow tkMenuMotion tkMenuNextEntry tkMenuNextMenu "
-        "tkMenuRightArrow tkMenuUnpost tkMenuUpArrow tkMessageBox tkMotifFDialog "
-        "tkMotifFDialog_ActivateDList tkMotifFDialog_ActivateFEnt tkMotifFDialog_ActivateFList tkMotifFDialog_ActivateSEnt tkMotifFDialog_BrowseDList "
-        "tkMotifFDialog_BrowseFList tkMotifFDialog_BuildUI tkMotifFDialog_CancelCmd tkMotifFDialog_Config tkMotifFDialog_Create "
-        "tkMotifFDialog_FileTypes tkMotifFDialog_FilterCmd tkMotifFDialog_InterpFilter tkMotifFDialog_LoadFiles tkMotifFDialog_MakeSList "
-        "tkMotifFDialog_OkCmd tkMotifFDialog_SetFilter tkMotifFDialog_SetListMode tkMotifFDialog_Update tkPostOverPoint "
-        "tkRecolorTree tkRestoreOldGrab tkSaveGrabInfo tkScaleActivate tkScaleButton2Down "
-        "tkScaleButtonDown tkScaleControlPress tkScaleDrag tkScaleEndDrag tkScaleIncrement "
-        "tkScreenChanged tkScrollButton2Down tkScrollButtonDown tkScrollButtonDrag tkScrollButtonUp "
-        "tkScrollByPages tkScrollByUnits tkScrollDrag tkScrollEndDrag tkScrollSelect "
-        "tkScrollStartDrag tkScrollTopBottom tkScrollToPos tkTabToWindow tkTearOffMenu "
-        "tkTextAutoScan tkTextButton1 tkTextClosestGap tkTextInsert tkTextKeyExtend "
-        "tkTextKeySelect tkTextNextPara tkTextNextPos tkTextNextWord tkTextPaste "
-        "tkTextPrevPara tkTextPrevPos tkTextPrevWord tkTextResetAnchor tkTextScrollPages "
-        "tkTextSelectTo tkTextSetCursor tkTextTranspose tkTextUpDownLine tkTraverseToMenu "
-        "tkTraverseWithinMenu";
+    // keywordclass.tcl
+    "after append array auto_execok "
+    "auto_import auto_load auto_load_index auto_qualify "
+    "beep bgerror binary break case catch cd clock "
+    "close concat continue dde default echo else elseif "
+    "encoding eof error eval exec exit expr fblocked "
+    "fconfigure fcopy file fileevent flush for foreach format "
+    "gets glob global history http if incr info "
+    "interp join lappend lindex linsert list llength load "
+    "loadTk lrange lreplace lsearch lset lsort memory msgcat "
+    "namespace open package pid pkg::create pkg_mkIndex Platform-specific proc "
+    "puts pwd re_syntax read regexp registry regsub rename "
+    "resource return scan seek set socket source split "
+    "string subst switch tclLog tclMacPkgSearch tclPkgSetup tclPkgUnknown tell "
+    "time trace unknown unset update uplevel upvar variable "
+    "vwait while "
+    // keywordclass.tk
+    "bell bind bindtags bitmap button canvas checkbutton clipboard "
+    "colors console cursors destroy entry event focus font "
+    "frame grab grid image Inter-client keysyms label labelframe "
+    "listbox lower menu menubutton message option options pack "
+    "panedwindow photo place radiobutton raise scale scrollbar selection "
+    "send spinbox text tk tk_chooseColor tk_chooseDirectory tk_dialog tk_focusNext "
+    "tk_getOpenFile tk_messageBox tk_optionMenu tk_popup tk_setPalette tkerror tkvars tkwait "
+    "toplevel winfo wish wm "
+    // keywordclass.itcl
+    //"@scope body class code common component configbody "
+    //"constructor define destructor hull import inherit itcl itk itk_component "
+    //"itk_initialize itk_interior itk_option iwidgets keep method "
+    //"private protected public "
+    // keywordclass.TkCommands
+    "tk_bisque tk_chooseColor tk_dialog tk_focusFollowsMouse tk_focusNext "
+    "tk_focusPrev tk_getOpenFile tk_getSaveFile tk_messageBox tk_optionMenu "
+    "tk_popup tk_setPalette tk_textCopy tk_textCut tk_textPaste "
+    "tkButtonAutoInvoke tkButtonDown tkButtonEnter tkButtonInvoke tkButtonLeave "
+    "tkButtonUp tkCancelRepeat tkCheckRadioDown tkCheckRadioEnter tkCheckRadioInvoke "
+    "tkColorDialog tkColorDialog_BuildDialog tkColorDialog_CancelCmd tkColorDialog_Config tkColorDialog_CreateSelector "
+    "tkColorDialog_DrawColorScale tkColorDialog_EnterColorBar tkColorDialog_HandleRGBEntry tkColorDialog_HandleSelEntry tkColorDialog_InitValues "
+    "tkColorDialog_LeaveColorBar tkColorDialog_MoveSelector tkColorDialog_OkCmd tkColorDialog_RedrawColorBars tkColorDialog_RedrawFinalColor "
+    "tkColorDialog_ReleaseMouse tkColorDialog_ResizeColorBars tkColorDialog_RgbToX tkColorDialog_SetRGBValue tkColorDialog_StartMove "
+    "tkColorDialog_XToRgb tkConsoleAbout tkConsoleBind tkConsoleExit tkConsoleHistory "
+    "tkConsoleInit tkConsoleInsert tkConsoleInvoke tkConsoleOutput tkConsolePrompt "
+    "tkConsoleSource tkDarken tkEntryAutoScan tkEntryBackspace tkEntryButton1 "
+    "tkEntryClosestGap tkEntryGetSelection tkEntryInsert tkEntryKeySelect tkEntryMouseSelect "
+    "tkEntryNextWord tkEntryPaste tkEntryPreviousWord tkEntrySeeInsert tkEntrySetCursor "
+    "tkEntryTranspose tkEventMotifBindings tkFDGetFileTypes tkFirstMenu tkFocusGroup_BindIn "
+    "tkFocusGroup_BindOut tkFocusGroup_Create tkFocusGroup_Destroy tkFocusGroup_In tkFocusGroup_Out "
+    "tkFocusOK tkGenerateMenuSelect tkIconList tkIconList_Add tkIconList_Arrange "
+    "tkIconList_AutoScan tkIconList_Btn1 tkIconList_Config tkIconList_Create tkIconList_CtrlBtn1 "
+    "tkIconList_Curselection tkIconList_DeleteAll tkIconList_Double1 tkIconList_DrawSelection tkIconList_FocusIn "
+    "tkIconList_FocusOut tkIconList_Get tkIconList_Goto tkIconList_Index tkIconList_Invoke "
+    "tkIconList_KeyPress tkIconList_Leave1 tkIconList_LeftRight tkIconList_Motion1 tkIconList_Reset "
+    "tkIconList_ReturnKey tkIconList_See tkIconList_Select tkIconList_Selection tkIconList_ShiftBtn1 "
+    "tkIconList_UpDown tkListbox tkListboxAutoScan tkListboxBeginExtend tkListboxBeginSelect "
+    "tkListboxBeginToggle tkListboxCancel tkListboxDataExtend tkListboxExtendUpDown tkListboxKeyAccel_Goto "
+    "tkListboxKeyAccel_Key tkListboxKeyAccel_Reset tkListboxKeyAccel_Set tkListboxKeyAccel_Unset tkListboxMotion "
+    "tkListboxSelectAll tkListboxUpDown tkMbButtonUp tkMbEnter tkMbLeave "
+    "tkMbMotion tkMbPost tkMenuButtonDown tkMenuDownArrow tkMenuDup "
+    "tkMenuEscape tkMenuFind tkMenuFindName tkMenuFirstEntry tkMenuInvoke "
+    "tkMenuLeave tkMenuLeftArrow tkMenuMotion tkMenuNextEntry tkMenuNextMenu "
+    "tkMenuRightArrow tkMenuUnpost tkMenuUpArrow tkMessageBox tkMotifFDialog "
+    "tkMotifFDialog_ActivateDList tkMotifFDialog_ActivateFEnt tkMotifFDialog_ActivateFList tkMotifFDialog_ActivateSEnt tkMotifFDialog_BrowseDList "
+    "tkMotifFDialog_BrowseFList tkMotifFDialog_BuildUI tkMotifFDialog_CancelCmd tkMotifFDialog_Config tkMotifFDialog_Create "
+    "tkMotifFDialog_FileTypes tkMotifFDialog_FilterCmd tkMotifFDialog_InterpFilter tkMotifFDialog_LoadFiles tkMotifFDialog_MakeSList "
+    "tkMotifFDialog_OkCmd tkMotifFDialog_SetFilter tkMotifFDialog_SetListMode tkMotifFDialog_Update tkPostOverPoint "
+    "tkRecolorTree tkRestoreOldGrab tkSaveGrabInfo tkScaleActivate tkScaleButton2Down "
+    "tkScaleButtonDown tkScaleControlPress tkScaleDrag tkScaleEndDrag tkScaleIncrement "
+    "tkScreenChanged tkScrollButton2Down tkScrollButtonDown tkScrollButtonDrag tkScrollButtonUp "
+    "tkScrollByPages tkScrollByUnits tkScrollDrag tkScrollEndDrag tkScrollSelect "
+    "tkScrollStartDrag tkScrollTopBottom tkScrollToPos tkTabToWindow tkTearOffMenu "
+    "tkTextAutoScan tkTextButton1 tkTextClosestGap tkTextInsert tkTextKeyExtend "
+    "tkTextKeySelect tkTextNextPara tkTextNextPos tkTextNextWord tkTextPaste "
+    "tkTextPrevPara tkTextPrevPos tkTextPrevWord tkTextResetAnchor tkTextScrollPages "
+    "tkTextSelectTo tkTextSetCursor tkTextTranspose tkTextUpDownLine tkTraverseToMenu "
+    "tkTraverseWithinMenu";
 #endif //STE_USE_LANG_TCL
 
 #if STE_USE_LANG_NNCRONTAB
 static const char* STE_WordList1_STE_LANG_NNCRONTAB =
-       "AGAIN ALLOT AND Action BEGIN CASE COMPARE CONSTANT CREATE DO Days "
-       "ELSE ENDCASE ENDOF EVAL-SUBST EVALUATE FALSE Hours I IF LEAVE "
-       "LOOP Minutes Months NOT OF OFF ON OR PAD REPEAT Rule SET THEN "
-       "TRUE Time UNTIL VALUE VARIABLE WHILE WeekDays Years";
+    "AGAIN ALLOT AND Action BEGIN CASE COMPARE CONSTANT CREATE DO Days "
+    "ELSE ENDCASE ENDOF EVAL-SUBST EVALUATE FALSE Hours I IF LEAVE "
+    "LOOP Minutes Months NOT OF OFF ON OR PAD REPEAT Rule SET THEN "
+    "TRUE Time UNTIL VALUE VARIABLE WHILE WeekDays Years";
 static const char* STE_WordList2_STE_LANG_NNCRONTAB =
-       "</JScript> </SCRIPT> </VBScript> <JScript> <VBScript> ACCESS-DATE "
-       "BEEP CALL_DIAL CALL_HANGUP CHAR CLIPBOARD CONSOLE CREATION-DATE "
-       "CUR-DATE DATE- DATE-INTERVAL DELAY DIAL DIR-CREATE DIR-DELETE "
-       "DIR-EMPTY DIR-SIZE Day@ Domain ERR-MSG EXIST FILE-ACCESS-DATE "
-       "FILE-APPEND FILE-COPY FILE-CREATE FILE-CREATION-DATE FILE-CROP "
-       "FILE-DATE FILE-DELETE FILE-EMPTY FILE-EXIST FILE-MOVE FILE-RENAME "
-       "FILE-SIZE FILE-WRITE FILE-WRITE-DATE FOR-CHILD-WINDOWS FOR-FILES "
-       "FOR-WINDOWS FREE-SPACE GET-CUR-TIME GET-REG GET-VER GetTickCount "
-       "HANGUP HIDE-ICON HINT HINT-OFF HINT-POS HINT-SIZE HINTW "
-       "HOST-EXIST Hour@ IDLE INTERVAL IS-ARCHIVE IS-DIR IS-HIDDEN "
-       "IS-READONLY IS-SYSTEM KILL LAUNCH LOG LOGGEDON LOGOFF LogonBatch "
-       "LogonInteractive LogonNetwork MOUSE-LBCLK MOUSE-LBDCLK MOUSE-LBDN "
-       "MOUSE-LBUP MOUSE-MOVE MOUSE-MOVER MOUSE-MOVEW MOUSE-RBCLK "
-       "MOUSE-RBDCLK MOUSE-RBDN MOUSE-RBUP MSG Min@ Mon@ "
-       "MonitorResponseTime NHOST-EXIST No ONLINE PAUSE PLAY-SOUND "
-       "PLAY-SOUNDW POP3-CHECK POWEROFF PROC-EXIST PROC-TIME PURGE-OLD "
-       "PURGE-OLDA PURGE-OLDW Password QSTART-APP QSTART-APPW QUERY QUIT "
-       "RASDomain RASError RASPassword RASPhone RASSecPassword RASUser "
-       "RE-ALL RE-MATCH REBOOT REG-DELETE-KEY REG-DELETE-VALUE REG-DWORD "
-       "REG-SZ REMINDER RUN SEND-KEYS SEND-KEYS-DELAY SHOW-ICON SHUTDOWN "
-       "START-APP START-APPW START-QUIT START-TIME Sec@ SecPassword THINT "
-       "THINTW TimeSec@ TMSG TQUERY User WDay@ WIN-ACTIVATE WIN-ACTIVE "
-       "WIN-CLICK WIN-CLOSE WIN-EXIST WIN-HIDE WIN-HWND WIN-MAXIMIZE "
-       "WIN-MINIMIZE WIN-MOVE WIN-MOVER WIN-RESTORE WIN-SEND-KEYS "
-       "WIN-SHOW WIN-TERMINATE WIN-TOPMOST WIN-VER WIN-WAIT WINAPI "
-       "WRITE-DATE WatchClipboard WatchConnect WatchDir WatchDisconnect "
-       "WatchDriveInsert WatchDriveRemove WatchFile WatchProc "
-       "WatchProcStop WatchWinActivate WatchWinCreate WatchWinDestroy "
-       "WatchWindow WinNT Year@ Yes";
+    "</JScript> </SCRIPT> </VBScript> <JScript> <VBScript> ACCESS-DATE "
+    "BEEP CALL_DIAL CALL_HANGUP CHAR CLIPBOARD CONSOLE CREATION-DATE "
+    "CUR-DATE DATE- DATE-INTERVAL DELAY DIAL DIR-CREATE DIR-DELETE "
+    "DIR-EMPTY DIR-SIZE Day@ Domain ERR-MSG EXIST FILE-ACCESS-DATE "
+    "FILE-APPEND FILE-COPY FILE-CREATE FILE-CREATION-DATE FILE-CROP "
+    "FILE-DATE FILE-DELETE FILE-EMPTY FILE-EXIST FILE-MOVE FILE-RENAME "
+    "FILE-SIZE FILE-WRITE FILE-WRITE-DATE FOR-CHILD-WINDOWS FOR-FILES "
+    "FOR-WINDOWS FREE-SPACE GET-CUR-TIME GET-REG GET-VER GetTickCount "
+    "HANGUP HIDE-ICON HINT HINT-OFF HINT-POS HINT-SIZE HINTW "
+    "HOST-EXIST Hour@ IDLE INTERVAL IS-ARCHIVE IS-DIR IS-HIDDEN "
+    "IS-READONLY IS-SYSTEM KILL LAUNCH LOG LOGGEDON LOGOFF LogonBatch "
+    "LogonInteractive LogonNetwork MOUSE-LBCLK MOUSE-LBDCLK MOUSE-LBDN "
+    "MOUSE-LBUP MOUSE-MOVE MOUSE-MOVER MOUSE-MOVEW MOUSE-RBCLK "
+    "MOUSE-RBDCLK MOUSE-RBDN MOUSE-RBUP MSG Min@ Mon@ "
+    "MonitorResponseTime NHOST-EXIST No ONLINE PAUSE PLAY-SOUND "
+    "PLAY-SOUNDW POP3-CHECK POWEROFF PROC-EXIST PROC-TIME PURGE-OLD "
+    "PURGE-OLDA PURGE-OLDW Password QSTART-APP QSTART-APPW QUERY QUIT "
+    "RASDomain RASError RASPassword RASPhone RASSecPassword RASUser "
+    "RE-ALL RE-MATCH REBOOT REG-DELETE-KEY REG-DELETE-VALUE REG-DWORD "
+    "REG-SZ REMINDER RUN SEND-KEYS SEND-KEYS-DELAY SHOW-ICON SHUTDOWN "
+    "START-APP START-APPW START-QUIT START-TIME Sec@ SecPassword THINT "
+    "THINTW TimeSec@ TMSG TQUERY User WDay@ WIN-ACTIVATE WIN-ACTIVE "
+    "WIN-CLICK WIN-CLOSE WIN-EXIST WIN-HIDE WIN-HWND WIN-MAXIMIZE "
+    "WIN-MINIMIZE WIN-MOVE WIN-MOVER WIN-RESTORE WIN-SEND-KEYS "
+    "WIN-SHOW WIN-TERMINATE WIN-TOPMOST WIN-VER WIN-WAIT WINAPI "
+    "WRITE-DATE WatchClipboard WatchConnect WatchDir WatchDisconnect "
+    "WatchDriveInsert WatchDriveRemove WatchFile WatchProc "
+    "WatchProcStop WatchWinActivate WatchWinCreate WatchWinDestroy "
+    "WatchWindow WinNT Year@ Yes";
 static const char* STE_WordList3_STE_LANG_NNCRONTAB =
-       "ALL AboveNormalPriority AsService BelowNormalPriority FILESONLY "
-       "HighPriority IdlePriority LoadProfile NoActive NoDel NoLog "
-       "NoRunAs NormalPriority OnceADay OnceAHour OnceAMonth OnceAWeek "
-       "RECURSIVE RealtimePriority RunOnce SWHide ShowMaximized "
-       "ShowMinimized ShowNoActivate ShowNormal StartIn StartPos "
-       "StartSize TODEPTH WATCH-CHANGE-ATTRIBUTES WATCH-CHANGE-DIR-NAME "
-       "WATCH-CHANGE-FILE-NAME WATCH-CHANGE-LAST-WRITE "
-       "WATCH-CHANGE-SECURITY WATCH-CHANGE-SIZE WaitFor WatchSubtree "
-       "WithoutProfile";
+    "ALL AboveNormalPriority AsService BelowNormalPriority FILESONLY "
+    "HighPriority IdlePriority LoadProfile NoActive NoDel NoLog "
+    "NoRunAs NormalPriority OnceADay OnceAHour OnceAMonth OnceAWeek "
+    "RECURSIVE RealtimePriority RunOnce SWHide ShowMaximized "
+    "ShowMinimized ShowNoActivate ShowNormal StartIn StartPos "
+    "StartSize TODEPTH WATCH-CHANGE-ATTRIBUTES WATCH-CHANGE-DIR-NAME "
+    "WATCH-CHANGE-FILE-NAME WATCH-CHANGE-LAST-WRITE "
+    "WATCH-CHANGE-SECURITY WATCH-CHANGE-SIZE WaitFor WatchSubtree "
+    "WithoutProfile";
 #endif //STE_USE_LANG_NNCRONTAB
 
 #if STE_USE_LANG_BULLANT
 static const char* STE_WordList1_STE_LANG_BULLANT =
-       "abstract all ancestor and application assert attributes author "
-       "begin callback class concrete config constants construct continue "
-       "depends description downcast driver elif else ensures error "
-       "exception exposure extension false fatal final function generics "
-       "glyph help hidden host immutable in inherits is kernel label "
-       "leave library locals mutable none not null obsolete options or "
-       "other parameters peer private public raise reason restricted "
-       "retry return returns rollback route security self settings "
-       "severity step task test transaction true unknown varying warning "
-       "when method end if until while trap case debug for foreach lock "
-       "boolean character character$ date date$ datetime datetime$ float "
-       "hex$ identifier identifier$ integer interval interval$ money "
-       "money$ raw raw$ string tick tick$ time time$ version version$";
+    "abstract all ancestor and application assert attributes author "
+    "begin callback class concrete config constants construct continue "
+    "depends description downcast driver elif else ensures error "
+    "exception exposure extension false fatal final function generics "
+    "glyph help hidden host immutable in inherits is kernel label "
+    "leave library locals mutable none not null obsolete options or "
+    "other parameters peer private public raise reason restricted "
+    "retry return returns rollback route security self settings "
+    "severity step task test transaction true unknown varying warning "
+    "when method end if until while trap case debug for foreach lock "
+    "boolean character character$ date date$ datetime datetime$ float "
+    "hex$ identifier identifier$ integer interval interval$ money "
+    "money$ raw raw$ string tick tick$ time time$ version version$";
 #endif //STE_USE_LANG_BULLANT
 
 #if STE_USE_LANG_VBSCRIPT
 static const char* STE_WordList1_STE_LANG_VBSCRIPT =
-       "and begin case call continue do each else elseif end erase error "
-       "event exit false for function get gosub goto if implement in load "
-       "loop lset me mid new next not nothing on or property raiseevent "
-       "rem resume return rset select set stop sub then to true unload "
-       "until wend while with withevents attribute alias as boolean byref "
-       "byte byval const compare currency date declare dim double enum "
-       "explicit friend global integer let lib long module object option "
-       "optional preserve private property public redim single static "
-       "string type variant";
+    "and begin case call continue do each else elseif end erase error "
+    "event exit false for function get gosub goto if implement in load "
+    "loop lset me mid new next not nothing on or property raiseevent "
+    "rem resume return rset select set stop sub then to true unload "
+    "until wend while with withevents attribute alias as boolean byref "
+    "byte byval const compare currency date declare dim double enum "
+    "explicit friend global integer let lib long module object option "
+    "optional preserve private property public redim single static "
+    "string type variant";
 #endif //STE_USE_LANG_VBSCRIPT
 
 //static const char* STE_WordList1_STE_LANG_ASP
@@ -784,501 +784,501 @@ static const char* STE_WordList1_STE_LANG_PHP =
 
 #if STE_USE_LANG_MATLAB || STE_USE_LANG_OCTAVE
 static const char* STE_WordList1_STE_LANG_MATLAB =
-       "break case catch continue else elseif end for function global if "
-       "otherwise persistent return switch try while";
+    "break case catch continue else elseif end for function global if "
+    "otherwise persistent return switch try while";
 #endif //STE_USE_LANG_MATLAB || STE_USE_LANG_OCTAVE
 
 #if STE_USE_LANG_SCRIPTOL
 static const char* STE_WordList1_STE_LANG_SCRIPTOL =
-       "act action alias always and array as bool boolean break by byte "
-       "class case catch const constant continue dyn def define dict do "
-       "double echo else elsif end enum error false file for float forever "
-       "function globak gtk in if ifdef import include int integer java "
-       "javax let long match mod nil not natural null number or print "
-       "protected public real return redo scan script scriptol sol short "
-       "super static step until using var text then this true try void "
-       "volatile while when undef zero";
+    "act action alias always and array as bool boolean break by byte "
+    "class case catch const constant continue dyn def define dict do "
+    "double echo else elsif end enum error false file for float forever "
+    "function globak gtk in if ifdef import include int integer java "
+    "javax let long match mod nil not natural null number or print "
+    "protected public real return redo scan script scriptol sol short "
+    "super static step until using var text then this true try void "
+    "volatile while when undef zero";
 #endif //STE_USE_LANG_SCRIPTOL
 
 #if STE_USE_LANG_ASM
 static const char* STE_WordList1_STE_LANG_ASM =
-       "aaa aad aam aas adc add and call cbw clc cld cli cmc cmp cmps "
-       "cmpsb cmpsw cwd daa das dec div esc hlt idiv imul in inc int into "
-       "iret ja jae jb jbe jc jcxz je jg jge jl jle jmp jna jnae jnb jnbe "
-       "jnc jne jng jnge jnl jnle jno jnp jns jnz jo jp jpe jpo js jz "
-       "lahf lds lea les lods lodsb lodsw loop loope loopew loopne "
-       "loopnew loopnz loopnzw loopw loopz loopzw mov movs movsb movsw "
-       "mul neg nop not or out pop popf push pushf rcl rcr ret retf retn "
-       "rol ror sahf sal sar sbb scas scasb scasw shl shr stc std sti "
-       "stos stosb stosw sub test wait xchg xlat xlatb xor bound enter "
-       "ins insb insw leave outs outsb outsw popa pusha pushw arpl lar "
-       "lsl sgdt sidt sldt smsw str verr verw clts lgdt lidt lldt lmsw "
-       "ltr bsf bsr bt btc btr bts cdq cmpsd cwde insd iretd iretdf "
-       "iretf jecxz lfs lgs lodsd loopd looped loopned loopnzd loopzd "
-       "lss movsd movsx movzx outsd popad popfd pushad pushd pushfd scasd "
-       "seta setae setb setbe setc sete setg setge setl setle setna "
-       "setnae setnb setnbe setnc setne setng setnge setnl setnle setno "
-       "setnp setns setnz seto setp setpe setpo sets setz shld shrd stosd "
-       "bswap cmpxchg invd  invlpg  wbinvd  xadd lock rep repe repne "
-       "repnz repz";
+    "aaa aad aam aas adc add and call cbw clc cld cli cmc cmp cmps "
+    "cmpsb cmpsw cwd daa das dec div esc hlt idiv imul in inc int into "
+    "iret ja jae jb jbe jc jcxz je jg jge jl jle jmp jna jnae jnb jnbe "
+    "jnc jne jng jnge jnl jnle jno jnp jns jnz jo jp jpe jpo js jz "
+    "lahf lds lea les lods lodsb lodsw loop loope loopew loopne "
+    "loopnew loopnz loopnzw loopw loopz loopzw mov movs movsb movsw "
+    "mul neg nop not or out pop popf push pushf rcl rcr ret retf retn "
+    "rol ror sahf sal sar sbb scas scasb scasw shl shr stc std sti "
+    "stos stosb stosw sub test wait xchg xlat xlatb xor bound enter "
+    "ins insb insw leave outs outsb outsw popa pusha pushw arpl lar "
+    "lsl sgdt sidt sldt smsw str verr verw clts lgdt lidt lldt lmsw "
+    "ltr bsf bsr bt btc btr bts cdq cmpsd cwde insd iretd iretdf "
+    "iretf jecxz lfs lgs lodsd loopd looped loopned loopnzd loopzd "
+    "lss movsd movsx movzx outsd popad popfd pushad pushd pushfd scasd "
+    "seta setae setb setbe setc sete setg setge setl setle setna "
+    "setnae setnb setnbe setnc setne setng setnge setnl setnle setno "
+    "setnp setns setnz seto setp setpe setpo sets setz shld shrd stosd "
+    "bswap cmpxchg invd  invlpg  wbinvd  xadd lock rep repe repne "
+    "repnz repz";
 static const char* STE_WordList2_STE_LANG_ASM =
-       "f2xm1 fabs fadd faddp fbld fbstp fchs fclex fcom fcomp fcompp "
-       "fdecstp fdisi fdiv fdivp fdivr fdivrp feni ffree fiadd ficom "
-       "ficomp fidiv fidivr fild fimul fincstp finit fist fistp fisub "
-       "fisubr fld fld1 fldcw fldenv fldenvw fldl2e fldl2t fldlg2 fldln2 "
-       "fldpi fldz fmul fmulp fnclex fndisi fneni fninit fnop fnsave "
-       "fnsavew fnstcw fnstenv fnstenvw fnstsw fpatan fprem fptan frndint "
-       "frstor frstorw fsave fsavew fscale fsqrt fst fstcw fstenv fstenvw "
-       "fstp fstsw fsub fsubp fsubr fsubrp ftst fwait fxam fxch fxtract "
-       "fyl2x fyl2xp1 fsetpm fcos fldenvd fnsaved fnstenvd fprem1 frstord "
-       "fsaved fsin fsincos fstenvd fucom fucomp fucompp";
+    "f2xm1 fabs fadd faddp fbld fbstp fchs fclex fcom fcomp fcompp "
+    "fdecstp fdisi fdiv fdivp fdivr fdivrp feni ffree fiadd ficom "
+    "ficomp fidiv fidivr fild fimul fincstp finit fist fistp fisub "
+    "fisubr fld fld1 fldcw fldenv fldenvw fldl2e fldl2t fldlg2 fldln2 "
+    "fldpi fldz fmul fmulp fnclex fndisi fneni fninit fnop fnsave "
+    "fnsavew fnstcw fnstenv fnstenvw fnstsw fpatan fprem fptan frndint "
+    "frstor frstorw fsave fsavew fscale fsqrt fst fstcw fstenv fstenvw "
+    "fstp fstsw fsub fsubp fsubr fsubrp ftst fwait fxam fxch fxtract "
+    "fyl2x fyl2xp1 fsetpm fcos fldenvd fnsaved fnstenvd fprem1 frstord "
+    "fsaved fsin fsincos fstenvd fucom fucomp fucompp";
 static const char* STE_WordList3_STE_LANG_ASM =
-       "ah al ax bh bl bp bx ch cl cr0 cr2 cr3 cs cx dh di dl dr0 dr1 dr2 "
-       "dr3 dr6 dr7 ds dx eax ebp ebx ecx edi edx es esi esp fs gs si sp "
-       "ss st tr3 tr4 tr5 tr6 tr7";
+    "ah al ax bh bl bp bx ch cl cr0 cr2 cr3 cs cx dh di dl dr0 dr1 dr2 "
+    "dr3 dr6 dr7 ds dx eax ebp ebx ecx edi edx es esi esp fs gs si sp "
+    "ss st tr3 tr4 tr5 tr6 tr7";
 static const char* STE_WordList4_STE_LANG_ASM =
-       ".186 .286 .286c .286p .287 .386 .386c .386p .387 .486 .486p .8086 "
-       ".8087 .alpha .break .code .const .continue .cref .data .data?  "
-       ".dosseg .else .elseif .endif .endw .err .err1 .err2 .errb .errdef "
-       ".errdif .errdifi .erre .erridn .erridni .errnb .errndef .errnz "
-       ".exit .fardata .fardata? .if .lall .lfcond .list .listall .listif "
-       ".listmacro .listmacroall  .model .no87 .nocref .nolist .nolistif "
-       ".nolistmacro .radix .repeat .sall .seq .sfcond .stack .startup "
-       ".tfcond .type .until .untilcxz .while .xall .xcref .xlist alias "
-       "align assume catstr comm comment db dd df dosseg dq dt dup dw "
-       "echo else elseif elseif1 elseif2 elseifb elseifdef elseifdif "
-       "elseifdifi elseife elseifidn elseifidni elseifnb elseifndef end "
-       "endif endm endp ends eq  equ even exitm extern externdef extrn "
-       "for forc ge goto group gt high highword if if1 if2 ifb ifdef "
-       "ifdif ifdifi ife  ifidn ifidni ifnb ifndef include includelib "
-       "instr invoke irp irpc label le length lengthof local low lowword "
-       "lroffset lt macro mask mod .msfloat name ne offset opattr option "
-       "org %out page popcontext proc proto ptr public purge pushcontext "
-       "record repeat rept seg segment short size sizeof sizestr struc "
-       "struct substr subtitle subttl textequ this title type typedef "
-       "union while width";
+    ".186 .286 .286c .286p .287 .386 .386c .386p .387 .486 .486p .8086 "
+    ".8087 .alpha .break .code .const .continue .cref .data .data?  "
+    ".dosseg .else .elseif .endif .endw .err .err1 .err2 .errb .errdef "
+    ".errdif .errdifi .erre .erridn .erridni .errnb .errndef .errnz "
+    ".exit .fardata .fardata? .if .lall .lfcond .list .listall .listif "
+    ".listmacro .listmacroall  .model .no87 .nocref .nolist .nolistif "
+    ".nolistmacro .radix .repeat .sall .seq .sfcond .stack .startup "
+    ".tfcond .type .until .untilcxz .while .xall .xcref .xlist alias "
+    "align assume catstr comm comment db dd df dosseg dq dt dup dw "
+    "echo else elseif elseif1 elseif2 elseifb elseifdef elseifdif "
+    "elseifdifi elseife elseifidn elseifidni elseifnb elseifndef end "
+    "endif endm endp ends eq  equ even exitm extern externdef extrn "
+    "for forc ge goto group gt high highword if if1 if2 ifb ifdef "
+    "ifdif ifdifi ife  ifidn ifidni ifnb ifndef include includelib "
+    "instr invoke irp irpc label le length lengthof local low lowword "
+    "lroffset lt macro mask mod .msfloat name ne offset opattr option "
+    "org %out page popcontext proc proto ptr public purge pushcontext "
+    "record repeat rept seg segment short size sizeof sizestr struc "
+    "struct substr subtitle subttl textequ this title type typedef "
+    "union while width";
 static const char* STE_WordList5_STE_LANG_ASM =
-       "$ ? @b @f addr basic byte c carry? dword far far16 fortran fword "
-       "near near16 overflow? parity? pascal qword real4 real8 real10 "
-       "sbyte sdword sign? stdcall sword syscall tbyte vararg word zero? "
-       "flat near32 far32 abs all assumes at casemap common compact cpu "
-       "dotname emulator epilogue error export expr16 expr32 farstack "
-       "flat forceframe huge language large listing ljmp loadds m510 "
-       "medium memory nearstack nodotname noemulator nokeyword noljmp "
-       "nom510 none nonunique nooldmacros nooldstructs noreadonly "
-       "noscoped nosignextend nothing notpublic oldmacros oldstructs "
-       "os_dos para private prologue radix  readonly req scoped setif2 "
-       "smallstack tiny use16 use32 uses";
+    "$ ? @b @f addr basic byte c carry? dword far far16 fortran fword "
+    "near near16 overflow? parity? pascal qword real4 real8 real10 "
+    "sbyte sdword sign? stdcall sword syscall tbyte vararg word zero? "
+    "flat near32 far32 abs all assumes at casemap common compact cpu "
+    "dotname emulator epilogue error export expr16 expr32 farstack "
+    "flat forceframe huge language large listing ljmp loadds m510 "
+    "medium memory nearstack nodotname noemulator nokeyword noljmp "
+    "nom510 none nonunique nooldmacros nooldstructs noreadonly "
+    "noscoped nosignextend nothing notpublic oldmacros oldstructs "
+    "os_dos para private prologue radix  readonly req scoped setif2 "
+    "smallstack tiny use16 use32 uses";
 #endif //STE_USE_LANG_ASM
 
 //static const char* STE_WordList5_STE_LANG_CPPNOCASE uses cpp
 
 #if STE_USE_LANG_FORTRAN || STE_USE_LANG_F77
 static const char* STE_WordList1_STE_LANG_FORTRAN =
-       "allocatable allocate assignment backspace block blockdata call "
-       "case character close common complex contains continue cycle data "
-       "deallocate default dimension direct do double doubleprecision "
-       "elemental else elseif elsewhere end endblock endblockdata enddo "
-       "endfile endforall endfunction endif endinterface endmodule "
-       "endprogram endselect endsubroutine endtype endwhere entry "
-       "equivalence err exist exit external forall format formatted "
-       "function go goto if implicit in inout include inquire integer "
-       "intent interface intrinsic iolength iostat kind len logical "
-       "module namelist none null nullify only open operator optional "
-       "parameter pointer position precision print private procedure "
-       "program public pure out read readwrite real rec recursive result "
-       "return rewind save select selectcase sequence sequential stat "
-       "status stop subroutine target then to type unformatted unit use "
-       "where while write";
+    "allocatable allocate assignment backspace block blockdata call "
+    "case character close common complex contains continue cycle data "
+    "deallocate default dimension direct do double doubleprecision "
+    "elemental else elseif elsewhere end endblock endblockdata enddo "
+    "endfile endforall endfunction endif endinterface endmodule "
+    "endprogram endselect endsubroutine endtype endwhere entry "
+    "equivalence err exist exit external forall format formatted "
+    "function go goto if implicit in inout include inquire integer "
+    "intent interface intrinsic iolength iostat kind len logical "
+    "module namelist none null nullify only open operator optional "
+    "parameter pointer position precision print private procedure "
+    "program public pure out read readwrite real rec recursive result "
+    "return rewind save select selectcase sequence sequential stat "
+    "status stop subroutine target then to type unformatted unit use "
+    "where while write";
 static const char* STE_WordList2_STE_LANG_FORTRAN =
-       "abs achar acos acosd adjustl adjustr aimag aimax0 aimin0 aint "
-       "ajmax0 ajmin0 akmax0 akmin0 all allocated alog alog10 amax0 amax1 "
-       "amin0 amin1 amod anint any asin asind associated atan atan2 "
-       "atan2d atand bitest bitl bitlr bitrl bjtest bit_size bktest break "
-       "btest cabs ccos cdabs cdcos cdexp cdlog cdsin cdsqrt ceiling cexp "
-       "char clog cmplx conjg cos cosd cosh count cpu_time cshift csin "
-       "csqrt dabs dacos dacosd dasin dasind datan datan2 datan2d datand "
-       "date date_and_time dble dcmplx dconjg dcos dcosd dcosh dcotan "
-       "ddim dexp dfloat dflotk dfloti dflotj digits dim dimag dint dlog "
-       "dlog10 dmax1 dmin1 dmod dnint dot_product dprod dreal dsign dsin "
-       "dsind dsinh dsqrt dtan dtand dtanh eoshift epsilon errsns exp "
-       "exponent float floati floatj floatk floor fraction free huge iabs "
-       "iachar iand ibclr ibits ibset ichar idate idim idint idnint ieor "
-       "ifix iiabs iiand iibclr iibits iibset iidim iidint iidnnt iieor "
-       "iifix iint iior iiqint iiqnnt iishft iishftc iisign ilen imax0 "
-       "imax1 imin0 imin1 imod index inint inot int int1 int2 int4 int8 "
-       "iqint iqnint ior ishft ishftc isign isnan izext jiand jibclr "
-       "jibits jibset jidim jidint jidnnt jieor jifix jint jior jiqint "
-       "jiqnnt jishft jishftc jisign jmax0 jmax1 jmin0 jmin1 jmod jnint "
-       "jnot jzext kiabs kiand kibclr kibits kibset kidim kidint kidnnt "
-       "kieor kifix kind kint kior kishft kishftc kisign kmax0 kmax1 "
-       "kmin0 kmin1 kmod knint knot kzext lbound leadz len len_trim "
-       "lenlge lge lgt lle llt log log10 logical lshift malloc matmul "
-       "max max0 max1 maxexponent maxloc maxval merge min min0 min1 "
-       "minexponent minloc minval mod modulo mvbits nearest nint not "
-       "nworkers number_of_processors pack popcnt poppar precision "
-       "present product radix random random_number random_seed range real "
-       "repeat reshape rrspacing rshift scale scan secnds "
-       "selected_int_kind selected_real_kind set_exponent shape sign sin "
-       "sind sinh size sizeof sngl snglq spacing spread sqrt sum "
-       "system_clock tan tand tanh tiny transfer transpose trim ubound "
-       "unpack verify";
+    "abs achar acos acosd adjustl adjustr aimag aimax0 aimin0 aint "
+    "ajmax0 ajmin0 akmax0 akmin0 all allocated alog alog10 amax0 amax1 "
+    "amin0 amin1 amod anint any asin asind associated atan atan2 "
+    "atan2d atand bitest bitl bitlr bitrl bjtest bit_size bktest break "
+    "btest cabs ccos cdabs cdcos cdexp cdlog cdsin cdsqrt ceiling cexp "
+    "char clog cmplx conjg cos cosd cosh count cpu_time cshift csin "
+    "csqrt dabs dacos dacosd dasin dasind datan datan2 datan2d datand "
+    "date date_and_time dble dcmplx dconjg dcos dcosd dcosh dcotan "
+    "ddim dexp dfloat dflotk dfloti dflotj digits dim dimag dint dlog "
+    "dlog10 dmax1 dmin1 dmod dnint dot_product dprod dreal dsign dsin "
+    "dsind dsinh dsqrt dtan dtand dtanh eoshift epsilon errsns exp "
+    "exponent float floati floatj floatk floor fraction free huge iabs "
+    "iachar iand ibclr ibits ibset ichar idate idim idint idnint ieor "
+    "ifix iiabs iiand iibclr iibits iibset iidim iidint iidnnt iieor "
+    "iifix iint iior iiqint iiqnnt iishft iishftc iisign ilen imax0 "
+    "imax1 imin0 imin1 imod index inint inot int int1 int2 int4 int8 "
+    "iqint iqnint ior ishft ishftc isign isnan izext jiand jibclr "
+    "jibits jibset jidim jidint jidnnt jieor jifix jint jior jiqint "
+    "jiqnnt jishft jishftc jisign jmax0 jmax1 jmin0 jmin1 jmod jnint "
+    "jnot jzext kiabs kiand kibclr kibits kibset kidim kidint kidnnt "
+    "kieor kifix kind kint kior kishft kishftc kisign kmax0 kmax1 "
+    "kmin0 kmin1 kmod knint knot kzext lbound leadz len len_trim "
+    "lenlge lge lgt lle llt log log10 logical lshift malloc matmul "
+    "max max0 max1 maxexponent maxloc maxval merge min min0 min1 "
+    "minexponent minloc minval mod modulo mvbits nearest nint not "
+    "nworkers number_of_processors pack popcnt poppar precision "
+    "present product radix random random_number random_seed range real "
+    "repeat reshape rrspacing rshift scale scan secnds "
+    "selected_int_kind selected_real_kind set_exponent shape sign sin "
+    "sind sinh size sizeof sngl snglq spacing spread sqrt sum "
+    "system_clock tan tand tanh tiny transfer transpose trim ubound "
+    "unpack verify";
 
 // static const char* STE_WordList1_STE_LANG_F77 uses FORTRAN
 #endif //STE_USE_LANG_FORTRAN || STE_USE_LANG_F77
 
 #if STE_USE_LANG_CSS
 static const char* STE_WordList1_STE_LANG_CSS =
-       "left right top bottom position font-family font-style font-variant "
-       "font-weight font-size font color background-color background-image "
-       "background-repeat background-attachment background-position background "
-       "word-spacing letter-spacing text-decoration vertical-align text-transform "
-       "text-align text-indent line-height margin-top margin-right margin-bottom "
-       "margin-left margin padding-top padding-right padding-bottom padding-left "
-       "padding border-top-width border-right-width border-bottom-width "
-       "border-left-width border-width border-top border-right border-bottom "
-       "border-left border border-color border-style width height float clear "
-       "display white-space list-style-type list-style-image list-style-position "
-       "list-style";
+    "left right top bottom position font-family font-style font-variant "
+    "font-weight font-size font color background-color background-image "
+    "background-repeat background-attachment background-position background "
+    "word-spacing letter-spacing text-decoration vertical-align text-transform "
+    "text-align text-indent line-height margin-top margin-right margin-bottom "
+    "margin-left margin padding-top padding-right padding-bottom padding-left "
+    "padding border-top-width border-right-width border-bottom-width "
+    "border-left-width border-width border-top border-right border-bottom "
+    "border-left border border-color border-style width height float clear "
+    "display white-space list-style-type list-style-image list-style-position "
+    "list-style";
 static const char* STE_WordList2_STE_LANG_CSS =
-       "first-letter first-line active link visited";
+    "first-letter first-line active link visited";
 #endif //STE_USE_LANG_CSS
 
 #if STE_USE_LANG_POV
 static const char* STE_WordList1_STE_LANG_POV =
-       "declare local include undef fopen fclose read write default version "
-       "case range break debug error warning if ifdef ifndef switch while "
-       "macro else end";
+    "declare local include undef fopen fclose read write default version "
+    "case range break debug error warning if ifdef ifndef switch while "
+    "macro else end";
 static const char* STE_WordList2_STE_LANG_POV =
-       "camera light_source light_group object blob sphere cylinder box cone "
-       "sor height_field julia_fractal lathe prism sphere_sweep superellipsoid "
-       "text torus bicubic_patch disc mesh mesh2 polygon triangle "
-       "smooth_triangle plane poly cubic quartic quadric isosurface parametric "
-       "union intersection difference merge function array spline "
-       "vertex_vectors normal_vectors uv_vectors face_indices normal_indices "
-       "uv_indices texture texture_list interior_texture texture_map "
-       "material_map image_map color_map colour_map pigment_map normal_map "
-       "slope_map bump_map density_map pigment normal material interior finish "
-       "reflection irid slope pigment_pattern image_pattern warp media "
-       "scattering density background fog sky_sphere rainbow global_settings "
-       "radiosity photons pattern transform looks_like projected_through "
-       "contained_by clipped_by bounded_by";
+    "camera light_source light_group object blob sphere cylinder box cone "
+    "sor height_field julia_fractal lathe prism sphere_sweep superellipsoid "
+    "text torus bicubic_patch disc mesh mesh2 polygon triangle "
+    "smooth_triangle plane poly cubic quartic quadric isosurface parametric "
+    "union intersection difference merge function array spline "
+    "vertex_vectors normal_vectors uv_vectors face_indices normal_indices "
+    "uv_indices texture texture_list interior_texture texture_map "
+    "material_map image_map color_map colour_map pigment_map normal_map "
+    "slope_map bump_map density_map pigment normal material interior finish "
+    "reflection irid slope pigment_pattern image_pattern warp media "
+    "scattering density background fog sky_sphere rainbow global_settings "
+    "radiosity photons pattern transform looks_like projected_through "
+    "contained_by clipped_by bounded_by";
 static const char* STE_WordList3_STE_LANG_POV =
-       "linear_spline quadratic_spline cubic_spline natural_spline "
-       "bezier_spline b_spline read write append inverse open perspective "
-       "orthographic fisheye ultra_wide_angle omnimax panoramic spherical "
-       "spotlight jitter circular orient media_attenuation media_interaction "
-       "shadowless parallel refraction collect pass_through global_lights "
-       "hierarchy sturm smooth gif tga iff pot png pgm ppm jpeg tiff sys "
-       "ttf quaternion hypercomplex linear_sweep conic_sweep type "
-       "all_intersections split_union cutaway_textures no_shadow no_image "
-       "no_reflection double_illuminate hollow uv_mapping all use_index "
-       "use_color use_colour no_bump_scale conserve_energy fresnel average "
-       "agate boxed bozo bumps cells crackle cylindrical density_file dents "
-       "facets granite leopard marble onion planar quilted radial ripples "
-       "spotted waves wood wrinkles solid use_alpha interpolate magnet "
-       "noise_generator toroidal ramp_wave triangle_wave sine_wave "
-       "scallop_wave cubic_wave poly_wave once map_type method fog_type "
-       "hf_gray_16 charset ascii utf8 rotate scale translate matrix location "
-       "right up direction sky angle look_at aperture blur_samples "
-       "focal_point confidence variance radius falloff tightness point_at "
-       "area_light adaptive fade_distance fade_power threshold strength "
-       "water_level tolerance max_iteration precision slice u_steps v_steps "
-       "flatness inside_vector accuracy max_gradient evaluate max_trace "
-       "precompute target ior dispersion dispersion_samples caustics color "
-       "colour rgb rgbf rgbt rgbft red green blue filter transmit gray hf "
-       "fade_color fade_colour quick_color quick_colour brick checker hexagon "
-       "brick_size mortar bump_size ambient diffuse brilliance crand phong "
-       "phong_size metallic specular roughness reflection_exponent exponent "
-       "thickness gradient spiral1 spiral2 agate_turb form metric offset df3 "
-       "coords size mandel exterior julia control0 control1 altitude "
-       "turbulence octaves omega lambda repeat flip black-hole orientation "
-       "dist_exp major_radius frequency phase intervals samples ratio "
-       "absorption emission aa_threshold aa_level eccentricity extinction "
-       "distance turb_depth fog_offset fog_alt width arc_angle falloff_angle "
-       "adc_bailout ambient_light assumed_gamma irid_wavelength "
-       "number_of_waves always_sample brigthness count error_bound "
-       "gray_threshold load_file low_error_factor max_sample minimum_reuse "
-       "nearest_count pretrace_end pretrace_start recursion_limit save_file "
-       "spacing gather max_trace_level autostop expand_thresholds";
+    "linear_spline quadratic_spline cubic_spline natural_spline "
+    "bezier_spline b_spline read write append inverse open perspective "
+    "orthographic fisheye ultra_wide_angle omnimax panoramic spherical "
+    "spotlight jitter circular orient media_attenuation media_interaction "
+    "shadowless parallel refraction collect pass_through global_lights "
+    "hierarchy sturm smooth gif tga iff pot png pgm ppm jpeg tiff sys "
+    "ttf quaternion hypercomplex linear_sweep conic_sweep type "
+    "all_intersections split_union cutaway_textures no_shadow no_image "
+    "no_reflection double_illuminate hollow uv_mapping all use_index "
+    "use_color use_colour no_bump_scale conserve_energy fresnel average "
+    "agate boxed bozo bumps cells crackle cylindrical density_file dents "
+    "facets granite leopard marble onion planar quilted radial ripples "
+    "spotted waves wood wrinkles solid use_alpha interpolate magnet "
+    "noise_generator toroidal ramp_wave triangle_wave sine_wave "
+    "scallop_wave cubic_wave poly_wave once map_type method fog_type "
+    "hf_gray_16 charset ascii utf8 rotate scale translate matrix location "
+    "right up direction sky angle look_at aperture blur_samples "
+    "focal_point confidence variance radius falloff tightness point_at "
+    "area_light adaptive fade_distance fade_power threshold strength "
+    "water_level tolerance max_iteration precision slice u_steps v_steps "
+    "flatness inside_vector accuracy max_gradient evaluate max_trace "
+    "precompute target ior dispersion dispersion_samples caustics color "
+    "colour rgb rgbf rgbt rgbft red green blue filter transmit gray hf "
+    "fade_color fade_colour quick_color quick_colour brick checker hexagon "
+    "brick_size mortar bump_size ambient diffuse brilliance crand phong "
+    "phong_size metallic specular roughness reflection_exponent exponent "
+    "thickness gradient spiral1 spiral2 agate_turb form metric offset df3 "
+    "coords size mandel exterior julia control0 control1 altitude "
+    "turbulence octaves omega lambda repeat flip black-hole orientation "
+    "dist_exp major_radius frequency phase intervals samples ratio "
+    "absorption emission aa_threshold aa_level eccentricity extinction "
+    "distance turb_depth fog_offset fog_alt width arc_angle falloff_angle "
+    "adc_bailout ambient_light assumed_gamma irid_wavelength "
+    "number_of_waves always_sample brigthness count error_bound "
+    "gray_threshold load_file low_error_factor max_sample minimum_reuse "
+    "nearest_count pretrace_end pretrace_start recursion_limit save_file "
+    "spacing gather max_trace_level autostop expand_thresholds";
 static const char* STE_WordList4_STE_LANG_POV =
-       "x y z t u v yes no true false on off clock clock_delta clock_on "
-       "final_clock final_frame frame_number image_height image_width "
-       "initial_clock initial_frame pi version";
+    "x y z t u v yes no true false on off clock clock_delta clock_on "
+    "final_clock final_frame frame_number image_height image_width "
+    "initial_clock initial_frame pi version";
 static const char* STE_WordList5_STE_LANG_POV =
-       "abs acos acosh asc asin asinh atan atanh atan2 ceil cos cosh defined "
-       "degrees dimensions dimension_size div exp file_exists floor inside "
-       "int ln log max min mod pow prod radians rand seed select sin sinh "
-       "sqrt strcmp strlen sum tan tanh val vdot vlength min_extent "
-       "max_extent trace vaxis_rotate vcross vrotate vnormalize vturbulence "
-       "chr concat str strlwr strupr substr vstr sqr cube reciprocal pwr";
+    "abs acos acosh asc asin asinh atan atanh atan2 ceil cos cosh defined "
+    "degrees dimensions dimension_size div exp file_exists floor inside "
+    "int ln log max min mod pow prod radians rand seed select sin sinh "
+    "sqrt strcmp strlen sum tan tanh val vdot vlength min_extent "
+    "max_extent trace vaxis_rotate vcross vrotate vnormalize vturbulence "
+    "chr concat str strlwr strupr substr vstr sqr cube reciprocal pwr";
 #endif //STE_USE_LANG_POV
 
 #if STE_USE_LANG_LOUT
 static const char* STE_WordList1_STE_LANG_LOUT =
-       "@OptGall @Filter @FilterIn @FilterOut @FilterErr @FontDef @Family "
-       "@Face @Name @Metrics @ExtraMetrics @Mapping @Recode @Common @Rump "
-       "@Meld @Insert @OneOf @Next @Plus @Minus @Wide @High @HShift @VShift "
-       "@BeginHeaderComponent @EndHeaderComponent @SetHeaderComponent "
-       "@ClearHeaderComponent @OneCol @OneRow @HScale @VScale @HCover "
-       "@VCover @Scale @KernShrink @HContract @VContract @HLimited @VLimited "
-       "@HExpand @VExpand @StartHVSpan @StartHSpan @StartVSpan @HSpan @VSpan "
-       "@PAdjust @HAdjust @VAdjust @Rotate @Background @IncludeGraphic "
-       "@SysIncludeGraphic @Graphic @LinkSource @LinkDest @URLLink "
-       "@PlainGraphic @Verbatim @RawVerbatim @Case @Yield @BackEnd @Char "
-       "@Font @Space @YUnit @ZUnit @Break @Underline @SetColour @SetColor "
-       "@SetTexture @Outline @Language @CurrLang @CurrFamily @CurrFace "
-       "@CurrYUnit @CurrZUnit @LEnv @LClos @LUse @LEO @Open @Use @NotRevealed "
-       "@Tagged @Database @SysDatabase @Include @SysInclude "
-       "@IncludeGraphicRepeated @PrependGraphic @SysIncludeGraphicRepeated "
-       "@SysPrependGraphic @Target @Null @PageLabel @Galley @ForceGalley "
-       "@LInput @Split @Tag @Key @Optimize @Merge @Enclose @Begin @End "
-       "@Moment @Second @Minute @Hour @Day @Month @Year @Century @WeekDay "
-       "@YearDay @DaylightSaving @@A @@B @@C @@D @@E @@V";
+    "@OptGall @Filter @FilterIn @FilterOut @FilterErr @FontDef @Family "
+    "@Face @Name @Metrics @ExtraMetrics @Mapping @Recode @Common @Rump "
+    "@Meld @Insert @OneOf @Next @Plus @Minus @Wide @High @HShift @VShift "
+    "@BeginHeaderComponent @EndHeaderComponent @SetHeaderComponent "
+    "@ClearHeaderComponent @OneCol @OneRow @HScale @VScale @HCover "
+    "@VCover @Scale @KernShrink @HContract @VContract @HLimited @VLimited "
+    "@HExpand @VExpand @StartHVSpan @StartHSpan @StartVSpan @HSpan @VSpan "
+    "@PAdjust @HAdjust @VAdjust @Rotate @Background @IncludeGraphic "
+    "@SysIncludeGraphic @Graphic @LinkSource @LinkDest @URLLink "
+    "@PlainGraphic @Verbatim @RawVerbatim @Case @Yield @BackEnd @Char "
+    "@Font @Space @YUnit @ZUnit @Break @Underline @SetColour @SetColor "
+    "@SetTexture @Outline @Language @CurrLang @CurrFamily @CurrFace "
+    "@CurrYUnit @CurrZUnit @LEnv @LClos @LUse @LEO @Open @Use @NotRevealed "
+    "@Tagged @Database @SysDatabase @Include @SysInclude "
+    "@IncludeGraphicRepeated @PrependGraphic @SysIncludeGraphicRepeated "
+    "@SysPrependGraphic @Target @Null @PageLabel @Galley @ForceGalley "
+    "@LInput @Split @Tag @Key @Optimize @Merge @Enclose @Begin @End "
+    "@Moment @Second @Minute @Hour @Day @Month @Year @Century @WeekDay "
+    "@YearDay @DaylightSaving @@A @@B @@C @@D @@E @@V";
 static const char* STE_WordList2_STE_LANG_LOUT =
-       "&&& && & ^// ^/ ^|| ^| ^& // / || |";
+    "&&& && & ^// ^/ ^|| ^| ^& // / || |";
 static const char* STE_WordList3_STE_LANG_LOUT =
-       "def langdef force horizontally into extend import export precedence "
-       "associativity left right body macro named compulsory following "
-       "preceding foll_or_prec now";
+    "def langdef force horizontally into extend import export precedence "
+    "associativity left right body macro named compulsory following "
+    "preceding foll_or_prec now";
 #endif //STE_USE_LANG_LOUT
 
 #if STE_USE_LANG_ESCRIPT
 static const char* STE_WordList1_STE_LANG_ESCRIPT =
-       "basic basicio boats cfgfile file http npc os uo util accessible "
-       "addmenuitem appendconfigfileelem applyconstraint applydamage "
-       "applyrawdamage assignrecttoweatherregion append baseskilltorawskill "
-       "boatfromitem broadcast ban cdbl cint cstr checklineofsight checklosat "
-       "checkskill consumemana consumereagents consumesubstance createaccount "
-       "createitematlocation createiteminbackpack createitemininventory "
-       "createitemincontainer createmenu createmultiatlocation "
-       "createnpcfromtemplate createrootiteminstoragearea createstoragearea "
-       "clear_script_profile_counters close damage destroyitem destroymulti "
-       "destroyrootiteminstoragearea detach disableevents disconnectclient "
-       "distance disable enableevents enumerateitemsincontainer "
-       "enumerateonlinecharacters equipfromtemplate equipitem "
-       "eraseglobalproperty eraseobjproperty enable enabled erase "
-       "events_waiting exists findconfigelem findobjtypeincontainer "
-       "findrootiteminstoragearea findstoragearea fclose find fopen fread "
-       "fseek ftell fwrite gamestat getamount getcommandhelp getconfigint "
-       "getconfigintkeys getconfigmaxintkey getconfigreal getconfigstring "
-       "getconfigstringkeys getconfigstringarray getelemproperty "
-       "getequipmentbylayer getglobalproperty getharvestdifficulty "
-       "getmapinfo getmenuobjtypes getobjproperty getobjtype getobjtypebyname "
-       "getproperty getrawskill getregionstring getskill getspelldifficulty "
-       "getstandingheight getworldheight grantprivilege harvestresource "
-       "healdamage hex islegalmove insert keys listequippeditems "
-       "listghostsnearlocation listhostiles listitemsatlocation "
-       "listitemsnearlocation listitemsnearlocationoftype "
-       "listmobilesinlineofsight listmobilesnearlocation "
-       "listmobilesnearlocationex listobjectsinbox loadtusscpfile "
-       "left len log_profile lower makeboundingbox move moveboat "
-       "moveboatrelative movecharactertolocation moveitemtocontainer "
-       "moveitemtolocation move_offline_mobiles openpaperdoll open pack "
-       "performaction playlightningbolteffect playmovingeffect "
-       "playmovingeffectxyz playobjectcenteredeffect playsoundeffect "
-       "playsoundeffectprivate playstationaryeffect printtextabove "
-       "printtextaboveprivate packages polcore position print queryparam "
-       "randomdiceroll randomint rawskilltobaseskill readconfigfile readgameclock "
-       "releaseitem registerforspeechevents registeritemwithboat requestinput "
-       "reserveitem restartscript resurrect revokeprivilege runawayfrom "
-       "runawayfromlocation runtoward runtowardlocation reverse "
-       "run_script_to_completion saveworldstate selectmenuitem2 self "
-       "sendbuywindow senddialoggump sendevent sendopenspecialcontainer "
-       "sendpacket sendsellwindow sendskillwindow sendstringastipwindow "
-       "sendsysmessage sendtextentrygump setanchor setglobalproperty "
-       "setname setobjproperty setopponent setproperty setrawskill "
-       "setregionlightlevel setregionweatherlevel setscriptcontroller "
-       "setwarmode shutdown speakpowerwords splitwords startspelleffect "
-       "subtractamount systemfindboatbyserial systemfindobjectbyserial "
-       "say set_critical set_debug set_priority set_priority_divide "
-       "set_script_option setcmdlevel setdex setint setlightlevel setmaster "
-       "setname setpassword setstr shrink size sleep sleepms sort spendgold "
-       "squelch start_script syslog system_rpm target targetcoordinates "
-       "targetmultiplacement turnawayfrom turnawayfromlocation turnboat "
-       "turntoward turntowardlocation toggle unloadconfigfile unpack unban "
-       "unload_scripts upper walkawayfrom walkawayfromlocation walktoward "
-       "walktowardlocation wander writehtml writehtmlraw wait_for_event "
-       "movechar_forcelocation moveitem_forcelocation moveitem_normal "
-       "scriptopt_debug scriptopt_no_interrupt scriptopt_no_runaway "
-       "te_cancel_disable te_cancel_enable te_style_disable te_style_normal "
-       "te_style_numerical tgtopt_check_los tgtopt_harmful tgtopt_helpful "
-       "tgtopt_neutral tgtopt_nocheck_los setprop getprop";
+    "basic basicio boats cfgfile file http npc os uo util accessible "
+    "addmenuitem appendconfigfileelem applyconstraint applydamage "
+    "applyrawdamage assignrecttoweatherregion append baseskilltorawskill "
+    "boatfromitem broadcast ban cdbl cint cstr checklineofsight checklosat "
+    "checkskill consumemana consumereagents consumesubstance createaccount "
+    "createitematlocation createiteminbackpack createitemininventory "
+    "createitemincontainer createmenu createmultiatlocation "
+    "createnpcfromtemplate createrootiteminstoragearea createstoragearea "
+    "clear_script_profile_counters close damage destroyitem destroymulti "
+    "destroyrootiteminstoragearea detach disableevents disconnectclient "
+    "distance disable enableevents enumerateitemsincontainer "
+    "enumerateonlinecharacters equipfromtemplate equipitem "
+    "eraseglobalproperty eraseobjproperty enable enabled erase "
+    "events_waiting exists findconfigelem findobjtypeincontainer "
+    "findrootiteminstoragearea findstoragearea fclose find fopen fread "
+    "fseek ftell fwrite gamestat getamount getcommandhelp getconfigint "
+    "getconfigintkeys getconfigmaxintkey getconfigreal getconfigstring "
+    "getconfigstringkeys getconfigstringarray getelemproperty "
+    "getequipmentbylayer getglobalproperty getharvestdifficulty "
+    "getmapinfo getmenuobjtypes getobjproperty getobjtype getobjtypebyname "
+    "getproperty getrawskill getregionstring getskill getspelldifficulty "
+    "getstandingheight getworldheight grantprivilege harvestresource "
+    "healdamage hex islegalmove insert keys listequippeditems "
+    "listghostsnearlocation listhostiles listitemsatlocation "
+    "listitemsnearlocation listitemsnearlocationoftype "
+    "listmobilesinlineofsight listmobilesnearlocation "
+    "listmobilesnearlocationex listobjectsinbox loadtusscpfile "
+    "left len log_profile lower makeboundingbox move moveboat "
+    "moveboatrelative movecharactertolocation moveitemtocontainer "
+    "moveitemtolocation move_offline_mobiles openpaperdoll open pack "
+    "performaction playlightningbolteffect playmovingeffect "
+    "playmovingeffectxyz playobjectcenteredeffect playsoundeffect "
+    "playsoundeffectprivate playstationaryeffect printtextabove "
+    "printtextaboveprivate packages polcore position print queryparam "
+    "randomdiceroll randomint rawskilltobaseskill readconfigfile readgameclock "
+    "releaseitem registerforspeechevents registeritemwithboat requestinput "
+    "reserveitem restartscript resurrect revokeprivilege runawayfrom "
+    "runawayfromlocation runtoward runtowardlocation reverse "
+    "run_script_to_completion saveworldstate selectmenuitem2 self "
+    "sendbuywindow senddialoggump sendevent sendopenspecialcontainer "
+    "sendpacket sendsellwindow sendskillwindow sendstringastipwindow "
+    "sendsysmessage sendtextentrygump setanchor setglobalproperty "
+    "setname setobjproperty setopponent setproperty setrawskill "
+    "setregionlightlevel setregionweatherlevel setscriptcontroller "
+    "setwarmode shutdown speakpowerwords splitwords startspelleffect "
+    "subtractamount systemfindboatbyserial systemfindobjectbyserial "
+    "say set_critical set_debug set_priority set_priority_divide "
+    "set_script_option setcmdlevel setdex setint setlightlevel setmaster "
+    "setname setpassword setstr shrink size sleep sleepms sort spendgold "
+    "squelch start_script syslog system_rpm target targetcoordinates "
+    "targetmultiplacement turnawayfrom turnawayfromlocation turnboat "
+    "turntoward turntowardlocation toggle unloadconfigfile unpack unban "
+    "unload_scripts upper walkawayfrom walkawayfromlocation walktoward "
+    "walktowardlocation wander writehtml writehtmlraw wait_for_event "
+    "movechar_forcelocation moveitem_forcelocation moveitem_normal "
+    "scriptopt_debug scriptopt_no_interrupt scriptopt_no_runaway "
+    "te_cancel_disable te_cancel_enable te_style_disable te_style_normal "
+    "te_style_numerical tgtopt_check_los tgtopt_harmful tgtopt_helpful "
+    "tgtopt_neutral tgtopt_nocheck_los setprop getprop";
 static const char* STE_WordList2_STE_LANG_ESCRIPT =
-       "array const dictionary global local var and default in next not "
-       "or return to include use enum";
+    "array const dictionary global local var and default in next not "
+    "or return to include use enum";
 static const char* STE_WordList3_STE_LANG_ESCRIPT =
-       "while for endfor function program endprogram endfunction foreach "
-       "case else elseif if endcase endenum endforeach endif endwhile";
+    "while for endfor function program endprogram endfunction foreach "
+    "case else elseif if endcase endenum endforeach endif endwhile";
 #endif //STE_USE_LANG_ESCRIPT
 
 #if STE_USE_LANG_PS
 static const char* STE_WordList1_STE_LANG_PS =
-       "$error = == FontDirectory StandardEncoding UserObjects abs add "
-       "aload anchorsearch and arc arcn arcto array ashow astore atan "
-       "awidthshow begin bind bitshift bytesavailable cachestatus ceiling "
-       "charpath clear cleardictstack cleartomark clip clippath closefile "
-       "closepath concat concatmatrix copy copypage cos count countdictstack "
-       "countexecstack counttomark currentcmykcolor currentcolorspace "
-       "currentdash currentdict currentfile currentflat currentfont "
-       "currentgray currenthsbcolor currentlinecap currentlinejoin "
-       "currentlinewidth currentmatrix currentmiterlimit currentpagedevice "
-       "currentpoint currentrgbcolor currentscreen currenttransfer cvi cvlit "
-       "cvn cvr cvrs cvs cvx def defaultmatrix definefont dict dictstack div "
-       "dtransform dup echo end eoclip eofill eq erasepage errordict exch "
-       "exec execstack executeonly executive exit exp false file fill "
-       "findfont flattenpath floor flush flushfile for forall ge get "
-       "getinterval grestore grestoreall gsave gt idetmatrix idiv "
-       "idtransform if ifelse image imagemask index initclip initgraphics "
-       "initmatrix inustroke invertmatrix itransform known kshow le length "
-       "lineto ln load log loop lt makefont mark matrix maxlength mod moveto "
-       "mul ne neg newpath noaccess nor not null nulldevice or pathbbox "
-       "pathforall pop print prompt pstack put putinterval quit rand rcheck "
-       "rcurveto read readhexstring readline readonly readstring rectstroke "
-       "repeat resetfile restore reversepath rlineto rmoveto roll rotate "
-       "round rrand run save scale scalefont search setblackgeneration "
-       "setcachedevice setcachelimit setcharwidth setcolorscreen "
-       "setcolortransfer setdash setflat setfont setgray sethsbcolor "
-       "setlinecap setlinejoin setlinewidth setmatrix setmiterlimit "
-       "setpagedevice setrgbcolor setscreen settransfer setvmthreshold show "
-       "showpage sin sqrt srand stack start status statusdict stop stopped "
-       "store string stringwidth stroke strokepath sub systemdict token "
-       "token transform translate true truncate type ueofill "
-       "undefineresource userdict usertime version vmstatus wcheck where "
-       "widthshow write writehexstring writestring xcheck xor";
+    "$error = == FontDirectory StandardEncoding UserObjects abs add "
+    "aload anchorsearch and arc arcn arcto array ashow astore atan "
+    "awidthshow begin bind bitshift bytesavailable cachestatus ceiling "
+    "charpath clear cleardictstack cleartomark clip clippath closefile "
+    "closepath concat concatmatrix copy copypage cos count countdictstack "
+    "countexecstack counttomark currentcmykcolor currentcolorspace "
+    "currentdash currentdict currentfile currentflat currentfont "
+    "currentgray currenthsbcolor currentlinecap currentlinejoin "
+    "currentlinewidth currentmatrix currentmiterlimit currentpagedevice "
+    "currentpoint currentrgbcolor currentscreen currenttransfer cvi cvlit "
+    "cvn cvr cvrs cvs cvx def defaultmatrix definefont dict dictstack div "
+    "dtransform dup echo end eoclip eofill eq erasepage errordict exch "
+    "exec execstack executeonly executive exit exp false file fill "
+    "findfont flattenpath floor flush flushfile for forall ge get "
+    "getinterval grestore grestoreall gsave gt idetmatrix idiv "
+    "idtransform if ifelse image imagemask index initclip initgraphics "
+    "initmatrix inustroke invertmatrix itransform known kshow le length "
+    "lineto ln load log loop lt makefont mark matrix maxlength mod moveto "
+    "mul ne neg newpath noaccess nor not null nulldevice or pathbbox "
+    "pathforall pop print prompt pstack put putinterval quit rand rcheck "
+    "rcurveto read readhexstring readline readonly readstring rectstroke "
+    "repeat resetfile restore reversepath rlineto rmoveto roll rotate "
+    "round rrand run save scale scalefont search setblackgeneration "
+    "setcachedevice setcachelimit setcharwidth setcolorscreen "
+    "setcolortransfer setdash setflat setfont setgray sethsbcolor "
+    "setlinecap setlinejoin setlinewidth setmatrix setmiterlimit "
+    "setpagedevice setrgbcolor setscreen settransfer setvmthreshold show "
+    "showpage sin sqrt srand stack start status statusdict stop stopped "
+    "store string stringwidth stroke strokepath sub systemdict token "
+    "token transform translate true truncate type ueofill "
+    "undefineresource userdict usertime version vmstatus wcheck where "
+    "widthshow write writehexstring writestring xcheck xor";
 static const char* STE_WordList2_STE_LANG_PS =
-       "GlobalFontDirectory ISOLatin1Encoding SharedFontDirectory UserObject "
-       "arct colorimage cshow currentblackgeneration currentcacheparams "
-       "currentcmykcolor currentcolor currentcolorrendering "
-       "currentcolorscreen currentcolorspace currentcolortransfer "
-       "currentdevparams currentglobal currentgstate currenthalftone "
-       "currentobjectformat currentoverprint currentpacking "
-       "currentpagedevice currentshared currentstrokeadjust "
-       "currentsystemparams currentundercolorremoval currentuserparams "
-       "defineresource defineuserobject deletefile execform execuserobject "
-       "filenameforall fileposition filter findencoding findresource gcheck "
-       "globaldict glyphshow gstate ineofill infill instroke inueofill "
-       "inufill inustroke languagelevel makepattern packedarray printobject "
-       "product realtime rectclip rectfill rectstroke renamefile "
-       "resourceforall resourcestatus revision rootfont scheck selectfont "
-       "serialnumber setbbox setblackgeneration setcachedevice2 "
-       "setcacheparams setcmykcolor setcolor setcolorrendering "
-       "setcolorscreen setcolorspace setcolortranfer setdevparams "
-       "setfileposition setglobal setgstate sethalftone setobjectformat "
-       "setoverprint setpacking setpagedevice setpattern setshared "
-       "setstrokeadjust setsystemparams setucacheparams setundercolorremoval "
-       "setuserparams setvmthreshold shareddict startjob uappend ucache "
-       "ucachestatus ueofill ufill undef undefinefont undefineresource "
-       "undefineuserobject upath ustroke ustrokepath vmreclaim writeobject "
-       "xshow xyshow yshow";
+    "GlobalFontDirectory ISOLatin1Encoding SharedFontDirectory UserObject "
+    "arct colorimage cshow currentblackgeneration currentcacheparams "
+    "currentcmykcolor currentcolor currentcolorrendering "
+    "currentcolorscreen currentcolorspace currentcolortransfer "
+    "currentdevparams currentglobal currentgstate currenthalftone "
+    "currentobjectformat currentoverprint currentpacking "
+    "currentpagedevice currentshared currentstrokeadjust "
+    "currentsystemparams currentundercolorremoval currentuserparams "
+    "defineresource defineuserobject deletefile execform execuserobject "
+    "filenameforall fileposition filter findencoding findresource gcheck "
+    "globaldict glyphshow gstate ineofill infill instroke inueofill "
+    "inufill inustroke languagelevel makepattern packedarray printobject "
+    "product realtime rectclip rectfill rectstroke renamefile "
+    "resourceforall resourcestatus revision rootfont scheck selectfont "
+    "serialnumber setbbox setblackgeneration setcachedevice2 "
+    "setcacheparams setcmykcolor setcolor setcolorrendering "
+    "setcolorscreen setcolorspace setcolortranfer setdevparams "
+    "setfileposition setglobal setgstate sethalftone setobjectformat "
+    "setoverprint setpacking setpagedevice setpattern setshared "
+    "setstrokeadjust setsystemparams setucacheparams setundercolorremoval "
+    "setuserparams setvmthreshold shareddict startjob uappend ucache "
+    "ucachestatus ueofill ufill undef undefinefont undefineresource "
+    "undefineuserobject upath ustroke ustrokepath vmreclaim writeobject "
+    "xshow xyshow yshow";
 static const char* STE_WordList3_STE_LANG_PS =
-       "cliprestore clipsave composefont currentsmoothness "
-       "findcolorrendering setsmoothness shfill";
+    "cliprestore clipsave composefont currentsmoothness "
+    "findcolorrendering setsmoothness shfill";
 static const char* STE_WordList4_STE_LANG_PS =
-       ".begintransparencygroup .begintransparencymask .bytestring "
-       ".charboxpath .currentaccuratecurves .currentblendmode "
-       ".currentcurvejoin .currentdashadapt .currentdotlength "
-       ".currentfilladjust2 .currentlimitclamp .currentopacityalpha "
-       ".currentoverprintmode .currentrasterop .currentshapealpha "
-       ".currentsourcetransparent .currenttextknockout "
-       ".currenttexturetransparent .dashpath .dicttomark "
-       ".discardtransparencygroup .discardtransparencymask "
-       ".endtransparencygroup .endtransparencymask .execn .filename "
-       ".filename .fileposition .forceput .forceundef .forgetsave "
-       ".getbitsrect .getdevice .inittransparencymask .knownget .locksafe "
-       ".makeoperator .namestring .oserrno .oserrorstring .peekstring "
-       ".rectappend .runandhide .setaccuratecurves .setblendmode "
-       ".setcurvejoin .setdashadapt .setdebug .setdefaultmatrix "
-       ".setdotlength .setfilladjust2 .setlimitclamp .setmaxlength "
-       ".setopacityalpha .setoverprintmode .setrasterop .setsafe "
-       ".setshapealpha .setsourcetransparent .settextknockout "
-       ".settexturetransparent .stringbreak .stringmatch .tempfile "
-       ".type1decrypt .type1encrypt .type1execchar .unread arccos arcsin "
-       "copydevice copyscanlines currentdevice finddevice findlibfile "
-       "findprotodevice flushpage getdeviceprops getenv makeimagedevice "
-       "makewordimagedevice max min putdeviceprops setdevice";
+    ".begintransparencygroup .begintransparencymask .bytestring "
+    ".charboxpath .currentaccuratecurves .currentblendmode "
+    ".currentcurvejoin .currentdashadapt .currentdotlength "
+    ".currentfilladjust2 .currentlimitclamp .currentopacityalpha "
+    ".currentoverprintmode .currentrasterop .currentshapealpha "
+    ".currentsourcetransparent .currenttextknockout "
+    ".currenttexturetransparent .dashpath .dicttomark "
+    ".discardtransparencygroup .discardtransparencymask "
+    ".endtransparencygroup .endtransparencymask .execn .filename "
+    ".filename .fileposition .forceput .forceundef .forgetsave "
+    ".getbitsrect .getdevice .inittransparencymask .knownget .locksafe "
+    ".makeoperator .namestring .oserrno .oserrorstring .peekstring "
+    ".rectappend .runandhide .setaccuratecurves .setblendmode "
+    ".setcurvejoin .setdashadapt .setdebug .setdefaultmatrix "
+    ".setdotlength .setfilladjust2 .setlimitclamp .setmaxlength "
+    ".setopacityalpha .setoverprintmode .setrasterop .setsafe "
+    ".setshapealpha .setsourcetransparent .settextknockout "
+    ".settexturetransparent .stringbreak .stringmatch .tempfile "
+    ".type1decrypt .type1encrypt .type1execchar .unread arccos arcsin "
+    "copydevice copyscanlines currentdevice finddevice findlibfile "
+    "findprotodevice flushpage getdeviceprops getenv makeimagedevice "
+    "makewordimagedevice max min putdeviceprops setdevice";
 #endif //STE_USE_LANG_PS
 
 #if STE_USE_LANG_NSIS
 static const char* STE_WordList1_STE_LANG_NSIS =
-       "What Abort AddSize AllowRootDirInstall AutoCloseWindow BGGradient "
-       "BrandingText BringToFront CRCCheck Call CallInstDLL Caption "
-       "ClearErrors CompletedText ComponentText CopyFiles CreateDirectory "
-       "CreateShortCut Delete DeleteINISec DeleteINIStr DeleteRegKey "
-       "DeleteRegValue DetailPrint DetailsButtonText DirShow DirText "
-       "DisabledBitmap EnabledBitmap EnumRegKey EnumRegValue Exch Exec "
-       "ExecShell ExecWait ExpandEnvStrings File FileClose FileErrorText "
-       "FileOpen FileRead FileReadByte FileSeek FileWrite FileWriteByte "
-       "FindClose FindFirst FindNext FindWindow Function FunctionEnd "
-       "GetCurrentAddress GetDLLVersionLocal GetDllVersion GetFileTime "
-       "GetFileTimeLocal GetFullPathName GetFunctionAddress GetLabelAddress "
-       "GetTempFileName Goto HideWindow Icon IfErrors IfFileExists "
-       "IfRebootFlag InstProgressFlags InstType InstallButtonText "
-       "InstallColors InstallDir InstallDirRegKey IntCmp IntCmpU IntFmt "
-       "IntOp IsWindow LicenseData LicenseText MessageBox MiscButtonText "
-       "Name OutFile Pop Push Quit RMDir ReadEnvStr ReadINIStr ReadRegDword "
-       "ReadRegStr Reboot RegDLL Rename Return SearchPath Section "
-       "SectionDivider SectionEnd SectionIn SendMessage SetAutoClose "
-       "SetCompress SetDatablockOptimize SetDateSave SetDetailsPrint "
-       "SetDetailsView SetErrors SetFileAttributes SetOutPath SetOverwrite "
-       "SetRebootFlag ShowInstDetails ShowUninstDetails SilentInstall "
-       "SilentUnInstall Sleep SpaceTexts StrCmp StrCpy StrLen SubCaption "
-       "UnRegDLL UninstallButtonText UninstallCaption UninstallEXEName "
-       "UninstallIcon UninstallSubCaption UninstallText WindowIcon "
-       "WriteINIStr WriteRegBin WriteRegDword WriteRegExpandStr "
-       "WriteRegStr WriteUninstaller SectionGetFlags SectionSetFlags "
-       "SectionSetText SectionGetText LogText LogSet CreateFont "
-       "SetShellVarContext SetStaticBkColor SetBrandingImage PluginDir "
-       "SubSectionEnd SubSection CheckBitmap ChangeUI SetFont "
-       "AddBrandingImage XPStyle LangString !define !undef !ifdef !ifndef "
-       "!endif !else !macro !echo !warning !error !verbose !macroend "
-       "!insertmacro !system !include !cd !packhdr";
+    "What Abort AddSize AllowRootDirInstall AutoCloseWindow BGGradient "
+    "BrandingText BringToFront CRCCheck Call CallInstDLL Caption "
+    "ClearErrors CompletedText ComponentText CopyFiles CreateDirectory "
+    "CreateShortCut Delete DeleteINISec DeleteINIStr DeleteRegKey "
+    "DeleteRegValue DetailPrint DetailsButtonText DirShow DirText "
+    "DisabledBitmap EnabledBitmap EnumRegKey EnumRegValue Exch Exec "
+    "ExecShell ExecWait ExpandEnvStrings File FileClose FileErrorText "
+    "FileOpen FileRead FileReadByte FileSeek FileWrite FileWriteByte "
+    "FindClose FindFirst FindNext FindWindow Function FunctionEnd "
+    "GetCurrentAddress GetDLLVersionLocal GetDllVersion GetFileTime "
+    "GetFileTimeLocal GetFullPathName GetFunctionAddress GetLabelAddress "
+    "GetTempFileName Goto HideWindow Icon IfErrors IfFileExists "
+    "IfRebootFlag InstProgressFlags InstType InstallButtonText "
+    "InstallColors InstallDir InstallDirRegKey IntCmp IntCmpU IntFmt "
+    "IntOp IsWindow LicenseData LicenseText MessageBox MiscButtonText "
+    "Name OutFile Pop Push Quit RMDir ReadEnvStr ReadINIStr ReadRegDword "
+    "ReadRegStr Reboot RegDLL Rename Return SearchPath Section "
+    "SectionDivider SectionEnd SectionIn SendMessage SetAutoClose "
+    "SetCompress SetDatablockOptimize SetDateSave SetDetailsPrint "
+    "SetDetailsView SetErrors SetFileAttributes SetOutPath SetOverwrite "
+    "SetRebootFlag ShowInstDetails ShowUninstDetails SilentInstall "
+    "SilentUnInstall Sleep SpaceTexts StrCmp StrCpy StrLen SubCaption "
+    "UnRegDLL UninstallButtonText UninstallCaption UninstallEXEName "
+    "UninstallIcon UninstallSubCaption UninstallText WindowIcon "
+    "WriteINIStr WriteRegBin WriteRegDword WriteRegExpandStr "
+    "WriteRegStr WriteUninstaller SectionGetFlags SectionSetFlags "
+    "SectionSetText SectionGetText LogText LogSet CreateFont "
+    "SetShellVarContext SetStaticBkColor SetBrandingImage PluginDir "
+    "SubSectionEnd SubSection CheckBitmap ChangeUI SetFont "
+    "AddBrandingImage XPStyle LangString !define !undef !ifdef !ifndef "
+    "!endif !else !macro !echo !warning !error !verbose !macroend "
+    "!insertmacro !system !include !cd !packhdr";
 static const char* STE_WordList2_STE_LANG_NSIS =
-       "$0 $1 $2 $3 $4 $5 $6 $7 $8 $9 $R0 $R1 $R2 $R3 $R4 $R5 $R6 $R7 $R8 "
-       "$R9 $CMDLINE $DESKTOP $EXEDIR $HWNDPARENT $INSTDIR $OUTDIR "
-       "$PROGRAMFILES ${NSISDIR} $\n $\r $QUICKLAUNCH $SMPROGRAMS $SMSTARTUP "
-       "$STARTMENU $SYSDIR $TEMP $WINDIR";
+    "$0 $1 $2 $3 $4 $5 $6 $7 $8 $9 $R0 $R1 $R2 $R3 $R4 $R5 $R6 $R7 $R8 "
+    "$R9 $CMDLINE $DESKTOP $EXEDIR $HWNDPARENT $INSTDIR $OUTDIR "
+    "$PROGRAMFILES ${NSISDIR} $\n $\r $QUICKLAUNCH $SMPROGRAMS $SMSTARTUP "
+    "$STARTMENU $SYSDIR $TEMP $WINDIR";
 static const char* STE_WordList3_STE_LANG_NSIS =
-       "ARCHIVE FILE_ATTRIBUTE_ARCHIVE FILE_ATTRIBUTE_HIDDEN "
-       "FILE_ATTRIBUTE_NORMAL FILE_ATTRIBUTE_OFFLINE FILE_ATTRIBUTE_READONLY "
-       "FILE_ATTRIBUTE_SYSTEM FILE_ATTRIBUTE_TEMPORARY HIDDEN HKCC HKCR HKCU "
-       "HKDD HKEY_CLASSES_ROOT HKEY_CURRENT_CONFIG HKEY_CURRENT_USER "
-       "HKEY_DYN_DATA HKEY_LOCAL_MACHINE HKEY_PERFORMANCE_DATA HKEY_USERS "
-       "HKLM HKPD HKU IDABORT IDCANCEL IDIGNORE IDNO IDOK IDRETRY IDYES "
-       "MB_ABORTRETRYIGNORE MB_DEFBUTTON1 MB_DEFBUTTON2 MB_DEFBUTTON3 "
-       "MB_DEFBUTTON4 MB_ICONEXCLAMATION MB_ICONINFORMATION MB_ICONQUESTION "
-       "MB_ICONSTOP MB_OK MB_OKCANCEL MB_RETRYCANCEL MB_RIGHT "
-       "MB_SETFOREGROUND MB_TOPMOST MB_YESNO MB_YESNOCANCEL NORMAL OFFLINE "
-       "READONLY SW_SHOWMAXIMIZED SW_SHOWMINIMIZED SW_SHOWNORMAL SYSTEM "
-       "TEMPORARY auto colored false force hide ifnewer nevershow normal off "
-       "on show silent silentlog smooth true try";
+    "ARCHIVE FILE_ATTRIBUTE_ARCHIVE FILE_ATTRIBUTE_HIDDEN "
+    "FILE_ATTRIBUTE_NORMAL FILE_ATTRIBUTE_OFFLINE FILE_ATTRIBUTE_READONLY "
+    "FILE_ATTRIBUTE_SYSTEM FILE_ATTRIBUTE_TEMPORARY HIDDEN HKCC HKCR HKCU "
+    "HKDD HKEY_CLASSES_ROOT HKEY_CURRENT_CONFIG HKEY_CURRENT_USER "
+    "HKEY_DYN_DATA HKEY_LOCAL_MACHINE HKEY_PERFORMANCE_DATA HKEY_USERS "
+    "HKLM HKPD HKU IDABORT IDCANCEL IDIGNORE IDNO IDOK IDRETRY IDYES "
+    "MB_ABORTRETRYIGNORE MB_DEFBUTTON1 MB_DEFBUTTON2 MB_DEFBUTTON3 "
+    "MB_DEFBUTTON4 MB_ICONEXCLAMATION MB_ICONINFORMATION MB_ICONQUESTION "
+    "MB_ICONSTOP MB_OK MB_OKCANCEL MB_RETRYCANCEL MB_RIGHT "
+    "MB_SETFOREGROUND MB_TOPMOST MB_YESNO MB_YESNOCANCEL NORMAL OFFLINE "
+    "READONLY SW_SHOWMAXIMIZED SW_SHOWMINIMIZED SW_SHOWNORMAL SYSTEM "
+    "TEMPORARY auto colored false force hide ifnewer nevershow normal off "
+    "on show silent silentlog smooth true try";
 static const char* STE_WordList4_STE_LANG_NSIS =
-       "MyFunction MySomethingElse";
+    "MyFunction MySomethingElse";
 #endif //STE_USE_LANG_NSIS
 
 #if STE_USE_LANG_MMIXAL
 static const char* STE_WordList1_STE_LANG_MMIXAL =
-       "2ADDU 4ADDU 8ADDU 16ADDU ADD ADDU AND ANDNH ANDNL ANDNMH ANDNML "
-       "BDIF BEV BN BNN BNP BNZ BOD BP BSPEC BYTE BZ CMP CMPU CSEV CSN "
-       "CSNN CSNP CSNZ CSOD CSP CSWAP CSZ DIV DIVU ESPEC EXPR FADD FCMP "
-       "FCMPE FDIV FEQL FEQLE FIX FIXU FLOT FLOTU FMUL FREM FSQRT FSUB "
-       "FUN FUNE GET GETA GO GREG I_BIT INCH INCL INCMH INCML IS JMP LDA "
-       "LDB LDBU LDHT LDO LDOU LDSF LDT LDTU LDUNC LDVTS LDW LDWU LOC "
-       "LOCAL MOR MUL MULU MUX MXOR NAND NEG NEGU NNIX NOR NXOR O_BIT "
-       "OCTA ODIF OR ORH ORL ORMH ORML ORN PBEV PBN PBNN PBNP PBNZ PBOD "
-       "PBP PBZ POP PREFIX PREGO PRELD PREST PUSHGO PUSHJ PUT RESUME SAVE "
-       "SET SETH SETL SETMH SETML SFLOT SFLOTU SL SLU SR SRU STB STBU "
-       "STCO STHT STO STOU STSF STT STTU STUNC STW STWU SUB SUBU SWYM "
-       "SYNC SYNCD TDIF TETRA TRAP TRIP UNSAVE WDIF WYDEXOR ZSEV ZSN ZSNN "
-       "ZSNP ZSNZ ZSOD ZSP ZSZ";
+    "2ADDU 4ADDU 8ADDU 16ADDU ADD ADDU AND ANDNH ANDNL ANDNMH ANDNML "
+    "BDIF BEV BN BNN BNP BNZ BOD BP BSPEC BYTE BZ CMP CMPU CSEV CSN "
+    "CSNN CSNP CSNZ CSOD CSP CSWAP CSZ DIV DIVU ESPEC EXPR FADD FCMP "
+    "FCMPE FDIV FEQL FEQLE FIX FIXU FLOT FLOTU FMUL FREM FSQRT FSUB "
+    "FUN FUNE GET GETA GO GREG I_BIT INCH INCL INCMH INCML IS JMP LDA "
+    "LDB LDBU LDHT LDO LDOU LDSF LDT LDTU LDUNC LDVTS LDW LDWU LOC "
+    "LOCAL MOR MUL MULU MUX MXOR NAND NEG NEGU NNIX NOR NXOR O_BIT "
+    "OCTA ODIF OR ORH ORL ORMH ORML ORN PBEV PBN PBNN PBNP PBNZ PBOD "
+    "PBP PBZ POP PREFIX PREGO PRELD PREST PUSHGO PUSHJ PUT RESUME SAVE "
+    "SET SETH SETL SETMH SETML SFLOT SFLOTU SL SLU SR SRU STB STBU "
+    "STCO STHT STO STOU STSF STT STTU STUNC STW STWU SUB SUBU SWYM "
+    "SYNC SYNCD TDIF TETRA TRAP TRIP UNSAVE WDIF WYDEXOR ZSEV ZSN ZSNN "
+    "ZSNP ZSNZ ZSOD ZSP ZSZ";
 static const char* STE_WordList2_STE_LANG_MMIXAL =
-       "rA rB rC rD rE rF rG rH rI rJ rK rL rM rN rO rP rQ rR rS rT rU rV "
-       "rW rX rY rZ rBB rTT rWW rXX rYY rZZ";
+    "rA rB rC rD rE rF rG rH rI rJ rK rL rM rN rO rP rQ rR rS rT rU rV "
+    "rW rX rY rZ rBB rTT rWW rXX rYY rZZ";
 static const char* STE_WordList3_STE_LANG_MMIXAL =
-       "@ Text_Segment Data_Segment Pool_Segment Stack_Segment "
-       "StdErr StdIn StdOut Fopen Fclose Fread Fwrite Fgets Fputs Fgetws "
-       "Fputws Ftell Fseek TextRead TextWrite BinaryRead BinaryWrite "
-       "BinaryReadWrite";
+    "@ Text_Segment Data_Segment Pool_Segment Stack_Segment "
+    "StdErr StdIn StdOut Fopen Fclose Fread Fwrite Fgets Fputs Fgetws "
+    "Fputws Ftell Fseek TextRead TextWrite BinaryRead BinaryWrite "
+    "BinaryReadWrite";
 #endif //STE_USE_LANG_MMIXAL
 
 
@@ -1441,34 +1441,34 @@ static const char* STE_WordList3_STE_LANG_VERILOG =
 
 #if STE_USE_LANG_KIX
 static const char* STE_WordList1_STE_LANG_KIX =
-        "? and beep big break call cd cls color cookie1 copy "
-        "debug del dim display do until exit flushkb for each next function endfunction "
-        "get gets global go gosub goto if else endif md or password play quit "
-        "rd redim return run select case endselect set setl setm settime "
-        "shell sleep small use while loop";
+    "? and beep big break call cd cls color cookie1 copy "
+    "debug del dim display do until exit flushkb for each next function endfunction "
+    "get gets global go gosub goto if else endif md or password play quit "
+    "rd redim return run select case endselect set setl setm settime "
+    "shell sleep small use while loop";
 static const char* STE_WordList2_STE_LANG_KIX =
-        "abs addkey addprinterconnection addprogramgroup "
-        "addprogramitem asc ascan at backupeventlog box cdbl chr cint cleareventlog "
-        "close comparefiletimes createobject cstr dectohex delkey delprinterconnection "
-        "delprogramgroup delprogramitem deltree delvalue dir enumgroup enumipinfo enumkey "
-        "enumlocalgroup enumvalue execute exist existkey expandenvironmentvars fix "
-        "formatnumber freefilehandle getdiskspace getfileattr getfilesize getfiletime "
-        "getfileversion getobject iif ingroup instr instrrev int isdeclared join "
-        "kbhit keyexist lcase left len loadhive loadkey logevent logoff ltrim "
-        "memorysize messagebox open readline readprofilestring readtype readvalue "
-        "redirectoutput right rnd round rtrim savekey sendkeys sendmessage setascii "
-        "setconsole setdefaultprinter setfileattr setfocus setoption setsystemstate "
-        "settitle setwallpaper showprogramgroup shutdown sidtoname split srnd substr "
-        "trim ubound ucase unloadhive val vartype vartypename writeline "
-        "writeprofilestring writevalue";
+    "abs addkey addprinterconnection addprogramgroup "
+    "addprogramitem asc ascan at backupeventlog box cdbl chr cint cleareventlog "
+    "close comparefiletimes createobject cstr dectohex delkey delprinterconnection "
+    "delprogramgroup delprogramitem deltree delvalue dir enumgroup enumipinfo enumkey "
+    "enumlocalgroup enumvalue execute exist existkey expandenvironmentvars fix "
+    "formatnumber freefilehandle getdiskspace getfileattr getfilesize getfiletime "
+    "getfileversion getobject iif ingroup instr instrrev int isdeclared join "
+    "kbhit keyexist lcase left len loadhive loadkey logevent logoff ltrim "
+    "memorysize messagebox open readline readprofilestring readtype readvalue "
+    "redirectoutput right rnd round rtrim savekey sendkeys sendmessage setascii "
+    "setconsole setdefaultprinter setfileattr setfocus setoption setsystemstate "
+    "settitle setwallpaper showprogramgroup shutdown sidtoname split srnd substr "
+    "trim ubound ucase unloadhive val vartype vartypename writeline "
+    "writeprofilestring writevalue";
 static const char* STE_WordList3_STE_LANG_KIX =
-        "address build color comment cpu crlf csd curdir "
-        "date day domain dos error fullname homedir homedrive homeshr hostname "
-        "inwin ipaddress0 ipaddress1 ipaddress2 ipaddress3 kix lanroot ldomain "
-        "ldrive lm logonmode longhomedir lserver maxpwage mdayno mhz monthno "
-        "month msecs pid primarygroup priv productsuite producttype pwage ras "
-        "result rserver scriptdir scriptexe scriptname serror sid site startdir "
-        "syslang ticks time userid userlang wdayno wksta wuserid ydayno year";
+    "address build color comment cpu crlf csd curdir "
+    "date day domain dos error fullname homedir homedrive homeshr hostname "
+    "inwin ipaddress0 ipaddress1 ipaddress2 ipaddress3 kix lanroot ldomain "
+    "ldrive lm logonmode longhomedir lserver maxpwage mdayno mhz monthno "
+    "month msecs pid primarygroup priv productsuite producttype pwage ras "
+    "result rserver scriptdir scriptexe scriptname serror sid site startdir "
+    "syslang ticks time userid userlang wdayno wksta wuserid ydayno year";
 #endif //STE_USE_LANG_KIX
 
 //static const char* STE_WordList1_STE_LANG_GUI4CLI - nothing in scite
@@ -1742,53 +1742,53 @@ static const char* STE_WordList1_STE_LANG_D =
 
 #if STE_USE_LANG_IDL
 static const char* STE_WordList1_STE_LANG_IDL =
-       "aggregatable allocate appobject arrays async async_uuid "
-       "uto_handle bindable boolean broadcast byte byte_count call_as "
-       "callback char coclass code comm_status const context_handle "
-       "context_handle_noserialize context_handle_serialize control "
-       "cpp_quote custom decode default defaultbind defaultcollelem "
-       "defaultvalue defaultvtable dispinterface displaybind dllname "
-       "double dual enable_allocate encode endpoint entry enum "
-       "error_status_t explicit_handle fault_status first_is float "
-       "handle_t heap helpcontext helpfile helpstring helpstringcontext "
-       "helpstringdll hidden hyper id idempotent ignore iid_as "
-       "iid_is immediatebind implicit_handle import importlib in include "
-       "in_line int __int64 __int3264 interface last_is lcid length_is "
-       "library licensed local long max_is maybe message methods "
-       "midl_pragma midl_user_allocate midl_user_free min_is module "
-       "ms_union ncacn_at_dsp ncacn_dnet_nsp ncacn_http ncacn_ip_tcp "
-       "ncacn_nb_ipx ncacn_nb_nb ncacn_nb_tcp ncacn_np ncacn_spx "
-       "ncacn_vns_spp ncadg_ip_udp ncadg_ipx ncadg_mq ncalrpc nocode "
-       "nonbrowsable noncreatable nonextensible notify object odl "
-       "oleautomation optimize optional out out_of_line pipe "
-       "pointer_default pragma properties propget propput propputref ptr "
-       "public range readonly ref represent_as requestedit restricted "
-       "retval shape short signed size_is small source "
-       "strict_context_handle string struct switch switch_is switch_type "
-       "transmit_as typedef uidefault union unique unsigned user_marshal "
-       "usesgetlasterror uuid v1_enum vararg version void wchar_t "
-       "wire_marshal";
+    "aggregatable allocate appobject arrays async async_uuid "
+    "uto_handle bindable boolean broadcast byte byte_count call_as "
+    "callback char coclass code comm_status const context_handle "
+    "context_handle_noserialize context_handle_serialize control "
+    "cpp_quote custom decode default defaultbind defaultcollelem "
+    "defaultvalue defaultvtable dispinterface displaybind dllname "
+    "double dual enable_allocate encode endpoint entry enum "
+    "error_status_t explicit_handle fault_status first_is float "
+    "handle_t heap helpcontext helpfile helpstring helpstringcontext "
+    "helpstringdll hidden hyper id idempotent ignore iid_as "
+    "iid_is immediatebind implicit_handle import importlib in include "
+    "in_line int __int64 __int3264 interface last_is lcid length_is "
+    "library licensed local long max_is maybe message methods "
+    "midl_pragma midl_user_allocate midl_user_free min_is module "
+    "ms_union ncacn_at_dsp ncacn_dnet_nsp ncacn_http ncacn_ip_tcp "
+    "ncacn_nb_ipx ncacn_nb_nb ncacn_nb_tcp ncacn_np ncacn_spx "
+    "ncacn_vns_spp ncadg_ip_udp ncadg_ipx ncadg_mq ncalrpc nocode "
+    "nonbrowsable noncreatable nonextensible notify object odl "
+    "oleautomation optimize optional out out_of_line pipe "
+    "pointer_default pragma properties propget propput propputref ptr "
+    "public range readonly ref represent_as requestedit restricted "
+    "retval shape short signed size_is small source "
+    "strict_context_handle string struct switch switch_is switch_type "
+    "transmit_as typedef uidefault union unique unsigned user_marshal "
+    "usesgetlasterror uuid v1_enum vararg version void wchar_t "
+    "wire_marshal";
 #endif //STE_USE_LANG_IDL
 
 #if STE_USE_LANG_PLSQL
 static const char* STE_WordList1_STE_LANG_PLSQL =
-       "all alter and any array as asc at authid avg begin between binary_integer "
-       "body boolean bulk by char char_base check close cluster collect comment "
-       "commit compress connect constant create current currval cursor date day "
-       "declare decimal default delete desc distinct do drop else elsif end "
-       "exception exclusive execute exists exit extends false fetch float for "
-       "forall from function goto group having heap hour if immediate in index "
-       "indicator insert integer interface intersect interval into is isolation "
-       "java level like limited lock long loop max min minus minute mlslabel mod "
-       "mode month natural naturaln new nextval nocopy not nowait null number "
-       "number_base ocirowid of on opaque open operator option or order "
-       "organization others out package partition pctfree pls_integer positive "
-       "positiven pragma prior private procedure public raise range raw real record "
-       "ref release return reverse rollback row rowid rownum rowtype savepoint "
-       "second select separate set share smallint space sql sqlcode sqlerrm start "
-       "stddev subtype successful sum synonym sysdate table then time timestamp to "
-       "trigger true type uid union unique update use user validate values varchar "
-       "varchar2 variance view when whenever where while with work write year zone";
+    "all alter and any array as asc at authid avg begin between binary_integer "
+    "body boolean bulk by char char_base check close cluster collect comment "
+    "commit compress connect constant create current currval cursor date day "
+    "declare decimal default delete desc distinct do drop else elsif end "
+    "exception exclusive execute exists exit extends false fetch float for "
+    "forall from function goto group having heap hour if immediate in index "
+    "indicator insert integer interface intersect interval into is isolation "
+    "java level like limited lock long loop max min minus minute mlslabel mod "
+    "mode month natural naturaln new nextval nocopy not nowait null number "
+    "number_base ocirowid of on opaque open operator option or order "
+    "organization others out package partition pctfree pls_integer positive "
+    "positiven pragma prior private procedure public raise range raw real record "
+    "ref release return reverse rollback row rowid rownum rowtype savepoint "
+    "second select separate set share smallint space sql sqlcode sqlerrm start "
+    "stddev subtype successful sum synonym sysdate table then time timestamp to "
+    "trigger true type uid union unique update use user validate values varchar "
+    "varchar2 variance view when whenever where while with work write year zone";
 #endif //STE_USE_LANG_PLSQL
 
 #if STE_USE_LANG_SQUIRREL
@@ -2633,9 +2633,9 @@ static const char* STE_WordList1_STE_LANG_SQUIRREL =
 #define STE_LexerBraces_STE_LANG_EIFFEL     6
 #define STE_LexerBraces_STE_LANG_EIFFELKW   6
 #if defined(wxSTC_TCL_DEFAULT)
-    #define STE_LexerBraces_STE_LANG_TCL        6
+#define STE_LexerBraces_STE_LANG_TCL        6
 #else
-    #define STE_LexerBraces_STE_LANG_TCL        10
+#define STE_LexerBraces_STE_LANG_TCL        10
 #endif // defined(wxSTC_TCL_DEFAULT)
 #define STE_LexerBraces_STE_LANG_NNCRONTAB  0
 #define STE_LexerBraces_STE_LANG_BULLANT    0
@@ -2691,7 +2691,7 @@ static const char* STE_WordList1_STE_LANG_SQUIRREL =
 #define DefSTE_LexerComments_STE_LANG_NULL
 #define DefSTE_LexerComments_STE_LANG_PYTHON     STE_LexerComments _STE_LexerComments_STE_LANG_PYTHON     = { 0, "#", "", "", "", "", "" };
 #define DefSTE_LexerComments_STE_LANG_CPP        // java and others rely on this
-    STE_LexerComments _STE_LexerComments_STE_LANG_CPP        = { 0, "//", "/*", "*", "*/", "/*", "*/" };
+STE_LexerComments _STE_LexerComments_STE_LANG_CPP        = { 0, "//", "/*", "*", "*/", "/*", "*/" };
 #define DefSTE_LexerComments_STE_LANG_HTML
 #define DefSTE_LexerComments_STE_LANG_XML
 #define DefSTE_LexerComments_STE_LANG_PERL       STE_LexerComments _STE_LexerComments_STE_LANG_PERL       = { 0, "#", "", "", "", "", "" };
@@ -2842,7 +2842,7 @@ static const char* STE_WordList1_STE_LANG_SQUIRREL =
 #define DefSTE_LexerBlock_STE_LANG_NULL
 #define DefSTE_LexerBlock_STE_LANG_PYTHON
 #define DefSTE_LexerBlock_STE_LANG_CPP        // java and others rely on this
-    STE_LexerBlock _STE_LexerBlock_STE_LANG_CPP        = { 10, "{", 10, "}" };
+STE_LexerBlock _STE_LexerBlock_STE_LANG_CPP        = { 10, "{", 10, "}" };
 #define DefSTE_LexerBlock_STE_LANG_HTML
 #define DefSTE_LexerBlock_STE_LANG_XML
 #define DefSTE_LexerBlock_STE_LANG_PERL       STE_LexerBlock _STE_LexerBlock_STE_LANG_PERL       = { 10, "{", 10, "}" };
@@ -3150,12 +3150,14 @@ Case Else EndIf ElseIf EndFunc EndSelect Next Until Wend CASE ELSE ENDIF ELSEIF 
 STE_LexerStyles *STE_LexerStyles_STE_LANG_CONTAINER = NULL;
 
 #define STE_LexerStyles_STE_LANG_NULL_COUNT 1
-static STE_LexerStyles STE_LexerStyles_STE_LANG_NULL[STE_LexerStyles_STE_LANG_NULL_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_NULL[STE_LexerStyles_STE_LANG_NULL_COUNT] =
+{
     { STE_STYLE_DEFAULT, 0, "All text" }
 };
 
 #define STE_LexerStyles_STE_LANG_PYTHON_COUNT 16
-static STE_LexerStyles STE_LexerStyles_STE_LANG_PYTHON[STE_LexerStyles_STE_LANG_PYTHON_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_PYTHON[STE_LexerStyles_STE_LANG_PYTHON_COUNT] =
+{
     // Lexical states for SCLEX_PYTHON
     { STE_STYLE_DEFAULT,        wxSTC_P_DEFAULT,        "White space" }, // 0
     { STE_STYLE_COMMENTLINE,    wxSTC_P_COMMENTLINE,    "Comment" }, // 1
@@ -3176,7 +3178,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_PYTHON[STE_LexerStyles_STE_LANG_
 };
 
 #define STE_LexerStyles_STE_LANG_CPP_COUNT 20
-static STE_LexerStyles STE_LexerStyles_STE_LANG_CPP[STE_LexerStyles_STE_LANG_CPP_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_CPP[STE_LexerStyles_STE_LANG_CPP_COUNT] =
+{
     // Lexical states for SCLEX_CPP
     { STE_STYLE_DEFAULT,        wxSTC_C_DEFAULT,        "White space" }, // 0
     { STE_STYLE_COMMENT,        wxSTC_C_COMMENT,        "Comment: /* */" }, // 1
@@ -3201,7 +3204,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_CPP[STE_LexerStyles_STE_LANG_CPP
 };
 
 #define STE_LexerStyles_STE_LANG_HTML_COUNT 110
-static STE_LexerStyles STE_LexerStyles_STE_LANG_HTML[STE_LexerStyles_STE_LANG_HTML_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_HTML[STE_LexerStyles_STE_LANG_HTML_COUNT] =
+{
     // Lexical states for SCLEX_HTML, SCLEX_XML
     { STE_STYLE_DEFAULT,        wxSTC_H_DEFAULT,            "Text" },
     { STE_STYLE_DEFAULT,        wxSTC_H_TAG,                "Tags" },
@@ -3338,7 +3342,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_HTML[STE_LexerStyles_STE_LANG_HT
 STE_LexerStyles *STE_LexerStyles_STE_LANG_XML = STE_LexerStyles_STE_LANG_HTML;
 
 #define STE_LexerStyles_STE_LANG_PERL_COUNT 30
-static STE_LexerStyles STE_LexerStyles_STE_LANG_PERL[STE_LexerStyles_STE_LANG_PERL_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_PERL[STE_LexerStyles_STE_LANG_PERL_COUNT] =
+{
     // Lexical states for SCLEX_PERL
     { STE_STYLE_DEFAULT,        wxSTC_PL_DEFAULT,       "White space" }, // 0
     { STE_STYLE_ERROR,          wxSTC_PL_ERROR,         "Error" }, // 1
@@ -3374,7 +3379,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_PERL[STE_LexerStyles_STE_LANG_PE
 };
 
 #define STE_LexerStyles_STE_LANG_SQL_COUNT 22
-static STE_LexerStyles STE_LexerStyles_STE_LANG_SQL[STE_LexerStyles_STE_LANG_SQL_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_SQL[STE_LexerStyles_STE_LANG_SQL_COUNT] =
+{
     // Lexical states for SCLEX_SQL
     { STE_STYLE_DEFAULT,               0,      "White space" }, // 0
     { STE_STYLE_COMMENT,               1,      "Comment" }, // 1
@@ -3402,7 +3408,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_SQL[STE_LexerStyles_STE_LANG_SQL
 };
 
 #define STE_LexerStyles_STE_LANG_VB_COUNT 15
-static STE_LexerStyles STE_LexerStyles_STE_LANG_VB[STE_LexerStyles_STE_LANG_VB_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_VB[STE_LexerStyles_STE_LANG_VB_COUNT] =
+{
     // Lexical states for SCLEX_VB, SCLEX_VBSCRIPT, SCLEX_POWERBASIC
     { STE_STYLE_DEFAULT,               wxSTC_B_DEFAULT,      "White space" }, // 0
     { STE_STYLE_COMMENT,               wxSTC_B_COMMENT,      "Comment" }, // 1
@@ -3422,7 +3429,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_VB[STE_LexerStyles_STE_LANG_VB_C
 };
 
 #define STE_LexerStyles_STE_LANG_PROPERTIES_COUNT 5
-static STE_LexerStyles STE_LexerStyles_STE_LANG_PROPERTIES[STE_LexerStyles_STE_LANG_PROPERTIES_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_PROPERTIES[STE_LexerStyles_STE_LANG_PROPERTIES_COUNT] =
+{
     // Lexical states for SCLEX_PROPERTIES
     { STE_STYLE_DEFAULT,            wxSTC_PROPS_DEFAULT,     "Default" }, // 0
     { STE_STYLE_COMMENT,            wxSTC_PROPS_COMMENT,     "Comment" }, // 1
@@ -3432,7 +3440,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_PROPERTIES[STE_LexerStyles_STE_L
 };
 
 #define STE_LexerStyles_STE_LANG_ERRORLIST_COUNT 21
-static STE_LexerStyles STE_LexerStyles_STE_LANG_ERRORLIST[STE_LexerStyles_STE_LANG_ERRORLIST_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_ERRORLIST[STE_LexerStyles_STE_LANG_ERRORLIST_COUNT] =
+{
     // Lexical states for SCLEX_ERRORLIST
     { STE_STYLE_DEFAULT,  wxSTC_ERR_DEFAULT,       "Default" }, // 0
     { STE_STYLE_ERROR,    wxSTC_ERR_PYTHON,        "python Error" }, // 1
@@ -3458,7 +3467,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_ERRORLIST[STE_LexerStyles_STE_LA
 };
 
 #define STE_LexerStyles_STE_LANG_MAKEFILE_COUNT 7
-static STE_LexerStyles STE_LexerStyles_STE_LANG_MAKEFILE[STE_LexerStyles_STE_LANG_MAKEFILE_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_MAKEFILE[STE_LexerStyles_STE_LANG_MAKEFILE_COUNT] =
+{
     // Lexical states for SCLEX_MAKEFILE
     { STE_STYLE_DEFAULT,        wxSTC_MAKE_DEFAULT,      "Default" }, // 0
     { STE_STYLE_COMMENT,        wxSTC_MAKE_COMMENT,      "Comment: #" }, // 1
@@ -3471,7 +3481,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_MAKEFILE[STE_LexerStyles_STE_LAN
 };
 
 #define STE_LexerStyles_STE_LANG_BATCH_COUNT 8
-static STE_LexerStyles STE_LexerStyles_STE_LANG_BATCH[STE_LexerStyles_STE_LANG_BATCH_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_BATCH[STE_LexerStyles_STE_LANG_BATCH_COUNT] =
+{
     // Lexical states for SCLEX_BATCH
     { STE_STYLE_DEFAULT,    wxSTC_BAT_DEFAULT,      "Default" }, // 0
     { STE_STYLE_COMMENT,    wxSTC_BAT_COMMENT,      "Comment (rem or ::)" }, // 1
@@ -3484,12 +3495,14 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_BATCH[STE_LexerStyles_STE_LANG_B
 };
 
 #define STE_LexerStyles_STE_LANG_XCODE_COUNT 1 // FIXME just a guess no SciTE styles for this
-static STE_LexerStyles STE_LexerStyles_STE_LANG_XCODE[STE_LexerStyles_STE_LANG_XCODE_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_XCODE[STE_LexerStyles_STE_LANG_XCODE_COUNT] =
+{
     { STE_STYLE_DEFAULT,         0,   "Default text" }, // 0
 };
 
 #define STE_LexerStyles_STE_LANG_LATEX_COUNT 5
-static STE_LexerStyles STE_LexerStyles_STE_LANG_LATEX[STE_LexerStyles_STE_LANG_LATEX_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_LATEX[STE_LexerStyles_STE_LANG_LATEX_COUNT] =
+{
     // Lexical states for SCLEX_LATEX
     { STE_STYLE_DEFAULT,         wxSTC_L_DEFAULT,   "White space" }, // 0
     { STE_STYLE_COMMAND,         wxSTC_L_COMMAND,   "Command" }, // 1
@@ -3499,7 +3512,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_LATEX[STE_LexerStyles_STE_LANG_L
 };
 
 #define STE_LexerStyles_STE_LANG_LUA_COUNT 20
-static STE_LexerStyles STE_LexerStyles_STE_LANG_LUA[STE_LexerStyles_STE_LANG_LUA_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_LUA[STE_LexerStyles_STE_LANG_LUA_COUNT] =
+{
     // Lexical states for SCLEX_LUA
     { STE_STYLE_DEFAULT,           wxSTC_LUA_DEFAULT,       "White space" }, // 0
     { STE_STYLE_COMMENT,           wxSTC_LUA_COMMENT,       "Block comment (Lua 5.0)" }, // 1
@@ -3524,7 +3538,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_LUA[STE_LexerStyles_STE_LANG_LUA
 };
 
 #define STE_LexerStyles_STE_LANG_DIFF_COUNT 7
-static STE_LexerStyles STE_LexerStyles_STE_LANG_DIFF[STE_LexerStyles_STE_LANG_DIFF_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_DIFF[STE_LexerStyles_STE_LANG_DIFF_COUNT] =
+{
     // Lexical states for SCLEX_DIFF
     { STE_STYLE_DEFAULT,        wxSTC_DIFF_DEFAULT,     "Default" }, // 0
     { STE_STYLE_COMMENT,        wxSTC_DIFF_COMMENT,     "Comment (part before \"diff ...\" or \"--- ...\" and , Only in ..., Binary file...)" }, // 1
@@ -3536,7 +3551,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_DIFF[STE_LexerStyles_STE_LANG_DI
 };
 
 #define STE_LexerStyles_STE_LANG_CONF_COUNT 10
-static STE_LexerStyles STE_LexerStyles_STE_LANG_CONF[STE_LexerStyles_STE_LANG_CONF_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_CONF[STE_LexerStyles_STE_LANG_CONF_COUNT] =
+{
     // Lexical states for SCLEX_CONF (Apache Configuration Files Lexer)
     { STE_STYLE_DEFAULT,    wxSTC_CONF_DEFAULT,     "White space" }, // 0
     { STE_STYLE_COMMENT,    wxSTC_CONF_COMMENT,     "Comment" }, // 1
@@ -3551,7 +3567,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_CONF[STE_LexerStyles_STE_LANG_CO
 };
 
 #define STE_LexerStyles_STE_LANG_PASCAL_COUNT 12
-static STE_LexerStyles STE_LexerStyles_STE_LANG_PASCAL[STE_LexerStyles_STE_LANG_PASCAL_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_PASCAL[STE_LexerStyles_STE_LANG_PASCAL_COUNT] =
+{
     // Lexical states for PASCAL uses SCLEX_CPP
     { STE_STYLE_DEFAULT,        wxSTC_C_DEFAULT,        "White space" }, // 0
     { STE_STYLE_COMMENT,        wxSTC_C_COMMENT,        "Comment" }, // 1
@@ -3568,7 +3585,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_PASCAL[STE_LexerStyles_STE_LANG_
 };
 
 #define STE_LexerStyles_STE_LANG_AVE_COUNT 15
-static STE_LexerStyles STE_LexerStyles_STE_LANG_AVE[STE_LexerStyles_STE_LANG_AVE_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_AVE[STE_LexerStyles_STE_LANG_AVE_COUNT] =
+{
     // Lexical states for SCLEX_AVE, Avenue
     { STE_STYLE_DEFAULT,       wxSTC_AVE_DEFAULT,   "White space" }, // 0
     { STE_STYLE_COMMENT,       wxSTC_AVE_COMMENT,   "Comment" }, // 1
@@ -3588,7 +3606,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_AVE[STE_LexerStyles_STE_LANG_AVE
 };
 
 #define STE_LexerStyles_STE_LANG_ADA_COUNT 12
-static STE_LexerStyles STE_LexerStyles_STE_LANG_ADA[STE_LexerStyles_STE_LANG_ADA_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_ADA[STE_LexerStyles_STE_LANG_ADA_COUNT] =
+{
     // Lexical states for SCLEX_ADA
     { STE_STYLE_DEFAULT,          wxSTC_ADA_DEFAULT,      "Default" }, // 0
     { STE_STYLE_KEYWORD1,         wxSTC_ADA_WORD,         "Keyword" }, // 1
@@ -3605,7 +3624,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_ADA[STE_LexerStyles_STE_LANG_ADA
 };
 
 #define STE_LexerStyles_STE_LANG_LISP_COUNT 8
-static STE_LexerStyles STE_LexerStyles_STE_LANG_LISP[STE_LexerStyles_STE_LANG_LISP_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_LISP[STE_LexerStyles_STE_LANG_LISP_COUNT] =
+{
     // Lexical states for SCLEX_LISP
     { STE_STYLE_DEFAULT,            wxSTC_LISP_DEFAULT,     "White space" }, // 0
     { STE_STYLE_COMMENT,            wxSTC_LISP_COMMENT,     "Line Comment" }, // 1
@@ -3620,7 +3640,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_LISP[STE_LexerStyles_STE_LANG_LI
 };
 
 #define STE_LexerStyles_STE_LANG_RUBY_COUNT 14
-static STE_LexerStyles STE_LexerStyles_STE_LANG_RUBY[STE_LexerStyles_STE_LANG_RUBY_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_RUBY[STE_LexerStyles_STE_LANG_RUBY_COUNT] =
+{
     // Lexical states for SCLEX_PYTHON
     { STE_STYLE_DEFAULT,        wxSTC_P_DEFAULT,        "White space" },
     { STE_STYLE_COMMENTLINE,    wxSTC_P_COMMENTLINE,    "Comment" },
@@ -3639,7 +3660,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_RUBY[STE_LexerStyles_STE_LANG_RU
 };
 
 #define STE_LexerStyles_STE_LANG_EIFFEL_COUNT 9
-static STE_LexerStyles STE_LexerStyles_STE_LANG_EIFFEL[STE_LexerStyles_STE_LANG_EIFFEL_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_EIFFEL[STE_LexerStyles_STE_LANG_EIFFEL_COUNT] =
+{
     // Lexical states for SCLEX_EIFFEL and SCLEX_EIFFELKW
     { STE_STYLE_DEFAULT,         wxSTC_EIFFEL_DEFAULT,      "Default" }, // 0
     { STE_STYLE_COMMENTLINE,     wxSTC_EIFFEL_COMMENTLINE,  "Line comment" }, // 1
@@ -3653,7 +3675,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_EIFFEL[STE_LexerStyles_STE_LANG_
 };
 
 #define STE_LexerStyles_STE_LANG_EIFFELKW_COUNT 9
-static STE_LexerStyles STE_LexerStyles_STE_LANG_EIFFELKW[STE_LexerStyles_STE_LANG_EIFFELKW_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_EIFFELKW[STE_LexerStyles_STE_LANG_EIFFELKW_COUNT] =
+{
     // Lexical states for SCLEX_EIFFEL and SCLEX_EIFFELKW
     { STE_STYLE_DEFAULT,         wxSTC_EIFFEL_DEFAULT,      "Default" }, // 0
     { STE_STYLE_COMMENTLINE,     wxSTC_EIFFEL_COMMENTLINE,  "Line comment" }, // 1
@@ -3669,7 +3692,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_EIFFELKW[STE_LexerStyles_STE_LAN
 #if defined(wxSTC_TCL_DEFAULT)
 
 #define STE_LexerStyles_STE_LANG_TCL_COUNT 22
-static STE_LexerStyles STE_LexerStyles_STE_LANG_TCL[STE_LexerStyles_STE_LANG_TCL_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_TCL[STE_LexerStyles_STE_LANG_TCL_COUNT] =
+{
     // Lexical states for SCLEX_CPP
     { STE_STYLE_DEFAULT,        wxSTC_TCL_DEFAULT,        "White space" }, // 0
     { STE_STYLE_COMMENT,        wxSTC_TCL_COMMENT,        "Comment:.....; #comment" }, // 1
@@ -3699,7 +3723,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_TCL[STE_LexerStyles_STE_LANG_TCL
 #else // not defined(wxSTC_TCL_DEFAULT)
 
 #define STE_LexerStyles_STE_LANG_TCL_COUNT 14
-static STE_LexerStyles STE_LexerStyles_STE_LANG_TCL[STE_LexerStyles_STE_LANG_TCL_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_TCL[STE_LexerStyles_STE_LANG_TCL_COUNT] =
+{
     // Lexical states for SCLEX_CPP
     { STE_STYLE_DEFAULT,        wxSTC_C_DEFAULT,        "White space" }, // 0
     { STE_STYLE_COMMENT,        wxSTC_C_COMMENT,        "Comment" }, // 1
@@ -3719,7 +3744,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_TCL[STE_LexerStyles_STE_LANG_TCL
 #endif // defined(wxSTC_TCL_DEFAULT)
 
 #define STE_LexerStyles_STE_LANG_NNCRONTAB_COUNT 11
-static STE_LexerStyles STE_LexerStyles_STE_LANG_NNCRONTAB[STE_LexerStyles_STE_LANG_NNCRONTAB_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_NNCRONTAB[STE_LexerStyles_STE_LANG_NNCRONTAB_COUNT] =
+{
     // Lexical states for SCLEX_NNCRONTAB (nnCron crontab Lexer)
     { STE_STYLE_DEFAULT,      wxSTC_NNCRONTAB_DEFAULT,      "White space" }, // 0
     { STE_STYLE_COMMENT,      wxSTC_NNCRONTAB_COMMENT,      "Comment" }, // 1
@@ -3735,7 +3761,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_NNCRONTAB[STE_LexerStyles_STE_LA
 };
 
 #define STE_LexerStyles_STE_LANG_BULLANT_COUNT 10
-static STE_LexerStyles STE_LexerStyles_STE_LANG_BULLANT[STE_LexerStyles_STE_LANG_BULLANT_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_BULLANT[STE_LexerStyles_STE_LANG_BULLANT_COUNT] =
+{
     // Lexical states for SCLEX_CPP
     { STE_STYLE_DEFAULT,        wxSTC_C_DEFAULT,        "White space" }, // 0
     { STE_STYLE_COMMENT,        wxSTC_C_COMMENT,        "Comment" }, // 1
@@ -3750,7 +3777,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_BULLANT[STE_LexerStyles_STE_LANG
 };
 
 #define STE_LexerStyles_STE_LANG_VBSCRIPT_COUNT 15
-static STE_LexerStyles STE_LexerStyles_STE_LANG_VBSCRIPT[STE_LexerStyles_STE_LANG_VBSCRIPT_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_VBSCRIPT[STE_LexerStyles_STE_LANG_VBSCRIPT_COUNT] =
+{
     // Lexical states for SCLEX_VB, SCLEX_VBSCRIPT, SCLEX_POWERBASIC
     { STE_STYLE_DEFAULT,               wxSTC_B_DEFAULT,      "White space" }, // 0
     { STE_STYLE_COMMENT,               wxSTC_B_COMMENT,      "Comment" }, // 1
@@ -3777,7 +3805,8 @@ STE_LexerStyles* STE_LexerStyles_STE_LANG_PHP = STE_LexerStyles_STE_LANG_HTML;
 
 
 #define STE_LexerStyles_STE_LANG_BAAN_COUNT 11
-static STE_LexerStyles STE_LexerStyles_STE_LANG_BAAN[STE_LexerStyles_STE_LANG_BAAN_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_BAAN[STE_LexerStyles_STE_LANG_BAAN_COUNT] =
+{
     // Lexical states for SCLEX_BAAN
     { STE_STYLE_DEFAULT,           wxSTC_BAAN_DEFAULT,      "White space" }, // 0
     { STE_STYLE_COMMENT,           wxSTC_BAAN_COMMENT,      "Comment" }, // 1
@@ -3793,7 +3822,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_BAAN[STE_LexerStyles_STE_LANG_BA
 };
 
 #define STE_LexerStyles_STE_LANG_MATLAB_COUNT 9
-static STE_LexerStyles STE_LexerStyles_STE_LANG_MATLAB[STE_LexerStyles_STE_LANG_MATLAB_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_MATLAB[STE_LexerStyles_STE_LANG_MATLAB_COUNT] =
+{
     // Lexical states for SCLEX_MATLAB
     { STE_STYLE_DEFAULT,       wxSTC_MATLAB_DEFAULT,            "White space" }, // 0
     { STE_STYLE_COMMENT,       wxSTC_MATLAB_COMMENT,            "Comment" }, // 1
@@ -3808,7 +3838,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_MATLAB[STE_LexerStyles_STE_LANG_
 };
 
 #define STE_LexerStyles_STE_LANG_SCRIPTOL_COUNT 16
-static STE_LexerStyles STE_LexerStyles_STE_LANG_SCRIPTOL[STE_LexerStyles_STE_LANG_SCRIPTOL_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_SCRIPTOL[STE_LexerStyles_STE_LANG_SCRIPTOL_COUNT] =
+{
     // Lexical states for SCLEX_SCRIPTOL
     { STE_STYLE_DEFAULT,        wxSTC_SCRIPTOL_DEFAULT,     "Default" }, // 0
     { STE_STYLE_DEFAULT,        wxSTC_SCRIPTOL_WHITE,       "White space" }, // 1
@@ -3829,7 +3860,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_SCRIPTOL[STE_LexerStyles_STE_LAN
 };
 
 #define STE_LexerStyles_STE_LANG_ASM_COUNT 15
-static STE_LexerStyles STE_LexerStyles_STE_LANG_ASM[STE_LexerStyles_STE_LANG_ASM_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_ASM[STE_LexerStyles_STE_LANG_ASM_COUNT] =
+{
     // Lexical states for SCLEX_ASM
     { STE_STYLE_DEFAULT,        wxSTC_ASM_DEFAULT,          "Default" }, // 0
     { STE_STYLE_COMMENT,        wxSTC_ASM_COMMENT,          "Comment" }, // 1
@@ -3852,7 +3884,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_ASM[STE_LexerStyles_STE_LANG_ASM
 STE_LexerStyles *STE_LexerStyles_STE_LANG_CPPNOCASE = STE_LexerStyles_STE_LANG_CPP;
 
 #define STE_LexerStyles_STE_LANG_FORTRAN_COUNT 15
-static STE_LexerStyles STE_LexerStyles_STE_LANG_FORTRAN[STE_LexerStyles_STE_LANG_FORTRAN_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_FORTRAN[STE_LexerStyles_STE_LANG_FORTRAN_COUNT] =
+{
     // Lexical states for SCLEX_FORTRAN
     { STE_STYLE_DEFAULT,        wxSTC_F_DEFAULT,        "Default" }, // 0
     { STE_STYLE_COMMENT,        wxSTC_F_COMMENT,        "Comment" }, // 1
@@ -3875,7 +3908,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_FORTRAN[STE_LexerStyles_STE_LANG
 STE_LexerStyles *STE_LexerStyles_STE_LANG_F77 = STE_LexerStyles_STE_LANG_FORTRAN;
 
 #define STE_LexerStyles_STE_LANG_CSS_COUNT 16
-static STE_LexerStyles STE_LexerStyles_STE_LANG_CSS[STE_LexerStyles_STE_LANG_CSS_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_CSS[STE_LexerStyles_STE_LANG_CSS_COUNT] =
+{
     // Lexical states for SCLEX_CSS
     { STE_STYLE_DEFAULT,        wxSTC_CSS_DEFAULT,              "White space" }, // 0
     { STE_STYLE_KEYWORD1,       wxSTC_CSS_TAG,                  "Selector (HTML tag)" }, // 1
@@ -3897,7 +3931,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_CSS[STE_LexerStyles_STE_LANG_CSS
 };
 
 #define STE_LexerStyles_STE_LANG_POV_COUNT 17
-static STE_LexerStyles STE_LexerStyles_STE_LANG_POV[STE_LexerStyles_STE_LANG_POV_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_POV[STE_LexerStyles_STE_LANG_POV_COUNT] =
+{
     // Lexical states for SCLEX_POV
     { STE_STYLE_DEFAULT,        wxSTC_POV_DEFAULT,      "White space" }, // 0
     { STE_STYLE_COMMENT,        wxSTC_POV_COMMENT,      "Comment" }, // 1
@@ -3919,7 +3954,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_POV[STE_LexerStyles_STE_LANG_POV
 };
 
 #define STE_LexerStyles_STE_LANG_LOUT_COUNT 11
-static STE_LexerStyles STE_LexerStyles_STE_LANG_LOUT[STE_LexerStyles_STE_LANG_LOUT_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_LOUT[STE_LexerStyles_STE_LANG_LOUT_COUNT] =
+{
     // Lexical states for SCLEX_LOUT
     { STE_STYLE_DEFAULT,        wxSTC_LOUT_DEFAULT,     "White space" }, // 0
     { STE_STYLE_COMMENT,        wxSTC_LOUT_COMMENT,     "Comment" }, // 1
@@ -3935,7 +3971,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_LOUT[STE_LexerStyles_STE_LANG_LO
 };
 
 #define STE_LexerStyles_STE_LANG_ESCRIPT_COUNT 12
-static STE_LexerStyles STE_LexerStyles_STE_LANG_ESCRIPT[STE_LexerStyles_STE_LANG_ESCRIPT_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_ESCRIPT[STE_LexerStyles_STE_LANG_ESCRIPT_COUNT] =
+{
     // Lexical states for SCLEX_ESCRIPT
     { STE_STYLE_DEFAULT,        wxSTC_ESCRIPT_DEFAULT,      "Default" }, // 0
     { STE_STYLE_COMMENT,        wxSTC_ESCRIPT_COMMENT,      "Comment" }, // 1
@@ -3952,7 +3989,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_ESCRIPT[STE_LexerStyles_STE_LANG
 };
 
 #define STE_LexerStyles_STE_LANG_PS_COUNT 16
-static STE_LexerStyles STE_LexerStyles_STE_LANG_PS[STE_LexerStyles_STE_LANG_PS_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_PS[STE_LexerStyles_STE_LANG_PS_COUNT] =
+{
     // Lexical states for SCLEX_PS
     { STE_STYLE_DEFAULT,        wxSTC_PS_DEFAULT,       "Default" }, // 0
     { STE_STYLE_COMMENTLINE,    wxSTC_PS_COMMENT,       "Comment" }, // 1
@@ -3973,7 +4011,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_PS[STE_LexerStyles_STE_LANG_PS_C
 };
 
 #define STE_LexerStyles_STE_LANG_NSIS_COUNT 15
-static STE_LexerStyles STE_LexerStyles_STE_LANG_NSIS[STE_LexerStyles_STE_LANG_NSIS_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_NSIS[STE_LexerStyles_STE_LANG_NSIS_COUNT] =
+{
     // Lexical states for SCLEX_NSIS
     { STE_STYLE_DEFAULT,        wxSTC_NSIS_DEFAULT,       "Whitespace" }, // 0
     { STE_STYLE_COMMENT,        wxSTC_NSIS_COMMENT,       "Comment" }, // 1
@@ -3997,7 +4036,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_NSIS[STE_LexerStyles_STE_LANG_NS
 };
 
 #define STE_LexerStyles_STE_LANG_MMIXAL_COUNT 18
-static STE_LexerStyles STE_LexerStyles_STE_LANG_MMIXAL[STE_LexerStyles_STE_LANG_MMIXAL_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_MMIXAL[STE_LexerStyles_STE_LANG_MMIXAL_COUNT] =
+{
     // Lexical states for SCLEX_MMIXAL
     { STE_STYLE_DEFAULT,    wxSTC_MMIXAL_LEADWS,        "Divsion of leading whitespace in line" }, // 0
     { STE_STYLE_COMMENT,    wxSTC_MMIXAL_COMMENT,       "Comment" }, // 1
@@ -4020,7 +4060,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_MMIXAL[STE_LexerStyles_STE_LANG_
 };
 
 #define STE_LexerStyles_STE_LANG_CLW_COUNT 15
-static STE_LexerStyles STE_LexerStyles_STE_LANG_CLW[STE_LexerStyles_STE_LANG_CLW_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_CLW[STE_LexerStyles_STE_LANG_CLW_COUNT] =
+{
     // Lexical states for SCLEX_CLW
     { STE_STYLE_DEFAULT,    wxSTC_CLW_DEFAULT,               "Default" }, // 0
     { STE_STYLE_LABEL,      wxSTC_CLW_LABEL,                 "Label" }, // 1
@@ -4043,7 +4084,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_CLW[STE_LexerStyles_STE_LANG_CLW
 STE_LexerStyles* STE_LexerStyles_STE_LANG_CLWNOCASE = STE_LexerStyles_STE_LANG_CLW;
 
 #define STE_LexerStyles_STE_LANG_LOT_COUNT 7
-static STE_LexerStyles STE_LexerStyles_STE_LANG_LOT[STE_LexerStyles_STE_LANG_LOT_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_LOT[STE_LexerStyles_STE_LANG_LOT_COUNT] =
+{
     // Lexical states for SCLEX_LOT
     { STE_STYLE_DEFAULT,  wxSTC_LOT_DEFAULT,   "Default" }, // 0
     { STE_STYLE_DEFAULT,  wxSTC_LOT_HEADER,    "Header" }, // 1
@@ -4055,7 +4097,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_LOT[STE_LexerStyles_STE_LANG_LOT
 };
 
 #define STE_LexerStyles_STE_LANG_YAML_COUNT 9
-static STE_LexerStyles STE_LexerStyles_STE_LANG_YAML[STE_LexerStyles_STE_LANG_YAML_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_YAML[STE_LexerStyles_STE_LANG_YAML_COUNT] =
+{
     // Lexical states for SCLEX_YAML
     { STE_STYLE_DEFAULT,  wxSTC_YAML_DEFAULT,     "Default" }, // 0
     { STE_STYLE_DEFAULT,  wxSTC_YAML_COMMENT,     "Comment line" }, // 1
@@ -4069,7 +4112,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_YAML[STE_LexerStyles_STE_LANG_YA
 };
 
 #define STE_LexerStyles_STE_LANG_TEX_COUNT 6
-static STE_LexerStyles STE_LexerStyles_STE_LANG_TEX[STE_LexerStyles_STE_LANG_TEX_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_TEX[STE_LexerStyles_STE_LANG_TEX_COUNT] =
+{
     // Lexical states for SCLEX_TEX
     { STE_STYLE_DEFAULT,    wxSTC_TEX_DEFAULT,   "Default" }, // 0
     { STE_STYLE_LABEL,      wxSTC_TEX_SPECIAL,   "Special" }, // 1
@@ -4080,7 +4124,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_TEX[STE_LexerStyles_STE_LANG_TEX
 };
 
 #define STE_LexerStyles_STE_LANG_METAPOST_COUNT 7
-static STE_LexerStyles STE_LexerStyles_STE_LANG_METAPOST[STE_LexerStyles_STE_LANG_METAPOST_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_METAPOST[STE_LexerStyles_STE_LANG_METAPOST_COUNT] =
+{
     { STE_STYLE_DEFAULT,    wxSTC_METAPOST_DEFAULT,   "Default" }, // 0
     { STE_STYLE_DEFAULT,    wxSTC_METAPOST_SPECIAL,   "Special" }, // 1
     { STE_STYLE_DEFAULT,    wxSTC_METAPOST_GROUP,     "Group" }, // 2
@@ -4094,7 +4139,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_METAPOST[STE_LexerStyles_STE_LAN
 STE_LexerStyles* STE_LexerStyles_STE_LANG_POWERBASIC = STE_LexerStyles_STE_LANG_VB;
 
 #define STE_LexerStyles_STE_LANG_FORTH_COUNT 12
-static STE_LexerStyles STE_LexerStyles_STE_LANG_FORTH[STE_LexerStyles_STE_LANG_FORTH_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_FORTH[STE_LexerStyles_STE_LANG_FORTH_COUNT] =
+{
     // Lexical states for SCLEX_FORTH (Forth Lexer)
     { STE_STYLE_DEFAULT,        wxSTC_FORTH_DEFAULT,     "Whitespace" }, // 0
     { STE_STYLE_COMMENT,        wxSTC_FORTH_COMMENT,     "Comment" }, // 1
@@ -4115,7 +4161,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_FORTH[STE_LexerStyles_STE_LANG_F
 #else
 #define STE_LexerStyles_STE_LANG_ERLANG_COUNT 14
 #endif
-static STE_LexerStyles STE_LexerStyles_STE_LANG_ERLANG[STE_LexerStyles_STE_LANG_ERLANG_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_ERLANG[STE_LexerStyles_STE_LANG_ERLANG_COUNT] =
+{
     // Lexical states for SCLEX_ERLANG
     { STE_STYLE_DEFAULT,    wxSTC_ERLANG_DEFAULT,       "White space" }, // 0
     { STE_STYLE_COMMENT,    wxSTC_ERLANG_COMMENT,       "Comment" }, // 1
@@ -4140,7 +4187,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_ERLANG[STE_LexerStyles_STE_LANG_
 STE_LexerStyles* STE_LexerStyles_STE_LANG_OCTAVE = STE_LexerStyles_STE_LANG_MATLAB;
 
 #define STE_LexerStyles_STE_LANG_MSSQL_COUNT 17
-static STE_LexerStyles STE_LexerStyles_STE_LANG_MSSQL[STE_LexerStyles_STE_LANG_MSSQL_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_MSSQL[STE_LexerStyles_STE_LANG_MSSQL_COUNT] =
+{
     // Lexical states for SCLEX_MSSQL
     { STE_STYLE_DEFAULT,    wxSTC_MSSQL_DEFAULT,            "Default" }, // 0
     { STE_STYLE_DEFAULT,    wxSTC_MSSQL_COMMENT,            "Comment" }, // 1
@@ -4162,7 +4210,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_MSSQL[STE_LexerStyles_STE_LANG_M
 };
 
 #define STE_LexerStyles_STE_LANG_VERILOG_COUNT 14
-static STE_LexerStyles STE_LexerStyles_STE_LANG_VERILOG[STE_LexerStyles_STE_LANG_VERILOG_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_VERILOG[STE_LexerStyles_STE_LANG_VERILOG_COUNT] =
+{
     // Lexical states for SCLEX_VERILOG
     { STE_STYLE_DEFAULT,    wxSTC_V_DEFAULT,        "White space" }, // 0
     { STE_STYLE_DEFAULT,    wxSTC_V_COMMENT,        "Comment" }, // 1
@@ -4181,7 +4230,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_VERILOG[STE_LexerStyles_STE_LANG
 };
 
 #define STE_LexerStyles_STE_LANG_KIX_COUNT 11
-static STE_LexerStyles STE_LexerStyles_STE_LANG_KIX[STE_LexerStyles_STE_LANG_KIX_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_KIX[STE_LexerStyles_STE_LANG_KIX_COUNT] =
+{
     // Lexical states for SCLEX_KIX
     { STE_STYLE_DEFAULT,    wxSTC_KIX_DEFAULT,     "White space" }, // 0
     { STE_STYLE_DEFAULT,    wxSTC_KIX_COMMENT,     "Comment" }, // 1
@@ -4197,7 +4247,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_KIX[STE_LexerStyles_STE_LANG_KIX
 };
 
 #define STE_LexerStyles_STE_LANG_GUI4CLI_COUNT 10
-static STE_LexerStyles STE_LexerStyles_STE_LANG_GUI4CLI[STE_LexerStyles_STE_LANG_GUI4CLI_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_GUI4CLI[STE_LexerStyles_STE_LANG_GUI4CLI_COUNT] =
+{
     // Lexical states for SCLEX_GUI4CLI
     { STE_STYLE_DEFAULT,    wxSTC_GC_DEFAULT,       "Default" }, // 0
     { STE_STYLE_DEFAULT,    wxSTC_GC_COMMENTLINE,   "Line comment" }, // 1
@@ -4212,7 +4263,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_GUI4CLI[STE_LexerStyles_STE_LANG
 };
 
 #define STE_LexerStyles_STE_LANG_SPECMAN_COUNT 16
-static STE_LexerStyles STE_LexerStyles_STE_LANG_SPECMAN[STE_LexerStyles_STE_LANG_SPECMAN_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_SPECMAN[STE_LexerStyles_STE_LANG_SPECMAN_COUNT] =
+{
     // Lexical states for SCLEX_SPECMAN
     { STE_STYLE_DEFAULT,    wxSTC_SN_DEFAULT,           "White space" }, // 0
     { STE_STYLE_DEFAULT,    wxSTC_SN_CODE,              "Code" }, // 1
@@ -4233,7 +4285,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_SPECMAN[STE_LexerStyles_STE_LANG
 };
 
 #define STE_LexerStyles_STE_LANG_AU3_COUNT 13
-static STE_LexerStyles STE_LexerStyles_STE_LANG_AU3[STE_LexerStyles_STE_LANG_AU3_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_AU3[STE_LexerStyles_STE_LANG_AU3_COUNT] =
+{
     // Lexical states for SCLEX_AU3
     { STE_STYLE_DEFAULT,    wxSTC_AU3_DEFAULT,      "White space" }, // 0
     { STE_STYLE_DEFAULT,    wxSTC_AU3_COMMENT,      "Comment line" }, // 1
@@ -4253,7 +4306,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_AU3[STE_LexerStyles_STE_LANG_AU3
 };
 
 #define STE_LexerStyles_STE_LANG_APDL_COUNT 13
-static STE_LexerStyles STE_LexerStyles_STE_LANG_APDL[STE_LexerStyles_STE_LANG_APDL_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_APDL[STE_LexerStyles_STE_LANG_APDL_COUNT] =
+{
     // Lexical states for SCLEX_APDL
     { STE_STYLE_DEFAULT,    wxSTC_APDL_DEFAULT,      "Default" }, // 0
     { STE_STYLE_DEFAULT,    wxSTC_APDL_COMMENT,      "Comment" }, // 1
@@ -4271,7 +4325,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_APDL[STE_LexerStyles_STE_LANG_AP
 };
 
 #define STE_LexerStyles_STE_LANG_BASH_COUNT 14
-static STE_LexerStyles STE_LexerStyles_STE_LANG_BASH[STE_LexerStyles_STE_LANG_BASH_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_BASH[STE_LexerStyles_STE_LANG_BASH_COUNT] =
+{
     // Lexical states for SCLEX_BASH
     { STE_STYLE_DEFAULT,      wxSTC_SH_DEFAULT,         "White space" }, // 0
     { STE_STYLE_ERROR,        wxSTC_SH_ERROR,           "Error" }, // 1
@@ -4290,7 +4345,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_BASH[STE_LexerStyles_STE_LANG_BA
 };
 
 #define STE_LexerStyles_STE_LANG_ASN1_COUNT 11
-static STE_LexerStyles STE_LexerStyles_STE_LANG_ASN1[STE_LexerStyles_STE_LANG_ASN1_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_ASN1[STE_LexerStyles_STE_LANG_ASN1_COUNT] =
+{
     // Lexical states for SCLEX_ASN1
     { STE_STYLE_DEFAULT,    wxSTC_ASN1_DEFAULT,     "Default" }, // 0
     { STE_STYLE_COMMENT,    wxSTC_ASN1_COMMENT,     "Comment" }, // 1
@@ -4306,7 +4362,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_ASN1[STE_LexerStyles_STE_LANG_AS
 };
 
 #define STE_LexerStyles_STE_LANG_VHDL_COUNT 15
-static STE_LexerStyles STE_LexerStyles_STE_LANG_VHDL[STE_LexerStyles_STE_LANG_VHDL_COUNT] = {
+static STE_LexerStyles STE_LexerStyles_STE_LANG_VHDL[STE_LexerStyles_STE_LANG_VHDL_COUNT] =
+{
     // Lexical states for SCLEX_VHDL
     { STE_STYLE_DEFAULT,    wxSTC_VHDL_DEFAULT,         "White space" }, // 0
     { STE_STYLE_DEFAULT,    wxSTC_VHDL_COMMENT,         "Comment" }, // 1
@@ -4374,523 +4431,524 @@ STE_LexerStyles* STE_LexerStyles_STE_LANG_SQUIRREL = STE_LexerStyles_STE_LANG_CP
 
 // CREATE LEXERS ------------------------
 #if STE_USE_LANG_CONTAINER
-    DEFINE_STE_LANG(STE_LANG_CONTAINER )
-    #define STE_Lang_STE_LANG_CONTAINER  &_STE_Lang_STE_LANG_CONTAINER
+DEFINE_STE_LANG(STE_LANG_CONTAINER )
+#define STE_Lang_STE_LANG_CONTAINER  &_STE_Lang_STE_LANG_CONTAINER
 #else
-    #define STE_Lang_STE_LANG_CONTAINER  NULL
+#define STE_Lang_STE_LANG_CONTAINER  NULL
 #endif
 #if STE_USE_LANG_NULL
-    DEFINE_STE_LANG(STE_LANG_NULL      )
-    #define STE_Lang_STE_LANG_NULL       &_STE_Lang_STE_LANG_NULL
+DEFINE_STE_LANG(STE_LANG_NULL      )
+#define STE_Lang_STE_LANG_NULL       &_STE_Lang_STE_LANG_NULL
 #else
-    #define STE_Lang_STE_LANG_NULL       NULL
+#define STE_Lang_STE_LANG_NULL       NULL
 #endif
 #if STE_USE_LANG_PYTHON
-    DEFINE_STE_LANG(STE_LANG_PYTHON    )
-    #define STE_Lang_STE_LANG_PYTHON     &_STE_Lang_STE_LANG_PYTHON
+DEFINE_STE_LANG(STE_LANG_PYTHON    )
+#define STE_Lang_STE_LANG_PYTHON     &_STE_Lang_STE_LANG_PYTHON
 #else
-    #define STE_Lang_STE_LANG_PYTHON     NULL
+#define STE_Lang_STE_LANG_PYTHON     NULL
 #endif
 #if STE_USE_LANG_CPP
-    DEFINE_STE_LANG(STE_LANG_CPP       )
-    #define STE_Lang_STE_LANG_CPP        &_STE_Lang_STE_LANG_CPP
+DEFINE_STE_LANG(STE_LANG_CPP       )
+#define STE_Lang_STE_LANG_CPP        &_STE_Lang_STE_LANG_CPP
 #else
-    #define STE_Lang_STE_LANG_CPP        NULL
+#define STE_Lang_STE_LANG_CPP        NULL
 #endif
 #if STE_USE_LANG_HTML
-    DEFINE_STE_LANG(STE_LANG_HTML      )
-    #define STE_Lang_STE_LANG_HTML       &_STE_Lang_STE_LANG_HTML
+DEFINE_STE_LANG(STE_LANG_HTML      )
+#define STE_Lang_STE_LANG_HTML       &_STE_Lang_STE_LANG_HTML
 #else
-    #define STE_Lang_STE_LANG_HTML       NULL
+#define STE_Lang_STE_LANG_HTML       NULL
 #endif
 #if STE_USE_LANG_XML
-    DEFINE_STE_LANG(STE_LANG_XML       )
-    #define STE_Lang_STE_LANG_XML        &_STE_Lang_STE_LANG_XML
+DEFINE_STE_LANG(STE_LANG_XML       )
+#define STE_Lang_STE_LANG_XML        &_STE_Lang_STE_LANG_XML
 #else
-    #define STE_Lang_STE_LANG_XML        NULL
+#define STE_Lang_STE_LANG_XML        NULL
 #endif
 #if STE_USE_LANG_PERL
-    DEFINE_STE_LANG(STE_LANG_PERL      )
-    #define STE_Lang_STE_LANG_PERL       &_STE_Lang_STE_LANG_PERL
+DEFINE_STE_LANG(STE_LANG_PERL      )
+#define STE_Lang_STE_LANG_PERL       &_STE_Lang_STE_LANG_PERL
 #else
-    #define STE_Lang_STE_LANG_PERL       NULL
+#define STE_Lang_STE_LANG_PERL       NULL
 #endif
 #if STE_USE_LANG_SQL
-    DEFINE_STE_LANG(STE_LANG_SQL       )
-    #define STE_Lang_STE_LANG_SQL        &_STE_Lang_STE_LANG_SQL
+DEFINE_STE_LANG(STE_LANG_SQL       )
+#define STE_Lang_STE_LANG_SQL        &_STE_Lang_STE_LANG_SQL
 #else
-    #define STE_Lang_STE_LANG_SQL        NULL
+#define STE_Lang_STE_LANG_SQL        NULL
 #endif
 #if STE_USE_LANG_VB
-    DEFINE_STE_LANG(STE_LANG_VB        )
-    #define STE_Lang_STE_LANG_VB         &_STE_Lang_STE_LANG_VB
+DEFINE_STE_LANG(STE_LANG_VB        )
+#define STE_Lang_STE_LANG_VB         &_STE_Lang_STE_LANG_VB
 #else
-    #define STE_Lang_STE_LANG_VB         NULL
+#define STE_Lang_STE_LANG_VB         NULL
 #endif
 #if STE_USE_LANG_PROPERTIES
-    DEFINE_STE_LANG(STE_LANG_PROPERTIES)
-    #define STE_Lang_STE_LANG_PROPERTIES &_STE_Lang_STE_LANG_PROPERTIES
+DEFINE_STE_LANG(STE_LANG_PROPERTIES)
+#define STE_Lang_STE_LANG_PROPERTIES &_STE_Lang_STE_LANG_PROPERTIES
 #else
-    #define STE_Lang_STE_LANG_PROPERTIES NULL
+#define STE_Lang_STE_LANG_PROPERTIES NULL
 #endif
 #if STE_USE_LANG_ERRORLIST
-    DEFINE_STE_LANG(STE_LANG_ERRORLIST )
-    #define STE_Lang_STE_LANG_ERRORLIST  &_STE_Lang_STE_LANG_ERRORLIST
+DEFINE_STE_LANG(STE_LANG_ERRORLIST )
+#define STE_Lang_STE_LANG_ERRORLIST  &_STE_Lang_STE_LANG_ERRORLIST
 #else
-    #define STE_Lang_STE_LANG_ERRORLIST  NULL
+#define STE_Lang_STE_LANG_ERRORLIST  NULL
 #endif
 #if STE_USE_LANG_MAKEFILE
-    DEFINE_STE_LANG(STE_LANG_MAKEFILE  )
-    #define STE_Lang_STE_LANG_MAKEFILE   &_STE_Lang_STE_LANG_MAKEFILE
+DEFINE_STE_LANG(STE_LANG_MAKEFILE  )
+#define STE_Lang_STE_LANG_MAKEFILE   &_STE_Lang_STE_LANG_MAKEFILE
 #else
-    #define STE_Lang_STE_LANG_MAKEFILE   NULL
+#define STE_Lang_STE_LANG_MAKEFILE   NULL
 #endif
 #if STE_USE_LANG_BATCH
-    DEFINE_STE_LANG(STE_LANG_BATCH     )
-    #define STE_Lang_STE_LANG_BATCH      &_STE_Lang_STE_LANG_BATCH
+DEFINE_STE_LANG(STE_LANG_BATCH     )
+#define STE_Lang_STE_LANG_BATCH      &_STE_Lang_STE_LANG_BATCH
 #else
-    #define STE_Lang_STE_LANG_BATCH      NULL
+#define STE_Lang_STE_LANG_BATCH      NULL
 #endif
 #if STE_USE_LANG_XCODE
-    DEFINE_STE_LANG(STE_LANG_XCODE     )
-    #define STE_Lang_STE_LANG_XCODE      &_STE_Lang_STE_LANG_XCODE
+DEFINE_STE_LANG(STE_LANG_XCODE     )
+#define STE_Lang_STE_LANG_XCODE      &_STE_Lang_STE_LANG_XCODE
 #else
-    #define STE_Lang_STE_LANG_XCODE      NULL
+#define STE_Lang_STE_LANG_XCODE      NULL
 #endif
 #if STE_USE_LANG_LATEX
-    DEFINE_STE_LANG(STE_LANG_LATEX     )
-    #define STE_Lang_STE_LANG_LATEX      &_STE_Lang_STE_LANG_LATEX
+DEFINE_STE_LANG(STE_LANG_LATEX     )
+#define STE_Lang_STE_LANG_LATEX      &_STE_Lang_STE_LANG_LATEX
 #else
-    #define STE_Lang_STE_LANG_LATEX      NULL
+#define STE_Lang_STE_LANG_LATEX      NULL
 #endif
 #if STE_USE_LANG_LUA
-    DEFINE_STE_LANG(STE_LANG_LUA       )
-    #define STE_Lang_STE_LANG_LUA        &_STE_Lang_STE_LANG_LUA
+DEFINE_STE_LANG(STE_LANG_LUA       )
+#define STE_Lang_STE_LANG_LUA        &_STE_Lang_STE_LANG_LUA
 #else
-    #define STE_Lang_STE_LANG_LUA        NULL
+#define STE_Lang_STE_LANG_LUA        NULL
 #endif
 #if STE_USE_LANG_DIFF
-    DEFINE_STE_LANG(STE_LANG_DIFF      )
-    #define STE_Lang_STE_LANG_DIFF       &_STE_Lang_STE_LANG_DIFF
+DEFINE_STE_LANG(STE_LANG_DIFF      )
+#define STE_Lang_STE_LANG_DIFF       &_STE_Lang_STE_LANG_DIFF
 #else
-    #define STE_Lang_STE_LANG_DIFF       NULL
+#define STE_Lang_STE_LANG_DIFF       NULL
 #endif
 #if STE_USE_LANG_CONF
-    DEFINE_STE_LANG(STE_LANG_CONF      )
-    #define STE_Lang_STE_LANG_CONF       &_STE_Lang_STE_LANG_CONF
+DEFINE_STE_LANG(STE_LANG_CONF      )
+#define STE_Lang_STE_LANG_CONF       &_STE_Lang_STE_LANG_CONF
 #else
-    #define STE_Lang_STE_LANG_CONF       NULL
+#define STE_Lang_STE_LANG_CONF       NULL
 #endif
 #if STE_USE_LANG_PASCAL
-    DEFINE_STE_LANG(STE_LANG_PASCAL    )
-    #define STE_Lang_STE_LANG_PASCAL     &_STE_Lang_STE_LANG_PASCAL
+DEFINE_STE_LANG(STE_LANG_PASCAL    )
+#define STE_Lang_STE_LANG_PASCAL     &_STE_Lang_STE_LANG_PASCAL
 #else
-    #define STE_Lang_STE_LANG_PASCAL     NULL
+#define STE_Lang_STE_LANG_PASCAL     NULL
 #endif
 #if STE_USE_LANG_AVE
-    DEFINE_STE_LANG(STE_LANG_AVE       )
-    #define STE_Lang_STE_LANG_AVE        &_STE_Lang_STE_LANG_AVE
+DEFINE_STE_LANG(STE_LANG_AVE       )
+#define STE_Lang_STE_LANG_AVE        &_STE_Lang_STE_LANG_AVE
 #else
-    #define STE_Lang_STE_LANG_AVE        NULL
+#define STE_Lang_STE_LANG_AVE        NULL
 #endif
 #if STE_USE_LANG_ADA
-    DEFINE_STE_LANG(STE_LANG_ADA       )
-    #define STE_Lang_STE_LANG_ADA        &_STE_Lang_STE_LANG_ADA
+DEFINE_STE_LANG(STE_LANG_ADA       )
+#define STE_Lang_STE_LANG_ADA        &_STE_Lang_STE_LANG_ADA
 #else
-    #define STE_Lang_STE_LANG_ADA        NULL
+#define STE_Lang_STE_LANG_ADA        NULL
 #endif
 #if STE_USE_LANG_LISP
-    DEFINE_STE_LANG(STE_LANG_LISP      )
-    #define STE_Lang_STE_LANG_LISP       &_STE_Lang_STE_LANG_LISP
+DEFINE_STE_LANG(STE_LANG_LISP      )
+#define STE_Lang_STE_LANG_LISP       &_STE_Lang_STE_LANG_LISP
 #else
-    #define STE_Lang_STE_LANG_LISP       NULL
+#define STE_Lang_STE_LANG_LISP       NULL
 #endif
 #if STE_USE_LANG_RUBY
-    DEFINE_STE_LANG(STE_LANG_RUBY      )
-    #define STE_Lang_STE_LANG_RUBY       &_STE_Lang_STE_LANG_RUBY
+DEFINE_STE_LANG(STE_LANG_RUBY      )
+#define STE_Lang_STE_LANG_RUBY       &_STE_Lang_STE_LANG_RUBY
 #else
-    #define STE_Lang_STE_LANG_RUBY       NULL
+#define STE_Lang_STE_LANG_RUBY       NULL
 #endif
 #if STE_USE_LANG_EIFFEL
-    DEFINE_STE_LANG(STE_LANG_EIFFEL    )
-    #define STE_Lang_STE_LANG_EIFFEL     &_STE_Lang_STE_LANG_EIFFEL
+DEFINE_STE_LANG(STE_LANG_EIFFEL    )
+#define STE_Lang_STE_LANG_EIFFEL     &_STE_Lang_STE_LANG_EIFFEL
 #else
-    #define STE_Lang_STE_LANG_EIFFEL     NULL
+#define STE_Lang_STE_LANG_EIFFEL     NULL
 #endif
 #if STE_USE_LANG_EIFFELKW
-    DEFINE_STE_LANG(STE_LANG_EIFFELKW  )
-    #define STE_Lang_STE_LANG_EIFFELKW   &_STE_Lang_STE_LANG_EIFFELKW
+DEFINE_STE_LANG(STE_LANG_EIFFELKW  )
+#define STE_Lang_STE_LANG_EIFFELKW   &_STE_Lang_STE_LANG_EIFFELKW
 #else
-    #define STE_Lang_STE_LANG_EIFFELKW   NULL
+#define STE_Lang_STE_LANG_EIFFELKW   NULL
 #endif
 #if STE_USE_LANG_TCL
-    DEFINE_STE_LANG(STE_LANG_TCL       )
-    #define STE_Lang_STE_LANG_TCL        &_STE_Lang_STE_LANG_TCL
+DEFINE_STE_LANG(STE_LANG_TCL       )
+#define STE_Lang_STE_LANG_TCL        &_STE_Lang_STE_LANG_TCL
 #else
-    #define STE_Lang_STE_LANG_TCL        NULL
+#define STE_Lang_STE_LANG_TCL        NULL
 #endif
 #if STE_USE_LANG_NNCRONTAB
-    DEFINE_STE_LANG(STE_LANG_NNCRONTAB )
-    #define STE_Lang_STE_LANG_NNCRONTAB  &_STE_Lang_STE_LANG_NNCRONTAB
+DEFINE_STE_LANG(STE_LANG_NNCRONTAB )
+#define STE_Lang_STE_LANG_NNCRONTAB  &_STE_Lang_STE_LANG_NNCRONTAB
 #else
-    #define STE_Lang_STE_LANG_NNCRONTAB  NULL
+#define STE_Lang_STE_LANG_NNCRONTAB  NULL
 #endif
 #if STE_USE_LANG_BULLANT
-    DEFINE_STE_LANG(STE_LANG_BULLANT   )
-    #define STE_Lang_STE_LANG_BULLANT    &_STE_Lang_STE_LANG_BULLANT
+DEFINE_STE_LANG(STE_LANG_BULLANT   )
+#define STE_Lang_STE_LANG_BULLANT    &_STE_Lang_STE_LANG_BULLANT
 #else
-    #define STE_Lang_STE_LANG_BULLANT    NULL
+#define STE_Lang_STE_LANG_BULLANT    NULL
 #endif
 #if STE_USE_LANG_VBSCRIPT
-    DEFINE_STE_LANG(STE_LANG_VBSCRIPT  )
-    #define STE_Lang_STE_LANG_VBSCRIPT   &_STE_Lang_STE_LANG_VBSCRIPT
+DEFINE_STE_LANG(STE_LANG_VBSCRIPT  )
+#define STE_Lang_STE_LANG_VBSCRIPT   &_STE_Lang_STE_LANG_VBSCRIPT
 #else
-    #define STE_Lang_STE_LANG_VBSCRIPT   NULL
+#define STE_Lang_STE_LANG_VBSCRIPT   NULL
 #endif
 
 #if STE_USE_LANG_ASP && defined(wxSTC_LEX_ASP) // not in 2.7.0
-    DEFINE_STE_LANG(STE_LANG_ASP       )
-    #define STE_Lang_STE_LANG_ASP        &_STE_Lang_STE_LANG_ASP
+DEFINE_STE_LANG(STE_LANG_ASP       )
+#define STE_Lang_STE_LANG_ASP        &_STE_Lang_STE_LANG_ASP
 #else
-    #define STE_Lang_STE_LANG_ASP        NULL
+#define STE_Lang_STE_LANG_ASP        NULL
 #endif
 #if STE_USE_LANG_PHP && defined(wxSTC_LEX_PHP) // not in 2.7.0
-    DEFINE_STE_LANG(STE_LANG_PHP       )
-    #define STE_Lang_STE_LANG_PHP        &_STE_Lang_STE_LANG_PHP
+DEFINE_STE_LANG(STE_LANG_PHP       )
+#define STE_Lang_STE_LANG_PHP        &_STE_Lang_STE_LANG_PHP
 #else
-    #define STE_Lang_STE_LANG_PHP        NULL
+#define STE_Lang_STE_LANG_PHP        NULL
 #endif
 
 #if STE_USE_LANG_BAAN
-    DEFINE_STE_LANG(STE_LANG_BAAN      )
-    #define STE_Lang_STE_LANG_BAAN       &_STE_Lang_STE_LANG_BAAN
+DEFINE_STE_LANG(STE_LANG_BAAN      )
+#define STE_Lang_STE_LANG_BAAN       &_STE_Lang_STE_LANG_BAAN
 #else
-    #define STE_Lang_STE_LANG_BAAN       NULL
+#define STE_Lang_STE_LANG_BAAN       NULL
 #endif
 #if STE_USE_LANG_MATLAB
-    DEFINE_STE_LANG(STE_LANG_MATLAB    )
-    #define STE_Lang_STE_LANG_MATLAB     &_STE_Lang_STE_LANG_MATLAB
+DEFINE_STE_LANG(STE_LANG_MATLAB    )
+#define STE_Lang_STE_LANG_MATLAB     &_STE_Lang_STE_LANG_MATLAB
 #else
-    #define STE_Lang_STE_LANG_MATLAB     NULL
+#define STE_Lang_STE_LANG_MATLAB     NULL
 #endif
 #if STE_USE_LANG_SCRIPTOL
-    DEFINE_STE_LANG(STE_LANG_SCRIPTOL  )
-    #define STE_Lang_STE_LANG_SCRIPTOL   &_STE_Lang_STE_LANG_SCRIPTOL
+DEFINE_STE_LANG(STE_LANG_SCRIPTOL  )
+#define STE_Lang_STE_LANG_SCRIPTOL   &_STE_Lang_STE_LANG_SCRIPTOL
 #else
-    #define STE_Lang_STE_LANG_SCRIPTOL   NULL
+#define STE_Lang_STE_LANG_SCRIPTOL   NULL
 #endif
 #if STE_USE_LANG_ASM
-    DEFINE_STE_LANG(STE_LANG_ASM       )
-    #define STE_Lang_STE_LANG_ASM        &_STE_Lang_STE_LANG_ASM
+DEFINE_STE_LANG(STE_LANG_ASM       )
+#define STE_Lang_STE_LANG_ASM        &_STE_Lang_STE_LANG_ASM
 #else
-    #define STE_Lang_STE_LANG_ASM        NULL
+#define STE_Lang_STE_LANG_ASM        NULL
 #endif
 #if STE_USE_LANG_CPPNOCASE
-    DEFINE_STE_LANG(STE_LANG_CPPNOCASE )
-    #define STE_Lang_STE_LANG_CPPNOCASE  &_STE_Lang_STE_LANG_CPPNOCASE
+DEFINE_STE_LANG(STE_LANG_CPPNOCASE )
+#define STE_Lang_STE_LANG_CPPNOCASE  &_STE_Lang_STE_LANG_CPPNOCASE
 #else
-    #define STE_Lang_STE_LANG_CPPNOCASE  NULL
+#define STE_Lang_STE_LANG_CPPNOCASE  NULL
 #endif
 #if STE_USE_LANG_FORTRAN
-    DEFINE_STE_LANG(STE_LANG_FORTRAN   )
-    #define STE_Lang_STE_LANG_FORTRAN    &_STE_Lang_STE_LANG_FORTRAN
+DEFINE_STE_LANG(STE_LANG_FORTRAN   )
+#define STE_Lang_STE_LANG_FORTRAN    &_STE_Lang_STE_LANG_FORTRAN
 #else
-    #define STE_Lang_STE_LANG_FORTRAN    NULL
+#define STE_Lang_STE_LANG_FORTRAN    NULL
 #endif
 #if STE_USE_LANG_F77
-    DEFINE_STE_LANG(STE_LANG_F77       )
-    #define STE_Lang_STE_LANG_F77        &_STE_Lang_STE_LANG_F77
+DEFINE_STE_LANG(STE_LANG_F77       )
+#define STE_Lang_STE_LANG_F77        &_STE_Lang_STE_LANG_F77
 #else
-    #define STE_Lang_STE_LANG_F77        NULL
+#define STE_Lang_STE_LANG_F77        NULL
 #endif
 #if STE_USE_LANG_CSS
-    DEFINE_STE_LANG(STE_LANG_CSS       )
-    #define STE_Lang_STE_LANG_CSS        &_STE_Lang_STE_LANG_CSS
+DEFINE_STE_LANG(STE_LANG_CSS       )
+#define STE_Lang_STE_LANG_CSS        &_STE_Lang_STE_LANG_CSS
 #else
-    #define STE_Lang_STE_LANG_CSS        NULL
+#define STE_Lang_STE_LANG_CSS        NULL
 #endif
 #if STE_USE_LANG_POV
-    DEFINE_STE_LANG(STE_LANG_POV       )
-    #define STE_Lang_STE_LANG_POV        &_STE_Lang_STE_LANG_POV
+DEFINE_STE_LANG(STE_LANG_POV       )
+#define STE_Lang_STE_LANG_POV        &_STE_Lang_STE_LANG_POV
 #else
-    #define STE_Lang_STE_LANG_POV        NULL
+#define STE_Lang_STE_LANG_POV        NULL
 #endif
 #if STE_USE_LANG_LOUT
-    DEFINE_STE_LANG(STE_LANG_LOUT      )
-    #define STE_Lang_STE_LANG_LOUT       &_STE_Lang_STE_LANG_LOUT
+DEFINE_STE_LANG(STE_LANG_LOUT      )
+#define STE_Lang_STE_LANG_LOUT       &_STE_Lang_STE_LANG_LOUT
 #else
-    #define STE_Lang_STE_LANG_LOUT       NULL
+#define STE_Lang_STE_LANG_LOUT       NULL
 #endif
 #if STE_USE_LANG_ESCRIPT
-    DEFINE_STE_LANG(STE_LANG_ESCRIPT   )
-    #define STE_Lang_STE_LANG_ESCRIPT    &_STE_Lang_STE_LANG_ESCRIPT
+DEFINE_STE_LANG(STE_LANG_ESCRIPT   )
+#define STE_Lang_STE_LANG_ESCRIPT    &_STE_Lang_STE_LANG_ESCRIPT
 #else
-    #define STE_Lang_STE_LANG_ESCRIPT    NULL
+#define STE_Lang_STE_LANG_ESCRIPT    NULL
 #endif
 #if STE_USE_LANG_PS
-    DEFINE_STE_LANG(STE_LANG_PS        )
-    #define STE_Lang_STE_LANG_PS         &_STE_Lang_STE_LANG_PS
+DEFINE_STE_LANG(STE_LANG_PS        )
+#define STE_Lang_STE_LANG_PS         &_STE_Lang_STE_LANG_PS
 #else
-    #define STE_Lang_STE_LANG_PS         NULL
+#define STE_Lang_STE_LANG_PS         NULL
 #endif
 #if STE_USE_LANG_NSIS
-    DEFINE_STE_LANG(STE_LANG_NSIS      )
-    #define STE_Lang_STE_LANG_NSIS       &_STE_Lang_STE_LANG_NSIS
+DEFINE_STE_LANG(STE_LANG_NSIS      )
+#define STE_Lang_STE_LANG_NSIS       &_STE_Lang_STE_LANG_NSIS
 #else
-    #define STE_Lang_STE_LANG_NSIS       NULL
+#define STE_Lang_STE_LANG_NSIS       NULL
 #endif
 #if STE_USE_LANG_MMIXAL
-    DEFINE_STE_LANG(STE_LANG_MMIXAL    )
-    #define STE_Lang_STE_LANG_MMIXAL     &_STE_Lang_STE_LANG_MMIXAL
+DEFINE_STE_LANG(STE_LANG_MMIXAL    )
+#define STE_Lang_STE_LANG_MMIXAL     &_STE_Lang_STE_LANG_MMIXAL
 #else
-    #define STE_Lang_STE_LANG_MMIXAL     NULL
+#define STE_Lang_STE_LANG_MMIXAL     NULL
 #endif
 #if STE_USE_LANG_CLW
-    DEFINE_STE_LANG(STE_LANG_CLW       )
-    #define STE_Lang_STE_LANG_CLW        &_STE_Lang_STE_LANG_CLW
+DEFINE_STE_LANG(STE_LANG_CLW       )
+#define STE_Lang_STE_LANG_CLW        &_STE_Lang_STE_LANG_CLW
 #else
-    #define STE_Lang_STE_LANG_CLW        NULL
+#define STE_Lang_STE_LANG_CLW        NULL
 #endif
 #if STE_USE_LANG_CLWNOCASE
-    DEFINE_STE_LANG(STE_LANG_CLWNOCASE )
-    #define STE_Lang_STE_LANG_CLWNOCASE  &_STE_Lang_STE_LANG_CLWNOCASE
+DEFINE_STE_LANG(STE_LANG_CLWNOCASE )
+#define STE_Lang_STE_LANG_CLWNOCASE  &_STE_Lang_STE_LANG_CLWNOCASE
 #else
-    #define STE_Lang_STE_LANG_CLWNOCASE  NULL
+#define STE_Lang_STE_LANG_CLWNOCASE  NULL
 #endif
 #if STE_USE_LANG_LOT
-    DEFINE_STE_LANG(STE_LANG_LOT       )
-    #define STE_Lang_STE_LANG_LOT        &_STE_Lang_STE_LANG_LOT
+DEFINE_STE_LANG(STE_LANG_LOT       )
+#define STE_Lang_STE_LANG_LOT        &_STE_Lang_STE_LANG_LOT
 #else
-    #define STE_Lang_STE_LANG_LOT        NULL
+#define STE_Lang_STE_LANG_LOT        NULL
 #endif
 #if STE_USE_LANG_YAML
-    DEFINE_STE_LANG(STE_LANG_YAML      )
-    #define STE_Lang_STE_LANG_YAML       &_STE_Lang_STE_LANG_YAML
+DEFINE_STE_LANG(STE_LANG_YAML      )
+#define STE_Lang_STE_LANG_YAML       &_STE_Lang_STE_LANG_YAML
 #else
-    #define STE_Lang_STE_LANG_YAML       NULL
+#define STE_Lang_STE_LANG_YAML       NULL
 #endif
 #if STE_USE_LANG_TEX
-    DEFINE_STE_LANG(STE_LANG_TEX       )
-    #define STE_Lang_STE_LANG_TEX        &_STE_Lang_STE_LANG_TEX
+DEFINE_STE_LANG(STE_LANG_TEX       )
+#define STE_Lang_STE_LANG_TEX        &_STE_Lang_STE_LANG_TEX
 #else
-    #define STE_Lang_STE_LANG_TEX        NULL
+#define STE_Lang_STE_LANG_TEX        NULL
 #endif
 #if STE_USE_LANG_METAPOST
-    DEFINE_STE_LANG(STE_LANG_METAPOST  )
-    #define STE_Lang_STE_LANG_METAPOST   &_STE_Lang_STE_LANG_METAPOST
+DEFINE_STE_LANG(STE_LANG_METAPOST  )
+#define STE_Lang_STE_LANG_METAPOST   &_STE_Lang_STE_LANG_METAPOST
 #else
-    #define STE_Lang_STE_LANG_METAPOST   NULL
+#define STE_Lang_STE_LANG_METAPOST   NULL
 #endif
 #if STE_USE_LANG_POWERBASIC
-    DEFINE_STE_LANG(STE_LANG_POWERBASIC)
-    #define STE_Lang_STE_LANG_POWERBASIC &_STE_Lang_STE_LANG_POWERBASIC
+DEFINE_STE_LANG(STE_LANG_POWERBASIC)
+#define STE_Lang_STE_LANG_POWERBASIC &_STE_Lang_STE_LANG_POWERBASIC
 #else
-    #define STE_Lang_STE_LANG_POWERBASIC NULL
+#define STE_Lang_STE_LANG_POWERBASIC NULL
 #endif
 #if STE_USE_LANG_FORTH
-    DEFINE_STE_LANG(STE_LANG_FORTH     )
-    #define STE_Lang_STE_LANG_FORTH      &_STE_Lang_STE_LANG_FORTH
+DEFINE_STE_LANG(STE_LANG_FORTH     )
+#define STE_Lang_STE_LANG_FORTH      &_STE_Lang_STE_LANG_FORTH
 #else
-    #define STE_Lang_STE_LANG_FORTH      NULL
+#define STE_Lang_STE_LANG_FORTH      NULL
 #endif
 #if STE_USE_LANG_ERLANG
-    DEFINE_STE_LANG(STE_LANG_ERLANG    )
-    #define STE_Lang_STE_LANG_ERLANG     &_STE_Lang_STE_LANG_ERLANG
+DEFINE_STE_LANG(STE_LANG_ERLANG    )
+#define STE_Lang_STE_LANG_ERLANG     &_STE_Lang_STE_LANG_ERLANG
 #else
-    #define STE_Lang_STE_LANG_ERLANG     NULL
+#define STE_Lang_STE_LANG_ERLANG     NULL
 #endif
 #if STE_USE_LANG_OCTAVE
-    DEFINE_STE_LANG(STE_LANG_OCTAVE    )
-    #define STE_Lang_STE_LANG_OCTAVE     &_STE_Lang_STE_LANG_OCTAVE
+DEFINE_STE_LANG(STE_LANG_OCTAVE    )
+#define STE_Lang_STE_LANG_OCTAVE     &_STE_Lang_STE_LANG_OCTAVE
 #else
-    #define STE_Lang_STE_LANG_OCTAVE     NULL
+#define STE_Lang_STE_LANG_OCTAVE     NULL
 #endif
 #if STE_USE_LANG_MSSQL
-    DEFINE_STE_LANG(STE_LANG_MSSQL     )
-    #define STE_Lang_STE_LANG_MSSQL      &_STE_Lang_STE_LANG_MSSQL
+DEFINE_STE_LANG(STE_LANG_MSSQL     )
+#define STE_Lang_STE_LANG_MSSQL      &_STE_Lang_STE_LANG_MSSQL
 #else
-    #define STE_Lang_STE_LANG_MSSQL      NULL
+#define STE_Lang_STE_LANG_MSSQL      NULL
 #endif
 #if STE_USE_LANG_VERILOG
-    DEFINE_STE_LANG(STE_LANG_VERILOG   )
-    #define STE_Lang_STE_LANG_VERILOG    &_STE_Lang_STE_LANG_VERILOG
+DEFINE_STE_LANG(STE_LANG_VERILOG   )
+#define STE_Lang_STE_LANG_VERILOG    &_STE_Lang_STE_LANG_VERILOG
 #else
-    #define STE_Lang_STE_LANG_VERILOG    NULL
+#define STE_Lang_STE_LANG_VERILOG    NULL
 #endif
 #if STE_USE_LANG_KIX
-    DEFINE_STE_LANG(STE_LANG_KIX       )
-    #define STE_Lang_STE_LANG_KIX        &_STE_Lang_STE_LANG_KIX
+DEFINE_STE_LANG(STE_LANG_KIX       )
+#define STE_Lang_STE_LANG_KIX        &_STE_Lang_STE_LANG_KIX
 #else
-    #define STE_Lang_STE_LANG_KIX        NULL
+#define STE_Lang_STE_LANG_KIX        NULL
 #endif
 #if STE_USE_LANG_GUI4CLI
-    DEFINE_STE_LANG(STE_LANG_GUI4CLI   )
-    #define STE_Lang_STE_LANG_GUI4CLI    &_STE_Lang_STE_LANG_GUI4CLI
+DEFINE_STE_LANG(STE_LANG_GUI4CLI   )
+#define STE_Lang_STE_LANG_GUI4CLI    &_STE_Lang_STE_LANG_GUI4CLI
 #else
-    #define STE_Lang_STE_LANG_GUI4CLI    NULL
+#define STE_Lang_STE_LANG_GUI4CLI    NULL
 #endif
 #if STE_USE_LANG_SPECMAN
-    DEFINE_STE_LANG(STE_LANG_SPECMAN   )
-    #define STE_Lang_STE_LANG_SPECMAN    &_STE_Lang_STE_LANG_SPECMAN
+DEFINE_STE_LANG(STE_LANG_SPECMAN   )
+#define STE_Lang_STE_LANG_SPECMAN    &_STE_Lang_STE_LANG_SPECMAN
 #else
-    #define STE_Lang_STE_LANG_SPECMAN    NULL
+#define STE_Lang_STE_LANG_SPECMAN    NULL
 #endif
 #if STE_USE_LANG_AU3
-    DEFINE_STE_LANG(STE_LANG_AU3       )
-    #define STE_Lang_STE_LANG_AU3        &_STE_Lang_STE_LANG_AU3
+DEFINE_STE_LANG(STE_LANG_AU3       )
+#define STE_Lang_STE_LANG_AU3        &_STE_Lang_STE_LANG_AU3
 #else
-    #define STE_Lang_STE_LANG_AU3        NULL
+#define STE_Lang_STE_LANG_AU3        NULL
 #endif
 #if STE_USE_LANG_APDL
-    DEFINE_STE_LANG(STE_LANG_APDL      )
-    #define STE_Lang_STE_LANG_APDL       &_STE_Lang_STE_LANG_APDL
+DEFINE_STE_LANG(STE_LANG_APDL      )
+#define STE_Lang_STE_LANG_APDL       &_STE_Lang_STE_LANG_APDL
 #else
-    #define STE_Lang_STE_LANG_APDL       NULL
+#define STE_Lang_STE_LANG_APDL       NULL
 #endif
 #if STE_USE_LANG_BASH
-    DEFINE_STE_LANG(STE_LANG_BASH      )
-    #define STE_Lang_STE_LANG_BASH       &_STE_Lang_STE_LANG_BASH
+DEFINE_STE_LANG(STE_LANG_BASH      )
+#define STE_Lang_STE_LANG_BASH       &_STE_Lang_STE_LANG_BASH
 #else
-    #define STE_Lang_STE_LANG_BASH       NULL
+#define STE_Lang_STE_LANG_BASH       NULL
 #endif
 #if STE_USE_LANG_ASN1
-    DEFINE_STE_LANG(STE_LANG_ASN1      )
-    #define STE_Lang_STE_LANG_ASN1       &_STE_Lang_STE_LANG_ASN1
+DEFINE_STE_LANG(STE_LANG_ASN1      )
+#define STE_Lang_STE_LANG_ASN1       &_STE_Lang_STE_LANG_ASN1
 #else
-    #define STE_Lang_STE_LANG_ASN1       NULL
+#define STE_Lang_STE_LANG_ASN1       NULL
 #endif
 #if STE_USE_LANG_VHDL
-    DEFINE_STE_LANG(STE_LANG_VHDL      )
-    #define STE_Lang_STE_LANG_VHDL       &_STE_Lang_STE_LANG_VHDL
+DEFINE_STE_LANG(STE_LANG_VHDL      )
+#define STE_Lang_STE_LANG_VHDL       &_STE_Lang_STE_LANG_VHDL
 #else
-    #define STE_Lang_STE_LANG_VHDL       NULL
+#define STE_Lang_STE_LANG_VHDL       NULL
 #endif
 #if STE_USE_LANG_JAVA
-    DEFINE_STE_LANG(STE_LANG_JAVA      )
-    #define STE_Lang_STE_LANG_JAVA       &_STE_Lang_STE_LANG_JAVA
+DEFINE_STE_LANG(STE_LANG_JAVA      )
+#define STE_Lang_STE_LANG_JAVA       &_STE_Lang_STE_LANG_JAVA
 #else
-    #define STE_Lang_STE_LANG_JAVA       NULL
+#define STE_Lang_STE_LANG_JAVA       NULL
 #endif
 #if STE_USE_LANG_JAVASCRIPT
-    DEFINE_STE_LANG(STE_LANG_JAVASCRIPT)
-    #define STE_Lang_STE_LANG_JAVASCRIPT &_STE_Lang_STE_LANG_JAVASCRIPT
+DEFINE_STE_LANG(STE_LANG_JAVASCRIPT)
+#define STE_Lang_STE_LANG_JAVASCRIPT &_STE_Lang_STE_LANG_JAVASCRIPT
 #else
-    #define STE_Lang_STE_LANG_JAVASCRIPT NULL
+#define STE_Lang_STE_LANG_JAVASCRIPT NULL
 #endif
 #if STE_USE_LANG_RC
-    DEFINE_STE_LANG(STE_LANG_RC        )
-    #define STE_Lang_STE_LANG_RC         &_STE_Lang_STE_LANG_RC
+DEFINE_STE_LANG(STE_LANG_RC        )
+#define STE_Lang_STE_LANG_RC         &_STE_Lang_STE_LANG_RC
 #else
-    #define STE_Lang_STE_LANG_RC         NULL
+#define STE_Lang_STE_LANG_RC         NULL
 #endif
 #if STE_USE_LANG_CS
-    DEFINE_STE_LANG(STE_LANG_CS        )
-    #define STE_Lang_STE_LANG_CS         &_STE_Lang_STE_LANG_CS
+DEFINE_STE_LANG(STE_LANG_CS        )
+#define STE_Lang_STE_LANG_CS         &_STE_Lang_STE_LANG_CS
 #else
-    #define STE_Lang_STE_LANG_CS         NULL
+#define STE_Lang_STE_LANG_CS         NULL
 #endif
 #if STE_USE_LANG_D
-    DEFINE_STE_LANG(STE_LANG_D        )
-    #define STE_Lang_STE_LANG_D         &_STE_Lang_STE_LANG_D
+DEFINE_STE_LANG(STE_LANG_D        )
+#define STE_Lang_STE_LANG_D         &_STE_Lang_STE_LANG_D
 #else
-    #define STE_Lang_STE_LANG_D         NULL
+#define STE_Lang_STE_LANG_D         NULL
 #endif
 #if STE_USE_LANG_IDL
-    DEFINE_STE_LANG(STE_LANG_IDL       )
-    #define STE_Lang_STE_LANG_IDL        &_STE_Lang_STE_LANG_IDL
+DEFINE_STE_LANG(STE_LANG_IDL       )
+#define STE_Lang_STE_LANG_IDL        &_STE_Lang_STE_LANG_IDL
 #else
-    #define STE_Lang_STE_LANG_IDL        NULL
+#define STE_Lang_STE_LANG_IDL        NULL
 #endif
 
 #if STE_USE_LANG_PLSQL
-    DEFINE_STE_LANG(STE_LANG_PLSQL     )
-    #define STE_Lang_STE_LANG_PLSQL      &_STE_Lang_STE_LANG_PLSQL
+DEFINE_STE_LANG(STE_LANG_PLSQL     )
+#define STE_Lang_STE_LANG_PLSQL      &_STE_Lang_STE_LANG_PLSQL
 #else
-    #define STE_Lang_STE_LANG_PLSQL      NULL
+#define STE_Lang_STE_LANG_PLSQL      NULL
 #endif
 
 #if STE_USE_LANG_SQUIRREL
-    DEFINE_STE_LANG(STE_LANG_SQUIRREL  )
-    #define STE_Lang_STE_LANG_SQUIRREL   &_STE_Lang_STE_LANG_SQUIRREL
+DEFINE_STE_LANG(STE_LANG_SQUIRREL  )
+#define STE_Lang_STE_LANG_SQUIRREL   &_STE_Lang_STE_LANG_SQUIRREL
 #else
-    #define STE_Lang_STE_LANG_SQUIRREL   NULL
+#define STE_Lang_STE_LANG_SQUIRREL   NULL
 #endif
 
 // CREATE LEXER ARRAY ------------------------
-STE_Language *s_STE_Languages[STE_LANG__MAX] = {
-    STE_Lang_STE_LANG_CONTAINER ,
-    STE_Lang_STE_LANG_NULL      ,
-    STE_Lang_STE_LANG_PYTHON    ,
-    STE_Lang_STE_LANG_CPP       ,
-    STE_Lang_STE_LANG_HTML      ,
-    STE_Lang_STE_LANG_XML       ,
-    STE_Lang_STE_LANG_PERL      ,
-    STE_Lang_STE_LANG_SQL       ,
-    STE_Lang_STE_LANG_VB        ,
+STE_Language *s_STE_Languages[STE_LANG__MAX] =
+{
+    STE_Lang_STE_LANG_CONTAINER,
+    STE_Lang_STE_LANG_NULL,
+    STE_Lang_STE_LANG_PYTHON,
+    STE_Lang_STE_LANG_CPP,
+    STE_Lang_STE_LANG_HTML,
+    STE_Lang_STE_LANG_XML,
+    STE_Lang_STE_LANG_PERL,
+    STE_Lang_STE_LANG_SQL,
+    STE_Lang_STE_LANG_VB,
     STE_Lang_STE_LANG_PROPERTIES,
-    STE_Lang_STE_LANG_ERRORLIST ,
-    STE_Lang_STE_LANG_MAKEFILE  ,
-    STE_Lang_STE_LANG_BATCH     ,
-    STE_Lang_STE_LANG_XCODE     ,
-    STE_Lang_STE_LANG_LATEX     ,
-    STE_Lang_STE_LANG_LUA       ,
-    STE_Lang_STE_LANG_DIFF      ,
-    STE_Lang_STE_LANG_CONF      ,
-    STE_Lang_STE_LANG_PASCAL    ,
-    STE_Lang_STE_LANG_AVE       ,
-    STE_Lang_STE_LANG_ADA       ,
-    STE_Lang_STE_LANG_LISP      ,
-    STE_Lang_STE_LANG_RUBY      ,
-    STE_Lang_STE_LANG_EIFFEL    ,
-    STE_Lang_STE_LANG_EIFFELKW  ,
-    STE_Lang_STE_LANG_TCL       ,
-    STE_Lang_STE_LANG_NNCRONTAB ,
-    STE_Lang_STE_LANG_BULLANT   ,
-    STE_Lang_STE_LANG_VBSCRIPT  ,
-    STE_Lang_STE_LANG_ASP       ,
-    STE_Lang_STE_LANG_PHP       ,
-    STE_Lang_STE_LANG_BAAN      ,
-    STE_Lang_STE_LANG_MATLAB    ,
-    STE_Lang_STE_LANG_SCRIPTOL  ,
-    STE_Lang_STE_LANG_ASM       ,
-    STE_Lang_STE_LANG_CPPNOCASE ,
-    STE_Lang_STE_LANG_FORTRAN   ,
-    STE_Lang_STE_LANG_F77       ,
-    STE_Lang_STE_LANG_CSS       ,
-    STE_Lang_STE_LANG_POV       ,
-    STE_Lang_STE_LANG_LOUT      ,
-    STE_Lang_STE_LANG_ESCRIPT   ,
-    STE_Lang_STE_LANG_PS        ,
-    STE_Lang_STE_LANG_NSIS      ,
-    STE_Lang_STE_LANG_MMIXAL    ,
-    STE_Lang_STE_LANG_CLW       ,
-    STE_Lang_STE_LANG_CLWNOCASE ,
-    STE_Lang_STE_LANG_LOT       ,
-    STE_Lang_STE_LANG_YAML      ,
-    STE_Lang_STE_LANG_TEX       ,
-    STE_Lang_STE_LANG_METAPOST  ,
+    STE_Lang_STE_LANG_ERRORLIST,
+    STE_Lang_STE_LANG_MAKEFILE,
+    STE_Lang_STE_LANG_BATCH,
+    STE_Lang_STE_LANG_XCODE,
+    STE_Lang_STE_LANG_LATEX,
+    STE_Lang_STE_LANG_LUA,
+    STE_Lang_STE_LANG_DIFF,
+    STE_Lang_STE_LANG_CONF,
+    STE_Lang_STE_LANG_PASCAL,
+    STE_Lang_STE_LANG_AVE,
+    STE_Lang_STE_LANG_ADA,
+    STE_Lang_STE_LANG_LISP,
+    STE_Lang_STE_LANG_RUBY,
+    STE_Lang_STE_LANG_EIFFEL,
+    STE_Lang_STE_LANG_EIFFELKW,
+    STE_Lang_STE_LANG_TCL,
+    STE_Lang_STE_LANG_NNCRONTAB,
+    STE_Lang_STE_LANG_BULLANT,
+    STE_Lang_STE_LANG_VBSCRIPT,
+    STE_Lang_STE_LANG_ASP,
+    STE_Lang_STE_LANG_PHP,
+    STE_Lang_STE_LANG_BAAN,
+    STE_Lang_STE_LANG_MATLAB,
+    STE_Lang_STE_LANG_SCRIPTOL,
+    STE_Lang_STE_LANG_ASM,
+    STE_Lang_STE_LANG_CPPNOCASE,
+    STE_Lang_STE_LANG_FORTRAN,
+    STE_Lang_STE_LANG_F77,
+    STE_Lang_STE_LANG_CSS,
+    STE_Lang_STE_LANG_POV,
+    STE_Lang_STE_LANG_LOUT,
+    STE_Lang_STE_LANG_ESCRIPT,
+    STE_Lang_STE_LANG_PS,
+    STE_Lang_STE_LANG_NSIS,
+    STE_Lang_STE_LANG_MMIXAL,
+    STE_Lang_STE_LANG_CLW,
+    STE_Lang_STE_LANG_CLWNOCASE,
+    STE_Lang_STE_LANG_LOT,
+    STE_Lang_STE_LANG_YAML,
+    STE_Lang_STE_LANG_TEX,
+    STE_Lang_STE_LANG_METAPOST,
     STE_Lang_STE_LANG_POWERBASIC,
-    STE_Lang_STE_LANG_FORTH     ,
-    STE_Lang_STE_LANG_ERLANG    ,
-    STE_Lang_STE_LANG_OCTAVE    ,
-    STE_Lang_STE_LANG_MSSQL     ,
-    STE_Lang_STE_LANG_VERILOG   ,
-    STE_Lang_STE_LANG_KIX       ,
-    STE_Lang_STE_LANG_GUI4CLI   ,
-    STE_Lang_STE_LANG_SPECMAN   ,
-    STE_Lang_STE_LANG_AU3       ,
-    STE_Lang_STE_LANG_APDL      ,
-    STE_Lang_STE_LANG_BASH      ,
-    STE_Lang_STE_LANG_ASN1      ,
-    STE_Lang_STE_LANG_VHDL      ,
-    STE_Lang_STE_LANG_JAVA      ,
+    STE_Lang_STE_LANG_FORTH,
+    STE_Lang_STE_LANG_ERLANG,
+    STE_Lang_STE_LANG_OCTAVE,
+    STE_Lang_STE_LANG_MSSQL,
+    STE_Lang_STE_LANG_VERILOG,
+    STE_Lang_STE_LANG_KIX,
+    STE_Lang_STE_LANG_GUI4CLI,
+    STE_Lang_STE_LANG_SPECMAN,
+    STE_Lang_STE_LANG_AU3,
+    STE_Lang_STE_LANG_APDL,
+    STE_Lang_STE_LANG_BASH,
+    STE_Lang_STE_LANG_ASN1,
+    STE_Lang_STE_LANG_VHDL,
+    STE_Lang_STE_LANG_JAVA,
     STE_Lang_STE_LANG_JAVASCRIPT,
-    STE_Lang_STE_LANG_RC        ,
-    STE_Lang_STE_LANG_CS        ,
-    STE_Lang_STE_LANG_D         ,
-    STE_Lang_STE_LANG_IDL       ,
-    STE_Lang_STE_LANG_PLSQL     ,
-    STE_Lang_STE_LANG_SQUIRREL  ,
+    STE_Lang_STE_LANG_RC,
+    STE_Lang_STE_LANG_CS,
+    STE_Lang_STE_LANG_D,
+    STE_Lang_STE_LANG_IDL,
+    STE_Lang_STE_LANG_PLSQL,
+    STE_Lang_STE_LANG_SQUIRREL,
 };
 
 //-----------------------------------------------------------------------------
@@ -4911,9 +4969,9 @@ public:
     wxArrayPtrVoid          m_langs;
     wxSTEPairArrayIntString m_userFilePatterns; // user defined file patterns
     wxSTEPairArrayIntString m_userStyles;       // user defined styles
-                                                //   mapped langID*1000+style_n
+    //   mapped langID*1000+style_n
     wxSTEPairArrayIntString m_userKeyWords;     // user defined extra words
-                                                //   mapped langID*1000+word_n
+    //   mapped langID*1000+word_n
 };
 
 //-----------------------------------------------------------------------------
@@ -4970,9 +5028,9 @@ bool wxSTEditorLangs::IsEqualTo(const wxSTEditorLangs &langs) const
     wxSTEditorLangs_RefData *otherLangData = (wxSTEditorLangs_RefData *)langs.GetRefData();
 
     if ((M_LANGDATA->m_langs.GetCount() != otherLangData->m_langs.GetCount()) ||
-        (M_LANGDATA->m_userFilePatterns != otherLangData->m_userFilePatterns) ||
-        (M_LANGDATA->m_userStyles       != otherLangData->m_userStyles) ||
-        (M_LANGDATA->m_userKeyWords     != otherLangData->m_userKeyWords))
+            (M_LANGDATA->m_userFilePatterns != otherLangData->m_userFilePatterns) ||
+            (M_LANGDATA->m_userStyles       != otherLangData->m_userStyles) ||
+            (M_LANGDATA->m_userKeyWords     != otherLangData->m_userKeyWords))
         return false;
 
     size_t n, count = M_LANGDATA->m_langs.GetCount();
@@ -5019,8 +5077,8 @@ int wxSTEditorLangs::FindLanguageByFilename(const wxFileName& fileName_) const
 
         wxString filePattern = GetFilePattern(lang_n).Lower();
         for (wxStringTokenizer tokenizer(filePattern, wxT(";"));
-             tokenizer.HasMoreTokens();
-             )
+                tokenizer.HasMoreTokens();
+            )
         {
             wxString wildToken = tokenizer.GetNextToken();
             wxFileName wildFileName(wildToken);
@@ -5122,13 +5180,20 @@ int wxSTEditorLangs::SciToSTEStyle(size_t lang_n, int sci_style) const
     // these are the same for all languages
     switch (sci_style)
     {
-        case wxSTC_STYLE_DEFAULT     : return STE_STYLE_DEFAULT;
-        case wxSTC_STYLE_LINENUMBER  : return STE_STYLE_LINENUMBER;
-        case wxSTC_STYLE_BRACELIGHT  : return STE_STYLE_BRACELIGHT;
-        case wxSTC_STYLE_BRACEBAD    : return STE_STYLE_BRACEBAD;
-        case wxSTC_STYLE_CONTROLCHAR : return STE_STYLE_CONTROLCHAR;
-        case wxSTC_STYLE_INDENTGUIDE : return STE_STYLE_INDENTGUIDE;
-        default : break;
+    case wxSTC_STYLE_DEFAULT     :
+        return STE_STYLE_DEFAULT;
+    case wxSTC_STYLE_LINENUMBER  :
+        return STE_STYLE_LINENUMBER;
+    case wxSTC_STYLE_BRACELIGHT  :
+        return STE_STYLE_BRACELIGHT;
+    case wxSTC_STYLE_BRACEBAD    :
+        return STE_STYLE_BRACEBAD;
+    case wxSTC_STYLE_CONTROLCHAR :
+        return STE_STYLE_CONTROLCHAR;
+    case wxSTC_STYLE_INDENTGUIDE :
+        return STE_STYLE_INDENTGUIDE;
+    default :
+        break;
     }
 
     if (!GetLanguage(lang_n)) return -1;

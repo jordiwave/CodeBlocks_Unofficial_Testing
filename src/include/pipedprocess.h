@@ -17,38 +17,41 @@
  */
 class DLLIMPORT PipedProcess : public wxProcess
 {
-    public:
-        // class constructor
-        PipedProcess(PipedProcess** pvThis, wxEvtHandler* parent, int id = wxID_ANY,
-                     bool pipe = true, const wxString& dir = wxEmptyString, int index = -1);
-        // class destructor
-        ~PipedProcess() override;
-        virtual int Launch(const wxString& cmd, int flags);
-        virtual void SendString(const wxString& text);
-        virtual bool HasInput();
-        virtual int GetPid(){ return m_Pid; }
-        void ForfeitStreams();
-    protected:
-        void OnTerminate(int pid, int status) override;
-        virtual void OnTimer(wxTimerEvent& event);
-        virtual void OnIdle(wxIdleEvent& event);
-    protected:
-        wxEvtHandler* m_Parent;
-        wxTimer m_timerPollProcess;
-        int m_Id;
-        int m_Pid;
+public:
+    // class constructor
+    PipedProcess(PipedProcess** pvThis, wxEvtHandler* parent, int id = wxID_ANY,
+                 bool pipe = true, const wxString& dir = wxEmptyString, int index = -1);
+    // class destructor
+    ~PipedProcess() override;
+    virtual int Launch(const wxString& cmd, int flags);
+    virtual void SendString(const wxString& text);
+    virtual bool HasInput();
+    virtual int GetPid()
+    {
+        return m_Pid;
+    }
+    void ForfeitStreams();
+protected:
+    void OnTerminate(int pid, int status) override;
+    virtual void OnTimer(wxTimerEvent& event);
+    virtual void OnIdle(wxIdleEvent& event);
+protected:
+    wxEvtHandler* m_Parent;
+    wxTimer m_timerPollProcess;
+    int m_Id;
+    int m_Pid;
 
-        /// When there are multiple processes started you could use this to distinguish between
-        /// different processes. You could also use the id, but then you must preallocate too many
-        /// ids and with the growing number of threads available in contemporary machines, this
-        /// becomes unfeasible.
-        /// It is sent back in the X variable of the CodeBlocksEvent.
-        int m_Index;
+    /// When there are multiple processes started you could use this to distinguish between
+    /// different processes. You could also use the id, but then you must preallocate too many
+    /// ids and with the growing number of threads available in contemporary machines, this
+    /// becomes unfeasible.
+    /// It is sent back in the X variable of the CodeBlocksEvent.
+    int m_Index;
 
-        bool m_Stopped;
-    private:
-        PipedProcess** m_pvThis;
-        DECLARE_EVENT_TABLE()
+    bool m_Stopped;
+private:
+    PipedProcess** m_pvThis;
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // PIPEDPROCESS_H

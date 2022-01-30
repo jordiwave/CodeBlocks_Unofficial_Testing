@@ -15,17 +15,17 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/control.h>
-    #include <wx/menu.h>
-    #include <wx/settings.h>
-    #include <wx/bitmap.h>
-    #include <wx/dc.h>
-    #include <wx/dcclient.h>
-    #include <wx/scrolwin.h>
+#include <wx/control.h>
+#include <wx/menu.h>
+#include <wx/settings.h>
+#include <wx/bitmap.h>
+#include <wx/dc.h>
+#include <wx/dcclient.h>
+#include <wx/scrolwin.h>
 #endif // WX_PRECOMP
 
 #include "wx/things/bmpcombo.h"
@@ -46,8 +46,8 @@ BEGIN_EVENT_TABLE(wxBmpComboPopupChild, wxScrolledWindow)
 END_EVENT_TABLE()
 
 wxBmpComboPopupChild::wxBmpComboPopupChild(wxWindow *parent, wxBmpComboBox *owner)
-                        : wxScrolledWindow( parent, wxID_ANY, wxDefaultPosition,
-                             wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL)
+    : wxScrolledWindow( parent, wxID_ANY, wxDefaultPosition,
+                        wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL)
 {
     m_bmpCombo = owner;
     m_last_selection = -1;
@@ -133,20 +133,26 @@ void wxBmpComboPopupChild::OnKeyDown( wxKeyEvent &event )
 
     switch (event.GetKeyCode())
     {
-        case WXK_ESCAPE :
-        {
-            m_bmpCombo->HidePopup();
-            return;
-        }
-        case WXK_RETURN :
-        {
-            m_bmpCombo->SetSelection(sel, true);
-            m_bmpCombo->HidePopup();
-            return;
-        }
-        case WXK_UP     : sel--; break;
-        case WXK_DOWN   : sel++; break;
-        default : event.Skip(true); return;
+    case WXK_ESCAPE :
+    {
+        m_bmpCombo->HidePopup();
+        return;
+    }
+    case WXK_RETURN :
+    {
+        m_bmpCombo->SetSelection(sel, true);
+        m_bmpCombo->HidePopup();
+        return;
+    }
+    case WXK_UP     :
+        sel--;
+        break;
+    case WXK_DOWN   :
+        sel++;
+        break;
+    default :
+        event.Skip(true);
+        return;
     }
 
     if (sel < 0)
@@ -192,9 +198,14 @@ void wxBmpComboLabel::OnChar( wxKeyEvent &event )
 {
     switch (event.GetKeyCode())
     {
-        case WXK_UP   : m_bmpCombo->SetNextSelection(false, true); break;
-        case WXK_DOWN : m_bmpCombo->SetNextSelection(true, true); break;
-        default : break;
+    case WXK_UP   :
+        m_bmpCombo->SetNextSelection(false, true);
+        break;
+    case WXK_DOWN :
+        m_bmpCombo->SetNextSelection(true, true);
+        break;
+    default :
+        break;
     }
 }
 
@@ -242,9 +253,9 @@ void wxBmpComboBox::Init()
 }
 
 bool wxBmpComboBox::Create( wxWindow* parent, wxWindowID id,
-                               const wxPoint& pos, const wxSize& size,
-                               long style, const wxValidator& val,
-                               const wxString& name)
+                            const wxPoint& pos, const wxSize& size,
+                            long style, const wxValidator& val,
+                            const wxString& name)
 {
     if (!DropDownBase::Create(parent,id,pos,size,wxNO_BORDER|wxCLIP_CHILDREN,val,name))
         return false;
@@ -297,19 +308,19 @@ void wxBmpComboBox::OnSize( wxSizeEvent& event )
 
 void wxBmpComboBox::DoSetSize(int x, int y, int width, int height, int sizeFlags)
 {
-/*
-    wxSize curSize( GetSize() );
+    /*
+        wxSize curSize( GetSize() );
 
-    if (width == -1)
-        width = curSize.GetWidth();
-    if (height == -1)
-        height = curSize.GetHeight();
-*/
+        if (width == -1)
+            width = curSize.GetWidth();
+        if (height == -1)
+            height = curSize.GetHeight();
+    */
     DropDownBase::DoSetSize(x, y, width, height, sizeFlags);
-/*
-    width = width - ((wxWindow*)m_dropdownButton)->GetSize().x;
-    m_labelWin->SetSize(0, 0, width, height);
-*/
+    /*
+        width = width - ((wxWindow*)m_dropdownButton)->GetSize().x;
+        m_labelWin->SetSize(0, 0, width, height);
+    */
 }
 
 wxSize wxBmpComboBox::DoGetBestSize() const

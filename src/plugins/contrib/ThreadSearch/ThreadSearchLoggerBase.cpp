@@ -21,29 +21,29 @@
 #include "ThreadSearch.h"
 
 ThreadSearchLoggerBase* ThreadSearchLoggerBase::Build(ThreadSearchView &threadSearchView,
-                                                      ThreadSearch &threadSearchPlugin,
-                                                      eLoggerTypes loggerType,
-                                                      InsertIndexManager::eFileSorting fileSorting,
-                                                      wxWindow *pParent, long id)
+        ThreadSearch &threadSearchPlugin,
+        eLoggerTypes loggerType,
+        InsertIndexManager::eFileSorting fileSorting,
+        wxWindow *pParent, long id)
 {
 
     switch (loggerType)
     {
-        case TypeList:
-            return new ThreadSearchLoggerList(threadSearchView, threadSearchPlugin, fileSorting , pParent, id);
-        case TypeTree:
-            return new ThreadSearchLoggerTree(threadSearchView, threadSearchPlugin, fileSorting , pParent, id);
-        case TypeSTC:
-            return new ThreadSearchLoggerSTC(threadSearchView, threadSearchPlugin, fileSorting , pParent, id);
-        default:
-            return nullptr;
+    case TypeList:
+        return new ThreadSearchLoggerList(threadSearchView, threadSearchPlugin, fileSorting, pParent, id);
+    case TypeTree:
+        return new ThreadSearchLoggerTree(threadSearchView, threadSearchPlugin, fileSorting, pParent, id);
+    case TypeSTC:
+        return new ThreadSearchLoggerSTC(threadSearchView, threadSearchPlugin, fileSorting, pParent, id);
+    default:
+        return nullptr;
     }
 }
 
 ThreadSearchLoggerBase::ThreadSearchLoggerBase(wxWindow *parent,
-                                               ThreadSearchView &threadSearchView,
-                                               ThreadSearch &threadSearchPlugin,
-                                               InsertIndexManager::eFileSorting fileSorting) :
+        ThreadSearchView &threadSearchView,
+        ThreadSearch &threadSearchPlugin,
+        InsertIndexManager::eFileSorting fileSorting) :
     wxPanel(parent, -1, wxDefaultPosition, wxSize(1,1)),
     m_ThreadSearchView(threadSearchView),
     m_ThreadSearchPlugin(threadSearchPlugin),

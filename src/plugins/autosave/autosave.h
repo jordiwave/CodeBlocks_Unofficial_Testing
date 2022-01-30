@@ -20,17 +20,23 @@ class Autosave : public cbPlugin
     wxTimer *timer1;
     wxTimer *timer2;
 
-	public:
-		Autosave();
-		~Autosave() override;
-		int GetConfigurationPriority() const override { return  50; }
-		int GetConfigurationGroup() const override { return  cgUnknown; }
-		void OnAttach() override; // fires when the plugin is attached to the application
-		void Start();
-		void OnRelease(bool appShutDown) override; // fires when the plugin is released from the application
-		cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent) override;
-        void OnTimer(wxTimerEvent& event);
-        void SaveProject(cbProject *p, int method);
+public:
+    Autosave();
+    ~Autosave() override;
+    int GetConfigurationPriority() const override
+    {
+        return  50;
+    }
+    int GetConfigurationGroup() const override
+    {
+        return  cgUnknown;
+    }
+    void OnAttach() override; // fires when the plugin is attached to the application
+    void Start();
+    void OnRelease(bool appShutDown) override; // fires when the plugin is released from the application
+    cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent) override;
+    void OnTimer(wxTimerEvent& event);
+    void SaveProject(cbProject *p, int method);
     DECLARE_EVENT_TABLE()
 };
 
@@ -39,20 +45,29 @@ class AutosaveConfigDlg : public cbConfigurationPanel
 {
     Autosave* plugin;
 
-	public:
-		AutosaveConfigDlg(wxWindow* parent, Autosave* plug);
-		virtual ~AutosaveConfigDlg(){};
+public:
+    AutosaveConfigDlg(wxWindow* parent, Autosave* plug);
+    virtual ~AutosaveConfigDlg() {};
 
-        wxString GetTitle() const override { return _("Autosave"); }
-        wxString GetBitmapBaseName() const override { return _T("autosave"); }
-        void OnApply() override { SaveSettings(); }
-        void OnCancel() override {}
-	private:
-	    void OnProjectsChecked(wxCommandEvent &event);
-	    void OnSourceChecked(wxCommandEvent &event);
-	private:
-        void LoadSettings();
-        void SaveSettings();
+    wxString GetTitle() const override
+    {
+        return _("Autosave");
+    }
+    wxString GetBitmapBaseName() const override
+    {
+        return _T("autosave");
+    }
+    void OnApply() override
+    {
+        SaveSettings();
+    }
+    void OnCancel() override {}
+private:
+    void OnProjectsChecked(wxCommandEvent &event);
+    void OnSourceChecked(wxCommandEvent &event);
+private:
+    void LoadSettings();
+    void SaveSettings();
     DECLARE_EVENT_TABLE();
 };
 

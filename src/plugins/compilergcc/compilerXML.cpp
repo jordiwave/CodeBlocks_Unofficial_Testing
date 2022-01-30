@@ -1,7 +1,7 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/arrstr.h>
+#include <wx/arrstr.h>
 #endif // CB_PRECOMP
 
 #include <wx/filefn.h>
@@ -9,7 +9,7 @@
 #include <wx/regex.h>
 #include <wx/xml/xml.h>
 #ifdef __WXMSW__ // for wxRegKey
-    #include <wx/msw/registry.h>
+#include <wx/msw/registry.h>
 #endif // __WXMSW__
 
 #include "compilerXML.h"
@@ -108,7 +108,7 @@ AutoDetectResult CompilerXML::AutoDetectInstallationDir()
                                 break;
                         }
                         else if (sm == master && (   (targ.IsEmpty() && wxDirExists(value + wxFILE_SEP_PATH + wxT("bin")))
-                                                  || wxFileExists(pathArray[i] + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + targ)) )
+                                                     || wxFileExists(pathArray[i] + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + targ)) )
                         {
                             if (AddPath(pathArray[i] + wxFILE_SEP_PATH + wxT("bin"), sm))
                                 break;
@@ -123,9 +123,9 @@ AutoDetectResult CompilerXML::AutoDetectInstallationDir()
                 {
                     path = wxFindFirstFile(value, wxDIR);
                     if (!path.IsEmpty() &&
-                         ((targ.IsEmpty() && wxDirExists(path)) ||
-                          wxFileExists(path + wxFILE_SEP_PATH + targ) ||
-                          wxFileExists(path + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + targ)))
+                            ((targ.IsEmpty() && wxDirExists(path)) ||
+                             wxFileExists(path + wxFILE_SEP_PATH + targ) ||
+                             wxFileExists(path + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + targ)))
                     {
                         AddPath(path, sm);
                     }
@@ -247,8 +247,8 @@ AutoDetectResult CompilerXML::AutoDetectInstallationDir()
     wxSetEnv(wxT("PATH"), origPath);
 
     if (   wxFileExists(m_MasterPath + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + m_Programs.C)
-        || wxFileExists(m_MasterPath + wxFILE_SEP_PATH + m_Programs.C)
-        || (GetID() == wxT("null")) ) // Special case so "No Compiler" is valid
+            || wxFileExists(m_MasterPath + wxFILE_SEP_PATH + m_Programs.C)
+            || (GetID() == wxT("null")) ) // Special case so "No Compiler" is valid
     {
         return adrDetected;
     }

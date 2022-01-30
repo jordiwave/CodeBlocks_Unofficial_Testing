@@ -27,12 +27,18 @@ class WXDLLIMPEXP_STEDIT wxSTEditorPrefBase : public wxObject
 public:
     wxSTEditorPrefBase() : wxObject() {}
     virtual ~wxSTEditorPrefBase() {}
-    bool IsOk() const { return m_refData != NULL; }
+    bool IsOk() const
+    {
+        return m_refData != NULL;
+    }
 
     /// Get the number of editors that this class manages.
     size_t GetEditorCount() const;
     /// Does this manage this editor?
-    bool HasEditor(wxSTEditor* editor) const { return FindEditor(editor) != wxNOT_FOUND; }
+    bool HasEditor(wxSTEditor* editor) const
+    {
+        return FindEditor(editor) != wxNOT_FOUND;
+    }
     /// What is the index of this editor? wxNOT_FOUND if unknown.
     int FindEditor(wxSTEditor* editor) const;
     /// Get the editor at this index.
@@ -63,7 +69,10 @@ class WXDLLIMPEXP_STEDIT wxSTEditorPrefBase_RefData : public wxObjectRefData
 {
 public:
     wxSTEditorPrefBase_RefData() { }
-    virtual ~wxSTEditorPrefBase_RefData() { m_editors.Clear(); }
+    virtual ~wxSTEditorPrefBase_RefData()
+    {
+        m_editors.Clear();
+    }
 
     wxArrayPtrVoid m_editors;
 };
@@ -96,19 +105,33 @@ public:
 class WXDLLIMPEXP_STEDIT wxSTEditorPrefs : public wxSTEditorPrefBase
 {
 public:
-    wxSTEditorPrefs(bool create=false) { Init(); if (create) Create(); }
-    wxSTEditorPrefs(const wxSTEditorPrefs &prefs) { Init(); Create(prefs); }
+    wxSTEditorPrefs(bool create=false)
+    {
+        Init();
+        if (create) Create();
+    }
+    wxSTEditorPrefs(const wxSTEditorPrefs &prefs)
+    {
+        Init();
+        Create(prefs);
+    }
 
     virtual ~wxSTEditorPrefs() {}
 
-    bool IsOk() const { return m_refData != NULL; }
+    bool IsOk() const
+    {
+        return m_refData != NULL;
+    }
     bool Create();                             ///< (re)create as new with default vals
     bool Create(const wxSTEditorPrefs &other); ///< make a Refed copy of other
     bool Create(wxSTEditor *editor);           ///< initialize from editor values (doesn't modify editor)
-                                               ///< not all values supported
+    ///< not all values supported
     void Copy(const wxSTEditorPrefs &other);   ///< make a full copy, create if necessary
     void Reset();                              ///< reset to default vals
-    void Destroy() { UnRef(); }
+    void Destroy()
+    {
+        UnRef();
+    }
 
     /// Do these two prefs have the same values
     bool IsEqualTo(const wxSTEditorPrefs &prefs) const;
@@ -139,19 +162,37 @@ public:
     bool SetPrefInt(size_t pref_n, int value, bool update = true);
 
     /// Get preferences as a bool
-    bool GetPrefBool(size_t pref_n) const { return GetPrefInt(pref_n) != 0; }
+    bool GetPrefBool(size_t pref_n) const
+    {
+        return GetPrefInt(pref_n) != 0;
+    }
     /// Set preferences as a bool
-    bool SetPrefBool(size_t pref_n, bool value, bool update = true) { return SetPrefInt(pref_n, value ? 1 : 0, update); }
+    bool SetPrefBool(size_t pref_n, bool value, bool update = true)
+    {
+        return SetPrefInt(pref_n, value ? 1 : 0, update);
+    }
 
     /// Get preferences using, win_id = ID_STE_PREF__FIRST ... ID_STE_PREF__LAST
-    int  GetPrefIntByID(int win_id) const { return GetPrefInt(win_id - ID_STE_PREF__FIRST); }
+    int  GetPrefIntByID(int win_id) const
+    {
+        return GetPrefInt(win_id - ID_STE_PREF__FIRST);
+    }
     /// Set preferences using, win_id = ID_STE_PREF__FIRST ... ID_STE_PREF__LAST
-    bool SetPrefIntByID(int win_id, int value, bool update = true) { return SetPrefInt(win_id - ID_STE_PREF__FIRST, value, update); }
+    bool SetPrefIntByID(int win_id, int value, bool update = true)
+    {
+        return SetPrefInt(win_id - ID_STE_PREF__FIRST, value, update);
+    }
 
     /// Get preferences using, win_id = ID_STE_PREF__FIRST ... ID_STE_PREF__LAST
-    bool GetPrefBoolByID(int win_id) const { return GetPrefIntByID(win_id) != 0; }
+    bool GetPrefBoolByID(int win_id) const
+    {
+        return GetPrefIntByID(win_id) != 0;
+    }
     /// Set preferences using, win_id = ID_STE_PREF__FIRST ... ID_STE_PREF__LAST
-    bool SetPrefBoolByID(int win_id, bool value, bool update = true) { return SetPrefIntByID(win_id, value ? 1 : 0, update); }
+    bool SetPrefBoolByID(int win_id, bool value, bool update = true)
+    {
+        return SetPrefIntByID(win_id, value ? 1 : 0, update);
+    }
 
     /// @}
     //-------------------------------------------------------------------------
@@ -160,7 +201,10 @@ public:
     /// This is additional info about the pref that won't be saved in the wxConfig
     ///  all instances of the prefs class share these values
     int  GetPrefFlags(size_t pref_n) const;
-    bool HasPrefFlag(size_t pref_n, int flag) const { return STE_HASBIT(GetPrefFlags(pref_n), flag); }
+    bool HasPrefFlag(size_t pref_n, int flag) const
+    {
+        return STE_HASBIT(GetPrefFlags(pref_n), flag);
+    }
     void SetPrefFlags(size_t pref_n, int flags);
     //@}
 
@@ -224,9 +268,13 @@ public:
     }
 
     bool operator == (const wxSTEditorPrefs& prefs) const
-        { return m_refData == prefs.m_refData; }
+    {
+        return m_refData == prefs.m_refData;
+    }
     bool operator != (const wxSTEditorPrefs& prefs) const
-        { return m_refData != prefs.m_refData; }
+    {
+        return m_refData != prefs.m_refData;
+    }
     /// @}
 
 private:

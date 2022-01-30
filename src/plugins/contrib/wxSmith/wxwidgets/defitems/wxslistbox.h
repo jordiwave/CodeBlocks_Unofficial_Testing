@@ -28,19 +28,19 @@
 /** \brief Class for wxsListBox widget */
 class wxsListBox: public wxsWidget
 {
-    public:
+public:
 
-        wxsListBox(wxsItemResData* Data);
+    wxsListBox(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
 
-        wxArrayString ArrayChoices;
-        long DefaultSelection;
+    wxArrayString ArrayChoices;
+    long DefaultSelection;
 };
 
 #endif

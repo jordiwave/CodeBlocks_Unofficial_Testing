@@ -53,55 +53,55 @@
  */
 class wxsPropertyStream
 {
-    public:
+public:
 
-        /** \brief Ctor */
-        wxsPropertyStream() {}
+    /** \brief Ctor */
+    wxsPropertyStream() {}
 
-        /** \brief Dctor */
-        virtual ~wxsPropertyStream() {}
+    /** \brief Dctor */
+    virtual ~wxsPropertyStream() {}
 
-        /** \brief Reading wxChar value from steram */
-        virtual bool GetChar(const wxString &Name, wxChar& Value, wxChar Default = _T('\0'));
+    /** \brief Reading wxChar value from steram */
+    virtual bool GetChar(const wxString &Name, wxChar& Value, wxChar Default = _T('\0'));
 
-        /** \brief Writing wxChar value to stream */
-        virtual bool PutChar(const wxString &Name, wxChar& Value, wxChar Default = _T('\0'));
+    /** \brief Writing wxChar value to stream */
+    virtual bool PutChar(const wxString &Name, wxChar& Value, wxChar Default = _T('\0'));
 
-        /** \brief Getting double value */
-        virtual bool GetDouble(const wxString& Name, double& value, double Default = 0.0);
+    /** \brief Getting double value */
+    virtual bool GetDouble(const wxString& Name, double& value, double Default = 0.0);
 
-        /** \brief Writting double value */
-        virtual bool PutDouble(const wxString& Name, double& value, double Default = 0.0);
+    /** \brief Writting double value */
+    virtual bool PutDouble(const wxString& Name, double& value, double Default = 0.0);
 
-        /** \brief Getting long value */
-        virtual bool GetLong(const wxString &Name, long& Value, long Default = 0);
+    /** \brief Getting long value */
+    virtual bool GetLong(const wxString &Name, long& Value, long Default = 0);
 
-        /** \brief Writing long value */
-        virtual bool PutLong(const wxString &Name, long& Value, long Default = 0);
+    /** \brief Writing long value */
+    virtual bool PutLong(const wxString &Name, long& Value, long Default = 0);
 
-        /** \brief Getting unsigned long value */
-        virtual bool GetULong(const wxString &Name, unsigned long& Value, unsigned long Default = 0);
+    /** \brief Getting unsigned long value */
+    virtual bool GetULong(const wxString &Name, unsigned long& Value, unsigned long Default = 0);
 
-        /** \brief Writing unsigned long value */
-        virtual bool PutULong(const wxString &Name, unsigned long& Value, unsigned long Default = 0);
+    /** \brief Writing unsigned long value */
+    virtual bool PutULong(const wxString &Name, unsigned long& Value, unsigned long Default = 0);
 
-        /** \brief Getting bool value */
-        virtual bool GetBool(const wxString &Name, bool& Value, bool Default = false);
+    /** \brief Getting bool value */
+    virtual bool GetBool(const wxString &Name, bool& Value, bool Default = false);
 
-        /** \brief Writing bool value */
-        virtual bool PutBool(const wxString &Name, bool& Value, bool Default = false);
+    /** \brief Writing bool value */
+    virtual bool PutBool(const wxString &Name, bool& Value, bool Default = false);
 
-        /** \brief Getting wxString value */
-        virtual bool GetString(const wxString &Name, wxString& Value, wxString Default = wxEmptyString)=0;
+    /** \brief Getting wxString value */
+    virtual bool GetString(const wxString &Name, wxString& Value, wxString Default = wxEmptyString)=0;
 
-        /** \brief Writting wxString value */
-        virtual bool PutString(const wxString &Name, wxString& Value, wxString Default = wxEmptyString)=0;
+    /** \brief Writting wxString value */
+    virtual bool PutString(const wxString &Name, wxString& Value, wxString Default = wxEmptyString)=0;
 
-        /** \brief Function creating new data sub-group */
-        virtual void SubCategory(const wxString &Name)=0;
+    /** \brief Function creating new data sub-group */
+    virtual void SubCategory(const wxString &Name)=0;
 
-        /** \brief Function restoring previous data group */
-        virtual void PopCategory()=0;
+    /** \brief Function restoring previous data group */
+    virtual void PopCategory()=0;
 };
 
 #endif

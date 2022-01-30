@@ -20,11 +20,11 @@
  */
 class LanguageDef
 {
- 	public:
- 	   wxString name;                       /**< Name of the language. */
- 	   wxArrayString ext;                   /**< File's extensions associated with the language. */
- 	   wxString single_line_comment;        /**< Single line comments for the language. */
- 	   wxString multiple_line_comment[2];   /**< Multiple line comments for the language. */
- };
+public:
+    wxString name;                       /**< Name of the language. */
+    wxArrayString ext;                   /**< File's extensions associated with the language. */
+    wxString single_line_comment;        /**< Single line comments for the language. */
+    wxString multiple_line_comment[2];   /**< Multiple line comments for the language. */
+};
 
 #endif

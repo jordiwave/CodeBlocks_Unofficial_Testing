@@ -28,18 +28,18 @@
 /** \brief Class for wxsRadioButton widget */
 class wxsRadioButton: public wxsWidget
 {
-    public:
+public:
 
-        wxsRadioButton(wxsItemResData* Data);
+    wxsRadioButton(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        wxString Label;
-        bool IsSelected;
+    wxString Label;
+    bool IsSelected;
 };
 
 #endif

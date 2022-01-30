@@ -30,13 +30,16 @@ class ThreadSearchLoggerList : public ThreadSearchLoggerBase
 public:
     /** Constructor. */
     ThreadSearchLoggerList(ThreadSearchView& threadSearchView, ThreadSearch& threadSearchPlugin,
-                            InsertIndexManager::eFileSorting fileSorting, wxWindow* pParent, long id);
+                           InsertIndexManager::eFileSorting fileSorting, wxWindow* pParent, long id);
 
     /** Destructor. */
     ~ThreadSearchLoggerList() override;
 
     /** Getter */
-    eLoggerTypes GetLoggerType() override { return TypeList; }
+    eLoggerTypes GetLoggerType() override
+    {
+        return TypeList;
+    }
 
     /** Called by ThreadSearchView when new settings are applied. */
     void Update() override;

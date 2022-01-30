@@ -20,63 +20,78 @@
 
 class BuildTargetPanel: public wxPanel
 {
-    public:
+public:
 
-        BuildTargetPanel(wxWindow* parent,wxWindowID id = -1);
-        virtual ~BuildTargetPanel();
+    BuildTargetPanel(wxWindow* parent,wxWindowID id = -1);
+    virtual ~BuildTargetPanel();
 
-        void ShowCompiler(bool show)
-        {
-            lblCompiler->Show(show);
-            cmbCompiler->Show(show);
-        }
-        void SetTargetName(const wxString& name)
-        {
-            txtName->SetValue(name);
-        }
-        void SetEnableDebug(bool debug)
-        {
-            chkEnableDebug->SetValue(debug);
-        }
+    void ShowCompiler(bool show)
+    {
+        lblCompiler->Show(show);
+        cmbCompiler->Show(show);
+    }
+    void SetTargetName(const wxString& name)
+    {
+        txtName->SetValue(name);
+    }
+    void SetEnableDebug(bool debug)
+    {
+        chkEnableDebug->SetValue(debug);
+    }
 
-        wxComboBox* GetCompilerCombo(){ return cmbCompiler; }
-        bool GetEnableDebug() const { return chkEnableDebug->IsChecked(); }
-        wxString GetTargetName() const { return txtName->GetValue(); }
-        wxString GetOutputDir() const { return txtOut->GetValue(); }
-        wxString GetObjectOutputDir() const { return txtObjOut->GetValue(); }
+    wxComboBox* GetCompilerCombo()
+    {
+        return cmbCompiler;
+    }
+    bool GetEnableDebug() const
+    {
+        return chkEnableDebug->IsChecked();
+    }
+    wxString GetTargetName() const
+    {
+        return txtName->GetValue();
+    }
+    wxString GetOutputDir() const
+    {
+        return txtOut->GetValue();
+    }
+    wxString GetObjectOutputDir() const
+    {
+        return txtObjOut->GetValue();
+    }
 
 
-        //(*Identifiers(BuildTargetPanel)
-        static const long ID_STATICTEXT1;
-        static const long ID_STATICTEXT3;
-        static const long ID_TEXTCTRL1;
-        static const long ID_STATICTEXT2;
-        static const long ID_COMBOBOX1;
-        static const long ID_STATICTEXT4;
-        static const long ID_TEXTCTRL2;
-        static const long ID_STATICTEXT5;
-        static const long ID_TEXTCTRL3;
-        static const long ID_CHECKBOX1;
-        //*)
+    //(*Identifiers(BuildTargetPanel)
+    static const long ID_STATICTEXT1;
+    static const long ID_STATICTEXT3;
+    static const long ID_TEXTCTRL1;
+    static const long ID_STATICTEXT2;
+    static const long ID_COMBOBOX1;
+    static const long ID_STATICTEXT4;
+    static const long ID_TEXTCTRL2;
+    static const long ID_STATICTEXT5;
+    static const long ID_TEXTCTRL3;
+    static const long ID_CHECKBOX1;
+    //*)
 
-    private:
+private:
 
-        //(*Handlers(BuildTargetPanel)
-        void OntxtNameText(wxCommandEvent& event);
-        //*)
+    //(*Handlers(BuildTargetPanel)
+    void OntxtNameText(wxCommandEvent& event);
+    //*)
 
-        //(*Declarations(BuildTargetPanel)
-        wxComboBox* cmbCompiler;
-        wxTextCtrl* txtName;
-        wxStaticText* lblCompiler;
-        wxTextCtrl* txtOut;
-        wxStaticText* StaticText3;
-        wxCheckBox* chkEnableDebug;
-        wxBoxSizer* BoxSizer1;
-        wxTextCtrl* txtObjOut;
-        //*)
+    //(*Declarations(BuildTargetPanel)
+    wxComboBox* cmbCompiler;
+    wxTextCtrl* txtName;
+    wxStaticText* lblCompiler;
+    wxTextCtrl* txtOut;
+    wxStaticText* StaticText3;
+    wxCheckBox* chkEnableDebug;
+    wxBoxSizer* BoxSizer1;
+    wxTextCtrl* txtObjOut;
+    //*)
 
-        DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

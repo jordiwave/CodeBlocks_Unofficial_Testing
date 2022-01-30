@@ -45,60 +45,63 @@ WX_DEFINE_ARRAY(LibraryResult*,ResultArray);
  */
 class ResultMap
 {
-    public:
+public:
 
-        /** \brief Default ctor */
-        ResultMap();
+    /** \brief Default ctor */
+    ResultMap();
 
-        /** \brief Copying ctor */
-        ResultMap(const ResultMap& source);
+    /** \brief Copying ctor */
+    ResultMap(const ResultMap& source);
 
-        /** \brief Dctor - clears all results */
-        virtual ~ResultMap();
+    /** \brief Dctor - clears all results */
+    virtual ~ResultMap();
 
-        /** \brief Clearing all results */
-        void Clear();
+    /** \brief Clearing all results */
+    void Clear();
 
-        /** \brief Getting array associated with specified variable name
-         *  \note When adding new result to array fetched this way
-         *        remember that this must be structure generated using new
-         *        and ResultMap will delete it automatically.
-         */
-        ResultArray& GetShortCode(const wxString& Name) { return Map[Name]; }
+    /** \brief Getting array associated with specified variable name
+     *  \note When adding new result to array fetched this way
+     *        remember that this must be structure generated using new
+     *        and ResultMap will delete it automatically.
+     */
+    ResultArray& GetShortCode(const wxString& Name)
+    {
+        return Map[Name];
+    }
 
-        /** \brief Checking if given global variable does exist */
-        bool IsShortCode(const wxString& Name);
+    /** \brief Checking if given global variable does exist */
+    bool IsShortCode(const wxString& Name);
 
-        /** \brief Getting all results */
-        void GetAllResults(ResultArray& Array);
+    /** \brief Getting all results */
+    void GetAllResults(ResultArray& Array);
 
-        /** \brief Getting array of used variable names */
-        void GetShortCodes(wxArrayString& Names);
+    /** \brief Getting array of used variable names */
+    void GetShortCodes(wxArrayString& Names);
 
-        /** \brief Writing detected results into configuration */
-        void WriteDetectedResults();
+    /** \brief Writing detected results into configuration */
+    void WriteDetectedResults();
 
-        /** \brief Reading detected results from configuration (previous results are cleared) */
-        void ReadDetectedResults();
+    /** \brief Reading detected results from configuration (previous results are cleared) */
+    void ReadDetectedResults();
 
-        /** \brief Reading results from PkgConfig */
-        void ReadPkgConfigResults(PkgConfigManager* m_PkgConfigManager);
+    /** \brief Reading results from PkgConfig */
+    void ReadPkgConfigResults(PkgConfigManager* m_PkgConfigManager);
 
-        /** \brief Reading predefined results from configuration files */
-        void ReadPredefinedResults();
+    /** \brief Reading predefined results from configuration files */
+    void ReadPredefinedResults();
 
-        /** \brief Copying operator */
-        ResultMap& operator=(const ResultMap& source);
+    /** \brief Copying operator */
+    ResultMap& operator=(const ResultMap& source);
 
-        /** \brief Dumping content into debug output */
-        void DebugDump(const wxString& Name);
+    /** \brief Dumping content into debug output */
+    void DebugDump(const wxString& Name);
 
-    private:
+private:
 
-        void LoadPredefinedResultFromFile(const wxString& FileName);
+    void LoadPredefinedResultFromFile(const wxString& FileName);
 
-        WX_DECLARE_STRING_HASH_MAP(ResultArray,ResultHashMap);
-        ResultHashMap Map;
+    WX_DECLARE_STRING_HASH_MAP(ResultArray,ResultHashMap);
+    ResultHashMap Map;
 };
 
 /** \brief Array of maps, each element should keep results of only one type */

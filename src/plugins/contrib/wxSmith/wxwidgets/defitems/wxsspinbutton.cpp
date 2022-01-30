@@ -26,24 +26,24 @@
 
 namespace
 {
-    wxsRegisterItem<wxsSpinButton> Reg(_T("SpinButton"),wxsTWidget,_T("Standard"),100);
+wxsRegisterItem<wxsSpinButton> Reg(_T("SpinButton"),wxsTWidget,_T("Standard"),100);
 
-    WXS_ST_BEGIN(wxsSpinButtonStyles,_T("wxSP_VERTICAL|wxSP_ARROW_KEYS"))
-        WXS_ST_CATEGORY("wxsSpinButton")
-        WXS_ST(wxSP_HORIZONTAL)
-        WXS_ST(wxSP_VERTICAL)
-        WXS_ST(wxSP_ARROW_KEYS)
-        WXS_ST(wxSP_WRAP)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsSpinButtonStyles,_T("wxSP_VERTICAL|wxSP_ARROW_KEYS"))
+WXS_ST_CATEGORY("wxsSpinButton")
+WXS_ST(wxSP_HORIZONTAL)
+WXS_ST(wxSP_VERTICAL)
+WXS_ST(wxSP_ARROW_KEYS)
+WXS_ST(wxSP_WRAP)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
 
 
-    WXS_EV_BEGIN(wxsSpinButtonEvents)
-        WXS_EVI(EVT_SPIN,wxEVT_SCROLL_THUMBTRACK,wxSpinEvent,Change)
-        WXS_EVI(EVT_SPIN_UP,wxEVT_SCROLL_LINEUP,wxSpinEvent,ChangeUp)
-        WXS_EVI(EVT_SPIN_DOWN,wxEVT_SCROLL_LINEDOWN,wxSpinEvent,ChangeDown)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsSpinButtonEvents)
+WXS_EVI(EVT_SPIN,wxEVT_SCROLL_THUMBTRACK,wxSpinEvent,Change)
+WXS_EVI(EVT_SPIN_UP,wxEVT_SCROLL_LINEUP,wxSpinEvent,ChangeUp)
+WXS_EVI(EVT_SPIN_DOWN,wxEVT_SCROLL_LINEDOWN,wxSpinEvent,ChangeDown)
+WXS_EV_END()
 }
 
 wxsSpinButton::wxsSpinButton(wxsItemResData* Data):
@@ -61,22 +61,22 @@ void wxsSpinButton::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/spinbutt.h>"),GetInfo().ClassName,0);
-            AddHeader(_T("<wx/spinbutt.h>"),_T("wxSpinEvent"),0);
-            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-            if ( Value ) Codef(_T("%ASetValue(%d);\n"), Value);
-            if ( Max > Min ) Codef(_T("%ASetRange(%d, %d);\n"), Min, Max);
-            BuildSetupWindowCode();
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/spinbutt.h>"),GetInfo().ClassName,0);
+        AddHeader(_T("<wx/spinbutt.h>"),_T("wxSpinEvent"),0);
+        Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+        if ( Value ) Codef(_T("%ASetValue(%d);\n"), Value);
+        if ( Max > Min ) Codef(_T("%ASetRange(%d, %d);\n"), Min, Max);
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsSpinButton::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsSpinButton::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

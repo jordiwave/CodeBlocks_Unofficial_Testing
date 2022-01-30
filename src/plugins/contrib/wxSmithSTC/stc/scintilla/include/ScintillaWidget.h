@@ -22,16 +22,18 @@ extern "C" {
 typedef struct _ScintillaObject ScintillaObject;
 typedef struct _ScintillaClass  ScintillaClass;
 
-struct _ScintillaObject {
-	GtkContainer cont;
-	void *pscin;
+struct _ScintillaObject
+{
+    GtkContainer cont;
+    void *pscin;
 };
 
-struct _ScintillaClass {
-	GtkContainerClass parent_class;
+struct _ScintillaClass
+{
+    GtkContainerClass parent_class;
 
-	void (* command) (ScintillaObject *ttt);
-	void (* notify) (ScintillaObject *ttt);
+    void (* command) (ScintillaObject *ttt);
+    void (* notify) (ScintillaObject *ttt);
 };
 
 #if GLIB_MAJOR_VERSION < 2

@@ -15,16 +15,19 @@ class wxWindow;
 
 class CBProfiler : public cbToolPlugin
 {
-    public:
-        CBProfiler();
-        ~CBProfiler();
-        int GetConfigurationGroup() const { return cgCompiler; }
-        cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
-        int Execute();
-        void OnAttach(); // fires when the plugin is attached to the application
-        void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-    private:
-        CBProfilerExecDlg* dlg;
+public:
+    CBProfiler();
+    ~CBProfiler();
+    int GetConfigurationGroup() const
+    {
+        return cgCompiler;
+    }
+    cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+    int Execute();
+    void OnAttach(); // fires when the plugin is attached to the application
+    void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+private:
+    CBProfilerExecDlg* dlg;
 };
 
 #endif // CBPROFILER_H

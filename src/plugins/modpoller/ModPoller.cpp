@@ -13,5 +13,5 @@
 
 namespace
 {
-    PluginRegistrant<ModPoller> reg(_T("ModPoller"));
+PluginRegistrant<ModPoller> reg(_T("ModPoller"));
 }

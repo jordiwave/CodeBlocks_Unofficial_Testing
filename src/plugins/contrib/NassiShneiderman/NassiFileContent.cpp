@@ -4,7 +4,7 @@
 #include <wx/intl.h>
 
 NassiFileContent::NassiFileContent():
-m_firstbrick(0)
+    m_firstbrick(0)
 {
 }
 

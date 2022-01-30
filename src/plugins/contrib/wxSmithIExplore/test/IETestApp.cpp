@@ -23,9 +23,9 @@ bool IETestApp::OnInit()
     wxInitAllImageHandlers();
     if ( wxsOK )
     {
-    	IETestFrame* Frame = new IETestFrame(0);
-    	Frame->Show();
-    	SetTopWindow(Frame);
+        IETestFrame* Frame = new IETestFrame(0);
+        Frame->Show();
+        SetTopWindow(Frame);
     }
     //*)
     return wxsOK;

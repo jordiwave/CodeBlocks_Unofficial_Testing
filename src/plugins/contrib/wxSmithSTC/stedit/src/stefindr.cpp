@@ -140,20 +140,20 @@ void wxSTEUpdateSearchCtrl(wxSearchCtrl* searchCtrl,
 //-----------------------------------------------------------------------------
 
 wxSTEditorFoundStringData::wxSTEditorFoundStringData()
-                          :wxStringClientData(),
-                           m_line_number(0),    m_line_start_pos(0),
-                           m_file_start_pos(0), m_string_length(0)
+    :wxStringClientData(),
+     m_line_number(0),    m_line_start_pos(0),
+     m_file_start_pos(0), m_string_length(0)
 {
 }
 
 wxSTEditorFoundStringData::wxSTEditorFoundStringData(const wxFileName& fileName,
-                                                     int line_number,    int line_start_pos,
-                                                     int file_start_pos, int string_length,
-                                                     const wxString& text)
-                          :wxStringClientData(text),
-                           m_fileName(fileName),
-                           m_line_number(line_number),       m_line_start_pos(line_start_pos),
-                           m_file_start_pos(file_start_pos), m_string_length(string_length)
+        int line_number,    int line_start_pos,
+        int file_start_pos, int string_length,
+        const wxString& text)
+    :wxStringClientData(text),
+     m_fileName(fileName),
+     m_line_number(line_number),       m_line_start_pos(line_start_pos),
+     m_file_start_pos(file_start_pos), m_string_length(string_length)
 {
 }
 
@@ -216,10 +216,10 @@ bool wxSTEditorFoundStringData::FromString(const wxString& findAllString)
 wxSTEditorFindReplaceData wxSTEditorFindReplaceData::sm_findReplaceData(wxFR_DOWN|STE_FR_WRAPAROUND);
 
 wxSTEditorFindReplaceData::wxSTEditorFindReplaceData(wxUint32 flags)
-                          :wxFindReplaceData(),
-                           m_max_strings(10),
-                           m_loaded_config(false),
-                           m_dialogSize(wxDefaultSize)
+    :wxFindReplaceData(),
+     m_max_strings(10),
+     m_loaded_config(false),
+     m_dialogSize(wxDefaultSize)
 {
     SetFlags(flags);
 }
@@ -250,7 +250,7 @@ int wxSTEditorFindReplaceData::ScintillaToSTEFindFlags(int sci_flags)
 
 // static
 bool wxSTEditorFindReplaceData::GotoFindAllString(const wxSTEditorFoundStringData& foundStringData,
-                                                  wxSTEditor* editor)
+        wxSTEditor* editor)
 {
     wxCHECK_MSG(editor, false, wxT("Invalid wxSTEditor to goto line in."));
 
@@ -260,7 +260,7 @@ bool wxSTEditorFindReplaceData::GotoFindAllString(const wxSTEditorFoundStringDat
         if (foundStringData.GetFileStartPosition()+foundStringData.GetStringLength() <= editor->GetLength())
         {
             editor->GotoPos(foundStringData.GetFileStartPosition());
-            editor->SetSelection(foundStringData.GetFileStartPosition(), 
+            editor->SetSelection(foundStringData.GetFileStartPosition(),
                                  foundStringData.GetFileStartPosition()+foundStringData.GetStringLength());
         }
         else
@@ -273,7 +273,7 @@ bool wxSTEditorFindReplaceData::GotoFindAllString(const wxSTEditorFoundStringDat
 }
 
 bool wxSTEditorFindReplaceData::LoadConfig(wxConfigBase &config,
-                                           const wxString &configPath)
+        const wxString &configPath)
 {
     m_loaded_config = true; // maybe it failed, but we tried at least once
 
@@ -290,7 +290,7 @@ bool wxSTEditorFindReplaceData::LoadConfig(wxConfigBase &config,
 }
 
 void wxSTEditorFindReplaceData::SaveConfig(wxConfigBase &config,
-                                           const wxString &configPath) const
+        const wxString &configPath) const
 {
     wxString key(wxSTEditorOptions::FixConfigPath(configPath, false));
     config.Write(key + wxT("/FindFlags"), GetFlags());
@@ -314,8 +314,8 @@ void wxSTEditorFindResultsEditor::Init()
 }
 
 bool wxSTEditorFindResultsEditor::Create(wxWindow *parent, wxWindowID winid,
-                                         const wxPoint& pos, const wxSize& size,
-                                         long style, const wxString& name)
+        const wxPoint& pos, const wxSize& size,
+        long style, const wxString& name)
 {
     if (!wxSTEditor::Create(parent, winid, pos, size, style, name))
         return false;
@@ -566,8 +566,8 @@ wxSizer *FindSizerSizer(wxSizer *sizer, wxSizer *topSizer)
     wxSizerItemList &sizerList = topSizer->GetChildren();
 
     for (wxSizerItemList::iterator it = sizerList.begin();
-         it != sizerList.end();
-         it++)
+            it != sizerList.end();
+            it++)
     {
         wxSizerItem *item = *it;
 
@@ -591,8 +591,8 @@ wxSizer *FindSizerWindow(wxWindow *win, wxSizer *topSizer)
     wxSizerItemList &sizerList = topSizer->GetChildren();
 
     for (wxSizerItemList::iterator it = sizerList.begin();
-         it != sizerList.end();
-         it++)
+            it != sizerList.end();
+            it++)
     {
         wxSizerItem *item = *it;
 
@@ -640,7 +640,7 @@ bool wxSTEditorFindReplacePanel::Create(wxWindow *parent, wxWindowID winid,
     m_replaceAllButton  = wxStaticCast(FindWindow(ID_STEDLG_REPLACEALL_BUTTON ), wxButton);
 
     m_insertMenu = wxSTEditorMenuManager::CreateInsertCharsMenu(NULL,
-        STE_MENU_INSERTCHARS_CHARS|STE_MENU_INSERTCHARS_REGEXP);
+                   STE_MENU_INSERTCHARS_CHARS|STE_MENU_INSERTCHARS_REGEXP);
 
     if (!data)
     {
@@ -692,8 +692,8 @@ bool wxSTEditorFindReplacePanel::Create(wxWindow *parent, wxWindowID winid,
         m_scopealldocsRadioButton->Show(false);
         // you can't find in all docs, remove that flag, set find from cursor
         if ( m_findReplaceData->HasFlag(STE_FR_ALLDOCS) ||
-            (!m_findReplaceData->HasFlag(STE_FR_WHOLEDOC) &&
-             !m_findReplaceData->HasFlag(STE_FR_FROMCURSOR)) )
+                (!m_findReplaceData->HasFlag(STE_FR_WHOLEDOC) &&
+                 !m_findReplaceData->HasFlag(STE_FR_FROMCURSOR)) )
             m_findReplaceData->SetFlags((m_findReplaceData->GetFlags() & ~STE_FR_SEARCH_MASK) | STE_FR_FROMCURSOR);
     }
 
@@ -838,8 +838,8 @@ void wxSTEditorFindReplacePanel::Send(wxFindDialogEvent& event)
         m_findReplaceData->AddFindString(event.GetFindString());
 
     if ( HasFlag(wxFR_REPLACEDIALOG) &&
-         (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE ||
-          event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL) )
+            (event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE ||
+             event.GetEventType() == wxEVT_COMMAND_FIND_REPLACE_ALL) )
     {
         m_findReplaceData->SetReplaceString(event.GetReplaceString());
         m_findReplaceData->AddReplaceString(event.GetReplaceString());
@@ -858,8 +858,8 @@ void wxSTEditorFindReplacePanel::Send(wxFindDialogEvent& event)
     wxSTEditorFindResultsEditor* resultsEditor = GetFindResultsEditor() ? GetFindResultsEditor() : m_resultEditor;
 
     if (m_findReplaceData->HasFlag(STE_FR_FINDALL) && resultsEditor &&
-        ((event.GetEventType() == wxEVT_COMMAND_FIND) ||
-         (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)))
+            ((event.GetEventType() == wxEVT_COMMAND_FIND) ||
+             (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)))
     {
         m_findReplaceData->GetFoundStringArray().Clear();
         resultsEditor->SetResults(*m_findReplaceData);
@@ -878,8 +878,8 @@ void wxSTEditorFindReplacePanel::Send(wxFindDialogEvent& event)
     }
 
     if (m_findReplaceData->HasFlag(STE_FR_FINDALL) && resultsEditor &&
-        ((event.GetEventType() == wxEVT_COMMAND_FIND) ||
-         (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)))
+            ((event.GetEventType() == wxEVT_COMMAND_FIND) ||
+             (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)))
     {
         resultsEditor->SetTargetWindow(GetTargetWindow());
         resultsEditor->SetResults(*m_findReplaceData);
@@ -905,30 +905,42 @@ void wxSTEditorFindReplacePanel::OnButton(wxCommandEvent& event)
 {
     switch (event.GetId())
     {
-        case ID_STEDLG_FIND_BITMAPBUTTON  :
-        {
-            // set the clientdata of the menu to the combo it's for, see OnMenu
-            wxRect r = ((wxWindow*)event.GetEventObject())->GetRect();
-            m_insertMenu->SetClientData((void*)m_findCombo);
-            m_insertMenu->Enable(ID_STEDLG_MENU_INSERTMENURE, m_regexpFindCheckBox->IsChecked());
-            PopupMenu(m_insertMenu, r.GetRight(), r.GetTop());
-            break;
-        }
-        case ID_STEDLG_REPLACE_BITMAPBUTTON  :
-        {
-            wxRect r = ((wxWindow*)event.GetEventObject())->GetRect();
-            m_insertMenu->SetClientData((void*)m_replaceCombo);
-            m_insertMenu->Enable(ID_STEDLG_MENU_INSERTMENURE, m_regexpFindCheckBox->IsChecked());
-            PopupMenu(m_insertMenu, r.GetRight(), r.GetTop());
-            break;
-        }
-        case ID_STEDLG_FIND_BUTTON        : SendEvent(wxEVT_COMMAND_FIND_NEXT); break;
-        case ID_STEDLG_REPLACE_BUTTON     : SendEvent(wxEVT_COMMAND_FIND_REPLACE); break;
-        case ID_STEDLG_REPLACEFIND_BUTTON : SendEvent(wxEVT_COMMAND_FIND_REPLACE);
-                                            SendEvent(wxEVT_COMMAND_FIND_NEXT); break;
-        case ID_STEDLG_REPLACEALL_BUTTON  : SendEvent(wxEVT_COMMAND_FIND_REPLACE_ALL); break;
-        case wxID_CANCEL                  : SendEvent(wxEVT_COMMAND_FIND_CLOSE); event.Skip(); break;
-        default : break;
+    case ID_STEDLG_FIND_BITMAPBUTTON  :
+    {
+        // set the clientdata of the menu to the combo it's for, see OnMenu
+        wxRect r = ((wxWindow*)event.GetEventObject())->GetRect();
+        m_insertMenu->SetClientData((void*)m_findCombo);
+        m_insertMenu->Enable(ID_STEDLG_MENU_INSERTMENURE, m_regexpFindCheckBox->IsChecked());
+        PopupMenu(m_insertMenu, r.GetRight(), r.GetTop());
+        break;
+    }
+    case ID_STEDLG_REPLACE_BITMAPBUTTON  :
+    {
+        wxRect r = ((wxWindow*)event.GetEventObject())->GetRect();
+        m_insertMenu->SetClientData((void*)m_replaceCombo);
+        m_insertMenu->Enable(ID_STEDLG_MENU_INSERTMENURE, m_regexpFindCheckBox->IsChecked());
+        PopupMenu(m_insertMenu, r.GetRight(), r.GetTop());
+        break;
+    }
+    case ID_STEDLG_FIND_BUTTON        :
+        SendEvent(wxEVT_COMMAND_FIND_NEXT);
+        break;
+    case ID_STEDLG_REPLACE_BUTTON     :
+        SendEvent(wxEVT_COMMAND_FIND_REPLACE);
+        break;
+    case ID_STEDLG_REPLACEFIND_BUTTON :
+        SendEvent(wxEVT_COMMAND_FIND_REPLACE);
+        SendEvent(wxEVT_COMMAND_FIND_NEXT);
+        break;
+    case ID_STEDLG_REPLACEALL_BUTTON  :
+        SendEvent(wxEVT_COMMAND_FIND_REPLACE_ALL);
+        break;
+    case wxID_CANCEL                  :
+        SendEvent(wxEVT_COMMAND_FIND_CLOSE);
+        event.Skip();
+        break;
+    default :
+        break;
     }
 }
 
@@ -939,32 +951,71 @@ void wxSTEditorFindReplacePanel::OnMenu(wxCommandEvent& event)
 
     switch (event.GetId())
     {
-        case ID_STEDLG_INSERTMENU_TAB : c = wxT("\t"); break;
-        case ID_STEDLG_INSERTMENU_CR  : c = wxT("\r"); break;
-        case ID_STEDLG_INSERTMENU_LF  : c = wxT("\n"); break;
+    case ID_STEDLG_INSERTMENU_TAB :
+        c = wxT("\t");
+        break;
+    case ID_STEDLG_INSERTMENU_CR  :
+        c = wxT("\r");
+        break;
+    case ID_STEDLG_INSERTMENU_LF  :
+        c = wxT("\n");
+        break;
 
-        case ID_STEDLG_INSERTMENURE_ANYCHAR   : c = wxT("."); break;
-        case ID_STEDLG_INSERTMENURE_RANGE     : c = wxT("[]");  ipos = -1; break;
-        case ID_STEDLG_INSERTMENURE_NOTRANGE  : c = wxT("[^]"); ipos = -1; break;
-        case ID_STEDLG_INSERTMENURE_BEGINLINE : c = wxT("^"); break;
-        case ID_STEDLG_INSERTMENURE_ENDLINE   : c = wxT("$"); break;
-        case ID_STEDLG_INSERTMENURE_TAGEXPR   :
+    case ID_STEDLG_INSERTMENURE_ANYCHAR   :
+        c = wxT(".");
+        break;
+    case ID_STEDLG_INSERTMENURE_RANGE     :
+        c = wxT("[]");
+        ipos = -1;
+        break;
+    case ID_STEDLG_INSERTMENURE_NOTRANGE  :
+        c = wxT("[^]");
+        ipos = -1;
+        break;
+    case ID_STEDLG_INSERTMENURE_BEGINLINE :
+        c = wxT("^");
+        break;
+    case ID_STEDLG_INSERTMENURE_ENDLINE   :
+        c = wxT("$");
+        break;
+    case ID_STEDLG_INSERTMENURE_TAGEXPR   :
+    {
+        if (!STE_HASBIT(GetFindFlags(), STE_FR_POSIX))
         {
-            if (!STE_HASBIT(GetFindFlags(), STE_FR_POSIX))
-                { c = wxT("\\(\\)");  ipos = -2; }
-            else
-                { c = wxT("()");  ipos = -1; }
-            break;
+            c = wxT("\\(\\)");
+            ipos = -2;
         }
-        case ID_STEDLG_INSERTMENURE_0MATCHES  : c = wxT("*"); break;
-        case ID_STEDLG_INSERTMENURE_1MATCHES  : c = wxT("+"); break;
-        case ID_STEDLG_INSERTMENURE_01MATCHES : c = wxT("?"); break;
+        else
+        {
+            c = wxT("()");
+            ipos = -1;
+        }
+        break;
+    }
+    case ID_STEDLG_INSERTMENURE_0MATCHES  :
+        c = wxT("*");
+        break;
+    case ID_STEDLG_INSERTMENURE_1MATCHES  :
+        c = wxT("+");
+        break;
+    case ID_STEDLG_INSERTMENURE_01MATCHES :
+        c = wxT("?");
+        break;
 
-        case ID_STEDLG_INSERTMENURE_ALPHANUM  : c = wxT("[a-zA-Z0-9]"); break;
-        case ID_STEDLG_INSERTMENURE_ALPHA     : c = wxT("[a-zA-Z]"); break;
-        case ID_STEDLG_INSERTMENURE_NUMERIC   : c = wxT("[0-9]"); break;
-        case ID_STEDLG_INSERTMENURE_TAB       : c = wxT("\\t"); break;
-        default : break;
+    case ID_STEDLG_INSERTMENURE_ALPHANUM  :
+        c = wxT("[a-zA-Z0-9]");
+        break;
+    case ID_STEDLG_INSERTMENURE_ALPHA     :
+        c = wxT("[a-zA-Z]");
+        break;
+    case ID_STEDLG_INSERTMENURE_NUMERIC   :
+        c = wxT("[0-9]");
+        break;
+    case ID_STEDLG_INSERTMENURE_TAB       :
+        c = wxT("\\t");
+        break;
+    default :
+        break;
     }
 
     if (c.Length()) // this must have been for the m_insertMenu
@@ -1045,7 +1096,7 @@ void wxSTEditorFindReplacePanel::UpdateFindFlags()
     else if (m_scopealldocsRadioButton->GetValue()) m_flags |= STE_FR_ALLDOCS;
 
     if (!GetFindResultsEditor() && m_resultEditor &&
-        (m_resultEditor->IsShown() != STE_HASBIT(m_flags, STE_FR_FINDALL)))
+            (m_resultEditor->IsShown() != STE_HASBIT(m_flags, STE_FR_FINDALL)))
     {
         InvalidateBestSize();
         SetMinSize(wxSize(10, 10));
@@ -1171,21 +1222,21 @@ void wxSTEditorFindReplaceDialog::Init()
 }
 
 bool wxSTEditorFindReplaceDialog::Create(wxWindow *parent,
-                                         wxSTEditorFindReplaceData *data,
-                                         const wxString& title,
-                                         int style, const wxString &name)
+        wxSTEditorFindReplaceData *data,
+        const wxString& title,
+        int style, const wxString &name)
 {
     if (!wxDialog::Create(parent, ID_STE_FINDREPLACE_DIALOG, title,
-                           wxDefaultPosition, wxDefaultSize,
-                           wxDEFAULT_DIALOG_STYLE_RESIZE | wxFRAME_FLOAT_ON_PARENT | style,
-                           name))
-                           //wxDEFAULT_FRAME_STYLE | wxRESIZE_BORDER | wxFRAME_FLOAT_ON_PARENT | style,
+                          wxDefaultPosition, wxDefaultSize,
+                          wxDEFAULT_DIALOG_STYLE_RESIZE | wxFRAME_FLOAT_ON_PARENT | style,
+                          name))
+        //wxDEFAULT_FRAME_STYLE | wxRESIZE_BORDER | wxFRAME_FLOAT_ON_PARENT | style,
     {
         return false;
     }
 
     m_findReplacePanel = new wxSTEditorFindReplacePanel(this, wxID_ANY, data, wxDefaultPosition,
-                                   wxDefaultSize, wxTAB_TRAVERSAL | wxNO_BORDER | style);
+            wxDefaultSize, wxTAB_TRAVERSAL | wxNO_BORDER | style);
     m_findReplacePanel->SetTargetWindow(parent); // assume this, they can override later
 
     // use sizer since child file replace panel will use it to resize us
@@ -1203,8 +1254,8 @@ bool wxSTEditorFindReplaceDialog::Create(wxWindow *parent,
     wxSize size = GetSize();
 
     if (m_findReplacePanel->m_resultEditor && m_findReplacePanel->m_resultEditor->IsShown() &&
-        (dialogSize != wxDefaultSize) &&
-        ((dialogSize.x > size.x) || (dialogSize.y > size.y)))
+            (dialogSize != wxDefaultSize) &&
+            ((dialogSize.x > size.x) || (dialogSize.y > size.y)))
     {
         SetSize(wxMax(dialogSize.x, size.x), wxMax(dialogSize.y, size.y));
     }
@@ -1233,51 +1284,53 @@ void wxSTEditorFindReplaceDialog::OnButton(wxCommandEvent& event)
 {
     switch (event.GetId())
     {
-        case ID_STEDLG_FINDALL_CHECKBOX :
-        {
-            // wxWidgets needs help resizing the shown/hidden results editor
-            //   This ugly hack works in any case
-            //wxSize s = GetSize();
-            //wxSize minSize = m_findReplacePanel->GetSize();
-            //wxPrintf(wxT("DLG %d %d    %d %d\n"), s.GetWidth(), s.GetHeight(), minSize.GetWidth(), minSize.GetHeight());
+    case ID_STEDLG_FINDALL_CHECKBOX :
+    {
+        // wxWidgets needs help resizing the shown/hidden results editor
+        //   This ugly hack works in any case
+        //wxSize s = GetSize();
+        //wxSize minSize = m_findReplacePanel->GetSize();
+        //wxPrintf(wxT("DLG %d %d    %d %d\n"), s.GetWidth(), s.GetHeight(), minSize.GetWidth(), minSize.GetHeight());
 
-            InvalidateBestSize();
-            SetMinSize(wxSize(10,10));
-            GetSizer()->SetMinSize(wxSize(10,10));
-            m_findReplacePanel->GetSizer()->SetSizeHints(this);
+        InvalidateBestSize();
+        SetMinSize(wxSize(10,10));
+        GetSizer()->SetMinSize(wxSize(10,10));
+        m_findReplacePanel->GetSizer()->SetSizeHints(this);
 
-            break;
-        }
-        case wxID_CANCEL : Destroy();
-        default : event.Skip();
+        break;
+    }
+    case wxID_CANCEL :
+        Destroy();
+    default :
+        event.Skip();
     }
 }
 
 void wxSTEditorFindReplaceDialog::OnSize(wxSizeEvent &event)
 {
-/*
-    if (GetSize() != m_findReplacePanel->GetSizer()->CalcMin())
-    {
-        InvalidateBestSize();
-        SetMinSize(wxSize(10,10));
-        GetSizer()->SetMinSize(wxSize(10,10));
-        m_findReplacePanel->GetSizer()->SetMinSize(wxSize(10,10));
-        m_findReplacePanel->GetSizer()->SetSizeHints(m_findReplacePanel);
-        GetSizer()->SetSizeHints(this);
-        //SetClientSize(GetSizer()->CalcMin());
-    }
-    else
-*/
+    /*
+        if (GetSize() != m_findReplacePanel->GetSizer()->CalcMin())
+        {
+            InvalidateBestSize();
+            SetMinSize(wxSize(10,10));
+            GetSizer()->SetMinSize(wxSize(10,10));
+            m_findReplacePanel->GetSizer()->SetMinSize(wxSize(10,10));
+            m_findReplacePanel->GetSizer()->SetSizeHints(m_findReplacePanel);
+            GetSizer()->SetSizeHints(this);
+            //SetClientSize(GetSizer()->CalcMin());
+        }
+        else
+    */
 
     // remember the size of the find dialog for find all
     if (m_findReplacePanel && m_findReplacePanel->GetData() &&
-        m_findReplacePanel->m_resultEditor && m_findReplacePanel->m_resultEditor->IsShown())
+            m_findReplacePanel->m_resultEditor && m_findReplacePanel->m_resultEditor->IsShown())
     {
         m_findReplacePanel->GetData()->SetDialogSize(GetSize());
     }
 
 
-        event.Skip();
+    event.Skip();
 
     //wxPrintf(wxT("wxSTEditorFindReplaceDialog::OnSize %d %d   %d %d\n"), GetSize().x, GetSize().y, event.GetSize().x, event.GetSize().y);
 }

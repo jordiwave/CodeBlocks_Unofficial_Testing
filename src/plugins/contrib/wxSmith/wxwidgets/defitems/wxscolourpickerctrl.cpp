@@ -24,18 +24,18 @@
 
 namespace
 {
-    wxsRegisterItem<wxsColourPickerCtrl> Reg(_T("ColourPickerCtrl"), wxsTWidget, _T("Advanced"), 140);
+wxsRegisterItem<wxsColourPickerCtrl> Reg(_T("ColourPickerCtrl"), wxsTWidget, _T("Advanced"), 140);
 
-    WXS_ST_BEGIN(wxsColourPickerCtrlStyles, _T(""))
-        WXS_ST_CATEGORY("wxColourPickerCtrl")
-        WXS_ST(wxCLRP_SHOW_LABEL)
-        WXS_ST(wxCLRP_USE_TEXTCTRL)
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsColourPickerCtrlStyles, _T(""))
+WXS_ST_CATEGORY("wxColourPickerCtrl")
+WXS_ST(wxCLRP_SHOW_LABEL)
+WXS_ST(wxCLRP_USE_TEXTCTRL)
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsColourPickerCtrlEvents)
-        WXS_EVI(EVT_COLOURPICKER_CHANGED, wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEvent, ColourChanged)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsColourPickerCtrlEvents)
+WXS_EVI(EVT_COLOURPICKER_CHANGED, wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEvent, ColourChanged)
+WXS_EV_END()
 }
 
 /*! \brief Ctor
@@ -49,7 +49,7 @@ wxsColourPickerCtrl::wxsColourPickerCtrl(wxsItemResData* Data):
         &Reg.Info,
         wxsColourPickerCtrlEvents,
         wxsColourPickerCtrlStyles),
-        m_cdColour(*wxBLACK)
+    m_cdColour(*wxBLACK)
 {}
 
 /*! \brief Create the initial control.
@@ -61,22 +61,22 @@ void wxsColourPickerCtrl::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/clrpicker.h>"),GetInfo().ClassName,0);
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/clrpicker.h>"),GetInfo().ClassName,0);
 
-            wxString ss = m_cdColour.BuildCode(GetCoderContext());
-            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), ss.wx_str());
+        wxString ss = m_cdColour.BuildCode(GetCoderContext());
+        Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), ss.wx_str());
 
-            BuildSetupWindowCode();
-            return;
-        }
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsColourPickerCtrl::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsColourPickerCtrl::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 
@@ -91,10 +91,12 @@ wxObject* wxsColourPickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
 {
     wxColourPickerCtrl* Preview;
     wxColour clr = m_cdColour.GetColour();
-    if(clr.IsOk()){
+    if(clr.IsOk())
+    {
         Preview = new wxColourPickerCtrl(Parent, GetId(), clr, Pos(Parent), Size(Parent), Style());
     }
-    else{
+    else
+    {
         Preview = new wxColourPickerCtrl(Parent, GetId(), *wxBLACK, Pos(Parent), Size(Parent), Style());
     }
     return SetupWindow(Preview,Flags);

@@ -3,11 +3,11 @@
 #include <sdk.h> // Code::Blocks SDK
 
 #ifndef CB_PRECOMP
-    #include <cbeditor.h>
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <editorcolourset.h>
-    #include <manager.h>
+#include <cbeditor.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <editorcolourset.h>
+#include <manager.h>
 #endif
 
 #include <wx/regex.h>
@@ -18,7 +18,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<SmartIndentXML> reg(wxT("SmartIndentXML"));
+PluginRegistrant<SmartIndentXML> reg(wxT("SmartIndentXML"));
 }
 
 void SmartIndentXML::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
@@ -131,7 +131,7 @@ void SmartIndentXML::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
     }
     // indent
     if (   AutoIndentEnabled()
-        && ( (ch == wxT('\n')) || ((stc->GetEOLMode() == wxSCI_EOL_CR) && (ch == wxT('\r'))) ) )
+            && ( (ch == wxT('\n')) || ((stc->GetEOLMode() == wxSCI_EOL_CR) && (ch == wxT('\r'))) ) )
     {
         wxString indent = ed->GetLineIndentString(currLine - 1);
         stc->BeginUndoAction();

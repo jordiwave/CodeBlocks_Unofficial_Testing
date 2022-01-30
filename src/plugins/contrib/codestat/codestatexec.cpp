@@ -262,7 +262,8 @@ void CodeStatExecDlg::UpdateProgress()
     }
 }
 
-void CodeStatExecDlg::ShowResults(int index) {
+void CodeStatExecDlg::ShowResults(int index)
+{
     ProjectCodeStats& stat = m_cache[index];
 
     wxStaticText* txt_num_files = XRCCTRL(*this, "txt_num_files", wxStaticText);
@@ -364,8 +365,8 @@ void AnalyseLine(bool &comment, bool &code, bool &multi_line_comment, const Lang
     {
         // First comment sign found is a single line comment sign
         if ( (first_single_line_comment > -1)
-            && ((first_multi_line_comment_begin == -1)
-                || ((first_multi_line_comment_begin>-1)&&(first_single_line_comment<first_multi_line_comment_begin)))
+                && ((first_multi_line_comment_begin == -1)
+                    || ((first_multi_line_comment_begin>-1)&&(first_single_line_comment<first_multi_line_comment_begin)))
            )
         {
             comment = true;

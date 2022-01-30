@@ -20,12 +20,12 @@
 class wxEvtHandler;
 
 #ifndef CC_PROCESS_LOG_EVENT_TO_PARENT
-    #define CC_PROCESS_LOG_EVENT_TO_PARENT 0
+#define CC_PROCESS_LOG_EVENT_TO_PARENT 0
 #endif
 
 #ifdef CC_PARSER_TEST
-    #undef CC_PROCESS_LOG_EVENT_TO_PARENT
-    #define CC_PROCESS_LOG_EVENT_TO_PARENT 1
+#undef CC_PROCESS_LOG_EVENT_TO_PARENT
+#define CC_PROCESS_LOG_EVENT_TO_PARENT 1
 #endif
 
 extern bool           g_EnableDebugTrace; //!< Toggles tracing into file.
@@ -47,14 +47,20 @@ public:
     void Log(const wxString& msg);
     void DebugLog(const wxString& msg, int id=g_idCCDebugLogger);
     void DebugLogError(const wxString& msg);
-    bool GetExternalLogStatus(){return m_ExternLogActive;}
+    bool GetExternalLogStatus()
+    {
+        return m_ExternLogActive;
+    }
     void SetExternalLog(bool OnOrOff);
 
 protected:
     CCLogger();
     virtual ~CCLogger();
     CCLogger(const CCLogger&)            { ; }
-    CCLogger& operator=(const CCLogger&) { return *this; }
+    CCLogger& operator=(const CCLogger&)
+    {
+        return *this;
+    }
 
     // static member variables (instance and critical section for Parser)
     friend class std::default_delete<CCLogger>;
@@ -83,42 +89,42 @@ private:
 // MUTEX TRACKING
 // ----------------------------------------------------------------------------
 #if defined(CC_ENABLE_LOCKER_TRACK)
-    // [1] Implementations for tracking mutexes:
-    #define THREAD_LOCKER_MTX_LOCK(NAME)                                         \
+// [1] Implementations for tracking mutexes:
+#define THREAD_LOCKER_MTX_LOCK(NAME)                                         \
         CCLogger::Get()->DebugLog(wxString::Format(_T("%s.Lock() : %s(), %s, %d"),              \
                                     wxString(#NAME, wxConvUTF8).wx_str(),        \
                                     wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
                                     wxString(__FILE__, wxConvUTF8).wx_str(),     \
                                     __LINE__))
-    #define THREAD_LOCKER_MTX_LOCK_SUCCESS(NAME)                                 \
+#define THREAD_LOCKER_MTX_LOCK_SUCCESS(NAME)                                 \
         CCLogger::Get()->DebugLog(wxString::Format(_T("%s.Lock().Success() : %s(), %s, %d"),    \
                                     wxString(#NAME, wxConvUTF8).wx_str(),        \
                                     wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
                                     wxString(__FILE__, wxConvUTF8).wx_str(),     \
                                     __LINE__))
-    #define THREAD_LOCKER_MTX_UNLOCK(NAME)                                       \
+#define THREAD_LOCKER_MTX_UNLOCK(NAME)                                       \
         CCLogger::Get()->DebugLog(wxString::Format(_T("%s.Unlock() : %s(), %s, %d"),            \
                                     wxString(#NAME, wxConvUTF8).wx_str(),        \
                                     wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
                                     wxString(__FILE__, wxConvUTF8).wx_str(),     \
                                     __LINE__))
-    #define THREAD_LOCKER_MTX_UNLOCK_SUCCESS(NAME)                               \
+#define THREAD_LOCKER_MTX_UNLOCK_SUCCESS(NAME)                               \
         CCLogger::Get()->DebugLog(wxString::Format(_T("%s.Unlock().Success() : %s(), %s, %d"),  \
                                     wxString(#NAME, wxConvUTF8).wx_str(),        \
                                     wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
                                     wxString(__FILE__, wxConvUTF8).wx_str(),     \
                                     __LINE__))
-    #define THREAD_LOCKER_MTX_FAIL(NAME)                                         \
+#define THREAD_LOCKER_MTX_FAIL(NAME)                                         \
         CCLogger::Get()->DebugLogError(wxString::Format(_T("%s.Fail() : %s(), %s, %d"),              \
                                     wxString(#NAME, wxConvUTF8).wx_str(),        \
                                     wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
                                     wxString(__FILE__, wxConvUTF8).wx_str(),     \
                                     __LINE__))
-    // ----------------------------------------------------------------------------
-    // CC_LOCKER_TRACK_TT_MTX_LOCK
-    // [2] Cumulative convenient macros for tracking mutexes [USE THESE!]:
-    // ----------------------------------------------------------------------------
-    #define CC_LOCKER_TRACK_TT_MTX_LOCK(M)    \
+// ----------------------------------------------------------------------------
+// CC_LOCKER_TRACK_TT_MTX_LOCK
+// [2] Cumulative convenient macros for tracking mutexes [USE THESE!]:
+// ----------------------------------------------------------------------------
+#define CC_LOCKER_TRACK_TT_MTX_LOCK(M)    \
     {                                         \
         auto locker_result = M.LockTimeout(250); \
         if (locker_result==wxMUTEX_NO_ERROR) \
@@ -126,52 +132,52 @@ private:
         else                                  \
           THREAD_LOCKER_MTX_FAIL(M);          \
     }
-    // --CC_LOCKER_TRACK_TT_MTX_UNLOCK TRACK-----------
-    #define CC_LOCKER_TRACK_TT_MTX_UNLOCK(M)    \
+// --CC_LOCKER_TRACK_TT_MTX_UNLOCK TRACK-----------
+#define CC_LOCKER_TRACK_TT_MTX_UNLOCK(M)    \
     {                                           \
         if (M.Unlock()==wxMUTEX_NO_ERROR)       \
           THREAD_LOCKER_MTX_UNLOCK_SUCCESS(M);  \
         else                                    \
           THREAD_LOCKER_MTX_FAIL(M);            \
     }
-    #define CC_LOCKER_TRACK_CBBT_MTX_LOCK   CC_LOCKER_TRACK_TT_MTX_LOCK
-    #define CC_LOCKER_TRACK_CBBT_MTX_UNLOCK CC_LOCKER_TRACK_TT_MTX_UNLOCK
-    #define CC_LOCKER_TRACK_P_MTX_LOCK      CC_LOCKER_TRACK_TT_MTX_LOCK
-    #define CC_LOCKER_TRACK_P_MTX_UNLOCK    CC_LOCKER_TRACK_TT_MTX_UNLOCK
+#define CC_LOCKER_TRACK_CBBT_MTX_LOCK   CC_LOCKER_TRACK_TT_MTX_LOCK
+#define CC_LOCKER_TRACK_CBBT_MTX_UNLOCK CC_LOCKER_TRACK_TT_MTX_UNLOCK
+#define CC_LOCKER_TRACK_P_MTX_LOCK      CC_LOCKER_TRACK_TT_MTX_LOCK
+#define CC_LOCKER_TRACK_P_MTX_UNLOCK    CC_LOCKER_TRACK_TT_MTX_UNLOCK
 
-    // ----------------------------------------------------------------------------
-    // TRACKING CRITICAL SECTIONS
-    // [2] Implementations for tracking critical sections:
-    // ----------------------------------------------------------------------------
-    #define THREAD_LOCKER_CS_ENTER(NAME)                                         \
+// ----------------------------------------------------------------------------
+// TRACKING CRITICAL SECTIONS
+// [2] Implementations for tracking critical sections:
+// ----------------------------------------------------------------------------
+#define THREAD_LOCKER_CS_ENTER(NAME)                                         \
         CCLogger::Get()->DebugLog(wxString::Format(_T("%s.Enter() : %s(), %s, %d"),             \
                                     wxString(#NAME, wxConvUTF8).wx_str(),        \
                                     wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
                                     wxString(__FILE__, wxConvUTF8).wx_str(),     \
                                     __LINE__))
-    #define THREAD_LOCKER_CS_ENTERED(NAME)                                       \
+#define THREAD_LOCKER_CS_ENTERED(NAME)                                       \
         CCLogger::Get()->DebugLog(wxString::Format(_T("%s.Entered() : %s(), %s, %d"),           \
                                     wxString(#NAME, wxConvUTF8).wx_str(),        \
                                     wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
                                     wxString(__FILE__, wxConvUTF8).wx_str(),     \
                                     __LINE__))
-    #define THREAD_LOCKER_CS_LEAVE(NAME)                                         \
+#define THREAD_LOCKER_CS_LEAVE(NAME)                                         \
         CCLogger::Get()->DebugLog(wxString::Format(_T("%s.Leave() : %s(), %s, %d"),             \
                                     wxString(#NAME, wxConvUTF8).wx_str(),        \
                                     wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
                                     wxString(__FILE__, wxConvUTF8).wx_str(),     \
                                     __LINE__))
-    // ----------------------------------------------------------------------------
-    //  TRACKING CRITICAL SECTIONS
-    // [2] Cumulative convenient macros for tracking critical sections [USE THESE!]:
-    // ----------------------------------------------------------------------------
-    #define CC_LOCKER_TRACK_CS_ENTER(CS) \
+// ----------------------------------------------------------------------------
+//  TRACKING CRITICAL SECTIONS
+// [2] Cumulative convenient macros for tracking critical sections [USE THESE!]:
+// ----------------------------------------------------------------------------
+#define CC_LOCKER_TRACK_CS_ENTER(CS) \
     {                                    \
          THREAD_LOCKER_CS_ENTER(CS);     \
          CS.Enter();                     \
          THREAD_LOCKER_CS_ENTERED(CS);   \
     }
-    #define CC_LOCKER_TRACK_CS_LEAVE(CS) \
+#define CC_LOCKER_TRACK_CS_LEAVE(CS) \
     {                                    \
           THREAD_LOCKER_CS_LEAVE(CS);    \
           CS.Leave();                    \
@@ -180,13 +186,13 @@ private:
 //  MUTEX LOCK ASSERTS
 // ----------------------------------------------------------------------------
 #elif defined CC_ENABLE_LOCKER_ASSERT
-    #define CC_LOCKER_TRACK_CS_ENTER(CS)     CS.Enter();
-    #define CC_LOCKER_TRACK_CS_LEAVE(CS)     CS.Leave();
+#define CC_LOCKER_TRACK_CS_ENTER(CS)     CS.Enter();
+#define CC_LOCKER_TRACK_CS_LEAVE(CS)     CS.Leave();
 
-    // ----------------------------------------------------------------------------
-    //  UNUSED -- 2021/09/8
-    // ----------------------------------------------------------------------------
-    #define CC_LOCKER_TRACK_TT_MTX_LOCK_UNUSED(M)      \
+// ----------------------------------------------------------------------------
+//  UNUSED -- 2021/09/8
+// ----------------------------------------------------------------------------
+#define CC_LOCKER_TRACK_TT_MTX_LOCK_UNUSED(M)      \
         do {                                    \
             auto locker_result = M.LockTimeout(250);   \
             if (locker_result != wxMUTEX_NO_ERROR)  \
@@ -197,10 +203,10 @@ private:
             cbAssert(locker_result==wxMUTEX_NO_ERROR);          \
             M##_Owner = wxString::Format("%s %d",__PRETTY_FUNCTION__, __LINE__); /*record owner*/  \
         } while (false);
-    // ----------------------------------------------------------------------------
-    //  Assert on failed lockTimeout
-    // ----------------------------------------------------------------------------
-    #define CC_LOCKER_TRACK_TT_MTX_LOCK(M)      \
+// ----------------------------------------------------------------------------
+//  Assert on failed lockTimeout
+// ----------------------------------------------------------------------------
+#define CC_LOCKER_TRACK_TT_MTX_LOCK(M)      \
         do {                                    \
             auto locker_result = M.LockTimeout(250);   \
             if (locker_result != wxMUTEX_NO_ERROR)  \
@@ -217,10 +223,10 @@ private:
                 M##_Owner = wxString::Format("%s %d",__PRETTY_FUNCTION__, __LINE__); \
         } while (false);
 
-    // ----------------------------------------------------------------------------
-    // assert on failed UNLOCK
-    // ----------------------------------------------------------------------------
-    #define CC_LOCKER_TRACK_TT_MTX_UNLOCK(M)    \
+// ----------------------------------------------------------------------------
+// assert on failed UNLOCK
+// ----------------------------------------------------------------------------
+#define CC_LOCKER_TRACK_TT_MTX_UNLOCK(M)    \
         do {                                    \
             auto locker_result = M.Unlock();       \
             if (locker_result != wxMUTEX_NO_ERROR)  \
@@ -234,21 +240,21 @@ private:
             else M##_Owner = "NONE"; /*record owner*/  \
         } while (false);
 
-    #define CC_LOCKER_TRACK_CBBT_MTX_LOCK    CC_LOCKER_TRACK_TT_MTX_LOCK
-    #define CC_LOCKER_TRACK_CBBT_MTX_UNLOCK  CC_LOCKER_TRACK_TT_MTX_UNLOCK
-    #define CC_LOCKER_TRACK_P_MTX_LOCK       CC_LOCKER_TRACK_TT_MTX_LOCK
-    #define CC_LOCKER_TRACK_P_MTX_UNLOCK     CC_LOCKER_TRACK_TT_MTX_UNLOCK
+#define CC_LOCKER_TRACK_CBBT_MTX_LOCK    CC_LOCKER_TRACK_TT_MTX_LOCK
+#define CC_LOCKER_TRACK_CBBT_MTX_UNLOCK  CC_LOCKER_TRACK_TT_MTX_UNLOCK
+#define CC_LOCKER_TRACK_P_MTX_LOCK       CC_LOCKER_TRACK_TT_MTX_LOCK
+#define CC_LOCKER_TRACK_P_MTX_UNLOCK     CC_LOCKER_TRACK_TT_MTX_UNLOCK
 // ----------------------------------------------------------------------------
 // Neither MUTEX TRACK or ASSERT (ie, release code)
 // ----------------------------------------------------------------------------
 #else
-    #define CC_LOCKER_TRACK_CS_ENTER(CS)     CS.Enter();
-    #define CC_LOCKER_TRACK_CS_LEAVE(CS)     CS.Leave();
+#define CC_LOCKER_TRACK_CS_ENTER(CS)     CS.Enter();
+#define CC_LOCKER_TRACK_CS_LEAVE(CS)     CS.Leave();
 
-    //#define CC_LOCKER_TRACK_TT_MTX_LOCK(M)   M.LockTimeout(250);
-    //#define CC_LOCKER_TRACK_TT_MTX_LOCK(M)   M.Lock();
-    #define CC_LOCKER_TRACK_TT_MTX_LOCK(M)      \
-        do {                                    \
+//#define CC_LOCKER_TRACK_TT_MTX_LOCK(M)   M.LockTimeout(250);
+//#define CC_LOCKER_TRACK_TT_MTX_LOCK(M)   M.Lock();
+#define CC_LOCKER_TRACK_TT_MTX_LOCK(M)      \
+        {                                    \
             auto locker_result = M.Lock();   \
             if (locker_result != wxMUTEX_NO_ERROR)  \
             {   wxString err1st = wxString::Format("Owner: %s", M##_Owner); \
@@ -258,13 +264,13 @@ private:
             } \
             else /*lock succeeded, record new owner*/ \
                 M##_Owner = wxString::Format("%s %d",__PRETTY_FUNCTION__, __LINE__); \
-        } while (false);
+        };
 
-    #define CC_LOCKER_TRACK_TT_MTX_UNLOCK(M) M.Unlock();
-    #define CC_LOCKER_TRACK_CBBT_MTX_LOCK    CC_LOCKER_TRACK_TT_MTX_LOCK
-    #define CC_LOCKER_TRACK_CBBT_MTX_UNLOCK  CC_LOCKER_TRACK_TT_MTX_UNLOCK
-    #define CC_LOCKER_TRACK_P_MTX_LOCK       CC_LOCKER_TRACK_TT_MTX_LOCK
-    #define CC_LOCKER_TRACK_P_MTX_UNLOCK     CC_LOCKER_TRACK_TT_MTX_UNLOCK
+#define CC_LOCKER_TRACK_TT_MTX_UNLOCK(M) M.Unlock();
+#define CC_LOCKER_TRACK_CBBT_MTX_LOCK    CC_LOCKER_TRACK_TT_MTX_LOCK
+#define CC_LOCKER_TRACK_CBBT_MTX_UNLOCK  CC_LOCKER_TRACK_TT_MTX_UNLOCK
+#define CC_LOCKER_TRACK_P_MTX_LOCK       CC_LOCKER_TRACK_TT_MTX_LOCK
+#define CC_LOCKER_TRACK_P_MTX_UNLOCK     CC_LOCKER_TRACK_TT_MTX_UNLOCK
 #endif //defined CC_ENABLE_LOCKER_ASSERT
 
 // ----------------------------------------------------------------------------

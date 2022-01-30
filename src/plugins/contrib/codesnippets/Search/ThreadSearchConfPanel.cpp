@@ -14,11 +14,11 @@
 #endif
 //#include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-	#include <wx/checkbox.h>
-	#include <wx/radiobox.h>
-	#include <wx/sizer.h>
-	#include <wx/statbox.h>
-	#include <wx/stattext.h>
+#include <wx/checkbox.h>
+#include <wx/radiobox.h>
+#include <wx/sizer.h>
+#include <wx/statbox.h>
+#include <wx/stattext.h>
 #endif
 
 #include "ThreadSearch.h"
@@ -36,7 +36,7 @@
 
 
 ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, wxWindow* parent,wxWindowID id)
-					  :m_ThreadSearchPlugin(threadSearchPlugin)
+    :m_ThreadSearchPlugin(threadSearchPlugin)
 {
     Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL);
 
@@ -62,25 +62,29 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
     m_pChkDisplayLogHeaders = new wxCheckBox(this, idChkDisplayLogHeaders, wxT("Display header in log window."));
     m_pChkDrawLogLines = new wxCheckBox(this, idChkDrawLogLines, wxT("Draw lines between log columns."));
 
-    const wxString m_pRadPanelManagement_choices[] = {
+    const wxString m_pRadPanelManagement_choices[] =
+    {
         wxT("Messages notebook"),
         wxT("Layout")
     };
     m_pRadPanelManagement = new wxRadioBox(this, wxID_ANY, wxT("SnippetsSearch panel management by"), wxDefaultPosition, wxDefaultSize, 2, m_pRadPanelManagement_choices, 1, wxRA_SPECIFY_ROWS);
 
-    const wxString m_pRadLoggerType_choices[] = {
+    const wxString m_pRadLoggerType_choices[] =
+    {
         wxT("List"),
         wxT("Tree")
     };
     m_pRadLoggerType = new wxRadioBox(this, wxID_ANY, wxT("Logger type"), wxDefaultPosition, wxDefaultSize, 2, m_pRadLoggerType_choices, 1, wxRA_SPECIFY_ROWS);
 
-    const wxString m_pRadSplitterWndMode_choices[] = {
+    const wxString m_pRadSplitterWndMode_choices[] =
+    {
         wxT("Horizontal"),
         wxT("Vertical")
     };
     m_pRadSplitterWndMode = new wxRadioBox(this, wxID_ANY, wxT("Splitter window mode"), wxDefaultPosition, wxDefaultSize, 2, m_pRadSplitterWndMode_choices, 1, wxRA_SPECIFY_ROWS);
 
-    const wxString m_pRadSortBy_choices[] = {
+    const wxString m_pRadSortBy_choices[] =
+    {
         wxT("file path"),
         wxT("file name")
     };
@@ -112,43 +116,43 @@ END_EVENT_TABLE();
 
 void ThreadSearchConfPanel::OnThreadSearchEnable(wxCommandEvent &event)
 {
-	m_pChkUseDefaultOptionsForThreadSearch->Enable(event.IsChecked());
+    m_pChkUseDefaultOptionsForThreadSearch->Enable(event.IsChecked());
     event.Skip();
 }
 
 
 void ThreadSearchConfPanel::OnChkShowThreadSearchToolBarClick(wxCommandEvent &event)
 {
-	if ( (event.IsChecked() == false) && (m_pChkShowThreadSearchWidgets->GetValue() == false) )
-	{
-		if ( wxID_YES != cbMessageBox(wxT("Do you really want to hide both ThreadSearch toolbar and widgets ?"),
-									  wxT("Sure ?"), wxICON_QUESTION|wxYES_NO) )
-		{
-			m_pChkShowThreadSearchToolBar->SetValue(true);
-		}
-	}
-	event.Skip();
+    if ( (event.IsChecked() == false) && (m_pChkShowThreadSearchWidgets->GetValue() == false) )
+    {
+        if ( wxID_YES != cbMessageBox(wxT("Do you really want to hide both ThreadSearch toolbar and widgets ?"),
+                                      wxT("Sure ?"), wxICON_QUESTION|wxYES_NO) )
+        {
+            m_pChkShowThreadSearchToolBar->SetValue(true);
+        }
+    }
+    event.Skip();
 }
 
 
 void ThreadSearchConfPanel::OnChkCodePreview(wxCommandEvent &event)
 {
-	m_pRadSplitterWndMode->Enable(event.IsChecked());
-	event.Skip();
+    m_pRadSplitterWndMode->Enable(event.IsChecked());
+    event.Skip();
 }
 
 
 void ThreadSearchConfPanel::OnChkShowThreadSearchWidgetsClick(wxCommandEvent &event)
 {
-	if ( (event.IsChecked() == false) && (m_pChkShowThreadSearchToolBar->GetValue() == false) )
-	{
-		if ( wxID_YES != cbMessageBox(wxT("Do you really want to hide both ThreadSearch toolbar and widgets ?"),
-									  wxT("Sure ?"), wxICON_QUESTION|wxYES_NO) )
-		{
-			m_pChkShowThreadSearchWidgets->SetValue(true);
-		}
-	}
-	event.Skip();
+    if ( (event.IsChecked() == false) && (m_pChkShowThreadSearchToolBar->GetValue() == false) )
+    {
+        if ( wxID_YES != cbMessageBox(wxT("Do you really want to hide both ThreadSearch toolbar and widgets ?"),
+                                      wxT("Sure ?"), wxICON_QUESTION|wxYES_NO) )
+        {
+            m_pChkShowThreadSearchWidgets->SetValue(true);
+        }
+    }
+    event.Skip();
 }
 
 
@@ -176,8 +180,8 @@ void ThreadSearchConfPanel::set_properties()
     m_pRadSortBy->SetSelection(0);
     // end wxGlade
 
-	ThreadSearchFindData findData;
-	m_ThreadSearchPlugin.GetFindData(findData);
+    ThreadSearchFindData findData;
+    m_ThreadSearchPlugin.GetFindData(findData);
 
     m_pChkWholeWord->SetValue(findData.GetMatchWord());
     m_pChkStartWord->SetValue(findData.GetStartWord());
@@ -195,51 +199,51 @@ void ThreadSearchConfPanel::set_properties()
     int radIndex = 0;
     switch (m_ThreadSearchPlugin.GetManagerType())
     {
-		case ThreadSearchViewManagerBase::TypeLayout :
-		{
-			radIndex = 1;
-			break;
-		}
-		case ThreadSearchViewManagerBase::TypeMessagesNotebook : // fall-though
-		default:
-		{
-			radIndex = 0;
-			break;
-		}
+    case ThreadSearchViewManagerBase::TypeLayout :
+    {
+        radIndex = 1;
+        break;
+    }
+    case ThreadSearchViewManagerBase::TypeMessagesNotebook : // fall-though
+    default:
+    {
+        radIndex = 0;
+        break;
+    }
     }
     m_pRadPanelManagement->SetSelection(radIndex);
 
     radIndex = 0;
     switch (m_ThreadSearchPlugin.GetLoggerType())
     {
-		case ThreadSearchLoggerBase::TypeTree:
-		{
-			radIndex = 1;
-			break;
-		}
-		case ThreadSearchLoggerBase::TypeList : // fall-though
-		default:
-		{
-			radIndex = 0;
-			break;
-		}
+    case ThreadSearchLoggerBase::TypeTree:
+    {
+        radIndex = 1;
+        break;
+    }
+    case ThreadSearchLoggerBase::TypeList : // fall-though
+    default:
+    {
+        radIndex = 0;
+        break;
+    }
     }
     m_pRadLoggerType->SetSelection(radIndex);
 
     radIndex = 0;
     switch (m_ThreadSearchPlugin.GetSplitterMode())
     {
-		case wxSPLIT_HORIZONTAL:
-		{
-			radIndex = 0;
-			break;
-		}
-		default :
-		// case wxSPLIT_VERTICAL:
-		{
-			radIndex = 1;
-			break;
-		}
+    case wxSPLIT_HORIZONTAL:
+    {
+        radIndex = 0;
+        break;
+    }
+    default :
+        // case wxSPLIT_VERTICAL:
+    {
+        radIndex = 1;
+        break;
+    }
     }
     m_pRadSplitterWndMode->SetSelection(radIndex);
     m_pRadSplitterWndMode->Enable(m_ThreadSearchPlugin.GetShowCodePreview());
@@ -247,17 +251,17 @@ void ThreadSearchConfPanel::set_properties()
     radIndex = 0;
     switch (m_ThreadSearchPlugin.GetFileSorting())
     {
-		case InsertIndexManager::SortByFileName:
-		{
-			radIndex = 1;
-			break;
-		}
-		case InsertIndexManager::SortByFilePath : // fall-through
-		default:
-		{
-			radIndex = 0;
-			break;
-		}
+    case InsertIndexManager::SortByFileName:
+    {
+        radIndex = 1;
+        break;
+    }
+    case InsertIndexManager::SortByFilePath : // fall-through
+    default:
+    {
+        radIndex = 0;
+        break;
+    }
     }
     m_pRadSortBy->SetSelection(radIndex);
 
@@ -326,48 +330,48 @@ void ThreadSearchConfPanel::do_layout()
 
 void ThreadSearchConfPanel::OnApply()
 {
-	ThreadSearchFindData findData;
+    ThreadSearchFindData findData;
 
-	// Inits variable data from user values
-	findData.SetFindText       (wxEmptyString);
-	findData.SetHiddenSearch   (m_pPnlDirParams->GetSearchDirHidden());
-	findData.SetRecursiveSearch(m_pPnlDirParams->GetSearchDirRecursively());
-	findData.SetSearchPath     (m_pPnlDirParams->GetSearchDirPath());
-	findData.SetSearchMask     (m_pPnlDirParams->GetSearchMask());
-	findData.SetMatchWord      (m_pChkWholeWord->IsChecked());
-	findData.SetStartWord      (m_pChkStartWord->IsChecked());
-	findData.SetMatchCase      (m_pChkMatchCase->IsChecked());
-	findData.SetRegEx          (m_pChkRegExp->IsChecked());
+    // Inits variable data from user values
+    findData.SetFindText       (wxEmptyString);
+    findData.SetHiddenSearch   (m_pPnlDirParams->GetSearchDirHidden());
+    findData.SetRecursiveSearch(m_pPnlDirParams->GetSearchDirRecursively());
+    findData.SetSearchPath     (m_pPnlDirParams->GetSearchDirPath());
+    findData.SetSearchMask     (m_pPnlDirParams->GetSearchMask());
+    findData.SetMatchWord      (m_pChkWholeWord->IsChecked());
+    findData.SetStartWord      (m_pChkStartWord->IsChecked());
+    findData.SetMatchCase      (m_pChkMatchCase->IsChecked());
+    findData.SetRegEx          (m_pChkRegExp->IsChecked());
 
-	findData.UpdateSearchScope(ScopeOpenFiles,      m_pPnlSearchIn->GetSearchInOpenFiles());
-	findData.UpdateSearchScope(ScopeSnippetFiles,   m_pPnlSearchIn->GetSearchInSnippetFiles());
-	//-findData.UpdateSearchScope(ScopeWorkspaceFiles, m_pPnlSearchIn->GetSearchInWorkspaceFiles());
-	findData.UpdateSearchScope(ScopeDirectoryFiles, m_pPnlSearchIn->GetSearchInDirectory());
+    findData.UpdateSearchScope(ScopeOpenFiles,      m_pPnlSearchIn->GetSearchInOpenFiles());
+    findData.UpdateSearchScope(ScopeSnippetFiles,   m_pPnlSearchIn->GetSearchInSnippetFiles());
+    //-findData.UpdateSearchScope(ScopeWorkspaceFiles, m_pPnlSearchIn->GetSearchInWorkspaceFiles());
+    findData.UpdateSearchScope(ScopeDirectoryFiles, m_pPnlSearchIn->GetSearchInDirectory());
 
-	// Updates plug-in with new datas
-	m_ThreadSearchPlugin.SetFindData(findData);
-	m_ThreadSearchPlugin.SetCtxMenuIntegration(m_pChkThreadSearchEnable->IsChecked());
-	m_ThreadSearchPlugin.SetUseDefValsForThreadSearch(m_pChkUseDefaultOptionsForThreadSearch->IsChecked());
-	m_ThreadSearchPlugin.SetShowSearchControls(m_pChkShowThreadSearchWidgets->IsChecked());
-	m_ThreadSearchPlugin.SetShowCodePreview(m_pChkShowCodePreview->IsChecked());
-	m_ThreadSearchPlugin.SetDisplayLogHeaders(m_pChkDisplayLogHeaders->IsChecked());
-	m_ThreadSearchPlugin.SetDrawLogLines(m_pChkDrawLogLines->IsChecked());
+    // Updates plug-in with new datas
+    m_ThreadSearchPlugin.SetFindData(findData);
+    m_ThreadSearchPlugin.SetCtxMenuIntegration(m_pChkThreadSearchEnable->IsChecked());
+    m_ThreadSearchPlugin.SetUseDefValsForThreadSearch(m_pChkUseDefaultOptionsForThreadSearch->IsChecked());
+    m_ThreadSearchPlugin.SetShowSearchControls(m_pChkShowThreadSearchWidgets->IsChecked());
+    m_ThreadSearchPlugin.SetShowCodePreview(m_pChkShowCodePreview->IsChecked());
+    m_ThreadSearchPlugin.SetDisplayLogHeaders(m_pChkDisplayLogHeaders->IsChecked());
+    m_ThreadSearchPlugin.SetDrawLogLines(m_pChkDrawLogLines->IsChecked());
 
     int radIndex = m_pRadPanelManagement->GetSelection();
     ThreadSearchViewManagerBase::eManagerTypes mgrType;
     switch (radIndex)
     {
-		case 1 :
-		{
-			mgrType = ThreadSearchViewManagerBase::TypeLayout;
-			break;
-		}
-		default:
-		// case 0 :
-		{
-			mgrType = ThreadSearchViewManagerBase::TypeMessagesNotebook;
-			break;
-		}
+    case 1 :
+    {
+        mgrType = ThreadSearchViewManagerBase::TypeLayout;
+        break;
+    }
+    default:
+        // case 0 :
+    {
+        mgrType = ThreadSearchViewManagerBase::TypeMessagesNotebook;
+        break;
+    }
     }
     m_ThreadSearchPlugin.SetManagerType(mgrType);
 
@@ -375,17 +379,17 @@ void ThreadSearchConfPanel::OnApply()
     ThreadSearchLoggerBase::eLoggerTypes lgrType;
     switch (radIndex)
     {
-		case 1 :
-		{
-			lgrType = ThreadSearchLoggerBase::TypeTree;
-			break;
-		}
-		default:
-		// case 0 :
-		{
-			lgrType = ThreadSearchLoggerBase::TypeList;
-			break;
-		}
+    case 1 :
+    {
+        lgrType = ThreadSearchLoggerBase::TypeTree;
+        break;
+    }
+    default:
+        // case 0 :
+    {
+        lgrType = ThreadSearchLoggerBase::TypeList;
+        break;
+    }
     }
     m_ThreadSearchPlugin.SetLoggerType(lgrType);
 
@@ -393,17 +397,17 @@ void ThreadSearchConfPanel::OnApply()
     InsertIndexManager::eFileSorting sortingType;
     switch (radIndex)
     {
-		case 1 :
-		{
-			sortingType = InsertIndexManager::SortByFileName;
-			break;
-		}
-		default:
-		// case 0 :
-		{
-			sortingType = InsertIndexManager::SortByFilePath;
-			break;
-		}
+    case 1 :
+    {
+        sortingType = InsertIndexManager::SortByFileName;
+        break;
+    }
+    default:
+        // case 0 :
+    {
+        sortingType = InsertIndexManager::SortByFilePath;
+        break;
+    }
     }
     m_ThreadSearchPlugin.SetFileSorting(sortingType);
 
@@ -411,24 +415,24 @@ void ThreadSearchConfPanel::OnApply()
     wxSplitMode splitterMode;
     switch (radIndex)
     {
-		case 1 :
-		{
-			splitterMode = wxSPLIT_VERTICAL;
-			break;
-		}
-		default:
-		// case 0 :
-		{
-			splitterMode = wxSPLIT_HORIZONTAL;
-			break;
-		}
+    case 1 :
+    {
+        splitterMode = wxSPLIT_VERTICAL;
+        break;
+    }
+    default:
+        // case 0 :
+    {
+        splitterMode = wxSPLIT_HORIZONTAL;
+        break;
+    }
     }
     m_ThreadSearchPlugin.SetSplitterMode(splitterMode);
 
-	// Updates toolbar visibility
-	m_ThreadSearchPlugin.ShowToolBar(m_pChkShowThreadSearchToolBar->IsChecked());
+    // Updates toolbar visibility
+    m_ThreadSearchPlugin.ShowToolBar(m_pChkShowThreadSearchToolBar->IsChecked());
 
-	// Notifies plug-in observers (ThreadSearchView)
-	m_ThreadSearchPlugin.Notify();
+    // Notifies plug-in observers (ThreadSearchView)
+    m_ThreadSearchPlugin.Notify();
 }
 

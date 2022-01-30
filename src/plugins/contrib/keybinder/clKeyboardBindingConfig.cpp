@@ -13,8 +13,8 @@
 //
 #include <wx/filename.h>
 # if defined(LOGGING)
-    #include <wx/private/wxprintf.h>
-    #include <wx/textfile.h>
+#include <wx/private/wxprintf.h>
+#include <wx/textfile.h>
 #endif
 
 #include "manager.h"
@@ -47,10 +47,12 @@ clKeyboardBindingConfig& clKeyboardBindingConfig::Load()
     // unused typedef std::unordered_multimap<wxString, wxString> GlobalAccelMap_t;     //(2019/04/3)
     MenuItemDataMap_t globalBindings;                                                   //(2019/04/3)
 
-    {//Block
+    {
+        //Block
         JSONElement menus = root.toElement().namedObject(_T("menus"));
         int arrSize = menus.arraySize();
-        for(int i = 0; i < arrSize; ++i) {
+        for(int i = 0; i < arrSize; ++i)
+        {
             JSONElement item = menus.arrayItem(i);
             MenuItemData binding;
             binding.action = item.namedObject(_T("description")).toString();
@@ -70,10 +72,10 @@ clKeyboardBindingConfig& clKeyboardBindingConfig::Load()
         // Append the global key bindings to the end of the menu bindings
         for(MenuItemDataMap_t::const_iterator iter = globalBindings.begin(); iter != globalBindings.end(); ++iter)
         {
-            #if defined(LOGGING) //debugging
-                wxString resourceID = iter->first;
-                MenuItemData binding = iter->second;
-            #endif
+#if defined(LOGGING) //debugging
+            wxString resourceID = iter->first;
+            MenuItemData binding = iter->second;
+#endif
             m_bindings.insert(std::make_pair(iter->first, iter->second) );
         }
 
@@ -177,7 +179,7 @@ bool clKeyboardBindingConfig::SortBindings( std::vector<MenuItemDataMap_t::itera
     for (size_t ii=0; ii < bindGlobals.size(); ++ii)
         sortedIters.push_back(bindGlobals[ii]);
 
-    #if defined(LOGGING) //debugging
+#if defined(LOGGING) //debugging
     // ----------------------------------------------------------------------------
     // Debugging: write log file of the sorted sequence
     // ----------------------------------------------------------------------------
@@ -206,7 +208,7 @@ bool clKeyboardBindingConfig::SortBindings( std::vector<MenuItemDataMap_t::itera
 
     logFile.Write();
     logFile.Close();
-    #endif //defined logging
+#endif //defined logging
 
     return (sortedIters.size() > 0);
 }

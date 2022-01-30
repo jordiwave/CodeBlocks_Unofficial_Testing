@@ -37,8 +37,8 @@ wxsQuickPropsPanel::wxsQuickPropsPanel(
     const wxSize& size,
     long style,
     const wxString& name):
-        wxPanel(parent,id,pos,size,style,name),
-        Container(PC)
+    wxPanel(parent,id,pos,size,style,name),
+    Container(PC)
 {
 }
 

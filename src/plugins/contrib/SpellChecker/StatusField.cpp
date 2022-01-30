@@ -102,7 +102,7 @@ static wxBitmap LoadImageInPath(const wxString &path, wxString fileName,
     if (!bmp.IsOk())
     {
         const wxString msg2 = wxString::Format(wxT("Loading image: '%s' failed!"),
-                                              (imgPath + fileName2).wx_str());
+                                               (imgPath + fileName2).wx_str());
         Manager::Get()->GetLogManager()->DebugLog(msg1);
         Manager::Get()->GetLogManager()->DebugLog(msg2);
     }

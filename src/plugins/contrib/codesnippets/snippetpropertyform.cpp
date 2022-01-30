@@ -27,7 +27,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 #ifdef WX_PRECOMP
-    #include "wx_pch.h"
+#include "wx_pch.h"
 #else
 #endif
 #include "wx/wxprec.h"
@@ -45,62 +45,62 @@
 
 SnippetPropertyForm::SnippetPropertyForm( wxWindow* parent, int id, wxString title, wxPoint pos, wxSize size, int style ) : wxScrollingDialog( parent, id, title, pos, size, style )
 {
-	wxBoxSizer* sbSizer;
-	sbSizer = new wxBoxSizer(  wxVERTICAL );
+    wxBoxSizer* sbSizer;
+    sbSizer = new wxBoxSizer(  wxVERTICAL );
 
-	wxBoxSizer* bSizer;
-	bSizer = new wxBoxSizer( wxHORIZONTAL );
+    wxBoxSizer* bSizer;
+    bSizer = new wxBoxSizer( wxHORIZONTAL );
     // Label
-	m_ItemLabelStaticText = new wxStaticText( this, ID_DEFAULT, wxT("Label"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer->Add( m_ItemLabelStaticText, 0, wxALL, 5 );
+    m_ItemLabelStaticText = new wxStaticText( this, ID_DEFAULT, wxT("Label"), wxDefaultPosition, wxDefaultSize, 0 );
+    bSizer->Add( m_ItemLabelStaticText, 0, wxALL, 5 );
     // Label Text Area
-	//-m_ItemLabelTextCtrl = new wxTextCtrl( this, ID_DEFAULT, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
-	m_ItemLabelTextCtrl = new wxTextCtrl( this, ID_DEFAULT, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER  );
-	bSizer->Add( m_ItemLabelTextCtrl, 1, wxALL, 5 );
+    //-m_ItemLabelTextCtrl = new wxTextCtrl( this, ID_DEFAULT, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
+    m_ItemLabelTextCtrl = new wxTextCtrl( this, ID_DEFAULT, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER  );
+    bSizer->Add( m_ItemLabelTextCtrl, 1, wxALL, 5 );
 
-	sbSizer->Add( bSizer, 0, wxEXPAND, 5 );
+    sbSizer->Add( bSizer, 0, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer1;
-	bSizer1 = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* bSizer1;
+    bSizer1 = new wxBoxSizer( wxVERTICAL );
     // Snippet Label
-	m_SnippetStaticText = new wxStaticText( this, ID_DEFAULT, wxT("Snippet | File Link"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer1->Add( m_SnippetStaticText, 0, wxALL, 5 );
+    m_SnippetStaticText = new wxStaticText( this, ID_DEFAULT, wxT("Snippet | File Link"), wxDefaultPosition, wxDefaultSize, 0 );
+    bSizer1->Add( m_SnippetStaticText, 0, wxALL, 5 );
 
     // create wxscintilla edit control
     //-m_SnippetEditCtrl = new Edit(this, ID_DEFAULT, wxDefaultPosition, wxDefaultSize, 0);//|wxHSCROLL|wxNO_BORDER|wxVSCROLL|wxTE_MULTILINE  );
     m_SnippetEditCtrl = new wxScintilla(this, ID_DEFAULT, wxDefaultPosition, wxDefaultSize, 0);//|wxHSCROLL|wxNO_BORDER|wxVSCROLL|wxTE_MULTILINE  );
-	bSizer1->Add( m_SnippetEditCtrl, 1, wxALL|wxEXPAND, 5 );
+    bSizer1->Add( m_SnippetEditCtrl, 1, wxALL|wxEXPAND, 5 );
 
-	sbSizer->Add( bSizer1, 1, wxEXPAND, 5 );
+    sbSizer->Add( bSizer1, 1, wxEXPAND, 5 );
     // Buttons
-	wxFlexGridSizer* fgSizer;
-	fgSizer = new wxFlexGridSizer( 1, 2, 0, 0 );
-	fgSizer->SetFlexibleDirection( wxVERTICAL );
+    wxFlexGridSizer* fgSizer;
+    fgSizer = new wxFlexGridSizer( 1, 2, 0, 0 );
+    fgSizer->SetFlexibleDirection( wxVERTICAL );
 
-	wxBoxSizer* bSizer5;
-	bSizer5 = new wxBoxSizer( wxHORIZONTAL );
+    wxBoxSizer* bSizer5;
+    bSizer5 = new wxBoxSizer( wxHORIZONTAL );
 
-	//-2018/03/24 m_SnippetButton = new wxButton( this, ID_SNIPPETBUTTON, wxT("ExtEdit"), wxDefaultPosition, wxDefaultSize, 0 );
-	//-2018/03/24 bSizer5->Add( m_SnippetButton, 0, wxALL, 5 );
+    //-2018/03/24 m_SnippetButton = new wxButton( this, ID_SNIPPETBUTTON, wxT("ExtEdit"), wxDefaultPosition, wxDefaultSize, 0 );
+    //-2018/03/24 bSizer5->Add( m_SnippetButton, 0, wxALL, 5 );
 
-	m_FileSelectButton = new wxButton( this, ID_FILESELECTBUTTON, wxT("Link target"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer5->Add( m_FileSelectButton, 0, wxALL, 5 );
+    m_FileSelectButton = new wxButton( this, ID_FILESELECTBUTTON, wxT("Link target"), wxDefaultPosition, wxDefaultSize, 0 );
+    bSizer5->Add( m_FileSelectButton, 0, wxALL, 5 );
 
-	fgSizer->Add( bSizer5, 1, wxEXPAND, 5 );
+    fgSizer->Add( bSizer5, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer6;
-	bSizer6 = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* bSizer6;
+    bSizer6 = new wxBoxSizer( wxVERTICAL );
 
-	m_sdbSizer1 = new wxStdDialogButtonSizer();
-	m_sdbSizer1->AddButton( new wxButton( this, wxID_OK ) );
-	m_sdbSizer1->AddButton( new wxButton( this, wxID_CANCEL ) );
-	m_sdbSizer1->Realize();
-	bSizer6->Add( m_sdbSizer1, 0, wxALL, 5 );
+    m_sdbSizer1 = new wxStdDialogButtonSizer();
+    m_sdbSizer1->AddButton( new wxButton( this, wxID_OK ) );
+    m_sdbSizer1->AddButton( new wxButton( this, wxID_CANCEL ) );
+    m_sdbSizer1->Realize();
+    bSizer6->Add( m_sdbSizer1, 0, wxALL, 5 );
 
-	fgSizer->Add( bSizer6, 1, wxEXPAND, 5 );
+    fgSizer->Add( bSizer6, 1, wxEXPAND, 5 );
 
-	sbSizer->Add( fgSizer, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+    sbSizer->Add( fgSizer, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
-	this->SetSizer( sbSizer );
-	this->Layout();
+    this->SetSizer( sbSizer );
+    this->Layout();
 }

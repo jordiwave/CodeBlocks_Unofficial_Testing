@@ -50,22 +50,22 @@ namespace
 {
 
 
-    wxsRegisterItem<wxsGLCanvas> Reg(
-        "GLCanvas",                     // Class name
-        wxsTWidget,                     // Item type
-        "Advanced",                     // Category in palette
-        80,                             // Priority in palette
-        false);                         // We do not allow this item inside XRC files
+wxsRegisterItem<wxsGLCanvas> Reg(
+    "GLCanvas",                     // Class name
+    wxsTWidget,                     // Item type
+    "Advanced",                     // Category in palette
+    80,                             // Priority in palette
+    false);                         // We do not allow this item inside XRC files
 
 
-    WXS_ST_BEGIN(wxsGLCanvasStyles,_T(""))
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsGLCanvasStyles,_T(""))
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsGLCanvasEvents)
-        WXS_EV_DEFAULTS()
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsGLCanvasEvents)
+WXS_EV_DEFAULTS()
+WXS_EV_END()
 
 }
 
@@ -108,31 +108,31 @@ void wxsGLCanvas::OnBuildCreatingCode()
 {
     switch (GetLanguage())
     {
-        case wxsCPP:
-        {
-            AddHeader("<wx/glcanvas.h>", GetInfo().ClassName, 0);
+    case wxsCPP:
+    {
+        AddHeader("<wx/glcanvas.h>", GetInfo().ClassName, 0);
 
-            // Generate unique name for attributes variable
-            const wxString aname(GetCoderContext()->GetUniqueName("GLCanvasAttributes"));
+        // Generate unique name for attributes variable
+        const wxString aname(GetCoderContext()->GetUniqueName("GLCanvasAttributes"));
 
-            // Now we can create our window
-            Codef("#if wxCHECK_VERSION(3,1,0)\n");  // Check wxWidgets version because the order of parameters in GLCanvas has changed with this version
-            FillNewAttributes(aname);
-            Codef("\t%C(%W, %v, %I, %P, %S, %T, %N);\n", aname.wx_str());
-            Codef("#else\n");
-            FillOldAttributes(aname);
-            Codef("\t%C(%W, %I, %v, %P, %S, %T, %N);\n", aname.wx_str());
-            Codef("#endif // wxCHECK_VERSION\n");
+        // Now we can create our window
+        Codef("#if wxCHECK_VERSION(3,1,0)\n");  // Check wxWidgets version because the order of parameters in GLCanvas has changed with this version
+        FillNewAttributes(aname);
+        Codef("\t%C(%W, %v, %I, %P, %S, %T, %N);\n", aname.wx_str());
+        Codef("#else\n");
+        FillOldAttributes(aname);
+        Codef("\t%C(%W, %I, %v, %P, %S, %T, %N);\n", aname.wx_str());
+        Codef("#endif // wxCHECK_VERSION\n");
 
-            BuildSetupWindowCode();
-            break;
-        }
+        BuildSetupWindowCode();
+        break;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsGLCanvas::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsGLCanvas::OnBuildCreatingCode"),GetLanguage());
+    }
     };
 }
 
@@ -265,16 +265,16 @@ wxObject* wxsGLCanvas::OnBuildPreview(wxWindow* Parent, long Flags)
 // canvas will be located
 
 
-/*
-wxGLCanvas  *gc;
+    /*
+    wxGLCanvas  *gc;
 
-    gc = new wxGLCanvas(Parent,
-        GetId(),
-        Pos(Parent),
-        Size(Parent));
-    SetupWindow(gc, Flags);
-    return gc;
-*/
+        gc = new wxGLCanvas(Parent,
+            GetId(),
+            Pos(Parent),
+            Size(Parent));
+        SetupWindow(gc, Flags);
+        return gc;
+    */
 
     wxPanel* gc = new wxPanel(Parent, GetId(),Pos(Parent),Size(Parent),Style());
     SetupWindow(gc, Flags);

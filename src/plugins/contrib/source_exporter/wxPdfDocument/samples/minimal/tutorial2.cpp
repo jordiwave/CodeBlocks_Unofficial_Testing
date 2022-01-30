@@ -53,63 +53,63 @@
 
 class PdfTuto2 : public wxPdfDocument
 {
-  // Page header
-  void Header()
-  {
-    // Logo
-    Image(wxS("wxpdfdoc.png"),10,8,28);
-    // Helvetica bold 15
-    SetFont(wxS("Helvetica"),wxS("B"),15);
-    // Move to the right
-    Cell(80);
-    // Title
-    Cell(30,10,wxS("Title"),wxPDF_BORDER_FRAME,0,wxPDF_ALIGN_CENTER);
-    // Line break
-    Ln(20);
-  }
+    // Page header
+    void Header()
+    {
+        // Logo
+        Image(wxS("wxpdfdoc.png"),10,8,28);
+        // Helvetica bold 15
+        SetFont(wxS("Helvetica"),wxS("B"),15);
+        // Move to the right
+        Cell(80);
+        // Title
+        Cell(30,10,wxS("Title"),wxPDF_BORDER_FRAME,0,wxPDF_ALIGN_CENTER);
+        // Line break
+        Ln(20);
+    }
 
-  // Page footer
-  void Footer()
-  {
-    // Position at 1.5 cm from bottom
-    SetY(-15);
-    // Helvetica italic 8
-    SetFont(wxS("Helvetica"),wxS("I"),8);
-    // Page number
-    Cell(0,10,wxString::Format(wxS("Page %d/{nb}"),PageNo()),0,0,wxPDF_ALIGN_CENTER);
-  }
+    // Page footer
+    void Footer()
+    {
+        // Position at 1.5 cm from bottom
+        SetY(-15);
+        // Helvetica italic 8
+        SetFont(wxS("Helvetica"),wxS("I"),8);
+        // Page number
+        Cell(0,10,wxString::Format(wxS("Page %d/{nb}"),PageNo()),0,0,wxPDF_ALIGN_CENTER);
+    }
 };
 
 int
 tutorial2(bool testMode)
 {
-  int rc = 0;
-  if (wxFileName::IsFileReadable(wxS("smile.jpg")) &&
-      wxFileName::IsFileReadable(wxS("apple.gif")))
-  {
-    // Instantiation of inherited class
-    PdfTuto2 pdf;
-    if (testMode)
+    int rc = 0;
+    if (wxFileName::IsFileReadable(wxS("smile.jpg")) &&
+            wxFileName::IsFileReadable(wxS("apple.gif")))
     {
-      pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
-      pdf.SetCompression(false);
+        // Instantiation of inherited class
+        PdfTuto2 pdf;
+        if (testMode)
+        {
+            pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
+            pdf.SetCompression(false);
+        }
+        pdf.AliasNbPages();
+        pdf.AddPage();
+        pdf.Image(wxS("smile.jpg"), 70, 40, 12);
+        pdf.Image(wxS("apple.gif"), 110, 40, 25);
+        pdf.SetFont(wxS("Times"), wxS(""), 12);
+        int i;
+        for (i = 1; i <= 40; i++)
+        {
+            pdf.Cell(0, 10, wxString::Format(wxS("Printing line number %d"), i), 0, 1);
+        }
+        pdf.SaveAsFile(wxS("tutorial2.pdf"));
     }
-    pdf.AliasNbPages();
-    pdf.AddPage();
-    pdf.Image(wxS("smile.jpg"), 70, 40, 12);
-    pdf.Image(wxS("apple.gif"), 110, 40, 25);
-    pdf.SetFont(wxS("Times"), wxS(""), 12);
-    int i;
-    for (i = 1; i <= 40; i++)
+    else
     {
-      pdf.Cell(0, 10, wxString::Format(wxS("Printing line number %d"), i), 0, 1);
+        rc = 1;
     }
-    pdf.SaveAsFile(wxS("tutorial2.pdf"));
-  }
-  else
-  {
-    rc = 1;
-  }
-  return rc;
+    return rc;
 }
 

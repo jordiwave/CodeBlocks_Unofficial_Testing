@@ -9,20 +9,20 @@
  **************************************************************/
 
 #if defined(CB_PRECOMP)
-    #include "sdk.h"
+#include "sdk.h"
 #endif
 
 #ifndef CB_PRECOMP
-    #include <wx/bmpbuttn.h>
-    #include <wx/button.h>
-    #include <wx/combobox.h>
-    #include <wx/splitter.h>
-    #include <wx/statbox.h>
-    #include <wx/toolbar.h>
+#include <wx/bmpbuttn.h>
+#include <wx/button.h>
+#include <wx/combobox.h>
+#include <wx/splitter.h>
+#include <wx/statbox.h>
+#include <wx/toolbar.h>
 
-    #include "cbeditor.h"
-    #include "configmanager.h"
-    #include "editorcolourset.h"
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "editorcolourset.h"
 #endif
 
 #include "cbstyledtextctrl.h"
@@ -54,12 +54,12 @@ const          int TIMER_PERIOD        = 100;
 // ----------------------------------------------------------------------------
 ThreadSearchView::ThreadSearchView( ThreadSearch& threadSearchPlugin)
 // ----------------------------------------------------------------------------
-                 //-:wxPanel(Manager::Get()->GetAppWindow())
-                 :wxPanel(threadSearchPlugin.m_pParent)
-                 ,m_ThreadSearchPlugin(threadSearchPlugin)
-                 ,m_Timer(this, idTmrListCtrlUpdate)
-                 ,m_StoppingThread(0)
-                 ,m_pParent(threadSearchPlugin.m_pParent)
+//-:wxPanel(Manager::Get()->GetAppWindow())
+    :wxPanel(threadSearchPlugin.m_pParent)
+    ,m_ThreadSearchPlugin(threadSearchPlugin)
+    ,m_Timer(this, idTmrListCtrlUpdate)
+    ,m_StoppingThread(0)
+    ,m_pParent(threadSearchPlugin.m_pParent)
 {
     m_bNotebookSizerSet = false;
     m_pFindThread = NULL;
@@ -81,10 +81,10 @@ ThreadSearchView::ThreadSearchView( ThreadSearch& threadSearchPlugin)
     m_pPnlDirParams = new DirectoryParamsPanel(this, -1);
     m_pSearchPreview = new cbStyledTextCtrl(m_pPnlPreview, wxID_ANY, wxDefaultPosition, wxSize(1,1));
     m_pLogger = ThreadSearchLoggerBase::BuildThreadSearchLoggerBase(*this, m_ThreadSearchPlugin,
-                                                                    m_ThreadSearchPlugin.GetLoggerType(),
-                                                                    m_ThreadSearchPlugin.GetFileSorting(),
-                                                                    m_pPnlListLog,
-                                                                    idWndLogger);
+                m_ThreadSearchPlugin.GetLoggerType(),
+                m_ThreadSearchPlugin.GetFileSorting(),
+                m_pPnlListLog,
+                idWndLogger);
 
     set_properties();
     do_layout();
@@ -137,22 +137,22 @@ ThreadSearchView::~ThreadSearchView()
     // so I do it myself
     long id = m_pSearchPreview->GetId();
     Disconnect(id, wxEVT_SCI_MARGINCLICK,
-            (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
-            &ThreadSearchView::OnMarginClick);
+               (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
+               &ThreadSearchView::OnMarginClick);
 
     Disconnect(id, wxEVT_CONTEXT_MENU,
-            (wxObjectEventFunction) (wxEventFunction) (wxContextMenuEventFunction)
-            &ThreadSearchView::OnContextMenu);
+               (wxObjectEventFunction) (wxEventFunction) (wxContextMenuEventFunction)
+               &ThreadSearchView::OnContextMenu);
 
     Disconnect(idTxtSearchDirPath, wxEVT_COMMAND_TEXT_UPDATED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &ThreadSearchView::OnTxtSearchDirPathTextEvent);
+               (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+               &ThreadSearchView::OnTxtSearchDirPathTextEvent);
 
     Disconnect(idTxtSearchMask, wxEVT_COMMAND_TEXT_UPDATED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &ThreadSearchView::OnTxtSearchMaskTextEvent);
+               (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+               &ThreadSearchView::OnTxtSearchMaskTextEvent);
     Disconnect(wxEVT_S_THREAD_SEARCH_ERROR,
-            (wxObjectEventFunction)&ThreadSearchView::OnThreadSearchErrorEvent);
+               (wxObjectEventFunction)&ThreadSearchView::OnThreadSearchErrorEvent);
 
     m_ThreadSearchPlugin.OnThreadSearchViewDestruction();
 
@@ -502,8 +502,8 @@ bool ThreadSearchView::UpdatePreview(const wxString& file, long line)
         //#if defined(LOGGING)
         //LOGIT( _T("ThreadSearchView::selectionBkgd[%0X][%0X][%0X]"), selectionBkgd.Red(), selectionBkgd.Green(), selectionBkgd.Blue() );
         //#endif
-        m_pSearchPreview->SetSelBackground ( true , wxSystemSettings::GetColour(wxSYS_COLOUR_ACTIVECAPTION ) );
-        m_pSearchPreview->SetSelForeground ( true , wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT  ) );
+        m_pSearchPreview->SetSelBackground ( true, wxSystemSettings::GetColour(wxSYS_COLOUR_ACTIVECAPTION ) );
+        m_pSearchPreview->SetSelForeground ( true, wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT  ) );
 
         int startPos = m_pSearchPreview->PositionFromLine(line);
         int endPos   = m_pSearchPreview->GetLineEndPosition(line);
@@ -581,11 +581,11 @@ void ThreadSearchView::OnLoggerDoubleClick(const wxString& file, long line)
 
                 wxFocusEvent ev(wxEVT_SET_FOCUS);
                 ev.SetWindow(this);
-                #if wxCHECK_VERSION(3, 0, 0)
+#if wxCHECK_VERSION(3, 0, 0)
                 control->GetEventHandler()->AddPendingEvent(ev);
-                #else
+#else
                 control->AddPendingEvent(ev);
-                #endif
+#endif
             }
             return;
         }//if IsOpen
@@ -626,16 +626,17 @@ void ThreadSearchView::OnLoggerDoubleClick(const wxString& file, long line)
     ed->GotoLine(line);
 
     // Show even if line is folded
-    if (cbStyledTextCtrl* control = ed->GetControl()) {
+    if (cbStyledTextCtrl* control = ed->GetControl())
+    {
         control->EnsureVisible(line);
 
         wxFocusEvent ev(wxEVT_SET_FOCUS);
         ev.SetWindow(this);
-        #if wxCHECK_VERSION(3, 0, 0)
+#if wxCHECK_VERSION(3, 0, 0)
         control->GetEventHandler()->AddPendingEvent(ev);
-        #else
+#else
         control->AddPendingEvent(ev);
-        #endif
+#endif
     }
 }
 
@@ -646,36 +647,36 @@ void ThreadSearchView::OnMarginClick(wxScintillaEvent& event)
     // breakpoints and bookmarks.
     switch (event.GetMargin())
     {
-        case 2: // folding margin
-        {
-            int lineYpix = event.GetPosition();
-            int line = m_pSearchPreview->LineFromPosition(lineYpix);
+    case 2: // folding margin
+    {
+        int lineYpix = event.GetPosition();
+        int line = m_pSearchPreview->LineFromPosition(lineYpix);
 
-            m_pSearchPreview->ToggleFold(line);
-            break;
-        }
-        case 1: // bookmarks and breakpoints margin
-        {
-            // For now I ignore bookmarks and breakpoints
-            /*
-            #define BOOKMARK_MARKER    2
-            int line = m_pSearchPreview->LineFromPosition(event.GetPosition());
+        m_pSearchPreview->ToggleFold(line);
+        break;
+    }
+    case 1: // bookmarks and breakpoints margin
+    {
+        // For now I ignore bookmarks and breakpoints
+        /*
+        #define BOOKMARK_MARKER    2
+        int line = m_pSearchPreview->LineFromPosition(event.GetPosition());
 
-            if ( m_pSearchPreview->MarkerGet(line) & (1 << BOOKMARK_MARKER) )
-            {
-                m_pSearchPreview->MarkerDelete(line, BOOKMARK_MARKER);
-            }
-            else
-            {
-                m_pSearchPreview->MarkerAdd(line, BOOKMARK_MARKER);
-            }
-            */
-            break;
-        }
-        default:
+        if ( m_pSearchPreview->MarkerGet(line) & (1 << BOOKMARK_MARKER) )
         {
-            break;
+            m_pSearchPreview->MarkerDelete(line, BOOKMARK_MARKER);
         }
+        else
+        {
+            m_pSearchPreview->MarkerAdd(line, BOOKMARK_MARKER);
+        }
+        */
+        break;
+    }
+    default:
+    {
+        break;
+    }
     }
 }
 
@@ -803,7 +804,8 @@ void ThreadSearchView::EnableControls(bool enable)
 {
     // Used to disable search parameters controls during
     // threaded search in notebook panel and toolbar.
-    long idsArray[] = {
+    long idsArray[] =
+    {
         idBtnDirSelectClick,
         idBtnOptions,
         idCboSearchExpr,
@@ -817,7 +819,8 @@ void ThreadSearchView::EnableControls(bool enable)
         idTxtSearchMask
     };
 
-    long toolBarIdsArray[] = {
+    long toolBarIdsArray[] =
+    {
         idBtnOptions,
         idCboSearchExpr
     };
@@ -964,12 +967,14 @@ void ThreadSearchView::UpdateSearchButtons(bool enable, eSearchButtonLabel label
     wxString prefix = ConfigManager::GetDataFolder() + _T("/images/codesnippets/");
 
     wxString searchButtonPathsEnabled[]  = {prefix + wxT("findf.png"),
-                                            prefix + wxT("stop.png") ,
-                                            wxEmptyString};
+                                            prefix + wxT("stop.png"),
+                                            wxEmptyString
+                                           };
 
     wxString searchButtonPathsDisabled[] = {prefix + wxT("findfdisabled.png"),
-                                            prefix + wxT("stopdisabled.png") ,
-                                            wxEmptyString};
+                                            prefix + wxT("stopdisabled.png"),
+                                            wxEmptyString
+                                           };
 
     // Gets toolbar search button pointer
     wxBitmapButton* pToolBarSearchBtn = static_cast<wxBitmapButton*>(m_pToolBar->FindControl(idBtnSearch));
@@ -1032,14 +1037,14 @@ void ThreadSearchView::ApplySplitterSettings(bool showCodePreview, long splitter
         {
             if ( m_pSplitter->IsSplit() == true ) m_pSplitter->Unsplit();
             if ( splitterMode == wxSPLIT_HORIZONTAL )
-    {
+            {
                 m_pSplitter->SplitHorizontally(m_pPnlListLog, m_pPnlPreview);
             }
             else
-        {
-            m_pSplitter->SplitVertically(m_pPnlPreview, m_pPnlListLog);
+            {
+                m_pSplitter->SplitVertically(m_pPnlPreview, m_pPnlListLog);
+            }
         }
-    }
     }
     else
     {
@@ -1063,11 +1068,11 @@ void ThreadSearchView::SetLoggerType(ThreadSearchLoggerBase::eLoggerTypes lgrTyp
     {
         delete m_pLogger;
         m_pLogger = ThreadSearchLoggerBase::BuildThreadSearchLoggerBase(*this
-                                                                       , m_ThreadSearchPlugin
-                                                                       , lgrType
-                                                                       , m_ThreadSearchPlugin.GetFileSorting()
-                                                                       , m_pPnlListLog
-                                                                       , idWndLogger);
+                    , m_ThreadSearchPlugin
+                    , lgrType
+                    , m_ThreadSearchPlugin.GetFileSorting()
+                    , m_pPnlListLog
+                    , idWndLogger);
         m_pPnlListLog->GetSizer()->Add(m_pLogger->GetWindow(), 1, wxEXPAND|wxFIXED_MINSIZE, 0);
         wxSizer* pTopSizer = m_pPnlListLog->GetSizer();
         pTopSizer->Layout();

@@ -21,13 +21,23 @@ public:
     CCOptionsDlg(wxWindow* parent, ParseManager* np, CodeCompletion* cc, DocumentationHelper* dh);
     ~CCOptionsDlg() override;
 
-    wxString GetTitle() const override { return _("clangd_client"); }
-    wxString GetBitmapBaseName() const override { return _T("codecompletion"); }
+    wxString GetTitle() const override
+    {
+        return _("clangd_client");
+    }
+    wxString GetBitmapBaseName() const override
+    {
+        return _T("clangd_client");
+    }
     void OnApply() override;
     void OnCancel() override {}
 
-    void OnFindDirLLVM_Dlg(wxCommandEvent& event);   //(ph 2021/11/8)
-    void OnLLVM_AutoDetect(cb_unused wxCommandEvent& event);        //(ph 2021/11/8)
+    void OnFindClangDaemonDir_Dlg(wxCommandEvent& event);
+    void OnFindClangDir_Dlg(wxCommandEvent& event);
+
+    void OnLLVM_ClangDaemon_AutoDetect(cb_unused wxCommandEvent& event);
+    void OnLLVM_Clang_AutoDetect(cb_unused wxCommandEvent& event);
+    void OnLLVM_ClangBoth_AutoDetect(cb_unused wxCommandEvent& event);
 
 protected:
     void OnChooseColour(wxCommandEvent& event);

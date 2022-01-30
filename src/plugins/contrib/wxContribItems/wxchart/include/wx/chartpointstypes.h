@@ -32,47 +32,82 @@ class WXDLLIMPEXP_CHART wxChartPointsTypes
 /* C::B end */
 {
 private:
-	enum CHART_POINTS_TYPES
-	{
-		BAR = 0,
-		BAR3D,
-		PIE,
-		PIE3D,
-		POINTS,
-		POINTS3D,
-		LINE,
-		LINE3D,
-		AREA,
-		AREA3D
-	};
+    enum CHART_POINTS_TYPES
+    {
+        BAR = 0,
+        BAR3D,
+        PIE,
+        PIE3D,
+        POINTS,
+        POINTS3D,
+        LINE,
+        LINE3D,
+        AREA,
+        AREA3D
+    };
 
 public:
 
-	// Type ctors
-	//-----------
-	static const wxChartPointsTypes Bar() { return (BAR); }
-	static const wxChartPointsTypes Bar3D() { return (BAR3D); }
-	static const wxChartPointsTypes Pie() { return (PIE); }
-	static const wxChartPointsTypes Pie3D() { return (PIE3D); }
-	static const wxChartPointsTypes Points() { return (POINTS); }
-	static const wxChartPointsTypes Poiints3D() { return (POINTS3D); }
-	static const wxChartPointsTypes Line() { return (LINE); }
-	static const wxChartPointsTypes Line3D() { return (LINE3D); }
-	static const wxChartPointsTypes Area() { return (AREA); }
-	static const wxChartPointsTypes Area3D() { return (AREA3D); }
+    // Type ctors
+    //-----------
+    static const wxChartPointsTypes Bar()
+    {
+        return (BAR);
+    }
+    static const wxChartPointsTypes Bar3D()
+    {
+        return (BAR3D);
+    }
+    static const wxChartPointsTypes Pie()
+    {
+        return (PIE);
+    }
+    static const wxChartPointsTypes Pie3D()
+    {
+        return (PIE3D);
+    }
+    static const wxChartPointsTypes Points()
+    {
+        return (POINTS);
+    }
+    static const wxChartPointsTypes Poiints3D()
+    {
+        return (POINTS3D);
+    }
+    static const wxChartPointsTypes Line()
+    {
+        return (LINE);
+    }
+    static const wxChartPointsTypes Line3D()
+    {
+        return (LINE3D);
+    }
+    static const wxChartPointsTypes Area()
+    {
+        return (AREA);
+    }
+    static const wxChartPointsTypes Area3D()
+    {
+        return (AREA3D);
+    }
 
-	// conversion to int
-	//------------------
-	int GetIntType() const { return (int)m_Type; }
+    // conversion to int
+    //------------------
+    int GetIntType() const
+    {
+        return (int)m_Type;
+    }
 
 private:
-	const CHART_POINTS_TYPES m_Type;
+    const CHART_POINTS_TYPES m_Type;
 
-	wxChartPointsTypes(CHART_POINTS_TYPES t) : m_Type(t) {};
+    wxChartPointsTypes(CHART_POINTS_TYPES t) : m_Type(t) {};
 
-	// Wrong. Only for MSW compiler
+    // Wrong. Only for MSW compiler
     wxChartPointsTypes& operator=(const wxChartPointsTypes& UNUSED_ARG(rhs))
-        { return *this;}
+    {
+        return *this;
+    }
 };
 
 //+++-S-cf-------------------------------------------------------------------
@@ -83,11 +118,11 @@ private:
 //	RETURN:		bool
 //----------------------------------------------------------------------E-+++
 inline bool operator==(
-	const wxChartPointsTypes& lhs,
-	const wxChartPointsTypes& rhs
+    const wxChartPointsTypes& lhs,
+    const wxChartPointsTypes& rhs
 )
 {
-	return ( lhs.GetIntType() == rhs.GetIntType() );
+    return ( lhs.GetIntType() == rhs.GetIntType() );
 }
 
 #endif // __CHARTPOINTSTYPES_H__

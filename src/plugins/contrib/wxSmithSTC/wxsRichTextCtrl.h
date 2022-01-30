@@ -32,17 +32,17 @@
 
 class wxsRichTextCtrl : public wxsWidget
 {
-    public:
-        wxsRichTextCtrl(wxsItemResData* Data);
+public:
+    wxsRichTextCtrl(wxsItemResData* Data);
 
-    protected:
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnBuildCreatingCode();
-        virtual void OnEnumWidgetProperties(long Flags);
+protected:
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        wxSize          mSize;                          // used to check for default size
-        wxArrayString   mText;                          // initial text contents
-        wxsPositionSizeData     mVirtualSize;
+    wxSize          mSize;                          // used to check for default size
+    wxArrayString   mText;                          // initial text contents
+    wxsPositionSizeData     mVirtualSize;
 };
 
 #endif      // wxsRICHTEXTCTRL_H

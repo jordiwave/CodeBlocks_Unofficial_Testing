@@ -22,9 +22,9 @@ TextCtrlTask::TextCtrlTask(NassiView *view, NassiFileContent *nfc, TextCtrl *tex
         UpdateSize();
 
         wxTextAttr attr(*wxBLACK, wxNullColour,
-            m_textgraph->m_nmbr%2 ?
-                m_view->GetSourceFont() : m_view->GetCommentFont()
-        );
+                        m_textgraph->m_nmbr%2 ?
+                        m_view->GetSourceFont() : m_view->GetCommentFont()
+                       );
 
         m_textctrl->SetDefaultStyle( attr );
         m_textctrl->WriteText( *(m_textgraph->m_str) );
@@ -82,9 +82,9 @@ void TextCtrlTask::OnMouseRightDown(wxMouseEvent& /*event*/, const wxPoint& /*po
     CloseTask();
 }
 
-void TextCtrlTask::OnKeyDown(wxKeyEvent & /*event*/){}
+void TextCtrlTask::OnKeyDown(wxKeyEvent & /*event*/) {}
 
-void TextCtrlTask::OnChar(wxKeyEvent & /*event*/){}
+void TextCtrlTask::OnChar(wxKeyEvent & /*event*/) {}
 
 bool TextCtrlTask::HasSelection()const
 {
@@ -142,7 +142,7 @@ TextCtrlTask::EditPosition TextCtrlTask::GetEditPosition(const wxPoint &pos)
         wxPoint offset = m_textgraph->lineoffsets[n] + m_textgraph->offset;
         wxPoint size = m_textgraph->linesizes[n];
         if ( pos.x > offset.x && pos.x < offset.x + size.x &&
-             pos.y > offset.y && pos.y < offset.y + size.y )
+                pos.y > offset.y && pos.y < offset.y + size.y )
         {
             wxArrayInt widths = m_textgraph->linewidths[n];
             wxUint32 k;
@@ -165,16 +165,19 @@ void TextCtrlTask::UpdateSize()
 
 /// /////////////////////////////////
 
-void TextCtrlTask::OnMouseRightUp(wxMouseEvent& /*event*/, const wxPoint& /*position*/){}
+void TextCtrlTask::OnMouseRightUp(wxMouseEvent& /*event*/, const wxPoint& /*position*/) {}
 
-void TextCtrlTask::OnMouseLeftUp(wxMouseEvent& /*event*/, const wxPoint& /*position*/){}
+void TextCtrlTask::OnMouseLeftUp(wxMouseEvent& /*event*/, const wxPoint& /*position*/) {}
 
 HooverDrawlet *TextCtrlTask::OnMouseMove(wxMouseEvent& /*event*/, const wxPoint& /*position*/)
 {
     return 0;
 }
 
-void TextCtrlTask::UnlinkTextGraph(){m_textgraph = 0;}
+void TextCtrlTask::UnlinkTextGraph()
+{
+    m_textgraph = 0;
+}
 
 void TextCtrlTask::CloseTask()
 {

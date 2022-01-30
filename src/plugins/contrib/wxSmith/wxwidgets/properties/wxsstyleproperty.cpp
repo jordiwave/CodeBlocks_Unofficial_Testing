@@ -39,10 +39,10 @@ wxsStyleProperty::wxsStyleProperty(
     long _StyleSetPtrOffset,
     bool _IsExtra,
     int Priority):
-        wxsProperty(StyleName,DataName,Priority),
-        Offset(_Offset),
-        StyleSetPtrOffset(_StyleSetPtrOffset),
-        IsExtra(_IsExtra)
+    wxsProperty(StyleName,DataName,Priority),
+    Offset(_Offset),
+    StyleSetPtrOffset(_StyleSetPtrOffset),
+    IsExtra(_IsExtra)
 {
 }
 

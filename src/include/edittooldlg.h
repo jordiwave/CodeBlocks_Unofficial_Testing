@@ -14,18 +14,18 @@ class wxUpdateUIEvent;
 
 class EditToolDlg : public wxScrollingDialog
 {
-	public:
-		EditToolDlg(wxWindow* parent, cbTool* tool);
-		~EditToolDlg() override;
-		void EndModal(int retCode) override;
-	private:
-		void OnUpdateUI(wxUpdateUIEvent& event);
-		void OnBrowseCommand(wxCommandEvent& event);
-		void OnBrowseDir(wxCommandEvent& event);
+public:
+    EditToolDlg(wxWindow* parent, cbTool* tool);
+    ~EditToolDlg() override;
+    void EndModal(int retCode) override;
+private:
+    void OnUpdateUI(wxUpdateUIEvent& event);
+    void OnBrowseCommand(wxCommandEvent& event);
+    void OnBrowseDir(wxCommandEvent& event);
 
-		cbTool* m_Tool;   //!< the tool we are editing (setting up)
+    cbTool* m_Tool;   //!< the tool we are editing (setting up)
 
-		DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // EDITTOOLDLG_H

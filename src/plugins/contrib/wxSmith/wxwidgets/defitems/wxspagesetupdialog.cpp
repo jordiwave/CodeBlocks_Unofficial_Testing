@@ -26,7 +26,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsPageSetupDialog> Reg(_T("PageSetupDialog"), wxsTTool, _T("Dialogs"), 130, false);
+wxsRegisterItem<wxsPageSetupDialog> Reg(_T("PageSetupDialog"), wxsTTool, _T("Dialogs"), 130, false);
 }
 
 /*! \brief Ctor
@@ -109,77 +109,93 @@ void wxsPageSetupDialog::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/printdlg.h>"),GetInfo().ClassName,hfInPCH);
+
+        wxString sDataName = GetCoderContext()->GetUniqueName(_T("pageSetupDialogData"));
+        AddDeclaration(wxString::Format(wxT("wxPageSetupDialogData  *%s;"), sDataName.wx_str()));
+        Codef(_T("\t%s = new wxPageSetupDialogData;\n"), sDataName.wx_str());
+
+        // These functions are Windows only.
+        if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
         {
-            AddHeader(_T("<wx/printdlg.h>"),GetInfo().ClassName,hfInPCH);
-
-            wxString sDataName = GetCoderContext()->GetUniqueName(_T("pageSetupDialogData"));
-            AddDeclaration(wxString::Format(wxT("wxPageSetupDialogData  *%s;"), sDataName.wx_str()));
-            Codef(_T("\t%s = new wxPageSetupDialogData;\n"), sDataName.wx_str());
-
-            // These functions are Windows only.
-            if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
-                if(m_bEnableHelp){
-                    Codef(_T("\t%s->EnableHelp(%b);\n"), sDataName.wx_str(), m_bEnableHelp);
-                }
-                if(!m_bEnableMargins){
-                    Codef(_T("\t%s->EnableMargins(%b);\n"), sDataName.wx_str(), m_bEnableMargins);
-                }
-                if(!m_bEnableOrientation){
-                    Codef(_T("\t%s->EnableOrientation(%b);\n"), sDataName.wx_str(), m_bEnableOrientation);
-                }
-                if(!m_bEnablePaper){
-                    Codef(_T("\t%s->EnablePaper(%b);\n"), sDataName.wx_str(), m_bEnablePaper);
-                }
-                if(m_bDefaultInfo){
-                    Codef(_T("\t%s->SetDefaultInfo(%b);\n"), sDataName.wx_str(), m_bDefaultInfo);
-                }
-                if(m_bDefaultMinMargins){
-                    Codef(_T("\t%s->SetDefaultMinMargins(%b);\n"), sDataName.wx_str(), m_bDefaultMinMargins);
-                }
+            if(m_bEnableHelp)
+            {
+                Codef(_T("\t%s->EnableHelp(%b);\n"), sDataName.wx_str(), m_bEnableHelp);
             }
-
-            if(!m_bEnablePrinter){
-                Codef(_T("\t%s->EnablePrinter(%b);\n"), sDataName.wx_str(), m_bEnablePrinter);
+            if(!m_bEnableMargins)
+            {
+                Codef(_T("\t%s->EnableMargins(%b);\n"), sDataName.wx_str(), m_bEnableMargins);
             }
-            if(m_iMarginLeft > -1 && m_iMarginTop > -1){
-                Codef(_T("\t%s->SetMarginTopLeft(wxPoint(%d, %d));\n"), sDataName.wx_str(), m_iMarginLeft, m_iMarginTop);
+            if(!m_bEnableOrientation)
+            {
+                Codef(_T("\t%s->EnableOrientation(%b);\n"), sDataName.wx_str(), m_bEnableOrientation);
             }
-            if(m_iMarginRight > -1 && m_iMarginBottom > -1){
-                Codef(_T("\t%s->SetMarginBottomRight(wxPoint(%d, %d));\n"), sDataName.wx_str(), m_iMarginRight, m_iMarginBottom);
+            if(!m_bEnablePaper)
+            {
+                Codef(_T("\t%s->EnablePaper(%b);\n"), sDataName.wx_str(), m_bEnablePaper);
             }
-            // These functions are Windows only.
-            if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
-                if(m_iMarginMinLeft > -1 && m_iMarginMinTop > -1){
-                    Codef(_T("\t%s->SetMinMarginTopLeft(wxPoint(%d, %d));\n"), sDataName.wx_str(), m_iMarginMinLeft, m_iMarginMinTop);
-                }
-                if(m_iMarginMinRight > -1 && m_iMarginMinBottom > -1){
-                    Codef(_T("\t%s->SetMinMarginBottomRight(wxPoint(%d, %d));\n"), sDataName.wx_str(), m_iMarginMinRight, m_iMarginMinBottom);
-                }
+            if(m_bDefaultInfo)
+            {
+                Codef(_T("\t%s->SetDefaultInfo(%b);\n"), sDataName.wx_str(), m_bDefaultInfo);
             }
-            // If PaperId = wxPAPER_NONE and paper size = wxDefaultSize, the default system settings will be used.
-            if(m_iPaperID != wxPAPER_NONE){
-                // Set paper wxPAPER_NONE is not set.
-                Codef(_T("\t%s->SetPaperId(%s);\n"), sDataName.wx_str(), arrPaperIDs[m_iPaperID].wx_str());
+            if(m_bDefaultMinMargins)
+            {
+                Codef(_T("\t%s->SetDefaultMinMargins(%b);\n"), sDataName.wx_str(), m_bDefaultMinMargins);
             }
-            else{
-                // Set paper size if wxPAPER_NONE is set.
-                if(m_iPaperWidth != -1 && m_iPaperHeight != -1){
-                    Codef(_T("\t%s->SetPaperSize(wxSize(%d, %d));\n"), sDataName.wx_str(), m_iPaperWidth, m_iPaperHeight);
-                }
-            }
-
-            Codef(_T("%C(%W, %s);\n"), sDataName.wx_str());
-            BuildSetupWindowCode();
-            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("delete %s;\n"), GetVarName().wx_str()));
-            return;
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
+        if(!m_bEnablePrinter)
         {
-            wxsCodeMarks::Unknown(_T("wxsPageSetupDialog::OnBuildCreatingCode"),GetLanguage());
+            Codef(_T("\t%s->EnablePrinter(%b);\n"), sDataName.wx_str(), m_bEnablePrinter);
         }
+        if(m_iMarginLeft > -1 && m_iMarginTop > -1)
+        {
+            Codef(_T("\t%s->SetMarginTopLeft(wxPoint(%d, %d));\n"), sDataName.wx_str(), m_iMarginLeft, m_iMarginTop);
+        }
+        if(m_iMarginRight > -1 && m_iMarginBottom > -1)
+        {
+            Codef(_T("\t%s->SetMarginBottomRight(wxPoint(%d, %d));\n"), sDataName.wx_str(), m_iMarginRight, m_iMarginBottom);
+        }
+        // These functions are Windows only.
+        if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
+        {
+            if(m_iMarginMinLeft > -1 && m_iMarginMinTop > -1)
+            {
+                Codef(_T("\t%s->SetMinMarginTopLeft(wxPoint(%d, %d));\n"), sDataName.wx_str(), m_iMarginMinLeft, m_iMarginMinTop);
+            }
+            if(m_iMarginMinRight > -1 && m_iMarginMinBottom > -1)
+            {
+                Codef(_T("\t%s->SetMinMarginBottomRight(wxPoint(%d, %d));\n"), sDataName.wx_str(), m_iMarginMinRight, m_iMarginMinBottom);
+            }
+        }
+        // If PaperId = wxPAPER_NONE and paper size = wxDefaultSize, the default system settings will be used.
+        if(m_iPaperID != wxPAPER_NONE)
+        {
+            // Set paper wxPAPER_NONE is not set.
+            Codef(_T("\t%s->SetPaperId(%s);\n"), sDataName.wx_str(), arrPaperIDs[m_iPaperID].wx_str());
+        }
+        else
+        {
+            // Set paper size if wxPAPER_NONE is set.
+            if(m_iPaperWidth != -1 && m_iPaperHeight != -1)
+            {
+                Codef(_T("\t%s->SetPaperSize(wxSize(%d, %d));\n"), sDataName.wx_str(), m_iPaperWidth, m_iPaperHeight);
+            }
+        }
+
+        Codef(_T("%C(%W, %s);\n"), sDataName.wx_str());
+        BuildSetupWindowCode();
+        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("delete %s;\n"), GetVarName().wx_str()));
+        return;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsPageSetupDialog::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 
@@ -193,7 +209,8 @@ void wxsPageSetupDialog::OnEnumToolProperties(cb_unused long Flags)
 {
     /*! \brief Paper IDs.
      */
-    static const long PaperIDs[] = {
+    static const long PaperIDs[] =
+    {
         wxPAPER_NONE,
         wxPAPER_LETTER,
         wxPAPER_LEGAL,
@@ -245,7 +262,8 @@ void wxsPageSetupDialog::OnEnumToolProperties(cb_unused long Flags)
 #undef _
 #define _(x)   L##x
 
-    static const wxChar* PaperIDNames[]  = {
+    static const wxChar* PaperIDNames[]  =
+    {
         _("Use specific dimensions"),
         _("Letter, 8 1/2 by 11 inches"),
         _("Legal, 8 1/2 by 14 inches"),
@@ -294,7 +312,8 @@ void wxsPageSetupDialog::OnEnumToolProperties(cb_unused long Flags)
 #pragma pop_macro("_")
 
     // These functions are Windows only.
-    if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
+    if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
+    {
         WXS_BOOL(wxsPageSetupDialog, m_bDefaultInfo, _("Default Info"), _T("default_info"), false)
         WXS_BOOL(wxsPageSetupDialog, m_bEnableHelp, _("Enable Help"), _T("enable_help"), false)
         WXS_BOOL(wxsPageSetupDialog, m_bEnableMargins, _("Enable Margins"), _T("enable_margins"), true)
@@ -304,7 +323,8 @@ void wxsPageSetupDialog::OnEnumToolProperties(cb_unused long Flags)
     WXS_LONG(wxsPageSetupDialog, m_iMarginRight,  _("Margin Right (mm)"), _T("margin_right"), -1)
     WXS_LONG(wxsPageSetupDialog, m_iMarginBottom,  _("Margin Bottom (mm)"), _T("margin_bottom"), -1)
     // These functions are Windows only.
-    if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
+    if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
+    {
         WXS_BOOL(wxsPageSetupDialog, m_bDefaultMinMargins, _("Default Min. Margins"), _T("default_min_margins"), false)
         WXS_LONG(wxsPageSetupDialog, m_iMarginMinLeft,  _("Min. Margin Left (mm)"), _T("min_margin_left"), -1)
         WXS_LONG(wxsPageSetupDialog, m_iMarginMinTop,  _("Min. Margin Top (mm)"), _T("min_margin_top"), -1)
@@ -312,7 +332,8 @@ void wxsPageSetupDialog::OnEnumToolProperties(cb_unused long Flags)
         WXS_LONG(wxsPageSetupDialog, m_iMarginMinBottom,  _("Min. Margin Bottom (mm)"), _T("min_margin_bottom"), -1)
     }
     // These functions are Windows only.
-    if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
+    if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
+    {
         WXS_BOOL(wxsPageSetupDialog, m_bEnableOrientation, _("Enable Orientation"), _T("enable_orientation"), true)
         WXS_BOOL(wxsPageSetupDialog, m_bEnablePaper, _("Enable Paper"), _T("enable_paper"), true)
     }

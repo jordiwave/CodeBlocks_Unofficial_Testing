@@ -3,25 +3,25 @@
 namespace
 {
 
-    #include "images/wxled16.xpm"
-    #include "images/wxled32.xpm"
+#include "images/wxled16.xpm"
+#include "images/wxled32.xpm"
 
 
-    wxsRegisterItem<wxsLed> Reg(
-        _T("wxLed"),
-        wxsTWidget,
-        _T("wxWindows"),
-        _T("Thomas Monjalon"),
-        _T(""),
-        _T(""),
-        _T("Led"),
-        80,
-        _T("Led"),
-        wxsCPP,
-        1, 0,
-        wxBitmap(wxled32),
-        wxBitmap(wxled16),
-        true);
+wxsRegisterItem<wxsLed> Reg(
+    _T("wxLed"),
+    wxsTWidget,
+    _T("wxWindows"),
+    _T("Thomas Monjalon"),
+    _T(""),
+    _T(""),
+    _T("Led"),
+    80,
+    _T("Led"),
+    wxsCPP,
+    1, 0,
+    wxBitmap(wxled32),
+    wxBitmap(wxled16),
+    true);
 }
 
 wxsLed::wxsLed(wxsItemResData* Data):
@@ -31,7 +31,7 @@ wxsLed::wxsLed(wxsItemResData* Data):
         NULL,
         NULL,
         flVariable | flId|flEnabled),
-        m_State(true)
+    m_State(true)
 {
     //ctor
     m_Disable = wxColour(128,128,128);
@@ -54,20 +54,20 @@ void wxsLed::OnBuildCreatingCode()
 
     switch ( GetLanguage())
     {
-        case wxsCPP:
-            AddHeader(_T("<wx/led.h>"),GetInfo().ClassName);
-            Codef(_T("%C(%W,%I,%s,%s,%s,%P,%S);\n"), ss.wx_str(), ss2.wx_str(), ss3.wx_str());
-            if ( !GetBaseProps()->m_Enabled)
-                Codef(_T("%ADisable();\n"));
-            if(m_State)
-                Codef(_T("%ASwitchOn();\n"));
-            else
-                Codef(_T("%ASwitchOff();\n"));
-            break;
+    case wxsCPP:
+        AddHeader(_T("<wx/led.h>"),GetInfo().ClassName);
+        Codef(_T("%C(%W,%I,%s,%s,%s,%P,%S);\n"), ss.wx_str(), ss2.wx_str(), ss3.wx_str());
+        if ( !GetBaseProps()->m_Enabled)
+            Codef(_T("%ADisable();\n"));
+        if(m_State)
+            Codef(_T("%ASwitchOn();\n"));
+        else
+            Codef(_T("%ASwitchOff();\n"));
+        break;
 
-        case wxsUnknownLanguage: // fall-though
-        default:
-            wxsCodeMarks::Unknown(_T("wxsLed::OnBuildCreatingCode"),GetLanguage());
+    case wxsUnknownLanguage: // fall-though
+    default:
+        wxsCodeMarks::Unknown(_T("wxsLed::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
@@ -87,22 +87,22 @@ void wxsLed::OnEnumWidgetProperties(cb_unused long Flags)
 {
 
     WXS_COLOUR(
-    wxsLed,
-    m_Disable,
-    _("Disable Colour"),
-    _T("disable_colour"));
+        wxsLed,
+        m_Disable,
+        _("Disable Colour"),
+        _T("disable_colour"));
 
     WXS_COLOUR(
-    wxsLed,
-    m_EnableOn,
-    _("On Colour"),
-    _T("on_colour"));
+        wxsLed,
+        m_EnableOn,
+        _("On Colour"),
+        _T("on_colour"));
 
     WXS_COLOUR(
-    wxsLed,
-    m_EnableOff,
-    _("Off Colour"),
-    _T("off_colour"));
+        wxsLed,
+        m_EnableOff,
+        _("Off Colour"),
+        _T("off_colour"));
 
     WXS_BOOL(
         wxsLed,

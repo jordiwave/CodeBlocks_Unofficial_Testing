@@ -11,9 +11,9 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/menu.h>
-    #include "configmanager.h"
-    #include "editormanager.h"
+#include <wx/menu.h>
+#include "configmanager.h"
+#include "editormanager.h"
 #endif
 
 #include <wx/docview.h>
@@ -42,7 +42,8 @@ void RecentItemsList::AddToHistory(const wxString& FileName)
     for (size_t i = 0; i < m_list->GetCount(); ++i)
     {
         if (low == m_list->GetHistoryFile(i).Lower())
-        {    // it exists, set filename to the existing name, so it can become
+        {
+            // it exists, set filename to the existing name, so it can become
             // the most recent one
             filename = m_list->GetHistoryFile(i);
             break;

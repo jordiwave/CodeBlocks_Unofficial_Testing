@@ -58,20 +58,22 @@
 
 /* the affix table entry */
 
-struct affent {
-  char* appnd;
-  char* strip;
-  short appndl;
-  short stripl;
-  char achar;
-  char xpflg;
-  short numconds;
-  char conds[SET_SIZE];
+struct affent
+{
+    char* appnd;
+    char* strip;
+    short appndl;
+    short stripl;
+    char achar;
+    char xpflg;
+    short numconds;
+    char conds[SET_SIZE];
 };
 
-struct affixptr {
-  struct affent* aep;
-  int num;
+struct affixptr
+{
+    struct affent* aep;
+    int num;
 };
 
 /* the prefix and suffix table */
@@ -85,10 +87,11 @@ struct affixptr ptable[MAX_PREFIXES];
 struct affixptr stable[MAX_SUFFIXES];
 
 /* data structure to store results of lookups */
-struct matches {
-  struct hentry* hashent; /* hash table entry */
-  struct affent* prefix;  /* Prefix used, or NULL */
-  struct affent* suffix;  /* Suffix used, or NULL */
+struct matches
+{
+    struct hentry* hashent; /* hash table entry */
+    struct affent* prefix;  /* Prefix used, or NULL */
+    struct affent* suffix;  /* Suffix used, or NULL */
 };
 
 int numroots;                    /* number of root words found */
@@ -96,11 +99,12 @@ struct matches roots[MAX_ROOTS]; /* list of root words found */
 
 /* hashing stuff */
 
-struct hentry {
-  char* word;
-  char* affstr;
-  struct hentry* next;
-  int keep;
+struct hentry
+{
+    char* word;
+    char* affstr;
+    struct hentry* next;
+    int keep;
 };
 
 int tablesize;
@@ -109,9 +113,10 @@ struct hentry* tableptr;
 /* unmunch stuff */
 
 int numwords; /* number of words found */
-struct dwords {
-  char* word;
-  int pallow;
+struct dwords
+{
+    char* word;
+    int pallow;
 };
 
 struct dwords wlist[MAX_WORDS]; /* list words found */

@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        
-// Purpose:     
-// Author:      
-// Modified by: 
+// Name:
+// Purpose:
+// Author:
+// Modified by:
 // Created:     Mon 10 May 2004 10:44:57 PM EDT
-// RCS-ID:      
-// Copyright:   
-// Licence:     
+// RCS-ID:
+// Copyright:
+// Licence:
 /////////////////////////////////////////////////////////////////////////////
 
 /*!
@@ -58,7 +58,7 @@ class EngineDictionaryDownloader;
  */
 
 class DictionaryWizard: public wxWizard
-{    
+{
     DECLARE_CLASS( DictionaryWizard )
     DECLARE_EVENT_TABLE()
 
@@ -84,10 +84,19 @@ public:
 
     /// Should we show tooltips?
     static bool ShowToolTips();
-    
-    void SetEngineDownloader(EngineDictionaryDownloader* pDownloader) { m_pDownloader = pDownloader; }
-    EngineDictionaryDownloader* GetEngineDownloader() { return m_pDownloader; }
-    wxArrayString* GetDictionariesToDownload() { return &m_DictionariesToDownload; }
+
+    void SetEngineDownloader(EngineDictionaryDownloader* pDownloader)
+    {
+        m_pDownloader = pDownloader;
+    }
+    EngineDictionaryDownloader* GetEngineDownloader()
+    {
+        return m_pDownloader;
+    }
+    wxArrayString* GetDictionariesToDownload()
+    {
+        return &m_DictionariesToDownload;
+    }
     void PopulateDictionariesToDownload();
 
 ////@begin DictionaryWizard member variables
@@ -103,7 +112,7 @@ private:
  */
 
 class WizardPage1: public wxWizardPageSimple
-{    
+{
     DECLARE_DYNAMIC_CLASS( WizardPage1 )
     DECLARE_EVENT_TABLE()
 
@@ -138,7 +147,7 @@ public:
  */
 
 class WizardPage2: public wxWizardPageSimple
-{    
+{
     DECLARE_DYNAMIC_CLASS( WizardPage2 )
     DECLARE_EVENT_TABLE()
 
@@ -158,14 +167,14 @@ public:
 ////@end WizardPage2 event handler declarations
     void OnPageChanged(wxWizardEvent& event);
     void OnButtonDownloadClick( wxCommandEvent& event );
-    
+
 ////@begin WizardPage2 member function declarations
 ////@end WizardPage2 member function declarations
 
     /// Should we show tooltips?
     static bool ShowToolTips();
     wxString GenerateDictionarySummary();
-    
+
 ////@begin WizardPage2 member variables
 ////@end WizardPage2 member variables
 };

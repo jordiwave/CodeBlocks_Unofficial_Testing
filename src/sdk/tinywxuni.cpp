@@ -1,10 +1,10 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/file.h>
-    #include <wx/string.h>
-    #include "filemanager.h"
-    #include "manager.h"
+#include <wx/file.h>
+#include <wx/string.h>
+#include "filemanager.h"
+#include "manager.h"
 #endif
 
 #include "tinywxuni.h"
@@ -20,7 +20,7 @@ bool TinyXML::LoadDocument(const wxString& filename, TiXmlDocument *doc)
     size_t len = file.Length();
 
     if (!len)
-		return false;
+        return false;
 
     char *input = new char[len+1];
     input[len] = '\0';

@@ -1,8 +1,8 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include "editorbase.h"
-    #include <wx/dir.h>
+#include "editorbase.h"
+#include <wx/dir.h>
 #endif
 
 #include <wx/tokenzr.h>
@@ -14,50 +14,50 @@
 #define CC_PARSER_BASE_DEBUG_OUTPUT 0
 
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
-    #if CC_GLOBAL_DEBUG_OUTPUT == 1
-        #undef CC_PARSER_BASE_DEBUG_OUTPUT
-        #define CC_PARSER_BASE_DEBUG_OUTPUT 1
-    #elif CC_PARSER_BASE_DEBUG_OUTPUT == 2
-        #undef CC_PARSER_BASE_DEBUG_OUTPUT
-        #define CC_PARSER_BASE_DEBUG_OUTPUT 2
-    #endif
+#if CC_GLOBAL_DEBUG_OUTPUT == 1
+#undef CC_PARSER_BASE_DEBUG_OUTPUT
+#define CC_PARSER_BASE_DEBUG_OUTPUT 1
+#elif CC_PARSER_BASE_DEBUG_OUTPUT == 2
+#undef CC_PARSER_BASE_DEBUG_OUTPUT
+#define CC_PARSER_BASE_DEBUG_OUTPUT 2
+#endif
 #endif
 
 #ifdef CC_PARSER_TEST
-    #define TRACE(format, args...) \
+#define TRACE(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-    #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-    #define TRACE2_SET_FLAG(traceFile)
+#define TRACE2_SET_FLAG(traceFile)
 
-    // don't use locker macros in the cctest project
-    #undef CC_LOCKER_TRACK_TT_MTX_LOCK
-    #define CC_LOCKER_TRACK_TT_MTX_LOCK(a)
-    #undef CC_LOCKER_TRACK_TT_MTX_UNLOCK
-    #define CC_LOCKER_TRACK_TT_MTX_UNLOCK(a)
+// don't use locker macros in the cctest project
+#undef CC_LOCKER_TRACK_TT_MTX_LOCK
+#define CC_LOCKER_TRACK_TT_MTX_LOCK(a)
+#undef CC_LOCKER_TRACK_TT_MTX_UNLOCK
+#define CC_LOCKER_TRACK_TT_MTX_UNLOCK(a)
 #else
-    #if CC_PARSER_BASE_DEBUG_OUTPUT == 1
-        #define TRACE(format, args...) \
+#if CC_PARSER_BASE_DEBUG_OUTPUT == 1
+#define TRACE(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-        #define TRACE2(format, args...)
-        #define TRACE2_SET_FLAG(traceFile)
-    #elif CC_PARSER_BASE_DEBUG_OUTPUT == 2
-        #define TRACE(format, args...)                                              \
+#define TRACE2(format, args...)
+#define TRACE2_SET_FLAG(traceFile)
+#elif CC_PARSER_BASE_DEBUG_OUTPUT == 2
+#define TRACE(format, args...)                                              \
             do                                                                      \
             {                                                                       \
                 if (g_EnableDebugTrace)                                             \
                     CCLogger::Get()->DebugLog(wxString::Format(format, ##args));                   \
             }                                                                       \
             while (false)
-        #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-        #define TRACE2_SET_FLAG(traceFile) \
+#define TRACE2_SET_FLAG(traceFile) \
             g_EnableDebugTrace = !g_DebugTraceFile.IsEmpty() && traceFile.EndsWith(g_DebugTraceFile)
-    #else
-        #define TRACE(format, args...)
-        #define TRACE2(format, args...)
-        #define TRACE2_SET_FLAG(traceFile)
-    #endif
+#else
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
+#define TRACE2_SET_FLAG(traceFile)
+#endif
 #endif // CC_PARSER_TEST
 
 // both cctest and codecompletion plugin need the FileType() function, but the former is much
@@ -69,9 +69,16 @@ ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool /*
 {
     static bool          empty_ext = true;
     static wxArrayString header_ext;
-    header_ext.Add(_T("h")); header_ext.Add(_T("hpp")); header_ext.Add(_T("tcc")); header_ext.Add(_T("xpm"));
+    header_ext.Add(_T("h"));
+    header_ext.Add(_T("hpp"));
+    header_ext.Add(_T("tcc"));
+    header_ext.Add(_T("xpm"));
     static wxArrayString source_ext;
-    source_ext.Add(_T("c")); source_ext.Add(_T("cpp")); source_ext.Add(_T("cxx")); source_ext.Add(_T("cc")); source_ext.Add(_T("c++"));
+    source_ext.Add(_T("c"));
+    source_ext.Add(_T("cpp"));
+    source_ext.Add(_T("cxx"));
+    source_ext.Add(_T("cc"));
+    source_ext.Add(_T("c++"));
 
     if (filename.IsEmpty())
     {
@@ -463,7 +470,7 @@ Token* ParserBase::GetTokenInFile(wxString filename, wxString requestedDisplayNa
         // lock failed, do not block the UI thread
         // Note: This function called from a UI/clangd event, so it's extremely unlikely that
         // any other thread has the lock, unless the user is fast enough
-        // the refresh the ClassBrowser while this event is running.
+        // to refresh the ClassBrowser while this event is running.
         wxString msg = wxString::Format("Error: Lock failed: %s", __FUNCTION__);
         Manager::Get()->GetLogManager()->DebugLog(msg);
         return nullptr;
@@ -477,7 +484,7 @@ Token* ParserBase::GetTokenInFile(wxString filename, wxString requestedDisplayNa
         // ---------------------------------------------
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex) //UNlock TokenTree
         // ---------------------------------------------
-       return nullptr;
+        return nullptr;
     }
     else
     {

@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12197 $
-* $Id: wxseventseditor.cpp 12197 2020-08-11 08:14:14Z fuscated $
+* $Revision: 12683 $
+* $Id: wxseventseditor.cpp 12683 2022-01-27 11:09:56Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxseventseditor.cpp $
 */
 
@@ -30,8 +30,8 @@
 
 namespace
 {
-    const wxString NoneStr   = _("-- None --");
-    const wxString AddNewStr = _("-- Add new handler --");
+const wxString NoneStr   = _("-- None --");
+const wxString AddNewStr = _("-- Add new handler --");
 }
 
 wxsEventsEditor::wxsEventsEditor():
@@ -149,7 +149,7 @@ void wxsEventsEditor::PGChanged(wxsItem* Item,wxsPropertyGridManager* Grid,wxPGI
     // 1, the event sink already have a real function name associated
     // 2, the current selected name is the same as the sink name
     if (   ( !usedHandlerName.IsEmpty() )
-        && usedHandlerName.IsSameAs(Selection) )
+            && usedHandlerName.IsSameAs(Selection) )
     {
         // which means this event is emulated from the double click on the event ID name,
         // user want to jump to the implementation of this event handler function body,
@@ -158,7 +158,7 @@ void wxsEventsEditor::PGChanged(wxsItem* Item,wxsPropertyGridManager* Grid,wxPGI
         return;
     }
     else if (  usedHandlerName.IsEmpty()
-             && Selection.IsSameAs(NoneStr) )
+               && Selection.IsSameAs(NoneStr) )
     {
         // special case here(cause by the emulate of OnChange when user double click on the event
         // name, nothing should be done in this case.
@@ -212,113 +212,113 @@ bool wxsEventsEditor::GotoOrBuildEvent(wxsItem* Item,int EventIndex,wxsPropertyG
 void wxsEventsEditor::FindFunctions(const wxString& ArgType,wxArrayString& Array)
 {
     wxString Code = wxsCoder::Get()->GetCode(m_Header,
-        wxsCodeMarks::Beg(m_Language,_T("Handlers"),m_Class),
-        wxsCodeMarks::End(m_Language),
-        false,false);
+                    wxsCodeMarks::Beg(m_Language,_T("Handlers"),m_Class),
+                    wxsCodeMarks::End(m_Language),
+                    false,false);
 
     switch ( m_Language )
     {
-        case wxsCPP:
-        {
-            // Basic parsing
+    case wxsCPP:
+    {
+        // Basic parsing
 
-            for(;;)
+        for(;;)
+        {
+            // Searching for void statement - it may begin new fuunction declaration
+
+            int Pos = Code.Find(_T("void"));
+            if ( Pos == -1 ) break;
+
+            // Removing all before function name
+            Code.Remove(0,Pos+4).Trim(false);
+
+            // Getting function name
+            Pos  = 0;
+            while ( (int)Code.Length() > Pos )
             {
-                // Searching for void statement - it may begin new fuunction declaration
-
-                int Pos = Code.Find(_T("void"));
-                if ( Pos == -1 ) break;
-
-                // Removing all before function name
-                Code.Remove(0,Pos+4).Trim(false);
-
-                // Getting function name
-                Pos  = 0;
-                while ( (int)Code.Length() > Pos )
+                wxChar First = Code.GetChar(Pos);
+                if ( ( First<_T('A') || First>_T('Z') ) &&
+                        ( First<_T('a') || First>_T('z') ) &&
+                        ( First<_T('0') || First>_T('9') ) &&
+                        ( First!=_T('_') ) )
                 {
-                    wxChar First = Code.GetChar(Pos);
-                    if ( ( First<_T('A') || First>_T('Z') ) &&
-                         ( First<_T('a') || First>_T('z') ) &&
-                         ( First<_T('0') || First>_T('9') ) &&
-                         ( First!=_T('_') ) )
-                    {
-                        break;
-                    }
-                    Pos++;
+                    break;
                 }
-                wxString NewFunctionName = Code.Mid(0,Pos);
-                Code.Remove(0,Pos).Trim(false);
-                if ( !Code.Length() ) break;
-
-                // Parsing arguments
-                if ( Code.GetChar(0) != _T('(') ) continue;
-                Code.Remove(0,1).Trim(false);
-                if ( !Code.Length() ) break;
-
-                // Getting argument type
-                Pos  = 0;
-                while ( (int)Code.Length() > Pos )
-                {
-                    wxChar First = Code.GetChar(Pos);
-                    if ( ( First<_T('A') || First>_T('Z') ) &&
-                         ( First<_T('a') || First>_T('z') ) &&
-                         ( First<_T('0') || First>_T('9') ) &&
-                         ( First!=_T('_') ) )
-                    {
-                        break;
-                    }
-                    Pos++;
-                }
-                wxString NewEventType = Code.Mid(0,Pos);
-                Code.Remove(0,Pos).Trim(false);
-                if ( !Code.Length() ) break;
-
-                // Checking if the rest of declaratin is valid
-                if ( Code.GetChar(0) != _T('&') ) continue;
-                Code.Remove(0,1).Trim(false);
-                if ( !Code.Length() ) break;
-
-                // Skipping argument name
-                Pos  = 0;
-                while ( (int)Code.Length() > Pos )
-                {
-                    wxChar First = Code.GetChar(Pos);
-                    if ( ( First<_T('A') || First>_T('Z') ) &&
-                         ( First<_T('a') || First>_T('z') ) &&
-                         ( First<_T('0') || First>_T('9') ) &&
-                         ( First!=_T('_') ) )
-                    {
-                        break;
-                    }
-                    Pos++;
-                }
-                Code.Remove(0,Pos).Trim(false);
-                if ( !Code.Length() ) break;
-
-                if ( Code.GetChar(0) != _T(')') ) continue;
-                Code.Remove(0,1).Trim(false);
-                if ( !Code.Length() ) break;
-
-                if ( Code.GetChar(0) != _T(';') ) continue;
-                Code.Remove(0,1).Trim(false);
-
-                if ( NewFunctionName.Length() == 0 || NewEventType.Length() == 0 ) continue;
-
-                // We got new function, checking event type and adding to array
-
-                if ( !ArgType.Length() || ArgType == NewEventType )
-                {
-                    Array.Add(NewFunctionName);
-                }
+                Pos++;
             }
-            break;
-        }
+            wxString NewFunctionName = Code.Mid(0,Pos);
+            Code.Remove(0,Pos).Trim(false);
+            if ( !Code.Length() ) break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsEventsEditor::FindFunctions"),m_Language);
+            // Parsing arguments
+            if ( Code.GetChar(0) != _T('(') ) continue;
+            Code.Remove(0,1).Trim(false);
+            if ( !Code.Length() ) break;
+
+            // Getting argument type
+            Pos  = 0;
+            while ( (int)Code.Length() > Pos )
+            {
+                wxChar First = Code.GetChar(Pos);
+                if ( ( First<_T('A') || First>_T('Z') ) &&
+                        ( First<_T('a') || First>_T('z') ) &&
+                        ( First<_T('0') || First>_T('9') ) &&
+                        ( First!=_T('_') ) )
+                {
+                    break;
+                }
+                Pos++;
+            }
+            wxString NewEventType = Code.Mid(0,Pos);
+            Code.Remove(0,Pos).Trim(false);
+            if ( !Code.Length() ) break;
+
+            // Checking if the rest of declaratin is valid
+            if ( Code.GetChar(0) != _T('&') ) continue;
+            Code.Remove(0,1).Trim(false);
+            if ( !Code.Length() ) break;
+
+            // Skipping argument name
+            Pos  = 0;
+            while ( (int)Code.Length() > Pos )
+            {
+                wxChar First = Code.GetChar(Pos);
+                if ( ( First<_T('A') || First>_T('Z') ) &&
+                        ( First<_T('a') || First>_T('z') ) &&
+                        ( First<_T('0') || First>_T('9') ) &&
+                        ( First!=_T('_') ) )
+                {
+                    break;
+                }
+                Pos++;
+            }
+            Code.Remove(0,Pos).Trim(false);
+            if ( !Code.Length() ) break;
+
+            if ( Code.GetChar(0) != _T(')') ) continue;
+            Code.Remove(0,1).Trim(false);
+            if ( !Code.Length() ) break;
+
+            if ( Code.GetChar(0) != _T(';') ) continue;
+            Code.Remove(0,1).Trim(false);
+
+            if ( NewFunctionName.Length() == 0 || NewEventType.Length() == 0 ) continue;
+
+            // We got new function, checking event type and adding to array
+
+            if ( !ArgType.Length() || ArgType == NewEventType )
+            {
+                Array.Add(NewFunctionName);
+            }
         }
+        break;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsEventsEditor::FindFunctions"),m_Language);
+    }
     }
 
 }
@@ -394,60 +394,71 @@ bool wxsEventsEditor::CreateNewFunction(const wxsEventDesc* Event,const wxString
 {
     switch ( m_Language )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        wxString Declarations = wxsCoder::Get()->GetCode(
+                                    m_Header,
+                                    wxsCodeMarks::Beg(wxsCPP,_T("Handlers"),m_Class),
+                                    wxsCodeMarks::End(wxsCPP),
+                                    false,false);
+
+        if ( Declarations.Length() == 0 )
         {
-            wxString Declarations = wxsCoder::Get()->GetCode(
-                m_Header,
-                wxsCodeMarks::Beg(wxsCPP,_T("Handlers"),m_Class),
-                wxsCodeMarks::End(wxsCPP),
-                false,false);
-
-            if ( Declarations.Length() == 0 )
-            {
-                return false;
-            }
-
-            Declarations << _T("void ") << NewFunctionName << _T('(');
-            Declarations << Event->ArgType << _T("& event);\n");
-
-            wxsCoder::Get()->AddCode(
-                m_Header,
-                wxsCodeMarks::Beg(wxsCPP,_T("Handlers"),m_Class),
-                wxsCodeMarks::End(wxsCPP),
-                Declarations,
-                true, false, false);
-
-            cbEditor* Editor = Manager::Get()->GetEditorManager()->Open(m_Source);
-            if ( !Editor )
-            {
-                return false;
-            }
-
-            wxString NewFunctionCode;
-            NewFunctionCode <<
-                _T("\n")
-                _T("void ") << m_Class << _T("::") << NewFunctionName << _T("(") << Event->ArgType << _T("& event)\n")
-                _T("{\n")
-                _T("}\n");
-
-            // TODO: Replace line endings with propert string
-
-            cbStyledTextCtrl* Ctrl = Editor->GetControl();
-            int LineNumber = Ctrl->GetLineCount();
-            Ctrl->DocumentEnd();
-            Ctrl->AddText(NewFunctionCode);
-            Editor->SetModified();
-            Editor->Activate();
-            Editor->GotoLine(LineNumber+2);
-            Ctrl->LineEnd();
-            return true;
+            return false;
         }
 
-        case wxsUnknownLanguage: // fall-through
+        Declarations << _T("void ") << NewFunctionName << _T('(');
+        Declarations << Event->ArgType << _T("& event);\n");
+
+        wxsCoder::Get()->AddCode(
+            m_Header,
+            wxsCodeMarks::Beg(wxsCPP,_T("Handlers"),m_Class),
+            wxsCodeMarks::End(wxsCPP),
+            Declarations,
+            true, false, false);
+
+        cbEditor* Editor = Manager::Get()->GetEditorManager()->Open(m_Source);
+        if ( !Editor )
+        {
+            return false;
+        }
+
+        cbStyledTextCtrl* Ctrl = Editor->GetControl();
+
+        wxString EOL;
+        switch (Ctrl->GetEOLMode())
+        {
+        case wxSCI_EOL_CRLF:
+            EOL = "\r\n";
+            break;
+        case wxSCI_EOL_CR:
+            EOL = "\r";
+            break;
         default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsEventsEditor::CreateNewFunction"),m_Language);
+            EOL = "\n";
         }
+
+        wxString NewFunctionCode;
+        NewFunctionCode << EOL <<
+                        "void " << m_Class << "::" << NewFunctionName << '(' << Event->ArgType << "& event)" << EOL <<
+                        '{' << EOL <<
+                        '}' << EOL;
+
+        int LineNumber = Ctrl->GetLineCount();
+        Ctrl->DocumentEnd();
+        Ctrl->AddText(NewFunctionCode);
+        Editor->SetModified();
+        Editor->Activate();
+        Editor->GotoLine(LineNumber+2);
+        Ctrl->LineEnd();
+        return true;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsEventsEditor::CreateNewFunction"),m_Language);
+    }
     }
     return true;
 }

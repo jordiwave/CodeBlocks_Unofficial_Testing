@@ -9,16 +9,16 @@
 
 #include "sdk_precomp.h"
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/checkbox.h>
-    #include <wx/filename.h>
-    #include <wx/intl.h>
-    #include <wx/listbox.h>
-    #include <wx/textctrl.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/filename.h>
+#include <wx/intl.h>
+#include <wx/listbox.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "projectbuildtarget.h"
-    #include "cbproject.h"
+#include "projectbuildtarget.h"
+#include "cbproject.h"
 #endif
 #include <wx/filedlg.h>
 #include "selecttargetdlg.h"
@@ -28,39 +28,60 @@
 /// Cancel button possible.
 class TargetListData : public wxClientData
 {
-    public:
-        TargetListData(const wxString& ExecParameters, const wxString& HostApp, bool RunHostAppInTerminal,
-                       bool DefaultExecTarget) :
-            m_HostApp(HostApp),
-            m_ExecParameters(ExecParameters),
-            m_RunHostAppInTerminal(RunHostAppInTerminal),
-            m_DefaultExecTarget(DefaultExecTarget)
-        {
-        }
+public:
+    TargetListData(const wxString& ExecParameters, const wxString& HostApp, bool RunHostAppInTerminal,
+                   bool DefaultExecTarget) :
+        m_HostApp(HostApp),
+        m_ExecParameters(ExecParameters),
+        m_RunHostAppInTerminal(RunHostAppInTerminal),
+        m_DefaultExecTarget(DefaultExecTarget)
+    {
+    }
 
-        void SetExecParameters(const wxString& ExecParameters)
-        {
-            m_ExecParameters = ExecParameters;
-            // Replace all '\n' by ' ' in the program-parameters .
-            // This is necessary because a multiline text control may add
-            // '\n' to the text but these characters must not be part of the
-            // parameters when executing the program.
-            m_ExecParameters.Replace(_T("\n"), _T(" "));
-        }
-        void SetHostApp(const wxString &hostApp) { m_HostApp = hostApp; }
-        void SetRunHostAppInTerminal(bool runAppInTerminal) { m_RunHostAppInTerminal = runAppInTerminal; }
-        void SetDefaultExecTarget(bool defaultTarget) { m_DefaultExecTarget = defaultTarget; }
+    void SetExecParameters(const wxString& ExecParameters)
+    {
+        m_ExecParameters = ExecParameters;
+        // Replace all '\n' by ' ' in the program-parameters .
+        // This is necessary because a multiline text control may add
+        // '\n' to the text but these characters must not be part of the
+        // parameters when executing the program.
+        m_ExecParameters.Replace(_T("\n"), _T(" "));
+    }
+    void SetHostApp(const wxString &hostApp)
+    {
+        m_HostApp = hostApp;
+    }
+    void SetRunHostAppInTerminal(bool runAppInTerminal)
+    {
+        m_RunHostAppInTerminal = runAppInTerminal;
+    }
+    void SetDefaultExecTarget(bool defaultTarget)
+    {
+        m_DefaultExecTarget = defaultTarget;
+    }
 
-        const wxString& GetHostApp() const { return m_HostApp; }
-        const wxString& GetExecParameters() const { return m_ExecParameters; }
-        bool GetRunHostAppInTerminal() const { return m_RunHostAppInTerminal; }
-        bool GetDefaultExecTarget() const { return m_DefaultExecTarget; }
+    const wxString& GetHostApp() const
+    {
+        return m_HostApp;
+    }
+    const wxString& GetExecParameters() const
+    {
+        return m_ExecParameters;
+    }
+    bool GetRunHostAppInTerminal() const
+    {
+        return m_RunHostAppInTerminal;
+    }
+    bool GetDefaultExecTarget() const
+    {
+        return m_DefaultExecTarget;
+    }
 
-    private:
-        wxString m_HostApp;
-        wxString m_ExecParameters;
-        bool m_RunHostAppInTerminal;
-        bool m_DefaultExecTarget;
+private:
+    wxString m_HostApp;
+    wxString m_ExecParameters;
+    bool m_RunHostAppInTerminal;
+    bool m_DefaultExecTarget;
 };
 
 BEGIN_EVENT_TABLE(SelectTargetDlg, wxScrollingDialog)

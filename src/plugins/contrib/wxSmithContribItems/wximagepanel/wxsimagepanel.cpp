@@ -26,33 +26,33 @@ namespace
 {
 // Loading images from xpm files
 
-    #include "wxImagePanel16.xpm"
-    #include "wxImagePanel32.xpm"
+#include "wxImagePanel16.xpm"
+#include "wxImagePanel32.xpm"
 
-    wxsRegisterItem<wxsImagePanel> Reg(
-        _T("wxImagePanel"),                  // Class name
-        wxsTContainer,                       // Item type
-        _T("wxWindows"),                     // License
-        _T("Ron Collins"),                   // Author
-        _T("rcoll@theriver.com"),            // Author's email
-        _T(""),                              // Item's homepage
-        _T("Contrib"),                       // Category in palette
-        60,                                  // Priority in palette
-        _T("ImagePanel"),                    // Base part of names for new items
-        wxsCPP,                              // List of coding languages supported by this item
-        1, 0,                                // Version
-        wxBitmap(wxImagePanel32_xpm),        // 32x32 bitmap
-        wxBitmap(wxImagePanel16_xpm),        // 16x16 bitmap
-        false);                              // We do not allow this item inside XRC files
+wxsRegisterItem<wxsImagePanel> Reg(
+    _T("wxImagePanel"),                  // Class name
+    wxsTContainer,                       // Item type
+    _T("wxWindows"),                     // License
+    _T("Ron Collins"),                   // Author
+    _T("rcoll@theriver.com"),            // Author's email
+    _T(""),                              // Item's homepage
+    _T("Contrib"),                       // Category in palette
+    60,                                  // Priority in palette
+    _T("ImagePanel"),                    // Base part of names for new items
+    wxsCPP,                              // List of coding languages supported by this item
+    1, 0,                                // Version
+    wxBitmap(wxImagePanel32_xpm),        // 32x32 bitmap
+    wxBitmap(wxImagePanel16_xpm),        // 16x16 bitmap
+    false);                              // We do not allow this item inside XRC files
 
-    WXS_ST_BEGIN(wxsImagePanelStyles,_T("wxRAISED_BORDER|wxTAB_TRAVERSAL"))
-        WXS_ST_CATEGORY("wxImagePanel")
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsImagePanelStyles,_T("wxRAISED_BORDER|wxTAB_TRAVERSAL"))
+WXS_ST_CATEGORY("wxImagePanel")
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsImagePanelEvents)
-        WXS_EV_DEFAULTS()
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsImagePanelEvents)
+WXS_EV_DEFAULTS()
+WXS_EV_END()
 }
 
 

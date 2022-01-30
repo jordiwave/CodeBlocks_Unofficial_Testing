@@ -10,12 +10,12 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/intl.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/button.h>
-    #include <wx/msgdlg.h>
-    #include <wx/listbox.h>
-    #include "globals.h"
+#include <wx/intl.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/msgdlg.h>
+#include <wx/listbox.h>
+#include "globals.h"
 #endif
 
 #include "editarraystringdlg.h"

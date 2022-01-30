@@ -31,8 +31,8 @@ const int DEBUGGER_SHOW_FILE_LINE = wxNewId();
 
 DebuggerCmd::DebuggerCmd(DebuggerDriver* driver, const wxString& cmd, bool logToNormalLog)
     : m_Cmd(cmd),
-    m_pDriver(driver),
-    m_LogToNormalLog(logToNormalLog)
+      m_pDriver(driver),
+      m_LogToNormalLog(logToNormalLog)
 {
 }
 
@@ -43,7 +43,7 @@ void DebuggerCmd::ParseOutput(const wxString& output)
 }
 
 DbgCmd_UpdateWindow::DbgCmd_UpdateWindow(DebuggerDriver* driver,
-                                         cbDebuggerPlugin::DebugWindows windowToUpdate) :
+        cbDebuggerPlugin::DebugWindows windowToUpdate) :
     DebuggerCmd(driver),
     m_windowToUpdate(windowToUpdate)
 {
@@ -60,23 +60,23 @@ void DbgCmd_UpdateWindow::Action()
 // Custom window to display output of DebuggerInfoCmd
 class DebuggerInfoWindow : public wxScrollingDialog
 {
-    public:
-        DebuggerInfoWindow(wxWindow *parent, const wxString& title, const wxString& content)
-            : wxScrollingDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize,
-                                wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
-        {
-            wxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-            wxFont font(8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-            m_pText = new wxTextCtrl(this, -1, content, wxDefaultPosition, wxDefaultSize,
-                                     wxTE_READONLY | wxTE_MULTILINE | wxTE_RICH2 | wxHSCROLL);
-            m_pText->SetFont(font);
+public:
+    DebuggerInfoWindow(wxWindow *parent, const wxString& title, const wxString& content)
+        : wxScrollingDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize,
+                            wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
+    {
+        wxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+        wxFont font(8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+        m_pText = new wxTextCtrl(this, -1, content, wxDefaultPosition, wxDefaultSize,
+                                 wxTE_READONLY | wxTE_MULTILINE | wxTE_RICH2 | wxHSCROLL);
+        m_pText->SetFont(font);
 
-            sizer->Add(m_pText, 1, wxGROW);
+        sizer->Add(m_pText, 1, wxGROW);
 
-            SetSizer(sizer);
-            sizer->Layout();
-        }
-        wxTextCtrl* m_pText;
+        SetSizer(sizer);
+        sizer->Layout();
+    }
+    wxTextCtrl* m_pText;
 };
 
 void DebuggerInfoCmd::ParseOutput(const wxString& output)
@@ -97,14 +97,14 @@ wxString DebuggerBreakpoint::GetLocation() const
 {
     switch (type)
     {
-        case bptData:
-            return breakAddress;
-        case bptCode:
-            return filenameAsPassed;
-        case bptFunction:
-            return func;
-        default:
-            return _("Unknown");
+    case bptData:
+        return breakAddress;
+    case bptCode:
+        return filenameAsPassed;
+    case bptFunction:
+        return func;
+    default:
+        return _("Unknown");
     }
 }
 
@@ -122,14 +122,14 @@ wxString DebuggerBreakpoint::GetType() const
 {
     switch (type)
     {
-        case bptData:
-            return _("Data");
-        case bptCode:
-            return _("Code");
-        case bptFunction:
-            return _("Function");
-        default:
-            return _("Unknown");
+    case bptData:
+        return _("Data");
+    case bptCode:
+        return _("Code");
+    case bptFunction:
+        return _("Function");
+    default:
+        return _("Unknown");
     }
 }
 
@@ -137,38 +137,38 @@ wxString DebuggerBreakpoint::GetInfo() const
 {
     switch (type)
     {
-        case bptData:
-            if (breakOnRead && breakOnWrite)
-                return  _("type: read-write");
-            else if (breakOnRead)
-                return _("type: read");
-            else if (breakOnWrite)
-                return _("type: write");
-            else
-                return _("type: unknown");
-        case bptCode:
+    case bptData:
+        if (breakOnRead && breakOnWrite)
+            return  _("type: read-write");
+        else if (breakOnRead)
+            return _("type: read");
+        else if (breakOnWrite)
+            return _("type: write");
+        else
+            return _("type: unknown");
+    case bptCode:
+    {
+        wxString s;
+        if (useCondition)
+            s += _("condition: ") + condition;
+        if (useIgnoreCount)
         {
-            wxString s;
-            if (useCondition)
-                s += _("condition: ") + condition;
-            if (useIgnoreCount)
-            {
-                if (!s.empty())
-                    s += wxT(" ");
-                s += wxString::Format(_("ignore count: %d"), ignoreCount);
-            }
-            if (temporary)
-            {
-                if (!s.empty())
-                    s += wxT(" ");
-                s += _("temporary");
-            }
-            s += wxString::Format(wxT(" (index: %ld)"), index);
-            return s;
+            if (!s.empty())
+                s += wxT(" ");
+            s += wxString::Format(_("ignore count: %d"), ignoreCount);
         }
-        case bptFunction:
-        default:
-            return wxEmptyString;
+        if (temporary)
+        {
+            if (!s.empty())
+                s += wxT(" ");
+            s += _("temporary");
+        }
+        s += wxString::Format(wxT(" (index: %ld)"), index);
+        return s;
+    }
+    case bptFunction:
+    default:
+        return wxEmptyString;
     }
 }
 
@@ -432,7 +432,8 @@ bool IsPointerType(const wxString &type)
                 return numberOfStars > 1;
         }
 
-    } while (true);
+    }
+    while (true);
 
     // Should be unreachable
     return false;

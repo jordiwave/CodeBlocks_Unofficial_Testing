@@ -24,19 +24,19 @@
 
 namespace
 {
-    wxsRegisterItem<wxsFontPickerCtrl> Reg(_T("FontPickerCtrl"), wxsTWidget, _T("Advanced"), 100);
+wxsRegisterItem<wxsFontPickerCtrl> Reg(_T("FontPickerCtrl"), wxsTWidget, _T("Advanced"), 100);
 
-    WXS_ST_BEGIN(wxsFontPickerCtrlStyles,_T("wxFNTP_FONTDESC_AS_LABEL|wxFNTP_USEFONT_FOR_LABEL"))
-        WXS_ST_CATEGORY("wxFontPickerCtrl")
-        WXS_ST(wxFNTP_FONTDESC_AS_LABEL)
-        WXS_ST(wxFNTP_USEFONT_FOR_LABEL)
-        WXS_ST(wxFNTP_USE_TEXTCTRL)
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsFontPickerCtrlStyles,_T("wxFNTP_FONTDESC_AS_LABEL|wxFNTP_USEFONT_FOR_LABEL"))
+WXS_ST_CATEGORY("wxFontPickerCtrl")
+WXS_ST(wxFNTP_FONTDESC_AS_LABEL)
+WXS_ST(wxFNTP_USEFONT_FOR_LABEL)
+WXS_ST(wxFNTP_USE_TEXTCTRL)
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsFontPickerCtrlEvents)
-        WXS_EVI(EVT_FONTPICKER_CHANGED, wxEVT_COMMAND_FONTPICKER_CHANGED, wxFontPickerEvent, FontChanged)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsFontPickerCtrlEvents)
+WXS_EVI(EVT_FONTPICKER_CHANGED, wxEVT_COMMAND_FONTPICKER_CHANGED, wxFontPickerEvent, FontChanged)
+WXS_EV_END()
 }
 
 /*! \brief Ctor
@@ -61,27 +61,27 @@ void wxsFontPickerCtrl::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/fontpicker.h>"),GetInfo().ClassName,0);
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/fontpicker.h>"),GetInfo().ClassName,0);
 
-            wxString sFntName = GetCoderContext()->GetUniqueName(_T("PickerFont"));
-            wxString sFnt = m_fdFont.BuildFontCode(sFntName, GetCoderContext());
-            if ( sFnt.Len()==0 )
-            {
-                sFntName = wxT("wxNullFont");
-            }
-            Codef(_T("%s"), sFnt.wx_str());
-            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), sFntName.wx_str());
-            BuildSetupWindowCode();
-            return;
-        }
-
-        case wxsUnknownLanguage: // fall-through
-        default:
+        wxString sFntName = GetCoderContext()->GetUniqueName(_T("PickerFont"));
+        wxString sFnt = m_fdFont.BuildFontCode(sFntName, GetCoderContext());
+        if ( sFnt.Len()==0 )
         {
-            wxsCodeMarks::Unknown(_T("wxsFontPickerCtrl::OnBuildCreatingCode"),GetLanguage());
+            sFntName = wxT("wxNullFont");
         }
+        Codef(_T("%s"), sFnt.wx_str());
+        Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), sFntName.wx_str());
+        BuildSetupWindowCode();
+        return;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsFontPickerCtrl::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

@@ -33,7 +33,7 @@ A(B,C);
 # define _GLIBCXX_VISIBILITY(V) _GLIBCXX_PSEUDO_VISIBILITY(V)
 namespace std _GLIBCXX_VISIBILITY(default)
 {
-    class string { };
+class string { };
 }
 
 

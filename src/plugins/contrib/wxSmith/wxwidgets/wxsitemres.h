@@ -31,16 +31,16 @@ class wxsItemResData;
 /** \brief Some abstract interface allowing wxsItemResData to access some resource-specific functions easily */
 class wxsItemResFunctions
 {
-    public:
+public:
 
-        /** \brief Ctor */
-        wxsItemResFunctions() {};
+    /** \brief Ctor */
+    wxsItemResFunctions() {};
 
-        /** \brief Dctor */
-        virtual ~wxsItemResFunctions() {};
+    /** \brief Dctor */
+    virtual ~wxsItemResFunctions() {};
 
-        /** \brief Generating exact preview used in editor after pressing preview button */
-        virtual wxWindow* OnBuildExactPreview(wxWindow* Parent,wxsItemResData* Data) = 0;
+    /** \brief Generating exact preview used in editor after pressing preview button */
+    virtual wxWindow* OnBuildExactPreview(wxWindow* Parent,wxsItemResData* Data) = 0;
 };
 
 /** \brief Base class for resources using item as root element
@@ -51,112 +51,124 @@ class wxsItemResFunctions
 class wxsItemRes: public wxWidgetsRes, public wxsItemResFunctions
 {
     DECLARE_CLASS(wxsItemRes)
-    public:
+public:
 
-        /** \brief Available edit modes for item resources */
-        enum EditMode { File, Source, Mixed };
+    /** \brief Available edit modes for item resources */
+    enum EditMode { File, Source, Mixed };
 
-        /** \brief Structure containing all arguments required when creating new resource */
-        struct NewResourceParams
+    /** \brief Structure containing all arguments required when creating new resource */
+    struct NewResourceParams
+    {
+        enum Scope
         {
-            enum Scope
-            {
-                Public,
-                Protected,
-                Private
-            };
-
-            wxString Class;
-            wxString Src;
-            wxString Hdr;
-            wxString Xrc;
-            wxString Pch;
-            wxString Wxs;
-            wxString InitFunc;
-            wxString BaseClass;
-            wxString CustomCtorArgs;
-            wxString PchGuard;
-            bool GenSrc;
-            bool GenHdr;
-            bool GenXrc;
-            bool UsePch;
-            bool UseInitFunc;
-            bool CtorParent;
-            bool CtorParentDef;
-            bool CtorId;
-            bool CtorIdDef;
-            bool CtorPos;
-            bool CtorPosDef;
-            bool CtorSize;
-            bool CtorSizeDef;
-            bool UseFwdDecl;
-            bool UseI18n;
-            Scope ScopeIds;
-            Scope ScopeMembers;
-            Scope ScopeHandlers;
-
-            NewResourceParams():
-                GenSrc(false), GenHdr(false), GenXrc(false), UsePch(false),
-                UseInitFunc(false), CtorParent(false), CtorParentDef(false),
-                CtorId(false), CtorIdDef(false), CtorPos(false), CtorPosDef(false),
-                CtorSize(false), CtorSizeDef(false), UseFwdDecl(false), UseI18n(true),
-                ScopeIds(Protected), ScopeMembers(Public), ScopeHandlers(Private)
-            {}
+            Public,
+            Protected,
+            Private
         };
 
-        /** \brief Ctor */
-        wxsItemRes(wxsProject* Owner,const wxString& ResourceType,bool CanBeMain);
+        wxString Class;
+        wxString Src;
+        wxString Hdr;
+        wxString Xrc;
+        wxString Pch;
+        wxString Wxs;
+        wxString InitFunc;
+        wxString BaseClass;
+        wxString CustomCtorArgs;
+        wxString PchGuard;
+        bool GenSrc;
+        bool GenHdr;
+        bool GenXrc;
+        bool UsePch;
+        bool UseInitFunc;
+        bool CtorParent;
+        bool CtorParentDef;
+        bool CtorId;
+        bool CtorIdDef;
+        bool CtorPos;
+        bool CtorPosDef;
+        bool CtorSize;
+        bool CtorSizeDef;
+        bool UseFwdDecl;
+        bool UseI18n;
+        Scope ScopeIds;
+        Scope ScopeMembers;
+        Scope ScopeHandlers;
 
-        /** \brief Ctor for external resource
-         *  \param FileName name of XRC file
-         *  \param Object Xml node with XRC resource
-         */
-        wxsItemRes(const wxString& FileName,const TiXmlElement* XrcElem,const wxString& ResourceType);
+        NewResourceParams():
+            GenSrc(false), GenHdr(false), GenXrc(false), UsePch(false),
+            UseInitFunc(false), CtorParent(false), CtorParentDef(false),
+            CtorId(false), CtorIdDef(false), CtorPos(false), CtorPosDef(false),
+            CtorSize(false), CtorSizeDef(false), UseFwdDecl(false), UseI18n(true),
+            ScopeIds(Protected), ScopeMembers(Public), ScopeHandlers(Private)
+        {}
+    };
 
-        /** \brief Dctor */
-        virtual ~wxsItemRes();
+    /** \brief Ctor */
+    wxsItemRes(wxsProject* Owner,const wxString& ResourceType,bool CanBeMain);
 
-        /** \brief Creating new resource and building files if necessarry */
-        virtual bool CreateNewResource(NewResourceParams& Params);
+    /** \brief Ctor for external resource
+     *  \param FileName name of XRC file
+     *  \param Object Xml node with XRC resource
+     */
+    wxsItemRes(const wxString& FileName,const TiXmlElement* XrcElem,const wxString& ResourceType);
 
-        /* Getters */
-        inline const wxString& GetWxsFileName() { return m_WxsFileName; }
-        inline const wxString& GetSrcFileName() { return m_SrcFileName; }
-        inline const wxString& GetHdrFileName() { return m_HdrFileName; }
-        inline const wxString& GetXrcFileName() { return m_XrcFileName; }
+    /** \brief Dctor */
+    virtual ~wxsItemRes();
 
-        bool Rename(const wxString& oldName, const wxString& newName) override;
+    /** \brief Creating new resource and building files if necessarry */
+    virtual bool CreateNewResource(NewResourceParams& Params);
 
-        /** \brief Getting current edit mode */
-        EditMode GetEditMode();
+    /* Getters */
+    inline const wxString& GetWxsFileName()
+    {
+        return m_WxsFileName;
+    }
+    inline const wxString& GetSrcFileName()
+    {
+        return m_SrcFileName;
+    }
+    inline const wxString& GetHdrFileName()
+    {
+        return m_HdrFileName;
+    }
+    inline const wxString& GetXrcFileName()
+    {
+        return m_XrcFileName;
+    }
 
-        /** \brief Building data object for this resource */
-        wxsItemResData* BuildResData(wxsItemEditor* Editor);
+    bool Rename(const wxString& oldName, const wxString& newName) override;
 
-    protected:
+    /** \brief Getting current edit mode */
+    EditMode GetEditMode();
 
-        virtual wxsEditor* OnCreateEditor(wxWindow* Parent);
-        virtual bool OnReadConfig(const TiXmlElement* Node);
-        virtual bool OnWriteConfig(TiXmlElement* Node);
-        virtual bool OnCanHandleFile(const wxString& FileName);
-        virtual wxString OnGetDeclarationFile();
-        virtual bool OnGetUsingXRC();
-        virtual bool OnGetCanBeMain();
-        virtual void OnFillPopupMenu(wxMenu* Menu);
-        virtual bool OnPopupMenu(long Id);
-        virtual bool OnDeleteCleanup(bool ShowDialog);
+    /** \brief Building data object for this resource */
+    wxsItemResData* BuildResData(wxsItemEditor* Editor);
 
-    private:
+protected:
 
-        virtual int OnGetTreeIcon();
+    virtual wxsEditor* OnCreateEditor(wxWindow* Parent);
+    virtual bool OnReadConfig(const TiXmlElement* Node);
+    virtual bool OnWriteConfig(TiXmlElement* Node);
+    virtual bool OnCanHandleFile(const wxString& FileName);
+    virtual wxString OnGetDeclarationFile();
+    virtual bool OnGetUsingXRC();
+    virtual bool OnGetCanBeMain();
+    virtual void OnFillPopupMenu(wxMenu* Menu);
+    virtual bool OnPopupMenu(long Id);
+    virtual bool OnDeleteCleanup(bool ShowDialog);
 
-        wxString m_WxsFileName;
-        wxString m_SrcFileName;
-        wxString m_HdrFileName;
-        wxString m_XrcFileName;
-        bool     m_UseForwardDeclarations;
-        bool     m_UseI18n;
-        bool     m_CanBeMain;
+private:
+
+    virtual int OnGetTreeIcon();
+
+    wxString m_WxsFileName;
+    wxString m_SrcFileName;
+    wxString m_HdrFileName;
+    wxString m_XrcFileName;
+    bool     m_UseForwardDeclarations;
+    bool     m_UseI18n;
+    bool     m_CanBeMain;
 };
 
 #endif

@@ -52,7 +52,7 @@ OR PERFORMANCE OF THIS SOFTWARE.
 #include <wx/log.h>
 
 #if (wxVERSION_NUMBER >= 2900)
-    #include <wx/uiaction.h>
+#include <wx/uiaction.h>
 #endif
 
 #include "wx/stedit/stedit.h"
@@ -84,14 +84,14 @@ static const wxString wxSTC_EOL_Strings[wxSTC_EOL_Strings_count] =
 //-----------------------------------------------------------------------------
 
 wxSTEditorRefData::wxSTEditorRefData()
-                  :wxObjectRefData(),
-                   m_file_bom(wxBOM_None),
-                   m_steLang_id(STE_LANG_NULL),
-                   m_treeItemData(NULL),
-                   m_last_autoindent_line(-1),
-                   m_last_autoindent_len(0),
-                   m_state(0),
-                   m_dirty_flag(false)
+    :wxObjectRefData(),
+     m_file_bom(wxBOM_None),
+     m_steLang_id(STE_LANG_NULL),
+     m_treeItemData(NULL),
+     m_last_autoindent_line(-1),
+     m_last_autoindent_len(0),
+     m_state(0),
+     m_dirty_flag(false)
 {
 }
 
@@ -295,17 +295,17 @@ void wxSTEditor::CreateOptions(const wxSTEditorOptions& options)
 
     // create the editor popup menu
     if (steMM && GetOptions().HasEditorOption(STE_CREATE_POPUPMENU) &&
-        !GetOptions().GetEditorPopupMenu())
+            !GetOptions().GetEditorPopupMenu())
     {
         GetOptions().SetEditorPopupMenu(steMM->CreateEditorPopupMenu(), false);
     }
 
     // create the accelerator table
     if (steMM && GetOptions().HasEditorOption(STE_CREATE_ACCELTABLE) &&
-        (GetOptions().GetEditorPopupMenu() || GetOptions().GetMenuBar()))
+            (GetOptions().GetEditorPopupMenu() || GetOptions().GetMenuBar()))
     {
         wxAcceleratorTable table(steMM->CreateAcceleratorTable(GetOptions().GetEditorPopupMenu(),
-                                                               GetOptions().GetMenuBar()));
+                                 GetOptions().GetMenuBar()));
         SetAcceleratorTable(table);
     }
 
@@ -393,13 +393,13 @@ void wxSTEditor::MarkDirty()
 bool wxSTEditor::GetViewNonPrint() const
 {
     return wxConstCast(this, wxSTEditor)->GetViewEOL() &&
-            (wxSTC_WS_INVISIBLE != wxConstCast(this, wxSTEditor)->GetViewWhiteSpace());
+           (wxSTC_WS_INVISIBLE != wxConstCast(this, wxSTEditor)->GetViewWhiteSpace());
 }
 
 void wxSTEditor::SetViewNonPrint(bool show_non_print)
 {
-   GetEditorPrefs().SetPrefBoolByID(ID_STE_PREF_VIEW_EOL, show_non_print);
-   GetEditorPrefs().SetPrefBoolByID(ID_STE_PREF_VIEW_WHITESPACE, show_non_print);
+    GetEditorPrefs().SetPrefBoolByID(ID_STE_PREF_VIEW_EOL, show_non_print);
+    GetEditorPrefs().SetPrefBoolByID(ID_STE_PREF_VIEW_WHITESPACE, show_non_print);
 }
 
 // --------------------------------------------------------------------------
@@ -516,10 +516,13 @@ static wxClipboardHelper::Clipboard_Type ClipboardTypeConv(STE_ClipboardType cli
 {
     switch (clip_type)
     {
-        case STE_CLIPBOARD_PRIMARY : return wxClipboardHelper::CLIPBOARD_PRIMARY;
-        case STE_CLIPBOARD_BOTH    : return wxClipboardHelper::CLIPBOARD_BOTH;
-        case STE_CLIPBOARD_DEFAULT :
-        default                    : return wxClipboardHelper::CLIPBOARD_DEFAULT;
+    case STE_CLIPBOARD_PRIMARY :
+        return wxClipboardHelper::CLIPBOARD_PRIMARY;
+    case STE_CLIPBOARD_BOTH    :
+        return wxClipboardHelper::CLIPBOARD_BOTH;
+    case STE_CLIPBOARD_DEFAULT :
+    default                    :
+        return wxClipboardHelper::CLIPBOARD_DEFAULT;
     }
 }
 
@@ -529,8 +532,8 @@ static wxClipboardHelper::Clipboard_Type ClipboardTypeConv(STE_ClipboardType cli
 }
 
 /*static*/ bool wxSTEditor::IsClipboardFormatAvailable(const enum wxDataFormatId* array,
-                                                       size_t array_count,
-                                                       STE_ClipboardType clip_type)
+        size_t array_count,
+        STE_ClipboardType clip_type)
 {
     return wxClipboardHelper::IsFormatAvailable(array, array_count, ClipboardTypeConv(clip_type));
 }
@@ -607,10 +610,18 @@ void wxSTEditor::PasteRectangular(const wxString& str, STE_TextPos pos)
 
     switch (stc_eol_mode)
     {
-        case wxSTC_EOL_CRLF : type = wxTextFileType_Dos; break;
-        case wxSTC_EOL_CR   : type = wxTextFileType_Mac; break;
-        case wxSTC_EOL_LF   : type = wxTextFileType_Unix; break;
-        default             : type = wxTextBuffer::typeDefault; break;
+    case wxSTC_EOL_CRLF :
+        type = wxTextFileType_Dos;
+        break;
+    case wxSTC_EOL_CR   :
+        type = wxTextFileType_Mac;
+        break;
+    case wxSTC_EOL_LF   :
+        type = wxTextFileType_Unix;
+        break;
+    default             :
+        type = wxTextBuffer::typeDefault;
+        break;
     }
     return type;
 }
@@ -763,7 +774,7 @@ size_t wxSTEditor::GetWordArrayCount(const wxString& text,
             {
                 const wxChar *word_c = words[i].GetData();
                 if ((ignoreCase && (wxStrnicmp(c, word_c, word_len) == 0)) ||
-                    (wxStrncmp(c, word_c, word_len) == 0))
+                        (wxStrncmp(c, word_c, word_len) == 0))
                 {
                     count[i]++;
                     total_count++;
@@ -845,8 +856,8 @@ size_t wxSTEditor::ConvertTabsToSpaces(bool to_spaces,
 
     BeginUndoAction();
     for (STE_TextPos find_pos = SearchInTarget(findString);
-         find_pos >= 0;
-         find_pos = SearchInTarget(findString))
+            find_pos >= 0;
+            find_pos = SearchInTarget(findString))
     {
         count++;
         ReplaceTarget(replaceString);
@@ -999,7 +1010,7 @@ static int wxString_FindFromPos(const wxString& str, const wxString& chars, size
 
         // char in str is in chars and is not a " preceeded by a \, eg. \"
         if ((idx != wxNOT_FOUND) &&
-            ( (n == 0) || (ch != wxT('\"')) || (chPrev != wxT('\\')) ) )
+                ( (n == 0) || (ch != wxT('\"')) || (chPrev != wxT('\\')) ) )
         {
             return (int)n;
         }
@@ -1042,8 +1053,8 @@ bool wxSTEditor::Columnize(int top_line, int bottom_line,
     wxString preserveStart;
 
     for (wxStringTokenizer tkz(preserveChars, wxT(" "), wxTOKEN_STRTOK);
-         tkz.HasMoreTokens();
-         )
+            tkz.HasMoreTokens();
+        )
     {
         wxString token(tkz.GetNextToken());
         preserveStart += token[0];
@@ -1065,7 +1076,11 @@ bool wxSTEditor::Columnize(int top_line, int bottom_line,
         for (int n = 0; n < len;  )
         {
             // skip whitespace always
-            while ((n < len) && ((*c == wxT(' ')) || (*c == wxT('\t')))) { c++; n++; }
+            while ((n < len) && ((*c == wxT(' ')) || (*c == wxT('\t'))))
+            {
+                c++;
+                n++;
+            }
             if (n == len) break;
             int match_start = n;
 
@@ -1087,7 +1102,8 @@ bool wxSTEditor::Columnize(int top_line, int bottom_line,
                     split_after = splitAfter.Find(wxChar(*c)) != wxNOT_FOUND;
                     if (split_after)
                     {
-                        c++; n++;
+                        c++;
+                        n++;
                         break;
                     }
                 }
@@ -1113,7 +1129,8 @@ bool wxSTEditor::Columnize(int top_line, int bottom_line,
                     }
                 }
 
-                c++; n++;
+                c++;
+                n++;
             }
 
             int match_len = n - match_start;
@@ -1124,7 +1141,8 @@ bool wxSTEditor::Columnize(int top_line, int bottom_line,
                 if (n == len) break; // all done - perhaps whitespace?
 
                 match_len++;
-                c++; n++;
+                c++;
+                n++;
             }
 
             matchStartArray[line-top_line].Add(match_start);
@@ -1207,8 +1225,8 @@ bool wxSTEditor::ShowConvertEOLModeDialog()
     int eol_mode = GetEOLMode();
 
     wxSingleChoiceDialog dialog(GetModalParent(),
-                      wxString(_("Current EOL : "))+wxSTC_EOL_Strings[eol_mode],
-                      _("Convert End of Line chars"), wxSTC_EOL_Strings_count, wxSTC_EOL_Strings);
+                                wxString(_("Current EOL : "))+wxSTC_EOL_Strings[eol_mode],
+                                _("Convert End of Line chars"), wxSTC_EOL_Strings_count, wxSTC_EOL_Strings);
     dialog.SetSelection(eol_mode);
 
     if ( dialog.ShowModal() != wxID_OK )
@@ -1287,7 +1305,7 @@ void wxSTEditor::ExpandFoldsToLevel(int level, bool expand)
             line_level &= wxSTC_FOLDLEVELNUMBERMASK;
 
             if ((( expand && (line_level <= level)) ||
-                 (!expand && (line_level >= level))) && (GetFoldExpanded(n) != expand))
+                    (!expand && (line_level >= level))) && (GetFoldExpanded(n) != expand))
                 ToggleFold(n);
         }
     }
@@ -1374,7 +1392,7 @@ bool wxSTEditor::LoadFile( const wxFileName &fileName_,
                            const wxString& encoding )
 {
     if (query_if_changed && GetOptions().HasEditorOption(STE_QUERY_SAVE_MODIFIED) &&
-        (QuerySaveIfModified(true) == wxCANCEL))
+            (QuerySaveIfModified(true) == wxCANCEL))
     {
         return false;
     }
@@ -1495,7 +1513,7 @@ bool wxSTEditor::LoadFileToString( wxString* str,
                     const char xml_header[] = "<?xml version=\"";
 
                     if ( (len >= WXSIZEOF(xml_header)) &&
-                         (0 == strncmp(xml_header, firstline.data(), WXSIZEOF(xml_header)-1))
+                            (0 == strncmp(xml_header, firstline.data(), WXSIZEOF(xml_header)-1))
                        )
                     {
                         found_lang = is_xml = SetLanguage(wxFileName(wxEmptyString, fileName.GetName(), wxT("xml")));
@@ -1515,58 +1533,64 @@ bool wxSTEditor::LoadFileToString( wxString* str,
             }
             switch (encoding)
             {
-                case wxTextEncoding::Ascii:
-                    // load file and get BOM
-                    ok = wxTextEncoding::CharToStringDetectBOM(str, charBuf, stream_len, &file_bom);
-                #if !(wxUSE_UNICODE || (defined(wxUSE_UNICODE_UTF8) && wxUSE_UNICODE_UTF8))
-                    if (ok) switch (file_bom)
+            case wxTextEncoding::Ascii:
+                // load file and get BOM
+                ok = wxTextEncoding::CharToStringDetectBOM(str, charBuf, stream_len, &file_bom);
+#if !(wxUSE_UNICODE || (defined(wxUSE_UNICODE_UTF8) && wxUSE_UNICODE_UTF8))
+                if (ok) switch (file_bom)
                     {
-                        case wxBOM_UTF16LE:
-                            if (flags == STE_LOAD_QUERY_UNICODE)
+                    case wxBOM_UTF16LE:
+                        if (flags == STE_LOAD_QUERY_UNICODE)
+                        {
+                            int ret = wxMessageBox(_("Unicode text file. Convert to Ansi text?"),
+                                                   _("Load Unicode?"),
+                                                   wxYES_NO | wxCANCEL | wxCENTRE | wxICON_QUESTION,
+                                                   parent);
+                            switch (ret)
                             {
-                                int ret = wxMessageBox(_("Unicode text file. Convert to Ansi text?"),
-                                                       _("Load Unicode?"),
-                                                       wxYES_NO | wxCANCEL | wxCENTRE | wxICON_QUESTION,
-                                                       parent);
-                                switch (ret)
-                                {
-                                    case wxYES:
-                                        break;
-                                    case wxNO:
-                                    case wxCANCEL:
-                                    default:
-                                        ok = false;
-                                        break;
-                                }
+                            case wxYES:
+                                break;
+                            case wxNO:
+                            case wxCANCEL:
+                            default:
+                                ok = false;
+                                break;
                             }
-                            break;
-                        default:
-                            break;
+                        }
+                        break;
+                    default:
+                        break;
                     }
-                #endif
-                    if (ok) switch (file_bom)
+#endif
+                if (ok) switch (file_bom)
                     {
-                        case wxBOM_UTF8:    encoding = wxTextEncoding::UTF8;       break;
-                        case wxBOM_UTF16LE: encoding = wxTextEncoding::Unicode_LE; break;
-                        default:            encoding = wxTextEncoding::Ascii;      break;
+                    case wxBOM_UTF8:
+                        encoding = wxTextEncoding::UTF8;
+                        break;
+                    case wxBOM_UTF16LE:
+                        encoding = wxTextEncoding::Unicode_LE;
+                        break;
+                    default:
+                        encoding = wxTextEncoding::Ascii;
+                        break;
                     }
-                    break;
-                case wxTextEncoding::Unicode_LE:
-                case wxTextEncoding::UTF8:
-                case wxTextEncoding::ISO8859_1:
-            #ifdef __WXMSW__
-                case wxTextEncoding::OEM:
-            #endif
-                    // get BOM
-                    file_bom = wxConvAuto_DetectBOM(charBuf.data(), stream_len);
+                break;
+            case wxTextEncoding::Unicode_LE:
+            case wxTextEncoding::UTF8:
+            case wxTextEncoding::ISO8859_1:
+#ifdef __WXMSW__
+            case wxTextEncoding::OEM:
+#endif
+                // get BOM
+                file_bom = wxConvAuto_DetectBOM(charBuf.data(), stream_len);
 
-                    // load file
-                    ok = wxTextEncoding::CharToString(str, charBuf, stream_len, encoding, file_bom);
+                // load file
+                ok = wxTextEncoding::CharToString(str, charBuf, stream_len, encoding, file_bom);
 
-                    break;
-                default:
-                    ok = false;
-                    break;
+                break;
+            default:
+                ok = false;
+                break;
             }
             if (ok)
             {
@@ -1632,7 +1656,7 @@ bool wxSTEditor::SaveFile( const wxFileName& fileName,
     if (!file.Open(fileName.GetFullPath(), wxFile::write))
     {
         wxMessageBox(wxString::Format(_("Error opening file to save : '%s'"), fileName.GetFullPath(GetOptions().GetDisplayPathSeparator()).wx_str()),
-                     _("Save file error"), wxOK|wxICON_ERROR , GetModalParent());
+                     _("Save file error"), wxOK|wxICON_ERROR, GetModalParent());
         return false;
     }
 
@@ -1662,7 +1686,7 @@ bool wxSTEditor::SaveFile( const wxFileName& fileName,
     else
     {
         wxMessageBox(wxString::Format(_("Error saving file : '%s'"), fileName.GetFullPath(GetOptions().GetDisplayPathSeparator()).wx_str()),
-                     _("Save file error"), wxOK|wxICON_ERROR , GetModalParent());
+                     _("Save file error"), wxOK|wxICON_ERROR, GetModalParent());
     }
     return false;
 }
@@ -1721,7 +1745,7 @@ bool wxSTEditor::SaveFileDialog( bool use_dialog, const wxString &extensions_,
 bool wxSTEditor::NewFile( const wxString &title_ )
 {
     if (GetOptions().HasEditorOption(STE_QUERY_SAVE_MODIFIED) &&
-         (QuerySaveIfModified(true) == wxCANCEL))
+            (QuerySaveIfModified(true) == wxCANCEL))
         return false;
 
     wxString title(title_);
@@ -1762,8 +1786,8 @@ bool wxSTEditor::NewFile( const wxString &title_ )
 bool wxSTEditor::Revert()
 {
     bool ok = (wxYES == wxMessageBox(_("Discard changes and load last saved version ?"),
-                                    _("Revert changes?"),
-                                    wxYES_NO | wxICON_QUESTION, GetModalParent()));
+                                     _("Revert changes?"),
+                                     wxYES_NO | wxICON_QUESTION, GetModalParent()));
     if (ok)
     {
         ok = LoadFile(GetFileName(), wxEmptyString, false);
@@ -1780,7 +1804,7 @@ void wxSTEditor::SetTextAndInitialize(const wxString& str)
     SetModified(false);
     GotoPos(0);
     ScrollToColumn(0); // extra help to ensure scrolled to 0
-                       // otherwise scrolled halfway thru 1st char
+    // otherwise scrolled halfway thru 1st char
 
     SetLanguage(GetSTERefData()->m_steLang_id); // -> Colourise();
     UpdateCanDo(IsShown());
@@ -1795,7 +1819,7 @@ int wxSTEditor::QuerySaveIfModified(bool save_file, int style)
     m_sendEvents = false; // block focus when dialog closes
 
     int ret = wxMessageBox(wxString::Format(_("%s\nHas unsaved changes.\nWould you like to save your file before closing?"),
-                                 GetFileName().GetFullPath(GetOptions().GetDisplayPathSeparator()).wx_str()),
+                                            GetFileName().GetFullPath(GetOptions().GetDisplayPathSeparator()).wx_str()),
                            _("Unsaved changes"),
                            style|wxCENTRE|wxICON_QUESTION, GetModalParent());
 
@@ -1806,7 +1830,7 @@ int wxSTEditor::QuerySaveIfModified(bool save_file, int style)
         // use dialog if it wasn't originally loaded from disk
         if (!SaveFile(!IsFileFromDisk()))
         {
-           ret = wxCANCEL;
+            ret = wxCANCEL;
         }
     }
 
@@ -1833,9 +1857,9 @@ bool wxSTEditor::IsAlteredOnDisk(bool show_reload_dialog)
         if (show_reload_dialog)
         {
             wxMessageBox(wxString::Format(_("%s\nDoesn't exist on disk anymore."),
-                           GetFileName().GetFullPath(GetOptions().GetDisplayPathSeparator()).wx_str()),
-                          _("File removed from disk"),
-                          wxOK | wxICON_EXCLAMATION, GetModalParent());
+                                          GetFileName().GetFullPath(GetOptions().GetDisplayPathSeparator()).wx_str()),
+                         _("File removed from disk"),
+                         wxOK | wxICON_EXCLAMATION, GetModalParent());
         }
 
         // reset to unknown, assume they know what they're doing
@@ -1848,7 +1872,7 @@ bool wxSTEditor::IsAlteredOnDisk(bool show_reload_dialog)
     if (altered && show_reload_dialog)
     {
         int ret = wxMessageBox( wxString::Format(_("The file '%s' has been modified externally.\nWould you like to reload the file?"),
-                                    GetFileName().GetFullPath(GetOptions().GetDisplayPathSeparator()).wx_str()),
+                                GetFileName().GetFullPath(GetOptions().GetDisplayPathSeparator()).wx_str()),
                                 _("File changed on disk"),
                                 wxYES_NO | wxICON_QUESTION, GetModalParent());
         if (ret == wxYES)
@@ -1946,7 +1970,7 @@ void wxSTEditor::ShowFindReplaceDialog(bool find)
     if (dialog != NULL)
     {
         if ((  find  && !(dialog->GetWindowStyle() & wxFR_REPLACEDIALOG)) ||
-            ((!find) &&  (dialog->GetWindowStyle() & wxFR_REPLACEDIALOG)) )
+                ((!find) &&  (dialog->GetWindowStyle() & wxFR_REPLACEDIALOG)) )
         {
             create = false;
             dialog->Raise();
@@ -2002,9 +2026,9 @@ void wxSTEditor::ShowFindReplaceDialog(bool find)
             SetFindString(selectedText, true);
 
         dialog = new wxSTEditorFindReplaceDialog(parent,
-                                                 steFindReplaceData,
-                                                 wxGetStockLabelEx(find ? wxID_FIND : wxID_REPLACE, wxSTOCK_PLAINTEXT),
-                                                 style | (find ? 0 : wxFR_REPLACEDIALOG));
+                steFindReplaceData,
+                wxGetStockLabelEx(find ? wxID_FIND : wxID_REPLACE, wxSTOCK_PLAINTEXT),
+                style | (find ? 0 : wxFR_REPLACEDIALOG));
         dialog->Show();
     }
 }
@@ -2051,8 +2075,8 @@ void wxSTEditor::HandleFindDialogEvent(wxFindDialogEvent& event)
     if ((eventType == wxEVT_COMMAND_FIND_NEXT) && !STE_HASBIT(flags, wxFR_DOWN))
     {
         if ((labs(GetSelectionEnd() - GetSelectionStart()) == STE_TextPos(findString.Length()))
-            && (GetFindReplaceData()->StringCmp(findString, GetSelectedText(), flags)))
-                pos -= (STE_TextPos)findString.Length() + 1; // doesn't matter if it matches or not, skip it
+                && (GetFindReplaceData()->StringCmp(findString, GetSelectedText(), flags)))
+            pos -= (STE_TextPos)findString.Length() + 1; // doesn't matter if it matches or not, skip it
     }
 
     if ((eventType == wxEVT_COMMAND_FIND) || (eventType == wxEVT_COMMAND_FIND_NEXT))
@@ -2075,12 +2099,12 @@ void wxSTEditor::HandleFindDialogEvent(wxFindDialogEvent& event)
 
                 if (STE_HASBIT(flags, STE_FR_FINDALL))
                 {
-                    foundStringArray.Add(wxSTEditorFoundStringData(GetFileName(), 
-                                                                   line, 
-                                                                   PositionFromLine(line), 
-                                                                   startPositions[n], 
-                                                                   endPositions[n]-startPositions[n], 
-                                                                   GetLine(line)));
+                    foundStringArray.Add(wxSTEditorFoundStringData(GetFileName(),
+                                         line,
+                                         PositionFromLine(line),
+                                         startPositions[n],
+                                         endPositions[n]-startPositions[n],
+                                         GetLine(line)));
                 }
             }
         }
@@ -2088,19 +2112,19 @@ void wxSTEditor::HandleFindDialogEvent(wxFindDialogEvent& event)
         {
             pos = FindString(findString, pos, -1, flags, STE_FINDSTRING_SELECT|STE_FINDSTRING_GOTO);
 
-        /*
-            // alternate way to do this, but our method is more flexible
-            SearchAnchor();
-            if (STE_HASBIT(flags, wxFR_DOWN))
-                pos = SearchNext(flags, findString);
-            else
-                pos = SearchPrev(flags, findString);
-        */
+            /*
+                // alternate way to do this, but our method is more flexible
+                SearchAnchor();
+                if (STE_HASBIT(flags, wxFR_DOWN))
+                    pos = SearchNext(flags, findString);
+                else
+                    pos = SearchPrev(flags, findString);
+            */
 
-        // FIXME - dialog for find no more occurances is annoying
-        // if (pos < 0)
-        // wxMessageBox(_("No more occurances of: \"") + findString + _("\""),
-        //              _("Find string"), wxOK | wxICON_EXCLAMATION, this);
+            // FIXME - dialog for find no more occurances is annoying
+            // if (pos < 0)
+            // wxMessageBox(_("No more occurances of: \"") + findString + _("\""),
+            //              _("Find string"), wxOK | wxICON_EXCLAMATION, this);
 
             if (pos >= 0)
             {
@@ -2304,10 +2328,10 @@ int wxSTEditor::ReplaceAllStrings(const wxString &findString,
     STE_TextPos found_end_pos   = 0;
 
     for (pos = FindString(findString, 0, -1, flags, STE_FINDSTRING_NOTHING,
-                         &found_start_pos, &found_end_pos);
-         pos != wxNOT_FOUND;
-         pos = FindString(findString, pos + replace_len, -1, flags, STE_FINDSTRING_NOTHING,
-                         &found_start_pos, &found_end_pos)
+                          &found_start_pos, &found_end_pos);
+            pos != wxNOT_FOUND;
+            pos = FindString(findString, pos + replace_len, -1, flags, STE_FINDSTRING_NOTHING,
+                             &found_start_pos, &found_end_pos)
         )
     {
         ++count;
@@ -2351,8 +2375,8 @@ size_t wxSTEditor::FindAllStrings(const wxString &str, int flags,
     wxArrayInt positions;
 
     for (pos = FindString(str, 0, -1, flags, STE_FINDSTRING_NOTHING, &found_start_pos, &found_end_pos);
-         pos != wxNOT_FOUND;
-         pos = FindString(str, found_end_pos, -1, flags, STE_FINDSTRING_NOTHING, &found_start_pos, &found_end_pos))
+            pos != wxNOT_FOUND;
+            pos = FindString(str, found_end_pos, -1, flags, STE_FINDSTRING_NOTHING, &found_start_pos, &found_end_pos))
     {
         count++;
         if (startPositions) startPositions->Add(found_start_pos);
@@ -2462,7 +2486,8 @@ int wxSTEditor::IsLinePreprocessorCondition(const wxString &line)
     const wxChar *currChar = line.GetData();
     wxString word;
 
-    if (!currChar) {
+    if (!currChar)
+    {
         return false;
     }
 
@@ -2543,47 +2568,47 @@ bool wxSTEditor::FindMatchingPreprocCondPosition(
 
     switch (status)
     {
-        case ppcStart:
+    case ppcStart:
+    {
+        if (isForward)
+            isInside = FindMatchingPreprocessorCondition(curLine, 1, ppcMiddle, ppcEnd);
+        else
         {
-            if (isForward)
-                isInside = FindMatchingPreprocessorCondition(curLine, 1, ppcMiddle, ppcEnd);
-            else
-            {
-                mppcMatch = mppcAtCaret;
-                return true;
-            }
-            break;
+            mppcMatch = mppcAtCaret;
+            return true;
         }
-        case ppcMiddle:
-        {
-            if (isForward)
-                isInside = FindMatchingPreprocessorCondition(curLine, 1, ppcMiddle, ppcEnd);
-            else
-                isInside = FindMatchingPreprocessorCondition(curLine, -1, ppcStart, ppcMiddle);
+        break;
+    }
+    case ppcMiddle:
+    {
+        if (isForward)
+            isInside = FindMatchingPreprocessorCondition(curLine, 1, ppcMiddle, ppcEnd);
+        else
+            isInside = FindMatchingPreprocessorCondition(curLine, -1, ppcStart, ppcMiddle);
 
-            break;
-        }
-        case ppcEnd:
+        break;
+    }
+    case ppcEnd:
+    {
+        if (isForward)
         {
-            if (isForward)
-            {
-                mppcMatch = mppcAtCaret;
-                return true;
-            }
-            else
-                isInside = FindMatchingPreprocessorCondition(curLine, -1, ppcStart, ppcMiddle);
-
-            break;
+            mppcMatch = mppcAtCaret;
+            return true;
         }
-        default:        // Should be noPPC
-        {
-            if (isForward)
-                isInside = FindMatchingPreprocessorCondition(curLine, 1, ppcMiddle, ppcEnd);
-            else
-                isInside = FindMatchingPreprocessorCondition(curLine, -1, ppcStart, ppcMiddle);
+        else
+            isInside = FindMatchingPreprocessorCondition(curLine, -1, ppcStart, ppcMiddle);
 
-            break;
-        }
+        break;
+    }
+    default:        // Should be noPPC
+    {
+        if (isForward)
+            isInside = FindMatchingPreprocessorCondition(curLine, 1, ppcMiddle, ppcEnd);
+        else
+            isInside = FindMatchingPreprocessorCondition(curLine, -1, ppcStart, ppcMiddle);
+
+        break;
+    }
     }
 
     if (isInside)
@@ -2592,7 +2617,8 @@ bool wxSTEditor::FindMatchingPreprocCondPosition(
     return isInside;
 }
 
-static bool IsBrace(char ch) {
+static bool IsBrace(char ch)
+{
     return ch == '[' || ch == ']' || ch == '(' || ch == ')' || ch == '{' || ch == '}';
 }
 
@@ -2606,7 +2632,7 @@ bool wxSTEditor::DoFindMatchingBracePosition(STE_TextPos& braceAtCaret, STE_Text
     int ste_languageID = GetLanguageId();
 
     int bracesStyle = GetEditorLangs().IsOk() && GetEditorLangs().HasLanguage(ste_languageID)
-                         ? GetEditorLangs().GetBracesStyle(ste_languageID) : 10;
+                      ? GetEditorLangs().GetBracesStyle(ste_languageID) : 10;
     int lexLanguage = GetLexer();
     int bracesStyleCheck = bracesStyle; // FIXME what is this?
     STE_TextPos caretPos = GetCurrentPos();
@@ -2626,14 +2652,14 @@ bool wxSTEditor::DoFindMatchingBracePosition(STE_TextPos& braceAtCaret, STE_Text
     }
     // Priority goes to character before caret
     if (charBefore && IsBrace(charBefore) &&
-        ((styleBefore == bracesStyleCheck) || (!bracesStyle)))
+            ((styleBefore == bracesStyleCheck) || (!bracesStyle)))
     {
         braceAtCaret = caretPos - 1;
     }
 
     bool colonMode = false;
     if ((lexLanguage == wxSTC_LEX_PYTHON) &&
-        (':' == charBefore) && (wxSTC_P_OPERATOR == styleBefore))
+            (':' == charBefore) && (wxSTC_P_OPERATOR == styleBefore))
     {
         braceAtCaret = caretPos - 1;
         colonMode = true;
@@ -2653,7 +2679,7 @@ bool wxSTEditor::DoFindMatchingBracePosition(STE_TextPos& braceAtCaret, STE_Text
                 isAfter = false;
             }
             if ((lexLanguage == wxSTC_LEX_PYTHON) &&
-                (':' == charAfter) && (wxSTC_P_OPERATOR == styleAfter))
+                    (':' == charAfter) && (wxSTC_P_OPERATOR == styleAfter))
             {
                 braceAtCaret = caretPos;
                 colonMode = true;
@@ -2680,7 +2706,8 @@ bool wxSTEditor::DoFindMatchingBracePosition(STE_TextPos& braceAtCaret, STE_Text
 }
 // This code copied from SciTEBase.cxx
 // Copyright 1998-2011 by Neil Hodgson <neilh@scintilla.org>
-void wxSTEditor::DoBraceMatch() {
+void wxSTEditor::DoBraceMatch()
+{
     //if (!bracesCheck)
     //        return;
     STE_TextPos braceAtCaret = -1;
@@ -2735,11 +2762,12 @@ void wxSTEditor::DoBraceMatch() {
 
 // This code copied from SciTEBase.cxx
 // Copyright 1998-2011 by Neil Hodgson <neilh@scintilla.org>
-STE_TextPos wxSTEditor::GetCaretInLine() {
-        STE_TextPos caret = GetCurrentPos();
-        int line = LineFromPosition(caret);
-        STE_TextPos lineStart = PositionFromLine(line);
-        return caret - lineStart;
+STE_TextPos wxSTEditor::GetCaretInLine()
+{
+    STE_TextPos caret = GetCurrentPos();
+    int line = LineFromPosition(caret);
+    STE_TextPos lineStart = PositionFromLine(line);
+    return caret - lineStart;
 }
 
 // --------------------------------------------------------------------------
@@ -2794,7 +2822,8 @@ size_t wxSTEditor::DoGetAutoCompleteKeyWords(const wxString& root, wxArrayString
 
 // This code copied from SciTEBase.cxx (though it bears no resemblance to the original)
 // Copyright 1998-2011 by Neil Hodgson <neilh@scintilla.org>
-wxString wxSTEditor::EliminateDuplicateWords(const wxString& words0) const {
+wxString wxSTEditor::EliminateDuplicateWords(const wxString& words0) const
+{
     wxString words;
     wxShadowObjectFields wordHashMap; // we just use the string part
 
@@ -2821,33 +2850,36 @@ wxString wxSTEditor::EliminateDuplicateWords(const wxString& words0) const {
 
 // This code copied from SciTEBase.cxx
 // Copyright 1998-2011 by Neil Hodgson <neilh@scintilla.org>
-bool wxSTEditor::StartAutoComplete() {
-        wxString line = GetLine(GetCurrentLine());
-        int current = GetCaretInLine();
+bool wxSTEditor::StartAutoComplete()
+{
+    wxString line = GetLine(GetCurrentLine());
+    int current = GetCaretInLine();
 
-        int startword = current;
+    int startword = current;
 
-        startword = WordStartPosition(current, true); // FIXME good enough?
+    startword = WordStartPosition(current, true); // FIXME good enough?
 
-        //while ((startword > 0) &&
-        //        ((calltipWordCharacters.Find(line[startword - 1]) != wxNOT_FOUND) ||
-        //         (autoCompleteStartCharacters.Find(line[startword - 1]) != wxNOT_FOUND))) {
-        //       startword--;
-        //}
+    //while ((startword > 0) &&
+    //        ((calltipWordCharacters.Find(line[startword - 1]) != wxNOT_FOUND) ||
+    //         (autoCompleteStartCharacters.Find(line[startword - 1]) != wxNOT_FOUND))) {
+    //       startword--;
+    //}
 
-        wxString root = line.Mid(startword, current - startword);
+    wxString root = line.Mid(startword, current - startword);
 
-        if (!root.IsEmpty()) {
-                //wxString words; //= apis.GetNearestWords(root.wx_str(), root.length(),
-                                  //  autoCompleteIgnoreCase, calltipParametersStart[0]);
-                wxString words = GetAutoCompleteKeyWords(root);
-                if (!words.IsEmpty()) {
-                        words = EliminateDuplicateWords(words);
-                        AutoCompShow((int)root.Length(), words);
-                }
-                return true;
+    if (!root.IsEmpty())
+    {
+        //wxString words; //= apis.GetNearestWords(root.wx_str(), root.length(),
+        //  autoCompleteIgnoreCase, calltipParametersStart[0]);
+        wxString words = GetAutoCompleteKeyWords(root);
+        if (!words.IsEmpty())
+        {
+            words = EliminateDuplicateWords(words);
+            AutoCompShow((int)root.Length(), words);
         }
-        return false;
+        return true;
+    }
+    return false;
 }
 
 /*
@@ -2868,88 +2900,99 @@ int wxCMPFUNC_CONV wxSTE_StringSortNoCase(const wxString& first, const wxString&
 
 // This code copied from SciTEBase.cxx - NOT updated to 1.73
 // Copyright 1998-2011 by Neil Hodgson <neilh@scintilla.org>
-bool wxSTEditor::StartAutoCompleteWord(bool onlyOneWord, bool add_keywords) {
-        bool autoCompleteIgnoreCase = false; // FIXME added
+bool wxSTEditor::StartAutoCompleteWord(bool onlyOneWord, bool add_keywords)
+{
+    bool autoCompleteIgnoreCase = false; // FIXME added
 
-        wxString line = GetLine(GetCurrentLine());
-        int current = GetCaretInLine();
+    wxString line = GetLine(GetCurrentLine());
+    int current = GetCaretInLine();
 
-        int startword = current;
-        // Autocompletion of pure numbers is mostly an annoyance
-        bool allNumber = true;
-        while (startword > 0 && (wordCharacters.Find(line[startword - 1]) != wxNOT_FOUND)) {
-                startword--;
-                if (line[startword] < wxT('0') || line[startword] > wxT('9')) {
-                        allNumber = false;
-                }
-        }
-        if (startword == current || allNumber)
-                return true;
-        wxString root = line.Mid(startword, current - startword);
-
-        int doclen = GetLength();
-        //TextToFind ft = {{0, 0}, 0, {0, 0}};
-        //ft.lpstrText = const_cast<char*>(root.wx_str());
-        //ft.chrg.cpMin = 0;
-        //ft.chrg.cpMax = doclen;
-        //ft.chrgText.cpMin = 0;
-        //ft.chrgText.cpMax = 0;
-        const int flags = wxSTC_FIND_WORDSTART | (autoCompleteIgnoreCase ? 0 : wxSTC_FIND_MATCHCASE);
-        STE_TextPos posCurrentWord = GetCurrentPos() - (STE_TextPos)root.length();
-        size_t minWordLength = 0;
-        size_t nwords = 0;
-
-        // wordsNear contains a list of words separated by single spaces and with a space
-        // at the start and end. This makes it easy to search for words.
-        wxArrayString wordsNear; //(autoCompleteIgnoreCase ? wxSTE_StringSortNoCase : wxSTE_StringSort);
-        //wxSortedArrayString wordsNear; //(autoCompleteIgnoreCase ? wxSTE_StringSortNoCase : wxSTE_StringSort);
-
-        if (add_keywords)
+    int startword = current;
+    // Autocompletion of pure numbers is mostly an annoyance
+    bool allNumber = true;
+    while (startword > 0 && (wordCharacters.Find(line[startword - 1]) != wxNOT_FOUND))
+    {
+        startword--;
+        if (line[startword] < wxT('0') || line[startword] > wxT('9'))
         {
-            DoGetAutoCompleteKeyWords(root, wordsNear);
-            wordsNear.Sort();
-
+            allNumber = false;
         }
-
-        int posFind = FindText(0, doclen, root, flags);
-        while (posFind >= 0 && posFind < doclen) {      // search all the document
-                int wordEnd = posFind + static_cast<int>(root.length());
-                //wxPrintf(wxT("AutoComp '%s' pos %d/%d - %d\n"), root.c_str(), (int)wordEnd, (int)doclen, (int)wordsNear.GetCount());
-                if (posFind != posCurrentWord) {
-                        while (wordCharacters.Find(wordEnd < doclen ? (wxChar)GetCharAt(wordEnd) : wxT('\0')) != wxNOT_FOUND)
-                                wordEnd++;
-                        unsigned int wordLength = wordEnd - posFind;
-                        if (wordLength > root.length()) {
-                                wxString word = GetTextRange(posFind, wordEnd);
-                                //word.insert(0, wxT("\n"));
-                                //word.append(wxT("\n"));
-                                if (wordsNear.Index(word) == wxNOT_FOUND) {        // add a new entry
-                                        wordsNear.Add(word);
-                                        if (minWordLength < wordLength)
-                                                minWordLength = wordLength;
-
-                                        nwords++;
-                                        if (onlyOneWord && nwords > 1) {
-                                                return true;
-                                        }
-                                }
-                        }
-                }
-                //ft.chrg.cpMin = wordEnd;
-                posFind = FindText(wordEnd, doclen, root, flags);
-        }
-
-        size_t length = wordsNear.GetCount();
-        if ((length > 0) && (!onlyOneWord || (minWordLength > root.length()))) {
-                wxString words(wordsNear[0]);
-                for (size_t n = 1; n < length; n++)
-                    words += wxT(" ") + wordsNear[n];
-
-                AutoCompShow((int)root.length(), words);
-        } else {
-                AutoCompCancel();
-        }
+    }
+    if (startword == current || allNumber)
         return true;
+    wxString root = line.Mid(startword, current - startword);
+
+    int doclen = GetLength();
+    //TextToFind ft = {{0, 0}, 0, {0, 0}};
+    //ft.lpstrText = const_cast<char*>(root.wx_str());
+    //ft.chrg.cpMin = 0;
+    //ft.chrg.cpMax = doclen;
+    //ft.chrgText.cpMin = 0;
+    //ft.chrgText.cpMax = 0;
+    const int flags = wxSTC_FIND_WORDSTART | (autoCompleteIgnoreCase ? 0 : wxSTC_FIND_MATCHCASE);
+    STE_TextPos posCurrentWord = GetCurrentPos() - (STE_TextPos)root.length();
+    size_t minWordLength = 0;
+    size_t nwords = 0;
+
+    // wordsNear contains a list of words separated by single spaces and with a space
+    // at the start and end. This makes it easy to search for words.
+    wxArrayString wordsNear; //(autoCompleteIgnoreCase ? wxSTE_StringSortNoCase : wxSTE_StringSort);
+    //wxSortedArrayString wordsNear; //(autoCompleteIgnoreCase ? wxSTE_StringSortNoCase : wxSTE_StringSort);
+
+    if (add_keywords)
+    {
+        DoGetAutoCompleteKeyWords(root, wordsNear);
+        wordsNear.Sort();
+
+    }
+
+    int posFind = FindText(0, doclen, root, flags);
+    while (posFind >= 0 && posFind < doclen)        // search all the document
+    {
+        int wordEnd = posFind + static_cast<int>(root.length());
+        //wxPrintf(wxT("AutoComp '%s' pos %d/%d - %d\n"), root.c_str(), (int)wordEnd, (int)doclen, (int)wordsNear.GetCount());
+        if (posFind != posCurrentWord)
+        {
+            while (wordCharacters.Find(wordEnd < doclen ? (wxChar)GetCharAt(wordEnd) : wxT('\0')) != wxNOT_FOUND)
+                wordEnd++;
+            unsigned int wordLength = wordEnd - posFind;
+            if (wordLength > root.length())
+            {
+                wxString word = GetTextRange(posFind, wordEnd);
+                //word.insert(0, wxT("\n"));
+                //word.append(wxT("\n"));
+                if (wordsNear.Index(word) == wxNOT_FOUND)          // add a new entry
+                {
+                    wordsNear.Add(word);
+                    if (minWordLength < wordLength)
+                        minWordLength = wordLength;
+
+                    nwords++;
+                    if (onlyOneWord && nwords > 1)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        //ft.chrg.cpMin = wordEnd;
+        posFind = FindText(wordEnd, doclen, root, flags);
+    }
+
+    size_t length = wordsNear.GetCount();
+    if ((length > 0) && (!onlyOneWord || (minWordLength > root.length())))
+    {
+        wxString words(wordsNear[0]);
+        for (size_t n = 1; n < length; n++)
+            words += wxT(" ") + wordsNear[n];
+
+        AutoCompShow((int)root.length(), words);
+    }
+    else
+    {
+        AutoCompCancel();
+    }
+    return true;
 }
 
 // --------------------------------------------------------------------------
@@ -3012,8 +3055,8 @@ bool wxSTEditor::ShowPrintPreviewDialog()
 
     wxPrintDialogData printDialogData( *printData );
     wxPrintPreview *preview = new wxPrintPreview(new wxSTEditorPrintout(this),
-                                                 new wxSTEditorPrintout(this),
-                                                 &printDialogData);
+            new wxSTEditorPrintout(this),
+            &printDialogData);
     if (!preview->IsOk())
     {
         delete preview;
@@ -3097,7 +3140,7 @@ bool wxSTEditor::ShowPrintOptionsDialog()
 void wxSTEditor::UpdateAllItems()
 {
     UpdateItems(GetOptions().GetEditorPopupMenu(), GetOptions().GetMenuBar(),
-                                                   GetOptions().GetToolBar());
+                GetOptions().GetToolBar());
     UpdateItems(GetOptions().GetNotebookPopupMenu());
     UpdateItems(GetOptions().GetSplitterPopupMenu());
 }
@@ -3110,7 +3153,7 @@ void wxSTEditor::UpdateItems(wxMenu *menu, wxMenuBar *menuBar, wxToolBar *toolBa
     const bool fold = GetMarginWidth(STE_MARGIN_FOLD) > 0;
     const bool sel = HasSelection();
     const bool sel_lines = !sel ? false : (LineFromPosition(GetSelectionStart()) !=
-                                          (LineFromPosition(GetSelectionEnd())));
+                                           (LineFromPosition(GetSelectionEnd())));
 
     // Edit menu items
     STE_MM::DoEnableItem(menu, menuBar, toolBar, wxID_SAVE,         CanSave());
@@ -3192,412 +3235,505 @@ bool wxSTEditor::HandleMenuEvent(wxCommandEvent& event)
 
     switch (win_id)
     {
-        // File menu items ----------------------------------------------------
-        case wxID_NEW    : NewFile(wxEmptyString); return true;
-        case wxID_OPEN   : LoadFile(); return true;
-        case wxID_SAVE   : SaveFile(false); return true;
-        case wxID_SAVEAS : SaveFile(true); return true;
-        case wxID_REVERT : Revert(); return true;
+    // File menu items ----------------------------------------------------
+    case wxID_NEW    :
+        NewFile(wxEmptyString);
+        return true;
+    case wxID_OPEN   :
+        LoadFile();
+        return true;
+    case wxID_SAVE   :
+        SaveFile(false);
+        return true;
+    case wxID_SAVEAS :
+        SaveFile(true);
+        return true;
+    case wxID_REVERT :
+        Revert();
+        return true;
 
-        case ID_STE_EXPORT : ShowExportDialog(); return true;
+    case ID_STE_EXPORT :
+        ShowExportDialog();
+        return true;
 
-        case ID_STE_PROPERTIES : ShowPropertiesDialog(); return true;
+    case ID_STE_PROPERTIES :
+        ShowPropertiesDialog();
+        return true;
 
-        case wxID_PRINT              : ShowPrintDialog(); return true;
-        case wxID_PREVIEW            : ShowPrintPreviewDialog(); return true;
-        case wxID_PRINT_SETUP        : ShowPrintSetupDialog(); return true;
-        case ID_STE_PRINT_PAGE_SETUP : ShowPrintPageSetupDialog(); return true;
-        case ID_STE_PRINT_OPTIONS    : ShowPrintOptionsDialog(); return true;
-        // Edit menu items ----------------------------------------------------
-        case wxID_CUT         : Cut();   return true;
-        case wxID_COPY        : Copy();  return true;
-        case ID_STE_COPY_HTML :
+    case wxID_PRINT              :
+        ShowPrintDialog();
+        return true;
+    case wxID_PREVIEW            :
+        ShowPrintPreviewDialog();
+        return true;
+    case wxID_PRINT_SETUP        :
+        ShowPrintSetupDialog();
+        return true;
+    case ID_STE_PRINT_PAGE_SETUP :
+        ShowPrintPageSetupDialog();
+        return true;
+    case ID_STE_PRINT_OPTIONS    :
+        ShowPrintOptionsDialog();
+        return true;
+    // Edit menu items ----------------------------------------------------
+    case wxID_CUT         :
+        Cut();
+        return true;
+    case wxID_COPY        :
+        Copy();
+        return true;
+    case ID_STE_COPY_HTML :
+    {
+        wxSTEditorExporter steExport(this);
+        wxString text(steExport.RenderAsHTML(GetSelectionStart(), GetSelectionEnd()));
+
+#ifdef __WXMSW__
+        text.Replace(wxT("\n"), wxTextBuffer::GetEOL(wxTextFileType_Dos)); // to make Notepad happy
+#endif
+        SetClipboardHtml(text);
+        return true;
+    }
+    case ID_STE_COPY_PRIMARY :
+    {
+        SetClipboardText(GetSelectedText(), STE_CLIPBOARD_BOTH);
+        return true;
+    }
+    case wxID_PASTE        :
+        Paste();
+        return true;
+    case ID_STE_PASTE_RECT :
+        PasteRectangular();
+        return true;
+    case wxID_CLEAR        :
+    {
+        // Let scintilla handle the WXK_DELETE so it can be used in the macro recorder
+        // and we guarantee the same behavior for the menu item and the delete key.
+#if (wxVERSION_NUMBER >= 2900)
+        wxUIActionSimulator().Char(WXK_DELETE);
+#else
+        wxKeyEvent keyEvent(wxEVT_KEY_DOWN);
+        keyEvent.m_keyCode = WXK_DELETE;
+        wxStyledTextCtrl::OnKeyDown(keyEvent);
+#endif
+        return true;
+    }
+    case ID_STE_PREF_SELECTION_MODE    :
+    {
+        if (GetEditorPrefs().IsOk())
         {
-            wxSTEditorExporter steExport(this);
-            wxString text(steExport.RenderAsHTML(GetSelectionStart(), GetSelectionEnd()));
+            GetEditorPrefs().SetPrefInt(STE_PREF_SELECTION_MODE,
+                                        event.IsChecked() ? wxSTC_SEL_RECTANGLE : wxSTC_SEL_STREAM);
+        }
 
-        #ifdef __WXMSW__
-            text.Replace(wxT("\n"), wxTextBuffer::GetEOL(wxTextFileType_Dos)); // to make Notepad happy
-        #endif
-            SetClipboardHtml(text);
+        if (event.IsChecked())
+            SetSelectionMode(wxSTC_SEL_RECTANGLE);
+        else
+            Cancel();
+
+        return true;
+    }
+    case wxID_SELECTALL        :
+        SelectAll();
+        return true;
+
+    case ID_STE_LINE_CUT       :
+        LineCut();
+        return true;
+    case ID_STE_LINE_COPY      :
+        LineCopy();
+        return true;
+    case ID_STE_LINE_DELETE    :
+        LineDelete();
+        return true;
+    case ID_STE_LINE_TRANSPOSE :
+        LineTranspose();
+        return true;
+    case ID_STE_LINE_DUPLICATE :
+        LineDuplicate();
+        return true;
+
+    case wxID_FIND             :
+        ShowFindReplaceDialog(true);
+        return true;
+
+    case ID_STE_TOOLBAR_SEARCHCTRL_MENU0 :
+    case ID_STE_TOOLBAR_SEARCHCTRL_MENU1 :
+    case ID_STE_TOOLBAR_SEARCHCTRL_MENU2 :
+    case ID_STE_TOOLBAR_SEARCHCTRL_MENU3 :
+    case ID_STE_TOOLBAR_SEARCHCTRL_MENU4 :
+    case ID_STE_TOOLBAR_SEARCHCTRL_MENU5 :
+    case ID_STE_TOOLBAR_SEARCHCTRL_MENU6 :
+    case ID_STE_TOOLBAR_SEARCHCTRL_MENU7 :
+    case ID_STE_TOOLBAR_SEARCHCTRL_MENU8 :
+    case ID_STE_TOOLBAR_SEARCHCTRL_MENU9 :
+    {
+        wxSTEditorFindReplaceData* findReplaceData = GetFindReplaceData();
+        if (findReplaceData == NULL) return true;
+
+        int index = win_id - ID_STE_TOOLBAR_SEARCHCTRL_MENU0;
+        if (index >= (int)findReplaceData->GetFindStrings().GetCount()) return true;
+        wxString findString(findReplaceData->GetFindStrings()[index]);
+
+        SetFindString(findString, true);
+        wxCommandEvent menuEvent(wxEVT_COMMAND_MENU_SELECTED, ID_STE_FIND_NEXT);
+        GetEventHandler()->AddPendingEvent(menuEvent);
+        return true;
+    }
+    case ID_STE_TOOLBAR_SEARCHCTRL :
+    {
+        if (event.GetEventType() == wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN)
+        {
+            //wxSearchCtrl* searchCtrl = wxDynamicCast(event.GetEventObject(), wxSearchCtrl);
+            //if (searchCtrl != NULL)
+            //    searchCtrl->Clear();
+
             return true;
         }
-        case ID_STE_COPY_PRIMARY :
+        else if (event.GetEventType() == wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN)
         {
-            SetClipboardText(GetSelectedText(), STE_CLIPBOARD_BOTH);
-            return true;
+            // popup menu is shown
+            //return true;
         }
-        case wxID_PASTE        : Paste(); return true;
-        case ID_STE_PASTE_RECT : PasteRectangular(); return true;
-        case wxID_CLEAR        :
-        {
-            // Let scintilla handle the WXK_DELETE so it can be used in the macro recorder
-            // and we guarantee the same behavior for the menu item and the delete key.
-        #if (wxVERSION_NUMBER >= 2900)
-            wxUIActionSimulator().Char(WXK_DELETE);
-        #else
-            wxKeyEvent keyEvent(wxEVT_KEY_DOWN);
-            keyEvent.m_keyCode = WXK_DELETE;
-            wxStyledTextCtrl::OnKeyDown(keyEvent);
-        #endif
-            return true;
-        }
-        case ID_STE_PREF_SELECTION_MODE    :
-        {
-            if (GetEditorPrefs().IsOk())
-            {
-                GetEditorPrefs().SetPrefInt(STE_PREF_SELECTION_MODE,
-                    event.IsChecked() ? wxSTC_SEL_RECTANGLE : wxSTC_SEL_STREAM);
-            }
 
-            if (event.IsChecked())
-                SetSelectionMode(wxSTC_SEL_RECTANGLE);
-            else
-                Cancel();
-
-            return true;
-        }
-        case wxID_SELECTALL        : SelectAll(); return true;
-
-        case ID_STE_LINE_CUT       : LineCut(); return true;
-        case ID_STE_LINE_COPY      : LineCopy(); return true;
-        case ID_STE_LINE_DELETE    : LineDelete(); return true;
-        case ID_STE_LINE_TRANSPOSE : LineTranspose(); return true;
-        case ID_STE_LINE_DUPLICATE : LineDuplicate(); return true;
-
-        case wxID_FIND             : ShowFindReplaceDialog(true); return true;
-
-        case ID_STE_TOOLBAR_SEARCHCTRL_MENU0 :
-        case ID_STE_TOOLBAR_SEARCHCTRL_MENU1 :
-        case ID_STE_TOOLBAR_SEARCHCTRL_MENU2 :
-        case ID_STE_TOOLBAR_SEARCHCTRL_MENU3 :
-        case ID_STE_TOOLBAR_SEARCHCTRL_MENU4 :
-        case ID_STE_TOOLBAR_SEARCHCTRL_MENU5 :
-        case ID_STE_TOOLBAR_SEARCHCTRL_MENU6 :
-        case ID_STE_TOOLBAR_SEARCHCTRL_MENU7 :
-        case ID_STE_TOOLBAR_SEARCHCTRL_MENU8 :
-        case ID_STE_TOOLBAR_SEARCHCTRL_MENU9 :
-        {
-            wxSTEditorFindReplaceData* findReplaceData = GetFindReplaceData();
-            if (findReplaceData == NULL) return true;
-
-            int index = win_id - ID_STE_TOOLBAR_SEARCHCTRL_MENU0;
-            if (index >= (int)findReplaceData->GetFindStrings().GetCount()) return true;
-            wxString findString(findReplaceData->GetFindStrings()[index]);
-
+        wxString findString(event.GetString());
+        if (GetFindString() != findString)
             SetFindString(findString, true);
-            wxCommandEvent menuEvent(wxEVT_COMMAND_MENU_SELECTED, ID_STE_FIND_NEXT);
-            GetEventHandler()->AddPendingEvent(menuEvent);
-            return true;
-        }
-        case ID_STE_TOOLBAR_SEARCHCTRL :
+
+        // call our find next processing code
+        win_id = ID_STE_FIND_NEXT;
+
+        // fall though...
+    }
+    case ID_STE_FIND_PREV :
+    case ID_STE_FIND_NEXT :
+    {
+        // try our parents (stenotebook) to see if they can handle it
+        // we need to use a wxFindDialogEvent to set string and flags
+        wxFindDialogEvent event2(wxEVT_COMMAND_FIND_NEXT, GetId());
+        event2.SetEventObject(this);
+        event2.SetFindString(GetFindString());
+        int orig_flags = GetFindFlags();
+        int flags = orig_flags & ~(STE_FR_FINDALL | STE_FR_BOOKMARKALL);
+        if (win_id == ID_STE_FIND_PREV)
         {
-            if (event.GetEventType() == wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN)
-            {
-                //wxSearchCtrl* searchCtrl = wxDynamicCast(event.GetEventObject(), wxSearchCtrl);
-                //if (searchCtrl != NULL)
-                //    searchCtrl->Clear();
-
-                return true;
-            }
-            else if (event.GetEventType() == wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN)
-            {
-                // popup menu is shown
-                //return true;
-            }
-
-            wxString findString(event.GetString());
-            if (GetFindString() != findString)
-                SetFindString(findString, true);
-
-            // call our find next processing code
-            win_id = ID_STE_FIND_NEXT;
-
-            // fall though...
+            flags = STE_SETBIT(flags, wxFR_DOWN, !(flags & wxFR_DOWN));
         }
-        case ID_STE_FIND_PREV :
-        case ID_STE_FIND_NEXT :
-        {
-            // try our parents (stenotebook) to see if they can handle it
-            // we need to use a wxFindDialogEvent to set string and flags
-            wxFindDialogEvent event2(wxEVT_COMMAND_FIND_NEXT, GetId());
-            event2.SetEventObject(this);
-            event2.SetFindString(GetFindString());
-            int orig_flags = GetFindFlags();
-            int flags = orig_flags & ~(STE_FR_FINDALL | STE_FR_BOOKMARKALL);
-            if (win_id == ID_STE_FIND_PREV)
-            {
-               flags = STE_SETBIT(flags, wxFR_DOWN, !(flags & wxFR_DOWN));
-            }
-            event2.SetFlags(flags);
-            if (!GetParent()->GetEventHandler()->ProcessEvent(event2))
-                FindString(GetFindString(), GetCurrentPos(), -1, flags);
+        event2.SetFlags(flags);
+        if (!GetParent()->GetEventHandler()->ProcessEvent(event2))
+            FindString(GetFindString(), GetCurrentPos(), -1, flags);
 
-            // restore flags to how they were before
-            SetFindFlags(orig_flags, true);
+        // restore flags to how they were before
+        SetFindFlags(orig_flags, true);
 
-            // Make it easy to keep pressing enter to search again, normally the editor gets the focus.
-            if ((event.GetId() == ID_STE_TOOLBAR_SEARCHCTRL) &&
+        // Make it easy to keep pressing enter to search again, normally the editor gets the focus.
+        if ((event.GetId() == ID_STE_TOOLBAR_SEARCHCTRL) &&
                 (wxDynamicCast(event.GetEventObject(), wxWindow) != NULL))
-            {
-                wxDynamicCast(event.GetEventObject(), wxWindow)->SetFocus();
-            }
-
-            return true;
-        }
-        case ID_STE_FIND_DOWN :
         {
-            int flags = GetFindFlags();
-            flags = STE_SETBIT(flags, wxFR_DOWN, event.IsChecked());
-            SetFindFlags(flags, true);
-            UpdateAllItems(); // help toolbar get updated
-            return true;
+            wxDynamicCast(event.GetEventObject(), wxWindow)->SetFocus();
         }
-        case wxID_REPLACE : ShowFindReplaceDialog(false); return true;
 
-        case ID_STE_GOTO_LINE : ShowGotoLineDialog(); return true;
+        return true;
+    }
+    case ID_STE_FIND_DOWN :
+    {
+        int flags = GetFindFlags();
+        flags = STE_SETBIT(flags, wxFR_DOWN, event.IsChecked());
+        SetFindFlags(flags, true);
+        UpdateAllItems(); // help toolbar get updated
+        return true;
+    }
+    case wxID_REPLACE :
+        ShowFindReplaceDialog(false);
+        return true;
 
-        case wxID_REDO : Redo(); return true;
-        case wxID_UNDO : Undo(); return true;
+    case ID_STE_GOTO_LINE :
+        ShowGotoLineDialog();
+        return true;
 
-        case ID_STE_READONLY     : SetReadOnly(event.IsChecked()); return true;
-        case ID_STE_COMPLETEWORD : StartAutoCompleteWord(false, true); return true;
-        case ID_STE_COPYPATH     : CopyFilePathToClipboard(); return true;
+    case wxID_REDO :
+        Redo();
+        return true;
+    case wxID_UNDO :
+        Undo();
+        return true;
 
-        // Tools menu items ---------------------------------------------------
-        case ID_STE_UPPERCASE   : UpperCase(); /* CmdKeyExecute(wxSTC_CMD_UPPERCASE); */ return true;
-        case ID_STE_LOWERCASE   : LowerCase(); /* CmdKeyExecute(wxSTC_CMD_LOWERCASE); */ return true;
-        case ID_STE_LINES_JOIN  :
-        case ID_STE_LINES_SPLIT :
+    case ID_STE_READONLY     :
+        SetReadOnly(event.IsChecked());
+        return true;
+    case ID_STE_COMPLETEWORD :
+        StartAutoCompleteWord(false, true);
+        return true;
+    case ID_STE_COPYPATH     :
+        CopyFilePathToClipboard();
+        return true;
+
+    // Tools menu items ---------------------------------------------------
+    case ID_STE_UPPERCASE   :
+        UpperCase(); /* CmdKeyExecute(wxSTC_CMD_UPPERCASE); */ return true;
+    case ID_STE_LOWERCASE   :
+        LowerCase(); /* CmdKeyExecute(wxSTC_CMD_LOWERCASE); */ return true;
+    case ID_STE_LINES_JOIN  :
+    case ID_STE_LINES_SPLIT :
+    {
+        SetTargetStart(GetSelectionStart());
+        SetTargetEnd(GetSelectionEnd());
+        if (win_id == ID_STE_LINES_JOIN)
+            LinesJoin();
+        else
+            LinesSplit(TextWidth(wxSTC_STYLE_DEFAULT, wxString(wxT('W'), GetEdgeColumn())));
+        return true;
+    }
+    case ID_STE_INCREASE_INDENT :
+        SetIndentation(GetIndent());
+        return true;
+    case ID_STE_DECREASE_INDENT :
+        SetIndentation(-GetIndent());
+        return true;
+
+    case ID_STE_TABS_TO_SPACES  :
+        ConvertTabsToSpaces(true);
+        return true;
+    case ID_STE_SPACES_TO_TABS  :
+        ConvertTabsToSpaces(false);
+        return true;
+    case ID_STE_CONVERT_EOL     :
+        ShowConvertEOLModeDialog();
+        return true;
+    case ID_STE_VIEW_NONPRINT   :
+        SetViewNonPrint(event.IsChecked());
+        return true;
+
+    case ID_STE_TRAILING_WHITESPACE :
+        RemoveTrailingWhitespace();
+        return true;
+    case ID_STE_REMOVE_CHARSAROUND  :
+        RemoveCharsAroundPos();
+        return true;
+
+    case ID_STE_INSERT_TEXT     :
+        ShowInsertTextDialog();
+        return true;
+    case ID_STE_INSERT_DATETIME :
+        ReplaceSelection(wxDateTime::Now().Format());
+        return true;
+
+    case ID_STE_COLUMNIZE :
+        ShowColumnizeDialog();
+        return true;
+
+    // View menu items ----------------------------------------------------
+    case ID_STE_FOLDS_TOGGLE_CURRENT :
+        ToggleFoldAtLine();
+        return true;
+
+    case ID_STE_FOLDS_COLLAPSE_LEVEL :
+    {
+        int num = wxGetNumberFromUser(_("Level to collapse all folds to"),
+                                      wxEmptyString, _("Collapse folds to level"),
+                                      (GetFoldLevel(GetCurrentLine())&wxSTC_FOLDLEVELNUMBERMASK)-wxSTC_FOLDLEVELBASE,
+                                      0, wxSTC_FOLDLEVELNUMBERMASK-wxSTC_FOLDLEVELBASE, GetModalParent());
+        if (num >= 0)
+            CollapseFoldsToLevel(num);
+        return true;
+    }
+    case ID_STE_FOLDS_EXPAND_LEVEL   :
+    {
+        int num = wxGetNumberFromUser(_("Level to expand all folds to"),
+                                      wxEmptyString, _("Expand folds to level"),
+                                      (GetFoldLevel(GetCurrentLine())&wxSTC_FOLDLEVELNUMBERMASK)-wxSTC_FOLDLEVELBASE,
+                                      0, wxSTC_FOLDLEVELNUMBERMASK-wxSTC_FOLDLEVELBASE, GetModalParent());
+        if (num >= 0)
+            ExpandFoldsToLevel(num);
+        return true;
+    }
+    case ID_STE_FOLDS_COLLAPSE_ALL :
+        CollapseAllFolds();
+        return true;
+    case ID_STE_FOLDS_EXPAND_ALL   :
+        ExpandAllFolds();
+        return true;
+    case ID_STE_PREF_ZOOM          :
+        ShowSetZoomDialog();
+        return true;
+    // Bookmark menu items ------------------------------------------------
+    case ID_STE_BOOKMARKS :
+    {
+        wxSTEditorBookmarkDialog(this, _("Windows"));
+        return true;
+
+        // TODO : make a full dialog to add and delete markers and work with notebook
+        wxArrayString bookmarks;
+        int current_line = (int)GetCurrentLine();
+        int best_marker = 0;
+        int best_marker_distance = 100000;
+
+        int line = MarkerNext(0, 1<<STE_MARKER_BOOKMARK);
+        while (line >= 0)
         {
-            SetTargetStart(GetSelectionStart());
-            SetTargetEnd(GetSelectionEnd());
-            if (win_id == ID_STE_LINES_JOIN)
-                LinesJoin();
-            else
-                LinesSplit(TextWidth(wxSTC_STYLE_DEFAULT, wxString(wxT('W'), GetEdgeColumn())));
-            return true;
+            if (labs(current_line - line) < best_marker_distance)
+                best_marker = (int)bookmarks.GetCount();
+
+            wxString s(wxString::Format(wxT("%-5d : "), line+1) + GetLineText(line));
+            if (s.Length() > 100) s = s.Mid(0, 100) + wxT("...");
+            bookmarks.Add(s);
+            line = MarkerNext(line+1, 1<<STE_MARKER_BOOKMARK);
         }
-        case ID_STE_INCREASE_INDENT : SetIndentation(GetIndent()); return true;
-        case ID_STE_DECREASE_INDENT : SetIndentation(-GetIndent()); return true;
 
-        case ID_STE_TABS_TO_SPACES  : ConvertTabsToSpaces(true); return true;
-        case ID_STE_SPACES_TO_TABS  : ConvertTabsToSpaces(false); return true;
-        case ID_STE_CONVERT_EOL     : ShowConvertEOLModeDialog(); return true;
-        case ID_STE_VIEW_NONPRINT   : SetViewNonPrint(event.IsChecked()); return true;
-
-        case ID_STE_TRAILING_WHITESPACE : RemoveTrailingWhitespace(); return true;
-        case ID_STE_REMOVE_CHARSAROUND  : RemoveCharsAroundPos(); return true;
-
-        case ID_STE_INSERT_TEXT     : ShowInsertTextDialog(); return true;
-        case ID_STE_INSERT_DATETIME : ReplaceSelection(wxDateTime::Now().Format()); return true;
-
-        case ID_STE_COLUMNIZE : ShowColumnizeDialog(); return true;
-
-        // View menu items ----------------------------------------------------
-        case ID_STE_FOLDS_TOGGLE_CURRENT : ToggleFoldAtLine(); return true;
-
-        case ID_STE_FOLDS_COLLAPSE_LEVEL :
-        {
-            int num = wxGetNumberFromUser(_("Level to collapse all folds to"),
-                                          wxEmptyString, _("Collapse folds to level"),
-                                          (GetFoldLevel(GetCurrentLine())&wxSTC_FOLDLEVELNUMBERMASK)-wxSTC_FOLDLEVELBASE,
-                                          0, wxSTC_FOLDLEVELNUMBERMASK-wxSTC_FOLDLEVELBASE, GetModalParent());
-            if (num >= 0)
-                CollapseFoldsToLevel(num);
-            return true;
-        }
-        case ID_STE_FOLDS_EXPAND_LEVEL   :
-        {
-            int num = wxGetNumberFromUser(_("Level to expand all folds to"),
-                                          wxEmptyString, _("Expand folds to level"),
-                                          (GetFoldLevel(GetCurrentLine())&wxSTC_FOLDLEVELNUMBERMASK)-wxSTC_FOLDLEVELBASE,
-                                          0, wxSTC_FOLDLEVELNUMBERMASK-wxSTC_FOLDLEVELBASE, GetModalParent());
-            if (num >= 0)
-                ExpandFoldsToLevel(num);
-            return true;
-        }
-        case ID_STE_FOLDS_COLLAPSE_ALL : CollapseAllFolds();  return true;
-        case ID_STE_FOLDS_EXPAND_ALL   : ExpandAllFolds();    return true;
-        case ID_STE_PREF_ZOOM          : ShowSetZoomDialog(); return true;
-        // Bookmark menu items ------------------------------------------------
-        case ID_STE_BOOKMARKS :
-        {
-            wxSTEditorBookmarkDialog(this, _("Windows"));
-            return true;
-
-            // TODO : make a full dialog to add and delete markers and work with notebook
-            wxArrayString bookmarks;
-            int current_line = (int)GetCurrentLine();
-            int best_marker = 0;
-            int best_marker_distance = 100000;
-
-            int line = MarkerNext(0, 1<<STE_MARKER_BOOKMARK);
-            while (line >= 0)
-            {
-                if (labs(current_line - line) < best_marker_distance)
-                    best_marker = (int)bookmarks.GetCount();
-
-                wxString s(wxString::Format(wxT("%-5d : "), line+1) + GetLineText(line));
-                if (s.Length() > 100) s = s.Mid(0, 100) + wxT("...");
-                bookmarks.Add(s);
-                line = MarkerNext(line+1, 1<<STE_MARKER_BOOKMARK);
-            }
-
-            if (bookmarks.empty())
-                bookmarks.Add(_("No bookmarks in document"));
+        if (bookmarks.empty())
+            bookmarks.Add(_("No bookmarks in document"));
 
 #if (wxVERSION_NUMBER > 2900)
-            wxString choice = wxGetSingleChoice(_("Choose a bookmark to go to"), _("Bookmarks"),
-                                                bookmarks, best_marker, this);
+        wxString choice = wxGetSingleChoice(_("Choose a bookmark to go to"), _("Bookmarks"),
+                                            bookmarks, best_marker, this);
 #else
-            wxString choice = wxGetSingleChoice(_("Choose a bookmark to go to"), _("Bookmarks"),
-                                                bookmarks, this);
+        wxString choice = wxGetSingleChoice(_("Choose a bookmark to go to"), _("Bookmarks"),
+                                            bookmarks, this);
 #endif
-            if (!choice.IsEmpty())
-            {
-                long l = 0;
-                if (choice.BeforeFirst(wxT(' ')).Trim(false).ToLong(&l))
-                    GotoLine(l-1);
-            }
-            return true;
-        }
-        case ID_STE_BOOKMARK_TOGGLE :
+        if (!choice.IsEmpty())
         {
-            if ((MarkerGet(GetCurrentLine()) & (1<<STE_MARKER_BOOKMARK)) != 0)
-                MarkerDelete(GetCurrentLine(), STE_MARKER_BOOKMARK);
+            long l = 0;
+            if (choice.BeforeFirst(wxT(' ')).Trim(false).ToLong(&l))
+                GotoLine(l-1);
+        }
+        return true;
+    }
+    case ID_STE_BOOKMARK_TOGGLE :
+    {
+        if ((MarkerGet(GetCurrentLine()) & (1<<STE_MARKER_BOOKMARK)) != 0)
+            MarkerDelete(GetCurrentLine(), STE_MARKER_BOOKMARK);
+        else
+            MarkerAdd(GetCurrentLine(), STE_MARKER_BOOKMARK);
+        return true;
+    }
+    case ID_STE_BOOKMARK_FIRST :
+    {
+        int line = MarkerNext(0, 1<<STE_MARKER_BOOKMARK);
+        if (line != -1)
+            GotoLine(line);
+        return true;
+    }
+    case ID_STE_BOOKMARK_PREVIOUS :
+    {
+        // Note: Scintilla is forgiving about invalid line nums (at least for now)
+        int line = MarkerPrevious(GetCurrentLine()-1, 1<<STE_MARKER_BOOKMARK);
+        if (line != -1)
+            GotoLine(line);
+        return true;
+    }
+    case ID_STE_BOOKMARK_NEXT :
+    {
+        int line = MarkerNext(GetCurrentLine()+1, 1<<STE_MARKER_BOOKMARK);
+        if (line != -1)
+            GotoLine(line);
+        return true;
+    }
+    case ID_STE_BOOKMARK_LAST :
+    {
+        int line = MarkerPrevious(GetLineCount(), 1<<STE_MARKER_BOOKMARK);
+        if (line != -1)
+            GotoLine(line);
+        return true;
+    }
+    case ID_STE_BOOKMARK_CLEAR :
+    {
+        MarkerDeleteAll(STE_MARKER_BOOKMARK);
+        return true;
+    }
+    // Preference menu items ----------------------------------------------
+    case ID_STE_PREFERENCES :
+    {
+        if (GetEditorPrefs().IsOk() || GetEditorStyles().IsOk() || GetEditorLangs().IsOk())
+        {
+            wxSTEditorPrefPageData editorData(GetEditorPrefs(),
+                                              GetEditorStyles(),
+                                              GetEditorLangs(),
+                                              GetLanguageId(),
+                                              this);
+
+            wxSTEditorPrefDialog prefDialog(editorData, GetModalParent());
+
+            prefDialog.ShowModal();
+        }
+
+        return true;
+    }
+    case ID_STE_PREF_EDGE_COLUMN :
+    {
+        int val = wxGetNumberFromUser(_("Column to show long line marker"),
+                                      wxEmptyString, _("Set long line marker"),
+                                      GetEdgeColumn(),
+                                      0, 255, GetModalParent());
+        if (val >= 0)
+        {
+            if (GetEditorPrefs().IsOk())
+                GetEditorPrefs().SetPrefIntByID(ID_STE_PREF_EDGE_COLUMN, val);
             else
-                MarkerAdd(GetCurrentLine(), STE_MARKER_BOOKMARK);
-            return true;
-        }
-        case ID_STE_BOOKMARK_FIRST :
-        {
-            int line = MarkerNext(0, 1<<STE_MARKER_BOOKMARK);
-            if (line != -1)
-                GotoLine(line);
-            return true;
-        }
-        case ID_STE_BOOKMARK_PREVIOUS :
-        {
-            // Note: Scintilla is forgiving about invalid line nums (at least for now)
-            int line = MarkerPrevious(GetCurrentLine()-1, 1<<STE_MARKER_BOOKMARK);
-            if (line != -1)
-                GotoLine(line);
-            return true;
-        }
-        case ID_STE_BOOKMARK_NEXT :
-        {
-            int line = MarkerNext(GetCurrentLine()+1, 1<<STE_MARKER_BOOKMARK);
-            if (line != -1)
-                GotoLine(line);
-            return true;
-        }
-        case ID_STE_BOOKMARK_LAST :
-        {
-            int line = MarkerPrevious(GetLineCount(), 1<<STE_MARKER_BOOKMARK);
-            if (line != -1)
-                GotoLine(line);
-            return true;
-        }
-        case ID_STE_BOOKMARK_CLEAR :
-        {
-            MarkerDeleteAll(STE_MARKER_BOOKMARK);
-            return true;
-        }
-        // Preference menu items ----------------------------------------------
-        case ID_STE_PREFERENCES :
-        {
-            if (GetEditorPrefs().IsOk() || GetEditorStyles().IsOk() || GetEditorLangs().IsOk())
-            {
-                wxSTEditorPrefPageData editorData(GetEditorPrefs(),
-                                                  GetEditorStyles(),
-                                                  GetEditorLangs(),
-                                                  GetLanguageId(),
-                                                  this);
-
-                wxSTEditorPrefDialog prefDialog(editorData, GetModalParent());
-
-                prefDialog.ShowModal();
-            }
-
-            return true;
-        }
-        case ID_STE_PREF_EDGE_COLUMN :
-        {
-            int val = wxGetNumberFromUser(_("Column to show long line marker"),
-                                          wxEmptyString, _("Set long line marker"),
-                                          GetEdgeColumn(),
-                                          0, 255, GetModalParent());
-            if (val >= 0)
-            {
-                if (GetEditorPrefs().IsOk())
-                    GetEditorPrefs().SetPrefIntByID(ID_STE_PREF_EDGE_COLUMN, val);
-                else
-                    SetEdgeColumn(val);
-            }
-
-            return true;
-        }
-        case ID_STE_PREF_TAB_WIDTH :
-        {
-            int val = wxGetNumberFromUser(_("Characters to expand tabs"),
-                                          wxEmptyString, _("Set tab width"),
-                                          GetTabWidth(),
-                                          0, 255, GetModalParent());
-            if (val >= 0)
-            {
-                if (GetEditorPrefs().IsOk())
-                    GetEditorPrefs().SetPrefIntByID(ID_STE_PREF_TAB_WIDTH, val);
-                else
-                    SetTabWidth(val);
-            }
-
-            return true;
-        }
-        case ID_STE_PREF_INDENT_WIDTH :
-        {
-            int val = wxGetNumberFromUser(_("Characters to indent"), wxEmptyString, _("Set indentation width"),
-                                          GetIndent(),
-                                          0, 255, GetModalParent());
-            if (val >= 0)
-            {
-                if (GetEditorPrefs().IsOk())
-                    GetEditorPrefs().SetPrefIntByID(ID_STE_PREF_INDENT_WIDTH, val);
-                else
-                    SetIndent(val);
-            }
-
-            return true;
-        }
-        case ID_STE_PREF_EOL_MODE :
-        {
-            int eol_mode = GetEOLMode();
-            int val = wxGetSingleChoiceIndex(wxString(_("Current EOL : "))+wxSTC_EOL_Strings[eol_mode],
-                                             _("Select EOL mode"), wxSTC_EOL_Strings_count, wxSTC_EOL_Strings, GetModalParent());
-
-            if ((val != -1) && (val != eol_mode))
-            {
-                if (GetEditorPrefs().IsOk())
-                    GetEditorPrefs().SetPrefIntByID(ID_STE_PREF_EOL_MODE, val);
-                else
-                    SetEOLMode(val);
-            }
-            return true;
-        }
-        case ID_STE_SAVE_PREFERENCES :
-        {
-            if (wxConfigBase::Get(false))
-                GetOptions().SaveConfig(*wxConfigBase::Get(false));
-
-            return true;
+                SetEdgeColumn(val);
         }
 
-        default : break;
+        return true;
+    }
+    case ID_STE_PREF_TAB_WIDTH :
+    {
+        int val = wxGetNumberFromUser(_("Characters to expand tabs"),
+                                      wxEmptyString, _("Set tab width"),
+                                      GetTabWidth(),
+                                      0, 255, GetModalParent());
+        if (val >= 0)
+        {
+            if (GetEditorPrefs().IsOk())
+                GetEditorPrefs().SetPrefIntByID(ID_STE_PREF_TAB_WIDTH, val);
+            else
+                SetTabWidth(val);
+        }
+
+        return true;
+    }
+    case ID_STE_PREF_INDENT_WIDTH :
+    {
+        int val = wxGetNumberFromUser(_("Characters to indent"), wxEmptyString, _("Set indentation width"),
+                                      GetIndent(),
+                                      0, 255, GetModalParent());
+        if (val >= 0)
+        {
+            if (GetEditorPrefs().IsOk())
+                GetEditorPrefs().SetPrefIntByID(ID_STE_PREF_INDENT_WIDTH, val);
+            else
+                SetIndent(val);
+        }
+
+        return true;
+    }
+    case ID_STE_PREF_EOL_MODE :
+    {
+        int eol_mode = GetEOLMode();
+        int val = wxGetSingleChoiceIndex(wxString(_("Current EOL : "))+wxSTC_EOL_Strings[eol_mode],
+                                         _("Select EOL mode"), wxSTC_EOL_Strings_count, wxSTC_EOL_Strings, GetModalParent());
+
+        if ((val != -1) && (val != eol_mode))
+        {
+            if (GetEditorPrefs().IsOk())
+                GetEditorPrefs().SetPrefIntByID(ID_STE_PREF_EOL_MODE, val);
+            else
+                SetEOLMode(val);
+        }
+        return true;
+    }
+    case ID_STE_SAVE_PREFERENCES :
+    {
+        if (wxConfigBase::Get(false))
+            GetOptions().SaveConfig(*wxConfigBase::Get(false));
+
+        return true;
+    }
+
+    default :
+        break;
     }
 
     // check if wxSTEditorPref knows this id
     if ( GetEditorPrefs().IsOk() && (win_id >= ID_STE_PREF__FIRST) &&
-                                    (win_id <= ID_STE_PREF__LAST))
+            (win_id <= ID_STE_PREF__LAST))
     {
         GetEditorPrefs().SetPrefBoolByID(win_id, event.IsChecked());
         return true;
@@ -3668,7 +3804,7 @@ long wxSTEditor::UpdateCanDo(bool send_event)
     }
 
     if (send_event && (state_change != 0))
-       SendEvent(wxEVT_STEDITOR_STATE_CHANGED, state_change, GetState(), GetFileName().GetFullPath());
+        SendEvent(wxEVT_STEDITOR_STATE_CHANGED, state_change, GetState(), GetFileName().GetFullPath());
 
     return state_change;
 }
@@ -3872,8 +4008,8 @@ bool wxSTEditor::SendEvent(wxEventType eventType, int evt_int, long extra_long,
     //wxPrintf(wxT("Send event %d, %d %ld '%s'\n"), long(eventType), evt_int, extra_long, evtStr.wx_str());
 
     if ((eventType == wxEVT_STEDITOR_STATE_CHANGED) ||
-        (eventType == wxEVT_STEDITOR_SET_FOCUS) ||
-        (eventType == wxEVT_STESHELL_ENTER))
+            (eventType == wxEVT_STEDITOR_SET_FOCUS) ||
+            (eventType == wxEVT_STESHELL_ENTER))
     {
         wxSTEditorEvent event(GetId(), eventType, this,
                               evt_int, extra_long, evtStr);
@@ -3899,7 +4035,7 @@ bool wxSTEditor::SendEvent(wxEventType eventType, int evt_int, long extra_long,
         return false;
     }
 
-   return GetEventHandler()->ProcessEvent(event);
+    return GetEventHandler()->ProcessEvent(event);
 }
 
 void wxSTEditor::OnKeyDown(wxKeyEvent& event)
@@ -3908,29 +4044,29 @@ void wxSTEditor::OnKeyDown(wxKeyEvent& event)
 
     switch ( event.GetKeyCode() )
     {
-        case WXK_ESCAPE:
-        {
-            if (HasSelection())
-                RemoveSelection();
+    case WXK_ESCAPE:
+    {
+        if (HasSelection())
+            RemoveSelection();
 
-            event.Skip(); // allow other default behavior too
+        event.Skip(); // allow other default behavior too
 
-            break;
-        }
-        case WXK_INSERT : // already have ID_STE_SELECT_RECT for Alt-Shift-P
-        {
-            if (event.AltDown() && event.ShiftDown())
-                PasteRectangular();
-            else
-                event.Skip();
-
-            break;
-        }
-        default:
-        {
+        break;
+    }
+    case WXK_INSERT : // already have ID_STE_SELECT_RECT for Alt-Shift-P
+    {
+        if (event.AltDown() && event.ShiftDown())
+            PasteRectangular();
+        else
             event.Skip();
-            break;
-        }
+
+        break;
+    }
+    default:
+    {
+        event.Skip();
+        break;
+    }
     }
 }
 
@@ -4004,7 +4140,7 @@ void wxSTEditor::OnSTCCharAdded(wxStyledTextEvent &event)
 
     // Change this if support for mac files with \r if needed
     if ((c == wxT('\n')) && GetEditorPrefs().IsOk() &&
-         GetEditorPrefs().GetPrefBool(STE_PREF_AUTOINDENT))
+            GetEditorPrefs().GetPrefBool(STE_PREF_AUTOINDENT))
     {
         const int line = GetCurrentLine();
         const int indent = line < 1 ? 0 : GetLineIndentation(line - 1);
@@ -4049,8 +4185,8 @@ void wxSTEditor::OnSTCUpdateUI(wxStyledTextEvent &event)
         GetSelection(&start_pos, &end_pos);
 
         if ((start_pos + 3   < end_pos) &&
-            (start_pos + 40  > end_pos) &&
-            TextRangeIsWord(start_pos, end_pos))
+                (start_pos + 40  > end_pos) &&
+                TextRangeIsWord(start_pos, end_pos))
         {
             wxString text(GetTextRange(start_pos, end_pos));
 
@@ -4117,7 +4253,7 @@ void wxSTEditor::OnScroll( wxScrollEvent& event )
         int longest_len = GetLongestLinePixelWidth();
         if (longest_len > scroll_width)
             SetScrollWidth(longest_len);
-            //sb->SetScrollbar(pos, thumb, text_width, true);
+        //sb->SetScrollbar(pos, thumb, text_width, true);
 
         // You have to release the scrollbar before the change takes effect.
         sb->Refresh();
@@ -4140,7 +4276,7 @@ void wxSTEditor::OnScrollWin( wxScrollWinEvent& event )
         int longest_len = GetLongestLinePixelWidth();
         if (longest_len > scroll_width)
             SetScrollWidth(longest_len);
-            //SetScrollbar(wxHORIZONTAL, pos, thumb, text_width, true);
+        //SetScrollbar(wxHORIZONTAL, pos, thumb, text_width, true);
     }
 }
 
@@ -4185,7 +4321,7 @@ void wxSTEditor::OnSTCMarginClick(wxStyledTextEvent &event)
     m_marginDClickMargin = margin;
 
     if ((t < last_time + double_click_millis) &&
-        (line == last_line) && (margin == last_margin))
+            (line == last_line) && (margin == last_margin))
     {
         wxStyledTextEvent dClickEvent(event);
         dClickEvent.SetEventType(wxEVT_STEDITOR_MARGINDCLICK);
@@ -4221,8 +4357,8 @@ void wxSTEditor::OnSTCMarginDClick(wxStyledTextEvent &event)
     const int line = event.GetLine();
 
     if ((event.GetMargin() == STE_MARGIN_MARKER) &&
-        GetEditorPrefs().IsOk() &&
-        GetEditorPrefs().GetPrefBoolByID(ID_STE_PREF_BOOKMARK_DCLICK))
+            GetEditorPrefs().IsOk() &&
+            GetEditorPrefs().GetPrefBoolByID(ID_STE_PREF_BOOKMARK_DCLICK))
     {
         // See similiar code for ID_STE_BOOKMARK_TOGGLE
         if ((MarkerGet(line) & (1<<STE_MARKER_BOOKMARK)) != 0)
@@ -4308,10 +4444,12 @@ void wxSTEditor::SetClientObject( wxClientData *data )
 
 static const int ste_ctrlCharLenghts_size = 32;
 static const int ste_ctrlCharLengths[ste_ctrlCharLenghts_size] =
-                                           { 3, 3, 3, 3, 3, 3, 3, 3,
-                                             2, 2, 2, 2, 2, 2, 2, 2,
-                                             3, 3, 3, 3, 3, 3, 3, 3,
-                                             3, 2, 3, 3, 2, 2, 2, 2 };
+{
+    3, 3, 3, 3, 3, 3, 3, 3,
+    2, 2, 2, 2, 2, 2, 2, 2,
+    3, 3, 3, 3, 3, 3, 3, 3,
+    3, 2, 3, 3, 2, 2, 2, 2
+};
 
 int wxSTEditor::GetLongestLinePixelWidth(int top_line, int bottom_line)
 {
@@ -4325,7 +4463,9 @@ int wxSTEditor::GetLongestLinePixelWidth(int top_line, int bottom_line)
 
     if (last_line < first_line)
     {
-        int tmp = first_line; first_line = last_line; last_line = tmp;
+        int tmp = first_line;
+        first_line = last_line;
+        last_line = tmp;
     }
 
     // FIXME this is not the best solution, but with some luck it'll work

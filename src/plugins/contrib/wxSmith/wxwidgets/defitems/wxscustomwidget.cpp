@@ -25,21 +25,21 @@
 
 namespace
 {
-    wxsRegisterItem<wxsCustomWidget> Reg(
-        _T("Custom"),
-        wxsTWidget,
-        _T(""),_T(""),_T(""),_T(""),
-        _T("Standard"),
-        380,
-        _T("Custom"),
-        wxsCPP,
-        0,0,
-        _T("images/wxsmith/Custom32.png"),
-        _T("images/wxsmith/Custom16.png"));
+wxsRegisterItem<wxsCustomWidget> Reg(
+    _T("Custom"),
+    wxsTWidget,
+    _T(""),_T(""),_T(""),_T(""),
+    _T("Standard"),
+    380,
+    _T("Custom"),
+    wxsCPP,
+    0,0,
+    _T("images/wxsmith/Custom32.png"),
+    _T("images/wxsmith/Custom16.png"));
 
-    WXS_EV_BEGIN(wxsCustomWidgetEvents)
-        WXS_EV_DEFAULTS()
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsCustomWidgetEvents)
+WXS_EV_DEFAULTS()
+WXS_EV_END()
 }
 
 
@@ -145,15 +145,15 @@ bool wxsCustomWidget::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
                 // Skipping all standard elements
                 wxString Name = cbC2U(Child->Value());
                 if ( Name != "pos" &&
-                     Name != "size" &&
-                     Name != "style" &&
-                     Name != "enabled" &&
-                     Name != "focused" &&
-                     Name != "hidden" &&
-                     Name != "fg" &&
-                     Name != "bg" &&
-                     Name != "font" &&
-                     Name != "handler" )
+                        Name != "size" &&
+                        Name != "style" &&
+                        Name != "enabled" &&
+                        Name != "focused" &&
+                        Name != "hidden" &&
+                        Name != "fg" &&
+                        Name != "bg" &&
+                        Name != "font" &&
+                        Name != "handler" )
                 {
                     m_XmlDataDoc.InsertEndChild(*Child);
                 }
@@ -182,15 +182,15 @@ bool wxsCustomWidget::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
                 // Skipping all standard elements
                 wxString Name = cbC2U(Child->Value());
                 if ( Name != "pos" &&
-                     Name != "size" &&
-                     Name != "style" &&
-                     Name != "enabled" &&
-                     Name != "focused" &&
-                     Name != "hidden" &&
-                     Name != "fg" &&
-                     Name != "bg" &&
-                     Name != "font" &&
-                     Name != "handler" )
+                        Name != "size" &&
+                        Name != "style" &&
+                        Name != "enabled" &&
+                        Name != "focused" &&
+                        Name != "hidden" &&
+                        Name != "fg" &&
+                        Name != "bg" &&
+                        Name != "font" &&
+                        Name != "handler" )
                 {
                     Element->InsertEndChild(*Child);
                 }

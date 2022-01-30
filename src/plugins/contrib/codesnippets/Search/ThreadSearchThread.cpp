@@ -19,7 +19,7 @@
 #endif
 //#include "sdk.h"
 #ifndef CB_PRECOMP
-    #include "cbeditor.h"
+#include "cbeditor.h"
 #endif
 
 #include "cbauibook.h"
@@ -48,10 +48,10 @@ ThreadSearchThread::ThreadSearchThread(ThreadSearchView*           pThreadSearch
         m_Masks.Add(_T("*"));
     }
     m_pTextFileSearcher = TextFileSearcher::BuildTextFileSearcher(findData.GetFindText(),
-                                                                  findData.GetMatchCase(),
-                                                                  findData.GetStartWord(),
-                                                                  findData.GetMatchWord(),
-                                                                  findData.GetRegEx());
+                          findData.GetMatchCase(),
+                          findData.GetStartWord(),
+                          findData.GetMatchWord(),
+                          findData.GetRegEx());
     if (!m_pTextFileSearcher)
     {
         sThreadSearchEvent event(wxEVT_S_THREAD_SEARCH_ERROR, -1);
@@ -113,34 +113,35 @@ void *ThreadSearchThread::Entry()
         }
     }
     else if ( m_FindData.MustSearchInProject() == true ) do
-    {
-        //(pecan 2008/4/11)
-        // Search in "Snippets Tree" has replaced old Search in "Project Tree" check box
-        wxString codeSnippetsIndex = GetThreadSearchView()->GetThreadSearchPlugin()->GetCodeSnippetsIndex();
-        if (not codeSnippetsIndex.IsEmpty() )
-            AddNewItem(m_FilePaths, codeSnippetsIndex);
-
-        //// Tell CodeSnippetsTreeCtrl to fill global fileLink array with FileLinks
-        //CodeSnippetsEvent evt(wxEVT_CODESNIPPETS_GETFILELINKS, 0);
-        //evt.SetSnippetString(_T("Testing GetFileLinks"));
-        //evt.ProcessCodeSnippetsEvent(evt);
-        //if ( TestDestroy() == true ) return 0;
-
-        // Add CodeSnippet FileLinks array to searched files
-        FileLinksMapArray& hash = GetConfig()->GetFileLinksMapArray();
-        for (FileLinksMapArray::iterator it = hash.begin(); it != hash.end(); it++)
-            AddNewItem(m_FilePaths, it->first);
-        break;
-        // ----- removed --- notice the break; statement above --- removed ----- //(pecan 2008/4/11)
-        // Search in project files ?
-        // Necessary only if not already parsed in workspace part
-        cbProject* pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
-        if ( pProject != NULL )
         {
-            AddSnippetFiles(m_FilePaths, *pProject);
-            if ( TestDestroy() == true ) return 0;
+            //(pecan 2008/4/11)
+            // Search in "Snippets Tree" has replaced old Search in "Project Tree" check box
+            wxString codeSnippetsIndex = GetThreadSearchView()->GetThreadSearchPlugin()->GetCodeSnippetsIndex();
+            if (not codeSnippetsIndex.IsEmpty() )
+                AddNewItem(m_FilePaths, codeSnippetsIndex);
+
+            //// Tell CodeSnippetsTreeCtrl to fill global fileLink array with FileLinks
+            //CodeSnippetsEvent evt(wxEVT_CODESNIPPETS_GETFILELINKS, 0);
+            //evt.SetSnippetString(_T("Testing GetFileLinks"));
+            //evt.ProcessCodeSnippetsEvent(evt);
+            //if ( TestDestroy() == true ) return 0;
+
+            // Add CodeSnippet FileLinks array to searched files
+            FileLinksMapArray& hash = GetConfig()->GetFileLinksMapArray();
+            for (FileLinksMapArray::iterator it = hash.begin(); it != hash.end(); it++)
+                AddNewItem(m_FilePaths, it->first);
+            break;
+            // ----- removed --- notice the break; statement above --- removed ----- //(pecan 2008/4/11)
+            // Search in project files ?
+            // Necessary only if not already parsed in workspace part
+            cbProject* pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+            if ( pProject != NULL )
+            {
+                AddSnippetFiles(m_FilePaths, *pProject);
+                if ( TestDestroy() == true ) return 0;
+            }
         }
-    }while(false);
+        while(false);
 
     // Tests thread stop (cancel search, app shutdown)
     if ( TestDestroy() == true ) return 0;
@@ -233,41 +234,41 @@ void ThreadSearchThread::FindInFile(const wxString& path)
 
     switch ( m_pTextFileSearcher->FindInFile(path, m_LineTextArray) )
     {
-        case TextFileSearcher::idStringFound:
-        {
-            sThreadSearchEvent event(wxEVT_S_THREAD_SEARCH, -1);
-            event.SetString(path);
-            event.SetLineTextArray(m_LineTextArray);
+    case TextFileSearcher::idStringFound:
+    {
+        sThreadSearchEvent event(wxEVT_S_THREAD_SEARCH, -1);
+        event.SetString(path);
+        event.SetLineTextArray(m_LineTextArray);
 
-            // Using wxPostEvent, we avoid multi-threaded memory violation.
-            m_pThreadSearchView->PostThreadSearchEvent(event);
-            break;
-        }
-        case TextFileSearcher::idStringNotFound:
-        {
-            break;
-        }
-        case TextFileSearcher::idFileNotFound:
-        {
-            sThreadSearchEvent event(wxEVT_S_THREAD_SEARCH_ERROR, -1);
-            event.SetString(path + _T(" does not exist."));
+        // Using wxPostEvent, we avoid multi-threaded memory violation.
+        m_pThreadSearchView->PostThreadSearchEvent(event);
+        break;
+    }
+    case TextFileSearcher::idStringNotFound:
+    {
+        break;
+    }
+    case TextFileSearcher::idFileNotFound:
+    {
+        sThreadSearchEvent event(wxEVT_S_THREAD_SEARCH_ERROR, -1);
+        event.SetString(path + _T(" does not exist."));
 
-            // Using wxPostEvent, we avoid multi-threaded memory violation.
-            wxPostEvent( m_pThreadSearchView,event);
-            break;
-        }
-        case TextFileSearcher::idFileOpenError:
-        {
-            sThreadSearchEvent event(wxEVT_S_THREAD_SEARCH_ERROR, -1);
-            event.SetString(_T("Failed to open ") + path);
+        // Using wxPostEvent, we avoid multi-threaded memory violation.
+        wxPostEvent( m_pThreadSearchView,event);
+        break;
+    }
+    case TextFileSearcher::idFileOpenError:
+    {
+        sThreadSearchEvent event(wxEVT_S_THREAD_SEARCH_ERROR, -1);
+        event.SetString(_T("Failed to open ") + path);
 
-            // Using wxPostEvent, we avoid multi-threaded memory violation.
-            wxPostEvent( m_pThreadSearchView,event);
-            break;
-        }
-        default:
-        {
-        }
+        // Using wxPostEvent, we avoid multi-threaded memory violation.
+        wxPostEvent( m_pThreadSearchView,event);
+        break;
+    }
+    default:
+    {
+    }
     }
 }
 

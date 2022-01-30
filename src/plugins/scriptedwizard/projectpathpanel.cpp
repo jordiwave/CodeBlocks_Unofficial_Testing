@@ -9,11 +9,11 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-    #include <wx/filename.h>
-    //(*InternalHeadersPCH(ProjectPathPanel)
-    #include <wx/string.h>
-    #include <wx/intl.h>
-    //*)
+#include <wx/filename.h>
+//(*InternalHeadersPCH(ProjectPathPanel)
+#include <wx/string.h>
+#include <wx/intl.h>
+//*)
 #endif // CB_PRECOMP
 #include <filefilters.h>
 
@@ -136,7 +136,7 @@ void ProjectPathPanel::OntxtPrjTitleText(cb_unused wxCommandEvent& event)
     wxString prjtitle = txtPrjTitle->GetValue();
     // Make a check if the project title has any extension or not
     if (!prjtitle.IsEmpty() &&
-        !prjtitle.Right(4).IsSameAs(FileFilters::CODEBLOCKS_DOT_EXT))
+            !prjtitle.Right(4).IsSameAs(FileFilters::CODEBLOCKS_DOT_EXT))
         prjtitle = prjtitle + FileFilters::CODEBLOCKS_DOT_EXT;
     txtPrjName->SetValue(prjtitle);
 

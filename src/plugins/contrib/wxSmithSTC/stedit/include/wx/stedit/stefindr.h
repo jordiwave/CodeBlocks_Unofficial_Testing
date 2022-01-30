@@ -33,23 +33,23 @@ class WXDLLIMPEXP_FWD_CORE wxComboBox;
 /// Add a string to the array at the top and remove any to keep the max_count.
 /// If max_count <= 0 then don't remove any.
 WXDLLIMPEXP_STEDIT bool wxSTEPrependArrayString(const wxString &str,
-                                                wxArrayString &strArray,
-                                                int max_count);
+        wxArrayString &strArray,
+        int max_count);
 
 /// Prepend a string to a wxComboBox, removing any copies of it appearing after.
 /// If max_strings > 0 then ensure that there are only max_strings in the combo.
 WXDLLIMPEXP_STEDIT bool wxSTEPrependComboBoxString(const wxString &str,
-                                                   wxComboBox *combo,
-                                                   int max_strings);
+        wxComboBox *combo,
+        int max_strings);
 
 /// Initialize the combo to have these strings and select first.
 WXDLLIMPEXP_STEDIT void wxSTEInitComboBoxStrings(const wxArrayString& values,
-                                                 wxComboBox* combo);
+        wxComboBox* combo);
 
 /// Initialize the menu to have these strings up to max_count number.
 WXDLLIMPEXP_STEDIT void wxSTEInitMenuStrings(const wxArrayString& values,
-                                             wxMenu* menu,
-                                             int start_win_id, int max_count);
+        wxMenu* menu,
+        int start_win_id, int max_count);
 
 /// @}
 
@@ -59,16 +59,16 @@ WXDLLIMPEXP_STEDIT void wxSTEInitMenuStrings(const wxArrayString& values,
 
 /// Update a wxSearchCtrl in a wxToolBar by window id to the find replace data.
 WXDLLIMPEXP_STEDIT void wxSTEUpdateSearchCtrl(wxToolBar* toolbar,
-                                              wxWindowID win_id,
-                                              const wxSTEditorFindReplaceData* findReplaceData);
+        wxWindowID win_id,
+        const wxSTEditorFindReplaceData* findReplaceData);
 
 /// Update a wxSearchCtrl to the find replace data.
 WXDLLIMPEXP_STEDIT void wxSTEUpdateSearchCtrl(wxSearchCtrl* searchCtrl,
-                                              const wxSTEditorFindReplaceData* findReplaceData);
+        const wxSTEditorFindReplaceData* findReplaceData);
 
 
 //-----------------------------------------------------------------------------
-/// wxSTEditorFoundStringData 
+/// wxSTEditorFoundStringData
 //-----------------------------------------------------------------------------
 
 class WXDLLIMPEXP_STEDIT wxSTEditorFoundStringData : public wxStringClientData
@@ -82,16 +82,40 @@ public:
 
     virtual ~wxSTEditorFoundStringData() {}
 
-    bool IsOk() const { return GetLineString().Length() > 0; }
+    bool IsOk() const
+    {
+        return GetLineString().Length() > 0;
+    }
 
-    const wxString& GetLineString() const    { return GetData(); }
-    void SetLineString(const wxString& text) { SetData(text); }
+    const wxString& GetLineString() const
+    {
+        return GetData();
+    }
+    void SetLineString(const wxString& text)
+    {
+        SetData(text);
+    }
 
-    const wxFileName& GetFileName() const { return m_fileName; }
-    int GetLineNumber()             const { return m_line_number; }
-    int GetLineStartPosition()      const { return m_line_start_pos; }
-    int GetFileStartPosition()      const { return m_file_start_pos; }
-    int GetStringLength()           const { return m_string_length; }
+    const wxFileName& GetFileName() const
+    {
+        return m_fileName;
+    }
+    int GetLineNumber()             const
+    {
+        return m_line_number;
+    }
+    int GetLineStartPosition()      const
+    {
+        return m_line_start_pos;
+    }
+    int GetFileStartPosition()      const
+    {
+        return m_file_start_pos;
+    }
+    int GetStringLength()           const
+    {
+        return m_string_length;
+    }
 
     wxString ToString() const;
     bool FromString(const wxString& data);
@@ -167,13 +191,25 @@ public:
 
 #if !wxCHECK_VERSION(3, 0, 0)
     // Add the const version of these functions, added to wxWidgets late in 2.9.5
-    const wxString& GetFindString()    const { return ((wxFindReplaceData*)this)->GetFindString(); }
-    const wxString& GetReplaceString() const { return ((wxFindReplaceData*)this)->GetReplaceString(); }
+    const wxString& GetFindString()    const
+    {
+        return ((wxFindReplaceData*)this)->GetFindString();
+    }
+    const wxString& GetReplaceString() const
+    {
+        return ((wxFindReplaceData*)this)->GetReplaceString();
+    }
 #endif //!wxCHECK_VERSION(3, 0, 0)
 
-    bool HasFlag(int flag) const { return (GetFlags() & flag) != 0; }
+    bool HasFlag(int flag) const
+    {
+        return (GetFlags() & flag) != 0;
+    }
 
-    void SetFlag(wxUint32 flag, bool enable) { SetFlags( STE_SETBIT(GetFlags(), flag, enable) ); }
+    void SetFlag(wxUint32 flag, bool enable)
+    {
+        SetFlags( STE_SETBIT(GetFlags(), flag, enable) );
+    }
 
     /// Convert the STE flags to Scintilla flags.
     static int STEToScintillaFindFlags(int ste_flags);
@@ -181,22 +217,46 @@ public:
     static int ScintillaToSTEFindFlags(int sci_flags);
 
     /// Add find strings at top of list removing old ones if > GetMaxStrings().
-    void AddFindString(const wxString& str) { wxSTEPrependArrayString(str, m_findStrings, m_max_strings); }
+    void AddFindString(const wxString& str)
+    {
+        wxSTEPrependArrayString(str, m_findStrings, m_max_strings);
+    }
     /// Add replace strings at top of list removing old ones if > GetMaxStrings().
-    void AddReplaceString(const wxString& str) { wxSTEPrependArrayString(str, m_replaceStrings, m_max_strings); }
+    void AddReplaceString(const wxString& str)
+    {
+        wxSTEPrependArrayString(str, m_replaceStrings, m_max_strings);
+    }
 
-    const wxArrayString& GetFindStrings()    const { return m_findStrings; }
-    const wxArrayString& GetReplaceStrings() const { return m_replaceStrings; }
+    const wxArrayString& GetFindStrings()    const
+    {
+        return m_findStrings;
+    }
+    const wxArrayString& GetReplaceStrings() const
+    {
+        return m_replaceStrings;
+    }
 
     /// Get max number of search strings to save.
-    int GetMaxStrings() const { return m_max_strings; }
+    int GetMaxStrings() const
+    {
+        return m_max_strings;
+    }
     /// Set max number of search strings to save.
-    void SetMaxStrings(int count) { m_max_strings = count; }
+    void SetMaxStrings(int count)
+    {
+        m_max_strings = count;
+    }
 
     /// Get the find all strings, set from a previous call to find all.
     /// Format is ("%ld|%s|%d|%s", &editor, filename, line#, line text).
-    const wxArraySTEditorFoundStringData& GetFoundStringArray() const { return m_foundStringArray; }
-          wxArraySTEditorFoundStringData& GetFoundStringArray()       { return m_foundStringArray; }
+    const wxArraySTEditorFoundStringData& GetFoundStringArray() const
+    {
+        return m_foundStringArray;
+    }
+    wxArraySTEditorFoundStringData& GetFoundStringArray()
+    {
+        return m_foundStringArray;
+    }
 
     /// Goto and select the text in the found string data.
     static bool GotoFindAllString(const wxSTEditorFoundStringData& foundStringData,
@@ -214,8 +274,14 @@ public:
     /// This size is only set if the user expands it, otherwise it's equal to wxDefaultSize.
     /// Also, it does not size the current dialog and only sets the size
     ///   of the dialog when first created.
-    wxSize GetDialogSize() const           { return m_dialogSize; }
-    void SetDialogSize(const wxSize& size) { m_dialogSize = size; }
+    wxSize GetDialogSize() const
+    {
+        return m_dialogSize;
+    }
+    void SetDialogSize(const wxSize& size)
+    {
+        m_dialogSize = size;
+    }
 
     /// Load/Save config for find flags.
     /// See also wxSTEditorOptions for paths and internal saving config.
@@ -225,8 +291,14 @@ public:
                     const wxString &configPath = wxT("/wxSTEditor/FindReplace/")) const;
 
     /// Returns true after calling LoadConfig().
-    bool HasLoadedConfig() const      { return m_loaded_config; }
-    void SetLoadedConfig(bool loaded) { m_loaded_config = loaded; }
+    bool HasLoadedConfig() const
+    {
+        return m_loaded_config;
+    }
+    void SetLoadedConfig(bool loaded)
+    {
+        m_loaded_config = loaded;
+    }
 
     /// all editors (can and should probably) share the same find/replace data.
     static wxSTEditorFindReplaceData sm_findReplaceData;
@@ -248,7 +320,10 @@ protected:
 class WXDLLIMPEXP_STEDIT wxSTEditorFindResultsEditor : public wxSTEditor
 {
 public:
-    wxSTEditorFindResultsEditor() : wxSTEditor() { Init(); }
+    wxSTEditorFindResultsEditor() : wxSTEditor()
+    {
+        Init();
+    }
 
     wxSTEditorFindResultsEditor(wxWindow *parent, wxWindowID winid,
                                 const wxPoint& pos = wxDefaultPosition,
@@ -276,8 +351,14 @@ public:
     void SetResults(const wxSTEditorFindReplaceData& findReplaceData);
 
     /// Set the window to send the events to, if NULL then send to the parent.
-    wxWindow* GetTargetWindow() const     { return m_targetWin; }
-    void SetTargetWindow( wxWindow* win ) { m_targetWin = win; }
+    wxWindow* GetTargetWindow() const
+    {
+        return m_targetWin;
+    }
+    void SetTargetWindow( wxWindow* win )
+    {
+        m_targetWin = win;
+    }
 
 protected:
 
@@ -303,7 +384,10 @@ private:
 class WXDLLIMPEXP_STEDIT wxSTEditorFindReplacePanel : public wxPanel
 {
 public:
-    wxSTEditorFindReplacePanel() : wxPanel() { Init(); }
+    wxSTEditorFindReplacePanel() : wxPanel()
+    {
+        Init();
+    }
 
     wxSTEditorFindReplacePanel(wxWindow *parent, wxWindowID winid,
                                wxSTEditorFindReplaceData *data,
@@ -329,21 +413,33 @@ public:
     /// @{
 
     /// Get the global editor to show "find all" string in, may be NULL.
-    static wxSTEditorFindResultsEditor* GetFindResultsEditor() { return sm_findResultsEditor; }
+    static wxSTEditorFindResultsEditor* GetFindResultsEditor()
+    {
+        return sm_findResultsEditor;
+    }
     /// Set a global editor to show "find all" strings in.
     /// If no editor is set then this find panel will be expanded and the
     /// results shown there.
-    static void SetFindResultsEditor(wxSTEditorFindResultsEditor* findResultsEditor) { sm_findResultsEditor = findResultsEditor; }
+    static void SetFindResultsEditor(wxSTEditorFindResultsEditor* findResultsEditor)
+    {
+        sm_findResultsEditor = findResultsEditor;
+    }
 
     /// @}
 
     /// Find dialog data access, data should never be NULL.
-    wxSTEditorFindReplaceData *GetData() { return m_findReplaceData; }
+    wxSTEditorFindReplaceData *GetData()
+    {
+        return m_findReplaceData;
+    }
     void  SetData(wxSTEditorFindReplaceData *data);
 
     /// Set the window to send the events to, if NULL then send to the parent.
     wxWindow* GetTargetWindow() const;
-    void SetTargetWindow( wxWindow* win ) { m_targetWin = win; }
+    void SetTargetWindow( wxWindow* win )
+    {
+        m_targetWin = win;
+    }
 
     /// Try to get an editor for this dialog.
     /// It uses the target window and checks if it is a wxSTEditor, wxSTEditorSplitter,
@@ -353,7 +449,10 @@ public:
     // implementation
     void UpdateButtons();            // enable/disable buttons as appropriate
     void SelectFindString();         // select the find string in the combo
-    int  GetFindFlags() const { return m_flags; }
+    int  GetFindFlags() const
+    {
+        return m_flags;
+    }
     void UpdateFindFlags();
 
     // -----------------------------------------------------------------------
@@ -429,7 +528,10 @@ WXDLLIMPEXP_DATA_STEDIT(extern const wxString) wxSTEditorFindReplaceDialogNameSt
 class WXDLLIMPEXP_STEDIT wxSTEditorFindReplaceDialog : public wxDialog
 {
 public:
-    wxSTEditorFindReplaceDialog() : wxDialog() { Init(); }
+    wxSTEditorFindReplaceDialog() : wxDialog()
+    {
+        Init();
+    }
 
     wxSTEditorFindReplaceDialog( wxWindow *parent,
                                  wxSTEditorFindReplaceData *data,
@@ -450,7 +552,10 @@ public:
     virtual ~wxSTEditorFindReplaceDialog();
 
     /// Get/Set values for this dialog.
-    wxSTEditorFindReplacePanel* GetFindReplacePanel() const { return m_findReplacePanel; }
+    wxSTEditorFindReplacePanel* GetFindReplacePanel() const
+    {
+        return m_findReplacePanel;
+    }
 
     // -----------------------------------------------------------------------
     // implementation

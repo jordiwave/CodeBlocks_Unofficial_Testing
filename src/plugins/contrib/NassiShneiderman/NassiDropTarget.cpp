@@ -39,10 +39,10 @@ wxDragResult NassiDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult def)
     }
 
     return m_window->OnDrop(wxPoint(x,y),
-        ((NassiDataObject *)GetDataObject())->GetBrick(),
-        ((NassiDataObject *)GetDataObject())->GetText(0),
-        ((NassiDataObject *)GetDataObject())->GetText(1),
-         def );
+                            ((NassiDataObject *)GetDataObject())->GetBrick(),
+                            ((NassiDataObject *)GetDataObject())->GetText(0),
+                            ((NassiDataObject *)GetDataObject())->GetText(1),
+                            def );
 }
 
 wxDragResult NassiDropTarget::OnDragOver(wxCoord x, wxCoord y, wxDragResult def)

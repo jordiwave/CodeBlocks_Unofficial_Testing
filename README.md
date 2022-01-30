@@ -96,4 +96,4 @@ connection is detected.
 
     These can be downloaded from https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/8.1.0/
 
-PPS On 1-FEB-2022 this repo will become an experimental CB repo that is a fork of CB with allot more changes and fixes.
+

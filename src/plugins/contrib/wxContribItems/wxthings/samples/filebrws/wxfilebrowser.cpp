@@ -13,13 +13,13 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWidgets headers)
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <wx/buffer.h>
@@ -30,48 +30,50 @@
 #include <wx/generic/filedlgg.h>
 
 /* XPM */
-static const char *mondrian_xpm[] = {
-/* columns rows colors chars-per-pixel */
-"32 32 6 1",
-"  c Black",
-". c Blue",
-"X c #00bf00",
-"o c Red",
-"O c Yellow",
-"+ c Gray100",
-/* pixels */
-"                                ",
-" oooooo +++++++++++++++++++++++ ",
-" oooooo +++++++++++++++++++++++ ",
-" oooooo +++++++++++++++++++++++ ",
-" oooooo +++++++++++++++++++++++ ",
-" oooooo +++++++++++++++++++++++ ",
-" oooooo +++++++++++++++++++++++ ",
-" oooooo +++++++++++++++++++++++ ",
-"                                ",
-" ++++++ ++++++++++++++++++ .... ",
-" ++++++ ++++++++++++++++++ .... ",
-" ++++++ ++++++++++++++++++ .... ",
-" ++++++ ++++++++++++++++++ .... ",
-" ++++++ ++++++++++++++++++ .... ",
-" ++++++ ++++++++++++++++++      ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++ ++++++++++++++++++ ++++ ",
-" ++++++                    ++++ ",
-" ++++++ OOOOOOOOOOOO XXXXX ++++ ",
-" ++++++ OOOOOOOOOOOO XXXXX ++++ ",
-" ++++++ OOOOOOOOOOOO XXXXX ++++ ",
-" ++++++ OOOOOOOOOOOO XXXXX ++++ ",
-" ++++++ OOOOOOOOOOOO XXXXX ++++ ",
-" ++++++ OOOOOOOOOOOO XXXXX ++++ ",
-"                                "};
+static const char *mondrian_xpm[] =
+{
+    /* columns rows colors chars-per-pixel */
+    "32 32 6 1",
+    "  c Black",
+    ". c Blue",
+    "X c #00bf00",
+    "o c Red",
+    "O c Yellow",
+    "+ c Gray100",
+    /* pixels */
+    "                                ",
+    " oooooo +++++++++++++++++++++++ ",
+    " oooooo +++++++++++++++++++++++ ",
+    " oooooo +++++++++++++++++++++++ ",
+    " oooooo +++++++++++++++++++++++ ",
+    " oooooo +++++++++++++++++++++++ ",
+    " oooooo +++++++++++++++++++++++ ",
+    " oooooo +++++++++++++++++++++++ ",
+    "                                ",
+    " ++++++ ++++++++++++++++++ .... ",
+    " ++++++ ++++++++++++++++++ .... ",
+    " ++++++ ++++++++++++++++++ .... ",
+    " ++++++ ++++++++++++++++++ .... ",
+    " ++++++ ++++++++++++++++++ .... ",
+    " ++++++ ++++++++++++++++++      ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++ ++++++++++++++++++ ++++ ",
+    " ++++++                    ++++ ",
+    " ++++++ OOOOOOOOOOOO XXXXX ++++ ",
+    " ++++++ OOOOOOOOOOOO XXXXX ++++ ",
+    " ++++++ OOOOOOOOOOOO XXXXX ++++ ",
+    " ++++++ OOOOOOOOOOOO XXXXX ++++ ",
+    " ++++++ OOOOOOOOOOOO XXXXX ++++ ",
+    " ++++++ OOOOOOOOOOOO XXXXX ++++ ",
+    "                                "
+};
 
 // ----------------------------------------------------------------------------
 // constants
@@ -96,7 +98,10 @@ public:
 
     virtual ~MyFrame() {}
 
-    void OnQuit(wxCommandEvent& WXUNUSED(event)) { Close(true); }
+    void OnQuit(wxCommandEvent& WXUNUSED(event))
+    {
+        Close(true);
+    }
     void OnAbout(wxCommandEvent& event);
     void OnGenericFileDlg( wxCommandEvent &event );
 
@@ -123,7 +128,7 @@ public:
     virtual bool OnInit()
     {
         MyFrame *frame = new MyFrame(_T("Minimal wxWidgets App"),
-                                 wxPoint(50, 50), wxSize(450, 400));
+                                     wxPoint(50, 50), wxSize(450, 400));
         frame->Show(true);
 
         return true;
@@ -154,7 +159,7 @@ IMPLEMENT_APP(MyApp)
 // ----------------------------------------------------------------------------
 
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size, long style)
-       : wxFrame(NULL, -1, title, pos, size, style)
+    : wxFrame(NULL, -1, title, pos, size, style)
 {
     SetIcon(wxICON(mondrian));
 

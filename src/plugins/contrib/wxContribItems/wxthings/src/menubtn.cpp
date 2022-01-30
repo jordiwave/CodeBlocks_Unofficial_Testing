@@ -15,31 +15,33 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/control.h>
-    #include <wx/menu.h>
-    #include <wx/settings.h>
-    #include <wx/bitmap.h>
-    #include <wx/pen.h>
-    #include <wx/dc.h>
+#include <wx/control.h>
+#include <wx/menu.h>
+#include <wx/settings.h>
+#include <wx/bitmap.h>
+#include <wx/pen.h>
+#include <wx/dc.h>
 #endif // WX_PRECOMP
 
 #include "wx/things/toggle.h"
 #include "wx/things/menubtn.h"
 
 /* XPM */
-static const char *down_arrow_xpm_data[] = {
-/* columns rows colors chars-per-pixel */
-"5 3 2 1",
-"  c None",
-"a c Black",
-/* pixels */
-"aaaaa",
-" aaa ",
-"  a  "};
+static const char *down_arrow_xpm_data[] =
+{
+    /* columns rows colors chars-per-pixel */
+    "5 3 2 1",
+    "  c None",
+    "a c Black",
+    /* pixels */
+    "aaaaa",
+    " aaa ",
+    "  a  "
+};
 
 static wxBitmap s_dropdownBitmap; // all buttons share the same bitmap
 

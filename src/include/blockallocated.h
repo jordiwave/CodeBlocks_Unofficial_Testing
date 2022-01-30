@@ -17,10 +17,10 @@
 
 namespace BlkAllc
 {
-    void DebugLog(wxString cn, int blockSize, int poolSize, int max_refs, int total_refs, int ref_count);
+void DebugLog(wxString cn, int blockSize, int poolSize, int max_refs, int total_refs, int ref_count);
 
-    const bool enable_global_debug = false;
-    const bool verbose = false;
+const bool enable_global_debug = false;
+const bool verbose = false;
 }
 
 
@@ -66,9 +66,9 @@ public:
 
     BlockAllocator() : first(0), ref_count(0), max_refs(0), total_refs(0)
     {
-    #if defined(__GNUC__)
+#if defined(__GNUC__)
         assert(__builtin_constant_p(debug));
-    #endif
+#endif
     };
 
     ~BlockAllocator()

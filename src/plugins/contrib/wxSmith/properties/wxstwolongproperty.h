@@ -68,47 +68,50 @@ struct wxsTwoLongData
 /** \brief Dimension property (long integer value which may be in pixel or dialog units) */
 class wxsTwoLongProperty: public wxsProperty
 {
-    public:
-        /** \brief Ctor
-         *  \param PGName               name of property in Property Grid
-         *  \param PGDUName             name of "use dialog units" property
-         *  \param DataName             name of property in data stuctures
-         *  \param Offset               offset of wxsTwoLongData value (taken from wxsOFFSET macro)
-         *  \param DefaultValue1        default value 1 applied on read errors
-         *  \param DefaultValue2        default value 2 applied on read errors
-         *  \param Priority             priority of this property
-         */
-        wxsTwoLongProperty(
-            const wxString& PGName,
-            const wxString& PGValue1Name,
-            const wxString& PGValue2Name,
-            const wxString& DataName,
-            long Offset,
-            long DefaultValue1=0,
-            long DefaultValue2=0,
-            int Priority=100);
+public:
+    /** \brief Ctor
+     *  \param PGName               name of property in Property Grid
+     *  \param PGDUName             name of "use dialog units" property
+     *  \param DataName             name of property in data stuctures
+     *  \param Offset               offset of wxsTwoLongData value (taken from wxsOFFSET macro)
+     *  \param DefaultValue1        default value 1 applied on read errors
+     *  \param DefaultValue2        default value 2 applied on read errors
+     *  \param Priority             priority of this property
+     */
+    wxsTwoLongProperty(
+        const wxString& PGName,
+        const wxString& PGValue1Name,
+        const wxString& PGValue2Name,
+        const wxString& DataName,
+        long Offset,
+        long DefaultValue1=0,
+        long DefaultValue2=0,
+        int Priority=100);
 
-        /** \brief Returning type name */
-        virtual const wxString GetTypeName() { return _T("wxsTwoLongProperty"); }
+    /** \brief Returning type name */
+    virtual const wxString GetTypeName()
+    {
+        return _T("wxsTwoLongProperty");
+    }
 
-    protected:
+protected:
 
-        virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
-        virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-        virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-        virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-        virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
+    virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
+    virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
+    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-    private:
-        long Offset;
-        long DefaultValue1;
-        long DefaultValue2;
-        bool DefValue;
+private:
+    long Offset;
+    long DefaultValue1;
+    long DefaultValue2;
+    bool DefValue;
 
-        wxString Value1Name;
-        wxString Value2Name;
+    wxString Value1Name;
+    wxString Value2Name;
 };
 
 /** \addtogroup ext_properties_macros

@@ -3,11 +3,11 @@
 #include <sdk.h> // Code::Blocks SDK
 
 #ifndef CB_PRECOMP
-    #include <cbeditor.h>
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <editorcolourset.h>
-    #include <manager.h>
+#include <cbeditor.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <editorcolourset.h>
+#include <manager.h>
 #endif
 
 #include <cbstyledtextctrl.h>
@@ -16,7 +16,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<SmartIndentPython> reg(wxT("SmartIndentPython"));
+PluginRegistrant<SmartIndentPython> reg(wxT("SmartIndentPython"));
 }
 
 void SmartIndentPython::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
@@ -78,7 +78,7 @@ void SmartIndentPython::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) cons
     {
         stc->DoBraceCompletion(ch);
         if (  !(stc->IsComment(stc->GetStyleAt(pos)) || stc->IsComment(stc->GetStyleAt(pos - 2)))
-            && (ch == wxT('"') || ch == wxT('\'')) )
+                && (ch == wxT('"') || ch == wxT('\'')) )
         {
             const wxString tripleQuote(3, ch);
             if (stc->GetTextRange(pos - 3, pos) == tripleQuote && !stc->IsString(stc->GetStyleAt(pos - 4)))

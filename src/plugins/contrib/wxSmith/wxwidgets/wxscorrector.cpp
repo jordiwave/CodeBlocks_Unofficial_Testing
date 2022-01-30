@@ -214,7 +214,7 @@ void wxsCorrector::AfterChange(wxsItem* Item)
     }
 
     if ( (Item->GetPropertiesFlags() & flLocal) &&
-         ((Item->GetEvents().GetCount()) <= 0) )
+            ((Item->GetEvents().GetCount()) <= 0) )
     {
         wxString prefix = s_IdPrefix;
         prefix << Item->GetInfo().DefaultVarName.Upper();
@@ -386,9 +386,9 @@ bool wxsCorrector::FixVarName(wxString& Name)
             if ( NextChars.Find(Name.GetChar(i)) == -1 )
             {
                 Manager::Get()->GetLogManager()->DebugLog(F(_T("wxSmith: Variable name : \"%s\" is not a valid c++ identifier (invalid character \"%c\" at position %lu)"),
-                                                            Name.wx_str(),
-                                                            wxChar(Name.GetChar(i)),
-                                                            static_cast<unsigned long>(i)));
+                        Name.wx_str(),
+                        wxChar(Name.GetChar(i)),
+                        static_cast<unsigned long>(i)));
             }
             else
                 Corrected.Append(Name.GetChar(i));

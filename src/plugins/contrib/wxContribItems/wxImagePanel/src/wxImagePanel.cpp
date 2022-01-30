@@ -27,7 +27,8 @@ IMPLEMENT_CLASS(wxImagePanel, wxPanel)
 // create a new panel
 
 wxImagePanel::wxImagePanel(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name):
-            wxPanel(parent, id, pos, size, style, name) {
+    wxPanel(parent, id, pos, size, style, name)
+{
 
     mBitmap  = wxNullBitmap;
     mStretch = false;
@@ -39,26 +40,30 @@ wxImagePanel::wxImagePanel(wxWindow* parent, wxWindowID id, const wxPoint& pos, 
 
 //-----------------------------------------------------------------------------
 
-void    wxImagePanel::SetBitmap(wxBitmap &inBitmap) {
+void    wxImagePanel::SetBitmap(wxBitmap &inBitmap)
+{
 
     mBitmap = inBitmap;
     Refresh();
 }
 
-wxBitmap wxImagePanel::GetBitmap(void) {
+wxBitmap wxImagePanel::GetBitmap(void)
+{
 
     return mBitmap;
 }
 
 //-----------------------------------------------------------------------------
 
-void    wxImagePanel::SetStretch(bool inStretch) {
+void    wxImagePanel::SetStretch(bool inStretch)
+{
 
     mStretch = inStretch;
     Refresh();
 }
 
-bool    wxImagePanel::GetStretch(void) {
+bool    wxImagePanel::GetStretch(void)
+{
 
     return mStretch;
 }
@@ -67,22 +72,23 @@ bool    wxImagePanel::GetStretch(void) {
 
 //-----------------------------------------------------------------------------
 
-void    wxImagePanel::DoPaint(wxPaintEvent& event) {
-int         ww, wh;
-int         bw, bh;
-double      sx, sy;
-wxColour    cc;
-wxBrush     brush;
-wxPaintDC   dc(this);
+void    wxImagePanel::DoPaint(wxPaintEvent& event)
+{
+    int         ww, wh;
+    int         bw, bh;
+    double      sx, sy;
+    wxColour    cc;
+    wxBrush     brush;
+    wxPaintDC   dc(this);
 
 // fill in the background color
 
-/**
-    cc = GetBackgroundColour();
-    if (cc.IsOk()) {
+    /**
+        cc = GetBackgroundColour();
+        if (cc.IsOk()) {
 
-    };
-**/
+        };
+    **/
 
     dc.Clear();
 
@@ -92,11 +98,13 @@ wxPaintDC   dc(this);
 
 // need to stretch it?
 
-    if (mStretch) {
+    if (mStretch)
+    {
         GetSize(&ww, &wh);
         bw = mBitmap.GetWidth();
         bh = mBitmap.GetHeight();
-        if ((bw > 0) && (bh > 0)) {
+        if ((bw > 0) && (bh > 0))
+        {
             sx = ((double) ww) / ((double) bw);
             sy = ((double) wh) / ((double) bh);
             dc.SetUserScale(sx, sy);

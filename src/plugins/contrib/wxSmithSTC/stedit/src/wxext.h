@@ -41,8 +41,8 @@ public:
 #endif
 
 WXDLLIMPEXP_STEDIT void wxFrame_SetInitialPosition(wxFrame*,
-                    const wxPoint& pos = wxDefaultPosition,
-                    const wxSize& size = wxDefaultSize, int margin_pct = 5);
+        const wxPoint& pos = wxDefaultPosition,
+        const wxSize& size = wxDefaultSize, int margin_pct = 5);
 WXDLLIMPEXP_STEDIT void wxFrame_ClonePosition(wxFrame* wnd, wxWindow* other = NULL);
 
 WXDLLIMPEXP_STEDIT void wxCommandLineUsage(wxWindow* parent);
@@ -86,21 +86,21 @@ WXDLLIMPEXP_STEDIT wxString wxGetStockLabelEx(wxWindowID, long flags = wxSTOCK_W
 #ifdef _WX_PRNTBASEH__
 class WXDLLIMPEXP_STEDIT wxPreviewFrameEx : public wxPreviewFrame
 {
-   typedef wxPreviewFrame base;
+    typedef wxPreviewFrame base;
 public:
-   wxPreviewFrameEx(wxPrintPreviewBase* preview,
-                   wxWindow *parent,
-                   const wxString& title,
-                   const wxPoint& pos = wxDefaultPosition,
-                   const wxSize& size = wxDefaultSize,
-                   long style = wxDEFAULT_FRAME_STYLE,
-                   const wxString& name = wxT("frame"));
-   virtual bool Destroy();
+    wxPreviewFrameEx(wxPrintPreviewBase* preview,
+                     wxWindow *parent,
+                     const wxString& title,
+                     const wxPoint& pos = wxDefaultPosition,
+                     const wxSize& size = wxDefaultSize,
+                     long style = wxDEFAULT_FRAME_STYLE,
+                     const wxString& name = wxT("frame"));
+    virtual bool Destroy();
 protected:
 #if (wxVERSION_NUMBER < 2900)
-   void OnKeyDown(wxKeyEvent&);
+    void OnKeyDown(wxKeyEvent&);
 #endif
-   DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 #endif
 
@@ -151,7 +151,10 @@ public:
     virtual size_t FromWChar(char*          dst, size_t dstLen,
                              const wchar_t* src, size_t srcLen = wxNO_LEN) const;
 
-    virtual wxMBConv* Clone() const { return new wxMBConvOEM(); }
+    virtual wxMBConv* Clone() const
+    {
+        return new wxMBConvOEM();
+    }
 };
 #endif
 
@@ -165,9 +168,9 @@ public:
         UTF8,
         Unicode_LE,
         ISO8859_1,
-    #ifdef __WXMSW__
+#ifdef __WXMSW__
         OEM,
-    #endif
+#endif
         TextEncoding__Count
     };
 

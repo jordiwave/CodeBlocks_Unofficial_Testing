@@ -14,10 +14,10 @@
 #include "scripting/bindings/sc_utils.h"
 
 #ifndef CB_PRECOMP
-    #include <globals.h>
-    #include <manager.h>
-    #include <configmanager.h>
-    #include <scriptingmanager.h>
+#include <globals.h>
+#include <manager.h>
+#include <configmanager.h>
+#include <scriptingmanager.h>
 #endif
 
 #include <wx/filedlg.h>
@@ -192,7 +192,8 @@ void ScriptConsole::LogError(const wxString& msg)
                 txtConsole->AppendText(_("error: ") + line + "\n");
             break;
         }
-    } while (1);
+    }
+    while (1);
 
     Manager::ProcessPendingEvents();
 }

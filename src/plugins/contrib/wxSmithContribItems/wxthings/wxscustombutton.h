@@ -29,28 +29,28 @@
 
 class wxsCustomButton : public wxsWidget
 {
-    public:
+public:
 
-        wxsCustomButton(wxsItemResData* Data);
-        virtual ~wxsCustomButton();
+    wxsCustomButton(wxsItemResData* Data);
+    virtual ~wxsCustomButton();
 
-    private:
+private:
 
-        void OnBuildCreatingCode();
-        wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        void OnEnumWidgetProperties(long Flags);
+    void OnBuildCreatingCode();
+    wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    void OnEnumWidgetProperties(long Flags);
 
-        long m_Type;
-        bool m_Flat;
-        wxString m_Label;
-        long m_LabelPosition;
-        wxsBitmapData m_Bitmap;
-        wxsBitmapData m_BitmapSelected;
-        wxsBitmapData m_BitmapFocused;
-        wxsBitmapData m_BitmapDisabled;
-        wxsSizeData m_Margins;
-        wxsSizeData m_LabelMargins;
-        wxsSizeData m_BitmapMargins;
+    long m_Type;
+    bool m_Flat;
+    wxString m_Label;
+    long m_LabelPosition;
+    wxsBitmapData m_Bitmap;
+    wxsBitmapData m_BitmapSelected;
+    wxsBitmapData m_BitmapFocused;
+    wxsBitmapData m_BitmapDisabled;
+    wxsSizeData m_Margins;
+    wxsSizeData m_LabelMargins;
+    wxsSizeData m_BitmapMargins;
 };
 
 #endif

@@ -32,34 +32,34 @@
 
 namespace
 {
-    // Helper values for compound property
-    enum
-    {
-        DEFIND = 1,
-        XIND,
-        YIND,
-        DUIND
-    };
+// Helper values for compound property
+enum
+{
+    DEFIND = 1,
+    XIND,
+    YIND,
+    DUIND
+};
 }
 
 wxString wxsPositionSizeData::GetPositionCode(wxsCoderContext* Context)
 {
     switch ( Context->m_Language )
     {
-        case wxsCPP:
-        {
-            return IsDefault ?
-                _T("wxDefaultPosition") :
-                DialogUnits ?
-                    wxString::Format(_T("wxDLG_UNIT(%s,wxPoint(%ld,%ld))"),Context->m_WindowParent.c_str(),X,Y) :
-                    wxString::Format(_T("wxPoint(%ld,%ld)"),X,Y);
-        }
+    case wxsCPP:
+    {
+        return IsDefault ?
+               _T("wxDefaultPosition") :
+               DialogUnits ?
+               wxString::Format(_T("wxDLG_UNIT(%s,wxPoint(%ld,%ld))"),Context->m_WindowParent.c_str(),X,Y) :
+               wxString::Format(_T("wxPoint(%ld,%ld)"),X,Y);
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsPositionSizeData::GetPositionCode"),Context->m_Language);
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsPositionSizeData::GetPositionCode"),Context->m_Language);
+    }
     }
 
     return wxEmptyString;
@@ -69,20 +69,20 @@ wxString wxsPositionSizeData::GetSizeCode(wxsCoderContext* Context)
 {
     switch ( Context->m_Language )
     {
-        case wxsCPP:
-        {
-            return IsDefault ?
-                _T("wxDefaultSize") :
-                DialogUnits ?
-                    wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%ld,%ld))"),Context->m_WindowParent.c_str(),X,Y) :
-                    wxString::Format(_T("wxSize(%ld,%ld)"),X,Y);
-        }
+    case wxsCPP:
+    {
+        return IsDefault ?
+               _T("wxDefaultSize") :
+               DialogUnits ?
+               wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%ld,%ld))"),Context->m_WindowParent.c_str(),X,Y) :
+               wxString::Format(_T("wxSize(%ld,%ld)"),X,Y);
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsPositionSizeData::GetSizeCode"),Context->m_Language);
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsPositionSizeData::GetSizeCode"),Context->m_Language);
+    }
     }
 
     return wxEmptyString;
@@ -97,11 +97,11 @@ wxsPositionSizeProperty::wxsPositionSizeProperty(
     const wxString& _DataName,
     long _Offset,
     int _Priority):
-        wxsProperty(PGUseDefName,_DataName,_Priority),
-        PGXName(_PGXName),
-        PGYName(_PGYName),
-        PGDUName(_PGDUName),
-        Offset(_Offset)
+    wxsProperty(PGUseDefName,_DataName,_Priority),
+    PGXName(_PGXName),
+    PGYName(_PGYName),
+    PGDUName(_PGDUName),
+    Offset(_Offset)
 {}
 
 
@@ -132,24 +132,24 @@ bool wxsPositionSizeProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGrid
 {
     switch ( Index )
     {
-        case DEFIND:
-            DEFVALUE = Grid->GetPropertyValue(Id).GetBool();
-            break;
+    case DEFIND:
+        DEFVALUE = Grid->GetPropertyValue(Id).GetBool();
+        break;
 
-        case XIND:
-            XVALUE = Grid->GetPropertyValue(Id).GetLong();
-            break;
+    case XIND:
+        XVALUE = Grid->GetPropertyValue(Id).GetLong();
+        break;
 
-        case YIND:
-            YVALUE = Grid->GetPropertyValue(Id).GetLong();
-            break;
+    case YIND:
+        YVALUE = Grid->GetPropertyValue(Id).GetLong();
+        break;
 
-        case DUIND:
-            DUVALUE = Grid->GetPropertyValue(Id).GetBool();
-            break;
+    case DUIND:
+        DUVALUE = Grid->GetPropertyValue(Id).GetBool();
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     return true;
@@ -159,48 +159,48 @@ bool wxsPositionSizeProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGri
 {
     switch ( Index )
     {
-        case DEFIND:
-            Grid->SetPropertyValue(Id,DEFVALUE);
-            break;
+    case DEFIND:
+        Grid->SetPropertyValue(Id,DEFVALUE);
+        break;
 
-        case XIND:
-            if ( DEFVALUE )
-            {
-                Grid->DisableProperty(Id);
-            }
-            else
-            {
-                Grid->EnableProperty(Id);
-            }
-            Grid->SetPropertyValue(Id,XVALUE);
-            break;
+    case XIND:
+        if ( DEFVALUE )
+        {
+            Grid->DisableProperty(Id);
+        }
+        else
+        {
+            Grid->EnableProperty(Id);
+        }
+        Grid->SetPropertyValue(Id,XVALUE);
+        break;
 
-        case YIND:
-            if ( DEFVALUE )
-            {
-                Grid->DisableProperty(Id);
-            }
-            else
-            {
-                Grid->EnableProperty(Id);
-            }
-            Grid->SetPropertyValue(Id,YVALUE);
-            break;
+    case YIND:
+        if ( DEFVALUE )
+        {
+            Grid->DisableProperty(Id);
+        }
+        else
+        {
+            Grid->EnableProperty(Id);
+        }
+        Grid->SetPropertyValue(Id,YVALUE);
+        break;
 
-        case DUIND:
-            if ( DEFVALUE )
-            {
-                Grid->DisableProperty(Id);
-            }
-            else
-            {
-                Grid->EnableProperty(Id);
-            }
-            Grid->SetPropertyValue(Id,DUVALUE);
-            break;
+    case DUIND:
+        if ( DEFVALUE )
+        {
+            Grid->DisableProperty(Id);
+        }
+        else
+        {
+            Grid->EnableProperty(Id);
+        }
+        Grid->SetPropertyValue(Id,DUVALUE);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
     return true;
 }
@@ -240,7 +240,7 @@ bool wxsPositionSizeProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement*
     }
 
     if ( !Str.BeforeFirst(_T(',')).ToLong(&XVALUE) ||
-         !Str.AfterLast(_T(',')).ToLong(&YVALUE) )
+            !Str.AfterLast(_T(',')).ToLong(&YVALUE) )
     {
         DEFVALUE = true;
         XVALUE = -1;

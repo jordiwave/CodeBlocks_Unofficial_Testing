@@ -30,7 +30,10 @@ public:
     {}
     ~ThreadSearchViewManagerMessagesNotebook() override;
 
-    eManagerTypes GetManagerType() override { return TypeMessagesNotebook; }
+    eManagerTypes GetManagerType() override
+    {
+        return TypeMessagesNotebook;
+    }
     void AddViewToManager() override;
     void RemoveViewFromManager() override;
     bool ShowView(uint32_t flags) override;

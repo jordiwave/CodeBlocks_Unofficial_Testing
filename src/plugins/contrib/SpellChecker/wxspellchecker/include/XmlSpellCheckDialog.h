@@ -16,26 +16,26 @@ class XmlSpellCheckDialog : public wxDialog, public wxSpellCheckUserInterface
 {
 public:
     XmlSpellCheckDialog(wxWindow *parent, wxString strResourceFile, wxString strDialogResource, wxString strWordListResource, wxSpellCheckEngineInterface* SpellChecker = NULL);
-		~XmlSpellCheckDialog();
+    ~XmlSpellCheckDialog();
 
-		// Code handling the interface
-		void OnRecheckPage(wxCommandEvent& event);
-		void OnCheckWord(wxCommandEvent& event);
-		void OnReplaceWord(wxCommandEvent& event);
-		void OnIgnoreWord(wxCommandEvent& event);
-		void OnReplaceAll(wxCommandEvent& event);
-		void OnIgnoreAll(wxCommandEvent& event);
-		void OnAddWordToCustomDictionary(wxCommandEvent& event);
-		void OnEditCustomDictionary(wxCommandEvent& event);
-		void OnChangeLanguage(wxCommandEvent& event);
-		void OnChangeSuggestionSelection(wxCommandEvent& event);
-		void OnDblClkSuggestionSelection(wxCommandEvent& event);
+    // Code handling the interface
+    void OnRecheckPage(wxCommandEvent& event);
+    void OnCheckWord(wxCommandEvent& event);
+    void OnReplaceWord(wxCommandEvent& event);
+    void OnIgnoreWord(wxCommandEvent& event);
+    void OnReplaceAll(wxCommandEvent& event);
+    void OnIgnoreAll(wxCommandEvent& event);
+    void OnAddWordToCustomDictionary(wxCommandEvent& event);
+    void OnEditCustomDictionary(wxCommandEvent& event);
+    void OnChangeLanguage(wxCommandEvent& event);
+    void OnChangeSuggestionSelection(wxCommandEvent& event);
+    void OnDblClkSuggestionSelection(wxCommandEvent& event);
     void OnClose(wxCommandEvent& event);
 
     virtual void SetMisspelledWord(const wxString& strMisspelling);
 
     virtual int PresentSpellCheckUserInterface(const wxString& strMisspelling);
- 		void CreateDialog(wxWindow* pParent);
+    void CreateDialog(wxWindow* pParent);
     void OnOptions(wxCommandEvent& event);
 
 private:

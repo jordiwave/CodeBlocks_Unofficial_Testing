@@ -9,38 +9,38 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/checkbox.h>
-    #include <wx/checklst.h>
-    #include <wx/combobox.h>
-    #include <wx/dir.h>
-    #include <wx/image.h>
-    #include <wx/intl.h>
-    #include <wx/listbox.h>
-    #include <wx/panel.h>
-    #include <wx/radiobox.h>
-    #include <wx/sizer.h>
-    #include <wx/spinctrl.h>
-    #include <wx/stattext.h>
-    #include <wx/wizard.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/checklst.h>
+#include <wx/combobox.h>
+#include <wx/dir.h>
+#include <wx/image.h>
+#include <wx/intl.h>
+#include <wx/listbox.h>
+#include <wx/panel.h>
+#include <wx/radiobox.h>
+#include <wx/sizer.h>
+#include <wx/spinctrl.h>
+#include <wx/stattext.h>
+#include <wx/wizard.h>
+#include <wx/xrc/xmlres.h>
 
-    #include <wx/wxscintilla.h> // CB Header
-    #include <cbexception.h>
-    #include "cbeditor.h"
-    #include <cbproject.h>
-    #include <compiler.h>
-    #include <compilerfactory.h>
-    #include <configmanager.h>
-    #include "editormanager.h"
-    #include <filefilters.h>
-    #include <globals.h>
-    #include <infowindow.h>
-    #include "logmanager.h"
-    #include <manager.h>
-    #include <projectbuildtarget.h>
-    #include <projectmanager.h>
-    #include <scriptingmanager.h>
+#include <wx/wxscintilla.h> // CB Header
+#include <cbexception.h>
+#include "cbeditor.h"
+#include <cbproject.h>
+#include <compiler.h>
+#include <compilerfactory.h>
+#include <configmanager.h>
+#include "editormanager.h"
+#include <filefilters.h>
+#include <globals.h>
+#include <infowindow.h>
+#include "logmanager.h"
+#include <manager.h>
+#include <projectbuildtarget.h>
+#include <projectmanager.h>
+#include <scriptingmanager.h>
 #endif // CB_PRECOMP
 
 #include "wiz.h"
@@ -54,14 +54,15 @@ WX_DEFINE_OBJARRAY(Wizards); // TODO: find out why this causes a shadow warning 
 
 namespace
 {
-    PluginRegistrant<Wiz> reg(_T("ScriptedWizard"));
+PluginRegistrant<Wiz> reg(_T("ScriptedWizard"));
 }
 
 namespace ScriptBindings
 {
 
 template<>
-struct TypeInfo<Wiz> {
+struct TypeInfo<Wiz>
+{
     static uint32_t typetag;
     static constexpr const SQChar *className = _SC("Wiz");
     using baseClass = void;
@@ -73,11 +74,11 @@ uint32_t TypeInfo<Wiz>::typetag = uint32_t(TypeTag::Unassigned);
 
 Wiz::Wiz()
     : m_pWizard(nullptr),
-    m_pWizProjectPathPanel(nullptr),
-    m_pWizFilePathPanel(nullptr),
-    m_pWizCompilerPanel(nullptr),
-    m_pWizBuildTargetPanel(nullptr),
-    m_LaunchIndex(0)
+      m_pWizProjectPathPanel(nullptr),
+      m_pWizFilePathPanel(nullptr),
+      m_pWizCompilerPanel(nullptr),
+      m_pWizBuildTargetPanel(nullptr),
+      m_LaunchIndex(0)
 {
     //ctor
 }
@@ -246,18 +247,18 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
 
     // clear previous script's context
     static const wxString clearout_wizscripts =  _T("function BeginWizard(){};\n"
-                                                    "function SetupProject(project){return false;};\n"
-                                                    "function SetupTarget(target,is_debug){return false;};\n"
-                                                    "function SetupCustom(){return false;};\n"
-                                                    "function CreateFiles(){return _T(\"\");};\n"
-                                                    "function GetFilesDir(){return _T(\"\");};\n"
-                                                    "function GetGeneratedFile(index){return _T(\"\");};\n"
-                                                    "function GetTargetName() { return _T(\"\"); }\n");
+            "function SetupProject(project){return false;};\n"
+            "function SetupTarget(target,is_debug){return false;};\n"
+            "function SetupCustom(){return false;};\n"
+            "function CreateFiles(){return _T(\"\");};\n"
+            "function GetFilesDir(){return _T(\"\");};\n"
+            "function GetGeneratedFile(index){return _T(\"\");};\n"
+            "function GetTargetName() { return _T(\"\"); }\n");
     scriptMgr->LoadBuffer(clearout_wizscripts, _T("ClearWizState"));
 
     // early check: build target wizards need an active project
     if (m_Wizards[index].output_type == totTarget &&
-        !Manager::Get()->GetProjectManager()->GetActiveProject())
+            !Manager::Get()->GetProjectManager()->GetActiveProject())
     {
         cbMessageBox(_("You need to open (or create) a project first!"), _("Error"), wxICON_ERROR);
         return nullptr;
@@ -289,7 +290,7 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
     const wxString global_commons = ConfigManager::GetFolder(sdDataGlobal) + _T("/templates/wizard/common_functions.script");
     const wxString user_commons = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/common_functions.script");
     if (!scriptMgr->LoadScript(global_commons) && // load global common functions
-        !scriptMgr->LoadScript(user_commons)) // and/or load user common functions
+            !scriptMgr->LoadScript(user_commons)) // and/or load user common functions
     {
         // any errors have been displayed by ScriptingManager
         Clear();
@@ -346,8 +347,8 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
     if (m_Wizards[index].output_type == totProject && !m_pWizProjectPathPanel)
     {
         cbMessageBox(_("This wizard is missing the following mandatory wizard page:\n\n"
-                        "Project path selection\n"
-                        "Execution aborted..."), _("Error"), wxICON_ERROR);
+                       "Project path selection\n"
+                       "Execution aborted..."), _("Error"), wxICON_ERROR);
         Clear();
         return nullptr;
     }
@@ -362,11 +363,20 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
         // ok, wizard done
         switch (m_Wizards[index].output_type)
         {
-            case totProject:     base = RunProjectWizard(pFilename); break;
-            case totTarget:      base = RunTargetWizard(pFilename); break;
-            case totFiles:       base = RunFilesWizard(pFilename); break;
-            case totCustom:      base = RunCustomWizard(pFilename); break;
-            default: break;
+        case totProject:
+            base = RunProjectWizard(pFilename);
+            break;
+        case totTarget:
+            base = RunTargetWizard(pFilename);
+            break;
+        case totFiles:
+            base = RunFilesWizard(pFilename);
+            break;
+        case totCustom:
+            base = RunCustomWizard(pFilename);
+            break;
+        default:
+            break;
         }
     }
     Clear();
@@ -590,7 +600,8 @@ CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
         ScriptBindings::Caller caller(scriptMgr->GetVM());
 
         wxString *result = nullptr;
-        if (caller.CallByNameAndReturn0(_SC("GetTargetName"), result)) {
+        if (caller.CallByNameAndReturn0(_SC("GetTargetName"), result))
+        {
             if (!result || result->empty())
             {
                 cbMessageBox(_("GetTargetName returned empty string. Failing!"), _("Error"), wxICON_ERROR);
@@ -624,24 +635,26 @@ CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
         // check the compiler Id
         wxString CompilerId = GetTargetCompilerID();
         if(CompilerId == wxEmptyString)
-        {    // no compiler had been specified
+        {
+            // no compiler had been specified
             // fall back 1 : the poject one
             CompilerId = theproject->GetCompilerID();
             if(CompilerId == wxEmptyString)
-            {    // even the project does not have one
+            {
+                // even the project does not have one
                 // fall back 2 : CB default
                 CompilerId = CompilerFactory::GetDefaultCompilerID();
                 cbMessageBox(    _("No compiler had been specified. The new target will use the default compiler."),
-                    _("Fallback compiler selected"),
-                    wxOK | wxICON_INFORMATION,
-                    Manager::Get()->GetAppWindow());
+                                 _("Fallback compiler selected"),
+                                 wxOK | wxICON_INFORMATION,
+                                 Manager::Get()->GetAppWindow());
             }
             else
             {
                 cbMessageBox(    _("No compiler had been specified. The new target will use the same compiler as the project."),
-                    _("Fallback compiler selected"),
-                    wxOK | wxICON_INFORMATION,
-                    Manager::Get()->GetAppWindow());
+                                 _("Fallback compiler selected"),
+                                 wxOK | wxICON_INFORMATION,
+                                 Manager::Get()->GetAppWindow());
             }
         }
         // setup the target
@@ -662,7 +675,8 @@ CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
 
     // Ask the script to setup the new target (setup options, etc) by calling its SetupTarget().
     bool result = false;
-    if (caller.CallByNameAndReturn2(_SC("SetupTarget"), result, target, isDebug)) {
+    if (caller.CallByNameAndReturn2(_SC("SetupTarget"), result, target, isDebug))
+    {
         if (!result)
         {
             cbMessageBox(_("Couldn't setup target options:"), _("Error"), wxICON_ERROR);
@@ -733,17 +747,18 @@ wxString Wiz::GenerateFile(const wxString& basePath, const wxString& filename, c
     FileType ft = FileTypeOf(fname.GetFullPath());
     switch (ft)
     {
-        case ftCodeBlocksProject:
-        case ftCodeBlocksWorkspace:
-        case ftExecutable:
-        case ftDynamicLib:
-        case ftStaticLib:
-        case ftResourceBin:
-        case ftObject:
+    case ftCodeBlocksProject:
+    case ftCodeBlocksWorkspace:
+    case ftExecutable:
+    case ftDynamicLib:
+    case ftStaticLib:
+    case ftResourceBin:
+    case ftObject:
 //        case ftOther:
-            Manager::Get()->GetLogManager()->DebugLog(_T("Attempt to generate a file with forbidden extension!\nFile: ") + fname.GetFullPath());
-            return wxEmptyString;
-        default: break;
+        Manager::Get()->GetLogManager()->DebugLog(_T("Attempt to generate a file with forbidden extension!\nFile: ") + fname.GetFullPath());
+        return wxEmptyString;
+    default:
+        break;
     }
 
     // make sure filename is relative
@@ -775,11 +790,11 @@ wxString Wiz::GenerateFile(const wxString& basePath, const wxString& filename, c
     {
         wxString query_overwrite;
         query_overwrite.Printf(
-          _T("Warning:\n")
-          _T("The wizard is about to OVERWRITE the following existing file:\n")+
-          fname.GetFullPath()+_T("\n\n") +
-          _T("Are you sure that you want to OVERWRITE the file?\n\n")+
-          _T("(If you answer 'No' the existing file will be kept.)"));
+            _T("Warning:\n")
+            _T("The wizard is about to OVERWRITE the following existing file:\n")+
+            fname.GetFullPath()+_T("\n\n") +
+            _T("Are you sure that you want to OVERWRITE the file?\n\n")+
+            _T("(If you answer 'No' the existing file will be kept.)"));
         if (cbMessageBox(query_overwrite, _T("Confirmation"),
                          wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxID_NO)
         {
@@ -840,11 +855,11 @@ void Wiz::CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxStri
         {
             wxString query_overwrite;
             query_overwrite.Printf(
-              _T("Warning:\n")
-              _T("The wizard is about to OVERWRITE the following existing file:\n")+
-              wxFileName(dstfile).GetFullPath()+_T("\n\n")+
-              _T("Are you sure that you want to OVERWRITE the file?\n\n")+
-              _T("(If you answer 'No' the existing file will be kept.)"));
+                _T("Warning:\n")
+                _T("The wizard is about to OVERWRITE the following existing file:\n")+
+                wxFileName(dstfile).GetFullPath()+_T("\n\n")+
+                _T("Are you sure that you want to OVERWRITE the file?\n\n")+
+                _T("(If you answer 'No' the existing file will be kept.)"));
             if (cbMessageBox(query_overwrite, _T("Confirmation"),
                              wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) != wxID_YES)
             {
@@ -921,7 +936,7 @@ void Wiz::FillContainerWithSelectCompilers( const wxString& name, const wxString
     wxWizardPage* page = m_pWizard->GetCurrentPage();
     if (page)
     {
-        wxItemContainer* win = dynamic_cast<wxItemContainer*>( page->FindWindowByName( name.IsEmpty() ? _T("GenericChoiceList") : name , page ) );
+        wxItemContainer* win = dynamic_cast<wxItemContainer*>( page->FindWindowByName( name.IsEmpty() ? _T("GenericChoiceList") : name, page ) );
         if (win)
         {
             wxArrayString valids = GetArrayFromString(validCompilerIDs, _T(";"), true);
@@ -957,7 +972,7 @@ void Wiz::AppendContainerWithSelectCompilers( const wxString& name, const wxStri
     wxWizardPage* page = m_pWizard->GetCurrentPage();
     if (page)
     {
-        wxItemContainer* win = dynamic_cast<wxItemContainer*>( page->FindWindowByName( name.IsEmpty() ? _T("GenericChoiceList") : name , page ) );
+        wxItemContainer* win = dynamic_cast<wxItemContainer*>( page->FindWindowByName( name.IsEmpty() ? _T("GenericChoiceList") : name, page ) );
         if (win)
         {
             wxArrayString valids = GetArrayFromString(validCompilerIDs, _T(";"), true);
@@ -1443,8 +1458,8 @@ void Wiz::AddWizard(TemplateOutputType otype,
     if (info.templatePNG.Ok() && (info.templatePNG.GetWidth() != 32 || info.templatePNG.GetHeight() != 32))
     {
         Manager::Get()->GetLogManager()->LogWarning(F(_("Resizing image '%s' to fit 32x32 (original size is %dx%d)"),
-                                                      tpng.wx_str(), info.templatePNG.GetWidth(),
-                                                      info.templatePNG.GetHeight()));
+                tpng.wx_str(), info.templatePNG.GetWidth(),
+                info.templatePNG.GetHeight()));
         wxImage temp = info.templatePNG.ConvertToImage();
         temp.Resize(wxSize(32, 32), wxPoint(0, 0), -1, -1, -1);
         info.templatePNG = wxBitmap(temp);
@@ -1457,12 +1472,23 @@ void Wiz::AddWizard(TemplateOutputType otype,
     wxString typS;
     switch (otype)
     {
-        case totProject: typS = _T("Project");      break;
-        case totTarget:  typS = _T("Build-target"); break;
-        case totFiles:   typS = _T("File(s)");      break;
-        case totUser:    typS = _T("User");         break;
-        case totCustom:  typS = _T("Custom");       break;
-        default: break;
+    case totProject:
+        typS = _T("Project");
+        break;
+    case totTarget:
+        typS = _T("Build-target");
+        break;
+    case totFiles:
+        typS = _T("File(s)");
+        break;
+    case totUser:
+        typS = _T("User");
+        break;
+    case totCustom:
+        typS = _T("Custom");
+        break;
+    default:
+        break;
     }
 
     Manager::Get()->GetLogManager()->DebugLog(F(typS + _T(" wizard added for '%s'"), title.wx_str()));
@@ -1637,9 +1663,9 @@ void Wiz::SetCompilerDefault(cb_unused const wxString& defCompilerID)
 }
 
 void Wiz::SetDebugTargetDefaults(bool wantDebug,
-                                    const wxString& debugName,
-                                    const wxString& debugOut,
-                                    const wxString& debugObjOut)
+                                 const wxString& debugName,
+                                 const wxString& debugOut,
+                                 const wxString& debugObjOut)
 {
     // default compiler settings (returned if no compiler page is added in the wizard)
     m_WantDebug = wantDebug;
@@ -1649,9 +1675,9 @@ void Wiz::SetDebugTargetDefaults(bool wantDebug,
 }
 
 void Wiz::SetReleaseTargetDefaults(bool wantRelease,
-                                    const wxString& releaseName,
-                                    const wxString& releaseOut,
-                                    const wxString& releaseObjOut)
+                                   const wxString& releaseName,
+                                   const wxString& releaseOut,
+                                   const wxString& releaseObjOut)
 {
     // default compiler settings (returned if no compiler page is added in the wizard)
     m_WantRelease = wantRelease;
@@ -1668,7 +1694,7 @@ int Wiz::FillContainerWithChoices( const wxString& name, const wxString& choices
     wxWizardPage* page = m_pWizard->GetCurrentPage();
     if (page)
     {
-        wxItemContainer* win = dynamic_cast<wxItemContainer*>( page->FindWindowByName( name.IsEmpty() ? _T("GenericChoiceList") : name , page ) );
+        wxItemContainer* win = dynamic_cast<wxItemContainer*>( page->FindWindowByName( name.IsEmpty() ? _T("GenericChoiceList") : name, page ) );
         if (win)
         {
             win->Clear();
@@ -1693,7 +1719,7 @@ int Wiz::AppendContainerWithChoices( const wxString& name, const wxString& choic
     wxWizardPage* page = m_pWizard->GetCurrentPage();
     if (page)
     {
-        wxItemContainer* win = dynamic_cast<wxItemContainer*>( page->FindWindowByName( name.IsEmpty() ? _T("GenericChoiceList") : name , page ) );
+        wxItemContainer* win = dynamic_cast<wxItemContainer*>( page->FindWindowByName( name.IsEmpty() ? _T("GenericChoiceList") : name, page ) );
         if (win)
         {
             wxArrayString items = GetArrayFromString( choices, _T(";") );
@@ -1803,7 +1829,7 @@ SQInteger Wiz_AddGenericSingleChoiceListPage(HSQUIRRELVM v)
     if (!extractor.Process("Wiz::AddGenericSingleChoiceListPage"))
         return extractor.ErrorMessage();
     extractor.p0->AddGenericSingleChoiceListPage(*extractor.p1, *extractor.p2, *extractor.p3,
-                                                 extractor.p4);
+            extractor.p4);
     return 0;
 }
 

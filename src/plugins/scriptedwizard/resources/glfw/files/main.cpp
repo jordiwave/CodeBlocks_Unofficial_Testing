@@ -57,14 +57,14 @@ void generateTriangle(std::vector<triangle>& tr, int level, point top_point, poi
     {
         // Find the edge midpoints.
         point left_mid = point(
-            (top_point.x + left_point.x) / 2.0,
-            (top_point.y + left_point.y) / 2.0);
+                             (top_point.x + left_point.x) / 2.0,
+                             (top_point.y + left_point.y) / 2.0);
         point right_mid = point(
-            (top_point.x + right_point.x) / 2.0,
-            (top_point.y + right_point.y) / 2.0);
+                              (top_point.x + right_point.x) / 2.0,
+                              (top_point.y + right_point.y) / 2.0);
         point bottom_mid = point(
-            (left_point.x + right_point.x) / 2.0,
-            (left_point.y + right_point.y) / 2.0);
+                               (left_point.x + right_point.x) / 2.0,
+                               (left_point.y + right_point.y) / 2.0);
 
 
         // Recursively generate smaller triangles.
@@ -111,7 +111,7 @@ int main(void)
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        glRotatef(glfwGetTime() * 50.0, 0.0 , 0.0 , 1.0);
+        glRotatef(glfwGetTime() * 50.0, 0.0, 0.0, 1.0);
         glBegin(GL_TRIANGLES);
         // go trought all triangles and draw them
         for(const triangle& item : image)
@@ -129,6 +129,6 @@ int main(void)
         glfwPollEvents();
     }
     glfwDestroyWindow(window);
-     glfwTerminate();
-     return 0;
- }
+    glfwTerminate();
+    return 0;
+}

@@ -27,37 +27,37 @@
 
 namespace
 {
-    #include "wxcustombutton16.xpm"
-    #include "wxcustombutton32.xpm"
+#include "wxcustombutton16.xpm"
+#include "wxcustombutton32.xpm"
 
-    wxsRegisterItem<wxsCustomButton> Reg(
-        _T("wxCustomButton"),
-        wxsTWidget,
-        _T("wxWindows"),
-        _T("Bruce Phillips, John Labenski"),
-        _T("jlabenski@gmail.com"),
-        _T("http://wxcode.sourceforge.net/showcomp.php?name=wxThings"),
-        _T("Contrib"),
-        90,
-        _T("Button"),
-        wxsCPP,
-        1, 0,
-        wxBitmap(wxcustombutton32_xpm),
-        wxBitmap(wxcustombutton16_xpm),
-        false);
+wxsRegisterItem<wxsCustomButton> Reg(
+    _T("wxCustomButton"),
+    wxsTWidget,
+    _T("wxWindows"),
+    _T("Bruce Phillips, John Labenski"),
+    _T("jlabenski@gmail.com"),
+    _T("http://wxcode.sourceforge.net/showcomp.php?name=wxThings"),
+    _T("Contrib"),
+    90,
+    _T("Button"),
+    wxsCPP,
+    1, 0,
+    wxBitmap(wxcustombutton32_xpm),
+    wxBitmap(wxcustombutton16_xpm),
+    false);
 
-    WXS_EV_BEGIN(wxsCustomButtonEvents)
-        WXS_EVI(EVT_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEvent,Click)
-        WXS_EVI(EVT_TOGGLEBUTTON,wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,wxCommandEvent,Toggle)
-        WXS_EV_DEFAULTS()
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsCustomButtonEvents)
+WXS_EVI(EVT_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEvent,Click)
+WXS_EVI(EVT_TOGGLEBUTTON,wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,wxCommandEvent,Toggle)
+WXS_EV_DEFAULTS()
+WXS_EV_END()
 
 
-    const long TypeValues[] = { wxCUSTBUT_NOTOGGLE, wxCUSTBUT_BUTTON, wxCUSTBUT_TOGGLE, wxCUSTBUT_BUT_DCLICK_TOG, wxCUSTBUT_TOG_DCLICK_BUT };
-    const wxChar* TypeNames[] = { _T("wxCUSTBUT_NOTOGGLE"), _T("wxCUSTBUT_BUTTON"), _T("wxCUSTBUT_TOGGLE"), _T("wxCUSTBUT_BUT_DCLICK_TOG"), _T("wxCUSTBUT_TOG_DCLICK_BUT"), NULL };
+const long TypeValues[] = { wxCUSTBUT_NOTOGGLE, wxCUSTBUT_BUTTON, wxCUSTBUT_TOGGLE, wxCUSTBUT_BUT_DCLICK_TOG, wxCUSTBUT_TOG_DCLICK_BUT };
+const wxChar* TypeNames[] = { _T("wxCUSTBUT_NOTOGGLE"), _T("wxCUSTBUT_BUTTON"), _T("wxCUSTBUT_TOGGLE"), _T("wxCUSTBUT_BUT_DCLICK_TOG"), _T("wxCUSTBUT_TOG_DCLICK_BUT"), NULL };
 
-    const long LabelPositionValues[] = { wxCUSTBUT_LEFT, wxCUSTBUT_RIGHT, wxCUSTBUT_TOP, wxCUSTBUT_BOTTOM };
-    const wxChar* LabelPositionNames[] = { _T("wxCUSTBUT_LEFT"), _T("wxCUSTBUT_RIGHT"), _T("wxCUSTBUT_TOP"), _T("wxCUSTBUT_BOTTOM"), NULL };
+const long LabelPositionValues[] = { wxCUSTBUT_LEFT, wxCUSTBUT_RIGHT, wxCUSTBUT_TOP, wxCUSTBUT_BOTTOM };
+const wxChar* LabelPositionNames[] = { _T("wxCUSTBUT_LEFT"), _T("wxCUSTBUT_RIGHT"), _T("wxCUSTBUT_TOP"), _T("wxCUSTBUT_BOTTOM"), NULL };
 }
 
 wxsCustomButton::wxsCustomButton(wxsItemResData* Data):
@@ -81,91 +81,91 @@ void wxsCustomButton::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/things/toggle.h>"),GetInfo().ClassName);
+        AddHeader(_T("<wx/tglbtn.h>"),_T(""),hfLocal);
+
+        wxString Style;
+        for ( int i=0; TypeNames[i]; i++ )
         {
-            AddHeader(_T("<wx/things/toggle.h>"),GetInfo().ClassName);
-            AddHeader(_T("<wx/tglbtn.h>"),_T(""),hfLocal);
-
-            wxString Style;
-            for ( int i=0; TypeNames[i]; i++ )
+            if ( TypeValues[i] == m_Type )
             {
-                if ( TypeValues[i] == m_Type )
-                {
-                    Style = TypeNames[i];
-                    break;
-                }
+                Style = TypeNames[i];
+                break;
             }
+        }
 
-            for ( int i=0; LabelPositionNames[i]; i++ )
-            {
-                if ( m_LabelPosition == LabelPositionValues[i] )
-                {
-                    if ( !Style.IsEmpty() )
-                    {
-                        Style.Append(_T('|'));
-                    }
-                    Style.Append(LabelPositionNames[i]);
-                    break;
-                }
-            }
-
-            if ( m_Flat )
+        for ( int i=0; LabelPositionNames[i]; i++ )
+        {
+            if ( m_LabelPosition == LabelPositionValues[i] )
             {
                 if ( !Style.IsEmpty() )
                 {
                     Style.Append(_T('|'));
                 }
-                Style.Append(_T("wxCUSTBUT_FLAT"));
+                Style.Append(LabelPositionNames[i]);
+                break;
             }
-
-            if ( Style.IsEmpty() )
-            {
-                Style = _T("0");
-            }
-
-            Codef(_T("%C(%W,%I,%t,%i,%P,%S,%s,%V,%N);\n"),m_Label.wx_str(),&m_Bitmap,wxART_OTHER,Style.wx_str());
-
-            if ( !m_BitmapSelected.IsEmpty() )
-            {
-                Codef(_T("%ASetBitmapSelected(%i);\n"),&m_BitmapSelected,wxART_OTHER);
-            }
-
-            if ( !m_BitmapFocused.IsEmpty() )
-            {
-                Codef(_T("%ASetBitmapFocus(%i);\n"),&m_BitmapFocused,wxART_OTHER);
-            }
-
-            if ( !m_BitmapDisabled.IsEmpty() )
-            {
-                Codef(_T("%ASetBitmapDisabled(%i);\n"),&m_BitmapDisabled,wxART_OTHER);
-            }
-            else if ( !m_Bitmap.IsEmpty() )
-            {
-                // Use internal function to generate bitmap dithered with background colour
-                Codef(_T("%ASetBitmapDisabled(%ACreateBitmapDisabled(%AGetBitmapLabel()));\n"));
-            }
-
-            if ( !m_Margins.IsDefault )
-            {
-                Codef(_T("%ASetMargins(%z);\n"),&m_Margins);
-            }
-
-            if ( !m_LabelMargins.IsDefault )
-            {
-                Codef(_T("%ASetLabelMargin(%z);\n"),&m_LabelMargins);
-            }
-
-            if ( !m_BitmapMargins.IsDefault )
-            {
-                Codef(_T("%ASetBitmapMargin(%z);\n"),&m_BitmapMargins);
-            }
-
-            break;
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsCustomButton::OnBuildCreatingCode"),GetLanguage());
+        if ( m_Flat )
+        {
+            if ( !Style.IsEmpty() )
+            {
+                Style.Append(_T('|'));
+            }
+            Style.Append(_T("wxCUSTBUT_FLAT"));
+        }
+
+        if ( Style.IsEmpty() )
+        {
+            Style = _T("0");
+        }
+
+        Codef(_T("%C(%W,%I,%t,%i,%P,%S,%s,%V,%N);\n"),m_Label.wx_str(),&m_Bitmap,wxART_OTHER,Style.wx_str());
+
+        if ( !m_BitmapSelected.IsEmpty() )
+        {
+            Codef(_T("%ASetBitmapSelected(%i);\n"),&m_BitmapSelected,wxART_OTHER);
+        }
+
+        if ( !m_BitmapFocused.IsEmpty() )
+        {
+            Codef(_T("%ASetBitmapFocus(%i);\n"),&m_BitmapFocused,wxART_OTHER);
+        }
+
+        if ( !m_BitmapDisabled.IsEmpty() )
+        {
+            Codef(_T("%ASetBitmapDisabled(%i);\n"),&m_BitmapDisabled,wxART_OTHER);
+        }
+        else if ( !m_Bitmap.IsEmpty() )
+        {
+            // Use internal function to generate bitmap dithered with background colour
+            Codef(_T("%ASetBitmapDisabled(%ACreateBitmapDisabled(%AGetBitmapLabel()));\n"));
+        }
+
+        if ( !m_Margins.IsDefault )
+        {
+            Codef(_T("%ASetMargins(%z);\n"),&m_Margins);
+        }
+
+        if ( !m_LabelMargins.IsDefault )
+        {
+            Codef(_T("%ASetLabelMargin(%z);\n"),&m_LabelMargins);
+        }
+
+        if ( !m_BitmapMargins.IsDefault )
+        {
+            Codef(_T("%ASetBitmapMargin(%z);\n"),&m_BitmapMargins);
+        }
+
+        break;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsCustomButton::OnBuildCreatingCode"),GetLanguage());
     }
 }
 

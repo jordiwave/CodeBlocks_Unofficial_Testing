@@ -35,7 +35,7 @@
 // --------------------------------------------------------------------------
 
 #ifndef STE_MaxFileSize
-    #define STE_MaxFileSize 100000000
+#define STE_MaxFileSize 100000000
 #endif
 
 //-----------------------------------------------------------------------------
@@ -43,7 +43,7 @@
 //-----------------------------------------------------------------------------
 
 #ifndef ID_STE__FIRST
-    #define ID_STE__FIRST 100 // first menu/window ID value
+#define ID_STE__FIRST 100 // first menu/window ID value
 #endif
 
 //-----------------------------------------------------------------------------
@@ -53,7 +53,7 @@
 //-----------------------------------------------------------------------------
 
 #ifndef STN_NOTEBOOK_PAGES_ALLOWED
-    #define STN_NOTEBOOK_PAGES_ALLOWED 200  // default max number of pages
+#define STN_NOTEBOOK_PAGES_ALLOWED 200  // default max number of pages
 #endif
 
 //-----------------------------------------------------------------------------
@@ -61,7 +61,7 @@
 //-----------------------------------------------------------------------------
 
 #ifndef STE_USE_HTML_PRINT
-    #define STE_USE_HTML_PRINT 0
+#define STE_USE_HTML_PRINT 0
 #endif
 
 //-----------------------------------------------------------------------------
@@ -70,21 +70,21 @@
 
 // A smallish font size that is nicely readable (your mileage may vary)
 #ifndef STE_DEFAULT_FONT_SIZE
-    #ifdef __WXGTK__
-        #define STE_DEFAULT_FONT_SIZE 12
-    #else
-        #define STE_DEFAULT_FONT_SIZE 10
-    #endif
+#ifdef __WXGTK__
+#define STE_DEFAULT_FONT_SIZE 12
+#else
+#define STE_DEFAULT_FONT_SIZE 10
+#endif
 #endif // #ifndef STE_DEFAULT_FONT_SIZE
 
 // A fixed width font - courier is not great, but a reasonable start
 #ifndef STE_DEFAULT_FONT_FACENAME
-    #ifdef __WXMSW__
-        // Use a TrueType/ClearType font on Windows
-        #define STE_DEFAULT_FONT_FACENAME wxT("Courier New")
-    #else
-        #define STE_DEFAULT_FONT_FACENAME wxT("Courier")
-    #endif
+#ifdef __WXMSW__
+// Use a TrueType/ClearType font on Windows
+#define STE_DEFAULT_FONT_FACENAME wxT("Courier New")
+#else
+#define STE_DEFAULT_FONT_FACENAME wxT("Courier")
+#endif
 #endif // #ifndef STE_DEFAULT_FONT_FACENAME
 
 // --------------------------------------------------------------------------

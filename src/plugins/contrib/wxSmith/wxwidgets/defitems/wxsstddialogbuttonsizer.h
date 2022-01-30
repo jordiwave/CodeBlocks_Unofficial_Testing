@@ -27,28 +27,28 @@
 
 class wxsStdDialogButtonSizer: public wxsItem
 {
-    public:
+public:
 
-        wxsStdDialogButtonSizer(wxsItemResData* Data);
+    wxsStdDialogButtonSizer(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual long OnGetPropertiesFlags();
-        virtual void OnEnumItemProperties(long Flags);
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long PreviewFlags);
-        virtual void OnBuildCreatingCode();
-        virtual bool OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra);
-        virtual bool OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra);
-        virtual void OnAddExtraProperties(wxsPropertyGridManager* Grid);
-        virtual void OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id);
-        virtual void OnBuildDeclarationsCode();
+    virtual long OnGetPropertiesFlags();
+    virtual void OnEnumItemProperties(long Flags);
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long PreviewFlags);
+    virtual void OnBuildCreatingCode();
+    virtual bool OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra);
+    virtual bool OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra);
+    virtual void OnAddExtraProperties(wxsPropertyGridManager* Grid);
+    virtual void OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id);
+    virtual void OnBuildDeclarationsCode();
 
-        static const int NumButtons = 8;
+    static const int NumButtons = 8;
 
-        bool     m_Use    [NumButtons];
-        wxPGId   m_UseId  [NumButtons];
-        wxString m_Label  [NumButtons];
-        wxPGId   m_LabelId[NumButtons];
+    bool     m_Use    [NumButtons];
+    wxPGId   m_UseId  [NumButtons];
+    wxString m_Label  [NumButtons];
+    wxPGId   m_LabelId[NumButtons];
 
 };
 

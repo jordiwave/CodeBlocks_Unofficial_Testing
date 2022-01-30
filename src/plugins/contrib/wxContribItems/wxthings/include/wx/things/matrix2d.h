@@ -16,7 +16,8 @@
 
 class WXDLLIMPEXP_FWD_BASE wxArrayInt;
 
-namespace wxthings {
+namespace wxthings
+{
 
 //----------------------------------------------------------------------------
 //  wxMatrix2D - a generic double valued 2D ref counted matrix class
@@ -25,10 +26,22 @@ class WXDLLIMPEXP_THINGS wxMatrix2D : public wxObject
 {
 public:
     wxMatrix2D() : wxObject() {}
-    wxMatrix2D(const wxMatrix2D &matrix, bool full_copy = false) : wxObject() { Create(matrix, full_copy); }
-    wxMatrix2D(int width, int height, bool zero = true) : wxObject() { Create(width, height, zero); }
-    wxMatrix2D(int width, int height, const double *data) : wxObject() { Create(width, height, data); }
-    wxMatrix2D(int width, int height, double *data, bool static_data) : wxObject() { Create(width, height, data, static_data); }
+    wxMatrix2D(const wxMatrix2D &matrix, bool full_copy = false) : wxObject()
+    {
+        Create(matrix, full_copy);
+    }
+    wxMatrix2D(int width, int height, bool zero = true) : wxObject()
+    {
+        Create(width, height, zero);
+    }
+    wxMatrix2D(int width, int height, const double *data) : wxObject()
+    {
+        Create(width, height, data);
+    }
+    wxMatrix2D(int width, int height, double *data, bool static_data) : wxObject()
+    {
+        Create(width, height, data, static_data);
+    }
 
     virtual ~wxMatrix2D();
 
@@ -75,9 +88,15 @@ public:
     // Insert matrix at this col position, matricies must have same number of rows
     wxMatrix2D InsertCols(int col, const wxMatrix2D& matrix) const;
     // Append new rows to the matrix, matricies must have same number of cols
-    wxMatrix2D AppendRows(const wxMatrix2D& matrix) const { return InsertRows(-1, matrix); }
+    wxMatrix2D AppendRows(const wxMatrix2D& matrix) const
+    {
+        return InsertRows(-1, matrix);
+    }
     // Append new cols to the matrix, matricies must have same number of rows
-    wxMatrix2D AppendCols(const wxMatrix2D& matrix) const { return InsertCols(-1, matrix); }
+    wxMatrix2D AppendCols(const wxMatrix2D& matrix) const
+    {
+        return InsertCols(-1, matrix);
+    }
 
     // Get a sub matrix inside of the this one, returns a new matrix
     wxMatrix2D SubMatrix(const wxRect& rect) const;
@@ -148,10 +167,22 @@ public:
     bool LoadFile( const wxString &filename, const wxArrayInt *cols = NULL );
     wxArrayString m_file_comments;
 
-    friend wxMatrix2D operator+(wxMatrix2D &a, wxMatrix2D &b) { return a.Add(b); }
-    friend wxMatrix2D operator+(double scalar, wxMatrix2D &b) { return b.Add(scalar); }
-    friend wxMatrix2D operator*(wxMatrix2D &a, wxMatrix2D &b) { return a.Mult(b); }
-    friend wxMatrix2D operator*(double scalar, wxMatrix2D &a) { return a.Mult(scalar); }
+    friend wxMatrix2D operator+(wxMatrix2D &a, wxMatrix2D &b)
+    {
+        return a.Add(b);
+    }
+    friend wxMatrix2D operator+(double scalar, wxMatrix2D &b)
+    {
+        return b.Add(scalar);
+    }
+    friend wxMatrix2D operator*(wxMatrix2D &a, wxMatrix2D &b)
+    {
+        return a.Mult(b);
+    }
+    friend wxMatrix2D operator*(double scalar, wxMatrix2D &a)
+    {
+        return a.Mult(scalar);
+    }
 
     wxMatrix2D& operator = (const wxMatrix2D& matrix)
     {
@@ -164,7 +195,10 @@ public:
         if (!Ok() || !matrix.Ok()) return false;
         return GetData() == matrix.GetData();
     }
-    bool operator != (const wxMatrix2D& matrix) { return !(*this == matrix); }
+    bool operator != (const wxMatrix2D& matrix)
+    {
+        return !(*this == matrix);
+    }
 
 private:
     DECLARE_DYNAMIC_CLASS(wxMatrix2D)

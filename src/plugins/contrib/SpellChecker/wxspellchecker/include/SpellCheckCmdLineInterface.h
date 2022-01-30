@@ -15,14 +15,14 @@
 class SpellCheckCmdLineInterface : public wxSpellCheckUserInterface
 {
 public:
-  SpellCheckCmdLineInterface(wxSpellCheckEngineInterface* SpellChecker = NULL);
-	virtual ~SpellCheckCmdLineInterface();
+    SpellCheckCmdLineInterface(wxSpellCheckEngineInterface* SpellChecker = NULL);
+    virtual ~SpellCheckCmdLineInterface();
 
 public:
-	virtual int PresentSpellCheckUserInterface(const wxString& strMisspelling);
-  void PrintMisspelling();
-  void PrintSuggestions();
-  void GetFeedback();
+    virtual int PresentSpellCheckUserInterface(const wxString& strMisspelling);
+    void PrintMisspelling();
+    void PrintSuggestions();
+    void GetFeedback();
 };
 
 #endif  // __SPELL_CHECK_CMDLINE_INTERFACE__

@@ -12,7 +12,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef WX_PRECOMP
-	#include "wx/wx.h"
+#include "wx/wx.h"
 #endif
 
 #include <wx/datetime.h>
@@ -20,28 +20,28 @@
 
 CTimeAlarm::CTimeAlarm()
 {
-	m_dJAlarmTime = 0 ;
-	m_bEnable = false ;
+    m_dJAlarmTime = 0 ;
+    m_bEnable = false ;
 }
 
 void CTimeAlarm::SetAlarmTime(wxDateTime alarmtime)
 {
-	m_dJAlarmTime = alarmtime.GetJDN();
+    m_dJAlarmTime = alarmtime.GetJDN();
 }
 
 void CTimeAlarm::SetAlarmTime(double alarmtime)
 {
-	m_dJAlarmTime = alarmtime ;
+    m_dJAlarmTime = alarmtime ;
 }
 
 //return DD-MM-YY HH:MM::SS dell'allarme corrente
 wxString CTimeAlarm::GetAlarmString()
 {
-	wxString sDate ;
-	wxDateTime jdate ;
+    wxString sDate ;
+    wxDateTime jdate ;
 
-	jdate.Set(m_dJAlarmTime) ;
-	sDate = jdate.Format(wxT("%d-%m-%Y %H:%M:%S")) ;
+    jdate.Set(m_dJAlarmTime) ;
+    sDate = jdate.Format(wxT("%d-%m-%Y %H:%M:%S")) ;
 
-	return sDate ;
+    return sDate ;
 }

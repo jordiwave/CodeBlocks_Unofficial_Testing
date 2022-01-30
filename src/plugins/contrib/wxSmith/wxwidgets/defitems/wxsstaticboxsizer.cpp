@@ -24,7 +24,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsStaticBoxSizer> Reg(_T("StaticBoxSizer"),wxsTSizer,_T("Layout"),20);
+wxsRegisterItem<wxsStaticBoxSizer> Reg(_T("StaticBoxSizer"),wxsTSizer,_T("Layout"),20);
 }
 
 
@@ -45,20 +45,20 @@ void wxsStaticBoxSizer::OnBuildSizerCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%s, %W, %t);\n"),
-                    (Orient!=wxHORIZONTAL)?_T("wxVERTICAL"):_T("wxHORIZONTAL"),
-                    Label.wx_str());
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%s, %W, %t);\n"),
+              (Orient!=wxHORIZONTAL)?_T("wxVERTICAL"):_T("wxHORIZONTAL"),
+              Label.wx_str());
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsStaticBoxSizer::OnBuildSizerCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsStaticBoxSizer::OnBuildSizerCreatingCode"),GetLanguage());
+    }
     }
 }
 

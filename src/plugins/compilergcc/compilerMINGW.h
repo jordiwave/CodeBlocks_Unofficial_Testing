@@ -11,17 +11,17 @@
 
 class CompilerMINGW : public Compiler
 {
-    public:
-        // added arguments to ctor so we can derive other gcc-flavours directly
-        // from MinGW (e.g. the cygwin compiler is derived from this one).
-        CompilerMINGW(const wxString& name = _("GNU GCC Compiler"), const wxString& ID = _T("gcc"));
-        ~CompilerMINGW() override;
-        AutoDetectResult AutoDetectInstallationDir() override;
-        CompilerCommandGenerator* GetCommandGenerator(cbProject *project) override;
-    protected:
-        Compiler* CreateCopy() override;
-        void SetVersionString() override;
-    private:
+public:
+    // added arguments to ctor so we can derive other gcc-flavours directly
+    // from MinGW (e.g. the cygwin compiler is derived from this one).
+    CompilerMINGW(const wxString& name = _("GNU GCC Compiler"), const wxString& ID = _T("gcc"));
+    ~CompilerMINGW() override;
+    AutoDetectResult AutoDetectInstallationDir() override;
+    CompilerCommandGenerator* GetCommandGenerator(cbProject *project) override;
+protected:
+    Compiler* CreateCopy() override;
+    void SetVersionString() override;
+private:
 };
 
 #endif // COMPILER_MINGW_H

@@ -14,7 +14,7 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <cbplugin.h> // for "class cbPlugin"
@@ -23,21 +23,24 @@
 
 class FileManagerPlugin : public cbPlugin
 {
-    public:
-        FileManagerPlugin();
-        virtual ~FileManagerPlugin();
+public:
+    FileManagerPlugin();
+    virtual ~FileManagerPlugin();
 
-    protected:
-        virtual void BuildMenu(wxMenuBar* /*menuBar*/) {}
-        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
-        virtual bool BuildToolBar(wxToolBar* /*toolBar*/) {return false;}
-        virtual void OnAttach();
-        virtual void OnRelease(bool appShutDown);
-        void OnOpenProjectInFileBrowser(wxCommandEvent& event);
-        FileExplorer *m_fe;
-        DECLARE_EVENT_TABLE();
-    private:
-        wxString m_project_selected;
+protected:
+    virtual void BuildMenu(wxMenuBar* /*menuBar*/) {}
+    virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
+    virtual bool BuildToolBar(wxToolBar* /*toolBar*/)
+    {
+        return false;
+    }
+    virtual void OnAttach();
+    virtual void OnRelease(bool appShutDown);
+    void OnOpenProjectInFileBrowser(wxCommandEvent& event);
+    FileExplorer *m_fe;
+    DECLARE_EVENT_TABLE();
+private:
+    wxString m_project_selected;
 };
 
 #endif // FILEMANAGER_H_INCLUDED

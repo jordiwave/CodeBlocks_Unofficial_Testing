@@ -29,7 +29,7 @@
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include "wx/label.h"
@@ -399,7 +399,7 @@ void wxBar3DChartPoints::Draw(
         //-------------------------------------------------------------------
 
         hp->SetBrush( wxBrush(wxChartColors::GetDarkColor(GetColor(),
-            10), wxBRUSHSTYLE_SOLID));
+                              10), wxBRUSHSTYLE_SOLID));
 
         //-------------------------------------------------------------------
         // Make sure that the difference y and y - h is at lease 1
@@ -412,7 +412,8 @@ void wxBar3DChartPoints::Draw(
         if ( d == 0 )
             d += 1;
 
-        wxPoint next[] = {
+        wxPoint next[] =
+        {
             wxPoint(
                 static_cast<int>(ceil(x + w * GetZoom())),
                 y1 ),
@@ -425,14 +426,15 @@ void wxBar3DChartPoints::Draw(
             wxPoint(
                 static_cast<int>(ceil(x + w * GetZoom())),
                 y4 ),
-	   };
+        };
 
-    	hp->DrawPolygon( 4, next );
+        hp->DrawPolygon( 4, next );
 
         //-------------------------------------------------------------------
         // Draw Poligon on top of main Rectangle
         //-------------------------------------------------------------------
-        wxPoint top[] = {
+        wxPoint top[] =
+        {
             wxPoint(
                 static_cast<int>(ceil(x)),
                 y4 ),
@@ -445,7 +447,7 @@ void wxBar3DChartPoints::Draw(
             wxPoint(
                 static_cast<int>(ceil(x + (sizes->GetWidthBar3d() - w) * GetZoom())),
                 y4 - d ),
-       };
+        };
 
         hp->DrawPolygon( 4, top );
 
@@ -495,7 +497,7 @@ void wxBar3DChartPoints::Draw(
                         lbl,
                         UP );
             break;
-            case NAME:
+        case NAME:
             lbl = GetName(iNode).c_str();
             wxLbl.Draw( hp, static_cast<int>(ceil(x)),
                         static_cast<int>(ceil(hr->h - y)),

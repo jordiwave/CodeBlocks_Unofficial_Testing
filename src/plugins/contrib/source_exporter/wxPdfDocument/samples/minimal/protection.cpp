@@ -30,19 +30,19 @@
 int
 protection1(bool testMode)
 {
-  wxPdfDocument pdf;
-  if (testMode)
-  {
-    pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
-    pdf.SetCompression(false);
-  }
-  pdf.SetProtection(wxPDF_PERMISSION_PRINT);
-  pdf.Open();
-  pdf.AddPage();
-  pdf.SetFont(wxS("Helvetica"));
-  pdf.Cell(0,10,wxString(wxS("You can print me but not copy my text.")),0,1);
-  pdf.SaveAsFile(wxS("protection1.pdf"));
-  return 0;
+    wxPdfDocument pdf;
+    if (testMode)
+    {
+        pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
+        pdf.SetCompression(false);
+    }
+    pdf.SetProtection(wxPDF_PERMISSION_PRINT);
+    pdf.Open();
+    pdf.AddPage();
+    pdf.SetFont(wxS("Helvetica"));
+    pdf.Cell(0,10,wxString(wxS("You can print me but not copy my text.")),0,1);
+    pdf.SaveAsFile(wxS("protection1.pdf"));
+    return 0;
 }
 
 /**
@@ -55,18 +55,18 @@ protection1(bool testMode)
 int
 protection2(bool testMode)
 {
-  wxPdfDocument pdf;
-  if (testMode)
-  {
-    pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
-    pdf.SetCompression(false);
-  }
-  pdf.SetProtection(wxPDF_PERMISSION_NONE, wxS("Hello"), wxS("World"), wxPDF_ENCRYPTION_RC4V2, 128);
-  pdf.Open();
-  pdf.AddPage();
-  pdf.SetFont(wxS("Helvetica"));
-  pdf.Cell(0,10,wxString(wxS("You can only view me on screen.")),0,1);
-  pdf.SaveAsFile(wxS("protection2.pdf"));
-  return 0;
+    wxPdfDocument pdf;
+    if (testMode)
+    {
+        pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
+        pdf.SetCompression(false);
+    }
+    pdf.SetProtection(wxPDF_PERMISSION_NONE, wxS("Hello"), wxS("World"), wxPDF_ENCRYPTION_RC4V2, 128);
+    pdf.Open();
+    pdf.AddPage();
+    pdf.SetFont(wxS("Helvetica"));
+    pdf.Cell(0,10,wxString(wxS("You can only view me on screen.")),0,1);
+    pdf.SaveAsFile(wxS("protection2.pdf"));
+    return 0;
 }
 

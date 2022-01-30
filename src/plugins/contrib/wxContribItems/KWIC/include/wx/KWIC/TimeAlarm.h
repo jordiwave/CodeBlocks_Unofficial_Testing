@@ -15,18 +15,24 @@
 class CTimeAlarm
 {
 public:
-	CTimeAlarm() ;
+    CTimeAlarm() ;
 
-	void Enable () { m_bEnable = true ; } ;
-	void Disable () { m_bEnable = false ; } ;
+    void Enable ()
+    {
+        m_bEnable = true ;
+    } ;
+    void Disable ()
+    {
+        m_bEnable = false ;
+    } ;
 
-	void SetAlarmTime(wxDateTime alarmtime) ;
-	void SetAlarmTime(double alarmtime) ;
+    void SetAlarmTime(wxDateTime alarmtime) ;
+    void SetAlarmTime(double alarmtime) ;
 
-	wxString GetAlarmString () ;
+    wxString GetAlarmString () ;
 
 private:
-	double m_dJAlarmTime ;
-	bool m_bEnable ;
+    double m_dJAlarmTime ;
+    bool m_bEnable ;
 
 } ;

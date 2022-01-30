@@ -30,8 +30,14 @@ WX_DECLARE_OBJARRAY(VCSstate, VCSstatearray);
 class Expansion
 {
 public:
-    Expansion() { name = _T("");}
-    ~Expansion() {for(size_t i=0;i<children.size();i++) delete children[i];}
+    Expansion()
+    {
+        name = _T("");
+    }
+    ~Expansion()
+    {
+        for(size_t i=0; i<children.size(); i++) delete children[i];
+    }
     wxString name;
     ExpList children;
 };
@@ -43,9 +49,9 @@ class FileTreeCtrl: public wxTreeCtrl
 {
 public: //wxTR_HIDE_ROOT|
     FileTreeCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxDefaultSize, long style = wxTR_HAS_BUTTONS|wxTR_MULTIPLE|wxTR_NO_LINES,
-        const wxValidator& validator = wxDefaultValidator,
-        const wxString& name = _T("treeCtrl"));
+                 const wxSize& size = wxDefaultSize, long style = wxTR_HAS_BUTTONS|wxTR_MULTIPLE|wxTR_NO_LINES,
+                 const wxValidator& validator = wxDefaultValidator,
+                 const wxString& name = _T("treeCtrl"));
     FileTreeCtrl();
     FileTreeCtrl(wxWindow *parent);
     void OnKeyDown(wxKeyEvent &e);
@@ -65,11 +71,14 @@ class FileExplorer: public wxPanel
     friend class wxFEDropTarget;
 public:
     FileExplorer(wxWindow *parent,wxWindowID id = wxID_ANY,
-        const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
-        long style = wxTAB_TRAVERSAL|wxTE_PROCESS_ENTER, const wxString& name = _T("Files"));
+                 const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
+                 long style = wxTAB_TRAVERSAL|wxTE_PROCESS_ENTER, const wxString& name = _T("Files"));
     ~FileExplorer();
     bool SetRootFolder(wxString root);
-    wxString GetRootFolder() {return m_root;}
+    wxString GetRootFolder()
+    {
+        return m_root;
+    }
     void FindFile(const wxString &/*file*/) {}
     void MoveFiles(const wxString &destination, const wxArrayString &selectedfiles);
     void CopyFiles(const wxString &destination, const wxArrayString &selectedfiles);

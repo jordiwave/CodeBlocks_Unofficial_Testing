@@ -8,7 +8,7 @@
 
 // get rid of wxWidgets debug ugliness
 #ifdef new
-    #undef new
+#undef new
 #endif
 
 #include <map>
@@ -38,9 +38,9 @@
 
 namespace
 {
-  template <typename T>
-  T wxStrHexTo(const wxString &str)
-  {
+template <typename T>
+T wxStrHexTo(const wxString &str)
+{
     T ret = 0; // return
     std::size_t count = 0; // how many characters we've converted
     std::size_t pos = 0; // string position
@@ -48,23 +48,23 @@ namespace
     // if it begins with 0x or 0X, just ignore it
     if (str[pos] == _T('0'))
     {
-      ++pos;
-
-      if (str[pos] == _T('x') || str[pos] == _T('X'))
-      {
-        ++pos; // start after the x or X
-      }
-
-      while (str[pos] == _T('0')) // skip all zeros
-      {
         ++pos;
-      }
+
+        if (str[pos] == _T('x') || str[pos] == _T('X'))
+        {
+            ++pos; // start after the x or X
+        }
+
+        while (str[pos] == _T('0')) // skip all zeros
+        {
+            ++pos;
+        }
     }
 
     while (count < sizeof(T) * 2) // be sure we don't keep adding more to ret
     {
-      switch (str[pos].GetValue())
-      {
+        switch (str[pos].GetValue())
+        {
         case _T('0'):
         case _T('1'):
         case _T('2'):
@@ -75,10 +75,10 @@ namespace
         case _T('7'):
         case _T('8'):
         case _T('9'):
-          ret <<= 4;
-          ret |= str[pos] - _T('0');
-          ++count;
-          break;
+            ret <<= 4;
+            ret |= str[pos] - _T('0');
+            ++count;
+            break;
 
         case _T('a'):
         case _T('b'):
@@ -86,10 +86,10 @@ namespace
         case _T('d'):
         case _T('e'):
         case _T('f'):
-          ret <<= 4;
-          ret |= str[pos] - _T('a') + 10;
-          ++count;
-          break;
+            ret <<= 4;
+            ret |= str[pos] - _T('a') + 10;
+            ++count;
+            break;
 
         case _T('A'):
         case _T('B'):
@@ -97,20 +97,20 @@ namespace
         case _T('D'):
         case _T('E'):
         case _T('F'):
-          ret <<= 4;
-          ret |= str[pos] - _T('A') + 10;
-          ++count;
-          break;
+            ret <<= 4;
+            ret |= str[pos] - _T('A') + 10;
+            ++count;
+            break;
 
         default: // whatever we find that doesn't match ends the conversion
-          return ret;
-      }
+            return ret;
+        }
 
-      ++pos;
+        ++pos;
     }
 
     return ret;
-  }
+}
 }
 
 //#0 wxEntry () at main.cpp:5
@@ -202,9 +202,9 @@ static wxRegEx reStepI(wxT("(((.*)[a-zA-Z]:)?.*)?:(\\d+):(middle|beg):(.*)"),
 #endif
 static wxRegEx reStepI2(_T("\\A(0x[A-Fa-f0-9]+)\\s+(\\d+)\\s+in (.*)"),
 #ifndef __WXMAC__
-                       wxRE_ADVANCED);
+                        wxRE_ADVANCED);
 #else
-                       wxRE_EXTENDED);
+                        wxRE_EXTENDED);
 #endif
 static wxRegEx reStepI3(_T("^(0x[A-Fa-f0-9]+) in (.*)? from (.*)"));
 static wxRegEx reStepI4(_T("^(0x[A-Fa-f0-9]+) in (.*)? at (.*)"));
@@ -221,21 +221,21 @@ static wxRegEx reNextI(_T("\x1a\x1a(([a-zA-Z]:)?.*?):([0-9]*):([0-9]*):(middle|b
   */
 class GdbCmd_AddSourceDir : public DebuggerCmd
 {
-    public:
-        /** If @c dir is empty, resets all search dirs to $cdir:$cwd, the default. */
-        GdbCmd_AddSourceDir(DebuggerDriver* driver, const wxString& dir)
-            : DebuggerCmd(driver)
-        {
-            m_Cmd << _T("directory ") << dir;
-        }
-        void ParseOutput(const wxString& output) override
-        {
-            // Output:
-            // Warning: C:\Devel\tmp\console\111: No such file or directory.
-            // Source directories searched: <dir>;$cdir;$cwd
-            if (output.StartsWith(_T("Warning: ")))
-                m_pDriver->Log(output.BeforeFirst(_T('\n')));
-        }
+public:
+    /** If @c dir is empty, resets all search dirs to $cdir:$cwd, the default. */
+    GdbCmd_AddSourceDir(DebuggerDriver* driver, const wxString& dir)
+        : DebuggerCmd(driver)
+    {
+        m_Cmd << _T("directory ") << dir;
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        // Output:
+        // Warning: C:\Devel\tmp\console\111: No such file or directory.
+        // Source directories searched: <dir>;$cdir;$cwd
+        if (output.StartsWith(_T("Warning: ")))
+            m_pDriver->Log(output.BeforeFirst(_T('\n')));
+    }
 };
 
 /**
@@ -243,23 +243,23 @@ class GdbCmd_AddSourceDir : public DebuggerCmd
   */
 class GdbCmd_SetDebuggee : public DebuggerCmd
 {
-    public:
-        /** @param file The file to debug. */
-        GdbCmd_SetDebuggee(DebuggerDriver* driver, const wxString& file)
-            : DebuggerCmd(driver)
-        {
-            m_Cmd << _T("file ") << file;
-        }
-        void ParseOutput(const wxString& output) override
-        {
-            // Output:
-            // Reading symbols from C:\Devel\tmp\console/console.exe...done.
-            // or if it doesn't exist:
-            // console.exe: No such file or directory.
+public:
+    /** @param file The file to debug. */
+    GdbCmd_SetDebuggee(DebuggerDriver* driver, const wxString& file)
+        : DebuggerCmd(driver)
+    {
+        m_Cmd << _T("file ") << file;
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        // Output:
+        // Reading symbols from C:\Devel\tmp\console/console.exe...done.
+        // or if it doesn't exist:
+        // console.exe: No such file or directory.
 
-            // just log everything before the prompt
-            m_pDriver->Log(output.BeforeFirst(_T('\n')));
-        }
+        // just log everything before the prompt
+        m_pDriver->Log(output.BeforeFirst(_T('\n')));
+    }
 };
 
 /**
@@ -267,27 +267,27 @@ class GdbCmd_SetDebuggee : public DebuggerCmd
   */
 class GdbCmd_AddSymbolFile : public DebuggerCmd
 {
-    public:
-        /** @param file The file which contains the symbols. */
-        GdbCmd_AddSymbolFile(DebuggerDriver* driver, const wxString& file)
-            : DebuggerCmd(driver)
-        {
-            m_Cmd << _T("add-symbol-file ") << file;
-        }
-        void ParseOutput(const wxString& output) override
-        {
-            // Output:
-            //
-            // add symbol table from file "console.exe" at
-            // Reading symbols from C:\Devel\tmp\console/console.exe...done.
-            //
-            // or if it doesn't exist:
-            // add symbol table from file "console.exe" at
-            // console.exe: No such file or directory.
+public:
+    /** @param file The file which contains the symbols. */
+    GdbCmd_AddSymbolFile(DebuggerDriver* driver, const wxString& file)
+        : DebuggerCmd(driver)
+    {
+        m_Cmd << _T("add-symbol-file ") << file;
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        // Output:
+        //
+        // add symbol table from file "console.exe" at
+        // Reading symbols from C:\Devel\tmp\console/console.exe...done.
+        //
+        // or if it doesn't exist:
+        // add symbol table from file "console.exe" at
+        // console.exe: No such file or directory.
 
-            // just ignore the "add symbol" line and log the rest before the prompt
-            m_pDriver->Log(output.AfterFirst(_T('\n')).BeforeLast(_T('\n')));
-        }
+        // just ignore the "add symbol" line and log the rest before the prompt
+        m_pDriver->Log(output.AfterFirst(_T('\n')).BeforeLast(_T('\n')));
+    }
 };
 
 /**
@@ -295,17 +295,17 @@ class GdbCmd_AddSymbolFile : public DebuggerCmd
   */
 class GdbCmd_SetArguments : public DebuggerCmd
 {
-    public:
-        /** @param file The file which contains the symbols. */
-        GdbCmd_SetArguments(DebuggerDriver* driver, const wxString& args)
-            : DebuggerCmd(driver)
-        {
-            m_Cmd << _T("set args ") << args;
-        }
-        void ParseOutput(cb_unused const wxString& output) override
-        {
-            // No output
-        }
+public:
+    /** @param file The file which contains the symbols. */
+    GdbCmd_SetArguments(DebuggerDriver* driver, const wxString& args)
+        : DebuggerCmd(driver)
+    {
+        m_Cmd << _T("set args ") << args;
+    }
+    void ParseOutput(cb_unused const wxString& output) override
+    {
+        // No output
+    }
 };
 
 /**
@@ -313,39 +313,42 @@ class GdbCmd_SetArguments : public DebuggerCmd
   */
 class GdbCmd_AttachToProcess : public DebuggerCmd
 {
-    public:
-        /** @param file The file to debug. */
-        GdbCmd_AttachToProcess(DebuggerDriver* driver, int pid)
-            : DebuggerCmd(driver)
+public:
+    /** @param file The file to debug. */
+    GdbCmd_AttachToProcess(DebuggerDriver* driver, int pid)
+        : DebuggerCmd(driver)
+    {
+        m_Cmd << _T("attach ") << wxString::Format(_T("%d"), pid);
+        m_pDriver->Log(wxString::Format(_("Attaching to program with pid: %d"), pid));
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        // Output:
+        // Attaching to process <pid>
+        // or,
+        // Can't attach to process.
+        wxArrayString lines = GetArrayFromString(output, _T('\n'));
+        for (unsigned int i = 0; i < lines.GetCount(); ++i)
         {
-            m_Cmd << _T("attach ") << wxString::Format(_T("%d"), pid);
-            m_pDriver->Log(wxString::Format(_("Attaching to program with pid: %d"), pid));
-        }
-        void ParseOutput(const wxString& output) override
-        {
-            // Output:
-            // Attaching to process <pid>
-            // or,
-            // Can't attach to process.
-            wxArrayString lines = GetArrayFromString(output, _T('\n'));
-            for (unsigned int i = 0; i < lines.GetCount(); ++i)
+            if (lines[i].StartsWith(_T("Attaching")))
+                m_pDriver->Log(lines[i]);
+            else if (lines[i].StartsWith(wxT("Can't "))
+                     || lines[i].StartsWith(wxT("Could not attach to process"))
+                     || lines[i].StartsWith(wxT("ptrace: No such process")))
             {
-                if (lines[i].StartsWith(_T("Attaching")))
-                    m_pDriver->Log(lines[i]);
-                else if (lines[i].StartsWith(wxT("Can't "))
-                         || lines[i].StartsWith(wxT("Could not attach to process"))
-                         || lines[i].StartsWith(wxT("ptrace: No such process")))
-                {
-                    // log this and quit debugging
-                    m_pDriver->Log(_("Attaching failed: ")+lines[i]);
-                    m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, _T("quit")));
-                    m_pDriver->MarkProgramStopped(true);
-                }
-//                m_pDriver->DebugLog(lines[i]);
+                // log this and quit debugging
+                m_pDriver->Log(_("Attaching failed: ")+lines[i]);
+                m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, _T("quit")));
+                m_pDriver->MarkProgramStopped(true);
             }
+//                m_pDriver->DebugLog(lines[i]);
         }
+    }
 
-        bool IsContinueCommand() const override { return true; }
+    bool IsContinueCommand() const override
+    {
+        return true;
+    }
 };
 
 /**
@@ -353,25 +356,25 @@ class GdbCmd_AttachToProcess : public DebuggerCmd
   */
 class GdbCmd_Detach : public DebuggerCmd
 {
-    public:
-        /** @param file The file to debug. */
-        GdbCmd_Detach(DebuggerDriver* driver)
-            : DebuggerCmd(driver)
+public:
+    /** @param file The file to debug. */
+    GdbCmd_Detach(DebuggerDriver* driver)
+        : DebuggerCmd(driver)
+    {
+        m_Cmd << _T("detach");
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        // Output:
+        // Attaching to process <pid>
+        wxArrayString lines = GetArrayFromString(output, _T('\n'));
+        for (unsigned int i = 0; i < lines.GetCount(); ++i)
         {
-            m_Cmd << _T("detach");
-        }
-        void ParseOutput(const wxString& output) override
-        {
-            // Output:
-            // Attaching to process <pid>
-            wxArrayString lines = GetArrayFromString(output, _T('\n'));
-            for (unsigned int i = 0; i < lines.GetCount(); ++i)
-            {
-                if (lines[i].StartsWith(_T("Detaching")))
-                    m_pDriver->Log(lines[i]);
+            if (lines[i].StartsWith(_T("Detaching")))
+                m_pDriver->Log(lines[i]);
 //                m_pDriver->DebugLog(lines[i]);
-            }
         }
+    }
 };
 
 /**
@@ -382,44 +385,44 @@ class GdbCmd_Detach : public DebuggerCmd
   */
 class GdbCmd_AddBreakpointCondition : public DebuggerCmd
 {
-        cb::shared_ptr<DebuggerBreakpoint> m_BP;
-    public:
-        /** @param bp The breakpoint to set its condition. */
-        GdbCmd_AddBreakpointCondition(DebuggerDriver* driver, cb::shared_ptr<DebuggerBreakpoint> bp)
-            : DebuggerCmd(driver),
-            m_BP(bp)
+    cb::shared_ptr<DebuggerBreakpoint> m_BP;
+public:
+    /** @param bp The breakpoint to set its condition. */
+    GdbCmd_AddBreakpointCondition(DebuggerDriver* driver, cb::shared_ptr<DebuggerBreakpoint> bp)
+        : DebuggerCmd(driver),
+          m_BP(bp)
+    {
+        m_Cmd << _T("condition ") << wxString::Format(_T("%ld"), (int) m_BP->index);
+        if (m_BP->useCondition)
+            m_Cmd << _T(" ") << m_BP->condition;
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        if (output.StartsWith(_T("No symbol ")))
         {
-            m_Cmd << _T("condition ") << wxString::Format(_T("%ld"), (int) m_BP->index);
-            if (m_BP->useCondition)
-                m_Cmd << _T(" ") << m_BP->condition;
-        }
-        void ParseOutput(const wxString& output) override
-        {
-            if (output.StartsWith(_T("No symbol ")))
+            wxString s = wxString::Format(_("While setting up custom conditions for breakpoint %ld (%s, line %d),\n"
+                                            "the debugger responded with the following error:\n"
+                                            "\nError: %s\n\n"
+                                            "Do you want to make this an un-conditional breakpoint?"),
+                                          m_BP->index,
+                                          m_BP->filename.c_str(),
+                                          m_BP->line + 1,
+                                          output.c_str());
+            if (cbMessageBox(s, _("Warning"), wxICON_WARNING | wxYES_NO) == wxID_YES)
             {
-                wxString s = wxString::Format(_("While setting up custom conditions for breakpoint %ld (%s, line %d),\n"
-                                                "the debugger responded with the following error:\n"
-                                                "\nError: %s\n\n"
-                                                "Do you want to make this an un-conditional breakpoint?"),
-                                                m_BP->index,
-                                                m_BP->filename.c_str(),
-                                                m_BP->line + 1,
-                                                output.c_str());
-                if (cbMessageBox(s, _("Warning"), wxICON_WARNING | wxYES_NO) == wxID_YES)
-                {
-                    // re-run this command but without a condition
-                    m_BP->useCondition = false;
-                    m_pDriver->QueueCommand(new GdbCmd_AddBreakpointCondition(m_pDriver, m_BP), DebuggerDriver::High);
-                }
-                else if ( m_BP->alreadySet )
-                {
-                    m_pDriver->RemoveBreakpoint(m_BP);
-                    ((cbEditor*)Manager::Get()->GetEditorManager()->GetActiveEditor())->SetDebugLine(-1);
-                    m_pDriver->Continue();
-                }
+                // re-run this command but without a condition
+                m_BP->useCondition = false;
+                m_pDriver->QueueCommand(new GdbCmd_AddBreakpointCondition(m_pDriver, m_BP), DebuggerDriver::High);
             }
-
+            else if ( m_BP->alreadySet )
+            {
+                m_pDriver->RemoveBreakpoint(m_BP);
+                ((cbEditor*)Manager::Get()->GetEditorManager()->GetActiveEditor())->SetDebugLine(-1);
+                m_pDriver->Continue();
+            }
         }
+
+    }
 };
 
 /**
@@ -427,122 +430,122 @@ class GdbCmd_AddBreakpointCondition : public DebuggerCmd
   */
 class GdbCmd_AddBreakpoint : public DebuggerCmd
 {
-        cb::shared_ptr<DebuggerBreakpoint> m_BP;
-    public:
-        /** @param bp The breakpoint to set. */
-        GdbCmd_AddBreakpoint(DebuggerDriver* driver, cb::shared_ptr<DebuggerBreakpoint> bp)
-            : DebuggerCmd(driver),
-            m_BP(bp)
-        {
-            // gdb doesn't allow setting the bp number.
-            // instead, we must read it back in ParseOutput()...
-            m_BP->index = -1;
+    cb::shared_ptr<DebuggerBreakpoint> m_BP;
+public:
+    /** @param bp The breakpoint to set. */
+    GdbCmd_AddBreakpoint(DebuggerDriver* driver, cb::shared_ptr<DebuggerBreakpoint> bp)
+        : DebuggerCmd(driver),
+          m_BP(bp)
+    {
+        // gdb doesn't allow setting the bp number.
+        // instead, we must read it back in ParseOutput()...
+        m_BP->index = -1;
 
-            if (m_BP->enabled)
+        if (m_BP->enabled)
+        {
+            if (m_BP->type == DebuggerBreakpoint::bptCode)//m_BP->func.IsEmpty())
             {
-                if (m_BP->type == DebuggerBreakpoint::bptCode)//m_BP->func.IsEmpty())
-                {
-                    wxString out = m_BP->filename;
-                    // we add one to line,  because scintilla uses 0-based line numbers, while gdb uses 1-based
-                    if (!m_BP->temporary)
-                        m_Cmd << _T("break ");
-                    else
-                        m_Cmd << _T("tbreak ");
-                    m_Cmd << _T('"') << out << _T(":") << wxString::Format(_T("%d"), m_BP->line) << _T('"');
-                }
-                else if (m_BP->type == DebuggerBreakpoint::bptData)
-                {
-                    if (m_BP->breakOnRead && m_BP->breakOnWrite)
-                        m_Cmd << _T("awatch ");
-                    else if (m_BP->breakOnRead)
-                        m_Cmd << _T("rwatch ");
-                    else
-                        m_Cmd << _T("watch ");
-                    m_Cmd << m_BP->breakAddress;
-                }
-                //GDB workaround
-                //Use function name if this is C++ constructor/destructor
+                wxString out = m_BP->filename;
+                // we add one to line,  because scintilla uses 0-based line numbers, while gdb uses 1-based
+                if (!m_BP->temporary)
+                    m_Cmd << _T("break ");
                 else
-                {
+                    m_Cmd << _T("tbreak ");
+                m_Cmd << _T('"') << out << _T(":") << wxString::Format(_T("%d"), m_BP->line) << _T('"');
+            }
+            else if (m_BP->type == DebuggerBreakpoint::bptData)
+            {
+                if (m_BP->breakOnRead && m_BP->breakOnWrite)
+                    m_Cmd << _T("awatch ");
+                else if (m_BP->breakOnRead)
+                    m_Cmd << _T("rwatch ");
+                else
+                    m_Cmd << _T("watch ");
+                m_Cmd << m_BP->breakAddress;
+            }
+            //GDB workaround
+            //Use function name if this is C++ constructor/destructor
+            else
+            {
 //                    if (m_BP->temporary)
 //                        cbThrow(_T("Temporary breakpoint on constructor/destructor is not allowed"));
-                    m_Cmd << _T("rbreak ") << m_BP->func;
-                }
-                //end GDB workaround
-
-                m_BP->alreadySet = true;
-                // condition and ignore count will be set in ParseOutput, where we 'll have the bp number
+                m_Cmd << _T("rbreak ") << m_BP->func;
             }
+            //end GDB workaround
+
+            m_BP->alreadySet = true;
+            // condition and ignore count will be set in ParseOutput, where we 'll have the bp number
         }
-        void ParseOutput(const wxString& output) override
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        // possible outputs (we 're only interested in 1st and 2nd samples):
+        //
+        // Hardware watchpoint 1: expr
+        // Breakpoint 1 at 0x4013d6: file main.cpp, line 8.
+        // No line 100 in file "main.cpp".
+        // No source file named main2.cpp.
+        if (reBreakpoint.Matches(output))
         {
-            // possible outputs (we 're only interested in 1st and 2nd samples):
-            //
-            // Hardware watchpoint 1: expr
-            // Breakpoint 1 at 0x4013d6: file main.cpp, line 8.
-            // No line 100 in file "main.cpp".
-            // No source file named main2.cpp.
-            if (reBreakpoint.Matches(output))
-            {
 //                m_pDriver->DebugLog(wxString::Format(_("Breakpoint added: file %s, line %d"), m_BP->filename.c_str(), m_BP->line + 1));
-                if (!m_BP->func.IsEmpty())
-                    m_pDriver->Log(_("GDB workaround for constructor/destructor breakpoints activated."));
+            if (!m_BP->func.IsEmpty())
+                m_pDriver->Log(_("GDB workaround for constructor/destructor breakpoints activated."));
 
-                reBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
-                reBreakpoint.GetMatch(output, 2).ToULong(&m_BP->address, 16);
+            reBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
+            reBreakpoint.GetMatch(output, 2).ToULong(&m_BP->address, 16);
 
-                // conditional breakpoint
-                if (m_BP->useCondition && !m_BP->condition.IsEmpty())
-                {
-                    m_pDriver->QueueCommand(new GdbCmd_AddBreakpointCondition(m_pDriver, m_BP), DebuggerDriver::High);
-                }
-
-                // ignore count
-                if (m_BP->useIgnoreCount && m_BP->ignoreCount > 0)
-                {
-                    wxString cmd;
-                    cmd << _T("ignore ") << wxString::Format(_T("%d"), (int) m_BP->index) << _T(" ") << wxString::Format(_T("%d"), (int) m_BP->ignoreCount);
-                    m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, cmd), DebuggerDriver::High);
-                }
-            }
-            else if (rePendingBreakpoint.Matches(output))
+            // conditional breakpoint
+            if (m_BP->useCondition && !m_BP->condition.IsEmpty())
             {
-                if (!m_BP->func.IsEmpty())
-                    m_pDriver->Log(_("GDB workaround for constructor/destructor breakpoints activated."));
-
-                rePendingBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
-
-                // conditional breakpoint
-                // condition can not be evaluated for pending breakpoints, so we only set a flag and do this later
-                if (m_BP->useCondition && !m_BP->condition.IsEmpty())
-                {
-                    m_BP->wantsCondition = true;
-                }
-
-                // ignore count
-                if (m_BP->useIgnoreCount && m_BP->ignoreCount > 0)
-                {
-                    wxString cmd;
-                    cmd << _T("ignore ") << wxString::Format(_T("%d"), (int) m_BP->index) << _T(" ") << wxString::Format(_T("%d"), (int) m_BP->ignoreCount);
-                    m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, cmd), DebuggerDriver::High);
-                }
+                m_pDriver->QueueCommand(new GdbCmd_AddBreakpointCondition(m_pDriver, m_BP), DebuggerDriver::High);
             }
-            else if (reDataBreakpoint.Matches(output))
+
+            // ignore count
+            if (m_BP->useIgnoreCount && m_BP->ignoreCount > 0)
             {
-                reDataBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
+                wxString cmd;
+                cmd << _T("ignore ") << wxString::Format(_T("%d"), (int) m_BP->index) << _T(" ") << wxString::Format(_T("%d"), (int) m_BP->ignoreCount);
+                m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, cmd), DebuggerDriver::High);
             }
-            else if (reHWBreakpoint.Matches(output))
-            {
-                reHWBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
-                reHWBreakpoint.GetMatch(output, 2).ToULong(&m_BP->address, 16);
-            }
-            else if (reTemporaryBreakpoint.Matches(output))
-                reTemporaryBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
-            else
-                m_pDriver->Log(output); // one of the error responses
-
-            Manager::Get()->GetDebuggerManager()->GetBreakpointDialog()->Reload();
         }
+        else if (rePendingBreakpoint.Matches(output))
+        {
+            if (!m_BP->func.IsEmpty())
+                m_pDriver->Log(_("GDB workaround for constructor/destructor breakpoints activated."));
+
+            rePendingBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
+
+            // conditional breakpoint
+            // condition can not be evaluated for pending breakpoints, so we only set a flag and do this later
+            if (m_BP->useCondition && !m_BP->condition.IsEmpty())
+            {
+                m_BP->wantsCondition = true;
+            }
+
+            // ignore count
+            if (m_BP->useIgnoreCount && m_BP->ignoreCount > 0)
+            {
+                wxString cmd;
+                cmd << _T("ignore ") << wxString::Format(_T("%d"), (int) m_BP->index) << _T(" ") << wxString::Format(_T("%d"), (int) m_BP->ignoreCount);
+                m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, cmd), DebuggerDriver::High);
+            }
+        }
+        else if (reDataBreakpoint.Matches(output))
+        {
+            reDataBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
+        }
+        else if (reHWBreakpoint.Matches(output))
+        {
+            reHWBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
+            reHWBreakpoint.GetMatch(output, 2).ToULong(&m_BP->address, 16);
+        }
+        else if (reTemporaryBreakpoint.Matches(output))
+            reTemporaryBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
+        else
+            m_pDriver->Log(output); // one of the error responses
+
+        Manager::Get()->GetDebuggerManager()->GetBreakpointDialog()->Reload();
+    }
 };
 
 /**
@@ -550,34 +553,34 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
   */
 class GdbCmd_AddDataBreakpoint : public DebuggerCmd
 {
-        cb::shared_ptr<DebuggerBreakpoint> m_BP;
-    public:
-        /** @param bp The breakpoint to set. */
-        GdbCmd_AddDataBreakpoint(DebuggerDriver* driver, cb::shared_ptr<DebuggerBreakpoint> bp)
-            : DebuggerCmd(driver),
-            m_BP(bp)
+    cb::shared_ptr<DebuggerBreakpoint> m_BP;
+public:
+    /** @param bp The breakpoint to set. */
+    GdbCmd_AddDataBreakpoint(DebuggerDriver* driver, cb::shared_ptr<DebuggerBreakpoint> bp)
+        : DebuggerCmd(driver),
+          m_BP(bp)
+    {
+        if (m_BP->enabled)
+            m_Cmd << _T("output &") << m_BP->breakAddress;
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        // Hardware watchpoint 1: expr
+        if (output.StartsWith(_T("No symbol ")) || output.StartsWith(_T("Attempt to ")))
+            m_pDriver->Log(output);
+        else
         {
-            if (m_BP->enabled)
-                m_Cmd << _T("output &") << m_BP->breakAddress;
-        }
-        void ParseOutput(const wxString& output) override
-        {
-            // Hardware watchpoint 1: expr
-            if (output.StartsWith(_T("No symbol ")) || output.StartsWith(_T("Attempt to ")))
-                m_pDriver->Log(output);
-            else
+            if (reGenericHexAddress.Matches(output))
             {
-                if (reGenericHexAddress.Matches(output))
-                {
-                    wxString contents = reGenericHexAddress.GetMatch(output, 1);
-                    m_BP->breakAddress = _T("*") + contents;
-                    DebuggerManager *dbgManager = Manager::Get()->GetDebuggerManager();
-                    dbgManager->GetBreakpointDialog()->Reload();
+                wxString contents = reGenericHexAddress.GetMatch(output, 1);
+                m_BP->breakAddress = _T("*") + contents;
+                DebuggerManager *dbgManager = Manager::Get()->GetDebuggerManager();
+                dbgManager->GetBreakpointDialog()->Reload();
 
-                    m_pDriver->QueueCommand(new GdbCmd_AddBreakpoint(m_pDriver, m_BP), DebuggerDriver::High);
-                }
+                m_pDriver->QueueCommand(new GdbCmd_AddBreakpoint(m_pDriver, m_BP), DebuggerDriver::High);
             }
         }
+    }
 };
 
 /**
@@ -585,40 +588,40 @@ class GdbCmd_AddDataBreakpoint : public DebuggerCmd
   */
 class GdbCmd_RemoveBreakpoint : public DebuggerCmd
 {
-    public:
-        /** @param bp The breakpoint to remove. If NULL, all breakpoints are removed. */
-        GdbCmd_RemoveBreakpoint(DebuggerDriver* driver, cb::shared_ptr<DebuggerBreakpoint> bp)
-            : DebuggerCmd(driver),
-            m_BP(bp)
+public:
+    /** @param bp The breakpoint to remove. If NULL, all breakpoints are removed. */
+    GdbCmd_RemoveBreakpoint(DebuggerDriver* driver, cb::shared_ptr<DebuggerBreakpoint> bp)
+        : DebuggerCmd(driver),
+          m_BP(bp)
+    {
+        if (!bp)
         {
-            if (!bp)
-            {
-                m_Cmd << _T("delete breakpoints");
-                return;
-            }
-            if (bp->index >= 0)
-            {
-                m_Cmd << _T("delete breakpoints ") << wxString::Format(_T("%d"), (int) bp->index);
-            }
+            m_Cmd << _T("delete breakpoints");
+            return;
         }
-        void ParseOutput(const wxString& output) override
+        if (bp->index >= 0)
         {
-            if (!m_BP)
-                return;
+            m_Cmd << _T("delete breakpoints ") << wxString::Format(_T("%d"), (int) bp->index);
+        }
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        if (!m_BP)
+            return;
 
-            // This can crash because m_BP could already be deleted
-            // and if it isn't deleted already, it will be soon
-            // so there's no point in invalidating the bp number anyway
+        // This can crash because m_BP could already be deleted
+        // and if it isn't deleted already, it will be soon
+        // so there's no point in invalidating the bp number anyway
 
-            // invalidate bp number
+        // invalidate bp number
 //            m_BP->index = -1;
 
-            if (!output.IsEmpty())
-                m_pDriver->Log(output);
+        if (!output.IsEmpty())
+            m_pDriver->Log(output);
 //            m_pDriver->DebugLog(wxString::Format(_("Breakpoint removed: file %s, line %d"), m_BP->filename.c_str(), m_BP->line + 1));
-        }
+    }
 
-        cb::shared_ptr<DebuggerBreakpoint> m_BP;
+    cb::shared_ptr<DebuggerBreakpoint> m_BP;
 };
 
 /**
@@ -626,28 +629,28 @@ class GdbCmd_RemoveBreakpoint : public DebuggerCmd
   */
 class GdbCmd_SetCatch : public DebuggerCmd
 {
-        wxString m_type;
-        int *m_resultIndex;
-        wxRegEx m_regExp;
-    public:
-        GdbCmd_SetCatch(DebuggerDriver *driver, const wxString &type, int *resultIndex) :
-            DebuggerCmd(driver),
-            m_type(type),
-            m_resultIndex(resultIndex),
-            m_regExp(wxT("^Catchpoint[[:blank:]]([0-9]+)[[:blank:]]\\(") + type + wxT("\\)$"), wxRE_ADVANCED)
-        {
-            m_Cmd = wxT("catch ") + type;
-        }
+    wxString m_type;
+    int *m_resultIndex;
+    wxRegEx m_regExp;
+public:
+    GdbCmd_SetCatch(DebuggerDriver *driver, const wxString &type, int *resultIndex) :
+        DebuggerCmd(driver),
+        m_type(type),
+        m_resultIndex(resultIndex),
+        m_regExp(wxT("^Catchpoint[[:blank:]]([0-9]+)[[:blank:]]\\(") + type + wxT("\\)$"), wxRE_ADVANCED)
+    {
+        m_Cmd = wxT("catch ") + type;
+    }
 
-        void ParseOutput(const wxString& output) override
+    void ParseOutput(const wxString& output) override
+    {
+        if (m_regExp.Matches(output))
         {
-            if (m_regExp.Matches(output))
-            {
-                long index;
-                m_regExp.GetMatch(output, 1).ToLong(&index);
-                *m_resultIndex = index;
-            }
+            long index;
+            m_regExp.GetMatch(output, 1).ToLong(&index);
+            *m_resultIndex = index;
         }
+    }
 };
 
 
@@ -656,43 +659,43 @@ class GdbCmd_SetCatch : public DebuggerCmd
   */
 class GdbCmd_Continue : public DebuggerContinueBaseCmd
 {
-    public:
-        GdbCmd_Continue(DebuggerDriver* driver) :
-            DebuggerContinueBaseCmd(driver, wxT("cont"))
-        {
-        }
+public:
+    GdbCmd_Continue(DebuggerDriver* driver) :
+        DebuggerContinueBaseCmd(driver, wxT("cont"))
+    {
+    }
 
-        void Action() override
-        {
-            m_pDriver->NotifyDebuggeeContinued();
-        }
+    void Action() override
+    {
+        m_pDriver->NotifyDebuggeeContinued();
+    }
 };
 
 class GdbCmd_Start : public DebuggerContinueBaseCmd
 {
-    public:
-        GdbCmd_Start(DebuggerDriver* driver, const wxString &cmd) :
-            DebuggerContinueBaseCmd(driver, cmd)
-        {
-        }
+public:
+    GdbCmd_Start(DebuggerDriver* driver, const wxString &cmd) :
+        DebuggerContinueBaseCmd(driver, cmd)
+    {
+    }
 
-        void ParseOutput(const wxString &output) override
+    void ParseOutput(const wxString &output) override
+    {
+        const wxArrayString &lines = GetArrayFromString(output, _T('\n'));
+        for (size_t ii = 0; ii < lines.GetCount(); ++ii)
         {
-            const wxArrayString &lines = GetArrayFromString(output, _T('\n'));
-            for (size_t ii = 0; ii < lines.GetCount(); ++ii)
-            {
-                if (   lines[ii].StartsWith(wxT("No symbol table loaded"))
+            if (   lines[ii].StartsWith(wxT("No symbol table loaded"))
                     || lines[ii].StartsWith(wxT("No executable file specified"))
                     || lines[ii].StartsWith(wxT("No executable specified"))
                     || lines[ii].StartsWith(wxT("Don't know how to run")))
-                {
-                    // log this and quit debugging
-                    m_pDriver->Log(_("Starting the debuggee failed: ")+lines[ii]);
-                    m_pDriver->MarkProgramStopped(true);
-                    m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, _T("quit")));
-                }
+            {
+                // log this and quit debugging
+                m_pDriver->Log(_("Starting the debuggee failed: ")+lines[ii]);
+                m_pDriver->MarkProgramStopped(true);
+                m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, _T("quit")));
             }
         }
+    }
 };
 
 /**
@@ -700,27 +703,27 @@ class GdbCmd_Start : public DebuggerContinueBaseCmd
   */
 class GdbCmd_InfoProgram : public DebuggerCmd
 {
-    public:
-        GdbCmd_InfoProgram(DebuggerDriver* driver)
-            : DebuggerCmd(driver)
-        {
-            m_Cmd << _T("info program");
-        }
-        void ParseOutput(const wxString& output) override
-        {
-            wxString pid_str;
-            if (reInfoProgramThread.Matches(output))
-                pid_str = reInfoProgramThread.GetMatch(output, 1);
-            else if (reInfoProgramProcess.Matches(output))
-                pid_str = reInfoProgramProcess.GetMatch(output, 1);
+public:
+    GdbCmd_InfoProgram(DebuggerDriver* driver)
+        : DebuggerCmd(driver)
+    {
+        m_Cmd << _T("info program");
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        wxString pid_str;
+        if (reInfoProgramThread.Matches(output))
+            pid_str = reInfoProgramThread.GetMatch(output, 1);
+        else if (reInfoProgramProcess.Matches(output))
+            pid_str = reInfoProgramProcess.GetMatch(output, 1);
 
-            if (!pid_str.IsEmpty())
-            {
-                long pid;
-                if (pid_str.ToLong(&pid, 10) && pid != 0)
-                    m_pDriver->SetChildPID(pid);
-            }
+        if (!pid_str.IsEmpty())
+        {
+            long pid;
+            if (pid_str.ToLong(&pid, 10) && pid != 0)
+                m_pDriver->SetChildPID(pid);
         }
+    }
 };
 
 /**
@@ -728,43 +731,43 @@ class GdbCmd_InfoProgram : public DebuggerCmd
   */
 class GdbCmd_Threads : public DebuggerCmd
 {
-    public:
-        /** @param tree The tree to display the args. */
-        GdbCmd_Threads(DebuggerDriver* driver)
-            : DebuggerCmd(driver)
+public:
+    /** @param tree The tree to display the args. */
+    GdbCmd_Threads(DebuggerDriver* driver)
+        : DebuggerCmd(driver)
+    {
+        m_Cmd << _T("info threads");
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        m_pDriver->GetThreads().clear();
+        wxArrayString lines = GetArrayFromString(output, _T('\n'));
+        for (unsigned int i = 0; i < lines.GetCount(); ++i)
         {
-            m_Cmd << _T("info threads");
-        }
-        void ParseOutput(const wxString& output) override
-        {
-            m_pDriver->GetThreads().clear();
-            wxArrayString lines = GetArrayFromString(output, _T('\n'));
-            for (unsigned int i = 0; i < lines.GetCount(); ++i)
-            {
 //                m_pDriver->Log(lines[i]);
-                if (reInfoThreads.Matches(lines[i]))
-                {
+            if (reInfoThreads.Matches(lines[i]))
+            {
 //                    m_pDriver->Log(_T("MATCH!"));
-                    wxString active = reInfoThreads.GetMatch(lines[i], 1);
-                    active.Trim(true);
-                    active.Trim(false);
-                    wxString num = reInfoThreads.GetMatch(lines[i], 2);
-                    wxString info = reInfoThreads.GetMatch(lines[i], 3);
+                wxString active = reInfoThreads.GetMatch(lines[i], 1);
+                active.Trim(true);
+                active.Trim(false);
+                wxString num = reInfoThreads.GetMatch(lines[i], 2);
+                wxString info = reInfoThreads.GetMatch(lines[i], 3);
 
-                    #if defined(_WIN64)
-                    long long int number;
-                    num.ToLongLong(&number, 10);
-                    #else
-                    long number;
-                    num.ToLong(&number, 10);
-                    #endif
+#if defined(_WIN64)
+                long long int number;
+                num.ToLongLong(&number, 10);
+#else
+                long number;
+                num.ToLong(&number, 10);
+#endif
 
-                    DebuggerDriver::ThreadsContainer &threads = m_pDriver->GetThreads();
-                    threads.push_back(cb::shared_ptr<cbThread>(new cbThread(!active.empty(), number, info)));
-                }
+                DebuggerDriver::ThreadsContainer &threads = m_pDriver->GetThreads();
+                threads.push_back(cb::shared_ptr<cbThread>(new cbThread(!active.empty(), number, info)));
             }
-            Manager::Get()->GetDebuggerManager()->GetThreadsDialog()->Reload();
         }
+        Manager::Get()->GetDebuggerManager()->GetThreadsDialog()->Reload();
+    }
 };
 
 /**
@@ -772,76 +775,89 @@ class GdbCmd_Threads : public DebuggerCmd
   */
 class GdbCmd_Watch : public DebuggerCmd
 {
-        cb::shared_ptr<GDBWatch> m_watch;
-    public:
-        GdbCmd_Watch(DebuggerDriver* driver, cb::shared_ptr<GDBWatch> watch) :
-            DebuggerCmd(driver),
-            m_watch(watch)
+    cb::shared_ptr<GDBWatch> m_watch;
+public:
+    GdbCmd_Watch(DebuggerDriver* driver, cb::shared_ptr<GDBWatch> watch) :
+        DebuggerCmd(driver),
+        m_watch(watch)
+    {
+        wxString type;
+        wxString symbol;
+
+        m_watch->GetSymbol(symbol);
+        m_watch->GetType(type);
+        type.Trim(true);
+        type.Trim(false);
+        m_Cmd << _T("output ");
+        switch (m_watch->GetFormat())
         {
-            wxString type;
+        case Decimal:
+            m_Cmd << _T("/d ");
+            break;
+        case Unsigned:
+            m_Cmd << _T("/u ");
+            break;
+        case Hex:
+            m_Cmd << _T("/x ");
+            break;
+        case Binary:
+            m_Cmd << _T("/t ");
+            break;
+        case Char:
+            m_Cmd << _T("/c ");
+            break;
+        case Float:
+            m_Cmd << _T("/f ");
+            break;
+        case Last:
+        case Any:
+        case Undefined:
+        default:
+            break;
+        }
+
+        if (g_DebugLanguage == dl_Cpp)
+        {
+            // auto-set array types
+            if (!m_watch->IsArray() &&  m_watch->GetFormat() == Undefined && type.Contains(_T('[')))
+                m_watch->SetArray(true);
+
+            if (m_watch->IsArray() && m_watch->GetArrayCount() > 0)
+            {
+                m_Cmd << wxT("(") << symbol << wxT(")");
+                m_Cmd << wxString::Format(_T("[%d]@%d"), m_watch->GetArrayStart(), m_watch->GetArrayCount());
+            }
+            else
+                m_Cmd << symbol;
+        }
+        else  // (g_DebugLanguage == dl_Fortran)
+        {
+            if (m_watch->IsArray() && m_watch->GetArrayCount() > 0)
+            {
+                if (m_watch->GetArrayStart() < 1)
+                    m_watch->SetArrayParams(1, m_watch->GetArrayCount());
+                m_Cmd << symbol;
+                m_Cmd << wxString::Format(_T("(%d)@%d"), m_watch->GetArrayStart(), m_watch->GetArrayCount());
+            }
+            else
+                m_Cmd << symbol;
+        }
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        wxString w = output;
+        w.Trim(true);
+        w.Trim(false);
+
+        if (!ParseGDBWatchValue(m_watch, w))
+        {
             wxString symbol;
-
             m_watch->GetSymbol(symbol);
-            m_watch->GetType(type);
-            type.Trim(true);
-            type.Trim(false);
-            m_Cmd << _T("output ");
-            switch (m_watch->GetFormat())
-            {
-                case Decimal:       m_Cmd << _T("/d "); break;
-                case Unsigned:      m_Cmd << _T("/u "); break;
-                case Hex:           m_Cmd << _T("/x "); break;
-                case Binary:        m_Cmd << _T("/t "); break;
-                case Char:          m_Cmd << _T("/c "); break;
-                case Float:         m_Cmd << _T("/f "); break;
-                case Last:
-                case Any:
-                case Undefined:
-                default:            break;
-            }
-
-            if (g_DebugLanguage == dl_Cpp)
-            {
-                // auto-set array types
-                if (!m_watch->IsArray() &&  m_watch->GetFormat() == Undefined && type.Contains(_T('[')))
-                    m_watch->SetArray(true);
-
-                if (m_watch->IsArray() && m_watch->GetArrayCount() > 0)
-                {
-                    m_Cmd << wxT("(") << symbol << wxT(")");
-                    m_Cmd << wxString::Format(_T("[%d]@%d"), m_watch->GetArrayStart(), m_watch->GetArrayCount());
-                }
-                else
-                    m_Cmd << symbol;
-            }
-            else  // (g_DebugLanguage == dl_Fortran)
-            {
-                if (m_watch->IsArray() && m_watch->GetArrayCount() > 0)
-                {
-                    if (m_watch->GetArrayStart() < 1)
-                        m_watch->SetArrayParams(1, m_watch->GetArrayCount());
-                    m_Cmd << symbol;
-                    m_Cmd << wxString::Format(_T("(%d)@%d"), m_watch->GetArrayStart(), m_watch->GetArrayCount());
-                }
-                else
-                    m_Cmd << symbol;
-            }
+            wxString const &msg = wxT("Parsing GDB output failed for '") + symbol + wxT("'!");
+            m_watch->SetValue(msg);
+            Manager::Get()->GetLogManager()->LogError(msg);
         }
-        void ParseOutput(const wxString& output) override
-        {
-            wxString w = output;
-            w.Trim(true);
-            w.Trim(false);
-
-            if (!ParseGDBWatchValue(m_watch, w))
-            {
-                wxString symbol;
-                m_watch->GetSymbol(symbol);
-                wxString const &msg = wxT("Parsing GDB output failed for '") + symbol + wxT("'!");
-                m_watch->SetValue(msg);
-                Manager::Get()->GetLogManager()->LogError(msg);
-            }
-        }
+    }
 };
 
 
@@ -850,44 +866,44 @@ class GdbCmd_Watch : public DebuggerCmd
   */
 class GdbCmd_MemoryRangeWatch : public DebuggerCmd
 {
-        cb::shared_ptr<GDBMemoryRangeWatch> m_watch;
-        wxString m_ParseFunc;
-    public:
-        GdbCmd_MemoryRangeWatch(DebuggerDriver* driver, cb::shared_ptr<GDBMemoryRangeWatch> watch) :
-            DebuggerCmd(driver),
-            m_watch(watch)
-        {
-            // wx2.8 does not support uint64_z for wxstring::printf
-            const size_t tmpBuffSize = 20;
-            char tmpAddr[tmpBuffSize];
-            char tmpSize[tmpBuffSize];
-            memset(tmpAddr, 0, tmpBuffSize);
-            memset(tmpSize, 0, tmpBuffSize);
-            snprintf(tmpAddr, tmpBuffSize, "0x%" PRIx64, m_watch->GetAddress());
-            snprintf(tmpSize, tmpBuffSize, "%" PRIu64, m_watch->GetSize());
+    cb::shared_ptr<GDBMemoryRangeWatch> m_watch;
+    wxString m_ParseFunc;
+public:
+    GdbCmd_MemoryRangeWatch(DebuggerDriver* driver, cb::shared_ptr<GDBMemoryRangeWatch> watch) :
+        DebuggerCmd(driver),
+        m_watch(watch)
+    {
+        // wx2.8 does not support uint64_z for wxstring::printf
+        const size_t tmpBuffSize = 20;
+        char tmpAddr[tmpBuffSize];
+        char tmpSize[tmpBuffSize];
+        memset(tmpAddr, 0, tmpBuffSize);
+        memset(tmpSize, 0, tmpBuffSize);
+        snprintf(tmpAddr, tmpBuffSize, "0x%" PRIx64, m_watch->GetAddress());
+        snprintf(tmpSize, tmpBuffSize, "%" PRIu64, m_watch->GetSize());
 
-            m_Cmd  = wxString(wxT("x /")) << wxString::FromUTF8(tmpSize) << wxT("xb ") << wxString::FromUTF8(tmpAddr);
+        m_Cmd  = wxString(wxT("x /")) << wxString::FromUTF8(tmpSize) << wxT("xb ") << wxString::FromUTF8(tmpAddr);
+    }
+
+    void ParseOutput(const wxString& output) override
+    {
+        wxArrayString lines = GetArrayFromString(output, _T('\n'));
+        wxString addr;
+        std::vector<uint8_t> memory, lineMemory;
+        for (unsigned int i = 0; i < lines.GetCount(); ++i)
+        {
+            lineMemory.clear();
+            // TODO: handle errors here!
+            ParseGDBExamineMemoryLine(addr, lineMemory, lines[i]);
+
+            memory.insert(memory.end(), lineMemory.begin(), lineMemory.end());
         }
 
-        void ParseOutput(const wxString& output) override
-        {
-            wxArrayString lines = GetArrayFromString(output, _T('\n'));
-            wxString addr;
-            std::vector<uint8_t> memory, lineMemory;
-            for (unsigned int i = 0; i < lines.GetCount(); ++i)
-            {
-                lineMemory.clear();
-                // TODO: handle errors here!
-                ParseGDBExamineMemoryLine(addr, lineMemory, lines[i]);
-
-                memory.insert(memory.end(), lineMemory.begin(), lineMemory.end());
-            }
-
-            wxString watchString;
-            watchString = wxString::From8BitData(reinterpret_cast<const char*>(memory.data()),
-                                                 memory.size());
-            m_watch->SetValue(watchString);
-        }
+        wxString watchString;
+        watchString = wxString::From8BitData(reinterpret_cast<const char*>(memory.data()),
+                                             memory.size());
+        m_watch->SetValue(watchString);
+    }
 };
 
 /**
@@ -895,58 +911,58 @@ class GdbCmd_MemoryRangeWatch : public DebuggerCmd
   */
 class GdbCmd_FindWatchType : public DebuggerCmd
 {
-        cb::shared_ptr<GDBWatch> m_watch;
-        bool m_firstTry;
-    public:
-        GdbCmd_FindWatchType(DebuggerDriver* driver, cb::shared_ptr<GDBWatch> watch, bool firstTry = true) :
-            DebuggerCmd(driver),
-            m_watch(watch),
-            m_firstTry(firstTry)
+    cb::shared_ptr<GDBWatch> m_watch;
+    bool m_firstTry;
+public:
+    GdbCmd_FindWatchType(DebuggerDriver* driver, cb::shared_ptr<GDBWatch> watch, bool firstTry = true) :
+        DebuggerCmd(driver),
+        m_watch(watch),
+        m_firstTry(firstTry)
+    {
+        if (m_firstTry)
+            m_Cmd << wxT("whatis ");
+        else
+            m_Cmd << wxT("whatis &");
+        wxString symbol;
+        m_watch->GetSymbol(symbol);
+        m_Cmd << symbol;
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        // happens, when wxString is passed as const reference parameter
+        if (m_firstTry && output == wxT("Attempt to take contents of a non-pointer value."))
         {
-            if (m_firstTry)
-                m_Cmd << wxT("whatis ");
-            else
-                m_Cmd << wxT("whatis &");
-            wxString symbol;
-            m_watch->GetSymbol(symbol);
-            m_Cmd << symbol;
+            m_pDriver->QueueCommand(new GdbCmd_FindWatchType(m_pDriver, m_watch, false), DebuggerDriver::High);
+            return;
         }
-        void ParseOutput(const wxString& output) override
+        if (output.StartsWith(wxT("No symbol \"")) && output.EndsWith(wxT("\" in current context.")))
         {
-            // happens, when wxString is passed as const reference parameter
-            if (m_firstTry && output == wxT("Attempt to take contents of a non-pointer value."))
-            {
-                m_pDriver->QueueCommand(new GdbCmd_FindWatchType(m_pDriver, m_watch, false), DebuggerDriver::High);
-                return;
-            }
-            if (output.StartsWith(wxT("No symbol \"")) && output.EndsWith(wxT("\" in current context.")))
-            {
-                m_watch->RemoveChildren();
-                m_watch->SetType(wxEmptyString);
-                m_watch->SetValue(_("Not available in current context!"));
-                return;
-            }
-
-            // examples:
-            // type = wxString
-            // type = const wxChar
-            // type = Action *
-            // type = bool
-
-            wxString tmp = output.AfterFirst(_T('='));
-            if (!m_firstTry && !tmp.empty())
-                tmp = tmp.substr(0, tmp.length() - 1);
-
-            wxString old_type;
-            m_watch->GetType(old_type);
-            if(old_type != tmp)
-            {
-                m_watch->RemoveChildren();
-                m_watch->SetType(tmp);
-                m_watch->SetValue(wxEmptyString);
-            }
-            m_pDriver->QueueCommand(new GdbCmd_Watch(m_pDriver, m_watch), DebuggerDriver::High);
+            m_watch->RemoveChildren();
+            m_watch->SetType(wxEmptyString);
+            m_watch->SetValue(_("Not available in current context!"));
+            return;
         }
+
+        // examples:
+        // type = wxString
+        // type = const wxChar
+        // type = Action *
+        // type = bool
+
+        wxString tmp = output.AfterFirst(_T('='));
+        if (!m_firstTry && !tmp.empty())
+            tmp = tmp.substr(0, tmp.length() - 1);
+
+        wxString old_type;
+        m_watch->GetType(old_type);
+        if(old_type != tmp)
+        {
+            m_watch->RemoveChildren();
+            m_watch->SetType(tmp);
+            m_watch->SetValue(wxEmptyString);
+        }
+        m_pDriver->QueueCommand(new GdbCmd_Watch(m_pDriver, m_watch), DebuggerDriver::High);
+    }
 };
 
 /**
@@ -954,64 +970,64 @@ class GdbCmd_FindWatchType : public DebuggerCmd
   */
 class GdbCmd_TooltipEvaluation : public DebuggerCmd
 {
-        wxRect m_WinRect;
-        wxString m_What;
-        wxString m_Type;
-        wxString m_Address;
-        bool m_autoDereferenced;
-    public:
-        /** @param what The variable to evaluate.
-            @param win A pointer to the tip window pointer.
-            @param tiprect The tip window's rect.
-        */
-        GdbCmd_TooltipEvaluation(DebuggerDriver* driver, const wxString& what, const wxRect& tiprect,
-                                 const wxString& w_type = wxEmptyString, const wxString& address = wxEmptyString)
-            : DebuggerCmd(driver),
-            m_WinRect(tiprect),
-            m_What(what),
-            m_Type(w_type),
-            m_Address(address),
-            m_autoDereferenced(false)
+    wxRect m_WinRect;
+    wxString m_What;
+    wxString m_Type;
+    wxString m_Address;
+    bool m_autoDereferenced;
+public:
+    /** @param what The variable to evaluate.
+        @param win A pointer to the tip window pointer.
+        @param tiprect The tip window's rect.
+    */
+    GdbCmd_TooltipEvaluation(DebuggerDriver* driver, const wxString& what, const wxRect& tiprect,
+                             const wxString& w_type = wxEmptyString, const wxString& address = wxEmptyString)
+        : DebuggerCmd(driver),
+          m_WinRect(tiprect),
+          m_What(what),
+          m_Type(w_type),
+          m_Address(address),
+          m_autoDereferenced(false)
+    {
+        m_Type.Trim(true);
+        m_Type.Trim(false);
+        if (IsPointerType(w_type))
         {
-            m_Type.Trim(true);
-            m_Type.Trim(false);
-            if (IsPointerType(w_type))
-            {
-                m_What = wxT("*") + m_What;
-                m_autoDereferenced = true;
-            }
-
-            m_Cmd << wxT("output ");
-            m_Cmd << m_What;
+            m_What = wxT("*") + m_What;
+            m_autoDereferenced = true;
         }
-        void ParseOutput(const wxString& output) override
+
+        m_Cmd << wxT("output ");
+        m_Cmd << m_What;
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        wxString contents = output;
+        contents.Trim(true);
+        contents.Trim(false);
+
+        cb::shared_ptr<GDBWatch> watch(new GDBWatch(m_What));
+        watch->SetType(m_Type);
+
+        ParseGDBWatchValue(watch, contents);
+        if (!m_Address.empty() && m_autoDereferenced)
         {
-            wxString contents = output;
-            contents.Trim(true);
-            contents.Trim(false);
-
-            cb::shared_ptr<GDBWatch> watch(new GDBWatch(m_What));
-            watch->SetType(m_Type);
-
-            ParseGDBWatchValue(watch, contents);
-            if (!m_Address.empty() && m_autoDereferenced)
-            {
-                // Add the address of the expression only if the value is empty, this
-                // way we won't override the value of the dereferenced expression.
-                wxString value;
-                watch->GetValue(value);
-                if (value.empty())
-                    watch->SetValue(m_Address);
-                else if (!value.Contains(m_Address))
-                    watch->SetValue(m_Address + wxT(": ") + value);
-            }
-            watch->SetForTooltip(true);
-            if (watch->GetChildCount() > 0)
-                watch->Expand(true);
-
-            if (Manager::Get()->GetDebuggerManager()->ShowValueTooltip(watch, m_WinRect))
-                m_pDriver->GetDebugger()->AddWatchNoUpdate(watch);
+            // Add the address of the expression only if the value is empty, this
+            // way we won't override the value of the dereferenced expression.
+            wxString value;
+            watch->GetValue(value);
+            if (value.empty())
+                watch->SetValue(m_Address);
+            else if (!value.Contains(m_Address))
+                watch->SetValue(m_Address + wxT(": ") + value);
         }
+        watch->SetForTooltip(true);
+        if (watch->GetChildCount() > 0)
+            watch->Expand(true);
+
+        if (Manager::Get()->GetDebuggerManager()->ShowValueTooltip(watch, m_WinRect))
+            m_pDriver->GetDebugger()->AddWatchNoUpdate(watch);
+    }
 };
 
 /**
@@ -1019,42 +1035,42 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
   */
 class GdbCmd_FindTooltipAddress : public DebuggerCmd
 {
-        wxRect m_WinRect;
-        wxString m_What;
-        wxString m_Type;
-    public:
-        /** @param tree The tree to display the watch. */
-        GdbCmd_FindTooltipAddress(DebuggerDriver* driver, const wxString& what, const wxRect& tiprect, const wxString& w_type = wxEmptyString)
-            : DebuggerCmd(driver),
-            m_WinRect(tiprect),
-            m_What(what),
-            m_Type(w_type)
+    wxRect m_WinRect;
+    wxString m_What;
+    wxString m_Type;
+public:
+    /** @param tree The tree to display the watch. */
+    GdbCmd_FindTooltipAddress(DebuggerDriver* driver, const wxString& what, const wxRect& tiprect, const wxString& w_type = wxEmptyString)
+        : DebuggerCmd(driver),
+          m_WinRect(tiprect),
+          m_What(what),
+          m_Type(w_type)
+    {
+        if (m_Type.IsEmpty())
         {
-            if (m_Type.IsEmpty())
-            {
-                m_pDriver->QueueCommand(new GdbCmd_TooltipEvaluation(m_pDriver, m_What, m_WinRect, m_Type), DebuggerDriver::High);
-                return;
-            }
-            m_Cmd << _T("output ");
-            if (m_Type.Last() != _T('*'))
-                m_Cmd << _T('&');
-            m_Cmd << m_What;
+            m_pDriver->QueueCommand(new GdbCmd_TooltipEvaluation(m_pDriver, m_What, m_WinRect, m_Type), DebuggerDriver::High);
+            return;
         }
-        void ParseOutput(const wxString& output) override
-        {
-            // examples:
-            // type = wxString
-            // type = const wxChar
-            // type = Action *
-            // type = bool
+        m_Cmd << _T("output ");
+        if (m_Type.Last() != _T('*'))
+            m_Cmd << _T('&');
+        m_Cmd << m_What;
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        // examples:
+        // type = wxString
+        // type = const wxChar
+        // type = Action *
+        // type = bool
 
-            wxString tmp;
-            if (reGenericHexAddress.Matches(output))
-                tmp = reGenericHexAddress.GetMatch(output, 1);
+        wxString tmp;
+        if (reGenericHexAddress.Matches(output))
+            tmp = reGenericHexAddress.GetMatch(output, 1);
 
-            // add the actual evaluation command with high priority
-            m_pDriver->QueueCommand(new GdbCmd_TooltipEvaluation(m_pDriver, m_What, m_WinRect, m_Type, tmp), DebuggerDriver::High);
-        }
+        // add the actual evaluation command with high priority
+        m_pDriver->QueueCommand(new GdbCmd_TooltipEvaluation(m_pDriver, m_What, m_WinRect, m_Type, tmp), DebuggerDriver::High);
+    }
 };
 
 /**
@@ -1062,80 +1078,80 @@ class GdbCmd_FindTooltipAddress : public DebuggerCmd
   */
 class GdbCmd_FindTooltipType : public DebuggerCmd
 {
-        wxRect m_WinRect;
-        wxString m_What;
-        static bool singleUsage; // special flag to avoid launching multiple tooltips because of event chain latency
-    public:
-        /** @param tree The tree to display the watch. */
-        GdbCmd_FindTooltipType(DebuggerDriver* driver, const wxString& what, const wxRect& tiprect)
-            : DebuggerCmd(driver),
-            m_WinRect(tiprect),
-            m_What(what)
+    wxRect m_WinRect;
+    wxString m_What;
+    static bool singleUsage; // special flag to avoid launching multiple tooltips because of event chain latency
+public:
+    /** @param tree The tree to display the watch. */
+    GdbCmd_FindTooltipType(DebuggerDriver* driver, const wxString& what, const wxRect& tiprect)
+        : DebuggerCmd(driver),
+          m_WinRect(tiprect),
+          m_What(what)
+    {
+        if (!singleUsage)
         {
-            if (!singleUsage)
-            {
-                singleUsage = true;
-                m_Cmd << _T("whatis ");
-                m_Cmd << m_What;
-            }
+            singleUsage = true;
+            m_Cmd << _T("whatis ");
+            m_Cmd << m_What;
         }
-        ~GdbCmd_FindTooltipType()
-        {
-            singleUsage = false;
-        }
-        void ParseOutput(const wxString& output) override
-        {
-            // examples:
-            // type = wxString
-            // type = const wxChar
-            // type = Action *
-            // type = bool
+    }
+    ~GdbCmd_FindTooltipType()
+    {
+        singleUsage = false;
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        // examples:
+        // type = wxString
+        // type = const wxChar
+        // type = Action *
+        // type = bool
 
-            wxString tmp = output.AfterFirst(_T('='));
-            tmp.Trim(false);
+        wxString tmp = output.AfterFirst(_T('='));
+        tmp.Trim(false);
 
-            // add the actual evaluation command with high priority
-            m_pDriver->QueueCommand(new GdbCmd_FindTooltipAddress(m_pDriver, m_What, m_WinRect, tmp), DebuggerDriver::High);
-        }
+        // add the actual evaluation command with high priority
+        m_pDriver->QueueCommand(new GdbCmd_FindTooltipAddress(m_pDriver, m_What, m_WinRect, tmp), DebuggerDriver::High);
+    }
 };
 bool GdbCmd_FindTooltipType::singleUsage = false;
 
 class GdbCmd_LocalsFuncArgs : public DebuggerCmd
 {
-        cb::shared_ptr<GDBWatch> m_watch;
-        bool m_doLocals;
-    public:
-        GdbCmd_LocalsFuncArgs(DebuggerDriver* driver, cb::shared_ptr<GDBWatch> watch, bool doLocals) :
-            DebuggerCmd(driver),
-            m_watch(watch),
-            m_doLocals(doLocals)
+    cb::shared_ptr<GDBWatch> m_watch;
+    bool m_doLocals;
+public:
+    GdbCmd_LocalsFuncArgs(DebuggerDriver* driver, cb::shared_ptr<GDBWatch> watch, bool doLocals) :
+        DebuggerCmd(driver),
+        m_watch(watch),
+        m_doLocals(doLocals)
+    {
+        if (m_doLocals)
+            m_Cmd = wxT("info locals");
+        else
+            m_Cmd = wxT("info args");
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        if ((m_doLocals && output == wxT("No locals.")) || (!m_doLocals && output == wxT("No arguments.")))
         {
-            if (m_doLocals)
-                m_Cmd = wxT("info locals");
-            else
-                m_Cmd = wxT("info args");
+            m_watch->RemoveChildren();
+            return;
         }
-        void ParseOutput(const wxString& output) override
+
+        std::vector<GDBLocalVariable> watchStrings;
+        TokenizeGDBLocals(watchStrings, output);
+
+        m_watch->MarkChildsAsRemoved();
+        for (std::vector<GDBLocalVariable>::const_iterator it = watchStrings.begin(); it != watchStrings.end(); ++it)
         {
-            if ((m_doLocals && output == wxT("No locals.")) || (!m_doLocals && output == wxT("No arguments.")))
-            {
-                m_watch->RemoveChildren();
-                return;
-            }
-
-            std::vector<GDBLocalVariable> watchStrings;
-            TokenizeGDBLocals(watchStrings, output);
-
-            m_watch->MarkChildsAsRemoved();
-            for (std::vector<GDBLocalVariable>::const_iterator it = watchStrings.begin(); it != watchStrings.end(); ++it)
-            {
-                if (it->error)
-                    continue;
-                cb::shared_ptr<GDBWatch> watch = AddChild(m_watch, it->name);
-                ParseGDBWatchValue(watch, it->value);
-            }
-            m_watch->RemoveMarkedChildren();
+            if (it->error)
+                continue;
+            cb::shared_ptr<GDBWatch> watch = AddChild(m_watch, it->name);
+            ParseGDBWatchValue(watch, it->value);
         }
+        m_watch->RemoveMarkedChildren();
+    }
 };
 
 /**
@@ -1146,157 +1162,160 @@ class GdbCmd_LocalsFuncArgs : public DebuggerCmd
 class GdbCmd_ChangeFrame : public DebuggerCmd
 {
     int   m_addrchgmode;
-    public:
-        int AddrChgMode() { return m_addrchgmode; }
-        GdbCmd_ChangeFrame(DebuggerDriver* driver, int frameno, int p_addrchgmode=1)
-            : DebuggerCmd(driver)
-            ,m_addrchgmode(p_addrchgmode) //1 means do not change disassembly address
-        {
-            m_Cmd << _T("frame ") << frameno;
-        }
-        void ParseOutput(const wxString& output) override
-        {
-            m_pDriver->Log(output);
-        }
+public:
+    int AddrChgMode()
+    {
+        return m_addrchgmode;
+    }
+    GdbCmd_ChangeFrame(DebuggerDriver* driver, int frameno, int p_addrchgmode=1)
+        : DebuggerCmd(driver)
+        ,m_addrchgmode(p_addrchgmode) //1 means do not change disassembly address
+    {
+        m_Cmd << _T("frame ") << frameno;
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        m_pDriver->Log(output);
+    }
 };
 /**
   * Command to run a backtrace.
   */
 class GdbCmd_Backtrace : public DebuggerCmd
 {
-    public:
-        /** @param dlg The backtrace dialog. */
-        GdbCmd_Backtrace(DebuggerDriver* driver)
-            : DebuggerCmd(driver)
-        {
-            m_Cmd << _T("bt 30");
-        }
-        void ParseOutput(const wxString& output) override
-        {
-            int validFrameNumber = -1;
-            cbStackFrame validSF;
+public:
+    /** @param dlg The backtrace dialog. */
+    GdbCmd_Backtrace(DebuggerDriver* driver)
+        : DebuggerCmd(driver)
+    {
+        m_Cmd << _T("bt 30");
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        int validFrameNumber = -1;
+        cbStackFrame validSF;
 
-            m_pDriver->GetStackFrames().clear();
-            wxArrayString lines = GetArrayFromString(output, _T('\n'));
-            for (unsigned int i = 0; i < lines.GetCount(); ++i)
+        m_pDriver->GetStackFrames().clear();
+        wxArrayString lines = GetArrayFromString(output, _T('\n'));
+        for (unsigned int i = 0; i < lines.GetCount(); ++i)
+        {
+            cbStackFrame sf;
+            bool hasLineInfo;
+            bool matched = MatchLine(sf, hasLineInfo, lines[i]);
+            if (matched)
             {
-                cbStackFrame sf;
-                bool hasLineInfo;
-                bool matched = MatchLine(sf, hasLineInfo, lines[i]);
-                if (matched)
+                if (hasLineInfo && validFrameNumber == -1)
                 {
-                    if (hasLineInfo && validFrameNumber == -1)
-                    {
-                        validSF = sf;
-                        validFrameNumber = sf.GetNumber();
-                    }
-                    m_pDriver->GetStackFrames().push_back(cb::shared_ptr<cbStackFrame>(new cbStackFrame(sf)));
+                    validSF = sf;
+                    validFrameNumber = sf.GetNumber();
                 }
+                m_pDriver->GetStackFrames().push_back(cb::shared_ptr<cbStackFrame>(new cbStackFrame(sf)));
             }
-            if (validFrameNumber > 0) // if it's 0, then the driver already synced the editor
+        }
+        if (validFrameNumber > 0) // if it's 0, then the driver already synced the editor
+        {
+            bool autoSwitch = cbDebuggerCommonConfig::GetFlag(cbDebuggerCommonConfig::AutoSwitchFrame);
+            if (!autoSwitch)
             {
-                bool autoSwitch = cbDebuggerCommonConfig::GetFlag(cbDebuggerCommonConfig::AutoSwitchFrame);
-                if (!autoSwitch)
-                {
-                    long line;
+                long line;
 
-                    // replace the valid stack frame with the first frame or the user selected frame
-                    if (!m_pDriver->GetStackFrames().empty())
-                    {
-                        if (m_pDriver->GetUserSelectedFrame() != -1)
-                        {
-                            validFrameNumber = m_pDriver->GetUserSelectedFrame();
-                            DebuggerDriver::StackFrameContainer const &frames = m_pDriver->GetStackFrames();
-
-                            if (validFrameNumber >= 0 && validFrameNumber <= static_cast<int>(frames.size()))
-                                validSF = *frames[validFrameNumber];
-                            else if (!frames.empty())
-                                validSF = *frames.front();
-                        }
-                    }
-                    if (validSF.GetLine().ToLong(&line))
-                    {
-                        m_pDriver->Log(wxString::Format(_T("Displaying first frame with valid source info (#%d)"), validFrameNumber));
-                        m_pDriver->ShowFile(validSF.GetFilename(), line);
-                    }
-                }
-                else
+                // replace the valid stack frame with the first frame or the user selected frame
+                if (!m_pDriver->GetStackFrames().empty())
                 {
                     if (m_pDriver->GetUserSelectedFrame() != -1)
+                    {
                         validFrameNumber = m_pDriver->GetUserSelectedFrame();
-                    // can't call m_pDriver->SwitchToFrame() here
-                    // because it causes a cascade update, never stopping...
-                    //m_pDriver->Log(wxString::Format(_T("Switching to frame #%d which has valid source info"), validFrameNumber));
+                        DebuggerDriver::StackFrameContainer const &frames = m_pDriver->GetStackFrames();
 
-                    //The following output:
-                    //>>>>>>cb_gdb:
-                    //> frame 1
-                    //#1  0x6f826722 in wxInitAllImageHandlers () at ../../src/common/imagall.cpp:29
-                    //^Z^ZC:\dev\wxwidgets\wxWidgets-2.8.10\build\msw/../../src/common/imagall.cpp:29:961:beg:0x6f826722
-                    //>>>>>>cb_gdb:
-                    //matches output from both break and frame responses. We need to ignore it
-                    //for a frame command to avoid incorrect disassembly displays when stepping instructions.
-                    m_pDriver->QueueCommand(new GdbCmd_ChangeFrame(m_pDriver, validFrameNumber));
-                    m_pDriver->SetCurrentFrame(validFrameNumber, false);
+                        if (validFrameNumber >= 0 && validFrameNumber <= static_cast<int>(frames.size()))
+                            validSF = *frames[validFrameNumber];
+                        else if (!frames.empty())
+                            validSF = *frames.front();
+                    }
+                }
+                if (validSF.GetLine().ToLong(&line))
+                {
+                    m_pDriver->Log(wxString::Format(_T("Displaying first frame with valid source info (#%d)"), validFrameNumber));
+                    m_pDriver->ShowFile(validSF.GetFilename(), line);
                 }
             }
-            Manager::Get()->GetDebuggerManager()->GetBacktraceDialog()->Reload();
-        }
-
-        static bool MatchLine(cbStackFrame &sf, bool &hasLineInfo, const wxString &line)
-        {
-            hasLineInfo = false;
-            // reBT1 matches frame number, address, function and args (common to all formats)
-            // reBT2 matches filename and line (optional)
-            // reBT3 matches filename only (for DLLs) (optional)
-
-            // #0  main (argc=1, argv=0x3e2440) at my main.cpp:15
-            if (reBTX.Matches(line))
-            {
-                long int number;
-                reBTX.GetMatch(line, 1).ToLong(&number);
-                sf.SetNumber(number);
-                sf.SetAddress(cbDebuggerStringToAddress(reBTX.GetMatch(line, 2)));
-                sf.SetSymbol(reBTX.GetMatch(line, 3) + reBTX.GetMatch(line, 4));
-            }
-            else if (reBT1.Matches(line))
-            {
-                long int number;
-                reBT1.GetMatch(line, 1).ToLong(&number);
-                sf.SetNumber(number);
-                sf.SetAddress(cbDebuggerStringToAddress(reBT1.GetMatch(line, 2)));
-                sf.SetSymbol(reBT1.GetMatch(line, 3) + reBT1.GetMatch(line, 4));
-            }
-            else if (reBT0.Matches(line))
-            {
-                long int number;
-                reBT0.GetMatch(line, 1).ToLong(&number);
-                sf.SetNumber(number);
-                sf.SetAddress(0);
-                sf.SetSymbol(reBT0.GetMatch(line, 2));
-                sf.SetFile(reBT0.GetMatch(line, 3), wxEmptyString);
-            }
-            else if (reBT4.Matches(line))
-            {
-                long int number;
-                reBT4.GetMatch(line, 1).ToLong(&number);
-                sf.SetNumber(number);
-                sf.SetAddress(cbDebuggerStringToAddress(reBT4.GetMatch(line, 2)));
-                sf.SetSymbol(reBT4.GetMatch(line, 3));
-            }
             else
-                return false;
-
-            sf.MakeValid(true);
-            if (reBT2.Matches(line))
             {
-                sf.SetFile(reBT2.GetMatch(line, 1), reBT2.GetMatch(line, 2));
-                hasLineInfo = true;
+                if (m_pDriver->GetUserSelectedFrame() != -1)
+                    validFrameNumber = m_pDriver->GetUserSelectedFrame();
+                // can't call m_pDriver->SwitchToFrame() here
+                // because it causes a cascade update, never stopping...
+                //m_pDriver->Log(wxString::Format(_T("Switching to frame #%d which has valid source info"), validFrameNumber));
+
+                //The following output:
+                //>>>>>>cb_gdb:
+                //> frame 1
+                //#1  0x6f826722 in wxInitAllImageHandlers () at ../../src/common/imagall.cpp:29
+                //^Z^ZC:\dev\wxwidgets\wxWidgets-2.8.10\build\msw/../../src/common/imagall.cpp:29:961:beg:0x6f826722
+                //>>>>>>cb_gdb:
+                //matches output from both break and frame responses. We need to ignore it
+                //for a frame command to avoid incorrect disassembly displays when stepping instructions.
+                m_pDriver->QueueCommand(new GdbCmd_ChangeFrame(m_pDriver, validFrameNumber));
+                m_pDriver->SetCurrentFrame(validFrameNumber, false);
             }
-            else if (reBT3.Matches(line))
-                sf.SetFile(reBT3.GetMatch(line, 1), wxEmptyString);
-            return true;
         }
+        Manager::Get()->GetDebuggerManager()->GetBacktraceDialog()->Reload();
+    }
+
+    static bool MatchLine(cbStackFrame &sf, bool &hasLineInfo, const wxString &line)
+    {
+        hasLineInfo = false;
+        // reBT1 matches frame number, address, function and args (common to all formats)
+        // reBT2 matches filename and line (optional)
+        // reBT3 matches filename only (for DLLs) (optional)
+
+        // #0  main (argc=1, argv=0x3e2440) at my main.cpp:15
+        if (reBTX.Matches(line))
+        {
+            long int number;
+            reBTX.GetMatch(line, 1).ToLong(&number);
+            sf.SetNumber(number);
+            sf.SetAddress(cbDebuggerStringToAddress(reBTX.GetMatch(line, 2)));
+            sf.SetSymbol(reBTX.GetMatch(line, 3) + reBTX.GetMatch(line, 4));
+        }
+        else if (reBT1.Matches(line))
+        {
+            long int number;
+            reBT1.GetMatch(line, 1).ToLong(&number);
+            sf.SetNumber(number);
+            sf.SetAddress(cbDebuggerStringToAddress(reBT1.GetMatch(line, 2)));
+            sf.SetSymbol(reBT1.GetMatch(line, 3) + reBT1.GetMatch(line, 4));
+        }
+        else if (reBT0.Matches(line))
+        {
+            long int number;
+            reBT0.GetMatch(line, 1).ToLong(&number);
+            sf.SetNumber(number);
+            sf.SetAddress(0);
+            sf.SetSymbol(reBT0.GetMatch(line, 2));
+            sf.SetFile(reBT0.GetMatch(line, 3), wxEmptyString);
+        }
+        else if (reBT4.Matches(line))
+        {
+            long int number;
+            reBT4.GetMatch(line, 1).ToLong(&number);
+            sf.SetNumber(number);
+            sf.SetAddress(cbDebuggerStringToAddress(reBT4.GetMatch(line, 2)));
+            sf.SetSymbol(reBT4.GetMatch(line, 3));
+        }
+        else
+            return false;
+
+        sf.MakeValid(true);
+        if (reBT2.Matches(line))
+        {
+            sf.SetFile(reBT2.GetMatch(line, 1), reBT2.GetMatch(line, 2));
+            hasLineInfo = true;
+        }
+        else if (reBT3.Matches(line))
+            sf.SetFile(reBT3.GetMatch(line, 1), wxEmptyString);
+        return true;
+    }
 };
 
 /**
@@ -1304,69 +1323,69 @@ class GdbCmd_Backtrace : public DebuggerCmd
   */
 class GdbCmd_InfoRegisters : public DebuggerCmd
 {
-        wxString m_disassemblyFlavor;
+    wxString m_disassemblyFlavor;
 
-    public:
-        /** @param dlg The disassembly dialog. */
+public:
+    /** @param dlg The disassembly dialog. */
 
-        // only tested on mingw/pc/win env
-        GdbCmd_InfoRegisters(DebuggerDriver* driver, wxString disassemblyFlavor = wxEmptyString) :
-            DebuggerCmd(driver),
-            m_disassemblyFlavor(disassemblyFlavor)
+    // only tested on mingw/pc/win env
+    GdbCmd_InfoRegisters(DebuggerDriver* driver, wxString disassemblyFlavor = wxEmptyString) :
+        DebuggerCmd(driver),
+        m_disassemblyFlavor(disassemblyFlavor)
+    {
+        m_Cmd << _T("info registers");
+    };
+
+    void ParseOutput(const wxString& output) override
+    {
+        // output is a series of:
+        //
+        // eax            0x40e66666       1088841318
+        // ecx            0x40cbf0 4246512
+        // edx            0x77c61ae8       2009471720
+        // ebx            0x4000   16384
+        // esp            0x22ff50 0x22ff50
+        // ebp            0x22ff78 0x22ff78
+        // esi            0x22ef80 2289536
+        // edi            0x5dd3f4 6149108
+        // eip            0x4013c9 0x4013c9
+        // eflags         0x247    583
+        // cs             0x1b     27
+        // ss             0x23     35
+        // ds             0x23     35
+        // es             0x23     35
+        // fs             0x3b     59
+        // gs             0x0      0
+
+        // or32 register string parser
+        if(m_disassemblyFlavor == _T("set disassembly-flavor or32"))
         {
-            m_Cmd << _T("info registers");
-        };
-
-        void ParseOutput(const wxString& output) override
-        {
-            // output is a series of:
-            //
-            // eax            0x40e66666       1088841318
-            // ecx            0x40cbf0 4246512
-            // edx            0x77c61ae8       2009471720
-            // ebx            0x4000   16384
-            // esp            0x22ff50 0x22ff50
-            // ebp            0x22ff78 0x22ff78
-            // esi            0x22ef80 2289536
-            // edi            0x5dd3f4 6149108
-            // eip            0x4013c9 0x4013c9
-            // eflags         0x247    583
-            // cs             0x1b     27
-            // ss             0x23     35
-            // ds             0x23     35
-            // es             0x23     35
-            // fs             0x3b     59
-            // gs             0x0      0
-
-            // or32 register string parser
-            if(m_disassemblyFlavor == _T("set disassembly-flavor or32"))
-            {
-                ParseOutputFromOR32gdbPort(output);
-            }
-            else
+            ParseOutputFromOR32gdbPort(output);
+        }
+        else
             // use generic parser - this may work for other platforms or you may have to write your own
-            {
-                cbCPURegistersDlg *dialog = Manager::Get()->GetDebuggerManager()->GetCPURegistersDialog();
+        {
+            cbCPURegistersDlg *dialog = Manager::Get()->GetDebuggerManager()->GetCPURegistersDialog();
 
-                wxArrayString lines = GetArrayFromString(output, _T('\n'));
-                for (unsigned int i = 0; i < lines.GetCount(); ++i)
+            wxArrayString lines = GetArrayFromString(output, _T('\n'));
+            for (unsigned int i = 0; i < lines.GetCount(); ++i)
+            {
+                if (reRegisters.Matches(lines[i]))
                 {
-                    if (reRegisters.Matches(lines[i]))
-                    {
-                        const wxString &addr = reRegisters.GetMatch(lines[i], 1);
-                        const wxString &hex = reRegisters.GetMatch(lines[i], 2);
-                        const wxString &interpreted = reRegisters.GetMatch(lines[i], 3);
-                        dialog->SetRegisterValue(addr, hex, interpreted);
-                    }
+                    const wxString &addr = reRegisters.GetMatch(lines[i], 1);
+                    const wxString &hex = reRegisters.GetMatch(lines[i], 2);
+                    const wxString &interpreted = reRegisters.GetMatch(lines[i], 3);
+                    dialog->SetRegisterValue(addr, hex, interpreted);
                 }
             }
+        }
 
 //            m_pDlg->Show(true);
 //            m_pDriver->DebugLog(output);
-        }
+    }
 
-        void ParseOutputFromOR32gdbPort(const wxString& output)
-        {
+    void ParseOutputFromOR32gdbPort(const wxString& output)
+    {
 // (gdb) info reg
 //        R0        R1        R2        R3        R4        R5        R6        R7
 //  00000000  f0016f2c  f0016ff8  00000005  00000008  00004c84  ffffbfff  00000001
@@ -1377,56 +1396,56 @@ class GdbCmd_InfoRegisters : public DebuggerCmd
 //       R24       R25       R26       R27       R28       R29       R30       R31
 //  000000c0  00000000  00030021  00000000  00000000  00000000  00000000  f0016f2c
 
-            // produce an array of alternate register/value string lines, each entry
-            // is started on detecting a '\n'
-            wxArrayString lines = GetArrayFromString(output, _T("\n"));
+        // produce an array of alternate register/value string lines, each entry
+        // is started on detecting a '\n'
+        wxArrayString lines = GetArrayFromString(output, _T("\n"));
 
-            // check for empty or short string
-            if((output == _T("")) || (lines.GetCount()<2))
+        // check for empty or short string
+        if((output == _T("")) || (lines.GetCount()<2))
+        {
+            return;
+        }
+        cbCPURegistersDlg *dialog = Manager::Get()->GetDebuggerManager()->GetCPURegistersDialog();
+
+        for (unsigned int i = 0; i < lines.GetCount(); i+=2)
+        {
+            wxArrayString regMnemonics;
+            wxArrayString regValues;
+            wxString RegisterMnemonicString;
+            wxString RegisterValueString;
+
+            // filter register values
+            RegisterValueString =lines.Item(i+1);
+
+            wxStringTokenizer RegisterValueStringTokenizer((RegisterValueString), wxT(" "), wxTOKEN_STRTOK);
+            while ( RegisterValueStringTokenizer.HasMoreTokens() )
             {
-                return;
+                wxString RegisterValueStringToken = RegisterValueStringTokenizer.GetNextToken();
+                // add register value to array
+                regValues.Add(RegisterValueStringToken);
             }
-            cbCPURegistersDlg *dialog = Manager::Get()->GetDebuggerManager()->GetCPURegistersDialog();
+            // register mnemonics on even (and zero) lines
+            RegisterMnemonicString =lines.Item(i);
 
-            for (unsigned int i = 0; i < lines.GetCount(); i+=2)
+            wxStringTokenizer RegisterMnemonicStringTokenizer((RegisterMnemonicString), wxT(" "), wxTOKEN_STRTOK);
+            while ( RegisterMnemonicStringTokenizer.HasMoreTokens() )
             {
-                wxArrayString regMnemonics;
-                wxArrayString regValues;
-                wxString RegisterMnemonicString;
-                wxString RegisterValueString;
+                wxString RegisterMnemonicStringToken = RegisterMnemonicStringTokenizer.GetNextToken();
+                // add register mnemonic to arrau
+                regMnemonics.Add(RegisterMnemonicStringToken);
+            }
 
-                // filter register values
-                RegisterValueString =lines.Item(i+1);
+            // loop around the values and mnemonics arrays and add them to the dialog boxes
+            for (unsigned int j = 0; j < regMnemonics.GetCount(); j++)
+            {
+                wxString reg = regMnemonics.Item(j);
+                wxString addr = regValues.Item(j);
 
-                wxStringTokenizer RegisterValueStringTokenizer((RegisterValueString), wxT(" "), wxTOKEN_STRTOK);
-                while ( RegisterValueStringTokenizer.HasMoreTokens() )
-                {
-                    wxString RegisterValueStringToken = RegisterValueStringTokenizer.GetNextToken();
-                    // add register value to array
-                    regValues.Add(RegisterValueStringToken);
-                }
-                // register mnemonics on even (and zero) lines
-                RegisterMnemonicString =lines.Item(i);
-
-                wxStringTokenizer RegisterMnemonicStringTokenizer((RegisterMnemonicString), wxT(" "), wxTOKEN_STRTOK);
-                while ( RegisterMnemonicStringTokenizer.HasMoreTokens() )
-                {
-                    wxString RegisterMnemonicStringToken = RegisterMnemonicStringTokenizer.GetNextToken();
-                    // add register mnemonic to arrau
-                    regMnemonics.Add(RegisterMnemonicStringToken);
-                }
-
-                // loop around the values and mnemonics arrays and add them to the dialog boxes
-                for (unsigned int j = 0; j < regMnemonics.GetCount(); j++)
-                {
-                    wxString reg = regMnemonics.Item(j);
-                    wxString addr = regValues.Item(j);
-
-                    if (!reg.IsEmpty() && !addr.IsEmpty())
-                        dialog->SetRegisterValue(reg, addr, wxEmptyString);
-                }
+                if (!reg.IsEmpty() && !addr.IsEmpty())
+                    dialog->SetRegisterValue(reg, addr, wxEmptyString);
             }
         }
+    }
 };
 
 /**
@@ -1436,88 +1455,88 @@ class GdbCmd_Disassembly : public DebuggerCmd
 {
     bool m_mixedMode;
 
-    public:
-        GdbCmd_Disassembly(DebuggerDriver* driver, bool MixedMode, wxString hexAddrStr)
-            : DebuggerCmd(driver)
-            , m_mixedMode(MixedMode)
-        {
-            m_Cmd << _T("disassemble");
-            if(m_mixedMode)
-                //gdb's ordering of instructions with /m can be pretty confusing...
-                //with /m, sometimes, some instructions are missing ( for gdb 7.1/7.2 x86
-                //on output from tdm gxx 4.4.1) from returned responses.
-                m_Cmd << _T(" /m");
+public:
+    GdbCmd_Disassembly(DebuggerDriver* driver, bool MixedMode, wxString hexAddrStr)
+        : DebuggerCmd(driver)
+        , m_mixedMode(MixedMode)
+    {
+        m_Cmd << _T("disassemble");
+        if(m_mixedMode)
+            //gdb's ordering of instructions with /m can be pretty confusing...
+            //with /m, sometimes, some instructions are missing ( for gdb 7.1/7.2 x86
+            //on output from tdm gxx 4.4.1) from returned responses.
+            m_Cmd << _T(" /m");
 
-            if(hexAddrStr.IsEmpty())
-                //****NOTE: If this branch is taken, disassembly may not reflect the program's
-                //actual current location.  Other areas of code will change the current (stack) frame
-                //which results in $pc reflecting the eip(x86-based) of that frame.  After changing to
-                //a non-top frame, a request (gdb 7.2 x86) to print either '$pc' or '$eip' will
-                //return the same value.
-                //So, there seems to be no way to obtain the actual current address in this (non-MI)
-                //interface.  Hence, we can't get the correct disassembly (when the $pc does not
-                //reflect actual current address.)  GDB itself does continue to step from the correct address, so
-                //there may be some other way to obtain it yet to be found.
-                m_Cmd << _T(" $pc");
-            else if(wxT("0x") == hexAddrStr.Left(2) || wxT("0X") == hexAddrStr.Left(2))
-                m_Cmd << wxT(" ") << hexAddrStr;
-            else
-                m_Cmd << wxT(" 0x") << hexAddrStr;
-        }
-        void ParseOutput(const wxString& output) override
+        if(hexAddrStr.IsEmpty())
+            //****NOTE: If this branch is taken, disassembly may not reflect the program's
+            //actual current location.  Other areas of code will change the current (stack) frame
+            //which results in $pc reflecting the eip(x86-based) of that frame.  After changing to
+            //a non-top frame, a request (gdb 7.2 x86) to print either '$pc' or '$eip' will
+            //return the same value.
+            //So, there seems to be no way to obtain the actual current address in this (non-MI)
+            //interface.  Hence, we can't get the correct disassembly (when the $pc does not
+            //reflect actual current address.)  GDB itself does continue to step from the correct address, so
+            //there may be some other way to obtain it yet to be found.
+            m_Cmd << _T(" $pc");
+        else if(wxT("0x") == hexAddrStr.Left(2) || wxT("0X") == hexAddrStr.Left(2))
+            m_Cmd << wxT(" ") << hexAddrStr;
+        else
+            m_Cmd << wxT(" 0x") << hexAddrStr;
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        // output for "disassemble" is a series of:
+        //
+        // Dump of assembler code for function main:
+        // 0x00401390 <main+0>:    push   ebp
+        // ...
+        // End of assembler dump.
+        //
+        // OR, output for "disassemble /m" is:
+        //Dump of assembler code for function main:
+        //6       {
+        //   0x00401318 <+0>:     push   %ebp
+        //   0x00401319 <+1>:     mov    %esp,%ebp
+        //   0x0040131b <+3>:     and    $0xfffffff0,%esp
+        //   0x0040131e <+6>:     push   %ebx
+        //   0x0040131f <+7>:     mov    $0x103c,%eax
+        //   0x00401324 <+12>:    call   0x401bac <_alloca>
+        //   0x00401329 <+17>:    call   0x4019a0 <__main>
+        //
+        //7       #if 1
+        //8           char filename[2048], filenameabs[2048] ;
+        //9           if(argc > 1)
+        //=> 0x0040132e <+22>:    cmpl   $0x1,0x8(%ebp)
+        //   0x00401332 <+26>:    jle    0x401351 <main+57>
+        // ...
+        //   0x004015aa <+658>:   ret
+        //
+        //End of assembler dump.
+        const wxString disasmerror(_T("No function contains specified address."));
+        cbDisassemblyDlg *dialog = Manager::Get()->GetDebuggerManager()->GetDisassemblyDialog();
+        wxArrayString lines = GetArrayFromString(output, _T('\n'));
+        for (unsigned int i = 0; i < lines.GetCount(); ++i)
         {
-            // output for "disassemble" is a series of:
-            //
-            // Dump of assembler code for function main:
-            // 0x00401390 <main+0>:    push   ebp
-            // ...
-            // End of assembler dump.
-            //
-            // OR, output for "disassemble /m" is:
-            //Dump of assembler code for function main:
-            //6       {
-            //   0x00401318 <+0>:     push   %ebp
-            //   0x00401319 <+1>:     mov    %esp,%ebp
-            //   0x0040131b <+3>:     and    $0xfffffff0,%esp
-            //   0x0040131e <+6>:     push   %ebx
-            //   0x0040131f <+7>:     mov    $0x103c,%eax
-            //   0x00401324 <+12>:    call   0x401bac <_alloca>
-            //   0x00401329 <+17>:    call   0x4019a0 <__main>
-            //
-            //7       #if 1
-            //8           char filename[2048], filenameabs[2048] ;
-            //9           if(argc > 1)
-            //=> 0x0040132e <+22>:    cmpl   $0x1,0x8(%ebp)
-            //   0x00401332 <+26>:    jle    0x401351 <main+57>
-            // ...
-            //   0x004015aa <+658>:   ret
-            //
-            //End of assembler dump.
-            const wxString disasmerror(_T("No function contains specified address."));
-            cbDisassemblyDlg *dialog = Manager::Get()->GetDebuggerManager()->GetDisassemblyDialog();
-            wxArrayString lines = GetArrayFromString(output, _T('\n'));
-            for (unsigned int i = 0; i < lines.GetCount(); ++i)
+            if (lines[i].StartsWith(disasmerror))
             {
-                if (lines[i].StartsWith(disasmerror))
-                {
-                    //So, GDB won't disassemble anywhere there is code????
-                    dialog->AddSourceLine(0, disasmerror);
-                    break ;
-                }
-                else if (reDisassembly.Matches(lines[i]))
-                {
-                    uint64_t addr = cbDebuggerStringToAddress(reDisassembly.GetMatch(lines[i], 1));
-                    dialog->AddAssemblerLine(addr, reDisassembly.GetMatch(lines[i], 2));
-                }
-                else if (m_mixedMode && reDisassemblySource.Matches(lines[i]))
-                {
-                    long int lineno;
-                    reDisassemblySource.GetMatch(lines[i], 1).ToLong(&lineno, 10);
-                    dialog->AddSourceLine(lineno, reDisassemblySource.GetMatch(lines[i], 2));
-                }
+                //So, GDB won't disassemble anywhere there is code????
+                dialog->AddSourceLine(0, disasmerror);
+                break ;
             }
-            dialog->CenterCurrentLine();
+            else if (reDisassembly.Matches(lines[i]))
+            {
+                uint64_t addr = cbDebuggerStringToAddress(reDisassembly.GetMatch(lines[i], 1));
+                dialog->AddAssemblerLine(addr, reDisassembly.GetMatch(lines[i], 2));
+            }
+            else if (m_mixedMode && reDisassemblySource.Matches(lines[i]))
+            {
+                long int lineno;
+                reDisassemblySource.GetMatch(lines[i], 1).ToLong(&lineno, 10);
+                dialog->AddSourceLine(lineno, reDisassemblySource.GetMatch(lines[i], 2));
+            }
         }
+        dialog->CenterCurrentLine();
+    }
 };
 
 /**
@@ -1525,110 +1544,110 @@ class GdbCmd_Disassembly : public DebuggerCmd
   */
 class GdbCmd_DisassemblyInit : public DebuggerCmd
 {
-        wxString m_disassemblyFlavor;
-        wxString m_hexAddrStr;
+    wxString m_disassemblyFlavor;
+    wxString m_hexAddrStr;
 
-        static wxString LastAddr;
-        static wxString LastSymbol;
-    public:
-         // only tested on mingw/pc/win env
-        GdbCmd_DisassemblyInit(DebuggerDriver* driver, wxString disassemblyFlavor = wxEmptyString,
-                               wxString hexAddrStr = wxT(""))
-            : DebuggerCmd(driver),
-            m_disassemblyFlavor(disassemblyFlavor),
-            m_hexAddrStr(hexAddrStr)
+    static wxString LastAddr;
+    static wxString LastSymbol;
+public:
+    // only tested on mingw/pc/win env
+    GdbCmd_DisassemblyInit(DebuggerDriver* driver, wxString disassemblyFlavor = wxEmptyString,
+                           wxString hexAddrStr = wxT(""))
+        : DebuggerCmd(driver),
+          m_disassemblyFlavor(disassemblyFlavor),
+          m_hexAddrStr(hexAddrStr)
+    {
+        m_Cmd << _T("if 1\n") ;
+        if(m_hexAddrStr.empty())
         {
-            m_Cmd << _T("if 1\n") ;
+            const Cursor &cursor = driver->GetCursor() ;
+            if(cursor.address.empty())
+                m_Cmd << _T("disassemble $pc,$pc+50\n") ;
+            else
+            {
+                m_Cmd << _T("disassemble ") << cursor.address << _T("\n") ;
+            }
+        }
+        else
+            m_Cmd << _T("disassemble ") << m_hexAddrStr << _T("\n") ;
+
+        m_Cmd << _T("info frame\n") << _T("end\n");
+    };
+
+    void ParseOutput(const wxString& p_output) override
+    {
+        cbDisassemblyDlg *dialog = Manager::Get()->GetDebuggerManager()->GetDisassemblyDialog();
+
+        wxString frame_output, reg_output ;
+        size_t apos ;
+        apos = p_output.find(_T("Stack level ")); //looking for 'info frame' output
+        if(apos == wxString::npos)
+        {
+            m_pDriver->Log(_T("Failure finding \"Stack level \""));
+            apos = p_output.length();
+        }
+        reg_output = p_output.substr(0,apos);
+        frame_output = p_output.substr(apos, p_output.length()-apos);
+        wxString &output = frame_output ;
+        if(reDisassemblyCurPC.Matches(reg_output))
+        {
             if(m_hexAddrStr.empty())
             {
-                const Cursor &cursor = driver->GetCursor() ;
-                if(cursor.address.empty())
-                    m_Cmd << _T("disassemble $pc,$pc+50\n") ;
-                else
-                {
-                    m_Cmd << _T("disassemble ") << cursor.address << _T("\n") ;
-                }
+                m_hexAddrStr = reDisassemblyCurPC.GetMatch(reg_output,1);
             }
-            else
-                m_Cmd << _T("disassemble ") << m_hexAddrStr << _T("\n") ;
-
-            m_Cmd << _T("info frame\n") << _T("end\n");
-        };
-
-        void ParseOutput(const wxString& p_output) override
+        }
+        else
         {
-            cbDisassemblyDlg *dialog = Manager::Get()->GetDebuggerManager()->GetDisassemblyDialog();
+            m_pDriver->Log(_T("Failure matching reg_output"));
+        }
+        //process 'info frame'
+        const wxArrayString &lines = GetArrayFromString(output, _T('\n'));
+        if (lines.Count() <= 2)
+            return;
+        size_t firstLine = 0;
+        for (; firstLine < lines.Count() && !reDisassemblyInit.Matches(lines[firstLine]); ++firstLine)
+            ;
+        if (firstLine + 1 < lines.Count())
+        {
+            bool sameSymbol = false;
+            if (reDisassemblyInitSymbol.Matches(lines[firstLine]))
+            {
+                const wxString &symbol = reDisassemblyInitSymbol.GetMatch(lines[firstLine], 1)
+                                         + reDisassemblyInitSymbol.GetMatch(lines[firstLine], 2);
+                sameSymbol = (LastSymbol == symbol);
 
-            wxString frame_output, reg_output ;
-            size_t apos ;
-            apos = p_output.find(_T("Stack level ")); //looking for 'info frame' output
-            if(apos == wxString::npos)
-            {
-                m_pDriver->Log(_T("Failure finding \"Stack level \""));
-                apos = p_output.length();
+                if (!sameSymbol)
+                    LastSymbol = symbol;
             }
-            reg_output = p_output.substr(0,apos);
-            frame_output = p_output.substr(apos, p_output.length()-apos);
-            wxString &output = frame_output ;
-            if(reDisassemblyCurPC.Matches(reg_output))
-            {
-                if(m_hexAddrStr.empty())
-                {
-                    m_hexAddrStr = reDisassemblyCurPC.GetMatch(reg_output,1);
-                }
-            }
-            else
-            {
-                m_pDriver->Log(_T("Failure matching reg_output"));
-            }
-            //process 'info frame'
-            const wxArrayString &lines = GetArrayFromString(output, _T('\n'));
-            if (lines.Count() <= 2)
+
+            cbStackFrame sf;
+            const wxString &addr = reDisassemblyInit.GetMatch(output, 1);
+            if (addr == LastAddr && sameSymbol)
                 return;
-            size_t firstLine = 0;
-            for (; firstLine < lines.Count() && !reDisassemblyInit.Matches(lines[firstLine]); ++firstLine)
-                ;
-            if (firstLine + 1 < lines.Count())
+            LastAddr = addr;
+            sf.SetAddress(cbDebuggerStringToAddress(addr));
+            if (reDisassemblyInitFunc.Matches(output))
+                sf.SetSymbol(reDisassemblyInitFunc.GetMatch(output, 2));
+
+            sf.MakeValid(true);
+            dialog->Clear(sf);
+            if(!m_hexAddrStr.empty())
             {
-                bool sameSymbol = false;
-                if (reDisassemblyInitSymbol.Matches(lines[firstLine]))
-                {
-                    const wxString &symbol = reDisassemblyInitSymbol.GetMatch(lines[firstLine], 1)
-                                             + reDisassemblyInitSymbol.GetMatch(lines[firstLine], 2);
-                    sameSymbol = (LastSymbol == symbol);
-
-                    if (!sameSymbol)
-                        LastSymbol = symbol;
-                }
-
-                cbStackFrame sf;
-                const wxString &addr = reDisassemblyInit.GetMatch(output, 1);
-                if (addr == LastAddr && sameSymbol)
-                    return;
-                LastAddr = addr;
-                sf.SetAddress(cbDebuggerStringToAddress(addr));
-                if (reDisassemblyInitFunc.Matches(output))
-                    sf.SetSymbol(reDisassemblyInitFunc.GetMatch(output, 2));
-
-                sf.MakeValid(true);
-                dialog->Clear(sf);
-                if(!m_hexAddrStr.empty())
-                {
-                    dialog->SetActiveAddress(cbDebuggerStringToAddress(m_hexAddrStr));
-                    Cursor acursor = m_pDriver->GetCursor();
-                    acursor.address = m_hexAddrStr;
-                    m_pDriver->SetCursor(acursor);
-                }
-                bool mixedmode = Manager::Get()->GetDebuggerManager()->IsDisassemblyMixedMode();
-                m_pDriver->QueueCommand(new GdbCmd_Disassembly(m_pDriver, mixedmode, m_hexAddrStr)); //chain call
+                dialog->SetActiveAddress(cbDebuggerStringToAddress(m_hexAddrStr));
+                Cursor acursor = m_pDriver->GetCursor();
+                acursor.address = m_hexAddrStr;
+                m_pDriver->SetCursor(acursor);
             }
+            bool mixedmode = Manager::Get()->GetDebuggerManager()->IsDisassemblyMixedMode();
+            m_pDriver->QueueCommand(new GdbCmd_Disassembly(m_pDriver, mixedmode, m_hexAddrStr)); //chain call
         }
+    }
 
-        static void Clear()
-        {
-            LastAddr.Clear();
-            LastSymbol.Clear();
-        }
+    static void Clear()
+    {
+        LastAddr.Clear();
+        LastSymbol.Clear();
+    }
 };
 // static
 wxString GdbCmd_DisassemblyInit::LastAddr;
@@ -1639,217 +1658,217 @@ wxString GdbCmd_DisassemblyInit::LastSymbol;
   */
 class GdbCmd_ExamineMemory : public DebuggerCmd
 {
-    public:
-        /** @param dlg The memory dialog. */
-        GdbCmd_ExamineMemory(DebuggerDriver* driver)
-            : DebuggerCmd(driver)
-        {
-            cbExamineMemoryDlg *dialog = Manager::Get()->GetDebuggerManager()->GetExamineMemoryDialog();
-            const wxString &address = CleanStringValue(dialog->GetBaseAddress());
-            m_Cmd.Printf(_T("x/%dxb %s"), dialog->GetBytes(), address.c_str());
-        }
-        void ParseOutput(const wxString& output) override
-        {
-            cbExamineMemoryDlg *dialog = Manager::Get()->GetDebuggerManager()->GetExamineMemoryDialog();
+public:
+    /** @param dlg The memory dialog. */
+    GdbCmd_ExamineMemory(DebuggerDriver* driver)
+        : DebuggerCmd(driver)
+    {
+        cbExamineMemoryDlg *dialog = Manager::Get()->GetDebuggerManager()->GetExamineMemoryDialog();
+        const wxString &address = CleanStringValue(dialog->GetBaseAddress());
+        m_Cmd.Printf(_T("x/%dxb %s"), dialog->GetBytes(), address.c_str());
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        cbExamineMemoryDlg *dialog = Manager::Get()->GetDebuggerManager()->GetExamineMemoryDialog();
 
-            dialog->Begin();
-            dialog->Clear();
+        dialog->Begin();
+        dialog->Clear();
 
-            wxString addr;
-            std::vector<uint8_t> values;
-            wxArrayString lines = GetArrayFromString(output, _T('\n'));
-            for (unsigned int i = 0; i < lines.GetCount(); ++i)
+        wxString addr;
+        std::vector<uint8_t> values;
+        wxArrayString lines = GetArrayFromString(output, _T('\n'));
+        for (unsigned int i = 0; i < lines.GetCount(); ++i)
+        {
+            if (ParseGDBExamineMemoryLine(addr, values, lines[i]))
             {
-                if (ParseGDBExamineMemoryLine(addr, values, lines[i]))
+                wxString hexByte;
+                for (uint8_t v : values)
                 {
-                    wxString hexByte;
-                    for (uint8_t v : values)
-                    {
-                        hexByte = wxString::Format(wxT("%02x"), v);
-                        dialog->AddHexByte(addr, hexByte);
-                    }
-                }
-                else
-                {
-                    dialog->AddError(lines[i]);
-                    continue;
+                    hexByte = wxString::Format(wxT("%02x"), v);
+                    dialog->AddHexByte(addr, hexByte);
                 }
             }
-
-            dialog->End();
+            else
+            {
+                dialog->AddError(lines[i]);
+                continue;
+            }
         }
+
+        dialog->End();
+    }
 };
 
 class GdbCmd_RemoteBaud : public DebuggerCmd
 {
-    public:
-        GdbCmd_RemoteBaud(DebuggerDriver* driver, const wxString& baud)
-            : DebuggerCmd(driver)
-        {
-            m_Cmd << _T("set remotebaud ") << baud;
-            driver->Log(_("Setting serial connection speed to ") + baud);
-        }
-        void ParseOutput(cb_unused const wxString& output) override
-        {
-        }
+public:
+    GdbCmd_RemoteBaud(DebuggerDriver* driver, const wxString& baud)
+        : DebuggerCmd(driver)
+    {
+        m_Cmd << _T("set remotebaud ") << baud;
+        driver->Log(_("Setting serial connection speed to ") + baud);
+    }
+    void ParseOutput(cb_unused const wxString& output) override
+    {
+    }
 };
 
 class GdbCmd_RemoteTarget : public DebuggerCmd
 {
-    public:
-        GdbCmd_RemoteTarget(DebuggerDriver* driver, const RemoteDebugging *rd)
-            : DebuggerCmd(driver)
+public:
+    GdbCmd_RemoteTarget(DebuggerDriver* driver, const RemoteDebugging *rd)
+        : DebuggerCmd(driver)
+    {
+        const wxString targetRemote = rd->extendedRemote ? _T("target extended-remote ") : _T("target remote ");
+        switch (rd->connType)
         {
-            const wxString targetRemote = rd->extendedRemote ? _T("target extended-remote ") : _T("target remote ");
-            switch (rd->connType)
-            {
-                case RemoteDebugging::TCP:
-                {
-                    if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
-                        m_Cmd << targetRemote << _T("tcp:") << rd->ip << _T(":") << rd->ipPort;
-                }
-                break;
-
-                case RemoteDebugging::UDP:
-                {
-                    if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
-                        m_Cmd << targetRemote << _T("udp:") << rd->ip << _T(":") << rd->ipPort;
-                }
-                break;
-
-                case RemoteDebugging::Serial:
-                {
-                    if (!rd->serialPort.IsEmpty())
-                        m_Cmd << targetRemote << rd->serialPort;
-                }
-                break;
-
-                default:
-                    break;
-            }
-
-            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(m_Cmd);
-            if (!m_Cmd.IsEmpty())
-                driver->Log(_("Connecting to remote target"));
-            else
-                m_pDriver->Log(_("Invalid settings for remote debugging!"));
-        }
-        void ParseOutput(const wxString& output) override
+        case RemoteDebugging::TCP:
         {
-            // This command will either output an error or a breakpoint address info
-            // Connection errors are of the form:
-            //
-            // tcp:10.10.1.205:2345: No route to host.
-            // (remote system can't be contacted on the IP level)
-            //
-            // tcp:10.10.1.205:2345: Connection refused.
-            // (no gdb proxy/server running on the specified remote system ip/port)
-            //
-            // tcp:1111:222: Invalid argument.
-            //
-            // sdsdsds: unknown host
-            // tcp:sdsdsds:ddd: No such file or directory.
-            //
-            // Malformed response to offset query, *
-            // Ignoring packet error, continuing...
-            // (serial line errors)
-            //
-            // Now, we could use a regex to filter these but this might be overkill
-            // since the above errors are the only (?) ones we could get.
-            // So for now we 'll just check them verbatim...
-
-            wxString errMsg;
-
-            if (output.Contains(_T("No route to host")))
-                errMsg << _("Can't connect to the remote system.\nVerify your connection settings and that\nthe remote system is reachable/powered-on.");
-            else if (output.Contains(_T("Connection refused")))
-                errMsg << _("Connection refused by the remote system.\nVerify your connection settings and that\nthe GDB server/proxy is running on the remote system.");
-            else if (output.Contains(_T("Malformed response")) ||
-                    output.Contains(_T("packet error")))
-            {
-                errMsg << _("Connection can't be established.\nVerify your connection settings and that\nthe GDB server/proxy is running on the remote system.");
-            }
-            else if (output.Contains(_T("Invalid argument")))
-                errMsg << _("Invalid argument.\nVerify your connection settings (probably some typo).");
-            else if (output.Contains(_T("unknown host")))
-                errMsg << _("Unknown host.\nVerify your connection settings (probably some typo).");
-
-            if (!errMsg.IsEmpty())
-            {
-                m_pDriver->Log(_("Failed"));
-
-                // tell the user
-                errMsg << _("\nThe exact error message was:\n\n");
-                errMsg << output;
-                InfoWindow::Display(_("Error"), errMsg, 10000, 1000); // show for 10 seconds with 1 second delay
-                return;
-            }
-
-            m_pDriver->Log(_("Connected"));
+            if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
+                m_Cmd << targetRemote << _T("tcp:") << rd->ip << _T(":") << rd->ipPort;
         }
+        break;
+
+        case RemoteDebugging::UDP:
+        {
+            if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
+                m_Cmd << targetRemote << _T("udp:") << rd->ip << _T(":") << rd->ipPort;
+        }
+        break;
+
+        case RemoteDebugging::Serial:
+        {
+            if (!rd->serialPort.IsEmpty())
+                m_Cmd << targetRemote << rd->serialPort;
+        }
+        break;
+
+        default:
+            break;
+        }
+
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(m_Cmd);
+        if (!m_Cmd.IsEmpty())
+            driver->Log(_("Connecting to remote target"));
+        else
+            m_pDriver->Log(_("Invalid settings for remote debugging!"));
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        // This command will either output an error or a breakpoint address info
+        // Connection errors are of the form:
+        //
+        // tcp:10.10.1.205:2345: No route to host.
+        // (remote system can't be contacted on the IP level)
+        //
+        // tcp:10.10.1.205:2345: Connection refused.
+        // (no gdb proxy/server running on the specified remote system ip/port)
+        //
+        // tcp:1111:222: Invalid argument.
+        //
+        // sdsdsds: unknown host
+        // tcp:sdsdsds:ddd: No such file or directory.
+        //
+        // Malformed response to offset query, *
+        // Ignoring packet error, continuing...
+        // (serial line errors)
+        //
+        // Now, we could use a regex to filter these but this might be overkill
+        // since the above errors are the only (?) ones we could get.
+        // So for now we 'll just check them verbatim...
+
+        wxString errMsg;
+
+        if (output.Contains(_T("No route to host")))
+            errMsg << _("Can't connect to the remote system.\nVerify your connection settings and that\nthe remote system is reachable/powered-on.");
+        else if (output.Contains(_T("Connection refused")))
+            errMsg << _("Connection refused by the remote system.\nVerify your connection settings and that\nthe GDB server/proxy is running on the remote system.");
+        else if (output.Contains(_T("Malformed response")) ||
+                 output.Contains(_T("packet error")))
+        {
+            errMsg << _("Connection can't be established.\nVerify your connection settings and that\nthe GDB server/proxy is running on the remote system.");
+        }
+        else if (output.Contains(_T("Invalid argument")))
+            errMsg << _("Invalid argument.\nVerify your connection settings (probably some typo).");
+        else if (output.Contains(_T("unknown host")))
+            errMsg << _("Unknown host.\nVerify your connection settings (probably some typo).");
+
+        if (!errMsg.IsEmpty())
+        {
+            m_pDriver->Log(_("Failed"));
+
+            // tell the user
+            errMsg << _("\nThe exact error message was:\n\n");
+            errMsg << output;
+            InfoWindow::Display(_("Error"), errMsg, 10000, 1000); // show for 10 seconds with 1 second delay
+            return;
+        }
+
+        m_pDriver->Log(_("Connected"));
+    }
 };
 
 class GdbCmd_StepOrNextInstruction : public DebuggerContinueBaseCmd
 {
 
-    public:
-        GdbCmd_StepOrNextInstruction(GDB_driver* driver, const wxChar *command)
-            : DebuggerContinueBaseCmd(driver)
+public:
+    GdbCmd_StepOrNextInstruction(GDB_driver* driver, const wxChar *command)
+        : DebuggerContinueBaseCmd(driver)
+    {
+        m_Cmd << command;
+    }
+    void ParseOutput(const wxString& output) override
+    {
+        DebuggerManager *manager = Manager::Get()->GetDebuggerManager();
+        if (!manager->UpdateDisassembly())
+            return;
+        wxString disasm_flavour = static_cast<GDB_driver*>(m_pDriver)->AsmFlavour() ;
+        cbDisassemblyDlg *dialog = manager->GetDisassemblyDialog();
+        m_pDriver->Log(output);
+
+        wxString addrstr;
+
+        if(reStepI.Matches(output)) //applies to reStepI and reNextI seem to be same
+            addrstr = reStepI.GetMatch(output, 6);
+        else if(reStepI2.Matches(output))
+            addrstr = reStepI2.GetMatch(output, 1);
+        else if(reStepI3.Matches(output))
+            addrstr = reStepI3.GetMatch(output, 1);
+        else if(reStepI4.Matches(output))
+            addrstr = reStepI4.GetMatch(output, 1);
+        else
         {
-            m_Cmd << command;
+            // There is an error parsing the output, so clear file/line location info
+            cbStackFrame sf;
+            dialog->Clear(sf);
+            //Since we don't recognize/anticipate that output, and thus
+            //can't get an address, request a complete re-disassembly.
+            m_pDriver->QueueCommand(new GdbCmd_DisassemblyInit(m_pDriver,disasm_flavour));
+            return;
         }
-        void ParseOutput(const wxString& output) override
-        {
-            DebuggerManager *manager = Manager::Get()->GetDebuggerManager();
-            if (!manager->UpdateDisassembly())
-                return;
-            wxString disasm_flavour = static_cast<GDB_driver*>(m_pDriver)->AsmFlavour() ;
-            cbDisassemblyDlg *dialog = manager->GetDisassemblyDialog();
-            m_pDriver->Log(output);
 
-            wxString addrstr;
+        if (addrstr.empty())
+            return;
 
-            if(reStepI.Matches(output)) //applies to reStepI and reNextI seem to be same
-                addrstr = reStepI.GetMatch(output, 6);
-            else if(reStepI2.Matches(output))
-                addrstr = reStepI2.GetMatch(output, 1);
-            else if(reStepI3.Matches(output))
-                addrstr = reStepI3.GetMatch(output, 1);
-            else if(reStepI4.Matches(output))
-                addrstr = reStepI4.GetMatch(output, 1);
-            else
-            {
-                // There is an error parsing the output, so clear file/line location info
-                cbStackFrame sf;
-                dialog->Clear(sf);
-                //Since we don't recognize/anticipate that output, and thus
-                //can't get an address, request a complete re-disassembly.
-                m_pDriver->QueueCommand(new GdbCmd_DisassemblyInit(m_pDriver,disasm_flavour));
-                return;
-            }
-
-            if (addrstr.empty())
-                return;
-
-            if (!dialog->SetActiveAddress(cbDebuggerStringToAddress(addrstr)))
-                m_pDriver->QueueCommand(new GdbCmd_DisassemblyInit(m_pDriver,disasm_flavour ,addrstr));
-        }
+        if (!dialog->SetActiveAddress(cbDebuggerStringToAddress(addrstr)))
+            m_pDriver->QueueCommand(new GdbCmd_DisassemblyInit(m_pDriver,disasm_flavour,addrstr));
+    }
 };
 class GdbCmd_StepInstruction : public GdbCmd_StepOrNextInstruction
 {
-    public:
-        GdbCmd_StepInstruction(GDB_driver* driver)
-            : GdbCmd_StepOrNextInstruction(driver, _T("nexti"))
-        {
-        }
+public:
+    GdbCmd_StepInstruction(GDB_driver* driver)
+        : GdbCmd_StepOrNextInstruction(driver, _T("nexti"))
+    {
+    }
 };
 class GdbCmd_StepIntoInstruction : public GdbCmd_StepOrNextInstruction
 {
-    public:
-        GdbCmd_StepIntoInstruction(GDB_driver* driver)
-            : GdbCmd_StepOrNextInstruction(driver, _T("stepi"))
-        {
-        }
+public:
+    GdbCmd_StepIntoInstruction(GDB_driver* driver)
+        : GdbCmd_StepOrNextInstruction(driver, _T("stepi"))
+    {
+    }
 };
 
 /** Command which tries to find the current cursor position.
@@ -1857,46 +1876,46 @@ class GdbCmd_StepIntoInstruction : public GdbCmd_StepOrNextInstruction
   */
 class GdbCmd_FindCursor : public DebuggerCmd
 {
-    public:
-        GdbCmd_FindCursor(GDB_driver *driver) :
-            DebuggerCmd(driver, wxT("info frame"))
-        {
-        }
+public:
+    GdbCmd_FindCursor(GDB_driver *driver) :
+        DebuggerCmd(driver, wxT("info frame"))
+    {
+    }
 
-        void ParseOutput(const wxString& output) override
+    void ParseOutput(const wxString& output) override
+    {
+        const wxArrayString &lines = GetArrayFromString(output, _T('\n'));
+        if (lines.Count() <= 2)
+            return;
+        size_t firstLine = 0;
+        for (; firstLine < lines.Count() && !reDisassemblyInit.Matches(lines[firstLine]); ++firstLine)
+            ;
+        firstLine++;
+        if (firstLine < lines.Count())
         {
-            const wxArrayString &lines = GetArrayFromString(output, _T('\n'));
-            if (lines.Count() <= 2)
-                return;
-            size_t firstLine = 0;
-            for (; firstLine < lines.Count() && !reDisassemblyInit.Matches(lines[firstLine]); ++firstLine)
-                ;
-            firstLine++;
-            if (firstLine < lines.Count())
+            wxString symbol, file, line;
+            if (reDisassemblyInitSymbol.Matches(lines[firstLine]))
             {
-                wxString symbol, file, line;
-                if (reDisassemblyInitSymbol.Matches(lines[firstLine]))
-                {
-                    symbol = reDisassemblyInitSymbol.GetMatch(lines[firstLine], 1);
-                    file = reDisassemblyInitSymbol.GetMatch(lines[firstLine], 2);
-                    line = reDisassemblyInitSymbol.GetMatch(lines[firstLine], 3);
-                }
-
-                const wxString &addr = reDisassemblyInit.GetMatch(output, 1);
-                long longAddress;
-                addr.ToULong((unsigned long int*)&longAddress, 16);
-
-                Cursor cursor = m_pDriver->GetCursor();
-                cursor.address =  addr;
-                cursor.changed = true;
-                cursor.file = file;
-                cursor.function = symbol;
-                if (!line.ToLong(&cursor.line))
-                    cursor.line = -1;
-                m_pDriver->SetCursor(cursor);
-                m_pDriver->NotifyCursorChanged();
+                symbol = reDisassemblyInitSymbol.GetMatch(lines[firstLine], 1);
+                file = reDisassemblyInitSymbol.GetMatch(lines[firstLine], 2);
+                line = reDisassemblyInitSymbol.GetMatch(lines[firstLine], 3);
             }
+
+            const wxString &addr = reDisassemblyInit.GetMatch(output, 1);
+            long longAddress;
+            addr.ToULong((unsigned long int*)&longAddress, 16);
+
+            Cursor cursor = m_pDriver->GetCursor();
+            cursor.address =  addr;
+            cursor.changed = true;
+            cursor.file = file;
+            cursor.function = symbol;
+            if (!line.ToLong(&cursor.line))
+                cursor.line = -1;
+            m_pDriver->SetCursor(cursor);
+            m_pDriver->NotifyCursorChanged();
         }
+    }
 };
 
 /**
@@ -1904,20 +1923,20 @@ class GdbCmd_FindCursor : public DebuggerCmd
   */
 class GdbCmd_DebugLanguage : public DebuggerCmd
 {
-    public:
-        GdbCmd_DebugLanguage(DebuggerDriver* driver)
-            : DebuggerCmd(driver)
-        {
-            m_Cmd << _T("show language");
-        }
+public:
+    GdbCmd_DebugLanguage(DebuggerDriver* driver)
+        : DebuggerCmd(driver)
+    {
+        m_Cmd << _T("show language");
+    }
 
-        void ParseOutput(const wxString& output) override
-        {
-            if (output.Lower().Find(wxT("fortran")) != wxNOT_FOUND)
-                g_DebugLanguage = dl_Fortran;
-            else
-                g_DebugLanguage = dl_Cpp;
-        }
+    void ParseOutput(const wxString& output) override
+    {
+        if (output.Lower().Find(wxT("fortran")) != wxNOT_FOUND)
+            g_DebugLanguage = dl_Fortran;
+        else
+            g_DebugLanguage = dl_Cpp;
+    }
 };
 
 #endif // DEBUGGER_COMMANDS_H

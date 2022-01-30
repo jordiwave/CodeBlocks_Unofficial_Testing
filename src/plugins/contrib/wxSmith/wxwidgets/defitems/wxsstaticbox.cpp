@@ -25,15 +25,15 @@
 
 namespace
 {
-    wxsRegisterItem<wxsStaticBox> Reg(_T("StaticBox"),wxsTWidget,_T("Standard"),70);
+wxsRegisterItem<wxsStaticBox> Reg(_T("StaticBox"),wxsTWidget,_T("Standard"),70);
 
-    WXS_ST_BEGIN(wxsStaticBoxStyles,_T(""))
-        WXS_ST_CATEGORY("wxStaticBox")
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsStaticBoxStyles,_T(""))
+WXS_ST_CATEGORY("wxStaticBox")
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsStaticBoxEvents)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsStaticBoxEvents)
+WXS_EV_END()
 }
 
 wxsStaticBox::wxsStaticBox(wxsItemResData* Data):
@@ -49,19 +49,19 @@ void wxsStaticBox::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/statbox.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %N);\n"),Label.wx_str());
-            BuildSetupWindowCode();
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/statbox.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%W, %I, %t, %P, %S, %T, %N);\n"),Label.wx_str());
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsStaticBox::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsStaticBox::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

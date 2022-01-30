@@ -29,58 +29,58 @@
 
 namespace
 {
-    wxsRegisterItem<wxsToolBar> Reg(_T("ToolBar"),wxsTTool,_T("Tools"),10);
+wxsRegisterItem<wxsToolBar> Reg(_T("ToolBar"),wxsTTool,_T("Tools"),10);
 
-    class ToolBarEditorDialog: public wxScrollingDialog
+class ToolBarEditorDialog: public wxScrollingDialog
+{
+public:
+
+    wxsToolBarEditor* Editor;
+
+    ToolBarEditorDialog(wxsToolBar* ToolBar):
+        wxScrollingDialog(0,-1,_("ToolBar editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
     {
-        public:
+        wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
+        Editor = new wxsToolBarEditor(this,ToolBar);
+        Sizer->Add(Editor, 1, wxEXPAND|wxBOTTOM, 5);
+        Sizer->Add(CreateButtonSizer(wxOK|wxCANCEL),0,wxEXPAND,15);
+        SetSizer(Sizer);
+        Sizer->SetSizeHints(this);
+        Fit();
+        PlaceWindow(this,pdlCentre,true);
+    }
 
-            wxsToolBarEditor* Editor;
+    void OnOK(cb_unused wxCommandEvent& event)
+    {
+        Editor->ApplyChanges();
+        EndModal(wxID_OK);
+    }
 
-            ToolBarEditorDialog(wxsToolBar* ToolBar):
-                wxScrollingDialog(0,-1,_("ToolBar editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
-            {
-                wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
-                Editor = new wxsToolBarEditor(this,ToolBar);
-                Sizer->Add(Editor, 1, wxEXPAND|wxBOTTOM, 5);
-                Sizer->Add(CreateButtonSizer(wxOK|wxCANCEL),0,wxEXPAND,15);
-                SetSizer(Sizer);
-                Sizer->SetSizeHints(this);
-                Fit();
-                PlaceWindow(this,pdlCentre,true);
-            }
+    DECLARE_EVENT_TABLE()
+};
 
-            void OnOK(cb_unused wxCommandEvent& event)
-            {
-                Editor->ApplyChanges();
-                EndModal(wxID_OK);
-            }
-
-            DECLARE_EVENT_TABLE()
-    };
-
-    BEGIN_EVENT_TABLE(ToolBarEditorDialog,wxScrollingDialog)
-        EVT_BUTTON(wxID_OK,ToolBarEditorDialog::OnOK)
-    END_EVENT_TABLE()
+BEGIN_EVENT_TABLE(ToolBarEditorDialog,wxScrollingDialog)
+    EVT_BUTTON(wxID_OK,ToolBarEditorDialog::OnOK)
+END_EVENT_TABLE()
 
 
-    WXS_ST_BEGIN(wxsToolBarStyles,_T("wxTB_HORIZONTAL|wxNO_BORDER"))
-        WXS_ST(wxTB_FLAT)
-        WXS_ST(wxTB_DOCKABLE)
-        WXS_ST(wxTB_VERTICAL)
-        WXS_ST(wxTB_HORIZONTAL)
-        WXS_ST(wxTB_TEXT)
-        WXS_ST(wxTB_NOICONS)
-        WXS_ST(wxTB_NODIVIDER)
-        WXS_ST(wxTB_NOALIGN)
-        WXS_ST(wxTB_HORZ_LAYOUT)
-        WXS_ST(wxTB_HORZ_TEXT)
-        WXS_ST(wxTB_TOP)
-        WXS_ST(wxTB_LEFT)
-        WXS_ST(wxTB_RIGHT)
-        WXS_ST(wxTB_BOTTOM)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsToolBarStyles,_T("wxTB_HORIZONTAL|wxNO_BORDER"))
+WXS_ST(wxTB_FLAT)
+WXS_ST(wxTB_DOCKABLE)
+WXS_ST(wxTB_VERTICAL)
+WXS_ST(wxTB_HORIZONTAL)
+WXS_ST(wxTB_TEXT)
+WXS_ST(wxTB_NOICONS)
+WXS_ST(wxTB_NODIVIDER)
+WXS_ST(wxTB_NOALIGN)
+WXS_ST(wxTB_HORZ_LAYOUT)
+WXS_ST(wxTB_HORZ_TEXT)
+WXS_ST(wxTB_TOP)
+WXS_ST(wxTB_LEFT)
+WXS_ST(wxTB_RIGHT)
+WXS_ST(wxTB_BOTTOM)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 }
 
 wxsToolBar::wxsToolBar(wxsItemResData* Data):
@@ -107,60 +107,60 @@ void wxsToolBar::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-            AddHeader(_T("<wx/toolbar.h>"),GetInfo().ClassName,hfInPCH);
+    case wxsCPP:
+        AddHeader(_T("<wx/toolbar.h>"),GetInfo().ClassName,hfInPCH);
 
-            // NOTE: This code assumes that parent is wxFrame
-            if ( GetChildCount() )
+        // NOTE: This code assumes that parent is wxFrame
+        if ( GetChildCount() )
+        {
+            /*
+            if ( !GetParent() && GetResourceData()->GetClassType()==_T("wxFrame") )
             {
-                /*
-                if ( !GetParent() && GetResourceData()->GetClassType()==_T("wxFrame") )
-                {
-                    Codef(_T("%v = CreateToolBar(%T, %I, %N);\n"),GetVarName().c_str());
-                }
-                else
-                */
-                {
-                    Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-                }
+                Codef(_T("%v = CreateToolBar(%T, %I, %N);\n"),GetVarName().c_str());
+            }
+            else
+            */
+            {
+                Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+            }
 
-                if ( !m_BitmapSize.IsDefault )
+            if ( !m_BitmapSize.IsDefault )
+            {
+                Codef(_T("%ASetToolBitmapSize(%z);\n"),&m_BitmapSize);
+            }
+            if ( !m_Margins.IsDefault )
+            {
+                Codef(_T("%ASetMargins(%<);\n"),&m_Margins);
+            }
+            if ( m_Packing >= 0 )
+            {
+                Codef(_T("%ASetToolPacking(%d);\n"),m_Packing);
+            }
+            if ( m_Separation >= 0 )
+            {
+                Codef(_T("%ASetToolSeparation(%d);\n"),m_Separation);
+            }
+            for ( int i=0; i<GetChildCount(); i++ )
+            {
+                wxsItem* Child = GetChild(i);
+                Child->BuildCode(GetCoderContext());
+                if ( Child->GetClassName() != _T("wxToolBarToolBase") )
                 {
-                    Codef(_T("%ASetToolBitmapSize(%z);\n"),&m_BitmapSize);
-                }
-                if ( !m_Margins.IsDefault )
-                {
-                    Codef(_T("%ASetMargins(%<);\n"),&m_Margins);
-                }
-                if ( m_Packing >= 0 )
-                {
-                    Codef(_T("%ASetToolPacking(%d);\n"),m_Packing);
-                }
-                if ( m_Separation >= 0 )
-                {
-                    Codef(_T("%ASetToolSeparation(%d);\n"),m_Separation);
-                }
-                for ( int i=0; i<GetChildCount(); i++ )
-                {
-                    wxsItem* Child = GetChild(i);
-                    Child->BuildCode(GetCoderContext());
-                    if ( Child->GetClassName() != _T("wxToolBarToolBase") )
-                    {
-                        Codef(_T("%AAddControl(%o);\n"),i);
-                    }
-                }
-                Codef(_T("%ARealize();\n"));
-                BuildSetupWindowCode();
-                if ( !GetParent() && GetResourceData()->GetClassType()==_T("wxFrame") )
-                {
-                    Codef(_T("SetToolBar(%O);\n"));
+                    Codef(_T("%AAddControl(%o);\n"),i);
                 }
             }
-            break;
+            Codef(_T("%ARealize();\n"));
+            BuildSetupWindowCode();
+            if ( !GetParent() && GetResourceData()->GetClassType()==_T("wxFrame") )
+            {
+                Codef(_T("SetToolBar(%O);\n"));
+            }
+        }
+        break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsToolBar::OnBuildCreatingCode"),GetLanguage());
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsToolBar::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
@@ -207,9 +207,9 @@ bool wxsToolBar::OnCanAddChild(wxsItem* Item,bool ShowMessage)
     {
         wxString ClassName = Item->GetClassName();
         if ( ClassName == _T("wxPanel") ||
-             ClassName == _T("wxDialog") ||
-             ClassName == _T("wxScrollingDialog") ||
-             ClassName == _T("wxFrame") )
+                ClassName == _T("wxDialog") ||
+                ClassName == _T("wxScrollingDialog") ||
+                ClassName == _T("wxFrame") )
         {
             if ( ShowMessage )
             {

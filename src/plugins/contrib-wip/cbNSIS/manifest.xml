@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="2" minor="16"  release="0" />
+    <Plugin name="cbNSIS">
+        <Value title="cbNSIS" />
+        <Value version="0.1.1" />
+        <Value description="" />
+        <Value author="GeO" />
+        <Value authorEmail="GeO.GeO@live.de" />
+        <Value authorWebsite="https://sourceforge.net/projects/fafnir/files/cbNSIS/windows" />
+        <Value thanksTo="" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

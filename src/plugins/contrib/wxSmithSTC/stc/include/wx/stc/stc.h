@@ -26,11 +26,11 @@
 
 
 #ifdef WXMAKINGDLL_STC
-    #define WXDLLIMPEXP_STC WXEXPORT
+#define WXDLLIMPEXP_STC WXEXPORT
 #elif defined(WXUSINGDLL)
-    #define WXDLLIMPEXP_STC WXIMPORT
+#define WXDLLIMPEXP_STC WXIMPORT
 #else // not making nor using DLL
-    #define WXDLLIMPEXP_STC
+#define WXDLLIMPEXP_STC
 #endif
 
 
@@ -1807,7 +1807,8 @@ class  WXDLLIMPEXP_STC wxStyledTextEvent;
 
 //----------------------------------------------------------------------
 
-class WXDLLIMPEXP_STC wxStyledTextCtrl : public wxControl {
+class WXDLLIMPEXP_STC wxStyledTextCtrl : public wxControl
+{
 public:
 
 #ifdef SWIG
@@ -1825,7 +1826,10 @@ public:
                      const wxPoint& pos = wxDefaultPosition,
                      const wxSize& size = wxDefaultSize, long style = 0,
                      const wxString& name = wxSTCNameStr);
-    wxStyledTextCtrl() { m_swx = NULL; }
+    wxStyledTextCtrl()
+    {
+        m_swx = NULL;
+    }
     ~wxStyledTextCtrl();
 
 #endif
@@ -1927,7 +1931,7 @@ public:
 
     // Retrieve the text of the line containing the caret.
     // Returns the index of the caret on the line.
-    #ifdef SWIG
+#ifdef SWIG
     wxString GetCurLine(int* OUTPUT);
 #else
     wxString GetCurLine(int* linePos=NULL);
@@ -1972,8 +1976,8 @@ public:
     // Set the symbol used for a particular marker number,
     // and optionally the fore and background colours.
     void MarkerDefine(int markerNumber, int markerSymbol,
-                const wxColour& foreground = wxNullColour,
-                const wxColour& background = wxNullColour);
+                      const wxColour& foreground = wxNullColour,
+                      const wxColour& background = wxNullColour);
 
     // Set the foreground colour used for a particular marker number.
     void MarkerSetForeground(int markerNumber, const wxColour& fore);
@@ -2351,12 +2355,12 @@ public:
 
     // On Windows, will draw the document into a display context such as a printer.
     int FormatRange(bool   doDraw,
-               int    startPos,
-               int    endPos,
-               wxDC*  draw,
-               wxDC*  target, 
-               wxRect renderRect,
-               wxRect pageRect);
+                    int    startPos,
+                    int    endPos,
+                    wxDC*  draw,
+                    wxDC*  target,
+                    wxRect renderRect,
+                    wxRect pageRect);
 
     // Retrieve the display line at the top of the display.
     int GetFirstVisibleLine();
@@ -3238,7 +3242,7 @@ public:
 
     // Set the font encoding to be used by a style.
     void StyleSetFontEncoding(int style, wxFontEncoding encoding);
-    
+
 
     // Perform one of the operations defined by the wxSTC_CMD_* constants.
     void CmdKeyExecute(int cmd);
@@ -3279,8 +3283,14 @@ public:
     void SetHScrollBar(wxScrollBar* bar);
 
     // Can be used to prevent the EVT_CHAR handler from adding the char
-    bool GetLastKeydownProcessed() { return m_lastKeyDownConsumed; }
-    void SetLastKeydownProcessed(bool val) { m_lastKeyDownConsumed = val; }
+    bool GetLastKeydownProcessed()
+    {
+        return m_lastKeyDownConsumed;
+    }
+    void SetLastKeydownProcessed(bool val)
+    {
+        m_lastKeyDownConsumed = val;
+    }
 
     // Write the contents of the editor to filename
     bool SaveFile(const wxString& filename);
@@ -3305,13 +3315,13 @@ public:
     bool GetUseAntiAliasing();
 
 
-    
+
     // The following methods are nearly equivallent to their similarly named
     // cousins above.  The difference is that these methods bypass wxString
     // and always use a char* even if used in a unicode build of wxWidgets.
     // In that case the character data will be utf-8 encoded since that is
     // what is used internally by Scintilla in unicode builds.
-    
+
     // Add text to the document at current position.
     void AddTextRaw(const char* text);
 
@@ -3400,7 +3410,8 @@ protected:
 
 //----------------------------------------------------------------------
 
-class WXDLLIMPEXP_STC wxStyledTextEvent : public wxCommandEvent {
+class WXDLLIMPEXP_STC wxStyledTextEvent : public wxCommandEvent
+{
 public:
     wxStyledTextEvent(wxEventType commandType=0, int id=0);
 #ifndef SWIG
@@ -3408,57 +3419,180 @@ public:
 #endif
     ~wxStyledTextEvent() {}
 
-    void SetPosition(int pos)             { m_position = pos; }
-    void SetKey(int k)                    { m_key = k; }
-    void SetModifiers(int m)              { m_modifiers = m; }
-    void SetModificationType(int t)       { m_modificationType = t; }
-    void SetText(const wxString& t)       { m_text = t; }
-    void SetLength(int len)               { m_length = len; }
-    void SetLinesAdded(int num)           { m_linesAdded = num; }
-    void SetLine(int val)                 { m_line = val; }
-    void SetFoldLevelNow(int val)         { m_foldLevelNow = val; }
-    void SetFoldLevelPrev(int val)        { m_foldLevelPrev = val; }
-    void SetMargin(int val)               { m_margin = val; }
-    void SetMessage(int val)              { m_message = val; }
-    void SetWParam(int val)               { m_wParam = val; }
-    void SetLParam(int val)               { m_lParam = val; }
-    void SetListType(int val)             { m_listType = val; }
-    void SetX(int val)                    { m_x = val; }
-    void SetY(int val)                    { m_y = val; }
-    void SetDragText(const wxString& val) { m_dragText = val; }
-    void SetDragAllowMove(bool val)       { m_dragAllowMove = val; }
+    void SetPosition(int pos)
+    {
+        m_position = pos;
+    }
+    void SetKey(int k)
+    {
+        m_key = k;
+    }
+    void SetModifiers(int m)
+    {
+        m_modifiers = m;
+    }
+    void SetModificationType(int t)
+    {
+        m_modificationType = t;
+    }
+    void SetText(const wxString& t)
+    {
+        m_text = t;
+    }
+    void SetLength(int len)
+    {
+        m_length = len;
+    }
+    void SetLinesAdded(int num)
+    {
+        m_linesAdded = num;
+    }
+    void SetLine(int val)
+    {
+        m_line = val;
+    }
+    void SetFoldLevelNow(int val)
+    {
+        m_foldLevelNow = val;
+    }
+    void SetFoldLevelPrev(int val)
+    {
+        m_foldLevelPrev = val;
+    }
+    void SetMargin(int val)
+    {
+        m_margin = val;
+    }
+    void SetMessage(int val)
+    {
+        m_message = val;
+    }
+    void SetWParam(int val)
+    {
+        m_wParam = val;
+    }
+    void SetLParam(int val)
+    {
+        m_lParam = val;
+    }
+    void SetListType(int val)
+    {
+        m_listType = val;
+    }
+    void SetX(int val)
+    {
+        m_x = val;
+    }
+    void SetY(int val)
+    {
+        m_y = val;
+    }
+    void SetDragText(const wxString& val)
+    {
+        m_dragText = val;
+    }
+    void SetDragAllowMove(bool val)
+    {
+        m_dragAllowMove = val;
+    }
 #ifdef  STC_USE_DND
-    void SetDragResult(wxDragResult val)  { m_dragResult = val; }
+    void SetDragResult(wxDragResult val)
+    {
+        m_dragResult = val;
+    }
 #endif
 
-    int  GetPosition() const         { return m_position; }
-    int  GetKey()  const             { return m_key; }
-    int  GetModifiers() const        { return m_modifiers; }
-    int  GetModificationType() const { return m_modificationType; }
-    wxString GetText() const         { return m_text; }
-    int  GetLength() const           { return m_length; }
-    int  GetLinesAdded() const       { return m_linesAdded; }
-    int  GetLine() const             { return m_line; }
-    int  GetFoldLevelNow() const     { return m_foldLevelNow; }
-    int  GetFoldLevelPrev() const    { return m_foldLevelPrev; }
-    int  GetMargin() const           { return m_margin; }
-    int  GetMessage() const          { return m_message; }
-    int  GetWParam() const           { return m_wParam; }
-    int  GetLParam() const           { return m_lParam; }
-    int  GetListType() const         { return m_listType; }
-    int  GetX() const                { return m_x; }
-    int  GetY() const                { return m_y; }
-    wxString GetDragText()           { return m_dragText; }
-    bool GetDragAllowMove()          { return m_dragAllowMove; }
+    int  GetPosition() const
+    {
+        return m_position;
+    }
+    int  GetKey()  const
+    {
+        return m_key;
+    }
+    int  GetModifiers() const
+    {
+        return m_modifiers;
+    }
+    int  GetModificationType() const
+    {
+        return m_modificationType;
+    }
+    wxString GetText() const
+    {
+        return m_text;
+    }
+    int  GetLength() const
+    {
+        return m_length;
+    }
+    int  GetLinesAdded() const
+    {
+        return m_linesAdded;
+    }
+    int  GetLine() const
+    {
+        return m_line;
+    }
+    int  GetFoldLevelNow() const
+    {
+        return m_foldLevelNow;
+    }
+    int  GetFoldLevelPrev() const
+    {
+        return m_foldLevelPrev;
+    }
+    int  GetMargin() const
+    {
+        return m_margin;
+    }
+    int  GetMessage() const
+    {
+        return m_message;
+    }
+    int  GetWParam() const
+    {
+        return m_wParam;
+    }
+    int  GetLParam() const
+    {
+        return m_lParam;
+    }
+    int  GetListType() const
+    {
+        return m_listType;
+    }
+    int  GetX() const
+    {
+        return m_x;
+    }
+    int  GetY() const
+    {
+        return m_y;
+    }
+    wxString GetDragText()
+    {
+        return m_dragText;
+    }
+    bool GetDragAllowMove()
+    {
+        return m_dragAllowMove;
+    }
 #ifdef STC_USE_DND
-    wxDragResult GetDragResult()     { return m_dragResult; }
+    wxDragResult GetDragResult()
+    {
+        return m_dragResult;
+    }
 #endif
 
     bool GetShift() const;
     bool GetControl() const;
     bool GetAlt() const;
 
-    virtual wxEvent* Clone() const { return new wxStyledTextEvent(*this); }
+    virtual wxEvent* Clone() const
+    {
+        return new wxStyledTextEvent(*this);
+    }
 
 #ifndef SWIG
 private:
@@ -3499,62 +3633,63 @@ private:
 
 #ifndef SWIG
 BEGIN_DECLARE_EVENT_TYPES()
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_CHANGE,             1650)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_STYLENEEDED,        1651)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_CHARADDED,          1652)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_SAVEPOINTREACHED,   1653)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_SAVEPOINTLEFT,      1654)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_ROMODIFYATTEMPT,    1655)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_KEY,                1656)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_DOUBLECLICK,        1657)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_UPDATEUI,           1658)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_MODIFIED,           1659)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_MACRORECORD,        1660)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_MARGINCLICK,        1661)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_NEEDSHOWN,          1662)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_PAINTED,            1664)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_USERLISTSELECTION,  1665)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_URIDROPPED,         1666)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_DWELLSTART,         1667)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_DWELLEND,           1668)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_START_DRAG,         1669)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_DRAG_OVER,          1670)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_DO_DROP,            1671)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_ZOOM,               1672)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_HOTSPOT_CLICK,      1673)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_HOTSPOT_DCLICK,     1674)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_CALLTIP_CLICK,      1675)
-    DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_AUTOCOMP_SELECTION, 1676)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_CHANGE,             1650)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_STYLENEEDED,        1651)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_CHARADDED,          1652)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_SAVEPOINTREACHED,   1653)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_SAVEPOINTLEFT,      1654)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_ROMODIFYATTEMPT,    1655)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_KEY,                1656)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_DOUBLECLICK,        1657)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_UPDATEUI,           1658)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_MODIFIED,           1659)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_MACRORECORD,        1660)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_MARGINCLICK,        1661)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_NEEDSHOWN,          1662)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_PAINTED,            1664)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_USERLISTSELECTION,  1665)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_URIDROPPED,         1666)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_DWELLSTART,         1667)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_DWELLEND,           1668)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_START_DRAG,         1669)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_DRAG_OVER,          1670)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_DO_DROP,            1671)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_ZOOM,               1672)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_HOTSPOT_CLICK,      1673)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_HOTSPOT_DCLICK,     1674)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_CALLTIP_CLICK,      1675)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_STC, wxEVT_STC_AUTOCOMP_SELECTION, 1676)
 END_DECLARE_EVENT_TYPES()
 #else
-    enum {
-        wxEVT_STC_CHANGE,
-        wxEVT_STC_STYLENEEDED,
-        wxEVT_STC_CHARADDED,
-        wxEVT_STC_SAVEPOINTREACHED,
-        wxEVT_STC_SAVEPOINTLEFT,
-        wxEVT_STC_ROMODIFYATTEMPT,
-        wxEVT_STC_KEY,
-        wxEVT_STC_DOUBLECLICK,
-        wxEVT_STC_UPDATEUI,
-        wxEVT_STC_MODIFIED,
-        wxEVT_STC_MACRORECORD,
-        wxEVT_STC_MARGINCLICK,
-        wxEVT_STC_NEEDSHOWN,
-        wxEVT_STC_PAINTED,
-        wxEVT_STC_USERLISTSELECTION,
-        wxEVT_STC_URIDROPPED,
-        wxEVT_STC_DWELLSTART,
-        wxEVT_STC_DWELLEND,
-        wxEVT_STC_START_DRAG,
-        wxEVT_STC_DRAG_OVER,
-        wxEVT_STC_DO_DROP,
-        wxEVT_STC_ZOOM,
-        wxEVT_STC_HOTSPOT_CLICK,
-        wxEVT_STC_HOTSPOT_DCLICK,
-        wxEVT_STC_CALLTIP_CLICK,
-        wxEVT_STC_AUTOCOMP_SELECTION
-    };
+enum
+{
+    wxEVT_STC_CHANGE,
+    wxEVT_STC_STYLENEEDED,
+    wxEVT_STC_CHARADDED,
+    wxEVT_STC_SAVEPOINTREACHED,
+    wxEVT_STC_SAVEPOINTLEFT,
+    wxEVT_STC_ROMODIFYATTEMPT,
+    wxEVT_STC_KEY,
+    wxEVT_STC_DOUBLECLICK,
+    wxEVT_STC_UPDATEUI,
+    wxEVT_STC_MODIFIED,
+    wxEVT_STC_MACRORECORD,
+    wxEVT_STC_MARGINCLICK,
+    wxEVT_STC_NEEDSHOWN,
+    wxEVT_STC_PAINTED,
+    wxEVT_STC_USERLISTSELECTION,
+    wxEVT_STC_URIDROPPED,
+    wxEVT_STC_DWELLSTART,
+    wxEVT_STC_DWELLEND,
+    wxEVT_STC_START_DRAG,
+    wxEVT_STC_DRAG_OVER,
+    wxEVT_STC_DO_DROP,
+    wxEVT_STC_ZOOM,
+    wxEVT_STC_HOTSPOT_CLICK,
+    wxEVT_STC_HOTSPOT_DCLICK,
+    wxEVT_STC_CALLTIP_CLICK,
+    wxEVT_STC_AUTOCOMP_SELECTION
+};
 #endif
 
 
@@ -3602,13 +3737,16 @@ WXDLLIMPEXP_STC const wxWX2MBbuf wx2stc(const wxString& str);
 
 #else // not UNICODE
 
-inline wxString stc2wx(const char* str) {
+inline wxString stc2wx(const char* str)
+{
     return wxString(str);
 }
-inline wxString stc2wx(const char* str, size_t len) {
+inline wxString stc2wx(const char* str, size_t len)
+{
     return wxString(str, len);
 }
-inline const wxWX2MBbuf wx2stc(const wxString& str) {
+inline const wxWX2MBbuf wx2stc(const wxString& str)
+{
     return str.mbc_str();
 }
 

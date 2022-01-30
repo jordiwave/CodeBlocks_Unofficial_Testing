@@ -176,7 +176,8 @@ struct TypeInfo<EditorBase>
 };
 
 template<>
-struct TypeInfo<EditorManager> {
+struct TypeInfo<EditorManager>
+{
     static const uint32_t typetag = uint32_t(TypeTag::EditorManager);
     static constexpr const SQChar *className = _SC("EditorManager");
     using baseClass = void;
@@ -209,7 +210,8 @@ struct TypeInfo<ProjectBuildTarget>
 class ProgressDialog;
 
 template<>
-struct TypeInfo<ProgressDialog> {
+struct TypeInfo<ProgressDialog>
+{
     static const uint32_t typetag = uint32_t(TypeTag::ProgressDialog);
     static constexpr const SQChar *className = _SC("ProgressDialog");
     using baseClass = void;

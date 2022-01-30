@@ -13,22 +13,22 @@ class SymTabExecDlg;
 
 class SymTab : public cbToolPlugin
 {
-/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+    /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 public:
-/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
-           SymTab();
-  virtual ~SymTab();
+    /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+    SymTab();
+    virtual ~SymTab();
 
-  int  Execute();
+    int  Execute();
 
-  void OnAttach(); // fires when the plugin is attached to the application
-  void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+    void OnAttach(); // fires when the plugin is attached to the application
+    void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 
-/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+    /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 private:
-/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
-  SymTabConfigDlg* CfgDlg;
-  SymTabExecDlg*   ExeDlg;
+    /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+    SymTabConfigDlg* CfgDlg;
+    SymTabExecDlg*   ExeDlg;
 };
 
 #endif // SYMTAB_H

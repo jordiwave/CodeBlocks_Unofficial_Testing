@@ -18,16 +18,16 @@
 #include "gdb_driver.h"
 
 #ifndef CB_PRECOMP
-    #include <algorithm>
+#include <algorithm>
 
-    #include "cbproject.h"
-    #include "manager.h"
-    #include "projectmanager.h"
+#include "cbproject.h"
+#include "manager.h"
+#include "projectmanager.h"
 #endif
 
 DebuggerState::DebuggerState(DebuggerGDB* plugin)
     : m_pPlugin(plugin),
-    m_pDriver(0)
+      m_pDriver(0)
 {
 }
 
@@ -101,7 +101,7 @@ wxString DebuggerState::ConvertToValidFilename(const wxString& filename)
 } // end of ConvertToValidFilename
 
 cb::shared_ptr<DebuggerBreakpoint> DebuggerState::AddBreakpoint(const wxString& file, int line,
-                                                                bool temp, const wxString& lineText)
+        bool temp, const wxString& lineText)
 {
     wxString bpfile = ConvertToValidFilename(file);
 

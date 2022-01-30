@@ -16,36 +16,39 @@
 
 class wxsGridBagSizerExtra: public wxsSizerExtra
 {
-	public:
-		long colspan;
-		long rowspan;
-		long col;
-		long row;
-		wxsGridBagSizerExtra();
-		wxString AllParamsCode(wxsCoderContext* Ctx);
+public:
+    long colspan;
+    long rowspan;
+    long col;
+    long row;
+    wxsGridBagSizerExtra();
+    wxString AllParamsCode(wxsCoderContext* Ctx);
 
-	protected:
-		virtual void OnEnumProperties(long Flags);
+protected:
+    virtual void OnEnumProperties(long Flags);
 };
 
 class wxsGridBagSizer: public wxsSizer
 {
-	public:
-		wxsGridBagSizer(wxsItemResData* Data);
+public:
+    wxsGridBagSizer(wxsItemResData* Data);
 
-	private:
-		virtual void OnBuildCreatingCode();
-		virtual wxsPropertyContainer* OnBuildExtra();
-		virtual wxGridBagSizer* OnBuildSizerPreview(wxWindow* Parent);
-		virtual void OnBuildSizerCreatingCode();
-		virtual void OnEnumSizerProperties(long Flags);
-		virtual bool OnIsPointer() { return true; }
-		wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+private:
+    virtual void OnBuildCreatingCode();
+    virtual wxsPropertyContainer* OnBuildExtra();
+    virtual wxGridBagSizer* OnBuildSizerPreview(wxWindow* Parent);
+    virtual void OnBuildSizerCreatingCode();
+    virtual void OnEnumSizerProperties(long Flags);
+    virtual bool OnIsPointer()
+    {
+        return true;
+    }
+    wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
 
-		wxsDimensionData VGap;
-		wxsDimensionData HGap;
-		wxString GrowableRows;
-		wxString GrowableCols;
+    wxsDimensionData VGap;
+    wxsDimensionData HGap;
+    wxString GrowableRows;
+    wxString GrowableCols;
 };
 
 #endif // WXSGRIDBAGSIZER_H

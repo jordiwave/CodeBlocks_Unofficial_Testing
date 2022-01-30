@@ -30,20 +30,20 @@ class wxsItem;
 /** \brief Class responsible for operations on wxWidgets items inside resource tree */
 class wxsItemResTreeData: public wxsResourceTreeItemData
 {
-    public:
+public:
 
-        /** \brief Ctor */
-        wxsItemResTreeData(wxsItem* Item);
+    /** \brief Ctor */
+    wxsItemResTreeData(wxsItem* Item);
 
-        /** \brief Dctor */
-        virtual ~wxsItemResTreeData();
+    /** \brief Dctor */
+    virtual ~wxsItemResTreeData();
 
-    private:
+private:
 
-        virtual void OnSelect();
-        virtual void OnRightClick();
+    virtual void OnSelect();
+    virtual void OnRightClick();
 
-        wxsItem* m_Item;
+    wxsItem* m_Item;
 };
 
 

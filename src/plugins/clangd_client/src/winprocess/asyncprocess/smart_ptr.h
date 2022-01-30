@@ -62,28 +62,46 @@ template <class T> class SmartPtr
         /**
          * Destructor
          */
-        virtual ~SmartPtrRef() { delete m_data; }
+        virtual ~SmartPtrRef()
+        {
+            delete m_data;
+        }
 
         /**
          * \return Pointer to the row data
          */
-        T* GetData() { return m_data; }
+        T* GetData()
+        {
+            return m_data;
+        }
 
-        const T* GetData() const { return m_data; }
+        const T* GetData() const
+        {
+            return m_data;
+        }
         /**
          * Increase reference counting by 1
          */
-        void IncRef() { m_refCount++; }
+        void IncRef()
+        {
+            m_refCount++;
+        }
 
         /**
          * Decrease reference counting by 1
          */
-        void DecRef() { m_refCount--; }
+        void DecRef()
+        {
+            m_refCount--;
+        }
         /**
          * Return the current reference counting
          * \return current reference counting
          */
-        int GetRefCount() { return m_refCount; }
+        int GetRefCount()
+        {
+            return m_refCount;
+        }
     };
 
     SmartPtrRef* m_ref;
@@ -133,7 +151,8 @@ public:
         if(!rhs.m_ref) return *this;
 
         m_ref = rhs.m_ref;
-        if(m_ref) {
+        if(m_ref)
+        {
             m_ref->IncRef();
         }
         return *this;
@@ -142,7 +161,10 @@ public:
     /**
      * Destructor
      */
-    virtual ~SmartPtr() { DeleteRefCount(); }
+    virtual ~SmartPtr()
+    {
+        DeleteRefCount();
+    }
 
     /**
      * Replace the current pointer with ptr
@@ -159,20 +181,32 @@ public:
      * Return pointer the row data pointer
      * \return pointer to the row data pointer
      */
-    T* Get() { return m_ref->GetData(); }
+    T* Get()
+    {
+        return m_ref->GetData();
+    }
 
-    const T* Get() const { return m_ref->GetData(); }
+    const T* Get() const
+    {
+        return m_ref->GetData();
+    }
     /**
      * Overload the '->' operator
      * \return pointer to the row data pointer
      */
-    T* operator->() const { return m_ref->GetData(); }
+    T* operator->() const
+    {
+        return m_ref->GetData();
+    }
 
     /**
      * Dereference operator
      * \return dereference the row data
      */
-    T& operator*() const { return *(m_ref->GetData()); }
+    T& operator*() const
+    {
+        return *(m_ref->GetData());
+    }
 
     /**
      * Test for NULL operator
@@ -189,23 +223,33 @@ public:
      * test for bool operation
      * \return true of the internal raw data exist and it is not null
      */
-    operator bool() const { return m_ref && m_ref->GetData(); }
+    operator bool() const
+    {
+        return m_ref && m_ref->GetData();
+    }
 
 private:
     void DeleteRefCount()
     {
         // decrease the ref count (or delete pointer if it is 1)
-        if(m_ref) {
-            if(m_ref->GetRefCount() == 1) {
+        if(m_ref)
+        {
+            if(m_ref->GetRefCount() == 1)
+            {
                 delete m_ref;
                 m_ref = NULL;
-            } else {
+            }
+            else
+            {
                 m_ref->DecRef();
             }
         }
     };
 
-    void CreateFresh(T* ptr) { m_ref = new SmartPtrRef(ptr); }
+    void CreateFresh(T* ptr)
+    {
+        m_ref = new SmartPtrRef(ptr);
+    }
 };
 
 #endif // CODELITE_SMART_PTR_H

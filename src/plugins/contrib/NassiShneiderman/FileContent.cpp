@@ -6,8 +6,8 @@
 #include <wx/cmdproc.h>
 
 
-FileContentObserver::FileContentObserver(){}
-FileContentObserver::~FileContentObserver(){}
+FileContentObserver::FileContentObserver() {}
+FileContentObserver::~FileContentObserver() {}
 
 
 FileContent::FileContent():
@@ -47,13 +47,25 @@ bool FileContent::Open(const wxString &filename)
     return true;
 }
 
-bool FileContent::GetModified(){return m_modified;}
+bool FileContent::GetModified()
+{
+    return m_modified;
+}
 
-void FileContent::SetModified( bool modified ) {m_modified = modified;}
+void FileContent::SetModified( bool modified )
+{
+    m_modified = modified;
+}
 
-void FileContent::Modify( bool modified ){SetModified(modified);}
+void FileContent::Modify( bool modified )
+{
+    SetModified(modified);
+}
 
-bool FileContent::IsReadOnly(){ return false; }
+bool FileContent::IsReadOnly()
+{
+    return false;
+}
 
 void FileContent::NotifyObservers(wxObject* hint)
 {

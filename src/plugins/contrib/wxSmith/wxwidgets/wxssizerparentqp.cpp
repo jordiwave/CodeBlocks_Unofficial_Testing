@@ -191,8 +191,8 @@ void wxsSizerParentQP::ReadData()
     BrdTop    ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::BorderTop)    != 0 );
     BrdBottom ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::BorderBottom) != 0 );
     BrdAll    ->SetValue(   (m_Extra->Flags & wxsSizerFlagsProperty::BorderAll) != 0
-                         || (   BrdLeft->IsChecked() && BrdRight->IsChecked()
-                             && BrdTop->IsChecked()  && BrdBottom->IsChecked()) );
+                            || (   BrdLeft->IsChecked() && BrdRight->IsChecked()
+                                   && BrdTop->IsChecked()  && BrdBottom->IsChecked()) );
     BrdSize   ->SetValue(m_Extra->Border.Value);
     BrdDlg    ->SetValue(m_Extra->Border.DialogUnits);
 
@@ -216,21 +216,24 @@ void wxsSizerParentQP::ReadData()
 
     if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignBottom )
     {
-        if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignRight )            PlaceRB->SetValue(true); else
-        if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignCenterHorizontal ) PlaceCB->SetValue(true); else
-                                                                           PlaceLB->SetValue(true);
+        if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignRight )            PlaceRB->SetValue(true);
+        else if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignCenterHorizontal ) PlaceCB->SetValue(true);
+        else
+            PlaceLB->SetValue(true);
     }
     else if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignCenterVertical )
     {
-        if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignRight )            PlaceRC->SetValue(true); else
-        if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignCenterHorizontal ) PlaceCC->SetValue(true); else
-                                                                           PlaceLC->SetValue(true);
+        if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignRight )            PlaceRC->SetValue(true);
+        else if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignCenterHorizontal ) PlaceCC->SetValue(true);
+        else
+            PlaceLC->SetValue(true);
     }
     else
     {
-        if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignRight )            PlaceRT->SetValue(true); else
-        if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignCenterHorizontal ) PlaceCT->SetValue(true); else
-                                                                           PlaceLT->SetValue(true);
+        if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignRight )            PlaceRT->SetValue(true);
+        else if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignCenterHorizontal ) PlaceCT->SetValue(true);
+        else
+            PlaceLT->SetValue(true);
     }
 }
 

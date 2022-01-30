@@ -35,8 +35,8 @@
 #include <tinywxuni.h>
 
 #if defined(__WXMSW__) && defined(LoadImage)
-    // Fix Windows winuser.h Header define of LoadImage.
-    #undef LoadImage
+// Fix Windows winuser.h Header define of LoadImage.
+#undef LoadImage
 #endif
 
 
@@ -44,7 +44,7 @@ using namespace wxsFlags;
 
 namespace
 {
-    const int ToolsTreeImageId = wxsResourceTree::LoadImage(_T("images/wxsmith/tools16.png"));
+const int ToolsTreeImageId = wxsResourceTree::LoadImage(_T("images/wxsmith/tools16.png"));
 }
 
 wxsItemResData::wxsItemResData(
@@ -60,31 +60,31 @@ wxsItemResData::wxsItemResData(
     wxsResourceItemId TreeId,
     wxsItemEditor* Editor,
     wxsItemResFunctions* Functions):
-        m_WxsFileName(WxsFileName),
-        m_SrcFileName(SrcFileName),
-        m_HdrFileName(HdrFileName),
-        m_XrcFileName(XrcFileName),
-        m_Translation(WithTranslation),
-        m_ClassName(ClassName),
-        m_ClassType(ClassType),
-        m_Language(Language),
-        m_TreeId(TreeId),
-        m_ToolsId(),
-        m_ToolsNodeIsExpanded(false),
-        m_Editor(Editor),
-        m_Functions(Functions),
-        m_RootItem(0),
-        m_RootSelection(0),
-        m_Preview(0),
-        m_Corrector(this),
-        m_IsOK(false),
-        m_LockCount(0),
-        m_ReadOnly(false)
+    m_WxsFileName(WxsFileName),
+    m_SrcFileName(SrcFileName),
+    m_HdrFileName(HdrFileName),
+    m_XrcFileName(XrcFileName),
+    m_Translation(WithTranslation),
+    m_ClassName(ClassName),
+    m_ClassType(ClassType),
+    m_Language(Language),
+    m_TreeId(TreeId),
+    m_ToolsId(),
+    m_ToolsNodeIsExpanded(false),
+    m_Editor(Editor),
+    m_Functions(Functions),
+    m_RootItem(0),
+    m_RootSelection(0),
+    m_Preview(0),
+    m_Corrector(this),
+    m_IsOK(false),
+    m_LockCount(0),
+    m_ReadOnly(false)
 {
     if (  WxsFileName.empty() &&
-          SrcFileName.empty() &&
-          HdrFileName.empty() &&
-         !XrcFileName.empty() )
+            SrcFileName.empty() &&
+            HdrFileName.empty() &&
+            !XrcFileName.empty() )
     {
         m_PropertiesFilter = flFile;
     }
@@ -189,20 +189,20 @@ bool wxsItemResData::SilentLoad()
 {
     switch ( m_PropertiesFilter & (flFile|flMixed|flSource) )
     {
-        case flFile:
-            m_IsOK = LoadInFileMode();
-            break;
+    case flFile:
+        m_IsOK = LoadInFileMode();
+        break;
 
-        case flMixed:
-            m_IsOK = LoadInMixedMode();
-            break;
+    case flMixed:
+        m_IsOK = LoadInMixedMode();
+        break;
 
-        case flSource:
-            m_IsOK = LoadInSourceMode();
-            break;
+    case flSource:
+        m_IsOK = LoadInSourceMode();
+        break;
 
-        default:
-            m_IsOK = false;
+    default:
+        m_IsOK = false;
     }
     return m_IsOK;
 }
@@ -407,17 +407,17 @@ bool wxsItemResData::Save()
     m_IsOK = true;
     switch ( m_PropertiesFilter & (flFile|flMixed|flSource) )
     {
-        case flFile:
-            return SaveInFileMode();
+    case flFile:
+        return SaveInFileMode();
 
-        case flMixed:
-            return SaveInMixedMode();
+    case flMixed:
+        return SaveInMixedMode();
 
-        case flSource:
-            return SaveInSourceMode();
+    case flSource:
+        return SaveInSourceMode();
 
-        default:
-            break;
+    default:
+        break;
     }
 
     return false;
@@ -523,17 +523,17 @@ void wxsItemResData::RebuildFiles()
 {
     switch ( m_PropertiesFilter & (flSource|flMixed|flSource) )
     {
-        case flSource:
-            RebuildSourceCode();
-            break;
+    case flSource:
+        RebuildSourceCode();
+        break;
 
-        case flMixed:
-            RebuildSourceCode();
-            RebuildXrcFile();
-            break;
+    case flMixed:
+        RebuildSourceCode();
+        RebuildXrcFile();
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -544,19 +544,19 @@ void wxsItemResData::DetectAutoCodeBlocks()
     do
     {
         if ( wxsCoder::Get()->GetCode(
-                m_SrcFileName,
-                wxsCodeMarks::Beg(wxsCPP,_T("InternalHeadersPCH"),m_ClassName),
-                wxsCodeMarks::End(wxsCPP),
-                true,false).IsEmpty() )
+                    m_SrcFileName,
+                    wxsCodeMarks::Beg(wxsCPP,_T("InternalHeadersPCH"),m_ClassName),
+                    wxsCodeMarks::End(wxsCPP),
+                    true,false).IsEmpty() )
         {
             break;
         }
 
         if ( wxsCoder::Get()->GetCode(
-                m_HdrFileName,
-                wxsCodeMarks::Beg(wxsCPP,_T("HeadersPCH"),m_ClassName),
-                wxsCodeMarks::End(wxsCPP),
-                true,false).IsEmpty() )
+                    m_HdrFileName,
+                    wxsCodeMarks::Beg(wxsCPP,_T("HeadersPCH"),m_ClassName),
+                    wxsCodeMarks::End(wxsCPP),
+                    true,false).IsEmpty() )
         {
             break;
         }
@@ -567,155 +567,155 @@ void wxsItemResData::DetectAutoCodeBlocks()
 
     // Check if we should clear event table
     m_IsEventTable = !wxsCoder::Get()->GetCode(
-        m_HdrFileName,
-        wxsCodeMarks::Beg(wxsCPP,_T("EventTable"),m_ClassName),
-        wxsCodeMarks::End(wxsCPP),
-        true,false).IsEmpty();
+                         m_HdrFileName,
+                         wxsCodeMarks::Beg(wxsCPP,_T("EventTable"),m_ClassName),
+                         wxsCodeMarks::End(wxsCPP),
+                         true,false).IsEmpty();
 }
 
 void wxsItemResData::RebuildSourceCode()
 {
     switch ( m_Language )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        wxStopWatch SW;
+
+        wxsCoderContext Context;
+
+        // Setup language
+        Context.m_Language = m_Language;
+        Context.m_Flags = GetPropertiesFilter();
+
+        // Set-up parent for root item
+        if ( m_RootItem->GetBaseProps()->m_ParentFromArg )
         {
-            wxStopWatch SW;
+            // use procedure's argument if there's any used...
+            Context.m_WindowParent = _T("parent");
+        }
+        else
+        {
+            // ...or null if there's none
+            Context.m_WindowParent = _T("0");
+        }
 
-            wxsCoderContext Context;
+        // Add some initial headers
+        if (m_Translation)
+            Context.AddHeader(_T("<wx/intl.h>"),_T(""),hfLocal|hfInPCH);
+        Context.AddHeader(_T("<wx/string.h>"),_T(""),hfLocal|hfInPCH);
+        if ( m_PropertiesFilter & flMixed )
+        {
+            Context.m_LocalHeadersNonPCH.insert(_T("<wx/xrc/xmlres.h>"));
+        }
 
-            // Setup language
-            Context.m_Language = m_Language;
-            Context.m_Flags = GetPropertiesFilter();
+        // Creating local and global declarations
+        // Root item will automatically iterate thorough all tools so don't need to do it here
+        m_RootItem->BuildCode(&Context);
 
-            // Set-up parent for root item
-            if ( m_RootItem->GetBaseProps()->m_ParentFromArg )
-            {
-                // use procedure's argument if there's any used...
-                Context.m_WindowParent = _T("parent");
-            }
-            else
-            {
-                // ...or null if there's none
-                Context.m_WindowParent = _T("0");
-            }
+        wxsCoder::Get()->AddCode(
+            m_HdrFileName,
+            wxsCodeMarks::Beg(wxsCPP,_T("Declarations"),m_ClassName),
+            wxsCodeMarks::End(wxsCPP),
+            DeclarationsCode(&Context),
+            false );
 
-            // Add some initial headers
-            if (m_Translation)
-                Context.AddHeader(_T("<wx/intl.h>"),_T(""),hfLocal|hfInPCH);
-            Context.AddHeader(_T("<wx/string.h>"),_T(""),hfLocal|hfInPCH);
-            if ( m_PropertiesFilter & flMixed )
-            {
-                Context.m_LocalHeadersNonPCH.insert(_T("<wx/xrc/xmlres.h>"));
-            }
+        wxsCoder::Get()->AddCode(
+            m_HdrFileName,
+            wxsCodeMarks::Beg(wxsCPP,_T("Identifiers"),m_ClassName),
+            wxsCodeMarks::End(wxsCPP),
+            IdentifiersCode(&Context),
+            false );
 
-            // Creating local and global declarations
-            // Root item will automatically iterate thorough all tools so don't need to do it here
-            m_RootItem->BuildCode(&Context);
+        wxsCoder::Get()->AddCode(
+            m_SrcFileName,
+            wxsCodeMarks::Beg(wxsCPP,_T("Initialize"),m_ClassName),
+            wxsCodeMarks::End(wxsCPP),
+            InitializeCode(&Context),
+            false );
+
+        wxsCoder::Get()->AddCode(
+            m_SrcFileName,
+            wxsCodeMarks::Beg(wxsCPP,_T("Destroy"),m_ClassName),
+            wxsCodeMarks::End(wxsCPP),
+            DestroyCode(&Context),
+            false );
+
+        wxsCoder::Get()->AddCode(
+            m_SrcFileName,
+            wxsCodeMarks::Beg(wxsCPP,_T("IdInit"),m_ClassName),
+            wxsCodeMarks::End(wxsCPP),
+            IdInitCode(&Context),
+            false );
+
+        if ( m_IsEventTable )
+        {
+            wxsCoder::Get()->AddCode(
+                m_SrcFileName,
+                wxsCodeMarks::Beg(wxsCPP,_T("EventTable"),m_ClassName),
+                wxsCodeMarks::End(wxsCPP),
+                _T("\n"),
+                false );    // This clears previously used event table for event binding
+        }
+
+        if ( m_PropertiesFilter & flPchFilter )
+        {
+
+            wxsCoder::Get()->AddCode(
+                m_SrcFileName,
+                wxsCodeMarks::Beg(wxsCPP,_T("InternalHeadersPCH"),m_ClassName),
+                wxsCodeMarks::End(wxsCPP),
+                InternalHeadersCode(&Context),
+                false );
+
+            wxsCoder::Get()->AddCode(
+                m_SrcFileName,
+                wxsCodeMarks::Beg(wxsCPP,_T("InternalHeaders"),m_ClassName),
+                wxsCodeMarks::End(wxsCPP),
+                InternalHeadersNoPCHCode(&Context),
+                false );
 
             wxsCoder::Get()->AddCode(
                 m_HdrFileName,
-                wxsCodeMarks::Beg(wxsCPP,_T("Declarations"),m_ClassName),
+                wxsCodeMarks::Beg(wxsCPP,_T("HeadersPCH"),m_ClassName),
                 wxsCodeMarks::End(wxsCPP),
-                DeclarationsCode(&Context),
+                HeadersCode(&Context),
                 false );
 
             wxsCoder::Get()->AddCode(
                 m_HdrFileName,
-                wxsCodeMarks::Beg(wxsCPP,_T("Identifiers"),m_ClassName),
+                wxsCodeMarks::Beg(wxsCPP,_T("Headers"),m_ClassName),
                 wxsCodeMarks::End(wxsCPP),
-                IdentifiersCode(&Context),
+                HeadersNoPCHCode(&Context),
                 false );
-
-            wxsCoder::Get()->AddCode(
-                m_SrcFileName,
-                wxsCodeMarks::Beg(wxsCPP,_T("Initialize"),m_ClassName),
-                wxsCodeMarks::End(wxsCPP),
-                InitializeCode(&Context),
-                false );
-
-            wxsCoder::Get()->AddCode(
-                m_SrcFileName,
-                wxsCodeMarks::Beg(wxsCPP,_T("Destroy"),m_ClassName),
-                wxsCodeMarks::End(wxsCPP),
-                DestroyCode(&Context),
-                false );
-
-            wxsCoder::Get()->AddCode(
-                m_SrcFileName,
-                wxsCodeMarks::Beg(wxsCPP,_T("IdInit"),m_ClassName),
-                wxsCodeMarks::End(wxsCPP),
-                IdInitCode(&Context),
-                false );
-
-            if ( m_IsEventTable )
-            {
-                wxsCoder::Get()->AddCode(
-                    m_SrcFileName,
-                    wxsCodeMarks::Beg(wxsCPP,_T("EventTable"),m_ClassName),
-                    wxsCodeMarks::End(wxsCPP),
-                    _T("\n"),
-                    false );    // This clears previously used event table for event binding
-            }
-
-            if ( m_PropertiesFilter & flPchFilter )
-            {
-
-                wxsCoder::Get()->AddCode(
-                    m_SrcFileName,
-                    wxsCodeMarks::Beg(wxsCPP,_T("InternalHeadersPCH"),m_ClassName),
-                    wxsCodeMarks::End(wxsCPP),
-                    InternalHeadersCode(&Context),
-                    false );
-
-                wxsCoder::Get()->AddCode(
-                    m_SrcFileName,
-                    wxsCodeMarks::Beg(wxsCPP,_T("InternalHeaders"),m_ClassName),
-                    wxsCodeMarks::End(wxsCPP),
-                    InternalHeadersNoPCHCode(&Context),
-                    false );
-
-                wxsCoder::Get()->AddCode(
-                    m_HdrFileName,
-                    wxsCodeMarks::Beg(wxsCPP,_T("HeadersPCH"),m_ClassName),
-                    wxsCodeMarks::End(wxsCPP),
-                    HeadersCode(&Context),
-                    false );
-
-                wxsCoder::Get()->AddCode(
-                    m_HdrFileName,
-                    wxsCodeMarks::Beg(wxsCPP,_T("Headers"),m_ClassName),
-                    wxsCodeMarks::End(wxsCPP),
-                    HeadersNoPCHCode(&Context),
-                    false );
-            }
-            else
-            {
-                wxsCoder::Get()->AddCode(
-                    m_SrcFileName,
-                    wxsCodeMarks::Beg(wxsCPP,_T("InternalHeaders"),m_ClassName),
-                    wxsCodeMarks::End(wxsCPP),
-                    InternalHeadersAllCode(&Context),
-                    false );
-
-                wxsCoder::Get()->AddCode(
-                    m_HdrFileName,
-                    wxsCodeMarks::Beg(wxsCPP,_T("Headers"),m_ClassName),
-                    wxsCodeMarks::End(wxsCPP),
-                    HeadersAllCode(&Context),
-                    false );
-            }
-
-            wxsCoder::Get()->Flush(500);
-            //Manager::Get()->GetLogManager()->DebugLog(F(_T("wxSmith: New code built in %d milis"),SW.Time()));
-
-            break;
         }
-
-        case wxsUnknownLanguage: // fall-through
-        default:
+        else
         {
-            wxsCodeMarks::Unknown(_T("wxsItemResData::RebuildSourceCode"),m_Language);
+            wxsCoder::Get()->AddCode(
+                m_SrcFileName,
+                wxsCodeMarks::Beg(wxsCPP,_T("InternalHeaders"),m_ClassName),
+                wxsCodeMarks::End(wxsCPP),
+                InternalHeadersAllCode(&Context),
+                false );
+
+            wxsCoder::Get()->AddCode(
+                m_HdrFileName,
+                wxsCodeMarks::Beg(wxsCPP,_T("Headers"),m_ClassName),
+                wxsCodeMarks::End(wxsCPP),
+                HeadersAllCode(&Context),
+                false );
         }
+
+        wxsCoder::Get()->Flush(500);
+        //Manager::Get()->GetLogManager()->DebugLog(F(_T("wxSmith: New code built in %d milis"),SW.Time()));
+
+        break;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsItemResData::RebuildSourceCode"),m_Language);
+    }
     }
 
 }

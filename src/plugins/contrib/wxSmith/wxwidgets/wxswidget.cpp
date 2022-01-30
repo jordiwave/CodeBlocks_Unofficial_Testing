@@ -30,7 +30,7 @@ wxsWidget::wxsWidget(
     const wxsEventDesc* EventArray,
     const wxsStyleSet* StyleSet,
     long PropertiesFlags):
-        wxsItem(Data,Info,PropertiesFlags,EventArray,StyleSet)
+    wxsItem(Data,Info,PropertiesFlags,EventArray,StyleSet)
 {
 
 }

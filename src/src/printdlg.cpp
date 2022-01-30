@@ -9,16 +9,16 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/intl.h>
-    #include <wx/checkbox.h>
-    #include <wx/radiobox.h>
-    #include <wx/string.h>
-    #include <wx/xrc/xmlres.h>
-    #include "cbeditor.h"
-    #include "configmanager.h"
-    #include "editormanager.h"
-    #include "manager.h"
+#include <wx/button.h>
+#include <wx/intl.h>
+#include <wx/checkbox.h>
+#include <wx/radiobox.h>
+#include <wx/string.h>
+#include <wx/xrc/xmlres.h>
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "manager.h"
 #endif
 #include "cbstyledtextctrl.h"
 
@@ -26,17 +26,17 @@
 
 PrintDialog::PrintDialog(wxWindow* parent)
 {
-	//ctor
-	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgPrint"),_T("wxScrollingDialog"));
-	XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
+    //ctor
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgPrint"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
-	cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-	if (ed)
-	{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
         bool hasSel = ed->GetControl()->GetSelectedText().Length();
         XRCCTRL(*this, "rbScope", wxRadioBox)->SetSelection(hasSel ? 0 : 1);
-	}
-	else
+    }
+    else
         XRCCTRL(*this, "rbScope", wxRadioBox)->SetSelection(1);
 
     int mode = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/print_mode"), 1);
@@ -47,7 +47,7 @@ PrintDialog::PrintDialog(wxWindow* parent)
 
 PrintDialog::~PrintDialog()
 {
-	//dtor
+    //dtor
 }
 
 PrintScope PrintDialog::GetPrintScope() const

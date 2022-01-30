@@ -19,38 +19,38 @@
 
 class TidyCmtSettings : public wxPanel
 {
-	public:
+public:
 
-		TidyCmtSettings(wxWindow* parent, const TidyCmtConfig& tcc);
-		virtual ~TidyCmtSettings();
+    TidyCmtSettings(wxWindow* parent, const TidyCmtConfig& tcc);
+    virtual ~TidyCmtSettings();
 
-		TidyCmtConfig GetTidyCmtConfig();
+    TidyCmtConfig GetTidyCmtConfig();
 
-		//(*Identifiers(TidyCmtSettings)
-		static const long ID_CHK_ENABLE;
-		static const long ID_SPN_LENGTH;
-		static const long ID_TXT_SINGLE_LINE_CMT;
-		static const long ID_TXT_MULTI_LINE_CMT;
-		//*)
+    //(*Identifiers(TidyCmtSettings)
+    static const long ID_CHK_ENABLE;
+    static const long ID_SPN_LENGTH;
+    static const long ID_TXT_SINGLE_LINE_CMT;
+    static const long ID_TXT_MULTI_LINE_CMT;
+    //*)
 
-	protected:
+protected:
 
-		//(*Handlers(TidyCmtSettings)
-		void OnEnableClick(wxCommandEvent& event);
-		//*)
+    //(*Handlers(TidyCmtSettings)
+    void OnEnableClick(wxCommandEvent& event);
+    //*)
 
-		//(*Declarations(TidyCmtSettings)
-		wxCheckBox* chkEnable;
-		wxSpinCtrl* spnLength;
-		wxTextCtrl* txtMultiLineCmt;
-		wxTextCtrl* txtSingleLineCmt;
-		//*)
+    //(*Declarations(TidyCmtSettings)
+    wxCheckBox* chkEnable;
+    wxSpinCtrl* spnLength;
+    wxTextCtrl* txtMultiLineCmt;
+    wxTextCtrl* txtSingleLineCmt;
+    //*)
 
-	private:
+private:
 
     void DoEnable(bool en);
 
-		DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // TIDYCMTSETTINGS_H

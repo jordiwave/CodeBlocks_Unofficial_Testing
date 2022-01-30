@@ -12,29 +12,35 @@
 
 class EditMimeTypesDlg : public cbConfigurationPanel
 {
-    public:
-        EditMimeTypesDlg(wxWindow* parent, MimeTypesArray& array);
-        ~EditMimeTypesDlg() override;
+public:
+    EditMimeTypesDlg(wxWindow* parent, MimeTypesArray& array);
+    ~EditMimeTypesDlg() override;
 
-        wxString GetTitle() const override { return _("Files extension handling"); }
-        wxString GetBitmapBaseName() const override { return _T("extensions"); }
-        void OnApply() override;
-        void OnCancel() override {}
-    private:
-        void FillList();
-        void UpdateDisplay();
-        void Save(int index);
-        void OnSelectionChanged(wxCommandEvent& event);
-        void OnActionChanged(wxCommandEvent& event);
-        void OnBrowseProgram(wxCommandEvent& event);
-        void OnNew(wxCommandEvent& event);
-        void OnDelete(wxCommandEvent& event);
+    wxString GetTitle() const override
+    {
+        return _("Files extension handling");
+    }
+    wxString GetBitmapBaseName() const override
+    {
+        return _T("extensions");
+    }
+    void OnApply() override;
+    void OnCancel() override {}
+private:
+    void FillList();
+    void UpdateDisplay();
+    void Save(int index);
+    void OnSelectionChanged(wxCommandEvent& event);
+    void OnActionChanged(wxCommandEvent& event);
+    void OnBrowseProgram(wxCommandEvent& event);
+    void OnNew(wxCommandEvent& event);
+    void OnDelete(wxCommandEvent& event);
 
-        MimeTypesArray& m_Array;
-        int m_Selection;
-        int m_LastSelection;
+    MimeTypesArray& m_Array;
+    int m_Selection;
+    int m_LastSelection;
 
-        DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 };
 
 #endif // EDITMIMETYPESDLG_H

@@ -24,20 +24,20 @@
 /** \brief Class for wxsAuiToolBarItem widget */
 class wxsAuiToolBarItem: public wxsAuiToolBarItemBase
 {
-    public:
+public:
 
-        wxsBitmapData m_Bitmap;
-        wxsBitmapData m_DisabledBitmap;
-        wxString      m_ShortHelp;
-        wxString      m_LongHelp;
-        wxItemKind    m_ItemKind;
-        bool          m_DropDown;
+    wxsBitmapData m_Bitmap;
+    wxsBitmapData m_DisabledBitmap;
+    wxString      m_ShortHelp;
+    wxString      m_LongHelp;
+    wxItemKind    m_ItemKind;
+    bool          m_DropDown;
 
-        wxsAuiToolBarItem(wxsItemResData* Data);
+    wxsAuiToolBarItem(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnEnumItemProperties(long Flags);
+    virtual void OnEnumItemProperties(long Flags);
 };
 
 #endif

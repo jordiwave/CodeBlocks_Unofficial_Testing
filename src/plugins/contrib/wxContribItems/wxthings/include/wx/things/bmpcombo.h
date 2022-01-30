@@ -49,18 +49,21 @@ enum wxBmpComboBox_Style
 class WXDLLIMPEXP_THINGS wxBmpComboBox : public DropDownBase
 {
 public:
-    wxBmpComboBox() : DropDownBase() { Init(); }
+    wxBmpComboBox() : DropDownBase()
+    {
+        Init();
+    }
 
     // Compatible with a wxComboBox, uses strings only
     wxBmpComboBox(wxWindow *parent, wxWindowID id,
-                     const wxString& value = wxEmptyString, // used only if first choice is !null
-                     const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxDefaultSize,
-                     int n = 0, const wxString choices[] = (const wxString *) NULL,
-                     long style = wxBMPCOMBO_RIGHT,
-                     const wxValidator& val = wxDefaultValidator,
-                     const wxString& name = wxT("wxBmpComboBox"))
-                    :DropDownBase()
+                  const wxString& value = wxEmptyString, // used only if first choice is !null
+                  const wxPoint& pos = wxDefaultPosition,
+                  const wxSize& size = wxDefaultSize,
+                  int n = 0, const wxString choices[] = (const wxString *) NULL,
+                  long style = wxBMPCOMBO_RIGHT,
+                  const wxValidator& val = wxDefaultValidator,
+                  const wxString& name = wxT("wxBmpComboBox"))
+        :DropDownBase()
     {
         Init();
         if ((n > 0) || (!value.IsEmpty()))
@@ -79,14 +82,14 @@ public:
     // Native constructor (only adds first item) you probably want to
     // use the largest item first so that the size is correct from the start.
     wxBmpComboBox(wxWindow* parent, wxWindowID id,
-                     const wxString& label,
-                     const wxBitmap& bitmap,
-                     const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxDefaultSize,
-                     long style = wxBMPCOMBO_RIGHT,
-                     const wxValidator& val = wxDefaultValidator,
-                     const wxString& name = wxT("wxBmpComboBox"))
-                    :DropDownBase()
+                  const wxString& label,
+                  const wxBitmap& bitmap,
+                  const wxPoint& pos = wxDefaultPosition,
+                  const wxSize& size = wxDefaultSize,
+                  long style = wxBMPCOMBO_RIGHT,
+                  const wxValidator& val = wxDefaultValidator,
+                  const wxString& name = wxT("wxBmpComboBox"))
+        :DropDownBase()
     {
         Init();
         Append(label, bitmap);
@@ -116,9 +119,15 @@ public:
     void Clear();
     void Delete( unsigned int n, unsigned int count = 1 );
 
-    size_t GetCount() const { return m_labels.GetCount(); }
+    size_t GetCount() const
+    {
+        return m_labels.GetCount();
+    }
 
-    int  GetSelection() const { return m_selection; }
+    int  GetSelection() const
+    {
+        return m_selection;
+    }
     void SetSelection( int n, bool send_event = false );
     void SetNextSelection(bool foward, bool send_event = false);
 
@@ -128,22 +137,40 @@ public:
     void SetItemBitmap(int n, const wxBitmap &bitmap);
     void SetLabel(int n, const wxString &label);
     void SetItem(int n, const wxString &label, const wxBitmap &bitmap)
-        { SetLabel(n, label); SetItemBitmap(n, bitmap); }
+    {
+        SetLabel(n, label);
+        SetItemBitmap(n, bitmap);
+    }
 
     virtual bool SetBackgroundColour(const wxColour &colour);
 
     virtual void HidePopup();
 
     // When adding/deleting many items freeze it and thaw when done
-    void Freeze() { m_frozen = true; }
+    void Freeze()
+    {
+        m_frozen = true;
+    }
     void Thaw();
 
     // implementation
-    wxBmpComboLabel* GetLabelWindow() { return m_labelWin; }
+    wxBmpComboLabel* GetLabelWindow()
+    {
+        return m_labelWin;
+    }
     // Get the largest label, bitmap, item=(label+bitmap) size
-    wxSize GetLabelSize() const  { return m_labelSize; }
-    wxSize GetBitmapSize() const { return m_bitmapSize; }
-    wxSize GetItemSize() const   { return m_itemSize; }
+    wxSize GetLabelSize() const
+    {
+        return m_labelSize;
+    }
+    wxSize GetBitmapSize() const
+    {
+        return m_bitmapSize;
+    }
+    wxSize GetItemSize() const
+    {
+        return m_itemSize;
+    }
     void CalcLabelBitmapPos(int n, const wxSize &area, wxPoint &labelPos, wxPoint &bitmapPos) const;
     void CalcLayout();
     void DrawItem(wxDC &dc, int n) const;
@@ -185,8 +212,8 @@ class WXDLLIMPEXP_THINGS wxBmpComboLabel : public wxWindow
 {
 public:
     wxBmpComboLabel(wxBmpComboBox *parent = NULL, int style = wxSUNKEN_BORDER)
-                    : wxWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, style),
-                      m_bmpCombo(parent) {}
+        : wxWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, style),
+          m_bmpCombo(parent) {}
 
 protected:
     void OnPaint( wxPaintEvent &event );

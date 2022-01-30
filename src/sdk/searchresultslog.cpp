@@ -10,12 +10,12 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/arrstr.h>
-    #include <wx/filename.h>
-    #include <wx/listctrl.h>
-    #include "manager.h"
-    #include "editormanager.h"
-    #include "cbeditor.h"
+#include <wx/arrstr.h>
+#include <wx/filename.h>
+#include <wx/listctrl.h>
+#include "manager.h"
+#include "editormanager.h"
+#include "cbeditor.h"
 #endif
 #include "cbstyledtextctrl.h"
 
@@ -23,7 +23,7 @@
 
 namespace
 {
-    const int ID_List = wxNewId();
+const int ID_List = wxNewId();
 }
 
 BEGIN_EVENT_TABLE(cbSearchResultsLog, wxEvtHandler)
@@ -85,7 +85,8 @@ void cbSearchResultsLog::SyncEditor(int selIndex)
     ed->Activate();
     ed->GotoLine(line);
 
-    if (cbStyledTextCtrl* ctrl = ed->GetControl()) {
+    if (cbStyledTextCtrl* ctrl = ed->GetControl())
+    {
         ctrl->EnsureVisible(line);
     }
 }

@@ -47,76 +47,76 @@ class wxWidgetsGUI;
  */
 class wxWidgetsGUIAppAdoptingDlg: public wxScrollingDialog
 {
-    public:
+public:
 
-        wxWidgetsGUIAppAdoptingDlg(wxWindow* parent,wxWidgetsGUI* GUI,wxWindowID id = -1);
-        virtual ~wxWidgetsGUIAppAdoptingDlg();
+    wxWidgetsGUIAppAdoptingDlg(wxWindow* parent,wxWidgetsGUI* GUI,wxWindowID id = -1);
+    virtual ~wxWidgetsGUIAppAdoptingDlg();
 
-        //(*Identifiers(wxWidgetsGUIAppAdoptingDlg)
-        static const long ID_LISTBOX1;
-        static const long ID_GAUGE1;
-        static const long ID_STATICTEXT1;
-        static const long ID_STATICTEXT2;
-        static const long ID_BUTTON5;
-        static const long ID_BUTTON2;
-        static const long ID_BUTTON3;
-        static const long ID_STATICLINE2;
-        static const long ID_BUTTON4;
-        static const long ID_STATICLINE1;
-        static const long ID_BUTTON6;
-        //*)
+    //(*Identifiers(wxWidgetsGUIAppAdoptingDlg)
+    static const long ID_LISTBOX1;
+    static const long ID_GAUGE1;
+    static const long ID_STATICTEXT1;
+    static const long ID_STATICTEXT2;
+    static const long ID_BUTTON5;
+    static const long ID_BUTTON2;
+    static const long ID_BUTTON3;
+    static const long ID_STATICLINE2;
+    static const long ID_BUTTON4;
+    static const long ID_STATICLINE1;
+    static const long ID_BUTTON6;
+    //*)
 
-        wxString m_RelativeFileName;
+    wxString m_RelativeFileName;
 
-    protected:
+protected:
 
-        //(*Handlers(wxWidgetsGUIAppAdoptingDlg)
-        void OnButton6Click(wxCommandEvent& event);
-        void OnButton4Click(wxCommandEvent& event);
-        void OnClose(wxCloseEvent& event);
-        void OnTimer(wxTimerEvent& event);
-        void OnUseFileBtnClick(wxCommandEvent& event);
-        void OnSelectBtnClick(wxCommandEvent& event);
-        void OnCreateBtnClick(wxCommandEvent& event);
-        //*)
+    //(*Handlers(wxWidgetsGUIAppAdoptingDlg)
+    void OnButton6Click(wxCommandEvent& event);
+    void OnButton4Click(wxCommandEvent& event);
+    void OnClose(wxCloseEvent& event);
+    void OnTimer(wxTimerEvent& event);
+    void OnUseFileBtnClick(wxCommandEvent& event);
+    void OnSelectBtnClick(wxCommandEvent& event);
+    void OnCreateBtnClick(wxCommandEvent& event);
+    //*)
 
-        //(*Declarations(wxWidgetsGUIAppAdoptingDlg)
-        wxButton* Button4;
-        wxButton* CreateBtn;
-        wxBoxSizer* BoxSizer2;
-        wxStaticLine* StaticLine2;
-        wxButton* Button6;
-        wxButton* SelectBtn;
-        wxStaticLine* StaticLine1;
-        wxButton* UseFileBtn;
-        wxGauge* Progress;
-        wxStaticText* ScanningFile;
-        wxStaticText* ScanningTxt;
-        wxListBox* FoundFiles;
-        //*)
+    //(*Declarations(wxWidgetsGUIAppAdoptingDlg)
+    wxButton* Button4;
+    wxButton* CreateBtn;
+    wxBoxSizer* BoxSizer2;
+    wxStaticLine* StaticLine2;
+    wxButton* Button6;
+    wxButton* SelectBtn;
+    wxStaticLine* StaticLine1;
+    wxButton* UseFileBtn;
+    wxGauge* Progress;
+    wxStaticText* ScanningFile;
+    wxStaticText* ScanningTxt;
+    wxListBox* FoundFiles;
+    //*)
 
-    private:
+private:
 
-        /** \brief Starting scanning of files
-         *  \note This function creates it's own
-         *        event-dispatching loop while searching inside files
-         */
-        void Run();
+    /** \brief Starting scanning of files
+     *  \note This function creates it's own
+     *        event-dispatching loop while searching inside files
+     */
+    void Run();
 
-        /** \brief Scanning one file
-         *  \return true when file can be used as wxApp container, false otherwise
-         */
-        bool ScanFile(ProjectFile* File);
+    /** \brief Scanning one file
+     *  \return true when file can be used as wxApp container, false otherwise
+     */
+    bool ScanFile(ProjectFile* File);
 
-        /** \brief Adding smith bindings for given file */
-        void AddSmith(wxString RelativeFileName);
+    /** \brief Adding smith bindings for given file */
+    void AddSmith(wxString RelativeFileName);
 
-        cbProject* m_Project;       ///< \brief Helper pointer to C::B project
-        wxWidgetsGUI* m_GUI;        ///< \brief GUI which has requested the scan
-        wxTimer m_Timer;            ///< \brief Timer used to call Run() after dialog is shown
-        bool m_Run;                 ///< \brief Flag used to break scanning of files after closing dialog
+    cbProject* m_Project;       ///< \brief Helper pointer to C::B project
+    wxWidgetsGUI* m_GUI;        ///< \brief GUI which has requested the scan
+    wxTimer m_Timer;            ///< \brief Timer used to call Run() after dialog is shown
+    bool m_Run;                 ///< \brief Flag used to break scanning of files after closing dialog
 
-        DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

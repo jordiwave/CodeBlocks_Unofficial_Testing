@@ -28,8 +28,8 @@ public:
 public:
     /** Constructor. */
     InsertIndexManager(eFileSorting fileSorting = SortByFilePath)
-                    : m_SortedStringArray()
-                    , m_FileSorting(fileSorting)
+        : m_SortedStringArray()
+        , m_FileSorting(fileSorting)
     {
     }
 
@@ -46,11 +46,20 @@ public:
     long GetInsertionIndex(const wxString& filePath, long nbItemstoInsert = 1);
 
     /** Reset : clears array of paths */
-    void Reset() {m_SortedStringArray.Empty();}
+    void Reset()
+    {
+        m_SortedStringArray.Empty();
+    }
 
     // Accessors
-    eFileSorting GetFileSorting() const                   {return m_FileSorting;}
-    void         SetFileSorting(eFileSorting fileSorting) {m_FileSorting = fileSorting;}
+    eFileSorting GetFileSorting() const
+    {
+        return m_FileSorting;
+    }
+    void         SetFileSorting(eFileSorting fileSorting)
+    {
+        m_FileSorting = fileSorting;
+    }
 
 private:
     wxSortedArrayString m_SortedStringArray;

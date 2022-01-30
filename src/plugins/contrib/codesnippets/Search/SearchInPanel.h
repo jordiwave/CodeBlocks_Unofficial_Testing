@@ -28,21 +28,22 @@ class wxCheckBox;
 class wxCommandEvent;
 
 
-class SearchInPanel: public wxPanel {
+class SearchInPanel: public wxPanel
+{
 public:
     // begin wxGlade: SearchInPanel::ids
     // end wxGlade
 
-	/** Constructor. */
+    /** Constructor. */
     SearchInPanel(wxWindow* parent, int id, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
 
-	// Getters
+    // Getters
     bool GetSearchInOpenFiles()      const;
     bool GetSearchInSnippetFiles()   const;
     bool GetSearchInWorkspaceFiles() const;
     bool GetSearchInDirectory()      const;
 
-	// Setters
+    // Setters
     void SetSearchInOpenFiles     (bool bSearchInOpenFiles);
     void SetSearchInSnippetFiles  (bool bSearchInSnippetFiles);
     void SetSearchInWorkspaceFiles(bool bSearchInWorkspaceFiles);
@@ -65,9 +66,9 @@ protected:
     DECLARE_EVENT_TABLE();
 
 public:
-	/** Gets all checkboxes click events to forward them to
-	  * the parent window..
-	  */
+    /** Gets all checkboxes click events to forward them to
+      * the parent window..
+      */
     void OnChkClickEvent(wxCommandEvent &event); // wxGlade: <event_handler>
 
     // The 2 following methods work together. It offers a kind of
@@ -75,12 +76,12 @@ public:
     // project checkboxes (it is stupid to search both in project and
     // workspace because project is already included in workpsace).
 
-	/** If project checkbox is checked, we uncheck if necessary the workspace checkbox.
-	  */
+    /** If project checkbox is checked, we uncheck if necessary the workspace checkbox.
+      */
     void OnChkSearchSnippetFilesClick(wxCommandEvent &event); // wxGlade: <event_handler>
 
-	/** If workspace checkbox is checked, we uncheck if necessary the project checkbox.
-	  */
+    /** If workspace checkbox is checked, we uncheck if necessary the project checkbox.
+      */
     void OnChkSearchWorkspaceFilesClick(wxCommandEvent &event); // wxGlade: <event_handler>
 }; // wxGlade: end class
 

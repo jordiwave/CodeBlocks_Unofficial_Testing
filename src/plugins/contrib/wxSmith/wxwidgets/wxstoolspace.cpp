@@ -29,9 +29,9 @@
 
 namespace
 {
-    const int ExtraBorderSize = 7;
-    const int IconSize = 32;
-    const int DragBoxSize = 6;
+const int ExtraBorderSize = 7;
+const int IconSize = 32;
+const int DragBoxSize = 6;
 }
 
 BEGIN_EVENT_TABLE(wxsToolSpace,wxScrolledWindow)

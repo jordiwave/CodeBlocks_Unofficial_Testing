@@ -18,7 +18,7 @@
 #include <wx/msgdlg.h>
 
 #ifdef __WXMSW__
-    #include <wx/msw/registry.h>
+#include <wx/msw/registry.h>
 #endif
 
 CompilerIAR::CompilerIAR(wxString arch)
@@ -66,7 +66,8 @@ AutoDetectResult CompilerIAR::AutoDetectInstallationDir()
                             break;
                         m_MasterPath.Clear();
                     }
-                } while (key.GetNextKey(subkeyname, idx));
+                }
+                while (key.GetNextKey(subkeyname, idx));
             }
         }
 #endif // __WXMSW__
@@ -85,7 +86,7 @@ AutoDetectResult CompilerIAR::AutoDetectInstallationDir()
                         wxFileName fn(dir.GetName() + wxFILE_SEP_PATH + filename + wxFILE_SEP_PATH +
                                       m_Arch + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + m_Programs.C);
                         if (   wxFileName::IsFileExecutable(fn.GetFullPath())
-                            && (m_MasterPath.IsEmpty() || fn.GetPath() > m_MasterPath) )
+                                && (m_MasterPath.IsEmpty() || fn.GetPath() > m_MasterPath) )
                         {
                             m_MasterPath = dir.GetName() + wxFILE_SEP_PATH + filename + wxFILE_SEP_PATH + m_Arch;
                         }

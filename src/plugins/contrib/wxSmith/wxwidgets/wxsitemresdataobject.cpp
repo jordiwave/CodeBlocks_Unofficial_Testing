@@ -46,7 +46,7 @@ bool wxsItemResDataObject::GetDataHere(cb_unused const wxDataFormat& format,void
     wxString XmlData = GetXmlData();
     const wxWX2MBbuf str = cbU2C(XmlData);
     memcpy(buf,str,strlen(str)+1);
-       return true;
+    return true;
 }
 
 size_t wxsItemResDataObject::GetDataSize(cb_unused const wxDataFormat& format) const
@@ -151,8 +151,8 @@ bool wxsItemResDataObject::SetXmlData(const wxString& Data)
     }
 
     for ( TiXmlElement* Elem = m_XmlElem->FirstChildElement("object");
-          Elem;
-          Elem = Elem->NextSiblingElement("object") )
+            Elem;
+            Elem = Elem->NextSiblingElement("object") )
     {
         m_ItemCount++;
     }

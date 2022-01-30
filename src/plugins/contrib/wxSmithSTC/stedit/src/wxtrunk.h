@@ -12,11 +12,11 @@
 #define __WXTRUNK_H__
 
 #if (wxVERSION_NUMBER < 2812)
-    #define wxT_2 wxT
+#define wxT_2 wxT
 #endif
 
 #ifndef wxAPPLY
-    #define wxAPPLY 0x00000020
+#define wxAPPLY 0x00000020
 #endif
 
 #ifdef _WX_CONVAUTO_H_
@@ -48,7 +48,7 @@ WXDLLIMPEXP_STEDIT const char* wxConvAuto_GetBOMChars(wxBOM, size_t* count);
 #if defined(_WX_ABOUTDLG_H_) && (wxVERSION_NUMBER < 2900)
 inline void wxAboutBox(const wxAboutDialogInfo& info, wxWindow* WXUNUSED(parent))
 {
-   wxAboutBox(info);
+    wxAboutBox(info);
 }
 #endif
 

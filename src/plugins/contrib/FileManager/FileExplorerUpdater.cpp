@@ -326,12 +326,12 @@ bool FileExplorerUpdater::GetCurrentState(const wxString &path)
             is_vcs=true;
             m_vcs_type = _T("Hg");
         }
-/*    if (m_fe->m_parse_cvs && !is_vcs)
-        if (ParseCVSChanges(path,sa))
-        {
-            is_vcs=true;
-            is_cvs=true;
-        }*/
+    /*    if (m_fe->m_parse_cvs && !is_vcs)
+            if (ParseCVSChanges(path,sa))
+            {
+                is_vcs=true;
+                is_cvs=true;
+            }*/
 
     bool cont = dir.GetFirst(&filename,wxEmptyString,flags);
     while ( cont && !TestDestroy() && !m_kill)
@@ -352,7 +352,7 @@ bool FileExplorerUpdater::GetCurrentState(const wxString &path)
             if (!fn.IsFileWritable())
                 itemstate=fvsReadOnly;
 
-            for(size_t i=0;i<sa.GetCount();i++)
+            for(size_t i=0; i<sa.GetCount(); i++)
             {
                 if (fn.GetFullPath() == sa[i].path || fn.SameAs(sa[i].path))
                 {
@@ -383,7 +383,7 @@ bool FileExplorerUpdater::CalcChanges()
     while(tree_it!=m_treestate.end() && !TestDestroy())
     {
         bool match=false;
-        for(FileDataVec::iterator it=m_currentstate.begin();it!=m_currentstate.end();it++)
+        for(FileDataVec::iterator it=m_currentstate.begin(); it!=m_currentstate.end(); it++)
             if (it->name==tree_it->name)
             {
                 match=true;
@@ -401,7 +401,7 @@ bool FileExplorerUpdater::CalcChanges()
     }
     for(FileDataVec::iterator tree_it2 = m_treestate.begin(); tree_it2 != m_treestate.end(); ++tree_it2)
         m_removers.push_back(*tree_it2);
-    for(FileDataVec::iterator it=m_currentstate.begin();it!=m_currentstate.end();it++)
+    for(FileDataVec::iterator it=m_currentstate.begin(); it!=m_currentstate.end(); it++)
         m_adders.push_back(*it);
     return !TestDestroy();
 }
@@ -427,7 +427,7 @@ bool FileExplorerUpdater::ParseSVNChanges(const wxString &path, VCSstatearray &s
     int hresult = Exec(_T("svn stat -N ."), output, path);
     if (hresult != 0)
         return false;
-    for(size_t i=0;i<output.GetCount();i++)
+    for(size_t i=0; i<output.GetCount(); i++)
     {
         if (output[i].Len()<=7)
             break;
@@ -435,38 +435,38 @@ bool FileExplorerUpdater::ParseSVNChanges(const wxString &path, VCSstatearray &s
         wxChar a=output[i][0];
         switch(a)
         {
-            case ' ':
-                s.state=fvsVcUpToDate;
-                break;
-            case '?':
-                s.state=fvsVcNonControlled;
-                break;
-            case 'A':
-                s.state=fvsVcAdded;
-                break;
-            case 'M':
-                s.state=fvsVcModified;
-                break;
-            case 'C':
-                s.state=fvsVcConflict;
-                break;
-            case 'D':
-                s.state=fvsVcMissing;
-                break;
-            case 'I':
-                s.state=fvsVcNonControlled;
-                break;
-            case 'X':
-                s.state=fvsVcExternal;
-                break;
-            case '!':
-                s.state=fvsVcMissing;
-                break;
-            case '~':
-                s.state=fvsVcLockStolen;
-                break;
-            default:
-                break;
+        case ' ':
+            s.state=fvsVcUpToDate;
+            break;
+        case '?':
+            s.state=fvsVcNonControlled;
+            break;
+        case 'A':
+            s.state=fvsVcAdded;
+            break;
+        case 'M':
+            s.state=fvsVcModified;
+            break;
+        case 'C':
+            s.state=fvsVcConflict;
+            break;
+        case 'D':
+            s.state=fvsVcMissing;
+            break;
+        case 'I':
+            s.state=fvsVcNonControlled;
+            break;
+        case 'X':
+            s.state=fvsVcExternal;
+            break;
+        case '!':
+            s.state=fvsVcMissing;
+            break;
+        case '~':
+            s.state=fvsVcLockStolen;
+            break;
+        default:
+            break;
         }
         if (relative_paths)
         {
@@ -495,7 +495,7 @@ bool FileExplorerUpdater::ParseSVNChangesTree(const wxString &path, VCSstatearra
     int hresult = Exec(_T("svn diff --summarize -c") + m_vcs_commit_string + _T(" ") + rel_root_path, output, m_repo_path);
     if (hresult!=0)
         return false;
-    for(size_t i=0;i<output.GetCount();i++)
+    for(size_t i=0; i<output.GetCount(); i++)
     {
         if (output[i].Len()<=3)
             break;
@@ -503,38 +503,38 @@ bool FileExplorerUpdater::ParseSVNChangesTree(const wxString &path, VCSstatearra
         wxChar a=output[i][0];
         switch(a)
         {
-            case ' ':
-                s.state=fvsVcUpToDate;
-                break;
-            case '?':
-                s.state=fvsVcNonControlled;
-                break;
-            case 'A':
-                s.state=fvsVcAdded;
-                break;
-            case 'M':
-                s.state=fvsVcModified;
-                break;
-            case 'C':
-                s.state=fvsVcConflict;
-                break;
-            case 'D':
-                s.state=fvsVcMissing;
-                break;
-            case 'I':
-                s.state=fvsVcNonControlled;
-                break;
-            case 'X':
-                s.state=fvsVcExternal;
-                break;
-            case '!':
-                s.state=fvsVcMissing;
-                break;
-            case '~':
-                s.state=fvsVcLockStolen;
-                break;
-            default:
-                break;
+        case ' ':
+            s.state=fvsVcUpToDate;
+            break;
+        case '?':
+            s.state=fvsVcNonControlled;
+            break;
+        case 'A':
+            s.state=fvsVcAdded;
+            break;
+        case 'M':
+            s.state=fvsVcModified;
+            break;
+        case 'C':
+            s.state=fvsVcConflict;
+            break;
+        case 'D':
+            s.state=fvsVcMissing;
+            break;
+        case 'I':
+            s.state=fvsVcNonControlled;
+            break;
+        case 'X':
+            s.state=fvsVcExternal;
+            break;
+        case '!':
+            s.state=fvsVcMissing;
+            break;
+        case '~':
+            s.state=fvsVcLockStolen;
+            break;
+        default:
+            break;
         }
         if (relative_paths)
         {
@@ -572,89 +572,89 @@ bool FileExplorerUpdater::ParseGITChanges(const wxString &path, VCSstatearray &s
     wxArrayString output;
     wxString rpath=parent;
     int name_pos;
-    #ifdef __WXMSW__
+#ifdef __WXMSW__
     int hresult = Exec(_T("cmd /c git status --short"), output, parent);
-    #else
+#else
     int hresult = Exec(_T("git status --short"), output, parent);
-    #endif
+#endif
     if (hresult!=0)
         return false;
     name_pos = 3;
-    for (size_t i=0;i<output.GetCount();i++)
+    for (size_t i=0; i<output.GetCount(); i++)
     {
 
-/*
-Per git status --help.
-Status code is 2 letter code
-       o   ' ' = unmodified
-       o   M = modified
-       o   A = added
-       o   D = deleted
-       o   R = renamed
-       o   C = copied
-       o   U = updated but unmerged
+        /*
+        Per git status --help.
+        Status code is 2 letter code
+               o   ' ' = unmodified
+               o   M = modified
+               o   A = added
+               o   D = deleted
+               o   R = renamed
+               o   C = copied
+               o   U = updated but unmerged
 
-*/
+        */
         if (output[i].Len()<=3)
             break;
         VCSstate s;
         wxChar a=output[i][0];
         switch(a)
         {
-            case 'M':
-                s.state=fvsVcUpToDate;
-                break;
-            case 'A':
-                s.state=fvsVcUpToDate;
-                break;
-            case 'D':
-                s.state=fvsVcUpToDate;
-                break;
-            case 'R':
-                s.state=fvsVcUpToDate;
-                break;
-            case 'C':
-                s.state=fvsVcUpToDate;
-                break;
-            case 'U':
-                s.state=fvsVcUpToDate;
-                break;
-            case '?':
-                s.state=fvsVcNonControlled;
-                break;
-            default:
-                s.state=fvsNormal;
-                break;
+        case 'M':
+            s.state=fvsVcUpToDate;
+            break;
+        case 'A':
+            s.state=fvsVcUpToDate;
+            break;
+        case 'D':
+            s.state=fvsVcUpToDate;
+            break;
+        case 'R':
+            s.state=fvsVcUpToDate;
+            break;
+        case 'C':
+            s.state=fvsVcUpToDate;
+            break;
+        case 'U':
+            s.state=fvsVcUpToDate;
+            break;
+        case '?':
+            s.state=fvsVcNonControlled;
+            break;
+        default:
+            s.state=fvsNormal;
+            break;
         }
         a=output[i][1];
         switch(a)
         {
-            case 'M':
-                s.state=fvsVcModified;
-                break;
-            case 'A':
-                s.state=fvsVcAdded;
-                break;
-            case 'D':
-                s.state=fvsVcModified;
-                break;
-            case 'R':
-                s.state=fvsVcModified;
-                break;
-            case 'C':
-                s.state=fvsVcModified;
-                break;
-            case 'U':
-                s.state=fvsVcModified;
-                break;
-            case '?':
-                s.state=fvsVcNonControlled;
-                break;
-            case ' ':
-                break;
-            default:
-                s.state=fvsNormal;
-                break;
+        case 'M':
+            s.state=fvsVcModified;
+            break;
+        case 'A':
+            s.state=fvsVcAdded;
+            break;
+        case 'D':
+            s.state=fvsVcModified;
+            break;
+        case 'R':
+            s.state=fvsVcModified;
+            break;
+        case 'C':
+            s.state=fvsVcModified;
+            break;
+        case 'U':
+            s.state=fvsVcModified;
+            break;
+        case '?':
+            s.state=fvsVcNonControlled;
+            break;
+        case ' ':
+            break;
+        default:
+            s.state=fvsNormal;
+            break;
         }
         if (output[i][0]!=' ' && output[i][1]!=' ' && output[i][0]!=output[i][1])
             s.state=fvsVcConflict;
@@ -687,53 +687,53 @@ bool FileExplorerUpdater::ParseGITChangesTree(const wxString &path, VCSstatearra
         return false;
     if (output.GetCount() > 0) // first line is the one-line commit summary
         output.RemoveAt(0);
-    for (size_t i=0;i<output.GetCount();i++)
+    for (size_t i=0; i<output.GetCount(); i++)
     {
 
-/*
-Per git status --help.
-Status code is 2 letter code
-       o   ' ' = unmodified
-       o   M = modified
-       o   A = added
-       o   D = deleted
-       o   R = renamed
-       o   C = copied
-       o   U = updated but unmerged
+        /*
+        Per git status --help.
+        Status code is 2 letter code
+               o   ' ' = unmodified
+               o   M = modified
+               o   A = added
+               o   D = deleted
+               o   R = renamed
+               o   C = copied
+               o   U = updated but unmerged
 
-*/
+        */
         if (output[i].Len()<=3)
             continue;
         VCSstate s;
         wxChar a=output[i][0];
         switch(a)
         {
-            case 'M':
-                s.state=fvsVcModified;
-                break;
-            case 'A':
-                s.state=fvsVcAdded;
-                break;
-            case 'D':
-                s.state=fvsVcModified;
-                break;
-            case 'R':
-                s.state=fvsVcModified;
-                break;
-            case 'C':
-                s.state=fvsVcModified;
-                break;
-            case 'U':
-                s.state=fvsVcModified;
-                break;
-            case '?':
-                s.state=fvsVcNonControlled;
-                break;
-            case ' ':
-                break;
-            default:
-                s.state=fvsNormal;
-                break;
+        case 'M':
+            s.state=fvsVcModified;
+            break;
+        case 'A':
+            s.state=fvsVcAdded;
+            break;
+        case 'D':
+            s.state=fvsVcModified;
+            break;
+        case 'R':
+            s.state=fvsVcModified;
+            break;
+        case 'C':
+            s.state=fvsVcModified;
+            break;
+        case 'U':
+            s.state=fvsVcModified;
+            break;
+        case '?':
+            s.state=fvsVcNonControlled;
+            break;
+        case ' ':
+            break;
+        default:
+            s.state=fvsNormal;
+            break;
         }
         s.path = output[i].Mid(name_pos);
         if (!s.path.StartsWith(rel_root_path))
@@ -777,16 +777,16 @@ bool FileExplorerUpdater::ParseBZRChanges(const wxString &path, VCSstatearray &s
     wxArrayString output;
     int name_pos = 4;
     wxString rpath=parent;
-    #ifdef __WXMSW__
+#ifdef __WXMSW__
     int hresult=Exec(_T("cmd /c bzr stat --short ")+path, output, path);
-    #else
+#else
     int hresult=Exec(_T("bzr stat --short ")+path, output, path);
-    #endif
+#endif
     if (hresult!=0)
     {
         return false;
     }
-    for(size_t i=0;i<output.GetCount();i++)
+    for(size_t i=0; i<output.GetCount(); i++)
     {
         if (output[i].Len()<=4)
             break;
@@ -794,42 +794,42 @@ bool FileExplorerUpdater::ParseBZRChanges(const wxString &path, VCSstatearray &s
         wxChar a=output[i][0];
         switch(a)
         {
-            case '+':
-                s.state=fvsVcUpToDate;
-                break;
-            case '-':
-                s.state=fvsVcNonControlled;
-                break;
+        case '+':
+            s.state=fvsVcUpToDate;
+            break;
+        case '-':
+            s.state=fvsVcNonControlled;
+            break;
 //            case 'C':
 //                s.state=fvsVcConflict;
 //                break;
-            case '?':
-                s.state=fvsVcNonControlled;
-                break;
-            case 'R':
-                s.state=fvsVcModified;
-                break;
-            case 'P': //pending merge
-                s.state=fvsVcOutOfDate;
-                break;
-            default:
-                break;
+        case '?':
+            s.state=fvsVcNonControlled;
+            break;
+        case 'R':
+            s.state=fvsVcModified;
+            break;
+        case 'P': //pending merge
+            s.state=fvsVcOutOfDate;
+            break;
+        default:
+            break;
         }
         a=output[i][1];
         switch(a)
         {
-            case 'N': // created
-                s.state=fvsVcAdded;
-                break;
-            case 'D': //deleted
-                s.state=fvsVcMissing;
-                break;
-            case 'K': //kind changed
-            case 'M': //modified
-                s.state=fvsVcModified;
-                break;
-            default:
-                break;
+        case 'N': // created
+            s.state=fvsVcAdded;
+            break;
+        case 'D': //deleted
+            s.state=fvsVcMissing;
+            break;
+        case 'K': //kind changed
+        case 'M': //modified
+            s.state=fvsVcModified;
+            break;
+        default:
+            break;
         }
         if (output[i][0]=='C')
             s.state=fvsVcConflict;
@@ -861,7 +861,7 @@ bool FileExplorerUpdater::ParseBZRChangesTree(const wxString &path, VCSstatearra
     int hresult = Exec(_T("bzr status --short -c ") + m_vcs_commit_string + _T(" ") + rel_root_path, output, m_repo_path);
     if (hresult!=0)
         return false;
-    for(size_t i=0;i<output.GetCount();i++)
+    for(size_t i=0; i<output.GetCount(); i++)
     {
         if (output[i].Len()<=4)
             break;
@@ -869,42 +869,42 @@ bool FileExplorerUpdater::ParseBZRChangesTree(const wxString &path, VCSstatearra
         wxChar a=output[i][0];
         switch(a)
         {
-            case '+':
-                s.state=fvsVcUpToDate;
-                break;
-            case '-':
-                s.state=fvsVcNonControlled;
-                break;
+        case '+':
+            s.state=fvsVcUpToDate;
+            break;
+        case '-':
+            s.state=fvsVcNonControlled;
+            break;
 //            case 'C':
 //                s.state=fvsVcConflict;
 //                break;
-            case '?':
-                s.state=fvsVcNonControlled;
-                break;
-            case 'R':
-                s.state=fvsVcModified;
-                break;
-            case 'P': //pending merge
-                s.state=fvsVcOutOfDate;
-                break;
-            default:
-                break;
+        case '?':
+            s.state=fvsVcNonControlled;
+            break;
+        case 'R':
+            s.state=fvsVcModified;
+            break;
+        case 'P': //pending merge
+            s.state=fvsVcOutOfDate;
+            break;
+        default:
+            break;
         }
         a=output[i][1];
         switch(a)
         {
-            case 'N': // created
-                s.state=fvsVcAdded;
-                break;
-            case 'D': //deleted
-                s.state=fvsVcMissing;
-                break;
-            case 'K': //kind changed
-            case 'M': //modified
-                s.state=fvsVcModified;
-                break;
-            default:
-                break;
+        case 'N': // created
+            s.state=fvsVcAdded;
+            break;
+        case 'D': //deleted
+            s.state=fvsVcMissing;
+            break;
+        case 'K': //kind changed
+        case 'M': //modified
+            s.state=fvsVcModified;
+            break;
+        default:
+            break;
         }
         if (output[i][0]=='C')
             s.state=fvsVcConflict;
@@ -944,7 +944,7 @@ bool FileExplorerUpdater::ParseHGChanges(const wxString &path, VCSstatearray &sa
     int hresult=Exec(_T("hg -y stat ."), output, path);
     if (hresult!=0)
         return false;
-    for(size_t i=0;i<output.GetCount();i++)
+    for(size_t i=0; i<output.GetCount(); i++)
     {
         if (output[i].Len()<=2)
             break;
@@ -952,26 +952,26 @@ bool FileExplorerUpdater::ParseHGChanges(const wxString &path, VCSstatearray &sa
         wxChar a=output[i][0];
         switch(a)
         {
-            case 'C': //clean
-                s.state=fvsVcUpToDate;
-                break;
-            case '?': //not tracked
-                s.state=fvsVcNonControlled;
-                break;
-            case '!': // local copy removed -- will not see this file
-                s.state=fvsVcMissing;
-                break;
-            case 'A': // added
-                s.state=fvsVcAdded;
-                break;
-            case 'R': //removed from branch, but exists in local copy
-                s.state=fvsVcMissing;
-                break;
-            case 'M': //modified
-                s.state=fvsVcModified;
-                break;
-            default:
-                break;
+        case 'C': //clean
+            s.state=fvsVcUpToDate;
+            break;
+        case '?': //not tracked
+            s.state=fvsVcNonControlled;
+            break;
+        case '!': // local copy removed -- will not see this file
+            s.state=fvsVcMissing;
+            break;
+        case 'A': // added
+            s.state=fvsVcAdded;
+            break;
+        case 'R': //removed from branch, but exists in local copy
+            s.state=fvsVcMissing;
+            break;
+        case 'M': //modified
+            s.state=fvsVcModified;
+            break;
+        default:
+            break;
         }
         if (relative_paths)
         {
@@ -1000,7 +1000,7 @@ bool FileExplorerUpdater::ParseHGChangesTree(const wxString &path, VCSstatearray
     int hresult = Exec(_T("hg status --change ") + m_vcs_commit_string + _T(" ") + rel_root_path, output, m_repo_path);
     if (hresult!=0)
         return false;
-    for(size_t i=0;i<output.GetCount();i++)
+    for(size_t i=0; i<output.GetCount(); i++)
     {
         if (output[i].Len()<=2)
             break;
@@ -1008,26 +1008,26 @@ bool FileExplorerUpdater::ParseHGChangesTree(const wxString &path, VCSstatearray
         wxChar a=output[i][0];
         switch(a)
         {
-            case 'C': //clean
-                s.state=fvsVcUpToDate;
-                break;
-            case '?': //not tracked
-                s.state=fvsVcNonControlled;
-                break;
-            case '!': // local copy removed -- will not see this file
-                s.state=fvsVcMissing;
-                break;
-            case 'A': // added
-                s.state=fvsVcAdded;
-                break;
-            case 'R': //removed from branch, but exists in local copy
-                s.state=fvsVcMissing;
-                break;
-            case 'M': //modified
-                s.state=fvsVcModified;
-                break;
-            default:
-                break;
+        case 'C': //clean
+            s.state=fvsVcUpToDate;
+            break;
+        case '?': //not tracked
+            s.state=fvsVcNonControlled;
+            break;
+        case '!': // local copy removed -- will not see this file
+            s.state=fvsVcMissing;
+            break;
+        case 'A': // added
+            s.state=fvsVcAdded;
+            break;
+        case 'R': //removed from branch, but exists in local copy
+            s.state=fvsVcMissing;
+            break;
+        case 'M': //modified
+            s.state=fvsVcModified;
+            break;
+        default:
+            break;
         }
         if (relative_paths)
         {
@@ -1054,7 +1054,7 @@ bool FileExplorerUpdater::ParseCVSChanges(const wxString &path, VCSstatearray &s
     Exec(_T("cvs stat -q -l  ."),output,path);
 //    if (hresult!=0)
 //        return false;
-    for(size_t i=0;i<output.GetCount();i++)
+    for(size_t i=0; i<output.GetCount(); i++)
     {
         int ind1=output[i].Find(_T("File: "));
         int ind2=output[i].Find(_T("Status: "));
@@ -1132,7 +1132,7 @@ bool FileExplorerUpdater::GetGITCommitState(const wxString &path)
                 break;
             }
         }
-        for(size_t j=0;j<sa.GetCount();j++)
+        for(size_t j=0; j<sa.GetCount(); j++)
         {
             if (fn.GetFullPath() == sa[j].path || fn.SameAs(sa[j].path))
             {
@@ -1195,7 +1195,7 @@ bool FileExplorerUpdater::GetHgCommitState(const wxString &path)
             fd.state = fvsNormal;
             fd.name = name;
         }
-        for(size_t j=0;j<sa.GetCount();j++)
+        for(size_t j=0; j<sa.GetCount(); j++)
         {
             if (fn.GetFullPath() == sa[j].path || fn.SameAs(sa[j].path))
             {
@@ -1246,15 +1246,15 @@ bool FileExplorerUpdater::GetVCSCommitState(const wxString &path, const wxString
             fn = wxFileName(fn.GetPath());
         }
         else
-        for(size_t j=0;j<sa.GetCount();j++)
-        {
-            if (fn.GetFullName() == sa[j].path || fn.SameAs(sa[j].path))
+            for(size_t j=0; j<sa.GetCount(); j++)
             {
-                fd.state = sa[j].state;
-                sa.RemoveAt(j);
-                break;
+                if (fn.GetFullName() == sa[j].path || fn.SameAs(sa[j].path))
+                {
+                    fd.state = sa[j].state;
+                    sa.RemoveAt(j);
+                    break;
+                }
             }
-        }
         fd.name = fn.GetFullName();;
         m_currentstate.push_back(fd);
     }
@@ -1447,8 +1447,8 @@ bool CommitUpdater::Update(const wxString &what, const wxString &repo_branch, Co
     if (IsRunning())
         return false;
     if (!(what.StartsWith(_T("BRANCHES")) ||
-        what.StartsWith(_T("COMMITS:")) ||
-        what.StartsWith(_T("DETAIL:"))) )
+            what.StartsWith(_T("COMMITS:")) ||
+            what.StartsWith(_T("DETAIL:"))) )
         return false;
     m_what = wxString(what.c_str());
     m_repo_branch = repo_branch;
@@ -1765,7 +1765,8 @@ void *CommitUpdater::Entry()
                 if (i>=n)
                     continue;
                 s = output[i];
-                ++i; ++i; //Blank line between commit info and the message
+                ++i;
+                ++i; //Blank line between commit info and the message
                 if (!s.StartsWith(_T("r")))
                     continue;
                 cdata.id = s.BeforeFirst(_T('|')).AfterFirst(_T('r')).Strip(wxString::both);

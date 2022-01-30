@@ -39,7 +39,8 @@ wxUint32 TextGraph::GetNumberOfLines()
     wxString s(*m_str);
     wxInt32 pos;
     wxUint32 k = 0;
-    do{
+    do
+    {
         pos = s.Find('\n');
         if ( pos != -1 )
             s = s.SubString( pos+1, s.Length() );
@@ -59,7 +60,8 @@ void TextGraph::CalcMinSize( wxDC *dc )
     linewidths.clear();
     wxInt32 pos;
     wxUint32 k = 0;
-    do{
+    do
+    {
         pos = s.Find('\n');
         wxString te = s;
         if ( pos != -1 )
@@ -94,7 +96,8 @@ void TextGraph::Draw( wxDC *dc )
     wxString s(*m_str);
     wxInt32 pos;
     wxUint32 k = 0;
-    do{
+    do
+    {
         pos = s.Find('\n');
         wxString te = s;
         if ( pos != -1 )
@@ -136,9 +139,9 @@ bool TextGraph::HasPoint(const wxPoint &pos)
     for (wxUint32 n = 0 ; n < linesizes.size() ; ++n )
     {
         if ( pos.x > offset.x + lineoffsets[n].x &&
-             pos.y > offset.y + lineoffsets[n].y &&
-             pos.x < offset.x + lineoffsets[n].x + linesizes[n].x &&
-             pos.y < offset.y + lineoffsets[n].y + linesizes[n].y )
+                pos.y > offset.y + lineoffsets[n].y &&
+                pos.x < offset.x + lineoffsets[n].x + linesizes[n].x &&
+                pos.y < offset.y + lineoffsets[n].y + linesizes[n].y )
             return true;
     }
     return false;

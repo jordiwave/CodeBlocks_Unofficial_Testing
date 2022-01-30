@@ -154,11 +154,11 @@ void wxSTEditorPrefs::Init()
     AddInitPref(wxT("Visible Slop"),        1, STE_PREF_FLAG_INT);
     AddInitPref(wxT("EOL Mode"),
 #if defined(__WXMSW__) || defined(__WXPM__)
-                                            wxSTC_EOL_CRLF, STE_PREF_FLAG_INT);
+                wxSTC_EOL_CRLF, STE_PREF_FLAG_INT);
 #elif defined(__WXMAC__) && !defined(__DARWIN__)
-                                            wxSTC_EOL_CR, STE_PREF_FLAG_INT);
+                wxSTC_EOL_CR, STE_PREF_FLAG_INT);
 #else
-                                            wxSTC_EOL_LF, STE_PREF_FLAG_INT);
+                wxSTC_EOL_LF, STE_PREF_FLAG_INT);
 #endif
     AddInitPref(wxT("Selection mode"),      -1, STE_PREF_FLAG_INT);
     AddInitPref(wxT("Print Magnification"), -2, STE_PREF_FLAG_INT);
@@ -172,7 +172,7 @@ void wxSTEditorPrefs::Init()
     AddInitPref(wxT("Two Phase Draw"),      0, STE_PREF_FLAG_BOOL);
     // DO NOT USE page cache in wxWidgets < 2.5.4, leads to a crash eventually Need Scintilla 1.61
     AddInitPref(wxT("Layout Cache"),
-                                            wxSTC_CACHE_PAGE, STE_PREF_FLAG_INT);
+                wxSTC_CACHE_PAGE, STE_PREF_FLAG_INT);
     AddInitPref(wxT("Use Antialiasing"),    1,                STE_PREF_FLAG_BOOL);
 
     AddInitPref(wxT("Save Remove Trailing Whitespace"), 0,    STE_PREF_FLAG_BOOL);
@@ -218,7 +218,7 @@ wxString wxSTEditorPrefs::GetPrefName(size_t pref_n) const
 void wxSTEditorPrefs::SetPrefName(size_t pref_n, const wxString& prefName)
 {
     wxCHECK_RET(pref_n < GetInitPrefCount(),
-        wxT("Invalid pref id in wxSTEditorPrefs::SetPrefName"));
+                wxT("Invalid pref id in wxSTEditorPrefs::SetPrefName"));
     s_STE_PrefNames[pref_n] = prefName;
 }
 
@@ -249,7 +249,7 @@ void wxSTEditorPrefs::SetInitPrefValue(size_t pref_n, const wxString& value) con
 }
 
 size_t wxSTEditorPrefs::AddInitPref(const wxString& prefName,
-                                          const wxString& value, int flags) const
+                                    const wxString& value, int flags) const
 {
     s_STE_PrefNames.Add(prefName);
     s_STE_PrefValues.Add(value);
@@ -572,9 +572,9 @@ void wxSTEditorPrefs::UpdateEditor(wxSTEditor *editor)
     if ((margin0_width < 0) || (margin1_width < 0) || (margin2_width < 0))
     {
         if ((M_PREFDATA->m_lineNumberAutoWidth < 1) ||
-            !editor->GetEditorStyles().IsOk() ||
-            (editor->GetEditorStyles().CreateConfigLine(STE_STYLE_LINENUMBER) !=
-             M_PREFDATA->m_lineNumberStyle))
+                !editor->GetEditorStyles().IsOk() ||
+                (editor->GetEditorStyles().CreateConfigLine(STE_STYLE_LINENUMBER) !=
+                 M_PREFDATA->m_lineNumberStyle))
         {
             M_PREFDATA->m_lineNumberStyle = editor->GetEditorStyles().CreateConfigLine(STE_STYLE_LINENUMBER);
             M_PREFDATA->m_lineNumberAutoWidth = editor->TextWidth(wxSTC_STYLE_LINENUMBER, wxT("_999999"));
@@ -586,13 +586,13 @@ void wxSTEditorPrefs::UpdateEditor(wxSTEditor *editor)
     }
 
     if (!HasPrefFlag(STE_PREF_MARGIN0_WIDTH, STE_PREF_FLAG_IGNORE) &&
-        (editor->GetMarginWidth(STE_MARGIN_0) != margin0_width))
+            (editor->GetMarginWidth(STE_MARGIN_0) != margin0_width))
         editor->SetMarginWidth(STE_MARGIN_0,    margin0_width);
     if (!HasPrefFlag(STE_PREF_MARGIN1_WIDTH, STE_PREF_FLAG_IGNORE) &&
-        (editor->GetMarginWidth(STE_MARGIN_1) != margin1_width))
+            (editor->GetMarginWidth(STE_MARGIN_1) != margin1_width))
         editor->SetMarginWidth(STE_MARGIN_1,    margin1_width);
     if (!HasPrefFlag(STE_PREF_MARGIN2_WIDTH, STE_PREF_FLAG_IGNORE) &&
-        (editor->GetMarginWidth(STE_MARGIN_2) != margin2_width))
+            (editor->GetMarginWidth(STE_MARGIN_2) != margin2_width))
         editor->SetMarginWidth(STE_MARGIN_2,    margin2_width);
 
     if (!HasPrefFlag(STE_PREF_AUTOC_STOPS, STE_PREF_FLAG_IGNORE))
@@ -614,7 +614,7 @@ void wxSTEditorPrefs::UpdateEditor(wxSTEditor *editor)
                   if (item) { item->Check(GetPrefBoolByID(menu_id)); item->Enable(enabled); } }
 
 void wxSTEditorPrefs::UpdateMenuToolItems(wxMenu *menu, wxMenuBar *menuBar,
-                                          wxToolBar *toolBar)
+        wxToolBar *toolBar)
 {
     wxCHECK_RET(IsOk(), wxT("Prefs not created"));
     if (!menu && !menuBar && !toolBar) return;
@@ -675,7 +675,7 @@ void wxSTEditorPrefs::SaveConfig( wxConfigBase &config,
         if (!HasPrefFlag(pref_n, STE_PREF_FLAG_NOCONFIG))
         {
             if (((flags && STE_CONFIG_SAVE_DIFFS) == 0) ||
-                (M_PREFDATA->m_prefs[pref_n] != GetInitPrefValue(pref_n)))
+                    (M_PREFDATA->m_prefs[pref_n] != GetInitPrefValue(pref_n)))
             {
                 if (HasPrefFlag(pref_n, STE_PREF_FLAG_INT|STE_PREF_FLAG_BOOL))
                     config.Write(key + name, GetPrefInt(pref_n));

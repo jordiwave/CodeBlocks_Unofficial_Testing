@@ -28,20 +28,20 @@
 /** \brief Class for wxsRadioBox widget */
 class wxsRadioBox: public wxsWidget
 {
-    public:
+public:
 
-        wxsRadioBox(wxsItemResData* Data);
+    wxsRadioBox(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        wxString Label;
-        wxArrayString ArrayChoices;
-        long DefaultSelection;
-        long Dimension;
+    wxString Label;
+    wxArrayString ArrayChoices;
+    long DefaultSelection;
+    long Dimension;
 };
 
 #endif

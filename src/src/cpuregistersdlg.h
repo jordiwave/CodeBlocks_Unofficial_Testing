@@ -13,23 +13,26 @@ class wxListCtrl;
 
 class CPURegistersDlg : public wxPanel, public cbCPURegistersDlg
 {
-    public:
-        CPURegistersDlg(wxWindow* parent);
+public:
+    CPURegistersDlg(wxWindow* parent);
 
-        wxWindow* GetWindow() override { return this; }
+    wxWindow* GetWindow() override
+    {
+        return this;
+    }
 
-        void Clear() override;
-        void SetRegisterValue(const wxString& reg_name, const wxString& hexValue,
-                              const wxString& interpreted) override;
-        void EnableWindow(bool enable) override;
-    protected:
-        int RegisterIndex(const wxString& reg_name);
-        void OnRefresh(wxCommandEvent& event);
+    void Clear() override;
+    void SetRegisterValue(const wxString& reg_name, const wxString& hexValue,
+                          const wxString& interpreted) override;
+    void EnableWindow(bool enable) override;
+protected:
+    int RegisterIndex(const wxString& reg_name);
+    void OnRefresh(wxCommandEvent& event);
 
-    private:
-        DECLARE_EVENT_TABLE();
-    private:
-        wxListCtrl* m_pList;
+private:
+    DECLARE_EVENT_TABLE();
+private:
+    wxListCtrl* m_pList;
 };
 
 #endif // CPUREGISTERSDLG_H

@@ -53,10 +53,10 @@
 
 namespace
 {
-    // Register the plugin
-    PluginRegistrant<lib_finder> reg(_T("lib_finder"));
+// Register the plugin
+PluginRegistrant<lib_finder> reg(_T("lib_finder"));
 
-    static const bool ExtraEventPresent = true;
+static const bool ExtraEventPresent = true;
 };
 
 lib_finder* lib_finder::m_Singleton = 0;
@@ -126,7 +126,7 @@ int lib_finder::Execute()
     LibrariesDlg m_Dlg(Manager::Get()->GetAppWindow(),m_KnownLibraries);
     PlaceWindow(&m_Dlg);
     m_Dlg.ShowModal();
-	return -1;
+    return -1;
 }
 
 
@@ -384,10 +384,11 @@ namespace ScriptBindings
 {
 
 // Dummy type
-struct LibFinder{};
+struct LibFinder {};
 
 template<>
-struct TypeInfo<LibFinder> {
+struct TypeInfo<LibFinder>
+{
     static uint32_t typetag;
     static constexpr const SQChar *className = _SC("LibFinder");
     using baseClass = void;

@@ -32,39 +32,39 @@
 
 struct ARM_MMU_FIRST_LEVEL_FAULT
 {
-	unsigned int id : 2;
-	unsigned int sbz : 30;
+    unsigned int id : 2;
+    unsigned int sbz : 30;
 };
 #define ARM_MMU_FIRST_LEVEL_FAULT_ID		0x0
 
 struct ARM_MMU_FIRST_LEVEL_PAGE_TABLE
 {
-	unsigned int id : 2;
-	unsigned int imp : 2;
-	unsigned int domain : 4;
-	unsigned int p : 1;
-	unsigned int base_address : 23;
+    unsigned int id : 2;
+    unsigned int imp : 2;
+    unsigned int domain : 4;
+    unsigned int p : 1;
+    unsigned int base_address : 23;
 };
 #define ARM_MMU_FIRST_LEVEL_PAGE_TABLE_ID	0x1
 
 struct ARM_MMU_FIRST_LEVEL_SECTION
 {
-	unsigned int id : 2;
-	unsigned int b : 1;
-	unsigned int c : 1;
-	unsigned int imp : 1;
-	unsigned int domain : 4;
-	unsigned int p : 1;
-	unsigned int ap : 2;
-	unsigned int tex : 8;
-	unsigned int base_address : 12;
+    unsigned int id : 2;
+    unsigned int b : 1;
+    unsigned int c : 1;
+    unsigned int imp : 1;
+    unsigned int domain : 4;
+    unsigned int p : 1;
+    unsigned int ap : 2;
+    unsigned int tex : 8;
+    unsigned int base_address : 12;
 };
 #define ARM_MMU_FIRST_LEVEL_SECTION_ID		0x2
 
 struct ARM_MMU_FIRST_LEVEL_RESERVED
 {
-	unsigned int id : 2;
-	unsigned int sbz : 30;
+    unsigned int id : 2;
+    unsigned int sbz : 30;
 };
 #define ARM_MMU_FIRST_LEVEL_RESERVED_ID		0x3
 
@@ -101,11 +101,11 @@ struct ARM_MMU_FIRST_LEVEL_RESERVED
 
 union ARM_MMU_FIRST_LEVEL_DESCRIPTOR
 {
-	unsigned int							word;
-	struct ARM_MMU_FIRST_LEVEL_FAULT		fault;
-	struct ARM_MMU_FIRST_LEVEL_PAGE_TABLE	page_table;
-	struct ARM_MMU_FIRST_LEVEL_SECTION		section;
-	struct ARM_MMU_FIRST_LEVEL_RESERVED		reserved;
+    unsigned int							word;
+    struct ARM_MMU_FIRST_LEVEL_FAULT		fault;
+    struct ARM_MMU_FIRST_LEVEL_PAGE_TABLE	page_table;
+    struct ARM_MMU_FIRST_LEVEL_SECTION		section;
+    struct ARM_MMU_FIRST_LEVEL_RESERVED		reserved;
 };
 
 #define ARM_UNCACHEABLE				0
@@ -148,13 +148,13 @@ union ARM_MMU_FIRST_LEVEL_DESCRIPTOR
 #define MMU_Control_BTB		0x800
 
 #ifdef __cplusplus
-  extern "C" {
+extern "C" {
 #endif /* __cplusplus */
 
 void pxa_mmu_init(void);
 
 #ifdef __cplusplus
-  }
+}
 #endif /* __cplusplus */
 
 #endif /* __PXA_MM_H__ */

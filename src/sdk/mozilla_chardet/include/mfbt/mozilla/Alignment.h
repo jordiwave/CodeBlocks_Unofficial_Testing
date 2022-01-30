@@ -12,7 +12,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace mozilla {
+namespace mozilla
+{
 
 /*
  * This class, and the corresponding macro MOZ_ALIGNOF, figures out how many
@@ -27,7 +28,7 @@ class AlignmentFinder
         T t;
     };
 
-  public:
+public:
     static const size_t alignment = sizeof(Aligner) - sizeof(T);
 };
 
@@ -111,25 +112,39 @@ struct AlignedElem<16>
 template<size_t Nbytes>
 struct AlignedStorage
 {
-    union U {
-      char bytes[Nbytes];
-      uint64_t _;
+    union U
+    {
+        char bytes[Nbytes];
+        uint64_t _;
     } u;
 
-    const void* addr() const { return u.bytes; }
-    void* addr() { return u.bytes; }
+    const void* addr() const
+    {
+        return u.bytes;
+    }
+    void* addr()
+    {
+        return u.bytes;
+    }
 };
 
 template<typename T>
 struct AlignedStorage2
 {
-    union U {
-      char bytes[sizeof(T)];
-      uint64_t _;
+    union U
+    {
+        char bytes[sizeof(T)];
+        uint64_t _;
     } u;
 
-    const T* addr() const { return reinterpret_cast<const T*>(u.bytes); }
-    T* addr() { return static_cast<T*>(static_cast<void*>(u.bytes)); }
+    const T* addr() const
+    {
+        return reinterpret_cast<const T*>(u.bytes);
+    }
+    T* addr()
+    {
+        return static_cast<T*>(static_cast<void*>(u.bytes));
+    }
 };
 
 } /* namespace mozilla */

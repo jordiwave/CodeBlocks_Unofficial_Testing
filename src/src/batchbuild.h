@@ -14,32 +14,32 @@
 // used for batch builds only.
 class BatchLogWindow : public wxScrollingDialog
 {
-    public:
-        BatchLogWindow(wxWindow *parent, const wxString &title)
-            : wxScrollingDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
+public:
+    BatchLogWindow(wxWindow *parent, const wxString &title)
+        : wxScrollingDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
+    {
+        wxSize size;
+        size.SetWidth(Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/batch_build_log/width"), wxDefaultSize.GetWidth()));
+        size.SetHeight(Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/batch_build_log/height"), wxDefaultSize.GetHeight()));
+        SetSize(size);
+    }
+    void EndModal(int retCode) override
+    {
+        // allowed to close?
+        // find compiler plugin
+        if (cbHasRunningCompilers(Manager::Get()->GetPluginManager()))
         {
-            wxSize size;
-            size.SetWidth(Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/batch_build_log/width"), wxDefaultSize.GetWidth()));
-            size.SetHeight(Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/batch_build_log/height"), wxDefaultSize.GetHeight()));
-            SetSize(size);
-        }
-        void EndModal(int retCode) override
-        {
-            // allowed to close?
-            // find compiler plugin
-            if (cbHasRunningCompilers(Manager::Get()->GetPluginManager()))
+            if (cbMessageBox(_("The build is in progress. Are you sure you want to abort it?"),
+                             _("Abort build?"),
+                             wxICON_QUESTION | wxYES_NO, this) == wxID_YES)
             {
-                if (cbMessageBox(_("The build is in progress. Are you sure you want to abort it?"),
-                                _("Abort build?"),
-                                wxICON_QUESTION | wxYES_NO, this) == wxID_YES)
-                {
-                    cbStopRunningCompilers(Manager::Get()->GetPluginManager());
-                    return;
-                }
+                cbStopRunningCompilers(Manager::Get()->GetPluginManager());
+                return;
             }
-
-            Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/batch_build_log/width"), (int)GetSize().GetWidth());
-            Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/batch_build_log/height"), (int)GetSize().GetHeight());
-            wxScrollingDialog::EndModal(retCode);
         }
+
+        Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/batch_build_log/width"), (int)GetSize().GetWidth());
+        Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/batch_build_log/height"), (int)GetSize().GetHeight());
+        wxScrollingDialog::EndModal(retCode);
+    }
 };

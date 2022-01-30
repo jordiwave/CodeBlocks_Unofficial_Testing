@@ -19,42 +19,43 @@ cbMouseSapCfg::cbMouseSapCfg(wxWindow* parent, MouseSap* pOwner, wxWindowID /*id
     :pOwnerClass(pOwner)
 {
     cbConfigurationPanel::Create(parent, -1, wxDefaultPosition, wxDefaultSize,
-		wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+                                 wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
-	wxBoxSizer* bSizer1;
-	bSizer1 = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* bSizer1;
+    bSizer1 = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizer2;
-	bSizer2 = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* bSizer2;
+    bSizer2 = new wxBoxSizer( wxVERTICAL );
 
-	bSizer2->SetMinSize(wxSize( -1,50 ));
-	StaticText1 = new wxStaticText( this, wxID_ANY, _("MouseSap Configuration"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer2->Add( StaticText1, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+    bSizer2->SetMinSize(wxSize( -1,50 ));
+    StaticText1 = new wxStaticText( this, wxID_ANY, _("MouseSap Configuration"), wxDefaultPosition, wxDefaultSize, 0 );
+    bSizer2->Add( StaticText1, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
-	bSizer2->Add( 0, 0, 1, wxEXPAND, 0 );
+    bSizer2->Add( 0, 0, 1, wxEXPAND, 0 );
 
-	bSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
+    bSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer5;
-	bSizer5 = new wxBoxSizer( wxHORIZONTAL );
-	m_pluginEnabled = new wxCheckBox( this, wxID_ANY, _("MouseSap Enabled"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer5->Add( m_pluginEnabled, 0, wxALL, 5 );
-	bSizer1->Add( bSizer5, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+    wxBoxSizer* bSizer5;
+    bSizer5 = new wxBoxSizer( wxHORIZONTAL );
+    m_pluginEnabled = new wxCheckBox( this, wxID_ANY, _("MouseSap Enabled"), wxDefaultPosition, wxDefaultSize, 0 );
+    bSizer5->Add( m_pluginEnabled, 0, wxALL, 5 );
+    bSizer1->Add( bSizer5, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
-	wxString docString1 = wxT("This plugin adds editor functions using the shiftKey, ctrlKey and  middleMouse button.\n\n")
-    wxT("If selected text & shift-middleMouse, \t\tpaste selected text at current cursor position.\n")
-    wxT("If selected text & shift-middleMouse "); //insert bold "inside" below
+    wxString docString1 = wxT("This plugin adds editor functions using the shiftKey, ctrlKey and  middleMouse button.\n\n")
+                          wxT("If selected text & shift-middleMouse, \t\tpaste selected text at current cursor position.\n")
+                          wxT("If selected text & shift-middleMouse "); //insert bold "inside" below
 
     wxString docString2 = wxT(" selection, copy to clipboard(like ctrl-c).\n")
-    wxT("If selected text & shift-switch editor, \t\tcopy selection to clipboard.\n")
-    wxT("If selected text & shift-ctrl-middleMouse "); //insert bold "inside" below
+                          wxT("If selected text & shift-switch editor, \t\tcopy selection to clipboard.\n")
+                          wxT("If selected text & shift-ctrl-middleMouse "); //insert bold "inside" below
 
     wxString docString3 = wxT(" selection, overwrite selection with clipboard data.\n")
-    wxT("If no selected text & shift-middleMouse,\t\tpaste clipboard data at cursor position(like ctrl-v).");
+                          wxT("If no selected text & shift-middleMouse,\t\tpaste clipboard data at cursor position(like ctrl-v).");
 
-	wxBoxSizer* bSizer7;
-	bSizer7 = new wxBoxSizer( wxHORIZONTAL );
-    int xsize; int ysize;
+    wxBoxSizer* bSizer7;
+    bSizer7 = new wxBoxSizer( wxHORIZONTAL );
+    int xsize;
+    int ysize;
     parent->GetClientSize(&xsize, &ysize);
     wxRichTextCtrl* richTextCtrl = new wxRichTextCtrl(
         this, wxID_ANY, wxEmptyString, wxDefaultPosition,
@@ -88,11 +89,11 @@ cbMouseSapCfg::cbMouseSapCfg(wxWindow* parent, MouseSap* pOwner, wxWindowID /*id
     r.WriteText(docString3);
     r.Enable(false);
 
-	bSizer7->Add( richTextCtrl, 0, wxALL, 5 );
-	bSizer1->Add( bSizer7, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+    bSizer7->Add( richTextCtrl, 0, wxALL, 5 );
+    bSizer1->Add( bSizer7, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
-	this->SetSizer( bSizer1 );
-	this->Layout();
+    this->SetSizer( bSizer1 );
+    this->Layout();
 }
 #endif //defined( __WXMSW__ )
 
@@ -105,45 +106,45 @@ cbMouseSapCfg::cbMouseSapCfg(wxWindow* parent, MouseSap* pOwner, wxWindowID /*id
     :pOwnerClass(pOwner)
 {
     cbConfigurationPanel::Create(parent, -1, wxDefaultPosition, wxDefaultSize,
-		wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+                                 wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
-	wxBoxSizer* bSizer1;
-	bSizer1 = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* bSizer1;
+    bSizer1 = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizer2;
-	bSizer2 = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* bSizer2;
+    bSizer2 = new wxBoxSizer( wxVERTICAL );
 
-	bSizer2->SetMinSize(wxSize( -1,50 ));
-	StaticText1 = new wxStaticText( this, wxID_ANY, _("MouseSap Configuration"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer2->Add( StaticText1, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+    bSizer2->SetMinSize(wxSize( -1,50 ));
+    StaticText1 = new wxStaticText( this, wxID_ANY, _("MouseSap Configuration"), wxDefaultPosition, wxDefaultSize, 0 );
+    bSizer2->Add( StaticText1, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
-	bSizer2->Add( 0, 0, 1, wxEXPAND, 0 );
+    bSizer2->Add( 0, 0, 1, wxEXPAND, 0 );
 
-	bSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
+    bSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer5;
-	bSizer5 = new wxBoxSizer( wxHORIZONTAL );
-	m_pluginEnabled = new wxCheckBox( this, wxID_ANY, _("MouseSap Enabled"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer5->Add( m_pluginEnabled, 0, wxALL, 5 );
-	bSizer1->Add( bSizer5, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+    wxBoxSizer* bSizer5;
+    bSizer5 = new wxBoxSizer( wxHORIZONTAL );
+    m_pluginEnabled = new wxCheckBox( this, wxID_ANY, _("MouseSap Enabled"), wxDefaultPosition, wxDefaultSize, 0 );
+    bSizer5->Add( m_pluginEnabled, 0, wxALL, 5 );
+    bSizer1->Add( bSizer5, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
-	wxBoxSizer* bSizer6;
-	bSizer6 = new wxBoxSizer( wxHORIZONTAL );
-	wxString docString = wxT("This plugin adds editor functions using the shiftKey, ctrlKey and  middleMouse button.\n\n")
-	wxT("If selected text && shift-middleMouse,                  paste selected text at current cursor position.\n")
-	wxT("If selected text && shift-middleMouse inside selection,  copy to clipboard(like ctrl-c).\n")
-	wxT("If selected text && shift-switch editor,                 copy selection to clipboard.\n")
-    wxT("If selected text && shift-ctrl-middleMouse inside selection,  overwrite selection with clipboard data.\n")
-    wxT("If no selected text && Shift-middleMouse,             paste clipboard data at cursor position(like ctrl-v).");
+    wxBoxSizer* bSizer6;
+    bSizer6 = new wxBoxSizer( wxHORIZONTAL );
+    wxString docString = wxT("This plugin adds editor functions using the shiftKey, ctrlKey and  middleMouse button.\n\n")
+                         wxT("If selected text && shift-middleMouse,                  paste selected text at current cursor position.\n")
+                         wxT("If selected text && shift-middleMouse inside selection,  copy to clipboard(like ctrl-c).\n")
+                         wxT("If selected text && shift-switch editor,                 copy selection to clipboard.\n")
+                         wxT("If selected text && shift-ctrl-middleMouse inside selection,  overwrite selection with clipboard data.\n")
+                         wxT("If no selected text && Shift-middleMouse,             paste clipboard data at cursor position(like ctrl-v).");
 
     wxStaticText* staticText1 = new wxStaticText(this, wxID_ANY,
-                                   docString,
-                                   wxDefaultPosition, wxDefaultSize, 0);
-	bSizer6->Add( staticText1, 0, wxALL, 5 );
-	bSizer1->Add( bSizer6, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+            docString,
+            wxDefaultPosition, wxDefaultSize, 0);
+    bSizer6->Add( staticText1, 0, wxALL, 5 );
+    bSizer1->Add( bSizer6, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
-	this->SetSizer( bSizer1 );
-	this->Layout();
+    this->SetSizer( bSizer1 );
+    this->Layout();
 
 }
 #endif //NOT defined (__WXMSW__ )
@@ -176,12 +177,12 @@ wxString cbMouseSapCfg::GetBitmapBaseName() const
 
     wxString pngName = _T("generic-plugin");
     //if file exist "./share/codeblocks/images/settings/cbMouseSap.png";
-    #ifdef __WXGTK__
-     if ( ::wxFileExists(ConfigManager::GetDataFolder() + _T("/images/settings/MouseSap.png")) )
-    #else
-     if ( ::wxFileExists(ConfigManager::GetDataFolder() + _T("\\images\\settings\\MouseSap.png")) )
-    #endif
-    	pngName = _T("MouseSap") ;
+#ifdef __WXGTK__
+    if ( ::wxFileExists(ConfigManager::GetDataFolder() + _T("/images/settings/MouseSap.png")) )
+#else
+    if ( ::wxFileExists(ConfigManager::GetDataFolder() + _T("\\images\\settings\\MouseSap.png")) )
+#endif
+        pngName = _T("MouseSap") ;
     // else return "generic-plugin"
     return pngName;
 }

@@ -17,14 +17,17 @@
 #include <memory>
 
 #ifndef CB_PRECOMP
-    #include <wx/file.h>
-    #include <wx/filename.h>
-    #include "configmanager.h"
+#include <wx/file.h>
+#include <wx/filename.h>
+#include "configmanager.h"
 #endif
 
 
 class TiXmlDocument;
-namespace TinyXML{ bool SaveDocument(const wxString&, TiXmlDocument*); }
+namespace TinyXML
+{
+bool SaveDocument(const wxString&, TiXmlDocument*);
+}
 
 
 // ***** class: LoaderBase *****
@@ -56,7 +59,10 @@ public:
     LoaderBase() : wait(true), data(nullptr), len(0) {};
     ~LoaderBase() override;
     void operator()() override {};
-    wxString FileName() const { return fileName; };
+    wxString FileName() const
+    {
+        return fileName;
+    };
 
     bool Sync();
     char* GetData();
@@ -67,7 +73,10 @@ public:
 class DLLIMPORT FileLoader : public LoaderBase
 {
 public:
-    FileLoader(const wxString& name) { fileName = name; };
+    FileLoader(const wxString& name)
+    {
+        fileName = name;
+    };
     void operator()() override;
 };
 
@@ -75,7 +84,10 @@ public:
 class DLLIMPORT URLLoader : public LoaderBase
 {
 public:
-    URLLoader(const wxString& name) { fileName = name; };
+    URLLoader(const wxString& name)
+    {
+        fileName = name;
+    };
     void operator()() override;
 private:
     std::vector<char> mBuffer;
@@ -85,8 +97,14 @@ private:
 class DLLIMPORT NullLoader : public LoaderBase
 {
 public:
-    NullLoader(const wxString& name, char* buffer, size_t size) { fileName = name; data = buffer; len = size; Ready(); };
-    void operator()() override{};
+    NullLoader(const wxString& name, char* buffer, size_t size)
+    {
+        fileName = name;
+        data = buffer;
+        len = size;
+        Ready();
+    };
+    void operator()() override {};
 };
 
 // ***** class: EditorReuser *****
@@ -105,7 +123,7 @@ public:
         strcpy(data, (const char*)s.mb_str(wxConvUTF8));
         Ready();
     }
-    void operator()() override{};
+    void operator()() override {};
 };
 
 // ***** class: FileManager *****

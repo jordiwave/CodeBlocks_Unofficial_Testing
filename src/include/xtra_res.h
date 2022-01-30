@@ -16,23 +16,23 @@ class wxXmlResourceHandler;
 
 class DLLIMPORT wxToolBarAddOnXmlHandler : public wxXmlResourceHandler
 {
-    public:
-        wxToolBarAddOnXmlHandler();
-        wxObject *DoCreateResource() override;
-        bool CanHandle(wxXmlNode *node) override;
+public:
+    wxToolBarAddOnXmlHandler();
+    wxObject *DoCreateResource() override;
+    bool CanHandle(wxXmlNode *node) override;
 
-        void SetToolbarImageSize(int size);
-        void SetCurrentResourceID(const wxString &id);
+    void SetToolbarImageSize(int size);
+    void SetCurrentResourceID(const wxString &id);
 
-    protected:
-        bool m_isInside;
-        bool m_isAddon;
-        wxToolBar *m_toolbar;
-        int m_ImageSize;
-        wxString m_PathReplaceString;
-        wxString m_CurrentID;
+protected:
+    bool m_isInside;
+    bool m_isAddon;
+    wxToolBar *m_toolbar;
+    int m_ImageSize;
+    wxString m_PathReplaceString;
+    wxString m_CurrentID;
 
-        wxBitmap GetCenteredBitmap(const wxString& param, wxSize size, double scaleFactor);
+    wxBitmap GetCenteredBitmap(const wxString& param, wxSize size, double scaleFactor);
 };
 
 class DLLIMPORT wxScrollingDialogXmlHandler : public wxDialogXmlHandler

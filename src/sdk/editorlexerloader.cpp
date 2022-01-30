@@ -10,12 +10,12 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "globals.h"
-    #include "manager.h"
-    #include "logmanager.h"
-    #include <wx/dynarray.h>
-    #include <wx/regex.h>
-    #include <wx/wxscintilla.h>
+#include "globals.h"
+#include "manager.h"
+#include "logmanager.h"
+#include <wx/dynarray.h>
+#include <wx/regex.h>
+#include <wx/wxscintilla.h>
 #endif
 
 #include "editorcolourset.h"
@@ -165,12 +165,12 @@ void EditorLexerLoader::DoStyles(HighlightLanguage language, TiXmlElement* node)
 
 //                LOGSTREAM << _("Adding style: ") << name << _T("(") << value << _T(")\n");
                 m_pTarget->AddOption(language, name, value,
-                                    fgcolour,
-                                    bgcolour,
-                                    bold,
-                                    italics,
-                                    underlined,
-                                    value >= 0);
+                                     fgcolour,
+                                     bgcolour,
+                                     bold,
+                                     italics,
+                                     underlined,
+                                     value >= 0);
             }
         }
         style = style->NextSiblingElement("Style");
@@ -219,9 +219,9 @@ void EditorLexerLoader::DoSingleKeywordNode(HighlightLanguage language, TiXmlEle
     TiXmlElement* keywords = node->FirstChildElement(nodename.mb_str());
     while (keywords)
     {
-    //    LOGSTREAM << "Found " << nodename << '\n';
+        //    LOGSTREAM << "Found " << nodename << '\n';
         int keyidx = keywords->Attribute("index") ? atol(keywords->Attribute("index")) : -1;
-    //    LOGSTREAM << "keyidx=" << keyidx << '\n';
+        //    LOGSTREAM << "keyidx=" << keyidx << '\n';
         if (keyidx != -1)
         {
             // the lexer file contains keywords indented - remove the extra spacing and EOLs

@@ -59,7 +59,7 @@ class ParseManager : public wxEvtHandler, private ParseManagerBase
 {
 private:
     /** Constructor */
-    ParseManager(){};
+    ParseManager() {};
 
 public:
     /** Constructor */
@@ -70,7 +70,10 @@ public:
     ~ParseManager();
 
     /** return a reference to the current active Parser object */
-    ParserBase& GetParser() { return *m_Parser; }
+    ParserBase& GetParser()
+    {
+        return *m_Parser;
+    }
 
     /** return the Parser pointer corresponding to the input C::B project
      * @param project input C::B project pointer
@@ -113,7 +116,10 @@ public:
      *   For Clangd, this is alway false
      */
     //-bool IsParserPerWorkspace() const { return m_ParserPerWorkspace; }
-    bool IsParserPerWorkspace() const { return false; } //(ph 2021/08/26)
+    bool IsParserPerWorkspace() const
+    {
+        return false;    //(ph 2021/08/26)
+    }
 
     /** Return true if all the Parser's batch-parse stages are finished, otherwise return false */
     bool Done();
@@ -258,7 +264,10 @@ public:
 
     // The functions below is used to manage symbols browser
     /** return active class browser pointer */
-    ClassBrowser* GetClassBrowser() const { return m_ClassBrowser; }
+    ClassBrowser* GetClassBrowser() const
+    {
+        return m_ClassBrowser;
+    }
 
     /** create the class browser */
     void CreateClassBrowser();
@@ -271,14 +280,32 @@ public:
     void UpdateClassBrowser();
 
     // save current options and BrowserOptions          //(ph 2021/05/25)
-    void ParserOptionsSave(ParserBase* pParser)  {m_OptionsSaved = pParser->Options();}
-    void BrowserOptionsSave(ParserBase* pParser) {m_BrowserOptionsSaved = pParser->ClassBrowserOptions();}
-    ParserOptions&  GetSavedOptions()        {return m_OptionsSaved;}
-    BrowserOptions& GetSavedBrowserOptions() {return m_BrowserOptionsSaved;}
+    void ParserOptionsSave(ParserBase* pParser)
+    {
+        m_OptionsSaved = pParser->Options();
+    }
+    void BrowserOptionsSave(ParserBase* pParser)
+    {
+        m_BrowserOptionsSaved = pParser->ClassBrowserOptions();
+    }
+    ParserOptions&  GetSavedOptions()
+    {
+        return m_OptionsSaved;
+    }
+    BrowserOptions& GetSavedBrowserOptions()
+    {
+        return m_BrowserOptionsSaved;
+    }
 
     wxString m_RenameSymbolToChange;
-    void SetRenameSymbolToChange(wxString sysmbolToChange){m_RenameSymbolToChange = sysmbolToChange;}
-    wxString GetRenameSymbolToChange(){return m_RenameSymbolToChange;}
+    void SetRenameSymbolToChange(wxString sysmbolToChange)
+    {
+        m_RenameSymbolToChange = sysmbolToChange;
+    }
+    wxString GetRenameSymbolToChange()
+    {
+        return m_RenameSymbolToChange;
+    }
 
     // ----------------------------------------------------------------------------
     wxEvtHandler* FindEventHandler(wxEvtHandler* pEvtHdlr)
@@ -310,7 +337,10 @@ public:
         return nowMillis - startMillis;
     }
 
-    LSPEventCallbackHandler* GetLSPEventSinkHandler(){return m_pLSPEventSinkHandler;}
+    LSPEventCallbackHandler* GetLSPEventSinkHandler()
+    {
+        return m_pLSPEventSinkHandler;
+    }
 
 
 protected:
@@ -323,7 +353,7 @@ protected:
 
     bool AddCompilerAndIncludeDirs(cbProject* project, ParserBase* parser); //(ph 2021/11/4)
 
-  /** Add compiler include directories (from search paths) to a parser */
+    /** Add compiler include directories (from search paths) to a parser */
     void AddCompilerIncludeDirsToParser(const Compiler* compiler, ParserBase* parser);
 
     /** Switch parser object according the current active editor and filename */
@@ -476,7 +506,7 @@ private:
     /** Add the collected default GCC compiler include search paths to a parser
      * todo: document this
      */
-     void AddGCCCompilerDirs(const wxString& masterPath, const wxString& compilerCpp, ParserBase* parser);
+    void AddGCCCompilerDirs(const wxString& masterPath, const wxString& compilerCpp, ParserBase* parser);
 
     /** Add a list of directories to the parser's search directories, normalise to "base" path, if
      * "base" is not empty. Replaces macros.

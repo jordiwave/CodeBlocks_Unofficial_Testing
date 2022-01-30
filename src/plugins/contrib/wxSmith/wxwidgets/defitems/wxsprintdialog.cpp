@@ -24,7 +24,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsPrintDialog> Reg(_T("PrintDialog"), wxsTTool, _T("Dialogs"), 110, false);
+wxsRegisterItem<wxsPrintDialog> Reg(_T("PrintDialog"), wxsTTool, _T("Dialogs"), 110, false);
 }
 
 /*! \brief Ctor
@@ -58,59 +58,70 @@ void wxsPrintDialog::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/printdlg.h>"),GetInfo().ClassName,hfInPCH);
+
+        wxString sDataName = GetCoderContext()->GetUniqueName(_T("printDialogData"));
+        AddDeclaration(wxString::Format(wxT("wxPrintDialogData  *%s;"), sDataName.wx_str()));
+        Codef(_T("\t%s = new wxPrintDialogData;\n"), sDataName.wx_str());
+
+        if(m_bEnableHelp)
         {
-            AddHeader(_T("<wx/printdlg.h>"),GetInfo().ClassName,hfInPCH);
-
-            wxString sDataName = GetCoderContext()->GetUniqueName(_T("printDialogData"));
-            AddDeclaration(wxString::Format(wxT("wxPrintDialogData  *%s;"), sDataName.wx_str()));
-            Codef(_T("\t%s = new wxPrintDialogData;\n"), sDataName.wx_str());
-
-            if(m_bEnableHelp){
-                Codef(_T("\t%s->EnableHelp(%b);\n"), sDataName.wx_str(), m_bEnableHelp);
+            Codef(_T("\t%s->EnableHelp(%b);\n"), sDataName.wx_str(), m_bEnableHelp);
+        }
+        if(!m_bEnablePageNumbers)
+        {
+            Codef(_T("\t%s->EnablePageNumbers(%b);\n"), sDataName.wx_str(), m_bEnablePageNumbers);
+        }
+        if(!m_bEnablePrintToFile)
+        {
+            Codef(_T("\t%s->EnablePrintToFile(%b);\n"), sDataName.wx_str(), m_bEnablePrintToFile);
+        }
+        if(m_bEnableSelection)
+        {
+            Codef(_T("\t%s->EnableSelection(%b);\n"), sDataName.wx_str(), m_bEnableSelection);
+            if(m_bSelection)
+            {
+                Codef(_T("\t%s->SetSelection(%b);\n"), sDataName.wx_str(), m_bSelection);
             }
-            if(!m_bEnablePageNumbers){
-                Codef(_T("\t%s->EnablePageNumbers(%b);\n"), sDataName.wx_str(), m_bEnablePageNumbers);
-            }
-            if(!m_bEnablePrintToFile){
-                Codef(_T("\t%s->EnablePrintToFile(%b);\n"), sDataName.wx_str(), m_bEnablePrintToFile);
-            }
-            if(m_bEnableSelection){
-                Codef(_T("\t%s->EnableSelection(%b);\n"), sDataName.wx_str(), m_bEnableSelection);
-                if(m_bSelection){
-                    Codef(_T("\t%s->SetSelection(%b);\n"), sDataName.wx_str(), m_bSelection);
-                }
-            }
-            if(m_bCollate){
-                Codef(_T("\t%s->SetCollate(%b);\n"), sDataName.wx_str(), m_bCollate);
-            }
-            if(m_iFromPage > 0){
-                Codef(_T("\t%s->SetFromPage(%d);\n"), sDataName.wx_str(), m_iFromPage);
-            }
-            if(m_iToPage > 0){
-                Codef(_T("\t%s->SetToPage(%d);\n"), sDataName.wx_str(), m_iToPage);
-            }
-            if(m_iMinPage > 0){
-                Codef(_T("\t%s->SetMinPage(%d);\n"), sDataName.wx_str(), m_iMinPage);
-            }
-            if(m_iMaxPage > 0){
-                Codef(_T("\t%s->SetMaxPage(%d);\n"), sDataName.wx_str(), m_iMaxPage);
-            }
-            if(m_iNoCopies > 1){
-                Codef(_T("\t%s->SetNoCopies(%d);\n"), sDataName.wx_str(), m_iNoCopies);
-            }
-
-            Codef(_T("%C(%W, %v);\n"), sDataName.wx_str());
-            BuildSetupWindowCode();
-            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("delete %s;\n"), GetVarName().wx_str()));
-            return;
+        }
+        if(m_bCollate)
+        {
+            Codef(_T("\t%s->SetCollate(%b);\n"), sDataName.wx_str(), m_bCollate);
+        }
+        if(m_iFromPage > 0)
+        {
+            Codef(_T("\t%s->SetFromPage(%d);\n"), sDataName.wx_str(), m_iFromPage);
+        }
+        if(m_iToPage > 0)
+        {
+            Codef(_T("\t%s->SetToPage(%d);\n"), sDataName.wx_str(), m_iToPage);
+        }
+        if(m_iMinPage > 0)
+        {
+            Codef(_T("\t%s->SetMinPage(%d);\n"), sDataName.wx_str(), m_iMinPage);
+        }
+        if(m_iMaxPage > 0)
+        {
+            Codef(_T("\t%s->SetMaxPage(%d);\n"), sDataName.wx_str(), m_iMaxPage);
+        }
+        if(m_iNoCopies > 1)
+        {
+            Codef(_T("\t%s->SetNoCopies(%d);\n"), sDataName.wx_str(), m_iNoCopies);
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsPrintDialog::OnBuildCreatingCode"),GetLanguage());
-        }
+        Codef(_T("%C(%W, %v);\n"), sDataName.wx_str());
+        BuildSetupWindowCode();
+        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("delete %s;\n"), GetVarName().wx_str()));
+        return;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsPrintDialog::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

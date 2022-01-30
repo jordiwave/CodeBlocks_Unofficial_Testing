@@ -36,41 +36,44 @@
  */
 class PkgConfigManager
 {
-    public:
+public:
 
-        /** \brief Ctor
-         *
-         * It does not detet the presence or list of libraries
-         */
-        PkgConfigManager();
+    /** \brief Ctor
+     *
+     * It does not detet the presence or list of libraries
+     */
+    PkgConfigManager();
 
-        /** \brief Dctor */
-        ~PkgConfigManager();
+    /** \brief Dctor */
+    ~PkgConfigManager();
 
-        /** \brief Checking whether there is pkg-config on this system */
-        bool IsPkgConfig() { return m_PkgConfigVersion!=-1L; }
+    /** \brief Checking whether there is pkg-config on this system */
+    bool IsPkgConfig()
+    {
+        return m_PkgConfigVersion!=-1L;
+    }
 
-        /** \brief Adding libraries detected from pkg-config to given set */
-        bool DetectLibraries(ResultMap& Results);
+    /** \brief Adding libraries detected from pkg-config to given set */
+    bool DetectLibraries(ResultMap& Results);
 
-        /** \brief Clear all results */
-        void Clear();
+    /** \brief Clear all results */
+    void Clear();
 
-        /** \brief Update given target to use library from pkg-config */
-        bool UpdateTarget(const wxString& LibName,CompileTargetBase* Target,bool Force=true);
+    /** \brief Update given target to use library from pkg-config */
+    bool UpdateTarget(const wxString& LibName,CompileTargetBase* Target,bool Force=true);
 
-        /** \brief Refreshing pkg-config data */
-        void RefreshData();
+    /** \brief Refreshing pkg-config data */
+    void RefreshData();
 
-    private:
+private:
 
-        /** \brief Detecting version of pkg-config */
-        bool DetectVersion();
+    /** \brief Detecting version of pkg-config */
+    bool DetectVersion();
 
 //        /** \brief Reading list of supported libraries */
 //        bool LoadLibraries();
 
-        long m_PkgConfigVersion;    ///< \brief Pkg-Config version, -1 if there's no pkg-config
+    long m_PkgConfigVersion;    ///< \brief Pkg-Config version, -1 if there's no pkg-config
 //        ResultMap m_Libraries;      ///< \brief Libraries detected by pkg-config
 };
 

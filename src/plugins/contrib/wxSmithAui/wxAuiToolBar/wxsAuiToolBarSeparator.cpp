@@ -26,24 +26,24 @@ using namespace wxsFlags;
 
 namespace
 {
-    #include "../images/wxsAuiToolBarSeparator16.xpm"
-    #include "../images/wxsAuiToolBarSeparator32.xpm"
+#include "../images/wxsAuiToolBarSeparator16.xpm"
+#include "../images/wxsAuiToolBarSeparator32.xpm"
 
-    wxsRegisterItem<wxsAuiToolBarSeparator> Reg(
-        _T("wxAuiToolBarSeparator"),            // Class name
-        wxsTWidget,                             // Item type
-        _T("wxWindows"),                        // License
-        _T("Benjamin I. Williams"),             // Author
-        _T(""),                                 // Author's email
-        _T(""),                                 // Item's homepage
-        _T("Aui"),                              // Category in palette
-        20,                                     // Priority in palette
-        _T("AuiToolBarSeparator"),              // Base part of names for new items
-        wxsCPP,                                 // List of coding languages supported by this item
-        2, 8,                                   // Version
-        wxBitmap(wxsAuiToolBarSeparator32_xpm), // 32x32 bitmap
-        wxBitmap(wxsAuiToolBarSeparator16_xpm), // 16x16 bitmap
-        false);
+wxsRegisterItem<wxsAuiToolBarSeparator> Reg(
+    _T("wxAuiToolBarSeparator"),            // Class name
+    wxsTWidget,                             // Item type
+    _T("wxWindows"),                        // License
+    _T("Benjamin I. Williams"),             // Author
+    _T(""),                                 // Author's email
+    _T(""),                                 // Item's homepage
+    _T("Aui"),                              // Category in palette
+    20,                                     // Priority in palette
+    _T("AuiToolBarSeparator"),              // Base part of names for new items
+    wxsCPP,                                 // List of coding languages supported by this item
+    2, 8,                                   // Version
+    wxBitmap(wxsAuiToolBarSeparator32_xpm), // 32x32 bitmap
+    wxBitmap(wxsAuiToolBarSeparator16_xpm), // 16x16 bitmap
+    false);
 }
 
 wxsAuiToolBarSeparator::wxsAuiToolBarSeparator(wxsItemResData* Data)

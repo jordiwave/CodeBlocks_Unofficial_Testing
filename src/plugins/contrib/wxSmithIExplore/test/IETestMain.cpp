@@ -19,8 +19,10 @@
 //*)
 
 //helper functions
-enum wxbuildinfoformat {
-    short_f, long_f };
+enum wxbuildinfoformat
+{
+    short_f, long_f
+};
 
 wxString wxbuildinfo(wxbuildinfoformat format)
 {
@@ -188,7 +190,7 @@ void IETestFrame::OnBitmapButton5Click(wxCommandEvent& event)
 
 void IETestFrame::OnIE1BeforeNavigate2(wxMSHTMLEvent& event)
 {
-wxString    s;
+    wxString    s;
 
     s = event.GetText1();
     StatusBar1->SetStatusText(s, 0);
@@ -196,7 +198,7 @@ wxString    s;
 
 void IETestFrame::OnIE1NewWindow2(wxMSHTMLEvent& event)
 {
-wxString    s;
+    wxString    s;
 
     s = _T("New Window Requested");
     StatusBar1->SetStatusText(s, 1);
@@ -204,7 +206,7 @@ wxString    s;
 
 void IETestFrame::OnIE1DocumentComplete(wxMSHTMLEvent& event)
 {
-wxString    s;
+    wxString    s;
 
     s = event.GetText1();
     StatusBar1->SetStatusText(s, 2);
@@ -212,7 +214,7 @@ wxString    s;
 
 void IETestFrame::OnIE1ProgressChange(wxMSHTMLEvent& event)
 {
-wxString    s;
+    wxString    s;
 
     s.Printf(_T("%ld / %ld"), event.GetLong1(), event.GetLong2());
     StatusBar1->SetStatusText(s, 3);
@@ -220,7 +222,7 @@ wxString    s;
 
 void IETestFrame::OnIE1StatusTextChange(wxMSHTMLEvent& event)
 {
-wxString    s;
+    wxString    s;
 
     s = event.GetText1();
     StatusBar1->SetStatusText(s, 4);
@@ -228,7 +230,7 @@ wxString    s;
 
 void IETestFrame::OnIE1TitleChange(wxMSHTMLEvent& event)
 {
-wxString    s;
+    wxString    s;
 
     s = event.GetText1();
     StatusBar1->SetStatusText(s, 5);

@@ -36,25 +36,25 @@
 
 namespace
 {
-    /** \brief Event type for background-fetching system */
-    const int wxEVT_FETCH_SEQUENCE = wxNewEventType();
+/** \brief Event type for background-fetching system */
+const int wxEVT_FETCH_SEQUENCE = wxNewEventType();
 
-    /** \brief Identifier used by refresh timer */
-    const int RefreshTimerId = wxNewId();
+/** \brief Identifier used by refresh timer */
+const int RefreshTimerId = wxNewId();
 
-    /** \brief Types of paint delays */
-    enum RepaintDelayType
-    {
-        None,
-        Yield,
-        TimerFast,
-        TimerNormal
-    };
+/** \brief Types of paint delays */
+enum RepaintDelayType
+{
+    None,
+    Yield,
+    TimerFast,
+    TimerNormal
+};
 
-    inline RepaintDelayType GetDelayType()
-    {
-        return TimerNormal;
-    }
+inline RepaintDelayType GetDelayType()
+{
+    return TimerNormal;
+}
 }
 
 BEGIN_EVENT_TABLE(wxsDrawingWindow,wxScrolledWindow)
@@ -174,40 +174,40 @@ void wxsDrawingWindow::OnFetchSequence(cb_unused wxCommandEvent& event)
     // do it's stuff before we can read bitmap directly from screen
     switch ( GetDelayType() )
     {
-        case None:
-            // We don't wait at all assuming that everything is
-            // shown now
-            FetchSequencePhase2();
-            break;
+    case None:
+        // We don't wait at all assuming that everything is
+        // shown now
+        FetchSequencePhase2();
+        break;
 
-        case Yield:
-            // We call Yield() to let wxWidgets process all messages
-            // This can be dangerous in some environments when calling
-            // Yield() may internally destroy this class (happens on Linux)
-            Manager::Yield();
-            FetchSequencePhase2();
-            break;
+    case Yield:
+        // We call Yield() to let wxWidgets process all messages
+        // This can be dangerous in some environments when calling
+        // Yield() may internally destroy this class (happens on Linux)
+        Manager::Yield();
+        FetchSequencePhase2();
+        break;
 
-        case TimerNormal:
-            // We start timer that will send event after some time.
-            // We assume here that before timer event is processed,
-            // all events used to udpate screen will be processed.
-            m_RefreshTimer.Start(50,true);
-            break;
+    case TimerNormal:
+        // We start timer that will send event after some time.
+        // We assume here that before timer event is processed,
+        // all events used to udpate screen will be processed.
+        m_RefreshTimer.Start(50,true);
+        break;
 
-        case TimerFast:
-            // This version is simillar to TimerNormal, but with the difference is
-            // that here's almost no gap between refresh request and refresh
-            // execution. This may not be preffered on some platforms where
-            // timer events have high priority and are called before processing
-            // any pending events on queue. In such situation, it may lead to
-            // some unprocessed events which should update screen's content
-            // while fetching bitmap.
-            m_RefreshTimer.Start(1,true);
-            break;
+    case TimerFast:
+        // This version is simillar to TimerNormal, but with the difference is
+        // that here's almost no gap between refresh request and refresh
+        // execution. This may not be preffered on some platforms where
+        // timer events have high priority and are called before processing
+        // any pending events on queue. In such situation, it may lead to
+        // some unprocessed events which should update screen's content
+        // while fetching bitmap.
+        m_RefreshTimer.Start(1,true);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
 }
@@ -302,10 +302,10 @@ bool wxsDrawingWindow::NoNeedToRefetch()
     GetViewStart(&NewVirtX,&NewVirtY);
 
     if ( m_WasContentChanged ||
-         NewSizeX != m_LastSizeX ||
-         NewSizeY != m_LastSizeY ||
-         NewVirtX != m_LastVirtX ||
-         NewVirtY != m_LastVirtY )
+            NewSizeX != m_LastSizeX ||
+            NewSizeY != m_LastSizeY ||
+            NewVirtX != m_LastVirtX ||
+            NewVirtY != m_LastVirtY )
     {
         m_WasContentChanged = false;
         m_LastSizeX = NewSizeX;

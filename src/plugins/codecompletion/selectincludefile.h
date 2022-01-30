@@ -11,11 +11,11 @@
 #include "scrollingdialog.h"
 
 #ifndef WX_PRECOMP
-    #include <wx/button.h>
-    #include <wx/intl.h>
-    #include <wx/listbox.h>
-    #include <wx/sizer.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/intl.h>
+#include <wx/listbox.h>
+#include <wx/sizer.h>
+#include <wx/xrc/xmlres.h>
 #endif
 
 class SelectIncludeFile: public wxScrollingDialog
@@ -25,7 +25,10 @@ public:
     virtual ~SelectIncludeFile();
 
     void AddListEntries(const wxArrayString& IncludeFile);
-    wxString GetIncludeFile() const { return m_SelectedIncludeFile; }
+    wxString GetIncludeFile() const
+    {
+        return m_SelectedIncludeFile;
+    }
 
 private:
     void OnOk(wxCommandEvent& event);

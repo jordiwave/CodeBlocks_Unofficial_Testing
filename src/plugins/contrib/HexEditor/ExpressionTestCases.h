@@ -29,7 +29,7 @@
 
 namespace Expression
 {
-    TestCasesBase& GetTests();
+TestCasesBase& GetTests();
 }
 
 #endif

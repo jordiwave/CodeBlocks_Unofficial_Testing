@@ -25,24 +25,24 @@
 
 namespace
 {
-    wxsRegisterItem<wxsPasswordEntryDialog> Reg(
-        _T("PasswordEntryDialog"),        // Class base name
-        wxsTTool,                                       // Item type
-        _T("Dialogs"),                              // Category in palette
-        120,                                                 // Priority in palette
-        false);                                             // We do not allow this item inside XRC files
+wxsRegisterItem<wxsPasswordEntryDialog> Reg(
+    _T("PasswordEntryDialog"),        // Class base name
+    wxsTTool,                                       // Item type
+    _T("Dialogs"),                              // Category in palette
+    120,                                                 // Priority in palette
+    false);                                             // We do not allow this item inside XRC files
 
 
-    WXS_ST_BEGIN(wxsPasswordEntryDialogStyles, wxT("wxOK | wxCANCEL | wxCENTRE | wxWS_EX_VALIDATE_RECURSIVELY | wxTE_PASSWORD"));
-        WXS_ST_CATEGORY("wxPasswordEntryDialog")
-        WXS_ST(wxCANCEL)
-        WXS_ST(wxCENTRE)
-        WXS_ST(wxOK)
-        WXS_ST(wxTE_CENTRE)
-        WXS_ST(wxTE_NOHIDESEL)
-        WXS_ST(wxTE_RIGHT)
-        WXS_EXST(wxWS_EX_VALIDATE_RECURSIVELY)
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsPasswordEntryDialogStyles, wxT("wxOK | wxCANCEL | wxCENTRE | wxWS_EX_VALIDATE_RECURSIVELY | wxTE_PASSWORD"));
+WXS_ST_CATEGORY("wxPasswordEntryDialog")
+WXS_ST(wxCANCEL)
+WXS_ST(wxCENTRE)
+WXS_ST(wxOK)
+WXS_ST(wxTE_CENTRE)
+WXS_ST(wxTE_NOHIDESEL)
+WXS_ST(wxTE_RIGHT)
+WXS_EXST(wxWS_EX_VALIDATE_RECURSIVELY)
+WXS_ST_END()
 }
 
 /*! \brief Ctor
@@ -56,9 +56,9 @@ wxsPasswordEntryDialog::wxsPasswordEntryDialog(wxsItemResData *Data):
             NULL,
             wxsPasswordEntryDialogStyles,
             (flVariable | flId | flSubclass | flExtraCode)),
-            m_sCaption(wxGetPasswordFromUserPromptStr),
-            m_sMessage(wxEmptyString),
-            m_sDefaultValue(wxEmptyString)
+    m_sCaption(wxGetPasswordFromUserPromptStr),
+    m_sMessage(wxEmptyString),
+    m_sDefaultValue(wxEmptyString)
 {
 }
 
@@ -71,16 +71,16 @@ void wxsPasswordEntryDialog::OnBuildCreatingCode()
 {
     switch(GetLanguage())
     {
-        case wxsCPP:
-            AddHeader(_T("<wx/textdlg.h>"), GetInfo().ClassName, 0);
-            Codef(_T("%C(%W, %t, %t, %t, %T, %P);\n"), m_sMessage.wx_str(), m_sCaption.wx_str(), m_sDefaultValue.wx_str());
-            BuildSetupWindowCode();
-            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-            break;
+    case wxsCPP:
+        AddHeader(_T("<wx/textdlg.h>"), GetInfo().ClassName, 0);
+        Codef(_T("%C(%W, %t, %t, %t, %T, %P);\n"), m_sMessage.wx_str(), m_sCaption.wx_str(), m_sDefaultValue.wx_str());
+        BuildSetupWindowCode();
+        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+        break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsPasswordEntryDialog::OnBuildCreatingCode"), GetLanguage());
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsPasswordEntryDialog::OnBuildCreatingCode"), GetLanguage());
     }
 }
 

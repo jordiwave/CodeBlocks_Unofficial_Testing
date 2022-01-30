@@ -15,22 +15,25 @@ class wxListEvent;
 
 class ThreadsDlg : public wxPanel, public cbThreadsDlg
 {
-    public:
-        ThreadsDlg(wxWindow* parent);
+public:
+    ThreadsDlg(wxWindow* parent);
 
-        wxWindow* GetWindow() override { return this; }
+    wxWindow* GetWindow() override
+    {
+        return this;
+    }
 
-        void Reload() override;
-        void EnableWindow(bool enable) override;
-    protected:
-        void OnListRightClick(wxListEvent& event);
-        void OnListDoubleClick(wxListEvent& event);
-        void OnSwitchThread(wxCommandEvent& event);
+    void Reload() override;
+    void EnableWindow(bool enable) override;
+protected:
+    void OnListRightClick(wxListEvent& event);
+    void OnListDoubleClick(wxListEvent& event);
+    void OnSwitchThread(wxCommandEvent& event);
 
-    private:
-        DECLARE_EVENT_TABLE();
-    private:
-        wxListCtrl *m_list;
+private:
+    DECLARE_EVENT_TABLE();
+private:
+    wxListCtrl *m_list;
 };
 
 #endif // THREADSDLG_H

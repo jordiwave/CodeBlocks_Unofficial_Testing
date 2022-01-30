@@ -10,19 +10,19 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/checkbox.h>
-    #include <wx/filename.h>
-    #include <wx/intl.h>
-    #include <wx/listctrl.h>
-    #include <wx/string.h>
-    #include <wx/utils.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/filename.h>
+#include <wx/intl.h>
+#include <wx/listctrl.h>
+#include <wx/string.h>
+#include <wx/utils.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "manager.h"
-    #include "configmanager.h"
-    #include "pluginmanager.h"
-    #include "cbplugin.h" // IsAttached
+#include "manager.h"
+#include "configmanager.h"
+#include "pluginmanager.h"
+#include "cbplugin.h" // IsAttached
 #endif
 
 #include "annoyingdialog.h"
@@ -204,8 +204,8 @@ void PluginsConfigurationDlg::OnToggle(wxCommandEvent& event)
         if (elem && elem->plugin)
         {
             pd.Update(++count,
-                        wxString::Format("%s \"%s\"...", isEnable ? _("Enabling") : _("Disabling"), elem->info.title),
-                        &skip);
+                      wxString::Format("%s \"%s\"...", isEnable ? _("Enabling") : _("Disabling"), elem->info.title),
+                      &skip);
             if (skip)
                 break;
 
@@ -247,10 +247,10 @@ void PluginsConfigurationDlg::OnToggle(wxCommandEvent& event)
 void PluginsConfigurationDlg::OnInstall(cb_unused wxCommandEvent& event)
 {
     wxFileDialog fd(this,
-                        _("Select plugin to install"),
-                        wxEmptyString, wxEmptyString,
-                        _T("Code::Blocks Plugins (*.cbplugin)|*.cbplugin"),
-                        wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE | compatibility::wxHideReadonly);
+                    _("Select plugin to install"),
+                    wxEmptyString, wxEmptyString,
+                    _T("Code::Blocks Plugins (*.cbplugin)|*.cbplugin"),
+                    wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE | compatibility::wxHideReadonly);
     PlaceWindow(&fd);
     if (fd.ShowModal() != wxID_OK)
         return;
@@ -371,8 +371,8 @@ void PluginsConfigurationDlg::OnExport(cb_unused wxCommandEvent& event)
         fname.SetExt(_T("cbplugin"));
 
         pd.Update(++count,
-                    wxString::Format(_("Exporting \"%s\"..."), elem->info.title),
-                    &skip);
+                  wxString::Format(_("Exporting \"%s\"..."), elem->info.title),
+                  &skip);
         if (skip)
             break;
 
@@ -381,24 +381,24 @@ void PluginsConfigurationDlg::OnExport(cb_unused wxCommandEvent& event)
         if (!confirmed && wxFileExists(filename))
         {
             AnnoyingDialog dlg(_("Overwrite confirmation"),
-                                wxString::Format(_("%s already exists.\n"
-                                "Are you sure you want to overwrite it?"), filename.c_str()),
-                                wxART_QUESTION,
-                                AnnoyingDialog::THREE_BUTTONS,
-                                AnnoyingDialog::rtONE,
-                                _("&Yes"), _("Yes to &all"), _("&No"));
+                               wxString::Format(_("%s already exists.\n"
+                                                  "Are you sure you want to overwrite it?"), filename.c_str()),
+                               wxART_QUESTION,
+                               AnnoyingDialog::THREE_BUTTONS,
+                               AnnoyingDialog::rtONE,
+                               _("&Yes"), _("Yes to &all"), _("&No"));
             switch (dlg.ShowModal())
             {
-                case AnnoyingDialog::rtTHREE:
-                    continue;
-                    break;
+            case AnnoyingDialog::rtTHREE:
+                continue;
+                break;
 
-                case AnnoyingDialog::rtTWO:
-                    confirmed = true;
-                    break;
+            case AnnoyingDialog::rtTWO:
+                confirmed = true;
+                break;
 
-                default:
-                    break;
+            default:
+                break;
             }
         }
 

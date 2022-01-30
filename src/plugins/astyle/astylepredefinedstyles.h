@@ -8,22 +8,22 @@
 
 enum AStylePredefinedStyle
 {
-  aspsAllman = 0,
-  aspsJava,
-  aspsKr,
-  aspsStroustrup,
-  aspsWhitesmith,
-  aspsVTK,
-  aspsRatliff,
-  aspsGnu,
-  aspsLinux,
-  aspsHorstmann,
-  asps1TBS,
-  aspsGoogle,
-  aspsMozilla,
-  aspsPico,
-  aspsLisp,
-  aspsCustom
+    aspsAllman = 0,
+    aspsJava,
+    aspsKr,
+    aspsStroustrup,
+    aspsWhitesmith,
+    aspsVTK,
+    aspsRatliff,
+    aspsGnu,
+    aspsLinux,
+    aspsHorstmann,
+    asps1TBS,
+    aspsGoogle,
+    aspsMozilla,
+    aspsPico,
+    aspsLisp,
+    aspsCustom
 };
 
 #endif // ASTYLEPREDEFINEDSTYLES_H

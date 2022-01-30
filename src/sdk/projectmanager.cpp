@@ -2,32 +2,32 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12224 $
- * $Id: projectmanager.cpp 12224 2020-10-26 10:07:41Z fuscated $
+ * $Revision: 12679 $
+ * $Id: projectmanager.cpp 12679 2022-01-25 09:15:00Z bluehazzard $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/projectmanager.cpp $
  */
 
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/datetime.h>
-    #include <wx/dir.h>
-    #include <wx/filename.h>
+#include <wx/datetime.h>
+#include <wx/dir.h>
+#include <wx/filename.h>
 
-    #include "projectmanager.h" // class's header file
-    #include "sdk_events.h"
-    #include "manager.h"
-    #include "configmanager.h"
-    #include "cbproject.h"
-    #include "logmanager.h"
-    #include "pluginmanager.h"
-    #include "editormanager.h"
-    #include "uservarmanager.h"
-    #include "workspaceloader.h"
-    #include "cbworkspace.h"
-    #include "cbeditor.h"
-    #include "globals.h"
-    #include "cbexception.h"  // for cbassert
+#include "projectmanager.h" // class's header file
+#include "sdk_events.h"
+#include "manager.h"
+#include "configmanager.h"
+#include "cbproject.h"
+#include "logmanager.h"
+#include "pluginmanager.h"
+#include "editormanager.h"
+#include "uservarmanager.h"
+#include "workspaceloader.h"
+#include "cbworkspace.h"
+#include "cbeditor.h"
+#include "globals.h"
+#include "cbexception.h"  // for cbassert
 #endif
 
 #include <wx/progdlg.h>
@@ -48,28 +48,58 @@ END_EVENT_TABLE()
 
 class NullProjectManagerUI : public cbProjectManagerUI
 {
-    public:
-        cbAuiNotebook* GetNotebook() override { return nullptr; }
-        cbTreeCtrl* GetTree() override { return nullptr; }
-        void RebuildTree() override {}
-        void FreezeTree() override {}
-        void UnfreezeTree(bool force = false) override { (void)force; }
-        wxTreeItemId GetTreeSelection() override { return wxTreeItemId(); }
-        void UpdateActiveProject(cbProject* WXUNUSED(oldProject), cbProject* WXUNUSED(newProject), bool WXUNUSED(refresh)) override {}
-        void RemoveProject(cbProject* WXUNUSED(project)) override {}
-        void BeginLoadingWorkspace() override {}
-        void CloseWorkspace() override {}
-        void FinishLoadingProject(cbProject* WXUNUSED(project), bool WXUNUSED(newAddition), FilesGroupsAndMasks* WXUNUSED(fileGroups)) override {}
-        void FinishLoadingWorkspace(cbProject* WXUNUSED(activeProject), const wxString& WXUNUSED(workspaceTitle)) override {}
-        void ShowFileInTree(ProjectFile& WXUNUSED(projectFile)) override {}
-        bool QueryCloseAllProjects() override { return true; }
-        bool QueryCloseProject(cbProject* WXUNUSED(proj), bool dontsavefiles = false) override  { (void)dontsavefiles; return true; }
-        bool QueryCloseWorkspace() override  { return true; }
-        int AskForBuildTargetIndex(cbProject* project = nullptr) override { (void)project; return -1; }
-        wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = nullptr) override { (void)project; return wxArrayInt(); }
-        void ConfigureProjectDependencies(cb_unused cbProject* base,
-                                          cb_unused wxWindow *parent) override {}
-        void SwitchToProjectsPage() override {}
+public:
+    cbAuiNotebook* GetNotebook() override
+    {
+        return nullptr;
+    }
+    cbTreeCtrl* GetTree() override
+    {
+        return nullptr;
+    }
+    void RebuildTree() override {}
+    void FreezeTree() override {}
+    void UnfreezeTree(bool force = false) override
+    {
+        (void)force;
+    }
+    wxTreeItemId GetTreeSelection() override
+    {
+        return wxTreeItemId();
+    }
+    void UpdateActiveProject(cbProject* WXUNUSED(oldProject), cbProject* WXUNUSED(newProject), bool WXUNUSED(refresh)) override {}
+    void RemoveProject(cbProject* WXUNUSED(project)) override {}
+    void BeginLoadingWorkspace() override {}
+    void CloseWorkspace() override {}
+    void FinishLoadingProject(cbProject* WXUNUSED(project), bool WXUNUSED(newAddition), FilesGroupsAndMasks* WXUNUSED(fileGroups)) override {}
+    void FinishLoadingWorkspace(cbProject* WXUNUSED(activeProject), const wxString& WXUNUSED(workspaceTitle)) override {}
+    void ShowFileInTree(ProjectFile& WXUNUSED(projectFile)) override {}
+    bool QueryCloseAllProjects() override
+    {
+        return true;
+    }
+    bool QueryCloseProject(cbProject* WXUNUSED(proj), bool dontsavefiles = false) override
+    {
+        (void)dontsavefiles;
+        return true;
+    }
+    bool QueryCloseWorkspace() override
+    {
+        return true;
+    }
+    int AskForBuildTargetIndex(cbProject* project = nullptr) override
+    {
+        (void)project;
+        return -1;
+    }
+    wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = nullptr) override
+    {
+        (void)project;
+        return wxArrayInt();
+    }
+    void ConfigureProjectDependencies(cb_unused cbProject* base,
+                                      cb_unused wxWindow *parent) override {}
+    void SwitchToProjectsPage() override {}
 };
 
 // class constructor
@@ -269,7 +299,8 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
         }
 
         break;
-    }  while (false);
+    }
+    while (false);
     // we 're done
 
     EndLoadingProject(result);
@@ -337,7 +368,7 @@ void ProjectManager::ReloadProject(cbProject *project)
         if (!projectsDependingOnReloaded.empty())
         {
             for (ProjectsArray::iterator it = projectsDependingOnReloaded.begin();
-                 it != projectsDependingOnReloaded.end(); ++it)
+                    it != projectsDependingOnReloaded.end(); ++it)
             {
                 AddProjectDependency(*it, loadedProject);
             }
@@ -449,7 +480,7 @@ bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refres
         return false;
     if (!dontsave)
     {
-         if (!m_ui->QueryCloseProject(project))
+        if (!m_ui->QueryCloseProject(project))
             return false;
     }
 
@@ -750,7 +781,9 @@ int ProjectManager::AddFileToProject(const wxString& filename, cbProject* projec
         project = GetActiveProject();
 
     wxArrayInt targets;
-    targets.Add(target);
+    if(target != -1)
+        targets.Add(target);
+
     if (AddFileToProject(filename, project, targets) == 1)
         return targets[0];
     return -1;
@@ -778,14 +811,16 @@ int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbP
         project = GetActiveProject();
 
     wxArrayInt targets;
-    targets.Add(target);
+    if(target != -1)
+        targets.Add(target);
+
     if (AddMultipleFilesToProject(filelist, project, targets) == 1)
         return targets[0];
     return -1;
 }
 
 int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbProject* project,
-                                              wxArrayInt& targets)
+        wxArrayInt& targets)
 {
     if (!project)
         project = GetActiveProject();
@@ -1172,11 +1207,11 @@ void ProjectManager::EndLoadingWorkspace()
         if (numNotes)
         {
             if (numNotes == 1 || // if only one project has notes, don't bother asking
-                cbMessageBox(wxString::Format(_("%d projects contain notes that should be displayed on-load.\n"
-                                                "Do you want to display them now, one after the other?"),
-                                                numNotes),
-                                                _("Display project notes?"),
-                                                wxICON_QUESTION | wxYES_NO) == wxID_YES)
+                    cbMessageBox(wxString::Format(_("%d projects contain notes that should be displayed on-load.\n"
+                                                    "Do you want to display them now, one after the other?"),
+                                                  numNotes),
+                                 _("Display project notes?"),
+                                 wxICON_QUESTION | wxYES_NO) == wxID_YES)
             {
                 for (size_t i = 0; i < m_pProjects->GetCount(); ++i)
                 {
@@ -1204,7 +1239,7 @@ cbPlugin* ProjectManager::GetIsRunning() const
 }
 
 cbProject* ProjectManager::FindProjectForFile(const wxString& file, ProjectFile **resultFile,
-                                              bool isRelative, bool isUnixFilename)
+        bool isRelative, bool isUnixFilename)
 {
     for (size_t i = 0; i < m_pProjects->GetCount(); ++i)
     {

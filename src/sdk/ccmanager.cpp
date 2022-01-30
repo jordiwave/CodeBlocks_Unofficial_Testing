@@ -12,19 +12,19 @@
 #include "ccmanager.h"
 
 #ifndef CB_PRECOMP
-    #include <algorithm>
+#include <algorithm>
 
-    #include <wx/listctrl.h>
-    #include <wx/menu.h>
+#include <wx/listctrl.h>
+#include <wx/menu.h>
 #if wxUSE_POPUPWIN
-    #include <wx/popupwin.h>
+#include <wx/popupwin.h>
 #endif
-    #include <wx/timer.h>
+#include <wx/timer.h>
 
-    #include "cbeditor.h"
-    #include "configmanager.h"
-    #include "editormanager.h"
-    #include "logmanager.h" // for F
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "logmanager.h" // for F
 #endif
 
 #include <wx/html/htmlwin.h>
@@ -36,76 +36,76 @@
 
 namespace CCManagerHelper
 {
-    // shift points if they are past the insertion/deletion point
-    inline void RipplePts(int& ptA, int& ptB, int len, int delta)
-    {
-        if (ptA > len - delta)
-            ptA += delta;
-        if (ptB > len - delta)
-            ptB += delta;
-    }
+// shift points if they are past the insertion/deletion point
+inline void RipplePts(int& ptA, int& ptB, int len, int delta)
+{
+    if (ptA > len - delta)
+        ptA += delta;
+    if (ptB > len - delta)
+        ptB += delta;
+}
 
-    // wxScintilla::FindColumn seems to be broken; re-implement:
-    // Find the position of a column on a line taking into account tabs and
-    // multi-byte characters. If beyond end of line, return line end position.
-    inline int FindColumn(int line, int column, wxScintilla* stc)
+// wxScintilla::FindColumn seems to be broken; re-implement:
+// Find the position of a column on a line taking into account tabs and
+// multi-byte characters. If beyond end of line, return line end position.
+inline int FindColumn(int line, int column, wxScintilla* stc)
+{
+    int lnEnd = stc->GetLineEndPosition(line);
+    for (int pos = stc->PositionFromLine(line); pos < lnEnd; ++pos)
     {
-        int lnEnd = stc->GetLineEndPosition(line);
-        for (int pos = stc->PositionFromLine(line); pos < lnEnd; ++pos)
-        {
-            if (stc->GetColumn(pos) == column)
-                return pos;
-        }
-        return lnEnd;
+        if (stc->GetColumn(pos) == column)
+            return pos;
     }
+    return lnEnd;
+}
 
-    // test if an editor position is displayed
-    inline bool IsPosVisible(int pos, wxScintilla* stc)
-    {
-        const int dist = stc->VisibleFromDocLine(stc->LineFromPosition(pos)) - stc->GetFirstVisibleLine();
-        return !(dist < 0 || dist > stc->LinesOnScreen()); // caret is off screen
-    }
+// test if an editor position is displayed
+inline bool IsPosVisible(int pos, wxScintilla* stc)
+{
+    const int dist = stc->VisibleFromDocLine(stc->LineFromPosition(pos)) - stc->GetFirstVisibleLine();
+    return !(dist < 0 || dist > stc->LinesOnScreen()); // caret is off screen
+}
 
-    // return a hash of a calltip context (to avoid storing strings of each calltip)
-    // used in m_CallTipChoiceDict and m_CallTipFuzzyChoiceDict
-    static int CallTipToInt(const wxString& firstTip, int numPages)
+// return a hash of a calltip context (to avoid storing strings of each calltip)
+// used in m_CallTipChoiceDict and m_CallTipFuzzyChoiceDict
+static int CallTipToInt(const wxString& firstTip, int numPages)
+{
+    int val = 33 * firstTip.Length() ^ numPages;
+    for (wxString::const_iterator itr = firstTip.begin();
+            itr != firstTip.end(); ++itr)
     {
-        int val = 33 * firstTip.Length() ^ numPages;
-        for (wxString::const_iterator itr = firstTip.begin();
-             itr != firstTip.end(); ++itr)
-        {
-            val = 33 * val ^ static_cast<int>(*itr);
-        }
-        return val;
+        val = 33 * val ^ static_cast<int>(*itr);
     }
+    return val;
+}
 
-    // (shamelessly stolen from mime handler plugin ;) )
-    // build all HTML font sizes (1..7) from the given base size
-    static void BuildFontSizes(int *sizes, int size)
-    {
-        // using a fixed factor (1.2, from CSS2) is a bad idea as explained at
-        // http://www.w3.org/TR/CSS21/fonts.html#font-size-props but this is by far
-        // simplest thing to do so still do it like this for now
-        sizes[0] = int(size * 0.75); // exception to 1.2 rule, otherwise too small
-        sizes[1] = int(size * 0.83);
-        sizes[2] = size;
-        sizes[3] = int(size * 1.2);
-        sizes[4] = int(size * 1.44);
-        sizes[5] = int(size * 1.73);
-        sizes[6] = int(size * 2);
-    }
+// (shamelessly stolen from mime handler plugin ;) )
+// build all HTML font sizes (1..7) from the given base size
+static void BuildFontSizes(int *sizes, int size)
+{
+    // using a fixed factor (1.2, from CSS2) is a bad idea as explained at
+    // http://www.w3.org/TR/CSS21/fonts.html#font-size-props but this is by far
+    // simplest thing to do so still do it like this for now
+    sizes[0] = int(size * 0.75); // exception to 1.2 rule, otherwise too small
+    sizes[1] = int(size * 0.83);
+    sizes[2] = size;
+    sizes[3] = int(size * 1.2);
+    sizes[4] = int(size * 1.44);
+    sizes[5] = int(size * 1.73);
+    sizes[6] = int(size * 2);
+}
 
-    // (shamelessly stolen from mime handler plugin ;) )
-    static int GetDefaultHTMLFontSize()
-    {
-        // base the default font size on the size of the default system font but
-        // also ensure that we have a font of reasonable size, otherwise small HTML
-        // fonts are unreadable
-        int size = wxNORMAL_FONT->GetPointSize();
-        if ( size < 9 )
-            size = 9;
-        return size;
-    }
+// (shamelessly stolen from mime handler plugin ;) )
+static int GetDefaultHTMLFontSize()
+{
+    // base the default font size on the size of the default system font but
+    // also ensure that we have a font of reasonable size, otherwise small HTML
+    // fonts are unreadable
+    int size = wxNORMAL_FONT->GetPointSize();
+    if ( size < 9 )
+        size = 9;
+    return size;
+}
 }
 
 template<> CCManager* Mgr<CCManager>::instance = nullptr;
@@ -152,7 +152,7 @@ class UnfocusablePopupWindow :
 #if wxUSE_POPUPWIN
     public wxPopupWindow
 #else
-     public wxFrame
+    public wxFrame
 #endif // wxUSE_POPUPWIN
 {
 public:
@@ -170,7 +170,7 @@ public:
 #ifdef __WXMAC__
                 | wxPOPUP_WINDOW
 #endif // __WXMAC__
-                )
+               )
 #endif // wxUSE_POPUPWIN
     {
         Hide();
@@ -218,14 +218,14 @@ void UnfocusablePopupWindow::ActivateParent()
     // Although we're a frame, we always want the parent to be active, so
     // raise it whenever we get shown, focused, etc.
     wxTopLevelWindow *frame = wxDynamicCast(
-        wxGetTopLevelParent(GetParent()), wxTopLevelWindow);
+                                  wxGetTopLevelParent(GetParent()), wxTopLevelWindow);
     if (frame)
         frame->Raise();
 }
 
 void UnfocusablePopupWindow::DoSetSize(int x, int y,
-                       int width, int height,
-                       int sizeFlags)
+                                       int width, int height,
+                                       int sizeFlags)
 {
     // convert coords to screen coords since we're a top-level window
     if (x != wxDefaultCoord)
@@ -482,7 +482,8 @@ struct TokenSorter
             if (m_CaseSensitive)
                 diff = a.displayName.Cmp(b.displayName);
             else
-            {   // cannot use CmpNoCase() because it compares lower case but Scintilla compares upper
+            {
+                // cannot use CmpNoCase() because it compares lower case but Scintilla compares upper
                 diff = a.displayName.Upper().Cmp(b.displayName.Upper());
                 if (diff == 0)
                     diff = a.displayName.Cmp(b.displayName);
@@ -520,7 +521,7 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     int tknStart = stc->WordStartPosition(tknEnd, true);
 
     m_AutocompTokens = ccPlugin->GetAutocompList(event.GetInt() == FROM_TIMER,
-                                                 ed, tknStart, tknEnd);
+                       ed, tknStart, tknEnd);
     if (m_AutocompTokens.empty())
         return;
 
@@ -578,9 +579,9 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     {
         const wxString& contextStr = stc->GetTextRange(tknStart, stc->WordEndPosition(tknEnd, true));
         std::vector<cbCodeCompletionPlugin::CCToken>::const_iterator tknIt
-                = std::lower_bound(m_AutocompTokens.begin(), m_AutocompTokens.end(),
-                                   cbCodeCompletionPlugin::CCToken(-1, contextStr),
-                                   sortFunctor);
+            = std::lower_bound(m_AutocompTokens.begin(), m_AutocompTokens.end(),
+                               cbCodeCompletionPlugin::CCToken(-1, contextStr),
+                               sortFunctor);
         if (tknIt != m_AutocompTokens.end() && tknIt->displayName.StartsWith(contextStr))
             stc->AutoCompSelect(tknIt->displayName);
     }
@@ -730,7 +731,7 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
                 hlStart = hlLoc;
                 hlEnd = hlStart + tknEnd - tknStart;
                 if (   (hlStart > 0 && (tips[0][hlStart - 1] == wxT('_') || wxIsalpha(tips[0][hlStart - 1])))
-                    || (hlEnd < static_cast<int>(tips[0].Length()) - 1 && (tips[0][hlEnd] == wxT('_') || wxIsalpha(tips[0][hlEnd]))) )
+                        || (hlEnd < static_cast<int>(tips[0].Length()) - 1 && (tips[0][hlEnd] == wxT('_') || wxIsalpha(tips[0][hlEnd]))) )
                 {
                     i = hlEnd;
                     hlStart = hlEnd = wxSCI_INVALID_POSITION;
@@ -741,10 +742,10 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
         }
     }
     else if (  allowCallTip
-             && !(   stc->IsString(style)
-                  || stc->IsComment(style)
-                  || stc->IsCharacter(style)
-                  || stc->IsPreprocessor(style) ) )
+               && !(   stc->IsString(style)
+                       || stc->IsComment(style)
+                       || stc->IsCharacter(style)
+                       || stc->IsPreprocessor(style) ) )
     {
         const int line = stc->LineFromPosition(pos);
         if (pos + 4 > stc->PositionFromLine(line) + (int)ed->GetLineIndentString(line).Length())
@@ -787,7 +788,7 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
         {
             int tooltipMode = Manager::Get()->GetConfigManager(wxT("ccmanager"))->ReadInt(wxT("/tooltip_mode"), 1);
             if (   tooltipMode != 3 // keybound only
-                || m_CallTipActive != wxSCI_INVALID_POSITION )
+                    || m_CallTipActive != wxSCI_INVALID_POSITION )
             {
                 wxCommandEvent pendingShow(cbEVT_DEFERRED_CALLTIP_SHOW);
                 AddPendingEvent(pendingShow);
@@ -807,7 +808,7 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
             // 2, an interested char belong to alChars is entered
             int autolaunchCt = Manager::Get()->GetConfigManager(wxT("ccmanager"))->ReadInt(wxT("/auto_launch_count"), 3);
             if (   (pos - wordStartPos >= autolaunchCt && !stc->AutoCompActive())
-                || pos - wordStartPos == autolaunchCt + 4 )
+                    || pos - wordStartPos == autolaunchCt + 4 )
             {
                 CodeBlocksEvent evt(cbEVT_COMPLETE_CODE);
                 Manager::Get()->ProcessEvent(evt);
@@ -876,7 +877,7 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
         if (ccPlugin && m_OwnsAutocomp)
         {
             if (   m_LastAutocompIndex != wxNOT_FOUND
-                && m_LastAutocompIndex < (int)m_AutocompTokens.size() )
+                    && m_LastAutocompIndex < (int)m_AutocompTokens.size() )
             {
                 ccPlugin->DoAutocomplete(m_AutocompTokens[m_LastAutocompIndex], ed);
             }
@@ -893,19 +894,19 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
     {
         switch (event.GetPosition())
         {
-            case 1: // up
-                AdvanceTip(Previous);
-                DoUpdateCallTip(ed);
-                break;
+        case 1: // up
+            AdvanceTip(Previous);
+            DoUpdateCallTip(ed);
+            break;
 
-            case 2: // down
-                AdvanceTip(Next);
-                DoUpdateCallTip(ed);
-                break;
+        case 2: // down
+            AdvanceTip(Next);
+            DoUpdateCallTip(ed);
+            break;
 
-            case 0: // elsewhere
-            default:
-                break;
+        case 0: // elsewhere
+        default:
+            break;
         }
     }
     event.Skip();
@@ -963,13 +964,13 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
         while (wxIsspace(stc->GetCharAt(lnStart)))
             ++lnStart; // do not show too far left on multi-line call tips
         if (   m_CallTips.size() > 1
-            && tooltipMode == tmForceSinglePage ) // force single page
+                && tooltipMode == tmForceSinglePage ) // force single page
         {
             wxString tip;
             int hlStart, hlEnd;
             hlStart = hlEnd = wxSCI_INVALID_POSITION;
             for (CallTipVec::const_iterator itr = m_CallTips.begin();
-                 itr != m_CallTips.end(); ++itr)
+                    itr != m_CallTips.end(); ++itr)
             {
                 if (hlStart == hlEnd && itr->hlStart != itr->hlEnd)
                 {
@@ -1008,7 +1009,7 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
             }
             // search short term recall
             for (CallTipVec::const_iterator itr = m_CallTips.begin();
-                 itr != m_CallTips.end(); ++itr)
+                    itr != m_CallTips.end(); ++itr)
             {
                 if (itr->tip == curTip)
                 {
@@ -1238,7 +1239,7 @@ void CCManager::DoBufferedCC(cbStyledTextCtrl* stc)
     // We need to check if the auto completion is active, because if there are no matches scintilla will close
     // the popup and any call to AutoCompSelect will result in a crash.
     if (stc->AutoCompActive() &&
-        (m_LastAutocompIndex != wxNOT_FOUND && m_LastAutocompIndex < (int)m_AutocompTokens.size()))
+            (m_LastAutocompIndex != wxNOT_FOUND && m_LastAutocompIndex < (int)m_AutocompTokens.size()))
     {
         // re-select last selected entry
         const cbCodeCompletionPlugin::CCToken& token = m_AutocompTokens[m_LastAutocompIndex];
@@ -1270,7 +1271,7 @@ void CCManager::DoShowDocumentation(cbEditor* ed)
     if (!ccPlugin)
         return;
     if (   m_LastAutocompIndex == wxNOT_FOUND
-        || m_LastAutocompIndex >= (int)m_AutocompTokens.size() )
+            || m_LastAutocompIndex >= (int)m_AutocompTokens.size() )
     {
         return;
     }

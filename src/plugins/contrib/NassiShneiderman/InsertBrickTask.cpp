@@ -11,27 +11,27 @@
 
 
 #if defined(__WXGTK__)
-    #include "rc/ifcur_inv.xpm"
-    #include "rc/whilecur_inv.xpm"
-    #include "rc/dowhilecur_inv.xpm"
-    #include "rc/instrcur_inv.xpm"
-    #include "rc/forcur_inv.xpm"
-    #include "rc/switchcur_inv.xpm"
-    #include "rc/breakcur_inv.xpm"
-    #include "rc/continuecur_inv.xpm"
-    #include "rc/returncur_inv.xpm"
-    #include "rc/blockcur_inv.xpm"
+#include "rc/ifcur_inv.xpm"
+#include "rc/whilecur_inv.xpm"
+#include "rc/dowhilecur_inv.xpm"
+#include "rc/instrcur_inv.xpm"
+#include "rc/forcur_inv.xpm"
+#include "rc/switchcur_inv.xpm"
+#include "rc/breakcur_inv.xpm"
+#include "rc/continuecur_inv.xpm"
+#include "rc/returncur_inv.xpm"
+#include "rc/blockcur_inv.xpm"
 #else
-    #include "rc/ifcur.xpm"
-    #include "rc/whilecur.xpm"
-    #include "rc/dowhilecur.xpm"
-    #include "rc/instrcur.xpm"
-    #include "rc/forcur.xpm"
-    #include "rc/switchcur.xpm"
-    #include "rc/breakcur.xpm"
-    #include "rc/continuecur.xpm"
-    #include "rc/returncur.xpm"
-    #include "rc/blockcur.xpm"
+#include "rc/ifcur.xpm"
+#include "rc/whilecur.xpm"
+#include "rc/dowhilecur.xpm"
+#include "rc/instrcur.xpm"
+#include "rc/forcur.xpm"
+#include "rc/switchcur.xpm"
+#include "rc/breakcur.xpm"
+#include "rc/continuecur.xpm"
+#include "rc/returncur.xpm"
+#include "rc/blockcur.xpm"
 #endif
 
 
@@ -50,20 +50,30 @@ wxCursor InsertBrickTask::Start()
 {
     switch ( m_tool )
     {
-        case NassiView::NASSI_TOOL_CONTINUE:    return wxCursor(continuecur_xpm);
-        case NassiView::NASSI_TOOL_BREAK:       return wxCursor(breakcur_xpm);
-        case NassiView::NASSI_TOOL_RETURN:      return wxCursor(returncur_xpm);
-        case NassiView::NASSI_TOOL_WHILE:       return wxCursor(whilecur_xpm);
-        case NassiView::NASSI_TOOL_DOWHILE:     return wxCursor(dowhilecur_xpm);
-        case NassiView::NASSI_TOOL_FOR:         return wxCursor(forcur_xpm);
-        case NassiView::NASSI_TOOL_BLOCK:       return wxCursor(blockcur_xpm);
-        case NassiView::NASSI_TOOL_IF:          return wxCursor(wxImage(ifcur_xpm));
-        case NassiView::NASSI_TOOL_SWITCH:      return wxCursor(switchcur_xpm);
-        default:
-        case NassiView::NASSI_TOOL_ESC:
-        case NassiView::NASSI_TOOL_SELECT:
-        case NassiView::NASSI_TOOL_PASTE:
-        case NassiView::NASSI_TOOL_INSTRUCTION: return wxCursor(instrcur_xpm);
+    case NassiView::NASSI_TOOL_CONTINUE:
+        return wxCursor(continuecur_xpm);
+    case NassiView::NASSI_TOOL_BREAK:
+        return wxCursor(breakcur_xpm);
+    case NassiView::NASSI_TOOL_RETURN:
+        return wxCursor(returncur_xpm);
+    case NassiView::NASSI_TOOL_WHILE:
+        return wxCursor(whilecur_xpm);
+    case NassiView::NASSI_TOOL_DOWHILE:
+        return wxCursor(dowhilecur_xpm);
+    case NassiView::NASSI_TOOL_FOR:
+        return wxCursor(forcur_xpm);
+    case NassiView::NASSI_TOOL_BLOCK:
+        return wxCursor(blockcur_xpm);
+    case NassiView::NASSI_TOOL_IF:
+        return wxCursor(wxImage(ifcur_xpm));
+    case NassiView::NASSI_TOOL_SWITCH:
+        return wxCursor(switchcur_xpm);
+    default:
+    case NassiView::NASSI_TOOL_ESC:
+    case NassiView::NASSI_TOOL_SELECT:
+    case NassiView::NASSI_TOOL_PASTE:
+    case NassiView::NASSI_TOOL_INSTRUCTION:
+        return wxCursor(instrcur_xpm);
     }
 }
 
@@ -73,7 +83,7 @@ bool InsertBrickTask::Done()const
 }
 
 // events from window:
-void InsertBrickTask::OnMouseLeftUp(wxMouseEvent & /*event*/, const wxPoint & /*position*/){}
+void InsertBrickTask::OnMouseLeftUp(wxMouseEvent & /*event*/, const wxPoint & /*position*/) {}
 
 void InsertBrickTask::OnMouseLeftDown(wxMouseEvent & /*event*/, const wxPoint &position)
 {
@@ -112,7 +122,7 @@ void InsertBrickTask::OnMouseRightDown(wxMouseEvent & /*event*/, const wxPoint &
     m_done = true;
 }
 
-void InsertBrickTask::OnMouseRightUp(wxMouseEvent& /*event*/, const wxPoint & /*position*/){}
+void InsertBrickTask::OnMouseRightUp(wxMouseEvent& /*event*/, const wxPoint & /*position*/) {}
 
 HooverDrawlet *InsertBrickTask::OnMouseMove(wxMouseEvent & /*event*/, const wxPoint &position)
 {
@@ -141,23 +151,32 @@ void InsertBrickTask::OnKeyDown(wxKeyEvent &event)
     //event.Skip();
 }
 
-void InsertBrickTask::OnChar(wxKeyEvent & /*event*/){}
+void InsertBrickTask::OnChar(wxKeyEvent & /*event*/) {}
 
 // events from frame(s)
-bool InsertBrickTask::CanEdit()const{ return false; }
+bool InsertBrickTask::CanEdit()const
+{
+    return false;
+}
 
 //bool InsertBrickTask::CanCopy()const{ return false; }
 
 //bool InsertBrickTask::CanCut()const{ return false; }
 
-bool InsertBrickTask::CanPaste()const{ return false; }
+bool InsertBrickTask::CanPaste()const
+{
+    return false;
+}
 
-bool InsertBrickTask::HasSelection()const{ return false; }
+bool InsertBrickTask::HasSelection()const
+{
+    return false;
+}
 
-void InsertBrickTask::DeleteSelection(){}
+void InsertBrickTask::DeleteSelection() {}
 
-void InsertBrickTask::Copy(){}
+void InsertBrickTask::Copy() {}
 
-void InsertBrickTask::Cut(){}
+void InsertBrickTask::Cut() {}
 
-void InsertBrickTask::Paste(){}
+void InsertBrickTask::Paste() {}

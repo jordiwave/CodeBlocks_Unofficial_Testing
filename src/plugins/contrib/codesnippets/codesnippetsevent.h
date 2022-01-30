@@ -22,40 +22,58 @@ class CodeSnippetsEvent : public wxCommandEvent
 // ----------------------------------------------------------------------------
 {
 public:
-	/** Constructor. */
-	CodeSnippetsEvent(wxEventType commandType = wxEVT_NULL, int id = 0);
+    /** Constructor. */
+    CodeSnippetsEvent(wxEventType commandType = wxEVT_NULL, int id = 0);
 
-	/** Copy constructor. */
-	CodeSnippetsEvent( const CodeSnippetsEvent& event);
+    /** Copy constructor. */
+    CodeSnippetsEvent( const CodeSnippetsEvent& event);
 
-	/** Destructor. */
-	~CodeSnippetsEvent();
+    /** Destructor. */
+    ~CodeSnippetsEvent();
 
-	virtual wxEvent* Clone() const { return new CodeSnippetsEvent(*this);}
+    virtual wxEvent* Clone() const
+    {
+        return new CodeSnippetsEvent(*this);
+    }
 
-	DECLARE_DYNAMIC_CLASS(CodeSnippetsEvent);
+    DECLARE_DYNAMIC_CLASS(CodeSnippetsEvent);
 
-	int      GetSnippetID() const {return m_SnippetID;}
-	void     SetSnippetID( const int itemid ) {m_SnippetID = itemid;}
-	wxString GetSnippetString() const {return m_SnippetString;}
-	void     SetSnippetString( const wxString string ) {m_SnippetString = string;}
-	wxString GetEventTypeLabel() const {return m_EventTypeLabel;}
+    int      GetSnippetID() const
+    {
+        return m_SnippetID;
+    }
+    void     SetSnippetID( const int itemid )
+    {
+        m_SnippetID = itemid;
+    }
+    wxString GetSnippetString() const
+    {
+        return m_SnippetString;
+    }
+    void     SetSnippetString( const wxString string )
+    {
+        m_SnippetString = string;
+    }
+    wxString GetEventTypeLabel() const
+    {
+        return m_EventTypeLabel;
+    }
     bool     PostCodeSnippetsEvent(const CodeSnippetsEvent& event);
     bool     ProcessCodeSnippetsEvent(const CodeSnippetsEvent& event);
 
 private:
-	int       m_SnippetID;
-	wxString  m_SnippetString;
-	wxString  m_EventTypeLabel;
+    int       m_SnippetID;
+    wxString  m_SnippetString;
+    wxString  m_EventTypeLabel;
 };
 
 typedef void (wxEvtHandler::*CodeSnippetsEventFunction)(CodeSnippetsEvent&);
 
 BEGIN_DECLARE_EVENT_TYPES()
-	DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_CODESNIPPETS_SELECT, wxID_ANY)
-	DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_CODESNIPPETS_EDIT, wxID_ANY)
-	DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_CODESNIPPETS_NEW_INDEX, wxID_ANY)
-	DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_CODESNIPPETS_GETFILELINKS, wxID_ANY)
+DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_CODESNIPPETS_SELECT, wxID_ANY)
+DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_CODESNIPPETS_EDIT, wxID_ANY)
+DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_CODESNIPPETS_NEW_INDEX, wxID_ANY)
+DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_CODESNIPPETS_GETFILELINKS, wxID_ANY)
 END_DECLARE_EVENT_TYPES()
 
 #define EVT_CODESNIPPETS_SELECT(id, fn) \

@@ -1,7 +1,7 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/event.h>
-    #include <wx/image.h>
+#include <wx/event.h>
+#include <wx/image.h>
 #endif
 #include <wx/bitmap.h>
 #include <wx/dc.h>
@@ -182,11 +182,20 @@ void byoSnake::Move()
 
     switch ( m_Direction )
     {
-        case dLeft:  newX--; break;
-        case dRight: newX++; break;
-        case dUp:    newY--; break;
-        case dDown:  newY++; break;
-        default: break;
+    case dLeft:
+        newX--;
+        break;
+    case dRight:
+        newX++;
+        break;
+    case dUp:
+        newY--;
+        break;
+    case dDown:
+        newY++;
+        break;
+    default:
+        break;
     }
 
     bool valid = true;

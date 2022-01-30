@@ -32,23 +32,36 @@ public:
     /** Destructor. */
     ~ThreadSearchEvent() override;
 
-    wxEvent *Clone() const override { return new ThreadSearchEvent(*this); }
+    wxEvent *Clone() const override
+    {
+        return new ThreadSearchEvent(*this);
+    }
 
     DECLARE_DYNAMIC_CLASS(ThreadSearchEvent);
 
     // Contains a series of string containing line index (starting from 1), matching line
-    const wxArrayString& GetLineTextArray() const { return m_LineTextArray; }
-    void SetLineTextArray(const wxArrayString& ArrayString) { m_LineTextArray = ArrayString; }
+    const wxArrayString& GetLineTextArray() const
+    {
+        return m_LineTextArray;
+    }
+    void SetLineTextArray(const wxArrayString& ArrayString)
+    {
+        m_LineTextArray = ArrayString;
+    }
 
     void SetMatchedPositions(std::vector<int> &matchedPositions)
     {
         m_MatchedPositions.swap(matchedPositions);
     }
-    const std::vector<int>& GetMatchedPositions() const {
+    const std::vector<int>& GetMatchedPositions() const
+    {
         return m_MatchedPositions;
     }
 
-    size_t GetNumberOfMatches() const { return m_LineTextArray.GetCount() / 2; }
+    size_t GetNumberOfMatches() const
+    {
+        return m_LineTextArray.GetCount() / 2;
+    }
 
 private:
     wxArrayString m_LineTextArray;
@@ -63,8 +76,8 @@ private:
 typedef void (wxEvtHandler::*ThreadSearchEventFunction)(ThreadSearchEvent&);
 
 BEGIN_DECLARE_EVENT_TYPES()
-    DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_THREAD_SEARCH, wxID_ANY)
-    DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_THREAD_SEARCH_ERROR, wxID_ANY)
+DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_THREAD_SEARCH, wxID_ANY)
+DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_THREAD_SEARCH_ERROR, wxID_ANY)
 END_DECLARE_EVENT_TYPES()
 
 #define EVT_THREAD_SEARCH(id, fn) \

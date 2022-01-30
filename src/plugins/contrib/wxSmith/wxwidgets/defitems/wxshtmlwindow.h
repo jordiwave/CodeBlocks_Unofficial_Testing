@@ -28,19 +28,19 @@
 
 class wxsHtmlWindow: public wxsWidget
 {
-    public:
+public:
 
-        wxsHtmlWindow(wxsItemResData* Data);
+    wxsHtmlWindow(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        wxsDimensionData Borders;
-        wxString Url;
-        wxString HtmlCode;
+    wxsDimensionData Borders;
+    wxString Url;
+    wxString HtmlCode;
 
 };
 

@@ -28,94 +28,94 @@
 /** \brief Internal modification class */
 class FileContentBuffered::IntModificationData: public FileContentBuffered::ModificationData
 {
-    public:
+public:
 
-        IntModificationData( std::vector< char >& buffer ): m_Buffer( buffer ) {}
+    IntModificationData( std::vector< char >& buffer ): m_Buffer( buffer ) {}
 
-        enum typeEnum
+    enum typeEnum
+    {
+        change,         ///< \brief Some content was changed
+        added,          ///< \brief Some data was inserted
+        removed,        ///< \brief Some data was removed
+    };
+
+    std::vector< char >& m_Buffer;
+
+    typeEnum             m_Type;
+    OffsetT              m_Position;
+    std::vector< char >  m_OldData;
+    std::vector< char >  m_NewData;
+
+    void Apply()
+    {
+        switch ( m_Type )
         {
-            change,         ///< \brief Some content was changed
-            added,          ///< \brief Some data was inserted
-            removed,        ///< \brief Some data was removed
-        };
-
-        std::vector< char >& m_Buffer;
-
-        typeEnum             m_Type;
-        OffsetT              m_Position;
-        std::vector< char >  m_OldData;
-        std::vector< char >  m_NewData;
-
-        void Apply()
+        case added:
         {
-            switch ( m_Type )
-            {
-                case added:
-                {
-                    assert( m_Buffer.size() >= m_Position );
-                    m_Buffer.insert( m_Buffer.begin() + m_Position, m_NewData.begin(), m_NewData.end() );
-                    break;
-                }
-
-                case removed:
-                {
-                    assert( m_Buffer.size() > m_Position );
-                    assert( m_Buffer.size() >= m_Position + m_OldData.size() );
-                    m_Buffer.erase( m_Buffer.begin() + m_Position, m_Buffer.begin() + m_Position + m_OldData.size() );
-                    break;
-                }
-
-                case change:
-                {
-                    assert( m_Buffer.size() > m_Position );
-                    assert( m_Buffer.size() >= m_Position + m_NewData.size() );
-                    assert( m_OldData.size() == m_NewData.size() );
-
-                    std::copy( m_NewData.begin(), m_NewData.end(), m_Buffer.begin() + m_Position );
-                    break;
-                }
-                default:
-                    break;
-            }
+            assert( m_Buffer.size() >= m_Position );
+            m_Buffer.insert( m_Buffer.begin() + m_Position, m_NewData.begin(), m_NewData.end() );
+            break;
         }
 
-        void Revert()
+        case removed:
         {
-            switch ( m_Type )
-            {
-                case removed:
-                {
-                    assert( m_Buffer.size() >= m_Position );
-                    m_Buffer.insert( m_Buffer.begin() + m_Position, m_OldData.begin(), m_OldData.end() );
-                    break;
-                }
-
-                case added:
-                {
-                    assert( m_Buffer.size() > m_Position );
-                    assert( m_Buffer.size() >= m_Position + m_NewData.size() );
-                    m_Buffer.erase( m_Buffer.begin() + m_Position, m_Buffer.begin() + m_Position + m_NewData.size() );
-                    break;
-                }
-
-                case change:
-                {
-                    assert( m_Buffer.size() > m_Position );
-                    assert( m_Buffer.size() >= m_Position + m_OldData.size() );
-                    assert( m_OldData.size() == m_NewData.size() );
-
-                    std::copy( m_OldData.begin(), m_OldData.end(), m_Buffer.begin() + m_Position );
-                    break;
-                }
-                default:
-                    break;
-            }
+            assert( m_Buffer.size() > m_Position );
+            assert( m_Buffer.size() >= m_Position + m_OldData.size() );
+            m_Buffer.erase( m_Buffer.begin() + m_Position, m_Buffer.begin() + m_Position + m_OldData.size() );
+            break;
         }
 
-        OffsetT Length()
+        case change:
         {
-            return m_OldData.empty() ? m_NewData.size() : m_OldData.size();
+            assert( m_Buffer.size() > m_Position );
+            assert( m_Buffer.size() >= m_Position + m_NewData.size() );
+            assert( m_OldData.size() == m_NewData.size() );
+
+            std::copy( m_NewData.begin(), m_NewData.end(), m_Buffer.begin() + m_Position );
+            break;
         }
+        default:
+            break;
+        }
+    }
+
+    void Revert()
+    {
+        switch ( m_Type )
+        {
+        case removed:
+        {
+            assert( m_Buffer.size() >= m_Position );
+            m_Buffer.insert( m_Buffer.begin() + m_Position, m_OldData.begin(), m_OldData.end() );
+            break;
+        }
+
+        case added:
+        {
+            assert( m_Buffer.size() > m_Position );
+            assert( m_Buffer.size() >= m_Position + m_NewData.size() );
+            m_Buffer.erase( m_Buffer.begin() + m_Position, m_Buffer.begin() + m_Position + m_NewData.size() );
+            break;
+        }
+
+        case change:
+        {
+            assert( m_Buffer.size() > m_Position );
+            assert( m_Buffer.size() >= m_Position + m_OldData.size() );
+            assert( m_OldData.size() == m_NewData.size() );
+
+            std::copy( m_OldData.begin(), m_OldData.end(), m_Buffer.begin() + m_Position );
+            break;
+        }
+        default:
+            break;
+        }
+    }
+
+    OffsetT Length()
+    {
+        return m_OldData.empty() ? m_NewData.size() : m_OldData.size();
+    }
 };
 
 FileContentBuffered::FileContentBuffered()

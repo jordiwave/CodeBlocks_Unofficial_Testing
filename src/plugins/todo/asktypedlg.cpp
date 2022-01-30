@@ -9,10 +9,10 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-  #include <wx/choice.h>
-  #include <wx/intl.h>
-  #include <wx/string.h>
-  #include <wx/xrc/xmlres.h>
+#include <wx/choice.h>
+#include <wx/intl.h>
+#include <wx/string.h>
+#include <wx/xrc/xmlres.h>
 #endif
 #include "asktypedlg.h"
 

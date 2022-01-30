@@ -9,10 +9,10 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-    //(*InternalHeadersPCH(BuildTargetPanel)
-    #include <wx/string.h>
-    #include <wx/intl.h>
-    //*)
+//(*InternalHeadersPCH(BuildTargetPanel)
+#include <wx/string.h>
+#include <wx/intl.h>
+//*)
 #endif // CB_PRECOMP
 
 #include "buildtargetpanel.h"

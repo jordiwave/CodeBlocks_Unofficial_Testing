@@ -31,23 +31,23 @@
 #include "globals.h"
 
 #if defined(__WXMSW__) && defined(LoadImage)
-    // Fix Windows winuser.h Header define of LoadImage.
-    #undef LoadImage
+// Fix Windows winuser.h Header define of LoadImage.
+#undef LoadImage
 #endif
 
 namespace
 {
-    class wxsResourceTreeProjectData: public wxsResourceTreeItemData
+class wxsResourceTreeProjectData: public wxsResourceTreeItemData
+{
+public:
+    wxsResourceTreeProjectData(wxsProject* Project): m_Project(Project) {}
+    wxsProject* m_Project;
+    virtual void OnRightClick()
     {
-        public:
-            wxsResourceTreeProjectData(wxsProject* Project): m_Project(Project) {}
-            wxsProject* m_Project;
-            virtual void OnRightClick()
-            {
 
-            }
+    }
 
-    };
+};
 }
 
 wxsResourceTree* wxsResourceTree::m_Singleton = 0;
@@ -85,14 +85,14 @@ wxsResourceItemId wxsResourceTree::NewProjectItem(const wxString& ProjectTitle,w
     if ( !m_IsExt )
     {
         Id = AppendItem(GetRootItem(),
-            ProjectTitle,m_ProjectImageId,m_ProjectImageId,
-            new wxsResourceTreeProjectData(Project));
+                        ProjectTitle,m_ProjectImageId,m_ProjectImageId,
+                        new wxsResourceTreeProjectData(Project));
     }
     else
     {
         Id = InsertItem(GetRootItem(),GetChildrenCount(GetRootItem(),false),
-            ProjectTitle,m_ProjectImageId,m_ProjectImageId,
-            new wxsResourceTreeProjectData(Project));
+                        ProjectTitle,m_ProjectImageId,m_ProjectImageId,
+                        new wxsResourceTreeProjectData(Project));
     }
 
     Expand(GetRootItem());
@@ -104,8 +104,8 @@ wxsResourceItemId wxsResourceTree::ExternalResourcesId()
     if ( !m_IsExt )
     {
         m_ExtId = AppendItem(GetRootItem(),
-            _("External resources"),m_ExternalImageId,m_ExternalImageId,
-            0);
+                             _("External resources"),m_ExternalImageId,m_ExternalImageId,
+                             0);
         m_IsExt = true;
     }
     return m_ExtId;

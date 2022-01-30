@@ -28,31 +28,31 @@
 
 namespace
 {
-    wxsRegisterItem<wxsDialog> Reg( _T("Dialog"), wxsTContainer, _T(""), 0 );
+wxsRegisterItem<wxsDialog> Reg( _T("Dialog"), wxsTContainer, _T(""), 0 );
 
-    WXS_ST_BEGIN(wxsDialogStyles,_T("wxDEFAULT_DIALOG_STYLE"))
-        WXS_ST_CATEGORY("wxDialog")
-        WXS_ST(wxSTAY_ON_TOP)
-        WXS_ST(wxCAPTION)
-        WXS_ST(wxDEFAULT_DIALOG_STYLE)
-        WXS_ST(wxSYSTEM_MENU)
-        WXS_ST(wxRESIZE_BORDER)
-        WXS_ST(wxCLOSE_BOX)
-        WXS_ST(wxDIALOG_NO_PARENT)
-        WXS_ST(wxTAB_TRAVERSAL)
-        WXS_ST(wxMAXIMIZE_BOX)
-        WXS_ST(wxMINIMIZE_BOX)
-        WXS_ST(wxFRAME_SHAPED)
-        WXS_EXST(wxDIALOG_EX_CONTEXTHELP)
-        WXS_EXST(wxDIALOG_EX_METAL)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsDialogStyles,_T("wxDEFAULT_DIALOG_STYLE"))
+WXS_ST_CATEGORY("wxDialog")
+WXS_ST(wxSTAY_ON_TOP)
+WXS_ST(wxCAPTION)
+WXS_ST(wxDEFAULT_DIALOG_STYLE)
+WXS_ST(wxSYSTEM_MENU)
+WXS_ST(wxRESIZE_BORDER)
+WXS_ST(wxCLOSE_BOX)
+WXS_ST(wxDIALOG_NO_PARENT)
+WXS_ST(wxTAB_TRAVERSAL)
+WXS_ST(wxMAXIMIZE_BOX)
+WXS_ST(wxMINIMIZE_BOX)
+WXS_ST(wxFRAME_SHAPED)
+WXS_EXST(wxDIALOG_EX_CONTEXTHELP)
+WXS_EXST(wxDIALOG_EX_METAL)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsDialogEvents)
-        WXS_EVI(EVT_INIT_DIALOG,wxEVT_INIT_DIALOG,wxInitDialogEvent,Init)
-        WXS_EVI(EVT_CLOSE,wxEVT_CLOSE_WINDOW,wxCloseEvent,Close)
-        WXS_EV_DEFAULTS()
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsDialogEvents)
+WXS_EVI(EVT_INIT_DIALOG,wxEVT_INIT_DIALOG,wxInitDialogEvent,Init)
+WXS_EVI(EVT_CLOSE,wxEVT_CLOSE_WINDOW,wxCloseEvent,Close)
+WXS_EV_DEFAULTS()
+WXS_EV_END()
 }
 
 wxsDialog::wxsDialog(wxsItemResData* Data):
@@ -69,33 +69,33 @@ void wxsDialog::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/dialog.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%W, %I, %t, wxDefaultPosition, wxDefaultSize, %T, %N);\n"),Title.wx_str());
+        if ( !GetBaseProps()->m_Size.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_SizeFromArg) )
         {
-            AddHeader(_T("<wx/dialog.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%W, %I, %t, wxDefaultPosition, wxDefaultSize, %T, %N);\n"),Title.wx_str());
-            if ( !GetBaseProps()->m_Size.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_SizeFromArg) )
-            {
-                Codef(_T("%ASetClientSize(%S);\n"));
-            }
-            if ( !GetBaseProps()->m_Position.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_PositionFromArg) )
-            {
-                Codef(_T("%AMove(%P);\n"));
-            }
-            BuildSetupWindowCode();
-            AddChildrenCode();
-            if ( Centered )
-            {
-                Codef(_T("%ACenter();\n"));
-            }
-
-            return;
+            Codef(_T("%ASetClientSize(%S);\n"));
+        }
+        if ( !GetBaseProps()->m_Position.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_PositionFromArg) )
+        {
+            Codef(_T("%AMove(%P);\n"));
+        }
+        BuildSetupWindowCode();
+        AddChildrenCode();
+        if ( Centered )
+        {
+            Codef(_T("%ACenter();\n"));
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsDialog::OnBuildCreatingCode"),GetLanguage());
-        }
+        return;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsDialog::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

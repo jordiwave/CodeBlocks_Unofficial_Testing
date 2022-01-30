@@ -26,35 +26,35 @@
 
 namespace
 {
-    wxsRegisterItem<wxsPanel> Reg(_T("Panel"),wxsTContainer, _T("Standard"), 190);
+wxsRegisterItem<wxsPanel> Reg(_T("Panel"),wxsTContainer, _T("Standard"), 190);
 
-    WXS_ST_BEGIN(wxsPanelStyles,_T("wxTAB_TRAVERSAL"))
-        WXS_ST_CATEGORY("wxPanel")
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsPanelStyles,_T("wxTAB_TRAVERSAL"))
+WXS_ST_CATEGORY("wxPanel")
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsPanelEvents)
-        WXS_EV_DEFAULTS()
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsPanelEvents)
+WXS_EV_DEFAULTS()
+WXS_EV_END()
 
-    class PanelPreview: public wxsGridPanel
+class PanelPreview: public wxsGridPanel
+{
+public:
+
+    PanelPreview(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size,long style,bool IsRoot):
+        wxsGridPanel(parent,id,pos,size,style),
+        m_IsRoot(IsRoot)
+    {}
+
+private:
+
+    bool DrawBorder()
     {
-        public:
+        return !m_IsRoot;
+    }
 
-            PanelPreview(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size,long style,bool IsRoot):
-                wxsGridPanel(parent,id,pos,size,style),
-                m_IsRoot(IsRoot)
-            {}
-
-        private:
-
-            bool DrawBorder()
-            {
-                return !m_IsRoot;
-            }
-
-            bool m_IsRoot;
-    };
+    bool m_IsRoot;
+};
 }
 
 wxsPanel::wxsPanel(wxsItemResData* Data):
@@ -69,20 +69,20 @@ void wxsPanel::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/panel.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-            BuildSetupWindowCode();
-            AddChildrenCode();
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/panel.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+        BuildSetupWindowCode();
+        AddChildrenCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsPanel::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsPanel::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

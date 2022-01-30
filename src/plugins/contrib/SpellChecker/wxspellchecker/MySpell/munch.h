@@ -6,9 +6,9 @@
 #define MAX_SUFFIXES  256
 #define MAX_ROOTS      20
 #define MAX_WORDS     5000
- 
+
 #define ROTATE_LEN      5
- 
+
 #define ROTATE(v,q) \
    (v) = ((v) << (q)) | (((v) >> (32 - q)) & ((1 << (q))-1));
 
@@ -25,7 +25,7 @@ struct affent
     short   appndl;
     short   stripl;
     char    achar;
-    char    xpflg;   
+    char    xpflg;
     short   numconds;
     char    conds[SET_SIZE];
 };
@@ -63,13 +63,13 @@ struct matches  roots[MAX_ROOTS]; /* list of root words found */
 
 struct hentry
 {
-  char * word;
-  char * affstr;
-  struct hentry * next;
-  int keep;
+    char * word;
+    char * affstr;
+    struct hentry * next;
+    int keep;
 };
 
- 
+
 int             tablesize;
 struct hentry * tableptr;
 
@@ -78,8 +78,8 @@ struct hentry * tableptr;
 int    numwords;	          /* number of words found */
 struct dwords
 {
-  char * word;
-  int pallow;
+    char * word;
+    int pallow;
 };
 
 struct dwords  wlist[MAX_WORDS]; /* list words found */
@@ -103,8 +103,8 @@ void aff_chk (const char * word, int len);
 
 void pfx_chk (const char * word, int len, struct affent* ep, int num);
 
-void suf_chk (const char * word, int len, struct affent * ep, int num, 
-	      struct affent * pfxent, int cpflag);
+void suf_chk (const char * word, int len, struct affent * ep, int num,
+              struct affent * pfxent, int cpflag);
 
 void add_affix_char(struct hentry * hent, char ac);
 

@@ -15,11 +15,11 @@ namespace ScriptBindings
 
 static std::string GetItemString(HSQUIRRELVM vm, SQInteger stackIdx)
 {
-/*    const void *ptr;
-    sq_getvoidptr(vm, stackIdx, &ptr);
-    std::stringstream s;
-    s << std::hex << ptr;
-    return s.str();*/
+    /*    const void *ptr;
+        sq_getvoidptr(vm, stackIdx, &ptr);
+        std::stringstream s;
+        s << std::hex << ptr;
+        return s.str();*/
     return "unknown value";
 }
 
@@ -28,91 +28,91 @@ std::string MakeStringFromSquirrelValue(HSQUIRRELVM vm, const int stackIdx)
     std::string line;
     switch (sq_gettype(vm, stackIdx))
     {
-        case OT_NULL:
-            line+="Null";
-            break;
+    case OT_NULL:
+        line+="Null";
+        break;
 
-        case OT_INTEGER:
+    case OT_INTEGER:
+    {
+        SQInteger value;
+        sq_getinteger(vm, stackIdx, &value);
+        line+=std::to_string(value);
+        line+="; Integer";
+        break;
+    }
+    case OT_FLOAT:
+    {
+        SQFloat value;
+        sq_getfloat(vm, stackIdx, &value);
+        line+=std::to_string(value);
+        line+="; Float";
+        break;
+    }
+    case OT_BOOL:
+    {
+        SQBool value;
+        sq_getbool(vm, stackIdx, &value);
+        line+=(value ? "True" : "False");
+        line+="; Bool";
+        break;
+    }
+    case OT_STRING:
+    {
+        const SQChar *value;
+        sq_getstring(vm, stackIdx, &value);
+        if (value != nullptr)
         {
-            SQInteger value;
-            sq_getinteger(vm, stackIdx, &value);
-            line+=std::to_string(value);
-            line+="; Integer";
-            break;
+            line+="'";
+            line+=value;
         }
-        case OT_FLOAT:
-        {
-            SQFloat value;
-            sq_getfloat(vm, stackIdx, &value);
-            line+=std::to_string(value);
-            line+="; Float";
-            break;
-        }
-        case OT_BOOL:
-        {
-            SQBool value;
-            sq_getbool(vm, stackIdx, &value);
-            line+=(value ? "True" : "False");
-            line+="; Bool";
-            break;
-        }
-        case OT_STRING:
-        {
-            const SQChar *value;
-            sq_getstring(vm, stackIdx, &value);
-            if (value != nullptr)
-            {
-                line+="'";
-                line+=value;
-            }
-            else
-                line+="'<n/a>";
-            line+="'; String";
-            break;
-        }
-        case OT_TABLE:
-            line+=GetItemString(vm, stackIdx);
-            line+="; Table";
-            break;
-        case OT_ARRAY:
-            line+=GetItemString(vm, stackIdx);
-            line+="; Array";
-            break;
-        case OT_USERDATA:
-            line+="UserData";
-            break;
-        case OT_CLOSURE:
-            line+="Closure";
-            break;
-        case OT_NATIVECLOSURE:
-            line+="NativeClosure";
-            break;
-        case OT_GENERATOR:
-            line+="Generator";
-            break;
-        case OT_USERPOINTER:
-            line+="UserPointer";
-            break;
-        case OT_THREAD:
-            line+="Thread";
-            break;
-        case OT_FUNCPROTO:
-            line+="FuncProto";
-            break;
-        case OT_CLASS:
-            line+="Class";
-            break;
-        case OT_INSTANCE:
-        {
-            line+=GetItemString(vm, stackIdx);
-            line+="; Instance";
-            break;
-        }
-        case OT_WEAKREF:
-            line+="WeakRef";
-            break;
-        default:
-            line+="<Unknown>";
+        else
+            line+="'<n/a>";
+        line+="'; String";
+        break;
+    }
+    case OT_TABLE:
+        line+=GetItemString(vm, stackIdx);
+        line+="; Table";
+        break;
+    case OT_ARRAY:
+        line+=GetItemString(vm, stackIdx);
+        line+="; Array";
+        break;
+    case OT_USERDATA:
+        line+="UserData";
+        break;
+    case OT_CLOSURE:
+        line+="Closure";
+        break;
+    case OT_NATIVECLOSURE:
+        line+="NativeClosure";
+        break;
+    case OT_GENERATOR:
+        line+="Generator";
+        break;
+    case OT_USERPOINTER:
+        line+="UserPointer";
+        break;
+    case OT_THREAD:
+        line+="Thread";
+        break;
+    case OT_FUNCPROTO:
+        line+="FuncProto";
+        break;
+    case OT_CLASS:
+        line+="Class";
+        break;
+    case OT_INSTANCE:
+    {
+        line+=GetItemString(vm, stackIdx);
+        line+="; Instance";
+        break;
+    }
+    case OT_WEAKREF:
+        line+="WeakRef";
+        break;
+    default:
+        line+="<Unknown>";
     }
     return line;
 }

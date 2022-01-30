@@ -20,8 +20,14 @@ public:
     CCOptionsProjectDlg(wxWindow* parent, cbProject* project, NativeParser* np);
     ~CCOptionsProjectDlg() override;
 
-    wxString GetTitle() const override { return _("C/C++ parser options"); }
-    wxString GetBitmapBaseName() const override { return _T("generic-plugin"); }
+    wxString GetTitle() const override
+    {
+        return _("C/C++ parser options");
+    }
+    wxString GetBitmapBaseName() const override
+    {
+        return _T("generic-plugin");
+    }
     void OnApply() override;
     void OnCancel() override {}
 

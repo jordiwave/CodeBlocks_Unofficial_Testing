@@ -9,27 +9,27 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/arrstr.h>
-    #include <wx/button.h>
-    #include <wx/checklst.h>
-    #include <wx/combobox.h>
-    #include <wx/event.h>
-    #include <wx/file.h>
-    #include <wx/intl.h>
-    #include <wx/listctrl.h>
-    #include <wx/sizer.h>
-    #include <wx/stattext.h>
-    #include <wx/utils.h>
+#include <wx/arrstr.h>
+#include <wx/button.h>
+#include <wx/checklst.h>
+#include <wx/combobox.h>
+#include <wx/event.h>
+#include <wx/file.h>
+#include <wx/intl.h>
+#include <wx/listctrl.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/utils.h>
 
-    #include "cbeditor.h"
-    #include "cbproject.h"
-    #include "editormanager.h"
-    #include "filemanager.h"
-    #include "globals.h"
-    #include "manager.h"
-    #include "projectfile.h"
-    #include "projectmanager.h"
-    #include "logmanager.h"
+#include "cbeditor.h"
+#include "cbproject.h"
+#include "editormanager.h"
+#include "filemanager.h"
+#include "globals.h"
+#include "manager.h"
+#include "projectfile.h"
+#include "projectmanager.h"
+#include "logmanager.h"
 #endif
 
 #include <wx/progdlg.h>
@@ -42,11 +42,11 @@
 
 namespace
 {
-    int idList          = wxNewId();
-    int idSource        = wxNewId();
-    int idUser          = wxNewId();
-    int idButtonRefresh = wxNewId();
-    int idButtonTypes   = wxNewId();
+int idList          = wxNewId();
+int idSource        = wxNewId();
+int idUser          = wxNewId();
+int idButtonRefresh = wxNewId();
+int idButtonTypes   = wxNewId();
 };
 
 BEGIN_EVENT_TABLE(ToDoListView, wxEvtHandler)
@@ -162,92 +162,92 @@ void ToDoListView::Parse()
 
     switch (m_pSource->GetSelection())
     {
-        case 0: // current file only
+    case 0: // current file only
+    {
+        // this is the easiest selection ;)
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetActiveEditor());
+        ParseEditor(ed);
+        break;
+    }
+    case 1: // open files
+    {
+        // easy too; parse all open editor files...
+        for (int i = 0; i < Manager::Get()->GetEditorManager()->GetEditorsCount(); ++i)
         {
-            // this is the easiest selection ;)
-            cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetActiveEditor());
+            cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetEditor(i));
             ParseEditor(ed);
-            break;
         }
-        case 1: // open files
+        break;
+    }
+    case 2: // active target files
+    {
+        // loop all project files
+        // but be aware: if a file is opened, use the open file because
+        // it might not be the same on the disk...
+        cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+        if (!prj)
+            return;
+        ProjectBuildTarget *target = prj->GetBuildTarget(prj->GetActiveBuildTarget());
+        if (!target)
+            return;
+        wxProgressDialog pd(_T("Todo Plugin: Processing all files in the active target.."),
+                            _T("Processing a target of a big project may take large amount of time.\n\n"
+                               "Please be patient!\n"),
+                            target->GetFilesCount(),
+                            Manager::Get()->GetAppWindow(),
+                            wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
+        int i = 0;
+        for (FilesList::iterator it = target->GetFilesList().begin();
+                it != target->GetFilesList().end();
+                ++it)
         {
-            // easy too; parse all open editor files...
-            for (int i = 0; i < Manager::Get()->GetEditorManager()->GetEditorsCount(); ++i)
-            {
-                cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetEditor(i));
+            ProjectFile* pf = *it;
+            wxString filename = pf->file.GetFullPath();
+            cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(filename);
+            if (ed)
                 ParseEditor(ed);
-            }
-            break;
-        }
-        case 2: // active target files
-        {
-            // loop all project files
-            // but be aware: if a file is opened, use the open file because
-            // it might not be the same on the disk...
-            cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-            if (!prj)
-                return;
-            ProjectBuildTarget *target = prj->GetBuildTarget(prj->GetActiveBuildTarget());
-            if (!target)
-                return;
-            wxProgressDialog pd(_T("Todo Plugin: Processing all files in the active target.."),
-                                _T("Processing a target of a big project may take large amount of time.\n\n"
-                                   "Please be patient!\n"),
-                                target->GetFilesCount(),
-                                Manager::Get()->GetAppWindow(),
-                                wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
-            int i = 0;
-            for (FilesList::iterator it = target->GetFilesList().begin();
-                 it != target->GetFilesList().end();
-                 ++it)
+            else
+                ParseFile(filename);
+            if (!pd.Update(i++))
             {
-                ProjectFile* pf = *it;
-                wxString filename = pf->file.GetFullPath();
-                cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(filename);
-                if (ed)
-                    ParseEditor(ed);
-                else
-                    ParseFile(filename);
-                if (!pd.Update(i++))
-                {
-                    break;
-                }
+                break;
             }
-            break;
         }
-        case 3: // all project files
+        break;
+    }
+    case 3: // all project files
+    {
+        // loop all project files
+        // but be aware: if a file is opened, use the open file because
+        // it might not be the same on the disk...
+        cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+        if (!prj)
+            return;
+        wxProgressDialog pd(_T("Todo Plugin: Processing all files.."),
+                            _T("Processing a big project may take large amount of time.\n\n"
+                               "Please be patient!\n"),
+                            prj->GetFilesCount(),
+                            Manager::Get()->GetAppWindow(),
+                            wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
+        int i = 0;
+        for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
         {
-            // loop all project files
-            // but be aware: if a file is opened, use the open file because
-            // it might not be the same on the disk...
-            cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-            if (!prj)
-                return;
-            wxProgressDialog pd(_T("Todo Plugin: Processing all files.."),
-                                _T("Processing a big project may take large amount of time.\n\n"
-                                   "Please be patient!\n"),
-                                prj->GetFilesCount(),
-                                Manager::Get()->GetAppWindow(),
-                                wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
-            int i = 0;
-            for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
+            ProjectFile* pf = *it;
+            wxString filename = pf->file.GetFullPath();
+            cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(filename);
+            if (ed)
+                ParseEditor(ed);
+            else
+                ParseFile(filename);
+            if (!pd.Update(i++))
             {
-                ProjectFile* pf = *it;
-                wxString filename = pf->file.GetFullPath();
-                cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(filename);
-                if (ed)
-                    ParseEditor(ed);
-                else
-                    ParseFile(filename);
-                if (!pd.Update(i++))
-                {
-                    break;
-                }
+                break;
             }
-            break;
         }
-        default:
-            break;
+        break;
+    }
+    default:
+        break;
     }
     FillList();
 }
@@ -315,8 +315,9 @@ void ToDoListView::FillList()
             m_Items.Add(m_ItemsMap[filename][i]);
     }
     else
-    {   // m_Items contains all the items belong to m_ItemsMap
-        for (it = m_ItemsMap.begin();it != m_ItemsMap.end();++it)
+    {
+        // m_Items contains all the items belong to m_ItemsMap
+        for (it = m_ItemsMap.begin(); it != m_ItemsMap.end(); ++it)
         {
             for (unsigned int i = 0; i < it->second.size(); i++)
                 m_Items.Add(it->second[i]);
@@ -354,51 +355,51 @@ void ToDoListView::SortList()
             const ToDoItem item2 = m_Items[i+1];
             switch (m_SortColumn)
             {
-                // The columns are composed with different types...
-                case 0: // type
-                    swap = item1.type.CmpNoCase(item2.type);
-                    break;
-                case 1: // text
-                    swap = item1.text.CmpNoCase(item2.text);
-                    break;
-                case 2: // user
-                    swap = item1.user.CmpNoCase(item2.user);
-                    break;
-                case 3: // priority
-                    if      (item1.priorityStr > item2.priorityStr)
-                        swap =  1;
-                    else if (item1.priorityStr < item2.priorityStr)
-                        swap = -1;
-                    else
-                        swap =  0;
-                    break;
-                case 4: // line
-                    if      (item1.line > item2.line)
-                        swap =  1;
-                    else if (item1.line < item2.line)
-                        swap = -1;
-                    else
-                        swap =  0;
-                    break;
-                case 5: // date
-                    {
-                        wxDateTime date1;
-                        wxDateTime date2;
-                        date1.ParseDate(item1.date.c_str());
-                        date2.ParseDate(item2.date.c_str());
-                        if      (date1 > date2)
-                            swap =  1;
-                        else if (date1 < date2)
-                            swap = -1;
-                        else
-                            swap =  0;
-                        break;
-                    }
-                case 6: // filename
-                    swap = item1.filename.CmpNoCase(item2.filename);
-                    break;
-                default:
-                    break;
+            // The columns are composed with different types...
+            case 0: // type
+                swap = item1.type.CmpNoCase(item2.type);
+                break;
+            case 1: // text
+                swap = item1.text.CmpNoCase(item2.text);
+                break;
+            case 2: // user
+                swap = item1.user.CmpNoCase(item2.user);
+                break;
+            case 3: // priority
+                if      (item1.priorityStr > item2.priorityStr)
+                    swap =  1;
+                else if (item1.priorityStr < item2.priorityStr)
+                    swap = -1;
+                else
+                    swap =  0;
+                break;
+            case 4: // line
+                if      (item1.line > item2.line)
+                    swap =  1;
+                else if (item1.line < item2.line)
+                    swap = -1;
+                else
+                    swap =  0;
+                break;
+            case 5: // date
+            {
+                wxDateTime date1;
+                wxDateTime date2;
+                date1.ParseDate(item1.date.c_str());
+                date2.ParseDate(item2.date.c_str());
+                if      (date1 > date2)
+                    swap =  1;
+                else if (date1 < date2)
+                    swap = -1;
+                else
+                    swap =  0;
+                break;
+            }
+            case 6: // filename
+                swap = item1.filename.CmpNoCase(item2.filename);
+                break;
+            default:
+                break;
             }// switch
 
             // Swap items
@@ -424,7 +425,7 @@ void ToDoListView::FillListControl()
     {
         const ToDoItem& item = m_Items[i];
         if (m_pUser->GetSelection() == 0 || // all users
-            m_pUser->GetStringSelection().Matches(item.user)) // or matches user
+                m_pUser->GetStringSelection().Matches(item.user)) // or matches user
         {
             int idx = control->InsertItem(control->GetItemCount(), item.type);
             control->SetItem(idx, 1, item.text);
@@ -596,7 +597,7 @@ CheckListDialog::CheckListDialog(wxWindow*       parent,
                                  const wxPoint&  pos,
                                  const wxSize&   size,
                                  long            style)
-  : wxDialog(parent, id, title, pos, size, style)
+    : wxDialog(parent, id, title, pos, size, style)
 {
     SetSizeHints(wxDefaultSize, wxDefaultSize);
 

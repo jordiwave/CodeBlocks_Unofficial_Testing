@@ -356,9 +356,9 @@
 /*****************************************************************************/
 
 #ifdef XPCOM_GLUE
-  #define NS_CheckThreadSafe(owningThread, msg)
+#define NS_CheckThreadSafe(owningThread, msg)
 #else
-  #define NS_CheckThreadSafe(owningThread, msg)                 \
+#define NS_CheckThreadSafe(owningThread, msg)                 \
     if (MOZ_UNLIKELY(owningThread != PR_GetCurrentThread())) {  \
       MOZ_CRASH(msg);                                           \
     }

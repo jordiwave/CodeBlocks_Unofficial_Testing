@@ -32,7 +32,7 @@ protected:
     CscopeResultTable *m_table;
 
 protected:
-	void ClearResults(void);
+    void ClearResults(void);
 
 private:
     void OnListItemActivated(wxListEvent &event);
@@ -40,14 +40,14 @@ private:
 
 public:
     void CopyContentsToClipboard(bool selectionOnly);
-	CscopeTab( wxWindow* parent, CscopeConfig *cfg );
-	virtual ~CscopeTab();
-	void BuildTable(CscopeResultTable *table);
-	void Clear();
-	void SetMessage(const wxString &msg, int percent);
+    CscopeTab( wxWindow* parent, CscopeConfig *cfg );
+    virtual ~CscopeTab();
+    void BuildTable(CscopeResultTable *table);
+    void Clear();
+    void SetMessage(const wxString &msg, int percent);
 
 private:
-	CscopeConfig *m_cfg;
+    CscopeConfig *m_cfg;
 };
 
 #endif // CSCOPE_TAB

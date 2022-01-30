@@ -21,7 +21,7 @@
 // Register the plugin
 namespace
 {
-    PluginRegistrant<DevPakUpdater> reg(_T("DevPakUpdater"));
+PluginRegistrant<DevPakUpdater> reg(_T("DevPakUpdater"));
 };
 
 DevPakUpdater::DevPakUpdater()
@@ -58,8 +58,8 @@ bool DevPakUpdater::ConfigurationValid()
             return false;
         // ask to add in compiler paths
         if (wxMessageBox(_("Do you want to add this path to the compiler's search dirs?\n"
-                        "(needed to be able to actually compile anything)"),
-                        _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
+                           "(needed to be able to actually compile anything)"),
+                         _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
         {
             Compiler* compiler = CompilerFactory::GetCompiler(0); // GCC is always first compiler
             if (!compiler)
@@ -79,7 +79,7 @@ int DevPakUpdater::Configure()
     if (g_MasterPath.IsEmpty())
         g_MasterPath = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + _T("DevPaks");
     wxString dir = wxDirSelector(_("Please select the path where DevPaks will be downloaded and installed:"),
-                                g_MasterPath);
+                                 g_MasterPath);
     if (!dir.IsEmpty())
     {
         g_MasterPath = dir;

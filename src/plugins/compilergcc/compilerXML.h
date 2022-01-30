@@ -7,30 +7,30 @@
 
 class CompilerXML : public Compiler
 {
-    public:
-        CompilerXML(const wxString& name, const wxString& ID, const wxString& file);
-        ~CompilerXML() override;
+public:
+    CompilerXML(const wxString& name, const wxString& ID, const wxString& file);
+    ~CompilerXML() override;
 
-        AutoDetectResult AutoDetectInstallationDir() override;
+    AutoDetectResult AutoDetectInstallationDir() override;
 
-    protected:
-        Compiler* CreateCopy() override;
+protected:
+    Compiler* CreateCopy() override;
 
-    private:
+private:
 
-        enum SearchMode
-        {
-            master,
-            extra,
-            include,
-            resource,
-            lib,
-            none
-        };
+    enum SearchMode
+    {
+        master,
+        extra,
+        include,
+        resource,
+        lib,
+        none
+    };
 
-        bool AddPath(const wxString& pth, SearchMode sm, int rmDirs = 0);
+    bool AddPath(const wxString& pth, SearchMode sm, int rmDirs = 0);
 
-        wxString m_fileName;
+    wxString m_fileName;
 };
 
 #endif // COMPILER_XML_H

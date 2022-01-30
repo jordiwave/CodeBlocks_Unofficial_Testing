@@ -276,10 +276,22 @@ public:
     /** a Token is added, associate doxygen style documents(comments before the variables) to the Token */
     void SetLastTokenIdx(int tokenIdx);
     // set position to end of last token
-    void SetTokenIndex(int position){ m_TokenIndex = position; }            // LSP //(ph 2021/05/27)
-    void SetPeekTokenIndex(int position){ m_PeekTokenIndex = position; }    // LSP //(ph 2021/06/12)
-    void SetPeekAvailable(bool torf){m_PeekAvailable = torf;}               //(ph 2021/06/12)
-    wxString& GetBufferData(){ return m_Buffer; }  //(ph 2021/03/19)
+    void SetTokenIndex(int position)
+    {
+        m_TokenIndex = position;    // LSP //(ph 2021/05/27)
+    }
+    void SetPeekTokenIndex(int position)
+    {
+        m_PeekTokenIndex = position;    // LSP //(ph 2021/06/12)
+    }
+    void SetPeekAvailable(bool torf)
+    {
+        m_PeekAvailable = torf;   //(ph 2021/06/12)
+    }
+    wxString& GetBufferData()
+    {
+        return m_Buffer;    //(ph 2021/03/19)
+    }
 
     // ----------------------------------------------------------------------------
     //  LSP
@@ -289,20 +301,29 @@ public:
     std::vector<std::string> m_SemanticTokensModifiers;
 
     // conversion of LSP character semantic tokens to size_t absolute line and col
-    #define stLINENUM   0 //position of semantic token line number
-    #define stCOLNUM    1 //position of semantic token col number
-    #define stLENGTH    2 //position of semantic token token length
-    #define stTYPE      3 //position of semantic token token type
-    #define stMODIFIER  4 //position of semantic token type modifier
+#define stLINENUM   0 //position of semantic token line number
+#define stCOLNUM    1 //position of semantic token col number
+#define stLENGTH    2 //position of semantic token token length
+#define stTYPE      3 //position of semantic token token type
+#define stMODIFIER  4 //position of semantic token type modifier
     typedef std::tuple<size_t,size_t,size_t,size_t,size_t> LSP_SemanticToken_t;
     std::vector<LSP_SemanticToken_t> m_SemanticTokensVec;
 
     bool LSP_ConvertSemanticTokens(json* pJson);
-    std::vector<LSP_SemanticToken_t>& GetSemanticTokensVec() { return m_SemanticTokensVec;}
-    std::vector<std::string>& GetSemanticTokensTypes()     {return m_SemanticTokensTypes;}
-    std::vector<std::string>& GetSemanticTokensModifiers() {return m_SemanticTokensModifiers;}
+    std::vector<LSP_SemanticToken_t>& GetSemanticTokensVec()
+    {
+        return m_SemanticTokensVec;
+    }
+    std::vector<std::string>& GetSemanticTokensTypes()
+    {
+        return m_SemanticTokensTypes;
+    }
+    std::vector<std::string>& GetSemanticTokensModifiers()
+    {
+        return m_SemanticTokensModifiers;
+    }
 
-     size_t m_SemanticTokensIdx;    //current semantic token being examined
+    size_t m_SemanticTokensIdx;    //current semantic token being examined
     // LSP semantic token info
     unsigned int         m_SemanticTokenIndex      ;    // offset into LSP semantic tokens //(ph 2021/03/19)
     unsigned int         m_SemanticTokenLineNumber ;    //(ph 2021/03/19)

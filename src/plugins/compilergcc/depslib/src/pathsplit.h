@@ -4,7 +4,7 @@
  * This file is part of depslib.
  *
  * License is hereby granted to use this software and distribute it
- * freely, as long as this copyright notice is retained and modifications 
+ * freely, as long as this copyright notice is retained and modifications
  * are clearly marked.
  *
  * ALL WARRANTIES ARE HEREBY DISCLAIMED.
@@ -24,8 +24,8 @@ typedef struct _pathsplit PATHSPLIT;
 
 struct _pathsplit
 {
-	PATHPART part[64];
-	int count;
+    PATHPART part[64];
+    int count;
 };
 
 extern void path_split(const char *path, PATHSPLIT *f);

@@ -30,30 +30,33 @@
  */
 class wxsGridPanel: public wxPanel
 {
-    public:
+public:
 
-        /** \brief Empty ctor */
-        wxsGridPanel();
+    /** \brief Empty ctor */
+    wxsGridPanel();
 
-        /** \brief Ctor */
-        wxsGridPanel(wxWindow* parent, wxWindowID id=wxID_ANY, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxTAB_TRAVERSAL, const wxString& name=_T("wxsGridPanel"));
+    /** \brief Ctor */
+    wxsGridPanel(wxWindow* parent, wxWindowID id=wxID_ANY, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxTAB_TRAVERSAL, const wxString& name=_T("wxsGridPanel"));
 
-        /** \brief Dctor */
-        virtual ~wxsGridPanel();
+    /** \brief Dctor */
+    virtual ~wxsGridPanel();
 
-        /** \brief Reading grid size from system configuration */
-        static int GetGridSize();
+    /** \brief Reading grid size from system configuration */
+    static int GetGridSize();
 
-    protected:
+protected:
 
-        /** \brief Paint procedure */
-        void OnPaint(wxPaintEvent& event);
+    /** \brief Paint procedure */
+    void OnPaint(wxPaintEvent& event);
 
-        /** \brief Checking whether we should draw border around client area */
-        virtual bool DrawBorder() { return false; }
+    /** \brief Checking whether we should draw border around client area */
+    virtual bool DrawBorder()
+    {
+        return false;
+    }
 
-        DECLARE_CLASS(wxsGridPanel)
-        DECLARE_EVENT_TABLE()
+    DECLARE_CLASS(wxsGridPanel)
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

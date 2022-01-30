@@ -32,8 +32,8 @@ END_EVENT_TABLE()
 
 DebuggerOptionsProjectDlg::DebuggerOptionsProjectDlg(wxWindow* parent, DebuggerGDB* debugger, cbProject* project)
     : m_pDBG(debugger),
-    m_pProject(project),
-    m_LastTargetSel(-1)
+      m_pProject(project),
+      m_LastTargetSel(-1)
 {
     if (!wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlDebuggerProjectOptions")))
         return;
@@ -238,9 +238,9 @@ void DebuggerOptionsProjectDlg::OnAdd(wxCommandEvent& WXUNUSED(event))
     wxListBox* control = XRCCTRL(*this, "lstSearchDirs", wxListBox);
 
     EditPathDlg dlg(this,
-            m_pProject ? m_pProject->GetBasePath() : _T(""),
-            m_pProject ? m_pProject->GetBasePath() : _T(""),
-            _("Add directory"));
+                    m_pProject ? m_pProject->GetBasePath() : _T(""),
+                    m_pProject ? m_pProject->GetBasePath() : _T(""),
+                    _("Add directory"));
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
@@ -258,9 +258,9 @@ void DebuggerOptionsProjectDlg::OnEdit(wxCommandEvent& WXUNUSED(event))
         return;
 
     EditPathDlg dlg(this,
-            control->GetString(sel),
-            m_pProject ? m_pProject->GetBasePath() : _T(""),
-            _("Edit directory"));
+                    control->GetString(sel),
+                    m_pProject ? m_pProject->GetBasePath() : _T(""),
+                    _("Edit directory"));
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)

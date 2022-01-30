@@ -10,13 +10,13 @@
 
 class CompilerGNUFortran : public Compiler
 {
-    public:
-        CompilerGNUFortran();
-        ~CompilerGNUFortran() override;
-        AutoDetectResult AutoDetectInstallationDir() override;
-    protected:
-        Compiler* CreateCopy() override;
-    private:
+public:
+    CompilerGNUFortran();
+    ~CompilerGNUFortran() override;
+    AutoDetectResult AutoDetectInstallationDir() override;
+protected:
+    Compiler* CreateCopy() override;
+private:
 };
 
 #endif // COMPILER_GFORTRAN_H

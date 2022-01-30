@@ -21,19 +21,19 @@ typedef std::list<wxString> StringList;
 
 namespace ParserCommon
 {
-    /** the enum type of the file type */
-    enum EFileType
-    {
-        ftHeader,
-        ftSource,
-        ftOther
-    };
+/** the enum type of the file type */
+enum EFileType
+{
+    ftHeader,
+    ftSource,
+    ftOther
+};
 
-    /** return a file type, which can be either header files or implementation files or other files
-     *  @param filename the input file name
-     *  @param force_refresh read the user's option of file extension to classify the file type
-     */
-    EFileType FileType(const wxString& filename, bool force_refresh = false);
+/** return a file type, which can be either header files or implementation files or other files
+ *  @param filename the input file name
+ *  @param force_refresh read the user's option of file extension to classify the file type
+ */
+EFileType FileType(const wxString& filename, bool force_refresh = false);
 }// namespace ParserCommon
 
 /** specify the scope of the shown symbols */
@@ -132,32 +132,68 @@ public:
     virtual void AddBatchParse(cb_unused const StringList& filenames)                                   { ; }
     virtual void AddParse(cb_unused const wxString& filename)                                           { ; }
     virtual void AddPredefinedMacros(cb_unused const wxString& defs)                                    { ; }
-    virtual bool UpdateParsingProject(cb_unused cbProject* project)                                     { return false; }
+    virtual bool UpdateParsingProject(cb_unused cbProject* project)
+    {
+        return false;
+    }
 
     virtual bool ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks = false,
                              bool isTemp = false, const wxString& filename = wxEmptyString,
                              int parentIdx = -1, int initLine = 0);
-    virtual bool ParseBufferForFunctions(cb_unused const wxString& buffer)                                  { return false; }
-    virtual bool ParseBufferForNamespaces(cb_unused const wxString& buffer, cb_unused NameSpaceVec& result) { return false; }
+    virtual bool ParseBufferForFunctions(cb_unused const wxString& buffer)
+    {
+        return false;
+    }
+    virtual bool ParseBufferForNamespaces(cb_unused const wxString& buffer, cb_unused NameSpaceVec& result)
+    {
+        return false;
+    }
     virtual bool ParseBufferForUsingNamespace(cb_unused const wxString& buffer, cb_unused wxArrayString& result,
-                                              cb_unused bool bufferSkipBlocks = true)                       { return false; }
+            cb_unused bool bufferSkipBlocks = true)
+    {
+        return false;
+    }
 
     virtual bool Reparse(cb_unused const wxString& filename, cb_unused bool isLocal = true);     // allow other implementations of derived (dummy) classes
-    virtual bool AddFile(cb_unused const wxString& filename, cb_unused cbProject* project, cb_unused bool isLocal = true) { return false; }
-    virtual bool RemoveFile(cb_unused const wxString& filename)                                                           { return false; }
-    virtual bool IsFileParsed(cb_unused const wxString& filename)                                                         { return false; }
+    virtual bool AddFile(cb_unused const wxString& filename, cb_unused cbProject* project, cb_unused bool isLocal = true)
+    {
+        return false;
+    }
+    virtual bool RemoveFile(cb_unused const wxString& filename)
+    {
+        return false;
+    }
+    virtual bool IsFileParsed(cb_unused const wxString& filename)
+    {
+        return false;
+    }
 
-    virtual bool     Done()          { return true; }
-    virtual wxString NotDoneReason() { return wxEmptyString; }
+    virtual bool     Done()
+    {
+        return true;
+    }
+    virtual wxString NotDoneReason()
+    {
+        return wxEmptyString;
+    }
 
     virtual TokenTree* GetTokenTree() const; // allow other implementations of derived (dummy) classes
-    TokenTree* GetTempTokenTree()    { return m_TempTokenTree; }
+    TokenTree* GetTempTokenTree()
+    {
+        return m_TempTokenTree;
+    }
 
-    virtual const wxString GetPredefinedMacros() const { return wxEmptyString; } // allow other implementations of derived (dummy) classes
+    virtual const wxString GetPredefinedMacros() const
+    {
+        return wxEmptyString;    // allow other implementations of derived (dummy) classes
+    }
 
     /** add a directory to the Parser's include path database */
     void                 AddIncludeDir(const wxString& dir);
-    const wxArrayString& GetIncludeDirs() const { return m_IncludeDirs; }
+    const wxArrayString& GetIncludeDirs() const
+    {
+        return m_IncludeDirs;
+    }
     wxString             GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal);
     /** it mimics what a compiler does to find an include header files, if the firstonly option is
      * true, it will return the first found header file, otherwise, the complete database of the
@@ -171,8 +207,14 @@ public:
     virtual void            WriteOptions() {}
 
     // make them virtual, so Parser class can overwrite then!
-    virtual ParserOptions&  Options()             { return m_Options;        }
-    virtual BrowserOptions& ClassBrowserOptions() { return m_BrowserOptions; }
+    virtual ParserOptions&  Options()
+    {
+        return m_Options;
+    }
+    virtual BrowserOptions& ClassBrowserOptions()
+    {
+        return m_BrowserOptions;
+    }
 
     size_t FindTokensInFile(const wxString& filename, TokenIdxSet& result, short int kindMask);
 

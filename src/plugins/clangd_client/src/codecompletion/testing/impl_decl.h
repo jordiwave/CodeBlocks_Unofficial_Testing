@@ -2,8 +2,8 @@
 
 class ImplDecl
 {
-  typedef int int_foo;
-  public:
+    typedef int int_foo;
+public:
     bool        MethodA();
     void        MethodB() const;
     const void* MethodC() const;
@@ -14,10 +14,16 @@ class ImplDecl
     bool        MethodH(         float   f = 8.);
     bool        MethodI(         float   /*FF*/);
     bool        MethodJ(         float   FF    );
-    bool        MethodK(         float   f = 9.) { return true; };
+    bool        MethodK(         float   f = 9.)
+    {
+        return true;
+    };
 };
 
 bool        GlobalNonExt();
 extern bool GlobalExt();
 
-template <class T> T GetMax(T a, T b) { return (a>b?a:b); };
+template <class T> T GetMax(T a, T b)
+{
+    return (a>b?a:b);
+};

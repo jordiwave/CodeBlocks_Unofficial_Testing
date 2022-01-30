@@ -22,7 +22,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsHtmlEasyPrinting> Reg(_T("HtmlEasyPrinting"), wxsTTool, _T("Tools"), 75, false);
+wxsRegisterItem<wxsHtmlEasyPrinting> Reg(_T("HtmlEasyPrinting"), wxsTTool, _T("Tools"), 75, false);
 }
 
 /*! \brief Ctor
@@ -36,10 +36,10 @@ wxsHtmlEasyPrinting::wxsHtmlEasyPrinting(wxsItemResData* Data):
         &Reg.Info,
         NULL,
         NULL),
-        m_sHeader(wxEmptyString),
-        m_sFooter(wxEmptyString),
-        m_iHeaderPages(wxPAGE_ALL),
-        m_iFooterPages(wxPAGE_ALL)
+    m_sHeader(wxEmptyString),
+    m_sFooter(wxEmptyString),
+    m_iHeaderPages(wxPAGE_ALL),
+    m_iFooterPages(wxPAGE_ALL)
 {}
 
 /*! \brief Create the initial control.
@@ -51,28 +51,30 @@ void wxsHtmlEasyPrinting::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/html/htmprint.h>"),GetInfo().ClassName,hfInPCH);
+
+        Codef(_T("%C(%N, %W);\n"));
+
+        if(!m_sHeader.IsEmpty())
         {
-            AddHeader(_T("<wx/html/htmprint.h>"),GetInfo().ClassName,hfInPCH);
-
-            Codef(_T("%C(%N, %W);\n"));
-
-            if(!m_sHeader.IsEmpty()){
-                Codef(_T("%ASetHeader(%s, %d);\n"), m_sHeader.wx_str(), m_iHeaderPages);
-            }
-            if(!m_sFooter.IsEmpty()){
-                Codef(_T("%ASetHeader(%s, %d);\n"), m_sFooter.wx_str(), m_iFooterPages);
-            }
-
-            BuildSetupWindowCode();
-            return;
+            Codef(_T("%ASetHeader(%s, %d);\n"), m_sHeader.wx_str(), m_iHeaderPages);
+        }
+        if(!m_sFooter.IsEmpty())
+        {
+            Codef(_T("%ASetHeader(%s, %d);\n"), m_sFooter.wx_str(), m_iFooterPages);
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsHtmlEasyPrinting::OnBuildCreatingCode"),GetLanguage());
-        }
+        BuildSetupWindowCode();
+        return;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsHtmlEasyPrinting::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

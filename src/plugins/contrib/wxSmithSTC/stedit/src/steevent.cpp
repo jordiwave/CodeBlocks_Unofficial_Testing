@@ -48,7 +48,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxSTEditorEvent, wxCommandEvent)
 wxSTEditorEvent::wxSTEditorEvent( int id, wxEventType type, wxObject* obj,
                                   int stateChange, int stateValues,
                                   const wxString& fileName )
-                :wxCommandEvent(type, id)
+    :wxCommandEvent(type, id)
 {
     SetEventObject(obj);
     SetInt(stateChange);

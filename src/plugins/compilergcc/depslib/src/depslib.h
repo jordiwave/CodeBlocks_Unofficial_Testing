@@ -4,7 +4,7 @@
  * This file is part of depslib.
  *
  * License is hereby granted to use this software and distribute it
- * freely, as long as this copyright notice is retained and modifications 
+ * freely, as long as this copyright notice is retained and modifications
  * are clearly marked.
  *
  * ALL WARRANTIES ARE HEREBY DISCLAIMED.
@@ -22,10 +22,10 @@ extern "C" {
 /* This structure is returned by depsGetStats() */
 struct depsStats
 {
-	long scanned; /* the number of files scanned for #include */
-	long cache_used; /* This many files were not scanned for #include because
+    long scanned; /* the number of files scanned for #include */
+    long cache_used; /* This many files were not scanned for #include because
 					   up-to-date entries in the cache were found */
-	long cache_updated; /* This many files had entries in the cache updated */
+    long cache_updated; /* This many files had entries in the cache updated */
 };
 
 typedef struct _depsRef *depsRef;
@@ -98,7 +98,7 @@ extern depsRef depsScanForHeaders(const char *path);
  * Call this to get the absolute path and file modification time of the file
  * that has the most-recent file modification time. This could be the same
  * file passed to depsScanForHeaders() or one of its descendent header files.
- * 
+ *
  * arg ref (in) -> the result of depsScanForHeaders()
  * arg time (out) -> the file modification time of the most-recent file
  * result -> the absolute path of the most-recent file. On Windows this will

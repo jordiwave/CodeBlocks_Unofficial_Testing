@@ -4,7 +4,7 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 #include <set>
@@ -21,57 +21,57 @@
 #include <wx/html/htmlwin.h>
 
 #ifndef CB_PRECOMP
-  #include <wx/listctrl.h> // wxListEvent
-  #include <wx/choice.h>
-  #include <wx/checkbox.h>
-  #include <wx/regex.h>
+#include <wx/listctrl.h> // wxListEvent
+#include <wx/choice.h>
+#include <wx/checkbox.h>
+#include <wx/regex.h>
 #endif
 
 class RegExDlg: public wxScrollingDialog
 {
-	public:
+public:
 
-		RegExDlg(wxWindow* parent,wxWindowID id = -1);
-		virtual ~RegExDlg();
+    RegExDlg(wxWindow* parent,wxWindowID id = -1);
+    virtual ~RegExDlg();
 
-		//(*Identifiers(RegExDlg)
-		//*)
+    //(*Identifiers(RegExDlg)
+    //*)
 
-		void EndModal(int retCode);
+    void EndModal(int retCode);
 
-		static void ReleaseAll();
+    static void ReleaseAll();
 
-	protected:
+protected:
 
-		//(*Handlers(RegExDlg)
-		void OnClose(wxCloseEvent& event);
-		void OnValueChanged(wxCommandEvent& event);
-		void OnQuoteChanged(wxCommandEvent& event);
-		void OnOptionChanged(wxCommandEvent& event);
-		void OnSyntaxSelect(wxCommandEvent& event);
-		//*)
+    //(*Handlers(RegExDlg)
+    void OnClose(wxCloseEvent& event);
+    void OnValueChanged(wxCommandEvent& event);
+    void OnQuoteChanged(wxCommandEvent& event);
+    void OnOptionChanged(wxCommandEvent& event);
+    void OnSyntaxSelect(wxCommandEvent& event);
+    //*)
 
-	private:
+private:
 
-        wxArrayString GetBuiltinMatches(const wxString& text);
-        void Reevaluate();
-        void ShowError(bool Error);
+    wxArrayString GetBuiltinMatches(const wxString& text);
+    void Reevaluate();
+    void ShowError(bool Error);
 
-        //(*Declarations(RegExDlg)
-        wxCheckBox* m_newlines;
-        wxCheckBox* m_nocase;
-        wxChoice* m_syntax;
-        wxHtmlWindow* m_output;
-        wxStaticText* StaticText4;
-        wxTextCtrl* m_quoted;
-        wxTextCtrl* m_regex;
-        wxTextCtrl* m_text;
-        //*)
+    //(*Declarations(RegExDlg)
+    wxCheckBox* m_newlines;
+    wxCheckBox* m_nocase;
+    wxChoice* m_syntax;
+    wxHtmlWindow* m_output;
+    wxStaticText* StaticText4;
+    wxTextCtrl* m_quoted;
+    wxTextCtrl* m_regex;
+    wxTextCtrl* m_text;
+    //*)
 
-        typedef std::set<RegExDlg*> VisibleDialogs;
-        static VisibleDialogs m_visible_dialogs;
+    typedef std::set<RegExDlg*> VisibleDialogs;
+    static VisibleDialogs m_visible_dialogs;
 
-		DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

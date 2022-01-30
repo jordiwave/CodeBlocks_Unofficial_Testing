@@ -23,25 +23,25 @@
 
 namespace
 {
-    wxsRegisterItem<wxsDirPickerCtrl> Reg(_T("DirPickerCtrl"), wxsTWidget, _T("Advanced"), 120);
+wxsRegisterItem<wxsDirPickerCtrl> Reg(_T("DirPickerCtrl"), wxsTWidget, _T("Advanced"), 120);
 
 #ifdef __WXGTK__
-    // GTK apps usually don't have a textctrl next to the picker
-    WXS_ST_BEGIN(wxsDirPickerCtrlStyles,_T("wxDIRP_DIR_MUST_EXIST"))
+// GTK apps usually don't have a textctrl next to the picker
+WXS_ST_BEGIN(wxsDirPickerCtrlStyles,_T("wxDIRP_DIR_MUST_EXIST"))
 #else
-    WXS_ST_BEGIN(wxsDirPickerCtrlStyles,_T("wxDIRP_USE_TEXTCTRL|wxDIRP_DIR_MUST_EXIST"))
+WXS_ST_BEGIN(wxsDirPickerCtrlStyles,_T("wxDIRP_USE_TEXTCTRL|wxDIRP_DIR_MUST_EXIST"))
 #endif
-        WXS_ST_CATEGORY("wxDirPickerCtrl")
-        WXS_ST(wxDIRP_CHANGE_DIR)
-        WXS_ST(wxDIRP_DIR_MUST_EXIST)
-        WXS_ST(wxDIRP_USE_TEXTCTRL)
-        WXS_ST(wxDIRP_SMALL)
-    WXS_ST_END()
+WXS_ST_CATEGORY("wxDirPickerCtrl")
+WXS_ST(wxDIRP_CHANGE_DIR)
+WXS_ST(wxDIRP_DIR_MUST_EXIST)
+WXS_ST(wxDIRP_USE_TEXTCTRL)
+WXS_ST(wxDIRP_SMALL)
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsDirPickerCtrlEvents)
-        WXS_EVI(EVT_DIRPICKER_CHANGED, wxEVT_COMMAND_DIRPICKER_CHANGED, wxFileDirPickerEvent , DirChanged)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsDirPickerCtrlEvents)
+WXS_EVI(EVT_DIRPICKER_CHANGED, wxEVT_COMMAND_DIRPICKER_CHANGED, wxFileDirPickerEvent, DirChanged)
+WXS_EV_END()
 }
 
 /*! \brief Ctor
@@ -55,8 +55,8 @@ wxsDirPickerCtrl::wxsDirPickerCtrl(wxsItemResData* Data):
         &Reg.Info,
         wxsDirPickerCtrlEvents,
         wxsDirPickerCtrlStyles),
-        m_sMessage(wxDirSelectorPromptStr),
-        m_sPath(wxEmptyString)
+    m_sMessage(wxDirSelectorPromptStr),
+    m_sPath(wxEmptyString)
 {}
 
 /*! \brief Create the initial control.
@@ -68,19 +68,19 @@ void wxsDirPickerCtrl::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/filepicker.h>"),GetInfo().ClassName,0);
-            Codef(_T("%C(%W, %I, %n, %t, %P, %S, %T, %V, %N);\n"), m_sPath.wx_str(), m_sMessage.wx_str());
-            BuildSetupWindowCode();
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/filepicker.h>"),GetInfo().ClassName,0);
+        Codef(_T("%C(%W, %I, %n, %t, %P, %S, %T, %V, %N);\n"), m_sPath.wx_str(), m_sMessage.wx_str());
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsDirPickerCtrl::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsDirPickerCtrl::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

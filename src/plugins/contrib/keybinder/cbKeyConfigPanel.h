@@ -17,22 +17,31 @@ class UsrConfigPanel : public cbConfigurationPanel
 // ----------------------------------------------------------------------------
 {
 
-    public:
+public:
     // ctor(s)
     UsrConfigPanel(wxWindow* parent, const wxString& title, int);
-	virtual ~UsrConfigPanel();
+    virtual ~UsrConfigPanel();
 
 
-    wxString GetTitle() const { return _("Keyboard shortcuts"); }
-    wxString GetBitmapBaseName() const { return _T("onekeytobindthem"); }
-	void OnApply();
-	void OnCancel(){}
+    wxString GetTitle() const
+    {
+        return _("Keyboard shortcuts");
+    }
+    wxString GetBitmapBaseName() const
+    {
+        return _T("onekeytobindthem");
+    }
+    void OnApply();
+    void OnCancel() {}
     void OnPageChanging();
 
-	wxKeyConfigPanel* GetKeyConfigPanel(){return m_pwxKeyConfigPanel;} //(2019/04/6)
+    wxKeyConfigPanel* GetKeyConfigPanel()
+    {
+        return m_pwxKeyConfigPanel;   //(2019/04/6)
+    }
     void GetKeyConfigPanelPhaseII(wxMenuBar* pMenuBar, UsrConfigPanel* pUsrConfigPanel, int mode);
 
-    private:
+private:
     //-cbKeyBinderPlgn* m_pBinder;
     clKeyboardManager*  m_pkbMgr;
     wxWindow*           m_pConfigWindow;

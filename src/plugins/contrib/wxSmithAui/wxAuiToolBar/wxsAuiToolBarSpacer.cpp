@@ -26,31 +26,31 @@ using namespace wxsFlags;
 
 namespace
 {
-    #include "../images/wxsAuiToolBarSpacer16.xpm"
-    #include "../images/wxsAuiToolBarSpacer32.xpm"
+#include "../images/wxsAuiToolBarSpacer16.xpm"
+#include "../images/wxsAuiToolBarSpacer32.xpm"
 
-    wxsRegisterItem<wxsAuiToolBarSpacer> Reg(
-        _T("wxAuiToolBarSpacer"),            // Class name
-        wxsTWidget,                             // Item type
-        _T("wxWindows"),                        // License
-        _T("Benjamin I. Williams"),             // Author
-        _T(""),                                 // Author's email
-        _T(""),                                 // Item's homepage
-        _T("Aui"),                              // Category in palette
-        1,                                     // Priority in palette
-        _T("AuiToolBarSpacer"),                                 // Base part of names for new items
-        wxsCPP,                                 // List of coding languages supported by this item
-        2, 8,                                   // Version
-        wxBitmap(wxsAuiToolBarSpacer32_xpm),    // 32x32 bitmap
-        wxBitmap(wxsAuiToolBarSpacer16_xpm),    // 16x16 bitmap
-        false);
+wxsRegisterItem<wxsAuiToolBarSpacer> Reg(
+    _T("wxAuiToolBarSpacer"),            // Class name
+    wxsTWidget,                             // Item type
+    _T("wxWindows"),                        // License
+    _T("Benjamin I. Williams"),             // Author
+    _T(""),                                 // Author's email
+    _T(""),                                 // Item's homepage
+    _T("Aui"),                              // Category in palette
+    1,                                     // Priority in palette
+    _T("AuiToolBarSpacer"),                                 // Base part of names for new items
+    wxsCPP,                                 // List of coding languages supported by this item
+    2, 8,                                   // Version
+    wxBitmap(wxsAuiToolBarSpacer32_xpm),    // 32x32 bitmap
+    wxBitmap(wxsAuiToolBarSpacer16_xpm),    // 16x16 bitmap
+    false);
 }
 
 wxsAuiToolBarSpacer::wxsAuiToolBarSpacer(wxsItemResData* Data)
     : wxsAuiToolBarItemBase(Data,&Reg.Info,flId,0,0),
-    m_Stretch(false),
-    m_Pixels(0),
-    m_Proportion(1)
+      m_Stretch(false),
+      m_Pixels(0),
+      m_Proportion(1)
 {}
 
 void wxsAuiToolBarSpacer::OnEnumItemProperties(long Flags)

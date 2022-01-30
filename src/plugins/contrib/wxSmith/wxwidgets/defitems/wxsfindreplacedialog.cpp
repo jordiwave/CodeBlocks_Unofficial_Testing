@@ -25,29 +25,29 @@
 
 namespace
 {
-    wxsRegisterItem<wxsFindReplaceDialog> Reg(
-        _T("FindReplaceDialog"),           // Class base name
-        wxsTTool,                                       // Item type
-        _T("Dialogs"),                              // Category in palette
-        170,                                                 // Priority in palette
-        false);                                             // We do not allow this item inside XRC files
+wxsRegisterItem<wxsFindReplaceDialog> Reg(
+    _T("FindReplaceDialog"),           // Class base name
+    wxsTTool,                                       // Item type
+    _T("Dialogs"),                              // Category in palette
+    170,                                                 // Priority in palette
+    false);                                             // We do not allow this item inside XRC files
 
 
-    WXS_ST_BEGIN(wxsFindReplaceDialogStyles, NULL);
-        WXS_ST_CATEGORY("wxFindReplaceDialog")
-        WXS_ST(wxFR_REPLACEDIALOG)
-        WXS_ST(wxFR_NOUPDOWN)
-        WXS_ST(wxFR_NOMATCHCASE)
-        WXS_ST(wxFR_NOWHOLEWORD)
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsFindReplaceDialogStyles, NULL);
+WXS_ST_CATEGORY("wxFindReplaceDialog")
+WXS_ST(wxFR_REPLACEDIALOG)
+WXS_ST(wxFR_NOUPDOWN)
+WXS_ST(wxFR_NOMATCHCASE)
+WXS_ST(wxFR_NOWHOLEWORD)
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsFindReplaceDialogEvents)
-        WXS_EVI(EVT_FIND, wxEVT_COMMAND_FIND, wxFindDialogEvent, Find)
-        WXS_EVI(EVT_FIND_NEXT, wxEVT_COMMAND_FIND_NEXT, wxFindDialogEvent, FindNext)
-        WXS_EVI(EVT_FIND_REPLACE, wxEVT_COMMAND_FIND_REPLACE, wxFindDialogEvent, Replace)
-        WXS_EVI(EVT_FIND_REPLACE_ALL, wxEVT_COMMAND_FIND_REPLACE_ALL, wxFindDialogEvent, ReplaceAll)
-        WXS_EVI(EVT_FIND_CLOSE, wxEVT_COMMAND_FIND_CLOSE, wxFindDialogEvent, Close)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsFindReplaceDialogEvents)
+WXS_EVI(EVT_FIND, wxEVT_COMMAND_FIND, wxFindDialogEvent, Find)
+WXS_EVI(EVT_FIND_NEXT, wxEVT_COMMAND_FIND_NEXT, wxFindDialogEvent, FindNext)
+WXS_EVI(EVT_FIND_REPLACE, wxEVT_COMMAND_FIND_REPLACE, wxFindDialogEvent, Replace)
+WXS_EVI(EVT_FIND_REPLACE_ALL, wxEVT_COMMAND_FIND_REPLACE_ALL, wxFindDialogEvent, ReplaceAll)
+WXS_EVI(EVT_FIND_CLOSE, wxEVT_COMMAND_FIND_CLOSE, wxFindDialogEvent, Close)
+WXS_EV_END()
 }
 
 /*! \brief Ctor
@@ -61,7 +61,7 @@ wxsFindReplaceDialog::wxsFindReplaceDialog(wxsItemResData *Data):
             wxsFindReplaceDialogEvents,
             wxsFindReplaceDialogStyles,
             (flVariable | flId | flSubclass | flExtraCode)),
-            m_sCaption(wxEmptyString)
+    m_sCaption(wxEmptyString)
 {
 }
 
@@ -76,22 +76,22 @@ void wxsFindReplaceDialog::OnBuildCreatingCode()
     wxString sNote(_("// NOTE: In order for events to connect properly you must set the ID of this wxFindReplaceDialog to -1 in wxSmith."));
     switch(GetLanguage())
     {
-        case wxsCPP:
-            AddHeader(_T("<wx/fdrepdlg.h>"), GetInfo().ClassName, 0);
+    case wxsCPP:
+        AddHeader(_T("<wx/fdrepdlg.h>"), GetInfo().ClassName, 0);
 
-            sfindReplaceData = GetCoderContext()->GetUniqueName(_T("findReplaceData"));
-            AddDeclaration(wxString::Format(wxT("wxFindReplaceData %s;"), sfindReplaceData.wx_str()));
+        sfindReplaceData = GetCoderContext()->GetUniqueName(_T("findReplaceData"));
+        AddDeclaration(wxString::Format(wxT("wxFindReplaceData %s;"), sfindReplaceData.wx_str()));
 
-            Codef(_T("\t%s\n"), sNote.wx_str());
-            Codef(_T("%C(%W, &%s, %t, %T);\n"), sfindReplaceData.wx_str(), m_sCaption.wx_str());
+        Codef(_T("\t%s\n"), sNote.wx_str());
+        Codef(_T("%C(%W, &%s, %t, %T);\n"), sfindReplaceData.wx_str(), m_sCaption.wx_str());
 
-            BuildSetupWindowCode();
-            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-            break;
+        BuildSetupWindowCode();
+        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+        break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsFindReplaceDialog::OnBuildCreatingCode"), GetLanguage());
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsFindReplaceDialog::OnBuildCreatingCode"), GetLanguage());
     }
 }
 

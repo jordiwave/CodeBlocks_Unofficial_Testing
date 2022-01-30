@@ -33,15 +33,15 @@ class wxImagePanel : public wxPanel
 {
 public:
 
-        wxImagePanel(wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxTAB_TRAVERSAL, const wxString& name = _("ImagePanel"));
+    wxImagePanel(wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxTAB_TRAVERSAL, const wxString& name = _("ImagePanel"));
 
-        void        SetBitmap(wxBitmap &inBitmap);
-        wxBitmap    GetBitmap(void);
+    void        SetBitmap(wxBitmap &inBitmap);
+    wxBitmap    GetBitmap(void);
 
-        void        SetStretch(bool inStretch);
-        bool        GetStretch(void);
+    void        SetStretch(bool inStretch);
+    bool        GetStretch(void);
 
-        void        DoPaint(wxPaintEvent& event);
+    void        DoPaint(wxPaintEvent& event);
 
 
 

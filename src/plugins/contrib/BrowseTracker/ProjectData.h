@@ -28,44 +28,47 @@ WX_DEFINE_ARRAY_PTR(cbStyledTextCtrl*, ArrayOfcbSTCPtrs);
 class ProjectData
 // ----------------------------------------------------------------------------
 {
-    public:
-        ProjectData(cbProject* pcbProject);
-        ~ProjectData();
+public:
+    ProjectData(cbProject* pcbProject);
+    ~ProjectData();
 
-        wxString        GetProjectFilename();
+    wxString        GetProjectFilename();
 
-        void            AddEditor( wxString filePath );
-        BrowseMarks*    GetBrowse_MarksFromHash( wxString filePath);
-        BrowseMarks*    GetPointerToBrowse_MarksArray(FileBrowse_MarksHash& hash ,wxString filePath);
-        bool            FindFilename( const wxString filePath);
-        void            IncrementActivationCount();
-        int             GetActivationCount();
+    void            AddEditor( wxString filePath );
+    BrowseMarks*    GetBrowse_MarksFromHash( wxString filePath);
+    BrowseMarks*    GetPointerToBrowse_MarksArray(FileBrowse_MarksHash& hash,wxString filePath);
+    bool            FindFilename( const wxString filePath);
+    void            IncrementActivationCount();
+    int             GetActivationCount();
 
-        BrowseMarks*    HashAddBrowse_Marks( const wxString filePath );
+    BrowseMarks*    HashAddBrowse_Marks( const wxString filePath );
 
 
-        void            SaveLayout();
-        void            LoadLayout();
-        bool            IsLayoutLoaded(){return m_bLayoutLoaded;}
+    void            SaveLayout();
+    void            LoadLayout();
+    bool            IsLayoutLoaded()
+    {
+        return m_bLayoutLoaded;
+    }
 
-        void            DumpHash( const wxString hashType);
-        void            DumpBrowse_Marks( const wxString hashType );
-    protected:
-    private:
-        ProjectData();
+    void            DumpHash( const wxString hashType);
+    void            DumpBrowse_Marks( const wxString hashType );
+protected:
+private:
+    ProjectData();
 
-        EditorManager*  m_pEdMgr;
-        wxString        m_ProjectFilename;
-        cbProject*      m_pCBProject;
+    EditorManager*  m_pEdMgr;
+    wxString        m_ProjectFilename;
+    cbProject*      m_pCBProject;
 
-        // Hash: filePath, BrowseMarks* array
-        FileBrowse_MarksHash m_FileBrowse_MarksArchive;
+    // Hash: filePath, BrowseMarks* array
+    FileBrowse_MarksHash m_FileBrowse_MarksArchive;
 
-        int     m_CurrIndexEntry;
-        int     m_LastIndexEntry;
+    int     m_CurrIndexEntry;
+    int     m_LastIndexEntry;
 
-        int     m_ActivationCount;
-        bool    m_bLayoutLoaded;
+    int     m_ActivationCount;
+    bool    m_bLayoutLoaded;
 
 };
 

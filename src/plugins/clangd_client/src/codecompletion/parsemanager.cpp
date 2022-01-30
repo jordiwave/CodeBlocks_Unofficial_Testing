@@ -11,29 +11,29 @@
 #include <time.h> //(ph 2021/04/16)
 
 #ifndef CB_PRECOMP
-    #include <cctype>
+#include <cctype>
 
-    #include <wx/dir.h>
-    #include <wx/log.h> // for wxSafeShowMessage()
-    #include <wx/regex.h>
-    #include <wx/wfstream.h>
-    #include <wx/window.h>  //(ph 2021/04/15)
+#include <wx/dir.h>
+#include <wx/log.h> // for wxSafeShowMessage()
+#include <wx/regex.h>
+#include <wx/wfstream.h>
+#include <wx/window.h>  //(ph 2021/04/15)
 
-    #include <cbauibook.h>
-    #include <cbeditor.h>
-    #include <cbexception.h>
-    #include <cbproject.h>
-    #include <compilerfactory.h>
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <logmanager.h>
-    #include <macrosmanager.h>
-    #include <manager.h>
-    #include <pluginmanager.h>
-    #include <prep.h> // nullptr
-    #include <projectmanager.h>
+#include <cbauibook.h>
+#include <cbeditor.h>
+#include <cbexception.h>
+#include <cbproject.h>
+#include <compilerfactory.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <logmanager.h>
+#include <macrosmanager.h>
+#include <manager.h>
+#include <pluginmanager.h>
+#include <prep.h> // nullptr
+#include <projectmanager.h>
 
-    #include <tinyxml/tinyxml.h>
+#include <tinyxml/tinyxml.h>
 #endif
 
 #include <wx/tokenzr.h>
@@ -52,32 +52,32 @@
 //#define CC_ParseManager_DEBUG_OUTPUT 1      //(ph 2021/05/1)
 
 #if defined (CC_GLOBAL_DEBUG_OUTPUT)
-    #if CC_GLOBAL_DEBUG_OUTPUT == 1
-        #undef CC_ParseManager_DEBUG_OUTPUT
-        #define CC_ParseManager_DEBUG_OUTPUT 1
-    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
-        #undef CC_ParseManager_DEBUG_OUTPUT
-        #define CC_ParseManager_DEBUG_OUTPUT 2
-    #endif
+#if CC_GLOBAL_DEBUG_OUTPUT == 1
+#undef CC_ParseManager_DEBUG_OUTPUT
+#define CC_ParseManager_DEBUG_OUTPUT 1
+#elif CC_GLOBAL_DEBUG_OUTPUT == 2
+#undef CC_ParseManager_DEBUG_OUTPUT
+#define CC_ParseManager_DEBUG_OUTPUT 2
+#endif
 #endif
 
 #if CC_ParseManager_DEBUG_OUTPUT == 1
-    #define TRACE(format, args...) \
+#define TRACE(format, args...) \
         CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-    #define TRACE2(format, args...)
+#define TRACE2(format, args...)
 #elif CC_ParseManager_DEBUG_OUTPUT == 2
-    #define TRACE(format, args...)                                              \
+#define TRACE(format, args...)                                              \
         do                                                                      \
         {                                                                       \
             if (g_EnableDebugTrace)                                             \
                 CCLogger::Get()->DebugLog(wxString::Format(format, ##args));   \
         }                                                                       \
         while (false)
-    #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
         CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
 #else
-    #define TRACE(format, args...)
-    #define TRACE2(format, args...)
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
 #endif
 
 /*
@@ -95,35 +95,35 @@
 namespace ParseManagerHelper
 // ----------------------------------------------------------------------------
 {
-    class ParserDirTraverser : public wxDirTraverser
+class ParserDirTraverser : public wxDirTraverser
+{
+public:
+    ParserDirTraverser(const wxString& excludePath, wxArrayString& files) :
+        m_ExcludeDir(excludePath),
+        m_Files(files)
+    {}
+
+    wxDirTraverseResult OnFile(const wxString& filename) override
     {
-    public:
-        ParserDirTraverser(const wxString& excludePath, wxArrayString& files) :
-            m_ExcludeDir(excludePath),
-            m_Files(files)
-        {}
+        if (ParserCommon::FileType(filename) != ParserCommon::ftOther)
+            m_Files.Add(filename);
+        return wxDIR_CONTINUE;
+    }
 
-        wxDirTraverseResult OnFile(const wxString& filename) override
-        {
-            if (ParserCommon::FileType(filename) != ParserCommon::ftOther)
-                m_Files.Add(filename);
-            return wxDIR_CONTINUE;
-        }
+    wxDirTraverseResult OnDir(const wxString& dirname) override
+    {
+        if (dirname == m_ExcludeDir)
+            return wxDIR_IGNORE;
+        if (m_Files.GetCount() == 1)
+            return wxDIR_STOP;
+        m_Files.Clear();
+        return wxDIR_CONTINUE;
+    }
 
-        wxDirTraverseResult OnDir(const wxString& dirname) override
-        {
-            if (dirname == m_ExcludeDir)
-                return wxDIR_IGNORE;
-            if (m_Files.GetCount() == 1)
-                return wxDIR_STOP;
-            m_Files.Clear();
-            return wxDIR_CONTINUE;
-        }
-
-    private:
-        const wxString& m_ExcludeDir;
-        wxArrayString&  m_Files;
-    };
+private:
+    const wxString& m_ExcludeDir;
+    wxArrayString&  m_Files;
+};
 }// namespace ParseManagerHelper
 
 //// /** event id for the sequence project parsing timer */
@@ -147,8 +147,8 @@ static wxImageList* LoadImageList(int size)
     wxImageList *list = new wxImageList(size, size);
     wxBitmap bmp;
     const wxString prefix = ConfigManager::GetDataFolder()
-                          + wxString::Format(_T("/clangd_client.zip#zip:images/%dx%d/"), size,
-                                             size);
+                            + wxString::Format(_T("/clangd_client.zip#zip:images/%dx%d/"), size,
+                                    size);
 
     // Bitmaps must be added by order of PARSER_IMG_* consts.
     AddToImageList(list, prefix + _T("class_folder.png")); // PARSER_IMG_CLASS_FOLDER
@@ -293,7 +293,7 @@ cbProject* ParseManager::GetProjectByFilename(const wxString& filename)
         ParserBase* parser = GetParserByProject(activeProject);
         //If (active parser parsed file) or (file belongs to active project) return active project
         if ( (parser && parser->IsFileParsed(filename)) //Why?
-            || activeProject->GetFileByFilename(filename, false, true) )
+                || activeProject->GetFileByFilename(filename, false, true) )
         {
             return activeProject;
         }
@@ -309,7 +309,7 @@ cbProject* ParseManager::GetProjectByFilename(const wxString& filename)
                 // if (file has been parsed by project) or (file belongs to project) return project
                 parser = GetParserByProject(project);
                 if ( (parser && parser->IsFileParsed(filename)) //also checks for standalone file
-                    || project->GetFileByFilename(filename, false, true) )
+                        || project->GetFileByFilename(filename, false, true) )
                 {
                     return project;
                 }
@@ -379,96 +379,128 @@ int ParseManager::GetTokenKindImage(const Token* token)
 
     switch (token->m_TokenKind)
     {
-        case tkMacroDef:          return PARSER_IMG_MACRO_DEF;
+    case tkMacroDef:
+        return PARSER_IMG_MACRO_DEF;
 
-        case tkEnum:
-            switch (token->m_Scope)
-            {
-                case tsPublic:    return PARSER_IMG_ENUM_PUBLIC;
-                case tsProtected: return PARSER_IMG_ENUM_PROTECTED;
-                case tsPrivate:   return PARSER_IMG_ENUM_PRIVATE;
-                case tsUndefined:
-                default:          return PARSER_IMG_ENUM;
-            }
+    case tkEnum:
+        switch (token->m_Scope)
+        {
+        case tsPublic:
+            return PARSER_IMG_ENUM_PUBLIC;
+        case tsProtected:
+            return PARSER_IMG_ENUM_PROTECTED;
+        case tsPrivate:
+            return PARSER_IMG_ENUM_PRIVATE;
+        case tsUndefined:
+        default:
+            return PARSER_IMG_ENUM;
+        }
 
-        case tkEnumerator:        return PARSER_IMG_ENUMERATOR;
+    case tkEnumerator:
+        return PARSER_IMG_ENUMERATOR;
 
-        case tkClass:
-            switch (token->m_Scope)
-            {
-                case tsPublic:    return PARSER_IMG_CLASS_PUBLIC;
-                case tsProtected: return PARSER_IMG_CLASS_PROTECTED;
-                case tsPrivate:   return PARSER_IMG_CLASS_PRIVATE;
-                case tsUndefined:
-                default:          return PARSER_IMG_CLASS;
-            }
+    case tkClass:
+        switch (token->m_Scope)
+        {
+        case tsPublic:
+            return PARSER_IMG_CLASS_PUBLIC;
+        case tsProtected:
+            return PARSER_IMG_CLASS_PROTECTED;
+        case tsPrivate:
+            return PARSER_IMG_CLASS_PRIVATE;
+        case tsUndefined:
+        default:
+            return PARSER_IMG_CLASS;
+        }
 
-        case tkNamespace:         return PARSER_IMG_NAMESPACE;
+    case tkNamespace:
+        return PARSER_IMG_NAMESPACE;
 
-        case tkTypedef:
-            switch (token->m_Scope)
-            {
-                case tsPublic:    return PARSER_IMG_TYPEDEF_PUBLIC;
-                case tsProtected: return PARSER_IMG_TYPEDEF_PROTECTED;
-                case tsPrivate:   return PARSER_IMG_TYPEDEF_PRIVATE;
-                case tsUndefined:
-                default:          return PARSER_IMG_TYPEDEF;
-            }
+    case tkTypedef:
+        switch (token->m_Scope)
+        {
+        case tsPublic:
+            return PARSER_IMG_TYPEDEF_PUBLIC;
+        case tsProtected:
+            return PARSER_IMG_TYPEDEF_PROTECTED;
+        case tsPrivate:
+            return PARSER_IMG_TYPEDEF_PRIVATE;
+        case tsUndefined:
+        default:
+            return PARSER_IMG_TYPEDEF;
+        }
 
-        case tkMacroUse:
-            switch (token->m_Scope)
-            {
-                case tsPublic:    return PARSER_IMG_MACRO_USE_PUBLIC;
-                case tsProtected: return PARSER_IMG_MACRO_USE_PROTECTED;
-                case tsPrivate:   return PARSER_IMG_MACRO_USE_PRIVATE;
-                case tsUndefined:
-                default:          return PARSER_IMG_MACRO_USE;
-            }
+    case tkMacroUse:
+        switch (token->m_Scope)
+        {
+        case tsPublic:
+            return PARSER_IMG_MACRO_USE_PUBLIC;
+        case tsProtected:
+            return PARSER_IMG_MACRO_USE_PROTECTED;
+        case tsPrivate:
+            return PARSER_IMG_MACRO_USE_PRIVATE;
+        case tsUndefined:
+        default:
+            return PARSER_IMG_MACRO_USE;
+        }
 
-        case tkConstructor:
-            switch (token->m_Scope)
-            {
-                case tsProtected: return PARSER_IMG_CTOR_PROTECTED;
-                case tsPrivate:   return PARSER_IMG_CTOR_PRIVATE;
-                case tsUndefined:
-                case tsPublic:
-                default:          return PARSER_IMG_CTOR_PUBLIC;
-            }
+    case tkConstructor:
+        switch (token->m_Scope)
+        {
+        case tsProtected:
+            return PARSER_IMG_CTOR_PROTECTED;
+        case tsPrivate:
+            return PARSER_IMG_CTOR_PRIVATE;
+        case tsUndefined:
+        case tsPublic:
+        default:
+            return PARSER_IMG_CTOR_PUBLIC;
+        }
 
-        case tkDestructor:
-            switch (token->m_Scope)
-            {
-                case tsProtected: return PARSER_IMG_DTOR_PROTECTED;
-                case tsPrivate:   return PARSER_IMG_DTOR_PRIVATE;
-                case tsUndefined:
-                case tsPublic:
-                default:          return PARSER_IMG_DTOR_PUBLIC;
-            }
+    case tkDestructor:
+        switch (token->m_Scope)
+        {
+        case tsProtected:
+            return PARSER_IMG_DTOR_PROTECTED;
+        case tsPrivate:
+            return PARSER_IMG_DTOR_PRIVATE;
+        case tsUndefined:
+        case tsPublic:
+        default:
+            return PARSER_IMG_DTOR_PUBLIC;
+        }
 
-        case tkFunction:
-            switch (token->m_Scope)
-            {
-                case tsProtected: return PARSER_IMG_FUNC_PROTECTED;
-                case tsPrivate:   return PARSER_IMG_FUNC_PRIVATE;
-                case tsUndefined:
-                case tsPublic:
-                default:          return PARSER_IMG_FUNC_PUBLIC;
-            }
+    case tkFunction:
+        switch (token->m_Scope)
+        {
+        case tsProtected:
+            return PARSER_IMG_FUNC_PROTECTED;
+        case tsPrivate:
+            return PARSER_IMG_FUNC_PRIVATE;
+        case tsUndefined:
+        case tsPublic:
+        default:
+            return PARSER_IMG_FUNC_PUBLIC;
+        }
 
-        case tkVariable:
-            switch (token->m_Scope)
-            {
-                case tsProtected: return PARSER_IMG_VAR_PROTECTED;
-                case tsPrivate:   return PARSER_IMG_VAR_PRIVATE;
-                case tsUndefined:
-                case tsPublic:
-                default:          return PARSER_IMG_VAR_PUBLIC;
-            }
+    case tkVariable:
+        switch (token->m_Scope)
+        {
+        case tsProtected:
+            return PARSER_IMG_VAR_PROTECTED;
+        case tsPrivate:
+            return PARSER_IMG_VAR_PRIVATE;
+        case tsUndefined:
+        case tsPublic:
+        default:
+            return PARSER_IMG_VAR_PUBLIC;
+        }
 
-        case tkAnyContainer:
-        case tkAnyFunction:
-        case tkUndefined:
-        default:                  return PARSER_IMG_NONE;
+    case tkAnyContainer:
+    case tkAnyFunction:
+    case tkUndefined:
+    default:
+        return PARSER_IMG_NONE;
     }
 }
 // ----------------------------------------------------------------------------
@@ -496,7 +528,7 @@ wxArrayString ParseManager::GetAllPathsByFilename(const wxString& filename)
     if (files.GetCount() == 1)
     {
         cbProject* project = IsParserPerWorkspace() ? GetActiveEditorProject()
-                                                    : GetProjectByParser(m_Parser);
+                             : GetProjectByParser(m_Parser);
         // search in the project
         if (project)
         {
@@ -575,7 +607,7 @@ wxString ParseManager::GetHeaderForSourceFile(cbProject* pProject, wxString& fil
     {
         ProjectFile* pf = *flist_it;
         if ( (FileTypeOf(pf->relativeFilename) == ftSource)
-            or (FileTypeOf(pf->relativeFilename) == ftTemplateSource) )
+                or (FileTypeOf(pf->relativeFilename) == ftTemplateSource) )
             continue;
         if ( pf and (pf->file.GetName() == fnFilename.GetName()) )
         {
@@ -601,7 +633,7 @@ wxString ParseManager::GetSourceForHeaderFile(cbProject* pProject, wxString& fil
         if ( FileTypeOf(pf->relativeFilename) != ftSource)
             continue;
         if ( pf and (pf->file.GetName() == fnFilename.GetName()) )
-                return pf->file.GetFullPath();
+            return pf->file.GetFullPath();
     }
     return wxString();
 }
@@ -814,14 +846,15 @@ void ParseManager::RereadParserOptions()
     m_Parser->ReadOptions();
     bool reparse = false;
     cbProject* project = GetActiveEditorProject();
-    if (   opts.followLocalIncludes  != m_Parser->Options().followLocalIncludes
-        || opts.followGlobalIncludes != m_Parser->Options().followGlobalIncludes
-        || opts.wantPreprocessor     != m_Parser->Options().wantPreprocessor
-        || opts.parseComplexMacros   != m_Parser->Options().parseComplexMacros
-        || opts.logClangdClientCheck != m_Parser->Options().logClangdClientCheck
-        || opts.logClangdServerCheck != m_Parser->Options().logClangdServerCheck
-        || opts.LLVM_MasterPath      != m_Parser->Options().LLVM_MasterPath //(ph 2021/11/7)
-        || m_ParserPerWorkspace      != parserPerWorkspace ) //always false for clangd
+    if (   opts.followLocalIncludes         != m_Parser->Options().followLocalIncludes
+            || opts.followGlobalIncludes        != m_Parser->Options().followGlobalIncludes
+            || opts.wantPreprocessor            != m_Parser->Options().wantPreprocessor
+            || opts.parseComplexMacros          != m_Parser->Options().parseComplexMacros
+            || opts.logClangdClientCheck        != m_Parser->Options().logClangdClientCheck
+            || opts.logClangdServerCheck        != m_Parser->Options().logClangdServerCheck
+            || opts.LLVM_ClangDaemonMasterPath  != m_Parser->Options().LLVM_ClangDaemonMasterPath
+            || opts.LLVM_ClangMasterPath        != m_Parser->Options().LLVM_ClangMasterPath
+            || m_ParserPerWorkspace             != parserPerWorkspace ) //always false for clangd
     {
         // important options changed... flag for reparsing
         if (cbMessageBox(_("You changed some class parser options. Do you want to "
@@ -1206,13 +1239,13 @@ void ParseManager::UpdateClassBrowser()
 // ----------------------------------------------------------------------------
 {
     if (not m_ClassBrowser)
-          return;
+        return;
 
     TRACE(_T("ParseManager::UpdateClassBrowser()"));
 
     if ( m_Parser != m_TempParser
-        && m_Parser->Done()
-        && (not Manager::IsAppShuttingDown()) )
+            && m_Parser->Done()
+            && (not Manager::IsAppShuttingDown()) )
     {
         m_ClassBrowser->UpdateClassBrowserView();
     }
@@ -1231,32 +1264,32 @@ void ParseManager::GetPriorityFilesForParsing(StringList& localSourcesList, cbPr
         // -------------------------------------------------------
         cbEditor* pEditor = pEdMgr->GetBuiltinActiveEditor();
         if (pEditor) switch(1)
-        {
+            {
             default:
-            wxString filename = pEditor->GetFilename();
-            // Find the ProjectFile and project containing this editors file.
-            ProjectFile* pProjectFile = pEditor->GetProjectFile();
-            if (not pProjectFile) break;
-            cbProject* pFilesProject = pProjectFile->GetParentProject();
-            // For LSP, file must belong to a project, because LSP needs target compiler parameters.
-            if (not pFilesProject) break;
-            if (pFilesProject != pProject) break; //file doesnt belong to this project
-            FileType ft = FileTypeOf(pEditor->GetShortName());                  //(ph 2021/09/14)
-            if ( ft != ftHeader && ft != ftSource && ft != ftTemplateSource) // only parse source/header files
+                wxString filename = pEditor->GetFilename();
+                // Find the ProjectFile and project containing this editors file.
+                ProjectFile* pProjectFile = pEditor->GetProjectFile();
+                if (not pProjectFile) break;
+                cbProject* pFilesProject = pProjectFile->GetParentProject();
+                // For LSP, file must belong to a project, because LSP needs target compiler parameters.
+                if (not pFilesProject) break;
+                if (pFilesProject != pProject) break; //file doesnt belong to this project
+                FileType ft = FileTypeOf(pEditor->GetShortName());                  //(ph 2021/09/14)
+                if ( ft != ftHeader && ft != ftSource && ft != ftTemplateSource) // only parse source/header files
+                    break;
+
+                // add file to background parsing queue
+                localSourcesList.push_back(filename);
+
+                // The following is wasted work since the file will be opened and parsed anyway
+                // when the use requests goto decl/defs.
+                //// add associated .h or .cpp file for quick got decl/defs
+                ////wxString hdrOrSrcFile = GetSourceOrHeaderForFile((pProject, filename);
+                ////if (hdrOrSrcFile.Length())
+                ////    localSourcesList.push_back(hdrOrSrcFile);
+
                 break;
-
-            // add file to background parsing queue
-            localSourcesList.push_back(filename);
-
-            // The following is wasted work since the file will be opened and parsed anyway
-            // when the use requests goto decl/defs.
-            //// add associated .h or .cpp file for quick got decl/defs
-            ////wxString hdrOrSrcFile = GetSourceOrHeaderForFile((pProject, filename);
-            ////if (hdrOrSrcFile.Length())
-            ////    localSourcesList.push_back(hdrOrSrcFile);
-
-            break;
-        } //endif switch
+            } //endif switch
 
         // -------------------------------------------------------
         // Add a file list entry for the remaining open editor files
@@ -1305,7 +1338,7 @@ bool ParseManager::DoFullParsing(cbProject* project, ParserBase* parser)
     if (project)
     {
         if ( not parser->Options().platformCheck
-            || (parser->Options().platformCheck && project->SupportsCurrentPlatform()) )
+                || (parser->Options().platformCheck && project->SupportsCurrentPlatform()) )
         {
             // Note: This parses xml data to get the search directories. It might be expensive if
             //       the list of directories is too large.
@@ -1349,7 +1382,7 @@ bool ParseManager::DoFullParsing(cbProject* project, ParserBase* parser)
         // so that the latest modified files get parsed first.
         std::multimap<wxDateTime,wxString>sortedSources;
         for (FilesList::const_iterator fl_it = project->GetFilesList().begin();
-             fl_it != project->GetFilesList().end(); ++fl_it)
+                fl_it != project->GetFilesList().end(); ++fl_it)
         {
             ProjectFile* pf = *fl_it;
             if (!pf)
@@ -1407,7 +1440,7 @@ bool ParseManager::DoFullParsing(cbProject* project, ParserBase* parser)
     if (not localSources.empty())
     {
         CCLogger::Get()->DebugLog(wxString::Format(_T("ParseManager::DoFullParsing: Added %lu source file(s) for project '%s' to batch-parser..."),
-                                    static_cast<unsigned long>( localSources.size()), prj.wx_str()));
+                                  static_cast<unsigned long>( localSources.size()), prj.wx_str()));
 
         //for (const wxString& entry : localSources) // **Debugging**
         //{
@@ -2151,7 +2184,7 @@ bool ParseManager::AddCompilerAndIncludeDirs(cbProject* project, ParserBase* par
 
     // get project include search dirs
     if (   !parser->Options().platformCheck
-        || (parser->Options().platformCheck && project->SupportsCurrentPlatform()) )
+            || (parser->Options().platformCheck && project->SupportsCurrentPlatform()) )
     {
         AddIncludeDirsToParser(project->GetIncludeDirs(), base, parser);
     }
@@ -2171,7 +2204,7 @@ bool ParseManager::AddCompilerAndIncludeDirs(cbProject* project, ParserBase* par
         if (!target) continue;
 
         if (   !parser->Options().platformCheck
-            || (parser->Options().platformCheck && target->SupportsCurrentPlatform()) )
+                || (parser->Options().platformCheck && target->SupportsCurrentPlatform()) )
         {
             // post-processed search dirs (from build scripts)
             if (compiler && generator)
@@ -2193,7 +2226,8 @@ bool ParseManager::AddCompilerAndIncludeDirs(cbProject* project, ParserBase* par
 
     // add the project compiler to the array of compilers
     if (compiler)
-    {   // note it might be possible that this compiler is already in the list
+    {
+        // note it might be possible that this compiler is already in the list
         // no need to worry since the compiler list of the parser will filter out duplicate
         // entries in the include dir list
         Compilers[nCompilers++] = compiler;
@@ -2592,7 +2626,7 @@ void ParseManager::AddCompilerIncludeDirsToParser(const Compiler* compiler, Pars
     if (!compiler || !parser) return;
 
     if (   !parser->Options().platformCheck
-        || (parser->Options().platformCheck && compiler->SupportsCurrentPlatform()) )
+            || (parser->Options().platformCheck && compiler->SupportsCurrentPlatform()) )
     {
         // these dirs were the user's compiler include search dirs
         AddIncludeDirsToParser(compiler->GetIncludeDirs(), wxEmptyString, parser);
@@ -2742,7 +2776,9 @@ bool ParseManager::SafeExecute(const wxString& app_path, const wxString& app, co
     {
         wxString tmp_path_env = pth + (platform::windows ? _T(";") : _T(":")) + path_env;
         if ( !wxSetEnv(_T("PATH"), tmp_path_env) )
-        {   CCLogger::Get()->DebugLog(_T("ParseManager::SafeExecute: Could not set PATH environment variable: ") + tmp_path_env); }
+        {
+            CCLogger::Get()->DebugLog(_T("ParseManager::SafeExecute: Could not set PATH environment variable: ") + tmp_path_env);
+        }
     }
 
     if ( wxExecute(cmd + args, output, error, wxEXEC_SYNC | wxEXEC_NODISABLE) == -1 )
@@ -2753,7 +2789,9 @@ bool ParseManager::SafeExecute(const wxString& app_path, const wxString& app, co
     }
 
     if ( !pth.IsEmpty() && !wxSetEnv(_T("PATH"), path_env) )
-    {   CCLogger::Get()->DebugLog(_T("ParseManager::SafeExecute: Could not restore PATH environment variable: ") + path_env); }
+    {
+        CCLogger::Get()->DebugLog(_T("ParseManager::SafeExecute: Could not restore PATH environment variable: ") + path_env);
+    }
 
     reentry = false;
 
@@ -2970,8 +3008,8 @@ void ParseManager::OnEditorActivated(EditorBase* editor)
     else if (!project)
     {
         if (   !parser->IsFileParsed(activatedFile)
-            && m_StandaloneFiles.Index(activatedFile) == wxNOT_FOUND
-            && AddFileToParser(project, activatedFile, parser) )
+                && m_StandaloneFiles.Index(activatedFile) == wxNOT_FOUND
+                && AddFileToParser(project, activatedFile, parser) )
         {
             wxFileName file(activatedFile);
             parser->AddIncludeDir(file.GetPath());
@@ -2990,7 +3028,7 @@ void ParseManager::OnEditorActivated(EditorBase* editor)
         if (m_Parser->ClassBrowserOptions().displayFilter == bdfFile)
             m_ClassBrowser->UpdateClassBrowserView(true); // check header and implementation file swap
         else if (   m_ParserPerWorkspace // project view only available in case of one parser per WS //m_ParserPerWorkspace always false for clangd
-                 && m_Parser->ClassBrowserOptions().displayFilter == bdfProject)
+                    && m_Parser->ClassBrowserOptions().displayFilter == bdfProject)
             m_ClassBrowser->UpdateClassBrowserView();
     }
 }

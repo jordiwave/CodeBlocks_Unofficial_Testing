@@ -28,12 +28,12 @@ class WXDLLIMPEXP_FWD_STEDIT wxArrayAcceleratorEntry;
 enum STE_MenuOptionsType
 {
     STE_MENU_NOTEBOOK = 0x0000001, ///< Adds items for use with a wxSTEditorNotebook
-                                   ///< or conversely blocks items if you don't have notebook.
+    ///< or conversely blocks items if you don't have notebook.
 
     STE_MENU_READONLY = 0x0000002, ///< Strips all items that cannot be used for read-only editors.
 
     STE_MENU_FRAME    = 0x0000004  ///< A temporarily set bit to know if menu is for a frame.
-                                   ///< Do not add this permamently, see usage in wxSTEditorMenuManager::CreateMenuBar().
+                        ///< Do not add this permamently, see usage in wxSTEditorMenuManager::CreateMenuBar().
 };
 
 // --------------------------------------------------------------------------
@@ -209,7 +209,10 @@ enum STE_InsertCharsMenuType
 class WXDLLIMPEXP_STEDIT wxSTEditorMenuManager
 {
 public:
-    wxSTEditorMenuManager() { Init(); } ///< everything set to 0
+    wxSTEditorMenuManager()
+    {
+        Init();    ///< everything set to 0
+    }
 
     wxSTEditorMenuManager(int menuOptionTypes, // = 0 or STE_MENU_NOTEBOOK,
                           int fileMenuItemTypes     = STE_MENU_FILE_DEFAULT,
@@ -251,7 +254,11 @@ public:
 
     /// Get a wxArray of wxAcceleratorEntries that map to the menu options
     /// and therefore the menu IDs and items that have or will be created.
-    wxArrayAcceleratorEntry* GetAcceleratorArray() { InitAcceleratorArray(); return m_accelEntryArray; }
+    wxArrayAcceleratorEntry* GetAcceleratorArray()
+    {
+        InitAcceleratorArray();
+        return m_accelEntryArray;
+    }
 
     // ------------------------------------------------------------------------
     /// @name Controlling what items get created.
@@ -268,21 +275,63 @@ public:
     ///     STE_File/Edit/Tools/XXXMenuItemType based on the menu_type.
     /// Get/Has/SetToolbarTools are combinations of enum STE_ToolbarToolType.
     /// @{
-    int GetMenuOptionTypes() const                       { return m_menuOptionTypes; }
-    int GetMenuItemTypes( STE_MenuType menu_type ) const { return m_menuItemTypes[menu_type]; }
-    int GetToolbarToolTypes() const                      { return m_toolBarToolTypes; }
+    int GetMenuOptionTypes() const
+    {
+        return m_menuOptionTypes;
+    }
+    int GetMenuItemTypes( STE_MenuType menu_type ) const
+    {
+        return m_menuItemTypes[menu_type];
+    }
+    int GetToolbarToolTypes() const
+    {
+        return m_toolBarToolTypes;
+    }
 
-    bool HasMenuOptionType(  int menu_opt ) const                       { return (menu_opt  & GetMenuOptionTypes()) != 0; }
-    bool HasMenuItemType( STE_MenuType menu_type, int menu_item ) const { return (menu_item & GetMenuItemTypes(menu_type)) != 0; }
-    bool HasToolbarToolType( int tool_opt ) const                       { return (tool_opt  & GetToolbarToolTypes()) != 0; }
+    bool HasMenuOptionType(  int menu_opt ) const
+    {
+        return (menu_opt  & GetMenuOptionTypes()) != 0;
+    }
+    bool HasMenuItemType( STE_MenuType menu_type, int menu_item ) const
+    {
+        return (menu_item & GetMenuItemTypes(menu_type)) != 0;
+    }
+    bool HasToolbarToolType( int tool_opt ) const
+    {
+        return (tool_opt  & GetToolbarToolTypes()) != 0;
+    }
 
-    void SetMenuOptionType( int menu_opt, bool val )                        { m_menuOptionTypes          = STE_SETBIT(m_menuOptionTypes, menu_opt, val);           m_accels_dirty = true; }
-    void SetMenuItemType( STE_MenuType menu_type, int menu_item, bool val ) { m_menuItemTypes[menu_type] = STE_SETBIT(m_menuItemTypes[menu_type], menu_item, val); m_accels_dirty = true; }
-    void SetToolbarToolType( int tool_opt, bool val )                       { m_toolBarToolTypes         = STE_SETBIT(m_toolBarToolTypes, tool_opt, val);          m_accels_dirty = true; }
+    void SetMenuOptionType( int menu_opt, bool val )
+    {
+        m_menuOptionTypes          = STE_SETBIT(m_menuOptionTypes, menu_opt, val);
+        m_accels_dirty = true;
+    }
+    void SetMenuItemType( STE_MenuType menu_type, int menu_item, bool val )
+    {
+        m_menuItemTypes[menu_type] = STE_SETBIT(m_menuItemTypes[menu_type], menu_item, val);
+        m_accels_dirty = true;
+    }
+    void SetToolbarToolType( int tool_opt, bool val )
+    {
+        m_toolBarToolTypes         = STE_SETBIT(m_toolBarToolTypes, tool_opt, val);
+        m_accels_dirty = true;
+    }
 
-    void SetMenuOptions( int menu_opt )                         { m_menuOptionTypes          = menu_opt;   m_accels_dirty = true; }
-    void SetMenuItems( STE_MenuType menu_type, int menu_items ) { m_menuItemTypes[menu_type] = menu_items; m_accels_dirty = true; }
-    void SetToolbarTools( int tool_opt )                        { m_toolBarToolTypes         = tool_opt;   m_accels_dirty = true; }
+    void SetMenuOptions( int menu_opt )
+    {
+        m_menuOptionTypes          = menu_opt;
+        m_accels_dirty = true;
+    }
+    void SetMenuItems( STE_MenuType menu_type, int menu_items )
+    {
+        m_menuItemTypes[menu_type] = menu_items;
+        m_accels_dirty = true;
+    }
+    void SetToolbarTools( int tool_opt )
+    {
+        m_toolBarToolTypes         = tool_opt;
+        m_accels_dirty = true;
+    }
 
     /// @}
     // ------------------------------------------------------------------------
@@ -372,13 +421,13 @@ public:
 
     /// Create an wxAcceleratorTable from a wxMenu and/or wxMenuBar.
     static wxAcceleratorTable CreateAcceleratorTable(const wxMenu* menu,
-                                                     const wxMenuBar* menuBar);
+            const wxMenuBar* menuBar);
     /// Helper function to add items from a wxMenu/wxMenuBar (either can be NULL)
     ///   to a wxArrayPtrVoid array of 'new' wxAcceleratorEntries.
     /// Returns true if any were added.
     /// You must delete the entries when done with them.
     static bool GetAcceleratorEntries(const wxMenu* menu, const wxMenuBar* menuBar,
-                               wxArrayPtrVoid& entries);
+                                      wxArrayPtrVoid& entries);
     /// Helper function to create an wxAcceleratorTable from array of wxAcceleratorEntries.
     static wxAcceleratorTable CreateAcceleratorTable(wxArrayPtrVoid& entries);
 
@@ -392,10 +441,16 @@ public:
     virtual void EnableEditorItems(bool enable, wxMenu *menu,
                                    wxMenuBar *menuBar, wxToolBar *toolBar);
     /// remembers last value of the call to EnableEditorItems (initially true).
-    bool HasEnabledEditorItems() const { return m_enabledEditorItems; }
+    bool HasEnabledEditorItems() const
+    {
+        return m_enabledEditorItems;
+    }
 
     /// These are extra wxWindowIDs to enable for EnableEditorItems()
-    wxArrayInt* GetEnableEditorIDs() { return &m_enableItemsArray; }
+    wxArrayInt* GetEnableEditorIDs()
+    {
+        return &m_enableItemsArray;
+    }
 
     /// @}
     // ------------------------------------------------------------------------

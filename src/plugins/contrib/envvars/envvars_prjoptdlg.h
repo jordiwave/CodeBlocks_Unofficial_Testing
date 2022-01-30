@@ -19,34 +19,38 @@ class cbProject;
 class EnvVarsProjectOptionsDlg : public cbConfigurationPanel
 {
 public:
-  /// Ctor
-  EnvVarsProjectOptionsDlg(wxWindow*  parent, cbProject* project);
-  /// Dtor
-  ~EnvVarsProjectOptionsDlg() override;
+    /// Ctor
+    EnvVarsProjectOptionsDlg(wxWindow*  parent, cbProject* project);
+    /// Dtor
+    ~EnvVarsProjectOptionsDlg() override;
 
-  /// returns the title of the plugin configuration panel
-  wxString GetTitle() const override
-  { return _("EnvVars options"); }
+    /// returns the title of the plugin configuration panel
+    wxString GetTitle() const override
+    {
+        return _("EnvVars options");
+    }
 
-  /// returns the title of the plugin's bitmap to use for settings
-  wxString GetBitmapBaseName() const override
-  { return _T("generic-plugin"); }
+    /// returns the title of the plugin's bitmap to use for settings
+    wxString GetBitmapBaseName() const override
+    {
+        return _T("generic-plugin");
+    }
 
 protected:
-  /// Fires if the UI is being updated (wx event)
-  void OnUpdateUI(wxUpdateUIEvent& event);
+    /// Fires if the UI is being updated (wx event)
+    void OnUpdateUI(wxUpdateUIEvent& event);
 
 private:
-  /// Fires if the "apply" button is pressed inside project settings
-  void OnApply() override;
+    /// Fires if the "apply" button is pressed inside project settings
+    void OnApply() override;
 
-  /// Fires if the "cancel" button is pressed inside project settings
-  void OnCancel() override {}
+    /// Fires if the "cancel" button is pressed inside project settings
+    void OnCancel() override {}
 
-  EnvVars*   m_pPlugin;  //!< pointer to the EnvVars plugin (the parent)
-  cbProject* m_pProject; //!< pointer to the currently active C::B project
+    EnvVars*   m_pPlugin;  //!< pointer to the EnvVars plugin (the parent)
+    cbProject* m_pProject; //!< pointer to the currently active C::B project
 
-  DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // ENVVARSPROJECTOPTIONSDLG_H

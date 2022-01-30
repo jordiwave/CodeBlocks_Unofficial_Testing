@@ -38,106 +38,109 @@
 
 class SelectStoredExpressionDlg: public wxScrollingDialog
 {
-	public:
+public:
 
-		SelectStoredExpressionDlg( wxWindow* parent, const wxString& startingExpresion = wxEmptyString );
-		virtual ~SelectStoredExpressionDlg();
+    SelectStoredExpressionDlg( wxWindow* parent, const wxString& startingExpresion = wxEmptyString );
+    virtual ~SelectStoredExpressionDlg();
 
-		wxString GetExpression() { return m_Expression; }
+    wxString GetExpression()
+    {
+        return m_Expression;
+    }
 
-	private:
+private:
 
-        wxString m_Expression;
+    wxString m_Expression;
 
-		//(*Declarations(SelectStoredExpressionDlg)
-		wxButton* Button4;
-		wxButton* Button1;
-		wxButton* Button2;
-		wxButton* Button3;
-		wxStaticText* StaticText1;
-		wxTimer Timer1;
-		wxListBox* m_Expressions;
-		wxTextCtrl* m_Filter;
-		//*)
+    //(*Declarations(SelectStoredExpressionDlg)
+    wxButton* Button4;
+    wxButton* Button1;
+    wxButton* Button2;
+    wxButton* Button3;
+    wxStaticText* StaticText1;
+    wxTimer Timer1;
+    wxListBox* m_Expressions;
+    wxTextCtrl* m_Filter;
+    //*)
 
-		//(*Identifiers(SelectStoredExpressionDlg)
-		static const long ID_LISTBOX1;
-		static const long ID_STATICTEXT1;
-		static const long ID_TEXTCTRL1;
-		static const long ID_BUTTON1;
-		static const long ID_BUTTON2;
-		static const long ID_BUTTON3;
-		static const long ID_BUTTON4;
-		static const long ID_TIMER1;
-		//*)
+    //(*Identifiers(SelectStoredExpressionDlg)
+    static const long ID_LISTBOX1;
+    static const long ID_STATICTEXT1;
+    static const long ID_TEXTCTRL1;
+    static const long ID_BUTTON1;
+    static const long ID_BUTTON2;
+    static const long ID_BUTTON3;
+    static const long ID_BUTTON4;
+    static const long ID_TIMER1;
+    //*)
 
-		//(*Handlers(SelectStoredExpressionDlg)
-		void OnOkClick(wxCommandEvent& event);
-		void OnCancelClick(wxCommandEvent& event);
-		void OnButton1Click(wxCommandEvent& event);
-		void Onm_ExpressionsSelect(wxCommandEvent& event);
-		void OnButton2Click(wxCommandEvent& event);
-		void OnButton3Click(wxCommandEvent& event);
-		void Onm_FilterText(wxCommandEvent& event);
-		void Onm_FilterTextEnter(wxCommandEvent& event);
-		void OnTimer1Trigger(wxTimerEvent& event);
-		void OnButton4Click(wxCommandEvent& event);
-		void Onm_ExpressionsDClick(wxCommandEvent& event);
-		//*)
+    //(*Handlers(SelectStoredExpressionDlg)
+    void OnOkClick(wxCommandEvent& event);
+    void OnCancelClick(wxCommandEvent& event);
+    void OnButton1Click(wxCommandEvent& event);
+    void Onm_ExpressionsSelect(wxCommandEvent& event);
+    void OnButton2Click(wxCommandEvent& event);
+    void OnButton3Click(wxCommandEvent& event);
+    void Onm_FilterText(wxCommandEvent& event);
+    void Onm_FilterTextEnter(wxCommandEvent& event);
+    void OnTimer1Trigger(wxTimerEvent& event);
+    void OnButton4Click(wxCommandEvent& event);
+    void Onm_ExpressionsDClick(wxCommandEvent& event);
+    //*)
 
-		void BuildContent(wxWindow* parent);
-		void ReadExpressions();
-		void StoreExpressions();
-		void RecreateExpressionsList( const wxString& selectionHint = wxEmptyString );
+    void BuildContent(wxWindow* parent);
+    void ReadExpressions();
+    void StoreExpressions();
+    void RecreateExpressionsList( const wxString& selectionHint = wxEmptyString );
 
-        typedef std::map< wxString, wxString > CacheT;
-        CacheT m_Cache;
-        bool m_CacheChanged;
+    typedef std::map< wxString, wxString > CacheT;
+    CacheT m_Cache;
+    bool m_CacheChanged;
 
-        /** \brief Helper class to identify items on expression list */
-        class ListData: public wxClientData
+    /** \brief Helper class to identify items on expression list */
+    class ListData: public wxClientData
+    {
+    public:
+
+        /** \brief Ctor */
+        inline ListData( const CacheT::iterator& i ): m_Iterator( i )
+        {}
+
+        /** \brief Fetch iterator */
+        inline const CacheT::iterator& GetIterator()
         {
-            public:
+            return m_Iterator;
+        }
 
-                /** \brief Ctor */
-                inline ListData( const CacheT::iterator& i ): m_Iterator( i )
-                {}
+        /** \brief Fetch key */
+        inline const wxString& GetKey()
+        {
+            return m_Iterator->first;
+        }
 
-                /** \brief Fetch iterator */
-                inline const CacheT::iterator& GetIterator()
-                {
-                    return m_Iterator;
-                }
+        /** \brief Fetch value */
+        inline const wxString& GetValue()
+        {
+            return m_Iterator->second;
+        }
 
-                /** \brief Fetch key */
-                inline const wxString& GetKey()
-                {
-                    return m_Iterator->first;
-                }
+    private:
 
-                /** \brief Fetch value */
-                inline const wxString& GetValue()
-                {
-                    return m_Iterator->second;
-                }
+        CacheT::iterator m_Iterator;        ///< \brief Item's iterator
+    };
 
-            private:
+    ListData* GetSelection();
 
-                CacheT::iterator m_Iterator;        ///< \brief Item's iterator
-        };
+    void AddingExpression( const wxString& defaultName, const wxString& defaultValue );
 
-        ListData* GetSelection();
+    void FilterUpdated();
 
-        void AddingExpression( const wxString& defaultName, const wxString& defaultValue );
+    void StoreExpressionsQuery();
 
-        void FilterUpdated();
-
-        void StoreExpressionsQuery();
-
-        static wxString GetListName( const wxString& name, const wxString& expr );
+    static wxString GetListName( const wxString& name, const wxString& expr );
 
 
-		DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

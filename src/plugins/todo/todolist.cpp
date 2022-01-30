@@ -9,24 +9,24 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-  #include <wx/checklst.h>
-  #include <wx/event.h>
-  #include <wx/frame.h> // GetMenuBar
-  #include <wx/fs_zip.h>
-  #include <wx/intl.h>
-  #include <wx/menu.h>
-  #include <wx/menuitem.h>
-  #include <wx/string.h>
-  #include <wx/utils.h>
-  #include <wx/xrc/xmlres.h>
+#include <wx/checklst.h>
+#include <wx/event.h>
+#include <wx/frame.h> // GetMenuBar
+#include <wx/fs_zip.h>
+#include <wx/intl.h>
+#include <wx/menu.h>
+#include <wx/menuitem.h>
+#include <wx/string.h>
+#include <wx/utils.h>
+#include <wx/xrc/xmlres.h>
 
-  #include "cbeditor.h"
-  #include "configmanager.h"
-  #include "editormanager.h"
-  #include "manager.h"
-  #include "projectmanager.h"
-  #include "logmanager.h"
-  #include "sdk_events.h"
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "manager.h"
+#include "projectmanager.h"
+#include "logmanager.h"
+#include "sdk_events.h"
 #endif
 
 
@@ -40,7 +40,7 @@
 
 namespace
 {
-    PluginRegistrant<ToDoList> reg(_T("ToDoList"));
+PluginRegistrant<ToDoList> reg(_T("ToDoList"));
 }
 
 const int idViewTodo = wxNewId();
@@ -74,13 +74,20 @@ void ToDoList::OnAttach()
     // create ToDo in bottom view
     wxArrayString titles;
     wxArrayInt widths;
-    titles.Add(_("Type")); widths.Add(64);
-    titles.Add(_("Text")); widths.Add(320);
-    titles.Add(_("User")); widths.Add(64);
-    titles.Add(_("Prio")); widths.Add(48);
-    titles.Add(_("Line")); widths.Add(48);
-    titles.Add(_("Date")); widths.Add(56);
-    titles.Add(_("File")); widths.Add(640);
+    titles.Add(_("Type"));
+    widths.Add(64);
+    titles.Add(_("Text"));
+    widths.Add(320);
+    titles.Add(_("User"));
+    widths.Add(64);
+    titles.Add(_("Prio"));
+    widths.Add(48);
+    titles.Add(_("Line"));
+    widths.Add(48);
+    titles.Add(_("Date"));
+    widths.Add(56);
+    titles.Add(_("File"));
+    widths.Add(640);
 
     m_pListLog = new ToDoListView(titles, widths, m_Types);
 
@@ -242,9 +249,9 @@ void ToDoList::LoadTypes()
 
     if (selectedTypes.GetCount()==0)
     {
-      // initially, all types are selected
-      for (size_t i=0; i<m_Types.GetCount(); i++)
-        selectedTypes.Add(m_Types[i]);
+        // initially, all types are selected
+        for (size_t i=0; i<m_Types.GetCount(); i++)
+            selectedTypes.Add(m_Types[i]);
     }
 
     m_pListLog->m_pAllowedTypesDlg->SetChecked(selectedTypes);
@@ -370,18 +377,18 @@ void ToDoList::OnAddItem(cb_unused wxCommandEvent& event)
                 return;
             switch(asktype_dlg.GetTypeCorrection())
             {
-                case tcStay:
-                    break; // do nothing, leave things as they are
-                case tcSwitch:
-                    if (CmtType == tdctDoxygenLine)
-                        CmtType = tdctDoxygenStream;
-                    else
-                        CmtType = tdctStream;
-                    break;
-                case tcMove:
-                default:
-                    idx = control->GetLineEndPosition(line);
-                    break;
+            case tcStay:
+                break; // do nothing, leave things as they are
+            case tcSwitch:
+                if (CmtType == tdctDoxygenLine)
+                    CmtType = tdctDoxygenStream;
+                else
+                    CmtType = tdctStream;
+                break;
+            case tcMove:
+            default:
+                idx = control->GetLineEndPosition(line);
+                break;
             } // end switch
         }
     }
@@ -394,10 +401,14 @@ void ToDoList::OnAddItem(cb_unused wxCommandEvent& event)
         // calculate insertion point by skipping next newline
         switch (control->GetEOLMode())
         {
-            case wxSCI_EOL_CRLF: crlfLen = 2; break;
-            case wxSCI_EOL_CR: // fall-though
-            case wxSCI_EOL_LF: // fall-though
-            default:             crlfLen = 1; break;
+        case wxSCI_EOL_CRLF:
+            crlfLen = 2;
+            break;
+        case wxSCI_EOL_CR: // fall-though
+        case wxSCI_EOL_LF: // fall-though
+        default:
+            crlfLen = 1;
+            break;
         }
         if (idx > 0)
             idx += crlfLen;
@@ -413,25 +424,25 @@ void ToDoList::OnAddItem(cb_unused wxCommandEvent& event)
     // start with the comment
     switch(CmtType)
     {
-        default:
-        case tdctLine:
-            buffer << token.lineComment;
-            break;
-        case tdctDoxygenLine:
-            buffer << token.doxygenLineComment;
-            break;
-        case tdctDoxygenStream:
-            buffer << token.doxygenStreamCommentStart;
-            break;
-        case tdctWarning:
-            buffer << _T("#warning");
-            break;
-        case tdctError:
-            buffer << _T("#error");
-            break;
-        case tdctStream:
-            buffer << token.streamCommentStart;
-            break;
+    default:
+    case tdctLine:
+        buffer << token.lineComment;
+        break;
+    case tdctDoxygenLine:
+        buffer << token.doxygenLineComment;
+        break;
+    case tdctDoxygenStream:
+        buffer << token.doxygenStreamCommentStart;
+        break;
+    case tdctWarning:
+        buffer << _T("#warning");
+        break;
+    case tdctError:
+        buffer << _T("#error");
+        break;
+    case tdctStream:
+        buffer << token.streamCommentStart;
+        break;
     } // end switch
     buffer << _T(" ");
 

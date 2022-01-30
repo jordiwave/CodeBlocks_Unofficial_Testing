@@ -10,12 +10,12 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "projectbuildtarget.h" // class's header file
-    #include "cbproject.h"
-    #include "manager.h"
-    #include "projectmanager.h"
-    #include "macrosmanager.h"
-    #include "globals.h"
+#include "projectbuildtarget.h" // class's header file
+#include "cbproject.h"
+#include "manager.h"
+#include "projectmanager.h"
+#include "macrosmanager.h"
+#include "globals.h"
 #endif
 
 
@@ -23,7 +23,7 @@
 // class constructor
 ProjectBuildTarget::ProjectBuildTarget(cbProject* parentProject)
     : m_Project(parentProject),
-    m_FileArray(ProjectFile::CompareProjectFiles)
+      m_FileArray(ProjectFile::CompareProjectFiles)
 {
     m_BuildWithAll = false;
     m_CreateStaticLib = true;

@@ -11,15 +11,15 @@
 #include "editwatchdlg.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/checkbox.h>
-    #include <wx/defs.h>
-    #include <wx/intl.h>
-    #include <wx/radiobox.h>
-    #include <wx/sizer.h>
-    #include <wx/spinctrl.h>
-    #include <wx/textctrl.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/defs.h>
+#include <wx/intl.h>
+#include <wx/radiobox.h>
+#include <wx/sizer.h>
+#include <wx/spinctrl.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
 #endif // CB_PRECOMP
 
 #include "debugger_defs.h"

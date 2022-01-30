@@ -17,37 +17,43 @@ class cbStackFrame;
 
 class DisassemblyDlg : public wxPanel, public cbDisassemblyDlg
 {
-    public:
-        DisassemblyDlg(wxWindow* parent);
+public:
+    DisassemblyDlg(wxWindow* parent);
 
-        wxWindow* GetWindow() override { return this; }
+    wxWindow* GetWindow() override
+    {
+        return this;
+    }
 
-        void Clear(const cbStackFrame& frame) override;
-        void AddAssemblerLine(uint64_t addr, const wxString& line) override;
-        void AddSourceLine(int lineno, const wxString& line) override;
-        bool SetActiveAddress(uint64_t addr) override;
-        void CenterLine(int lineno) override;
-        void CenterCurrentLine() override;
-        bool HasActiveAddr() override { return m_HasActiveAddr; }
-        void EnableWindow(bool enable) override;
+    void Clear(const cbStackFrame& frame) override;
+    void AddAssemblerLine(uint64_t addr, const wxString& line) override;
+    void AddSourceLine(int lineno, const wxString& line) override;
+    bool SetActiveAddress(uint64_t addr) override;
+    void CenterLine(int lineno) override;
+    void CenterCurrentLine() override;
+    bool HasActiveAddr() override
+    {
+        return m_HasActiveAddr;
+    }
+    void EnableWindow(bool enable) override;
 
-    protected:
-        void OnSave(wxCommandEvent& event);
-        void OnRefresh(wxCommandEvent& event);
-        void OnMixedModeCB(wxCommandEvent &event);
-        void OnAdjustLine(wxCommandEvent &event);
+protected:
+    void OnSave(wxCommandEvent& event);
+    void OnRefresh(wxCommandEvent& event);
+    void OnMixedModeCB(wxCommandEvent &event);
+    void OnAdjustLine(wxCommandEvent &event);
 
-        wxScintilla* m_pCode;
-        uint64_t m_LastActiveAddr;
-        bool m_HasActiveAddr;
-        wxString m_FrameFunction;
-        wxString m_FrameAddress;
-        bool m_ClearFlag;
-        std::vector<char> m_LineTypes; //'S'ource, 'D'isassembly
+    wxScintilla* m_pCode;
+    uint64_t m_LastActiveAddr;
+    bool m_HasActiveAddr;
+    wxString m_FrameFunction;
+    wxString m_FrameAddress;
+    bool m_ClearFlag;
+    std::vector<char> m_LineTypes; //'S'ource, 'D'isassembly
 
-    private:
-        wxCheckBox *m_MixedModeCB;
-        DECLARE_EVENT_TABLE();
+private:
+    wxCheckBox *m_MixedModeCB;
+    DECLARE_EVENT_TABLE();
 };
 
 #endif // DISASSEMBLYDLG_H

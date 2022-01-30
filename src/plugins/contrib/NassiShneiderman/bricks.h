@@ -25,17 +25,38 @@ public:
     virtual ~NassiBrick();
     virtual NassiBrick *Clone() const = 0;// {return ( new NassiBrick(*this) ); }
 
-    NassiBrick *GetPrevious() const { return previous; }
-    NassiBrick *GetNext() const { return mNext; }
-    NassiBrick *GetParent() const { return parent; }
+    NassiBrick *GetPrevious() const
+    {
+        return previous;
+    }
+    NassiBrick *GetNext() const
+    {
+        return mNext;
+    }
+    NassiBrick *GetParent() const
+    {
+        return parent;
+    }
     NassiBrick *SetNext(NassiBrick *nex);
     NassiBrick *SetPrevious(NassiBrick *prev);
     NassiBrick *SetParent(NassiBrick *brick);
-    virtual wxUint32 GetChildCount() const { return 0;}
-    virtual NassiBrick *GetChild(wxUint32 /*n*/ = 0) const { return 0;}
+    virtual wxUint32 GetChildCount() const
+    {
+        return 0;
+    }
+    virtual NassiBrick *GetChild(wxUint32 /*n*/ = 0) const
+    {
+        return 0;
+    }
     virtual NassiBrick *SetChild(NassiBrick *brick, wxUint32 n = 0);
-    virtual void RemoveChild(wxUint32 /*pos*/) { return; }//only for switch elsif blocks
-    virtual void AddChild(wxUint32 /*pos*/) { return; }//only for switch elsif blocks
+    virtual void RemoveChild(wxUint32 /*pos*/)
+    {
+        return;    //only for switch elsif blocks
+    }
+    virtual void AddChild(wxUint32 /*pos*/)
+    {
+        return;    //only for switch elsif blocks
+    }
 
     virtual void SetTextByNumber(const  wxString &str, wxUint32 n = 0) = 0;
     virtual const wxString *GetTextByNumber(wxUint32 n=0) const = 0;
@@ -45,7 +66,10 @@ public:
     void GenerateStrukTeX(wxString &str);
     virtual void GetStrukTeX(wxString &str, wxUint32 n);
     virtual void SaveSource(wxTextOutputStream &text_stream, wxUint32);
-    virtual bool IsBlock(){return false;}
+    virtual bool IsBlock()
+    {
+        return false;
+    }
     bool IsParent(NassiBrick *brick);
     wxUint32 GetLevel();
     bool IsYoungerSibling(NassiBrick *brick);
@@ -85,8 +109,14 @@ public:
         return new NassiInstructionBrick(*this);
     }
 
-    wxUint32 GetChildCount() const {return 0;}
-    NassiBrick *GetChild(wxUint32 /*n*/ = 0) const {return 0;}
+    wxUint32 GetChildCount() const
+    {
+        return 0;
+    }
+    NassiBrick *GetChild(wxUint32 /*n*/ = 0) const
+    {
+        return 0;
+    }
     NassiBrick *SetChild(NassiBrick *brick, wxUint32 n = 0);
     void SetTextByNumber(const  wxString &str, wxUint32 n = 0);
     const wxString *GetTextByNumber(wxUint32 n=0) const;
@@ -111,8 +141,14 @@ public:
         return ( new NassiBreakBrick(*this) );
     }
 
-    wxUint32 GetChildCount() const {return 0;}
-    NassiBrick *GetChild(wxUint32 /*n*/ = 0) const {return 0;}
+    wxUint32 GetChildCount() const
+    {
+        return 0;
+    }
+    NassiBrick *GetChild(wxUint32 /*n*/ = 0) const
+    {
+        return 0;
+    }
     NassiBrick *SetChild(NassiBrick *brick, wxUint32 n = 0);
     void SetTextByNumber(const  wxString &str, wxUint32 n = 0);
     const wxString *GetTextByNumber(wxUint32 n=0)const;
@@ -165,9 +201,18 @@ private:
     NassiReturnBrick &operator=(const NassiReturnBrick &rhs);
 public:
     virtual ~NassiReturnBrick();
-    virtual NassiBrick *Clone()const{return ( new NassiReturnBrick(*this) );}
-    wxUint32 GetChildCount() const{return 0;}
-    NassiBrick *GetChild(wxUint32 /*n*/ = 0) const {return 0;}
+    virtual NassiBrick *Clone()const
+    {
+        return ( new NassiReturnBrick(*this) );
+    }
+    wxUint32 GetChildCount() const
+    {
+        return 0;
+    }
+    NassiBrick *GetChild(wxUint32 /*n*/ = 0) const
+    {
+        return 0;
+    }
     NassiBrick *SetChild(NassiBrick *brick, wxUint32 n = 0);
     void SetTextByNumber(const  wxString &str, wxUint32 n = 0);
     const wxString *GetTextByNumber(wxUint32 n=0)const;
@@ -228,7 +273,10 @@ public:
         return ( new NassiForBrick(*this) );
     }
 
-    wxUint32 GetChildCount() const {return 1;}
+    wxUint32 GetChildCount() const
+    {
+        return 1;
+    }
     NassiBrick *GetChild(wxUint32 n = 0) const ;
     NassiBrick *SetChild(NassiBrick *brick, wxUint32 n = 0);
     void SetTextByNumber(const  wxString &str, wxUint32 n = 0);
@@ -302,7 +350,10 @@ public:
 
     virtual void GetStrukTeX(wxString &str, wxUint32 n);
     virtual void SaveSource(wxTextOutputStream &text_stream, wxUint32 n = 0);
-    virtual bool IsBlock(){return true;}
+    virtual bool IsBlock()
+    {
+        return true;
+    }
 private:
     NassiBrick *Child;
 public:
@@ -352,7 +403,10 @@ private:
     NassiSwitchBrick &operator=(const NassiSwitchBrick &rhs);
 public:
     virtual ~NassiSwitchBrick();
-    virtual NassiBrick *Clone()const { return new NassiSwitchBrick(*this); }
+    virtual NassiBrick *Clone()const
+    {
+        return new NassiSwitchBrick(*this);
+    }
 
     wxUint32 GetChildCount() const;
     NassiBrick *GetChild(wxUint32 n = 0) const ;
@@ -382,8 +436,14 @@ class NassiBricksCompositeIterator
 public:
     NassiBricksCompositeIterator(NassiBrick *frst);
     void First();
-    bool IsDone() { return done; }
-    NassiBrick *CurrentItem(){ return current; }
+    bool IsDone()
+    {
+        return done;
+    }
+    NassiBrick *CurrentItem()
+    {
+        return current;
+    }
     void Next();
 private:
     NassiBrick *first;

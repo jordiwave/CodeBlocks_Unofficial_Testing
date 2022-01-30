@@ -25,6 +25,6 @@
 
 namespace
 {
-    PluginRegistrant<wxSmith>     RegMain(_T("wxSmith"));
-    PluginRegistrant<wxSmithMime> RegMime(_T("wxSmithMime"));
+PluginRegistrant<wxSmith>     RegMain(_T("wxSmith"));
+PluginRegistrant<wxSmithMime> RegMime(_T("wxSmithMime"));
 }

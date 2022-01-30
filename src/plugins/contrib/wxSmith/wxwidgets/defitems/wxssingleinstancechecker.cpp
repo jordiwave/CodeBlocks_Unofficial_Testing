@@ -25,12 +25,12 @@
 
 namespace
 {
-    wxsRegisterItem<wxsSingleInstanceChecker> Reg(
-        _T("SingleInstanceChecker"),  // Class name
-        wxsTTool,                     // Item type
-        _T("Tools"),                  // Category in palette
-        50,                           // Priority in palette
-        false);                       // We do not allow this item inside XRC files
+wxsRegisterItem<wxsSingleInstanceChecker> Reg(
+    _T("SingleInstanceChecker"),  // Class name
+    wxsTTool,                     // Item type
+    _T("Tools"),                  // Category in palette
+    50,                           // Priority in palette
+    false);                       // We do not allow this item inside XRC files
 }
 
 //------------------------------------------------------------------------------
@@ -52,29 +52,29 @@ void wxsSingleInstanceChecker::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/utils.h>"),   GetInfo().ClassName, 0);
-            AddHeader(_T("<wx/snglinst.h>"),GetInfo().ClassName, 0);
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/utils.h>"),   GetInfo().ClassName, 0);
+        AddHeader(_T("<wx/snglinst.h>"),GetInfo().ClassName, 0);
 
-            if ( AppName.IsEmpty() )
-            {
-                AddHeader(_T("<wx/app.h>"), GetInfo().ClassName, 0);
-                Codef( _T("%C(wxTheApp->GetAppName() + _T(\"_\") + wxGetUserId() + _T(\"_Guard\"));\n") );
-            }
-            else
-            {
-                Codef(_T("%C(%n + wxGetUserId() + _T(\"_Guard\"));\n"), ( AppName + _T("_") ).wx_str() );
-            }
-            BuildSetupWindowCode();
-            break;
-        }
-
-        case wxsUnknownLanguage: // fall-through
-        default:
+        if ( AppName.IsEmpty() )
         {
-            wxsCodeMarks::Unknown( _T("wxsSingleInstanceChecker::OnBuildCreatingCode"), GetLanguage() );
+            AddHeader(_T("<wx/app.h>"), GetInfo().ClassName, 0);
+            Codef( _T("%C(wxTheApp->GetAppName() + _T(\"_\") + wxGetUserId() + _T(\"_Guard\"));\n") );
         }
+        else
+        {
+            Codef(_T("%C(%n + wxGetUserId() + _T(\"_Guard\"));\n"), ( AppName + _T("_") ).wx_str() );
+        }
+        BuildSetupWindowCode();
+        break;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown( _T("wxsSingleInstanceChecker::OnBuildCreatingCode"), GetLanguage() );
+    }
     }
 }
 

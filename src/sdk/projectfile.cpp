@@ -10,14 +10,14 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "projectfile.h"
-    #include "projectbuildtarget.h"
-    #include "cbproject.h"
-    #include "compilerfactory.h"
-    #include "manager.h"
-    #include "projectmanager.h"
-    #include "macrosmanager.h"
-    #include "globals.h"
+#include "projectfile.h"
+#include "projectbuildtarget.h"
+#include "cbproject.h"
+#include "compilerfactory.h"
+#include "manager.h"
+#include "projectmanager.h"
+#include "macrosmanager.h"
+#include "globals.h"
 #endif
 
 #include "projectfileoptionsdlg.h"
@@ -409,53 +409,53 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     FileType ft = FileTypeOf(pf->relativeFilename);
 
     Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID())
-                                : CompilerFactory::GetDefaultCompiler();
+                         : CompilerFactory::GetDefaultCompiler();
 
     // support for precompiled headers
     if (target && ft == ftHeader && compiler && compiler->GetSwitches().supportsPCH)
     {
         switch (target->GetParentProject()->GetModeForPCH())
         {
-            case pchSourceDir:
+        case pchSourceDir:
+        {
+            // if PCH is for a file called all.h, we create
+            // all.h.gch/<target>_all.h.gch
+            // (that's right: a directory)
+            wxString new_gch = target->GetTitle() + _T('_') + pf->GetObjName();
+            // make sure we 're not generating subdirs
+            size_t len = new_gch.Length();
+            for (size_t i = 0; i < len; ++i)
             {
-                // if PCH is for a file called all.h, we create
-                // all.h.gch/<target>_all.h.gch
-                // (that's right: a directory)
-                wxString new_gch = target->GetTitle() + _T('_') + pf->GetObjName();
-                // make sure we 're not generating subdirs
-                size_t len = new_gch.Length();
-                for (size_t i = 0; i < len; ++i)
-                {
-                    wxChar c = new_gch[i];
-                    if (c == _T('/') || c == _T('\\') || c == _T('.'))
-                        new_gch[i] = _T('_');
-                }
-
-                wxFileName fn(source_file_native);
-                object_file_native = fn.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) +
-                                    fn.GetFullName() + _T('.') + compiler->GetSwitches().PCHExtension +
-                                    wxFILE_SEP_PATH +
-                                    new_gch;
-                object_file_flat_native = object_file_native;
-                break;
+                wxChar c = new_gch[i];
+                if (c == _T('/') || c == _T('\\') || c == _T('.'))
+                    new_gch[i] = _T('_');
             }
 
-            case pchObjectDir:
-            {
-                object_file_native      = objOut + sep + obj_name.GetFullPath();
-                object_file_flat_native = objOut + sep + obj_name.GetFullName();
-                break;
-            }
+            wxFileName fn(source_file_native);
+            object_file_native = fn.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) +
+                                 fn.GetFullName() + _T('.') + compiler->GetSwitches().PCHExtension +
+                                 wxFILE_SEP_PATH +
+                                 new_gch;
+            object_file_flat_native = object_file_native;
+            break;
+        }
 
-            case pchSourceFile:
-            {
-                object_file_native      = pf->GetObjName();
-                object_file_flat_native = object_file_native;
-                break;
-            }
+        case pchObjectDir:
+        {
+            object_file_native      = objOut + sep + obj_name.GetFullPath();
+            object_file_flat_native = objOut + sep + obj_name.GetFullName();
+            break;
+        }
 
-            default:
-                break;
+        case pchSourceFile:
+        {
+            object_file_native      = pf->GetObjName();
+            object_file_flat_native = object_file_native;
+            break;
+        }
+
+        default:
+            break;
         }
     }
     else
@@ -482,7 +482,7 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
             bool     diffVolume         = false;
 
             if (   platform::windows
-                && (!fileVol.IsEmpty() && !fileVol.IsSameAs(prjbase.GetVolume(), false)) )
+                    && (!fileVol.IsEmpty() && !fileVol.IsSameAs(prjbase.GetVolume(), false)) )
             {
                 objOut += fileVol;
                 obj_file_full_path = obj_file_full_path.AfterFirst(_T('\\'));

@@ -9,10 +9,10 @@
 #include "incremental_select_helper.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/dialog.h>
-    #include <wx/sizer.h>
-    #include <wx/stattext.h>
-    #include <wx/textctrl.h>
+#include <wx/dialog.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
 #endif
 
 IncrementalSelectIterator::~IncrementalSelectIterator()
@@ -200,51 +200,51 @@ static wxStandardID KeyDownAction(wxKeyEvent& event, int &selected, int selected
     // now, adjust position from key input
     switch (event.GetKeyCode())
     {
-        case WXK_RETURN:
-        case WXK_NUMPAD_ENTER:
-            return wxID_OK;
+    case WXK_RETURN:
+    case WXK_NUMPAD_ENTER:
+        return wxID_OK;
 
-        case WXK_ESCAPE:
-            return wxID_CANCEL;
+    case WXK_ESCAPE:
+        return wxID_CANCEL;
 
-        case WXK_UP:
-        case WXK_NUMPAD_UP:
-            if (selected)
-                selected--;
-            break;
+    case WXK_UP:
+    case WXK_NUMPAD_UP:
+        if (selected)
+            selected--;
+        break;
 
-        case WXK_DOWN:
-        case WXK_NUMPAD_DOWN:
-            selected++;
-            break;
+    case WXK_DOWN:
+    case WXK_NUMPAD_DOWN:
+        selected++;
+        break;
 
-        case WXK_PAGEUP:
-        case WXK_NUMPAD_PAGEUP:
-            selected -= 10;
-            break;
+    case WXK_PAGEUP:
+    case WXK_NUMPAD_PAGEUP:
+        selected -= 10;
+        break;
 
-        case WXK_PAGEDOWN:
-        case WXK_NUMPAD_PAGEDOWN:
-            selected += 10;
-            break;
+    case WXK_PAGEDOWN:
+    case WXK_NUMPAD_PAGEDOWN:
+        selected += 10;
+        break;
 
-        case WXK_HOME:
-            if (wxGetKeyState(WXK_CONTROL))
-                selected = 0;
-            else
-                event.Skip();
-            break;
-
-        case WXK_END:
-            if (wxGetKeyState(WXK_CONTROL))
-                selected = selectedMax;
-            else
-                event.Skip();
-            break;
-
-        default:
+    case WXK_HOME:
+        if (wxGetKeyState(WXK_CONTROL))
+            selected = 0;
+        else
             event.Skip();
-            break;
+        break;
+
+    case WXK_END:
+        if (wxGetKeyState(WXK_CONTROL))
+            selected = selectedMax;
+        else
+            event.Skip();
+        break;
+
+    default:
+        event.Skip();
+        break;
     }
 
     // Clamp value below 0 and above Max
@@ -286,7 +286,7 @@ int IncrementalSelectHandler::GetSelection()
 }
 
 IncrementalListCtrl::IncrementalListCtrl(wxWindow *parent, wxWindowID winid, const wxPoint& pos, const wxSize& size,
-                                         long style, const wxValidator &validator, const wxString &name) :
+        long style, const wxValidator &validator, const wxString &name) :
     wxListCtrl(parent, winid, pos, size, style, validator, name)
 {
 }
@@ -356,7 +356,7 @@ BEGIN_EVENT_TABLE(IncrementalSelectDialog, wxDialog)
 END_EVENT_TABLE()
 
 IncrementalSelectDialog::IncrementalSelectDialog(wxWindow* parent, IncrementalSelectIterator *iterator,
-                                                 const wxString &title, const wxString &message) :
+        const wxString &title, const wxString &message) :
     m_handler(this, iterator)
 {
     BuildContent(parent, iterator, title, message);
@@ -370,13 +370,13 @@ IncrementalSelectDialog::~IncrementalSelectDialog()
 }
 
 void IncrementalSelectDialog::BuildContent(wxWindow* parent, IncrementalSelectIterator *iterator, const wxString &title,
-                                           const wxString &message)
+        const wxString &message)
 {
     Create(parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize,
            wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX|wxMAXIMIZE_BOX, _T("wxID_ANY"));
     wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
     wxStaticText *labelCtrl = new wxStaticText(this, wxID_ANY, message, wxDefaultPosition, wxDefaultSize, 0,
-                                               _T("wxID_ANY"));
+            _T("wxID_ANY"));
     sizer->Add(labelCtrl, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
     m_text = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER, wxDefaultValidator,
                             _T("ID_TEXTCTRL1"));

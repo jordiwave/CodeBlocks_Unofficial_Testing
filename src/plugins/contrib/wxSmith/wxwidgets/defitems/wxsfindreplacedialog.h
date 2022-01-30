@@ -28,16 +28,16 @@
 */
 class wxsFindReplaceDialog: public wxsTool
 {
-    public:
+public:
 
-        wxsFindReplaceDialog(wxsItemResData* Data);
+    wxsFindReplaceDialog(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual void OnEnumToolProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual void OnEnumToolProperties(long Flags);
 
-        wxString m_sCaption;    //!< The dialogue caption.
+    wxString m_sCaption;    //!< The dialogue caption.
 };
 
 #endif      //  WXSFINDREPLACEDIALOG_H

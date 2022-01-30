@@ -16,10 +16,20 @@
 //base lib
 void sq_base_register(HSQUIRRELVM v);
 
-struct SQExceptionTrap{
+struct SQExceptionTrap
+{
     SQExceptionTrap() {}
-    SQExceptionTrap(SQInteger ss, SQInteger stackbase,SQInstruction *ip, SQInteger ex_target){ _stacksize = ss; _stackbase = stackbase; _ip = ip; _extarget = ex_target;}
-    SQExceptionTrap(const SQExceptionTrap &et) { (*this) = et;  }
+    SQExceptionTrap(SQInteger ss, SQInteger stackbase,SQInstruction *ip, SQInteger ex_target)
+    {
+        _stacksize = ss;
+        _stackbase = stackbase;
+        _ip = ip;
+        _extarget = ex_target;
+    }
+    SQExceptionTrap(const SQExceptionTrap &et)
+    {
+        (*this) = et;
+    }
     SQInteger _stackbase;
     SQInteger _stacksize;
     SQInstruction *_ip;
@@ -35,7 +45,8 @@ typedef sqvector<SQExceptionTrap> ExceptionsTraps;
 
 struct SQVM : public CHAINABLE_OBJ
 {
-    struct CallInfo{
+    struct CallInfo
+    {
         //CallInfo() { _generator = NULL;}
         SQInstruction *_ip;
         SQObjectPtr *_literals;
@@ -49,7 +60,7 @@ struct SQVM : public CHAINABLE_OBJ
         SQBool _root;
     };
 
-typedef sqvector<CallInfo> CallInfoVec;
+    typedef sqvector<CallInfo> CallInfoVec;
 public:
     void DebugHookProxy(SQInteger type, const SQChar * sourcename, SQInteger line, const SQChar * funcname);
     static void _DebugHookProxy(HSQUIRRELVM v, SQInteger type, const SQChar * sourcename, SQInteger line, const SQChar * funcname);
@@ -117,10 +128,14 @@ public:
 
 #ifndef NO_GARBAGE_COLLECTOR
     void Mark(SQCollectable **chain);
-    SQObjectType GetType() {return OT_THREAD;}
+    SQObjectType GetType()
+    {
+        return OT_THREAD;
+    }
 #endif
     void Finalize();
-    void GrowCallStack() {
+    void GrowCallStack()
+    {
         SQInteger newsize = _alloccallsstacksize*2;
         _callstackdata.resize(newsize);
         _callsstack = &_callstackdata[0];
@@ -128,7 +143,10 @@ public:
     }
     bool EnterFrame(SQInteger newbase, SQInteger newtop, bool tailcall);
     void LeaveFrame();
-    void Release(){ sq_delete(this,SQVM); }
+    void Release()
+    {
+        sq_delete(this,SQVM);
+    }
 ////////////////////////////////////////////////////////////////////////////
     //stack functions for the api
     void Remove(SQInteger n);
@@ -180,13 +198,23 @@ public:
     SQInteger _suspended_traps;
 };
 
-struct AutoDec{
-    AutoDec(SQInteger *n) { _n = n; }
-    ~AutoDec() { (*_n)--; }
+struct AutoDec
+{
+    AutoDec(SQInteger *n)
+    {
+        _n = n;
+    }
+    ~AutoDec()
+    {
+        (*_n)--;
+    }
     SQInteger *_n;
 };
 
-inline SQObjectPtr &stack_get(HSQUIRRELVM v,SQInteger idx){return ((idx>=0)?(v->GetAt(idx+v->_stackbase-1)):(v->GetUp(idx)));}
+inline SQObjectPtr &stack_get(HSQUIRRELVM v,SQInteger idx)
+{
+    return ((idx>=0)?(v->GetAt(idx+v->_stackbase-1)):(v->GetUp(idx)));
+}
 
 #define _ss(_vm_) (_vm_)->_sharedstate
 

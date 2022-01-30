@@ -60,11 +60,11 @@
  * for forward compatibility.
  */
 #if defined(__clang__)
-   /*
-    * Per Clang documentation, "Note that marketing version numbers should not
-    * be used to check for language features, as different vendors use different
-    * numbering schemes. Instead, use the feature checking macros."
-    */
+/*
+ * Per Clang documentation, "Note that marketing version numbers should not
+ * be used to check for language features, as different vendors use different
+ * numbering schemes. Instead, use the feature checking macros."
+ */
 #  ifndef __has_extension
 #    define __has_extension __has_feature /* compatibility, for older versions of clang */
 #  endif
@@ -95,7 +95,7 @@
 #    endif
 #    define MOZ_HAVE_CXX11_DELETE
 #  else
-     /* __final is a non-C++11 GCC synonym for 'final', per GCC r176655. */
+/* __final is a non-C++11 GCC synonym for 'final', per GCC r176655. */
 #    if MOZ_GCC_VERSION_AT_LEAST(4, 7, 0)
 #      define MOZ_HAVE_CXX11_FINAL       __final
 #    endif
@@ -106,7 +106,7 @@
 #  if _MSC_VER >= 1700
 #    define MOZ_HAVE_CXX11_FINAL         final
 #  else
-     /* MSVC <= 10 used to spell "final" as "sealed". */
+/* MSVC <= 10 used to spell "final" as "sealed". */
 #    define MOZ_HAVE_CXX11_FINAL         sealed
 #  endif
 #  define MOZ_HAVE_CXX11_OVERRIDE

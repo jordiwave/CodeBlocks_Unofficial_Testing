@@ -10,10 +10,10 @@ using std::string;
 
 class ODTExporter : public BaseExporter
 {
-  public:
+public:
     void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount, int tabWidth);
 
-  private:
+private:
     static const char *ODTManifestFile;
     static const char *ODTMetaFile;
     static const char *ODTMIMETypeFile;

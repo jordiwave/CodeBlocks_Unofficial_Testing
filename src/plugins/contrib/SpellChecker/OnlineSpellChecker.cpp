@@ -213,9 +213,9 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl) const
 
                 int wordend = stc->WordEndPosition(wordstart, true);
                 if ( wordend > 0 &&             // Word end has to be > 0 to be valid (< 0 -> invalid pos, == 0 -> only 1 character)
-                     wordend != curspos &&      // If the cursor is at the end of the current word, the user is currently editing this word, so we skip it
-                     wordend != wordstart &&    // We do not check single letters...
-                     m_pSpellHelper->HasStyleToBeChecked(lang, stc->GetStyleAt(wordstart)) )
+                        wordend != curspos &&      // If the cursor is at the end of the current word, the user is currently editing this word, so we skip it
+                        wordend != wordstart &&    // We do not check single letters...
+                        m_pSpellHelper->HasStyleToBeChecked(lang, stc->GetStyleAt(wordstart)) )
                 {
                     DissectWordAndCheck(stc, wordstart, wordend);
                 }

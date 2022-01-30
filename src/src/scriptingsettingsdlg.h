@@ -39,37 +39,37 @@ typedef std::vector<ScriptEntry> ScriptsVector;
 
 class ScriptingSettingsDlg : public wxScrollingDialog
 {
-    public:
-        ScriptingSettingsDlg(wxWindow* parent);
-        ~ScriptingSettingsDlg() override;
+public:
+    ScriptingSettingsDlg(wxWindow* parent);
+    ~ScriptingSettingsDlg() override;
 
-        void EndModal(int retCode) override;
-    protected:
-        void FillScripts();
-        void UpdateState();
-        void FillTrusts();
-        void UpdateTrustsState();
-        void LoadItem(long item);
-        void SaveItem(long item);
+    void EndModal(int retCode) override;
+protected:
+    void FillScripts();
+    void UpdateState();
+    void FillTrusts();
+    void UpdateTrustsState();
+    void LoadItem(long item);
+    void SaveItem(long item);
 
-        void OnListSelection(wxListEvent& event);
-        void OnListDeselection(wxListEvent& event);
-        void OnAddScript(wxCommandEvent& event);
-        void OnRemoveScript(wxCommandEvent& event);
-        void OnScriptChanged(wxCommandEvent& event);
-        void OnScriptMenuChanged(wxCommandEvent& event);
-        void OnEnable(wxCommandEvent& event);
-        void OnRegister(wxCommandEvent& event);
-        void OnBrowse(wxCommandEvent& event);
+    void OnListSelection(wxListEvent& event);
+    void OnListDeselection(wxListEvent& event);
+    void OnAddScript(wxCommandEvent& event);
+    void OnRemoveScript(wxCommandEvent& event);
+    void OnScriptChanged(wxCommandEvent& event);
+    void OnScriptMenuChanged(wxCommandEvent& event);
+    void OnEnable(wxCommandEvent& event);
+    void OnRegister(wxCommandEvent& event);
+    void OnBrowse(wxCommandEvent& event);
 
-        void OnTrustSelection(wxListEvent& event);
-        void OnDeleteTrust(wxCommandEvent& event);
-        void OnValidateTrusts(wxCommandEvent& event);
+    void OnTrustSelection(wxListEvent& event);
+    void OnDeleteTrust(wxCommandEvent& event);
+    void OnValidateTrusts(wxCommandEvent& event);
 
-        ScriptsVector m_ScriptsVector;
-        bool m_IgnoreTextEvents;
-    private:
-        DECLARE_EVENT_TABLE()
+    ScriptsVector m_ScriptsVector;
+    bool m_IgnoreTextEvents;
+private:
+    DECLARE_EVENT_TABLE()
 };
 
 

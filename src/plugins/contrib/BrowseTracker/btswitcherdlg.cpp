@@ -66,19 +66,19 @@ void wxSwitcherItem::Copy(const wxSwitcherItem& item)
 bool wxSwitcherItem::operator== (const wxSwitcherItem& item) const
 {
     return (
-    m_id == item.m_id &&
-    m_name == item.m_name &&
-    m_title == item.m_title &&
-    m_description == item.m_description &&
-    m_isGroup == item.m_isGroup &&
-    m_breakColumn == item.m_breakColumn &&
-    m_rect == item.m_rect &&
-    m_font == item.m_font &&
-    m_textColour == item.m_textColour &&
-    m_colPos == item.m_colPos &&
-    m_rowPos == item.m_rowPos &&
-    m_window == item.m_window
-        );
+               m_id == item.m_id &&
+               m_name == item.m_name &&
+               m_title == item.m_title &&
+               m_description == item.m_description &&
+               m_isGroup == item.m_isGroup &&
+               m_breakColumn == item.m_breakColumn &&
+               m_rect == item.m_rect &&
+               m_font == item.m_font &&
+               m_textColour == item.m_textColour &&
+               m_colPos == item.m_colPos &&
+               m_rowPos == item.m_rowPos &&
+               m_window == item.m_window
+           );
 }
 
 /*!
@@ -97,8 +97,8 @@ bool wxSwitcherItems::operator== (const wxSwitcherItems& items) const
         return false;
 
     if (m_backgroundColour != items.m_backgroundColour || m_textColour != items.m_textColour ||
-        m_selectionColour != items.m_selectionColour || m_selectionOutlineColour != items.m_selectionOutlineColour ||
-        m_selectionTextColour != items.m_selectionTextColour || m_itemFont != items.m_itemFont)
+            m_selectionColour != items.m_selectionColour || m_selectionOutlineColour != items.m_selectionOutlineColour ||
+            m_selectionTextColour != items.m_selectionTextColour || m_itemFont != items.m_itemFont)
         return false;
 
     size_t i;
@@ -271,7 +271,7 @@ void wxSwitcherItems::PaintItems(wxDC& dc, wxWindow* win)
     {
         standardFont = GetItemFont();
         groupFont = wxFont(standardFont.GetPointSize(), standardFont.GetFamily(), standardFont.GetStyle(),
-            wxFONTWEIGHT_BOLD, standardFont.GetUnderlined(), standardFont.GetFaceName());
+                           wxFONTWEIGHT_BOLD, standardFont.GetUnderlined(), standardFont.GetFaceName());
     }
 
     int textMarginX = wxSWITCHER_TEXT_MARGIN_X;
@@ -529,19 +529,24 @@ void wxMultiColumnListCtrl::OnMouseEvent(wxMouseEvent& event)
         Refresh();
     }
     else if (event.GetButton() == wxMOUSE_BTN_NONE)
-    {   // Mouse move
+    {
+        // Mouse move
         bool bCanSelectItem = true;
         if (m_ptMouse.x != -2 && m_ptMouse.y != -2)
-        {   // If ==-2 => Don't select item on mouse pointer : used when user select the window with keyboard
+        {
+            // If ==-2 => Don't select item on mouse pointer : used when user select the window with keyboard
             if (m_ptMouse.x != -1 && m_ptMouse.y != -1)
-            {   // If ==-1 => The client already move the mouse, select the item under the mouse cursor
+            {
+                // If ==-1 => The client already move the mouse, select the item under the mouse cursor
                 wxPoint ptCurrent = ClientToScreen(event.GetPosition());
                 if (abs(ptCurrent.x - m_ptMouse.x) >= 3 || abs(ptCurrent.y - m_ptMouse.y) >= 3)
-                {   // the user has moved the mouse over a 3 pixels square
+                {
+                    // the user has moved the mouse over a 3 pixels square
                     m_ptMouse.x = m_ptMouse.y = -1; // Accept to select an item
                 }
                 else
-                {   // Select this item is not allowed for the moment, the user must move the mouse
+                {
+                    // Select this item is not allowed for the moment, the user must move the mouse
                     bCanSelectItem = false;
                 }
             }
@@ -598,7 +603,7 @@ void wxMultiColumnListCtrl::OnKey(wxKeyEvent& event)
     }
     // check for BrowseTracker menu accelerators //(2021/05/6)
     else if ( (event.GetKeyCode() == m_btBackKeyCode) || (event.GetKeyCode() == m_btFrwdKeyCode)
-             || (event.GetKeyCode() == GetExtraNavigationKey()) )
+              || (event.GetKeyCode() == GetExtraNavigationKey()) )
     {
         if (event.GetKeyCode() == m_btBackKeyCode)
         {
@@ -906,7 +911,7 @@ BEGIN_EVENT_TABLE(wxSwitcherDialog, wxScrollingDialog)
 END_EVENT_TABLE()
 
 wxSwitcherDialog::wxSwitcherDialog( const wxSwitcherItems& items, wxWindow *parent, wxWindowID id,
-        const wxString& title, const wxPoint &position, const wxSize& size, long style )
+                                    const wxString& title, const wxPoint &position, const wxSize& size, long style )
 {
     Init();
 
@@ -914,7 +919,7 @@ wxSwitcherDialog::wxSwitcherDialog( const wxSwitcherItems& items, wxWindow *pare
 }
 
 bool wxSwitcherDialog::Create( const wxSwitcherItems& items, wxWindow *parent, wxWindowID id,
-        const wxString& title, const wxPoint &position, const wxSize& size, long style )
+                               const wxString& title, const wxPoint &position, const wxSize& size, long style )
 {
     m_switcherBorderStyle = (style & wxBORDER_MASK);
     if (m_switcherBorderStyle == wxBORDER_NONE)
@@ -937,7 +942,7 @@ bool wxSwitcherDialog::Create( const wxSwitcherItems& items, wxWindow *parent, w
         m_listCtrl->SetModifierKey(m_modifierKey);
 
     int borderStyle = wxSIMPLE_BORDER;
-        borderStyle = wxBORDER_NONE;
+    borderStyle = wxBORDER_NONE;
 
     m_descriptionCtrl = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(-1, 100), borderStyle);
     m_descriptionCtrl->SetHTMLBackgroundColour(GetBackgroundColour());
@@ -984,7 +989,7 @@ void wxSwitcherDialog::Init()
         m_borderColour = wxColour(49, 106, 197);
     else
 #endif
-    m_borderColour = *wxBLACK;
+        m_borderColour = *wxBLACK;
 }
 
 void wxSwitcherDialog::OnCloseWindow(wxCloseEvent& WXUNUSED(event))

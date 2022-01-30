@@ -89,21 +89,26 @@ void CPlatform::Assign(const CPlatform& Platform)
 
 CString CPlatform::Name(const OS_Type PlatformOS)
 {
-    switch (PlatformOS) {
+    switch (PlatformOS)
+    {
     default:
     case CPlatform::OS_Other:
     case CPlatform::OS_Count:
     { }
-    case CPlatform::OS_Unix: {
+    case CPlatform::OS_Unix:
+    {
         return STR_UNIX;
     }
-    case CPlatform::OS_Windows: {
+    case CPlatform::OS_Windows:
+    {
         return STR_WINDOWS;
     }
-    case CPlatform::OS_Mac: {
+    case CPlatform::OS_Mac:
+    {
         return STR_MAC;
     }
-    case CPlatform::OS_MSys: {
+    case CPlatform::OS_MSys:
+    {
         return STR_MSYS;
     }
     }
@@ -126,35 +131,46 @@ CString CPlatform::Name(void)
 
 CString CPlatform::Pd(const CString& Path) const
 {
-    if (m_OS_Type==OS_Windows) {
+    if (m_OS_Type==OS_Windows)
+    {
         return MakeWindowsPath(Path);
-    } else {
+    }
+    else
+    {
         return MakeUnixPath(Path);
     }
 }
 
 CString CPlatform::SpecialChars(void) const
 {
-    if (m_OS_Type==OS_Windows) {
+    if (m_OS_Type==OS_Windows)
+    {
         return " ";
-    } else {
+    }
+    else
+    {
         return ALPHABET_SHELL_CHARS;
     }
 }
 
 CString CPlatform::ProtectPath(const CString& Path, const int QuoteMode)
 {
-   (void)QuoteMode;
-    if (Path.GetLength() > 0) {
-        if (Path.GetFirstChar() == '$') {
+    (void)QuoteMode;
+    if (Path.GetLength() > 0)
+    {
+        if (Path.GetFirstChar() == '$')
+        {
             /* Do not change paths like '$(SOME_VAR)' */
             return Path;
         }
     }
-    if (m_OS_Type==OS_Windows) {
+    if (m_OS_Type==OS_Windows)
+    {
         //return QuoteSpaces(Path,QuoteMode);
         return ShieldChars(Path,this->SpecialChars());
-    } else {
+    }
+    else
+    {
         return ShieldChars(Path,this->SpecialChars());
     }
 }
@@ -238,9 +254,11 @@ bool CPlatform::IsDynamicLibraryExtension(const CString& Ext) const
 void CPlatform::Reset(const CPlatform::OS_Type OS)
 {
     m_OS_Type = OS;
-    switch (m_OS_Type) {
+    switch (m_OS_Type)
+    {
     default:
-    case CPlatform::OS_Unix: {
+    case CPlatform::OS_Unix:
+    {
         m_Cmd_Null = "/dev/null";
         m_Cmd_Copy = "cp -p $src $dst";
         m_Cmd_Move = "mv $src $dst";
@@ -263,7 +281,8 @@ void CPlatform::Reset(const CPlatform::OS_Type OS)
         m_DynamicLibraryExtensions.Clear()<<"so";
         break;
     }
-    case CPlatform::OS_MSys: {
+    case CPlatform::OS_MSys:
+    {
         m_Cmd_Null = "/dev/null";
         m_Cmd_Copy = "cp -p $src $dst";
         m_Cmd_Move = "mv $src $dst";
@@ -286,7 +305,8 @@ void CPlatform::Reset(const CPlatform::OS_Type OS)
         m_DynamicLibraryExtensions.Clear() << "dll";
         break;
     }
-    case CPlatform::OS_Windows: {
+    case CPlatform::OS_Windows:
+    {
         m_Cmd_Null = "NUL";
         m_Cmd_Copy = "copy $src $dst";
         m_Cmd_Move = "move $src $dst";
@@ -309,7 +329,8 @@ void CPlatform::Reset(const CPlatform::OS_Type OS)
         m_DynamicLibraryExtensions.Clear()<<"dll";
         break;
     }
-    case CPlatform::OS_Mac: {
+    case CPlatform::OS_Mac:
+    {
         m_Cmd_Null = "/dev/null";
         m_Cmd_Copy = "cp -p $src $dst";
         m_Cmd_Move = "mv $src $dst";
@@ -338,12 +359,15 @@ void CPlatform::Reset(const CPlatform::OS_Type OS)
 void CPlatform::Read(const TiXmlElement *Root, const CString& Name, CString& Value)
 {
     TiXmlNode *_command = (TiXmlNode *)Root->FirstChild("command");
-    while (0!=_command) {
+    while (0!=_command)
+    {
         TiXmlElement* command = _command->ToElement();
         //if (strcmp(command->Value(),"command")!=0) break;
-        if (0!=command) {
+        if (0!=command)
+        {
             char *value = 0;
-            if ((value = (char *)command->Attribute(Name.GetCString()))) {
+            if ((value = (char *)command->Attribute(Name.GetCString())))
+            {
                 Value = value;
             }
         }
@@ -354,12 +378,14 @@ void CPlatform::Read(const TiXmlElement *Root, const CString& Name, CString& Val
 void CPlatform::Read(const TiXmlElement *PlatformRoot)
 {
     char *value = 0;
-    if ((value = (char *)PlatformRoot->Attribute("name"))) {
+    if ((value = (char *)PlatformRoot->Attribute("name")))
+    {
         CString name = value;
         m_OS_Type = OS(name);
     }
     Reset(m_OS_Type);
-    if ((value = (char *)PlatformRoot->Attribute("path_delimiter"))) {
+    if ((value = (char *)PlatformRoot->Attribute("path_delimiter")))
+    {
         m_PathDelimiter = value[0];
     }
     /*
@@ -385,11 +411,13 @@ void CPlatform::Read(const TiXmlElement *PlatformRoot)
         CString s;
         CStringList l;
         Read(PlatformRoot, "static_lib_ext", s);
-        if (!s.IsEmpty()) {
+        if (!s.IsEmpty())
+        {
             ParseStr(s, ' ', l);
             l.RemoveDuplicates();
             l.RemoveEmpty();
-            if (!l.IsEmpty()) {
+            if (!l.IsEmpty())
+            {
                 m_StaticLibraryExtensions = l;
             }
         }
@@ -398,11 +426,13 @@ void CPlatform::Read(const TiXmlElement *PlatformRoot)
         CString s;
         CStringList l;
         Read(PlatformRoot, "dynamic_lib_ext", s);
-        if (!s.IsEmpty()) {
+        if (!s.IsEmpty())
+        {
             ParseStr(s, ' ', l);
             l.RemoveDuplicates();
             l.RemoveEmpty();
-            if (!l.IsEmpty()) {
+            if (!l.IsEmpty())
+            {
                 m_DynamicLibraryExtensions = l;
             }
         }
@@ -503,16 +533,20 @@ size_t CPlatformSet::GetCount(void) const
 
 CPlatform *CPlatformSet::Platform(const size_t Index) const
 {
-    if (Index<m_Platforms.size()) {
+    if (Index<m_Platforms.size())
+    {
         return m_Platforms[Index];
-    } else {
+    }
+    else
+    {
         return 0;
     }
 }
 
 CPlatform *CPlatformSet::Find(const CPlatform::OS_Type OS)
 {
-    for (int i = 0, n = m_Platforms.size(); i < n; i++) {
+    for (int i = 0, n = m_Platforms.size(); i < n; i++)
+    {
         CPlatform *p = m_Platforms[i];
         if (p->OS() == OS) return p;
     }
@@ -523,25 +557,29 @@ void CPlatformSet::AddDefault(void)
 {
     if (m_Locked) return;
     CPlatform *p = Find(CPlatform::OS_Unix);
-    if (0 == p) {
+    if (0 == p)
+    {
         p = new CPlatform();
         p->Reset(CPlatform::OS_Unix);
         m_Platforms.push_back(p);
     }
     p = Find(CPlatform::OS_Windows);
-    if (0 == p) {
+    if (0 == p)
+    {
         p = new CPlatform();
         p->Reset(CPlatform::OS_Windows);
         m_Platforms.push_back(p);
     }
     p = Find(CPlatform::OS_Mac);
-    if (0 == p) {
+    if (0 == p)
+    {
         p = new CPlatform();
         p->Reset(CPlatform::OS_Mac);
         m_Platforms.push_back(p);
     }
     p = Find(CPlatform::OS_MSys);
-    if (0 == p) {
+    if (0 == p)
+    {
         p = new CPlatform();
         p->Reset(CPlatform::OS_MSys);
         m_Platforms.push_back(p);
@@ -551,13 +589,15 @@ void CPlatformSet::AddDefault(void)
 void CPlatformSet::Read(const TiXmlElement *ConfigRoot)
 {
     TiXmlNode *_platform = (TiXmlNode *)ConfigRoot->FirstChild("platform");
-    while (0 != _platform) {
+    while (0 != _platform)
+    {
 
         TiXmlElement* platform = _platform->ToElement();
 
         if (strcmp(platform->Value(), "platform") !=0 )
             break;
-        if (0!=platform) {
+        if (0!=platform)
+        {
             CPlatform *p = new CPlatform();
             p->Read(platform);
             m_Platforms.push_back(p);
@@ -568,7 +608,8 @@ void CPlatformSet::Read(const TiXmlElement *ConfigRoot)
 
 void CPlatformSet::Write(TiXmlElement *ConfigRoot)
 {
-    for (int i = 0, n = m_Platforms.size(); i < n; i++) {
+    for (int i = 0, n = m_Platforms.size(); i < n; i++)
+    {
         CPlatform *p = m_Platforms[i];
         TiXmlElement *p_root = new TiXmlElement("platform");
         p->Write(p_root);
@@ -578,14 +619,18 @@ void CPlatformSet::Write(TiXmlElement *ConfigRoot)
 
 void CPlatformSet::Show(void)
 {
-    if (m_Platforms.size()) {
+    if (m_Platforms.size())
+    {
         std::cout<<"Configued "<<m_Platforms.size()<<" platform(s):"<<std::endl;
-        for (int i = 0, n = m_Platforms.size(); i < n; i++) {
+        for (int i = 0, n = m_Platforms.size(); i < n; i++)
+        {
             std::cout<<"Platform #"<<(i+1)<<": "<<std::endl;
             CPlatform *p = m_Platforms[i];
             p->Show();
         }
-    } else {
+    }
+    else
+    {
         std::cout<<"No platforms configured"<<std::endl;
     }
 }

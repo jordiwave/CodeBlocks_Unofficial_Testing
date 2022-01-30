@@ -30,7 +30,7 @@ BEGIN_EVENT_TABLE(wxSTEditorFrame, wxFrame)
     EVT_MENU_OPEN               (wxSTEditorFrame::OnMenuOpen)
     EVT_MENU                    (wxID_ANY, wxSTEditorFrame::OnMenu)
     EVT_SEARCHCTRL_SEARCH_BTN   (ID_STE_TOOLBAR_SEARCHCTRL, wxSTEditorFrame::OnMenu) // wxCommandEvent so we can treat it like a menu
-	EVT_SEARCHCTRL_CANCEL_BTN   (ID_STE_TOOLBAR_SEARCHCTRL, wxSTEditorFrame::OnMenu)
+    EVT_SEARCHCTRL_CANCEL_BTN   (ID_STE_TOOLBAR_SEARCHCTRL, wxSTEditorFrame::OnMenu)
     EVT_TEXT_ENTER              (ID_STE_TOOLBAR_SEARCHCTRL, wxSTEditorFrame::OnMenu) // wxCommandEvent so we can treat it like a menu
 
     //EVT_STEDITOR_CREATED      (wxID_ANY, wxSTEditorFrame::OnSTECreated)
@@ -104,9 +104,9 @@ wxSTEditorFrame::~wxSTEditorFrame()
         GetOptions().SaveFileConfig(*config);
 
     if (config && GetOptions().HasConfigOption(STE_CONFIG_FINDREPLACE) &&
-        GetOptions().GetFindReplaceData())
+            GetOptions().GetFindReplaceData())
         GetOptions().GetFindReplaceData()->SaveConfig(*config,
-                      GetOptions().GetConfigPath(STE_OPTION_CFGPATH_FINDREPLACE));
+                GetOptions().GetConfigPath(STE_OPTION_CFGPATH_FINDREPLACE));
 }
 
 bool wxSTEditorFrame::Destroy()
@@ -207,7 +207,7 @@ void wxSTEditorFrame::CreateOptions( const wxSTEditorOptions& options )
 #if wxCHECK_VERSION(3, 0, 0)
                                               |(GetOptions().HasFrameOption(STF_CREATE_NOTEBOOK) ? wxDIRCTRL_MULTIPLE : 0)
 #endif // wxCHECK_VERSION(3, 0, 0)
-                                              );
+                                             );
 
         m_sideNotebook->AddPage(m_steTreeCtrl, _("Files"));
         m_sideNotebook->AddPage(m_dirCtrl,     _("Open"));
@@ -273,7 +273,7 @@ void wxSTEditorFrame::CreateOptions( const wxSTEditorOptions& options )
     if (GetOptions().HasConfigOption(STE_CONFIG_FINDREPLACE) && config)
     {
         if (GetOptions().GetFindReplaceData() &&
-            !GetOptions().GetFindReplaceData()->HasLoadedConfig())
+                !GetOptions().GetFindReplaceData()->HasLoadedConfig())
             GetOptions().GetFindReplaceData()->LoadConfig(*config);
     }
 
@@ -364,8 +364,8 @@ bool wxSTEditorFrame::LoadFile(const wxFileName& fileName, bool show_error_dialo
     if (show_error_dialog_on_error && !ok)
     {
         wxMessageBox(wxString::Format(_("Error opening file: '%s'"),
-                     fileName.GetFullPath(GetOptions().GetDisplayPathSeparator()).wx_str()),
-                     STE_APPDISPLAYNAME, wxOK|wxICON_ERROR , this);
+                                      fileName.GetFullPath(GetOptions().GetDisplayPathSeparator()).wx_str()),
+                     STE_APPDISPLAYNAME, wxOK|wxICON_ERROR, this);
     }
 
     return ok;
@@ -374,7 +374,7 @@ bool wxSTEditorFrame::LoadFile(const wxFileName& fileName, bool show_error_dialo
 void wxSTEditorFrame::UpdateAllItems()
 {
     UpdateItems(GetOptions().GetEditorPopupMenu(), GetOptions().GetMenuBar(),
-                                                   GetOptions().GetToolBar());
+                GetOptions().GetToolBar());
     UpdateItems(GetOptions().GetNotebookPopupMenu());
     UpdateItems(GetOptions().GetSplitterPopupMenu());
 }
@@ -442,7 +442,7 @@ void wxSTEditorFrame::SaveConfig(wxConfigBase &config, const wxString &configPat
 
     wxRect rect = GetRect();
     if ((rect.x>=0) && (rect.y>=0) && (rect.width>=100) && (rect.height>=100))
-       config.Write(configPath + wxT("/FrameSize"), wxString::Format(wxT("%d,%d,%d,%d"), rect.x, rect.y, rect.width, rect.height));
+        config.Write(configPath + wxT("/FrameSize"), wxString::Format(wxT("%d,%d,%d,%d"), rect.x, rect.y, rect.width, rect.height));
 }
 
 void wxSTEditorFrame::OnNotebookPageChanged(wxNotebookEvent &WXUNUSED(event))
@@ -530,10 +530,10 @@ void wxSTEditorFrame::OnDirCtrlItemActivation(wxTreeEvent &WXUNUSED(event))
     if (m_dirCtrl->GetTreeCtrl()->HasFlag(wxTR_MULTIPLE))
     {
         // We won't reach here in 2.8 since wxDIRCTRL_MULTIPLE doesn't exist
-        #if wxCHECK_VERSION(3, 0, 0)
-            // Avoid assert in GTK for calling wxTreeCtrl::GetSelection() on multiple selection treectrl
-            m_dirCtrl->GetFilePaths(files);
-        #endif
+#if wxCHECK_VERSION(3, 0, 0)
+        // Avoid assert in GTK for calling wxTreeCtrl::GetSelection() on multiple selection treectrl
+        m_dirCtrl->GetFilePaths(files);
+#endif
     }
     else
     {
@@ -668,18 +668,18 @@ bool wxSTEditorFrame::HandleMenuEvent(wxCommandEvent &event)
     // menu items that the frame handles before children
     switch (win_id)
     {
-        case ID_STE_SAVE_PREFERENCES :
+    case ID_STE_SAVE_PREFERENCES :
+    {
+        // we save everything the children do and more
+        wxConfigBase *config = GetConfigBase();
+        if (config)
         {
-            // we save everything the children do and more
-            wxConfigBase *config = GetConfigBase();
-            if (config)
-            {
-                SaveConfig(*config, GetOptions().GetConfigPath(STE_OPTION_CFGPATH_FRAME));
-                GetOptions().SaveConfig(*config);
-            }
-
-            return true;
+            SaveConfig(*config, GetOptions().GetConfigPath(STE_OPTION_CFGPATH_FRAME));
+            GetOptions().SaveConfig(*config);
         }
+
+        return true;
+    }
     }
 
     wxWindow*           focusWin = FindFocus();
@@ -698,7 +698,7 @@ bool wxSTEditorFrame::HandleMenuEvent(wxCommandEvent &event)
     if (editor)
     {
         if (wxDynamicCast(editor->GetParent(), wxSTEditorSplitter) &&
-            wxDynamicCast(editor->GetParent(), wxSTEditorSplitter)->HandleMenuEvent(event))
+                wxDynamicCast(editor->GetParent(), wxSTEditorSplitter)->HandleMenuEvent(event))
             return true;
         if (editor->HandleMenuEvent(event))
             return true;
@@ -717,36 +717,37 @@ bool wxSTEditorFrame::HandleMenuEvent(wxCommandEvent &event)
 
     switch (win_id)
     {
-        case ID_STE_SHOW_FULLSCREEN :
+    case ID_STE_SHOW_FULLSCREEN :
+    {
+        long style = wxFULLSCREEN_NOBORDER|wxFULLSCREEN_NOTOOLBAR|wxFULLSCREEN_NOCAPTION;
+        ShowFullScreen(event.IsChecked(), style);
+        return true;
+    }
+    case ID_STF_SHOW_SIDEBAR :
+    {
+        ShowSidebar(event.IsChecked());
+        return true;
+    }
+    case wxID_EXIT :
+    {
+        if (GetEditorNotebook())
         {
-            long style = wxFULLSCREEN_NOBORDER|wxFULLSCREEN_NOTOOLBAR|wxFULLSCREEN_NOCAPTION;
-            ShowFullScreen(event.IsChecked(), style);
-            return true;
-        }
-        case ID_STF_SHOW_SIDEBAR :
-        {
-            ShowSidebar(event.IsChecked());
-            return true;
-        }
-        case wxID_EXIT :
-        {
-            if (GetEditorNotebook())
-            {
-                if (!GetEditorNotebook()->QuerySaveIfModified())
-                    return true;
-            }
-            else if (editor && (editor->QuerySaveIfModified(true) == wxCANCEL))
+            if (!GetEditorNotebook()->QuerySaveIfModified())
                 return true;
+        }
+        else if (editor && (editor->QuerySaveIfModified(true) == wxCANCEL))
+            return true;
 
-            Destroy();
-            return true;
-        }
-        case wxID_ABOUT :
-        {
-            wxSTEditorAboutDialog(this);
-            return true;
-        }
-        default : break;
+        Destroy();
+        return true;
+    }
+    case wxID_ABOUT :
+    {
+        wxSTEditorAboutDialog(this);
+        return true;
+    }
+    default :
+        break;
     }
 
     return false;
@@ -781,7 +782,7 @@ void wxSTEditorFrame::OnClose( wxCloseEvent &event )
 #if wxUSE_DRAG_AND_DROP
 
 bool wxSTEditorFileDropTarget::OnDropFiles(wxCoord WXUNUSED(x), wxCoord WXUNUSED(y),
-                                           const wxArrayString& filenames)
+        const wxArrayString& filenames)
 {
     wxCHECK_MSG(m_owner, false, wxT("Invalid file drop target"));
 

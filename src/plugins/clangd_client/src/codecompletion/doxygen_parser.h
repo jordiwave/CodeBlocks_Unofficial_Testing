@@ -9,9 +9,9 @@
 #include <set>
 
 #if wxUSE_POPUPWIN
-    #include <wx/popupwin.h>
+#include <wx/popupwin.h>
 #else
-    #include <wx/frame.h>
+#include <wx/frame.h>
 #endif // wxUSE_POPUPWIN
 
 #include "parser/token.h" // TokenIdxSet
@@ -26,80 +26,80 @@ class wxHtmlLinkEvent;
 
 namespace Doxygen
 {
-    enum KeywordsIds
-    {
-        NO_KEYWORD,
+enum KeywordsIds
+{
+    NO_KEYWORD,
 
-        PARAM,
-        RETURN, RESULT,
-        BRIEF, SHORT,
-        SA, SEE,
+    PARAM,
+    RETURN, RESULT,
+    BRIEF, SHORT,
+    SA, SEE,
 
-        // structural keywords:
-        CLASS, STRUCT,
-        UNION,
-        ENUM,
-        NAMESPACE,
+    // structural keywords:
+    CLASS, STRUCT,
+    UNION,
+    ENUM,
+    NAMESPACE,
 
-        FN,
-        VAR,
-        DEF,
+    FN,
+    VAR,
+    DEF,
 
-        // some other keywords:
-        CODE,
-        ENDCODE,
+    // some other keywords:
+    CODE,
+    ENDCODE,
 
-        NESTED_KEYWORDS_BEGIN,
+    NESTED_KEYWORDS_BEGIN,
 
-        B = NESTED_KEYWORDS_BEGIN,
+    B = NESTED_KEYWORDS_BEGIN,
 
-        KEYWORDS_COUNT // Always at end
-    };
+    KEYWORDS_COUNT // Always at end
+};
 
-    enum KeywordsRanges
-    {
-        RANGE_UNKNOWN,
-        RANGE_PARAGRAPH,
-        RANGE_BLOCK,
-        RANGE_LINE,
-        RANGE_WORD
-    };
+enum KeywordsRanges
+{
+    RANGE_UNKNOWN,
+    RANGE_PARAGRAPH,
+    RANGE_BLOCK,
+    RANGE_LINE,
+    RANGE_WORD
+};
 
 
-    struct DoxygenParser
-    {
-        static const wxString Keywords[];
-        static const int KwCount;
-        static const wxString NewLineReplacment;
+struct DoxygenParser
+{
+    static const wxString Keywords[];
+    static const int KwCount;
+    static const wxString NewLineReplacment;
 
-        DoxygenParser();
+    DoxygenParser();
 
-        int FindNextKeyword(const wxString& doc);
-        int GetArgument(const wxString& doc, int range, wxString& output);
-        int GetPosition() const;
-        void ReplaceInDoc(wxString& doc, size_t start, size_t count, const wxString& str);
-        void ReplaceCurrentKeyword(wxString& doc, const wxString& str);
+    int FindNextKeyword(const wxString& doc);
+    int GetArgument(const wxString& doc, int range, wxString& output);
+    int GetPosition() const;
+    void ReplaceInDoc(wxString& doc, size_t start, size_t count, const wxString& str);
+    void ReplaceCurrentKeyword(wxString& doc, const wxString& str);
 
-    protected:
-        int CheckKeyword(const wxString& doc);
-        int GetParagraphArgument(const wxString& doc, wxString& output);
-        void GetWordArgument(const wxString& doc, wxString& output);
-        void GetBlockArgument(const wxString& doc, wxString& output);
-        int GetLineArgument(const wxString& doc, wxString& output);
-        bool IsKeywordBegin(const wxString& doc) const;
-        bool IsOneOf(wxChar c, const wxChar* chars) const;
+protected:
+    int CheckKeyword(const wxString& doc);
+    int GetParagraphArgument(const wxString& doc, wxString& output);
+    void GetWordArgument(const wxString& doc, wxString& output);
+    void GetBlockArgument(const wxString& doc, wxString& output);
+    int GetLineArgument(const wxString& doc, wxString& output);
+    bool IsKeywordBegin(const wxString& doc) const;
+    bool IsOneOf(wxChar c, const wxChar* chars) const;
 
-    protected:
-        bool IsEnd(const wxString& doc) const;
-        int GetEndLine(const wxString& doc) const;
-        //! \return true if m_Pos has changed
-        bool SkipDecorations(const wxString& doc);
-        //! \return true if m_Pos has changed
-        bool HandleNewLine(const wxString& doc, wxString& output, const wxString& replaceWith = NewLineReplacment);
+protected:
+    bool IsEnd(const wxString& doc) const;
+    int GetEndLine(const wxString& doc) const;
+    //! \return true if m_Pos has changed
+    bool SkipDecorations(const wxString& doc);
+    //! \return true if m_Pos has changed
+    bool HandleNewLine(const wxString& doc, wxString& output, const wxString& replaceWith = NewLineReplacment);
 
-        int m_FoundKw;   // index to Keywors array
-        int m_Pos;          // index to doc
-    };
+    int m_FoundKw;   // index to Keywors array
+    int m_Pos;          // index to doc
+};
 
 }//namespace Doxygen
 
@@ -142,8 +142,14 @@ public:
     void RereadOptions(ConfigManager* cfg);
     void WriteOptions(ConfigManager* cfg);
 
-    bool IsEnabled()              { return m_Enabled;    }
-    void SetEnabled(bool enabled) { m_Enabled = enabled; }
+    bool IsEnabled()
+    {
+        return m_Enabled;
+    }
+    void SetEnabled(bool enabled)
+    {
+        m_Enabled = enabled;
+    }
 
 protected:
     void SaveTokenIdx();

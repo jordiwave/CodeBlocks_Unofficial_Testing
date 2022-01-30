@@ -29,48 +29,51 @@
  */
 class wxsAuiDockableProperty: public wxsProperty
 {
-    public:
+public:
 
-        // Available docking places
-        static const long TopDockable           = 0x0001;
-        static const long BottomDockable        = 0x0002;
-        static const long LeftDockable          = 0x0004;
-        static const long RightDockable         = 0x0008;
-        static const long Dockable              = 0x0010;
+    // Available docking places
+    static const long TopDockable           = 0x0001;
+    static const long BottomDockable        = 0x0002;
+    static const long LeftDockable          = 0x0004;
+    static const long RightDockable         = 0x0008;
+    static const long Dockable              = 0x0010;
 
-        /** \brief Ctor
-         *  \param Offset   offset to long handling border flags
-         *  \param Priority         priority of this property
-         */
-        wxsAuiDockableProperty(long Offset,int Priority);
+    /** \brief Ctor
+     *  \param Offset   offset to long handling border flags
+     *  \param Priority         priority of this property
+     */
+    wxsAuiDockableProperty(long Offset,int Priority);
 
-        /** \brief Returning type of this property */
-        virtual const wxString GetTypeName() { return _T("PaneInfo"); }
+    /** \brief Returning type of this property */
+    virtual const wxString GetTypeName()
+    {
+        return _T("PaneInfo");
+    }
 
-        /** \brief Getting string representation of flags */
-        static wxString GetString(long Flags);
+    /** \brief Getting string representation of flags */
+    static wxString GetString(long Flags);
 
-        /** \brief Getting PaneInfo properties */
-        static void GetDockableFlags(wxAuiPaneInfo& PaneInfo, long Flags);
+    /** \brief Getting PaneInfo properties */
+    static void GetDockableFlags(wxAuiPaneInfo& PaneInfo, long Flags);
 
-    protected:
+protected:
 
-        virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
-        virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-        virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-        virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-        virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
+    virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
+    virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
+    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-    private:
+private:
 
-        static long ParseString(const wxString& String);
+    static long ParseString(const wxString& String);
 
-        long Offset;
+    long Offset;
 
-        static const long DockableAll = TopDockable | BottomDockable | LeftDockable | RightDockable;
-        static const long DockableMask  = DockableAll | Dockable;
+    static const long DockableAll = TopDockable | BottomDockable | LeftDockable | RightDockable;
+    static const long DockableMask  = DockableAll | Dockable;
 };
 
 
@@ -87,29 +90,32 @@ class wxsAuiDockableProperty: public wxsProperty
 /** \brief First time add property */
 class wxsFirstAddProperty: public wxsProperty
 {
-    public:
+public:
 
-        /** \brief Ctor
-         *  \param PGName   name of property in Property Grid
-         *  \param DataName name of property in data stuctures
-         *  \param Offset   offset of boolean (taken from wxsOFFSET macro)
-         *  \param Default  default value applied on read errors
-         */
-        wxsFirstAddProperty(const wxString& PGName,const wxString& DataName,long Offset,bool Default=0,int Priority=100);
+    /** \brief Ctor
+     *  \param PGName   name of property in Property Grid
+     *  \param DataName name of property in data stuctures
+     *  \param Offset   offset of boolean (taken from wxsOFFSET macro)
+     *  \param Default  default value applied on read errors
+     */
+    wxsFirstAddProperty(const wxString& PGName,const wxString& DataName,long Offset,bool Default=0,int Priority=100);
 
-        /** \brief Returning type name */
-        virtual const wxString GetTypeName() { return _T("bool"); }
+    /** \brief Returning type name */
+    virtual const wxString GetTypeName()
+    {
+        return _T("bool");
+    }
 
-    protected:
+protected:
 
-        virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-        virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-    private:
-        long Offset;
-        bool Default;
+private:
+    long Offset;
+    bool Default;
 };
 
 /** \brief Macro automatically declaring boolean property

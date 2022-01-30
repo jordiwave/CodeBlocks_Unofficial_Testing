@@ -7,7 +7,7 @@
  * Copyright: Pecan
  * License:   GPL
  **************************************************************/
- #ifndef LOGGING_H_INCLUDED
+#ifndef LOGGING_H_INCLUDED
 #define LOGGING_H_INCLUDED
 
 // ---------------------------------------------------------------------------
@@ -18,16 +18,16 @@
 
 #define LOGIT wxLogDebug
 #if defined(LOGGING)
- #define LOGGING 1
- #undef LOGIT
- #define LOGIT wxLogMessage
- #define TRAP asm("int3")
+#define LOGGING 1
+#undef LOGIT
+#define LOGIT wxLogMessage
+#define TRAP asm("int3")
 #endif
 
 // ----------------------------------------------------------------------------
-   #if LOGGING
-	extern wxLogWindow*    m_pLog;
-   #endif
+#if LOGGING
+extern wxLogWindow*    m_pLog;
+#endif
 // ----------------------------------------------------------------------------
 
 

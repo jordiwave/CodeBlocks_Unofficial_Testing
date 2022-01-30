@@ -27,38 +27,47 @@
 /** \brief Base class for performing tests */
 class TestCasesBase
 {
-    public:
+public:
 
-        /** \brief Structure gathering the output from tests */
-        struct Output
-        {
-            virtual void AddLog( const wxString& logLine ) = 0;
-            virtual bool StopTest() = 0;
-        };
+    /** \brief Structure gathering the output from tests */
+    struct Output
+    {
+        virtual void AddLog( const wxString& logLine ) = 0;
+        virtual bool StopTest() = 0;
+    };
 
-        /** \brief Ctor */
-        TestCasesBase(): m_Out( 0 ) {}
+    /** \brief Ctor */
+    TestCasesBase(): m_Out( 0 ) {}
 
-        /** \brief Initialize functors */
-        inline void InitOutput( Output& out ) { m_Out = &out; }
+    /** \brief Initialize functors */
+    inline void InitOutput( Output& out )
+    {
+        m_Out = &out;
+    }
 
-        /** \brief Dctor */
-        virtual ~TestCasesBase() {}
+    /** \brief Dctor */
+    virtual ~TestCasesBase() {}
 
-        /** \brief Perform all tests */
-        virtual bool PerformTests() = 0;
+    /** \brief Perform all tests */
+    virtual bool PerformTests() = 0;
 
-    protected:
+protected:
 
-        /** \brief Output some test log */
-        inline void AddLog( const wxString& logLine ) { m_Out->AddLog( logLine ); }
+    /** \brief Output some test log */
+    inline void AddLog( const wxString& logLine )
+    {
+        m_Out->AddLog( logLine );
+    }
 
-        /** \brief Check if we should stop */
-        inline bool StopTest() { return m_Out->StopTest(); }
+    /** \brief Check if we should stop */
+    inline bool StopTest()
+    {
+        return m_Out->StopTest();
+    }
 
-    private:
+private:
 
-        Output* m_Out;  ///< \brief structure gathering the output
+    Output* m_Out;  ///< \brief structure gathering the output
 };
 
 #endif

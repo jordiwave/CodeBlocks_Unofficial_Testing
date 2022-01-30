@@ -18,14 +18,14 @@
 
 namespace std
 {
-    template<>
-    struct hash<wxString>
+template<>
+struct hash<wxString>
+{
+    size_t operator()(const wxString& s) const
     {
-        size_t operator()(const wxString& s) const
-        {
-            return std::hash<std::wstring>()(s.ToStdWstring());
-        }
-    };
+        return std::hash<std::wstring>()(s.ToStdWstring());
+    }
+};
 } // namespace std
 
 #endif // wxUSE_STD_STRING

@@ -31,23 +31,23 @@
 int
 wmf(bool testMode)
 {
-  int rc = 0;
-  if (wxFileName::IsFileReadable(wxS("ringmaster.wmf")))
-  {
-    wxPdfDocument pdf;
-    if (testMode)
+    int rc = 0;
+    if (wxFileName::IsFileReadable(wxS("ringmaster.wmf")))
     {
-      pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
-      pdf.SetCompression(false);
+        wxPdfDocument pdf;
+        if (testMode)
+        {
+            pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
+            pdf.SetCompression(false);
+        }
+        pdf.AddPage();
+        pdf.Image(wxS("ringmaster.wmf"), 50, 10, 110, 0, wxS("wmf"));
+        pdf.SaveAsFile(wxS("wmf.pdf"));
     }
-    pdf.AddPage();
-    pdf.Image(wxS("ringmaster.wmf"), 50, 10, 110, 0, wxS("wmf"));
-    pdf.SaveAsFile(wxS("wmf.pdf"));
-  }
-  else
-  {
-    rc = 1;
-  }
-  return rc;
+    else
+    {
+        rc = 1;
+    }
+    return rc;
 }
 

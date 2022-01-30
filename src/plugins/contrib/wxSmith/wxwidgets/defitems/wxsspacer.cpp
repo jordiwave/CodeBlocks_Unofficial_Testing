@@ -26,48 +26,48 @@
 
 namespace
 {
-    wxsRegisterItem<wxsSpacer> Reg(
-        _T("Spacer"),
-        wxsTSpacer,
-        _("wxWidgets license"),
-        _("wxWidgets team"),
-        _T(""),
-        _T("www.wxwidgets.org"),
-        _T("Layout"),
-        100,
-        _T(""),
-        wxsCPP,
-        2,6,
-        _T("images/wxsmith/Spacer32.png"),
-        _T("images/wxsmith/Spacer16.png"));
+wxsRegisterItem<wxsSpacer> Reg(
+    _T("Spacer"),
+    wxsTSpacer,
+    _("wxWidgets license"),
+    _("wxWidgets team"),
+    _T(""),
+    _T("www.wxwidgets.org"),
+    _T("Layout"),
+    100,
+    _T(""),
+    wxsCPP,
+    2,6,
+    _T("images/wxsmith/Spacer32.png"),
+    _T("images/wxsmith/Spacer16.png"));
 
-    class wxsSpacerPreview: public wxPanel
+class wxsSpacerPreview : public wxPanel
+{
+public:
+    wxsSpacerPreview(wxWindow* Parent,const wxSize& Size):
+        wxPanel(Parent,-1,wxDefaultPosition,Size)
     {
-        public:
-            wxsSpacerPreview(wxWindow* Parent,const wxSize& Size):
-                wxPanel(Parent,-1,wxDefaultPosition,Size)
-            {
-            }
+    }
 
-        private:
-            void OnPaint(cb_unused wxPaintEvent& event)
-            {
-                wxPaintDC DC(this);
-                DC.SetBrush(wxBrush(*wxBLACK, wxBRUSHSTYLE_CROSSDIAG_HATCH));
-                DC.SetPen(wxPen(*wxBLACK, 1));
-                DC.DrawRectangle(0,0,GetSize().GetWidth(),GetSize().GetHeight());
-            }
+private:
+    void OnPaint(cb_unused wxPaintEvent& event)
+    {
+        wxPaintDC DC(this);
+        DC.SetBrush(wxBrush(*wxBLACK, wxBRUSHSTYLE_CROSSDIAG_HATCH));
+        DC.SetPen(wxPen(*wxBLACK, 1));
+        DC.DrawRectangle(0, 0, GetSize().GetWidth(), GetSize().GetHeight());
+    }
 
-            DECLARE_EVENT_TABLE()
-    };
+    DECLARE_EVENT_TABLE()
+};
 
-    BEGIN_EVENT_TABLE(wxsSpacerPreview,wxPanel)
-        EVT_PAINT(wxsSpacerPreview::OnPaint)
-    END_EVENT_TABLE()
+BEGIN_EVENT_TABLE(wxsSpacerPreview,wxPanel)
+    EVT_PAINT(wxsSpacerPreview::OnPaint)
+END_EVENT_TABLE()
 
 }
 
-wxsSpacer::wxsSpacer(wxsItemResData* Data): wxsItem(Data,&Reg.Info,flSize,0,0)
+wxsSpacer::wxsSpacer(wxsItemResData* Data) : wxsItem(Data, &Reg.Info, flSize, 0, 0)
 {
 }
 
@@ -94,40 +94,40 @@ void wxsSpacer::OnBuildCreatingCode()
     if (!Extra)
         return;
 
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        wxsSizeData& Size = GetBaseProps()->m_Size;
+        if (Size.DialogUnits)
         {
-            wxsSizeData& Size = GetBaseProps()->m_Size;
-            if ( Size.DialogUnits )
-            {
-                // We use 'SpacerSizes' extra variable to keep count of currently added spacer sizes
-                // length of this extra string indicates current spacer size number
-                const wxString SizeName = GetCoderContext()->GetUniqueName(_T("__SpacerSize"));
+            // We use 'SpacerSizes' extra variable to keep count of currently added spacer sizes
+            // length of this extra string indicates current spacer size number
+            const wxString SizeName = GetCoderContext()->GetUniqueName(_T("__SpacerSize"));
 
-                Codef(_T("wxSize %s = %z;\n")
-                      _T("%MAdd(%s.GetWidth(),%s.GetHeight(),%s);\n"),
-                      SizeName.wx_str(),
-                      &Size,
-                      SizeName.wx_str(),
-                      SizeName.wx_str(),
-                      Extra->AllParamsCode(GetCoderContext()).wx_str());
-            }
-            else
-            {
-                Codef(_T("%MAdd(%d,%d,%s);\n"),
-                    (int)Size.X,
-                    (int)Size.Y,
-                    Extra->AllParamsCode(GetCoderContext()).wx_str());
-            }
-
-            break;
+            Codef(_T("wxSize %s = %z;\n")
+                  _T("%MAdd(%s.GetWidth(),%s.GetHeight(),%s);\n"),
+                  SizeName.wx_str(),
+                  &Size,
+                  SizeName.wx_str(),
+                  SizeName.wx_str(),
+                  Extra->AllParamsCode(GetCoderContext()).wx_str());
+        }
+        else
+        {
+            Codef(_T("%MAdd(%d,%d,%s);\n"),
+                  (int)Size.X,
+                  (int)Size.Y,
+                  Extra->AllParamsCode(GetCoderContext()).wx_str());
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsSpacer::OnBuildCreatingCode"),GetLanguage());
-        }
+        break;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsSpacer::OnBuildCreatingCode"), GetLanguage());
+    }
     }
 }

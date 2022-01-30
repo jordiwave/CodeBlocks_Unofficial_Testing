@@ -30,34 +30,35 @@
 
 class wxsBmpSwitcher : public wxsWidget
 {
-	public:
-		wxsBmpSwitcher(wxsItemResData* Data);
-		virtual ~wxsBmpSwitcher();
-	protected:
-	private:
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+public:
+    wxsBmpSwitcher(wxsItemResData* Data);
+    virtual ~wxsBmpSwitcher();
+protected:
+private:
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        // Dynamic properties.
-        /*! \brief Bitmap enum.
-         */
-        struct BmpDesc{
-            wxPGId 		id;														//!< Tag property ID.
-            wxString	sPath;												//!< The path to the image file.
-        };
-        WX_DEFINE_ARRAY(BmpDesc*, BmpArray);
+    // Dynamic properties.
+    /*! \brief Bitmap enum.
+     */
+    struct BmpDesc
+    {
+        wxPGId 		id;														//!< Tag property ID.
+        wxString	sPath;												//!< The path to the image file.
+    };
+    WX_DEFINE_ARRAY(BmpDesc*, BmpArray);
 
-        long			m_iState;												//!< The control's state i.e. which bitmap is visible.
-        BmpArray 	m_arrBmps;											//!< The array of bitmap description structs.
-        wxPGId 		m_BmpCountId;									//!< The ID of the bitmap count property.
+    long			m_iState;												//!< The control's state i.e. which bitmap is visible.
+    BmpArray 	m_arrBmps;											//!< The array of bitmap description structs.
+    wxPGId 		m_BmpCountId;									//!< The ID of the bitmap count property.
 
-        void OnAddExtraProperties(wxsPropertyGridManager* Grid);
-        void OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId id);
-        bool OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra);
-        bool OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra);
-		void InsertPropertyForBmp(wxsPropertyGridManager* Grid,int Position);
-		bool HandleChangeInBmp(wxsPropertyGridManager* Grid,wxPGId id,int Position);
+    void OnAddExtraProperties(wxsPropertyGridManager* Grid);
+    void OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId id);
+    bool OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra);
+    bool OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra);
+    void InsertPropertyForBmp(wxsPropertyGridManager* Grid,int Position);
+    bool HandleChangeInBmp(wxsPropertyGridManager* Grid,wxPGId id,int Position);
 };
 
 #endif // WXSBMPSWITCHER_H

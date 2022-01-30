@@ -38,7 +38,7 @@ bool PasteTask::Done()const
 }
 
 // events from window:
-void PasteTask::OnMouseLeftUp(wxMouseEvent& /*event*/, const wxPoint& /*position*/){}
+void PasteTask::OnMouseLeftUp(wxMouseEvent& /*event*/, const wxPoint& /*position*/) {}
 
 void PasteTask::OnMouseLeftDown(wxMouseEvent& /*event*/, const wxPoint &position)
 {
@@ -94,7 +94,7 @@ void PasteTask::OnMouseRightDown(wxMouseEvent& /*event*/, const wxPoint& /*posit
     m_done = true;
 }
 
-void PasteTask::OnMouseRightUp(wxMouseEvent& /*event*/, const wxPoint& /*position*/){}
+void PasteTask::OnMouseRightUp(wxMouseEvent& /*event*/, const wxPoint& /*position*/) {}
 
 HooverDrawlet *PasteTask::OnMouseMove(wxMouseEvent& /*event*/, const wxPoint &position)
 {
@@ -123,22 +123,31 @@ void PasteTask::OnKeyDown(wxKeyEvent &event)
     //event.Skip();
 }
 
-void PasteTask::OnChar(wxKeyEvent & /*event*/){}
+void PasteTask::OnChar(wxKeyEvent & /*event*/) {}
 
 // events from frame( s )
-bool PasteTask::CanEdit()const{ return false; }
+bool PasteTask::CanEdit()const
+{
+    return false;
+}
 
-bool PasteTask::HasSelection()const{ return false; }
+bool PasteTask::HasSelection()const
+{
+    return false;
+}
 
-bool PasteTask::CanPaste()const{ return false; }
+bool PasteTask::CanPaste()const
+{
+    return false;
+}
 
-void PasteTask::DeleteSelection(){}
+void PasteTask::DeleteSelection() {}
 
-void PasteTask::Copy(){}
+void PasteTask::Copy() {}
 
-void PasteTask::Paste(){}
+void PasteTask::Paste() {}
 
-void PasteTask::Cut(){}
+void PasteTask::Cut() {}
 
 //bool PasteTask::CanCopy()const{return false;}
 

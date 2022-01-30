@@ -18,7 +18,7 @@
 /// A Thread Pool implementation
 class DLLIMPORT cbThreadPool
 {
-  public:
+public:
     /** cbThreadPool ctor
       *
       * @param owner Event handler to receive cbEVT_THREADTASK_ENDED and cbEVT_THREADTASK_ALLDONE events
@@ -46,7 +46,10 @@ class DLLIMPORT cbThreadPool
     int GetConcurrentThreads() const;
 
     /** return the pool ID */
-    int GetId() const { return m_ID; }
+    int GetId() const
+    {
+        return m_ID;
+    }
 
     /** Adds a new task to the pool
       *
@@ -84,7 +87,7 @@ class DLLIMPORT cbThreadPool
       */
     void BatchEnd();
 
-  private:
+private:
 
     /// Josuttis' implementation of CountedPtr
     /* class for counted reference semantics
@@ -94,18 +97,18 @@ class DLLIMPORT cbThreadPool
     template <typename T>
     class CountedPtr
     {
-      private:
+    private:
         T *ptr;         // pointer to the value
         long *count;    // shared number of owners
 
-      public:
+    public:
         // initialize pointer with existing pointer
         // - requires that the pointer p is a return value of new
         explicit CountedPtr(T *p = nullptr) : ptr(p), count(new long(1)) {}
         // copy pointer (one more owner)
         CountedPtr(const CountedPtr<T> &p) : ptr(p.ptr), count(p.count)
         {
-          ++*count;
+            ++*count;
         }
 
         // destructor (delete value if this was the last owner)
@@ -138,7 +141,7 @@ class DLLIMPORT cbThreadPool
             return ptr;
         }
 
-      private:
+    private:
         /** decrease the counter, and if it get 0, destroy both counter and value */
         void dispose()
         {
@@ -157,7 +160,7 @@ class DLLIMPORT cbThreadPool
       */
     class cbWorkerThread : public wxThread
     {
-      public:
+    public:
         /** cbWorkerThread ctor
           *
           * @param pool Thread Pool this Worker Thread belongs to
@@ -181,7 +184,7 @@ class DLLIMPORT cbThreadPool
         /// Aborts the running task (if any)
         void AbortTask();
 
-      private:
+    private:
         /** whether is is aborted or not */
         bool m_abort;
 
@@ -209,25 +212,25 @@ class DLLIMPORT cbThreadPool
     /// All tasks are added to one of these. It'll also save the autodelete value
     struct cbThreadedTaskElement
     {
-      cbThreadedTaskElement(cbThreadedTask *_task = nullptr, bool _autodelete = false)
-      : task(_task),
-        autodelete(_autodelete)
-      {
-        // empty
-      }
-
-      /// It'll delete the task only if it was set to
-      void Delete()
-      {
-        if (autodelete)
+        cbThreadedTaskElement(cbThreadedTask *_task = nullptr, bool _autodelete = false)
+            : task(_task),
+              autodelete(_autodelete)
         {
-          delete task;
-          task = nullptr; // better safe than sorry
+            // empty
         }
-      }
 
-      cbThreadedTask *task;
-      bool autodelete;
+        /// It'll delete the task only if it was set to
+        void Delete()
+        {
+            if (autodelete)
+            {
+                delete task;
+                task = nullptr; // better safe than sorry
+            }
+        }
+
+        cbThreadedTask *task;
+        bool autodelete;
     };
 
     typedef std::list<cbThreadedTaskElement> TasksQueue;
@@ -285,7 +288,7 @@ class DLLIMPORT cbThreadPool
     void AwakeNeeded();
 
 
-  protected:
+protected:
     friend class cbWorkerThread;
 
     /** Returns the next task in the queue to run
@@ -322,59 +325,59 @@ class DLLIMPORT cbThreadPool
 /* ************************************************ */
 
 inline cbThreadPool::cbThreadPool(wxEvtHandler *owner, int id, int concurrentThreads, unsigned int stackSize)
-: m_pOwner(owner),
-  m_ID(id),
-  m_batching(false),
-  m_concurrentThreads(-1),
-  m_stackSize(stackSize),
-  m_concurrentThreadsSchedule(0),
-  m_taskAdded(false),
-  m_workingThreads(0),
-  m_semaphore(new wxSemaphore)
+    : m_pOwner(owner),
+      m_ID(id),
+      m_batching(false),
+      m_concurrentThreads(-1),
+      m_stackSize(stackSize),
+      m_concurrentThreadsSchedule(0),
+      m_taskAdded(false),
+      m_workingThreads(0),
+      m_semaphore(new wxSemaphore)
 {
-  // m_concurrentThreads will be set to a positive integer value.
-  SetConcurrentThreads(concurrentThreads);
+    // m_concurrentThreads will be set to a positive integer value.
+    SetConcurrentThreads(concurrentThreads);
 }
 
 inline int cbThreadPool::GetConcurrentThreads() const
 {
-  wxMutexLocker lock(m_Mutex);
-  return m_concurrentThreadsSchedule ? m_concurrentThreadsSchedule : m_concurrentThreads;
+    wxMutexLocker lock(m_Mutex);
+    return m_concurrentThreadsSchedule ? m_concurrentThreadsSchedule : m_concurrentThreads;
 }
 
 inline bool cbThreadPool::Done() const
 {
-  wxMutexLocker lock(m_Mutex);
-  return m_workingThreads == 0;
+    wxMutexLocker lock(m_Mutex);
+    return m_workingThreads == 0;
 }
 
 inline void cbThreadPool::BatchBegin()
 {
-  wxMutexLocker lock(m_Mutex);
-  m_batching = true;
+    wxMutexLocker lock(m_Mutex);
+    m_batching = true;
 }
 
 inline void cbThreadPool::Broadcast()
 {
-  // if m_concurrentThreads == -1, which means the pool is not initialized yet
-  if (m_concurrentThreads == -1)
-    return;
-  // let the idle(pending) worker thread to execute tasks, those worker threads are waiting for semaphore
-  for (std::size_t i = 0; i < static_cast<std::size_t>(m_concurrentThreads - m_workingThreads); ++i)
-    m_semaphore->Post();
+    // if m_concurrentThreads == -1, which means the pool is not initialized yet
+    if (m_concurrentThreads == -1)
+        return;
+    // let the idle(pending) worker thread to execute tasks, those worker threads are waiting for semaphore
+    for (std::size_t i = 0; i < static_cast<std::size_t>(m_concurrentThreads - m_workingThreads); ++i)
+        m_semaphore->Post();
 }
 
 inline void cbThreadPool::AwakeNeeded()
 {
-  // if m_concurrentThreads == -1, which means the pool is not initialized yet
-  if (m_concurrentThreads == -1)
-    return;
+    // if m_concurrentThreads == -1, which means the pool is not initialized yet
+    if (m_concurrentThreads == -1)
+        return;
 
-  // the thread number to awake should be less than the idle thread number and the tasks queue's size
-  std::size_t awakeThreadNumber = std::min<std::size_t>(m_tasksQueue.size(),
-                                                        (m_concurrentThreads - m_workingThreads));
-  for (std::size_t i = 0; i < awakeThreadNumber; ++i)
-    m_semaphore->Post();
+    // the thread number to awake should be less than the idle thread number and the tasks queue's size
+    std::size_t awakeThreadNumber = std::min<std::size_t>(m_tasksQueue.size(),
+                                    (m_concurrentThreads - m_workingThreads));
+    for (std::size_t i = 0; i < awakeThreadNumber; ++i)
+        m_semaphore->Post();
 }
 
 #endif  //CBTHREADPOOL_H

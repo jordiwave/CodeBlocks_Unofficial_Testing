@@ -50,11 +50,14 @@ void CWorkspaceUnit::Read(const TiXmlElement* UnitRoot)
 {
     m_FileName = UnitRoot->Attribute("filename");
     const TiXmlNode *_depends = UnitRoot->FirstChild("Depends");
-    while (0!=_depends) {
+    while (0!=_depends)
+    {
         const TiXmlElement *depends = _depends->ToElement();
-        if (0!=depends) {
+        if (0!=depends)
+        {
             char *value = (char *)depends->Attribute("filename");
-            if (0!=value) {
+            if (0!=value)
+            {
                 m_Depends.Insert(value);
             }
         }
@@ -70,7 +73,8 @@ void CWorkspaceUnit::Show(void)
     std::cout<<m_FileName.GetString();
     std::cout<<", Weight: "<<m_Weight;
     std::cout<<", Dependencies: "<<m_Depends.GetCount()<<std::endl;
-    for (int i = 0, n = m_Depends.GetCount(); i < n; i++) {
+    for (int i = 0, n = m_Depends.GetCount(); i < n; i++)
+    {
         std::cout<<"Dependency #"<<(i+1)<<": "<<m_Depends[i].GetString()<<std::endl;
     }
 #else
@@ -100,16 +104,22 @@ CCodeBlocksWorkspace::~CCodeBlocksWorkspace(void)
 int CCodeBlocksWorkspace::CalculateProjectWeight(const size_t Index)
 {
     CWorkspaceUnit *unit = m_Units[Index];
-    if (unit->m_Depends.GetCount()) {
-        if (unit->m_Weight) {
+    if (unit->m_Depends.GetCount())
+    {
+        if (unit->m_Weight)
+        {
             return unit->m_Weight;
         }
         int weight = 0;
-        for (int j = 0, nj = unit->m_Depends.GetCount(); j < nj; j++) {
+        for (int j = 0, nj = unit->m_Depends.GetCount(); j < nj; j++)
+        {
             CString dependency = unit->m_Depends[j];
-            for (size_t i = 0, ni = m_Units.size(); i < ni; i++) {
-                if (i!=Index) {
-                    if (unit->m_FileName == dependency) {
+            for (size_t i = 0, ni = m_Units.size(); i < ni; i++)
+            {
+                if (i!=Index)
+                {
+                    if (unit->m_FileName == dependency)
+                    {
                         weight += CalculateProjectWeight(i);
                     }
                 }
@@ -123,7 +133,8 @@ int CCodeBlocksWorkspace::CalculateProjectWeight(const size_t Index)
 
 void CCodeBlocksWorkspace::ResolveProjectDependencies(void)
 {
-    for (size_t i = 0; i < m_Units.size(); i++) {
+    for (size_t i = 0; i < m_Units.size(); i++)
+    {
         m_Units[i]->m_Weight = CalculateProjectWeight(i);
     }
 }
@@ -146,7 +157,8 @@ void CCodeBlocksWorkspace::SortProjectsByWeight(void)
 void CCodeBlocksWorkspace::Clear()
 {
     m_Title.Clear();
-    for (size_t i = 0; i < m_Units.size(); i++) {
+    for (size_t i = 0; i < m_Units.size(); i++)
+    {
         delete m_Units[i];
     }
     m_Units.clear();
@@ -161,14 +173,18 @@ void CCodeBlocksWorkspace::Clear()
 void CCodeBlocksWorkspace::Read(const TiXmlElement* WorkspaceRoot)
 {
     const TiXmlNode *_workspace = WorkspaceRoot->FirstChild("Workspace");
-    if (0!=_workspace) {
+    if (0!=_workspace)
+    {
         const TiXmlElement *workspace = _workspace->ToElement();
-        if (0!=workspace) {
+        if (0!=workspace)
+        {
             m_Title = workspace->Attribute("title");
             TiXmlNode *_project = (TiXmlNode *)_workspace->FirstChild("Project");
-            while (0!=_project) {
+            while (0!=_project)
+            {
                 TiXmlElement* project = _project->ToElement();
-                if (0!=project) {
+                if (0!=project)
+                {
                     CWorkspaceUnit *unit = new CWorkspaceUnit();
                     unit->Read(project);
                     m_Units.push_back(unit);
@@ -187,7 +203,8 @@ bool CCodeBlocksWorkspace::LoadWorkspace(const CString& FileName)
     if (!result) return false;
     Clear();
     const TiXmlElement *root = cbw.RootElement();
-    if (0==strcmp(root->Value(),"CodeBlocks_workspace_file")) {
+    if (0==strcmp(root->Value(),"CodeBlocks_workspace_file"))
+    {
         Read(root);
         result = true;
     }
@@ -198,7 +215,8 @@ bool CCodeBlocksWorkspace::LoadWorkspace(const CString& FileName)
 bool CCodeBlocksWorkspace::LoadWorkspaceProjects(const CString& WorkspacePath)
 {
     bool result = true;
-    for (size_t i = 0; i < m_Units.size(); i++) {
+    for (size_t i = 0; i < m_Units.size(); i++)
+    {
         result &= m_Units[i]->LoadProject(WorkspacePath);
     }
 // resolve project dependencies and sort projects by weight
@@ -211,13 +229,15 @@ void CCodeBlocksWorkspace::Show(const bool ShowProjects)
 {
     std::cout<<"Workspace title: "<<m_Title.GetString()<<std::endl;
     std::cout<<"Projects: "<<m_Units.size()<<std::endl;
-    for (size_t i = 0; i < m_Units.size(); i++) {
+    for (size_t i = 0; i < m_Units.size(); i++)
+    {
         std::cout<<"Project #"<<(i+1)<<": ";
 #ifndef SHOW_MODE_ONELINE
         std::cout<<std::endl;
 #endif
         m_Units[i]->Show();
-        if (ShowProjects) {
+        if (ShowProjects)
+        {
             m_Units[i]->m_Project.Show();
         }
     }
@@ -229,14 +249,16 @@ bool CCodeBlocksWorkspace::GenerateMakefile
 // generate individual makefiles for projects
     CString cwd = GetCurrentDir();
     CString workspace_path = ExtractFilePath(FileName);
-    if (!workspace_path.IsEmpty()) {
+    if (!workspace_path.IsEmpty())
+    {
         ChangeDir(workspace_path);
     }
 //
     m_TargetNames.Clear();
     m_MakefileNames.Clear();
     m_TargetDeps.Clear();
-    for (size_t i = 0; i < m_Units.size(); i++) {
+    for (size_t i = 0; i < m_Units.size(); i++)
+    {
         CString project_name = m_Units[i]->m_FileName;
         //CString makefile_path = JoinPaths(workspace_path,ExtractFilePath(project_name));
         CString makefile_path = ExtractFilePath(project_name);
@@ -246,7 +268,8 @@ bool CCodeBlocksWorkspace::GenerateMakefile
         CString makefile_name = ExtractFileName(makefile_pathname);
         target_name = CCodeBlocksProject::DecorateTargetName(target_name,Config.TargetNameCase());
         CString target_deps;
-        for (int j = 0; j < m_Units[i]->m_Depends.GetCount(); j++) {
+        for (int j = 0; j < m_Units[i]->m_Depends.GetCount(); j++)
+        {
             CString dep_name = ChangeFileExt(m_Units[i]->m_Depends[j],"");
             if (j>0) target_deps += " ";
             target_deps += CCodeBlocksProject::DecorateTargetName(dep_name,Config.TargetNameCase());
@@ -262,11 +285,13 @@ bool CCodeBlocksWorkspace::GenerateMakefile
     }
 // generate workspace makefile
     int active_platforms = 0;
-    for (size_t pi = 0, pn = Config.Platforms().GetCount(); pi < pn; pi++) {
+    for (size_t pi = 0, pn = Config.Platforms().GetCount(); pi < pn; pi++)
+    {
         if (Config.Platforms().Platform(pi)->Active()) active_platforms++;
     }
     bool single_platform = (1==active_platforms);
-    for (size_t pi = 0, pn = Config.Platforms().GetCount(); pi < pn; pi++) {
+    for (size_t pi = 0, pn = Config.Platforms().GetCount(); pi < pn; pi++)
+    {
         CPlatform *pl = Config.Platforms().Platform(pi);
         if (!pl->Active()) continue;
         CString makefile_path = ExtractFilePath(FileName);
@@ -300,16 +325,19 @@ bool CCodeBlocksWorkspace::GenerateMakefile
         section++;
         // targets
         CMakefileRule& rule_all = m_Makefile.AddRule("all",section);
-        for (int i = 0; i < m_TargetNames.GetCount(); i++) {
+        for (int i = 0; i < m_TargetNames.GetCount(); i++)
+        {
             rule_all.Dependencies().Insert(m_TargetNames[i]);
         }
         section++;
-        for (int i = 0; i < m_TargetNames.GetCount(); i++) {
+        for (int i = 0; i < m_TargetNames.GetCount(); i++)
+        {
             CString makefile_path = m_MakefilePaths[i];
             CMakefileRule& rule_target = m_Makefile.AddRule(m_TargetNames[i],section);
             rule_target.Dependencies().Insert(m_TargetDeps[i]);
             line = "$(MAKE)";
-            if (!makefile_path.IsEmpty()) {
+            if (!makefile_path.IsEmpty())
+            {
                 line += " -C "+pl->ProtectPath(pl->Pd(makefile_path),Config.QuotePathMode());
             }
             line += " all -f "+pl->ProtectPath(pl->Pd(m_MakefileNames[i])+platform_suffix,Config.QuotePathMode());
@@ -318,15 +346,18 @@ bool CCodeBlocksWorkspace::GenerateMakefile
         section++;
         //
         CMakefileRule& rule_clean = m_Makefile.AddRule("clean",section);
-        for (int i = 0; i < m_TargetNames.GetCount(); i++) {
+        for (int i = 0; i < m_TargetNames.GetCount(); i++)
+        {
             rule_clean.Dependencies().Insert("clean_"+m_TargetNames[i]);
         }
         section++;
-        for (int i = 0; i < m_TargetNames.GetCount(); i++) {
+        for (int i = 0; i < m_TargetNames.GetCount(); i++)
+        {
             CString makefile_path = m_MakefilePaths[i];
             CMakefileRule& rule_clean_target = m_Makefile.AddRule("clean_"+m_TargetNames[i],section);
             line = "$(MAKE)";
-            if (!makefile_path.IsEmpty()) {
+            if (!makefile_path.IsEmpty())
+            {
                 line += " -C "+pl->ProtectPath(pl->Pd(makefile_path),Config.QuotePathMode());
             }
             line += " clean -f "+pl->ProtectPath(pl->Pd(m_MakefileNames[i])+platform_suffix,Config.QuotePathMode());
@@ -348,13 +379,15 @@ void CCodeBlocksWorkspace::GenerateMakefileText(const CString& FileName,
 //std::cout<<"Workspace: "<<FileName.GetCString()<<std::endl;
     CString cwd = GetCurrentDir();
     CString workspace_path = ExtractFilePath(FileName);
-    if (!workspace_path.IsEmpty()) {
+    if (!workspace_path.IsEmpty())
+    {
         ChangeDir(workspace_path);
     }
 //std::cout<<"Workspace path: "<<workspace_path.GetCString()<<std::endl;
     m_TargetNames.Clear();
     m_MakefileNames.Clear();
-    for (size_t i = 0; i < m_Units.size(); i++) {
+    for (size_t i = 0; i < m_Units.size(); i++)
+    {
         CString project_name = m_Units[i]->m_FileName;
         CString makefile_path = JoinPaths(workspace_path,ExtractFilePath(project_name));
         CString makefile_pathname = JoinPaths(workspace_path,project_name+".mak");
@@ -376,11 +409,13 @@ void CCodeBlocksWorkspace::GenerateMakefileText(const CString& FileName,
 //CString cwd = GetCurrentDir();
 // generate workspace makefile
     int active_platforms = 0;
-    for (size_t pi = 0, pn = Config.Platforms().GetCount(); pi < pn; pi++) {
+    for (size_t pi = 0, pn = Config.Platforms().GetCount(); pi < pn; pi++)
+    {
         if (Config.Platforms().Platform(pi)->Active()) active_platforms++;
     }
     bool single_platform = (1==active_platforms);
-    for (size_t pi = 0, pn = Config.Platforms().GetCount(); pi < pn; pi++) {
+    for (size_t pi = 0, pn = Config.Platforms().GetCount(); pi < pn; pi++)
+    {
         CPlatform *pl = Config.Platforms().Platform(pi);
         if (!pl->Active()) continue;
         CString makefile_path = ExtractFilePath(FileName);
@@ -414,17 +449,20 @@ void CCodeBlocksWorkspace::GenerateMakefileText(const CString& FileName,
         m_MakefileText.Insert("");
         // targets
         line = "all:";
-        for (int i = 0; i < m_TargetNames.GetCount(); i++) {
+        for (int i = 0; i < m_TargetNames.GetCount(); i++)
+        {
             line.Append(" ").Append(m_TargetNames[i]);
         }
         m_MakefileText.Insert(line);
         m_MakefileText.Insert("");
-        for (int i = 0; i < m_TargetNames.GetCount(); i++) {
+        for (int i = 0; i < m_TargetNames.GetCount(); i++)
+        {
             CString makefile_path = m_MakefilePaths[i];
             line = m_TargetNames[i]+":";
             m_MakefileText.Insert(line);
             line = "\t$(MAKE)";
-            if (!makefile_path.IsEmpty()) {
+            if (!makefile_path.IsEmpty())
+            {
                 line += " -C "+pl->ProtectPath(pl->Pd(makefile_path),Config.QuotePathMode());
             }
             line += " all -f "+pl->ProtectPath(pl->Pd(m_MakefileNames[i])+platform_suffix,Config.QuotePathMode());
@@ -433,17 +471,20 @@ void CCodeBlocksWorkspace::GenerateMakefileText(const CString& FileName,
         }
         //
         line = "clean:";
-        for (int i = 0; i < m_TargetNames.GetCount(); i++) {
+        for (int i = 0; i < m_TargetNames.GetCount(); i++)
+        {
             line.Append(" clean_").Append(m_TargetNames[i]);
         }
         m_MakefileText.Insert(line);
         m_MakefileText.Insert("");
-        for (int i = 0; i < m_TargetNames.GetCount(); i++) {
+        for (int i = 0; i < m_TargetNames.GetCount(); i++)
+        {
             CString makefile_path = m_MakefilePaths[i];
             line = "clean_"+m_TargetNames[i]+":";
             m_MakefileText.Insert(line);
             line = "\t$(MAKE)";
-            if (!makefile_path.IsEmpty()) {
+            if (!makefile_path.IsEmpty())
+            {
                 line += " -C "+pl->ProtectPath(pl->Pd(makefile_path),Config.QuotePathMode());
             }
             line += " clean -f "+pl->ProtectPath(pl->Pd(m_MakefileNames[i])+platform_suffix,Config.QuotePathMode());
@@ -452,7 +493,8 @@ void CCodeBlocksWorkspace::GenerateMakefileText(const CString& FileName,
         }
         //
         line = ".PHONY:";
-        for (int i = 0; i < m_TargetNames.GetCount(); i++) {
+        for (int i = 0; i < m_TargetNames.GetCount(); i++)
+        {
             line.Append(" ").Append(m_TargetNames[i]);
             line.Append(" clean_").Append(m_TargetNames[i]);
         }

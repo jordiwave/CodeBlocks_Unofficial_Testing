@@ -26,27 +26,27 @@
 
 namespace
 {
-    wxsRegisterItem<wxsCheckListBox> Reg(_T("CheckListBox"),wxsTWidget,_T("Standard"),320);
+wxsRegisterItem<wxsCheckListBox> Reg(_T("CheckListBox"),wxsTWidget,_T("Standard"),320);
 
-    WXS_ST_BEGIN(wxsCheckListBoxStyles,_T(""))
-        WXS_ST_CATEGORY("wxCheckListBox")
-        WXS_ST(wxLB_SINGLE)
-        WXS_ST(wxLB_MULTIPLE)
-        WXS_ST(wxLB_EXTENDED)
-        WXS_ST(wxLB_HSCROLL)
-        WXS_ST(wxLB_ALWAYS_SB)
-        WXS_ST(wxLB_NEEDED_SB)
-        WXS_ST(wxLB_SORT)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsCheckListBoxStyles,_T(""))
+WXS_ST_CATEGORY("wxCheckListBox")
+WXS_ST(wxLB_SINGLE)
+WXS_ST(wxLB_MULTIPLE)
+WXS_ST(wxLB_EXTENDED)
+WXS_ST(wxLB_HSCROLL)
+WXS_ST(wxLB_ALWAYS_SB)
+WXS_ST(wxLB_NEEDED_SB)
+WXS_ST(wxLB_SORT)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsCheckListBoxEvents)
-        WXS_EVI(EVT_CHECKLISTBOX,wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,wxCommandEvent,Toggled)
-        // Derived from wxListBox:
-        WXS_EVI(EVT_LISTBOX,wxEVT_COMMAND_LISTBOX_SELECTED,wxCommandEvent,Select)
-        WXS_EVI(EVT_LISTBOX_DCLICK,wxEVT_COMMAND_LISTBOX_DOUBLECLICKED,wxCommandEvent,DClick)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsCheckListBoxEvents)
+WXS_EVI(EVT_CHECKLISTBOX,wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,wxCommandEvent,Toggled)
+// Derived from wxListBox:
+WXS_EVI(EVT_LISTBOX,wxEVT_COMMAND_LISTBOX_SELECTED,wxCommandEvent,Select)
+WXS_EVI(EVT_LISTBOX_DCLICK,wxEVT_COMMAND_LISTBOX_DOUBLECLICKED,wxCommandEvent,DClick)
+WXS_EV_END()
 }
 
 wxsCheckListBox::wxsCheckListBox(wxsItemResData* Data):
@@ -62,33 +62,33 @@ void wxsCheckListBox::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/checklst.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/checklst.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
 
-            for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
+        for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
+        {
+            if ( ArrayChecks[i] )
             {
-                if ( ArrayChecks[i] )
-                {
-                    Codef( _T("%ACheck("));
-                }
-                Codef( _T("%AAppend(%t)"), ArrayChoices[i].wx_str());
-                if ( ArrayChecks[i] )
-                {
-                    Codef(_T(")"));
-                }
-                Codef(_T(";\n"));
+                Codef( _T("%ACheck("));
             }
-            BuildSetupWindowCode();
-            return;
+            Codef( _T("%AAppend(%t)"), ArrayChoices[i].wx_str());
+            if ( ArrayChecks[i] )
+            {
+                Codef(_T(")"));
+            }
+            Codef(_T(";\n"));
         }
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsCheckListBox::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsCheckListBox::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

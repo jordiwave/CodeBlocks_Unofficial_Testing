@@ -53,7 +53,10 @@ enum
 class WXDLLIMPEXP_THINGS wxSpinCtrlDbl: public wxControl
 {
 public:
-    wxSpinCtrlDbl() : wxControl() { Init(); }
+    wxSpinCtrlDbl() : wxControl()
+    {
+        Init();
+    }
 
     // Native constructor - note &parent, this is to avoid ambiguity
     wxSpinCtrlDbl( wxWindow &parent, wxWindowID id,
@@ -112,7 +115,12 @@ public:
     virtual void SetValue( double value );
     void SetValue( double value, double min, double max, double increment,
                    int digits = wxSPINCTRLDBL_AUTODIGITS, formatType fmt = lg_fmt )
-        { SetRange(min, max); SetIncrement(increment); SetDigits(digits, fmt); SetValue(value); }
+    {
+        SetRange(min, max);
+        SetIncrement(increment);
+        SetDigits(digits, fmt);
+        SetValue(value);
+    }
     // Set the value as text, if force then set text as is
     virtual void SetValue( const wxString& text, bool force );
     // Set the allowed range, if max_val < min_val then no range and all vals allowed.
@@ -120,7 +128,10 @@ public:
     // Set the increment to use when the spin button or arrow keys pressed.
     void SetIncrement( double increment );
     void SetIncrement( double increment, int digits, formatType fmt = lg_fmt )
-        { SetIncrement(increment); SetDigits(digits, fmt); }
+    {
+        SetIncrement(increment);
+        SetDigits(digits, fmt);
+    }
     // Set the number of digits to show, use wxSPINCTRLDBL_AUTODIGITS
     //  or specify exact number to show i.e. %.[digits]lf
     //  The format type is used to create an appropriate format string.
@@ -128,7 +139,10 @@ public:
     // Set the format string to use, ie. format="%.2lf" for .01
     void SetFormat( const wxString& format );
     // Set the control the the default value.
-    virtual void SetDefaultValue() { SetValue( m_default_value ); }
+    virtual void SetDefaultValue()
+    {
+        SetValue( m_default_value );
+    }
     // Set the value of the default value, default is the inital value.
     void SetDefaultValue( double default_value );
     // Force the value to always be divisible by the increment, initially off.
@@ -137,18 +151,51 @@ public:
     //   when the increment is very small.
     void SetSnapToTicks(bool forceTicks);
 
-    double   GetValue() const { return m_value; }
-    double   GetMin() const { return m_min; }
-    double   GetMax() const { return m_max; }
-    virtual bool HasRange() const { return m_max >= m_min; }
-    virtual bool InRange(double value) const { return !HasRange() || ((value >= m_min) && (value <= m_max)); }
-    double   GetIncrement() const { return m_increment; }
-    int      GetDigits() const { return m_digits; }
-    wxString GetFormat() const { return m_textFormat; }
-    double   GetDefaultValue() const { return m_default_value; }
-    bool     GetSnapToTicks() const { return m_snap_ticks; }
+    double   GetValue() const
+    {
+        return m_value;
+    }
+    double   GetMin() const
+    {
+        return m_min;
+    }
+    double   GetMax() const
+    {
+        return m_max;
+    }
+    virtual bool HasRange() const
+    {
+        return m_max >= m_min;
+    }
+    virtual bool InRange(double value) const
+    {
+        return !HasRange() || ((value >= m_min) && (value <= m_max));
+    }
+    double   GetIncrement() const
+    {
+        return m_increment;
+    }
+    int      GetDigits() const
+    {
+        return m_digits;
+    }
+    wxString GetFormat() const
+    {
+        return m_textFormat;
+    }
+    double   GetDefaultValue() const
+    {
+        return m_default_value;
+    }
+    bool     GetSnapToTicks() const
+    {
+        return m_snap_ticks;
+    }
 
-    bool IsDefaultValue() const { return (m_value == m_default_value); }
+    bool IsDefaultValue() const
+    {
+        return (m_value == m_default_value);
+    }
 
     virtual bool SetFont( const wxFont &font );
     wxFont GetFont() const;
@@ -160,7 +207,10 @@ public:
     wxColour GetForegroundColour() const;
 
     // for setting... stuff
-    wxTextCtrl *GetTextCtrl() { return (wxTextCtrl*)m_textCtrl; }
+    wxTextCtrl *GetTextCtrl()
+    {
+        return (wxTextCtrl*)m_textCtrl;
+    }
 
 protected:
     void OnSpinUp( wxSpinEvent &event );

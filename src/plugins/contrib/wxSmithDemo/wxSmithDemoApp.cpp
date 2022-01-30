@@ -23,9 +23,9 @@ bool wxSmithDemoApp::OnInit()
     wxInitAllImageHandlers();
     if ( wxsOK )
     {
-    	wxSmithDemoFrame* Frame = new wxSmithDemoFrame(0);
-    	Frame->Show();
-    	SetTopWindow(Frame);
+        wxSmithDemoFrame* Frame = new wxSmithDemoFrame(0);
+        Frame->Show();
+        SetTopWindow(Frame);
     }
     //*)
     return wxsOK;

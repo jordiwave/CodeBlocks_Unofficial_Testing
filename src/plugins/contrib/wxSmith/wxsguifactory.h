@@ -38,34 +38,37 @@ class wxsProject;
  */
 class wxsGUIFactory
 {
-    public:
+public:
 
-        /** \brief Building GUI item from given name */
-        static wxsGUI* Build(const wxString& Name,wxsProject* Project);
+    /** \brief Building GUI item from given name */
+    static wxsGUI* Build(const wxString& Name,wxsProject* Project);
 
-        /** \brief Creating GUI after selecting it from list */
-        static wxsGUI* SelectNew(const wxString& Message,wxsProject* Project);
+    /** \brief Creating GUI after selecting it from list */
+    static wxsGUI* SelectNew(const wxString& Message,wxsProject* Project);
 
-        /** \brief Getting name of created gui */
-        virtual wxString GetName() { return m_Name; }
+    /** \brief Getting name of created gui */
+    virtual wxString GetName()
+    {
+        return m_Name;
+    }
 
-    protected:
+protected:
 
-        /** \brief Ctor */
-        wxsGUIFactory(const wxString& Name);
+    /** \brief Ctor */
+    wxsGUIFactory(const wxString& Name);
 
-        /** \brief Dctor */
-        virtual ~wxsGUIFactory();
+    /** \brief Dctor */
+    virtual ~wxsGUIFactory();
 
-        /** \brief Creating GUI module */
-        virtual wxsGUI* OnCreate(wxsProject* Project) = 0;
+    /** \brief Creating GUI module */
+    virtual wxsGUI* OnCreate(wxsProject* Project) = 0;
 
-    private:
+private:
 
-        WX_DECLARE_STRING_HASH_MAP(wxsGUIFactory*,GUIItemHashT);
+    WX_DECLARE_STRING_HASH_MAP(wxsGUIFactory*,GUIItemHashT);
 
-        wxString m_Name;                        ///< \brief GUI name
-        static inline GUIItemHashT& GetHash();  ///< \brief Getting hash table
+    wxString m_Name;                        ///< \brief GUI name
+    static inline GUIItemHashT& GetHash();  ///< \brief Getting hash table
 };
 
 /** \brief template for easy GUI registering
@@ -76,10 +79,13 @@ class wxsGUIFactory
  */
 template <class T> class wxsRegisterGUI: public wxsGUIFactory
 {
-    public:
-        wxsRegisterGUI(const wxString& Name): wxsGUIFactory(Name) {}
-    protected:
-        virtual wxsGUI* OnCreate(wxsProject* Project) { return new T(Project); }
+public:
+    wxsRegisterGUI(const wxString& Name): wxsGUIFactory(Name) {}
+protected:
+    virtual wxsGUI* OnCreate(wxsProject* Project)
+    {
+        return new T(Project);
+    }
 };
 
 #endif

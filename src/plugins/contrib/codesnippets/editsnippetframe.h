@@ -40,100 +40,109 @@ class EditSnippetFrame : public wxFrame
     friend class EditFrameDropTextTarget;
     friend class EditFrameDropFileTarget;
 
-    public:
-        //! constructor
-		EditSnippetFrame(const wxTreeItemId SnippetItemId, int* pRetcode);
+public:
+    //! constructor
+    EditSnippetFrame(const wxTreeItemId SnippetItemId, int* pRetcode);
 
-		wxString GetName();
-		wxString GetText();
-		wxString GetFileName(){return m_EditFileName;};
-		wxTreeItemId GetSnippetId(){return m_SnippetItemId;}
+    wxString GetName();
+    wxString GetText();
+    wxString GetFileName()
+    {
+        return m_EditFileName;
+    };
+    wxTreeItemId GetSnippetId()
+    {
+        return m_SnippetItemId;
+    }
 
-        // edit object
-        SEditorManager* GetEditorManager(){return m_pEditorManager;}
+    // edit object
+    SEditorManager* GetEditorManager()
+    {
+        return m_pEditorManager;
+    }
 
-        //! destructor
-        ~EditSnippetFrame ();
+    //! destructor
+    ~EditSnippetFrame ();
 
-        //! event handlers
-        //! common
-        void OnFocusWindow (wxFocusEvent &event);
-        void OnKillFocusWindow (wxFocusEvent &event);
-        void OnLeaveWindow (wxMouseEvent &event);
-        void OnAbout (wxCommandEvent &event);
-        void OnExit (wxCommandEvent &event);
-        //-void OnTimerEvent (wxTimerEvent &event);
-        //! file
-        void OnFileNew (wxCommandEvent &event);
-        void OnFileNewFrame (wxCommandEvent &event);
+    //! event handlers
+    //! common
+    void OnFocusWindow (wxFocusEvent &event);
+    void OnKillFocusWindow (wxFocusEvent &event);
+    void OnLeaveWindow (wxMouseEvent &event);
+    void OnAbout (wxCommandEvent &event);
+    void OnExit (wxCommandEvent &event);
+    //-void OnTimerEvent (wxTimerEvent &event);
+    //! file
+    void OnFileNew (wxCommandEvent &event);
+    void OnFileNewFrame (wxCommandEvent &event);
 
-        void OnFileOpen (wxCommandEvent &event);
-        void OnFileOpenFrame (wxCommandEvent &event);
+    void OnFileOpen (wxCommandEvent &event);
+    void OnFileOpenFrame (wxCommandEvent &event);
 
-        void OnFileSave (wxCommandEvent& event);
-        void OnFileSaveAs (wxCommandEvent& event);
-        void OncbEditorSave( CodeBlocksEvent& event );
-        void OnMenuFileClose (wxCommandEvent& event);
+    void OnFileSave (wxCommandEvent& event);
+    void OnFileSaveAs (wxCommandEvent& event);
+    void OncbEditorSave( CodeBlocksEvent& event );
+    void OnMenuFileClose (wxCommandEvent& event);
 
-        void OnCloseFrameOrWindow(wxCloseEvent &event);
-        //-void OnCloseWindow (wxCloseEvent &event);
-        ////void OnWindowDestroy( wxCommandEvent event );
-        void OnPageClose( wxAuiNotebookEvent event );
-        void OnFileCheckModified();
+    void OnCloseFrameOrWindow(wxCloseEvent &event);
+    //-void OnCloseWindow (wxCloseEvent &event);
+    ////void OnWindowDestroy( wxCommandEvent event );
+    void OnPageClose( wxAuiNotebookEvent event );
+    void OnFileCheckModified();
 
-        //! properties
-        void OnProperties (wxCommandEvent &event);
-        //! print
-        //void OnPrintSetup (wxCommandEvent &event);
-        //void OnPrintPreview (wxCommandEvent &event);
-        //void OnPrint (wxCommandEvent &event);
-        void OnFilePrint (wxCommandEvent &event);
-        //! edit events
-        void OnEditEvent (wxCommandEvent &event);
-        void OnEditEventUI (wxUpdateUIEvent& event);
+    //! properties
+    void OnProperties (wxCommandEvent &event);
+    //! print
+    //void OnPrintSetup (wxCommandEvent &event);
+    //void OnPrintPreview (wxCommandEvent &event);
+    //void OnPrint (wxCommandEvent &event);
+    void OnFilePrint (wxCommandEvent &event);
+    //! edit events
+    void OnEditEvent (wxCommandEvent &event);
+    void OnEditEventUI (wxUpdateUIEvent& event);
 
-        void On_cbEditorSaveEvent(CodeBlocksEvent& event);
+    void On_cbEditorSaveEvent(CodeBlocksEvent& event);
 
-    private:
-        void InitEditSnippetFrame(const wxTreeItemId SnippetItemId, int* pRetcode);
-		void EndSnippetDlg(int wxID_OKorCANCEL);
-		////void OnOK(wxCommandEvent& event);
-		////void OnCancel(wxCommandEvent& event);
-		void OnHelp(wxCommandEvent& event);
-        void FileOpen (wxString fname);
-        // print preview position and size
-        wxRect DeterminePrintSize ();
-        void OnFrameActivated(wxActivateEvent& event);
+private:
+    void InitEditSnippetFrame(const wxTreeItemId SnippetItemId, int* pRetcode);
+    void EndSnippetDlg(int wxID_OKorCANCEL);
+    ////void OnOK(wxCommandEvent& event);
+    ////void OnCancel(wxCommandEvent& event);
+    void OnHelp(wxCommandEvent& event);
+    void FileOpen (wxString fname);
+    // print preview position and size
+    wxRect DeterminePrintSize ();
+    void OnFrameActivated(wxActivateEvent& event);
 
-        void SaveSnippetFramePosn();
-        void CreateMenu ();
-        void OnConvertEOL (wxCommandEvent &event);
-        void OnEditHighlightMode(wxCommandEvent& event);
-        void CreateMenuViewLanguage(wxMenu* menuHilight);
-        void OpenDroppedFiles(const wxArrayString& arrayData);
+    void SaveSnippetFramePosn();
+    void CreateMenu ();
+    void OnConvertEOL (wxCommandEvent &event);
+    void OnEditHighlightMode(wxCommandEvent& event);
+    void CreateMenuViewLanguage(wxMenu* menuHilight);
+    void OpenDroppedFiles(const wxArrayString& arrayData);
 
-        ScbEditor*      m_pScbEditor;
-        wxColour        m_SysWinBkgdColour;    //(pecan 2007/3/27)
-		wxString        m_EditFileName;        // filename if physical file
-		wxString        m_TmpFileName;         // filename if file from xml text
-        wxString        m_EditSnippetLabel;
-        wxString        m_EditSnippetText;
+    ScbEditor*      m_pScbEditor;
+    wxColour        m_SysWinBkgdColour;    //(pecan 2007/3/27)
+    wxString        m_EditFileName;        // filename if physical file
+    wxString        m_TmpFileName;         // filename if file from xml text
+    wxString        m_EditSnippetLabel;
+    wxString        m_EditSnippetText;
 
-		// our return code to be placed in m_pReturnCode;
-		int             m_nReturnCode;
-		wxTreeItemId    m_SnippetItemId;
+    // our return code to be placed in m_pReturnCode;
+    int             m_nReturnCode;
+    wxTreeItemId    m_SnippetItemId;
 
-        //! creates the application menu bar
-        wxMenuBar       *m_menuBar;
+    //! creates the application menu bar
+    wxMenuBar       *m_menuBar;
 
-        SEditorManager* m_pEditorManager;
-        int             m_ActiveEventId;
-        int             m_OncloseWindowEntries;
-        int             m_bOnActivateBusy;
+    SEditorManager* m_pEditorManager;
+    int             m_ActiveEventId;
+    int             m_OncloseWindowEntries;
+    int             m_bOnActivateBusy;
 
-        int             m_bEditorSaveEvent;
+    int             m_bEditorSaveEvent;
 
-        DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // EDITSNIPPETFRAME_H

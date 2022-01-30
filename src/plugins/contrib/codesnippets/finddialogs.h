@@ -47,7 +47,8 @@
 
 //----------------------------------------------------------------------------
 //! myFindReplaceFlags
-enum myFindReplaceFlags {
+enum myFindReplaceFlags
+{
     // find/replace flags
     myFR_DOWN = 1,
     myFR_WHOLEWORD = 2,
@@ -57,7 +58,8 @@ enum myFindReplaceFlags {
 };
 
 //! myFindReplaceDialogStyles
-enum myFindReplaceDialogStyles {
+enum myFindReplaceDialogStyles
+{
     // find/replace styles
     myFR_FINDINFILES = 1,
     myFR_REPLACEDIALOG = 2,

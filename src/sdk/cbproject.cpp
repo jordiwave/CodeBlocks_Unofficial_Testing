@@ -10,7 +10,7 @@
 #include "sdk_precomp.h"
 
 #ifndef wxUSE_CHOICEDLG
-    #define wxUSE_CHOICEDLG 1
+#define wxUSE_CHOICEDLG 1
 #endif
 
 #include <wx/choicdlg.h>
@@ -18,26 +18,26 @@
 #include <wx/filename.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/dir.h>
+#include <wx/dir.h>
 
-    #include "cbproject.h" // class's header file
-    #include "cbeditor.h"
-    #include "cbtreectrl.h"
-    #include "compiler.h" // GetSwitches
-    #include "compilerfactory.h"
-    #include "configmanager.h"
-    #include "editormanager.h"
-    #include "filemanager.h"
-    #include "globals.h"
-    #include "infowindow.h"
-    #include "logmanager.h"
-    #include "macrosmanager.h"
-    #include "manager.h"
-    #include "pluginmanager.h"
-    #include "projectbuildtarget.h"
-    #include "projectfile.h"
-    #include "projectmanager.h"
-    #include "sdk_events.h"
+#include "cbproject.h" // class's header file
+#include "cbeditor.h"
+#include "cbtreectrl.h"
+#include "compiler.h" // GetSwitches
+#include "compilerfactory.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "filemanager.h"
+#include "globals.h"
+#include "infowindow.h"
+#include "logmanager.h"
+#include "macrosmanager.h"
+#include "manager.h"
+#include "pluginmanager.h"
+#include "projectbuildtarget.h"
+#include "projectfile.h"
+#include "projectmanager.h"
+#include "sdk_events.h"
 #endif
 
 #include <map>
@@ -124,7 +124,7 @@ cbProject& cbProject::operator=(const cbProject &p)
     m_VirtualTargets = p.m_VirtualTargets;
     m_CurrentlyCompilingTarget = nullptr;
 
-    for (FilesList::iterator it = m_Files.begin(); it != m_Files.end();++it)
+    for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
         delete(*it);
     m_Files.clear();
 
@@ -251,7 +251,7 @@ void cbProject::SetCompilerID(const wxString& id)
                     ProjectFile* pf = *it;
                     wxFileName obj(pf->GetObjName());
                     if (   (FileTypeOf(pf->relativeFilename) != ftResource)
-                        && (obj.GetExt() == compiler->GetSwitches().objectExtension) )
+                            && (obj.GetExt() == compiler->GetSwitches().objectExtension) )
                     {
                         obj.SetExt(compiler->GetSwitches().objectExtension);
                         pf->SetObjName(obj.GetFullName());
@@ -344,7 +344,7 @@ void cbProject::ClearAllProperties()
 
     Delete(m_pExtensionsElement);
 
-    for (FilesList::iterator it = m_Files.begin(); it != m_Files.end();++it)
+    for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
         delete(*it);
     m_Files.clear();
     m_FileArray.Clear();
@@ -406,15 +406,15 @@ void cbProject::Open()
 
             // moved to ProjectManager::LoadProject()
             // see explanation there...
-    //        NotifyPlugins(cbEVT_PROJECT_OPEN);
+            //        NotifyPlugins(cbEVT_PROJECT_OPEN);
 
             if (fileUpgraded)
             {
                 InfoWindow::Display(m_Title,
-                  _("The loaded project file was generated\n"
-                    "with an older version of Code::Blocks.\n\n"
-                    "Code::Blocks can import older project files,\n"
-                    "but will always save in the current format."), 12000, 2000);
+                                    _("The loaded project file was generated\n"
+                                      "with an older version of Code::Blocks.\n\n"
+                                      "Code::Blocks can import older project files,\n"
+                                      "but will always save in the current format."), 12000, 2000);
             }
             m_LastModified = fname.GetModificationTime();
         }
@@ -457,7 +457,7 @@ void cbProject::CalculateCommonTopLevelPath()
         bool fileHasUNCName = f->file.GetFullPath().StartsWith(_T("\\\\"));
 
         if (   (!prjHasUNCName &&  fileHasUNCName)
-            || ( prjHasUNCName && !fileHasUNCName) )
+                || ( prjHasUNCName && !fileHasUNCName) )
         {
             continue;
         }
@@ -467,18 +467,19 @@ void cbProject::CalculateCommonTopLevelPath()
 
         size_t pos = 0;
         while (   (pos < tmp.Length())
-               && (   (tmp.GetChar(pos) == _T('.'))
-                   || (tmp.GetChar(pos) == _T('/'))
-                   || (tmp.GetChar(pos) == _T('\\')) ) )
+                  && (   (tmp.GetChar(pos) == _T('.'))
+                         || (tmp.GetChar(pos) == _T('/'))
+                         || (tmp.GetChar(pos) == _T('\\')) ) )
         {
             ++pos;
         }
         if ( (pos > 0) && (pos < tmp.Length()) )
             tmpbase << sep << tmp.Left(pos) << sep;
 
-        wxFileName tmpbaseF(tmpbase); tmpbaseF.Normalize(wxPATH_NORM_DOTS);
+        wxFileName tmpbaseF(tmpbase);
+        tmpbaseF.Normalize(wxPATH_NORM_DOTS);
         if (   (tmpbaseF.GetDirCount() < base.GetDirCount())
-            && (base.GetPath().StartsWith(tmpbaseF.GetPath())) )
+                && (base.GetPath().StartsWith(tmpbaseF.GetPath())) )
         {
             base = tmpbaseF;
         }
@@ -502,9 +503,9 @@ void cbProject::CalculateCommonTopLevelPath()
         bool fileHasUNCName = fileName.StartsWith(_T("\\\\"));
 
         if (   (prjHasUNCName && fileHasUNCName)
-            || (   !prjHasUNCName
-                && !fileHasUNCName
-                && vol.IsSameAs(f->file.GetVolume(), false) ) )
+                || (   !prjHasUNCName
+                       && !fileHasUNCName
+                       && vol.IsSameAs(f->file.GetVolume(), false) ) )
         {
             wxFileName relFileCTLP(f->file);
             relFileCTLP.MakeRelativeTo( m_CommonTopLevelPath );
@@ -747,13 +748,13 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 //  This means we have to search anyway.
 //  NP though, I added a hashmap for fast searches in GetFileByFilename()
 
-/* NOTE (mandrav#1#): Calling GetFileByFilename() twice, is costly.
-    Instead of searching for duplicate files when entering here,
-    we 'll search before exiting.
-    The rationale is that by then, we'll have the relative filename
-    in our own representation and this will make everything quicker
-    (check GetFileByFilename implementation to understand why)...
-*/
+    /* NOTE (mandrav#1#): Calling GetFileByFilename() twice, is costly.
+        Instead of searching for duplicate files when entering here,
+        we 'll search before exiting.
+        The rationale is that by then, we'll have the relative filename
+        in our own representation and this will make everything quicker
+        (check GetFileByFilename implementation to understand why)...
+    */
 //    f = GetFileByFilename(filename, true, true);
 //    if (!f)
 //        f = GetFileByFilename(filename, false, true);
@@ -849,15 +850,15 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         pf->AddBuildTarget(m_Targets[targetIndex]->GetTitle());
 
     localCompile =    compile
-                   && (   ft == ftSource
-                       || ft == ftResource
-                       || !GenFilesHackMap.empty() );
+                      && (   ft == ftSource
+                             || ft == ftResource
+                             || !GenFilesHackMap.empty() );
     localLink =    link
-                && (   ft == ftSource
-                    || ft == ftResource
-                    || ft == ftObject
-                    || ft == ftResourceBin
-                    || ft == ftStaticLib );
+                   && (   ft == ftSource
+                          || ft == ftResource
+                          || ft == ftObject
+                          || ft == ftResourceBin
+                          || ft == ftStaticLib );
 
     pf->compile = localCompile;
     pf->link    = localLink;
@@ -868,8 +869,8 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 #ifdef __WXMSW__
     // for Windows, make sure the filename is not on another drive...
     if (   (local_filename.Length() > 1)
-        && (local_filename.GetChar(1) == _T(':'))
-        && (fname.GetVolume() != wxFileName(m_Filename).GetVolume()) )
+            && (local_filename.GetChar(1) == _T(':'))
+            && (fname.GetVolume() != wxFileName(m_Filename).GetVolume()) )
         // (this is a quick test to avoid the costly wxFileName ctor below)
     {
         fname.Assign(filename);
@@ -981,21 +982,21 @@ bool cbProject::RemoveFile(ProjectFile* pf)
     Manager::Get()->GetEditorManager()->Close(pf->file.GetFullPath());
 
     {
-		FilesList::iterator it = m_Files.find(pf);
+        FilesList::iterator it = m_Files.find(pf);
 
-		if (it == m_Files.end())
-		{
-			Manager::Get()->GetLogManager()->DebugLog(_T("Can't locate node for ProjectFile* !"));
-		}
-		else
-		{
-			if (!m_FileArray.IsEmpty())
-				m_FileArray.Remove(*it);
+        if (it == m_Files.end())
+        {
+            Manager::Get()->GetLogManager()->DebugLog(_T("Can't locate node for ProjectFile* !"));
+        }
+        else
+        {
+            if (!m_FileArray.IsEmpty())
+                m_FileArray.Remove(*it);
 
-			m_Files.erase(it);
-		}
-	}
-	// remove this file from all targets too
+            m_Files.erase(it);
+        }
+    }
+    // remove this file from all targets too
     for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
     {
         if (ProjectBuildTarget* target = m_Targets[i])
@@ -1006,7 +1007,7 @@ bool cbProject::RemoveFile(ProjectFile* pf)
     if (pf->AutoGeneratedBy())
     {
         ProjectFilesVector::iterator it = std::find(pf->AutoGeneratedBy()->generatedFiles.begin(),
-            pf->AutoGeneratedBy()->generatedFiles.end(), pf);
+                                          pf->AutoGeneratedBy()->generatedFiles.end(), pf);
         pf->AutoGeneratedBy()->generatedFiles.erase(it);
     }
 
@@ -1179,7 +1180,7 @@ ProjectFile* cbProject::GetFileByFilename(const wxString& filename, bool isRelat
         // our own relative files don't have it, so the search would fail
         // this happens when importing MS projects...
         if (tmp.StartsWith(_T(".\\")) ||
-            tmp.StartsWith(_T("./")))
+                tmp.StartsWith(_T("./")))
         {
             tmp.Remove(0, 2);
         }
@@ -1215,7 +1216,7 @@ bool cbProject::CloseAllFiles(bool dontsave)
     // first try to close modified editors
 
     if (!dontsave && !QueryCloseAllFiles())
-            return false;
+        return false;
 
     // now free the rest of the project files
     Manager::Get()->GetEditorManager()->HideNotebook();
@@ -1378,8 +1379,8 @@ bool cbProject::ExportTargetAsProject(const wxString& targetName)
 
     // ask for the new project's name
     wxString newName = cbGetTextFromUser(_("Please enter the new project's name (no path, no extension)."),
-                                        _("Export target as new project"),
-                                        target->GetTitle());
+                                         _("Export target as new project"),
+                                         target->GetTitle());
     if (newName.IsEmpty())
         return false;
     wxFileName fname(GetFilename());
@@ -1768,9 +1769,9 @@ void cbProject::ShowNotes(bool nonEmptyOnly, bool editable)
         return;
 
     GenericMultiLineNotesDlg dlg(Manager::Get()->GetAppWindow(),
-                                _("Notes about ") + m_Title,
-                                m_Notes,
-                                !editable);
+                                 _("Notes about ") + m_Title,
+                                 m_Notes,
+                                 !editable);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {

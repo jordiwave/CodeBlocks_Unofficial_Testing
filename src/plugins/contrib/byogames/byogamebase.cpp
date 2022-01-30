@@ -14,29 +14,29 @@ byoGameBase::GamesListT byoGameBase::AllGames;
 
 namespace
 {
-    wxColour colours[] =
-    {
-        wxColour(0xFF,0,0),
-        wxColour(0,0xFF,0),
-        wxColour(0,0,0xFF),
-        wxColour(0xFF,0xFF,0),
-        wxColour(0xFF,0,0xFF),
-        wxColour(0,0xFF,0xFF)
-    };
+wxColour colours[] =
+{
+    wxColour(0xFF,0,0),
+    wxColour(0,0xFF,0),
+    wxColour(0,0,0xFF),
+    wxColour(0xFF,0xFF,0),
+    wxColour(0xFF,0,0xFF),
+    wxColour(0,0xFF,0xFF)
+};
 
-    const int coloursCount = sizeof(colours)/sizeof(colours[0]);
+const int coloursCount = sizeof(colours)/sizeof(colours[0]);
 
-    long PlayingTicks = 0;
-    long WorkingTicks = 0;
-    bool PlayBlocked = false;
-    int  PlayingCount = 0;
+long PlayingTicks = 0;
+long WorkingTicks = 0;
+bool PlayBlocked = false;
+int  PlayingCount = 0;
 
-    bool IsMaxPlayTime = true;
-    int  MaxPlayTime = 10*60;
-    bool IsMinWorkTime = true;
-    int  MinWorkTime = 60*60;
-    bool IsMaxWorkTime = true;
-    int  MaxWorkTime = 3*60*60;
+bool IsMaxPlayTime = true;
+int  MaxPlayTime = 10*60;
+bool IsMinWorkTime = true;
+int  MinWorkTime = 60*60;
+bool IsMaxWorkTime = true;
+int  MaxWorkTime = 3*60*60;
 }
 
 BEGIN_EVENT_TABLE(byoGameBase,wxWindow)
@@ -53,7 +53,7 @@ byoGameBase::byoGameBase(wxWindow* parent,const wxString& GameName):
     m_Paused(true),
     m_GameName(GameName)
 {
-	Create(parent,-1,wxDefaultPosition,wxDefaultSize,wxWANTS_CHARS);
+    Create(parent,-1,wxDefaultPosition,wxDefaultSize,wxWANTS_CHARS);
     AllGames.Add(this);
     SetPause(false);
 }
@@ -173,13 +173,13 @@ void byoGameBase::RecalculateSizeHints(int minStepsHoriz,int minStepsVert)
     m_MinCellsVert  = minStepsVert;
 
     Manager::Get()->GetLogManager()->DebugLog(F(_T("msh: %d, msv: %d, ch: %d, cv: %d, cs: %d, x: %d, y: %d"),
-        minStepsHoriz,
-        minStepsVert,
-        cellSizeH,
-        cellSizeV,
-        m_CellSize,
-        m_FirstCellXPos,
-        m_FirstCellYPos));
+            minStepsHoriz,
+            minStepsVert,
+            cellSizeH,
+            cellSizeV,
+            m_CellSize,
+            m_FirstCellXPos,
+            m_FirstCellYPos));
 
 }
 

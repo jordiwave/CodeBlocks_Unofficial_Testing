@@ -10,13 +10,13 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/combobox.h>
-    #include <wx/intl.h>
-    #include <wx/textctrl.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/combobox.h>
+#include <wx/intl.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "cbplugin.h"
+#include "cbplugin.h"
 #endif
 
 #include "examinememorydlg.h"

@@ -34,10 +34,10 @@ public:
       */
     // We don't use ThreadSearchFindData to limit coupling
     static TextFileSearcher* BuildTextFileSearcher(const wxString& searchText,
-                                                   bool matchCase,
-                                                   bool matchWordBegin,
-                                                   bool matchWord,
-                                                   bool regEx);
+            bool matchCase,
+            bool matchWordBegin,
+            bool matchWord,
+            bool regEx);
 
 
     /** Destructor. */
@@ -74,10 +74,10 @@ protected:
     /** Constructor. */
     // We don't use ThreadSearchFindData to limit coupling
     TextFileSearcher(const wxString& searchText, bool matchCase, bool matchWordBegin, bool matchWord):
-                     m_SearchText(searchText),
-                     m_MatchCase(matchCase),
-                     m_MatchWordBegin(matchWordBegin),
-                     m_MatchWord(matchWord)
+        m_SearchText(searchText),
+        m_MatchCase(matchCase),
+        m_MatchWordBegin(matchWordBegin),
+        m_MatchWord(matchWord)
     {}
 
     wxString   m_SearchText;

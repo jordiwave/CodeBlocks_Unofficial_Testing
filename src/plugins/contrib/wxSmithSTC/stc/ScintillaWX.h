@@ -52,11 +52,11 @@
 //----------------------------------------------------------------------
 
 #ifdef WXMAKINGDLL_STC
-    #define WXDLLIMPEXP_STC WXEXPORT
+#define WXDLLIMPEXP_STC WXEXPORT
 #elif defined(WXUSINGDLL)
-    #define WXDLLIMPEXP_STC WXIMPORT
+#define WXDLLIMPEXP_STC WXIMPORT
 #else // not making nor using DLL
-    #define WXDLLIMPEXP_STC
+#define WXDLLIMPEXP_STC
 #endif
 
 class WXDLLIMPEXP_STC wxStyledTextCtrl;           // forward
@@ -67,9 +67,11 @@ class ScintillaWX;
 // Helper classes
 
 #if wxUSE_DRAG_AND_DROP
-class wxSTCDropTarget : public wxTextDropTarget {
+class wxSTCDropTarget : public wxTextDropTarget
+{
 public:
-    void SetScintilla(ScintillaWX* swx) {
+    void SetScintilla(ScintillaWX* swx)
+    {
         this->swx = swx;
     }
 
@@ -85,7 +87,8 @@ private:
 
 //----------------------------------------------------------------------
 
-class ScintillaWX : public ScintillaBase {
+class ScintillaWX : public ScintillaBase
+{
 public:
 
     ScintillaWX(wxStyledTextCtrl* win);
@@ -140,7 +143,10 @@ public:
     void DoMouseWheel(int rotation, int delta, int linesPerAction, int ctrlDown, bool isPageScroll);
     void DoAddChar(int key);
     int  DoKeyDown(const wxKeyEvent& event, bool* consumed);
-    void DoTick() { Tick(); }
+    void DoTick()
+    {
+        Tick();
+    }
     void DoOnIdle(wxIdleEvent& evt);
     void DoStartDrag();
 
@@ -159,7 +165,10 @@ public:
     // helpers
     void FullPaint();
     bool CanPaste();
-    bool GetHideSelection() { return hideSelection; }
+    bool GetHideSelection()
+    {
+        return hideSelection;
+    }
     void DoScrollToLine(int line);
     void DoScrollToColumn(int column);
     void ClipChildren(wxDC& dc, PRectangle rect);
@@ -188,7 +197,7 @@ private:
     int sysCaretWidth;
     int sysCaretHeight;
 #endif
-   
+
     friend class wxSTCCallTip;
 };
 

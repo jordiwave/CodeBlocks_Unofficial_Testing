@@ -26,18 +26,18 @@
 
 namespace
 {
-    wxsRegisterItem<wxsStaticLine> Reg(_T("StaticLine"),wxsTWidget,_T("Standard"),60);
+wxsRegisterItem<wxsStaticLine> Reg(_T("StaticLine"),wxsTWidget,_T("Standard"),60);
 
-    WXS_ST_BEGIN(wxsStaticLineStyles,_T("wxLI_HORIZONTAL"))
-        WXS_ST_CATEGORY("wxStaticLine")
-        WXS_ST(wxLI_HORIZONTAL)
-        WXS_ST(wxLI_VERTICAL)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsStaticLineStyles,_T("wxLI_HORIZONTAL"))
+WXS_ST_CATEGORY("wxStaticLine")
+WXS_ST(wxLI_HORIZONTAL)
+WXS_ST(wxLI_VERTICAL)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsStaticLineEvents)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsStaticLineEvents)
+WXS_EV_END()
 }
 
 wxsStaticLine::wxsStaticLine(wxsItemResData* Data):
@@ -57,19 +57,19 @@ void wxsStaticLine::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/statline.h>"),GetInfo().ClassName,0);
-            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-            BuildSetupWindowCode();
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/statline.h>"),GetInfo().ClassName,0);
+        Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsStaticLine::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsStaticLine::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

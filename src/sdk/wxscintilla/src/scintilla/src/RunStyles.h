@@ -11,47 +11,49 @@
 #define RUNSTYLES_H
 
 #ifdef SCI_NAMESPACE
-namespace Scintilla {
+namespace Scintilla
+{
 #endif
 
-class RunStyles {
+class RunStyles
+{
 private:
-	std::unique_ptr<Partitioning> starts;
-	std::unique_ptr<SplitVector<int>> styles;
-	int RunFromPosition(int position) const;
-	int SplitRun(int position);
-	void RemoveRun(int run);
-	void RemoveRunIfEmpty(int run);
-	void RemoveRunIfSameAsPrevious(int run);
+    std::unique_ptr<Partitioning> starts;
+    std::unique_ptr<SplitVector<int>> styles;
+    int RunFromPosition(int position) const;
+    int SplitRun(int position);
+    void RemoveRun(int run);
+    void RemoveRunIfEmpty(int run);
+    void RemoveRunIfSameAsPrevious(int run);
 public:
-	RunStyles();
-	// Deleted so RunStyles objects can not be copied.
-	RunStyles(const RunStyles &) = delete;
-	void operator=(const RunStyles &) = delete;
-	~RunStyles();
-	int Length() const;
-	int ValueAt(int position) const;
-	int FindNextChange(int position, int end) const;
-	int StartRun(int position) const;
-	int EndRun(int position) const;
-	// Returns true if some values may have changed
-	bool FillRange(int &position, int value, int &fillLength);
-	void SetValueAt(int position, int value);
-	void InsertSpace(int position, int insertLength);
-	void DeleteAll();
-	void DeleteRange(int position, int deleteLength);
-	int Runs() const;
-	bool AllSame() const;
-	bool AllSameAs(int value) const;
-	int Find(int value, int start) const;
+    RunStyles();
+    // Deleted so RunStyles objects can not be copied.
+    RunStyles(const RunStyles &) = delete;
+    void operator=(const RunStyles &) = delete;
+    ~RunStyles();
+    int Length() const;
+    int ValueAt(int position) const;
+    int FindNextChange(int position, int end) const;
+    int StartRun(int position) const;
+    int EndRun(int position) const;
+    // Returns true if some values may have changed
+    bool FillRange(int &position, int value, int &fillLength);
+    void SetValueAt(int position, int value);
+    void InsertSpace(int position, int insertLength);
+    void DeleteAll();
+    void DeleteRange(int position, int deleteLength);
+    int Runs() const;
+    bool AllSame() const;
+    bool AllSameAs(int value) const;
+    int Find(int value, int start) const;
 
-	void Check() const;
+    void Check() const;
 
-/* CHANGEBAR begin */
-	char *PersistantForm() const;
-	void FromPersistant(const char *form);
-	static bool PersistantSame(const char *form1, const char *form2);
-/* CHANGEBAR end */
+    /* CHANGEBAR begin */
+    char *PersistantForm() const;
+    void FromPersistant(const char *form);
+    static bool PersistantSame(const char *form1, const char *form2);
+    /* CHANGEBAR end */
 };
 
 #ifdef SCI_NAMESPACE

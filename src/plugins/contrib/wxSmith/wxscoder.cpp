@@ -361,8 +361,8 @@ bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const 
     if ( Position == -1 )
     {
         Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't find code with header:\n\t\"%s\"\nin file '%s'"),
-                                                    Header.wx_str(),
-                                                    Editor->GetFilename().wx_str()));
+                Header.wx_str(),
+                Editor->GetFilename().wx_str()));
         return false;
     }
 
@@ -373,8 +373,8 @@ bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const 
     if ( EndPosition == -1 )
     {
         Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Unfinished block of auto-generated code with header:\n\t\"%s\"\nin file '%s'"),
-                                                    Header.wx_str(),
-                                                    Editor->GetFilename().wx_str()));
+                Header.wx_str(),
+                Editor->GetFilename().wx_str()));
 
         return false;
     }
@@ -527,17 +527,23 @@ wxString wxsCoder::RebuildCode(wxString& BaseIndentation,const wxChar* Code,int 
     {
         switch ( *Code )
         {
-            case _T('\n'):
-                {
-                    while (!Result.IsEmpty() &&
-                           (Result.Last() == _T(' ') || Result.Last() == _T('\t')))
-                        Result.RemoveLast();
-                    Result << BaseIndentation;
-                    break;
-                }
-            case _T('\t'): if ( UseTab ) { Result << Tab; break; }
+        case _T('\n'):
+        {
+            while (!Result.IsEmpty() &&
+                    (Result.Last() == _T(' ') || Result.Last() == _T('\t')))
+                Result.RemoveLast();
+            Result << BaseIndentation;
+            break;
+        }
+        case _T('\t'):
+            if ( UseTab )
+            {
+                Result << Tab;
+                break;
+            }
 
-            default:       Result << *Code;
+        default:
+            Result << *Code;
         }
         Code++;
     }
@@ -570,7 +576,7 @@ wxString wxsCoder::CutSpaces(wxString Code,int Count)
         while ( Code.Length() )
         {
             if ( ( Code[0] != _T('\n') ) &&
-                 ( Code[0] != _T('\r') ) ) break;
+                    ( Code[0] != _T('\r') ) ) break;
             Code.Remove(0,1);
         }
         int LeftSpaces = Count;

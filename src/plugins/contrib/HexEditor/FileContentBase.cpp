@@ -28,8 +28,8 @@
 
 namespace
 {
-    const FileContentBase::OffsetT maxBufferedSize = 1024L * 1024L * 4;
-    const FileContentBase::OffsetT maxAnySize      = 0x8000000000000000ULL;//1024L * 1024L * 1024L * 2;  // 2 GB limit
+const FileContentBase::OffsetT maxBufferedSize = 1024L * 1024L * 4;
+const FileContentBase::OffsetT maxAnySize      = 0x8000000000000000ULL;//1024L * 1024L * 1024L * 2;  // 2 GB limit
 }
 
 FileContentBase::InvalidModificationData FileContentBase::m_UndoInvalid;

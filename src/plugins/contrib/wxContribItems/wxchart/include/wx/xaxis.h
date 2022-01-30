@@ -33,11 +33,11 @@ class WXDLLIMPEXP_CHART wxXAxis : public wxAxis
 {
 
 public:
-	~wxXAxis() {};
+    ~wxXAxis() {};
 
-	// Draw xaxis area
-	//-----------------
-	void Draw(CHART_HPAINT hp, CHART_HRECT hr);
+    // Draw xaxis area
+    //-----------------
+    void Draw(CHART_HPAINT hp, CHART_HRECT hr);
 };
 
 #endif // __WXXAXIS_H__

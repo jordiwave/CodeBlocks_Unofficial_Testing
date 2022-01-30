@@ -73,11 +73,11 @@ wxLegend::~wxLegend()
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxLegend::Add(
-	const wxString &lbl,
-	const ChartColor &col
+    const wxString &lbl,
+    const ChartColor &col
 )
 {
-	m_lDescs.Add( DescLegend(lbl, col) );
+    m_lDescs.Add( DescLegend(lbl, col) );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -88,7 +88,7 @@ void wxLegend::Add(
 //----------------------------------------------------------------------E-+++
 void wxLegend::Clear()
 {
-	m_lDescs.Clear();
+    m_lDescs.Clear();
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -99,7 +99,7 @@ void wxLegend::Clear()
 //----------------------------------------------------------------------E-+++
 int wxLegend::GetCount() const
 {
-	return ( m_lDescs.GetCount() );
+    return ( m_lDescs.GetCount() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -109,18 +109,18 @@ int wxLegend::GetCount() const
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 ChartColor wxLegend::GetColor(
-	int n
+    int n
 ) const
 {
-	ChartColor colRes = wxCHART_NOCOLOR;
+    ChartColor colRes = wxCHART_NOCOLOR;
 
     int iMax = GetCount();
-	if ( iMax > n )
-	{
+    if ( iMax > n )
+    {
         colRes = m_lDescs.Item( n ).m_col;
-	}
+    }
 
-	return ( colRes );
+    return ( colRes );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -130,19 +130,19 @@ ChartColor wxLegend::GetColor(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 wxString wxLegend::GetLabel(
-	int n
+    int n
 ) const
 {
     wxString lblRes = wxEmptyString;
 
-	int iMax = GetCount();
-	if ( iMax > n )
-	{
+    int iMax = GetCount();
+    if ( iMax > n )
+    {
         lblRes = m_lDescs.Item( n ).m_lbl;
 
-	}
+    }
 
-	return ( lblRes );
+    return ( lblRes );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -247,7 +247,7 @@ bool wxLegend::IsInArrowUp(
 {
     bool fRes = false;
     if ( abs(x - m_ArrowUp.m_x) <= 4 &&
-         abs(y - m_ArrowUp.m_d) <= 4 )
+            abs(y - m_ArrowUp.m_d) <= 4 )
         fRes = true;
 
     return ( fRes );
@@ -267,7 +267,7 @@ bool wxLegend::IsInArrowDown(
 {
     bool fRes = false;
     if ( abs(x - m_ArrowDown.m_x) <= 4 &&
-         abs(y - m_ArrowDown.m_y) <= 4 )
+            abs(y - m_ArrowDown.m_y) <= 4 )
         fRes = true;
 
     return ( fRes );
@@ -360,10 +360,12 @@ void wxLegend::DrawArrow(
     if ( pos == ARROW_DOWN )
         size *= (-1);
 
-    wxPoint points[] = {
+    wxPoint points[] =
+    {
         wxPoint( x, y ),
         wxPoint( x - size, y + size ),
-        wxPoint( x + size, y + size) };
+        wxPoint( x + size, y + size)
+    };
     hp->DrawPolygon( 3, points );
 
     if ( pos == ARROW_UP )
@@ -407,8 +409,8 @@ void wxLegend::WriteLabel(
     wxString label;
 
     for ( int iData = page * ROWS_PAGE;
-          iData < iDatas && iData < (page+1) * ROWS_PAGE;
-          ++ iData )
+            iData < iDatas && iData < (page+1) * ROWS_PAGE;
+            ++ iData )
     {
         hp->SetBrush( wxBrush(GetColor(iData), wxBRUSHSTYLE_SOLID));
         hp->SetPen( *wxTRANSPARENT_PEN );

@@ -10,15 +10,15 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <cbproject.h>
-    #include <cbexception.h>
-    #include <configmanager.h>
-    #include <debuggermanager.h>
-    #include <globals.h>
-    #include <infowindow.h>
-    #include <logmanager.h>
-    #include <manager.h>
-    #include <projectbuildtarget.h>
+#include <cbproject.h>
+#include <cbexception.h>
+#include <configmanager.h>
+#include <debuggermanager.h>
+#include <globals.h>
+#include <infowindow.h>
+#include <logmanager.h>
+#include <manager.h>
+#include <projectbuildtarget.h>
 #endif
 
 #include "cdb_driver.h"
@@ -41,8 +41,8 @@ static wxRegEx reFile(_T("[[:blank:]]([A-z]+.*)[[:blank:]]+\\[([A-z]:)(.*) @ ([0
 
 CDB_driver::CDB_driver(DebuggerGDB* plugin)
     : DebuggerDriver(plugin),
-    m_Target(nullptr),
-    m_IsStarted(false)
+      m_Target(nullptr),
+      m_IsStarted(false)
 {
     //ctor
 }
@@ -110,13 +110,13 @@ void CDB_driver::SetTarget(ProjectBuildTarget* target)
 void CDB_driver::Prepare(cb_unused bool isConsole, cb_unused int printElements,
                          cb_unused const RemoteDebugging &remoteDebugging)
 {
-	// The very first command won't get the right output back due to the spam on CDB launch.
-	// Throw in a dummy command to flush the output buffer.
-	m_QueueBusy = true;
-	QueueCommand(new DebuggerCmd(this,_T(".echo Clear buffer")),High);
+    // The very first command won't get the right output back due to the spam on CDB launch.
+    // Throw in a dummy command to flush the output buffer.
+    m_QueueBusy = true;
+    QueueCommand(new DebuggerCmd(this,_T(".echo Clear buffer")),High);
 
-	// Either way, get the PID of the child
-	QueueCommand(new CdbCmd_GetPID(this));
+    // Either way, get the PID of the child
+    QueueCommand(new CdbCmd_GetPID(this));
 }
 
 void CDB_driver::Start(cb_unused bool breakOnEntry)
@@ -342,7 +342,7 @@ void CDB_driver::Attach(cb_unused int pid)
 }
 
 void CDB_driver::UpdateMemoryRangeWatches(cb_unused MemoryRangeWatchesContainer &watches,
-                                          cb_unused bool ignoreAutoUpdate)
+        cb_unused bool ignoreAutoUpdate)
 {
     // FIXME (bluehazzard#): implement this
     NOT_IMPLEMENTED();
@@ -430,7 +430,7 @@ void CDB_driver::ParseOutput(const wxString& output)
         else if (lines[i].Contains(_T("Break instruction exception")) && !m_pDBG->IsTemporaryBreak())
         {
             m_ProgramIsStopped = true;
-        	// Code breakpoint / assert
+            // Code breakpoint / assert
             m_pDBG->BringCBToFront();
             Manager::Get()->GetDebuggerManager()->ShowBacktraceDialog();
             DoBacktrace(true);

@@ -39,19 +39,19 @@
 
 class wxsMathPlot : public wxsContainer
 {
-    public:
+public:
 
-        wxsMathPlot(wxsItemResData* Data);
+    wxsMathPlot(wxsItemResData* Data);
 
 
-    protected:
+protected:
 
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnBuildCreatingCode();
-        virtual void OnEnumContainerProperties(long Flags);
-        virtual bool OnCanAddChild(wxsItem* Item, bool ShowMessage);
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual void OnEnumContainerProperties(long Flags);
+    virtual bool OnCanAddChild(wxsItem* Item, bool ShowMessage);
 
-        double      mXScale, mYScale;
+    double      mXScale, mYScale;
 
 };
 

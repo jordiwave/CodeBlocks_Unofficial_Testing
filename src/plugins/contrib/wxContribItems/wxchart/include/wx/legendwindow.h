@@ -41,35 +41,35 @@ class WXDLLIMPEXP_CHART wxLegendWindow : public wxWindow
 /* C::B end */
 {
 public:
-	wxLegendWindow() {};	// for IMPLEMENT_DYNAMIC_CLASS
-	wxLegendWindow(wxWindow *parent);
+    wxLegendWindow() {};	// for IMPLEMENT_DYNAMIC_CLASS
+    wxLegendWindow(wxWindow *parent);
 
-	// List descriptos utilities
-	// allow access to CWxLegend functionality
-	//----------------------------------------
+    // List descriptos utilities
+    // allow access to CWxLegend functionality
+    //----------------------------------------
     void Add(const wxString &lbl, const ChartColor &col);
-	void Clear();
-	int GetCount() const;
-	ChartColor GetColor(int n) const;
-	wxString GetLabel(int n) const;
+    void Clear();
+    int GetCount() const;
+    ChartColor GetColor(int n) const;
+    wxString GetLabel(int n) const;
 
-	// Draw legend window
-	//-------------------
-	void Draw(CHART_HPAINT hp, int x = 0, int y = 0);
+    // Draw legend window
+    //-------------------
+    void Draw(CHART_HPAINT hp, int x = 0, int y = 0);
 
 private:
-	wxLegend m_Legend;
-	wxWindow *m_WinParent;
+    wxLegend m_Legend;
+    wxWindow *m_WinParent;
 
-	// events
-	//-------
+    // events
+    //-------
     void OnPaint(wxPaintEvent &event);
     void OnMouse(wxMouseEvent &event);
     void OnMouseMove(wxMouseEvent &event);
 
-/* C::B begin */
+    /* C::B begin */
     DECLARE_DYNAMIC_CLASS(wxLegendWindow)
-/* C::B end */
+    /* C::B end */
     DECLARE_EVENT_TABLE()
 };
 

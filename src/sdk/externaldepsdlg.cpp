@@ -10,12 +10,12 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "cbproject.h"
-    #include "projectbuildtarget.h"
-    #include <wx/xrc/xmlres.h>
-    #include <wx/button.h>
-    #include <wx/listbox.h>
-    #include "globals.h"
+#include "cbproject.h"
+#include "projectbuildtarget.h"
+#include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/listbox.h>
+#include "globals.h"
 #endif
 
 #include "externaldepsdlg.h"
@@ -36,7 +36,7 @@ END_EVENT_TABLE()
 
 ExternalDepsDlg::ExternalDepsDlg(wxWindow* parent, cbProject* project, ProjectBuildTarget* target)
     : m_pProject(project),
-    m_pTarget(target)
+      m_pTarget(target)
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgExternalDeps"),_T("wxScrollingDialog"));

@@ -7,8 +7,8 @@ extern __declspec(dllexport) void f1(int*), *f2(), f3(float);
 extern unsigned int Func1(int*), *Func2(char);
 
 unsigned int  (*fp1)(int*) = Func1,
-             *(*fp2)(char) = Func2,
-              (*fp3)();
+*(*fp2)(char) = Func2,
+(*fp3)();
 
 class MyClass
 {

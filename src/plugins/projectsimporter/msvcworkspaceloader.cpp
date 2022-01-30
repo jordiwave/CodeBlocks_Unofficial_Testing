@@ -10,21 +10,21 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/string.h>
-    #include <wx/intl.h>
-    #include <wx/txtstrm.h>
-    #include <wx/dynarray.h>
-    #include <wx/filename.h>
-    #include <wx/msgdlg.h>
-    #include <wx/wfstream.h>
+#include <wx/string.h>
+#include <wx/intl.h>
+#include <wx/txtstrm.h>
+#include <wx/dynarray.h>
+#include <wx/filename.h>
+#include <wx/msgdlg.h>
+#include <wx/wfstream.h>
 
-    #include "globals.h"
-    #include "manager.h"
-    #include "logmanager.h"
-    #include "projectmanager.h"
-    #include "compilerfactory.h"
-    #include "compiler.h"
-    #include "cbproject.h"
+#include "globals.h"
+#include "manager.h"
+#include "logmanager.h"
+#include "projectmanager.h"
+#include "compilerfactory.h"
+#include "compiler.h"
+#include "cbproject.h"
 #endif
 
 #include <wx/stream.h>
@@ -51,28 +51,30 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename, wxString& Title)
                            "(If you answer No, you will be asked for each and every project"
                            " which compiler to use...)"), _("Question"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
     {
-        case wxID_YES:
-            askForCompiler = false;
-            break;
-        case wxID_NO:
-            askForCompiler = true;
-            break;
-        case wxID_CANCEL: // fall-through
-        default:
-            return false;
+    case wxID_YES:
+        askForCompiler = false;
+        break;
+    case wxID_NO:
+        askForCompiler = true;
+        break;
+    case wxID_CANCEL: // fall-through
+    default:
+        return false;
     }
     switch (cbMessageBox(_("Do you want to import all configurations (e.g. Debug/Release) from the "
                            "imported projects?\n"
                            "(If you answer No, you will be asked for each and every project"
                            " which configurations to import...)"), _("Question"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
     {
-        case wxID_YES:
-            askForTargets = false; break;
-        case wxID_NO:
-            askForTargets = true; break;
-        case wxID_CANCEL: // fall-through
-        default:
-            return false;
+    case wxID_YES:
+        askForTargets = false;
+        break;
+    case wxID_NO:
+        askForTargets = true;
+        break;
+    case wxID_CANCEL: // fall-through
+    default:
+        return false;
     }
 
     wxFileInputStream file(filename);

@@ -10,10 +10,10 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/string.h>
+#include <wx/string.h>
 
-    #include <cbproject.h>
-    #include <projectfile.h>
+#include <cbproject.h>
+#include <projectfile.h>
 #endif
 
 #include "parserthreadedtask.h"
@@ -25,32 +25,32 @@
 #define CC_PARSERTHREADEDTASK_DEBUG_OUTPUT 0
 
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
-    #if CC_GLOBAL_DEBUG_OUTPUT == 1
-        #undef CC_PARSERTHREADEDTASK_DEBUG_OUTPUT
-        #define CC_PARSERTHREADEDTASK_DEBUG_OUTPUT 1
-    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
-        #undef CC_PARSERTHREADEDTASK_DEBUG_OUTPUT
-        #define CC_PARSERTHREADEDTASK_DEBUG_OUTPUT 2
-    #endif
+#if CC_GLOBAL_DEBUG_OUTPUT == 1
+#undef CC_PARSERTHREADEDTASK_DEBUG_OUTPUT
+#define CC_PARSERTHREADEDTASK_DEBUG_OUTPUT 1
+#elif CC_GLOBAL_DEBUG_OUTPUT == 2
+#undef CC_PARSERTHREADEDTASK_DEBUG_OUTPUT
+#define CC_PARSERTHREADEDTASK_DEBUG_OUTPUT 2
+#endif
 #endif
 
 #if CC_PARSERTHREADEDTASK_DEBUG_OUTPUT == 1
-    #define TRACE(format, args...) \
+#define TRACE(format, args...) \
         CCLogger::Get()->DebugLog(F(format, ##args))
-    #define TRACE2(format, args...)
+#define TRACE2(format, args...)
 #elif CC_PARSERTHREADEDTASK_DEBUG_OUTPUT == 2
-    #define TRACE(format, args...)                            \
+#define TRACE(format, args...)                            \
         do                                                    \
         {                                                     \
             if (g_EnableDebugTrace)                           \
                 CCLogger::Get()->DebugLog(F(format, ##args)); \
         }                                                     \
         while (false)
-    #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
         CCLogger::Get()->DebugLog(F(format, ##args))
 #else
-    #define TRACE(format, args...)
-    #define TRACE2(format, args...)
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
 #endif
 
 // class ParserThreadedTask
@@ -123,7 +123,7 @@ int MarkFileAsLocalThreadedTask::Execute()
 
     // mark all project files as local
     for (FilesList::const_iterator it  = m_Project->GetFilesList().begin();
-                                   it != m_Project->GetFilesList().end(); ++it)
+            it != m_Project->GetFilesList().end(); ++it)
     {
         ProjectFile* pf = *it;
         if (!pf)

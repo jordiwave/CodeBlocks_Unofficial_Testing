@@ -20,69 +20,109 @@
 class kwxLinearMeter : public wxWindow
 {
 public:
-	kwxLinearMeter(){};
+    kwxLinearMeter() {};
     kwxLinearMeter(wxWindow *parent, const wxWindowID id = -1, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
-	bool Create(wxWindow* parent, const wxWindowID id, const wxPoint& pos, const wxSize& size);
-	virtual ~kwxLinearMeter();
+    bool Create(wxWindow* parent, const wxWindowID id, const wxPoint& pos, const wxSize& size);
+    virtual ~kwxLinearMeter();
 
-	void SetRangeVal(int min, int max) {m_nMin = min; m_nMax = max ; } ;
-	void SetActiveBarColour(wxColour colour) { m_cActiveBar = colour ; } ;
-	void SetPassiveBarColour(wxColour colour) { m_cPassiveBar = colour ; } ;
-	void SetBorderColour(wxColour colour) { m_cBorderColour = colour ; } ;
-	void SetValue(int val) ;
-	void SetTxtFont(wxFont &font) {m_Font = font ; } ;
-	void SetTxtLimitColour(wxColour colour) { m_cLimitColour = colour ; } ;
-	void SetTxtValueColour(wxColour colour) { m_cValueColour = colour ; } ;
-	void SetTagsColour(wxColour colour) { m_cTagsColour = colour ; } ;
+    void SetRangeVal(int min, int max)
+    {
+        m_nMin = min;
+        m_nMax = max ;
+    } ;
+    void SetActiveBarColour(wxColour colour)
+    {
+        m_cActiveBar = colour ;
+    } ;
+    void SetPassiveBarColour(wxColour colour)
+    {
+        m_cPassiveBar = colour ;
+    } ;
+    void SetBorderColour(wxColour colour)
+    {
+        m_cBorderColour = colour ;
+    } ;
+    void SetValue(int val) ;
+    void SetTxtFont(wxFont &font)
+    {
+        m_Font = font ;
+    } ;
+    void SetTxtLimitColour(wxColour colour)
+    {
+        m_cLimitColour = colour ;
+    } ;
+    void SetTxtValueColour(wxColour colour)
+    {
+        m_cValueColour = colour ;
+    } ;
+    void SetTagsColour(wxColour colour)
+    {
+        m_cTagsColour = colour ;
+    } ;
 
-	void SetOrizDirection(bool dir) { m_bDirOrizFlag = dir ; } ;
-	void ShowCurrent(bool show) { m_bShowCurrent = show ; } ;
-	void ShowLimits(bool show) { m_bShowLimits = show ; } ;
+    void SetOrizDirection(bool dir)
+    {
+        m_bDirOrizFlag = dir ;
+    } ;
+    void ShowCurrent(bool show)
+    {
+        m_bShowCurrent = show ;
+    } ;
+    void ShowLimits(bool show)
+    {
+        m_bShowLimits = show ;
+    } ;
 
-	void AddTag(int val) ;
+    void AddTag(int val) ;
 
-	int GetValue() { return m_nRealVal ; } ;
+    int GetValue()
+    {
+        return m_nRealVal ;
+    } ;
 
 protected:
-	int m_nScaledVal ;
-	int m_nRealVal ;
+    int m_nScaledVal ;
+    int m_nRealVal ;
 
-	bool m_bDirOrizFlag ;
+    bool m_bDirOrizFlag ;
 
-	int m_nMax ;
-	int m_nMin ;
+    int m_nMax ;
+    int m_nMin ;
 
 private:
     // any class wishing to process wxWindows events must use this macro
     DECLARE_EVENT_TABLE()
 
-	void    OnPaint(wxPaintEvent& event);
-	wxWindowID	 GetID() { return m_id; } ;
+    void    OnPaint(wxPaintEvent& event);
+    wxWindowID	 GetID()
+    {
+        return m_id;
+    } ;
 
 private:
 
-	void DrawLimits(wxDC &dc);
-	void DrawCurrent(wxDC &dc);
-	void DrawTags(wxDC &dc);
+    void DrawLimits(wxDC &dc);
+    void DrawCurrent(wxDC &dc);
+    void DrawTags(wxDC &dc);
 
-	wxWindowID m_id ;
-	wxBitmap *membitmap ;
+    wxWindowID m_id ;
+    wxBitmap *membitmap ;
 
-	int m_aTagsVal[MAX_TAGS] ;
+    int m_aTagsVal[MAX_TAGS] ;
 
-	int m_nTagsNum ;
+    int m_nTagsNum ;
 
 
-	bool m_bShowCurrent ;
-	bool m_bShowLimits ;
+    bool m_bShowCurrent ;
+    bool m_bShowLimits ;
 
-	wxColour m_cActiveBar ;
-	wxColour m_cPassiveBar ;
-	wxColour m_cLimitColour ;
-	wxColour m_cValueColour ;
-	wxColour m_cBorderColour ;
-	wxColour m_cTagsColour ;
-	wxFont m_Font ;
+    wxColour m_cActiveBar ;
+    wxColour m_cPassiveBar ;
+    wxColour m_cLimitColour ;
+    wxColour m_cValueColour ;
+    wxColour m_cBorderColour ;
+    wxColour m_cTagsColour ;
+    wxFont m_Font ;
 };
 
 #endif

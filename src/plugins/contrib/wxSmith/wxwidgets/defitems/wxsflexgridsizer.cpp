@@ -25,48 +25,48 @@
 
 namespace
 {
-    wxArrayInt GetArray(const wxString& String,bool* Valid = 0)
+wxArrayInt GetArray(const wxString& String,bool* Valid = 0)
+{
+    wxStringTokenizer Tokens(String,_T(","));
+    wxArrayInt Array;
+    if ( Valid )
     {
-        wxStringTokenizer Tokens(String,_T(","));
-        wxArrayInt Array;
-        if ( Valid )
-        {
-            *Valid = true;
-        }
-
-        while ( Tokens.HasMoreTokens() )
-        {
-            long Value;
-            wxString Token = Tokens.GetNextToken();
-            Token.Trim(true);
-            Token.Trim(false);
-            if ( !Token.ToLong(&Value) && Valid )
-            {
-                *Valid = false;
-            }
-            Array.Add((int)Value);
-        }
-
-        return Array;
+        *Valid = true;
     }
 
-    bool FixupList(wxString& List)
+    while ( Tokens.HasMoreTokens() )
     {
-        bool Ret;
-        wxArrayInt Array = GetArray(List,&Ret);
-        List.Clear();
-        for ( size_t i=0; i<Array.Count(); i++ )
+        long Value;
+        wxString Token = Tokens.GetNextToken();
+        Token.Trim(true);
+        Token.Trim(false);
+        if ( !Token.ToLong(&Value) && Valid )
         {
-            List.Append(wxString::Format(_T("%d"),Array[i]));
-            if ( i < Array.Count() - 1 )
-            {
-                List.Append(_T(','));
-            }
+            *Valid = false;
         }
-        return Ret;
+        Array.Add((int)Value);
     }
 
-    wxsRegisterItem<wxsFlexGridSizer> Reg(_T("FlexGridSizer"),wxsTSizer,_T("Layout"),80);
+    return Array;
+}
+
+bool FixupList(wxString& List)
+{
+    bool Ret;
+    wxArrayInt Array = GetArray(List,&Ret);
+    List.Clear();
+    for ( size_t i=0; i<Array.Count(); i++ )
+    {
+        List.Append(wxString::Format(_T("%d"),Array[i]));
+        if ( i < Array.Count() - 1 )
+        {
+            List.Append(_T(','));
+        }
+    }
+    return Ret;
+}
+
+wxsRegisterItem<wxsFlexGridSizer> Reg(_T("FlexGridSizer"),wxsTSizer,_T("Layout"),80);
 }
 
 wxsFlexGridSizer::wxsFlexGridSizer(wxsItemResData* Data):
@@ -79,7 +79,7 @@ wxsFlexGridSizer::wxsFlexGridSizer(wxsItemResData* Data):
 wxSizer* wxsFlexGridSizer::OnBuildSizerPreview(wxWindow* Parent)
 {
     wxFlexGridSizer* Sizer = new wxFlexGridSizer(Rows,Cols,
-        VGap.GetPixels(Parent),HGap.GetPixels(Parent));
+            VGap.GetPixels(Parent),HGap.GetPixels(Parent));
 
     wxArrayInt _Cols = GetArray(GrowableCols);
     for ( size_t i=0; i<_Cols.Count(); i++ )
@@ -99,33 +99,33 @@ void wxsFlexGridSizer::OnBuildSizerCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%d, %d, %s, %s);\n"),Rows,Cols,
+              VGap.GetPixelsCode(GetCoderContext()).wx_str(),
+              HGap.GetPixelsCode(GetCoderContext()).wx_str());
+
+        wxArrayInt _Cols = GetArray(GrowableCols);
+        for ( size_t i=0; i<_Cols.Count(); i++ )
         {
-            AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%d, %d, %s, %s);\n"),Rows,Cols,
-                  VGap.GetPixelsCode(GetCoderContext()).wx_str(),
-                  HGap.GetPixelsCode(GetCoderContext()).wx_str());
-
-            wxArrayInt _Cols = GetArray(GrowableCols);
-            for ( size_t i=0; i<_Cols.Count(); i++ )
-            {
-                Codef(_T("%AAddGrowableCol(%d);\n"),_Cols[i]);
-            }
-
-            wxArrayInt _Rows = GetArray(GrowableRows);
-            for ( size_t i=0; i<_Rows.Count(); i++ )
-            {
-                Codef(_T("%AAddGrowableRow(%d);\n"),_Rows[i]);
-            }
-
-            return;
+            Codef(_T("%AAddGrowableCol(%d);\n"),_Cols[i]);
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
+        wxArrayInt _Rows = GetArray(GrowableRows);
+        for ( size_t i=0; i<_Rows.Count(); i++ )
         {
-            wxsCodeMarks::Unknown(_T("wxsFlexGridSizer::OnBuildSizerCreatingCode"),GetLanguage());
+            Codef(_T("%AAddGrowableRow(%d);\n"),_Rows[i]);
         }
+
+        return;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsFlexGridSizer::OnBuildSizerCreatingCode"),GetLanguage());
+    }
     }
 }
 

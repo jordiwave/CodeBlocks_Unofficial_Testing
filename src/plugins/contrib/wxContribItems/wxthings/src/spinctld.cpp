@@ -12,12 +12,12 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/valtext.h>     // for wxTextValidator
-    #include <wx/textctrl.h>
+#include <wx/valtext.h>     // for wxTextValidator
+#include <wx/textctrl.h>
 #endif // WX_PRECOMP
 
 #include <wx/tooltip.h>
@@ -70,13 +70,13 @@ BEGIN_EVENT_TABLE(wxSpinCtrlDblTextCtrl,wxTextCtrl)
 END_EVENT_TABLE()
 
 wxSpinCtrlDblTextCtrl::wxSpinCtrlDblTextCtrl( wxWindow *parent, wxWindowID id,
-                                              const wxString &value,
-                                              const wxPoint &pos, const wxSize &size,
-                                              long style,
-                                              const wxValidator& validator,
-                                              const wxString &name)
-                       :wxTextCtrl( parent, id, value, pos, size, style,
-                                    validator, name)
+        const wxString &value,
+        const wxPoint &pos, const wxSize &size,
+        long style,
+        const wxValidator& validator,
+        const wxString &name)
+    :wxTextCtrl( parent, id, value, pos, size, style,
+                 validator, name)
 {
     m_parent = (wxSpinCtrlDbl*)parent;
 }
@@ -158,9 +158,9 @@ bool wxSpinCtrlDbl::Create( wxWindow *parent, wxWindowID id,
     m_spinButton = new wxSpinButton( this, id, wxPoint(0,0), wxSize(-1, height),
                                      wxSP_ARROW_KEYS|wxSP_VERTICAL|wxSP_WRAP);
     m_textCtrl = new wxSpinCtrlDblTextCtrl( this, id, value,
-                      wxPoint(0,0),
-                      wxSize(width-m_spinButton->GetSize().GetWidth(), height),
-                      wxTE_NOHIDESEL|wxTE_PROCESS_ENTER, validator);
+                                            wxPoint(0,0),
+                                            wxSize(width-m_spinButton->GetSize().GetWidth(), height),
+                                            wxTE_NOHIDESEL|wxTE_PROCESS_ENTER, validator);
 
     DoSetSize( pos.x, pos.y, width, height );
     SetInitialSize(wxSize(width, height));
@@ -313,58 +313,60 @@ void wxSpinCtrlDbl::OnChar( wxKeyEvent &event )
 
     switch ( event.GetKeyCode() )
     {
-        case WXK_UP :
-        {
-            if (m_textCtrl && m_textCtrl->IsModified()) SyncSpinToText(false);
-            SetValue( m_value + m_increment * modifier );
-            DoSendEvent();
-            break;
-        }
-        case WXK_DOWN :
-        {
-            if (m_textCtrl && m_textCtrl->IsModified()) SyncSpinToText(false);
-            SetValue( m_value - m_increment * modifier );
-            DoSendEvent();
-            break;
-        }
-        case WXK_PAGEUP :  // pg-up
-        {
-            if (m_textCtrl && m_textCtrl->IsModified()) SyncSpinToText(false);
-            SetValue( m_value + m_increment * 10.0 * modifier );
-            DoSendEvent();
-            break;
-        }
-        case WXK_PAGEDOWN :  // pg-down
-        {
-            if (m_textCtrl && m_textCtrl->IsModified()) SyncSpinToText(false);
-            SetValue( m_value - m_increment * 10.0 * modifier );
-            DoSendEvent();
-            break;
-        }
-        case WXK_SPACE :
-        {
-            SetValue(m_value);
-            event.Skip(false);
-            break;
-        }
-        case WXK_ESCAPE :
-        {
-            SetDefaultValue();
-            DoSendEvent();
-            break;
-        }
-        case WXK_TAB :
-        {
-            wxNavigationKeyEvent new_event;
-            new_event.SetEventObject( GetParent() );
-            new_event.SetDirection( !event.ShiftDown() );
-            // CTRL-TAB changes the (parent) window, i.e. switch notebook page
-            new_event.SetWindowChange( event.ControlDown() );
-            new_event.SetCurrentFocus( this );
-            GetParent()->GetEventHandler()->ProcessEvent( new_event );
-            break;
-        }
-        default : event.Skip(); break;
+    case WXK_UP :
+    {
+        if (m_textCtrl && m_textCtrl->IsModified()) SyncSpinToText(false);
+        SetValue( m_value + m_increment * modifier );
+        DoSendEvent();
+        break;
+    }
+    case WXK_DOWN :
+    {
+        if (m_textCtrl && m_textCtrl->IsModified()) SyncSpinToText(false);
+        SetValue( m_value - m_increment * modifier );
+        DoSendEvent();
+        break;
+    }
+    case WXK_PAGEUP :  // pg-up
+    {
+        if (m_textCtrl && m_textCtrl->IsModified()) SyncSpinToText(false);
+        SetValue( m_value + m_increment * 10.0 * modifier );
+        DoSendEvent();
+        break;
+    }
+    case WXK_PAGEDOWN :  // pg-down
+    {
+        if (m_textCtrl && m_textCtrl->IsModified()) SyncSpinToText(false);
+        SetValue( m_value - m_increment * 10.0 * modifier );
+        DoSendEvent();
+        break;
+    }
+    case WXK_SPACE :
+    {
+        SetValue(m_value);
+        event.Skip(false);
+        break;
+    }
+    case WXK_ESCAPE :
+    {
+        SetDefaultValue();
+        DoSendEvent();
+        break;
+    }
+    case WXK_TAB :
+    {
+        wxNavigationKeyEvent new_event;
+        new_event.SetEventObject( GetParent() );
+        new_event.SetDirection( !event.ShiftDown() );
+        // CTRL-TAB changes the (parent) window, i.e. switch notebook page
+        new_event.SetWindowChange( event.ControlDown() );
+        new_event.SetCurrentFocus( this );
+        GetParent()->GetEventHandler()->ProcessEvent( new_event );
+        break;
+    }
+    default :
+        event.Skip();
+        break;
     }
 }
 
@@ -466,9 +468,13 @@ void wxSpinCtrlDbl::SetDigits( int digits, formatType fmt )
                 m_digits = extra_digits + i-decimalplace;
                 switch (fmt)
                 {
-                    case le_fmt : m_textFormat.Printf(wxT("%%.%dle"), m_digits ); break;
-                    case lf_fmt :
-                    default     : m_textFormat.Printf(wxT("%%.%dlg"), m_digits ); break;
+                case le_fmt :
+                    m_textFormat.Printf(wxT("%%.%dle"), m_digits );
+                    break;
+                case lf_fmt :
+                default     :
+                    m_textFormat.Printf(wxT("%%.%dlg"), m_digits );
+                    break;
                 }
 
                 SetValue(m_value);
@@ -483,17 +489,21 @@ void wxSpinCtrlDbl::SetDigits( int digits, formatType fmt )
 
     switch (fmt)
     {
-        case le_fmt : m_textFormat.Printf(wxT("%%.%dle"), m_digits ); break;
-        case lg_fmt :
-        {
-            if (m_digits == -1)
-                m_textFormat.Printf(wxT("%%lg") );
-            else
-                m_textFormat.Printf(wxT("%%.%dlg"), m_digits );
-            break;
-        }
-        case lf_fmt :
-        default     : m_textFormat.Printf(wxT("%%.%dlf"), m_digits ); break;
+    case le_fmt :
+        m_textFormat.Printf(wxT("%%.%dle"), m_digits );
+        break;
+    case lg_fmt :
+    {
+        if (m_digits == -1)
+            m_textFormat.Printf(wxT("%%lg") );
+        else
+            m_textFormat.Printf(wxT("%%.%dlg"), m_digits );
+        break;
+    }
+    case lf_fmt :
+    default     :
+        m_textFormat.Printf(wxT("%%.%dlf"), m_digits );
+        break;
     }
 
     SetValue(m_value);

@@ -7,8 +7,8 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include "cbeditor.h"
-    #include "editormanager.h"
+#include "cbeditor.h"
+#include "editormanager.h"
 #endif
 
 #include "debugger_interface_creator.h"

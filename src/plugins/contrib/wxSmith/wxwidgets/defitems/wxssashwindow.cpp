@@ -26,27 +26,27 @@
 
 namespace
 {
-    wxsRegisterItem<wxsSashWindow> Reg(
-        _T("SashWindow"),
-        wxsTContainer,
-        _T("Layout"),                   // Category in palette
-        40,                             // Priority in palette
-        false);                         // We do not allow this item inside XRC files
+wxsRegisterItem<wxsSashWindow> Reg(
+    _T("SashWindow"),
+    wxsTContainer,
+    _T("Layout"),                   // Category in palette
+    40,                             // Priority in palette
+    false);                         // We do not allow this item inside XRC files
 
 
-    WXS_ST_BEGIN(wxsSashWindowStyles,_T("wxSW_3D|wxCLIP_CHILDREN"))
-        WXS_ST_CATEGORY("wxSashWindow")
-        WXS_ST(wxSW_3D)
-        WXS_ST(wxSW_3DSASH)
-        WXS_ST(wxSW_3DBORDER)
-        WXS_ST(wxSW_BORDER)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsSashWindowStyles,_T("wxSW_3D|wxCLIP_CHILDREN"))
+WXS_ST_CATEGORY("wxSashWindow")
+WXS_ST(wxSW_3D)
+WXS_ST(wxSW_3DSASH)
+WXS_ST(wxSW_3DBORDER)
+WXS_ST(wxSW_BORDER)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsSashWindowEvents)
-        WXS_EVI(EVT_SASH_DRAGGED,wxEVT_SASH_DRAGGED,wxSashEvent,SashDragged)
-        WXS_EV_DEFAULTS()
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsSashWindowEvents)
+WXS_EVI(EVT_SASH_DRAGGED,wxEVT_SASH_DRAGGED,wxSashEvent,SashDragged)
+WXS_EV_DEFAULTS()
+WXS_EV_END()
 }
 
 //------------------------------------------------------------------------------
@@ -91,23 +91,23 @@ void wxsSashWindow::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-            AddHeader(_T("<wx/sashwin.h>"),GetInfo().ClassName, 0);
+    case wxsCPP:
+        AddHeader(_T("<wx/sashwin.h>"),GetInfo().ClassName, 0);
 
-            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-            BuildSetupWindowCode();
-            AddChildrenCode();
+        Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+        BuildSetupWindowCode();
+        AddChildrenCode();
 
-            Codef( _T("%ASetSashVisible(wxSASH_TOP,    %b);\n"), mTop);
-            Codef( _T("%ASetSashVisible(wxSASH_BOTTOM, %b);\n"), mBottom);
-            Codef( _T("%ASetSashVisible(wxSASH_LEFT,   %b);\n"), mLeft);
-            Codef( _T("%ASetSashVisible(wxSASH_RIGHT,  %b);\n"), mRight);
+        Codef( _T("%ASetSashVisible(wxSASH_TOP,    %b);\n"), mTop);
+        Codef( _T("%ASetSashVisible(wxSASH_BOTTOM, %b);\n"), mBottom);
+        Codef( _T("%ASetSashVisible(wxSASH_LEFT,   %b);\n"), mLeft);
+        Codef( _T("%ASetSashVisible(wxSASH_RIGHT,  %b);\n"), mRight);
 
-            break;
+        break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsSashWindow::OnBuildCreatingCode"),GetLanguage());
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsSashWindow::OnBuildCreatingCode"),GetLanguage());
     }
 }
 

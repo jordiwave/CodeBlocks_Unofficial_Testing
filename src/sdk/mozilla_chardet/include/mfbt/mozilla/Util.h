@@ -20,7 +20,8 @@
 
 #include "mozilla/Alignment.h"
 
-namespace mozilla {
+namespace mozilla
+{
 
 /*
  * Safely subtract two pointers when it is known that end >= begin.  This avoids
@@ -32,8 +33,8 @@ template<class T>
 MOZ_ALWAYS_INLINE size_t
 PointerRangeSize(T* begin, T* end)
 {
-  MOZ_ASSERT(end >= begin);
-  return (size_t(end) - size_t(begin)) / sizeof(T);
+    MOZ_ASSERT(end >= begin);
+    return (size_t(end) - size_t(begin)) / sizeof(T);
 }
 
 /*
@@ -46,7 +47,7 @@ template<typename T, size_t N>
 MOZ_CONSTEXPR size_t
 ArrayLength(T (&arr)[N])
 {
-  return N;
+    return N;
 }
 
 /*
@@ -58,7 +59,7 @@ template<typename T, size_t N>
 MOZ_CONSTEXPR T*
 ArrayEnd(T (&arr)[N])
 {
-  return arr + ArrayLength(arr);
+    return arr + ArrayLength(arr);
 }
 
 } /* namespace mozilla */

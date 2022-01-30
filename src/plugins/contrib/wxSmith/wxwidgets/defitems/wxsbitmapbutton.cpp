@@ -27,24 +27,24 @@
 
 namespace
 {
-    wxsRegisterItem<wxsBitmapButton> Reg(_T("BitmapButton"),wxsTWidget,_T("Standard"),360);
+wxsRegisterItem<wxsBitmapButton> Reg(_T("BitmapButton"),wxsTWidget,_T("Standard"),360);
 
-    WXS_ST_BEGIN(wxsBitmapButtonStyles,_T("wxBU_AUTODRAW"))
-        WXS_ST_CATEGORY("wxBitmapButton")
-        WXS_ST(wxBU_LEFT)
-        WXS_ST(wxBU_TOP)
-        WXS_ST(wxBU_RIGHT)
-        WXS_ST(wxBU_BOTTOM)
-        WXS_ST(wxBU_AUTODRAW)
-        // cyberkoa: "The help mentions that wxBU_EXACTFIX is not used but the XRC code yes
-        //  WXS_ST(wxBU_EXACTFIX)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsBitmapButtonStyles,_T("wxBU_AUTODRAW"))
+WXS_ST_CATEGORY("wxBitmapButton")
+WXS_ST(wxBU_LEFT)
+WXS_ST(wxBU_TOP)
+WXS_ST(wxBU_RIGHT)
+WXS_ST(wxBU_BOTTOM)
+WXS_ST(wxBU_AUTODRAW)
+// cyberkoa: "The help mentions that wxBU_EXACTFIX is not used but the XRC code yes
+//  WXS_ST(wxBU_EXACTFIX)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsBitmapButtonEvents)
-        WXS_EVI(EVT_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEvent,Click)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsBitmapButtonEvents)
+WXS_EVI(EVT_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEvent,Click)
+WXS_EV_END()
 }
 
 wxsBitmapButton::wxsBitmapButton(wxsItemResData* Data):
@@ -60,37 +60,37 @@ void wxsBitmapButton::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/bmpbuttn.h>"),GetInfo().ClassName,hfInPCH);
+
+        Codef(_T("%C(%W, %I, %i, %P, %S, %T, %V, %N);\n"), &BitmapLabel, _T("wxART_BUTTON"));
+        if ( !BitmapDisabled.IsEmpty() )
         {
-            AddHeader(_T("<wx/bmpbuttn.h>"),GetInfo().ClassName,hfInPCH);
-
-            Codef(_T("%C(%W, %I, %i, %P, %S, %T, %V, %N);\n"), &BitmapLabel, _T("wxART_BUTTON"));
-            if ( !BitmapDisabled.IsEmpty() )
-            {
-                Codef(_T("%ASetBitmapDisabled(%i);\n"), &BitmapDisabled, _T("wxART_BUTTON"));
-            }
-            if ( !BitmapSelected.IsEmpty() )
-            {
-                Codef(_T("%ASetBitmapSelected(%i);\n"), &BitmapSelected, _T("wxART_BUTTON"));
-            }
-            if ( !BitmapFocus.IsEmpty() )
-            {
-                Codef(_T("%ASetBitmapFocus(%i);\n"), &BitmapFocus, _T("wxART_BUTTON"));
-            }
-
-            if ( IsDefault )
-            {
-                Codef(_T("%ASetDefault();\n"));
-            }
-            BuildSetupWindowCode();
-            return;
+            Codef(_T("%ASetBitmapDisabled(%i);\n"), &BitmapDisabled, _T("wxART_BUTTON"));
+        }
+        if ( !BitmapSelected.IsEmpty() )
+        {
+            Codef(_T("%ASetBitmapSelected(%i);\n"), &BitmapSelected, _T("wxART_BUTTON"));
+        }
+        if ( !BitmapFocus.IsEmpty() )
+        {
+            Codef(_T("%ASetBitmapFocus(%i);\n"), &BitmapFocus, _T("wxART_BUTTON"));
         }
 
-        case wxsUnknownLanguage: // fall through
-        default:
+        if ( IsDefault )
         {
-            wxsCodeMarks::Unknown(_T("wxsBitmapButton::OnBuildCreatingCode"),GetLanguage());
+            Codef(_T("%ASetDefault();\n"));
         }
+        BuildSetupWindowCode();
+        return;
+    }
+
+    case wxsUnknownLanguage: // fall through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsBitmapButton::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

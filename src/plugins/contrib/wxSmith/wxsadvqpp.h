@@ -40,44 +40,47 @@ class wxsAdvQPPChild;
  */
 class wxsAdvQPP : public wxsQuickPropsPanel
 {
-    public:
-        /** \brief Ctor
-         *
-         * Number of parameters was reduced comparing to wxsQuickPropsPanel's
-         * constructor. The reason is that this panel will be used in editor
-         * area and some parameters must have specified values.
-         */
-        wxsAdvQPP(wxWindow* Parent,wxsPropertyContainer* Container);
+public:
+    /** \brief Ctor
+     *
+     * Number of parameters was reduced comparing to wxsQuickPropsPanel's
+     * constructor. The reason is that this panel will be used in editor
+     * area and some parameters must have specified values.
+     */
+    wxsAdvQPP(wxWindow* Parent,wxsPropertyContainer* Container);
 
-        /** \brief Dctor */
-        virtual ~wxsAdvQPP();
+    /** \brief Dctor */
+    virtual ~wxsAdvQPP();
 
-        /** \brief Function registering child panel */
-        void Register(wxsAdvQPPChild* Child,const wxString& Title);
+    /** \brief Function registering child panel */
+    void Register(wxsAdvQPPChild* Child,const wxString& Title);
 
-    private:
+private:
 
-        /** \brief Function updating content of all child panels */
-        void Update();
+    /** \brief Function updating content of all child panels */
+    void Update();
 
-        /** \brief Overriding NotifyChange function to give access from
-         *         wxsAdvQPPChild
-         */
-        inline void NotifyChange() { wxsQuickPropsPanel::NotifyChange(); }
+    /** \brief Overriding NotifyChange function to give access from
+     *         wxsAdvQPPChild
+     */
+    inline void NotifyChange()
+    {
+        wxsQuickPropsPanel::NotifyChange();
+    }
 
-        /** \brief Notification on toggling button press */
-        void OnToggleButton(wxCommandEvent& event);
+    /** \brief Notification on toggling button press */
+    void OnToggleButton(wxCommandEvent& event);
 
-        WX_DEFINE_ARRAY(wxsAdvQPPChild*,wxArrayAdvQPPChild);
-        WX_DEFINE_ARRAY(wxButton*,wxArrayButton);
+    WX_DEFINE_ARRAY(wxsAdvQPPChild*,wxArrayAdvQPPChild);
+    WX_DEFINE_ARRAY(wxButton*,wxArrayButton);
 
-        wxArrayAdvQPPChild Children;    ///< \brief Array of child panels
-        wxArrayButton Buttons;          ///< \brief Buttons used to toggle
-        wxBoxSizer* Sizer;              ///< \brief Sizer layouting panels
+    wxArrayAdvQPPChild Children;    ///< \brief Array of child panels
+    wxArrayButton Buttons;          ///< \brief Buttons used to toggle
+    wxBoxSizer* Sizer;              ///< \brief Sizer layouting panels
 
-        DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 
-        friend class wxsAdvQPPChild;
+    friend class wxsAdvQPPChild;
 };
 
 #endif

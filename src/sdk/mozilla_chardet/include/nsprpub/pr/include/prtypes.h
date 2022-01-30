@@ -382,7 +382,8 @@ typedef unsigned long long PRUint64;
 #define PR_INT64_MIN (-PR_INT64_MAX - 1)
 #define PR_UINT64_MAX PR_UINT64(-1)
 #else  /* !HAVE_LONG_LONG */
-typedef struct {
+typedef struct
+{
 #ifdef IS_LITTLE_ENDIAN
     PRUint32 lo, hi;
 #else

@@ -36,7 +36,8 @@ class CPlatformSet;
 class CPlatform
 {
 public:
-    enum OS_Type {
+    enum OS_Type
+    {
         OS_Other,
         OS_Unix,
         OS_Windows,

@@ -29,9 +29,18 @@ WX_DECLARE_OBJARRAY_WITH_DECL(wxOptionValue, wxArrayOptionValue, class WXDLLIMPE
 class WXDLLIMPEXP_THINGS wxOptionValue : public wxObject
 {
 public:
-    wxOptionValue(bool create = true) : wxObject() { if (create) Create(); }
-    wxOptionValue( const wxOptionValue &optValue ) : wxObject() { Create(optValue); }
-    wxOptionValue( const wxString &str ) : wxObject() { Create(str); }
+    wxOptionValue(bool create = true) : wxObject()
+    {
+        if (create) Create();
+    }
+    wxOptionValue( const wxOptionValue &optValue ) : wxObject()
+    {
+        Create(optValue);
+    }
+    wxOptionValue( const wxString &str ) : wxObject()
+    {
+        Create(str);
+    }
 
     // (Re)Create as an empty container
     bool Create();
@@ -86,19 +95,56 @@ public:
 
     // Option functions (arbitrary name/value mapping)
     void SetOption(const wxString& name, const wxString& value, bool force=true );
-    void SetOption(const wxString& name, int value,             bool force=true ) { SetOption(name, wxString::Format(wxT("%d"), value), force); }
-    void SetOption(const wxString& name, double value,          bool force=true ) { SetOption(name, wxString::Format(wxT("%lf"), value), force); }
+    void SetOption(const wxString& name, int value,             bool force=true )
+    {
+        SetOption(name, wxString::Format(wxT("%d"), value), force);
+    }
+    void SetOption(const wxString& name, double value,          bool force=true )
+    {
+        SetOption(name, wxString::Format(wxT("%lf"), value), force);
+    }
 
     // printf style for numeric values SetOption("Name", true, "%d %f", 2, 2.5)
     void SetOption(const wxString& name, bool update, const wxChar* format, ...);
 
-    void SetOption(const wxString& name, int    v1, int    v2, int    v3, bool force=true ) { SetOption(name, wxString::Format(wxT("%d %d %d"), v1, v2, v3), force); }
-    void SetOption(const wxString& name, double v1, double v2, double v3, bool force=true ) { SetOption(name, wxString::Format(wxT("%lf %lf %lf"), v1, v2, v3), force); }
-    void SetOption(const wxString& name, int   *v, int count,             bool force=true ) { if(v) { wxString s; for (int i=0; i<count; i++) s += wxString::Format(wxT("%d "), v[i]); SetOption(name, s, force); }}
-    void SetOption(const wxString& name, float *v, int count,             bool force=true ) { if(v) { wxString s; for (int i=0; i<count; i++) s += wxString::Format(wxT("%f "), v[i]); SetOption(name, s, force); }}
-    void SetOption(const wxString& name, const wxPoint &value,            bool force=true ) { SetOption(name, wxString::Format(wxT("%d %d"), value.x, value.y), force); }
-    void SetOption(const wxString& name, const wxSize &value,             bool force=true ) { SetOption(name, wxString::Format(wxT("%d %d"), value.x, value.y), force); }
-    void SetOption(const wxString& name, const wxRect &value,             bool force=true ) { SetOption(name, wxString::Format(wxT("%d %d %d %d"), value.x, value.y, value.width, value.height), force); }
+    void SetOption(const wxString& name, int    v1, int    v2, int    v3, bool force=true )
+    {
+        SetOption(name, wxString::Format(wxT("%d %d %d"), v1, v2, v3), force);
+    }
+    void SetOption(const wxString& name, double v1, double v2, double v3, bool force=true )
+    {
+        SetOption(name, wxString::Format(wxT("%lf %lf %lf"), v1, v2, v3), force);
+    }
+    void SetOption(const wxString& name, int   *v, int count,             bool force=true )
+    {
+        if(v)
+        {
+            wxString s;
+            for (int i=0; i<count; i++) s += wxString::Format(wxT("%d "), v[i]);
+            SetOption(name, s, force);
+        }
+    }
+    void SetOption(const wxString& name, float *v, int count,             bool force=true )
+    {
+        if(v)
+        {
+            wxString s;
+            for (int i=0; i<count; i++) s += wxString::Format(wxT("%f "), v[i]);
+            SetOption(name, s, force);
+        }
+    }
+    void SetOption(const wxString& name, const wxPoint &value,            bool force=true )
+    {
+        SetOption(name, wxString::Format(wxT("%d %d"), value.x, value.y), force);
+    }
+    void SetOption(const wxString& name, const wxSize &value,             bool force=true )
+    {
+        SetOption(name, wxString::Format(wxT("%d %d"), value.x, value.y), force);
+    }
+    void SetOption(const wxString& name, const wxRect &value,             bool force=true )
+    {
+        SetOption(name, wxString::Format(wxT("%d %d %d %d"), value.x, value.y, value.width, value.height), force);
+    }
 
     wxString GetOption(const wxString& name) const; // returns wxEmptyString if not found
     int GetOptionInt(const wxString& name) const;   // returns 0 if not found
@@ -140,10 +186,14 @@ public:
 
     bool GetOption(const wxString& name, wxPoint &value,
                    const wxString& delims = wxT(" ,\t\r\n")) const
-        { return GetOption(name, &value.x, &value.y, delims); }
+    {
+        return GetOption(name, &value.x, &value.y, delims);
+    }
     bool GetOption(const wxString& name, wxSize &value,
                    const wxString& delims = wxT(" ,\t\r\n")) const
-        { return GetOption(name, &value.x, &value.y, delims); }
+    {
+        return GetOption(name, &value.x, &value.y, delims);
+    }
     bool GetOption(const wxString& name, wxRect &value,
                    const wxString& delims = wxT(" ,\t\r\n")) const;
 
@@ -156,9 +206,13 @@ public:
         return *this;
     }
     bool operator == (const wxOptionValue& optValue) const
-        { return m_refData == optValue.m_refData; }
+    {
+        return m_refData == optValue.m_refData;
+    }
     bool operator != (const wxOptionValue& optValue) const
-        { return m_refData != optValue.m_refData; }
+    {
+        return m_refData != optValue.m_refData;
+    }
 
 private :
     // ref counting code

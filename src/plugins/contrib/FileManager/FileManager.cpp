@@ -1,9 +1,9 @@
 #include <wx/aui/aui.h>
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-    #include <cbauibook.h>
-    #include <cbproject.h>
-    #include <projectmanager.h>
+#include <cbauibook.h>
+#include <cbproject.h>
+#include <projectmanager.h>
 #endif
 //#include <configurationpanel.h>
 
@@ -13,7 +13,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<FileManagerPlugin> reg(_T("FileManager"));
+PluginRegistrant<FileManagerPlugin> reg(_T("FileManager"));
 }
 
 int ID_ProjectOpenInFileBrowser=wxNewId();
@@ -60,11 +60,11 @@ void FileManagerPlugin::OnRelease(bool /*appShutDown*/)
 
 void FileManagerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
-	if(type==mtProjectManager && data && data->GetKind()==FileTreeData::ftdkProject)
-	{
-	    m_project_selected=wxFileName(data->GetProject()->GetFilename()).GetPath();
+    if(type==mtProjectManager && data && data->GetKind()==FileTreeData::ftdkProject)
+    {
+        m_project_selected=wxFileName(data->GetProject()->GetFilename()).GetPath();
         menu->Append(ID_ProjectOpenInFileBrowser, _("Open Project Folder in File Browser"), _("Opens the folder containing the project file in the file browser"));
-	}
+    }
 }
 
 void FileManagerPlugin::OnOpenProjectInFileBrowser(wxCommandEvent& /*event*/)

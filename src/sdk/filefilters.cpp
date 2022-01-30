@@ -128,7 +128,8 @@ bool FileFilters::GetFilterIndexFromName(const wxString& FiltersList, const wxSt
 } // end of GetFilterIndexFromName
 
 bool FileFilters::GetFilterNameFromIndex(const wxString& FiltersList, int Index, wxString& FilterName)
-{    // we return the name (not the mask)
+{
+    // we return the name (not the mask)
     bool bFound = false;
     // the List will contain 2 entries per type (description, mask)
     wxArrayString List = GetArrayFromString(FiltersList, _T("|"), true);
@@ -188,17 +189,17 @@ const wxString FileFilters::RESOURCEBIN_EXT         = _T("res");
 const wxString FileFilters::XML_EXT                 = _T("xml");
 const wxString FileFilters::SCRIPT_EXT              = _T("script");
 #if   defined(__WXMSW__)
-    const wxString FileFilters::DYNAMICLIB_EXT      = _T("dll");
-    const wxString FileFilters::EXECUTABLE_EXT      = _T("exe");
-    const wxString FileFilters::NATIVE_EXT          = _T("sys");
+const wxString FileFilters::DYNAMICLIB_EXT      = _T("dll");
+const wxString FileFilters::EXECUTABLE_EXT      = _T("exe");
+const wxString FileFilters::NATIVE_EXT          = _T("sys");
 #elif defined(__WXMAC__)
-    const wxString FileFilters::DYNAMICLIB_EXT      = _T("dylib");
-    const wxString FileFilters::EXECUTABLE_EXT      = _T("");
-    const wxString FileFilters::NATIVE_EXT          = _T("");
+const wxString FileFilters::DYNAMICLIB_EXT      = _T("dylib");
+const wxString FileFilters::EXECUTABLE_EXT      = _T("");
+const wxString FileFilters::NATIVE_EXT          = _T("");
 #else
-    const wxString FileFilters::DYNAMICLIB_EXT      = _T("so");
-    const wxString FileFilters::EXECUTABLE_EXT      = _T("");
-    const wxString FileFilters::NATIVE_EXT          = _T("");
+const wxString FileFilters::DYNAMICLIB_EXT      = _T("so");
+const wxString FileFilters::EXECUTABLE_EXT      = _T("");
+const wxString FileFilters::NATIVE_EXT          = _T("");
 #endif
 
 // dot.ext version
@@ -247,11 +248,11 @@ const wxString FileFilters::RESOURCEBIN_DOT_EXT     = _T('.') + FileFilters::RES
 const wxString FileFilters::XML_DOT_EXT             = _T('.') + FileFilters::XML_EXT;
 const wxString FileFilters::SCRIPT_DOT_EXT          = _T('.') + FileFilters::SCRIPT_EXT;
 #ifdef __WXMSW__
-    const wxString FileFilters::DYNAMICLIB_DOT_EXT  = _T('.') + FileFilters::DYNAMICLIB_EXT;
-    const wxString FileFilters::EXECUTABLE_DOT_EXT  = _T('.') + FileFilters::EXECUTABLE_EXT;
-    const wxString FileFilters::NATIVE_DOT_EXT      = _T('.') + FileFilters::NATIVE_EXT;
+const wxString FileFilters::DYNAMICLIB_DOT_EXT  = _T('.') + FileFilters::DYNAMICLIB_EXT;
+const wxString FileFilters::EXECUTABLE_DOT_EXT  = _T('.') + FileFilters::EXECUTABLE_EXT;
+const wxString FileFilters::NATIVE_DOT_EXT      = _T('.') + FileFilters::NATIVE_EXT;
 #else
-    const wxString FileFilters::DYNAMICLIB_DOT_EXT  = _T('.') + FileFilters::DYNAMICLIB_EXT;
-    const wxString FileFilters::EXECUTABLE_DOT_EXT  = EXECUTABLE_EXT; // no dot, since no extension
-    const wxString FileFilters::NATIVE_DOT_EXT      = NATIVE_EXT; // no dot, since no extension
+const wxString FileFilters::DYNAMICLIB_DOT_EXT  = _T('.') + FileFilters::DYNAMICLIB_EXT;
+const wxString FileFilters::EXECUTABLE_DOT_EXT  = EXECUTABLE_EXT; // no dot, since no extension
+const wxString FileFilters::NATIVE_DOT_EXT      = NATIVE_EXT; // no dot, since no extension
 #endif

@@ -28,21 +28,21 @@
 /** \brief Class for wxSpinCtrlDouble widget */
 class wxsSpinCtrlDouble: public wxsWidget
 {
-    public:
+public:
 
-        wxsSpinCtrlDouble(wxsItemResData* Data);
+    wxsSpinCtrlDouble(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent, long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent, long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        wxString Value;
-        double Min;
-        double Max;
-        double Initial;
-        double Increment;
+    wxString Value;
+    double Min;
+    double Max;
+    double Initial;
+    double Increment;
 
 };
 

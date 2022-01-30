@@ -30,15 +30,15 @@ extern "C" {
 // We need to export the squirrel functions, so we can call them in plugins.
 // They would be exposed by the codeblocks.dll/libcodeblocks.so
 #ifndef SQUIRREL_API
-    #if defined(__WXMSW__)
-        #if defined(EXPORT_LIB)
-            #define SQUIRREL_API __declspec (dllexport)
-        #else
-            #define SQUIRREL_API __declspec (dllimport)
-        #endif // EXPORT_LIB
-    #else
-        #define SQUIRREL_API extern
-    #endif // defined(__WXMSW__)
+#if defined(__WXMSW__)
+#if defined(EXPORT_LIB)
+#define SQUIRREL_API __declspec (dllexport)
+#else
+#define SQUIRREL_API __declspec (dllimport)
+#endif // EXPORT_LIB
+#else
+#define SQUIRREL_API extern
+#endif // defined(__WXMSW__)
 #endif // SQUIRREL_API
 // C::B end
 
@@ -119,7 +119,8 @@ struct SQOuter;
 #define _RT_WEAKREF         0x00010000
 #define _RT_OUTER           0x00020000
 
-typedef enum tagSQObjectType{
+typedef enum tagSQObjectType
+{
     OT_NULL =           (_RT_NULL|SQOBJECT_CANBEFALSE),
     OT_INTEGER =        (_RT_INTEGER|SQOBJECT_NUMERIC|SQOBJECT_CANBEFALSE),
     OT_FLOAT =          (_RT_FLOAT|SQOBJECT_NUMERIC|SQOBJECT_CANBEFALSE),
@@ -132,13 +133,13 @@ typedef enum tagSQObjectType{
     OT_NATIVECLOSURE =  (_RT_NATIVECLOSURE|SQOBJECT_REF_COUNTED),
     OT_GENERATOR =      (_RT_GENERATOR|SQOBJECT_REF_COUNTED),
     OT_USERPOINTER =    _RT_USERPOINTER,
-    OT_THREAD =         (_RT_THREAD|SQOBJECT_REF_COUNTED) ,
+    OT_THREAD =         (_RT_THREAD|SQOBJECT_REF_COUNTED),
     OT_FUNCPROTO =      (_RT_FUNCPROTO|SQOBJECT_REF_COUNTED), //internal usage only
     OT_CLASS =          (_RT_CLASS|SQOBJECT_REF_COUNTED),
     OT_INSTANCE =       (_RT_INSTANCE|SQOBJECT_REF_COUNTED|SQOBJECT_DELEGABLE),
     OT_WEAKREF =        (_RT_WEAKREF|SQOBJECT_REF_COUNTED),
     OT_OUTER =          (_RT_OUTER|SQOBJECT_REF_COUNTED) //internal usage only
-}SQObjectType;
+} SQObjectType;
 
 #define ISREFCOUNTED(t) (t&SQOBJECT_REF_COUNTED)
 
@@ -164,25 +165,27 @@ typedef union tagSQObjectValue
     struct SQInstance *pInstance;
     struct SQWeakRef *pWeakRef;
     SQRawObjectVal raw;
-}SQObjectValue;
+} SQObjectValue;
 
 
 typedef struct tagSQObject
 {
     SQObjectType _type;
     SQObjectValue _unVal;
-}SQObject;
+} SQObject;
 
-typedef struct  tagSQMemberHandle{
+typedef struct  tagSQMemberHandle
+{
     SQBool _static;
     SQInteger _index;
-}SQMemberHandle;
+} SQMemberHandle;
 
-typedef struct tagSQStackInfos{
+typedef struct tagSQStackInfos
+{
     const SQChar* funcname;
     const SQChar* source;
     SQInteger line;
-}SQStackInfos;
+} SQStackInfos;
 
 typedef struct SQVM* HSQUIRRELVM;
 typedef SQObject HSQOBJECT;
@@ -190,26 +193,28 @@ typedef SQMemberHandle HSQMEMBERHANDLE;
 typedef SQInteger (*SQFUNCTION)(HSQUIRRELVM);
 typedef SQInteger (*SQRELEASEHOOK)(SQUserPointer,SQInteger size);
 typedef void (*SQCOMPILERERROR)(HSQUIRRELVM,const SQChar * /*desc*/,const SQChar * /*source*/,SQInteger /*line*/,SQInteger /*column*/);
-typedef void (*SQPRINTFUNCTION)(HSQUIRRELVM,const SQChar * ,...);
+typedef void (*SQPRINTFUNCTION)(HSQUIRRELVM,const SQChar *,...);
 typedef void (*SQDEBUGHOOK)(HSQUIRRELVM /*v*/, SQInteger /*type*/, const SQChar * /*sourcename*/, SQInteger /*line*/, const SQChar * /*funcname*/);
 typedef SQInteger (*SQWRITEFUNC)(SQUserPointer,SQUserPointer,SQInteger);
 typedef SQInteger (*SQREADFUNC)(SQUserPointer,SQUserPointer,SQInteger);
 
 typedef SQInteger (*SQLEXREADFUNC)(SQUserPointer);
 
-typedef struct tagSQRegFunction{
+typedef struct tagSQRegFunction
+{
     const SQChar *name;
     SQFUNCTION f;
     SQInteger nparamscheck;
     const SQChar *typemask;
-}SQRegFunction;
+} SQRegFunction;
 
-typedef struct tagSQFunctionInfo {
+typedef struct tagSQFunctionInfo
+{
     SQUserPointer funcid;
     const SQChar *name;
     const SQChar *source;
     SQInteger line;
-}SQFunctionInfo;
+} SQFunctionInfo;
 
 /*vm*/
 SQUIRREL_API HSQUIRRELVM sq_open(SQInteger initialstacksize);

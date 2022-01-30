@@ -8,7 +8,7 @@
  */
 
 #ifndef CB_PRECOMP
-    #include <wx/frame.h> // GetMenuBar
+#include <wx/frame.h> // GetMenuBar
 #endif
 
 #include "sdk_precomp.h"
@@ -18,7 +18,7 @@
 
 namespace
 {
-    wxRegEx reInsert(_T("([0-9]+):.+"));
+wxRegEx reInsert(_T("([0-9]+):.+"));
 }
 
 MenuItemsManager::MenuItemsManager(bool autoClearOnDestroy)

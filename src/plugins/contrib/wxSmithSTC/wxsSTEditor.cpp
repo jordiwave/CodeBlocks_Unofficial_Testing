@@ -26,40 +26,40 @@ namespace
 
 // Loading images from xpm files
 
-    #include "STE16.xpm"
-    #include "STE32.xpm"
+#include "STE16.xpm"
+#include "STE32.xpm"
 
-    wxsRegisterItem<wxsSTEditor> Reg(
-        _T("wxSTEditor"),           // Class name
-        wxsTWidget,                     // Item type
-        _T("wxWindows"),                // License
-        _T("Ron Collins"),              // Author
-        _T("rcoll@theriver.com"),       // Author's email
-        _T(""),                         // Item's homepage
-        _T("Styled Text"),              // Category in palette
-        55,                             // Priority in palette
-        _T("STE"),                      // Base part of names for new items
-        wxsCPP,                         // List of coding languages supported by this item
-        1, 0,                           // Version
-        wxBitmap(STE32_xpm),            // 32x32 bitmap
-        wxBitmap(STE16_xpm),            // 16x16 bitmap
-        false);                         // We do not allow this item inside XRC files
+wxsRegisterItem<wxsSTEditor> Reg(
+    _T("wxSTEditor"),           // Class name
+    wxsTWidget,                     // Item type
+    _T("wxWindows"),                // License
+    _T("Ron Collins"),              // Author
+    _T("rcoll@theriver.com"),       // Author's email
+    _T(""),                         // Item's homepage
+    _T("Styled Text"),              // Category in palette
+    55,                             // Priority in palette
+    _T("STE"),                      // Base part of names for new items
+    wxsCPP,                         // List of coding languages supported by this item
+    1, 0,                           // Version
+    wxBitmap(STE32_xpm),            // 32x32 bitmap
+    wxBitmap(STE16_xpm),            // 16x16 bitmap
+    false);                         // We do not allow this item inside XRC files
 
 
-    WXS_ST_BEGIN(wxsSTEditorStyles,_T("wxRE_MULTILINE|wxRAISED_BORDER|wxWANTS_CHARS"))
-        WXS_ST_CATEGORY("wxSTEditor")
+WXS_ST_BEGIN(wxsSTEditorStyles,_T("wxRE_MULTILINE|wxRAISED_BORDER|wxWANTS_CHARS"))
+WXS_ST_CATEGORY("wxSTEditor")
 
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsSTEditorEvents)
+WXS_EV_BEGIN(wxsSTEditorEvents)
 
-       WXS_EVI(EVT_TEXT_ENTER,                    wxEVT_COMMAND_TEXT_ENTER,                    wxCommandEvent,  EvTextEnter)
-       WXS_EVI(EVT_TEXT,                          wxEVT_COMMAND_TEXT_UPDATED,                  wxCommandEvent,  EvTextUpdated)
-       WXS_EVI(EVT_TEXT_URL,                      wxEVT_COMMAND_TEXT_URL,                      wxTextUrlEvent,  EvTextURL)
+WXS_EVI(EVT_TEXT_ENTER,                    wxEVT_COMMAND_TEXT_ENTER,                    wxCommandEvent,  EvTextEnter)
+WXS_EVI(EVT_TEXT,                          wxEVT_COMMAND_TEXT_UPDATED,                  wxCommandEvent,  EvTextUpdated)
+WXS_EVI(EVT_TEXT_URL,                      wxEVT_COMMAND_TEXT_URL,                      wxTextUrlEvent,  EvTextURL)
 
-        WXS_EV_DEFAULTS()
-    WXS_EV_END()
+WXS_EV_DEFAULTS()
+WXS_EV_END()
 }
 
 //------------------------------------------------------------------------------
@@ -79,11 +79,12 @@ wxsSTEditor::wxsSTEditor(wxsItemResData* Data):
 
 //------------------------------------------------------------------------------
 
-void wxsSTEditor::OnBuildCreatingCode() {
-wxString            vname;
-wxString            aname;
-wxString            ss, tt;
-wxColour            fg;
+void wxsSTEditor::OnBuildCreatingCode()
+{
+    wxString            vname;
+    wxString            aname;
+    wxString            ss, tt;
+    wxColour            fg;
 
 // valid language?
 
@@ -113,14 +114,16 @@ wxColour            fg;
 
 // a virtual size
 
-    if (! mVirtualSize.IsDefault) {
+    if (! mVirtualSize.IsDefault)
+    {
         ss = mVirtualSize.GetSizeCode(GetCoderContext());
         Codef(_T("%ASetVirtualSize(%s);\n"), ss.c_str());
     };
 
 // initial text
 
-    for(size_t i=0; i<mText.GetCount(); i++) {
+    for(size_t i=0; i<mText.GetCount(); i++)
+    {
         ss  = mText.Item(i);
         ss += _T("\n");
         Codef(_T("%AAppendText(%t);\n"), ss.c_str());
@@ -129,11 +132,12 @@ wxColour            fg;
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsSTEditor::OnBuildPreview(wxWindow* Parent, long Flags) {
-wxSTEditor          *ste;
-wxColour            fg;
-wxString            ss;
-wxSize              zz;
+wxObject* wxsSTEditor::OnBuildPreview(wxWindow* Parent, long Flags)
+{
+    wxSTEditor          *ste;
+    wxColour            fg;
+    wxString            ss;
+    wxSize              zz;
 
 // the default size of this widget is microscopic
 // use this to make a reasonable default size
@@ -151,14 +155,16 @@ wxSize              zz;
 
 // a virtual size
 
-    if (! mVirtualSize.IsDefault) {
+    if (! mVirtualSize.IsDefault)
+    {
         zz = mVirtualSize.GetSize(Parent);
         ste->SetVirtualSize(zz);
     };
 
 // add in initial text
 
-    for(size_t i=0; i<mText.GetCount(); i++) {
+    for(size_t i=0; i<mText.GetCount(); i++)
+    {
         ss  = mText.Item(i);
         ss += _T("\n");
         ste->AppendText(ss);
@@ -171,7 +177,8 @@ wxSize              zz;
 
 //------------------------------------------------------------------------------
 
-void wxsSTEditor::OnEnumWidgetProperties(long Flags) {
+void wxsSTEditor::OnEnumWidgetProperties(long Flags)
+{
 
 // initial text contents
 

@@ -81,37 +81,40 @@ struct wxsFontData
  */
 class wxsFontProperty: public wxsCustomEditorProperty
 {
-    public:
+public:
 
-        /** \brief Ctor
-         *  \param PGName       name of property in Property Grid
-         *  \param DataName     name of property in data stuctures
-         *  \param Offset       offset of wxsFontData structure (returned from wxsOFFSET macro)
-         *  \param Priority     priority of this property
-         */
-        wxsFontProperty(
-            const wxString& PGName,
-            const wxString& DataName,
-            long Offset,
-            int Priority=100);
+    /** \brief Ctor
+     *  \param PGName       name of property in Property Grid
+     *  \param DataName     name of property in data stuctures
+     *  \param Offset       offset of wxsFontData structure (returned from wxsOFFSET macro)
+     *  \param Priority     priority of this property
+     */
+    wxsFontProperty(
+        const wxString& PGName,
+        const wxString& DataName,
+        long Offset,
+        int Priority=100);
 
-        /** \brief Returning type name */
-        virtual const wxString GetTypeName() { return _T("wxFont"); }
+    /** \brief Returning type name */
+    virtual const wxString GetTypeName()
+    {
+        return _T("wxFont");
+    }
 
-        /** \brief Showing editor for this property */
-        virtual bool ShowEditor(wxsPropertyContainer* Object);
+    /** \brief Showing editor for this property */
+    virtual bool ShowEditor(wxsPropertyContainer* Object);
 
-    protected:
+protected:
 
-        virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-        virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-        virtual wxString GetStr(wxsPropertyContainer* Object);
+    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual wxString GetStr(wxsPropertyContainer* Object);
 
-    private:
+private:
 
-        long Offset;
+    long Offset;
 };
 
 /** \addtogroup ext_properties_macros

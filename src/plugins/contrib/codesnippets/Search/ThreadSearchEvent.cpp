@@ -14,7 +14,7 @@
  * License:   GPL
  **************************************************************/
 
- #include "ThreadSearchEvent.h"
+#include "ThreadSearchEvent.h"
 
 DEFINE_EVENT_TYPE(wxEVT_S_THREAD_SEARCH)
 DEFINE_EVENT_TYPE(wxEVT_S_THREAD_SEARCH_ERROR)
@@ -22,15 +22,15 @@ DEFINE_EVENT_TYPE(wxEVT_S_THREAD_SEARCH_SHOWMSG)
 IMPLEMENT_DYNAMIC_CLASS(sThreadSearchEvent, wxCommandEvent)
 
 sThreadSearchEvent::sThreadSearchEvent(wxEventType commandType, int id)
-					 :wxCommandEvent(commandType, id)
+    :wxCommandEvent(commandType, id)
 {
 }
 
 
 sThreadSearchEvent::sThreadSearchEvent(const sThreadSearchEvent& Event)
-				  :wxCommandEvent(Event)
+    :wxCommandEvent(Event)
 {
-	m_LineTextArray = Event.GetLineTextArray();
+    m_LineTextArray = Event.GetLineTextArray();
 }
 
 

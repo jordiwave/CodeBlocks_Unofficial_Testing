@@ -27,37 +27,37 @@ namespace
 
 // Loading images from xpm files
 
-    #include "images/text16.xpm"
-    #include "images/text32.xpm"
+#include "images/text16.xpm"
+#include "images/text32.xpm"
 
-    wxsRegisterItem<wxsText> Reg(
-        _T("mpText"),                 // Class name
-        wxsTWidget,                     // Item type
-        _T("wxWindows"),                // License
-        _T("Ron Collins"),              // Author
-        _T("rcoll@theriver.com"),       // Author's email
-        _T(""),                         // Item's homepage
-        _T("MathPlot"),                 // Category in palette
-        60,                             // Priority in palette
-        _T("Marker"),                   // Base part of names for new items
-        wxsCPP,                         // List of coding languages supported by this item
-        1, 0,                           // Version
-        wxBitmap(text32_xpm),         // 32x32 bitmap
-        wxBitmap(text16_xpm),         // 16x16 bitmap
-        false);                         // We do not allow this item inside XRC files
+wxsRegisterItem<wxsText> Reg(
+    _T("mpText"),                 // Class name
+    wxsTWidget,                     // Item type
+    _T("wxWindows"),                // License
+    _T("Ron Collins"),              // Author
+    _T("rcoll@theriver.com"),       // Author's email
+    _T(""),                         // Item's homepage
+    _T("MathPlot"),                 // Category in palette
+    60,                             // Priority in palette
+    _T("Marker"),                   // Base part of names for new items
+    wxsCPP,                         // List of coding languages supported by this item
+    1, 0,                           // Version
+    wxBitmap(text32_xpm),         // 32x32 bitmap
+    wxBitmap(text16_xpm),         // 16x16 bitmap
+    false);                         // We do not allow this item inside XRC files
 
 
-    WXS_ST_BEGIN(wxsTextStyles,_T(""))
-        WXS_ST_CATEGORY("mpText")
-        WXS_ST(wxST_NO_AUTORESIZE)
-        WXS_ST(wxALIGN_LEFT)
-        WXS_ST(wxALIGN_RIGHT)
-        WXS_ST(wxALIGN_CENTRE)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsTextStyles,_T(""))
+WXS_ST_CATEGORY("mpText")
+WXS_ST(wxST_NO_AUTORESIZE)
+WXS_ST(wxALIGN_LEFT)
+WXS_ST(wxALIGN_RIGHT)
+WXS_ST(wxALIGN_CENTRE)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsTextEvents)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsTextEvents)
+WXS_EV_END()
 
 }
 
@@ -79,15 +79,16 @@ wxsText::wxsText(wxsItemResData* Data):
 //
 // need to set line color and style
 
-void wxsText::OnBuildCreatingCode() {
-wxString    vname;
-wxString    pname;
-wxString    cname;
-wxString    fname;
-wxString    xname;
-wxString    yname;
-wxString    dtext;
-wxString    s;
+void wxsText::OnBuildCreatingCode()
+{
+    wxString    vname;
+    wxString    pname;
+    wxString    cname;
+    wxString    fname;
+    wxString    xname;
+    wxString    yname;
+    wxString    dtext;
+    wxString    s;
 
 // we only know C++ language
 
@@ -112,7 +113,8 @@ wxString    s;
 // assign a pen to the layer
 
     dtext = mPenColour.BuildCode(GetCoderContext());
-    if (dtext.Len() > 0) {
+    if (dtext.Len() > 0)
+    {
         Codef(_T("wxPen   %s(%s);\n"), cname.wx_str(), dtext.wx_str());
         Codef(_T("%s->SetPen(%s);\n"), vname.wx_str(), cname.wx_str());
     };
@@ -120,7 +122,8 @@ wxString    s;
 // assign a font to the layer
 
     dtext = mPenFont.BuildFontCode(fname, GetCoderContext());
-    if (dtext.Len() > 0) {
+    if (dtext.Len() > 0)
+    {
         Codef(_T("%s"), dtext.wx_str());
         Codef(_T("%s->SetFont(%s);\n"), vname.wx_str(), fname.wx_str());
     };
@@ -137,15 +140,16 @@ wxString    s;
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsText::OnBuildPreview(wxWindow* Parent, long Flags) {
-wxStaticText    *Preview;
-mpText        *mk;
-mpWindow        *mp;
-wxPen           pen;
-wxColour        cc;
-wxFont          ff;
-bool            hide;
-double          xp, yp;
+wxObject* wxsText::OnBuildPreview(wxWindow* Parent, long Flags)
+{
+    wxStaticText    *Preview;
+    mpText        *mk;
+    mpWindow        *mp;
+    wxPen           pen;
+    wxColour        cc;
+    wxFont          ff;
+    bool            hide;
+    double          xp, yp;
 
 // if parent is not an mpWindow, then exit out
 
@@ -180,11 +184,13 @@ double          xp, yp;
 
 // X & Y position
 
-    if (! mXpos.ToDouble(&xp)) {
+    if (! mXpos.ToDouble(&xp))
+    {
         xp = 0.0;
         mXpos = "0.0";
     };
-    if (! mYpos.ToDouble(&yp)) {
+    if (! mYpos.ToDouble(&yp))
+    {
         yp = 0.0;
         mYpos = "0.0";
     };
@@ -207,12 +213,15 @@ double          xp, yp;
 //------------------------------------------------------------------------------
 // declare the var as a simple wxPanel
 
-void wxsText::OnBuildDeclarationsCode() {
+void wxsText::OnBuildDeclarationsCode()
+{
 
-    if (GetLanguage() == wxsCPP) {
+    if (GetLanguage() == wxsCPP)
+    {
         AddDeclaration(_T("mpText   *") + GetVarName() + _T(";"));
     }
-    else {
+    else
+    {
         wxsCodeMarks::Unknown(_T("wxsText::OnBuildDeclarationsCode"),GetLanguage());
     };
 }
@@ -222,7 +231,8 @@ void wxsText::OnBuildDeclarationsCode() {
 
 //------------------------------------------------------------------------------
 
-void wxsText::OnEnumWidgetProperties(cb_unused long Flags) {
+void wxsText::OnEnumWidgetProperties(cb_unused long Flags)
+{
 
     WXS_SHORT_STRING(wxsText, mLabel,     _("Marker Text"), "mLabelText",  "*",   true);
     WXS_SHORT_STRING(wxsText, mXpos,      _("X Position"),  "mXpos",       "0.0", true);

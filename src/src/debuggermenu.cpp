@@ -9,15 +9,15 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/menu.h>
-    #include <wx/toolbar.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/menu.h>
+#include <wx/toolbar.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "cbeditor.h"
-    #include "cbproject.h"
-    #include "editormanager.h"
-    #include "logmanager.h"
-    #include "projectmanager.h"
+#include "cbeditor.h"
+#include "cbproject.h"
+#include "editormanager.h"
+#include "logmanager.h"
+#include "projectmanager.h"
 #endif
 
 #include "debuggermenu.h"
@@ -31,75 +31,78 @@
 
 namespace
 {
-    const int idMenuDebug = XRCID("idDebuggerMenuDebug");
-    const int idMenuDebugActive = XRCID("idDebuggerMenuActive");
-    const int idMenuDebugActiveTargetsDefault = wxNewId();
-    const int idMenuRunToCursor = XRCID("idDebuggerMenuRunToCursor");
-    const int idMenuSetNextStatement = XRCID("idDebuggerMenuSetNextStatement");
-    const int idMenuNext = XRCID("idDebuggerMenuNext");
-    const int idMenuStep = XRCID("idDebuggerMenuStep");
-    const int idMenuNextInstr = XRCID("idDebuggerMenuNextInstr");
-    const int idMenuStepIntoInstr = XRCID("idDebuggerMenuStepIntoInstr");
-    const int idMenuStepOut = XRCID("idDebuggerMenuStepOut");
-    const int idMenuBreak = XRCID("idDebuggerMenuBreak");
-    const int idMenuStop = XRCID("idDebuggerMenuStop");
-    const int idToolbarStop = XRCID("idDebuggerToolbarStop");
-    const int idMenuToggleBreakpoint = XRCID("idDebuggerMenuToggleBreakpoint");
-    const int idMenuRemoveAllBreakpoints = XRCID("idDebuggerMenuRemoveAllBreakpoints");
-    const int idMenuAddDataBreakpoint = XRCID("idMenuAddDataBreakpoint");
-    const int idMenuSendCommand = XRCID("idDebuggerMenuSendCommand");
-    const int idMenuAddSymbolFile = XRCID("idDebuggerMenuAddSymbolFile");
-    const int idMenuAttachToProcess = XRCID("idDebuggerMenuAttachToProcess");
-    const int idMenuDetach = XRCID("idDebuggerMenuDetach");
+const int idMenuDebug = XRCID("idDebuggerMenuDebug");
+const int idMenuDebugActive = XRCID("idDebuggerMenuActive");
+const int idMenuDebugActiveTargetsDefault = wxNewId();
+const int idMenuRunToCursor = XRCID("idDebuggerMenuRunToCursor");
+const int idMenuSetNextStatement = XRCID("idDebuggerMenuSetNextStatement");
+const int idMenuNext = XRCID("idDebuggerMenuNext");
+const int idMenuStep = XRCID("idDebuggerMenuStep");
+const int idMenuNextInstr = XRCID("idDebuggerMenuNextInstr");
+const int idMenuStepIntoInstr = XRCID("idDebuggerMenuStepIntoInstr");
+const int idMenuStepOut = XRCID("idDebuggerMenuStepOut");
+const int idMenuBreak = XRCID("idDebuggerMenuBreak");
+const int idMenuStop = XRCID("idDebuggerMenuStop");
+const int idToolbarStop = XRCID("idDebuggerToolbarStop");
+const int idMenuToggleBreakpoint = XRCID("idDebuggerMenuToggleBreakpoint");
+const int idMenuRemoveAllBreakpoints = XRCID("idDebuggerMenuRemoveAllBreakpoints");
+const int idMenuAddDataBreakpoint = XRCID("idMenuAddDataBreakpoint");
+const int idMenuSendCommand = XRCID("idDebuggerMenuSendCommand");
+const int idMenuAddSymbolFile = XRCID("idDebuggerMenuAddSymbolFile");
+const int idMenuAttachToProcess = XRCID("idDebuggerMenuAttachToProcess");
+const int idMenuDetach = XRCID("idDebuggerMenuDetach");
 
-    const long idMenuDebuggingWindows = XRCID("idDebuggingWindows");
-    const long idMenuTools = XRCID("idDebuggerInfo");
+const long idMenuDebuggingWindows = XRCID("idDebuggingWindows");
+const long idMenuTools = XRCID("idDebuggerInfo");
 
-    const int idDebuggerToolInfo = XRCID("idDebuggerToolInfo");
-    const int idDebuggerToolWindows = XRCID("idDebuggerToolWindows");
+const int idDebuggerToolInfo = XRCID("idDebuggerToolInfo");
+const int idDebuggerToolWindows = XRCID("idDebuggerToolWindows");
 
-    const int idMenuDebuggerAddWatch = wxNewId();
+const int idMenuDebuggerAddWatch = wxNewId();
 
-    inline void HideValueTooltip() { Manager::Get()->GetDebuggerManager()->GetInterfaceFactory()->HideValueTooltip(); }
+inline void HideValueTooltip()
+{
+    Manager::Get()->GetDebuggerManager()->GetInterfaceFactory()->HideValueTooltip();
+}
 
-    bool Support(cbDebuggerPlugin *plugin, cbDebuggerFeature::Flags flag)
+bool Support(cbDebuggerPlugin *plugin, cbDebuggerFeature::Flags flag)
+{
+    return plugin && plugin->SupportsFeature(flag);
+}
+
+wxMenu* GetMenuById(long menuId, bool recreate = false)
+{
+    wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
+    if (!mbar)
+        return nullptr;
+    wxMenuItem *item = mbar->FindItem(menuId);
+    if (!item)
+        return nullptr;
+    if (recreate)
     {
-        return plugin && plugin->SupportsFeature(flag);
-    }
-
-    wxMenu* GetMenuById(long menuId, bool recreate = false)
-    {
-        wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
-        if (!mbar)
-            return nullptr;
-        wxMenuItem *item = mbar->FindItem(menuId);
-        if (!item)
-            return nullptr;
-        if (recreate)
+        wxMenu *menu = item->GetMenu();
+        int pos = wxNOT_FOUND;
+        for (size_t ii = 0; ii < menu->GetMenuItemCount(); ++ii)
         {
-            wxMenu *menu = item->GetMenu();
-            int pos = wxNOT_FOUND;
-            for (size_t ii = 0; ii < menu->GetMenuItemCount(); ++ii)
+            if (item == menu->FindItemByPosition(ii))
             {
-                if (item == menu->FindItemByPosition(ii))
-                {
-                    pos = ii;
-                    break;
-                }
-            }
-            if (pos != wxNOT_FOUND)
-            {
-                wxMenu *newSubMenu = new wxMenu;
-                wxMenuItem *newItem = new wxMenuItem(menu, item->GetId(), item->GetItemLabelText(), item->GetHelp(),
-                                                     item->GetKind(), newSubMenu);
-                menu->Insert(pos, newItem);
-
-                menu->Destroy(item);
-                return newItem->GetSubMenu();
+                pos = ii;
+                break;
             }
         }
-        return item ? item->GetSubMenu() : nullptr;
+        if (pos != wxNOT_FOUND)
+        {
+            wxMenu *newSubMenu = new wxMenu;
+            wxMenuItem *newItem = new wxMenuItem(menu, item->GetId(), item->GetItemLabelText(), item->GetHelp(),
+                                                 item->GetKind(), newSubMenu);
+            menu->Insert(pos, newItem);
+
+            menu->Destroy(item);
+            return newItem->GetSubMenu();
+        }
     }
+    return item ? item->GetSubMenu() : nullptr;
+}
 }
 
 BEGIN_EVENT_TABLE(DebuggerMenuHandler, wxEvtHandler)

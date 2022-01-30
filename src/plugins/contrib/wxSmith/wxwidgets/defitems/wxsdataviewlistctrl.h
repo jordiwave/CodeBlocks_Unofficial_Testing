@@ -29,17 +29,17 @@
 /** \brief Class for wxsDataViewListCtrl widget */
 class wxsDataViewListCtrl: public wxsWidget
 {
-    public:
+public:
 
-        wxsDataViewListCtrl(wxsItemResData* Data);
+    wxsDataViewListCtrl(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
-        void FindAllImageLists(wxArrayString &aNames);
-        void UpdateTreeItemList(void);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
+    void FindAllImageLists(wxArrayString &aNames);
+    void UpdateTreeItemList(void);
 
 };
 

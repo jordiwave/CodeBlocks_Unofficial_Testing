@@ -199,50 +199,50 @@ void wxsPropertyContainer::Property(wxsProperty& Prop)
     // XmlWrite, PropStreamRead, PropStreamWrite, ShowInPropertyGrid
     switch ( Flags & (flPropGrid|flXml|flPropStream) )
     {
-        case flPropGrid:
-            // Called from ShowInPropertyGrid
-            wxsPGRID()->NewPropertyContainerAddProperty(&Prop,this);
-            break;
+    case flPropGrid:
+        // Called from ShowInPropertyGrid
+        wxsPGRID()->NewPropertyContainerAddProperty(&Prop,this);
+        break;
 
-        case flXml:
-            if ( IsRead )
+    case flXml:
+        if ( IsRead )
+        {
+            // Called from XmlRead
+            Prop.XmlRead(this,CurrentElement->FirstChildElement(cbU2C(Prop.GetDataName())));
+        }
+        else
+        {
+            // Called from XmlWrite
+            TiXmlElement* Element = CurrentElement->InsertEndChild(
+                                        TiXmlElement(cbU2C(Prop.GetDataName())))->ToElement();
+
+            if ( !Prop.XmlWrite(this,Element) )
             {
-                // Called from XmlRead
-                Prop.XmlRead(this,CurrentElement->FirstChildElement(cbU2C(Prop.GetDataName())));
+                // Removing useless node, TiXml automatically frees memory
+                CurrentElement->RemoveChild(Element);
             }
-            else
-            {
-                // Called from XmlWrite
-                TiXmlElement* Element = CurrentElement->InsertEndChild(
-                    TiXmlElement(cbU2C(Prop.GetDataName())))->ToElement();
+        }
+        break;
 
-                if ( !Prop.XmlWrite(this,Element) )
-                {
-                    // Removing useless node, TiXml automatically frees memory
-                    CurrentElement->RemoveChild(Element);
-                }
-            }
-            break;
+    case flPropStream:
+        if ( IsRead )
+        {
+            // Called from PropStreamRead
+            Prop.PropStreamRead(this,CurrentStream);
+        }
+        else
+        {
+            // Called from PropStreamWrite
+            Prop.PropStreamWrite(this,CurrentStream);
+        }
+        break;
 
-        case flPropStream:
-            if ( IsRead )
-            {
-                // Called from PropStreamRead
-                Prop.PropStreamRead(this,CurrentStream);
-            }
-            else
-            {
-                // Called from PropStreamWrite
-                Prop.PropStreamWrite(this,CurrentStream);
-            }
-            break;
+    default:
 
-        default:
-
-            // This can not be done
-            wxMessageBox(_T("wxsPropertyContainer::Property() function has been\n")
-                         _T("called manually. If you are the Developer,\n")
-                         _T("please remove this code."));
+        // This can not be done
+        wxMessageBox(_T("wxsPropertyContainer::Property() function has been\n")
+                     _T("called manually. If you are the Developer,\n")
+                     _T("please remove this code."));
 
     }
 }

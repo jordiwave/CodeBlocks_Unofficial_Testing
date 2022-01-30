@@ -38,7 +38,8 @@ class SearchInPanel;
 class DirectoryParamsPanel;
 
 
-class ThreadSearchConfPanel: public cbConfigurationPanel {
+class ThreadSearchConfPanel: public cbConfigurationPanel
+{
 public:
     // begin wxGlade: ThreadSearchConfPanel::ids
     // end wxGlade
@@ -51,12 +52,18 @@ public:
     void SetSearchAndMaskHistory(const wxArrayString &dirHistory, const wxArrayString &maskHistory);
 
     /** Returns the title displayed in the left column of the "Settings/Environment" dialog. */
-    wxString GetTitle() const override { return _("Thread search"); }
+    wxString GetTitle() const override
+    {
+        return _("Thread search");
+    }
 
     /** Returns string used to build active/inactive images path in the left column
       * of the "Settings/Environment" dialog.
       */
-    wxString GetBitmapBaseName() const override { return wxT("ThreadSearch"); }
+    wxString GetBitmapBaseName() const override
+    {
+        return wxT("ThreadSearch");
+    }
 
     /** Called automatically when user clicks on OK
       */

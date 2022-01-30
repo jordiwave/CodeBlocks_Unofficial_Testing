@@ -24,23 +24,23 @@
 
 class wxsSashLayoutWindow: public wxsContainer
 {
-    public:
+public:
 
-        wxsSashLayoutWindow(wxsItemResData* Data);
+    wxsSashLayoutWindow(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnBuildCreatingCode();
-        virtual void OnEnumContainerProperties(long Flags);
-        virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual void OnEnumContainerProperties(long Flags);
+    virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
 
-        bool    mTop;
-        bool    mBottom;
-        bool    mLeft;
-        bool    mRight;
-        long    mAlign;
-        long    mOrient;
+    bool    mTop;
+    bool    mBottom;
+    bool    mLeft;
+    bool    mRight;
+    long    mAlign;
+    long    mOrient;
 
 };
 

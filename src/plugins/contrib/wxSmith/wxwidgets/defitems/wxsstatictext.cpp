@@ -24,19 +24,19 @@
 
 namespace
 {
-    wxsRegisterItem<wxsStaticText> Reg(_T("StaticText"),wxsTWidget,_T("Standard"),50);
+wxsRegisterItem<wxsStaticText> Reg(_T("StaticText"),wxsTWidget,_T("Standard"),50);
 
-    WXS_ST_BEGIN(wxsStaticTextStyles,_T(""))
-        WXS_ST_CATEGORY("wxStaticText")
-        WXS_ST(wxST_NO_AUTORESIZE)
-        WXS_ST(wxALIGN_LEFT)
-        WXS_ST(wxALIGN_RIGHT)
-        WXS_ST(wxALIGN_CENTRE)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsStaticTextStyles,_T(""))
+WXS_ST_CATEGORY("wxStaticText")
+WXS_ST(wxST_NO_AUTORESIZE)
+WXS_ST(wxALIGN_LEFT)
+WXS_ST(wxALIGN_RIGHT)
+WXS_ST(wxALIGN_CENTRE)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsStaticTextEvents)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsStaticTextEvents)
+WXS_EV_END()
 
 }
 
@@ -55,19 +55,19 @@ void wxsStaticText::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/stattext.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %N);\n"),Label.wx_str());
-            BuildSetupWindowCode();
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/stattext.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%W, %I, %t, %P, %S, %T, %N);\n"),Label.wx_str());
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsStaticText::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsStaticText::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

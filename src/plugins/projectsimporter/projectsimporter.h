@@ -10,16 +10,19 @@
 
 class ProjectsImporter : public cbMimePlugin
 {
-    public:
-        ProjectsImporter();
-        ~ProjectsImporter() override;
-        bool HandlesEverything() const override { return false; }
-        bool CanHandleFile(const wxString& filename) const override;
-        int OpenFile(const wxString& filename) override;
-        void BuildMenu(wxMenuBar* menuBar) override;
-    private:
-        int LoadProject(const wxString& filename);
-        int LoadWorkspace(const wxString& filename);
+public:
+    ProjectsImporter();
+    ~ProjectsImporter() override;
+    bool HandlesEverything() const override
+    {
+        return false;
+    }
+    bool CanHandleFile(const wxString& filename) const override;
+    int OpenFile(const wxString& filename) override;
+    void BuildMenu(wxMenuBar* menuBar) override;
+private:
+    int LoadProject(const wxString& filename);
+    int LoadWorkspace(const wxString& filename);
 };
 
 #endif // PROJECTSIMPORTER_H

@@ -30,43 +30,43 @@
 
 struct ARM_MMU_FIRST_LEVEL_FAULT
 {
-	unsigned int id : 2;
-	unsigned int sbz : 30;
+    unsigned int id : 2;
+    unsigned int sbz : 30;
 };
 #define ARM_MMU_FIRST_LEVEL_FAULT_ID		0x0
 
 struct ARM_MMU_FIRST_LEVEL_PAGE_TABLE
 {
-	unsigned int id : 2;
-	unsigned int imp : 2;
-	unsigned int domain : 4;
-	unsigned int sbz : 1;
-	unsigned int base_address : 23;
+    unsigned int id : 2;
+    unsigned int imp : 2;
+    unsigned int domain : 4;
+    unsigned int sbz : 1;
+    unsigned int base_address : 23;
 };
 #define ARM_MMU_FIRST_LEVEL_PAGE_TABLE_ID	0x1
 
 struct ARM_MMU_FIRST_LEVEL_SECTION
 {
-	unsigned int id : 2;
-	unsigned int b : 1;
-	unsigned int c : 1;
-	unsigned int imp : 1;
-	unsigned int domain : 4;
-	unsigned int sbz0 : 1;
-	unsigned int ap : 2;
-	unsigned int sbz1 : 8;
-	unsigned int base_address : 12;
+    unsigned int id : 2;
+    unsigned int b : 1;
+    unsigned int c : 1;
+    unsigned int imp : 1;
+    unsigned int domain : 4;
+    unsigned int sbz0 : 1;
+    unsigned int ap : 2;
+    unsigned int sbz1 : 8;
+    unsigned int base_address : 12;
 };
 #define ARM_MMU_FIRST_LEVEL_SECTION_ID		0x2
 
 struct ARM_MMU_FIRST_LEVEL_FINE_PAGE_TABLE
 {
-	unsigned int id : 2;
-	unsigned int sbz0 : 2;
-	unsigned int imp : 1;
-	unsigned int domain : 4;
-	unsigned int sbz1 : 3;
-	unsigned int base_address : 20;
+    unsigned int id : 2;
+    unsigned int sbz0 : 2;
+    unsigned int imp : 1;
+    unsigned int domain : 4;
+    unsigned int sbz1 : 3;
+    unsigned int base_address : 20;
 };
 #define ARM_MMU_FIRST_LEVEL_FINE_PAGE_ID	0x3
 
@@ -104,11 +104,11 @@ struct ARM_MMU_FIRST_LEVEL_FINE_PAGE_TABLE
 
 union ARM_MMU_FIRST_LEVEL_DESCRIPTOR
 {
-	unsigned int								word;
-	struct ARM_MMU_FIRST_LEVEL_FAULT			fault;
-	struct ARM_MMU_FIRST_LEVEL_PAGE_TABLE		page_table;
-	struct ARM_MMU_FIRST_LEVEL_SECTION			section;
-	struct ARM_MMU_FIRST_LEVEL_FINE_PAGE_TABLE	fine_page_table;
+    unsigned int								word;
+    struct ARM_MMU_FIRST_LEVEL_FAULT			fault;
+    struct ARM_MMU_FIRST_LEVEL_PAGE_TABLE		page_table;
+    struct ARM_MMU_FIRST_LEVEL_SECTION			section;
+    struct ARM_MMU_FIRST_LEVEL_FINE_PAGE_TABLE	fine_page_table;
 };
 
 #define ARM_UNCACHEABLE				0
@@ -146,14 +146,14 @@ union ARM_MMU_FIRST_LEVEL_DESCRIPTOR
 
 
 #ifdef __cplusplus
-  extern "C" {
+extern "C" {
 #endif /* __cplusplus */
 
 /* Initialization of platform's MMU */
 void hal_mmu_init(void);
 
 #ifdef __cplusplus
-  }
+}
 #endif /* __cplusplus */
 
 #endif /* __ARM9_MM_H__ */

@@ -12,12 +12,12 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/menu.h>
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <logmanager.h>
-    #include <cbeditor.h>
-    #include <cbproject.h>
+#include <wx/menu.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <logmanager.h>
+#include <cbeditor.h>
+#include <cbproject.h>
 #endif
 
 #include "ReopenEditor.h"
@@ -27,9 +27,9 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<ReopenEditor> reg(_T("ReopenEditor"));
-    const int idReopenEditor = wxNewId();
-    const int idReopenEditorView = wxNewId();
+PluginRegistrant<ReopenEditor> reg(_T("ReopenEditor"));
+const int idReopenEditor = wxNewId();
+const int idReopenEditorView = wxNewId();
 }
 
 
@@ -76,8 +76,8 @@ void ReopenEditor::OnAttach()
     const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
     const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
     const wxString undoImgFile = ConfigManager::GetDataFolder()
-                               + wxString::Format(_T("/resources.zip#zip:/images/%dx%d/undo.png"),
-                                                  uiSize, uiSize);
+                                 + wxString::Format(_T("/resources.zip#zip:/images/%dx%d/undo.png"),
+                                         uiSize, uiSize);
     m_LogIcon = cbLoadBitmapScaled(undoImgFile, wxBITMAP_TYPE_PNG, uiScaleFactor);
 
     m_pListLog = nullptr;
@@ -282,10 +282,10 @@ void ReopenEditor::OnViewList(wxCommandEvent& event)
     {
         if(event.IsChecked())
         {
-                CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-                Manager::Get()->ProcessEvent(evtShow);
-                CodeBlocksLogEvent event2(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
-                Manager::Get()->ProcessEvent(event2);
+            CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+            Manager::Get()->ProcessEvent(evtShow);
+            CodeBlocksLogEvent event2(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
+            Manager::Get()->ProcessEvent(event2);
         }
         else
         {

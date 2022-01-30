@@ -6,7 +6,7 @@ compile_commands.json
 *.layout
 *.depend
 *.cache
-autorevision.h
+# autorevision.h
 *.bmarks
 Makefile.in
 /build*

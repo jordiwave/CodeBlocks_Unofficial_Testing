@@ -1,25 +1,41 @@
-Updated for the release on 24-Jan-2022
+Updated for the release on 28-Jan-2022
 
-The installers include changes that make the Code::Blocks installation and setup/configuration on Windows allot easier compared to the official C::B 20.03 or nightly builds.
-The installers references in this post are *not* official Code::Blocks releases, nor are they thoroughly tested like the official builds done by the Code::Blocks Team.
+The code and installers are *not* official and unsupported by any other Code::Blocks developer. They are NOT thoroughly tested and no code reviews on the changes have been done.
 
 Installer download link:
 ========================
 https://sourceforge.net/projects/unofficial-cb-installers/
 
-C::B exe/dll changed/update highlights compared to the last nightly SVN 12673 release (23-Jan-2021):
+C::B exe/dll changed/update highlights compared to the last nightly SVN 12675 release (23-Jan-2021):
 ====================================================================================================
-    1. Incorporated SVN changes up to and including SVN 12675. See https://sourceforge.net/p/codeblocks/code/12675/log/ for change info.
-    2. Does not include the CBFortan Plugin or other plugins that are SVN externals.
-    3. Has auto-detect/auto add GDB support when options*.xml include GDB info. (SF Ticket 1114)
-    4. Auto-detect POP up condition on startup has changed. After initial install will only pop up if the default compiler has issues. (SF Ticket 1117)
-    5. Auto-detect compiler dialog has the option to show the installed or all the compilers. (SF Ticket 1117).
-    6. The compiler selection dialog has the option of showing the detected compilers or all the compilers. Fix a number of compiler selection dialog bugs. (SF Ticket 1111)
-    7. Moved Help->About->Information to Help->"System Information" and added allot of extra info on the CB and PC setup. Added copy to clipboard button that anonymizes the data when copied to the clipboard. (SF Ticket 748)
-    8. Add ability to copy debug watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
-    9. Added Pecan's experimental CB-clangd_client. See https://sourceforge.net/projects/cb-clangd-client (updated to V2.0.10 as of 23JAN2022)
-
-    
+    1. Incorporated SVN changes up to and including SVN 12684. See https://sourceforge.net/p/codeblocks/code/12684/log/ for change info.
+    2. Has auto-detect/auto add GDB support when options*.xml include GDB info. (SF Ticket 1114)
+    3. Auto-detect POP up condition on startup has changed. After initial install will only pop up if the default compiler has issues. (SF Ticket 1117)
+    4. Auto-detect compiler dialog has the option to show the installed or all the compilers. (SF Ticket 1117).
+    5. The compiler selection dialog has the option of showing the detected compilers or all the compilers. Fix a number of compiler selection dialog bugs. (SF Ticket 1111)
+    6. Moved Help->About->Information to Help->"System Information" and added allot of extra info on the CB and PC setup. Added copy to clipboard button that anonymizes the data when copied to the clipboard. (SF Ticket 748)
+    7. Add ability to copy debug watch variable content to clipboard. Add three extra watches dialog context menu options: copy data, copy symbol and data and copy the symbol tree. (SF Ticket 654)
+    8. HUGE number of plugin changes as follows:
+        * tidycmt (added to installer 24JAN2022)
+        * headerguard (added to installer 24JAN2022)
+        * loghacker (added to installer 24JAN2022)
+        * ModPoller (added to installer 24JAN2022)
+        * DisplayEvents (code and installer added 22JAN2022)
+        * cb_koders (removed from build and installer 24JAN2022)
+        * CBFortan Plugin from SVN C::B get (added code to git on 25JAN2022)
+        * https://sourceforge.net/projects/cb-clangd-client (code and installer added 07JAN2022 & updated to V0.2.11 as of 27JAN2022 & local changes)
+        * https://github.com/bluehazzard/cbMarkdown (code and installer added 24JAN2022)
+        * https://github.com/bluehazzard/cbBuildTools (code and installer added 24JAN2022)
+        * https://github.com/bluehazzard/cbMemoryView (code and installer added 24JAN2022)
+        * https://github.com/bluehazzard/cbSystemView (code and installer added 24JAN2022)
+        * https://github.com/danselmi/cbDiff  (code and installer added 25JAN2022)
+        * https://github.com/loandr/GitBlocks (code and installer added 25JAN2022)
+        * https://sourceforge.net/projects/fafnir/files/cbNSIS/windows/ (code and installer added 25JAN2022)
+        * https://github.com/MortenMacFly/cbtortoisesvn (code and installer added 25JAN2022)
+        * https://github.com/zinnjonas/cbInno (code and installer added 25JAN2022)
+    9. Modified config code so the configs for this version are installed in the codeblocks_experimental directory in order to allow nightly 
+          and this version to co-exist on the one pC.
+        
 Updated installer highlights compared to the C::B 20.03 NSIS installer:
 =======================================================================
     1. Option to download and run the following compiler installers from the internet:
@@ -61,17 +77,29 @@ Updated installer highlights compared to the C::B 20.03 NSIS installer:
             * i686-8.1.0-release-posix-dwarf-rt_v6-rev0.7z
             * x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z
           These can be downloaded from https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/8.1.0/
-
+    33. Added the following plugins not included in the 20.03 NSIS:
+        * tidycmt (added 24JAN2022)
+        * headerguard (added 24JAN2022)
+        * loghacker (added 24JAN2022)
+        * ModPoller (added 24JAN2022)
+        * clangd_client (added 07JAN2022)
+        * DisplayEvents (added 22JAN2022)
+        * https://github.com/bluehazzard/cbMarkdown (added 24JAN2022)
+        * https://github.com/bluehazzard/cbBuildTools (added 24JAN2022)
+        * https://github.com/bluehazzard/cbMemoryView (added 24JAN2022)
+        * https://github.com/bluehazzard/cbSystemView (added 24JAN2022)
+    34. Removed the following plugins:
+        * cb_koders (removed 24JAN2022)
+    35 Modified install directory and name from codeblocks to codeblocks_experimental in order to allow nightly and this version to co-exist on the one pC.
 
 SOURCE/Compiler Info:
 =====================
-1. The source code repo used to produce the installers is currently:
-    https://github.com/acotty/codeblocks_sf/tree/AC-WindowsInstaller
+1. The source code repo used to produce the installers is:
+    https://github.com/acotty/codeblocks_sf
 2. C::B x64 built with MSYS2 mingw64 GCC 11.2 using the latest MSYS 2 release at the time of the build.
 3. C::B x86 built with MingGW-32 installer using "GCC 8.1.0 , i686, posix threading, dwarf exception hading and 0 build revision" configuration.
 
 NOTES:
 ======
-If you want to check these installers out then I would advise backing up your Code::Blocks install and user data directories before running the installer so you can go back to your current configuration. 
-You can also rename Code::Blocks install and user data directories instead of backing them up if you want.
+    If there are any other plugins you think should be included that are benefit to both PC & Linux devs please let me know. I will not consider plugins that are for only one OS or for embedded systems.
 

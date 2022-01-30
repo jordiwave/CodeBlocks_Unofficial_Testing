@@ -76,7 +76,9 @@ unsigned long GetFileCRC32(const char* file)
 
                 crc = 0xFFFFFFFFUL;
                 while ((ch = getc(fp)) != EOF)
-                    { crc = (crc>>8) ^ crc_table[ (crc^ch) & 0xFF ]; }
+                {
+                    crc = (crc>>8) ^ crc_table[ (crc^ch) & 0xFF ];
+                }
 
                 crc ^= 0xFFFFFFFFUL ;
 
@@ -87,7 +89,10 @@ unsigned long GetFileCRC32(const char* file)
     }
 
     // If we have a crc table, delete it from memory
-    if ( crc_table ) { delete[] crc_table; }
+    if ( crc_table )
+    {
+        delete[] crc_table;
+    }
 
     // Set it to a null pointer, the have it (re)created on next calls to this
     // function
@@ -113,14 +118,19 @@ unsigned long GetTextCRC32(const char* text)
             // Calculate the checksum
             crc = 0xFFFFFFFFUL;
             while (*text)
-                { crc = (crc>>8) ^ crc_table[ (crc^(*text++)) & 0xFF ]; }
+            {
+                crc = (crc>>8) ^ crc_table[ (crc^(*text++)) & 0xFF ];
+            }
 
             crc ^= 0xFFFFFFFFUL ;
         }
     }
 
     // If we have a crc table, delete it from memory
-    if ( crc_table ) { delete[] crc_table; }
+    if ( crc_table )
+    {
+        delete[] crc_table;
+    }
 
     // Set it to a null pointer, the have it (re)created on next calls to this
     // function

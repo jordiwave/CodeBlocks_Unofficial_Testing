@@ -9,14 +9,16 @@
 #define CATALOGUE_H
 
 #ifdef SCI_NAMESPACE
-namespace Scintilla {
+namespace Scintilla
+{
 #endif
 
-class Catalogue {
+class Catalogue
+{
 public:
-	static const LexerModule *Find(int language);
-	static const LexerModule *Find(const char *languageName);
-	static void AddLexerModule(LexerModule *plm);
+    static const LexerModule *Find(int language);
+    static const LexerModule *Find(const char *languageName);
+    static void AddLexerModule(LexerModule *plm);
 };
 
 #ifdef SCI_NAMESPACE

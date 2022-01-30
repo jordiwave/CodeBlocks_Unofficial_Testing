@@ -205,7 +205,7 @@ private:
 class LSPEventCallbackHandler: public wxEvtHandler
 // ----------------------------------------------------------------------------
 {
-  private:
+private:
     // -------------------------------------------------------
     //LSP callbacks
     // -------------------------------------------------------
@@ -213,7 +213,7 @@ class LSPEventCallbackHandler: public wxEvtHandler
     LSPEventCallbackMap m_LSPEventCallbackQueue;
     size_t m_RRIDsequence = 0;
 
-  public:
+public:
     // ----------------------------------------------------------------------------
     void OnLSPEventCallback(int lspRRID, wxCommandEvent& event)
     // ----------------------------------------------------------------------------
@@ -246,7 +246,10 @@ class LSPEventCallbackHandler: public wxEvtHandler
 
     }
 
-    size_t Count(){return m_LSPEventCallbackQueue.size();}
+    size_t Count()
+    {
+        return m_LSPEventCallbackQueue.size();
+    }
 
     // Verify that an event handler is still in the chain of event handlers
     // -------------------------------------------------------------
@@ -278,14 +281,16 @@ class LSPEventCallbackHandler: public wxEvtHandler
     {
         //dtor
         if (FindEventHandler(this))
-                Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+            Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
     }
 
     // GetLSPEventCallackQueue ptr
     // ----------------------------------------------------------------------------
     std::multimap<int, LSPMethodCallbackEvent*>* GetLSPEventCallbackQueue()
     // ----------------------------------------------------------------------------
-        { return &m_LSPEventCallbackQueue; }
+    {
+        return &m_LSPEventCallbackQueue;
+    }
 
     // ----------------------------------------------------------------------------
     void ClearLSPEventCallbacks()
@@ -317,7 +322,7 @@ class LSPEventCallbackHandler: public wxEvtHandler
         //-                static_cast<T*>(this), method, x1)
         //-        );
         LSPMethodCallbackEvent* pCallBackEvent = new LSPMethodCallbackEvent0<T>(
-                                                    static_cast<TP*>(thisptr), method) ;
+            static_cast<TP*>(thisptr), method) ;
         m_RRIDsequence += 1;
         m_LSPEventCallbackQueue.insert(std::pair<int,LSPMethodCallbackEvent*>(m_RRIDsequence, pCallBackEvent));
         return m_RRIDsequence;
@@ -340,7 +345,7 @@ class LSPEventCallbackHandler: public wxEvtHandler
         //                static_cast<T*>(this), method, x1)
         //        );
         LSPMethodCallbackEvent* pCallBackEvent = new LSPMethodCallbackEvent1<T, T1>(
-                                                    static_cast<TP*>(thisptr), method, x1) ;
+            static_cast<TP*>(thisptr), method, x1) ;
         m_RRIDsequence += 1;
         m_LSPEventCallbackQueue.insert(std::pair<int,LSPMethodCallbackEvent*>(m_RRIDsequence, pCallBackEvent));
 
@@ -353,7 +358,7 @@ class LSPEventCallbackHandler: public wxEvtHandler
     size_t LSP_RegisterEventSink(ID id, TP* thisptr, void (T::*method)(T1 x1, T2 x2), P1 x1, P2 x2)
     {
         LSPMethodCallbackEvent* pCallBackEvent = new LSPMethodCallbackEvent2<T, T1, T2>(
-                                                    static_cast<TP*>(thisptr), method, x1, x2);
+            static_cast<TP*>(thisptr), method, x1, x2);
         m_RRIDsequence += 1;
         m_LSPEventCallbackQueue.insert(std::pair<int,LSPMethodCallbackEvent*>(id, pCallBackEvent));
         return m_RRIDsequence;

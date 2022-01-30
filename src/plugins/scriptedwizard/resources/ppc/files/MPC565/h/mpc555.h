@@ -92,7 +92,7 @@
 #define SGPIOCR		(* (volatile unsigned int *)	__SGPIOCR)
 #define EMCR		(* (volatile unsigned int *)	__EMCR)
 #define UMCR		(* (volatile unsigned int *)	__UMCR)
-	/* Dual SCI Interrupt Level */
+/* Dual SCI Interrupt Level */
 #define QDSCI_IL	(*(volatile short *)__QDSCI_IL)
 
 //SPR defines

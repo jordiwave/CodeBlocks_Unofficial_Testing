@@ -71,7 +71,10 @@
 #endif
 
 #ifndef __WXMAC__
-wxString GetResourcesDir(){ return wxEmptyString; };
+wxString GetResourcesDir()
+{
+    return wxEmptyString;
+};
 #endif
 
 // The app needs a flag to disable some plugin calls
@@ -81,7 +84,7 @@ wxString GetResourcesDir(){ return wxEmptyString; };
 
 
 //  missing mingw header definitions
-    #define MAPVK_VK_TO_VSC     0
+#define MAPVK_VK_TO_VSC     0
 
 IMPLEMENT_APP(CodeSnippetsApp);
 
@@ -94,33 +97,33 @@ BEGIN_EVENT_TABLE(CodeSnippetsApp, wxApp)
 END_EVENT_TABLE()
 
 #ifdef __WXMAC__
-    #if wxCHECK_VERSION(3, 0, 0)
-        #include "wx/osx/core/cfstring.h"
-    #else
-        #include "wx/mac/corefoundation/cfstring.h"
-    #endif
-    #include "wx/intl.h"
+#if wxCHECK_VERSION(3, 0, 0)
+#include "wx/osx/core/cfstring.h"
+#else
+#include "wx/mac/corefoundation/cfstring.h"
+#endif
+#include "wx/intl.h"
 
-    #include <CoreFoundation/CFBundle.h>
-    #include <CoreFoundation/CFURL.h>
+#include <CoreFoundation/CFBundle.h>
+#include <CoreFoundation/CFURL.h>
 
-    // returns e.g. "/Applications/appname.app/Contents/Resources" if application is bundled,
-    // or the directory of the binary, e.g. "/usr/local/bin/appname", if it is *not* bundled.
-    // ----------------------------------------------------------------------------
-    static wxString GetResourcesDir()
-    // ----------------------------------------------------------------------------
-    {
-        CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
-        CFURLRef absoluteURL = CFURLCopyAbsoluteURL(resourcesURL); // relative -> absolute
-        CFRelease(resourcesURL);
-        CFStringRef cfStrPath = CFURLCopyFileSystemPath(absoluteURL,kCFURLPOSIXPathStyle);
-        CFRelease(absoluteURL);
-        #if wxCHECK_VERSION(3, 0, 0)
-          return wxCFStringRef(cfStrPath).AsString(wxLocale::GetSystemEncoding());
-        #else
-          return wxMacCFStringHolder(cfStrPath).AsString(wxLocale::GetSystemEncoding());
-        #endif
-    }
+// returns e.g. "/Applications/appname.app/Contents/Resources" if application is bundled,
+// or the directory of the binary, e.g. "/usr/local/bin/appname", if it is *not* bundled.
+// ----------------------------------------------------------------------------
+static wxString GetResourcesDir()
+// ----------------------------------------------------------------------------
+{
+    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
+    CFURLRef absoluteURL = CFURLCopyAbsoluteURL(resourcesURL); // relative -> absolute
+    CFRelease(resourcesURL);
+    CFStringRef cfStrPath = CFURLCopyFileSystemPath(absoluteURL,kCFURLPOSIXPathStyle);
+    CFRelease(absoluteURL);
+#if wxCHECK_VERSION(3, 0, 0)
+    return wxCFStringRef(cfStrPath).AsString(wxLocale::GetSystemEncoding());
+#else
+    return wxMacCFStringHolder(cfStrPath).AsString(wxLocale::GetSystemEncoding());
+#endif
+}
 #endif
 
 // ----------------------------------------------------------------------------
@@ -138,16 +141,16 @@ bool CodeSnippetsApp::OnInit()
     SetConfig( new CodeSnippetsConfig );
     GetConfig()->m_bIsPlugin = false;
 
-	CodeSnippetsAppFrame* frame = new CodeSnippetsAppFrame(0L, _("CodeSnippets"));
+    CodeSnippetsAppFrame* frame = new CodeSnippetsAppFrame(0L, _("CodeSnippets"));
 
-	// Return without show if this is *not* first instance of pgm
-	// The instance address was cleared by CodeSnippetsApp to show
-	// that this is not the first instance.
-	if (GetConfig()->m_sWindowHandle.IsEmpty() ) return false;
-	if (frame->GetInitXRCResult() == false) return false;
+    // Return without show if this is *not* first instance of pgm
+    // The instance address was cleared by CodeSnippetsApp to show
+    // that this is not the first instance.
+    if (GetConfig()->m_sWindowHandle.IsEmpty() ) return false;
+    if (frame->GetInitXRCResult() == false) return false;
 
-	frame->Show();
-	return true;
+    frame->Show();
+    return true;
 }
 // ----------------------------------------------------------------------------
 int CodeSnippetsApp::OnExit()
@@ -177,8 +180,10 @@ int CodeSnippetsApp::OnExit()
 // ----------------------------------------------------------------------------
 //helper functions
 // ----------------------------------------------------------------------------
-enum wxbuildinfoformat {
-    short_f, long_f };
+enum wxbuildinfoformat
+{
+    short_f, long_f
+};
 
 wxString wxbuildinfo(wxbuildinfoformat format)
 {
@@ -238,19 +243,19 @@ BEGIN_EVENT_TABLE(CodeSnippetsAppFrame, wxFrame)
     EVT_MENU(idFileOpenRecentFileClearHistory,  CodeSnippetsAppFrame::OnRecentFileClearHistory)
 
     // -- Testing --
-    #if defined(LOGGING)
+#if defined(LOGGING)
     EVT_MENU(idMenuTest,        CodeSnippetsAppFrame::OnEventTest)
-    #endif
+#endif
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
 CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame* frame, const wxString& title)
 // ----------------------------------------------------------------------------
     : wxFrame(frame, -1, title)
-      ,m_Timer(this,0)
+    ,m_Timer(this,0)
 {
-      frame = this;
-      InitCodeSnippetsAppFrame( frame, title); //allow us to gdb break
+    frame = this;
+    InitCodeSnippetsAppFrame( frame, title); //allow us to gdb break
 }//ctor
 // ----------------------------------------------------------------------------
 CodeSnippetsAppFrame::~CodeSnippetsAppFrame()
@@ -283,49 +288,51 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     GetConfig()->pMainFrame = this;
     GetConfig()->AppName = wxT("codesnippets");
 
-    #if LOGGING
-     wxWindow* m_pAppWin = this;
-     wxLog::EnableLogging(true);
-     m_pLog = new wxLogWindow( m_pAppWin, _T(" CodeSnippets Log"),true,false);
-     wxLog::SetActiveTarget( m_pLog);
-     m_pLog->Flush();
-     m_pLog->GetFrame()->SetSize(20,20,600,300);
-     LOGIT( _T("CodeSnippets App Logging Started[%s]"),pVersion->GetVersion().c_str());
-    #endif
+#if LOGGING
+    wxWindow* m_pAppWin = this;
+    wxLog::EnableLogging(true);
+    m_pLog = new wxLogWindow( m_pAppWin, _T(" CodeSnippets Log"),true,false);
+    wxLog::SetActiveTarget( m_pLog);
+    m_pLog->Flush();
+    m_pLog->GetFrame()->SetSize(20,20,600,300);
+    LOGIT( _T("CodeSnippets App Logging Started[%s]"),pVersion->GetVersion().c_str());
+#endif
 
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT(wxT("AppName is[%s]"),GetConfig()->AppName.c_str());
-    #endif
+#endif
 
     // If invoked from CodeBlocks? (as opposed to being standalone)
     // there'll be a "--KeepAlivePid=<pid>" argument. This is the CB pid which
     // has been written to /temp/cbsnippetspid<pid>.plg keepAlive file.
     // When CB wants us to terminate, the file will disappear.
     if ( wxTheApp->argc >1 ) do
-    {
-        wxString keepAliveArg = wxTheApp->argv[1];
-        if ( not keepAliveArg.Contains(wxT("KeepAlivePid")) ) break;
-        wxString keepAlivePid = keepAliveArg.AfterLast('=');
-        long lKeepAlivePid = 0;
-        keepAlivePid.ToLong(&lKeepAlivePid);
-        GetConfig()->SetKeepAlivePid( lKeepAlivePid );
-        #if defined(LOGGING)
-        LOGIT( _T("App: KeepAlivePid is [%lu]"), GetConfig()->GetKeepAlivePid() );
-        #endif
-    }while(false); //if KeepAlivePid argument
+        {
+            wxString keepAliveArg = wxTheApp->argv[1];
+            if ( not keepAliveArg.Contains(wxT("KeepAlivePid")) ) break;
+            wxString keepAlivePid = keepAliveArg.AfterLast('=');
+            long lKeepAlivePid = 0;
+            keepAlivePid.ToLong(&lKeepAlivePid);
+            GetConfig()->SetKeepAlivePid( lKeepAlivePid );
+#if defined(LOGGING)
+            LOGIT( _T("App: KeepAlivePid is [%lu]"), GetConfig()->GetKeepAlivePid() );
+#endif
+        }
+        while(false);  //if KeepAlivePid argument
 
     // If invoked from CodeBlocks? (as opposed to being standalone)
     // there'll be a "--AppParent=<string>" argument.
     if ( wxTheApp->argc >2 ) do
-    {
-        wxString appParentArg = wxTheApp->argv[2];
-        if ( not appParentArg.Contains(wxT("AppParent")) ) break;
-        wxString appParent = appParentArg.AfterLast('=');
-        GetConfig()->SetAppParent( appParent );
-        #if defined(LOGGING)
-        LOGIT( _T("App: AppParent is [%s]"), GetConfig()->GetAppParent().c_str() );
-        #endif
-    }while(false); //if AppParent argument
+        {
+            wxString appParentArg = wxTheApp->argv[2];
+            if ( not appParentArg.Contains(wxT("AppParent")) ) break;
+            wxString appParent = appParentArg.AfterLast('=');
+            GetConfig()->SetAppParent( appParent );
+#if defined(LOGGING)
+            LOGIT( _T("App: AppParent is [%s]"), GetConfig()->GetAppParent().c_str() );
+#endif
+        }
+        while(false);  //if AppParent argument
 
     // -----------------------------------------
     // Find Config File
@@ -334,16 +341,17 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     m_ConfigFolder = Normalize(wxStandardPaths::Get().GetUserDataDir());
     wxString m_ExecuteFolder = Normalize(FindAppPath(wxTheApp->argv[0], ::wxGetCwd(), wxEmptyString));
 
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT(wxT("CfgFolder[%s]"),m_ConfigFolder.c_str());
     LOGIT(wxT("ExecFolder[%s]"),m_ExecuteFolder.c_str());
-    #endif
+#endif
 
     // ----------------------------------------
     // Find the codesnippets .ini config file
     // ----------------------------------------
     wxString iniFilenameStr;
-    do{
+    do
+    {
         // if codesnippets.ini is in the executable folder, use it
         iniFilenameStr = m_ExecuteFolder + wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
         if (::wxFileExists(iniFilenameStr))
@@ -379,10 +387,11 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
 
         //use the default app folder <user>/codesnippets/codesnippets.ini
         iniFilenameStr = m_ConfigFolder + wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
-    }while(0);
-    #if defined(LOGGING)
+    }
+    while(0);
+#if defined(LOGGING)
     LOGIT( _T("using .ini at[%s]"),iniFilenameStr.c_str() );
-    #endif
+#endif
 
     // ---------------------
     // Initialize Globals, read the .ini file
@@ -393,9 +402,9 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     if (::wxFileExists(defaultconfStr))
         GetConfig()->SettingsCBConfigPath = m_ExecuteFolder;
 
-     #if defined(LOGGING)
-     LOGIT( _T("SettingsSnippetsCfgPath[%s]"),GetConfig()->SettingsSnippetsCfgPath.c_str() );
-     #endif
+#if defined(LOGGING)
+    LOGIT( _T("SettingsSnippetsCfgPath[%s]"),GetConfig()->SettingsSnippetsCfgPath.c_str() );
+#endif
 
     // Read in the .ini file
     GetConfig()->SettingsLoad();
@@ -411,26 +420,27 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     // in the users data directory along with the necessary resouce files in the .exe folder.
     ImportCBResources();
 
-    #if defined(__WXMSW__)
-        // -----------------------------------------
-        // Check for pgm instance already running
-        // -----------------------------------------
-        const wxString name = wxString::Format(wxT("CodeSnippets-%s"), wxGetUserId().c_str());
-        m_checker = new wxSingleInstanceChecker(name);
+#if defined(__WXMSW__)
+    // -----------------------------------------
+    // Check for pgm instance already running
+    // -----------------------------------------
+    const wxString name = wxString::Format(wxT("CodeSnippets-%s"), wxGetUserId().c_str());
+    m_checker = new wxSingleInstanceChecker(name);
 
-        if ( m_checker->IsAnotherRunning() ) do
-        {   // Previous instance is running.
+    if ( m_checker->IsAnotherRunning() ) do
+        {
+            // Previous instance is running.
             // Minimize then restore the first instance so pgm appears on active screen
             // Got the first instance handle of the window from the config file
             HWND pFirstInstance;
             // gotten from cfgFile.Read( wxT("WindowHandle"),  &windowHandle ) ;
-            #if defined(_WIN64) | defined(WIN64)
+#if defined(_WIN64) | defined(WIN64)
             size_t val;
             if ( GetConfig()->m_sWindowHandle.ToULongLong( &val, 16) )
-            #else
+#else
             long unsigned int val;
             if ( GetConfig()->m_sWindowHandle.ToULong( &val, 16) )
-            #endif
+#endif
                 pFirstInstance = (HWND)val;
             if (pFirstInstance && ::IsWindow(pFirstInstance) )
             {
@@ -457,8 +467,9 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
                 GetConfig()->m_sWindowHandle = wxEmptyString;
                 return ;
             }
-        }while(0);//fi m_checker
-    #endif //WXMSW
+        }
+        while(0); //fi m_checker
+#endif //WXMSW
 
     // This is first instance of program
     // write the window handle to the config file for other instance loads
@@ -470,7 +481,8 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     //  SDK initialization
     // -------------------------------
     if (not InitializeSDK() )
-    {   // Got an error.Tell app class we're terminating
+    {
+        // Got an error.Tell app class we're terminating
         GetConfig()->m_sWindowHandle = wxEmptyString;
         return;
     }
@@ -494,20 +506,20 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
 
     wxMenu* fileOpenRecentFilesSubMenu = new wxMenu(wxT(""));
     fileOpenRecentFilesSubMenu->Append(idFileOpenRecentFileClearHistory, _("Clear History"), _("Clear Recent History"));
-    fileMenu->Append(idFileOpenRecentFile, _("Recent History"), fileOpenRecentFilesSubMenu , _("Recent Files History"));
+    fileMenu->Append(idFileOpenRecentFile, _("Recent History"), fileOpenRecentFilesSubMenu, _("Recent Files History"));
     fileMenu->Append(idMenuQuit, _("&Quit\tAlt-F4"), _("Quit the application"));
     mbar->Append(fileMenu, _("&File"));
 
-        // Settings menu
+    // Settings menu
     wxMenu* settingsMenu = new wxMenu(_T(""));
     settingsMenu->Append(idMenuSettingsOptions, _("Options..."), _("Configuration Options"));
     //settingsMenu->Append(idMenuSettingsSave, _("Save"), _("Save Settings"));
-    #if defined(LOGGING)
+#if defined(LOGGING)
     settingsMenu->Append(idMenuTest, _("Test"), _("Testing"));
-    #endif
+#endif
     mbar->Append(settingsMenu, _("Settings"));
 
-        // About menu item
+    // About menu item
     wxMenu* helpMenu = new wxMenu(_T(""));
     helpMenu->Append(idMenuAbout, _("&About\tF1"), _("Show info about this application"));
     mbar->Append(helpMenu, _("&Help"));
@@ -527,7 +539,7 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     SetStatusText( versionStr, 0);
     SetStatusText(wxbuildinfo(short_f), 1);
 
-        // set the frame icon
+    // set the frame icon
     GetConfig()->pSnipImages = new SnipImages();
     SetIcon(GetConfig()->GetSnipImages()->GetSnipListIcon(TREE_IMAGE_ALL_SNIPPETS));
 
@@ -543,14 +555,20 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     SetSizer( m_pMainSizer );
     Layout();
     // dont allow window to disappear
-    if ( GetConfig()->windowWidth<20 ) {GetConfig()->windowWidth = 100;}
-    if ( GetConfig()->windowHeight<40 ) {GetConfig()->windowHeight = 200;}
+    if ( GetConfig()->windowWidth<20 )
+    {
+        GetConfig()->windowWidth = 100;
+    }
+    if ( GetConfig()->windowHeight<40 )
+    {
+        GetConfig()->windowHeight = 200;
+    }
     SetSize(GetConfig()->windowXpos, GetConfig()->windowYpos,
             GetConfig()->windowWidth, GetConfig()->windowHeight);
 
     buildInfo = wxbuildinfo(long_f);
     wxString
-        pgmVersionString = wxT("CodeSnippets v") + pVersion->GetVersion();
+    pgmVersionString = wxT("CodeSnippets v") + pVersion->GetVersion();
     buildInfo = wxT("\t")+pgmVersionString + wxT("\n")+ wxT("\t")+buildInfo;
     buildInfo = buildInfo + wxT("\n\n\t")+wxT("Original Code by Arto Jonsson");
     buildInfo = buildInfo + wxT("\n\t")+wxT("Modified/Enhanced by Pecan Heber");
@@ -561,45 +579,47 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     // we may have been invoked with a parameter of KeepAlivePid=####
     // We terminate when the Pid no longer exists.
     if ( wxTheApp->argc >1 ) do
-    {
-        wxString keepAliveArg = wxTheApp->argv[1];
-        if ( not keepAliveArg.Contains(wxT("KeepAlivePid")) ) break;
-        wxString keepAlivePid = keepAliveArg.AfterLast('=');
-        long lKeepAlivePid = 0;
-        keepAlivePid.ToLong(&lKeepAlivePid);
-        GetConfig()->SetKeepAlivePid( lKeepAlivePid );
-         #if defined(LOGGING)
-         LOGIT( _T("App: KeepAlivePid is [%lu]"), GetConfig()->GetKeepAlivePid() );
-         #endif
-
-        wxString tempDir = GetConfig()->GetTempDir();
-        m_KeepAliveFileName = tempDir + wxT("/cbsnippetspid") +keepAlivePid+ wxT(".plg");
-         #if defined(LOGGING)
-         LOGIT( _T("KeepAlive FileName[%s]"),m_KeepAliveFileName.GetData() );
-         #endif
-        if ( not ::wxFileExists(m_KeepAliveFileName) )
         {
-            wxMessageBox(wxString::Format(wxT("Error: Did not find KeepAlive File[%s]"), m_KeepAliveFileName.GetData() ));
-            m_KeepAliveFileName = wxEmptyString;
-            break;
+            wxString keepAliveArg = wxTheApp->argv[1];
+            if ( not keepAliveArg.Contains(wxT("KeepAlivePid")) ) break;
+            wxString keepAlivePid = keepAliveArg.AfterLast('=');
+            long lKeepAlivePid = 0;
+            keepAlivePid.ToLong(&lKeepAlivePid);
+            GetConfig()->SetKeepAlivePid( lKeepAlivePid );
+#if defined(LOGGING)
+            LOGIT( _T("App: KeepAlivePid is [%lu]"), GetConfig()->GetKeepAlivePid() );
+#endif
+
+            wxString tempDir = GetConfig()->GetTempDir();
+            m_KeepAliveFileName = tempDir + wxT("/cbsnippetspid") +keepAlivePid+ wxT(".plg");
+#if defined(LOGGING)
+            LOGIT( _T("KeepAlive FileName[%s]"),m_KeepAliveFileName.GetData() );
+#endif
+            if ( not ::wxFileExists(m_KeepAliveFileName) )
+            {
+                wxMessageBox(wxString::Format(wxT("Error: Did not find KeepAlive File[%s]"), m_KeepAliveFileName.GetData() ));
+                m_KeepAliveFileName = wxEmptyString;
+                break;
+            }
+
+
+            if ( GetConfig()->GetKeepAlivePid() )
+            {
+                StartKeepAliveTimer( 2 );
+#if defined(LOGGING)
+                LOGIT( _T("StartKeepAliveTimer for[%lu]"),GetConfig()->GetKeepAlivePid() );
+#endif
+            }
+
         }
-
-
-        if ( GetConfig()->GetKeepAlivePid() )
-        {    StartKeepAliveTimer( 2 );
-             #if defined(LOGGING)
-             LOGIT( _T("StartKeepAliveTimer for[%lu]"),GetConfig()->GetKeepAlivePid() );
-             #endif
-        }
-
-    }while(0);
+        while(0);
 
     // This App version of CodeSnippets has a local copy of DragScroll
     // for it's external editors
-	InitializeDragScroll();
+    InitializeDragScroll();
 
-	// Add TreeCtrl to DragScroll managed windows
-    sDragScrollEvent dsevt(wxEVT_S_DRAGSCROLL_EVENT , idDragScrollAddWindow);
+    // Add TreeCtrl to DragScroll managed windows
+    sDragScrollEvent dsevt(wxEVT_S_DRAGSCROLL_EVENT, idDragScrollAddWindow);
     dsevt.SetEventObject(GetConfig()->GetSnippetsTreeCtrl());
     dsevt.SetString( GetConfig()->GetSnippetsTreeCtrl()->GetName() );
     GetConfig()->GetDragScrollEvtHandler()->AddPendingEvent( dsevt );
@@ -649,20 +669,22 @@ wxString CodeSnippetsAppFrame::FindAppPath(const wxString& argv0, const wxString
 #endif
 
     wxString argv0Str = argv0;
-    #if defined(__WXMSW__)
-        do{
-            if (argv0Str.Contains(wxT(".exe")) ) break;
-            if (argv0Str.Contains(wxT(".bat")) ) break;
-            if (argv0Str.Contains(wxT(".cmd")) ) break;
-            argv0Str.Append(wxT(".exe"));
-        }while(0);
-    #endif
+#if defined(__WXMSW__)
+    do
+    {
+        if (argv0Str.Contains(wxT(".exe")) ) break;
+        if (argv0Str.Contains(wxT(".bat")) ) break;
+        if (argv0Str.Contains(wxT(".cmd")) ) break;
+        argv0Str.Append(wxT(".exe"));
+    }
+    while(0);
+#endif
 
     if (wxIsAbsolutePath(argv0Str))
     {
-        #if defined(LOGGING)
+#if defined(LOGGING)
         LOGIT( _T("FindAppPath: AbsolutePath[%s]"), wxPathOnly(argv0Str).GetData() );
-        #endif
+#endif
         return wxPathOnly(argv0Str);
     }
     else
@@ -675,9 +697,9 @@ wxString CodeSnippetsAppFrame::FindAppPath(const wxString& argv0, const wxString
         str = currentDir + argv0Str;
         if (wxFileExists(str))
         {
-            #if defined(LOGGING)
+#if defined(LOGGING)
             LOGIT( _T("FindAppPath: RelativePath[%s]"), wxPathOnly(str).GetData() );
-            #endif
+#endif
             return wxPathOnly(str);
         }
     }
@@ -690,16 +712,16 @@ wxString CodeSnippetsAppFrame::FindAppPath(const wxString& argv0, const wxString
     str = pathList.FindAbsoluteValidPath(argv0Str);
     if (!str.IsEmpty())
     {
-        #if defined(LOGGING)
+#if defined(LOGGING)
         LOGIT( _T("FindAppPath: SearchPath[%s]"), wxPathOnly(str).GetData() );
-        #endif
+#endif
         return wxPathOnly(str);
     }
 
     // Failed
-     #if defined(LOGGING)
-     LOGIT(  _T("FindAppPath: Failed, returning cwd") );
-     #endif
+#if defined(LOGGING)
+    LOGIT(  _T("FindAppPath: Failed, returning cwd") );
+#endif
     return wxEmptyString;
     //return cwd;
 }
@@ -708,7 +730,7 @@ wxString CodeSnippetsAppFrame::FindAppPath(const wxString& argv0, const wxString
 void CodeSnippetsAppFrame::OnClose(wxCloseEvent &event)
 // ----------------------------------------------------------------------------
 {
-     // Don't close down if file checking is active
+    // Don't close down if file checking is active
     if (m_bOnActivateBusy)
         return;
 
@@ -722,8 +744,8 @@ void CodeSnippetsAppFrame::OnClose(wxCloseEvent &event)
     // EVT_CLOSE is never called for codesnippetswindow.
     // so we'll invoke it here. It saves the xml indexes.
     if (GetSnippetsWindow())
-            if ( GetSnippetsWindow()->GetFileChanged() )
-                GetSnippetsWindow()->GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlPath);
+        if ( GetSnippetsWindow()->GetFileChanged() )
+            GetSnippetsWindow()->GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlPath);
 
     // Save CodeSnippets.ini file
     //-GetConfig()->SetExternalPersistentOpen(false);
@@ -738,14 +760,14 @@ void CodeSnippetsAppFrame::OnClose(wxCloseEvent &event)
 
     // If not started by CB, ask SDK to write config file
     if ( 0 == GetConfig()->GetKeepAlivePid() )
-    if ( Manager::Get() )
-    {
-        //-Manager::Free(); dont clobber codeblocks' .conf file
-        if (wxFileExists(m_ConfigFolder+_T("/default.conf.backup")) )
-            wxRemoveFile(m_ConfigFolder+_T("/default.conf.backup")) ;
-        if (wxFileExists(m_ConfigFolder+_T("/default.conf.cbTemp")) )
-            wxRemoveFile(m_ConfigFolder+_T("/default.conf.cbTemp")) ;
-    }
+        if ( Manager::Get() )
+        {
+            //-Manager::Free(); dont clobber codeblocks' .conf file
+            if (wxFileExists(m_ConfigFolder+_T("/default.conf.backup")) )
+                wxRemoveFile(m_ConfigFolder+_T("/default.conf.backup")) ;
+            if (wxFileExists(m_ConfigFolder+_T("/default.conf.cbTemp")) )
+                wxRemoveFile(m_ConfigFolder+_T("/default.conf.cbTemp")) ;
+        }
 
     Destroy();
 }
@@ -784,9 +806,10 @@ void CodeSnippetsAppFrame::OnFileLoad(wxCommandEvent& event)
 
     // Save any previously modified file
     if ( GetFileChanged() )
-    {    // Ask users if they want to save the snippet xml file
+    {
+        // Ask users if they want to save the snippet xml file
         int answer = wxMessageBox( wxT("Save Snippets file?\n\n")+GetConfig()->SettingsSnippetsXmlPath,
-                                                wxT("Open"),wxYES_NO );
+                                   wxT("Open"),wxYES_NO );
         if ( answer == wxYES)
         {
             // Save the snippets
@@ -806,9 +829,9 @@ void CodeSnippetsAppFrame::OnFileSave(wxCommandEvent& event)
     // save main xml file to fileName configured in Settings
     SetActiveMenuId( event.GetId() );
 
-    #ifdef LOGGING
-     LOGIT( _T("Saving XML file[%s]"), GetConfig()->SettingsSnippetsXmlPath.GetData() );
-    #endif //LOGGING
+#ifdef LOGGING
+    LOGIT( _T("Saving XML file[%s]"), GetConfig()->SettingsSnippetsXmlPath.GetData() );
+#endif //LOGGING
     GetSnippetsWindow()->OnMnuSaveSnippets( event );
 
 }
@@ -842,16 +865,21 @@ void CodeSnippetsAppFrame::OnActivate(wxActivateEvent& event)
 {
     // Application/CodeSnippets has been activated
 
-    if ( m_bOnActivateBusy ) {event.Skip();return;}
+    if ( m_bOnActivateBusy )
+    {
+        event.Skip();
+        return;
+    }
     ++m_bOnActivateBusy;
-    #if defined(LOGGING)
+#if defined(LOGGING)
     //LOGIT( _T("CodeSnippetsAppFrame::OnActivate[%d]"), m_bOnActivateBusy);
-    #endif
-    do{ //only once
+#endif
+    do  //only once
+    {
         // Check that it's us that got activated
-         if (not event.GetActive()) break;
+        if (not event.GetActive()) break;
 
-         // Check that CodeSnippets actually has a file open
+        // Check that CodeSnippets actually has a file open
         if (not GetConfig()->GetSnippetsWindow() )  break;
         if (not GetConfig()->GetSnippetsTreeCtrl() ) break;
 
@@ -859,7 +887,8 @@ void CodeSnippetsAppFrame::OnActivate(wxActivateEvent& event)
         if (not p) break;
         p->CheckForExternallyModifiedFiles();
 
-    }while(0);
+    }
+    while(0);
 
     m_bOnActivateBusy = 0;
     event.Skip();
@@ -900,18 +929,29 @@ void CodeSnippetsAppFrame::OnTimerAlarm(wxTimerEvent& event)
 void CodeSnippetsAppFrame::OnIdle(wxIdleEvent& event)
 // ----------------------------------------------------------------------------
 {
-    if ( GetConfig()->m_appIsShutdown) { event.Skip(); return;}
+    if ( GetConfig()->m_appIsShutdown)
+    {
+        event.Skip();
+        return;
+    }
 
     // when menu help clears the statusbar, put back the version string
     wxStatusBar* sb = GetStatusBar();
     if (not sb)
-        {event.Skip(); return;}
+    {
+        event.Skip();
+        return;
+    }
 
     if (GetConfig()->m_appIsShutdown)
-        { event.Skip(); return; }
+    {
+        event.Skip();
+        return;
+    }
 
     if ( sb->GetStatusText() == wxEmptyString )
-    { sb->SetStatusText( versionStr);
+    {
+        sb->SetStatusText( versionStr);
     }
 
     // See if user changed from "external" to "docked" or "floating"
@@ -920,7 +960,10 @@ void CodeSnippetsAppFrame::OnIdle(wxIdleEvent& event)
     {
         // Don't close down if file checking is active
         if (m_bOnActivateBusy)
-            {event.Skip(); return;}
+        {
+            event.Skip();
+            return;
+        }
         wxCloseEvent evtClose(wxEVT_CLOSE_WINDOW, GetId());
         //-OnClose(evtClose);
         evtClose.SetEventObject(this);
@@ -931,15 +974,16 @@ void CodeSnippetsAppFrame::OnIdle(wxIdleEvent& event)
     CodeSnippetsTreeCtrl* pTree = GetConfig()->GetSnippetsTreeCtrl();
     if ( pTree ) pTree->OnIdle();
 
-    event.Skip();return;
+    event.Skip();
+    return;
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsAppFrame::OnEventTest(wxCommandEvent &event)
 // ----------------------------------------------------------------------------
 {
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("CodeSnippetsAppFrame::OnEventTest()"));
-    #endif
+#endif
     ////    CodeSnippetsEvent evt(wxEVT_CODESNIPPETS_SELECT, 15);
     ////    evt.PostCodeSnippetsEvent(evt);
     ////
@@ -988,10 +1032,10 @@ void CodeSnippetsAppFrame::InitializeRecentFilesHistory()
             recentFiles->Remove(clear);
 
             wxFileConfig cfgFile(wxEmptyString,     // appname
-                        wxEmptyString,      // vendor
-                        GetConfig()->SettingsSnippetsCfgPath,     // local filename
-                        wxEmptyString,      // global file
-                        wxCONFIG_USE_LOCAL_FILE);
+                                 wxEmptyString,      // vendor
+                                 GetConfig()->SettingsSnippetsCfgPath,     // local filename
+                                 wxEmptyString,      // global file
+                                 wxCONFIG_USE_LOCAL_FILE);
 
             m_pFilesHistory->Load( cfgFile );
             wxArrayString files;
@@ -1024,7 +1068,8 @@ void CodeSnippetsAppFrame::AddToRecentFilesHistory(const wxString& FileName)
     for (size_t i = 0; i < m_pFilesHistory->GetCount(); ++i)
     {
         if (low == m_pFilesHistory->GetHistoryFile(i).Lower())
-        {    // it exists, set filename to the existing name, so it can become
+        {
+            // it exists, set filename to the existing name, so it can become
             // the most recent one
             filename = m_pFilesHistory->GetHistoryFile(i);
             break;
@@ -1080,11 +1125,11 @@ void CodeSnippetsAppFrame::TerminateRecentFilesHistory()
         for (unsigned int i = 0; i < m_pFilesHistory->GetCount(); ++i)
             files.Add(m_pFilesHistory->GetHistoryFile(i));
 
-     wxFileConfig cfgFile(wxEmptyString,     // appname
-                        wxEmptyString,      // vendor
-                        GetConfig()->SettingsSnippetsCfgPath,     // local filename
-                        wxEmptyString,      // global file
-                        wxCONFIG_USE_LOCAL_FILE);
+        wxFileConfig cfgFile(wxEmptyString,     // appname
+                             wxEmptyString,      // vendor
+                             GetConfig()->SettingsSnippetsCfgPath,     // local filename
+                             wxEmptyString,      // global file
+                             wxCONFIG_USE_LOCAL_FILE);
 
         m_pFilesHistory->Save( cfgFile );
         cfgFile.Flush();
@@ -1133,7 +1178,8 @@ void CodeSnippetsAppFrame::OnRecentFileReopen(wxCommandEvent& event)
         //-GetSnippetsWindow()->GetSnippetsTreeCtrl()->FetchFileModificationTime();
     }
     else
-    {   // file not found
+    {
+        // file not found
         //-wxString msg(wxString::Format(wxT("File not found:\n%s\n\n"),fname.GetData()));
         //-messageBox( msg );
         AskToRemoveFileFromHistory(m_pFilesHistory, id);
@@ -1154,8 +1200,8 @@ void CodeSnippetsAppFrame::AskToRemoveFileFromHistory(wxFileHistory* hist, int i
 // ----------------------------------------------------------------------------
 {
     if (cbMessageBox(_("Can't open file.\nDo you want to remove it from the recent files list?"),
-                    _("Question"),
-                    wxYES_NO | wxICON_QUESTION) == wxID_YES)
+                     _("Question"),
+                     wxYES_NO | wxICON_QUESTION) == wxID_YES)
     {
         hist->RemoveFileFromHistory(id);
     }
@@ -1307,10 +1353,10 @@ bool CodeSnippetsAppFrame::InitXRCStuff()
     // This seems to be loaded by Manager::Get(this)-> above
     //-Manager::LoadResource(_T("manager_resources.zip"));
     if (!Manager::LoadResource(_T("resources.zip")))
-	{
-		ComplainBadInstall();
-		return false;
-	}
+    {
+        ComplainBadInstall();
+        return false;
+    }
     return true;
 }
 // ----------------------------------------------------------------------------
@@ -1319,14 +1365,14 @@ void CodeSnippetsAppFrame::ComplainBadInstall()
 {
     wxString msg;
     msg.Printf(_T("Cannot find resources...\n"
-        "%s was configured to be installed in '%s'.\n"
-        "Please use the command-line switch '--prefix' or "
-        "set the CODEBLOCKS_DATA_DIR environment variable "
-        "to point where %s is installed,\n"
-        "or try re-installing the application..."),
-        _T("CodeSnippetsApp"),
-        ConfigManager::ReadDataPath().c_str(),
-        wxTheApp->GetAppName().c_str());
+                  "%s was configured to be installed in '%s'.\n"
+                  "Please use the command-line switch '--prefix' or "
+                  "set the CODEBLOCKS_DATA_DIR environment variable "
+                  "to point where %s is installed,\n"
+                  "or try re-installing the application..."),
+               _T("CodeSnippetsApp"),
+               ConfigManager::ReadDataPath().c_str(),
+               wxTheApp->GetAppName().c_str());
     cbMessageBox(msg);
 }
 // ----------------------------------------------------------------------------
@@ -1368,28 +1414,28 @@ int CodeSnippetsAppFrame::ParseCmdLine(wxFrame* handlerFrame)
     // too, so we don't know here what exactly are the supported options
     switch ( parser.Parse(false) )
     {
-        case -1:
-            parser.Usage();
-            return -1;
+    case -1:
+        parser.Usage();
+        return -1;
 
-        case 0:
+    case 0:
+    {
+        {
+            wxString val;
+            parser.Found(_T("prefix"), &m_Prefix);
+
+            if (parser.Found(_T("personality"), &val) ||
+                    parser.Found(_T("profile"), &val))
             {
-                {
-                    wxString val;
-                    parser.Found(_T("prefix"), &m_Prefix);
-
-                    if (parser.Found(_T("personality"), &val) ||
-                        parser.Found(_T("profile"), &val))
-                    {
-                        //SetupPersonality(val);
-                    }
-
-                }
+                //SetupPersonality(val);
             }
-            break;
 
-        default:
-            return 1; // syntax error / unknown option
+        }
+    }
+    break;
+
+    default:
+        return 1; // syntax error / unknown option
     }
 #endif // wxUSE_CMDLINE_PARSER
     return filesInCmdLine ? 1 : 0;
@@ -1413,13 +1459,13 @@ void CodeSnippetsAppFrame::ImportCBResources()
     wxString appParent = GetConfig()->GetAppParent();
     if ( appParent.empty()) appParent =_T("codeblocks");
     wxString prefixPath;
-    #if defined(__WXMSW__)
-        if (cbConfigFolder.EndsWith(_T("codesnippets"), &prefixPath))
-            cbConfigFolder = prefixPath.Append( appParent );
-    #else
-        if (cbConfigFolder.EndsWith(_T(".codesnippets"), &prefixPath))
-            cbConfigFolder = prefixPath.Append(wxT(".")+appParent);
-    #endif
+#if defined(__WXMSW__)
+    if (cbConfigFolder.EndsWith(_T("codesnippets"), &prefixPath))
+        cbConfigFolder = prefixPath.Append( appParent );
+#else
+    if (cbConfigFolder.EndsWith(_T(".codesnippets"), &prefixPath))
+        cbConfigFolder = prefixPath.Append(wxT(".")+appParent);
+#endif
 
     // If the <appdata>/<pgmName>/ dir has no "default.conf", make a copy
     // of the one found in CB configFolder so that user will not get
@@ -1429,16 +1475,16 @@ void CodeSnippetsAppFrame::ImportCBResources()
     {
         //.ini must be in .exe folder to receive .conf
         if (appConfigFolder == appExeFolder)
-        if (not wxFileExists(appExeFolder + _T("/default.conf")) )
-        {
-            #if defined(LOGGING)
-            bool copied =
-            #endif
-            wxCopyFile( fileToCopy, appExeFolder+_T("/default.conf") );
-            #if defined(LOGGING)
-            LOGIT( _T("Copy [%s][%s][%s]"), fileToCopy.c_str(), cbConfigFolder.c_str(), copied?_T("OK"):_T("FAILED"));
-            #endif
-        }
+            if (not wxFileExists(appExeFolder + _T("/default.conf")) )
+            {
+#if defined(LOGGING)
+                bool copied =
+#endif
+                    wxCopyFile( fileToCopy, appExeFolder+_T("/default.conf") );
+#if defined(LOGGING)
+                LOGIT( _T("Copy [%s][%s][%s]"), fileToCopy.c_str(), cbConfigFolder.c_str(), copied?_T("OK"):_T("FAILED"));
+#endif
+            }
     }
     // Copy missing resources from CB exe folder to app config folder
     if (not wxDirExists(appExeFolder + _T("/share/codeblocks/")))
@@ -1460,22 +1506,24 @@ wxString CodeSnippetsAppFrame::GetCBExeFolder() //Get CodeBlocks executable fold
     // Assume that codeblocks.dll is in the resource path base.
     // Then look for <dllPath>/share/codeblocks/resources.zip
     // to verify.
-    #if defined(__WXMSW__)
+#if defined(__WXMSW__)
     if( m_Prefix.IsEmpty() )
-    do{
-        wxChar dllPath[1024] = {0};
-        HMODULE dllHandle = LoadLibrary(_T("codeblocks.dll"));
-        if (not dllHandle) break;
-        DWORD pathLen = GetModuleFileName( dllHandle, dllPath, sizeof(dllPath));
-        if (not pathLen) break;
-        cbExeFolder.assign(::wxPathOnly(dllPath));
-        #if defined(LOGGING)
-          LOGIT( _T("CodeBlocks.dll Path[%s]"), cbExeFolder.c_str());
-        #endif
-        //cbExeFolder.append(_T("/share/codeblocks"));
-        //if (not ::wxFileExists(cbExeFolder + _T("/resources.zip")) ) break;
-    }while(false);
-    #endif
+        do
+        {
+            wxChar dllPath[1024] = {0};
+            HMODULE dllHandle = LoadLibrary(_T("codeblocks.dll"));
+            if (not dllHandle) break;
+            DWORD pathLen = GetModuleFileName( dllHandle, dllPath, sizeof(dllPath));
+            if (not pathLen) break;
+            cbExeFolder.assign(::wxPathOnly(dllPath));
+#if defined(LOGGING)
+            LOGIT( _T("CodeBlocks.dll Path[%s]"), cbExeFolder.c_str());
+#endif
+            //cbExeFolder.append(_T("/share/codeblocks"));
+            //if (not ::wxFileExists(cbExeFolder + _T("/resources.zip")) ) break;
+        }
+        while(false);
+#endif
     return cbExeFolder;
 }
 // ----------------------------------------------------------------------------
@@ -1488,16 +1536,16 @@ bool CodeSnippetsAppFrame::FileImport(const wxString& source, const wxString& de
 
     // If the src file is just a file, then use ::wxCopyFile
     //  otherwise is wxDirTraverser to copy the whole directory
-    #if defined(LOGGING)
+#if defined(LOGGING)
     //LOGIT(_("Copying file[%s] into working directory[%s]\n"),
     //            source.c_str(), dest.c_str());
-    #endif
+#endif
     if (::wxDirExists (source))
     {
-        #if defined(LOGGING)
+#if defined(LOGGING)
         //LOGIT(_("Adding directory[%s] to repository[%s]\n"),
         //            source.c_str(), dest.c_str()) ;
-        #endif
+#endif
         wxDir dir (source);
         if (dir.IsOpened ())
         {
@@ -1508,10 +1556,10 @@ bool CodeSnippetsAppFrame::FileImport(const wxString& source, const wxString& de
     else //file
     {
         wxString srcNative(source);
-        #if defined(LOGGING)
+#if defined(LOGGING)
         //LOGIT(_("Adding file[%s] to repository[%s]\n"),
         //            srcNative.c_str(), dest.c_str());
-        #endif
+#endif
         wxString destfile = dest;
         // convert destdir to destdir + filename
         if (::wxDirExists(destfile))

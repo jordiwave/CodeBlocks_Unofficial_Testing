@@ -27,7 +27,7 @@
 
 class wxSTEditorModule : public wxModule
 {
-DECLARE_DYNAMIC_CLASS(wxSTEditorModule)
+    DECLARE_DYNAMIC_CLASS(wxSTEditorModule)
 public:
     wxSTEditorModule() : wxModule() {}
     bool OnInit()
@@ -83,8 +83,14 @@ wxPageSetupData *wxSTEditorPrintout::GetPageSetupData(bool create_on_demand)
     return sm_STE_pageSetupData;
 }
 
-bool wxSTEditorPrintout::GetPrintDataStatic()     { return sm_STE_printdata_static; }
-bool wxSTEditorPrintout::GetPageSetupDataStatic() { return sm_STE_pagesetupdata_static; }
+bool wxSTEditorPrintout::GetPrintDataStatic()
+{
+    return sm_STE_printdata_static;
+}
+bool wxSTEditorPrintout::GetPageSetupDataStatic()
+{
+    return sm_STE_pagesetupdata_static;
+}
 
 void wxSTEditorPrintout::SetPrintData( wxPrintData *printData, bool is_static )
 {
@@ -105,9 +111,9 @@ void wxSTEditorPrintout::SetPageSetupData( wxPageSetupData *pageSetupData, bool 
 
 wxSTEditorPrintout::wxSTEditorPrintout(wxSTEditor *editor,
                                        const wxString& title)
-                   :wxPrintout(title), m_editor(editor),
-                    m_margin0_width(-1), m_margin1_width(-1), m_margin2_width(-1),
-                    m_edge_mode(-1)
+    :wxPrintout(title), m_editor(editor),
+     m_margin0_width(-1), m_margin1_width(-1), m_margin2_width(-1),
+     m_edge_mode(-1)
 {
     wxCHECK_RET(m_editor, wxT("Invalid editor in wxSTEditorPrintout"));
 
@@ -163,7 +169,8 @@ bool wxSTEditorPrintout::OnBeginDocument(int startPage, int endPage)
     if (!linenums_never && (has_linenums || linenums_always))
     {
         // calculate the smallest line number width to save space
-        int line_count = m_editor->GetLineCount(); line_count = wxMax(line_count, 1);
+        int line_count = m_editor->GetLineCount();
+        line_count = wxMax(line_count, 1);
         wxString lineStr((int)log10((double)line_count)+1, wxT('5'));
 
         int line_margin_width = m_editor->TextWidth(wxSTC_STYLE_LINENUMBER, lineStr);
@@ -217,7 +224,8 @@ bool wxSTEditorPrintout::OnPrintPage(int page)
     //dc->SetBrush(*wxTRANSPARENT_BRUSH);
     dc->SetBrush(*wxGREEN_BRUSH);
     dc->SetPen(wxPen(wxColour(255,0,0), 2, wxSOLID));
-    dc->DrawRectangle(m_pageRect); dc->DrawRectangle(m_pageRect.Inflate(-20, -20));
+    dc->DrawRectangle(m_pageRect);
+    dc->DrawRectangle(m_pageRect.Inflate(-20, -20));
     dc->SetPen(wxPen(wxColour(255,0,0), 2, wxSOLID));
     dc->SetBrush(*wxBLUE_BRUSH);
     dc->DrawRectangle(m_printRect);
@@ -368,9 +376,9 @@ bool wxSTEditorPrintout::PrintScaling(wxDC *dc)
 IMPLEMENT_ABSTRACT_CLASS(wxSTEditorPrintOptionsDialog, wxDialog);
 
 wxSTEditorPrintOptionsDialog::wxSTEditorPrintOptionsDialog(wxWindow *parent)
-                             :wxDialog(parent, wxID_ANY, _("Printer options"),
-                                       wxDefaultPosition, wxDefaultSize,
-                                       wxDEFAULT_DIALOG_STYLE_RESIZE)
+    :wxDialog(parent, wxID_ANY, _("Printer options"),
+              wxDefaultPosition, wxDefaultSize,
+              wxDEFAULT_DIALOG_STYLE_RESIZE)
 {
     SetIcons(wxSTEditorArtProvider::GetDialogIconBundle());
     wxSTEditorPrintPrefsSizer(this, false, true);

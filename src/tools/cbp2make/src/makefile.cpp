@@ -43,7 +43,8 @@ CString CMakefileVariable::GetValue(const int Index)
 
 void CMakefileVariable::SetValue(const CString& NewValue, const int Index)
 {
-    while (Index >= m_Values.GetCount()) {
+    while (Index >= m_Values.GetCount())
+    {
         m_Values.Insert("");
     }
     m_Values[Index] = NewValue;
@@ -134,19 +135,22 @@ void CMakefileSection::Show(void)
     std::cout<<"Header:"<<std::endl;
     m_Header.Print(std::cout);
     std::cout<<"Macro variables: "<<m_Macros.size()<<std::endl;
-    for (size_t i = 0; i < m_Macros.size(); i++) {
+    for (size_t i = 0; i < m_Macros.size(); i++)
+    {
         CMakefileVariable& v = *m_Macros[i];
         std::cout<<"Macro #"<<(i+1)<<": "<<v.Name().GetString()<<" = "
                  <<v.JoinValues().GetString()<<std::endl;
     }
     std::cout<<"Environment variables: "<<m_EnvVars.size()<<std::endl;
-    for (size_t i = 0; i < m_EnvVars.size(); i++) {
+    for (size_t i = 0; i < m_EnvVars.size(); i++)
+    {
         CMakefileVariable& v = *m_EnvVars[i];
         std::cout<<"Variable #"<<(i+1)<<": "<<v.Name().GetString()<<" = "
                  <<v.JoinValues().GetString()<<std::endl;
     }
     std::cout<<"Rules: "<<m_Rules.size()<<std::endl;
-    for (size_t i = 0; i < m_Rules.size(); i++) {
+    for (size_t i = 0; i < m_Rules.size(); i++)
+    {
         CMakefileRule& r = *m_Rules[i];
         r.Show();
     }
@@ -169,7 +173,8 @@ std::vector<CMakefileVariable *>& CMakefileSection::EnvVars(void)
 
 CMakefileVariable *CMakefileSection::FindMacro(const CString& Name)
 {
-    for (size_t i = 0; i < m_Macros.size(); i++) {
+    for (size_t i = 0; i < m_Macros.size(); i++)
+    {
         CMakefileVariable *v = m_Macros[i];
         if (Name == v->Name()) return v;
     }
@@ -178,7 +183,8 @@ CMakefileVariable *CMakefileSection::FindMacro(const CString& Name)
 
 CMakefileVariable *CMakefileSection::FindEnvVar(const CString& Name)
 {
-    for (size_t i = 0; i < m_EnvVars.size(); i++) {
+    for (size_t i = 0; i < m_EnvVars.size(); i++)
+    {
         CMakefileVariable *v = m_EnvVars[i];
         if (Name == v->Name()) return v;
     }
@@ -187,9 +193,11 @@ CMakefileVariable *CMakefileSection::FindEnvVar(const CString& Name)
 
 CMakefileVariable& CMakefileSection::AddMacro(const CString& Name, const CString& Value)
 {
-    if (!Name.IsEmpty()) { //if (!Value.IsEmpty())
+    if (!Name.IsEmpty())   //if (!Value.IsEmpty())
+    {
         CMakefileVariable *v = FindMacro(Name);
-        if (0==v) {
+        if (0==v)
+        {
             v = new CMakefileVariable;
             m_Macros.push_back(v);
         }
@@ -202,9 +210,11 @@ CMakefileVariable& CMakefileSection::AddMacro(const CString& Name, const CString
 
 CMakefileVariable& CMakefileSection::AddEnvVar(const CString& Name, const CString& Value)
 {
-    if (!Name.IsEmpty()) { //if (!Value.IsEmpty())
+    if (!Name.IsEmpty())   //if (!Value.IsEmpty())
+    {
         CMakefileVariable *v = FindEnvVar(Name);
-        if (0==v) {
+        if (0==v)
+        {
             v = new CMakefileVariable;
             m_EnvVars.push_back(v);
         }
@@ -222,7 +232,8 @@ size_t CMakefileSection::RulesCount(void) const
 
 CMakefileRule& CMakefileSection::GetRule(const size_t Index)
 {
-    if (Index<m_Rules.size()) {
+    if (Index<m_Rules.size())
+    {
         return *m_Rules[Index];
     }
     return m_NullRule;
@@ -231,9 +242,11 @@ CMakefileRule& CMakefileSection::GetRule(const size_t Index)
 CMakefileRule& CMakefileSection::AddRule(const CString& TargetName)
 {
     CMakefileRule *r = 0;
-    for (size_t i = 0; i < m_Rules.size(); i++) {
+    for (size_t i = 0; i < m_Rules.size(); i++)
+    {
         r = m_Rules[i];
-        if (r->Target() == TargetName) {
+        if (r->Target() == TargetName)
+        {
             return *r;
         }
     }
@@ -275,7 +288,8 @@ size_t CMakefile::SectionCount(void) const
 
 CMakefileSection& CMakefile::GetSection(const size_t Section)
 {
-    while (Section >= m_Sections.size()) {
+    while (Section >= m_Sections.size())
+    {
         AddSection();
     }
     return *m_Sections[Section];
@@ -343,41 +357,50 @@ CStringList& CMakefile::Update(void)
     CStringList phony_targets;
 //
     m_Text.Clear();
-    for (size_t i = 0; i < m_Sections.size(); i++) {
+    for (size_t i = 0; i < m_Sections.size(); i++)
+    {
         CMakefileSection& section = *m_Sections[i];
         // add header
-        if (section.Header().GetLength() > 0) {
+        if (section.Header().GetLength() > 0)
+        {
             m_Text.Insert(section.Header()).Insert("");
         }
         // add macro variables
         std::vector<CMakefileVariable *>& macros = section.Macros();
-        for (size_t j = 0; j < macros.size(); j++) {
+        for (size_t j = 0; j < macros.size(); j++)
+        {
             CMakefileVariable& v = *macros[j];
             v.Values().RemoveEmpty();
             m_Text.Insert(v.Name()+" = "+v.JoinValues());
         }
-        if (macros.size() > 0) {
+        if (macros.size() > 0)
+        {
             m_Text.Insert("");
         }
         // add environment variables
         std::vector<CMakefileVariable *>& env_vars = section.EnvVars();
-        for (size_t j = 0; j < env_vars.size(); j++) {
+        for (size_t j = 0; j < env_vars.size(); j++)
+        {
             CMakefileVariable& v = *env_vars[j];
             v.Values().RemoveEmpty();
             m_Text.Insert(v.Name()+" = "+v.JoinValues());
         }
-        if (env_vars.size() > 0) {
+        if (env_vars.size() > 0)
+        {
             m_Text.Insert("");
         }
         // add rules
-        for (size_t j = 0; j < section.RulesCount(); j++) {
+        for (size_t j = 0; j < section.RulesCount(); j++)
+        {
             CMakefileRule& r = section.GetRule(j);
             m_Text.Insert(r.Target()+": "+r.JoinDependencies());
-            for (int k = 0; k < r.Commands().GetCount(); k++) {
+            for (int k = 0; k < r.Commands().GetCount(); k++)
+            {
                 m_Text.Insert("\t"+r.Commands().GetString(k));
             }
             m_Text.Insert("");
-            if (0 == r.Dependencies().GetCount()) {
+            if (0 == r.Dependencies().GetCount())
+            {
                 phony_targets.Insert(r.Target());
             }
         }

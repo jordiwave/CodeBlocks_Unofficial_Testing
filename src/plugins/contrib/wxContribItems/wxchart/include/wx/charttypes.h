@@ -27,8 +27,8 @@
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/string.h>
-    #include <wx/dc.h>
+#include <wx/string.h>
+#include <wx/dc.h>
 #endif
 
 #include "wx/chartdef.h"
@@ -40,12 +40,12 @@
 // Area to be drawn
 typedef struct
 {
-	int x;
-	int xscroll;
-	int y;
-	int yscroll;
-	int w;
-	int h;
+    int x;
+    int xscroll;
+    int y;
+    int yscroll;
+    int w;
+    int h;
 } CHART_RECT, *CHART_HRECT;
 
 // Device Context
@@ -59,17 +59,17 @@ typedef unsigned long ChartColor;
 // Keep track of the size of the charts
 struct ChartSizes
 {
-	ChartSizes();// : nbar(0), nbar3d(0),
-				 //  wbar(DEFAULT_BAR_WIDTH), wbar3d(DEFAULT_BAR3D_WIDTH),
-				 //  gap(DEFAULT_GAP_WIDTH), scroll(DEFAULT_SCROLL_STEP),
-				 //  s_height(DEFAULT_SIZE_HEIGHT) {};
-	int nbar;
-	int nbar3d;
-	int wbar;
-	int wbar3d;
-	int gap;
-	int scroll;
-	int s_height;
+    ChartSizes();// : nbar(0), nbar3d(0),
+    //  wbar(DEFAULT_BAR_WIDTH), wbar3d(DEFAULT_BAR3D_WIDTH),
+    //  gap(DEFAULT_GAP_WIDTH), scroll(DEFAULT_SCROLL_STEP),
+    //  s_height(DEFAULT_SIZE_HEIGHT) {};
+    int nbar;
+    int nbar3d;
+    int wbar;
+    int wbar3d;
+    int gap;
+    int scroll;
+    int s_height;
 };
 #endif
 

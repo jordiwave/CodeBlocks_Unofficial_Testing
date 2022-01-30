@@ -18,25 +18,25 @@ class wxUpdateUIEvent;
  */
 class PluginsConfigurationDlg : public wxScrollingDialog
 {
-    public:
-        // class constructor
-        PluginsConfigurationDlg(wxWindow* parent);
-        // class destructor
-        ~PluginsConfigurationDlg() override;
+public:
+    // class constructor
+    PluginsConfigurationDlg(wxWindow* parent);
+    // class destructor
+    ~PluginsConfigurationDlg() override;
 
-        void EndModal(int retCode) override;
-    private:
-        void FillList();
-        void OnToggle(wxCommandEvent& event);
-        void OnInstall(wxCommandEvent& event);
-        void OnUninstall(wxCommandEvent& event);
-        void OnExport(wxCommandEvent& event);
-        void OnSelect(wxListEvent& event);
-        void OnMouseMotion(wxMouseEvent& event);
-        void OnUpdateUI(wxUpdateUIEvent& event);
-        void OnLinkClicked(wxHtmlLinkEvent& event);
+    void EndModal(int retCode) override;
+private:
+    void FillList();
+    void OnToggle(wxCommandEvent& event);
+    void OnInstall(wxCommandEvent& event);
+    void OnUninstall(wxCommandEvent& event);
+    void OnExport(wxCommandEvent& event);
+    void OnSelect(wxListEvent& event);
+    void OnMouseMotion(wxMouseEvent& event);
+    void OnUpdateUI(wxUpdateUIEvent& event);
+    void OnLinkClicked(wxHtmlLinkEvent& event);
 
-        DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 };
 
 #endif // PLUGINSCONFIGURATIONDLG_H

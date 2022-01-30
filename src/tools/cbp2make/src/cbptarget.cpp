@@ -39,7 +39,8 @@ CBuildTarget::~CBuildTarget(void)
 
 CString CBuildTarget::TargetTypeName(const TargetType Type)
 {
-    switch (Type) {
+    switch (Type)
+    {
     case CBuildTarget::ttExecutable:
         return "executable";
     case CBuildTarget::ttConsoleExecutable:
@@ -64,7 +65,8 @@ CString CBuildTarget::TargetTypeName(void)
 
 CString CBuildTarget::OptionsRelationName(const OptionsRelation Relation)
 {
-    switch (Relation) {
+    switch (Relation)
+    {
     case CBuildTarget::orProject:
         return "project";
     case CBuildTarget::orTarget:
@@ -80,74 +82,99 @@ CString CBuildTarget::OptionsRelationName(const OptionsRelation Relation)
 
 CString CBuildTarget::AutoFilePrefix(const CPlatform::OS_Type OS)
 {
-    switch (OS) {
+    switch (OS)
+    {
     default:
-    case CPlatform::OS_Unix: {
-        switch (m_Type) {
-        case CBuildTarget::ttConsoleExecutable: {
+    case CPlatform::OS_Unix:
+    {
+        switch (m_Type)
+        {
+        case CBuildTarget::ttConsoleExecutable:
+        {
             return "";
         }
-        case CBuildTarget::ttExecutable:        {
+        case CBuildTarget::ttExecutable:
+        {
             return "";
         }
-        case CBuildTarget::ttStaticLibrary:     {
+        case CBuildTarget::ttStaticLibrary:
+        {
             return "lib";
         }
-        case CBuildTarget::ttDynamicLibrary:    {
+        case CBuildTarget::ttDynamicLibrary:
+        {
             return "";
         }
-        case CBuildTarget::ttNative:            {
+        case CBuildTarget::ttNative:
+        {
             return "";
         }
-        case CBuildTarget::ttCommands:          {
+        case CBuildTarget::ttCommands:
+        {
             return "";
         }
             //case CBuildTarget::tt: { break; }
         }
         break;
     }
-    case CPlatform::OS_Windows: {
-        switch (m_Type) {
-        case CBuildTarget::ttConsoleExecutable: {
+    case CPlatform::OS_Windows:
+    {
+        switch (m_Type)
+        {
+        case CBuildTarget::ttConsoleExecutable:
+        {
             return "";
         }
-        case CBuildTarget::ttExecutable:        {
+        case CBuildTarget::ttExecutable:
+        {
             return "";
         }
-        case CBuildTarget::ttStaticLibrary:     {
+        case CBuildTarget::ttStaticLibrary:
+        {
             return "lib";
         }
-        case CBuildTarget::ttDynamicLibrary:    {
+        case CBuildTarget::ttDynamicLibrary:
+        {
             return "";
         }
-        case CBuildTarget::ttNative:            {
+        case CBuildTarget::ttNative:
+        {
             return "";
         }
-        case CBuildTarget::ttCommands:          {
+        case CBuildTarget::ttCommands:
+        {
             return "";
         }
             //case CBuildTarget::tt: { break; }
         }
         break;
     }
-    case CPlatform::OS_Mac: {
-        switch (m_Type) {
-        case CBuildTarget::ttConsoleExecutable: {
+    case CPlatform::OS_Mac:
+    {
+        switch (m_Type)
+        {
+        case CBuildTarget::ttConsoleExecutable:
+        {
             return "";
         }
-        case CBuildTarget::ttExecutable:        {
+        case CBuildTarget::ttExecutable:
+        {
             return "";
         }
-        case CBuildTarget::ttStaticLibrary:     {
+        case CBuildTarget::ttStaticLibrary:
+        {
             return "lib";
         }
-        case CBuildTarget::ttDynamicLibrary:    {
+        case CBuildTarget::ttDynamicLibrary:
+        {
             return "";
         }
-        case CBuildTarget::ttNative:            {
+        case CBuildTarget::ttNative:
+        {
             return "";
         }
-        case CBuildTarget::ttCommands:          {
+        case CBuildTarget::ttCommands:
+        {
             return "";
         }
             //case CBuildTarget::tt: { break; }
@@ -160,26 +187,35 @@ CString CBuildTarget::AutoFilePrefix(const CPlatform::OS_Type OS)
 
 CString CBuildTarget::AutoFileExtension(const CPlatform::OS_Type OS, const CBuildTarget::TargetType Type)
 {
-    switch (OS) {
+    switch (OS)
+    {
     default:
-    case CPlatform::OS_Unix: {
-        switch (Type) {
-        case CBuildTarget::ttConsoleExecutable: {
+    case CPlatform::OS_Unix:
+    {
+        switch (Type)
+        {
+        case CBuildTarget::ttConsoleExecutable:
+        {
             return "";
         }
-        case CBuildTarget::ttExecutable:        {
+        case CBuildTarget::ttExecutable:
+        {
             return "";
         }
-        case CBuildTarget::ttStaticLibrary:     {
+        case CBuildTarget::ttStaticLibrary:
+        {
             return "a";
         }
-        case CBuildTarget::ttDynamicLibrary:    {
+        case CBuildTarget::ttDynamicLibrary:
+        {
             return "so";
         }
-        case CBuildTarget::ttNative:            {
+        case CBuildTarget::ttNative:
+        {
             return "";
         }
-        case CBuildTarget::ttCommands:          {
+        case CBuildTarget::ttCommands:
+        {
             return "";
         }
             //case CBuildTarget::tt: { break; }
@@ -187,48 +223,64 @@ CString CBuildTarget::AutoFileExtension(const CPlatform::OS_Type OS, const CBuil
         break;
     }
     case CPlatform::OS_MSys:
-    case CPlatform::OS_Windows: {
-        switch (Type) {
-        case CBuildTarget::ttConsoleExecutable: {
+    case CPlatform::OS_Windows:
+    {
+        switch (Type)
+        {
+        case CBuildTarget::ttConsoleExecutable:
+        {
             return "exe";
         }
-        case CBuildTarget::ttExecutable:        {
+        case CBuildTarget::ttExecutable:
+        {
             return "exe";
         }
-        case CBuildTarget::ttStaticLibrary:     {
+        case CBuildTarget::ttStaticLibrary:
+        {
             return "a";
         }
-        case CBuildTarget::ttDynamicLibrary:    {
+        case CBuildTarget::ttDynamicLibrary:
+        {
             return "dll";
         }
-        case CBuildTarget::ttNative:            {
+        case CBuildTarget::ttNative:
+        {
             return "sys";
         }
-        case CBuildTarget::ttCommands:          {
+        case CBuildTarget::ttCommands:
+        {
             return "";
         }
             //case CBuildTarget::tt: { break; }
         }
         break;
     }
-    case CPlatform::OS_Mac: {
-        switch (Type) {
-        case CBuildTarget::ttConsoleExecutable: {
+    case CPlatform::OS_Mac:
+    {
+        switch (Type)
+        {
+        case CBuildTarget::ttConsoleExecutable:
+        {
             return "";
         }
-        case CBuildTarget::ttExecutable:        {
+        case CBuildTarget::ttExecutable:
+        {
             return "";
         }
-        case CBuildTarget::ttStaticLibrary:     {
+        case CBuildTarget::ttStaticLibrary:
+        {
             return "a";
         }
-        case CBuildTarget::ttDynamicLibrary:    {
+        case CBuildTarget::ttDynamicLibrary:
+        {
             return "dylib";
         }
-        case CBuildTarget::ttNative:            {
+        case CBuildTarget::ttNative:
+        {
             return "";
         }
-        case CBuildTarget::ttCommands:          {
+        case CBuildTarget::ttCommands:
+        {
             return "";
         }
             //case CBuildTarget::tt: { break; }
@@ -252,7 +304,8 @@ CString CBuildTarget::AutoFileExtension(const int Platform)
 CString CBuildTarget::MakeOptions(const OptionsRelation Relation,
                                   const CString& ProjectOptions, const CString& TargetOptions)
 {
-    switch (Relation) {
+    switch (Relation)
+    {
     case CBuildTarget::orProject:
         return ProjectOptions;
     case CBuildTarget::orTarget:
@@ -268,7 +321,8 @@ CString CBuildTarget::MakeOptions(const OptionsRelation Relation,
 CString CBuildTarget::CFlags(void)
 {
     CString result;
-    for (int i = 0; i < m_CompilerOptions.GetCount(); i++) {
+    for (int i = 0; i < m_CompilerOptions.GetCount(); i++)
+    {
         result += " "+m_CompilerOptions[i];
     }
     return result;
@@ -282,7 +336,8 @@ CString CBuildTarget::CFlags(const CString& ProjectCFlags)
 CString CBuildTarget::RCFlags(void)
 {
     CString result;
-    for (int i = 0; i < m_ResourceCompilerOptions.GetCount(); i++) {
+    for (int i = 0; i < m_ResourceCompilerOptions.GetCount(); i++)
+    {
         result += " "+m_ResourceCompilerOptions[i];
     }
     return result;
@@ -296,7 +351,8 @@ CString CBuildTarget::RCFlags(const CString& ProjectRCFlags)
 CString CBuildTarget::LdFlags(void)
 {
     CString result;
-    for (int i = 0; i < m_LinkerOptions.GetCount(); i++) {
+    for (int i = 0; i < m_LinkerOptions.GetCount(); i++)
+    {
         result += " "+m_LinkerOptions[i];
     }
     return result;
@@ -310,7 +366,8 @@ CString CBuildTarget::LdFlags(const CString& ProjectLdFlags)
 CString CBuildTarget::IncDirs(const CString& IncDirSwitch)
 {
     CString result;
-    for (int i = 0; i < m_CompilerDirectories.GetCount(); i++) {
+    for (int i = 0; i < m_CompilerDirectories.GetCount(); i++)
+    {
         result = JoinStr(result,IncDirSwitch+m_CompilerDirectories[i],' ');
     }
     return result;
@@ -324,7 +381,8 @@ CString CBuildTarget::IncDirs(const CString& ProjectIncDirs, const CString& IncD
 CString CBuildTarget::ResDirs(const CString& IncDirSwitch)
 {
     CString result;
-    for (int i = 0; i < m_ResourceCompilerDirectories.GetCount(); i++) {
+    for (int i = 0; i < m_ResourceCompilerDirectories.GetCount(); i++)
+    {
         result = JoinStr(result,IncDirSwitch+m_ResourceCompilerDirectories[i],' ');
     }
     return result;
@@ -338,7 +396,8 @@ CString CBuildTarget::ResDirs(const CString& ProjectResDirs, const CString& IncD
 CString CBuildTarget::LibDirs(const CString& LibDirSwitch)
 {
     CString result;
-    for (int i = 0; i < m_LinkerDirectories.GetCount(); i++) {
+    for (int i = 0; i < m_LinkerDirectories.GetCount(); i++)
+    {
         result = JoinStr(result,LibDirSwitch+m_LinkerDirectories[i],' ');
     }
     return result;
@@ -352,14 +411,18 @@ CString CBuildTarget::LibDirs(const CString& ProjectLibDirs, const CString& LibD
 CString CBuildTarget::Libs(const CPlatform& Platform, const CString& LinkLibSwitch)
 {
     CString result;
-    for (int i = 0; i < m_LinkerLibraries.GetCount(); i++) {
+    for (int i = 0; i < m_LinkerLibraries.GetCount(); i++)
+    {
         CString lib_name = m_LinkerLibraries[i];
         CString lib_ext = ExtractFileExt(lib_name);
         //if (lib_ext.IsEmpty()) // wrong for files with dots but without .a extension
         //if (lib_ext==AutoFileExtension(OS,CBuildTarget::ttStaticLibrary)) // a plaform may have several valid extensions
-        if (Platform.IsStaticLibraryExtension(lib_ext)) {
+        if (Platform.IsStaticLibraryExtension(lib_ext))
+        {
             result = JoinStr(result,lib_name,' ');
-        } else {
+        }
+        else
+        {
             result = JoinStr(result,LinkLibSwitch+lib_name,' ');
         }
     }
@@ -369,7 +432,8 @@ CString CBuildTarget::Libs(const CPlatform& Platform, const CString& LinkLibSwit
 CString CBuildTarget::ExtDeps(void)
 {
     CString result;
-    for (int i = 0; i < m_ExternalDependencies.GetCount(); i++) {
+    for (int i = 0; i < m_ExternalDependencies.GetCount(); i++)
+    {
         result += " "+m_ExternalDependencies[i];
     }
     return result;
@@ -410,58 +474,75 @@ void CBuildTarget::Read(const TiXmlElement *TargetRoot)
     char *value = 0;
     if ((value = (char *)TargetRoot->Attribute("title"))) m_Title = value;
     TiXmlNode *_option = (TiXmlNode *)TargetRoot->FirstChild("Option");
-    while (0!=_option) {
+    while (0!=_option)
+    {
         TiXmlElement* option = _option->ToElement();
-        if (0!=option) {
+        if (0!=option)
+        {
             char *value = 0;
-            if ((value = (char *)option->Attribute("platforms"))) {
+            if ((value = (char *)option->Attribute("platforms")))
+            {
                 ParseStr(value,';',m_Platforms);
                 m_Platforms.RemoveEmpty();
 
                 if (m_Platforms.FindString("Windows") != INVALID_INDEX
-                    && m_Platforms.FindString("MSys") == INVALID_INDEX) {
+                        && m_Platforms.FindString("MSys") == INVALID_INDEX)
+                {
                     m_Platforms.Insert("MSys");
                 }
 
             }
-            if ((value = (char *)option->Attribute("output"))) {
+            if ((value = (char *)option->Attribute("output")))
+            {
                 m_Output = value;
             }
-            if ((value = (char *)option->Attribute("prefix_auto"))) {
+            if ((value = (char *)option->Attribute("prefix_auto")))
+            {
                 m_AutoPrefix = StringToBoolean(value);
             }
-            if ((value = (char *)option->Attribute("extension_auto"))) {
+            if ((value = (char *)option->Attribute("extension_auto")))
+            {
                 m_AutoExtension = StringToBoolean(value);
             }
-            if ((value = (char *)option->Attribute("working_dir"))) {
+            if ((value = (char *)option->Attribute("working_dir")))
+            {
                 m_WorkingDirectory = value;
             }
-            if ((value = (char *)option->Attribute("object_output"))) {
+            if ((value = (char *)option->Attribute("object_output")))
+            {
                 m_ObjectOutput = value;
             }
-            if ((value = (char *)option->Attribute("external_deps"))) {
+            if ((value = (char *)option->Attribute("external_deps")))
+            {
                 ParseStr(value,';',m_ExternalDependencies);
                 m_ExternalDependencies.RemoveEmpty();
             }
-            if ((value = (char *)option->Attribute("type"))) {
+            if ((value = (char *)option->Attribute("type")))
+            {
                 m_Type = (CBuildTarget::TargetType)StringToInteger(value);
             }
-            if ((value = (char *)option->Attribute("compiler"))) {
+            if ((value = (char *)option->Attribute("compiler")))
+            {
                 m_Compiler = value;
             }
-            if ((value = (char *)option->Attribute("projectCompilerOptionsRelation"))) {
+            if ((value = (char *)option->Attribute("projectCompilerOptionsRelation")))
+            {
                 m_CompilerOptionsRelation = (CBuildTarget::OptionsRelation)StringToInteger(value);
             }
-            if ((value = (char *)option->Attribute("projectLinkerOptionsRelation"))) {
+            if ((value = (char *)option->Attribute("projectLinkerOptionsRelation")))
+            {
                 m_LinkerOptionsRelation = (CBuildTarget::OptionsRelation)StringToInteger(value);
             }
-            if ((value = (char *)option->Attribute("projectIncludeDirsRelation"))) {
+            if ((value = (char *)option->Attribute("projectIncludeDirsRelation")))
+            {
                 m_IncludeDirectoriesRelation = (CBuildTarget::OptionsRelation)StringToInteger(value);
             }
-            if ((value = (char *)option->Attribute("projectResourceIncludeDirsRelation"))) {
+            if ((value = (char *)option->Attribute("projectResourceIncludeDirsRelation")))
+            {
                 m_ResourceIncludeDirectoriesRelation = (CBuildTarget::OptionsRelation)StringToInteger(value);
             }
-            if ((value = (char *)option->Attribute("projectLibDirsRelation"))) {
+            if ((value = (char *)option->Attribute("projectLibDirsRelation")))
+            {
                 m_LibraryDirectoriesRelation = (CBuildTarget::OptionsRelation)StringToInteger(value);
             }
             /*
@@ -474,16 +555,21 @@ void CBuildTarget::Read(const TiXmlElement *TargetRoot)
         _option = (TiXmlNode *)TargetRoot->IterateChildren(_option);
     } // option
     TiXmlNode *_compiler = (TiXmlNode *)TargetRoot->FirstChild("Compiler");
-    if (0!=_compiler) {
+    if (0!=_compiler)
+    {
         TiXmlNode *_option = (TiXmlNode *)_compiler->FirstChild("Add");
-        while (0!=_option) {
+        while (0!=_option)
+        {
             TiXmlElement* option = _option->ToElement();
-            if (0!=option) {
+            if (0!=option)
+            {
                 char *value = 0;
-                if ((value = (char *)option->Attribute("option"))) {
+                if ((value = (char *)option->Attribute("option")))
+                {
                     m_CompilerOptions.Insert(value);
                 }
-                if ((value = (char *)option->Attribute("directory"))) {
+                if ((value = (char *)option->Attribute("directory")))
+                {
                     m_CompilerDirectories.Insert(value);
                 }
             }
@@ -491,13 +577,17 @@ void CBuildTarget::Read(const TiXmlElement *TargetRoot)
         } // option
     } // compiler
     TiXmlNode *_res_compiler = (TiXmlNode *)TargetRoot->FirstChild("ResourceCompiler");
-    if (0!=_res_compiler) {
+    if (0!=_res_compiler)
+    {
         TiXmlNode *_option = (TiXmlNode *)_res_compiler->FirstChild("Add");
-        while (0!=_option) {
+        while (0!=_option)
+        {
             TiXmlElement* option = _option->ToElement();
-            if (0!=option) {
+            if (0!=option)
+            {
                 char *value = 0;
-                if ((value = (char *)option->Attribute("directory"))) {
+                if ((value = (char *)option->Attribute("directory")))
+                {
                     m_ResourceCompilerDirectories.Insert(value);
                 }
             }
@@ -505,20 +595,26 @@ void CBuildTarget::Read(const TiXmlElement *TargetRoot)
         } // option
     } // resource compiler
     TiXmlNode *_linker = (TiXmlNode *)TargetRoot->FirstChild("Linker");
-    if (0!=_linker) {
+    if (0!=_linker)
+    {
         TiXmlNode *_option = (TiXmlNode *)_linker->FirstChild("Add");
-        while (0!=_option) {
+        while (0!=_option)
+        {
             TiXmlElement* option = _option->ToElement();
-            if (0!=option) {
+            if (0!=option)
+            {
                 if (strcmp(option->Value(),"Add")) break;
                 char *value = 0;
-                if ((value = (char *)option->Attribute("option"))) {
+                if ((value = (char *)option->Attribute("option")))
+                {
                     m_LinkerOptions.Insert(value);
                 }
-                if ((value = (char *)option->Attribute("directory"))) {
+                if ((value = (char *)option->Attribute("directory")))
+                {
                     m_LinkerDirectories.Insert(value);
                 }
-                if ((value = (char *)option->Attribute("library"))) {
+                if ((value = (char *)option->Attribute("library")))
+                {
                     m_LinkerLibraries.Insert(value);
                 }
             }
@@ -526,32 +622,41 @@ void CBuildTarget::Read(const TiXmlElement *TargetRoot)
         } // option
     } // linker
     TiXmlNode *_extra_cmd = (TiXmlNode *)TargetRoot->FirstChild("ExtraCommands");
-    if (0!=_extra_cmd) {
+    if (0!=_extra_cmd)
+    {
         TiXmlNode *_option = (TiXmlNode *)_extra_cmd->FirstChild("Add");
-        while (0!=_option) {
+        while (0!=_option)
+        {
             TiXmlElement* option = _option->ToElement();
-            if (0!=option) {
+            if (0!=option)
+            {
                 if (strcmp(option->Value(),"Add")) break;
                 char *value = 0;
-                if ((value = (char *)option->Attribute("before"))) {
+                if ((value = (char *)option->Attribute("before")))
+                {
                     m_BeforeBuildCommands.Insert(value);
                 }
-                if ((value = (char *)option->Attribute("after"))) {
+                if ((value = (char *)option->Attribute("after")))
+                {
                     m_AfterBuildCommands.Insert(value);
                 }
             }
             _option = (TiXmlNode *)_extra_cmd->IterateChildren(_option);
         } // option
         _option = (TiXmlNode *)_extra_cmd->FirstChild("Mode");
-        while (0!=_option) {
+        while (0!=_option)
+        {
             TiXmlElement* option = _option->ToElement();
-            if (0!=option) {
+            if (0!=option)
+            {
                 if (strcmp(option->Value(),"Mode")) break;
                 char *value = 0;
-                if ((value = (char *)option->Attribute("before"))) {
+                if ((value = (char *)option->Attribute("before")))
+                {
                     m_ForceBeforeBuildCommands = (strcmp(value,"always")==0);
                 }
-                if ((value = (char *)option->Attribute("after"))) {
+                if ((value = (char *)option->Attribute("after")))
+                {
                     m_ForceAfterBuildCommands = (strcmp(value,"always")==0);
                 }
             }
@@ -569,7 +674,8 @@ void CBuildTarget::Read(const TiXmlElement *TargetRoot)
 
 CString CBuildTarget::Name(const CString& Prefix, const int Case) const
 {
-    switch (Case) {
+    switch (Case)
+    {
     default:
     case 0:
         return Prefix+m_MFName;
@@ -582,7 +688,8 @@ CString CBuildTarget::Name(const CString& Prefix, const int Case) const
 
 CString CBuildTarget::Name(const CString& Prefix) const
 {
-    switch (m_NameCase) {
+    switch (m_NameCase)
+    {
     default:
     case 0:
         return Prefix+m_MFName;
@@ -596,9 +703,12 @@ CString CBuildTarget::Name(const CString& Prefix) const
 void CBuildTarget::Show(void)
 {
     std::cout<<"Target title: "<<m_Title.GetString()<<std::endl;
-    if (m_Platforms.GetCount()) {
+    if (m_Platforms.GetCount())
+    {
         ShowStringList("Platforms","Platform",m_Platforms);
-    } else {
+    }
+    else
+    {
         std::cout<<"Platforms: all"<<std::endl;
     }
     std::cout<<"Binary output: "<<m_Output.GetCString()<<std::endl;
@@ -656,10 +766,12 @@ void CVirtualTarget::Clear(void)
 void CVirtualTarget::Read(const TiXmlElement *TargetRoot)
 {
     char *value = 0;
-    if ((value = (char *)TargetRoot->Attribute("alias"))) {
+    if ((value = (char *)TargetRoot->Attribute("alias")))
+    {
         m_Alias = value;
     }
-    if ((value = (char *)TargetRoot->Attribute("targets"))) {
+    if ((value = (char *)TargetRoot->Attribute("targets")))
+    {
         ParseStr(value,';',m_Targets);
         m_Targets.RemoveEmpty();
     }
@@ -673,7 +785,8 @@ void CVirtualTarget::Read(const TiXmlElement *TargetRoot)
 
 CString CVirtualTarget::Name(const CString& Prefix) const
 {
-    switch (m_NameCase) {
+    switch (m_NameCase)
+    {
     default:
     case 0:
         return Prefix+m_MFName;
@@ -686,9 +799,10 @@ CString CVirtualTarget::Name(const CString& Prefix) const
 
 CString CVirtualTarget::Name(const CString& Prefix, const int TargetIndex) const
 {
-   (void)Prefix;
+    (void)Prefix;
     CString name = MakefileFriendly(m_Targets.GetString(TargetIndex));
-    switch (m_NameCase) {
+    switch (m_NameCase)
+    {
     default:
     case 0:
         return name;
@@ -702,7 +816,8 @@ CString CVirtualTarget::Name(const CString& Prefix, const int TargetIndex) const
 void CVirtualTarget::Show(void)
 {
     std::cout<<"Target alias: "<<m_Alias.GetString()<<std::endl;
-    if (m_Targets.GetCount()) {
+    if (m_Targets.GetCount())
+    {
         ShowStringList("Targets","Target",m_Targets);
     }
 }

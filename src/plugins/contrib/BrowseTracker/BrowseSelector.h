@@ -34,71 +34,71 @@ class BrowseTracker;
 class BrowseSelector : public wxScrollingDialog
 // ----------------------------------------------------------------------------
 {
-    protected:
-        wxListBox*  m_listBox;
-        long        m_selectedItem;
-        std::map<int, int> m_indexMap;
-        wxPanel*    m_panel;
-        static wxBitmap m_bmp;
+protected:
+    wxListBox*  m_listBox;
+    long        m_selectedItem;
+    std::map<int, int> m_indexMap;
+    wxPanel*    m_panel;
+    static wxBitmap m_bmp;
 
-        void CloseDialog();
+    void CloseDialog();
 
-    public:
-        /**
-         * Parameterized constructor
-         * \param parent dialog parent window
-         */
-        BrowseSelector(wxWindow* parent, BrowseTracker* pBrowseTracker, int menuID);
+public:
+    /**
+     * Parameterized constructor
+     * \param parent dialog parent window
+     */
+    BrowseSelector(wxWindow* parent, BrowseTracker* pBrowseTracker, int menuID);
 
-        /**
-         * Destructor
-         */
-        virtual ~BrowseSelector();
+    /**
+     * Destructor
+     */
+    virtual ~BrowseSelector();
 
-        /**
-         * Create the dialog, usually part of the two steps construction of a
-         * dialog
-         * \param parent dialog parent window
-         */
-        void Create(wxWindow* parent, BrowseTracker* pBrowseTracker, int menuID);
+    /**
+     * Create the dialog, usually part of the two steps construction of a
+     * dialog
+     * \param parent dialog parent window
+     */
+    void Create(wxWindow* parent, BrowseTracker* pBrowseTracker, int menuID);
 
-        /// Event handling
-        void OnKeyUp(wxKeyEvent &event);
-        void OnKeyDown(wxKeyEvent &event);
-        void OnNavigationKey(wxKeyEvent &event);
-        void OnItemSelected(wxCommandEvent &event);
-        void OnPanelPaint(wxPaintEvent &event);
-        void OnPanelEraseBg(wxEraseEvent &event);
-        void OnWindowKillFocus(wxFocusEvent& event);
-        int  PopulateListControl(EditorBase* pEditor);
+    /// Event handling
+    void OnKeyUp(wxKeyEvent &event);
+    void OnKeyDown(wxKeyEvent &event);
+    void OnNavigationKey(wxKeyEvent &event);
+    void OnItemSelected(wxCommandEvent &event);
+    void OnPanelPaint(wxPaintEvent &event);
+    void OnPanelEraseBg(wxEraseEvent &event);
+    void OnWindowKillFocus(wxFocusEvent& event);
+    int  PopulateListControl(EditorBase* pEditor);
 
-    private:
-        /**
-         * Default constructor
-         */
-        BrowseSelector();
-        /**
-         * Brighten a given colour with amount
-         * \param color starting colour
-         * \param percent percent, 0 - no change, 100 - white
-         * \return brighten colour
-         */
-        wxColor LightColour(const wxColour& color, int percent);
+private:
+    /**
+     * Default constructor
+     */
+    BrowseSelector();
+    /**
+     * Brighten a given colour with amount
+     * \param color starting colour
+     * \param percent percent, 0 - no change, 100 - white
+     * \return brighten colour
+     */
+    wxColor LightColour(const wxColour& color, int percent);
 
-        /**
-         * Paint rectangle with gradient colouring
-         * \param dc device context
-         * \param rect rectangle
-         * \param startColor gradient colour 1
-         * \param endColor gradient colour 2
-         * \param vertical use vertical gradient or horizontal
-         */
-        void PaintStraightGradientBox(wxDC& dc, const wxRect& rect, const wxColour& startColor, const wxColour& endColor, bool  vertical = true);
+    /**
+     * Paint rectangle with gradient colouring
+     * \param dc device context
+     * \param rect rectangle
+     * \param startColor gradient colour 1
+     * \param endColor gradient colour 2
+     * \param vertical use vertical gradient or horizontal
+     */
+    void PaintStraightGradientBox(wxDC& dc, const wxRect& rect, const wxColour& startColor, const wxColour& endColor, bool  vertical = true);
 
-        BrowseTracker*  m_pBrowseTracker;
-        int             m_menuID;
-        int             m_KeyDownCode;
-        int             m_KeyDownMods;
+    BrowseTracker*  m_pBrowseTracker;
+    int             m_menuID;
+    int             m_KeyDownCode;
+    int             m_KeyDownMods;
 
 };
 

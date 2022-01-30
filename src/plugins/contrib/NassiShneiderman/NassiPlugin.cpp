@@ -4,8 +4,8 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-    #include <wx/xrc/xmlres.h>
-    #include <cbeditor.h>
+#include <wx/xrc/xmlres.h>
+#include <cbeditor.h>
 #endif
 #include <configurationpanel.h>
 #include <cbstyledtextctrl.h>
@@ -20,41 +20,44 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    const int MaxInsertMenuEntries = 10;
+const int MaxInsertMenuEntries = 10;
 
-    PluginRegistrant<NassiPlugin> reg(_T("NassiShneidermanPlugin"));
-    const int NASSI_ID_NEW_FILE = wxNewId();
-    const int idParseC = wxNewId();
-    const int insertCFromDiagram[MaxInsertMenuEntries] = {
-        static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()),
-        static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId())};
+PluginRegistrant<NassiPlugin> reg(_T("NassiShneidermanPlugin"));
+const int NASSI_ID_NEW_FILE = wxNewId();
+const int idParseC = wxNewId();
+const int insertCFromDiagram[MaxInsertMenuEntries] =
+{
+    static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()),
+    static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId())
+};
 }
 
-namespace {
-    const int NASSI_ID_TOGGLE_SOURCE =  XRCID("NASSI_ID_TOGGLE_SOURCE");
-    const int NASSI_ID_TOGGLE_COMMENT =  XRCID("NASSI_ID_TOGGLE_COMMENT");
+namespace
+{
+const int NASSI_ID_TOGGLE_SOURCE =  XRCID("NASSI_ID_TOGGLE_SOURCE");
+const int NASSI_ID_TOGGLE_COMMENT =  XRCID("NASSI_ID_TOGGLE_COMMENT");
 
-    const int NASSI_ID_ESC = XRCID("NASSI_ID_ESC");
-    const int NASSI_ID_INSTRUCTION = XRCID("NASSI_ID_INSTRUCTION");
-    const int NASSI_ID_IF = XRCID("NASSI_ID_IF");
-    const int NASSI_ID_SWITCH = XRCID("NASSI_ID_SWITCH");
-    const int NASSI_ID_WHILE = XRCID("NASSI_ID_WHILE");
-    const int NASSI_ID_DOWHILE = XRCID("NASSI_ID_DOWHILE");
-    const int NASSI_ID_FOR = XRCID("NASSI_ID_FOR");
-    const int NASSI_ID_BLOCK = XRCID("NASSI_ID_BLOCK");
-    const int NASSI_ID_BREAK = XRCID("NASSI_ID_BREAK");
-    const int NASSI_ID_CONTINUE = XRCID("NASSI_ID_CONTINUE");
-    const int NASSI_ID_RETURN = XRCID("NASSI_ID_RETURN");
+const int NASSI_ID_ESC = XRCID("NASSI_ID_ESC");
+const int NASSI_ID_INSTRUCTION = XRCID("NASSI_ID_INSTRUCTION");
+const int NASSI_ID_IF = XRCID("NASSI_ID_IF");
+const int NASSI_ID_SWITCH = XRCID("NASSI_ID_SWITCH");
+const int NASSI_ID_WHILE = XRCID("NASSI_ID_WHILE");
+const int NASSI_ID_DOWHILE = XRCID("NASSI_ID_DOWHILE");
+const int NASSI_ID_FOR = XRCID("NASSI_ID_FOR");
+const int NASSI_ID_BLOCK = XRCID("NASSI_ID_BLOCK");
+const int NASSI_ID_BREAK = XRCID("NASSI_ID_BREAK");
+const int NASSI_ID_CONTINUE = XRCID("NASSI_ID_CONTINUE");
+const int NASSI_ID_RETURN = XRCID("NASSI_ID_RETURN");
 
-    const int NASSI_ID_EXPORT_SVG = wxNewId();
-    const int NASSI_ID_EXPORT_SOURCE = wxNewId();
-    const int NASSI_ID_EXPORT_VHDL = wxNewId();
-    const int NASSI_ID_EXPORT_PS = wxNewId();
-    const int NASSI_ID_EXPORT_STRUKTEX = wxNewId();
-    const int NASSI_ID_EXPORT_BITMAP = wxNewId();
+const int NASSI_ID_EXPORT_SVG = wxNewId();
+const int NASSI_ID_EXPORT_SOURCE = wxNewId();
+const int NASSI_ID_EXPORT_VHDL = wxNewId();
+const int NASSI_ID_EXPORT_PS = wxNewId();
+const int NASSI_ID_EXPORT_STRUKTEX = wxNewId();
+const int NASSI_ID_EXPORT_BITMAP = wxNewId();
 
-    const int NASSI_ID_GLASS_P = XRCID("NASSI_ID_GLASS_P");
-    const int NASSI_ID_GLASS_N = XRCID("NASSI_ID_GLASS_N");
+const int NASSI_ID_GLASS_P = XRCID("NASSI_ID_GLASS_P");
+const int NASSI_ID_GLASS_N = XRCID("NASSI_ID_GLASS_N");
 }
 // TODO (danselmi#1#): Check if export of svg generates not conformant SVG data???
 
@@ -69,7 +72,7 @@ BEGIN_EVENT_TABLE(NassiPlugin, cbPlugin)
     EVT_UPDATE_UI(NASSI_ID_TOGGLE_COMMENT, NassiPlugin::OnUpdateToggleText)
 
     EVT_MENU(NASSI_ID_TOGGLE_SOURCE, NassiPlugin::OnToggleText)
-    EVT_MENU(NASSI_ID_TOGGLE_COMMENT , NassiPlugin::OnToggleText)
+    EVT_MENU(NASSI_ID_TOGGLE_COMMENT, NassiPlugin::OnToggleText)
 
     EVT_UPDATE_UI(NASSI_ID_ESC, NassiPlugin::OnUpdateTools)
     EVT_UPDATE_UI(NASSI_ID_INSTRUCTION, NassiPlugin::OnUpdateTools)
@@ -230,10 +233,10 @@ void NassiPlugin::BuildMenu(wxMenuBar* menuBar)
     if ( !exportmenu->FindItem(NASSI_ID_EXPORT_BITMAP) )
         exportmenu->Append(NASSI_ID_EXPORT_BITMAP, _T("PNG"), _("export to PNG format"));
 
-    #if wxUSE_POSTSCRIPT
+#if wxUSE_POSTSCRIPT
     if ( !exportmenu->FindItem(NASSI_ID_EXPORT_PS) )
         exportmenu->Append(NASSI_ID_EXPORT_PS, _T("PS"), _("export to PS"));
-    #endif
+#endif
 
 
     wxMenu* filenewmenu = 0;
@@ -386,20 +389,20 @@ void NassiPlugin::ParseC(wxCommandEvent & /*event*/)
 
     switch ( stc->GetLexer() )
     {
-        case wxSCI_LEX_CPP:
+    case wxSCI_LEX_CPP:
+    {
+        const wxString str = stc->GetSelectedText();
+        if ( !panel->ParseC(str) )
         {
-            const wxString str = stc->GetSelectedText();
-            if ( !panel->ParseC(str) )
-            {
-                panel->Close();
-                wxMessageBox(_("unable to parse input"), _("Error!"));
-            }
-            //else stc->SetReadOnly(true);
-
+            panel->Close();
+            wxMessageBox(_("unable to parse input"), _("Error!"));
         }
-            break;
-        default:
-            break;
+        //else stc->SetReadOnly(true);
+
+    }
+    break;
+    default:
+        break;
     }
 }
 
@@ -556,13 +559,13 @@ void NassiPlugin::OnExport(wxCommandEvent &event)
 
     int id = event.GetId();
     if( id == NASSI_ID_EXPORT_SOURCE )            ed->ExportCSource();
-        else if( id == NASSI_ID_EXPORT_SVG )      ed->ExportSVG();
-        else if( id == NASSI_ID_EXPORT_VHDL )     ed->ExportVHDLSource();
-    #if wxUSE_POSTSCRIPT
-        else if( id == NASSI_ID_EXPORT_PS )       ed->ExportPS();
-    #endif
-        else if( id == NASSI_ID_EXPORT_STRUKTEX ) ed->ExportStrukTeX();
-        else /*NASSI_ID_EXPORT_BITMAP*/           ed->ExportBitmap();
+    else if( id == NASSI_ID_EXPORT_SVG )      ed->ExportSVG();
+    else if( id == NASSI_ID_EXPORT_VHDL )     ed->ExportVHDLSource();
+#if wxUSE_POSTSCRIPT
+    else if( id == NASSI_ID_EXPORT_PS )       ed->ExportPS();
+#endif
+    else if( id == NASSI_ID_EXPORT_STRUKTEX ) ed->ExportStrukTeX();
+    else /*NASSI_ID_EXPORT_BITMAP*/           ed->ExportBitmap();
 }
 
 //} export end

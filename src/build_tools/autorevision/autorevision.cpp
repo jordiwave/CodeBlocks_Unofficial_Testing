@@ -14,50 +14,56 @@
 #include <tinyxml.h>
 
 #if defined(__WIN32__) || defined(_WIN32) || defined(__WIN32) || defined(__WIN64) || defined(__WIN64__)
-    #define WIN32_LEAN_AND_MEAN 1
-    #define NOGDI
-    #include <windows.h>
-    #include <direct.h>
-    inline void set_env(const char* k, const char* v) { SetEnvironmentVariable(k, v); }
-    inline bool fileExists(const char* path)
-    {
-        DWORD attr = GetFileAttributes(path);
-        if (attr == INVALID_FILE_ATTRIBUTES && GetLastError()==ERROR_FILE_NOT_FOUND)
-            return false;   //  not a file
-        else
-            return true;
-    }
-    inline std::string getCwd()
-    {
-        char buffer[1000]={0};
-        _getcwd(buffer, 1000);
-        return buffer;
-    }
+#define WIN32_LEAN_AND_MEAN 1
+#define NOGDI
+#include <windows.h>
+#include <direct.h>
+inline void set_env(const char* k, const char* v)
+{
+    SetEnvironmentVariable(k, v);
+}
+inline bool fileExists(const char* path)
+{
+    DWORD attr = GetFileAttributes(path);
+    if (attr == INVALID_FILE_ATTRIBUTES && GetLastError()==ERROR_FILE_NOT_FOUND)
+        return false;   //  not a file
+    else
+        return true;
+}
+inline std::string getCwd()
+{
+    char buffer[1000]= {0};
+    _getcwd(buffer, 1000);
+    return buffer;
+}
 #else
-    #include <stdlib.h>
-    #include <unistd.h>
-    #include <sys/types.h>
-    #include <sys/stat.h>
-    inline void set_env(const char* k, const char* v) { setenv(k, v, 1); }
-    inline bool fileExists(const char* path)
-    {
-        struct stat buffer;
-        return (stat(path, &buffer) == 0);
-    }
-    inline std::string getCwd()
-    {
-        char buffer[1000]={0};
-        getcwd(buffer, 1000);
-        return buffer;
-    }
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+inline void set_env(const char* k, const char* v)
+{
+    setenv(k, v, 1);
+}
+inline bool fileExists(const char* path)
+{
+    struct stat buffer;
+    return (stat(path, &buffer) == 0);
+}
+inline std::string getCwd()
+{
+    char buffer[1000]= {0};
+    getcwd(buffer, 1000);
+    return buffer;
+}
 #endif
 
 #if !defined WIFEXITED
-    #define WIFEXITED(x) 1
+#define WIFEXITED(x) 1
 #endif
 
 #if !defined WEXITSTATUS
-    #define WEXITSTATUS(x) x
+#define WEXITSTATUS(x) x
 #endif
 
 bool GetProcessOutput(std::string& output, const std::string& cmd);

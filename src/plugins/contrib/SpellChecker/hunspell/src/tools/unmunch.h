@@ -54,20 +54,22 @@
 
 /* the affix table entry */
 
-struct affent {
-  char* appnd;
-  char* strip;
-  short appndl;
-  short stripl;
-  char achar;
-  char xpflg;
-  short numconds;
-  char conds[SET_SIZE];
+struct affent
+{
+    char* appnd;
+    char* strip;
+    short appndl;
+    short stripl;
+    char achar;
+    char xpflg;
+    short numconds;
+    char conds[SET_SIZE];
 };
 
-struct affixptr {
-  struct affent* aep;
-  int num;
+struct affixptr
+{
+    struct affent* aep;
+    int num;
 };
 
 /* the prefix and suffix table */
@@ -83,9 +85,10 @@ struct affixptr stable[MAX_SUFFIXES];
 int fullstrip;
 
 int numwords; /* number of words found */
-struct dwords {
-  char* word;
-  int pallow;
+struct dwords
+{
+    char* word;
+    int pallow;
 };
 
 struct dwords wlist[MAX_WORDS]; /* list words found */

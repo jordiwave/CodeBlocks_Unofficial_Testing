@@ -45,39 +45,39 @@ class WXDLLIMPEXP_CHART wxXAxisWindow : public wxWindow
 /* C::B end */
 {
 public:
-	wxXAxisWindow() {};	// for IMPLEMENT_DYNAMIC_CLASS
-	wxXAxisWindow(wxScrolledWindow *parent);
+    wxXAxisWindow() {};	// for IMPLEMENT_DYNAMIC_CLASS
+    wxXAxisWindow(wxScrolledWindow *parent);
 
-	// access CWxXAxis's Get/Set virtual size
-	//---------------------------------------
-	void SetVirtualMax(ChartValue v);
-	void SetVirtualMin(ChartValue v);
-	ChartValue GetVirtualMax() const;
-	ChartValue GetVirtualMin() const;
+    // access CWxXAxis's Get/Set virtual size
+    //---------------------------------------
+    void SetVirtualMax(ChartValue v);
+    void SetVirtualMin(ChartValue v);
+    ChartValue GetVirtualMax() const;
+    ChartValue GetVirtualMin() const;
 
-	// access CWxXAxis's Get/Set zoom
-	//---------------------------------------
-	void SetZoom(double z);
-	double GetZoom();
-	void SetSizes(wxChartSizes *sizes);
-	const wxChartSizes* GetSizes() const;
+    // access CWxXAxis's Get/Set zoom
+    //---------------------------------------
+    void SetZoom(double z);
+    double GetZoom();
+    void SetSizes(wxChartSizes *sizes);
+    const wxChartSizes* GetSizes() const;
 
-	// Draw y-axis window
-	//-------------------
-	void Draw(CHART_HPAINT hp, int x = 0, int y = 0);
+    // Draw y-axis window
+    //-------------------
+    void Draw(CHART_HPAINT hp, int x = 0, int y = 0);
 
 private:
-	wxXAxis m_XAxis;
-	wxScrolledWindow *m_WinParent;
+    wxXAxis m_XAxis;
+    wxScrolledWindow *m_WinParent;
 
-	// events
-	//-------
+    // events
+    //-------
     void OnPaint(wxPaintEvent &event);
     void OnMouse(wxMouseEvent &event);
 
-/* C::B begin */
+    /* C::B begin */
     DECLARE_DYNAMIC_CLASS(wxXAxisWindow)
-/* C::B end */
+    /* C::B end */
     DECLARE_EVENT_TABLE()
 };
 

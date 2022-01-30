@@ -12,8 +12,8 @@
  * License:   GPL
  **************************************************************/
 
- #include "dragscrollevent.h"
- #include "dragscroll.h"
+#include "dragscrollevent.h"
+#include "dragscroll.h"
 
 IMPLEMENT_DYNAMIC_CLASS(DragScrollEvent, wxCommandEvent)
 
@@ -22,7 +22,7 @@ const wxEventType wxEVT_DRAGSCROLL_EVENT = wxNewEventType();
 // ----------------------------------------------------------------------------
 DragScrollEvent::DragScrollEvent(wxEventType commandType, int id)
 // ----------------------------------------------------------------------------
-					 :wxCommandEvent(commandType, id)
+    :wxCommandEvent(commandType, id)
 {
     //ctor
     //-m_propagationLevel = wxEVENT_PROPAGATE_MAX ;
@@ -41,13 +41,13 @@ DragScrollEvent::DragScrollEvent(wxEventType commandType, int id)
 // -- clone -------------------------------------------------------------------
 DragScrollEvent::DragScrollEvent( const DragScrollEvent& Event)
 // ----------------------------------------------------------------------------
-				  :wxCommandEvent(Event)
-				  //-,m_WindowID(0)
-				  //-,m_pWindow(0)
+    :wxCommandEvent(Event)
+     //-,m_WindowID(0)
+     //-,m_pWindow(0)
 {
     // This is invoked by DragScrollEvent::Clone() from AddPendingEvent etc
     // Copy any fields necessary to the cloned event, eg.
-	m_EventTypeLabel = Event.GetEventTypeLabel();
+    m_EventTypeLabel = Event.GetEventTypeLabel();
 }
 // ----------------------------------------------------------------------------
 DragScrollEvent::~DragScrollEvent()
@@ -73,9 +73,9 @@ bool DragScrollEvent::PostDragScrollEvent(const cbPlugin* targetWin)
     }
     else
     {
-        #if defined(LOGGING)
+#if defined(LOGGING)
         LOGIT( _T("PostDragScrollEvent[%s]"), _T("Failed"));
-        #endif
+#endif
         return false;
     }
 
@@ -100,9 +100,9 @@ bool DragScrollEvent::ProcessDragScrollEvent(const cbPlugin* targetWin)
     }
     else
     {
-        #if defined(LOGGING)
+#if defined(LOGGING)
         LOGIT( _T("ProcessDragScrollEvent[%s]"), _T("Failed"));
-        #endif
+#endif
         return false;
     }
 

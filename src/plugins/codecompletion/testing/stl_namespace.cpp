@@ -7,9 +7,9 @@ void nop (void)
 {
 //  std::
 
-  string s;
+    string s;
 //  s.
 
-  vector<int> v;
+    vector<int> v;
 //  v.
 }

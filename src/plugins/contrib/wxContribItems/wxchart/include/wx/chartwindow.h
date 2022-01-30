@@ -24,8 +24,8 @@
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/window.h>
-    #include <wx/scrolwin.h>
+#include <wx/window.h>
+#include <wx/scrolwin.h>
 #endif
 
 #include "wx/chart.h"
@@ -47,23 +47,23 @@ class WXDLLIMPEXP_CHART wxChartWindow : public wxWindow
 {
 public:
 
-	wxChartWindow(wxScrolledWindow *parent = NULL, bool usegrid = true);
+    wxChartWindow(wxScrolledWindow *parent = NULL, bool usegrid = true);
 
-	// allow access of CChart's public methods
-	// Add() - Clear()
-	//-----------------------------------------
-	void Add(wxChartPoints* cp);
-	void Clear();
+    // allow access of CChart's public methods
+    // Add() - Clear()
+    //-----------------------------------------
+    void Add(wxChartPoints* cp);
+    void Clear();
 
-	// allow access of CChart's public methods
-	// Get statistics
-	//---------------
-	ChartValue GetMaxX() const;
-	ChartValue GetMinX() const;
-	ChartValue GetMaxY() const;
-	ChartValue GetMinY() const;
-	int GetNumBarPoints() const;
-	int GetNumBar3DPoints() const;
+    // allow access of CChart's public methods
+    // Get statistics
+    //---------------
+    ChartValue GetMaxX() const;
+    ChartValue GetMinX() const;
+    ChartValue GetMaxY() const;
+    ChartValue GetMinY() const;
+    int GetNumBarPoints() const;
+    int GetNumBar3DPoints() const;
 
     // Get/Set virtual size
     //---------------------
@@ -83,27 +83,27 @@ public:
     void SetSizes(wxChartSizes *sizes);
     wxChartSizes *GetSizes() const;
 
-	// Draw chart points
-	//------------------
-	void Draw(CHART_HPAINT hp, int x = 0, int y = 0);
+    // Draw chart points
+    //------------------
+    void Draw(CHART_HPAINT hp, int x = 0, int y = 0);
 
 private:
-	wxChart m_Chart;
-	wxScrolledWindow *m_WinParent;
+    wxChart m_Chart;
+    wxScrolledWindow *m_WinParent;
     bool m_UseGrid;
 
     // Draw helper function
     //-----------------
     void DrawHLines(CHART_HPAINT hp, CHART_HRECT hr);
 
-	// wxWindows events
-	//-----------------
+    // wxWindows events
+    //-----------------
     void OnPaint(wxPaintEvent &event);
     void OnMouse(wxMouseEvent &event);
 
-/* C::B begin */
+    /* C::B begin */
     DECLARE_DYNAMIC_CLASS(wxChartWindow)
-/* C::B end */
+    /* C::B end */
     DECLARE_EVENT_TABLE()
 };
 
@@ -119,10 +119,10 @@ private:
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 inline void wxChartWindow::Add(
-	wxChartPoints* cp
+    wxChartPoints* cp
 )
 {
-	m_Chart.Add( cp );
+    m_Chart.Add( cp );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -133,7 +133,7 @@ inline void wxChartWindow::Add(
 //----------------------------------------------------------------------E-+++
 inline void wxChartWindow::Clear()
 {
-	m_Chart.Clear();
+    m_Chart.Clear();
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -144,7 +144,7 @@ inline void wxChartWindow::Clear()
 //----------------------------------------------------------------------E-+++
 inline ChartValue wxChartWindow::GetMaxX() const
 {
-	return ( m_Chart.GetMaxX() );
+    return ( m_Chart.GetMaxX() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -155,7 +155,7 @@ inline ChartValue wxChartWindow::GetMaxX() const
 //----------------------------------------------------------------------E-+++
 inline ChartValue wxChartWindow::GetMinX() const
 {
-	return ( m_Chart.GetMinX() );
+    return ( m_Chart.GetMinX() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -166,7 +166,7 @@ inline ChartValue wxChartWindow::GetMinX() const
 //----------------------------------------------------------------------E-+++
 inline ChartValue wxChartWindow::GetMaxY() const
 {
-	return ( m_Chart.GetMaxY() );
+    return ( m_Chart.GetMaxY() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -177,7 +177,7 @@ inline ChartValue wxChartWindow::GetMaxY() const
 //----------------------------------------------------------------------E-+++
 inline ChartValue wxChartWindow::GetMinY() const
 {
-	return ( m_Chart.GetMinY() );
+    return ( m_Chart.GetMinY() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -189,7 +189,7 @@ inline ChartValue wxChartWindow::GetMinY() const
 //----------------------------------------------------------------------E-+++
 inline int wxChartWindow::GetNumBarPoints() const
 {
-	return ( m_Chart.GetNumBarPoints() );
+    return ( m_Chart.GetNumBarPoints() );
 
 }
 
@@ -202,7 +202,7 @@ inline int wxChartWindow::GetNumBarPoints() const
 //----------------------------------------------------------------------E-+++
 inline int wxChartWindow::GetNumBar3DPoints() const
 {
-	return ( m_Chart.GetNumBar3DPoints() );
+    return ( m_Chart.GetNumBar3DPoints() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -212,10 +212,10 @@ inline int wxChartWindow::GetNumBar3DPoints() const
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 inline void wxChartWindow::SetZoom(
-	double z
+    double z
 )
 {
-	m_Chart.SetZoom( z );
+    m_Chart.SetZoom( z );
 }
 
 //+++-S-cf-------------------------------------------------------------------

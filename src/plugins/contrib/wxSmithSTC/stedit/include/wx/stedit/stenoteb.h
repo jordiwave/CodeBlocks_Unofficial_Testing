@@ -31,7 +31,10 @@ class WXDLLIMPEXP_FWD_STEDIT wxSTEditorTreeCtrl;
 class WXDLLIMPEXP_STEDIT wxSTEditorNotebook : public wxNotebook
 {
 public:
-    wxSTEditorNotebook() : wxNotebook() { Init(); }
+    wxSTEditorNotebook() : wxNotebook()
+    {
+        Init();
+    }
     wxSTEditorNotebook( wxWindow *parent, wxWindowID id,
                         const wxPoint& pos = wxDefaultPosition,
                         const wxSize& size = wxDefaultSize,
@@ -54,18 +57,33 @@ public:
     /// Create and set the wxSTEditorOptions, call this after creation.
     virtual void CreateOptions(const wxSTEditorOptions& options);
     /// Get the editor option values.
-    const wxSTEditorOptions& GetOptions() const { return m_options; }
+    const wxSTEditorOptions& GetOptions() const
+    {
+        return m_options;
+    }
     /// Get the editor option values.
-    wxSTEditorOptions& GetOptions() { return m_options; }
+    wxSTEditorOptions& GetOptions()
+    {
+        return m_options;
+    }
     /// Set the options, the options will now be refed copies of the ones you send in.
     /// This can be used to detach the options for a particular editor from
     /// the rest of them.
-    void SetOptions(const wxSTEditorOptions& options) { m_options = options; }
+    void SetOptions(const wxSTEditorOptions& options)
+    {
+        m_options = options;
+    }
 
     /// Get the wxSTEditorTreeCtrl to manage.
-    wxSTEditorTreeCtrl* GetSTEditorTreeCtrl() { return m_editorTreeCtrl; }
+    wxSTEditorTreeCtrl* GetSTEditorTreeCtrl()
+    {
+        return m_editorTreeCtrl;
+    }
     /// Set a wxSTEditorTreeCtrl to manage.
-    void SetSTEditorTreeCtrl(wxSTEditorTreeCtrl* editorTreeCtrl) { m_editorTreeCtrl = editorTreeCtrl; }
+    void SetSTEditorTreeCtrl(wxSTEditorTreeCtrl* editorTreeCtrl)
+    {
+        m_editorTreeCtrl = editorTreeCtrl;
+    }
 
     /// enable/disable sending wxSTEditor events from children editors.
     void SetSendSTEEvents(bool send);
@@ -85,16 +103,22 @@ public:
     /// Insert a blank wxSTEditorSplitter into the notebook.
     /// nPage = -1 means at end or if sorted then alphabetically.
     wxSTEditorSplitter* InsertEditorSplitter(int nPage, wxWindowID win_id,
-                                             const wxString& title,
-                                             bool bSelect = false);
+            const wxString& title,
+            bool bSelect = false);
     /// Insert a splitter of your own creation.
     bool InsertEditorSplitter(int nPage, wxSTEditorSplitter* splitter,
                               bool bSelect = false);
 
     /// Get/Set the maximum number of pages to allow, default is STN_NOTEBOOK_PAGES_MAX_DEFAULT.
     /// Absolute max is STN_NOTEBOOK_PAGES_MAX, menu IDs will confict if greater.
-    size_t GetMaxPageCount() const { return m_stn_max_page_count; }
-    void SetMaxPageCount(size_t count) { m_stn_max_page_count = (int)count; }
+    size_t GetMaxPageCount() const
+    {
+        return m_stn_max_page_count;
+    }
+    void SetMaxPageCount(size_t count)
+    {
+        m_stn_max_page_count = (int)count;
+    }
 
     /// Strip the path off the wxSTEditor::GetFileName() to use as tab name.
     wxString FileNameToTabName(const wxSTEditor* editor) const;

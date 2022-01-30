@@ -23,7 +23,7 @@ private:
 
 public:
     /**Initialize the m_text to an empty string.*/
-    avHeader():m_text(_T("")){}
+    avHeader():m_text(_T("")) {}
 
     /**Optional constructor.
     *Initialize the m_text to a predefined value.
@@ -31,7 +31,7 @@ public:
     */
     avHeader(const wxString& text );
 
-    ~avHeader(){}
+    ~avHeader() {}
 
     /**Sets the value of m_text.
     *@param text The value to store on m_text.

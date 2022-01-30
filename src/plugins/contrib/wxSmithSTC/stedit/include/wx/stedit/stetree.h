@@ -34,7 +34,7 @@ public:
     wxTreeItemId  m_id;         ///< The tree id in the wxTreeCtrl.
     int           m_page_num;   ///< The notebook page number, or -1 for none.
     wxWindow*     m_notePage;   ///< The wxNotebook's wxWindow page
-                                ///<   most likely a wxSTEditorSplitter/wxSTEditor.
+    ///<   most likely a wxSTEditorSplitter/wxSTEditor.
     wxString      m_root;       ///< Root leaf in the wxTreeCtrl.
     wxFileName    m_fileName;   ///< Filename of the page.
     wxArrayString m_treePath;   ///< Path to the tree item, without root item.
@@ -90,7 +90,10 @@ enum STE_TreeCtrlImage_Type
 class WXDLLIMPEXP_STEDIT wxSTEditorTreeCtrl : public wxTreeCtrl
 {
 public:
-    wxSTEditorTreeCtrl() : wxTreeCtrl() { Init(); }
+    wxSTEditorTreeCtrl() : wxTreeCtrl()
+    {
+        Init();
+    }
     wxSTEditorTreeCtrl(wxWindow *parent, wxWindowID id = wxID_ANY,
                        const wxPoint& pos = wxDefaultPosition,
                        const wxSize& size = wxDefaultSize,
@@ -112,7 +115,10 @@ public:
     /// Set the wxSTEditorNotebook to show the pages for.
     void SetSTENotebook(wxSTEditorNotebook* notebook);
     /// Get the wxSTEditorNotebook this syncs with.
-    wxSTEditorNotebook* GetSTEditorNotebook() { return m_steNotebook; }
+    wxSTEditorNotebook* GetSTEditorNotebook()
+    {
+        return m_steNotebook;
+    }
 
     /// How to display the filenames in the tree.
     /// For "c:\software\program\readme.txt", the tree will show the

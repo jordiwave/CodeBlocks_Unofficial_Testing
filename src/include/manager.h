@@ -47,7 +47,7 @@ class wxToolBarAddOnXmlHandler;
 
 class DLLIMPORT Manager
 {
-     Manager();
+    Manager();
     ~Manager();
 
     void OnMenu(wxCommandEvent& event);
@@ -56,7 +56,10 @@ public:
     static void SetAppStartedUp(bool app_started_up);
     static void SetAppShuttingDown(bool app_shutting_down);
     static void SetBatchBuild(bool is_batch);
-    static bool IsBatchBuild() { return m_IsBatch; }
+    static bool IsBatchBuild()
+    {
+        return m_IsBatch;
+    }
     /// Blocks/unblocks Manager::Yield(). Be careful when using it. Actually, do *not* use it ;)
     static void BlockYields(bool block);
     /// Whenever you need to call wxYield(), call Manager::Yield(). It's safer.
@@ -168,9 +171,15 @@ public:
     void RemoveAllEventSinksFor(void* owner);
 
     /// Returns pointer to the search result logger, might be nullptr or hidden.
-    cbSearchResultsLog* GetSearchResultLogger() const { return m_SearchResultLog; }
+    cbSearchResultsLog* GetSearchResultLogger() const
+    {
+        return m_SearchResultLog;
+    }
     /// Sets the pointer to the search result logger, users must not call this method.
-    void SetSearchResultLogger(cbSearchResultsLog *log) { m_SearchResultLog = log; }
+    void SetSearchResultLogger(cbSearchResultsLog *log)
+    {
+        m_SearchResultLog = log;
+    }
 
 private:
     wxFrame*               m_pAppWindow;
@@ -210,12 +219,21 @@ template <class MgrT> class DLLIMPORT Mgr
 
 protected:
 
-    Mgr()          { assert(Mgr<MgrT>::instance == nullptr); }
-    virtual ~Mgr() { Mgr<MgrT>::instance = nullptr; }
+    Mgr()
+    {
+        assert(Mgr<MgrT>::instance == nullptr);
+    }
+    virtual ~Mgr()
+    {
+        Mgr<MgrT>::instance = nullptr;
+    }
 
 public:
 
-    static bool Valid() { return instance; }
+    static bool Valid()
+    {
+        return instance;
+    }
 
     static MgrT* Get()
     {

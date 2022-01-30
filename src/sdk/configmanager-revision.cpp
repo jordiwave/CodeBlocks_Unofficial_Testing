@@ -15,8 +15,8 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "configmanager.h"
-    #include <wx/string.h>
+#include "configmanager.h"
+#include <wx/string.h>
 #endif
 
 #include "autorevision.h"

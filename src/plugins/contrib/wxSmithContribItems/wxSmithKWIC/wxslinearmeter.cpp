@@ -27,27 +27,27 @@
 
 namespace
 {
-    // Loading images from xpm files
+// Loading images from xpm files
 #include "images/linmet16.xpm"
 #include "images/linmet32.xpm"
 
-    // This code provides basic informations about item and register
-    // it inside wxSmith
-    wxsRegisterItem<wxsLinearMeter> Reg(
-        _T("kwxLinearMeter"),                                         // Class name
-        wxsTWidget,                                                            // Item type
-        _T("KWIC License"),                                           // License
-        _T("Andrea V. & Marco Cavallini"),                   // Author
-        _T("m.cavallini@koansoftware.com"),              // Author's email
-        _T("http://www.koansoftware.com/kwic/"),        // Item's homepage
-        _T("KWIC"),                                                             // Category in palette
-        40,                                                                            // Priority in palette
-        _T("LinearMeter"),                                               // Base part of names for new items
-        wxsCPP,                                                                // List of coding languages supported by this item
-        1, 0,                                                                          // Version
-        wxBitmap(linmet32_xpm),                                   // 32x32 bitmap
-        wxBitmap(linmet16_xpm),                                   // 16x16 bitmap
-        true);                                                                        // We do not allow this item inside XRC files
+// This code provides basic informations about item and register
+// it inside wxSmith
+wxsRegisterItem<wxsLinearMeter> Reg(
+    _T("kwxLinearMeter"),                                         // Class name
+    wxsTWidget,                                                            // Item type
+    _T("KWIC License"),                                           // License
+    _T("Andrea V. & Marco Cavallini"),                   // Author
+    _T("m.cavallini@koansoftware.com"),              // Author's email
+    _T("http://www.koansoftware.com/kwic/"),        // Item's homepage
+    _T("KWIC"),                                                             // Category in palette
+    40,                                                                            // Priority in palette
+    _T("LinearMeter"),                                               // Base part of names for new items
+    wxsCPP,                                                                // List of coding languages supported by this item
+    1, 0,                                                                          // Version
+    wxBitmap(linmet32_xpm),                                   // 32x32 bitmap
+    wxBitmap(linmet16_xpm),                                   // 16x16 bitmap
+    true);                                                                        // We do not allow this item inside XRC files
 }
 
 /*! \brief Constructor.
@@ -75,7 +75,8 @@ wxsLinearMeter::wxsLinearMeter(wxsItemResData *Data) :
  */
 wxsLinearMeter::~wxsLinearMeter()
 {
-    for(size_t i = 0; i < m_arrTags.Count(); i++){
+    for(size_t i = 0; i < m_arrTags.Count(); i++)
+    {
         delete m_arrTags[i];
     }
     m_arrTags.Clear();
@@ -90,57 +91,64 @@ void wxsLinearMeter::OnBuildCreatingCode()
 {
     switch(GetLanguage())
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("\"wx/KWIC/LinearMeter.h\""), GetInfo().ClassName);
+        Codef(_T("%C(%W,%I,%P,%S);\n"));
+
+        // Default range is 0-100.
+        if(m_iRangeMin != 0 || m_iRangeMax != 100)
         {
-            AddHeader(_T("\"wx/KWIC/LinearMeter.h\""), GetInfo().ClassName);
-            Codef(_T("%C(%W,%I,%P,%S);\n"));
-
-            // Default range is 0-100.
-            if(m_iRangeMin != 0 || m_iRangeMax != 100){
-                Codef(_T("%ASetRangeVal(%d, %d);\n"), static_cast<int>(m_iRangeMin), static_cast<int>(m_iRangeMax));
-            }
-            if(!m_bHorizontal){
-                Codef(_T("%ASetOrizDirection(false);\n"));
-            }
-            if(!m_bShowVal){
-                Codef(_T("%AShowCurrent(false);\n"));
-            }
-            if(!m_bShowLimits){
-                Codef(_T("%AShowLimits(false);\n"));
-            }
-            wxString ss = m_cdActiveBarColour.BuildCode(GetCoderContext());
-            if(!ss.IsEmpty()) Codef(_T("%ASetActiveBarColour(%s);\n"), ss.wx_str());
-            ss = m_cdPassiveBarColour.BuildCode(GetCoderContext());
-            if(!ss.IsEmpty()) Codef(_T("%ASetPassiveBarColour(%s);\n"), ss.wx_str());
-            ss = m_cdBorderColour.BuildCode(GetCoderContext());
-            if(!ss.IsEmpty()) Codef(_T("%ASetBorderColour(%s);\n"), ss.wx_str());
-            ss = m_cdLimitTextColour.BuildCode(GetCoderContext());
-            if(!ss.IsEmpty()) Codef(_T("%ASetTxtLimitColour(%s);\n"), ss.wx_str());
-            ss = m_cdValueTextColour.BuildCode(GetCoderContext());
-            if(!ss.IsEmpty()) Codef(_T("%ASetTxtValueColour(%s);\n"), ss.wx_str());
-            ss = m_cdTagColour.BuildCode(GetCoderContext());
-            if(!ss.IsEmpty()) Codef(_T("%ASetTagsColour(%s);\n"), ss.wx_str());
-            for(size_t i = 0; i < m_arrTags.Count(); i++){
-                TagDesc *Desc = m_arrTags[i];
-                Codef(_T("\t%AAddTag(%d);\n"), Desc->val);
-            }
-            ss = GetCoderContext()->GetUniqueName(_T("LinearMeterFont"));
-            wxString sFnt = m_fnt.BuildFontCode(ss, GetCoderContext());
-            if(sFnt.Len() > 0){
-                Codef(_T("%s"), sFnt.wx_str());
-                Codef(_T("%ASetTxtFont(%s);\n"), ss.wx_str());
-            }
-            // Value needs to be set after other params for correct display.
-            if(m_iValue){
-                Codef(_T("%ASetValue(%d);\n"), static_cast<int>(m_iValue));
-            }
-
-            BuildSetupWindowCode();
-            break;
+            Codef(_T("%ASetRangeVal(%d, %d);\n"), static_cast<int>(m_iRangeMin), static_cast<int>(m_iRangeMax));
         }
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsLinearMeter::OnBuildCreatingCode"), GetLanguage());
+        if(!m_bHorizontal)
+        {
+            Codef(_T("%ASetOrizDirection(false);\n"));
+        }
+        if(!m_bShowVal)
+        {
+            Codef(_T("%AShowCurrent(false);\n"));
+        }
+        if(!m_bShowLimits)
+        {
+            Codef(_T("%AShowLimits(false);\n"));
+        }
+        wxString ss = m_cdActiveBarColour.BuildCode(GetCoderContext());
+        if(!ss.IsEmpty()) Codef(_T("%ASetActiveBarColour(%s);\n"), ss.wx_str());
+        ss = m_cdPassiveBarColour.BuildCode(GetCoderContext());
+        if(!ss.IsEmpty()) Codef(_T("%ASetPassiveBarColour(%s);\n"), ss.wx_str());
+        ss = m_cdBorderColour.BuildCode(GetCoderContext());
+        if(!ss.IsEmpty()) Codef(_T("%ASetBorderColour(%s);\n"), ss.wx_str());
+        ss = m_cdLimitTextColour.BuildCode(GetCoderContext());
+        if(!ss.IsEmpty()) Codef(_T("%ASetTxtLimitColour(%s);\n"), ss.wx_str());
+        ss = m_cdValueTextColour.BuildCode(GetCoderContext());
+        if(!ss.IsEmpty()) Codef(_T("%ASetTxtValueColour(%s);\n"), ss.wx_str());
+        ss = m_cdTagColour.BuildCode(GetCoderContext());
+        if(!ss.IsEmpty()) Codef(_T("%ASetTagsColour(%s);\n"), ss.wx_str());
+        for(size_t i = 0; i < m_arrTags.Count(); i++)
+        {
+            TagDesc *Desc = m_arrTags[i];
+            Codef(_T("\t%AAddTag(%d);\n"), Desc->val);
+        }
+        ss = GetCoderContext()->GetUniqueName(_T("LinearMeterFont"));
+        wxString sFnt = m_fnt.BuildFontCode(ss, GetCoderContext());
+        if(sFnt.Len() > 0)
+        {
+            Codef(_T("%s"), sFnt.wx_str());
+            Codef(_T("%ASetTxtFont(%s);\n"), ss.wx_str());
+        }
+        // Value needs to be set after other params for correct display.
+        if(m_iValue)
+        {
+            Codef(_T("%ASetValue(%d);\n"), static_cast<int>(m_iValue));
+        }
+
+        BuildSetupWindowCode();
+        break;
+    }
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsLinearMeter::OnBuildCreatingCode"), GetLanguage());
     }
 }
 
@@ -156,52 +164,65 @@ wxObject *wxsLinearMeter::OnBuildPreview(wxWindow *parent, long flags)
     kwxLinearMeter *preview = new kwxLinearMeter(parent, GetId(), Pos(parent), Size(parent));
 
     // Default range is 0-100.
-    if(m_iRangeMin != 0 || m_iRangeMax != 100){
+    if(m_iRangeMin != 0 || m_iRangeMax != 100)
+    {
         preview->SetRangeVal(m_iRangeMin, m_iRangeMax);
     }
-    if(!m_bHorizontal){
+    if(!m_bHorizontal)
+    {
         preview->SetOrizDirection(false);
     }
-    if(!m_bShowVal){
+    if(!m_bShowVal)
+    {
         preview->ShowCurrent(false);
     }
-    if(!m_bShowLimits){
+    if(!m_bShowLimits)
+    {
         preview->ShowLimits(false);
     }
     wxColour clr = m_cdActiveBarColour.GetColour();
-    if(clr.IsOk()){
+    if(clr.IsOk())
+    {
         preview->SetActiveBarColour(clr);
     }
     clr = m_cdPassiveBarColour.GetColour();
-    if(clr.IsOk()){
+    if(clr.IsOk())
+    {
         preview->SetPassiveBarColour(clr);
     }
     clr = m_cdBorderColour.GetColour();
-    if(clr.IsOk()){
+    if(clr.IsOk())
+    {
         preview->SetBorderColour(clr);
     }
     clr = m_cdLimitTextColour.GetColour();
-    if(clr.IsOk()){
+    if(clr.IsOk())
+    {
         preview->SetTxtLimitColour(clr);
     }
     clr = m_cdValueTextColour.GetColour();
-    if(clr.IsOk()){
+    if(clr.IsOk())
+    {
         preview->SetTxtValueColour(clr);
     }
     clr = m_cdTagColour.GetColour();
-    if(clr.IsOk()){
+    if(clr.IsOk())
+    {
         preview->SetTagsColour(clr);
     }
-    for(size_t i = 0; i < m_arrTags.Count(); i++){
+    for(size_t i = 0; i < m_arrTags.Count(); i++)
+    {
         TagDesc *Desc = m_arrTags[i];
         preview->AddTag(Desc->val);
     }
     wxFont fnt = m_fnt.BuildFont();
-    if(fnt.IsOk()){
+    if(fnt.IsOk())
+    {
         preview->SetTxtFont(fnt);
     }
     // Value needs to be set after other params for correct display.
-    if(m_iValue){
+    if(m_iValue)
+    {
         preview->SetValue(m_iValue);
     }
 
@@ -243,7 +264,8 @@ void wxsLinearMeter::OnAddExtraProperties(wxsPropertyGridManager *Grid)
 {
     Grid->SelectPage(0);
     m_TagCountId = Grid->GetGrid()->Insert(_("Bar Colour"), new wxIntProperty(_("Number Of Tags"), wxPG_LABEL, (int)m_arrTags.Count()));
-    for(int i = 0; i < (int)m_arrTags.Count(); i++){
+    for(int i = 0; i < (int)m_arrTags.Count(); i++)
+    {
         InsertPropertyForTag(Grid, i);
     }
     wxsWidget::OnAddExtraProperties(Grid);
@@ -259,16 +281,19 @@ void wxsLinearMeter::OnAddExtraProperties(wxsPropertyGridManager *Grid)
 void wxsLinearMeter::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId id)
 {
     Grid->SelectPage(0);
-    if(id == m_TagCountId){
+    if(id == m_TagCountId)
+    {
         int OldValue = (int)m_arrTags.Count();
         int NewValue = Grid->GetPropertyValueAsInt(id);
 
-        if(NewValue < 0){
+        if(NewValue < 0)
+        {
             NewValue = 0;
             Grid->SetPropertyValue(id, NewValue);
         }
 
-        if(NewValue > OldValue){
+        if(NewValue > OldValue)
+        {
             // We have to generate new entries
             for(int i = OldValue; i < NewValue; i++)
             {
@@ -276,9 +301,11 @@ void wxsLinearMeter::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId
                 InsertPropertyForTag(Grid, i);
             }
         }
-        else if(NewValue < OldValue){
+        else if(NewValue < OldValue)
+        {
             // We have to remove some entries
-            for(int i = NewValue;i < OldValue;i++){
+            for(int i = NewValue; i < OldValue; i++)
+            {
                 Grid->DeleteProperty(m_arrTags[i]->id);
                 delete m_arrTags[i];
             }
@@ -290,7 +317,8 @@ void wxsLinearMeter::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId
         return;
     }
 
-    for(int i = 0;i < (int)m_arrTags.Count();i++){
+    for(int i = 0; i < (int)m_arrTags.Count(); i++)
+    {
         if(HandleChangeInTag(Grid, id, i)) return;
     }
     wxsWidget::OnExtraPropertyChanged(Grid, id);
@@ -306,7 +334,8 @@ void wxsLinearMeter::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId
  */
 bool wxsLinearMeter::OnXmlRead(TiXmlElement *Element, bool IsXRC, bool IsExtra)
 {
-    for(size_t i = 0;i < m_arrTags.Count();i++){
+    for(size_t i = 0; i < m_arrTags.Count(); i++)
+    {
         delete m_arrTags[i];
     }
     m_arrTags.Clear();
@@ -327,10 +356,12 @@ bool wxsLinearMeter::OnXmlRead(TiXmlElement *Element, bool IsXRC, bool IsExtra)
 //        }
 //    }
     int i = 1;
-    while(1){
+    while(1)
+    {
         wxString s = wxString::Format(wxT("tag_%d_value"), i);
         TiXmlElement *TagElem = Element->FirstChildElement(s.mb_str());
-        if(!TagElem){
+        if(!TagElem)
+        {
             break;
         }
 
@@ -366,7 +397,8 @@ bool wxsLinearMeter::OnXmlWrite(TiXmlElement *Element, bool IsXRC, bool IsExtra)
 //        msg->LinkEndChild(new TiXmlText(wxString::Format(wxT("%d"), Desc->val).mb_str()));
 //        tags->LinkEndChild(msg);
 //    }
-    for(size_t i = 0;i < m_arrTags.Count();i++){
+    for(size_t i = 0; i < m_arrTags.Count(); i++)
+    {
         TagDesc *Desc = m_arrTags[i];
         wxString s = wxString::Format(wxT("tag_%lu_value"), static_cast<unsigned long>(i + 1));
         TiXmlElement *msg = new TiXmlElement(s.mb_str());
@@ -405,12 +437,14 @@ bool wxsLinearMeter::HandleChangeInTag(wxsPropertyGridManager *Grid, wxPGId id, 
     TagDesc *Desc = m_arrTags[Position];
     bool Changed = false;
 
-    if(Desc->id == id){
+    if(Desc->id == id)
+    {
         Desc->val = Grid->GetPropertyValueAsInt(id);
         Changed = true;
     }
 
-    if(Changed){
+    if(Changed)
+    {
         NotifyPropertyChange(true);
         return true;
     }

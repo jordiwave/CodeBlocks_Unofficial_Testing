@@ -19,44 +19,44 @@
 
 class KodersDialog: public wxScrollingDialog
 {
-	public:
+public:
 
-		KodersDialog(wxWindow* parent,wxWindowID id = -1);
-		virtual ~KodersDialog();
+    KodersDialog(wxWindow* parent,wxWindowID id = -1);
+    virtual ~KodersDialog();
 
-		void     SetSearch(const wxString &search);
-		wxString GetSearch() const;
-		wxString GetLanguage() const;
+    void     SetSearch(const wxString &search);
+    wxString GetSearch() const;
+    wxString GetLanguage() const;
 
-		//(*Identifiers(KodersDialog)
-		static const long ID_LBL_INTRO;
-		static const long ID_TXT_SEARCH;
-		static const long ID_BTN_SEARCH;
-		static const long ID_LBL_FILTER;
-		static const long ID_CHO_LANGUAGES;
-		//*)
+    //(*Identifiers(KodersDialog)
+    static const long ID_LBL_INTRO;
+    static const long ID_TXT_SEARCH;
+    static const long ID_BTN_SEARCH;
+    static const long ID_LBL_FILTER;
+    static const long ID_CHO_LANGUAGES;
+    //*)
 
-	protected:
+protected:
 
-		//(*Handlers(KodersDialog)
-		void OnBtnSearchClick(wxCommandEvent& event);
-		//*)
+    //(*Handlers(KodersDialog)
+    void OnBtnSearchClick(wxCommandEvent& event);
+    //*)
 
-		//(*Declarations(KodersDialog)
-		wxBoxSizer* bszFilter;
-		wxBoxSizer* bszMain;
-		wxChoice* choLanguages;
-		wxButton* btnSearch;
-		wxBoxSizer* bszIntro;
-		wxTextCtrl* txtSearch;
-		wxBoxSizer* bszSearch;
-		wxStaticText* lblFilter;
-		wxStaticText* lblIntro;
-		//*)
+    //(*Declarations(KodersDialog)
+    wxBoxSizer* bszFilter;
+    wxBoxSizer* bszMain;
+    wxChoice* choLanguages;
+    wxButton* btnSearch;
+    wxBoxSizer* bszIntro;
+    wxTextCtrl* txtSearch;
+    wxBoxSizer* bszSearch;
+    wxStaticText* lblFilter;
+    wxStaticText* lblIntro;
+    //*)
 
-	private:
+private:
 
-		DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // KODERSDIALOG_H

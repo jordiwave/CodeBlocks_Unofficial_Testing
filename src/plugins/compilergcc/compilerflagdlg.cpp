@@ -1,10 +1,10 @@
 #include <sdk.h>
 #include <prep.h>
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/combobox.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/textctrl.h>
+#include <wx/button.h>
+#include <wx/combobox.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/textctrl.h>
 #endif
 #include <wx/tglbtn.h>
 

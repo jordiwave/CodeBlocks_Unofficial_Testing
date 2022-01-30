@@ -6,7 +6,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<wxSmithAui> reg(_T("wxSmithAui"));
+PluginRegistrant<wxSmithAui> reg(_T("wxSmithAui"));
 }
 
 

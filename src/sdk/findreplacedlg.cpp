@@ -14,24 +14,24 @@
 #include <algorithm>
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/checkbox.h>
-    #include <wx/choice.h>
-    #include <wx/combobox.h>
-    #include <wx/intl.h>
-    #include <wx/notebook.h>
-    #include <wx/radiobox.h>
-    #include <wx/regex.h>
-    #include <wx/sizer.h>
-    #include <wx/stattext.h>
-    #include <wx/textctrl.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/choice.h>
+#include <wx/combobox.h>
+#include <wx/intl.h>
+#include <wx/notebook.h>
+#include <wx/radiobox.h>
+#include <wx/regex.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "cbproject.h"
-    #include "configmanager.h"
-    #include "editormanager.h"
-    #include "globals.h"
-    #include "projectmanager.h"
+#include "cbproject.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "globals.h"
+#include "projectmanager.h"
 #endif
 
 #include "incremental_select_helper.h"
@@ -70,10 +70,10 @@ BEGIN_EVENT_TABLE(FindReplaceDlg, wxScrollingDialog)
 END_EVENT_TABLE()
 
 FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelection,
-                       bool findMode, bool findReplaceInFilesOnly, bool findReplaceInFilesActive)
+                               bool findMode, bool findReplaceInFilesOnly, bool findReplaceInFilesActive)
     : FindReplaceBase(parent, initial, hasSelection),
-    m_findReplaceInFilesActive(findReplaceInFilesActive),
-    m_findMode(findMode)
+      m_findReplaceInFilesActive(findReplaceInFilesActive),
+      m_findMode(findMode)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgFindReplace"),_T("wxScrollingDialog"));
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
@@ -160,7 +160,7 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
 
     // load search path options
     XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(cfg->Read(CONF_GROUP _T("/search_path"),
-                                                                    (active_project ? active_project->GetBasePath() : wxT(""))));
+            (active_project ? active_project->GetBasePath() : wxT(""))));
     wxComboBox* cmbSearchMask = XRCCTRL(*this, "cmbSearchMask", wxComboBox);
     if (cfg->Exists(CONF_GROUP _T("/search_mask")))
     {
@@ -180,7 +180,7 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
 
     wxChoice *chProject = XRCCTRL(*this, "chProject", wxChoice);
     wxChoice *chTarget = XRCCTRL(*this, "chTarget", wxChoice);
-    for(unsigned int i=0;i<pa->size();++i)
+    for(unsigned int i=0; i<pa->size(); ++i)
     {
         chProject->AppendString((*pa)[i]->GetTitle());
         if ((*pa)[i] == active_project)
@@ -195,7 +195,7 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
             if (targetCount < maxTargetCount)
             {
                 wxArrayString targetNames;
-                for(int j=0;j<targetCount && j<maxTargetCount;++j)
+                for(int j=0; j<targetCount && j<maxTargetCount; ++j)
                     targetNames.push_back(active_project->GetBuildTarget(j)->GetTitle());
                 chTarget->Append(targetNames);
                 const int targIdx = chTarget->FindString(active_project->GetActiveBuildTarget(), true);
@@ -248,21 +248,21 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
 
     switch (rbScope->GetSelection())
     {
-        case 1:
-            XRCCTRL(*this, "pnSearchPath",    wxPanel)->Hide();
-            XRCCTRL(*this, "pnSearchPath",    wxPanel)->Disable();
-            XRCCTRL(*this, "pnSearchProject", wxPanel)->Show();
-            break;
-        case 3:
-            XRCCTRL(*this, "pnSearchPath",    wxPanel)->Show();
-            XRCCTRL(*this, "pnSearchPath",    wxPanel)->Enable();
-            XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
-            break;
-        default:
-            XRCCTRL(*this, "pnSearchPath",    wxPanel)->Show();
-            XRCCTRL(*this, "pnSearchPath",    wxPanel)->Disable();
-            XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
-            break;
+    case 1:
+        XRCCTRL(*this, "pnSearchPath",    wxPanel)->Hide();
+        XRCCTRL(*this, "pnSearchPath",    wxPanel)->Disable();
+        XRCCTRL(*this, "pnSearchProject", wxPanel)->Show();
+        break;
+    case 3:
+        XRCCTRL(*this, "pnSearchPath",    wxPanel)->Show();
+        XRCCTRL(*this, "pnSearchPath",    wxPanel)->Enable();
+        XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
+        break;
+    default:
+        XRCCTRL(*this, "pnSearchPath",    wxPanel)->Show();
+        XRCCTRL(*this, "pnSearchPath",    wxPanel)->Disable();
+        XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
+        break;
     }
     (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(1))->Layout();
 
@@ -578,21 +578,21 @@ void FindReplaceDlg::OnScopeChange(cb_unused wxCommandEvent& event)
     wxRadioBox* rbScope = XRCCTRL(*this, "rbScope2", wxRadioBox);
     switch (rbScope->GetSelection())
     {
-        case 1:
-            XRCCTRL(*this, "pnSearchPath", wxPanel)->Hide();
-            XRCCTRL(*this, "pnSearchPath", wxPanel)->Disable();
-            XRCCTRL(*this, "pnSearchProject", wxPanel)->Show();
-            break;
-        case 3:
-            XRCCTRL(*this, "pnSearchPath", wxPanel)->Show();
-            XRCCTRL(*this, "pnSearchPath", wxPanel)->Enable();
-            XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
-            break;
-        default:
-            XRCCTRL(*this, "pnSearchPath", wxPanel)->Show();
-            XRCCTRL(*this, "pnSearchPath", wxPanel)->Disable();
-            XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
-            break;
+    case 1:
+        XRCCTRL(*this, "pnSearchPath", wxPanel)->Hide();
+        XRCCTRL(*this, "pnSearchPath", wxPanel)->Disable();
+        XRCCTRL(*this, "pnSearchProject", wxPanel)->Show();
+        break;
+    case 3:
+        XRCCTRL(*this, "pnSearchPath", wxPanel)->Show();
+        XRCCTRL(*this, "pnSearchPath", wxPanel)->Enable();
+        XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
+        break;
+    default:
+        XRCCTRL(*this, "pnSearchPath", wxPanel)->Show();
+        XRCCTRL(*this, "pnSearchPath", wxPanel)->Disable();
+        XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
+        break;
     }
     if (m_findPage==nullptr)
         (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(1))->Layout();
@@ -621,7 +621,7 @@ void FindReplaceDlg::OnSearchProject(cb_unused wxCommandEvent& event)
     const bool targAll = (chTarget->GetSelection() == 0);
     chTarget->Clear();
     chTarget->AppendString(_("All project files"));
-    for(int j=0;j<active_project->GetBuildTargetsCount();++j)
+    for(int j=0; j<active_project->GetBuildTargetsCount(); ++j)
         chTarget->AppendString(active_project->GetBuildTarget(j)->GetTitle());
     const int targIdx = chTarget->FindString(active_project->GetActiveBuildTarget(), true);
     chTarget->SetSelection(targAll || targIdx < 0 ? 0 : targIdx);
@@ -669,13 +669,13 @@ void FindReplaceDlg::OnDeferredFocus(cb_unused wxCommandEvent& event)
     if ( IsMultiLine() )
     {
         wxTextCtrl* tc = ( IsFindInFiles() ? XRCCTRL(*this, "txtMultiLineFind2", wxTextCtrl)
-                                           : XRCCTRL(*this, "txtMultiLineFind1", wxTextCtrl) );
+                           : XRCCTRL(*this, "txtMultiLineFind1", wxTextCtrl) );
         if (tc) tc->SetFocus();
     }
     else
     {
         wxComboBox* cb =  ( IsFindInFiles() ? XRCCTRL(*this, "cmbFind2", wxComboBox)
-                                            : XRCCTRL(*this, "cmbFind1", wxComboBox) );
+                            : XRCCTRL(*this, "cmbFind1", wxComboBox) );
         if (cb) cb->SetFocus();
     }
 }
@@ -691,13 +691,13 @@ void FindReplaceDlg::OnActivate(wxActivateEvent& event)
     if ( IsMultiLine() )
     {
         wxTextCtrl* tcp = ( IsFindInFiles() ? XRCCTRL(*this, "txtMultiLineFind2", wxTextCtrl)
-                                            : XRCCTRL(*this, "txtMultiLineFind1", wxTextCtrl) );
+                            : XRCCTRL(*this, "txtMultiLineFind1", wxTextCtrl) );
         if (tcp) tcp->SetFocus();
     }
     else
     {
         wxComboBox* cbp =  ( IsFindInFiles() ? XRCCTRL(*this, "cmbFind2", wxComboBox)
-                                             : XRCCTRL(*this, "cmbFind1", wxComboBox) );
+                             : XRCCTRL(*this, "cmbFind1", wxComboBox) );
         if (cbp) cbp->SetFocus();
     }
     event.Skip();

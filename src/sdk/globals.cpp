@@ -10,27 +10,27 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/choicdlg.h>
-    #include <wx/dcmemory.h>
-    #include <wx/file.h>
-    #include <wx/filename.h>
-    #include <wx/filesys.h>
-    #include <wx/image.h>
-    #include <wx/imaglist.h>
-    #include <wx/listctrl.h>
-    #include <wx/menu.h>
-    #include <wx/settings.h>
-    #include <wx/textdlg.h>
+#include <wx/choicdlg.h>
+#include <wx/dcmemory.h>
+#include <wx/file.h>
+#include <wx/filename.h>
+#include <wx/filesys.h>
+#include <wx/image.h>
+#include <wx/imaglist.h>
+#include <wx/listctrl.h>
+#include <wx/menu.h>
+#include <wx/settings.h>
+#include <wx/textdlg.h>
 
-    #include "wx/wxscintilla.h"
+#include "wx/wxscintilla.h"
 
-    #include "cbexception.h"
-    #include "configmanager.h" // ReadBool
-    #include "filemanager.h"
-    #include "globals.h"
-    #include "logmanager.h"
-    #include "manager.h"
-    #include "projectmanager.h"
+#include "cbexception.h"
+#include "configmanager.h" // ReadBool
+#include "filemanager.h"
+#include "globals.h"
+#include "logmanager.h"
+#include "manager.h"
+#include "projectmanager.h"
 #endif
 
 #include <tinyxml.h>
@@ -50,8 +50,8 @@
 #include "filegroupsandmasks.h"
 
 #ifndef __WXMSW__
-    #include <unistd.h> // readlink
-    #include <sys/stat.h> // lstat
+#include <unistd.h> // readlink
+#include <sys/stat.h> // lstat
 #endif
 
 const wxString DEFAULT_WORKSPACE     = _T("default.workspace");
@@ -204,13 +204,13 @@ wxArrayString MakeUniqueArray(const wxArrayString& array, bool caseSens)
     {
         if (caseSens)
         {
-          if (out.Index(array[i]) == wxNOT_FOUND)
-              out.Add(array[i]);
+            if (out.Index(array[i]) == wxNOT_FOUND)
+                out.Add(array[i]);
         }
         else
         {
-          if (out.Index(array[i].Lower()) == wxNOT_FOUND)
-              out.Add(array[i].Lower()); // append only lower-case for the moment
+            if (out.Index(array[i].Lower()) == wxNOT_FOUND)
+                out.Add(array[i].Lower()); // append only lower-case for the moment
         }
     }
     return out;
@@ -289,24 +289,24 @@ FileType FileTypeOf(const wxString& filename)
     wxString ext = filename.AfterLast(_T('.')).Lower();
 
     if (ext.IsSameAs(FileFilters::ASM_EXT) ||
-        ext.IsSameAs(FileFilters::C_EXT) ||
-        ext.IsSameAs(FileFilters::CC_EXT) ||
-        ext.IsSameAs(FileFilters::CPP_EXT) ||
-        ext.IsSameAs(FileFilters::CXX_EXT) ||
-        ext.IsSameAs(FileFilters::CPLPL_EXT) ||
-        ext.IsSameAs(FileFilters::S_EXT) ||
-        ext.IsSameAs(FileFilters::SS_EXT) ||
-        ext.IsSameAs(FileFilters::S62_EXT) ||
-        ext.IsSameAs(FileFilters::D_EXT) ||
-        ext.IsSameAs(FileFilters::F_EXT) ||
-        ext.IsSameAs(FileFilters::F77_EXT) ||
-        ext.IsSameAs(FileFilters::F90_EXT) ||
-        ext.IsSameAs(FileFilters::F95_EXT) ||
-        ext.IsSameAs(FileFilters::FOR_EXT) ||
-        ext.IsSameAs(FileFilters::FPP_EXT) ||
-        ext.IsSameAs(FileFilters::F03_EXT) ||
-        ext.IsSameAs(FileFilters::F08_EXT) ||
-        ext.IsSameAs(FileFilters::JAVA_EXT)
+            ext.IsSameAs(FileFilters::C_EXT) ||
+            ext.IsSameAs(FileFilters::CC_EXT) ||
+            ext.IsSameAs(FileFilters::CPP_EXT) ||
+            ext.IsSameAs(FileFilters::CXX_EXT) ||
+            ext.IsSameAs(FileFilters::CPLPL_EXT) ||
+            ext.IsSameAs(FileFilters::S_EXT) ||
+            ext.IsSameAs(FileFilters::SS_EXT) ||
+            ext.IsSameAs(FileFilters::S62_EXT) ||
+            ext.IsSameAs(FileFilters::D_EXT) ||
+            ext.IsSameAs(FileFilters::F_EXT) ||
+            ext.IsSameAs(FileFilters::F77_EXT) ||
+            ext.IsSameAs(FileFilters::F90_EXT) ||
+            ext.IsSameAs(FileFilters::F95_EXT) ||
+            ext.IsSameAs(FileFilters::FOR_EXT) ||
+            ext.IsSameAs(FileFilters::FPP_EXT) ||
+            ext.IsSameAs(FileFilters::F03_EXT) ||
+            ext.IsSameAs(FileFilters::F08_EXT) ||
+            ext.IsSameAs(FileFilters::JAVA_EXT)
        )
         return ftSource;
 
@@ -762,11 +762,11 @@ wxFontEncoding DetectEncodingAndConvert(const char* strIn, wxString& strOut, wxF
     if (platform::unicode)
     {
         if (possibleEncoding != wxFONTENCODING_UTF16 &&
-            possibleEncoding != wxFONTENCODING_UTF16LE &&
-            possibleEncoding != wxFONTENCODING_UTF16BE &&
-            possibleEncoding != wxFONTENCODING_UTF32 &&
-            possibleEncoding != wxFONTENCODING_UTF32LE &&
-            possibleEncoding != wxFONTENCODING_UTF32BE)
+                possibleEncoding != wxFONTENCODING_UTF16LE &&
+                possibleEncoding != wxFONTENCODING_UTF16BE &&
+                possibleEncoding != wxFONTENCODING_UTF32 &&
+                possibleEncoding != wxFONTENCODING_UTF32LE &&
+                possibleEncoding != wxFONTENCODING_UTF32BE)
         {
             // crashes deep in the runtime (windows, at least)
             // if one of the above encodings, hence the guard
@@ -823,12 +823,12 @@ wxString GetEOLStr(int eolMode)
     }
     switch (eolMode)
     {
-      case wxSCI_EOL_CR:
-          return wxT("\r");
-      case wxSCI_EOL_LF:
-          return wxT("\n");
-      default: // wxSCI_EOL_CRLF
-          return wxT("\r\n");
+    case wxSCI_EOL_CR:
+        return wxT("\r");
+    case wxSCI_EOL_LF:
+        return wxT("\n");
+    default: // wxSCI_EOL_CRLF
+        return wxT("\r\n");
     }
 }
 
@@ -840,11 +840,11 @@ wxString URLEncode(const wxString &str) // not sure this is 100% standards compl
     {
         wxChar c = str[i];
         if (  (c >= _T('A') && c <= _T('Z'))
-           || (c >= _T('a') && c <= _T('z'))
-           || (c >= _T('0') && c <= _T('9'))
-           || (c == _T('.'))
-           || (c == _T('-'))
-           || (c == _T('_')) )
+                || (c >= _T('a') && c <= _T('z'))
+                || (c >= _T('0') && c <= _T('9'))
+                || (c == _T('.'))
+                || (c == _T('-'))
+                || (c == _T('_')) )
 
             ret.Append(c);
         else if (c == _T(' '))
@@ -941,7 +941,7 @@ wxMenu* CopyMenu(wxMenu* mnu, bool with_accelerators)
         return nullptr;
     wxMenu* theMenu = new wxMenu();
 
-    for (size_t i = 0; i < mnu->GetMenuItemCount();++i)
+    for (size_t i = 0; i < mnu->GetMenuItemCount(); ++i)
     {
         wxMenuItem* tmpItem = mnu->FindItemByPosition(i);
         wxMenuItem* theItem = new wxMenuItem(nullptr,
@@ -1110,7 +1110,7 @@ bool UsesCommonControls6()
             hr = (*pDllGetVersion)(&dvi);
 
             if (SUCCEEDED(hr))
-               result = dvi.dwMajorVersion == 6;
+                result = dvi.dwMajorVersion == 6;
         }
 
         FreeLibrary(hinstDll);
@@ -1234,7 +1234,7 @@ int cbFindMinSize16to64(int targetSize)
 }
 
 std::unique_ptr<wxImageList> cbMakeScaledImageList(int size, double scaleFactor,
-                                                   int &outActualSize)
+        int &outActualSize)
 {
 #ifdef __WXMSW__
     outActualSize = size;
@@ -1304,8 +1304,12 @@ void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)
     long flags = lc->GetWindowStyleFlag();
     switch (style)
     {
-        case sisNoIcons: flags = (flags & ~wxLC_MASK_TYPE) | wxLC_LIST; break;
-        default: flags = (flags & ~wxLC_MASK_TYPE) | wxLC_ICON; break;
+    case sisNoIcons:
+        flags = (flags & ~wxLC_MASK_TYPE) | wxLC_LIST;
+        break;
+    default:
+        flags = (flags & ~wxLC_MASK_TYPE) | wxLC_ICON;
+        break;
     }
     lc->SetWindowStyleFlag(flags);
 }
@@ -1350,7 +1354,7 @@ wxRect cbGetMonitorRectForWindow(wxWindow *window)
 cbChildWindowPlacement cbGetChildWindowPlacement(ConfigManager &appConfig)
 {
     int intChildWindowPlacement = appConfig.ReadInt(wxT("/dialog_placement/child_placement"),
-                                                    int(cbChildWindowPlacement::CenterOnParent));
+                                  int(cbChildWindowPlacement::CenterOnParent));
     if (intChildWindowPlacement < 0 || intChildWindowPlacement >= 3)
         intChildWindowPlacement = 0;
 
@@ -1370,19 +1374,19 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
         const cbChildWindowPlacement placement =  cbGetChildWindowPlacement(*cfg);
         switch (placement)
         {
-            case cbChildWindowPlacement::CenterOnParent:
-                w->CenterOnParent();
-                return;
-            case cbChildWindowPlacement::CenterOnDisplay:
-            {
-                if (mode == pdlBest)
-                    the_mode = cfg->ReadInt(_T("/dialog_placement/dialog_position"), (int) pdlCentre);
-                else
-                    the_mode = (int) mode;
-                break;
-            }
-            case cbChildWindowPlacement::LeaveToWM:
-                return;
+        case cbChildWindowPlacement::CenterOnParent:
+            w->CenterOnParent();
+            return;
+        case cbChildWindowPlacement::CenterOnDisplay:
+        {
+            if (mode == pdlBest)
+                the_mode = cfg->ReadInt(_T("/dialog_placement/dialog_position"), (int) pdlCentre);
+            else
+                the_mode = (int) mode;
+            break;
+        }
+        case cbChildWindowPlacement::LeaveToWM:
+            return;
         }
     }
 
@@ -1395,70 +1399,70 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
 
     switch(the_mode)
     {
-        case pdlCentre:
+    case pdlCentre:
+    {
+        windowRect.x = monitorRect.x + (monitorRect.width  - windowRect.width)/2;
+        windowRect.y = monitorRect.y  + (monitorRect.height - windowRect.height)/2;
+    }
+    break;
+
+
+    case pdlHead:
+    {
+        windowRect.x = monitorRect.x + (monitorRect.width  - windowRect.width)/2;
+        windowRect.y = monitorRect.y  + (monitorRect.height - windowRect.height)/3;
+    }
+    break;
+
+
+    case pdlConstrain:
+    {
+        int x1 = windowRect.x;
+        int x2 = windowRect.x + windowRect.width;
+        int y1 = windowRect.y;
+        int y2 = windowRect.y + windowRect.height;
+
+        if (windowRect.width > monitorRect.width) // cannot place without clipping, so centre it
         {
-            windowRect.x = monitorRect.x + (monitorRect.width  - windowRect.width)/2;
-            windowRect.y = monitorRect.y  + (monitorRect.height - windowRect.height)/2;
+            x1 = monitorRect.x + (monitorRect.width  - windowRect.width)/2;
+            x2 = x1 + windowRect.width;
         }
-        break;
-
-
-        case pdlHead:
+        else
         {
-            windowRect.x = monitorRect.x + (monitorRect.width  - windowRect.width)/2;
-            windowRect.y = monitorRect.y  + (monitorRect.height - windowRect.height)/3;
+            x2 = std::min(monitorRect.GetRight(), windowRect.GetRight());
+            x1 = std::max(x2 - windowRect.width, monitorRect.x);
+            x2 = x1 + windowRect.width;
         }
-        break;
-
-
-        case pdlConstrain:
+        if (windowRect.height > monitorRect.height) // cannot place without clipping, so centre it
         {
-            int x1 = windowRect.x;
-            int x2 = windowRect.x + windowRect.width;
-            int y1 = windowRect.y;
-            int y2 = windowRect.y + windowRect.height;
-
-            if (windowRect.width > monitorRect.width) // cannot place without clipping, so centre it
-            {
-                x1 = monitorRect.x + (monitorRect.width  - windowRect.width)/2;
-                x2 = x1 + windowRect.width;
-            }
-            else
-            {
-                x2 = std::min(monitorRect.GetRight(), windowRect.GetRight());
-                x1 = std::max(x2 - windowRect.width, monitorRect.x);
-                x2 = x1 + windowRect.width;
-            }
-            if (windowRect.height > monitorRect.height) // cannot place without clipping, so centre it
-            {
-                y1 = monitorRect.y + (monitorRect.height  - windowRect.height)/2;
-                y2 = y1 + windowRect.height;
-            }
-            else
-            {
-                y2 = std::min(monitorRect.GetBottom(), windowRect.GetBottom());
-                y1 = std::max(y2 - windowRect.height, monitorRect.y);
-                y2 = y1 + windowRect.height;
-            }
-            windowRect = wxRect(x1, y1, x2-x1, y2-y1);
+            y1 = monitorRect.y + (monitorRect.height  - windowRect.height)/2;
+            y2 = y1 + windowRect.height;
         }
-        break;
-
-        case pdlClip:
+        else
         {
-            int x1 = windowRect.x;
-            int x2 = windowRect.x + windowRect.width;
-            int y1 = windowRect.y;
-            int y2 = windowRect.y + windowRect.height;
-
-            x1 = std::max(x1, monitorRect.x);
-            x2 = std::min(x2, monitorRect.GetRight());
-            y1 = std::max(y1, monitorRect.y);
-            y2 = std::min(y2, monitorRect.GetBottom());
-
-            windowRect = wxRect(x1, y1, x2-x1, y2-y1);
+            y2 = std::min(monitorRect.GetBottom(), windowRect.GetBottom());
+            y1 = std::max(y2 - windowRect.height, monitorRect.y);
+            y2 = y1 + windowRect.height;
         }
-        break;
+        windowRect = wxRect(x1, y1, x2-x1, y2-y1);
+    }
+    break;
+
+    case pdlClip:
+    {
+        int x1 = windowRect.x;
+        int x2 = windowRect.x + windowRect.width;
+        int y1 = windowRect.y;
+        int y2 = windowRect.y + windowRect.height;
+
+        x1 = std::max(x1, monitorRect.x);
+        x2 = std::min(x2, monitorRect.GetRight());
+        y1 = std::max(y1, monitorRect.y);
+        y2 = std::min(y2, monitorRect.GetBottom());
+
+        windowRect = wxRect(x1, y1, x2-x1, y2-y1);
+    }
+    break;
     }
 
     w->SetSize(windowRect.x,  windowRect.y, windowRect.width, windowRect.height, wxSIZE_ALLOW_MINUS_ONE);
@@ -1481,7 +1485,7 @@ void cbFixWindowSizeAndPlace(wxTopLevelWindow* const w)
         const int panelHeight   = w->GetSize().GetHeight();
         const int panelWidth    = w->GetSize().GetWidth();
         if (panelHeight > displayHeight ||
-            panelWidth  > displayWidth)
+                panelWidth  > displayWidth)
         {
             // If the window is bigger then the current display
             // Rescale the window to 1/3 of the current resolution
@@ -1528,64 +1532,64 @@ DirAccessCheck cbDirAccessCheck(const wxString& dir)
 
 namespace platform
 {
-    windows_version_t cb_get_os()
-    {
-        if (!platform::windows)
-            return winver_NotWindows;
+windows_version_t cb_get_os()
+{
+    if (!platform::windows)
+        return winver_NotWindows;
 
-        windows_version_t version = winver_UnknownWindows;
+    windows_version_t version = winver_UnknownWindows;
 
-        int Major = 0;
-        int Minor = 0;
-        int Micro = 0;
+    int Major = 0;
+    int Minor = 0;
+    int Micro = 0;
 #if wxCHECK_VERSION(3, 1, 1)
-        switch (wxGetOsVersion(&Major, &Minor, &Micro))
+    switch (wxGetOsVersion(&Major, &Minor, &Micro))
 #else
-        switch (wxGetOsVersion(&Major, &Minor))
+    switch (wxGetOsVersion(&Major, &Minor))
 #endif
+    {
+    case wxOS_WINDOWS_9X:
+        version = winver_Windows9598ME;
+        break;
+    case wxOS_WINDOWS_NT:
+        switch (Major)
         {
-            case wxOS_WINDOWS_9X:
-                version = winver_Windows9598ME;
-            break;
-            case wxOS_WINDOWS_NT:
-                switch (Major)
-                {
-                case 5:
-                    if (Minor == 0)
-                        version = winver_WindowsNT2000;
-                    else if (Minor == 1)
-                        version = winver_WindowsXP;
-                    else if (Minor == 2)
-                        version = winver_WindowsServer2003;
-
-                break;
-                case 6:
-                    if (Minor == 0)
-                        version = winver_WindowsVista;
-                    else if (Minor == 1)
-                        version = winver_Windows7;
-                    else if ((Minor == 2) || (Minor == 3))
-                        version = winver_Windows8;
-
-                break;
-                case 10:
-                    if (Minor == 0)
-                        version = (Micro < 22000) ? winver_Windows10 : winver_Windows11;
-                }
+        case 5:
+            if (Minor == 0)
+                version = winver_WindowsNT2000;
+            else if (Minor == 1)
+                version = winver_WindowsXP;
+            else if (Minor == 2)
+                version = winver_WindowsServer2003;
 
             break;
-            default:
-                ;
+        case 6:
+            if (Minor == 0)
+                version = winver_WindowsVista;
+            else if (Minor == 1)
+                version = winver_Windows7;
+            else if ((Minor == 2) || (Minor == 3))
+                version = winver_Windows8;
+
+            break;
+        case 10:
+            if (Minor == 0)
+                version = (Micro < 22000) ? winver_Windows10 : winver_Windows11;
         }
 
-        return version;
+        break;
+    default:
+        ;
     }
 
-    windows_version_t WindowsVersion()
-    {
-        static const windows_version_t theOS = cb_get_os();
-        return theOS;
-    }
+    return version;
+}
+
+windows_version_t WindowsVersion()
+{
+    static const windows_version_t theOS = cb_get_os();
+    return theOS;
+}
 }
 
 // returns the real path of a file by resolving symlinks
@@ -1646,22 +1650,22 @@ int cbMessageBox(const wxString& message, const wxString& caption, int style, wx
     // Cannot create a wxMessageDialog with a nullptr as parent
     if (!parent)
     {
-      // wxMessage*Box* returns any of: wxYES, wxNO, wxCANCEL, wxOK.
-      int answer = wxMessageBox(message, caption, style, parent, x, y);
-      switch (answer)
-      {
+        // wxMessage*Box* returns any of: wxYES, wxNO, wxCANCEL, wxOK.
+        int answer = wxMessageBox(message, caption, style, parent, x, y);
+        switch (answer)
+        {
         // map answer to the one of wxMessage*Dialog* to ensure compatibility
         case (wxOK):
-          return wxID_OK;
+            return wxID_OK;
         case (wxCANCEL):
-          return wxID_CANCEL;
+            return wxID_CANCEL;
         case (wxYES):
-          return wxID_YES;
+            return wxID_YES;
         case (wxNO):
-          return wxID_NO;
+            return wxID_NO;
         default:
-          return -1; // NOTE: Cannot happen unless wxWidgets API changes
-      }
+            return -1; // NOTE: Cannot happen unless wxWidgets API changes
+        }
     }
 
     wxMessageDialog dlg(parent, message, caption, style, wxPoint(x,y));
@@ -1685,8 +1689,8 @@ DLLIMPORT int cbGetSingleChoiceIndex(const wxString& message, const wxString& ca
 }
 
 DLLIMPORT wxArrayInt cbGetMultiChoiceDialog(const wxString& message, const wxString& caption,
-                                     const wxArrayString& choices, wxWindow *parent,
-                                     const wxSize& size, const wxArrayInt& initialSelection)
+        const wxArrayString& choices, wxWindow *parent,
+        const wxSize& size, const wxArrayInt& initialSelection)
 {
     if (!parent)
         parent = Manager::Get()->GetAppWindow();
@@ -1768,8 +1772,8 @@ std::unique_ptr<wxImageList> cbProjectTreeImages::MakeImageList(int baseSize, wx
     std::unique_ptr<wxImageList> images = cbMakeScaledImageList(size, scaleFactor, imageListSize);
 
     const wxString prefix = ConfigManager::ReadDataPath()
-                          + wxString::Format(_T("/resources.zip#zip:images/tree/%dx%d/"),
-                                             size, size);
+                            + wxString::Format(_T("/resources.zip#zip:images/tree/%dx%d/"),
+                                    size, size);
     wxBitmap bmp;
     for (const wxString &img : imgs)
     {

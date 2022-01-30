@@ -13,9 +13,9 @@
  * Copyright: Jerome ANTOINE
  * License:   GPL
  **************************************************************/
- #include <wx/datetime.h>
- #include <wx/intl.h>
- #include "ThreadSearchTrace.h"
+#include <wx/datetime.h>
+#include <wx/intl.h>
+#include "ThreadSearchTrace.h"
 
 
 ThreadSearchTrace* ThreadSearchTrace::ms_Tracer = NULL;
@@ -73,7 +73,7 @@ void ThreadSearchTrace::Uninit()
 
 
 TraceBeginEndOfMethod::TraceBeginEndOfMethod(const wxString& method)
-                      :m_Method(method)
+    :m_Method(method)
 {
     wxString begin(_("Begin of "));
     begin += m_Method;

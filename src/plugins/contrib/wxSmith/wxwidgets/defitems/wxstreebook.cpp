@@ -43,170 +43,173 @@ using namespace wxsFlags;
 
 namespace
 {
-    wxsRegisterItem<wxsTreebook> Reg(_T("Treebook"), wxsTContainer, _T("Standard"), 20);
+wxsRegisterItem<wxsTreebook> Reg(_T("Treebook"), wxsTContainer, _T("Standard"), 20);
 
-    /** \brief Extra parameters for Treebook's children
-    *
-    * I store the data required to manage the tree hierarchy here.
-    * Child windows are stored as a flat list here but reconstructed in tree order when the code is built.
-    * The parent node is the node in the tree to which a given node is attached. If the parent node value is -1,
-    * the default, the node is attached to the trunk of the tree. Since the number assigned by the control to a node
-    * changes with each insertion and deletion, the collection is re-parsed after each such operation and the node
-    * numbers adjusted.
-    */
-    class wxsTreebookExtra: public wxsPropertyContainer
+/** \brief Extra parameters for Treebook's children
+*
+* I store the data required to manage the tree hierarchy here.
+* Child windows are stored as a flat list here but reconstructed in tree order when the code is built.
+* The parent node is the node in the tree to which a given node is attached. If the parent node value is -1,
+* the default, the node is attached to the trunk of the tree. Since the number assigned by the control to a node
+* changes with each insertion and deletion, the collection is re-parsed after each such operation and the node
+* numbers adjusted.
+*/
+class wxsTreebookExtra: public wxsPropertyContainer
+{
+public:
+
+    wxsTreebookExtra():
+        m_Label(_("Page name")),
+        m_Selected(false),
+        m_iParentNode(0),
+        m_iTreePos(0)
+    {}
+
+    wxString m_Label;
+    bool m_Selected;
+    int m_iIndex;
+    long m_iParentNode;
+    int m_iTreePos;
+
+protected:
+
+    virtual void OnEnumProperties(cb_unused long Flags)
     {
-        public:
+        WXS_SHORT_STRING(wxsTreebookExtra, m_Label, _("Page name"), _T("label"), _T(""), false);
+        WXS_BOOL(wxsTreebookExtra, m_Selected, _("Page selected"), _T("selected"), false);
+    }
+};
 
-            wxsTreebookExtra():
-                m_Label(_("Page name")),
-                m_Selected(false),
-                m_iParentNode(0),
-                m_iTreePos(0)
-            {}
+/** \brief Internal Quick properties panel */
+class wxsTreebookParentQP: public wxsAdvQPPChild
+{
+public:
 
-            wxString m_Label;
-            bool m_Selected;
-            int m_iIndex;
-            long m_iParentNode;
-            int m_iTreePos;
-
-        protected:
-
-            virtual void OnEnumProperties(cb_unused long Flags)
-            {
-                WXS_SHORT_STRING(wxsTreebookExtra, m_Label, _("Page name"), _T("label"), _T(""), false);
-                WXS_BOOL(wxsTreebookExtra, m_Selected, _("Page selected"), _T("selected"), false);
-            }
-    };
-
-    /** \brief Internal Quick properties panel */
-    class wxsTreebookParentQP: public wxsAdvQPPChild
+    wxsTreebookParentQP(wxsAdvQPP *parent, wxsTreebookExtra *Extra, wxWindowID id = -1):
+        wxsAdvQPPChild(parent, _("Treebook")),
+        m_Extra(Extra)
     {
-        public:
+        //(*Initialize(wxsTreebookParentQP)
+        Create(parent, id, wxDefaultPosition, wxSize(120,133), wxTAB_TRAVERSAL, _T("id"));
+        FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
+        StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Label"));
+        Label = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+        StaticBoxSizer1->Add(Label, 0, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 5);
+        FlexGridSizer1->Add(StaticBoxSizer1, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+        StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Selection"));
+        Selected = new wxCheckBox(this, ID_CHECKBOX1, _("Selected"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
+        Selected->SetValue(false);
+        StaticBoxSizer2->Add(Selected, 1, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
+        FlexGridSizer1->Add(StaticBoxSizer2, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+        SetSizer(FlexGridSizer1);
+        FlexGridSizer1->SetSizeHints(this);
 
-            wxsTreebookParentQP(wxsAdvQPP *parent, wxsTreebookExtra *Extra, wxWindowID id = -1):
-                wxsAdvQPPChild(parent, _("Treebook")),
-                m_Extra(Extra)
-            {
-                //(*Initialize(wxsTreebookParentQP)
-                Create(parent, id, wxDefaultPosition, wxSize(120,133), wxTAB_TRAVERSAL, _T("id"));
-                FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
-                StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Label"));
-                Label = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-                StaticBoxSizer1->Add(Label, 0, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-                FlexGridSizer1->Add(StaticBoxSizer1, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-                StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Selection"));
-                Selected = new wxCheckBox(this, ID_CHECKBOX1, _("Selected"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
-                Selected->SetValue(false);
-                StaticBoxSizer2->Add(Selected, 1, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-                FlexGridSizer1->Add(StaticBoxSizer2, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-                SetSizer(FlexGridSizer1);
-                FlexGridSizer1->SetSizeHints(this);
+        Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsTreebookParentQP::OnLabelText);
+        Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsTreebookParentQP::OnSelectionChange);
+        //*)
+        ReadData();
 
-                Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsTreebookParentQP::OnLabelText);
-                Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsTreebookParentQP::OnSelectionChange);
-                //*)
-                ReadData();
+        Label->Connect(-1, wxEVT_KILL_FOCUS, (wxObjectEventFunction)&wxsTreebookParentQP::OnLabelKillFocus, 0, this);
+    }
 
-                Label->Connect(-1, wxEVT_KILL_FOCUS, (wxObjectEventFunction)&wxsTreebookParentQP::OnLabelKillFocus, 0, this);
-            }
+    virtual ~wxsTreebookParentQP()
+    {
+        //(*Destroy(wxsTreebookParentQP)
+        //*)
+    }
 
-            virtual ~wxsTreebookParentQP()
-            {
-                //(*Destroy(wxsTreebookParentQP)
-                //*)
-            }
+private:
 
-        private:
+    virtual void Update()
+    {
+        ReadData();
+    }
 
-            virtual void Update()
-            {
-                ReadData();
-            }
+    void ReadData()
+    {
+        if (!GetPropertyContainer() || !m_Extra) return;
+        Label->SetValue(m_Extra->m_Label);
+        Selected->SetValue(m_Extra->m_Selected);
+    }
 
-            void ReadData()
-            {
-                if (!GetPropertyContainer() || !m_Extra) return;
-                Label->SetValue(m_Extra->m_Label);
-                Selected->SetValue(m_Extra->m_Selected);
-            }
+    void SaveData()
+    {
+        if (!GetPropertyContainer() || !m_Extra) return;
+        m_Extra->m_Label = Label->GetValue();
+        m_Extra->m_Selected = Selected->GetValue();
+        NotifyChange();
+    }
 
-            void SaveData()
-            {
-                if (!GetPropertyContainer() || !m_Extra) return;
-                m_Extra->m_Label = Label->GetValue();
-                m_Extra->m_Selected = Selected->GetValue();
-                NotifyChange();
-            }
-
-            //(*Identifiers(wxsTreebookParentQP)
-            static const long ID_TEXTCTRL1;
-            static const long ID_CHECKBOX1;
-            //*)
-
-            //(*Handlers(wxsTreebookParentQP)
-            void OnLabelText(wxCommandEvent &event);
-            void OnLabelKillFocus(wxFocusEvent &event);
-            void OnSelectionChange(wxCommandEvent &event);
-            //*)
-
-            //(*Declarations(wxsTreebookParentQP)
-            wxStaticBoxSizer* StaticBoxSizer2;
-            wxCheckBox* Selected;
-            wxTextCtrl* Label;
-            wxStaticBoxSizer* StaticBoxSizer1;
-            wxFlexGridSizer* FlexGridSizer1;
-            //*)
-
-            wxsTreebookExtra *m_Extra;
-
-            DECLARE_EVENT_TABLE()
-    };
-
-    //(*IdInit(wxsTreebookParentQP)
-    const long wxsTreebookParentQP::ID_TEXTCTRL1 = wxNewId();
-    const long wxsTreebookParentQP::ID_CHECKBOX1 = wxNewId();
+    //(*Identifiers(wxsTreebookParentQP)
+    static const long ID_TEXTCTRL1;
+    static const long ID_CHECKBOX1;
     //*)
 
-    BEGIN_EVENT_TABLE(wxsTreebookParentQP, wxPanel)
-        //(*EventTable(wxsTreebookParentQP)
-        //*)
-    END_EVENT_TABLE()
+    //(*Handlers(wxsTreebookParentQP)
+    void OnLabelText(wxCommandEvent &event);
+    void OnLabelKillFocus(wxFocusEvent &event);
+    void OnSelectionChange(wxCommandEvent &event);
+    //*)
 
-    void wxsTreebookParentQP::OnLabelText(cb_unused wxCommandEvent &event)       {
-        SaveData();
-    }
-    void wxsTreebookParentQP::OnLabelKillFocus(wxFocusEvent &event)    {
-        SaveData();
-        event.Skip();
-    }
-    void wxsTreebookParentQP::OnSelectionChange(cb_unused wxCommandEvent &event) {
-        SaveData();
-    }
+    //(*Declarations(wxsTreebookParentQP)
+    wxStaticBoxSizer* StaticBoxSizer2;
+    wxCheckBox* Selected;
+    wxTextCtrl* Label;
+    wxStaticBoxSizer* StaticBoxSizer1;
+    wxFlexGridSizer* FlexGridSizer1;
+    //*)
 
-    WXS_ST_BEGIN(wxsTreebookStyles, wxT("wxBK_DEFAULT"))
-    WXS_ST_CATEGORY("wxTreebook")
-    WXS_ST(wxBK_DEFAULT)
-    WXS_ST(wxBK_LEFT)
-    WXS_ST(wxBK_RIGHT)
-    WXS_ST(wxBK_TOP)
-    WXS_ST(wxBK_BOTTOM)
-    WXS_ST_DEFAULTS()
-    WXS_ST_END()
+    wxsTreebookExtra *m_Extra;
 
-    WXS_EV_BEGIN(wxsTreebookEvents)
-    WXS_EVI(EVT_TREEBOOK_PAGE_CHANGED, wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED, wxNotebookEvent, PageChanged)
-    WXS_EVI(EVT_TREEBOOK_PAGE_CHANGING, wxEVT_COMMAND_TREEBOOK_PAGE_CHANGING, wxNotebookEvent, PageChanging)
-    WXS_EVI(EVT_TREEBOOK_NODE_COLLAPSED, wxEVT_COMMAND_TREEBOOK_NODE_COLLAPSED, wxNotebookEvent, NodeCollapsed)
-    WXS_EVI(EVT_TREEBOOK_NODE_EXPANDED, wxEVT_COMMAND_TREEBOOK_NODE_EXPANDED, wxNotebookEvent, NodeExpanded)
-    WXS_EV_END()
+    DECLARE_EVENT_TABLE()
+};
 
-    const long popupNewPageId = wxNewId();
-    const long popupPrevPageId = wxNewId();
-    const long popupNextPageId = wxNewId();
-    const long popupFirstId = wxNewId();
-    const long popupLastId = wxNewId();
+//(*IdInit(wxsTreebookParentQP)
+const long wxsTreebookParentQP::ID_TEXTCTRL1 = wxNewId();
+const long wxsTreebookParentQP::ID_CHECKBOX1 = wxNewId();
+//*)
+
+BEGIN_EVENT_TABLE(wxsTreebookParentQP, wxPanel)
+    //(*EventTable(wxsTreebookParentQP)
+    //*)
+END_EVENT_TABLE()
+
+void wxsTreebookParentQP::OnLabelText(cb_unused wxCommandEvent &event)
+{
+    SaveData();
+}
+void wxsTreebookParentQP::OnLabelKillFocus(wxFocusEvent &event)
+{
+    SaveData();
+    event.Skip();
+}
+void wxsTreebookParentQP::OnSelectionChange(cb_unused wxCommandEvent &event)
+{
+    SaveData();
+}
+
+WXS_ST_BEGIN(wxsTreebookStyles, wxT("wxBK_DEFAULT"))
+WXS_ST_CATEGORY("wxTreebook")
+WXS_ST(wxBK_DEFAULT)
+WXS_ST(wxBK_LEFT)
+WXS_ST(wxBK_RIGHT)
+WXS_ST(wxBK_TOP)
+WXS_ST(wxBK_BOTTOM)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
+
+WXS_EV_BEGIN(wxsTreebookEvents)
+WXS_EVI(EVT_TREEBOOK_PAGE_CHANGED, wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED, wxNotebookEvent, PageChanged)
+WXS_EVI(EVT_TREEBOOK_PAGE_CHANGING, wxEVT_COMMAND_TREEBOOK_PAGE_CHANGING, wxNotebookEvent, PageChanging)
+WXS_EVI(EVT_TREEBOOK_NODE_COLLAPSED, wxEVT_COMMAND_TREEBOOK_NODE_COLLAPSED, wxNotebookEvent, NodeCollapsed)
+WXS_EVI(EVT_TREEBOOK_NODE_EXPANDED, wxEVT_COMMAND_TREEBOOK_NODE_EXPANDED, wxNotebookEvent, NodeExpanded)
+WXS_EV_END()
+
+const long popupNewPageId = wxNewId();
+const long popupPrevPageId = wxNewId();
+const long popupNextPageId = wxNewId();
+const long popupFirstId = wxNewId();
+const long popupLastId = wxNewId();
 }
 
 wxsTreebook::wxsTreebook(wxsItemResData *Data):
@@ -289,31 +292,31 @@ void wxsTreebook::OnBuildCreatingCode()
 {
     switch(GetLanguage())
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/treebook.h>"), GetInfo().ClassName, 0);
+        AddHeader(_T("<wx/treebook.h>"), _T("wxTreebookEvent"), 0);
+        Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+        BuildSetupWindowCode();
+        AddChildrenCode();
+
+        for (int i = 0; i < GetChildCount(); i++)
+        {
+            wxsTreebookExtra *TBExtra = (wxsTreebookExtra*)GetChildExtra(i);
+            if (TBExtra)
             {
-                AddHeader(_T("<wx/treebook.h>"), GetInfo().ClassName, 0);
-                AddHeader(_T("<wx/treebook.h>"), _T("wxTreebookEvent"), 0);
-                Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-                BuildSetupWindowCode();
-                AddChildrenCode();
-
-                for (int i = 0; i < GetChildCount(); i++)
-                {
-                    wxsTreebookExtra *TBExtra = (wxsTreebookExtra*)GetChildExtra(i);
-                    if (TBExtra)
-                    {
-                        Codef(_T("%AAddPage(%o, %t, %b);\n"), i, TBExtra->m_Label.wx_str(), TBExtra->m_Selected);
-                    }
-                }
-
-                break;
+                Codef(_T("%AAddPage(%o, %t, %b);\n"), i, TBExtra->m_Label.wx_str(), TBExtra->m_Selected);
             }
+        }
 
-        case wxsUnknownLanguage:
-        default:
-            {
-                wxsCodeMarks::Unknown(_T("wxsTreebook::OnBuildCreatingCode"), GetLanguage());
-            }
+        break;
+    }
+
+    case wxsUnknownLanguage:
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsTreebook::OnBuildCreatingCode"), GetLanguage());
+    }
     }
 }
 

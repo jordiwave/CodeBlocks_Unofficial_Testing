@@ -14,30 +14,31 @@
 //----------------------------------------------------------------------------
 #include "wx/chartcolors.h"
 
-ChartColor wxChartColors::vColors[] = {
-		wxCHART_RED,
-		wxCHART_GREEN,
-		wxCHART_BLUE,
-        wxCHART_YELOW,
-        wxCHART_CYAN,
-		wxCHART_LRED,
-		wxCHART_LGREEN,
-		wxCHART_LBLUE,
-		wxCHART_LYELOW,
-		wxCHART_LCYAN,
-        wxCHART_ALICEBLUE,
-        wxCHART_ANTIQUEWHITE,
-        wxCHART_AQUAMARINE,
-        wxCHART_BLUEVIOLET,
-        wxCHART_BROWN,
-        wxCHART_TURQUOISE,
-        wxCHART_SEAGREEN,
-        wxCHART_GOLD,
-        wxCHART_SIENNA,
-        wxCHART_GOLDENROD,
-        wxCHART_ROYALBLUE,
-        wxCHART_GRAY,
-        wxCHART_SLATEGRAY
+ChartColor wxChartColors::vColors[] =
+{
+    wxCHART_RED,
+    wxCHART_GREEN,
+    wxCHART_BLUE,
+    wxCHART_YELOW,
+    wxCHART_CYAN,
+    wxCHART_LRED,
+    wxCHART_LGREEN,
+    wxCHART_LBLUE,
+    wxCHART_LYELOW,
+    wxCHART_LCYAN,
+    wxCHART_ALICEBLUE,
+    wxCHART_ANTIQUEWHITE,
+    wxCHART_AQUAMARINE,
+    wxCHART_BLUEVIOLET,
+    wxCHART_BROWN,
+    wxCHART_TURQUOISE,
+    wxCHART_SEAGREEN,
+    wxCHART_GOLD,
+    wxCHART_SIENNA,
+    wxCHART_GOLDENROD,
+    wxCHART_ROYALBLUE,
+    wxCHART_GRAY,
+    wxCHART_SLATEGRAY
 };
 
 size_t wxChartColors::colPos = 0;
@@ -50,10 +51,10 @@ size_t wxChartColors::colPos = 0;
 //----------------------------------------------------------------------E-+++
 ChartColor wxChartColors::GetColor()
 {
-	if ( colPos >= sizeof(vColors)/sizeof(ChartColor) )
-		colPos = 0;
+    if ( colPos >= sizeof(vColors)/sizeof(ChartColor) )
+        colPos = 0;
 
-	return static_cast<ChartColor>( vColors[colPos++] );
+    return static_cast<ChartColor>( vColors[colPos++] );
 }
 
 //+++-S-cf-------------------------------------------------------------------

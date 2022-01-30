@@ -9,7 +9,7 @@
  * This file is part of jam.
  *
  * License is hereby granted to use this software and distribute it
- * freely, as long as this copyright notice is retained and modifications 
+ * freely, as long as this copyright notice is retained and modifications
  * are clearly marked.
  *
  * ALL WARRANTIES ARE HEREBY DISCLAIMED.
@@ -22,7 +22,7 @@
  */
 
 /*
- * pathsys.h - PATHNAME struct 
+ * pathsys.h - PATHNAME struct
  *
  * 11/04/02 (seiwald) - const-ing for string literals
  */
@@ -32,7 +32,7 @@
  *
  * <grist> is salt to distinguish between targets that otherwise would
  * have the same name:  it never appears in the bound name of a target.
- * (member) is an archive member name: the syntax is arbitrary, but must 
+ * (member) is an archive member name: the syntax is arbitrary, but must
  * agree in path_parse(), path_build() and the Jambase.
  *
  * On VMS, we keep track of whether the original path was a directory
@@ -42,15 +42,17 @@
 typedef struct _pathname PATHNAME;
 typedef struct _pathpart PATHPART;
 
-struct _pathpart {
-	const char *ptr;
-	int	len;
+struct _pathpart
+{
+    const char *ptr;
+    int	len;
 };
 
-struct _pathname {
-	PATHPART	part[6];
+struct _pathname
+{
+    PATHPART	part[6];
 # ifdef OS_VMS
-	int		parent;
+    int		parent;
 # endif
 
 # define f_grist	part[0]

@@ -10,21 +10,21 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #ifdef __WXMAC__
-        #include <wx/font.h>
-    #endif //__WXMAC__
-    #include <wx/button.h>    // wxImage
-    #include <wx/image.h>    // wxImage
-    #include <wx/intl.h>
-    #include <wx/stattext.h>
-    #include <wx/string.h>
-    #include <wx/textctrl.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/versioninfo.h>
+#ifdef __WXMAC__
+#include <wx/font.h>
+#endif //__WXMAC__
+#include <wx/button.h>    // wxImage
+#include <wx/image.h>    // wxImage
+#include <wx/intl.h>
+#include <wx/stattext.h>
+#include <wx/string.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/versioninfo.h>
 
-    #include "licenses.h"
-    #include "configmanager.h"
-    #include "wx/wxscintilla.h"
+#include "licenses.h"
+#include "configmanager.h"
+#include "wx/wxscintilla.h"
 #endif
 
 #include <wx/bitmap.h>
@@ -85,62 +85,62 @@ dlgAbout::dlgAbout(wxWindow* parent)
     wxTextCtrl *txtThanksTo = XRCCTRL(*this, "txtThanksTo", wxTextCtrl);
     // Note: Keep this is sync with the AUTHORS file in SVN.
     txtThanksTo->SetValue(_(
-        "Developers:\n"
-        "--------------\n"
-        "Yiannis Mandravellos: Developer - Project leader\n"
-        "Thomas Denk         : Developer\n"
-        "Lieven de Cock      : Developer\n"
-        "\"tiwag\"             : Developer\n"
-        "Martin Halle        : Developer\n"
-        "Biplab Modak        : Developer\n"
-        "Jens Lody           : Developer\n"
-        "Yuchen Deng         : Developer\n"
-        "Teodor Petrov       : Developer\n"
-        "Daniel Anselmi      : Developer\n"
-        "Yuanhui Zhang       : Developer\n"
-        "Damien Moore        : Developer\n"
-        "Micah Ng            : Developer\n"
-        "BlueHazzard         : Developer\n"
-        "Miguel Gimenez      : Developer\n"
-        "Ricardo Garcia      : All-hands person\n"
-        "Paul A. Jimenez     : Help and AStyle plugins\n"
-        "Thomas Lorblanches  : CodeStat and Profiler plugins\n"
-        "Bartlomiej Swiecki  : wxSmith RAD plugin\n"
-        "Jerome Antoine      : ThreadSearch plugin\n"
-        "Pecan Heber         : Keybinder, BrowseTracker, DragScroll\n"
-        "                      CodeSnippets plugins\n"
-        "Arto Jonsson        : CodeSnippets plugin (passed on to Pecan)\n"
-        "Darius Markauskas   : Fortran support\n"
-        "Mario Cupelli       : Compiler support for embedded systems\n"
-        "                      User's manual\n"
-        "Jonas Zinn          : Misc. wxSmith AddOns and plugins\n"
-        "Mirai Computing     : cbp2make tool\n"
-        "Anders F Bjoerklund : wxMac compatibility\n"
-        "\n"
-        "Contributors (in no special order):\n"
-        "-----------------------------------\n"
-        "Daniel Orb          : RPM spec file and packages\n"
-        "byo,elvstone, me22  : Conversion to Unicode\n"
-        "pasgui              : Providing Ubuntu nightly packages\n"
-        "Hakki Dogusan       : DigitalMars compiler support\n"
-        "ybx                 : OpenWatcom compiler support\n"
-        "Tim Baker           : Patches for the direct-compile-mode\n"
-        "                      dependencies generation system\n"
-        "David Perfors       : Unicode tester and future documentation writer\n"
-        "Sylvain Prat        : Initial MSVC workspace and project importers\n"
-        "Chris Raschko       : Design of the 3D logo for Code::Blocks\n"
-        "J.A. Ortega         : 3D Icon based on the above\n"
-        "Alexandr Efremo     : Providing OpenSuSe packages\n"
-        "Huki                : Misc. Code-Completion improvements\n"
-        "stahta01            : Misc. patches for several enhancements\n"
-        "\n"
-        "All contributors that provided patches.\n"
-        "The wxWidgets project (https://www.wxwidgets.org).\n"
-        "wxScintilla (https://sourceforge.net/projects/wxscintilla).\n"
-        "TinyXML parser (http://www.grinninglizard.com/tinyxml).\n"
-        "Squirrel scripting language (http://www.squirrel-lang.org).\n"
-        "The GNU Software Foundation (https://www.gnu.org).\n"
-        "Last, but not least, the open-source community."));
+                              "Developers:\n"
+                              "--------------\n"
+                              "Yiannis Mandravellos: Developer - Project leader\n"
+                              "Thomas Denk         : Developer\n"
+                              "Lieven de Cock      : Developer\n"
+                              "\"tiwag\"             : Developer\n"
+                              "Martin Halle        : Developer\n"
+                              "Biplab Modak        : Developer\n"
+                              "Jens Lody           : Developer\n"
+                              "Yuchen Deng         : Developer\n"
+                              "Teodor Petrov       : Developer\n"
+                              "Daniel Anselmi      : Developer\n"
+                              "Yuanhui Zhang       : Developer\n"
+                              "Damien Moore        : Developer\n"
+                              "Micah Ng            : Developer\n"
+                              "BlueHazzard         : Developer\n"
+                              "Miguel Gimenez      : Developer\n"
+                              "Ricardo Garcia      : All-hands person\n"
+                              "Paul A. Jimenez     : Help and AStyle plugins\n"
+                              "Thomas Lorblanches  : CodeStat and Profiler plugins\n"
+                              "Bartlomiej Swiecki  : wxSmith RAD plugin\n"
+                              "Jerome Antoine      : ThreadSearch plugin\n"
+                              "Pecan Heber         : Keybinder, BrowseTracker, DragScroll\n"
+                              "                      CodeSnippets plugins\n"
+                              "Arto Jonsson        : CodeSnippets plugin (passed on to Pecan)\n"
+                              "Darius Markauskas   : Fortran support\n"
+                              "Mario Cupelli       : Compiler support for embedded systems\n"
+                              "                      User's manual\n"
+                              "Jonas Zinn          : Misc. wxSmith AddOns and plugins\n"
+                              "Mirai Computing     : cbp2make tool\n"
+                              "Anders F Bjoerklund : wxMac compatibility\n"
+                              "\n"
+                              "Contributors (in no special order):\n"
+                              "-----------------------------------\n"
+                              "Daniel Orb          : RPM spec file and packages\n"
+                              "byo,elvstone, me22  : Conversion to Unicode\n"
+                              "pasgui              : Providing Ubuntu nightly packages\n"
+                              "Hakki Dogusan       : DigitalMars compiler support\n"
+                              "ybx                 : OpenWatcom compiler support\n"
+                              "Tim Baker           : Patches for the direct-compile-mode\n"
+                              "                      dependencies generation system\n"
+                              "David Perfors       : Unicode tester and future documentation writer\n"
+                              "Sylvain Prat        : Initial MSVC workspace and project importers\n"
+                              "Chris Raschko       : Design of the 3D logo for Code::Blocks\n"
+                              "J.A. Ortega         : 3D Icon based on the above\n"
+                              "Alexandr Efremo     : Providing OpenSuSe packages\n"
+                              "Huki                : Misc. Code-Completion improvements\n"
+                              "stahta01            : Misc. patches for several enhancements\n"
+                              "\n"
+                              "All contributors that provided patches.\n"
+                              "The wxWidgets project (https://www.wxwidgets.org).\n"
+                              "wxScintilla (https://sourceforge.net/projects/wxscintilla).\n"
+                              "TinyXML parser (http://www.grinninglizard.com/tinyxml).\n"
+                              "Squirrel scripting language (http://www.squirrel-lang.org).\n"
+                              "The GNU Software Foundation (https://www.gnu.org).\n"
+                              "Last, but not least, the open-source community."));
     wxTextCtrl *txtLicense = XRCCTRL(*this, "txtLicense", wxTextCtrl);
     txtLicense->SetValue(LICENSE_GPL);
 

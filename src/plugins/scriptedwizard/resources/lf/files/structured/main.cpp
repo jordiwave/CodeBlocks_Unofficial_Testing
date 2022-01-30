@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
     // the engine
     initLF();
-    
+
     // the render window
     render::IRenderWindow* rwin;
     rwin = CLFRender::getInstance().createRenderWindow(
@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
                render::EWCF_AUTOCLOSE /* | render::EWCF_FULLSCREEN */,
                render::EAAF_NONE);
     rwin->setWindowCaption(L"Lightfeather 3D project");
-    rwin->setVisible(true); 
+    rwin->setVisible(true);
 
     // the "Main" class
     CMain* mainClass = new CMain(rwin);
@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     // clean-up
     delete mainClass;
     deinitLF();
-    
+
     return 0;
 }
 

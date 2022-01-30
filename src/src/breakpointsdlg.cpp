@@ -37,15 +37,15 @@
 
 namespace
 {
-    const long idList = wxNewId();
-    // menu
-    const long idRemove = wxNewId();
-    const long idRemoveAll = wxNewId();
-    const long idProperties = wxNewId();
-    const long idOpen = wxNewId();
-    const long idEnable = wxNewId();
-    const long idDisable = wxNewId();
-    const long idShowTemp = wxNewId();
+const long idList = wxNewId();
+// menu
+const long idRemove = wxNewId();
+const long idRemoveAll = wxNewId();
+const long idProperties = wxNewId();
+const long idOpen = wxNewId();
+const long idEnable = wxNewId();
+const long idDisable = wxNewId();
+const long idShowTemp = wxNewId();
 }
 
 BEGIN_EVENT_TABLE(BreakpointsDlg, wxPanel)
@@ -97,8 +97,8 @@ BreakpointsDlg::BreakpointsDlg() :
 #endif // __WXMSW__
 
     const wxString &basepath = ConfigManager::GetDataFolder()
-                             + wxT("/manager_resources.zip#zip:/images/")
-                             + sizeStr;
+                               + wxT("/manager_resources.zip#zip:/images/")
+                               + sizeStr;
     wxBitmap icon = cbLoadBitmapScaled(basepath + wxT("breakpoint.png"), wxBITMAP_TYPE_PNG,
                                        scaleFactor);
     if (icon.IsOk())
@@ -212,9 +212,9 @@ struct FindBreakpointPred
     bool operator()(const BreakpointsDlg::Item &item) const
     {
         return plugin == item.plugin
-                && item.breakpoint->IsVisibleInEditor()
-                && item.breakpoint->GetLocation() == filename
-                && item.breakpoint->GetLine() == line;
+               && item.breakpoint->IsVisibleInEditor()
+               && item.breakpoint->GetLocation() == filename
+               && item.breakpoint->GetLine() == line;
     }
 private:
     cbDebuggerPlugin *plugin;

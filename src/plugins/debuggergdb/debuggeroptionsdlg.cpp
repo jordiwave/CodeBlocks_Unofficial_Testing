@@ -10,64 +10,64 @@
 #include <sdk.h>
 #include "debuggeroptionsdlg.h"
 #ifndef CB_PRECOMP
-    #include <wx/checkbox.h>
-    #include <wx/choice.h>
-    #include <wx/filedlg.h>
-    #include <wx/intl.h>
-    #include <wx/radiobox.h>
-    #include <wx/spinctrl.h>
-    #include <wx/textctrl.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/checkbox.h>
+#include <wx/choice.h>
+#include <wx/filedlg.h>
+#include <wx/intl.h>
+#include <wx/radiobox.h>
+#include <wx/spinctrl.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
 
-    #include <configmanager.h>
-    #include <macrosmanager.h>
+#include <configmanager.h>
+#include <macrosmanager.h>
 #endif
 
 #include "debuggergdb.h"
 
 class DebuggerConfigurationPanel : public wxPanel
 {
-    public:
-        void ValidateExecutablePath()
+public:
+    void ValidateExecutablePath()
+    {
+        wxTextCtrl *pathCtrl = XRCCTRL(*this, "txtExecutablePath", wxTextCtrl);
+        wxString path = pathCtrl->GetValue();
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(path);
+        if (!wxFileExists(path))
         {
-            wxTextCtrl *pathCtrl = XRCCTRL(*this, "txtExecutablePath", wxTextCtrl);
-            wxString path = pathCtrl->GetValue();
-            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(path);
-            if (!wxFileExists(path))
-            {
-                pathCtrl->SetForegroundColour(*wxWHITE);
-                pathCtrl->SetBackgroundColour(*wxRED);
-                pathCtrl->SetToolTip(_("Full path to the debugger's executable. Executable can't be found on the filesystem!"));
-            }
-            else
-            {
-                pathCtrl->SetForegroundColour(wxNullColour);
-                pathCtrl->SetBackgroundColour(wxNullColour);
-                pathCtrl->SetToolTip(_("Full path to the debugger's executable."));
-            }
-            pathCtrl->Refresh();
+            pathCtrl->SetForegroundColour(*wxWHITE);
+            pathCtrl->SetBackgroundColour(*wxRED);
+            pathCtrl->SetToolTip(_("Full path to the debugger's executable. Executable can't be found on the filesystem!"));
         }
-    private:
-        void OnBrowse(cb_unused wxCommandEvent &event)
+        else
         {
-            wxString oldPath = XRCCTRL(*this, "txtExecutablePath", wxTextCtrl)->GetValue();
-            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(oldPath);
-            wxFileDialog dlg(this, _("Select executable file"), wxEmptyString, oldPath,
-                             wxFileSelectorDefaultWildcardStr, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-            PlaceWindow(&dlg);
-            if (dlg.ShowModal() == wxID_OK)
-            {
-                wxString newPath = dlg.GetPath();
-                XRCCTRL(*this, "txtExecutablePath", wxTextCtrl)->ChangeValue(newPath);
-            }
+            pathCtrl->SetForegroundColour(wxNullColour);
+            pathCtrl->SetBackgroundColour(wxNullColour);
+            pathCtrl->SetToolTip(_("Full path to the debugger's executable."));
         }
+        pathCtrl->Refresh();
+    }
+private:
+    void OnBrowse(cb_unused wxCommandEvent &event)
+    {
+        wxString oldPath = XRCCTRL(*this, "txtExecutablePath", wxTextCtrl)->GetValue();
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(oldPath);
+        wxFileDialog dlg(this, _("Select executable file"), wxEmptyString, oldPath,
+                         wxFileSelectorDefaultWildcardStr, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+        PlaceWindow(&dlg);
+        if (dlg.ShowModal() == wxID_OK)
+        {
+            wxString newPath = dlg.GetPath();
+            XRCCTRL(*this, "txtExecutablePath", wxTextCtrl)->ChangeValue(newPath);
+        }
+    }
 
-        void OnTextChange(cb_unused wxCommandEvent &event)
-        {
-            ValidateExecutablePath();
-        }
-    private:
-        DECLARE_EVENT_TABLE()
+    void OnTextChange(cb_unused wxCommandEvent &event)
+    {
+        ValidateExecutablePath();
+    }
+private:
+    DECLARE_EVENT_TABLE()
 };
 
 BEGIN_EVENT_TABLE(DebuggerConfigurationPanel, wxPanel)
@@ -132,51 +132,51 @@ bool DebuggerConfiguration::GetFlag(Flags flag)
 {
     switch (flag)
     {
-        case DisableInit:
-            return m_config.ReadBool(wxT("disable_init"), true);
-        case WatchFuncArgs:
-            return m_config.ReadBool(wxT("watch_args"), true);
-        case WatchLocals:
-            return m_config.ReadBool(wxT("watch_locals"), true);
-        case CatchExceptions:
-            return m_config.ReadBool(wxT("catch_exceptions"), true);
-        case EvalExpression:
-            return m_config.ReadBool(wxT("eval_tooltip"), false);
-        case AddOtherProjectDirs:
-            return m_config.ReadBool(wxT("add_other_search_dirs"), false);
-        case DoNotRun:
-            return m_config.ReadBool(wxT("do_not_run"), false);
-        default:
-            return false;
+    case DisableInit:
+        return m_config.ReadBool(wxT("disable_init"), true);
+    case WatchFuncArgs:
+        return m_config.ReadBool(wxT("watch_args"), true);
+    case WatchLocals:
+        return m_config.ReadBool(wxT("watch_locals"), true);
+    case CatchExceptions:
+        return m_config.ReadBool(wxT("catch_exceptions"), true);
+    case EvalExpression:
+        return m_config.ReadBool(wxT("eval_tooltip"), false);
+    case AddOtherProjectDirs:
+        return m_config.ReadBool(wxT("add_other_search_dirs"), false);
+    case DoNotRun:
+        return m_config.ReadBool(wxT("do_not_run"), false);
+    default:
+        return false;
     }
 }
 void DebuggerConfiguration::SetFlag(Flags flag, bool value)
 {
     switch (flag)
     {
-        case DisableInit:
-            m_config.Write(wxT("disable_init"), value);
-            break;
-        case WatchFuncArgs:
-            m_config.Write(wxT("watch_args"), value);
-            break;
-        case WatchLocals:
-            m_config.Write(wxT("watch_locals"), value);
-            break;
-        case CatchExceptions:
-            m_config.Write(wxT("catch_exceptions"), value);
-            break;
-        case EvalExpression:
-            m_config.Write(wxT("eval_tooltip"), value);
-            break;
-        case AddOtherProjectDirs:
-            m_config.Write(wxT("add_other_search_dirs"), value);
-            break;
-        case DoNotRun:
-            m_config.Write(wxT("do_not_run"), value);
-            break;
-        default:
-            ;
+    case DisableInit:
+        m_config.Write(wxT("disable_init"), value);
+        break;
+    case WatchFuncArgs:
+        m_config.Write(wxT("watch_args"), value);
+        break;
+    case WatchLocals:
+        m_config.Write(wxT("watch_locals"), value);
+        break;
+    case CatchExceptions:
+        m_config.Write(wxT("catch_exceptions"), value);
+        break;
+    case EvalExpression:
+        m_config.Write(wxT("eval_tooltip"), value);
+        break;
+    case AddOtherProjectDirs:
+        m_config.Write(wxT("add_other_search_dirs"), value);
+        break;
+    case DoNotRun:
+        m_config.Write(wxT("do_not_run"), value);
+        break;
+    default:
+        ;
     }
 }
 
@@ -208,23 +208,23 @@ wxString DebuggerConfiguration::GetDisassemblyFlavorCommand()
     wxString flavour = wxT("set disassembly-flavor ");
     switch (disassembly_flavour)
     {
-        case 1: // AT & T
-        {
-            flavour << wxT("att");
-            break;
-        }
-        case 2: // Intel
-        {
-            flavour << wxT("intel");
-            break;
-        }
-        case 3: // Custom
-        {
-            wxString instruction_set = m_config.Read(wxT("instruction_set"), wxEmptyString);
-            flavour << instruction_set;
-            break;
-        }
-        default: // including case 0: // System default
+    case 1: // AT & T
+    {
+        flavour << wxT("att");
+        break;
+    }
+    case 2: // Intel
+    {
+        flavour << wxT("intel");
+        break;
+    }
+    case 3: // Custom
+    {
+        wxString instruction_set = m_config.Read(wxT("instruction_set"), wxEmptyString);
+        flavour << instruction_set;
+        break;
+    }
+    default: // including case 0: // System default
 
         if(platform::windows)
             flavour << wxT("att");

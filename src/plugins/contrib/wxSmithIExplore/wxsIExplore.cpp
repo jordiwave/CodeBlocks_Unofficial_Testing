@@ -31,38 +31,38 @@
 namespace
 {
 // Loading images from xpm files
-    #include "IE16.xpm"
-    #include "IE32.xpm"
+#include "IE16.xpm"
+#include "IE32.xpm"
 
-    wxsRegisterItem<wxsIExplore> Reg(
-        _T("wxIEHtmlWin"),              // Class name
-        wxsTWidget,                     // Item type
-        _T("wxWindows"),                // License
-        _T("Ron Collins"),              // Author
-        _T("rcoll@theriver.com"),       // Author's email
-        _T(""),                         // Item's homepage
-        _T("IExplore"),                 // Category in palette
-        90,                             // Priority in palette
-        _T("IE"),                       // Base part of names for new items
-        wxsCPP,                         // List of coding languages supported by this item
-        1, 0,                           // Version
-        wxBitmap(IE32_xpm),             // 32x32 bitmap
-        wxBitmap(IE16_xpm),             // 16x16 bitmap
-        false);                         // We do not allow this item inside XRC files
+wxsRegisterItem<wxsIExplore> Reg(
+    _T("wxIEHtmlWin"),              // Class name
+    wxsTWidget,                     // Item type
+    _T("wxWindows"),                // License
+    _T("Ron Collins"),              // Author
+    _T("rcoll@theriver.com"),       // Author's email
+    _T(""),                         // Item's homepage
+    _T("IExplore"),                 // Category in palette
+    90,                             // Priority in palette
+    _T("IE"),                       // Base part of names for new items
+    wxsCPP,                         // List of coding languages supported by this item
+    1, 0,                           // Version
+    wxBitmap(IE32_xpm),             // 32x32 bitmap
+    wxBitmap(IE16_xpm),             // 16x16 bitmap
+    false);                         // We do not allow this item inside XRC files
 
-    WXS_ST_BEGIN(wxsIExploreStyles,_T("wxRAISED_BORDER|wxTAB_TRAVERSAL"))
-        WXS_ST_CATEGORY("wxIEHtmlWin")
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsIExploreStyles,_T("wxRAISED_BORDER|wxTAB_TRAVERSAL"))
+WXS_ST_CATEGORY("wxIEHtmlWin")
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsIExploreEvents)
-        WXS_EVI(EVT_MSHTML_BEFORENAVIGATE2,  wxEVT_COMMAND_MSHTML_BEFORENAVIGATE2,  wxMSHTMLEvent, BeforeNavigate2)
-        WXS_EVI(EVT_MSHTML_NEWWINDOW2,       wxEVT_COMMAND_MSHTML_NEWWINDOW2,       wxMSHTMLEvent, NewWindow2)
-        WXS_EVI(EVT_MSHTML_DOCUMENTCOMPLETE, wxEVT_COMMAND_MSHTML_DOCUMENTCOMPLETE, wxMSHTMLEvent, DocumentComplete)
-        WXS_EVI(EVT_MSHTML_PROGRESSCHANGE,   wxEVT_COMMAND_MSHTML_PROGRESSCHANGE,   wxMSHTMLEvent, ProgressChange)
-        WXS_EVI(EVT_MSHTML_STATUSTEXTCHANGE, wxEVT_COMMAND_MSHTML_STATUSTEXTCHANGE, wxMSHTMLEvent, StatusTextChange)
-        WXS_EVI(EVT_MSHTML_TITLECHANGE,      wxEVT_COMMAND_MSHTML_TITLECHANGE,      wxMSHTMLEvent, TitleChange)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsIExploreEvents)
+WXS_EVI(EVT_MSHTML_BEFORENAVIGATE2,  wxEVT_COMMAND_MSHTML_BEFORENAVIGATE2,  wxMSHTMLEvent, BeforeNavigate2)
+WXS_EVI(EVT_MSHTML_NEWWINDOW2,       wxEVT_COMMAND_MSHTML_NEWWINDOW2,       wxMSHTMLEvent, NewWindow2)
+WXS_EVI(EVT_MSHTML_DOCUMENTCOMPLETE, wxEVT_COMMAND_MSHTML_DOCUMENTCOMPLETE, wxMSHTMLEvent, DocumentComplete)
+WXS_EVI(EVT_MSHTML_PROGRESSCHANGE,   wxEVT_COMMAND_MSHTML_PROGRESSCHANGE,   wxMSHTMLEvent, ProgressChange)
+WXS_EVI(EVT_MSHTML_STATUSTEXTCHANGE, wxEVT_COMMAND_MSHTML_STATUSTEXTCHANGE, wxMSHTMLEvent, StatusTextChange)
+WXS_EVI(EVT_MSHTML_TITLECHANGE,      wxEVT_COMMAND_MSHTML_TITLECHANGE,      wxMSHTMLEvent, TitleChange)
+WXS_EV_END()
 }
 
 //------------------------------------------------------------------------------
@@ -116,7 +116,8 @@ wxObject* wxsIExplore::OnBuildPreview(wxWindow* Parent, long Flags)
     SetupWindow(ie, Flags);
 
 // start page
-    if (! mStartPage.IsEmpty()) {
+    if (! mStartPage.IsEmpty())
+    {
         int i = mStartPage.Find(_T("//"));
         if (i == wxNOT_FOUND) mStartPage = _T("http://") + mStartPage;
         if ((Flags & pfExact) != 0) ie->LoadUrl(mStartPage);

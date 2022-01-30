@@ -10,13 +10,13 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-    #include <wx/combobox.h>
-    #include <wx/menu.h>
-    #include <wx/toolbar.h>
-    #include <wx/xrc/xmlres.h>
-    #include "cbeditor.h"
-    #include "configmanager.h"
-    #include "sdk_events.h"
+#include <wx/combobox.h>
+#include <wx/menu.h>
+#include <wx/toolbar.h>
+#include <wx/xrc/xmlres.h>
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "sdk_events.h"
 #endif
 
 #include "cbstyledtextctrl.h"
@@ -33,7 +33,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<ThreadSearch> reg(_T("ThreadSearch"));
+PluginRegistrant<ThreadSearch> reg(_T("ThreadSearch"));
 }
 
 // ----------------------------------------------------------------------------
@@ -125,24 +125,24 @@ END_EVENT_TABLE()
 
 // constructor
 ThreadSearch::ThreadSearch()
-             :m_SearchedWord(wxEmptyString),
-              m_pThreadSearchView(nullptr),
-              m_pViewManager(nullptr),
-              m_pToolbar(nullptr),
-              m_CtxMenuIntegration(true),
-              m_UseDefValsForThreadSearch(true),
-              m_ShowSearchControls(true),
-              m_ShowDirControls(false),
-              m_ShowCodePreview(true),
-              m_DeletePreviousResults(true),
-              m_LoggerType(ThreadSearchLoggerBase::TypeList),
-              m_DisplayLogHeaders(true),
-              m_DrawLogLines(false),
-              m_AutosizeLogColumns(false),
-              m_pCboSearchExpr(nullptr),
-              m_SplitterMode(wxSPLIT_VERTICAL),
-              m_FileSorting(InsertIndexManager::SortByFilePath),
-              m_EditorHookId(-1)
+    :m_SearchedWord(wxEmptyString),
+     m_pThreadSearchView(nullptr),
+     m_pViewManager(nullptr),
+     m_pToolbar(nullptr),
+     m_CtxMenuIntegration(true),
+     m_UseDefValsForThreadSearch(true),
+     m_ShowSearchControls(true),
+     m_ShowDirControls(false),
+     m_ShowCodePreview(true),
+     m_DeletePreviousResults(true),
+     m_LoggerType(ThreadSearchLoggerBase::TypeList),
+     m_DisplayLogHeaders(true),
+     m_DrawLogLines(false),
+     m_AutosizeLogColumns(false),
+     m_pCboSearchExpr(nullptr),
+     m_SplitterMode(wxSPLIT_VERTICAL),
+     m_FileSorting(InsertIndexManager::SortByFilePath),
+     m_EditorHookId(-1)
 {
 }
 
@@ -198,14 +198,14 @@ void ThreadSearch::OnAttach()
     // is FALSE, it means that the application did *not* "load"
     // (see: does not need) this plugin...
 
-    #if LOGGING
-     wxLog::EnableLogging(true);
-     m_pLog = new wxLogWindow(Manager::Get()->GetAppWindow(), _T(" ThreadSearch Plugin"), true, false);
-     wxLog::SetActiveTarget( m_pLog);
-     m_pLog->Flush();
-     m_pLog->GetFrame()->SetSize(20,30,600,300);
-     LOGIT( _T("ThreadSearch Plugin Logging Started"));
-    #endif
+#if LOGGING
+    wxLog::EnableLogging(true);
+    m_pLog = new wxLogWindow(Manager::Get()->GetAppWindow(), _T(" ThreadSearch Plugin"), true, false);
+    wxLog::SetActiveTarget( m_pLog);
+    m_pLog->Flush();
+    m_pLog->GetFrame()->SetSize(20,30,600,300);
+    LOGIT( _T("ThreadSearch Plugin Logging Started"));
+#endif
 
     CreateView(ThreadSearchViewManagerBase::TypeMessagesNotebook, false);
 
@@ -321,7 +321,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
             if (items[i]->IsSeparator())
             {
                 menu->Insert(i, controlIDs.Get(ControlIDs::idMenuSearchThreadSearch), _("Thread search"),
-                                _("Perform a Threaded search with the current word"));
+                             _("Perform a Threaded search with the current word"));
                 menu->InsertSeparator(i);
                 break;
             }
@@ -331,7 +331,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
         {
             // not found, just append
             menu->Append(controlIDs.Get(ControlIDs::idMenuSearchThreadSearch), _("Thread search"),
-                            _("Perform a Threaded search with the current word"));
+                         _("Perform a Threaded search with the current word"));
             menu->AppendSeparator();
         }
     }
@@ -472,7 +472,7 @@ void ThreadSearch::BuildModuleMenu(const ModuleType type, wxMenu* pMenu, const F
 }
 
 cbConfigurationPanel* ThreadSearch::GetConfigurationPanelEx(wxWindow* parent,
-                                                            cbConfigurationPanelColoursInterface *coloursInterface)
+        cbConfigurationPanelColoursInterface *coloursInterface)
 {
     if (!IsAttached())
         return NULL;
@@ -636,11 +636,11 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
     wxBitmap bmpFind = cbLoadBitmapScaled(prefix + wxT("findf.png"), wxBITMAP_TYPE_PNG,
                                           scaleFactor);
     wxBitmap bmpFindDisabled = cbLoadBitmapScaled(prefix + wxT("findfdisabled.png"),
-                                                  wxBITMAP_TYPE_PNG, scaleFactor);
+                               wxBITMAP_TYPE_PNG, scaleFactor);
     wxBitmap bmpOptions = cbLoadBitmapScaled(prefix + wxT("options.png"), wxBITMAP_TYPE_PNG,
-                                             scaleFactor);
+                          scaleFactor);
     wxBitmap bmpOptionsDisabled = cbLoadBitmapScaled(prefix + wxT("optionsdisabled.png"),
-                                                     wxBITMAP_TYPE_PNG, scaleFactor);
+                                  wxBITMAP_TYPE_PNG, scaleFactor);
 
     toolBar->AddControl(m_pCboSearchExpr);
     toolBar->AddTool(controlIDs.Get(ControlIDs::idBtnSearch), wxString(),
@@ -830,7 +830,7 @@ bool ThreadSearch::GetCursorWord(wxString& sWord)
 
 void ThreadSearch::OnMnuEditCopy(wxCommandEvent& event)
 {
-       if ( !IsAttached() )
+    if ( !IsAttached() )
     {
         event.Skip();
         return;
@@ -874,7 +874,8 @@ void ThreadSearch::OnMnuEditCopyUpdateUI(wxUpdateUIEvent& event)
 {
     if ( !IsAttached() )
     {
-        event.Skip(); return;
+        event.Skip();
+        return;
     }
 
     wxWindow* pFocused = wxWindow::FindFocus();
@@ -933,28 +934,42 @@ void ThreadSearch::OnMnuEditPaste(wxCommandEvent& event)
     //      If the window isn't one of ours, we'll event.Skip();
     // ----------------------------------------------------------------
 
-       if ( !IsAttached() )
-        { event.Skip(); return; }
+    if ( !IsAttached() )
+    {
+        event.Skip();
+        return;
+    }
 
-    if (not m_IsAttached) {event.Skip(); return;}
+    if (not m_IsAttached)
+    {
+        event.Skip();
+        return;
+    }
 
     wxWindow* pFocused = wxWindow::FindFocus();
-    if (not pFocused) { event.Skip(); return; }
+    if (not pFocused)
+    {
+        event.Skip();
+        return;
+    }
 
     wxString focusedStr = pFocused->GetName();
 //    DBGLOG(wxT("OnMnuEditPaste:Focused[%p][%s]"), pFocused, focusedStr.c_str());
 
     // don't allow paste when the following windows have the focus
     if ( (pFocused == m_pThreadSearchView->m_pSearchPreview) ||
-         (pFocused == (wxWindow*)m_pThreadSearchView->m_pLogger) )
+            (pFocused == (wxWindow*)m_pThreadSearchView->m_pLogger) )
     {
         return;
     }
 
     // if the following window have the focus, own the paste.
     if ( (pFocused != m_pCboSearchExpr)
-        && (pFocused != m_pThreadSearchView->m_pCboSearchExpr) )
-        { event.Skip(); return;}
+            && (pFocused != m_pThreadSearchView->m_pCboSearchExpr) )
+    {
+        event.Skip();
+        return;
+    }
 
     if (pFocused == m_pCboSearchExpr)
         m_pCboSearchExpr->Paste();

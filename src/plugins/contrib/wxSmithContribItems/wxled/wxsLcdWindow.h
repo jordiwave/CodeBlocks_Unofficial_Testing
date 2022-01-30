@@ -6,22 +6,22 @@
 
 class wxsLcdWindow : public wxsWidget
 {
-    public:
-        wxsLcdWindow(wxsItemResData* Data);
-        virtual ~wxsLcdWindow();
-    protected:
+public:
+    wxsLcdWindow(wxsItemResData* Data);
+    virtual ~wxsLcdWindow();
+protected:
 
-        void        OnBuildCreatingCode();
-        wxObject*   OnBuildPreview(wxWindow* Parent,long Flags);
-        void        OnEnumWidgetProperties(long Flags);
+    void        OnBuildCreatingCode();
+    wxObject*   OnBuildPreview(wxWindow* Parent,long Flags);
+    void        OnEnumWidgetProperties(long Flags);
 
-        long int        NumberOfDigits;
-        wxString        Content;
-        wxsColourData   ColourLight;
-        wxsColourData   ColourGray;
-        wxsColourData   BackGround;
+    long int        NumberOfDigits;
+    wxString        Content;
+    wxsColourData   ColourLight;
+    wxsColourData   ColourGray;
+    wxsColourData   BackGround;
 
-    private:
+private:
 };
 
 #endif // WXSLCDWINDOW_H

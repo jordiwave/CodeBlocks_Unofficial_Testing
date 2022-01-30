@@ -8,9 +8,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="bzip2">
-				<Option output="../../../devel31_64/libbz2_help.a" prefix_auto="0" extension_auto="0" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libbz2_help.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
-				<Option object_output="../../../.objs31_64/plugins/contrib/help_plugin/bzip2" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/help_plugin/bzip2" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -22,9 +22,9 @@
 				</Linker>
 			</Target>
 			<Target title="zlib">
-				<Option output="../../../devel31_64/libz.a" prefix_auto="0" extension_auto="0" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libz.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
-				<Option object_output="../../../.objs31_64/plugins/contrib/help_plugin/zlib" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/help_plugin/zlib" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -36,26 +36,26 @@
 				</Linker>
 			</Target>
 			<Target title="help_plugin">
-				<Option output="../../../devel31_64/share/CodeBlocks/plugins/help_plugin.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="../../../.objs31_64/plugins/contrib/help_plugin" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/help_plugin.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/help_plugin" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="../../../devel31_64/codeblocks.exe" />
+				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="-Wall" />
-					<Add option="$(#CB_RELEASE_TYPE)" />
+					<Add option="$(#CB_BUILD.CFLAGS)" />
 					<Add option="-pipe" />
 					<Add option="-mthreads" />
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />
 					<Add option="-DBUILDING_PLUGIN" />
-                    <Add option="-Winvalid-pch" />
-                    <Add option="-DCB_PRECOMP" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-DCB_PRECOMP" />
 					<Add option="-DHAVE_W32API_H" />
 					<Add option="-D__WXMSW__" />
-					<Add option="-D_WIN64" />
+					<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
 					<Add option="-DWXUSINGDLL" />
 					<Add option="-DcbDEBUG" />
 					<Add option="-DwxUSE_UNICODE" />
@@ -68,46 +68,43 @@
 					<Add library="z" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 ..\..\..\devel31_64\share\CodeBlocks\help_plugin.zip manifest.xml *.xrc" />
-					<Add after="zip -Rq9 ..\..\..\devel31_64\share\CodeBlocks\help_plugin.zip images\16x16\*.png images\20x20\*.png images\24x24\*.png" />
-					<Add after="zip -Rq9 ..\..\..\devel31_64\share\CodeBlocks\help_plugin.zip images\28x28\*.png images\32x32\*.png images\40x40\*.png" />
-					<Add after="zip -Rq9 ..\..\..\devel31_64\share\CodeBlocks\help_plugin.zip images\48x48\*.png images\56x56\*.png images\64x64\*.png" />
-					<Add after="cmd /c if not exist ..\..\..\devel31_64\share\CodeBlocks\docs mkdir ..\..\..\devel31_64\share\CodeBlocks\docs" />
-					<Add after="xcopy /Y index.ini ..\..\..\devel31_64\share\CodeBlocks\docs" />
-					<Add after="cmd /c if not exist ..\..\..\output31_64\share\CodeBlocks\docs mkdir ..\..\..\output31_64\share\CodeBlocks\docs" />
-					<Add after="xcopy /Y index.ini ..\..\..\output31_64\share\CodeBlocks\docs" />
+					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
+					<Add before="cmd /c if exist $(TARGET_OUTPUT_FILE) del $(TARGET_OUTPUT_FILE)" />
+					<Add before="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\help_plugin.zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\help_plugin.zip" />
+
+					<Add after="zip -j9  $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\help_plugin.zip manifest.xml *.xrc" />
+					<Add after="zip -rq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\help_plugin.zip .\images" />
+
+					<Add after="cmd /c if not exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\docs mkdir $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\docs" />
+					<Add after="xcopy /Y index.ini $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\docs\" />
+
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
-			<Environment>
-				<!-- Variable name="WX_CFG" value="" / -->
-				<!-- Variable name="WX_SUFFIX" value="u" / -->
-				<!-- Variable name="WX_VERSION" value="31" / -->
-			</Environment>
 		</Build>
 		<VirtualTargets>
 			<Add alias="All" targets="bzip2;zlib;help_plugin;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="-std=gnu++11" />
-			<Add directory="$(#WX31_64.include)" />
-			<Add directory="$(#WX31_64.lib)/gcc_dll$(#WX31.WX_CFG)/msw$(#WX31.WX_SUFFIX)" />
-			<Add directory="../../../include" />
-			<Add directory="../../../include/tinyxml" />
-			<Add directory="../../../sdk/wxscintilla/include" />
-			<Add directory="../../../include/scripting/include" />
+			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add directory="$(#CB_BUILD)/include" />
+			<Add directory="$(#CB_BUILD)/include/tinyxml" />
+			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
+			<Add directory="$(#CB_BUILD)/include/scripting/include" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(#WX31_64.include)" />
+			<Add directory="$(#WXWIDGETS.include)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-image-base" />
 			<Add option="-Wl,--add-stdcall-alias" />
 			<Add option="-Wl,--enable-auto-import" />
-			<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
+			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
 			<Add library="codeblocks" />
-			<Add directory="../../../devel31_64" />
-			<Add directory="$(#WX31_64.lib)/gcc_dll$(#WX31.WX_CFG)" />
+			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
 		</Linker>
 		<Unit filename="HelpConfigDialog.cpp">
 			<Option target="help_plugin" />

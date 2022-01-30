@@ -32,9 +32,9 @@ wxWindow* Utils::FindWindowRecursively(const wxWindow* parent, const wxString& p
 {
     if ( parent )
     {
-        #if defined(LOGGING)
-            //LOGIT( _T("Parent[%p]Label[%s]Name[%s]"), parent, parent->GetLabel().c_str(), parent->GetName().c_str() );
-        #endif
+#if defined(LOGGING)
+        //LOGIT( _T("Parent[%p]Label[%s]Name[%s]"), parent, parent->GetLabel().c_str(), parent->GetName().c_str() );
+#endif
         // see if this is the one we're looking for
         if ( parent->GetLabel().Matches(partialLabel) )
             return (wxWindow *)parent;
@@ -43,7 +43,7 @@ wxWindow* Utils::FindWindowRecursively(const wxWindow* parent, const wxString& p
 
         // It wasn't, so check all its children
         for ( wxWindowList::compatibility_iterator node = parent->GetChildren().GetFirst();
-              node; node = node->GetNext() )
+                node; node = node->GetNext() )
         {
             // recursively check each child
             wxWindow *win = (wxWindow *)node->GetData();
@@ -68,8 +68,8 @@ wxWindow* Utils::FindWindowRecursively(const wxWindow* parent, const wxWindow* h
 
         // It wasn't, so check all its children
         for ( wxWindowList::compatibility_iterator node = parent->GetChildren().GetFirst();
-              node;
-              node = node->GetNext() )
+                node;
+                node = node->GetNext() )
         {
             // recursively check each child
             wxWindow *win = (wxWindow *)node->GetData();
@@ -94,8 +94,8 @@ wxWindow* Utils::WinExists(wxWindow *parent)
 
     // start at very top of wx's windows
     for ( wxWindowList::compatibility_iterator node = wxTopLevelWindows.GetFirst();
-          node;
-          node = node->GetNext() )
+            node;
+            node = node->GetNext() )
     {
         // recursively check each window & its children
         wxWindow* win = node->GetData();

@@ -83,12 +83,12 @@ void comment_collector::operator() ( wxChar const *first, wxChar const *last ) c
 }
 
 MoveComment::MoveComment(wxString &src, wxString &dst):
-	m_src(src), m_dst(dst)
+    m_src(src), m_dst(dst)
 {}
 
 void MoveComment::operator()( wxChar const *first, wxChar const *last ) const
 {
-	if (!m_src.IsEmpty())
+    if (!m_src.IsEmpty())
     {
         m_dst = m_src;
         m_src.clear();
@@ -164,7 +164,7 @@ void CreateNassiReturnBrick::operator() ( wxChar const * /*first*/, wxChar const
     m_brick->SetNext( new NassiReturnBrick() );
     m_brick = m_brick->GetNext();
     m_brick->SetTextByNumber(m_c_str, 0);
-    m_brick->SetTextByNumber( m_s_str , 1);
+    m_brick->SetTextByNumber( m_s_str, 1);
     m_c_str.clear();
     m_s_str.clear();
 }

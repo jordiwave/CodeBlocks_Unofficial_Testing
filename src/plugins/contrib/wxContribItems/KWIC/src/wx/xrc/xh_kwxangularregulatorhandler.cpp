@@ -48,22 +48,24 @@ wxObject *kwxAngularRegulatorHandler::DoCreateResource()
 
     control->Create(m_parentAsWindow, GetID(), GetPosition(), GetSize(), wxBORDER_NONE);
     control->SetRange(GetLong(wxT("range_min"), 0), GetLong(wxT("range_max"), 220));
-	control->SetAngle(GetLong(wxT("angle_min"), -20), GetLong(wxT("angle_max"), 200));
+    control->SetAngle(GetLong(wxT("angle_min"), -20), GetLong(wxT("angle_max"), 200));
     control->SetExtCircleColour(GetColour(wxT("external_circlecolour"), *wxLIGHT_GREY));
     control->SetIntCircleColour(GetColour(wxT("internal_circle_colour"), *wxLIGHT_GREY));
     control->SetKnobBorderColour(GetColour(wxT("knob_border_colour"), *wxBLACK));
     control->SetKnobColour(GetColour(wxT("knob_colour"), *wxLIGHT_GREY));
     control->SetLimitsColour(GetColour(wxT("range_tag_colour"), *wxBLACK));
     control->SetTagsColour(GetColour(wxT("tag_colour"), *wxBLACK));
-	int i = 1;
-	while(1){
-		wxString s = wxString::Format(wxT("tag_%d_value"), i);
-		if(!HasParam(s)){
-			break;
-		}
-		control->AddTag(GetLong(s));
-		i++;
-	}
+    int i = 1;
+    while(1)
+    {
+        wxString s = wxString::Format(wxT("tag_%d_value"), i);
+        if(!HasParam(s))
+        {
+            break;
+        }
+        control->AddTag(GetLong(s));
+        i++;
+    }
     control->SetValue(GetLong(wxT("value"), 0));
 
     SetupWindow(control);

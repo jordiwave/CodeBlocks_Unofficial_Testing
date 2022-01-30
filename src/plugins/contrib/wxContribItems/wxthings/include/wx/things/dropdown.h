@@ -54,7 +54,10 @@ class WXDLLIMPEXP_THINGS DropDownBase : public wxControl
 {
 public:
 
-    DropDownBase() : wxControl() { Init(); }
+    DropDownBase() : wxControl()
+    {
+        Init();
+    }
 
     DropDownBase( wxWindow *parent, wxWindowID id = wxID_ANY,
                   const wxPoint& pos = wxDefaultPosition,
@@ -62,7 +65,7 @@ public:
                   long style = 0,
                   const wxValidator& val = wxDefaultValidator,
                   const wxString& name = wxT("DropDownBase"))
-                  : wxControl()
+        : wxControl()
     {
         Init();
         Create(parent, id, pos, size, style, val, name);
@@ -84,9 +87,15 @@ public:
 
     // implementation
     void OnDropButton( wxCommandEvent &event );
-    wxCustomButton* GetDropDownButton() { return m_dropdownButton; }
+    wxCustomButton* GetDropDownButton()
+    {
+        return m_dropdownButton;
+    }
     // Get the popup window, NULL when not shown
-    DropDownPopup* GetPopupWindow() { return m_popupWin; }
+    DropDownPopup* GetPopupWindow()
+    {
+        return m_popupWin;
+    }
 
 protected:
     virtual void DoSetSize(int x, int y, int width, int height,
@@ -100,7 +109,10 @@ protected:
     // override to set the height of the dropdown box
     //   input max_height is height from bottom of ctrl to bottom of screen
     //   return < 1 to not have the popup displayed
-    virtual int DoGetBestDropHeight(int max_height) { return max_height; }
+    virtual int DoGetBestDropHeight(int max_height)
+    {
+        return max_height;
+    }
 
     wxCustomButton *m_dropdownButton;
     DropDownPopup *m_popupWin;
@@ -118,7 +130,10 @@ private:
 class WXDLLIMPEXP_THINGS DropDownPopup : public wxPopupTransientWindow
 {
 public:
-    DropDownPopup() : wxPopupTransientWindow() { Init(); }
+    DropDownPopup() : wxPopupTransientWindow()
+    {
+        Init();
+    }
     DropDownPopup(DropDownBase *parent, int style = wxBORDER_NONE) : wxPopupTransientWindow()
     {
         Init();
@@ -133,7 +148,10 @@ public:
     virtual bool ProcessLeftDown(wxMouseEvent& event);
 
     virtual void SetChild(wxWindow *child);
-    virtual wxWindow *GetChild() const { return m_childWin; }
+    virtual wxWindow *GetChild() const
+    {
+        return m_childWin;
+    }
     bool m_ignore_popup;
 
 protected:

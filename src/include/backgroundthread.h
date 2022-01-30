@@ -35,8 +35,8 @@
 class AbstractJob
 {
 public:
-    AbstractJob(){};
-    virtual ~AbstractJob(){};
+    AbstractJob() {};
+    virtual ~AbstractJob() {};
     virtual void operator()() = 0;
 };
 
@@ -74,28 +74,28 @@ class BackgroundThread : public wxThread
 
 public:
     BackgroundThread(JobQueue *q, wxSemaphore *s, const bool owns_jobs = true)
-    : queue(q), semaphore(s), die(false), ownsQueue(false), ownsSemaphore(false), ownsJobs(owns_jobs)
+        : queue(q), semaphore(s), die(false), ownsQueue(false), ownsSemaphore(false), ownsJobs(owns_jobs)
     {
         Create();
         Run();
     };
 
     BackgroundThread(wxSemaphore *s, const bool owns_jobs = true)
-    : queue(new JobQueue), semaphore(s), die(false), ownsQueue(true), ownsSemaphore(false), ownsJobs(owns_jobs)
+        : queue(new JobQueue), semaphore(s), die(false), ownsQueue(true), ownsSemaphore(false), ownsJobs(owns_jobs)
     {
         Create();
         Run();
     };
 
     BackgroundThread(JobQueue *q, const bool owns_jobs = true)
-    : queue(q), semaphore(new wxSemaphore), die(false), ownsQueue(false), ownsSemaphore(true), ownsJobs(owns_jobs)
+        : queue(q), semaphore(new wxSemaphore), die(false), ownsQueue(false), ownsSemaphore(true), ownsJobs(owns_jobs)
     {
         Create();
         Run();
     };
 
     BackgroundThread(const bool owns_jobs = true)
-    : queue(new JobQueue), semaphore(new wxSemaphore), die(false), ownsQueue(true), ownsSemaphore(true), ownsJobs(owns_jobs)
+        : queue(new JobQueue), semaphore(new wxSemaphore), die(false), ownsQueue(true), ownsSemaphore(true), ownsJobs(owns_jobs)
     {
         Create();
         Run();
@@ -154,8 +154,20 @@ public:
 
 
 
-struct Agony { inline void operator()(BackgroundThread* t){t->MarkDying();}; };
-struct Death { inline void operator()(BackgroundThread* t){t->Die();}; };
+struct Agony
+{
+    inline void operator()(BackgroundThread* t)
+    {
+        t->MarkDying();
+    };
+};
+struct Death
+{
+    inline void operator()(BackgroundThread* t)
+    {
+        t->Die();
+    };
+};
 
 class BackgroundThreadPool
 {

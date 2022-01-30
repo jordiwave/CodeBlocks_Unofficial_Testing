@@ -64,40 +64,43 @@ typedef wxsBitmapIconData wxsIconData;
  */
 class wxsBitmapIconProperty: public wxsCustomEditorProperty
 {
-    public:
+public:
 
-        /** \brief Ctor
-         *  \param PGName           name of property in Property Grid
-         *  \param DataName         name of property in data stuctures
-         *  \param Offset           offset of wxsBitmapIconData structure (returned from wxsOFFSET macro)
-         *  \param DefaultClient    name of default art provider client
-         *  \param Priority         priority of this property
-         */
-        wxsBitmapIconProperty(
-            const wxString& PGName,
-            const wxString& DataName,
-            long Offset,
-            const wxString& DefaultClient = _T("wxART_OTHER"),
-            int Priority=100);
+    /** \brief Ctor
+     *  \param PGName           name of property in Property Grid
+     *  \param DataName         name of property in data stuctures
+     *  \param Offset           offset of wxsBitmapIconData structure (returned from wxsOFFSET macro)
+     *  \param DefaultClient    name of default art provider client
+     *  \param Priority         priority of this property
+     */
+    wxsBitmapIconProperty(
+        const wxString& PGName,
+        const wxString& DataName,
+        long Offset,
+        const wxString& DefaultClient = _T("wxART_OTHER"),
+        int Priority=100);
 
-        /** \brief Returning type name */
-        virtual const wxString GetTypeName() { return _T("wxBitmapIcon"); }
+    /** \brief Returning type name */
+    virtual const wxString GetTypeName()
+    {
+        return _T("wxBitmapIcon");
+    }
 
-        /** \brief Showing editor for this property */
-        virtual bool ShowEditor(wxsPropertyContainer* Object);
+    /** \brief Showing editor for this property */
+    virtual bool ShowEditor(wxsPropertyContainer* Object);
 
-    protected:
+protected:
 
-        virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-        virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-        virtual wxString GetStr(wxsPropertyContainer* Object);
+    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual wxString GetStr(wxsPropertyContainer* Object);
 
-    private:
+private:
 
-        long Offset;
-        wxString DefaultClient;
+    long Offset;
+    wxString DefaultClient;
 };
 
 typedef wxsBitmapIconProperty wxsBitmapProperty;

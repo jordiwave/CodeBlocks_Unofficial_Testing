@@ -31,38 +31,38 @@ namespace
 
 // Loading images from xpm files
 
-    #include "SpeedButton16.xpm"
-    #include "SpeedButton32.xpm"
+#include "SpeedButton16.xpm"
+#include "SpeedButton32.xpm"
 
-    wxsRegisterItem<wxsSpeedButton> Reg(
-        _T("wxSpeedButton"),            // Class name
-        wxsTWidget,                     // Item type
-        _T("wxWindows"),                // License
-        _T("Ron Collins"),              // Author
-        _T("rcoll@theriver.com"),       // Author's email
-        _T(""),                         // Item's homepage
-        _T("Contrib"),                  // Category in palette
-        50,                             // Priority in palette
-        _T("SpeedButton"),              // Base part of names for new items
-        wxsCPP,                         // List of coding languages supported by this item
-        1, 0,                           // Version
-        wxBitmap(SpeedButton32_xpm),    // 32x32 bitmap
-        wxBitmap(SpeedButton16_xpm),    // 16x16 bitmap
-        false);                         // We do not allow this item inside XRC files
+wxsRegisterItem<wxsSpeedButton> Reg(
+    _T("wxSpeedButton"),            // Class name
+    wxsTWidget,                     // Item type
+    _T("wxWindows"),                // License
+    _T("Ron Collins"),              // Author
+    _T("rcoll@theriver.com"),       // Author's email
+    _T(""),                         // Item's homepage
+    _T("Contrib"),                  // Category in palette
+    50,                             // Priority in palette
+    _T("SpeedButton"),              // Base part of names for new items
+    wxsCPP,                         // List of coding languages supported by this item
+    1, 0,                           // Version
+    wxBitmap(SpeedButton32_xpm),    // 32x32 bitmap
+    wxBitmap(SpeedButton16_xpm),    // 16x16 bitmap
+    false);                         // We do not allow this item inside XRC files
 
-    WXS_ST_BEGIN(wxsSpeedButtonStyles,_T("wxBORDER_NONE|wxTAB_TRAVERSAL"))
-        WXS_ST_CATEGORY("wxSpeedButton")
-        WXS_ST(wxBU_LEFT)
-        WXS_ST(wxBU_TOP)
-        WXS_ST(wxBU_RIGHT)
-        WXS_ST(wxBU_BOTTOM)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsSpeedButtonStyles,_T("wxBORDER_NONE|wxTAB_TRAVERSAL"))
+WXS_ST_CATEGORY("wxSpeedButton")
+WXS_ST(wxBU_LEFT)
+WXS_ST(wxBU_TOP)
+WXS_ST(wxBU_RIGHT)
+WXS_ST(wxBU_BOTTOM)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsSpeedButtonEvents)
-        WXS_EVI(EVT_COMMAND_LEFT_CLICK,  wxEVT_COMMAND_LEFT_CLICK,  wxCommandEvent, LeftClick)
-        WXS_EVI(EVT_COMMAND_RIGHT_CLICK, wxEVT_COMMAND_RIGHT_CLICK, wxCommandEvent, RightClick)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsSpeedButtonEvents)
+WXS_EVI(EVT_COMMAND_LEFT_CLICK,  wxEVT_COMMAND_LEFT_CLICK,  wxCommandEvent, LeftClick)
+WXS_EVI(EVT_COMMAND_RIGHT_CLICK, wxEVT_COMMAND_RIGHT_CLICK, wxCommandEvent, RightClick)
+WXS_EV_END()
 }
 
 //------------------------------------------------------------------------------
@@ -91,12 +91,13 @@ wxsSpeedButton::wxsSpeedButton(wxsItemResData* Data):
 
 //------------------------------------------------------------------------------
 
-void wxsSpeedButton::OnBuildCreatingCode() {
-int         n;
-wxString    inc;
-wxString    vname;                  // name of this var
-wxString    bname;                  // name of wxBitmap for the button
-wxString    ss, tt;
+void wxsSpeedButton::OnBuildCreatingCode()
+{
+    int         n;
+    wxString    inc;
+    wxString    vname;                  // name of this var
+    wxString    bname;                  // name of wxBitmap for the button
+    wxString    ss, tt;
 
 // valid language?
 
@@ -126,7 +127,7 @@ wxString    ss, tt;
 // create the button
 
     Codef(_T("%s = new wxSpeedButton(%W, %I, %t, %s, %d, %d, %d, %b, %P, %S, %T, %V, %N);\n"),
-        vname.wx_str(), mLabel.wx_str(), bname.wx_str(), mGlyphCount, mMargin, n, mAllowAllUp);
+          vname.wx_str(), mLabel.wx_str(), bname.wx_str(), mGlyphCount, mMargin, n, mAllowAllUp);
     BuildSetupWindowCode();
 
 // and individual button settings
@@ -142,8 +143,9 @@ wxString    ss, tt;
 //   then #include the file and make a bitmap from the data
 // else it must be a file was selected, so make a bitmap from the file
 
-void  wxsSpeedButton::BuildBitmap(void) {
-wxString    s,v;
+void  wxsSpeedButton::BuildBitmap(void)
+{
+    wxString    s,v;
 
 // make a name for the bitmap
 
@@ -151,19 +153,22 @@ wxString    s,v;
 
 // no image
 
-    if ((mGlyph.Id.IsEmpty()) && (mGlyph.FileName.IsEmpty())) {
+    if ((mGlyph.Id.IsEmpty()) && (mGlyph.FileName.IsEmpty()))
+    {
         Codef(_T("wxBitmap %s = wxNullBitmap;\n"), v.wx_str());
     }
 
 // art-provider image
 
-    else if (! mGlyph.Id.IsEmpty()) {
+    else if (! mGlyph.Id.IsEmpty())
+    {
         Codef(_T("wxBitmap %s(%i);\n"), v.wx_str(), &mGlyph);
     }
 
 // is it an XPM and do we want to #include it?
 
-    else if ((IsImageXPM(mGlyph)) && (mUseInclude)) {
+    else if ((IsImageXPM(mGlyph)) && (mUseInclude))
+    {
         s = mGlyph.FileName;
         s.Replace("\\", "/", true);
         s = "\"" + s + "\"";
@@ -175,7 +180,8 @@ wxString    s,v;
 
 // else a normal image file
 
-    else if (! mGlyph.FileName.IsEmpty()) {
+    else if (! mGlyph.FileName.IsEmpty())
+    {
         s = mGlyph.FileName;
         s.Replace("\\", "/", true);
 
@@ -184,7 +190,8 @@ wxString    s,v;
 
 // an unknown and unexpected set of conditions
 
-    else {
+    else
+    {
         Codef(_T("wxBitmap %s = wxNullBitmap;\n"), v.wx_str());
     };
 }
@@ -192,8 +199,9 @@ wxString    s,v;
 //------------------------------------------------------------------------------
 // did the user specify a XPM image file?
 
-bool    wxsSpeedButton::IsImageXPM(wxsBitmapData &inData) {
-wxString    s;
+bool    wxsSpeedButton::IsImageXPM(wxsBitmapData &inData)
+{
+    wxString    s;
 
 // a special case of no image at all
 
@@ -228,7 +236,8 @@ wxString    s;
 // if an image data buffer specifies an XPM file, then return the name
 // of the static char array defined by the file
 
-wxString    wxsSpeedButton::GetXPMName(wxsBitmapData &inData) {
+wxString    wxsSpeedButton::GetXPMName(wxsBitmapData &inData)
+{
     wxFileInputStream input( inData.FileName );
     wxTextInputStream txt( input );
 
@@ -239,7 +248,8 @@ wxString    wxsSpeedButton::GetXPMName(wxsBitmapData &inData) {
 
 // read until EOF, keeping the last data name we find
 
-    while (! input.Eof()) {
+    while (! input.Eof())
+    {
 
 // next line
 
@@ -287,10 +297,11 @@ wxString    wxsSpeedButton::GetXPMName(wxsBitmapData &inData) {
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsSpeedButton::OnBuildPreview(wxWindow* Parent, long Flags) {
-int             n;
-wxSpeedButton   *sb;
-wxBitmap        bmp;
+wxObject* wxsSpeedButton::OnBuildPreview(wxWindow* Parent, long Flags)
+{
+    int             n;
+    wxSpeedButton   *sb;
+    wxBitmap        bmp;
 
 // make bitmap
 
@@ -307,8 +318,8 @@ wxBitmap        bmp;
 // make a button
 
     sb = new wxSpeedButton(Parent, GetId(), mLabel, bmp, mGlyphCount,
-        mMargin, n, mAllowAllUp, Pos(Parent), Size(Parent), Style(),
-        wxDefaultValidator, _T("SpeedButton"));
+                           mMargin, n, mAllowAllUp, Pos(Parent), Size(Parent), Style(),
+                           wxDefaultValidator, _T("SpeedButton"));
     if (sb == NULL) return NULL;
     SetupWindow(sb, Flags);
 
@@ -321,9 +332,10 @@ wxBitmap        bmp;
 
 //------------------------------------------------------------------------------
 
-void wxsSpeedButton::OnEnumWidgetProperties(cb_unused long Flags) {
-static const long    TypeValues[] = {    0,                   1,                   2,                     3,                 0};
-static const wxChar* TypeNames[]  = {_T("Simple Button"), _T("Toggle Button"), _T("Group By Parent"), _T("Group By Index"),  0};
+void wxsSpeedButton::OnEnumWidgetProperties(cb_unused long Flags)
+{
+    static const long    TypeValues[] = {    0,                   1,                   2,                     3,                 0};
+    static const wxChar* TypeNames[]  = {_T("Simple Button"), _T("Toggle Button"), _T("Group By Parent"), _T("Group By Index"),  0};
 
     WXS_STRING(wxsSpeedButton, mLabel,      _("Label"),               _T("label"),      _T(""), false);
     WXS_BITMAP(wxsSpeedButton, mGlyph,      _("Glyph"),               _T("glyph"),      _T("wxART_OTHER"));

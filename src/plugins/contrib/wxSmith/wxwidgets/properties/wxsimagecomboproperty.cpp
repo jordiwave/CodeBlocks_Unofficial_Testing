@@ -59,8 +59,8 @@ bool wxsImageComboProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* E
     }
 
     for ( TiXmlElement* Item = Element->FirstChildElement(cbU2C(DataSubName));
-          Item;
-          Item = Item->NextSiblingElement(cbU2C(DataSubName)) )
+            Item;
+            Item = Item->NextSiblingElement(cbU2C(DataSubName)) )
     {
         const char* Text = Item->GetText();
         if ( Text )

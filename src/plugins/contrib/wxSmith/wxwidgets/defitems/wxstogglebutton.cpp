@@ -26,17 +26,17 @@
 
 namespace
 {
-    wxsRegisterItem<wxsToggleButton> Reg(_T("ToggleButton"),wxsTWidget,_T("Standard"),30);
+wxsRegisterItem<wxsToggleButton> Reg(_T("ToggleButton"),wxsTWidget,_T("Standard"),30);
 
-    WXS_ST_BEGIN(wxsToggleButtonStyles,_T(""))
-        WXS_ST_CATEGORY("wxToggleButton")
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsToggleButtonStyles,_T(""))
+WXS_ST_CATEGORY("wxToggleButton")
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsToggleButtonEvents)
-        WXS_EVI(EVT_TOGGLEBUTTON,wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,wxCommandEvent,Toggle)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsToggleButtonEvents)
+WXS_EVI(EVT_TOGGLEBUTTON,wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,wxCommandEvent,Toggle)
+WXS_EV_END()
 }
 
 wxsToggleButton::wxsToggleButton(wxsItemResData* Data):
@@ -45,8 +45,8 @@ wxsToggleButton::wxsToggleButton(wxsItemResData* Data):
         &Reg.Info,
         wxsToggleButtonEvents,
         wxsToggleButtonStyles),
-   Label(_("Label")),
-   IsChecked(false)
+    Label(_("Label")),
+    IsChecked(false)
 {}
 
 
@@ -54,20 +54,20 @@ void wxsToggleButton::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/tglbtn.h>"),GetInfo().ClassName,0);
-            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.wx_str());
-            if ( IsChecked ) Codef(_T("%ASetValue(%b);\n"),true);
-            BuildSetupWindowCode();
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/tglbtn.h>"),GetInfo().ClassName,0);
+        Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.wx_str());
+        if ( IsChecked ) Codef(_T("%ASetValue(%b);\n"),true);
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsToggleButton::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsToggleButton::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

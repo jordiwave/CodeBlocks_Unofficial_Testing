@@ -79,7 +79,7 @@ void wxsItemEditorContent::PaintExtra(wxDC* DC)
         }
         int PosX = DPD->PosX - m_DragBoxSize/2;
         int PosY = DPD->PosY - m_DragBoxSize/2;
-        DC->DrawRectangle(PosX , PosY, m_DragBoxSize, m_DragBoxSize );
+        DC->DrawRectangle(PosX, PosY, m_DragBoxSize, m_DragBoxSize );
     }
 
     if ( m_MouseState==msTargetSearch && m_TargetInfo )
@@ -268,7 +268,7 @@ wxsItemEditorContent::DragPointData* wxsItemEditorContent::FindDragPointAtPos(in
         int dpy = DPD->PosY - (m_DragBoxSize/2);
 
         if ( (PosX >= dpx) && (PosX < dpx+m_DragBoxSize) &&
-             (PosY >= dpy) && (PosY < dpy+m_DragBoxSize) )
+                (PosY >= dpy) && (PosY < dpy+m_DragBoxSize) )
         {
             return DPD;
         }
@@ -314,14 +314,27 @@ void wxsItemEditorContent::OnMouse(wxMouseEvent& event)
     event.m_y = NewY;
     switch ( m_MouseState )
     {
-        case msDraggingPointInit: OnMouseDraggingPointInit (event); break;
-        case msDraggingPoint:     OnMouseDraggingPoint     (event); break;
-        case msDraggingItemInit:  OnMouseDraggingItemInit  (event); break;
-        case msDraggingItem:      OnMouseDraggingItem      (event); break;
-        case msTargetSearch:      OnMouseTargetSearch      (event); break;
-        case msWaitForIdle:                                         break;
-        case msIdle: // fall-through
-        default:                  OnMouseIdle              (event); break;
+    case msDraggingPointInit:
+        OnMouseDraggingPointInit (event);
+        break;
+    case msDraggingPoint:
+        OnMouseDraggingPoint     (event);
+        break;
+    case msDraggingItemInit:
+        OnMouseDraggingItemInit  (event);
+        break;
+    case msDraggingItem:
+        OnMouseDraggingItem      (event);
+        break;
+    case msTargetSearch:
+        OnMouseTargetSearch      (event);
+        break;
+    case msWaitForIdle:
+        break;
+    case msIdle: // fall-through
+    default:
+        OnMouseIdle              (event);
+        break;
     }
 
     IsRunning = false;
@@ -434,29 +447,29 @@ void wxsItemEditorContent::OnMouseIdle(wxMouseEvent& event)
         {
             switch ( DPD->Type )
             {
-                case LeftTop:
-                case RightBtm:
-                    SetCur(wxCURSOR_SIZENWSE);
-                    break;
+            case LeftTop:
+            case RightBtm:
+                SetCur(wxCURSOR_SIZENWSE);
+                break;
 
-                case Top:
-                case Btm:
-                    SetCur(wxCURSOR_SIZENS);
-                    break;
+            case Top:
+            case Btm:
+                SetCur(wxCURSOR_SIZENS);
+                break;
 
-                case RightTop:
-                case LeftBtm:
-                    SetCur(wxCURSOR_SIZENESW);
-                    break;
+            case RightTop:
+            case LeftBtm:
+                SetCur(wxCURSOR_SIZENESW);
+                break;
 
-                case Left:
-                case Right:
-                    SetCur(wxCURSOR_SIZEWE);
-                    break;
+            case Left:
+            case Right:
+                SetCur(wxCURSOR_SIZEWE);
+                break;
 
-                case DragBoxTypeCnt: // fall-through
-                default:
-                    SetCur(wxCURSOR_ARROW);
+            case DragBoxTypeCnt: // fall-through
+            default:
+                SetCur(wxCURSOR_ARROW);
             }
         }
         else
@@ -584,53 +597,53 @@ void wxsItemEditorContent::OnMouseDraggingPoint(wxMouseEvent& event)
     int Dummy = 0;
     switch ( m_CurDragPoint->Type )
     {
-        case LeftTop:
-            leftTop->PosX = leftTop->DragInitPosX + DeltaX;
-            leftTop->PosY = leftTop->DragInitPosY + DeltaY;
-            GridFixupForGlobalCoordinates(leftTop->PosX,leftTop->PosY,m_CurDragItem);
-            break;
+    case LeftTop:
+        leftTop->PosX = leftTop->DragInitPosX + DeltaX;
+        leftTop->PosY = leftTop->DragInitPosY + DeltaY;
+        GridFixupForGlobalCoordinates(leftTop->PosX,leftTop->PosY,m_CurDragItem);
+        break;
 
-        case Top:
-            leftTop->PosY = leftTop->DragInitPosY + DeltaY;
-            GridFixupForGlobalCoordinates(Dummy,leftTop->PosY,m_CurDragItem);
-            break;
+    case Top:
+        leftTop->PosY = leftTop->DragInitPosY + DeltaY;
+        GridFixupForGlobalCoordinates(Dummy,leftTop->PosY,m_CurDragItem);
+        break;
 
-        case RightTop:
-            rightBtm->PosX = rightBtm->DragInitPosX + DeltaX;
-            leftTop->PosY = leftTop->DragInitPosY + DeltaY;
-            GridFixupForGlobalCoordinates(rightBtm->PosX,leftTop->PosY,m_CurDragItem);
-            break;
+    case RightTop:
+        rightBtm->PosX = rightBtm->DragInitPosX + DeltaX;
+        leftTop->PosY = leftTop->DragInitPosY + DeltaY;
+        GridFixupForGlobalCoordinates(rightBtm->PosX,leftTop->PosY,m_CurDragItem);
+        break;
 
-        case Left:
-            leftTop->PosX = leftTop->DragInitPosX + DeltaX;
-            GridFixupForGlobalCoordinates(leftTop->PosX,Dummy,m_CurDragItem);
-            break;
+    case Left:
+        leftTop->PosX = leftTop->DragInitPosX + DeltaX;
+        GridFixupForGlobalCoordinates(leftTop->PosX,Dummy,m_CurDragItem);
+        break;
 
-        case Right:
-            rightBtm->PosX = rightBtm->DragInitPosX + DeltaX;
-            GridFixupForGlobalCoordinates(rightBtm->PosX,Dummy,m_CurDragItem);
-            break;
+    case Right:
+        rightBtm->PosX = rightBtm->DragInitPosX + DeltaX;
+        GridFixupForGlobalCoordinates(rightBtm->PosX,Dummy,m_CurDragItem);
+        break;
 
-        case LeftBtm:
-            leftTop->PosX = leftTop->DragInitPosX + DeltaX;
-            rightBtm->PosY = rightBtm->DragInitPosY + DeltaY;
-            GridFixupForGlobalCoordinates(leftTop->PosX,rightBtm->PosY,m_CurDragItem);
-            break;
+    case LeftBtm:
+        leftTop->PosX = leftTop->DragInitPosX + DeltaX;
+        rightBtm->PosY = rightBtm->DragInitPosY + DeltaY;
+        GridFixupForGlobalCoordinates(leftTop->PosX,rightBtm->PosY,m_CurDragItem);
+        break;
 
-        case Btm:
-            rightBtm->PosY = rightBtm->DragInitPosY + DeltaY;
-            GridFixupForGlobalCoordinates(Dummy,rightBtm->PosY,m_CurDragItem);
-            break;
+    case Btm:
+        rightBtm->PosY = rightBtm->DragInitPosY + DeltaY;
+        GridFixupForGlobalCoordinates(Dummy,rightBtm->PosY,m_CurDragItem);
+        break;
 
-        case RightBtm:
-            rightBtm->PosX = rightBtm->DragInitPosX + DeltaX;
-            rightBtm->PosY = rightBtm->DragInitPosY + DeltaY;
-            GridFixupForGlobalCoordinates(rightBtm->PosX,rightBtm->PosY,m_CurDragItem);
-            break;
+    case RightBtm:
+        rightBtm->PosX = rightBtm->DragInitPosX + DeltaX;
+        rightBtm->PosY = rightBtm->DragInitPosY + DeltaY;
+        GridFixupForGlobalCoordinates(rightBtm->PosX,rightBtm->PosY,m_CurDragItem);
+        break;
 
-        case DragBoxTypeCnt: // fall-through
-        default:
-            break;
+    case DragBoxTypeCnt: // fall-through
+    default:
+        break;
     }
 
     int LX = leftTop->PosX;
@@ -708,7 +721,7 @@ void wxsItemEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
         m_Data->BeginChange();
 
         if ( m_CurDragPoint->PosX != m_CurDragPoint->DragInitPosX ||
-             m_CurDragPoint->PosY != m_CurDragPoint->DragInitPosY )
+                m_CurDragPoint->PosY != m_CurDragPoint->DragInitPosY )
         {
             wxsParent* NewParent = 0;
             wxsItem* AtCursor = 0;
@@ -716,8 +729,8 @@ void wxsItemEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
             if ( FindDraggingItemTarget(event.GetX(),event.GetY(),m_CurDragItem,NewParent,AtCursor,AddAfter) )
             {
                 if ( (m_CurDragItem->GetParent() == NewParent) ||
-                     (NewParent->CanAddChild(m_CurDragItem,false) &&
-                      m_CurDragItem->CanAddToParent(NewParent,false)) )
+                        (NewParent->CanAddChild(m_CurDragItem,false) &&
+                         m_CurDragItem->CanAddToParent(NewParent,false)) )
                 {
                     wxsParent* CurParent = m_CurDragItem->GetParent();
 

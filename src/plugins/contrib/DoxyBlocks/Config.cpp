@@ -25,11 +25,11 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/filename.h>
+#include <wx/filename.h>
 
-    #include <configmanager.h>
-    #include <manager.h>
-    #include <personalitymanager.h>
+#include <configmanager.h>
+#include <manager.h>
+#include <personalitymanager.h>
 #endif //CB_PRECOMP
 #include <wx/fileconf.h>
 
@@ -42,10 +42,10 @@ DoxyBlocksConfig::DoxyBlocksConfig()
     m_iBlockComment = GetDefaultBlockComment();
     m_iLineComment = GetDefaultLineComment();
     // Doxyfile defaults.
-     m_sProjectNumber = GetDefaultProjectNumber();
+    m_sProjectNumber = GetDefaultProjectNumber();
     m_bUseAutoVersion = GetDefaultUseAutoVersion();
-     m_sOutputDirectory = GetDefaultOutputDirectory();
-     m_sOutputLanguage = GetDefaultOutputLanguage();
+    m_sOutputDirectory = GetDefaultOutputDirectory();
+    m_sOutputLanguage = GetDefaultOutputLanguage();
     m_bExtractAll = GetDefaultExtractAll();
     m_bExtractPrivate = GetDefaultExtractPrivate();
     m_bExtractStatic = GetDefaultExtractStatic();
@@ -68,11 +68,11 @@ DoxyBlocksConfig::DoxyBlocksConfig()
     m_bClassDiagrams = GetDefaultClassDiagrams();
     m_bHaveDot = GetDefaultHaveDot();
     // General.
-     m_sPathDoxygen = GetDefaultPathDoxygen();
-     m_sPathDoxywizard = GetDefaultPathDoxywizard();
-     m_sPathHHC = GetDefaultPathHHC();
-     m_sPathDot = GetDefaultPathDot();
-     m_sPathCHMViewer = GetDefaultPathCHMViewer();
+    m_sPathDoxygen = GetDefaultPathDoxygen();
+    m_sPathDoxywizard = GetDefaultPathDoxywizard();
+    m_sPathHHC = GetDefaultPathHHC();
+    m_sPathDot = GetDefaultPathDot();
+    m_sPathCHMViewer = GetDefaultPathCHMViewer();
     m_bOverwriteDoxyfile = GetDefaultOverwriteDoxyfile();
     m_bPromptBeforeOverwriting = GetDefaultPromptBeforeOverwriting();
     m_bUseAtInTags = GetDefaultUseAtInTags();
@@ -229,7 +229,8 @@ bool DoxyBlocksConfig::ReadPrefsTemplate()
 
     wxString sCfgIni(wxT("DoxyBlocks.ini"));
     wxString sCfgPath(Manager::Get()->GetConfigManager(_T("app"))->GetConfigFolder() + wxFILE_SEP_PATH + sCfgIni);
-    if(!wxFile::Exists(sCfgPath)){
+    if(!wxFile::Exists(sCfgPath))
+    {
         return false;
     }
 

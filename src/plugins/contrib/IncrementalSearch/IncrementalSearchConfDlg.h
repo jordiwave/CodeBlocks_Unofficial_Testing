@@ -21,9 +21,18 @@ public:
     ~IncrementalSearchConfDlg();
 
 private:
-    wxString GetTitle() const { return _("Incremental search settings"); }
-    wxString GetBitmapBaseName() const { return _T("incsearch"); }
-    void OnApply() { SaveSettings(); }
+    wxString GetTitle() const
+    {
+        return _("Incremental search settings");
+    }
+    wxString GetBitmapBaseName() const
+    {
+        return _T("incsearch");
+    }
+    void OnApply()
+    {
+        SaveSettings();
+    }
     void OnCancel() {}
     void OnChooseColour(wxCommandEvent& event);
     void SaveSettings();

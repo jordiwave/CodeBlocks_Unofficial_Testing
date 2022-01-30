@@ -30,16 +30,16 @@
 
 namespace
 {
-    wxsRegisterItem<wxsMediaCtrl> Reg(_T("MediaCtrl"),wxsTWidget,_T("Standard"),210);
+wxsRegisterItem<wxsMediaCtrl> Reg(_T("MediaCtrl"),wxsTWidget,_T("Standard"),210);
 
-    WXS_EV_BEGIN(wxsMediaCtrlEvents)
-        WXS_EVI(EVT_MEDIA_LOADED, wxEVT_MEDIA_LOADED, wxMediaEvent, Loaded)
-        WXS_EVI(EVT_MEDIA_PLAY, wxEVT_MEDIA_PLAY, wxMediaEvent, Play)
-        WXS_EVI(EVT_MEDIA_PAUSE, wxEVT_MEDIA_PAUSE, wxMediaEvent, Pause)
-        WXS_EVI(EVT_MEDIA_STATECHANGED, wxEVT_MEDIA_STATECHANGED, wxMediaEvent, StateChanged)
-        WXS_EVI(EVT_MEDIA_STOP, wxEVT_MEDIA_STOP, wxMediaEvent, Stop)
-        WXS_EVI(EVT_MEDIA_FINISHED, wxEVT_MEDIA_FINISHED, wxMediaEvent, Finished)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsMediaCtrlEvents)
+WXS_EVI(EVT_MEDIA_LOADED, wxEVT_MEDIA_LOADED, wxMediaEvent, Loaded)
+WXS_EVI(EVT_MEDIA_PLAY, wxEVT_MEDIA_PLAY, wxMediaEvent, Play)
+WXS_EVI(EVT_MEDIA_PAUSE, wxEVT_MEDIA_PAUSE, wxMediaEvent, Pause)
+WXS_EVI(EVT_MEDIA_STATECHANGED, wxEVT_MEDIA_STATECHANGED, wxMediaEvent, StateChanged)
+WXS_EVI(EVT_MEDIA_STOP, wxEVT_MEDIA_STOP, wxMediaEvent, Stop)
+WXS_EVI(EVT_MEDIA_FINISHED, wxEVT_MEDIA_FINISHED, wxMediaEvent, Finished)
+WXS_EV_END()
 }
 
 /*! \brief Ctor
@@ -53,10 +53,10 @@ wxsMediaCtrl::wxsMediaCtrl(wxsItemResData* Data):
         &Reg.Info,
         wxsMediaCtrlEvents,
         NULL),
-        m_sMediaFile(wxEmptyString),
-        m_sProxy(wxEmptyString),
-        m_iControls(wxMEDIACTRLPLAYERCONTROLS_DEFAULT),
-        m_iVolume(5)
+    m_sMediaFile(wxEmptyString),
+    m_sProxy(wxEmptyString),
+    m_iControls(wxMEDIACTRLPLAYERCONTROLS_DEFAULT),
+    m_iVolume(5)
 //        m_sBackend(wxEmptyString)
 {}
 
@@ -69,56 +69,59 @@ void wxsMediaCtrl::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/mediactrl.h>"),GetInfo().ClassName,hfInPCH);
+
+        Codef(_T("%C(%W, %I, %s, %P, %S, %T);\n"), wxT("wxEmptyString"));
+
+        if(m_sMediaFile.StartsWith(wxT("http://")))
         {
-            AddHeader(_T("<wx/mediactrl.h>"),GetInfo().ClassName,hfInPCH);
-
-            Codef(_T("%C(%W, %I, %s, %P, %S, %T);\n"), wxT("wxEmptyString"));
-
-            if(m_sMediaFile.StartsWith(wxT("http://")))
-            {
-                // Online media, possibly with proxy.
-                if(!m_sProxy.IsEmpty())
-                    Codef(_T("%ALoadURIWithProxy(%n, %n);\n"), m_sMediaFile.wx_str(), m_sProxy.wx_str());
-                else
-                    Codef(_T("%ALoadURI(%n);\n"), m_sMediaFile.wx_str());
-            }
-            else // Local media file.
-                Codef(_T("%ALoad(%n);\n"), m_sMediaFile.wx_str());
-
-            switch(m_iControls){
-                case wxMEDIACTRLPLAYERCONTROLS_NONE:
-                    Codef(_T("%AShowPlayerControls(%s);\n"), wxT("wxMEDIACTRLPLAYERCONTROLS_NONE"));
-                    break;
-                case wxMEDIACTRLPLAYERCONTROLS_STEP:
-                    Codef(_T("%AShowPlayerControls(%s);\n"), wxT("wxMEDIACTRLPLAYERCONTROLS_STEP"));
-                    break;
-                case wxMEDIACTRLPLAYERCONTROLS_VOLUME:
-                    Codef(_T("%AShowPlayerControls(%s);\n"), wxT("wxMEDIACTRLPLAYERCONTROLS_VOLUME"));
-                    break;
-                case wxMEDIACTRLPLAYERCONTROLS_DEFAULT:
-                    Codef(_T("%AShowPlayerControls(%s);\n"), wxT("wxMEDIACTRLPLAYERCONTROLS_DEFAULT"));
-                    break;
-            }
-            // WXS_ENUM won't store doubles so I store the volume level as an int  = (real value * 10)
-            // and jump through hoops to get a double in the output.
-            wxString sVol;
-            if(m_iVolume == 10){
-                sVol = wxT("1.0");
-            }
-            else{
-                sVol = wxString::Format(wxT("0.%ld"), m_iVolume);
-            }
-            Codef(_T("%ASetVolume(%s);\n"), sVol.c_str());
-
-            BuildSetupWindowCode();
-            return;
+            // Online media, possibly with proxy.
+            if(!m_sProxy.IsEmpty())
+                Codef(_T("%ALoadURIWithProxy(%n, %n);\n"), m_sMediaFile.wx_str(), m_sProxy.wx_str());
+            else
+                Codef(_T("%ALoadURI(%n);\n"), m_sMediaFile.wx_str());
         }
+        else // Local media file.
+            Codef(_T("%ALoad(%n);\n"), m_sMediaFile.wx_str());
 
-        default:
+        switch(m_iControls)
         {
-            wxsCodeMarks::Unknown(_T("wxsMediaCtrl::OnBuildCreatingCode"),GetLanguage());
+        case wxMEDIACTRLPLAYERCONTROLS_NONE:
+            Codef(_T("%AShowPlayerControls(%s);\n"), wxT("wxMEDIACTRLPLAYERCONTROLS_NONE"));
+            break;
+        case wxMEDIACTRLPLAYERCONTROLS_STEP:
+            Codef(_T("%AShowPlayerControls(%s);\n"), wxT("wxMEDIACTRLPLAYERCONTROLS_STEP"));
+            break;
+        case wxMEDIACTRLPLAYERCONTROLS_VOLUME:
+            Codef(_T("%AShowPlayerControls(%s);\n"), wxT("wxMEDIACTRLPLAYERCONTROLS_VOLUME"));
+            break;
+        case wxMEDIACTRLPLAYERCONTROLS_DEFAULT:
+            Codef(_T("%AShowPlayerControls(%s);\n"), wxT("wxMEDIACTRLPLAYERCONTROLS_DEFAULT"));
+            break;
         }
+        // WXS_ENUM won't store doubles so I store the volume level as an int  = (real value * 10)
+        // and jump through hoops to get a double in the output.
+        wxString sVol;
+        if(m_iVolume == 10)
+        {
+            sVol = wxT("1.0");
+        }
+        else
+        {
+            sVol = wxString::Format(wxT("0.%ld"), m_iVolume);
+        }
+        Codef(_T("%ASetVolume(%s);\n"), sVol.c_str());
+
+        BuildSetupWindowCode();
+        return;
+    }
+
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsMediaCtrl::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 
@@ -133,32 +136,37 @@ wxObject* wxsMediaCtrl::OnBuildPreview(wxWindow* parent,long flags)
 {
     wxMediaCtrl* preview = new wxMediaCtrl(parent, GetId(), wxEmptyString, Pos(parent), Size(parent), Style());//, m_sBackend);
 
-    if(m_sMediaFile.StartsWith(wxT("http://"))){
+    if(m_sMediaFile.StartsWith(wxT("http://")))
+    {
         // Online media, possibly with proxy.
-        if(!m_sProxy.IsEmpty()){
+        if(!m_sProxy.IsEmpty())
+        {
             preview->LoadURIWithProxy(m_sMediaFile, m_sProxy);
         }
-        else{
+        else
+        {
             preview->LoadURI(m_sMediaFile);
         }
     }
-    else{
+    else
+    {
         // Local media file.
         preview->Load(m_sMediaFile);
     }
-    switch(m_iControls){
-        case wxMEDIACTRLPLAYERCONTROLS_NONE:
-            preview->ShowPlayerControls(wxMEDIACTRLPLAYERCONTROLS_NONE);
-            break;
-        case wxMEDIACTRLPLAYERCONTROLS_STEP:
-            preview->ShowPlayerControls(wxMEDIACTRLPLAYERCONTROLS_STEP);
-            break;
-        case wxMEDIACTRLPLAYERCONTROLS_VOLUME:
-            preview->ShowPlayerControls(wxMEDIACTRLPLAYERCONTROLS_VOLUME);
-            break;
-        case wxMEDIACTRLPLAYERCONTROLS_DEFAULT:
-            preview->ShowPlayerControls(wxMEDIACTRLPLAYERCONTROLS_DEFAULT);
-            break;
+    switch(m_iControls)
+    {
+    case wxMEDIACTRLPLAYERCONTROLS_NONE:
+        preview->ShowPlayerControls(wxMEDIACTRLPLAYERCONTROLS_NONE);
+        break;
+    case wxMEDIACTRLPLAYERCONTROLS_STEP:
+        preview->ShowPlayerControls(wxMEDIACTRLPLAYERCONTROLS_STEP);
+        break;
+    case wxMEDIACTRLPLAYERCONTROLS_VOLUME:
+        preview->ShowPlayerControls(wxMEDIACTRLPLAYERCONTROLS_VOLUME);
+        break;
+    case wxMEDIACTRLPLAYERCONTROLS_DEFAULT:
+        preview->ShowPlayerControls(wxMEDIACTRLPLAYERCONTROLS_DEFAULT);
+        break;
     }
     // WXS_ENUM won't store doubles so I store the volume level as an int  = (real value * 10) and divide by 10 here.
     // Note: If the cast is omitted, the result is always rounded to 0 or 1, I presume by implicit casting to long.
@@ -180,9 +188,10 @@ void wxsMediaCtrl::OnEnumWidgetProperties(long flags)
     /*!< Volume level names. */
     static const wxChar* VolumeNames[]  = {wxT("0.0"), wxT("0.1"), wxT("0.2"), wxT("0.3"), wxT("0.4"), wxT("0.5"), wxT("0.6"), wxT("0.7"), wxT("0.8"), wxT("0.9"), wxT("1.0"), NULL};
     static const long ControlStates[] = {wxMEDIACTRLPLAYERCONTROLS_NONE,                                         //!< No controls.
-                                                         wxMEDIACTRLPLAYERCONTROLS_STEP,                                         //!< Step controls like fastfoward, step one frame etc.
-                                                         wxMEDIACTRLPLAYERCONTROLS_VOLUME,                                     //!< Volume controls like the speaker icon, volume slider, etc.
-                                                         wxMEDIACTRLPLAYERCONTROLS_DEFAULT};                                 //!< Default controls for the toolkit.
+                                         wxMEDIACTRLPLAYERCONTROLS_STEP,                                         //!< Step controls like fastfoward, step one frame etc.
+                                         wxMEDIACTRLPLAYERCONTROLS_VOLUME,                                     //!< Volume controls like the speaker icon, volume slider, etc.
+                                         wxMEDIACTRLPLAYERCONTROLS_DEFAULT
+                                        };                                 //!< Default controls for the toolkit.
     static const wxChar* ControlNames[]  = {wxT("None"), wxT("Step"), wxT("Volume"), wxT("Default"), NULL};    //!< Control state names.
 
     WXS_SHORT_STRING(wxsMediaCtrl, m_sMediaFile, _("Media File"), _T("media_file"), _T(""), false)

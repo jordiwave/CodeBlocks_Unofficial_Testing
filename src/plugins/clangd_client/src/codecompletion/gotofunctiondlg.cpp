@@ -7,18 +7,18 @@
 #include "gotofunctiondlg.h"
 
 #ifndef CB_PRECOMP
-    //(*InternalHeadersPCH(GotoFunctionDlg)
-    #include <wx/checkbox.h>
-    #include <wx/sizer.h>
-    #include <wx/listctrl.h>
-    #include <wx/string.h>
-    #include <wx/intl.h>
-    #include <wx/stattext.h>
-    #include <wx/textctrl.h>
-    //*)
+//(*InternalHeadersPCH(GotoFunctionDlg)
+#include <wx/checkbox.h>
+#include <wx/sizer.h>
+#include <wx/listctrl.h>
+#include <wx/string.h>
+#include <wx/intl.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+//*)
 
-    #include "configmanager.h"
-    #include <algorithm>
+#include "configmanager.h"
+#include <algorithm>
 #endif
 //(*InternalHeaders(GotoFunctionDlg)
 //*)
@@ -110,7 +110,8 @@ int GotoFunctionDlg::Iterator::GetColumnWidth(int column) const
 
 void GotoFunctionDlg::Iterator::Sort()
 {
-    std::sort(m_tokens.begin(), m_tokens.end(), [] (const FunctionToken &a, const FunctionToken &b) {
+    std::sort(m_tokens.begin(), m_tokens.end(), [] (const FunctionToken &a, const FunctionToken &b)
+    {
         return a.funcName.CmpNoCase(b.funcName)<0;
     });
 }

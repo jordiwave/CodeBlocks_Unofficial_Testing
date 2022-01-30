@@ -51,8 +51,8 @@ const long ProcessingDlg::ID_BUTTON1 = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(ProcessingDlg,wxScrollingDialog)
-	//(*EventTable(ProcessingDlg)
-	//*)
+    //(*EventTable(ProcessingDlg)
+    //*)
 END_EVENT_TABLE()
 
 ProcessingDlg::ProcessingDlg(wxWindow* parent,LibraryDetectionManager& Manager,TypedResults& KnownResults,wxWindowID id):
@@ -60,23 +60,23 @@ ProcessingDlg::ProcessingDlg(wxWindow* parent,LibraryDetectionManager& Manager,T
     m_Manager(Manager),
     m_KnownResults(KnownResults)
 {
-	//(*Initialize(ProcessingDlg)
-	Create(parent, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxCAPTION, _T("id"));
-	FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
-	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Processing"));
-	Status = new wxStaticText(this, ID_STATICTEXT1, _("Waiting"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-	StaticBoxSizer1->Add(Status, 0, wxEXPAND, 0);
-	Gauge1 = new wxGauge(this, ID_GAUGE1, 100, wxDefaultPosition, wxSize(402,12), 0, wxDefaultValidator, _T("ID_GAUGE1"));
-	StaticBoxSizer1->Add(Gauge1, 1, wxALIGN_CENTER_HORIZONTAL, 5);
-	FlexGridSizer1->Add(StaticBoxSizer1, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-	StopBtn = new wxButton(this, ID_BUTTON1, _("Stop"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
-	FlexGridSizer1->Add(StopBtn, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
-	SetSizer(FlexGridSizer1);
-	FlexGridSizer1->Fit(this);
-	FlexGridSizer1->SetSizeHints(this);
+    //(*Initialize(ProcessingDlg)
+    Create(parent, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxCAPTION, _T("id"));
+    FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
+    StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Processing"));
+    Status = new wxStaticText(this, ID_STATICTEXT1, _("Waiting"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+    StaticBoxSizer1->Add(Status, 0, wxEXPAND, 0);
+    Gauge1 = new wxGauge(this, ID_GAUGE1, 100, wxDefaultPosition, wxSize(402,12), 0, wxDefaultValidator, _T("ID_GAUGE1"));
+    StaticBoxSizer1->Add(Gauge1, 1, wxALIGN_CENTER_HORIZONTAL, 5);
+    FlexGridSizer1->Add(StaticBoxSizer1, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    StopBtn = new wxButton(this, ID_BUTTON1, _("Stop"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
+    FlexGridSizer1->Add(StopBtn, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    SetSizer(FlexGridSizer1);
+    FlexGridSizer1->Fit(this);
+    FlexGridSizer1->SetSizeHints(this);
 
-	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProcessingDlg::OnButton1Click);
-	//*)
+    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProcessingDlg::OnButton1Click);
+    //*)
 }
 
 ProcessingDlg::~ProcessingDlg()
@@ -225,8 +225,8 @@ void ProcessingDlg::ApplyResults(bool addOnly)
 
         Names.Add(
             wxString::Format(_T("%s : %s"),
-                Results[i]->ShortCode.c_str(),
-                Name.c_str()));
+                             Results[i]->ShortCode.c_str(),
+                             Name.c_str()));
         if ( PreviousVar != Results[i]->ShortCode )
         {
             Selected.Add((int)i);
@@ -332,256 +332,256 @@ void ProcessingDlg::CheckFilter(
 
     switch ( Filter.Type )
     {
-        case LibraryDetectionFilter::File:
+    case LibraryDetectionFilter::File:
+    {
+        // Split path
+        wxArrayString Pattern;
+        SplitPath(Filter.Value,Pattern);
+
+        // Fetch list of files with filename matching last pattern's element
+        const wxArrayString& PathArray = Map[Pattern[Pattern.Count()-1]];
+        if ( PathArray.empty() ) return;
+
+        // Process those files
+        for ( size_t i=0; i<PathArray.Count(); i++ )
         {
-            // Split path
-            wxArrayString Pattern;
-            SplitPath(Filter.Value,Pattern);
+            wxArrayString Path;
+            wxStringStringMap Vars = OldVars;
+            SplitPath(PathArray[i],Path);
 
-            // Fetch list of files with filename matching last pattern's element
-            const wxArrayString& PathArray = Map[Pattern[Pattern.Count()-1]];
-            if ( PathArray.empty() ) return;
+            int path_index = (int)Path.Count() - 1;
+            int pattern_index = (int)Pattern.Count() - 1;
 
-            // Process those files
-            for ( size_t i=0; i<PathArray.Count(); i++ )
+            // Check if patterns do match
+            while ( ( path_index >= 0 ) && ( pattern_index >= 0 ) )
             {
-                wxArrayString Path;
-                wxStringStringMap Vars = OldVars;
-                SplitPath(PathArray[i],Path);
-
-                int path_index = (int)Path.Count() - 1;
-                int pattern_index = (int)Pattern.Count() - 1;
-
-                // Check if patterns do match
-                while ( ( path_index >= 0 ) && ( pattern_index >= 0 ) )
+                wxString& PatternPart = Pattern[pattern_index];
+                if ( IsVariable(PatternPart) )
                 {
-                    wxString& PatternPart = Pattern[pattern_index];
-                    if ( IsVariable(PatternPart) )
+                    wxString VarName = PatternPart.Mid(3,PatternPart.Len()-4);
+                    if ( Vars[VarName].empty() )
                     {
-                        wxString VarName = PatternPart.Mid(3,PatternPart.Len()-4);
-                        if ( Vars[VarName].empty() )
-                        {
-                            Vars[VarName] = Path[path_index];
-                        }
-                        else
-                        {
-                            if ( Vars[VarName] != Path[path_index] ) break;
-                        }
+                        Vars[VarName] = Path[path_index];
                     }
                     else
                     {
-                        if ( PatternPart != Path[path_index] ) break;
+                        if ( Vars[VarName] != Path[path_index] ) break;
                     }
-                    path_index--;
-                    pattern_index--;
                 }
-
-                // This is when patterns did not match
-                if ( pattern_index >= 0 ) continue;
-
-                // Construct base path from the rest of file's name
-                wxString BasePath;
-                for ( int j=0; j<=path_index; j++ )
+                else
                 {
-                    BasePath += Path[j] + wxFileName::GetPathSeparator();
+                    if ( PatternPart != Path[path_index] ) break;
                 }
-
-                // And check if base path match the previous one
-                if ( !OldBasePath.IsEmpty() )
-                {
-                    if ( BasePath != OldBasePath ) continue;
-                }
-
-                // Ok, this filter matches, let's advance to next filet
-                CheckFilter(BasePath,Vars,OldCompilers,Config,Set,WhichFilter+1);
+                path_index--;
+                pattern_index--;
             }
-            break;
-        }
 
-        case LibraryDetectionFilter::Platform:
+            // This is when patterns did not match
+            if ( pattern_index >= 0 ) continue;
+
+            // Construct base path from the rest of file's name
+            wxString BasePath;
+            for ( int j=0; j<=path_index; j++ )
+            {
+                BasePath += Path[j] + wxFileName::GetPathSeparator();
+            }
+
+            // And check if base path match the previous one
+            if ( !OldBasePath.IsEmpty() )
+            {
+                if ( BasePath != OldBasePath ) continue;
+            }
+
+            // Ok, this filter matches, let's advance to next filet
+            CheckFilter(BasePath,Vars,OldCompilers,Config,Set,WhichFilter+1);
+        }
+        break;
+    }
+
+    case LibraryDetectionFilter::Platform:
+    {
+        wxStringTokenizer Tokenizer(Filter.Value,_T("| \t"));
+        bool IsPlatform = false;
+        while ( Tokenizer.HasMoreTokens() )
         {
-            wxStringTokenizer Tokenizer(Filter.Value,_T("| \t"));
-            bool IsPlatform = false;
-            while ( Tokenizer.HasMoreTokens() )
+            wxString Platform = Tokenizer.GetNextToken();
+
+            if ( platform::windows )
             {
-                wxString Platform = Tokenizer.GetNextToken();
-
-                if ( platform::windows )
+                if ( Platform==_T("win") || Platform==_T("windows") )
                 {
-                    if ( Platform==_T("win") || Platform==_T("windows") )
-                    {
-                        IsPlatform = true;
-                        break;
-                    }
-                }
-
-                if ( platform::macosx )
-                {
-                    if ( Platform==_T("mac") || Platform==_T("macosx") )
-                    {
-                        IsPlatform = true;
-                        break;
-                    }
-                }
-
-                if ( platform::Linux )
-                {
-                    if ( Platform==_T("lin") || Platform==_T("linux") )
-                    {
-                        IsPlatform = true;
-                        break;
-                    }
-                }
-
-                if ( platform::freebsd )
-                {
-                    if ( Platform==_T("bsd") || Platform==_T("freebsd") )
-                    {
-                        IsPlatform = true;
-                        break;
-                    }
-                }
-
-                if ( platform::netbsd )
-                {
-                    if ( Platform==_T("bsd") || Platform==_T("netbsd") )
-                    {
-                        IsPlatform = true;
-                        break;
-                    }
-                }
-
-                if ( platform::openbsd )
-                {
-                    if ( Platform==_T("bsd") || Platform==_T("openbsd") )
-                    {
-                        IsPlatform = true;
-                        break;
-                    }
-                }
-
-                if ( platform::darwin )
-                {
-                    if ( Platform==_T("darwin") )
-                    {
-                        IsPlatform = true;
-                        break;
-                    }
-                }
-
-                if ( platform::solaris )
-                {
-                    if ( Platform==_T("solaris") )
-                    {
-                        IsPlatform = true;
-                        break;
-                    }
-                }
-
-                if ( platform::Unix )
-                {
-                    if ( Platform==_T("unix") || Platform==_T("un*x") )
-                    {
-                        IsPlatform = true;
-                        break;
-                    }
+                    IsPlatform = true;
+                    break;
                 }
             }
 
-            if ( IsPlatform )
+            if ( platform::macosx )
             {
-                CheckFilter(OldBasePath,OldVars,OldCompilers,Config,Set,WhichFilter+1);
+                if ( Platform==_T("mac") || Platform==_T("macosx") )
+                {
+                    IsPlatform = true;
+                    break;
+                }
             }
-            break;
+
+            if ( platform::Linux )
+            {
+                if ( Platform==_T("lin") || Platform==_T("linux") )
+                {
+                    IsPlatform = true;
+                    break;
+                }
+            }
+
+            if ( platform::freebsd )
+            {
+                if ( Platform==_T("bsd") || Platform==_T("freebsd") )
+                {
+                    IsPlatform = true;
+                    break;
+                }
+            }
+
+            if ( platform::netbsd )
+            {
+                if ( Platform==_T("bsd") || Platform==_T("netbsd") )
+                {
+                    IsPlatform = true;
+                    break;
+                }
+            }
+
+            if ( platform::openbsd )
+            {
+                if ( Platform==_T("bsd") || Platform==_T("openbsd") )
+                {
+                    IsPlatform = true;
+                    break;
+                }
+            }
+
+            if ( platform::darwin )
+            {
+                if ( Platform==_T("darwin") )
+                {
+                    IsPlatform = true;
+                    break;
+                }
+            }
+
+            if ( platform::solaris )
+            {
+                if ( Platform==_T("solaris") )
+                {
+                    IsPlatform = true;
+                    break;
+                }
+            }
+
+            if ( platform::Unix )
+            {
+                if ( Platform==_T("unix") || Platform==_T("un*x") )
+                {
+                    IsPlatform = true;
+                    break;
+                }
+            }
         }
 
-        case LibraryDetectionFilter::Exec:
-        {
-            bool IsExec = false;
-            if ( wxIsAbsolutePath(Filter.Value) )
-            {
-                // If this is absolute path, we don't search in PATH evironment var
-                IsExec = wxFileName::IsFileExecutable(Filter.Value);
-            }
-            else
-            {
-                // Let's search for the name in search paths
-                wxString Path;
-                if ( wxGetEnv(_T("PATH"),&Path) )
-                {
-                    wxString Splitter = _T(":");
-                    if ( platform::windows ) Splitter = _T(";");
-                    wxStringTokenizer Tokenizer(Path,Splitter);
-                    while ( Tokenizer.HasMoreTokens() )
-                    {
-                        wxString OnePath = Tokenizer.GetNextToken();
-
-                        // Let's skip relative paths (f.ex. ".")
-                        if ( !wxIsAbsolutePath(OnePath) ) continue;
-
-                        OnePath += wxFileName::GetPathSeparator()+Filter.Value;
-                        if ( wxFileName::IsFileExecutable(OnePath) )
-                        {
-                            IsExec = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if ( IsExec )
-            {
-                CheckFilter(OldBasePath,OldVars,OldCompilers,Config,Set,WhichFilter+1);
-            }
-            break;
-        }
-
-        case LibraryDetectionFilter::PkgConfig:
-        {
-            if ( m_KnownResults[rtPkgConfig].IsShortCode(Filter.Value) )
-            {
-                CheckFilter(OldBasePath,OldVars,OldCompilers,Config,Set,WhichFilter+1);
-            }
-            break;
-        }
-
-        case LibraryDetectionFilter::Compiler:
-        {
-            if ( OldCompilers.IsEmpty() )
-            {
-                // If this is the first compiler filter, let's build new list and continue
-                CheckFilter(OldBasePath,OldVars,wxStringTokenize(Filter.Value,_T("| \t")),Config,Set,WhichFilter+1);
-            }
-            else
-            {
-                // We've set compiler list before, leave only the intersection
-                // of previous and current list
-                wxArrayString Compilers;
-                wxStringTokenizer Tokenizer(Filter.Value,_T("| \t"));
-                while ( Tokenizer.HasMoreTokens() )
-                {
-                    wxString Comp = Tokenizer.GetNextToken();
-                    if ( OldCompilers.Index(Comp) != wxNOT_FOUND )
-                    {
-                        Compilers.Add(Comp);
-                    }
-                }
-
-                if ( !Compilers.IsEmpty() )
-                {
-                    CheckFilter(OldBasePath,OldVars,Compilers,Config,Set,WhichFilter+1);
-                }
-            }
-            break;
-        }
-
-        case LibraryDetectionFilter::None:
+        if ( IsPlatform )
         {
             CheckFilter(OldBasePath,OldVars,OldCompilers,Config,Set,WhichFilter+1);
-            break;
         }
-        default:
-            break;
+        break;
+    }
+
+    case LibraryDetectionFilter::Exec:
+    {
+        bool IsExec = false;
+        if ( wxIsAbsolutePath(Filter.Value) )
+        {
+            // If this is absolute path, we don't search in PATH evironment var
+            IsExec = wxFileName::IsFileExecutable(Filter.Value);
+        }
+        else
+        {
+            // Let's search for the name in search paths
+            wxString Path;
+            if ( wxGetEnv(_T("PATH"),&Path) )
+            {
+                wxString Splitter = _T(":");
+                if ( platform::windows ) Splitter = _T(";");
+                wxStringTokenizer Tokenizer(Path,Splitter);
+                while ( Tokenizer.HasMoreTokens() )
+                {
+                    wxString OnePath = Tokenizer.GetNextToken();
+
+                    // Let's skip relative paths (f.ex. ".")
+                    if ( !wxIsAbsolutePath(OnePath) ) continue;
+
+                    OnePath += wxFileName::GetPathSeparator()+Filter.Value;
+                    if ( wxFileName::IsFileExecutable(OnePath) )
+                    {
+                        IsExec = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if ( IsExec )
+        {
+            CheckFilter(OldBasePath,OldVars,OldCompilers,Config,Set,WhichFilter+1);
+        }
+        break;
+    }
+
+    case LibraryDetectionFilter::PkgConfig:
+    {
+        if ( m_KnownResults[rtPkgConfig].IsShortCode(Filter.Value) )
+        {
+            CheckFilter(OldBasePath,OldVars,OldCompilers,Config,Set,WhichFilter+1);
+        }
+        break;
+    }
+
+    case LibraryDetectionFilter::Compiler:
+    {
+        if ( OldCompilers.IsEmpty() )
+        {
+            // If this is the first compiler filter, let's build new list and continue
+            CheckFilter(OldBasePath,OldVars,wxStringTokenize(Filter.Value,_T("| \t")),Config,Set,WhichFilter+1);
+        }
+        else
+        {
+            // We've set compiler list before, leave only the intersection
+            // of previous and current list
+            wxArrayString Compilers;
+            wxStringTokenizer Tokenizer(Filter.Value,_T("| \t"));
+            while ( Tokenizer.HasMoreTokens() )
+            {
+                wxString Comp = Tokenizer.GetNextToken();
+                if ( OldCompilers.Index(Comp) != wxNOT_FOUND )
+                {
+                    Compilers.Add(Comp);
+                }
+            }
+
+            if ( !Compilers.IsEmpty() )
+            {
+                CheckFilter(OldBasePath,OldVars,Compilers,Config,Set,WhichFilter+1);
+            }
+        }
+        break;
+    }
+
+    case LibraryDetectionFilter::None:
+    {
+        CheckFilter(OldBasePath,OldVars,OldCompilers,Config,Set,WhichFilter+1);
+        break;
+    }
+    default:
+        break;
     }
 }
 
@@ -665,8 +665,8 @@ void ProcessingDlg::FoundLibrary(const wxString& OldBasePath,const wxStringStrin
 wxString ProcessingDlg::FixVars(wxString Original,const wxStringStringMap& Vars)
 {
     for ( wxStringStringMap::const_iterator it = Vars.begin();
-          it != Vars.end();
-          ++it )
+            it != Vars.end();
+            ++it )
     {
         wxString SearchString = _T("$(") + it->first + _T(")");
         wxString ReplaceWith = it->second;

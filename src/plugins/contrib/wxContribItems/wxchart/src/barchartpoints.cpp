@@ -29,7 +29,7 @@
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include "wx/label.h"
@@ -45,13 +45,13 @@
 //----------------------------------------------------------------------E-+++
 wxBarChartPoints::wxBarChartPoints(
     wxString name,
-	ChartColor c,
+    ChartColor c,
     bool showlabel
 ) : wxChartPoints(wxChartPointsTypes::Bar()),
-	m_Name(name),
-	m_Color(c),
-	m_Zoom(1),
-	m_BarTag(NONE),
+    m_Name(name),
+    m_Color(c),
+    m_Zoom(1),
+    m_BarTag(NONE),
     m_ShowLabel( showlabel)
 {
 }
@@ -63,10 +63,10 @@ wxBarChartPoints::wxBarChartPoints(
 //	RETURN:		int
 //----------------------------------------------------------------------E-+++
 ChartValue wxBarChartPoints::GetXVal(
-	int n
+    int n
 ) const
 {
-	return ( m_Points.GetXVal(n) );
+    return ( m_Points.GetXVal(n) );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -76,10 +76,10 @@ ChartValue wxBarChartPoints::GetXVal(
 //	RETURN:		int
 //----------------------------------------------------------------------E-+++
 ChartValue wxBarChartPoints::GetYVal(
-	int n
+    int n
 ) const
 {
-	return ( m_Points.GetYVal(n) );
+    return ( m_Points.GetYVal(n) );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -89,10 +89,10 @@ ChartValue wxBarChartPoints::GetYVal(
 //	RETURN:		std::string
 //----------------------------------------------------------------------E-+++
 wxString wxBarChartPoints::GetName(
-	int n
+    int n
 ) const
 {
-	return ( m_Points.GetName(n) );
+    return ( m_Points.GetName(n) );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -103,7 +103,7 @@ wxString wxBarChartPoints::GetName(
 //----------------------------------------------------------------------E-+++
 int wxBarChartPoints::GetCount() const
 {
-	return ( m_Points.GetCount() );
+    return ( m_Points.GetCount() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -113,10 +113,10 @@ int wxBarChartPoints::GetCount() const
 //	RETURN:		ChartColor
 //----------------------------------------------------------------------E-+++
 ChartColor wxBarChartPoints::GetColor(
-	int WXUNUSED(n)
+    int WXUNUSED(n)
 ) const
 {
-	return ( 0 );
+    return ( 0 );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -127,7 +127,7 @@ ChartColor wxBarChartPoints::GetColor(
 //----------------------------------------------------------------------E-+++
 ChartValue wxBarChartPoints::GetMaxX() const
 {
-	return ( m_Points.GetMaxX() );
+    return ( m_Points.GetMaxX() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -138,7 +138,7 @@ ChartValue wxBarChartPoints::GetMaxX() const
 //----------------------------------------------------------------------E-+++
 ChartValue wxBarChartPoints::GetMaxY() const
 {
-	return ( m_Points.GetMaxY() );
+    return ( m_Points.GetMaxY() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -149,7 +149,7 @@ ChartValue wxBarChartPoints::GetMaxY() const
 //----------------------------------------------------------------------E-+++
 ChartValue wxBarChartPoints::GetMinX() const
 {
-	return ( m_Points.GetMinX() );
+    return ( m_Points.GetMinX() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -160,7 +160,7 @@ ChartValue wxBarChartPoints::GetMinX() const
 //----------------------------------------------------------------------E-+++
 ChartValue wxBarChartPoints::GetMinY() const
 {
-	return ( m_Points.GetMinY() );
+    return ( m_Points.GetMinY() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -170,10 +170,10 @@ ChartValue wxBarChartPoints::GetMinY() const
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxBarChartPoints::SetZoom(
-	double z
+    double z
 )
 {
-	m_Zoom = z;
+    m_Zoom = z;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -194,10 +194,10 @@ double wxBarChartPoints::GetZoom()
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxBarChartPoints::SetSizes(
-	wxChartSizes *sizes
+    wxChartSizes *sizes
 )
 {
-	m_Sizes = sizes;
+    m_Sizes = sizes;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -208,7 +208,7 @@ void wxBarChartPoints::SetSizes(
 //----------------------------------------------------------------------E-+++
 wxChartSizes* wxBarChartPoints::GetSizes() const
 {
-	return ( m_Sizes );
+    return ( m_Sizes );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -219,7 +219,7 @@ wxChartSizes* wxBarChartPoints::GetSizes() const
 //----------------------------------------------------------------------E-+++
 ChartColor wxBarChartPoints::GetColor() const
 {
-	return ( m_Color );
+    return ( m_Color );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -229,10 +229,10 @@ ChartColor wxBarChartPoints::GetColor() const
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxBarChartPoints::SetColor(
-	ChartColor c
+    ChartColor c
 )
 {
-	m_Color =  c;
+    m_Color =  c;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -243,7 +243,7 @@ void wxBarChartPoints::SetColor(
 //----------------------------------------------------------------------E-+++
 wxString wxBarChartPoints::GetName() const
 {
-	return ( m_Name );
+    return ( m_Name );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -256,7 +256,7 @@ void wxBarChartPoints::SetName(
     wxString name
 )
 {
-	m_Name =  name;
+    m_Name =  name;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -269,11 +269,11 @@ void wxBarChartPoints::SetName(
 //----------------------------------------------------------------------E-+++
 void wxBarChartPoints::Add(
     wxString name,
-	ChartValue x,
-	ChartValue y
+    ChartValue x,
+    ChartValue y
 )
 {
-	m_Points.Add( name, x, y );
+    m_Points.Add( name, x, y );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -287,15 +287,15 @@ void wxBarChartPoints::Add(
 //----------------------------------------------------------------------E-+++
 void wxBarChartPoints::Add(
     wxString name,
-	ChartValue x,
-	ChartValue y,
-	ChartColor WXUNUSED(c)
+    ChartValue x,
+    ChartValue y,
+    ChartColor WXUNUSED(c)
 )
 {
-	//-----------------------------------------------------------------------
-	// discard color
-	//-----------------------------------------------------------------------
-	Add( name, x, y );
+    //-----------------------------------------------------------------------
+    // discard color
+    //-----------------------------------------------------------------------
+    Add( name, x, y );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -305,10 +305,10 @@ void wxBarChartPoints::Add(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxBarChartPoints::SetDisplayTag(
-	wxDISPLAY_LABEL d
+    wxDISPLAY_LABEL d
 )
 {
-	m_BarTag = d;
+    m_BarTag = d;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -319,7 +319,7 @@ void wxBarChartPoints::SetDisplayTag(
 //----------------------------------------------------------------------E-+++
 wxDISPLAY_LABEL wxBarChartPoints::GetDisplayTag() const
 {
-	return ( m_BarTag );
+    return ( m_BarTag );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -362,15 +362,15 @@ void wxBarChartPoints::Draw(
         //-------------------------------------------------------------------
         double xVal  = ceil( GetXVal(iNode) );
         x = hr->x + GetZoom() * xVal * ( sizes->GetWidthBar() *
-                sizes->GetNumBar() +
-                sizes->GetWidthBar3d() * sizes->GetNumBar3d() +
-                sizes->GetGap() );
+                                         sizes->GetNumBar() +
+                                         sizes->GetWidthBar3d() * sizes->GetNumBar3d() +
+                                         sizes->GetGap() );
 
         //-------------------------------------------------------------------
         // Get y-position for iNode bar
         //-------------------------------------------------------------------
         y = hr->y + ( (hr->h - sizes->GetSizeHeight())*
-                GetYVal(iNode) ) / ValMax ;
+                      GetYVal(iNode) ) / ValMax ;
 
         hp->DrawRectangle( static_cast<int>(ceil(x)),
                            static_cast<int>(ceil(hr->h - y)),
@@ -387,49 +387,49 @@ void wxBarChartPoints::Draw(
         wxLabel wxLbl;
         switch ( GetDisplayTag() )
         {
-            case XVALUE:
-                lbl.Printf( wxT("%d"), static_cast<int>(xVal));
-                wxLbl.Draw( hp, static_cast<int>(ceil(x)),
-                            static_cast<int>(ceil(hr->h - y)),
-                            GetColor(),
-                            lbl,
-                            UP);
-                break;
-            case YVALUE:
-                lbl.Printf( wxT("%d"), static_cast<int>(GetYVal(iNode)));
-                wxLbl.Draw( hp, static_cast<int>(ceil(x)),
-                            static_cast<int>(ceil(hr->h - y)),
-                            GetColor(),
-                            lbl,
-                            UP );
-                break;
-            case XVALUE_FLOAT:
-                lbl.Printf( wxT("%4.1f"), xVal);
-                wxLbl.Draw( hp, static_cast<int>(ceil(x)),
-                            static_cast<int>(ceil(hr->h - y)),
-                            GetColor(),
-                            lbl,
-                            UP);
-                break;
-            case YVALUE_FLOAT:
-                lbl.Printf( wxT("%4.1f"), GetYVal(iNode));
-                wxLbl.Draw( hp, static_cast<int>(ceil(x)),
-                            static_cast<int>(ceil(hr->h - y)),
-                            GetColor(),
-                            lbl,
-                            UP );
-                break;
-            case NAME:
-                lbl = GetName(iNode).c_str();
-                wxLbl.Draw( hp, static_cast<int>(ceil(x)),
-                            static_cast<int>(ceil(hr->h - y)),
-                            GetColor(),
-                            lbl,
-                            UP );
-                break;
-            case NONE: // fall-through
-            default:
-                break;
+        case XVALUE:
+            lbl.Printf( wxT("%d"), static_cast<int>(xVal));
+            wxLbl.Draw( hp, static_cast<int>(ceil(x)),
+                        static_cast<int>(ceil(hr->h - y)),
+                        GetColor(),
+                        lbl,
+                        UP);
+            break;
+        case YVALUE:
+            lbl.Printf( wxT("%d"), static_cast<int>(GetYVal(iNode)));
+            wxLbl.Draw( hp, static_cast<int>(ceil(x)),
+                        static_cast<int>(ceil(hr->h - y)),
+                        GetColor(),
+                        lbl,
+                        UP );
+            break;
+        case XVALUE_FLOAT:
+            lbl.Printf( wxT("%4.1f"), xVal);
+            wxLbl.Draw( hp, static_cast<int>(ceil(x)),
+                        static_cast<int>(ceil(hr->h - y)),
+                        GetColor(),
+                        lbl,
+                        UP);
+            break;
+        case YVALUE_FLOAT:
+            lbl.Printf( wxT("%4.1f"), GetYVal(iNode));
+            wxLbl.Draw( hp, static_cast<int>(ceil(x)),
+                        static_cast<int>(ceil(hr->h - y)),
+                        GetColor(),
+                        lbl,
+                        UP );
+            break;
+        case NAME:
+            lbl = GetName(iNode).c_str();
+            wxLbl.Draw( hp, static_cast<int>(ceil(x)),
+                        static_cast<int>(ceil(hr->h - y)),
+                        GetColor(),
+                        lbl,
+                        UP );
+            break;
+        case NONE: // fall-through
+        default:
+            break;
         }
     }
 

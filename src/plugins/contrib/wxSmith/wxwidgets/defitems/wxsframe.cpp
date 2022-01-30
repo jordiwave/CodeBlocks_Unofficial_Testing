@@ -28,38 +28,38 @@
 
 namespace
 {
-    wxsRegisterItem<wxsFrame> Reg( _T("Frame"), wxsTContainer, _T(""), 0 );
+wxsRegisterItem<wxsFrame> Reg( _T("Frame"), wxsTContainer, _T(""), 0 );
 
-    WXS_ST_BEGIN(wxsFrameStyles,_T("wxDEFAULT_FRAME_STYLE"))
-        WXS_ST_CATEGORY("wxFrame")
-        WXS_ST(wxCAPTION)
-        WXS_ST(wxDEFAULT_DIALOG_STYLE)
-        WXS_ST(wxDEFAULT_FRAME_STYLE)
-        WXS_ST(wxSYSTEM_MENU)
-        WXS_ST(wxRESIZE_BORDER)
-        WXS_ST(wxCLOSE_BOX)
-        WXS_ST(wxFRAME_NO_TASKBAR)
-        WXS_ST(wxFRAME_SHAPED)
-        WXS_ST(wxFRAME_TOOL_WINDOW)
-        WXS_ST(wxFRAME_FLOAT_ON_PARENT)
-        WXS_ST(wxMAXIMIZE_BOX)
-        WXS_ST(wxMINIMIZE_BOX)
-        WXS_ST(wxSTAY_ON_TOP)
-        WXS_ST(wxTAB_TRAVERSAL)
-        WXS_EXST(wxFRAME_EX_METAL)
-        WXS_EXST(wxFRAME_EX_CONTEXTHELP)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsFrameStyles,_T("wxDEFAULT_FRAME_STYLE"))
+WXS_ST_CATEGORY("wxFrame")
+WXS_ST(wxCAPTION)
+WXS_ST(wxDEFAULT_DIALOG_STYLE)
+WXS_ST(wxDEFAULT_FRAME_STYLE)
+WXS_ST(wxSYSTEM_MENU)
+WXS_ST(wxRESIZE_BORDER)
+WXS_ST(wxCLOSE_BOX)
+WXS_ST(wxFRAME_NO_TASKBAR)
+WXS_ST(wxFRAME_SHAPED)
+WXS_ST(wxFRAME_TOOL_WINDOW)
+WXS_ST(wxFRAME_FLOAT_ON_PARENT)
+WXS_ST(wxMAXIMIZE_BOX)
+WXS_ST(wxMINIMIZE_BOX)
+WXS_ST(wxSTAY_ON_TOP)
+WXS_ST(wxTAB_TRAVERSAL)
+WXS_EXST(wxFRAME_EX_METAL)
+WXS_EXST(wxFRAME_EX_CONTEXTHELP)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsFrameEvents)
-        WXS_EVI(EVT_CLOSE,wxEVT_CLOSE_WINDOW,wxCloseEvent,Close)
-        WXS_EVI(EVT_ACTIVATE,wxEVT_ACTIVATE,wxActivateEvent,Activate)
-        WXS_EVI(EVT_ICONIZE,wxEVT_ICONIZE,wxIconizeEvent,Iconize)
-        WXS_EVI(EVT_MENU_OPEN,wxEVT_MENU_OPEN,wxMenuEvent,MenuOpen)
-        WXS_EVI(EVT_MENU_CLOSE,wxEVT_MENU_CLOSE,wxMenuEvent,MenuClose)
-        WXS_EVI(EVT_MENU_HIGHLIGHT_ALL,wxEVT_MENU_HIGHLIGHT,wxMenuEvent,MenuHighlightAll)
-        WXS_EV_DEFAULTS()
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsFrameEvents)
+WXS_EVI(EVT_CLOSE,wxEVT_CLOSE_WINDOW,wxCloseEvent,Close)
+WXS_EVI(EVT_ACTIVATE,wxEVT_ACTIVATE,wxActivateEvent,Activate)
+WXS_EVI(EVT_ICONIZE,wxEVT_ICONIZE,wxIconizeEvent,Iconize)
+WXS_EVI(EVT_MENU_OPEN,wxEVT_MENU_OPEN,wxMenuEvent,MenuOpen)
+WXS_EVI(EVT_MENU_CLOSE,wxEVT_MENU_CLOSE,wxMenuEvent,MenuClose)
+WXS_EVI(EVT_MENU_HIGHLIGHT_ALL,wxEVT_MENU_HIGHLIGHT,wxMenuEvent,MenuHighlightAll)
+WXS_EV_DEFAULTS()
+WXS_EV_END()
 
 }
 
@@ -77,45 +77,45 @@ void wxsFrame::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/frame.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%W, %I, %t, wxDefaultPosition, wxDefaultSize, %T, %N);\n"),Title.wx_str());
+        if ( !GetBaseProps()->m_Size.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_SizeFromArg) )
         {
-            AddHeader(_T("<wx/frame.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%W, %I, %t, wxDefaultPosition, wxDefaultSize, %T, %N);\n"),Title.wx_str());
-            if ( !GetBaseProps()->m_Size.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_SizeFromArg) )
-            {
-                Codef(_T("%ASetClientSize(%S);\n"));
-            }
-            if ( !GetBaseProps()->m_Position.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_PositionFromArg) )
-            {
-                Codef(_T("%AMove(%P);\n"));
-            }
-            BuildSetupWindowCode();
-            if ( !Icon.IsEmpty() )
-            {
-                AddHeader(_T("<wx/icon.h>"), GetInfo().ClassName, hfLocal);
-                Codef(
-                    _T("{\n")
-                    _T("\twxIcon FrameIcon;\n")
-                    _T("\tFrameIcon.CopyFromBitmap(%i);\n")
-                    _T("\t%ASetIcon(FrameIcon);\n")
-                    _T("}\n"),
-                        &Icon,_T("wxART_FRAME_ICON"));
-            }
-
-            AddChildrenCode();
-            if ( Centered )
-            {
-                Codef(_T("%ACenter();\n"));
-            }
-
-            return;
+            Codef(_T("%ASetClientSize(%S);\n"));
+        }
+        if ( !GetBaseProps()->m_Position.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_PositionFromArg) )
+        {
+            Codef(_T("%AMove(%P);\n"));
+        }
+        BuildSetupWindowCode();
+        if ( !Icon.IsEmpty() )
+        {
+            AddHeader(_T("<wx/icon.h>"), GetInfo().ClassName, hfLocal);
+            Codef(
+                _T("{\n")
+                _T("\twxIcon FrameIcon;\n")
+                _T("\tFrameIcon.CopyFromBitmap(%i);\n")
+                _T("\t%ASetIcon(FrameIcon);\n")
+                _T("}\n"),
+                &Icon,_T("wxART_FRAME_ICON"));
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
+        AddChildrenCode();
+        if ( Centered )
         {
-            wxsCodeMarks::Unknown(_T("wxsFrame::OnBuildCreatingCode"),GetLanguage());
+            Codef(_T("%ACenter();\n"));
         }
+
+        return;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsFrame::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

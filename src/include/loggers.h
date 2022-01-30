@@ -22,7 +22,7 @@ class wxListCtrl;
 class DLLIMPORT NullLogger : public Logger
 {
 public:
-    void Append(cb_unused const wxString& msg, cb_unused Logger::level lv) override{};
+    void Append(cb_unused const wxString& msg, cb_unused Logger::level lv) override {};
 };
 
 /** a logger which prints messages to the standard console IO */
@@ -51,8 +51,15 @@ public:
         fputs(::newline_string.mb_str(), f.fp());
     };
 
-    virtual void Open(const wxString& filename) { Close(); f.Open(filename, _T("wb")); };
-    virtual void Close(){ if(f.IsOpened()) f.Close(); };
+    virtual void Open(const wxString& filename)
+    {
+        Close();
+        f.Open(filename, _T("wb"));
+    };
+    virtual void Close()
+    {
+        if(f.IsOpened()) f.Close();
+    };
 };
 
 /** Cascading Style Sheets class for HTML logger */
@@ -79,7 +86,10 @@ class DLLIMPORT HTMLFileLogger : public FileLogger
     CSS css;
 public:
     HTMLFileLogger(const wxString& filename);
-    void SetCSS(const CSS& in_css) { css = in_css; };
+    void SetCSS(const CSS& in_css)
+    {
+        css = in_css;
+    };
 
     void Append(const wxString& msg, Logger::level lv) override;
     void Open(const wxString& filename) override;

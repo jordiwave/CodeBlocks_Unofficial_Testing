@@ -87,7 +87,10 @@ public:
     // the function below were virtual functions from the base class
     void OnAttach() override;
     void OnRelease(bool appShutDown) override;
-    int GetConfigurationGroup() const override { return cgEditor; }
+    int GetConfigurationGroup() const override
+    {
+        return cgEditor;
+    }
 
     /** CC's config dialog */
     cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent) override;
@@ -100,7 +103,10 @@ public:
     /** build CC Toolbar */
     bool BuildToolBar(wxToolBar* toolBar) override;
     /** toolbar priority value */
-    int GetToolBarPriority() override { return 10; }
+    int GetToolBarPriority() override
+    {
+        return 10;
+    }
 
     // override virtual functions in cbCodeCompletionPlugin class
     CCProviderStatus GetProviderStatusFor(cbEditor* ed) override;

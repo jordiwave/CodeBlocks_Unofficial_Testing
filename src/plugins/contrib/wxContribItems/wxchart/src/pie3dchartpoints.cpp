@@ -52,10 +52,10 @@ const double ELLISSE_H = 0.75;
 //	RETURN:		Radiant
 //----------------------------------------------------------------------E-+++
 static inline double DegToRad(
-	double deg
+    double deg
 )
 {
-	return (deg * M_PI) / 180.0;
+    return (deg * M_PI) / 180.0;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -95,14 +95,14 @@ static inline wxPoint EllipsePoint(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 wxPie3DChartPoints::wxPie3DChartPoints(
-	wxString name,
-	ChartColor c,
+    wxString name,
+    ChartColor c,
     bool showlabel
 ) : wxChartPoints(wxChartPointsTypes::Pie3D()),
-	m_Name(name),
-	m_Color(c),
-	m_Zoom(1),
-	m_PieTag(NONE),
+    m_Name(name),
+    m_Color(c),
+    m_Zoom(1),
+    m_PieTag(NONE),
     m_ShowLabel(showlabel)
 {
 }
@@ -114,10 +114,10 @@ wxPie3DChartPoints::wxPie3DChartPoints(
 //	RETURN:		int
 //----------------------------------------------------------------------E-+++
 ChartValue wxPie3DChartPoints::GetXVal(
-	int n
+    int n
 ) const
 {
-	return ( m_Points.GetXVal(n) );
+    return ( m_Points.GetXVal(n) );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -127,10 +127,10 @@ ChartValue wxPie3DChartPoints::GetXVal(
 //	RETURN:		int
 //----------------------------------------------------------------------E-+++
 ChartValue wxPie3DChartPoints::GetYVal(
-	int n
+    int n
 ) const
 {
-	return ( m_Points.GetYVal(n) );
+    return ( m_Points.GetYVal(n) );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -140,10 +140,10 @@ ChartValue wxPie3DChartPoints::GetYVal(
 //	RETURN:		wxString
 //----------------------------------------------------------------------E-+++
 wxString wxPie3DChartPoints::GetName(
-	int n
+    int n
 ) const
 {
-	return ( m_Points.GetName(n) );
+    return ( m_Points.GetName(n) );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -154,7 +154,7 @@ wxString wxPie3DChartPoints::GetName(
 //----------------------------------------------------------------------E-+++
 ChartColor wxPie3DChartPoints::GetColor(int n) const
 {
-	return ( m_Points.GetColor(n) );
+    return ( m_Points.GetColor(n) );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -165,7 +165,7 @@ ChartColor wxPie3DChartPoints::GetColor(int n) const
 //----------------------------------------------------------------------E-+++
 int wxPie3DChartPoints::GetCount() const
 {
-	return ( m_Points.GetCount() );
+    return ( m_Points.GetCount() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -176,8 +176,8 @@ int wxPie3DChartPoints::GetCount() const
 //----------------------------------------------------------------------E-+++
 ChartValue wxPie3DChartPoints::GetMaxX() const
 {
-	//return ( m_Points.GetMaxX() );
-	return ( 0 );
+    //return ( m_Points.GetMaxX() );
+    return ( 0 );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -189,7 +189,7 @@ ChartValue wxPie3DChartPoints::GetMaxX() const
 ChartValue wxPie3DChartPoints::GetMaxY() const
 {
 //	return ( m_Points.GetMaxY() );
-	return ( 0 );
+    return ( 0 );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -201,7 +201,7 @@ ChartValue wxPie3DChartPoints::GetMaxY() const
 ChartValue wxPie3DChartPoints::GetMinX() const
 {
 //	return ( m_Points.GetMinX() );
-	return ( 0 );
+    return ( 0 );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -213,7 +213,7 @@ ChartValue wxPie3DChartPoints::GetMinX() const
 ChartValue wxPie3DChartPoints::GetMinY() const
 {
 //	return ( m_Points.GetMinY() );
-	return ( 0 );
+    return ( 0 );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -223,10 +223,10 @@ ChartValue wxPie3DChartPoints::GetMinY() const
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPie3DChartPoints::SetZoom(
-	double z
+    double z
 )
 {
-	m_Zoom = z;
+    m_Zoom = z;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -247,10 +247,10 @@ double wxPie3DChartPoints::GetZoom()
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPie3DChartPoints::SetSizes(
-	wxChartSizes *sizes
+    wxChartSizes *sizes
 )
 {
-	m_Sizes = sizes;
+    m_Sizes = sizes;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -272,7 +272,7 @@ wxChartSizes* wxPie3DChartPoints::GetSizes() const
 //----------------------------------------------------------------------E-+++
 ChartColor wxPie3DChartPoints::GetColor() const
 {
-	return ( m_Color );
+    return ( m_Color );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -282,10 +282,10 @@ ChartColor wxPie3DChartPoints::GetColor() const
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPie3DChartPoints::SetColor(
-	ChartColor c
+    ChartColor c
 )
 {
-	m_Color = c;
+    m_Color = c;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -296,7 +296,7 @@ void wxPie3DChartPoints::SetColor(
 //----------------------------------------------------------------------E-+++
 wxString wxPie3DChartPoints::GetName() const
 {
-	return ( m_Name );
+    return ( m_Name );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -306,10 +306,10 @@ wxString wxPie3DChartPoints::GetName() const
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPie3DChartPoints::SetName(
-	wxString name
+    wxString name
 )
 {
-	m_Name =  name;
+    m_Name =  name;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -321,12 +321,12 @@ void wxPie3DChartPoints::SetName(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPie3DChartPoints::Add(
-	wxString name,
-	ChartValue x,
-	ChartValue y
+    wxString name,
+    ChartValue x,
+    ChartValue y
 )
 {
-	Add( name, x, y, wxCHART_NOCOLOR );
+    Add( name, x, y, wxCHART_NOCOLOR );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -339,15 +339,15 @@ void wxPie3DChartPoints::Add(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPie3DChartPoints::Add(
-	wxString name,
-	ChartValue x,
-	ChartValue y,
-	ChartColor c
+    wxString name,
+    ChartValue x,
+    ChartValue y,
+    ChartColor c
 )
 {
-	if ( c == wxCHART_NOCOLOR )
-		c = wxChartColors::GetColor();
-	m_Points.Add( name, x, y, c );
+    if ( c == wxCHART_NOCOLOR )
+        c = wxChartColors::GetColor();
+    m_Points.Add( name, x, y, c );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -357,10 +357,10 @@ void wxPie3DChartPoints::Add(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPie3DChartPoints::SetDisplayTag(
- 	wxDISPLAY_LABEL d
+    wxDISPLAY_LABEL d
 )
 {
-	m_PieTag = d;
+    m_PieTag = d;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -371,7 +371,7 @@ void wxPie3DChartPoints::SetDisplayTag(
 //----------------------------------------------------------------------E-+++
 wxDISPLAY_LABEL wxPie3DChartPoints::GetDisplayTag() const
 {
-	return ( m_PieTag );
+    return ( m_PieTag );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -396,7 +396,7 @@ void wxPie3DChartPoints::Draw(
     // Fit Ellisse in window
     //-----------------------------------------------------------------------
     int r = (int)wxMin( (int)hr->w / 2,
-        (int)(hr->h - 2 * sizes->GetSizeHeight() * ELLISSE_H) / 2 );
+                        (int)(hr->h - 2 * sizes->GetSizeHeight() * ELLISSE_H) / 2 );
 
     if ( r > 0 )
     {
@@ -418,48 +418,48 @@ void wxPie3DChartPoints::Draw(
             int deep;
             int x, y, w, h;
 
-			// Calc Size of Rectangle which hold Ellisse
+            // Calc Size of Rectangle which hold Ellisse
             w = (int)floor(r * ELLISSE_W);
-			h = (int)floor(r * ELLISSE_H);
+            h = (int)floor(r * ELLISSE_H);
 
-			// Top corner left hand side
+            // Top corner left hand side
             x = hr->x + hr->w/2 - w/2;
             y = hr->y + hr->h/2 - h;
 
             // Shadow Deep
             deep = (int)floor( SHADOW_DEEP * GetZoom() );
 
-			//---------------------------------------------------------------
-			// Draw shadow part of chart
-			//---------------------------------------------------------------
+            //---------------------------------------------------------------
+            // Draw shadow part of chart
+            //---------------------------------------------------------------
 
-			hp->DrawEllipticArc(
-				x,
-				y + deep, // Shadow Deep
-				w,
-				h,
-				175, // Draw half Ellisse
-				360);
-			hp->DrawEllipticArc(
-				x,
-				y + deep, // Shadow Deep
-				w,
-				h,
-				0, // Draw half Ellisse
-				5);
+            hp->DrawEllipticArc(
+                x,
+                y + deep, // Shadow Deep
+                w,
+                h,
+                175, // Draw half Ellisse
+                360);
+            hp->DrawEllipticArc(
+                x,
+                y + deep, // Shadow Deep
+                w,
+                h,
+                0, // Draw half Ellisse
+                5);
 
-			// left hand side line
-			rad = DegToRad( 180 );
+            // left hand side line
+            rad = DegToRad( 180 );
 
-			hp->DrawLine(
+            hp->DrawLine(
                 EllipsePoint( w, h, x, y, rad ).x,
                 EllipsePoint( w, h, x, y, rad ).y,
                 EllipsePoint( w, h, x, y, rad ).x,
                 EllipsePoint( w, h, x, y + deep, rad ).y + 1
             );
 
-			// right hand side line
-			rad = DegToRad( 360 );
+            // right hand side line
+            rad = DegToRad( 360 );
 
             hp->DrawLine(
                 EllipsePoint( w, h, x, y, rad ).x,
@@ -468,8 +468,8 @@ void wxPie3DChartPoints::Draw(
                 EllipsePoint( w - 180, h, x, y + deep, rad ).y
             );
 
-			grad = 0;
-			//int count = 0;
+            grad = 0;
+            //int count = 0;
             for ( iData = 0; iData < iDatas; ++ iData )
             {
                 hp->SetPen( *wxBLACK_PEN );
@@ -487,18 +487,18 @@ void wxPie3DChartPoints::Draw(
                 //-----------------------------------------------------------
                 if ( grad1 > 180 )
                 {
-					//if (++count > 3)
-					//	return;
+                    //if (++count > 3)
+                    //	return;
 
                     // set colors to draw
                     hp->SetPen(
                         wxPen(wxChartColors::GetDarkColor(
-                            GetColor(iData), 15))
+                                  GetColor(iData), 15))
                     );
                     hp->SetBrush(
                         wxBrush(wxChartColors::GetDarkColor(
-                            GetColor(iData), 15),
-                        wxBRUSHSTYLE_SOLID)
+                                    GetColor(iData), 15),
+                                wxBRUSHSTYLE_SOLID)
                     );
 
                     // Avoid redraw line
@@ -509,17 +509,17 @@ void wxPie3DChartPoints::Draw(
                             EllipsePoint( w, h, x, y, DegToRad( grad1 ) ).y - 1,
                             EllipsePoint( w, h, x, y, DegToRad( grad1 ) ).x,
                             EllipsePoint( w, h, x, y + deep,
-                                DegToRad( grad1 ) ).y + 1
+                                          DegToRad( grad1 ) ).y + 1
                         );
                     }
                     hp->FloodFill(
                         EllipsePoint( w, h, x, y,
-                            DegToRad( grad1 ) ).x - 3, // just inside
+                                      DegToRad( grad1 ) ).x - 3, // just inside
                         (int)floor(EllipsePoint( w, h, x, y,
-                            DegToRad( grad1 ) ).y + (double)deep/2), // middle
+                                                 DegToRad( grad1 ) ).y + (double)deep/2), // middle
                         *wxWHITE
                     );
-				}
+                }
 
                 //-----------------------------------------------------------
                 // Only draw Label if user wants it
@@ -532,7 +532,7 @@ void wxPie3DChartPoints::Draw(
 
                 LABEL_POSITION p;
                 if ( grad < 90 ||
-                    grad > 270 )
+                        grad > 270 )
                     p = RIGHT;
                 else
                     p = LEFT;
@@ -546,16 +546,16 @@ void wxPie3DChartPoints::Draw(
                 case XVALUE:
                     lbl.Printf( wxT("%d"), static_cast<int>(GetXVal(iData)) );
                     wxLbl.Draw( hp,
-                        EllipsePoint( w, h, x, y, DegToRad( grad ) ).x,
-                        EllipsePoint( w, h, x, y, DegToRad( grad ) ).y,
-                        GetColor(iData), lbl, p );
+                                EllipsePoint( w, h, x, y, DegToRad( grad ) ).x,
+                                EllipsePoint( w, h, x, y, DegToRad( grad ) ).y,
+                                GetColor(iData), lbl, p );
                     break;
                 case YVALUE:
                     lbl.Printf( wxT("%d"), static_cast<int>(GetYVal(iData)) );
                     wxLbl.Draw( hp,
-                        EllipsePoint( w, h, x, y, DegToRad( grad ) ).x,
-                        EllipsePoint( w, h, x, y, DegToRad( grad ) ).y,
-                        GetColor(iData), lbl, p );
+                                EllipsePoint( w, h, x, y, DegToRad( grad ) ).x,
+                                EllipsePoint( w, h, x, y, DegToRad( grad ) ).y,
+                                GetColor(iData), lbl, p );
                     break;
                 case XVALUE_FLOAT:
                     lbl.Printf( wxT("%4.1f"), GetXVal(iData) );
@@ -571,12 +571,12 @@ void wxPie3DChartPoints::Draw(
                                 EllipsePoint( w, h, x, y, DegToRad( grad ) ).y,
                                 GetColor(iData), lbl, p );
                     break;
-                    case NAME:
+                case NAME:
                     lbl = GetName(iData).c_str();
                     wxLbl.Draw( hp,
-                        EllipsePoint( w, h, x, y, DegToRad( grad ) ).x,
-                        EllipsePoint( w, h, x, y, DegToRad( grad ) ).y,
-                        GetColor(iData), lbl, p );
+                                EllipsePoint( w, h, x, y, DegToRad( grad ) ).x,
+                                EllipsePoint( w, h, x, y, DegToRad( grad ) ).y,
+                                GetColor(iData), lbl, p );
                     break;
                 case NONE: // fall-through
                 default:

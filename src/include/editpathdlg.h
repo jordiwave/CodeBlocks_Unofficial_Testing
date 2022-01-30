@@ -11,8 +11,8 @@
 
 class DLLIMPORT EditPathDlg : public wxScrollingDialog
 {
-	public:
-		EditPathDlg(wxWindow* parent,
+public:
+    EditPathDlg(wxWindow* parent,
                 const wxString& path,       // initial path
                 const wxString& basepath,   // for relative pathes
                 const wxString& title = _("Edit Path"),      // title of the dialog
@@ -21,29 +21,35 @@ class DLLIMPORT EditPathDlg : public wxScrollingDialog
                 const bool allowMultiSel = false,  // whether to allow for multiple files selection
                 const wxString& filter = _("All files(*)|*"));  // wildcard for files
 
-		~EditPathDlg() override;
-		EditPathDlg& operator=(const EditPathDlg&){ return *this; } // just to satisfy script bindings (never used)
+    ~EditPathDlg() override;
+    EditPathDlg& operator=(const EditPathDlg&)
+    {
+        return *this;    // just to satisfy script bindings (never used)
+    }
 
-		const wxString& GetPath(){ return m_Path; }
+    const wxString& GetPath()
+    {
+        return m_Path;
+    }
     void EndModal(int retCode) override;
 
-	protected:
-        void OnUpdateUI(wxUpdateUIEvent& event);
-        void OnBrowse(wxCommandEvent& event);
-        void OnOther(wxCommandEvent& event);
+protected:
+    void OnUpdateUI(wxUpdateUIEvent& event);
+    void OnBrowse(wxCommandEvent& event);
+    void OnOther(wxCommandEvent& event);
 
-        wxString m_Path;
-        wxString m_Message;
-        wxString m_Basepath;
-        wxString m_Filter;
-        bool     m_WantDir;
-        bool     m_AllowMultiSel;
-        bool     m_AskMakeRelative;
-        bool     m_ShowCreateDirButton;
+    wxString m_Path;
+    wxString m_Message;
+    wxString m_Basepath;
+    wxString m_Filter;
+    bool     m_WantDir;
+    bool     m_AllowMultiSel;
+    bool     m_AskMakeRelative;
+    bool     m_ShowCreateDirButton;
 
-	private:
+private:
 
-        DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 };
 
 #endif // EDITPATHDLG_H

@@ -31,8 +31,8 @@ END_EVENT_TABLE()
 
 EditMimeTypesDlg::EditMimeTypesDlg(wxWindow* parent, MimeTypesArray& array)
     : m_Array(array),
-    m_Selection(-1),
-    m_LastSelection(-1)
+      m_Selection(-1),
+      m_LastSelection(-1)
 {
     //ctor
     wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgEditFilesHandling"));

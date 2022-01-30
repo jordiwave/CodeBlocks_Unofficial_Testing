@@ -10,16 +10,16 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/intl.h>
-    #include <wx/listbox.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/intl.h>
+#include <wx/listbox.h>
+#include <wx/xrc/xmlres.h>
 
-    #include <cbproject.h>
-    #include <cbstyledtextctrl.h>
-    #include <globals.h>
-    #include <logmanager.h>
-    #include <manager.h>
+#include <cbproject.h>
+#include <cbstyledtextctrl.h>
+#include <globals.h>
+#include <logmanager.h>
+#include <manager.h>
 #endif
 
 #include <editpathdlg.h>
@@ -129,6 +129,6 @@ void CCOptionsProjectDlg::OnApply()
                        "These paths will be taken into account for next parser runs.\n"
                        "If you want them to take effect immediately, you will have to close "
                        "and re-open your project."),
-                       _("Information"), wxICON_INFORMATION);
+                     _("Information"), wxICON_INFORMATION);
     }
 }

@@ -81,8 +81,14 @@ class CCTreeCtrlExpandedItemData
 public:
     CCTreeCtrlExpandedItemData(const CCTreeCtrlData* data, const int level);
 
-    int   GetLevel() const          { return m_Level; }
-    const CCTreeCtrlData& GetData() { return m_Data;  }
+    int   GetLevel() const
+    {
+        return m_Level;
+    }
+    const CCTreeCtrlData& GetData()
+    {
+        return m_Data;
+    }
 private:
     CCTreeCtrlData m_Data;  // copy of tree item data
     int            m_Level; // nesting level in the tree
@@ -96,7 +102,7 @@ class CCTreeCntrl : public wxTreeCtrl
 public:
     CCTreeCntrl();
     CCTreeCntrl(wxWindow* parent, const wxWindowID id, const wxPoint& pos,
-               const wxSize& size, long style);
+                const wxSize& size, long style);
 
     void SetCompareFunction(const BrowserSortType type);
     void RemoveDoubles(const wxTreeItemId& parent);

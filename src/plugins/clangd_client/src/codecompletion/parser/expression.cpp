@@ -12,7 +12,7 @@
 #include <stack>
 
 #ifndef CB_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <logmanager.h>
@@ -25,64 +25,64 @@
 #define CC_EXPRESSION_DEBUG_OUTPUT 0
 
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
-    #if CC_GLOBAL_DEBUG_OUTPUT == 1
-        #undef CC_EXPRESSION_DEBUG_OUTPUT
-        #define CC_EXPRESSION_DEBUG_OUTPUT 1
-    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
-        #undef CC_EXPRESSION_DEBUG_OUTPUT
-        #define CC_EXPRESSION_DEBUG_OUTPUT 2
-    #endif
+#if CC_GLOBAL_DEBUG_OUTPUT == 1
+#undef CC_EXPRESSION_DEBUG_OUTPUT
+#define CC_EXPRESSION_DEBUG_OUTPUT 1
+#elif CC_GLOBAL_DEBUG_OUTPUT == 2
+#undef CC_EXPRESSION_DEBUG_OUTPUT
+#define CC_EXPRESSION_DEBUG_OUTPUT 2
+#endif
 #endif
 
 #ifdef CC_PARSER_TEST
-    #define TRACE(format, args...) \
+#define TRACE(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-    #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
 #else
-    #if CC_EXPRESSION_DEBUG_OUTPUT == 1
-        #define TRACE(format, args...) \
+#if CC_EXPRESSION_DEBUG_OUTPUT == 1
+#define TRACE(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-        #define TRACE2(format, args...)
-    #elif CC_EXPRESSION_DEBUG_OUTPUT == 2
-    #define TRACE(format, args...)                                              \
+#define TRACE2(format, args...)
+#elif CC_EXPRESSION_DEBUG_OUTPUT == 2
+#define TRACE(format, args...)                                              \
         do                                                                      \
         {                                                                       \
             if (g_EnableDebugTrace)                                             \
                 CCLogger::Get()->DebugLog(wxString::Format(format, ##args));                   \
         }                                                                       \
         while (false)
-        #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
             CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-    #else
-        #define TRACE(format, args...)
-        #define TRACE2(format, args...)
-    #endif
+#else
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
+#endif
 #endif
 
 namespace ExpressionConsts
 {
-    const wxString Plus         (_T("+"));
-    const wxString Subtract     (_T("-"));
-    const wxString Multiply     (_T("*"));
-    const wxString Divide       (_T("/"));
-    const wxString LParenthesis (_T("("));
-    const wxString RParenthesis (_T(")"));
-    const wxString Mod          (_T("%"));
-    const wxString Power        (_T("^"));
-    const wxString BitwiseAnd   (_T("&"));
-    const wxString BitwiseOr    (_T("|"));
-    const wxString And          (_T("&&"));
-    const wxString Or           (_T("||"));
-    const wxString Not          (_T("!"));
-    const wxString Equal        (_T("=="));
-    const wxString Unequal      (_T("!="));
-    const wxString GT           (_T(">"));
-    const wxString LT           (_T("<"));
-    const wxString GTOrEqual    (_T(">="));
-    const wxString LTOrEqual    (_T("<="));
-    const wxString LShift       (_T("<<"));
-    const wxString RShift       (_T(">>"));
+const wxString Plus         (_T("+"));
+const wxString Subtract     (_T("-"));
+const wxString Multiply     (_T("*"));
+const wxString Divide       (_T("/"));
+const wxString LParenthesis (_T("("));
+const wxString RParenthesis (_T(")"));
+const wxString Mod          (_T("%"));
+const wxString Power        (_T("^"));
+const wxString BitwiseAnd   (_T("&"));
+const wxString BitwiseOr    (_T("|"));
+const wxString And          (_T("&&"));
+const wxString Or           (_T("||"));
+const wxString Not          (_T("!"));
+const wxString Equal        (_T("=="));
+const wxString Unequal      (_T("!="));
+const wxString GT           (_T(">"));
+const wxString LT           (_T("<"));
+const wxString GTOrEqual    (_T(">="));
+const wxString LTOrEqual    (_T("<="));
+const wxString LShift       (_T("<<"));
+const wxString RShift       (_T(">>"));
 }
 
 ExpressionNode::ExpressionNode()
@@ -133,30 +133,41 @@ long ExpressionNode::GetNodeTypePriority(ExpressionNodeType type)
 {
     switch (type)
     {
-        case LParenthesis:
-        case RParenthesis: return 10;
-        case Not:          return 9;
-        case Mod:          return 8;
-        case Multiply:
-        case Divide:
-        case Power:        return 7;
-        case Plus:
-        case Subtract:     return 6;
-        case LShift:
-        case RShift:       return 5;
-        case BitwiseAnd:
-        case BitwiseOr:    return 4;
-        case Equal:
-        case Unequal:
-        case GT:
-        case LT:
-        case GTOrEqual:
-        case LTOrEqual:    return 3;
-        case And:          return 2;
-        case Or:           return 1;
-        case Numeric:
-        case Unknown:
-        default:           return 0;
+    case LParenthesis:
+    case RParenthesis:
+        return 10;
+    case Not:
+        return 9;
+    case Mod:
+        return 8;
+    case Multiply:
+    case Divide:
+    case Power:
+        return 7;
+    case Plus:
+    case Subtract:
+        return 6;
+    case LShift:
+    case RShift:
+        return 5;
+    case BitwiseAnd:
+    case BitwiseOr:
+        return 4;
+    case Equal:
+    case Unequal:
+    case GT:
+    case LT:
+    case GTOrEqual:
+    case LTOrEqual:
+        return 3;
+    case And:
+        return 2;
+    case Or:
+        return 1;
+    case Numeric:
+    case Unknown:
+    default:
+        return 0;
     }
 }
 
@@ -164,32 +175,32 @@ bool ExpressionNode::IsUnaryNode(ExpressionNodeType type)
 {
     switch (type)
     {
-        case ExpressionNode::Plus:
-        case ExpressionNode::Subtract:
-        case ExpressionNode::Not:
-            return true;
-        case ExpressionNode::Unknown:
-        case ExpressionNode::Multiply:
-        case ExpressionNode::Divide:
-        case ExpressionNode::LParenthesis:
-        case ExpressionNode::RParenthesis:
-        case ExpressionNode::Mod:
-        case ExpressionNode::Power:
-        case ExpressionNode::BitwiseAnd:
-        case ExpressionNode::BitwiseOr:
-        case ExpressionNode::And:
-        case ExpressionNode::Or:
-        case ExpressionNode::Equal:
-        case ExpressionNode::Unequal:
-        case ExpressionNode::GT:
-        case ExpressionNode::LT:
-        case ExpressionNode::GTOrEqual:
-        case ExpressionNode::LTOrEqual:
-        case ExpressionNode::LShift:
-        case ExpressionNode::RShift:
-        case ExpressionNode::Numeric:
-        default:
-            return false;
+    case ExpressionNode::Plus:
+    case ExpressionNode::Subtract:
+    case ExpressionNode::Not:
+        return true;
+    case ExpressionNode::Unknown:
+    case ExpressionNode::Multiply:
+    case ExpressionNode::Divide:
+    case ExpressionNode::LParenthesis:
+    case ExpressionNode::RParenthesis:
+    case ExpressionNode::Mod:
+    case ExpressionNode::Power:
+    case ExpressionNode::BitwiseAnd:
+    case ExpressionNode::BitwiseOr:
+    case ExpressionNode::And:
+    case ExpressionNode::Or:
+    case ExpressionNode::Equal:
+    case ExpressionNode::Unequal:
+    case ExpressionNode::GT:
+    case ExpressionNode::LT:
+    case ExpressionNode::GTOrEqual:
+    case ExpressionNode::LTOrEqual:
+    case ExpressionNode::LShift:
+    case ExpressionNode::RShift:
+    case ExpressionNode::Numeric:
+    default:
+        return false;
     }
 }
 
@@ -198,28 +209,28 @@ bool ExpressionNode::IsBinaryOperator(wxString first, wxString second)
 {
     switch ((wxChar)first.GetChar(0))
     {
-        case _T('&'):
-        case _T('|'):
-        case _T('='):
-        case _T('!'):
-        case _T('>'):
-        case _T('<'):
-        {
-            wxString newOperator(first + second);
-            if (newOperator == ExpressionConsts::And ||
-            newOperator == ExpressionConsts::Or ||
-            newOperator == ExpressionConsts::Equal ||
-            newOperator == ExpressionConsts::Unequal ||
-            newOperator == ExpressionConsts::GTOrEqual ||
-            newOperator == ExpressionConsts::LTOrEqual ||
-            newOperator == ExpressionConsts::LShift ||
-            newOperator == ExpressionConsts::RShift)
-                return true;
-            else
-                return false;
-        }
-        default:
+    case _T('&'):
+    case _T('|'):
+    case _T('='):
+    case _T('!'):
+    case _T('>'):
+    case _T('<'):
+    {
+        wxString newOperator(first + second);
+        if (newOperator == ExpressionConsts::And ||
+                newOperator == ExpressionConsts::Or ||
+                newOperator == ExpressionConsts::Equal ||
+                newOperator == ExpressionConsts::Unequal ||
+                newOperator == ExpressionConsts::GTOrEqual ||
+                newOperator == ExpressionConsts::LTOrEqual ||
+                newOperator == ExpressionConsts::LShift ||
+                newOperator == ExpressionConsts::RShift)
+            return true;
+        else
             return false;
+    }
+    default:
+        return false;
     }
 }
 
@@ -306,9 +317,9 @@ void Expression::ConvertInfixToPostfix()
         else
         {
             if (ExpressionNode::IsUnaryNode(type) && (m_PostfixExpression.empty() ||
-                                                        (lastType != ExpressionNode::Unknown &&
-                                                         lastType != ExpressionNode::RParenthesis &&
-                                                         lastType != ExpressionNode::Numeric)))
+                    (lastType != ExpressionNode::Unknown &&
+                     lastType != ExpressionNode::RParenthesis &&
+                     lastType != ExpressionNode::Numeric)))
             {
                 expNode.SetUnaryOperator();
                 stackOperator.push(expNode);
@@ -321,7 +332,7 @@ void Expression::ConvertInfixToPostfix()
             {
                 ExpressionNode beforeExpNode = stackOperator.top();
                 if (beforeExpNode.GetType() != ExpressionNode::LParenthesis &&
-                    beforeExpNode.GetPriority() >= expNode.GetPriority())
+                        beforeExpNode.GetPriority() >= expNode.GetPriority())
                 {
                     m_PostfixExpression.push_back(beforeExpNode);
                     stackOperator.pop();
@@ -432,50 +443,58 @@ long Expression::Calculate(ExpressionNode::ExpressionNodeType type, long first, 
 {
     switch (type)
     {
-        case ExpressionNode::Plus:
-            return first + second;
-        case ExpressionNode::Subtract:
-            return first - second;
-        case ExpressionNode::Multiply:
-            return first * second;
-        case ExpressionNode::Divide:
-            if (second == 0) { m_Status = false; return 0; }
-            else return first / second;
-        case ExpressionNode::Mod:
-            if (second == 0) { m_Status = false; return 0; }
-            else return first / second;
-        case ExpressionNode::BitwiseAnd:
-            return first & second;
-        case ExpressionNode::BitwiseOr:
-            return first | second;
-        case ExpressionNode::And:
-            return first && second;
-        case ExpressionNode::Or:
-            return first || second;
-        case ExpressionNode::Equal:
-            return first == second;
-        case ExpressionNode::Unequal:
-            return first != second;
-        case ExpressionNode::GT:
-            return first > second;
-        case ExpressionNode::LT:
-            return first < second;
-        case ExpressionNode::GTOrEqual:
-            return first >= second;
-        case ExpressionNode::LTOrEqual:
-            return first <= second;
-        case ExpressionNode::LShift:
-            return first << second;
-        case ExpressionNode::RShift:
-            return first >> second;
-        case ExpressionNode::Unknown:
-        case ExpressionNode::LParenthesis:
-        case ExpressionNode::RParenthesis:
-        case ExpressionNode::Power:
-        case ExpressionNode::Not:
-        case ExpressionNode::Numeric:
-        default:
+    case ExpressionNode::Plus:
+        return first + second;
+    case ExpressionNode::Subtract:
+        return first - second;
+    case ExpressionNode::Multiply:
+        return first * second;
+    case ExpressionNode::Divide:
+        if (second == 0)
+        {
+            m_Status = false;
             return 0;
+        }
+        else return first / second;
+    case ExpressionNode::Mod:
+        if (second == 0)
+        {
+            m_Status = false;
+            return 0;
+        }
+        else return first / second;
+    case ExpressionNode::BitwiseAnd:
+        return first & second;
+    case ExpressionNode::BitwiseOr:
+        return first | second;
+    case ExpressionNode::And:
+        return first && second;
+    case ExpressionNode::Or:
+        return first || second;
+    case ExpressionNode::Equal:
+        return first == second;
+    case ExpressionNode::Unequal:
+        return first != second;
+    case ExpressionNode::GT:
+        return first > second;
+    case ExpressionNode::LT:
+        return first < second;
+    case ExpressionNode::GTOrEqual:
+        return first >= second;
+    case ExpressionNode::LTOrEqual:
+        return first <= second;
+    case ExpressionNode::LShift:
+        return first << second;
+    case ExpressionNode::RShift:
+        return first >> second;
+    case ExpressionNode::Unknown:
+    case ExpressionNode::LParenthesis:
+    case ExpressionNode::RParenthesis:
+    case ExpressionNode::Power:
+    case ExpressionNode::Not:
+    case ExpressionNode::Numeric:
+    default:
+        return 0;
     }
 }
 
@@ -483,33 +502,33 @@ long Expression::CalculateUnary(ExpressionNode::ExpressionNodeType type, long va
 {
     switch (type)
     {
-        case ExpressionNode::Plus:
-            return value;
-        case ExpressionNode::Subtract:
-            return 0 - value;
-        case ExpressionNode::Not:
-            return !value;
-        case ExpressionNode::Unknown:
-        case ExpressionNode::Multiply:
-        case ExpressionNode::Divide:
-        case ExpressionNode::LParenthesis:
-        case ExpressionNode::RParenthesis:
-        case ExpressionNode::Mod:
-        case ExpressionNode::Power:
-        case ExpressionNode::BitwiseAnd:
-        case ExpressionNode::BitwiseOr:
-        case ExpressionNode::And:
-        case ExpressionNode::Or:
-        case ExpressionNode::Equal:
-        case ExpressionNode::Unequal:
-        case ExpressionNode::GT:
-        case ExpressionNode::LT:
-        case ExpressionNode::GTOrEqual:
-        case ExpressionNode::LTOrEqual:
-        case ExpressionNode::LShift:
-        case ExpressionNode::RShift:
-        case ExpressionNode::Numeric:
-        default:
-            return 0;
+    case ExpressionNode::Plus:
+        return value;
+    case ExpressionNode::Subtract:
+        return 0 - value;
+    case ExpressionNode::Not:
+        return !value;
+    case ExpressionNode::Unknown:
+    case ExpressionNode::Multiply:
+    case ExpressionNode::Divide:
+    case ExpressionNode::LParenthesis:
+    case ExpressionNode::RParenthesis:
+    case ExpressionNode::Mod:
+    case ExpressionNode::Power:
+    case ExpressionNode::BitwiseAnd:
+    case ExpressionNode::BitwiseOr:
+    case ExpressionNode::And:
+    case ExpressionNode::Or:
+    case ExpressionNode::Equal:
+    case ExpressionNode::Unequal:
+    case ExpressionNode::GT:
+    case ExpressionNode::LT:
+    case ExpressionNode::GTOrEqual:
+    case ExpressionNode::LTOrEqual:
+    case ExpressionNode::LShift:
+    case ExpressionNode::RShift:
+    case ExpressionNode::Numeric:
+    default:
+        return 0;
     }
 }

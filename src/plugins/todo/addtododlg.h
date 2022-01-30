@@ -35,27 +35,27 @@ enum ToDoCommentType
 // when user want to add a new todo item, this dialog will shown to let user setting properties
 class AddTodoDlg : public wxScrollingDialog
 {
-    public:
-        AddTodoDlg(wxWindow* parent, const wxArrayString& users, const wxArrayString& types, std::bitset<(int)tdctError+1> supportedTdcts);
+public:
+    AddTodoDlg(wxWindow* parent, const wxArrayString& users, const wxArrayString& types, std::bitset<(int)tdctError+1> supportedTdcts);
 
-        wxString GetText() const;
-        wxString GetUser() const;
-        bool DateRequested() const;
-        int GetPriority() const;
-        ToDoPosition GetPosition() const;
-        wxString GetType() const;
-        ToDoCommentType GetCommentType() const;
+    wxString GetText() const;
+    wxString GetUser() const;
+    bool DateRequested() const;
+    int GetPriority() const;
+    ToDoPosition GetPosition() const;
+    wxString GetType() const;
+    ToDoCommentType GetCommentType() const;
 
-        void EndModal(int retVal) override;
+    void EndModal(int retVal) override;
 
-    private:
-        void OnAddUser(wxCommandEvent&);
-        void OnDelUser(wxCommandEvent&);
-        void OnAddType(wxCommandEvent&);
-        void OnDelType(wxCommandEvent&);
+private:
+    void OnAddUser(wxCommandEvent&);
+    void OnDelUser(wxCommandEvent&);
+    void OnAddType(wxCommandEvent&);
+    void OnDelType(wxCommandEvent&);
 
-        std::bitset<(int)tdctError+1> m_supportedTdcts;
-        DECLARE_EVENT_TABLE()
+    std::bitset<(int)tdctError+1> m_supportedTdcts;
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // ADDTODODLG_H

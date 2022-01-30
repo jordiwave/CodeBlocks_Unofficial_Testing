@@ -16,7 +16,8 @@
 
 struct SQSharedState;
 
-enum SQMetaMethod{
+enum SQMetaMethod
+{
     MT_ADD=0,
     MT_SUB=1,
     MT_MUL=2,
@@ -88,7 +89,11 @@ struct SQRefCounted
 {
     SQUnsignedInteger _uiRef;
     struct SQWeakRef *_weakref;
-    SQRefCounted() { _uiRef = 0; _weakref = NULL; }
+    SQRefCounted()
+    {
+        _uiRef = 0;
+        _weakref = NULL;
+    }
     virtual ~SQRefCounted();
     SQWeakRef *GetWeakRef(SQObjectType type);
     virtual void Release()=0;
@@ -290,10 +295,10 @@ struct SQObjectPtr : public SQObject
         SQObjectValue unOldVal = _unVal;
         _type = OT_NULL;
         _unVal.raw = (SQRawObjectVal)NULL;
-        __Release(tOldType ,unOldVal);
+        __Release(tOldType,unOldVal);
     }
-    private:
-        SQObjectPtr(const SQChar *){} //safety
+private:
+    SQObjectPtr(const SQChar *) {} //safety
 };
 
 
@@ -310,7 +315,8 @@ inline void _Swap(SQObject &a,SQObject &b)
 /////////////////////////////////////////////////////////////////////////////////////
 #ifndef NO_GARBAGE_COLLECTOR
 #define MARK_FLAG 0x80000000
-struct SQCollectable : public SQRefCounted {
+struct SQCollectable : public SQRefCounted
+{
     SQCollectable *_next;
     SQCollectable *_prev;
     SQSharedState *_sharedstate;
@@ -336,7 +342,8 @@ struct SQCollectable : public SQRefCounted {
 #define INIT_CHAIN() ((void)0)
 #endif
 
-struct SQDelegable : public CHAINABLE_OBJ {
+struct SQDelegable : public CHAINABLE_OBJ
+{
     bool SetDelegate(SQTable *m);
     virtual bool GetMetaMethod(SQVM *v,SQMetaMethod mm,SQObjectPtr &res);
     SQTable *_delegate;

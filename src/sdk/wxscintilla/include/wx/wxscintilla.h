@@ -45,11 +45,11 @@
 #endif
 
 #ifdef WXMAKINGDLL_SCI
-    #define WXDLLIMPEXP_SCI WXEXPORT
+#define WXDLLIMPEXP_SCI WXEXPORT
 #elif defined(WXUSINGDLL_SCI) || defined(WXUSINGDLL)
-    #define WXDLLIMPEXP_SCI WXIMPORT
+#define WXDLLIMPEXP_SCI WXIMPORT
 #else // not making nor using DLL
-    #define WXDLLIMPEXP_SCI
+#define WXDLLIMPEXP_SCI
 #endif
 /* C::B end */
 
@@ -2509,11 +2509,11 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 
 
 #if defined(__clang__) || wxCHECK_GCC_VERSION(4, 5)
-    #define wxSCI_STRINGIFY(X) #X
-    #define wxSCI_DEPRECATED_MACRO_VALUE(value,msg) \
+#define wxSCI_STRINGIFY(X) #X
+#define wxSCI_DEPRECATED_MACRO_VALUE(value,msg) \
         _Pragma(wxSCI_STRINGIFY(GCC warning msg)) value
 #else
-    #define wxSCI_DEPRECATED_MACRO_VALUE(value,msg) value
+#define wxSCI_DEPRECATED_MACRO_VALUE(value,msg) value
 #endif
 
 //----------------------------------------------------------------------
@@ -2840,14 +2840,15 @@ class  ScintillaWX;                      // forward declare
 class  WordList;
 
 #ifdef SCI_NAMESPACE
-	#ifndef SCI_NAMESPACE_PREFIX
-		#define SCI_NAMESPACE_PREFIX( x ) Scintilla::x
-	#endif
-namespace Scintilla {
+#ifndef SCI_NAMESPACE_PREFIX
+#define SCI_NAMESPACE_PREFIX( x ) Scintilla::x
+#endif
+namespace Scintilla
+{
 #else
-	#ifndef SCI_NAMESPACE_PREFIX
-		#define SCI_NAMESPACE_PREFIX( x ) x
-	#endif
+#ifndef SCI_NAMESPACE_PREFIX
+#define SCI_NAMESPACE_PREFIX( x ) x
+#endif
 #endif
 struct SCNotification;
 #ifdef SCI_NAMESPACE
@@ -2862,7 +2863,8 @@ class  WXDLLIMPEXP_SCI wxScintillaEvent;
 
 //----------------------------------------------------------------------
 
-class WXDLLIMPEXP_SCI wxScintilla : public wxControl {
+class WXDLLIMPEXP_SCI wxScintilla : public wxControl
+{
 public:
 
 #ifdef SWIG
@@ -2880,7 +2882,10 @@ public:
                  const wxPoint& pos = wxDefaultPosition,
                  const wxSize& size = wxDefaultSize, long style = 0,
                  const wxString& name = wxSCINameStr);
-    wxScintilla() { m_swx = NULL; }
+    wxScintilla()
+    {
+        m_swx = NULL;
+    }
     ~wxScintilla();
 
 #endif
@@ -2938,14 +2943,14 @@ public:
     // history and discarding them.
     void SetUndoCollection(bool collectUndo);
 
-/* CHANGEBAR begin */
+    /* CHANGEBAR begin */
     // Choose between collecting actions into the changes
     // history and discarding them.
     void SetChangeCollection(bool collectChange);
 
     // Find a changed line, if fromLine > toLine search is performed backwards.
     int FindChangedLine (const int fromLine, const int toLine) const;
-/* CHANGEBAR end */
+    /* CHANGEBAR end */
 
     // Select all the text in the document.
     void SelectAll();
@@ -3001,7 +3006,7 @@ public:
     void SetAnchor(int anchor);
 
     // Retrieve the text of the line containing the caret.
-    #ifdef SWIG
+#ifdef SWIG
     wxString GetCurLine(int* OUTPUT);
 #else
     wxString GetCurLine(int* linePos=NULL);
@@ -3060,8 +3065,8 @@ public:
     // Set the symbol used for a particular marker number,
     // and optionally the fore and background colours.
     void MarkerDefine(int markerNumber, int markerSymbol,
-                const wxColour& foreground = wxNullColour,
-                const wxColour& background = wxNullColour);
+                      const wxColour& foreground = wxNullColour,
+                      const wxColour& background = wxNullColour);
 
     // Set the foreground colour used for a particular marker number.
     void MarkerSetForeground(int markerNumber, const wxColour& fore);
@@ -3571,12 +3576,12 @@ public:
 
     // On Windows, will draw the document into a display context such as a printer.
     int FormatRange(bool   doDraw,
-               int    startPos,
-               int    endPos,
-               wxDC*  draw,
-               wxDC*  target,
-               wxRect renderRect,
-               wxRect pageRect);
+                    int    startPos,
+                    int    endPos,
+                    wxDC*  draw,
+                    wxDC*  target,
+                    wxRect renderRect,
+                    wxRect pageRect);
 
     // Retrieve the display line at the top of the display.
     int GetFirstVisibleLine() const;
@@ -3644,9 +3649,9 @@ public:
     bool CanUndo() const;
 
     // Delete the undo history.
-/* CHANGEBAR begin */
+    /* CHANGEBAR begin */
     void EmptyUndoBuffer(bool collectChangeHistory=false);
-/* CHANGEBAR end */
+    /* CHANGEBAR end */
 
     // Undo one action in the undo history.
     void Undo();
@@ -4779,13 +4784,13 @@ public:
     // Clear selections to a single empty stream selection
     void ClearSelections();
 
-/* C::B begin */
+    /* C::B begin */
     // Select a range of text.
     void SetSelectionVoid(int startPos, int endPos);
 
     // Set a simple selection
     int SetSelectionInt(int caret, int anchor);
-/* C::B end */
+    /* C::B end */
 
     // Add a selection
     int AddSelection(int caret, int anchor);
@@ -5165,16 +5170,22 @@ public:
     void SetHScrollBar(wxScrollBar* bar);
 
     // Can be used to prevent the EVT_CHAR handler from adding the char
-    bool GetLastKeydownProcessed() { return m_lastKeyDownConsumed; }
-    void SetLastKeydownProcessed(bool val) { m_lastKeyDownConsumed = val; }
+    bool GetLastKeydownProcessed()
+    {
+        return m_lastKeyDownConsumed;
+    }
+    void SetLastKeydownProcessed(bool val)
+    {
+        m_lastKeyDownConsumed = val;
+    }
 
-/* C::B begin */
+    /* C::B begin */
     // Write the contents of the editor to filename
     bool SaveFile(const wxString& filename);
 
     // Load the contents of filename into the editor
     bool LoadFile(const wxString& filename);
-/* C::B end */
+    /* C::B end */
 
 #ifdef SCI_USE_DND
     // Allow for simulating a DnD DragEnter
@@ -5293,8 +5304,14 @@ public:
     {
         SetCurrentPos(int(pos == -1 ? GetLastPosition() : pos));
     }
-    virtual long GetInsertionPoint() const { return GetCurrentPos(); }
-    virtual long GetLastPosition() const { return GetTextLength(); }
+    virtual long GetInsertionPoint() const
+    {
+        return GetCurrentPos();
+    }
+    virtual long GetLastPosition() const
+    {
+        return GetTextLength();
+    }
 
     virtual void SetSelection(long from, long to)
     {
@@ -5337,28 +5354,46 @@ public:
     }
 #endif
 
-    virtual bool IsEditable() const { return !GetReadOnly(); }
-    virtual void SetEditable(bool editable) { SetReadOnly(!editable); }
+    virtual bool IsEditable() const
+    {
+        return !GetReadOnly();
+    }
+    virtual void SetEditable(bool editable)
+    {
+        SetReadOnly(!editable);
+    }
 
-/* C::B begin capture mouse assert fix */
+    /* C::B begin capture mouse assert fix */
     void SetMouseCapture(bool on);
     bool HaveMouseCapture() const;
-/* C::B end */
+    /* C::B end */
 
-/* C::B begin */
+    /* C::B begin */
 #if wxCHECK_VERSION(3, 0, 0)
     static wxVersionInfo GetLibraryVersionInfo();
 #endif
-/* C::B end */
+    /* C::B end */
 
 protected:
-/* C::B begin */
-    wxString GetValue() const { return GetText(); }
-    void SetValue(const wxString& text) { SetText(text); }
-/* C::B end */
+    /* C::B begin */
+    wxString GetValue() const
+    {
+        return GetText();
+    }
+    void SetValue(const wxString& text)
+    {
+        SetText(text);
+    }
+    /* C::B end */
     virtual void DoSetValue(const wxString& value, int flags);
-    virtual wxString DoGetValue() const { return GetText(); }
-    virtual wxWindow *GetEditableWindow() { return this; }
+    virtual wxString DoGetValue() const
+    {
+        return GetText();
+    }
+    virtual wxWindow *GetEditableWindow()
+    {
+        return this;
+    }
 
 #ifndef SWIG
     virtual bool DoLoadFile(const wxString& file, int fileType);
@@ -5414,7 +5449,8 @@ protected:
 
 //----------------------------------------------------------------------
 
-class WXDLLIMPEXP_SCI wxScintillaEvent : public wxCommandEvent {
+class WXDLLIMPEXP_SCI wxScintillaEvent : public wxCommandEvent
+{
 public:
     wxScintillaEvent(wxEventType commandType=0, int id=0);
 #ifndef SWIG
@@ -5422,33 +5458,105 @@ public:
 #endif
     ~wxScintillaEvent() {}
 
-    void SetPosition(int pos)             { m_position = pos; }
-    void SetKey(int k)                    { m_key = k; }
-    void SetModifiers(int m)              { m_modifiers = m; }
-    void SetModificationType(int t)       { m_modificationType = t; }
+    void SetPosition(int pos)
+    {
+        m_position = pos;
+    }
+    void SetKey(int k)
+    {
+        m_key = k;
+    }
+    void SetModifiers(int m)
+    {
+        m_modifiers = m;
+    }
+    void SetModificationType(int t)
+    {
+        m_modificationType = t;
+    }
     // Kept for backwards compatibility, use SetString().
-    void SetText(const wxString& t)       { SetString(t); }
-    void SetLength(int len)               { m_length = len; }
-    void SetLinesAdded(int num)           { m_linesAdded = num; }
-    void SetLine(int val)                 { m_line = val; }
-    void SetFoldLevelNow(int val)         { m_foldLevelNow = val; }
-    void SetFoldLevelPrev(int val)        { m_foldLevelPrev = val; }
-    void SetMargin(int val)               { m_margin = val; }
-    void SetMessage(int val)              { m_message = val; }
-    void SetWParam(int val)               { m_wParam = val; }
-    void SetLParam(int val)               { m_lParam = val; }
-    void SetListType(int val)             { m_listType = val; }
-    void SetX(int val)                    { m_x = val; }
-    void SetY(int val)                    { m_y = val; }
-    void SetToken(int val)                { m_token = val; }
-    void SetAnnotationLinesAdded(int val) { m_annotationLinesAdded = val; }
-    void SetUpdated(int val)              { m_updated = val; }
-    void SetListCompletionMethod(int val) { m_listCompletionMethod = val; }
+    void SetText(const wxString& t)
+    {
+        SetString(t);
+    }
+    void SetLength(int len)
+    {
+        m_length = len;
+    }
+    void SetLinesAdded(int num)
+    {
+        m_linesAdded = num;
+    }
+    void SetLine(int val)
+    {
+        m_line = val;
+    }
+    void SetFoldLevelNow(int val)
+    {
+        m_foldLevelNow = val;
+    }
+    void SetFoldLevelPrev(int val)
+    {
+        m_foldLevelPrev = val;
+    }
+    void SetMargin(int val)
+    {
+        m_margin = val;
+    }
+    void SetMessage(int val)
+    {
+        m_message = val;
+    }
+    void SetWParam(int val)
+    {
+        m_wParam = val;
+    }
+    void SetLParam(int val)
+    {
+        m_lParam = val;
+    }
+    void SetListType(int val)
+    {
+        m_listType = val;
+    }
+    void SetX(int val)
+    {
+        m_x = val;
+    }
+    void SetY(int val)
+    {
+        m_y = val;
+    }
+    void SetToken(int val)
+    {
+        m_token = val;
+    }
+    void SetAnnotationLinesAdded(int val)
+    {
+        m_annotationLinesAdded = val;
+    }
+    void SetUpdated(int val)
+    {
+        m_updated = val;
+    }
+    void SetListCompletionMethod(int val)
+    {
+        m_listCompletionMethod = val;
+    }
 #ifdef  SCI_USE_DND
     // Kept for backwards compatibility, use SetString().
-    void SetDragText(const wxString& val) { SetString(val); }
-    void SetDragFlags(int flags)          { m_dragFlags = flags; }
-    void SetDragResult(wxDragResult val)  { m_dragResult = val; }
+    void SetDragText(const wxString& val)
+    {
+        SetString(val);
+    }
+    void SetDragFlags(int flags)
+    {
+        m_dragFlags = flags;
+    }
+    void SetDragResult(wxDragResult val)
+    {
+        m_dragResult = val;
+    }
 
     // This method is kept mainly for backwards compatibility, use
     // SetDragFlags() in the new code.
@@ -5461,43 +5569,121 @@ public:
     }
 #endif
 
-    int  GetPosition() const         { return m_position; }
-    int  GetKey()  const             { return m_key; }
-    int  GetModifiers() const        { return m_modifiers; }
-    int  GetModificationType() const { return m_modificationType; }
+    int  GetPosition() const
+    {
+        return m_position;
+    }
+    int  GetKey()  const
+    {
+        return m_key;
+    }
+    int  GetModifiers() const
+    {
+        return m_modifiers;
+    }
+    int  GetModificationType() const
+    {
+        return m_modificationType;
+    }
     // Kept for backwards compatibility, use GetString().
-    wxString GetText() const         { return GetString(); }
-    int  GetLength() const           { return m_length; }
-    int  GetLinesAdded() const       { return m_linesAdded; }
-    int  GetLine() const             { return m_line; }
-    int  GetFoldLevelNow() const     { return m_foldLevelNow; }
-    int  GetFoldLevelPrev() const    { return m_foldLevelPrev; }
-    int  GetMargin() const           { return m_margin; }
-    int  GetMessage() const          { return m_message; }
-    int  GetWParam() const           { return m_wParam; }
-    int  GetLParam() const           { return m_lParam; }
-    int  GetListType() const         { return m_listType; }
-    int  GetX() const                { return m_x; }
-    int  GetY() const                { return m_y; }
-    int  GetToken() const                 { return m_token; }
-    int  GetAnnotationsLinesAdded() const { return m_annotationLinesAdded; }
-    int  GetUpdated() const               { return m_updated; }
-    int  GetListCompletionMethod() const  { return m_listCompletionMethod; }
+    wxString GetText() const
+    {
+        return GetString();
+    }
+    int  GetLength() const
+    {
+        return m_length;
+    }
+    int  GetLinesAdded() const
+    {
+        return m_linesAdded;
+    }
+    int  GetLine() const
+    {
+        return m_line;
+    }
+    int  GetFoldLevelNow() const
+    {
+        return m_foldLevelNow;
+    }
+    int  GetFoldLevelPrev() const
+    {
+        return m_foldLevelPrev;
+    }
+    int  GetMargin() const
+    {
+        return m_margin;
+    }
+    int  GetMessage() const
+    {
+        return m_message;
+    }
+    int  GetWParam() const
+    {
+        return m_wParam;
+    }
+    int  GetLParam() const
+    {
+        return m_lParam;
+    }
+    int  GetListType() const
+    {
+        return m_listType;
+    }
+    int  GetX() const
+    {
+        return m_x;
+    }
+    int  GetY() const
+    {
+        return m_y;
+    }
+    int  GetToken() const
+    {
+        return m_token;
+    }
+    int  GetAnnotationsLinesAdded() const
+    {
+        return m_annotationLinesAdded;
+    }
+    int  GetUpdated() const
+    {
+        return m_updated;
+    }
+    int  GetListCompletionMethod() const
+    {
+        return m_listCompletionMethod;
+    }
 
 #ifdef SCI_USE_DND
     // Kept for backwards compatibility, use GetString().
-    wxString GetDragText()           { return GetString(); }
-    int GetDragFlags()               { return m_dragFlags; }
-    wxDragResult GetDragResult()     { return m_dragResult; }
+    wxString GetDragText()
+    {
+        return GetString();
+    }
+    int GetDragFlags()
+    {
+        return m_dragFlags;
+    }
+    wxDragResult GetDragResult()
+    {
+        return m_dragResult;
+    }
 
-    bool GetDragAllowMove() { return (GetDragFlags() & wxDrag_AllowMove) != 0; }
+    bool GetDragAllowMove()
+    {
+        return (GetDragFlags() & wxDrag_AllowMove) != 0;
+    }
 #endif
 
     bool GetShift() const;
     bool GetControl() const;
     bool GetAlt() const;
 
-    virtual wxEvent* Clone() const { return new wxScintillaEvent(*this); }
+    virtual wxEvent* Clone() const
+    {
+        return new wxScintillaEvent(*this);
+    }
 
 #ifndef SWIG
 private:
@@ -5574,41 +5760,42 @@ DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_AUTOCOMP_COMPLETED,   16
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_MARGIN_RIGHT_CLICK,   1684)
 END_DECLARE_EVENT_TYPES()
 #else
-    enum {
-        wxEVT_SCI_CHANGE,
-        wxEVT_SCI_STYLENEEDED,
-        wxEVT_SCI_CHARADDED,
-        wxEVT_SCI_SAVEPOINTREACHED,
-        wxEVT_SCI_SAVEPOINTLEFT,
-        wxEVT_SCI_ROMODIFYATTEMPT,
-        wxEVT_SCI_DOUBLECLICK,
-        wxEVT_SCI_UPDATEUI,
-        wxEVT_SCI_MODIFIED,
-        wxEVT_SCI_MACRORECORD,
-        wxEVT_SCI_MARGINCLICK,
-        wxEVT_SCI_NEEDSHOWN,
-        wxEVT_SCI_PAINTED,
-        wxEVT_SCI_USERLISTSELECTION,
-        wxEVT_SCI_DWELLSTART,
-        wxEVT_SCI_DWELLEND,
-        wxEVT_SCI_START_DRAG,
-        wxEVT_SCI_DRAG_OVER,
-        wxEVT_SCI_DO_DROP,
-        wxEVT_SCI_ZOOM,
-        wxEVT_SCI_HOTSPOT_CLICK,
-        wxEVT_SCI_HOTSPOT_DCLICK,
-        wxEVT_SCI_CALLTIP_CLICK,
-        wxEVT_SCI_AUTOCOMP_SELECTION,
-        wxEVT_SCI_INDICATOR_CLICK,
-        wxEVT_SCI_INDICATOR_RELEASE,
-        wxEVT_SCI_AUTOCOMP_CANCELLED,
-        wxEVT_SCI_AUTOCOMP_CHAR_DELETED,
-        wxEVT_SCI_HOTSPOT_RELEASE_CLICK,
-        wxEVT_SCI_CLIPBOARD_COPY,
-        wxEVT_SCI_CLIPBOARD_PASTE,
-        wxEVT_SCI_AUTOCOMP_COMPLETED,
-        wxEVT_SCI_MARGIN_RIGHT_CLICK
-    };
+enum
+{
+    wxEVT_SCI_CHANGE,
+    wxEVT_SCI_STYLENEEDED,
+    wxEVT_SCI_CHARADDED,
+    wxEVT_SCI_SAVEPOINTREACHED,
+    wxEVT_SCI_SAVEPOINTLEFT,
+    wxEVT_SCI_ROMODIFYATTEMPT,
+    wxEVT_SCI_DOUBLECLICK,
+    wxEVT_SCI_UPDATEUI,
+    wxEVT_SCI_MODIFIED,
+    wxEVT_SCI_MACRORECORD,
+    wxEVT_SCI_MARGINCLICK,
+    wxEVT_SCI_NEEDSHOWN,
+    wxEVT_SCI_PAINTED,
+    wxEVT_SCI_USERLISTSELECTION,
+    wxEVT_SCI_DWELLSTART,
+    wxEVT_SCI_DWELLEND,
+    wxEVT_SCI_START_DRAG,
+    wxEVT_SCI_DRAG_OVER,
+    wxEVT_SCI_DO_DROP,
+    wxEVT_SCI_ZOOM,
+    wxEVT_SCI_HOTSPOT_CLICK,
+    wxEVT_SCI_HOTSPOT_DCLICK,
+    wxEVT_SCI_CALLTIP_CLICK,
+    wxEVT_SCI_AUTOCOMP_SELECTION,
+    wxEVT_SCI_INDICATOR_CLICK,
+    wxEVT_SCI_INDICATOR_RELEASE,
+    wxEVT_SCI_AUTOCOMP_CANCELLED,
+    wxEVT_SCI_AUTOCOMP_CHAR_DELETED,
+    wxEVT_SCI_HOTSPOT_RELEASE_CLICK,
+    wxEVT_SCI_CLIPBOARD_COPY,
+    wxEVT_SCI_CLIPBOARD_PASTE,
+    wxEVT_SCI_AUTOCOMP_COMPLETED,
+    wxEVT_SCI_MARGIN_RIGHT_CLICK
+};
 #endif
 
 
@@ -5618,7 +5805,7 @@ typedef void (wxEvtHandler::*wxScintillaEventFunction)(wxScintillaEvent&);
 
 /* C::B begin */
 #if !wxCHECK_VERSION(3, 0, 0)
-  #define wxEVENT_HANDLER_CAST( functype, func ) \
+#define wxEVENT_HANDLER_CAST( functype, func ) \
       ( wxObjectEventFunction )( wxEventFunction )wxStaticCastEvent( functype, &func )
 #endif
 /* C::B end */
@@ -5689,13 +5876,16 @@ inline size_t wx2scilen(const wxString& WXUNUSED(str), const wxCharBuffer& buf)
 
 #else // not UNICODE
 
-inline wxString sci2wx(const char* str) {
+inline wxString sci2wx(const char* str)
+{
     return wxString(str);
 }
-inline wxString sci2wx(const char* str, size_t len) {
+inline wxString sci2wx(const char* str, size_t len)
+{
     return wxString(str, len);
 }
-inline const char* wx2sci(const wxString& str) {
+inline const char* wx2sci(const wxString& str)
+{
     return str.mbc_str();
 }
 

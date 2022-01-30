@@ -1,18 +1,18 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/intl.h>
-    #include <wx/string.h>
-    #include <wx/regex.h>
+#include <wx/intl.h>
+#include <wx/string.h>
+#include <wx/regex.h>
 
-    #include "cbeditor.h"
-    #include "manager.h"
+#include "cbeditor.h"
+#include "manager.h"
 #endif
 #include "rndgen.h"
 #include "cbstyledtextctrl.h"
 
 namespace
 {
-    PluginRegistrant<RndGen> reg("rndgen");
+PluginRegistrant<RndGen> reg("rndgen");
 }
 
 void RndGen::OnAttach()

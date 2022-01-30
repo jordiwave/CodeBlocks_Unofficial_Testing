@@ -32,21 +32,21 @@
 
 class wxsSTEditor : public wxsWidget
 {
-    public:
+public:
 
-        wxsSTEditor(wxsItemResData* Data);
-
-
-    protected:
-
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnBuildCreatingCode();
-        virtual void OnEnumWidgetProperties(long Flags);
+    wxsSTEditor(wxsItemResData* Data);
 
 
-        wxSize              mSize;                          // used to check for default size
-        wxArrayString       mText;                          // initial text contents
-        wxsPositionSizeData mVirtualSize;
+protected:
+
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual void OnEnumWidgetProperties(long Flags);
+
+
+    wxSize              mSize;                          // used to check for default size
+    wxArrayString       mText;                          // initial text contents
+    wxsPositionSizeData mVirtualSize;
 
 };
 

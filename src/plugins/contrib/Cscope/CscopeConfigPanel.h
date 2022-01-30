@@ -14,42 +14,48 @@
 
 class CscopeConfigPanel: public cbConfigurationPanel
 {
-	public:
+public:
 
-		CscopeConfigPanel(wxWindow* parent);
-		virtual ~CscopeConfigPanel();
+    CscopeConfigPanel(wxWindow* parent);
+    virtual ~CscopeConfigPanel();
 
-        /// @return the panel's title.
-        virtual wxString GetTitle() const override { return _("Cscope"); }
-        /// @return the panel's bitmap base name. You must supply two bitmaps: \<basename\>.png and \<basename\>-off.png...
-        virtual wxString GetBitmapBaseName() const override { return wxT("Cscope"); }
-        /// Called when the user chooses to apply the configuration.
-        virtual void OnApply() override;
-        /// Called when the user chooses to cancel the configuration.
-        virtual void OnCancel() override { ; }
+    /// @return the panel's title.
+    virtual wxString GetTitle() const override
+    {
+        return _("Cscope");
+    }
+    /// @return the panel's bitmap base name. You must supply two bitmaps: \<basename\>.png and \<basename\>-off.png...
+    virtual wxString GetBitmapBaseName() const override
+    {
+        return wxT("Cscope");
+    }
+    /// Called when the user chooses to apply the configuration.
+    virtual void OnApply() override;
+    /// Called when the user chooses to cancel the configuration.
+    virtual void OnCancel() override { ; }
 
 
-		//(*Declarations(CscopeConfigPanel)
-		wxTextCtrl* txtCscopeApp;
-		//*)
+    //(*Declarations(CscopeConfigPanel)
+    wxTextCtrl* txtCscopeApp;
+    //*)
 
-	protected:
+protected:
 
-		//(*Identifiers(CscopeConfigPanel)
-		static const long ID_TXT_CPP_CHECK_APP;
-		static const long ID_BTN_CPPCHECK_APP;
-		static const long ID_HYC_CPP_CHECK_WWW;
-		//*)
+    //(*Identifiers(CscopeConfigPanel)
+    static const long ID_TXT_CPP_CHECK_APP;
+    static const long ID_BTN_CPPCHECK_APP;
+    static const long ID_HYC_CPP_CHECK_WWW;
+    //*)
 
-	private:
+private:
 
-        wxString GetDefaultCscopeExecutableName();
+    wxString GetDefaultCscopeExecutableName();
 
-		//(*Handlers(CscopeConfigPanel)
-		void OnbtnCscopeAppClick(wxCommandEvent& event);
-		//*)
+    //(*Handlers(CscopeConfigPanel)
+    void OnbtnCscopeAppClick(wxCommandEvent& event);
+    //*)
 
-		DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

@@ -44,187 +44,197 @@ using namespace wxsFlags;
 
 namespace
 {
-    #include "../images/wxsAuiNotebook16.xpm"
-    #include "../images/wxsAuiNotebook32.xpm"
+#include "../images/wxsAuiNotebook16.xpm"
+#include "../images/wxsAuiNotebook32.xpm"
 
-    wxsRegisterItem<wxsAuiNotebook> Reg(
-        _T("wxAuiNotebook"),                // Class name
-        wxsTContainer,                      // Item type
-        _T("wxWindows"),                    // License
-        _T("Benjamin I. Williams"),         // Author
-        _T(""),                             // Author's email
-        _T(""),                             // Item's homepage
-        _T("Aui"),                          // Category in palette
-        50,                                 // Priority in palette
-        _T("AuiNotebook"),                  // Base part of names for new items
-        wxsCPP,                             // List of coding languages supported by this item
-        2, 8,                               // Version
-        wxBitmap(wxsAuiNotebook32_xpm),     // 32x32 bitmap
-        wxBitmap(wxsAuiNotebook16_xpm),     // 16x16 bitmap
-        false);                             // Allow in XRC
+wxsRegisterItem<wxsAuiNotebook> Reg(
+    _T("wxAuiNotebook"),                // Class name
+    wxsTContainer,                      // Item type
+    _T("wxWindows"),                    // License
+    _T("Benjamin I. Williams"),         // Author
+    _T(""),                             // Author's email
+    _T(""),                             // Item's homepage
+    _T("Aui"),                          // Category in palette
+    50,                                 // Priority in palette
+    _T("AuiNotebook"),                  // Base part of names for new items
+    wxsCPP,                             // List of coding languages supported by this item
+    2, 8,                               // Version
+    wxBitmap(wxsAuiNotebook32_xpm),     // 32x32 bitmap
+    wxBitmap(wxsAuiNotebook16_xpm),     // 16x16 bitmap
+    false);                             // Allow in XRC
 
-    /** \brief Extra parameters for aui notebook's children */
-    class wxsAuiNotebookExtra: public wxsPropertyContainer
+/** \brief Extra parameters for aui notebook's children */
+class wxsAuiNotebookExtra: public wxsPropertyContainer
+{
+public:
+
+    wxsAuiNotebookExtra():
+        m_Label(_("Page name")),
+        m_Selected(false)
+    {}
+
+    wxString m_Label;
+    bool m_Selected;
+    wxsIconData m_Icon;
+
+protected:
+
+    virtual void OnEnumProperties(cb_unused long Flags)
     {
-        public:
+        WXS_SHORT_STRING(wxsAuiNotebookExtra,m_Label,_("Page name"),_T("label"),_T(""),false)
+        WXS_BOOL(wxsAuiNotebookExtra,m_Selected,_("Page selected"),_T("selected"),false)
+        WXS_ICON(wxsAuiNotebookExtra,m_Icon,_("Page icon"),_T("icon"),wxART_MENU)
+    }
+};
 
-            wxsAuiNotebookExtra():
-                m_Label(_("Page name")),
-                m_Selected(false)
-            {}
+/** \brief Internal Quick properties panel */
+class wxsAuiNotebookParentQP: public wxsAdvQPPChild
+{
+public:
 
-            wxString m_Label;
-            bool m_Selected;
-            wxsIconData m_Icon;
-
-        protected:
-
-            virtual void OnEnumProperties(cb_unused long Flags)
-            {
-                WXS_SHORT_STRING(wxsAuiNotebookExtra,m_Label,_("Page name"),_T("label"),_T(""),false)
-                WXS_BOOL(wxsAuiNotebookExtra,m_Selected,_("Page selected"),_T("selected"),false)
-                WXS_ICON(wxsAuiNotebookExtra,m_Icon,_("Page icon"),_T("icon"),wxART_MENU)
-            }
-    };
-
-    /** \brief Internal Quick properties panel */
-    class wxsAuiNotebookParentQP: public wxsAdvQPPChild
+    wxsAuiNotebookParentQP(wxsAdvQPP* parent,wxsAuiNotebookExtra* Extra,wxWindowID id = -1):
+        wxsAdvQPPChild(parent,_("AuiNotebook")),
+        m_Extra(Extra)
     {
-        public:
+        //(*Initialize(wxsAuiNotebookParentQP)
+        Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
+        FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
+        StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Label"));
+        Label = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+        StaticBoxSizer1->Add(Label, 0, wxBOTTOM|wxEXPAND, 5);
+        FlexGridSizer1->Add(StaticBoxSizer1, 1, wxLEFT|wxRIGHT|wxEXPAND, 5);
+        StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Selection"));
+        Selected = new wxCheckBox(this, ID_CHECKBOX1, _("Selected"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
+        Selected->SetValue(false);
+        StaticBoxSizer2->Add(Selected, 1, wxBOTTOM|wxEXPAND, 5);
+        FlexGridSizer1->Add(StaticBoxSizer2, 1, wxLEFT|wxRIGHT|wxEXPAND, 5);
+        SetSizer(FlexGridSizer1);
+        FlexGridSizer1->Fit(this);
+        FlexGridSizer1->SetSizeHints(this);
 
-            wxsAuiNotebookParentQP(wxsAdvQPP* parent,wxsAuiNotebookExtra* Extra,wxWindowID id = -1):
-                wxsAdvQPPChild(parent,_("AuiNotebook")),
-                m_Extra(Extra)
-            {
-                //(*Initialize(wxsAuiNotebookParentQP)
-                Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
-                FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
-                StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Label"));
-                Label = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-                StaticBoxSizer1->Add(Label, 0, wxBOTTOM|wxEXPAND, 5);
-                FlexGridSizer1->Add(StaticBoxSizer1, 1, wxLEFT|wxRIGHT|wxEXPAND, 5);
-                StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Selection"));
-                Selected = new wxCheckBox(this, ID_CHECKBOX1, _("Selected"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
-                Selected->SetValue(false);
-                StaticBoxSizer2->Add(Selected, 1, wxBOTTOM|wxEXPAND, 5);
-                FlexGridSizer1->Add(StaticBoxSizer2, 1, wxLEFT|wxRIGHT|wxEXPAND, 5);
-                SetSizer(FlexGridSizer1);
-                FlexGridSizer1->Fit(this);
-                FlexGridSizer1->SetSizeHints(this);
+        Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsAuiNotebookParentQP::OnLabelText);
+        Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiNotebookParentQP::OnSelectionChange);
+        //*)
+        ReadData();
 
-                Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsAuiNotebookParentQP::OnLabelText);
-                Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiNotebookParentQP::OnSelectionChange);
-                //*)
-                ReadData();
+        Label->Connect(-1,wxEVT_KILL_FOCUS,(wxObjectEventFunction)&wxsAuiNotebookParentQP::OnLabelKillFocus,0,this);
+    }
 
-                Label->Connect(-1,wxEVT_KILL_FOCUS,(wxObjectEventFunction)&wxsAuiNotebookParentQP::OnLabelKillFocus,0,this);
-            }
+    virtual ~wxsAuiNotebookParentQP()
+    {
+        //(*Destroy(wxsAuiNotebookParentQP)
+        //*)
+    }
 
-            virtual ~wxsAuiNotebookParentQP()
-            {
-                //(*Destroy(wxsAuiNotebookParentQP)
-                //*)
-            }
+private:
 
-        private:
+    virtual void Update()
+    {
+        ReadData();
+    }
 
-            virtual void Update()
-            {
-                ReadData();
-            }
+    void ReadData()
+    {
+        if ( !GetPropertyContainer() || !m_Extra ) return;
+        Label->SetValue(m_Extra->m_Label);
+        Selected->SetValue(m_Extra->m_Selected);
+    }
 
-            void ReadData()
-            {
-                if ( !GetPropertyContainer() || !m_Extra ) return;
-                Label->SetValue(m_Extra->m_Label);
-                Selected->SetValue(m_Extra->m_Selected);
-            }
+    void SaveData()
+    {
+        if ( !GetPropertyContainer() || !m_Extra ) return;
+        m_Extra->m_Label = Label->GetValue();
+        m_Extra->m_Selected = Selected->GetValue();
+        NotifyChange();
+    }
 
-            void SaveData()
-            {
-                if ( !GetPropertyContainer() || !m_Extra ) return;
-                m_Extra->m_Label = Label->GetValue();
-                m_Extra->m_Selected = Selected->GetValue();
-                NotifyChange();
-            }
-
-            //(*Identifiers(wxsAuiNotebookParentQP)
-            static const long ID_TEXTCTRL1;
-            static const long ID_CHECKBOX1;
-            //*)
-
-            //(*Handlers(wxsAuiNotebookParentQP)
-            void OnLabelText(wxCommandEvent& event);
-            void OnLabelKillFocus(wxFocusEvent& event);
-            void OnSelectionChange(wxCommandEvent& event);
-            //*)
-
-            //(*Declarations(wxsAuiNotebookParentQP)
-            wxStaticBoxSizer* StaticBoxSizer2;
-            wxTextCtrl* Label;
-            wxFlexGridSizer* FlexGridSizer1;
-            wxCheckBox* Selected;
-            wxStaticBoxSizer* StaticBoxSizer1;
-            //*)
-
-            wxsAuiNotebookExtra* m_Extra;
-
-            DECLARE_EVENT_TABLE()
-    };
-
-    //(*IdInit(wxsAuiNotebookParentQP)
-    const long wxsAuiNotebookParentQP::ID_TEXTCTRL1 = wxNewId();
-    const long wxsAuiNotebookParentQP::ID_CHECKBOX1 = wxNewId();
+    //(*Identifiers(wxsAuiNotebookParentQP)
+    static const long ID_TEXTCTRL1;
+    static const long ID_CHECKBOX1;
     //*)
 
-    BEGIN_EVENT_TABLE(wxsAuiNotebookParentQP,wxPanel)
-        //(*EventTable(wxsAuiNotebookParentQP)
-        //*)
-    END_EVENT_TABLE()
+    //(*Handlers(wxsAuiNotebookParentQP)
+    void OnLabelText(wxCommandEvent& event);
+    void OnLabelKillFocus(wxFocusEvent& event);
+    void OnSelectionChange(wxCommandEvent& event);
+    //*)
 
-    void wxsAuiNotebookParentQP::OnLabelText(cb_unused wxCommandEvent& event)       { SaveData(); }
-    void wxsAuiNotebookParentQP::OnLabelKillFocus(wxFocusEvent& event)              { SaveData(); event.Skip(); }
-    void wxsAuiNotebookParentQP::OnSelectionChange(cb_unused wxCommandEvent& event) { SaveData(); }
+    //(*Declarations(wxsAuiNotebookParentQP)
+    wxStaticBoxSizer* StaticBoxSizer2;
+    wxTextCtrl* Label;
+    wxFlexGridSizer* FlexGridSizer1;
+    wxCheckBox* Selected;
+    wxStaticBoxSizer* StaticBoxSizer1;
+    //*)
 
-    WXS_ST_BEGIN(wxsAuiNotebookStyles,_T("wxAUI_NB_DEFAULT_STYLE"))
-        WXS_ST_CATEGORY("wxAuiNotebook")
-        WXS_ST(wxAUI_NB_TAB_SPLIT)
-        WXS_ST(wxAUI_NB_TAB_MOVE)
-        WXS_ST(wxAUI_NB_TAB_EXTERNAL_MOVE)
-        WXS_ST(wxAUI_NB_TAB_FIXED_WIDTH)
-        WXS_ST(wxAUI_NB_SCROLL_BUTTONS)
-        WXS_ST(wxAUI_NB_WINDOWLIST_BUTTON)
-        WXS_ST(wxAUI_NB_CLOSE_BUTTON)
-        WXS_ST(wxAUI_NB_CLOSE_ON_ACTIVE_TAB)
-        WXS_ST(wxAUI_NB_CLOSE_ON_ALL_TABS)
-        WXS_ST(wxAUI_NB_TOP)
-        WXS_ST(wxAUI_NB_BOTTOM)
-        WXS_ST(wxAUI_NB_DEFAULT_STYLE)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+    wxsAuiNotebookExtra* m_Extra;
 
-    WXS_EV_BEGIN(wxsAuiNotebookEvents)
-        WXS_EVI(EVT_AUINOTEBOOK_PAGE_CLOSE,wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE,wxAuiNotebookEvent,PageClose)
-        WXS_EVI(EVT_AUINOTEBOOK_PAGE_CLOSED,wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSED,wxAuiNotebookEvent,PageClosed)
-        WXS_EVI(EVT_AUINOTEBOOK_PAGE_CHANGED,wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED,wxAuiNotebookEvent,PageChanged)
-        WXS_EVI(EVT_AUINOTEBOOK_PAGE_CHANGING,wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGING,wxAuiNotebookEvent,PageChanging)
-        WXS_EVI(EVT_AUINOTEBOOK_BUTTON,wxEVT_COMMAND_AUINOTEBOOK_BUTTON,wxAuiNotebookEvent,Button)
-        WXS_EVI(EVT_AUINOTEBOOK_BEGIN_DRAG,wxEVT_COMMAND_AUINOTEBOOK_BEGIN_DRAG,wxAuiNotebookEvent,BeginDrag)
-        WXS_EVI(EVT_AUINOTEBOOK_END_DRAG,wxEVT_COMMAND_AUINOTEBOOK_END_DRAG,wxAuiNotebookEvent,EndDrag)
-        WXS_EVI(EVT_AUINOTEBOOK_DRAG_MOTION,wxEVT_COMMAND_AUINOTEBOOK_DRAG_MOTION,wxAuiNotebookEvent,DragMotion)
-        WXS_EVI(EVT_AUINOTEBOOK_DRAG_DONE,wxEVT_COMMAND_AUINOTEBOOK_DRAG_DONE,wxAuiNotebookEvent,DragDone)
-        WXS_EVI(EVT_AUINOTEBOOK_TAB_MIDDLE_DOWN,wxEVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_DOWN,wxAuiNotebookEvent,TabMiddleDown)
-        WXS_EVI(EVT_AUINOTEBOOK_TAB_MIDDLE_UP,wxEVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_UP,wxAuiNotebookEvent,TabMiddleUp)
-        WXS_EVI(EVT_AUINOTEBOOK_TAB_RIGHT_DOWN,wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_DOWN,wxAuiNotebookEvent,TabRightDown)
-        WXS_EVI(EVT_AUINOTEBOOK_TAB_RIGHT_UP,wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_UP,wxAuiNotebookEvent,TabRightUp)
-        WXS_EVI(EVT_AUINOTEBOOK_BG_DCLICK,wxEVT_COMMAND_AUINOTEBOOK_BG_DCLICK,wxAuiNotebookEvent,BgDClick)
-    WXS_EV_END()
+    DECLARE_EVENT_TABLE()
+};
 
-    const long popupNewPageId = wxNewId();
-    const long popupPrevPageId = wxNewId();
-    const long popupNextPageId = wxNewId();
-    const long popupFirstId = wxNewId();
-    const long popupLastId = wxNewId();
+//(*IdInit(wxsAuiNotebookParentQP)
+const long wxsAuiNotebookParentQP::ID_TEXTCTRL1 = wxNewId();
+const long wxsAuiNotebookParentQP::ID_CHECKBOX1 = wxNewId();
+//*)
+
+BEGIN_EVENT_TABLE(wxsAuiNotebookParentQP,wxPanel)
+    //(*EventTable(wxsAuiNotebookParentQP)
+    //*)
+END_EVENT_TABLE()
+
+void wxsAuiNotebookParentQP::OnLabelText(cb_unused wxCommandEvent& event)
+{
+    SaveData();
+}
+void wxsAuiNotebookParentQP::OnLabelKillFocus(wxFocusEvent& event)
+{
+    SaveData();
+    event.Skip();
+}
+void wxsAuiNotebookParentQP::OnSelectionChange(cb_unused wxCommandEvent& event)
+{
+    SaveData();
+}
+
+WXS_ST_BEGIN(wxsAuiNotebookStyles,_T("wxAUI_NB_DEFAULT_STYLE"))
+WXS_ST_CATEGORY("wxAuiNotebook")
+WXS_ST(wxAUI_NB_TAB_SPLIT)
+WXS_ST(wxAUI_NB_TAB_MOVE)
+WXS_ST(wxAUI_NB_TAB_EXTERNAL_MOVE)
+WXS_ST(wxAUI_NB_TAB_FIXED_WIDTH)
+WXS_ST(wxAUI_NB_SCROLL_BUTTONS)
+WXS_ST(wxAUI_NB_WINDOWLIST_BUTTON)
+WXS_ST(wxAUI_NB_CLOSE_BUTTON)
+WXS_ST(wxAUI_NB_CLOSE_ON_ACTIVE_TAB)
+WXS_ST(wxAUI_NB_CLOSE_ON_ALL_TABS)
+WXS_ST(wxAUI_NB_TOP)
+WXS_ST(wxAUI_NB_BOTTOM)
+WXS_ST(wxAUI_NB_DEFAULT_STYLE)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
+
+WXS_EV_BEGIN(wxsAuiNotebookEvents)
+WXS_EVI(EVT_AUINOTEBOOK_PAGE_CLOSE,wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE,wxAuiNotebookEvent,PageClose)
+WXS_EVI(EVT_AUINOTEBOOK_PAGE_CLOSED,wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSED,wxAuiNotebookEvent,PageClosed)
+WXS_EVI(EVT_AUINOTEBOOK_PAGE_CHANGED,wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED,wxAuiNotebookEvent,PageChanged)
+WXS_EVI(EVT_AUINOTEBOOK_PAGE_CHANGING,wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGING,wxAuiNotebookEvent,PageChanging)
+WXS_EVI(EVT_AUINOTEBOOK_BUTTON,wxEVT_COMMAND_AUINOTEBOOK_BUTTON,wxAuiNotebookEvent,Button)
+WXS_EVI(EVT_AUINOTEBOOK_BEGIN_DRAG,wxEVT_COMMAND_AUINOTEBOOK_BEGIN_DRAG,wxAuiNotebookEvent,BeginDrag)
+WXS_EVI(EVT_AUINOTEBOOK_END_DRAG,wxEVT_COMMAND_AUINOTEBOOK_END_DRAG,wxAuiNotebookEvent,EndDrag)
+WXS_EVI(EVT_AUINOTEBOOK_DRAG_MOTION,wxEVT_COMMAND_AUINOTEBOOK_DRAG_MOTION,wxAuiNotebookEvent,DragMotion)
+WXS_EVI(EVT_AUINOTEBOOK_DRAG_DONE,wxEVT_COMMAND_AUINOTEBOOK_DRAG_DONE,wxAuiNotebookEvent,DragDone)
+WXS_EVI(EVT_AUINOTEBOOK_TAB_MIDDLE_DOWN,wxEVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_DOWN,wxAuiNotebookEvent,TabMiddleDown)
+WXS_EVI(EVT_AUINOTEBOOK_TAB_MIDDLE_UP,wxEVT_COMMAND_AUINOTEBOOK_TAB_MIDDLE_UP,wxAuiNotebookEvent,TabMiddleUp)
+WXS_EVI(EVT_AUINOTEBOOK_TAB_RIGHT_DOWN,wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_DOWN,wxAuiNotebookEvent,TabRightDown)
+WXS_EVI(EVT_AUINOTEBOOK_TAB_RIGHT_UP,wxEVT_COMMAND_AUINOTEBOOK_TAB_RIGHT_UP,wxAuiNotebookEvent,TabRightUp)
+WXS_EVI(EVT_AUINOTEBOOK_BG_DCLICK,wxEVT_COMMAND_AUINOTEBOOK_BG_DCLICK,wxAuiNotebookEvent,BgDClick)
+WXS_EV_END()
+
+const long popupNewPageId = wxNewId();
+const long popupPrevPageId = wxNewId();
+const long popupNextPageId = wxNewId();
+const long popupFirstId = wxNewId();
+const long popupLastId = wxNewId();
 }
 
 wxsAuiNotebook::wxsAuiNotebook(wxsItemResData* Data):
@@ -258,7 +268,7 @@ bool wxsAuiNotebook::OnCanAddChild(wxsItem* Item,bool ShowMessage)
         return false;
     }
 
-	return wxsContainer::OnCanAddChild(Item,ShowMessage);
+    return wxsContainer::OnCanAddChild(Item,ShowMessage);
 }
 
 wxsPropertyContainer* wxsAuiNotebook::OnBuildExtra()
@@ -281,72 +291,72 @@ void wxsAuiNotebook::OnAddChildQPP(wxsItem* Child,wxsAdvQPP* QPP)
 wxObject* wxsAuiNotebook::OnBuildPreview(wxWindow* Parent,long PreviewFlags)
 {
     UpdateCurrentSelection();
-	wxAuiNotebook* AuiNotebook = new wxAuiNotebook(Parent,-1,Pos(Parent),Size(Parent),Style());
+    wxAuiNotebook* AuiNotebook = new wxAuiNotebook(Parent,-1,Pos(Parent),Size(Parent),Style());
 
-	if ( !GetChildCount() && !(PreviewFlags&pfExact) )
-	{
-	    // Adding additional empty AuiNotebook to prevent from having zero-sized AuiNotebook
-	    AuiNotebook->AddPage(
+    if ( !GetChildCount() && !(PreviewFlags&pfExact) )
+    {
+        // Adding additional empty AuiNotebook to prevent from having zero-sized AuiNotebook
+        AuiNotebook->AddPage(
             new wxPanel(AuiNotebook,-1,wxDefaultPosition,wxSize(50,50)),
             _("No pages"));
-	}
+    }
 
-	AddChildrenPreview(AuiNotebook,PreviewFlags);
+    AddChildrenPreview(AuiNotebook,PreviewFlags);
 
-	for ( int i=0; i<GetChildCount(); i++ )
-	{
-	    wxsItem* Child = GetChild(i);
-	    wxsAuiNotebookExtra* ANBExtra = (wxsAuiNotebookExtra*)GetChildExtra(i);
+    for ( int i=0; i<GetChildCount(); i++ )
+    {
+        wxsItem* Child = GetChild(i);
+        wxsAuiNotebookExtra* ANBExtra = (wxsAuiNotebookExtra*)GetChildExtra(i);
 
-	    wxWindow* ChildPreview = wxDynamicCast(GetChild(i)->GetLastPreview(),wxWindow);
-	    if ( !ChildPreview ) continue;
+        wxWindow* ChildPreview = wxDynamicCast(GetChild(i)->GetLastPreview(),wxWindow);
+        if ( !ChildPreview ) continue;
 
-	    bool Selected = (Child == m_CurrentSelection);
-	    if ( PreviewFlags & pfExact ) Selected = ANBExtra->m_Selected;
+        bool Selected = (Child == m_CurrentSelection);
+        if ( PreviewFlags & pfExact ) Selected = ANBExtra->m_Selected;
 
-	    AuiNotebook->AddPage(ChildPreview,ANBExtra->m_Label,Selected,ANBExtra->m_Icon.GetPreview(wxDefaultSize,wxART_OTHER));
-	}
+        AuiNotebook->AddPage(ChildPreview,ANBExtra->m_Label,Selected,ANBExtra->m_Icon.GetPreview(wxDefaultSize,wxART_OTHER));
+    }
 
-	return AuiNotebook;
+    return AuiNotebook;
 }
 
 void wxsAuiNotebook::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/aui/aui.h>"),GetInfo().ClassName,0);
-            AddHeader(_T("<wx/aui/aui.h>"),_T("wxAuiNotebookEvent"),0);
-            Codef(_T("%C(%W, %I, %P, %S, %T);\n"));
-            BuildSetupWindowCode();
-            AddChildrenCode();
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/aui/aui.h>"),GetInfo().ClassName,0);
+        AddHeader(_T("<wx/aui/aui.h>"),_T("wxAuiNotebookEvent"),0);
+        Codef(_T("%C(%W, %I, %P, %S, %T);\n"));
+        BuildSetupWindowCode();
+        AddChildrenCode();
 
-            for ( int i=0; i<GetChildCount(); i++ )
+        for ( int i=0; i<GetChildCount(); i++ )
+        {
+            wxsAuiNotebookExtra* ANBExtra = (wxsAuiNotebookExtra*)GetChildExtra(i);
+            if ( !ANBExtra->m_Icon.IsEmpty() )
             {
-                wxsAuiNotebookExtra* ANBExtra = (wxsAuiNotebookExtra*)GetChildExtra(i);
-                if ( !ANBExtra->m_Icon.IsEmpty() )
-                {
-                    Codef(_T("%AAddPage(%o, %t, %b, %i);\n"),i,ANBExtra->m_Label.wx_str(),ANBExtra->m_Selected,&(ANBExtra->m_Icon),_T("wxART_MENU"));
-                }
-                else if ( ANBExtra->m_Selected )
-                {
-                    Codef(_T("%AAddPage(%o, %t, %b);\n"),i,ANBExtra->m_Label.wx_str(),ANBExtra->m_Selected);
-                }
-                else
-                {
-                    Codef(_T("%AAddPage(%o, %t);\n"),i,ANBExtra->m_Label.wx_str());
-                }
+                Codef(_T("%AAddPage(%o, %t, %b, %i);\n"),i,ANBExtra->m_Label.wx_str(),ANBExtra->m_Selected,&(ANBExtra->m_Icon),_T("wxART_MENU"));
             }
-
-            break;
+            else if ( ANBExtra->m_Selected )
+            {
+                Codef(_T("%AAddPage(%o, %t, %b);\n"),i,ANBExtra->m_Label.wx_str(),ANBExtra->m_Selected);
+            }
+            else
+            {
+                Codef(_T("%AAddPage(%o, %t);\n"),i,ANBExtra->m_Label.wx_str());
+            }
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsAuiNotebook::OnBuildCreatingCode"),GetLanguage());
-        }
+        break;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsAuiNotebook::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

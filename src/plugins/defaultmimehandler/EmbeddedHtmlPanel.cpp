@@ -11,13 +11,13 @@
 #include "EmbeddedHtmlPanel.h"
 
 #ifndef CB_PRECOMP
-    //(*InternalHeadersPCH(EmbeddedHtmlPanel)
-    #include <wx/bmpbuttn.h>
-    #include <wx/sizer.h>
-    #include <wx/string.h>
-    #include <wx/intl.h>
-    #include <wx/stattext.h>
-    //*)
+//(*InternalHeadersPCH(EmbeddedHtmlPanel)
+#include <wx/bmpbuttn.h>
+#include <wx/sizer.h>
+#include <wx/string.h>
+#include <wx/intl.h>
+#include <wx/stattext.h>
+//*)
 #endif
 //(*InternalHeaders(EmbeddedHtmlPanel)
 #include <wx/bitmap.h>

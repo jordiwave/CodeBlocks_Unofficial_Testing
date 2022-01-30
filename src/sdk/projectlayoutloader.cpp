@@ -10,16 +10,16 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/confbase.h>
-    #include <wx/fileconf.h>
-    #include <wx/intl.h>
-    #include "manager.h"
-    #include "configmanager.h"
-    #include "projectmanager.h"
-    #include "logmanager.h"
-    #include "editormanager.h"
-    #include "cbeditor.h"
-    #include "cbproject.h"
+#include <wx/confbase.h>
+#include <wx/fileconf.h>
+#include <wx/intl.h>
+#include "manager.h"
+#include "configmanager.h"
+#include "projectmanager.h"
+#include "logmanager.h"
+#include "editormanager.h"
+#include "cbeditor.h"
+#include "cbproject.h"
 #endif
 
 #include "projectlayoutloader.h"
@@ -29,7 +29,7 @@
 
 ProjectLayoutLoader::ProjectLayoutLoader(cbProject* project)
     : m_pProject(project),
-    m_TopProjectFile(nullptr)
+      m_TopProjectFile(nullptr)
 {
     //ctor
 }
@@ -84,11 +84,11 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
         {
             pMsg->DebugLog(F(_T("Project layout file version is > %d.%d. Trying to load..."), PROJECT_LAYOUT_FILE_VERSION_MAJOR, PROJECT_LAYOUT_FILE_VERSION_MINOR));
             AnnoyingDialog dlg(_("Project layout file format is newer/unknown"),
-                                F(_("This project layout file was saved with a newer version of Code::Blocks.\n"
-                                "Will try to load, but you might see unexpected results.\n"
-                                "In this case close the project, delete %s and reopen the project."),filename.wx_str()),
-                                wxART_WARNING,
-                                AnnoyingDialog::OK);
+                               F(_("This project layout file was saved with a newer version of Code::Blocks.\n"
+                                   "Will try to load, but you might see unexpected results.\n"
+                                   "In this case close the project, delete %s and reopen the project."),filename.wx_str()),
+                               wxART_WARNING,
+                               AnnoyingDialog::OK);
             dlg.ShowModal();
         }
         else
@@ -107,20 +107,20 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
             if (!msg.IsEmpty())
             {
                 msg.Prepend(wxString::Format(_("Project layout file format is older (%d.%d) than the current format (%d.%d).\n"
-                                                "The file will automatically be upgraded on close.\n"
-                                                "But please read the following list of changes, as some of them\n"
-                                                "might not automatically convert existing (old) settings.\n"
-                                                "If you don't understand what a change means, you probably don't\n"
-                                                "use that feature so you don't have to worry about it.\n\n"
-                                                "List of changes:\n"),
-                                            major,
-                                            minor,
-                                            PROJECT_LAYOUT_FILE_VERSION_MAJOR,
-                                            PROJECT_LAYOUT_FILE_VERSION_MINOR));
+                                               "The file will automatically be upgraded on close.\n"
+                                               "But please read the following list of changes, as some of them\n"
+                                               "might not automatically convert existing (old) settings.\n"
+                                               "If you don't understand what a change means, you probably don't\n"
+                                               "use that feature so you don't have to worry about it.\n\n"
+                                               "List of changes:\n"),
+                                             major,
+                                             minor,
+                                             PROJECT_LAYOUT_FILE_VERSION_MAJOR,
+                                             PROJECT_LAYOUT_FILE_VERSION_MINOR));
                 AnnoyingDialog dlg(_("Project layout file format changed"),
-                                    msg,
-                                    wxART_INFORMATION,
-                                    AnnoyingDialog::OK);
+                                   msg,
+                                   wxART_INFORMATION,
+                                   AnnoyingDialog::OK);
                 dlg.ShowModal();
             }
 
@@ -128,9 +128,9 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
             {
                 warn_msg.Prepend(_("!!! WARNING !!!\n\n"));
                 AnnoyingDialog dlg(_("Project layout file upgrade warning"),
-                                    warn_msg,
-                                    wxART_WARNING,
-                                    AnnoyingDialog::OK);
+                                   warn_msg,
+                                   wxART_WARNING,
+                                   AnnoyingDialog::OK);
                 dlg.ShowModal();
             }
         }
@@ -236,7 +236,7 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
     }
 
     if (   (major >= 1)
-        && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), false)) )
+            && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), false)) )
     {
         elem = root->FirstChildElement("EditorTabsLayout");
         if (elem)

@@ -13,24 +13,24 @@
 #include <wx/regex.h>
 
 #ifndef CB_PRECOMP
-    #include <globals.h>
-    #include <manager.h>
-    #include <configmanager.h>
+#include <globals.h>
+#include <manager.h>
+#include <configmanager.h>
 #endif
 
 #include <regex>
 
 namespace
 {
-    const std::regex::flag_type syntax_types[] =
-    {
-        std::regex::ECMAScript,
-        std::regex::basic,
-        std::regex::extended,
-        std::regex::awk,
-        std::regex::grep,
-        std::regex::egrep
-    };
+const std::regex::flag_type syntax_types[] =
+{
+    std::regex::ECMAScript,
+    std::regex::basic,
+    std::regex::extended,
+    std::regex::awk,
+    std::regex::grep,
+    std::regex::egrep
+};
 }
 
 //(*InternalHeaders(RegExDlg)

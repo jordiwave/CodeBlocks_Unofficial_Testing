@@ -12,18 +12,24 @@
 
 class GenericMultiLineNotesDlg : public wxScrollingDialog
 {
-    public:
-        GenericMultiLineNotesDlg(wxWindow* parent, const wxString& caption = _("Notes"), const wxString& notes = wxEmptyString, bool readOnly = true);
-        ~GenericMultiLineNotesDlg() override;
-		GenericMultiLineNotesDlg& operator=(const GenericMultiLineNotesDlg&){ return *this; } // just to satisfy script bindings (never used)
+public:
+    GenericMultiLineNotesDlg(wxWindow* parent, const wxString& caption = _("Notes"), const wxString& notes = wxEmptyString, bool readOnly = true);
+    ~GenericMultiLineNotesDlg() override;
+    GenericMultiLineNotesDlg& operator=(const GenericMultiLineNotesDlg&)
+    {
+        return *this;    // just to satisfy script bindings (never used)
+    }
 
-        const wxString& GetNotes(){ return m_Notes; }
-        void EndModal(int retCode) override;
-    protected:
-        wxString m_Notes;
-        bool m_ReadOnly;
-    private:
-        DECLARE_EVENT_TABLE()
+    const wxString& GetNotes()
+    {
+        return m_Notes;
+    }
+    void EndModal(int retCode) override;
+protected:
+    wxString m_Notes;
+    bool m_ReadOnly;
+private:
+    DECLARE_EVENT_TABLE()
 };
 
 

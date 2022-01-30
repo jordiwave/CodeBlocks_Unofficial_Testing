@@ -13,10 +13,10 @@
 #include "scripting/bindings/sc_typeinfo_all.h"
 
 #ifndef CB_PRECOMP
-    #include "cbproject.h"
-    #include "logmanager.h"
-    #include "menuitemsmanager.h"
-    #include "scriptingmanager.h"
+#include "cbproject.h"
+#include "logmanager.h"
+#include "menuitemsmanager.h"
+#include "scriptingmanager.h"
 #endif // CB_PRECOMP
 
 namespace ScriptBindings

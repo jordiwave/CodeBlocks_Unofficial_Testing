@@ -1,7 +1,7 @@
 #if defined(UNICODE) && !defined(_UNICODE)
-    #define _UNICODE
+#define _UNICODE
 #elif defined(_UNICODE) && !defined(UNICODE)
-    #define UNICODE
+#define UNICODE
 #endif
 
 #include <tchar.h>
@@ -14,9 +14,9 @@ LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
 TCHAR szClassName[ ] = _T("CodeBlocksWindowsApp");
 
 int WINAPI WinMain (HINSTANCE hThisInstance,
-                     HINSTANCE hPrevInstance,
-                     LPSTR lpszArgument,
-                     int nCmdShow)
+                    HINSTANCE hPrevInstance,
+                    LPSTR lpszArgument,
+                    int nCmdShow)
 {
     HWND hwnd;               /* This is the handle for our window */
     MSG messages;            /* Here messages to the application are saved */
@@ -45,18 +45,18 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 
     /* The class is registered, let's create the program*/
     hwnd = CreateWindowEx (
-           0,                   /* Extended possibilites for variation */
-           szClassName,         /* Classname */
-           _T("Code::Blocks Template Windows App"),       /* Title Text */
-           WS_OVERLAPPEDWINDOW, /* default window */
-           CW_USEDEFAULT,       /* Windows decides the position */
-           CW_USEDEFAULT,       /* where the window ends up on the screen */
-           544,                 /* The programs width */
-           375,                 /* and height in pixels */
-           HWND_DESKTOP,        /* The window is a child-window to desktop */
-           NULL,                /* No menu */
-           hThisInstance,       /* Program Instance handler */
-           NULL                 /* No Window Creation data */
+               0,                   /* Extended possibilites for variation */
+               szClassName,         /* Classname */
+               _T("Code::Blocks Template Windows App"),       /* Title Text */
+               WS_OVERLAPPEDWINDOW, /* default window */
+               CW_USEDEFAULT,       /* Windows decides the position */
+               CW_USEDEFAULT,       /* where the window ends up on the screen */
+               544,                 /* The programs width */
+               375,                 /* and height in pixels */
+               HWND_DESKTOP,        /* The window is a child-window to desktop */
+               NULL,                /* No menu */
+               hThisInstance,       /* Program Instance handler */
+               NULL                 /* No Window Creation data */
            );
 
     /* Make the window visible on the screen */
@@ -82,11 +82,11 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 {
     switch (message)                  /* handle the messages */
     {
-        case WM_DESTROY:
-            PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
-            break;
-        default:                      /* for messages that we don't deal with */
-            return DefWindowProc (hwnd, message, wParam, lParam);
+    case WM_DESTROY:
+        PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
+        break;
+    default:                      /* for messages that we don't deal with */
+        return DefWindowProc (hwnd, message, wParam, lParam);
     }
 
     return 0;

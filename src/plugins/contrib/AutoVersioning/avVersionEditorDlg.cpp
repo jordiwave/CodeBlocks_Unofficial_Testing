@@ -289,8 +289,8 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID /*id*/)
     BoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
     wxString __wxRadioBoxChoices_1[2] =
     {
-    	_("C"),
-    	_("C++")
+        _("C"),
+        _("C++")
     };
     rbHeaderLanguage = new wxRadioBox(pnlSettings, ID_HEADERLANGUAGE_RADIOBOX, _("Header language"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_1, 2, wxRA_VERTICAL, wxDefaultValidator, _T("ID_HEADERLANGUAGE_RADIOBOX"));
     rbHeaderLanguage->SetSelection(1);
@@ -438,33 +438,33 @@ void avVersionEditorDlg::SetCount(long value)
 //{Settings
 void avVersionEditorDlg::SetAuto(bool value)
 {
-	m_autoMajorMinor = value;
-	chkAutoIncrement->SetValue(value);
+    m_autoMajorMinor = value;
+    chkAutoIncrement->SetValue(value);
 }
 
 void avVersionEditorDlg::SetDates(bool value)
 {
-	m_dates = value;
-	chkDates->SetValue(value);
+    m_dates = value;
+    chkDates->SetValue(value);
 }
 
 void avVersionEditorDlg::SetDefine(bool value)
 {
-	m_useDefine = value;
-	chkDefine->SetValue(value);
+    m_useDefine = value;
+    chkDefine->SetValue(value);
 }
 
 // GJH 03/03/10 Added manifest updating.
 void avVersionEditorDlg::SetManifest(bool value)
 {
-	m_updateManifest = value;
-	chkUpdateManifest->SetValue(value);
+    m_updateManifest = value;
+    chkUpdateManifest->SetValue(value);
 }
 
 void avVersionEditorDlg::SetSvn(bool value)
 {
-	m_svn = value;
-	chkSvn->SetValue(value);
+    m_svn = value;
+    chkSvn->SetValue(value);
     if(!value)
     {
         txtSvnDir->Disable();
@@ -488,8 +488,8 @@ void avVersionEditorDlg::SetSvnDirectory(const wxString& value)
 
 void avVersionEditorDlg::SetCommit(bool value)
 {
-	m_commit = value;
-	chkCommit->SetValue(value);
+    m_commit = value;
+    chkCommit->SetValue(value);
     if(!value)
     {
         chkAskCommit->Disable();
@@ -502,8 +502,8 @@ void avVersionEditorDlg::SetCommit(bool value)
 
 void avVersionEditorDlg::SetCommitAsk(bool value)
 {
-	m_askCommit = value;
-	chkAskCommit->SetValue(value);
+    m_askCommit = value;
+    chkAskCommit->SetValue(value);
 }
 
 void avVersionEditorDlg::SetLanguage(const wxString& value)
@@ -545,42 +545,42 @@ void avVersionEditorDlg::SetStatusAbbreviation(const wxString& value)
 //{Scheme
 void avVersionEditorDlg::SetMinorMaximum(long value)
 {
-	m_minorMaximun = value;
-	wxString strValue;
-	strValue.Printf(_T("%ld"),value);
-	txtMinorMaximun->SetValue(strValue);
+    m_minorMaximun = value;
+    wxString strValue;
+    strValue.Printf(_T("%ld"),value);
+    txtMinorMaximun->SetValue(strValue);
 }
 
 void avVersionEditorDlg::SetBuildMaximum(long value)
 {
-	m_buildMaximun = value;
-	wxString strValue;
-	strValue.Printf(_T("%ld"),value);
-	txtBuildNumberMaximun->SetValue(strValue);
+    m_buildMaximun = value;
+    wxString strValue;
+    strValue.Printf(_T("%ld"),value);
+    txtBuildNumberMaximun->SetValue(strValue);
 }
 
 void avVersionEditorDlg::SetRevisionMaximum(long value)
 {
-	m_revisionMaximun = value;
-	wxString strValue;
-	strValue.Printf(_T("%ld"),value);
-	txtRevisionMax->SetValue(strValue);
+    m_revisionMaximun = value;
+    wxString strValue;
+    strValue.Printf(_T("%ld"),value);
+    txtRevisionMax->SetValue(strValue);
 }
 
 void avVersionEditorDlg::SetRevisionRandomMaximum(long value)
 {
-	m_revisionRandomMaximun = value;
-	wxString strValue;
-	strValue.Printf(_T("%ld"),value);
-	txtRevisionRandom->SetValue(strValue);
+    m_revisionRandomMaximun = value;
+    wxString strValue;
+    strValue.Printf(_T("%ld"),value);
+    txtRevisionRandom->SetValue(strValue);
 }
 
 void avVersionEditorDlg::SetBuildTimesToMinorIncrement(long value)
 {
-	m_buildTimesToMinorIncrement = value;
-	wxString strValue;
-	strValue.Printf(_T("%ld"),value);
-	txtBuildTimes->SetValue(strValue);
+    m_buildTimesToMinorIncrement = value;
+    wxString strValue;
+    strValue.Printf(_T("%ld"),value);
+    txtBuildTimes->SetValue(strValue);
 }
 //}
 
@@ -588,7 +588,7 @@ void avVersionEditorDlg::SetBuildTimesToMinorIncrement(long value)
 void avVersionEditorDlg::SetChanges(bool value)
 {
     m_changes = value;
-	chkChanges->SetValue(value);
+    chkChanges->SetValue(value);
 }
 
 void avVersionEditorDlg::SetChangesLogPath(const wxString& value)
@@ -647,8 +647,8 @@ void avVersionEditorDlg::OnAcceptClick(wxCommandEvent&)
     m_autoMajorMinor = chkAutoIncrement->IsChecked();
     m_dates = chkDates->IsChecked();
     m_useDefine = chkDefine->IsChecked();
-	// GJH 03/03/10 Added manifest updating.
-	m_updateManifest = chkUpdateManifest->IsChecked();
+    // GJH 03/03/10 Added manifest updating.
+    m_updateManifest = chkUpdateManifest->IsChecked();
     m_svn = chkSvn->IsChecked();
     m_svnDirectory = txtSvnDir->GetValue();
     m_commit = chkCommit->IsChecked();
@@ -744,7 +744,7 @@ void avVersionEditorDlg::ValidateInput()
 
     if (type.Find(_T("wxTextCtrl")) != wxNOT_FOUND)
     {
-        ForceValidation:; //To force validation when the user clicks the Accept buttom or other control not of type wxTexCtrl
+ForceValidation:; //To force validation when the user clicks the Accept buttom or other control not of type wxTexCtrl
 
         if (l_FocusedControl != this->FindFocus() && l_FocusedControl != 0)
         {
@@ -855,7 +855,8 @@ void avVersionEditorDlg::OnChangesLogPathClick(wxCommandEvent& /*event*/)
     wxString fullpath;
     fullpath = wxFileSelector(_("Select the changeslog path and filename:"), path, filename, extension, _T("Text File (*.txt)|*.txt"));
 
-    if(!fullpath.IsEmpty()){
+    if(!fullpath.IsEmpty())
+    {
         wxFileName relativeFile(fullpath);
         relativeFile.MakeRelativeTo();
 

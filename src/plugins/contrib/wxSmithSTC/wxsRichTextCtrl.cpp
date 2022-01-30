@@ -26,52 +26,52 @@ namespace
 
 // Loading images from xpm files
 
-    #include "RTF16.xpm"
-    #include "RTF32.xpm"
+#include "RTF16.xpm"
+#include "RTF32.xpm"
 
-    wxsRegisterItem<wxsRichTextCtrl> Reg(
-        _T("wxRichTextCtrl"),           // Class name
-        wxsTWidget,                     // Item type
-        _T("wxWindows"),                // License
-        _T("Ron Collins"),              // Author
-        _T("rcoll@theriver.com"),       // Author's email
-        _T(""),                         // Item's homepage
-        _T("Styled Text"),                // Category in palette
-        80,                             // Priority in palette
-        _T("RTF"),                      // Base part of names for new items
-        wxsCPP,                         // List of coding languages supported by this item
-        1, 0,                           // Version
-        wxBitmap(RTF32_xpm),            // 32x32 bitmap
-        wxBitmap(RTF16_xpm),            // 16x16 bitmap
-        false);                         // We do not allow this item inside XRC files
+wxsRegisterItem<wxsRichTextCtrl> Reg(
+    _T("wxRichTextCtrl"),           // Class name
+    wxsTWidget,                     // Item type
+    _T("wxWindows"),                // License
+    _T("Ron Collins"),              // Author
+    _T("rcoll@theriver.com"),       // Author's email
+    _T(""),                         // Item's homepage
+    _T("Styled Text"),                // Category in palette
+    80,                             // Priority in palette
+    _T("RTF"),                      // Base part of names for new items
+    wxsCPP,                         // List of coding languages supported by this item
+    1, 0,                           // Version
+    wxBitmap(RTF32_xpm),            // 32x32 bitmap
+    wxBitmap(RTF16_xpm),            // 16x16 bitmap
+    false);                         // We do not allow this item inside XRC files
 
 
-    WXS_ST_BEGIN(wxsRichTextCtrlStyles,_T("wxRE_MULTILINE|wxRAISED_BORDER|wxWANTS_CHARS"))
-        WXS_ST_CATEGORY("wxRichTextCtrl")
-        WXS_ST(wxRE_READONLY )
-        WXS_ST(wxRE_MULTILINE )
-        WXS_ST(wxRE_CENTER_CARET )
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsRichTextCtrlStyles,_T("wxRE_MULTILINE|wxRAISED_BORDER|wxWANTS_CHARS"))
+WXS_ST_CATEGORY("wxRichTextCtrl")
+WXS_ST(wxRE_READONLY )
+WXS_ST(wxRE_MULTILINE )
+WXS_ST(wxRE_CENTER_CARET )
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsRichTextCtrlEvents)
-       WXS_EVI(EVT_RICHTEXT_CHARACTER,            wxEVT_COMMAND_RICHTEXT_CHARACTER,            wxRichTextEvent, EvCharacter)
-       WXS_EVI(EVT_RICHTEXT_DELETE,               wxEVT_COMMAND_RICHTEXT_DELETE,               wxRichTextEvent, EvDelete)
-       WXS_EVI(EVT_RICHTEXT_RETURN,               wxEVT_COMMAND_RICHTEXT_RETURN,               wxRichTextEvent, EvReturn)
-       WXS_EVI(EVT_RICHTEXT_STYLE_CHANGED,        wxEVT_COMMAND_RICHTEXT_STYLE_CHANGED,        wxRichTextEvent, EvStyleChanged)
-       WXS_EVI(EVT_RICHTEXT_STYLESHEET_CHANGED,   wxEVT_COMMAND_RICHTEXT_STYLESHEET_CHANGING,  wxRichTextEvent, EvStylesheetChanging)
-       WXS_EVI(EVT_RICHTEXT_STYLESHEET_REPLACING, wxEVT_COMMAND_RICHTEXT_STYLESHEET_REPLACING, wxRichTextEvent, EvStylesheetReplacing)
-       WXS_EVI(EVT_RICHTEXT_STYLESHEET_REPLACED,  wxEVT_COMMAND_RICHTEXT_STYLESHEET_REPLACED,  wxRichTextEvent, EvStylesheetReplaced)
-       WXS_EVI(EVT_RICHTEXT_CONTENT_INSERTED,     wxEVT_COMMAND_RICHTEXT_CONTENT_INSERTED,     wxRichTextEvent, EvContentInserted)
-       WXS_EVI(EVT_RICHTEXT_CONTENT_DELETED,      wxEVT_COMMAND_RICHTEXT_CONTENT_DELETED,      wxRichTextEvent, EvContentDeleted)
-       WXS_EVI(EVT_RICHTEXT_BUFFER_RESET,         wxEVT_COMMAND_RICHTEXT_BUFFER_RESET,         wxRichTextEvent, EvBufferReset)
+WXS_EV_BEGIN(wxsRichTextCtrlEvents)
+WXS_EVI(EVT_RICHTEXT_CHARACTER,            wxEVT_COMMAND_RICHTEXT_CHARACTER,            wxRichTextEvent, EvCharacter)
+WXS_EVI(EVT_RICHTEXT_DELETE,               wxEVT_COMMAND_RICHTEXT_DELETE,               wxRichTextEvent, EvDelete)
+WXS_EVI(EVT_RICHTEXT_RETURN,               wxEVT_COMMAND_RICHTEXT_RETURN,               wxRichTextEvent, EvReturn)
+WXS_EVI(EVT_RICHTEXT_STYLE_CHANGED,        wxEVT_COMMAND_RICHTEXT_STYLE_CHANGED,        wxRichTextEvent, EvStyleChanged)
+WXS_EVI(EVT_RICHTEXT_STYLESHEET_CHANGED,   wxEVT_COMMAND_RICHTEXT_STYLESHEET_CHANGING,  wxRichTextEvent, EvStylesheetChanging)
+WXS_EVI(EVT_RICHTEXT_STYLESHEET_REPLACING, wxEVT_COMMAND_RICHTEXT_STYLESHEET_REPLACING, wxRichTextEvent, EvStylesheetReplacing)
+WXS_EVI(EVT_RICHTEXT_STYLESHEET_REPLACED,  wxEVT_COMMAND_RICHTEXT_STYLESHEET_REPLACED,  wxRichTextEvent, EvStylesheetReplaced)
+WXS_EVI(EVT_RICHTEXT_CONTENT_INSERTED,     wxEVT_COMMAND_RICHTEXT_CONTENT_INSERTED,     wxRichTextEvent, EvContentInserted)
+WXS_EVI(EVT_RICHTEXT_CONTENT_DELETED,      wxEVT_COMMAND_RICHTEXT_CONTENT_DELETED,      wxRichTextEvent, EvContentDeleted)
+WXS_EVI(EVT_RICHTEXT_BUFFER_RESET,         wxEVT_COMMAND_RICHTEXT_BUFFER_RESET,         wxRichTextEvent, EvBufferReset)
 
-       WXS_EVI(EVT_TEXT_ENTER,                    wxEVT_COMMAND_TEXT_ENTER,                    wxCommandEvent,  EvTextEnter)
-       WXS_EVI(EVT_TEXT,                          wxEVT_COMMAND_TEXT_UPDATED,                  wxCommandEvent,  EvTextUpdated)
-       WXS_EVI(EVT_TEXT_URL,                      wxEVT_COMMAND_TEXT_URL,                      wxTextUrlEvent,  EvTextURL)
+WXS_EVI(EVT_TEXT_ENTER,                    wxEVT_COMMAND_TEXT_ENTER,                    wxCommandEvent,  EvTextEnter)
+WXS_EVI(EVT_TEXT,                          wxEVT_COMMAND_TEXT_UPDATED,                  wxCommandEvent,  EvTextUpdated)
+WXS_EVI(EVT_TEXT_URL,                      wxEVT_COMMAND_TEXT_URL,                      wxTextUrlEvent,  EvTextURL)
 
-        WXS_EV_DEFAULTS()
-    WXS_EV_END()
+WXS_EV_DEFAULTS()
+WXS_EV_END()
 }
 
 //------------------------------------------------------------------------------
@@ -91,12 +91,13 @@ wxsRichTextCtrl::wxsRichTextCtrl(wxsItemResData* Data):
 
 //------------------------------------------------------------------------------
 
-void wxsRichTextCtrl::OnBuildCreatingCode() {
-wxString            vname;
-wxString            aname;
-wxString            ss, tt;
-wxsBaseProperties   *bp;
-wxColour            fg;
+void wxsRichTextCtrl::OnBuildCreatingCode()
+{
+    wxString            vname;
+    wxString            aname;
+    wxString            ss, tt;
+    wxsBaseProperties   *bp;
+    wxColour            fg;
 
 // valid language?
 
@@ -126,7 +127,8 @@ wxColour            fg;
     bp = GetBaseProps();
     fg = bp->m_Fg.GetColour();
 
-    if (fg.Ok()) {
+    if (fg.Ok())
+    {
         Codef(_T("wxRichTextAttr  %s;\n"), aname.c_str());
         Codef(_T("%s.SetTextColour(wxColour(%d, %d, %d));\n"), aname.c_str(), fg.Red(), fg.Green(), fg.Blue());
         Codef(_T("%s.SetFlags(wxTEXT_ATTR_TEXT_COLOUR);\n"), aname.c_str());
@@ -139,7 +141,8 @@ wxColour            fg;
 
 // a virtual size
 
-    if (! mVirtualSize.IsDefault) {
+    if (! mVirtualSize.IsDefault)
+    {
         ss = mVirtualSize.GetSizeCode(GetCoderContext());
         Codef(_T("%ASetVirtualSize(%s);\n"), ss.c_str());
     };
@@ -147,7 +150,8 @@ wxColour            fg;
 
 // initial text
 
-    for(size_t i=0; i<mText.GetCount(); i++) {
+    for(size_t i=0; i<mText.GetCount(); i++)
+    {
         ss  = mText.Item(i);
         ss += _T("\n");
         Codef(_T("%AAppendText(%t);\n"), ss.c_str());
@@ -156,13 +160,14 @@ wxColour            fg;
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsRichTextCtrl::OnBuildPreview(wxWindow* Parent, long Flags) {
-wxRichTextCtrl      *rtf;
-wxRichTextAttr      attr;
-wxsBaseProperties   *bp;
-wxColour            fg;
-wxString            ss;
-wxSize              zz;
+wxObject* wxsRichTextCtrl::OnBuildPreview(wxWindow* Parent, long Flags)
+{
+    wxRichTextCtrl      *rtf;
+    wxRichTextAttr      attr;
+    wxsBaseProperties   *bp;
+    wxColour            fg;
+    wxString            ss;
+    wxSize              zz;
 
 // the default size of this widget is microscopic
 // use this to make a reasonable default size
@@ -179,7 +184,8 @@ wxSize              zz;
     bp = GetBaseProps();
     fg = bp->m_Fg.GetColour();
 
-    if (fg.Ok()) {
+    if (fg.Ok())
+    {
         attr.SetTextColour(fg);
         attr.SetFlags(wxTEXT_ATTR_TEXT_COLOUR);
         rtf->SetBasicStyle(attr);
@@ -191,14 +197,16 @@ wxSize              zz;
 
 // a virtual size
 
-    if (! mVirtualSize.IsDefault) {
+    if (! mVirtualSize.IsDefault)
+    {
         zz = mVirtualSize.GetSize(Parent);
         rtf->SetVirtualSize(zz);
     };
 
 // add in initial text
 
-    for(size_t i=0; i<mText.GetCount(); i++) {
+    for(size_t i=0; i<mText.GetCount(); i++)
+    {
         ss  = mText.Item(i);
         ss += _T("\n");
         rtf->AppendText(ss);
@@ -211,7 +219,8 @@ wxSize              zz;
 
 //------------------------------------------------------------------------------
 
-void wxsRichTextCtrl::OnEnumWidgetProperties(long Flags) {
+void wxsRichTextCtrl::OnEnumWidgetProperties(long Flags)
+{
 
 // initial text contents
 

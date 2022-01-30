@@ -29,8 +29,8 @@
 #define DOCKABLEIND     0x01
 
 wxsAuiDockableProperty::wxsAuiDockableProperty(long _Offset,int Priority):
-        wxsProperty(_("PaneInfo"),_T("dockabledirection"),Priority),
-        Offset(_Offset)
+    wxsProperty(_("PaneInfo"),_T("dockabledirection"),Priority),
+    Offset(_Offset)
 {
 }
 
@@ -53,27 +53,27 @@ bool wxsAuiDockableProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridM
 {
     switch ( Index )
     {
-        case DOCKABLEIND:
-            long DockableValue;
-            bool PreviousDockable;
-            DockableValue = Grid->GetPropertyValue(Id).GetLong();
-            PreviousDockable = DOCKABLEFLAGS & Dockable;
+    case DOCKABLEIND:
+        long DockableValue;
+        bool PreviousDockable;
+        DockableValue = Grid->GetPropertyValue(Id).GetLong();
+        PreviousDockable = DOCKABLEFLAGS & Dockable;
 
-            DOCKABLEFLAGS &= ~DockableMask;
+        DOCKABLEFLAGS &= ~DockableMask;
 
-            if ( !(DockableValue&Dockable) && PreviousDockable)
-                break;
-            else if ( ((DockableValue & DockableMask) ==  DockableAll) |
-                      ((DockableValue & Dockable)     && !PreviousDockable) )
-            {
-                DOCKABLEFLAGS |= Dockable;
-            }
-            else
-                DOCKABLEFLAGS |= ( (DockableValue & DockableMask) & ~Dockable );
+        if ( !(DockableValue&Dockable) && PreviousDockable)
             break;
+        else if ( ((DockableValue & DockableMask) ==  DockableAll) |
+                  ((DockableValue & Dockable)     && !PreviousDockable) )
+        {
+            DOCKABLEFLAGS |= Dockable;
+        }
+        else
+            DOCKABLEFLAGS |= ( (DockableValue & DockableMask) & ~Dockable );
+        break;
 
-        default:
-            return false;
+    default:
+        return false;
     }
     return true;
 }
@@ -82,18 +82,18 @@ bool wxsAuiDockableProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGrid
 {
     switch ( Index )
     {
-        case DOCKABLEIND:
-            long DockableValue;
-            DockableValue = DOCKABLEFLAGS&DockableMask;
+    case DOCKABLEIND:
+        long DockableValue;
+        DockableValue = DOCKABLEFLAGS&DockableMask;
 
-            if (DockableValue == Dockable)
-                Grid->SetPropertyValue(Id,DockableMask);
-            else
-                Grid->SetPropertyValue(Id,DockableValue);
-            break;
+        if (DockableValue == Dockable)
+            Grid->SetPropertyValue(Id,DockableMask);
+        else
+            Grid->SetPropertyValue(Id,DockableValue);
+        break;
 
-        default:
-            return false;
+    default:
+        return false;
     }
     return true;
 }
@@ -146,7 +146,7 @@ long wxsAuiDockableProperty::ParseString(const wxString& String)
     {
         wxString Flag = Tkn.GetNextToken();
 
-             if ( Flag == _T("TopDockable(false)")    ) Flags &= ~TopDockable;
+        if ( Flag == _T("TopDockable(false)")    ) Flags &= ~TopDockable;
         else if ( Flag == _T("BottomDockable(false)") ) Flags &= ~BottomDockable;
         else if ( Flag == _T("LeftDockable(false)")   ) Flags &= ~LeftDockable;
         else if ( Flag == _T("RightDockable(false)")  ) Flags &= ~RightDockable;

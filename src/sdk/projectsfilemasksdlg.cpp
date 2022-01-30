@@ -10,13 +10,13 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/xrc/xmlres.h>
-    #include <wx/intl.h>
-    #include <wx/button.h>
-    #include <wx/textctrl.h>
-    #include <wx/msgdlg.h>
-    #include <wx/listbox.h>
-    #include "globals.h"
+#include <wx/xrc/xmlres.h>
+#include <wx/intl.h>
+#include <wx/button.h>
+#include <wx/textctrl.h>
+#include <wx/msgdlg.h>
+#include <wx/listbox.h>
+#include "globals.h"
 #endif
 
 #include "projectsfilemasksdlg.h"
@@ -87,7 +87,7 @@ void ProjectsFileMasksDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 void ProjectsFileMasksDlg::OnAdd(cb_unused wxCommandEvent& event)
 {
     wxString groupName = cbGetTextFromUser(_("Enter the new group name:"),
-                                            _("New group"), wxString(), this);
+                                           _("New group"), wxString(), this);
     if (groupName.IsEmpty())
         return;
     m_FileGroupsAndMasksCopy.AddGroup(groupName);
@@ -103,7 +103,7 @@ void ProjectsFileMasksDlg::OnEdit(cb_unused wxCommandEvent& event)
     wxListBox* pList = XRCCTRL(*this, "lstCategories", wxListBox);
     wxString oldName = pList->GetStringSelection();
     wxString groupName = cbGetTextFromUser(_("Rename the group:"),
-                                            _("Edit group"), oldName, this);
+                                           _("Edit group"), oldName, this);
     if (!groupName.IsEmpty() && groupName != oldName)
     {
         m_FileGroupsAndMasksCopy.RenameGroup(pList->GetSelection(), groupName);

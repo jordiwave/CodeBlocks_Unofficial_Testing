@@ -10,14 +10,14 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/intl.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/spinctrl.h>
-    #include <wx/stattext.h>
-    #include <wx/textctrl.h>
-    #include <wx/wxscintilla.h>
-    #include "editorcolourset.h"
+#include <wx/button.h>
+#include <wx/intl.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/spinctrl.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+#include <wx/wxscintilla.h>
+#include "editorcolourset.h"
 #endif
 
 #include "editkeywordsdlg.h"
@@ -29,9 +29,9 @@ END_EVENT_TABLE()
 
 EditKeywordsDlg::EditKeywordsDlg(wxWindow* parent, EditorColourSet* theme, HighlightLanguage lang, const wxArrayString& descr)
     : m_pTheme(theme),
-    m_Lang(lang),
-    m_LastSet(0),
-    descriptions(descr)
+      m_Lang(lang),
+      m_LastSet(0),
+      descriptions(descr)
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditLangKeywords"),_T("wxScrollingDialog"));

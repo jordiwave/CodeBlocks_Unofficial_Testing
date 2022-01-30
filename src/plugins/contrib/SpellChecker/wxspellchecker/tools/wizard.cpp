@@ -18,21 +18,21 @@
 // ----------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation "wizard.cpp"
-    #pragma interface "wizard.cpp"
+#pragma implementation "wizard.cpp"
+#pragma interface "wizard.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWindows headers
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+#include "wx/wx.h"
 #endif
 
 #include "AspellDictionaryDownloader.h"
@@ -117,8 +117,8 @@ bool MyApp::OnInit()
 // ----------------------------------------------------------------------------
 
 MyFrame::MyFrame(const wxString& title)
-       : wxFrame((wxFrame *)NULL, -1, title,
-                  wxDefaultPosition, wxSize(250, 150))  // small frame
+    : wxFrame((wxFrame *)NULL, -1, title,
+              wxDefaultPosition, wxSize(250, 150))  // small frame
 {
     wxMenu *menuFile = new wxMenu;
     menuFile->Append(Wizard_Run, _T("&Run wizard...\tCtrl-R"));
@@ -144,17 +144,17 @@ void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::OnRunWizard(wxCommandEvent& WXUNUSED(event))
 {
-  EngineDictionaryDownloader* pDownloader = new AspellDictionaryDownloader();
-  if (pDownloader)
-  {
-    DictionaryWizard* pWizard = new DictionaryWizard(this);
-    pWizard->SetEngineDownloader(pDownloader);
-    pWizard->Run();
-    pWizard->SetEngineDownloader(NULL);
-    pWizard->Destroy();
-  
-    delete pDownloader;
-  }
+    EngineDictionaryDownloader* pDownloader = new AspellDictionaryDownloader();
+    if (pDownloader)
+    {
+        DictionaryWizard* pWizard = new DictionaryWizard(this);
+        pWizard->SetEngineDownloader(pDownloader);
+        pWizard->Run();
+        pWizard->SetEngineDownloader(NULL);
+        pWizard->Destroy();
+
+        delete pDownloader;
+    }
 }
 
 void MyFrame::OnWizardCancel(wxWizardEvent& WXUNUSED(event))

@@ -65,34 +65,44 @@ bool CCodeBlocksBuildConfig::Load(const CString& FileName)
     TiXmlDocument cfg;
     if (!cfg.LoadFile(FileName.GetCString())) return false;
     const TiXmlElement *root = cfg.RootElement();
-    if (0==strcmp(root->Value(),"cbp2make")) {
+    if (0==strcmp(root->Value(),"cbp2make"))
+    {
         const TiXmlNode *_platforms = root->FirstChild("platforms");
-        if (0!=_platforms) {
+        if (0!=_platforms)
+        {
             const TiXmlElement *platforms = _platforms->ToElement();
-            if (0!=platforms) {
+            if (0!=platforms)
+            {
                 m_Platforms.Read(platforms);
             }
         }
         const TiXmlNode *_toolchains = root->FirstChild("toolchains");
-        if (0!=_toolchains) {
+        if (0!=_toolchains)
+        {
             const TiXmlElement *toolchains = _toolchains->ToElement();
-            if (0!=toolchains) {
+            if (0!=toolchains)
+            {
                 m_ToolChains.Read(toolchains);
             }
         }
         const TiXmlNode *_globvars = root->FirstChild("globalvariables");
-        if (0!=_globvars) {
+        if (0!=_globvars)
+        {
             const TiXmlElement *globvars = _globvars->ToElement();
-            if (0!=globvars) {
+            if (0!=globvars)
+            {
                 m_GlobalVariables.Read(globvars);
             }
         }
         const TiXmlNode *_options = root->FirstChild("options");
-        if (0!=_options) {
+        if (0!=_options)
+        {
             const TiXmlElement *options = _options->ToElement();
-            if (0!=options) {
+            if (0!=options)
+            {
                 char *value = 0;
-                if ((value = (char *)options->Attribute("default"))) {
+                if ((value = (char *)options->Attribute("default")))
+                {
                     m_DefaultOptions = value;
                 }
             }

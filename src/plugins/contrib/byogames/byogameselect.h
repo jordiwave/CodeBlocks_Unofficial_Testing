@@ -14,42 +14,42 @@ class wxCommandEvent;
 
 class byoGameSelect: public wxScrollingDialog
 {
-	public:
+public:
 
-		byoGameSelect(wxWindow* parent,wxWindowID id = -1);
-		virtual ~byoGameSelect();
+    byoGameSelect(wxWindow* parent,wxWindowID id = -1);
+    virtual ~byoGameSelect();
 
-		//(*Identifiers(byoGameSelect)
-		static const long ID_STATICTEXT1;
-		static const long ID_PANEL1;
-		static const long ID_LISTBOX1;
-		static const long ID_STATICLINE1;
-		//*)
+    //(*Identifiers(byoGameSelect)
+    static const long ID_STATICTEXT1;
+    static const long ID_PANEL1;
+    static const long ID_LISTBOX1;
+    static const long ID_STATICLINE1;
+    //*)
 
-	protected:
+protected:
 
-		//(*Handlers(byoGameSelect)
-		void OnCancel(wxCommandEvent& event);
-		void OnPlay(wxCommandEvent& event);
-		//*)
+    //(*Handlers(byoGameSelect)
+    void OnCancel(wxCommandEvent& event);
+    void OnPlay(wxCommandEvent& event);
+    //*)
 
-		//(*Declarations(byoGameSelect)
-		wxPanel* Panel1;
-		wxBoxSizer* BoxSizer3;
-		wxButton* Button1;
-		wxButton* Button2;
-		wxBoxSizer* BoxSizer2;
-		wxStaticText* StaticText1;
-		wxStaticLine* StaticLine1;
-		wxListBox* m_GamesList;
-		wxBoxSizer* BoxSizer4;
-		wxBoxSizer* BoxSizer1;
-		wxStaticBoxSizer* StaticBoxSizer1;
-		//*)
+    //(*Declarations(byoGameSelect)
+    wxPanel* Panel1;
+    wxBoxSizer* BoxSizer3;
+    wxButton* Button1;
+    wxButton* Button2;
+    wxBoxSizer* BoxSizer2;
+    wxStaticText* StaticText1;
+    wxStaticLine* StaticLine1;
+    wxListBox* m_GamesList;
+    wxBoxSizer* BoxSizer4;
+    wxBoxSizer* BoxSizer1;
+    wxStaticBoxSizer* StaticBoxSizer1;
+    //*)
 
-	private:
+private:
 
-		DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // BYOGAMESELECT_H

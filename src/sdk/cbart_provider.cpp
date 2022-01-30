@@ -3,8 +3,8 @@
 #include "cbart_provider.h"
 
 #ifndef CB_PRECOMP
-    #include "globals.h"
-    #include "logmanager.h"
+#include "globals.h"
+#include "logmanager.h"
 #endif // CB_PRECOMP
 
 cbArtProvider::cbArtProvider(const wxString &prefix)

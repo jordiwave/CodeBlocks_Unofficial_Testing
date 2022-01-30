@@ -10,15 +10,15 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/string.h>
-    #include "cbproject.h"
-    #include "compilerfactory.h"
-    #include "logmanager.h"
-    #include <map>
+#include <wx/string.h>
+#include "cbproject.h"
+#include "compilerfactory.h"
+#include "logmanager.h"
+#include <map>
 #endif
 
 #if defined(__WXMSW__)
-    #include <wx/msw/registry.h>
+#include <wx/msw/registry.h>
 #endif // defined(__WXMSW__)
 
 #include "cygwin.h"

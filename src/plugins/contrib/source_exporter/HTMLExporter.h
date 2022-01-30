@@ -8,10 +8,10 @@ using std::string;
 
 class HTMLExporter : public BaseExporter
 {
-  public:
+public:
     void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount, int tabWidth);
 
-  private:
+private:
     static const char *HTMLHeaderBEG;
     static const char *HTMLMeta;
     static const char *HTMLStyleBEG;

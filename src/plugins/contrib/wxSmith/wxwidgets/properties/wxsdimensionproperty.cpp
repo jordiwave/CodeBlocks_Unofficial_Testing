@@ -27,29 +27,29 @@ wxString wxsDimensionData::GetPixelsCode(wxsCoderContext* Context)
 {
     switch ( Context->m_Language )
     {
-        case wxsCPP:
-        {
-            if ( !DialogUnits ) return wxString::Format(_T("%ld"),Value);
-            return wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%ld,0)).GetWidth()"),Context->m_WindowParent.c_str(),Value);
-        }
+    case wxsCPP:
+    {
+        if ( !DialogUnits ) return wxString::Format(_T("%ld"),Value);
+        return wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%ld,0)).GetWidth()"),Context->m_WindowParent.c_str(),Value);
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsDimensionData::GetPixelsCode"),Context->m_Language);
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsDimensionData::GetPixelsCode"),Context->m_Language);
+    }
     }
     return wxEmptyString;
 }
 
 namespace
 {
-    // Some helper values to create compound properties
-    enum
-    {
-        DIM_VALUE = 1,
-        DIM_UNITS = 2
-    };
+// Some helper values to create compound properties
+enum
+{
+    DIM_VALUE = 1,
+    DIM_UNITS = 2
+};
 }
 
 
@@ -67,11 +67,11 @@ wxsDimensionProperty::wxsDimensionProperty(
     long _DefaultValue,
     bool _DefaultDialogUnits,
     int Priority):
-        wxsProperty(PGName,DataName,Priority),
-        Offset(_Offset),
-        DefaultValue(_DefaultValue),
-        DefaultDialogUnits(_DefaultDialogUnits),
-        PGDUName(_PGDUName)
+    wxsProperty(PGName,DataName,Priority),
+    Offset(_Offset),
+    DefaultValue(_DefaultValue),
+    DefaultDialogUnits(_DefaultDialogUnits),
+    PGDUName(_PGDUName)
 {}
 
 
@@ -87,16 +87,16 @@ bool wxsDimensionProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridMan
 {
     switch ( Index )
     {
-        case DIM_VALUE:
-            VALUE = Grid->GetPropertyValue(Id).GetLong();
-            return true;
+    case DIM_VALUE:
+        VALUE = Grid->GetPropertyValue(Id).GetLong();
+        return true;
 
-        case DIM_UNITS:
-            UNITS = Grid->GetPropertyValue(Id).GetBool();
-            return true;
+    case DIM_UNITS:
+        UNITS = Grid->GetPropertyValue(Id).GetBool();
+        return true;
 
-        default:
-            break;
+    default:
+        break;
     }
     return false;
 }
@@ -105,16 +105,16 @@ bool wxsDimensionProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridMa
 {
     switch ( Index )
     {
-        case DIM_VALUE:
-            Grid->SetPropertyValue(Id,VALUE);
-            return true;
+    case DIM_VALUE:
+        Grid->SetPropertyValue(Id,VALUE);
+        return true;
 
-        case DIM_UNITS:
-            Grid->SetPropertyValue(Id,UNITS);
-            return true;
+    case DIM_UNITS:
+        Grid->SetPropertyValue(Id,UNITS);
+        return true;
 
-        default:
-            break;
+    default:
+        break;
     }
     return false;
 }

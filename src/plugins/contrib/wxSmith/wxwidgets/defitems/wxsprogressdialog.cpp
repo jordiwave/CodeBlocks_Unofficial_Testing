@@ -25,25 +25,25 @@
 
 namespace
 {
-    wxsRegisterItem<wxsProgressDialog> Reg(
-        _T("ProgressDialog"),               // Class base name
-        wxsTTool,                                   // Item type
-        _T("Dialogs"),                          // Category in palette
-        100,                                             // Priority in palette
-        false);                                         // We do not allow this item inside XRC files
+wxsRegisterItem<wxsProgressDialog> Reg(
+    _T("ProgressDialog"),               // Class base name
+    wxsTTool,                                   // Item type
+    _T("Dialogs"),                          // Category in palette
+    100,                                             // Priority in palette
+    false);                                         // We do not allow this item inside XRC files
 
 
-    WXS_ST_BEGIN(wxsProgressDialogStyles, wxT("wxPD_AUTO_HIDE | wxPD_APP_MODAL"));
-        WXS_ST_CATEGORY("wxProgressDialog")
-        WXS_ST(wxPD_APP_MODAL)
-        WXS_ST(wxPD_AUTO_HIDE)
-        WXS_ST(wxPD_CAN_ABORT)
-        WXS_ST(wxPD_CAN_SKIP)
-        WXS_ST(wxPD_ELAPSED_TIME)
-        WXS_ST(wxPD_ESTIMATED_TIME)
-        WXS_ST(wxPD_REMAINING_TIME)
-        WXS_ST(wxPD_SMOOTH)
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsProgressDialogStyles, wxT("wxPD_AUTO_HIDE | wxPD_APP_MODAL"));
+WXS_ST_CATEGORY("wxProgressDialog")
+WXS_ST(wxPD_APP_MODAL)
+WXS_ST(wxPD_AUTO_HIDE)
+WXS_ST(wxPD_CAN_ABORT)
+WXS_ST(wxPD_CAN_SKIP)
+WXS_ST(wxPD_ELAPSED_TIME)
+WXS_ST(wxPD_ESTIMATED_TIME)
+WXS_ST(wxPD_REMAINING_TIME)
+WXS_ST(wxPD_SMOOTH)
+WXS_ST_END()
 
 }
 
@@ -58,10 +58,10 @@ wxsProgressDialog::wxsProgressDialog(wxsItemResData *Data):
             NULL,
             wxsProgressDialogStyles,
             (flVariable | flId | flSubclass | flExtraCode)),
-            m_sTitle(wxEmptyString),
-            m_sMessage(wxEmptyString),
-            m_iMaxValue(100),
-            m_bRunAtStartup(false)
+    m_sTitle(wxEmptyString),
+    m_sMessage(wxEmptyString),
+    m_iMaxValue(100),
+    m_bRunAtStartup(false)
 {
 }
 
@@ -77,20 +77,21 @@ void wxsProgressDialog::OnBuildCreatingCode()
 {
     switch(GetLanguage())
     {
-        case wxsCPP:
-            AddHeader(_T("<wx/progdlg.h>"), GetInfo().ClassName, 0);
+    case wxsCPP:
+        AddHeader(_T("<wx/progdlg.h>"), GetInfo().ClassName, 0);
 
-            if(m_bRunAtStartup){
-                // Initialize and display the dialogue at application start-up.
-                Codef(_T("%C(%t, %t, %d, %W, %T);\n"), m_sTitle.wx_str(), m_sMessage.wx_str(), m_iMaxValue);
-            }
+        if(m_bRunAtStartup)
+        {
+            // Initialize and display the dialogue at application start-up.
+            Codef(_T("%C(%t, %t, %d, %W, %T);\n"), m_sTitle.wx_str(), m_sMessage.wx_str(), m_iMaxValue);
+        }
 
-            BuildSetupWindowCode();
-            break;
+        BuildSetupWindowCode();
+        break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsProgressDialog::OnBuildCreatingCode"), GetLanguage());
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsProgressDialog::OnBuildCreatingCode"), GetLanguage());
     }
 }
 

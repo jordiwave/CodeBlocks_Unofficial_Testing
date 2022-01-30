@@ -28,17 +28,17 @@
 
 class wxsScrolledWindow : public wxsContainer
 {
-    public:
+public:
 
-        wxsScrolledWindow(wxsItemResData* Data);
+    wxsScrolledWindow(wxsItemResData* Data);
 
-    protected:
+protected:
 
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnBuildCreatingCode();
-        virtual void OnEnumContainerProperties(long Flags);
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual void OnEnumContainerProperties(long Flags);
 
-        wxsTwoLongData m_scrollRate;
+    wxsTwoLongData m_scrollRate;
 };
 
 #endif

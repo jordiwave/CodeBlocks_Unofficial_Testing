@@ -44,14 +44,14 @@
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 wxPieChartPoints::wxPieChartPoints(
-	wxString name,
-	ChartColor c,
+    wxString name,
+    ChartColor c,
     bool showlabel
 ) : wxChartPoints(wxChartPointsTypes::Pie()),
-	m_Name(name),
-	m_Color(c),
-	m_Zoom(1),
-	m_PieTag(NONE),
+    m_Name(name),
+    m_Color(c),
+    m_Zoom(1),
+    m_PieTag(NONE),
     m_ShowLabel(showlabel)
 {
 }
@@ -63,10 +63,10 @@ wxPieChartPoints::wxPieChartPoints(
 //	RETURN:		int
 //----------------------------------------------------------------------E-+++
 ChartValue wxPieChartPoints::GetXVal(
-	int n
+    int n
 ) const
 {
-	return ( m_Points.GetXVal(n) );
+    return ( m_Points.GetXVal(n) );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -76,10 +76,10 @@ ChartValue wxPieChartPoints::GetXVal(
 //	RETURN:		int
 //----------------------------------------------------------------------E-+++
 ChartValue wxPieChartPoints::GetYVal(
-	int n
+    int n
 ) const
 {
-	return ( m_Points.GetYVal(n) );
+    return ( m_Points.GetYVal(n) );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -89,10 +89,10 @@ ChartValue wxPieChartPoints::GetYVal(
 //	RETURN:		wxString
 //----------------------------------------------------------------------E-+++
 wxString wxPieChartPoints::GetName(
-	int n
+    int n
 ) const
 {
-	return ( m_Points.GetName(n) );
+    return ( m_Points.GetName(n) );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -103,7 +103,7 @@ wxString wxPieChartPoints::GetName(
 //----------------------------------------------------------------------E-+++
 ChartColor wxPieChartPoints::GetColor(int n) const
 {
-	return ( m_Points.GetColor(n) );
+    return ( m_Points.GetColor(n) );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -114,7 +114,7 @@ ChartColor wxPieChartPoints::GetColor(int n) const
 //----------------------------------------------------------------------E-+++
 int wxPieChartPoints::GetCount() const
 {
-	return ( m_Points.GetCount() );
+    return ( m_Points.GetCount() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -125,8 +125,8 @@ int wxPieChartPoints::GetCount() const
 //----------------------------------------------------------------------E-+++
 ChartValue wxPieChartPoints::GetMaxX() const
 {
-	//return ( m_Points.GetMaxX() );
-	return ( 0 );
+    //return ( m_Points.GetMaxX() );
+    return ( 0 );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -138,7 +138,7 @@ ChartValue wxPieChartPoints::GetMaxX() const
 ChartValue wxPieChartPoints::GetMaxY() const
 {
 //	return ( m_Points.GetMaxY() );
-	return ( 0 );
+    return ( 0 );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -150,7 +150,7 @@ ChartValue wxPieChartPoints::GetMaxY() const
 ChartValue wxPieChartPoints::GetMinX() const
 {
 //	return ( m_Points.GetMinX() );
-	return ( 0 );
+    return ( 0 );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -162,7 +162,7 @@ ChartValue wxPieChartPoints::GetMinX() const
 ChartValue wxPieChartPoints::GetMinY() const
 {
 //	return ( m_Points.GetMinY() );
-	return ( 0 );
+    return ( 0 );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -172,10 +172,10 @@ ChartValue wxPieChartPoints::GetMinY() const
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPieChartPoints::SetZoom(
-	double z
+    double z
 )
 {
-	m_Zoom = z;
+    m_Zoom = z;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -186,7 +186,7 @@ void wxPieChartPoints::SetZoom(
 //----------------------------------------------------------------------E-+++
 double wxPieChartPoints::GetZoom()
 {
-	return ( m_Zoom );
+    return ( m_Zoom );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -196,10 +196,10 @@ double wxPieChartPoints::GetZoom()
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPieChartPoints::SetSizes(
-	wxChartSizes *sizes
+    wxChartSizes *sizes
 )
 {
-	m_Sizes = sizes;
+    m_Sizes = sizes;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -210,7 +210,7 @@ void wxPieChartPoints::SetSizes(
 //----------------------------------------------------------------------E-+++
 wxChartSizes* wxPieChartPoints::GetSizes() const
 {
-	return ( m_Sizes );
+    return ( m_Sizes );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -221,7 +221,7 @@ wxChartSizes* wxPieChartPoints::GetSizes() const
 //----------------------------------------------------------------------E-+++
 ChartColor wxPieChartPoints::GetColor() const
 {
-	return ( m_Color );
+    return ( m_Color );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -231,10 +231,10 @@ ChartColor wxPieChartPoints::GetColor() const
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPieChartPoints::SetColor(
-	ChartColor c
+    ChartColor c
 )
 {
-	m_Color = c;
+    m_Color = c;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -245,7 +245,7 @@ void wxPieChartPoints::SetColor(
 //----------------------------------------------------------------------E-+++
 wxString wxPieChartPoints::GetName() const
 {
-	return ( m_Name );
+    return ( m_Name );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -255,10 +255,10 @@ wxString wxPieChartPoints::GetName() const
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPieChartPoints::SetName(
-	wxString name
+    wxString name
 )
 {
-	m_Name =  name;
+    m_Name =  name;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -270,12 +270,12 @@ void wxPieChartPoints::SetName(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPieChartPoints::Add(
-	wxString name,
-	ChartValue x,
-	ChartValue y
+    wxString name,
+    ChartValue x,
+    ChartValue y
 )
 {
-	Add( name, x, y, wxCHART_NOCOLOR );
+    Add( name, x, y, wxCHART_NOCOLOR );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -288,15 +288,15 @@ void wxPieChartPoints::Add(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPieChartPoints::Add(
-	wxString name,
-	ChartValue x,
-	ChartValue y,
-	ChartColor c
+    wxString name,
+    ChartValue x,
+    ChartValue y,
+    ChartColor c
 )
 {
-	if ( c == wxCHART_NOCOLOR )
-		c = wxChartColors::GetColor();
-	m_Points.Add( name, x, y, c );
+    if ( c == wxCHART_NOCOLOR )
+        c = wxChartColors::GetColor();
+    m_Points.Add( name, x, y, c );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -306,10 +306,10 @@ void wxPieChartPoints::Add(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPieChartPoints::SetDisplayTag(
- 	wxDISPLAY_LABEL d
+    wxDISPLAY_LABEL d
 )
 {
-	m_PieTag = d;
+    m_PieTag = d;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -320,7 +320,7 @@ void wxPieChartPoints::SetDisplayTag(
 //----------------------------------------------------------------------E-+++
 wxDISPLAY_LABEL wxPieChartPoints::GetDisplayTag() const
 {
-	return ( m_PieTag );
+    return ( m_PieTag );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -342,7 +342,7 @@ void wxPieChartPoints::Draw(
     wxChartSizes *sizes = GetSizes();
 
     int r = (int)wxMin( (int)hr->w/2,
-        (int)(hr->h - 2*sizes->GetSizeHeight())/2 );
+                        (int)(hr->h - 2*sizes->GetSizeHeight())/2 );
 
     if ( r > 0 )
     {
@@ -419,7 +419,7 @@ void wxPieChartPoints::Draw(
                     lbl.Printf( wxT("%4.1f"), GetYVal(iData) );
                     wxLbl.Draw( hp, x2, y2, GetColor(iData), lbl, p );
                     break;
-                    case NAME:
+                case NAME:
                     lbl = GetName(iData).c_str();
                     wxLbl.Draw( hp, x2, y2, GetColor(iData), lbl, p );
                     break;

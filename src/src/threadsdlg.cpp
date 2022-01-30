@@ -10,12 +10,12 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/listctrl.h>
-    #include <wx/menu.h>
-    #include <wx/sizer.h>
+#include <wx/listctrl.h>
+#include <wx/menu.h>
+#include <wx/sizer.h>
 
-    #include "cbplugin.h"
-    #include "debuggermanager.h"
+#include "cbplugin.h"
+#include "debuggermanager.h"
 #endif
 
 #include "threadsdlg.h"
@@ -24,8 +24,8 @@
 
 namespace
 {
-    const int idList = wxNewId();
-    const int idSwitch = wxNewId();
+const int idList = wxNewId();
+const int idSwitch = wxNewId();
 }
 
 BEGIN_EVENT_TABLE(ThreadsDlg, wxPanel)
@@ -51,9 +51,9 @@ ThreadsDlg::ThreadsDlg(wxWindow* parent) : wxPanel(parent)
     m_list->InsertColumn(2, _("Info"), wxLIST_FORMAT_LEFT);
 
     Manager::Get()->GetColourManager()->RegisterColour(_("Debugger"), _("Active thread text"),
-                                                       wxT("dbg_threads_active_text"), *wxWHITE);
+            wxT("dbg_threads_active_text"), *wxWHITE);
     Manager::Get()->GetColourManager()->RegisterColour(_("Debugger"), _("Active thread background"),
-                                                       wxT("dbg_threads_active_back"), *wxRED);
+            wxT("dbg_threads_active_back"), *wxRED);
 }
 
 void ThreadsDlg::Reload()

@@ -30,7 +30,7 @@ CompilerOW::CompilerOW()
 
 CompilerOW::~CompilerOW()
 {
-	//dtor
+    //dtor
 }
 
 Compiler * CompilerOW::CreateCopy()

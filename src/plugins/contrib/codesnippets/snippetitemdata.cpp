@@ -20,7 +20,7 @@
 // RCS-ID: $Id: snippetitemdata.cpp 10362 2015-07-26 08:13:33Z jenslody $
 
 #ifdef WX_PRECOMP
-    #include "wx_pch.h"
+#include "wx_pch.h"
 #else
 #endif
 
@@ -52,7 +52,7 @@ SnippetTreeItemData::SnippetTreeItemData(SnippetItemType type, wxString snippet,
 SnippetTreeItemData::~SnippetTreeItemData()
 // ----------------------------------------------------------------------------
 {
-	//dtor
+    //dtor
 }
 // ----------------------------------------------------------------------------
 void SnippetTreeItemData::InitializeItem(SnippetItemID oldID)

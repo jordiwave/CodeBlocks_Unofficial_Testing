@@ -9,18 +9,18 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/checkbox.h>
-    #include <wx/choice.h>
-    #include <wx/combobox.h>
-    #include <wx/intl.h>
-    #include <wx/listbox.h>
-    #include <wx/sizer.h>
-    #include <wx/spinctrl.h>
-    #include <wx/textctrl.h>
-    #include <wx/xrc/xmlres.h>
-    #include "compilerfactory.h"
-    #include "globals.h"
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/choice.h>
+#include <wx/combobox.h>
+#include <wx/intl.h>
+#include <wx/listbox.h>
+#include <wx/sizer.h>
+#include <wx/spinctrl.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
+#include "compilerfactory.h"
+#include "globals.h"
 #endif
 #include "advancedcompileroptionsdlg.h"
 
@@ -68,8 +68,8 @@ END_EVENT_TABLE()
 
 AdvancedCompilerOptionsDlg::AdvancedCompilerOptionsDlg(wxWindow* parent, const wxString& compilerId)
     : m_CompilerId(compilerId),
-    m_LastCmdIndex(-1),
-    m_LastExtIndex(-1)
+      m_LastCmdIndex(-1),
+      m_LastExtIndex(-1)
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAdvancedCompilerOptions"),_T("wxScrollingDialog"));
@@ -403,10 +403,10 @@ void AdvancedCompilerOptionsDlg::OnRegexDelete(wxCommandEvent& WXUNUSED(event))
 void AdvancedCompilerOptionsDlg::OnRegexDefaults(wxCommandEvent& WXUNUSED(event))
 {
     if (cbMessageBox(_("Are you sure you want to load the default regular expressions "
-                    "for this compiler?\n"
-                    "ALL regular expressions will be erased and replaced with their default "
-                    "counterparts!\n\n"
-                    "Are you REALLY sure?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT, this) == wxID_YES)
+                       "for this compiler?\n"
+                       "ALL regular expressions will be erased and replaced with their default "
+                       "counterparts!\n\n"
+                       "Are you REALLY sure?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT, this) == wxID_YES)
     {
         Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
         if (!compiler)
@@ -478,12 +478,12 @@ void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& WXUNUSED(event))
                  "Filename: %s\n"
                  "Line number: %s\n"
                  "Message: %s"),
-                    clt == cltNormal ? _("Normal")
-                 : (clt == cltInfo   ? _("Info")
-                 : (clt == cltError  ? _("Error") : _("Warning") ) ),
-                compiler->GetLastErrorFilename().wx_str(),
-                compiler->GetLastErrorLine().wx_str(),
-                compiler->GetLastError().wx_str()
+               clt == cltNormal ? _("Normal")
+               : (clt == cltInfo   ? _("Info")
+                  : (clt == cltError  ? _("Error") : _("Warning") ) ),
+               compiler->GetLastErrorFilename().wx_str(),
+               compiler->GetLastErrorLine().wx_str(),
+               compiler->GetLastError().wx_str()
               );
 
     cbMessageBox(msg, _("Test results"), wxICON_INFORMATION, this);

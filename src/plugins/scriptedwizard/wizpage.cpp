@@ -9,17 +9,17 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-    #include <wx/ctrlsub.h>
-    #include <manager.h>
-    #include <logmanager.h>
-    #include <configmanager.h>
-    #include <projectmanager.h>
-    #include <scriptingmanager.h>
-    #include <compilerfactory.h>
-    #include <compiler.h>
-    #include <macrosmanager.h>
-    #include <cbproject.h>
-    #include <cbexception.h>
+#include <wx/ctrlsub.h>
+#include <manager.h>
+#include <logmanager.h>
+#include <configmanager.h>
+#include <projectmanager.h>
+#include <scriptingmanager.h>
+#include <compilerfactory.h>
+#include <compiler.h>
+#include <macrosmanager.h>
+#include <cbproject.h>
+#include <cbexception.h>
 #endif
 
 #include "wizpage.h"
@@ -34,7 +34,8 @@
 #include "scripting/bindings/sc_utils.h"
 #include "scripting/bindings/sc_typeinfo_all.h"
 
-namespace Wizard {
+namespace Wizard
+{
 
 void FillCompilerControl(wxItemContainer *control, const wxString& compilerID, const wxString& validCompilerIDs)
 {
@@ -92,7 +93,7 @@ END_EVENT_TABLE()
 
 WizPageBase::WizPageBase(const wxString& pageName, wxWizard* parent, const wxBitmap& bitmap)
     : wxWizardPageSimple(parent, 0, 0, bitmap),
-    m_PageName(pageName)
+      m_PageName(pageName)
 {
     // duplicate pageIDs are not allowed
     if (s_PagesByName[m_PageName])
@@ -273,7 +274,7 @@ void WizInfoPanel::OnPageChanging(wxWizardEvent& event)
 
 WizFilePathPanel::WizFilePathPanel(bool showHeaderGuard, wxWizard* parent, const wxBitmap& bitmap)
     : WizPageBase(_T("FilePathPage"), parent, bitmap),
-    m_AddToProject(false)
+      m_AddToProject(false)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("scripts"));
     m_pFilePathPanel = new FilePathPanel(this);
@@ -404,9 +405,9 @@ void WizProjectPathPanel::OnPageChanging(wxWizardEvent& event)
         if (wxFileExists(fullname))
         {
             if (cbMessageBox(_("A project with the same name already exists in the project folder.\n"
-                        "Are you sure you want to use this directory (files may be OVERWRITTEN)?"),
-                        _("Confirmation"),
-                        wxICON_QUESTION | wxYES_NO, GetParent()) != wxID_YES)
+                               "Are you sure you want to use this directory (files may be OVERWRITTEN)?"),
+                             _("Confirmation"),
+                             wxICON_QUESTION | wxYES_NO, GetParent()) != wxID_YES)
             {
 //                cbMessageBox(_("A project with the same name already exists in the project folder.\n"
 //                            "Please select a different project name..."), _("Warning"), wxICON_WARNING, GetParent());
@@ -439,7 +440,7 @@ BEGIN_EVENT_TABLE(WizGenericSelectPathPanel, WizPageBase)
 END_EVENT_TABLE()
 
 WizGenericSelectPathPanel::WizGenericSelectPathPanel(const wxString& pageId, const wxString& descr, const wxString& label, const wxString& defValue,
-                                            wxWizard* parent, const wxBitmap& bitmap)
+        wxWizard* parent, const wxBitmap& bitmap)
     : WizPageBase(pageId, parent, bitmap)
 {
     wxString savedValue = Manager::Get()->GetConfigManager(_T("project_wizard"))->Read(_T("/generic_paths/") + pageId);
@@ -493,9 +494,9 @@ void WizGenericSelectPathPanel::OnPageChanging(wxWizardEvent& event)
 ////////////////////////////////////////////////////////////////////////////////
 
 WizCompilerPanel::WizCompilerPanel(const wxString& compilerID, const wxString& validCompilerIDs, wxWizard* parent, const wxBitmap& bitmap,
-                                    bool allowCompilerChange, bool allowConfigChange)
+                                   bool allowCompilerChange, bool allowConfigChange)
     : WizPageBase(_T("CompilerPage"), parent, bitmap),
-    m_AllowConfigChange(allowConfigChange)
+      m_AllowConfigChange(allowConfigChange)
 {
     m_pCompilerPanel = new CompilerPanel(this, GetParent());
 
@@ -621,10 +622,10 @@ void WizCompilerPanel::OnPageChanging(wxWizardEvent& event)
 ////////////////////////////////////////////////////////////////////////////////
 
 WizBuildTargetPanel::WizBuildTargetPanel(const wxString& targetName, bool isDebug,
-                                    wxWizard* parent, const wxBitmap& bitmap,
-                                    bool showCompiler,
-                                    const wxString& compilerID, const wxString& validCompilerIDs,
-                                    bool allowCompilerChange)
+        wxWizard* parent, const wxBitmap& bitmap,
+        bool showCompiler,
+        const wxString& compilerID, const wxString& validCompilerIDs,
+        bool allowCompilerChange)
     : WizPageBase(_T("BuildTargetPage"), parent, bitmap)
 {
     m_pBuildTargetPanel = new BuildTargetPanel(this);

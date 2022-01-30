@@ -83,10 +83,10 @@ void wxSTEditorMenuManager::InitAcceleratorArray() const
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 ' ', ID_STE_COMPLETEWORD));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'T', ID_STE_LINE_TRANSPOSE));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'D', ID_STE_LINE_DUPLICATE));
-      //m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'R', ID_STE_PREF_SELECTION_MODE));
-    #ifdef __UNIX__
+        //m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'R', ID_STE_PREF_SELECTION_MODE));
+#ifdef __UNIX__
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'C', ID_STE_COPY_PRIMARY));
-    #endif // __UNIX__
+#endif // __UNIX__
     }
 
     // View menu items  -------------------------------------------------------
@@ -102,7 +102,7 @@ void wxSTEditorMenuManager::InitAcceleratorArray() const
         m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_FIND));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,   'H',    wxID_REPLACE));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F3, ID_STE_FIND_NEXT));
-        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_SHIFT , WXK_F3, ID_STE_FIND_PREV));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_SHIFT, WXK_F3, ID_STE_FIND_PREV));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F2, ID_STE_FIND_DOWN));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,   'G',    ID_STE_GOTO_LINE));
     }
@@ -395,7 +395,7 @@ bool wxSTEditorMenuManager::CreateToolBar(wxToolBar *tb) const
     if (HasToolbarToolType(STE_TOOLBAR_PRINT))
     {
         if (tb->GetToolsCount()) tb->AddSeparator();
-        tb->AddTool(wxID_PRINT  , wxEmptyString, STE_ARTTOOL(wxART_STEDIT_PRINT)       , wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_PRINT), wxGetStockHelpString(wxID_PRINT));
+        tb->AddTool(wxID_PRINT, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_PRINT), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_PRINT), wxGetStockHelpString(wxID_PRINT));
         tb->AddTool(wxID_PREVIEW, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_PRINTPREVIEW), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_PREVIEW), wxGetStockHelpString(wxID_PREVIEW));
     }
     if (HasToolbarToolType(STE_TOOLBAR_EDIT_CUTCOPYPASTE))
@@ -415,10 +415,10 @@ bool wxSTEditorMenuManager::CreateToolBar(wxToolBar *tb) const
     {
         if (tb->GetToolsCount()) tb->AddSeparator();
         //tb->AddTool(ID_STE_FIND_DOWN, _("Search direction"), STE_ARTTOOL(wxART_STEDIT_FINDDOWN), wxNullBitmap, wxITEM_CHECK, _("Search direction"), _("Search direction for next occurance in document"));
-        tb->AddTool(wxID_FIND       , wxEmptyString, STE_ARTTOOL(wxART_STEDIT_FIND    ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_FIND), _("Find text in document..."));
+        tb->AddTool(wxID_FIND, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_FIND    ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_FIND), _("Find text in document..."));
         tb->AddTool(ID_STE_FIND_NEXT, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_FINDDOWN), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(_("Find next"), *m_accelEntryArray, ID_STE_FIND_NEXT), _("Find next occurance in document"));
         tb->AddTool(ID_STE_FIND_PREV, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_FINDUP  ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(_("Find previous"), *m_accelEntryArray, ID_STE_FIND_PREV), _("Find previous occurance in document"));
-        tb->AddTool(wxID_REPLACE    , wxEmptyString, STE_ARTTOOL(wxART_STEDIT_REPLACE ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_REPLACE), _("Replace text in document"));
+        tb->AddTool(wxID_REPLACE, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_REPLACE ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_REPLACE), _("Replace text in document"));
     }
     if (HasToolbarToolType(STE_TOOLBAR_EDIT_SEARCH_CTRL))
     {
@@ -505,11 +505,11 @@ wxMenu *wxSTEditorMenuManager::CreateFileMenu(wxMenu *menu_) const
 
         menu->Append(MenuItem(menu, wxID_PRINT,              wxGetStockLabelEx(wxID_PRINT  ), _("Print current document"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_PRINT)));
         menu->Append(MenuItem(menu, wxID_PREVIEW,            wxGetStockLabelEx(wxID_PREVIEW), _("Print preview of the current document"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_PRINTPREVIEW)));
-   #ifdef __WXMSW__
+#ifdef __WXMSW__
         // The wxID_PRINT_SETUP dialog is the same as the wxID_PRINT one, at least on Windows; confusing to the user
-   #else
+#else
         menu->Append(MenuItem(menu, wxID_PRINT_SETUP,        _("Printer set&up..."), _("Setup the printer"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_PRINTSETUP)));
-   #endif
+#endif
         menu->Append(MenuItem(menu, ID_STE_PRINT_PAGE_SETUP, _("Printer pa&ge setup..."), _("Setup the printout page"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_PRINTPAGESETUP)));
         menu->Append(MenuItem(menu, ID_STE_PRINT_OPTIONS,    _("Printer options..."), _("Set other printout options"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_PRINTPREVIEW)));
     }
@@ -1016,8 +1016,8 @@ static bool AddAccelFromMenuItem(const wxMenu* menu, wxArrayPtrVoid& entries)
     const wxMenuItemList& itemList = menu->GetMenuItems();
 
     for ( wxMenuItemList::const_iterator it = itemList.begin();
-          it != itemList.end();
-          it++)
+            it != itemList.end();
+            it++)
     {
         wxMenuItem *menuItem = *it;
         if (!menuItem)
@@ -1057,8 +1057,8 @@ static bool AddAccelFromMenuItem(const wxMenu* menu, wxArrayPtrVoid& entries)
 
 // static
 bool wxSTEditorMenuManager::GetAcceleratorEntries(const wxMenu* menu,
-                                                  const wxMenuBar* menuBar,
-                                                  wxArrayPtrVoid& entries)
+        const wxMenuBar* menuBar,
+        wxArrayPtrVoid& entries)
 {
     bool ret = false;
     if (menu)
@@ -1085,7 +1085,7 @@ wxAcceleratorTable wxSTEditorMenuManager::CreateAcceleratorTable(wxArrayPtrVoid&
 
 // static
 wxAcceleratorTable wxSTEditorMenuManager::CreateAcceleratorTable(const wxMenu* menu,
-                                                                 const wxMenuBar* menuBar)
+        const wxMenuBar* menuBar)
 {
     wxArrayPtrVoid entries;
     GetAcceleratorEntries(menu, menuBar, entries);
@@ -1101,7 +1101,7 @@ wxAcceleratorTable wxSTEditorMenuManager::CreateAcceleratorTable(const wxMenu* m
 }
 
 void wxSTEditorMenuManager::EnableEditorItems(bool enable, wxMenu *menu,
-                                              wxMenuBar *menuBar, wxToolBar *toolBar)
+        wxMenuBar *menuBar, wxToolBar *toolBar)
 {
     m_enabledEditorItems = enable;
 
@@ -1113,7 +1113,8 @@ void wxSTEditorMenuManager::EnableEditorItems(bool enable, wxMenu *menu,
     for (n = 0; n < count; n++)
         DoEnableItem(menu, menuBar, toolBar, m_enableItemsArray[n], enable);
 
-    const int menuIds[] = {
+    const int menuIds[] =
+    {
         wxID_SAVE,
         wxID_SAVEAS,
         ID_STN_SAVE_ALL,
@@ -1180,8 +1181,8 @@ void wxSTEditorMenuManager::EnableEditorItems(bool enable, wxMenu *menu,
 
 // static
 wxMenuItem *wxSTEditorMenuManager::MenuItem(wxMenu *menu, wxWindowID win_id,
-                                     const wxString &text, const wxString &help,
-                                     wxItemKind kind, const wxBitmap &bitmap)
+        const wxString &text, const wxString &help,
+        wxItemKind kind, const wxBitmap &bitmap)
 {
     wxMenuItem *item = new wxMenuItem(menu, win_id, text, help, kind);
     if (bitmap.IsOk())
@@ -1212,8 +1213,8 @@ void wxSTEditorMenuManager::DestroyMenuItem(wxMenu *menu, int menu_id, bool clea
 
     // delete duplicate separators
     for (;
-         node;
-         node = node->GetNext())
+            node;
+            node = node->GetNext())
     {
         wxMenuItem* item = wxStaticCast(node->GetData(), wxMenuItem);
         if (lastItem && lastItem->IsSeparator() && item->IsSeparator())
@@ -1231,7 +1232,7 @@ void wxSTEditorMenuManager::DestroyMenuItem(wxMenu *menu, int menu_id, bool clea
 }
 
 bool wxSTEditorMenuManager::DoEnableItem(wxMenu *menu, wxMenuBar *menuBar,
-                               wxToolBar *toolBar, wxWindowID menu_id, bool val)
+        wxToolBar *toolBar, wxWindowID menu_id, bool val)
 {
     //wxPrintf(wxT("DoEnableItem %d - val %d\n"), menu_id, int(val));
     bool ret = false;
@@ -1263,7 +1264,7 @@ bool wxSTEditorMenuManager::DoEnableItem(wxMenu *menu, wxMenuBar *menuBar,
     return ret;
 }
 bool wxSTEditorMenuManager::DoCheckItem(wxMenu *menu, wxMenuBar *menuBar,
-                              wxToolBar *toolBar, wxWindowID menu_id, bool val)
+                                        wxToolBar *toolBar, wxWindowID menu_id, bool val)
 {
     //wxPrintf(wxT("DoCheckItem %d - val %d\n"), menu_id, int(val));
     bool ret = false;
@@ -1295,7 +1296,7 @@ bool wxSTEditorMenuManager::DoCheckItem(wxMenu *menu, wxMenuBar *menuBar,
     return ret;
 }
 bool wxSTEditorMenuManager::DoSetTextItem(wxMenu *menu, wxMenuBar *menuBar,
-                                        wxWindowID menu_id, const wxString &val)
+        wxWindowID menu_id, const wxString &val)
 {
     bool ret = false;
 

@@ -24,9 +24,9 @@
 //-----------------------------------------------------------------------------
 
 wxSTETreeItemData::wxSTETreeItemData(int page_num, wxWindow* win)
-                  :m_page_num(page_num),
-                   m_notePage(win),
-                   m_steRefData(NULL)
+    :m_page_num(page_num),
+     m_notePage(win),
+     m_steRefData(NULL)
 {
 }
 
@@ -159,62 +159,62 @@ bool wxSTEditorTreeCtrl::HandleMenuEvent(wxCommandEvent &event)
 
     switch (win_id)
     {
-        case ID_STT_FILE_OPEN :
+    case ID_STT_FILE_OPEN :
+    {
+        if (id)
         {
-            if (id)
-            {
-                wxTreeEvent treeEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, this, id);
-                OnTreeCtrl(treeEvent);
-            }
-            return true;
+            wxTreeEvent treeEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, this, id);
+            OnTreeCtrl(treeEvent);
         }
-        case ID_STT_FILE_CLOSE :
+        return true;
+    }
+    case ID_STT_FILE_CLOSE :
+    {
+        if (id && m_steNotebook && data)
         {
-            if (id && m_steNotebook && data)
-            {
-                m_steNotebook->ClosePage(data->m_page_num, true);
-            }
-            return true;
+            m_steNotebook->ClosePage(data->m_page_num, true);
         }
-        case ID_STT_FILE_PROPERTIES :
+        return true;
+    }
+    case ID_STT_FILE_PROPERTIES :
+    {
+        if (id && m_steNotebook && data && data->m_notePage)
         {
-            if (id && m_steNotebook && data && data->m_notePage)
-            {
-                wxSTEditor* editor = wxDynamicCast(data->m_notePage, wxSTEditor);
+            wxSTEditor* editor = wxDynamicCast(data->m_notePage, wxSTEditor);
 
-                if (!editor && wxDynamicCast(data->m_notePage, wxSTEditorSplitter))
-                    editor = wxDynamicCast(data->m_notePage, wxSTEditorSplitter)->GetEditor();
+            if (!editor && wxDynamicCast(data->m_notePage, wxSTEditorSplitter))
+                editor = wxDynamicCast(data->m_notePage, wxSTEditorSplitter)->GetEditor();
 
-                if (editor)
-                    editor->ShowPropertiesDialog();
-            }
-            return true;
+            if (editor)
+                editor->ShowPropertiesDialog();
         }
-        case ID_STT_EXPAND_ALL :
+        return true;
+    }
+    case ID_STT_EXPAND_ALL :
+    {
+        ExpandAll();
+        return true;
+    }
+    case ID_STT_COLLAPSE_ALL :
+    {
+        // Can't CollapseAll() if root node is hidden.
+        wxTreeItemIdValue cookie;
+        wxTreeItemId rootId = GetRootItem();
+        wxTreeItemId childId = GetFirstChild(rootId, cookie);
+        for (; childId; childId = GetNextChild(rootId, cookie))
         {
-            ExpandAll();
-            return true;
+            CollapseAllChildren(childId);
         }
-        case ID_STT_COLLAPSE_ALL :
-        {
-            // Can't CollapseAll() if root node is hidden.
-            wxTreeItemIdValue cookie;
-            wxTreeItemId rootId = GetRootItem();
-            wxTreeItemId childId = GetFirstChild(rootId, cookie);
-            for (; childId; childId = GetNextChild(rootId, cookie))
-            {
-                CollapseAllChildren(childId);
-            }
-            return true;
-        }
-        case ID_STT_SHOW_FILENAME_ONLY :
-        case ID_STT_SHOW_FILEPATH_ONLY :
-        case ID_STT_SHOW_PATH_THEN_FILENAME :
-        case ID_STT_SHOW_ALL_PATHS :
-        {
-            SetDisplayType((FileDisplay_Type)(win_id-ID_STT_SHOW_FILENAME_ONLY));
-            return true;
-        }
+        return true;
+    }
+    case ID_STT_SHOW_FILENAME_ONLY :
+    case ID_STT_SHOW_FILEPATH_ONLY :
+    case ID_STT_SHOW_PATH_THEN_FILENAME :
+    case ID_STT_SHOW_ALL_PATHS :
+    {
+        SetDisplayType((FileDisplay_Type)(win_id-ID_STT_SHOW_FILENAME_ONLY));
+        return true;
+    }
     }
 
     return false;
@@ -277,9 +277,9 @@ void wxSTEditorTreeCtrl::OnSTEState(wxSTEditorEvent &event)
     event.Skip();
 
     if ( event.HasStateChange(STE_MODIFIED) &&
-        (event.GetEditor() != NULL) &&
-        (event.GetEditor()->GetTreeItemData() != NULL) &&
-        (event.GetEditor()->GetTreeItemData()->m_id))
+            (event.GetEditor() != NULL) &&
+            (event.GetEditor()->GetTreeItemData() != NULL) &&
+            (event.GetEditor()->GetTreeItemData()->m_id))
     {
         SetItemTextColour(event.GetEditor()->GetTreeItemData()->m_id, event.GetEditor()->IsModified() ? *wxRED : *wxBLACK);
     }
@@ -405,7 +405,8 @@ void wxSTEditorTreeCtrl::UpdateFromNotebook()
         rootId = AddRoot(wxT("Root"), -1, -1, NULL);
 
     // Check for and add a "Opened files" item to the treectrl
-    wxArrayString openedfilesPath; openedfilesPath.Add(_("Opened files"));
+    wxArrayString openedfilesPath;
+    openedfilesPath.Add(_("Opened files"));
     wxTreeItemId openedId = FindOrInsertItem(openedfilesPath, STE_TREECTRL_FIND_OR_INSERT);
 
     wxLongToLongHashMap windowToSTETreeItemDataMap = m_windowToSTETreeItemDataMap;
@@ -432,7 +433,7 @@ void wxSTEditorTreeCtrl::UpdateFromNotebook()
             if (steTreeItemData)
             {
                 if ((steTreeItemData->m_notePage == notePage) &&
-                    (steTreeItemData->m_fileName == editor->GetFileName()))
+                        (steTreeItemData->m_fileName == editor->GetFileName()))
                 {
                     // the page didn't change name, but do resync page number
                     steTreeItemData->m_page_num = n;
@@ -485,36 +486,36 @@ void wxSTEditorTreeCtrl::UpdateFromNotebook()
 
                 switch (m_display_type)
                 {
-                    case SHOW_FILENAME_ONLY :
-                    {
-                        steTreeItemData->m_treePath.Add(steTreeItemData->m_root);
-                        steTreeItemData->m_treePath.Add(fn.GetFullName());
-                        break;
-                    }
-                    case SHOW_FILEPATH_ONLY :
-                    {
-                        steTreeItemData->m_treePath.Add(steTreeItemData->m_root);
-                        steTreeItemData->m_treePath.Add(fn.GetFullPath());
-                        break;
-                    }
-                    case SHOW_PATH_THEN_FILENAME :
-                    {
-                        steTreeItemData->m_treePath.Add(steTreeItemData->m_root);
-                        steTreeItemData->m_treePath.Add(fn.GetPath());
-                        steTreeItemData->m_treePath.Add(fn.GetFullName());
-                        break;
-                    }
-                    case SHOW_ALL_PATHS :
-                    {
-                        steTreeItemData->m_treePath.Add(steTreeItemData->m_root);
+                case SHOW_FILENAME_ONLY :
+                {
+                    steTreeItemData->m_treePath.Add(steTreeItemData->m_root);
+                    steTreeItemData->m_treePath.Add(fn.GetFullName());
+                    break;
+                }
+                case SHOW_FILEPATH_ONLY :
+                {
+                    steTreeItemData->m_treePath.Add(steTreeItemData->m_root);
+                    steTreeItemData->m_treePath.Add(fn.GetFullPath());
+                    break;
+                }
+                case SHOW_PATH_THEN_FILENAME :
+                {
+                    steTreeItemData->m_treePath.Add(steTreeItemData->m_root);
+                    steTreeItemData->m_treePath.Add(fn.GetPath());
+                    steTreeItemData->m_treePath.Add(fn.GetFullName());
+                    break;
+                }
+                case SHOW_ALL_PATHS :
+                {
+                    steTreeItemData->m_treePath.Add(steTreeItemData->m_root);
 
-                        wxArrayString dirs = fn.GetDirs();
-                        for (size_t i = 0; i < dirs.GetCount(); ++i)
-                            steTreeItemData->m_treePath.Add(dirs[i]);
+                    wxArrayString dirs = fn.GetDirs();
+                    for (size_t i = 0; i < dirs.GetCount(); ++i)
+                        steTreeItemData->m_treePath.Add(dirs[i]);
 
-                        steTreeItemData->m_treePath.Add(fn.GetFullName());
-                        break;
-                    }
+                    steTreeItemData->m_treePath.Add(fn.GetFullName());
+                    break;
+                }
                 }
             }
             else
@@ -664,7 +665,7 @@ int wxSTEditorTreeCtrl::DeleteItem(const wxTreeItemId& id_, bool delete_empty,
         n++;
 
         while( parentId && (parentId != rootId) && (parentId != topId) &&
-               ((n <= levels) || (levels == -1)))
+                ((n <= levels) || (levels == -1)))
         {
             unsigned int child_count = GetChildrenCount(parentId, false);
 
@@ -700,7 +701,7 @@ int wxSTEditorTreeCtrl::DeleteItem(const wxTreeItemId& id_, bool delete_empty,
 }
 
 wxTreeItemId wxSTEditorTreeCtrl::FindOrInsertItem(const wxArrayString& treePath,
-                                                  STE_TreeCtrlFindInsert_Type find_type)
+        STE_TreeCtrlFindInsert_Type find_type)
 {
     wxCHECK_MSG(treePath.GetCount() > 0, wxTreeItemId(), wxT("Nothing to insert"));
 
@@ -778,8 +779,8 @@ wxTreeItemId wxSTEditorTreeCtrl::FindOrInsertItem(const wxArrayString& treePath,
 }
 
 size_t wxSTEditorTreeCtrl::GetAllChildrenItemIds(const wxTreeItemId& start_id,
-                                                 wxArrayTreeItemIds& arrayIds,
-                                                 STE_TreeCtrlGet_Type get_type)
+        wxArrayTreeItemIds& arrayIds,
+        STE_TreeCtrlGet_Type get_type)
 {
     // MSW crashes on GetNextSibling on the root item
     if (start_id == GetRootItem())
@@ -793,8 +794,8 @@ size_t wxSTEditorTreeCtrl::GetAllChildrenItemIds(const wxTreeItemId& start_id,
 }
 
 size_t wxSTEditorTreeCtrl::DoGetAllChildrenItemIds(const wxTreeItemId& start_id,
-                                                   wxArrayTreeItemIds& arrayIds,
-                                                   STE_TreeCtrlGet_Type get_type)
+        wxArrayTreeItemIds& arrayIds,
+        STE_TreeCtrlGet_Type get_type)
 {
     size_t count = 0;
 
@@ -809,7 +810,7 @@ size_t wxSTEditorTreeCtrl::DoGetAllChildrenItemIds(const wxTreeItemId& start_id,
         {
             wxTreeItemData* data = GetItemData(id);
             if (( data && ((get_type & STE_TREECTRL_GET_DATA)   != 0)) ||
-                (!data && ((get_type & STE_TREECTRL_GET_NODATA) != 0)))
+                    (!data && ((get_type & STE_TREECTRL_GET_NODATA) != 0)))
             {
                 arrayIds.Add(id);
                 count++;

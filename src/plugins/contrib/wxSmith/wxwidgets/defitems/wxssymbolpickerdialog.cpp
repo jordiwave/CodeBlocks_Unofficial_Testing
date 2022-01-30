@@ -26,31 +26,31 @@
 
 namespace
 {
-    wxsRegisterItem<wxsSymbolPickerDialog> Reg(
-        _T("SymbolPickerDialog"),       // Class base name
-        wxsTTool,                       // Item type
-        _T("Dialogs"),                  // Category in palette
-        60,                             // Priority in palette
-        false);                         // We do not allow this item inside XRC files
+wxsRegisterItem<wxsSymbolPickerDialog> Reg(
+    _T("SymbolPickerDialog"),       // Class base name
+    wxsTTool,                       // Item type
+    _T("Dialogs"),                  // Category in palette
+    60,                             // Priority in palette
+    false);                         // We do not allow this item inside XRC files
 
 
-    WXS_ST_BEGIN(wxsSymbolPickerDialogStyles,_T("wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX"))
-        WXS_ST_CATEGORY("wxSymbolPickerDialog")
-        WXS_ST(wxSTAY_ON_TOP)
-        WXS_ST(wxCAPTION)
-        WXS_ST(wxDEFAULT_DIALOG_STYLE)
-        WXS_ST(wxSYSTEM_MENU)
-        WXS_ST(wxRESIZE_BORDER)
-        WXS_ST(wxCLOSE_BOX)
-        WXS_ST(wxDIALOG_NO_PARENT)
-        WXS_ST(wxTAB_TRAVERSAL)
-        WXS_ST(wxMAXIMIZE_BOX)
-        WXS_ST(wxMINIMIZE_BOX)
-        WXS_ST(wxFRAME_SHAPED)
-        WXS_EXST(wxDIALOG_EX_CONTEXTHELP)
-        WXS_EXST(wxDIALOG_EX_METAL)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsSymbolPickerDialogStyles,_T("wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX"))
+WXS_ST_CATEGORY("wxSymbolPickerDialog")
+WXS_ST(wxSTAY_ON_TOP)
+WXS_ST(wxCAPTION)
+WXS_ST(wxDEFAULT_DIALOG_STYLE)
+WXS_ST(wxSYSTEM_MENU)
+WXS_ST(wxRESIZE_BORDER)
+WXS_ST(wxCLOSE_BOX)
+WXS_ST(wxDIALOG_NO_PARENT)
+WXS_ST(wxTAB_TRAVERSAL)
+WXS_ST(wxMAXIMIZE_BOX)
+WXS_ST(wxMINIMIZE_BOX)
+WXS_ST(wxFRAME_SHAPED)
+WXS_EXST(wxDIALOG_EX_CONTEXTHELP)
+WXS_EXST(wxDIALOG_EX_METAL)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 }
 
 //------------------------------------------------------------------------------
@@ -66,16 +66,16 @@ void wxsSymbolPickerDialog::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-            AddHeader(_T("<wx/richtext/richtextsymboldlg.h>"),GetInfo().ClassName, 0);
-            Codef(_T("%C( %t, %t, %t, %W, %I, %t, %P, %S, %T);\n"), _T(""), _T(""), _T(""), _T("Title") );
-            BuildSetupWindowCode();
-            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-            break;
+    case wxsCPP:
+        AddHeader(_T("<wx/richtext/richtextsymboldlg.h>"),GetInfo().ClassName, 0);
+        Codef(_T("%C( %t, %t, %t, %W, %I, %t, %P, %S, %T);\n"), _T(""), _T(""), _T(""), _T("Title") );
+        BuildSetupWindowCode();
+        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+        break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsSymbolPickerDialog::OnBuildCreatingCode"),GetLanguage());
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsSymbolPickerDialog::OnBuildCreatingCode"),GetLanguage());
     }
 }
 

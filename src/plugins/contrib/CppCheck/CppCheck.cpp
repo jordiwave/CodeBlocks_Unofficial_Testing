@@ -8,25 +8,25 @@
   **************************************************************/
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/arrstr.h>
-    #include <wx/dir.h>
-    #include <wx/file.h>
-    #include <wx/filefn.h>
-    #include <wx/fs_zip.h>
-    #include <wx/filename.h>
-    #include <wx/intl.h>
-    #include <wx/menu.h>
-    #include <wx/string.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/arrstr.h>
+#include <wx/dir.h>
+#include <wx/file.h>
+#include <wx/filefn.h>
+#include <wx/fs_zip.h>
+#include <wx/filename.h>
+#include <wx/intl.h>
+#include <wx/menu.h>
+#include <wx/string.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "cbproject.h"
-    #include "cbplugin.h"
-    #include "configmanager.h"
-    #include "manager.h"
-    #include "logmanager.h"
-    #include "pluginmanager.h"
-    #include "projectmanager.h"
-    #include "macrosmanager.h"
+#include "cbproject.h"
+#include "cbplugin.h"
+#include "configmanager.h"
+#include "manager.h"
+#include "logmanager.h"
+#include "pluginmanager.h"
+#include "projectmanager.h"
+#include "macrosmanager.h"
 #endif
 
 #include <wx/busyinfo.h>
@@ -45,24 +45,24 @@
 // Register the plugin
 namespace
 {
-    PluginRegistrant<CppCheck> reg(_T("CppCheck"));
+PluginRegistrant<CppCheck> reg(_T("CppCheck"));
 };
 
 namespace
 {
-    bool CheckRequirements()
+bool CheckRequirements()
+{
+    cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
+    // if no project open, exit
+    if (!Project)
     {
-        cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
-        // if no project open, exit
-        if (!Project)
-        {
-            wxString msg = _("You need to open a project\nbefore using the plugin!");
-            cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
-            Manager::Get()->GetLogManager()->DebugLog(msg);
-            return false;
-        }
-        return true;
+        wxString msg = _("You need to open a project\nbefore using the plugin!");
+        cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
+        Manager::Get()->GetLogManager()->DebugLog(msg);
+        return false;
     }
+    return true;
+}
 }; // namespace
 
 
@@ -95,10 +95,14 @@ void CppCheck::OnAttach()
         CodeBlocksLogEvent evtAdd1(cbEVT_ADD_LOG_WINDOW, m_CppCheckLog, LogMan->Slot(m_LogPageIndex).title);
         Manager::Get()->ProcessEvent(evtAdd1);
 
-        wxArrayString Titles; wxArrayInt Widths;
-        Titles.Add(_("File"));    Widths.Add(128);
-        Titles.Add(_("Line"));    Widths.Add(48);
-        Titles.Add(_("Message")); Widths.Add(640);
+        wxArrayString Titles;
+        wxArrayInt Widths;
+        Titles.Add(_("File"));
+        Widths.Add(128);
+        Titles.Add(_("Line"));
+        Widths.Add(48);
+        Titles.Add(_("Message"));
+        Widths.Add(640);
         m_ListLog = new CppCheckListLog(Titles, Widths);
 
         m_ListLogPageIndex = LogMan->SetLog(m_ListLog);
@@ -181,10 +185,10 @@ int CppCheck::Execute()
     int result_vera     = 0;
 
     if ((0==choice) || (2==choice))
-      result_cppcheck = ExecuteCppCheck(Project);
+        result_cppcheck = ExecuteCppCheck(Project);
 
     if ((1==choice) || (2==choice))
-      result_vera = ExecuteVera(Project);
+        result_vera = ExecuteVera(Project);
 
     return ((0==result_cppcheck) && (0==result_vera)) ? 0 : -1;
 }
@@ -211,12 +215,12 @@ int CppCheck::ExecuteCppCheck(cbProject* Project)
         ProjectFile* pf = *it;
         // filter to avoid including non C/C++ files
         if (   pf->relativeFilename.EndsWith(FileFilters::C_DOT_EXT)
-            || pf->relativeFilename.EndsWith(FileFilters::CPP_DOT_EXT)
-            || pf->relativeFilename.EndsWith(FileFilters::CC_DOT_EXT)
-            || pf->relativeFilename.EndsWith(FileFilters::CXX_DOT_EXT)
-            || pf->relativeFilename.EndsWith(FileFilters::CPLPL_DOT_EXT)
-            || (FileTypeOf(pf->relativeFilename) == ftHeader)
-            || (FileTypeOf(pf->relativeFilename) == ftTemplateSource) )
+                || pf->relativeFilename.EndsWith(FileFilters::CPP_DOT_EXT)
+                || pf->relativeFilename.EndsWith(FileFilters::CC_DOT_EXT)
+                || pf->relativeFilename.EndsWith(FileFilters::CXX_DOT_EXT)
+                || pf->relativeFilename.EndsWith(FileFilters::CPLPL_DOT_EXT)
+                || (FileTypeOf(pf->relativeFilename) == ftHeader)
+                || (FileTypeOf(pf->relativeFilename) == ftTemplateSource) )
         {
             InputFile.Write(pf->relativeFilename + _T("\n"));
         }
@@ -287,12 +291,12 @@ int CppCheck::DoCppCheckExecute(TCppCheckAttribs& CppCheckAttribs)
     wxString CppArgs = cfg->Read(_T("cppcheck_args"), _T("--verbose --enable=all --enable=style --xml"));
     Manager::Get()->GetMacrosManager()->ReplaceMacros(CppArgs);
     wxString CommandLine = CppExe + _T(" ") + CppArgs
-                         + _T(" --file-list=") + CppCheckAttribs.InputFileName;
+                           + _T(" --file-list=") + CppCheckAttribs.InputFileName;
 
     if ( !CppCheckAttribs.IncludeList.IsEmpty() )
     {
         CommandLine += _T(" ") + CppCheckAttribs.IncludeList.Trim() + _T(" ")
-                     + CppCheckAttribs.DefineList.Trim();
+                       + CppCheckAttribs.DefineList.Trim();
     }
 
     wxArrayString Output, Errors;
@@ -409,8 +413,8 @@ bool CppCheck::DoCppCheckParseXMLv2(TiXmlHandle& Handle)
     const TiXmlHandle& Errors = Handle.FirstChildElement("errors");
 
     for (const TiXmlElement* Error = Errors.FirstChildElement("error").ToElement();
-                             Error;
-                             Error = Error->NextSiblingElement("error"))
+            Error;
+            Error = Error->NextSiblingElement("error"))
     {
         wxString Id;
         if (const char* IdValue = Error->Attribute("id"))
@@ -477,12 +481,12 @@ int CppCheck::ExecuteVera(cbProject* Project)
         ProjectFile* pf = *it;
         // filter to avoid including non C/C++ files
         if (   pf->relativeFilename.EndsWith(FileFilters::C_DOT_EXT)
-            || pf->relativeFilename.EndsWith(FileFilters::CPP_DOT_EXT)
-            || pf->relativeFilename.EndsWith(FileFilters::CC_DOT_EXT)
-            || pf->relativeFilename.EndsWith(FileFilters::CXX_DOT_EXT)
-            || pf->relativeFilename.EndsWith(FileFilters::CPLPL_DOT_EXT)
-            || (FileTypeOf(pf->relativeFilename) == ftHeader)
-            || (FileTypeOf(pf->relativeFilename) == ftTemplateSource) )
+                || pf->relativeFilename.EndsWith(FileFilters::CPP_DOT_EXT)
+                || pf->relativeFilename.EndsWith(FileFilters::CC_DOT_EXT)
+                || pf->relativeFilename.EndsWith(FileFilters::CXX_DOT_EXT)
+                || pf->relativeFilename.EndsWith(FileFilters::CPLPL_DOT_EXT)
+                || (FileTypeOf(pf->relativeFilename) == ftHeader)
+                || (FileTypeOf(pf->relativeFilename) == ftTemplateSource) )
         {
             InputFile.Write(pf->relativeFilename + _T("\n"));
         }
@@ -500,7 +504,7 @@ int CppCheck::DoVeraExecute(const wxString& InputsFile)
     wxString VeraArgs = cfg->Read(_T("vera_args"), wxEmptyString);
     Manager::Get()->GetMacrosManager()->ReplaceMacros(VeraArgs);
     wxString CommandLine = VeraExe + _T(" ") + VeraArgs
-                         + _T("--inputs ") + InputsFile;
+                           + _T("--inputs ") + InputsFile;
 
     wxArrayString Output, Errors;
     bool isOK = AppExecute(_T("vera++"), CommandLine, Output, Errors);
@@ -515,41 +519,41 @@ int CppCheck::DoVeraExecute(const wxString& InputsFile)
 
 void CppCheck::DoVeraAnalysis(const wxArrayString& Result)
 {
-  wxRegEx reVera(_T("(.+):([0-9]+):(.+)"));
+    wxRegEx reVera(_T("(.+):([0-9]+):(.+)"));
 
-  bool ErrorsPresent = false;
+    bool ErrorsPresent = false;
 
-  for (size_t idxCount = 0; idxCount < Result.GetCount(); ++idxCount)
-  {
-    wxString Res = Result[idxCount];
-    if (reVera.Matches(Res))
+    for (size_t idxCount = 0; idxCount < Result.GetCount(); ++idxCount)
     {
-      wxString File = reVera.GetMatch(Res, 1);
-      wxString Line = reVera.GetMatch(Res, 2);
-      wxString Msg  = reVera.GetMatch(Res, 3);
+        wxString Res = Result[idxCount];
+        if (reVera.Matches(Res))
+        {
+            wxString File = reVera.GetMatch(Res, 1);
+            wxString Line = reVera.GetMatch(Res, 2);
+            wxString Msg  = reVera.GetMatch(Res, 3);
 
-      if (!File.IsEmpty() && !Line.IsEmpty() && !Msg.IsEmpty())
-      {
-          wxArrayString Arr;
-          Arr.Add(File);
-          Arr.Add(Line);
-          Arr.Add(Msg);
-          m_ListLog->Append(Arr);
-          ErrorsPresent = true;
-      }
-      else if (!Msg.IsEmpty())
-          AppendToLog(Msg); // might be something important like config not found...
+            if (!File.IsEmpty() && !Line.IsEmpty() && !Msg.IsEmpty())
+            {
+                wxArrayString Arr;
+                Arr.Add(File);
+                Arr.Add(Line);
+                Arr.Add(Msg);
+                m_ListLog->Append(Arr);
+                ErrorsPresent = true;
+            }
+            else if (!Msg.IsEmpty())
+                AppendToLog(Msg); // might be something important like config not found...
+        }
     }
-  }
 
-  if (ErrorsPresent)
-  {
-      if ( Manager::Get()->GetLogManager() )
-      {
-          CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_ListLog);
-          Manager::Get()->ProcessEvent(evtSwitch);
-      }
-  }
+    if (ErrorsPresent)
+    {
+        if ( Manager::Get()->GetLogManager() )
+        {
+            CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_ListLog);
+            Manager::Get()->ProcessEvent(evtSwitch);
+        }
+    }
 }
 //} Vera
 
@@ -575,8 +579,8 @@ bool CppCheck::AppExecute(const wxString& app, const wxString& CommandLine, wxAr
     if ( -1 == wxExecute(CommandLine, Output, Errors, wxEXEC_SYNC) )
     {
         wxString msg = _("Failed to launch ") + app + _T(".\n"
-                         "Please setup the ") + app + _T(" executable accordingly in the settings\n"
-                        "and make sure its also in the path so ") + app + _T(" resources are found.");
+                       "Please setup the ") + app + _T(" executable accordingly in the settings\n"
+                               "and make sure its also in the path so ") + app + _T(" resources are found.");
         AppendToLog(msg);
         cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
         if (!m_PATH.IsEmpty()) wxSetEnv(wxT("PATH"), m_PATH); // Restore

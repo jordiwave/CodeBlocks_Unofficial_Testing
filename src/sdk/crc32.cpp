@@ -78,14 +78,19 @@ wxUint32 wxCrc32::FromString(const wxString& text)
             // Calculate the checksum
             crc = 0xFFFFFFFFUL;
             while (text[i])
-                { crc = (crc>>8) ^ crc_table[ (crc^(text[i++].GetValue())) & 0xFF ]; }
+            {
+                crc = (crc>>8) ^ crc_table[ (crc^(text[i++].GetValue())) & 0xFF ];
+            }
 
             crc ^= 0xFFFFFFFFUL ;
         }
     }
 
     // If we have a crc table, delete it from memory
-    if ( crc_table ) { delete[] crc_table; }
+    if ( crc_table )
+    {
+        delete[] crc_table;
+    }
 
     // Set it to a null pointer, the have it (re)created on next calls to this
     // function

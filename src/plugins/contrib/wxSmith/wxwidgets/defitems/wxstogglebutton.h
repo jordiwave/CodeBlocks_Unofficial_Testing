@@ -28,18 +28,18 @@
 /** \brief Class for wxsToggleButton widget */
 class wxsToggleButton: public wxsWidget
 {
-    public:
+public:
 
-        wxsToggleButton(wxsItemResData* Data);
+    wxsToggleButton(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        wxString Label;
-        bool IsChecked;
+    wxString Label;
+    bool IsChecked;
 
 };
 

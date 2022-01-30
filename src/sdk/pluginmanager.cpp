@@ -10,25 +10,25 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/dir.h>
-    #include <wx/filesys.h>
-    #include <wx/intl.h>
-    #include <wx/menu.h>
-    #include <wx/string.h>
+#include <wx/dir.h>
+#include <wx/filesys.h>
+#include <wx/intl.h>
+#include <wx/menu.h>
+#include <wx/string.h>
 
-    #include "pluginmanager.h"
-    #include "cbexception.h"
-    #include "cbplugin.h"
-    #include "infowindow.h"
-    #include "logmanager.h"
-    #include "macrosmanager.h"
-    #include "manager.h"
-    #include "editormanager.h"
-    #include "configmanager.h"
-    #include "personalitymanager.h"
-    #include "scriptingmanager.h"
-    #include "globals.h"
-    #include "sdk_events.h"
+#include "pluginmanager.h"
+#include "cbexception.h"
+#include "cbplugin.h"
+#include "infowindow.h"
+#include "logmanager.h"
+#include "macrosmanager.h"
+#include "manager.h"
+#include "editormanager.h"
+#include "configmanager.h"
+#include "personalitymanager.h"
+#include "scriptingmanager.h"
+#include "globals.h"
+#include "sdk_events.h"
 #endif
 
 #include <algorithm>
@@ -91,70 +91,70 @@ inline int CompareVersions(const wxString& new_version, const wxString& old_vers
 
 namespace LibLoader
 {
-    struct RefCountedLib
-    {
-        RefCountedLib() : lib(nullptr), ref(0) {}
-        wxDynamicLibrary* lib;
-        int ref;
-    };
-    typedef std::map<wxString, RefCountedLib> Libs;
-    Libs s_Libs;
+struct RefCountedLib
+{
+    RefCountedLib() : lib(nullptr), ref(0) {}
+    wxDynamicLibrary* lib;
+    int ref;
+};
+typedef std::map<wxString, RefCountedLib> Libs;
+Libs s_Libs;
 
-    inline wxDynamicLibrary* LoadLibrary(const wxString& filename)
+inline wxDynamicLibrary* LoadLibrary(const wxString& filename)
+{
+    Libs::iterator it = s_Libs.find(filename);
+    if (it != s_Libs.end())
     {
-        Libs::iterator it = s_Libs.find(filename);
-        if (it != s_Libs.end())
-        {
-            // existing lib./codeblocks
-            it->second.ref++;
-            return it->second.lib;
-        }
-        // new lib
-        it = s_Libs.insert(s_Libs.end(), std::make_pair(filename, RefCountedLib()));
-        it->second.lib = new wxDynamicLibrary;
-        it->second.ref = 1;
-        it->second.lib->Load(filename);
+        // existing lib./codeblocks
+        it->second.ref++;
         return it->second.lib;
     }
+    // new lib
+    it = s_Libs.insert(s_Libs.end(), std::make_pair(filename, RefCountedLib()));
+    it->second.lib = new wxDynamicLibrary;
+    it->second.ref = 1;
+    it->second.lib->Load(filename);
+    return it->second.lib;
+}
 
-    inline void RemoveLibrary(wxDynamicLibrary* lib)
+inline void RemoveLibrary(wxDynamicLibrary* lib)
+{
+    Libs::iterator it;
+    for (it = s_Libs.begin(); it != s_Libs.end(); ++it)
     {
-        Libs::iterator it;
-        for (it = s_Libs.begin(); it != s_Libs.end(); ++it)
+        RefCountedLib& rcl = it->second;
+        if (rcl.lib == lib)
         {
-            RefCountedLib& rcl = it->second;
-            if (rcl.lib == lib)
+            // found
+            rcl.ref--;
+            if (rcl.ref == 0)
             {
-                // found
-                rcl.ref--;
-                if (rcl.ref == 0)
-                {
-                    // only delete the lib if not shutting down
-                    // if we are shutting down, it will be deleted automatically
-                    if (!Manager::IsAppShuttingDown())
-                        delete rcl.lib;
-                    s_Libs.erase(it);
-                }
-                return;
+                // only delete the lib if not shutting down
+                // if we are shutting down, it will be deleted automatically
+                if (!Manager::IsAppShuttingDown())
+                    delete rcl.lib;
+                s_Libs.erase(it);
             }
+            return;
         }
-        // if we reached here, it's a lib that was not handled by us
-        // (or had wrong refcounting)
     }
+    // if we reached here, it's a lib that was not handled by us
+    // (or had wrong refcounting)
+}
 
-    inline void Cleanup()
+inline void Cleanup()
+{
+    Libs::iterator it;
+    for (it = s_Libs.begin(); it != s_Libs.end(); ++it)
     {
-        Libs::iterator it;
-        for (it = s_Libs.begin(); it != s_Libs.end(); ++it)
-        {
-            RefCountedLib& rcl = it->second;
-            // only delete the lib if not shutting down
-            // if we are shutting down, it will be deleted automatically
-            if (!Manager::IsAppShuttingDown())
-                delete rcl.lib;
-        }
-        s_Libs.clear();
+        RefCountedLib& rcl = it->second;
+        // only delete the lib if not shutting down
+        // if we are shutting down, it will be deleted automatically
+        if (!Manager::IsAppShuttingDown())
+            delete rcl.lib;
     }
+    s_Libs.clear();
+}
 };
 
 //static
@@ -167,7 +167,7 @@ END_EVENT_TABLE()
 // class constructor
 PluginManager::PluginManager()
     : m_pCurrentlyLoadingLib(nullptr),
-    m_pCurrentlyLoadingManifestDoc(nullptr)
+      m_pCurrentlyLoadingManifestDoc(nullptr)
 {
     Manager::Get()->GetAppWindow()->PushEventHandler(this);
 }
@@ -247,10 +247,10 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
             }
 
             if (cbMessageBox(msg + _T('\n') +
-                            _("If you want to proceed, the installed plugin will be "
-                            "uninstalled first.\n"
-                            "Do you want to proceed?"),
-                            _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_NO)
+                             _("If you want to proceed, the installed plugin will be "
+                               "uninstalled first.\n"
+                               "Do you want to proceed?"),
+                             _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_NO)
             {
                 return false;
             }
@@ -292,8 +292,8 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
 
     // extract plugin from bundle
     if (!ExtractFile(actualName,
-                    localName,
-                    pluginFilename))
+                     localName,
+                     pluginFilename))
         return false;
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("Extracted plugin")));
 
@@ -301,8 +301,8 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
 
     // extract resources from bundle
     if (!ExtractFile(actualName,
-                    resourceName,
-                    resourceDir + _T('/') + resourceName))
+                     resourceName,
+                     resourceDir + _T('/') + resourceName))
         return false;
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("Extracted resources")));
 
@@ -410,8 +410,8 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
     {
         // no write-access; abort
         cbMessageBox(_("You don't have the needed privileges to uninstall this plugin.\n"
-                        "Ask your administrator to uninstall this plugin for you..."),
-                        _("Warning"), wxICON_WARNING);
+                       "Ask your administrator to uninstall this plugin for you..."),
+                     _("Warning"), wxICON_WARNING);
         return false;
     }
 
@@ -479,18 +479,18 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
         {
             Manager::Get()->GetLogManager()->LogWarning(_T("Failed to remove plugin file: ") + pluginFilename);
             cbMessageBox(_("Plugin could not be completely uninstalled because its files could not be removed.\n\n"
-                            "This can happen if the plugin's file is in-use like, for "
-                            "example, when the same plugin file provides more than one "
-                            "plugin.\n"
-                            "In this case either uninstall all other plugins "
-                            "which are provided by the same file, or remove it yourself "
-                            "(manually) when you shut down Code::Blocks.\n"
-                            "The files that could not be deleted are:\n\n") +
-                            pluginFilename + _T('\n') +
-                            resourceFilename + _T('\n') +
-                            settingsOnFilename + _T('\n') +
-                            settingsOffFilename,
-                            _("Warning"), wxICON_WARNING);
+                           "This can happen if the plugin's file is in-use like, for "
+                           "example, when the same plugin file provides more than one "
+                           "plugin.\n"
+                           "In this case either uninstall all other plugins "
+                           "which are provided by the same file, or remove it yourself "
+                           "(manually) when you shut down Code::Blocks.\n"
+                           "The files that could not be deleted are:\n\n") +
+                         pluginFilename + _T('\n') +
+                         resourceFilename + _T('\n') +
+                         settingsOnFilename + _T('\n') +
+                         settingsOffFilename,
+                         _("Warning"), wxICON_WARNING);
             return false;
         }
     }
@@ -564,7 +564,7 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
         if (!wxFile::Access(filename, wxFile::write))
         {
             cbMessageBox(wxString::Format(_("%s is in use.\nAborting..."), filename.c_str()),
-                        _("Warning"), wxICON_WARNING);
+                         _("Warning"), wxICON_WARNING);
             return false;
         }
     }
@@ -592,7 +592,7 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
         zip << in;
     }
     zip.SetComment(_T("This is a redistributable plugin for the Code::Blocks IDE.\n"
-                        "See http://www.codeblocks.org for details..."));
+                      "See http://www.codeblocks.org for details..."));
 
     return true;
 }
@@ -666,9 +666,9 @@ bool PluginManager::ExtractFile(const wxString& bundlename,
 }
 
 void PluginManager::RegisterPlugin(const wxString& name,
-                                    CreatePluginProc createProc,
-                                    FreePluginProc freeProc,
-                                    PluginSDKVersionProc versionProc)
+                                   CreatePluginProc createProc,
+                                   FreePluginProc freeProc,
+                                   PluginSDKVersionProc versionProc)
 {
     // sanity checks
     if (name.IsEmpty() || !createProc || !freeProc || !versionProc)
@@ -681,9 +681,11 @@ void PluginManager::RegisterPlugin(const wxString& name,
     // read manifest file for plugin
     PluginInfo info;
     if (!ReadManifestFile(m_CurrentlyLoadingFilename, name, &info) ||
-        info.name.IsEmpty())
+            info.name.IsEmpty())
     {
-        Manager::Get()->GetLogManager()->LogError(_T("Invalid manifest file for: ") + name);
+        Manager::Get()->GetLogManager()->LogError(_T("Invalid manifest file for: ") + name + _T(" filename: ") + m_CurrentlyLoadingFilename);
+        if (info.name.IsEmpty())
+            Manager::Get()->GetLogManager()->LogError(_T("Invalid manifest file ") + name + _T(" : info.name.IsEmpty"));
         return;
     }
 
@@ -693,19 +695,19 @@ void PluginManager::RegisterPlugin(const wxString& name,
     int release;
     versionProc(&major, &minor, &release);
     if (major != PLUGIN_SDK_VERSION_MAJOR ||
-        minor != PLUGIN_SDK_VERSION_MINOR ||
-        release != PLUGIN_SDK_VERSION_RELEASE)
+            minor != PLUGIN_SDK_VERSION_MINOR ||
+            release != PLUGIN_SDK_VERSION_RELEASE)
     {
         // wrong version: in this case, inform the user...
         wxString fmt;
         fmt.Printf(_("SDK version mismatch for %s (%d.%d.%d). Expecting %d.%d.%d"),
-                    name.c_str(),
-                    major,
-                    minor,
-                    release,
-                    PLUGIN_SDK_VERSION_MAJOR,
-                    PLUGIN_SDK_VERSION_MINOR,
-                    PLUGIN_SDK_VERSION_RELEASE);
+                   name.c_str(),
+                   major,
+                   minor,
+                   release,
+                   PLUGIN_SDK_VERSION_MAJOR,
+                   PLUGIN_SDK_VERSION_MINOR,
+                   PLUGIN_SDK_VERSION_RELEASE);
         Manager::Get()->GetLogManager()->LogError(fmt);
         return;
     }
@@ -723,8 +725,8 @@ void PluginManager::RegisterPlugin(const wxString& name,
 }
 
 bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
-                                    const wxString& pluginName,
-                                    PluginInfo* infoOut)
+                                     const wxString& pluginName,
+                                     PluginInfo* infoOut)
 {
     if (!m_pCurrentlyLoadingManifestDoc)
     {
@@ -864,7 +866,7 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
 }
 
 void PluginManager::ReadExtraFilesFromManifestFile(const wxString& pluginFilename,
-                                                    wxArrayString& extraFiles)
+        wxArrayString& extraFiles)
 {
     extraFiles.Clear();
 
@@ -934,8 +936,8 @@ void PluginManager::ReadExtraFilesFromManifestFile(const wxString& pluginFilenam
 int PluginManager::ScanForPlugins(const wxString& path)
 {
     static const wxString PluginsMask = platform::windows                      ? _T("*.dll")
-                                      : (platform::darwin || platform::macosx) ? _T("*.dylib")
-                                      :                                          _T("*.so");
+                                        : (platform::darwin || platform::macosx) ? _T("*.dylib")
+                                        :                                          _T("*.so");
     int count = 0;
     if (!wxDirExists(path))
         return count;
@@ -995,10 +997,10 @@ int PluginManager::ScanForPlugins(const wxString& path)
     {
         InfoWindow::Display(_("Warning"),
                             _("One or more plugins were not loaded.\n"
-                            "This usually happens when a plugin is built for\n"
-                            "a different version of the Code::Blocks SDK.\n"
-                            "Check the application log for more info.\n\n"
-                            "List of failed plugins:\n") + failed,
+                              "This usually happens when a plugin is built for\n"
+                              "a different version of the Code::Blocks SDK.\n"
+                              "Check the application log for more info.\n\n"
+                              "List of failed plugins:\n") + failed,
                             15000, 3000);
     }
     return count;
@@ -1075,7 +1077,7 @@ void PluginManager::LoadAllPlugins()
     {
         wxString msg;
         msg.Printf(_("Plugin \"%s\" failed to load last time Code::Blocks was executed.\n"
-                    "Do you want to disable this plugin from loading?"), probPlugin.c_str());
+                     "Do you want to disable this plugin from loading?"), probPlugin.c_str());
         if (cbMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO) == wxID_NO)
             probPlugin = _T("");
     }
@@ -1118,7 +1120,7 @@ void PluginManager::LoadAllPlugins()
 
                 wxString msg;
                 msg.Printf(_("Plugin \"%s\" failed to load...\n"
-                            "Do you want to disable this plugin from loading next time?"), elem->info.title.c_str());
+                             "Do you want to disable this plugin from loading next time?"), elem->info.title.c_str());
                 if (cbMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO) == wxID_YES)
                     Manager::Get()->GetConfigManager(_T("plugins"))->Write(baseKey, false);
             }
@@ -1270,8 +1272,8 @@ inline int SortByConfigurationPriority(cbPlugin** first, cbPlugin** second)
 }
 
 void PluginManager::GetConfigurationPanels(int group, wxWindow* parent,
-                                           ConfigurationPanelsArray& arrayToFill,
-                                           cbConfigurationPanelColoursInterface *coloursInterface)
+        ConfigurationPanelsArray& arrayToFill,
+        cbConfigurationPanelColoursInterface *coloursInterface)
 {
     // build an array of Plugins* because we need to order it by configuration priority
     PluginsArray arr;

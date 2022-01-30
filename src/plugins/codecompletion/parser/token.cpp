@@ -17,32 +17,32 @@
 #define CC_TOKEN_DEBUG_OUTPUT 0
 
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
-    #if CC_GLOBAL_DEBUG_OUTPUT == 1
-        #undef CC_TOKEN_DEBUG_OUTPUT
-        #define CC_TOKEN_DEBUG_OUTPUT 1
-    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
-        #undef CC_TOKEN_DEBUG_OUTPUT
-        #define CC_TOKEN_DEBUG_OUTPUT 2
-    #endif
+#if CC_GLOBAL_DEBUG_OUTPUT == 1
+#undef CC_TOKEN_DEBUG_OUTPUT
+#define CC_TOKEN_DEBUG_OUTPUT 1
+#elif CC_GLOBAL_DEBUG_OUTPUT == 2
+#undef CC_TOKEN_DEBUG_OUTPUT
+#define CC_TOKEN_DEBUG_OUTPUT 2
+#endif
 #endif
 
 #if CC_TOKEN_DEBUG_OUTPUT == 1
-    #define TRACE(format, args...) \
+#define TRACE(format, args...) \
         CCLogger::Get()->DebugLog(F(format, ##args))
-    #define TRACE2(format, args...)
+#define TRACE2(format, args...)
 #elif CC_TOKEN_DEBUG_OUTPUT == 2
-    #define TRACE(format, args...)                                              \
+#define TRACE(format, args...)                                              \
         do                                                                      \
         {                                                                       \
             if (g_EnableDebugTrace)                                             \
                 CCLogger::Get()->DebugLog(F(format, ##args));                   \
         }                                                                       \
         while (false)
-    #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
         CCLogger::Get()->DebugLog(F(format, ##args))
 #else
-    #define TRACE(format, args...)
-    #define TRACE2(format, args...)
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
 #endif
 
 Token::Token(const wxString& name, unsigned int file, unsigned int line, size_t ticket) :
@@ -141,9 +141,9 @@ bool Token::IsValidAncestor(const wxString& ancestor)
 
     case 4:
         if (   ancestor == _T("void")
-            || ancestor == _T("bool")
-            || ancestor == _T("long")
-            || ancestor == _T("char") )
+                || ancestor == _T("bool")
+                || ancestor == _T("long")
+                || ancestor == _T("char") )
         {
             return false;
         }
@@ -151,7 +151,7 @@ bool Token::IsValidAncestor(const wxString& ancestor)
 
     case 5:
         if (   ancestor == _T("short")
-            || ancestor == _T("float") )
+                || ancestor == _T("float") )
         {
             return false;
         }
@@ -159,7 +159,7 @@ bool Token::IsValidAncestor(const wxString& ancestor)
 
     case 6:
         if (   ancestor == _T("size_t")
-            || ancestor == _T("double") )
+                || ancestor == _T("double") )
         {
             return false;
         }
@@ -172,7 +172,7 @@ bool Token::IsValidAncestor(const wxString& ancestor)
 
     default:
         if (   ancestor.StartsWith(_T("unsigned"))
-            || ancestor.StartsWith(_T("signed")) )
+                || ancestor.StartsWith(_T("signed")) )
         {
             return false;
         }
@@ -312,21 +312,36 @@ wxString Token::GetTokenKindString() const
 {
     switch (m_TokenKind)
     {
-        case tkClass:           return _T("class");
-        case tkNamespace:       return _T("namespace");
-        case tkTypedef:         return _T("typedef");
-        case tkEnum:            return _T("enum");
-        case tkEnumerator:      return _T("enumerator");
-        case tkFunction:        return _T("function");
-        case tkConstructor:     return _T("constructor");
-        case tkDestructor:      return _T("destructor");
-        case tkMacroDef:        return _T("macro definition");
-        case tkMacroUse:        return _T("macro usage");
-        case tkVariable:        return _T("variable");
-        case tkAnyContainer:    return _T("any container");
-        case tkAnyFunction:     return _T("any function");
-        case tkUndefined:       return _T("undefined");
-        default:                return wxEmptyString; // tkUndefined
+    case tkClass:
+        return _T("class");
+    case tkNamespace:
+        return _T("namespace");
+    case tkTypedef:
+        return _T("typedef");
+    case tkEnum:
+        return _T("enum");
+    case tkEnumerator:
+        return _T("enumerator");
+    case tkFunction:
+        return _T("function");
+    case tkConstructor:
+        return _T("constructor");
+    case tkDestructor:
+        return _T("destructor");
+    case tkMacroDef:
+        return _T("macro definition");
+    case tkMacroUse:
+        return _T("macro usage");
+    case tkVariable:
+        return _T("variable");
+    case tkAnyContainer:
+        return _T("any container");
+    case tkAnyFunction:
+        return _T("any function");
+    case tkUndefined:
+        return _T("undefined");
+    default:
+        return wxEmptyString; // tkUndefined
     }
 }
 
@@ -334,10 +349,15 @@ wxString Token::GetTokenScopeString() const
 {
     switch (m_Scope)
     {
-        case tsPrivate:   return _T("private");
-        case tsProtected: return _T("protected");
-        case tsPublic:    return _T("public");
-        case tsUndefined: return _T("undefined");
-        default:          return wxEmptyString;
+    case tsPrivate:
+        return _T("private");
+    case tsProtected:
+        return _T("protected");
+    case tsPublic:
+        return _T("public");
+    case tsUndefined:
+        return _T("undefined");
+    default:
+        return wxEmptyString;
     }
 }

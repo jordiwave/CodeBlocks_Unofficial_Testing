@@ -33,33 +33,33 @@ wxsItem* wxsItemFactory::Build(const wxString& Name,wxsItemResData* Data)
     // Checking few things in item's info
     switch ( Item->GetInfo().Type )
     {
-        case wxsTTool:
-            if ( !Item->ConvertToTool() )
-            {
-                // Fake item
-                delete Item;
-                return 0;
-            }
-            break;
-
-        case wxsTContainer:
-            if ( !Item->ConvertToParent() )
-            {
-                // Fake item
-                delete Item;
-                return 0;
-            }
-            break;
-
-        case wxsTSizer:
-        case wxsTSpacer:
-        case wxsTWidget:
-            break;
-
-        case wxsTInvalid:
-        default:
+    case wxsTTool:
+        if ( !Item->ConvertToTool() )
+        {
+            // Fake item
             delete Item;
             return 0;
+        }
+        break;
+
+    case wxsTContainer:
+        if ( !Item->ConvertToParent() )
+        {
+            // Fake item
+            delete Item;
+            return 0;
+        }
+        break;
+
+    case wxsTSizer:
+    case wxsTSpacer:
+    case wxsTWidget:
+        break;
+
+    case wxsTInvalid:
+    default:
+        delete Item;
+        return 0;
     }
 
     return Item;

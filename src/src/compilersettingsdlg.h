@@ -13,19 +13,19 @@ class wxListbookEvent;
 
 class CompilerSettingsDlg : public wxScrollingDialog
 {
-	public:
-		CompilerSettingsDlg(wxWindow* parent);
-		~CompilerSettingsDlg() override;
-		void EndModal(int retCode) override;
-	protected:
-        void OnPageChanging(wxListbookEvent& event);
-        void OnPageChanged(wxListbookEvent& event);
-	private:
-        void AddPluginPanels();
-        void UpdateListbookImages();
-        ConfigurationPanelsArray m_PluginPanels;
-        wxImageList* m_pImageList;
-        DECLARE_EVENT_TABLE()
+public:
+    CompilerSettingsDlg(wxWindow* parent);
+    ~CompilerSettingsDlg() override;
+    void EndModal(int retCode) override;
+protected:
+    void OnPageChanging(wxListbookEvent& event);
+    void OnPageChanged(wxListbookEvent& event);
+private:
+    void AddPluginPanels();
+    void UpdateListbookImages();
+    ConfigurationPanelsArray m_PluginPanels;
+    wxImageList* m_pImageList;
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // COMPILERSETTINGSDLG_H

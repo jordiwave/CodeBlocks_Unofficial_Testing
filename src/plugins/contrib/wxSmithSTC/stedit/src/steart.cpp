@@ -67,8 +67,8 @@ wxSTEditorArtProvider::wxSTEditorArtProvider() : wxArtProvider()
 
 // static
 wxBitmap wxSTEditorArtProvider::DoGetBitmap(const wxArtID& art_id,
-                                            const wxArtClient& client,
-                                            const wxSize& size_)
+        const wxArtClient& client,
+        const wxSize& size_)
 {
     static const struct art_item
     {
@@ -133,10 +133,10 @@ wxBitmap wxSTEditorArtProvider::DoGetBitmap(const wxArtID& art_id,
         // try to get the bitmap that is closest in size to the requested size
         // we will resize it later if necessary
         if ((size.GetWidth()  > m_app_small.GetWidth()  + 5) ||
-            (size.GetHeight() > m_app_small.GetHeight() + 5))
+                (size.GetHeight() > m_app_small.GetHeight() + 5))
             bmp = m_app_large;
         else
-           bmp = m_app_small;
+            bmp = m_app_small;
     }
     else
     {
@@ -189,8 +189,8 @@ wxIconBundle wxSTEditorArtProvider::GetDialogIconBundle()
 }
 
 wxBitmap wxSTEditorArtProvider::CreateBitmap(const wxArtID& id,
-                                             const wxArtClient& client,
-                                             const wxSize& size)
+        const wxArtClient& client,
+        const wxSize& size)
 {
     wxBitmap bmp = DoGetBitmap(id, client, size);
 
@@ -198,7 +198,7 @@ wxBitmap wxSTEditorArtProvider::CreateBitmap(const wxArtID& id,
 }
 
 wxIconBundle wxSTEditorArtProvider::CreateIconBundle(const wxArtID& id,
-                                                     const wxArtClient& WXUNUSED(client))
+        const wxArtClient& WXUNUSED(client))
 {
     if (id == wxART_STEDIT_APP)
         return GetDialogIconBundle();

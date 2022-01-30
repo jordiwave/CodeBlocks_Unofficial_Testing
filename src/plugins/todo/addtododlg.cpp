@@ -9,17 +9,17 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-  #include <wx/arrstr.h>
-  #include <wx/checkbox.h>
-  #include <wx/choice.h>
-  #include <wx/intl.h>
-  #include <wx/spinctrl.h>
-  #include <wx/textctrl.h>
-  #include <wx/xrc/xmlres.h>
+#include <wx/arrstr.h>
+#include <wx/checkbox.h>
+#include <wx/choice.h>
+#include <wx/intl.h>
+#include <wx/spinctrl.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
 
-  #include "manager.h"
-  #include "configmanager.h"
-  #include "globals.h"
+#include "manager.h"
+#include "configmanager.h"
+#include "globals.h"
 #endif
 #include "addtododlg.h"
 
@@ -95,7 +95,7 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, const wxArrayString& users, const wxArr
     if (m_supportedTdcts[(int)tdctWarning])
         cmb->Append(_T("Compiler warning"));
     if (m_supportedTdcts[(int)tdctError])
-            cmb->Append(_T("Compiler error"));
+        cmb->Append(_T("Compiler error"));
 
     if (lastStyle.empty())
         cmb->SetSelection(0);
@@ -186,7 +186,7 @@ void AddTodoDlg::OnAddUser(wxCommandEvent&)
     // ask for the new user to be added to the "choice" list
     const wxString &User = cbGetTextFromUser(_T("Enter the user you wish to add"), _T("Add user"), wxEmptyString, this);
     if (!User.empty())
-            XRCCTRL(*this, "chcUser", wxChoice)->Append(User);
+        XRCCTRL(*this, "chcUser", wxChoice)->Append(User);
 }
 
 void AddTodoDlg::OnDelUser(wxCommandEvent&)
@@ -196,12 +196,13 @@ void AddTodoDlg::OnDelUser(wxCommandEvent&)
     if (sel == wxNOT_FOUND)
         return;
 
-    wxString msg; msg.Printf(_T("Are you sure you want to delete the user '%s'?"), cmb->GetString(sel).c_str());
+    wxString msg;
+    msg.Printf(_T("Are you sure you want to delete the user '%s'?"), cmb->GetString(sel).c_str());
     if (cbMessageBox(msg, _T("Confirmation"), wxICON_QUESTION | wxYES_NO, this) == wxID_NO)
-       return;
+        return;
 
     cmb->Delete(sel);
-      cmb->SetSelection(0);
+    cmb->SetSelection(0);
 }
 
 
@@ -220,12 +221,13 @@ void AddTodoDlg::OnDelType(wxCommandEvent&)
     if (sel == wxNOT_FOUND)
         return;
 
-    wxString msg; msg.Printf(_T("Are you sure you want to delete the type '%s'?"), cmb->GetString(sel).c_str());
+    wxString msg;
+    msg.Printf(_T("Are you sure you want to delete the type '%s'?"), cmb->GetString(sel).c_str());
     if (cbMessageBox(msg, _T("Confirmation"), wxICON_QUESTION | wxYES_NO, this) == wxID_NO)
-       return;
+        return;
 
     cmb->Delete(sel);
-      cmb->SetSelection(0);
+    cmb->SetSelection(0);
 }
 
 bool AddTodoDlg::DateRequested() const

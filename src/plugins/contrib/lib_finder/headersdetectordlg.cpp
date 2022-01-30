@@ -21,9 +21,9 @@ const long HeadersDetectorDlg::ID_TIMER1 = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(HeadersDetectorDlg,wxScrollingDialog)
-	//(*EventTable(HeadersDetectorDlg)
-	//*)
-	EVT_BUTTON(wxID_CANCEL,HeadersDetectorDlg::Cancel)
+    //(*EventTable(HeadersDetectorDlg)
+    //*)
+    EVT_BUTTON(wxID_CANCEL,HeadersDetectorDlg::Cancel)
 END_EVENT_TABLE()
 
 HeadersDetectorDlg::HeadersDetectorDlg(wxWindow* parent,cbProject* project,wxArrayString& headers)
@@ -33,42 +33,42 @@ HeadersDetectorDlg::HeadersDetectorDlg(wxWindow* parent,cbProject* project,wxArr
     , m_Finished(false)
     , m_Cancel(false)
 {
-	//(*Initialize(HeadersDetectorDlg)
-	wxFlexGridSizer* FlexGridSizer1;
-	wxBoxSizer* BoxSizer1;
-	wxStdDialogButtonSizer* StdDialogButtonSizer1;
-	wxStaticBoxSizer* StaticBoxSizer1;
+    //(*Initialize(HeadersDetectorDlg)
+    wxFlexGridSizer* FlexGridSizer1;
+    wxBoxSizer* BoxSizer1;
+    wxStdDialogButtonSizer* StdDialogButtonSizer1;
+    wxStaticBoxSizer* StaticBoxSizer1;
 
-	Create(parent, wxID_ANY, _("Detecting missing libraries..."), wxDefaultPosition, wxDefaultSize, wxCAPTION, _T("wxID_ANY"));
-	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Scanning:"));
-	FlexGridSizer1 = new wxFlexGridSizer(0, 2, 5, 5);
-	FlexGridSizer1->AddGrowableCol(1);
-	StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Project:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-	FlexGridSizer1->Add(StaticText1, 1, wxALIGN_CENTER_VERTICAL, 5);
-	m_ProjectName = new wxStaticText(this, ID_STATICTEXT3, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
-	FlexGridSizer1->Add(m_ProjectName, 1, wxEXPAND, 5);
-	StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("File:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
-	FlexGridSizer1->Add(StaticText2, 1, wxALIGN_CENTER_VERTICAL, 5);
-	m_FileNameTxt = new wxStaticText(this, ID_STATICTEXT4, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT4"));
-	FlexGridSizer1->Add(m_FileNameTxt, 1, wxEXPAND, 5);
-	StaticBoxSizer1->Add(FlexGridSizer1, 1, wxALL|wxEXPAND, 5);
-	m_ProgressBar = new wxGauge(this, ID_GAUGE1, 100, wxDefaultPosition, wxSize(341,15), 0, wxDefaultValidator, _T("ID_GAUGE1"));
-	StaticBoxSizer1->Add(m_ProgressBar, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
-	BoxSizer1->Add(StaticBoxSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
-	StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
-	StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
-	StdDialogButtonSizer1->Realize();
-	BoxSizer1->Add(StdDialogButtonSizer1, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
-	SetSizer(BoxSizer1);
-	Timer1.SetOwner(this, ID_TIMER1);
-	Timer1.Start(50, false);
-	BoxSizer1->Fit(this);
-	BoxSizer1->SetSizeHints(this);
-	Center();
+    Create(parent, wxID_ANY, _("Detecting missing libraries..."), wxDefaultPosition, wxDefaultSize, wxCAPTION, _T("wxID_ANY"));
+    BoxSizer1 = new wxBoxSizer(wxVERTICAL);
+    StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Scanning:"));
+    FlexGridSizer1 = new wxFlexGridSizer(0, 2, 5, 5);
+    FlexGridSizer1->AddGrowableCol(1);
+    StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Project:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+    FlexGridSizer1->Add(StaticText1, 1, wxALIGN_CENTER_VERTICAL, 5);
+    m_ProjectName = new wxStaticText(this, ID_STATICTEXT3, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
+    FlexGridSizer1->Add(m_ProjectName, 1, wxEXPAND, 5);
+    StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("File:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
+    FlexGridSizer1->Add(StaticText2, 1, wxALIGN_CENTER_VERTICAL, 5);
+    m_FileNameTxt = new wxStaticText(this, ID_STATICTEXT4, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT4"));
+    FlexGridSizer1->Add(m_FileNameTxt, 1, wxEXPAND, 5);
+    StaticBoxSizer1->Add(FlexGridSizer1, 1, wxALL|wxEXPAND, 5);
+    m_ProgressBar = new wxGauge(this, ID_GAUGE1, 100, wxDefaultPosition, wxSize(341,15), 0, wxDefaultValidator, _T("ID_GAUGE1"));
+    StaticBoxSizer1->Add(m_ProgressBar, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    BoxSizer1->Add(StaticBoxSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+    StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
+    StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
+    StdDialogButtonSizer1->Realize();
+    BoxSizer1->Add(StdDialogButtonSizer1, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    SetSizer(BoxSizer1);
+    Timer1.SetOwner(this, ID_TIMER1);
+    Timer1.Start(50, false);
+    BoxSizer1->Fit(this);
+    BoxSizer1->SetSizeHints(this);
+    Center();
 
-	Connect(ID_TIMER1,wxEVT_TIMER,(wxObjectEventFunction)&HeadersDetectorDlg::OnTimer1Trigger);
-	//*)
+    Connect(ID_TIMER1,wxEVT_TIMER,(wxObjectEventFunction)&HeadersDetectorDlg::OnTimer1Trigger);
+    //*)
 
     m_Thread.m_Dlg = this;
     m_Thread.Create();
@@ -82,8 +82,8 @@ HeadersDetectorDlg::~HeadersDetectorDlg()
 {
     m_Thread.Wait();
 
-	//(*Destroy(HeadersDetectorDlg)
-	//*)
+    //(*Destroy(HeadersDetectorDlg)
+    //*)
 }
 
 
@@ -187,97 +187,97 @@ void HeadersDetectorDlg::ProcessFile( ProjectFile* file, wxArrayString& includes
             bool thisCharAdded = false;
             switch ( ch )
             {
-                case '\n':
-                    if ( content[pos] == '\r' )
-                        pos++;
-                    // Continue to \r
-                case '\r':
-                    if ( last != '\\' )
+            case '\n':
+                if ( content[pos] == '\r' )
+                    pos++;
+            // Continue to \r
+            case '\r':
+                if ( last != '\\' )
+                {
+                    lineEnd = true;
+                    break;
+                }
+                else if ( lastCharAdded )
+                {
+                    // Removing last char since it was '\'
+                    // which is removed in the
+                    // preprocessor level
+                    lineLength--;
+                }
+                break;
+
+            case '*':
+                if ( blockComment )
+                {
+                    if ( content[pos] == '/' )
                     {
-                        lineEnd = true;
+                        pos++;
+                        blockComment = false;
                         break;
                     }
-                    else if ( lastCharAdded )
-                    {
-                        // Removing last char since it was '\'
-                        // which is removed in the
-                        // preprocessor level
-                        lineLength--;
-                    }
-                    break;
+                }
+                else if ( !lineComment )
+                {
+                    thisCharAdded = true;
+                    line[lineLength++] = ch;
+                }
+                break;
 
-                case '*':
-                    if ( blockComment )
-                    {
-                        if ( content[pos] == '/' )
-                        {
-                            pos++;
-                            blockComment = false;
-                            break;
-                        }
-                    }
-                    else if ( !lineComment )
-                    {
-                        thisCharAdded = true;
-                        line[lineLength++] = ch;
-                    }
-                    break;
-
-                case '"':
-                    if ( !blockComment && !lineComment )
-                    {
-                        if ( !inChar )
-                        {
-                            if ( !inStr )
-                                inStr = true;
-                            else if ( last != '\\' )
-                                inStr = false;
-                        }
-                        thisCharAdded = true;
-                        line[lineLength++] = ch;
-                    }
-                    break;
-
-                case '\'':
-                    if ( !blockComment && !lineComment )
+            case '"':
+                if ( !blockComment && !lineComment )
+                {
+                    if ( !inChar )
                     {
                         if ( !inStr )
-                        {
-                            if ( !inChar )
-                                inChar = true;
-                            else if ( last != '\\' )
-                                inChar = false;
-                        }
-                        thisCharAdded = true;
-                        line[lineLength++] = ch;
+                            inStr = true;
+                        else if ( last != '\\' )
+                            inStr = false;
                     }
-                    break;
+                    thisCharAdded = true;
+                    line[lineLength++] = ch;
+                }
+                break;
 
-                case '/':
-                    if ( !blockComment && !lineComment && !inStr && !inChar )
+            case '\'':
+                if ( !blockComment && !lineComment )
+                {
+                    if ( !inStr )
                     {
-                        if ( content[pos] == '/' )
-                        {
-                            pos++;
-                            lineComment = true;
-                            break;
-                        }
-
-                        if ( content[pos] == '*' )
-                        {
-                            pos++;
-                            blockComment = true;
-                            break;
-                        }
+                        if ( !inChar )
+                            inChar = true;
+                        else if ( last != '\\' )
+                            inChar = false;
                     }
+                    thisCharAdded = true;
+                    line[lineLength++] = ch;
+                }
+                break;
 
-                    // Contnue to default case
-                default:
-                    if ( !blockComment && !lineComment )
+            case '/':
+                if ( !blockComment && !lineComment && !inStr && !inChar )
+                {
+                    if ( content[pos] == '/' )
                     {
-                        thisCharAdded = true;
-                        line[lineLength++] = ch;
+                        pos++;
+                        lineComment = true;
+                        break;
                     }
+
+                    if ( content[pos] == '*' )
+                    {
+                        pos++;
+                        blockComment = true;
+                        break;
+                    }
+                }
+
+            // Contnue to default case
+            default:
+                if ( !blockComment && !lineComment )
+                {
+                    thisCharAdded = true;
+                    line[lineLength++] = ch;
+                }
             }
             last = ch;
             lastCharAdded = thisCharAdded;
@@ -302,7 +302,7 @@ void HeadersDetectorDlg::ProcessFile( ProjectFile* file, wxArrayString& includes
                 char readTill =
                     ( line[i] == '<' ) ? '>' :
                     ( line[i] == '"' ) ? '"' :
-                      0;
+                    0;
 
                 if ( readTill )
                 {

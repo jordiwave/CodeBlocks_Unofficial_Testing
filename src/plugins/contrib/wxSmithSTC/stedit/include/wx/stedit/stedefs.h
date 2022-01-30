@@ -21,9 +21,9 @@
 #include <wx/stc/stc.h>
 
 #if (wxVERSION_NUMBER >= 2900)
-    // #include <wx/stc/private.h> // wx2stc() has been moved here, but isn't exported
-    #define wx2stc(wxstr)    (wxstr).mb_str()
-    #define stc2wx(char_str) wxString(char_str)
+// #include <wx/stc/private.h> // wx2stc() has been moved here, but isn't exported
+#define wx2stc(wxstr)    (wxstr).mb_str()
+#define stc2wx(char_str) wxString(char_str)
 #endif
 
 //-----------------------------------------------------------------------------
@@ -38,7 +38,7 @@
 /// If you get an error on this line, you probably forgot to copy
 ///   include/wx/stedit/setup0.h to include/wx/stedit/setup.h
 #if !defined(_STESETUP_H_)
-    #include "wx/stedit/setup.h"
+#include "wx/stedit/setup.h"
 #endif // !defined(_STESETUP_H_)
 
 #ifndef ID_STE__FIRST
@@ -71,21 +71,21 @@
 /// @{
 
 #ifdef WXMAKINGDLL_STEDIT
-    #define WXDLLIMPEXP_STEDIT WXEXPORT
-    #define WXDLLIMPEXP_DATA_STEDIT(type) WXEXPORT type
+#define WXDLLIMPEXP_STEDIT WXEXPORT
+#define WXDLLIMPEXP_DATA_STEDIT(type) WXEXPORT type
 #elif defined(WXUSINGDLL_STEDIT)
-    #define WXDLLIMPEXP_STEDIT WXIMPORT
-    #define WXDLLIMPEXP_DATA_STEDIT(type) WXIMPORT type
+#define WXDLLIMPEXP_STEDIT WXIMPORT
+#define WXDLLIMPEXP_DATA_STEDIT(type) WXIMPORT type
 #else // not making nor using DLL
-    #define WXDLLIMPEXP_STEDIT
-    #define WXDLLIMPEXP_DATA_STEDIT(type) type
+#define WXDLLIMPEXP_STEDIT
+#define WXDLLIMPEXP_DATA_STEDIT(type) type
 #endif
 
 /// Forward declare all wxStEdit classes with this macro
 #if defined(HAVE_VISIBILITY) || (defined(__WINDOWS__) && defined(__GNUC__))
-    #define WXDLLIMPEXP_FWD_STEDIT
+#define WXDLLIMPEXP_FWD_STEDIT
 #else
-    #define WXDLLIMPEXP_FWD_STEDIT WXDLLIMPEXP_STEDIT
+#define WXDLLIMPEXP_FWD_STEDIT WXDLLIMPEXP_STEDIT
 #endif
 
 /// @}
@@ -159,7 +159,7 @@ enum STE_StateType
     STE_EDITABLE   = 0x0100, ///< the control is not readonly
 
     STE_FILENAME   = 0x0200  ///< not a state, flag for wxSTEditorEvent
-                             ///< saying that the editor's filename has changed
+                     ///< saying that the editor's filename has changed
 };
 
 //-----------------------------------------------------------------------------
@@ -197,7 +197,7 @@ enum STE_MarkerType
 {
     STE_MARKER_BOOKMARK = 0, // bookmarks use this (0 means at bottom)
     STE_MARKER__MAX          // start your own markers at STE_MARKER__MAX
-                             // to avoid any conflicts
+    // to avoid any conflicts
 };
 
 //-----------------------------------------------------------------------------
@@ -538,7 +538,7 @@ enum STE_WindowId_Type
 
 enum STE_PrefType
 {
-                                    // [default value], [value type and range], description
+    // [default value], [value type and range], description
     STE_PREF_HIGHLIGHT_SYNTAX = 0,  ///< true, bool, turns off lexer
     STE_PREF_HIGHLIGHT_PREPROC,     ///< true, bool, SetProperty("styling.within.preprocessor"
     STE_PREF_HIGHLIGHT_BRACES,      ///< true, bool, code in wxSTEditor
@@ -635,7 +635,7 @@ enum STE_PrefFlagType
 
     STE_PREF_FLAG_IGNORE    = 0x0004, ///< do not set the pref value for editor
     STE_PREF_FLAG_NOCONFIG  = 0x0008, ///< don't load/save this in the wxConfig
-                                      ///< eg. your program "hard codes" this value
+    ///< eg. your program "hard codes" this value
 };
 
 //-----------------------------------------------------------------------------
@@ -648,18 +648,18 @@ enum STE_LoadFileType
     // If a file(stream) starts with 0xfffe as first two chars it's probably unicode.
 
     STE_LOAD_DEFAULT       = 0,      ///< load as unicode if it has the header,
-                                     ///<   else load as ascii
+    ///<   else load as ascii
 
     STE_LOAD_QUERY_UNICODE = 0x0001, ///< popup dialog to ask (or rather warn) if to load in unicode
-                                     ///<   if the file starts w/ unicode signature. Flag ignored in Unicode build.
+    ///<   if the file starts w/ unicode signature. Flag ignored in Unicode build.
     STE_LOAD_ASCII         = 0x0002, ///< load as ascii in all cases
     STE_LOAD_UNICODE       = 0x0004, ///< load as unicode in all cases
 
     STE_LOAD_FROM_DISK     = 0x0008, ///< The file is/was/will be loaded from disk.
 
     STE_LOAD_NOERRDLG      = 0x0010, ///< never show an error message dialog
-                                     ///<   silent failure, return false
-                                     ///<   this flag can be used with one of the others
+    ///<   silent failure, return false
+    ///<   this flag can be used with one of the others
 };
 
 //-----------------------------------------------------------------------------

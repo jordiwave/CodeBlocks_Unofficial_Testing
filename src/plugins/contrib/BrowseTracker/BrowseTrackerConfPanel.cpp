@@ -42,16 +42,16 @@ BrowseTrackerConfPanel::BrowseTrackerConfPanel(BrowseTracker& browseTrackerPlugi
     m_pConfigPanel =  new ConfigPanel( this, id );
     wxBoxSizer* pMainSizer = new wxBoxSizer( wxVERTICAL );
     this->SetSizer( pMainSizer );
-    pMainSizer->Add(m_pConfigPanel, 1 , wxEXPAND );
+    pMainSizer->Add(m_pConfigPanel, 1, wxEXPAND );
     pMainSizer->Layout();
 
-	// Connect Events for choice validation
-	m_pConfigPanel->Cfg_BrowseMarksEnabled->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnEnableBrowseMarks ), NULL, this );
-	m_pConfigPanel->Cfg_WrapJumpEntries->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnWrapJumpEntries ), NULL, this );
-	m_pConfigPanel->Cfg_ShowToolbar->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnShowToolbar ), NULL, this );
-	m_pConfigPanel->Cfg_ActivatePrevEd->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnActivatePrevEd ), NULL, this ); //2020/06/15
-	m_pConfigPanel->Cfg_ToggleKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( BrowseTrackerConfPanel::OnToggleBrowseMarkKey ), NULL, this );
-	m_pConfigPanel->Cfg_ClearAllKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( BrowseTrackerConfPanel::OnClearAllBrowseMarksKey ), NULL, this );
+    // Connect Events for choice validation
+    m_pConfigPanel->Cfg_BrowseMarksEnabled->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnEnableBrowseMarks ), NULL, this );
+    m_pConfigPanel->Cfg_WrapJumpEntries->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnWrapJumpEntries ), NULL, this );
+    m_pConfigPanel->Cfg_ShowToolbar->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnShowToolbar ), NULL, this );
+    m_pConfigPanel->Cfg_ActivatePrevEd->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnActivatePrevEd ), NULL, this ); //2020/06/15
+    m_pConfigPanel->Cfg_ToggleKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( BrowseTrackerConfPanel::OnToggleBrowseMarkKey ), NULL, this );
+    m_pConfigPanel->Cfg_ClearAllKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( BrowseTrackerConfPanel::OnClearAllBrowseMarksKey ), NULL, this );
 
     // FIXME (ph#): Something fishy here. On the first use of View/BrowseTracker/Settings
     // the BrowseMark is not set to the BookMark style when selected.
@@ -80,8 +80,8 @@ void BrowseTrackerConfPanel::OnApply()
     m_BrowseTrackerPlugin.m_UserMarksStyle      = BookMarksStyle;
 
     m_BrowseTrackerPlugin.m_ToggleKey           = m_pConfigPanel->Cfg_ToggleKey->GetSelection();
-	m_BrowseTrackerPlugin.m_LeftMouseDelay      = m_pConfigPanel->Cfg_LeftMouseDelay->GetValue();
-	m_BrowseTrackerPlugin.m_ClearAllKey         = m_pConfigPanel->Cfg_ClearAllKey->GetSelection();
+    m_BrowseTrackerPlugin.m_LeftMouseDelay      = m_pConfigPanel->Cfg_LeftMouseDelay->GetValue();
+    m_BrowseTrackerPlugin.m_ClearAllKey         = m_pConfigPanel->Cfg_ClearAllKey->GetSelection();
 
     m_BrowseTrackerPlugin.m_ConfigShowToolbar   = m_pConfigPanel->Cfg_ShowToolbar->GetValue();
     m_BrowseTrackerPlugin.ShowBrowseTrackerToolBar(m_BrowseTrackerPlugin.m_ConfigShowToolbar);
@@ -89,9 +89,9 @@ void BrowseTrackerConfPanel::OnApply()
     m_BrowseTrackerPlugin.m_CfgActivatePrevEd      = m_pConfigPanel->Cfg_ActivatePrevEd->GetValue(); //2020/06/15
 
     // write user options to config file
-	m_BrowseTrackerPlugin.SaveUserOptions( m_BrowseTrackerPlugin.GetBrowseTrackerCfgFilename() );
-	// call validation/update routine
-	m_BrowseTrackerPlugin.OnConfigApply();
+    m_BrowseTrackerPlugin.SaveUserOptions( m_BrowseTrackerPlugin.GetBrowseTrackerCfgFilename() );
+    // call validation/update routine
+    m_BrowseTrackerPlugin.OnConfigApply();
 }
 // ----------------------------------------------------------------------------
 void BrowseTrackerConfPanel::GetUserOptions(wxString configFullPath)
@@ -102,17 +102,17 @@ void BrowseTrackerConfPanel::GetUserOptions(wxString configFullPath)
 
     m_BrowseTrackerPlugin.ReadUserOptions( configFullPath );
 
-    #if defined(__WXMSW__)
+#if defined(__WXMSW__)
     // The following causes bad color combination in Windows 10
     //-m_pConfigPanel->m_staticText4->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_ACTIVECAPTION ) );
-    #endif
+#endif
 
     // set the current values
     m_pConfigPanel->Cfg_BrowseMarksEnabled->SetValue( m_BrowseTrackerPlugin.m_BrowseMarksEnabled);
     m_pConfigPanel->Cfg_WrapJumpEntries->SetValue( m_BrowseTrackerPlugin.m_WrapJumpEntries);
     m_pConfigPanel->Cfg_ToggleKey->SetSelection( m_BrowseTrackerPlugin.m_ToggleKey );
-	m_pConfigPanel->Cfg_LeftMouseDelay->SetValue( m_BrowseTrackerPlugin.m_LeftMouseDelay ) ;
-	m_pConfigPanel->Cfg_ClearAllKey->SetSelection( m_BrowseTrackerPlugin.m_ClearAllKey ) ;
+    m_pConfigPanel->Cfg_LeftMouseDelay->SetValue( m_BrowseTrackerPlugin.m_LeftMouseDelay ) ;
+    m_pConfigPanel->Cfg_ClearAllKey->SetSelection( m_BrowseTrackerPlugin.m_ClearAllKey ) ;
 
     m_pConfigPanel->Cfg_ActivatePrevEd->SetValue(m_BrowseTrackerPlugin.m_CfgActivatePrevEd); //2020/06/15
 
@@ -177,7 +177,7 @@ void BrowseTrackerConfPanel::OnActivatePrevEd( wxCommandEvent& event ) //2020/12
     // Enable switching to previous editor when current closed
     if ( not m_pConfigPanel->Cfg_ActivatePrevEd->IsChecked() )
     {
-       //- m_pConfigPanel->Cfg_ActivatePrevEd->Enable(false); dont do this
+        //- m_pConfigPanel->Cfg_ActivatePrevEd->Enable(false); dont do this
     }
 
     if ( m_pConfigPanel->Cfg_ActivatePrevEd->IsChecked() )

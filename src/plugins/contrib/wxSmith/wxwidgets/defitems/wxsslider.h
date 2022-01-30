@@ -28,26 +28,26 @@
 /** \brief Class for wxsSlider widget */
 class wxsSlider: public wxsWidget
 {
-    public:
+public:
 
-        wxsSlider(wxsItemResData* Data);
+    wxsSlider(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        long Value;
-        long Min;
-        long Max;
-        long TickFrequency;
-        long PageSize;
-        long LineSize;
-        long ThumbLength;
-        long Tick;
-        long SelMin;
-        long SelMax;
+    long Value;
+    long Min;
+    long Max;
+    long TickFrequency;
+    long PageSize;
+    long LineSize;
+    long ThumbLength;
+    long Tick;
+    long SelMin;
+    long SelMax;
 };
 
 #endif

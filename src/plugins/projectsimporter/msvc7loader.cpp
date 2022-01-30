@@ -10,15 +10,15 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/intl.h>
-    #include <wx/msgdlg.h>
+#include <wx/intl.h>
+#include <wx/msgdlg.h>
 
-    #include "manager.h"
-    #include "logmanager.h"
-    #include "cbproject.h"
-    #include "globals.h"
-    #include "compilerfactory.h"
-    #include "compiler.h"
+#include "manager.h"
+#include "logmanager.h"
+#include "cbproject.h"
+#include "globals.h"
+#include "compilerfactory.h"
+#include "compiler.h"
 #endif
 
 #include <wx/choicdlg.h>
@@ -33,8 +33,8 @@
 
 MSVC7Loader::MSVC7Loader(cbProject* project)
     : m_pProject(project),
-    m_ConvertSwitches(false),
-    m_Version(0)
+      m_ConvertSwitches(false),
+      m_Version(0)
 {
     //ctor
     if (platform::windows)
@@ -256,7 +256,7 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
     for (; tool; tool=tool->NextSiblingElement("Tool"))
     {
         if (strcmp(tool->Attribute("Name"), "VCLinkerTool") == 0 ||
-            strcmp(tool->Attribute("Name"), "VCLibrarianTool") == 0)
+                strcmp(tool->Attribute("Name"), "VCLibrarianTool") == 0)
         {
             // linker
             wxString tmp;
@@ -422,9 +422,9 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
                 bt->AddCompilerOption(wxString(_T("/W")) + tmp);
             }
 
-/* For more details on "DebugInformationFormat", please visit
-   http://msdn2.microsoft.com/en-us/library/aa652260(VS.71).aspx
-   http://msdn2.microsoft.com/en-us/library/microsoft.visualstudio.vcprojectengine.debugoption(VS.80).aspx */
+            /* For more details on "DebugInformationFormat", please visit
+               http://msdn2.microsoft.com/en-us/library/aa652260(VS.71).aspx
+               http://msdn2.microsoft.com/en-us/library/microsoft.visualstudio.vcprojectengine.debugoption(VS.80).aspx */
             tmp = cbC2U(tool->Attribute("DebugInformationFormat"));
             if (tmp.IsSameAs(_T("3")))
                 bt->AddCompilerOption(m_ConvertSwitches ? _T("") : _T("/Zi"));
@@ -469,15 +469,15 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
                 tmp = cbC2U(tool->Attribute("MinimalRebuild"));
                 if (tmp.IsSameAs(_T("TRUE")))
                     bt->AddCompilerOption(_T("/Gm"));
-/*
-                RuntimeLibrary :
-                rtMultiThreaded          0 --> /MT
-                rtMultiThreadedDebug     1 --> /MTd
-                rtMultiThreadedDLL       2 --> /MD
-                rtMultiThreadedDebugDLL  3 --> /MDd
-                rtSingleThreaded         4 --> /ML
-                rtSingleThreadedDebug    5 --> /MLd
-*/
+                /*
+                                RuntimeLibrary :
+                                rtMultiThreaded          0 --> /MT
+                                rtMultiThreadedDebug     1 --> /MTd
+                                rtMultiThreadedDLL       2 --> /MD
+                                rtMultiThreadedDebugDLL  3 --> /MDd
+                                rtSingleThreaded         4 --> /ML
+                                rtSingleThreadedDebug    5 --> /MLd
+                */
                 tmp = cbC2U(tool->Attribute("RuntimeLibrary"));
                 if      (tmp.IsSameAs(_T("0"))) bt->AddCompilerOption(_T("/MT"));
                 else if (tmp.IsSameAs(_T("1"))) bt->AddCompilerOption(_T("/MTd"));
@@ -490,12 +490,12 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
                 tmp = cbC2U(tool->Attribute("SuppressStartupBanner"));
                 if (tmp.IsSameAs(_T("TRUE"))) bt->AddCompilerOption("/nologo");
 #endif
-/*
-                runtimeBasicCheckNone 0
-                runtimeCheckStackFrame 1  --> /RTCs or /GZ
-                runtimeCheckUninitVariables 2
-                runtimeBasicCheckAll 3
-*/
+                /*
+                                runtimeBasicCheckNone 0
+                                runtimeCheckStackFrame 1  --> /RTCs or /GZ
+                                runtimeCheckUninitVariables 2
+                                runtimeBasicCheckAll 3
+                */
                 tmp = cbC2U(tool->Attribute("BasicRuntimeChecks"));
                 if (tmp.IsSameAs(_T("1")))
                     bt->AddCompilerOption(_T("/GZ"));
@@ -509,11 +509,11 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             if (tmp.IsSameAs(_T("TRUE")))
                 bt->AddCompilerOption(m_ConvertSwitches ? _T("-frtti") : _T("/GR"));
 
-/*
-            AdditionalOptions=" /Zm1000 /GR  -DCMAKE_INTDIR=\&quot;Debug\&quot;"
-            ObjectFile="Debug\"
-            /Zm<n> max memory alloc (% of default)
-*/
+            /*
+                        AdditionalOptions=" /Zm1000 /GR  -DCMAKE_INTDIR=\&quot;Debug\&quot;"
+                        ObjectFile="Debug\"
+                        /Zm<n> max memory alloc (% of default)
+            */
             tmp = cbC2U(tool->Attribute("AdditionalOptions"));
             //tmp = ReplaceMSVCMacros(tmp);
             arr = GetArrayFromString(tmp, _T(" "));

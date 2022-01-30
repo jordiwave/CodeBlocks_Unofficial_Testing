@@ -311,7 +311,7 @@ NassiAddChildIndicatorCommand::NassiAddChildIndicatorCommand( NassiFileContent *
 NassiAddChildIndicatorCommand::~NassiAddChildIndicatorCommand()
 {
     if ( !m_done && m_nbrk )
-            delete m_nbrk;
+        delete m_nbrk;
 }
 
 bool NassiAddChildIndicatorCommand::Do()
@@ -321,8 +321,8 @@ bool NassiAddChildIndicatorCommand::Do()
     m_brick->AddChild( m_ChildAddNumber );
     m_brick->SetChild( m_nbrk, m_ChildAddNumber );
 
-    m_brick->SetTextByNumber( strc , 2*(m_ChildAddNumber+1) );
-    m_brick->SetTextByNumber( strs , 2*(m_ChildAddNumber+1)+1 );
+    m_brick->SetTextByNumber( strc, 2*(m_ChildAddNumber+1) );
+    m_brick->SetTextByNumber( strs, 2*(m_ChildAddNumber+1)+1 );
     m_done = true;
     m_nfc->Modify(true);
     m_nfc->NotifyObservers();

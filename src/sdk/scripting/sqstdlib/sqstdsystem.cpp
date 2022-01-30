@@ -23,7 +23,8 @@
 static SQInteger _system_getenv(HSQUIRRELVM v)
 {
     const SQChar *s;
-    if(SQ_SUCCEEDED(sq_getstring(v,2,&s))){
+    if(SQ_SUCCEEDED(sq_getstring(v,2,&s)))
+    {
         sq_pushstring(v,scgetenv(s),-1);
         return 1;
     }
@@ -34,7 +35,8 @@ static SQInteger _system_getenv(HSQUIRRELVM v)
 static SQInteger _system_system(HSQUIRRELVM v)
 {
     const SQChar *s;
-    if(SQ_SUCCEEDED(sq_getstring(v,2,&s))){
+    if(SQ_SUCCEEDED(sq_getstring(v,2,&s)))
+    {
         sq_pushinteger(v,scsystem(s));
         return 1;
     }
@@ -86,14 +88,17 @@ static SQInteger _system_date(HSQUIRRELVM v)
     time_t t;
     SQInteger it;
     SQInteger format = 'l';
-    if(sq_gettop(v) > 1) {
+    if(sq_gettop(v) > 1)
+    {
         sq_getinteger(v,2,&it);
         t = it;
-        if(sq_gettop(v) > 2) {
+        if(sq_gettop(v) > 2)
+        {
             sq_getinteger(v,3,(SQInteger*)&format);
         }
     }
-    else {
+    else
+    {
         time(&t);
     }
     tm *date;
@@ -118,7 +123,8 @@ static SQInteger _system_date(HSQUIRRELVM v)
 
 
 #define _DECL_FUNC(name,nparams,pmask) {_SC(#name),_system_##name,nparams,pmask}
-static const SQRegFunction systemlib_funcs[]={
+static const SQRegFunction systemlib_funcs[]=
+{
     _DECL_FUNC(getenv,2,_SC(".s")),
     _DECL_FUNC(system,2,_SC(".s")),
     _DECL_FUNC(clock,0,NULL),

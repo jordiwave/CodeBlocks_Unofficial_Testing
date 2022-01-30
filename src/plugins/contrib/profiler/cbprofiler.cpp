@@ -9,20 +9,20 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/datetime.h>
-    #include <wx/filename.h>
-    #include <wx/fs_zip.h>
-    #include <wx/intl.h>
-    #include <wx/string.h>
-    #include <wx/xrc/xmlres.h>
-    #include "cbproject.h"
-    #include "configmanager.h"
-    #include "globals.h"
-    #include "macrosmanager.h"
-    #include "manager.h"
-    #include "logmanager.h"
-    #include "projectbuildtarget.h"
-    #include "projectmanager.h"
+#include <wx/datetime.h>
+#include <wx/filename.h>
+#include <wx/fs_zip.h>
+#include <wx/intl.h>
+#include <wx/string.h>
+#include <wx/xrc/xmlres.h>
+#include "cbproject.h"
+#include "configmanager.h"
+#include "globals.h"
+#include "macrosmanager.h"
+#include "manager.h"
+#include "logmanager.h"
+#include "projectbuildtarget.h"
+#include "projectmanager.h"
 #endif
 #include <wx/choicdlg.h>
 #include <wx/filedlg.h>
@@ -34,7 +34,7 @@
 // Register the plugin
 namespace
 {
-    PluginRegistrant<CBProfiler> reg(_T("Profiler"));
+PluginRegistrant<CBProfiler> reg(_T("Profiler"));
 };
 
 CBProfiler::CBProfiler()

@@ -55,7 +55,8 @@ class SearchInPanel;
 class DirectoryParamsPanel;
 
 
-class ThreadSearchView: public wxPanel {
+class ThreadSearchView: public wxPanel
+{
 
     friend class ThreadSearch;
 public:
@@ -124,7 +125,10 @@ public:
       * C::B plugins manager provides a toolbar instance to ThreadSearch instance
       * during init. This instance is referenced in ThreadSearchView by m_pToolBar.
       */
-    void SetToolBar(wxToolBar* pToolBar) {m_pToolBar = pToolBar;}
+    void SetToolBar(wxToolBar* pToolBar)
+    {
+        m_pToolBar = pToolBar;
+    }
 
     /** Set the proper image depending if there are any enabled options in the popup menu.
       */
@@ -211,7 +215,8 @@ protected:
 
     /// enum defining the possible labels to update Search buttons (view and toolbars)
     /// Undefined can be used to skip label update
-    enum eSearchButtonLabel {
+    enum eSearchButtonLabel
+    {
         search,
         cancel,
         skip
@@ -245,9 +250,9 @@ public:
     void OnMarginClick(wxScintillaEvent& event);
     void OnContextMenu(wxContextMenuEvent& event);
     void OnLoggerClick      (const wxString& file, long line);  // Called by ThreadSearchLoggerBase derived instance
-                                                                // when user clicks on a search result
+    // when user clicks on a search result
     void OnLoggerDoubleClick(const wxString& file, long line);  // Called by ThreadSearchLoggerBase derived instance
-                                                                // when user double clicks on a search result
+    // when user double clicks on a search result
 
     void OnBtnSearchOpenFiles(wxCommandEvent &event);
     void OnBtnSearchTargetFiles(wxCommandEvent &event);

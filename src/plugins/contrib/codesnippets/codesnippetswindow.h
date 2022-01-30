@@ -41,120 +41,158 @@ class wxTreeEvent;
 class CodeSnippetsWindow : public wxPanel
 // ----------------------------------------------------------------------------
 {
-	// Ugly as hell but this how it needs to be done
-	friend class SnippetsDropTarget;
-	friend class CodeSnippets;
+    // Ugly as hell but this how it needs to be done
+    friend class SnippetsDropTarget;
+    friend class CodeSnippets;
 
-	public:
+public:
 
-		CodeSnippetsWindow(wxWindow* parent);
-		~CodeSnippetsWindow();
+    CodeSnippetsWindow(wxWindow* parent);
+    ~CodeSnippetsWindow();
 
-        void SaveSnippetsToFile(const wxString& fileName);
-        bool IsSnippet(wxTreeItemId item = (void*)0  )
-            { return GetSnippetsTreeCtrl()->IsSnippet(item); }
-        bool IsFileSnippet(wxTreeItemId itemId=(void*)0)
-            { return GetSnippetsTreeCtrl()->IsFileSnippet(itemId); }
-        bool IsUrlSnippet(wxTreeItemId itemId=(void*)0)
-            { return GetSnippetsTreeCtrl()->IsUrlSnippet(itemId); }
+    void SaveSnippetsToFile(const wxString& fileName);
+    bool IsSnippet(wxTreeItemId item = (void*)0  )
+    {
+        return GetSnippetsTreeCtrl()->IsSnippet(item);
+    }
+    bool IsFileSnippet(wxTreeItemId itemId=(void*)0)
+    {
+        return GetSnippetsTreeCtrl()->IsFileSnippet(itemId);
+    }
+    bool IsUrlSnippet(wxTreeItemId itemId=(void*)0)
+    {
+        return GetSnippetsTreeCtrl()->IsUrlSnippet(itemId);
+    }
 
-        //Getter helper routines
-        CodeSnippetsTreeCtrl*   GetSnippetsTreeCtrl(){ return m_SnippetsTreeCtrl ;}
-        wxImageList*            GetSnipImageList(){ return GetConfig()->GetSnipImages()->GetSnipImageList();}
+    //Getter helper routines
+    CodeSnippetsTreeCtrl*   GetSnippetsTreeCtrl()
+    {
+        return m_SnippetsTreeCtrl ;
+    }
+    wxImageList*            GetSnipImageList()
+    {
+        return GetConfig()->GetSnipImages()->GetSnipImageList();
+    }
 
-        bool GetFileChanged( )
-            {return GetSnippetsTreeCtrl() && GetSnippetsTreeCtrl()->GetFileChanged();}
-        bool SetFileChanged( bool truefalse )
-            {return GetSnippetsTreeCtrl()->SetFileChanged(truefalse);}
+    bool GetFileChanged( )
+    {
+        return GetSnippetsTreeCtrl() && GetSnippetsTreeCtrl()->GetFileChanged();
+    }
+    bool SetFileChanged( bool truefalse )
+    {
+        return GetSnippetsTreeCtrl()->SetFileChanged(truefalse);
+    }
 
-        wxString GetSnippetString() { return GetSnippetsTreeCtrl()->GetSnippetString();}
-        wxString GetSnippetString( wxTreeItemId itemId ) { return GetSnippetsTreeCtrl()->GetSnippetString(itemId);}
-        wxTreeItemId GetAssociatedItemID(){return GetSnippetsTreeCtrl()->GetAssociatedItemID();}
-        void SetAssociatedItemID(wxTreeItemId id){GetSnippetsTreeCtrl()->SetAssociatedItemID(id);}
+    wxString GetSnippetString()
+    {
+        return GetSnippetsTreeCtrl()->GetSnippetString();
+    }
+    wxString GetSnippetString( wxTreeItemId itemId )
+    {
+        return GetSnippetsTreeCtrl()->GetSnippetString(itemId);
+    }
+    wxTreeItemId GetAssociatedItemID()
+    {
+        return GetSnippetsTreeCtrl()->GetAssociatedItemID();
+    }
+    void SetAssociatedItemID(wxTreeItemId id)
+    {
+        GetSnippetsTreeCtrl()->SetAssociatedItemID(id);
+    }
 
-        bool IsEditingLabel() {return m_bIsEditingLabel;}
-        void IsEditingLabel( bool trueorfalse) { m_bIsEditingLabel = trueorfalse;}
-        bool IsAppendingFile(){return m_AppendItemsFromFile;}
+    bool IsEditingLabel()
+    {
+        return m_bIsEditingLabel;
+    }
+    void IsEditingLabel( bool trueorfalse)
+    {
+        m_bIsEditingLabel = trueorfalse;
+    }
+    bool IsAppendingFile()
+    {
+        return m_AppendItemsFromFile;
+    }
 
-	private:
-		void InitDlg();
-		void ApplySnippet(const wxTreeItemId& itemID);
-		void CheckForMacros(wxString& snippet);
-		bool AddTextToClipBoard(const wxString& text);
-        void SetSnippetImage(wxTreeItemId itemId);
-        void CheckForExternallyModifiedFiles();
-        void ShowSnippetsAbout(wxString buildInfo);
-		wxTreeItemId SearchSnippet(const wxString& searchTerms, const wxTreeItemId& node);
-		bool IsTreeBusy(){
-		    if (not GetSnippetsTreeCtrl()) return true; //debugging
-		    return GetSnippetsTreeCtrl()->IsTreeBusy();
-        }//IsTreeBusy
+private:
+    void InitDlg();
+    void ApplySnippet(const wxTreeItemId& itemID);
+    void CheckForMacros(wxString& snippet);
+    bool AddTextToClipBoard(const wxString& text);
+    void SetSnippetImage(wxTreeItemId itemId);
+    void CheckForExternallyModifiedFiles();
+    void ShowSnippetsAbout(wxString buildInfo);
+    wxTreeItemId SearchSnippet(const wxString& searchTerms, const wxTreeItemId& node);
+    bool IsTreeBusy()
+    {
+        if (not GetSnippetsTreeCtrl()) return true; //debugging
+        return GetSnippetsTreeCtrl()->IsTreeBusy();
+    }//IsTreeBusy
 
-		wxTextCtrl*             m_SearchSnippetCtrl;
-		wxButton*               m_SearchCfgBtn;
-		CodeSnippetsTreeCtrl*   m_SnippetsTreeCtrl;
-		bool                    m_AppendItemsFromFile;
+    wxTextCtrl*             m_SearchSnippetCtrl;
+    wxButton*               m_SearchCfgBtn;
+    CodeSnippetsTreeCtrl*   m_SnippetsTreeCtrl;
+    bool                    m_AppendItemsFromFile;
 //-		SearchConfiguration     m_SearchConfig;
-		bool                    m_isCheckingForExternallyModifiedFiles;
-        TiXmlDocument*          pTiXmlDoc;
-        bool                    m_bIsEditingLabel;
+    bool                    m_isCheckingForExternallyModifiedFiles;
+    TiXmlDocument*          pTiXmlDoc;
+    bool                    m_bIsEditingLabel;
 
-        //-Utils utils;
+    //-Utils utils;
 
-		void OnSearchCfg(wxCommandEvent& event);
-		void OnSearch(wxCommandEvent& event);
-		void OnItemActivated(wxTreeEvent& event);
-		void OnItemMenu(wxTreeEvent& event);
-		void OnBeginDrag(wxTreeEvent& event);
-		void OnEndDrag(wxTreeEvent& event);
-		void OnMnuAddSubCategory(wxCommandEvent& event);
-		void OnMnuRemove(wxCommandEvent& event);
-		void OnMnuRename(wxCommandEvent& event);
-		void OnMnuConvertToCategory(wxCommandEvent& event);
-		void OnMnuAddSnippet(wxCommandEvent& event);
-		void OnMnuApplySnippet(wxCommandEvent& event);
-		void OnBeginLabelEdit(wxTreeEvent& event);
-		void OnMnuLoadSnippetsFromFile(wxCommandEvent& event);
-		void OnMnuSaveSnippets(wxCommandEvent& event);
-		void OnMnuSaveSnippetsAs(wxCommandEvent& event);
-		void OnEndLabelEdit(wxTreeEvent& event);
-		void OnMnuRemoveAll(wxCommandEvent& event);
-		void OnMnuCaseSensitive(wxCommandEvent& event);
-		void OnMnuChangeScope(wxCommandEvent& event);
-		void OnMnuClear(wxCommandEvent& event);
-		void OnMnuCopyToClipboard(wxCommandEvent& event);
-		void OnMnuEditSnippet(wxCommandEvent& event);
-		void OnItemGetToolTip(wxTreeEvent& event);
-        void OnMnuProperties(wxCommandEvent& event);
-        void OnMnuEditSnippetAsFileLink(wxCommandEvent& event);
-        void OnMnuOpenFileLink(wxCommandEvent& event);
-        void OnMnuSaveSnippetAsFileLink(wxCommandEvent& event);
-        void OnMnuSettings(wxCommandEvent& event);
-        void OnMnuAbout(wxCommandEvent& event);
-        void OnMnuTest(wxCommandEvent& event);
-        void OnShutdown(wxCloseEvent& event);
-        void OnMnuCopy(wxCommandEvent& event);
-        void OnMnuPaste(wxCommandEvent& event);
-        void OnMnuFileBackup(wxCommandEvent& event);
-        void OnClose(wxCloseEvent& event); //never occurs
-        void OnIdle(wxIdleEvent& event);
-        void OnMnuSearchExtended(wxCommandEvent& event);
-        void OnLeaveWindow (wxMouseEvent &event);
-        void OnEnterWindow (wxMouseEvent &event);
+    void OnSearchCfg(wxCommandEvent& event);
+    void OnSearch(wxCommandEvent& event);
+    void OnItemActivated(wxTreeEvent& event);
+    void OnItemMenu(wxTreeEvent& event);
+    void OnBeginDrag(wxTreeEvent& event);
+    void OnEndDrag(wxTreeEvent& event);
+    void OnMnuAddSubCategory(wxCommandEvent& event);
+    void OnMnuRemove(wxCommandEvent& event);
+    void OnMnuRename(wxCommandEvent& event);
+    void OnMnuConvertToCategory(wxCommandEvent& event);
+    void OnMnuAddSnippet(wxCommandEvent& event);
+    void OnMnuApplySnippet(wxCommandEvent& event);
+    void OnBeginLabelEdit(wxTreeEvent& event);
+    void OnMnuLoadSnippetsFromFile(wxCommandEvent& event);
+    void OnMnuSaveSnippets(wxCommandEvent& event);
+    void OnMnuSaveSnippetsAs(wxCommandEvent& event);
+    void OnEndLabelEdit(wxTreeEvent& event);
+    void OnMnuRemoveAll(wxCommandEvent& event);
+    void OnMnuCaseSensitive(wxCommandEvent& event);
+    void OnMnuChangeScope(wxCommandEvent& event);
+    void OnMnuClear(wxCommandEvent& event);
+    void OnMnuCopyToClipboard(wxCommandEvent& event);
+    void OnMnuEditSnippet(wxCommandEvent& event);
+    void OnItemGetToolTip(wxTreeEvent& event);
+    void OnMnuProperties(wxCommandEvent& event);
+    void OnMnuEditSnippetAsFileLink(wxCommandEvent& event);
+    void OnMnuOpenFileLink(wxCommandEvent& event);
+    void OnMnuSaveSnippetAsFileLink(wxCommandEvent& event);
+    void OnMnuSettings(wxCommandEvent& event);
+    void OnMnuAbout(wxCommandEvent& event);
+    void OnMnuTest(wxCommandEvent& event);
+    void OnShutdown(wxCloseEvent& event);
+    void OnMnuCopy(wxCommandEvent& event);
+    void OnMnuPaste(wxCommandEvent& event);
+    void OnMnuFileBackup(wxCommandEvent& event);
+    void OnClose(wxCloseEvent& event); //never occurs
+    void OnIdle(wxIdleEvent& event);
+    void OnMnuSearchExtended(wxCommandEvent& event);
+    void OnLeaveWindow (wxMouseEvent &event);
+    void OnEnterWindow (wxMouseEvent &event);
 
-		DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 // ----------------------------------------------------------------------------
 class SnippetsDropTarget : public wxTextDropTarget
 // ----------------------------------------------------------------------------
 {
-	public:
-		SnippetsDropTarget(CodeSnippetsTreeCtrl* treeCtrl) : m_TreeCtrl(treeCtrl) {}
-		~SnippetsDropTarget() {}
-		bool OnDropText(wxCoord x, wxCoord y, const wxString& data);
-	private:
-		CodeSnippetsTreeCtrl* m_TreeCtrl;
+public:
+    SnippetsDropTarget(CodeSnippetsTreeCtrl* treeCtrl) : m_TreeCtrl(treeCtrl) {}
+    ~SnippetsDropTarget() {}
+    bool OnDropText(wxCoord x, wxCoord y, const wxString& data);
+private:
+    CodeSnippetsTreeCtrl* m_TreeCtrl;
 };
 
 #endif // CODESNIPPETSWINDOW_H

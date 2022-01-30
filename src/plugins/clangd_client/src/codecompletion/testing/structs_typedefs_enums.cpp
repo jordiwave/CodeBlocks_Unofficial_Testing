@@ -8,8 +8,8 @@
 // structs and typdef'd structs
 struct _s
 {
-  int   x;
-  float y;
+    int   x;
+    float y;
 };
 typedef struct _s t_s;
 typedef _s (*t_ptr_s)(int a, int b);
@@ -18,28 +18,28 @@ typedef std::basic_string<char> my_string;
 
 typedef struct _s_inner
 {
-  int z_inner;
+    int z_inner;
 } t_s_inner;
 
 typedef struct _s_outer
 {
-  t_s_inner z;
-  void*     pVoid;
-  char       c;
+    t_s_inner z;
+    void*     pVoid;
+    char       c;
 } t_s_outer;
 
 // typedef'd classes
 class _c
 {
-  int   l;
-  float m;
+    int   l;
+    float m;
 };
 typedef class _c t_c;
 
 typedef class _c_inner
 {
-  int   l;
-  float m;
+    int   l;
+    float m;
 } t_c_inner;
 
 typedef class _c_mult
@@ -51,16 +51,16 @@ typedef class _c_mult
 // typedefs in classes
 class c1
 {
-    public:
-        typedef string s;
+public:
+    typedef string s;
 };
 
 // typedefs in class templates
 template<typename _Tp>
 class c2
 {
-    public:
-        typedef string s;
+public:
+    typedef string s;
 };
 
 typedef unsigned int i_uinteger;
@@ -85,56 +85,61 @@ typedef union
 
 // a hard (stripped) example from windef.h and wtypes.h:
 #ifndef _ANONYMOUS_STRUCT
-  #define _ANONYMOUS_STRUCT
-  #undef  _STRUCT_NAME
-  #define _STRUCT_NAME(x) x
+#define _ANONYMOUS_STRUCT
+#undef  _STRUCT_NAME
+#define _STRUCT_NAME(x) x
 #else
-  #undef  _STRUCT_NAME
-  #define _STRUCT_NAME(x)
+#undef  _STRUCT_NAME
+#define _STRUCT_NAME(x)
 #endif
 typedef union tagCY
 {
-  _ANONYMOUS_STRUCT struct
-  {
-    unsigned long Lo;
-    long Hi;
-  }_STRUCT_NAME(s);
-  long long int64;
+    _ANONYMOUS_STRUCT struct
+    {
+        unsigned long Lo;
+        long Hi;
+    } _STRUCT_NAME(s);
+    long long int64;
 } CY;
 
 // a very hard (stripped) sample from mmsystems.h:
 #ifndef NONAMELESSUNION
-  #ifdef __GNUC__
-    #if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
-      #define _ANONYMOUS_UNION  __extension__
-      #undef  _ANONYMOUS_STRUCT
-      #define _ANONYMOUS_STRUCT __extension__
-    #else
-      #if defined(__cplusplus)
-        #undef  _ANONYMOUS_UNION
-        #define _ANONYMOUS_UNION __extension__
-      #endif /* __cplusplus */
-    #endif /* __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95) */
-  #endif /* __GNUC__ */
+#ifdef __GNUC__
+#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
+#define _ANONYMOUS_UNION  __extension__
+#undef  _ANONYMOUS_STRUCT
+#define _ANONYMOUS_STRUCT __extension__
+#else
+#if defined(__cplusplus)
+#undef  _ANONYMOUS_UNION
+#define _ANONYMOUS_UNION __extension__
+#endif /* __cplusplus */
+#endif /* __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95) */
+#endif /* __GNUC__ */
 #endif /* NONAMELESSUNION */
-typedef struct tagMIXERCONTROLA {
-  long cbStruct;
-  char szShortName[1024];
-  union {
-    _ANONYMOUS_STRUCT struct {
-      long lMinimum;
-      long lMaximum;
-    }_STRUCT_NAME(s);
-    _ANONYMOUS_STRUCT struct {
-      int dwMinimum;
-      int dwMaximum;
-    }_STRUCT_NAME(s1);
-    int dwReserved[6];
-  } Bounds;
-  union {
-    long cSteps;
-    long dwReserved[6];
-  } Metrics;
+typedef struct tagMIXERCONTROLA
+{
+    long cbStruct;
+    char szShortName[1024];
+    union
+    {
+        _ANONYMOUS_STRUCT struct
+        {
+            long lMinimum;
+            long lMaximum;
+        } _STRUCT_NAME(s);
+        _ANONYMOUS_STRUCT struct
+        {
+            int dwMinimum;
+            int dwMaximum;
+        } _STRUCT_NAME(s1);
+        int dwReserved[6];
+    } Bounds;
+    union
+    {
+        long cSteps;
+        long dwReserved[6];
+    } Metrics;
 } MIXERCONTROLA,*PMIXERCONTROLA,*LPMIXERCONTROLA;
 
 /********************
@@ -144,30 +149,31 @@ typedef struct tagMIXERCONTROLA {
 // First comment
 enum EGlobalCommented // Here can be a comment, too
 // Here, too
-{ /* even here */
-                       egcOne,                 //!< Typical Doxygen comment
-  // In between comment
-                       egcTwo,                 /** another version */
-                       egcThree = 5 /* Foo */, // Inside comment
-/* Leading comment */  egcFour
+{
+    /* even here */
+    egcOne,                 //!< Typical Doxygen comment
+    // In between comment
+    egcTwo,                 /** another version */
+    egcThree = 5 /* Foo */, // Inside comment
+    /* Leading comment */  egcFour
 }; // Final comment
 
 enum EGlobal
 {
-  egOne, egTwo, egThree
+    egOne, egTwo, egThree
 };
 
 enum EGlobalAssign
 {
-  egaOne = 1, egaTwo = 2, egaThree = egaTwo
+    egaOne = 1, egaTwo = 2, egaThree = egaTwo
 };
 
 // C++11:
 enum class EEnumClassGlobal
 {
-  ecgOne,
-  ecgTwo,
-  ecgThree
+    ecgOne,
+    ecgTwo,
+    ecgThree
 };
 
 enum class EEnumClassGlobalType : unsigned int { ecgtOne, ecgtTwo };
@@ -175,19 +181,19 @@ enum EEnumClassGlobalTypeAssign : unsigned int { ecgtaOne = 1, ecgtaTwo };
 
 struct SEnum
 {
-  enum ELocal
-  {
-    elOne, elTwo, elThree,
-  };
+    enum ELocal
+    {
+        elOne, elTwo, elThree,
+    };
 
-  enum { eUnnamed };
+    enum { eUnnamed };
 
-  enum class EEnumClassLocal
-  {
-    eclOne,
-    eclTwo,
-    eclThree
-  };
+    enum class EEnumClassLocal
+    {
+        eclOne,
+        eclTwo,
+        eclThree
+    };
 };
 
 /********************

@@ -29,36 +29,36 @@ namespace
 {
 //    wxsRegisterItem<wxsStaticText> Reg(_T("StaticText"),wxsTWidget,_T("Standard"),80);
 
-    #include "images/axis16.xpm"
-    #include "images/axis32.xpm"
+#include "images/axis16.xpm"
+#include "images/axis32.xpm"
 
-    wxsRegisterItem<wxsAxis> Reg(
-        _T("mpAxis"),                   // Class name
-        wxsTWidget,                     // Item type
-        _T("wxWindows"),                // License
-        _T("Ron Collins"),              // Author
-        _T("rcoll@theriver.com"),       // Author's email
-        _T(""),                         // Item's homepage
-        _T("MathPlot"),                 // Category in palette
-        80,                             // Priority in palette
-        _T("Axis"),                     // Base part of names for new items
-        wxsCPP,                         // List of coding languages supported by this item
-        1, 0,                           // Version
-        wxBitmap(axis32_xpm),           // 32x32 bitmap
-        wxBitmap(axis16_xpm),           // 16x16 bitmap
-        false);                         // We do not allow this item inside XRC files
+wxsRegisterItem<wxsAxis> Reg(
+    _T("mpAxis"),                   // Class name
+    wxsTWidget,                     // Item type
+    _T("wxWindows"),                // License
+    _T("Ron Collins"),              // Author
+    _T("rcoll@theriver.com"),       // Author's email
+    _T(""),                         // Item's homepage
+    _T("MathPlot"),                 // Category in palette
+    80,                             // Priority in palette
+    _T("Axis"),                     // Base part of names for new items
+    wxsCPP,                         // List of coding languages supported by this item
+    1, 0,                           // Version
+    wxBitmap(axis32_xpm),           // 32x32 bitmap
+    wxBitmap(axis16_xpm),           // 16x16 bitmap
+    false);                         // We do not allow this item inside XRC files
 
-    WXS_ST_BEGIN(wxsAxisStyles,_T(""))
-        WXS_ST_CATEGORY("mpAxis")
-        WXS_ST(wxST_NO_AUTORESIZE)
-        WXS_ST(wxALIGN_LEFT)
-        WXS_ST(wxALIGN_RIGHT)
-        WXS_ST(wxALIGN_CENTRE)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsAxisStyles,_T(""))
+WXS_ST_CATEGORY("mpAxis")
+WXS_ST(wxST_NO_AUTORESIZE)
+WXS_ST(wxALIGN_LEFT)
+WXS_ST(wxALIGN_RIGHT)
+WXS_ST(wxALIGN_CENTRE)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsAxisEvents)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsAxisEvents)
+WXS_EV_END()
 
 }
 
@@ -80,12 +80,13 @@ wxsAxis::wxsAxis(wxsItemResData* Data):
 
 //------------------------------------------------------------------------------
 
-void wxsAxis::OnBuildCreatingCode() {
-wxString    vname;
-wxString    pname;
-wxString    cname;
-wxString    fname;
-wxString    dtext;
+void wxsAxis::OnBuildCreatingCode()
+{
+    wxString    vname;
+    wxString    pname;
+    wxString    cname;
+    wxString    fname;
+    wxString    dtext;
 
 // we only know C++ language
 
@@ -111,7 +112,8 @@ wxString    dtext;
 // assign a pen to the layer
 
     dtext = mPenColour.BuildCode(GetCoderContext());
-    if (dtext.Len() > 0) {
+    if (dtext.Len() > 0)
+    {
         Codef(_T("wxPen   %s(%s);\n"), cname.wx_str(), dtext.wx_str());
         Codef(_T("%s->SetPen(%s);\n"), vname.wx_str(), cname.wx_str());
     };
@@ -119,7 +121,8 @@ wxString    dtext;
 // assign a font to the layer
 
     dtext = mPenFont.BuildFontCode(fname, GetCoderContext());
-    if (dtext.Len() > 0) {
+    if (dtext.Len() > 0)
+    {
         Codef(_T("%s"), dtext.wx_str());
         Codef(_T("%s->SetFont(%s);\n"), vname.wx_str(), fname.wx_str());
     };
@@ -134,15 +137,16 @@ wxString    dtext;
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsAxis::OnBuildPreview(wxWindow* Parent,long Flags) {
-wxStaticText    *Preview;
-mpWindow        *mp;
-mpScaleX        *xx;
-mpScaleY        *yy;
-wxPen           pen;
-wxColour        cc;
-wxFont          ff;
-bool            hide;
+wxObject* wxsAxis::OnBuildPreview(wxWindow* Parent,long Flags)
+{
+    wxStaticText    *Preview;
+    mpWindow        *mp;
+    mpScaleX        *xx;
+    mpScaleY        *yy;
+    wxPen           pen;
+    wxColour        cc;
+    wxFont          ff;
+    bool            hide;
 
 // if parent is not an mpWindow, then exit out
 
@@ -177,13 +181,15 @@ bool            hide;
 
 // make the axis
 
-    if (mType == 0) {
+    if (mType == 0)
+    {
         xx = new mpScaleX(mLabel, mAlign, mTics);
         xx->SetPen(pen);
         xx->SetFont(ff);
         if (! hide) mp->AddLayer(xx);
     }
-    else {
+    else
+    {
         yy = new mpScaleY(mLabel, mAlign, mTics);
         yy->SetPen(pen);
         yy->SetFont(ff);
@@ -198,13 +204,16 @@ bool            hide;
 //------------------------------------------------------------------------------
 // declare the var as a simple wxPanel
 
-void wxsAxis::OnBuildDeclarationsCode() {
+void wxsAxis::OnBuildDeclarationsCode()
+{
 
-    if (GetLanguage() == wxsCPP) {
+    if (GetLanguage() == wxsCPP)
+    {
         if (mType == 0) AddDeclaration(_T("mpScaleX   *") + GetVarName() + _T(";"));
         else            AddDeclaration(_T("mpScaleY   *") + GetVarName() + _T(";"));
     }
-    else {
+    else
+    {
         wxsCodeMarks::Unknown(_T("wxsAxis::OnBuildDeclarationsCode"),GetLanguage());
     };
 }
@@ -212,11 +221,12 @@ void wxsAxis::OnBuildDeclarationsCode() {
 
 //------------------------------------------------------------------------------
 
-void wxsAxis::OnEnumWidgetProperties(cb_unused long Flags) {
-static const long    TypeValues[]  = {    0,            1,        0};
-static const wxChar* TypeNames[]   = {_T("X-Axis"), _T("Y-Axis"), 0};
-static const long    AlignValues[] = {    mpALIGN_BORDER_LEFT,       mpALIGN_BORDER_TOP,       mpALIGN_LEFT,       mpALIGN_TOP,       mpALIGN_CENTER,       mpALIGN_RIGHT,       mpALIGN_BOTTOM,       mpALIGN_BORDER_RIGHT,       mpALIGN_BORDER_BOTTOM,   0};
-static const wxChar* AlignNames[]  = {_T("mpALIGN_BORDER_LEFT"), _T("mpALIGN_BORDER_TOP"), _T("mpALIGN_LEFT"), _T("mpALIGN_TOP"), _T("mpALIGN_CENTER"), _T("mpALIGN_RIGHT"), _T("mpALIGN_BOTTOM"), _T("mpALIGN_BORDER_RIGHT"), _T("mpALIGN_BORDER_BOTTOM"), 0};
+void wxsAxis::OnEnumWidgetProperties(cb_unused long Flags)
+{
+    static const long    TypeValues[]  = {    0,            1,        0};
+    static const wxChar* TypeNames[]   = {_T("X-Axis"), _T("Y-Axis"), 0};
+    static const long    AlignValues[] = {    mpALIGN_BORDER_LEFT,       mpALIGN_BORDER_TOP,       mpALIGN_LEFT,       mpALIGN_TOP,       mpALIGN_CENTER,       mpALIGN_RIGHT,       mpALIGN_BOTTOM,       mpALIGN_BORDER_RIGHT,       mpALIGN_BORDER_BOTTOM,   0};
+    static const wxChar* AlignNames[]  = {_T("mpALIGN_BORDER_LEFT"), _T("mpALIGN_BORDER_TOP"), _T("mpALIGN_LEFT"), _T("mpALIGN_TOP"), _T("mpALIGN_CENTER"), _T("mpALIGN_RIGHT"), _T("mpALIGN_BOTTOM"), _T("mpALIGN_BORDER_RIGHT"), _T("mpALIGN_BORDER_BOTTOM"), 0};
 
 
 

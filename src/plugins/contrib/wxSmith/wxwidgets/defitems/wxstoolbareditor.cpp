@@ -176,16 +176,16 @@ wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
 
             switch (Item->m_Type)
             {
-                case wxsToolBarItem::Separator:
-                case wxsToolBarItem::Stretchable:
-                    New->m_Id = wxString(); // fall-through
-                case wxsToolBarItem::Radio:
-                case wxsToolBarItem::Check:
-                    New->m_Type = Item->m_Type;
-                    break;
-                case wxsToolBarItem::Normal: // fall-though
-                default:
-                    New->m_Type = wxsToolBarItem::Normal;
+            case wxsToolBarItem::Separator:
+            case wxsToolBarItem::Stretchable:
+                New->m_Id = wxString(); // fall-through
+            case wxsToolBarItem::Radio:
+            case wxsToolBarItem::Check:
+                New->m_Type = Item->m_Type;
+                break;
+            case wxsToolBarItem::Normal: // fall-though
+            default:
+                New->m_Type = wxsToolBarItem::Normal;
             }
 
             m_Content->Append(GetItemLabel(New),New);
@@ -231,7 +231,7 @@ void wxsToolBarEditor::OnTypeChanged(cb_unused wxCommandEvent& event)
 
 namespace
 {
-    typedef wxsItem* wxsItemP;
+typedef wxsItem* wxsItemP;
 }
 
 void wxsToolBarEditor::ApplyChanges()
@@ -269,23 +269,23 @@ void wxsToolBarEditor::ApplyChanges()
             else
             {
                 wxsToolBarItem* New = new wxsToolBarItem(m_ToolBar->GetResourceData(),
-                                                         Item->m_Type);
+                        Item->m_Type);
                 switch (Item->m_Type)
                 {
-                    case wxsToolBarItem::Separator:
-                    case wxsToolBarItem::Stretchable:
-                    case wxsToolBarItem::Radio:
-                    case wxsToolBarItem::Check:
-                        New->m_Type = Item->m_Type;
-                        break;
-                    case wxsToolBarItem::Normal:  // fall-through
-                    case wxsToolBarItem::Control: // fall-through
-                    default:
-                        New->m_Type = wxsToolBarItem::Normal;
+                case wxsToolBarItem::Separator:
+                case wxsToolBarItem::Stretchable:
+                case wxsToolBarItem::Radio:
+                case wxsToolBarItem::Check:
+                    New->m_Type = Item->m_Type;
+                    break;
+                case wxsToolBarItem::Normal:  // fall-through
+                case wxsToolBarItem::Control: // fall-through
+                default:
+                    New->m_Type = wxsToolBarItem::Normal;
                 }
 
                 if (Item->m_Type != wxsToolBarItem::Separator
-                    && Item->m_Type != wxsToolBarItem::Stretchable)
+                        && Item->m_Type != wxsToolBarItem::Stretchable)
                 {
                     New->SetIdName(Item->m_Id);
                     New->SetVarName(Item->m_Variable);
@@ -514,7 +514,7 @@ void wxsToolBarEditor::OnDelClick(cb_unused wxCommandEvent& event)
         if (NewCount > 0)
         {
             if (Selection == NewCount)
-               --Selection;
+                --Selection;
 
             m_Content->SetSelection(Selection);
             SelectItem((ToolBarItem*)m_Content->GetClientObject(Selection));

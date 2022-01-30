@@ -47,7 +47,10 @@ wxMenuBar* wxMenuCmd::m_pMenuBar = NULL;
 namespace
 // ----------------------------------------------------------------------------
 {
-    bool wxFound(int result){return result != wxNOT_FOUND;}
+bool wxFound(int result)
+{
+    return result != wxNOT_FOUND;
+}
 }
 // ----------------------------------------------------------------------------
 // Global utility functions
@@ -59,7 +62,8 @@ int wxFindMenuItem(wxMenuBar *p, const wxString &str)
 {
     int id = wxNOT_FOUND;
 
-    for (int i=0; i < (int)p->GetMenuCount(); i++) {
+    for (int i=0; i < (int)p->GetMenuCount(); i++)
+    {
 
         id = p->GetMenu(i)->FindItem(str);
         if (id != wxNOT_FOUND)
@@ -116,10 +120,11 @@ int FindMenuDuplicateItems(wxMenu* pMenu, wxString& rStr, int& rCount)
         // Find matching menu item in keybinder array of commands
         wxString menuItemLabel = pMenuItem->GetItemLabelText().Trim();
         if (rStr == pMenuItem->GetItemLabelText().Trim() )
-        {    rCount++;
-            #if defined(LOGGING)
-             wxLogMessage( _T("Duplicate menu item [%d][%s]"), pMenuItem->GetId(), pMenuItem->GetItemLabelText().GetData()  );
-            #endif
+        {
+            rCount++;
+#if defined(LOGGING)
+            wxLogMessage( _T("Duplicate menu item [%d][%s]"), pMenuItem->GetId(), pMenuItem->GetItemLabelText().GetData()  );
+#endif
         }
     }//for
     return rCount;
@@ -150,7 +155,8 @@ wxString GetFullMenuPath(int id)
 
     // prepend menu labels by iterating upwards through the menu structure
     while (pParentMenu)
-    {    for (int i=0; i < (int)pParentMenu->GetMenuItemCount(); i++)
+    {
+        for (int i=0; i < (int)pParentMenu->GetMenuItemCount(); i++)
         {
             wxMenuItem* pitem = pParentMenu->GetMenuItems().Item(i)->GetData();
             if (pitem->GetSubMenu() && (pitem->GetSubMenu()== pMenu ))
@@ -165,7 +171,7 @@ wxString GetFullMenuPath(int id)
     }//while
 
     // prepend last parent from menu bar
-    for (int i=0; i<(int)pbar->GetMenuCount() ;++i )
+    for (int i=0; i<(int)pbar->GetMenuCount() ; ++i )
     {
         wxMenu* pBarMenu = pbar->GetMenu(i);
         if ( pBarMenu == pMenu)
@@ -192,9 +198,9 @@ int FindMenuIdUsingFullMenuPath( const wxString& sFullMenuPath )
     // like a file path.
 
     if ( sFullMenuPath.IsEmpty() ) return wxNOT_FOUND;
-    #if defined(LOGGING)
+#if defined(LOGGING)
     wxLogMessage( _T("FindMenuIdUsingFullMenuPath[%s]"), sFullMenuPath.c_str() );
-    #endif
+#endif
     wxMenuBar* pMenuBar = wxMenuCmd::m_pMenuBar;
     int id = wxNOT_FOUND;
     int menuIndex = wxNOT_FOUND;
@@ -221,9 +227,9 @@ int FindMenuIdUsingFullMenuPath( const wxString& sFullMenuPath )
     // find and compare file key path levels to each level of the actual menu
     for (int i=1; i < (int)levels.GetCount(); ++i)
     {
-        #if defined(LOGGING)
+#if defined(LOGGING)
         wxLogMessage( _T("Searching for Level[%d][%s]"), i, levels[i].wx_str() );
-        #endif
+#endif
         if (not pMenu) return wxNOT_FOUND;
         found = false;
         for (int j=0; j < (int)pMenu->GetMenuItemCount(); ++j )
@@ -231,12 +237,13 @@ int FindMenuIdUsingFullMenuPath( const wxString& sFullMenuPath )
             pMenuItem = pMenu->FindItemByPosition(j);
             //wxLogMessage( _T("MenuItem[%d][%s]"), j, pMenuItem->GetLabel().c_str() );
             if ( pMenuItem->GetItemLabelText().Trim() == levels[i])
-            {   menuIndex = j;
+            {
+                menuIndex = j;
                 pMenu = pMenuItem->GetSubMenu();
                 found = true;
-                #if defined(LOGGING)
-                    wxLogMessage( _T("Found menuItem [%s]"), pMenuItem->GetItemLabelText().c_str() );
-                #endif
+#if defined(LOGGING)
+                wxLogMessage( _T("Found menuItem [%s]"), pMenuItem->GetItemLabelText().c_str() );
+#endif
                 break;
             }
         }//for j
@@ -291,7 +298,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
     //+v0.4.11
     // leave numeric menu items alone. They get replaced by CodeBlocks
     if (IsNumericMenuItem(pLclMnuItem))
-      return;
+        return;
 
     wxString strText = pLclMnuItem->GetItemLabel();
 
@@ -301,15 +308,18 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
     //-wxString str = pLclMnuItem->GetLabel()
 
     wxString str = strText.BeforeFirst('\t');
-     // GTK is substituting '&' with an underscore
+    // GTK is substituting '&' with an underscore
     int idx = 0;
     // change the first underscore to an & mnemonic, all others to blank
     if ( -1 != (idx = str.Find('_'))) str[idx] = '&';
     for ( size_t i=0; i<str.Length(); ++i)
-        if ( str[i]=='_'){ str[i] = ' ';}
-    #if defined(LOGGING)
-     wxLogMessage( _T("Updating menu item Label[%s]Text[%s]id[%d]"), str.wx_str(), strText.wx_str(), pLclMnuItem->GetId() );
-    #endif
+        if ( str[i]=='_')
+        {
+            str[i] = ' ';
+        }
+#if defined(LOGGING)
+    wxLogMessage( _T("Updating menu item Label[%s]Text[%s]id[%d]"), str.wx_str(), strText.wx_str(), pLclMnuItem->GetId() );
+#endif
 
 
     // on GTK, an optimization in wxMenu::SetText checks
@@ -320,9 +330,9 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
     str.Trim();
     if (m_nShortcuts <= 0)
     {
-        #if defined(LOGGING)
+#if defined(LOGGING)
         wxLogMessage(_("wxMenuCmd::Update - no shortcuts defined for [%s]"), str.c_str());
-        #endif
+#endif
 
         // no more shortcuts for this menuitem: SetText()
         // will delete the hotkeys associated...
@@ -331,9 +341,9 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
     }
 
     wxString newtext = str+wxT("\t")+GetShortcut(0)->GetStr();
-    #if defined(LOGGING)
+#if defined(LOGGING)
     wxLogMessage(_("wxMenuCmd::Update - setting the new text to [%s]"), newtext.c_str());
-    #endif
+#endif
 
     // on GTK, the SetAccel() function doesn't have any effect...
     pLclMnuItem->SetItemLabel(newtext);
@@ -368,7 +378,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
 
     // leave numeric menu items alone. They get replaced by CodeBlocks
     if (IsNumericMenuItem(pLclMnuItem))
-      return;
+        return;
 
     wxString strText = pLclMnuItem->GetItemLabel();
     //use full text to get label in order to preserve mnemonics/accelerators
@@ -377,11 +387,12 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
 
     wxAcceleratorEntry* pItemAccel = pLclMnuItem->GetAccel();
     // clearing previous shortcuts if none now assigned
-    if (m_nShortcuts <= 0) {
+    if (m_nShortcuts <= 0)
+    {
         if ( ! pItemAccel) return;
-        #if LOGGING
-         wxLogMessage(_("wxMenuCmd::Update - Removing shortcuts [%d][%s] for [%d][%s]"),pLclMnuItem->GetId(), strText.wx_str(), m_nId, newtext.wx_str());
-        #endif
+#if LOGGING
+        wxLogMessage(_("wxMenuCmd::Update - Removing shortcuts [%d][%s] for [%d][%s]"),pLclMnuItem->GetId(), strText.wx_str(), m_nId, newtext.wx_str());
+#endif
         // set "non bitmapped" text to preserve menu width
         pLclMnuItem->SetItemLabel(newtext);
         //now rebuild the menuitem if bitmapped
@@ -397,12 +408,12 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
     wxAcceleratorEntry* pPrfAccel = wxAcceleratorEntry::Create(newtext);
     if ( ! pPrfAccel) return;
     if ( pItemAccel
-         && ( pItemAccel->GetFlags() == pPrfAccel->GetFlags() )
-         && ( pItemAccel->GetKeyCode() == pPrfAccel->GetKeyCode() ) )
-         return;
-    #if LOGGING
-     wxLogMessage(_("wxMenuCmd::Update - Setting shortcuts for [%d][%s]"), pLclMnuItem->GetId(), newtext.wx_str());
-    #endif
+            && ( pItemAccel->GetFlags() == pPrfAccel->GetFlags() )
+            && ( pItemAccel->GetKeyCode() == pPrfAccel->GetKeyCode() ) )
+        return;
+#if LOGGING
+    wxLogMessage(_("wxMenuCmd::Update - Setting shortcuts for [%d][%s]"), pLclMnuItem->GetId(), newtext.wx_str());
+#endif
     pLclMnuItem->SetItemLabel(newtext);
     //now rebuild the menuitem if bitmapped
     if (pLclMnuItem->GetBitmap().GetWidth())
@@ -427,22 +438,23 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
 // ----------------------------------------------------------------------------
 wxMenuItem* wxMenuCmd::RebuildMenuitem(wxMenuItem* pMnuItem)
 // ----------------------------------------------------------------------------
-{//Reinstated v1.0.13 2006/12/30 for wx2.6.3 w/fixes and wx2.8.0
- // which now cause the same problem as 2.6.2
+{
+    //Reinstated v1.0.13 2006/12/30 for wx2.6.3 w/fixes and wx2.8.0
+// which now cause the same problem as 2.6.2
     // ---------------------------------------------------------------
     //  Do it the slow/hard way, remove and delete the menu item
     // ---------------------------------------------------------------
     wxMenu* pMenu = pMnuItem->GetMenu();
     wxMenuItemList items = pMenu->GetMenuItems();
     int pos = items.IndexOf(pMnuItem);
-   // rebuild the menuitem
+    // rebuild the menuitem
     wxMenuItem* pnewitem = new wxMenuItem(pMenu, m_nId,
-                pMnuItem->GetItemLabel(),
-                pMnuItem->GetHelp(), pMnuItem->GetKind(),
-                pMnuItem->GetSubMenu() );
+                                          pMnuItem->GetItemLabel(),
+                                          pMnuItem->GetHelp(), pMnuItem->GetKind(),
+                                          pMnuItem->GetSubMenu() );
     pnewitem->SetBitmap(pMnuItem->GetBitmap() );
     pnewitem->SetFont(pMnuItem->GetFont() );
-   #if wxUSE_OWNER_DRAWN    //TimS 2006/12/30 v1.0.13
+#if wxUSE_OWNER_DRAWN    //TimS 2006/12/30 v1.0.13
     if ( pMnuItem->IsOwnerDrawn() )
     {
         pnewitem->SetOwnerDrawn(true);
@@ -454,7 +466,7 @@ wxMenuItem* wxMenuCmd::RebuildMenuitem(wxMenuItem* pMnuItem)
             pnewitem->SetBitmaps(pMnuItem->GetBitmap(true), pMnuItem->GetBitmap(false));
         }
     }
-   #endif
+#endif
     // remove the menuitem
     pMenu->Destroy(pMnuItem);
     // update keybinder array menu item pointer
@@ -468,7 +480,8 @@ wxMenuItem* wxMenuCmd::RebuildMenuitem(wxMenuItem* pMnuItem)
 // ----------------------------------------------------------------------------
 bool wxMenuCmd::IsNumericMenuItem(wxMenuItem* pwxMenuItem)   //v0.2
 // ----------------------------------------------------------------------------
-{//v0.2
+{
+    //v0.2
     wxString str = pwxMenuItem->GetItemLabel();
     if (str.Length() <2) return false;
     if (str.Left(1).IsNumber()) return true;
@@ -530,17 +543,18 @@ wxCmd *wxMenuCmd::CreateNew(wxString sCmdName, int id)
     if ( pMenuItemByCfgId && (pMenuItemByCfgId->GetItemLabelText().Trim() == cmdName) )
         pMenuItem = pMenuItemByCfgId;
     else
-    {   // didn't find the menu id with the specified cmd name.
-        #if defined(LOGGING)
-            wxLogMessage( _T("CreateNew() Unmatched id[%d][%s]"), id, cmdName.GetData() );
-        #endif
+    {
+        // didn't find the menu id with the specified cmd name.
+#if defined(LOGGING)
+        wxLogMessage( _T("CreateNew() Unmatched id[%d][%s]"), id, cmdName.GetData() );
+#endif
         actualMenuID = FindMenuIdUsingFullMenuPath( fullMenuPath ) ;
         if (wxFound(actualMenuID) )
             pMenuItem = m_pMenuBar->FindItem( actualMenuID );
-        #if defined(LOGGING)
+#if defined(LOGGING)
         else
             wxLogMessage( _T("CreateNew() UnFound id[%d][%s]"), id, cmdName.GetData() );
-        #endif
+#endif
 
     }//end else
 
@@ -566,7 +580,8 @@ wxCmd *wxMenuCmd::CreateNew(wxString sCmdName, int id)
 // ----------------------------------------------------------------------------
 bool wxMenuWalker::IsNumericMenuItem(wxMenuItem* pwxMenuItem)   //v0.2
 // ----------------------------------------------------------------------------
-{//v0.2
+{
+    //v0.2
     wxString str = pwxMenuItem->GetItemLabel();
     if (str.Length() <2) return false;
     if (str.Left(1).IsNumber()) return true;
@@ -623,7 +638,7 @@ void wxMenuWalker::WalkMenu(wxMenuBar* p, wxMenu* m, void* data)
         // skip separators (on wxMSW they are marked as wxITEM_NORMAL
         // but they do have empty labels)...
         if (pitem->GetKind() != wxITEM_SEPARATOR &&
-            pitem->GetItemLabelText().Trim() != wxEmptyString)
+                pitem->GetItemLabelText().Trim() != wxEmptyString)
             WalkMenuItem(p, pitem, tmp);
 
         // the cookie we gave to WalkMenuItem is not useful anymore
@@ -690,7 +705,8 @@ void* wxMenuTreeWalker::OnMenuWalk(wxMenuBar *p, wxMenu *m, void *data)
         return NULL;
 
     // if this is the first level of menus, we must create a new tree item
-    if (*id == m_root) {
+    if (*id == m_root)
+    {
 
         // find the index of the given menu
         for (i=0; i < (int)p->GetMenuCount(); i++)
@@ -700,7 +716,7 @@ void* wxMenuTreeWalker::OnMenuWalk(wxMenuBar *p, wxMenu *m, void *data)
 
         // and append a new tree branch with the appropriate label
         wxTreeItemId newId = m_pTreeCtrl->AppendItem(*id,
-            wxMenuItem::GetLabelText(p->GetMenuLabel(i)));
+                             wxMenuItem::GetLabelText(p->GetMenuLabel(i)));
 
         // menu items contained in the given menu must be added
         // to the just created branch
@@ -716,7 +732,8 @@ void* wxMenuTreeWalker::OnMenuItemWalk(wxMenuBar *, wxMenuItem *m, void *data)
 // ----------------------------------------------------------------------------
 {
     wxTreeItemId* id = (wxTreeItemId *)data;
-    if (id->IsOk()) {
+    if (id->IsOk())
+    {
 
         // to each tree branch attach a wxTreeItemData containing
         // the ID of the menuitem which it represents...
@@ -724,7 +741,7 @@ void* wxMenuTreeWalker::OnMenuItemWalk(wxMenuBar *, wxMenuItem *m, void *data)
 
         // create the new item in the tree ctrl
         wxTreeItemId newId = m_pTreeCtrl->AppendItem(*id,
-            m->GetItemLabelText().Trim(), -1, -1, treedata);
+                             m->GetItemLabelText().Trim(), -1, -1, treedata);
 
         return new wxTreeItemId(newId);
     }
@@ -766,7 +783,8 @@ void *wxMenuComboListWalker::OnMenuWalk(wxMenuBar *p, wxMenu *m, void *)
     wxString toadd;
 
     // find the index of the given menu
-    if (m_strAcc.IsEmpty()) {
+    if (m_strAcc.IsEmpty())
+    {
 
         int i;
         for (i=0; i < (int)p->GetMenuCount(); i++)
@@ -776,7 +794,9 @@ void *wxMenuComboListWalker::OnMenuWalk(wxMenuBar *p, wxMenu *m, void *)
         toadd = wxMenuItem::GetLabelText(p->GetMenuLabel(i));
         m_strAcc = toadd;
 
-    } else {
+    }
+    else
+    {
 
         //toadd = m->GetTitle();
         toadd = m_strAcc;
@@ -825,7 +845,8 @@ void wxMenuComboListWalker::OnMenuExit(wxMenuBar *, wxMenu * /*m*/, void *)
     //-wxLogDebug(wxT("wxMenuWalker::OnMenuExit - walking on [%s]"), m->GetTitle().c_str());
     //-wxLogDebug("\n");
 
-    if (!m_strAcc.IsEmpty()){// && m_strAcc.Right() == str) {
+    if (!m_strAcc.IsEmpty()) // && m_strAcc.Right() == str) {
+    {
 
         int diff = m_strAcc.Find(wxT('|'), TRUE);
 
@@ -840,7 +861,8 @@ void wxMenuComboListWalker::OnMenuExit(wxMenuBar *, wxMenu * /*m*/, void *)
 // ----------------------------------------------------------------------------
 void wxMenuComboListWalker::DeleteData(void *)
 // ----------------------------------------------------------------------------
-{ /* we need NOT TO DELETE the given pointer !! */
+{
+    /* we need NOT TO DELETE the given pointer !! */
 }
 
 // ***************************************************************************
@@ -858,7 +880,8 @@ void *wxMenuShortcutWalker::OnMenuItemWalk(wxMenuBar *, wxMenuItem *m, void *)
 
     // check for shortcuts
     wxAcceleratorEntry* a = m->GetAccel();      // returns a pointer which we have to delete
-    if (a) {
+    if (a)
+    {
 
         // this menuitem has an associated accelerator... add an entry
         // to the array of bindings for the relative command...
@@ -875,12 +898,12 @@ void wxMenuShortcutWalker::DeleteData(void *
 #ifdef __WXDEBUG__
                                       data
 #endif  // to avoid warnings about unused arg
-                                      )
+                                     )
 // ----------------------------------------------------------------------------
 {
     wxASSERT_MSG(data == NULL,
-                wxT("wxMenuShortcutWalker does not use the 'data' parameter")
-        );
+                 wxT("wxMenuShortcutWalker does not use the 'data' parameter")
+                );
 }
 // ----------------------------------------------------------------------------
 

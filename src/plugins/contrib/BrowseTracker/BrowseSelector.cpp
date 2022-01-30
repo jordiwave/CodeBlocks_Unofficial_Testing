@@ -46,19 +46,19 @@
 wxBitmap BrowseSelector::m_bmp;
 namespace
 {
-    static bool firstPaint = true;
-    int idMenuTrackerforward        = XRCID("ViewForwardEd");
-    int idMenuTrackerBackward       = XRCID("ViewBackwardEd");
+static bool firstPaint = true;
+int idMenuTrackerforward        = XRCID("ViewForwardEd");
+int idMenuTrackerBackward       = XRCID("ViewBackwardEd");
 }
 
 // ----------------------------------------------------------------------------
 BrowseSelector::BrowseSelector(wxWindow* parent, BrowseTracker* pBrowseTracker, int menuID)
 // ----------------------------------------------------------------------------
-: m_listBox(NULL)
-, m_selectedItem(-1)
-, m_panel(NULL)
-, m_pBrowseTracker(pBrowseTracker)
-, m_menuID(menuID)
+    : m_listBox(NULL)
+    , m_selectedItem(-1)
+    , m_panel(NULL)
+    , m_pBrowseTracker(pBrowseTracker)
+    , m_menuID(menuID)
 {
 
     Create(parent, pBrowseTracker, m_menuID);
@@ -189,8 +189,8 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, int
     if (!m_bmp.Ok())
     {
         const wxString filename = ConfigManager::GetDataFolder()
-                                + wxString::Format(wxT("/BrowseTracker.zip#zip:images/%dx%d/signpost.png"),
-                                                   imageSize, imageSize);
+                                  + wxString::Format(wxT("/BrowseTracker.zip#zip:images/%dx%d/signpost.png"),
+                                          imageSize, imageSize);
         m_bmp = cbLoadBitmapScaled(filename, wxBITMAP_TYPE_PNG, cbGetContentScaleFactor(*this));
     }
     //?m_listBox->SetFocus();
@@ -277,9 +277,9 @@ void BrowseSelector::OnNavigationKey(wxKeyEvent &event)
     long maxItems = m_listBox->GetCount();
     long itemToSelect = 0;
 
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("OnNavigationKey selected[%ld]maxItems[%ld]key[%d]"), selected, maxItems, event.GetKeyCode() );
-    #endif
+#endif
 
     if( (event.GetKeyCode() == WXK_LEFT) || (event.GetKeyCode() == WXK_UP) )
     {
@@ -349,7 +349,8 @@ void BrowseSelector::CloseDialog()
     m_selectedItem = m_listBox->GetSelection();
 
     if ((m_selectedItem > -1) && (m_selectedItem < MaxEntries))
-    {   std::map<int, int>::iterator iter = m_indexMap.find(m_selectedItem);
+    {
+        std::map<int, int>::iterator iter = m_indexMap.find(m_selectedItem);
         LOGIT( _T("ListBox[%ld] Map[%d]"), m_selectedItem, iter->second );
         // we have to end the dlg before activating the editor or else
         // the old editor get re-activated.

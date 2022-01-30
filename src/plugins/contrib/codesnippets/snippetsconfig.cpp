@@ -18,15 +18,15 @@
 */
 // RCS-ID: $Id: snippetsconfig.cpp 12648 2022-01-13 20:06:39Z wh11204 $
 #ifdef WX_PRECOMP
-    #include "wx_pch.h"
+#include "wx_pch.h"
 #endif
 
-    #include "pluginmanager.h"
+#include "pluginmanager.h"
 
-    #include <wx/fileconf.h>
-    #include <wx/stdpaths.h>
-    #include <wx/app.h>
-    #include <wx/filename.h>
+#include <wx/fileconf.h>
+#include <wx/stdpaths.h>
+#include <wx/app.h>
+#include <wx/filename.h>
 
 #include <sstream>
 
@@ -35,41 +35,53 @@
 #include "snippetsconfig.h"
 #include "editormanager.h"
 
-    // Rreferenced in snippetproperty.cpp
-    // So each has an extern to the definition here.
-    //-int idMenuProperties = wxNewId();
+// Rreferenced in snippetproperty.cpp
+// So each has an extern to the definition here.
+//-int idMenuProperties = wxNewId();
 
-    // anchor to global configuration
-    CodeSnippetsConfig* g_pConfig = 0;
-    CodeSnippetsConfig* GetConfig(){return g_pConfig;}
-    void SetConfig( CodeSnippetsConfig* p) {g_pConfig = p;}
+// anchor to global configuration
+CodeSnippetsConfig* g_pConfig = 0;
+CodeSnippetsConfig* GetConfig()
+{
+    return g_pConfig;
+}
+void SetConfig( CodeSnippetsConfig* p)
+{
+    g_pConfig = p;
+}
 
-    int     g_activeMenuId = 0;
-    int     GetActiveMenuId(){return g_activeMenuId;}
-    void    SetActiveMenuId(int menuId) { g_activeMenuId = menuId; }
+int     g_activeMenuId = 0;
+int     GetActiveMenuId()
+{
+    return g_activeMenuId;
+}
+void    SetActiveMenuId(int menuId)
+{
+    g_activeMenuId = menuId;
+}
 
-    // ------------------------------------
-    // UTF8 conversion routines
-    // ------------------------------------
-    // Return @c str as a proper unicode-compatible string
-    wxString csC2U(const char* str)
-    {
-        #if wxUSE_UNICODE
-            return wxString(str, wxConvUTF8);
-        #else
-            return wxString(str);
-        #endif
-    }
+// ------------------------------------
+// UTF8 conversion routines
+// ------------------------------------
+// Return @c str as a proper unicode-compatible string
+wxString csC2U(const char* str)
+{
+#if wxUSE_UNICODE
+    return wxString(str, wxConvUTF8);
+#else
+    return wxString(str);
+#endif
+}
 
-    // Return multibyte (C string) representation of the string
-    const wxWX2MBbuf csU2C(const wxString& str)
-    {
-        #if wxUSE_UNICODE
-            return str.mb_str(wxConvUTF8);
-        #else
-            return (wxChar*)str.mb_str();
-        #endif
-    }
+// Return multibyte (C string) representation of the string
+const wxWX2MBbuf csU2C(const wxString& str)
+{
+#if wxUSE_UNICODE
+    return str.mb_str(wxConvUTF8);
+#else
+    return (wxChar*)str.mb_str();
+#endif
+}
 
 // ----------------------------------------------------------------------------
 CodeSnippetsConfig::CodeSnippetsConfig()
@@ -86,16 +98,16 @@ CodeSnippetsConfig::CodeSnippetsConfig()
     pSnippetsTreeCtrl = nullptr;
     pSnippetsSearchCtrl = nullptr;
     m_bIsPlugin = 0;
-	SettingsExternalEditor  = wxEmptyString;
-	SettingsSnippetsCfgPath = wxEmptyString;
-	SettingsSnippetsXmlPath = wxEmptyString;
-	SettingsSnippetsFolder  = wxEmptyString;
-	SettingsCBConfigPath    = wxEmptyString;
-	SettingsSearchBox = false;
-	SettingsEditorsStayOnTop = true;
-	SettingsToolTipsOption = true;
-	m_SearchConfig.caseSensitive = false;
-	m_SearchConfig.scope = SCOPE_BOTH;
+    SettingsExternalEditor  = wxEmptyString;
+    SettingsSnippetsCfgPath = wxEmptyString;
+    SettingsSnippetsXmlPath = wxEmptyString;
+    SettingsSnippetsFolder  = wxEmptyString;
+    SettingsCBConfigPath    = wxEmptyString;
+    SettingsSearchBox = false;
+    SettingsEditorsStayOnTop = true;
+    SettingsToolTipsOption = true;
+    m_SearchConfig.caseSensitive = false;
+    m_SearchConfig.scope = SCOPE_BOTH;
     pSnipImages = nullptr;
     nEditDlgWidth = 0;
     nEditDlgHeight = 0;
@@ -126,29 +138,29 @@ CodeSnippetsConfig::~CodeSnippetsConfig()
 void CodeSnippetsConfig::SettingsLoad()
 // ----------------------------------------------------------------------------
 {
-        // file will be saved in $HOME/codesnippets.ini
+    // file will be saved in $HOME/codesnippets.ini
 
 
-    #ifdef LOGGING
-     wxString fn(__FUNCTION__, wxConvUTF8);
-     LOGIT( _T("--- [%s] ---"),fn.c_str() );
-     LOGIT(wxT("Loading Settings File[%s]"),SettingsSnippetsCfgPath.c_str());
-    #endif //LOGGING
+#ifdef LOGGING
+    wxString fn(__FUNCTION__, wxConvUTF8);
+    LOGIT( _T("--- [%s] ---"),fn.c_str() );
+    LOGIT(wxT("Loading Settings File[%s]"),SettingsSnippetsCfgPath.c_str());
+#endif //LOGGING
 
     wxFileConfig cfgFile(
-                    wxEmptyString,              // appname
-                    wxEmptyString,              // vendor
-                    SettingsSnippetsCfgPath,// local filename
-                    wxEmptyString,              // global file
-                    wxCONFIG_USE_LOCAL_FILE);
+        wxEmptyString,              // appname
+        wxEmptyString,              // vendor
+        SettingsSnippetsCfgPath,// local filename
+        wxEmptyString,              // global file
+        wxCONFIG_USE_LOCAL_FILE);
 
-	cfgFile.Read( wxT("ExternalEditor"),  &SettingsExternalEditor, wxEmptyString ) ;
-	cfgFile.Read( wxT("SnippetFile"),     &SettingsSnippetsXmlPath, wxEmptyString ) ;
-	cfgFile.Read( wxT("SnippetFolder"),   &SettingsSnippetsFolder, wxEmptyString ) ;
-	cfgFile.Read( wxT("ViewSearchBox"),   &GetConfig()->SettingsSearchBox, true ) ;
-	cfgFile.Read( wxT("casesensitive"),   &m_SearchConfig.caseSensitive, true ) ;
-	int nScope;
-	cfgFile.Read( wxT("scope"),             &nScope, SCOPE_BOTH ) ;
+    cfgFile.Read( wxT("ExternalEditor"),  &SettingsExternalEditor, wxEmptyString ) ;
+    cfgFile.Read( wxT("SnippetFile"),     &SettingsSnippetsXmlPath, wxEmptyString ) ;
+    cfgFile.Read( wxT("SnippetFolder"),   &SettingsSnippetsFolder, wxEmptyString ) ;
+    cfgFile.Read( wxT("ViewSearchBox"),   &GetConfig()->SettingsSearchBox, true ) ;
+    cfgFile.Read( wxT("casesensitive"),   &m_SearchConfig.caseSensitive, true ) ;
+    int nScope;
+    cfgFile.Read( wxT("scope"),             &nScope, SCOPE_BOTH ) ;
     m_SearchConfig.scope = (SearchScope)nScope;
 
     // read Editors Stay-On-Top of main window option
@@ -158,14 +170,14 @@ void CodeSnippetsConfig::SettingsLoad()
 
     // Read External App state. Launched App will see it as false because
     // plugin has not set it true yet, so if this is launched App, set it true
-	cfgFile.Read( wxT("ExternalPersistentOpen"), &m_IsExternalPersistentOpen, false ) ;
-	if ( IsApplication() ) SetExternalPersistentOpen(true);
+    cfgFile.Read( wxT("ExternalPersistentOpen"), &m_IsExternalPersistentOpen, false ) ;
+    if ( IsApplication() ) SetExternalPersistentOpen(true);
 
     // read user specified window state (External, Floating, or Docked)
     cfgFile.Read( wxT("WindowState"), &m_SettingsWindowState, wxT("Floating") );
-    #if defined(LOGGING)
-     LOGIT( _T("WindowState[%s]"), GetSettingsWindowState().c_str() );
-    #endif
+#if defined(LOGGING)
+    LOGIT( _T("WindowState[%s]"), GetSettingsWindowState().c_str() );
+#endif
     // read last window position
     wxString winPos;
     cfgFile.Read( wxT("WindowPosition"),  &winPos, wxEmptyString) ;
@@ -188,17 +200,17 @@ void CodeSnippetsConfig::SettingsLoad()
     }
     LOGIT( _T("WindowPosition[%s]"),winPos.c_str() );
 
-    #ifdef LOGGING
-     LOGIT( _T("SettingsExternalEditor[%s]"), SettingsExternalEditor.c_str() );
-     LOGIT( _T("SettingsSnippetsXmlPath[%s]"),SettingsSnippetsXmlPath.c_str() );
-     LOGIT( _T("SettingsSnippetsFolder[%s]"), SettingsSnippetsFolder.c_str() );
-     LOGIT( _T("SettingsSearchBox[%d]"),      SettingsSearchBox );
-     LOGIT( _T("caseSensitive[%d]"),            m_SearchConfig.caseSensitive );
-     LOGIT( _T("SettingsSnippetsXmlPath[%s]"),  SettingsSnippetsXmlPath.c_str() );
-     LOGIT( _T("SettingsEditorsStayOnTop[%s]"), SettingsEditorsStayOnTop?_T("True"):_T("False") );
-     LOGIT( _T("SettingsToolTipsOption[%s]"),   SettingsToolTipsOption?_T("True"):_T("False") );
-     LOGIT( _T("ExternalPersistentOpen[%s]"),   IsExternalPersistentOpen()?_T("True"):_T("False") );
-    #endif //LOGGING
+#ifdef LOGGING
+    LOGIT( _T("SettingsExternalEditor[%s]"), SettingsExternalEditor.c_str() );
+    LOGIT( _T("SettingsSnippetsXmlPath[%s]"),SettingsSnippetsXmlPath.c_str() );
+    LOGIT( _T("SettingsSnippetsFolder[%s]"), SettingsSnippetsFolder.c_str() );
+    LOGIT( _T("SettingsSearchBox[%d]"),      SettingsSearchBox );
+    LOGIT( _T("caseSensitive[%d]"),            m_SearchConfig.caseSensitive );
+    LOGIT( _T("SettingsSnippetsXmlPath[%s]"),  SettingsSnippetsXmlPath.c_str() );
+    LOGIT( _T("SettingsEditorsStayOnTop[%s]"), SettingsEditorsStayOnTop?_T("True"):_T("False") );
+    LOGIT( _T("SettingsToolTipsOption[%s]"),   SettingsToolTipsOption?_T("True"):_T("False") );
+    LOGIT( _T("ExternalPersistentOpen[%s]"),   IsExternalPersistentOpen()?_T("True"):_T("False") );
+#endif //LOGGING
 
 ////    // read windowHandle of last or current pgm instance that ran
 ////    // CodeSnippetsApp will check if it's actually running
@@ -215,49 +227,51 @@ void CodeSnippetsConfig::SettingsLoad()
 void CodeSnippetsConfig::SettingsSave()
 // ----------------------------------------------------------------------------
 {
-        // file will be saved in $HOME/codesnippets.ini
+    // file will be saved in $HOME/codesnippets.ini
 
-    #ifdef LOGGING
-     wxString fn(__FUNCTION__, wxConvUTF8);
-     LOGIT( _T("--- [%s] ---"),fn.c_str() );
-     LOGIT(wxT("Saving Settings File[%s]"),SettingsSnippetsCfgPath.c_str());
-    #endif //LOGGING
+#ifdef LOGGING
+    wxString fn(__FUNCTION__, wxConvUTF8);
+    LOGIT( _T("--- [%s] ---"),fn.c_str() );
+    LOGIT(wxT("Saving Settings File[%s]"),SettingsSnippetsCfgPath.c_str());
+#endif //LOGGING
 
     wxFileConfig cfgFile(wxEmptyString, // appname
-                        wxEmptyString,      // vendor
-                        SettingsSnippetsCfgPath,    // local filename
-                        wxEmptyString,                  // global file
-                        wxCONFIG_USE_LOCAL_FILE);
+                         wxEmptyString,      // vendor
+                         SettingsSnippetsCfgPath,    // local filename
+                         wxEmptyString,                  // global file
+                         wxCONFIG_USE_LOCAL_FILE);
 
     //-wxFileConfig& cfgFile = *GetCfgFile();
 
-	cfgFile.Write( wxT("ExternalEditor"),  SettingsExternalEditor ) ;
-	cfgFile.Write( wxT("SnippetFile"),     SettingsSnippetsXmlPath ) ;
-	cfgFile.Write( wxT("SnippetFolder"),   SettingsSnippetsFolder ) ;
-	cfgFile.Write( wxT("ViewSearchBox"),   SettingsSearchBox ) ;
-	cfgFile.Write( wxT("casesensitive"),   m_SearchConfig.caseSensitive ) ;
-	cfgFile.Write( wxT("scope"),           int(m_SearchConfig.scope) );
-	cfgFile.Write( wxT("EditorsStayOnTop"),SettingsEditorsStayOnTop );
-	cfgFile.Write( wxT("ToolTipsOption"),  SettingsToolTipsOption );
-	if ( IsPlugin() )
-	{   // Write ExternalPersistent for plugin use only
+    cfgFile.Write( wxT("ExternalEditor"),  SettingsExternalEditor ) ;
+    cfgFile.Write( wxT("SnippetFile"),     SettingsSnippetsXmlPath ) ;
+    cfgFile.Write( wxT("SnippetFolder"),   SettingsSnippetsFolder ) ;
+    cfgFile.Write( wxT("ViewSearchBox"),   SettingsSearchBox ) ;
+    cfgFile.Write( wxT("casesensitive"),   m_SearchConfig.caseSensitive ) ;
+    cfgFile.Write( wxT("scope"),           int(m_SearchConfig.scope) );
+    cfgFile.Write( wxT("EditorsStayOnTop"),SettingsEditorsStayOnTop );
+    cfgFile.Write( wxT("ToolTipsOption"),  SettingsToolTipsOption );
+    if ( IsPlugin() )
+    {
+        // Write ExternalPersistent for plugin use only
         cfgFile.Write( wxT("ExternalPersistentOpen"),IsExternalPersistentOpen() );
-        #if defined(LOGGING)
+#if defined(LOGGING)
         //LOGIT( _T("ExternalPersistentOpen is[%s]"), IsExternalPersistentOpen()?_T("true"):_T("false"));
-        #endif
-	}
+#endif
+    }
 
     //wxString lastWindowState = wxT("External");
     //if ( IsFloatingWindow() ) {lastWindowState = wxT("Floating");}
     //if ( IsDockedWindow() ) {lastWindowState = wxT("Docked");}
-    #if defined(LOGGING)
-     LOGIT( _T("WindowState[%s]"), m_SettingsWindowState.c_str() );
-    #endif
+#if defined(LOGGING)
+    LOGIT( _T("WindowState[%s]"), m_SettingsWindowState.c_str() );
+#endif
     cfgFile.Write( wxT("WindowState"), m_SettingsWindowState );
 
     if (IsApplication())
         if ( GetMainFrame() && GetMainFrame()->IsShown() )
-        {   // record the current window position and size
+        {
+            // record the current window position and size
             // here, use the main frame, not the snippets window
             wxWindow* pwin = (wxWindow*)GetMainFrame();;
             int winXposn, winYposn, winWidth, winHeight;
@@ -267,7 +281,7 @@ void CodeSnippetsConfig::SettingsSave()
             wxString winPos;
             winPos = wxString::Format(wxT("%d %d %d %d"), winXposn,winYposn,winWidth,winHeight);
             cfgFile.Write(wxT("WindowPosition"),  winPos) ;
-             LOGIT( _T("Saving WindowPosition[%s]"), winPos.c_str() );
+            LOGIT( _T("Saving WindowPosition[%s]"), winPos.c_str() );
         }
     cfgFile.Flush();
 }
@@ -275,19 +289,19 @@ void CodeSnippetsConfig::SettingsSave()
 void CodeSnippetsConfig::SettingsSaveString(const wxString settingName, const wxString settingValue )
 // ----------------------------------------------------------------------------
 {
-        // file will be saved in $HOME/codesnippets.ini
-        // we should probably enable the following definition. Without t
-        // ALL entries are re-written to the conf, overwritting any put there
-        // by an external pgm.
+    // file will be saved in $HOME/codesnippets.ini
+    // we should probably enable the following definition. Without t
+    // ALL entries are re-written to the conf, overwritting any put there
+    // by an external pgm.
 
     wxFileConfig cfgFile(wxEmptyString,                 // appname
-                        wxEmptyString,                  // vendor
-                        SettingsSnippetsCfgPath,    // local filename
-                        wxEmptyString,                  // global file
-                        wxCONFIG_USE_LOCAL_FILE);
+                         wxEmptyString,                  // vendor
+                         SettingsSnippetsCfgPath,    // local filename
+                         wxEmptyString,                  // global file
+                         wxCONFIG_USE_LOCAL_FILE);
 
-	cfgFile.Write( settingName,  settingValue ) ;
-	cfgFile.Flush();
+    cfgFile.Write( settingName,  settingValue ) ;
+    cfgFile.Flush();
 
 }
 // ----------------------------------------------------------------------------
@@ -305,8 +319,8 @@ wxString CodeSnippetsConfig::SettingsReadString(const wxString settingName )
                          wxCONFIG_USE_LOCAL_FILE);
 
     wxString result;
-	cfgFile.Read( settingName,  &result, wxEmptyString ) ;
-	return result;
+    cfgFile.Read( settingName,  &result, wxEmptyString ) ;
+    return result;
 }
 // ----------------------------------------------------------------------------
 wxString CodeSnippetsConfig::GetSettingsWindowState()
@@ -333,10 +347,10 @@ void CodeSnippetsConfig::SettingsSaveWinPosition()
     // else the mainframe position will be recorded instead of the floating window.
 
     wxFileConfig cfgFile(wxEmptyString, // appname
-                        wxEmptyString,      // vendor
-                        SettingsSnippetsCfgPath,    // local filename
-                        wxEmptyString,                  // global file
-                        wxCONFIG_USE_LOCAL_FILE);
+                         wxEmptyString,      // vendor
+                         SettingsSnippetsCfgPath,    // local filename
+                         wxEmptyString,                  // global file
+                         wxCONFIG_USE_LOCAL_FILE);
 
     // record the current window position and size
     // here use the snippets windows' parent, not the main frame
@@ -352,7 +366,7 @@ void CodeSnippetsConfig::SettingsSaveWinPosition()
     wxString winPos;
     winPos = wxString::Format(wxT("%d %d %d %d"), winXposn,winYposn,winWidth,winHeight);
     cfgFile.Write(wxT("WindowPosition"),  winPos) ;
-     LOGIT( _T("SavingWindowPosition[%s]"), winPos.c_str() );
+    LOGIT( _T("SavingWindowPosition[%s]"), winPos.c_str() );
     cfgFile.Flush();
 
 }
@@ -363,7 +377,8 @@ void CodeSnippetsConfig::CenterChildOnParent(wxWindow* child, wxWindow* parentPa
     //For docked window we cannot get its position. Just move
     // the window over the last known parent position
 
-    int displayX; int displayY;
+    int displayX;
+    int displayY;
     ::wxDisplaySize(&displayX, &displayY);
 
     //(pecan 2008/5/04)
@@ -371,8 +386,9 @@ void CodeSnippetsConfig::CenterChildOnParent(wxWindow* child, wxWindow* parentPa
     //if ( GetConfig()->IsPlugin() ) // //(pecan 2008/5/04)
     {
         wxPoint parentPosn( GetConfig()->windowXpos+(GetConfig()->windowWidth>>1),
-            GetConfig()->windowYpos+(GetConfig()->windowHeight>>1) );
-        do {   // place bottomLeft child at bottomLeft of parent window
+                            GetConfig()->windowYpos+(GetConfig()->windowHeight>>1) );
+        do     // place bottomLeft child at bottomLeft of parent window
+        {
             int parentx,parenty;
             int parentsizex,parentsizey;
             int childsizex,childsizey;
@@ -392,7 +408,8 @@ void CodeSnippetsConfig::CenterChildOnParent(wxWindow* child, wxWindow* parentPa
             // Make sure child is not off left/top of screen
             if ( parentPosn.x < 1) parentPosn.x = 1;
             if ( parentPosn.y < 1) parentPosn.y = 1;
-        }while(false);
+        }
+        while(false);
         child->Move( parentPosn.x, parentPosn.y);
     }
 }
@@ -402,7 +419,10 @@ bool CodeSnippetsConfig::IsDockedWindow(wxWindow** pWindowRequest, wxPoint* pCoo
 {
     // If window is Docked window, return its info
 
-    if ( IsApplication() ) {return false;}
+    if ( IsApplication() )
+    {
+        return false;
+    }
 
     // Get Snippets top window
     wxWindow* pwSnippet = (wxWindow*)GetSnippetsWindow();
@@ -416,8 +436,8 @@ bool CodeSnippetsConfig::IsDockedWindow(wxWindow** pWindowRequest, wxPoint* pCoo
     }
     // Get CodeBlocks main window
     wxWindow* pwCodeBlocks = wxTheApp->GetTopWindow();
-     //LOGIT( _T("IsDockedpwSnippet[%p]pwCodeBlocks[%p]"),pwSnippet,pwCodeBlocks );
-     //LOGIT( _T("IsDocked pwSnippet[%s]pwCodeBlocks[%s]"),pwSnippet->GetName().c_str(),pwCodeBlocks->GetName().c_str() );
+    //LOGIT( _T("IsDockedpwSnippet[%p]pwCodeBlocks[%p]"),pwSnippet,pwCodeBlocks );
+    //LOGIT( _T("IsDocked pwSnippet[%s]pwCodeBlocks[%s]"),pwSnippet->GetName().c_str(),pwCodeBlocks->GetName().c_str() );
 
     // Floating windows have different parents than their original MainFrame
     // if parent window != CodeBlocks MainFrame, then Floating, not docked
@@ -431,9 +451,10 @@ bool CodeSnippetsConfig::IsDockedWindow(wxWindow** pWindowRequest, wxPoint* pCoo
     wxWindow* pmf = pwSnippet;
     if (pWindowRequest) *pWindowRequest = pmf;
     if (pCoordRequest)
-    {   *pCoordRequest = pmf->GetPosition();
-         if ( *pCoordRequest == wxPoint(0,0 ) )
-           pmf->ClientToScreen(&pCoordRequest->x, &pCoordRequest->y);
+    {
+        *pCoordRequest = pmf->GetPosition();
+        if ( *pCoordRequest == wxPoint(0,0 ) )
+            pmf->ClientToScreen(&pCoordRequest->x, &pCoordRequest->y);
     }
     if (pSizeRequest) *pSizeRequest = pmf->GetSize();
     //LOGIT( _T("IsDocked[%s]"),wxT("true"));
@@ -449,7 +470,10 @@ bool CodeSnippetsConfig::IsFloatingWindow(wxWindow** pWindowRequest, wxPoint* pC
 
     // If window is Floating window, return its info
 
-    if ( IsApplication() ) {return false;}
+    if ( IsApplication() )
+    {
+        return false;
+    }
 
     // Get Snippets top window
     wxWindow* pwSnippet = (wxWindow*)GetSnippetsWindow();
@@ -458,39 +482,40 @@ bool CodeSnippetsConfig::IsFloatingWindow(wxWindow** pWindowRequest, wxPoint* pC
     while (pwSnippet->GetParent())
     {
         pwSnippet = pwSnippet->GetParent();
-        #if defined(LOGGING)
+#if defined(LOGGING)
         //-LOGIT( _T("IsFloating Parent[%p][%s]"), pwSnippet, pwSnippet->GetName().c_str() );
-        #endif
+#endif
         // break out after we get a pointer to any parent frame
         if (pwSnippet->GetName() == wxT("frame")) break;
     }
     // Get CodeBlocks main window
     //wxWindow* pwCodeBlocks = Manager::Get()->GetAppWindow();
     wxWindow* pwCodeBlocks = GetConfig()->GetMainFrame();
-     //LOGIT( _T("IsFloating pwSnippet[%p]pwCodeBlocks[%p]"),pwSnippet,pwCodeBlocks );
-     //LOGIT( _T("IsFloating pwSnippet[%s]pwCodeBlocks[%s]"),pwSnippet->GetName().c_str(),pwCodeBlocks->GetName().c_str() );
+    //LOGIT( _T("IsFloating pwSnippet[%p]pwCodeBlocks[%p]"),pwSnippet,pwCodeBlocks );
+    //LOGIT( _T("IsFloating pwSnippet[%s]pwCodeBlocks[%s]"),pwSnippet->GetName().c_str(),pwCodeBlocks->GetName().c_str() );
 
     // Floating windows have different parents than their original MainFrame
     // if parent window == CodeBlocks MainFrame, then docked
     if ( pwSnippet == pwCodeBlocks )
     {
-        #if defined(LOGGING)
+#if defined(LOGGING)
         //LOGIT( _T("IsFloating[%s]"),wxT("false"));
-        #endif
+#endif
         return false;
     }
 
-    #if defined(LOGGING)
+#if defined(LOGGING)
     //LOGIT( _T("IsFloating[%s]"),wxT("true"));
-    #endif
+#endif
 
     // Have floating window, point to reparented focused window
     wxWindow* pmf = pwSnippet;
     if (pWindowRequest) *pWindowRequest = pmf;
     if (pCoordRequest)
-    {   *pCoordRequest = pmf->GetPosition();
-         if ( *pCoordRequest == wxPoint(0,0 ) )
-           pmf->ClientToScreen(&pCoordRequest->x, &pCoordRequest->y);
+    {
+        *pCoordRequest = pmf->GetPosition();
+        if ( *pCoordRequest == wxPoint(0,0 ) )
+            pmf->ClientToScreen(&pCoordRequest->x, &pCoordRequest->y);
     }
     if (pSizeRequest) *pSizeRequest = pmf->GetSize();
 
@@ -500,7 +525,7 @@ bool CodeSnippetsConfig::IsFloatingWindow(wxWindow** pWindowRequest, wxPoint* pC
 bool CodeSnippetsConfig::IsExternalWindow()
 // ----------------------------------------------------------------------------
 {
-  	return GetConfig()->GetSettingsWindowState().Contains(wxT("External"));
+    return GetConfig()->GetSettingsWindowState().Contains(wxT("External"));
 }
 // ----------------------------------------------------------------------------
 wxString CodeSnippetsConfig::GetTempDir()
@@ -580,9 +605,9 @@ EditorManager* CodeSnippetsConfig::GetEditorManager(wxFrame* frame)
         it =  m_EdManagerMapArray.find(frame);
         if (it not_eq m_EdManagerMapArray.end() )
         {
-            #if defined(LOGGING)
+#if defined(LOGGING)
             //LOGIT( _T("GetEditorManager frame[%p]Mgr[%p]"), frame, it->second);
-            #endif
+#endif
             return it->second;
         }
     }//while
@@ -596,9 +621,9 @@ void CodeSnippetsConfig::RegisterEditorManager(wxFrame* frame, EditorManager* ed
     EdManagerMapArray::iterator it = m_EdManagerMapArray.find(frame);
     if ( it == m_EdManagerMapArray.end()  )
         m_EdManagerMapArray[frame] = edMgr;
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("RegisterEditorManager frame[%p]Mgr[%p]"), frame, edMgr);
-    #endif
+#endif
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsConfig::RemoveEditorManager(wxFrame* frame)

@@ -24,14 +24,14 @@
 
 namespace
 {
-    wxsRegisterItem<wxsAnimationCtrl> Reg(_T("AnimationCtrl"),wxsTWidget,_T("Standard"),370);
+wxsRegisterItem<wxsAnimationCtrl> Reg(_T("AnimationCtrl"),wxsTWidget,_T("Standard"),370);
 
-    WXS_ST_BEGIN(wxsAnimationCtrlStyles,_T("wxAC_DEFAULT_STYLE"))
-        WXS_ST_CATEGORY("wxAnimationCtrl")
-        WXS_ST(wxAC_DEFAULT_STYLE)
-        WXS_ST(wxAC_NO_AUTORESIZE)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsAnimationCtrlStyles,_T("wxAC_DEFAULT_STYLE"))
+WXS_ST_CATEGORY("wxAnimationCtrl")
+WXS_ST(wxAC_DEFAULT_STYLE)
+WXS_ST(wxAC_NO_AUTORESIZE)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 }
 
 /*! \brief Ctor
@@ -45,7 +45,7 @@ wxsAnimationCtrl::wxsAnimationCtrl(wxsItemResData* Data):
         &Reg.Info,
         NULL,
         wxsAnimationCtrlStyles),
-        m_bPlay(false)
+    m_bPlay(false)
 {}
 
 /*! \brief Create the initial control.
@@ -57,30 +57,32 @@ void wxsAnimationCtrl::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/animate.h>"),GetInfo().ClassName,hfInPCH);
+
+        wxString sAnimName = GetCoderContext()->GetUniqueName(_T("anim"));
+        Codef(_T("\twxAnimation %s(%n);\n"), sAnimName.wx_str(), m_sAnimation.wx_str());
+        Codef(_T("%C(%W, %I, %s, %P, %S, %T, %N);\n"), sAnimName.wx_str());
+
+        if(!m_bmpInactive.IsEmpty())
         {
-            AddHeader(_T("<wx/animate.h>"),GetInfo().ClassName,hfInPCH);
-
-            wxString sAnimName = GetCoderContext()->GetUniqueName(_T("anim"));
-            Codef(_T("\twxAnimation %s(%n);\n"), sAnimName.wx_str(), m_sAnimation.wx_str());
-            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %N);\n"), sAnimName.wx_str());
-
-            if(!m_bmpInactive.IsEmpty()){
-                Codef(_T("%ASetInactiveBitmap(%i);\n"), &m_bmpInactive, _T("wxART_OTHER"));
-            }
-            if(m_bPlay){
-                Codef(_T("%APlay();\n"));
-            }
-
-            BuildSetupWindowCode();
-            return;
+            Codef(_T("%ASetInactiveBitmap(%i);\n"), &m_bmpInactive, _T("wxART_OTHER"));
+        }
+        if(m_bPlay)
+        {
+            Codef(_T("%APlay();\n"));
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsAnimationCtrl::OnBuildCreatingCode"),GetLanguage());
-        }
+        BuildSetupWindowCode();
+        return;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsAnimationCtrl::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 
@@ -93,7 +95,8 @@ void wxsAnimationCtrl::OnBuildCreatingCode()
  */
 wxObject* wxsAnimationCtrl::OnBuildPreview(wxWindow* parent,long flags)
 {
-    wxAnimation anim; anim.LoadFile(m_sAnimation);
+    wxAnimation anim;
+    anim.LoadFile(m_sAnimation);
     wxAnimationCtrl* preview = new wxAnimationCtrl(parent, GetId(), anim, Pos(parent), Size(parent), Style());
 
     if(!m_bmpInactive.IsEmpty())

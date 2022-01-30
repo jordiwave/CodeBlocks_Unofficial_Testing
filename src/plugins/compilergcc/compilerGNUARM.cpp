@@ -10,9 +10,9 @@
 #include <sdk.h>
 #include <prep.h>
 #ifndef CB_PRECOMP
-    #include <wx/intl.h>
-    #include <wx/regex.h>
-    #include <wx/utils.h> // wxGetOSDirectory, wxGetEnv
+#include <wx/intl.h>
+#include <wx/regex.h>
+#include <wx/utils.h> // wxGetOSDirectory, wxGetEnv
 #endif
 #include <wx/filefn.h> // wxFileExists
 #include <wx/fileconf.h> // wxFileConfig

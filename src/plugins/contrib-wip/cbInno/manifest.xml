@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="2" minor="16"  release="0" />
+    <Plugin name="cbInno">
+        <Value title="cbInno" />
+        <Value version="0.1.1" />
+        <Value description="INNO editor" />
+        <Value author="Jonas Zinn" />
+        <Value authorEmail="Jonas.S.Zinn@gmail.com" />
+        <Value authorWebsite="https://github.com/zinnjonas/cbInno" />
+        <Value thanksTo="" />
+        <Value license="GPL" />
+    </Plugin>
+    <!-- Extra file="lexers/lexer_inno.sample" / -->
+    <!-- Extra file="lexers/lexer_inno.xml" / -->
+</CodeBlocks_plugin_manifest_file>

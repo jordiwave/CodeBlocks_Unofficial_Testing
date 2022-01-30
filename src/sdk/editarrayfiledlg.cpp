@@ -10,12 +10,12 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/intl.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/button.h>
-    #include <wx/msgdlg.h>
-    #include <wx/listbox.h>
-    #include "globals.h"
+#include <wx/intl.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/msgdlg.h>
+#include <wx/listbox.h>
+#include "globals.h"
 #endif
 
 #include <wx/filedlg.h>
@@ -32,8 +32,8 @@ END_EVENT_TABLE()
 
 EditArrayFileDlg::EditArrayFileDlg(wxWindow* parent, wxArrayString& array, bool useRelativePaths, const wxString& basePath)
     : m_Array(array),
-    m_UseRelativePaths(useRelativePaths),
-    m_BasePath(basePath)
+      m_UseRelativePaths(useRelativePaths),
+      m_BasePath(basePath)
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditArrayString"),_T("wxScrollingDialog"));
@@ -78,11 +78,11 @@ void EditArrayFileDlg::EndModal(int retCode)
 void EditArrayFileDlg::OnAdd(wxCommandEvent& WXUNUSED(event))
 {
     wxFileDialog dlg(this,
-                    _("Select file"),
-                    m_BasePath,
-                    _T(""),
-                    FileFilters::GetFilterAll(),
-                    wxFD_OPEN | compatibility::wxHideReadonly);
+                     _("Select file"),
+                     m_BasePath,
+                     _T(""),
+                     FileFilters::GetFilterAll(),
+                     wxFD_OPEN | compatibility::wxHideReadonly);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
@@ -97,11 +97,11 @@ void EditArrayFileDlg::OnEdit(wxCommandEvent& WXUNUSED(event))
 {
     wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
     wxFileDialog dlg(this,
-                    _("Select file"),
-                    m_BasePath,
-                    list->GetStringSelection(),
-                    FileFilters::GetFilterAll(),
-                    wxFD_OPEN | compatibility::wxHideReadonly);
+                     _("Select file"),
+                     m_BasePath,
+                     list->GetStringSelection(),
+                     FileFilters::GetFilterAll(),
+                     wxFD_OPEN | compatibility::wxHideReadonly);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;

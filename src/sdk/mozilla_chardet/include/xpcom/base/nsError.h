@@ -129,10 +129,10 @@
   } nsresult;
 */
 
-  /*
-   * enum classes don't place their initializers in the global scope, so we need
-   * #define's for compatibility with old code.
-   */
+/*
+ * enum classes don't place their initializers in the global scope, so we need
+ * #define's for compatibility with old code.
+ */
 /*
   #include "ErrorListCxxDefines.h"
 #elif defined(MOZ_HAVE_CXX11_ENUM_TYPE)
@@ -145,12 +145,12 @@
   } nsresult;
 #elif defined(__cplusplus)
 */
-  /*
-   * We're C++ in an old compiler lacking enum classes *and* typed enums (likely
-   * gcc < 4.5.1 as clang/MSVC have long supported one or both), or compiler
-   * support is unknown.  Yet nsresult must have unsigned 32-bit representation.
-   * So just make it a typedef, and implement the constants with global consts.
-   */
+/*
+ * We're C++ in an old compiler lacking enum classes *and* typed enums (likely
+ * gcc < 4.5.1 as clang/MSVC have long supported one or both), or compiler
+ * support is unknown.  Yet nsresult must have unsigned 32-bit representation.
+ * So just make it a typedef, and implement the constants with global consts.
+ */
 /*
   typedef uint32_t nsresult;
 
@@ -162,19 +162,19 @@
     ;
 #else
 */
-  /*
-   * C doesn't have any way to fix the type underlying an enum, and enum
-   * initializers can't have values outside the range of 'int'.  So typedef
-   * nsresult to the correct unsigned type, and fall back to using #defines for
-   * all error constants.
-   */
-  typedef uint32_t nsresult;
+/*
+ * C doesn't have any way to fix the type underlying an enum, and enum
+ * initializers can't have values outside the range of 'int'.  So typedef
+ * nsresult to the correct unsigned type, and fall back to using #defines for
+ * all error constants.
+ */
+typedef uint32_t nsresult;
 // Error codes, see ErrorList.h:
-  #define NS_OK                    0
-  #define nsMBCSGroupProberFailed  1
-  #define nsSBCSGroupProberFailed  2
-  #define nsLatin1ProberFailed     3
-  #define nsEscCharSetProberFailed 4
+#define NS_OK                    0
+#define nsMBCSGroupProberFailed  1
+#define nsSBCSGroupProberFailed  2
+#define nsLatin1ProberFailed     3
+#define nsEscCharSetProberFailed 4
 /*
   #include "ErrorListCDefines.h"
 #endif
@@ -190,8 +190,9 @@
  */
 
 #ifdef __cplusplus
-inline uint32_t NS_FAILED_impl(nsresult _nsresult) {
-  return static_cast<uint32_t>(_nsresult) & 0x80000000;
+inline uint32_t NS_FAILED_impl(nsresult _nsresult)
+{
+    return static_cast<uint32_t>(_nsresult) & 0x80000000;
 }
 #define NS_FAILED(_nsresult)    ((bool)MOZ_UNLIKELY(NS_FAILED_impl(_nsresult)))
 #define NS_SUCCEEDED(_nsresult) ((bool)MOZ_LIKELY(!NS_FAILED_impl(_nsresult)))
@@ -224,14 +225,14 @@ static_assert(sizeof(nsresult) == sizeof(uint32_t),
 #define NS_ERROR_GENERATE_FAILURE(module, code) \
   NS_ERROR_GENERATE(NS_ERROR_SEVERITY_ERROR, module, code)
 
- /*
-  * This will return the nsresult corresponding to the most recent NSPR failure
-  * returned by PR_GetError.
-  *
-  ***********************************************************************
-  *      Do not depend on this function. It will be going away!
-  ***********************************************************************
-  */
+/*
+ * This will return the nsresult corresponding to the most recent NSPR failure
+ * returned by PR_GetError.
+ *
+ ***********************************************************************
+ *      Do not depend on this function. It will be going away!
+ ***********************************************************************
+ */
 /*
 extern nsresult
 NS_ErrorAccordingToNSPR();
@@ -243,14 +244,17 @@ NS_ErrorAccordingToNSPR();
  */
 
 #ifdef __cplusplus
-inline uint16_t NS_ERROR_GET_CODE(nsresult err) {
-  return uint32_t(err) & 0xffff;
+inline uint16_t NS_ERROR_GET_CODE(nsresult err)
+{
+    return uint32_t(err) & 0xffff;
 }
-inline uint16_t NS_ERROR_GET_MODULE(nsresult err) {
-  return ((uint32_t(err) >> 16) - NS_ERROR_MODULE_BASE_OFFSET) & 0x1fff;
+inline uint16_t NS_ERROR_GET_MODULE(nsresult err)
+{
+    return ((uint32_t(err) >> 16) - NS_ERROR_MODULE_BASE_OFFSET) & 0x1fff;
 }
-inline bool NS_ERROR_GET_SEVERITY(nsresult err) {
-  return uint32_t(err) >> 31;
+inline bool NS_ERROR_GET_SEVERITY(nsresult err)
+{
+    return uint32_t(err) >> 31;
 }
 #else
 #define NS_ERROR_GET_CODE(err)     ((err) & 0xffff)

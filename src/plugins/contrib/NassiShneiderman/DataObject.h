@@ -26,7 +26,7 @@ public:
     virtual bool GetDataHere(const wxDataFormat& format, void *pBuf)const;
     bool HasBrick();
 
-	static const wxChar * NassiFormatId;
+    static const wxChar * NassiFormatId;
 
 private:
     NassiDataObject(const NassiDataObject &p);

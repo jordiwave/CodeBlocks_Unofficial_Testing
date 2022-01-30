@@ -24,8 +24,10 @@ private:
     SQSharedState *_sharedstate;
 };
 
-struct RefTable {
-    struct RefNode {
+struct RefTable
+{
+    struct RefNode
+    {
         SQObjectPtr obj;
         SQUnsignedInteger refs;
         struct RefNode *next;

@@ -5,16 +5,16 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 class TextCtrl : public wxTextCtrl
 {
 public:
-        TextCtrl(wxWindow* parent, wxWindowID id, const wxString& value = _T(""), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
-        virtual ~TextCtrl();
+    TextCtrl(wxWindow* parent, wxWindowID id, const wxString& value = _T(""), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
+    virtual ~TextCtrl();
 
-        void SetOrigSize(wxSize size);
+    void SetOrigSize(wxSize size);
 protected:
 private:
     void OnText(wxCommandEvent &event);

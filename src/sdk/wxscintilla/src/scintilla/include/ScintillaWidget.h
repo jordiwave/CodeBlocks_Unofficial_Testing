@@ -30,16 +30,18 @@ extern "C" {
 typedef struct _ScintillaObject ScintillaObject;
 typedef struct _ScintillaClass  ScintillaObjectClass;
 
-struct _ScintillaObject {
-	GtkContainer cont;
-	void *pscin;
+struct _ScintillaObject
+{
+    GtkContainer cont;
+    void *pscin;
 };
 
-struct _ScintillaClass {
-	GtkContainerClass parent_class;
+struct _ScintillaClass
+{
+    GtkContainerClass parent_class;
 
-	void (* command) (ScintillaObject *sci, int cmd, GtkWidget *window);
-	void (* notify) (ScintillaObject *sci, int id, SCNotification *scn);
+    void (* command) (ScintillaObject *sci, int cmd, GtkWidget *window);
+    void (* notify) (ScintillaObject *sci, int id, SCNotification *scn);
 };
 
 GType		scintilla_object_get_type		(void);

@@ -27,21 +27,21 @@
 /** \brief Class for wxMediaCtrl widget */
 class wxsMediaCtrl: public wxsWidget
 {
-    public:
+public:
 
-        wxsMediaCtrl(wxsItemResData* Data);
+    wxsMediaCtrl(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        wxString             m_sMediaFile;            //!< The media file path or URI.
-        wxString             m_sProxy;                //!< Proxy URI.
-        bool                    m_bPlay;                    //!< Play the animation.
-        long                    m_iControls;                //!< wxMediaCtrlPlayerControls enum value.
-        long                    m_iVolume;                //!< The volume level. This value is divided by 10 to obtain the actual level.
+    wxString             m_sMediaFile;            //!< The media file path or URI.
+    wxString             m_sProxy;                //!< Proxy URI.
+    bool                    m_bPlay;                    //!< Play the animation.
+    long                    m_iControls;                //!< wxMediaCtrlPlayerControls enum value.
+    long                    m_iVolume;                //!< The volume level. This value is divided by 10 to obtain the actual level.
 //        wxString             m_sBackend;            //!< The media back-end.
 //        wxValidator         m_validator;                //!< The control validator.
 

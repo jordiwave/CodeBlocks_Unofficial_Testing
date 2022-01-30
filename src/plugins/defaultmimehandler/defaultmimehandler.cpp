@@ -9,17 +9,17 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/filename.h>
-    #include <wx/fs_zip.h>
-    #include "globals.h"
-    #include <wx/intl.h>
-    #include <wx/utils.h>
-    #include <wx/xrc/xmlres.h>
-    #include "cbeditor.h"
-    #include "configmanager.h"
-    #include "editormanager.h"
-    #include "logmanager.h"
-    #include "manager.h"
+#include <wx/filename.h>
+#include <wx/fs_zip.h>
+#include "globals.h"
+#include <wx/intl.h>
+#include <wx/utils.h>
+#include <wx/xrc/xmlres.h>
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "logmanager.h"
+#include "manager.h"
 #endif
 
 #include <wx/choicdlg.h>
@@ -33,7 +33,7 @@
 // this auto-registers the plugin
 namespace
 {
-    PluginRegistrant<DefaultMimeHandler> reg(_T("FilesExtensionHandler"));
+PluginRegistrant<DefaultMimeHandler> reg(_T("FilesExtensionHandler"));
 }
 
 DefaultMimeHandler::DefaultMimeHandler()
@@ -164,7 +164,7 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
     if (mt)
         return DoOpenFile(mt, filename);
     else if (the_file.GetExt().CmpNoCase(_T("htm")) == 0 ||
-            the_file.GetExt().CmpNoCase(_T("html")) == 0)
+             the_file.GetExt().CmpNoCase(_T("html")) == 0)
     {
         // embedded help viewer (unless the user has added an explicit association manually)
         m_Html->Open(filename);
@@ -184,8 +184,8 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
         const wxString message = _("Code::Blocks does not yet know how to open this kind of file.\n"
                                    "Please select what you want to do with it:");
         const int answer = cbGetSingleChoiceIndex(message, _("What to do?"), choices,
-                                                  Manager::Get()->GetAppWindow(), wxSize(400, 300),
-                                                  0);
+                           Manager::Get()->GetAppWindow(), wxSize(400, 300),
+                           0);
         if (answer != -1)
         {
             wxString ext = the_file.GetExt().Lower();
@@ -194,41 +194,42 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
                             : wxString(_T("*.")) + ext;
             switch (answer)
             {
-                case 0: // choose external program
+            case 0: // choose external program
+            {
+                wxString prg = ChooseExternalProgram();
+                if (!prg.IsEmpty())
                 {
-                    wxString prg = ChooseExternalProgram();
-                    if (!prg.IsEmpty())
-                    {
-                        mt = new cbMimeType;
-                        mt->wildcard = wild;
-                        mt->useEditor = false;
-                        mt->useAssoc = false;
-                        mt->program = prg;
-                        mt->programIsModal = cbMessageBox(_("Do you want Code::Blocks to be disabled while the external program is running?"), _("Question"), wxICON_QUESTION | wxYES_NO) == wxID_YES;
-                        m_MimeTypes.Add(mt);
-                        return DoOpenFile(mt, filename);
-                    }
-                    break;
-                }
-                case 1: // open with associated app
                     mt = new cbMimeType;
                     mt->wildcard = wild;
                     mt->useEditor = false;
-                    mt->useAssoc = true;
-                    m_MimeTypes.Add(mt);
-                    return DoOpenFile(mt, filename);
-                    break;
-                case 2: // open in editor
-                {
-                    mt = new cbMimeType;
-                    mt->wildcard = wild;
-                    mt->useEditor = true;
                     mt->useAssoc = false;
+                    mt->program = prg;
+                    mt->programIsModal = cbMessageBox(_("Do you want Code::Blocks to be disabled while the external program is running?"), _("Question"), wxICON_QUESTION | wxYES_NO) == wxID_YES;
                     m_MimeTypes.Add(mt);
                     return DoOpenFile(mt, filename);
-                    break;
                 }
-                default: break;
+                break;
+            }
+            case 1: // open with associated app
+                mt = new cbMimeType;
+                mt->wildcard = wild;
+                mt->useEditor = false;
+                mt->useAssoc = true;
+                m_MimeTypes.Add(mt);
+                return DoOpenFile(mt, filename);
+                break;
+            case 2: // open in editor
+            {
+                mt = new cbMimeType;
+                mt->wildcard = wild;
+                mt->useEditor = true;
+                mt->useAssoc = false;
+                m_MimeTypes.Add(mt);
+                return DoOpenFile(mt, filename);
+                break;
+            }
+            default:
+                break;
             }
         }
         else if (answer == wxID_CANCEL)
@@ -261,10 +262,10 @@ wxString DefaultMimeHandler::ChooseExternalProgram()
 {
     wxFileDialog dlg(0,
                      _("Select program"),
-                    wxEmptyString,
-                    wxEmptyString,
-                    FileFilters::GetFilterAll(),
-                    wxFD_OPEN | compatibility::wxHideReadonly);
+                     wxEmptyString,
+                     wxEmptyString,
+                     FileFilters::GetFilterAll(),
+                     wxFD_OPEN | compatibility::wxHideReadonly);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
         return dlg.GetPath();
@@ -290,15 +291,15 @@ int DefaultMimeHandler::DoOpenFile(cbMimeType* mt, const wxString& filename)
     else if (mt->useAssoc)
     {
         // easy too. use associated app
-        #ifdef __WXMSW__
+#ifdef __WXMSW__
         ShellExecute(0, wxString(_T("open")).c_str(), filename.c_str(), 0, 0, SW_SHOW);
-        #endif
-        #ifdef __WXGTK__
+#endif
+#ifdef __WXGTK__
         wxExecute(wxString::Format(_T("xdg-open \"%s\""), filename.c_str()));
-        #endif
-        #ifdef __WXMAC__
+#endif
+#ifdef __WXMAC__
         wxExecute(wxString::Format(_T("open \"%s\""), filename.c_str()));
-        #endif
+#endif
         return 0;
     }
     else

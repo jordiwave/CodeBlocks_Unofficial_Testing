@@ -18,7 +18,7 @@ JumpData::~JumpData()
 // ----------------------------------------------------------------------------
 {
     //dtor
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("JumpData dtor"));
-    #endif
+#endif
 }

@@ -12,16 +12,17 @@
 #include <sdk.h> // Code::Blocks SDK
 
 #ifndef CB_PRECOMP
-    #include <algorithm>
-    #include <configmanager.h>
-    #include <cbeditor.h>
-    #include <editormanager.h>
+#include <algorithm>
+#include <configmanager.h>
+#include <cbeditor.h>
+#include <editormanager.h>
 #endif
 
 #include <cbstyledtextctrl.h>
 #include <cbcolourmanager.h>
 
-enum Indicator : int {
+enum Indicator : int
+{
     Background = 10,
     TextBackground,
     Selection,
@@ -49,7 +50,7 @@ void Highlighter::Call(cbEditor* ctrl, wxScintillaEvent &event) const
 
     // check the event type if it is an update event
     if ( event.GetEventType() == wxEVT_SCI_UPDATEUI ||
-         event.GetEventType() == wxEVT_SCI_PAINTED )
+            event.GetEventType() == wxEVT_SCI_PAINTED )
     {
         HighlightOccurrencesOfSelection(ctrl);
         OnEditorUpdateUI(ctrl);
@@ -101,8 +102,8 @@ void Highlighter::OnEditorChangeTextRange(cbEditor* ctrl, int start, int end)con
         end = stc->GetLineEndPosition(stc->LineFromPosition(end));
 
         if (   m_InvalidatedRangesStart.GetCount() == 0
-            || m_InvalidatedRangesStart.Last() != start
-            || m_InvalidatedRangesEnd.Last() != end )
+                || m_InvalidatedRangesStart.Last() != start
+                || m_InvalidatedRangesEnd.Last() != end )
         {
             m_InvalidatedRangesStart.Add(start);
             m_InvalidatedRangesEnd.Add(end);
@@ -238,7 +239,7 @@ void Highlighter::DoSetIndications(cbEditor* ctrl)const
             stc->SetIndicatorCurrent(Indicator::Background);
 
             for (std::set<wxString>::iterator it = m_Texts.begin();
-                 it != m_Texts.end(); it++ )
+                    it != m_Texts.end(); it++ )
             {
                 wxString text = *it;
 
@@ -248,8 +249,8 @@ void Highlighter::DoSetIndications(cbEditor* ctrl)const
 
                 int endPos = 0; // we need this to work properly with multibyte characters
                 for ( int pos = stc->FindText(startpos, endpos, text, flag, &endPos);
-                    pos != wxSCI_INVALID_POSITION ;
-                    pos = stc->FindText(pos+=text.Len(), endpos, text, flag, &endPos) )
+                        pos != wxSCI_INVALID_POSITION ;
+                        pos = stc->FindText(pos+=text.Len(), endpos, text, flag, &endPos) )
                 {
                     if (overrideText)
                     {
@@ -373,7 +374,7 @@ void Highlighter::HighlightOccurrencesOfSelection(cbEditor* ctrl)const
         for (int ii = 0; ii < count; ++ii)
         {
             selections.push_back(Selections::value_type(control->GetSelectionNStart(ii),
-                                                        control->GetSelectionNEnd(ii)));
+                                 control->GetSelectionNEnd(ii)));
         }
         std::sort(selections.begin(), selections.end());
         Selections::const_iterator currSelection = selections.begin();
@@ -381,8 +382,8 @@ void Highlighter::HighlightOccurrencesOfSelection(cbEditor* ctrl)const
         // search for every occurence
         int endPos = 0; // we need this to work properly with multibyte characters
         for ( int pos = control->FindText(0, eof, selectedText, flag, &endPos);
-            pos != wxSCI_INVALID_POSITION ;
-            pos = control->FindText(pos+=selectedText.Len(), eof, selectedText, flag, &endPos) )
+                pos != wxSCI_INVALID_POSITION ;
+                pos = control->FindText(pos+=selectedText.Len(), eof, selectedText, flag, &endPos) )
         {
             // check if the found text is selected
             // if it is don't add indicator for it, because it looks ugly

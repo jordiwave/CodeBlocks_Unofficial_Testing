@@ -27,7 +27,7 @@
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/dynarray.h>
+#include <wx/dynarray.h>
 #endif
 
 #include "wx/chartpoints.h"
@@ -52,39 +52,39 @@ class WXDLLIMPEXP_CHART wxChart
 /* C::B end */
 {
 public:
-	wxChart();
-	virtual ~wxChart();
+    wxChart();
+    virtual ~wxChart();
 
-	// ChartPoints utility
-	//--------------------
-	void Add(wxChartPoints* cp);
-	void Clear();
+    // ChartPoints utility
+    //--------------------
+    void Add(wxChartPoints* cp);
+    void Clear();
 
-	// Get statistics
-	//---------------
-	ChartValue GetMaxX() const;
-	ChartValue GetMinX() const;
-	ChartValue GetMaxY() const;
-	ChartValue GetMinY() const;
-	int GetNumBarPoints() const;
-	int GetNumBar3DPoints() const;
+    // Get statistics
+    //---------------
+    ChartValue GetMaxX() const;
+    ChartValue GetMinX() const;
+    ChartValue GetMaxY() const;
+    ChartValue GetMinY() const;
+    int GetNumBarPoints() const;
+    int GetNumBar3DPoints() const;
 
-	// Set zoom
-	//-------------
-	void SetZoom(double z);
+    // Set zoom
+    //-------------
+    void SetZoom(double z);
     double GetZoom() const;
 
-	// Set sizes for drawing
-	//----------------------
-	void SetSizes(wxChartSizes *sizes);
+    // Set sizes for drawing
+    //----------------------
+    void SetSizes(wxChartSizes *sizes);
     wxChartSizes* GetSizes() const;
 
-	// Draw chart
-	//-----------
-	virtual void Draw(CHART_HPAINT hp, CHART_HRECT hr);
+    // Draw chart
+    //-----------
+    virtual void Draw(CHART_HPAINT hp, CHART_HRECT hr);
 
 private:
-	ListChartPoints m_LCP;
+    ListChartPoints m_LCP;
 };
 
 #endif // __CHART_H__

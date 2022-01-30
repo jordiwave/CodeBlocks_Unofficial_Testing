@@ -22,18 +22,18 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/dcclient.h>
-    #include <wx/filedlg.h>
-    #include <wx/filename.h>
-    #include <wx/sizer.h>
-    #include <wx/choicdlg.h>
+#include <wx/dcclient.h>
+#include <wx/filedlg.h>
+#include <wx/filename.h>
+#include <wx/sizer.h>
+#include <wx/choicdlg.h>
 
-    #include <manager.h>
-    #include <editormanager.h>
-    #include <configmanager.h>
-    #include <logmanager.h>
-    #include <globals.h>
-    #include "prep.h"
+#include <manager.h>
+#include <editormanager.h>
+#include <configmanager.h>
+#include <logmanager.h>
+#include <globals.h>
+#include "prep.h"
 #endif // CB_PRECOMP
 
 #include <wx/dcbuffer.h>
@@ -61,16 +61,16 @@
 
 namespace
 {
-    inline int NWD( int a, int b )
+inline int NWD( int a, int b )
+{
+    while ( b )
     {
-        while ( b )
-        {
-            int c = a % b;
-            a = b;
-            b = c;
-        }
-        return a;
+        int c = a % b;
+        a = b;
+        b = c;
     }
+    return a;
+}
 }
 
 //(*IdInit(HexEditPanel)
@@ -142,8 +142,8 @@ const long HexEditPanel::ID_MENUITEM28 = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(HexEditPanel,EditorBase)
-	//(*EventTable(HexEditPanel)
-	//*)
+    //(*EventTable(HexEditPanel)
+    //*)
 END_EVENT_TABLE()
 
 HexEditPanel::EditorsSet HexEditPanel::m_AllEditors;
@@ -467,8 +467,8 @@ HexEditPanel::~HexEditPanel()
     delete m_Content;
     m_Content = 0;
 
-	//(*Destroy(HexEditPanel)
-	//*)
+    //(*Destroy(HexEditPanel)
+    //*)
 }
 
 void HexEditPanel::SetFontSize( int size )
@@ -526,10 +526,10 @@ void HexEditPanel::RecalculateCoefs(wxDC &dc)
 
     int colsLeftForViews =
         m_Cols
-          - 8               // Offset
-          - 1               // ':' after offset
-          - 2 * MAX_VIEWS   // spacing between views
-          - 2;              // right margin
+        - 8               // Offset
+        - 1               // ':' after offset
+        - 2 * MAX_VIEWS   // spacing between views
+        - 2;              // right margin
 
     int maxByteInLine = (int)( colsLeftForViews / avgByteCharacters );
 
@@ -903,9 +903,14 @@ void HexEditPanel::RefreshStatus()
     {
         switch ( m_DigitView->GetDigitBits() )
         {
-            case 1: m_DigitBits->SetLabel( _("Bin") ); break;
-            case 4: m_DigitBits->SetLabel( _("Hex") ); break;
-            default: m_DigitBits->SetLabel( wxString::Format( _("%d bits") , m_DigitView->GetDigitBits() ) );
+        case 1:
+            m_DigitBits->SetLabel( _("Bin") );
+            break;
+        case 4:
+            m_DigitBits->SetLabel( _("Hex") );
+            break;
+        default:
+            m_DigitBits->SetLabel( wxString::Format( _("%d bits"), m_DigitView->GetDigitBits() ) );
         }
 
         if ( m_DigitView->GetLittleEndian() )
@@ -917,10 +922,17 @@ void HexEditPanel::RefreshStatus()
 
         switch ( m_ColsMode )
         {
-            case CM_SPECIFIED: m_ColsModeBtn->SetLabel( wxString::Format( _("Cols: %d"), m_ColsValue ) ); break;
-            case CM_MULT:      m_ColsModeBtn->SetLabel( wxString::Format( _("Cols: %d ( n * %d )"), m_ColsCount, m_ColsValue ) ); break;
-            case CM_POWER:     m_ColsModeBtn->SetLabel( wxString::Format( _("Cols: %d ( n ^ %d )"), m_ColsCount, m_ColsValue ) ); break;
-            default:           m_ColsModeBtn->SetLabel( wxString::Format( _("Cols: %d ( Any )"), m_ColsCount ) );
+        case CM_SPECIFIED:
+            m_ColsModeBtn->SetLabel( wxString::Format( _("Cols: %d"), m_ColsValue ) );
+            break;
+        case CM_MULT:
+            m_ColsModeBtn->SetLabel( wxString::Format( _("Cols: %d ( n * %d )"), m_ColsCount, m_ColsValue ) );
+            break;
+        case CM_POWER:
+            m_ColsModeBtn->SetLabel( wxString::Format( _("Cols: %d ( n ^ %d )"), m_ColsCount, m_ColsValue ) );
+            break;
+        default:
+            m_ColsModeBtn->SetLabel( wxString::Format( _("Cols: %d ( Any )"), m_ColsCount ) );
         }
     }
 }
@@ -934,110 +946,110 @@ void HexEditPanel::OnDrawAreaKeyDown(wxKeyEvent& event)
 
     switch ( event.GetKeyCode() )
     {
-        case WXK_LEFT:
-        {
-            m_ActiveView->MoveLeft();
-            break;
-        }
+    case WXK_LEFT:
+    {
+        m_ActiveView->MoveLeft();
+        break;
+    }
 
-        case WXK_RIGHT:
-        {
-            m_ActiveView->MoveRight();
-            break;
-        }
+    case WXK_RIGHT:
+    {
+        m_ActiveView->MoveRight();
+        break;
+    }
 
-        case WXK_UP:
-        {
-            m_ActiveView->MoveUp();
-            break;
-        }
+    case WXK_UP:
+    {
+        m_ActiveView->MoveUp();
+        break;
+    }
 
-        case WXK_DOWN:
+    case WXK_DOWN:
+    {
+        m_ActiveView->MoveDown();
+        break;
+    }
+
+    case WXK_PAGEDOWN:
+    {
+        for ( unsigned int i=0; i<m_Lines/2; i++ )
         {
             m_ActiveView->MoveDown();
-            break;
         }
+        break;
+    }
 
-        case WXK_PAGEDOWN:
+    case WXK_PAGEUP:
+    {
+        for ( unsigned int i=0; i<m_Lines/2; i++ )
         {
-            for ( unsigned int i=0; i<m_Lines/2; i++ )
+            m_ActiveView->MoveUp();
+        }
+        break;
+    }
+
+    case WXK_TAB:
+    {
+        m_ActiveView->SetActive( false );
+        int newViewId = -1;
+        for ( int i=0; i<MAX_VIEWS; ++i )
+        {
+            if ( m_ActiveView == m_Views[ i ] )
             {
-                m_ActiveView->MoveDown();
+                newViewId = ( i + 1 ) % MAX_VIEWS;
+                break;
             }
-            break;
         }
+        if ( newViewId < 0 ) newViewId = 0;
+        m_ActiveView = m_Views[ newViewId ];
+        m_ActiveView->SetActive( true );
+        m_ViewNotifyContentChange = true;
+        break;
+    }
 
-        case WXK_PAGEUP:
-        {
-            for ( unsigned int i=0; i<m_Lines/2; i++ )
-            {
-                m_ActiveView->MoveUp();
-            }
-            break;
-        }
+    case WXK_HOME:
+    {
+        m_Current = 0;
+        m_ViewNotifyOffsetChange = true;
+        break;
+    }
 
-        case WXK_TAB:
-        {
-            m_ActiveView->SetActive( false );
-            int newViewId = -1;
-            for ( int i=0; i<MAX_VIEWS; ++i )
-            {
-                if ( m_ActiveView == m_Views[ i ] )
-                {
-                    newViewId = ( i + 1 ) % MAX_VIEWS;
-                    break;
-                }
-            }
-            if ( newViewId < 0 ) newViewId = 0;
-            m_ActiveView = m_Views[ newViewId ];
-            m_ActiveView->SetActive( true );
-            m_ViewNotifyContentChange = true;
-            break;
-        }
+    case WXK_END:
+    {
 
-        case WXK_HOME:
-        {
-            m_Current = 0;
-            m_ViewNotifyOffsetChange = true;
-            break;
-        }
+        m_Current = m_Content->GetSize()-1;
+        m_ViewNotifyOffsetChange = true;
+        break;
+    }
 
-        case WXK_END:
-        {
+    case WXK_INSERT:
+    {
+        // Insert empty byte at current position
+        FileContentBase::ExtraUndoData data(
+            m_ActiveView,
+            m_Current, m_ActiveView->GetCurrentPositionFlags(),
+            m_Current, m_ActiveView->GetCurrentPositionFlags() );
+        m_Content->Add( data, m_Current, 1, 0 );
+        m_ViewNotifyContentChange = true;
+        break;
+    }
 
-            m_Current = m_Content->GetSize()-1;
-            m_ViewNotifyOffsetChange = true;
-            break;
-        }
+    case WXK_DELETE:
+    {
+        FileContentBase::ExtraUndoData data(
+            m_ActiveView,
+            m_Current, m_ActiveView->GetCurrentPositionFlags(),
+            m_Current, m_ActiveView->GetCurrentPositionFlags() );
+        m_Content->Remove( data, m_Current, 1 );
+        m_ViewNotifyContentChange = true;
+        break;
+    }
 
-        case WXK_INSERT:
-        {
-            // Insert empty byte at current position
-            FileContentBase::ExtraUndoData data(
-                m_ActiveView,
-                m_Current, m_ActiveView->GetCurrentPositionFlags(),
-                m_Current, m_ActiveView->GetCurrentPositionFlags() );
-            m_Content->Add( data, m_Current, 1, 0 );
-            m_ViewNotifyContentChange = true;
-            break;
-        }
-
-        case WXK_DELETE:
-        {
-            FileContentBase::ExtraUndoData data(
-                m_ActiveView,
-                m_Current, m_ActiveView->GetCurrentPositionFlags(),
-                m_Current, m_ActiveView->GetCurrentPositionFlags() );
-            m_Content->Remove( data, m_Current, 1 );
-            m_ViewNotifyContentChange = true;
-            break;
-        }
-
-        default:
-        {
-            m_ActiveView->PutChar( event.GetUnicodeKey() );
-            break;
-        }
+    default:
+    {
+        m_ActiveView->PutChar( event.GetUnicodeKey() );
+        break;
+    }
     }
 
     if ( m_ViewNotifyOffsetChange )
@@ -1165,11 +1177,11 @@ bool HexEditPanel::SaveAs()
         Path = mgr->Read(_T("/file_dialogs/save_file_as/directory"), Path);
 
     wxFileDialog dlg(Manager::Get()->GetAppWindow(),
-                      _("Save file"),
-                      Path,
-                      fname.GetFullName(),
-                      _T("*.*"),//m_filecontent->GetWildcard(),
-                      wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+                     _("Save file"),
+                     Path,
+                     fname.GetFullName(),
+                     _T("*.*"),//m_filecontent->GetWildcard(),
+                     wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK) // cancelled out
     {
@@ -1382,9 +1394,14 @@ void HexEditPanel::OnSpecialKeyDown(wxKeyEvent& event)
     {
         switch ( event.GetKeyCode() )
         {
-            case 'G': ProcessGoto(); return;
-            case 'F': ProcessSearch(); return;
-            default: break;
+        case 'G':
+            ProcessGoto();
+            return;
+        case 'F':
+            ProcessSearch();
+            return;
+        default:
+            break;
         }
     }
 
@@ -1419,15 +1436,15 @@ void HexEditPanel::ProcessGoto()
     for ( ;; )
     {
         str = cbGetTextFromUser(
-            _("Enter offset\n"
-              "\n"
-              "Available forms are:\n"
-              " * Decimal ( 100 )\n"
-              " * Hexadecimal ( 1AB, 0x1AB, 1ABh )\n"
-              " * Offset from current ( +100, -100, +0x1AB )"),
-            _("Goto offset"),
-            str,
-            this);
+                  _("Enter offset\n"
+                    "\n"
+                    "Available forms are:\n"
+                    " * Decimal ( 100 )\n"
+                    " * Hexadecimal ( 1AB, 0x1AB, 1ABh )\n"
+                    " * Offset from current ( +100, -100, +0x1AB )"),
+                  _("Goto offset"),
+                  str,
+                  this);
 
         if ( str.IsEmpty() ) return;
         str.Trim( true ).Trim( false );
@@ -1795,22 +1812,22 @@ bool HexEditPanel::MatchColumnsCount(int colsCount)
 {
     switch ( m_ColsMode )
     {
-        case CM_MULT:
-            return ( colsCount % m_ColsValue ) == 0;
+    case CM_MULT:
+        return ( colsCount % m_ColsValue ) == 0;
 
-        case CM_SPECIFIED:
-            return colsCount == m_ColsValue;
+    case CM_SPECIFIED:
+        return colsCount == m_ColsValue;
 
-        case CM_POWER:
-            while ( colsCount > 1 )
-            {
-                if ( colsCount % m_ColsValue ) return false;
-                colsCount /= m_ColsValue;
-            }
-            return true;
+    case CM_POWER:
+        while ( colsCount > 1 )
+        {
+            if ( colsCount % m_ColsValue ) return false;
+            colsCount /= m_ColsValue;
+        }
+        return true;
 
-        default:
-            return true;
+    default:
+        return true;
     }
 }
 
@@ -1825,9 +1842,14 @@ void HexEditPanel::OnButton4Click1(wxCommandEvent& /*event*/)
 
     switch ( index )
     {
-        case 0: test = &Expression::GetTests(); break;
-        case 1: test = &FileContentDisk::GetTests(); break;
-        default: break;
+    case 0:
+        test = &Expression::GetTests();
+        break;
+    case 1:
+        test = &FileContentDisk::GetTests();
+        break;
+    default:
+        break;
     }
 
     if ( !test ) return;

@@ -50,10 +50,10 @@ public:
                     int font_attr        = STE_STYLE_FONT_NONE,
                     int use_default      = STE_STYLE_USEDEFAULT_ALL,
                     int style_uses       = STE_STYLE_USES_ALL)
-                     : m_styleName(name), m_fore_colour(fore_colour),
-                       m_back_colour(back_colour), m_faceName(face),
-                       m_font_size(font_size), m_font_attr(font_attr),
-                       m_use_default(use_default), m_style_uses(style_uses) {}
+        : m_styleName(name), m_fore_colour(fore_colour),
+          m_back_colour(back_colour), m_faceName(face),
+          m_font_size(font_size), m_font_attr(font_attr),
+          m_use_default(use_default), m_style_uses(style_uses) {}
 
     wxString m_styleName;    ///< human readable name of the style
     int      m_fore_colour;  ///< foreground colour, 0xRRGGBB
@@ -76,7 +76,9 @@ public:
                (m_style_uses  == style.m_style_uses);
     }
     bool operator != (const wxSTEditorStyle& style) const
-        { return !(*this == style); }
+    {
+        return !(*this == style);
+    }
 };
 
 WX_DECLARE_OBJARRAY_WITH_DECL(wxSTEditorStyle, wxArraySTEditorStyle, class WXDLLIMPEXP_STEDIT);
@@ -104,18 +106,32 @@ typedef class WXDLLIMPEXP_STEDIT SortedPairArrayNumberKey<int, wxArrayInt, wxSTE
 class WXDLLIMPEXP_STEDIT wxSTEditorStyles : public wxSTEditorPrefBase
 {
 public:
-    wxSTEditorStyles(bool create = false) { Init(); if (create) Create(); }
-    wxSTEditorStyles(const wxSTEditorStyles &styles) { Init(); Create(styles); }
+    wxSTEditorStyles(bool create = false)
+    {
+        Init();
+        if (create) Create();
+    }
+    wxSTEditorStyles(const wxSTEditorStyles &styles)
+    {
+        Init();
+        Create(styles);
+    }
 
     virtual ~wxSTEditorStyles() {}
 
-    bool IsOk() const { return m_refData != NULL; }
+    bool IsOk() const
+    {
+        return m_refData != NULL;
+    }
     bool Create();                                  ///< (re)create as new
     bool Create(const wxSTEditorStyles &other);     ///< make a Refed copy of other
     //bool Create(wxSTEditor *editor);              ///< can't get styles from Scintilla
     void Copy(const wxSTEditorStyles &other);       ///< make a full copy
     void Reset();                                   ///< reset to default vals
-    void Destroy() { UnRef(); }
+    void Destroy()
+    {
+        UnRef();
+    }
 
     /// Do these two styles have the same values
     bool IsEqualTo(const wxSTEditorStyles &styles) const;
@@ -128,7 +144,10 @@ public:
     // ------------------------------------------------------------------------
 
     /// Is this style set
-    bool HasStyle(int style_n) const { return FindNthStyle(style_n) != wxNOT_FOUND; }
+    bool HasStyle(int style_n) const
+    {
+        return FindNthStyle(style_n) != wxNOT_FOUND;
+    }
     /// Get style_n (index) from the name of the style or wxNOT_FOUND
     int GetStyleIndex(const wxString &name) const;
     /// Get the list of styles in sorted numerical order to iterate through styles.
@@ -165,55 +184,109 @@ public:
     /// Get a human readable name for the style
     wxString GetStyleName(int style_n) const;
 
-    wxColour GetForegroundColour(int style_n, bool use_default = true) const { return IntTowxColour(GetForegroundColourInt(style_n, use_default)); }
-      int GetForegroundColourInt(int style_n, bool use_default = true) const;
-    wxColour GetBackgroundColour(int style_n, bool use_default = true) const { return IntTowxColour(GetBackgroundColourInt(style_n, use_default)); }
-      int GetBackgroundColourInt(int style_n, bool use_default = true) const;
+    wxColour GetForegroundColour(int style_n, bool use_default = true) const
+    {
+        return IntTowxColour(GetForegroundColourInt(style_n, use_default));
+    }
+    int GetForegroundColourInt(int style_n, bool use_default = true) const;
+    wxColour GetBackgroundColour(int style_n, bool use_default = true) const
+    {
+        return IntTowxColour(GetBackgroundColourInt(style_n, use_default));
+    }
+    int GetBackgroundColourInt(int style_n, bool use_default = true) const;
 
     wxFont GetFont(int style_n, bool use_default = true) const;
     wxString GetFaceName(int style_n, bool use_default = true) const;
     int GetSize(int style_n, bool use_default = true) const;
     /// Get the attributes as enum STE_FontAttrType
     int GetFontAttr(int style_n, bool use_default = true) const;
-      bool GetBold(int style_n, bool use_default = true) const       { return STE_HASBIT(GetFontAttr(style_n, use_default), STE_STYLE_FONT_BOLD); }
-      bool GetItalic(int style_n, bool use_default = true) const     { return STE_HASBIT(GetFontAttr(style_n, use_default), STE_STYLE_FONT_ITALIC); }
-      bool GetUnderlined(int style_n, bool use_default = true) const { return STE_HASBIT(GetFontAttr(style_n, use_default), STE_STYLE_FONT_UNDERLINED); }
-      bool GetHidden(int style_n, bool use_default = true) const     { return STE_HASBIT(GetFontAttr(style_n, use_default), STE_STYLE_FONT_HIDDEN); }
-      bool GetEOLFilled(int style_n, bool use_default = true) const  { return STE_HASBIT(GetFontAttr(style_n, use_default), STE_STYLE_FONT_EOLFILLED); }
-      bool GetHotSpot(int style_n, bool use_default = true) const    { return STE_HASBIT(GetFontAttr(style_n, use_default), STE_STYLE_FONT_HOTSPOT); }
-      /// returns wxSTC_CASE_MIXED/UPPER/LOWER
-      int  GetCase(int style_n, bool use_default = true) const;
+    bool GetBold(int style_n, bool use_default = true) const
+    {
+        return STE_HASBIT(GetFontAttr(style_n, use_default), STE_STYLE_FONT_BOLD);
+    }
+    bool GetItalic(int style_n, bool use_default = true) const
+    {
+        return STE_HASBIT(GetFontAttr(style_n, use_default), STE_STYLE_FONT_ITALIC);
+    }
+    bool GetUnderlined(int style_n, bool use_default = true) const
+    {
+        return STE_HASBIT(GetFontAttr(style_n, use_default), STE_STYLE_FONT_UNDERLINED);
+    }
+    bool GetHidden(int style_n, bool use_default = true) const
+    {
+        return STE_HASBIT(GetFontAttr(style_n, use_default), STE_STYLE_FONT_HIDDEN);
+    }
+    bool GetEOLFilled(int style_n, bool use_default = true) const
+    {
+        return STE_HASBIT(GetFontAttr(style_n, use_default), STE_STYLE_FONT_EOLFILLED);
+    }
+    bool GetHotSpot(int style_n, bool use_default = true) const
+    {
+        return STE_HASBIT(GetFontAttr(style_n, use_default), STE_STYLE_FONT_HOTSPOT);
+    }
+    /// returns wxSTC_CASE_MIXED/UPPER/LOWER
+    int  GetCase(int style_n, bool use_default = true) const;
     /// The style may have a value, but if set to use default then override it
     ///   using the value from STE_STYLE_DEFAULT, mask is STE_STYLE_USEDEFAULT_XXX.
     int GetUseDefault(int style_n) const;
-    bool GetUsesDefault(int style_n, int mask) const { return (mask & GetUseDefault(style_n)) != 0; }
+    bool GetUsesDefault(int style_n, int mask) const
+    {
+        return (mask & GetUseDefault(style_n)) != 0;
+    }
     /// Not all styles use all values, returns ored STE_STYLE_USES_XXX
     /// This is really only used for saving into wxConfig.
     /// Note: All styles internally store all values regardless of this setting.
     int  GetStyleUsage(int style_n) const;
-    bool GetStyleUses(int style_n, int mask) const { return (GetStyleUsage(style_n) & mask) != 0; }
+    bool GetStyleUses(int style_n, int mask) const
+    {
+        return (GetStyleUsage(style_n) & mask) != 0;
+    }
 
     /// Set the whole style, adding it if it didn't already exist
     bool SetStyle( int style_n, const wxSTEditorStyle& steStyle );
 
-    void SetForegroundColour(int style_n, const wxColour &colour) { SetForegroundColourInt(style_n, wxColourToInt(colour)); }
-      void SetForegroundColourInt(int style_n, int colour);
-    void SetBackgroundColour(int style_n, const wxColour &colour) { SetBackgroundColourInt(style_n, wxColourToInt(colour)); }
-      void SetBackgroundColourInt(int style_n, int colour);
+    void SetForegroundColour(int style_n, const wxColour &colour)
+    {
+        SetForegroundColourInt(style_n, wxColourToInt(colour));
+    }
+    void SetForegroundColourInt(int style_n, int colour);
+    void SetBackgroundColour(int style_n, const wxColour &colour)
+    {
+        SetBackgroundColourInt(style_n, wxColourToInt(colour));
+    }
+    void SetBackgroundColourInt(int style_n, int colour);
 
     void SetFont(int style_n, const wxFont &font);
     void SetFaceName(int style_n, const wxString &faceName);
     void SetSize(int style_n, int size);
     // Set the attributes using STE_FontAttrType
     void SetFontAttr(int style_n, int ste_font_attr);
-      void SetBold(int style_n, bool bold)                  { SetFontAttr(style_n, STE_SETBIT(GetFontAttr(style_n), STE_STYLE_FONT_BOLD,       bold)); }
-      void SetItalic(int style_n, bool ital)                { SetFontAttr(style_n, STE_SETBIT(GetFontAttr(style_n), STE_STYLE_FONT_ITALIC,     ital)); }
-      void SetUnderlined(int style_n, bool undl)            { SetFontAttr(style_n, STE_SETBIT(GetFontAttr(style_n), STE_STYLE_FONT_UNDERLINED, undl)); }
-      void SetHidden(int style_n, bool hid)                 { SetFontAttr(style_n, STE_SETBIT(GetFontAttr(style_n), STE_STYLE_FONT_HIDDEN,     hid )); }
-      void SetEOLFilled(int style_n, bool eolfilled)        { SetFontAttr(style_n, STE_SETBIT(GetFontAttr(style_n), STE_STYLE_FONT_EOLFILLED,  eolfilled)); }
-      void SetHotSpot(int style_n, bool hotspot)            { SetFontAttr(style_n, STE_SETBIT(GetFontAttr(style_n), STE_STYLE_FONT_HOTSPOT,    hotspot)); }
-      /// set case with wxSTC_CASE_MIXED/UPPER/LOWER
-      void SetCase(int style_n, int lcase);
+    void SetBold(int style_n, bool bold)
+    {
+        SetFontAttr(style_n, STE_SETBIT(GetFontAttr(style_n), STE_STYLE_FONT_BOLD,       bold));
+    }
+    void SetItalic(int style_n, bool ital)
+    {
+        SetFontAttr(style_n, STE_SETBIT(GetFontAttr(style_n), STE_STYLE_FONT_ITALIC,     ital));
+    }
+    void SetUnderlined(int style_n, bool undl)
+    {
+        SetFontAttr(style_n, STE_SETBIT(GetFontAttr(style_n), STE_STYLE_FONT_UNDERLINED, undl));
+    }
+    void SetHidden(int style_n, bool hid)
+    {
+        SetFontAttr(style_n, STE_SETBIT(GetFontAttr(style_n), STE_STYLE_FONT_HIDDEN,     hid ));
+    }
+    void SetEOLFilled(int style_n, bool eolfilled)
+    {
+        SetFontAttr(style_n, STE_SETBIT(GetFontAttr(style_n), STE_STYLE_FONT_EOLFILLED,  eolfilled));
+    }
+    void SetHotSpot(int style_n, bool hotspot)
+    {
+        SetFontAttr(style_n, STE_SETBIT(GetFontAttr(style_n), STE_STYLE_FONT_HOTSPOT,    hotspot));
+    }
+    /// set case with wxSTC_CASE_MIXED/UPPER/LOWER
+    void SetCase(int style_n, int lcase);
     /// Set whether style should use style STE_STYLE_DEFAULT's values.
     /// Or together STE_STYLE_USEDEFAULT_XXX together to create a mask
     void SetUseDefault(int style_n, int mask, bool use_default);
@@ -221,7 +294,10 @@ public:
     /// @}
     // ------------------------------------------------------------------------
     /// Add a new style
-    bool AddStyle(int style_n, const wxSTEditorStyle& steStyle) { return SetStyle(style_n, steStyle); }
+    bool AddStyle(int style_n, const wxSTEditorStyle& steStyle)
+    {
+        return SetStyle(style_n, steStyle);
+    }
 
     // ------------------------------------------------------------------------
     /// Remove a style
@@ -236,20 +312,52 @@ public:
     /// indic_n = 0,1,2  (not STE_STYLE_INDIC_[0,1,2] which is used internally)
     /// style = wxSTC_INDIC_PLAIN...wxSTC_INDIC_MAX
 
-    bool HasIndicatorStyle(int indic_n) const          { wxCHECK_STEINDIC_MSG(indic_n, false); return HasStyle(STE_STYLE_INDIC__FIRST+indic_n); }
-    int GetIndicatorStyle(int indic_n) const           { wxCHECK_STEINDIC_MSG(indic_n, 0); return GetFontAttr(STE_STYLE_INDIC__FIRST+indic_n, false); }
-    wxColour GetIndicatorForeground(int indic_n) const { wxCHECK_STEINDIC_MSG(indic_n, *wxBLACK); return GetForegroundColour(STE_STYLE_INDIC__FIRST+indic_n, false); }
-    int GetIndicatorMask(int indic_n) const            { wxCHECK_STEINDIC_MSG(indic_n, 0);
-                                                          return (indic_n == 0) ? wxSTC_INDIC0_MASK :
-                                                                ((indic_n == 1) ? wxSTC_INDIC1_MASK :
-                                                                ((indic_n == 2) ? wxSTC_INDIC2_MASK : 0)); }
+    bool HasIndicatorStyle(int indic_n) const
+    {
+        wxCHECK_STEINDIC_MSG(indic_n, false);
+        return HasStyle(STE_STYLE_INDIC__FIRST+indic_n);
+    }
+    int GetIndicatorStyle(int indic_n) const
+    {
+        wxCHECK_STEINDIC_MSG(indic_n, 0);
+        return GetFontAttr(STE_STYLE_INDIC__FIRST+indic_n, false);
+    }
+    wxColour GetIndicatorForeground(int indic_n) const
+    {
+        wxCHECK_STEINDIC_MSG(indic_n, *wxBLACK);
+        return GetForegroundColour(STE_STYLE_INDIC__FIRST+indic_n, false);
+    }
+    int GetIndicatorMask(int indic_n) const
+    {
+        wxCHECK_STEINDIC_MSG(indic_n, 0);
+        return (indic_n == 0) ? wxSTC_INDIC0_MASK :
+               ((indic_n == 1) ? wxSTC_INDIC1_MASK :
+                ((indic_n == 2) ? wxSTC_INDIC2_MASK : 0));
+    }
 
-    void SetIndicator(int indic_n, int style, const wxColour &colour) { wxCHECK_STEINDIC_RET(indic_n); SetIndicatorStyle(indic_n, style); SetIndicatorForeground(indic_n, colour); }
-    void SetIndicatorStyle(int indic_n, int style)                    { wxCHECK_STEINDIC_RET(indic_n); SetFontAttr(STE_STYLE_INDIC__FIRST+indic_n, style); }
-    void SetIndicatorForeground(int indic_n, const wxColour &colour)  { wxCHECK_STEINDIC_RET(indic_n); SetForegroundColour(STE_STYLE_INDIC__FIRST+indic_n, colour); }
+    void SetIndicator(int indic_n, int style, const wxColour &colour)
+    {
+        wxCHECK_STEINDIC_RET(indic_n);
+        SetIndicatorStyle(indic_n, style);
+        SetIndicatorForeground(indic_n, colour);
+    }
+    void SetIndicatorStyle(int indic_n, int style)
+    {
+        wxCHECK_STEINDIC_RET(indic_n);
+        SetFontAttr(STE_STYLE_INDIC__FIRST+indic_n, style);
+    }
+    void SetIndicatorForeground(int indic_n, const wxColour &colour)
+    {
+        wxCHECK_STEINDIC_RET(indic_n);
+        SetForegroundColour(STE_STYLE_INDIC__FIRST+indic_n, colour);
+    }
 
     /// remove an indicator style
-    bool RemoveIndicatorStyle(int indic_n) { wxCHECK_STEINDIC_MSG(indic_n, false); return RemoveStyle(STE_STYLE_INDIC__FIRST+indic_n); }
+    bool RemoveIndicatorStyle(int indic_n)
+    {
+        wxCHECK_STEINDIC_MSG(indic_n, false);
+        return RemoveStyle(STE_STYLE_INDIC__FIRST+indic_n);
+    }
 
     /// @}
     // ------------------------------------------------------------------------
@@ -258,22 +366,58 @@ public:
     /// marker_n = 0,1,2...31 (not STE_STYLE_MARKERS__FIRST which is used internally).
     /// markerSymbol = wxSTC_MARK_CIRCLE...wxSTC_MARK_MAX
 
-    int HasMarkerSymbol(int marker_n) const { wxCHECK_STEMARKER_MSG(marker_n, false); return HasStyle(STE_STYLE_MARKER__FIRST+marker_n); }
+    int HasMarkerSymbol(int marker_n) const
+    {
+        wxCHECK_STEMARKER_MSG(marker_n, false);
+        return HasStyle(STE_STYLE_MARKER__FIRST+marker_n);
+    }
 
-    int GetMarkerSymbol(int marker_n) const          { wxCHECK_STEMARKER_MSG(marker_n, 0); return GetFontAttr(STE_STYLE_MARKER__FIRST+marker_n, false); }
-    wxColour GetMarkerForeground(int marker_n) const { wxCHECK_STEMARKER_MSG(marker_n, *wxWHITE); return GetForegroundColour(STE_STYLE_MARKER__FIRST+marker_n, false); }
-    wxColour GetMarkerBackground(int marker_n) const { wxCHECK_STEMARKER_MSG(marker_n, *wxBLACK); return GetBackgroundColour(STE_STYLE_MARKER__FIRST+marker_n, false); }
+    int GetMarkerSymbol(int marker_n) const
+    {
+        wxCHECK_STEMARKER_MSG(marker_n, 0);
+        return GetFontAttr(STE_STYLE_MARKER__FIRST+marker_n, false);
+    }
+    wxColour GetMarkerForeground(int marker_n) const
+    {
+        wxCHECK_STEMARKER_MSG(marker_n, *wxWHITE);
+        return GetForegroundColour(STE_STYLE_MARKER__FIRST+marker_n, false);
+    }
+    wxColour GetMarkerBackground(int marker_n) const
+    {
+        wxCHECK_STEMARKER_MSG(marker_n, *wxBLACK);
+        return GetBackgroundColour(STE_STYLE_MARKER__FIRST+marker_n, false);
+    }
 
     void SetMarker(int marker_n, int markerSymbol,
                    const wxColour& foreground, const wxColour& background)
-        { wxCHECK_STEMARKER_RET(marker_n); SetMarkerSymbol(marker_n, markerSymbol);
-          SetMarkerForeground(marker_n, foreground); SetMarkerBackground(marker_n, background); }
-    void SetMarkerSymbol(int marker_n, int markerSymbol)            { wxCHECK_STEMARKER_RET(marker_n); SetFontAttr(STE_STYLE_MARKER__FIRST+marker_n, markerSymbol); }
-    void SetMarkerForeground(int marker_n, const wxColour &colour)  { wxCHECK_STEMARKER_RET(marker_n); SetForegroundColour(STE_STYLE_MARKER__FIRST+marker_n, colour); }
-    void SetMarkerBackground(int marker_n, const wxColour &colour)  { wxCHECK_STEMARKER_RET(marker_n); SetBackgroundColour(STE_STYLE_MARKER__FIRST+marker_n, colour); }
+    {
+        wxCHECK_STEMARKER_RET(marker_n);
+        SetMarkerSymbol(marker_n, markerSymbol);
+        SetMarkerForeground(marker_n, foreground);
+        SetMarkerBackground(marker_n, background);
+    }
+    void SetMarkerSymbol(int marker_n, int markerSymbol)
+    {
+        wxCHECK_STEMARKER_RET(marker_n);
+        SetFontAttr(STE_STYLE_MARKER__FIRST+marker_n, markerSymbol);
+    }
+    void SetMarkerForeground(int marker_n, const wxColour &colour)
+    {
+        wxCHECK_STEMARKER_RET(marker_n);
+        SetForegroundColour(STE_STYLE_MARKER__FIRST+marker_n, colour);
+    }
+    void SetMarkerBackground(int marker_n, const wxColour &colour)
+    {
+        wxCHECK_STEMARKER_RET(marker_n);
+        SetBackgroundColour(STE_STYLE_MARKER__FIRST+marker_n, colour);
+    }
 
     /// remove a marker style
-    bool RemoveMarkerStyle(int marker_n) { wxCHECK_STEMARKER_MSG(marker_n, false); return RemoveStyle(STE_STYLE_MARKER__FIRST+marker_n); }
+    bool RemoveMarkerStyle(int marker_n)
+    {
+        wxCHECK_STEMARKER_MSG(marker_n, false);
+        return RemoveStyle(STE_STYLE_MARKER__FIRST+marker_n);
+    }
 
     /// Set markers for the fold style of the editor STE_FOLDSTYLE_XXX
     /// @returns success (known fold style)
@@ -302,8 +446,14 @@ public:
     /// Remove an initial style, all wxSTEditorStyles created onwards will
     ///  not have this style.
     bool RemoveInitStyle( int style_n ) const;
-    bool RemoveInitIndicator( int indic_n ) const { return RemoveInitStyle(STE_STYLE_INDIC__FIRST+indic_n); }
-    bool RemoveInitMarker( int marker_n ) const   { return RemoveInitStyle(STE_STYLE_MARKER__FIRST+marker_n); }
+    bool RemoveInitIndicator( int indic_n ) const
+    {
+        return RemoveInitStyle(STE_STYLE_INDIC__FIRST+indic_n);
+    }
+    bool RemoveInitMarker( int marker_n ) const
+    {
+        return RemoveInitStyle(STE_STYLE_MARKER__FIRST+marker_n);
+    }
 
     /// @}
     // ------------------------------------------------------------------------
@@ -350,9 +500,13 @@ public:
     }
 
     bool operator == (const wxSTEditorStyles& styles) const
-        { return m_refData == styles.m_refData; }
+    {
+        return m_refData == styles.m_refData;
+    }
     bool operator != (const wxSTEditorStyles& styles) const
-        { return m_refData != styles.m_refData; }
+    {
+        return m_refData != styles.m_refData;
+    }
     /// @}
 
     /// Convert a wxColour to an integer.

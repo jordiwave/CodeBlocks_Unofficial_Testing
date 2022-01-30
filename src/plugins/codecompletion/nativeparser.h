@@ -61,7 +61,10 @@ public:
     ~NativeParser();
 
     /** return a reference to the current active Parser object */
-    ParserBase& GetParser() { return *m_Parser; }
+    ParserBase& GetParser()
+    {
+        return *m_Parser;
+    }
 
     /** return the Parser pointer corresponding to the input C::B project
      * @param project input C::B project pointer
@@ -101,7 +104,10 @@ public:
     cbProject* GetCurrentProject();
 
     /** Return true if one Parser per whole workspace option is selected */
-    bool IsParserPerWorkspace() const { return m_ParserPerWorkspace; }
+    bool IsParserPerWorkspace() const
+    {
+        return m_ParserPerWorkspace;
+    }
 
     /** Return true if all the Parser's batch-parse stages are finished, otherwise return false */
     bool Done();
@@ -237,7 +243,10 @@ public:
 
     // The function below is used to manage symbols browser
     /** return active class browser pointer */
-    ClassBrowser* GetClassBrowser() const { return m_ClassBrowser; }
+    ClassBrowser* GetClassBrowser() const
+    {
+        return m_ClassBrowser;
+    }
 
     /** create the class browser */
     void CreateClassBrowser();
@@ -327,10 +336,16 @@ private:
                                  int           caretPos = -1);
 
     /** used in CodeCompletion suggestion list to boost the performance, we use a cache */
-    bool LastAISearchWasGlobal() const { return m_LastAISearchWasGlobal; }
+    bool LastAISearchWasGlobal() const
+    {
+        return m_LastAISearchWasGlobal;
+    }
 
     /** The same as above */
-    const wxString& LastAIGlobalSearch() const { return m_LastAIGlobalSearch; }
+    const wxString& LastAIGlobalSearch() const
+    {
+        return m_LastAIGlobalSearch;
+    }
 
     /** collect the using namespace directive in the editor specified by searchData
      * @param searchData search location

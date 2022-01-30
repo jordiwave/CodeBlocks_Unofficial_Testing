@@ -7,8 +7,8 @@
 // The global instance of the shell registry
 ShellRegistry& GlobalShellRegistry()
 {
-   static ShellRegistry* theRegistry = new ShellRegistry();
-   return *theRegistry;
+    static ShellRegistry* theRegistry = new ShellRegistry();
+    return *theRegistry;
 }
 
 // Unique IDs for Timer and Shell Manager messages
@@ -64,7 +64,7 @@ void ShellRegistry::FreeControl(ShellCtrlBase */*sh*/) //TODO: Don't think this 
 //IMPLEMENT_DYNAMIC_CLASS(ShellCtrlBase, wxPanel)
 
 ShellCtrlBase::ShellCtrlBase(wxWindow* parent, int id, const wxString &name, ShellManager *shellmgr)
-                : wxPanel(parent, id)
+    : wxPanel(parent, id)
 {
     m_parent=parent;
     m_name=name;
@@ -167,7 +167,7 @@ ShellCtrlBase *ShellManager::GetPage(size_t i)
 
 ShellCtrlBase *ShellManager::GetPage(const wxString &name)
 {
-    for(unsigned int i=0;i<m_nb->GetPageCount();i++)
+    for(unsigned int i=0; i<m_nb->GetPageCount(); i++)
     {
         ShellCtrlBase *sh=GetPage(i);
         if(name==sh->GetName())
@@ -202,7 +202,7 @@ void ShellManager::RemoveDeadPages()
 
 size_t ShellManager::GetTermNum(ShellCtrlBase *term)
 {
-    for(unsigned int i=0;i<m_nb->GetPageCount();i++)
+    for(unsigned int i=0; i<m_nb->GetPageCount(); i++)
     {
         ShellCtrlBase *shell=GetPage(i);
         if(shell==term)
@@ -214,7 +214,7 @@ size_t ShellManager::GetTermNum(ShellCtrlBase *term)
 int ShellManager::NumAlive()
 {
     int count=0;
-    for(unsigned int i=0;i<m_nb->GetPageCount();i++)
+    for(unsigned int i=0; i<m_nb->GetPageCount(); i++)
         count+=!GetPage(i)->IsDead();
     return count;
 }
@@ -231,14 +231,15 @@ void ShellManager::OnShellTerminate(ShellCtrlBase *term)
 
 void ShellManager::OnPollandSyncOutput(wxTimerEvent& /*te*/)
 {
-    for(unsigned int i=0;i<m_nb->GetPageCount();i++)
+    for(unsigned int i=0; i<m_nb->GetPageCount(); i++)
     {
         GetPage(i)->SyncOutput();
     }
 }
 
 void ShellManager::OnUserInput(wxKeyEvent& /*ke*/)
-{ //TODO: This shouldn't be necessary as individual pages will have the focus
+{
+    //TODO: This shouldn't be necessary as individual pages will have the focus
 //    ShellCtrlBase *sh=(ShellCtrlBase*)m_nb->GetCurrentPage();
 //    sh->OnUserInput(ke);
 }

@@ -11,13 +11,13 @@
 //*)
 
 BEGIN_EVENT_TABLE(ReopenEditorConfDLg,wxPanel)
-	//(*EventTable(ReopenEditorConfDLg)
-	//*)
+    //(*EventTable(ReopenEditorConfDLg)
+    //*)
 END_EVENT_TABLE()
 
 ReopenEditorConfDLg::ReopenEditorConfDLg(wxWindow* parent)
 {
-	BuildContent(parent);
+    BuildContent(parent);
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
     bool isManaged = cfg->ReadBool(_T("/reopen_editor/managed"),true);
     XRCCTRL(*this, "rbReopenDockOrNot", wxRadioBox)->SetSelection(isManaged?1:0);
@@ -26,16 +26,16 @@ ReopenEditorConfDLg::ReopenEditorConfDLg(wxWindow* parent)
 
 void ReopenEditorConfDLg::BuildContent(wxWindow* parent)
 {
-	//(*Initialize(ReopenEditorConfDLg)
-	wxXmlResource::Get()->LoadObject(this,parent,_T("ReopenEditorConfDLg"),_T("wxPanel"));
-	RadioBox1 = (wxRadioBox*)FindWindow(XRCID("rbReopenDockOrNot"));
-	//*)
+    //(*Initialize(ReopenEditorConfDLg)
+    wxXmlResource::Get()->LoadObject(this,parent,_T("ReopenEditorConfDLg"),_T("wxPanel"));
+    RadioBox1 = (wxRadioBox*)FindWindow(XRCID("rbReopenDockOrNot"));
+    //*)
 }
 
 ReopenEditorConfDLg::~ReopenEditorConfDLg()
 {
-	//(*Destroy(ReopenEditorConfDLg)
-	//*)
+    //(*Destroy(ReopenEditorConfDLg)
+    //*)
 }
 
 void ReopenEditorConfDLg::SaveSettings()

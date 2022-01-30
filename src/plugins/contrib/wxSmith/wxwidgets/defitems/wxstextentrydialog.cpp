@@ -25,34 +25,34 @@
 
 namespace
 {
-    wxsRegisterItem<wxsTextEntryDialog> Reg(
-        _T("TextEntryDialog"),               // Class base name
-        wxsTTool,                               // Item type
-        _T("Dialogs"),                          // Category in palette
-        50,                                         // Priority in palette
-        false);                                     // We do not allow this item inside XRC files
+wxsRegisterItem<wxsTextEntryDialog> Reg(
+    _T("TextEntryDialog"),               // Class base name
+    wxsTTool,                               // Item type
+    _T("Dialogs"),                          // Category in palette
+    50,                                         // Priority in palette
+    false);                                     // We do not allow this item inside XRC files
 
 
-    WXS_ST_BEGIN(wxsTextEntryDialogStyles, wxT("wxOK | wxCANCEL | wxCENTRE | wxWS_EX_VALIDATE_RECURSIVELY"));
-        WXS_ST_CATEGORY("wxTextEntryDialog")
-        WXS_ST(wxOK)
-        WXS_ST(wxCANCEL)
-        WXS_ST(wxCENTRE)
-        WXS_ST(wxWS_EX_VALIDATE_RECURSIVELY)
-        WXS_ST(wxTE_MULTILINE)
-        WXS_ST(wxTE_PASSWORD)
-        WXS_ST(wxTE_READONLY)
-        WXS_ST(wxTE_RICH)
-        WXS_ST(wxTE_RICH2)
-        WXS_ST(wxTE_NOHIDESEL)
-        WXS_ST(wxHSCROLL)
-        WXS_ST(wxTE_CENTRE)
-        WXS_ST(wxTE_RIGHT)
-        WXS_ST(wxTE_CHARWRAP)
-        WXS_ST(wxTE_WORDWRAP)
-        WXS_ST(wxTE_BESTWRAP)
-        WXS_ST(wxTE_CAPITALIZE)
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsTextEntryDialogStyles, wxT("wxOK | wxCANCEL | wxCENTRE | wxWS_EX_VALIDATE_RECURSIVELY"));
+WXS_ST_CATEGORY("wxTextEntryDialog")
+WXS_ST(wxOK)
+WXS_ST(wxCANCEL)
+WXS_ST(wxCENTRE)
+WXS_ST(wxWS_EX_VALIDATE_RECURSIVELY)
+WXS_ST(wxTE_MULTILINE)
+WXS_ST(wxTE_PASSWORD)
+WXS_ST(wxTE_READONLY)
+WXS_ST(wxTE_RICH)
+WXS_ST(wxTE_RICH2)
+WXS_ST(wxTE_NOHIDESEL)
+WXS_ST(wxHSCROLL)
+WXS_ST(wxTE_CENTRE)
+WXS_ST(wxTE_RIGHT)
+WXS_ST(wxTE_CHARWRAP)
+WXS_ST(wxTE_WORDWRAP)
+WXS_ST(wxTE_BESTWRAP)
+WXS_ST(wxTE_CAPITALIZE)
+WXS_ST_END()
 }
 
 /*! \brief Ctor
@@ -66,9 +66,9 @@ wxsTextEntryDialog::wxsTextEntryDialog(wxsItemResData *Data):
             NULL,
             wxsTextEntryDialogStyles,
             (flVariable | flId | flSubclass | flExtraCode)),
-            m_sCaption(wxGetTextFromUserPromptStr),
-            m_sMessage(wxEmptyString),
-            m_sDefaultValue(wxEmptyString)
+    m_sCaption(wxGetTextFromUserPromptStr),
+    m_sMessage(wxEmptyString),
+    m_sDefaultValue(wxEmptyString)
 {
 }
 
@@ -81,16 +81,16 @@ void wxsTextEntryDialog::OnBuildCreatingCode()
 {
     switch(GetLanguage())
     {
-        case wxsCPP:
-            AddHeader(_T("<wx/textdlg.h>"), GetInfo().ClassName, 0);
-            Codef(_T("%C(%W, %t, %t, %t, %T, %P);\n"), m_sMessage.wx_str(), m_sCaption.wx_str(), m_sDefaultValue.wx_str());
-            BuildSetupWindowCode();
-            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-            break;
+    case wxsCPP:
+        AddHeader(_T("<wx/textdlg.h>"), GetInfo().ClassName, 0);
+        Codef(_T("%C(%W, %t, %t, %t, %T, %P);\n"), m_sMessage.wx_str(), m_sCaption.wx_str(), m_sDefaultValue.wx_str());
+        BuildSetupWindowCode();
+        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+        break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsTextEntryDialog::OnBuildCreatingCode"), GetLanguage());
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsTextEntryDialog::OnBuildCreatingCode"), GetLanguage());
     }
 }
 

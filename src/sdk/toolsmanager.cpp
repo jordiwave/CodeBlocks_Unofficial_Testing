@@ -10,19 +10,19 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/intl.h>
-    #include <wx/process.h>
-    #include <wx/menu.h>
-    #include <wx/msgdlg.h>
+#include <wx/intl.h>
+#include <wx/process.h>
+#include <wx/menu.h>
+#include <wx/msgdlg.h>
 
-    #include "toolsmanager.h"
-    #include "manager.h"
-    #include "macrosmanager.h"
-    #include "configmanager.h"
-    #include "logmanager.h"
-    #include "pipedprocess.h"
-    #include "globals.h"
-    #include "sdk_events.h"
+#include "toolsmanager.h"
+#include "manager.h"
+#include "macrosmanager.h"
+#include "configmanager.h"
+#include "logmanager.h"
+#include "pipedprocess.h"
+#include "globals.h"
+#include "sdk_events.h"
 #endif
 
 #include <wx/mdi.h>
@@ -49,8 +49,8 @@ END_EVENT_TABLE()
 
 ToolsManager::ToolsManager()
     : m_Menu(nullptr),
-    m_pProcess(nullptr),
-    m_Pid(0)
+      m_pProcess(nullptr),
+      m_Pid(0)
 {
     LoadTools();
     Manager::Get()->GetAppWindow()->PushEventHandler(this);
@@ -82,8 +82,8 @@ bool ToolsManager::Execute(const cbTool* tool)
     if (m_pProcess)
     {
         cbMessageBox(_("Another tool is currently executing.\n"
-                        "Please allow for it to finish before launching another tool..."),
-                        _("Error"), wxICON_ERROR);
+                       "Please allow for it to finish before launching another tool..."),
+                     _("Error"), wxICON_ERROR);
         return false;
     }
 
@@ -109,9 +109,9 @@ bool ToolsManager::Execute(const cbTool* tool)
         wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
         term.Replace(_T("$TITLE"), _T("'") + tool->GetName() + _T("'"));
         cmdline << term << _T(" ");
-        #define CONSOLE_RUNNER "cb_console_runner"
+#define CONSOLE_RUNNER "cb_console_runner"
 #else
-        #define CONSOLE_RUNNER "cb_console_runner.exe"
+#define CONSOLE_RUNNER "cb_console_runner.exe"
 #endif
         wxString baseDir = ConfigManager::GetExecutableFolder();
         if (wxFileExists(baseDir + wxT("/" CONSOLE_RUNNER)))
@@ -124,7 +124,7 @@ bool ToolsManager::Execute(const cbTool* tool)
 
     if(!(Manager::Get()->GetMacrosManager()))
         return false; // We cannot afford the Macros Manager to fail here!
-                      // What if it failed already?
+    // What if it failed already?
     wxSetWorkingDirectory(dir);
 
     // log info so user can troubleshoot
@@ -136,19 +136,19 @@ bool ToolsManager::Execute(const cbTool* tool)
 
     switch (tool->GetLaunchOption())
     {
-        case cbTool::LAUNCH_NEW_CONSOLE_WINDOW:
-            pipe = false; // no need to pipe output channels...
-            break;
+    case cbTool::LAUNCH_NEW_CONSOLE_WINDOW:
+        pipe = false; // no need to pipe output channels...
+        break;
 
-        case cbTool::LAUNCH_VISIBLE:
-        case cbTool::LAUNCH_VISIBLE_DETACHED:
-            flags |= wxEXEC_NOHIDE;
-            pipe = false;
-            break;
+    case cbTool::LAUNCH_VISIBLE:
+    case cbTool::LAUNCH_VISIBLE_DETACHED:
+        flags |= wxEXEC_NOHIDE;
+        pipe = false;
+        break;
 
-        case cbTool::LAUNCH_HIDDEN: // fall-through
-        default:
-            break; // use the default values of pipe and flags...
+    case cbTool::LAUNCH_HIDDEN: // fall-through
+    default:
+        break; // use the default values of pipe and flags...
     }
 
     if (tool->GetLaunchOption() == cbTool::LAUNCH_VISIBLE_DETACHED)
@@ -164,7 +164,7 @@ bool ToolsManager::Execute(const cbTool* tool)
         {
             CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, LogManager::app_log);
             Manager::Get()->ProcessEvent(evtSwitch);        // switch to default log
-         }
+        }
     }
     else
     {

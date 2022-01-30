@@ -83,66 +83,118 @@ void wxSTEditorStyles::Init()
     keyArr.Alloc(52);
     valArr.Alloc(52);
 
-    keyArr.Add(STE_STYLE_DEFAULT);           valArr.Add(wxSTEditorStyle(wxT("Default text"),       0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, 0,                                 STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_KEYWORD1);          valArr.Add(wxSTEditorStyle(wxT("Keyword 1"),          0x0000FF, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFONTSTYLE,  STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_KEYWORD2);          valArr.Add(wxSTEditorStyle(wxT("Keyword 2"),          0x0000AA, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_KEYWORD3);          valArr.Add(wxSTEditorStyle(wxT("Keyword 3"),          0x42426F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_KEYWORD4);          valArr.Add(wxSTEditorStyle(wxT("Keyword 4"),          0xAA00AA, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_KEYWORD5);          valArr.Add(wxSTEditorStyle(wxT("Keyword 5"),          0x2F2F2F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_KEYWORD6);          valArr.Add(wxSTEditorStyle(wxT("Keyword 6"),          0x808080, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_COMMENT);           valArr.Add(wxSTEditorStyle(wxT("Comment"),            0x238E23, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_COMMENTDOC);        valArr.Add(wxSTEditorStyle(wxT("Comment doc"),        0x238E23, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_COMMENTLINE);       valArr.Add(wxSTEditorStyle(wxT("Comment line"),       0x238E23, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_COMMENTOTHER);      valArr.Add(wxSTEditorStyle(wxT("Comment other"),      0x238E23, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_CHARACTER);         valArr.Add(wxSTEditorStyle(wxT("Character"),          0x9F9F9F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_CHARACTEREOL);      valArr.Add(wxSTEditorStyle(wxT("Character EOL"),      0x9F9F9F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_STRING);            valArr.Add(wxSTEditorStyle(wxT("String"),             0x2AA52A, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_STRINGEOL);         valArr.Add(wxSTEditorStyle(wxT("String EOL"),         0x2AA52A, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_DELIMITER);         valArr.Add(wxSTEditorStyle(wxT("Delimiter"),          0xCC3232, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_PUNCTUATION);       valArr.Add(wxSTEditorStyle(wxT("Punctuation"),        0xCC3232, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_OPERATOR);          valArr.Add(wxSTEditorStyle(wxT("Operator"),           0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_BRACE);             valArr.Add(wxSTEditorStyle(wxT("Brace"),              0x4F2F4F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_COMMAND);           valArr.Add(wxSTEditorStyle(wxT("Command"),            0x0000FF, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_IDENTIFIER);        valArr.Add(wxSTEditorStyle(wxT("Identifier"),         0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_LABEL);             valArr.Add(wxSTEditorStyle(wxT("Label"),              0x4F2F4F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_NUMBER);            valArr.Add(wxSTEditorStyle(wxT("Number"),             0x238E6B, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_PARAMETER);         valArr.Add(wxSTEditorStyle(wxT("Parameter"),          0x4F2F4F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_REGEX);             valArr.Add(wxSTEditorStyle(wxT("Regular expression"), 0xDB70DB, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_UUID);              valArr.Add(wxSTEditorStyle(wxT("UUID"),               0xDB70DB, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_VALUE);             valArr.Add(wxSTEditorStyle(wxT("Value"),              0xDB70DB, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_PREPROCESSOR);      valArr.Add(wxSTEditorStyle(wxT("Preprocessor"),       0x808080, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_SCRIPT);            valArr.Add(wxSTEditorStyle(wxT("Script"),             0x2F2F2F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_ERROR);             valArr.Add(wxSTEditorStyle(wxT("Error"),              0xFF0000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_UNDEFINED);         valArr.Add(wxSTEditorStyle(wxT("Undefined"),          0x32CC32, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_DEFAULT);
+    valArr.Add(wxSTEditorStyle(wxT("Default text"),       0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, 0,                                 STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_KEYWORD1);
+    valArr.Add(wxSTEditorStyle(wxT("Keyword 1"),          0x0000FF, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFONTSTYLE,  STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_KEYWORD2);
+    valArr.Add(wxSTEditorStyle(wxT("Keyword 2"),          0x0000AA, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_KEYWORD3);
+    valArr.Add(wxSTEditorStyle(wxT("Keyword 3"),          0x42426F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_KEYWORD4);
+    valArr.Add(wxSTEditorStyle(wxT("Keyword 4"),          0xAA00AA, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_KEYWORD5);
+    valArr.Add(wxSTEditorStyle(wxT("Keyword 5"),          0x2F2F2F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_KEYWORD6);
+    valArr.Add(wxSTEditorStyle(wxT("Keyword 6"),          0x808080, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_COMMENT);
+    valArr.Add(wxSTEditorStyle(wxT("Comment"),            0x238E23, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_COMMENTDOC);
+    valArr.Add(wxSTEditorStyle(wxT("Comment doc"),        0x238E23, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_COMMENTLINE);
+    valArr.Add(wxSTEditorStyle(wxT("Comment line"),       0x238E23, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_COMMENTOTHER);
+    valArr.Add(wxSTEditorStyle(wxT("Comment other"),      0x238E23, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_CHARACTER);
+    valArr.Add(wxSTEditorStyle(wxT("Character"),          0x9F9F9F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_CHARACTEREOL);
+    valArr.Add(wxSTEditorStyle(wxT("Character EOL"),      0x9F9F9F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_STRING);
+    valArr.Add(wxSTEditorStyle(wxT("String"),             0x2AA52A, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_STRINGEOL);
+    valArr.Add(wxSTEditorStyle(wxT("String EOL"),         0x2AA52A, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_DELIMITER);
+    valArr.Add(wxSTEditorStyle(wxT("Delimiter"),          0xCC3232, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_PUNCTUATION);
+    valArr.Add(wxSTEditorStyle(wxT("Punctuation"),        0xCC3232, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_OPERATOR);
+    valArr.Add(wxSTEditorStyle(wxT("Operator"),           0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_BRACE);
+    valArr.Add(wxSTEditorStyle(wxT("Brace"),              0x4F2F4F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_COMMAND);
+    valArr.Add(wxSTEditorStyle(wxT("Command"),            0x0000FF, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_IDENTIFIER);
+    valArr.Add(wxSTEditorStyle(wxT("Identifier"),         0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_LABEL);
+    valArr.Add(wxSTEditorStyle(wxT("Label"),              0x4F2F4F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_NUMBER);
+    valArr.Add(wxSTEditorStyle(wxT("Number"),             0x238E6B, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_PARAMETER);
+    valArr.Add(wxSTEditorStyle(wxT("Parameter"),          0x4F2F4F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_REGEX);
+    valArr.Add(wxSTEditorStyle(wxT("Regular expression"), 0xDB70DB, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_UUID);
+    valArr.Add(wxSTEditorStyle(wxT("UUID"),               0xDB70DB, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_VALUE);
+    valArr.Add(wxSTEditorStyle(wxT("Value"),              0xDB70DB, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_PREPROCESSOR);
+    valArr.Add(wxSTEditorStyle(wxT("Preprocessor"),       0x808080, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_SCRIPT);
+    valArr.Add(wxSTEditorStyle(wxT("Script"),             0x2F2F2F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_ERROR);
+    valArr.Add(wxSTEditorStyle(wxT("Error"),              0xFF0000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_UNDEFINED);
+    valArr.Add(wxSTEditorStyle(wxT("Undefined"),          0x32CC32, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
     //keyArr.Add(STE_STYLE_UNUSED);          valArr.Add(wxSTEditorStyle(wxT("Unused"),             0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_ALL,          STE_STYLE_USES_ALL));
     //keyArr.Add(wxSTC_STYLE_DEFAULT);       valArr.Add(wxSTEditorStyle(wxT("Editor default"),     0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_ALL,          STE_STYLE_USES_ALL));
 
-    keyArr.Add(STE_STYLE_LINENUMBER);        valArr.Add(wxSTEditorStyle(wxT("Line numbers"),       0x000000, 0xC0C0C0, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOCOLOUR,     STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_BRACELIGHT);        valArr.Add(wxSTEditorStyle(wxT("Brace hilight"),      0x0000FF, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_BRACEBAD);          valArr.Add(wxSTEditorStyle(wxT("Brace mismatch"),     0xFF0000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_CONTROLCHAR);       valArr.Add(wxSTEditorStyle(wxT("Control character"),  0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_INDENTGUIDE);       valArr.Add(wxSTEditorStyle(wxT("Indent guide"),       0x808080, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_COLOUR));
+    keyArr.Add(STE_STYLE_LINENUMBER);
+    valArr.Add(wxSTEditorStyle(wxT("Line numbers"),       0x000000, 0xC0C0C0, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOCOLOUR,     STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_BRACELIGHT);
+    valArr.Add(wxSTEditorStyle(wxT("Brace hilight"),      0x0000FF, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_BRACEBAD);
+    valArr.Add(wxSTEditorStyle(wxT("Brace mismatch"),     0xFF0000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_CONTROLCHAR);
+    valArr.Add(wxSTEditorStyle(wxT("Control character"),  0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_INDENTGUIDE);
+    valArr.Add(wxSTEditorStyle(wxT("Indent guide"),       0x808080, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_COLOUR));
 
-    keyArr.Add(STE_STYLE_SELECTION_COLOUR);  valArr.Add(wxSTEditorStyle(wxT("Selection colour"),   0xFFFFFF, 0xC0C0C0, wxEmptyString,    0,                0, STE_STYLE_USEDEFAULT_NOCOLOUR,     STE_STYLE_USES_COLOUR));
-    keyArr.Add(STE_STYLE_WHITESPACE_COLOUR); valArr.Add(wxSTEditorStyle(wxT("Whitespace colour"),  0x000000, 0xFFFFFF, wxEmptyString,    0,                0, STE_STYLE_USEDEFAULT_ALL,          STE_STYLE_USES_COLOUR));
-    keyArr.Add(STE_STYLE_EDGE_COLOUR);       valArr.Add(wxSTEditorStyle(wxT("Edge colour"),        0xC0C0C0, 0xFFFFFF, wxEmptyString,    0,                0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_FORECOLOUR));
-    keyArr.Add(STE_STYLE_CARET_COLOUR);      valArr.Add(wxSTEditorStyle(wxT("Caret colour"),       0x000000, 0xF9F9F9, wxEmptyString,    0,                0, STE_STYLE_USEDEFAULT_NOCOLOUR,     STE_STYLE_USES_COLOUR));
-    keyArr.Add(STE_STYLE_FOLD_COLOUR);       valArr.Add(wxSTEditorStyle(wxT("Fold margin colour"), 0xE0E0E0, 0xFFFFFF, wxEmptyString,    0,                0, STE_STYLE_USEDEFAULT_NOCOLOUR,     STE_STYLE_USES_COLOUR));
+    keyArr.Add(STE_STYLE_SELECTION_COLOUR);
+    valArr.Add(wxSTEditorStyle(wxT("Selection colour"),   0xFFFFFF, 0xC0C0C0, wxEmptyString,    0,                0, STE_STYLE_USEDEFAULT_NOCOLOUR,     STE_STYLE_USES_COLOUR));
+    keyArr.Add(STE_STYLE_WHITESPACE_COLOUR);
+    valArr.Add(wxSTEditorStyle(wxT("Whitespace colour"),  0x000000, 0xFFFFFF, wxEmptyString,    0,                0, STE_STYLE_USEDEFAULT_ALL,          STE_STYLE_USES_COLOUR));
+    keyArr.Add(STE_STYLE_EDGE_COLOUR);
+    valArr.Add(wxSTEditorStyle(wxT("Edge colour"),        0xC0C0C0, 0xFFFFFF, wxEmptyString,    0,                0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_FORECOLOUR));
+    keyArr.Add(STE_STYLE_CARET_COLOUR);
+    valArr.Add(wxSTEditorStyle(wxT("Caret colour"),       0x000000, 0xF9F9F9, wxEmptyString,    0,                0, STE_STYLE_USEDEFAULT_NOCOLOUR,     STE_STYLE_USES_COLOUR));
+    keyArr.Add(STE_STYLE_FOLD_COLOUR);
+    valArr.Add(wxSTEditorStyle(wxT("Fold margin colour"), 0xE0E0E0, 0xFFFFFF, wxEmptyString,    0,                0, STE_STYLE_USEDEFAULT_NOCOLOUR,     STE_STYLE_USES_COLOUR));
 
     // defaults same as Scintilla's defaults
-    keyArr.Add(STE_STYLE_INDIC_0);           valArr.Add(wxSTEditorStyle(wxT("Indicator 0"),        0x007F00, 0xFFFFFF, wxEmptyString, 0, wxSTC_INDIC_SQUIGGLE, STE_STYLE_USEDEFAULT_NOFONTSTYLE, STE_STYLE_USES_FORECOLOUR|STE_STYLE_USES_STYLE));
-    keyArr.Add(STE_STYLE_INDIC_1);           valArr.Add(wxSTEditorStyle(wxT("Indicator 1"),        0x0000FF, 0xFFFFFF, wxEmptyString, 0, wxSTC_INDIC_TT,       STE_STYLE_USEDEFAULT_NOFONTSTYLE, STE_STYLE_USES_FORECOLOUR|STE_STYLE_USES_STYLE));
-    keyArr.Add(STE_STYLE_INDIC_2);           valArr.Add(wxSTEditorStyle(wxT("Indicator 2"),        0xFF0000, 0xFFFFFF, wxEmptyString, 0, wxSTC_INDIC_PLAIN,    STE_STYLE_USEDEFAULT_NOFONTSTYLE, STE_STYLE_USES_FORECOLOUR|STE_STYLE_USES_STYLE));
+    keyArr.Add(STE_STYLE_INDIC_0);
+    valArr.Add(wxSTEditorStyle(wxT("Indicator 0"),        0x007F00, 0xFFFFFF, wxEmptyString, 0, wxSTC_INDIC_SQUIGGLE, STE_STYLE_USEDEFAULT_NOFONTSTYLE, STE_STYLE_USES_FORECOLOUR|STE_STYLE_USES_STYLE));
+    keyArr.Add(STE_STYLE_INDIC_1);
+    valArr.Add(wxSTEditorStyle(wxT("Indicator 1"),        0x0000FF, 0xFFFFFF, wxEmptyString, 0, wxSTC_INDIC_TT,       STE_STYLE_USEDEFAULT_NOFONTSTYLE, STE_STYLE_USES_FORECOLOUR|STE_STYLE_USES_STYLE));
+    keyArr.Add(STE_STYLE_INDIC_2);
+    valArr.Add(wxSTEditorStyle(wxT("Indicator 2"),        0xFF0000, 0xFFFFFF, wxEmptyString, 0, wxSTC_INDIC_PLAIN,    STE_STYLE_USEDEFAULT_NOFONTSTYLE, STE_STYLE_USES_FORECOLOUR|STE_STYLE_USES_STYLE));
 
     // make sure that these are in order
-    keyArr.Add(STE_STYLE_MARKER_BOOKMARK);      valArr.Add(wxSTEditorStyle(wxT("Bookmark marker"),             0x000000, 0x33AA55, wxEmptyString, 0, wxSTC_MARK_ROUNDRECT,         STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
-    keyArr.Add(STE_STYLE_MARKER_FOLDEREND);     valArr.Add(wxSTEditorStyle(wxT("Folder End Marker"),           0xFFFFFF, 0x808080, wxEmptyString, 0, wxSTC_MARK_BOXPLUSCONNECTED,  STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
-    keyArr.Add(STE_STYLE_MARKER_FOLDEROPENMID); valArr.Add(wxSTEditorStyle(wxT("Folder Open Mid Marker"),      0xFFFFFF, 0x808080, wxEmptyString, 0, wxSTC_MARK_BOXMINUSCONNECTED, STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
-    keyArr.Add(STE_STYLE_MARKER_FOLDERMIDTAIL); valArr.Add(wxSTEditorStyle(wxT("Folder Open Mid Tail Marker"), 0xFFFFFF, 0x808080, wxEmptyString, 0, wxSTC_MARK_TCORNER,           STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
-    keyArr.Add(STE_STYLE_MARKER_FOLDERTAIL);    valArr.Add(wxSTEditorStyle(wxT("Folder Tail Marker"),          0xFFFFFF, 0x808080, wxEmptyString, 0, wxSTC_MARK_LCORNER,           STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
-    keyArr.Add(STE_STYLE_MARKER_FOLDERSUB);     valArr.Add(wxSTEditorStyle(wxT("Folder Sub Marker"),           0xFFFFFF, 0x808080, wxEmptyString, 0, wxSTC_MARK_VLINE,             STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
-    keyArr.Add(STE_STYLE_MARKER_FOLDER);        valArr.Add(wxSTEditorStyle(wxT("Folder Marker"),               0xFFFFFF, 0x808080, wxEmptyString, 0, wxSTC_MARK_BOXPLUS,           STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
-    keyArr.Add(STE_STYLE_MARKER_FOLDEROPEN);    valArr.Add(wxSTEditorStyle(wxT("Folder Open Marker"),          0xFFFFFF, 0x808080, wxEmptyString, 0, wxSTC_MARK_BOXMINUS,          STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
+    keyArr.Add(STE_STYLE_MARKER_BOOKMARK);
+    valArr.Add(wxSTEditorStyle(wxT("Bookmark marker"),             0x000000, 0x33AA55, wxEmptyString, 0, wxSTC_MARK_ROUNDRECT,         STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
+    keyArr.Add(STE_STYLE_MARKER_FOLDEREND);
+    valArr.Add(wxSTEditorStyle(wxT("Folder End Marker"),           0xFFFFFF, 0x808080, wxEmptyString, 0, wxSTC_MARK_BOXPLUSCONNECTED,  STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
+    keyArr.Add(STE_STYLE_MARKER_FOLDEROPENMID);
+    valArr.Add(wxSTEditorStyle(wxT("Folder Open Mid Marker"),      0xFFFFFF, 0x808080, wxEmptyString, 0, wxSTC_MARK_BOXMINUSCONNECTED, STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
+    keyArr.Add(STE_STYLE_MARKER_FOLDERMIDTAIL);
+    valArr.Add(wxSTEditorStyle(wxT("Folder Open Mid Tail Marker"), 0xFFFFFF, 0x808080, wxEmptyString, 0, wxSTC_MARK_TCORNER,           STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
+    keyArr.Add(STE_STYLE_MARKER_FOLDERTAIL);
+    valArr.Add(wxSTEditorStyle(wxT("Folder Tail Marker"),          0xFFFFFF, 0x808080, wxEmptyString, 0, wxSTC_MARK_LCORNER,           STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
+    keyArr.Add(STE_STYLE_MARKER_FOLDERSUB);
+    valArr.Add(wxSTEditorStyle(wxT("Folder Sub Marker"),           0xFFFFFF, 0x808080, wxEmptyString, 0, wxSTC_MARK_VLINE,             STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
+    keyArr.Add(STE_STYLE_MARKER_FOLDER);
+    valArr.Add(wxSTEditorStyle(wxT("Folder Marker"),               0xFFFFFF, 0x808080, wxEmptyString, 0, wxSTC_MARK_BOXPLUS,           STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
+    keyArr.Add(STE_STYLE_MARKER_FOLDEROPEN);
+    valArr.Add(wxSTEditorStyle(wxT("Folder Open Marker"),          0xFFFFFF, 0x808080, wxEmptyString, 0, wxSTC_MARK_BOXMINUS,          STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR, STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
 
 #if defined(__WXDEBUG__)
     for (size_t n = 1; n < keyArr.GetCount(); n++) wxCHECK_RET(keyArr[n-1] < keyArr[n], wxT("styles are initialized out of order"));
@@ -258,7 +310,7 @@ wxSTEditorStyle* wxSTEditorStyles::GetStyle(int style_n) const
 }
 
 wxSTEditorStyle* wxSTEditorStyles::GetStyleUseDefault(int style_n,
-                                                      int use_default_type) const
+        int use_default_type) const
 {
     wxCHECK_MSG(IsOk(), NULL, wxT("Styles not created"));
     wxSTEditorStyle *steStyle = GetStyle(style_n);
@@ -279,34 +331,34 @@ wxString wxSTEditorStyles::GetStyleName(int style_n) const
 int wxSTEditorStyles::GetForegroundColourInt(int style_n, bool use_default) const
 {
     wxSTEditorStyle* steStyle = GetStyleUseDefault(style_n,
-                        use_default ? STE_STYLE_USEDEFAULT_FORECOLOUR : 0);
+                                use_default ? STE_STYLE_USEDEFAULT_FORECOLOUR : 0);
     if (steStyle == NULL) return 0;
     return steStyle->m_fore_colour;
 }
 int wxSTEditorStyles::GetBackgroundColourInt(int style_n, bool use_default) const
 {
     wxSTEditorStyle* steStyle = GetStyleUseDefault(style_n,
-                        use_default ? STE_STYLE_USEDEFAULT_BACKCOLOUR : 0);
+                                use_default ? STE_STYLE_USEDEFAULT_BACKCOLOUR : 0);
     if (steStyle == NULL) return 0xFFFFFF;
     return steStyle->m_back_colour;
 }
 wxFont wxSTEditorStyles::GetFont(int style_n, bool use_default) const
 {
     wxCHECK_MSG(IsOk(), wxFont(STE_DEFAULT_FONT_SIZE, wxMODERN, wxNORMAL, wxNORMAL), wxT("Styles not created"));
-/*
-    wxFont *f = wxTheFontList->FindOrCreateFont(
-                GetSize(style_n, use_default),
-                wxMODERN, // unused using facename
-                GetItalic(style_n, use_default) ? wxITALIC : wxNORMAL,
-                GetBold(style_n, use_default) ? wxBOLD : wxNORMAL,
-                GetUnderlined(style_n, use_default),
-                GetFaceName(style_n, use_default));
+    /*
+        wxFont *f = wxTheFontList->FindOrCreateFont(
+                    GetSize(style_n, use_default),
+                    wxMODERN, // unused using facename
+                    GetItalic(style_n, use_default) ? wxITALIC : wxNORMAL,
+                    GetBold(style_n, use_default) ? wxBOLD : wxNORMAL,
+                    GetUnderlined(style_n, use_default),
+                    GetFaceName(style_n, use_default));
 
-    if (!f || !f->IsOk())
-        return wxFont(STE_DEFAULT_FONT_SIZE, wxMODERN, wxNORMAL, wxNORMAL);
+        if (!f || !f->IsOk())
+            return wxFont(STE_DEFAULT_FONT_SIZE, wxMODERN, wxNORMAL, wxNORMAL);
 
-    return wxFont(*f);
-*/
+        return wxFont(*f);
+    */
 
     wxFont font(GetSize(style_n, use_default),
                 wxMODERN, // unused using facename
@@ -323,21 +375,21 @@ wxFont wxSTEditorStyles::GetFont(int style_n, bool use_default) const
 wxString wxSTEditorStyles::GetFaceName(int style_n, bool use_default) const
 {
     wxSTEditorStyle* steStyle = GetStyleUseDefault(style_n,
-                        use_default ? STE_STYLE_USEDEFAULT_FACENAME : 0);
+                                use_default ? STE_STYLE_USEDEFAULT_FACENAME : 0);
     if (steStyle == NULL) return STE_DEFAULT_FONT_FACENAME;
     return steStyle->m_faceName;
 }
 int wxSTEditorStyles::GetSize(int style_n, bool use_default) const
 {
     wxSTEditorStyle* steStyle = GetStyleUseDefault(style_n,
-                        use_default ? STE_STYLE_USEDEFAULT_FONTSIZE : 0);
+                                use_default ? STE_STYLE_USEDEFAULT_FONTSIZE : 0);
     if (steStyle == NULL) return STE_DEFAULT_FONT_SIZE;
     return steStyle->m_font_size;
 }
 int wxSTEditorStyles::GetFontAttr(int style_n, bool use_default) const
 {
     wxSTEditorStyle* steStyle = GetStyleUseDefault(style_n,
-                        use_default ? STE_STYLE_USEDEFAULT_FONTSTYLE : 0);
+                                use_default ? STE_STYLE_USEDEFAULT_FONTSTYLE : 0);
     if (steStyle == NULL) return STE_STYLE_FONT_NONE;
     return steStyle->m_font_attr;
 }
@@ -380,24 +432,24 @@ bool wxSTEditorStyles::SetInitStyle( int ste_style, const wxSTEditorStyle& steSt
     return s_STE_PairArrayStyles.Add(ste_style, steStyle);
 }
 bool wxSTEditorStyles::SetInitIndicator( int indic_n, const wxString &name,
-                                         int fore_colour, int style) const
+        int fore_colour, int style) const
 {
     wxCHECK_STEINDIC_MSG(indic_n, false);
     return SetInitStyle(STE_STYLE_INDIC__FIRST+indic_n,
-                 wxSTEditorStyle(name, fore_colour, 0xFFFFFF,
-                 STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, style,
-                 STE_STYLE_USEDEFAULT_NOFONTSTYLE, // just fore and style
-                 STE_STYLE_USES_FORECOLOUR|STE_STYLE_USES_STYLE));
+                        wxSTEditorStyle(name, fore_colour, 0xFFFFFF,
+                                        STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, style,
+                                        STE_STYLE_USEDEFAULT_NOFONTSTYLE, // just fore and style
+                                        STE_STYLE_USES_FORECOLOUR|STE_STYLE_USES_STYLE));
 }
 bool wxSTEditorStyles::SetInitMarker( int marker_n, const wxString &name, int style,
                                       int fore_colour, int back_colour ) const
 {
     wxCHECK_STEMARKER_MSG(marker_n, false);
     return SetInitStyle(STE_STYLE_MARKER__FIRST+marker_n,
-                 wxSTEditorStyle(name, fore_colour, back_colour,
-                 STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, style,
-                 STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR,
-                 STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
+                        wxSTEditorStyle(name, fore_colour, back_colour,
+                                        STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, style,
+                                        STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR,
+                                        STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
 }
 
 bool wxSTEditorStyles::RemoveInitStyle( int style_n ) const
@@ -426,8 +478,8 @@ void wxSTEditorStyles::SetFont(int style_n, const wxFont &font)
     SetSize(style_n, font.GetPointSize());
 
     int ste_font_attr  = font.GetWeight() == wxBOLD   ? STE_STYLE_FONT_BOLD       : 0;
-        ste_font_attr |= font.GetStyle()  != wxNORMAL ? STE_STYLE_FONT_ITALIC     : 0;
-        ste_font_attr |= font.GetUnderlined()         ? STE_STYLE_FONT_UNDERLINED : 0;
+    ste_font_attr |= font.GetStyle()  != wxNORMAL ? STE_STYLE_FONT_ITALIC     : 0;
+    ste_font_attr |= font.GetUnderlined()         ? STE_STYLE_FONT_UNDERLINED : 0;
 
     SetFontAttr(style_n, ste_font_attr);
 }
@@ -457,9 +509,15 @@ void wxSTEditorStyles::SetCase(int style_n, int lcase)
 
     switch (lcase)
     {
-        case wxSTC_CASE_MIXED : steCase = STE_STYLE_FONT_CASEMIXED; break;
-        case wxSTC_CASE_UPPER : steCase = STE_STYLE_FONT_CASEUPPER; break;
-        case wxSTC_CASE_LOWER : steCase = STE_STYLE_FONT_CASELOWER; break;
+    case wxSTC_CASE_MIXED :
+        steCase = STE_STYLE_FONT_CASEMIXED;
+        break;
+    case wxSTC_CASE_UPPER :
+        steCase = STE_STYLE_FONT_CASEUPPER;
+        break;
+    case wxSTC_CASE_LOWER :
+        steCase = STE_STYLE_FONT_CASELOWER;
+        break;
     }
 
     wxCHECK_RET(steCase != -1, wxT("Invalid letter case for style"));
@@ -495,63 +553,64 @@ bool wxSTEditorStyles::SetFoldMarkerStyle(int fold_style)
     //  This code originally in SciTE/src/SciTEProps.cxx
     switch (fold_style)
     {
-        case STE_FOLDMARGIN_STYLE_ARROWS : // "..." for contracted folders, arrow pointing down for expanded
-        {
-            SetMarker(wxSTC_MARKNUM_FOLDEROPEN,    wxSTC_MARK_ARROWDOWN, *wxBLACK, *wxBLACK);
-            SetMarker(wxSTC_MARKNUM_FOLDER,        wxSTC_MARK_DOTDOTDOT, *wxBLACK, *wxBLACK);
-            SetMarker(wxSTC_MARKNUM_FOLDERSUB,     wxSTC_MARK_EMPTY,     *wxBLACK, *wxBLACK);
-            SetMarker(wxSTC_MARKNUM_FOLDERTAIL,    wxSTC_MARK_EMPTY,     *wxBLACK, *wxBLACK);
-            SetMarker(wxSTC_MARKNUM_FOLDEREND,     wxSTC_MARK_DOTDOTDOT, *wxBLACK, *wxWHITE);
-            SetMarker(wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_ARROWDOWN, *wxBLACK, *wxWHITE);
-            SetMarker(wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_EMPTY,     *wxBLACK, *wxBLACK);
-/*
-            // Arrow pointing right for contracted folders, arrow pointing down for expanded
-            editor->MarkerDefine(wxSTC_MARKNUM_FOLDEROPEN,    wxSTC_MARK_ARROWDOWN, *wxBLACK, *wxBLACK);
-            editor->MarkerDefine(wxSTC_MARKNUM_FOLDER,        wxSTC_MARK_ARROW, *wxBLACK, *wxBLACK);
-            editor->MarkerDefine(wxSTC_MARKNUM_FOLDERSUB,     wxSTC_MARK_EMPTY, *wxBLACK, *wxBLACK);
-            editor->MarkerDefine(wxSTC_MARKNUM_FOLDERTAIL,    wxSTC_MARK_EMPTY, *wxBLACK, *wxBLACK);
-            editor->MarkerDefine(wxSTC_MARKNUM_FOLDEREND,     wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
-            editor->MarkerDefine(wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
-            editor->MarkerDefine(wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
-*/
-            break;
-        }
-        case STE_FOLDMARGIN_STYLE_CIRCLES : // Like a flattened tree control using circular headers and curved joins
-        {
-            wxColour grey(0x40, 0x40, 0x40);
-            SetMarker(wxSTC_MARKNUM_FOLDEROPEN,    wxSTC_MARK_CIRCLEMINUS,  *wxWHITE, grey);
-            SetMarker(wxSTC_MARKNUM_FOLDER,        wxSTC_MARK_CIRCLEPLUS,   *wxWHITE, grey);
-            SetMarker(wxSTC_MARKNUM_FOLDERSUB,     wxSTC_MARK_VLINE,        *wxWHITE, grey);
-            SetMarker(wxSTC_MARKNUM_FOLDERTAIL,    wxSTC_MARK_LCORNERCURVE, *wxWHITE, grey);
-            SetMarker(wxSTC_MARKNUM_FOLDEREND,     wxSTC_MARK_CIRCLEPLUSCONNECTED,  *wxWHITE, grey);
-            SetMarker(wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_CIRCLEMINUSCONNECTED, *wxWHITE, grey);
-            SetMarker(wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_TCORNERCURVE, *wxWHITE, grey);
-            break;
-        }
-        case STE_FOLDMARGIN_STYLE_SQUARES : // Like a flattened tree control using square headers
-        {
-            wxColour grey(0x80, 0x80, 0x80);
-            SetMarker(wxSTC_MARKNUM_FOLDEROPEN,    wxSTC_MARK_BOXMINUS, *wxWHITE, grey);
-            SetMarker(wxSTC_MARKNUM_FOLDER,        wxSTC_MARK_BOXPLUS,  *wxWHITE, grey);
-            SetMarker(wxSTC_MARKNUM_FOLDERSUB,     wxSTC_MARK_VLINE,    *wxWHITE, grey);
-            SetMarker(wxSTC_MARKNUM_FOLDERTAIL,    wxSTC_MARK_LCORNER,  *wxWHITE, grey);
-            SetMarker(wxSTC_MARKNUM_FOLDEREND,     wxSTC_MARK_BOXPLUSCONNECTED,  *wxWHITE, grey);
-            SetMarker(wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_BOXMINUSCONNECTED, *wxWHITE, grey);
-            SetMarker(wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_TCORNER,  *wxWHITE, grey);
-            break;
-        }
-        case STE_FOLDMARGIN_STYLE_PLUSMINUS : // Plus for contracted folders, minus for expanded
-        {
-            SetMarker(wxSTC_MARKNUM_FOLDEROPEN,    wxSTC_MARK_MINUS, *wxWHITE, *wxBLACK);
-            SetMarker(wxSTC_MARKNUM_FOLDER,        wxSTC_MARK_PLUS,  *wxWHITE, *wxBLACK);
-            SetMarker(wxSTC_MARKNUM_FOLDERSUB,     wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
-            SetMarker(wxSTC_MARKNUM_FOLDERTAIL,    wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
-            SetMarker(wxSTC_MARKNUM_FOLDEREND,     wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
-            SetMarker(wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
-            SetMarker(wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
-            break;
-        }
-        default : return false; // unknown
+    case STE_FOLDMARGIN_STYLE_ARROWS : // "..." for contracted folders, arrow pointing down for expanded
+    {
+        SetMarker(wxSTC_MARKNUM_FOLDEROPEN,    wxSTC_MARK_ARROWDOWN, *wxBLACK, *wxBLACK);
+        SetMarker(wxSTC_MARKNUM_FOLDER,        wxSTC_MARK_DOTDOTDOT, *wxBLACK, *wxBLACK);
+        SetMarker(wxSTC_MARKNUM_FOLDERSUB,     wxSTC_MARK_EMPTY,     *wxBLACK, *wxBLACK);
+        SetMarker(wxSTC_MARKNUM_FOLDERTAIL,    wxSTC_MARK_EMPTY,     *wxBLACK, *wxBLACK);
+        SetMarker(wxSTC_MARKNUM_FOLDEREND,     wxSTC_MARK_DOTDOTDOT, *wxBLACK, *wxWHITE);
+        SetMarker(wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_ARROWDOWN, *wxBLACK, *wxWHITE);
+        SetMarker(wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_EMPTY,     *wxBLACK, *wxBLACK);
+        /*
+                    // Arrow pointing right for contracted folders, arrow pointing down for expanded
+                    editor->MarkerDefine(wxSTC_MARKNUM_FOLDEROPEN,    wxSTC_MARK_ARROWDOWN, *wxBLACK, *wxBLACK);
+                    editor->MarkerDefine(wxSTC_MARKNUM_FOLDER,        wxSTC_MARK_ARROW, *wxBLACK, *wxBLACK);
+                    editor->MarkerDefine(wxSTC_MARKNUM_FOLDERSUB,     wxSTC_MARK_EMPTY, *wxBLACK, *wxBLACK);
+                    editor->MarkerDefine(wxSTC_MARKNUM_FOLDERTAIL,    wxSTC_MARK_EMPTY, *wxBLACK, *wxBLACK);
+                    editor->MarkerDefine(wxSTC_MARKNUM_FOLDEREND,     wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
+                    editor->MarkerDefine(wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
+                    editor->MarkerDefine(wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
+        */
+        break;
+    }
+    case STE_FOLDMARGIN_STYLE_CIRCLES : // Like a flattened tree control using circular headers and curved joins
+    {
+        wxColour grey(0x40, 0x40, 0x40);
+        SetMarker(wxSTC_MARKNUM_FOLDEROPEN,    wxSTC_MARK_CIRCLEMINUS,  *wxWHITE, grey);
+        SetMarker(wxSTC_MARKNUM_FOLDER,        wxSTC_MARK_CIRCLEPLUS,   *wxWHITE, grey);
+        SetMarker(wxSTC_MARKNUM_FOLDERSUB,     wxSTC_MARK_VLINE,        *wxWHITE, grey);
+        SetMarker(wxSTC_MARKNUM_FOLDERTAIL,    wxSTC_MARK_LCORNERCURVE, *wxWHITE, grey);
+        SetMarker(wxSTC_MARKNUM_FOLDEREND,     wxSTC_MARK_CIRCLEPLUSCONNECTED,  *wxWHITE, grey);
+        SetMarker(wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_CIRCLEMINUSCONNECTED, *wxWHITE, grey);
+        SetMarker(wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_TCORNERCURVE, *wxWHITE, grey);
+        break;
+    }
+    case STE_FOLDMARGIN_STYLE_SQUARES : // Like a flattened tree control using square headers
+    {
+        wxColour grey(0x80, 0x80, 0x80);
+        SetMarker(wxSTC_MARKNUM_FOLDEROPEN,    wxSTC_MARK_BOXMINUS, *wxWHITE, grey);
+        SetMarker(wxSTC_MARKNUM_FOLDER,        wxSTC_MARK_BOXPLUS,  *wxWHITE, grey);
+        SetMarker(wxSTC_MARKNUM_FOLDERSUB,     wxSTC_MARK_VLINE,    *wxWHITE, grey);
+        SetMarker(wxSTC_MARKNUM_FOLDERTAIL,    wxSTC_MARK_LCORNER,  *wxWHITE, grey);
+        SetMarker(wxSTC_MARKNUM_FOLDEREND,     wxSTC_MARK_BOXPLUSCONNECTED,  *wxWHITE, grey);
+        SetMarker(wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_BOXMINUSCONNECTED, *wxWHITE, grey);
+        SetMarker(wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_TCORNER,  *wxWHITE, grey);
+        break;
+    }
+    case STE_FOLDMARGIN_STYLE_PLUSMINUS : // Plus for contracted folders, minus for expanded
+    {
+        SetMarker(wxSTC_MARKNUM_FOLDEROPEN,    wxSTC_MARK_MINUS, *wxWHITE, *wxBLACK);
+        SetMarker(wxSTC_MARKNUM_FOLDER,        wxSTC_MARK_PLUS,  *wxWHITE, *wxBLACK);
+        SetMarker(wxSTC_MARKNUM_FOLDERSUB,     wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
+        SetMarker(wxSTC_MARKNUM_FOLDERTAIL,    wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
+        SetMarker(wxSTC_MARKNUM_FOLDEREND,     wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
+        SetMarker(wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
+        SetMarker(wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_EMPTY, *wxWHITE, *wxBLACK);
+        break;
+    }
+    default :
+        return false; // unknown
     }
 
     return true;
@@ -578,21 +637,21 @@ void wxSTEditorStyles::SetEditorStyle( int stc_style, int ste_style,
     wxCHECK_RET(editor, wxT("Invalid editor"));
 
     if (GetStyleUses(ste_style, STE_STYLE_USES_FORECOLOUR) &&
-        (force || !GetUsesDefault(ste_style, STE_STYLE_USEDEFAULT_FORECOLOUR)))
+            (force || !GetUsesDefault(ste_style, STE_STYLE_USEDEFAULT_FORECOLOUR)))
         editor->StyleSetForeground(stc_style, GetForegroundColour(ste_style));
     if (GetStyleUses(ste_style, STE_STYLE_USES_BACKCOLOUR) &&
-        (force || !GetUsesDefault(ste_style, STE_STYLE_USEDEFAULT_BACKCOLOUR)))
+            (force || !GetUsesDefault(ste_style, STE_STYLE_USEDEFAULT_BACKCOLOUR)))
         editor->StyleSetBackground(stc_style, GetBackgroundColour(ste_style));
 
     if (GetStyleUses(ste_style, STE_STYLE_USES_FACENAME) &&
-        (force || !GetUsesDefault(ste_style, STE_STYLE_USEDEFAULT_FACENAME)))
+            (force || !GetUsesDefault(ste_style, STE_STYLE_USEDEFAULT_FACENAME)))
         editor->StyleSetFaceName(stc_style, GetFaceName(ste_style));
     if (GetStyleUses(ste_style, STE_STYLE_USES_FONTSIZE) &&
-        (force || !GetUsesDefault(ste_style, STE_STYLE_USEDEFAULT_FONTSIZE)))
+            (force || !GetUsesDefault(ste_style, STE_STYLE_USEDEFAULT_FONTSIZE)))
         editor->StyleSetSize(stc_style,     GetSize(ste_style));
 
     if (GetStyleUses(ste_style, STE_STYLE_USES_FONTSTYLE) &&
-        (force || !GetUsesDefault(ste_style, STE_STYLE_USEDEFAULT_FONTSTYLE)))
+            (force || !GetUsesDefault(ste_style, STE_STYLE_USEDEFAULT_FONTSTYLE)))
     {
         const int ste_font_attr = GetFontAttr(ste_style);
         editor->StyleSetBold(stc_style,      STE_HASBIT(ste_font_attr, STE_STYLE_FONT_BOLD));
@@ -608,12 +667,12 @@ void wxSTEditorStyles::SetEditorStyle( int stc_style, int ste_style,
     //void StyleSetFontEncoding(int style, wxFontEncoding encoding);
     //void StyleSetHotSpot(int style, bool hotspot);
 
-/*
-    if ((ste_style == STE_STYLE_CHARACTEREOL) || (ste_style == STE_STYLE_STRINGEOL))
-        editor->StyleSetEOLFilled(stc_style, true);
-    else
-        editor->StyleSetEOLFilled(stc_style, false);
-*/
+    /*
+        if ((ste_style == STE_STYLE_CHARACTEREOL) || (ste_style == STE_STYLE_STRINGEOL))
+            editor->StyleSetEOLFilled(stc_style, true);
+        else
+            editor->StyleSetEOLFilled(stc_style, false);
+    */
 }
 
 void wxSTEditorStyles::UpdateEditor( wxSTEditor *editor )
@@ -691,7 +750,7 @@ void wxSTEditorStyles::UpdateEditor( wxSTEditor *editor )
     for (n = 0; n < count; n++)
     {
         if ((styleArray[n] >= STE_STYLE_MARKER__FIRST) &&
-            (styleArray[n] <= STE_STYLE_MARKER__LAST))
+                (styleArray[n] <= STE_STYLE_MARKER__LAST))
         {
             int marker_n = styleArray[n] - STE_STYLE_MARKER__FIRST;
             editor->MarkerDefine(marker_n, GetMarkerSymbol(marker_n),
@@ -723,7 +782,8 @@ wxString wxSTEditorStyles::LoadConfig( wxConfigBase &config,
                 if (value.Find(wxT(":")) != wxNOT_FOUND)
                     errorMsg += ParseConfigLine(key, value);
             }
-        } while (config.GetNextEntry(key, index));
+        }
+        while (config.GetNextEntry(key, index));
     }
 
 
@@ -768,8 +828,8 @@ wxString wxSTEditorStyles::ParseConfigLine(const wxString &key, const wxString &
         return _("Unknown style name in '")+name+wxT("'\n");
 
     for (wxStringTokenizer tkz(value, wxT(","));
-         tkz.HasMoreTokens();
-         )
+            tkz.HasMoreTokens();
+        )
     {
         wxString token = tkz.GetNextToken();
         option = token.BeforeFirst(wxT(':')).Strip(wxString::both);
@@ -852,7 +912,7 @@ wxString wxSTEditorStyles::ParseConfigLine(const wxString &key, const wxString &
         else if (option == wxT("case"))
         {
             if (val.ToLong(&long_val) &&
-                ((long_val == wxSTC_CASE_MIXED)||(long_val == wxSTC_CASE_UPPER)||(long_val == wxSTC_CASE_LOWER)))
+                    ((long_val == wxSTC_CASE_MIXED)||(long_val == wxSTC_CASE_UPPER)||(long_val == wxSTC_CASE_LOWER)))
             {
                 //SetUseDefault(style_n, STE_STYLE_USEDEFAULT_FONTSTYLE, def);
                 SetCase(style_n, int(long_val));

@@ -10,28 +10,28 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/fs_zip.h>
-    #include <wx/log.h>
-    #include <wx/menu.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/fs_zip.h>
+#include <wx/log.h>
+#include <wx/menu.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "manager.h" // class's header file
-    #include "sdk_events.h"
-    #include "cbexception.h"
-    #include "projectmanager.h"
-    #include "editormanager.h"
-    #include "logmanager.h"
-    #include "pluginmanager.h"
-    #include "toolsmanager.h"
-    #include "macrosmanager.h"
-    #include "configmanager.h"
-    #include "scriptingmanager.h"
-    #include "templatemanager.h"
-    #include "personalitymanager.h"
-    #include "uservarmanager.h"
-    #include "filemanager.h"
-    #include "globals.h"
-    #include "xtra_res.h" // our new ToolBarAddOn handler
+#include "manager.h" // class's header file
+#include "sdk_events.h"
+#include "cbexception.h"
+#include "projectmanager.h"
+#include "editormanager.h"
+#include "logmanager.h"
+#include "pluginmanager.h"
+#include "toolsmanager.h"
+#include "macrosmanager.h"
+#include "configmanager.h"
+#include "scriptingmanager.h"
+#include "templatemanager.h"
+#include "personalitymanager.h"
+#include "uservarmanager.h"
+#include "filemanager.h"
+#include "globals.h"
+#include "xtra_res.h" // our new ToolBarAddOn handler
 #endif
 
 #include <wx/app.h> // wxTheApp
@@ -39,9 +39,9 @@
 #include <wx/fs_mem.h>
 
 #ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
-    // this preprocessor directive can be defined in cbfunctor.h to enable performance measure
-    #include <cxxabi.h>  // demangle C++ names
-    #include <cstdlib>   // free the memory created by abi::__cxa_demangle
+// this preprocessor directive can be defined in cbfunctor.h to enable performance measure
+#include <cxxabi.h>  // demangle C++ names
+#include <cstdlib>   // free the memory created by abi::__cxa_demangle
 #endif // PPRCESS_EVENT_PERFORMANCE_MEASURE
 
 #include "cbcolourmanager.h"
@@ -521,7 +521,7 @@ bool Manager::LoadResource(const wxString& file)
     if (wxFile::Access(resourceFile, wxFile::read) == false)
     {
         Get()->GetLogManager()->LogError(wxString::Format(_("Manager failed to access XRC resource '%s'."),
-                                                          resourceFile.wx_str()));
+                                         resourceFile.wx_str()));
         return false;
     }
 
@@ -551,7 +551,7 @@ bool Manager::LoadResource(const wxString& file)
         if (!wxXmlResource::Get()->Load(memoryFile))
         {
             Get()->GetLogManager()->LogError(wxString::Format(_("Manager failed to load XRC resource '%s'."),
-                                                              resourceFile.wx_str()));
+                                             resourceFile.wx_str()));
         }
         delete[] buf;
         return true;
@@ -560,7 +560,7 @@ bool Manager::LoadResource(const wxString& file)
     {
         delete[] buf;
         Get()->GetLogManager()->LogError(wxString::Format(_("Manager hardly failed to load XRC resource '%s'."),
-                                                          resourceFile.wx_str()));
+                                         resourceFile.wx_str()));
         return false;
     }
 }

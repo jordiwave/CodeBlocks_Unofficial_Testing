@@ -31,7 +31,8 @@ class wxComboBox;
 class wxCommandEvent;
 class ThreadSearchFindData;
 
-class DirectoryParamsPanel: public wxPanel {
+class DirectoryParamsPanel: public wxPanel
+{
 public:
     // begin wxGlade: DirectoryParamsPanel::ids
     // end wxGlade

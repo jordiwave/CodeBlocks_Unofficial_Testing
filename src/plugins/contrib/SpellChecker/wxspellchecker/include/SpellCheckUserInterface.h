@@ -15,35 +15,54 @@
 class wxSpellCheckUserInterface
 {
 public:
-  wxSpellCheckUserInterface(wxSpellCheckEngineInterface* pSpellChecker = NULL);
-	virtual ~wxSpellCheckUserInterface();
+    wxSpellCheckUserInterface(wxSpellCheckEngineInterface* pSpellChecker = NULL);
+    virtual ~wxSpellCheckUserInterface();
 
-  enum  {
+    enum
+    {
         ACTION_INITIAL = 0,
-		    ACTION_REPLACE,
-    		ACTION_IGNORE,
-		    ACTION_REPLACE_ALWAYS,
-    		ACTION_IGNORE_ALWAYS,
-		    ACTION_CLOSE 
-    		};
+        ACTION_REPLACE,
+        ACTION_IGNORE,
+        ACTION_REPLACE_ALWAYS,
+        ACTION_IGNORE_ALWAYS,
+        ACTION_CLOSE
+    };
 
 protected:
-  wxSpellCheckEngineInterface* m_pSpellCheckEngine;
+    wxSpellCheckEngineInterface* m_pSpellCheckEngine;
 
-  wxString m_strMisspelledWord;
-	wxString m_strReplaceWithText;
-  wxString m_strContext;
+    wxString m_strMisspelledWord;
+    wxString m_strReplaceWithText;
+    wxString m_strContext;
 
-  int m_nLastAction;
+    int m_nLastAction;
 
 public:
-  virtual void SetMisspelledWord(const wxString& strMisspelling) { m_strMisspelledWord = strMisspelling; }
-	wxString GetMisspelledWord() { return m_strMisspelledWord; }
-	wxString GetReplacementText() { return m_strReplaceWithText; }
-	wxString GetContext() { return m_strContext; }
-	int GetLastAction() { return m_nLastAction; }
-	void SetSpellCheckEngine(wxSpellCheckEngineInterface* pEngine) { m_pSpellCheckEngine = pEngine; }
-	virtual int PresentSpellCheckUserInterface(const wxString& strMisspelling) = 0;
+    virtual void SetMisspelledWord(const wxString& strMisspelling)
+    {
+        m_strMisspelledWord = strMisspelling;
+    }
+    wxString GetMisspelledWord()
+    {
+        return m_strMisspelledWord;
+    }
+    wxString GetReplacementText()
+    {
+        return m_strReplaceWithText;
+    }
+    wxString GetContext()
+    {
+        return m_strContext;
+    }
+    int GetLastAction()
+    {
+        return m_nLastAction;
+    }
+    void SetSpellCheckEngine(wxSpellCheckEngineInterface* pEngine)
+    {
+        m_pSpellCheckEngine = pEngine;
+    }
+    virtual int PresentSpellCheckUserInterface(const wxString& strMisspelling) = 0;
 };
 
 #endif  // __SPELL_CHECK_USER_INTERFACE__

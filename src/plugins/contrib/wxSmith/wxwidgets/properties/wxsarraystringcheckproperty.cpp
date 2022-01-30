@@ -54,8 +54,8 @@ bool wxsArrayStringCheckProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElem
     }
 
     for ( TiXmlElement* Item = Element->FirstChildElement(cbU2C(DataSubName));
-          Item;
-          Item = Item->NextSiblingElement(cbU2C(DataSubName)) )
+            Item;
+            Item = Item->NextSiblingElement(cbU2C(DataSubName)) )
     {
         // Fetching value of "checked" flag
         const char* CheckedAttr = Item->Attribute("checked");

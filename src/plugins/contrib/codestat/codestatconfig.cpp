@@ -8,14 +8,14 @@
  **************************************************************/
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/combobox.h>
-    #include <wx/event.h>
-    #include <wx/stattext.h>
-    #include <wx/textctrl.h>
-    #include <wx/xrc/xmlres.h>
-    #include "configmanager.h"
-    #include "globals.h"
-    #include "manager.h"
+#include <wx/combobox.h>
+#include <wx/event.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
+#include "configmanager.h"
+#include "globals.h"
+#include "manager.h"
 #endif
 #include <wx/textdlg.h>
 #include <wx/tokenzr.h>
@@ -25,10 +25,10 @@ int LoadDefaultSettings(LanguageDef languages[NB_FILETYPES_MAX]);
 
 
 BEGIN_EVENT_TABLE (CodeStatConfigDlg, wxPanel)
-EVT_COMBOBOX(XRCID("combo_Names"), CodeStatConfigDlg::ComboBoxEvent)
-EVT_BUTTON(XRCID("btn_Add"), CodeStatConfigDlg::Add)
-EVT_BUTTON(XRCID("btn_Remove"), CodeStatConfigDlg::Remove)
-EVT_BUTTON(XRCID("btn_Default"), CodeStatConfigDlg::RestoreDefault)
+    EVT_COMBOBOX(XRCID("combo_Names"), CodeStatConfigDlg::ComboBoxEvent)
+    EVT_BUTTON(XRCID("btn_Add"), CodeStatConfigDlg::Add)
+    EVT_BUTTON(XRCID("btn_Remove"), CodeStatConfigDlg::Remove)
+    EVT_BUTTON(XRCID("btn_Default"), CodeStatConfigDlg::RestoreDefault)
 END_EVENT_TABLE ()
 
 /** Load the language settings and display the configuration dialog.
@@ -62,16 +62,16 @@ void CodeStatConfigDlg::ReInitDialog()
     // Write languages names in the combo-box
     for (int i=0; i<m_nb_languages; i++)
     {
-       combo_Names->Append(m_languages[i].name);
+        combo_Names->Append(m_languages[i].name);
     }
 
     // Select first one
     m_selected_language = -1;
     if (m_nb_languages > 0)
     {
-       combo_Names->SetSelection(0);
-       m_selected_language = 0;
-       PrintLanguageInfo(0);
+        combo_Names->SetSelection(0);
+        m_selected_language = 0;
+        PrintLanguageInfo(0);
     }
 }
 
@@ -99,7 +99,7 @@ void CodeStatConfigDlg::SaveSettings()
         cfg->Write(wxString::Format(_T("/l%d/name"),i), m_languages[i].name);
         for (unsigned int j=0; j<m_languages[i].ext.Count(); ++j)
         {
-           extensions = extensions + m_languages[i].ext[j] + _T(" ");
+            extensions = extensions + m_languages[i].ext[j] + _T(" ");
         }
         cfg->Write(wxString::Format(_T("/l%d/ext"),i), extensions);
         cfg->Write(wxString::Format(_T("/l%d/single_line_comment"),i), m_languages[i].single_line_comment);
@@ -122,18 +122,19 @@ void CodeStatConfigDlg::SaveCurrentLanguage()
 {
     if (m_selected_language >= 0)
     {
-       wxString extensions;
-       extensions = XRCCTRL(*this, "txt_FileTypes", wxTextCtrl)->GetValue();
-       extensions.Trim(true); extensions.Trim(false);
-       m_languages[m_selected_language].ext.Clear();
-       wxStringTokenizer tkz(extensions);
-       while (tkz.HasMoreTokens())
-       {
-           m_languages[m_selected_language].ext.Add(tkz.GetNextToken());
-       }
-       m_languages[m_selected_language].single_line_comment = XRCCTRL(*this, "txt_SingleComment", wxTextCtrl)->GetValue();
-       m_languages[m_selected_language].multiple_line_comment[0] = XRCCTRL(*this, "txt_MultiLineCommentBegin", wxTextCtrl)->GetValue();
-       m_languages[m_selected_language].multiple_line_comment[1] = XRCCTRL(*this, "txt_MultiLineCommentEnd", wxTextCtrl)->GetValue();
+        wxString extensions;
+        extensions = XRCCTRL(*this, "txt_FileTypes", wxTextCtrl)->GetValue();
+        extensions.Trim(true);
+        extensions.Trim(false);
+        m_languages[m_selected_language].ext.Clear();
+        wxStringTokenizer tkz(extensions);
+        while (tkz.HasMoreTokens())
+        {
+            m_languages[m_selected_language].ext.Add(tkz.GetNextToken());
+        }
+        m_languages[m_selected_language].single_line_comment = XRCCTRL(*this, "txt_SingleComment", wxTextCtrl)->GetValue();
+        m_languages[m_selected_language].multiple_line_comment[0] = XRCCTRL(*this, "txt_MultiLineCommentBegin", wxTextCtrl)->GetValue();
+        m_languages[m_selected_language].multiple_line_comment[1] = XRCCTRL(*this, "txt_MultiLineCommentEnd", wxTextCtrl)->GetValue();
     }
 }
 
@@ -147,7 +148,7 @@ void CodeStatConfigDlg::PrintLanguageInfo(int id)
     wxString ext_string = _T("");
     for (unsigned int i=0; i<m_languages[id].ext.GetCount(); ++i)
     {
-       ext_string = ext_string + _T(" ") + m_languages[id].ext[i];
+        ext_string = ext_string + _T(" ") + m_languages[id].ext[i];
     }
     txt_FileTypes->SetValue(ext_string);
     wxTextCtrl* txt_SingleComment = XRCCTRL(*this, "txt_SingleComment", wxTextCtrl);
@@ -162,30 +163,31 @@ void CodeStatConfigDlg::PrintLanguageInfo(int id)
  */
 void CodeStatConfigDlg::Add(wxCommandEvent& /*event*/)
 {
-   wxTextEntryDialog dialog(this, _("Enter name of the new language:"), _("New language"), _T(""), wxOK|wxCANCEL);
-   PlaceWindow(&dialog);
-   if (dialog.ShowModal() == wxID_OK)
-   {
-       if (m_nb_languages < NB_FILETYPES_MAX)
-       {
-           wxString name = dialog.GetValue();
-           name.Trim(true); name.Trim(false);
-           if (!name.IsEmpty())
-           {
-               m_languages[m_nb_languages].name = name;
-               m_languages[m_nb_languages].ext.Clear();
-               m_languages[m_nb_languages].single_line_comment = _T("");
-               m_languages[m_nb_languages].multiple_line_comment[0] = _T("");
-               m_languages[m_nb_languages].multiple_line_comment[1] = _T("");
-               m_nb_languages++;
-               wxComboBox* combo_Names = XRCCTRL(*this, "combo_Names", wxComboBox);
-               combo_Names->Append(name);
-               combo_Names->SetSelection(m_nb_languages-1);
-               PrintLanguageInfo(m_nb_languages-1);
-           }
-       }
-       else cbMessageBox(_("Language list is full!"), _("Error"), wxOK, Manager::Get()->GetAppWindow());
-   }
+    wxTextEntryDialog dialog(this, _("Enter name of the new language:"), _("New language"), _T(""), wxOK|wxCANCEL);
+    PlaceWindow(&dialog);
+    if (dialog.ShowModal() == wxID_OK)
+    {
+        if (m_nb_languages < NB_FILETYPES_MAX)
+        {
+            wxString name = dialog.GetValue();
+            name.Trim(true);
+            name.Trim(false);
+            if (!name.IsEmpty())
+            {
+                m_languages[m_nb_languages].name = name;
+                m_languages[m_nb_languages].ext.Clear();
+                m_languages[m_nb_languages].single_line_comment = _T("");
+                m_languages[m_nb_languages].multiple_line_comment[0] = _T("");
+                m_languages[m_nb_languages].multiple_line_comment[1] = _T("");
+                m_nb_languages++;
+                wxComboBox* combo_Names = XRCCTRL(*this, "combo_Names", wxComboBox);
+                combo_Names->Append(name);
+                combo_Names->SetSelection(m_nb_languages-1);
+                PrintLanguageInfo(m_nb_languages-1);
+            }
+        }
+        else cbMessageBox(_("Language list is full!"), _("Error"), wxOK, Manager::Get()->GetAppWindow());
+    }
 }
 
 /** Remove the selected language from the list.
@@ -194,16 +196,16 @@ void CodeStatConfigDlg::Remove(wxCommandEvent& /*event*/)
 {
     if (m_nb_languages > 0)
     {
-       for (int i=m_selected_language; i<m_nb_languages-1; ++i)
-       {
-          m_languages[i].name = m_languages[i+1].name;
-          m_languages[i].ext = m_languages[i+1].ext;
-          m_languages[i].single_line_comment = m_languages[i+1].single_line_comment;
-          m_languages[i].multiple_line_comment[0] = m_languages[i+1].multiple_line_comment[0];
-          m_languages[i].multiple_line_comment[1] = m_languages[i+1].multiple_line_comment[1];
-       }
-       --m_nb_languages;
-       ReInitDialog();
+        for (int i=m_selected_language; i<m_nb_languages-1; ++i)
+        {
+            m_languages[i].name = m_languages[i+1].name;
+            m_languages[i].ext = m_languages[i+1].ext;
+            m_languages[i].single_line_comment = m_languages[i+1].single_line_comment;
+            m_languages[i].multiple_line_comment[0] = m_languages[i+1].multiple_line_comment[0];
+            m_languages[i].multiple_line_comment[1] = m_languages[i+1].multiple_line_comment[1];
+        }
+        --m_nb_languages;
+        ReInitDialog();
     }
 }
 
@@ -294,13 +296,13 @@ int LoadSettings(LanguageDef languages[NB_FILETYPES_MAX])
     // If no comment styles exist, use and save default ones
     if (nb_languages == 0)
     {
-       nb_languages = LoadDefaultSettings(languages);
+        nb_languages = LoadDefaultSettings(languages);
     }
     // else, load the user settings
     else
     {
         if (nb_languages > NB_FILETYPES_MAX)
-           nb_languages = NB_FILETYPES_MAX;
+            nb_languages = NB_FILETYPES_MAX;
         for (int i=0; i<nb_languages; ++i)
         {
             wxString extensions;
@@ -309,7 +311,7 @@ int LoadSettings(LanguageDef languages[NB_FILETYPES_MAX])
             languages[i].ext.Clear();
             wxStringTokenizer tkz(extensions);
             while (tkz.HasMoreTokens())
-               languages[i].ext.Add(tkz.GetNextToken());
+                languages[i].ext.Add(tkz.GetNextToken());
             languages[i].single_line_comment = cfg->Read(wxString::Format(_T("/l%d/single_line_comment"),i), _T(""));
             languages[i].multiple_line_comment[0] = cfg->Read(wxString::Format(_T("/l%d/multiple_line_comment_begin"),i), _T(""));
             languages[i].multiple_line_comment[1] = cfg->Read(wxString::Format(_T("/l%d/multiple_line_comment_end"),i), _T(""));

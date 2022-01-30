@@ -28,7 +28,7 @@ GraphNassiBrick::GraphNassiBrick(NassiView *view, NassiBrick *brick, BricksMap *
     m_map(bmap)
 {
 }
-GraphNassiBrick::~GraphNassiBrick(){}
+GraphNassiBrick::~GraphNassiBrick() {}
 
 bool GraphNassiBrick::IsVisible()
 {
@@ -109,8 +109,8 @@ bool GraphNassiBrick::HasPoint(const wxPoint &pos)
     if ( !IsVisible() ) return false;
 
     if ( pos.x >= m_offset.x &&           pos.y > m_offset.y &&
-         pos.x < m_offset.x + m_size.x && pos.y < m_offset.y + m_size.y)
-         return true;
+            pos.x < m_offset.x + m_size.x && pos.y < m_offset.y + m_size.y)
+        return true;
     return false;
 
 }
@@ -242,7 +242,7 @@ bool GraphNassiMinimizableBrick::IsOverMinMaxBox(const wxPoint &pos)
 {
     if ( !m_visible ) return false;
     if ( pos.x >= m_offset.x + 2 && pos.y >= m_offset.y + 2 &&
-         pos.x <= m_offset.x + 9 && pos.y <= m_offset.y + 9 )
+            pos.x <= m_offset.x + 9 && pos.y <= m_offset.y + 9 )
         return true;
     return false;
 }
@@ -300,7 +300,7 @@ GraphNassiInstructionBrick::GraphNassiInstructionBrick(NassiView *view, NassiBri
     //m_view->CreateTextGraph(m_brick, 1);
 }
 
-GraphNassiInstructionBrick::~GraphNassiInstructionBrick(){}
+GraphNassiInstructionBrick::~GraphNassiInstructionBrick() {}
 
 void GraphNassiInstructionBrick::Draw(wxDC *dc)
 {
@@ -421,7 +421,7 @@ GraphNassiBreakBrick::GraphNassiBreakBrick(NassiView *view, NassiBrick *brick, B
     m_b(0)
 {}
 
-GraphNassiBreakBrick::~GraphNassiBreakBrick(){}
+GraphNassiBreakBrick::~GraphNassiBreakBrick() {}
 
 void GraphNassiBreakBrick::Draw(wxDC *dc)
 {
@@ -525,7 +525,7 @@ GraphNassiContinueBrick::GraphNassiContinueBrick(NassiView *view, NassiBrick *br
     //m_view->CreateTextGraph(m_brick, 0);
 }
 
-GraphNassiContinueBrick::~GraphNassiContinueBrick(){}
+GraphNassiContinueBrick::~GraphNassiContinueBrick() {}
 
 void GraphNassiContinueBrick::Draw(wxDC *dc)
 {
@@ -631,7 +631,7 @@ GraphNassiReturnBrick::GraphNassiReturnBrick(NassiView *view, NassiBrick *brick,
 //    m_view->CreateTextGraph(m_brick, 1);
 }
 
-GraphNassiReturnBrick::~GraphNassiReturnBrick(){}
+GraphNassiReturnBrick::~GraphNassiReturnBrick() {}
 
 void GraphNassiReturnBrick::Draw(wxDC *dc)
 {
@@ -773,7 +773,7 @@ GraphNassiIfBrick::GraphNassiIfBrick(NassiView *view, NassiBrick *brick, BricksM
     m_hh(0)
 {}
 
-GraphNassiIfBrick::~GraphNassiIfBrick(){}
+GraphNassiIfBrick::~GraphNassiIfBrick() {}
 
 void GraphNassiIfBrick::Draw(wxDC *dc)
 {
@@ -824,7 +824,7 @@ void GraphNassiIfBrick::Draw(wxDC *dc)
             const NassiViewColors &colors = m_view->GetColors();
             dc->SetBrush(colors.emptyBrush);
             dc->DrawRectangle(m_offset.x, m_offset.y + m_hh - 1,
-                                m_p + 1,  m_size.y   - m_hh + 1 );
+                              m_p + 1,  m_size.y   - m_hh + 1 );
             dc->SetBrush(colors.defaultBrush);
         }
 
@@ -888,7 +888,7 @@ void GraphNassiIfBrick::SetOffsetAndSize(wxDC *dc, wxPoint offset, wxPoint size)
                          m_offset.y + m_hh - dy - commentTrue.GetTotalHeight() )
             );
             commentFalse.SetOffset(
-                wxPoint( m_offset.x + m_size.x - dx - commentFalse.GetWidth() ,
+                wxPoint( m_offset.x + m_size.x - dx - commentFalse.GetWidth(),
                          m_offset.y + m_hh - dy - commentFalse.GetTotalHeight())
             );
         }
@@ -897,15 +897,15 @@ void GraphNassiIfBrick::SetOffsetAndSize(wxDC *dc, wxPoint offset, wxPoint size)
         GraphNassiBrick *gchildt = this->GetGraphBrick(m_brick->GetChild(0));
         if ( gchildt )
             gchildt->SetOffsetAndSize(dc,
-                wxPoint(m_offset.x, m_offset.y + m_hh - 1 ),
-                wxPoint(m_p + 1,    m_size.y   - m_hh + 1));
+                                      wxPoint(m_offset.x, m_offset.y + m_hh - 1 ),
+                                      wxPoint(m_p + 1,    m_size.y   - m_hh + 1));
 
         /// draw the false brick
         GraphNassiBrick *gchildf = this->GetGraphBrick(m_brick->GetChild(1));
         if ( gchildf )
             gchildf->SetOffsetAndSize(dc,
-                wxPoint(m_offset.x + m_p, m_offset.y + m_hh - 1),
-                wxPoint(m_size.x - m_p,   m_size.y - m_hh + 1));
+                                      wxPoint(m_offset.x + m_p, m_offset.y + m_hh - 1),
+                                      wxPoint(m_size.x - m_p,   m_size.y - m_hh + 1));
     }
 
     offset.y += ( m_size.y - 1 );
@@ -958,8 +958,8 @@ void GraphNassiIfBrick::CalcMinSize(wxDC *dc, wxPoint &size)
     {
         wxCoord dx = dc->GetCharWidth(),
                 dy = dc->GetCharHeight();
-        wxCoord b0 = 0, b1 = 0 , b2 = 0, b3 = 8 * dx, b4 = 8 * dx;
-        wxCoord h0 = 0, h1 = 0 , h2 = 0, h3 = 4 * dy, h4 = 4 * dy;
+        wxCoord b0 = 0, b1 = 0, b2 = 0, b3 = 8 * dx, b4 = 8 * dx;
+        wxCoord h0 = 0, h1 = 0, h2 = 0, h3 = 4 * dy, h4 = 4 * dy;
 
         if ( m_view->IsDrawingComment() )
         {
@@ -1033,7 +1033,8 @@ void GraphNassiIfBrick::CalcMinSize(wxDC *dc, wxPoint &size)
                 q = b4;
         }
         else
-        { // h2 > h1;
+        {
+            // h2 > h1;
             hh = h0 + h2;
             q = hh / h2 * b2;
             if ( q < b0/2+b2 )
@@ -1086,9 +1087,9 @@ bool GraphNassiIfBrick::HasPoint(const wxPoint &pos)
         wxInt8 region = 0;
 
         if ( pos.y < m_offset.y + m_hh ||  // over the head |V|
-            ( pos.y > m_offset.y + m_hh + 10 && // minmaxbox
-              pos.x > m_offset.x + m_p - 10 && pos.x < m_offset.x + m_p + 10 )) // some place between both childs
-                    return true;//region = 0;
+                ( pos.y > m_offset.y + m_hh + 10 && // minmaxbox
+                  pos.x > m_offset.x + m_p - 10 && pos.x < m_offset.x + m_p + 10 )) // some place between both childs
+            return true;//region = 0;
         if ( pos.x < m_offset.x + m_p )
             region = 1;
         else
@@ -1197,7 +1198,7 @@ GraphNassiWhileBrick::GraphNassiWhileBrick(NassiView *view, NassiBrick *brick, B
     m_bb(0)
 {}
 
-GraphNassiWhileBrick::~GraphNassiWhileBrick(){}
+GraphNassiWhileBrick::~GraphNassiWhileBrick() {}
 
 void GraphNassiWhileBrick::Draw(wxDC *dc)
 {
@@ -1221,10 +1222,10 @@ void GraphNassiWhileBrick::Draw(wxDC *dc)
     else
     {
         wxPoint points[6];
-        points[0] = wxPoint(m_offset.x               , m_offset.y);
-        points[1] = wxPoint(m_offset.x               , m_offset.y + m_size.y - 1);
-        points[2] = wxPoint(m_offset.x + m_bb        , m_offset.y + m_size.y - 1);
-        points[3] = wxPoint(m_offset.x + m_bb        , m_offset.y + m_hh);
+        points[0] = wxPoint(m_offset.x, m_offset.y);
+        points[1] = wxPoint(m_offset.x, m_offset.y + m_size.y - 1);
+        points[2] = wxPoint(m_offset.x + m_bb, m_offset.y + m_size.y - 1);
+        points[3] = wxPoint(m_offset.x + m_bb, m_offset.y + m_hh);
         points[4] = wxPoint(m_offset.x + m_size.x - 1, m_offset.y + m_hh);
         points[5] = wxPoint(m_offset.x + m_size.x - 1, m_offset.y);
 
@@ -1250,7 +1251,7 @@ void GraphNassiWhileBrick::Draw(wxDC *dc)
             const NassiViewColors &colors = m_view->GetColors();
             dc->SetBrush(colors.emptyBrush);
             dc->DrawRectangle(m_offset.x + m_bb, m_offset.y + m_hh,
-                                m_size.x - m_bb, m_size.y - m_hh);
+                              m_size.x - m_bb, m_size.y - m_hh);
             dc->SetBrush(colors.defaultBrush);
         }
     }
@@ -1284,15 +1285,15 @@ void GraphNassiWhileBrick::SetOffsetAndSize(wxDC *dc, wxPoint offset, wxPoint si
         {
 
             source.SetOffset(
-                    wxPoint(m_offset.x + dx,
+                wxPoint(m_offset.x + dx,
                         m_offset.y + m_hh - dy - source.GetTotalHeight() ) );
         }
 
         GraphNassiBrick *gchild = this->GetGraphBrick(m_brick->GetChild());
         if ( gchild )
             gchild->SetOffsetAndSize(dc,
-                    wxPoint(m_offset.x + m_bb, m_offset.y + m_hh),
-                    wxPoint(m_size.x - m_bb,   m_size.y - m_hh));
+                                     wxPoint(m_offset.x + m_bb, m_offset.y + m_hh),
+                                     wxPoint(m_size.x - m_bb,   m_size.y - m_hh));
     }
 
     offset.y += ( m_size.y - 1 );
@@ -1403,8 +1404,8 @@ bool GraphNassiWhileBrick::HasPoint(const wxPoint &pos)
     if ( GraphNassiBrick::HasPoint(pos) )
     {
         if ( !m_brick->GetChild() ||
-             pos.x < m_offset.x + m_bb ||
-             pos.y < m_offset.y + m_hh)
+                pos.x < m_offset.x + m_bb ||
+                pos.y < m_offset.y + m_hh)
             return true;
     }
     return false;
@@ -1458,7 +1459,7 @@ GraphNassiDoWhileBrick::GraphNassiDoWhileBrick(NassiView *view, NassiBrick *bric
     m_hh(0)
 {}
 
-GraphNassiDoWhileBrick::~GraphNassiDoWhileBrick(){}
+GraphNassiDoWhileBrick::~GraphNassiDoWhileBrick() {}
 
 void GraphNassiDoWhileBrick::Draw(wxDC *dc)
 {
@@ -1482,12 +1483,12 @@ void GraphNassiDoWhileBrick::Draw(wxDC *dc)
     else
     {
         wxPoint points[6];
-        points[0] = wxPoint(m_offset.x               , m_offset.y);
-        points[1] = wxPoint(m_offset.x               , m_offset.y + m_size.y - 1);
+        points[0] = wxPoint(m_offset.x, m_offset.y);
+        points[1] = wxPoint(m_offset.x, m_offset.y + m_size.y - 1);
         points[2] = wxPoint(m_offset.x + m_size.x - 1, m_offset.y + m_size.y - 1);
         points[3] = wxPoint(m_offset.x + m_size.x - 1, m_offset.y + m_size.y - m_hh - 1);
-        points[4] = wxPoint(m_offset.x + m_bb        , m_offset.y + m_size.y - m_hh - 1);
-        points[5] = wxPoint(m_offset.x + m_bb        , m_offset.y);
+        points[4] = wxPoint(m_offset.x + m_bb, m_offset.y + m_size.y - m_hh - 1);
+        points[5] = wxPoint(m_offset.x + m_bb, m_offset.y);
 
         dc->DrawPolygon(6, points);
 
@@ -1513,8 +1514,8 @@ void GraphNassiDoWhileBrick::Draw(wxDC *dc)
         {
             const NassiViewColors &colors = m_view->GetColors();
             dc->SetBrush(colors.emptyBrush);
-            dc->DrawRectangle(m_offset.x + m_bb, m_offset.y ,
-                                m_size.x - m_bb, m_size.y - m_hh);
+            dc->DrawRectangle(m_offset.x + m_bb, m_offset.y,
+                              m_size.x - m_bb, m_size.y - m_hh);
             dc->SetBrush(colors.defaultBrush);
         }
     }
@@ -1548,14 +1549,14 @@ void GraphNassiDoWhileBrick::SetOffsetAndSize(wxDC *dc, wxPoint offset, wxPoint 
                                        m_offset.y + m_size.y - m_hh + dy ) );
         if ( m_view->IsDrawingSource() )
             source.SetOffset(wxPoint(m_offset.x + dx,
-                        m_offset.y + m_size.y - dy - source.GetTotalHeight()));
+                                     m_offset.y + m_size.y - dy - source.GetTotalHeight()));
 
 
         GraphNassiBrick *gchild = this->GetGraphBrick(m_brick->GetChild());
         if ( gchild )
             gchild->SetOffsetAndSize(dc,
-                    wxPoint(m_offset.x + m_bb, m_offset.y),
-                    wxPoint(m_size.x - m_bb,   m_size.y - m_hh));
+                                     wxPoint(m_offset.x + m_bb, m_offset.y),
+                                     wxPoint(m_size.x - m_bb,   m_size.y - m_hh));
     }
 
     offset.y += ( m_size.y - 1 );
@@ -1670,8 +1671,8 @@ bool GraphNassiDoWhileBrick::HasPoint(const wxPoint &pos)
     if ( GraphNassiBrick::HasPoint(pos) )
     {
         if ( !m_brick->GetChild() ||
-             pos.x < m_offset.x + m_bb ||
-             pos.y > m_offset.y + m_size.y - m_hh)
+                pos.x < m_offset.x + m_bb ||
+                pos.y > m_offset.y + m_size.y - m_hh)
             return true;
     }
     return false;
@@ -1726,7 +1727,7 @@ GraphNassiForBrick::GraphNassiForBrick(NassiView *view, NassiBrick *brick, Brick
     m_b(0)
 {}
 
-GraphNassiForBrick::~GraphNassiForBrick(){}
+GraphNassiForBrick::~GraphNassiForBrick() {}
 
 void GraphNassiForBrick::Draw(wxDC *dc)
 {
@@ -1750,19 +1751,19 @@ void GraphNassiForBrick::Draw(wxDC *dc)
     else
     {
         wxPoint points[8];
-        points[0] = wxPoint(m_offset.x               , m_offset.y);
-        points[1] = wxPoint(m_offset.x               , m_offset.y + m_size.y - 1);
+        points[0] = wxPoint(m_offset.x, m_offset.y);
+        points[1] = wxPoint(m_offset.x, m_offset.y + m_size.y - 1);
         points[2] = wxPoint(m_offset.x + m_size.x - 1, m_offset.y + m_size.y - 1);
         points[3] = wxPoint(m_offset.x + m_size.x - 1, m_offset.y + m_size.y - 1 - m_b);
-        points[4] = wxPoint(m_offset.x + m_bb        , m_offset.y + m_size.y - 1 - m_b);
-        points[5] = wxPoint(m_offset.x + m_bb        , m_offset.y + m_hh);
+        points[4] = wxPoint(m_offset.x + m_bb, m_offset.y + m_size.y - 1 - m_b);
+        points[5] = wxPoint(m_offset.x + m_bb, m_offset.y + m_hh);
         points[6] = wxPoint(m_offset.x + m_size.x - 1, m_offset.y + m_hh);
         points[7] = wxPoint(m_offset.x + m_size.x - 1, m_offset.y);
         dc->DrawPolygon(8, points);
 
         if ( m_view->IsDrawingComment() )
         {
-			dc->SetTextForeground(m_view->GetColors().commentColor);
+            dc->SetTextForeground(m_view->GetColors().commentColor);
             dc->SetFont( m_view->GetCommentFont() );
             comment.Draw(dc);
         }
@@ -1779,7 +1780,7 @@ void GraphNassiForBrick::Draw(wxDC *dc)
             const NassiViewColors &colors = m_view->GetColors();
             dc->SetBrush(colors.emptyBrush);
             dc->DrawRectangle(m_offset.x + m_bb, m_offset.y + m_hh,
-                                m_size.x - m_bb, m_size.y   - m_hh - m_b);
+                              m_size.x - m_bb, m_size.y   - m_hh - m_b);
             dc->SetBrush(colors.defaultBrush);
         }
     }
@@ -1824,8 +1825,8 @@ void GraphNassiForBrick::SetOffsetAndSize(wxDC *dc, wxPoint offset, wxPoint size
         GraphNassiBrick *gchild = this->GetGraphBrick(m_brick->GetChild());
         if ( gchild )
             gchild->SetOffsetAndSize(dc,
-                    wxPoint(m_offset.x + m_bb, m_offset.y + m_hh),
-                    wxPoint(m_size.x - m_bb,   m_size.y - m_hh - m_b));
+                                     wxPoint(m_offset.x + m_bb, m_offset.y + m_hh),
+                                     wxPoint(m_size.x - m_bb,   m_size.y - m_hh - m_b));
     }
 
     offset.y += ( m_size.y - 1 );
@@ -1935,9 +1936,9 @@ bool GraphNassiForBrick::HasPoint(const wxPoint &pos)
     if ( GraphNassiBrick::HasPoint(pos) )
     {
         if ( !m_brick->GetChild() ||
-             pos.x < m_offset.x + m_bb ||
-             pos.y < m_offset.y + m_hh ||
-             pos.y > m_offset.y + m_size.y - m_b)
+                pos.x < m_offset.x + m_bb ||
+                pos.y < m_offset.y + m_hh ||
+                pos.y > m_offset.y + m_size.y - m_b)
             return true;
     }
     return false;
@@ -1988,7 +1989,7 @@ GraphNassiBlockBrick::GraphNassiBlockBrick(NassiView *view, NassiBrick *brick, B
     m_hh(0)
 {}
 
-GraphNassiBlockBrick::~GraphNassiBlockBrick(){}
+GraphNassiBlockBrick::~GraphNassiBlockBrick() {}
 
 wxString GraphNassiBlockBrick::GetSource()
 {
@@ -2007,8 +2008,8 @@ void GraphNassiBlockBrick::Draw(wxDC *dc)
             dc->SetTextForeground(m_view->GetColors().sourceColor);
             dc->SetFont(m_view->GetSourceFont());
             dc->DrawText(this->GetSource(),
-                m_offset.x + dc->GetCharWidth() + 10,
-                m_offset.y + dc->GetCharHeight());
+                         m_offset.x + dc->GetCharWidth() + 10,
+                         m_offset.y + dc->GetCharHeight());
         }
         dc->DrawBitmap(
             wxBitmap(blocktool16_xpm),
@@ -2039,15 +2040,15 @@ void GraphNassiBlockBrick::Draw(wxDC *dc)
             dc->SetTextForeground(colors.sourceColor);
             dc->SetFont( m_view->GetSourceFont() );
             dc->DrawText(this->GetSource(),
-                m_offset.x + dc->GetCharWidth() + 10,
-                m_offset.y + dc->GetCharHeight());
+                         m_offset.x + dc->GetCharWidth() + 10,
+                         m_offset.y + dc->GetCharHeight());
         }
 
         GraphNassiBrick *gchild = this->GetGraphBrick(m_brick->GetChild());
         if ( !gchild )
         {
             dc->SetBrush(colors.emptyBrush);
-            dc->DrawRectangle(m_offset.x + 3, m_offset.y + m_hh ,
+            dc->DrawRectangle(m_offset.x + 3, m_offset.y + m_hh,
                               m_size.x - 6,   m_size.y - m_hh - 6);
             dc->SetBrush(colors.defaultBrush);
         }
@@ -2071,8 +2072,8 @@ void GraphNassiBlockBrick::SetOffsetAndSize(wxDC *dc, wxPoint offset, wxPoint si
         GraphNassiBrick *gchild = this->GetGraphBrick(m_brick->GetChild());
         if ( gchild )
             gchild->SetOffsetAndSize(dc,
-                    wxPoint(m_offset.x + 3, m_offset.y + m_hh),
-                    wxPoint(m_size.x - 6,   m_size.y - m_hh - 6));
+                                     wxPoint(m_offset.x + 3, m_offset.y + m_hh),
+                                     wxPoint(m_size.x - 6,   m_size.y - m_hh - 6));
     }
 
     offset.y += ( m_size.y - 1 );
@@ -2172,11 +2173,11 @@ bool GraphNassiBlockBrick::HasPoint(const wxPoint &pos)
     if ( GraphNassiBrick::HasPoint(pos) )
     {
         if ( !m_brick->GetChild() || // no child .. all pixels are ours
-             pos.x < m_offset.x + 3 || // 3 at the left
-             pos.y < m_offset.y + m_hh || // the head
-             pos.y >= m_offset.y + m_size.y - 6|| // at the bottom
-             pos.x >= m_offset.y + m_size.x - 3
-            )
+                pos.x < m_offset.x + 3 || // 3 at the left
+                pos.y < m_offset.y + m_hh || // the head
+                pos.y >= m_offset.y + m_size.y - 6|| // at the bottom
+                pos.x >= m_offset.y + m_size.x - 3
+           )
             return true;
     }
     return false;
@@ -2226,7 +2227,7 @@ GraphNassiSwitchBrick::GraphNassiSwitchBrick(NassiView *view, NassiBrick *brick,
     m_ActiveChildIndicator(0)
 {}
 
-GraphNassiSwitchBrick::~GraphNassiSwitchBrick(){}
+GraphNassiSwitchBrick::~GraphNassiSwitchBrick() {}
 
 void GraphNassiSwitchBrick::Draw(wxDC *dc)
 {
@@ -2274,7 +2275,7 @@ void GraphNassiSwitchBrick::Draw(wxDC *dc)
 
         for ( wxUint32 i = 0 ; i < m_brick->GetChildCount() ; i++ )
         {
-            dc->DrawLine( m_offset.x + offsetToChildSeparator[i] , m_offset.y + offsetToChild[i],
+            dc->DrawLine( m_offset.x + offsetToChildSeparator[i], m_offset.y + offsetToChild[i],
                           m_offset.x + m_hw, m_offset.y + offsetToChild[i]);
 
             GraphNassiBrick *gchild = this->GetGraphBrick(m_brick->GetChild(i));
@@ -2283,7 +2284,7 @@ void GraphNassiSwitchBrick::Draw(wxDC *dc)
                 const NassiViewColors &colors = m_view->GetColors();
                 dc->SetBrush(colors.emptyBrush);
                 dc->DrawRectangle(m_offset.x + m_hw-1, m_offset.y + offsetToChild[i],
-                                    m_size.x - m_hw+1, heightOfChildBricks[i]);
+                                  m_size.x - m_hw+1, heightOfChildBricks[i]);
                 dc->SetBrush(colors.defaultBrush);
             }
         }
@@ -2339,8 +2340,8 @@ void GraphNassiSwitchBrick::SetOffsetAndSize(wxDC *dc, wxPoint offset, wxPoint s
             offsetToChild[i] = TargetHeight - h;
             if ( gchild )
                 gchild->SetOffsetAndSize(dc,
-                        wxPoint(m_offset.x + m_hw-1, m_offset.y + offsetToChild[i]),
-                        wxPoint(m_size.x - m_hw+1,   heightOfChildBricks[i]));
+                                         wxPoint(m_offset.x + m_hw-1, m_offset.y + offsetToChild[i]),
+                                         wxPoint(m_size.x - m_hw+1,   heightOfChildBricks[i]));
 
             wxCoord offsetToDiagonalLine =
                 m_b - (wxCoord)((float)(m_b*offsetToChild[i])/(2.0*(float)m_size.y));
@@ -2380,8 +2381,8 @@ void GraphNassiSwitchBrick::SetOffsetAndSize(wxDC *dc, wxPoint offset, wxPoint s
             offsetToChild[0] = 0;
             if ( gchild )
                 gchild->SetOffsetAndSize(dc,
-                        wxPoint(m_offset.x + m_hw-1, m_offset.y ),
-                        wxPoint(m_size.x - m_hw+1,  heightOfChildBricks[0] ));
+                                         wxPoint(m_offset.x + m_hw-1, m_offset.y ),
+                                         wxPoint(m_size.x - m_hw+1,  heightOfChildBricks[0] ));
 
             wxCoord ht = 0;
             wxCoord ddyy = 0;
@@ -2645,7 +2646,7 @@ bool GraphNassiSwitchBrick::HasPoint(const wxPoint &pos)
         for ( wxUint32 i = 0 ; i < m_brick->GetChildCount() ; i++ )
         {
             if ( pos.y > m_offset.y + offsetToChild[i] &&
-                 pos.y < m_offset.y + offsetToChild[i] + heightOfChildBricks[i] )
+                    pos.y < m_offset.y + offsetToChild[i] + heightOfChildBricks[i] )
             {
                 if ( m_brick->GetChild(i) )
                     return false;
@@ -2667,7 +2668,8 @@ TextGraph *GraphNassiSwitchBrick::IsOverText(const wxPoint &pos)
             return 0;
     }
     if ( m_view->IsDrawingComment() )
-    {   if ( comment.HasPoint(pos) ) return &comment;
+    {
+        if ( comment.HasPoint(pos) ) return &comment;
         for ( wxUint32 i = 0 ; i < childcomment.size() ; i++ )
             if ( childcomments(i)->HasPoint(pos) )
                 return childcomments(i);
@@ -2809,9 +2811,9 @@ void GraphNassiSwitchBrick::DrawActive(wxDC *dc)
 
     wxPoint points[5];
     points[0] = wxPoint( offsetToChildSeparator[m_ActiveChildIndicator],
-                                offsetToChild[m_ActiveChildIndicator] );
+                         offsetToChild[m_ActiveChildIndicator] );
     points[1] = wxPoint( m_hw,
-                                offsetToChild[m_ActiveChildIndicator] );
+                         offsetToChild[m_ActiveChildIndicator] );
     if ( m_ActiveChildIndicator + 1 == m_brick->GetChildCount() )
     {
         points[2] = wxPoint(m_hw, m_size.y-1);

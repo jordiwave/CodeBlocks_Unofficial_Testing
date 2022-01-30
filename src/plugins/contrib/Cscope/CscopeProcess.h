@@ -7,14 +7,14 @@
 class CscopePlugin;
 class CscopeProcess : public wxProcess
 {
-        //DECLARE_DYNAMIC_CLASS(CscopeProcess)
-        CscopePlugin* m_parent;
-    public:
-        CscopeProcess(CscopePlugin* parent);
-        virtual ~CscopeProcess();
-        bool ReadProcessOutput();
-    protected:
-    private:
+    //DECLARE_DYNAMIC_CLASS(CscopeProcess)
+    CscopePlugin* m_parent;
+public:
+    CscopeProcess(CscopePlugin* parent);
+    virtual ~CscopeProcess();
+    bool ReadProcessOutput();
+protected:
+private:
 };
 
 

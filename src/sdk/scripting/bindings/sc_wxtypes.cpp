@@ -9,9 +9,9 @@
 
 #include "sdk_precomp.h"
 #ifndef CB_PRECOMP
-    #include <wx/gdicmn.h>
-    #include <wx/intl.h>
-    #include <wx/string.h>
+#include <wx/gdicmn.h>
+#include <wx/intl.h>
+#include <wx/string.h>
 #endif
 
 #include "scripting/bindings/sc_utils.h"
@@ -71,33 +71,33 @@ SQInteger wxString_ctor(HSQUIRRELVM v)
         const SQObjectType type = sq_gettype(v, 2);
         switch (type)
         {
-            case OT_STRING:
-            {
-                // Construct from Squirrel string
-                const SQChar *value = extractor.GetParamString(2);
-                cbAssert(value);
-                UserDataForType<wxString> *data;
-                data = SetupUserPointer<wxString, InstanceAllocationMode::InstanceIsInline>(v, 1);
-                if (!data)
-                    return -1; // SetupUserPointer should have called sq_throwerror!
-                new (&(data->userdata)) wxString(value);
-                return 0;
-            }
-            case OT_INSTANCE:
-            {
-                // Construct from wxString
-                wxString *value;
-                if (!extractor.ProcessParam(value, 2, "wxString_ctor"))
-                    return extractor.ErrorMessage();
-                UserDataForType<wxString> *data;
-                data = SetupUserPointer<wxString, InstanceAllocationMode::InstanceIsInline>(v, 1);
-                if (!data)
-                    return -1; // SetupUserPointer should have called sq_throwerror!
-                new (&(data->userdata)) wxString(*value);
-                return 0;
-            }
-            default:
-                return sq_throwerror(v, _SC("Unsupported argument type passed to wxString constructor!"));
+        case OT_STRING:
+        {
+            // Construct from Squirrel string
+            const SQChar *value = extractor.GetParamString(2);
+            cbAssert(value);
+            UserDataForType<wxString> *data;
+            data = SetupUserPointer<wxString, InstanceAllocationMode::InstanceIsInline>(v, 1);
+            if (!data)
+                return -1; // SetupUserPointer should have called sq_throwerror!
+            new (&(data->userdata)) wxString(value);
+            return 0;
+        }
+        case OT_INSTANCE:
+        {
+            // Construct from wxString
+            wxString *value;
+            if (!extractor.ProcessParam(value, 2, "wxString_ctor"))
+                return extractor.ErrorMessage();
+            UserDataForType<wxString> *data;
+            data = SetupUserPointer<wxString, InstanceAllocationMode::InstanceIsInline>(v, 1);
+            if (!data)
+                return -1; // SetupUserPointer should have called sq_throwerror!
+            new (&(data->userdata)) wxString(*value);
+            return 0;
+        }
+        default:
+            return sq_throwerror(v, _SC("Unsupported argument type passed to wxString constructor!"));
         }
     }
 }
@@ -118,40 +118,40 @@ SQInteger wxString_OpAdd(HSQUIRRELVM v)
     const SQObjectType type2 = sq_gettype(v, 2);
     switch (type2)
     {
-        case OT_INSTANCE:
-        {
-            const wxString *s2 = nullptr;
-            if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
-                return extractor.ErrorMessage();
-            result += *s2;
-            break;
-        }
-        case OT_STRING:
-        {
-            const SQChar *s2 = nullptr;
-            if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
-                return extractor.ErrorMessage();
-            result << s2;
-            break;
-        }
-        case OT_INTEGER:
-        {
-            SQInteger s2;
-            if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
-                return extractor.ErrorMessage();
-            result << s2;
-            break;
-        }
-        case OT_FLOAT:
-        {
-            SQFloat s2;
-            if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
-                return extractor.ErrorMessage();
-            result << s2;
-            break;
-        }
-        default:
-            return sq_throwerror(v, _SC("Unknown type"));
+    case OT_INSTANCE:
+    {
+        const wxString *s2 = nullptr;
+        if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
+            return extractor.ErrorMessage();
+        result += *s2;
+        break;
+    }
+    case OT_STRING:
+    {
+        const SQChar *s2 = nullptr;
+        if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
+            return extractor.ErrorMessage();
+        result << s2;
+        break;
+    }
+    case OT_INTEGER:
+    {
+        SQInteger s2;
+        if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
+            return extractor.ErrorMessage();
+        result << s2;
+        break;
+    }
+    case OT_FLOAT:
+    {
+        SQFloat s2;
+        if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
+            return extractor.ErrorMessage();
+        result << s2;
+        break;
+    }
+    default:
+        return sq_throwerror(v, _SC("Unknown type"));
     }
 
     return ConstructAndReturnInstance(v, result);
@@ -175,7 +175,7 @@ SQInteger wxString_OpCompare(HSQUIRRELVM v)
         const SQChar *s1;
         const wxString *s2;
         if (extractor.ProcessParam(s1, 1, "wxString_OpCompare")
-            && extractor.ProcessParam(s2, 2, "wxString_OpCompare"))
+                && extractor.ProcessParam(s2, 2, "wxString_OpCompare"))
         {
             wxString temp1(s1);
             sq_pushinteger(v, temp1.Cmp(*s2));
@@ -242,7 +242,7 @@ SQInteger wxString_AddChar(HSQUIRRELVM v)
     ExtractParams2<wxString*, SQInteger> extractor(v);
     if (!extractor.Process("wxString_AddChar"))
         return extractor.ErrorMessage();
-     char tmp[8];
+    char tmp[8];
     snprintf(tmp, 8, "%c", char(extractor.p1));
     *extractor.p0 += cbC2U(tmp);
     return 0;
@@ -432,49 +432,49 @@ bool SetupFirstLastParams(HSQUIRRELVM v, const wxString *&self, wxUniChar &searc
     switch (charParamType)
     {
     case OT_INTEGER:
+    {
+        SQInteger temp;
+        if (!extractor.ProcessParam(temp, 2, "SetupFirstLastParams"))
         {
-            SQInteger temp;
-            if (!extractor.ProcessParam(temp, 2, "SetupFirstLastParams"))
-            {
-                extractor.ErrorMessage();
-                return false;
-            }
-            searchChar = temp;
-            return true;
+            extractor.ErrorMessage();
+            return false;
         }
+        searchChar = temp;
+        return true;
+    }
     case OT_INSTANCE:
+    {
+        const wxString *search = nullptr;
+        if (!extractor.ProcessParam(search, 2, "SetupFirstLastParams"))
         {
-            const wxString *search = nullptr;
-            if (!extractor.ProcessParam(search, 2, "SetupFirstLastParams"))
-            {
-                extractor.ErrorMessage();
-                return false;
-            }
-            if (search->length() < 1)
-            {
-                sq_throwerror(v, _SC("SetupFirstLastParams: String length too short!"));
-                return false;
-            }
-            searchChar = search->GetChar(0);
-            return true;
+            extractor.ErrorMessage();
+            return false;
         }
+        if (search->length() < 1)
+        {
+            sq_throwerror(v, _SC("SetupFirstLastParams: String length too short!"));
+            return false;
+        }
+        searchChar = search->GetChar(0);
+        return true;
+    }
     case OT_STRING:
+    {
+        const SQChar *search = nullptr;
+        if (!extractor.ProcessParam(search, 2, "SetupFirstLastParams"))
         {
-            const SQChar *search = nullptr;
-            if (!extractor.ProcessParam(search, 2, "SetupFirstLastParams"))
-            {
-                extractor.ErrorMessage();
-                return false;
-            }
-            if (search && search[0] != _SC('\0'))
-                searchChar = search[0];
-            else
-            {
-                sq_throwerror(v, _SC("SetupFirstLastParams: Invalid searchChar parameter!"));
-                return false;
-            }
-            return true;
+            extractor.ErrorMessage();
+            return false;
         }
+        if (search && search[0] != _SC('\0'))
+            searchChar = search[0];
+        else
+        {
+            sq_throwerror(v, _SC("SetupFirstLastParams: Invalid searchChar parameter!"));
+            return false;
+        }
+        return true;
+    }
     default:
         sq_throwerror(v, _SC("SetupFirstLastParams: Invalid searchChar parameter!"));
         return false;
@@ -530,43 +530,43 @@ SQInteger wxColour_ctor(HSQUIRRELVM v)
     const int numArgs = sq_gettop(v);
     switch (numArgs)
     {
-        case 1: // empty ctor
-        {
-            UserDataForType<wxColour> *data;
-            data = SetupUserPointer<wxColour, InstanceAllocationMode::InstanceIsInline>(v, 1);
-            if (!data)
-                return -1; // SetupUserPointer should have called sq_throwerror!
-            new (&(data->userdata)) wxColour();
-            return 0;
-        }
-        case 4: // 3 ints
-        {
-            // env table, red, green, blue
-            ExtractParams4<SkipParam, SQInteger, SQInteger, SQInteger> extractor(v);
-            if (!extractor.Process("wxColour_ctor(3 ints)"))
-                return extractor.ErrorMessage();
-            UserDataForType<wxColour> *data;
-            data = SetupUserPointer<wxColour, InstanceAllocationMode::InstanceIsInline>(v, 1);
-            if (!data)
-                return -1; // SetupUserPointer should have called sq_throwerror!
-            new (&(data->userdata)) wxColour(extractor.p1, extractor.p2, extractor.p3);
-            return 0;
-        }
-        case 5: // 4 ints
-        {
-            // env table, red, green, blue, alpha
-            ExtractParams5<SkipParam, SQInteger, SQInteger, SQInteger, SQInteger> extractor(v);
-            if (!extractor.Process("wxColour_ctor(4 ints)"))
-                return extractor.ErrorMessage();
-            UserDataForType<wxColour> *data;
-            data = SetupUserPointer<wxColour, InstanceAllocationMode::InstanceIsInline>(v, 1);
-            if (!data)
-                return -1; // SetupUserPointer should have called sq_throwerror!
-            new (&(data->userdata)) wxColour(extractor.p1, extractor.p2, extractor.p3, extractor.p4);
-            return 0;
-        }
-        default:
-            return sq_throwerror(v, _SC("Unsupported number of arguments passed wxString()!"));
+    case 1: // empty ctor
+    {
+        UserDataForType<wxColour> *data;
+        data = SetupUserPointer<wxColour, InstanceAllocationMode::InstanceIsInline>(v, 1);
+        if (!data)
+            return -1; // SetupUserPointer should have called sq_throwerror!
+        new (&(data->userdata)) wxColour();
+        return 0;
+    }
+    case 4: // 3 ints
+    {
+        // env table, red, green, blue
+        ExtractParams4<SkipParam, SQInteger, SQInteger, SQInteger> extractor(v);
+        if (!extractor.Process("wxColour_ctor(3 ints)"))
+            return extractor.ErrorMessage();
+        UserDataForType<wxColour> *data;
+        data = SetupUserPointer<wxColour, InstanceAllocationMode::InstanceIsInline>(v, 1);
+        if (!data)
+            return -1; // SetupUserPointer should have called sq_throwerror!
+        new (&(data->userdata)) wxColour(extractor.p1, extractor.p2, extractor.p3);
+        return 0;
+    }
+    case 5: // 4 ints
+    {
+        // env table, red, green, blue, alpha
+        ExtractParams5<SkipParam, SQInteger, SQInteger, SQInteger, SQInteger> extractor(v);
+        if (!extractor.Process("wxColour_ctor(4 ints)"))
+            return extractor.ErrorMessage();
+        UserDataForType<wxColour> *data;
+        data = SetupUserPointer<wxColour, InstanceAllocationMode::InstanceIsInline>(v, 1);
+        if (!data)
+            return -1; // SetupUserPointer should have called sq_throwerror!
+        new (&(data->userdata)) wxColour(extractor.p1, extractor.p2, extractor.p3, extractor.p4);
+        return 0;
+    }
+    default:
+        return sq_throwerror(v, _SC("Unsupported number of arguments passed wxString()!"));
     }
 }
 
@@ -896,7 +896,7 @@ SQInteger wxFileName_GetPath(HSQUIRRELVM v)
         return sq_throwerror(v, _SC("wxFileName_GetPath: format out of range!"));
 
     return ConstructAndReturnInstance(v, extractor.p0->GetPath(int(extractor.p1),
-                                                               wxPathFormat(extractor.p2)));
+                                      wxPathFormat(extractor.p2)));
 }
 
 SQInteger wxFileName_InsertDir(HSQUIRRELVM v)

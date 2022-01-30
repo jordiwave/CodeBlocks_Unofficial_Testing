@@ -129,9 +129,25 @@ struct LoaderQueueItem
 class LoaderQueue: public std::queue<LoaderQueueItem>
 {
 public:
-    void Add(const LoaderQueueItem &item) { push(item); }
-    void Add(const wxString &op, const wxString &source, const wxString &destination, const wxString &comp_commit = wxEmptyString) { LoaderQueueItem item; item.op = op; item.source = source; item.destination = destination; item.comp_commit = comp_commit; push(item);}
-    LoaderQueueItem Pop() { LoaderQueueItem it = front(); pop(); return it; }
+    void Add(const LoaderQueueItem &item)
+    {
+        push(item);
+    }
+    void Add(const wxString &op, const wxString &source, const wxString &destination, const wxString &comp_commit = wxEmptyString)
+    {
+        LoaderQueueItem item;
+        item.op = op;
+        item.source = source;
+        item.destination = destination;
+        item.comp_commit = comp_commit;
+        push(item);
+    }
+    LoaderQueueItem Pop()
+    {
+        LoaderQueueItem it = front();
+        pop();
+        return it;
+    }
 };
 
 class VCSFileLoader: public Updater
@@ -142,7 +158,7 @@ public:
         m_fe=fe;
     }
     void Update(const wxString &op, const wxString &source_path, const wxString &destination_path, //call on main thread to do the background magic
-                    const wxString &comp_commit);
+                const wxString &comp_commit);
     wxString m_source_path;
     wxString m_destination_path;
 private:
@@ -160,7 +176,7 @@ class CommitUpdaterOptions
 public:
     CommitUpdaterOptions() {}
     CommitUpdaterOptions(const wxString &file0, const wxString &grep0, const wxString &start_commit0, const wxString &end_commit0,
-                       const wxString &date_before0, const wxString &date_after0, long commits_per_retrieve0)
+                         const wxString &date_before0, const wxString &date_after0, long commits_per_retrieve0)
     {
         file = wxString(file0.c_str());
         grep = wxString(grep0.c_str());

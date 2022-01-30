@@ -7,7 +7,7 @@
 #define STARTHEREPAGE_H
 
 #ifndef CB_PRECOMP
-    #include <editorbase.h>
+#include <editorbase.h>
 #endif
 
 extern const wxString g_StartHereTitle;
@@ -20,24 +20,27 @@ class StartHerePage : public EditorBase
 {
     wxString revInfo;
 
-    public:
-        StartHerePage(wxEvtHandler* owner, const RecentItemsList &projects,
-                      const RecentItemsList &files, wxWindow* parent);
-        ~StartHerePage() override;
+public:
+    StartHerePage(wxEvtHandler* owner, const RecentItemsList &projects,
+                  const RecentItemsList &files, wxWindow* parent);
+    ~StartHerePage() override;
 
-        bool LinkClicked(const wxHtmlLinkInfo& link);
-        bool VisibleToTree() const override { return false; }
-        void Reload();
-    private:
-        void RegisterColours();
-    protected:
-        wxEvtHandler* m_pOwner;
-        wxHtmlWindow* m_pWin;
-        wxString m_OriginalPageContent;
-        const RecentItemsList &m_projects;
-        const RecentItemsList &m_files;
-    private:
-        DECLARE_EVENT_TABLE()
+    bool LinkClicked(const wxHtmlLinkInfo& link);
+    bool VisibleToTree() const override
+    {
+        return false;
+    }
+    void Reload();
+private:
+    void RegisterColours();
+protected:
+    wxEvtHandler* m_pOwner;
+    wxHtmlWindow* m_pWin;
+    wxString m_OriginalPageContent;
+    const RecentItemsList &m_projects;
+    const RecentItemsList &m_files;
+private:
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // STARTHEREPAGE_H

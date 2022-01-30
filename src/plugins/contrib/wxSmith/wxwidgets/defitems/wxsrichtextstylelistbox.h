@@ -31,20 +31,20 @@
 */
 class wxsRichTextStyleListBox: public wxsWidget
 {
-    public:
+public:
 
-        wxsRichTextStyleListBox(wxsItemResData* Data);
+    wxsRichTextStyleListBox(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        wxString    m_sControl;                            //!< The associated wxRichTextCtrl.
-        wxString    m_sStyleSheet;                    //!< The associated style sheet.
-        int                m_iStyleType;                        //!< The style type to display.
-        bool            m_bApplyOnSelection;        //!< Whether to apply the style on selection.
+    wxString    m_sControl;                            //!< The associated wxRichTextCtrl.
+    wxString    m_sStyleSheet;                    //!< The associated style sheet.
+    int                m_iStyleType;                        //!< The style type to display.
+    bool            m_bApplyOnSelection;        //!< Whether to apply the style on selection.
 };
 
 #endif

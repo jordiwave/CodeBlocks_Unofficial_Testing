@@ -10,12 +10,12 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/checklst.h>
-    #include <wx/msgdlg.h>
-    #include <wx/stattext.h>
-    #include <wx/xrc/xmlres.h>
-    #include "globals.h"
+#include <wx/button.h>
+#include <wx/checklst.h>
+#include <wx/msgdlg.h>
+#include <wx/stattext.h>
+#include <wx/xrc/xmlres.h>
+#include "globals.h"
 #endif
 
 #include "multiselectdlg.h"
@@ -29,10 +29,10 @@ BEGIN_EVENT_TABLE(MultiSelectDlg, wxScrollingDialog)
 END_EVENT_TABLE()
 
 MultiSelectDlg::MultiSelectDlg(wxWindow* parent,
-                                const wxArrayString& items,
-                                const wxString& wildcard,
-                                const wxString& label,
-                                const wxString& title)
+                               const wxArrayString& items,
+                               const wxString& wildcard,
+                               const wxString& label,
+                               const wxString& title)
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgGenericMultiSelect"),_T("wxScrollingDialog"));
@@ -47,10 +47,10 @@ MultiSelectDlg::MultiSelectDlg(wxWindow* parent,
 }
 
 MultiSelectDlg::MultiSelectDlg(wxWindow* parent,
-                                const wxArrayString& items,
-                                bool selectall,
-                                const wxString& label,
-                                const wxString& title)
+                               const wxArrayString& items,
+                               bool selectall,
+                               const wxString& label,
+                               const wxString& title)
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgGenericMultiSelect"),_T("wxScrollingDialog"));

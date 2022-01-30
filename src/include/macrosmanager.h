@@ -29,11 +29,17 @@ public:
     void ReleaseMenu(wxMenuBar* menuBar);
     void ReplaceMacros(wxString& buffer, const ProjectBuildTarget* target = nullptr, bool subrequest = false);
     wxString ReplaceMacros(const wxString& buffer, const ProjectBuildTarget* target = nullptr);
-    void ReplaceEnvVars(wxString& buffer) { ReplaceMacros(buffer); }  /* misnomer, should be ReplaceVariables */;
+    void ReplaceEnvVars(wxString& buffer)
+    {
+        ReplaceMacros(buffer);
+    }  /* misnomer, should be ReplaceVariables */;
     void RecalcVars(const cbProject* project, EditorBase* editor, const ProjectBuildTarget* target);
     void ClearProjectKeys();
     void Reset();
-    const MacrosMap &GetMacros() { return m_Macros; }  /* intended for creation of detailed build environment reports attachable to build logs */
+    const MacrosMap &GetMacros()
+    {
+        return m_Macros;    /* intended for creation of detailed build environment reports attachable to build logs */
+    }
 
 protected:
     const ProjectBuildTarget* m_LastTarget;

@@ -16,27 +16,36 @@ class FileTreeData;
 
 class TidyCmt : public cbPlugin
 {
-  public:
+public:
     TidyCmt() { ; }
     virtual ~TidyCmt() { ; }
 
-		virtual int GetConfigurationGroup() const { return cgEditor; }
+    virtual int GetConfigurationGroup() const
+    {
+        return cgEditor;
+    }
     virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
     static void ConfigurePlugin(const TidyCmtConfig& tcc);
 
     // Not used:
-    virtual cbConfigurationPanel* GetProjectConfigurationPanel(cb_unused wxWindow* parent, cb_unused cbProject* prj) { return 0; }
+    virtual cbConfigurationPanel* GetProjectConfigurationPanel(cb_unused wxWindow* parent, cb_unused cbProject* prj)
+    {
+        return 0;
+    }
 
-  protected:
+protected:
     virtual void OnAttach();
     virtual void OnRelease(bool appShutDown);
 
     // Not used:
     virtual void BuildMenu(cb_unused wxMenuBar* menuBar) { ; }
     virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0) { ; }
-    virtual bool BuildToolBar(cb_unused wxToolBar* toolBar) { return false; }
+    virtual bool BuildToolBar(cb_unused wxToolBar* toolBar)
+    {
+        return false;
+    }
 
-  private:
+private:
 
     void OnSave(CodeBlocksEvent& event);
 };

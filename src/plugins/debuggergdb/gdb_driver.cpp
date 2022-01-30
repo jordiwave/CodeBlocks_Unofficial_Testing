@@ -498,8 +498,8 @@ void GDB_driver::AddBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp)
                     bp->func << _T("::");
                     bp->func << strDtor;
                     bp->func << strMethod;
-    //                if (bp->temporary)
-    //                    bp->temporary = false;
+                    //                if (bp->temporary)
+                    //                    bp->temporary = false;
                     NotifyCursorChanged(); // to force breakpoints window update
                 }
             }
@@ -561,7 +561,7 @@ void GDB_driver::UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch,
 }
 
 void GDB_driver::UpdateMemoryRangeWatches(MemoryRangeWatchesContainer &watches,
-                                          bool ignoreAutoUpdate)
+        bool ignoreAutoUpdate)
 {
     bool updateWatches = false;
     for (cb::shared_ptr<GDBMemoryRangeWatch> &watch : watches)
@@ -638,9 +638,9 @@ void GDB_driver::ParseOutput(const wxString& output)
     }
 
     if (   output.StartsWith(_T("gdb: "))
-        || output.StartsWith(_T("warning: "))
-        || output.StartsWith(_T("Warning: "))
-        || output.StartsWith(_T("ContinueDebugEvent ")) )
+            || output.StartsWith(_T("warning: "))
+            || output.StartsWith(_T("Warning: "))
+            || output.StartsWith(_T("ContinueDebugEvent ")) )
     {
         return;
     }
@@ -728,13 +728,13 @@ void GDB_driver::ParseOutput(const wxString& output)
 
         // Is the program exited?
         else if (   lines[i].StartsWith(_T("Error creating process"))
-                 || lines[i].StartsWith(_T("Program exited"))
-                 || lines[i].StartsWith(wxT("Program terminated with signal"))
-                 || lines[i].StartsWith(wxT("During startup program exited"))
-                 || lines[i].Contains(_T("program is not being run"))
-                 || lines[i].Contains(_T("Target detached"))
-                 || reInferiorExited.Matches(lines[i])
-                 || reInferiorExitedWithCode.Matches(lines[i]) )
+                    || lines[i].StartsWith(_T("Program exited"))
+                    || lines[i].StartsWith(wxT("Program terminated with signal"))
+                    || lines[i].StartsWith(wxT("During startup program exited"))
+                    || lines[i].Contains(_T("program is not being run"))
+                    || lines[i].Contains(_T("Target detached"))
+                    || reInferiorExited.Matches(lines[i])
+                    || reInferiorExitedWithCode.Matches(lines[i]) )
         {
             m_pDBG->Log(lines[i]);
             m_ProgramIsStopped = true;
@@ -753,8 +753,8 @@ void GDB_driver::ParseOutput(const wxString& output)
             m_QueueBusy = false;
 
             if (   lines[i].StartsWith(_T("Program received signal SIGINT"))
-                || lines[i].StartsWith(_T("Program received signal SIGTRAP"))
-                || lines[i].StartsWith(_T("Program received signal SIGSTOP")) )
+                    || lines[i].StartsWith(_T("Program received signal SIGTRAP"))
+                    || lines[i].StartsWith(_T("Program received signal SIGSTOP")) )
             {
                 // these are break/trace signals, just log them
                 Log(lines[i]);
@@ -777,14 +777,14 @@ void GDB_driver::ParseOutput(const wxString& output)
         // general errors
         // we don't deal with them, just relay them back to the user
         else if (   lines[i].StartsWith(_T("Error "))
-                 || lines[i].StartsWith(_T("No such"))
-                 || lines[i].StartsWith(_T("Cannot evaluate")) )
+                    || lines[i].StartsWith(_T("No such"))
+                    || lines[i].StartsWith(_T("Cannot evaluate")) )
         {
             m_pDBG->Log(lines[i]);
         }
 
         else if (   (lines[i].StartsWith(_T("Cannot find bounds of current function")))
-                 || (lines[i].StartsWith(_T("No stack"))) )
+                    || (lines[i].StartsWith(_T("No stack"))) )
         {
             m_pDBG->Log(lines[i]);
             m_ProgramIsStopped = true;
@@ -840,7 +840,7 @@ void GDB_driver::ParseOutput(const wxString& output)
                     else
                         file = UnixFilename(file);
 
-    //                m_pDBG->Log(wxString::Format(_T("file: %s, line: %s"), file.c_str(), lineStr.c_str()));
+                    //                m_pDBG->Log(wxString::Format(_T("file: %s, line: %s"), file.c_str(), lineStr.c_str()));
                     long line;
                     lineStr.ToLong(&line);
                     DebuggerState& state = m_pDBG->GetState();
@@ -848,7 +848,7 @@ void GDB_driver::ParseOutput(const wxString& output)
                     cb::shared_ptr<DebuggerBreakpoint> bp = state.GetBreakpoint(bpindex);
                     if (bp)
                     {
-    //                    m_pDBG->Log(_T("Found BP!!! Updating index..."));
+                        //                    m_pDBG->Log(_T("Found BP!!! Updating index..."));
                         long index;
                         wxString indexStr = rePendingFound1.GetMatch(newbpstr, 1);
                         indexStr.ToLong(&index);

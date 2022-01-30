@@ -16,7 +16,7 @@ class NassiDropTarget : public wxDropTarget
 public:
     //NassiDropTarget(NassiView *view);
     NassiDropTarget(NassiDiagramWindow *window, NassiView *view);
-    ~NassiDropTarget(){}
+    ~NassiDropTarget() {}
     virtual wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult def);
     virtual void OnLeave();
     virtual wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def);

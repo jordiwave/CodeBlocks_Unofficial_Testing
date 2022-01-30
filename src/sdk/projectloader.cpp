@@ -10,20 +10,20 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/confbase.h>
-    #include <wx/fileconf.h>
-    #include <wx/intl.h>
-    #include <wx/filename.h>
-    #include <wx/msgdlg.h>
-    #include <wx/stopwatch.h>
-    #include "manager.h"
-    #include "configmanager.h"
-    #include "projectmanager.h"
-    #include "logmanager.h"
-    #include "macrosmanager.h"
-    #include "cbproject.h"
-    #include "compilerfactory.h"
-    #include "globals.h"
+#include <wx/confbase.h>
+#include <wx/fileconf.h>
+#include <wx/intl.h>
+#include <wx/filename.h>
+#include <wx/msgdlg.h>
+#include <wx/stopwatch.h>
+#include "manager.h"
+#include "configmanager.h"
+#include "projectmanager.h"
+#include "logmanager.h"
+#include "macrosmanager.h"
+#include "cbproject.h"
+#include "compilerfactory.h"
+#include "globals.h"
 #endif
 
 #include <wx/dir.h>
@@ -40,10 +40,10 @@
 
 ProjectLoader::ProjectLoader(cbProject* project)
     : m_pProject(project),
-    m_Upgraded(false),
-    m_OpenDirty(false),
-    m_1_4_to_1_5_deftarget(-1),
-    m_IsPre_1_6(false)
+      m_Upgraded(false),
+      m_OpenDirty(false),
+      m_1_4_to_1_5_deftarget(-1),
+      m_IsPre_1_6(false)
 {
     //ctor
 }
@@ -105,7 +105,7 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
         m_IsPre_1_6 = major < 1 || (major == 1 && minor < 6);
 
         if (major < 1 ||
-            (major == 1 && minor < 2))
+                (major == 1 && minor < 2))
         {
             // pre-1.2
             pMsg->DebugLog(F(_T("Project version is %d.%d. Defaults have changed since then..."), major, minor));
@@ -115,10 +115,10 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
         {
             pMsg->DebugLog(F(_T("Project version is > %d.%d. Trying to load..."), PROJECT_FILE_VERSION_MAJOR, PROJECT_FILE_VERSION_MINOR));
             AnnoyingDialog dlg(_("Project file format is newer/unknown"),
-                                _("This project file was saved with a newer version of Code::Blocks.\n"
-                                "Will try to load, but you should make sure all the settings were loaded correctly..."),
-                                wxART_WARNING,
-                                AnnoyingDialog::OK);
+                               _("This project file was saved with a newer version of Code::Blocks.\n"
+                                 "Will try to load, but you should make sure all the settings were loaded correctly..."),
+                               wxART_WARNING,
+                               AnnoyingDialog::OK);
             dlg.ShowModal();
         }
         else
@@ -164,20 +164,20 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
             {
                 m_Upgraded = true;
                 msg.Prepend(wxString::Format(_("Project file format is older (%d.%d) than the current format (%d.%d).\n"
-                                                "The file will automatically be upgraded on save.\n"
-                                                "But please read the following list of changes, as some of them "
-                                                "might not automatically convert existing (old) settings.\n"
-                                                "If you don't understand what a change means, you probably don't "
-                                                "use that feature so you don't have to worry about it.\n\n"
-                                                "List of changes:\n"),
-                                            major,
-                                            minor,
-                                            PROJECT_FILE_VERSION_MAJOR,
-                                            PROJECT_FILE_VERSION_MINOR));
+                                               "The file will automatically be upgraded on save.\n"
+                                               "But please read the following list of changes, as some of them "
+                                               "might not automatically convert existing (old) settings.\n"
+                                               "If you don't understand what a change means, you probably don't "
+                                               "use that feature so you don't have to worry about it.\n\n"
+                                               "List of changes:\n"),
+                                             major,
+                                             minor,
+                                             PROJECT_FILE_VERSION_MAJOR,
+                                             PROJECT_FILE_VERSION_MINOR));
                 AnnoyingDialog dlg(_("Project file format changed"),
-                                    msg,
-                                    wxART_INFORMATION,
-                                    AnnoyingDialog::OK);
+                                   msg,
+                                   wxART_INFORMATION,
+                                   AnnoyingDialog::OK);
                 dlg.ShowModal();
             }
 
@@ -185,9 +185,9 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
             {
                 warn_msg.Prepend(_("!!! WARNING !!!\n\n"));
                 AnnoyingDialog dlg(_("Project file upgrade warning"),
-                                    warn_msg,
-                                    wxART_WARNING,
-                                    AnnoyingDialog::OK);
+                                   warn_msg,
+                                   wxART_WARNING,
+                                   AnnoyingDialog::OK);
                 dlg.ShowModal();
             }
         }
@@ -268,7 +268,8 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
         detected = CompilerFactory::GetCompiler(compilerIdx)->AutoDetectInstallationDir() == adrDetected;
     }
     if ((m_pProject && compilerIdx == -1) || (!detected))
-    {   // unknown user compiler
+    {
+        // unknown user compiler
         // similar code can be found @ OnTreeSelectionChange()
         // see there for more info : duplicate code now, since here we still need
         // to fill in the compiler list for the choice control, where in
@@ -293,10 +294,10 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
 
         wxString msg;
         msg.Printf(_("The defined compiler cannot be located (ID: %s).\n"
-                    "Please choose the compiler you want to use instead and click \"OK\".\n"
-                    "If you click \"Cancel\", the project/target will remain configured for\n"
-                    "that compiler and consequently can not be configured and will not be built."),
-                    compilerId);
+                     "Please choose the compiler you want to use instead and click \"OK\".\n"
+                     "If you click \"Cancel\", the project/target will remain configured for\n"
+                     "that compiler and consequently can not be configured and will not be built."),
+                   compilerId);
 
         Compiler* comp = CompilerFactory::SelectCompilerUI(msg);
 
@@ -342,10 +343,10 @@ void ProjectLoader::ConvertVersion_Pre_1_1()
     // CompileOptionsBase linker libs container
     wxString msg;
     msg.Printf(_("Project \"%s\" was saved with an earlier version of Code::Blocks.\n"
-                "In the current version, link libraries are treated separately from linker options.\n"
-                "Do you want to auto-detect the libraries \"%s\" is using and configure it accordingly?"),
-                m_pProject->GetTitle().c_str(),
-                m_pProject->GetTitle().c_str());
+                 "In the current version, link libraries are treated separately from linker options.\n"
+                 "Do you want to auto-detect the libraries \"%s\" is using and configure it accordingly?"),
+               m_pProject->GetTitle().c_str(),
+               m_pProject->GetTitle().c_str());
     if (cbMessageBox(msg, _("Question"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
     {
         // project first
@@ -866,7 +867,8 @@ void ProjectLoader::DoLinkerOptions(TiXmlElement* parentNode, ProjectBuildTarget
     {
         const wxString value = cbC2U(child->Attribute("value"));
 
-        wxString str[int(LinkerExecutableOption::Last) - 1] = {
+        wxString str[int(LinkerExecutableOption::Last) - 1] =
+        {
             wxT("CCompiler"),
             wxT("CppCompiler"),
             wxT("Linker")
@@ -1315,9 +1317,10 @@ static void SaveLinkerExecutable(TiXmlElement *linkerNode, const CompileOptionsB
 {
     const LinkerExecutableOption linkerExe = options.GetLinkerExecutable();
     if (linkerExe > LinkerExecutableOption::AutoDetect
-        && linkerExe < LinkerExecutableOption::Last)
+            && linkerExe < LinkerExecutableOption::Last)
     {
-        wxString str[int(LinkerExecutableOption::Last) - 1] = {
+        wxString str[int(LinkerExecutableOption::Last) - 1] =
+        {
             wxT("CCompiler"),
             wxT("CppCompiler"),
             wxT("Linker")
@@ -1446,8 +1449,8 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             }
 
             if (   (prefixPolicy == tgfpPlatformDefault)
-                && (   (!platform::windows && target->GetTargetType() == ttDynamicLib)
-                    || (target->GetTargetType() == ttStaticLib) ) )
+                    && (   (!platform::windows && target->GetTargetType() == ttDynamicLib)
+                           || (target->GetTargetType() == ttStaticLib) ) )
             {
                 wxString compilerId = target->GetCompilerID();
                 Compiler* compiler = CompilerFactory::GetCompiler(compilerId);
@@ -1474,9 +1477,9 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             if (target->GetTargetType() == ttDynamicLib)
             {
                 if (target->GetDynamicLibImportFilename() != _T("$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)"))
-                  outnode->SetAttribute("imp_lib",  cbU2C(UnixFilename(target->GetDynamicLibImportFilename(), wxPATH_UNIX)));
+                    outnode->SetAttribute("imp_lib",  cbU2C(UnixFilename(target->GetDynamicLibImportFilename(), wxPATH_UNIX)));
                 if (target->GetDynamicLibImportFilename() != _T("$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)"))
-                  outnode->SetAttribute("def_file", cbU2C(UnixFilename(target->GetDynamicLibDefFilename(), wxPATH_UNIX)));
+                    outnode->SetAttribute("def_file", cbU2C(UnixFilename(target->GetDynamicLibDefFilename(), wxPATH_UNIX)));
             }
             outnode->SetAttribute("prefix_auto",    prefixPolicy    == tgfpPlatformDefault ? "1" : "0");
             outnode->SetAttribute("extension_auto", extensionPolicy == tgfpPlatformDefault ? "1" : "0");
@@ -1680,8 +1683,8 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             AddElement(unitnode, "Option", "compile", f->compile ? 1 : 0);
 
         if (f->link != (   ft == ftSource || ft == ftResource
-                        || ft == ftObject || ft == ftResourceBin
-                        || ft == ftStaticLib ) )
+                           || ft == ftObject || ft == ftResourceBin
+                           || ft == ftStaticLib ) )
         {
             AddElement(unitnode, "Option", "link", f->link ? 1 : 0);
         }
@@ -1793,9 +1796,9 @@ wxString ProjectLoader::GetValidCompilerID(const wxString& proposal, const wxStr
         {
             wxString msg;
             msg.Printf(_("The defined compiler for %s cannot be located (ID: %s).\n"
-                        "Please choose the compiler you want to use instead and click \"OK\".\n"
-                        "If you click \"Cancel\", the project/target will be excluded from the build."), scope.c_str(),
-                        proposal.c_str());
+                         "Please choose the compiler you want to use instead and click \"OK\".\n"
+                         "If you click \"Cancel\", the project/target will be excluded from the build."), scope.c_str(),
+                       proposal.c_str());
             compiler = CompilerFactory::SelectCompilerUI(msg);
         }
     }

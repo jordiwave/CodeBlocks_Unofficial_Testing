@@ -52,20 +52,26 @@ public:
       * in configuration dialogs. Lower numbers mean the plugin's
       * configuration is put higher in the list.
       */
-    virtual int GetConfigurationPriority() const override { return 50; }
+    virtual int GetConfigurationPriority() const override
+    {
+        return 50;
+    }
 
     /** Return the configuration group for this plugin. Default is cgUnknown.
       * Notice that you can logically OR more than one configuration groups,
       * so you could set it, for example, as "cgCompiler | cgContribPlugin".
       */
-    virtual int GetConfigurationGroup() const override { return cgContribPlugin; }
+    virtual int GetConfigurationGroup() const override
+    {
+        return cgContribPlugin;
+    }
 
     /** Return plugin's configuration panel.
       * @param parent The parent window.
       * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
       */
     virtual cbConfigurationPanel* GetConfigurationPanelEx(wxWindow* parent,
-                                                          cbConfigurationPanelColoursInterface *coloursInterface
+            cbConfigurationPanelColoursInterface *coloursInterface
                                                          ) override;
 
     /** Return plugin's configuration panel for projects.
@@ -76,7 +82,7 @@ public:
       * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
       */
     virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* WXUNUSED(parent),
-                                                               cbProject* WXUNUSED(project)) override
+            cbProject* WXUNUSED(project)) override
     {
         return 0;
     }
@@ -132,38 +138,122 @@ public:
     void CreateView(ThreadSearchViewManagerBase::eManagerTypes mgrType, bool forceType);
 
     // Setters
-    void SetCtxMenuIntegration(bool ctxMenuIntegration)       {m_CtxMenuIntegration = ctxMenuIntegration;}
-    void SetUseDefValsForThreadSearch(bool useDefVals)        {m_UseDefValsForThreadSearch = useDefVals;}
-    void SetShowSearchControls(bool showSearchControls)       {m_ShowSearchControls = showSearchControls;}
-    void SetShowDirControls(bool showDirControls)             {m_ShowDirControls = showDirControls;}
-    void SetShowCodePreview(bool showCodePreview)             {m_ShowCodePreview = showCodePreview;}
-    void SetDeletePreviousResults(bool deletePreviousResults) {m_DeletePreviousResults = deletePreviousResults;}
-    void SetDisplayLogHeaders(bool displayLogHeaders)         {m_DisplayLogHeaders = displayLogHeaders;}
-    void SetDrawLogLines(bool drawLogLines)                   {m_DrawLogLines = drawLogLines;}
-    void SetAutosizeLogColumns(bool autosizeLogColumns)       {m_AutosizeLogColumns = autosizeLogColumns;}
-    void SetFindData(const ThreadSearchFindData& findData)    {m_FindData = findData;}
+    void SetCtxMenuIntegration(bool ctxMenuIntegration)
+    {
+        m_CtxMenuIntegration = ctxMenuIntegration;
+    }
+    void SetUseDefValsForThreadSearch(bool useDefVals)
+    {
+        m_UseDefValsForThreadSearch = useDefVals;
+    }
+    void SetShowSearchControls(bool showSearchControls)
+    {
+        m_ShowSearchControls = showSearchControls;
+    }
+    void SetShowDirControls(bool showDirControls)
+    {
+        m_ShowDirControls = showDirControls;
+    }
+    void SetShowCodePreview(bool showCodePreview)
+    {
+        m_ShowCodePreview = showCodePreview;
+    }
+    void SetDeletePreviousResults(bool deletePreviousResults)
+    {
+        m_DeletePreviousResults = deletePreviousResults;
+    }
+    void SetDisplayLogHeaders(bool displayLogHeaders)
+    {
+        m_DisplayLogHeaders = displayLogHeaders;
+    }
+    void SetDrawLogLines(bool drawLogLines)
+    {
+        m_DrawLogLines = drawLogLines;
+    }
+    void SetAutosizeLogColumns(bool autosizeLogColumns)
+    {
+        m_AutosizeLogColumns = autosizeLogColumns;
+    }
+    void SetFindData(const ThreadSearchFindData& findData)
+    {
+        m_FindData = findData;
+    }
 
     void SetManagerType (ThreadSearchViewManagerBase::eManagerTypes mgrType);
-    void SetLoggerType (ThreadSearchLoggerBase::eLoggerTypes        lgrType)      {m_LoggerType   = lgrType;}
-    void SetSplitterMode(wxSplitMode                                splitterMode) {m_SplitterMode = splitterMode;}
-    void SetFileSorting (InsertIndexManager::eFileSorting           fileSorting)  {m_FileSorting  = fileSorting;}
+    void SetLoggerType (ThreadSearchLoggerBase::eLoggerTypes        lgrType)
+    {
+        m_LoggerType   = lgrType;
+    }
+    void SetSplitterMode(wxSplitMode                                splitterMode)
+    {
+        m_SplitterMode = splitterMode;
+    }
+    void SetFileSorting (InsertIndexManager::eFileSorting           fileSorting)
+    {
+        m_FileSorting  = fileSorting;
+    }
 
     // Getters
-    bool GetCtxMenuIntegration()                     const {return m_CtxMenuIntegration;}
-    bool GetUseDefValsForThreadSearch()              const {return m_UseDefValsForThreadSearch;}
-    bool GetShowSearchControls()                     const {return m_ShowSearchControls;}
-    bool GetShowDirControls()                        const {return m_ShowDirControls;}
-    bool GetShowCodePreview()                        const {return m_ShowCodePreview;}
-    bool GetDeletePreviousResults()                  const {return m_DeletePreviousResults;}
-    bool GetDisplayLogHeaders()                      const {return m_DisplayLogHeaders;}
-    bool GetDrawLogLines()                           const {return m_DrawLogLines;}
-    bool GetAutosizeLogColumns()                     const {return m_AutosizeLogColumns;}
-    void GetFindData(ThreadSearchFindData& findData) const {findData = m_FindData;}
-    ThreadSearchFindData& GetFindData()                    {return m_FindData;}
-    ThreadSearchViewManagerBase::eManagerTypes GetManagerType() const {return m_pViewManager->GetManagerType();}
-    ThreadSearchLoggerBase::eLoggerTypes       GetLoggerType()  const {return m_LoggerType;}
-    long                                       GetSplitterMode() const {return m_SplitterMode;}
-    InsertIndexManager::eFileSorting           GetFileSorting()  const {return m_FileSorting;}
+    bool GetCtxMenuIntegration()                     const
+    {
+        return m_CtxMenuIntegration;
+    }
+    bool GetUseDefValsForThreadSearch()              const
+    {
+        return m_UseDefValsForThreadSearch;
+    }
+    bool GetShowSearchControls()                     const
+    {
+        return m_ShowSearchControls;
+    }
+    bool GetShowDirControls()                        const
+    {
+        return m_ShowDirControls;
+    }
+    bool GetShowCodePreview()                        const
+    {
+        return m_ShowCodePreview;
+    }
+    bool GetDeletePreviousResults()                  const
+    {
+        return m_DeletePreviousResults;
+    }
+    bool GetDisplayLogHeaders()                      const
+    {
+        return m_DisplayLogHeaders;
+    }
+    bool GetDrawLogLines()                           const
+    {
+        return m_DrawLogLines;
+    }
+    bool GetAutosizeLogColumns()                     const
+    {
+        return m_AutosizeLogColumns;
+    }
+    void GetFindData(ThreadSearchFindData& findData) const
+    {
+        findData = m_FindData;
+    }
+    ThreadSearchFindData& GetFindData()
+    {
+        return m_FindData;
+    }
+    ThreadSearchViewManagerBase::eManagerTypes GetManagerType() const
+    {
+        return m_pViewManager->GetManagerType();
+    }
+    ThreadSearchLoggerBase::eLoggerTypes       GetLoggerType()  const
+    {
+        return m_LoggerType;
+    }
+    long                                       GetSplitterMode() const
+    {
+        return m_SplitterMode;
+    }
+    InsertIndexManager::eFileSorting           GetFileSorting()  const
+    {
+        return m_FileSorting;
+    }
 
     /** This method runs a threaded search for text param.
       * @param text : text to look after
@@ -303,11 +393,11 @@ private:
     ThreadSearchFindData                 m_FindData;                  // Search structure containing all useful inforamtions
     ThreadSearchView*                    m_pThreadSearchView;         // Panel added to Messages notebook
     ThreadSearchViewManagerBase*         m_pViewManager;              // View manager. Used to add, remove, show and hide view.
-                                                                      // Used on a derived class (message notebook or layout manager).
+    // Used on a derived class (message notebook or layout manager).
     wxToolBar*                           m_pToolbar;                  // Panel added to Messages notebook
     bool                                 m_CtxMenuIntegration;        // Tells if 'Find occurrences' item must be present in contextual menu
     bool                                 m_UseDefValsForThreadSearch; // Tells if default values (whole word = true, match case = true)
-                                                                      // are used for 'Find occurrences' ctx menu command
+    // are used for 'Find occurrences' ctx menu command
     bool                                 m_ShowSearchControls;        // True if user wants to use message tab controls
     bool                                 m_ShowDirControls;           // True if user wants to display directory specific controls
     bool                                 m_ShowCodePreview;           // True if user wants to benefit from code preview
@@ -320,7 +410,7 @@ private:
     bool                                 m_OnReleased;                // For multiple simultaneous calls of OnRelease
     wxComboBox*                          m_pCboSearchExpr;
     wxSplitMode                          m_SplitterMode;              // Sets vertical or horizontal display for code
-                                                                      // preview and search results (logger)
+    // preview and search results (logger)
     InsertIndexManager::eFileSorting     m_FileSorting;               // Sorts file by name or by path
     int m_EditorHookId;
 

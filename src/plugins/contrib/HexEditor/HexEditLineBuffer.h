@@ -38,39 +38,42 @@ enum CharacterStyles
 /** \brief Class used to gather informations about one line to render and rendering it */
 class HexEditLineBuffer
 {
-    public:
+public:
 
-        /** \brief Ctor
-         *  \param length length of the line
-         */
-        HexEditLineBuffer( unsigned length );
+    /** \brief Ctor
+     *  \param length length of the line
+     */
+    HexEditLineBuffer( unsigned length );
 
-        /** \brief Dctor */
-        ~HexEditLineBuffer();
+    /** \brief Dctor */
+    ~HexEditLineBuffer();
 
-        /** \brief Reset the line and rewind to the beginning of it */
-        void Reset( char defaultChar = ' ', char defaultStyle = 0 );
+    /** \brief Reset the line and rewind to the beginning of it */
+    void Reset( char defaultChar = ' ', char defaultStyle = 0 );
 
-        /** \brief Add one character */
-        void PutChar( char ch, char style = 0 );
+    /** \brief Add one character */
+    void PutChar( char ch, char style = 0 );
 
-        /** \brief Add string */
-        inline void PutString( const char* ch, char style = 0 ) { while ( *ch ) PutChar( *ch++, style ); }
+    /** \brief Add string */
+    inline void PutString( const char* ch, char style = 0 )
+    {
+        while ( *ch ) PutChar( *ch++, style );
+    }
 
-        /** \brief Draw line buffer on given dc
-         *  \param dc context used to draw
-         *  \param x start horizontal position
-         *  \param y start vertical position
-         *  \param fontX width of current font
-         *  \param fontY height of current font
-         */
-        void Draw( wxDC& dc, int x, int y, int fontX, int fontY, wxColour* foregrounds, wxColour* backgrounds );
+    /** \brief Draw line buffer on given dc
+     *  \param dc context used to draw
+     *  \param x start horizontal position
+     *  \param y start vertical position
+     *  \param fontX width of current font
+     *  \param fontY height of current font
+     */
+    void Draw( wxDC& dc, int x, int y, int fontX, int fontY, wxColour* foregrounds, wxColour* backgrounds );
 
-    private:
+private:
 
-        char* m_Buffer;     ///< \brief Beginning of the buffer
-        char* m_Position;   ///< \brief Current position within the buffer
-        char* m_End;        ///< \brief End of buffer
+    char* m_Buffer;     ///< \brief Beginning of the buffer
+    char* m_Position;   ///< \brief Current position within the buffer
+    char* m_End;        ///< \brief End of buffer
 };
 
 #endif

@@ -10,23 +10,23 @@ class wxPdfDocument; // Forward declaration
 
 class PDFExporter : public BaseExporter
 {
-  public:
+public:
     struct Style
     {
-      int value;
-      wxColour back;
-      wxColour fore;
-      bool bold;
-      bool italics;
-      bool underlined;
+        int value;
+        wxColour back;
+        wxColour fore;
+        bool bold;
+        bool italics;
+        bool underlined;
 
-      bool operator == (int aValue);
+        bool operator == (int aValue);
     };
 
-  public:
+public:
     void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount, int tabWidth);
 
-  private:
+private:
     vector<Style> m_styles;
     int defStyleIdx;
 

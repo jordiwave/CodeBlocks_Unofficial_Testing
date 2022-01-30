@@ -46,7 +46,7 @@ public:
     void SpellCheck(wxSpellCheckEngineInterface* pSpellChecker);
     wxSpellCheckEngineInterface* ReturnSelectedSpellCheckEngine();
     void XmlSpellCheck(wxString strDialogResource);
-    
+
     void SetDefaultAspellOptions();
     void SetDefaultMySpellOptions();
     void SavePersonalDictionaries();
@@ -58,13 +58,13 @@ private:
     int m_nSelectedSpellCheckEngine;
     AspellInterface* m_pAspellInterface;
     MySpellInterface* m_pMySpellInterface;
-    
+
     enum
     {
-      USE_ASPELL = 0,
-      USE_MYSPELL
+        USE_ASPELL = 0,
+        USE_MYSPELL
     };
-    
+
     // any class wishing to process wxWindows events must use this macro
     DECLARE_EVENT_TABLE()
 };

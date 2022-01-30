@@ -16,9 +16,9 @@
 #define FILEUTILS_H
 
 #if defined(_WIN32)
-    #include "winprocess/asyncprocess/asyncprocess.h"
+#include "winprocess/asyncprocess/asyncprocess.h"
 #else
-    #include "unixprocess/asyncprocess/asyncprocess.h"
+#include "unixprocess/asyncprocess/asyncprocess.h"
 #endif
 //-#include "codelite_exports.h"
 //-#include "macros.h"
@@ -50,7 +50,8 @@ public:
 
         ~Deleter()
         {
-            if(m_filename.Exists()) {
+            if(m_filename.Exists())
+            {
                 clRemoveFile(m_filename);
             }
         }
@@ -106,7 +107,7 @@ public:
      * @param [output] tty the TTY of the launched terminal
      */
     static void OSXOpenDebuggerTerminalAndGetTTY(const wxString& path, const wxString& appname, wxString& tty,
-                                                 long& pid);
+            long& pid);
 
     /**
      * @brief return the command needed to open OSX terminal at a given directory and launch a command
@@ -183,7 +184,10 @@ public:
     /**
      * @brief return true if filename is a symlink
      */
-    static bool IsSymlink(const wxFileName& filename) { return IsSymlink(filename.GetFullPath()); }
+    static bool IsSymlink(const wxFileName& filename)
+    {
+        return IsSymlink(filename.GetFullPath());
+    }
     /**
      * @brief return true if filename is a symlink
      */
@@ -192,7 +196,10 @@ public:
     /**
      * @brief return true if filename is a symlink
      */
-    static bool IsDirectory(const wxFileName& filename) { return IsDirectory(filename.GetFullPath()); }
+    static bool IsDirectory(const wxFileName& filename)
+    {
+        return IsDirectory(filename.GetFullPath());
+    }
     /**
      * @brief return true if filename is a symlink
      */

@@ -209,18 +209,18 @@ void ResultMap::LoadPredefinedResultFromFile(const wxString& FileName)
     wxString CBBase = ConfigManager::GetFolder(sdBase) + wxFileName::GetPathSeparator();
 
     for ( TiXmlElement* RootElem = Doc.FirstChildElement("predefined_library");
-          RootElem;
-          RootElem = RootElem->NextSiblingElement("predefined_library") )
+            RootElem;
+            RootElem = RootElem->NextSiblingElement("predefined_library") )
     {
         for ( TiXmlElement* Elem = RootElem->FirstChildElement();
-              Elem;
-              Elem = Elem->NextSiblingElement() )
+                Elem;
+                Elem = Elem->NextSiblingElement() )
         {
             LibraryResult* Result = new LibraryResult();
             Result->Type         = rtPredefined;
-            Result->LibraryName  = wxString(Elem->Attribute("name")      ,wxConvUTF8);
+            Result->LibraryName  = wxString(Elem->Attribute("name"),wxConvUTF8);
             Result->ShortCode    = wxString(Elem->Attribute("short_code"),wxConvUTF8);
-            Result->BasePath     = wxString(Elem->Attribute("base_path") ,wxConvUTF8);
+            Result->BasePath     = wxString(Elem->Attribute("base_path"),wxConvUTF8);
             Result->PkgConfigVar = wxString(Elem->Attribute("pkg_config"),wxConvUTF8);
             if ( TiXmlElement* Sub = Elem->FirstChildElement("description") )
             {
@@ -292,7 +292,7 @@ void ResultMap::LoadPredefinedResultFromFile(const wxString& FileName)
             }
 
             if ( Result->LibraryName.IsEmpty() ||
-                 Result->ShortCode.IsEmpty() )
+                    Result->ShortCode.IsEmpty() )
             {
                 delete Result;
                 continue;

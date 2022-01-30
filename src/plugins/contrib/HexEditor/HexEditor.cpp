@@ -35,11 +35,11 @@
 
 namespace
 {
-    PluginRegistrant<HexEditor> reg( _T("HexEditor") );
+PluginRegistrant<HexEditor> reg( _T("HexEditor") );
 
-    const int idOpenHexEdit = wxNewId();
-    const int idOpenWithHE = wxNewId();
-    const int idOpenHexEditFileBrowser = wxNewId();
+const int idOpenHexEdit = wxNewId();
+const int idOpenWithHE = wxNewId();
+const int idOpenHexEditFileBrowser = wxNewId();
 }
 
 BEGIN_EVENT_TABLE( HexEditor, cbPlugin )
@@ -83,42 +83,42 @@ void HexEditor::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
 
     switch ( type )
     {
-        case mtProjectManager:
+    case mtProjectManager:
 
-            if ( data && data->GetKind()==FileTreeData::ftdkFile )
+        if ( data && data->GetKind()==FileTreeData::ftdkFile )
+        {
+            wxMenuItem* child = menu->FindItem( menu->FindItem( _("Open with") ) );
+            if ( child && child->IsSubMenu() )
             {
-                wxMenuItem* child = menu->FindItem( menu->FindItem( _("Open with") ) );
-                if ( child && child->IsSubMenu() )
-                {
-                    menu = child->GetSubMenu();
-                }
-
-                menu->AppendSeparator();
-                menu->Append( idOpenHexEdit, _( "Hex editor" ), _( "Open this file in hex editor" ) );
+                menu = child->GetSubMenu();
             }
-            break;
 
-        case mtFileExplorer: //filetreedata filled with ftdkFile or ftdkFolder as "kind", the file/folder selected is the "FullPath" of the entry
-            if(data && data->GetKind()==FileTreeData::ftdkFile)  //right clicked on folder in file explorer
+            menu->AppendSeparator();
+            menu->Append( idOpenHexEdit, _( "Hex editor" ), _( "Open this file in hex editor" ) );
+        }
+        break;
+
+    case mtFileExplorer: //filetreedata filled with ftdkFile or ftdkFolder as "kind", the file/folder selected is the "FullPath" of the entry
+        if(data && data->GetKind()==FileTreeData::ftdkFile)  //right clicked on folder in file explorer
+        {
+            wxFileName f(data->GetFolder());
+            m_browserselectedfile=f.GetFullPath();
+            wxMenuItem* child = menu->FindItem( menu->FindItem( _("Open with") ) );
+            if ( child && child->IsSubMenu() )
             {
-                wxFileName f(data->GetFolder());
-                m_browserselectedfile=f.GetFullPath();
-                wxMenuItem* child = menu->FindItem( menu->FindItem( _("Open with") ) );
-                if ( child && child->IsSubMenu() )
-                {
-                    menu = child->GetSubMenu();
-                }
-                menu->Append( idOpenHexEditFileBrowser, _( "Open With Hex Editor" ), _( "Open this file in hex editor" ) );
+                menu = child->GetSubMenu();
             }
-            break;
+            menu->Append( idOpenHexEditFileBrowser, _( "Open With Hex Editor" ), _( "Open this file in hex editor" ) );
+        }
+        break;
 
 
-        case mtEditorManager:
-        case mtLogManager:
-        case mtOpenFilesList:
-        case mtEditorTab:
-        default:
-            break;
+    case mtEditorManager:
+    case mtLogManager:
+    case mtOpenFilesList:
+    case mtEditorTab:
+    default:
+        break;
     }
 }
 

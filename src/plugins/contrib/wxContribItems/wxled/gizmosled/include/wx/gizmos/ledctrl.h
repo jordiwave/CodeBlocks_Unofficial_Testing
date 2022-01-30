@@ -41,13 +41,22 @@ public:
 
     // Create functions.
     bool Create(wxWindow *parent, wxWindowID id = wxID_ANY,
-                    const wxPoint& pos = wxDefaultPosition,
-                    const wxSize& size = wxDefaultSize,
-                    long style = 0);
+                const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize,
+                long style = 0);
 
-    wxLEDValueAlign GetAlignment() const { return m_Alignment; }
-    bool GetDrawFaded() const { return m_DrawFaded; }
-    const wxString &GetValue() const { return m_Value; }
+    wxLEDValueAlign GetAlignment() const
+    {
+        return m_Alignment;
+    }
+    bool GetDrawFaded() const
+    {
+        return m_DrawFaded;
+    }
+    const wxString &GetValue() const
+    {
+        return m_Value;
+    }
 
     void SetAlignment(wxLEDValueAlign Alignment, bool Redraw = true);
     void SetDrawFaded(bool DrawFaded, bool Redraw = true);

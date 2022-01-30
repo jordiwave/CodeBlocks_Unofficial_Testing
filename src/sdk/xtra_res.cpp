@@ -10,10 +10,10 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "xtra_res.h"
-    #include "logmanager.h"
-    #include "scrollingdialog.h"
-    #include <wx/wx.h>
+#include "xtra_res.h"
+#include "logmanager.h"
+#include "scrollingdialog.h"
+#include <wx/wx.h>
 #endif
 
 #include <wx/xml/xml.h>
@@ -84,7 +84,7 @@ static bool GetStockArtAttrs(wxString &art_id, wxString &art_client, const wxXml
 
 
 wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSize size,
-                                                     double scaleFactor)
+        double scaleFactor)
 {
     wxXmlNode *paramNode = GetParamNode(param);
     // If there is no such tag as requested it is best to return null bitmap, so default processing
@@ -225,16 +225,17 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
     {
         m_isAddon=(m_class == _T("wxToolBarAddOn"));
         if(m_isAddon)
-        { // special case: Only add items to toolbar
-          toolbar=(wxToolBar*)m_instance;
-          // XRC_MAKE_INSTANCE(toolbar, wxToolBar);
+        {
+            // special case: Only add items to toolbar
+            toolbar=(wxToolBar*)m_instance;
+            // XRC_MAKE_INSTANCE(toolbar, wxToolBar);
         }
         else
         {
             int style = GetStyle(_T("style"), wxNO_BORDER | wxTB_HORIZONTAL);
-            #ifdef __WXMSW__
+#ifdef __WXMSW__
             if (!(style & wxNO_BORDER)) style |= wxNO_BORDER;
-            #endif
+#endif
 
             // XRC_MAKE_INSTANCE(toolbar, wxToolBar)
             if (m_instance)
@@ -243,11 +244,11 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
                 toolbar = new wxToolBar;
 
             toolbar->Create(m_parentAsWindow,
-                             GetID(),
-                             GetPosition(),
-                             GetSize(),
-                             style,
-                             GetName());
+                            GetID(),
+                            GetPosition(),
+                            GetSize(),
+                            style,
+                            GetName());
             wxSize margins = GetSize(_T("margins"));
             if (!(margins == wxDefaultSize))
                 toolbar->SetMargins(margins.x, margins.y);
@@ -261,7 +262,7 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
 
         wxXmlNode *children_node = GetParamNode(_T("object"));
         if (!children_node)
-           children_node = GetParamNode(_T("object_ref"));
+            children_node = GetParamNode(_T("object_ref"));
 
         if (children_node == nullptr) return toolbar;
 
@@ -273,14 +274,14 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
         while (n)
         {
             if ((n->GetType() == wxXML_ELEMENT_NODE) &&
-                (n->GetName() == _T("object") || n->GetName() == _T("object_ref")))
+                    (n->GetName() == _T("object") || n->GetName() == _T("object_ref")))
             {
                 wxObject *created = CreateResFromNode(n, toolbar, nullptr);
                 wxControl *control = wxDynamicCast(created, wxControl);
                 if (!IsOfClass(n, _T("tool")) &&
-                    !IsOfClass(n, _T("separator")) &&
-                    control != nullptr &&
-                    control != toolbar)
+                        !IsOfClass(n, _T("separator")) &&
+                        control != nullptr &&
+                        control != toolbar)
                 {
                     //Manager::Get()->GetLogManager()->DebugLog(F(_T("control=%p, parent=%p, toolbar=%p"), control, control->GetParent(), toolbar));
                     toolbar->AddControl(control);

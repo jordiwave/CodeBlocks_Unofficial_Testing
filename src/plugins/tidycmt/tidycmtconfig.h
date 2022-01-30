@@ -11,10 +11,10 @@
 struct TidyCmtConfig
 {
     TidyCmtConfig() :
-      enabled(false),
-      length(80),
-      single_line_cmt(_T("//--")),
-      multi_line_cmt(_T("/*--")) { ; }
+        enabled(false),
+        length(80),
+        single_line_cmt(_T("//--")),
+        multi_line_cmt(_T("/*--")) { ; }
     bool         enabled;
     unsigned int length;
     wxString     single_line_cmt;

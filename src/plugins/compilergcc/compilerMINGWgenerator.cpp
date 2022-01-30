@@ -44,7 +44,7 @@ wxString CompilerMINGWGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBui
     // for PCH to work, the very first include dir *must* be the object output dir
     // *only* if PCH is generated in the object output dir
     if (target &&
-        target->GetParentProject()->GetModeForPCH() == pchObjectDir)
+            target->GetParentProject()->GetModeForPCH() == pchObjectDir)
     {
         wxArrayString includedDirs; // avoid adding duplicate dirs...
         wxString sep = wxFILE_SEP_PATH;

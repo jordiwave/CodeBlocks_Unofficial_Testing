@@ -52,17 +52,20 @@ bool wxsImageProperty::ShowEditor(wxsPropertyContainer *Object)
     // show the dialog, exit immediately if cancelled
     PlaceWindow(&dlg);
     n = dlg.ShowModal();
-    if(n != wxID_OK){
+    if(n != wxID_OK)
+    {
         return false;
     }
 
     // no data?
-    if(data.IsEmpty()){
+    if(data.IsEmpty())
+    {
         VALUE.Clear();
     }
 
     // get a preview image and store it as an array of XPM data
-    else{
+    else
+    {
         bmp = data.GetPreview(wxDefaultSize);
         wxsImageListEditorDlg::BitmapToArray(bmp, VALUE);
     }
@@ -135,7 +138,8 @@ bool wxsImageProperty::PropStreamRead(wxsPropertyContainer *Object, wxsPropertyS
     for(;;)
     {
         wxString Item;
-        if(!Stream->GetString(DataSubName, Item, wxEmptyString)){
+        if(!Stream->GetString(DataSubName, Item, wxEmptyString))
+        {
             break;
         }
         VALUE.Add(Item);

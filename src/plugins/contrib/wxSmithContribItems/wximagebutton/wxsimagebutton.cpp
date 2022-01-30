@@ -33,39 +33,39 @@ namespace
 #include "wxImageButton16.xpm"
 #include "wxImageButton32.xpm"
 
-    wxsRegisterItem<wxsImageButton> Reg(
-        _T("wxImageButton"),            				// Class name
-        wxsTWidget,                     					// Item type
-        _T("wxWindows"),                				// License
-        _T("Ron Collins"),              					// Author
-        _T("rcoll@theriver.com"),       			// Author's email
-        _T(""),                         							// Item's homepage
-        _T("Contrib"),              							// Category in palette
-        70,                             								// Priority in palette
-        _T("ImageButton"),              				// Base part of names for new items
-        wxsCPP,                         						// List of coding languages supported by this item
-        1, 0,                           								// Version
-        wxBitmap(wxImageButton32_xpm),    // 32x32 bitmap
-        wxBitmap(wxImageButton16_xpm),    // 16x16 bitmap
-        false);                         // We do not allow this item inside XRC files
+wxsRegisterItem<wxsImageButton> Reg(
+    _T("wxImageButton"),            				// Class name
+    wxsTWidget,                     					// Item type
+    _T("wxWindows"),                				// License
+    _T("Ron Collins"),              					// Author
+    _T("rcoll@theriver.com"),       			// Author's email
+    _T(""),                         							// Item's homepage
+    _T("Contrib"),              							// Category in palette
+    70,                             								// Priority in palette
+    _T("ImageButton"),              				// Base part of names for new items
+    wxsCPP,                         						// List of coding languages supported by this item
+    1, 0,                           								// Version
+    wxBitmap(wxImageButton32_xpm),    // 32x32 bitmap
+    wxBitmap(wxImageButton16_xpm),    // 16x16 bitmap
+    false);                         // We do not allow this item inside XRC files
 
 
-    WXS_ST_BEGIN(wxsImageButtonStyles,_T("wxBU_AUTODRAW"))
-        WXS_ST_CATEGORY("wxImageButton")
-        WXS_ST(wxBU_LEFT)
-        WXS_ST(wxBU_TOP)
-        WXS_ST(wxBU_RIGHT)
-        WXS_ST(wxBU_BOTTOM)
-        WXS_ST(wxBU_AUTODRAW)
-        // cyberkoa: "The help mentions that wxBU_EXACTFIX is not used but the XRC code yes
-        //  WXS_ST(wxBU_EXACTFIX)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsImageButtonStyles,_T("wxBU_AUTODRAW"))
+WXS_ST_CATEGORY("wxImageButton")
+WXS_ST(wxBU_LEFT)
+WXS_ST(wxBU_TOP)
+WXS_ST(wxBU_RIGHT)
+WXS_ST(wxBU_BOTTOM)
+WXS_ST(wxBU_AUTODRAW)
+// cyberkoa: "The help mentions that wxBU_EXACTFIX is not used but the XRC code yes
+//  WXS_ST(wxBU_EXACTFIX)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsImageButtonEvents)
-        WXS_EVI(EVT_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEvent,Click)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsImageButtonEvents)
+WXS_EVI(EVT_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEvent,Click)
+WXS_EV_END()
 }
 
 //------------------------------------------------------------------------------
@@ -91,7 +91,8 @@ wxsImageButton::wxsImageButton(wxsItemResData* Data):
 
 //------------------------------------------------------------------------------
 
-void wxsImageButton::OnBuildCreatingCode() {
+void wxsImageButton::OnBuildCreatingCode()
+{
 // we only handle C++ constructs here
 
     if (GetLanguage() != wxsCPP) wxsCodeMarks::Unknown(_T("wxsImageButton"),GetLanguage());
@@ -113,30 +114,35 @@ void wxsImageButton::OnBuildCreatingCode() {
 // have been coded
 
     wxsImageList* ilist = (wxsImageList *) wxsImageListEditorDlg::FindTool(this, mImageList);
-    if (ilist != NULL) {
+    if (ilist != NULL)
+    {
         const wxString ss = ilist->GetVarName();
-		// Locator comment.
+        // Locator comment.
         wxString tt;
-		tt.Printf(_("// Set the bitmaps for %s.\n"), vv.wx_str());
+        tt.Printf(_("// Set the bitmaps for %s.\n"), vv.wx_str());
         AddEventCode(tt);
 
         long ll = 0;
-        if (mLabelIndex.ToLong(&ll)) {
+        if (mLabelIndex.ToLong(&ll))
+        {
             tt.Printf(_T("%s->SetBitmapLabel(%s->GetBitmap(%ld));\n"), vv.wx_str(), ss.wx_str(), ll);
             AddEventCode(tt);
         };
 
-        if (mDisabledIndex.ToLong(&ll)) {
+        if (mDisabledIndex.ToLong(&ll))
+        {
             tt.Printf(_T("%s->SetBitmapDisabled(%s->GetBitmap(%ld));\n"), vv.wx_str(), ss.wx_str(), ll);
             AddEventCode(tt);
         };
 
-        if (mSelectedIndex.ToLong(&ll)) {
+        if (mSelectedIndex.ToLong(&ll))
+        {
             tt.Printf(_T("%s->SetBitmapSelected(%s->GetBitmap(%ld));\n"), vv.wx_str(), ss.wx_str(), ll);
             AddEventCode(tt);
         };
 
-        if (mFocusIndex.ToLong(&ll)) {
+        if (mFocusIndex.ToLong(&ll))
+        {
             tt.Printf(_T("%s->SetBitmapFocus(%s->GetBitmap(%ld));\n"), vv.wx_str(), ss.wx_str(), ll);
             AddEventCode(tt);
         };
@@ -151,7 +157,8 @@ void wxsImageButton::OnBuildCreatingCode() {
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsImageButton::OnBuildPreview(wxWindow* Parent,long Flags) {
+wxObject* wxsImageButton::OnBuildPreview(wxWindow* Parent,long Flags)
+{
 // the basic button
 
     wxBitmapButton* button = new wxBitmapButton(Parent, GetId(), wxNullBitmap,Pos(Parent),Size(Parent),Style());
@@ -162,7 +169,8 @@ wxObject* wxsImageButton::OnBuildPreview(wxWindow* Parent,long Flags) {
 
 // make the preview bitmaps
 
-    if (ilist != NULL) {
+    if (ilist != NULL)
+    {
         long ll = 0;
         if (mLabelIndex.ToLong(&ll))    button->SetBitmapLabel(ilist->GetPreview(ll));
         if (mDisabledIndex.ToLong(&ll)) button->SetBitmapDisabled(ilist->GetPreview(ll));
@@ -179,11 +187,12 @@ wxObject* wxsImageButton::OnBuildPreview(wxWindow* Parent,long Flags) {
 
 //------------------------------------------------------------------------------
 
-void wxsImageButton::OnEnumWidgetProperties(cb_unused long Flags) {
-static wxString         sImageNames[128];
-static const wxChar    *pImageNames[128];
-static wxString         sIndexNames[1024];
-static const wxChar    *pIndexNames[1024];
+void wxsImageButton::OnEnumWidgetProperties(cb_unused long Flags)
+{
+    static wxString         sImageNames[128];
+    static const wxChar    *pImageNames[128];
+    static wxString         sIndexNames[1024];
+    static const wxChar    *pIndexNames[1024];
 
 // find available images, and pointer to current imagelist
 

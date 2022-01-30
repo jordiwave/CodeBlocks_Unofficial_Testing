@@ -43,21 +43,24 @@ class wxsResource;
  */
 class wxsEditor: public EditorBase
 {
-    public:
+public:
 
-        /** \brief Ctor */
-        wxsEditor(wxWindow* parent,const wxString& title,wxsResource* Resource);
+    /** \brief Ctor */
+    wxsEditor(wxWindow* parent,const wxString& title,wxsResource* Resource);
 
-        /** \brief Dctor */
-        virtual ~wxsEditor();
+    /** \brief Dctor */
+    virtual ~wxsEditor();
 
-        /** \brief Getting current resource */
-        inline wxsResource* GetResource() { return m_Resource; }
+    /** \brief Getting current resource */
+    inline wxsResource* GetResource()
+    {
+        return m_Resource;
+    }
 
-    private:
+private:
 
-        /** \brief Currently associated resource */
-        wxsResource* m_Resource;
+    /** \brief Currently associated resource */
+    wxsResource* m_Resource;
 };
 
 #endif

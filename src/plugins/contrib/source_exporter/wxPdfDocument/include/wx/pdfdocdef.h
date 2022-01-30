@@ -1386,20 +1386,20 @@ If neither a row nor a cell background colour is specified the background is tra
 // the definition of WXPDFDOC_HAVE_VISIBILITY in configure, should be dropped
 // when wx 2.8 is not supported any longer.
 #ifdef WXPDFDOC_HAVE_VISIBILITY
-    #define WXPDFDOC_EXPORT __attribute__ ((visibility("default")))
+#define WXPDFDOC_EXPORT __attribute__ ((visibility("default")))
 #else
-    #define WXPDFDOC_EXPORT WXEXPORT
+#define WXPDFDOC_EXPORT WXEXPORT
 #endif
 
 #if defined(WXMAKINGDLL_PDFDOC)
-  #define WXDLLIMPEXP_PDFDOC WXPDFDOC_EXPORT
-  #define WXDLLIMPEXP_DATA_PDFDOC(type) WXPDFDOC_EXPORT type
+#define WXDLLIMPEXP_PDFDOC WXPDFDOC_EXPORT
+#define WXDLLIMPEXP_DATA_PDFDOC(type) WXPDFDOC_EXPORT type
 #elif defined(WXUSINGDLL_PDFDOC)
-  #define WXDLLIMPEXP_PDFDOC WXIMPORT
-  #define WXDLLIMPEXP_DATA_PDFDOC(type) WXIMPORT type
+#define WXDLLIMPEXP_PDFDOC WXIMPORT
+#define WXDLLIMPEXP_DATA_PDFDOC(type) WXIMPORT type
 #else // not making nor using DLL
-  #define WXDLLIMPEXP_PDFDOC
-  #define WXDLLIMPEXP_DATA_PDFDOC(type) type
+#define WXDLLIMPEXP_PDFDOC
+#define WXDLLIMPEXP_DATA_PDFDOC(type) type
 #endif
 
 // Setting inheritance of wxPdfDocument
@@ -1416,9 +1416,9 @@ If neither a row nor a cell background colour is specified the background is tra
   difference a separate macro for forward declarations is defined:
  */
 #if defined(HAVE_VISIBILITY) || (defined(__WINDOWS__) && defined(__GNUC__))
-  #define WXDLLIMPEXP_FWD_PDFDOC
+#define WXDLLIMPEXP_FWD_PDFDOC
 #else
-  #define WXDLLIMPEXP_FWD_PDFDOC WXDLLIMPEXP_PDFDOC
+#define WXDLLIMPEXP_FWD_PDFDOC WXDLLIMPEXP_PDFDOC
 #endif
 
 #endif // _PDFDOC_DEF_H_

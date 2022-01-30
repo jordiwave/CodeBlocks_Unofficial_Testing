@@ -57,80 +57,81 @@ wxString wxsBitmapIconData::BuildCode(bool NoResize,const wxString& SizeCode,wxs
 {
     switch ( Ctx->m_Language )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        Ctx->AddHeader(_T("<wx/bitmap.h>"),_T(""),hfLocal);
+        Ctx->AddHeader(_T("<wx/image.h>"),_T(""),hfLocal);
+        wxString Code;
+        if ( Id.empty() )
         {
-            Ctx->AddHeader(_T("<wx/bitmap.h>"),_T(""),hfLocal);
-            Ctx->AddHeader(_T("<wx/image.h>"),_T(""),hfLocal);
-            wxString Code;
-            if ( Id.empty() )
+            if ( FileName.empty() )
             {
-                if ( FileName.empty() )
+                if ( CodeText.empty() )
                 {
-                    if ( CodeText.empty() )
-                    {
-                        return wxEmptyString;
-                    }
-                    else
-                    {
-                        Code << CodeText;
-                    }
+                    return wxEmptyString;
                 }
-                else{
-                    if ( NoResize )
-                    {
-                        Code << _T("wxBitmap(wxImage(") << wxsCodeMarks::WxString(wxsCPP,FileName,false) << _T("))");
-                    }
-                    else
-                    {
-                        Code << _T("wxBitmap(wxImage(") << wxsCodeMarks::WxString(wxsCPP,FileName,false) << _T(").Rescale(")
-                             << SizeCode << _T(".GetWidth(),") << SizeCode << _T(".GetHeight()))");
-                    }
+                else
+                {
+                    Code << CodeText;
                 }
             }
             else
             {
-                Ctx->AddHeader(_T("<wx/artprov.h>"),_T(""),hfLocal);
-                Code << _T("wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(") << wxsCodeMarks::WxString(wxsCPP,Id,false) << _T("),");
-                wxString UsedClient = Client.empty() ? DefaultClient : Client;
-
-                if ( UsedClient == _T("wxART_TOOLBAR") ||
-                     UsedClient == _T("wxART_MENU") ||
-                     UsedClient == _T("wxART_FRAME_ICON") ||
-                     UsedClient == _T("wxART_CMN_DIALOG") ||
-                     UsedClient == _T("wxART_HELP_BROWSER") ||
-                     UsedClient == _T("wxART_MESSAGE_BO") ||
-                     UsedClient == _T("wxART_BUTTON") ||
-                     UsedClient == _T("wxART_OTHER") )
+                if ( NoResize )
                 {
-                    // One of predefined client ids so we can use name directly
-                    Code << UsedClient;
+                    Code << _T("wxBitmap(wxImage(") << wxsCodeMarks::WxString(wxsCPP,FileName,false) << _T("))");
                 }
                 else
                 {
-                    // Not standard client id, we have to use macro
-                    // but because wxART_MAKE_CLIENT_ID_FROM_STR uses + operator
-                    // we additionally have to convert text to wxString
-                    Code << _T("wxART_MAKE_CLIENT_ID_FROM_STR(wxString(");
-                    Code << wxsCodeMarks::WxString(wxsCPP,Client,false);
-                    Code << _T("))");
+                    Code << _T("wxBitmap(wxImage(") << wxsCodeMarks::WxString(wxsCPP,FileName,false) << _T(").Rescale(")
+                         << SizeCode << _T(".GetWidth(),") << SizeCode << _T(".GetHeight()))");
                 }
+            }
+        }
+        else
+        {
+            Ctx->AddHeader(_T("<wx/artprov.h>"),_T(""),hfLocal);
+            Code << _T("wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(") << wxsCodeMarks::WxString(wxsCPP,Id,false) << _T("),");
+            wxString UsedClient = Client.empty() ? DefaultClient : Client;
 
-                if ( !NoResize )
-                {
-                    Code << _T(",") << SizeCode;
-                }
-
-                Code << _T(")");
+            if ( UsedClient == _T("wxART_TOOLBAR") ||
+                    UsedClient == _T("wxART_MENU") ||
+                    UsedClient == _T("wxART_FRAME_ICON") ||
+                    UsedClient == _T("wxART_CMN_DIALOG") ||
+                    UsedClient == _T("wxART_HELP_BROWSER") ||
+                    UsedClient == _T("wxART_MESSAGE_BO") ||
+                    UsedClient == _T("wxART_BUTTON") ||
+                    UsedClient == _T("wxART_OTHER") )
+            {
+                // One of predefined client ids so we can use name directly
+                Code << UsedClient;
+            }
+            else
+            {
+                // Not standard client id, we have to use macro
+                // but because wxART_MAKE_CLIENT_ID_FROM_STR uses + operator
+                // we additionally have to convert text to wxString
+                Code << _T("wxART_MAKE_CLIENT_ID_FROM_STR(wxString(");
+                Code << wxsCodeMarks::WxString(wxsCPP,Client,false);
+                Code << _T("))");
             }
 
-            return Code;
+            if ( !NoResize )
+            {
+                Code << _T(",") << SizeCode;
+            }
+
+            Code << _T(")");
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsBitmapIconData::BuildCode"),Ctx->m_Language);
-        }
+        return Code;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsBitmapIconData::BuildCode"),Ctx->m_Language);
+    }
     }
 
     return wxEmptyString;

@@ -117,28 +117,28 @@ enum FileVisualState
 
 class DLLIMPORT cbProjectTreeImages
 {
-    public:
-        /// Create an image list with images which could be used in file trees.
-        /// Currently used in the project manager and the file manager.
-        /// @param baseSize The size of the images at when scale factor is 1.
-        /// @param treeParent The parent of the tree where the image list would be used. It is used
-        ///        to query the scaling factor from it.
-        /// @return wxImageList object which contains images which could be indexed with the values
-        ///         from the FileVisualState enum.
-        static std::unique_ptr<wxImageList> MakeImageList(int baseSize, wxWindow &treeParent);
+public:
+    /// Create an image list with images which could be used in file trees.
+    /// Currently used in the project manager and the file manager.
+    /// @param baseSize The size of the images at when scale factor is 1.
+    /// @param treeParent The parent of the tree where the image list would be used. It is used
+    ///        to query the scaling factor from it.
+    /// @return wxImageList object which contains images which could be indexed with the values
+    ///         from the FileVisualState enum.
+    static std::unique_ptr<wxImageList> MakeImageList(int baseSize, wxWindow &treeParent);
 
-        /** @return The workspace icon index in the image list.
-            @param  read_only Return the read-only icon for a workspace?
-         */
-        static int WorkspaceIconIndex(bool read_only = false);
-        /** @return The project icon index in the image list.
-            @param  read_only Return the read-only icon for a project?
-         */
-        static int ProjectIconIndex(bool read_only = false);
-        /** @return The folder icon index in the image list. */
-        static int FolderIconIndex();
-        /** @return The virtual folder icon index in the image list. */
-        static int VirtualFolderIconIndex();
+    /** @return The workspace icon index in the image list.
+        @param  read_only Return the read-only icon for a workspace?
+     */
+    static int WorkspaceIconIndex(bool read_only = false);
+    /** @return The project icon index in the image list.
+        @param  read_only Return the read-only icon for a project?
+     */
+    static int ProjectIconIndex(bool read_only = false);
+    /** @return The folder icon index in the image list. */
+    static int FolderIconIndex();
+    /** @return The virtual folder icon index in the image list. */
+    static int VirtualFolderIconIndex();
 };
 
 /** These are valid values for the visual style of the project tree.
@@ -219,8 +219,8 @@ extern DLLIMPORT wxString GetStringFromArray(const wxArrayString& array, const w
 extern DLLIMPORT wxArrayString GetArrayFromString(const wxString& text, const wxString& separator = DEFAULT_ARRAY_SEP, bool trimSpaces = true);
 typedef std::vector<wxString> wxStringVec;
 extern DLLIMPORT wxStringVec GetVectorFromString(const wxString& text,
-                                                 const wxString& separator = DEFAULT_ARRAY_SEP,
-                                                 bool trimSpaces = true);
+        const wxString& separator = DEFAULT_ARRAY_SEP,
+        bool trimSpaces = true);
 extern DLLIMPORT wxArrayString MakeUniqueArray(const wxArrayString& array, bool caseSens);
 extern DLLIMPORT wxString MakeUniqueString(const wxString& text,  const wxString& separator = DEFAULT_ARRAY_SEP, bool caseSens = true);
 extern DLLIMPORT void AppendArray(const wxArrayString& from, wxArrayString& to);
@@ -241,11 +241,11 @@ extern DLLIMPORT void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& par
 extern DLLIMPORT bool CreateDirRecursively(const wxString& full_path, int perms = 0755);
 extern DLLIMPORT bool CreateDir(const wxString& full_path, int perms = 0755);
 extern DLLIMPORT wxString ChooseDirectory(wxWindow* parent,
-                                          const wxString& message = _("Select directory"),
-                                          const wxString& initialPath = _T(""),
-                                          const wxString& basePath = _T(""),
-                                          bool askToMakeRelative = false, // relative to basePath
-                                          bool showCreateDirButton = false); // where supported
+        const wxString& message = _("Select directory"),
+        const wxString& initialPath = _T(""),
+        const wxString& basePath = _T(""),
+        bool askToMakeRelative = false, // relative to basePath
+        bool showCreateDirButton = false); // where supported
 
 extern DLLIMPORT bool NormalizePath(wxFileName& f,const wxString& base);
 extern DLLIMPORT bool IsSuffixOfPath(wxFileName const & suffix, wxFileName const & path);
@@ -305,7 +305,7 @@ extern DLLIMPORT wxBitmap cbLoadBitmap(const wxString& filename,
 /// @param fs File system used to load the image from. If nullptr the default would be used.
 /// @sa cbLoadBitmap
 extern DLLIMPORT wxBitmap cbLoadBitmapScaled(const wxString& filename, wxBitmapType bitmapType,
-                                             double scaleFactor, wxFileSystem *fs = nullptr);
+        double scaleFactor, wxFileSystem *fs = nullptr);
 
 /// Wrapper function for wxWidnow::GetContentScaleFactor.
 /// It is defined only to hide its absence from wx2.8.
@@ -323,7 +323,7 @@ extern DLLIMPORT int cbFindMinSize16to64(int targetSize);
 
 /// Cross platform way to create properly scaled image lists.
 extern DLLIMPORT std::unique_ptr<wxImageList> cbMakeScaledImageList(int size, double scaleFactor,
-                                                                    int &outActualSize);
+        int &outActualSize);
 
 /// Add an bitmap to an image list. This is HiDPI aware and handles if the bitmap is not OK (it
 /// creates an read square bitmap).
@@ -336,13 +336,16 @@ extern DLLIMPORT std::unique_ptr<wxImageList> cbMakeScaledImageList(int size, do
 /// @retval true If the image is OK.
 /// @retval false If the image wasn't OK and a red square image has been added to the list.
 extern DLLIMPORT bool cbAddBitmapToImageList(wxImageList &list, const wxBitmap &bitmap, int size,
-                                             int listSize, double scaleFactor);
+        int listSize, double scaleFactor);
 
 /// Returns true if the theme used for running Code::Blocks is a dark one.
 extern DLLIMPORT bool cbIsDarkTheme();
 
 // compatibility function
-inline wxBitmap LoadPNGWindows2000Hack(const wxString& filename){ return cbLoadBitmap(filename); }
+inline wxBitmap LoadPNGWindows2000Hack(const wxString& filename)
+{
+    return cbLoadBitmap(filename);
+}
 
 /** Finds out if a window is really shown.
   *
@@ -428,25 +431,25 @@ extern DLLIMPORT wxRect cbGetMonitorRectForWindow(wxWindow *window);
 extern DLLIMPORT int cbMessageBox(const wxString& message, const wxString& caption = wxEmptyString, int style = wxOK, wxWindow *parent = NULL, int x = -1, int y = -1);
 
 extern DLLIMPORT int cbGetSingleChoiceIndex(const wxString& message, const wxString& caption,
-                                            const wxArrayString& choices, wxWindow *parent = NULL,
-                                            const wxSize &size = wxSize(300, 300),
-                                            int initialSelection = 0);
+        const wxArrayString& choices, wxWindow *parent = NULL,
+        const wxSize &size = wxSize(300, 300),
+        int initialSelection = 0);
 
 /** wxMultiChoiceDialog wrapper.
   *
   * Use this instead of wxMessageBox(), as this uses PlaceWindow() to show it in the correct monitor.
   */
 extern DLLIMPORT wxArrayInt cbGetMultiChoiceDialog(const wxString& message, const wxString& caption,
-                                     const wxArrayString& choices, wxWindow *parent = nullptr,
-                                     const wxSize& size = wxSize(300, 300),
-                                     const wxArrayInt& initialSelection = wxArrayInt());
+        const wxArrayString& choices, wxWindow *parent = nullptr,
+        const wxSize& size = wxSize(300, 300),
+        const wxArrayInt& initialSelection = wxArrayInt());
 
 extern DLLIMPORT const char *cbGetTextFromUserPromptStr;
 
 extern DLLIMPORT wxString cbGetTextFromUser(const wxString &message,
-                                            const wxString &caption = cbGetTextFromUserPromptStr,
-                                            const wxString &default_value = wxEmptyString, wxWindow *parent = NULL,
-                                            int x = wxDefaultCoord, int y = wxDefaultCoord, bool centre = true);
+        const wxString &caption = cbGetTextFromUserPromptStr,
+        const wxString &default_value = wxEmptyString, wxWindow *parent = NULL,
+        int x = wxDefaultCoord, int y = wxDefaultCoord, bool centre = true);
 
 inline void NotifyMissingFile(const wxString &name)
 {
@@ -473,22 +476,22 @@ extern DLLIMPORT DirAccessCheck cbDirAccessCheck(const wxString& dir);
 
 namespace platform
 {
-    typedef enum
-    {
-        winver_NotWindows = 0,
-        winver_UnknownWindows,
-        winver_Windows9598ME,
-        winver_WindowsNT2000,
-        winver_WindowsXP,
-        winver_WindowsServer2003,
-        winver_WindowsVista,
-        winver_Windows7,
-        winver_Windows8,
-        winver_Windows10,
-        winver_Windows11
-    } windows_version_t;
+typedef enum
+{
+    winver_NotWindows = 0,
+    winver_UnknownWindows,
+    winver_Windows9598ME,
+    winver_WindowsNT2000,
+    winver_WindowsXP,
+    winver_WindowsServer2003,
+    winver_WindowsVista,
+    winver_Windows7,
+    winver_Windows8,
+    winver_Windows10,
+    winver_Windows11
+} windows_version_t;
 
-    extern DLLIMPORT windows_version_t WindowsVersion();
+extern DLLIMPORT windows_version_t WindowsVersion();
 }
 
 // returns the real path of a file by resolving symlinks

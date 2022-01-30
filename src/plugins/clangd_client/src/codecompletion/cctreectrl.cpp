@@ -10,9 +10,9 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #ifdef CC_BUILDTREE_MEASURING
-        #include <wx/stopwatch.h>
-    #endif
+#ifdef CC_BUILDTREE_MEASURING
+#include <wx/stopwatch.h>
+#endif
 #endif
 
 #include <wx/gdicmn.h> // wxPoint, wxSize
@@ -48,36 +48,36 @@ IMPLEMENT_DYNAMIC_CLASS(CCTreeCntrl, wxTreeCtrl)
 
 CCTreeCntrl::CCTreeCntrl()
 {
-   Compare = &CBNoCompare;
+    Compare = &CBNoCompare;
 }
 
 CCTreeCntrl::CCTreeCntrl(wxWindow *parent, const wxWindowID id,
-                       const wxPoint& pos, const wxSize& size, long style) :
+                         const wxPoint& pos, const wxSize& size, long style) :
     wxTreeCtrl(parent, id, pos, size, style)
 {
-   Compare = &CBNoCompare;
+    Compare = &CBNoCompare;
 }
 
 void CCTreeCntrl::SetCompareFunction(const BrowserSortType type)
 {
     switch (type)
     {
-        case bstAlphabet:
-            Compare = &CBAlphabetCompare;
-            break;
-        case bstKind:
-            Compare = &CBKindCompare;
-            break;
-        case bstScope:
-            Compare = &CBScopeCompare;
-            break;
-        case bstLine:
-            Compare = &CBLineCompare;
-            break;
-        case bstNone:
-        default:
-            Compare = &CBNoCompare;
-            break;
+    case bstAlphabet:
+        Compare = &CBAlphabetCompare;
+        break;
+    case bstKind:
+        Compare = &CBKindCompare;
+        break;
+    case bstScope:
+        Compare = &CBScopeCompare;
+        break;
+    case bstLine:
+        Compare = &CBLineCompare;
+        break;
+    case bstNone:
+    default:
+        Compare = &CBNoCompare;
+        break;
     }
 
 }
@@ -167,12 +167,12 @@ void CCTreeCntrl::RemoveDoubles(const wxTreeItemId& parent)
         CCTreeCtrlData* dataExisting = (CCTreeCtrlData*)(GetItemData(existing));
         CCTreeCtrlData* dataPrev = (CCTreeCtrlData*)(GetItemData(prevItem));
         if (dataExisting &&
-           dataPrev &&
-           dataExisting->m_SpecialFolder == sfToken &&
-           dataPrev->m_SpecialFolder == sfToken &&
-           dataExisting->m_Token &&
-           dataPrev->m_Token &&
-           (dataExisting->m_Token->DisplayName() == dataPrev->m_Token->DisplayName()))
+                dataPrev &&
+                dataExisting->m_SpecialFolder == sfToken &&
+                dataPrev->m_SpecialFolder == sfToken &&
+                dataExisting->m_Token &&
+                dataPrev->m_Token &&
+                (dataExisting->m_Token->DisplayName() == dataPrev->m_Token->DisplayName()))
         {
             Delete(prevItem);
         }

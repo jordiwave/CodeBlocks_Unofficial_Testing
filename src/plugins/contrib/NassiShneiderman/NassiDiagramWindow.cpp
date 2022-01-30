@@ -6,11 +6,11 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <wx/bitmap.h>
@@ -51,10 +51,10 @@ END_EVENT_TABLE()
 //MyDiagramWindow::MyDiagramWindow(wxView *v, wxMDIChildFrame *frame, const wxPoint& pos, const wxSize& size, long style):
 // wxScrolledWindow(frame, wxID_ANY, pos, size, style)
 NassiDiagramWindow::NassiDiagramWindow(wxWindow *parent, NassiView *view):
-        wxScrolledWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxWANTS_CHARS ),
-        //dndpt(-1, -1),
-        m_view(view),
-        m_hd(0)
+    wxScrolledWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxWANTS_CHARS ),
+    //dndpt(-1, -1),
+    m_view(view),
+    m_hd(0)
 {
     SetDropTarget( new NassiDropTarget(this, view) );
 
@@ -114,7 +114,7 @@ void NassiDiagramWindow::OnMouseWheel(wxMouseEvent& event)
     }
 }
 
-void NassiDiagramWindow::OnErase(wxEraseEvent & /*event*/){}
+void NassiDiagramWindow::OnErase(wxEraseEvent & /*event*/) {}
 
 void NassiDiagramWindow::OnPaint(wxPaintEvent & /*event*/)
 {
@@ -249,7 +249,7 @@ void NassiDiagramWindow::RemoveDrawlet(wxDC &dc)
     }
 }
 
-void NassiDiagramWindow::OnSetFocus(wxFocusEvent & /*event*/){}
+void NassiDiagramWindow::OnSetFocus(wxFocusEvent & /*event*/) {}
 
 void NassiDiagramWindow::OnKillFocus(wxFocusEvent & /*event*/)
 {

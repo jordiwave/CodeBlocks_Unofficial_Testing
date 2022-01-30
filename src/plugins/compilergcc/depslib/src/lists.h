@@ -9,7 +9,7 @@
  * This file is part of jam.
  *
  * License is hereby granted to use this software and distribute it
- * freely, as long as this copyright notice is retained and modifications 
+ * freely, as long as this copyright notice is retained and modifications
  * are clearly marked.
  *
  * ALL WARRANTIES ARE HEREBY DISCLAIMED.
@@ -63,10 +63,11 @@
 
 typedef struct _list LIST;
 
-struct _list {
-	LIST		*next;
-	LIST		*tail;		/* only valid in head node */
-	const char	*string;	/* private copy */
+struct _list
+{
+    LIST		*next;
+    LIST		*tail;		/* only valid in head node */
+    const char	*string;	/* private copy */
 } ;
 
 /*
@@ -77,9 +78,10 @@ typedef struct _lol LOL;
 
 # define LOL_MAX 9
 
-struct _lol {
-	int	count;
-	LIST	*list[ LOL_MAX ];
+struct _lol
+{
+    int	count;
+    LIST	*list[ LOL_MAX ];
 } ;
 
 LIST *	list_append( LIST *l, LIST *nl );

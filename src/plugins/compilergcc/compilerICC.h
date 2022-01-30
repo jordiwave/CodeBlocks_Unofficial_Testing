@@ -14,13 +14,13 @@
 
 class CompilerICC : public Compiler
 {
-    public:
-        CompilerICC();
-        ~CompilerICC() override;
-        AutoDetectResult AutoDetectInstallationDir() override;
-    protected:
-        Compiler* CreateCopy() override;
-    private:
+public:
+    CompilerICC();
+    ~CompilerICC() override;
+    AutoDetectResult AutoDetectInstallationDir() override;
+protected:
+    Compiler* CreateCopy() override;
+private:
 };
 
 #endif // COMPILER_ICC_H

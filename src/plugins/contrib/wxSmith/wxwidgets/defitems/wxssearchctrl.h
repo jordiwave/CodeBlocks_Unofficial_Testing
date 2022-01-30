@@ -26,19 +26,19 @@
 /** \brief Class for wxSearchCtrl widget */
 class wxsSearchCtrl: public wxsWidget
 {
-    public:
+public:
 
-        wxsSearchCtrl(wxsItemResData* Data);
+    wxsSearchCtrl(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        wxString             m_sValue;                                    //!< The default text value.
-        bool                    m_bShowSearchBtn;                    //!< If true, show the "Search" button.
-        bool                    m_bShowCancelBtn;                    //!< If true, show the "Cancel" button.
+    wxString             m_sValue;                                    //!< The default text value.
+    bool                    m_bShowSearchBtn;                    //!< If true, show the "Search" button.
+    bool                    m_bShowCancelBtn;                    //!< If true, show the "Cancel" button.
 };
 
 #endif // WXSSEARCHCTRL_H

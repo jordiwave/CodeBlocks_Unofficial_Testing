@@ -29,34 +29,37 @@ class wxBitmap;
 
 class wxsAutoResourceTreeImage
 {
-    public:
+public:
 
-        /** \brief Load image from file in data directory
-         *  \param FileName name of file relative to C::B's data directory
-         *  \param DontFree if true, image's index won't be freed automatically
-         *         when class is deleted. Set to true only in case of some global
-         *         images which will stay loaded as long as wxSmith is loaded.
-         */
-        wxsAutoResourceTreeImage(const wxString& FileName,bool DontFree=false);
+    /** \brief Load image from file in data directory
+     *  \param FileName name of file relative to C::B's data directory
+     *  \param DontFree if true, image's index won't be freed automatically
+     *         when class is deleted. Set to true only in case of some global
+     *         images which will stay loaded as long as wxSmith is loaded.
+     */
+    wxsAutoResourceTreeImage(const wxString& FileName,bool DontFree=false);
 
-        /** \brief Create image from given bitmap
-         *  \param Image bitmap to be added
-         *  \param DontFree if true, image's index won't be freed automatically
-         *         when class is deleted. Set to true only in case of some global
-         *         images which will stay loaded as long as wxSmith is loaded.
-         */
-        wxsAutoResourceTreeImage(const wxBitmap& Image,bool DontFree=false);
+    /** \brief Create image from given bitmap
+     *  \param Image bitmap to be added
+     *  \param DontFree if true, image's index won't be freed automatically
+     *         when class is deleted. Set to true only in case of some global
+     *         images which will stay loaded as long as wxSmith is loaded.
+     */
+    wxsAutoResourceTreeImage(const wxBitmap& Image,bool DontFree=false);
 
-        /** \brief Dctor - marks image's index as free if necessary */
-        ~wxsAutoResourceTreeImage();
+    /** \brief Dctor - marks image's index as free if necessary */
+    ~wxsAutoResourceTreeImage();
 
-        /** \brief Get index of handled image */
-        inline int GetIndex() const { return m_Index; }
+    /** \brief Get index of handled image */
+    inline int GetIndex() const
+    {
+        return m_Index;
+    }
 
-    private:
+private:
 
-        int  m_Index;
-        bool m_DontFree;
+    int  m_Index;
+    bool m_DontFree;
 };
 
 

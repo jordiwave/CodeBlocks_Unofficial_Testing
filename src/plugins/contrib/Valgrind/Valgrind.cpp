@@ -34,10 +34,10 @@
 // Register the plugin
 namespace
 {
-    PluginRegistrant<Valgrind> reg(_T("Valgrind"));
-    int IdMemCheckRun = wxNewId();
-    int IdMemCheckOpenLog = wxNewId();
-    int IdCacheGrind = wxNewId();
+PluginRegistrant<Valgrind> reg(_T("Valgrind"));
+int IdMemCheckRun = wxNewId();
+int IdMemCheckOpenLog = wxNewId();
+int IdCacheGrind = wxNewId();
 };
 
 BEGIN_EVENT_TABLE(Valgrind, cbPlugin)
@@ -130,7 +130,8 @@ void Valgrind::BuildMenu(wxMenuBar* MenuBar)
     int MenusCount = MenuBar->GetMenuCount();
     wxMenu* Menu = new wxMenu;
     if(MenuBar->Insert(MenusCount - 1, Menu, _("Valgrind")))
-    { // let's add all the menu entries
+    {
+        // let's add all the menu entries
         Menu->Append(IdMemCheckRun, _("Run MemCheck"), _("Run MemCheck"));
         Menu->Append(IdMemCheckOpenLog, _("Open MemCheck Xml log file"), _("Open MemCheck Xml log file"));
         Menu->AppendSeparator();
@@ -150,8 +151,8 @@ void Valgrind::WriteToLog(const wxString& Text)
     m_ValgrindLog->Clear();
     // maybe also show event needed ??
 #if 0
-CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-Manager::Get()->ProcessEvent(evtShow);
+    CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+    Manager::Get()->ProcessEvent(evtShow);
 #endif
     AppendToLog(Text);
 } // end of WriteToLog
@@ -162,10 +163,10 @@ void Valgrind::AppendToLog(const wxString& Text)
     {
         CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_ValgrindLog);
         Manager::Get()->ProcessEvent(evtSwitch);
-    // maybe also show event needed ??
+        // maybe also show event needed ??
 #if 0
-CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-Manager::Get()->ProcessEvent(evtShow);
+        CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+        Manager::Get()->ProcessEvent(evtShow);
 #endif
         LogMan->Log(Text, m_LogPageIndex);
     }
@@ -184,7 +185,7 @@ void Valgrind::ProcessStack(const TiXmlElement& Stack, bool AddHeader)
 
     // start by doing the first frame (that contains dir/file/line)
     for(const TiXmlElement* Frame = Stack.FirstChildElement("frame"); Frame;
-        Frame = Frame->NextSiblingElement("frame"))
+            Frame = Frame->NextSiblingElement("frame"))
     {
         const TiXmlElement* Dir = Frame->FirstChildElement("dir");
         const TiXmlElement* File = Frame->FirstChildElement("file");
@@ -222,7 +223,7 @@ bool CheckRequirements(wxString& ExeTarget, wxString &WorkDir, wxString& Command
                        wxString &DynamicLinkerPath)
 {
     cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
-   // if no project open, exit
+    // if no project open, exit
     if (!Project)
     {
         wxString msg = _("You need to open a project\nbefore using the plugin!");
@@ -354,7 +355,8 @@ void Valgrind::ParseMemCheckXML(TiXmlDocument &Doc)
     {
         wxString WhatValue, KindValue;
         if (const TiXmlElement* XWhat = Error->FirstChildElement("xwhat"))
-        {	// style use since Valgrind 3.5.0
+        {
+            // style use since Valgrind 3.5.0
             if (const TiXmlElement* Text = XWhat->FirstChildElement("text"))
             {
                 WhatValue = wxString::FromAscii(Text->GetText());

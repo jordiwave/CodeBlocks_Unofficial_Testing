@@ -31,70 +31,70 @@ using namespace wxsFlags;
 
 namespace
 {
-    wxsRegisterItem<wxsStdDialogButtonSizer> Reg(_T("StdDialogButtonSizer"),wxsTSizer,_T("Layout"),10);
+wxsRegisterItem<wxsStdDialogButtonSizer> Reg(_T("StdDialogButtonSizer"),wxsTSizer,_T("Layout"),10);
 
-    class wxsSizerPreview: public wxPanel
+class wxsSizerPreview: public wxPanel
+{
+public:
+    wxsSizerPreview(wxWindow* Parent): wxPanel(Parent,-1,wxDefaultPosition,wxDefaultSize, wxTAB_TRAVERSAL)
     {
-        public:
-            wxsSizerPreview(wxWindow* Parent): wxPanel(Parent,-1,wxDefaultPosition,wxDefaultSize, wxTAB_TRAVERSAL)
-            {
-                InheritAttributes();
-                Connect(wxID_ANY,wxEVT_PAINT,(wxObjectEventFunction)&wxsSizerPreview::OnPaint);
-            }
+        InheritAttributes();
+        Connect(wxID_ANY,wxEVT_PAINT,(wxObjectEventFunction)&wxsSizerPreview::OnPaint);
+    }
 
-        private:
+private:
 
-            void OnPaint(cb_unused wxPaintEvent& event)
-            {
-                // Drawing additional border around te panel
-                wxPaintDC DC(this);
-                int W, H;
-                GetSize(&W,&H);
-                DC.SetBrush(*wxTRANSPARENT_BRUSH);
-                DC.SetPen(*wxRED_PEN);
-                DC.DrawRectangle(0,0,W,H);
-            }
-    };
-
-    enum ButtonType
+    void OnPaint(cb_unused wxPaintEvent& event)
     {
-        Ok = 0, Yes, No, Cancel, Aply, Save, Help, ContextHelp
-    };
+        // Drawing additional border around te panel
+        wxPaintDC DC(this);
+        int W, H;
+        GetSize(&W,&H);
+        DC.SetBrush(*wxTRANSPARENT_BRUSH);
+        DC.SetPen(*wxRED_PEN);
+        DC.DrawRectangle(0,0,W,H);
+    }
+};
 
-    const wxChar* IdNames[] =
-    {
-        _T("wxID_OK"),
-        _T("wxID_YES"),
-        _T("wxID_NO"),
-        _T("wxID_CANCEL"),
-        _T("wxID_APPLY"),
-        _T("wxID_SAVE"),
-        _T("wxID_HELP"),
-        _T("wxID_CONTEXT_HELP")
-    };
-    const wxChar* IdLabels[] =
-    {
-        _T("OK Label:"),
-        _T("YES Label:"),
-        _T("NO Label:"),
-        _T("CANCEL Label:"),
-        _T("APPLY Label:"),
-        _T("SAVE Label:"),
-        _T("HELP Label:"),
-        _T("CONTEXT_HELP Label:")
-    };
+enum ButtonType
+{
+    Ok = 0, Yes, No, Cancel, Aply, Save, Help, ContextHelp
+};
 
-    const wxWindowID IdValues[] =
-    {
-        wxID_OK,
-        wxID_YES,
-        wxID_NO,
-        wxID_CANCEL,
-        wxID_APPLY,
-        wxID_SAVE,
-        wxID_HELP,
-        wxID_CONTEXT_HELP
-    };
+const wxChar* IdNames[] =
+{
+    _T("wxID_OK"),
+    _T("wxID_YES"),
+    _T("wxID_NO"),
+    _T("wxID_CANCEL"),
+    _T("wxID_APPLY"),
+    _T("wxID_SAVE"),
+    _T("wxID_HELP"),
+    _T("wxID_CONTEXT_HELP")
+};
+const wxChar* IdLabels[] =
+{
+    _T("OK Label:"),
+    _T("YES Label:"),
+    _T("NO Label:"),
+    _T("CANCEL Label:"),
+    _T("APPLY Label:"),
+    _T("SAVE Label:"),
+    _T("HELP Label:"),
+    _T("CONTEXT_HELP Label:")
+};
+
+const wxWindowID IdValues[] =
+{
+    wxID_OK,
+    wxID_YES,
+    wxID_NO,
+    wxID_CANCEL,
+    wxID_APPLY,
+    wxID_SAVE,
+    wxID_HELP,
+    wxID_CONTEXT_HELP
+};
 
 }
 
@@ -172,30 +172,30 @@ void wxsStdDialogButtonSizer::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
+        AddHeader(_T("<wx/button.h>"),GetInfo().ClassName,hfLocal);
+
+        if ( IsPointer() ) Codef(_T("%C();\n"));
+
+        for ( int i=0; i<NumButtons; i++ )
         {
-            AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
-            AddHeader(_T("<wx/button.h>"),GetInfo().ClassName,hfLocal);
-
-            if ( IsPointer() ) Codef(_T("%C();\n"));
-
-            for ( int i=0; i<NumButtons; i++ )
+            if ( m_Use[i] )
             {
-                if ( m_Use[i] )
-                {
-                    Codef(_T("%AAddButton(new wxButton(%W, %v, %t));\n"),IdNames[i],m_Label[i].wx_str());
-                }
+                Codef(_T("%AAddButton(new wxButton(%W, %v, %t));\n"),IdNames[i],m_Label[i].wx_str());
             }
-            Codef(_T("%ARealize();\n"));
-            break;
-
         }
+        Codef(_T("%ARealize();\n"));
+        break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsStdDialogButtonSizer::OnBuildCreatingCode"),GetLanguage());
-        }
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsStdDialogButtonSizer::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

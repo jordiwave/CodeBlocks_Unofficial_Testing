@@ -7,17 +7,12 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="../../devel31_64/cb_share_config" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="../../../devel31_64" />
-				<Option object_output="../../.objs31_64/tools/cb_share_config" />
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/cb_share_config" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/tools/cb_share_config" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 			</Target>
-			<Environment>
-				<!-- Variable name="WX_CFG" value="" / -->
-				<!-- Variable name="WX_SUFFIX" value="u" / -->
-				<!-- Variable name="WX_VERSION" value="31" / -->
-			</Environment>
 		</Build>
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
@@ -25,7 +20,7 @@
 		<Compiler>
 			<Add option="-pipe" />
 			<Add option="-mthreads" />
-			<Add option="-m64" />
+			<Add option="-m$(#CB_BUILD.OSBITS)" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-DUSE_PCH" />
@@ -34,22 +29,22 @@
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DWXUSINGDLL" />
-			<Add option="-std=gnu++11" />
-			<Add option="-D_WIN64" />
-			<Add directory="$(#WX31_64.include)" />
-			<Add directory="$(#WX31_64.lib)/gcc_dll$(#WX31.WX_CFG)/msw$(#WX31.WX_SUFFIX)" />
-			<Add directory="../../include" />
-			<Add directory="../../include/tinyxml" />
+			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
+			<Add directory="$(#WXWIDGETS.include)" />
+			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add directory="$(#CB_BUILD)/include" />
+			<Add directory="$(#CB_BUILD)/include/tinyxml" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(#WX31_64.include)" />
+			<Add directory="$(#WXWIDGETS.include)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />
 			<Add library="txml" />
-			<Add library="wxmsw$(#WX31.WX_VERSION)$(#WX31.WX_SUFFIX)" />
-			<Add directory="$(#WX31_64.lib)/gcc_dll$(#WX31.WX_CFG)" />
-			<Add directory="../../devel31_64" />
+			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
+			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
 		</Linker>
 		<Unit filename="app.cpp" />
 		<Unit filename="app.h" />

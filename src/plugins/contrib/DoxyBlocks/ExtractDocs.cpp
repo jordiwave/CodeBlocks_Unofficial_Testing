@@ -35,10 +35,10 @@
  *****************************************************************************/
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <cbproject.h>
-    #include <macrosmanager.h>
-    #include <projectfile.h>
-    #include <projectmanager.h>
+#include <cbproject.h>
+#include <macrosmanager.h>
+#include <projectfile.h>
+#include <projectmanager.h>
 #endif
 #include <wx/busyinfo.h>
 #include <wx/ffile.h>
@@ -56,21 +56,25 @@ void DoxyBlocks::OnExtractProject(wxCommandEvent & WXUNUSED(event))
  */
 void DoxyBlocks::DoExtractProject()
 {
-    if(!IsProjectOpen()){
+    if(!IsProjectOpen())
+    {
         return;
     }
 
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-    if(!prj){
+    if(!prj)
+    {
         wxString sMsg = _("Failed to get the active project!");
         AppendToLog(sMsg, LOG_ERROR);
         return;
     }
 
     // Check whether AutoVersioning is active for this project.
-    if(m_bAutoVersioning){
+    if(m_bAutoVersioning)
+    {
         // If we're using autoversion for docs, get the value.
-        if(m_pConfig->GetUseAutoVersion()){
+        if(m_pConfig->GetUseAutoVersion())
+        {
             m_sAutoVersion = GetAutoVersion();
             m_pConfig->SetProjectNumber(m_sAutoVersion);
             // Update the config object and mark the project as modified so the new version gets saved on exit.
@@ -122,26 +126,32 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
     wxArrayString sErrors;
     MacrosManager    *pMacMngr = Manager::Get()->GetMacrosManager();
 
-     // If there is no config file, create one. If it exists, check prefs.
+    // If there is no config file, create one. If it exists, check prefs.
     bool bWrite = true;
-    if(wxFile::Exists(fnDoxyfile.GetFullPath())){
+    if(wxFile::Exists(fnDoxyfile.GetFullPath()))
+    {
         bWrite = false;
         AppendToLog(_("Found existing doxyfile..."));
         bool bOverwriteDoxyfile = m_pConfig->GetOverwriteDoxyfile();
-        if(bOverwriteDoxyfile){
+        if(bOverwriteDoxyfile)
+        {
             bool bPromptB4Overwriting = m_pConfig->GetPromptBeforeOverwriting();
-            if(bPromptB4Overwriting){
-                if(wxMessageBox(_("Overwrite existing doxyfile?"), wxT("DoxyBlocks"), wxYES_NO|wxCENTRE) == wxYES){
+            if(bPromptB4Overwriting)
+            {
+                if(wxMessageBox(_("Overwrite existing doxyfile?"), wxT("DoxyBlocks"), wxYES_NO|wxCENTRE) == wxYES)
+                {
                     bWrite = true;
                 }
             }
-            else{
+            else
+            {
                 bWrite = true;
             }
         }
     }
 
-    if(bWrite){
+    if(bWrite)
+    {
         AppendToLog(_("Writing doxyfile..."));
         // Keep the CHM separate for easy access.
         wxString sChmFile = wxT("../") + sPrjName + wxT(".chm");
@@ -343,10 +353,12 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
         sText +=  wxT("DOCSET_PUBLISHER_NAME  = Publisher\n");
         sText +=  wxT("GENERATE_HTMLHELP      = ") + sGenerateHTMLHelp + nl;
         sText +=  wxT("CHM_FILE               = \"") + sChmFile    + qnl;
-        if(!sPathHHC.IsEmpty()){
+        if(!sPathHHC.IsEmpty())
+        {
             sText +=  wxT("HHC_LOCATION           = \"") + sPathHHC + qnl;
         }
-        else{
+        else
+        {
             sText +=  wxT("HHC_LOCATION           =\n");
         }
         sText +=  wxT("GENERATE_CHI           = ") + sGenerateCHI + nl;
@@ -478,10 +490,12 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
         sText +=  wxT("GRAPHICAL_HIERARCHY    = YES\n");
         sText +=  wxT("DIRECTORY_GRAPH        = YES\n");
         sText +=  wxT("DOT_IMAGE_FORMAT       = png\n");
-        if(!sPathDot.IsEmpty()){
+        if(!sPathDot.IsEmpty())
+        {
             sText +=  wxT("DOT_PATH           = \"") + sPathDot + qnl;
         }
-        else{
+        else
+        {
             sText +=  wxT("DOT_PATH               =\n");
         }
         sText +=  wxT("DOTFILE_DIRS           =\n");
@@ -499,9 +513,9 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
     }
 }
 
-   /**************************************************************************
-     this is where our work is performed :)  (text stolen from Yiannis)
-   **************************************************************************/
+/**************************************************************************
+  this is where our work is performed :)  (text stolen from Yiannis)
+**************************************************************************/
 
 /*! \brief Manage the generation of the doxygen configuration and log files.
  *
@@ -532,7 +546,8 @@ int DoxyBlocks::GenerateDocuments(cbProject *prj)
     const wxString sCfgBaseFile = wxT("doxyfile");
     const wxString sLogFile     = wxT("doxygen.log");
 
-    if(!sOutputDir.IsEmpty()){
+    if(!sOutputDir.IsEmpty())
+    {
         sDoxygenDir = sOutputDir;
     }
 
@@ -543,7 +558,8 @@ int DoxyBlocks::GenerateDocuments(cbProject *prj)
     fnDoxyfile.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT);
     fnDoxygenLog.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT);
 
-    if (!fnOutput.Mkdir(0777, wxPATH_MKDIR_FULL)){
+    if (!fnOutput.Mkdir(0777, wxPATH_MKDIR_FULL))
+    {
         const wxString sMsg = _("Failed. ") + fnOutput.GetFullPath() + _(" was not created.");
         AppendToLog(sMsg, LOG_WARNING);
         wxSetWorkingDirectory(sOldPath);
@@ -553,14 +569,15 @@ int DoxyBlocks::GenerateDocuments(cbProject *prj)
     // I'm in the project directory, now create the doxygen configuration files
     WriteConfigFiles(prj, sPrjName, sPrjPath, sDoxygenDir, fnDoxyfile, fnDoxygenLog);
 
-    if(!wxFile::Exists(fnDoxyfile.GetFullPath())){
+    if(!wxFile::Exists(fnDoxyfile.GetFullPath()))
+    {
         const wxString sMsg = _("Failed. ") + fnDoxyfile.GetFullPath() + _(" was not created.");
         AppendToLog(sMsg, LOG_WARNING);
         wxSetWorkingDirectory(sOldPath);
         return -1;
     }
-     // Drop into the doxygen dir.
-     wxSetWorkingDirectory(sPrjPath + wxFileName::GetPathSeparator() + sDoxygenDir);
+    // Drop into the doxygen dir.
+    wxSetWorkingDirectory(sPrjPath + wxFileName::GetPathSeparator() + sDoxygenDir);
 
     // now tango, launch doxygen...
     wxArrayString sOutput;
@@ -569,43 +586,54 @@ int DoxyBlocks::GenerateDocuments(cbProject *prj)
     wxString cmd = wxT("doxygen");
     // If a path is configured, use that instead.
     wxString sDoxygenPath = Manager::Get()->GetMacrosManager()->ReplaceMacros(m_pConfig->GetPathDoxygen());
-    if(!sDoxygenPath.IsEmpty()){
+    if(!sDoxygenPath.IsEmpty())
+    {
         cmd = sDoxygenPath;
     }
     wxString doxygenFileFullPath = fnDoxyfile.GetFullPath();
     QuoteStringIfNeeded(doxygenFileFullPath);
     const long ret = wxExecute(cmd + wxT(" ") + doxygenFileFullPath, sOutput, sErrors);
-    if(ret != -1){
+    if(ret != -1)
+    {
         // Write doxygen logfile to the log or remove it if it's empty
-        if(wxFile::Exists(fnDoxygenLog.GetFullPath())){
+        if(wxFile::Exists(fnDoxygenLog.GetFullPath()))
+        {
             wxString sText;
             wxFFile fileLog(fnDoxygenLog.GetFullPath());
-            if(fileLog.IsOpened()){
+            if(fileLog.IsOpened())
+            {
                 fileLog.ReadAll(&sText);
                 fileLog.Close();
             }
-           else{
+            else
+            {
                 AppendToLog(_("Failed to open ") + sLogFile, LOG_WARNING);
-           }
-           if(!sText.IsEmpty()){
+            }
+            if(!sText.IsEmpty())
+            {
                 AppendToLog(_("\nContents of doxygen's log file:"));
                 AppendToLog(sText, LOG_WARNING);
             }
-           else{
+            else
+            {
                 wxRemoveFile(sLogFile);
-           }
+            }
         }
 
         // Run docs if HTML was created.
-        if(m_pConfig->GetGenerateHTML()){
+        if(m_pConfig->GetGenerateHTML())
+        {
             // Open the newly created HTML docs, if prefs allow.
-            if(m_pConfig->GetRunHTML()){
+            if(m_pConfig->GetRunHTML())
+            {
                 DoRunHTML();
             }
-            if(m_pConfig->GetGenerateHTMLHelp()){
+            if(m_pConfig->GetGenerateHTMLHelp())
+            {
                 // Open the newly created CHM if prefs allow.
-                if(m_pConfig->GetRunCHM()){
-                    RunCompiledHelp(fnDoxyfile.GetPathWithSep() , sPrjName);
+                if(m_pConfig->GetRunCHM())
+                {
+                    RunCompiledHelp(fnDoxyfile.GetPathWithSep(), sPrjName);
                 }
             }
         }
@@ -614,7 +642,8 @@ int DoxyBlocks::GenerateDocuments(cbProject *prj)
         const wxString sMsg = wxT("Success.\nYour documents are in: ");
         AppendToLog(sMsg + fnDoxyfile.GetPathWithSep());
     }
-    else{
+    else
+    {
         // please google, install doxygen, set your path and...
         AppendToLog(wxString::Format(_("Execution of '%s' failed."), cmd.c_str()), LOG_ERROR);
         AppendToLog(_("Please ensure that the doxygen 'bin' directory is in your path or provide the specific path in DoxyBlocks' preferences.\n"));
@@ -665,13 +694,13 @@ wxString DoxyBlocks::GetInputList(cbProject *prj, wxFileName fnDoxyfile)
     asExtList.Add(wxT("*.py"));
     asExtList.Add(wxT("*.f90"));
 
-     // now let's build a string containing all the project files. To be on the safe side,
-     // we will quote them all so spaces and other special chars don't break the actual
-     // command later...
-     wxString sInputList;
-     const int cntExtList = asExtList.GetCount();
+    // now let's build a string containing all the project files. To be on the safe side,
+    // we will quote them all so spaces and other special chars don't break the actual
+    // command later...
+    wxString sInputList;
+    const int cntExtList = asExtList.GetCount();
 
-     sInputList += wxT("INPUT                  = ");
+    sInputList += wxT("INPUT                  = ");
 
     for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
     {
@@ -686,14 +715,14 @@ wxString DoxyBlocks::GetInputList(cbProject *prj, wxFileName fnDoxyfile)
             /* if the file matches one of the abovementioned filters, add it */
             for(int n = 0; n < cntExtList; ++n)
             {
-               if(sFileName.Matches(asExtList.Item(n)))
-               {
-                  sInputList += wxT("\\\n\t\"") + RelName + wxT("\" ");
-                  break;
-               }
+                if(sFileName.Matches(asExtList.Item(n)))
+                {
+                    sInputList += wxT("\\\n\t\"") + RelName + wxT("\" ");
+                    break;
+                }
             }
         }
     }
-     sInputList += wxT("\n");
-     return sInputList;
+    sInputList += wxT("\n");
+    return sInputList;
 }

@@ -142,21 +142,21 @@ class EditFrameDropTextTarget : public wxTextDropTarget
 {
     // Drop target used to place dragged data into Properties dialog
 
-	public:
-		EditFrameDropTextTarget(EditSnippetFrame* window) : m_Window(window) {}
-		~EditFrameDropTextTarget() {}
-		bool OnDropText(wxCoord x, wxCoord y, const wxString& data);
-	private:
-		EditSnippetFrame* m_Window;
+public:
+    EditFrameDropTextTarget(EditSnippetFrame* window) : m_Window(window) {}
+    ~EditFrameDropTextTarget() {}
+    bool OnDropText(wxCoord x, wxCoord y, const wxString& data);
+private:
+    EditSnippetFrame* m_Window;
 };
 // ----------------------------------------------------------------------------
 bool EditFrameDropTextTarget::OnDropText(wxCoord /*x*/, wxCoord /*y*/, const wxString& data)
 // ----------------------------------------------------------------------------
 {
     // Put dragged text into TextCtrl
-    #ifdef LOGGING
-     LOGIT( _T("Dragged Data[%s]"), data.GetData() );
-    #endif //LOGGING
+#ifdef LOGGING
+    LOGIT( _T("Dragged Data[%s]"), data.GetData() );
+#endif //LOGGING
     //m_Window->m_pEdit->WriteText(data);
     //    m_Window->m_pEdit->AddText(data);
     m_Window->m_pScbEditor->GetControl()->AddText(data);
@@ -169,12 +169,12 @@ class EditFrameDropFileTarget : public wxFileDropTarget
 {
     // Drop target used to place dragged data into Properties dialog
 
-	public:
-		EditFrameDropFileTarget(EditSnippetFrame* window) : m_Window(window) {}
-		~EditFrameDropFileTarget() {}
+public:
+    EditFrameDropFileTarget(EditSnippetFrame* window) : m_Window(window) {}
+    ~EditFrameDropFileTarget() {}
     bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
-	private:
-		EditSnippetFrame* m_Window;
+private:
+    EditSnippetFrame* m_Window;
 };
 // ----------------------------------------------------------------------------
 bool EditFrameDropFileTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& arrayData)
@@ -201,7 +201,7 @@ EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode
         windowStyle = windowStyle | wxFRAME_FLOAT_ON_PARENT;
 
     Create( GetConfig()->GetSnippetsWindow(), wxID_ANY, _T("Edit snippet"),
-		wxDefaultPosition, wxDefaultSize, windowStyle );
+            wxDefaultPosition, wxDefaultSize, windowStyle );
 
     InitEditSnippetFrame(TreeItemId, pRetcode );
     m_bEditorSaveEvent = 0;
@@ -258,7 +258,8 @@ void EditSnippetFrame::InitEditSnippetFrame(const wxTreeItemId  TreeItemId, int*
 
     // open first page. this == wxFrame
     if (not m_EditFileName.IsEmpty() )
-    {    m_pScbEditor = GetEditorManager()->Open(m_EditFileName);
+    {
+        m_pScbEditor = GetEditorManager()->Open(m_EditFileName);
     }
     else
     {
@@ -274,42 +275,42 @@ void EditSnippetFrame::InitEditSnippetFrame(const wxTreeItemId  TreeItemId, int*
         //-m_pScbEditor->Activate();
     }
 
-	// Load the window's size
+    // Load the window's size
     wxFileConfig cfgFile(wxEmptyString,     // appname
-                        wxEmptyString,      // vendor
-                        GetConfig()->SettingsSnippetsCfgPath,      // local filename
-                        wxEmptyString,      // global file
-                        wxCONFIG_USE_LOCAL_FILE);
+                         wxEmptyString,      // vendor
+                         GetConfig()->SettingsSnippetsCfgPath,      // local filename
+                         wxEmptyString,      // global file
+                         wxCONFIG_USE_LOCAL_FILE);
 
     cfgFile.Read( wxT("EditDlgXpos"),       &GetConfig()->nEditDlgXpos,20);
     cfgFile.Read( wxT("EditDlgYpos"),       &GetConfig()->nEditDlgYpos,20);
-	cfgFile.Read( wxT("EditDlgWidth"),      &GetConfig()->nEditDlgWidth, 500 ) ;
-	cfgFile.Read( wxT("EditDlgHeight"),     &GetConfig()->nEditDlgHeight, 400 ) ;
-	cfgFile.Read( wxT("EditDlgMaximized"),  &GetConfig()->bEditDlgMaximized, false );
-	//SetSize(GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight);
-	#if defined(LOGGING)
+    cfgFile.Read( wxT("EditDlgWidth"),      &GetConfig()->nEditDlgWidth, 500 ) ;
+    cfgFile.Read( wxT("EditDlgHeight"),     &GetConfig()->nEditDlgHeight, 400 ) ;
+    cfgFile.Read( wxT("EditDlgMaximized"),  &GetConfig()->bEditDlgMaximized, false );
+    //SetSize(GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight);
+#if defined(LOGGING)
     LOGIT( _T("EditDlgPosition IN X[%d]Y[%d]Width[%d]Height[%d]"),
-        GetConfig()->nEditDlgXpos,GetConfig()->nEditDlgYpos,
-        GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight );
-	#endif
+           GetConfig()->nEditDlgXpos,GetConfig()->nEditDlgYpos,
+           GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight );
+#endif
     SetSize(GetConfig()->nEditDlgXpos, GetConfig()->nEditDlgYpos, GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight);
 
     m_pScbEditor->Connect(wxEVT_LEAVE_WINDOW,
-                    (wxObjectEventFunction)(wxEventFunction)
-                    (wxMouseEventFunction)&EditSnippetFrame::OnLeaveWindow,
-                     NULL, this);
+                          (wxObjectEventFunction)(wxEventFunction)
+                          (wxMouseEventFunction)&EditSnippetFrame::OnLeaveWindow,
+                          NULL, this);
     // This event will only occur if the parent (SnippetsTreeCtrl) has
     // prior focus and an item is active(ie, an item is selected).
     // The OS focus's the window, but the event does not happen.
     // A side effect of this is a missing caret/cursor.
     m_pScbEditor->Connect(wxEVT_SET_FOCUS,
-                    (wxObjectEventFunction)(wxEventFunction)
-                    (wxFocusEventFunction)&EditSnippetFrame::OnFocusWindow,
-                     NULL, this);
+                          (wxObjectEventFunction)(wxEventFunction)
+                          (wxFocusEventFunction)&EditSnippetFrame::OnFocusWindow,
+                          NULL, this);
     m_pScbEditor->Connect(wxEVT_KILL_FOCUS,
-                    (wxObjectEventFunction)(wxEventFunction)
-                    (wxFocusEventFunction)&EditSnippetFrame::OnKillFocusWindow,
-                     NULL, this);
+                          (wxObjectEventFunction)(wxEventFunction)
+                          (wxFocusEventFunction)&EditSnippetFrame::OnKillFocusWindow,
+                          NULL, this);
 
     // wxEVT_DESTROY won't work for us because the window is already deleted and
     // therefore doesn't get to save any file changes.
@@ -320,17 +321,17 @@ void EditSnippetFrame::InitEditSnippetFrame(const wxTreeItemId  TreeItemId, int*
 
     //EVT_AUINOTEBOOK_PAGE_CLOSE(ID_NBEditorManager, SEditorManager::OnPageClose)
     Connect(wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE,
-                (wxObjectEventFunction)(wxEventFunction)
-                (wxAuiNotebookEventFunction)&EditSnippetFrame::OnPageClose,
-                NULL, this);
+            (wxObjectEventFunction)(wxEventFunction)
+            (wxAuiNotebookEventFunction)&EditSnippetFrame::OnPageClose,
+            NULL, this);
 
     Connect(cbEVT_EDITOR_SAVE,
-                (wxObjectEventFunction)(wxEventFunction)
-                (CodeBlocksEventFunction)&EditSnippetFrame::OncbEditorSave,
-                NULL, this);
+            (wxObjectEventFunction)(wxEventFunction)
+            (CodeBlocksEventFunction)&EditSnippetFrame::OncbEditorSave,
+            NULL, this);
 
     SetDropTarget(new EditFrameDropFileTarget(this));
-	m_pScbEditor->SetFocus();
+    m_pScbEditor->SetFocus();
 
 }
 // ----------------------------------------------------------------------------
@@ -346,7 +347,8 @@ EditSnippetFrame::~EditSnippetFrame()
         // or wxAuiNotebook will crash since it's deleted before
         // the EditorManager close calls.
         if ( m_pEditorManager )
-        {   ScbEditor* ed;
+        {
+            ScbEditor* ed;
             int knt = m_pEditorManager->GetEditorsCount();
             for ( int i=knt; i>0; --i )
             {
@@ -372,20 +374,21 @@ void EditSnippetFrame::SaveSnippetFramePosn()
 
     wxString CfgFilenameStr = GetConfig()->SettingsSnippetsCfgPath;
     wxFileConfig cfgFile(wxEmptyString,     // appname
-                        wxEmptyString,      // vendor
-                        CfgFilenameStr,     // local filename
-                        wxEmptyString,      // global file
-                        wxCONFIG_USE_LOCAL_FILE);
+                         wxEmptyString,      // vendor
+                         CfgFilenameStr,     // local filename
+                         wxEmptyString,      // global file
+                         wxCONFIG_USE_LOCAL_FILE);
     // save last location of the closing editor
     int x,y,w,h;
-    GetPosition(&x,&y); GetSize(&w,&h);
+    GetPosition(&x,&y);
+    GetSize(&w,&h);
     cfgFile.Write( wxT("EditDlgXpos"),  x );
     cfgFile.Write( wxT("EditDlgYpos"),  y );
     cfgFile.Write( wxT("EditDlgWidth"),  w );
     cfgFile.Write( wxT("EditDlgHeight"), h );
-    #if defined(LOGGING)
-     LOGIT( _T("EditDlgPositin OUT X[%d]Y[%d]Width[%d]Height[%d]"),x,y,w,h );
-    #endif
+#if defined(LOGGING)
+    LOGIT( _T("EditDlgPositin OUT X[%d]Y[%d]Width[%d]Height[%d]"),x,y,w,h );
+#endif
     cfgFile.Write( wxT("EditDlgMaximized"),  false );
     cfgFile.Flush();
 }
@@ -393,7 +396,7 @@ void EditSnippetFrame::SaveSnippetFramePosn()
 wxString EditSnippetFrame::GetName()
 // ----------------------------------------------------------------------------
 {
-	return m_EditSnippetLabel;
+    return m_EditSnippetLabel;
 }
 
 // ----------------------------------------------------------------------------
@@ -401,7 +404,7 @@ wxString EditSnippetFrame::GetText()
 // ----------------------------------------------------------------------------
 {
     // data was saved by file close
-	return m_EditSnippetText;
+    return m_EditSnippetText;
 }
 
 ////// ----------------------------------------------------------------------------
@@ -425,8 +428,8 @@ wxString EditSnippetFrame::GetText()
 void EditSnippetFrame::OnHelp(wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
-	// Link to the Wiki which contains information about the available macros
-	//FIXME: wxLaunchDefaultBrowser(_T("http://wiki.codeblocks.org/index.php?title=Builtin_variables"));
+    // Link to the Wiki which contains information about the available macros
+    //FIXME: wxLaunchDefaultBrowser(_T("http://wiki.codeblocks.org/index.php?title=Builtin_variables"));
 }
 
 // ----------------------------------------------------------------------------
@@ -439,11 +442,14 @@ void EditSnippetFrame::OnFocusWindow (wxFocusEvent &event)
     // prior focus and is active(ie, an item is selected).
     // The OS focus's the window, but the event does not happen.
     // A side effect of this is a missing caret/cursor.
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("EditSnippetFrame::OnFocusWindow"));
-    #endif
+#endif
     if ( GetConfig()->IsExternalWindow() )
-    { event.Skip(); return; }
+    {
+        event.Skip();
+        return;
+    }
 
     // must be floating or docked snippets
     //MakeModal(true); <= using wxFRAME_FLOAT_ON_PARENT works much better
@@ -454,9 +460,9 @@ void EditSnippetFrame::OnFocusWindow (wxFocusEvent &event)
 void EditSnippetFrame::OnKillFocusWindow (wxFocusEvent &event)
 // ----------------------------------------------------------------------------
 {
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("EditSnippetFrame::OnKillFocusWindow"));
-    #endif
+#endif
     //MakeModal(false);<= using wxFRAME_FLOAT_ON_PARENT works much better
     event.Skip();
 }
@@ -464,9 +470,9 @@ void EditSnippetFrame::OnKillFocusWindow (wxFocusEvent &event)
 void EditSnippetFrame::OnLeaveWindow (wxMouseEvent &event)
 // ----------------------------------------------------------------------------
 {
-    #if defined(LOGGING)
+#if defined(LOGGING)
     //LOGIT( _T("EditSnippetFrame::OnLeaveWindow"));
-    #endif
+#endif
     //MakeModal(false);<= using wxFRAME_FLOAT_ON_PARENT works much better
     event.Skip();
 }
@@ -524,11 +530,13 @@ void EditSnippetFrame::OnFileSave (wxCommandEvent& WXUNUSED(event))
     if ( not GetEditorManager()) return;
 
     if ( not m_EditFileName.IsEmpty())
-    {   //physical file
+    {
+        //physical file
         GetEditorManager()->SaveActive();
     }
     else if (GetEditorManager()->GetActiveEditor() == m_pScbEditor)
-    {   // XML data to save
+    {
+        // XML data to save
         m_EditSnippetText = m_pScbEditor->GetControl()->GetText();
         // we just transfered the data, set wxID_OK.
         m_nReturnCode = wxID_OK;
@@ -559,7 +567,8 @@ void EditSnippetFrame::OncbEditorSave( CodeBlocksEvent& event )
 
     SEditorBase* eb = GetEditorManager()->GetActiveEditor();
     if (m_pScbEditor && (eb == m_pScbEditor) )
-    {   // Save local XML data (snippet text)
+    {
+        // Save local XML data (snippet text)
         //wxCommandEvent cmdevt;
         //cmdevt.SetEventObject(m_pScbEditor);
         //OnFileClose(cmdevt);
@@ -570,9 +579,9 @@ void EditSnippetFrame::OncbEditorSave( CodeBlocksEvent& event )
 void EditSnippetFrame::OnPageClose( wxAuiNotebookEvent event )
 // ----------------------------------------------------------------------------
 {
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("EditSnippetFrame::OnPageClose"));
-    #endif
+#endif
 
     //Connect(wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE,
     //            (wxObjectEventFunction)(wxEventFunction)
@@ -586,7 +595,8 @@ void EditSnippetFrame::OnPageClose( wxAuiNotebookEvent event )
     cbAuiNotebook* pnb = (cbAuiNotebook*)event.GetEventObject();
     SEditorBase* eb = static_cast<SEditorBase*>(pnb->GetPage(event.GetSelection()));
     if (m_pScbEditor && (eb == m_pScbEditor) )
-    {   // Save local XML data (snippet text)
+    {
+        // Save local XML data (snippet text)
         //wxCommandEvent cmdevt;
         //cmdevt.SetEventObject(m_pScbEditor);
         //OnFileClose(cmdevt);
@@ -596,7 +606,8 @@ void EditSnippetFrame::OnPageClose( wxAuiNotebookEvent event )
 
     // if this is the last editor tab, send close window event
     if ( 1 >= GetEditorManager()->GetEditorsCount() )
-    {   // Close() causes a loop with OnWindowClose()
+    {
+        // Close() causes a loop with OnWindowClose()
         // This allows the last window to close first.
         wxCloseEvent closeEvent( wxEVT_CLOSE_WINDOW, this->GetId() );
         closeEvent.SetEventObject( this );
@@ -609,9 +620,9 @@ void EditSnippetFrame::OnCloseFrameOrWindow(wxCloseEvent &event)
 {
     // window will be destroyed by CodeSnippetTreeCtrl::OnIdle()
     // after it copies the snippet text and gets return code
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("EditSnippetFrame::OnCloseFrameOrWindow"));
-    #endif
+#endif
 
     // Set guard! Loop can occur here from OnPageClose call!
     if (m_OncloseWindowEntries++)
@@ -673,7 +684,8 @@ void EditSnippetFrame::OnMenuFileClose (wxCommandEvent &/*event*/)
 
     // if this is the last editor tab, send close window event
     if ( 0 >= GetEditorManager()->GetEditorsCount() )
-    {   // Close() cause a loop with OnWindowClose()
+    {
+        // Close() cause a loop with OnWindowClose()
         // This allows the last window to close first.
         wxCloseEvent closeEvent( wxEVT_CLOSE_WINDOW, this->GetId() );
         closeEvent.SetEventObject( this );
@@ -697,28 +709,30 @@ void EditSnippetFrame::OnFileCheckModified()
         //if (wxMessageBox (_("Text is not saved, save before closing?"), _("Close"),
         //if (messageBox (_("Text is not saved, save before closing?"), _("Close"),
         //                  wxYES_NO | wxICON_QUESTION) == wxYES) {
-            // save a real file
-            if ( not m_EditFileName.IsEmpty() )
-            {   // Physical file
-                // cbEditor will save the file on return
-                //m_pScbEditor->Save();
-                //if (m_pScbEditor->GetModified())
-                //{
-                //    messageBox (_("Text could not be saved!"), _("Close abort"),
-                //                  wxOK | wxICON_EXCLAMATION);
-                //    m_nReturnCode = wxID_CANCEL;
-                //    return;
-                //}
-                //m_nReturnCode = wxID_OK;
-            }
-            else  // else save XML data
-            {   // Snippet XML data
-                m_EditSnippetText = m_pScbEditor->GetControl()->GetText();
-                m_nReturnCode = wxID_OK;
-                //-m_pScbEditor->GetControl()->ClearAll();
-                m_pScbEditor->SetModified(false);
-                m_pScbEditor->GetControl()->SetSavePoint();
-            }//snippet
+        // save a real file
+        if ( not m_EditFileName.IsEmpty() )
+        {
+            // Physical file
+            // cbEditor will save the file on return
+            //m_pScbEditor->Save();
+            //if (m_pScbEditor->GetModified())
+            //{
+            //    messageBox (_("Text could not be saved!"), _("Close abort"),
+            //                  wxOK | wxICON_EXCLAMATION);
+            //    m_nReturnCode = wxID_CANCEL;
+            //    return;
+            //}
+            //m_nReturnCode = wxID_OK;
+        }
+        else  // else save XML data
+        {
+            // Snippet XML data
+            m_EditSnippetText = m_pScbEditor->GetControl()->GetText();
+            m_nReturnCode = wxID_OK;
+            //-m_pScbEditor->GetControl()->ClearAll();
+            m_pScbEditor->SetModified(false);
+            m_pScbEditor->GetControl()->SetSavePoint();
+        }//snippet
         //-}//if save
     }//if modified
 
@@ -842,76 +856,133 @@ void EditSnippetFrame::OnEditEvent (wxCommandEvent &event)
     int id = event.GetId();
     switch (id)
     {
-        //case wxID_CLEAR:        ed->GetControl()->LineDelete(); break;
-        case wxID_CLEAR:        ed->GetControl()->LineCut(); break;
-        case wxID_CUT:          ed->Cut(); break;
-        case wxID_COPY:         ed->Copy(); break;
-        case wxID_PASTE:        ed->Paste(); break;
-        case myID_INDENTINC:    ed->DoIndent(); break;
-        case myID_INDENTRED:    ed->DoUnIndent(); break;
-        case wxID_SELECTALL:    ed->GetControl()->SelectAll(); break;
-        case myID_OVERTYPE:     ed->GetControl()->SetOvertype (!ed->GetControl()->GetOvertype()); break;
-        case wxID_REDO:         ed->Redo(); break;
-        case wxID_UNDO:         ed->Undo(); break;
-        case myID_DISPLAYEOL:   stcCtrl->SetViewEOL (!stcCtrl->GetViewEOL()); break;
-        case myID_INDENTGUIDE:  stcCtrl->SetIndentationGuides( ! stcCtrl->GetIndentationGuides()); break;
-        case myID_LONGLINEON:   stcCtrl->SetEdgeMode (stcCtrl->GetEdgeMode() == 0? wxSCI_EDGE_LINE: wxSCI_EDGE_NONE); break;
-        case myID_WHITESPACE:   stcCtrl->SetViewWhiteSpace (stcCtrl->GetViewWhiteSpace() == 0?
-                                            wxSCI_WS_VISIBLEALWAYS: wxSCI_WS_INVISIBLE); break;
+    //case wxID_CLEAR:        ed->GetControl()->LineDelete(); break;
+    case wxID_CLEAR:
+        ed->GetControl()->LineCut();
+        break;
+    case wxID_CUT:
+        ed->Cut();
+        break;
+    case wxID_COPY:
+        ed->Copy();
+        break;
+    case wxID_PASTE:
+        ed->Paste();
+        break;
+    case myID_INDENTINC:
+        ed->DoIndent();
+        break;
+    case myID_INDENTRED:
+        ed->DoUnIndent();
+        break;
+    case wxID_SELECTALL:
+        ed->GetControl()->SelectAll();
+        break;
+    case myID_OVERTYPE:
+        ed->GetControl()->SetOvertype (!ed->GetControl()->GetOvertype());
+        break;
+    case wxID_REDO:
+        ed->Redo();
+        break;
+    case wxID_UNDO:
+        ed->Undo();
+        break;
+    case myID_DISPLAYEOL:
+        stcCtrl->SetViewEOL (!stcCtrl->GetViewEOL());
+        break;
+    case myID_INDENTGUIDE:
+        stcCtrl->SetIndentationGuides( ! stcCtrl->GetIndentationGuides());
+        break;
+    case myID_LONGLINEON:
+        stcCtrl->SetEdgeMode (stcCtrl->GetEdgeMode() == 0? wxSCI_EDGE_LINE: wxSCI_EDGE_NONE);
+        break;
+    case myID_WHITESPACE:
+        stcCtrl->SetViewWhiteSpace (stcCtrl->GetViewWhiteSpace() == 0?
+                                    wxSCI_WS_VISIBLEALWAYS: wxSCI_WS_INVISIBLE);
+        break;
 
-        case wxID_FIND:         eb->SearchFind(); break;
-        case myID_FINDNEXT:
-        case myID_FINDPREV:     eb->SearchFindNext( id == myID_FINDNEXT ); break;
+    case wxID_FIND:
+        eb->SearchFind();
+        break;
+    case myID_FINDNEXT:
+    case myID_FINDPREV:
+        eb->SearchFindNext( id == myID_FINDNEXT );
+        break;
 
-        case myID_REPLACE:
-        case myID_REPLACENEXT:  eb->OnSearchReplace(); break;
+    case myID_REPLACE:
+    case myID_REPLACENEXT:
+        eb->OnSearchReplace();
+        break;
 
-        case myID_BRACEMATCH:   ed->GotoMatchingBrace(); break;
-        case myID_GOTO:         eb->SearchGotoLine(); break;
+    case myID_BRACEMATCH:
+        ed->GotoMatchingBrace();
+        break;
+    case myID_GOTO:
+        eb->SearchGotoLine();
+        break;
 
 
-        case myID_READONLY:     stcCtrl->SetReadOnly ( ! stcCtrl->GetReadOnly()); break;
+    case myID_READONLY:
+        stcCtrl->SetReadOnly ( ! stcCtrl->GetReadOnly());
+        break;
 
+    case myID_CHARSETANSI:
+    case myID_CHARSETMAC:
+    {
+        int Nr;
+        int charset = stcCtrl->GetCodePage();
+        switch (event.GetId())
+        {
         case myID_CHARSETANSI:
+        {
+            charset = wxSCI_CHARSET_ANSI;
+            break;
+        }
         case myID_CHARSETMAC:
-        {       int Nr;
-                int charset = stcCtrl->GetCodePage();
-                switch (event.GetId()) {
-                    case myID_CHARSETANSI: {charset = wxSCI_CHARSET_ANSI; break;}
-                    case myID_CHARSETMAC:  {charset = wxSCI_CHARSET_ANSI; break;}
-                }
-                for (Nr = 0; Nr < wxSCI_STYLE_LASTPREDEFINED; Nr++)
-                {
-                    stcCtrl->StyleSetCharacterSet (Nr, charset);
-                }
-                stcCtrl->SetCodePage (charset);
-                break;
-        }//case
+        {
+            charset = wxSCI_CHARSET_ANSI;
+            break;
+        }
+        }
+        for (Nr = 0; Nr < wxSCI_STYLE_LASTPREDEFINED; Nr++)
+        {
+            stcCtrl->StyleSetCharacterSet (Nr, charset);
+        }
+        stcCtrl->SetCodePage (charset);
+        break;
+    }//case
 
-        case myID_CHANGEUPPER:
+    case myID_CHANGEUPPER:
+    case myID_CHANGELOWER:
+    {
+        switch (event.GetId())
+        {
         case myID_CHANGELOWER:
         {
-            switch (event.GetId()) {
-                case myID_CHANGELOWER: {
-                    stcCtrl->CmdKeyExecute (wxSCI_CMD_LOWERCASE);
-                    break;
-                }//case
-                case myID_CHANGEUPPER: {
-                    stcCtrl->CmdKeyExecute (wxSCI_CMD_UPPERCASE);
-                    break;
-                }//case
-            }//switch
+            stcCtrl->CmdKeyExecute (wxSCI_CMD_LOWERCASE);
             break;
         }//case
+        case myID_CHANGEUPPER:
+        {
+            stcCtrl->CmdKeyExecute (wxSCI_CMD_UPPERCASE);
+            break;
+        }//case
+        }//switch
+        break;
+    }//case
 
-        case myID_CONVERTCR:
-        case myID_CONVERTCRLF:
-        case myID_CONVERTLF: OnConvertEOL(event); break;
+    case myID_CONVERTCR:
+    case myID_CONVERTCRLF:
+    case myID_CONVERTLF:
+        OnConvertEOL(event);
+        break;
 
-        case myID_WRAPMODEON:
-            stcCtrl->SetWrapMode (stcCtrl->GetWrapMode() == 0? wxSCI_WRAP_WORD: wxSCI_WRAP_NONE); break;
+    case myID_WRAPMODEON:
+        stcCtrl->SetWrapMode (stcCtrl->GetWrapMode() == 0? wxSCI_WRAP_WORD: wxSCI_WRAP_NONE);
+        break;
 
-        default: break;
+    default:
+        break;
     }//switch id
 }//OnEditEvent
 // ----------------------------------------------------------------------------
@@ -928,10 +999,23 @@ void EditSnippetFrame::OnConvertEOL (wxCommandEvent &event)
     int id = event.GetId();
     wxUnusedVar(id);
     int eolMode = stcCtrl->GetEOLMode();
-    switch (event.GetId()) {
-        case myID_CONVERTCR: { eolMode = wxSCI_EOL_CR; break;}
-        case myID_CONVERTCRLF: { eolMode = wxSCI_EOL_CRLF; break;}
-        case myID_CONVERTLF: { eolMode = wxSCI_EOL_LF; break;}
+    switch (event.GetId())
+    {
+    case myID_CONVERTCR:
+    {
+        eolMode = wxSCI_EOL_CR;
+        break;
+    }
+    case myID_CONVERTCRLF:
+    {
+        eolMode = wxSCI_EOL_CRLF;
+        break;
+    }
+    case myID_CONVERTLF:
+    {
+        eolMode = wxSCI_EOL_LF;
+        break;
+    }
     }
     stcCtrl->ConvertEOLs (eolMode);
     stcCtrl->SetEOLMode (eolMode);
@@ -940,12 +1024,16 @@ void EditSnippetFrame::OnConvertEOL (wxCommandEvent &event)
 void EditSnippetFrame::OnEditEventUI (wxUpdateUIEvent &event)
 // ----------------------------------------------------------------------------
 {
-     //LOGIT( _T("EditSnippetFrame::OnEditEventUI") );
+    //LOGIT( _T("EditSnippetFrame::OnEditEventUI") );
 
     int id = event.GetId();
     wxUnusedVar(id);
     ScbEditor* ed = GetEditorManager()->GetBuiltinActiveEditor();
-    if ( not ed) { event.Skip(); return; }
+    if ( not ed)
+    {
+        event.Skip();
+        return;
+    }
 
     //if ( (id == idEditHighlightModeText) || (id == idEditHighlightMode) )
     {
@@ -960,10 +1048,11 @@ void EditSnippetFrame::OnEditEventUI (wxUpdateUIEvent &event)
 
     if (GetEditorManager()->GetEditorsCount() > 0 )
     {
-       if (GetEditorManager()->GetActiveEditor())
+        if (GetEditorManager()->GetActiveEditor())
             event.Enable(true);
     }
-    else{
+    else
+    {
         event.Enable (false);
     }
 
@@ -1109,8 +1198,8 @@ void EditSnippetFrame::CreateMenuViewLanguage(wxMenu* menuHilight)
     int id = idEditHighlightModeText;
     hl->AppendRadioItem(id, _T("Plain text"),wxString::Format(_("Switch highlighting mode for current document to \"%s\""), _T("Plain text")));
     Connect(id, -1, wxEVT_COMMAND_MENU_SELECTED,
-                    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                    &EditSnippetFrame::OnEditHighlightMode);
+            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            &EditSnippetFrame::OnEditHighlightMode);
 
     //-if(tmpidx!=wxNOT_FOUND)
     {
@@ -1127,7 +1216,7 @@ void EditSnippetFrame::CreateMenuViewLanguage(wxMenu* menuHilight)
                         hl->Break(); // break into columns every 20 items
                     int id = wxNewId();
                     hl->AppendRadioItem(id, langs[i],
-                                wxString::Format(_("Switch highlighting mode for current document to \"%s\""), langs[i].c_str()));
+                                        wxString::Format(_("Switch highlighting mode for current document to \"%s\""), langs[i].c_str()));
                     Connect(id, -1, wxEVT_COMMAND_MENU_SELECTED,
                             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                             &EditSnippetFrame::OnEditHighlightMode);
@@ -1141,7 +1230,9 @@ void EditSnippetFrame::CreateMenuViewLanguage(wxMenu* menuHilight)
 void EditSnippetFrame::FileOpen (wxString fname)
 // ----------------------------------------------------------------------------
 {
-    wxFileName w(fname); w.Normalize(); fname = w.GetFullPath();
+    wxFileName w(fname);
+    w.Normalize();
+    fname = w.GetFullPath();
 
 
     //m_pScbEditor->GetControl()->LoadFile(fname);
@@ -1202,28 +1293,33 @@ void EditSnippetFrame::OnFrameActivated(wxActivateEvent& event)
 {
     // This frame has been activated
 
-    if ( m_bOnActivateBusy ) {event.Skip();return;}
+    if ( m_bOnActivateBusy )
+    {
+        event.Skip();
+        return;
+    }
     ++m_bOnActivateBusy;
 
     // Check that it's us that got activated
     if ( event.GetActive() )
-      do { //only once
+        do   //only once
+        {
 
-        // Check that CodeSnippets actually has a file open
-        if (not GetConfig()->GetSnippetsWindow() )  break;
-        if (not GetConfig()->GetSnippetsTreeCtrl() ) break;
+            // Check that CodeSnippets actually has a file open
+            if (not GetConfig()->GetSnippetsWindow() )  break;
+            if (not GetConfig()->GetSnippetsTreeCtrl() ) break;
 
-        //-wxWindow* mainFrame = GetConfig()->GetMainFrame();
-        //-wxActivateEvent evt(wxEVT_ACTIVATE);
-        //-mainFrame->ProcessEvent(evt);
-        #if defined(LOGGING)
-        LOGIT( _T("EditSnippetFrame::OnAppActivate"));
-        #endif
-        //-if  ( (GetConfig()->GetEditorManagerCount() ) <--causes loop betwn ThreadSearchFrame and EditSnippetFrame
-        if  ( (GetConfig()->GetEditorManager(this) )
-              && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/check_modified_files"), true))
-            )
-            //-for (int i = 0; i < GetConfig()->GetEditorManagerCount(); ++i) <--causes loop betwn ThreadSearchFrame and EditSnippetFrame
+            //-wxWindow* mainFrame = GetConfig()->GetMainFrame();
+            //-wxActivateEvent evt(wxEVT_ACTIVATE);
+            //-mainFrame->ProcessEvent(evt);
+#if defined(LOGGING)
+            LOGIT( _T("EditSnippetFrame::OnAppActivate"));
+#endif
+            //-if  ( (GetConfig()->GetEditorManagerCount() ) <--causes loop betwn ThreadSearchFrame and EditSnippetFrame
+            if  ( (GetConfig()->GetEditorManager(this) )
+                    && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/check_modified_files"), true))
+                )
+                //-for (int i = 0; i < GetConfig()->GetEditorManagerCount(); ++i) <--causes loop betwn ThreadSearchFrame and EditSnippetFrame
             {
                 // for some reason a mouse up event doesnt make it into scintilla (scintilla bug)
                 // therefore the workaournd is not to directly call the editorManager, but
@@ -1236,7 +1332,8 @@ void EditSnippetFrame::OnFrameActivated(wxActivateEvent& event)
                 wxPostEvent(GetConfig()->GetEditorManager(this), evt);
                 //-GetConfig()->GetEditorManager(i)->ProcessEvent( evt);
             }
-    }while(0); //do only once
+        }
+        while(0);  //do only once
 
     m_bOnActivateBusy = 0;
     //-event.Skip();
@@ -1252,9 +1349,9 @@ void EditSnippetFrame::OpenDroppedFiles( const wxArrayString& arrayData)
 
     for( int i=0; i<(int)arrayData.GetCount(); ++i)
     {
-        #ifdef LOGGING
-         LOGIT( _T("Dragged File[%s]"), arrayData.Item(i).c_str() );
-        #endif //LOGGING
+#ifdef LOGGING
+        LOGIT( _T("Dragged File[%s]"), arrayData.Item(i).c_str() );
+#endif //LOGGING
         wxString filename = arrayData.Item(i);
         if ( wxFileExists(filename) )
         {

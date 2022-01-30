@@ -9,12 +9,12 @@
 
 #include "sdk_precomp.h"
 #ifndef CB_PRECOMP
-    #include <wx/listctrl.h>
-    #include <wx/textctrl.h>
-    #include <wx/settings.h>
-    #include "cbexception.h"
-    #include "manager.h"
-    #include "configmanager.h"
+#include <wx/listctrl.h>
+#include <wx/textctrl.h>
+#include <wx/settings.h>
+#include "cbexception.h"
+#include "manager.h"
+#include "configmanager.h"
 #endif
 
 #include <wx/clipbrd.h>
@@ -32,7 +32,7 @@ wxColour BlendTextColour(wxColour col)
     wxColour bgCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
 
     int dist = (fgCol.Red()*fgCol.Red() + fgCol.Green()*fgCol.Green() + fgCol.Blue()*fgCol.Blue())
-             - (bgCol.Red()*bgCol.Red() + bgCol.Green()*bgCol.Green() + bgCol.Blue()*bgCol.Blue());
+               - (bgCol.Red()*bgCol.Red() + bgCol.Green()*bgCol.Green() + bgCol.Blue()*bgCol.Blue());
     if (dist > 0)
     {
         // If foreground color is brighter than background color, this is a dark theme, so
@@ -177,13 +177,13 @@ bool TextCtrlLogger::HasFeature(Feature::Enum feature) const
 {
     switch (feature)
     {
-        case Feature::IsWrappable:
-            return (control && control->IsMultiLine());
-        case Feature::CanClear:
-        case Feature::CanCopy:
-            return true;
-        default:
-            return false;
+    case Feature::IsWrappable:
+        return (control && control->IsMultiLine());
+    case Feature::CanClear:
+    case Feature::CanCopy:
+        return true;
+    default:
+        return false;
     }
 }
 

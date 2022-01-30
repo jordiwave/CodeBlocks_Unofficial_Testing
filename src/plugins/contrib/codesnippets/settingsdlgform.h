@@ -33,34 +33,34 @@
 ///////////////////////////////////////////////////////////////////////////////
 class SettingsDlgForm : public wxScrollingDialog
 {
-	private:
+private:
 
-	protected:
-		wxStaticText* m_staticText;
-		wxStaticText* m_staticText1;
-		wxTextCtrl* m_ExtEditorTextCtrl;
-		wxButton* m_ExtEditorButton;
-		wxStaticText* m_staticText2;
-		wxTextCtrl* m_SnippetFileTextCtrl;
-		wxButton* m_SnippetFileButton;
-		wxStaticText* m_staticText7;
+protected:
+    wxStaticText* m_staticText;
+    wxStaticText* m_staticText1;
+    wxTextCtrl* m_ExtEditorTextCtrl;
+    wxButton* m_ExtEditorButton;
+    wxStaticText* m_staticText2;
+    wxTextCtrl* m_SnippetFileTextCtrl;
+    wxButton* m_SnippetFileButton;
+    wxStaticText* m_staticText7;
 ////		wxRadioButton* m_RadioFloatBtn;
 ////		wxRadioButton* m_RadioDockBtn;
 ////		wxRadioButton* m_RadioExternalBtn;
 
 ////		wxCheckBox* m_EditorsStayOnTopChkBox;
-		wxCheckBox* m_ToolTipsChkBox;
-		wxStaticText* m_CfgFolderStaticText;
-		wxStaticText* m_IniFolderStaticText;
-		wxStdDialogButtonSizer* m_sdbSizer;
-		wxButton* m_sdbSizerOK;
-		wxButton* m_sdbSizerCancel;
+    wxCheckBox* m_ToolTipsChkBox;
+    wxStaticText* m_CfgFolderStaticText;
+    wxStaticText* m_IniFolderStaticText;
+    wxStdDialogButtonSizer* m_sdbSizer;
+    wxButton* m_sdbSizerOK;
+    wxButton* m_sdbSizerCancel;
 
-	public:
-		wxTextCtrl* m_CfgFolderTextCtrl;
-		wxTextCtrl* m_IniFolderTextCtrl;
-		SettingsDlgForm( wxWindow* parent, wxWindowID id = ID_DEFAULT, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 462,389 ), long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
-		~SettingsDlgForm();
+public:
+    wxTextCtrl* m_CfgFolderTextCtrl;
+    wxTextCtrl* m_IniFolderTextCtrl;
+    SettingsDlgForm( wxWindow* parent, wxWindowID id = ID_DEFAULT, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 462,389 ), long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
+    ~SettingsDlgForm();
 
 };
 

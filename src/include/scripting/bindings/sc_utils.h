@@ -17,9 +17,9 @@
 #include <vector>
 
 #ifndef CB_PRECOMP
-    #include <wx/string.h>
-    #include "prep.h"
-    #include "settings.h"
+#include <wx/string.h>
+#include "prep.h"
+#include "settings.h"
 #endif // CB_PRECOMP
 
 /// @namespace ScriptBindings
@@ -216,7 +216,10 @@ struct PreserveTop
 #endif
         cbAssert(sq_gettop(m_vm) == m_top);
     }
-    void noCheck() { m_checkAtDtor = false; }
+    void noCheck()
+    {
+        m_checkAtDtor = false;
+    }
 private:
     HSQUIRRELVM m_vm;
     SQInteger m_top;
@@ -278,9 +281,9 @@ struct UserDataForType
     static_assert(alignof(UserType) <= TypeAlignment<NoCVUserType>::value, "The TypeAlignment specialization is probably incorrect!");
 
     using StorageType = typename std::aligned_storage<
-        smax(sizeof(UserType), sizeof(UserType*)),
-        smax(TypeAlignment<NoCVUserType>::value, alignof(UserType*))
-    >::type;
+                        smax(sizeof(UserType), sizeof(UserType*)),
+                        smax(TypeAlignment<NoCVUserType>::value, alignof(UserType*))
+                        >::type;
 
     InstanceAllocationMode mode;
     /// Make it possible to store either whole object or a pointer to an object.
@@ -296,7 +299,7 @@ struct UserDataForType
 template<>
 struct UserDataForType<void>
 {
-     using StorageType = int; // Prevent alignof(void)/sizeof(void) type of warnings!
+    using StorageType = int; // Prevent alignof(void)/sizeof(void) type of warnings!
 };
 
 /// Policy type which select the type used for the release hook.
@@ -316,11 +319,11 @@ SQInteger ReleaseHook(SQUserPointer ptr, cb_unused SQInteger size)
     switch (data.mode)
     {
     case InstanceAllocationMode::InstanceIsInline:
-        {
-            UserType *p = reinterpret_cast<UserType*>(&data.userdata);
-            p->~UserType();
-            break;
-        }
+    {
+        UserType *p = reinterpret_cast<UserType*>(&data.userdata);
+        p->~UserType();
+        break;
+    }
     default:
         cbAssert(false);
     }
@@ -522,7 +525,10 @@ struct ExtractParamsBase
 
     DLLIMPORT int ErrorMessage();
 
-    HSQUIRRELVM GetVM() { return m_vm; }
+    HSQUIRRELVM GetVM()
+    {
+        return m_vm;
+    }
 
 protected:
     HSQUIRRELVM m_vm;
@@ -1259,12 +1265,12 @@ SQInteger GenericMember_get(HSQUIRRELVM v)
     {
         switch (member->MatchAndGet(v, extractor.p0, extractor.p1))
         {
-            case MatchResult::Found:
-                return 1;
-            case MatchResult::Error:
-                return -1;
-            case MatchResult::NotFound:
-                break;
+        case MatchResult::Found:
+            return 1;
+        case MatchResult::Error:
+            return -1;
+        case MatchResult::NotFound:
+            break;
         }
     }
     return GenericMember_get<typename TypeInfo<ClassType>::baseClass>(v);
@@ -1281,12 +1287,12 @@ SQInteger GenericMember_set(HSQUIRRELVM v)
     {
         switch (member->MatchAndSet(v, extractor.p0, extractor.p1, 3))
         {
-            case MatchResult::Found:
-                return 0;
-            case MatchResult::Error:
-                return -1;
-            case MatchResult::NotFound:
-                break;
+        case MatchResult::Found:
+            return 0;
+        case MatchResult::Error:
+            return -1;
+        case MatchResult::NotFound:
+            break;
         }
     }
 
@@ -1359,7 +1365,10 @@ struct ObjectHandle
         return *this;
     }
 
-    const HSQOBJECT& Get() const { return m_object; }
+    const HSQOBJECT& Get() const
+    {
+        return m_object;
+    }
 
     void Push()
     {
@@ -1367,7 +1376,10 @@ struct ObjectHandle
         sq_pushobject(m_vm, m_object);
     }
 
-    HSQUIRRELVM GetVM() { return m_vm; }
+    HSQUIRRELVM GetVM()
+    {
+        return m_vm;
+    }
 
 private:
     HSQUIRRELVM m_vm;
@@ -1433,7 +1445,8 @@ struct Caller
     /// Prepare the function for calling.
     /// @return true if successful and false if there is a problem (function not found, object not a
     ///   closure, etc).
-    bool SetupFunc(const SQChar *funcName) {
+    bool SetupFunc(const SQChar *funcName)
+    {
         cbAssert(m_closureStackIdx == -1);
         sq_pushobject(m_vm, m_object);
         sq_pushstring(m_vm, funcName, -1);

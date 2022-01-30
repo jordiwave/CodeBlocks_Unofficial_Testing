@@ -11,15 +11,15 @@
 
 
 #ifndef CB_PRECOMP
-    #include <wx/confbase.h>
-    #include <wx/intl.h>
-    #include <wx/filename.h>
+#include <wx/confbase.h>
+#include <wx/intl.h>
+#include <wx/filename.h>
 
-    #include "manager.h"
-    #include "projectmanager.h"
-    #include "logmanager.h"
-    #include "cbproject.h"
-    #include "globals.h"
+#include "manager.h"
+#include "projectmanager.h"
+#include "logmanager.h"
+#include "cbproject.h"
+#include "globals.h"
 #endif
 
 #include "devcpploader.h"
@@ -30,12 +30,12 @@
 DevCppLoader::DevCppLoader(cbProject* project)
     : m_pProject(project)
 {
-	//ctor
+    //ctor
 }
 
 DevCppLoader::~DevCppLoader()
 {
-	//dtor
+    //dtor
 }
 
 bool DevCppLoader::Open(const wxString& filename)

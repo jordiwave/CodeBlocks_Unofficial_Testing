@@ -87,8 +87,8 @@ avChangesDlg::avChangesDlg(wxWindow* parent,wxWindowID /*id*/)
     grdChanges->SetColLabelValue(1,_T("Description"));
 
     grdChanges->AutoSize();
-	grdChanges->SetColSize(0, 60);
-	grdChanges->SetColSize(1, 645);
+    grdChanges->SetColSize(0, 60);
+    grdChanges->SetColSize(1, 645);
 }
 
 avChangesDlg::~avChangesDlg()

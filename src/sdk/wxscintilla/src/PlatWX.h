@@ -5,10 +5,10 @@
 
 /* C::B begin */
 #ifndef wxOVERRIDE
-    #define wxOVERRIDE override
+#define wxOVERRIDE override
 #endif // wxOVERRIDE
 #ifndef wxFALLTHROUGH
-    #define wxFALLTHROUGH
+#define wxFALLTHROUGH
 #endif // wxFALLTHROUGH
 /* C::B end */
 
@@ -16,7 +16,8 @@ wxRect wxRectFromPRectangle(PRectangle prc);
 PRectangle PRectangleFromwxRect(wxRect rc);
 wxColour wxColourFromCD(const ColourDesired& ca);
 
-class ListBoxImpl : public ListBox {
+class ListBoxImpl : public ListBox
+{
 private:
     int                 lineHeight;
     bool                unicodeMode;
@@ -41,14 +42,14 @@ public:
     virtual int CaretFromEdge() wxOVERRIDE;
     virtual void Clear() wxOVERRIDE;
     virtual void Append(char *s, int type = -1) wxOVERRIDE;
-            void Append(const wxString& text, int type);
+    void Append(const wxString& text, int type);
     virtual int Length() wxOVERRIDE;
     virtual void Select(int n) wxOVERRIDE;
     virtual int GetSelection() wxOVERRIDE;
     virtual int Find(const char *prefix) wxOVERRIDE;
     virtual void GetValue(int n, char *value, int len) wxOVERRIDE;
     virtual void RegisterImage(int type, const char *xpm_data) wxOVERRIDE;
-            void RegisterImageHelper(int type, const wxBitmap& bmp);
+    void RegisterImageHelper(int type, const wxBitmap& bmp);
     virtual void RegisterRGBAImage(int type, int width, int height, const unsigned char *pixelsImage) wxOVERRIDE;
     virtual void ClearRegisteredImages() wxOVERRIDE;
     virtual void SetDoubleClickAction(CallBackAction, void *) wxOVERRIDE;
@@ -58,7 +59,7 @@ public:
 class SurfaceData
 {
 public:
-    virtual ~SurfaceData(){}
+    virtual ~SurfaceData() {}
 };
 
 #if wxUSE_GRAPHICS_DIRECT2D
@@ -77,13 +78,26 @@ public:
     HRESULT CreateGraphicsResources();
     void SetEditorPaintAbandoned();
 
-    ID2D1DCRenderTarget* GetRenderTarget() const { return m_pRenderTarget.get(); }
-    ID2D1SolidColorBrush* GetSolidBrush() const { return m_pSolidBrush.get(); }
-    ID2D1BitmapBrush* GetPatternBrush() const { return m_pPatternBrush.get(); }
+    ID2D1DCRenderTarget* GetRenderTarget() const
+    {
+        return m_pRenderTarget.get();
+    }
+    ID2D1SolidColorBrush* GetSolidBrush() const
+    {
+        return m_pSolidBrush.get();
+    }
+    ID2D1BitmapBrush* GetPatternBrush() const
+    {
+        return m_pPatternBrush.get();
+    }
     IDWriteRenderingParams* GetDefaultRenderingParams() const
-        { return m_defaultRenderingParams; }
+    {
+        return m_defaultRenderingParams;
+    }
     IDWriteRenderingParams* GetCustomClearTypeRenderingParams() const
-        { return m_customClearTypeRenderingParams; }
+    {
+        return m_customClearTypeRenderingParams;
+    }
 
 private:
     wxCOMPtr<ID2D1Factory> m_pD2DFactory;
@@ -103,13 +117,31 @@ public:
     SurfaceFontDataD2D(const FontParameters& fp);
     bool Initialised() const;
 
-    XYPOSITION GetAscent() const { return m_ascent; }
-    XYPOSITION GetDescent() const { return m_descent; }
-    XYPOSITION GetInternalLeading() const { return m_internalLeading; }
-    XYPOSITION GetAverageCharWidth() const { return m_averageCharWidth; }
+    XYPOSITION GetAscent() const
+    {
+        return m_ascent;
+    }
+    XYPOSITION GetDescent() const
+    {
+        return m_descent;
+    }
+    XYPOSITION GetInternalLeading() const
+    {
+        return m_internalLeading;
+    }
+    XYPOSITION GetAverageCharWidth() const
+    {
+        return m_averageCharWidth;
+    }
 
-    D2D1_TEXT_ANTIALIAS_MODE GetFontQuality() const { return m_aaMode; }
-    IDWriteTextFormat* GetFormat() const { return m_pTextFormat.get(); }
+    D2D1_TEXT_ANTIALIAS_MODE GetFontQuality() const
+    {
+        return m_aaMode;
+    }
+    IDWriteTextFormat* GetFormat() const
+    {
+        return m_pTextFormat.get();
+    }
 
 private:
     XYPOSITION m_ascent;

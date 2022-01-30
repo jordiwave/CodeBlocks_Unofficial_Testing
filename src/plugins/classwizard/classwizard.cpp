@@ -9,18 +9,18 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/fs_zip.h>
-    #include <wx/intl.h>
-    #include <wx/menu.h>
-    #include <wx/string.h>
-    #include <wx/utils.h>
-    #include <wx/xrc/xmlres.h>
-    #include "cbproject.h"
-    #include "configmanager.h"
-    #include "globals.h"
-    #include "logmanager.h"
-    #include "manager.h"
-    #include "projectmanager.h"
+#include <wx/fs_zip.h>
+#include <wx/intl.h>
+#include <wx/menu.h>
+#include <wx/string.h>
+#include <wx/utils.h>
+#include <wx/xrc/xmlres.h>
+#include "cbproject.h"
+#include "configmanager.h"
+#include "globals.h"
+#include "logmanager.h"
+#include "manager.h"
+#include "projectmanager.h"
 #endif
 #include <wx/filesys.h>
 #include "classwizard.h"
@@ -29,13 +29,13 @@
 // this auto-registers the plugin
 namespace
 {
-    PluginRegistrant<ClassWizard> reg(_T("ClassWizard"));
+PluginRegistrant<ClassWizard> reg(_T("ClassWizard"));
 
-    int idLaunch = wxNewId();
+int idLaunch = wxNewId();
 }
 
 BEGIN_EVENT_TABLE(ClassWizard, cbPlugin)
-	EVT_MENU(idLaunch, ClassWizard::OnLaunch)
+    EVT_MENU(idLaunch, ClassWizard::OnLaunch)
 END_EVENT_TABLE()
 
 ClassWizard::ClassWizard()
@@ -52,27 +52,27 @@ ClassWizard::~ClassWizard()
 
 void ClassWizard::OnAttach()
 {
-	m_FileNewMenu = 0;
-	cbPlugin::OnAttach();
+    m_FileNewMenu = 0;
+    cbPlugin::OnAttach();
 }
 
 void ClassWizard::OnRelease(bool appShutDown)
 {
-	if (m_FileNewMenu)
-	{
-		m_FileNewMenu->Delete(idLaunch);
-		m_FileNewMenu = 0;
-	}
-	cbPlugin::OnRelease(appShutDown);
+    if (m_FileNewMenu)
+    {
+        m_FileNewMenu->Delete(idLaunch);
+        m_FileNewMenu = 0;
+    }
+    cbPlugin::OnRelease(appShutDown);
 }
 
 void ClassWizard::BuildMenu(wxMenuBar* menuBar)
 {
-	if (m_FileNewMenu)
-	{
-		m_FileNewMenu->Delete(idLaunch);
-		m_FileNewMenu = 0;
-	}
+    if (m_FileNewMenu)
+    {
+        m_FileNewMenu->Delete(idLaunch);
+        m_FileNewMenu = 0;
+    }
 
     const int pos = menuBar->FindMenu(_("&File"));
     if (pos != wxNOT_FOUND)
@@ -83,10 +83,10 @@ void ClassWizard::BuildMenu(wxMenuBar* menuBar)
         m_FileNewMenu = mn ? mn->GetSubMenu() : 0;
         if (m_FileNewMenu)
         {
-			m_FileNewMenu->Insert(2, idLaunch, _("Class..."));
+            m_FileNewMenu->Insert(2, idLaunch, _("Class..."));
         }
-		else
-			Manager::Get()->GetLogManager()->DebugLog(_T("Could not find File->New menu!"));
+        else
+            Manager::Get()->GetLogManager()->DebugLog(_T("Could not find File->New menu!"));
     }
     else
         Manager::Get()->GetLogManager()->DebugLog(_T("Could not find File menu!"));

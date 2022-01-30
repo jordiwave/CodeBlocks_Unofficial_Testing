@@ -7,7 +7,7 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
@@ -32,7 +32,7 @@ private:
     NassiDiagramWindow(const NassiDiagramWindow &p);
     NassiDiagramWindow &operator=(const NassiDiagramWindow &rhs);
 private:
-    void OnDraw(wxDC& /*dc*/){} //virtual
+    void OnDraw(wxDC& /*dc*/) {} //virtual
     void OnMouseWheel(wxMouseEvent& event);
     void OnMouseLeftUp(wxMouseEvent &event);
     void OnMouseLeftDown(wxMouseEvent &event);
@@ -51,7 +51,10 @@ private:
     void PaintBackground(wxDC &dc);
     void Draw(wxDC &dc);
 
-    bool HasFocus(){return this == this->FindFocus();}
+    bool HasFocus()
+    {
+        return this == this->FindFocus();
+    }
     void OnKillFocus(wxFocusEvent &event);
     void OnSetFocus(wxFocusEvent &event);
 

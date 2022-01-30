@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #ifndef CB_PRECOMP
-    #include "manager.h"
+#include "manager.h"
 #endif // CB_PRECOMP
 
 /// Custom art provider used to make menu item and bitmap button icons look good on HiDPI displays.

@@ -23,24 +23,24 @@
 
 namespace
 {
-    wxsRegisterItem<wxsSimpleHtmlListBox> Reg(_T("SimpleHtmlListBox"), wxsTWidget, _T("Standard"), 120);
+wxsRegisterItem<wxsSimpleHtmlListBox> Reg(_T("SimpleHtmlListBox"), wxsTWidget, _T("Standard"), 120);
 
-    WXS_ST_BEGIN(wxsSimpleHtmlListBoxStyles, wxT("wxHLB_DEFAULT_STYLE"))
-    WXS_ST_CATEGORY("wxSimpleHtmlListBox")
-    WXS_ST(wxHLB_DEFAULT_STYLE)
-    WXS_ST(wxHLB_MULTIPLE)
-    WXS_ST(wxLB_EXTENDED)
-    WXS_ST(wxLB_HSCROLL)
-    WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsSimpleHtmlListBoxStyles, wxT("wxHLB_DEFAULT_STYLE"))
+WXS_ST_CATEGORY("wxSimpleHtmlListBox")
+WXS_ST(wxHLB_DEFAULT_STYLE)
+WXS_ST(wxHLB_MULTIPLE)
+WXS_ST(wxLB_EXTENDED)
+WXS_ST(wxLB_HSCROLL)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsSimpleHtmlListBoxEvents)
-    WXS_EVI(EVT_LISTBOX, wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEvent, Select)
-    WXS_EVI(EVT_LISTBOX_DCLICK, wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEvent, DClick)
-    WXS_EVI(EVT_HTML_CELL_CLICKED, wxEVT_COMMAND_HTML_CELL_CLICKED, wxHtmlCellEvent, CellClicked)
-    WXS_EVI(EVT_HTML_CELL_HOVER, wxEVT_COMMAND_HTML_CELL_HOVER, wxHtmlCellEvent, CellHover)
-    WXS_EVI(EVT_HTML_LINK_CLICKED, wxEVT_COMMAND_HTML_LINK_CLICKED, wxHtmlLinkEvent, LinkClicked)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsSimpleHtmlListBoxEvents)
+WXS_EVI(EVT_LISTBOX, wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEvent, Select)
+WXS_EVI(EVT_LISTBOX_DCLICK, wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEvent, DClick)
+WXS_EVI(EVT_HTML_CELL_CLICKED, wxEVT_COMMAND_HTML_CELL_CLICKED, wxHtmlCellEvent, CellClicked)
+WXS_EVI(EVT_HTML_CELL_HOVER, wxEVT_COMMAND_HTML_CELL_HOVER, wxHtmlCellEvent, CellHover)
+WXS_EVI(EVT_HTML_LINK_CLICKED, wxEVT_COMMAND_HTML_LINK_CLICKED, wxHtmlLinkEvent, LinkClicked)
+WXS_EV_END()
 }
 
 /*! \brief Ctor
@@ -67,33 +67,33 @@ void wxsSimpleHtmlListBox::OnBuildCreatingCode()
 {
     switch(GetLanguage())
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/htmllbox.h>"), GetInfo().ClassName, hfInPCH);
+        Codef(_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
+        for(size_t i = 0; i <  ArrayChoices.GetCount(); ++i)
         {
-            AddHeader(_T("<wx/htmllbox.h>"), GetInfo().ClassName, hfInPCH);
-            Codef(_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
-            for(size_t i = 0; i <  ArrayChoices.GetCount(); ++i)
+            if(DefaultSelection == (int)i)
             {
-                if(DefaultSelection == (int)i)
-                {
-                    Codef(_T("%ASetSelection( "));
-                }
-                Codef(_T("%AAppend(%t)"), ArrayChoices[i].wx_str());
-                if(DefaultSelection == (int)i)
-                {
-                    Codef(_T(" )"));
-                }
-                Codef(_T(";\n"));
+                Codef(_T("%ASetSelection( "));
             }
-
-            BuildSetupWindowCode();
-            return;
+            Codef(_T("%AAppend(%t)"), ArrayChoices[i].wx_str());
+            if(DefaultSelection == (int)i)
+            {
+                Codef(_T(" )"));
+            }
+            Codef(_T(";\n"));
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsSimpleHtmlListBox::OnBuildCreatingCode"), GetLanguage());
-        }
+        BuildSetupWindowCode();
+        return;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsSimpleHtmlListBox::OnBuildCreatingCode"), GetLanguage());
+    }
     }
 }
 

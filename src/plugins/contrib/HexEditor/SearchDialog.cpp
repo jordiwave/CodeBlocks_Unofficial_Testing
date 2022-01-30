@@ -40,31 +40,34 @@
 
 namespace
 {
-    ConfigManager* GetConfigManager() { return Manager::Get()->GetConfigManager( CONF_NAME ); }
+ConfigManager* GetConfigManager()
+{
+    return Manager::Get()->GetConfigManager( CONF_NAME );
+}
 
 
-    #if defined ( __linux__ )  || defined ( LINUX )
+#if defined ( __linux__ )  || defined ( LINUX )
 
-        // Use native implementation
-        inline const void* my_memrchr( const void* s, int c, size_t n )
-        {
-            return memrchr( s, c, n );
-        }
+// Use native implementation
+inline const void* my_memrchr( const void* s, int c, size_t n )
+{
+    return memrchr( s, c, n );
+}
 
-    #else
+#else
 
-        // Custom implementation, may be much slower
-        inline const void* my_memrchr( const void* _s, int c, size_t n )
-        {
-            const char* s = (const char*)_s;
-            for ( size_t i=n; i-->0; )
-            {
-                if ( s[ i ] == c ) return s+i;
-            }
-            return 0;
-        }
+// Custom implementation, may be much slower
+inline const void* my_memrchr( const void* _s, int c, size_t n )
+{
+    const char* s = (const char*)_s;
+    for ( size_t i=n; i-->0; )
+    {
+        if ( s[ i ] == c ) return s+i;
+    }
+    return 0;
+}
 
-    #endif
+#endif
 }
 
 //(*IdInit(SearchDialog)
@@ -79,89 +82,89 @@ const long SearchDialog::ID_RADIOBOX1 = wxNewId();
 
 SearchDialog::SearchDialog( wxWindow* parent, FileContentBase* content, FileContentBase::OffsetT current ): m_Content( content ), m_Offset( current )
 {
-	BuildContent(parent);
+    BuildContent(parent);
 }
 
 void SearchDialog::BuildContent(wxWindow* parent)
 {
-	//(*Initialize(SearchDialog)
-	wxBoxSizer* BoxSizer3;
-	wxBoxSizer* BoxSizer2;
-	wxBoxSizer* BoxSizer1;
-	wxStdDialogButtonSizer* StdDialogButtonSizer1;
-	wxStaticBoxSizer* StaticBoxSizer1;
+    //(*Initialize(SearchDialog)
+    wxBoxSizer* BoxSizer3;
+    wxBoxSizer* BoxSizer2;
+    wxBoxSizer* BoxSizer1;
+    wxStdDialogButtonSizer* StdDialogButtonSizer1;
+    wxStaticBoxSizer* StaticBoxSizer1;
 
-	Create(parent, wxID_ANY, _("Search..."), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
-	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Search for"));
-	m_SearchValue = new wxComboBox(this, ID_COMBOBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_COMBOBOX1"));
-	StaticBoxSizer1->Add(m_SearchValue, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
-	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	m_SearchTypeString = new wxRadioButton(this, ID_RADIOBUTTON1, _("String"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON1"));
-	m_SearchTypeString->SetValue(true);
-	BoxSizer2->Add(m_SearchTypeString, 0, wxALL|wxEXPAND, 5);
-	m_SearchTypeHex = new wxRadioButton(this, ID_RADIOBUTTON2, _("Hex"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON2"));
-	BoxSizer2->Add(m_SearchTypeHex, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-	m_SearchTypeExpression = new wxRadioButton(this, ID_RADIOBUTTON3, _("Expression"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON3"));
-	BoxSizer2->Add(m_SearchTypeExpression, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer2->Add(13,8,1, wxALIGN_CENTER_VERTICAL, 5);
-	Button1 = new wxButton(this, ID_BUTTON1, _("\?"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON1"));
-	BoxSizer2->Add(Button1, 0, wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer1->Add(BoxSizer2, 0, wxEXPAND, 5);
-	BoxSizer1->Add(StaticBoxSizer1, 0, wxALL|wxEXPAND, 5);
-	BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-	wxString __wxRadioBoxChoices_1[2] =
-	{
-		_("Current position"),
-		_("Beginning")
-	};
-	m_StartFrom = new wxRadioBox(this, ID_RADIOBOX2, _("Start from"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_1, 1, wxRA_HORIZONTAL, wxDefaultValidator, _T("ID_RADIOBOX2"));
-	m_StartFrom->SetSelection(0);
-	BoxSizer3->Add(m_StartFrom, 1, wxALL|wxEXPAND, 5);
-	wxString __wxRadioBoxChoices_2[2] =
-	{
-		_("Up"),
-		_("Down")
-	};
-	m_Direction = new wxRadioBox(this, ID_RADIOBOX1, _("Direction"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_2, 1, wxRA_HORIZONTAL, wxDefaultValidator, _T("ID_RADIOBOX1"));
-	m_Direction->SetSelection(1);
-	BoxSizer3->Add(m_Direction, 1, wxALL|wxEXPAND, 5);
-	BoxSizer1->Add(BoxSizer3, 0, wxTOP|wxEXPAND, 5);
-	StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
-	StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_OK, _("&Find")));
-	StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
-	StdDialogButtonSizer1->Realize();
-	BoxSizer1->Add(StdDialogButtonSizer1, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
-	SetSizer(BoxSizer1);
-	BoxSizer1->Fit(this);
-	BoxSizer1->SetSizeHints(this);
+    Create(parent, wxID_ANY, _("Search..."), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
+    BoxSizer1 = new wxBoxSizer(wxVERTICAL);
+    StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Search for"));
+    m_SearchValue = new wxComboBox(this, ID_COMBOBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_COMBOBOX1"));
+    StaticBoxSizer1->Add(m_SearchValue, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
+    m_SearchTypeString = new wxRadioButton(this, ID_RADIOBUTTON1, _("String"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON1"));
+    m_SearchTypeString->SetValue(true);
+    BoxSizer2->Add(m_SearchTypeString, 0, wxALL|wxEXPAND, 5);
+    m_SearchTypeHex = new wxRadioButton(this, ID_RADIOBUTTON2, _("Hex"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON2"));
+    BoxSizer2->Add(m_SearchTypeHex, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    m_SearchTypeExpression = new wxRadioButton(this, ID_RADIOBUTTON3, _("Expression"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON3"));
+    BoxSizer2->Add(m_SearchTypeExpression, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer2->Add(13,8,1, wxALIGN_CENTER_VERTICAL, 5);
+    Button1 = new wxButton(this, ID_BUTTON1, _("\?"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON1"));
+    BoxSizer2->Add(Button1, 0, wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1->Add(BoxSizer2, 0, wxEXPAND, 5);
+    BoxSizer1->Add(StaticBoxSizer1, 0, wxALL|wxEXPAND, 5);
+    BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
+    wxString __wxRadioBoxChoices_1[2] =
+    {
+        _("Current position"),
+        _("Beginning")
+    };
+    m_StartFrom = new wxRadioBox(this, ID_RADIOBOX2, _("Start from"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_1, 1, wxRA_HORIZONTAL, wxDefaultValidator, _T("ID_RADIOBOX2"));
+    m_StartFrom->SetSelection(0);
+    BoxSizer3->Add(m_StartFrom, 1, wxALL|wxEXPAND, 5);
+    wxString __wxRadioBoxChoices_2[2] =
+    {
+        _("Up"),
+        _("Down")
+    };
+    m_Direction = new wxRadioBox(this, ID_RADIOBOX1, _("Direction"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_2, 1, wxRA_HORIZONTAL, wxDefaultValidator, _T("ID_RADIOBOX1"));
+    m_Direction->SetSelection(1);
+    BoxSizer3->Add(m_Direction, 1, wxALL|wxEXPAND, 5);
+    BoxSizer1->Add(BoxSizer3, 0, wxTOP|wxEXPAND, 5);
+    StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
+    StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_OK, _("&Find")));
+    StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
+    StdDialogButtonSizer1->Realize();
+    BoxSizer1->Add(StdDialogButtonSizer1, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    SetSizer(BoxSizer1);
+    BoxSizer1->Fit(this);
+    BoxSizer1->SetSizeHints(this);
 
-	Connect(ID_COMBOBOX1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&SearchDialog::OnOk);
-	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SearchDialog::OnButton1Click);
-	//*)
+    Connect(ID_COMBOBOX1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&SearchDialog::OnOk);
+    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SearchDialog::OnButton1Click);
+    //*)
 
-	ConfigManager* cfg = GetConfigManager();
+    ConfigManager* cfg = GetConfigManager();
 
     m_SearchValue->SetFocus();
 
     wxArrayString last = cfg->ReadArrayString( CONF_GROUP _T("/last") );
-	for ( size_t i = 0; i < last.GetCount(); ++i )
-	{
-		if ( !last[i].IsEmpty())
-		{
-		    m_SearchValue->Append( last[i] );
+    for ( size_t i = 0; i < last.GetCount(); ++i )
+    {
+        if ( !last[i].IsEmpty())
+        {
+            m_SearchValue->Append( last[i] );
         }
-	}
-	m_SearchValue->SetSelection( 0 );
-	m_StartFrom->SetSelection( cfg->ReadInt( CONF_GROUP _T("/origin") ) );
-	m_Direction->SetSelection( cfg->ReadInt( CONF_GROUP _T("/direction") ) );
+    }
+    m_SearchValue->SetSelection( 0 );
+    m_StartFrom->SetSelection( cfg->ReadInt( CONF_GROUP _T("/origin") ) );
+    m_Direction->SetSelection( cfg->ReadInt( CONF_GROUP _T("/direction") ) );
 
-	int type = cfg->ReadInt( CONF_GROUP _T("/hexedit/type") );
-	m_SearchTypeString    ->SetValue( type==0 );
-	m_SearchTypeHex       ->SetValue( type==1 );
-	m_SearchTypeExpression->SetValue( type==2 );
+    int type = cfg->ReadInt( CONF_GROUP _T("/hexedit/type") );
+    m_SearchTypeString    ->SetValue( type==0 );
+    m_SearchTypeHex       ->SetValue( type==1 );
+    m_SearchTypeExpression->SetValue( type==2 );
 
-	Connect( wxID_OK, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SearchDialog::OnOk) );
+    Connect( wxID_OK, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SearchDialog::OnOk) );
 
     // Limit vertical resizing.
     SetMaxSize(wxSize(-1, GetMinHeight()));
@@ -169,20 +172,20 @@ void SearchDialog::BuildContent(wxWindow* parent)
 
 SearchDialog::~SearchDialog()
 {
-	ConfigManager* cfg = GetConfigManager();
+    ConfigManager* cfg = GetConfigManager();
 
-	cfg->Write( CONF_GROUP _T("/origin"),    (int)m_StartFrom->GetSelection() );
-	cfg->Write( CONF_GROUP _T("/direction"), (int)m_Direction->GetSelection() );
+    cfg->Write( CONF_GROUP _T("/origin"),    (int)m_StartFrom->GetSelection() );
+    cfg->Write( CONF_GROUP _T("/direction"), (int)m_Direction->GetSelection() );
 
-	int type =
+    int type =
         m_SearchTypeString->GetValue() ? 0 :
         m_SearchTypeHex   ->GetValue() ? 1 : 2;
 
     cfg->Write( CONF_GROUP _T("/hexedit/type"), type );
 
-	wxString value = m_SearchValue->GetValue();
+    wxString value = m_SearchValue->GetValue();
 
-	wxArrayString last = cfg->ReadArrayString( CONF_GROUP _T("/last") );
+    wxArrayString last = cfg->ReadArrayString( CONF_GROUP _T("/last") );
     int lastPos = last.Index( value );
     if ( lastPos != wxNOT_FOUND )
     {
@@ -192,8 +195,8 @@ SearchDialog::~SearchDialog()
 
     cfg->Write( CONF_GROUP _T("/last"), last );
 
-	//(*Destroy(SearchDialog)
-	//*)
+    //(*Destroy(SearchDialog)
+    //*)
 }
 
 void SearchDialog::OnOk(wxCommandEvent& /*event*/)
@@ -513,8 +516,8 @@ void SearchDialog::SearchExpression(const wxString& expression)
             long double ld;
 
             if ( ( executor.GetResult( ull ) && !ull ) ||
-                 ( executor.GetResult( ll  ) && !ll  ) ||
-                 ( executor.GetResult( ld  ) && !ld  ) )
+                    ( executor.GetResult( ll  ) && !ll  ) ||
+                    ( executor.GetResult( ld  ) && !ld  ) )
             {
                 FoundAt( pos );
                 return;

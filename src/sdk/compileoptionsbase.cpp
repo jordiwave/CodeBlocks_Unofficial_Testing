@@ -10,19 +10,22 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "compileoptionsbase.h"
-    #include "sdk_events.h"
-    #include "manager.h"
-    #include "macrosmanager.h"
+#include "compileoptionsbase.h"
+#include "sdk_events.h"
+#include "manager.h"
+#include "macrosmanager.h"
 #endif
 
-namespace { static const bool s_case_sensitive = platform::windows ? false : true; }
+namespace
+{
+static const bool s_case_sensitive = platform::windows ? false : true;
+}
 
 CompileOptionsBase::CompileOptionsBase()
     : m_Platform(spAll),
-    m_LinkerExecutable(LinkerExecutableOption::AutoDetect),
-    m_Modified(false),
-    m_AlwaysRunPostCmds(false)
+      m_LinkerExecutable(LinkerExecutableOption::AutoDetect),
+      m_Modified(false),
+      m_AlwaysRunPostCmds(false)
 {
     //ctor
 }

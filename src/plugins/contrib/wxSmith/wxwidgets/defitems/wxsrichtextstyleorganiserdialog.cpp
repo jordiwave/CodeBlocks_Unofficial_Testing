@@ -25,41 +25,43 @@
 
 namespace
 {
-    wxsRegisterItem<wxsRichTextStyleOrganiserDialog> Reg(
-        _T("RichTextStyleOrganiserDialog"),      // Class base name
-        wxsTTool,                                                       // Item type
-        _T("Dialogs"),                                              // Category in palette
-        80,                                                                     // Priority in palette
-        false);                                                             // We do not allow this item inside XRC files
+wxsRegisterItem<wxsRichTextStyleOrganiserDialog> Reg(
+    _T("RichTextStyleOrganiserDialog"),      // Class base name
+    wxsTTool,                                                       // Item type
+    _T("Dialogs"),                                              // Category in palette
+    80,                                                                     // Priority in palette
+    false);                                                             // We do not allow this item inside XRC files
 
-    static const long arrStyleValues[] = {
-        wxRICHTEXT_ORGANISER_APPLY_STYLES,
-        wxRICHTEXT_ORGANISER_CREATE_STYLES,
-        wxRICHTEXT_ORGANISER_DELETE_STYLES,
-        wxRICHTEXT_ORGANISER_EDIT_STYLES,
-        wxRICHTEXT_ORGANISER_OK_CANCEL,
-        wxRICHTEXT_ORGANISER_RENAME_STYLES,
-        wxRICHTEXT_ORGANISER_RENUMBER,
-        wxRICHTEXT_ORGANISER_SHOW_ALL,
-        wxRICHTEXT_ORGANISER_SHOW_CHARACTER,
-        wxRICHTEXT_ORGANISER_SHOW_LIST,
-        wxRICHTEXT_ORGANISER_SHOW_PARAGRAPH
-    };
+static const long arrStyleValues[] =
+{
+    wxRICHTEXT_ORGANISER_APPLY_STYLES,
+    wxRICHTEXT_ORGANISER_CREATE_STYLES,
+    wxRICHTEXT_ORGANISER_DELETE_STYLES,
+    wxRICHTEXT_ORGANISER_EDIT_STYLES,
+    wxRICHTEXT_ORGANISER_OK_CANCEL,
+    wxRICHTEXT_ORGANISER_RENAME_STYLES,
+    wxRICHTEXT_ORGANISER_RENUMBER,
+    wxRICHTEXT_ORGANISER_SHOW_ALL,
+    wxRICHTEXT_ORGANISER_SHOW_CHARACTER,
+    wxRICHTEXT_ORGANISER_SHOW_LIST,
+    wxRICHTEXT_ORGANISER_SHOW_PARAGRAPH
+};
 
-    static const wxChar* arrStyleValueNames[] = {
-        _T("wxRICHTEXT_ORGANISER_APPLY_STYLES"),
-        _T("wxRICHTEXT_ORGANISER_CREATE_STYLES"),
-        _T("wxRICHTEXT_ORGANISER_DELETE_STYLES"),
-        _T("wxRICHTEXT_ORGANISER_EDIT_STYLES"),
-        _T("wxRICHTEXT_ORGANISER_OK_CANCEL"),
-        _T("wxRICHTEXT_ORGANISER_RENAME_STYLES"),
-        _T("wxRICHTEXT_ORGANISER_RENUMBER"),
-        _T("wxRICHTEXT_ORGANISER_SHOW_ALL"),
-        _T("wxRICHTEXT_ORGANISER_SHOW_CHARACTER"),
-        _T("wxRICHTEXT_ORGANISER_SHOW_LIST"),
-        _T("wxRICHTEXT_ORGANISER_SHOW_PARAGRAPH"),
-        NULL
-    };
+static const wxChar* arrStyleValueNames[] =
+{
+    _T("wxRICHTEXT_ORGANISER_APPLY_STYLES"),
+    _T("wxRICHTEXT_ORGANISER_CREATE_STYLES"),
+    _T("wxRICHTEXT_ORGANISER_DELETE_STYLES"),
+    _T("wxRICHTEXT_ORGANISER_EDIT_STYLES"),
+    _T("wxRICHTEXT_ORGANISER_OK_CANCEL"),
+    _T("wxRICHTEXT_ORGANISER_RENAME_STYLES"),
+    _T("wxRICHTEXT_ORGANISER_RENUMBER"),
+    _T("wxRICHTEXT_ORGANISER_SHOW_ALL"),
+    _T("wxRICHTEXT_ORGANISER_SHOW_CHARACTER"),
+    _T("wxRICHTEXT_ORGANISER_SHOW_LIST"),
+    _T("wxRICHTEXT_ORGANISER_SHOW_PARAGRAPH"),
+    NULL
+};
 }
 
 /*! \brief Ctor
@@ -73,9 +75,9 @@ wxsRichTextStyleOrganiserDialog::wxsRichTextStyleOrganiserDialog(wxsItemResData 
             NULL,
             NULL,
             (flVariable | flId | flSubclass | flExtraCode)),
-            m_sCaption(SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_TITLE),
-            m_iFlags(wxRICHTEXT_ORGANISER_SHOW_ALL|wxRICHTEXT_ORGANISER_DELETE_STYLES|wxRICHTEXT_ORGANISER_CREATE_STYLES|
-                                wxRICHTEXT_ORGANISER_APPLY_STYLES|wxRICHTEXT_ORGANISER_EDIT_STYLES|wxRICHTEXT_ORGANISER_RENAME_STYLES)
+    m_sCaption(SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_TITLE),
+    m_iFlags(wxRICHTEXT_ORGANISER_SHOW_ALL|wxRICHTEXT_ORGANISER_DELETE_STYLES|wxRICHTEXT_ORGANISER_CREATE_STYLES|
+             wxRICHTEXT_ORGANISER_APPLY_STYLES|wxRICHTEXT_ORGANISER_EDIT_STYLES|wxRICHTEXT_ORGANISER_RENAME_STYLES)
 {
 }
 
@@ -90,38 +92,42 @@ void wxsRichTextStyleOrganiserDialog::OnBuildCreatingCode()
     wxString sStyleSheetName = GetCoderContext()->GetUniqueName(_T("richTextStyleSheet"));
     switch(GetLanguage())
     {
-        case wxsCPP:
-            AddHeader(_T("<wx/dialog.h>"), GetInfo().ClassName, 0);
-            AddHeader(_T("<wx/richtext/richtextstyledlg.h>"), GetInfo().ClassName, 0);
+    case wxsCPP:
+        AddHeader(_T("<wx/dialog.h>"), GetInfo().ClassName, 0);
+        AddHeader(_T("<wx/richtext/richtextstyledlg.h>"), GetInfo().ClassName, 0);
 
-            for(int i = 0;arrStyleValueNames[i];i++){
-                if((m_iFlags & arrStyleValues[i]) == arrStyleValues[i]){
-                    sFlags << arrStyleValueNames[i] << _T("|");
-                }
+        for(int i = 0; arrStyleValueNames[i]; i++)
+        {
+            if((m_iFlags & arrStyleValues[i]) == arrStyleValues[i])
+            {
+                sFlags << arrStyleValueNames[i] << _T("|");
             }
-            if(sFlags.IsEmpty()){
-                sFlags = _T("0");
-            }
-            else{
-                sFlags.RemoveLast();
-            }
+        }
+        if(sFlags.IsEmpty())
+        {
+            sFlags = _T("0");
+        }
+        else
+        {
+            sFlags.RemoveLast();
+        }
 
-            AddDeclaration(wxString::Format(wxT("wxRichTextStyleSheet  *%s;"), sStyleSheetName.wx_str()));
-            Codef(_T("\t%s = new wxRichTextStyleSheet;\n"), sStyleSheetName.wx_str());
+        AddDeclaration(wxString::Format(wxT("wxRichTextStyleSheet  *%s;"), sStyleSheetName.wx_str()));
+        Codef(_T("\t%s = new wxRichTextStyleSheet;\n"), sStyleSheetName.wx_str());
 
-            Codef(_T("%C(%s, %s, NULL, %W, %I, %t, ")
-                  wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_POSITION, ")
-                  wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_SIZE, ")
-                  wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_STYLE);\n"),
-                  sFlags.wx_str(), sStyleSheetName.wx_str(), m_sCaption.wx_str());
+        Codef(_T("%C(%s, %s, NULL, %W, %I, %t, ")
+              wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_POSITION, ")
+              wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_SIZE, ")
+              wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_STYLE);\n"),
+              sFlags.wx_str(), sStyleSheetName.wx_str(), m_sCaption.wx_str());
 
-            BuildSetupWindowCode();
-            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-            break;
+        BuildSetupWindowCode();
+        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+        break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsRichTextStyleOrganiserDialog::OnBuildCreatingCode"), GetLanguage());
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsRichTextStyleOrganiserDialog::OnBuildCreatingCode"), GetLanguage());
     }
 }
 
@@ -135,7 +141,7 @@ void wxsRichTextStyleOrganiserDialog::OnEnumToolProperties(cb_unused long Flags)
 {
     // Default to wxRICHTEXT_ORGANISER_ORGANISE.
     WXS_FLAGS(wxsRichTextStyleOrganiserDialog, m_iFlags, _("Style Flags"), _T("style_flags"), arrStyleValues, arrStyleValueNames,
-                                                        wxRICHTEXT_ORGANISER_SHOW_ALL|wxRICHTEXT_ORGANISER_DELETE_STYLES|wxRICHTEXT_ORGANISER_CREATE_STYLES
-                                                        |wxRICHTEXT_ORGANISER_APPLY_STYLES|wxRICHTEXT_ORGANISER_EDIT_STYLES|wxRICHTEXT_ORGANISER_RENAME_STYLES )
+              wxRICHTEXT_ORGANISER_SHOW_ALL|wxRICHTEXT_ORGANISER_DELETE_STYLES|wxRICHTEXT_ORGANISER_CREATE_STYLES
+              |wxRICHTEXT_ORGANISER_APPLY_STYLES|wxRICHTEXT_ORGANISER_EDIT_STYLES|wxRICHTEXT_ORGANISER_RENAME_STYLES )
     WXS_SHORT_STRING(wxsRichTextStyleOrganiserDialog, m_sCaption, _("Caption"), _T("caption"), SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_TITLE, true);
 }

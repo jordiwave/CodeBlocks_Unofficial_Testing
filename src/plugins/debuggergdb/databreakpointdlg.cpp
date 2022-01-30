@@ -42,9 +42,9 @@ DataBreakpointDlg::DataBreakpointDlg(wxWindow *parent, const wxString& dataExpre
     bszMain->Add(m_dataExpression, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 8);
     wxString __wxRadioBoxChoices_1[3] =
     {
-    	_("Break on read"),
-    	_("Break on write"),
-    	_("Break on read or write")
+        _("Break on read"),
+        _("Break on write"),
+        _("Break on read or write")
     };
     m_condition = new wxRadioBox(this, ID_RDO_CONDITION, _("Condition"), wxDefaultPosition, wxDefaultSize, 3, __wxRadioBoxChoices_1, 1, 0, wxDefaultValidator, _T("ID_RDO_CONDITION"));
     bszMain->Add(m_condition, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 8);

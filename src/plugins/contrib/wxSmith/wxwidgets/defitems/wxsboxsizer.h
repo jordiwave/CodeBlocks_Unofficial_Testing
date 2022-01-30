@@ -28,18 +28,21 @@
 /** \brief Class for wxBoxSizer item */
 class wxsBoxSizer: public wxsSizer
 {
-    public:
+public:
 
-        wxsBoxSizer(wxsItemResData* Data);
+    wxsBoxSizer(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual wxSizer* OnBuildSizerPreview(wxWindow* Parent);
-        virtual void OnBuildSizerCreatingCode();
-        virtual void OnEnumSizerProperties(long Flags);
-        virtual bool OnIsPointer() { return true; }
+    virtual wxSizer* OnBuildSizerPreview(wxWindow* Parent);
+    virtual void OnBuildSizerCreatingCode();
+    virtual void OnEnumSizerProperties(long Flags);
+    virtual bool OnIsPointer()
+    {
+        return true;
+    }
 
-        long Orient;
+    long Orient;
 };
 
 #endif

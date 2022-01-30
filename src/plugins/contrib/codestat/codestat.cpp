@@ -26,7 +26,7 @@
 // Register the plugin
 namespace
 {
-    PluginRegistrant<CodeStat> reg(_T("CodeStat"));
+PluginRegistrant<CodeStat> reg(_T("CodeStat"));
 };
 
 CodeStat::CodeStat()
@@ -82,8 +82,8 @@ int CodeStat::Execute()
     if (!IsAttached())
         return -1;
 
-   const cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
-   // if no project open, exit
+    const cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+    // if no project open, exit
     if (!project)
     {
         wxString msg = _("You need to open a project\nbefore using the plugin!");

@@ -28,18 +28,18 @@
 /** \brief Class for wxsCheckBox widget */
 class wxsCheckBox: public wxsWidget
 {
-    public:
+public:
 
-        wxsCheckBox(wxsItemResData* Data);
+    wxsCheckBox(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        wxString Label;
-        bool IsChecked;
+    wxString Label;
+    bool IsChecked;
 };
 
 #endif

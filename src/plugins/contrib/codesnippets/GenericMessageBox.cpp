@@ -21,17 +21,17 @@
 //-#if wxUSE_MSGDLG && (!defined(__WXGTK20__) || defined(__WXUNIVERSAL__) || defined(__WXGPE__))
 
 #ifndef WX_PRECOMP
-    #include "wx/utils.h"
-    #include "wx/dialog.h"
-    #include "wx/button.h"
-    #include "wx/stattext.h"
-    #include "wx/statbmp.h"
-    #include "wx/layout.h"
-    #include "wx/intl.h"
-    #include "wx/icon.h"
-    #include "wx/sizer.h"
-    #include "wx/app.h"
-    #include "wx/settings.h"
+#include "wx/utils.h"
+#include "wx/dialog.h"
+#include "wx/button.h"
+#include "wx/stattext.h"
+#include "wx/statbmp.h"
+#include "wx/layout.h"
+#include "wx/intl.h"
+#include "wx/icon.h"
+#include "wx/sizer.h"
+#include "wx/app.h"
+#include "wx/settings.h"
 #endif
 
 #include <stdio.h>
@@ -42,7 +42,7 @@
 #include "wx/artprov.h"
 
 #if wxUSE_STATLINE
-    #include "wx/statline.h"
+#include "wx/statline.h"
 #endif
 
 // ----------------------------------------------------------------------------
@@ -50,19 +50,19 @@
 // ----------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(GenericMessageDialog, wxScrollingDialog)
-        EVT_BUTTON(wxID_YES, GenericMessageDialog::OnYes)
-        EVT_BUTTON(wxID_NO, GenericMessageDialog::OnNo)
-        EVT_BUTTON(wxID_CANCEL, GenericMessageDialog::OnCancel)
+    EVT_BUTTON(wxID_YES, GenericMessageDialog::OnYes)
+    EVT_BUTTON(wxID_NO, GenericMessageDialog::OnNo)
+    EVT_BUTTON(wxID_CANCEL, GenericMessageDialog::OnCancel)
 END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(GenericMessageDialog, wxScrollingDialog )
 
 // ----------------------------------------------------------------------------
 GenericMessageDialog::GenericMessageDialog( wxWindow *parent,
-                                                const wxString& message,
-                                                const wxString& caption,
-                                                long style,
-                                                const wxPoint& pos)
+        const wxString& message,
+        const wxString& caption,
+        long style,
+        const wxPoint& pos)
 // ----------------------------------------------------------------------------
     : wxScrollingDialog( parent, wxID_ANY, caption, pos, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ), m_style( style )
 {
@@ -79,25 +79,25 @@ GenericMessageDialog::GenericMessageDialog( wxWindow *parent,
         wxBitmap bitmap;
         switch ( m_style & wxICON_MASK )
         {
-            default:
-                wxFAIL_MSG(_T("incorrect log style"));
-                // fall through
+        default:
+            wxFAIL_MSG(_T("incorrect log style"));
+        // fall through
 
-            case wxICON_ERROR:
-                bitmap = wxArtProvider::GetIcon(wxART_ERROR, wxART_MESSAGE_BOX);
-                break;
+        case wxICON_ERROR:
+            bitmap = wxArtProvider::GetIcon(wxART_ERROR, wxART_MESSAGE_BOX);
+            break;
 
-            case wxICON_INFORMATION:
-                bitmap = wxArtProvider::GetIcon(wxART_INFORMATION, wxART_MESSAGE_BOX);
-                break;
+        case wxICON_INFORMATION:
+            bitmap = wxArtProvider::GetIcon(wxART_INFORMATION, wxART_MESSAGE_BOX);
+            break;
 
-            case wxICON_WARNING:
-                bitmap = wxArtProvider::GetIcon(wxART_WARNING, wxART_MESSAGE_BOX);
-                break;
+        case wxICON_WARNING:
+            bitmap = wxArtProvider::GetIcon(wxART_WARNING, wxART_MESSAGE_BOX);
+            break;
 
-            case wxICON_QUESTION:
-                bitmap = wxArtProvider::GetIcon(wxART_QUESTION, wxART_MESSAGE_BOX);
-                break;
+        case wxICON_QUESTION:
+            bitmap = wxArtProvider::GetIcon(wxART_QUESTION, wxART_MESSAGE_BOX);
+            break;
         }
         wxStaticBitmap *icon = new wxStaticBitmap(this, wxID_ANY, bitmap);
         if (is_pda)
@@ -158,7 +158,7 @@ void GenericMessageDialog::OnCancel(wxCommandEvent& WXUNUSED(event))
 }
 // ----------------------------------------------------------------------------
 int GenericMessageBox(const wxString& messageIn, const wxString& captionIn, long style,
-                 wxWindow *parent, int x, int y )
+                      wxWindow *parent, int x, int y )
 // ----------------------------------------------------------------------------
 {
     long decorated_style = style | wxCENTER;
@@ -169,22 +169,24 @@ int GenericMessageBox(const wxString& messageIn, const wxString& captionIn, long
     }
 
     // Substitute blanks for \t (tabs) which the wxGenericMessageDialog can't handle
-    wxString message = messageIn; message.Replace( _T("\t"), _T("    ") );
-    wxString caption = captionIn; caption.Replace( _T("\t"), _T("    ") );
+    wxString message = messageIn;
+    message.Replace( _T("\t"), _T("    ") );
+    wxString caption = captionIn;
+    caption.Replace( _T("\t"), _T("    ") );
 
     GenericMessageDialog dialog(parent, message, caption, decorated_style, wxPoint(x,y));
     PlaceWindow(&dialog);
     int ans = dialog.ShowModal();
     switch ( ans )
     {
-        case wxID_OK:
-            return wxOK;
-        case wxID_YES:
-            return wxYES;
-        case wxID_NO:
-            return wxNO;
-        case wxID_CANCEL:
-            return wxCANCEL;
+    case wxID_OK:
+        return wxOK;
+    case wxID_YES:
+        return wxYES;
+    case wxID_NO:
+        return wxNO;
+    case wxID_CANCEL:
+        return wxCANCEL;
     }
 
     wxFAIL_MSG( _T("unexpected return code from GenericMessageDialog") );

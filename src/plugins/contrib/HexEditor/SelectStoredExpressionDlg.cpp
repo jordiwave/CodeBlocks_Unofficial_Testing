@@ -40,79 +40,79 @@ const long SelectStoredExpressionDlg::ID_TIMER1 = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(SelectStoredExpressionDlg,wxScrollingDialog)
-	//(*EventTable(SelectStoredExpressionDlg)
-	//*)
+    //(*EventTable(SelectStoredExpressionDlg)
+    //*)
 END_EVENT_TABLE()
 
 SelectStoredExpressionDlg::SelectStoredExpressionDlg(wxWindow* parent,const wxString& startingExpression)
 {
     m_Expression = startingExpression;
     m_CacheChanged = false;
-	BuildContent(parent);
-	ReadExpressions();
-	RecreateExpressionsList();
+    BuildContent(parent);
+    ReadExpressions();
+    RecreateExpressionsList();
 }
 
 void SelectStoredExpressionDlg::BuildContent(wxWindow* parent)
 {
-	//(*Initialize(SelectStoredExpressionDlg)
-	wxBoxSizer* BoxSizer3;
-	wxBoxSizer* BoxSizer2;
-	wxBoxSizer* BoxSizer1;
-	wxStdDialogButtonSizer* StdDialogButtonSizer1;
-	wxStaticBoxSizer* StaticBoxSizer1;
+    //(*Initialize(SelectStoredExpressionDlg)
+    wxBoxSizer* BoxSizer3;
+    wxBoxSizer* BoxSizer2;
+    wxBoxSizer* BoxSizer1;
+    wxStdDialogButtonSizer* StdDialogButtonSizer1;
+    wxStaticBoxSizer* StaticBoxSizer1;
 
-	Create(parent, wxID_ANY, _("Stored Expressions"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
-	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Stored expressions"));
-	m_Expressions = new wxListBox(this, ID_LISTBOX1, wxDefaultPosition, wxSize(292,119), 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX1"));
-	StaticBoxSizer1->Add(m_Expressions, 1, wxALL|wxEXPAND, 5);
-	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Filter:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-	BoxSizer2->Add(StaticText1, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
-	m_Filter = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-	BoxSizer2->Add(m_Filter, 1, wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer1->Add(BoxSizer2, 0, wxBOTTOM|wxEXPAND, 5);
-	BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-	Button1 = new wxButton(this, ID_BUTTON1, _("New"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON1"));
-	BoxSizer3->Add(Button1, 1, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
-	Button2 = new wxButton(this, ID_BUTTON2, _("Clone"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON2"));
-	BoxSizer3->Add(Button2, 1, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
-	Button3 = new wxButton(this, ID_BUTTON3, _("Modify"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON3"));
-	BoxSizer3->Add(Button3, 1, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
-	Button4 = new wxButton(this, ID_BUTTON4, _("Delete"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON4"));
-	BoxSizer3->Add(Button4, 1, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer1->Add(BoxSizer3, 0, wxBOTTOM|wxRIGHT|wxEXPAND, 5);
-	BoxSizer1->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND, 5);
-	StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
-	StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
-	StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
-	StdDialogButtonSizer1->Realize();
-	BoxSizer1->Add(StdDialogButtonSizer1, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
-	SetSizer(BoxSizer1);
-	Timer1.SetOwner(this, ID_TIMER1);
-	BoxSizer1->Fit(this);
-	BoxSizer1->SetSizeHints(this);
+    Create(parent, wxID_ANY, _("Stored Expressions"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
+    BoxSizer1 = new wxBoxSizer(wxVERTICAL);
+    StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Stored expressions"));
+    m_Expressions = new wxListBox(this, ID_LISTBOX1, wxDefaultPosition, wxSize(292,119), 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX1"));
+    StaticBoxSizer1->Add(m_Expressions, 1, wxALL|wxEXPAND, 5);
+    BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
+    StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Filter:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+    BoxSizer2->Add(StaticText1, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    m_Filter = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    BoxSizer2->Add(m_Filter, 1, wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1->Add(BoxSizer2, 0, wxBOTTOM|wxEXPAND, 5);
+    BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
+    Button1 = new wxButton(this, ID_BUTTON1, _("New"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON1"));
+    BoxSizer3->Add(Button1, 1, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
+    Button2 = new wxButton(this, ID_BUTTON2, _("Clone"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON2"));
+    BoxSizer3->Add(Button2, 1, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
+    Button3 = new wxButton(this, ID_BUTTON3, _("Modify"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON3"));
+    BoxSizer3->Add(Button3, 1, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
+    Button4 = new wxButton(this, ID_BUTTON4, _("Delete"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON4"));
+    BoxSizer3->Add(Button4, 1, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1->Add(BoxSizer3, 0, wxBOTTOM|wxRIGHT|wxEXPAND, 5);
+    BoxSizer1->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND, 5);
+    StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
+    StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
+    StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
+    StdDialogButtonSizer1->Realize();
+    BoxSizer1->Add(StdDialogButtonSizer1, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    SetSizer(BoxSizer1);
+    Timer1.SetOwner(this, ID_TIMER1);
+    BoxSizer1->Fit(this);
+    BoxSizer1->SetSizeHints(this);
 
-	Connect(ID_LISTBOX1,wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&SelectStoredExpressionDlg::Onm_ExpressionsSelect);
-	Connect(ID_LISTBOX1,wxEVT_COMMAND_LISTBOX_DOUBLECLICKED,(wxObjectEventFunction)&SelectStoredExpressionDlg::Onm_ExpressionsDClick);
-	Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&SelectStoredExpressionDlg::Onm_FilterText);
-	Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&SelectStoredExpressionDlg::Onm_FilterTextEnter);
-	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SelectStoredExpressionDlg::OnButton1Click);
-	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SelectStoredExpressionDlg::OnButton2Click);
-	Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SelectStoredExpressionDlg::OnButton3Click);
-	Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SelectStoredExpressionDlg::OnButton4Click);
-	Connect(ID_TIMER1,wxEVT_TIMER,(wxObjectEventFunction)&SelectStoredExpressionDlg::OnTimer1Trigger);
-	//*)
+    Connect(ID_LISTBOX1,wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&SelectStoredExpressionDlg::Onm_ExpressionsSelect);
+    Connect(ID_LISTBOX1,wxEVT_COMMAND_LISTBOX_DOUBLECLICKED,(wxObjectEventFunction)&SelectStoredExpressionDlg::Onm_ExpressionsDClick);
+    Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&SelectStoredExpressionDlg::Onm_FilterText);
+    Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&SelectStoredExpressionDlg::Onm_FilterTextEnter);
+    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SelectStoredExpressionDlg::OnButton1Click);
+    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SelectStoredExpressionDlg::OnButton2Click);
+    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SelectStoredExpressionDlg::OnButton3Click);
+    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SelectStoredExpressionDlg::OnButton4Click);
+    Connect(ID_TIMER1,wxEVT_TIMER,(wxObjectEventFunction)&SelectStoredExpressionDlg::OnTimer1Trigger);
+    //*)
 
-	Connect(wxID_OK,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SelectStoredExpressionDlg::OnOkClick);
-	Connect(wxID_CANCEL,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SelectStoredExpressionDlg::OnCancelClick);
+    Connect(wxID_OK,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SelectStoredExpressionDlg::OnOkClick);
+    Connect(wxID_CANCEL,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SelectStoredExpressionDlg::OnCancelClick);
 }
 
 SelectStoredExpressionDlg::~SelectStoredExpressionDlg()
 {
-	//(*Destroy(SelectStoredExpressionDlg)
-	//*)
+    //(*Destroy(SelectStoredExpressionDlg)
+    //*)
 }
 
 void SelectStoredExpressionDlg::ReadExpressions()
@@ -238,7 +238,7 @@ void SelectStoredExpressionDlg::AddingExpression( const wxString& defaultName, c
     m_Cache[ name ] = value;
     m_CacheChanged = true;
 
-	RecreateExpressionsList( name );
+    RecreateExpressionsList( name );
 }
 
 void SelectStoredExpressionDlg::Onm_ExpressionsSelect(wxCommandEvent& /*event*/)
@@ -271,11 +271,11 @@ void SelectStoredExpressionDlg::StoreExpressionsQuery()
 {
     if ( m_CacheChanged )
     {
-       int ret = cbMessageBox( _("Expressions has changed.\nDo you want to save them?\n"), _("Changed expressions"), wxYES_NO );
-       if ( ret == wxID_YES )
-       {
-           StoreExpressions();
-       }
+        int ret = cbMessageBox( _("Expressions has changed.\nDo you want to save them?\n"), _("Changed expressions"), wxYES_NO );
+        if ( ret == wxID_YES )
+        {
+            StoreExpressions();
+        }
     }
     m_CacheChanged = false;
 }
@@ -320,7 +320,7 @@ void SelectStoredExpressionDlg::OnButton3Click(wxCommandEvent& /*event*/)
     m_Cache[ name ] = value;
     m_CacheChanged = true;
 
-	RecreateExpressionsList( name );
+    RecreateExpressionsList( name );
 }
 
 

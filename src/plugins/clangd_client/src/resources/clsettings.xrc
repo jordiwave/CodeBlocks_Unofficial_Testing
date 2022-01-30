@@ -318,28 +318,67 @@
 									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
-
-                                <!-- Begin Clangd client options -->
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer">
-										<label>Specify clangd executable to use</label>
+										<label>Specify clang and clangd executable directory to use</label>
 										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXTCLANGDAEMON">
+												<label>ClangD executable directory</label>
+												<fg>#800000</fg>
+											</object>
+											<flag>wxTOP|wxLEFT</flag>
+											<border>8</border>
+										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer">
 												<object class="sizeritem">
-													<object class="wxTextCtrl" name="txtMasterPath" />
+													<object class="wxTextCtrl" name="txtClangDaemonMasterPath" />
 													<flag>wxEXPAND</flag>
 													<option>1</option>
 												</object>
 												<object class="sizeritem">
-													<object class="wxButton" name="btnMasterPath">
+													<object class="wxButton" name="btnClangDaemonMasterPath">
 														<label>...</label>
 														<size>20,-1</size>
 													</object>
 													<flag>wxALIGN_TOP</flag>
 												</object>
 												<object class="sizeritem">
-													<object class="wxButton" name="btnAutoDetect">
+													<object class="wxButton" name="btnClangDaemonAutoDetect">
+														<label>Auto-detect</label>
+														<size>-1,-1</size>
+													</object>
+													<flag>wxALIGN_TOP</flag>
+												</object>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXTCLANG">
+												<label>Clang executable directory</label>
+												<fg>#800000</fg>
+											</object>
+											<flag>wxTOP|wxLEFT</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<object class="sizeritem">
+													<object class="wxTextCtrl" name="txtClangMasterPath" />
+													<flag>wxEXPAND</flag>
+													<option>1</option>
+												</object>
+												<object class="sizeritem">
+													<object class="wxButton" name="btnClangMasterPath">
+														<label>...</label>
+														<size>20,-1</size>
+													</object>
+													<flag>wxALIGN_TOP</flag>
+												</object>
+												<object class="sizeritem">
+													<object class="wxButton" name="btnClangAutoDetect">
 														<label>Auto-detect</label>
 														<size>-1,-1</size>
 													</object>
@@ -351,14 +390,19 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT7">
-												<label>NOTE: The clangd&apos;s version must be 13 or above. </label>
+												<label>NOTE: Both clangd and cland executables version must be 13 or above. </label>
 												<fg>#800000</fg>
 											</object>
-											<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+											<flag>wxTOP|wxBOTTOM|wxLEFT</flag>
 											<border>8</border>
 										</object>
-                                        <!-- End Clangd client options -->
-
+										<object class="sizeritem">
+											<object class="wxButton" name="btnClangBothAutoDetect">
+												<label>Auto-detect BOTH clang and clangd executables</label>
+												<size>-1,-1</size>
+											</object>
+											<flag>wxALIGN_CENTER_HORIZONTAL</flag>
+										</object>
 									</object>
 									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>8</border>
@@ -415,16 +459,12 @@
 									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
-
-                            <!-- Begin clangd options for log -->
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer">
 										<label>Clangd Logging options</label>
-                                    <orient>wxHORIZONTAL</orient>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkLogClangdClient">
 												<label>Enable Clangd Client logging</label>
-                                            <checked>0</checked>
 											</object>
 											<flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
 											<border>5</border>
@@ -432,16 +472,14 @@
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkLogClangdServer">
 												<label>Enable Clangd Server logging</label>
-                                            <checked>0</checked>
 											</object>
+											<flag>wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 									</object>
 									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
-                            <!-- End clangd options for log -->
-
 							</object>
 						</object>
 						<label>C/C++ parser (adv.)</label>

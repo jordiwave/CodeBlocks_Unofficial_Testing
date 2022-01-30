@@ -129,8 +129,8 @@ int IniParser::FindGroupByName(const wxString& name, bool caseSensitive) const
     for (int i = 0; i < GetGroupsCount(); ++i)
     {
         bool found = caseSensitive
-                    ? name.Cmp(m_Array[i].name) == 0
-                    : name.CmpNoCase(m_Array[i].name) == 0;
+                     ? name.Cmp(m_Array[i].name) == 0
+                     : name.CmpNoCase(m_Array[i].name) == 0;
         if (found)
             return i;
     }
@@ -168,8 +168,8 @@ int IniParser::FindKeyByName(int groupIdx, const wxString& name, bool caseSensit
     for (int i = 0; i < GetKeysCount(groupIdx); ++i)
     {
         bool found = caseSensitive
-                    ? name.Cmp(m_Array[groupIdx].pairs[i].key) == 0
-                    : name.CmpNoCase(m_Array[groupIdx].pairs[i].key) == 0;
+                     ? name.Cmp(m_Array[groupIdx].pairs[i].key) == 0
+                     : name.CmpNoCase(m_Array[groupIdx].pairs[i].key) == 0;
         if (found)
             return i;
     }

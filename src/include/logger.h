@@ -15,8 +15,8 @@ class wxWindow;
 
 namespace
 {
-    static wxString temp_string(_T('\0'), 250);
-    static wxString newline_string(_T("\n"));
+static wxString temp_string(_T('\0'), 250);
+static wxString newline_string(_T("\n"));
 }
 
 /** The base class for all kinds of loggers, see loggers.h for its derived classes */
@@ -64,10 +64,19 @@ public:
     virtual void      CopyContentsToClipboard(cb_optional bool selectionOnly = false) {}
 
     virtual void      UpdateSettings() {}
-    virtual wxWindow* CreateControl(cb_optional wxWindow* parent) { return nullptr; }
+    virtual wxWindow* CreateControl(cb_optional wxWindow* parent)
+    {
+        return nullptr;
+    }
 
-    virtual bool      GetWrapMode() const { return false; }
-    virtual bool      HasFeature(cb_optional Feature::Enum feature) const { return false; }
+    virtual bool      GetWrapMode() const
+    {
+        return false;
+    }
+    virtual bool      HasFeature(cb_optional Feature::Enum feature) const
+    {
+        return false;
+    }
     virtual void      AppendAdditionalMenuItems(cb_optional wxMenu &menu) {}
 };
 

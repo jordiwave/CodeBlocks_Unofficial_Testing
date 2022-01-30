@@ -7,7 +7,7 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include "Task.h"
@@ -32,43 +32,43 @@ class HooverDrawlet;
 
 class PasteTask : public Task
 {
-  public:
-		PasteTask(NassiView *view, NassiFileContent *nfc, NassiBrick *brick, wxString strc, wxString strs);
-		virtual ~PasteTask();
+public:
+    PasteTask(NassiView *view, NassiFileContent *nfc, NassiBrick *brick, wxString strc, wxString strs);
+    virtual ~PasteTask();
 
-		virtual wxCursor Start();
+    virtual wxCursor Start();
 
-        // events from window:
-		virtual void OnMouseLeftUp(wxMouseEvent &event, const wxPoint &position);
-        virtual void OnMouseLeftDown(wxMouseEvent &event, const wxPoint &position);
-        virtual void OnMouseRightDown(wxMouseEvent &event, const wxPoint &position);
-        virtual void OnMouseRightUp(wxMouseEvent& event, const wxPoint &position);
-        virtual HooverDrawlet *OnMouseMove(wxMouseEvent &event, const wxPoint &position);
-        virtual void OnKeyDown(wxKeyEvent &event);
-        virtual void OnChar(wxKeyEvent &event);
+    // events from window:
+    virtual void OnMouseLeftUp(wxMouseEvent &event, const wxPoint &position);
+    virtual void OnMouseLeftDown(wxMouseEvent &event, const wxPoint &position);
+    virtual void OnMouseRightDown(wxMouseEvent &event, const wxPoint &position);
+    virtual void OnMouseRightUp(wxMouseEvent& event, const wxPoint &position);
+    virtual HooverDrawlet *OnMouseMove(wxMouseEvent &event, const wxPoint &position);
+    virtual void OnKeyDown(wxKeyEvent &event);
+    virtual void OnChar(wxKeyEvent &event);
 
-        // events from frame(s)
-        virtual bool CanEdit()const;
-        //virtual bool CanCopy()const;
-        //virtual bool CanCut()const;
-        virtual bool CanPaste()const;
-        virtual bool HasSelection()const;
-        virtual void DeleteSelection();
-        virtual void Copy();
-        virtual void Cut();
-        virtual void Paste();
+    // events from frame(s)
+    virtual bool CanEdit()const;
+    //virtual bool CanCopy()const;
+    //virtual bool CanCut()const;
+    virtual bool CanPaste()const;
+    virtual bool HasSelection()const;
+    virtual void DeleteSelection();
+    virtual void Copy();
+    virtual void Cut();
+    virtual void Paste();
 
 
-        virtual bool Done()const;
-    private:
-        PasteTask(const PasteTask &p);
-        PasteTask &operator=(const PasteTask &rhs);
-	private:
-        NassiView *m_view;
-        NassiFileContent *m_nfc;
-        bool m_done;
-        NassiBrick *m_brick;
-        wxString m_strc, m_strs;
+    virtual bool Done()const;
+private:
+    PasteTask(const PasteTask &p);
+    PasteTask &operator=(const PasteTask &rhs);
+private:
+    NassiView *m_view;
+    NassiFileContent *m_nfc;
+    bool m_done;
+    NassiBrick *m_brick;
+    wxString m_strc, m_strs;
 };
 
 #endif //InsertBrickTask_h

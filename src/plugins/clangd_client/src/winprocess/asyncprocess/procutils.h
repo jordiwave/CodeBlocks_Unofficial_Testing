@@ -31,7 +31,8 @@
 #include <tlhelp32.h>
 #endif
 
-struct ProcessEntry {
+struct ProcessEntry
+{
     wxString name;
     long pid;
 };

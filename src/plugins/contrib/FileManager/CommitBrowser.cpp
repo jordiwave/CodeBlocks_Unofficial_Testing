@@ -9,8 +9,8 @@
 //*)
 
 BEGIN_EVENT_TABLE(CommitBrowser,wxDialog)
-	//(*EventTable(CommitBrowser)
-	//*)
+    //(*EventTable(CommitBrowser)
+    //*)
     EVT_COMMAND(0, wxEVT_NOTIFY_UPDATE_COMPLETE, CommitBrowser::OnUpdateComplete)
     EVT_COMMAND(0, wxEVT_NOTIFY_COMMITS_UPDATE_COMPLETE, CommitBrowser::OnCommitsUpdateComplete)
     EVT_LIST_ITEM_SELECTED(XRCID("ID_COMMITLIST"), CommitBrowser::OnListItemSelected)
@@ -23,16 +23,16 @@ END_EVENT_TABLE()
 
 CommitBrowser::CommitBrowser(wxWindow* parent, const wxString& repo_path, const wxString &repo_type, const wxString &files)
 {
-	//(*Initialize(CommitBrowser)
-	wxXmlResource::Get()->LoadObject(this,parent,_T("CommitBrowser"),_T("wxDialog"));
-	StaticText1 = (wxStaticText*)FindWindow(XRCID("ID_STATICTEXT1"));
-	Choice1 = (wxChoice*)FindWindow(XRCID("ID_BRANCH_CHOICE"));
-	CommitList = (wxListCtrl*)FindWindow(XRCID("ID_COMMITLIST"));
-	TextCtrl1 = (wxTextCtrl*)FindWindow(XRCID("ID_COMMIT_MESSAGE"));
-	ButtonMore = (wxButton*)FindWindow(XRCID("ID_BUTTON_MORE"));
-	CommitStatus = (wxStaticText*)FindWindow(XRCID("ID_COMMIT_STATUS"));
-	Button1 = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
-	Button2 = (wxButton*)FindWindow(XRCID("ID_BROWSE_COMMIT"));
+    //(*Initialize(CommitBrowser)
+    wxXmlResource::Get()->LoadObject(this,parent,_T("CommitBrowser"),_T("wxDialog"));
+    StaticText1 = (wxStaticText*)FindWindow(XRCID("ID_STATICTEXT1"));
+    Choice1 = (wxChoice*)FindWindow(XRCID("ID_BRANCH_CHOICE"));
+    CommitList = (wxListCtrl*)FindWindow(XRCID("ID_COMMITLIST"));
+    TextCtrl1 = (wxTextCtrl*)FindWindow(XRCID("ID_COMMIT_MESSAGE"));
+    ButtonMore = (wxButton*)FindWindow(XRCID("ID_BUTTON_MORE"));
+    CommitStatus = (wxStaticText*)FindWindow(XRCID("ID_COMMIT_STATUS"));
+    Button1 = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
+    Button2 = (wxButton*)FindWindow(XRCID("ID_BROWSE_COMMIT"));
 
     CheckStartCommit = (wxCheckBox*)FindWindow(XRCID("ID_CHECK_START_COMMIT"));
     StartCommit = (wxTextCtrl*)FindWindow(XRCID("ID_START_COMMIT"));
@@ -45,41 +45,41 @@ CommitBrowser::CommitBrowser(wxWindow* parent, const wxString& repo_path, const 
     Grep = (wxTextCtrl*)FindWindow(XRCID("ID_GREP_ENTRY"));
     FileEntry = (wxTextCtrl*)FindWindow(XRCID("ID_FILE_ENTRY"));
 
-	Connect(XRCID("ID_SEARCH_BUTTON"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CommitBrowser::OnSearch);
-	Connect(XRCID("ID_CANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CommitBrowser::OnButton1Click);
-	Connect(XRCID("ID_BROWSE_COMMIT"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CommitBrowser::OnButton2Click);
-	Connect(XRCID("ID_BUTTON_MORE"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CommitBrowser::OnButtonMore);
-	//*)
+    Connect(XRCID("ID_SEARCH_BUTTON"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CommitBrowser::OnSearch);
+    Connect(XRCID("ID_CANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CommitBrowser::OnButton1Click);
+    Connect(XRCID("ID_BROWSE_COMMIT"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CommitBrowser::OnButton2Click);
+    Connect(XRCID("ID_BUTTON_MORE"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CommitBrowser::OnButtonMore);
+    //*)
 
 
     m_autofetch_count = 0;
-	m_repo_path = repo_path;
-	m_repo_type = repo_type;
+    m_repo_path = repo_path;
+    m_repo_type = repo_type;
 
-	CommitList->InsertColumn(0,_T("ID"));
-	CommitList->InsertColumn(1,_T("Author"));
-	CommitList->InsertColumn(2,_T("Date"));
-	CommitList->InsertColumn(3,_T("Message"));
+    CommitList->InsertColumn(0,_T("ID"));
+    CommitList->InsertColumn(1,_T("Author"));
+    CommitList->InsertColumn(2,_T("Date"));
+    CommitList->InsertColumn(3,_T("Message"));
     ButtonMore->Disable();
     Button2->Disable();
-	TextCtrl1->Clear();
-	this->SetSize(600, 500);
-	//TODO: The amount fetched should be reduced if fetching over a network
-	m_rev_fetch_amt[_T("SVN")] = 20;
-	m_rev_fetch_amt[_T("GIT")] = 100;
-	m_rev_fetch_amt[_T("BZR")] = 100;
-	m_rev_fetch_amt[_T("Hg")] = 100;
-	FileEntry->SetValue(files);
+    TextCtrl1->Clear();
+    this->SetSize(600, 500);
+    //TODO: The amount fetched should be reduced if fetching over a network
+    m_rev_fetch_amt[_T("SVN")] = 20;
+    m_rev_fetch_amt[_T("GIT")] = 100;
+    m_rev_fetch_amt[_T("BZR")] = 100;
+    m_rev_fetch_amt[_T("Hg")] = 100;
+    FileEntry->SetValue(files);
 
     m_updater_commits = new CommitUpdater(this, m_repo_path, m_repo_type);
-	m_updater = new CommitUpdater(this, m_repo_path, m_repo_type);
-	m_updater->Update(_T("BRANCHES"));
+    m_updater = new CommitUpdater(this, m_repo_path, m_repo_type);
+    m_updater->Update(_T("BRANCHES"));
 }
 
 CommitBrowser::~CommitBrowser()
 {
-	//(*Destroy(CommitBrowser)
-	//*)
+    //(*Destroy(CommitBrowser)
+    //*)
 }
 
 wxString CommitBrowser::GetRepoBranch()
@@ -202,7 +202,7 @@ CommitUpdaterOptions CommitBrowser::GetCommitOptions()
                                 CheckBeforeDate->IsChecked()? wxString(BeforeDate->GetValue().FormatISODate()): e,
                                 CheckAfterDate->IsChecked()? wxString(AfterDate->GetValue().FormatISODate()): e,
                                 m_repo_type != wxEmptyString? m_rev_fetch_amt[m_repo_type]: 0
-                                );
+                               );
 }
 
 void CommitBrowser::OnBranchSelected(wxCommandEvent & /*event*/)

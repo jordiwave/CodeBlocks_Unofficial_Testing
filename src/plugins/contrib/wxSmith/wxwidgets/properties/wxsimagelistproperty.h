@@ -34,40 +34,43 @@
  */
 class wxsImageListProperty: public wxsCustomEditorProperty
 {
-    public:
+public:
 
-        /** \brief Ctor
-         *  \param PGName       The name of this property in the Property Grid.
-         *  \param DataName     The name of this property in data structures.
-         *  \param DataSubName  The name applied for each array element.
-         *  \param Offset       The offset of the value (returned from wxsOFFSET macro).
-         *  \param Priority int    The item's priority.
-         */
-        wxsImageListProperty(const wxString& PGName,const wxString& DataName,const wxString& DataSubName,long Offset,int Priority=100);
+    /** \brief Ctor
+     *  \param PGName       The name of this property in the Property Grid.
+     *  \param DataName     The name of this property in data structures.
+     *  \param DataSubName  The name applied for each array element.
+     *  \param Offset       The offset of the value (returned from wxsOFFSET macro).
+     *  \param Priority int    The item's priority.
+     */
+    wxsImageListProperty(const wxString& PGName,const wxString& DataName,const wxString& DataSubName,long Offset,int Priority=100);
 
-        /** \brief Returning type name */
-        virtual const wxString GetTypeName() { return _T("wxArrayString"); }
+    /** \brief Returning type name */
+    virtual const wxString GetTypeName()
+    {
+        return _T("wxArrayString");
+    }
 
-        /** \brief Showing editor for this property
-         *
-         * \param Object wxsPropertyContainer*    A pointer to a wxsPropertyContainer object.
-         * \return bool    True on succes, otherwise false.
-         *
-         */
-        virtual bool ShowEditor(wxsPropertyContainer* Object);
+    /** \brief Showing editor for this property
+     *
+     * \param Object wxsPropertyContainer*    A pointer to a wxsPropertyContainer object.
+     * \return bool    True on succes, otherwise false.
+     *
+     */
+    virtual bool ShowEditor(wxsPropertyContainer* Object);
 
-    protected:
+protected:
 
-        virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-        virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-        virtual wxString GetStr(wxsPropertyContainer* Object);
+    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual wxString GetStr(wxsPropertyContainer* Object);
 
-    private:
-        long Offset;                //!< The offset of a variable in this class.
-        wxString DataSubName;        //!< The name to use for sub-item entries in XML
-        wxString DataName;            //!< The name to use for item entries in XML.
+private:
+    long Offset;                //!< The offset of a variable in this class.
+    wxString DataSubName;        //!< The name to use for sub-item entries in XML
+    wxString DataName;            //!< The name to use for item entries in XML.
 };
 
 /** \addtogroup ext_properties_macros

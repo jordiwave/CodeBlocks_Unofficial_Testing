@@ -14,16 +14,16 @@
 #include "IncrementalSearch.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/menu.h>
-    #include <wx/settings.h>
-    #include <wx/toolbar.h>
-    #include <wx/textctrl.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/menu.h>
+#include <wx/settings.h>
+#include <wx/toolbar.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
 
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <cbeditor.h>
-    #include <logmanager.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <cbeditor.h>
+#include <logmanager.h>
 #endif
 
 #include <wx/combo.h>
@@ -37,9 +37,9 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<IncrementalSearch> reg(_T("IncrementalSearch"));
-    const int idIncSearchFocus = wxNewId();
-    const int idIncSearchCombo = wxNewId();
+PluginRegistrant<IncrementalSearch> reg(_T("IncrementalSearch"));
+const int idIncSearchFocus = wxNewId();
+const int idIncSearchCombo = wxNewId();
 }
 
 class cbIncSearchComboPopUp :
@@ -58,7 +58,10 @@ public:
         return wxListBox::Create(parent,wxID_ANY,wxPoint(0,0),wxSize(250,-1), choices, wxLB_SINGLE);
     }
 
-    virtual wxWindow *GetControl() { return this; }
+    virtual wxWindow *GetControl()
+    {
+        return this;
+    }
 
     virtual void SetStringValue(const wxString& s)
     {
@@ -147,24 +150,24 @@ END_EVENT_TABLE()
 
 // constructor
 IncrementalSearch::IncrementalSearch():
-        m_SearchText(wxEmptyString),
-        m_textCtrlBG_Default( wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW) ),
-        m_pToolbar(nullptr),
-        m_pTextCtrl(nullptr),
-        m_pEditor(nullptr),
-        m_NewPos(-1),
-        m_OldPos(-1),
-        m_SelStart(-1),
-        m_SelEnd(-1),
-        m_MinPos(-1),
-        m_MaxPos(-1),
-        m_flags(0),
-        m_Highlight(false),
-        m_SelectedOnly(false),
-        m_IndicFound(21),
-        m_IndicHighlight(22),
-        m_LengthFound(0),
-        m_LastInsertionPoint(0)
+    m_SearchText(wxEmptyString),
+    m_textCtrlBG_Default( wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW) ),
+    m_pToolbar(nullptr),
+    m_pTextCtrl(nullptr),
+    m_pEditor(nullptr),
+    m_NewPos(-1),
+    m_OldPos(-1),
+    m_SelStart(-1),
+    m_SelEnd(-1),
+    m_MinPos(-1),
+    m_MaxPos(-1),
+    m_flags(0),
+    m_Highlight(false),
+    m_SelectedOnly(false),
+    m_IndicFound(21),
+    m_IndicHighlight(22),
+    m_LengthFound(0),
+    m_LastInsertionPoint(0)
 
 {
     // Make sure our resources are available.
@@ -291,8 +294,8 @@ void IncrementalSearch::BuildMenu(wxMenuBar* menuBar)
         const int imageSize = Manager::Get()->GetImageSize(Manager::UIComponent::Menus);
         const double uiScale = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::Menus);
         const wxString prefix = ConfigManager::GetDataFolder()
-                              + wxString::Format(wxT("/IncrementalSearch.zip#zip:/images/%dx%d/"),
-                                                imageSize, imageSize);
+                                + wxString::Format(wxT("/IncrementalSearch.zip#zip:/images/%dx%d/"),
+                                        imageSize, imageSize);
         wxBitmap image = cbLoadBitmapScaled(prefix + wxT("incsearchfocus.png"), wxBITMAP_TYPE_PNG,
                                             uiScale);
         itemTmp->SetBitmap(image);
@@ -379,8 +382,8 @@ bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
             m_pComboCtrl->SetPopupControl(m_pChoice);
             m_pTextCtrl->Connect(wxEVT_KEY_DOWN,
                                  (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
-                                 &IncrementalSearch::OnKeyDown , 0, this);
-            m_pTextCtrl->Connect(wxEVT_KILL_FOCUS ,
+                                 &IncrementalSearch::OnKeyDown, 0, this);
+            m_pTextCtrl->Connect(wxEVT_KILL_FOCUS,
                                  (wxObjectEventFunction)(wxEventFunction)(wxFocusEventFunction)
                                  &IncrementalSearch::OnKillFocus, 0, this);
             //using the old wx2.8 versions of the constants, to avoid #ifdef'S
@@ -430,7 +433,7 @@ void IncrementalSearch::OnKeyDown(wxKeyEvent& event)
     else if(event.GetModifiers() == wxMOD_SHIFT && event.GetKeyCode() == WXK_RETURN)
     {
         if(m_pToolbar->GetToolEnabled(XRCID("idIncSearchPrev")))
-           DoSearchPrev();
+            DoSearchPrev();
     }
     else if(event.GetModifiers() == wxMOD_NONE && event.GetKeyCode() == WXK_ESCAPE)
     {
@@ -643,10 +646,10 @@ void IncrementalSearch::SearchText()
         // reset the backgroundcolor of the text-control
         m_pTextCtrl->SetBackgroundColour(m_textCtrlBG_Default);
         // windows does not update the backgroundcolor immediately, so we have to force it here
-        #ifdef __WXMSW__
+#ifdef __WXMSW__
         m_pTextCtrl->Refresh();
         m_pTextCtrl->Update();
-        #endif
+#endif
     }
     HighlightText();
 }
@@ -743,7 +746,7 @@ void IncrementalSearch::HighlightText()
             int onScreen = control->LinesOnScreen() >> 1;
             int l1 = line - onScreen;
             int l2 = line + onScreen;
-            for (int l=l1; l<=l2;l+=2)      // unfold visible lines on screen
+            for (int l=l1; l<=l2; l+=2)     // unfold visible lines on screen
                 control->EnsureVisible(l);
             control->GotoLine(l1);          // center selection on screen
             control->GotoLine(l2);
@@ -827,10 +830,10 @@ void IncrementalSearch::DoSearch(int fromPos, int startPos, int endPos)
         }
     }
     // windows does not update the backgroundcolor immediately, so we have to force it here
-    #ifdef __WXMSW__
+#ifdef __WXMSW__
     m_pTextCtrl->Refresh();
     m_pTextCtrl->Update();
-    #endif
+#endif
 }
 
 #ifndef __WXMSW__

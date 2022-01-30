@@ -10,21 +10,32 @@ struct SQClass;
 struct SQClosure : public CHAINABLE_OBJ
 {
 private:
-    SQClosure(SQSharedState *ss,SQFunctionProto *func){_function = func; __ObjAddRef(_function); _base = NULL; INIT_CHAIN();ADD_TO_CHAIN(&_ss(this)->_gc_chain,this); _env = NULL; _root=NULL;}
+    SQClosure(SQSharedState *ss,SQFunctionProto *func)
+    {
+        _function = func;
+        __ObjAddRef(_function);
+        _base = NULL;
+        INIT_CHAIN();
+        ADD_TO_CHAIN(&_ss(this)->_gc_chain,this);
+        _env = NULL;
+        _root=NULL;
+    }
 public:
-    static SQClosure *Create(SQSharedState *ss,SQFunctionProto *func,SQWeakRef *root){
+    static SQClosure *Create(SQSharedState *ss,SQFunctionProto *func,SQWeakRef *root)
+    {
         SQInteger size = _CALC_CLOSURE_SIZE(func);
         SQClosure *nc=(SQClosure*)SQ_MALLOC(size);
         new (nc) SQClosure(ss,func);
         nc->_outervalues = (SQObjectPtr *)(nc + 1);
         nc->_defaultparams = &nc->_outervalues[func->_noutervalues];
         nc->_root = root;
-         __ObjAddRef(nc->_root);
+        __ObjAddRef(nc->_root);
         _CONSTRUCT_VECTOR(SQObjectPtr,func->_noutervalues,nc->_outervalues);
         _CONSTRUCT_VECTOR(SQObjectPtr,func->_ndefaultparams,nc->_defaultparams);
         return nc;
     }
-    void Release(){
+    void Release()
+    {
         SQFunctionProto *f = _function;
         SQInteger size = _CALC_CLOSURE_SIZE(f);
         _DESTRUCT_VECTOR(SQObjectPtr,f->_noutervalues,_outervalues);
@@ -55,12 +66,16 @@ public:
     static bool Load(SQVM *v,SQUserPointer up,SQREADFUNC read,SQObjectPtr &ret);
 #ifndef NO_GARBAGE_COLLECTOR
     void Mark(SQCollectable **chain);
-    void Finalize(){
+    void Finalize()
+    {
         SQFunctionProto *f = _function;
         _NULL_SQOBJECT_VECTOR(_outervalues,f->_noutervalues);
         _NULL_SQOBJECT_VECTOR(_defaultparams,f->_ndefaultparams);
     }
-    SQObjectType GetType() {return OT_CLOSURE;}
+    SQObjectType GetType()
+    {
+        return OT_CLOSURE;
+    }
 #endif
     SQWeakRef *_env;
     SQWeakRef *_root;
@@ -75,7 +90,13 @@ struct SQOuter : public CHAINABLE_OBJ
 {
 
 private:
-    SQOuter(SQSharedState *ss, SQObjectPtr *outer){_valptr = outer; _next = NULL; INIT_CHAIN(); ADD_TO_CHAIN(&_ss(this)->_gc_chain,this); }
+    SQOuter(SQSharedState *ss, SQObjectPtr *outer)
+    {
+        _valptr = outer;
+        _next = NULL;
+        INIT_CHAIN();
+        ADD_TO_CHAIN(&_ss(this)->_gc_chain,this);
+    }
 
 public:
     static SQOuter *Create(SQSharedState *ss, SQObjectPtr *outer)
@@ -84,7 +105,10 @@ public:
         new (nc) SQOuter(ss, outer);
         return nc;
     }
-    ~SQOuter() { REMOVE_FROM_CHAIN(&_ss(this)->_gc_chain,this); }
+    ~SQOuter()
+    {
+        REMOVE_FROM_CHAIN(&_ss(this)->_gc_chain,this);
+    }
 
     void Release()
     {
@@ -94,8 +118,14 @@ public:
 
 #ifndef NO_GARBAGE_COLLECTOR
     void Mark(SQCollectable **chain);
-    void Finalize() { _value.Null(); }
-    SQObjectType GetType() {return OT_OUTER;}
+    void Finalize()
+    {
+        _value.Null();
+    }
+    SQObjectType GetType()
+    {
+        return OT_OUTER;
+    }
 #endif
 
     SQObjectPtr *_valptr;  /* pointer to value on stack, or _value below */
@@ -107,11 +137,19 @@ public:
 //////////////////////////////////////////////
 struct SQGenerator : public CHAINABLE_OBJ
 {
-    enum SQGeneratorState{eRunning,eSuspended,eDead};
+    enum SQGeneratorState {eRunning,eSuspended,eDead};
 private:
-    SQGenerator(SQSharedState *ss,SQClosure *closure){_closure=closure;_state=eRunning;_ci._generator=NULL;INIT_CHAIN();ADD_TO_CHAIN(&_ss(this)->_gc_chain,this);}
+    SQGenerator(SQSharedState *ss,SQClosure *closure)
+    {
+        _closure=closure;
+        _state=eRunning;
+        _ci._generator=NULL;
+        INIT_CHAIN();
+        ADD_TO_CHAIN(&_ss(this)->_gc_chain,this);
+    }
 public:
-    static SQGenerator *Create(SQSharedState *ss,SQClosure *closure){
+    static SQGenerator *Create(SQSharedState *ss,SQClosure *closure)
+    {
         SQGenerator *nc=(SQGenerator*)SQ_MALLOC(sizeof(SQGenerator));
         new (nc) SQGenerator(ss,closure);
         return nc;
@@ -120,11 +158,14 @@ public:
     {
         REMOVE_FROM_CHAIN(&_ss(this)->_gc_chain,this);
     }
-    void Kill(){
+    void Kill()
+    {
         _state=eDead;
         _stack.resize(0);
-        _closure.Null();}
-    void Release(){
+        _closure.Null();
+    }
+    void Release()
+    {
         sq_delete(this,SQGenerator);
     }
 
@@ -132,8 +173,15 @@ public:
     bool Resume(SQVM *v,SQObjectPtr &dest);
 #ifndef NO_GARBAGE_COLLECTOR
     void Mark(SQCollectable **chain);
-    void Finalize(){_stack.resize(0);_closure.Null();}
-    SQObjectType GetType() {return OT_GENERATOR;}
+    void Finalize()
+    {
+        _stack.resize(0);
+        _closure.Null();
+    }
+    SQObjectType GetType()
+    {
+        return OT_GENERATOR;
+    }
 #endif
     SQObjectPtr _closure;
     SQObjectPtrVec _stack;
@@ -147,7 +195,13 @@ public:
 struct SQNativeClosure : public CHAINABLE_OBJ
 {
 private:
-    SQNativeClosure(SQSharedState *ss,SQFUNCTION func){_function=func;INIT_CHAIN();ADD_TO_CHAIN(&_ss(this)->_gc_chain,this); _env = NULL;}
+    SQNativeClosure(SQSharedState *ss,SQFUNCTION func)
+    {
+        _function=func;
+        INIT_CHAIN();
+        ADD_TO_CHAIN(&_ss(this)->_gc_chain,this);
+        _env = NULL;
+    }
 public:
     static SQNativeClosure *Create(SQSharedState *ss,SQFUNCTION func,SQInteger nouters)
     {
@@ -175,7 +229,8 @@ public:
         __ObjRelease(_env);
         REMOVE_FROM_CHAIN(&_ss(this)->_gc_chain,this);
     }
-    void Release(){
+    void Release()
+    {
         SQInteger size = _CALC_NATVIVECLOSURE_SIZE(_noutervalues);
         _DESTRUCT_VECTOR(SQObjectPtr,_noutervalues,_outervalues);
         this->~SQNativeClosure();
@@ -184,8 +239,14 @@ public:
 
 #ifndef NO_GARBAGE_COLLECTOR
     void Mark(SQCollectable **chain);
-    void Finalize() { _NULL_SQOBJECT_VECTOR(_outervalues,_noutervalues); }
-    SQObjectType GetType() {return OT_NATIVECLOSURE;}
+    void Finalize()
+    {
+        _NULL_SQOBJECT_VECTOR(_outervalues,_noutervalues);
+    }
+    SQObjectType GetType()
+    {
+        return OT_NATIVECLOSURE;
+    }
 #endif
     SQInteger _nparamscheck;
     SQIntVec _typecheck;

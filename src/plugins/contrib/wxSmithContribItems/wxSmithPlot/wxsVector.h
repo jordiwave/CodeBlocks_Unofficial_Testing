@@ -29,32 +29,32 @@
 
 class wxsVector: public wxsWidget
 {
-    public:
+public:
 
-        wxsVector(wxsItemResData* Data);
+    wxsVector(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void        OnBuildCreatingCode();
-        virtual wxObject*   OnBuildPreview(wxWindow* Parent, long Flags);
-        virtual void        OnBuildDeclarationsCode();
-        virtual void        OnEnumWidgetProperties(long Flags);
+    virtual void        OnBuildCreatingCode();
+    virtual wxObject*   OnBuildPreview(wxWindow* Parent, long Flags);
+    virtual void        OnBuildDeclarationsCode();
+    virtual void        OnEnumWidgetProperties(long Flags);
 
-                void        ParseXY(void);
+    void        ParseXY(void);
 
 
 
-        wxString            mLabel;
-        int                 mAlign;
-        bool                mContinuous;
-        wxsColourData       mPenColour;     // color to draw
-        wxsFontData         mPenFont;       // for drawing the text
-        wxArrayString       mXYData;
+    wxString            mLabel;
+    int                 mAlign;
+    bool                mContinuous;
+    wxsColourData       mPenColour;     // color to draw
+    wxsFontData         mPenFont;       // for drawing the text
+    wxArrayString       mXYData;
 
-        wxArrayString       mXs;            // internal use; X data as a string
-        wxArrayString       mYs;            // Y data as a string
-        std::vector<double>  mXf;            // X data as a double value
-        std::vector<double>  mYf;            // Y data as a double
+    wxArrayString       mXs;            // internal use; X data as a string
+    wxArrayString       mYs;            // Y data as a string
+    std::vector<double>  mXf;            // X data as a double value
+    std::vector<double>  mYf;            // Y data as a double
 
 };
 

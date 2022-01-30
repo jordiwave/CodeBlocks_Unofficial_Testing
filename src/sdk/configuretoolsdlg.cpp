@@ -10,16 +10,16 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/intl.h>
-    #include <wx/listbox.h>
-    #include <wx/string.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/intl.h>
+#include <wx/listbox.h>
+#include <wx/string.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "manager.h"
-    #include "cbtool.h"
-    #include "toolsmanager.h"
-    #include "globals.h"
+#include "manager.h"
+#include "cbtool.h"
+#include "toolsmanager.h"
+#include "globals.h"
 #endif
 
 #include "configuretoolsdlg.h"
@@ -112,9 +112,9 @@ void ConfigureToolsDlg::OnRemove(cb_unused wxCommandEvent& event)
     const wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
     int sel = list->GetSelection();
     if (Manager::Get()->GetToolsManager()->GetToolByIndex(sel)->GetName() == CB_TOOLS_SEPARATOR
-        || cbMessageBox(_("Are you sure you want to remove this tool?"),
-                       _("Remove tool?"),
-                       wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION, this) == wxID_YES)
+            || cbMessageBox(_("Are you sure you want to remove this tool?"),
+                            _("Remove tool?"),
+                            wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION, this) == wxID_YES)
     {
         Manager::Get()->GetToolsManager()->RemoveToolByIndex(sel);
         DoFillList();

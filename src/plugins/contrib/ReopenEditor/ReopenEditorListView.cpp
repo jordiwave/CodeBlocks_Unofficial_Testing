@@ -9,26 +9,26 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/menu.h>
-    #include <wx/listctrl.h>
-    #include <wx/sizer.h>
-    #include <wx/panel.h>
+#include <wx/menu.h>
+#include <wx/listctrl.h>
+#include <wx/sizer.h>
+#include <wx/panel.h>
 
-    #include "editormanager.h"
-    #include "manager.h"
+#include "editormanager.h"
+#include "manager.h"
 #endif
 
 #include "ReopenEditorListView.h"
 
 namespace
 {
-    const int idReopenEditorList = wxNewId();
-    const int idReopenItem = wxNewId();
-    const int idReopenItems = wxNewId();
-    const int idReopenAll = wxNewId();
-    const int idRemoveItem = wxNewId();
-    const int idRemoveItems = wxNewId();
-    const int idRemoveAll = wxNewId();
+const int idReopenEditorList = wxNewId();
+const int idReopenItem = wxNewId();
+const int idReopenItems = wxNewId();
+const int idReopenAll = wxNewId();
+const int idRemoveItem = wxNewId();
+const int idRemoveItems = wxNewId();
+const int idRemoveAll = wxNewId();
 };
 
 BEGIN_EVENT_TABLE(ReopenEditorListView, wxPanel)

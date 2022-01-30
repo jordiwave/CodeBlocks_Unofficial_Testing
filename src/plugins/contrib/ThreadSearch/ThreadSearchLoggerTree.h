@@ -34,13 +34,16 @@ class ThreadSearchLoggerTree : public ThreadSearchLoggerBase
 public:
     /** Constructor. */
     ThreadSearchLoggerTree(ThreadSearchView& threadSearchView, ThreadSearch& threadSearchPlugin,
-                            InsertIndexManager::eFileSorting fileSorting, wxWindow* pParent, long id);
+                           InsertIndexManager::eFileSorting fileSorting, wxWindow* pParent, long id);
 
     /** Destructor. */
     ~ThreadSearchLoggerTree() override;
 
     /** Getter */
-    eLoggerTypes GetLoggerType() override { return TypeTree; }
+    eLoggerTypes GetLoggerType() override
+    {
+        return TypeTree;
+    }
 
     /** Called by ThreadSearchView to process a ThreadSearchEvent
       * sent by worker thread.

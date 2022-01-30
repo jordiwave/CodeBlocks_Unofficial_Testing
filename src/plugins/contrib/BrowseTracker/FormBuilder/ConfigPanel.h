@@ -26,37 +26,52 @@
 ///////////////////////////////////////////////////////////////////////////////
 /// Class ConfigPanel
 ///////////////////////////////////////////////////////////////////////////////
-class ConfigPanel : public wxPanel 
+class ConfigPanel : public wxPanel
 {
-	private:
-	
-	protected:
-		wxStaticText* m_staticText2;
-		
-		
-		wxStaticText* m_staticText3;
-		
-		// Virtual event handlers, overide them in your derived class
-		virtual void OnEnableBrowseMarks( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnWrapJumpEntries( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnShowToolbar( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnToggleBrowseMarkKey( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnClearAllBrowseMarksKey( wxCommandEvent& event ) { event.Skip(); }
-		
-	
-	public:
-		wxCheckBox* Cfg_BrowseMarksEnabled;
-		wxCheckBox* Cfg_WrapJumpEntries;
-		wxCheckBox* Cfg_ShowToolbar;
-		wxCheckBox* Cfg_ActivatePrevEd;
-		wxRadioBox* Cfg_ToggleKey;
-		wxStaticText* m_staticText4;
-		wxSlider* Cfg_LeftMouseDelay;
-		wxRadioBox* Cfg_ClearAllKey;
-		
-		ConfigPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 554,569 ), long style = wxTAB_TRAVERSAL );
-		~ConfigPanel();
-	
+private:
+
+protected:
+    wxStaticText* m_staticText2;
+
+
+    wxStaticText* m_staticText3;
+
+    // Virtual event handlers, overide them in your derived class
+    virtual void OnEnableBrowseMarks( wxCommandEvent& event )
+    {
+        event.Skip();
+    }
+    virtual void OnWrapJumpEntries( wxCommandEvent& event )
+    {
+        event.Skip();
+    }
+    virtual void OnShowToolbar( wxCommandEvent& event )
+    {
+        event.Skip();
+    }
+    virtual void OnToggleBrowseMarkKey( wxCommandEvent& event )
+    {
+        event.Skip();
+    }
+    virtual void OnClearAllBrowseMarksKey( wxCommandEvent& event )
+    {
+        event.Skip();
+    }
+
+
+public:
+    wxCheckBox* Cfg_BrowseMarksEnabled;
+    wxCheckBox* Cfg_WrapJumpEntries;
+    wxCheckBox* Cfg_ShowToolbar;
+    wxCheckBox* Cfg_ActivatePrevEd;
+    wxRadioBox* Cfg_ToggleKey;
+    wxStaticText* m_staticText4;
+    wxSlider* Cfg_LeftMouseDelay;
+    wxRadioBox* Cfg_ClearAllKey;
+
+    ConfigPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 554,569 ), long style = wxTAB_TRAVERSAL );
+    ~ConfigPanel();
+
 };
 
 #endif //__ConfigPanel__

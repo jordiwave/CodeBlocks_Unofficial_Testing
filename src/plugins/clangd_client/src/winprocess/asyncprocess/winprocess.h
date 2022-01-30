@@ -46,7 +46,7 @@ private:
     // WINDOWS implementation
     // Creating process related handles
     HANDLE hChildStdinRd, hChildStdinWr, hChildStdinWrDup, hChildStdoutRd, hChildStdoutWr, hChildStdoutRdDup,
-        hSaveStdin, hSaveStdout;
+           hSaveStdin, hSaveStdout;
 
     // Child process id & information
     DWORD dwProcessId;

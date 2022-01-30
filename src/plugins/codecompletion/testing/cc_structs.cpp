@@ -3,8 +3,8 @@
 // http://forums.codeblocks.org/index.php/topic,21417.0.html
 struct AAA
 {
-  int   x;
-  float y;
+    int   x;
+    float y;
 };
 
 struct AAA a1 = {.x = 1, .y=0.2}; // first line

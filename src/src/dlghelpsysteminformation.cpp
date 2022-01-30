@@ -6,19 +6,19 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #ifdef __WXMAC__
-        #include <wx/font.h>
-    #endif //__WXMAC__
-    #include <wx/button.h>    // wxImage
-    #include <wx/image.h>    // wxImage
-    #include <wx/intl.h>
-    #include <wx/stattext.h>
-    #include <wx/string.h>
-    #include <wx/textctrl.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/versioninfo.h>
-    #include "configmanager.h"
-    #include "wx/wxscintilla.h"
+#ifdef __WXMAC__
+#include <wx/font.h>
+#endif //__WXMAC__
+#include <wx/button.h>    // wxImage
+#include <wx/image.h>    // wxImage
+#include <wx/intl.h>
+#include <wx/stattext.h>
+#include <wx/string.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/versioninfo.h>
+#include "configmanager.h"
+#include "wx/wxscintilla.h"
 #endif
 
 #include <wx/clipbrd.h>
@@ -79,9 +79,9 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
 
     const wxVersionInfo scintillaVersion = wxScintilla::GetLibraryVersionInfo();
     const wxString scintillaStr = wxString::Format(_("%d.%d.%d"),
-                                                   scintillaVersion.GetMajor(),
-                                                   scintillaVersion.GetMinor(),
-                                                   scintillaVersion.GetMicro());
+                                  scintillaVersion.GetMajor(),
+                                  scintillaVersion.GetMinor(),
+                                  scintillaVersion.GetMicro());
     items.push_back({"Scintilla Version", scintillaStr});
     // ===========================================================================
     // wxwidget info
@@ -247,7 +247,7 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
                 {
                     if (    (asDBGDetails[0] == pdebugger->GetSettingsName()) &&
                             (asDBGDetails[1] == (*itConf)->GetName())
-                        )
+                       )
                     {
                         items.push_back({"         Configured Plugin",wxString()});
 
@@ -579,8 +579,8 @@ dlgHelpSystemInformation::~dlgHelpSystemInformation()
 
 void dlgHelpSystemInformation::CopyInfoToClipbaord(cb_unused wxCommandEvent& event)
 {
-   if (wxTheClipboard->Open())
-   {
+    if (wxTheClipboard->Open())
+    {
         if (wxTheClipboard->IsSupported( wxDF_TEXT ))
         {
             wxBusyCursor wait;
@@ -595,5 +595,5 @@ void dlgHelpSystemInformation::CopyInfoToClipbaord(cb_unused wxCommandEvent& eve
             wxTheClipboard->SetData( new wxTextDataObject(sTxtInformation) );
         }
         wxTheClipboard->Close();
-   }
+    }
 }

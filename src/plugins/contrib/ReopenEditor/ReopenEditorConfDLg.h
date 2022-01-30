@@ -10,35 +10,44 @@ class wxRadioBox;
 
 class ReopenEditorConfDLg: public cbConfigurationPanel
 {
-	public:
+public:
 
-		ReopenEditorConfDLg(wxWindow* parent);
-		virtual ~ReopenEditorConfDLg();
+    ReopenEditorConfDLg(wxWindow* parent);
+    virtual ~ReopenEditorConfDLg();
 
-		//(*Declarations(ReopenEditorConfDLg)
-		wxRadioBox* RadioBox1;
-		//*)
+    //(*Declarations(ReopenEditorConfDLg)
+    wxRadioBox* RadioBox1;
+    //*)
 
-	protected:
+protected:
 
-		//(*Identifiers(ReopenEditorConfDLg)
-		//*)
+    //(*Identifiers(ReopenEditorConfDLg)
+    //*)
 
-	private:
+private:
 
-		//(*Handlers(ReopenEditorConfDLg)
-		//*)
-        wxString GetTitle() const { return _("Reopen editor settings"); }
-        wxString GetBitmapBaseName() const { return _T("reopeneditor"); }
-        void OnApply() { SaveSettings(); }
-        void OnCancel() {}
-        void SaveSettings();
+    //(*Handlers(ReopenEditorConfDLg)
+    //*)
+    wxString GetTitle() const
+    {
+        return _("Reopen editor settings");
+    }
+    wxString GetBitmapBaseName() const
+    {
+        return _T("reopeneditor");
+    }
+    void OnApply()
+    {
+        SaveSettings();
+    }
+    void OnCancel() {}
+    void SaveSettings();
 
-	protected:
+protected:
 
-		void BuildContent(wxWindow* parent);
+    void BuildContent(wxWindow* parent);
 
-		DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

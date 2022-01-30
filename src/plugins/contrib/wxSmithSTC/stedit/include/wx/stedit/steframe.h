@@ -72,7 +72,10 @@ class WXDLLIMPEXP_STEDIT wxSTEditorFrame : public wxFrame
 {
 public:
     /// Default constructor, call Create(...) to actually make the frame.
-    wxSTEditorFrame() : wxFrame() { Init(); }
+    wxSTEditorFrame() : wxFrame()
+    {
+        Init();
+    }
     /// Create a wxSTEditorFrame.
     wxSTEditorFrame(wxWindow *parent, wxWindowID id = wxID_ANY,
                     const wxString& title = STE_APPDISPLAYNAME,
@@ -105,11 +108,20 @@ public:
     ///  or just create the child windows yourself.
     virtual void CreateOptions(const wxSTEditorOptions& options);
     /// GetOptions, use this to change editor option values
-    const wxSTEditorOptions& GetOptions() const { return m_options; }
-          wxSTEditorOptions& GetOptions()       { return m_options; }
+    const wxSTEditorOptions& GetOptions() const
+    {
+        return m_options;
+    }
+    wxSTEditorOptions& GetOptions()
+    {
+        return m_options;
+    }
     /// Set the options, the options will now be refed copies of the ones you set.
     /// Call this to detach the options for a particular frame from the others.
-    void SetOptions(const wxSTEditorOptions& options) { m_options = options; }
+    void SetOptions(const wxSTEditorOptions& options)
+    {
+        m_options = options;
+    }
 
     /// @}
 
@@ -131,21 +143,39 @@ public:
     /// different or more layers of windows.
     virtual wxSTEditorSplitter *GetEditorSplitter(int page = -1) const;
     /// Get the notebook containing the editor, returns NULL if style STF_SINGLEPAGE.
-    virtual wxSTEditorNotebook *GetEditorNotebook() const { return m_steNotebook; }
+    virtual wxSTEditorNotebook *GetEditorNotebook() const
+    {
+        return m_steNotebook;
+    }
 
     /// Get the horizontal splitter between editor (notebook) and some user set window.
-    virtual wxSplitterWindow* GetMainSplitter() const { return m_mainSplitter; }
+    virtual wxSplitterWindow* GetMainSplitter() const
+    {
+        return m_mainSplitter;
+    }
 
     /// Split or unsplit the GetSideSplitter().
     void ShowSidebar(bool show_left_side);
     /// Get the vertical splitter between sidebar notebook and editors, NULL if not style STF_SIDEBAR.
-    virtual wxSplitterWindow* GetSideSplitter() const { return m_sideSplitter; }
+    virtual wxSplitterWindow* GetSideSplitter() const
+    {
+        return m_sideSplitter;
+    }
     /// Get the sidebar notebook, NULL if not style STF_SIDEBAR.
-    virtual wxNotebook* GetSideNotebook() const { return m_sideNotebook; }
+    virtual wxNotebook* GetSideNotebook() const
+    {
+        return m_sideNotebook;
+    }
     /// Get the file treectrl in the sidebar notebook, NULL if not style STF_SIDEBAR.
-    virtual wxSTEditorTreeCtrl* GetFileTreeCtrl() const { return m_steTreeCtrl; }
+    virtual wxSTEditorTreeCtrl* GetFileTreeCtrl() const
+    {
+        return m_steTreeCtrl;
+    }
     /// Get the file treectrl in the sidebar notebook, NULL if not style STF_SIDEBAR.
-    virtual wxGenericDirCtrl* GetDirCtrl() const { return m_dirCtrl; }
+    virtual wxGenericDirCtrl* GetDirCtrl() const
+    {
+        return m_dirCtrl;
+    }
 
     /// @}
 
@@ -159,9 +189,15 @@ public:
     virtual void UpdateItems(wxMenu *menu=NULL, wxMenuBar *menuBar=NULL, wxToolBar *toolBar=NULL);
 
     /// Get the base of the title, default is the title set in constructor, @sa MakeTitle().
-    wxString GetTitleBase() const { return m_titleBase; }
+    wxString GetTitleBase() const
+    {
+        return m_titleBase;
+    }
     /// Set the base of the title, default is the title set in constructor, @sa MakeTitle().
-    void SetTitleBase( const wxString& titleBase ) { m_titleBase = titleBase; }
+    void SetTitleBase( const wxString& titleBase )
+    {
+        m_titleBase = titleBase;
+    }
     /// Title is "GetTitleBase() - [*] editor fileName", * used to denote modified.
     wxString MakeTitle(const wxSTEditor*) const;
 
@@ -247,8 +283,8 @@ private:
 class WXDLLIMPEXP_STEDIT wxSTEditorFileDropTarget : public wxFileDropTarget
 {
 public:
-    /// Create this for any window and it will traverse up the parents 
-    /// until a suitable frame, notebook, splitter, editor to 
+    /// Create this for any window and it will traverse up the parents
+    /// until a suitable frame, notebook, splitter, editor to
     /// open the file is found.
     wxSTEditorFileDropTarget(wxWindow *owner) : m_owner(owner) {}
 

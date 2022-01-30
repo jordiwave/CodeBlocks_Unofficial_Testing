@@ -29,21 +29,21 @@
 
 class wxsText: public wxsWidget
 {
-    public:
+public:
 
-        wxsText(wxsItemResData* Data);
+    wxsText(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void        OnBuildCreatingCode();
-        virtual wxObject*   OnBuildPreview(wxWindow* Parent, long Flags);
-        virtual void        OnBuildDeclarationsCode();
-        virtual void        OnEnumWidgetProperties(long Flags);
+    virtual void        OnBuildCreatingCode();
+    virtual wxObject*   OnBuildPreview(wxWindow* Parent, long Flags);
+    virtual void        OnBuildDeclarationsCode();
+    virtual void        OnEnumWidgetProperties(long Flags);
 
-        wxString            mLabel;
-        wxString            mXpos, mYpos;
-        wxsColourData       mPenColour;     // color to draw
-        wxsFontData         mPenFont;       // for drawing the text
+    wxString            mLabel;
+    wxString            mXpos, mYpos;
+    wxsColourData       mPenColour;     // color to draw
+    wxsFontData         mPenFont;       // for drawing the text
 };
 
 #endif      // WXSTEXT_H

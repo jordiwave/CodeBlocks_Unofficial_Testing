@@ -21,7 +21,7 @@
 //  SettingsDlg.cpp                                         //(pecan 2006/9/12)
 // ----------------------------------------------------------------------------
 #ifdef WX_PRECOMP
-    #include "wx_pch.h"
+#include "wx_pch.h"
 #else
 #endif
 
@@ -38,16 +38,16 @@
 #include "settingsdlgform.h"
 #include "version.h"
 
-   BEGIN_EVENT_TABLE(SettingsDlg, SettingsDlgForm)
+BEGIN_EVENT_TABLE(SettingsDlg, SettingsDlgForm)
     EVT_BUTTON(wxID_OK,            SettingsDlg::OnOk)
     EVT_BUTTON(ID_EXTEDITORBUTTON, SettingsDlg::OnExtEditorButton)
     EVT_BUTTON(ID_SNIPPETFILEBUTTON, SettingsDlg::OnSnippetFolderButton)
-   END_EVENT_TABLE()
+END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
 SettingsDlg::SettingsDlg(wxWindow* parent)
 // ----------------------------------------------------------------------------
-    :SettingsDlgForm(parent ,-1,wxT("User Settings"))
+    :SettingsDlgForm(parent,-1,wxT("User Settings"))
 {
     // move dialog into the parents frame space
     //wxPoint mousePosn = ::wxGetMousePosition();
@@ -58,11 +58,11 @@ SettingsDlg::SettingsDlg(wxWindow* parent)
     m_ExtEditorTextCtrl-> SetValue( wxT("Enter filename of external editor") );
     m_SnippetFileTextCtrl->SetValue(wxT("Enter Snippets storage Folder") );
 
-	// Put the old external editor filename into the textCtrl
+    // Put the old external editor filename into the textCtrl
     if ( not GetConfig()->SettingsExternalEditor.IsEmpty() )
         m_ExtEditorTextCtrl-> SetValue( GetConfig()->SettingsExternalEditor );
 
-	// Put the old Snippet XML folder into the textCtrl
+    // Put the old Snippet XML folder into the textCtrl
     if ( not GetConfig()->SettingsSnippetsFolder.IsEmpty() )
         m_SnippetFileTextCtrl-> SetValue( GetConfig()->SettingsSnippetsFolder );
 
@@ -115,7 +115,7 @@ void SettingsDlg::OnExtEditorButton(wxCommandEvent& event)
 {
     // Ask user for filename of editor program
 
-     wxUnusedVar(event);
+    wxUnusedVar(event);
     wxString newFileName;
     GetFileName(newFileName);
 
@@ -143,22 +143,22 @@ void SettingsDlg::GetFileName(wxString& newFileName)
 
     // Ask user for filename
     wxFileDialog dlg(this,                           //parent  window
-                 _T("Select file "),                 //message
-                 wxEmptyString,                      //default directory
-                 wxEmptyString,                      //default file
-                 wxT("*.*"),                         //wildcards
-                 wxFD_OPEN | wxFD_FILE_MUST_EXIST ); //style
+                     _T("Select file "),                 //message
+                     wxEmptyString,                      //default directory
+                     wxEmptyString,                      //default file
+                     wxT("*.*"),                         //wildcards
+                     wxFD_OPEN | wxFD_FILE_MUST_EXIST ); //style
 
-   // move dialog into the parents frame space
+    // move dialog into the parents frame space
     wxPoint mousePosn = ::wxGetMousePosition();
     dlg.Move(mousePosn.x, mousePosn.y);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK) return;
     newFileName = dlg.GetPath();
 
-    #ifdef LOGGING
-     LOGIT( _T("New filename[%s]"), newFileName.GetData() );
-    #endif //LOGGING;
+#ifdef LOGGING
+    LOGIT( _T("New filename[%s]"), newFileName.GetData() );
+#endif //LOGGING;
 
 }
 // ----------------------------------------------------------------------------
@@ -167,11 +167,11 @@ wxString SettingsDlg::AskForPathName()       //(pecan 2006/10/06)
 {
     // Ask user for filename
     wxDirDialog dlg(::wxGetTopLevelParent(0),   //parent  window
-                 _T("Select path "),             //message
-                 ::wxGetCwd(),                  //default directory
-                 wxDD_DEFAULT_STYLE );          //style
+                    _T("Select path "),             //message
+                    ::wxGetCwd(),                  //default directory
+                    wxDD_DEFAULT_STYLE );          //style
 
-   // move dialog into the parents frame space
+    // move dialog into the parents frame space
     wxPoint mousePosn = ::wxGetMousePosition();
     dlg.Move(mousePosn.x, mousePosn.y);
     PlaceWindow(&dlg);

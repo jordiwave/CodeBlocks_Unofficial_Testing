@@ -65,15 +65,15 @@ enum STE_OptionType
 enum STE_EditorOptionsType
 {
     STE_CREATE_POPUPMENU    = 0x0001, ///< Create a rightclick popupmenu at startup
-                                      ///< uses items in wxSTEditorMenuManager
-                                      ///< only creates if one is not previously assigned.
+    ///< uses items in wxSTEditorMenuManager
+    ///< only creates if one is not previously assigned.
     STE_QUERY_SAVE_MODIFIED = 0x0002, ///< Popup dialog to ask to save if modified.
     STE_CREATE_ACCELTABLE   = 0x0004, ///< Create and assign a wxAcceleratorTable
-                                      ///< for the editor from the popup menu items
-                                      ///< and any items in the wxMenubar that the
-                                      ///< editor can handle.
-                                      ///< NOTE: this has problems so it's not enabled
-                                      ///< by default.
+    ///< for the editor from the popup menu items
+    ///< and any items in the wxMenubar that the
+    ///< editor can handle.
+    ///< NOTE: this has problems so it's not enabled
+    ///< by default.
 
     STE_DEFAULT_OPTIONS     = STE_CREATE_POPUPMENU|STE_QUERY_SAVE_MODIFIED
 };
@@ -82,13 +82,13 @@ enum STE_EditorOptionsType
 enum STE_SplitterOptionsType
 {
     STS_CREATE_POPUPMENU    = 0x0001, ///< Right-click menu for setting splitting
-                                      ///< only creates if one is not previously assigned.
+    ///< only creates if one is not previously assigned.
     STS_NO_EDITOR           = 0x0002, ///< Don't initialize with an editor (you'll need to create one).
-                                      ///< The code assumes that GetEditor() for the splitter returns a valid editor.
+    ///< The code assumes that GetEditor() for the splitter returns a valid editor.
     STS_SPLITBUTTONS        = 0x0004, ///< When there is a single editor, show splitter buttons
-                                      ///< above and to the side of the scrollbars.
+    ///< above and to the side of the scrollbars.
     STS_DO_DRAG_AND_DROP    = 0x0008, ///< Create a wxSTEditorFileDropTarget for the splitter.
-                                      ///< For read-only editors you probably don't want this.
+    ///< For read-only editors you probably don't want this.
 
     STS_DEFAULT_OPTIONS     = STS_CREATE_POPUPMENU|STS_SPLITBUTTONS|STS_DO_DRAG_AND_DROP
 };
@@ -97,7 +97,7 @@ enum STE_SplitterOptionsType
 enum STE_NotebookOptionsType
 {
     STN_CREATE_POPUPMENU    = 0x0001, ///< Have a right-click tab menu
-                                      ///< only creates if one is not previously assigned.
+    ///< only creates if one is not previously assigned.
     STN_ALPHABETICAL_TABS   = 0x0002, ///< Always sort tabs alphabetically.
     STN_UPDATE_TITLES       = 0x0004, ///< Update the titles of the pages.
     STN_ALLOW_NO_PAGES      = 0x0008, ///< Allow having no pages.
@@ -113,16 +113,16 @@ enum STE_FrameOptionsType
     STF_CREATE_SINGLEPAGE   = 0x0001, ///< Create a single text editor.
     STF_CREATE_NOTEBOOK     = 0x0002, ///< Create a wxSTEditorNotebook for editors.
     STF_CREATE_SIDEBAR      = 0x0004, ///< Create a wxNotebook side panel.
-                                      ///< First page is a wxSTEditorTreeCtrl for listing files,
-                                      ///< you can add other pages in any order.
+    ///< First page is a wxSTEditorTreeCtrl for listing files,
+    ///< you can add other pages in any order.
     STF_CREATE_RESULT_NOTEBOOK = 0x0008, ///< Create a wxNotebook bottom panel for results.
-                                         ///< First page is a wxSTEditorFindResultsEditor for find results,
-                                         ///< you can add other pages in any order.
+    ///< First page is a wxSTEditorFindResultsEditor for find results,
+    ///< you can add other pages in any order.
     STF_CREATE_TOOLBAR      = 0x0010, ///< Create and maintain a toolbar.
     STF_CREATE_MENUBAR      = 0x0020, ///< Create and maintain a menubar.
     STF_CREATE_STATUSBAR    = 0x0040, ///< Create and maintain a statusbar.
     STF_CREATE_FILEHISTORY  = 0x0080, ///< Create and maintain a wxFileHistory
-                                      ///< if one doesn't already exist and you have wxID_OPEN.
+    ///< if one doesn't already exist and you have wxID_OPEN.
     STF_DO_DRAG_AND_DROP    = 0x0100, ///< Create a wxSTEditorFileDropTarget for the frame.
 
     STF_DEFAULT_OPTIONS     = STF_CREATE_NOTEBOOK|STF_CREATE_TOOLBAR|STF_CREATE_MENUBAR|STF_CREATE_STATUSBAR|STF_CREATE_FILEHISTORY|STF_DO_DRAG_AND_DROP
@@ -134,7 +134,7 @@ enum STE_FrameOptionsType
 enum STE_ConfigOptionsType
 {
     STF_CONFIG             = 0x0002, ///< wxSTEditorFrame will save its prefs if any
-                                     ///< prefs saved only for menu item ID_STE_SAVE_PREFERENCES
+    ///< prefs saved only for menu item ID_STE_SAVE_PREFERENCES
 
     STE_CONFIG_FILEHISTORY = 0x0004, ///< wxSTEditorOption's wxFileHistory should be saved
     STE_CONFIG_FINDREPLACE = 0x0008, ///< wxSTEditorFindReplaceData should be saved
@@ -144,12 +144,12 @@ enum STE_ConfigOptionsType
     STE_CONFIG_LANGS       = 0x0040, ///< wxSTEditorLangs will save their prefs
 
     STE_CONFIG_SAVE_DIFFS  = 0x0100, ///< Only save modified from default values
-                                     ///< removing ones that are default.
+    ///< removing ones that are default.
 
     STE_CONFIG_SAVE_ALWAYS = 0x0200, ///< Always save the config
-                                     ///< on pref dialog close, frame close...
-                                     ///< You may want to remove the menu item
-                                     ///<   ID_STE_SAVE_PREFERENCES.
+    ///< on pref dialog close, frame close...
+    ///< You may want to remove the menu item
+    ///<   ID_STE_SAVE_PREFERENCES.
 
     STE_CONFIG_DEFAULT_OPTIONS = STF_CONFIG|STE_CONFIG_FILEHISTORY|STE_CONFIG_FINDREPLACE|STE_CONFIG_PREFS|STE_CONFIG_STYLES|STE_CONFIG_LANGS
 };
@@ -166,7 +166,7 @@ enum STE_FindReplaceOptionsType
     //STE_FR_NOWRAPAROUND  = 0x020, // don't allow wrapping around
     //STE_FR_NOREGEX       = 0x040, // don't allow regex searching
     //STE_FR_NOALLDOCS     = 0x080  // don't allow search all docs option
-                                   //    (for not having editor notebook)
+    //    (for not having editor notebook)
 
     STE_FR_DEFAULT_OPTIONS = 0
 };
@@ -237,14 +237,34 @@ public:
     size_t GetOptionCount() const;
 
     wxString GetOption(size_t option_n) const;
-    int      GetOptionInt(size_t option_n) const { long n = 0; GetOption(option_n).ToLong(&n); return int(n); }
-    bool     HasOptionIntFlag(size_t option_n, int flag) const { return STE_HASBIT(GetOptionInt(option_n), flag); }
-    bool     GetOptionBool(size_t option_n) const  { return GetOptionInt(option_n) != 0; }
+    int      GetOptionInt(size_t option_n) const
+    {
+        long n = 0;
+        GetOption(option_n).ToLong(&n);
+        return int(n);
+    }
+    bool     HasOptionIntFlag(size_t option_n, int flag) const
+    {
+        return STE_HASBIT(GetOptionInt(option_n), flag);
+    }
+    bool     GetOptionBool(size_t option_n) const
+    {
+        return GetOptionInt(option_n) != 0;
+    }
 
     void SetOption(size_t option_n, const wxString& value);
-    void SetOptionInt(size_t option_n, int value) { SetOption(option_n, wxString::Format(wxT("%d"), value)); }
-    void SetOptionIntFlag(size_t option_n, int flag, bool set) { SetOptionInt(option_n, STE_SETBIT(GetOptionInt(option_n), flag, set)); }
-    void SetOptionBool(size_t option_n, bool value) { SetOptionInt(option_n, value ? 1 : 0); }
+    void SetOptionInt(size_t option_n, int value)
+    {
+        SetOption(option_n, wxString::Format(wxT("%d"), value));
+    }
+    void SetOptionIntFlag(size_t option_n, int flag, bool set)
+    {
+        SetOptionInt(option_n, STE_SETBIT(GetOptionInt(option_n), flag, set));
+    }
+    void SetOptionBool(size_t option_n, bool value)
+    {
+        SetOptionInt(option_n, value ? 1 : 0);
+    }
 
     /// @}
     // -----------------------------------------------------------------------
@@ -256,7 +276,10 @@ public:
     wxString GetOptionName(size_t option_n) const;
     void SetOptionName(size_t option_n, const wxString& name);
     int FindOptionByName(const wxString& name) const;
-    bool HasNamedOption(const wxString& name) const { return FindOptionByName(name) != wxNOT_FOUND; }
+    bool HasNamedOption(const wxString& name) const
+    {
+        return FindOptionByName(name) != wxNOT_FOUND;
+    }
 
     /// Add a new option with a given name, returning the index.
     /// The name is useful when your derived class wants to store values,
@@ -268,29 +291,89 @@ public:
     /// @name Get/Set/Has integer option flags.
     /// @{
 
-    int GetEditorOptions()   const { return GetOptionInt(STE_OPTION_EDITOR); }   ///< STE_EditorOptionsType
-    int GetSplitterOptions() const { return GetOptionInt(STE_OPTION_SPLITTER); } ///< STE_SplitterOptionsType
-    int GetNotebookOptions() const { return GetOptionInt(STE_OPTION_NOTEBOOK); } ///< STE_NotebookOptionsType
-    int GetFrameOptions()    const { return GetOptionInt(STE_OPTION_FRAME); }    ///< STE_FrameOptionsType
-    int GetConfigOptions()   const { return GetOptionInt(STE_OPTION_CONFIG); }   ///< STE_ConfigOptionsType
+    int GetEditorOptions()   const
+    {
+        return GetOptionInt(STE_OPTION_EDITOR);    ///< STE_EditorOptionsType
+    }
+    int GetSplitterOptions() const
+    {
+        return GetOptionInt(STE_OPTION_SPLITTER);    ///< STE_SplitterOptionsType
+    }
+    int GetNotebookOptions() const
+    {
+        return GetOptionInt(STE_OPTION_NOTEBOOK);    ///< STE_NotebookOptionsType
+    }
+    int GetFrameOptions()    const
+    {
+        return GetOptionInt(STE_OPTION_FRAME);    ///< STE_FrameOptionsType
+    }
+    int GetConfigOptions()   const
+    {
+        return GetOptionInt(STE_OPTION_CONFIG);    ///< STE_ConfigOptionsType
+    }
 
-    bool HasEditorOption(  int opt) const { return STE_HASBIT(opt, GetEditorOptions()); }
-    bool HasSplitterOption(int opt) const { return STE_HASBIT(opt, GetSplitterOptions()); }
-    bool HasNotebookOption(int opt) const { return STE_HASBIT(opt, GetNotebookOptions()); }
-    bool HasFrameOption(   int opt) const { return STE_HASBIT(opt, GetFrameOptions()); }
-    bool HasConfigOption(  int opt) const { return STE_HASBIT(opt, GetConfigOptions()); }
+    bool HasEditorOption(  int opt) const
+    {
+        return STE_HASBIT(opt, GetEditorOptions());
+    }
+    bool HasSplitterOption(int opt) const
+    {
+        return STE_HASBIT(opt, GetSplitterOptions());
+    }
+    bool HasNotebookOption(int opt) const
+    {
+        return STE_HASBIT(opt, GetNotebookOptions());
+    }
+    bool HasFrameOption(   int opt) const
+    {
+        return STE_HASBIT(opt, GetFrameOptions());
+    }
+    bool HasConfigOption(  int opt) const
+    {
+        return STE_HASBIT(opt, GetConfigOptions());
+    }
 
-    void SetEditorOption(   int opt, bool val ) { SetEditorOptions(STE_SETBIT(GetEditorOptions(), opt, val)); }
-    void SetSplitterOption( int opt, bool val ) { SetSplitterOptions(STE_SETBIT(GetSplitterOptions(), opt, val)); }
-    void SetNotebookOption( int opt, bool val ) { SetNotebookOptions(STE_SETBIT(GetNotebookOptions(), opt, val)); }
-    void SetFrameOption(    int opt, bool val ) { SetFrameOptions(STE_SETBIT(GetFrameOptions(), opt, val)); }
-    void SetConfigOption(   int opt, bool val ) { SetConfigOptions(STE_SETBIT(GetConfigOptions(), opt, val)); }
+    void SetEditorOption(   int opt, bool val )
+    {
+        SetEditorOptions(STE_SETBIT(GetEditorOptions(), opt, val));
+    }
+    void SetSplitterOption( int opt, bool val )
+    {
+        SetSplitterOptions(STE_SETBIT(GetSplitterOptions(), opt, val));
+    }
+    void SetNotebookOption( int opt, bool val )
+    {
+        SetNotebookOptions(STE_SETBIT(GetNotebookOptions(), opt, val));
+    }
+    void SetFrameOption(    int opt, bool val )
+    {
+        SetFrameOptions(STE_SETBIT(GetFrameOptions(), opt, val));
+    }
+    void SetConfigOption(   int opt, bool val )
+    {
+        SetConfigOptions(STE_SETBIT(GetConfigOptions(), opt, val));
+    }
 
-    void SetEditorOptions(   int editOptions )     { SetOptionInt(STE_OPTION_EDITOR, editOptions); }       ///< STE_EditorOptionsType
-    void SetSplitterOptions( int splitterOptions ) { SetOptionInt(STE_OPTION_SPLITTER, splitterOptions); } ///< STE_SplitterOptionsType
-    void SetNotebookOptions( int notebookOptions ) { SetOptionInt(STE_OPTION_NOTEBOOK, notebookOptions); } ///< STE_NotebookOptionsType
-    void SetFrameOptions(    int frameOptions )    { SetOptionInt(STE_OPTION_FRAME, frameOptions); }       ///< STE_FrameOptionsType
-    void SetConfigOptions(   int configOptions )   { SetOptionInt(STE_OPTION_CONFIG, configOptions); }     ///< STE_ConfigOptionsType
+    void SetEditorOptions(   int editOptions )
+    {
+        SetOptionInt(STE_OPTION_EDITOR, editOptions);    ///< STE_EditorOptionsType
+    }
+    void SetSplitterOptions( int splitterOptions )
+    {
+        SetOptionInt(STE_OPTION_SPLITTER, splitterOptions);    ///< STE_SplitterOptionsType
+    }
+    void SetNotebookOptions( int notebookOptions )
+    {
+        SetOptionInt(STE_OPTION_NOTEBOOK, notebookOptions);    ///< STE_NotebookOptionsType
+    }
+    void SetFrameOptions(    int frameOptions )
+    {
+        SetOptionInt(STE_OPTION_FRAME, frameOptions);    ///< STE_FrameOptionsType
+    }
+    void SetConfigOptions(   int configOptions )
+    {
+        SetOptionInt(STE_OPTION_CONFIG, configOptions);    ///< STE_ConfigOptionsType
+    }
 
     /// @}
     // -----------------------------------------------------------------------
@@ -298,15 +381,33 @@ public:
     /// @{
 
     /// The default filename to use when creating a new editor.
-    wxString GetDefaultFileName() const { return GetOption(STE_OPTION_DEFAULT_FILENAME); }
+    wxString GetDefaultFileName() const
+    {
+        return GetOption(STE_OPTION_DEFAULT_FILENAME);
+    }
     /// The default and (updated by filedialog) last path for the the load/save dialog.
-    wxString GetDefaultFilePath() const { return GetOption(STE_OPTION_DEFAULT_FILEPATH); }
+    wxString GetDefaultFilePath() const
+    {
+        return GetOption(STE_OPTION_DEFAULT_FILEPATH);
+    }
     /// The default extensions to use in the load/save dialog.
-    wxString GetDefaultFileExtensions() const { return GetOption(STE_OPTION_DEFAULT_FILEEXTS); }
+    wxString GetDefaultFileExtensions() const
+    {
+        return GetOption(STE_OPTION_DEFAULT_FILEEXTS);
+    }
 
-    void SetDefaultFileName( const wxString& fileName ) { SetOption(STE_OPTION_DEFAULT_FILENAME, fileName); }
-    void SetDefaultFilePath( const wxString& filePath ) { SetOption(STE_OPTION_DEFAULT_FILEPATH, filePath); }
-    void SetDefaultFileExtensions( const wxString& fileExt ) { SetOption(STE_OPTION_DEFAULT_FILEEXTS, fileExt); }
+    void SetDefaultFileName( const wxString& fileName )
+    {
+        SetOption(STE_OPTION_DEFAULT_FILENAME, fileName);
+    }
+    void SetDefaultFilePath( const wxString& filePath )
+    {
+        SetOption(STE_OPTION_DEFAULT_FILEPATH, filePath);
+    }
+    void SetDefaultFileExtensions( const wxString& fileExt )
+    {
+        SetOption(STE_OPTION_DEFAULT_FILEEXTS, fileExt);
+    }
 
     /// @}
 
@@ -433,9 +534,13 @@ public:
     }
 
     bool operator == (const wxSTEditorOptions& steOpts) const
-        { return m_refData == steOpts.m_refData; }
+    {
+        return m_refData == steOpts.m_refData;
+    }
     bool operator != (const wxSTEditorOptions& steOpts) const
-        { return m_refData != steOpts.m_refData; }
+    {
+        return m_refData != steOpts.m_refData;
+    }
     /// @}
 };
 

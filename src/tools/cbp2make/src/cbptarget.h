@@ -31,7 +31,8 @@ class CCodeBlocksProject;
 class CBuildTarget
 {
 public:
-    enum TargetType {
+    enum TargetType
+    {
         ttExecutable,
         ttConsoleExecutable,
         ttStaticLibrary,
@@ -39,7 +40,8 @@ public:
         ttCommands,
         ttNative // windows-only ".sys" files
     };
-    enum OptionsRelation {
+    enum OptionsRelation
+    {
         orProject,
         orTarget,
         orTargetProject,

@@ -30,37 +30,37 @@
 
 namespace
 {
-    wxsRegisterItem<wxsMenu> Reg(_T("Menu"),wxsTTool,_T("Tools"),70,false);
+wxsRegisterItem<wxsMenu> Reg(_T("Menu"),wxsTTool,_T("Tools"),70,false);
 
-    class MenuEditorDialog: public wxScrollingDialog
+class MenuEditorDialog: public wxScrollingDialog
+{
+public:
+
+    wxsMenuEditor* Editor;
+
+    MenuEditorDialog(wxsMenu* Menu):
+        wxScrollingDialog(0,-1,_("Menu editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
     {
-        public:
+        wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
+        Sizer->Add(Editor = new wxsMenuEditor(this,Menu),1,wxEXPAND,0);
+        Sizer->Add(CreateButtonSizer(wxOK|wxCANCEL),0,wxEXPAND,15);
+        SetSizer(Sizer);
+        Sizer->SetSizeHints(this);
+        PlaceWindow(this,pdlCentre,true);
+    }
 
-            wxsMenuEditor* Editor;
+    void OnOK(cb_unused wxCommandEvent& event)
+    {
+        Editor->ApplyChanges();
+        EndModal(wxID_OK);
+    }
 
-            MenuEditorDialog(wxsMenu* Menu):
-                wxScrollingDialog(0,-1,_("Menu editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
-            {
-                wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
-                Sizer->Add(Editor = new wxsMenuEditor(this,Menu),1,wxEXPAND,0);
-                Sizer->Add(CreateButtonSizer(wxOK|wxCANCEL),0,wxEXPAND,15);
-                SetSizer(Sizer);
-                Sizer->SetSizeHints(this);
-                PlaceWindow(this,pdlCentre,true);
-            }
+    DECLARE_EVENT_TABLE()
+};
 
-            void OnOK(cb_unused wxCommandEvent& event)
-            {
-                Editor->ApplyChanges();
-                EndModal(wxID_OK);
-            }
-
-            DECLARE_EVENT_TABLE()
-    };
-
-    BEGIN_EVENT_TABLE(MenuEditorDialog,wxScrollingDialog)
-        EVT_BUTTON(wxID_OK,MenuEditorDialog::OnOK)
-    END_EVENT_TABLE()
+BEGIN_EVENT_TABLE(MenuEditorDialog,wxScrollingDialog)
+    EVT_BUTTON(wxID_OK,MenuEditorDialog::OnOK)
+END_EVENT_TABLE()
 }
 
 wxsMenu::wxsMenu(wxsItemResData* Data):
@@ -204,27 +204,27 @@ void wxsMenu::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-            AddHeader(_T("<wx/menu.h>"),GetInfo().ClassName,hfInPCH);
-            if ( IsPointer() )
-            {
-                // There's no Create() method for wxMenu so we call ctor only when creating pointer
-                Codef(_T("%C();\n"));
-            }
-            for ( int i=0; i<GetChildCount(); i++ )
-            {
-                GetChild(i)->BuildCode(GetCoderContext());
-            }
-            if ( GetParent() && GetParent()->GetClassName()==_T("wxMenuBar") )
-            {
-                Codef(_T("%MAppend(%O, %t);\n"),m_Label.wx_str());
-            }
-            BuildSetupWindowCode();
-            break;
+    case wxsCPP:
+        AddHeader(_T("<wx/menu.h>"),GetInfo().ClassName,hfInPCH);
+        if ( IsPointer() )
+        {
+            // There's no Create() method for wxMenu so we call ctor only when creating pointer
+            Codef(_T("%C();\n"));
+        }
+        for ( int i=0; i<GetChildCount(); i++ )
+        {
+            GetChild(i)->BuildCode(GetCoderContext());
+        }
+        if ( GetParent() && GetParent()->GetClassName()==_T("wxMenuBar") )
+        {
+            Codef(_T("%MAppend(%O, %t);\n"),m_Label.wx_str());
+        }
+        BuildSetupWindowCode();
+        break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsMenu::OnBuildCreatingCode"),GetLanguage());
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsMenu::OnBuildCreatingCode"),GetLanguage());
     }
 }
 

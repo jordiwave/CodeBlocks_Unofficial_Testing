@@ -20,39 +20,45 @@
 
 class cbPlugin;
 
-    const int idDragScrollAddWindow    = XRCID("idDragScrollAddWindow");
-    const int idDragScrollRemoveWindow = XRCID("idDragScrollRemoveWindow");
-    const int idDragScrollRescan       = XRCID("idDragScrollRescan");
-    const int idDragScrollReadConfig   = XRCID("idDragScrollReadConfig");
-    const int idDragScrollInvokeConfig = XRCID("idDragScrollInvokeConfig");
+const int idDragScrollAddWindow    = XRCID("idDragScrollAddWindow");
+const int idDragScrollRemoveWindow = XRCID("idDragScrollRemoveWindow");
+const int idDragScrollRescan       = XRCID("idDragScrollRescan");
+const int idDragScrollReadConfig   = XRCID("idDragScrollReadConfig");
+const int idDragScrollInvokeConfig = XRCID("idDragScrollInvokeConfig");
 
 // ----------------------------------------------------------------------------
 class DragScrollEvent : public wxCommandEvent
 // ----------------------------------------------------------------------------
 {
 public:
-	/** Constructor. */
-	DragScrollEvent(wxEventType commandType = wxEVT_NULL, int id = 0);
+    /** Constructor. */
+    DragScrollEvent(wxEventType commandType = wxEVT_NULL, int id = 0);
 
-	/** Copy constructor. */
-	DragScrollEvent( const DragScrollEvent& event);
+    /** Copy constructor. */
+    DragScrollEvent( const DragScrollEvent& event);
 
-	/** Destructor. */
-	~DragScrollEvent();
+    /** Destructor. */
+    ~DragScrollEvent();
 
-	virtual wxEvent* Clone() const { return new DragScrollEvent(*this);}
+    virtual wxEvent* Clone() const
+    {
+        return new DragScrollEvent(*this);
+    }
 
-	DECLARE_DYNAMIC_CLASS(DragScrollEvent);
+    DECLARE_DYNAMIC_CLASS(DragScrollEvent);
 
-	wxString  GetEventTypeLabel() const {return m_EventTypeLabel;}
+    wxString  GetEventTypeLabel() const
+    {
+        return m_EventTypeLabel;
+    }
 
     bool      PostDragScrollEvent(const cbPlugin* targetWin);
     bool      ProcessDragScrollEvent(const cbPlugin* targetWin);
 
 private:
-	//-int        m_WindowID;
-	//-wxWindow*  m_pWindow;
-	wxString   m_EventTypeLabel;
+    //-int        m_WindowID;
+    //-wxWindow*  m_pWindow;
+    wxString   m_EventTypeLabel;
 };
 
 typedef void (wxEvtHandler::*DragScrollEventFunction)(DragScrollEvent&);

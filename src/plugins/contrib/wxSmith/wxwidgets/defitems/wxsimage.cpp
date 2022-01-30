@@ -27,7 +27,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsImage> Reg(_T("Image"), wxsTTool, _T("Tools"), 73);
+wxsRegisterItem<wxsImage> Reg(_T("Image"), wxsTTool, _T("Tools"), 73);
 }
 
 wxsImage::wxsImage(wxsItemResData *Data) :
@@ -68,44 +68,47 @@ void wxsImage::OnBuildCreatingCode()
     wxString    ss, tt;                 // general use
 
     // have we already been here?
-    if(m_IsBuilt) {
+    if(m_IsBuilt)
+    {
         return;
     }
     m_IsBuilt = true;
 
     switch(GetLanguage())
     {
-        case wxsCPP:
-            {
-                vname = GetVarName();
-                bname = vname + "_BMP";
-                xname = vname + "_XPM";
-                AddHeader("<wx/image.h>", GetInfo().ClassName, 0);
-                AddHeader("<wx/bitmap.h>", GetInfo().ClassName, 0);
+    case wxsCPP:
+    {
+        vname = GetVarName();
+        bname = vname + "_BMP";
+        xname = vname + "_XPM";
+        AddHeader("<wx/image.h>", GetInfo().ClassName, 0);
+        AddHeader("<wx/bitmap.h>", GetInfo().ClassName, 0);
 
-                // store the XPM data someplace
-                StoreXpmData();
+        // store the XPM data someplace
+        StoreXpmData();
 
-                // if there is no data, then just make empty image and bitmap
-                if(m_ImageData.Count() == 0) {
-                    Codef(_T("%s = new wxImage();\n"), vname.wx_str());
-                    Codef(_T("%s = new wxBitmap();\n"), bname.wx_str());
-                }
-                // else fill it with XPM data
-                else {
-                    Codef(_T("%s = new wxImage(%s);\n"),  vname.wx_str(), xname.wx_str());
-                    Codef(_T("%s = new wxBitmap(%s);\n"), bname.wx_str(), xname.wx_str());
-                }
+        // if there is no data, then just make empty image and bitmap
+        if(m_ImageData.Count() == 0)
+        {
+            Codef(_T("%s = new wxImage();\n"), vname.wx_str());
+            Codef(_T("%s = new wxBitmap();\n"), bname.wx_str());
+        }
+        // else fill it with XPM data
+        else
+        {
+            Codef(_T("%s = new wxImage(%s);\n"),  vname.wx_str(), xname.wx_str());
+            Codef(_T("%s = new wxBitmap(%s);\n"), bname.wx_str(), xname.wx_str());
+        }
 
-                BuildSetupWindowCode();
-                return;
-            }
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall through
-        default:
-            {
-                wxsCodeMarks::Unknown(_T("wxsImage::OnBuildCreatingCode"), GetLanguage());
-            }
+    case wxsUnknownLanguage: // fall through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsImage::OnBuildCreatingCode"), GetLanguage());
+    }
     }
 }
 
@@ -151,7 +154,8 @@ void wxsImage::OnBuildDeclarationsCode()
  * \return void
  *
  */
-void wxsImage::StoreXpmData(void) {
+void wxsImage::StoreXpmData(void)
+{
     int                 i, n;
     wxString    vname;
     wxString    xname;
@@ -168,14 +172,17 @@ void wxsImage::StoreXpmData(void) {
     // make a single string with the proper name
     tt = _T("");
     n = m_ImageData.GetCount();
-    if(n > 5){
+    if(n > 5)
+    {
         n = (n * m_ImageData.Item(n - 2).Length()) + 100;
         tt.Alloc(n);
     }
 
-    for(i = 0;i < (int)m_ImageData.GetCount();i++){
+    for(i = 0; i < (int)m_ImageData.GetCount(); i++)
+    {
         ss = m_ImageData.Item(i);
-        if(ss.Find(_T("xpm_data")) >= 0){
+        if(ss.Find(_T("xpm_data")) >= 0)
+        {
             ss.Replace(_T("xpm_data"), xname);
         }
 
@@ -184,8 +191,10 @@ void wxsImage::StoreXpmData(void) {
     }
 
     // store as an include file
-    if(m_Include) {
-        if(! wxFileName::DirExists(m_IDir)){
+    if(m_Include)
+    {
+        if(! wxFileName::DirExists(m_IDir))
+        {
             wxFileName::Mkdir(m_IDir);
         }
         ss  = m_IDir;
@@ -208,7 +217,8 @@ void wxsImage::StoreXpmData(void) {
         AddHeader(ss, GetInfo().ClassName, 0);
     }
     // store in-line in the main header file
-    else {
+    else
+    {
         Codef(tt);
     }
 }
@@ -223,7 +233,8 @@ wxBitmap wxsImage::GetPreview(void)
 {
     wxBitmap    bmp;
 
-    if(m_ImageData.GetCount() == 0){
+    if(m_ImageData.GetCount() == 0)
+    {
         return wxNullBitmap;
     }
 

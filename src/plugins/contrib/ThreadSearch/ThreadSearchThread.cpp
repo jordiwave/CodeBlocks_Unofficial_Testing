@@ -16,9 +16,9 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include "cbeditor.h"
-    #include "configmanager.h"
-    #include "projectbuildtarget.h"
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "projectbuildtarget.h"
 #endif
 
 #include "cbauibook.h"
@@ -43,10 +43,10 @@ ThreadSearchThread::ThreadSearchThread(ThreadSearchView*           pThreadSearch
         m_Masks.Add(_T("*"));
     }
     m_pTextFileSearcher = TextFileSearcher::BuildTextFileSearcher(findData.GetFindText(),
-                                                                  findData.GetMatchCase(),
-                                                                  findData.GetStartWord(),
-                                                                  findData.GetMatchWord(),
-                                                                  findData.GetRegEx());
+                          findData.GetMatchCase(),
+                          findData.GetStartWord(),
+                          findData.GetMatchWord(),
+                          findData.GetRegEx());
     if (!m_pTextFileSearcher)
     {
         ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
@@ -283,48 +283,48 @@ void ThreadSearchThread::FindInFile(const wxString& path)
 
     switch ( m_pTextFileSearcher->FindInFile(path, m_LineTextArray, m_MatchedPositions) )
     {
-        case TextFileSearcher::idStringFound:
+    case TextFileSearcher::idStringFound:
+    {
+        ThreadSearchEvent event(wxEVT_THREAD_SEARCH, -1);
+        event.SetString(path);
+        event.SetLineTextArray(m_LineTextArray);
+        event.SetMatchedPositions(m_MatchedPositions);
+
+        // Using wxPostEvent, we avoid multi-threaded memory violation.
+        m_pThreadSearchView->PostThreadSearchEvent(event);
+        break;
+    }
+    case TextFileSearcher::idStringNotFound:
+    {
+        break;
+    }
+    case TextFileSearcher::idFileNotFound:
+    {
+        if(m_ShowFileMissingError)
         {
-            ThreadSearchEvent event(wxEVT_THREAD_SEARCH, -1);
-            event.SetString(path);
-            event.SetLineTextArray(m_LineTextArray);
-            event.SetMatchedPositions(m_MatchedPositions);
+            ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
+            event.SetString(path + _(" does not exist."));
 
             // Using wxPostEvent, we avoid multi-threaded memory violation.
-            m_pThreadSearchView->PostThreadSearchEvent(event);
-            break;
+            wxPostEvent( m_pThreadSearchView,event);
         }
-        case TextFileSearcher::idStringNotFound:
+        break;
+    }
+    case TextFileSearcher::idFileOpenError:
+    {
+        if(m_ShowCantOpenFileError)
         {
-            break;
-        }
-        case TextFileSearcher::idFileNotFound:
-        {
-            if(m_ShowFileMissingError)
-            {
-                ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
-                event.SetString(path + _(" does not exist."));
+            ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
+            event.SetString(_("Failed to open ") + path);
 
-                // Using wxPostEvent, we avoid multi-threaded memory violation.
-                wxPostEvent( m_pThreadSearchView,event);
-            }
-            break;
+            // Using wxPostEvent, we avoid multi-threaded memory violation.
+            wxPostEvent( m_pThreadSearchView,event);
         }
-        case TextFileSearcher::idFileOpenError:
-        {
-            if(m_ShowCantOpenFileError)
-            {
-                ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
-                event.SetString(_("Failed to open ") + path);
-
-                // Using wxPostEvent, we avoid multi-threaded memory violation.
-                wxPostEvent( m_pThreadSearchView,event);
-            }
-            break;
-        }
-        default:
-        {
-        }
+        break;
+    }
+    default:
+    {
+    }
     }
 }
 

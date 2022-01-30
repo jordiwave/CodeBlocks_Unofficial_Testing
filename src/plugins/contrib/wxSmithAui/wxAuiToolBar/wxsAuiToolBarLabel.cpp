@@ -27,30 +27,30 @@ using namespace wxsFlags;
 
 namespace
 {
-    #include "../images/wxsAuiToolBarLabel16.xpm"
-    #include "../images/wxsAuiToolBarLabel32.xpm"
+#include "../images/wxsAuiToolBarLabel16.xpm"
+#include "../images/wxsAuiToolBarLabel32.xpm"
 
-    wxsRegisterItem<wxsAuiToolBarLabel> Reg(
-        _T("wxAuiToolBarLabel"),            // Class name
-        wxsTWidget,                         // Item type
-        _T("wxWindows"),                    // License
-        _T("Benjamin I. Williams"),         // Author
-        _T(""),                             // Author's email
-        _T(""),                             // Item's homepage
-        _T("Aui"),                          // Category in palette
-        10,                                 // Priority in palette
-        _T("AuiToolBarLabel"),              // Base part of names for new items
-        wxsCPP,                             // List of coding languages supported by this item
-        2, 8,                               // Version
-        wxBitmap(wxsAuiToolBarLabel32_xpm), // 32x32 bitmap
-        wxBitmap(wxsAuiToolBarLabel16_xpm), // 16x16 bitmap
-        false);
+wxsRegisterItem<wxsAuiToolBarLabel> Reg(
+    _T("wxAuiToolBarLabel"),            // Class name
+    wxsTWidget,                         // Item type
+    _T("wxWindows"),                    // License
+    _T("Benjamin I. Williams"),         // Author
+    _T(""),                             // Author's email
+    _T(""),                             // Item's homepage
+    _T("Aui"),                          // Category in palette
+    10,                                 // Priority in palette
+    _T("AuiToolBarLabel"),              // Base part of names for new items
+    wxsCPP,                             // List of coding languages supported by this item
+    2, 8,                               // Version
+    wxBitmap(wxsAuiToolBarLabel32_xpm), // 32x32 bitmap
+    wxBitmap(wxsAuiToolBarLabel16_xpm), // 16x16 bitmap
+    false);
 }
 
 wxsAuiToolBarLabel::wxsAuiToolBarLabel(wxsItemResData* Data)
     : wxsAuiToolBarItemBase(Data,&Reg.Info,flId,0,0),
-    m_IsDefault(true),
-    m_Width(0)
+      m_IsDefault(true),
+      m_Width(0)
 {}
 
 void wxsAuiToolBarLabel::OnEnumItemProperties(long Flags)

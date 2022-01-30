@@ -19,14 +19,14 @@ enum ScriptSecurityResponse
 
 class ScriptSecurityWarningDlg : public wxScrollingDialog
 {
-    public:
-        ScriptSecurityWarningDlg(wxWindow* parent, const wxString& operation, const wxString& command);
-        ~ScriptSecurityWarningDlg() override;
+public:
+    ScriptSecurityWarningDlg(wxWindow* parent, const wxString& operation, const wxString& command);
+    ~ScriptSecurityWarningDlg() override;
 
-        ScriptSecurityResponse GetResponse();
-        void EndModal(int retCode) override;
-    protected:
-    private:
+    ScriptSecurityResponse GetResponse();
+    void EndModal(int retCode) override;
+protected:
+private:
 };
 
 

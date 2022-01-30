@@ -11,28 +11,28 @@
 
 class DLLIMPORT ProjectsFileMasksDlg : public wxScrollingDialog
 {
-    public:
-        ProjectsFileMasksDlg(wxWindow* parent, FilesGroupsAndMasks* fgam);
-        ~ProjectsFileMasksDlg() override;
+public:
+    ProjectsFileMasksDlg(wxWindow* parent, FilesGroupsAndMasks* fgam);
+    ~ProjectsFileMasksDlg() override;
 
-        void OnUpdateUI(wxUpdateUIEvent& event);
-        void OnAdd(wxCommandEvent& event);
-        void OnEdit(wxCommandEvent& event);
-        void OnDelete(wxCommandEvent& event);
-        void OnSetDefault(wxCommandEvent& event);
-        void OnListChanged(wxCommandEvent& event);
-    protected:
-    private:
-        void RebuildList();
-        void ListChange();
+    void OnUpdateUI(wxUpdateUIEvent& event);
+    void OnAdd(wxCommandEvent& event);
+    void OnEdit(wxCommandEvent& event);
+    void OnDelete(wxCommandEvent& event);
+    void OnSetDefault(wxCommandEvent& event);
+    void OnListChanged(wxCommandEvent& event);
+protected:
+private:
+    void RebuildList();
+    void ListChange();
 
-        void EndModal(int retCode) override;
+    void EndModal(int retCode) override;
 
-        FilesGroupsAndMasks  m_FileGroupsAndMasksCopy;
-        FilesGroupsAndMasks* m_pFileGroupsAndMasks;
-        int                  m_LastListSelection;
+    FilesGroupsAndMasks  m_FileGroupsAndMasksCopy;
+    FilesGroupsAndMasks* m_pFileGroupsAndMasks;
+    int                  m_LastListSelection;
 
-        DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 };
 
 #endif // PROJECTSFILEMASKSDLG_H

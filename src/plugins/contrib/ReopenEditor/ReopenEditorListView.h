@@ -15,42 +15,42 @@ class wxPanel;
 
 class ReopenEditorListView : public wxPanel
 {
-    public:
-        ReopenEditorListView(const wxArrayString& titles, const wxArrayInt& widths);
-        ReopenEditorListView(const ReopenEditorListView& Original);
-        ~ReopenEditorListView();
+public:
+    ReopenEditorListView(const wxArrayString& titles, const wxArrayInt& widths);
+    ReopenEditorListView(const ReopenEditorListView& Original);
+    ~ReopenEditorListView();
 
-        virtual size_t GetItemsCount() const;
-        virtual void Prepend(const wxString& msg, Logger::level lv = Logger::info);
-        virtual void Prepend(const wxArrayString& colValues, Logger::level lv = Logger::info);
-        virtual void RemoveAt(size_t i);
-        virtual wxArrayString GetItemAsArray(long item) const;
-        virtual wxString GetFilename(long item) const;
-        virtual cbProject* GetProject(long item) const;
-        virtual void SetProject(long item, cbProject* prj) const;
+    virtual size_t GetItemsCount() const;
+    virtual void Prepend(const wxString& msg, Logger::level lv = Logger::info);
+    virtual void Prepend(const wxArrayString& colValues, Logger::level lv = Logger::info);
+    virtual void RemoveAt(size_t i);
+    virtual wxArrayString GetItemAsArray(long item) const;
+    virtual wxString GetFilename(long item) const;
+    virtual cbProject* GetProject(long item) const;
+    virtual void SetProject(long item, cbProject* prj) const;
 
-    private:
-        void Init();
+private:
+    void Init();
 
-    private:
-        wxListCtrl* m_pListControl;
-        struct ListStyles
-        {
-            wxFont font;
-            wxColour colour;
-        };
-        ListStyles style[Logger::num_levels];
-        void OnDoubleClick(wxListEvent& event);
-        void OnContextMenu(wxContextMenuEvent& /*event*/);
-        void OnReopenItems(wxCommandEvent& event);
-        void OnRemoveItems(wxCommandEvent& event);
-        void OnReopenAll(wxCommandEvent& /*event*/);
-        void OnRemoveAll(wxCommandEvent& /*event*/);
-        void DoShowContextMenu();
-        void DoOpen(wxString fname);
-        void DoOpen(wxArrayString fnames);
+private:
+    wxListCtrl* m_pListControl;
+    struct ListStyles
+    {
+        wxFont font;
+        wxColour colour;
+    };
+    ListStyles style[Logger::num_levels];
+    void OnDoubleClick(wxListEvent& event);
+    void OnContextMenu(wxContextMenuEvent& /*event*/);
+    void OnReopenItems(wxCommandEvent& event);
+    void OnRemoveItems(wxCommandEvent& event);
+    void OnReopenAll(wxCommandEvent& /*event*/);
+    void OnRemoveAll(wxCommandEvent& /*event*/);
+    void DoShowContextMenu();
+    void DoOpen(wxString fname);
+    void DoOpen(wxArrayString fnames);
 
-        DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // REOPENEDITORLISTVIEW_H

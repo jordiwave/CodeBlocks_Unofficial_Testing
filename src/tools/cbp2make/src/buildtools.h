@@ -32,7 +32,8 @@ class TiXmlElement;
 class CBuildTool
 {
 public:
-    enum ToolType {
+    enum ToolType
+    {
         btOther,
         btPreprocessor,
         btAssembler,

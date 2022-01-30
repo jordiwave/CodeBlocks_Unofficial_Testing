@@ -11,19 +11,19 @@
 #include "goto_file.h"
 
 #ifndef WX_PRECOMP
-    //(*InternalHeadersPCH(GotoFile)
-    #include <wx/sizer.h>
-    #include <wx/listctrl.h>
-    #include <wx/string.h>
-    #include <wx/intl.h>
-    #include <wx/stattext.h>
-    #include <wx/textctrl.h>
-    //*)
+//(*InternalHeadersPCH(GotoFile)
+#include <wx/sizer.h>
+#include <wx/listctrl.h>
+#include <wx/string.h>
+#include <wx/intl.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+//*)
 
-    #include <algorithm>
-    #include <cmath>
+#include <algorithm>
+#include <cmath>
 
-    #include "cbexception.h"
+#include "cbexception.h"
 #endif
 //(*InternalHeaders(GotoFile)
 //*)

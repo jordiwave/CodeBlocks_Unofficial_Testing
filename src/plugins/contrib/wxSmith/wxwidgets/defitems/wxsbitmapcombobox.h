@@ -33,24 +33,24 @@
 /** \brief Class for wxsBitmapComboBox widget */
 class wxsBitmapComboBox: public wxsWidget
 {
-    public:
+public:
 
-        wxsBitmapComboBox(wxsItemResData* Data);
+    wxsBitmapComboBox(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void        OnBuildCreatingCode();
-        virtual wxObject   *OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void        OnEnumWidgetProperties(long Flags);
+    virtual void        OnBuildCreatingCode();
+    virtual wxObject   *OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void        OnEnumWidgetProperties(long Flags);
 
-                void        FindAllImageLists(wxArrayString &aNames);
-                void        UpdateComboItemList(void);
-                void        ParseComboItem(wxString inSource, wxString &outItem, int &outIndex);
+    void        FindAllImageLists(wxArrayString &aNames);
+    void        UpdateComboItemList(void);
+    void        ParseComboItem(wxString inSource, wxString &outItem, int &outIndex);
 
 
 
-        wxString        mImageList;                 // list to use to select images
-        wxArrayString   mItems;                     // text of drop-down items
+    wxString        mImageList;                 // list to use to select images
+    wxArrayString   mItems;                     // text of drop-down items
 };
 
 #endif

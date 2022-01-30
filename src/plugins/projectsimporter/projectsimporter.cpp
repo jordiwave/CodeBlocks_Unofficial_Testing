@@ -10,22 +10,22 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/filename.h>
-    #include <wx/intl.h>
-    #include <wx/utils.h>
-    #include <wx/filename.h>
-    #include <wx/fs_zip.h>
-    #include <wx/menu.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/filename.h>
+#include <wx/intl.h>
+#include <wx/utils.h>
+#include <wx/filename.h>
+#include <wx/fs_zip.h>
+#include <wx/menu.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "globals.h"
-    #include "manager.h"
-    #include "logmanager.h"
-    #include "projectmanager.h"
-    #include "logmanager.h"
-    #include "compilerfactory.h"
-    #include "cbproject.h"
-    #include "cbworkspace.h"
+#include "globals.h"
+#include "manager.h"
+#include "logmanager.h"
+#include "projectmanager.h"
+#include "logmanager.h"
+#include "compilerfactory.h"
+#include "cbproject.h"
+#include "cbworkspace.h"
 #endif
 
 #include "projectsimporter.h"
@@ -41,7 +41,7 @@
 // this auto-registers the plugin
 namespace
 {
-    PluginRegistrant<ProjectsImporter> reg(_T("ProjectsImporter"));
+PluginRegistrant<ProjectsImporter> reg(_T("ProjectsImporter"));
 }
 
 ProjectsImporter::ProjectsImporter()
@@ -110,11 +110,11 @@ bool ProjectsImporter::CanHandleFile(const wxString& filename) const
 {
     const FileType ft = FileTypeOf(filename);
     return (   ft == ftDevCppProject
-            || ft == ftMSVC6Project
-            || ft == ftMSVC6Workspace
-            || ft == ftMSVC7Project
-            || ft == ftMSVC7Workspace
-            || ft == ftMSVC10Project );
+               || ft == ftMSVC6Project
+               || ft == ftMSVC6Workspace
+               || ft == ftMSVC7Project
+               || ft == ftMSVC7Workspace
+               || ft == ftMSVC10Project );
 }
 
 int ProjectsImporter::OpenFile(const wxString& filename)
@@ -122,23 +122,23 @@ int ProjectsImporter::OpenFile(const wxString& filename)
     const FileType ft = FileTypeOf(filename);
     switch (ft)
     {
-        case ftDevCppProject: // fallthrough
-        case ftMSVC6Project:  // fallthrough
-        case ftMSVC7Project:  // fallthrough
-        case ftMSVC10Project: // fallthrough
-        case ftXcode1Project: // fallthrough
-        case ftXcode2Project: // fallthrough
-            return LoadProject(filename);
-            break;
+    case ftDevCppProject: // fallthrough
+    case ftMSVC6Project:  // fallthrough
+    case ftMSVC7Project:  // fallthrough
+    case ftMSVC10Project: // fallthrough
+    case ftXcode1Project: // fallthrough
+    case ftXcode2Project: // fallthrough
+        return LoadProject(filename);
+        break;
 
-        case ftMSVC6Workspace: // fallthrough
-        case ftMSVC7Workspace: // fallthrough
-            return LoadWorkspace(filename);
-            break;
+    case ftMSVC6Workspace: // fallthrough
+    case ftMSVC7Workspace: // fallthrough
+        return LoadWorkspace(filename);
+        break;
 
-        default:
-            cbMessageBox(_("Failed to import file: unsupported"), _("Error"), wxICON_ERROR);
-            return -1;
+    default:
+        cbMessageBox(_("Failed to import file: unsupported"), _("Error"), wxICON_ERROR);
+        return -1;
     }
     return -1;
 }
@@ -164,20 +164,24 @@ int ProjectsImporter::LoadProject(const wxString& filename)
         FileType ft = FileTypeOf(filename);
         switch (ft)
         {
-            case ftDevCppProject:
-                loader = new DevCppLoader(prj); break;
-            case ftMSVC6Project:
-                loader = new MSVCLoader(prj); break;
-            case ftMSVC7Project:
-                loader = new MSVC7Loader(prj); break;
-            case ftMSVC10Project:
-                loader = new MSVC10Loader(prj); break;
-            case ftXcode1Project: /* placeholder, fallthrough (for now) */
-            case ftXcode2Project: /* placeholder, fallthrough (for now) */
-            default:
-                Manager::Get()->GetProjectManager()->EndLoadingProject(0);
-                cbMessageBox(_("Failed to import file: File type not supported."), _("Error"), wxICON_ERROR);
-                return -1;
+        case ftDevCppProject:
+            loader = new DevCppLoader(prj);
+            break;
+        case ftMSVC6Project:
+            loader = new MSVCLoader(prj);
+            break;
+        case ftMSVC7Project:
+            loader = new MSVC7Loader(prj);
+            break;
+        case ftMSVC10Project:
+            loader = new MSVC10Loader(prj);
+            break;
+        case ftXcode1Project: /* placeholder, fallthrough (for now) */
+        case ftXcode2Project: /* placeholder, fallthrough (for now) */
+        default:
+            Manager::Get()->GetProjectManager()->EndLoadingProject(0);
+            cbMessageBox(_("Failed to import file: File type not supported."), _("Error"), wxICON_ERROR);
+            return -1;
         }
 
         wxString compilerID;
@@ -261,12 +265,14 @@ int ProjectsImporter::LoadWorkspace(const wxString& filename)
     IBaseWorkspaceLoader* pWsp = 0;
     switch (ft)
     {
-        case ftMSVC6Workspace:
-            pWsp = new MSVCWorkspaceLoader; break;
-        case ftMSVC7Workspace:
-            pWsp = new MSVC7WorkspaceLoader; break;
-        default:
-            break;
+    case ftMSVC6Workspace:
+        pWsp = new MSVCWorkspaceLoader;
+        break;
+    case ftMSVC7Workspace:
+        pWsp = new MSVC7WorkspaceLoader;
+        break;
+    default:
+        break;
     }
 
     if (!pWsp)

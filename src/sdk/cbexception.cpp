@@ -10,18 +10,18 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "cbexception.h"
-    #include "globals.h"
-    #include "configmanager.h"
-    #include <wx/log.h> // for wxSafeShowMessage()
+#include "cbexception.h"
+#include "globals.h"
+#include "configmanager.h"
+#include <wx/log.h> // for wxSafeShowMessage()
 #endif
 
 #include <wx/intl.h>
 
 cbException::cbException(const wxString& msg, const wxString& file, int line)
-  : Message(msg),
-    File(file),
-    Line(line)
+    : Message(msg),
+      File(file),
+      Line(line)
 {}
 
 cbException::~cbException()

@@ -26,11 +26,11 @@
 
 namespace
 {
-    wxsRegisterItem<wxsTimer> Reg(_T("Timer"),wxsTTool,_T("Tools"),20,false);
+wxsRegisterItem<wxsTimer> Reg(_T("Timer"),wxsTTool,_T("Tools"),20,false);
 
-    WXS_EV_BEGIN(wxsTimerEvents)
-        WXS_EVI(EVT_TIMER,wxEVT_TIMER,wxTimerEvent,Trigger)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsTimerEvents)
+WXS_EVI(EVT_TIMER,wxEVT_TIMER,wxTimerEvent,Trigger)
+WXS_EV_END()
 
 }
 
@@ -50,20 +50,20 @@ void wxsTimer::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/timer.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%ASetOwner(this, %I);\n"));
-            if ( m_Interval > 0 ) Codef(_T("%AStart(%d, %b);\n"),m_Interval,m_OneShot);
-            BuildSetupWindowCode();
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/timer.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%ASetOwner(this, %I);\n"));
+        if ( m_Interval > 0 ) Codef(_T("%AStart(%d, %b);\n"),m_Interval,m_OneShot);
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsTimer::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsTimer::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

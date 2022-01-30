@@ -43,40 +43,40 @@ class wxCommandEvent;
 
 class DirListDlg: public wxScrollingDialog
 {
-	public:
+public:
 
-		DirListDlg(wxWindow* parent,wxWindowID id = -1);
-		virtual ~DirListDlg();
+    DirListDlg(wxWindow* parent,wxWindowID id = -1);
+    virtual ~DirListDlg();
 
-		wxArrayString Dirs;
+    wxArrayString Dirs;
 
-	private:
+private:
 
-        //(*Declarations(DirListDlg)
-        wxFlexGridSizer* FlexGridSizer1;
-        wxButton* Button4;
-        wxButton* Button3;
-        wxTextCtrl* DirList;
-        wxBoxSizer* BoxSizer2;
-        wxBoxSizer* BoxSizer1;
-        //*)
+    //(*Declarations(DirListDlg)
+    wxFlexGridSizer* FlexGridSizer1;
+    wxButton* Button4;
+    wxButton* Button3;
+    wxTextCtrl* DirList;
+    wxBoxSizer* BoxSizer2;
+    wxBoxSizer* BoxSizer1;
+    //*)
 
-		//(*Handlers(DirListDlg)
-		void OnButton1Click(wxCommandEvent& event);
-		void OnButton2Click(wxCommandEvent& event);
-		void OnButton3Click(wxCommandEvent& event);
-		void OnButton4Click(wxCommandEvent& event);
-		//*)
+    //(*Handlers(DirListDlg)
+    void OnButton1Click(wxCommandEvent& event);
+    void OnButton2Click(wxCommandEvent& event);
+    void OnButton3Click(wxCommandEvent& event);
+    void OnButton4Click(wxCommandEvent& event);
+    //*)
 
-		//(*Identifiers(DirListDlg)
-		static const long ID_TEXTCTRL1;
-		static const long ID_BUTTON1;
-		static const long ID_BUTTON2;
-		static const long ID_BUTTON3;
-		static const long ID_BUTTON4;
-		//*)
+    //(*Identifiers(DirListDlg)
+    static const long ID_TEXTCTRL1;
+    static const long ID_BUTTON1;
+    static const long ID_BUTTON2;
+    static const long ID_BUTTON3;
+    static const long ID_BUTTON4;
+    //*)
 
-		DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

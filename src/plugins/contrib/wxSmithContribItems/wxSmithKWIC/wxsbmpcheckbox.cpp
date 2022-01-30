@@ -27,31 +27,31 @@
 
 namespace
 {
-    // Loading images from xpm files
+// Loading images from xpm files
 #include "images/bmpchk16.xpm"
 #include "images/bmpchk32.xpm"
 
-    // This code provides basic informations about item and register
-    // it inside wxSmith
-    wxsRegisterItem<wxsBmpCheckbox> Reg(
-        _T("kwxBmpCheckBox"),                                 // Class name
-        wxsTWidget,                                                    // Item type
-        _T("KWIC License"),                                       // License
-        _T("Andrea V. & Marco Cavallini"),                   // Author
-        _T("m.cavallini@koansoftware.com"),              // Author's email
-        _T("http://www.koansoftware.com/kwic/"),        // Item's homepage
-        _T("KWIC"),                                                     // Category in palette
-        80,                                                                // Priority in palette
-        _T("BmpCheckbox"),                                       // Base part of names for new items
-        wxsCPP,                                                        // List of coding languages supported by this item
-        1, 0,                                                              // Version
-        wxBitmap(bmpchk32_xpm),                               // 32x32 bitmap
-        wxBitmap(bmpchk16_xpm),                               // 16x16 bitmap
-        true);                                                            // We do not allow this item inside XRC files
+// This code provides basic informations about item and register
+// it inside wxSmith
+wxsRegisterItem<wxsBmpCheckbox> Reg(
+    _T("kwxBmpCheckBox"),                                 // Class name
+    wxsTWidget,                                                    // Item type
+    _T("KWIC License"),                                       // License
+    _T("Andrea V. & Marco Cavallini"),                   // Author
+    _T("m.cavallini@koansoftware.com"),              // Author's email
+    _T("http://www.koansoftware.com/kwic/"),        // Item's homepage
+    _T("KWIC"),                                                     // Category in palette
+    80,                                                                // Priority in palette
+    _T("BmpCheckbox"),                                       // Base part of names for new items
+    wxsCPP,                                                        // List of coding languages supported by this item
+    1, 0,                                                              // Version
+    wxBitmap(bmpchk32_xpm),                               // 32x32 bitmap
+    wxBitmap(bmpchk16_xpm),                               // 16x16 bitmap
+    true);                                                            // We do not allow this item inside XRC files
 
-    WXS_EV_BEGIN(wxsBmpCheckboxEvents)
-        WXS_EVI(EVT_BMPCHECKBOX_CLICKED, kwxEVT_BITBUTTON_CLICK, wxCommandEvent, Clicked)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsBmpCheckboxEvents)
+WXS_EVI(EVT_BMPCHECKBOX_CLICKED, kwxEVT_BITBUTTON_CLICK, wxCommandEvent, Clicked)
+WXS_EV_END()
 
 }
 
@@ -67,9 +67,9 @@ wxsBmpCheckbox::wxsBmpCheckbox(wxsItemResData *Data) :
         wxsBmpCheckboxEvents,
         NULL,
         flVariable | flId | flPosition | flSize | flEnabled | flFocused | flHidden | flToolTip | flHelpText | flSubclass | flMinMaxSize),
-        m_bBorder(true),
-        m_iBorderStyle(wxPENSTYLE_DOT),
-        m_bChecked(false)
+    m_bBorder(true),
+    m_iBorderStyle(wxPENSTYLE_DOT),
+    m_bChecked(false)
 {
 }
 
@@ -88,54 +88,64 @@ void wxsBmpCheckbox::OnBuildCreatingCode()
 {
     switch(GetLanguage())
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("\"wx/KWIC/BmpCheckBox.h\""), GetInfo().ClassName);
+        // Write different code depending on whether the bitmaps are set or wxNullBitmap is used.
+        wxString sOn, sOff, sOnSel, sOffSel;
+        if(m_bdOn.IsEmpty())
         {
-            AddHeader(_T("\"wx/KWIC/BmpCheckBox.h\""), GetInfo().ClassName);
-            // Write different code depending on whether the bitmaps are set or wxNullBitmap is used.
-            wxString sOn, sOff, sOnSel, sOffSel;
-            if(m_bdOn.IsEmpty()){
-                sOn = wxT("wxNullBitmap");
-            }
-            else{
-                sOn = wxT("*pbmpOn");
-                Codef(_T("wxBitmap *pbmpOn = new %i;\n"), &m_bdOn, _T("wxART_OTHER"));
-            }
-            if(m_bdOff.IsEmpty()){
-                sOff = wxT("wxNullBitmap");
-            }
-            else{
-                sOff = wxT("*pbmpOff");
-                Codef(_T("wxBitmap *pbmpOff = new %i;\n"), &m_bdOff, _T("wxART_OTHER"));
-            }
-            if(m_bdOnSel.IsEmpty()){
-                sOnSel = wxT("wxNullBitmap");
-            }
-            else{
-                sOnSel = wxT("*pbmpOnSel");
-                Codef(_T("wxBitmap *pbmpOnSel = new %i;\n"), &m_bdOnSel, _T("wxART_OTHER"));
-            }
-            if(m_bdOffSel.IsEmpty()){
-                sOffSel = wxT("wxNullBitmap");
-            }
-            else{
-                sOffSel = wxT("*pbmpOffSel");
-                Codef(_T("wxBitmap *pbmpOffSel = new %i;\n"), &m_bdOffSel, _T("wxART_OTHER"));
-            }
-            Codef(_T("%C(%W,%I, %s, %s, %s, %s, %P,%S, %s);\n"), sOn.wx_str(), sOff.wx_str(), sOnSel.wx_str(), sOffSel.wx_str(), _T("wxBORDER_NONE"));
-            // The defaults are border on and wxDOT.
-            if(!m_bBorder || m_iBorderStyle != wxPENSTYLE_DOT){
-                Codef(_T("%ASetBorder(%b, %d);\n"), m_bBorder, m_iBorderStyle);
-            }
-            if(m_bChecked){
-                Codef(_T("%ASetState(true);\n"));
-            }
-
-            BuildSetupWindowCode();
-            break;
+            sOn = wxT("wxNullBitmap");
         }
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsBmpCheckbox::OnBuildCreatingCode"), GetLanguage());
+        else
+        {
+            sOn = wxT("*pbmpOn");
+            Codef(_T("wxBitmap *pbmpOn = new %i;\n"), &m_bdOn, _T("wxART_OTHER"));
+        }
+        if(m_bdOff.IsEmpty())
+        {
+            sOff = wxT("wxNullBitmap");
+        }
+        else
+        {
+            sOff = wxT("*pbmpOff");
+            Codef(_T("wxBitmap *pbmpOff = new %i;\n"), &m_bdOff, _T("wxART_OTHER"));
+        }
+        if(m_bdOnSel.IsEmpty())
+        {
+            sOnSel = wxT("wxNullBitmap");
+        }
+        else
+        {
+            sOnSel = wxT("*pbmpOnSel");
+            Codef(_T("wxBitmap *pbmpOnSel = new %i;\n"), &m_bdOnSel, _T("wxART_OTHER"));
+        }
+        if(m_bdOffSel.IsEmpty())
+        {
+            sOffSel = wxT("wxNullBitmap");
+        }
+        else
+        {
+            sOffSel = wxT("*pbmpOffSel");
+            Codef(_T("wxBitmap *pbmpOffSel = new %i;\n"), &m_bdOffSel, _T("wxART_OTHER"));
+        }
+        Codef(_T("%C(%W,%I, %s, %s, %s, %s, %P,%S, %s);\n"), sOn.wx_str(), sOff.wx_str(), sOnSel.wx_str(), sOffSel.wx_str(), _T("wxBORDER_NONE"));
+        // The defaults are border on and wxDOT.
+        if(!m_bBorder || m_iBorderStyle != wxPENSTYLE_DOT)
+        {
+            Codef(_T("%ASetBorder(%b, %d);\n"), m_bBorder, m_iBorderStyle);
+        }
+        if(m_bChecked)
+        {
+            Codef(_T("%ASetState(true);\n"));
+        }
+
+        BuildSetupWindowCode();
+        break;
+    }
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsBmpCheckbox::OnBuildCreatingCode"), GetLanguage());
     }
 }
 
@@ -155,10 +165,12 @@ wxObject *wxsBmpCheckbox::OnBuildPreview(wxWindow *parent, long flags)
     kwxBmpCheckBox *preview = new kwxBmpCheckBox(parent, GetId(), *pbmpOn, *pbmpOff, *pbmpOnSel, *pbmpOffSel, Pos(parent), Size(parent), wxBORDER_NONE);
 
     // The defaults are border on and wxDOT.
-    if(!m_bBorder || m_iBorderStyle != wxPENSTYLE_DOT){
+    if(!m_bBorder || m_iBorderStyle != wxPENSTYLE_DOT)
+    {
         preview->SetBorder(m_bBorder, m_iBorderStyle);
     }
-    if(m_bChecked){
+    if(m_bChecked)
+    {
         preview->SetState(true);
     }
 

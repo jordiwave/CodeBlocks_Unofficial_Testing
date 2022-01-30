@@ -4,11 +4,11 @@ using namespace lf;
 
 CMain::CMain(render::IRenderWindow* win)
     : rwin(win),
-    rl3d(win->getRenderLayer3D()),
-    smgr(rl3d->getSceneManager()),
-    cam(0),
-    camController(0),
-    quitNow(false)
+      rl3d(win->getRenderLayer3D()),
+      smgr(rl3d->getSceneManager()),
+      cam(0),
+      camController(0),
+      quitNow(false)
 {
     rwin->addKeyListener(this);
     setupScene();
@@ -31,8 +31,8 @@ void CMain::run()
     quitNow = false;
 
     while (!quitNow && CLFRender::getInstance().update())
-	{
-		// main loop
+    {
+        // main loop
     }
 }
 
@@ -60,8 +60,8 @@ void CMain::keyPressed(input::CKeyEvent& event)
 {
     switch (event.getKey())
     {
-        case input::KEY_ESCAPE:
-            quitNow = true;
-            break;
+    case input::KEY_ESCAPE:
+        quitNow = true;
+        break;
     }
 }

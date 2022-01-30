@@ -25,15 +25,15 @@
 /** \brief Class for wxsListView widget */
 class wxsListView: public wxsWidget
 {
-    public:
+public:
 
-        wxsListView(wxsItemResData* Data);
+    wxsListView(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 };
 
 #endif

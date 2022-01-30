@@ -10,22 +10,22 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <manager.h>
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <projectmanager.h>
-    #include <logmanager.h>
-    #include <cbeditor.h>
-    #include <cbproject.h>
-    #include <editorbase.h>
-    #include <sdk_events.h>
-    #include <misctreeitemdata.h>
+#include <manager.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <projectmanager.h>
+#include <logmanager.h>
+#include <cbeditor.h>
+#include <cbproject.h>
+#include <editorbase.h>
+#include <sdk_events.h>
+#include <misctreeitemdata.h>
 
-    #include <wx/window.h>
-    #include <wx/treectrl.h>
-    #include <wx/bitmap.h>
-    #include <wx/imaglist.h>
-    #include <wx/menu.h>
+#include <wx/window.h>
+#include <wx/treectrl.h>
+#include <wx/bitmap.h>
+#include <wx/imaglist.h>
+#include <wx/menu.h>
 #endif
 
 #include "openfileslistplugin.h"
@@ -34,21 +34,24 @@
 
 namespace
 {
-    // this auto-registers the plugin
-    PluginRegistrant<OpenFilesListPlugin> reg(_T("OpenFilesList"));
+// this auto-registers the plugin
+PluginRegistrant<OpenFilesListPlugin> reg(_T("OpenFilesList"));
 
-    const int idOpenFilesTree = wxNewId();
-    const int idViewOpenFilesTree = wxNewId();
-    const int idViewPreserveOpenEditors = wxNewId();
+const int idOpenFilesTree = wxNewId();
+const int idViewOpenFilesTree = wxNewId();
+const int idViewPreserveOpenEditors = wxNewId();
 
-    class OpenFilesListData : public wxTreeItemData
+class OpenFilesListData : public wxTreeItemData
+{
+public:
+    OpenFilesListData(EditorBase* ed_in) : ed(ed_in) {}
+    EditorBase* GetEditor() const
     {
-        public:
-            OpenFilesListData(EditorBase* ed_in) : ed(ed_in) {}
-            EditorBase* GetEditor() const { return ed; }
-        private:
-            EditorBase* ed;
-    };
+        return ed;
+    }
+private:
+    EditorBase* ed;
+};
 }
 
 BEGIN_EVENT_TABLE(OpenFilesListPlugin, cbPlugin)
@@ -82,7 +85,7 @@ void OpenFilesListPlugin::OnAttach()
 
     // create tree
     m_pTree = new wxTreeCtrl(Manager::Get()->GetAppWindow(), idOpenFilesTree,wxDefaultPosition,wxSize(150, 100),
-                            wxTR_HAS_BUTTONS | wxNO_BORDER | wxTR_HIDE_ROOT);
+                             wxTR_HAS_BUTTONS | wxNO_BORDER | wxTR_HIDE_ROOT);
 
     // load bitmaps
     {
@@ -96,8 +99,8 @@ void OpenFilesListPlugin::OnAttach()
 
         const wxString prefix = ConfigManager::GetDataFolder() + _T("/images/");
         const wxString treePrefix = ConfigManager::GetDataFolder()
-                                  + wxString::Format(_T("/resources.zip#zip:images/tree/%dx%d/"),
-                                                     size, size);
+                                    + wxString::Format(_T("/resources.zip#zip:images/tree/%dx%d/"),
+                                            size, size);
 
         wxBitmap bmp;
         bmp = cbLoadBitmapScaled(treePrefix + _T("folder_open.png"), wxBITMAP_TYPE_PNG,
@@ -191,7 +194,7 @@ void OpenFilesListPlugin::BuildMenu(wxMenuBar* menuBar)
             {
                 m_ViewMenu->InsertCheckItem(i, idViewOpenFilesTree, _("&Open files list"), _("Toggle displaying the open files list"));
                 m_ViewPreserveChk = m_ViewMenu->InsertCheckItem(i + 2, idViewPreserveOpenEditors, _("&Preserve open editors"), _("Preserve open editors per target/project.\n"
-                                                                                                                                 "Only available the when the workspace is empty."));
+                                    "Only available the when the workspace is empty."));
                 m_ViewPreserveChk->Check(m_PreserveOpenEditors);
                 m_ViewMenu->InsertSeparator(i + 3);
                 return;
@@ -201,7 +204,7 @@ void OpenFilesListPlugin::BuildMenu(wxMenuBar* menuBar)
         m_ViewMenu->AppendCheckItem(idViewOpenFilesTree, _("&Open files list"), _("Toggle displaying the open files list"));
         m_ViewMenu->AppendSeparator();
         m_ViewPreserveChk = m_ViewMenu->AppendCheckItem(idViewPreserveOpenEditors, _("&Preserve open editors"), _("Preserve open editors per target/project\n"
-                                                                                                                  "Only available the when workspace is empty."));
+                            "Only available the when workspace is empty."));
         m_ViewPreserveChk->Check(m_PreserveOpenEditors);
         m_ViewMenu->AppendSeparator();
     }
@@ -287,7 +290,7 @@ void OpenFilesListPlugin::RefreshOpenFilesTree(EditorBase* ed, bool remove)
             }
             else
                 m_pTree->Delete(item);
-             break;
+            break;
         }
         item = m_pTree->GetNextChild(m_pTree->GetRootItem(), cookie);
     }

@@ -1,16 +1,18 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 //helper functions
-enum wxbuildinfoformat {
-    short_f, long_f };
+enum wxbuildinfoformat
+{
+    short_f, long_f
+};
 
 wxString wxbuildinfo(wxbuildinfoformat format)
 {
@@ -69,7 +71,7 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
 END_EVENT_TABLE()
 
 MyFrame::MyFrame(wxFrame *frame, const wxString& title)
-        : wxFrame(frame, -1, title)
+    : wxFrame(frame, -1, title)
 {
 #if wxUSE_MENUS
     // create a menu bar

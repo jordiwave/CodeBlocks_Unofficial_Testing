@@ -29,40 +29,40 @@
 /** \brief Child of advanced quick props panel */
 class wxsAdvQPPChild : public wxPanel
 {
-    public:
+public:
 
-        /** \brief Ctor */
-        wxsAdvQPPChild(wxsAdvQPP* Parent,const wxString Title);
+    /** \brief Ctor */
+    wxsAdvQPPChild(wxsAdvQPP* Parent,const wxString Title);
 
-        /** \brief Dctor */
-        virtual ~wxsAdvQPPChild();
+    /** \brief Dctor */
+    virtual ~wxsAdvQPPChild();
 
-        /** \brief Getting container class
-         *  \note You should always compare returned value to 0 since
-         *        container may be accidentally unbinded from quick properties
-         *        panel.
-         */
-        inline wxsPropertyContainer* GetPropertyContainer()
-        {
-            return Parent->GetPropertyContainer();
-        }
+    /** \brief Getting container class
+     *  \note You should always compare returned value to 0 since
+     *        container may be accidentally unbinded from quick properties
+     *        panel.
+     */
+    inline wxsPropertyContainer* GetPropertyContainer()
+    {
+        return Parent->GetPropertyContainer();
+    }
 
-    protected:
+protected:
 
-        /** \brief Function which notifies that content of panel should be reloaded */
-        virtual void Update() = 0;
+    /** \brief Function which notifies that content of panel should be reloaded */
+    virtual void Update() = 0;
 
-        /** \brief Function which can be called to notify that user changed value of any property in this panel */
-        inline void NotifyChange()
-        {
-            Parent->NotifyChange();
-        }
+    /** \brief Function which can be called to notify that user changed value of any property in this panel */
+    inline void NotifyChange()
+    {
+        Parent->NotifyChange();
+    }
 
-    private:
+private:
 
-        wxsAdvQPP* Parent;
+    wxsAdvQPP* Parent;
 
-        friend class wxsAdvQPP;
+    friend class wxsAdvQPP;
 };
 
 #endif

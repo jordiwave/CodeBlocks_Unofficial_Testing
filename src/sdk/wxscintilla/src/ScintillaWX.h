@@ -79,14 +79,14 @@
 
 /* C::B begin */
 #ifndef wxOVERRIDE
-    #define wxOVERRIDE override
+#define wxOVERRIDE override
 #endif // wxOVERRIDE
 /* C::B end */
 
 // Define this if there is a standard clipboard format for rectangular
 // text selection under the current platform.
 #if defined(__WXMSW__) || defined(__WXGTK__)
-    #define wxHAVE_SCI_RECT_FORMAT
+#define wxHAVE_SCI_RECT_FORMAT
 #endif
 
 //----------------------------------------------------------------------
@@ -102,9 +102,11 @@ class SurfaceData;
 // Helper classes
 
 #if wxUSE_DRAG_AND_DROP
-class wxSCIDropTarget : public wxTextDropTarget {
+class wxSCIDropTarget : public wxTextDropTarget
+{
 public:
-    void SetScintilla(ScintillaWX* swx) {
+    void SetScintilla(ScintillaWX* swx)
+    {
         m_swx = swx;
     }
 
@@ -120,7 +122,8 @@ private:
 
 //----------------------------------------------------------------------
 
-class ScintillaWX : public ScintillaBase {
+class ScintillaWX : public ScintillaBase
+{
 public:
 
     ScintillaWX(wxScintilla* win);
@@ -176,7 +179,7 @@ public:
     void DoLeftButtonUp(Point pt, unsigned int curTime, bool ctrl);
     void DoLeftButtonMove(Point pt);
     void DoMiddleButtonUp(Point pt);
-/* C::B begin */
+    /* C::B begin */
 #if !wxCHECK_VERSION(3, 0, 0)
     enum wxMouseWheelAxis
     {
@@ -184,7 +187,7 @@ public:
         wxMOUSE_WHEEL_HORIZONTAL
     };
 #endif
-/* C::B end */
+    /* C::B end */
     void DoMouseWheel(wxMouseWheelAxis axis, int rotation, int delta,
                       int linesPerAction, int columnsPerAction,
                       bool ctrlDown, bool isPageScroll);
@@ -209,14 +212,23 @@ public:
     void FullPaint();
     void FullPaintDC(wxDC* dc);
     bool CanPaste() wxOVERRIDE;
-    bool GetHideSelection() { return view.hideSelection; }
+    bool GetHideSelection()
+    {
+        return view.hideSelection;
+    }
     void DoScrollToLine(int line);
     void DoScrollToColumn(int column);
     void ClipChildren(wxDC& dc, PRectangle rect);
     void SetUseAntiAliasing(bool useAA);
     bool GetUseAntiAliasing();
-    SurfaceData* GetSurfaceData() const {return m_surfaceData;}
-    void SetPaintAbandoned(){paintState = paintAbandoned;}
+    SurfaceData* GetSurfaceData() const
+    {
+        return m_surfaceData;
+    }
+    void SetPaintAbandoned()
+    {
+        paintState = paintAbandoned;
+    }
     void DoMarkerDefineBitmap(int markerNumber, const wxBitmap& bmp);
     void DoRegisterImage(int type, const wxBitmap& bmp);
 

@@ -10,15 +10,15 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/dir.h>
-    #include <wx/settings.h>
+#include <wx/dir.h>
+#include <wx/settings.h>
 
-    #include "globals.h"
-    #include "cbeditor.h"
-    #include "configmanager.h"
-    #include "logmanager.h"
-    #include "filemanager.h"
-    #include "manager.h"
+#include "globals.h"
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "logmanager.h"
+#include "filemanager.h"
+#include "manager.h"
 #endif
 
 #include <wx/regex.h>
@@ -83,11 +83,11 @@ EditorColourSet::~EditorColourSet()
 
 void EditorColourSet::ClearAllOptionColours()
 {
-   for (OptionSetsMap::iterator map_it = m_Sets.begin();
-                                                   map_it != m_Sets.end(); ++map_it)
+    for (OptionSetsMap::iterator map_it = m_Sets.begin();
+            map_it != m_Sets.end(); ++map_it)
     {
         for (OptionColours::iterator vec_it = (*map_it).second.m_Colours.begin();
-                            vec_it != (*map_it).second.m_Colours.end(); ++vec_it)
+                vec_it != (*map_it).second.m_Colours.end(); ++vec_it)
         {
             delete (*vec_it);
         }
@@ -165,8 +165,8 @@ void EditorColourSet::LoadAvailableSets()
             OptionColour* opt = it->second.m_Colours.Item(i);
             // valid values are:
             if (opt->value < 0 &&               // styles >= 0
-                opt->value != cbSELECTION &&    // cbSELECTION
-                opt->value != cbHIGHLIGHT_LINE) // cbHIGHLIGHT_LINE
+                    opt->value != cbSELECTION &&    // cbSELECTION
+                    opt->value != cbHIGHLIGHT_LINE) // cbHIGHLIGHT_LINE
             {
                 it->second.m_Colours.Remove(opt);
                 delete opt;
@@ -180,8 +180,8 @@ void EditorColourSet::LoadAvailableSets()
 HighlightLanguage EditorColourSet::AddHighlightLanguage(int lexer, const wxString& name)
 {
     if (   lexer < wxSCI_LEX_NULL
-        || lexer >  wxSCI_LEX_LAST // this is a C::B extension to wxscintilla.h
-        || name.IsEmpty() )
+            || lexer >  wxSCI_LEX_LAST // this is a C::B extension to wxscintilla.h
+            || name.IsEmpty() )
     {
         return HL_NONE;
     }
@@ -450,25 +450,25 @@ HighlightLanguage EditorColourSet::GetLanguageForFilename(const wxString& filena
     }
     // standard headers
     const wxString cppNames = wxT("|"
-            "algorithm|"  "atomic|"       "array|"              "bitset|"
-            "chrono|"     "complex|"      "condition_variable|" "deque|"
-            "exception|"  "fstream|"      "forward_list|"       "future|"
-            "functional|" "hash_map|"     "hash_set|"           "initializer_list|"
-            "iomanip|"    "ios|"          "iostream|"           "istream|"
-            "iterator|"   "limits|"       "list|"               "locale|"
-            "map|"        "memory|"       "mutex|"              "new|"
-            "numeric|"    "ostream|"      "queue|"              "random|"
-            "ratio|"      "regex|"        "set|"                "sstream|"
-            "stack|"      "stdexcept|"    "streambuf|"          "string|"
-            "strstream|"  "system_error|" "thread|"             "tuple|"
-            "typeinfo|"   "type_traits|"  "unordered_map|"      "unordered_set|"
-            "utility|"    "valarray|"     "vector|"
+                                  "algorithm|"  "atomic|"       "array|"              "bitset|"
+                                  "chrono|"     "complex|"      "condition_variable|" "deque|"
+                                  "exception|"  "fstream|"      "forward_list|"       "future|"
+                                  "functional|" "hash_map|"     "hash_set|"           "initializer_list|"
+                                  "iomanip|"    "ios|"          "iostream|"           "istream|"
+                                  "iterator|"   "limits|"       "list|"               "locale|"
+                                  "map|"        "memory|"       "mutex|"              "new|"
+                                  "numeric|"    "ostream|"      "queue|"              "random|"
+                                  "ratio|"      "regex|"        "set|"                "sstream|"
+                                  "stack|"      "stdexcept|"    "streambuf|"          "string|"
+                                  "strstream|"  "system_error|" "thread|"             "tuple|"
+                                  "typeinfo|"   "type_traits|"  "unordered_map|"      "unordered_set|"
+                                  "utility|"    "valarray|"     "vector|"
 
-            "cassert|"   "cctype|"  "cerrno|"  "cfenv|"    "cfloat|"
-            "cinttypes|" "ciso646|" "climits|" "clocale|"  "cmath|"
-            "csetjmp|"   "csignal|" "cstdarg|" "cstdbool|" "cstddef|"
-            "cstdint|"   "cstdio|"  "cstdlib|" "cstring|"  "ctgmath|"
-            "ctime|"     "cuchar|"  "cwchar|"  "cwctype|"            );
+                                  "cassert|"   "cctype|"  "cerrno|"  "cfenv|"    "cfloat|"
+                                  "cinttypes|" "ciso646|" "climits|" "clocale|"  "cmath|"
+                                  "csetjmp|"   "csignal|" "cstdarg|" "cstdbool|" "cstddef|"
+                                  "cstdint|"   "cstdio|"  "cstdlib|" "cstring|"  "ctgmath|"
+                                  "ctime|"     "cuchar|"  "cwchar|"  "cwctype|"            );
     if (cppNames.Find(wxT("|") + lfname + wxT("|")) != wxNOT_FOUND)
         return GetHighlightLanguage(wxT("C/C++"));
 
@@ -509,8 +509,8 @@ HighlightLanguage EditorColourSet::Apply(cbEditor* editor, HighlightLanguage lan
         lang = GetLanguageForFilename(editor->GetFilename());
 
     const bool isC = (   Manager::Get()->GetConfigManager(wxT("editor"))->ReadBool(wxT("no_stl_in_c"), true)
-                      && lang == GetHighlightLanguage(wxT("C/C++"))
-                      && editor->GetFilename().Lower().EndsWith(wxT(".c")) );
+                         && lang == GetHighlightLanguage(wxT("C/C++"))
+                         && editor->GetFilename().Lower().EndsWith(wxT(".c")) );
 
     Apply(lang, editor->GetLeftSplitViewControl(),  isC, colourise);
     Apply(lang, editor->GetRightSplitViewControl(), isC, colourise);
@@ -740,10 +740,10 @@ void EditorColourSet::Load()
             if (!s_notifiedUser)
             {
                 cbMessageBox(_("The way editor syntax highlighting configuration is saved, has changed.\n"
-                                "Syntax highlighting for all supported languages will revert to defaults now.\n"
-                                "We 're sorry for the inconvenience..."),
-                                _("Information"),
-                                wxICON_INFORMATION);
+                               "Syntax highlighting for all supported languages will revert to defaults now.\n"
+                               "We 're sorry for the inconvenience..."),
+                             _("Information"),
+                             wxICON_INFORMATION);
                 s_notifiedUser = true;
             }
             continue;
@@ -969,7 +969,7 @@ void EditorColourSet::SetStringLexerStyles(HighlightLanguage lang, const std::se
     if ( lang == HL_NONE )
         lang = m_PlainTextLexerID;
 
-   cbStyledTextCtrl::GetStringLexerStyles()[m_Sets[lang].m_Lexers] = styles;
+    cbStyledTextCtrl::GetStringLexerStyles()[m_Sets[lang].m_Lexers] = styles;
 }
 
 void EditorColourSet::SetCommentLexerStyles(HighlightLanguage lang, const std::set<int> &styles)
@@ -985,7 +985,7 @@ void EditorColourSet::SetCharacterLexerStyles(HighlightLanguage lang, const std:
     if ( lang == HL_NONE )
         lang = m_PlainTextLexerID;
 
-   cbStyledTextCtrl::GetCharacterLexerStyles()[m_Sets[lang].m_Lexers] = styles;
+    cbStyledTextCtrl::GetCharacterLexerStyles()[m_Sets[lang].m_Lexers] = styles;
 }
 
 void EditorColourSet::SetPreprocessorLexerStyles(HighlightLanguage lang, const std::set<int> &styles)
@@ -993,5 +993,5 @@ void EditorColourSet::SetPreprocessorLexerStyles(HighlightLanguage lang, const s
     if ( lang == HL_NONE )
         lang = m_PlainTextLexerID;
 
-   cbStyledTextCtrl::GetPreprocessorLexerStyles()[m_Sets[lang].m_Lexers] = styles;
+    cbStyledTextCtrl::GetPreprocessorLexerStyles()[m_Sets[lang].m_Lexers] = styles;
 }

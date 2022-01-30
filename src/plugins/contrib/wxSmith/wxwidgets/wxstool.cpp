@@ -31,7 +31,7 @@ wxsTool::wxsTool(
     const wxsEventDesc* EventArray,
     const wxsStyleSet* StyleSet,
     long PropertiesFlags):
-        wxsParent(Data,Info,PropertiesFlags,EventArray,StyleSet)
+    wxsParent(Data,Info,PropertiesFlags,EventArray,StyleSet)
 {
 }
 
@@ -45,21 +45,21 @@ bool wxsTool::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
 
     switch ( Data->GetPropertiesFilter() & (flSource|flMixed|flFile) )
     {
-        case flSource:
-            return true;
+    case flSource:
+        return true;
 
-        case flMixed:
-        case flFile:
-            if ( ShowMessage )
-            {
-                cbMessageBox(
-                    wxString::Format(_("%s is not supported in XRC"),GetInfo().ClassName.c_str()),
-                    _("Tool insertion error"));
-            }
-            return false;
+    case flMixed:
+    case flFile:
+        if ( ShowMessage )
+        {
+            cbMessageBox(
+                wxString::Format(_("%s is not supported in XRC"),GetInfo().ClassName.c_str()),
+                _("Tool insertion error"));
+        }
+        return false;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     return false;

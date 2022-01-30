@@ -9,25 +9,25 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-  #include <wx/button.h>
-  #include <wx/checkbox.h>
-  #include <wx/combobox.h>
-  #include <wx/event.h>
-  #include <wx/file.h>
-  #include <wx/filename.h>
-  #include <wx/intl.h>
-  #include <wx/listbox.h>
-  #include <wx/textctrl.h>
-  #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/combobox.h>
+#include <wx/event.h>
+#include <wx/file.h>
+#include <wx/filename.h>
+#include <wx/intl.h>
+#include <wx/listbox.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
 
-  #include "cbeditor.h"
-  #include "cbproject.h"
-  #include "configmanager.h"
-  #include "editormanager.h"
-  #include "globals.h"
-  #include "manager.h"
-  #include "macrosmanager.h"
-  #include "projectmanager.h"
+#include "cbeditor.h"
+#include "cbproject.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "globals.h"
+#include "manager.h"
+#include "macrosmanager.h"
+#include "projectmanager.h"
 #endif
 #include "cbstyledtextctrl.h"
 
@@ -201,8 +201,10 @@ void ClassWizardDlg::OnAddMemberVar(cb_unused wxCommandEvent& event)
     mv.Typ = memtyp;
     mv.Var = memvar;
     mv.Scp = memscp;
-    if (getter) mv.Get = _T("Get") + method; else mv.Get = wxEmptyString;
-    if (setter) mv.Set = _T("Set") + method; else mv.Set = wxEmptyString;
+    if (getter) mv.Get = _T("Get") + method;
+    else mv.Get = wxEmptyString;
+    if (setter) mv.Set = _T("Set") + method;
+    else mv.Set = wxEmptyString;
     m_MemberVars.push_back(mv);
 
     XRCCTRL(*this, "lstMemberVars", wxListBox)->Append(DoMemVarRepr(memtyp, memvar, memscp));
@@ -774,17 +776,17 @@ wxString ClassWizardDlg::DoMemVarRepr(const wxString & typ, const wxString & var
     wxString scpstr;
     switch(scp)
     {
-        case 0:
-            scpstr = _T("pub :: ");
-            break;
+    case 0:
+        scpstr = _T("pub :: ");
+        break;
 
-        case 1:
-            scpstr = _T("pro :: ");
-            break;
+    case 1:
+        scpstr = _T("pro :: ");
+        break;
 
-        case 2:
-            scpstr = _T("pri :: ");
-            break;
+    case 2:
+        scpstr = _T("pri :: ");
+        break;
     }
 
     return (scpstr + _T("[") + typ + _T("] : ") + var);

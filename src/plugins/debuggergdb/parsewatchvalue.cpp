@@ -55,10 +55,10 @@ struct Token
     void Trim(wxString const &s)
     {
         while (start < static_cast<int>(s.length())
-               && (s[start] == wxT(' ') || s[start] == wxT('\t') || s[start] == wxT('\n')))
+                && (s[start] == wxT(' ') || s[start] == wxT('\t') || s[start] == wxT('\n')))
             start++;
         while (end > 0
-               && (s[end - 1] == wxT(' ') || s[end - 1] == wxT('\t') || s[end - 1] == wxT('\n')))
+                && (s[end - 1] == wxT(' ') || s[end - 1] == wxT('\t') || s[end - 1] == wxT('\n')))
             end--;
     }
 
@@ -102,7 +102,7 @@ inline int DetectRepeatingSymbols(wxString const &str, int pos)
                 regexRepeatedChars.GetMatch(&start, &length, 0);
                 newPos = currPos + 3 + length;
                 if ((newPos + 4 < static_cast<int>(str.length()))
-                    && str[newPos] == wxT(',') && str[newPos + 2] == wxT('"'))
+                        && str[newPos] == wxT(',') && str[newPos + 2] == wxT('"'))
                 {
                     newPos += 3;
                     while (newPos < static_cast<int>(str.length()) && str[newPos] != wxT('"'))
@@ -128,7 +128,7 @@ inline bool GetNextToken(wxString const &str, int pos, Token &token)
 {
     token.hasRepeatedChar = false;
     while (pos < static_cast<int>(str.length())
-           && (str[pos] == _T(' ') || str[pos] == _T('\t') || str[pos] == _T('\n')))
+            && (str[pos] == _T(' ') || str[pos] == _T('\t') || str[pos] == _T('\n')))
         ++pos;
 
     if (pos >= static_cast<int>(str.length()))
@@ -137,7 +137,10 @@ inline bool GetNextToken(wxString const &str, int pos, Token &token)
     token.start = -1;
     bool in_quote = false, in_char = false;
     int open_braces = 0;
-    struct BraceType { enum Enum { None, Angle, Square, Normal }; };
+    struct BraceType
+    {
+        enum Enum { None, Angle, Square, Normal };
+    };
     BraceType::Enum brace_type = BraceType::None;
 
     switch (static_cast<wxChar>(str[pos]))
@@ -246,44 +249,44 @@ inline bool GetNextToken(wxString const &str, int pos, Token &token)
 
             switch (brace_type)
             {
-                case BraceType::Angle:
-                    if (str[pos] == wxT('<'))
-                        open_braces++;
-                    break;
-                case BraceType::Square:
-                    if (str[pos] == wxT('['))
-                        open_braces++;
-                    break;
-                case BraceType::None:
-                default:
-                    break;
+            case BraceType::Angle:
+                if (str[pos] == wxT('<'))
+                    open_braces++;
+                break;
+            case BraceType::Square:
+                if (str[pos] == wxT('['))
+                    open_braces++;
+                break;
+            case BraceType::None:
+            default:
+                break;
             }
         }
         else
         {
             switch (brace_type)
             {
-                case BraceType::Angle:
-                    if (str[pos] == wxT('<'))
-                        open_braces++;
-                    else if (str[pos] == wxT('>'))
-                        --open_braces;
-                    break;
-                case BraceType::Square:
-                    if (str[pos] == wxT('['))
-                        open_braces++;
-                    else if (str[pos] == wxT(']'))
-                        --open_braces;
-                    break;
-                case BraceType::Normal:
-                    if (str[pos] == wxT('('))
-                        open_braces++;
-                    else if (str[pos] == wxT(')'))
-                        --open_braces;
-                    break;
-                case BraceType::None:
-                default:
-                    break;
+            case BraceType::Angle:
+                if (str[pos] == wxT('<'))
+                    open_braces++;
+                else if (str[pos] == wxT('>'))
+                    --open_braces;
+                break;
+            case BraceType::Square:
+                if (str[pos] == wxT('['))
+                    open_braces++;
+                else if (str[pos] == wxT(']'))
+                    --open_braces;
+                break;
+            case BraceType::Normal:
+                if (str[pos] == wxT('('))
+                    open_braces++;
+                else if (str[pos] == wxT(')'))
+                    --open_braces;
+                break;
+            case BraceType::None:
+            default:
+                break;
             }
         }
         ++pos;
@@ -429,12 +432,12 @@ inline bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &v
             else if (token_value.type == Token::Undefined)
             {
                 if (   wxIsdigit(str[0])
-                    || str[0]==wxT('\'')
-                    || str[0]==wxT('"')
-                    || str[0]==wxT('<')
-                    || str[0]==wxT('-')
-                    || str.StartsWith(wxT("L\""))
-                    || str.StartsWith(wxT("L'")) )
+                        || str[0]==wxT('\'')
+                        || str[0]==wxT('"')
+                        || str[0]==wxT('<')
+                        || str[0]==wxT('-')
+                        || str.StartsWith(wxT("L\""))
+                        || str.StartsWith(wxT("L'")) )
                 {
                     token_value = token;
                 }
@@ -558,75 +561,75 @@ inline bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &v
             }
             break;
         case Token::OpenBrace:
+        {
+            cb::shared_ptr<GDBWatch> child;
+            if(token_name.type == Token::Undefined)
             {
-                cb::shared_ptr<GDBWatch> child;
-                if(token_name.type == Token::Undefined)
+                if (g_DebugLanguage == dl_Cpp)
                 {
-                    if (g_DebugLanguage == dl_Cpp)
-                    {
-                        int start_arr = watch->IsArray() ? watch->GetArrayStart() : 0;
-                        child = AddChild(watch, wxString::Format(wxT("[%d]"), start_arr + added_children));
-                    }
-                    else // g_DebugLanguage == dl_Fortran
-                    {
-                        int start_arr = watch->IsArray() ? watch->GetArrayStart() : 1;
-                        wxString childSymbol;
-                        if (isFortranArray)
-                        {
-                            childSymbol = wxString::Format(wxT("(%d,"), start_arr + added_children);
-                            childSymbol << watchSymbol.Mid(1);
-                        }
-                        else
-                        {
-                            childSymbol = wxString::Format(wxT("(%d)"), start_arr + added_children);
-                        }
-                        child = AddChild(watch, childSymbol);
-                    }
+                    int start_arr = watch->IsArray() ? watch->GetArrayStart() : 0;
+                    child = AddChild(watch, wxString::Format(wxT("[%d]"), start_arr + added_children));
                 }
-                else if (g_DebugLanguage == dl_Fortran)
-                    child = AddChild(watch, token_name.ExtractString(value));
-                else
-                    child = AddChild(watch, value, token_name);
-
-                if (g_DebugLanguage == dl_Fortran)
-                    child->SetValue(wxEmptyString);
-                else if (!pythonToStringValue.empty())
-                    child->SetValue(pythonToStringValue);
-                position = token_real_end;
-                added_children++;
-
-                if(!ParseGDBWatchValue(child, value, position, 0))
-                    return false;
-
-                if(g_DebugLanguage == dl_Fortran && isFortranArray && !hasNewWatchSymbol && token_name.type == Token::Undefined)
+                else // g_DebugLanguage == dl_Fortran
                 {
-                    // Change watch symbol on the way back for Fortran multidimensional arrays
+                    int start_arr = watch->IsArray() ? watch->GetArrayStart() : 1;
                     wxString childSymbol;
-                    child->GetSymbol(childSymbol);
-                    wxString::size_type pos = childSymbol.find_last_of(wxT(':'));
-                    if (pos != wxString::npos)
+                    if (isFortranArray)
                     {
-                        wxString::size_type pos_com = childSymbol.find(wxT(','), pos+2);
-                        if (pos_com != wxString::npos)
-                        {
-                            watchSymbolNew = childSymbol;
-                            watchSymbolNew.replace(pos+2, pos_com-(pos+2), wxT(':'));
-                            hasNewWatchSymbol = true;
-                        }
+                        childSymbol = wxString::Format(wxT("(%d,"), start_arr + added_children);
+                        childSymbol << watchSymbol.Mid(1);
                     }
                     else
                     {
-                        watchSymbolNew << wxT("(:,") << watchSymbol.Mid(1);
+                        childSymbol = wxString::Format(wxT("(%d)"), start_arr + added_children);
+                    }
+                    child = AddChild(watch, childSymbol);
+                }
+            }
+            else if (g_DebugLanguage == dl_Fortran)
+                child = AddChild(watch, token_name.ExtractString(value));
+            else
+                child = AddChild(watch, value, token_name);
+
+            if (g_DebugLanguage == dl_Fortran)
+                child->SetValue(wxEmptyString);
+            else if (!pythonToStringValue.empty())
+                child->SetValue(pythonToStringValue);
+            position = token_real_end;
+            added_children++;
+
+            if(!ParseGDBWatchValue(child, value, position, 0))
+                return false;
+
+            if(g_DebugLanguage == dl_Fortran && isFortranArray && !hasNewWatchSymbol && token_name.type == Token::Undefined)
+            {
+                // Change watch symbol on the way back for Fortran multidimensional arrays
+                wxString childSymbol;
+                child->GetSymbol(childSymbol);
+                wxString::size_type pos = childSymbol.find_last_of(wxT(':'));
+                if (pos != wxString::npos)
+                {
+                    wxString::size_type pos_com = childSymbol.find(wxT(','), pos+2);
+                    if (pos_com != wxString::npos)
+                    {
+                        watchSymbolNew = childSymbol;
+                        watchSymbolNew.replace(pos+2, pos_com-(pos+2), wxT(':'));
                         hasNewWatchSymbol = true;
                     }
                 }
-
-                token_real_end = position;
-                token_name.type = token_value.type = Token::Undefined;
-                skip_comma = true;
-                last_was_closing_brace = true;
+                else
+                {
+                    watchSymbolNew << wxT("(:,") << watchSymbol.Mid(1);
+                    hasNewWatchSymbol = true;
+                }
             }
-            break;
+
+            token_real_end = position;
+            token_name.type = token_value.type = Token::Undefined;
+            skip_comma = true;
+            last_was_closing_brace = true;
+        }
+        break;
         case Token::CloseBrace:
             if (!last_was_closing_brace)
             {
@@ -860,8 +863,8 @@ bool ParseCDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &value)
     for (unsigned ii = 0; ii < lines.GetCount(); ++ii)
     {
         if (unexpected_error.Matches(lines[ii])
-            || resolve_error.Matches(lines[ii])
-            || lines[ii] == wxT("No pointer for operator* '<EOL>'"))
+                || resolve_error.Matches(lines[ii])
+                || lines[ii] == wxT("No pointer for operator* '<EOL>'"))
         {
             watch->SetValue(lines[ii]);
             return true;

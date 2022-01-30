@@ -6,7 +6,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<[PLUGIN_NAME]> reg(_T("[PLUGIN_NAME]"));
+PluginRegistrant<[PLUGIN_NAME]> reg(_T("[PLUGIN_NAME]"));
 }
 
 [IF NEED_EVENTS]

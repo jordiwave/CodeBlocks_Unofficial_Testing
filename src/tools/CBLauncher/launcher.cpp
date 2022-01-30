@@ -39,24 +39,25 @@ static wchar_t appDir[MAX_PATH];
  */
 bool isCodeblocksRunning()
 {
-   PROCESSENTRY32 pe32;
-   pe32.dwSize = sizeof( PROCESSENTRY32 );
-   HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    PROCESSENTRY32 pe32;
+    pe32.dwSize = sizeof( PROCESSENTRY32 );
+    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
-   if(Process32First(hSnapshot, &pe32)) // enumerate through the processes
-   {
-      do
-      {
-         if(! _wcsicmp(pe32.szExeFile, cmd)) // Codeblocks is running
-         {
-            CloseHandle(hSnapshot);
-            return true;
-         }
-      } while(Process32Next(hSnapshot, &pe32));
-   }
+    if(Process32First(hSnapshot, &pe32)) // enumerate through the processes
+    {
+        do
+        {
+            if(! _wcsicmp(pe32.szExeFile, cmd)) // Codeblocks is running
+            {
+                CloseHandle(hSnapshot);
+                return true;
+            }
+        }
+        while(Process32Next(hSnapshot, &pe32));
+    }
 
-   CloseHandle(hSnapshot);
-   return false;
+    CloseHandle(hSnapshot);
+    return false;
 }
 
 /** @brief Modifies the system %APPDATA% environment variable to point to subdirectory

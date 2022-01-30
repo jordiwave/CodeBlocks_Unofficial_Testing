@@ -10,14 +10,14 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "configmanager.h"
-    #include "globals.h"
-    #include "personalitymanager.h"
-    #include "cbexception.h"
-    #include "logmanager.h"
-    #include <wx/file.h>
-    #include <wx/dir.h>
-    #include <wx/log.h> // for wxSafeShowMessage()
+#include "configmanager.h"
+#include "globals.h"
+#include "personalitymanager.h"
+#include "cbexception.h"
+#include "logmanager.h"
+#include <wx/file.h>
+#include <wx/dir.h>
+#include <wx/log.h> // for wxSafeShowMessage()
 #endif
 
 #include "crc32.h"
@@ -72,62 +72,62 @@ wxString ConfigManager::temp_folder;
 
 namespace CfgMgrConsts
 {
-    const wxString app_path(_T("app_path"));
-    const wxString data_path(_T("data_path"));
-    const wxString dotDot(_T(".."));
-    const int version = 1;
+const wxString app_path(_T("app_path"));
+const wxString data_path(_T("data_path"));
+const wxString dotDot(_T(".."));
+const int version = 1;
 }
 
 
 namespace
 {
-    wxString DetermineExecutablePath()
-    {
-        #ifdef __WXMSW__
-            wxChar name[MAX_PATH];
-            GetModuleFileName(0L, name, MAX_PATH);
-            wxFileName fname(name);
-            return fname.GetPath(wxPATH_GET_VOLUME);
-        #else
-        #ifdef __linux__
-            char c[PATH_MAX+1];
-            char *p = realpath("/proc/self/exe", &c[0]);
-            if (p == nullptr)
-                return _T(".");
-            wxFileName fname(cbC2U(p));
-            return fname.GetPath(wxPATH_GET_VOLUME);
-        #elif defined(sun) || defined(__sun)
-            wxFileName fname(cbC2U(getexecname()));
-            return fname.GetPath(wxPATH_GET_VOLUME);
-        #elif defined(__APPLE__) && defined(__MACH__)
-            char path[MAXPATHLEN+1];
-            uint32_t path_len = MAXPATHLEN;
-            // SPI first appeared in Mac OS X 10.2
-            _NSGetExecutablePath(path, &path_len);
-            wxFileName fname(wxString(path, wxConvUTF8));
-            return fname.GetPath(wxPATH_GET_VOLUME);
-        #else
-            return _T(".");
-        #endif
-        #endif
-    }
+wxString DetermineExecutablePath()
+{
+#ifdef __WXMSW__
+    wxChar name[MAX_PATH];
+    GetModuleFileName(0L, name, MAX_PATH);
+    wxFileName fname(name);
+    return fname.GetPath(wxPATH_GET_VOLUME);
+#else
+#ifdef __linux__
+    char c[PATH_MAX+1];
+    char *p = realpath("/proc/self/exe", &c[0]);
+    if (p == nullptr)
+        return _T(".");
+    wxFileName fname(cbC2U(p));
+    return fname.GetPath(wxPATH_GET_VOLUME);
+#elif defined(sun) || defined(__sun)
+    wxFileName fname(cbC2U(getexecname()));
+    return fname.GetPath(wxPATH_GET_VOLUME);
+#elif defined(__APPLE__) && defined(__MACH__)
+    char path[MAXPATHLEN+1];
+    uint32_t path_len = MAXPATHLEN;
+    // SPI first appeared in Mac OS X 10.2
+    _NSGetExecutablePath(path, &path_len);
+    wxFileName fname(wxString(path, wxConvUTF8));
+    return fname.GetPath(wxPATH_GET_VOLUME);
+#else
+    return _T(".");
+#endif
+#endif
+}
 
-    wxString DetermineResourcesPath()
-    {
-        #if defined(__WXMAC__)
-            CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
-            CFURLRef absoluteURL  = CFURLCopyAbsoluteURL(resourcesURL); // relative -> absolute
-            CFRelease(resourcesURL);
-            CFStringRef cfStrPath = CFURLCopyFileSystemPath(absoluteURL,kCFURLPOSIXPathStyle);
-            CFRelease(absoluteURL);
-              wxString str = wxCFStringRef(cfStrPath).AsString(wxLocale::GetSystemEncoding());
-            if (!str.Contains(wxString(_T("/Resources"))))
-               return ::DetermineExecutablePath() + _T("/.."); // not a bundle, use relative path
-            return str;
-        #else
-            return _T(".");
-        #endif
-    }
+wxString DetermineResourcesPath()
+{
+#if defined(__WXMAC__)
+    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
+    CFURLRef absoluteURL  = CFURLCopyAbsoluteURL(resourcesURL); // relative -> absolute
+    CFRelease(resourcesURL);
+    CFStringRef cfStrPath = CFURLCopyFileSystemPath(absoluteURL,kCFURLPOSIXPathStyle);
+    CFRelease(absoluteURL);
+    wxString str = wxCFStringRef(cfStrPath).AsString(wxLocale::GetSystemEncoding());
+    if (!str.Contains(wxString(_T("/Resources"))))
+        return ::DetermineExecutablePath() + _T("/.."); // not a bundle, use relative path
+    return str;
+#else
+    return _T(".");
+#endif
+}
 }
 
 
@@ -147,8 +147,8 @@ inline void ConfigManager::Collapse(wxString& str) const
         ++len;
 
         if (c == _T('/'))
-        while (*src == _T('/'))
-            ++src;
+            while (*src == _T('/'))
+                ++src;
     }
     str.Truncate(len);
 }
@@ -248,7 +248,7 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
     if (!TinyXML::LoadDocument(fileName, doc))
     {
         const wxString message = wxString::Format(_("Error reading config file: %s"),
-                                                  fileName.wx_str());
+                                 fileName.wx_str());
         handleConfigError(*doc, fileName, message);
     }
 
@@ -256,7 +256,7 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
     if (!docroot)
     {
         const wxString message = wxString::Format(wxT("Cannot find docroot in config file '%s'"),
-                                                  fileName.wx_str());
+                                 fileName.wx_str());
         handleConfigError(*doc, fileName, message);
         docroot = doc->FirstChildElement("CodeBlocksConfig");
 
@@ -272,8 +272,8 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
 
     wxString info;
     info.Printf(_T(" application info:\n"
-                    "\t svn_revision:\t%u\n"
-                    "\t build_date:\t%s, %s\n"), ConfigManager::GetRevisionNumber(), wxT(__DATE__), wxT(__TIME__));
+                   "\t svn_revision:\t%u\n"
+                   "\t build_date:\t%s, %s\n"), ConfigManager::GetRevisionNumber(), wxT(__DATE__), wxT(__TIME__));
 #if defined(__clang__)
     info += wxString::Format(wxT("\t compiler_version:\tclang %d.%d.%d\n"), __clang_major__,
                              __clang_minor__, __clang_patchlevel__);
@@ -381,15 +381,16 @@ void CfgMgrBldr::Flush()
                                        AnnoyingDialog::rtTWO, _("&Retry"), _("&Close"));
                     switch (dlg.ShowModal())
                     {
-                        case AnnoyingDialog::rtONE:
-                            done = false;
-                            break;
-                        case AnnoyingDialog::rtTWO:
-                        default:
-                            done = true;
+                    case AnnoyingDialog::rtONE:
+                        done = false;
+                        break;
+                    case AnnoyingDialog::rtTWO:
+                    default:
+                        done = true;
                     }
                 }
-            } while (!done);
+            }
+            while (!done);
         }
         else
         {
@@ -479,7 +480,7 @@ inline void to_upper(wxString& s)
     wxStringCharType *p = const_cast<wxStringCharType*>(s.wx_str());
     wxStringCharType q;
     size_t len = s.length()+1;
-    for (;--len;++p)
+    for (; --len; ++p)
     {
         q = *p;
         if (q >= 'a' && q <= 'z')
@@ -492,7 +493,7 @@ inline void to_lower(wxString& s)
     wxStringCharType *p = const_cast<wxStringCharType*>(s.wx_str());
     wxStringCharType q;
     size_t len = s.length()+1;
-    for (;--len;++p)
+    for (; --len; ++p)
     {
         q = *p;
         if (q >= 'A' && q <= 'Z')
@@ -526,49 +527,49 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
 
     switch (dir)
     {
-        case sdHome:
-            return ConfigManager::home_folder;
+    case sdHome:
+        return ConfigManager::home_folder;
 
-        case sdBase:
-            return ConfigManager::app_path;
+    case sdBase:
+        return ConfigManager::app_path;
 
-        case sdTemp:
-            return ConfigManager::temp_folder;
+    case sdTemp:
+        return ConfigManager::temp_folder;
 
-        case sdConfig:
-            return ConfigManager::config_folder;
+    case sdConfig:
+        return ConfigManager::config_folder;
 
-        case sdCurrent:
-            return ::wxGetCwd();
+    case sdCurrent:
+        return ::wxGetCwd();
 
-        case sdPluginsGlobal:
+    case sdPluginsGlobal:
 #ifndef CB_AUTOCONF
-            return ConfigManager::data_path_global + wxFILE_SEP_PATH + _T("plugins");
+        return ConfigManager::data_path_global + wxFILE_SEP_PATH + _T("plugins");
 #else
-            return ConfigManager::plugin_path_global;
+        return ConfigManager::plugin_path_global;
 #endif
 
-        case sdPluginsUser:
-            return ConfigManager::data_path_user   + wxFILE_SEP_PATH + _T("plugins");
+    case sdPluginsUser:
+        return ConfigManager::data_path_user   + wxFILE_SEP_PATH + _T("plugins");
 
-        case sdScriptsGlobal:
-            return ConfigManager::data_path_global + wxFILE_SEP_PATH + _T("scripts");
+    case sdScriptsGlobal:
+        return ConfigManager::data_path_global + wxFILE_SEP_PATH + _T("scripts");
 
-        case sdScriptsUser:
-            return ConfigManager::data_path_user   + wxFILE_SEP_PATH + _T("scripts");
+    case sdScriptsUser:
+        return ConfigManager::data_path_user   + wxFILE_SEP_PATH + _T("scripts");
 
-        case sdDataGlobal:
-            return ConfigManager::data_path_global;
+    case sdDataGlobal:
+        return ConfigManager::data_path_global;
 
-        case sdDataUser:
-            return ConfigManager::data_path_user;
+    case sdDataUser:
+        return ConfigManager::data_path_user;
 
-        case sdPath:
-        case sdAllUser:
-        case sdAllGlobal:
-        case sdAllKnown:
-        default:
-            return wxEmptyString;
+    case sdPath:
+    case sdAllUser:
+    case sdAllGlobal:
+    case sdAllKnown:
+    default:
+        return wxEmptyString;
     }
 }
 
@@ -579,12 +580,20 @@ inline wxString ConfigManager::GetUserDataFolder()
 #ifdef __WINDOWS__
     TCHAR buffer[MAX_PATH];
     if (!ConfigManager::has_alternate_user_data_path && ::GetEnvironmentVariable(_T("APPDATA"), buffer, MAX_PATH))
+#ifdef CB_EXPERIMENTAL_BUILD
+        return wxString::Format(_T("%s\\CodeBlocks-Experimental"), buffer);
+#else
         return wxString::Format(_T("%s\\CodeBlocks"), buffer);
+#endif
     else
         return wxStandardPathsBase::Get().GetUserDataDir();
 #else
 #ifdef __linux__
+#ifdef CB_EXPERIMENTAL_BUILD
+    gchar *filename = g_build_filename(g_get_user_config_dir(), "codeblocks_experimental", nullptr);
+#else
     gchar *filename = g_build_filename(g_get_user_config_dir(), "codeblocks", nullptr);
+#endif
     wxString result=wxString::FromUTF8(filename);
     g_free(filename);
     return result;
@@ -601,7 +610,7 @@ bool ConfigManager::SetUserDataFolder(const wxString &user_data_path)
     if (!CreateDirRecursively(udp))
     {
         cbMessageBox(wxString::Format(_("The --user-data-dir directory %s does not exist and could not be created. Please check the path and try again"),
-                                            user_data_path.c_str()), _("Command Line Error"));
+                                      user_data_path.c_str()), _("Command Line Error"));
         return false;
     }
     has_alternate_user_data_path = true;
@@ -695,10 +704,10 @@ wxString ConfigManager::InvalidNameMessage(const wxString& what, const wxString&
 {
     wxString s;
     s.Printf(_T("The %s %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for path naming (must start with a letter)."),
-    what.c_str(),
-    sub.c_str(),
-    cbC2U(localPath->Value()).c_str(),
-    cbC2U(root->Value()).c_str());
+             what.c_str(),
+             sub.c_str(),
+             cbC2U(localPath->Value()).c_str(),
+             cbC2U(root->Value()).c_str());
 
     return s;
 }
@@ -1763,8 +1772,8 @@ void cbWriteBatchBuildPlugins(wxArrayString bbplugins, wxWindow *messageBoxParen
     {
         bbplugins.Add(compiler);
         cbMessageBox(_("The compiler plugin must always be loaded for batch builds!\n"
-                    "Automatically re-enabled."),
-                    _("Warning"), wxICON_WARNING, messageBoxParent);
+                       "Automatically re-enabled."),
+                     _("Warning"), wxICON_WARNING, messageBoxParent);
     }
     ConfigManager *bbcfg = Manager::Get()->GetConfigManager(_T("plugins"));
     bbcfg->Write(_T("/batch_build_plugins"), bbplugins);

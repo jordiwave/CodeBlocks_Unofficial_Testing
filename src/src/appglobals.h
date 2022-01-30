@@ -12,27 +12,31 @@
 // #define RELEASE "20.03"
 
 #ifndef RELEASE
-    #define RELEASE "svn"
-    #define SVN_BUILD 1
+#define RELEASE "svn"
+#define SVN_BUILD 1
 #endif
 
 namespace appglobals
 {
-    typedef struct { int locale_code; wxString name; } Localisation;
+typedef struct
+{
+    int locale_code;
+    wxString name;
+} Localisation;
 
-    extern const wxString AppVendor;
-    extern const wxString AppName;
-    extern const wxString AppVersion;
-    extern const wxString AppActualVersionVerb;
-    extern const wxString AppActualVersion;
-    extern const wxString AppSDKVersion;
-    extern const wxString AppUrl;
-    extern const wxString AppContactEmail;
-    extern const wxString AppPlatform;
-    extern const wxString AppWXAnsiUnicode;
-    extern const wxString AppBuildTimestamp;
+extern const wxString AppVendor;
+extern const wxString AppName;
+extern const wxString AppVersion;
+extern const wxString AppActualVersionVerb;
+extern const wxString AppActualVersion;
+extern const wxString AppSDKVersion;
+extern const wxString AppUrl;
+extern const wxString AppContactEmail;
+extern const wxString AppPlatform;
+extern const wxString AppWXAnsiUnicode;
+extern const wxString AppBuildTimestamp;
 
-    extern const wxString DefaultBatchBuildArgs;
+extern const wxString DefaultBatchBuildArgs;
 }
 
 namespace cbHelpers

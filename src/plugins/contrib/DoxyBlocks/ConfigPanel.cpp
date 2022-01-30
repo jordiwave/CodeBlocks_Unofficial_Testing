@@ -165,12 +165,12 @@ ConfigPanel::ConfigPanel(wxWindow* parent, DoxyBlocks *pOwner, wxWindowID /*id*/
     BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
     wxString __wxRadioBoxChoices_1[6] =
     {
-      _("C/JavaDoc"),
-      _("C++ Exclamation"),
-      _("C++ Slash"),
-      _("Qt"),
-      _("Visible C Style"),
-      _("Visible C++ Style")
+        _("C/JavaDoc"),
+        _("C++ Exclamation"),
+        _("C++ Slash"),
+        _("Qt"),
+        _("Visible C Style"),
+        _("Visible C++ Style")
     };
     RadioBoxBlockComments = new wxRadioBox(Panel2, ID_RADIOBOX_BLOCKCOMMENTS, _("Block Comment Style"), wxDefaultPosition, wxDefaultSize, 6, __wxRadioBoxChoices_1, 1, wxRA_SPECIFY_COLS, wxDefaultValidator, _T("ID_RADIOBOX_BLOCKCOMMENTS"));
     RadioBoxBlockComments->SetToolTip(_("Select your preferred block comment style."));
@@ -183,10 +183,10 @@ ConfigPanel::ConfigPanel(wxWindow* parent, DoxyBlocks *pOwner, wxWindowID /*id*/
     BoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
     wxString __wxRadioBoxChoices_2[4] =
     {
-      _("C/JavaDoc"),
-      _("C++ Exclamation"),
-      _("C++ Slash"),
-      _("Qt")
+        _("C/JavaDoc"),
+        _("C++ Exclamation"),
+        _("C++ Slash"),
+        _("Qt")
     };
     RadioBoxLineComments = new wxRadioBox(Panel2, ID_RADIOBOX_LINECOMMENTS, _("Line Comment Style"), wxDefaultPosition, wxDefaultSize, 4, __wxRadioBoxChoices_2, 1, wxRA_SPECIFY_COLS, wxDefaultValidator, _T("ID_RADIOBOX_LINECOMMENTS"));
     RadioBoxLineComments->SetToolTip(_("Select your preferred line comment style."));
@@ -507,42 +507,50 @@ ConfigPanel::~ConfigPanel()
 void ConfigPanel::Init()
 {
     //    If the project uses autoversioning, enable the "Use AutoVersioning" checkbox.
-    if(m_bAutoVersioning){
+    if(m_bAutoVersioning)
+    {
         CheckBoxUseAutoVersion->Enable(true);
     }
-    if(!CheckBoxOverwriteDoxyfile->IsChecked()){
+    if(!CheckBoxOverwriteDoxyfile->IsChecked())
+    {
         CheckBoxPromptBeforeOverwriting->Enable(false);
     }
     WriteBlockComment(TextCtrlBlockComment, RadioBoxBlockComments->GetSelection(), CheckBoxUseAtInTags->GetValue());
     WriteLineComment(TextCtrlLineComment, RadioBoxLineComments->GetSelection());
     InitSTC(TextCtrlBlockComment);
     InitSTC(TextCtrlLineComment);
-    if(m_bAutoVersioning){
+    if(m_bAutoVersioning)
+    {
         CheckBoxUseAutoVersion->SetValue(m_bUseAutoVersion);
         // If "Use AutoVersion" is enabled, disable the version text box so that manual entry is
         // disallowed but the detected version is still visible.
-        if(m_bUseAutoVersion){
+        if(m_bUseAutoVersion)
+        {
             TextCtrlProjectNumber->Enable(false);
         }
     }
 
-    if(CheckBoxGenerateHTML->IsChecked()){
+    if(CheckBoxGenerateHTML->IsChecked())
+    {
         CheckBoxGenerateHTMLHelp->Enable(true);
         CheckBoxGenerateCHI->Enable(true);
         CheckBoxBinaryTOC->Enable(true);
     }
-    else{
+    else
+    {
         CheckBoxGenerateHTMLHelp->Enable(false);
         CheckBoxGenerateCHI->Enable(false);
         CheckBoxBinaryTOC->Enable(false);
     }
 
-    if(CheckBoxWarnings->IsChecked()){
+    if(CheckBoxWarnings->IsChecked())
+    {
         CheckBoxWarnIfDocError->Enable(true);
         CheckBoxWarnIfUndocumented->Enable(true);
         CheckBoxWarnNoParamdoc->Enable(true);
     }
-    else{
+    else
+    {
         CheckBoxWarnIfDocError->Enable(false);
         CheckBoxWarnIfUndocumented->Enable(false);
         CheckBoxWarnNoParamdoc->Enable(false);
@@ -616,49 +624,53 @@ void ConfigPanel::WriteBlockComment(cbStyledTextCtrl *stc, int iBlockComment, bo
     wxString sEndComment;
 
     // Allow for the greater space used by C++ slashes. I like things neat. :-)
-    if(iBlockComment == 1 || iBlockComment == 2 || iBlockComment == 5){
+    if(iBlockComment == 1 || iBlockComment == 2 || iBlockComment == 5)
+    {
         sReturn = wxString(wxT("\t\t")) + _("Return value.");
     }
-    switch(iBlockComment){
-        case 0:            //C/Javadoc.
-            sStartComment = wxT("/**");
-            sMidComment = wxT(" *");
-            sEndComment = wxT(" */");
-            break;
-        case 1:            // C++ exclamation.
-            sStartComment = wxT("//!");
-            sMidComment = wxT("//!");
-            sEndComment = wxT("//!");
-            break;
-        case 2:            // C++ slash.
-            sStartComment = wxT("///");
-            sMidComment = wxT("///");
-            sEndComment = wxT("///");
-            break;
-        case 3:            // Qt.
-            sStartComment = wxT("/*!");
-            sMidComment = wxT(" *");
-            sEndComment = wxT(" */");
-            break;
-        case 4:            // Visible C.
-            sStartComment = wxT("/********************************************//**");
-            sMidComment = wxT(" *");
-            sEndComment = wxT(" ***********************************************/");
-            break;
-        case 5:            // Visible C++.
-            sStartComment = wxT("/////////////////////////////////////////////////");
-            sMidComment = wxT("///");
-            sEndComment = wxT("/////////////////////////////////////////////////");
-            break;
-        default:
-            break;
+    switch(iBlockComment)
+    {
+    case 0:            //C/Javadoc.
+        sStartComment = wxT("/**");
+        sMidComment = wxT(" *");
+        sEndComment = wxT(" */");
+        break;
+    case 1:            // C++ exclamation.
+        sStartComment = wxT("//!");
+        sMidComment = wxT("//!");
+        sEndComment = wxT("//!");
+        break;
+    case 2:            // C++ slash.
+        sStartComment = wxT("///");
+        sMidComment = wxT("///");
+        sEndComment = wxT("///");
+        break;
+    case 3:            // Qt.
+        sStartComment = wxT("/*!");
+        sMidComment = wxT(" *");
+        sEndComment = wxT(" */");
+        break;
+    case 4:            // Visible C.
+        sStartComment = wxT("/********************************************//**");
+        sMidComment = wxT(" *");
+        sEndComment = wxT(" ***********************************************/");
+        break;
+    case 5:            // Visible C++.
+        sStartComment = wxT("/////////////////////////////////////////////////");
+        sMidComment = wxT("///");
+        sEndComment = wxT("/////////////////////////////////////////////////");
+        break;
+    default:
+        break;
     }
-    if(iBlockComment == 4 || iBlockComment == 5){
+    if(iBlockComment == 4 || iBlockComment == 5)
+    {
         stc->AddText(sStartComment);
         stc->NewLine();
         stc->AddText(sMidComment + sTagBrief + sBrief);
     }
-    else{
+    else
+    {
         stc->AddText(sStartComment + sTagBrief + sBrief);
     }
     // Use NewLine() to get the correct line ending chars.
@@ -705,23 +717,24 @@ void ConfigPanel::WriteLineComment(cbStyledTextCtrl *stc, int iLineComment)
     wxString sStartComment;
     wxString sEndComment;
 
-    switch(iLineComment){
-        case 0:            //C/Javadoc.
-            sStartComment = wxT("/**< ");
-            sEndComment = wxT(" */");
-            break;
-        case 1:            // C++ exclamation.
-            sStartComment = wxT("//!< ");
-            break;
-        case 2:            // C++ slash.
-            sStartComment = wxT("///< ");
-            break;
-        case 3:            // Qt.
-            sStartComment = wxT("/*!< ");
-            sEndComment = wxT(" */");
-            break;
-        default:
-            break;
+    switch(iLineComment)
+    {
+    case 0:            //C/Javadoc.
+        sStartComment = wxT("/**< ");
+        sEndComment = wxT(" */");
+        break;
+    case 1:            // C++ exclamation.
+        sStartComment = wxT("//!< ");
+        break;
+    case 2:            // C++ slash.
+        sStartComment = wxT("///< ");
+        break;
+    case 3:            // Qt.
+        sStartComment = wxT("/*!< ");
+        sEndComment = wxT(" */");
+        break;
+    default:
+        break;
     }
     stc->AddText(sGlobal + sStartComment + sComment + sEndComment);
     // Use NewLine() to get the correct line ending chars.
@@ -750,7 +763,7 @@ void ConfigPanel::WriteLineComment(cbStyledTextCtrl *stc, int iLineComment)
 void ConfigPanel::OnApply()
 {
     m_pOwnerClass->OnDialogueDone(this);
- }
+}
 
 /*! \brief Get the base name for the images to be displayed in the settings image list.
  *
@@ -761,11 +774,11 @@ void ConfigPanel::OnApply()
 wxString ConfigPanel::GetBitmapBaseName() const
 {
     wxString pngName = wxT("generic-plugin");
-    #ifdef __WXGTK__
-     if ( ::wxFileExists(ConfigManager::GetDataFolder() + wxT("/images/settings/DoxyBlocks.png")) )
-    #else
-     if ( ::wxFileExists(ConfigManager::GetDataFolder() + wxT("\\images\\settings\\DoxyBlocks.png")) )
-    #endif
+#ifdef __WXGTK__
+    if ( ::wxFileExists(ConfigManager::GetDataFolder() + wxT("/images/settings/DoxyBlocks.png")) )
+#else
+    if ( ::wxFileExists(ConfigManager::GetDataFolder() + wxT("\\images\\settings\\DoxyBlocks.png")) )
+#endif
         pngName = wxT("DoxyBlocks");
     return pngName;
 }
@@ -778,7 +791,8 @@ wxString ConfigPanel::GetBitmapBaseName() const
 void ConfigPanel::OnButtonBrowseDoxygenClick(wxCommandEvent& WXUNUSED(event))
 {
     wxString sPathDoxygen = GetApplicationPath();
-    if(!sPathDoxygen.empty()){
+    if(!sPathDoxygen.empty())
+    {
         TextCtrlPathDoxygen->SetValue(sPathDoxygen);
     }
 }
@@ -791,7 +805,8 @@ void ConfigPanel::OnButtonBrowseDoxygenClick(wxCommandEvent& WXUNUSED(event))
 void ConfigPanel::OnButtonBrowseDoxywizardClick(wxCommandEvent& WXUNUSED(event))
 {
     wxString sPathDoxywizard = GetApplicationPath();
-    if(!sPathDoxywizard.empty()){
+    if(!sPathDoxywizard.empty())
+    {
         TextCtrlPathDoxywizard->SetValue(sPathDoxywizard);
     }
 }
@@ -804,7 +819,8 @@ void ConfigPanel::OnButtonBrowseDoxywizardClick(wxCommandEvent& WXUNUSED(event))
 void ConfigPanel::OnButtonBrowseHHCClick(wxCommandEvent& WXUNUSED(event))
 {
     wxString sPathHHC = GetApplicationPath();
-    if(!sPathHHC.empty()){
+    if(!sPathHHC.empty())
+    {
         TextCtrlPathHHC->SetValue(sPathHHC);
     }
 }
@@ -817,7 +833,8 @@ void ConfigPanel::OnButtonBrowseHHCClick(wxCommandEvent& WXUNUSED(event))
 void ConfigPanel::OnButtonBrowseDotClick(wxCommandEvent& WXUNUSED(event))
 {
     wxString sPathDot = GetApplicationPath();
-    if(!sPathDot.empty()){
+    if(!sPathDot.empty())
+    {
         TextCtrlPathDot->SetValue(sPathDot);
     }
 }
@@ -830,7 +847,8 @@ void ConfigPanel::OnButtonBrowseDotClick(wxCommandEvent& WXUNUSED(event))
 void ConfigPanel::OnButtonBrowseCHMViewerClick(wxCommandEvent& WXUNUSED(event))
 {
     wxString sPathCHMViewer = GetApplicationPath();
-    if(!sPathCHMViewer.empty()){
+    if(!sPathCHMViewer.empty())
+    {
         TextCtrlPathCHMViewer->SetValue(sPathCHMViewer);
     }
 }
@@ -888,12 +906,14 @@ void ConfigPanel::OnRadioBoxLineCommentsSelect(wxCommandEvent& event)
  */
 void ConfigPanel::OnCheckBoxGenerateHTMLClick(wxCommandEvent& event)
 {
-    if(event.IsChecked()){
+    if(event.IsChecked())
+    {
         CheckBoxGenerateHTMLHelp->Enable(true);
         CheckBoxGenerateCHI->Enable(true);
         CheckBoxBinaryTOC->Enable(true);
     }
-    else{
+    else
+    {
         CheckBoxGenerateHTMLHelp->Enable(false);
         CheckBoxGenerateCHI->Enable(false);
         CheckBoxBinaryTOC->Enable(false);
@@ -907,10 +927,12 @@ void ConfigPanel::OnCheckBoxGenerateHTMLClick(wxCommandEvent& event)
  */
 void ConfigPanel::OnCheckBoxOverwriteDoxyfileClick(wxCommandEvent& event)
 {
-    if(event.IsChecked()){
+    if(event.IsChecked())
+    {
         CheckBoxPromptBeforeOverwriting->Enable(true);
     }
-    else{
+    else
+    {
         CheckBoxPromptBeforeOverwriting->Enable(false);
     }
 }
@@ -922,12 +944,14 @@ void ConfigPanel::OnCheckBoxOverwriteDoxyfileClick(wxCommandEvent& event)
  */
 void ConfigPanel::OnCheckBoxWarningsClick(wxCommandEvent& event)
 {
-    if(event.IsChecked()){
+    if(event.IsChecked())
+    {
         CheckBoxWarnIfDocError->Enable(true);
         CheckBoxWarnIfUndocumented->Enable(true);
         CheckBoxWarnNoParamdoc->Enable(true);
     }
-    else{
+    else
+    {
         CheckBoxWarnIfDocError->Enable(false);
         CheckBoxWarnIfUndocumented->Enable(false);
         CheckBoxWarnNoParamdoc->Enable(false);
@@ -944,10 +968,12 @@ void ConfigPanel::OnCheckBoxWarningsClick(wxCommandEvent& event)
  */
 void ConfigPanel::OnCheckBoxUseAutoversionClick(wxCommandEvent& event)
 {
-    if(event.IsChecked()){
+    if(event.IsChecked())
+    {
         TextCtrlProjectNumber->Enable(false);
     }
-    else{
+    else
+    {
         TextCtrlProjectNumber->Enable(true);
     }
 }

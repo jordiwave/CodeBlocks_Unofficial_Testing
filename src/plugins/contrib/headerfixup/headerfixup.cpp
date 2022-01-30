@@ -23,7 +23,7 @@
 
 namespace
 {
-  PluginRegistrant<HeaderFixup> reg(_T("HeaderFixup"));
+PluginRegistrant<HeaderFixup> reg(_T("HeaderFixup"));
 }
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -54,28 +54,28 @@ void HeaderFixup::OnRelease(bool /*appShutDown*/)
 
 int HeaderFixup::Execute()
 {
-  // if not attached, exit
-  if ( !IsAttached() )
-    return -1;
+    // if not attached, exit
+    if ( !IsAttached() )
+        return -1;
 
-  // if no project is opened -> inform the user and do not operate
-  const cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-  if (!prj)
-  {
-    cbMessageBox(_("You need to open a project/workspace before using this plugin!"),
-                 _T("Header Fixup"), wxICON_ERROR | wxOK);
-    return -1;
-  }
+    // if no project is opened -> inform the user and do not operate
+    const cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+    if (!prj)
+    {
+        cbMessageBox(_("You need to open a project/workspace before using this plugin!"),
+                     _T("Header Fixup"), wxICON_ERROR | wxOK);
+        return -1;
+    }
 
-  Execution Dlg(NULL);
-  PlaceWindow(&Dlg);
-  Dlg.ShowModal();
-  return 0;
+    Execution Dlg(NULL);
+    PlaceWindow(&Dlg);
+    Dlg.ShowModal();
+    return 0;
 }// Execute
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 cbConfigurationPanel* HeaderFixup::GetConfigurationPanel(wxWindow* parent)
 {
-  return new Configuration(parent);
+    return new Configuration(parent);
 }// GetConfigurationPanel

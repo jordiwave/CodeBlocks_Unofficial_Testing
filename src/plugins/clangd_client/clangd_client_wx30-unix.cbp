@@ -38,7 +38,7 @@
 					<Add after="if [ -e clangd_client.zip ]; then rm clangd_client.zip; fi;" />
 					<Add after="if [ -e clangd_client.cbplugin ]; then rm clangd_client.cbplugin; fi;" />
 					<Add after="zip -jq9 clangd_client.zip src/resources/manifest.xml src/resources/*.xrc" />
-					<Add after="zip -rq9 clangd_client.zip src/resources/images" />
+					<Add after="cd src/resources && zip -rq9 ../../clangd_client.zip images && cd ../.." />
 					<Add after="zip -jq9 clangd_client.cbplugin $(TARGET_OUTPUT_FILE) clangd_client.zip documentation-install/*.txt" />
 
 					<!-- Create the clangd_client.cbplugin file using the stripped dll -->

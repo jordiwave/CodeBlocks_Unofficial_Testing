@@ -5,7 +5,8 @@
 #define MAX_FUNC_STACKSIZE 0xFF
 #define MAX_LITERALS ((SQInteger)0x7FFFFFFF)
 
-enum BitWiseOP {
+enum BitWiseOP
+{
     BW_AND = 0,
     BW_OR = 2,
     BW_XOR = 3,
@@ -14,7 +15,8 @@ enum BitWiseOP {
     BW_USHIFTR = 6
 };
 
-enum CmpOP {
+enum CmpOP
+{
     CMP_G = 0,
     CMP_GE = 2,
     CMP_L = 3,
@@ -22,13 +24,15 @@ enum CmpOP {
     CMP_3W = 5
 };
 
-enum NewObjectType {
+enum NewObjectType
+{
     NOT_TABLE = 0,
     NOT_ARRAY = 1,
     NOT_CLASS = 2
 };
 
-enum AppendArrayType {
+enum AppendArrayType
+{
     AAT_STACK = 0,
     AAT_LITERAL = 1,
     AAT_INT = 2,
@@ -102,17 +106,21 @@ enum SQOpcode
     _OP_CLOSE=              0x3C
 };
 
-struct SQInstructionDesc {
+struct SQInstructionDesc
+{
     const SQChar *name;
 };
 
 struct SQInstruction
 {
-    SQInstruction(){};
+    SQInstruction() {};
     SQInstruction(SQOpcode _op,SQInteger a0=0,SQInteger a1=0,SQInteger a2=0,SQInteger a3=0)
-    {   op = (unsigned char)_op;
-        _arg0 = (unsigned char)a0;_arg1 = (SQInt32)a1;
-        _arg2 = (unsigned char)a2;_arg3 = (unsigned char)a3;
+    {
+        op = (unsigned char)_op;
+        _arg0 = (unsigned char)a0;
+        _arg1 = (SQInt32)a1;
+        _arg2 = (unsigned char)a2;
+        _arg3 = (unsigned char)a3;
     }
 
 

@@ -31,8 +31,8 @@
 // TODO: This is same as in wxsproject.h, make one set instead of two
 namespace
 {
-    const int CurrentVersion = 1;
-    const char* CurrentVersionStr = "1";
+const int CurrentVersion = 1;
+const char* CurrentVersionStr = "1";
 }
 
 const wxsVersionConverter& wxsVersionConverter::Get()
@@ -85,8 +85,8 @@ TiXmlElement* wxsVersionConverter::ConvertFromOldConfig(TiXmlElement* ConfigNode
         else
         {
             if ( NodeName == _T("dialog") ||
-                 NodeName == _T("frame") ||
-                 NodeName == _T("panel") )
+                    NodeName == _T("frame") ||
+                    NodeName == _T("panel") )
             {
                 const char* Wxs   = Node->Attribute("wxs_file");
                 const char* Class = Node->Attribute("class");
@@ -99,9 +99,9 @@ TiXmlElement* wxsVersionConverter::ConvertFromOldConfig(TiXmlElement* ConfigNode
                 {
                     if ( cbC2U(Mode) == _T("Source") ) Xrc = 0;
                     TiXmlElement* Res = Resources->InsertEndChild(TiXmlElement(
-                        NodeName == _T("dialog") ? "wxDialog" :
-                        NodeName == _T("frame")  ? "wxFrame" :
-                                                   "wxPanel" ))->ToElement();
+                                            NodeName == _T("dialog") ? "wxDialog" :
+                                            NodeName == _T("frame")  ? "wxFrame" :
+                                            "wxPanel" ))->ToElement();
 
                     Res->SetAttribute("wxs",cbU2C(_T("wxsmith/")+cbC2U(Wxs)));
                     Res->SetAttribute("src",Src);
@@ -212,16 +212,16 @@ void wxsVersionConverter::AdoptOldSourceFile(const wxString& FileName,const wxSt
     // break the conversion chain)
 
     bool IsInternalHeaders = wxsCoder::Get()->GetCode(
-        FileName,
-        _T("//(*InternalHeaders(") + Class + _T(")\n"),
-        _T("//*)"),
-        true,true).Length() != 0;
+                                 FileName,
+                                 _T("//(*InternalHeaders(") + Class + _T(")\n"),
+                                 _T("//*)"),
+                                 true,true).Length() != 0;
 
     bool IsIdInit = wxsCoder::Get()->GetCode(
-        FileName,
-        _T("//(*IdInit(") + Class + _T(")\n"),
-        _T("//*)"),
-        true,true).Length() != 0;
+                        FileName,
+                        _T("//(*IdInit(") + Class + _T(")\n"),
+                        _T("//*)"),
+                        true,true).Length() != 0;
 
     if ( !IsInternalHeaders || !IsIdInit )
     {

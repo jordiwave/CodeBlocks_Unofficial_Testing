@@ -5,12 +5,12 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-    #include <wx/dnd.h>
-    #include <wx/imaglist.h>
+#include <wx/dnd.h>
+#include <wx/imaglist.h>
 
-    #include <cbproject.h>
-    #include <configmanager.h>
-    #include <projectmanager.h>
+#include <cbproject.h>
+#include <configmanager.h>
+#include <projectmanager.h>
 #endif
 
 #include <list>
@@ -74,7 +74,7 @@ class UpdateQueue
 public:
     void Add(const wxTreeItemId &ti)
     {
-        for(std::list<wxTreeItemId>::iterator it=qdata.begin();it!=qdata.end();it++)
+        for(std::list<wxTreeItemId>::iterator it=qdata.begin(); it!=qdata.end(); it++)
         {
             if(*it==ti)
             {
@@ -101,7 +101,8 @@ private:
 };
 
 
-class DirTraverseFind : public wxDirTraverser     {
+class DirTraverseFind : public wxDirTraverser
+{
 public:
     DirTraverseFind(const wxString& wildcard) : m_files(), m_wildcard(wildcard) { }
     virtual wxDirTraverseResult OnFile(const wxString& filename)
@@ -116,7 +117,10 @@ public:
             m_files.Add(dirname);
         return wxDIR_CONTINUE;
     }
-    wxArrayString& GetMatches() {return m_files;}
+    wxArrayString& GetMatches()
+    {
+        return m_files;
+    }
 private:
     wxArrayString m_files;
     wxString m_wildcard;
@@ -126,12 +130,12 @@ private:
 class FEDataObject:public wxDataObjectComposite
 {
 public:
-   FEDataObject():wxDataObjectComposite()
-   {
-       m_file=new wxFileDataObject;
-       Add(m_file,true);
-   }
-   wxFileDataObject *m_file;
+    FEDataObject():wxDataObjectComposite()
+    {
+        m_file=new wxFileDataObject;
+        Add(m_file,true);
+    }
+    wxFileDataObject *m_file;
 
 };
 
@@ -202,9 +206,9 @@ END_EVENT_TABLE()
 IMPLEMENT_DYNAMIC_CLASS(FileTreeCtrl, wxTreeCtrl)
 
 FileTreeCtrl::FileTreeCtrl(wxWindow* parent, wxWindowID id, const wxPoint& pos,
-    const wxSize& size, long style,
-    const wxValidator& validator,
-    const wxString& name)
+                           const wxSize& size, long style,
+                           const wxValidator& validator,
+                           const wxString& name)
     : wxTreeCtrl(parent,id,pos,size,style,validator,name) {}
 
 FileTreeCtrl::FileTreeCtrl() { }
@@ -282,8 +286,8 @@ BEGIN_EVENT_TABLE(FileExplorer, wxPanel)
 END_EVENT_TABLE()
 
 FileExplorer::FileExplorer(wxWindow *parent,wxWindowID id,
-    const wxPoint& pos, const wxSize& size,
-    long style, const wxString& name):
+                           const wxPoint& pos, const wxSize& size,
+                           long style, const wxString& name):
     wxPanel(parent,id,pos,size,style, name)
 {
     m_kill=false;
@@ -344,7 +348,8 @@ FileExplorer::FileExplorer(wxWindow *parent,wxWindowID id,
     {
         m_Loc->Select(m_favdirs.GetCount());
         m_root=m_Loc->GetString(m_favdirs.GetCount());
-    } else
+    }
+    else
     {
         m_root=wxFileName::GetPathSeparator();
         m_Loc->Append(m_root);
@@ -475,7 +480,8 @@ bool FileExplorer::GetItemFromPath(const wxString &path, wxTreeItemId &ti)
         if(path==GetFullPath(ti))
             return true;
         ti=GetNextExpandedNode(ti);
-    } while(ti!=m_Tree->GetRootItem());
+    }
+    while(ti!=m_Tree->GetRootItem());
     return false;
 }
 
@@ -601,13 +607,13 @@ bool FileExplorer::ValidateRoot()
     wxTreeItemId ti=m_Tree->GetRootItem();
     while(true)
     {
-    if(!ti.IsOk())
-        break;
-    if(m_Tree->GetItemImage(ti)!=fvsFolder)
-        break;
-    if(!wxFileName::DirExists(GetFullPath(ti)))
-        break;
-    return true;
+        if(!ti.IsOk())
+            break;
+        if(m_Tree->GetItemImage(ti)!=fvsFolder)
+            break;
+        if(!wxFileName::DirExists(GetFullPath(ti)))
+            break;
+        return true;
     }
     return false;
 }
@@ -641,7 +647,8 @@ void FileExplorer::OnUpdateTreeItems(wxCommandEvent &/*e*/)
         Layout();
     }
     if(m_updater_cancel || !ti.IsOk())
-    { //NODE WAS DELETED - REFRESH NOW!
+    {
+        //NODE WAS DELETED - REFRESH NOW!
         //TODO: Should only need to clean up and restart the timer (no need to change queue)
         delete m_updater;
         m_updater=NULL;
@@ -662,10 +669,10 @@ void FileExplorer::OnUpdateTreeItems(wxCommandEvent &/*e*/)
     {
         m_Tree->Freeze();
         //LOOP THROUGH THE REMOVERS LIST AND REMOVE THOSE ITEMS FROM THE TREE
-    //    cbMessageBox(_T("Removers"));
-        for(FileDataVec::iterator it=removers.begin();it!=removers.end();it++)
+        //    cbMessageBox(_T("Removers"));
+        for(FileDataVec::iterator it=removers.begin(); it!=removers.end(); it++)
         {
-    //        cbMessageBox(it->name);
+            //        cbMessageBox(it->name);
             wxTreeItemIdValue cookie;
             wxTreeItemId ch=m_Tree->GetFirstChild(ti,cookie);
             while(ch.IsOk())
@@ -679,10 +686,10 @@ void FileExplorer::OnUpdateTreeItems(wxCommandEvent &/*e*/)
             }
         }
         //LOOP THROUGH THE ADDERS LIST AND ADD THOSE ITEMS TO THE TREE
-    //    cbMessageBox(_T("Adders"));
-        for(FileDataVec::iterator it=adders.begin();it!=adders.end();it++)
+        //    cbMessageBox(_T("Adders"));
+        for(FileDataVec::iterator it=adders.begin(); it!=adders.end(); it++)
         {
-    //        cbMessageBox(it->name);
+            //        cbMessageBox(it->name);
             wxTreeItemId newitem=m_Tree->AppendItem(ti,it->name,it->state);
             m_Tree->SetItemHasChildren(newitem,it->state==fvsFolder);
         }
@@ -725,7 +732,7 @@ wxString FileExplorer::GetFullPath(const wxTreeItemId &ti)
             path.AppendDir(m_Tree->GetItemText(vti[i]));
         wxFileName last_part(m_Tree->GetItemText(vti[vti.size()-1]));
         wxArrayString as = last_part.GetDirs();
-        for (size_t i=0;i<as.size();i++)
+        for (size_t i=0; i<as.size(); i++)
             path.AppendDir(as[i]);
         path = wxFileName(path.GetFullPath(), last_part.GetFullName()).GetFullPath();
     }
@@ -753,7 +760,7 @@ void FileExplorer::ReadConfig()
         cfg = Manager::Get()->GetConfigManager(_T("FileManager"));
     int len=0;
     cfg->Read(_T("FileExplorer/FavRootList/Len"), &len);
-    for(int i=0;i<len;i++)
+    for(int i=0; i<len; i++)
     {
         wxString ref=wxString::Format(_T("FileExplorer/FavRootList/I%i"),i);
         wxString loc;
@@ -765,7 +772,7 @@ void FileExplorer::ReadConfig()
     }
     len=0;
     cfg->Read(_T("FileExplorer/RootList/Len"), &len);
-    for(int i=0;i<len;i++)
+    for(int i=0; i<len; i++)
     {
         wxString ref=wxString::Format(_T("FileExplorer/RootList/I%i"),i);
         wxString loc;
@@ -774,7 +781,7 @@ void FileExplorer::ReadConfig()
     }
     len=0;
     cfg->Read(_T("FileExplorer/WildMask/Len"), &len);
-    for(int i=0;i<len;i++)
+    for(int i=0; i<len; i++)
     {
         wxString ref=wxString::Format(_T("FileExplorer/WildMask/I%i"),i);
         wxString wild;
@@ -799,7 +806,7 @@ void FileExplorer::WriteConfig()
     //cfg->Clear();
     int count=static_cast<int>(m_favdirs.GetCount());
     cfg->Write(_T("FileExplorer/FavRootList/Len"), count);
-    for(int i=0;i<count;i++)
+    for(int i=0; i<count; i++)
     {
         wxString ref=wxString::Format(_T("FileExplorer/FavRootList/I%i"),i);
         cfg->Write(ref+_T("/alias"), m_favdirs[i].alias);
@@ -807,14 +814,14 @@ void FileExplorer::WriteConfig()
     }
     count=static_cast<int>(m_Loc->GetCount())-static_cast<int>(m_favdirs.GetCount());
     cfg->Write(_T("FileExplorer/RootList/Len"), count);
-    for(int i=0;i<count;i++)
+    for(int i=0; i<count; i++)
     {
         wxString ref=wxString::Format(_T("FileExplorer/RootList/I%i"),i);
         cfg->Write(ref, m_Loc->GetString(m_favdirs.GetCount()+i));
     }
     count=static_cast<int>(m_WildCards->GetCount());
     cfg->Write(_T("FileExplorer/WildMask/Len"), count);
-    for(int i=0;i<count;i++)
+    for(int i=0; i<count; i++)
     {
         wxString ref=wxString::Format(_T("FileExplorer/WildMask/I%i"),i);
         cfg->Write(ref, m_WildCards->GetString(i));
@@ -830,7 +837,7 @@ void FileExplorer::WriteConfig()
 void FileExplorer::OnEnterWild(wxCommandEvent &/*event*/)
 {
     wxString wild=m_WildCards->GetValue();
-    for(size_t i=0;i<m_WildCards->GetCount();i++)
+    for(size_t i=0; i<m_WildCards->GetCount(); i++)
     {
         wxString cmp;
         cmp=m_WildCards->GetString(i);
@@ -868,7 +875,7 @@ void FileExplorer::OnEnterLoc(wxCommandEvent &/*event*/)
     wxString loc=m_Loc->GetValue();
     if(!SetRootFolder(loc))
         return;
-    for(size_t i=0;i<m_Loc->GetCount();i++)
+    for(size_t i=0; i<m_Loc->GetCount(); i++)
     {
         wxString cmp;
         if(i<m_favdirs.GetCount())
@@ -914,7 +921,7 @@ void FileExplorer::OnChooseLoc(wxCommandEvent &event)
     }
     else
     {
-        for(size_t i=m_favdirs.GetCount();i<m_Loc->GetCount();i++)
+        for(size_t i=m_favdirs.GetCount(); i<m_Loc->GetCount(); i++)
         {
             wxString cmp;
             cmp=m_Loc->GetString(i);
@@ -981,7 +988,8 @@ void FileExplorer::OnVCSControl(wxCommandEvent &/*event*/)
     {
         m_commit = commit;
         Refresh(m_Tree->GetRootItem());
-    } else
+    }
+    else
     {
         unsigned int i=0;
         for (; i<m_VCS_Control->GetCount(); ++i)
@@ -997,7 +1005,7 @@ void FileExplorer::OnVCSControl(wxCommandEvent &/*event*/)
 
 void FileExplorer::OnOpenInEditor(wxCommandEvent &/*event*/)
 {
-    for(int i=0;i<m_ticount;i++)
+    for(int i=0; i<m_ticount; i++)
     {
         if (IsBrowsingVCSTree())
         {
@@ -1045,7 +1053,7 @@ void FileExplorer::OnVCSDiff(wxCommandEvent &event)
     if (comp_commit == _T("Select commit..."))
     {
         wxString diff_paths;
-        for(int i=0;i<m_ticount;i++)
+        for(int i=0; i<m_ticount; i++)
         {
             wxFileName path(GetFullPath(m_selectti[i]));
             path.MakeRelativeTo(GetRootFolder());
@@ -1061,7 +1069,7 @@ void FileExplorer::OnVCSDiff(wxCommandEvent &event)
             return;
     }
     wxString diff_paths = wxEmptyString;
-    for(int i=0;i<m_ticount;i++)
+    for(int i=0; i<m_ticount; i++)
     {
         wxFileName path(GetFullPath(m_selectti[i]));
         path.MakeRelativeTo(GetRootFolder());
@@ -1107,7 +1115,8 @@ void FileExplorer::DoOpenInEditor(const wxString &filename)
         // open files just get activated
         eb->Activate();
         return;
-    } else
+    }
+    else
         em->Open(filename);
 }
 
@@ -1188,7 +1197,7 @@ void FileExplorer::OnRightClick(wxTreeEvent &event)
     m_ticount=m_Tree->GetSelections(m_selectti);
     if(!IsInSelection(event.GetItem())) //replace the selection with right clicked item if right clicked item isn't in the selection
     {
-        for(int i=0;i<m_ticount;i++)
+        for(int i=0; i<m_ticount; i++)
             m_Tree->SelectItem(m_selectti[i],false);
         m_Tree->SelectItem(event.GetItem());
         m_ticount=m_Tree->GetSelections(m_selectti);
@@ -1214,7 +1223,8 @@ void FileExplorer::OnRightClick(wxTreeEvent &event)
                     Popup->Append(ID_FILENEWFOLDER,_("New directory..."));
                     Popup->Append(ID_FILERENAME,_("&Rename..."));
                 }
-            } else
+            }
+            else
             {
                 if (!IsBrowsingVCSTree())
                     Popup->Append(ID_FILERENAME,_("&Rename..."));
@@ -1270,7 +1280,7 @@ void FileExplorer::OnRightClick(wxTreeEvent &event)
     {
         ftd->SetKind(FileTreeData::ftdkVirtualGroup);
         wxString pathlist = GetFullPath(m_selectti[0]);
-        for(int i=1;i<m_ticount;i++)
+        for(int i=1; i<m_ticount; i++)
             pathlist += _T("*") + GetFullPath(m_selectti[i]); //passing a '*' separated list of files/directories to any plugin takers
         ftd->SetFolder(pathlist);
     }
@@ -1355,7 +1365,7 @@ void FileExplorer::OnNewFolder(wxCommandEvent &/*event*/)
 void FileExplorer::OnDuplicate(wxCommandEvent &/*event*/)
 {
     m_ticount=m_Tree->GetSelections(m_selectti);
-    for(int i=0;i<m_ticount;i++)
+    for(int i=0; i<m_ticount; i++)
     {
         wxFileName path(GetFullPath(m_selectti[i]));  //SINGLE: m_Tree->GetSelection()
         if(wxFileName::FileExists(path.GetFullPath())||wxFileName::DirExists(path.GetFullPath()))
@@ -1402,7 +1412,7 @@ void FileExplorer::OnDuplicate(wxCommandEvent &/*event*/)
 
 void FileExplorer::CopyFiles(const wxString &destination, const wxArrayString &selectedfiles)
 {
-    for(unsigned int i=0;i<selectedfiles.Count();i++)
+    for(unsigned int i=0; i<selectedfiles.Count(); i++)
     {
         wxString path=selectedfiles[i];
         wxFileName destpath;
@@ -1436,7 +1446,7 @@ void FileExplorer::OnCopy(wxCommandEvent &/*event*/)
     dd.SetPath(GetFullPath(m_Tree->GetRootItem()));
     wxArrayString selectedfiles;
     m_ticount=m_Tree->GetSelections(m_selectti);
-    for(int i=0;i<m_ticount;i++) // really important not to rely on TreeItemId ater modal dialogs because file updates can change the file tree in the background.
+    for(int i=0; i<m_ticount; i++) // really important not to rely on TreeItemId ater modal dialogs because file updates can change the file tree in the background.
     {
         selectedfiles.Add(GetFullPath(m_selectti[i]));  //SINGLE: m_Tree->GetSelection()
     }
@@ -1450,7 +1460,7 @@ void FileExplorer::OnCopy(wxCommandEvent &/*event*/)
 
 void FileExplorer::MoveFiles(const wxString &destination, const wxArrayString &selectedfiles)
 {
-    for(unsigned int i=0;i<selectedfiles.Count();i++)
+    for(unsigned int i=0; i<selectedfiles.Count(); i++)
     {
         wxString path=selectedfiles[i];
         wxFileName destpath;
@@ -1476,7 +1486,7 @@ void FileExplorer::OnMove(wxCommandEvent &/*event*/)
     wxDirDialog dd(this,_("Move to"));
     wxArrayString selectedfiles;
     m_ticount=m_Tree->GetSelections(m_selectti);
-    for(int i=0;i<m_ticount;i++)
+    for(int i=0; i<m_ticount; i++)
         selectedfiles.Add(GetFullPath(m_selectti[i]));  //SINGLE: m_Tree->GetSelection()
     dd.SetPath(GetFullPath(m_Tree->GetRootItem()));
     PlaceWindow(&dd);
@@ -1490,7 +1500,7 @@ void FileExplorer::OnMove(wxCommandEvent &/*event*/)
 wxArrayString FileExplorer::GetSelectedPaths()
 {
     wxArrayString paths;
-    for(int i=0;i<m_ticount;i++)
+    for(int i=0; i<m_ticount; i++)
     {
         wxString path(GetFullPath(m_selectti[i]));  //SINGLE: m_Tree->GetSelection()
         paths.Add(path);
@@ -1503,12 +1513,12 @@ void FileExplorer::OnDelete(wxCommandEvent &/*event*/)
     m_ticount=m_Tree->GetSelections(m_selectti);
     wxArrayString as=GetSelectedPaths();
     wxString prompt=_("Your are about to delete\n\n");
-    for(unsigned int i=0;i<as.Count();i++)
+    for(unsigned int i=0; i<as.Count(); i++)
         prompt+=as[i]+'\n';
     prompt+=_("\nAre you sure?");
     if(MessageBox(m_Tree,prompt,_("Delete"),wxYES_NO)!=wxID_YES)
         return;
-    for(unsigned int i=0;i<as.Count();i++)
+    for(unsigned int i=0; i<as.Count(); i++)
     {
         wxString path=as[i];  //SINGLE: m_Tree->GetSelection()
         if(wxFileName::FileExists(path))
@@ -1521,8 +1531,8 @@ void FileExplorer::OnDelete(wxCommandEvent &/*event*/)
             //        }
             if(!::wxRemoveFile(path))
                 MessageBox(m_Tree,_("Delete file '")+path+_("' failed"));
-        } else
-        if(wxFileName::DirExists(path))
+        }
+        else if(wxFileName::DirExists(path))
         {
 #ifdef __WXMSW__
             wxArrayString output;
@@ -1594,11 +1604,11 @@ void FileExplorer::OnSettings(wxCommandEvent &/*event*/)
     if(fbs.ShowModal()==wxID_OK)
     {
         size_t count=m_favdirs.GetCount();
-        for(size_t i=0;i<count;i++)
+        for(size_t i=0; i<count; i++)
             m_Loc->Delete(0);
         m_favdirs=fbs.m_favdirs;
         count=m_favdirs.GetCount();
-        for(size_t i=0;i<count;i++)
+        for(size_t i=0; i<count; i++)
             m_Loc->Insert(m_favdirs[i].alias,i);
     }
 
@@ -1673,7 +1683,7 @@ void FileExplorer::OnBeginDragTreeItem(wxTreeEvent &event)
 
 bool FileExplorer::IsInSelection(const wxTreeItemId &ti)
 {
-    for(int i=0;i<m_ticount;i++)
+    for(int i=0; i<m_ticount; i++)
         if(ti==m_selectti[i])
             return true;
     return false;
@@ -1685,7 +1695,7 @@ void FileExplorer::OnEndDragTreeItem(wxTreeEvent &event)
 //    SetCursor(wxCursor(wxCROSS_CURSOR));
     if(m_Tree->GetItemImage(event.GetItem())!=fvsFolder) //can only copy to folders
         return;
-    for(int i=0;i<m_ticount;i++)
+    for(int i=0; i<m_ticount; i++)
     {
         wxString path(GetFullPath(m_selectti[i]));
         wxFileName destpath;
@@ -1709,7 +1719,8 @@ void FileExplorer::OnEndDragTreeItem(wxTreeEvent &event)
 #endif
                 if(hresult)
                     MessageBox(m_Tree,_("Move directory '")+path+_("' failed with error ")+wxString::Format(_T("%i"),hresult));
-            } else
+            }
+            else
             {
                 if(wxFileName::FileExists(path))
                     if(!PromptSaveOpenFile(_("File is modified, press Yes to save before copy, No to copy unsaved file or Cancel to skip file"),wxFileName(path)))
@@ -1739,7 +1750,7 @@ void FileExplorer::OnAddToProject(wxCommandEvent &/*event*/)
 {
     wxArrayString files;
     wxString file;
-    for(int i=0;i<m_ticount;i++)
+    for(int i=0; i<m_ticount; i++)
     {
         file=GetFullPath(m_selectti[i]);
         if(wxFileName::FileExists(file))
@@ -1752,7 +1763,7 @@ void FileExplorer::OnAddToProject(wxCommandEvent &/*event*/)
 
 bool FileExplorer::IsFilesOnly(wxArrayTreeItemIds tis)
 {
-    for(size_t i=0;i<tis.GetCount();i++)
+    for(size_t i=0; i<tis.GetCount(); i++)
         if(m_Tree->GetItemImage(tis[i])==fvsFolder)
             return false;
     return true;

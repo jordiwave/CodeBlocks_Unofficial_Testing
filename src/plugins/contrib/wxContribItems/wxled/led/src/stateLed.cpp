@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-BEGIN_EVENT_TABLE (wxStateLed , wxWindow)
+BEGIN_EVENT_TABLE (wxStateLed, wxWindow)
     EVT_PAINT (wxStateLed ::OnPaint)
 END_EVENT_TABLE ()
 

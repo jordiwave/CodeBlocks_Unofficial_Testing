@@ -10,9 +10,9 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-    // Required extra includes
-    #include <configmanager.h>
-    #include <infowindow.h>
+// Required extra includes
+#include <configmanager.h>
+#include <infowindow.h>
 #endif
 
 #include <wx/listctrl.h>
@@ -34,10 +34,10 @@ enum ListColumns : int
 };
 
 ThreadSearchLoggerList::ThreadSearchLoggerList(ThreadSearchView& threadSearchView,
-                                               ThreadSearch& threadSearchPlugin,
-                                               InsertIndexManager::eFileSorting fileSorting,
-                                               wxWindow* pParent,
-                                               long id) :
+        ThreadSearch& threadSearchPlugin,
+        InsertIndexManager::eFileSorting fileSorting,
+        wxWindow* pParent,
+        long id) :
     ThreadSearchLoggerBase(pParent, threadSearchView, threadSearchPlugin, fileSorting),
     m_IndexOffset(0),
     m_SortColumn(-1),
@@ -135,7 +135,8 @@ bool ThreadSearchLoggerList::GetFileLineFromListEvent(wxListEvent& /*event*/, wx
     bool success = false;
     wxListItem listItem;
 
-    do {
+    do
+    {
         // Finds selected item index
         long index = m_pListLog->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
         if ( index == -1 ) break;
@@ -158,7 +159,8 @@ bool ThreadSearchLoggerList::GetFileLineFromListEvent(wxListEvent& /*event*/, wx
         {
             success = true;
         }
-    } while ( 0 );
+    }
+    while ( 0 );
 
     return success;
 }
@@ -169,7 +171,8 @@ bool ThreadSearchLoggerList::IsLineResultLine(long index /* -1 */)
     bool isResultLine = false;
     wxListItem listItem;
 
-    do {
+    do
+    {
         if ( index == -1 )
             // Finds selected item index
             index = m_pListLog->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
@@ -186,7 +189,8 @@ bool ThreadSearchLoggerList::IsLineResultLine(long index /* -1 */)
 
         filedir = listItem.GetText();
         isResultLine = !filedir.StartsWith("=>");
-    } while ( 0 );
+    }
+    while ( 0 );
 
     return isResultLine;
 }
@@ -283,12 +287,12 @@ void ThreadSearchLoggerList::ConnectEvents(wxEvtHandler* pEvtHandler)
     int id = m_pListLog->GetId();
 
     pEvtHandler->Connect(id, wxEVT_COMMAND_LIST_ITEM_SELECTED,
-                        (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
-                        &ThreadSearchLoggerList::OnLoggerListClick, NULL, static_cast<wxEvtHandler*>(this));
+                         (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+                         &ThreadSearchLoggerList::OnLoggerListClick, NULL, static_cast<wxEvtHandler*>(this));
 
     pEvtHandler->Connect(id, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
-                        (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
-                        &ThreadSearchLoggerList::OnLoggerListDoubleClick, NULL, static_cast<wxEvtHandler*>(this));
+                         (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+                         &ThreadSearchLoggerList::OnLoggerListDoubleClick, NULL, static_cast<wxEvtHandler*>(this));
 
     pEvtHandler->Connect(id, wxEVT_COMMAND_LIST_COL_CLICK,
                          (wxObjectEventFunction) (wxEventFunction) (wxListEventFunction)
@@ -296,14 +300,14 @@ void ThreadSearchLoggerList::ConnectEvents(wxEvtHandler* pEvtHandler)
 
 #if wxUSE_MENUS
     pEvtHandler->Connect(id, wxEVT_CONTEXT_MENU,
-            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
-            &ThreadSearchLoggerList::OnLoggerListContextualMenu, NULL, this);
+                         (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+                         &ThreadSearchLoggerList::OnLoggerListContextualMenu, NULL, this);
 
     pEvtHandler->Connect(controlIDs.Get(ControlIDs::idMenuCtxDeleteItem), wxEVT_COMMAND_MENU_SELECTED,
-            wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteListItem), NULL, this);
+                         wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteListItem), NULL, this);
 
     pEvtHandler->Connect(controlIDs.Get(ControlIDs::idMenuCtxDeleteAllItems), wxEVT_COMMAND_MENU_SELECTED,
-            wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteAllListItems), NULL, this);
+                         wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteAllListItems), NULL, this);
 #endif // wxUSE_MENUS
 }
 
@@ -313,12 +317,12 @@ void ThreadSearchLoggerList::DisconnectEvents(wxEvtHandler* pEvtHandler)
     // Dynamic event Disconnections.
     int id = m_pListLog->GetId();
     pEvtHandler->Disconnect(id, wxEVT_COMMAND_LIST_ITEM_SELECTED,
-            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
-            &ThreadSearchLoggerList::OnLoggerListClick, NULL, static_cast<wxEvtHandler*>(this));
+                            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+                            &ThreadSearchLoggerList::OnLoggerListClick, NULL, static_cast<wxEvtHandler*>(this));
 
     pEvtHandler->Disconnect(id, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
-            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
-            &ThreadSearchLoggerList::OnLoggerListDoubleClick, NULL, static_cast<wxEvtHandler*>(this));
+                            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+                            &ThreadSearchLoggerList::OnLoggerListDoubleClick, NULL, static_cast<wxEvtHandler*>(this));
 
     pEvtHandler->Disconnect(id, wxEVT_COMMAND_LIST_COL_CLICK,
                             (wxObjectEventFunction) (wxEventFunction) (wxListEventFunction)
@@ -326,14 +330,14 @@ void ThreadSearchLoggerList::DisconnectEvents(wxEvtHandler* pEvtHandler)
 
 #if wxUSE_MENUS
     pEvtHandler->Disconnect(id, wxEVT_CONTEXT_MENU,
-            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
-            &ThreadSearchLoggerList::OnLoggerListContextualMenu, NULL, this);
+                            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+                            &ThreadSearchLoggerList::OnLoggerListContextualMenu, NULL, this);
 
     pEvtHandler->Disconnect(controlIDs.Get(ControlIDs::idMenuCtxDeleteItem), wxEVT_COMMAND_MENU_SELECTED,
-            wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteListItem), NULL, this);
+                            wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteListItem), NULL, this);
 
     pEvtHandler->Disconnect(controlIDs.Get(ControlIDs::idMenuCtxDeleteAllItems), wxEVT_COMMAND_MENU_SELECTED,
-            wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteAllListItems), NULL, this);
+                            wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteAllListItems), NULL, this);
 #endif // wxUSE_MENUS
 }
 
@@ -376,7 +380,7 @@ void ThreadSearchLoggerList::OnDeleteListItem(wxCommandEvent& /*event*/)
         if ( IsLineResultLine(index) )
         {
             if ( (index > 0) && !IsLineResultLine(index - 1) &&
-                 ((index == m_pListLog->GetItemCount() - 1) || !IsLineResultLine(index + 1)) )
+                    ((index == m_pListLog->GetItemCount() - 1) || !IsLineResultLine(index + 1)) )
             {
                 start--;
             }
@@ -610,16 +614,16 @@ void SetItemType(Item &item, wxListCtrl &list, long index, long &searchIndex)
 {
     switch (list.GetItemData(index))
     {
-        case 0:
-            item.type = 1;
-            break;
-        case 1:
-            item.type = 0;
-            ++searchIndex;
-            break;
-        case 2:
-        default:
-            item.type = 2;
+    case 0:
+        item.type = 1;
+        break;
+    case 1:
+        item.type = 0;
+        ++searchIndex;
+        break;
+    case 2:
+    default:
+        item.type = 2;
     }
 }
 
@@ -630,15 +634,15 @@ void RestoreItemData(wxListCtrl &list, const Item *items, long count)
     {
         switch (items[ii].type)
         {
-            case 0:
-                list.SetItemData(ii, 1);
-                break;
-            case 1:
-                list.SetItemData(ii, 0);
-                break;
-            case 2:
-            default:
-                list.SetItemData(ii, 2);
+        case 0:
+            list.SetItemData(ii, 1);
+            break;
+        case 1:
+            list.SetItemData(ii, 0);
+            break;
+        case 2:
+        default:
+            list.SetItemData(ii, 2);
         }
     }
 }
@@ -660,96 +664,96 @@ void ThreadSearchLoggerList::OnColumnClick(wxListEvent& event)
 
     switch (column)
     {
-        case ListColumns::Line:
-            {
-                long searchIndex = -1;
-                std::unique_ptr<ItemLine[]> items(new ItemLine[count]);
+    case ListColumns::Line:
+    {
+        long searchIndex = -1;
+        std::unique_ptr<ItemLine[]> items(new ItemLine[count]);
 
-                for (int ii = 0; ii < count; ++ii)
-                {
-                    wxListItem item;
-                    item.SetId(ii);
-                    item.SetMask(wxLIST_MASK_TEXT);
-                    item.SetColumn(ListColumns::Line);
-                    m_pListLog->GetItem(item);
+        for (int ii = 0; ii < count; ++ii)
+        {
+            wxListItem item;
+            item.SetId(ii);
+            item.SetMask(wxLIST_MASK_TEXT);
+            item.SetColumn(ListColumns::Line);
+            m_pListLog->GetItem(item);
 
-                    wxString const &str_line = item.GetText();
+            wxString const &str_line = item.GetText();
 
-                    long line;
-                    if (str_line.ToLong(&line))
-                        items[ii].line = line;
-                    else
-                        items[ii].line = -1;
+            long line;
+            if (str_line.ToLong(&line))
+                items[ii].line = line;
+            else
+                items[ii].line = -1;
 
-                    SetItemType(items[ii], *m_pListLog, ii, searchIndex);
-                    items[ii].searchIndex = searchIndex;
+            SetItemType(items[ii], *m_pListLog, ii, searchIndex);
+            items[ii].searchIndex = searchIndex;
 
-                    m_pListLog->SetItemPtrData(ii, reinterpret_cast<wxUIntPtr>(items.get() + ii));
-                }
-                m_pListLog->SortItems(m_Ascending ? SortLineAscending : SortLineDescending, 0);
+            m_pListLog->SetItemPtrData(ii, reinterpret_cast<wxUIntPtr>(items.get() + ii));
+        }
+        m_pListLog->SortItems(m_Ascending ? SortLineAscending : SortLineDescending, 0);
 
-                RestoreItemData(*m_pListLog, items.get(), count);
-            }
+        RestoreItemData(*m_pListLog, items.get(), count);
+    }
 
-            break;
-        case ListColumns::FilePath:
-            {
-                long searchIndex = -1;
-                std::unique_ptr<Item[]> items(new Item[count]);
+    break;
+    case ListColumns::FilePath:
+    {
+        long searchIndex = -1;
+        std::unique_ptr<Item[]> items(new Item[count]);
 
-                for (int ii = 0; ii < count; ++ii)
-                {
-                    wxListItem item;
-                    item.SetId(ii);
-                    item.SetMask(wxLIST_MASK_TEXT);
-                    item.SetColumn(ListColumns::FilePath);
-                    m_pListLog->GetItem(item);
+        for (int ii = 0; ii < count; ++ii)
+        {
+            wxListItem item;
+            item.SetId(ii);
+            item.SetMask(wxLIST_MASK_TEXT);
+            item.SetColumn(ListColumns::FilePath);
+            m_pListLog->GetItem(item);
 
-                    items[ii].filepath = item.GetText();
+            items[ii].filepath = item.GetText();
 
-                    item.SetColumn(ListColumns::Line);
-                    m_pListLog->GetItem(item);
+            item.SetColumn(ListColumns::Line);
+            m_pListLog->GetItem(item);
 
-                    items[ii].line = -1;
-                    item.GetText().ToLong(&items[ii].line);
+            items[ii].line = -1;
+            item.GetText().ToLong(&items[ii].line);
 
-                    SetItemType(items[ii], *m_pListLog, ii, searchIndex);
-                    items[ii].searchIndex = searchIndex;
+            SetItemType(items[ii], *m_pListLog, ii, searchIndex);
+            items[ii].searchIndex = searchIndex;
 
-                    m_pListLog->SetItemPtrData(ii, reinterpret_cast<wxUIntPtr>(items.get() + ii));
-                }
+            m_pListLog->SetItemPtrData(ii, reinterpret_cast<wxUIntPtr>(items.get() + ii));
+        }
 
-                m_pListLog->SortItems(m_Ascending ? SortFilepathAscending : SortFilepathDescending, 0);
+        m_pListLog->SortItems(m_Ascending ? SortFilepathAscending : SortFilepathDescending, 0);
 
-                RestoreItemData(*m_pListLog, items.get(), count);
-            }
-            break;
-        case ListColumns::Text:
-            {
-                long searchIndex = -1;
-                std::unique_ptr<ItemText[]> items(new ItemText[count]);
+        RestoreItemData(*m_pListLog, items.get(), count);
+    }
+    break;
+    case ListColumns::Text:
+    {
+        long searchIndex = -1;
+        std::unique_ptr<ItemText[]> items(new ItemText[count]);
 
-                for (int ii = 0; ii < count; ++ii)
-                {
-                    wxListItem item;
-                    item.SetId(ii);
-                    item.SetMask(wxLIST_MASK_TEXT);
-                    item.SetColumn(ListColumns::Text);
-                    m_pListLog->GetItem(item);
+        for (int ii = 0; ii < count; ++ii)
+        {
+            wxListItem item;
+            item.SetId(ii);
+            item.SetMask(wxLIST_MASK_TEXT);
+            item.SetColumn(ListColumns::Text);
+            m_pListLog->GetItem(item);
 
-                    items[ii].text = item.GetText();
-                    SetItemType(items[ii], *m_pListLog, ii, searchIndex);
-                    items[ii].searchIndex = searchIndex;
+            items[ii].text = item.GetText();
+            SetItemType(items[ii], *m_pListLog, ii, searchIndex);
+            items[ii].searchIndex = searchIndex;
 
-                    m_pListLog->SetItemPtrData(ii, reinterpret_cast<wxUIntPtr>(items.get() + ii));
-                }
+            m_pListLog->SetItemPtrData(ii, reinterpret_cast<wxUIntPtr>(items.get() + ii));
+        }
 
-                m_pListLog->SortItems(m_Ascending ? SortTextAscending : SortTextDescending, 0);
+        m_pListLog->SortItems(m_Ascending ? SortTextAscending : SortTextDescending, 0);
 
-                RestoreItemData(*m_pListLog, items.get(), count);
-            }
-            break;
-        default:
-            break;
+        RestoreItemData(*m_pListLog, items.get(), count);
+    }
+    break;
+    default:
+        break;
     }
 }

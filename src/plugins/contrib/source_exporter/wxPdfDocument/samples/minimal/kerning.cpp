@@ -30,24 +30,24 @@
 int
 kerning(bool testMode)
 {
-  wxPdfDocument pdf;
-  if (testMode)
-  {
-    pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
-    pdf.SetCompression(false);
-  }
-  pdf.Open();
-  pdf.SetFont(wxS("Helvetica"),wxS(""),15);
+    wxPdfDocument pdf;
+    if (testMode)
+    {
+        pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
+        pdf.SetCompression(false);
+    }
+    pdf.Open();
+    pdf.SetFont(wxS("Helvetica"),wxS(""),15);
 
-  // Page 1
-  pdf.AddPage();
-  pdf.SetKerning(false);
-  pdf.Cell(0,6,wxS("WATER AWAY (without kerning)"));
-  pdf.Ln(6);
-  pdf.SetKerning(true);
-  pdf.Cell(0,6,wxS("WATER AWAY (with kerning)"));
+    // Page 1
+    pdf.AddPage();
+    pdf.SetKerning(false);
+    pdf.Cell(0,6,wxS("WATER AWAY (without kerning)"));
+    pdf.Ln(6);
+    pdf.SetKerning(true);
+    pdf.Cell(0,6,wxS("WATER AWAY (with kerning)"));
 
-  pdf.SaveAsFile(wxS("kerning.pdf"));
+    pdf.SaveAsFile(wxS("kerning.pdf"));
 
-  return 0;
+    return 0;
 }

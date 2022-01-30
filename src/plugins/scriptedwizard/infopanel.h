@@ -18,37 +18,37 @@ class wxString;
 
 class InfoPanel: public wxPanel
 {
-	public:
+public:
 
-		InfoPanel(wxWindow* parent,wxWindowID id = -1);
-		virtual ~InfoPanel();
+    InfoPanel(wxWindow* parent,wxWindowID id = -1);
+    virtual ~InfoPanel();
 
-		//(*Identifiers(InfoPanel)
-		static const long ID_STATICTEXT1;
-		static const long ID_CHECKBOX1;
-		//*)
+    //(*Identifiers(InfoPanel)
+    static const long ID_STATICTEXT1;
+    static const long ID_CHECKBOX1;
+    //*)
 
-        void SetIntroText(const wxString& intro_msg)
-        {
-            lblIntro->SetLabel(intro_msg);
+    void SetIntroText(const wxString& intro_msg)
+    {
+        lblIntro->SetLabel(intro_msg);
 
-            GetSizer()->Fit(this);
-            GetSizer()->SetSizeHints(this);
-        }
+        GetSizer()->Fit(this);
+        GetSizer()->SetSizeHints(this);
+    }
 //	protected:
 
-		//(*Handlers(InfoPanel)
-		//*)
+    //(*Handlers(InfoPanel)
+    //*)
 
-		//(*Declarations(InfoPanel)
-		wxBoxSizer* BoxSizer1;
-		wxCheckBox* chkSkip;
-		wxStaticText* lblIntro;
-		//*)
+    //(*Declarations(InfoPanel)
+    wxBoxSizer* BoxSizer1;
+    wxCheckBox* chkSkip;
+    wxStaticText* lblIntro;
+    //*)
 
-	private:
+private:
 
-		DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // INFOPANEL_H

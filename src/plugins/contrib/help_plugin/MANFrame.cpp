@@ -9,14 +9,14 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-  #include <map>
-  #include <wx/arrstr.h>
-  #include <wx/button.h>
-  #include <wx/dir.h>
-  #include <wx/filename.h>
-  #include <wx/regex.h>
-  #include <wx/sizer.h>
-  #include <globals.h> // cbC2U
+#include <map>
+#include <wx/arrstr.h>
+#include <wx/button.h>
+#include <wx/dir.h>
+#include <wx/filename.h>
+#include <wx/regex.h>
+#include <wx/sizer.h>
+#include <globals.h> // cbC2U
 #endif
 
 #include <bzlib.h>
@@ -33,64 +33,64 @@
 
 namespace
 {
-    int butSearchID = wxNewId();
-    int butZoomInID = wxNewId();
-    int butZoomOutID = wxNewId();
-    int textEntryID = wxNewId();
-    int htmlWindowID = wxNewId();
+int butSearchID = wxNewId();
+int butZoomInID = wxNewId();
+int butZoomOutID = wxNewId();
+int textEntryID = wxNewId();
+int htmlWindowID = wxNewId();
 
-    const wxString NoSearchDirsSet = _("<html>\n"
-        "<head>\n"
-        "<meta content=\"text/html; charset=ISO-8859-1\"\n"
-        "http-equiv=\"content-type\">\n"
-        "<title></title>\n"
-        "</head>\n"
-        "<body>\n"
-        "<h2>No search directories set</h2>\n"
-        "<br>\n"
-        "You must configure a man page entry first\n"
-        "</body>\n"
-        "</html>");
+const wxString NoSearchDirsSet = _("<html>\n"
+                                   "<head>\n"
+                                   "<meta content=\"text/html; charset=ISO-8859-1\"\n"
+                                   "http-equiv=\"content-type\">\n"
+                                   "<title></title>\n"
+                                   "</head>\n"
+                                   "<body>\n"
+                                   "<h2>No search directories set</h2>\n"
+                                   "<br>\n"
+                                   "You must configure a man page entry first\n"
+                                   "</body>\n"
+                                   "</html>");
 
-    const wxString ManPageNotFound = _("<html>\n"
-        "<head>\n"
-        "<meta content=\"text/html; charset=ISO-8859-1\"\n"
-        "http-equiv=\"content-type\">\n"
-        "<title></title>\n"
-        "</head>\n"
-        "<body>\n"
-        "<h2>Man page not found</h2>\n"
-        "</body>\n"
-        "</html>");
+const wxString ManPageNotFound = _("<html>\n"
+                                   "<head>\n"
+                                   "<meta content=\"text/html; charset=ISO-8859-1\"\n"
+                                   "http-equiv=\"content-type\">\n"
+                                   "<title></title>\n"
+                                   "</head>\n"
+                                   "<body>\n"
+                                   "<h2>Man page not found</h2>\n"
+                                   "</body>\n"
+                                   "</html>");
 
-    // build all HTML font sizes (1..7) from the given base size
-    void wxBuildFontSizes(int *sizes, int size)
-    {
-        // using a fixed factor (1.2, from CSS2) is a bad idea as explained at
-        // http://www.w3.org/TR/CSS21/fonts.html#font-size-props but this is by far
-        // simplest thing to do so still do it like this for now
-        sizes[0] = int(size * 0.75); // exception to 1.2 rule, otherwise too small
-        sizes[1] = int(size * 0.83);
-        sizes[2] = size;
-        sizes[3] = int(size * 1.2);
-        sizes[4] = int(size * 1.44);
-        sizes[5] = int(size * 1.73);
-        sizes[6] = int(size * 2);
-    }
+// build all HTML font sizes (1..7) from the given base size
+void wxBuildFontSizes(int *sizes, int size)
+{
+    // using a fixed factor (1.2, from CSS2) is a bad idea as explained at
+    // http://www.w3.org/TR/CSS21/fonts.html#font-size-props but this is by far
+    // simplest thing to do so still do it like this for now
+    sizes[0] = int(size * 0.75); // exception to 1.2 rule, otherwise too small
+    sizes[1] = int(size * 0.83);
+    sizes[2] = size;
+    sizes[3] = int(size * 1.2);
+    sizes[4] = int(size * 1.44);
+    sizes[5] = int(size * 1.73);
+    sizes[6] = int(size * 2);
+}
 
-    int wxGetDefaultHTMLFontSize()
-    {
-        // base the default font size on the size of the default system font but
-        // also ensure that we have a font of reasonable size, otherwise small HTML
-        // fonts are unreadable
-        int size = wxNORMAL_FONT->GetPointSize();
-        if ( size < 10 )
-            size = 10;
+int wxGetDefaultHTMLFontSize()
+{
+    // base the default font size on the size of the default system font but
+    // also ensure that we have a font of reasonable size, otherwise small HTML
+    // fonts are unreadable
+    int size = wxNORMAL_FONT->GetPointSize();
+    if ( size < 10 )
+        size = 10;
 
-        return size;
-    }
+    return size;
+}
 
-    int font_sizes[7] = { 0 };
+int font_sizes[7] = { 0 };
 }
 
 BEGIN_EVENT_TABLE(MANFrame, wxPanel)
@@ -102,7 +102,7 @@ BEGIN_EVENT_TABLE(MANFrame, wxPanel)
 END_EVENT_TABLE()
 
 MANFrame::MANFrame(wxWindow *parent, wxWindowID id, const wxBitmap &zoomInBmp, const wxBitmap &zoomOutBmp)
-: wxPanel(parent, id), m_baseFontSize(wxGetDefaultHTMLFontSize())
+    : wxPanel(parent, id), m_baseFontSize(wxGetDefaultHTMLFontSize())
 {
     wxStaticText *m_label = new wxStaticText(this, wxID_ANY, _("Man page: "));
     m_entry = new wxTextCtrl(this, textEntryID, wxEmptyString, wxDefaultPosition, wxSize(20, -1), wxTE_PROCESS_ENTER);
@@ -191,7 +191,7 @@ void MANFrame::OnLinkClicked(wxHtmlLinkEvent &event)
     }
     else if (wxFileName(link).GetExt().Mid(0, 3).CmpNoCase(_T("htm")) == 0)
     {
-    	m_htmlWindow->LoadPage(link);
+        m_htmlWindow->LoadPage(link);
     }
 }
 
@@ -445,14 +445,14 @@ void MANFrame::OnZoomOut(wxCommandEvent &)
 wxString MANFrame::CreateLinksPage(const std::vector<wxString> &files)
 {
     wxString ret= _("<html>\n"
-        "<head>\n"
-        "<meta content=\"text/html; charset=ISO-8859-1\"\n"
-        "http-equiv=\"content-type\">\n"
-        "<title></title>\n"
-        "</head>\n"
-        "<body>\n"
-        "<h2>Multiple entries found</h2>\n"
-        "<br>\n");
+                    "<head>\n"
+                    "<meta content=\"text/html; charset=ISO-8859-1\"\n"
+                    "http-equiv=\"content-type\">\n"
+                    "<title></title>\n"
+                    "</head>\n"
+                    "<body>\n"
+                    "<h2>Multiple entries found</h2>\n"
+                    "<br>\n");
 
     typedef std::multimap<wxString, wxString> ResultsMap;
     ResultsMap sortedResults;
@@ -498,7 +498,7 @@ wxString MANFrame::CreateLinksPage(const std::vector<wxString> &files)
         ret += it->second;
 
     ret += _T("</body>\n"
-        "</html>");
+              "</html>");
 
     return ret;
 }

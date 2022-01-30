@@ -51,7 +51,7 @@ public:
     // a pointer which has been deallocated!
     //------------------------------------------------------------
     static wxBar3DChartPoints* CreateWxBar3DChartPoints(wxString name,
-        ChartColor c = wxCHART_NOCOLOR, bool showlabel = false);
+            ChartColor c = wxCHART_NOCOLOR, bool showlabel = false);
 
     virtual ~wxBar3DChartPoints() {};
 

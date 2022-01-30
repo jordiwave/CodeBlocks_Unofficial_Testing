@@ -24,34 +24,34 @@
 
 namespace
 {
-    wxsRegisterItem<wxsTextCtrl> Reg(_T("TextCtrl"),wxsTWidget,_T("Standard"),40);
+wxsRegisterItem<wxsTextCtrl> Reg(_T("TextCtrl"),wxsTWidget,_T("Standard"),40);
 
-    WXS_ST_BEGIN(wxsTextCtrlStyles,_T(""))
-        WXS_ST(wxTE_NO_VSCROLL)
-        WXS_ST(wxTE_PROCESS_ENTER)
-        WXS_ST(wxTE_PROCESS_TAB)
-        WXS_ST(wxTE_MULTILINE)
-        WXS_ST(wxTE_PASSWORD)
-        WXS_ST(wxTE_READONLY)
-        WXS_ST(wxTE_RICH)
-        WXS_ST(wxTE_RICH2)
-        WXS_ST(wxTE_AUTO_URL)
-        WXS_ST(wxTE_NOHIDESEL)
-        WXS_ST(wxTE_LEFT)
-        WXS_ST(wxTE_CENTRE)
-        WXS_ST(wxTE_RIGHT)
-        WXS_ST(wxTE_DONTWRAP)
-        WXS_ST(wxTE_CHARWRAP)
-        WXS_ST(wxTE_WORDWRAP)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsTextCtrlStyles,_T(""))
+WXS_ST(wxTE_NO_VSCROLL)
+WXS_ST(wxTE_PROCESS_ENTER)
+WXS_ST(wxTE_PROCESS_TAB)
+WXS_ST(wxTE_MULTILINE)
+WXS_ST(wxTE_PASSWORD)
+WXS_ST(wxTE_READONLY)
+WXS_ST(wxTE_RICH)
+WXS_ST(wxTE_RICH2)
+WXS_ST(wxTE_AUTO_URL)
+WXS_ST(wxTE_NOHIDESEL)
+WXS_ST(wxTE_LEFT)
+WXS_ST(wxTE_CENTRE)
+WXS_ST(wxTE_RIGHT)
+WXS_ST(wxTE_DONTWRAP)
+WXS_ST(wxTE_CHARWRAP)
+WXS_ST(wxTE_WORDWRAP)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsTextCtrlEvents)
-        WXS_EVI(EVT_TEXT,wxEVT_COMMAND_TEXT_UPDATED,wxCommandEvent,Text)
-        WXS_EVI(EVT_TEXT_ENTER,wxEVT_COMMAND_TEXT_ENTER,wxCommandEvent,TextEnter)
-        WXS_EVI(EVT_TEXT_URL,wxEVT_COMMAND_TEXT_URL,wxTextUrlEvent,TextUrl)
-        WXS_EVI(EVT_TEXT_MAXLEN,wxEVT_COMMAND_TEXT_MAXLEN,wxCommandEvent,TextMaxLen)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsTextCtrlEvents)
+WXS_EVI(EVT_TEXT,wxEVT_COMMAND_TEXT_UPDATED,wxCommandEvent,Text)
+WXS_EVI(EVT_TEXT_ENTER,wxEVT_COMMAND_TEXT_ENTER,wxCommandEvent,TextEnter)
+WXS_EVI(EVT_TEXT_URL,wxEVT_COMMAND_TEXT_URL,wxTextUrlEvent,TextUrl)
+WXS_EVI(EVT_TEXT_MAXLEN,wxEVT_COMMAND_TEXT_MAXLEN,wxCommandEvent,TextMaxLen)
+WXS_EV_END()
 
 }
 
@@ -69,20 +69,20 @@ void wxsTextCtrl::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/textctrl.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Text.wx_str());
-            if ( MaxLength > 0 ) Codef(_T("%ASetMaxLength(%d);\n"),MaxLength);
-            BuildSetupWindowCode();
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/textctrl.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Text.wx_str());
+        if ( MaxLength > 0 ) Codef(_T("%ASetMaxLength(%d);\n"),MaxLength);
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsTextCtrl::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsTextCtrl::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

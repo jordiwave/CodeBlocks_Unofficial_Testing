@@ -35,7 +35,10 @@
 class WXDLLIMPEXP_STEDIT wxSTEditorSplitter : public wxSplitterWindow
 {
 public:
-    wxSTEditorSplitter() : wxSplitterWindow() { Init(); }
+    wxSTEditorSplitter() : wxSplitterWindow()
+    {
+        Init();
+    }
     wxSTEditorSplitter( wxWindow *parent, wxWindowID id = wxID_ANY,
                         const wxPoint& pos = wxDefaultPosition,
                         const wxSize& size = wxDefaultSize,
@@ -58,12 +61,21 @@ public:
     /// Create and set the wxSTEditorOptions, call this after creation.
     virtual void CreateOptions(const wxSTEditorOptions& options);
     /// GetOptions, use this to change editor option values
-    const wxSTEditorOptions& GetOptions() const { return m_options; }
-    wxSTEditorOptions& GetOptions() { return m_options; }
+    const wxSTEditorOptions& GetOptions() const
+    {
+        return m_options;
+    }
+    wxSTEditorOptions& GetOptions()
+    {
+        return m_options;
+    }
     /// Set the options, the options will now be refed copies of the ones you send in.
     /// This can be used to detach the options for a particular editor from
     ///   the rest of them.
-    void SetOptions(const wxSTEditorOptions& options) { m_options = options; }
+    void SetOptions(const wxSTEditorOptions& options)
+    {
+        m_options = options;
+    }
 
     /// enable/disable sending wxSTEditor events from children editors
     void SetSendSTEEvents(bool send);
@@ -76,18 +88,33 @@ public:
     /// Get the editor that last had the focus or editor 1, always valid if initialized.
     wxSTEditor *GetEditor();
     /// Get a pointer to the first (left or top) editor, always valid if initialized.
-    wxSTEditor *GetEditor1() const { return m_editorOne; }
+    wxSTEditor *GetEditor1() const
+    {
+        return m_editorOne;
+    }
     /// Get a pointer to the second (right or bottom) editor, NULL when unsplit.
-    wxSTEditor *GetEditor2() const { return m_editorTwo; }
+    wxSTEditor *GetEditor2() const
+    {
+        return m_editorTwo;
+    }
 
     /// @name Splitting and Unsplitting
     /// Use these methods to control splitting/unsplitting NOT wxSplitterWindow's
     /// They handle resplitting and switching orientation so you don't need to
     /// unsplit before changing orientation.
     /// @{
-    virtual bool SplitVertically(int pos = 0)   { return DoSplit(wxSPLIT_VERTICAL, pos); }
-    virtual bool SplitHorizontally(int pos = 0) { return DoSplit(wxSPLIT_HORIZONTAL, pos); }
-    virtual bool Unsplit() { return wxSplitterWindow::Unsplit(m_editorTwo); }
+    virtual bool SplitVertically(int pos = 0)
+    {
+        return DoSplit(wxSPLIT_VERTICAL, pos);
+    }
+    virtual bool SplitHorizontally(int pos = 0)
+    {
+        return DoSplit(wxSPLIT_HORIZONTAL, pos);
+    }
+    virtual bool Unsplit()
+    {
+        return wxSplitterWindow::Unsplit(m_editorTwo);
+    }
     /// @}
 
     /// Update all the menu/tool items in the wxSTEditorOptions.

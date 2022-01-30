@@ -60,33 +60,43 @@ bool CBuildUnit::BelongToTarget(const CString& TargetName)
 void CBuildUnit::Read(const TiXmlElement *UnitRoot)
 {
     char *value = 0;
-    if ((value = (char *)UnitRoot->Attribute("filename"))) {
+    if ((value = (char *)UnitRoot->Attribute("filename")))
+    {
         m_FileName = value;
     }
     TiXmlNode *_option = (TiXmlNode *)UnitRoot->FirstChild("Option");
-    while (0 != _option) {
+    while (0 != _option)
+    {
         TiXmlElement* option = _option->ToElement();
-        if (0 != option) {
+        if (0 != option)
+        {
             char *value = 0;
-            if ((value = (char *)option->Attribute("compilerVar"))) {
+            if ((value = (char *)option->Attribute("compilerVar")))
+            {
                 m_CompilerVariable = value;
             }
-            if ((value = (char *)option->Attribute("compiler"))) {
+            if ((value = (char *)option->Attribute("compiler")))
+            {
                 m_CompilerVariable = value;
             }
-            if ((value = (char *)option->Attribute("compile"))) {
+            if ((value = (char *)option->Attribute("compile")))
+            {
                 m_DoCompile = StringToBoolean(value);
             }
-            if ((value = (char *)option->Attribute("link"))) {
+            if ((value = (char *)option->Attribute("link")))
+            {
                 m_DoLink = StringToBoolean(value);
             }
-            if ((value = (char *)option->Attribute("target"))) {
+            if ((value = (char *)option->Attribute("target")))
+            {
                 m_Targets.Insert(value);
             }
-            if ((value = (char *)option->Attribute("weight"))) {
+            if ((value = (char *)option->Attribute("weight")))
+            {
                 m_Weight = StringToInteger(value);
             }
-            if ((value = (char *)option->Attribute("buildCommand"))) {
+            if ((value = (char *)option->Attribute("buildCommand")))
+            {
                 m_CustomBuildCommand = value;
                 m_CustomBuildCommand = FindReplaceStr(m_CustomBuildCommand, "\\n", "\n\t");
             }
@@ -103,11 +113,15 @@ void CBuildUnit::Show(void)
     std::cout<<", Compile: "<<BooleanToYesNoString(m_DoCompile).GetString();
     std::cout<<", Link: "<<BooleanToYesNoString(m_DoLink).GetString();
     std::cout<<", Targets: ";
-    if (m_Targets.GetCount()) {
-        for (int i = 0, n = m_Targets.GetCount(); i < n; i++) {
+    if (m_Targets.GetCount())
+    {
+        for (int i = 0, n = m_Targets.GetCount(); i < n; i++)
+        {
             std::cout<<m_Targets[i].GetString()<<" ";
         }
-    } else {
+    }
+    else
+    {
         std::cout<<"all";
     }
     std::cout<<std::endl;
@@ -117,9 +131,12 @@ void CBuildUnit::Show(void)
     std::cout<<"Compile: "<<BooleanToYesNoString(m_DoCompile).GetString()<<std::endl;
     std::cout<<"Link: "<<BooleanToYesNoString(m_DoLink).GetString()<<std::endl;
     std::cout<<"Targets: ";
-    if (m_Targets.GetCount()) {
+    if (m_Targets.GetCount())
+    {
         ShowStringList("Targets","Target",m_Targets);
-    } else {
+    }
+    else
+    {
         std::cout<<"all";
     }
     std::cout<<std::endl;

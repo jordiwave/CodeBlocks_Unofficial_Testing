@@ -9,16 +9,16 @@
 
 #include "sdk_precomp.h"
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/checkbox.h>
-    #include <wx/intl.h>
-    #include <wx/sizer.h>
-    #include <wx/stattext.h>
-    #include "cbexception.h"
-    #include "configmanager.h"
-    #include "manager.h"
-    #include "logmanager.h"
-    #include "globals.h"
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/intl.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include "cbexception.h"
+#include "configmanager.h"
+#include "manager.h"
+#include "logmanager.h"
+#include "globals.h"
 #endif
 #include <wx/statbmp.h>
 #include "annoyingdialog.h"
@@ -30,8 +30,8 @@ END_EVENT_TABLE()
 AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message, const wxArtID icon,
                                dStyle style, dReturnType defaultReturn,
                                const wxString& b1, const wxString& b2, const wxString& b3)
-        : wxScrollingDialog(nullptr, -1, caption, wxDefaultPosition, wxDefaultSize, wxCAPTION),
-        m_DefRet(defaultReturn)
+    : wxScrollingDialog(nullptr, -1, caption, wxDefaultPosition, wxDefaultSize, wxCAPTION),
+      m_DefRet(defaultReturn)
 {
     Init(caption, caption, message, icon, style, b1, b2, b3);
 }
@@ -39,8 +39,8 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
 AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString &id, const wxString& message,
                                const wxArtID icon, dStyle style, dReturnType defaultReturn,
                                const wxString& b1, const wxString& b2, const wxString& b3)
-        : wxScrollingDialog(nullptr, -1, caption, wxDefaultPosition, wxDefaultSize, wxCAPTION),
-        m_DefRet(defaultReturn)
+    : wxScrollingDialog(nullptr, -1, caption, wxDefaultPosition, wxDefaultSize, wxCAPTION),
+      m_DefRet(defaultReturn)
 {
     Init(caption, id, message, icon, style, b1, b2, b3);
 }
@@ -231,20 +231,20 @@ void AnnoyingDialog::OnButton(wxCommandEvent& event)
     // convert IDs from standard buttons to dReturnType
     switch (id)
     {
-        case wxID_YES:
-            id = rtYES;
-            break;
-        case wxID_OK:
-            id = rtOK;
-            break;
-        case wxID_NO:
-            id = rtNO;
-            break;
-        case wxID_CANCEL:
-            id = rtCANCEL;
-            break;
-        default:
-            break;
+    case wxID_YES:
+        id = rtYES;
+        break;
+    case wxID_OK:
+        id = rtOK;
+        break;
+    case wxID_NO:
+        id = rtNO;
+        break;
+    case wxID_CANCEL:
+        id = rtCANCEL;
+        break;
+    default:
+        break;
     }
 
     if(m_CheckBox->IsChecked())

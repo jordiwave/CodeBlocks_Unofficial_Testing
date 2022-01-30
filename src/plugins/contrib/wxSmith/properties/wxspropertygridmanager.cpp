@@ -35,8 +35,8 @@ wxsPropertyGridManager::wxsPropertyGridManager(
     const wxSize& size,
     long style,
     const char* name):
-        wxPropertyGridManager(parent,id,pos,size,style,name),
-        MainContainer(0)
+    wxPropertyGridManager(parent,id,pos,size,style,name),
+    MainContainer(0)
 {
     Singleton = this;
     PropertiesList = 0;

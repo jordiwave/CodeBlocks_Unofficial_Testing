@@ -19,7 +19,8 @@ bool QuerySvn(const wxString& workingDir, wxString& revision, wxString& date)
 
         wxString buf = _T("");
 
-        for(unsigned int i=0; i<xmlOutput.GetCount(); ++i){
+        for(unsigned int i=0; i<xmlOutput.GetCount(); ++i)
+        {
             buf << xmlOutput[i];
         }
 
@@ -31,7 +32,7 @@ bool QuerySvn(const wxString& workingDir, wxString& revision, wxString& date)
 
         TiXmlHandle hCommit(&doc);
         hCommit = hCommit.FirstChildElement("info").FirstChildElement("entry").FirstChildElement("commit");
-		if(const TiXmlElement* e = hCommit.ToElement())
+        if(const TiXmlElement* e = hCommit.ToElement())
         {
             revision = e->Attribute("revision") ? cbC2U(e->Attribute("revision")) : _T("");
             const TiXmlElement* d = e->FirstChildElement("date");

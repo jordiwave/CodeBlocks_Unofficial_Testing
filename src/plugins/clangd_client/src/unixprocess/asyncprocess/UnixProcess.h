@@ -37,15 +37,27 @@ private:
     int fd[2];
 
 public:
-    const inline int read_fd() const { return fd[0]; }
-    const inline int write_fd() const { return fd[1]; }
-    CPipe() { pipe(fd); }
+    const inline int read_fd() const
+    {
+        return fd[0];
+    }
+    const inline int write_fd() const
+    {
+        return fd[1];
+    }
+    CPipe()
+    {
+        pipe(fd);
+    }
     void close()
     {
         ::close(fd[0]);
         ::close(fd[1]);
     }
-    ~CPipe() { close(); }
+    ~CPipe()
+    {
+        close();
+    }
 };
 
 // --------------------------------------------------------------
@@ -76,7 +88,10 @@ public:
     UnixProcess(wxEvtHandler* owner, const wxArrayString& args);
     ~UnixProcess();
 
-    int GetPid(){return (child_pid > 0 ? child_pid : 0);}
+    int GetPid()
+    {
+        return (child_pid > 0 ? child_pid : 0);
+    }
 
     // wait for process termination
     int Wait();

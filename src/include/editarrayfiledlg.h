@@ -12,21 +12,24 @@
 
 class DLLIMPORT EditArrayFileDlg : public wxScrollingDialog
 {
-	public:
-		EditArrayFileDlg(wxWindow* parent, wxArrayString& array, bool useRelativePaths = false, const wxString& basePath = _T(""));
-		~EditArrayFileDlg() override;
-		EditArrayFileDlg& operator=(const EditArrayFileDlg&){ return *this; } // just to satisfy script bindings (never used)
-		void EndModal(int retCode) override;
-	protected:
-		void OnAdd(wxCommandEvent& event);
-		void OnEdit(wxCommandEvent& event);
-		void OnDelete(wxCommandEvent& event);
-		void OnUpdateUI(wxUpdateUIEvent& event);
-		wxArrayString& m_Array;
-		bool m_UseRelativePaths;
-		wxString m_BasePath;
-	private:
-		DECLARE_EVENT_TABLE()
+public:
+    EditArrayFileDlg(wxWindow* parent, wxArrayString& array, bool useRelativePaths = false, const wxString& basePath = _T(""));
+    ~EditArrayFileDlg() override;
+    EditArrayFileDlg& operator=(const EditArrayFileDlg&)
+    {
+        return *this;    // just to satisfy script bindings (never used)
+    }
+    void EndModal(int retCode) override;
+protected:
+    void OnAdd(wxCommandEvent& event);
+    void OnEdit(wxCommandEvent& event);
+    void OnDelete(wxCommandEvent& event);
+    void OnUpdateUI(wxUpdateUIEvent& event);
+    wxArrayString& m_Array;
+    bool m_UseRelativePaths;
+    wxString m_BasePath;
+private:
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // EDITARRAYFILEDLG_H

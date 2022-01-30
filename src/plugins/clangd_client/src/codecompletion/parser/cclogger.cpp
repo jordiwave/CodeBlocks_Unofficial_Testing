@@ -142,7 +142,7 @@ void CCLogger::Init(wxEvtHandler* parent, int logId, int debugLogId, int debugLo
     wxDir::GetAllFiles(tempDir, &logFiles, "CBCCLogger*.log", wxDIR_FILES);
     for (size_t ii=0; ii<logFiles.GetCount(); ++ii)
         wxRemoveFile(logFiles[ii]);
-    }
+}
 // ----------------------------------------------------------------------------
 void CCLogger::AddToken(const wxString& msg)
 // ----------------------------------------------------------------------------
@@ -191,11 +191,11 @@ void CCLogger::DebugLog(const wxString& msg, int id)
     // Don't swamp event system with debugger messages
     if (not m_ExternLogActive )
     {
-        #if CC_PROCESS_LOG_EVENT_TO_PARENT
-            m_Parent->ProcessEvent(evt);
-        #else
-            wxPostEvent(m_Parent, evt);
-        #endif
+#if CC_PROCESS_LOG_EVENT_TO_PARENT
+        m_Parent->ProcessEvent(evt);
+#else
+        wxPostEvent(m_Parent, evt);
+#endif
     }
 
     //(ph 2021/08/30) write debugging msgs to external file.

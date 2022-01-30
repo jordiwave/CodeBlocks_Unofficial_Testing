@@ -79,8 +79,10 @@ static void __WrapSpacesForShell(wxString& str, size_t flags)
 {
     str.Trim().Trim(false);
     auto tmpArgs = StringUtils::BuildArgv(str);
-    if(tmpArgs.size() > 1) {
-        if(!shell_is_cmd || (flags & IProcessCreateSSH)) {
+    if(tmpArgs.size() > 1)
+    {
+        if(!shell_is_cmd || (flags & IProcessCreateSSH))
+        {
             // escape any occurances of "
             str.Replace("\"", "\\\"");
         }
@@ -91,7 +93,8 @@ static void __WrapSpacesForShell(wxString& str, size_t flags)
 static wxArrayString __WrapInShell(const wxArrayString& args, size_t flags)
 {
     wxArrayString tmparr = args;
-    for(wxString& arg : tmparr) {
+    for(wxString& arg : tmparr)
+    {
         __WrapSpacesForShell(arg, flags);
     }
 
@@ -99,16 +102,20 @@ static wxArrayString __WrapInShell(const wxArrayString& args, size_t flags)
     wxArrayString command;
 
     bool is_ssh = flags & IProcessCreateSSH;
-    if(shell_is_cmd && !is_ssh) {
+    if(shell_is_cmd && !is_ssh)
+    {
         wxChar* shell = wxGetenv(wxT("COMSPEC"));
-        if(!shell) {
+        if(!shell)
+        {
             shell = (wxChar*)wxT("CMD.EXE");
         }
         command.Add(shell);
         command.Add("/C");
         command.Add("\"" + cmd + "\"");
 
-    } else {
+    }
+    else
+    {
         command.Add("/bin/sh");
         command.Add("-c");
         command.Add("'" + cmd + "'");
@@ -207,17 +214,22 @@ static wxArrayString __WrapInShell(const wxArrayString& args, size_t flags)
 
 static void __FixArgs(wxArrayString& args)
 {
-    for(wxString& arg : args) {
+    for(wxString& arg : args)
+    {
         // escape LF/CR
         arg.Replace("\n", "");
         arg.Replace("\r", "");
 #if defined(__WXOSX__) || defined(__WXGTK__)
         arg.Trim().Trim(false);
-        if(arg.length() > 1) {
-            if(arg.StartsWith("'") && arg.EndsWith("'")) {
+        if(arg.length() > 1)
+        {
+            if(arg.StartsWith("'") && arg.EndsWith("'"))
+            {
                 arg.Remove(0, 1);
                 arg.RemoveLast();
-            } else if(arg.StartsWith("\"") && arg.EndsWith("\"")) {
+            }
+            else if(arg.StartsWith("\"") && arg.EndsWith("\""))
+            {
                 arg.Remove(0, 1);
                 arg.RemoveLast();
             }
@@ -233,7 +245,8 @@ IProcess* CreateAsyncProcess(wxEvtHandler* parent, const vector<wxString>& args,
 {
     wxArrayString wxargs;
     wxargs.reserve(args.size());
-    for(const wxString& s : args) {
+    for(const wxString& s : args)
+    {
         wxargs.Add(s);
     }
     return CreateAsyncProcess(parent, wxargs, flags, workingDir, env, sshAccountName);
@@ -249,7 +262,8 @@ IProcess* CreateAsyncProcess(wxEvtHandler* parent, const wxArrayString& args, si
 
 ////    clDEBUG1() << "1: CreateAsyncProcess called with:" << c << endl;
 
-    if(flags & IProcessWrapInShell) {
+    if(flags & IProcessWrapInShell)
+    {
         // wrap the command in OS specific terminal
         c = __WrapInShell(c, flags);
     }
@@ -321,19 +335,25 @@ void IProcess::SetProcessExitCode(int pid, int exitCode)
 void IProcess::WaitForTerminate(wxString& output)
 // --------------------------------------------------------------
 {
-    if(IsRedirect()) {
+    if(IsRedirect())
+    {
         wxString buff;
         wxString buffErr;
-        while(Read(buff, buffErr)) {
+        while(Read(buff, buffErr))
+        {
             output << buff;
-            if(!buff.IsEmpty() && !buffErr.IsEmpty()) {
+            if(!buff.IsEmpty() && !buffErr.IsEmpty())
+            {
                 output << "\n";
             }
             output << buffErr;
         }
-    } else {
+    }
+    else
+    {
         // Just wait for the process to terminate in a busy loop
-        while(IsAlive()) {
+        while(IsAlive())
+        {
             wxThread::Sleep(10);
         }
     }
@@ -343,7 +363,8 @@ void IProcess::WaitForTerminate(wxString& output)
 void IProcess::SuspendAsyncReads()
 // --------------------------------------------------------------
 {
-    if(m_thr) {
+    if(m_thr)
+    {
 ////        clDEBUG1() << "Suspending process reader thread..." << endl;
         m_thr->Suspend();
 ////        clDEBUG1() << "Suspending process reader thread...done" << endl;
@@ -354,7 +375,8 @@ void IProcess::SuspendAsyncReads()
 void IProcess::ResumeAsyncReads()
 // --------------------------------------------------------------
 {
-    if(m_thr) {
+    if(m_thr)
+    {
 ////        clDEBUG1() << "Resuming process reader thread..." << endl;
         m_thr->Resume();
 ////        clDEBUG1() << "Resuming process reader thread..." << endl;

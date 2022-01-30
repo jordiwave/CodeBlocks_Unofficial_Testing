@@ -26,7 +26,7 @@
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include "wx/chartwindow.h"
@@ -35,9 +35,9 @@
 IMPLEMENT_DYNAMIC_CLASS(wxChartWindow, wxWindow)
 
 BEGIN_EVENT_TABLE(wxChartWindow, wxWindow)
-  EVT_PAINT(        wxChartWindow::OnPaint)
-  EVT_LEFT_DOWN(    wxChartWindow::OnMouse)
-  EVT_LEFT_DCLICK(  wxChartWindow::OnMouse)
+    EVT_PAINT(        wxChartWindow::OnPaint)
+    EVT_LEFT_DOWN(    wxChartWindow::OnMouse)
+    EVT_LEFT_DCLICK(  wxChartWindow::OnMouse)
 END_EVENT_TABLE()
 
 
@@ -48,13 +48,13 @@ END_EVENT_TABLE()
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 wxChartWindow::wxChartWindow(
-	wxScrolledWindow *parent,
+    wxScrolledWindow *parent,
     bool usegrid
 ):  wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize/*, wxSIMPLE_BORDER*/),
-	m_WinParent(parent),
+    m_WinParent(parent),
     m_UseGrid(usegrid)
 {
-	SetBackgroundColour( *wxWHITE );
+    SetBackgroundColour( *wxWHITE );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -66,18 +66,20 @@ wxChartWindow::wxChartWindow(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxChartWindow::Draw(
-	CHART_HPAINT hp,
-	int x,
-	int y
+    CHART_HPAINT hp,
+    int x,
+    int y
 )
 {
-	//-----------------------------------------------------------------------
-	// Get window information
-	//-----------------------------------------------------------------------
-	CHART_RECT r;
-    r.x = x; r.y = y;
-	r.xscroll = 0; r.yscroll = 0;
-	GetClientSize( &r.w, &r.h );
+    //-----------------------------------------------------------------------
+    // Get window information
+    //-----------------------------------------------------------------------
+    CHART_RECT r;
+    r.x = x;
+    r.y = y;
+    r.xscroll = 0;
+    r.yscroll = 0;
+    GetClientSize( &r.w, &r.h );
 
     //-----------------------------------------------------------------------
     // Set Background
@@ -100,9 +102,9 @@ void wxChartWindow::Draw(
     if ( m_UseGrid )
         DrawHLines( hp, &r );
 
-	//-----------------------------------------------------------------------
-	// Draw all charts
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // Draw all charts
+    //-----------------------------------------------------------------------
     m_Chart.Draw( hp, &r );
 }
 
@@ -156,11 +158,11 @@ void wxChartWindow::DrawHLines(
         }
 
         wxChartSizes *sizes = GetSizes();
-/* C::B begin */
+        /* C::B begin */
         // avoid crashes if style contains USE_GRID and no charts are added to chartctrl
         if (!sizes)
             return;
-/* C::B end */
+        /* C::B end */
 
         hp->SetPen( *wxBLACK_DASHED_PEN );
 
@@ -168,13 +170,13 @@ void wxChartWindow::DrawHLines(
         while (current < upper+(step/2))
         {
             int y = (int)( (GetVirtualMaxY()-current) /
-                    range * ((double)hr->h - sizes->GetSizeHeight())) - 1;
+                           range * ((double)hr->h - sizes->GetSizeHeight())) - 1;
             if ((y > 10) && (y < hr->h - 7 - sizes->GetSizeHeight()))
             {
                 hp->DrawLine( hr->x,
                               y + sizes->GetSizeHeight() + hr->y,
-                    hr->x + static_cast<int>(GetVirtualWidth()),
-                    y + sizes->GetSizeHeight() + hr->y );
+                              hr->x + static_cast<int>(GetVirtualWidth()),
+                              y + sizes->GetSizeHeight() + hr->y );
             }
 
             current += step;
@@ -193,19 +195,19 @@ ChartValue wxChartWindow::GetVirtualWidth() const
     int iNodes = static_cast<int>(ceil( GetVirtualMaxX() ));
     wxChartSizes *sizes = GetSizes();
 
-/* C::B begin */
+    /* C::B begin */
     // sizes may be NULL, in this case return a fixed value
     if (!sizes)
         return 1;
-/* C::B end */
+    /* C::B end */
 
     ChartValue x = 0;
 
     for ( int iNode = 0; iNode <= iNodes; ++ iNode )
     {
         x +=  GetZoom() * ( sizes->GetWidthBar() * sizes->GetNumBar() +
-                sizes->GetWidthBar3d() * sizes->GetNumBar3d() +
-                sizes->GetGap() );
+                            sizes->GetWidthBar3d() * sizes->GetNumBar3d() +
+                            sizes->GetGap() );
     }
 
     return ( x );
@@ -218,16 +220,16 @@ ChartValue wxChartWindow::GetVirtualWidth() const
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxChartWindow::OnPaint(
-	wxPaintEvent &WXUNUSED(event)
+    wxPaintEvent &WXUNUSED(event)
 )
 {
     wxPaintDC dc( this );
     m_WinParent->PrepareDC( dc );
 
-	//-----------------------------------------------------------------------
-	// Draw all charts window
-	//-----------------------------------------------------------------------
-	Draw( &dc );
+    //-----------------------------------------------------------------------
+    // Draw all charts window
+    //-----------------------------------------------------------------------
+    Draw( &dc );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -237,7 +239,7 @@ void wxChartWindow::OnPaint(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxChartWindow::OnMouse(
-	wxMouseEvent &WXUNUSED(event)
+    wxMouseEvent &WXUNUSED(event)
 )
 {
 }

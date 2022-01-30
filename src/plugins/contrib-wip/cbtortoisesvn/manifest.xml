@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="2" minor="16" release="0" />
+    <Plugin name="CBTortoiseSVN">
+        <Value title="Codeblocks TortoiseSVN interface" />
+        <Value version="1.50.1" />
+        <Value description="SVN support for win32 Codeblocks using TortoiseSVN" />
+        <Value author="Jan van den Borst" />
+        <Value authorEmail="Jan van den Borst" />
+        <Value authorWebsite="http://tools.assembla.com/svn/CBTortoiseSVN" />
+        <Value thanksTo="The Code::Blocks team!" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

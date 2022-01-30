@@ -81,7 +81,7 @@ enum TokenKind
  */
 class Token
 {
-friend class TokenTree;
+    friend class TokenTree;
 public:
 
     /** constructor
@@ -110,7 +110,10 @@ public:
     /** check if the token has any child tokens.
      * @return true if it does have some child.
      */
-    bool HasChildren() const { return !m_Children.empty(); }
+    bool HasChildren() const
+    {
+        return !m_Children.empty();
+    }
 
     /** @brief get a literal string presentation of the namespace.
      *
@@ -158,7 +161,10 @@ public:
     wxString GetStrippedArgs() const;
 
     /** get the ticket value of the current token */
-    size_t GetTicket() const { return m_Ticket; }
+    size_t GetTicket() const
+    {
+        return m_Ticket;
+    }
 
     /** see whether the current token belong to any files in the file set, both m_FileIdx and
      * m_ImplFileIdx is considered
@@ -170,7 +176,10 @@ public:
     /** get the TokenTree associated with the current Token
      * @return TokenTree pointer
      */
-    TokenTree* GetTree() const { return m_TokenTree; }
+    TokenTree* GetTree() const
+    {
+        return m_TokenTree;
+    }
 
     /** build in types are not valid ancestors for a type define token
      * @param ancestor testing type string

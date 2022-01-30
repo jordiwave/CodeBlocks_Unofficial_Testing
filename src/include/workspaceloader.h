@@ -15,15 +15,15 @@
 
 class DLLIMPORT WorkspaceLoader : public IBaseWorkspaceLoader
 {
-    public:
-        WorkspaceLoader();
-        ~WorkspaceLoader() override;
+public:
+    WorkspaceLoader();
+    ~WorkspaceLoader() override;
 
-        bool Open(const wxString& filename, wxString& Title) override;
-        bool Save(const wxString& title, const wxString& filename) override;
+    bool Open(const wxString& filename, wxString& Title) override;
+    bool Save(const wxString& title, const wxString& filename) override;
 
-        bool SaveLayout(const wxString& filename);
-        bool LoadLayout(const wxString& filename);
+    bool SaveLayout(const wxString& filename);
+    bool LoadLayout(const wxString& filename);
 };
 
 #endif // WORKSPACELOADER_H

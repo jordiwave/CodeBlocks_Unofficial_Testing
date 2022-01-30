@@ -9,15 +9,15 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/filedlg.h>
-    #include <wx/listctrl.h>
-    #include <wx/menu.h>
-    #include <wx/sizer.h>
-    #include <wx/txtstrm.h>
-    #include <wx/wfstream.h>
-    #include <wx/dataobj.h>
-    #include "cbplugin.h"
-    #include "configmanager.h"
+#include <wx/filedlg.h>
+#include <wx/listctrl.h>
+#include <wx/menu.h>
+#include <wx/sizer.h>
+#include <wx/txtstrm.h>
+#include <wx/wfstream.h>
+#include <wx/dataobj.h>
+#include "cbplugin.h"
+#include "configmanager.h"
 #endif
 
 #include <wx/clipbrd.h>
@@ -29,13 +29,13 @@
 
 namespace
 {
-    const int idList = wxNewId();
-    const int idSwitch = wxNewId();
-    const int idSave = wxNewId();
-    const int idJump = wxNewId();
-    const int idCopyToClipboard = wxNewId();
-    const int idSettingJumpDefault = wxNewId();
-    const int idSettingSwitchDefault = wxNewId();
+const int idList = wxNewId();
+const int idSwitch = wxNewId();
+const int idSave = wxNewId();
+const int idJump = wxNewId();
+const int idCopyToClipboard = wxNewId();
+const int idSettingJumpDefault = wxNewId();
+const int idSettingSwitchDefault = wxNewId();
 }
 
 BEGIN_EVENT_TABLE(BacktraceDlg, wxPanel)
@@ -69,9 +69,9 @@ BacktraceDlg::BacktraceDlg(wxWindow* parent) :
     m_list->InsertColumn(4, _("Line"), wxLIST_FORMAT_RIGHT, 64);
 
     Manager::Get()->GetColourManager()->RegisterColour(_("Debugger"), _("Backtrace active frame background"),
-                                                       wxT("dbg_backtrace_active_background"), *wxRED);
+            wxT("dbg_backtrace_active_background"), *wxRED);
     Manager::Get()->GetColourManager()->RegisterColour(_("Debugger"), _("Backtrace active frame foreground"),
-                                                       wxT("dbg_backtrace_active_foreground"), *wxWHITE);
+            wxT("dbg_backtrace_active_foreground"), *wxWHITE);
 }
 
 void BacktraceDlg::Reload()

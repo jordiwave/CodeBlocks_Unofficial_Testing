@@ -24,8 +24,8 @@
 #include <configmanager.h>
 
 #ifdef __WXMSW__
-    #include <wx/dir.h>
-    #include <wx/msw/registry.h>
+#include <wx/dir.h>
+#include <wx/msw/registry.h>
 #endif
 
 CompilerMINGW::CompilerMINGW(const wxString& name, const wxString& ID)

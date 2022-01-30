@@ -34,9 +34,9 @@ bool NassiEditorPanel::ParseC(const wxString &str)
     rule_t comment_collected = comment[comment_collector(comment_str)];
     rule_t comment_collected2= comment[comment_collector(comment_str2)];
     rule_t parentheseshelper = (
-                confix_p(ch_p(_T('(')),
-                *(comment_collected | cstr | parentheseshelper | anychar_p),
-                ch_p(_T(')')))  );
+                                   confix_p(ch_p(_T('(')),
+                                            *(comment_collected | cstr | parentheseshelper | anychar_p),
+                                            ch_p(_T(')')))  );
     rule_t parentheses       = parentheseshelper[instr_collector(source_str)];
     rule_t keywordend        = (eps_p - (alnum_p | _T('_')));
     rule_t spaces            = *(space_p | comment_collected);
@@ -46,8 +46,8 @@ bool NassiEditorPanel::ParseC(const wxString &str)
     break_instr     = str_p(_T("break"))    >> keywordend >> spaces >> ch_p(_T(';')) >> *blank_p >> *comment_collected;
     continue_instr  = str_p(_T("continue")) >> keywordend >> spaces >> ch_p(_T(';')) >> *blank_p >> *comment_collected;
     return_instr    = confix_p(str_p(_T("return"))  >> keywordend,
-                           *( comment_collected | cstr[instr_collector(source_str)] | (anychar_p-ch_p(_T(';')))[instr_collector(source_str)] ),
-                           ch_p(_T(';')) >> *blank_p >> *comment_collected);
+                               *( comment_collected | cstr[instr_collector(source_str)] | (anychar_p-ch_p(_T(';')))[instr_collector(source_str)] ),
+                               ch_p(_T(';')) >> *blank_p >> *comment_collected);
     block = *space_p >>
             (ch_p(_T('{')) >> *blank_p >> *comment)[CreateNassiBlockBrick(comment_str, source_str, brickptr)] >>
             *( instruction | block ) >>
@@ -55,23 +55,23 @@ bool NassiEditorPanel::ParseC(const wxString &str)
             ch_p(_T('}'))[CreateNassiBlockEnd(comment_str, source_str, brickptr)] >> *blank_p >> *comment;
 
     if_instr        = (str_p(_T("if")) >> keywordend >> spaces >>
-                      parentheses >> *(space_p | comment_collected2))[CreateNassiIfBrick(comment_str, comment_str2, source_str, brickptr)] >>
+                       parentheses >> *(space_p | comment_collected2))[CreateNassiIfBrick(comment_str, comment_str2, source_str, brickptr)] >>
                       (instruction | block | ch_p(_T(';'))) >> eps_p[CreateNassiIfEndIfClause(brickptr)] >>
                       !(spaces >> (str_p(_T("else")) >> keywordend >> *blank_p >> *comment_collected)[CreateNassiIfBeginElseClause(comment_str, source_str, brickptr)] >>
-                      (instruction | block | ch_p(_T(';'))) >> eps_p[CreateNassiIfEndElseClause(brickptr)]);
+                        (instruction | block | ch_p(_T(';'))) >> eps_p[CreateNassiIfEndElseClause(brickptr)]);
 
     for_instr       = (str_p(_T("for")) >> keywordend >> spaces >>
-                      parentheses >> *blank_p >> *comment_collected)[CreateNassiForBrick(comment_str, source_str, brickptr)] >>
+                       parentheses >> *blank_p >> *comment_collected)[CreateNassiForBrick(comment_str, source_str, brickptr)] >>
                       (instruction | block | ch_p(_T(';'))) >> eps_p[CreateNassiForWhileEnd(brickptr)];
 
     while_instr     = (str_p(_T("while")) >> keywordend >> spaces >>
-                      parentheses >> *blank_p >> *comment_collected)[CreateNassiWhileBrick(comment_str, source_str, brickptr)] >>
+                       parentheses >> *blank_p >> *comment_collected)[CreateNassiWhileBrick(comment_str, source_str, brickptr)] >>
                       (instruction | block | ch_p(_T(';'))) >> eps_p[CreateNassiForWhileEnd(brickptr)];
 
     dowhile_instr   = str_p(_T("do")) >> keywordend >> *blank_p >> *comment_collected[MoveComment(comment_str, comment_str2)] >> eps_p[CreateNassiDoWhileBrick(brickptr)] >>
                       (instruction | block ) >>
                       (spaces >> str_p(_T("while")) >> keywordend >> spaces >>
-                      parentheses >> spaces >> ch_p(_T(';')) >> *blank_p >> *comment_collected2)[CreateNassiDoWhileEnd(comment_str2, source_str, brickptr)];
+                       parentheses >> spaces >> ch_p(_T(';')) >> *blank_p >> *comment_collected2)[CreateNassiDoWhileEnd(comment_str2, source_str, brickptr)];
 
     switch_instr    = switch_head[CreateNassiSwitchBrick(comment_str, source_str, brickptr)] >>
                       switch_body >>
@@ -84,12 +84,12 @@ bool NassiEditorPanel::ParseC(const wxString &str)
 
     switch_case     = spaces >>
                       ( confix_p(str_p(_T("case"))[instr_collector(source_str)] >> keywordend,
-                        //*( spaces | anychar_p[instr_collector(source_str)]),
-                        *( comment_collected | cstr[instr_collector(source_str)] | (anychar_p-ch_p(_T(':')))[instr_collector(source_str)] ),
-                        ch_p(_T(':'))[instr_collector(source_str)] >> *blank_p >> *comment_collected) |
-                       (str_p(_T("default"))[instr_collector(source_str)] >>  keywordend >>
-                       spaces >>
-                       ch_p(_T(':'))[instr_collector(source_str)] >> *blank_p >> *comment_collected));
+                                 //*( spaces | anychar_p[instr_collector(source_str)]),
+                                 *( comment_collected | cstr[instr_collector(source_str)] | (anychar_p-ch_p(_T(':')))[instr_collector(source_str)] ),
+                                 ch_p(_T(':'))[instr_collector(source_str)] >> *blank_p >> *comment_collected) |
+                        (str_p(_T("default"))[instr_collector(source_str)] >>  keywordend >>
+                         spaces >>
+                         ch_p(_T(':'))[instr_collector(source_str)] >> *blank_p >> *comment_collected));
 
     rule_t special_w = (str_p(_T("break"))   |
                         str_p(_T("continue"))|
@@ -104,17 +104,17 @@ bool NassiEditorPanel::ParseC(const wxString &str)
 
     other_instr    = ( preprocessor |
                        (*
-                          (cstr|( anychar_p -
-                            (
-                                comment              |
-                                ch_p(_T(';'))        |
-                                ch_p(_T('{'))        |
-                                ch_p(_T('}'))        |
-                                special_w
-                            )
-                          ))
-                          >> ch_p(_T(';')) )
-                      )[instr_collector(source_str)] >> *blank_p >> *comment_collected;
+                        (cstr|( anychar_p -
+                                (
+                                    comment              |
+                                    ch_p(_T(';'))        |
+                                    ch_p(_T('{'))        |
+                                    ch_p(_T('}'))        |
+                                    special_w
+                                )
+                              ))
+                        >> ch_p(_T(';')) )
+                     )[instr_collector(source_str)] >> *blank_p >> *comment_collected;
 
     instruction =
         spaces >>
@@ -136,9 +136,9 @@ bool NassiEditorPanel::ParseC(const wxString &str)
 
     // Parse
     parse_info< const wxChar * > info =
-    parse(
-        buf, *instruction >> *space_p
-    );
+        parse(
+            buf, *instruction >> *space_p
+        );
 
     /// check if the whole input was parsed.
     if(!info.full)//failed

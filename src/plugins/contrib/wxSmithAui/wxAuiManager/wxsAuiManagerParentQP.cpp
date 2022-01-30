@@ -255,9 +255,9 @@ wxsAuiManagerParentQP::wxsAuiManagerParentQP(wxsAdvQPP* parent, wxsAuiPaneInfoEx
     FlexGridSizer1->Add(StaticBoxSizer1, 1, wxLEFT|wxRIGHT|wxEXPAND, 5);
     wxString __wxRadioBoxChoices_1[3] =
     {
-    	_("None"),
-    	_("Default"),
-    	_("Top")
+        _("None"),
+        _("Default"),
+        _("Top")
     };
     Gripper = new wxRadioBox(this, ID_RADIOBOX1, _("Gripper"), wxDefaultPosition, wxDefaultSize, 3, __wxRadioBoxChoices_1, 1, 0, wxDefaultValidator, _T("ID_RADIOBOX1"));
     FlexGridSizer1->Add(Gripper, 1, wxLEFT|wxRIGHT|wxEXPAND, 5);
@@ -334,20 +334,20 @@ void wxsAuiManagerParentQP::ReadData()
     //Gripper
     switch ( m_Extra->m_Gripper )
     {
-        case 0:
-            Gripper->SetSelection(0);
-            break;
+    case 0:
+        Gripper->SetSelection(0);
+        break;
 
-        case wxLEFT:
-            Gripper->SetSelection(1);
-            break;
+    case wxLEFT:
+        Gripper->SetSelection(1);
+        break;
 
-        case wxTOP:
-            Gripper->SetSelection(2);
-            break;
+    case wxTOP:
+        Gripper->SetSelection(2);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     //{Dock
@@ -360,45 +360,45 @@ void wxsAuiManagerParentQP::ReadData()
 
     switch ( m_Extra->m_DockDirection )
     {
-        case wxAUI_DOCK_TOP:
-            DockTop->   SetValue(true);
-            DockBottom->SetValue(false);
-            DockLeft->  SetValue(false);
-            DockRight-> SetValue(false);
-            DockCenter->SetValue(false);
-            break;
+    case wxAUI_DOCK_TOP:
+        DockTop->   SetValue(true);
+        DockBottom->SetValue(false);
+        DockLeft->  SetValue(false);
+        DockRight-> SetValue(false);
+        DockCenter->SetValue(false);
+        break;
 
-        case wxAUI_DOCK_BOTTOM:
-            DockTop->   SetValue(false);
-            DockBottom->SetValue(true);
-            DockLeft->  SetValue(false);
-            DockRight-> SetValue(false);
-            DockCenter->SetValue(false);
-            break;
+    case wxAUI_DOCK_BOTTOM:
+        DockTop->   SetValue(false);
+        DockBottom->SetValue(true);
+        DockLeft->  SetValue(false);
+        DockRight-> SetValue(false);
+        DockCenter->SetValue(false);
+        break;
 
-        case wxAUI_DOCK_RIGHT:
-            DockTop->   SetValue(false);
-            DockBottom->SetValue(false);
-            DockLeft->  SetValue(false);
-            DockRight-> SetValue(true);
-            DockCenter->SetValue(false);
-            break;
+    case wxAUI_DOCK_RIGHT:
+        DockTop->   SetValue(false);
+        DockBottom->SetValue(false);
+        DockLeft->  SetValue(false);
+        DockRight-> SetValue(true);
+        DockCenter->SetValue(false);
+        break;
 
-        case wxAUI_DOCK_CENTER:
-            DockTop->   SetValue(false);
-            DockBottom->SetValue(false);
-            DockLeft->  SetValue(false);
-            DockRight-> SetValue(false);
-            DockCenter->SetValue(true);
-            break;
+    case wxAUI_DOCK_CENTER:
+        DockTop->   SetValue(false);
+        DockBottom->SetValue(false);
+        DockLeft->  SetValue(false);
+        DockRight-> SetValue(false);
+        DockCenter->SetValue(true);
+        break;
 
-        case wxAUI_DOCK_LEFT:
-        default:
-            DockTop->   SetValue(false);
-            DockBottom->SetValue(false);
-            DockLeft->  SetValue(true);
-            DockRight-> SetValue(false);
-            DockCenter->SetValue(false);
+    case wxAUI_DOCK_LEFT:
+    default:
+        DockTop->   SetValue(false);
+        DockBottom->SetValue(false);
+        DockLeft->  SetValue(true);
+        DockRight-> SetValue(false);
+        DockCenter->SetValue(false);
     }
 
     long Dockable = m_Extra->m_DockableFlags;
@@ -558,17 +558,17 @@ void wxsAuiManagerParentQP::OnGripperSelect(cb_unused wxCommandEvent& event)
 
     switch ( Gripper->GetSelection() )
     {
-        case 1:
-            m_Extra->m_Gripper = wxLEFT;
-            break;
+    case 1:
+        m_Extra->m_Gripper = wxLEFT;
+        break;
 
-        case 2:
-            m_Extra->m_Gripper = wxTOP;
+    case 2:
+        m_Extra->m_Gripper = wxTOP;
 
-        case 0: // fall-though
-        default:
-            m_Extra->m_Gripper = 0;
-            break;
+    case 0: // fall-though
+    default:
+        m_Extra->m_Gripper = 0;
+        break;
     }
 
     NotifyChange();
@@ -605,48 +605,48 @@ void wxsAuiManagerParentQP::OnStandardPaneChange(cb_unused wxCommandEvent& event
 
     switch ( m_Extra->m_StandardPane )
     {
-        case wxsAuiPaneInfoExtra::DefaultPane:
-            m_Extra->m_DockableFlags  = wxsAuiDockableProperty::Dockable;
-            m_Extra->m_Floatable      = true;
-            m_Extra->m_Movable        = true;
-            m_Extra->m_Resizable      = true;
-            m_Extra->m_CaptionVisible = true;
-            m_Extra->m_PaneBorder     = true;
-            m_Extra->m_CloseButton    = true;
-            break;
+    case wxsAuiPaneInfoExtra::DefaultPane:
+        m_Extra->m_DockableFlags  = wxsAuiDockableProperty::Dockable;
+        m_Extra->m_Floatable      = true;
+        m_Extra->m_Movable        = true;
+        m_Extra->m_Resizable      = true;
+        m_Extra->m_CaptionVisible = true;
+        m_Extra->m_PaneBorder     = true;
+        m_Extra->m_CloseButton    = true;
+        break;
 
-        case wxsAuiPaneInfoExtra::CenterPane:
-            m_Extra->m_Docked         = true;
-            m_Extra->m_Visible        = true;
-            m_Extra->m_DockableFlags  = wxsAuiDockableProperty::Dockable;
-            m_Extra->m_Floatable      = false;
-            m_Extra->m_Movable        = false;
-            m_Extra->m_Resizable      = true;
-            m_Extra->m_PaneBorder     = true;
-            m_Extra->m_CaptionVisible = false;
-            m_Extra->m_Gripper        = 0;
-            m_Extra->m_DestroyOnClose = false;
-            m_Extra->m_DockFixed      = false;
-            m_Extra->m_CloseButton    = false;
-            m_Extra->m_MaximizeButton = false;
-            m_Extra->m_MinimizeButton = false;
-            m_Extra->m_PinButton      = false;
-            m_Extra->m_DockDirection  = wxAUI_DOCK_CENTER;
-            break;
+    case wxsAuiPaneInfoExtra::CenterPane:
+        m_Extra->m_Docked         = true;
+        m_Extra->m_Visible        = true;
+        m_Extra->m_DockableFlags  = wxsAuiDockableProperty::Dockable;
+        m_Extra->m_Floatable      = false;
+        m_Extra->m_Movable        = false;
+        m_Extra->m_Resizable      = true;
+        m_Extra->m_PaneBorder     = true;
+        m_Extra->m_CaptionVisible = false;
+        m_Extra->m_Gripper        = 0;
+        m_Extra->m_DestroyOnClose = false;
+        m_Extra->m_DockFixed      = false;
+        m_Extra->m_CloseButton    = false;
+        m_Extra->m_MaximizeButton = false;
+        m_Extra->m_MinimizeButton = false;
+        m_Extra->m_PinButton      = false;
+        m_Extra->m_DockDirection  = wxAUI_DOCK_CENTER;
+        break;
 
-        case wxsAuiPaneInfoExtra::ToolbarPane:
-            m_Extra->m_DockableFlags  = wxsAuiDockableProperty::Dockable;
-            m_Extra->m_Floatable      = true;
-            m_Extra->m_Movable        = true;
-            m_Extra->m_Resizable      = false;
-            m_Extra->m_CaptionVisible = false;
-            m_Extra->m_PaneBorder     = true;
-            m_Extra->m_CloseButton    = true;
-            m_Extra->m_Gripper        = wxLEFT;
-            if ( m_Extra->m_Layer == 0 ) m_Extra->m_Layer = 10;
+    case wxsAuiPaneInfoExtra::ToolbarPane:
+        m_Extra->m_DockableFlags  = wxsAuiDockableProperty::Dockable;
+        m_Extra->m_Floatable      = true;
+        m_Extra->m_Movable        = true;
+        m_Extra->m_Resizable      = false;
+        m_Extra->m_CaptionVisible = false;
+        m_Extra->m_PaneBorder     = true;
+        m_Extra->m_CloseButton    = true;
+        m_Extra->m_Gripper        = wxLEFT;
+        if ( m_Extra->m_Layer == 0 ) m_Extra->m_Layer = 10;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     NotifyChange();

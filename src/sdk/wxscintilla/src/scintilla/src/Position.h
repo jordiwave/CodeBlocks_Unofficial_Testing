@@ -13,7 +13,8 @@
  * Sometimes used as a character index where it identifies the character after the position.
  */
 
-namespace Sci {
+namespace Sci
+{
 
 typedef int Position;
 typedef int Line;

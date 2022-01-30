@@ -30,20 +30,20 @@
 
 namespace Expression
 {
-    struct ExpressionTests
+struct ExpressionTests
+{
+    Value Execute( const wxString& code );
+    void TestCompile( const wxString& code );
+    void TestNoCompile( const wxString& code );
+
+    template< typename T > void TestValue(const wxString& code, T value );
+    template< typename T > void TestValueEps(const wxString& code, T value, double epsilon = 0.000000000001 );
+
+    inline void Ensure( bool condition, const wxString& msg )
     {
-        Value Execute( const wxString& code );
-        void TestCompile( const wxString& code );
-        void TestNoCompile( const wxString& code );
-
-        template< typename T > void TestValue(const wxString& code, T value );
-        template< typename T > void TestValueEps(const wxString& code, T value, double epsilon = 0.000000000001 );
-
-        inline void Ensure( bool condition, const wxString& msg )
-        {
-            ((TestCasesHelper< ExpressionTests >*)this)->Ensure( condition, msg );
-        }
-    };
+        ((TestCasesHelper< ExpressionTests >*)this)->Ensure( condition, msg );
+    }
+};
 
 }
 
@@ -162,69 +162,72 @@ void TestCases::Test<8>()
 
 namespace Expression
 {
-    Value ExpressionTests::Execute( const wxString& code )
-    {
-        Parser p;
-        Preprocessed out;
-        Ensure( p.Parse( code, out ), wxString::Format( _("Failed to parse expression: '%s'"), code.c_str() ) );
-        Executor e;
-        Ensure( e.Execute( out, 0, 0 ), wxString::Format( _("Couldn't execute expression: '%s'"), code.c_str() ) );
-        return e.GetResult();
-    }
+Value ExpressionTests::Execute( const wxString& code )
+{
+    Parser p;
+    Preprocessed out;
+    Ensure( p.Parse( code, out ), wxString::Format( _("Failed to parse expression: '%s'"), code.c_str() ) );
+    Executor e;
+    Ensure( e.Execute( out, 0, 0 ), wxString::Format( _("Couldn't execute expression: '%s'"), code.c_str() ) );
+    return e.GetResult();
+}
 
 
-    void ExpressionTests::TestCompile( const wxString& code )
-    {
-        Parser p;
-        Preprocessed out;
-        Ensure( p.Parse( code, out ), wxString::Format( _("Failed to parse expression: '%s'"), code.c_str() ) );
-    }
+void ExpressionTests::TestCompile( const wxString& code )
+{
+    Parser p;
+    Preprocessed out;
+    Ensure( p.Parse( code, out ), wxString::Format( _("Failed to parse expression: '%s'"), code.c_str() ) );
+}
 
-    template< typename T >
-    void ExpressionTests::TestValue(const wxString& code, T value )
-    {
-        Value ret = Execute( code );
+template< typename T >
+void ExpressionTests::TestValue(const wxString& code, T value )
+{
+    Value ret = Execute( code );
 
-        std::ostringstream ost;
-        ost << ret;
-        wxString retStr( ost.str().c_str(), wxConvLocal );
+    std::ostringstream ost;
+    ost << ret;
+    wxString retStr( ost.str().c_str(), wxConvLocal );
 
-        std::ostringstream ost2;
-        ost2.str().clear();
-        ost2 << value;
-        wxString valStr( ost2.str().c_str(), wxConvLocal );
+    std::ostringstream ost2;
+    ost2.str().clear();
+    ost2 << value;
+    wxString valStr( ost2.str().c_str(), wxConvLocal );
 
-        Ensure( ret == value, wxString::Format( _("Invalid value returned for expression: '%s', got %s, should be %s"), code.c_str(), retStr.c_str(), valStr.c_str() ) );
-    }
+    Ensure( ret == value, wxString::Format( _("Invalid value returned for expression: '%s', got %s, should be %s"), code.c_str(), retStr.c_str(), valStr.c_str() ) );
+}
 
-    template< typename T >
-    void ExpressionTests::TestValueEps(const wxString& code, T value, double epsilon )
-    {
-        Value ret = Execute( code );
+template< typename T >
+void ExpressionTests::TestValueEps(const wxString& code, T value, double epsilon )
+{
+    Value ret = Execute( code );
 
-        std::ostringstream ost;
-        ost << ret;
-        wxString retStr( ost.str().c_str(), wxConvLocal );
+    std::ostringstream ost;
+    ost << ret;
+    wxString retStr( ost.str().c_str(), wxConvLocal );
 
-        std::ostringstream ost2;
-        ost2.str().clear();
-        ost2 << value;
-        wxString valStr( ost2.str().c_str(), wxConvLocal );
+    std::ostringstream ost2;
+    ost2.str().clear();
+    ost2 << value;
+    wxString valStr( ost2.str().c_str(), wxConvLocal );
 
-        bool ok1 = ret >= ( value - epsilon );
-        bool ok2 = ret <= ( value + epsilon );
+    bool ok1 = ret >= ( value - epsilon );
+    bool ok2 = ret <= ( value + epsilon );
 
-        Ensure( ok1 && ok2, wxString::Format( _("Invalid value returned for expression: '%s', got %s, should be %s"), code.c_str(), retStr.c_str(), valStr.c_str() ) );
-    }
+    Ensure( ok1 && ok2, wxString::Format( _("Invalid value returned for expression: '%s', got %s, should be %s"), code.c_str(), retStr.c_str(), valStr.c_str() ) );
+}
 
-    void ExpressionTests::TestNoCompile( const wxString& code )
-    {
-        Parser p;
-        Preprocessed out;
-        Ensure( !p.Parse( code, out ), wxString::Format( _("Parsed invalid expression: '%s'"), code.c_str() ) );
-    }
+void ExpressionTests::TestNoCompile( const wxString& code )
+{
+    Parser p;
+    Preprocessed out;
+    Ensure( !p.Parse( code, out ), wxString::Format( _("Parsed invalid expression: '%s'"), code.c_str() ) );
+}
 
-    TestCases tests;
+TestCases tests;
 
-    TestCasesBase& GetTests() { return tests; }
+TestCasesBase& GetTests()
+{
+    return tests;
+}
 }

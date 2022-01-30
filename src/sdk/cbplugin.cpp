@@ -10,25 +10,25 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/frame.h> // wxFrame
-    #include <wx/menu.h>
-    #include <wx/process.h>
+#include <wx/frame.h> // wxFrame
+#include <wx/menu.h>
+#include <wx/process.h>
 
-    #include "cbeditor.h"
-    #include "cbplugin.h"
-    #include "cbproject.h"
-    #include "compiler.h" // GetSwitches
-    #include "configmanager.h"
-    #include "debuggermanager.h"
-    #include "editorcolourset.h"
-    #include "editormanager.h"
-    #include "infowindow.h"
-    #include "logmanager.h"
-    #include "macrosmanager.h"
-    #include "manager.h"
-    #include "projectbuildtarget.h"
-    #include "projectmanager.h"
-    #include "sdk_events.h"
+#include "cbeditor.h"
+#include "cbplugin.h"
+#include "cbproject.h"
+#include "compiler.h" // GetSwitches
+#include "configmanager.h"
+#include "debuggermanager.h"
+#include "editorcolourset.h"
+#include "editormanager.h"
+#include "infowindow.h"
+#include "logmanager.h"
+#include "macrosmanager.h"
+#include "manager.h"
+#include "projectbuildtarget.h"
+#include "projectmanager.h"
+#include "sdk_events.h"
 #endif
 
 #include <wx/toolbar.h>
@@ -42,10 +42,10 @@
 #include "loggers.h"
 
 #ifndef __WXMSW__
-    #include <errno.h>
-    // needed for the kill system call
-    #include <signal.h>
-    #include <sys/types.h>
+#include <errno.h>
+// needed for the kill system call
+#include <signal.h>
+#include <sys/types.h>
 #endif
 
 cbPlugin::cbPlugin() :
@@ -502,7 +502,7 @@ void cbDebuggerPlugin::OnProjectClosed(CodeBlocksEvent& event)
                            _("The project you were debugging has closed.\n"
                              "(The application most likely just finished.)\n"
                              "The debugging session will terminate immediately."),
-                            wxART_WARNING, AnnoyingDialog::OK);
+                           wxART_WARNING, AnnoyingDialog::OK);
         dlg.ShowModal();
         Stop();
         ResetProject();
@@ -621,38 +621,38 @@ bool cbDebuggerPlugin::GetDebuggee(wxString &pathToDebuggee, wxString &workingDi
     wxString out;
     switch (target->GetTargetType())
     {
-        case ttExecutable:
-        case ttConsoleOnly:
-        case ttNative:
-            {
-                out = UnixFilename(target->GetOutputFilename());
-                Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
-                wxFileName f(out);
-                f.MakeAbsolute(target->GetParentProject()->GetBasePath());
-                out = f.GetFullPath();
-                Log(_("Adding file: ") + out);
-                ConvertDirectory(out);
-            }
-            break;
+    case ttExecutable:
+    case ttConsoleOnly:
+    case ttNative:
+    {
+        out = UnixFilename(target->GetOutputFilename());
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
+        wxFileName f(out);
+        f.MakeAbsolute(target->GetParentProject()->GetBasePath());
+        out = f.GetFullPath();
+        Log(_("Adding file: ") + out);
+        ConvertDirectory(out);
+    }
+    break;
 
-        case ttStaticLib:
-        case ttDynamicLib:
-            // check for hostapp
-            if (target->GetHostApplication().IsEmpty())
-            {
-                cbMessageBox(_("You must select a host application to \"run\" a library..."));
-                return false;
-            }
-            out = UnixFilename(target->GetHostApplication());
-            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
-            Log(_("Adding file: ") + out);
-            ConvertDirectory(out);
-            break;
-
-        case ttCommandsOnly: // fall through:
-        default:
-            Log(_("Unsupported target type (Project -> Properties -> Build Targets -> Type)"), Logger::error);
+    case ttStaticLib:
+    case ttDynamicLib:
+        // check for hostapp
+        if (target->GetHostApplication().IsEmpty())
+        {
+            cbMessageBox(_("You must select a host application to \"run\" a library..."));
             return false;
+        }
+        out = UnixFilename(target->GetHostApplication());
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
+        Log(_("Adding file: ") + out);
+        ConvertDirectory(out);
+        break;
+
+    case ttCommandsOnly: // fall through:
+    default:
+        Log(_("Unsupported target type (Project -> Properties -> Build Targets -> Type)"), Logger::error);
+        return false;
     }
     if (out.empty())
     {
@@ -757,7 +757,10 @@ struct ConsoleInfo
 {
     ConsoleInfo(const wxString &path = wxEmptyString, int pid = -1) : ttyPath(path), sleepPID(pid) {}
 
-    bool IsValid() const { return !ttyPath.empty() && sleepPID > 0; }
+    bool IsValid() const
+    {
+        return !ttyPath.empty() && sleepPID > 0;
+    }
 
     wxString ttyPath;
     int sleepPID;
@@ -814,7 +817,10 @@ struct ConsoleProcessTerminationInfo
 {
     ConsoleProcessTerminationInfo() : status(-1), terminated(false) {}
 
-    bool FailedToStart() const { return terminated && status != 0; }
+    bool FailedToStart() const
+    {
+        return terminated && status != 0;
+    }
 
     int status;
     bool terminated;
@@ -891,7 +897,8 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
         // spawned terminal process exits immediately, but the sleep command is still executed.
         // If we detect such case we will return the PID for the sleep command instead of the PID
         // for the terminal.
-        if (kill(consolePid, 0) == -1 && errno == ESRCH) {
+        if (kill(consolePid, 0) == -1 && errno == ESRCH)
+        {
             DebugLog(F(wxT("Using sleep command's PID as console PID %d, TTY %s"),
                        info.sleepPID, info.ttyPath.wx_str()));
             consoleTty = info.ttyPath;

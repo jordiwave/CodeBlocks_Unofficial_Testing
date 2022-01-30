@@ -8,13 +8,13 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWindows headers)
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+#include "wx/wx.h"
 #endif
 
 #include "wx/dynlib.h"
@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #ifndef __VISUALC__
-  #include <unistd.h>
+#include <unistd.h>
 #endif
 
 #include "aspell.h"
@@ -179,52 +179,58 @@ typedef void (*aspell_string_pair_enumeration_assign_type) (struct AspellStringP
 class AspellWrapper
 {
 public:
-  AspellWrapper();
-  virtual ~AspellWrapper();
-  
-  bool LoadFunctions();
-  void Unload();
-  
-  aspell_speller_save_all_word_lists_type AspellSpellerSaveAllWordLists;
-  delete_aspell_document_checker_type DeleteAspellDocumentChecker;
-  delete_aspell_config_type DeleteAspellConfig;
-  delete_aspell_speller_type DeleteAspellSpeller;
-  delete_aspell_can_have_error_type DeleteAspellCanHaveError;
-  to_aspell_speller_type ToAspellSpeller;
-  new_aspell_config_type NewAspellConfig;
-  aspell_config_replace_type AspellConfigReplace;
-  aspell_speller_check_type AspellSpellerCheck;
-  new_aspell_document_checker_type NewAspellDocumentChecker;
-  aspell_error_type AspellError;
-  to_aspell_document_checker_type ToAspellDocumentChecker;
-  aspell_document_checker_process_type AspellDocumentCheckerProcess;
-  aspell_document_checker_next_misspelling_type AspellDocumentCheckerNextMisspelling;
-  aspell_speller_suggest_type AspellSpellerSuggest;
-  aspell_word_list_elements_type AspellWordListElements;
-  aspell_string_enumeration_next_type AspellStringEnumerationNext;
-  delete_aspell_string_enumeration_type DeleteAspellStringEnumeration;
-  aspell_speller_add_to_personal_type AspellSpellerAddToPersonal;
-  aspell_speller_personal_word_list_type AspellSpellerPersonalWordList;
-  aspell_config_possible_elements_type AspellConfigPossibleElements;
-  aspell_key_info_enumeration_next_type AspellKeyInfoEnumerationNext;
-  delete_aspell_key_info_enumeration_type DeleteAspellKeyInfoEnumeration;
-  new_aspell_speller_type NewAspellSpeller;
-  aspell_error_message_type AspellErrorMessage;
-  aspell_speller_store_replacement_type AspellSpellerStoreReplacement;
-  aspell_config_retrieve_type AspellConfigRetrieve;
-  get_aspell_dict_info_list_type GetAspellDictInfoList;
-  aspell_dict_info_list_elements_type AspellDictInfoListElements;
-  aspell_dict_info_enumeration_next_type AspellDictInfoEnumerationNext;
-  delete_aspell_dict_info_enumeration_type DeleteAspellDictInfoEnumeration;
-  aspell_config_remove_type AspellConfigRemove;
-  
-  void SetLibraryPath(wxString& strPath) { m_strLibraryPath = strPath; }
-  wxString GetLibraryPath() { return m_strLibraryPath; }
-  bool IsLoaded();
-  
+    AspellWrapper();
+    virtual ~AspellWrapper();
+
+    bool LoadFunctions();
+    void Unload();
+
+    aspell_speller_save_all_word_lists_type AspellSpellerSaveAllWordLists;
+    delete_aspell_document_checker_type DeleteAspellDocumentChecker;
+    delete_aspell_config_type DeleteAspellConfig;
+    delete_aspell_speller_type DeleteAspellSpeller;
+    delete_aspell_can_have_error_type DeleteAspellCanHaveError;
+    to_aspell_speller_type ToAspellSpeller;
+    new_aspell_config_type NewAspellConfig;
+    aspell_config_replace_type AspellConfigReplace;
+    aspell_speller_check_type AspellSpellerCheck;
+    new_aspell_document_checker_type NewAspellDocumentChecker;
+    aspell_error_type AspellError;
+    to_aspell_document_checker_type ToAspellDocumentChecker;
+    aspell_document_checker_process_type AspellDocumentCheckerProcess;
+    aspell_document_checker_next_misspelling_type AspellDocumentCheckerNextMisspelling;
+    aspell_speller_suggest_type AspellSpellerSuggest;
+    aspell_word_list_elements_type AspellWordListElements;
+    aspell_string_enumeration_next_type AspellStringEnumerationNext;
+    delete_aspell_string_enumeration_type DeleteAspellStringEnumeration;
+    aspell_speller_add_to_personal_type AspellSpellerAddToPersonal;
+    aspell_speller_personal_word_list_type AspellSpellerPersonalWordList;
+    aspell_config_possible_elements_type AspellConfigPossibleElements;
+    aspell_key_info_enumeration_next_type AspellKeyInfoEnumerationNext;
+    delete_aspell_key_info_enumeration_type DeleteAspellKeyInfoEnumeration;
+    new_aspell_speller_type NewAspellSpeller;
+    aspell_error_message_type AspellErrorMessage;
+    aspell_speller_store_replacement_type AspellSpellerStoreReplacement;
+    aspell_config_retrieve_type AspellConfigRetrieve;
+    get_aspell_dict_info_list_type GetAspellDictInfoList;
+    aspell_dict_info_list_elements_type AspellDictInfoListElements;
+    aspell_dict_info_enumeration_next_type AspellDictInfoEnumerationNext;
+    delete_aspell_dict_info_enumeration_type DeleteAspellDictInfoEnumeration;
+    aspell_config_remove_type AspellConfigRemove;
+
+    void SetLibraryPath(wxString& strPath)
+    {
+        m_strLibraryPath = strPath;
+    }
+    wxString GetLibraryPath()
+    {
+        return m_strLibraryPath;
+    }
+    bool IsLoaded();
+
 private:
-  wxDynamicLibrary m_AspellLibrary;
-  wxString m_strLibraryPath;
+    wxDynamicLibrary m_AspellLibrary;
+    wxString m_strLibraryPath;
 };
 
 #endif // __ASPELL_WRAPPER_H__

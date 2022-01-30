@@ -28,17 +28,17 @@
 
 class wxsColourDialog: public wxsTool
 {
-    public:
+public:
 
-        wxsColourDialog(wxsItemResData* Data);
+    wxsColourDialog(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual void OnEnumToolProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual void OnEnumToolProperties(long Flags);
 
-        bool m_ChooseFull;
-        wxsColourData m_Colour;
+    bool m_ChooseFull;
+    wxsColourData m_Colour;
 };
 
 #endif

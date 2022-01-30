@@ -54,8 +54,8 @@ void ProjectConfiguration::XmlLoad(TiXmlElement* Node,cbProject* Project)
     }
 
     for ( TiXmlElement* Elem = LibFinder->FirstChildElement("lib");
-          Elem;
-          Elem = Elem->NextSiblingElement("lib") )
+            Elem;
+            Elem = Elem->NextSiblingElement("lib") )
     {
         wxString LibName = cbC2U(Elem->Attribute("name"));
         if ( !LibName.IsEmpty() && m_GlobalUsedLibs.Index(LibName)==wxNOT_FOUND )
@@ -65,16 +65,16 @@ void ProjectConfiguration::XmlLoad(TiXmlElement* Node,cbProject* Project)
     }
 
     for ( TiXmlElement* Elem = LibFinder->FirstChildElement("target");
-          Elem;
-          Elem = Elem->NextSiblingElement("target") )
+            Elem;
+            Elem = Elem->NextSiblingElement("target") )
     {
         wxString TargetName = cbC2U(Elem->Attribute("name"));
         if ( !Project->GetBuildTarget(TargetName) ) continue;
 
         wxArrayString& Libs = m_TargetsUsedLibs[TargetName];
         for ( TiXmlElement* LibElem = Elem->FirstChildElement("lib");
-              LibElem;
-              LibElem = LibElem->NextSiblingElement("lib") )
+                LibElem;
+                LibElem = LibElem->NextSiblingElement("lib") )
         {
             wxString LibName = cbC2U(LibElem->Attribute("name"));
             if ( !LibName.IsEmpty() && Libs.Index(LibName)==wxNOT_FOUND )
@@ -105,8 +105,8 @@ void ProjectConfiguration::XmlWrite(TiXmlElement* Node,cbProject* Project)
     }
 
     for ( wxMultiStringMap::iterator iter = m_TargetsUsedLibs.begin();
-          iter != m_TargetsUsedLibs.end();
-          ++iter )
+            iter != m_TargetsUsedLibs.end();
+            ++iter )
     {
         if ( !Project->GetBuildTarget(iter->first) ) continue;
 

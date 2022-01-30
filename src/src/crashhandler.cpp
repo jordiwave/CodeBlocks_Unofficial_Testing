@@ -10,13 +10,13 @@
 #ifdef __WXMSW__
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/filefn.h>
-    #include <wx/filename.h>
-    #include <wx/string.h>
-    #include "cbeditor.h"
-    #include "configmanager.h"
-    #include "editormanager.h"
-    #include "globals.h"
+#include <wx/filefn.h>
+#include <wx/filename.h>
+#include <wx/string.h>
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "globals.h"
 #endif //CB_PRECOMP
 #include "cbstyledtextctrl.h"
 
@@ -29,7 +29,8 @@ inline void CrashHandlerSaveEditorFiles(wxString& buf)
     //get the "My Files" folder
     HRESULT result = SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, wxStringBuffer(path, MAX_PATH));
     if (FAILED(result))
-    {   //get at least the profiles folder
+    {
+        //get at least the profiles folder
         path = ConfigManager::GetHomeFolder();
     }
     path << _T("\\cb-crash-recover");
@@ -59,9 +60,9 @@ inline void CrashHandlerSaveEditorFiles(wxString& buf)
                         newfnpath = fnpath + wxString::Format(wxT(".%03d"),j);
 
                     if (cbSaveToFile(newfnpath,
-                                    ed->GetControl()->GetText(),
-                                    ed->GetEncoding(),
-                                    ed->GetUseBom() ) )
+                                     ed->GetControl()->GetText(),
+                                     ed->GetEncoding(),
+                                     ed->GetUseBom() ) )
                     {
                         AnyFileSaved = true;
                     }
@@ -101,28 +102,28 @@ LONG WINAPI CrashHandlerFunc(PEXCEPTION_POINTERS ExceptionInfo)
     }
 
     buf << _("Now you have three options:\n"
-              "1. Press 'Abort' to pass control back to the system. This will normally display the standard 'application error' message and kill the program.\n"
-              "2. Press 'Ignore' to step over the offending instruction. You may run into another access violation, but if you are lucky enough, you might get to save your work and close the program gracefully.\n"
-              "3. Press 'Retry' to return to the offending instruction (this is almost certain to fail again, but might nevertheless work in rare cases).");
+             "1. Press 'Abort' to pass control back to the system. This will normally display the standard 'application error' message and kill the program.\n"
+             "2. Press 'Ignore' to step over the offending instruction. You may run into another access violation, but if you are lucky enough, you might get to save your work and close the program gracefully.\n"
+             "3. Press 'Retry' to return to the offending instruction (this is almost certain to fail again, but might nevertheless work in rare cases).");
 
 
     switch(MessageBox(0, buf.c_str(), _T("Woah!"), MB_ABORTRETRYIGNORE))
     {
-        case IDABORT:
+    case IDABORT:
         return EXCEPTION_CONTINUE_SEARCH;
         break;
 
-        case IDIGNORE:
+    case IDIGNORE:
 #if !defined(_WIN64)
         ExceptionInfo->ContextRecord->Eip += 2;
 #endif
         return EXCEPTION_CONTINUE_EXECUTION;
         break;
 
-        case IDRETRY:
+    case IDRETRY:
         return EXCEPTION_CONTINUE_EXECUTION;
         break;
-        default:
+    default:
         break;
     }
     return EXCEPTION_CONTINUE_SEARCH;

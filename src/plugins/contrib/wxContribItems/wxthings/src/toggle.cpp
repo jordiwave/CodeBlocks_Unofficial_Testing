@@ -15,16 +15,16 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/control.h>
-    #include <wx/settings.h>
-    #include <wx/bitmap.h>
-    #include <wx/timer.h>
-    #include <wx/dc.h>
-    #include <wx/dcclient.h>
+#include <wx/control.h>
+#include <wx/settings.h>
+#include <wx/bitmap.h>
+#include <wx/timer.h>
+#include <wx/dc.h>
+#include <wx/dcclient.h>
 #endif // WX_PRECOMP
 
 #include <wx/tglbtn.h>
@@ -177,7 +177,7 @@ void wxCustomButton::OnMouseEvents(wxMouseEvent& event)
                 }
 
                 if ((m_button_style & wxCUSTBUT_TOGGLE) &&
-                    (m_button_style & wxCUSTBUT_TOG_DCLICK_BUT)) m_down++;
+                        (m_button_style & wxCUSTBUT_TOG_DCLICK_BUT)) m_down++;
             }
         }
 
@@ -276,8 +276,8 @@ void wxCustomButton::OnTimer( wxTimerEvent &event )
 void wxCustomButton::SendEvent()
 {
     if (((m_button_style & wxCUSTBUT_TOGGLE) && (m_eventType == wxEVT_LEFT_UP)) ||
-        ((m_button_style & wxCUSTBUT_BUT_DCLICK_TOG) && (m_eventType == wxEVT_LEFT_DCLICK)) ||
-        ((m_button_style & wxCUSTBUT_TOG_DCLICK_BUT) && (m_eventType == wxEVT_LEFT_UP)))
+            ((m_button_style & wxCUSTBUT_BUT_DCLICK_TOG) && (m_eventType == wxEVT_LEFT_DCLICK)) ||
+            ((m_button_style & wxCUSTBUT_TOG_DCLICK_BUT) && (m_eventType == wxEVT_LEFT_UP)))
     {
         wxCommandEvent eventOut(wxEVT_COMMAND_TOGGLEBUTTON_CLICKED, GetId());
         eventOut.SetInt(m_down%2 ? 1 : 0);
@@ -320,37 +320,37 @@ wxBitmap wxCustomButton::CreateBitmapDisabled(const wxBitmap &bitmap) const
 
     return wxBitmap(image);
 
-/*      // FIXME why bother creating focused wxCustomButton's bitmap
-        wxImage imgFoc = bitmap.ConvertToImage();
+    /*      // FIXME why bother creating focused wxCustomButton's bitmap
+            wxImage imgFoc = bitmap.ConvertToImage();
 
-        bool mask = false;
-        unsigned char mr=0, mg=0, mb=0;
-        if (img.HasMask())
-        {
-            mask = true;
-            mr = imgDis.GetMaskRed();
-            mg = imgDis.GetMaskGreen();
-            mb = imgDis.GetMaskBlue();
-        }
-        unsigned char *r, *g, *b;
-        unsigned char *focData = imgFoc.GetData();
-        r = imgFoc.GetData();
-        g = imgFoc.GetData() + 1;
-        b = imgFoc.GetData() + 2;
-        for (int j=0; j<h; j++)
-        {
-            for (int i=0; i<w; i++)
+            bool mask = false;
+            unsigned char mr=0, mg=0, mb=0;
+            if (img.HasMask())
             {
-                if ((!mask || ((*r!=mr)&&(*b!=mb)&&(*g!=mg))) &&
-                    ((*r<236)&&(*b<236)&&(*g<236)))
-                {
-                    *r += 20; *g += 20; *b += 20;
-                }
-                r += 3; g += 3; b += 3;
+                mask = true;
+                mr = imgDis.GetMaskRed();
+                mg = imgDis.GetMaskGreen();
+                mb = imgDis.GetMaskBlue();
             }
-        }
-        m_bmpFocus = wxBitmap(imgFoc);
-*/
+            unsigned char *r, *g, *b;
+            unsigned char *focData = imgFoc.GetData();
+            r = imgFoc.GetData();
+            g = imgFoc.GetData() + 1;
+            b = imgFoc.GetData() + 2;
+            for (int j=0; j<h; j++)
+            {
+                for (int i=0; i<w; i++)
+                {
+                    if ((!mask || ((*r!=mr)&&(*b!=mb)&&(*g!=mg))) &&
+                        ((*r<236)&&(*b<236)&&(*g<236)))
+                    {
+                        *r += 20; *g += 20; *b += 20;
+                    }
+                    r += 3; g += 3; b += 3;
+                }
+            }
+            m_bmpFocus = wxBitmap(imgFoc);
+    */
 
 }
 

@@ -47,9 +47,18 @@ public:
 
     // STL compatibility functions
     void                  clear();
-    inline Token* operator[](int idx)       { return GetTokenAt(idx); }
-    inline Token*         at(int idx)       { return GetTokenAt(idx); }
-    inline const Token *  at(int idx) const { return GetTokenAt(idx); }
+    inline Token* operator[](int idx)
+    {
+        return GetTokenAt(idx);
+    }
+    inline Token*         at(int idx)
+    {
+        return GetTokenAt(idx);
+    }
+    inline const Token *  at(int idx) const
+    {
+        return GetTokenAt(idx);
+    }
 
     /** total size of std::vector<Token*> */
     size_t                size();
@@ -60,7 +69,10 @@ public:
     size_t                realsize();
 
     /** check to see whether the TokenTree is empty*/
-    inline bool           empty()           { return size()==0;       }
+    inline bool           empty()
+    {
+        return size()==0;
+    }
 
     /** add a new Token instance to the TokenTree
      * @param newToken the pointer to a Token instance
@@ -83,7 +95,10 @@ public:
      */
     void                  erase(Token* oldToken);
 
-    inline void Clear()                     { clear();                }
+    inline void Clear()
+    {
+        clear();
+    }
 
     // Token specific functions
     /** collect the unused slots in the std::vector<Token*> */
@@ -195,8 +210,8 @@ public:
 
     const TokenIdxSet*   GetTokensBelongToFile(size_t fileIdx) const
     {
-      TokenFileMap::const_iterator it = m_FileMap.find(fileIdx);
-      return (it == m_FileMap.end() ? 0 : &(it->second));
+        TokenFileMap::const_iterator it = m_FileMap.find(fileIdx);
+        return (it == m_FileMap.end() ? 0 : &(it->second));
     }
 
     const TokenFileSet* GetFilesToBeReparsed() const
@@ -241,7 +256,7 @@ public:
     size_t InsertFileOrGetIndex(const wxString& filename);
 
     size_t GetFileMatches(const wxString& filename, std::set<size_t>& result,
-                                  bool caseSensitive, bool is_prefix);
+                          bool caseSensitive, bool is_prefix);
 
     size_t GetFileIndex(const wxString& filename);
 
@@ -342,7 +357,7 @@ protected:
      *  a std::vector< TokenIndexSet > in the SearchTree, the 16 is the index to fetch the value
      *  <30,40> in the vector
      */
-	TokenSearchTree   m_Tree;
+    TokenSearchTree   m_Tree;
 
     /** Contains the pointers to all the Token instances, it is just a std::vector<Token*>, the
      *  suggest way to access a Token instance is by first get its index in the m_Tokens, then get
@@ -350,14 +365,14 @@ protected:
      *  many Tokens which can reference each other, it is much safe using index instead of raw
      *  pointers.
      */
-	TokenList         m_Tokens;
+    TokenList         m_Tokens;
 
-	/** List of all the deleted (and available) tokens. When more and more Tokens were allocated,
-	 *  their address was recorded in the m_Tokens, m_Tokens grows larger, but if we delete some
-	 *  Tokens, there will be some empty slots in the std::vector<Token*>, we need to reuse those
-	 *  slots, here m_FreeTokens is to hold those empty slots for reuse, so we don't waste empty
-	 *  slots in the m_Tokens */
-	TokenIdxList      m_FreeTokens;
+    /** List of all the deleted (and available) tokens. When more and more Tokens were allocated,
+     *  their address was recorded in the m_Tokens, m_Tokens grows larger, but if we delete some
+     *  Tokens, there will be some empty slots in the std::vector<Token*>, we need to reuse those
+     *  slots, here m_FreeTokens is to hold those empty slots for reuse, so we don't waste empty
+     *  slots in the m_Tokens */
+    TokenIdxList      m_FreeTokens;
 
     /** namespace tokens belongs to the global namespace */
     TokenIdxSet       m_TopNameSpaces;

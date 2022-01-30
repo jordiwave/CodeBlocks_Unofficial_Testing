@@ -47,45 +47,45 @@ static void display(void)
     glColor3d(1,0,0);
 
     glPushMatrix();
-        glTranslated(-2.4,1.2,-6);
-        glRotated(60,1,0,0);
-        glRotated(a,0,0,1);
-        glutSolidSphere(1,slices,stacks);
+    glTranslated(-2.4,1.2,-6);
+    glRotated(60,1,0,0);
+    glRotated(a,0,0,1);
+    glutSolidSphere(1,slices,stacks);
     glPopMatrix();
 
     glPushMatrix();
-        glTranslated(0,1.2,-6);
-        glRotated(60,1,0,0);
-        glRotated(a,0,0,1);
-        glutSolidCone(1,1,slices,stacks);
+    glTranslated(0,1.2,-6);
+    glRotated(60,1,0,0);
+    glRotated(a,0,0,1);
+    glutSolidCone(1,1,slices,stacks);
     glPopMatrix();
 
     glPushMatrix();
-        glTranslated(2.4,1.2,-6);
-        glRotated(60,1,0,0);
-        glRotated(a,0,0,1);
-        glutSolidTorus(0.2,0.8,slices,stacks);
+    glTranslated(2.4,1.2,-6);
+    glRotated(60,1,0,0);
+    glRotated(a,0,0,1);
+    glutSolidTorus(0.2,0.8,slices,stacks);
     glPopMatrix();
 
     glPushMatrix();
-        glTranslated(-2.4,-1.2,-6);
-        glRotated(60,1,0,0);
-        glRotated(a,0,0,1);
-        glutWireSphere(1,slices,stacks);
+    glTranslated(-2.4,-1.2,-6);
+    glRotated(60,1,0,0);
+    glRotated(a,0,0,1);
+    glutWireSphere(1,slices,stacks);
     glPopMatrix();
 
     glPushMatrix();
-        glTranslated(0,-1.2,-6);
-        glRotated(60,1,0,0);
-        glRotated(a,0,0,1);
-        glutWireCone(1,1,slices,stacks);
+    glTranslated(0,-1.2,-6);
+    glRotated(60,1,0,0);
+    glRotated(a,0,0,1);
+    glutWireCone(1,1,slices,stacks);
     glPopMatrix();
 
     glPushMatrix();
-        glTranslated(2.4,-1.2,-6);
-        glRotated(60,1,0,0);
-        glRotated(a,0,0,1);
-        glutWireTorus(0.2,0.8,slices,stacks);
+    glTranslated(2.4,-1.2,-6);
+    glRotated(60,1,0,0);
+    glRotated(a,0,0,1);
+    glutWireTorus(0.2,0.8,slices,stacks);
     glPopMatrix();
 
     glutSwapBuffers();
@@ -96,23 +96,23 @@ static void key(unsigned char key, int x, int y)
 {
     switch (key)
     {
-        case 27 :
-        case 'q':
-            exit(0);
-            break;
+    case 27 :
+    case 'q':
+        exit(0);
+        break;
 
-        case '+':
-            slices++;
-            stacks++;
-            break;
+    case '+':
+        slices++;
+        stacks++;
+        break;
 
-        case '-':
-            if (slices>3 && stacks>3)
-            {
-                slices--;
-                stacks--;
-            }
-            break;
+    case '-':
+        if (slices>3 && stacks>3)
+        {
+            slices--;
+            stacks--;
+        }
+        break;
     }
 
     glutPostRedisplay();

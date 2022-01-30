@@ -7,16 +7,16 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/frame.h> // wxFrame
-    #include <wx/menu.h>
-    #include <wx/statusbr.h>
-    #include "cbplugin.h"
-    #include "compiler.h" // GetSwitches
-    #include "sdk_events.h"
-    #include "manager.h"
-    #include "projectbuildtarget.h"
-    #include "cbproject.h"
-    #include "logmanager.h"
+#include <wx/frame.h> // wxFrame
+#include <wx/menu.h>
+#include <wx/statusbr.h>
+#include "cbplugin.h"
+#include "compiler.h" // GetSwitches
+#include "sdk_events.h"
+#include "manager.h"
+#include "projectbuildtarget.h"
+#include "cbproject.h"
+#include "logmanager.h"
 #endif
 
 #include "cbstatusbar.h"

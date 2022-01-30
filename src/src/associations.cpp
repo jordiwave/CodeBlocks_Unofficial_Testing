@@ -9,8 +9,8 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-    #include <wx/radiobox.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/radiobox.h>
+#include <wx/xrc/xmlres.h>
 #endif
 #include "associations.h"
 #include "appglobals.h"
@@ -19,18 +19,18 @@
 #include <filefilters.h>
 #include <wx/checklst.h>
 
- #ifdef __WXMSW__
-    #include <wx/msw/registry.h>
-    #include <shlobj.h> // for SHChangeNotify()
+#ifdef __WXMSW__
+#include <wx/msw/registry.h>
+#include <shlobj.h> // for SHChangeNotify()
 #endif
 
 const Associations::Assoc knownTypes[] =
 {
-/*
-    { Extension (wxString), Description (wxString), IconIndex (int) }
-      Note: "index" is the index of the icon resource in "resources.rc"
-            Keep all indices in sync with icon indices in "resources.rc"!
-*/
+    /*
+        { Extension (wxString), Description (wxString), IconIndex (int) }
+          Note: "index" is the index of the icon resource in "resources.rc"
+                Keep all indices in sync with icon indices in "resources.rc"!
+    */
     { FileFilters::CODEBLOCKS_EXT,      _T("project file"),                  1 },
     { FileFilters::WORKSPACE_EXT,       _T("workspace file"),               11 },
 

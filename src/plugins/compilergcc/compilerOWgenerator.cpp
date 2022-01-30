@@ -258,20 +258,20 @@ wxString CompilerOWGenerator::MapDebugOptions(const wxString& Opt)
 
 void CompilerOWGenerator::MapDebuggerOptions(const wxString& Opt)
 {
-  if (Opt.IsSameAs(_T("-hw")))
-  {
-      m_DebuggerType = _T("watcom ");
-  }
-  else if (Opt.IsSameAs(_T("-hd")))
-  {
-      m_DebuggerType = _T("dwarf ");
-  }
-  else if (Opt.IsSameAs(_T("-hc")))
-  {
-      m_DebuggerType = _T("codeview ");
-  }
-  else
-  {
-      m_DebuggerType = wxEmptyString;
-  }
+    if (Opt.IsSameAs(_T("-hw")))
+    {
+        m_DebuggerType = _T("watcom ");
+    }
+    else if (Opt.IsSameAs(_T("-hd")))
+    {
+        m_DebuggerType = _T("dwarf ");
+    }
+    else if (Opt.IsSameAs(_T("-hc")))
+    {
+        m_DebuggerType = _T("codeview ");
+    }
+    else
+    {
+        m_DebuggerType = wxEmptyString;
+    }
 }

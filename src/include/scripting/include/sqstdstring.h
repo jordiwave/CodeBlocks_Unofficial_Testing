@@ -9,7 +9,8 @@ extern "C" {
 typedef unsigned int SQRexBool;
 typedef struct SQRex SQRex;
 
-typedef struct {
+typedef struct
+{
     const SQChar *begin;
     SQInteger len;
 } SQRexMatch;

@@ -28,18 +28,18 @@
 /** \brief Class for wxsChoice widget */
 class wxsChoice: public wxsWidget
 {
-    public:
+public:
 
-        wxsChoice(wxsItemResData* Data);
+    wxsChoice(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        wxArrayString ArrayChoices;
-        long DefaultSelection;
+    wxArrayString ArrayChoices;
+    long DefaultSelection;
 };
 
 #endif

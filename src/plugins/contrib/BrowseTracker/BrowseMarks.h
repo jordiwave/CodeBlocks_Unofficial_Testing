@@ -32,47 +32,50 @@ class BrowseMarks
     // Contains the BrowseMarks (scintilla positions) in a circular
     // queue for an editor
 
-    public:
+public:
 
-        BrowseMarks(wxString fullPath);
-        ~BrowseMarks();
-        int         GetMarkPrevious();
-        int         GetMarkNext();
-        int         GetMarkCurrent();
-        int         GetMark(int index);
-        int         GetMarkCount();
-        void        RecordMark(int pos);
-        void        RecordMarksFrom(BrowseMarks& otherBrowse_Marks);
-        void        CopyMarksFrom(const BrowseMarks& otherBrowse_Marks);
-        void        ClearMark(int startPos, int endPos);
-        void        ClearAllBrowse_Marks();
-        int         FindMark(int Posn);
-        bool        LineHasMarker(cbStyledTextCtrl* pControl, int line, int markerId) const;
-        void        MarkRemove(cbStyledTextCtrl* pControl, int line, int markerId);
-        void        MarkLine(cbStyledTextCtrl* pControl, int line, int markerId);
-        void        RemoveMarkerTypes( int markerId );
-        void        PlaceMarkerTypes( int markerId );
-        void        RebuildBrowse_Marks(cbEditor* cbed, bool addedLines);
-        wxString    GetStringOfBrowse_Marks() const;
-        wxString    GetFilePath(){return m_filePath;}
-        void        ImportBrowse_Marks();
-        void        SetBrowseMarksStyle( int style);
-        void        OnEditorEventHookIgnoreMarkerChanges( bool trueOrfalse);
-        void        Dump();
+    BrowseMarks(wxString fullPath);
+    ~BrowseMarks();
+    int         GetMarkPrevious();
+    int         GetMarkNext();
+    int         GetMarkCurrent();
+    int         GetMark(int index);
+    int         GetMarkCount();
+    void        RecordMark(int pos);
+    void        RecordMarksFrom(BrowseMarks& otherBrowse_Marks);
+    void        CopyMarksFrom(const BrowseMarks& otherBrowse_Marks);
+    void        ClearMark(int startPos, int endPos);
+    void        ClearAllBrowse_Marks();
+    int         FindMark(int Posn);
+    bool        LineHasMarker(cbStyledTextCtrl* pControl, int line, int markerId) const;
+    void        MarkRemove(cbStyledTextCtrl* pControl, int line, int markerId);
+    void        MarkLine(cbStyledTextCtrl* pControl, int line, int markerId);
+    void        RemoveMarkerTypes( int markerId );
+    void        PlaceMarkerTypes( int markerId );
+    void        RebuildBrowse_Marks(cbEditor* cbed, bool addedLines);
+    wxString    GetStringOfBrowse_Marks() const;
+    wxString    GetFilePath()
+    {
+        return m_filePath;
+    }
+    void        ImportBrowse_Marks();
+    void        SetBrowseMarksStyle( int style);
+    void        OnEditorEventHookIgnoreMarkerChanges( bool trueOrfalse);
+    void        Dump();
 
-    protected:
-    private:
-        BrowseMarks();
+protected:
+private:
+    BrowseMarks();
 
-        enum {MaxEntries = 20};
+    enum {MaxEntries = 20};
 
-        EditorManager* m_pEdMgr;
+    EditorManager* m_pEdMgr;
 
-        wxString    m_filePath;
-        wxString    m_fileShortName;
-        int         m_currIndex;    //index of current cursor posn
-        int         m_lastIndex;    //insertion index
-        wxArrayInt  m_EdPosnArray;
+    wxString    m_filePath;
+    wxString    m_fileShortName;
+    int         m_currIndex;    //index of current cursor posn
+    int         m_lastIndex;    //insertion index
+    wxArrayInt  m_EdPosnArray;
 };
 
 #endif // BROWSEMARKS_H

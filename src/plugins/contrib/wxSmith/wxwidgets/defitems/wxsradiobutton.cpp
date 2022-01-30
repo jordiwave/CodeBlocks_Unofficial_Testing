@@ -25,19 +25,19 @@
 
 namespace
 {
-    wxsRegisterItem<wxsRadioButton> Reg(_T("RadioButton"),wxsTWidget,_T("Standard"),170);
+wxsRegisterItem<wxsRadioButton> Reg(_T("RadioButton"),wxsTWidget,_T("Standard"),170);
 
-    WXS_ST_BEGIN(wxsRadioButtonStyles,_T(""))
-        WXS_ST_CATEGORY("wxRadioButton")
-        WXS_ST(wxRB_GROUP)
-        WXS_ST(wxRB_SINGLE)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsRadioButtonStyles,_T(""))
+WXS_ST_CATEGORY("wxRadioButton")
+WXS_ST(wxRB_GROUP)
+WXS_ST(wxRB_SINGLE)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsRadioButtonEvents)
-        WXS_EVI(EVT_RADIOBUTTON,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEvent,Select)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsRadioButtonEvents)
+WXS_EVI(EVT_RADIOBUTTON,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEvent,Select)
+WXS_EV_END()
 }
 
 wxsRadioButton::wxsRadioButton(wxsItemResData* Data):
@@ -55,20 +55,20 @@ void wxsRadioButton::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/radiobut.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.wx_str());
-            if ( IsSelected ) Codef( _T("%ASetValue(%b);\n"), true);
-            BuildSetupWindowCode();
-            return;
-        }
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/radiobut.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.wx_str());
+        if ( IsSelected ) Codef( _T("%ASetValue(%b);\n"), true);
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsRadioButton::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsRadioButton::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

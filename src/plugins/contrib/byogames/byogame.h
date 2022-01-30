@@ -17,36 +17,45 @@
  */
 class byoGameLauncher
 {
-    public:
+public:
 
-        /** \brief Ctor */
-        byoGameLauncher(const wxString& Name);
+    /** \brief Ctor */
+    byoGameLauncher(const wxString& Name);
 
-        /** \brief Dctor */
-        virtual ~byoGameLauncher();
+    /** \brief Dctor */
+    virtual ~byoGameLauncher();
 
-        /** \brief Getting number of registered games */
-        static inline int GetGamesCount() { return (int)GetGames().Count(); }
+    /** \brief Getting number of registered games */
+    static inline int GetGamesCount()
+    {
+        return (int)GetGames().Count();
+    }
 
-        /** \brief Getting name of game */
-        static inline const wxString& GetGameName(int gameNum) { return GetGames()[gameNum]->m_Name; }
+    /** \brief Getting name of game */
+    static inline const wxString& GetGameName(int gameNum)
+    {
+        return GetGames()[gameNum]->m_Name;
+    }
 
-        /** \brief Playing game */
-        static inline void PlayGame(int gameNum) { GetGames()[gameNum]->Play(); }
+    /** \brief Playing game */
+    static inline void PlayGame(int gameNum)
+    {
+        GetGames()[gameNum]->Play();
+    }
 
-    protected:
+protected:
 
-        /** \brief Starting game */
-        virtual void Play() = 0;
+    /** \brief Starting game */
+    virtual void Play() = 0;
 
-    private:
+private:
 
-        WX_DEFINE_ARRAY(byoGameLauncher*,GamesT);
+    WX_DEFINE_ARRAY(byoGameLauncher*,GamesT);
 
-        wxString m_Name;        ///< \brief Name of this game
+    wxString m_Name;        ///< \brief Name of this game
 
-        /** \brief Returning games object */
-        static GamesT& GetGames();
+    /** \brief Returning games object */
+    static GamesT& GetGames();
 };
 
 /** \brief Gaming extension to editorbase class
@@ -55,27 +64,34 @@ class byoGameLauncher
  */
 class byoEditorBase: public EditorBase
 {
-    public:
+public:
 
-        /** \brief Ctor, parent window is not required becuase
-          *        notebook will be used
-          */
-        byoEditorBase(const wxString& GameName);
+    /** \brief Ctor, parent window is not required becuase
+      *        notebook will be used
+      */
+    byoEditorBase(const wxString& GameName);
 
-        /** \brief Dctor */
-        virtual ~byoEditorBase();
+    /** \brief Dctor */
+    virtual ~byoEditorBase();
 
-        /** \brief Adding game class */
-        void AddGameContent(byoGameBase* base);
+    /** \brief Adding game class */
+    void AddGameContent(byoGameBase* base);
 
-        virtual void Activate() { if (m_Content) m_Content->SetFocus(); EditorBase::Activate(); }
+    virtual void Activate()
+    {
+        if (m_Content) m_Content->SetFocus();
+        EditorBase::Activate();
+    }
 
-    private:
+private:
 
-        void OnSetFocus(wxFocusEvent& /*event*/) { if (m_Content) m_Content->SetFocus(); }
+    void OnSetFocus(wxFocusEvent& /*event*/)
+    {
+        if (m_Content) m_Content->SetFocus();
+    }
 
-        byoGameBase* m_Content;
-        DECLARE_EVENT_TABLE()
+    byoGameBase* m_Content;
+    DECLARE_EVENT_TABLE()
 };
 
 

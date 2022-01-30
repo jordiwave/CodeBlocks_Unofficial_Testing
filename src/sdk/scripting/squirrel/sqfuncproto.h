@@ -4,7 +4,8 @@
 
 #include "sqopcodes.h"
 
-enum SQOuterType {
+enum SQOuterType
+{
     otLOCAL = 0,
     otOUTER = 1
 };
@@ -12,7 +13,7 @@ enum SQOuterType {
 struct SQOuterVar
 {
 
-    SQOuterVar(){}
+    SQOuterVar() {}
     SQOuterVar(const SQObjectPtr &name,const SQObjectPtr &src,SQOuterType t)
     {
         _name = name;
@@ -32,7 +33,7 @@ struct SQOuterVar
 
 struct SQLocalVarInfo
 {
-    SQLocalVarInfo():_start_op(0),_end_op(0),_pos(0){}
+    SQLocalVarInfo():_start_op(0),_end_op(0),_pos(0) {}
     SQLocalVarInfo(const SQLocalVarInfo &lvi)
     {
         _name=lvi._name;
@@ -46,7 +47,11 @@ struct SQLocalVarInfo
     SQUnsignedInteger _pos;
 };
 
-struct SQLineInfo { SQInteger _line;SQInteger _op; };
+struct SQLineInfo
+{
+    SQInteger _line;
+    SQInteger _op;
+};
 
 typedef sqvector<SQOuterVar> SQOuterVarVec;
 typedef sqvector<SQLocalVarInfo> SQLocalVarInfoVec;
@@ -67,9 +72,9 @@ private:
 
 public:
     static SQFunctionProto *Create(SQSharedState *ss,SQInteger ninstructions,
-        SQInteger nliterals,SQInteger nparameters,
-        SQInteger nfunctions,SQInteger noutervalues,
-        SQInteger nlineinfos,SQInteger nlocalvarinfos,SQInteger ndefaultparams)
+                                   SQInteger nliterals,SQInteger nparameters,
+                                   SQInteger nfunctions,SQInteger noutervalues,
+                                   SQInteger nlineinfos,SQInteger nlocalvarinfos,SQInteger ndefaultparams)
     {
         SQFunctionProto *f;
         //I compact the whole class and members in a single memory allocation
@@ -99,7 +104,8 @@ public:
         _CONSTRUCT_VECTOR(SQLocalVarInfo,f->_nlocalvarinfos,f->_localvarinfos);
         return f;
     }
-    void Release(){
+    void Release()
+    {
         _DESTRUCT_VECTOR(SQObjectPtr,_nliterals,_literals);
         _DESTRUCT_VECTOR(SQObjectPtr,_nparameters,_parameters);
         _DESTRUCT_VECTOR(SQObjectPtr,_nfunctions,_functions);
@@ -117,8 +123,14 @@ public:
     static bool Load(SQVM *v,SQUserPointer up,SQREADFUNC read,SQObjectPtr &ret);
 #ifndef NO_GARBAGE_COLLECTOR
     void Mark(SQCollectable **chain);
-    void Finalize(){ _NULL_SQOBJECT_VECTOR(_literals,_nliterals); }
-    SQObjectType GetType() {return OT_FUNCPROTO;}
+    void Finalize()
+    {
+        _NULL_SQOBJECT_VECTOR(_literals,_nliterals);
+    }
+    SQObjectType GetType()
+    {
+        return OT_FUNCPROTO;
+    }
 #endif
     SQObjectPtr _sourcename;
     SQObjectPtr _name;

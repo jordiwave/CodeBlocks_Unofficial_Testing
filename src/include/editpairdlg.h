@@ -11,27 +11,30 @@
 
 class DLLIMPORT EditPairDlg : public wxScrollingDialog
 {
-    public:
-        enum BrowseMode
-        {
-            bmDisable = 0,
-            bmBrowseForFile,
-            bmBrowseForDirectory
-        };
+public:
+    enum BrowseMode
+    {
+        bmDisable = 0,
+        bmBrowseForFile,
+        bmBrowseForDirectory
+    };
 
-        EditPairDlg(wxWindow* parent, wxString& key, wxString& value, const wxString& title = _("Edit pair"), BrowseMode allowBrowse = bmDisable);
-        ~EditPairDlg() override;
-		EditPairDlg& operator=(const EditPairDlg&){ return *this; } // just to satisfy script bindings (never used)
-		void EndModal(int retCode) override;
-    protected:
-        void OnUpdateUI(wxUpdateUIEvent& event);
-        void OnBrowse(wxCommandEvent& event);
+    EditPairDlg(wxWindow* parent, wxString& key, wxString& value, const wxString& title = _("Edit pair"), BrowseMode allowBrowse = bmDisable);
+    ~EditPairDlg() override;
+    EditPairDlg& operator=(const EditPairDlg&)
+    {
+        return *this;    // just to satisfy script bindings (never used)
+    }
+    void EndModal(int retCode) override;
+protected:
+    void OnUpdateUI(wxUpdateUIEvent& event);
+    void OnBrowse(wxCommandEvent& event);
 
-        wxString& m_Key;
-        wxString& m_Value;
-        BrowseMode m_BrowseMode;
-    private:
-        DECLARE_EVENT_TABLE()
+    wxString& m_Key;
+    wxString& m_Value;
+    BrowseMode m_BrowseMode;
+private:
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // EDITPAIRDLG_H

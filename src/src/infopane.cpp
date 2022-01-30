@@ -10,11 +10,11 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/event.h>
-    #include <wx/menu.h>
-    #include "cbexception.h"
-    #include "globals.h"
-    #include "configmanager.h"
+#include <wx/event.h>
+#include <wx/menu.h>
+#include "cbexception.h"
+#include "globals.h"
+#include "configmanager.h"
 #endif
 
 #include <wx/wupdlock.h>
@@ -24,16 +24,16 @@
 
 namespace
 {
-    long idNB_TabTop               = wxNewId();
-    long idNB_TabBottom            = wxNewId();
+long idNB_TabTop               = wxNewId();
+long idNB_TabBottom            = wxNewId();
 
-    long idCopyAllToClipboard      = wxNewId();
-    long idCopySelectedToClipboard = wxNewId();
+long idCopyAllToClipboard      = wxNewId();
+long idCopySelectedToClipboard = wxNewId();
 
-    long idWrapMode                = wxNewId();
-    long idClear                   = wxNewId();
+long idWrapMode                = wxNewId();
+long idClear                   = wxNewId();
 
-    long idNB                      = wxNewId();
+long idNB                      = wxNewId();
 }
 
 BEGIN_EVENT_TABLE(InfoPane, cbAuiNotebook)
@@ -58,7 +58,7 @@ InfoPane::InfoPane(wxWindow* parent) : cbAuiNotebook(parent, idNB, wxDefaultPosi
     const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
     const wxString path = ConfigManager::GetDataFolder()
                           + wxString::Format(_T("/resources.zip#zip:/images/infopane/%dx%d/edit.png"),
-                                             uiSize, uiSize);
+                                  uiSize, uiSize);
     m_DefaultBitmap = cbLoadBitmapScaled(path, wxBITMAP_TYPE_PNG, cbGetContentScaleFactor(*parent));
 }
 
@@ -102,7 +102,7 @@ void InfoPane::LoadTabOrder(wxString layout)
     {
         wxString theToken = strTok.GetNextToken();
         title = theToken.BeforeFirst('=');
-        for (size_t j = 0; j < m_Pages.GetCount();++j)
+        for (size_t j = 0; j < m_Pages.GetCount(); ++j)
         {
             if (m_Pages.Item(j)->title == title)
             {
@@ -378,8 +378,8 @@ void InfoPane::DoShowContextMenu()
 
     int selection = GetSelection();
     if (   (selection >= 0)
-        && (selection < static_cast<int>(GetPageCount()))
-        && (m_Pages.Item(GetPageIndexByWindow( GetPage(GetSelection()) ))->islogger) )
+            && (selection < static_cast<int>(GetPageCount()))
+            && (m_Pages.Item(GetPageIndexByWindow( GetPage(GetSelection()) ))->islogger) )
     {
         Logger* l = m_Pages.Item(GetPageIndexByWindow( GetPage(GetSelection()) ))->logger;
 
@@ -413,9 +413,9 @@ void InfoPane::DoShowContextMenu()
         menu.AppendSeparator();
 
     if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/infopane_tabs_bottom"), false))
-    	menu.Append(idNB_TabTop, _("Tabs at top"));
+        menu.Append(idNB_TabTop, _("Tabs at top"));
     else
-    	menu.Append(idNB_TabBottom, _("Tabs at bottom"));
+        menu.Append(idNB_TabBottom, _("Tabs at bottom"));
 
     // add toggle sub-menu
     wxMenu* view = new wxMenu;
@@ -513,7 +513,7 @@ bool InfoPane::DeleteLogger(Logger* l)
         }
     }
 
-   return false;
+    return false;
 }
 
 bool InfoPane::RemoveNonLogger(wxWindow* p)
@@ -531,7 +531,7 @@ bool InfoPane::RemoveNonLogger(wxWindow* p)
         }
     }
 
-   return false;
+    return false;
 }
 
 bool InfoPane::DeleteNonLogger(wxWindow* p)
@@ -552,6 +552,6 @@ bool InfoPane::DeleteNonLogger(wxWindow* p)
         }
     }
 
-   return false;
+    return false;
 }
 

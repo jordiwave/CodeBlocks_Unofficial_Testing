@@ -11,14 +11,14 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #ifdef __WXMSW__
-    #include <windows.h>
-    #include <conio.h>
-    #define wait_key getch
+#include <windows.h>
+#include <conio.h>
+#define wait_key getch
 #else
-    #define wait_key getchar
+#define wait_key getchar
 #endif
 #if defined(__unix__) || defined(__unix)
-    #include <sys/wait.h>
+#include <sys/wait.h>
 #endif
 #include <string.h>
 

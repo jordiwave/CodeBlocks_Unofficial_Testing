@@ -30,37 +30,37 @@
 
 namespace
 {
-    // Loading images from xpm files
-    #include "wxchart16.xpm"
-    #include "wxchart32.xpm"
+// Loading images from xpm files
+#include "wxchart16.xpm"
+#include "wxchart32.xpm"
 
-    // This code provides basic informations about item and register
-    // it inside wxSmith
-    wxsRegisterItem<wxsChart> Reg(
-        _T("wxChartCtrl"),              // Class name
-        wxsTWidget,                     // Item type
-        _T("wxWindows"),                // License
-        _T("Paolo Gava"),               // Author
-        _T("paolo_gava@hotmail.com"),   // Author's email
-        _T("http://wxcode.sourceforge.net/components/wxchart/"),    // Item's homepage
-        _T("Contrib"),                  // Category in palette
-        100,                             // Priority in palette
-        _T("Chart"),                    // Base part of names for new items
-        wxsCPP,                         // List of coding languages supported by this item
-        1, 0,                           // Version
-        wxBitmap(wxchart32_xpm),        // 32x32 bitmap
-        wxBitmap(wxchart16_xpm),        // 16x16 bitmap
-        false);                         // We do not allow this item inside XRC files
+// This code provides basic informations about item and register
+// it inside wxSmith
+wxsRegisterItem<wxsChart> Reg(
+    _T("wxChartCtrl"),              // Class name
+    wxsTWidget,                     // Item type
+    _T("wxWindows"),                // License
+    _T("Paolo Gava"),               // Author
+    _T("paolo_gava@hotmail.com"),   // Author's email
+    _T("http://wxcode.sourceforge.net/components/wxchart/"),    // Item's homepage
+    _T("Contrib"),                  // Category in palette
+    100,                             // Priority in palette
+    _T("Chart"),                    // Base part of names for new items
+    wxsCPP,                         // List of coding languages supported by this item
+    1, 0,                           // Version
+    wxBitmap(wxchart32_xpm),        // 32x32 bitmap
+    wxBitmap(wxchart16_xpm),        // 16x16 bitmap
+    false);                         // We do not allow this item inside XRC files
 
-    // Defining styles
-    WXS_ST_BEGIN(wxsChartStyles,_T("wxSIMPLE_BORDER"))
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+// Defining styles
+WXS_ST_BEGIN(wxsChartStyles,_T("wxSIMPLE_BORDER"))
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
 
-    static const long DEFAULT_STYLE_FIX = 0x1000;
-    static const long Values[] = { USE_AXIS_X, USE_AXIS_Y, USE_LEGEND, USE_ZOOM_BUT, USE_DEPTH_BUT, USE_GRID, DEFAULT_STYLE_FIX };
-    static const wxChar* Names[] = { _T("USE_AXIS_X"), _T("USE_AXIS_Y"), _T("USE_LEGEND"), _T("USE_ZOOM_BUT"), _T("USE_DEPTH_BUT"), _T("USE_GRID"), _T("DEFAULT_STYLE"), NULL };
+static const long DEFAULT_STYLE_FIX = 0x1000;
+static const long Values[] = { USE_AXIS_X, USE_AXIS_Y, USE_LEGEND, USE_ZOOM_BUT, USE_DEPTH_BUT, USE_GRID, DEFAULT_STYLE_FIX };
+static const wxChar* Names[] = { _T("USE_AXIS_X"), _T("USE_AXIS_Y"), _T("USE_LEGEND"), _T("USE_ZOOM_BUT"), _T("USE_DEPTH_BUT"), _T("USE_GRID"), _T("DEFAULT_STYLE"), NULL };
 
 }
 
@@ -87,66 +87,88 @@ void wxsChart::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/chartctrl.h>"),GetInfo().ClassName);
+        AddHeader(_T("<wx/barchartpoints.h>"),_T(""),hfLocal);
+        AddHeader(_T("<wx/bar3dchartpoints.h>"),_T(""),hfLocal);
+        AddHeader(_T("<wx/piechartpoints.h>"),_T(""),hfLocal);
+        AddHeader(_T("<wx/pie3dchartpoints.h>"),_T(""),hfLocal);
+
+        wxString StyleCode;
+        for ( int i=0; Names[i]; i++ )
         {
-            AddHeader(_T("<wx/chartctrl.h>"),GetInfo().ClassName);
-            AddHeader(_T("<wx/barchartpoints.h>"),_T(""),hfLocal);
-            AddHeader(_T("<wx/bar3dchartpoints.h>"),_T(""),hfLocal);
-            AddHeader(_T("<wx/piechartpoints.h>"),_T(""),hfLocal);
-            AddHeader(_T("<wx/pie3dchartpoints.h>"),_T(""),hfLocal);
-
-            wxString StyleCode;
-            for ( int i=0; Names[i]; i++ )
-            {
-                if ( (m_Flags & Values[i]) == Values[i] ) StyleCode << Names[i] << _T("|");
-            }
-
-            if ( StyleCode.IsEmpty() ) StyleCode = _T("0");
-            else                       StyleCode.RemoveLast();
-
-            Codef(_T("%C(%W,%I,(wxChartStyle)(%s),%P,%S,%T);\n"),StyleCode.wx_str());
-
-            Codef(_T("{\n"));
-            for ( size_t i=0; i<m_ChartPointsDesc.Count(); i++ )
-            {
-                ChartPointsDesc* Desc = m_ChartPointsDesc[i];
-
-                wxString GenStr;
-                switch ( Desc->Type )
-                {
-                    case Bar:      GenStr = _T("wxBarChartPoints::CreateWxBarChartPoints"); break;
-                    case Bar3D:    GenStr = _T("wxBar3DChartPoints::CreateWxBar3DChartPoints"); break;
-                    case Pie:      GenStr = _T("wxPieChartPoints::CreateWxPieChartPoints"); break;
-                    case Pie3D:    GenStr = _T("wxPie3DChartPoints::CreateWxPie3DChartPoints"); break;
-                    case Points:   GenStr = _T("wxPointsCharPoints::CreateWxPointsChartPoints"); break;
-                    case Points3D: GenStr = _T("wxPoints3DCharPoints::CreateWxPoints3DChartPoints"); break;
-                    case Line:     GenStr = _T("wxLineCharPoints::CreateWxLineChartPoints"); break;
-                    case Line3D:   GenStr = _T("wxLine3DCharPoints::CreateWxLine3DChartPoints"); break;
-                    case Area:     GenStr = _T("wxAreaCharPoints::CreateWxAreaChartPoints"); break;
-                    case Area3D:   GenStr = _T("wxArea3DCharPoints::CreateWxArea3DChartPoints"); break;
-                    default:       GenStr = _T("wxBarChartPoints::CreateWxBarChartPoints"); break;
-                }
-
-                wxString VarStr = wxString::Format(_T("PointSet%d"),(int)i);
-
-                Codef(_T("\twxChartPoints* %v = %s(%t);\n"),VarStr.wx_str(),GenStr.wx_str(),Desc->Name.wx_str());
-
-                for ( size_t j=0; j<Desc->Points.Count(); j++ )
-                {
-                    wxString PointStr = wxString::Format(_T("%lf,%lf"),Desc->Points[j]->X,Desc->Points[j]->Y);
-                    Codef(_T("\t%v->Add(%t,%s);\n"),VarStr.wx_str(),Desc->Points[j]->Name.wx_str(),PointStr.wx_str());
-                }
-
-                Codef(_T("\t%AAdd(%v);\n"),VarStr.wx_str());
-            }
-            Codef(_T("}\n"));
-
-            break;
+            if ( (m_Flags & Values[i]) == Values[i] ) StyleCode << Names[i] << _T("|");
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsChart::OnBuildCreatingCode"),GetLanguage());
+        if ( StyleCode.IsEmpty() ) StyleCode = _T("0");
+        else                       StyleCode.RemoveLast();
+
+        Codef(_T("%C(%W,%I,(wxChartStyle)(%s),%P,%S,%T);\n"),StyleCode.wx_str());
+
+        Codef(_T("{\n"));
+        for ( size_t i=0; i<m_ChartPointsDesc.Count(); i++ )
+        {
+            ChartPointsDesc* Desc = m_ChartPointsDesc[i];
+
+            wxString GenStr;
+            switch ( Desc->Type )
+            {
+            case Bar:
+                GenStr = _T("wxBarChartPoints::CreateWxBarChartPoints");
+                break;
+            case Bar3D:
+                GenStr = _T("wxBar3DChartPoints::CreateWxBar3DChartPoints");
+                break;
+            case Pie:
+                GenStr = _T("wxPieChartPoints::CreateWxPieChartPoints");
+                break;
+            case Pie3D:
+                GenStr = _T("wxPie3DChartPoints::CreateWxPie3DChartPoints");
+                break;
+            case Points:
+                GenStr = _T("wxPointsCharPoints::CreateWxPointsChartPoints");
+                break;
+            case Points3D:
+                GenStr = _T("wxPoints3DCharPoints::CreateWxPoints3DChartPoints");
+                break;
+            case Line:
+                GenStr = _T("wxLineCharPoints::CreateWxLineChartPoints");
+                break;
+            case Line3D:
+                GenStr = _T("wxLine3DCharPoints::CreateWxLine3DChartPoints");
+                break;
+            case Area:
+                GenStr = _T("wxAreaCharPoints::CreateWxAreaChartPoints");
+                break;
+            case Area3D:
+                GenStr = _T("wxArea3DCharPoints::CreateWxArea3DChartPoints");
+                break;
+            default:
+                GenStr = _T("wxBarChartPoints::CreateWxBarChartPoints");
+                break;
+            }
+
+            wxString VarStr = wxString::Format(_T("PointSet%d"),(int)i);
+
+            Codef(_T("\twxChartPoints* %v = %s(%t);\n"),VarStr.wx_str(),GenStr.wx_str(),Desc->Name.wx_str());
+
+            for ( size_t j=0; j<Desc->Points.Count(); j++ )
+            {
+                wxString PointStr = wxString::Format(_T("%lf,%lf"),Desc->Points[j]->X,Desc->Points[j]->Y);
+                Codef(_T("\t%v->Add(%t,%s);\n"),VarStr.wx_str(),Desc->Points[j]->Name.wx_str(),PointStr.wx_str());
+            }
+
+            Codef(_T("\t%AAdd(%v);\n"),VarStr.wx_str());
+        }
+        Codef(_T("}\n"));
+
+        break;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsChart::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
@@ -163,19 +185,29 @@ wxObject* wxsChart::OnBuildPreview(wxWindow* Parent,cb_unused long Flags)
 
         switch ( Desc->Type )
         {
-            case Bar:      _Points = wxBarChartPoints::CreateWxBarChartPoints(Desc->Name); break;
-            case Bar3D:    _Points = wxBar3DChartPoints::CreateWxBar3DChartPoints(Desc->Name); break;
-            case Pie:      _Points = wxPieChartPoints::CreateWxPieChartPoints(Desc->Name); break;
-            case Pie3D:    _Points = wxPie3DChartPoints::CreateWxPie3DChartPoints(Desc->Name); break;
-            /*
-            case _Points:   _Points = wxPointsCharPoints::CreateWxPointsChartPoints(Desc->Name); break;
-            case Points3D: _Points = wxPoints3DCharPoints::CreateWxPoints3DChartPoints(Desc->Name); break;
-            case Line:     _Points = wxLineCharPoints::CreateWxLineChartPoints(Desc->Name); break;
-            case Line3D:   _Points = wxLine3DCharPoints::CreateWxLine3DChartPoints(Desc->Name); break;
-            case Area:     _Points = wxAreaCharPoints::CreateWxAreaChartPoints(Desc->Name); break;
-            case Area3D:   _Points = wxArea3DCharPoints::CreateWxArea3DChartPoints(Desc->Name); break;
-            */
-            default:       _Points = wxBarChartPoints::CreateWxBarChartPoints(Desc->Name); break;
+        case Bar:
+            _Points = wxBarChartPoints::CreateWxBarChartPoints(Desc->Name);
+            break;
+        case Bar3D:
+            _Points = wxBar3DChartPoints::CreateWxBar3DChartPoints(Desc->Name);
+            break;
+        case Pie:
+            _Points = wxPieChartPoints::CreateWxPieChartPoints(Desc->Name);
+            break;
+        case Pie3D:
+            _Points = wxPie3DChartPoints::CreateWxPie3DChartPoints(Desc->Name);
+            break;
+        /*
+        case _Points:   _Points = wxPointsCharPoints::CreateWxPointsChartPoints(Desc->Name); break;
+        case Points3D: _Points = wxPoints3DCharPoints::CreateWxPoints3DChartPoints(Desc->Name); break;
+        case Line:     _Points = wxLineCharPoints::CreateWxLineChartPoints(Desc->Name); break;
+        case Line3D:   _Points = wxLine3DCharPoints::CreateWxLine3DChartPoints(Desc->Name); break;
+        case Area:     _Points = wxAreaCharPoints::CreateWxAreaChartPoints(Desc->Name); break;
+        case Area3D:   _Points = wxArea3DCharPoints::CreateWxArea3DChartPoints(Desc->Name); break;
+        */
+        default:
+            _Points = wxBarChartPoints::CreateWxBarChartPoints(Desc->Name);
+            break;
         }
 
         for ( size_t j=0; j<Desc->Points.Count(); j++ )
@@ -265,30 +297,31 @@ bool wxsChart::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
     m_ChartPointsDesc.Clear();
 
     for ( TiXmlElement* DescElem = Element->FirstChildElement("chartpointset");
-          DescElem;
-          DescElem = DescElem->NextSiblingElement("chartpointset") )
+            DescElem;
+            DescElem = DescElem->NextSiblingElement("chartpointset") )
     {
         ChartPointsDesc* Desc = new ChartPointsDesc;
         Desc->Name    = cbC2U(DescElem->Attribute("name"));
         wxString Type = cbC2U(DescElem->Attribute("type"));
 
-        if ( Type == _T("bar") )      Desc->Type = Bar;      else
-        if ( Type == _T("bar3d") )    Desc->Type = Bar3D;    else
-        if ( Type == _T("pie") )      Desc->Type = Pie;      else
-        if ( Type == _T("pie3d") )    Desc->Type = Pie3D;    else
-        /*
-        if ( Type == _T("points") )   Desc->Type = Points;   else
-        if ( Type == _T("points3d") ) Desc->Type = Points3D; else
-        if ( Type == _T("line") )     Desc->Type = Line;     else
-        if ( Type == _T("line3d") )   Desc->Type = Line3D;   else
-        if ( Type == _T("area") )     Desc->Type = Area;     else
-        if ( Type == _T("area3d") )   Desc->Type = Area3D;   else
-        */
-                                      Desc->Type = Bar;
+        if ( Type == _T("bar") )      Desc->Type = Bar;
+        else if ( Type == _T("bar3d") )    Desc->Type = Bar3D;
+        else if ( Type == _T("pie") )      Desc->Type = Pie;
+        else if ( Type == _T("pie3d") )    Desc->Type = Pie3D;
+        else
+            /*
+            if ( Type == _T("points") )   Desc->Type = Points;   else
+            if ( Type == _T("points3d") ) Desc->Type = Points3D; else
+            if ( Type == _T("line") )     Desc->Type = Line;     else
+            if ( Type == _T("line3d") )   Desc->Type = Line3D;   else
+            if ( Type == _T("area") )     Desc->Type = Area;     else
+            if ( Type == _T("area3d") )   Desc->Type = Area3D;   else
+            */
+            Desc->Type = Bar;
 
         for ( TiXmlElement* PointElem = DescElem->FirstChildElement("point");
-              PointElem;
-              PointElem = PointElem->NextSiblingElement("point") )
+                PointElem;
+                PointElem = PointElem->NextSiblingElement("point") )
         {
             PointDesc* Point = new PointDesc;
             Point->Name = cbC2U(PointElem->Attribute("name"));
@@ -314,17 +347,38 @@ bool wxsChart::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
         DescElem->SetAttribute("name",cbU2C(Desc->Name));
         switch ( Desc->Type )
         {
-            case Bar:      DescElem->SetAttribute("type","bar");      break;
-            case Bar3D:    DescElem->SetAttribute("type","bar3d");    break;
-            case Pie:      DescElem->SetAttribute("type","pie");      break;
-            case Pie3D:    DescElem->SetAttribute("type","pie3d");    break;
-            case Points:   DescElem->SetAttribute("type","points");   break;
-            case Points3D: DescElem->SetAttribute("type","points3d"); break;
-            case Line:     DescElem->SetAttribute("type","line");     break;
-            case Line3D:   DescElem->SetAttribute("type","line3d");   break;
-            case Area:     DescElem->SetAttribute("type","area");     break;
-            case Area3D:   DescElem->SetAttribute("type","area3d");   break;
-            default:                                                  break;
+        case Bar:
+            DescElem->SetAttribute("type","bar");
+            break;
+        case Bar3D:
+            DescElem->SetAttribute("type","bar3d");
+            break;
+        case Pie:
+            DescElem->SetAttribute("type","pie");
+            break;
+        case Pie3D:
+            DescElem->SetAttribute("type","pie3d");
+            break;
+        case Points:
+            DescElem->SetAttribute("type","points");
+            break;
+        case Points3D:
+            DescElem->SetAttribute("type","points3d");
+            break;
+        case Line:
+            DescElem->SetAttribute("type","line");
+            break;
+        case Line3D:
+            DescElem->SetAttribute("type","line3d");
+            break;
+        case Area:
+            DescElem->SetAttribute("type","area");
+            break;
+        case Area3D:
+            DescElem->SetAttribute("type","area3d");
+            break;
+        default:
+            break;
         }
 
         for ( size_t j=0; j<Desc->Points.Count(); j++ )

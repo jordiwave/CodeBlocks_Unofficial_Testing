@@ -20,17 +20,17 @@
 #define CONDITION_B_2 2
 
 #if   CONDITION_A
-  #if   CONDITION_A_1
-    #define COND IS_A_1
-  #elif CONDITION_A_2
-    #define COND IS_A_2
-  #endif
+#if   CONDITION_A_1
+#define COND IS_A_1
+#elif CONDITION_A_2
+#define COND IS_A_2
+#endif
 #elif CONDITION_B
-  #if   CONDITION_B_1
-    #define COND IS_B_1
-  #elif CONDITION_B_2
-    #define COND IS_B_2
-  #endif
+#if   CONDITION_B_1
+#define COND IS_B_1
+#elif CONDITION_B_2
+#define COND IS_B_2
+#endif
 #endif
 
 #if defined(CONDITION_B) && \
@@ -41,16 +41,16 @@ int bug761;
 
 class MyClass1
 {
-  public:
-           MyClass1() {};
-  virtual ~MyClass1() {};
+public:
+    MyClass1() {};
+    virtual ~MyClass1() {};
 };
 
 class MyClass2
 {
-  public:
-           MyClass2() {};
-  virtual ~MyClass2() {};
+public:
+    MyClass2() {};
+    virtual ~MyClass2() {};
 };
 
 class AClass
@@ -59,13 +59,13 @@ class AClass
     , public MyClass2
 #endif
 {
-  public:
+public:
 
-           AClass() {};
-  virtual ~AClass() {};
+    AClass() {};
+    virtual ~AClass() {};
 
-  int   i_integer;
-  float f_float;
+    int   i_integer;
+    float f_float;
 };
 
 #if 0

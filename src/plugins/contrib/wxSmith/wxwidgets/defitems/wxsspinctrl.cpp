@@ -26,24 +26,24 @@
 
 namespace
 {
-    wxsRegisterItem<wxsSpinCtrl> Reg(_T("SpinCtrl"),wxsTWidget,_T("Standard"),91);
+wxsRegisterItem<wxsSpinCtrl> Reg(_T("SpinCtrl"),wxsTWidget,_T("Standard"),91);
 
-    WXS_ST_BEGIN(wxsSpinCtrlStyles,_T(""))
-        WXS_ST_CATEGORY("wxSpinCtrl")
-        WXS_ST(wxSP_HORIZONTAL)
-        WXS_ST(wxSP_VERTICAL)
-        WXS_ST(wxSP_ARROW_KEYS)
-        WXS_ST(wxSP_WRAP)
-        WXS_ST(wxALIGN_LEFT)
-        WXS_ST(wxALIGN_CENTER_HORIZONTAL)
-        WXS_ST(wxALIGN_RIGHT)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsSpinCtrlStyles,_T(""))
+WXS_ST_CATEGORY("wxSpinCtrl")
+WXS_ST(wxSP_HORIZONTAL)
+WXS_ST(wxSP_VERTICAL)
+WXS_ST(wxSP_ARROW_KEYS)
+WXS_ST(wxSP_WRAP)
+WXS_ST(wxALIGN_LEFT)
+WXS_ST(wxALIGN_CENTER_HORIZONTAL)
+WXS_ST(wxALIGN_RIGHT)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
 
-    WXS_EV_BEGIN(wxsSpinCtrlEvents)
-        WXS_EVI(EVT_SPINCTRL,wxEVT_COMMAND_SPINCTRL_UPDATED,wxSpinEvent,Change)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsSpinCtrlEvents)
+WXS_EVI(EVT_SPINCTRL,wxEVT_COMMAND_SPINCTRL_UPDATED,wxSpinEvent,Change)
+WXS_EV_END()
 }
 
 wxsSpinCtrl::wxsSpinCtrl(wxsItemResData* Data):
@@ -61,25 +61,25 @@ void wxsSpinCtrl::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
-        {
-            AddHeader(_T("<wx/spinctrl.h>"),GetInfo().ClassName,0);
-            AddHeader(_T("<wx/spinctrl.h>"),_T("wxSpinEvent"),0);
-            long ValueLong = 0;
-            Value.ToLong(&ValueLong);
-            Codef(_T("%C(%W, %I, %n, %P, %S, %T, %d, %d, %d, %N);\n"),Value.wx_str(),Min,Max,ValueLong);
-            if ( !Value.empty() )
-                Codef(_T("%ASetValue(%n);\n"),Value.wx_str());
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/spinctrl.h>"),GetInfo().ClassName,0);
+        AddHeader(_T("<wx/spinctrl.h>"),_T("wxSpinEvent"),0);
+        long ValueLong = 0;
+        Value.ToLong(&ValueLong);
+        Codef(_T("%C(%W, %I, %n, %P, %S, %T, %d, %d, %d, %N);\n"),Value.wx_str(),Min,Max,ValueLong);
+        if ( !Value.empty() )
+            Codef(_T("%ASetValue(%n);\n"),Value.wx_str());
 
-            BuildSetupWindowCode();
-            return;
-        }
+        BuildSetupWindowCode();
+        return;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsSpinCtrl::OnBuildCreatingCode"),GetLanguage());
-        }
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsSpinCtrl::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 

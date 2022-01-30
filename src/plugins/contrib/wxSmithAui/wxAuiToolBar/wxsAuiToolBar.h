@@ -26,29 +26,29 @@
 
 class wxsAuiToolBar : public wxsContainer
 {
-    public:
-        int  m_GripperSize;
+public:
+    int  m_GripperSize;
 
-        wxsAuiToolBar(wxsItemResData* Data);
-        virtual ~wxsAuiToolBar();
+    wxsAuiToolBar(wxsItemResData* Data);
+    virtual ~wxsAuiToolBar();
 
-    protected:
-    private:
-        virtual void OnEnumContainerProperties(cb_unused long Flags) {}
-        virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
-        virtual bool OnCanAddToParent(wxsParent* Parent,bool ShowMessage);
-        virtual wxsPropertyContainer* OnBuildExtra();
-        virtual wxString OnXmlGetExtraObjectClass();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long PreviewFlags);
-        virtual void OnBuildCreatingCode();
-        virtual bool OnMouseClick(wxWindow* Preview,int PosX,int PosY);
-        virtual bool OnIsChildPreviewVisible(wxsItem* Child);
-        virtual bool OnEnsureChildPreviewVisible(wxsItem* Child);
+protected:
+private:
+    virtual void OnEnumContainerProperties(cb_unused long Flags) {}
+    virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
+    virtual bool OnCanAddToParent(wxsParent* Parent,bool ShowMessage);
+    virtual wxsPropertyContainer* OnBuildExtra();
+    virtual wxString OnXmlGetExtraObjectClass();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long PreviewFlags);
+    virtual void OnBuildCreatingCode();
+    virtual bool OnMouseClick(wxWindow* Preview,int PosX,int PosY);
+    virtual bool OnIsChildPreviewVisible(wxsItem* Child);
+    virtual bool OnEnsureChildPreviewVisible(wxsItem* Child);
 
-        void UpdateCurrentSelection();
+    void UpdateCurrentSelection();
 
-        wxsItem* m_CurrentSelection;
-        wxObject* m_LastPreview;        ///< \brief Current preview object
+    wxsItem* m_CurrentSelection;
+    wxObject* m_LastPreview;        ///< \brief Current preview object
 };
 
 #endif // WXSAUINOTEBOOK_H

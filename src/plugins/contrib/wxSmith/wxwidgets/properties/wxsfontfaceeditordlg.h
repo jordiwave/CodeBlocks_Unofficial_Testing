@@ -26,7 +26,7 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 //(*Headers(wxsFontFaceEditorDlg)
@@ -38,35 +38,35 @@
 
 class wxsFontFaceEditorDlg: public wxScrollingDialog
 {
-    public:
+public:
 
-        wxsFontFaceEditorDlg(wxWindow* parent,wxString& Face,wxWindowID id = -1);
-        virtual ~wxsFontFaceEditorDlg();
+    wxsFontFaceEditorDlg(wxWindow* parent,wxString& Face,wxWindowID id = -1);
+    virtual ~wxsFontFaceEditorDlg();
 
-        //(*Identifiers(wxsFontFaceEditorDlg)
-        static const long ID_TEXTCTRL1;
-        static const long ID_BUTTON1;
-        //*)
+    //(*Identifiers(wxsFontFaceEditorDlg)
+    static const long ID_TEXTCTRL1;
+    static const long ID_BUTTON1;
+    //*)
 
-    protected:
+protected:
 
-        //(*Handlers(wxsFontFaceEditorDlg)
-        void OnButton2Click(wxCommandEvent& event);
-        void OnButton1Click(wxCommandEvent& event);
-        //*)
+    //(*Handlers(wxsFontFaceEditorDlg)
+    void OnButton2Click(wxCommandEvent& event);
+    void OnButton1Click(wxCommandEvent& event);
+    //*)
 
-        //(*Declarations(wxsFontFaceEditorDlg)
-        wxTextCtrl* FaceName;
-        wxButton* Button1;
-        wxButton* Button2;
-        wxButton* Button3;
-        //*)
+    //(*Declarations(wxsFontFaceEditorDlg)
+    wxTextCtrl* FaceName;
+    wxButton* Button1;
+    wxButton* Button2;
+    wxButton* Button3;
+    //*)
 
-    private:
+private:
 
-        wxString& Face;
+    wxString& Face;
 
-        DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

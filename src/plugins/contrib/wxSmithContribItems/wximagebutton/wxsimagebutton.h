@@ -29,25 +29,25 @@
 /** \brief Class for wxImageButton widget */
 class wxsImageButton: public wxsWidget
 {
-    public:
+public:
 
-        wxsImageButton(wxsItemResData* Data);
+    wxsImageButton(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void        OnBuildCreatingCode();
-        virtual wxObject   *OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void        OnEnumWidgetProperties(long Flags);
-        virtual void        OnBuildDeclarationsCode();
+    virtual void        OnBuildCreatingCode();
+    virtual wxObject   *OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void        OnEnumWidgetProperties(long Flags);
+    virtual void        OnBuildDeclarationsCode();
 
-        bool        mIsDefault;
-        wxString    mImageList;                     // list to use to select images
-        wxString    mLabelIndex;                    // main image index
-        wxString    mDisabledIndex;                 // disabled image
-        wxString    mSelectedIndex;                 // selected image
-        wxString    mFocusIndex;                    // focused image
+    bool        mIsDefault;
+    wxString    mImageList;                     // list to use to select images
+    wxString    mLabelIndex;                    // main image index
+    wxString    mDisabledIndex;                 // disabled image
+    wxString    mSelectedIndex;                 // selected image
+    wxString    mFocusIndex;                    // focused image
 
-        int mCount;
+    int mCount;
 };
 
 #endif

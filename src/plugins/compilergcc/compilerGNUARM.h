@@ -10,13 +10,13 @@
 
 class CompilerGNUARM : public Compiler
 {
-    public:
-        CompilerGNUARM();
-        ~CompilerGNUARM() override;
-        AutoDetectResult AutoDetectInstallationDir() override;
-    protected:
-        Compiler* CreateCopy() override;
-    private:
+public:
+    CompilerGNUARM();
+    ~CompilerGNUARM() override;
+    AutoDetectResult AutoDetectInstallationDir() override;
+protected:
+    Compiler* CreateCopy() override;
+private:
 };
 
 #endif // COMPILER_GNUARM_H

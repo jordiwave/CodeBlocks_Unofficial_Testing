@@ -74,13 +74,24 @@ public:
     bool FindNext(bool includechildren = true);
 
     /** overload the *() operator, get the node index pointed by the iterator */
-    const nSearchTreeNode& operator* () const { return m_CurNode; }
+    const nSearchTreeNode& operator* () const
+    {
+        return m_CurNode;
+    }
 
     /** go to next node */
-    const BasicSearchTreeIterator& operator++() { FindNext(); return *this; }
+    const BasicSearchTreeIterator& operator++()
+    {
+        FindNext();
+        return *this;
+    }
 
     /** go to previous node */
-    const BasicSearchTreeIterator& operator--() { FindPrev(); return *this; }
+    const BasicSearchTreeIterator& operator--()
+    {
+        FindPrev();
+        return *this;
+    }
 
     /** go to the next node under the same parent's link map */
     bool FindNextSibling();
@@ -92,7 +103,10 @@ public:
     bool FindSibling(wxChar ch);
 
     /** reach the end of the tree */
-    bool Eof() { return (!IsValid() || m_Eof); }
+    bool Eof()
+    {
+        return (!IsValid() || m_Eof);
+    }
 
 protected:
     nSearchTreeNode  m_CurNode;        /// current pointed node index
@@ -130,7 +144,11 @@ public:
     nSearchTreeNode n;  /// Which node are we pointing to?
     size_t depth;       /// At what depth is the string's end located?
     SearchTreePoint(): n(0), depth(0) {}
-    SearchTreePoint(nSearchTreeNode nn, size_t dd) { n = nn; depth = dd; }
+    SearchTreePoint(nSearchTreeNode nn, size_t dd)
+    {
+        n = nn;
+        depth = dd;
+    }
 };
 
 /** This class represents a node of the tree, we still take an example E.g.
@@ -167,10 +185,16 @@ public:
                    unsigned int labellen);
     virtual ~SearchTreeNode();
     /** return the parent node index */
-    nSearchTreeNode GetParent() const { return m_Parent; }
+    nSearchTreeNode GetParent() const
+    {
+        return m_Parent;
+    }
 
     /** set the parent node index */
-    void SetParent(nSearchTreeNode newparent) { m_Parent = newparent; }
+    void SetParent(nSearchTreeNode newparent)
+    {
+        m_Parent = newparent;
+    }
 
     /** This will loop of the link map of the node, and find the child node with its edge beginning
      *  with the single character, return the valid node index then, if no such child node exists,
@@ -202,19 +226,31 @@ public:
     const wxString& GetActualLabel(const BasicSearchTree* tree) const;
 
     /** the index of the full label in tree->m_Labels array */
-    nSearchTreeLabel GetLabelNo() const { return m_Label; }
+    nSearchTreeLabel GetLabelNo() const
+    {
+        return m_Label;
+    }
 
     /** the first character index in the full label */
-    unsigned int GetLabelStart() const { return m_LabelStart; }
+    unsigned int GetLabelStart() const
+    {
+        return m_LabelStart;
+    }
 
     /** the length of the incoming label, in the above example, it is 4 for node"hysi"(2) */
-    unsigned int GetLabelLen() const { return m_LabelLen; }
+    unsigned int GetLabelLen() const
+    {
+        return m_LabelLen;
+    }
 
     /** specify the incoming edge of the current node */
     void SetLabel(nSearchTreeLabel label, unsigned int labelstart, unsigned int labellen);
 
     /** the depth of node is the string length from root node to the last character of the incoming edge */
-    unsigned int GetDepth() const { return m_Depth; }
+    unsigned int GetDepth() const
+    {
+        return m_Depth;
+    }
 
     /** Updates the depth by recalculate the m_Depth of the node, this happens the parent node has changed */
     void RecalcDepth(BasicSearchTree* tree);
@@ -228,7 +264,10 @@ public:
     unsigned int GetLabelStartDepth() const;
 
     /** check to see this node is a leaf node. Note the label's depth is 0-based */
-    bool IsLeaf() const { return m_Children.empty() && (m_Depth != 0); }
+    bool IsLeaf() const
+    {
+        return m_Children.empty() && (m_Depth != 0);
+    }
 
     /** Gets the deepest position where the string matches the edge's label.
      *  0 for 0 characters in the tree matched, 1 for 1 character matched, etc.
@@ -280,8 +319,14 @@ class BasicSearchTree
 public:
     BasicSearchTree();
     virtual ~BasicSearchTree();
-    virtual size_t size() const { return m_Points.size(); }     /// How many string keys are stored
-    virtual size_t GetCount() const { return m_Points.size(); } /// Gets the number of items stored
+    virtual size_t size() const
+    {
+        return m_Points.size();    /// How many string keys are stored
+    }
+    virtual size_t GetCount() const
+    {
+        return m_Points.size();    /// Gets the number of items stored
+    }
     virtual void clear(); /// Clear items and tree
 
     /** Adds an item number to position defined by s.
@@ -293,7 +338,10 @@ public:
     bool HasItem(const wxString& s);
 
     /// std::map compatibility for the above
-    size_t count(const wxString& s) { return HasItem(s) ? 1 : 0; }
+    size_t count(const wxString& s)
+    {
+        return HasItem(s) ? 1 : 0;
+    }
 
     /// Gets the array position defined by s
     size_t GetItemNo(const wxString& s);
@@ -402,10 +450,16 @@ public:
     T& operator[](const wxString& s);
 
     /// Serializes the stored items
-    virtual wxString SerializeItem(cb_unused size_t idx) { return wxString(_T("")); }
+    virtual wxString SerializeItem(cb_unused size_t idx)
+    {
+        return wxString(_T(""));
+    }
 
     /// Unserializes the items to be stored
-    virtual void* UnserializeItem(cb_unused const wxString& s) { return NULL; }
+    virtual void* UnserializeItem(cb_unused const wxString& s)
+    {
+        return NULL;
+    }
 
 protected:
     std::vector<T> m_Items;   /// The actual stored items

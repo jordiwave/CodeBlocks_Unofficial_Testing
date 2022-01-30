@@ -35,15 +35,21 @@
  */
 class wxsEmptyProperty: public wxsProperty
 {
-    public:
+public:
 
-        /** \brief Getting instance of empty property */
-        static inline wxsEmptyProperty& Get() { return Singleton; }
+    /** \brief Getting instance of empty property */
+    static inline wxsEmptyProperty& Get()
+    {
+        return Singleton;
+    }
 
-    private:
-        wxsEmptyProperty();
-        virtual const wxString GetTypeName() { return _T(""); }
-        static wxsEmptyProperty Singleton;
+private:
+    wxsEmptyProperty();
+    virtual const wxString GetTypeName()
+    {
+        return _T("");
+    }
+    static wxsEmptyProperty Singleton;
 };
 
 /** \addtogroup properties_macros

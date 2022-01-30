@@ -17,9 +17,9 @@
 #include "wx/stedit/stedlgs.h"
 
 #ifndef WXPRECOMP
-    #include <wx/scrolbar.h>
-    #include <wx/button.h>
-    #include <wx/dcclient.h>
+#include <wx/scrolbar.h>
+#include <wx/button.h>
+#include <wx/dcclient.h>
 #endif // WXPRECOMP
 
 //-----------------------------------------------------------------------------
@@ -48,10 +48,10 @@ public:
 //-----------------------------------------------------------------------------
 
 wxSTEditorScrollBar::wxSTEditorScrollBar(wxWindow *parent, wxWindowID id,
-                                         const wxPoint& pos, const wxSize& size,
-                                         long style,
-                                         const wxValidator& validator,
-                                         const wxString& name)
+        const wxPoint& pos, const wxSize& size,
+        long style,
+        const wxValidator& validator,
+        const wxString& name)
 {
     if (!wxScrollBar::Create(parent, id, pos, size, style, validator, name))
         return;
@@ -161,7 +161,7 @@ void wxSTEditorSplitter::CreateOptions(const wxSTEditorOptions& options)
     // create the popupmenu if desired
     wxSTEditorMenuManager *steMM = GetOptions().GetMenuManager();
     if (steMM && GetOptions().HasSplitterOption(STS_CREATE_POPUPMENU) &&
-        !GetOptions().GetSplitterPopupMenu())
+            !GetOptions().GetSplitterPopupMenu())
     {
         GetOptions().SetSplitterPopupMenu(steMM->CreateSplitterPopupMenu(), false);
     }
@@ -203,7 +203,7 @@ wxSTEditor *wxSTEditorSplitter::CreateEditor(wxWindowID id)
     wxSTEditor *newEditor = NULL;
 
     if ((event.GetEventObject() != NULL) &&
-        (wxDynamicCast(event.GetEventObject(), wxSTEditor) != NULL))
+            (wxDynamicCast(event.GetEventObject(), wxSTEditor) != NULL))
     {
         newEditor = wxDynamicCast(event.GetEventObject(), wxSTEditor);
         if (newEditor->GetParent() != this)
@@ -235,13 +235,13 @@ void wxSTEditorSplitter::SetUseSplitScrollbars(bool use_scrollbars)
     {
         // Create our own scrollbars so we can draw the splitter buttons
         if (m_hScrollBar || m_vScrollBar ||
-            GetEditor1()->GetHScrollBar() ||
-            GetEditor1()->GetVScrollBar()) return;
+                GetEditor1()->GetHScrollBar() ||
+                GetEditor1()->GetVScrollBar()) return;
 
         m_vScrollBar = new wxSTEditorScrollBar(this, ID_STE_VSCROLLBAR,
-                                       wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL);
+                                               wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL);
         m_hScrollBar = new wxSTEditorScrollBar(this, ID_STE_HSCROLLBAR,
-                                       wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
+                                               wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
 
         GetEditor1()->SetVScrollBar(m_vScrollBar);
         GetEditor1()->SetHScrollBar(m_hScrollBar);
@@ -252,9 +252,9 @@ void wxSTEditorSplitter::SetUseSplitScrollbars(bool use_scrollbars)
         m_hSplitButton->SetCursor(wxCURSOR_SIZENS);
 
         m_vSplitButton->Connect(wxEVT_LEFT_DOWN,
-            wxMouseEventHandler(wxSTEditorSplitter::OnSplitButtonLeftDown));
+                                wxMouseEventHandler(wxSTEditorSplitter::OnSplitButtonLeftDown));
         m_hSplitButton->Connect(wxEVT_LEFT_DOWN,
-            wxMouseEventHandler(wxSTEditorSplitter::OnSplitButtonLeftDown));
+                                wxMouseEventHandler(wxSTEditorSplitter::OnSplitButtonLeftDown));
     }
     else
     {
@@ -277,7 +277,7 @@ void wxSTEditorSplitter::SetUseSplitScrollbars(bool use_scrollbars)
         if (m_vSplitButton)
         {
             m_vSplitButton->Disconnect(wxEVT_LEFT_DOWN,
-                wxMouseEventHandler(wxSTEditorSplitter::OnSplitButtonLeftDown));
+                                       wxMouseEventHandler(wxSTEditorSplitter::OnSplitButtonLeftDown));
 
             m_vSplitButton->Destroy();
             m_vSplitButton = NULL;
@@ -285,7 +285,7 @@ void wxSTEditorSplitter::SetUseSplitScrollbars(bool use_scrollbars)
         if (m_hSplitButton)
         {
             m_hSplitButton->Disconnect(wxEVT_LEFT_DOWN,
-                wxMouseEventHandler(wxSTEditorSplitter::OnSplitButtonLeftDown));
+                                       wxMouseEventHandler(wxSTEditorSplitter::OnSplitButtonLeftDown));
 
             m_hSplitButton->Destroy();
             m_hSplitButton = NULL;
@@ -408,7 +408,7 @@ void wxSTEditorSplitter::OnUnsplit( wxWindow *removed )
 void wxSTEditorSplitter::UpdateAllItems()
 {
     UpdateItems(GetOptions().GetEditorPopupMenu(), GetOptions().GetMenuBar(),
-                                                   GetOptions().GetToolBar());
+                GetOptions().GetToolBar());
     UpdateItems(GetOptions().GetNotebookPopupMenu());
     UpdateItems(GetOptions().GetSplitterPopupMenu());
 }
@@ -448,10 +448,17 @@ bool wxSTEditorSplitter::HandleMenuEvent(wxCommandEvent &event)
 
     switch (event.GetId())
     {
-        case ID_STS_UNSPLIT     : Unsplit();            return true;
-        case ID_STS_SPLIT_HORIZ : SplitHorizontally(0); return true;
-        case ID_STS_SPLIT_VERT  : SplitVertically(0);   return true;
-        default : break;
+    case ID_STS_UNSPLIT     :
+        Unsplit();
+        return true;
+    case ID_STS_SPLIT_HORIZ :
+        SplitHorizontally(0);
+        return true;
+    case ID_STS_SPLIT_VERT  :
+        SplitVertically(0);
+        return true;
+    default :
+        break;
     }
 
     return false;
@@ -484,10 +491,10 @@ void wxSTEditorSplitter::OnScroll(wxScrollEvent& event)
 
     // pass our scrollbar events to the editor
     if (GetEditor1() &&
-        (
-          (event.GetEventObject() == m_hScrollBar) ||
-          (event.GetEventObject() == m_vScrollBar)
-        )
+            (
+                (event.GetEventObject() == m_hScrollBar) ||
+                (event.GetEventObject() == m_vScrollBar)
+            )
        )
     {
         GetEditor1()->GetEventHandler()->ProcessEvent(event);

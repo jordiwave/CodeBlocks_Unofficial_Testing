@@ -79,29 +79,57 @@ public:
         m_refData = new wxSTEPointerLockerRefData<T>(ptr, is_static);
     }
 
-    wxSTEPointerLocker(const wxSTEPointerLocker& locker) { Ref(locker); }
+    wxSTEPointerLocker(const wxSTEPointerLocker& locker)
+    {
+        Ref(locker);
+    }
 
     virtual ~wxSTEPointerLocker() { }
 
     /// Returns true if the pointer is valid.
-    bool IsOk() const { return (get() != NULL); }
+    bool IsOk() const
+    {
+        return (get() != NULL);
+    }
 
     /// Get the pointer, which may be NULL.
-    T*       get()       { return m_refData ? dynamic_cast<wxSTEPointerLockerRefData<T> >(m_refData)->m_pointer : NULL; }
+    T*       get()
+    {
+        return m_refData ? dynamic_cast<wxSTEPointerLockerRefData<T> >(m_refData)->m_pointer : NULL;
+    }
     /// Get the pointer, which may be NULL.
-    const T* get() const { return m_refData ? dynamic_cast<wxSTEPointerLockerRefData<T> >(m_refData)->m_pointer : NULL; }
+    const T* get() const
+    {
+        return m_refData ? dynamic_cast<wxSTEPointerLockerRefData<T> >(m_refData)->m_pointer : NULL;
+    }
 
     /// Set the pointer, clearing the reference to the previous one.
-    void     set(T* ptr, bool is_static) { UnRef(); m_refData = new wxSTEPointerLockerRefData<T>(ptr, is_static); }
+    void     set(T* ptr, bool is_static)
+    {
+        UnRef();
+        m_refData = new wxSTEPointerLockerRefData<T>(ptr, is_static);
+    }
 
     // ------------------------------------------------------------------------
     /// @name std/boost::shared_ptr compatibility functions.
     /// @{
 
-    void   reset()           { set(NULL, false); }
-    size_t use_count() const { return m_refData ? m_refData->GetRefCount() : 0; }
-    bool   unique()    const { return use_count() == 1; }
-    bool   expired()   const { return !IsOk(); }
+    void   reset()
+    {
+        set(NULL, false);
+    }
+    size_t use_count() const
+    {
+        return m_refData ? m_refData->GetRefCount() : 0;
+    }
+    bool   unique()    const
+    {
+        return use_count() == 1;
+    }
+    bool   expired()   const
+    {
+        return !IsOk();
+    }
 
     /// @}
     // ------------------------------------------------------------------------
@@ -115,11 +143,18 @@ public:
     }
 
     bool operator == (const wxSTEPointerLocker& locker) const
-        { return m_refData == locker.m_refData; }
+    {
+        return m_refData == locker.m_refData;
+    }
     bool operator != (const wxSTEPointerLocker& locker) const
-        { return m_refData != locker.m_refData; }
+    {
+        return m_refData != locker.m_refData;
+    }
 
-    operator bool() const { return IsOk(); }
+    operator bool() const
+    {
+        return IsOk();
+    }
     /// @}
 };
 
@@ -158,7 +193,10 @@ public:
         m_flag.m_flag--;
     }
 
-    bool IsInside() const { return m_isInside; }
+    bool IsInside() const
+    {
+        return m_isInside;
+    }
 
 private:
     wxSTERecursionGuardFlag& m_flag;
@@ -221,12 +259,31 @@ public:
     virtual ~wxSTEditorRefData();
 
     // Find/Add/Remove editors that share this data
-    size_t GetEditorCount() const            { return m_editors.GetCount(); }
-    bool HasEditor(wxSTEditor* editor) const { return FindEditor(editor) != wxNOT_FOUND; }
-    int FindEditor(wxSTEditor* editor) const { return m_editors.Index(editor); }
-    wxSTEditor *GetEditor(size_t n) const    { return (wxSTEditor*)m_editors.Item(n); }
-    void AddEditor(wxSTEditor* editor)       { if (!HasEditor(editor)) m_editors.Add(editor); }
-    void RemoveEditor(wxSTEditor* editor)    { int n = FindEditor(editor); if (n != wxNOT_FOUND) m_editors.RemoveAt(n); }
+    size_t GetEditorCount() const
+    {
+        return m_editors.GetCount();
+    }
+    bool HasEditor(wxSTEditor* editor) const
+    {
+        return FindEditor(editor) != wxNOT_FOUND;
+    }
+    int FindEditor(wxSTEditor* editor) const
+    {
+        return m_editors.Index(editor);
+    }
+    wxSTEditor *GetEditor(size_t n) const
+    {
+        return (wxSTEditor*)m_editors.Item(n);
+    }
+    void AddEditor(wxSTEditor* editor)
+    {
+        if (!HasEditor(editor)) m_editors.Add(editor);
+    }
+    void RemoveEditor(wxSTEditor* editor)
+    {
+        int n = FindEditor(editor);
+        if (n != wxNOT_FOUND) m_editors.RemoveAt(n);
+    }
 
     bool SetLanguage(int lang)
     {
@@ -251,7 +308,7 @@ protected:
 
     long    m_state;                // what state does this editor have, enum STE_StateType
     bool    m_dirty_flag;           // set if file format is changed by the user, in the properties dialog
-                                    // There is no opposite of SCI_SETSAVEPOINT
+    // There is no opposite of SCI_SETSAVEPOINT
     wxString   m_hilighted_word;    // The last selected word that has been indicated.
     wxArrayInt m_hilightedArray;    // Start pos of each hilighted word
 
@@ -285,7 +342,10 @@ class WXDLLIMPEXP_STEDIT wxSTEditor : public wxStyledTextCtrl
 {
 public :
 
-    wxSTEditor() : wxStyledTextCtrl() { Init(); }
+    wxSTEditor() : wxStyledTextCtrl()
+    {
+        Init();
+    }
 
     wxSTEditor(wxWindow *parent, wxWindowID id = wxID_ANY,
                const wxPoint& pos = wxDefaultPosition,
@@ -314,7 +374,10 @@ public :
                               long style = 0, // wxStyledTextCtrl ors this with defaults
                               const wxString& name = wxT("wxSTEditor")) const;
 
-    wxWindow* GetModalParent() { return this; } // TODO : remove this
+    wxWindow* GetModalParent()
+    {
+        return this;    // TODO : remove this
+    }
 
     /// If this editor is going to use a Refed document, run this after construction.
     /// A refed editor will mirror the original wxSTEditor, the input origEditor isn't modified.
@@ -356,7 +419,10 @@ public :
     /// In GTK2, for example, the event loop is run when updating a
     /// toolbar tool and so the ste editor can be destroyed before the toolbar
     /// finishes updating. When the function returns the program crashes.
-    void SetSendSTEEvents(bool send) { m_sendEvents = send; }
+    void SetSendSTEEvents(bool send)
+    {
+        m_sendEvents = send;
+    }
     // ************************************************************************
 
     // ------------------------------------------------------------------------
@@ -366,28 +432,80 @@ public :
     /// @{
 
 #if (wxVERSION_NUMBER < 2900) // in wx2.9 wxSTC derived from wxTextCtrlIface
-    bool CanCopy() const                    { return HasSelection(); }
-    bool CanCut()  const                    { return CanCopy() && IsEditable(); }
-    void SetInsertionPoint(STE_TextPos pos) { GotoPos(pos); }
-    void SetInsertionPointEnd()             { GotoPos(GetLength()); }
-    void WriteText(const wxString &text)    { InsertText(GetCurrentPos(), text); SetCurrentPos(GetCurrentPos() + (STE_TextPos)text.Len()); }
-    STE_TextPos XYToPosition(long x, long y) const { return x + wxConstCast(this, wxSTEditor)->PositionFromLine(y); }
+    bool CanCopy() const
+    {
+        return HasSelection();
+    }
+    bool CanCut()  const
+    {
+        return CanCopy() && IsEditable();
+    }
+    void SetInsertionPoint(STE_TextPos pos)
+    {
+        GotoPos(pos);
+    }
+    void SetInsertionPointEnd()
+    {
+        GotoPos(GetLength());
+    }
+    void WriteText(const wxString &text)
+    {
+        InsertText(GetCurrentPos(), text);
+        SetCurrentPos(GetCurrentPos() + (STE_TextPos)text.Len());
+    }
+    STE_TextPos XYToPosition(long x, long y) const
+    {
+        return x + wxConstCast(this, wxSTEditor)->PositionFromLine(y);
+    }
     // Remove this section of text between markers
-    void Remove(int iStart, int iEnd)       { SetTargetStart(iStart); SetTargetEnd(iEnd); ReplaceTarget(wxEmptyString); }
+    void Remove(int iStart, int iEnd)
+    {
+        SetTargetStart(iStart);
+        SetTargetEnd(iEnd);
+        ReplaceTarget(wxEmptyString);
+    }
     // Get the row/col representation of the position
     bool PositionToXY(STE_TextPos, long *x, long *y) const;
-    bool HasSelection() const               { return (GetSelectionStart() != GetSelectionEnd()); } // some wxTextCtrl implementations have this
-    void RemoveSelection()                  { SetSelection(GetCurrentPos() , GetCurrentPos()); }   // some wxTextCtrl implementations have this
-    void ShowPosition(STE_TextPos pos)      { GotoPos(pos); }
-    void SetValue(const wxString& text)     { SetText(text); }
-    void ChangeValue(const wxString& text)  { SetText(text); }
-    wxString GetValue() const               { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetText(); }
-    wxString GetText() const                { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetText(); }
-    void ClearSelections()                  { SetSelection(GetInsertionPoint() , GetInsertionPoint()); }
+    bool HasSelection() const
+    {
+        return (GetSelectionStart() != GetSelectionEnd());    // some wxTextCtrl implementations have this
+    }
+    void RemoveSelection()
+    {
+        SetSelection(GetCurrentPos(), GetCurrentPos());    // some wxTextCtrl implementations have this
+    }
+    void ShowPosition(STE_TextPos pos)
+    {
+        GotoPos(pos);
+    }
+    void SetValue(const wxString& text)
+    {
+        SetText(text);
+    }
+    void ChangeValue(const wxString& text)
+    {
+        SetText(text);
+    }
+    wxString GetValue() const
+    {
+        return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetText();
+    }
+    wxString GetText() const
+    {
+        return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetText();
+    }
+    void ClearSelections()
+    {
+        SetSelection(GetInsertionPoint(), GetInsertionPoint());
+    }
 
 
     // verbatim copy of wx trunk wxTextAreaBase::SetModified()
-    void SetModified(bool modified) { if ( modified ) MarkDirty(); else DiscardEdits(); }
+    void SetModified(bool modified)
+    {
+        if ( modified ) MarkDirty();
+        else DiscardEdits();
+    }
 #endif // (wxVERSION_NUMBER < 2900)
 
     wxString GetLineText(int line) const; ///< excluding any cr/lf at end.
@@ -395,48 +513,118 @@ public :
 
     virtual void SetEditable(bool editable);
 
-    void SetReadOnly(bool readOnly) { SetEditable(!readOnly); } // overload to use our overridden implementation
-    bool GetReadOnly() const        { return !IsEditable();   } // overload to use overridden implementation in a derived class
+    void SetReadOnly(bool readOnly)
+    {
+        SetEditable(!readOnly);    // overload to use our overridden implementation
+    }
+    bool GetReadOnly() const
+    {
+        return !IsEditable();      // overload to use overridden implementation in a derived class
+    }
 
     // ------------------------------------------------------------------------
     // wxWidgets 2.8 <--> 2.9 compatibility functions (most functions are const in wx2.9)
 
-    wxString GetTextRange(int startPos, int endPos) const { return  wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTextRange(startPos, endPos); }
+    wxString GetTextRange(int startPos, int endPos) const
+    {
+        return  wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTextRange(startPos, endPos);
+    }
 
 #if (wxVERSION_NUMBER >= 2900)
 
     /// changed from bool to int in wx trunk, returns enum IndentView.ivNone = 0.
-    bool GetIndentationGuides() const { return 0 != wxStyledTextCtrl::GetIndentationGuides(); }
+    bool GetIndentationGuides() const
+    {
+        return 0 != wxStyledTextCtrl::GetIndentationGuides();
+    }
 
 #else // (wxVERSION_NUMBER < 2900)
 
-    int GetEOLMode() const                { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetEOLMode(); }
-    STE_TextPos GetInsertionPoint() const { return wxConstCast(this, wxSTEditor)->GetCurrentPos(); } // not in wx2.8
+    int GetEOLMode() const
+    {
+        return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetEOLMode();
+    }
+    STE_TextPos GetInsertionPoint() const
+    {
+        return wxConstCast(this, wxSTEditor)->GetCurrentPos();    // not in wx2.8
+    }
 
-    wxString GetLine(int line) const { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetLine(line); }
-    int GetLength() const            { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetLength(); }
-    int GetTextLength() const        { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTextLength(); }
-    long GetNumberOfLines() const    { return wxConstCast(this, wxSTEditor)->GetLineCount(); } // not in wx2.8
-    wxString GetRange(int startPos, int endPos) const { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTextRange(startPos, endPos); }
+    wxString GetLine(int line) const
+    {
+        return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetLine(line);
+    }
+    int GetLength() const
+    {
+        return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetLength();
+    }
+    int GetTextLength() const
+    {
+        return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTextLength();
+    }
+    long GetNumberOfLines() const
+    {
+        return wxConstCast(this, wxSTEditor)->GetLineCount();    // not in wx2.8
+    }
+    wxString GetRange(int startPos, int endPos) const
+    {
+        return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTextRange(startPos, endPos);
+    }
 
     void GetSelection(STE_TextPos* iStart, STE_TextPos* iEnd) const // forwards compatibility, wx2.8 uses int*
-        { int s=0,e=0; wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetSelection(&s, &e); if (iStart) *iStart=s; if (iEnd) *iEnd=e; }
+    {
+        int s=0,e=0;
+        wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetSelection(&s, &e);
+        if (iStart) *iStart=s;
+        if (iEnd) *iEnd=e;
+    }
     void GetSelection(int *iStart, int *iEnd) const
-        { int s=0,e=0; wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetSelection(&s, &e); if (iStart) *iStart=s; if (iEnd) *iEnd=e; }
+    {
+        int s=0,e=0;
+        wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetSelection(&s, &e);
+        if (iStart) *iStart=s;
+        if (iEnd) *iEnd=e;
+    }
 
-    STE_TextPos GetSelectionStart() const { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetSelectionStart(); }
-    STE_TextPos GetSelectionEnd() const   { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetSelectionEnd(); }
+    STE_TextPos GetSelectionStart() const
+    {
+        return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetSelectionStart();
+    }
+    STE_TextPos GetSelectionEnd() const
+    {
+        return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetSelectionEnd();
+    }
 
-    STE_TextPos GetTargetStart() const    { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTargetStart(); }
-    STE_TextPos GetTargetEnd() const      { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTargetEnd(); }
+    STE_TextPos GetTargetStart() const
+    {
+        return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTargetStart();
+    }
+    STE_TextPos GetTargetEnd() const
+    {
+        return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTargetEnd();
+    }
 
-    virtual bool IsEditable() const       { return !wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetReadOnly(); } // not in wx2.8; virtual in wx trunk so make it virtual here too
+    virtual bool IsEditable() const
+    {
+        return !wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetReadOnly();    // not in wx2.8; virtual in wx trunk so make it virtual here too
+    }
 
-    int LineFromPosition(STE_TextPos pos) const  { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::LineFromPosition(pos); }
-    STE_TextPos PositionFromLine(int line) const { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::PositionFromLine(line); }
+    int LineFromPosition(STE_TextPos pos) const
+    {
+        return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::LineFromPosition(pos);
+    }
+    STE_TextPos PositionFromLine(int line) const
+    {
+        return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::PositionFromLine(line);
+    }
 
-    STE_TextPos GetLastPosition() const { return GetTextLength(); }
-    bool IsEmpty() const                { return GetLastPosition() <= 0; }
+    STE_TextPos GetLastPosition() const
+    {
+        return GetTextLength();
+    }
+    bool IsEmpty() const
+    {
+        return GetLastPosition() <= 0;
+    }
 #endif // (wxVERSION_NUMBER >= 2900)
 
 #ifdef __WXGTK__
@@ -445,8 +633,14 @@ public :
     /// drawing code in certain circumstances, for now let's just assume you can always paste if not readonly.
     /// The worst that can happen is that empty text is retrieved from the clipboard and
     /// nothing is pasted which is harmless. In any case, we want this check to be fast.
-    bool CanPaste()       { return IsEditable(); }
-    bool CanPaste() const { return IsEditable(); }
+    bool CanPaste()
+    {
+        return IsEditable();
+    }
+    bool CanPaste() const
+    {
+        return IsEditable();
+    }
 #endif // __WXGTK__
 
     virtual bool IsModified() const; // not in wx2.8; virtual in wx trunk so make it virtual here too
@@ -456,7 +650,10 @@ public :
     // ----------------------------------------------------------------------
 
     /// Colourize the whole document.
-    void ColouriseDocument() { Colourise(0, -1); }
+    void ColouriseDocument()
+    {
+        Colourise(0, -1);
+    }
 
     /// Returns true if both whitespace and EOL are shown, else false.
     bool GetViewNonPrint() const;
@@ -548,7 +745,10 @@ public :
     void SetLineText(int line, const wxString& text, bool inc_newline = false);
 
     /// Go to the start of the current line.
-    void GotoStartOfCurrentLine() { GotoLine(LineFromPosition(GetInsertionPoint())); }
+    void GotoStartOfCurrentLine()
+    {
+        GotoLine(LineFromPosition(GetInsertionPoint()));
+    }
 
     /// Get the number of words in the string, counts words as contiguous isalnum().
     size_t GetWordCount(const wxString& text) const;
@@ -618,11 +818,20 @@ public :
     /// Expand all folds at and above or below the level.
     void ExpandFoldsToLevel(int level, bool expand = true);
     /// Collapse all folds at and above or below the level.
-    void CollapseFoldsToLevel(int level) { ExpandFoldsToLevel(level, false); }
+    void CollapseFoldsToLevel(int level)
+    {
+        ExpandFoldsToLevel(level, false);
+    }
     /// Expand all the folds in the document.
-    void ExpandAllFolds()   { ExpandFoldsToLevel(wxSTC_FOLDLEVELNUMBERMASK, true); }
+    void ExpandAllFolds()
+    {
+        ExpandFoldsToLevel(wxSTC_FOLDLEVELNUMBERMASK, true);
+    }
     /// Collapse all the folds in the document.
-    void CollapseAllFolds() { CollapseFoldsToLevel(0); }
+    void CollapseAllFolds()
+    {
+        CollapseFoldsToLevel(0);
+    }
 
     // ------------------------------------------------------------------------
 
@@ -650,7 +859,10 @@ public :
     bool CopyFilePathToClipboard();
 
     /// Returns true if the document was ever loaded from or saved to disk.
-    bool IsFileFromDisk() const { return GetFileModificationTime().IsValid(); }
+    bool IsFileFromDisk() const
+    {
+        return GetFileModificationTime().IsValid();
+    }
 
     /// Set the last modification time of the file on the disk (internal use).
     /// Doesn't read/write to/from disk and the time should be invalid if it wasn't
@@ -663,7 +875,10 @@ public :
     /// Returns false if the document hasn't been modified since the last time it
     /// was saved. Returns true if it was never saved, even if the document is
     /// not modified which is used to show that "new" files should be saved.
-    bool CanSave() const { return IsModified() || !IsFileFromDisk(); }
+    bool CanSave() const
+    {
+        return IsModified() || !IsFileFromDisk();
+    }
 
 #if wxUSE_STREAMS
     /// Load a file from the wxInputStream (probably a wxFileInputStream).
@@ -831,11 +1046,20 @@ public :
     /// with state change STE_CANFIND if flags change.
     void SetFindFlags(long flags, bool send_evt = false);
     /// Get the direction of search.
-    bool GetFindDown() const { return (GetFindFlags() & wxFR_DOWN) != 0; }
+    bool GetFindDown() const
+    {
+        return (GetFindFlags() & wxFR_DOWN) != 0;
+    }
     /// Returns false if the last search failed and the flags or the find string hasn't changed.
-    bool CanFind() const { return HasState(STE_CANFIND); }
+    bool CanFind() const
+    {
+        return HasState(STE_CANFIND);
+    }
     /// Reset the canfind variable in case you change something else.
-    void SetCanFind(bool can_find) { SetStateSingle(STE_CANFIND, can_find); }
+    void SetCanFind(bool can_find)
+    {
+        SetStateSingle(STE_CANFIND, can_find);
+    }
 
     /// @}
     // ------------------------------------------------------------------------
@@ -942,13 +1166,26 @@ public :
     long UpdateCanDo(bool send_event);
 
     /// Get combinations enum STE_StateType.
-    long GetState() const     { return GetSTERefData()->m_state; }
+    long GetState() const
+    {
+        return GetSTERefData()->m_state;
+    }
     /// Set combinations enum STE_StateType.
-    void SetState(long state) { GetSTERefData()->m_state = state; }
+    void SetState(long state)
+    {
+        GetSTERefData()->m_state = state;
+    }
     /// Get if one or a combination of enum STE_StateType is set.
-    bool HasState(long ste_statetype) const   { return (GetSTERefData()->m_state & ste_statetype) != 0; }
+    bool HasState(long ste_statetype) const
+    {
+        return (GetSTERefData()->m_state & ste_statetype) != 0;
+    }
     /// Set a single or combination of enum STE_StateType.
-    void SetStateSingle(long state, bool set) { if (set) SetState(GetSTERefData()->m_state | state); else SetState(GetSTERefData()->m_state & ~state); }
+    void SetStateSingle(long state, bool set)
+    {
+        if (set) SetState(GetSTERefData()->m_state | state);
+        else SetState(GetSTERefData()->m_state & ~state);
+    }
 
     /// @}
     // ------------------------------------------------------------------------
@@ -1046,7 +1283,10 @@ public :
     void OnSTCMarginDClick(wxStyledTextEvent &event); // we generate this event
     void OnSetFocus(wxFocusEvent &event);
     void OnSTEFocus(wxSTEditorEvent &event);
-    void OnEraseBackground(wxEraseEvent &event) { event.Skip(false); }
+    void OnEraseBackground(wxEraseEvent &event)
+    {
+        event.Skip(false);
+    }
 
     // Note that these event functions below are intentionally out of order
     // in the source code so they're easier to maintain.
@@ -1059,9 +1299,15 @@ public :
     // ------------------------------------------------------------------------
 
     /// Access the scrollbar in the wxStyledTextCtrl.
-    wxScrollBar* GetHScrollBar() { return m_hScrollBar; }
+    wxScrollBar* GetHScrollBar()
+    {
+        return m_hScrollBar;
+    }
     /// Access the scrollbar in the wxStyledTextCtrl.
-    wxScrollBar* GetVScrollBar() { return m_vScrollBar; }
+    wxScrollBar* GetVScrollBar()
+    {
+        return m_vScrollBar;
+    }
 
     /// Get the width in pixels of the longest line between top_line and
     ///  bottom_line takeing care of ctrl chars and tabs.
@@ -1093,7 +1339,10 @@ public :
     /// Get the ref counted data for the editor (ref counted for splitting).
     /// The ref data is ALWAYS expected to exist, do NOT call wxObject::UnRef()
     /// unless you IMMEDIATELY replace it.
-    wxSTEditorRefData* GetSTERefData() const { return (wxSTEditorRefData*)GetRefData(); }
+    wxSTEditorRefData* GetSTERefData() const
+    {
+        return (wxSTEditorRefData*)GetRefData();
+    }
 
     /// @}
 
@@ -1113,9 +1362,15 @@ private:
     void Init();
 
     // Please use the virtual method IsModified() instead
-    bool GetModify() { return wxStyledTextCtrl::GetModify(); }
+    bool GetModify()
+    {
+        return wxStyledTextCtrl::GetModify();
+    }
     // Please use one of the virtual methods instead, SetModified(false) or DiscardEdits()
-    void SetSavePoint() { wxStyledTextCtrl::SetSavePoint(); }
+    void SetSavePoint()
+    {
+        wxStyledTextCtrl::SetSavePoint();
+    }
 
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(wxSTEditor)

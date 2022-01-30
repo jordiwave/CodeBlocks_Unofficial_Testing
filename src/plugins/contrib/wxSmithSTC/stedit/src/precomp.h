@@ -7,11 +7,11 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-    #include <wx/menu.h>
-    #include <wx/toolbar.h>
-    #include <wx/combobox.h>
-    #include <wx/msgdlg.h>
-    #include <wx/filedlg.h>
+#include <wx/menu.h>
+#include <wx/toolbar.h>
+#include <wx/combobox.h>
+#include <wx/msgdlg.h>
+#include <wx/filedlg.h>
 #endif // WX_PRECOMP
 
 #include <wx/tokenzr.h>

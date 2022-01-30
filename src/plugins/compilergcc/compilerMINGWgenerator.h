@@ -11,13 +11,13 @@
 // Overriden to support PCH for GCC
 class CompilerMINGWGenerator : public CompilerCommandGenerator
 {
-    public:
-        CompilerMINGWGenerator();
-        ~CompilerMINGWGenerator() override;
-    protected:
-        wxString SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* target) override;
-    private:
-        wxString m_VerStr;
+public:
+    CompilerMINGWGenerator();
+    ~CompilerMINGWGenerator() override;
+protected:
+    wxString SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* target) override;
+private:
+    wxString m_VerStr;
 };
 
 #endif // COMPILERMINGWGENERATOR_H

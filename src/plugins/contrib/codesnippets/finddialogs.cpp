@@ -41,13 +41,13 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all 'standard' wxWidgets headers)
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 // wxWidgets headers
@@ -104,9 +104,10 @@ myFindReplaceDlg::myFindReplaceDlg (wxWindow *parent,
                                     const wxString &replacestr,
                                     wxUint32 flags,
                                     long style)
-               : wxScrollingDialog (parent, -1, _("Dialog"),
-                           wxDefaultPosition, wxDefaultSize,
-                           style | wxDEFAULT_DIALOG_STYLE) {
+    : wxScrollingDialog (parent, -1, _("Dialog"),
+                         wxDefaultPosition, wxDefaultSize,
+                         style | wxDEFAULT_DIALOG_STYLE)
+{
 
     m_style = 0;
 
@@ -126,7 +127,7 @@ myFindReplaceDlg::myFindReplaceDlg (wxWindow *parent,
                                       wxDefaultPosition, wxSize(80, -1)),
                     0, wxALIGN_CENTRE_VERTICAL | wxRIGHT, 6);
     m_findstr = new wxComboBox (this, myID_DLG_FIND_TEXT, findstr,
-                                 wxDefaultPosition, wxSize(200, -1));
+                                wxDefaultPosition, wxSize(200, -1));
     findsizer->Add (m_findstr, 1, wxALIGN_CENTRE_VERTICAL);
     m_findpane->Add (findsizer, 0, wxEXPAND | wxBOTTOM, 6);
 
@@ -158,7 +159,7 @@ myFindReplaceDlg::myFindReplaceDlg (wxWindow *parent,
                                         wxDefaultPosition, wxSize(80, -1)),
                       0, wxALIGN_CENTRE_VERTICAL | wxRIGHT, 6);
     m_replacestr = new wxComboBox (this, -1, replacestr,
-                                    wxDefaultPosition, wxSize(200, -1));
+                                   wxDefaultPosition, wxSize(200, -1));
     m_replsizer->Add (m_replacestr, 1, wxALIGN_CENTRE_VERTICAL);
     m_findpane->Show (m_replsizer, false);
     m_findpane->Add (m_replsizer, 0, wxEXPAND | wxBOTTOM, 6);
@@ -228,7 +229,8 @@ myFindReplaceDlg::myFindReplaceDlg (wxWindow *parent,
 
 }
 
-myFindReplaceDlg::~myFindReplaceDlg () {
+myFindReplaceDlg::~myFindReplaceDlg ()
+{
 
     // store history
     StoreDirHistory ();
@@ -240,40 +242,54 @@ myFindReplaceDlg::~myFindReplaceDlg () {
 //----------------------------------------------------------------------------
 // event handlers
 
-void myFindReplaceDlg::OnCancel (wxCommandEvent &WXUNUSED(event)) {
+void myFindReplaceDlg::OnCancel (wxCommandEvent &WXUNUSED(event))
+{
     EndModal (wxID_CANCEL);
 }
 
-void myFindReplaceDlg::OnHelp (wxCommandEvent &WXUNUSED(event)) {
+void myFindReplaceDlg::OnHelp (wxCommandEvent &WXUNUSED(event))
+{
     ////(pecan 2007/4/05)
     //-g_help->Display(_T("dialogs.html#findreplace"));
 }
 
-void myFindReplaceDlg::OnOkay (wxCommandEvent &WXUNUSED(event)) {
+void myFindReplaceDlg::OnOkay (wxCommandEvent &WXUNUSED(event))
+{
     UpdateFindHistory (m_findstr->GetValue ());
-    if (m_style & myFR_REPLACEDIALOG) {
+    if (m_style & myFR_REPLACEDIALOG)
+    {
         UpdateReplaceHistory (m_replacestr->GetValue ());
-    }else if (m_style & myFR_FINDINFILES) {
+    }
+    else if (m_style & myFR_FINDINFILES)
+    {
         UpdateDirHistory (m_finddir->GetValue ());
     }
     EndModal (wxID_OK);
 }
 
-void myFindReplaceDlg::OnReplace (wxCommandEvent &WXUNUSED(event)) {
+void myFindReplaceDlg::OnReplace (wxCommandEvent &WXUNUSED(event))
+{
     UpdateFindHistory (m_findstr->GetValue ());
-    if (m_style & myFR_REPLACEDIALOG) {
+    if (m_style & myFR_REPLACEDIALOG)
+    {
         UpdateReplaceHistory (m_replacestr->GetValue ());
-    }else if (m_style & myFR_FINDINFILES) {
+    }
+    else if (m_style & myFR_FINDINFILES)
+    {
         UpdateDirHistory (m_finddir->GetValue ());
     }
     EndModal (myID_REPLACE);
 }
 
-void myFindReplaceDlg::OnReplaceAll (wxCommandEvent &WXUNUSED(event)) {
+void myFindReplaceDlg::OnReplaceAll (wxCommandEvent &WXUNUSED(event))
+{
     UpdateFindHistory (m_findstr->GetValue ());
-    if (m_style & myFR_REPLACEDIALOG) {
+    if (m_style & myFR_REPLACEDIALOG)
+    {
         UpdateReplaceHistory (m_replacestr->GetValue ());
-    }else if (m_style & myFR_FINDINFILES) {
+    }
+    else if (m_style & myFR_FINDINFILES)
+    {
         UpdateDirHistory (m_finddir->GetValue ());
     }
     EndModal (myID_REPLACEALL);
@@ -282,41 +298,50 @@ void myFindReplaceDlg::OnReplaceAll (wxCommandEvent &WXUNUSED(event)) {
 //----------------------------------------------------------------------------
 // private functions
 
-wxString myFindReplaceDlg::GetFindDirectory () {
+wxString myFindReplaceDlg::GetFindDirectory ()
+{
     return m_finddir->GetValue ();
 }
 
-void myFindReplaceDlg::SetFindDirectory (const wxString &finddir) {
+void myFindReplaceDlg::SetFindDirectory (const wxString &finddir)
+{
     m_finddir->SetValue (finddir);
 }
 
-wxString myFindReplaceDlg::GetFindFilespec () {
+wxString myFindReplaceDlg::GetFindFilespec ()
+{
     return m_findspec->GetValue ();
 }
 
-void myFindReplaceDlg::SetFindFilespec (const wxString &findspec) {
+void myFindReplaceDlg::SetFindFilespec (const wxString &findspec)
+{
     m_findspec->SetValue (findspec);
 }
 
-wxString myFindReplaceDlg::GetFindString () {
+wxString myFindReplaceDlg::GetFindString ()
+{
     return m_findstr->GetValue ();
 }
 
-void myFindReplaceDlg::SetFindString (const wxString &findstr) {
+void myFindReplaceDlg::SetFindString (const wxString &findstr)
+{
     m_findstr->SetSelection (0);
     m_findstr->SetValue (findstr);
 }
 
-wxString myFindReplaceDlg::GetReplaceString () {
+wxString myFindReplaceDlg::GetReplaceString ()
+{
     return m_replacestr->GetValue ();
 }
 
-void myFindReplaceDlg::SetReplaceString (const wxString &replacestr) {
+void myFindReplaceDlg::SetReplaceString (const wxString &replacestr)
+{
     m_replacestr->SetSelection (0);
     m_replacestr->SetValue (replacestr);
 }
 
-int myFindReplaceDlg::GetFlags () {
+int myFindReplaceDlg::GetFlags ()
+{
     // flags (myFR_DOWN, myFR_MATCHCASE, myFR_WHOLEWORD, myFR_FINDREGEX)
     int flags = 0;
     if (m_direction->GetSelection()!=0) flags |= myFR_DOWN;
@@ -327,10 +352,14 @@ int myFindReplaceDlg::GetFlags () {
     return flags;
 }
 
-void myFindReplaceDlg::SetFlags (int flags) {
-    if (flags & myFR_DOWN) {
+void myFindReplaceDlg::SetFlags (int flags)
+{
+    if (flags & myFR_DOWN)
+    {
         m_direction->SetSelection (1);
-    }else{
+    }
+    else
+    {
         m_direction->SetSelection (0);
     }
     m_matchcase->SetValue ((flags & myFR_MATCHCASE) > 0);
@@ -339,12 +368,14 @@ void myFindReplaceDlg::SetFlags (int flags) {
     m_subfolder->SetValue ((flags & myFR_SUBFOLDER) > 0);
 }
 
-int myFindReplaceDlg::ShowModal (long style) {
+int myFindReplaceDlg::ShowModal (long style)
+{
     UpdateDirHistory ();
     UpdateFindHistory ();
     UpdateReplaceHistory ();
     m_style = style;
-    if (m_style & myFR_REPLACEDIALOG) {
+    if (m_style & myFR_REPLACEDIALOG)
+    {
         SetTitle(_("Find and Replace"));
         m_findpane->Show (m_fdirsizer, false);
         m_findpane->Show (m_specsizer, false);
@@ -354,7 +385,9 @@ int myFindReplaceDlg::ShowModal (long style) {
         m_dirssizer->Show (m_direction, true);
         m_buttonpane->Show (m_replaceButton, true);
         m_buttonpane->Show (m_replaceAllButton, true);
-    }else if (m_style & myFR_FINDINFILES) {
+    }
+    else if (m_style & myFR_FINDINFILES)
+    {
         SetTitle(_("Find in Files"));
         m_findpane->Show (m_fdirsizer, true);
         m_findpane->Show (m_specsizer, true);
@@ -365,7 +398,9 @@ int myFindReplaceDlg::ShowModal (long style) {
         m_buttonpane->Show (m_replaceButton, false);
         m_buttonpane->Show (m_replaceAllButton, false);
         m_wholeword->Enable (false);
-    }else{
+    }
+    else
+    {
         SetTitle(_("Find"));
         m_findpane->Show (m_fdirsizer, false);
         m_findpane->Show (m_specsizer, false);
@@ -387,34 +422,39 @@ int myFindReplaceDlg::ShowModal (long style) {
     return wxScrollingDialog::ShowModal ();
 }
 
-void myFindReplaceDlg::LoadDirHistory () {
+void myFindReplaceDlg::LoadDirHistory ()
+{
     if (!m_finddirHist.IsEmpty()) return;
     wxConfig *cfg = new wxConfig (g_appname);
     wxString group = FINDREPLACEDLG + _T("/") + DIRECTORYHISTORY;
     wxString key;
     wxString value;
     int i;
-    for (i = 0; i < MAXHISTORY; ++i) {
+    for (i = 0; i < MAXHISTORY; ++i)
+    {
         key = group + wxString::Format (_T("%d"), i);
         if (cfg->Read (key, &value)) m_finddirHist.Add (value);
     }
     delete cfg;
 }
 
-void myFindReplaceDlg::StoreDirHistory () {
+void myFindReplaceDlg::StoreDirHistory ()
+{
     wxConfig *cfg = new wxConfig (g_appname);
     wxString group = FINDREPLACEDLG + _T("/") + DIRECTORYHISTORY;
     wxString key;
     wxString value;
     int i;
-    for (i = 0; i < (int)m_finddirHist.GetCount(); ++i) {
+    for (i = 0; i < (int)m_finddirHist.GetCount(); ++i)
+    {
         key = group + wxString::Format (_T("%d"), i);
         cfg->Write (key, m_finddirHist[i]);
     }
     delete cfg;
 }
 
-void myFindReplaceDlg::UpdateDirHistory (wxString item) {
+void myFindReplaceDlg::UpdateDirHistory (wxString item)
+{
 // FIXME:   //(pecan 2007/4/05)
 //    wxString value = m_finddir->GetValue();
 //    if (!item.IsEmpty()) {
@@ -434,7 +474,8 @@ void myFindReplaceDlg::UpdateDirHistory (wxString item) {
 //    m_finddir->SetValue(value);
 }
 
-void myFindReplaceDlg::LoadFindHistory () {
+void myFindReplaceDlg::LoadFindHistory ()
+{
 // FIXME: //(pecan 2007/4/05)
 //    if (!m_findstrHist.IsEmpty()) return;
 //    wxConfig *cfg = new wxConfig (g_appname);
@@ -449,20 +490,23 @@ void myFindReplaceDlg::LoadFindHistory () {
 //    delete cfg;
 }
 
-void myFindReplaceDlg::StoreFindHistory () {
+void myFindReplaceDlg::StoreFindHistory ()
+{
     wxConfig *cfg = new wxConfig (g_appname);
     wxString group = FINDREPLACEDLG + _T("/") + FINDSTRHISTORY;
     wxString key;
     wxString value;
     int i;
-    for (i = 0; i < (int)m_findstrHist.GetCount(); ++i) {
+    for (i = 0; i < (int)m_findstrHist.GetCount(); ++i)
+    {
         key = group + wxString::Format (_T("%d"), i);
         cfg->Write (key, m_findstrHist[i]);
     }
     delete cfg;
 }
 
-void myFindReplaceDlg::UpdateFindHistory (wxString item) {
+void myFindReplaceDlg::UpdateFindHistory (wxString item)
+{
 // FIXME: //(pecan 2007/4/05)
 //    wxString value = m_findstr->GetValue();
 //    if (!item.IsEmpty()) {
@@ -483,7 +527,8 @@ void myFindReplaceDlg::UpdateFindHistory (wxString item) {
 }
 
 void myFindReplaceDlg::LoadReplaceHistory ()
-{// FIXME: //(pecan 2007/4/05)
+{
+    // FIXME: //(pecan 2007/4/05)
 //    if (!m_replacestrHist.IsEmpty()) return;
 //    wxConfig *cfg = new wxConfig (g_appname);
 //    wxString group = FINDREPLACEDLG + _T("/") + REPLACESTRHISTORY;
@@ -498,7 +543,8 @@ void myFindReplaceDlg::LoadReplaceHistory ()
 }
 
 void myFindReplaceDlg::StoreReplaceHistory ()
-{// FIXME: //(pecan 2007/4/05)
+{
+    // FIXME: //(pecan 2007/4/05)
 //    wxConfig *cfg = new wxConfig (g_appname);
 //    wxString group = FINDREPLACEDLG + _T("/") + REPLACESTRHISTORY;
 //    wxString key;
@@ -512,7 +558,8 @@ void myFindReplaceDlg::StoreReplaceHistory ()
 }
 
 void myFindReplaceDlg::UpdateReplaceHistory (wxString item)
-{// FIXME: //(pecan 2007/4/05)
+{
+    // FIXME: //(pecan 2007/4/05)
 //    wxString value = m_replacestr->GetValue();
 //    if (!item.IsEmpty()) {
 //        int i = m_replacestrHist.Index (item);
@@ -542,9 +589,10 @@ END_EVENT_TABLE()
 
 myGotoDlg::myGotoDlg (wxWindow *parent,
                       long style)
-         : wxScrollingDialog (parent, -1, _("Goto line"),
-                     wxDefaultPosition, wxDefaultSize,
-                     style | wxDEFAULT_DIALOG_STYLE) {
+    : wxScrollingDialog (parent, -1, _("Goto line"),
+                         wxDefaultPosition, wxDefaultSize,
+                         style | wxDEFAULT_DIALOG_STYLE)
+{
 
     //accelerators (for help)
     const int nEntries = 1 ;
@@ -584,7 +632,8 @@ myGotoDlg::myGotoDlg (wxWindow *parent,
 //----------------------------------------------------------------------------
 // event handlers
 
-void myGotoDlg::OnHelp (wxCommandEvent &WXUNUSED(event)) {
+void myGotoDlg::OnHelp (wxCommandEvent &WXUNUSED(event))
+{
     // //(pecan 2007/4/05)
     //g_help->Display(_T("dialogs.html#gotoposition"));
 }
@@ -592,17 +641,20 @@ void myGotoDlg::OnHelp (wxCommandEvent &WXUNUSED(event)) {
 //----------------------------------------------------------------------------
 // private functions
 
-int myGotoDlg::GetPosition () {
+int myGotoDlg::GetPosition ()
+{
     long position;
     if (m_position->GetValue ().ToLong(&position)) return position;
     return -1;
 }
 
-void myGotoDlg::SetPosition (int position) {
+void myGotoDlg::SetPosition (int position)
+{
     m_position->SetValue (wxString::Format(_T("%d"), position));
 }
 
-int myGotoDlg::ShowModal (long WXUNUSED(style)) {
+int myGotoDlg::ShowModal (long WXUNUSED(style))
+{
     m_position->SetFocus();
     m_position->SetSelection (-1, -1);
     return wxScrollingDialog::ShowModal ();

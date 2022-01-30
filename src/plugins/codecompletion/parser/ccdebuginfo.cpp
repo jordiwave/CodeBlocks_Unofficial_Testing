@@ -10,20 +10,20 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/object.h>
-    #include <wx/string.h>
-    #include <wx/file.h>
-    #include <wx/filedlg.h>
-    #include <wx/utils.h>    // wxWindowDisabler
+#include <wx/object.h>
+#include <wx/string.h>
+#include <wx/file.h>
+#include <wx/filedlg.h>
+#include <wx/utils.h>    // wxWindowDisabler
 
-    //(*InternalHeaders(CCDebugInfo)
-    #include <wx/string.h>
-    #include <wx/intl.h>
-    //*)
+//(*InternalHeaders(CCDebugInfo)
+#include <wx/string.h>
+#include <wx/intl.h>
+//*)
 
-    #include <cbeditor.h>
-    #include <editormanager.h>
-    #include <logmanager.h>
+#include <cbeditor.h>
+#include <editormanager.h>
+#include <logmanager.h>
 #endif
 
 #include <wx/busyinfo.h>
@@ -35,59 +35,59 @@
 #define CC_DEBUGINFO_DEBUG_OUTPUT 0
 
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
-    #if CC_GLOBAL_DEBUG_OUTPUT == 1
-        #undef CC_DEBUGINFO_DEBUG_OUTPUT
-        #define CC_DEBUGINFO_DEBUG_OUTPUT 1
-    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
-        #undef CC_DEBUGINFO_DEBUG_OUTPUT
-        #define CC_DEBUGINFO_DEBUG_OUTPUT 2
-    #endif
+#if CC_GLOBAL_DEBUG_OUTPUT == 1
+#undef CC_DEBUGINFO_DEBUG_OUTPUT
+#define CC_DEBUGINFO_DEBUG_OUTPUT 1
+#elif CC_GLOBAL_DEBUG_OUTPUT == 2
+#undef CC_DEBUGINFO_DEBUG_OUTPUT
+#define CC_DEBUGINFO_DEBUG_OUTPUT 2
+#endif
 #endif
 
 #if CC_DEBUGINFO_DEBUG_OUTPUT == 1
-    #define TRACE(format, args...) \
+#define TRACE(format, args...) \
         CCLogger::Get()->DebugLog(F(format, ##args))
-    #define TRACE2(format, args...)
+#define TRACE2(format, args...)
 #elif CC_DEBUGINFO_DEBUG_OUTPUT == 2
-    #define TRACE(format, args...)                                              \
+#define TRACE(format, args...)                                              \
         do                                                                      \
         {                                                                       \
             if (g_EnableDebugTrace)                                             \
                 CCLogger::Get()->DebugLog(F(format, ##args));                   \
         }                                                                       \
         while (false)
-    #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
         CCLogger::Get()->DebugLog(F(format, ##args))
 #else
-    #define TRACE(format, args...)
-    #define TRACE2(format, args...)
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
 #endif
 
 namespace CCDebugInfoHelper
 {
-    inline void SaveCCDebugInfo(const wxString& fileDesc, const wxString& content)
-    {
-        wxString fname;
-        wxFileDialog dlg (Manager::Get()->GetAppWindow(),
-                        fileDesc,
-                        _T(""),
-                        _T(""),
-                        _T("Text files (*.txt)|*.txt|Any file (*)|*"),
-                        wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-        PlaceWindow(&dlg);
-        if (dlg.ShowModal() != wxID_OK)
-            return;
+inline void SaveCCDebugInfo(const wxString& fileDesc, const wxString& content)
+{
+    wxString fname;
+    wxFileDialog dlg (Manager::Get()->GetAppWindow(),
+                      fileDesc,
+                      _T(""),
+                      _T(""),
+                      _T("Text files (*.txt)|*.txt|Any file (*)|*"),
+                      wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() != wxID_OK)
+        return;
 
-        // Opening the file migth have failed, verify:
-        wxFile f(dlg.GetPath(), wxFile::write);
-        if (f.IsOpened())
-        {
-            f.Write(content); // write buffer to file
-            f.Close();        // release file handle
-        }
-        else
-            cbMessageBox(_("Cannot create file ") + fname, _("CC Debug Info"));
+    // Opening the file migth have failed, verify:
+    wxFile f(dlg.GetPath(), wxFile::write);
+    if (f.IsOpened())
+    {
+        f.Write(content); // write buffer to file
+        f.Close();        // release file handle
     }
+    else
+        cbMessageBox(_("Cannot create file ") + fname, _("CC Debug Info"));
+}
 }// namespace CCDebugInfoHelper
 
 //(*IdInit(CCDebugInfo)
@@ -715,99 +715,101 @@ void CCDebugInfo::OnSave(cb_unused wxCommandEvent& event)
 
     switch (sel)
     {
-        case -1:
-            // cancelled
-            return;
+    case -1:
+        // cancelled
+        return;
 
-        case 0:
-            {
-                wxString tt;
-                { // life time of wxWindowDisabler/wxBusyInfo
-                    wxWindowDisabler disableAll;
-                    wxBusyInfo running(_("Obtaining tokens tree... please wait (this may take several seconds)..."),
-                                       Manager::Get()->GetAppWindow());
+    case 0:
+    {
+        wxString tt;
+        {
+            // life time of wxWindowDisabler/wxBusyInfo
+            wxWindowDisabler disableAll;
+            wxBusyInfo running(_("Obtaining tokens tree... please wait (this may take several seconds)..."),
+                               Manager::Get()->GetAppWindow());
 
-                    tt = tree->m_Tree.dump();
-                }
-                CCDebugInfoHelper::SaveCCDebugInfo(_("Save tokens tree"), tt);
-            }
-            break;
-        case 1:
-            {
-                wxString tt_ser;
-                { // life time of wxWindowDisabler/wxBusyInfo
-                    wxWindowDisabler disableAll;
-                    wxBusyInfo running(_("Serialising tokens tree... please wait (this may take several seconds)..."),
-                                       Manager::Get()->GetAppWindow());
+            tt = tree->m_Tree.dump();
+        }
+        CCDebugInfoHelper::SaveCCDebugInfo(_("Save tokens tree"), tt);
+    }
+    break;
+    case 1:
+    {
+        wxString tt_ser;
+        {
+            // life time of wxWindowDisabler/wxBusyInfo
+            wxWindowDisabler disableAll;
+            wxBusyInfo running(_("Serialising tokens tree... please wait (this may take several seconds)..."),
+                               Manager::Get()->GetAppWindow());
 
-                    tt_ser = tree->m_Tree.Serialize();
-                }
-                CCDebugInfoHelper::SaveCCDebugInfo(_("Save serialised tokens tree"), tt_ser);
-            }
-            break;
-        case 2:
+            tt_ser = tree->m_Tree.Serialize();
+        }
+        CCDebugInfoHelper::SaveCCDebugInfo(_("Save serialised tokens tree"), tt_ser);
+    }
+    break;
+    case 2:
+    {
+        wxString files;
+        for (size_t i = 0; i < tree->m_FilenameMap.size(); ++i)
+        {
+            wxString file = tree->m_FilenameMap.GetString(i);
+            if (!file.IsEmpty())
+                files += file + _T("\r\n");
+        }
+
+        CCDebugInfoHelper::SaveCCDebugInfo(_("Save file list"), files);
+    }
+    break;
+    case 3:
+    {
+        wxString dirs;
+        const wxArrayString& dirsArray = m_Parser->GetIncludeDirs();
+        for (size_t i = 0; i < dirsArray.GetCount(); ++i)
+        {
+            const wxString& dir = dirsArray[i];
+            if (!dir.IsEmpty())
+                dirs += dir + _T("\r\n");
+        }
+        CCDebugInfoHelper::SaveCCDebugInfo(_("Save list of include directories"), dirs);
+    }
+    break;
+    case 4:
+    {
+        wxString fileTokens;
+        {
+            wxWindowDisabler disableAll;
+            wxBusyInfo running(_("Obtaining tokens tree... please wait (this may take several seconds)..."),
+                               Manager::Get()->GetAppWindow());
+            for (size_t i = 0; i < tree->m_FilenameMap.size(); ++i)
             {
-                wxString files;
-                for (size_t i = 0; i < tree->m_FilenameMap.size(); ++i)
+                const wxString file = tree->m_FilenameMap.GetString(i);
+                if (!file.IsEmpty())
                 {
-                    wxString file = tree->m_FilenameMap.GetString(i);
-                    if (!file.IsEmpty())
-                        files += file + _T("\r\n");
-                }
+                    fileTokens += file + _T("\r\n");
 
-                CCDebugInfoHelper::SaveCCDebugInfo(_("Save file list"), files);
-            }
-            break;
-        case 3:
-            {
-                wxString dirs;
-                const wxArrayString& dirsArray = m_Parser->GetIncludeDirs();
-                for (size_t i = 0; i < dirsArray.GetCount(); ++i)
-                {
-                    const wxString& dir = dirsArray[i];
-                    if (!dir.IsEmpty())
-                        dirs += dir + _T("\r\n");
-                }
-                CCDebugInfoHelper::SaveCCDebugInfo(_("Save list of include directories"), dirs);
-            }
-            break;
-        case 4:
-            {
-                wxString fileTokens;
-                {
-                    wxWindowDisabler disableAll;
-                    wxBusyInfo running(_("Obtaining tokens tree... please wait (this may take several seconds)..."),
-                                       Manager::Get()->GetAppWindow());
-                    for (size_t i = 0; i < tree->m_FilenameMap.size(); ++i)
+                    TokenIdxSet result;
+                    tree->FindTokensInFile(file, result, tkUndefined);
+                    for (TokenIdxSet::const_iterator it = result.begin(); it != result.end(); ++it)
                     {
-                        const wxString file = tree->m_FilenameMap.GetString(i);
-                        if (!file.IsEmpty())
-                        {
-                            fileTokens += file + _T("\r\n");
-
-                            TokenIdxSet result;
-                            tree->FindTokensInFile(file, result, tkUndefined);
-                            for (TokenIdxSet::const_iterator it = result.begin(); it != result.end(); ++it)
-                            {
-                                const Token* token = tree->at(*it);
-                                fileTokens << token->GetTokenKindString() << _T(" ");
-                                if (token->m_TokenKind == tkFunction)
-                                    fileTokens << token->m_Name << token->GetFormattedArgs() << _T("\t");
-                                else
-                                    fileTokens << token->DisplayName() << _T("\t");
-                                fileTokens << _T("[") << token->m_Line << _T(",") << token->m_ImplLine << _T("]");
-                                fileTokens << _T("\r\n");
-                            }
-                        }
-                        fileTokens += _T("\r\n");
+                        const Token* token = tree->at(*it);
+                        fileTokens << token->GetTokenKindString() << _T(" ");
+                        if (token->m_TokenKind == tkFunction)
+                            fileTokens << token->m_Name << token->GetFormattedArgs() << _T("\t");
+                        else
+                            fileTokens << token->DisplayName() << _T("\t");
+                        fileTokens << _T("[") << token->m_Line << _T(",") << token->m_ImplLine << _T("]");
+                        fileTokens << _T("\r\n");
                     }
                 }
-
-                CCDebugInfoHelper::SaveCCDebugInfo(_("Save token list of files"), fileTokens);
+                fileTokens += _T("\r\n");
             }
-            break;
-        default:
-            cbMessageBox(_("Invalid selection."), _("CC Debug Info"));
+        }
+
+        CCDebugInfoHelper::SaveCCDebugInfo(_("Save token list of files"), fileTokens);
+    }
+    break;
+    default:
+        cbMessageBox(_("Invalid selection."), _("CC Debug Info"));
     }
 }
 

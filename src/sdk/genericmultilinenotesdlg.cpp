@@ -10,9 +10,9 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/textctrl.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
 #endif
 
 #include "genericmultilinenotesdlg.h"
@@ -23,7 +23,7 @@ END_EVENT_TABLE()
 
 GenericMultiLineNotesDlg::GenericMultiLineNotesDlg(wxWindow* parent, const wxString& caption, const wxString& notes, bool readOnly)
     : m_Notes(notes),
-    m_ReadOnly(readOnly)
+      m_ReadOnly(readOnly)
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgGenericMultiLineNotes"),_T("wxScrollingDialog"));

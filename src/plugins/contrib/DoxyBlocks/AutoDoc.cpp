@@ -23,11 +23,11 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-  #include <cbeditor.h>
-  #include <configmanager.h>
-  #include <editormanager.h>
-  #include <editorcolourset.h>
-  #include <logmanager.h>
+#include <cbeditor.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <editorcolourset.h>
+#include <logmanager.h>
 #endif
 #include <wx/tokenzr.h>
 
@@ -36,7 +36,7 @@
 
 void DoxyBlocks::OnBlockComment(wxCommandEvent & WXUNUSED(event))
 {
-  DoBlockComment();
+    DoBlockComment();
 }
 
 /*! \brief Insert a comment block at the current line.
@@ -177,20 +177,20 @@ void DoxyBlocks::DoLineComment()
     wxString sComment;
     switch (iLineComment)
     {
-        case 0:            //C/Javadoc.
-            sComment = wxT("/**<  */");
-            break;
-        case 1:            // C++ exclamation.
-            sComment = wxT("//!< ");
-            break;
-        case 2:            // C++ slash.
-            sComment = wxT("///< ");
-            break;
-        case 3:            // Qt.
-            sComment = wxT("/*!<  */");
-            break;
-        default:
-            break;
+    case 0:            //C/Javadoc.
+        sComment = wxT("/**<  */");
+        break;
+    case 1:            // C++ exclamation.
+        sComment = wxT("//!< ");
+        break;
+    case 2:            // C++ slash.
+        sComment = wxT("///< ");
+        break;
+    case 3:            // Qt.
+        sComment = wxT("/*!<  */");
+        break;
+    default:
+        break;
     }
 
     int iMax = 5;
@@ -227,38 +227,38 @@ void DoxyBlocks::GetBlockCommentStrings(int iBlockComment, wxString &sStartComme
 {
     switch(iBlockComment)
     {
-        case 0:            //C/Javadoc.
-            sStartComment = wxT("/**");
-            sMidComment = wxT(" *");
-            sEndComment = wxT(" */");
-            break;
-        case 1:            // C++ exclamation.
-            sStartComment = wxT("//!");
-            sMidComment = wxT("//!");
-            sEndComment = wxT("//!");
-            break;
-        case 2:            // C++ slash.
-            sStartComment = wxT("///");
-            sMidComment = wxT("///");
-            sEndComment = wxT("///");
-            break;
-        case 3:            // Qt.
-            sStartComment = wxT("/*!");
-            sMidComment = wxT(" *");
-            sEndComment = wxT(" */");
-            break;
-        case 4:            // Visible C.
-            sStartComment = wxT("/********************************************//**");
-            sMidComment = wxT(" *");
-            sEndComment = wxT(" ***********************************************/");
-            break;
-        case 5:            // Visible C++.
-            sStartComment = wxT("/////////////////////////////////////////////////");
-            sMidComment = wxT("///");
-            sEndComment = wxT("/////////////////////////////////////////////////");
-            break;
-        default:
-            break;
+    case 0:            //C/Javadoc.
+        sStartComment = wxT("/**");
+        sMidComment = wxT(" *");
+        sEndComment = wxT(" */");
+        break;
+    case 1:            // C++ exclamation.
+        sStartComment = wxT("//!");
+        sMidComment = wxT("//!");
+        sEndComment = wxT("//!");
+        break;
+    case 2:            // C++ slash.
+        sStartComment = wxT("///");
+        sMidComment = wxT("///");
+        sEndComment = wxT("///");
+        break;
+    case 3:            // Qt.
+        sStartComment = wxT("/*!");
+        sMidComment = wxT(" *");
+        sEndComment = wxT(" */");
+        break;
+    case 4:            // Visible C.
+        sStartComment = wxT("/********************************************//**");
+        sMidComment = wxT(" *");
+        sEndComment = wxT(" ***********************************************/");
+        break;
+    case 5:            // Visible C++.
+        sStartComment = wxT("/////////////////////////////////////////////////");
+        sMidComment = wxT("///");
+        sEndComment = wxT("/////////////////////////////////////////////////");
+        break;
+    default:
+        break;
     }
 }
 
@@ -333,8 +333,8 @@ void DoxyBlocks::CommentFunction(cbStyledTextCtrl * control, int &iPos, wxString
         // Reorder the elements.
         if (arElements.GetCount() == 4)
         {
-                // "const type * name" or "const type & name".
-                sParam = arElements[3] + sSpace + arElements[0] + sSpace + arElements[1] + arElements[2];
+            // "const type * name" or "const type & name".
+            sParam = arElements[3] + sSpace + arElements[0] + sSpace + arElements[1] + arElements[2];
         }
         else if (arElements.GetCount() == 3)
         {
@@ -506,7 +506,7 @@ void DoxyBlocks::CommentFortran(cbStyledTextCtrl *control, int iLine, int &iPos,
     wxString sLineLw = sSpace + sLine.Lower().Trim(false);
 
     if (   (sLineLw.Find(_T(" function "))   == wxNOT_FOUND)
-        && (sLineLw.Find(_T(" subroutine ")) == wxNOT_FOUND) )
+            && (sLineLw.Find(_T(" subroutine ")) == wxNOT_FOUND) )
     {
         return; // nothing to do -> no function or subroutine
     }

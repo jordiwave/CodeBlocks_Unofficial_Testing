@@ -11,17 +11,17 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "cbauibook.h"
-    #include "cbeditor.h"
-    #include "cbproject.h"
-    #include "configmanager.h"
-    #include "editormanager.h"
-    #include "manager.h"
-    #include "projectmanager.h"
+#include "cbauibook.h"
+#include "cbeditor.h"
+#include "cbproject.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "manager.h"
+#include "projectmanager.h"
 
-    #include <wx/app.h>
-    #include <wx/dcclient.h>
-    #include <wx/regex.h>
+#include <wx/app.h>
+#include <wx/dcclient.h>
+#include <wx/regex.h>
 #endif
 
 #include <wx/tooltip.h>
@@ -43,14 +43,14 @@ BEGIN_EVENT_TABLE(cbAuiNotebook, wxAuiNotebook)
 END_EVENT_TABLE()
 
 cbAuiNotebook::cbAuiNotebook(wxWindow* pParent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
-        : wxAuiNotebook(pParent, id, pos, size, style),
+    : wxAuiNotebook(pParent, id, pos, size, style),
 #ifdef __WXMSW__
-          m_LastSelected(wxNOT_FOUND),
-          m_LastId(0),
+      m_LastSelected(wxNOT_FOUND),
+      m_LastId(0),
 #endif
-          m_SetZoomOnIdle(false),
-          m_MinimizeFreeSpaceOnIdle(false),
-          m_TabCtrlSize(wxDefaultSize)
+      m_SetZoomOnIdle(false),
+      m_MinimizeFreeSpaceOnIdle(false),
+      m_TabCtrlSize(wxDefaultSize)
 {
     //ctor
 #ifdef __WXGTK__
@@ -134,9 +134,9 @@ void cbAuiNotebook::UpdateTabControlsArray()
     {
         int pageCount = m_TabCtrls[i]->GetPageCount();
         if (m_TabCtrls[i]->GetActivePage() < 0 && pageCount > 0)
-             m_TabCtrls[i]->SetActivePage((size_t)0);
+            m_TabCtrls[i]->SetActivePage((size_t)0);
         if (m_TabCtrls[i]->GetActivePage() >= pageCount && pageCount > 0)
-             m_TabCtrls[i]->SetActivePage(pageCount - 1);
+            m_TabCtrls[i]->SetActivePage(pageCount - 1);
         m_TabCtrls[i]->DoShowHide();
     }
 }
@@ -271,8 +271,8 @@ void cbAuiNotebook::OnEnterTabCtrl(wxMouseEvent& event)
         if (nb)
         {
             if (   s_AllowMousewheel
-                && (nb->m_LastSelected == wxNOT_FOUND)
-                && (nb->m_LastId == 0) )
+                    && (nb->m_LastSelected == wxNOT_FOUND)
+                    && (nb->m_LastId == 0) )
             {
                 nb->StoreFocus();
                 tabCtrl->SetFocus();
@@ -765,7 +765,7 @@ bool cbAuiNotebook::LoadPerspective(const wxString& layout, bool mergeLayouts)
         while (!currentLayout.empty())
         {
             if ( currentLayout.BeforeFirst('|').StartsWith(_("layout2")) ||
-                 currentLayout.BeforeFirst('|').StartsWith(_("name=dummy")) )
+                    currentLayout.BeforeFirst('|').StartsWith(_("name=dummy")) )
             {
                 currentLayout = currentLayout.AfterFirst(('|'));
                 currentLayout.Trim();

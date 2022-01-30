@@ -37,11 +37,11 @@ private:
 class MoveComment
 {
 public:
-	MoveComment(wxString &src, wxString &dst);
-	void operator() ( wxChar const *first, wxChar const *last ) const;
+    MoveComment(wxString &src, wxString &dst);
+    void operator() ( wxChar const *first, wxChar const *last ) const;
 private:
-	wxString &m_src;
-	wxString &m_dst;
+    wxString &m_src;
+    wxString &m_dst;
 };
 
 class instr_collector

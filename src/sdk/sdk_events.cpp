@@ -10,11 +10,11 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "sdk_events.h"
-    #include "cbproject.h"
-    #include "editorbase.h"
-    #include "cbplugin.h"
-    #include "logmanager.h"
+#include "sdk_events.h"
+#include "cbproject.h"
+#include "editorbase.h"
+#include "cbplugin.h"
+#include "logmanager.h"
 #endif
 
 
@@ -27,7 +27,7 @@ IMPLEMENT_DYNAMIC_CLASS(CodeBlocksThreadEvent, wxCommandEvent)
 
 CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, Logger* logger_in, const wxString& title_in, wxBitmap *icon_in)
     : wxEvent(wxID_ANY, commandType),
-    logger(logger_in), logIndex(-1), icon(icon_in), title(title_in), window(nullptr)
+      logger(logger_in), logIndex(-1), icon(icon_in), title(title_in), window(nullptr)
 {
     // special case for add
     if (commandType == cbEVT_ADD_LOG_WINDOW && logger)
@@ -47,14 +47,14 @@ CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, Logger* logger_i
 
 CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, int logIndex_in, const wxString& title_in, wxBitmap *icon_in)
     : wxEvent(wxID_ANY, commandType),
-    logger(nullptr), logIndex(logIndex_in), icon(icon_in), title(title_in), window(nullptr)
+      logger(nullptr), logIndex(logIndex_in), icon(icon_in), title(title_in), window(nullptr)
 {
     logger = Manager::Get()->GetLogManager()->Slot(logIndex).GetLogger();
 }
 
 CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, wxWindow* window_in, const wxString& title_in, wxBitmap *icon_in)
     : wxEvent(wxID_ANY, commandType),
-    logger(nullptr), logIndex(-1), icon(icon_in), title(title_in), window(window_in)
+      logger(nullptr), logIndex(-1), icon(icon_in), title(title_in), window(window_in)
 {
 }
 

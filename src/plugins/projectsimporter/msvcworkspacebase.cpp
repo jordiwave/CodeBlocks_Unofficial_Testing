@@ -10,12 +10,12 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include "manager.h"
-    #include "logmanager.h"
-    #include "projectmanager.h"
-    #include "compilerfactory.h"
-    #include "compiler.h"
-    #include "cbproject.h"
+#include "manager.h"
+#include "logmanager.h"
+#include "projectmanager.h"
+#include "compilerfactory.h"
+#include "compiler.h"
+#include "cbproject.h"
 #endif
 
 #include "msvcworkspacebase.h"
@@ -199,7 +199,7 @@ void MSVCWorkspaceBase::updateProjects()
                     deps << fname.GetFullPath() << _T(';');
                     targetProj->SetExternalDeps(deps);
                     // ---------
-               }
+                }
             }
             else
                 Manager::Get()->GetLogManager()->DebugLog(_T("ERROR: dependency not found ") + proj._dependencyList[i]);

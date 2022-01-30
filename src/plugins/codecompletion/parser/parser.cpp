@@ -10,21 +10,21 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <queue>
+#include <queue>
 
-    #include <wx/app.h>
-    #include <wx/dir.h>
-    #include <wx/filename.h>
-    #include <wx/intl.h>
-    #include <wx/progdlg.h>
+#include <wx/app.h>
+#include <wx/dir.h>
+#include <wx/filename.h>
+#include <wx/intl.h>
+#include <wx/progdlg.h>
 
-    #include <cbproject.h>
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <globals.h>
-    #include <infowindow.h>
-    #include <logmanager.h>
-    #include <manager.h>
+#include <cbproject.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <globals.h>
+#include <infowindow.h>
+#include <logmanager.h>
+#include <manager.h>
 #endif
 
 #include <wx/tokenzr.h>
@@ -38,60 +38,60 @@
 
 
 #ifndef CB_PRECOMP
-    #include "editorbase.h"
+#include "editorbase.h"
 #endif
 
 #define CC_PARSER_DEBUG_OUTPUT 0
 
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
-    #if CC_GLOBAL_DEBUG_OUTPUT == 1
-        #undef CC_PARSER_DEBUG_OUTPUT
-        #define CC_PARSER_DEBUG_OUTPUT 1
-    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
-        #undef CC_PARSER_DEBUG_OUTPUT
-        #define CC_PARSER_DEBUG_OUTPUT 2
-    #endif
+#if CC_GLOBAL_DEBUG_OUTPUT == 1
+#undef CC_PARSER_DEBUG_OUTPUT
+#define CC_PARSER_DEBUG_OUTPUT 1
+#elif CC_GLOBAL_DEBUG_OUTPUT == 2
+#undef CC_PARSER_DEBUG_OUTPUT
+#define CC_PARSER_DEBUG_OUTPUT 2
+#endif
 #endif
 
 #if CC_PARSER_DEBUG_OUTPUT == 1
-    #define TRACE(format, args...) \
+#define TRACE(format, args...) \
         CCLogger::Get()->DebugLog(F(format, ##args))
-    #define TRACE2(format, args...)
+#define TRACE2(format, args...)
 #elif CC_PARSER_DEBUG_OUTPUT == 2
-    #define TRACE(format, args...)                                              \
+#define TRACE(format, args...)                                              \
         do                                                                      \
         {                                                                       \
             if (g_EnableDebugTrace)                                             \
                 CCLogger::Get()->DebugLog(F(format, ##args));                   \
         }                                                                       \
         while (false)
-    #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
         CCLogger::Get()->DebugLog(F(format, ##args))
 #else
-    #define TRACE(format, args...)
-    #define TRACE2(format, args...)
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
 #endif
 
 namespace ParserCommon
 {
-    static const int PARSER_BATCHPARSE_TIMER_DELAY           = 300;
-    static const int PARSER_BATCHPARSE_TIMER_RUN_IMMEDIATELY = 10;
-    static const int PARSER_BATCHPARSE_TIMER_DELAY_LONG      = 1000;
-    static const int PARSER_REPARSE_TIMER_DELAY              = 100;
+static const int PARSER_BATCHPARSE_TIMER_DELAY           = 300;
+static const int PARSER_BATCHPARSE_TIMER_RUN_IMMEDIATELY = 10;
+static const int PARSER_BATCHPARSE_TIMER_DELAY_LONG      = 1000;
+static const int PARSER_REPARSE_TIMER_DELAY              = 100;
 
-    // this static variable point to the Parser instance which is currently running the taskpool
-    // when the taskpool finishes, the pointer is set to nullptr.
-    static volatile Parser* s_CurrentParser = nullptr;
+// this static variable point to the Parser instance which is currently running the taskpool
+// when the taskpool finishes, the pointer is set to nullptr.
+static volatile Parser* s_CurrentParser = nullptr;
 
-    // NOTE (ollydbg#1#): This static variable is used to prevent changing the member variables of
-    // the Parser class from different threads. Basically, It should not be a static wxMutex for all
-    // the instances of the Parser class, it should be a member variable of the Parser class.
-    // Maybe, the author of this locker (Loaden?) thought that accessing to different Parser instances
-    // from different threads should also be avoided.
-    static          wxMutex s_ParserMutex;
+// NOTE (ollydbg#1#): This static variable is used to prevent changing the member variables of
+// the Parser class from different threads. Basically, It should not be a static wxMutex for all
+// the instances of the Parser class, it should be a member variable of the Parser class.
+// Maybe, the author of this locker (Loaden?) thought that accessing to different Parser instances
+// from different threads should also be avoided.
+static          wxMutex s_ParserMutex;
 
-    int idParserStart = wxNewId();
-    int idParserEnd   = wxNewId();
+int idParserStart = wxNewId();
+int idParserEnd   = wxNewId();
 
 }// namespace ParserCommon
 
@@ -301,14 +301,14 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked)
             if (!locked)
                 CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-            //check to see whether it is assigned already
-            canparse = !m_TokenTree->IsFileParsed(filename);
+                //check to see whether it is assigned already
+                canparse = !m_TokenTree->IsFileParsed(filename);
             if (canparse)
                 canparse = m_TokenTree->ReserveFileForParsing(filename, true) != 0;
 
             if (!locked)
                 CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-        }
+            }
 
         if (!canparse)
         {
@@ -596,7 +596,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
     // Do next task in BatchTimer's event handler, so start the m_BatchTimer
     if (!m_PredefinedMacros.IsEmpty()
-        || !m_BatchParseFiles.empty() )
+            || !m_BatchParseFiles.empty() )
     {
         TRACE(_T("Parser::OnAllThreadsDone(): Still some tasks left, starting m_BatchTimer."));
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_RUN_IMMEDIATELY, wxTIMER_ONE_SHOT);
@@ -605,9 +605,9 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
     // Do nothing
 #else
     else if (   (   m_ParserState == ParserCommon::ptCreateParser
-                 || m_ParserState == ParserCommon::ptAddFileToParser )
-             && m_NeedMarkFileAsLocal
-             && m_Project)
+                    || m_ParserState == ParserCommon::ptAddFileToParser )
+                && m_NeedMarkFileAsLocal
+                && m_Project)
     {
         m_NeedMarkFileAsLocal = false;
         MarkFileAsLocalThreadedTask* thread = new MarkFileAsLocalThreadedTask(this, m_Project);
@@ -660,7 +660,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 bool Parser::ParseFile(const wxString& filename, bool isGlobal, bool locked)
 {
     if (   (!isGlobal && !m_Options.followLocalIncludes)
-        || ( isGlobal && !m_Options.followGlobalIncludes) )
+            || ( isGlobal && !m_Options.followGlobalIncludes) )
         return false;
 
     if (filename.IsEmpty())
@@ -716,7 +716,7 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
     StartStopWatch(); // start counting the time we take for parsing the files
 
     if (m_BatchParseFiles.empty()
-        && m_PredefinedMacros.IsEmpty() ) // easy case: is there any thing to do at all?
+            && m_PredefinedMacros.IsEmpty() ) // easy case: is there any thing to do at all?
     {
         return;
     }
@@ -724,7 +724,7 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
     bool send_event          = true;
     bool sendStartParseEvent = false;
     if (   !m_BatchParseFiles.empty()
-        || !m_PredefinedMacros.IsEmpty() )
+            || !m_PredefinedMacros.IsEmpty() )
     {
         CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
 

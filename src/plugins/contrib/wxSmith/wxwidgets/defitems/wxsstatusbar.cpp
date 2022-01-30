@@ -26,16 +26,16 @@
 
 namespace
 {
-    wxsRegisterItem<wxsStatusBar> Reg(_T("StatusBar"),wxsTTool,_T("Tools"),40);
+wxsRegisterItem<wxsStatusBar> Reg(_T("StatusBar"),wxsTTool,_T("Tools"),40);
 
-    WXS_ST_BEGIN(wxsStatusBarStyles,_T(""))
-        WXS_ST_CATEGORY("wxStatusBar")
-        WXS_ST(wxST_SIZEGRIP)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsStatusBarStyles,_T(""))
+WXS_ST_CATEGORY("wxStatusBar")
+WXS_ST(wxST_SIZEGRIP)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    const wxChar* FieldStyles[] = { _T("wxSB_NORMAL"), _T("wxSB_FLAT"), _T("wxSB_RAISED"), 0 };
-    const long FieldStylesVal[] = { wxSB_NORMAL, wxSB_FLAT, wxSB_RAISED };
+const wxChar* FieldStyles[] = { _T("wxSB_NORMAL"), _T("wxSB_FLAT"), _T("wxSB_RAISED"), 0 };
+const long FieldStylesVal[] = { wxSB_NORMAL, wxSB_FLAT, wxSB_RAISED };
 }
 
 wxsStatusBar::wxsStatusBar(wxsItemResData* Data):
@@ -49,42 +49,42 @@ void wxsStatusBar::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/statusbr.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%W, %I, %T, %N);\n"));
+        if ( m_Fields>0 )
         {
-            AddHeader(_T("<wx/statusbr.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%W, %I, %T, %N);\n"));
-            if ( m_Fields>0 )
+            wxString WidthsVarName = GetCoderContext()->GetUniqueName(_T("__wxStatusBarWidths"));
+            wxString StylesVarName = GetCoderContext()->GetUniqueName(_T("__wxStatusBarStyles"));
+
+            Codef(_T("int %v[%d] = { "),WidthsVarName.wx_str(),m_Fields);
+            for ( int i=0; i<m_Fields; i++ )
             {
-                wxString WidthsVarName = GetCoderContext()->GetUniqueName(_T("__wxStatusBarWidths"));
-                wxString StylesVarName = GetCoderContext()->GetUniqueName(_T("__wxStatusBarStyles"));
-
-                Codef(_T("int %v[%d] = { "),WidthsVarName.wx_str(),m_Fields);
-                for ( int i=0; i<m_Fields; i++ )
-                {
-                    Codef( _T("%d%s"),
-                        m_VarWidth[i]?-m_Widths[i]:m_Widths[i],
-                        i==(m_Fields-1) ? _T(" };\n") : _T(", "));
-                }
-                Codef(_T("int %v[%d] = { "),StylesVarName.wx_str(),m_Fields);
-                for ( int i=0; i<m_Fields; i++ )
-                {
-                    Codef(_T("%s%s"),
-                        m_Styles[i] == wxSB_FLAT ?   _T("wxSB_FLAT") :
-                        m_Styles[i] == wxSB_RAISED ? _T("wxSB_RAISED") :
-                                                     _T("wxSB_NORMAL"),
-                        i==(m_Fields-1) ? _T(" };\n") : _T(", "));
-                }
-                Codef(_T("%ASetFieldsCount(%d,%v);\n"),m_Fields,WidthsVarName.wx_str());
-                Codef(_T("%ASetStatusStyles(%d,%v);\n"),m_Fields,StylesVarName.wx_str());
-                Codef(_T("SetStatusBar(%O);\n"));
+                Codef( _T("%d%s"),
+                       m_VarWidth[i]?-m_Widths[i]:m_Widths[i],
+                       i==(m_Fields-1) ? _T(" };\n") : _T(", "));
             }
-            BuildSetupWindowCode();
-            break;
+            Codef(_T("int %v[%d] = { "),StylesVarName.wx_str(),m_Fields);
+            for ( int i=0; i<m_Fields; i++ )
+            {
+                Codef(_T("%s%s"),
+                      m_Styles[i] == wxSB_FLAT ?   _T("wxSB_FLAT") :
+                      m_Styles[i] == wxSB_RAISED ? _T("wxSB_RAISED") :
+                      _T("wxSB_NORMAL"),
+                      i==(m_Fields-1) ? _T(" };\n") : _T(", "));
+            }
+            Codef(_T("%ASetFieldsCount(%d,%v);\n"),m_Fields,WidthsVarName.wx_str());
+            Codef(_T("%ASetStatusStyles(%d,%v);\n"),m_Fields,StylesVarName.wx_str());
+            Codef(_T("SetStatusBar(%O);\n"));
         }
+        BuildSetupWindowCode();
+        break;
+    }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsStatusBar::OnBuildCreatingCode"),GetLanguage());
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsStatusBar::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
@@ -118,7 +118,7 @@ bool wxsStatusBar::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
     return true;
 }
 
-        bool wxsStatusBar::OnCanAddChild(cb_unused wxsItem* Item,bool ShowMessage)
+bool wxsStatusBar::OnCanAddChild(cb_unused wxsItem* Item,bool ShowMessage)
 {
     if ( ShowMessage )
     {
@@ -204,9 +204,9 @@ void wxsStatusBar::OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id
     for ( int i=0; i<m_Fields; i++ )
     {
         if ( m_ParentIds[i]   == Id ||
-             m_WidthsIds[i]   == Id ||
-             m_StylesIds[i]   == Id ||
-             m_VarWidthIds[i] == Id )
+                m_WidthsIds[i]   == Id ||
+                m_StylesIds[i]   == Id ||
+                m_VarWidthIds[i] == Id )
         {
             m_Widths[i] = Grid->GetPropertyValueAsLong(m_WidthsIds[i]);
             m_Styles[i] = Grid->GetPropertyValueAsLong(m_StylesIds[i]);
@@ -300,7 +300,7 @@ bool wxsStatusBar::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
     if ( IsXRC )
     {
         Element->InsertEndChild(TiXmlElement("fields"))->
-                 InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%d"),m_Fields))));
+        InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%d"),m_Fields))));
 
         wxString Widths;
         wxString Styles;
@@ -328,9 +328,9 @@ bool wxsStatusBar::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
         }
 
         Element->InsertEndChild(TiXmlElement("widths"))->
-                 InsertEndChild(TiXmlText(cbU2C(Widths)));
+        InsertEndChild(TiXmlText(cbU2C(Widths)));
         Element->InsertEndChild(TiXmlElement("styles"))->
-                 InsertEndChild(TiXmlText(cbU2C(Styles)));
+        InsertEndChild(TiXmlText(cbU2C(Styles)));
     }
 
     return wxsParent::OnXmlWrite(Element,IsXRC,IsExtra);

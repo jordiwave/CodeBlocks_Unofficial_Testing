@@ -6,7 +6,8 @@
 
 #define SQSTD_STREAM_TYPE_TAG 0x80000000
 
-struct SQStream {
+struct SQStream
+{
     virtual SQInteger Read(void *buffer, SQInteger size) = 0;
     virtual SQInteger Write(void *buffer, SQInteger size) = 0;
     virtual SQInteger Flush() = 0;
@@ -29,7 +30,7 @@ typedef void* SQFILE;
 SQUIRREL_API SQFILE sqstd_fopen(const SQChar *,const SQChar *);
 SQUIRREL_API SQInteger sqstd_fread(SQUserPointer, SQInteger, SQInteger, SQFILE);
 SQUIRREL_API SQInteger sqstd_fwrite(const SQUserPointer, SQInteger, SQInteger, SQFILE);
-SQUIRREL_API SQInteger sqstd_fseek(SQFILE , SQInteger , SQInteger);
+SQUIRREL_API SQInteger sqstd_fseek(SQFILE, SQInteger, SQInteger);
 SQUIRREL_API SQInteger sqstd_ftell(SQFILE);
 SQUIRREL_API SQInteger sqstd_fflush(SQFILE);
 SQUIRREL_API SQInteger sqstd_fclose(SQFILE);

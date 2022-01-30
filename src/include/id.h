@@ -17,9 +17,9 @@ class ID
     wxString p__id;
 
 public:
-    ID(){};
-    ID(const wxString& id) : p__id(id){};
-    explicit ID(const ID& cpy) : p__id(cpy.id()){};
+    ID() {};
+    ID(const wxString& id) : p__id(id) {};
+    explicit ID(const ID& cpy) : p__id(cpy.id()) {};
 
     wxString id() const
     {

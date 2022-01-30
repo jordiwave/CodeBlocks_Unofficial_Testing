@@ -24,12 +24,12 @@ DECLARE_EVT_CBNET(cbEVT_CBNET_ABORTED);
 
 cbNetwork::cbNetwork(wxEvtHandler* parent, int id, const wxString& serverUrl)
     : m_pParent(parent),
-    m_ID(id),
-    m_ServerURL(serverUrl),
-    m_pStream(0),
-    m_pURL(0),
-    m_Abort(false),
-    m_Busy(false)
+      m_ID(id),
+      m_ServerURL(serverUrl),
+      m_pStream(0),
+      m_pURL(0),
+      m_Abort(false),
+      m_Busy(false)
 {
 }
 

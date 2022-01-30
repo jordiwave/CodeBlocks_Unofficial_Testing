@@ -44,12 +44,12 @@ public:
         SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
     }
     wxScrollingDialog(wxWindow *parent,
-             int id = wxID_ANY,
-             const wxString& title = wxEmptyString,
-             const wxPoint& pos = wxDefaultPosition,
-             const wxSize& size = wxDefaultSize,
-             long style = wxDEFAULT_DIALOG_STYLE,
-             const wxString& name = _("dialogBox"))
+                      int id = wxID_ANY,
+                      const wxString& title = wxEmptyString,
+                      const wxPoint& pos = wxDefaultPosition,
+                      const wxSize& size = wxDefaultSize,
+                      long style = wxDEFAULT_DIALOG_STYLE,
+                      const wxString& name = _("dialogBox"))
     {
         SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
         Create(parent, id, title, pos, size, style, name);
@@ -69,11 +69,11 @@ public:
     }
 
     wxScrollingPropertySheetDialog(wxWindow* parent, wxWindowID id,
-                       const wxString& title,
-                       const wxPoint& pos = wxDefaultPosition,
-                       const wxSize& sz = wxDefaultSize,
-                       long style = wxDEFAULT_DIALOG_STYLE,
-                       const wxString& name = wxDialogNameStr)
+                                   const wxString& title,
+                                   const wxPoint& pos = wxDefaultPosition,
+                                   const wxSize& sz = wxDefaultSize,
+                                   long style = wxDEFAULT_DIALOG_STYLE,
+                                   const wxString& name = wxDialogNameStr)
     {
         SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
         Create(parent, id, title, pos, sz, style, name);
@@ -85,5 +85,5 @@ protected:
 };
 
 #endif
- // _WX_SCROLLINGDIALOG_H_
+// _WX_SCROLLINGDIALOG_H_
 

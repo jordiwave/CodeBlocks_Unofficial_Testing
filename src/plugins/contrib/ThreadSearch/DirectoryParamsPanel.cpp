@@ -17,20 +17,20 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/artprov.h>
-    #include <wx/button.h>
-    #include <wx/bmpbuttn.h>
-    #include <wx/checkbox.h>
-    #include <wx/combobox.h>
-    #include <wx/dir.h>
-    #include <wx/dirdlg.h>
-    #include <wx/filename.h>
-    #include <wx/sizer.h>
-    #include <wx/stattext.h>
+#include <wx/artprov.h>
+#include <wx/button.h>
+#include <wx/bmpbuttn.h>
+#include <wx/checkbox.h>
+#include <wx/combobox.h>
+#include <wx/dir.h>
+#include <wx/dirdlg.h>
+#include <wx/filename.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
 
-    #include <algorithm>
+#include <algorithm>
 
-    #include "globals.h"
+#include "globals.h"
 #endif
 
 #include "DirectoryParamsPanel.h"
@@ -195,7 +195,7 @@ struct DirectorySelectDialog : wxDialog
         }
 
         wxBitmapButton *buttonDirSelect = new wxBitmapButton(this, controlIDs.Get(ControlIDs::idDirDialogDirButton),
-                                                             wxArtProvider::GetBitmap("core/folder_open", wxART_BUTTON));
+                wxArtProvider::GetBitmap("core/folder_open", wxART_BUTTON));
         wxPanel *panelList = new wxPanel(this);
         {
             m_list = new wxCheckListBox(panelList, controlIDs.Get(ControlIDs::idDirDialogList),
@@ -257,7 +257,7 @@ struct DirectorySelectDialog : wxDialog
             }
 
             wxButton *buttonUnCheckUnselected = new wxButton(panelList, controlIDs.Get(ControlIDs::idDirDialogCheckSelectedButton),
-                                                             "Check only selected");
+                    "Check only selected");
             wxStaticLine *separator0 = new wxStaticLine(panelList);
             wxButton *buttonAdd = new wxButton(panelList,
                                                controlIDs.Get(ControlIDs::idDirDialogAddButton),
@@ -270,8 +270,8 @@ struct DirectorySelectDialog : wxDialog
                                                   controlIDs.Get(ControlIDs::idDirDialogDeleteButton),
                                                   _("&Delete"));
             wxButton *buttonDeleteAll = new wxButton(panelList,
-                                                     controlIDs.Get(ControlIDs::idDirDialogDeleteAllButton),
-                                                     _("Delete a&ll"));
+                    controlIDs.Get(ControlIDs::idDirDialogDeleteAllButton),
+                    _("Delete a&ll"));
 
             wxBoxSizer *listButtonSizer = new wxBoxSizer(wxVERTICAL);
             listButtonSizer->Add(buttonUnCheckUnselected, 0, wxTOP | wxEXPAND, sizerBorder / 2);
@@ -516,7 +516,7 @@ BEGIN_EVENT_TABLE(DirectorySelectDialog, wxDialog)
 END_EVENT_TABLE();
 
 DirectoryParamsPanel::DirectoryParamsPanel(ThreadSearchFindData *findData, wxWindow* parent, int id, const wxPoint& pos,
-                                           const wxSize& size, long WXUNUSED(style)):
+        const wxSize& size, long WXUNUSED(style)):
     wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL),
     m_pFindData(findData)
 {
@@ -524,7 +524,7 @@ DirectoryParamsPanel::DirectoryParamsPanel(ThreadSearchFindData *findData, wxWin
 
     // begin wxGlade: DirectoryParamsPanel::DirectoryParamsPanel
     m_pSearchDirPath = new wxComboBox(this, controlIDs.Get(ControlIDs::idSearchDirPath), wxEmptyString,
-                                      wxDefaultPosition, wxDefaultSize, 0, choices, wxCB_DROPDOWN|wxTE_PROCESS_ENTER);
+                                      wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_DROPDOWN|wxTE_PROCESS_ENTER);
     SetWindowMinMaxSize(*m_pSearchDirPath, 80, 180);
     m_pSearchDirPath->AutoComplete(new DirTextCompleter);
 
@@ -636,16 +636,40 @@ void DirectoryParamsPanel::do_layout()
 }
 
 // Getters
-wxString DirectoryParamsPanel::GetSearchDirPath()        const {return m_pSearchDirPath->GetValue();}
-bool     DirectoryParamsPanel::GetSearchDirRecursively() const {return m_pChkSearchDirRecursively->IsChecked();}
-bool     DirectoryParamsPanel::GetSearchDirHidden()      const {return m_pChkSearchDirHiddenFiles->IsChecked();}
-wxString DirectoryParamsPanel::GetSearchMask()           const {return m_pMask->GetValue();}
+wxString DirectoryParamsPanel::GetSearchDirPath()        const
+{
+    return m_pSearchDirPath->GetValue();
+}
+bool     DirectoryParamsPanel::GetSearchDirRecursively() const
+{
+    return m_pChkSearchDirRecursively->IsChecked();
+}
+bool     DirectoryParamsPanel::GetSearchDirHidden()      const
+{
+    return m_pChkSearchDirHiddenFiles->IsChecked();
+}
+wxString DirectoryParamsPanel::GetSearchMask()           const
+{
+    return m_pMask->GetValue();
+}
 
 // Setters
-void     DirectoryParamsPanel::SetSearchDirPath(const wxString& sDirPath) {m_pSearchDirPath->SetValue(sDirPath);}
-void     DirectoryParamsPanel::SetSearchDirRecursively(bool bRecurse)     {m_pChkSearchDirRecursively->SetValue(bRecurse);}
-void     DirectoryParamsPanel::SetSearchDirHidden(bool bSearchHidden)     {m_pChkSearchDirHiddenFiles->SetValue(bSearchHidden);}
-void     DirectoryParamsPanel::SetSearchMask(const wxString& sMask)       {m_pMask->SetValue(sMask);}
+void     DirectoryParamsPanel::SetSearchDirPath(const wxString& sDirPath)
+{
+    m_pSearchDirPath->SetValue(sDirPath);
+}
+void     DirectoryParamsPanel::SetSearchDirRecursively(bool bRecurse)
+{
+    m_pChkSearchDirRecursively->SetValue(bRecurse);
+}
+void     DirectoryParamsPanel::SetSearchDirHidden(bool bSearchHidden)
+{
+    m_pChkSearchDirHiddenFiles->SetValue(bSearchHidden);
+}
+void     DirectoryParamsPanel::SetSearchMask(const wxString& sMask)
+{
+    m_pMask->SetValue(sMask);
+}
 
 void DirectoryParamsPanel::SetSearchHistory(const wxArrayString& searchDirs, const wxArrayString& searchMasks)
 {

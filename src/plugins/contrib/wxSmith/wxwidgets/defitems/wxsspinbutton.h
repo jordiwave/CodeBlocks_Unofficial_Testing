@@ -28,19 +28,19 @@
 /** \brief Class for wxsSpinButton widget */
 class wxsSpinButton: public wxsWidget
 {
-    public:
+public:
 
-        wxsSpinButton(wxsItemResData* Data);
+    wxsSpinButton(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        long Value;
-        long Min;
-        long Max;
+    long Value;
+    long Min;
+    long Max;
 };
 
 #endif

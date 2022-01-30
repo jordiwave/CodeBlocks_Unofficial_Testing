@@ -12,23 +12,23 @@
 
 class CompilerOWGenerator : public CompilerCommandGenerator
 {
-    public:
-        CompilerOWGenerator();
-        ~CompilerOWGenerator() override;
-        wxString SetupLibrariesDirs(Compiler* compiler, ProjectBuildTarget* target) override;
-        wxString SetupLinkerOptions(Compiler* compiler, ProjectBuildTarget* target) override;
-        wxString SetupLinkLibraries(Compiler* compiler, ProjectBuildTarget* target) override;
-    private:
-        // This maps target type to wlink.exe options
-        wxString MapTargetType(const wxString& Opt, int target_type);
-        // This maps debug related compiler options to wlink.exe options
-        wxString MapDebugOptions(const wxString& Opt);
-        // Open Watcom supports: Watcom debugger, Dwarf (default), CodeView
-        void MapDebuggerOptions(const wxString& Opt);
+public:
+    CompilerOWGenerator();
+    ~CompilerOWGenerator() override;
+    wxString SetupLibrariesDirs(Compiler* compiler, ProjectBuildTarget* target) override;
+    wxString SetupLinkerOptions(Compiler* compiler, ProjectBuildTarget* target) override;
+    wxString SetupLinkLibraries(Compiler* compiler, ProjectBuildTarget* target) override;
+private:
+    // This maps target type to wlink.exe options
+    wxString MapTargetType(const wxString& Opt, int target_type);
+    // This maps debug related compiler options to wlink.exe options
+    wxString MapDebugOptions(const wxString& Opt);
+    // Open Watcom supports: Watcom debugger, Dwarf (default), CodeView
+    void MapDebuggerOptions(const wxString& Opt);
 
-    private:
-        // Debugger name which will later be used in MapDebugOptions
-        wxString m_DebuggerType;
+private:
+    // Debugger name which will later be used in MapDebugOptions
+    wxString m_DebuggerType;
 };
 
 

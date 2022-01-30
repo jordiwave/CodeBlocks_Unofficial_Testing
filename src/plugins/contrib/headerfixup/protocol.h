@@ -29,27 +29,27 @@ class Protocol: public wxScrollingDialog
 {
 public:
 
-  Protocol(wxWindow* parent,wxWindowID id = -1);
+    Protocol(wxWindow* parent,wxWindowID id = -1);
 
-  void SetProtocol(const wxArrayString& Protocol);
+    void SetProtocol(const wxArrayString& Protocol);
 
-  //(*Identifiers(Protocol)
-  static const long ID_TXT_PROTOCOL;
-  //*)
+    //(*Identifiers(Protocol)
+    static const long ID_TXT_PROTOCOL;
+    //*)
 
 protected:
 
-  //(*Handlers(Protocol)
-  void OnBtnOKClick(wxCommandEvent& event);
-  //*)
+    //(*Handlers(Protocol)
+    void OnBtnOKClick(wxCommandEvent& event);
+    //*)
 
-  //(*Declarations(Protocol)
-  wxTextCtrl* m_Protocol;
-  //*)
+    //(*Declarations(Protocol)
+    wxTextCtrl* m_Protocol;
+    //*)
 
 private:
 
-  DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // PROTOCOL_H

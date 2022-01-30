@@ -18,57 +18,61 @@ class wxStaticText;
 
 class HeadersDetectorDlg: public wxScrollingDialog
 {
-	public:
+public:
 
-		HeadersDetectorDlg(wxWindow* parent,cbProject* project,wxArrayString& headers);
-		virtual ~HeadersDetectorDlg();
+    HeadersDetectorDlg(wxWindow* parent,cbProject* project,wxArrayString& headers);
+    virtual ~HeadersDetectorDlg();
 
-	private:
+private:
 
-		//(*Declarations(HeadersDetectorDlg)
-		wxStaticText* m_ProjectName;
-		wxStaticText* m_FileNameTxt;
-		wxStaticText* StaticText1;
-		wxTimer Timer1;
-		wxGauge* m_ProgressBar;
-		wxStaticText* StaticText2;
-		//*)
+    //(*Declarations(HeadersDetectorDlg)
+    wxStaticText* m_ProjectName;
+    wxStaticText* m_FileNameTxt;
+    wxStaticText* StaticText1;
+    wxTimer Timer1;
+    wxGauge* m_ProgressBar;
+    wxStaticText* StaticText2;
+    //*)
 
-		//(*Identifiers(HeadersDetectorDlg)
-		static const long ID_STATICTEXT1;
-		static const long ID_STATICTEXT3;
-		static const long ID_STATICTEXT2;
-		static const long ID_STATICTEXT4;
-		static const long ID_GAUGE1;
-		static const long ID_TIMER1;
-		//*)
+    //(*Identifiers(HeadersDetectorDlg)
+    static const long ID_STATICTEXT1;
+    static const long ID_STATICTEXT3;
+    static const long ID_STATICTEXT2;
+    static const long ID_STATICTEXT4;
+    static const long ID_GAUGE1;
+    static const long ID_TIMER1;
+    //*)
 
-		//(*Handlers(HeadersDetectorDlg)
-		void OnTimer1Trigger(wxTimerEvent& event);
-		void Cancel(wxCommandEvent& event);
-		//*)
+    //(*Handlers(HeadersDetectorDlg)
+    void OnTimer1Trigger(wxTimerEvent& event);
+    void Cancel(wxCommandEvent& event);
+    //*)
 
-		class WorkThread: public wxThread
-		{
-		    public:
-                WorkThread(): wxThread(wxTHREAD_JOINABLE) {}
-                ExitCode Entry() { m_Dlg->ThreadProc(); return 0; }
-                HeadersDetectorDlg* m_Dlg;
-		};
+    class WorkThread: public wxThread
+    {
+    public:
+        WorkThread(): wxThread(wxTHREAD_JOINABLE) {}
+        ExitCode Entry()
+        {
+            m_Dlg->ThreadProc();
+            return 0;
+        }
+        HeadersDetectorDlg* m_Dlg;
+    };
 
-		void ThreadProc();
-		void ProcessFile( ProjectFile* file, wxArrayString& includes );
+    void ThreadProc();
+    void ProcessFile( ProjectFile* file, wxArrayString& includes );
 
-        WorkThread        m_Thread;
-		cbProject*        m_Project;
-		wxArrayString&    m_Headers;
-		wxCriticalSection m_Section;
-		wxString          m_FileName;
-		int               m_Progress;
-		bool              m_Finished;
-		bool              m_Cancel;
+    WorkThread        m_Thread;
+    cbProject*        m_Project;
+    wxArrayString&    m_Headers;
+    wxCriticalSection m_Section;
+    wxString          m_FileName;
+    int               m_Progress;
+    bool              m_Finished;
+    bool              m_Cancel;
 
-		DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

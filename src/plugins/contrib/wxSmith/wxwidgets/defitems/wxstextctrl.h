@@ -28,18 +28,18 @@
 /** \brief Class for wxsTextCtrl widget */
 class wxsTextCtrl: public wxsWidget
 {
-    public:
+public:
 
-        wxsTextCtrl(wxsItemResData* Data);
+    wxsTextCtrl(wxsItemResData* Data);
 
-    private:
+private:
 
-        virtual void OnBuildCreatingCode();
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-        virtual void OnEnumWidgetProperties(long Flags);
+    virtual void OnBuildCreatingCode();
+    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
+    virtual void OnEnumWidgetProperties(long Flags);
 
-        wxString Text;
-        long MaxLength;
+    wxString Text;
+    long MaxLength;
 };
 
 #endif

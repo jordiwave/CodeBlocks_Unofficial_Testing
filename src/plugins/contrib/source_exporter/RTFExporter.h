@@ -10,23 +10,23 @@ using std::vector;
 
 class RTFExporter : public BaseExporter
 {
-  public:
+public:
     struct Style
     {
-      int value;
-      int backIdx;
-      int foreIdx;
-      bool bold;
-      bool italics;
-      bool underlined;
+        int value;
+        int backIdx;
+        int foreIdx;
+        bool bold;
+        bool italics;
+        bool underlined;
 
-      bool operator == (int aValue);
+        bool operator == (int aValue);
     };
 
-  public:
+public:
     void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount, int tabWidth);
 
-  private:
+private:
     vector<Style> m_styles;
     int defStyleIdx;
 

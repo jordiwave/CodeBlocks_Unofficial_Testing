@@ -81,8 +81,14 @@ class CCTreeCtrlExpandedItemData
 public:
     CCTreeCtrlExpandedItemData(const CCTreeCtrlData* data, const int level);
 
-    int   GetLevel() const          { return m_Level; }
-    const CCTreeCtrlData& GetData() { return m_Data;  }
+    int   GetLevel() const
+    {
+        return m_Level;
+    }
+    const CCTreeCtrlData& GetData()
+    {
+        return m_Data;
+    }
 private:
     CCTreeCtrlData m_Data;  // copy of tree item data
     int            m_Level; // nesting level in the tree

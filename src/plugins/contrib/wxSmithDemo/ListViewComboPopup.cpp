@@ -1,8 +1,8 @@
 #include "ListViewComboPopup.h"
 
 #ifndef WX_PRECOMP
-	//(*InternalHeadersPCH(ListViewComboPopup)
-	//*)
+//(*InternalHeadersPCH(ListViewComboPopup)
+//*)
 #endif
 //(*InternalHeaders(ListViewComboPopup)
 //*)
@@ -11,18 +11,18 @@
 //*)
 
 BEGIN_EVENT_TABLE(ListViewComboPopup,wxComboPopup)
-	//(*EventTable(ListViewComboPopup)
-	//*)
+    //(*EventTable(ListViewComboPopup)
+    //*)
 END_EVENT_TABLE()
 
 ListViewComboPopup::ListViewComboPopup(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size)
 {
-	//(*Initialize(ListViewComboPopup)
-	//*)
+    //(*Initialize(ListViewComboPopup)
+    //*)
 }
 
 ListViewComboPopup::~ListViewComboPopup()
 {
-	//(*Destroy(ListViewComboPopup)
-	//*)
+    //(*Destroy(ListViewComboPopup)
+    //*)
 }

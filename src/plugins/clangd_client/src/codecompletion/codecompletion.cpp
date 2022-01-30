@@ -10,36 +10,36 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <algorithm>
-    #include <iterator>
-    #include <set> // for handling unique items in some places
-    #include "assert.h"
+#include <algorithm>
+#include <iterator>
+#include <set> // for handling unique items in some places
+#include "assert.h"
 
-    #include <wx/choicdlg.h>
-    #include <wx/choice.h>
-    #include <wx/dir.h>
-    #include <wx/filename.h>
-    #include <wx/fs_zip.h>
-    #include <wx/menu.h>
-    #include <wx/mimetype.h>
-    #include <wx/msgdlg.h>
-    #include <wx/regex.h>
-    #include <wx/tipwin.h>
-    #include <wx/toolbar.h>
-    #include <wx/utils.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/wxscintilla.h>
+#include <wx/choicdlg.h>
+#include <wx/choice.h>
+#include <wx/dir.h>
+#include <wx/filename.h>
+#include <wx/fs_zip.h>
+#include <wx/menu.h>
+#include <wx/mimetype.h>
+#include <wx/msgdlg.h>
+#include <wx/regex.h>
+#include <wx/tipwin.h>
+#include <wx/toolbar.h>
+#include <wx/utils.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/wxscintilla.h>
 
-    #include <cbeditor.h>
-    #include <configmanager.h>
-    #include <editorcolourset.h>
-    #include <editormanager.h>
-    #include <globals.h>
-    #include <logmanager.h>
-    #include <macrosmanager.h>
-    #include <manager.h>
-    #include <projectmanager.h>
-    #include <sdk_events.h>
+#include <cbeditor.h>
+#include <configmanager.h>
+#include <editorcolourset.h>
+#include <editormanager.h>
+#include <globals.h>
+#include <logmanager.h>
+#include <macrosmanager.h>
+#include <manager.h>
+#include <projectmanager.h>
+#include <sdk_events.h>
 #endif
 
 #include <wx/textfile.h>    //(ph 2021/02/3)
@@ -88,27 +88,27 @@
 
 // let the global debug macro overwrite the local debug macro value
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
-    #undef CC_CODECOMPLETION_DEBUG_OUTPUT
-    #define CC_CODECOMPLETION_DEBUG_OUTPUT CC_GLOBAL_DEBUG_OUTPUT
+#undef CC_CODECOMPLETION_DEBUG_OUTPUT
+#define CC_CODECOMPLETION_DEBUG_OUTPUT CC_GLOBAL_DEBUG_OUTPUT
 #endif
 
 #if CC_CODECOMPLETION_DEBUG_OUTPUT == 1
-    #define TRACE(format, args...) \
+#define TRACE(format, args...) \
         CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
-    #define TRACE2(format, args...)
+#define TRACE2(format, args...)
 #elif CC_CODECOMPLETION_DEBUG_OUTPUT == 2
-    #define TRACE(format, args...)                                              \
+#define TRACE(format, args...)                                              \
         do                                                                      \
         {                                                                       \
             if (g_EnableDebugTrace)                                             \
                 CCLogger::Get()->DebugLog(wxString::Format(format, ##args));                   \
         }                                                                       \
         while (false)
-    #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
         CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
 #else
-    #define TRACE(format, args...)
-    #define TRACE2(format, args...)
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
 #endif
 
 /// Scopes choice name for global functions in CC's toolbar.
@@ -119,197 +119,200 @@ static wxString g_GlobalScope(_T("<global>"));
 namespace
 // ----------------------------------------------------------------------------
 {
-    // this auto-registers the plugin
-    PluginRegistrant<CodeCompletion> reg(_T("clangd_client"));
+// this auto-registers the plugin
+PluginRegistrant<CodeCompletion> reg(_T("clangd_client"));
 
-    const char STX = '\u0002';
+const char STX = '\u0002';
 
-    // LSP_Symbol identifiers
-    #include "../LSP_SymbolKind.h"
+// LSP_Symbol identifiers
+#include "../LSP_SymbolKind.h"
 
-    bool wxFound(int result){return result != wxNOT_FOUND;}
-    bool shutTFU = wxFound(0); //shutup 'not used' compiler err msg when wxFound not used
+bool wxFound(int result)
+{
+    return result != wxNOT_FOUND;
+}
+bool shutTFU = wxFound(0); //shutup 'not used' compiler err msg when wxFound not used
 }
 // ----------------------------------------------------------------------------
 namespace CodeCompletionHelper
 // ----------------------------------------------------------------------------
 {
-    // compare method for the sort algorithm for our FunctionScope struct
-    inline bool LessFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompletion::FunctionScope& fs2)
+// compare method for the sort algorithm for our FunctionScope struct
+inline bool LessFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompletion::FunctionScope& fs2)
+{
+    int result = wxStricmp(fs1.Scope, fs2.Scope);
+    if (result == 0)
     {
-        int result = wxStricmp(fs1.Scope, fs2.Scope);
+        result = wxStricmp(fs1.Name, fs2.Name);
         if (result == 0)
-        {
-            result = wxStricmp(fs1.Name, fs2.Name);
-            if (result == 0)
-                result = fs1.StartLine - fs2.StartLine;
-        }
-
-        return result < 0;
+            result = fs1.StartLine - fs2.StartLine;
     }
 
-    inline bool EqualFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompletion::FunctionScope& fs2)
-    {
-        int result = wxStricmp(fs1.Scope, fs2.Scope);
-        if (result == 0)
-            result = wxStricmp(fs1.Name, fs2.Name);
+    return result < 0;
+}
 
-        return result == 0;
-    }
+inline bool EqualFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompletion::FunctionScope& fs2)
+{
+    int result = wxStricmp(fs1.Scope, fs2.Scope);
+    if (result == 0)
+        result = wxStricmp(fs1.Name, fs2.Name);
 
-    inline bool LessNameSpace(const NameSpace& ns1, const NameSpace& ns2)
-    {
-        return ns1.Name < ns2.Name;
-    }
+    return result == 0;
+}
 
-    inline bool EqualNameSpace(const NameSpace& ns1, const NameSpace& ns2)
-    {
-        return ns1.Name == ns2.Name;
-    }
+inline bool LessNameSpace(const NameSpace& ns1, const NameSpace& ns2)
+{
+    return ns1.Name < ns2.Name;
+}
 
-    /// for OnGotoFunction(), search backward
-    /// @code
-    /// xxxxx  /* yyy */
-    ///     ^             ^
-    ///     result        begin
-    /// @endcode
-    inline wxChar GetLastNonWhitespaceChar(cbStyledTextCtrl* control, int position)
-    {
-        if (!control)
-            return 0;
+inline bool EqualNameSpace(const NameSpace& ns1, const NameSpace& ns2)
+{
+    return ns1.Name == ns2.Name;
+}
 
-        while (--position > 0)
-        {
-            const int style = control->GetStyleAt(position);
-            if (control->IsComment(style))
-                continue;
-
-            const wxChar ch = control->GetCharAt(position);
-            if (ch <= _T(' '))
-                continue;
-
-            return ch;
-        }
-
+/// for OnGotoFunction(), search backward
+/// @code
+/// xxxxx  /* yyy */
+///     ^             ^
+///     result        begin
+/// @endcode
+inline wxChar GetLastNonWhitespaceChar(cbStyledTextCtrl* control, int position)
+{
+    if (!control)
         return 0;
+
+    while (--position > 0)
+    {
+        const int style = control->GetStyleAt(position);
+        if (control->IsComment(style))
+            continue;
+
+        const wxChar ch = control->GetCharAt(position);
+        if (ch <= _T(' '))
+            continue;
+
+        return ch;
     }
 
-    /// for OnGotoFunction(), search forward
-    ///        /* yyy */  xxxxx
-    ///     ^             ^
-    ///     begin         result
-    inline wxChar GetNextNonWhitespaceChar(cbStyledTextCtrl* control, int position)
-    {
-        if (!control)
-            return 0;
+    return 0;
+}
 
-        const int totalLength = control->GetLength();
-        --position;
-        while (++position < totalLength)
-        {
-            const int style = control->GetStyleAt(position);
-            if (control->IsComment(style))
-                continue;
-
-            const wxChar ch = control->GetCharAt(position);
-            if (ch <= _T(' '))
-                continue;
-
-            return ch;
-        }
-
+/// for OnGotoFunction(), search forward
+///        /* yyy */  xxxxx
+///     ^             ^
+///     begin         result
+inline wxChar GetNextNonWhitespaceChar(cbStyledTextCtrl* control, int position)
+{
+    if (!control)
         return 0;
+
+    const int totalLength = control->GetLength();
+    --position;
+    while (++position < totalLength)
+    {
+        const int style = control->GetStyleAt(position);
+        if (control->IsComment(style))
+            continue;
+
+        const wxChar ch = control->GetCharAt(position);
+        if (ch <= _T(' '))
+            continue;
+
+        return ch;
     }
 
-    /**  Sorting in GetLocalIncludeDirs() */
-    inline int CompareStringLen(const wxString& first, const wxString& second)
-    {
-        return second.Len() - first.Len();
-    }
+    return 0;
+}
 
-    /**  for CodeCompleteIncludes()
-     * a line has some pattern like below
-     @code
-        # [space or tab] include
-     @endcode
-     */
-    inline bool TestIncludeLine(wxString const &line)
-    {
-        size_t index = line.find(_T('#'));
-        if (index == wxString::npos)
-            return false;
-        ++index;
+/**  Sorting in GetLocalIncludeDirs() */
+inline int CompareStringLen(const wxString& first, const wxString& second)
+{
+    return second.Len() - first.Len();
+}
 
-        for (; index < line.length(); ++index)
-        {
-            if (line[index] != _T(' ') && line[index] != _T('\t'))
-            {
-                if (line.Mid(index, 7) == _T("include"))
-                    return true;
-                break;
-            }
-        }
+/**  for CodeCompleteIncludes()
+ * a line has some pattern like below
+ @code
+    # [space or tab] include
+ @endcode
+ */
+inline bool TestIncludeLine(wxString const &line)
+{
+    size_t index = line.find(_T('#'));
+    if (index == wxString::npos)
         return false;
-    }
+    ++index;
 
-    /** return identifier like token string under the current cursor pointer
-     * @param[out] NameUnderCursor the identifier like token string
-     * @param[out] IsInclude true if it is a #include command
-     * @return true if the underlining text is a #include command, or a normal identifier
-     */
-    inline bool EditorHasNameUnderCursor(wxString& NameUnderCursor, bool& IsInclude)
+    for (; index < line.length(); ++index)
     {
-        bool ReturnValue = false;
-        if (cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
+        if (line[index] != _T(' ') && line[index] != _T('\t'))
         {
-            cbStyledTextCtrl* control = ed->GetControl();
-            const int pos = control->GetCurrentPos();
-            const wxString line = control->GetLine(control->LineFromPosition(pos));
-            const wxRegEx reg(_T("^[ \t]*#[ \t]*include[ \t]+[\"<]([^\">]+)[\">]"));
-            wxString inc;
-            if (reg.Matches(line))
-                inc = reg.GetMatch(line, 1);
+            if (line.Mid(index, 7) == _T("include"))
+                return true;
+            break;
+        }
+    }
+    return false;
+}
 
-            if (!inc.IsEmpty())
+/** return identifier like token string under the current cursor pointer
+ * @param[out] NameUnderCursor the identifier like token string
+ * @param[out] IsInclude true if it is a #include command
+ * @return true if the underlining text is a #include command, or a normal identifier
+ */
+inline bool EditorHasNameUnderCursor(wxString& NameUnderCursor, bool& IsInclude)
+{
+    bool ReturnValue = false;
+    if (cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
+    {
+        cbStyledTextCtrl* control = ed->GetControl();
+        const int pos = control->GetCurrentPos();
+        const wxString line = control->GetLine(control->LineFromPosition(pos));
+        const wxRegEx reg(_T("^[ \t]*#[ \t]*include[ \t]+[\"<]([^\">]+)[\">]"));
+        wxString inc;
+        if (reg.Matches(line))
+            inc = reg.GetMatch(line, 1);
+
+        if (!inc.IsEmpty())
+        {
+            NameUnderCursor = inc;
+            ReturnValue = true;
+            IsInclude = true;
+        }
+        else
+        {
+            const int start = control->WordStartPosition(pos, true);
+            const int end = control->WordEndPosition(pos, true);
+            const wxString word = control->GetTextRange(start, end);
+            if (!word.IsEmpty())
             {
-                NameUnderCursor = inc;
+                NameUnderCursor.Clear();
+                NameUnderCursor << word;
                 ReturnValue = true;
-                IsInclude = true;
-            }
-            else
-            {
-                const int start = control->WordStartPosition(pos, true);
-                const int end = control->WordEndPosition(pos, true);
-                const wxString word = control->GetTextRange(start, end);
-                if (!word.IsEmpty())
-                {
-                    NameUnderCursor.Clear();
-                    NameUnderCursor << word;
-                    ReturnValue = true;
-                    IsInclude = false;
-                }
+                IsInclude = false;
             }
         }
-        return ReturnValue;
     }
-    /** used to record the position of a token when user click find declaration or implementation */
-    struct GotoDeclarationItem
-    {
-        wxString filename;
-        unsigned line;
-    };
+    return ReturnValue;
+}
+/** used to record the position of a token when user click find declaration or implementation */
+struct GotoDeclarationItem
+{
+    wxString filename;
+    unsigned line;
+};
 
-    /** when user select one item in the suggestion list, the selected contains the full display
-     * name, for example, "function_name():function_return_type", and we only need to insert the
-     * "function_name" to the editor, so this function just get the actual inserted text.
-     * @param selected a full display name of the selected token in the suggestion list
-     * @return the stripped text which are used to insert to the editor
-     */
-    static wxString AutocompGetName(const wxString& selected)
-    {
-        size_t nameEnd = selected.find_first_of(_T("(: "));
-        return selected.substr(0,nameEnd);
-    }
+/** when user select one item in the suggestion list, the selected contains the full display
+ * name, for example, "function_name():function_return_type", and we only need to insert the
+ * "function_name" to the editor, so this function just get the actual inserted text.
+ * @param selected a full display name of the selected token in the suggestion list
+ * @return the stripped text which are used to insert to the editor
+ */
+static wxString AutocompGetName(const wxString& selected)
+{
+    size_t nameEnd = selected.find_first_of(_T("(: "));
+    return selected.substr(0,nameEnd);
+}
 
 }//end namespace CodeCompletionHelper
 
@@ -429,51 +432,12 @@ CodeCompletion::CodeCompletion() :
     m_DocHelper(this)
 {
     // We cannot run if the old CodeCompletion is enabled
-    bool oldCC_enabled = Manager::Get()->GetConfigManager(_T("plugins"))->ReadBool(_T("/CODECOMPLETION"), false );
-    if (oldCC_enabled)
-    {
-        return;
-    }
-    // ccmanager's config Settings/Editor/Code completion checkbox
-    ConfigManager* ccmcfg = Manager::Get()->GetConfigManager(_T("ccmanager"));
-    m_SettingsEditorCodeCompletionEnabled = ccmcfg->ReadBool(_T("/code_completion"), false);
-    // Main settings CodeCompletion must be enabled, else we exit.
-    if (not m_SettingsEditorCodeCompletionEnabled) return;
+    m_CC_initDeferred = true;
+    if (IsOldCC_Enabled() ) return;
 
     // get top window to use as cbMessage parent, else message boxes will hide behind dialog and main window
     wxWindow* topWindow = wxFindWindowByName("Manage plugins");
     if (not topWindow) topWindow = Manager::Get()->GetAppWindow();
-
-    // For LSP client
-    // If old "CodeCompletion" plugin is attached, exit with message
-    PluginManager* pPlgnMgr = Manager::Get()->GetPluginManager();
-    const PluginInfo* pCCinfo = pPlgnMgr->GetPluginInfo("CodeCompletion");
-    if (pCCinfo)
-    {
-        // Old CodeCompletion is loaded?
-        // Is it disabled...
-        wxString baseKey;
-        baseKey << _T("/") << "CodeCompletion";
-        bool loadIt = Manager::Get()->GetConfigManager(_T("plugins"))->ReadBool(baseKey,true);
-        if (loadIt)
-        {
-            wxString msg = "The Clangd client plugin cannot run while the \"Code completion\" plugin is enabled.";
-            msg += "\nClangd client plugin will now disable itself. :-(";
-            cbMessageBox(msg, "Clangd client", wxOK, topWindow);
-            m_IsAttached = false;
-            wxWindow* window = Manager::Get()->GetAppWindow();
-            if (window)
-            {
-                // remove ourself from the application's event handling chain...
-                // which cbPlugin.cpp just placed before calling OnAttach()
-                // Else an attempt to re-enable this plugin will cause a hang.
-                if (GetParseManager()->FindEventHandler(this))
-                    window->RemoveEventHandler(this);
-            }
-            m_PluginNeedsAppRestart = true;
-            return;
-        }
-    }
 
     // create Idle time CallbackHandler     //(ph 2021/09/27)
     LSPEventCallbackHandler* pNewLSPEventSinkHandler = new LSPEventCallbackHandler();
@@ -501,6 +465,8 @@ CodeCompletion::CodeCompletion() :
 
     Connect(XRCID("idLSP_Process_Terminated"), wxEVT_COMMAND_MENU_SELECTED, //(ph 2021/06/28)
             wxCommandEventHandler(CodeCompletion::OnLSP_ProcessTerminated));
+
+    m_CC_initDeferred = false;
 }
 // ----------------------------------------------------------------------------
 CodeCompletion::~CodeCompletion()
@@ -515,7 +481,7 @@ CodeCompletion::~CodeCompletion()
     Disconnect(idEditorActivatedTimer, wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnEditorActivatedTimer));
 
     Disconnect(XRCID("idLSP_Process_Terminated"), wxEVT_COMMAND_MENU_SELECTED, //(ph 2021/06/28)
-            wxCommandEventHandler(CodeCompletion::OnLSP_ProcessTerminated));
+               wxCommandEventHandler(CodeCompletion::OnLSP_ProcessTerminated));
 }
 // ----------------------------------------------------------------------------
 void CodeCompletion::OnAttach()
@@ -524,27 +490,14 @@ void CodeCompletion::OnAttach()
     AppVersion appVersion;
     appVersion.m_AppName = "clangd_client";
     // Set current plugin version
-	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
-	pInfo->version = appVersion.GetVersion();
-
-    // ccmanager's config obtained from Menu=>Settings=>Editor=>Code Completion (sub panel)
-    // Get the CB config item that enables CodeCompletion Settings/Editor/Code completion
-    ConfigManager* ccmcfg = Manager::Get()->GetConfigManager(_T("ccmanager"));
-    m_SettingsEditorCodeCompletionEnabled = ccmcfg->ReadBool(_T("/code_completion"), false);
-    if (not m_SettingsEditorCodeCompletionEnabled)
-    {
-        // Settings/Editor/Code completion is unchecked.
-        // show cland_client plugin as inactive in plugins manage Plugins window
-        pInfo->version = pInfo->version.BeforeFirst(' ') + " Inactive";
-        return;
-    }
+    PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
+    pInfo->version = appVersion.GetVersion();
 
     // get top window to use as cbMessage parent, else they hide behind dialog
     wxWindow* topWindow = wxFindWindowByName("Manage plugins");
     if (not topWindow) topWindow = Manager::Get()->GetAppWindow();
 
-    // For LSP client
-    // If old "CodeCompletion" plugin is attached, exit with message
+    // If old "CodeCompletion" plugin is loaded and enabled, exit with message
     PluginManager* pPlgnMgr = Manager::Get()->GetPluginManager();
     const PluginInfo* pCCinfo = pPlgnMgr->GetPluginInfo("CodeCompletion");
     if (pCCinfo)
@@ -553,13 +506,13 @@ void CodeCompletion::OnAttach()
         // Is it disabled...
         wxString baseKey;
         baseKey << _T("/") << "CodeCompletion";
-        bool loadIt = Manager::Get()->GetConfigManager(_T("plugins"))->ReadBool(baseKey,true);
-        if (loadIt)
+        bool isCCLoaded = Manager::Get()->GetConfigManager(_T("plugins"))->ReadBool(baseKey,true);
+        if (IsOldCC_Enabled() and isCCLoaded)
         {
             wxString msg = "The Clangd client plugin cannot run while the \"Code completion\" plugin is enabled.";
             msg += "\nClangd client plugin will now disable itself. :-(";
             cbMessageBox(msg, "Clangd client", wxOK, topWindow);
-            m_IsAttached = false;
+            m_IsAttached = false;   //don't allow plugin manager to enable clangd_client
             wxWindow* window = Manager::Get()->GetAppWindow();
             if (window)
             {
@@ -569,15 +522,17 @@ void CodeCompletion::OnAttach()
                 if (GetParseManager()->FindEventHandler(this))
                     window->RemoveEventHandler(this);
             }
-            m_PluginNeedsAppRestart = true;
             return;
         }
-    }
-    // For LSP client
-    if (m_PluginNeedsAppRestart)
+        if ((not IsOldCC_Enabled() ) and m_CC_initDeferred)
+            m_PluginNeedsAppRestart = true;
+    }//endif
+    else m_OldCC_enabled = false; //if no CC info, then CC not loaded
+
+    if ((not IsOldCC_Enabled() ) and (m_CC_initDeferred or m_PluginNeedsAppRestart) )
     {
-        cbMessageBox("Clang_Client plugin needs CodeBlocks to be restarted before it can function properly.",
-                        "CB restart needed", wxOK, topWindow);
+        cbMessageBox("Clang_Client plugin needs you to restart CodeBlocks before it can function properly.",
+                     "CB restart needed", wxOK, topWindow);
         wxWindow* window = Manager::Get()->GetAppWindow();
         if (window)
         {
@@ -587,6 +542,9 @@ void CodeCompletion::OnAttach()
             if (GetParseManager()->FindEventHandler(this))
                 window->RemoveEventHandler(this);
         }
+        // set m_IsAttached=true so that plugin manager enables it in the .conf
+        // else it'll be disabled after the restart and OnAttach() won't get called.
+        m_IsAttached = true;
         return;
     }
 
@@ -656,14 +614,13 @@ void CodeCompletion::OnAttach()
 bool CodeCompletion::CanDetach() const
 // ----------------------------------------------------------------------------
 {
-    if (not m_SettingsEditorCodeCompletionEnabled) return true;
 
     int prjCount = Manager::Get()->GetProjectManager()->GetProjects()->GetCount();
     if (prjCount)
     {
         wxWindow* pDlg = wxWindow::FindWindowByLabel("Manage plugins");
         wxString msg = "Please close the workspace before disabling or uninstalling clangd_client plugin.";
-        cbMessageBox(msg, "Uninstall" , wxOK, pDlg ? pDlg : wxTheApp->GetTopWindow());
+        cbMessageBox(msg, "Uninstall", wxOK, pDlg ? pDlg : wxTheApp->GetTopWindow());
         return false;
     }
     return true;
@@ -680,21 +637,10 @@ void CodeCompletion::OnRelease(bool appShutDown)
     // Reinstalling the missing support code for "virtual bool CanDetach() const { return true; }"
     // into the sdk allows us to ask the user to close the project before uninstalling
     // this plugin.
+    // Update: svn rev 12640 restored the missing CanDetach() query code.
 
-    if (not m_SettingsEditorCodeCompletionEnabled) return;
-
-    cbProject* pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
-
-    // Check for disable or uninstall plugin
-    if (pProject and (not appShutDown))
-    {
-        bool attachedState = m_IsAttached;
-        m_IsAttached =  true;
-        CodeBlocksEvent cbEvt(cbEVT_PROJECT_CLOSE);
-        cbEvt.SetProject(pProject);
-        OnProjectClosed(cbEvt);
-        m_IsAttached = attachedState;
-    }
+    // If plugin initialization never took place, nothing needs to be done here.
+    if (m_CC_initDeferred) return;
 
     GetParseManager()->RemoveClassBrowser(appShutDown);
     GetParseManager()->ClearParsers();
@@ -714,7 +660,7 @@ void CodeCompletion::OnRelease(bool appShutDown)
     m_AllFunctionsScopes.clear();
     m_ToolbarNeedRefresh = false;
 
-/* TODO (mandrav#1#): Delete separator line too... */
+    /* TODO (mandrav#1#): Delete separator line too... */
     if (m_EditMenu)
         m_EditMenu->Delete(idMenuRenameSymbols);
 
@@ -753,16 +699,14 @@ void CodeCompletion::OnRelease(bool appShutDown)
 cbConfigurationPanel* CodeCompletion::GetConfigurationPanel(wxWindow* parent)
 // ----------------------------------------------------------------------------
 {
-    if (not m_SettingsEditorCodeCompletionEnabled) return nullptr;
-
+    //-if (not m_SettingsEditorCodeCompletionEnabled) return nullptr;
+    if ( not IsAttached()) return nullptr;
     return new CCOptionsDlg(parent, GetParseManager(), this, &m_DocHelper);
 }
 // ----------------------------------------------------------------------------
 cbConfigurationPanel* CodeCompletion::GetProjectConfigurationPanel(wxWindow* parent, cbProject* project)
 // ----------------------------------------------------------------------------
 {
-    if (not m_SettingsEditorCodeCompletionEnabled) return nullptr;
-
     return new CCOptionsProjectDlg(parent, project, GetParseManager());
 }
 // ----------------------------------------------------------------------------
@@ -772,13 +716,10 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
     // if not attached, exit
     if (!IsAttached())
     {
-        // After OnAttach() the event handler was enabled by main().
-        // Disable hard coded events when not attached.
         SetEvtHandlerEnabled(false);
         return;
     }
 
-    if (not m_SettingsEditorCodeCompletionEnabled) return;
 
     int pos = menuBar->FindMenu(_("&Edit"));
     if (pos != wxNOT_FOUND)
@@ -869,9 +810,6 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
     if (!menu || !IsAttached() || !m_InitDone)
         return;
 
-    // User must specifically enable Code completion
-    if (not m_SettingsEditorCodeCompletionEnabled) return;
-
     if (type == mtEditorManager)
     {
         if (cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
@@ -913,11 +851,11 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
                     menu->Insert(pos++, idMenuFindReferences, msg);
                 }
                 else if ( pEditor and GetLSPclient(pEditor) //(ph 2021/01/18)
-                        and GetLSP_Initialized(pEditor) and GetLSPclient(pEditor)->GetLSP_IsEditorParsed(pEditor) )
-                 {
-                     msg.Printf(_("Find references of: '%s'"), NameUnderCursor.wx_str());
-                     menu->Insert(pos++, idMenuFindReferences, msg);
-                 }
+                          and GetLSP_Initialized(pEditor) and GetLSPclient(pEditor)->GetLSP_IsEditorParsed(pEditor) )
+                {
+                    msg.Printf(_("Find references of: '%s'"), NameUnderCursor.wx_str());
+                    menu->Insert(pos++, idMenuFindReferences, msg);
+                }
 
                 pluginManager->RegisterFindMenuItems(false, pos - initialPos);
             }
@@ -990,8 +928,10 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
 bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 // ----------------------------------------------------------------------------
 {
-    // User must specifically enable Code completion
-    if (not m_SettingsEditorCodeCompletionEnabled) return false;
+    if (not IsAttached()) return false;
+
+    if (IsOldCC_Enabled() or m_CC_initDeferred)
+        return false;
 
     // load the toolbar resource
     Manager::Get()->AddonToolBar(toolBar,_T("codecompletion_toolbar"));
@@ -1024,9 +964,14 @@ void CodeCompletion::OnPluginAttached(CodeBlocksEvent& event)
         {
             wxString msg = "You should not enable 'CodeCompletion' plugin when 'clangd_client' is running.";
             msg << "\nThey are not compatible with one another.";
+            msg << "\n\nPlease restart Code::Blocks to avoid the effects of these incompatibilities.";
             cbMessageBox(msg, "ERROR");
         }
         //Manager::Get()->GetLogManager()->DebugLog(F(_T("%s plugin activated"), msg.wx_str()));
+        if ( info->name.Lower() == "clangd_client" )
+        {
+            // This means that old CodeCompletin should be disabled.
+        }
     }
 }
 // ----------------------------------------------------------------------------
@@ -1034,9 +979,6 @@ void CodeCompletion::OnIdle(wxIdleEvent& event) //(ph 2020/10/24)
 // ----------------------------------------------------------------------------
 {
     event.Skip(); //always event.Skip() to allow others use of idle events
-
-    // User must specifically enable Code completion
-    if (not m_SettingsEditorCodeCompletionEnabled) return;
 
     if (ProjectManager::IsBusy() or (not IsAttached()) or (not m_InitDone) )
         return;
@@ -1054,23 +996,20 @@ void CodeCompletion::OnIdle(wxIdleEvent& event) //(ph 2020/10/24)
 CodeCompletion::CCProviderStatus CodeCompletion::GetProviderStatusFor(cbEditor* ed)
 // ----------------------------------------------------------------------------
 {
-    // User must specifically enable Code completion
-    if (not m_SettingsEditorCodeCompletionEnabled) return ccpsInactive;
-
     EditorColourSet *colour_set = ed->GetColourSet();
     if (colour_set && ed->GetLanguage() == colour_set->GetHighlightLanguage(wxT("C/C++")))
         return ccpsActive;
 
     switch (ParserCommon::FileType(ed->GetFilename()))
     {
-        case ParserCommon::ftHeader:
-        case ParserCommon::ftSource:
-            return ccpsActive;
+    case ParserCommon::ftHeader:
+    case ParserCommon::ftSource:
+        return ccpsActive;
 
-        case ParserCommon::ftOther:
-            return ccpsInactive;
-        default:
-            break;
+    case ParserCommon::ftOther:
+        return ccpsInactive;
+    default:
+        break;
     }
     return ccpsUniversal;
 }
@@ -1101,11 +1040,11 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(bool isAuto
         // AutocompList can be prompt after user typed "::" or "->"
         // or if in preprocessor directive, after user typed "<" or "\"" or "/"
         if (   (   curChar == wxT(':') // scope operator
-                && stc->GetCharAt(tknEnd - 2) != wxT(':') )
-            || (   curChar == wxT('>') // '->'
-                && stc->GetCharAt(tknEnd - 2) != wxT('-') )
-            || (   wxString(wxT("<\"/")).Find(curChar) != wxNOT_FOUND // #include directive
-                && !stc->IsPreprocessor(style) ) )
+                   && stc->GetCharAt(tknEnd - 2) != wxT(':') )
+                || (   curChar == wxT('>') // '->'
+                       && stc->GetCharAt(tknEnd - 2) != wxT('-') )
+                || (   wxString(wxT("<\"/")).Find(curChar) != wxNOT_FOUND // #include directive
+                       && !stc->IsPreprocessor(style) ) )
         {
             return tokens;
         }
@@ -1150,9 +1089,9 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(bool isAuto
     if (GetLSP_Initialized(ed) )
     {
         if (   stc->IsString(style)
-            || stc->IsComment(style)
-            || stc->IsCharacter(style)
-            || stc->IsPreprocessor(style) )
+                || stc->IsComment(style)
+                || stc->IsCharacter(style)
+                || stc->IsPreprocessor(style) )
         {
             return tokens; //For styles above ignore this request
         }
@@ -1170,7 +1109,8 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(bool isAuto
                 return tokens;  //return empty tokens
             GetLSPclient(ed)->LSP_Completion(ed);
         }
-        else {
+        else
+        {
             // time between typed keys too short. Wait awhile.
             m_PendingCompletionRequest = true;
             wxWakeUpIdle();
@@ -1213,9 +1153,9 @@ void CodeCompletion::DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEdit
     {
         const FileType fTp = FileTypeOf(ed->GetShortName());
         if (   fTp != ftSource
-            && fTp != ftHeader
-            && fTp != ftTemplateSource
-            && fTp != ftResource )
+                && fTp != ftHeader
+                && fTp != ftTemplateSource
+                && fTp != ftResource )
         {
             return; // not C/C++
         }
@@ -1298,9 +1238,9 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetTokenAt(int pos, cbEdito
     cbStyledTextCtrl* stc = ed->GetControl();
     const int style = stc->GetStyleAt(pos);
     if (   stc->IsString(style)
-        || stc->IsComment(style)
-        || stc->IsCharacter(style)
-        || stc->IsPreprocessor(style) )
+            || stc->IsComment(style)
+            || stc->IsCharacter(style)
+            || stc->IsPreprocessor(style) )
     {
         return tokens; //It's empty
     }
@@ -1364,8 +1304,8 @@ void CodeCompletion::LSP_DoAutocomplete(const CCToken& token, cbEditor* ed)     
     int curPos = stc->GetCurrentPos();
     int startPos = stc->WordStartPosition(curPos, true);
     if (   itemText.GetChar(0) == _T('~') // special handle for dtor
-        && startPos > 0
-        && stc->GetCharAt(startPos - 1) == _T('~'))
+            && startPos > 0
+            && stc->GetCharAt(startPos - 1) == _T('~'))
     {
         --startPos;
     }
@@ -1447,7 +1387,7 @@ void CodeCompletion::LSP_DoAutocomplete(const CCToken& token, cbEditor* ed)     
         {
             //bool addParentheses = tkn->m_TokenKind & tkAnyFunctio
             bool addParentheses = ( (token.id == LSP_SymbolKind::Function)
-                                   or token.displayName.BeforeFirst(' ').Contains("(") );
+                                    or token.displayName.BeforeFirst(' ').Contains("(") );
 
             // LSP does not yet provide arguments
             //if (!addParentheses && (tkn->m_TokenKind & tkMacroDef))
@@ -1572,21 +1512,31 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
     cbStyledTextCtrl* control = editor->GetControl();
 
     if      (event.GetEventType() == wxEVT_SCI_CHARADDED)
-    {   TRACE(_T("wxEVT_SCI_CHARADDED")); }
+    {
+        TRACE(_T("wxEVT_SCI_CHARADDED"));
+    }
     else if (event.GetEventType() == wxEVT_SCI_CHANGE)
-    {   TRACE(_T("wxEVT_SCI_CHANGE")); }
+    {
+        TRACE(_T("wxEVT_SCI_CHANGE"));
+    }
     else if (event.GetEventType() == wxEVT_SCI_MODIFIED)
-    {   TRACE(_T("wxEVT_SCI_MODIFIED")); }
+    {
+        TRACE(_T("wxEVT_SCI_MODIFIED"));
+    }
     else if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_SELECTION)
-    {   TRACE(_T("wxEVT_SCI_AUTOCOMP_SELECTION")); }
+    {
+        TRACE(_T("wxEVT_SCI_AUTOCOMP_SELECTION"));
+    }
     else if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_CANCELLED)
-    {   TRACE(_T("wxEVT_SCI_AUTOCOMP_CANCELLED")); }
+    {
+        TRACE(_T("wxEVT_SCI_AUTOCOMP_CANCELLED"));
+    }
 
     // if the user is modifying the editor, then CC should try to reparse the editor's content
     // and update the token tree.
     if (   GetParseManager()->GetParser().Options().whileTyping
-        && (   (event.GetModificationType() & wxSCI_MOD_INSERTTEXT)
-            || (event.GetModificationType() & wxSCI_MOD_DELETETEXT) ) )
+            && (   (event.GetModificationType() & wxSCI_MOD_INSERTTEXT)
+                   || (event.GetModificationType() & wxSCI_MOD_DELETETEXT) ) )
     {
         m_NeedReparse = true;
     }
@@ -1596,7 +1546,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
     if (   ((event.GetModificationType() & wxSCI_MOD_INSERTTEXT)
             || (event.GetModificationType() & wxSCI_MOD_DELETETEXT))
             and (GetLSPclient(editor))
-        )
+       )
     {
         // set time of modification
         m_LastModificationMilliTime =  GetLSPclient(editor)->GetNowMilliSeconds();
@@ -1762,7 +1712,7 @@ void CodeCompletion::OnViewClassBrowser(wxCommandEvent& event)
     if (!Manager::Get()->GetConfigManager(_T("clangd_client"))->ReadBool(_T("/use_symbols_browser"), true))
     {
         cbMessageBox(_("The symbols browser is disabled in code-completion options.\n"
-                        "Please enable it there first..."), _("Information"), wxICON_INFORMATION);
+                       "Please enable it there first..."), _("Information"), wxICON_INFORMATION);
         return;
     }
     CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
@@ -1789,13 +1739,13 @@ void CodeCompletion::OnGotoFunction(cb_unused wxCommandEvent& event)
         return;
     if (not GetLSP_Initialized(ed) )
     {
-       InfoWindow::Display("LSP", wxString::Format("%s\n not yet parsed.", ed->GetFilename()) );
-       return;
+        InfoWindow::Display("LSP", wxString::Format("%s\n not yet parsed.", ed->GetFilename()) );
+        return;
     }
     if ((not GetLSPclient(ed)) or (not GetLSPclient(ed)->GetLSP_IsEditorParsed(ed)) )
     {
-       InfoWindow::Display("LSP",wxString::Format("%s\n not yet parsed.", ed->GetFilename()) );
-       return;
+        InfoWindow::Display("LSP",wxString::Format("%s\n not yet parsed.", ed->GetFilename()) );
+        return;
     }
 
     TokenTree* tree = nullptr;
@@ -1862,7 +1812,8 @@ void CodeCompletion::OnGotoFunction(cb_unused wxCommandEvent& event)
         if (dlg.ShowModal() == wxID_OK)
         {
             int selection = dlg.GetSelection();
-            if (selection != wxNOT_FOUND) {
+            if (selection != wxNOT_FOUND)
+            {
                 const GotoFunctionDlg::FunctionToken *ft = iterator.GetToken(selection);
                 if (ed && ft)
                 {
@@ -1964,9 +1915,9 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     // prepare a boolean filter for declaration/implementation
     bool isDecl = event.GetId() == idGotoDeclaration    || event.GetId() == idMenuGotoDeclaration;
     bool isImpl = event.GetId() == idGotoImplementation || event.GetId() == idMenuGotoImplementation;
-   // ----------------------------------------------------------------------------
-   // LSP Goto Declaration/definition                //(ph 2020/10/12)
-   // ----------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------
+    // LSP Goto Declaration/definition                //(ph 2020/10/12)
+    // ----------------------------------------------------------------------------
     bool usingLSP_client = true;
     if (usingLSP_client)
     {
@@ -1975,8 +1926,8 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         cbProject* pEdProject = pProjectFile ? pProjectFile->GetParentProject() : nullptr;
         wxString filename = pActiveEditor->GetFilename();
         if ( (not pEdProject)
-             or (not (pEdProject == pActiveProject))
-             or (not pActiveProject->GetFileByFilename(filename,false)) )
+                or (not (pEdProject == pActiveProject))
+                or (not pActiveProject->GetFileByFilename(filename,false)) )
         {
             InfoWindow::Display("LSP " + wxString(__FUNCTION__), "Editor's file is not contained in the active project.", 6000);
             return;
@@ -1998,8 +1949,8 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         // if max parsing, spit out parsing is delayed message
         if (ParsingIsVeryBusy()) {;}
 
-       //Confusing behaviour for original CC vs Clangd:
-       // if caret is already on the definition (.h) clangd wont find it
+        //Confusing behaviour for original CC vs Clangd:
+        // if caret is already on the definition (.h) clangd wont find it
         if (isDecl)
         {
             GetLSPclient(pActiveEditor)->LSP_GoToDeclaration(pActiveEditor, GetCaretPosition(pActiveEditor));
@@ -2034,8 +1985,8 @@ void CodeCompletion::OnFindReferences(cb_unused wxCommandEvent& event)
     cbProject* pActiveProject = pPrjMgr->GetActiveProject();
     wxString filename = pEditor->GetFilename();
     if ( (not pEdProject)
-        or (not (pEdProject == pActiveProject))
-        or (not pActiveProject->GetFileByFilename(filename,false)) )
+            or (not (pEdProject == pActiveProject))
+            or (not pActiveProject->GetFileByFilename(filename,false)) )
     {
         InfoWindow::Display("LSP "+wxString(__FUNCTION__), "Editor's file is not contained in the active project.", 6000);
         return;
@@ -2079,9 +2030,9 @@ void CodeCompletion::OnRenameSymbols(cb_unused wxCommandEvent& event)
     //const int end = pEditor->GetControl()->WordEndPosition(pos, true);
 
     wxString replaceText = cbGetTextFromUser(_("Rename symbols under cursor"),
-                                             _("Code Refactoring"),
-                                             targetText,
-                                             Manager::Get()->GetAppWindow());
+                           _("Code Refactoring"),
+                           targetText,
+                           Manager::Get()->GetAppWindow());
 
     if (not replaceText.IsEmpty() && (replaceText != targetText) )
     {
@@ -2128,7 +2079,7 @@ void CodeCompletion::OnOpenIncludeFile(cb_unused wxCommandEvent& event)
     if (project)
     {
         for (FilesList::const_iterator it = project->GetFilesList().begin();
-                                       it != project->GetFilesList().end(); ++it)
+                it != project->GetFilesList().end(); ++it)
         {
             ProjectFile* pf = *it;
             if (!pf)
@@ -2153,7 +2104,8 @@ void CodeCompletion::OnOpenIncludeFile(cb_unused wxCommandEvent& event)
 
     wxString selectedFile;
     if (foundSet.GetCount() > 1)
-    {    // more than 1 hit : let the user choose
+    {
+        // more than 1 hit : let the user choose
         SelectIncludeFile Dialog(Manager::Get()->GetAppWindow());
         Dialog.AddListEntries(foundSet);
         PlaceWindow(&Dialog);
@@ -2221,12 +2173,13 @@ void CodeCompletion::OnCurrentProjectReparse(wxCommandEvent& event)
 void CodeCompletion::OnReparseSelectedProject(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
-     event.Skip();
+    event.Skip();
 
     switch (1)
-    {   //(ph 2021/02/12)
-        // Shutdown the current LSP client/server and start another one.
-        default:
+    {
+    //(ph 2021/02/12)
+    // Shutdown the current LSP client/server and start another one.
+    default:
 
         wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetUI().GetTree();
         if (!tree) break;
@@ -2362,7 +2315,8 @@ void CodeCompletion::OnLSP_SelectedFileReparse(wxCommandEvent& event)
             wxString filename = pf->file.GetFullPath();
             cbEditor* pEditor = pEdMgr->GetBuiltinEditor(filename);
             if (pEditor) pClient->LSP_DidSave(pEditor);
-            else {
+            else
+            {
                 // do a background didOpen(). It will be didClose()ed in OnLSP_RequestedSymbolsResponse();
                 // If its a header file, OnLSP_DiagnosticsResponse() will do the LSP idClose().
                 // We don't ask for symbols on headers because they incorrectly clobbler the TokenTree .cpp symbols.
@@ -2406,7 +2360,8 @@ void CodeCompletion::OnLSP_EditorFileReparse(wxCommandEvent& event)
             //      to cause a background parse.
             wxString filename = pf->file.GetFullPath();
             if (pEditor and pClient and pClient->GetLSP_IsEditorParsed(pEditor)) pClient->LSP_DidSave(pEditor); //(ph 2021/12/21)
-            else {
+            else
+            {
                 // do a background didOpen(). It will be didClose()ed in OnLSP_RequestedSymbolsResponse();
                 // If its a header file, OnLSP_DiagnosticsResponse() will do the LSP idClose().
                 // We don't ask for symbols on headers because they incorrectly clobbler the TokenTree .cpp symbols.
@@ -2515,11 +2470,11 @@ void CodeCompletion::OnProjectActivated(CodeBlocksEvent& event)
         if (GetParseManager()->GetParser().ClassBrowserOptions().displayFilter == bdfProject)
             GetParseManager()->UpdateClassBrowser();
     }
-        // when debugging, the cwd may be the executable path, not project path //(ph 2020/11/9)
-        cbProject* pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
-        wxString projDir =  pProject->GetBasePath();
-        if (wxGetCwd().Lower() != projDir.Lower())
-            wxSetWorkingDirectory(projDir);
+    // when debugging, the cwd may be the executable path, not project path //(ph 2020/11/9)
+    cbProject* pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+    wxString projDir =  pProject->GetBasePath();
+    if (wxGetCwd().Lower() != projDir.Lower())
+        wxSetWorkingDirectory(projDir);
 
     m_NeedsBatchColour = true;
     // ----------------------------------------------------------------
@@ -2532,7 +2487,7 @@ void CodeCompletion::OnProjectActivated(CodeBlocksEvent& event)
     {
         cbProject* pProject = event.GetProject();
         if ( (not GetLSPclient(pProject)) //if no project yet
-            and GetParseManager()->GetParserByProject(pProject) ) // but have Parser//(ph 2021/05/8)
+                and GetParseManager()->GetParserByProject(pProject) ) // but have Parser//(ph 2021/05/8)
             CreateNewLanguageServiceProcess(pProject);
     }
     event.Skip(); //<-- not necessary for CB
@@ -2599,7 +2554,8 @@ bool CodeCompletion::DoLockClangd_CacheAccess(cbProject* pcbProject, bool releas
     if (not opened) return success = false; //lock file in use
 
     if (lockFile.GetLine(LOCK_FILE_PID) == pidStr)
-    {    // this process pid owns the cache
+    {
+        // this process pid owns the cache
         lockFile.Close();
         return success = true;
     }
@@ -2608,42 +2564,42 @@ bool CodeCompletion::DoLockClangd_CacheAccess(cbProject* pcbProject, bool releas
     wxString pidProcessName = ProcUtils::GetProcessNameByPid(lockPid);
     // if pidProcessName not empty, lockPid is running
     if (pidProcessName.Length()) switch(1)
-    {
+        {
         default:
-        // The lockFile pid is running but is it a reused pid? (not codeblocks)
-        // if the running pid process name is different from lockFile pid process name
-        // it's a reused pid. Probably from a system reboot.
-        wxFileName fnLockFileExeName = lockFile.GetLine(LOCK_FILE_EXE);
-        wxFileName fnRunningExeName  = pidProcessName;
+            // The lockFile pid is running but is it a reused pid? (not codeblocks)
+            // if the running pid process name is different from lockFile pid process name
+            // it's a reused pid. Probably from a system reboot.
+            wxFileName fnLockFileExeName = lockFile.GetLine(LOCK_FILE_EXE);
+            wxFileName fnRunningExeName  = pidProcessName;
             //-debugging- wxString lockExe = fnLockFileExeName.GetFullName().Lower();
             //-debugging- wxString runExe = fnRunningExeName.GetFullName().Lower();
-        if (fnRunningExeName.GetFullName().Lower() == fnLockFileExeName.GetFullName().Lower())
-        {
-            // A running pid is using the old stale lockFile pid, and it's still running codeblocks
-            // See if the new project file is the same as the old lockFile project file.
-            bool sameProj = pcbProject->GetFilename().Lower() == lockFile.GetLine(LOCK_FILE_CBP).Lower();
-            if (not sameProj) break;
+            if (fnRunningExeName.GetFullName().Lower() == fnLockFileExeName.GetFullName().Lower())
+            {
+                // A running pid is using the old stale lockFile pid, and it's still running codeblocks
+                // See if the new project file is the same as the old lockFile project file.
+                bool sameProj = pcbProject->GetFilename().Lower() == lockFile.GetLine(LOCK_FILE_CBP).Lower();
+                if (not sameProj) break;
 
-            // Summary:
-            // These's already a running process that used to own the cache and it's running codeblocks.
-            // And THIS process is trying to access the same cache that the running process used to own.
-            // Most likely, THAT running process is a rebooted codeblocks that's using the cache.
-            // If it walks, quacks, and looks like a duck ...
-            wxString deniedMsg = wxString::Format(
-                               "Process: %s Pid(%d)\nis denied access to:\n%s"
-                               "\nbeing used by\n"
-                               "process: %s Pid(%d)",
-                                newExePath, pid,
-                                Clangd_cacheDir,
-                                pidProcessName, lockPid
-                               );
-            deniedMsg += "\n\nTo debug without this problem, debug a copy of the project directory.";
-            deniedMsg += "\nBut do not copy the .cache directory.";
-            cbMessageBox(deniedMsg);
-            lockFile.Close();
-            return success = false;
-        }//endif execs match
-    }//endif switch
+                // Summary:
+                // These's already a running process that used to own the cache and it's running codeblocks.
+                // And THIS process is trying to access the same cache that the running process used to own.
+                // Most likely, THAT running process is a rebooted codeblocks that's using the cache.
+                // If it walks, quacks, and looks like a duck ...
+                wxString deniedMsg = wxString::Format(
+                                         "Process: %s Pid(%d)\nis denied access to:\n%s"
+                                         "\nbeing used by\n"
+                                         "process: %s Pid(%d)",
+                                         newExePath, pid,
+                                         Clangd_cacheDir,
+                                         pidProcessName, lockPid
+                                     );
+                deniedMsg += "\n\nTo debug without this problem, debug a copy of the project directory.";
+                deniedMsg += "\nBut do not copy the .cache directory.";
+                cbMessageBox(deniedMsg);
+                lockFile.Close();
+                return success = false;
+            }//endif execs match
+        }//endif switch
 
     // old owning pid no longer exists; Set this process as new owning pid
     lockFile[LOCK_FILE_PID] = pidStr;
@@ -2662,7 +2618,7 @@ bool CodeCompletion::DoUnlockClangd_CacheAccess(cbProject* pcbProject)      //(p
     // Multiple processes must not write to the Clangd cashe else crashes happen
     // from bad cache indexes or asserts.
 
-   // Call this function to remove the cache Access lock
+    // Call this function to remove the cache Access lock
 
     bool success = false;
     if (not pcbProject) return success = false;
@@ -2685,9 +2641,9 @@ void CodeCompletion::OnLSP_ProcessTerminated(wxCommandEvent& event)     //(ph 20
 // ----------------------------------------------------------------------------
 {
     cbProject* pProject = (cbProject*)event.GetEventObject();
-    #if defined(cbDEBUG)
+#if defined(cbDEBUG)
     cbAssertNonFatal(pProject && "Entered with null project ptr.")
-    #endif
+#endif
     if (not pProject) return;
     m_LSP_Clients[pProject] = nullptr;
     return;
@@ -2696,9 +2652,9 @@ void CodeCompletion::OnLSP_ProcessTerminated(wxCommandEvent& event)     //(ph 20
 ProcessLanguageClient* CodeCompletion::CreateNewLanguageServiceProcess(cbProject* pcbProject)                                     //(ph 2020/11/4)
 // ----------------------------------------------------------------------------
 {
-    #if defined(cbDEBUG)
+#if defined(cbDEBUG)
     cbAssertNonFatal(pcbProject && "CreateNewLanguageServiceProcess requires a project");
-    #endif
+#endif
     if (not pcbProject) return nullptr;
 
     // Don't allow a second process to write to the current clangd symbol caches
@@ -2709,7 +2665,7 @@ ProcessLanguageClient* CodeCompletion::CreateNewLanguageServiceProcess(cbProject
         pLSPclient = m_LSP_Clients[pcbProject];
     else
     {
-       pLSPclient = new ProcessLanguageClient(pcbProject); //(ph 2021/11/18)
+        pLSPclient = new ProcessLanguageClient(pcbProject); //(ph 2021/11/18)
         CCLogger* pLogMgr = CCLogger::Get();
         if (pLSPclient and  pLSPclient->GetLSP_Server_PID() )
             pLogMgr->DebugLog("LSP: Started new LSP client/server for "
@@ -2760,9 +2716,9 @@ wxString CodeCompletion::GetLineTextFromFile(const wxString& file, const int lin
     control->Show(false);
 
     wxString resultText;
-   switch(1) //once only
+    switch(1) //once only
     {
-        default:
+    default:
 
         // check if the file is already opened in built-in editor and do search in it
         cbEditor* ed = edMan->IsBuiltinOpen(file);
@@ -2781,8 +2737,8 @@ wxString CodeCompletion::GetLineTextFromFile(const wxString& file, const int lin
             control->SetText(detector.GetWxStr());
         }
 
-            resultText = control->GetLine(lineNum).Trim(true).Trim(false);
-            break;
+        resultText = control->GetLine(lineNum).Trim(true).Trim(false);
+        break;
     }
 
     delete control; // done with it
@@ -2882,14 +2838,16 @@ void CodeCompletion::OnLSP_Event(wxCommandEvent& event)
         // capture the semanticTokens legends returned from LSP initialization response
         //https://microsoft.github.io/language-server-protocol/specification#textDocument_semanticTokens
         // ----------------------------------------------------------------------
-        try{
+        try
+        {
             if (pJson->at("result")["capabilities"].contains("semanticTokensProvider") )
             {
                 json legend = pJson->at("result")["capabilities"]["semanticTokensProvider"]["legend"];
                 m_SemanticTokensTypes = legend["tokenTypes"].get<std::vector<std::string>>();
                 m_SemanticTokensModifiers = legend["tokenModifiers"].get<std::vector<std::string>>();
             }//endif
-        }catch (std::exception &e)
+        }
+        catch (std::exception &e)
         {
             wxString msg = wxString::Format("%s() %s", __PRETTY_FUNCTION__, e.what());
             cbMessageBox(msg, "LSP initialization");
@@ -2909,7 +2867,8 @@ void CodeCompletion::OnLSP_Event(wxCommandEvent& event)
     // example:
     // {"jsonrpc":"2.0","id":"textDocument/definition","result":[{"uri":"file://F%3A/usr/Proj/HelloWxWorld/HelloWxWorldMain.cpp","range":{"start":{"line":89,"character":24},"end":{"line":89,"character":30}}}]}
 
-    bool isDecl = false; bool isImpl = false;
+    bool isDecl = false;
+    bool isImpl = false;
     if (evtString.StartsWith("textDocument/declaration") )
         isDecl = true;
     else if (evtString.StartsWith("textDocument/definition") )
@@ -3035,7 +2994,8 @@ void CodeCompletion::OnLSP_SemanticTokenResponse(wxCommandEvent& event)  //(ph 2
 // ----------------------------------------------------------------------------
 void CodeCompletion::ShutdownLSPclient(cbProject* pProject)
 // ----------------------------------------------------------------------------
-{   //(ph 2021/02/12)
+{
+    //(ph 2021/02/12)
     if (IsAttached() && m_InitDone)
     {
         CCLogger* pLogMgr = CCLogger::Get();
@@ -3102,7 +3062,8 @@ void CodeCompletion::ShutdownLSPclient(cbProject* pProject)
 // ----------------------------------------------------------------------------
 void CodeCompletion::CleanUpLSPLogs()
 // ----------------------------------------------------------------------------
-{ //(ph 2021/02/15)
+{
+    //(ph 2021/02/15)
 
     // MS Windows has a lock on closed clangd logs.
     // Windows will not allow deletion of clangd logs until the project closes.
@@ -3115,53 +3076,54 @@ void CodeCompletion::CleanUpLSPLogs()
     // new logs are created.
     wxString logIndexFilename(wxFileName::GetTempDir() + wxFILE_SEP_PATH + "CBclangd_LogsIndex.txt");
     if ( wxFileExists(logIndexFilename))
-    switch (1)
-    {
+        switch (1)
+        {
         default:
-        // The log index file contains entries of log filenames to keep.
-        // The first item is the PID of an active log. For example:
-        // 21320;02/14/21_12:49:58;F:\user\programs\msys64\mingw64\bin\clangd.exe;F:\usr\Proj\HelloWxWorld\HelloWxWorld.cbp
-        wxLogNull noLog;
-        wxTextFile logIndexFile(logIndexFilename);
-        logIndexFile.Open();
-        if (not logIndexFile.IsOpened()) break;
-        if (not logIndexFile.GetLineCount() ) break;
-        size_t logIndexLineCount = logIndexFile.GetLineCount();
+            // The log index file contains entries of log filenames to keep.
+            // The first item is the PID of an active log. For example:
+            // 21320;02/14/21_12:49:58;F:\user\programs\msys64\mingw64\bin\clangd.exe;F:\usr\Proj\HelloWxWorld\HelloWxWorld.cbp
+            wxLogNull noLog;
+            wxTextFile logIndexFile(logIndexFilename);
+            logIndexFile.Open();
+            if (not logIndexFile.IsOpened()) break;
+            if (not logIndexFile.GetLineCount() ) break;
+            size_t logIndexLineCount = logIndexFile.GetLineCount();
 
-        wxString tempDirName = wxFileName::GetTempDir();
-        wxArrayString logFilesVec;
+            wxString tempDirName = wxFileName::GetTempDir();
+            wxArrayString logFilesVec;
 
-        wxString logFilename = wxFindFirstFile(tempDirName + wxFILE_SEP_PATH + "CBclangd_*-*.log", wxFILE);
-        while(logFilename.Length())
-        {
-            logFilesVec.Add(logFilename);
-            logFilename = wxFindNextFile();
-            if (logFilename.empty()) break;
-        }
-        if (not logFilesVec.GetCount()) break;
-        // Delete log files with PIDs not in the log index
-        for (size_t ii=0; ii<logFilesVec.GetCount(); ++ii)
-        {
-            wxString logName = logFilesVec[ii];
-            wxString logPID = logName.AfterFirst('-').BeforeFirst('.');
-            // if log filename pid == an index file pid, it lives
-            for (size_t jj=0; jj<logIndexLineCount; ++jj)
+            wxString logFilename = wxFindFirstFile(tempDirName + wxFILE_SEP_PATH + "CBclangd_*-*.log", wxFILE);
+            while(logFilename.Length())
             {
-                // pid string is the first item in the log index
-                wxString ndxPID = logIndexFile.GetLine(jj).BeforeFirst(';');
-                if (logPID == ndxPID) break;   //This log lives, get next log.
-                if (jj == logIndexLineCount-1) //no match for pids, delete this log
-                    wxRemoveFile(logName);
-            }//endfor index filenames
-        }//endfor log Filenames
-        if (logIndexFile.IsOpened())
-            logIndexFile.Close();
-    }//end switch
+                logFilesVec.Add(logFilename);
+                logFilename = wxFindNextFile();
+                if (logFilename.empty()) break;
+            }
+            if (not logFilesVec.GetCount()) break;
+            // Delete log files with PIDs not in the log index
+            for (size_t ii=0; ii<logFilesVec.GetCount(); ++ii)
+            {
+                wxString logName = logFilesVec[ii];
+                wxString logPID = logName.AfterFirst('-').BeforeFirst('.');
+                // if log filename pid == an index file pid, it lives
+                for (size_t jj=0; jj<logIndexLineCount; ++jj)
+                {
+                    // pid string is the first item in the log index
+                    wxString ndxPID = logIndexFile.GetLine(jj).BeforeFirst(';');
+                    if (logPID == ndxPID) break;   //This log lives, get next log.
+                    if (jj == logIndexLineCount-1) //no match for pids, delete this log
+                        wxRemoveFile(logName);
+                }//endfor index filenames
+            }//endfor log Filenames
+            if (logIndexFile.IsOpened())
+                logIndexFile.Close();
+        }//end switch
 }//end CleanUpLSPLogs()
 // ----------------------------------------------------------------------------
 void CodeCompletion::CleanOutClangdTempFiles()
 // ----------------------------------------------------------------------------
-{ //(ph 2022/01/18)
+{
+    //(ph 2022/01/18)
     // clangd can leave behind a bunch of .pch and .tmp files with a pattern
     // of "preamble-*.pch" and "preamble-*.tmp"
     //Linux is allowing the removal of open files. So we trod carefully.
@@ -3169,7 +3131,7 @@ void CodeCompletion::CleanOutClangdTempFiles()
 //          Windows
 // --------------------------------------------------------------
 #if defined(_WIN32)
-     wxLogNull NoLog;   //avoid windows "not allowed" message boxes
+    wxLogNull NoLog;   //avoid windows "not allowed" message boxes
     // Get a list of temporary preamble-*.tmp files.
     wxString tempDir = wxFileName::GetTempDir();
     wxArrayString tmpFiles;
@@ -3186,7 +3148,9 @@ void CodeCompletion::CleanOutClangdTempFiles()
 //          Linux
 // --------------------------------------------------------------
 #if not defined(_WIN32)
-     wxLogNull NoLog;   //avoid message boxes of errors
+
+    if (not wxFileExists("/usr/bin/lsof")) return;
+    wxLogNull NoLog;   //avoid message boxes of errors
     // Get a list of temporary preamble-*.tmp files.
     wxString tempDir = wxFileName::GetTempDir();
     ProcUtils procUtils;
@@ -3262,8 +3226,8 @@ void CodeCompletion::OnProjectClosed(CodeBlocksEvent& event)
         }//endif m_pLSPclient
 
 
-       if (project && GetParseManager()->GetParserByProject(project))
-       {
+        if (project && GetParseManager()->GetParserByProject(project))
+        {
             // remove the CC Parser instance associated with the project
             GetParseManager()->DeleteParser(project);
         }
@@ -3288,7 +3252,7 @@ void CodeCompletion::OnProjectFileAdded(CodeBlocksEvent& event)
     // ------------------------------------------------------------
     switch(1)
     {
-        default:
+    default:
         cbProject* pProject = event.GetProject();
         if (not GetLSPclient(pProject)) break;
         wxString filename = event.GetString();
@@ -3301,7 +3265,7 @@ void CodeCompletion::OnProjectFileAdded(CodeBlocksEvent& event)
         // Delay GetLSPclient(pProject)->LSP_DidOpen(pEditor) with a callback.
         // Allows ProjectManager to add ProjectFile* to the project following this
         // event but before the callback event is invoked.
-         CallAfter(&CodeCompletion::OnLSP_ProjectFileAdded, pProject, filename);
+        CallAfter(&CodeCompletion::OnLSP_ProjectFileAdded, pProject, filename);
     }
 
     GetParseManager()->AddFileToParser(event.GetProject(), event.GetString());
@@ -3501,7 +3465,7 @@ void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
     //-if (pcbEd and GetLSP_Initialized(pcbEd) and GetLSPclient(pcbEd) )
     //^^ NoteToSelf: editor would not show initialized if it never got diagnostics //(ph 2021/06/4)
     if (pcbEd and pClient and pClient->GetLSP_EditorIsOpen(pcbEd))
-            GetLSPclient(pcbEd)->LSP_DidClose(pcbEd);
+        GetLSPclient(pcbEd)->LSP_DidClose(pcbEd);
 
     if (m_LastEditor == event.GetEditor())
     {
@@ -3559,9 +3523,9 @@ void CodeCompletion::OnCCDebugLogger(CodeBlocksThreadEvent& event)
     if (!Manager::IsAppShuttingDown())
     {
         if (event.GetId() == g_idCCDebugLogger)
-         Manager::Get()->GetLogManager()->DebugLog(event.GetString());
+            Manager::Get()->GetLogManager()->DebugLog(event.GetString());
         if (event.GetId() == g_idCCDebugErrorLogger)
-         Manager::Get()->GetLogManager()->DebugLogError(event.GetString());
+            Manager::Get()->GetLogManager()->DebugLogError(event.GetString());
     }
 }
 // ----------------------------------------------------------------------------
@@ -3705,8 +3669,8 @@ int CodeCompletion::DoAllMethodsImpl()
         {
             const Token* token = tree->at(*its);
             if (   token // valid token
-                && (token->m_TokenKind & (tkFunction | tkConstructor | tkDestructor)) // is method
-                && token->m_ImplLine == 0 ) // is un-implemented
+                    && (token->m_TokenKind & (tkFunction | tkConstructor | tkDestructor)) // is method
+                    && token->m_ImplLine == 0 ) // is un-implemented
             {
                 im[token->m_Line] = std::make_pair(*its, token->DisplayName());
             }
@@ -3768,7 +3732,7 @@ int CodeCompletion::DoAllMethodsImpl()
             {
                 // "int *" or "int &" ->  "int*" or "int&"
                 if (   (type.Last() == _T('&') || type.Last() == _T('*'))
-                    && type[type.Len() - 2] == _T(' '))
+                        && type[type.Len() - 2] == _T(' '))
                 {
                     type[type.Len() - 2] = type.Last();
                     type.RemoveLast();
@@ -3883,31 +3847,49 @@ void CodeCompletion::GotoFunctionPrevNext(bool next /* = false */)
             if         (best_func_line  > current_line)     // candidate: is after current line
             {
                 if (   (func_start_line > current_line  )   // another candidate
-                    && (func_start_line < best_func_line) ) // decide which is more near
-                { best_func = idx_func; found_best_func = true; }
+                        && (func_start_line < best_func_line) ) // decide which is more near
+                {
+                    best_func = idx_func;
+                    found_best_func = true;
+                }
             }
             else if    (func_start_line > current_line)     // candidate: is after current line
-            {     best_func = idx_func; found_best_func = true; }
+            {
+                best_func = idx_func;
+                found_best_func = true;
+            }
         }
         else // prev
         {
             if         (best_func_line  < current_line)     // candidate: is before current line
             {
                 if (   (func_start_line < current_line  )   // another candidate
-                    && (func_start_line > best_func_line) ) // decide which is closer
-                { best_func = idx_func; found_best_func = true; }
+                        && (func_start_line > best_func_line) ) // decide which is closer
+                {
+                    best_func = idx_func;
+                    found_best_func = true;
+                }
             }
             else if    (func_start_line < current_line)     // candidate: is before current line
-            {     best_func = idx_func; found_best_func = true; }
+            {
+                best_func = idx_func;
+                found_best_func = true;
+            }
         }
     }
 
     if      (found_best_func)
-    { line = m_FunctionsScope[best_func].StartLine; }
+    {
+        line = m_FunctionsScope[best_func].StartLine;
+    }
     else if ( next && m_FunctionsScope[best_func].StartLine>current_line)
-    { line = m_FunctionsScope[best_func].StartLine; }
+    {
+        line = m_FunctionsScope[best_func].StartLine;
+    }
     else if (!next && m_FunctionsScope[best_func].StartLine<current_line)
-    { line = m_FunctionsScope[best_func].StartLine; }
+    {
+        line = m_FunctionsScope[best_func].StartLine;
+    }
 
     if (line != -1)
     {
@@ -4063,12 +4045,12 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
     // the map if no such key(filename) is found.
     FunctionsScopePerFile* funcdata = &(m_AllFunctionsScopes[filename]);
 
-    #if CC_CODECOMPLETION_DEBUG_OUTPUT == 1 //(ph 2021/04/3)
-        wxString debugMsg = wxString::Format("ParseFunctionsAndFillToolbar() : m_ToolbarNeedReparse=%d, m_ToolbarNeedRefresh=%d, ",
-              m_ToolbarNeedReparse?1:0, m_ToolbarNeedRefresh?1:0);
-        debugMsg += wxString::Format("\n%s: funcdata->parsed[%d] ", __FUNCTION__, funcdata->parsed);
-        LogManager* pLogMgr = CCLogger::Get()->pLogMgr->DebugLog(debugMsg);
-    #endif
+#if CC_CODECOMPLETION_DEBUG_OUTPUT == 1 //(ph 2021/04/3)
+    wxString debugMsg = wxString::Format("ParseFunctionsAndFillToolbar() : m_ToolbarNeedReparse=%d, m_ToolbarNeedRefresh=%d, ",
+                                         m_ToolbarNeedReparse?1:0, m_ToolbarNeedRefresh?1:0);
+    debugMsg += wxString::Format("\n%s: funcdata->parsed[%d] ", __FUNCTION__, funcdata->parsed);
+    LogManager* pLogMgr = CCLogger::Get()->pLogMgr->DebugLog(debugMsg);
+#endif
 
     // *** Part 1: Parse the file (if needed) ***
     if (m_ToolbarNeedReparse || !funcdata->parsed)
@@ -4103,7 +4085,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
         TokenIdxSet result;
         bool hasTokenTreeLock = true;
         GetParseManager()->GetParser().FindTokensInFile(filename, result,
-                                                    tkAnyFunction | tkEnum | tkClass | tkNamespace, hasTokenTreeLock);
+                tkAnyFunction | tkEnum | tkClass | tkNamespace, hasTokenTreeLock);
         if ( ! result.empty())
             funcdata->parsed = true;    // if the file had some containers, flag it as parsed
         else
@@ -4165,11 +4147,11 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
         functionsScopes.resize(it - functionsScopes.begin());
 
         TRACE(F(_T("Found %lu namespace locations"), static_cast<unsigned long>(nameSpaces.size())));
-    #if CC_CODECOMPLETION_DEBUG_OUTPUT == 1
+#if CC_CODECOMPLETION_DEBUG_OUTPUT == 1
         for (unsigned int i = 0; i < nameSpaces.size(); ++i)
             CCLogger::Get()->DebugLog(wxString::Format(_T("\t%s (%d:%d)"),
-                nameSpaces[i].Name.wx_str(), nameSpaces[i].StartLine, nameSpaces[i].EndLine));
-    #endif
+                                      nameSpaces[i].Name.wx_str(), nameSpaces[i].StartLine, nameSpaces[i].EndLine));
+#endif
 
         if (!m_ToolbarNeedRefresh)
             m_ToolbarNeedRefresh = true;
@@ -4204,12 +4186,12 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
     }
 
     TRACE(F(_T("Parsed %lu functionScope items"), static_cast<unsigned long>(m_FunctionsScope.size())));
-    #if CC_CODECOMPLETION_DEBUG_OUTPUT == 1
+#if CC_CODECOMPLETION_DEBUG_OUTPUT == 1
     for (unsigned int i = 0; i < m_FunctionsScope.size(); ++i)
         CCLogger::Get()->DebugLog(wxString::Format(_T("\t%s%s (%d:%d)"),
-            m_FunctionsScope[i].Scope.wx_str(), m_FunctionsScope[i].Name.wx_str(),
-            m_FunctionsScope[i].StartLine, m_FunctionsScope[i].EndLine));
-    #endif
+                                  m_FunctionsScope[i].Scope.wx_str(), m_FunctionsScope[i].Name.wx_str(),
+                                  m_FunctionsScope[i].StartLine, m_FunctionsScope[i].EndLine));
+#endif
 
     // Does the toolbar need a refresh?
     if (m_ToolbarNeedRefresh || m_LastFile != filename)
@@ -4425,7 +4407,7 @@ void CodeCompletion::UpdateEditorSyntax(cbEditor* ed)
             continue; // no need to check the same token multiple times
         parsedTokens.insert(token->m_Index);
         for (TokenIdxSet::const_iterator chIt = token->m_Children.begin();
-             chIt != token->m_Children.end(); ++chIt)
+                chIt != token->m_Children.end(); ++chIt)
         {
             const Token* chToken = tree->at(*chIt);
             if (chToken && chToken->m_TokenKind == tkVariable)
@@ -4437,17 +4419,17 @@ void CodeCompletion::UpdateEditorSyntax(cbEditor* ed)
         if (token->m_Ancestors.empty())
             tree->RecalcInheritanceChain(token);
         for (TokenIdxSet::const_iterator ancIt = token->m_Ancestors.begin();
-             ancIt != token->m_Ancestors.end(); ++ancIt)
+                ancIt != token->m_Ancestors.end(); ++ancIt)
         {
             const Token* ancToken = tree->at(*ancIt);
             if (!ancToken || parsedTokens.find(ancToken->m_Index) != parsedTokens.end())
                 continue;
             for (TokenIdxSet::const_iterator chIt = ancToken->m_Children.begin();
-                 chIt != ancToken->m_Children.end(); ++chIt)
+                    chIt != ancToken->m_Children.end(); ++chIt)
             {
                 const Token* chToken = tree->at(*chIt);
                 if (   chToken && chToken->m_TokenKind == tkVariable
-                    && chToken->m_Scope != tsPrivate) // cannot inherit these...
+                        && chToken->m_Scope != tsPrivate) // cannot inherit these...
                 {
                     varList.insert(chToken->m_Name);
                 }
@@ -4463,7 +4445,7 @@ void CodeCompletion::UpdateEditorSyntax(cbEditor* ed)
 
     wxString keywords = colour_set->GetKeywords(ed->GetLanguage(), 3);
     for (std::set<wxString>::const_iterator keyIt = varList.begin();
-         keyIt != varList.end(); ++keyIt)
+            keyIt != varList.end(); ++keyIt)
     {
         keywords += wxT(" ") + *keyIt;
     }
@@ -4476,7 +4458,6 @@ void CodeCompletion::OnToolbarTimer(wxCommandEvent& event)
 {
     // Allow others to call OnToolbarTimer() via event.     //(ph 2021/09/11)
     // Invoked by Parser::OnLSP_ParseDocumentSymbols() to update the scope toolbar
-    if (not m_SettingsEditorCodeCompletionEnabled) return;
 
     m_ToolbarNeedReparse = true;
     m_ToolbarNeedRefresh = true;
@@ -4550,28 +4531,28 @@ wxBitmap CodeCompletion::GetImage(ImageId::Id id, int fontSize) //unused
     if (it == m_images.end())
     {
         const wxString prefix = ConfigManager::GetDataFolder()
-                              + wxString::Format(_T("/clangd_client.zip#zip:images/%dx%d/"), size, //(ph 2022/01/15)
-                                                 size);
+                                + wxString::Format(_T("/clangd_client.zip#zip:images/%dx%d/"), size, //(ph 2022/01/15)
+                                        size);
 
         wxString filename;
         switch (id)
         {
-            case ImageId::HeaderFile:
-                filename = prefix + wxT("header.png");
-                break;
-            case ImageId::KeywordCPP:
-                filename = prefix + wxT("keyword_cpp.png");
-                break;
-            case ImageId::KeywordD:
-                filename = prefix + wxT("keyword_d.png");
-                break;
-            case ImageId::Unknown:
-                filename = prefix + wxT("unknown.png");
-                break;
+        case ImageId::HeaderFile:
+            filename = prefix + wxT("header.png");
+            break;
+        case ImageId::KeywordCPP:
+            filename = prefix + wxT("keyword_cpp.png");
+            break;
+        case ImageId::KeywordD:
+            filename = prefix + wxT("keyword_d.png");
+            break;
+        case ImageId::Unknown:
+            filename = prefix + wxT("unknown.png");
+            break;
 
-            case ImageId::Last:
-            default:
-                ;
+        case ImageId::Last:
+        default:
+            ;
         }
 
         if (!filename.empty())

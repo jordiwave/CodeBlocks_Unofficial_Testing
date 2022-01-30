@@ -32,52 +32,52 @@
 
 namespace
 {
-    class wxsCustomEditorPropertyPropClass: public wxCustomPropertyClass
+class wxsCustomEditorPropertyPropClass: public wxCustomPropertyClass
+{
+public:
+    /** \brief Standard property editor */
+    wxsCustomEditorPropertyPropClass(
+        const wxString& label,
+        const wxString& name,
+        wxsCustomEditorProperty* property,
+        wxsPropertyContainer* object):
+        wxCustomPropertyClass(label,name),
+        Property(property),
+        Object(object)
     {
-        public:
-            /** \brief Standard property editor */
-            wxsCustomEditorPropertyPropClass(
-                const wxString& label,
-                const wxString& name,
-                wxsCustomEditorProperty* property,
-                wxsPropertyContainer* object):
-                    wxCustomPropertyClass(label,name),
-                    Property(property),
-                    Object(object)
-            {
-                SetEditor(wxPG_EDITOR(TextCtrlAndButton));
-                SetValue(Property->GetStr(Object));
-            }
+        SetEditor(wxPG_EDITOR(TextCtrlAndButton));
+        SetValue(Property->GetStr(Object));
+    }
 
-            virtual bool OnEvent(
-                wxPropertyGrid* propgrid,
-                wxWindow* wnd_primary,
-                wxEvent& event)
+    virtual bool OnEvent(
+        wxPropertyGrid* propgrid,
+        wxWindow* wnd_primary,
+        wxEvent& event)
+    {
+        if ( event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED )
+        {
+            if(Property->ShowEditor(Object))
             {
-                if ( event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED )
-                {
-                    if(Property->ShowEditor(Object))
-                    {
-                        SetValueInEvent (Property->GetStr(Object));
-                        return true;
-                    }
-                    return false;
-                }
-                return wxCustomPropertyClass::OnEvent(propgrid,wnd_primary,event);
+                SetValueInEvent (Property->GetStr(Object));
+                return true;
             }
+            return false;
+        }
+        return wxCustomPropertyClass::OnEvent(propgrid,wnd_primary,event);
+    }
 
-            virtual wxString ValueToString(cb_unused wxVariant& value, cb_unused int argFlags = 0) const
-            {
-                return Property->GetStr(Object);
-            }
+    virtual wxString ValueToString(cb_unused wxVariant& value, cb_unused int argFlags = 0) const
+    {
+        return Property->GetStr(Object);
+    }
 
-            /** \brief Pointer to wxsProperty which created this
-             *
-             * Pointer will be used to call ShowEditor
-             */
-            wxsCustomEditorProperty* Property;
-            wxsPropertyContainer* Object;
-    };
+    /** \brief Pointer to wxsProperty which created this
+     *
+     * Pointer will be used to call ShowEditor
+     */
+    wxsCustomEditorProperty* Property;
+    wxsPropertyContainer* Object;
+};
 }
 
 void wxsCustomEditorProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)

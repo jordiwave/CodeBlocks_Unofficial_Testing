@@ -27,24 +27,24 @@
 
 namespace
 {
-    wxsRegisterItem<wxsListBox> Reg(_T("ListBox"),wxsTWidget,_T("Standard"),240);
+wxsRegisterItem<wxsListBox> Reg(_T("ListBox"),wxsTWidget,_T("Standard"),240);
 
-    WXS_ST_BEGIN(wxsListBoxStyles,_T(""))
-        WXS_ST_CATEGORY("wxListBox")
-        WXS_ST(wxLB_SINGLE)
-        WXS_ST(wxLB_MULTIPLE)
-        WXS_ST(wxLB_EXTENDED)
-        WXS_ST(wxLB_HSCROLL)
-        WXS_ST(wxLB_ALWAYS_SB)
-        WXS_ST(wxLB_NEEDED_SB)
-        WXS_ST(wxLB_SORT)
-        WXS_ST_DEFAULTS()
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsListBoxStyles,_T(""))
+WXS_ST_CATEGORY("wxListBox")
+WXS_ST(wxLB_SINGLE)
+WXS_ST(wxLB_MULTIPLE)
+WXS_ST(wxLB_EXTENDED)
+WXS_ST(wxLB_HSCROLL)
+WXS_ST(wxLB_ALWAYS_SB)
+WXS_ST(wxLB_NEEDED_SB)
+WXS_ST(wxLB_SORT)
+WXS_ST_DEFAULTS()
+WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsListBoxEvents)
-        WXS_EVI(EVT_LISTBOX,wxEVT_COMMAND_LISTBOX_SELECTED,wxCommandEvent,Select)
-        WXS_EVI(EVT_LISTBOX_DCLICK,wxEVT_COMMAND_LISTBOX_DOUBLECLICKED,wxCommandEvent,DClick)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsListBoxEvents)
+WXS_EVI(EVT_LISTBOX,wxEVT_COMMAND_LISTBOX_SELECTED,wxCommandEvent,Select)
+WXS_EVI(EVT_LISTBOX_DCLICK,wxEVT_COMMAND_LISTBOX_DOUBLECLICKED,wxCommandEvent,DClick)
+WXS_EV_END()
 }
 
 wxsListBox::wxsListBox(wxsItemResData* Data):
@@ -60,33 +60,33 @@ void wxsListBox::OnBuildCreatingCode()
 {
     switch ( GetLanguage() )
     {
-        case wxsCPP:
+    case wxsCPP:
+    {
+        AddHeader(_T("<wx/listbox.h>"),GetInfo().ClassName,hfInPCH);
+        Codef(_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
+        for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
         {
-            AddHeader(_T("<wx/listbox.h>"),GetInfo().ClassName,hfInPCH);
-            Codef(_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
-            for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
+            if ( DefaultSelection == (int)i )
             {
-                if ( DefaultSelection == (int)i )
-                {
-                    Codef(_T("%ASetSelection( "));
-                }
-                Codef( _T("%AAppend(%t)"), ArrayChoices[i].wx_str());
-                if ( DefaultSelection == (int)i )
-                {
-                    Codef(_T(" )"));
-                }
-                Codef(_T(";\n"));
+                Codef(_T("%ASetSelection( "));
             }
-
-            BuildSetupWindowCode();
-            return;
+            Codef( _T("%AAppend(%t)"), ArrayChoices[i].wx_str());
+            if ( DefaultSelection == (int)i )
+            {
+                Codef(_T(" )"));
+            }
+            Codef(_T(";\n"));
         }
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsListBox::OnBuildCreatingCode"),GetLanguage());
-        }
+        BuildSetupWindowCode();
+        return;
+    }
+
+    case wxsUnknownLanguage: // fall-through
+    default:
+    {
+        wxsCodeMarks::Unknown(_T("wxsListBox::OnBuildCreatingCode"),GetLanguage());
+    }
     }
 }
 
@@ -108,6 +108,6 @@ wxObject* wxsListBox::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsListBox::OnEnumWidgetProperties(cb_unused long Flags)
 {
-      WXS_ARRAYSTRING(wxsListBox,ArrayChoices,_("Choices"),_T("content"),_T("item"))
-      WXS_LONG(wxsListBox,DefaultSelection,_("Default"),_T("default"),0)
+    WXS_ARRAYSTRING(wxsListBox,ArrayChoices,_("Choices"),_T("content"),_T("item"))
+    WXS_LONG(wxsListBox,DefaultSelection,_("Default"),_T("default"),0)
 }

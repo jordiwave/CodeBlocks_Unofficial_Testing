@@ -4,7 +4,7 @@
  * This file is part of depslib.
  *
  * License is hereby granted to use this software and distribute it
- * freely, as long as this copyright notice is retained and modifications 
+ * freely, as long as this copyright notice is retained and modifications
  * are clearly marked.
  *
  * ALL WARRANTIES ARE HEREBY DISCLAIMED.
@@ -14,18 +14,18 @@ typedef struct _header HEADER;
 
 struct _headers
 {
-	HEADERS *next;
-	HEADERS *tail;
-	HEADER *header;
+    HEADERS *next;
+    HEADERS *tail;
+    HEADER *header;
 };
 
 struct _header
 {
-	const char *key;
-	LIST *includes;
-	time_t time;
-	HEADERS *headers;
-	HEADER *newest;
+    const char *key;
+    LIST *includes;
+    time_t time;
+    HEADERS *headers;
+    HEADER *newest;
 };
 
 extern HEADER *headers(const char *t, time_t time);

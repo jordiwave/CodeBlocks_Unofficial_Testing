@@ -26,28 +26,28 @@ using namespace wxsFlags;
 
 namespace
 {
-    #include "../images/wxsAuiToolBarItem16.xpm"
-    #include "../images/wxsAuiToolBarItem32.xpm"
+#include "../images/wxsAuiToolBarItem16.xpm"
+#include "../images/wxsAuiToolBarItem32.xpm"
 
-    wxsRegisterItem<wxsAuiToolBarItem> Reg(
-        _T("wxAuiToolBarItem"),            // Class name
-        wxsTWidget,                             // Item type
-        _T("wxWindows"),                        // License
-        _T("Benjamin I. Williams"),             // Author
-        _T(""),                                 // Author's email
-        _T(""),                                 // Item's homepage
-        _T("Aui"),                              // Category in palette
-        30,                                     // Priority in palette
-        _T("AuiToolBarItem"),                                 // Base part of names for new items
-        wxsCPP,                                 // List of coding languages supported by this item
-        2, 8,                                   // Version
-        wxBitmap(wxsAuiToolBarItem32_xpm), // 32x32 bitmap
-        wxBitmap(wxsAuiToolBarItem16_xpm), // 16x16 bitmap
-        false);
+wxsRegisterItem<wxsAuiToolBarItem> Reg(
+    _T("wxAuiToolBarItem"),            // Class name
+    wxsTWidget,                             // Item type
+    _T("wxWindows"),                        // License
+    _T("Benjamin I. Williams"),             // Author
+    _T(""),                                 // Author's email
+    _T(""),                                 // Item's homepage
+    _T("Aui"),                              // Category in palette
+    30,                                     // Priority in palette
+    _T("AuiToolBarItem"),                                 // Base part of names for new items
+    wxsCPP,                                 // List of coding languages supported by this item
+    2, 8,                                   // Version
+    wxBitmap(wxsAuiToolBarItem32_xpm), // 32x32 bitmap
+    wxBitmap(wxsAuiToolBarItem16_xpm), // 16x16 bitmap
+    false);
 
-    WXS_EV_BEGIN(wxsAuiToolBarItemEvents)
-        WXS_EVI(EVT_TOOL,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEvent,Click)
-    WXS_EV_END()
+WXS_EV_BEGIN(wxsAuiToolBarItemEvents)
+WXS_EVI(EVT_TOOL,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEvent,Click)
+WXS_EV_END()
 }
 
 wxsAuiToolBarItem::wxsAuiToolBarItem(wxsItemResData* Data):
@@ -64,19 +64,23 @@ void wxsAuiToolBarItem::OnEnumItemProperties(long Flags)
     WXS_STRING(wxsAuiToolBarItem, m_LongHelp, _("Long help"), _T("longhelp"), wxEmptyString, false)
 
     static const long    ItemKindValues[] =
-        { wxITEM_NORMAL,
-          wxITEM_CHECK,
-          wxITEM_RADIO,
-          0 };
+    {
+        wxITEM_NORMAL,
+        wxITEM_CHECK,
+        wxITEM_RADIO,
+        0
+    };
 
 #pragma push_macro("_")
 #undef _
 #define _(x)   L##x
     static const wxChar* ItemKindNames[]  =
-        { _("Normal"),
-          _("Check"),
-          _("Radio"),
-          nullptr };
+    {
+        _("Normal"),
+        _("Check"),
+        _("Radio"),
+        nullptr
+    };
 #pragma pop_macro("_")
 
     WXS_ENUM(wxsAuiToolBarItem, m_ItemKind, _("Item kind"), _T("itemkind"), ItemKindValues, ItemKindNames, wxITEM_NORMAL)

@@ -15,7 +15,7 @@
 #include "filefilters.h"
 
 #ifndef CB_PRECOMP
-    #include "scriptingmanager.h"
+#include "scriptingmanager.h"
 #endif
 
 #include <wx/textctrl.h>

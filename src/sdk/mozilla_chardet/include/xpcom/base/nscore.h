@@ -268,13 +268,13 @@
 
 #ifdef MOZILLA_INTERNAL_API
 #  define NS_COM_GLUE
-   /*
-     The frozen string API has different definitions of nsAC?String
-     classes than the internal API. On systems that explicitly declare
-     dllexport symbols this is not a problem, but on ELF systems
-     internal symbols can accidentally "shine through"; we rename the
-     internal classes to avoid symbol conflicts.
-   */
+/*
+  The frozen string API has different definitions of nsAC?String
+  classes than the internal API. On systems that explicitly declare
+  dllexport symbols this is not a problem, but on ELF systems
+  internal symbols can accidentally "shine through"; we rename the
+  internal classes to avoid symbol conflicts.
+*/
 #  define nsAString nsAString_internal
 #  define nsACString nsACString_internal
 #else
@@ -386,11 +386,11 @@ typedef uint32_t nsrefcnt;
 #define NS_STRINGIFY(x_) NS_STRINGIFY_HELPER(x_)
 */
 
- /*
-  * If we're being linked as standalone glue, we don't want a dynamic
-  * dependency on NSPR libs, so we skip the debug thread-safety
-  * checks, and we cannot use the THREADSAFE_ISUPPORTS macros.
-  */
+/*
+ * If we're being linked as standalone glue, we don't want a dynamic
+ * dependency on NSPR libs, so we skip the debug thread-safety
+ * checks, and we cannot use the THREADSAFE_ISUPPORTS macros.
+ */
 /*
 #if defined(XPCOM_GLUE) && !defined(XPCOM_GLUE_USE_NSPR)
 #define XPCOM_GLUE_AVOID_NSPR

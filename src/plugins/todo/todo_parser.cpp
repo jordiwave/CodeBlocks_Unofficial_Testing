@@ -6,8 +6,8 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/arrstr.h>
-    #include <wx/datetime.h>
+#include <wx/arrstr.h>
+#include <wx/datetime.h>
 #endif // CB_PRECOMP
 
 #include "todo_parser.h"

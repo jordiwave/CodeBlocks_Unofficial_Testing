@@ -9,27 +9,27 @@
 
 #include "sdk_precomp.h"
 #ifndef CB_PRECOMP
-    #include <wx/artprov.h>
-    #include <wx/bmpbuttn.h>
-    #include <wx/combobox.h>
-    #include <wx/filedlg.h>
-    #include <wx/frame.h>
-    #include <wx/menu.h>
-    #include <wx/settings.h>
-    #include <wx/sizer.h>
-    #include <wx/stattext.h>
-    #include <wx/regex.h>
+#include <wx/artprov.h>
+#include <wx/bmpbuttn.h>
+#include <wx/combobox.h>
+#include <wx/filedlg.h>
+#include <wx/frame.h>
+#include <wx/menu.h>
+#include <wx/settings.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/regex.h>
 
-    #include "cbeditor.h"
-    #include "cbexception.h"
-    #include "cbplugin.h"
-    #include "cbproject.h"
-    #include "compilerfactory.h"
-    #include "configmanager.h"
-    #include "editormanager.h"
-    #include "logmanager.h"
-    #include "macrosmanager.h"
-    #include "projectmanager.h"
+#include "cbeditor.h"
+#include "cbexception.h"
+#include "cbplugin.h"
+#include "cbproject.h"
+#include "compilerfactory.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "logmanager.h"
+#include "macrosmanager.h"
+#include "projectmanager.h"
 #endif
 
 #include <algorithm>
@@ -130,8 +130,8 @@ int cbWatch::FindChildIndex(const wxString& symbol) const
 {
     int index = 0;
     for (std::vector<cb::shared_ptr<cbWatch> >::const_iterator it = m_children.begin();
-         it != m_children.end();
-         ++it, ++index)
+            it != m_children.end();
+            ++it, ++index)
     {
         wxString s;
         (*it)->GetSymbol(s);
@@ -369,20 +369,20 @@ bool cbDebuggerCommonConfig::GetFlag(Flags flag)
     ConfigManager *c = Manager::Get()->GetConfigManager(wxT("debugger_common"));
     switch (flag)
     {
-        case AutoBuild:
-            return c->ReadBool(wxT("/common/auto_build"), true);
-        case AutoSwitchFrame:
-            return c->ReadBool(wxT("/common/auto_switch_frame"), true);
-        case ShowDebuggersLog:
-            return c->ReadBool(wxT("/common/debug_log"), false);
-        case JumpOnDoubleClick:
-            return c->ReadBool(wxT("/common/jump_on_double_click"), false);
-        case RequireCtrlForTooltips:
-            return c->ReadBool(wxT("/common/require_ctrl_for_tooltips"), false);
-        case ShowTemporaryBreakpoints:
-            return c->ReadBool(wxT("/common/show_temporary_breakpoints"), false);
-        default:
-            return false;
+    case AutoBuild:
+        return c->ReadBool(wxT("/common/auto_build"), true);
+    case AutoSwitchFrame:
+        return c->ReadBool(wxT("/common/auto_switch_frame"), true);
+    case ShowDebuggersLog:
+        return c->ReadBool(wxT("/common/debug_log"), false);
+    case JumpOnDoubleClick:
+        return c->ReadBool(wxT("/common/jump_on_double_click"), false);
+    case RequireCtrlForTooltips:
+        return c->ReadBool(wxT("/common/require_ctrl_for_tooltips"), false);
+    case ShowTemporaryBreakpoints:
+        return c->ReadBool(wxT("/common/show_temporary_breakpoints"), false);
+    default:
+        return false;
     }
 }
 
@@ -391,25 +391,25 @@ void cbDebuggerCommonConfig::SetFlag(Flags flag, bool value)
     ConfigManager *c = Manager::Get()->GetConfigManager(wxT("debugger_common"));
     switch (flag)
     {
-        case AutoBuild:
-            c->Write(wxT("/common/auto_build"), value);
-            break;
-        case AutoSwitchFrame:
-            c->Write(wxT("/common/auto_switch_frame"), value);
-            break;
-        case ShowDebuggersLog:
-            c->Write(wxT("/common/debug_log"), value);
-            break;
-        case JumpOnDoubleClick:
-            c->Write(wxT("/common/jump_on_double_click"), value);
-            break;
-        case RequireCtrlForTooltips:
-            c->Write(wxT("/common/require_ctrl_for_tooltips"), value);
-            break;
-        case ShowTemporaryBreakpoints:
-            c->Write(wxT("/common/show_temporary_breakpoints"), value);
-        default:
-            ;
+    case AutoBuild:
+        c->Write(wxT("/common/auto_build"), value);
+        break;
+    case AutoSwitchFrame:
+        c->Write(wxT("/common/auto_switch_frame"), value);
+        break;
+    case ShowDebuggersLog:
+        c->Write(wxT("/common/debug_log"), value);
+        break;
+    case JumpOnDoubleClick:
+        c->Write(wxT("/common/jump_on_double_click"), value);
+        break;
+    case RequireCtrlForTooltips:
+        c->Write(wxT("/common/require_ctrl_for_tooltips"), value);
+        break;
+    case ShowTemporaryBreakpoints:
+        c->Write(wxT("/common/show_temporary_breakpoints"), value);
+    default:
+        ;
     }
 }
 
@@ -568,7 +568,7 @@ public:
         wxBoxSizer *control_sizer = new wxBoxSizer(wxHORIZONTAL);
 
         wxWindow *text_control = text_control_logger->CreateTextCtrl(this);
-        sizer->Add(text_control, wxEXPAND, wxEXPAND | wxALL , 0);
+        sizer->Add(text_control, wxEXPAND, wxEXPAND | wxALL, 0);
         sizer->Add(control_sizer, 0, wxEXPAND | wxALL, 0);
 
         wxStaticText *label = new wxStaticText(this, wxID_ANY, _T("Command:"),
@@ -579,10 +579,10 @@ public:
                                          wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 
         wxBitmap execute_bitmap = wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_EXECUTABLE_FILE")),
-                                                           wxART_BUTTON);
+                                  wxART_BUTTON);
         wxBitmap clear_bitmap = wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_DELETE")),wxART_BUTTON);
         wxBitmap file_open_bitmap =wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_OPEN")),
-                                                            wxART_BUTTON);
+                                   wxART_BUTTON);
 
         wxBitmapButton *button_execute;
         button_execute = new wxBitmapButton(this, idDebug_ExecuteButton, execute_bitmap, wxDefaultPosition,
@@ -591,14 +591,14 @@ public:
         button_execute->SetToolTip(_("Execute current command"));
 
         wxBitmapButton *button_load = new wxBitmapButton(this, idDebug_LoadButton, file_open_bitmap, wxDefaultPosition,
-                                                         wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator,
-                                                         _T("idDebug_LoadButton"));
+                wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator,
+                _T("idDebug_LoadButton"));
         button_load->SetDefault();
         button_load->SetToolTip(_("Load from file"));
 
         wxBitmapButton *button_clear = new wxBitmapButton(this, idDebug_ClearButton, clear_bitmap, wxDefaultPosition,
-                                                          wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator,
-                                                          _T("idDebug_ClearButton"));
+                wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator,
+                _T("idDebug_ClearButton"));
         button_clear->SetDefault();
         button_clear->SetToolTip(_("Clear output window"));
 
@@ -999,10 +999,10 @@ TextCtrlLogger* DebuggerManager::GetLogger(int &index)
         const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
         const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
         const wxString prefix = ConfigManager::GetDataFolder()
-                              + wxString::Format(_T("/resources.zip#zip:/images/infopane/%dx%d/"),
-                                                 uiSize, uiSize);
+                                + wxString::Format(_T("/resources.zip#zip:/images/infopane/%dx%d/"),
+                                        uiSize, uiSize);
         wxBitmap* bmp = new wxBitmap(cbLoadBitmapScaled(prefix + _T("misc.png"), wxBITMAP_TYPE_PNG,
-                                                        uiScaleFactor));
+                                     uiScaleFactor));
         slot.icon = bmp;
 
         CodeBlocksLogEvent evtAdd(cbEVT_ADD_LOG_WINDOW, m_logger, slot.title, slot.icon);
@@ -1410,7 +1410,7 @@ void DebuggerManager::OnSettingsChanged(CodeBlocksEvent& event)
     const cbSettingsType settingType = cbSettingsType(value);
 
     if (settingType == cbSettingsType::Compiler || settingType == cbSettingsType::Debugger
-        || settingType == cbSettingsType::BuildOptions)
+            || settingType == cbSettingsType::BuildOptions)
     {
         if (m_useTargetsDefault)
             FindTargetsDebugger();

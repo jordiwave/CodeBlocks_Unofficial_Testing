@@ -89,8 +89,8 @@ int LibraryDetectionManager::LoadXmlDoc( TiXmlDocument& Doc )
 {
     int loaded = 0;
     for ( TiXmlElement* Elem = Doc.FirstChildElement("library");
-          Elem;
-          Elem = Elem->NextSiblingElement("library") )
+            Elem;
+            Elem = Elem->NextSiblingElement("library") )
     {
         // Load the version of this set
         int version = 0;
@@ -137,8 +137,8 @@ int LibraryDetectionManager::LoadXmlDoc( TiXmlDocument& Doc )
 
         // Read categories of library
         for ( TiXmlAttribute* attr = Elem->FirstAttribute();
-              attr;
-              attr = attr->Next() )
+                attr;
+                attr = attr->Next() )
         {
 //            if ( !strncasecmp(attr->Name(),"category",8) )
             if ( !strncmp(attr->Name(),"category",8) )
@@ -172,8 +172,8 @@ int LibraryDetectionManager::LoadXml(TiXmlElement* Elem,LibraryDetectionConfig& 
 
     int loaded = 0;
     for ( TiXmlElement* Data = Elem->FirstChildElement();
-          Data;
-          Data = Data->NextSiblingElement() )
+            Data;
+            Data = Data->NextSiblingElement() )
     {
         wxString Node = wxString(Data->Value(),wxConvUTF8).MakeLower();
 
@@ -209,10 +209,10 @@ int LibraryDetectionManager::LoadXml(TiXmlElement* Elem,LibraryDetectionConfig& 
             // Load filter
             LibraryDetectionFilter::FilterType Type = LibraryDetectionFilter::None;
 
-            if ( Node == _T("platform") ) Type = LibraryDetectionFilter::Platform; else
-            if ( Node == _T("file") )     Type = LibraryDetectionFilter::File;     else
-            if ( Node == _T("exec") )     Type = LibraryDetectionFilter::Exec;     else
-            if ( Node == _T("compiler") ) Type = LibraryDetectionFilter::Compiler;
+            if ( Node == _T("platform") ) Type = LibraryDetectionFilter::Platform;
+            else if ( Node == _T("file") )     Type = LibraryDetectionFilter::File;
+            else if ( Node == _T("exec") )     Type = LibraryDetectionFilter::Exec;
+            else if ( Node == _T("compiler") ) Type = LibraryDetectionFilter::Compiler;
 
             if ( Type != LibraryDetectionFilter::None )
             {
@@ -252,7 +252,7 @@ int LibraryDetectionManager::LoadXml(TiXmlElement* Elem,LibraryDetectionConfig& 
             {
                 wxString cFlags = wxString(Data->Attribute("cflags"),wxConvUTF8);
                 wxString lFlags = wxString(Data->Attribute("lflags"),wxConvUTF8);
-                wxString Lib    = wxString(Data->Attribute("lib")   ,wxConvUTF8);
+                wxString Lib    = wxString(Data->Attribute("lib"),wxConvUTF8);
                 wxString Define = wxString(Data->Attribute("define"),wxConvUTF8);
                 if ( !cFlags.empty() ) Config.CFlags.Add(cFlags);
                 if ( !lFlags.empty() ) Config.LFlags.Add(lFlags);
@@ -281,7 +281,7 @@ int LibraryDetectionManager::LoadXml(TiXmlElement* Elem,LibraryDetectionConfig& 
         {
             // If there are any sub-configurations, let's
             // iterate through them and load config-specific settings
-            for ( ;Cfg; Cfg = Cfg->NextSiblingElement("config") )
+            for ( ; Cfg; Cfg = Cfg->NextSiblingElement("config") )
             {
                 // Append sub-configuration data
                 LibraryDetectionConfig Copy(Config);

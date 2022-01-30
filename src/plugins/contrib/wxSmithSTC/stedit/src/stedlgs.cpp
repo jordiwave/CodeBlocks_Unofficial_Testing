@@ -37,11 +37,11 @@ wxSTEditorPrefPageData::wxSTEditorPrefPageData()
 }
 
 wxSTEditorPrefPageData::wxSTEditorPrefPageData(const wxSTEditorPrefs& prefs,
-                                               const wxSTEditorStyles& styles,
-                                               const wxSTEditorLangs& langs,
-                                               int languageId,
-                                               wxSTEditor* editor,
-                                               int options)
+        const wxSTEditorStyles& styles,
+        const wxSTEditorLangs& langs,
+        int languageId,
+        wxSTEditor* editor,
+        int options)
 {
     m_refData = new wxSTEditorPrefPageData_RefData();
 
@@ -110,10 +110,10 @@ BEGIN_EVENT_TABLE(wxSTEditorPrefDialogPagePrefs, wxSTEditorPrefDialogPageBase)
 END_EVENT_TABLE()
 
 wxSTEditorPrefDialogPagePrefs::wxSTEditorPrefDialogPagePrefs( const wxSTEditorPrefPageData& editorPrefData,
-                                                              const wxSTEditorPrefPageData& prefData,
-                                                              wxWindow *parent,
-                                                              wxWindowID winid )
-                              : wxSTEditorPrefDialogPageBase(editorPrefData, prefData, parent, winid)
+        const wxSTEditorPrefPageData& prefData,
+        wxWindow *parent,
+        wxWindowID winid )
+    : wxSTEditorPrefDialogPageBase(editorPrefData, prefData, parent, winid)
 {
     wxCHECK_RET(editorPrefData.GetPrefs().IsOk(), wxT("Invalid preferences"));
 
@@ -366,10 +366,10 @@ void wxSTEditorPrefDialogPageStyles::Init()
 }
 
 wxSTEditorPrefDialogPageStyles::wxSTEditorPrefDialogPageStyles(const wxSTEditorPrefPageData& editorPrefData,
-                                                               const wxSTEditorPrefPageData& prefData,
-                                                               wxWindow *parent,
-                                                               wxWindowID winid )
-                               :wxSTEditorPrefDialogPageBase(editorPrefData, prefData, parent, winid)
+        const wxSTEditorPrefPageData& prefData,
+        wxWindow *parent,
+        wxWindowID winid )
+    :wxSTEditorPrefDialogPageBase(editorPrefData, prefData, parent, winid)
 {
     Init();
     wxSTEditorStyles steStyles(GetPrefData().GetStyles());
@@ -479,7 +479,7 @@ wxSTEditorPrefDialogPageStyles::wxSTEditorPrefDialogPageStyles(const wxSTEditorP
             // add the markers
             int marker_num = m_styleArray[n] - STE_STYLE_MARKER__FIRST;
             if ((marker_num >= wxSTC_MARKNUM_FOLDEREND) &&
-                (marker_num <= wxSTC_MARKNUM_FOLDEROPEN))
+                    (marker_num <= wxSTC_MARKNUM_FOLDEROPEN))
             {
                 m_colourEditor->MarkerAdd((int)m_colourLineArray.GetCount()-1, marker_num);
             }
@@ -532,7 +532,7 @@ void wxSTEditorPrefDialogPageStyles::FillStyleEditor(wxSTEditor* editor)
         for (n = 0; n < count; n++)
         {
             //if (langStyles.Index(steLangs.GetSTEStyle(lang_n, n)) == wxNOT_FOUND)
-                langStyles.Add(steLangs.GetSTEStyle(lang_n, n));
+            langStyles.Add(steLangs.GetSTEStyle(lang_n, n));
         }
     }
     else
@@ -605,112 +605,114 @@ void wxSTEditorPrefDialogPageStyles::OnEvent(wxCommandEvent &event)
 
     switch (event.GetId())
     {
-        case ID_STEDLG_STYLELANG_CHOICE :
-        {
-            m_styleEditor->MarkerDeleteHandle(m_style_editor_marker_handle);
-            FillStyleEditor(m_styleEditor);
-            m_style_editor_marker_handle = m_styleEditor->MarkerAdd(0, 0);
-            break;
-        }
+    case ID_STEDLG_STYLELANG_CHOICE :
+    {
+        m_styleEditor->MarkerDeleteHandle(m_style_editor_marker_handle);
+        FillStyleEditor(m_styleEditor);
+        m_style_editor_marker_handle = m_styleEditor->MarkerAdd(0, 0);
+        break;
+    }
 
-        // Font facename ------------------------------------------------------
-        case ID_STEDLG_FONT_CHECKBOX :
+    // Font facename ------------------------------------------------------
+    case ID_STEDLG_FONT_CHECKBOX :
+    {
+        steStyles.SetUseDefault(m_current_style, STE_STYLE_USEDEFAULT_FACENAME, !event.IsChecked());
+        break;
+    }
+    case ID_STEDLG_FONT_BUTTON :
+    {
+        wxFontData data;
+        data.EnableEffects(false);
+        data.SetAllowSymbols(false);
+        data.SetInitialFont(steStyles.GetFont(m_current_style));
+        wxFontDialog dialog(this, data);
+        if (dialog.ShowModal() == wxID_OK)
         {
-            steStyles.SetUseDefault(m_current_style, STE_STYLE_USEDEFAULT_FACENAME, !event.IsChecked());
-            break;
+            steStyles.SetFont(m_current_style, dialog.GetFontData().GetChosenFont());
         }
-        case ID_STEDLG_FONT_BUTTON :
+        break;
+    }
+    case ID_STEDLG_FONT_CHOICE :
+    {
+        steStyles.SetFaceName(m_current_style, m_fontChoice->GetStringSelection().AfterLast(wxT('*')));
+        break;
+    }
+    // Font size  ---------------------------------------------------------
+    case ID_STEDLG_FONTSIZE_CHECKBOX :
+    {
+        steStyles.SetUseDefault(m_current_style, STE_STYLE_USEDEFAULT_FONTSIZE, !event.IsChecked());
+        break;
+    }
+    case ID_STEDLG_FONTSIZE_SPINCTRL :
+    {
+        steStyles.SetSize(m_current_style, event.GetInt());
+        break;
+    }
+    // Font attributes ----------------------------------------------------
+    case ID_STEDLG_ATTRIBUTES_CHECKBOX :
+    {
+        steStyles.SetUseDefault(m_current_style, STE_STYLE_USEDEFAULT_FONTSTYLE, !event.IsChecked());
+        break;
+    }
+    case ID_STEDLG_BOLD_CHECKBOX :
+    {
+        steStyles.SetBold(m_current_style, event.IsChecked());
+        break;
+    }
+    case ID_STEDLG_ITALICS_CHECKBOX :
+    {
+        steStyles.SetItalic(m_current_style, event.IsChecked());
+        break;
+    }
+    case ID_STEDLG_UNDERLINE_CHECKBOX :
+    {
+        steStyles.SetUnderlined(m_current_style, event.IsChecked());
+        break;
+    }
+    case ID_STEDLG_EOLFILL_CHECKBOX :
+    {
+        steStyles.SetEOLFilled(m_current_style, event.IsChecked());
+        break;
+    }
+    // Font colours -------------------------------------------------------
+    case ID_STEDLG_FONTFORE_CHECKBOX :
+    {
+        steStyles.SetUseDefault(m_current_style, STE_STYLE_USEDEFAULT_FORECOLOUR, !event.IsChecked());
+        break;
+    }
+    case ID_STEDLG_FONTFORE_BUTTON :
+    {
+        m_colourData->SetColour(steStyles.GetForegroundColour(m_current_style));
+        wxColourDialog dialog(this, m_colourData);
+        dialog.SetTitle(_("Choose the font's foreground color"));
+        if (dialog.ShowModal() == wxID_OK)
         {
-            wxFontData data;
-            data.EnableEffects(false);
-            data.SetAllowSymbols(false);
-            data.SetInitialFont(steStyles.GetFont(m_current_style));
-            wxFontDialog dialog(this, data);
-            if (dialog.ShowModal() == wxID_OK)
-            {
-                steStyles.SetFont(m_current_style, dialog.GetFontData().GetChosenFont());
-            }
-            break;
+            *m_colourData = dialog.GetColourData();
+            steStyles.SetForegroundColour(m_current_style, m_colourData->GetColour());
         }
-        case ID_STEDLG_FONT_CHOICE :
+        break;
+    }
+    case ID_STEDLG_FONTBACK_CHECKBOX :
+    {
+        steStyles.SetUseDefault(m_current_style, STE_STYLE_USEDEFAULT_BACKCOLOUR, !event.IsChecked());
+        break;
+    }
+    case ID_STEDLG_FONTBACK_BUTTON :
+    {
+        m_colourData->SetColour(steStyles.GetBackgroundColour(m_current_style));
+        wxColourDialog dialog(this, m_colourData);
+        dialog.SetTitle(_("Choose the font's background color"));
+        if (dialog.ShowModal() == wxID_OK)
         {
-            steStyles.SetFaceName(m_current_style, m_fontChoice->GetStringSelection().AfterLast(wxT('*')));
-            break;
+            *m_colourData = dialog.GetColourData();
+            steStyles.SetBackgroundColour(m_current_style, m_colourData->GetColour());
         }
-        // Font size  ---------------------------------------------------------
-        case ID_STEDLG_FONTSIZE_CHECKBOX :
-        {
-            steStyles.SetUseDefault(m_current_style, STE_STYLE_USEDEFAULT_FONTSIZE, !event.IsChecked());
-            break;
-        }
-        case ID_STEDLG_FONTSIZE_SPINCTRL :
-        {
-            steStyles.SetSize(m_current_style, event.GetInt());
-            break;
-        }
-        // Font attributes ----------------------------------------------------
-        case ID_STEDLG_ATTRIBUTES_CHECKBOX :
-        {
-            steStyles.SetUseDefault(m_current_style, STE_STYLE_USEDEFAULT_FONTSTYLE, !event.IsChecked());
-            break;
-        }
-        case ID_STEDLG_BOLD_CHECKBOX :
-        {
-            steStyles.SetBold(m_current_style, event.IsChecked());
-            break;
-        }
-        case ID_STEDLG_ITALICS_CHECKBOX :
-        {
-            steStyles.SetItalic(m_current_style, event.IsChecked());
-            break;
-        }
-        case ID_STEDLG_UNDERLINE_CHECKBOX :
-        {
-            steStyles.SetUnderlined(m_current_style, event.IsChecked());
-            break;
-        }
-        case ID_STEDLG_EOLFILL_CHECKBOX :
-        {
-            steStyles.SetEOLFilled(m_current_style, event.IsChecked());
-            break;
-        }
-        // Font colours -------------------------------------------------------
-        case ID_STEDLG_FONTFORE_CHECKBOX :
-        {
-            steStyles.SetUseDefault(m_current_style, STE_STYLE_USEDEFAULT_FORECOLOUR, !event.IsChecked());
-            break;
-        }
-        case ID_STEDLG_FONTFORE_BUTTON :
-        {
-            m_colourData->SetColour(steStyles.GetForegroundColour(m_current_style));
-            wxColourDialog dialog(this, m_colourData);
-            dialog.SetTitle(_("Choose the font's foreground color"));
-            if (dialog.ShowModal() == wxID_OK)
-            {
-                *m_colourData = dialog.GetColourData();
-                steStyles.SetForegroundColour(m_current_style, m_colourData->GetColour());
-            }
-            break;
-        }
-        case ID_STEDLG_FONTBACK_CHECKBOX :
-        {
-            steStyles.SetUseDefault(m_current_style, STE_STYLE_USEDEFAULT_BACKCOLOUR, !event.IsChecked());
-            break;
-        }
-        case ID_STEDLG_FONTBACK_BUTTON :
-        {
-            m_colourData->SetColour(steStyles.GetBackgroundColour(m_current_style));
-            wxColourDialog dialog(this, m_colourData);
-            dialog.SetTitle(_("Choose the font's background color"));
-            if (dialog.ShowModal() == wxID_OK)
-            {
-                *m_colourData = dialog.GetColourData();
-                steStyles.SetBackgroundColour(m_current_style, m_colourData->GetColour());
-            }
-            break;
-        }
+        break;
+    }
 
-        default : event.Skip(); break;
+    default :
+        event.Skip();
+        break;
     }
 
     GetControlValues();
@@ -749,13 +751,13 @@ void wxSTEditorPrefDialogPageStyles::OnMarginClick( wxStyledTextEvent &event )
         return;
 
     if ((editor == m_colourEditor) &&
-        (m_colourEditor->MarkerLineFromHandle(m_colour_editor_marker_handle) != line))
+            (m_colourEditor->MarkerLineFromHandle(m_colour_editor_marker_handle) != line))
     {
         m_colourEditor->MarkerDeleteHandle(m_colour_editor_marker_handle);
         m_colour_editor_marker_handle = m_colourEditor->MarkerAdd(line, 0);
     }
     else if ((editor == m_styleEditor) &&
-        (m_styleEditor->MarkerLineFromHandle(m_style_editor_marker_handle) != line))
+             (m_styleEditor->MarkerLineFromHandle(m_style_editor_marker_handle) != line))
     {
         m_styleEditor->MarkerDeleteHandle(m_style_editor_marker_handle);
         m_style_editor_marker_handle = m_styleEditor->MarkerAdd(line, 0);
@@ -840,7 +842,7 @@ void wxSTEditorPrefDialogPageStyles::SetControlValues()
 
     // font name controls -----------------------------------------------------
     bool def_font = steStyles.GetUsesDefault(m_current_style, STE_STYLE_USEDEFAULT_FACENAME)
-                      && (m_current_style != 0);
+                    && (m_current_style != 0);
     m_fontCheckBox->SetValue(!def_font && use_font);
     if (use_font)
     {
@@ -1002,10 +1004,10 @@ void wxSTEditorPrefDialogPageLangs::Init()
 }
 
 wxSTEditorPrefDialogPageLangs::wxSTEditorPrefDialogPageLangs(const wxSTEditorPrefPageData& editorPrefData,
-                                                             const wxSTEditorPrefPageData& prefData,
-                                                             wxWindow *parent,
-                                                             wxWindowID winid )
-                              :wxSTEditorPrefDialogPageBase(editorPrefData, prefData, parent, winid)
+        const wxSTEditorPrefPageData& prefData,
+        wxWindow *parent,
+        wxWindowID winid )
+    :wxSTEditorPrefDialogPageBase(editorPrefData, prefData, parent, winid)
 {
     wxCHECK_RET(GetPrefData().GetLangs().IsOk(), wxT("Invalid languages"));
     wxCHECK_RET(GetPrefData().GetStyles().IsOk(), wxT("Invalid styles"));
@@ -1029,7 +1031,7 @@ wxSTEditorPrefDialogPageLangs::wxSTEditorPrefDialogPageLangs(const wxSTEditorPre
     // Create and add the style panel
     wxPanel *stylePanel = new wxPanel(m_notebook);
     m_styleEditor = new wxSTEditor(stylePanel, ID_STEDLG_LANG_STYLE_EDITOR,
-                                         wxDefaultPosition, wxDefaultSize);
+                                   wxDefaultPosition, wxDefaultSize);
     m_styleEditor->RegisterStyles(steStyles);
     // setup styles and dummy lexer
     m_styleEditor->SetStyleBits(7); // FIXME
@@ -1102,20 +1104,21 @@ void wxSTEditorPrefDialogPageLangs::OnChoice(wxCommandEvent& event)
 {
     switch (event.GetId())
     {
-        case ID_STEDLG_LANG_CHOICE       :
-        case ID_STEDLG_LANG_STYLE_CHOICE :
-        {
-            GetControlValues();
-            SetControlValues();
-            break;
-        }
-        case ID_STEDLG_LANG_KEYWORD_CHOICE :
-        {
-            GetControlValues();
-            SetKeywordTextCtrl();
-            break;
-        }
-        default : break;
+    case ID_STEDLG_LANG_CHOICE       :
+    case ID_STEDLG_LANG_STYLE_CHOICE :
+    {
+        GetControlValues();
+        SetControlValues();
+        break;
+    }
+    case ID_STEDLG_LANG_KEYWORD_CHOICE :
+    {
+        GetControlValues();
+        SetKeywordTextCtrl();
+        break;
+    }
+    default :
+        break;
     }
 }
 
@@ -1431,15 +1434,15 @@ bool wxSTEditorPrefDialog::Create( const wxSTEditorPrefPageData& editorPrefData,
     {
         m_noteBook->AddPage(
             new wxSTEditorPrefDialogPageStyles(GetEditorPrefData(), GetPrefData(), m_noteBook),
-                            _("Styles"), false, 6);
+            _("Styles"), false, 6);
     }
 
     if (GetPrefData().GetLangs().IsOk() && GetPrefData().GetStyles().IsOk() &&
-        GetPrefData().HasOption(STE_PREF_PAGE_SHOW_LANGS))
+            GetPrefData().HasOption(STE_PREF_PAGE_SHOW_LANGS))
     {
         m_noteBook->AddPage(
             new wxSTEditorPrefDialogPageLangs(GetEditorPrefData(), GetPrefData(), m_noteBook),
-                            _("Languages"), false, 7);
+            _("Languages"), false, 7);
     }
 
     m_noteBook->SetSelection(ms_currentpage);
@@ -1483,7 +1486,7 @@ void wxSTEditorPrefDialog::OnApply(wxCommandEvent &event)
     // set the language without update since will do it later
     if (GetEditorPrefData().GetEditor())
         GetEditorPrefData().GetEditor()->GetSTERefData()->SetLanguage(GetEditorPrefData().GetLanguageId());
-        //GetEditorPrefData().GetEditor()->SetLanguage(GetEditorPrefData().GetLanguageId());
+    //GetEditorPrefData().GetEditor()->SetLanguage(GetEditorPrefData().GetLanguageId());
 
     if (GetEditorPrefData().GetStyles().IsOk())
         GetEditorPrefData().GetStyles().UpdateAllEditors();
@@ -1562,10 +1565,10 @@ BEGIN_EVENT_TABLE(wxSTEditorPropertiesDialog, wxDialog)
 END_EVENT_TABLE()
 
 wxSTEditorPropertiesDialog::wxSTEditorPropertiesDialog(wxSTEditor* editor)
-                           :wxDialog(),
-                            m_editor(editor),
-                            m_encoding(wxTextEncoding::TypeFromString(editor->GetFileEncoding())),
-                            m_bom(editor->GetFileBOM())
+    :wxDialog(),
+     m_editor(editor),
+     m_encoding(wxTextEncoding::TypeFromString(editor->GetFileEncoding())),
+     m_bom(editor->GetFileBOM())
 {
 }
 
@@ -1599,8 +1602,8 @@ bool wxSTEditorPropertiesDialog::Create(wxWindow* parent,
         if (size.GetValue() >= 1024)
         {
             strSize = wxString::Format(wxT("%s (%s)"),
-                                        wxFileName::GetHumanReadableSize(size).wx_str(),
-                                        strSize.wx_str());
+                                       wxFileName::GetHumanReadableSize(size).wx_str(),
+                                       strSize.wx_str());
         }
     }
     else
@@ -1610,10 +1613,10 @@ bool wxSTEditorPropertiesDialog::Create(wxWindow* parent,
     SET_STATTEXT(ID_STEPROP_FILESIZE_TEXT, strSize);
 
     dtOpened = m_editor->GetFileModificationTime();
-    SET_STATTEXT(ID_STEPROP_FILEOPENED_TEXT  , dtOpened  .IsValid() ? dtOpened  .Format() : wxString(_("Not originally loaded from disk")));
+    SET_STATTEXT(ID_STEPROP_FILEOPENED_TEXT, dtOpened  .IsValid() ? dtOpened  .Format() : wxString(_("Not originally loaded from disk")));
     SET_STATTEXT(ID_STEPROP_FILEMODIFIED_TEXT, dtModified.IsValid() ? dtModified.Format() : wxString(_("<Unknown>")));
     SET_STATTEXT(ID_STEPROP_FILEACCESSED_TEXT, dtAccessed.IsValid() ? dtAccessed.Format() : wxString(_("<Unknown>")));
-    SET_STATTEXT(ID_STEPROP_FILECREATED_TEXT , dtCreated .IsValid() ? dtCreated .Format() : wxString(_("<Unknown>")));
+    SET_STATTEXT(ID_STEPROP_FILECREATED_TEXT, dtCreated .IsValid() ? dtCreated .Format() : wxString(_("<Unknown>")));
 
     // Information panel
 
@@ -1741,9 +1744,9 @@ BEGIN_EVENT_TABLE(wxSTEditorWindowsDialog, wxDialog)
 END_EVENT_TABLE()
 
 wxSTEditorWindowsDialog::wxSTEditorWindowsDialog(wxSTEditorNotebook *notebook,
-                                                 const wxString& title,
-                                                 long style)
-                        :wxDialog()
+        const wxString& title,
+        long style)
+    :wxDialog()
 {
     m_notebook = notebook;
     m_listBox = NULL;
@@ -1824,38 +1827,39 @@ void wxSTEditorWindowsDialog::OnButton(wxCommandEvent& event)
 
     switch (event.GetId())
     {
-        case ID_STEDLGS_WINDOWS_ACTIVATE_BUTTON :
+    case ID_STEDLGS_WINDOWS_ACTIVATE_BUTTON :
+    {
+        // only activate the first selection
+        m_notebook->SetSelection(selections[0]);
+        EndModal(wxID_OK);
+        break;
+    }
+    case ID_STEDLGS_WINDOWS_SAVE_BUTTON :
+    {
+        for (n = 0; n < count; n++)
         {
-            // only activate the first selection
-            m_notebook->SetSelection(selections[0]);
-            EndModal(wxID_OK);
-            break;
+            wxSTEditor* editor = m_notebook->GetEditor(selections[n]);
+            if (editor)
+                editor->SaveFile(false);
         }
-        case ID_STEDLGS_WINDOWS_SAVE_BUTTON :
-        {
-            for (n = 0; n < count; n++)
-            {
-                wxSTEditor* editor = m_notebook->GetEditor(selections[n]);
-                if (editor)
-                    editor->SaveFile(false);
-            }
 
-            break;
-        }
-        case ID_STEDLGS_WINDOWS_CLOSE_BUTTON :
+        break;
+    }
+    case ID_STEDLGS_WINDOWS_CLOSE_BUTTON :
+    {
+        // delete the windows from the end
+        for (n = count - 1; n >= 0; n--)
         {
-            // delete the windows from the end
-            for (n = count - 1; n >= 0; n--)
-            {
-                wxSTEditor* editor = m_notebook->GetEditor(selections[n]);
-                if (editor)
-                    m_notebook->ClosePage(selections[n]);
-            }
-
-            UpdateListBox();
-            break;
+            wxSTEditor* editor = m_notebook->GetEditor(selections[n]);
+            if (editor)
+                m_notebook->ClosePage(selections[n]);
         }
-        default : break;
+
+        UpdateListBox();
+        break;
+    }
+    default :
+        break;
     }
 }
 
@@ -1876,9 +1880,9 @@ BEGIN_EVENT_TABLE(wxSTEditorBookmarkDialog, wxDialog)
 END_EVENT_TABLE()
 
 wxSTEditorBookmarkDialog::wxSTEditorBookmarkDialog(wxWindow *win,
-                                                   const wxString& title,
-                                                   long style)
-                         :wxDialog()
+        const wxString& title,
+        long style)
+    :wxDialog()
 {
     m_notebook = NULL;
     m_editor   = NULL;
@@ -1986,7 +1990,7 @@ void wxSTEditorBookmarkDialog::UpdateTreeCtrl()
 }
 
 bool wxSTEditorBookmarkDialog::GetItemInfo(const wxTreeItemId& id,
-                                           long& notebook_page, long& bookmark_line)
+        long& notebook_page, long& bookmark_line)
 {
     notebook_page = -1;
     bookmark_line = -1;
@@ -1998,7 +2002,7 @@ bool wxSTEditorBookmarkDialog::GetItemInfo(const wxTreeItemId& id,
     if (parentId == m_treeCtrl->GetRootItem()) return false;
 
     if (m_treeCtrl->GetItemText(parentId).BeforeFirst(wxT(' ')).Trim(false).ToLong(&notebook_page) &&
-        m_treeCtrl->GetItemText(id).BeforeFirst(wxT(' ')).Trim(false).ToLong(&bookmark_line) )
+            m_treeCtrl->GetItemText(id).BeforeFirst(wxT(' ')).Trim(false).ToLong(&bookmark_line) )
     {
         notebook_page--; // make 0 based
         bookmark_line--;
@@ -2097,47 +2101,48 @@ void wxSTEditorBookmarkDialog::OnButton(wxCommandEvent& event)
 
     switch (event.GetId())
     {
-        case ID_STEDLGS_BOOKMARKS_GOTO_BUTTON :
+    case ID_STEDLGS_BOOKMARKS_GOTO_BUTTON :
+    {
+        if (bookmark_line != -1)
         {
-            if (bookmark_line != -1)
+            if (m_notebook)
             {
-                if (m_notebook)
-                {
-                    m_notebook->SetSelection(notebook_page);
-                    m_notebook->GetEditor(notebook_page)->GotoLine(bookmark_line);
-                }
-                else if (m_editor)
-                    m_editor->GotoLine(bookmark_line);
-
-                EndModal(wxID_OK);
+                m_notebook->SetSelection(notebook_page);
+                m_notebook->GetEditor(notebook_page)->GotoLine(bookmark_line);
             }
-            break;
+            else if (m_editor)
+                m_editor->GotoLine(bookmark_line);
+
+            EndModal(wxID_OK);
         }
-        case ID_STEDLGS_BOOKMARKS_DELETE_BUTTON :
+        break;
+    }
+    case ID_STEDLGS_BOOKMARKS_DELETE_BUTTON :
+    {
+        for (size_t n = 0; n < count; ++n)
         {
-            for (size_t n = 0; n < count; ++n)
+            id = selectedIds[n];
+            GetItemInfo(id, notebook_page, bookmark_line);
+
+            if (bookmark_line == -1) continue;
+
+            if (m_notebook)
             {
-                id = selectedIds[n];
-                GetItemInfo(id, notebook_page, bookmark_line);
-
-                if (bookmark_line == -1) continue;
-
-                if (m_notebook)
-                {
-                    m_notebook->GetEditor(notebook_page)->MarkerDelete(bookmark_line, STE_MARKER_BOOKMARK);
-                }
-                else if (m_editor)
-                    m_editor->MarkerDelete(bookmark_line, STE_MARKER_BOOKMARK);
-
-                if (m_treeCtrl->GetChildrenCount(m_treeCtrl->GetItemParent(id)) > 1)
-                    m_treeCtrl->Delete(id);
-                else
-                    m_treeCtrl->Delete(m_treeCtrl->GetItemParent(id));
+                m_notebook->GetEditor(notebook_page)->MarkerDelete(bookmark_line, STE_MARKER_BOOKMARK);
             }
+            else if (m_editor)
+                m_editor->MarkerDelete(bookmark_line, STE_MARKER_BOOKMARK);
 
-            break;
+            if (m_treeCtrl->GetChildrenCount(m_treeCtrl->GetItemParent(id)) > 1)
+                m_treeCtrl->Delete(id);
+            else
+                m_treeCtrl->Delete(m_treeCtrl->GetItemParent(id));
         }
-        default : break;
+
+        break;
+    }
+    default :
+        break;
     }
 
     UpdateButtons();
@@ -2181,7 +2186,7 @@ void wxSTEditorInsertTextDialog::Init()
 }
 
 wxSTEditorInsertTextDialog::wxSTEditorInsertTextDialog(wxSTEditor* editor,
-                                                       long style)
+        long style)
 {
     Init();
 
@@ -2260,22 +2265,26 @@ bool wxSTEditorInsertTextDialog::InsertIntoEditor()
 {
     switch (m_insert_type)
     {
-        case STE_INSERT_TEXT_PREPEND  : return m_editor->InsertTextAtCol(0, m_prependString);
-        case STE_INSERT_TEXT_APPEND   : return m_editor->InsertTextAtCol(-1, m_appendString);
-        case STE_INSERT_TEXT_ATCOLUMN : return m_editor->InsertTextAtCol(GetColumn(), m_prependString);
-        case STE_INSERT_TEXT_SURROUND :
-        {
-            if (m_appendString.Length() > 0u)
-                m_editor->InsertText(m_editor_sel_end, m_appendString);
-            if (m_prependString.Length() > 0u)
-                m_editor->InsertText(m_editor_sel_start, m_prependString);
+    case STE_INSERT_TEXT_PREPEND  :
+        return m_editor->InsertTextAtCol(0, m_prependString);
+    case STE_INSERT_TEXT_APPEND   :
+        return m_editor->InsertTextAtCol(-1, m_appendString);
+    case STE_INSERT_TEXT_ATCOLUMN :
+        return m_editor->InsertTextAtCol(GetColumn(), m_prependString);
+    case STE_INSERT_TEXT_SURROUND :
+    {
+        if (m_appendString.Length() > 0u)
+            m_editor->InsertText(m_editor_sel_end, m_appendString);
+        if (m_prependString.Length() > 0u)
+            m_editor->InsertText(m_editor_sel_start, m_prependString);
 
-            m_editor_sel_start -= (int)m_prependString.Length();
-            m_editor_sel_end   += (int)m_prependString.Length();
-            m_editor->SetSelection(m_editor_sel_start, m_editor_sel_end);
-            return true;
-        }
-        default : break;
+        m_editor_sel_start -= (int)m_prependString.Length();
+        m_editor_sel_end   += (int)m_prependString.Length();
+        m_editor->SetSelection(m_editor_sel_start, m_editor_sel_end);
+        return true;
+    }
+    default :
+        break;
     }
 
     return false;
@@ -2305,37 +2314,38 @@ void wxSTEditorInsertTextDialog::FormatText()
 
     switch (m_insert_type)
     {
-        case STE_INSERT_TEXT_PREPEND  :
-        {
-            m_testEditor->InsertTextAtCol(0, m_prependString);
-            break;
-        }
-        case STE_INSERT_TEXT_APPEND   :
-        {
-            m_testEditor->InsertTextAtCol(-1, m_appendString);
-            break;
-        }
-        case STE_INSERT_TEXT_ATCOLUMN :
-        {
-            m_testEditor->InsertTextAtCol(GetColumn(), m_prependString);
-            break;
-        }
-        case STE_INSERT_TEXT_SURROUND :
-        {
-            STE_TextPos sel_start = 0; //GetSelectionStart();
-            STE_TextPos sel_end   = m_testEditor->GetLength(); //GetSelectionEnd();
+    case STE_INSERT_TEXT_PREPEND  :
+    {
+        m_testEditor->InsertTextAtCol(0, m_prependString);
+        break;
+    }
+    case STE_INSERT_TEXT_APPEND   :
+    {
+        m_testEditor->InsertTextAtCol(-1, m_appendString);
+        break;
+    }
+    case STE_INSERT_TEXT_ATCOLUMN :
+    {
+        m_testEditor->InsertTextAtCol(GetColumn(), m_prependString);
+        break;
+    }
+    case STE_INSERT_TEXT_SURROUND :
+    {
+        STE_TextPos sel_start = 0; //GetSelectionStart();
+        STE_TextPos sel_end   = m_testEditor->GetLength(); //GetSelectionEnd();
 
-            if (m_appendString.Length() > 0u)
-                m_testEditor->InsertText(sel_end, m_appendString);
-            if (m_prependString.Length() > 0u)
-                m_testEditor->InsertText(sel_start, m_prependString);
+        if (m_appendString.Length() > 0u)
+            m_testEditor->InsertText(sel_end, m_appendString);
+        if (m_prependString.Length() > 0u)
+            m_testEditor->InsertText(sel_start, m_prependString);
 
-            sel_start -= (STE_TextPos)m_prependString.Length();
-            sel_end   += (STE_TextPos)m_prependString.Length();
-            m_testEditor->SetSelection(sel_start, sel_end);
-            break;
-        }
-        default : break;
+        sel_start -= (STE_TextPos)m_prependString.Length();
+        sel_end   += (STE_TextPos)m_prependString.Length();
+        m_testEditor->SetSelection(sel_start, sel_end);
+        break;
+    }
+    default :
+        break;
     }
 
     m_testEditor->SetSelection(0,0);
@@ -2348,36 +2358,37 @@ void wxSTEditorInsertTextDialog::OnButton(wxCommandEvent& event)
 
     switch (event.GetId())
     {
-        case ID_STEDLG_INSERT_PREPEND_BITMAPBUTTON :
-        {
-            // set the clientdata of the menu to the combo it's for, see OnMenu
-            wxRect r = wxStaticCast(event.GetEventObject(), wxWindow)->GetRect();
-            m_insertMenu->SetClientData((void*)m_prependCombo);
-            PopupMenu(m_insertMenu, r.GetRight(), r.GetTop());
-            break;
-        }
-        case ID_STEDLG_INSERT_APPEND_BITMAPBUTTON :
-        {
-            wxRect r = wxStaticCast(event.GetEventObject(), wxWindow)->GetRect();
-            m_insertMenu->SetClientData((void*)m_appendCombo);
-            PopupMenu(m_insertMenu, r.GetRight(), r.GetTop());
-            break;
-        }
-        case wxID_OK     :
-        {
-            // only remember these if they pressed OK
-            sm_radioID   = GetSelectedRadioId();
-            sm_spinValue = m_column;
+    case ID_STEDLG_INSERT_PREPEND_BITMAPBUTTON :
+    {
+        // set the clientdata of the menu to the combo it's for, see OnMenu
+        wxRect r = wxStaticCast(event.GetEventObject(), wxWindow)->GetRect();
+        m_insertMenu->SetClientData((void*)m_prependCombo);
+        PopupMenu(m_insertMenu, r.GetRight(), r.GetTop());
+        break;
+    }
+    case ID_STEDLG_INSERT_APPEND_BITMAPBUTTON :
+    {
+        wxRect r = wxStaticCast(event.GetEventObject(), wxWindow)->GetRect();
+        m_insertMenu->SetClientData((void*)m_appendCombo);
+        PopupMenu(m_insertMenu, r.GetRight(), r.GetTop());
+        break;
+    }
+    case wxID_OK     :
+    {
+        // only remember these if they pressed OK
+        sm_radioID   = GetSelectedRadioId();
+        sm_spinValue = m_column;
 
-            if (m_prependString.Length())
-                wxSTEPrependArrayString(m_prependString, sm_prependValues, 10);
-            if (m_appendString.Length())
-                wxSTEPrependArrayString(m_appendString, sm_appendValues, 10);
+        if (m_prependString.Length())
+            wxSTEPrependArrayString(m_prependString, sm_prependValues, 10);
+        if (m_appendString.Length())
+            wxSTEPrependArrayString(m_appendString, sm_appendValues, 10);
 
-            InsertIntoEditor();
-            break;
-        }
-        default : break;
+        InsertIntoEditor();
+        break;
+    }
+    default :
+        break;
     }
 
     FormatText();
@@ -2391,10 +2402,17 @@ void wxSTEditorInsertTextDialog::OnMenu(wxCommandEvent& event)
 
     switch (event.GetId())
     {
-        case ID_STEDLG_INSERTMENU_TAB : c = wxT("\t"); break;
-        case ID_STEDLG_INSERTMENU_CR  : c = wxT("\r"); break;
-        case ID_STEDLG_INSERTMENU_LF  : c = wxT("\n"); break;
-        default : break;
+    case ID_STEDLG_INSERTMENU_TAB :
+        c = wxT("\t");
+        break;
+    case ID_STEDLG_INSERTMENU_CR  :
+        c = wxT("\r");
+        break;
+    case ID_STEDLG_INSERTMENU_LF  :
+        c = wxT("\n");
+        break;
+    default :
+        break;
     }
 
     if (c.Length())  // this must have been for the m_insertMenu
@@ -2529,7 +2547,7 @@ bool wxSTEditorColumnizeDialog::Create(wxWindow* parent, long style)
         return false;
 
     m_testEditor = new wxSTEditor(this, ID_STEDLG_COLUMNIZE_EDITOR,
-                                        wxDefaultPosition, wxSize(400, 200));
+                                  wxDefaultPosition, wxSize(400, 200));
     wxSTEditorColumnizeSizer(this, true, true);
 
     m_splitBeforeCombo = wxStaticCast(FindWindow(ID_STEDLG_COLUMNIZE_BEFORE_COMBO  ), wxComboBox);
@@ -2575,27 +2593,28 @@ void wxSTEditorColumnizeDialog::OnButton(wxCommandEvent& event)
 {
     switch (event.GetId())
     {
-        case ID_STEDLG_COLUMNIZE_FORMAT_BUTTON :
-        {
-            FormatText();
-            break;
-        }
-        case ID_STEDLG_COLUMNIZE_ORIGINAL_BUTTON :
-        {
-            m_testEditor->SetReadOnly(false);
-            m_testEditor->SetText(m_initText);
-            m_testEditor->SetReadOnly(true);
-            break;
-        }
-        case wxID_OK :
-        {
-            wxSTEPrependArrayString(m_splitBeforeCombo->GetValue(), sm_splitBeforeArray, 10);
-            wxSTEPrependArrayString(m_splitAfterCombo->GetValue(),  sm_splitAfterArray,  10);
-            wxSTEPrependArrayString(m_preserveCombo->GetValue(),    sm_preserveArray,    10);
-            wxSTEPrependArrayString(m_ignoreCombo->GetValue(),      sm_ignoreArray,      10);
-            break;
-        }
-        default : break;
+    case ID_STEDLG_COLUMNIZE_FORMAT_BUTTON :
+    {
+        FormatText();
+        break;
+    }
+    case ID_STEDLG_COLUMNIZE_ORIGINAL_BUTTON :
+    {
+        m_testEditor->SetReadOnly(false);
+        m_testEditor->SetText(m_initText);
+        m_testEditor->SetReadOnly(true);
+        break;
+    }
+    case wxID_OK :
+    {
+        wxSTEPrependArrayString(m_splitBeforeCombo->GetValue(), sm_splitBeforeArray, 10);
+        wxSTEPrependArrayString(m_splitAfterCombo->GetValue(),  sm_splitAfterArray,  10);
+        wxSTEPrependArrayString(m_preserveCombo->GetValue(),    sm_preserveArray,    10);
+        wxSTEPrependArrayString(m_ignoreCombo->GetValue(),      sm_ignoreArray,      10);
+        break;
+    }
+    default :
+        break;
     }
 
     event.Skip();
@@ -2729,11 +2748,11 @@ IMPLEMENT_CLASS(wxSTEditorFileDialog, wxFileDialog)
 /*static*/ bool     wxSTEditorFileDialog::m_file_bom = false;
 
 wxSTEditorFileDialog::wxSTEditorFileDialog(wxWindow* parent,
-                                           const wxString& message,
-                                           const wxString& defaultDir,
-                                           const wxString& extensions,
-                                           long style)
-                     :wxFileDialog(parent, message, defaultDir, wxEmptyString, extensions, style)
+        const wxString& message,
+        const wxString& defaultDir,
+        const wxString& extensions,
+        long style)
+    :wxFileDialog(parent, message, defaultDir, wxEmptyString, extensions, style)
 {
 #if STE_FILEOPENEXTRA
     SetExtraControlCreator(&wxSTEditorFileOpenPanel::ControlCreator);
@@ -2745,12 +2764,19 @@ int wxSTEditorFileDialog::ShowModal()
 #if !STE_FILEOPENEXTRA
     switch (wxTextEncoding::TypeFromString(wxSTEditorFileDialog::m_encoding))
     {
-        case wxTextEncoding::UTF8       : SetFilterIndex(filterindex_utf8);    break;
-        case wxTextEncoding::Unicode_LE : SetFilterIndex(filterindex_unicode); break;
-    #ifdef __WXMSW__
-        case wxTextEncoding::OEM        : SetFilterIndex(filterindex_oem);     break;
-    #endif
-        default                         : break;
+    case wxTextEncoding::UTF8       :
+        SetFilterIndex(filterindex_utf8);
+        break;
+    case wxTextEncoding::Unicode_LE :
+        SetFilterIndex(filterindex_unicode);
+        break;
+#ifdef __WXMSW__
+    case wxTextEncoding::OEM        :
+        SetFilterIndex(filterindex_oem);
+        break;
+#endif
+    default                         :
+        break;
     }
 #endif //!STE_FILEOPENEXTRA
 
@@ -2772,17 +2798,17 @@ int wxSTEditorFileDialog::ShowModal()
     {
         switch (GetFilterIndex())
         {
-            case filterindex_utf8:
-                m_encoding = wxTextEncoding::TypeToString(wxTextEncoding::UTF8);
-                break;
-            case filterindex_unicode:
-                m_encoding = wxTextEncoding::TypeToString(wxTextEncoding::Unicode_LE);
-                break;
-        #ifdef __WXMSW__
-            case filterindex_oem:
-                m_encoding = wxTextEncoding::TypeToString(wxTextEncoding::OEM);
-                break;
-        #endif
+        case filterindex_utf8:
+            m_encoding = wxTextEncoding::TypeToString(wxTextEncoding::UTF8);
+            break;
+        case filterindex_unicode:
+            m_encoding = wxTextEncoding::TypeToString(wxTextEncoding::Unicode_LE);
+            break;
+#ifdef __WXMSW__
+        case filterindex_oem:
+            m_encoding = wxTextEncoding::TypeToString(wxTextEncoding::OEM);
+            break;
+#endif
         }
     }
 #endif // STE_FILEOPENEXTRA
@@ -2829,11 +2855,11 @@ void wxSTEditorAboutDialog(wxWindow* parent)
     wxString msg, buildStr;
 
 #ifdef wxUSE_UNICODE
-    #if defined(wxUSE_UNICODE_UTF8) && wxUSE_UNICODE_UTF8 // wx 2.9+
-        buildStr = wxT("UTF8");
-    #else
-        buildStr = wxT("Unicode");
-    #endif
+#if defined(wxUSE_UNICODE_UTF8) && wxUSE_UNICODE_UTF8 // wx 2.9+
+    buildStr = wxT("UTF8");
+#else
+    buildStr = wxT("Unicode");
+#endif
 #else
     buildStr = wxT("Ansi");
 #endif
@@ -2849,27 +2875,27 @@ void wxSTEditorAboutDialog(wxWindow* parent)
                 wxT("and %s, http://www.scintilla.org\n")
                 wxT("\n")
                 wxT("Compiled on %s%s."),
-            #if (wxVERSION_NUMBER >= 2902)
+#if (wxVERSION_NUMBER >= 2902)
                 wxStyledTextCtrl::GetLibraryVersionInfo().ToString().wx_str(),
-            #else
+#else
                 wxT("Scintilla 1.70"),
-            #endif
+#endif
                 wxString::FromAscii(__DATE__).wx_str(), // no need to show time
                 buildStr.wx_str()
-                );
+              );
 
     // FIXME - or test wxFileConfig doesn't have ClassInfo is this safe?
     //if ((wxFileConfig*)wxConfigBase::Get(false))
     //    msg += wxT("\nConfig file: ")+((wxFileConfig*)wxConfigBase::Get(false))->m_strLocalFile;
 
-   wxAboutDialogInfo info;
-   info.SetName(STE_APPDISPLAYNAME);
-   info.SetDescription(msg);
-   info.SetWebSite(wxT(STE_WEBSITE));
-   info.SetLicense(wxT("wxWindows Licence\nhttp://www.wxwidgets.org/about/licence3.txt"));
-   info.AddDeveloper(wxT("John Labenski"));
-   info.AddDeveloper(wxT("Troels K"));
-   info.AddDeveloper(wxT("Otto Wyss"));
-   info.SetIcon(wxArtProvider::GetIcon(wxART_STEDIT_APP, wxART_MESSAGE_BOX));
-   ::wxAboutBox(info, parent);
+    wxAboutDialogInfo info;
+    info.SetName(STE_APPDISPLAYNAME);
+    info.SetDescription(msg);
+    info.SetWebSite(wxT(STE_WEBSITE));
+    info.SetLicense(wxT("wxWindows Licence\nhttp://www.wxwidgets.org/about/licence3.txt"));
+    info.AddDeveloper(wxT("John Labenski"));
+    info.AddDeveloper(wxT("Troels K"));
+    info.AddDeveloper(wxT("Otto Wyss"));
+    info.SetIcon(wxArtProvider::GetIcon(wxART_STEDIT_APP, wxART_MESSAGE_BOX));
+    ::wxAboutBox(info, parent);
 }

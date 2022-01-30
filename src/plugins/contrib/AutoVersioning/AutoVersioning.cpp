@@ -58,7 +58,7 @@ END_EVENT_TABLE()
 
 namespace
 {
-    PluginRegistrant<AutoVersioning> reg(_T("AutoVersioning"));
+PluginRegistrant<AutoVersioning> reg(_T("AutoVersioning"));
 }
 
 //{Constructor and Destructor
@@ -66,7 +66,7 @@ AutoVersioning::AutoVersioning()
 {
     // hook to project loading procedure
     ProjectLoaderHooks::HookFunctorBase* AutoVerHook =
-      new ProjectLoaderHooks::HookFunctor<AutoVersioning>(this, &AutoVersioning::OnProjectLoadingHook);
+        new ProjectLoaderHooks::HookFunctor<AutoVersioning>(this, &AutoVersioning::OnProjectLoadingHook);
     m_AutoVerHookId = ProjectLoaderHooks::RegisterHook(AutoVerHook);
     m_Modified = false;
     m_Project = nullptr;
@@ -90,7 +90,7 @@ void AutoVersioning::OnAttach()
     m_timerStatus->Start(1000);
 
     //Register functions to events
-  // register event sink
+    // register event sink
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<AutoVersioning, CodeBlocksEvent>(this, &AutoVersioning::OnProjectActivated));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE,    new cbEventFunctor<AutoVersioning, CodeBlocksEvent>(this, &AutoVersioning::OnProjectClosed));
     Manager::Get()->RegisterEventSink(cbEVT_COMPILER_STARTED, new cbEventFunctor<AutoVersioning, CodeBlocksEvent>(this, &AutoVersioning::OnCompilerStarted));
@@ -310,7 +310,8 @@ void AutoVersioning::OnProjectClosed(CodeBlocksEvent& event)
         m_ProjectMapVersionState.erase(event.GetProject());
         m_IsVersioned.erase(event.GetProject());
         if(m_Project == event.GetProject())
-        {   // should always be the case (??? we hope ??)
+        {
+            // should always be the case (??? we hope ??)
             m_Project = nullptr;
         }
     }
@@ -387,12 +388,12 @@ void AutoVersioning::OnMenuAutoVersioning(wxCommandEvent&)
                     if(wxFileExists(m_Project->GetBasePath() + _T("version.h")))
                     {
                         wxMessageBox(
-                         _T("The header version.h already exist on your projects path. "
-                            "The content will be overwritten by the the version info generated code."
-                            "\n\nYou can change the default version.h file on the \"Settings\" Tab."
-                           ),
-                         _T("Warning"),
-                         wxICON_EXCLAMATION  | wxOK
+                            _T("The header version.h already exist on your projects path. "
+                               "The content will be overwritten by the the version info generated code."
+                               "\n\nYou can change the default version.h file on the \"Settings\" Tab."
+                              ),
+                            _T("Warning"),
+                            wxICON_EXCLAMATION  | wxOK
                         );
                     }
 
@@ -495,7 +496,7 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     VersionEditorDialog.SetAuto(GetConfig().Settings.Autoincrement);
     VersionEditorDialog.SetDates(GetConfig().Settings.DateDeclarations);
     VersionEditorDialog.SetDefine(GetConfig().Settings.UseDefine);
-	// GJH 03/03/10 Added manifest updating.
+    // GJH 03/03/10 Added manifest updating.
     VersionEditorDialog.SetManifest(GetConfig().Settings.UpdateManifest);
 
     VersionEditorDialog.SetSvn(GetConfig().Settings.Svn);
@@ -534,7 +535,7 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     GetConfig().Settings.Autoincrement = VersionEditorDialog.GetAuto();
     GetConfig().Settings.DateDeclarations = VersionEditorDialog.GetDates();
     GetConfig().Settings.UseDefine = VersionEditorDialog.GetDefine();
-	// GJH 03/03/10 Added manifest updating.
+    // GJH 03/03/10 Added manifest updating.
     GetConfig().Settings.UpdateManifest = VersionEditorDialog.GetManifest();
     GetConfig().Settings.AskToIncrement = VersionEditorDialog.GetCommitAsk();
     GetConfig().Settings.DoAutoIncrement = VersionEditorDialog.GetCommit();
@@ -553,7 +554,8 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     m_versionHeaderPath = cbC2U(GetConfig().Settings.HeaderPath.c_str());
 
     if(OldConfig != GetConfig())
-    {   // settings have changed => Project is to be considered changed
+    {
+        // settings have changed => Project is to be considered changed
         Project.SetModified(true);
     }
     // let's update the current version state values in case they were adjusted in the gui
@@ -569,7 +571,8 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     GetVersionState().Status.Abbreviation = cbU2C(VersionEditorDialog.GetStatusAbbreviation());
 
     if (!update)
-    {   // first time; we just activated the plug-in on the project; clean start
+    {
+        // first time; we just activated the plug-in on the project; clean start
         GetVersionState().BuildHistory = 0;
         m_Modified = false;
     }
@@ -676,15 +679,15 @@ void AutoVersioning::UpdateVersionHeader()
     headerOutput << '\t' << def_define_long << prefix << "BUILDS_COUNT " << def_equal << myPrintf << def_end <<'\n';
 
     myPrintf.Printf("%ld,%ld,%ld,%ld", GetVersionState().Values.Major, GetVersionState().Values.Minor,
-            GetVersionState().Values.Build, GetVersionState().Values.Revision);
+                    GetVersionState().Values.Build, GetVersionState().Values.Revision);
     headerOutput << '\t' << "#define " << prefix << "RC_FILEVERSION " << myPrintf << '\n';
 
     myPrintf.Printf("\"%ld, %ld, %ld, %ld\\0\"", GetVersionState().Values.Major, GetVersionState().Values.Minor,
-            GetVersionState().Values.Build, GetVersionState().Values.Revision);
+                    GetVersionState().Values.Build, GetVersionState().Values.Revision);
     headerOutput << '\t' << "#define " << prefix << "RC_FILEVERSION_STRING " << myPrintf << '\n';
 
     myPrintf.Printf("\"%ld.%ld.%ld.%ld\"", GetVersionState().Values.Major, GetVersionState().Values.Minor,
-            GetVersionState().Values.Build, GetVersionState().Values.Revision);
+                    GetVersionState().Values.Build, GetVersionState().Values.Revision);
     headerOutput << '\t' << def_define_char << prefix << "FULLVERSION_STRING " << def_array << def_equal << myPrintf << def_end << '\n';
 
     if (GetConfig().Settings.Svn)
@@ -738,40 +741,41 @@ void AutoVersioning::UpdateVersionHeader()
  */
 void AutoVersioning::UpdateManifest()
 {
-	wxFileName fnManifest(Manager::Get()->GetProjectManager()->GetActiveProject()->GetCommonTopLevelPath() + wxT("manifest.xml"));
-	wxString sPathManifest(fnManifest.GetFullPath());
-	if (wxFile::Exists(sPathManifest))
-	{
-		wxTextFile fileManifest(sPathManifest);
-		fileManifest.Open();
-		if(fileManifest.IsOpened()){
-			fileManifest.GetFirstLine();
-			wxString sLine;
-			size_t i;
-			while(!(sLine = fileManifest.GetNextLine()).IsEmpty())
-			{
-				if(sLine.Find(wxT("<Value version=")) != wxNOT_FOUND)
-				{
-					i = fileManifest.GetCurrentLine();
-					int iFirst, iLast;
-					// Find the first double quote.
-					iFirst = sLine.Find('"');
-					// Find the last double quote.
-					iLast = sLine.Find('"', true);
-					// Create a new version string...
-					wxString sVersion = sLine.SubString(iFirst, iLast);
-					wxString sNewVersion = wxString::Format(wxT("\"%ld.%ld.%ld\""), GetVersionState().Values.Major, GetVersionState().Values.Minor, GetVersionState().Values.Build);
-					// ...and insert it into the XML.
-					sLine.Replace(sVersion, sNewVersion);
-					// Remove the existing line and replace it with the new one.
-					fileManifest.RemoveLine(i);
-					fileManifest.InsertLine(sLine, i);
-					fileManifest.Write();
-					break;
-				}
-			}
-		}
-	}
+    wxFileName fnManifest(Manager::Get()->GetProjectManager()->GetActiveProject()->GetCommonTopLevelPath() + wxT("manifest.xml"));
+    wxString sPathManifest(fnManifest.GetFullPath());
+    if (wxFile::Exists(sPathManifest))
+    {
+        wxTextFile fileManifest(sPathManifest);
+        fileManifest.Open();
+        if(fileManifest.IsOpened())
+        {
+            fileManifest.GetFirstLine();
+            wxString sLine;
+            size_t i;
+            while(!(sLine = fileManifest.GetNextLine()).IsEmpty())
+            {
+                if(sLine.Find(wxT("<Value version=")) != wxNOT_FOUND)
+                {
+                    i = fileManifest.GetCurrentLine();
+                    int iFirst, iLast;
+                    // Find the first double quote.
+                    iFirst = sLine.Find('"');
+                    // Find the last double quote.
+                    iLast = sLine.Find('"', true);
+                    // Create a new version string...
+                    wxString sVersion = sLine.SubString(iFirst, iLast);
+                    wxString sNewVersion = wxString::Format(wxT("\"%ld.%ld.%ld\""), GetVersionState().Values.Major, GetVersionState().Values.Minor, GetVersionState().Values.Build);
+                    // ...and insert it into the XML.
+                    sLine.Replace(sVersion, sNewVersion);
+                    // Remove the existing line and replace it with the new one.
+                    fileManifest.RemoveLine(i);
+                    fileManifest.InsertLine(sLine, i);
+                    fileManifest.Write();
+                    break;
+                }
+            }
+        }
+    }
 }
 
 void AutoVersioning::CommitChanges()
@@ -822,10 +826,10 @@ void AutoVersioning::CommitChanges()
 
             m_Modified = false;
             UpdateVersionHeader();
-			// GJH 03/03/10 Added manifest updating.
+            // GJH 03/03/10 Added manifest updating.
             if(GetConfig().Settings.UpdateManifest)
             {
-				UpdateManifest();
+                UpdateManifest();
             }
 
         }

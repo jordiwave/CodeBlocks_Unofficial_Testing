@@ -16,27 +16,27 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-    #include <wx/dynarray.h>
-    #include <wx/intl.h>
-    #include <wx/log.h>
-    #include <wx/sizer.h>
-    #include <wx/stdpaths.h>
+#include <wx/dynarray.h>
+#include <wx/intl.h>
+#include <wx/log.h>
+#include <wx/sizer.h>
+#include <wx/stdpaths.h>
 
-    #include "cbeditor.h"
-    #include "configmanager.h"
-    #include "editormanager.h"
-    #include "manager.h"
-    #include "pluginmanager.h"
-    #include "personalitymanager.h"
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "manager.h"
+#include "pluginmanager.h"
+#include "personalitymanager.h"
 #endif
 
 #if defined(__WXMSW__)
-    #include <wx/msw/private/keyboard.h>
+#include <wx/msw/private/keyboard.h>
 #endif
 #include <wx/textfile.h>
 
 #if defined(LOGGING)
-    #include "debugging.h"
+#include "debugging.h"
 #endif
 #include "menuutils.h"
 #include "cbkeybinder.h"
@@ -44,9 +44,9 @@
 // ----------------------------------------------------------------------------
 //  UsrConfigPanel
 // ----------------------------------------------------------------------------
-    BEGIN_EVENT_TABLE(UsrConfigPanel, cbConfigurationPanel)
-        // add events here...
-    END_EVENT_TABLE()
+BEGIN_EVENT_TABLE(UsrConfigPanel, cbConfigurationPanel)
+    // add events here...
+END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
 //              Setting/Editor configuration panel
@@ -60,7 +60,7 @@ UsrConfigPanel::UsrConfigPanel(wxWindow* parent, const wxString& /*title*/, int 
     // if/when the user clicks on Settings/Editor/Keyboard shortcuts .
 
     cbConfigurationPanel::Create(parent, -1, wxDefaultPosition, wxDefaultSize,
-        wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+                                 wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
     m_pkbMgr = clKeyboardManager::Get();
     m_pwxKeyConfigPanel = nullptr;
@@ -79,8 +79,8 @@ UsrConfigPanel::UsrConfigPanel(wxWindow* parent, const wxString& /*title*/, int 
     m_pPrimaryProfile = new wxKeyProfile(_("Primary"), _("Our primary keyprofile"));
 
     // remove keyprofiles from our array
-    for (int i=0; i < m_pKeyProfileArray->GetCount();i++)
-      m_pKeyProfileArray->Remove(m_pKeyProfileArray->Item(i));
+    for (int i=0; i < m_pKeyProfileArray->GetCount(); i++)
+        m_pKeyProfileArray->Remove(m_pKeyProfileArray->Item(i));
     // clear out old array
     m_pKeyProfileArray->Cleanup();
 
@@ -113,9 +113,10 @@ void UsrConfigPanel::GetKeyConfigPanelPhaseII(wxMenuBar* pMenuBar, UsrConfigPane
 
     MenuItemDataMap_t accels;
     m_pkbMgr->GetAllAccelerators(accels);
-    #if defined(LOGGING)
-        size_t knt = accels.size(); wxUnusedVar(knt);
-    #endif
+#if defined(LOGGING)
+    size_t knt = accels.size();
+    wxUnusedVar(knt);
+#endif
 
     // --------------------------------------------------
     // Add core menu entries from the MenuItemDataMap
@@ -134,13 +135,14 @@ void UsrConfigPanel::GetKeyConfigPanelPhaseII(wxMenuBar* pMenuBar, UsrConfigPane
     {
         wxString resourceIDString = iter->first;
         MenuItemData itemData = iter->second;
-        long resourceID; itemData.resourceID.ToLong(&resourceID);
+        long resourceID;
+        itemData.resourceID.ToLong(&resourceID);
         wxString accel      = itemData.accel;
         wxString desc       = itemData.action;      //Help description
         wxString parentMenu = itemData.parentMenu;  //menu path with :: separators
-        #if defined(LOGGING)
+#if defined(LOGGING)
         LOGIT( _T("SetAccel[%s/%s/%s/%s/"), resourceIDString.wx_str(), accel.wx_str(), desc.wx_str(), parentMenu.wx_str());
-        #endif
+#endif
 
         if (parentMenu.empty()) //Empty parent menu means a <global> accelerator
         {
@@ -201,9 +203,9 @@ void UsrConfigPanel::GetKeyConfigPanelPhaseII(wxMenuBar* pMenuBar, UsrConfigPane
     // STEP #1: create a simple wxKeyConfigPanel
     //wxKeyConfigPanel*
 
-        m_pwxKeyConfigPanel = new wxKeyConfigPanel(this, mode);
-        wxSize clientSize = pUsrConfigPanel->GetClientSize();
-        m_pwxKeyConfigPanel->SetSize(clientSize);
+    m_pwxKeyConfigPanel = new wxKeyConfigPanel(this, mode);
+    wxSize clientSize = pUsrConfigPanel->GetClientSize();
+    m_pwxKeyConfigPanel->SetSize(clientSize);
 
     // STEP #2: add a profile array to the wxKeyConfigPanel
     //-m_p->AddProfiles(prof);
@@ -269,47 +271,61 @@ void UsrConfigPanel::OnApply()
 
     for(MenuItemDataMap_t::iterator iter = accelMap.begin(); iter != accelMap.end(); ++iter)
     {
-        nextItem:   //'goto nextItem;' is necessary since 'iter = prev(iter)' causes crashes after erase
-                    //After an erase, iter has pointer to the following item.
-                    //The item following erase() will be missed if the 'for' statement is allowed to execute.
+nextItem:   //'goto nextItem;' is necessary since 'iter = prev(iter)' causes crashes after erase
+        //After an erase, iter has pointer to the following item.
+        //The item following erase() will be missed if the 'for' statement is allowed to execute.
 
         if (iter == accelMap.end() ) break;
         wxString resourceIDString = iter->first;
         MenuItemData itemData = iter->second;
-        long resourceID; itemData.resourceID.ToLong(&resourceID);
+        long resourceID;
+        itemData.resourceID.ToLong(&resourceID);
         wxString accel      = itemData.accel;
         wxString desc       = itemData.action;      //Help description
         wxString parentMenu = itemData.parentMenu;  //menu path with :: separators
-        #if defined(LOGGING)
-            LOGIT( _T("Apply[%s/%s/%s/%s]"), resourceIDString.wx_str(), accel.wx_str(), desc.wx_str(), parentMenu.wx_str());
-        #endif
+#if defined(LOGGING)
+        LOGIT( _T("Apply[%s/%s/%s/%s]"), resourceIDString.wx_str(), accel.wx_str(), desc.wx_str(), parentMenu.wx_str());
+#endif
         wxCmd* pCmd = pKeyProfile->GetCmd(resourceID);
         if (not pCmd) //menu item no longer exists
-            {iter = accelMap.erase(iter); goto nextItem;}
+        {
+            iter = accelMap.erase(iter);
+            goto nextItem;
+        }
         // erase <global accels>; they'll be updated by the menu accel review
         if ( parentMenu.empty() or desc.StartsWith(_T("<global>")) )
-            {iter = accelMap.erase(iter); goto nextItem;}
-        if (pCmd) switch(true) //now have a matching wxCmd array entry
         {
+            iter = accelMap.erase(iter);
+            goto nextItem;
+        }
+        if (pCmd) switch(true) //now have a matching wxCmd array entry
+            {
             default:
-            wxArrayString cmdShortcuts = pCmd->GetShortcutsList();
-            size_t shortcutCount = cmdShortcuts.GetCount();
+                wxArrayString cmdShortcuts = pCmd->GetShortcutsList();
+                size_t shortcutCount = cmdShortcuts.GetCount();
 
-            if (accel.empty() ) switch(shortcutCount)
-            {
-                case 0: continue;
-                case 2: CreateGlobalAccel(pCmd);  /*falls through*/
-                case 1: iter->second.accel = cmdShortcuts[0];
-                continue;
-            }
-            if (not accel.empty() ) switch(shortcutCount)
-            {
-                case 0: iter->second.accel = _T(""); continue;
-                case 2: CreateGlobalAccel(pCmd);  /*falls through*/
-                case 1: iter->second.accel = cmdShortcuts[0];
-                continue;
-            }
-        }//endif pCmd switch(true)
+                if (accel.empty() ) switch(shortcutCount)
+                    {
+                    case 0:
+                        continue;
+                    case 2:
+                        CreateGlobalAccel(pCmd);  /*falls through*/
+                    case 1:
+                        iter->second.accel = cmdShortcuts[0];
+                        continue;
+                    }
+                if (not accel.empty() ) switch(shortcutCount)
+                    {
+                    case 0:
+                        iter->second.accel = _T("");
+                        continue;
+                    case 2:
+                        CreateGlobalAccel(pCmd);  /*falls through*/
+                    case 1:
+                        iter->second.accel = cmdShortcuts[0];
+                        continue;
+                    }
+            }//endif pCmd switch(true)
     }//endfor accelMap
 
     // Remove duplicate Menu accelerators, saving only the first occurance //(2019/04/22)
@@ -318,14 +334,15 @@ void UsrConfigPanel::OnApply()
     // Append cashed global accelerators to end of accelMap
     for(MenuItemDataMap_t::iterator iter = m_cachedGlobalAccelMap.begin(); iter != m_cachedGlobalAccelMap.end(); ++iter)
     {
-        #if defined(LOGGING)
-            wxString resourceIDString = iter->first;
-            MenuItemData itemData = iter->second;
-            long resourceID; itemData.resourceID.ToLong(&resourceID);
-            wxString accel      = itemData.accel;
-            wxString desc       = itemData.action;      //Help description
-            wxString parentMenu = itemData.parentMenu;  //menu path with :: separators
-        #endif
+#if defined(LOGGING)
+        wxString resourceIDString = iter->first;
+        MenuItemData itemData = iter->second;
+        long resourceID;
+        itemData.resourceID.ToLong(&resourceID);
+        wxString accel      = itemData.accel;
+        wxString desc       = itemData.action;      //Help description
+        wxString parentMenu = itemData.parentMenu;  //menu path with :: separators
+#endif
 
         accelMap.insert(std::make_pair(iter->first, iter->second));
     }
@@ -343,15 +360,15 @@ void UsrConfigPanel::CreateGlobalAccel(wxCmd* pCmd)
 // ----------------------------------------------------------------------------
 {
     // Create a global accelerator and hold for later addition to accelMap
-        wxArrayString cmdShortcuts = pCmd->GetShortcutsList();
-        wxASSERT(cmdShortcuts.GetCount() >1);
+    wxArrayString cmdShortcuts = pCmd->GetShortcutsList();
+    wxASSERT(cmdShortcuts.GetCount() >1);
 
-        MenuItemData itemData;
-        itemData.resourceID = wxString::Format(_T("%d"), pCmd->GetId());
-        itemData.accel      = cmdShortcuts[1];
-        itemData.action     = _T("<global>") + pCmd->GetDescription();    //Help description
-        itemData.parentMenu = _T("");                                     //globals have no parent
-        m_cachedGlobalAccelMap.insert(std::make_pair(itemData.resourceID, itemData));
+    MenuItemData itemData;
+    itemData.resourceID = wxString::Format(_T("%d"), pCmd->GetId());
+    itemData.accel      = cmdShortcuts[1];
+    itemData.action     = _T("<global>") + pCmd->GetDescription();    //Help description
+    itemData.parentMenu = _T("");                                     //globals have no parent
+    m_cachedGlobalAccelMap.insert(std::make_pair(itemData.resourceID, itemData));
 }
 // ----------------------------------------------------------------------------
 bool UsrConfigPanel::VerifyGlobalAccel(MenuItemData* pMenuItemData) //(2019/9/18)
@@ -360,7 +377,8 @@ bool UsrConfigPanel::VerifyGlobalAccel(MenuItemData* pMenuItemData) //(2019/9/18
     // Verify a global accelerator ie., return false if it's not in the menu entries
 
     wxString resourceID = pMenuItemData->resourceID;        // string menu id
-    long intResourceID;   resourceID.ToLong(&intResourceID);// int menu id
+    long intResourceID;
+    resourceID.ToLong(&intResourceID);// int menu id
     wxString accel      = pMenuItemData->accel;      //text representation of accelerator
     wxString action     = pMenuItemData->action;     //Help description
     wxString parentMenu = pMenuItemData->parentMenu; //globals have no parent

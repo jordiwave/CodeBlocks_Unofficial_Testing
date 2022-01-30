@@ -10,10 +10,10 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/app.h> // wxPostEvent
-    #include <wx/dir.h> // wxDirTraverser
-    #include <wx/event.h>
-    #include <wx/filename.h>
+#include <wx/app.h> // wxPostEvent
+#include <wx/dir.h> // wxDirTraverser
+#include <wx/event.h>
+#include <wx/filename.h>
 #endif
 
 #include "systemheadersthread.h"
@@ -21,32 +21,32 @@
 #define CC_SYSTEMHEADERSTHREAD_DEBUG_OUTPUT 0
 
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
-    #if CC_GLOBAL_DEBUG_OUTPUT == 1
-        #undef CC_SYSTEMHEADERSTHREAD_DEBUG_OUTPUT
-        #define CC_SYSTEMHEADERSTHREAD_DEBUG_OUTPUT 1
-    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
-        #undef CC_SYSTEMHEADERSTHREAD_DEBUG_OUTPUT
-        #define CC_SYSTEMHEADERSTHREAD_DEBUG_OUTPUT 2
-    #endif
+#if CC_GLOBAL_DEBUG_OUTPUT == 1
+#undef CC_SYSTEMHEADERSTHREAD_DEBUG_OUTPUT
+#define CC_SYSTEMHEADERSTHREAD_DEBUG_OUTPUT 1
+#elif CC_GLOBAL_DEBUG_OUTPUT == 2
+#undef CC_SYSTEMHEADERSTHREAD_DEBUG_OUTPUT
+#define CC_SYSTEMHEADERSTHREAD_DEBUG_OUTPUT 2
+#endif
 #endif
 
 #if CC_SYSTEMHEADERSTHREAD_DEBUG_OUTPUT == 1
-    #define TRACE(format, args...) \
+#define TRACE(format, args...) \
         CCLogger::Get()->DebugLog(F(format, ##args))
-    #define TRACE2(format, args...)
+#define TRACE2(format, args...)
 #elif CC_SYSTEMHEADERSTHREAD_DEBUG_OUTPUT == 2
-    #define TRACE(format, args...)                                              \
+#define TRACE(format, args...)                                              \
         do                                                                      \
         {                                                                       \
             if (g_EnableDebugTrace)                                             \
                 CCLogger::Get()->DebugLog(F(format, ##args));                   \
         }                                                                       \
         while (false)
-    #define TRACE2(format, args...) \
+#define TRACE2(format, args...) \
         CCLogger::Get()->DebugLog(F(format, ##args))
 #else
-    #define TRACE(format, args...)
-    #define TRACE2(format, args...)
+#define TRACE(format, args...)
+#define TRACE2(format, args...)
 #endif
 
 // sent message when finish traversing all the folders, before the thread dies
@@ -133,9 +133,9 @@ private:
 // class SystemHeadersThread
 
 SystemHeadersThread::SystemHeadersThread(wxEvtHandler*        parent,
-                                         wxCriticalSection*   critSect,
-                                         SystemHeadersMap&    headersMap,
-                                         const wxArrayString& incDirs) :
+        wxCriticalSection*   critSect,
+        SystemHeadersMap&    headersMap,
+        const wxArrayString& incDirs) :
     wxThread(wxTHREAD_JOINABLE),
     m_Parent(parent),
     m_SystemHeadersThreadCS(critSect),
@@ -255,7 +255,7 @@ HeaderDirTraverser::HeaderDirTraverser(wxThread*          thread,
 HeaderDirTraverser::~HeaderDirTraverser()
 {
     if (m_Locked)
-         m_SystemHeadersThreadCS->Leave();
+        m_SystemHeadersThreadCS->Leave();
 }
 
 wxDirTraverseResult HeaderDirTraverser::OnFile(const wxString& filename)

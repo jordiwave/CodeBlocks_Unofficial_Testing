@@ -6,7 +6,8 @@
 void sqstd_printcallstack(HSQUIRRELVM v)
 {
     SQPRINTFUNCTION pf = sq_geterrorfunc(v);
-    if(pf) {
+    if(pf)
+    {
         SQStackInfos si;
         SQInteger i;
         SQFloat f;
@@ -27,7 +28,8 @@ void sqstd_printcallstack(HSQUIRRELVM v)
         level=0;
         pf(v,_SC("\nLOCALS\n"));
 
-        for(level=0;level<10;level++){
+        for(level=0; level<10; level++)
+        {
             seq=0;
             while((name = sq_getlocal(v,level,seq)))
             {
@@ -82,13 +84,16 @@ void sqstd_printcallstack(HSQUIRRELVM v)
                 case OT_WEAKREF:
                     pf(v,_SC("[%s] WEAKREF\n"),name);
                     break;
-                case OT_BOOL:{
+                case OT_BOOL:
+                {
                     SQBool bval;
                     sq_getbool(v,-1,&bval);
                     pf(v,_SC("[%s] %s\n"),name,bval == SQTrue ? _SC("true"):_SC("false"));
-                             }
+                }
+                break;
+                default:
+                    assert(0);
                     break;
-                default: assert(0); break;
                 }
                 sq_pop(v,1);
             }
@@ -99,13 +104,17 @@ void sqstd_printcallstack(HSQUIRRELVM v)
 static SQInteger _sqstd_aux_printerror(HSQUIRRELVM v)
 {
     SQPRINTFUNCTION pf = sq_geterrorfunc(v);
-    if(pf) {
+    if(pf)
+    {
         const SQChar *sErr = 0;
-        if(sq_gettop(v)>=1) {
-            if(SQ_SUCCEEDED(sq_getstring(v,2,&sErr)))   {
+        if(sq_gettop(v)>=1)
+        {
+            if(SQ_SUCCEEDED(sq_getstring(v,2,&sErr)))
+            {
                 pf(v,_SC("\nAN ERROR HAS OCCURED [%s]\n"),sErr);
             }
-            else{
+            else
+            {
                 pf(v,_SC("\nAN ERROR HAS OCCURED [unknown]\n"));
             }
             sqstd_printcallstack(v);
@@ -117,7 +126,8 @@ static SQInteger _sqstd_aux_printerror(HSQUIRRELVM v)
 void _sqstd_compiler_error(HSQUIRRELVM v,const SQChar *sErr,const SQChar *sSource,SQInteger line,SQInteger column)
 {
     SQPRINTFUNCTION pf = sq_geterrorfunc(v);
-    if(pf) {
+    if(pf)
+    {
         pf(v,_SC("%s line = (%d) column = (%d) : error %s\n"),sSource,line,column,sErr);
     }
 }

@@ -7,8 +7,8 @@ class wxSpellCheckEngineInterface;
 
 struct DependencyStruct
 {
-  wxString strDependency;
-  wxString strLastValue;
+    wxString strDependency;
+    wxString strLastValue;
 };
 
 WX_DECLARE_STRING_HASH_MAP(DependencyStruct, StringToDependencyMap);
@@ -16,30 +16,33 @@ WX_DECLARE_STRING_HASH_MAP(DependencyStruct, StringToDependencyMap);
 class SpellCheckerOptionsDialog : public wxDialog
 {
 public:
-  SpellCheckerOptionsDialog(wxWindow* pParent, const wxString& strCaption, wxSpellCheckEngineInterface* pEngineInterface);
-  
-  void OnOK(wxCommandEvent& event);
-  void OnBrowseForDir(wxCommandEvent& event);
-  void OnBrowseForFile(wxCommandEvent& event);
-  OptionsMap* GetModifiedOptions() { return &m_ModifiedOptions; }
+    SpellCheckerOptionsDialog(wxWindow* pParent, const wxString& strCaption, wxSpellCheckEngineInterface* pEngineInterface);
 
-  virtual bool TransferDataFromWindow();
-  virtual bool TransferDataToWindow();
-  
-  virtual void UpdateControlPossibleValues(wxFocusEvent& event);
+    void OnOK(wxCommandEvent& event);
+    void OnBrowseForDir(wxCommandEvent& event);
+    void OnBrowseForFile(wxCommandEvent& event);
+    OptionsMap* GetModifiedOptions()
+    {
+        return &m_ModifiedOptions;
+    }
 
-  private:
-  void CreateControls();
-  void PopulateOptionsSizer(wxSizer* pSizer);
-  
-  wxSpellCheckEngineInterface* m_pEngineInterface;
-  OptionsMap m_ModifiedOptions;
-  
-  // Keep a map of all the option dependencies and add event handlers to update the
-  //  dependent option controls when they receive focus
-  StringToDependencyMap m_OptionDependenciesMap;
+    virtual bool TransferDataFromWindow();
+    virtual bool TransferDataToWindow();
 
-  DECLARE_EVENT_TABLE()
+    virtual void UpdateControlPossibleValues(wxFocusEvent& event);
+
+private:
+    void CreateControls();
+    void PopulateOptionsSizer(wxSizer* pSizer);
+
+    wxSpellCheckEngineInterface* m_pEngineInterface;
+    OptionsMap m_ModifiedOptions;
+
+    // Keep a map of all the option dependencies and add event handlers to update the
+    //  dependent option controls when they receive focus
+    StringToDependencyMap m_OptionDependenciesMap;
+
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // __SPELL_CHECKER_OPTIONS_DIALOG__

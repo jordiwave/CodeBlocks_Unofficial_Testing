@@ -40,8 +40,8 @@ struct wxsPositionSizeData
     inline wxPoint GetPosition(wxWindow* Parent)
     {
         return IsDefault ?
-            wxDefaultPosition:
-            DialogUnits ? wxDLG_UNIT(Parent,wxPoint(X,Y)) : wxPoint(X,Y);
+               wxDefaultPosition:
+               DialogUnits ? wxDLG_UNIT(Parent,wxPoint(X,Y)) : wxPoint(X,Y);
     }
 
     /** \brief Function fetching data from given position
@@ -83,8 +83,8 @@ struct wxsPositionSizeData
     inline wxSize GetSize(wxWindow* Parent)
     {
         return IsDefault ?
-            wxDefaultSize :
-            DialogUnits ? wxDLG_UNIT(Parent,wxSize(X,Y)) : wxSize(X,Y);
+               wxDefaultSize :
+               DialogUnits ? wxDLG_UNIT(Parent,wxSize(X,Y)) : wxSize(X,Y);
     }
 
     /** \brief Function fetching data from given size
@@ -138,45 +138,48 @@ typedef wxsPositionSizeData wxsSizeData;
  */
 class wxsPositionSizeProperty: public wxsProperty
 {
-    public:
+public:
 
-        /** \brief Ctor
-         *  \param PGUseDefName name of "use default value" property
-         *  \param PGXName      name of x/width property
-         *  \param PGYName      name of y/height property
-         *  \param PGDUName     name of "use dialog units" property
-         *  \param DataName     name of property in data stuctures
-         *  \param Offset       offset to wxsPositionSizeData structure
-         *  \param Priority     priority of this property
-         */
-        wxsPositionSizeProperty(
-            const wxString& PGUseDefName,
-            const wxString& PGXName,
-            const wxString& PGYName,
-            const wxString& PGDUName,
-            const wxString& DataName,
-            long Offset,
-            int Priority=100);
+    /** \brief Ctor
+     *  \param PGUseDefName name of "use default value" property
+     *  \param PGXName      name of x/width property
+     *  \param PGYName      name of y/height property
+     *  \param PGDUName     name of "use dialog units" property
+     *  \param DataName     name of property in data stuctures
+     *  \param Offset       offset to wxsPositionSizeData structure
+     *  \param Priority     priority of this property
+     */
+    wxsPositionSizeProperty(
+        const wxString& PGUseDefName,
+        const wxString& PGXName,
+        const wxString& PGYName,
+        const wxString& PGDUName,
+        const wxString& DataName,
+        long Offset,
+        int Priority=100);
 
-        /** \brief Returning type name */
-        virtual const wxString GetTypeName() { return _T("wxPosition wxSize"); }
+    /** \brief Returning type name */
+    virtual const wxString GetTypeName()
+    {
+        return _T("wxPosition wxSize");
+    }
 
-    protected:
+protected:
 
-        virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
-        virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-        virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-        virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-        virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-        virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
+    virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
+    virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
+    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
+    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-    private:
-        wxString PGXName;
-        wxString PGYName;
-        wxString PGDUName;
-        wxString DataName;
-        long Offset;
+private:
+    wxString PGXName;
+    wxString PGYName;
+    wxString PGDUName;
+    wxString DataName;
+    long Offset;
 };
 
 typedef wxsPositionSizeProperty wxsPositionProperty;

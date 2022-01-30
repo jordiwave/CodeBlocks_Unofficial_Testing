@@ -25,73 +25,73 @@
 class MainFrame: public wxFrame
 {
 //***********************************************************************
-	public:
+public:
 //***********************************************************************
 
-		MainFrame(wxWindow* parent,wxWindowID id = -1);
-		virtual ~MainFrame();
+    MainFrame(wxWindow* parent,wxWindowID id = -1);
+    virtual ~MainFrame();
 
 
-		//(*Identifiers(MainFrame)
-		static const long ID_LBL_STEPS;
-		static const long ID_LBL_FILE_SRC;
-		static const long ID_LBL_FILE_DST;
-		static const long ID_TXT_FILE_SRC;
-		static const long ID_BTN_FILE_SRC;
-		static const long ID_TXT_FILE_DST;
-		static const long ID_BTN_FILE_DST;
-		static const long ID_CFG_SRC;
-		static const long ID_LST_CFG;
-		static const long ID_BTN_TRANSFER;
-		static const long ID_BTN_UNCHECK;
-		static const long ID_BTN_EXPORT_ALL;
-		static const long ID_BTN_EXPORT;
-		static const long ID_BTN_SAVE;
-		static const long ID_BTN_CLOSE;
-		//*)
-
-//***********************************************************************
-	protected:
-//***********************************************************************
-
-		//(*Handlers(MainFrame)
-		void OnBtnFileSrcClick(wxCommandEvent& event);
-		void OnBtnFileDstClick(wxCommandEvent& event);
-		void OnBtnTransferClick(wxCommandEvent& event);
-		void OnBtnUncheckClick(wxCommandEvent& event);
-		void OnBtnExportAllClick(wxCommandEvent& event);
-		void OnBtnExportClick(wxCommandEvent& event);
-		void OnBtnSaveClick(wxCommandEvent& event);
-		void OnBtnCloseClick(wxCommandEvent& event);
-		//*)
-
-
-		//(*Declarations(MainFrame)
-		wxBoxSizer* bszSteps;
-		wxGridSizer* grsAction;
-		wxTextCtrl* txtFileDst;
-		wxStaticBoxSizer* sbsSteps;
-		wxBoxSizer* bszMain;
-		wxStaticText* lblFileSrc;
-		wxCheckListBox* clbCfgSrc;
-		wxButton* btnFileSrc;
-		wxFlexGridSizer* flsFileDst;
-		wxFlexGridSizer* flsFileSrc;
-		wxTextCtrl* txtFileSrc;
-		wxGridSizer* grsFile;
-		wxGridSizer* grsCfg;
-		wxButton* btnFileDst;
-		wxListBox* lstCfgDst;
-		wxStaticText* lblFileDst;
-		wxGridSizer* grsFileLabel;
-		wxStaticText* lblSteps;
-		//*)
+    //(*Identifiers(MainFrame)
+    static const long ID_LBL_STEPS;
+    static const long ID_LBL_FILE_SRC;
+    static const long ID_LBL_FILE_DST;
+    static const long ID_TXT_FILE_SRC;
+    static const long ID_BTN_FILE_SRC;
+    static const long ID_TXT_FILE_DST;
+    static const long ID_BTN_FILE_DST;
+    static const long ID_CFG_SRC;
+    static const long ID_LST_CFG;
+    static const long ID_BTN_TRANSFER;
+    static const long ID_BTN_UNCHECK;
+    static const long ID_BTN_EXPORT_ALL;
+    static const long ID_BTN_EXPORT;
+    static const long ID_BTN_SAVE;
+    static const long ID_BTN_CLOSE;
+    //*)
 
 //***********************************************************************
-	private:
+protected:
 //***********************************************************************
 
-		wxString      FileSelector();
+    //(*Handlers(MainFrame)
+    void OnBtnFileSrcClick(wxCommandEvent& event);
+    void OnBtnFileDstClick(wxCommandEvent& event);
+    void OnBtnTransferClick(wxCommandEvent& event);
+    void OnBtnUncheckClick(wxCommandEvent& event);
+    void OnBtnExportAllClick(wxCommandEvent& event);
+    void OnBtnExportClick(wxCommandEvent& event);
+    void OnBtnSaveClick(wxCommandEvent& event);
+    void OnBtnCloseClick(wxCommandEvent& event);
+    //*)
+
+
+    //(*Declarations(MainFrame)
+    wxBoxSizer* bszSteps;
+    wxGridSizer* grsAction;
+    wxTextCtrl* txtFileDst;
+    wxStaticBoxSizer* sbsSteps;
+    wxBoxSizer* bszMain;
+    wxStaticText* lblFileSrc;
+    wxCheckListBox* clbCfgSrc;
+    wxButton* btnFileSrc;
+    wxFlexGridSizer* flsFileDst;
+    wxFlexGridSizer* flsFileSrc;
+    wxTextCtrl* txtFileSrc;
+    wxGridSizer* grsFile;
+    wxGridSizer* grsCfg;
+    wxButton* btnFileDst;
+    wxListBox* lstCfgDst;
+    wxStaticText* lblFileDst;
+    wxGridSizer* grsFileLabel;
+    wxStaticText* lblSteps;
+    //*)
+
+//***********************************************************************
+private:
+//***********************************************************************
+
+    wxString      FileSelector();
     bool          LoadConfig  (const wxString& filename, TiXmlDocument** doc);
     bool          SameConfig  (const wxString& filename, wxTextCtrl* txt);
     void          OfferConfig (TiXmlDocument* config, wxListBox* listbox,
@@ -120,7 +120,7 @@ class MainFrame: public wxFrame
     bool                    mCfgDstValid;
     std::vector<TiXmlNode*> mNodesDst;
 
-		DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

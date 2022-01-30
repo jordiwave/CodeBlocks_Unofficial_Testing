@@ -23,62 +23,62 @@ typedef const int cbNetEvent;
   */
 class cbNetwork : public wxEvtHandler
 {
-    public:
-        /**
-          * @brief Structure that holds info on a remote file
-          *
-          * Used by the GetFileInfo() function.
-          */
-        struct FileInfo
-        {
-            wxString contentType; ///< The content type, e.g. "text/plain"
-            size_t size; ///< The file's size in bytes
-        };
+public:
+    /**
+      * @brief Structure that holds info on a remote file
+      *
+      * Used by the GetFileInfo() function.
+      */
+    struct FileInfo
+    {
+        wxString contentType; ///< The content type, e.g. "text/plain"
+        size_t size; ///< The file's size in bytes
+    };
 
-        /** Constructor
-          * @param serverUrl The remote server's top-level URL.
-          */
-        cbNetwork(wxEvtHandler* parent, int id, const wxString& serverUrl = _T(""));
-        ~cbNetwork();
-        
-        /** Set the server to connect to.
-          * @param serverUrl The remote server's top-level URL.
-          */
-        void SetServer(const wxString& serverUrl);
-        /** Retrieve file info on a remote file.
-          * @param remote The remote file (relative to server's URL passed to the constructor)
-          */
-        /** Abort an active connection */
-        void Abort();
-        FileInfo* GetFileInfo(const wxString& remote);
-        /** Retrieve the contents of a remote file.
-          * @param remote The remote file (relative to server's URL passed to the constructor)
-          * @param buffer The string buffer to put the file's contents in
-          * @note Use this function only for ASCII files.
-          */
-        bool ReadFileContents(const wxString& remote, wxString& buffer);
-        /** Retrieve a remote file.
-          * @param remote The remote file (relative to server's URL passed to the constructor)
-          * @param local The local filename to save to
-          */
-        bool DownloadFile(const wxString& remote, const wxString& local);
-        /** Is it connected? */
-        bool IsConnected();
-        /** Is it busy (downloading)? */
-        bool IsBusy();
-    protected:
-        void Disconnect();
-        bool Connect(const wxString& remote);
-        void Notify(cbNetEvent event, const wxString& msg, int integer = 0);
-        FileInfo* PrivateGetFileInfo(const wxString& remote); // no Connect() / Disconnect()
+    /** Constructor
+      * @param serverUrl The remote server's top-level URL.
+      */
+    cbNetwork(wxEvtHandler* parent, int id, const wxString& serverUrl = _T(""));
+    ~cbNetwork();
 
-        wxEvtHandler* m_pParent;
-        int m_ID;
-        wxString m_ServerURL;
-        wxInputStream* m_pStream;
-        wxURL* m_pURL;
-        bool m_Abort;
-        bool m_Busy;
+    /** Set the server to connect to.
+      * @param serverUrl The remote server's top-level URL.
+      */
+    void SetServer(const wxString& serverUrl);
+    /** Retrieve file info on a remote file.
+      * @param remote The remote file (relative to server's URL passed to the constructor)
+      */
+    /** Abort an active connection */
+    void Abort();
+    FileInfo* GetFileInfo(const wxString& remote);
+    /** Retrieve the contents of a remote file.
+      * @param remote The remote file (relative to server's URL passed to the constructor)
+      * @param buffer The string buffer to put the file's contents in
+      * @note Use this function only for ASCII files.
+      */
+    bool ReadFileContents(const wxString& remote, wxString& buffer);
+    /** Retrieve a remote file.
+      * @param remote The remote file (relative to server's URL passed to the constructor)
+      * @param local The local filename to save to
+      */
+    bool DownloadFile(const wxString& remote, const wxString& local);
+    /** Is it connected? */
+    bool IsConnected();
+    /** Is it busy (downloading)? */
+    bool IsBusy();
+protected:
+    void Disconnect();
+    bool Connect(const wxString& remote);
+    void Notify(cbNetEvent event, const wxString& msg, int integer = 0);
+    FileInfo* PrivateGetFileInfo(const wxString& remote); // no Connect() / Disconnect()
+
+    wxEvtHandler* m_pParent;
+    int m_ID;
+    wxString m_ServerURL;
+    wxInputStream* m_pStream;
+    wxURL* m_pURL;
+    bool m_Abort;
+    bool m_Busy;
 };
 
 #define DEFINE_EVT_CBNET(e) extern cbNetEvent e;

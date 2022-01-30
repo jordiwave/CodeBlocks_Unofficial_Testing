@@ -1,18 +1,18 @@
 #include <sdk.h> // Code::Blocks SDK
 
 #ifndef CB_PRECOMP
-    #include <wx/event.h>
-    #include <wx/msgdlg.h>
-    #include <wx/menu.h>
+#include <wx/event.h>
+#include <wx/msgdlg.h>
+#include <wx/menu.h>
 
-    #include <tinyxml/tinyxml.h>
+#include <tinyxml/tinyxml.h>
 
-    #include <cbproject.h>
-    #include <cbeditor.h>
-    #include <configurationpanel.h>
-    #include <editorbase.h>
-    #include <editormanager.h>
-    #include <manager.h>
+#include <cbproject.h>
+#include <cbeditor.h>
+#include <configurationpanel.h>
+#include <editorbase.h>
+#include <editormanager.h>
+#include <manager.h>
 #endif
 
 #include <cbstyledtextctrl.h>
@@ -24,7 +24,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<EditorConfig> reg(_T("EditorConfig"));
+PluginRegistrant<EditorConfig> reg(_T("EditorConfig"));
 }
 
 EditorConfig::EditorConfig()
@@ -47,7 +47,7 @@ void EditorConfig::OnAttach()
 {
     // register event
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED,
-        new cbEventFunctor<EditorConfig, CodeBlocksEvent>(this, &EditorConfig::OnEditorActivated));
+                                      new cbEventFunctor<EditorConfig, CodeBlocksEvent>(this, &EditorConfig::OnEditorActivated));
 }
 
 void EditorConfig::OnRelease(bool /*appShutDown*/)
@@ -124,7 +124,7 @@ void EditorConfig::SetProjectSettings(cbProject &project, const EditorSettings &
 
     if ( node && !es.active)
     {
-      // ToDo: Remove node and return?!
+        // ToDo: Remove node and return?!
     }
 
     if (!node)

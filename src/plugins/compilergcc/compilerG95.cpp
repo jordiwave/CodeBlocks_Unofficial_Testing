@@ -18,7 +18,7 @@
 #include <configmanager.h>
 
 #ifdef __WXMSW__
-    #include <wx/msw/registry.h>
+#include <wx/msw/registry.h>
 #endif
 
 CompilerG95::CompilerG95()

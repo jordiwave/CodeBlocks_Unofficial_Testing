@@ -12,13 +12,13 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-    #include <wx/object.h>
-    #include <wx/string.h>
-    #include <wx/gdicmn.h>
+#include <wx/object.h>
+#include <wx/string.h>
+#include <wx/gdicmn.h>
 #endif // WX_PRECOMP
 
 #include <wx/tokenzr.h>
@@ -414,7 +414,11 @@ int wxOptionValue::GetOptionInt(const wxString& name) const
 bool wxOptionValue::GetOption(const wxString& name, wxString &value ) const
 {
     wxString s = GetOption(name);
-    if (!s.IsEmpty()) { value = s; return true; }
+    if (!s.IsEmpty())
+    {
+        value = s;
+        return true;
+    }
     return false;
 }
 bool wxOptionValue::GetOption(const wxString& name, int *value ) const
@@ -480,7 +484,8 @@ int wxOptionValue::GetOption(const wxString& name, wxArrayInt &values,
 bool wxOptionValue::GetOption(const wxString& name, unsigned char *value, int count,
                               const wxString& delims) const
 {
-    wxArrayInt intArr; intArr.Alloc(count);
+    wxArrayInt intArr;
+    intArr.Alloc(count);
     if (GetOption(name, intArr, count, delims) != count)
         return false;
 
@@ -490,7 +495,8 @@ bool wxOptionValue::GetOption(const wxString& name, unsigned char *value, int co
 bool wxOptionValue::GetOption(const wxString& name, int *value, int count,
                               const wxString& delims) const
 {
-    wxArrayInt intArr; intArr.Alloc(count);
+    wxArrayInt intArr;
+    intArr.Alloc(count);
     if (GetOption(name, intArr, count, delims) != count)
         return false;
 
@@ -500,7 +506,8 @@ bool wxOptionValue::GetOption(const wxString& name, int *value, int count,
 bool wxOptionValue::GetOption(const wxString& name, long *value, int count,
                               const wxString& delims) const
 {
-    wxArrayInt intArr; intArr.Alloc(count);
+    wxArrayInt intArr;
+    intArr.Alloc(count);
     if (GetOption(name, intArr, count, delims) != count)
         return false;
 

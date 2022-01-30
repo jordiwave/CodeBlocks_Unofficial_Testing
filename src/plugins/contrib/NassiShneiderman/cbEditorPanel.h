@@ -27,7 +27,7 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include <manager.h>
@@ -43,52 +43,67 @@ class wxCommandProcessor;
 
 class cbEditorPanel: public EditorBase
 {
-    public:
-        cbEditorPanel( const wxString& fileName, const wxString& title, FileContent *fc );
-        virtual ~cbEditorPanel();
-    private:
-        cbEditorPanel(const cbEditorPanel &p);
-        cbEditorPanel &operator=(const cbEditorPanel &rhs);
-    public:
-        virtual bool GetModified() const;
-        virtual void SetModified(bool modified = true);
-        virtual bool Save();
-        virtual bool SaveAs();
+public:
+    cbEditorPanel( const wxString& fileName, const wxString& title, FileContent *fc );
+    virtual ~cbEditorPanel();
+private:
+    cbEditorPanel(const cbEditorPanel &p);
+    cbEditorPanel &operator=(const cbEditorPanel &rhs);
+public:
+    virtual bool GetModified() const;
+    virtual void SetModified(bool modified = true);
+    virtual bool Save();
+    virtual bool SaveAs();
 
 
-        virtual void Cut(){}
-        virtual void Copy(){}
-        virtual void Paste(){}
-        virtual void DeleteSelection(){}
-        virtual bool CanPaste() const { return false; }
-        virtual bool IsReadOnly() const { return false; }
-        virtual bool CanSelectAll() const { return false; }
-        virtual void SelectAll(){return;}
-        virtual bool HasSelection() const { return false; }
-        //virtual bool CanCut() const{return false;}
-        //virtual bool CanCopy() const{return false;}
+    virtual void Cut() {}
+    virtual void Copy() {}
+    virtual void Paste() {}
+    virtual void DeleteSelection() {}
+    virtual bool CanPaste() const
+    {
+        return false;
+    }
+    virtual bool IsReadOnly() const
+    {
+        return false;
+    }
+    virtual bool CanSelectAll() const
+    {
+        return false;
+    }
+    virtual void SelectAll()
+    {
+        return;
+    }
+    virtual bool HasSelection() const
+    {
+        return false;
+    }
+    //virtual bool CanCut() const{return false;}
+    //virtual bool CanCopy() const{return false;}
 
-        /** @brief Sets the editor's filename.
-          * @param filename The filename to set.
-          */
-        virtual void SetFilename(const wxString& filename);
+    /** @brief Sets the editor's filename.
+      * @param filename The filename to set.
+      */
+    virtual void SetFilename(const wxString& filename);
 
-    private:
-        virtual bool CanUndo() const;
-        virtual bool CanRedo() const;
-        virtual void Undo();
-        virtual void Redo();
+private:
+    virtual bool CanUndo() const;
+    virtual bool CanRedo() const;
+    virtual void Undo();
+    virtual void Redo();
 
-    protected:
-        void UpdateModified();
+protected:
+    void UpdateModified();
 
-        bool m_IsOK;
-        //wxCommandProcessor *m_cmdprocessor;
-        FileContent *m_filecontent;
+    bool m_IsOK;
+    //wxCommandProcessor *m_cmdprocessor;
+    FileContent *m_filecontent;
 
-    private:
+private:
 
-        //DECLARE_EVENT_TABLE()
+    //DECLARE_EVENT_TABLE()
 };
 
 #endif

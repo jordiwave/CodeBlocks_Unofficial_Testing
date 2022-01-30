@@ -5,14 +5,14 @@
 
 namespace P
 {
-	class M_C : public C
-	{
-  public:
-             M_C();
-		virtual ~M_C() {};
+class M_C : public C
+{
+public:
+    M_C();
+    virtual ~M_C() {};
 
-		virtual void init() const {};
-	};
+    virtual void init() const {};
+};
 }
 
 #endif //#ifndef _M_C_H_

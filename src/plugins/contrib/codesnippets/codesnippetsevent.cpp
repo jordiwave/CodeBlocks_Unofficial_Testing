@@ -12,10 +12,10 @@
  * License:   GPL
  **************************************************************/
 
- #include "codesnippetsevent.h"
- #include "version.h"
- #include "csutils.h"
- #include "snippetsconfig.h"
+#include "codesnippetsevent.h"
+#include "version.h"
+#include "csutils.h"
+#include "snippetsconfig.h"
 
 DEFINE_EVENT_TYPE(wxEVT_CODESNIPPETS_SELECT)
 DEFINE_EVENT_TYPE(wxEVT_CODESNIPPETS_EDIT)
@@ -26,7 +26,7 @@ IMPLEMENT_DYNAMIC_CLASS(CodeSnippetsEvent, wxCommandEvent)
 // ----------------------------------------------------------------------------
 CodeSnippetsEvent::CodeSnippetsEvent(wxEventType commandType, int id)
 // ----------------------------------------------------------------------------
-					 :wxCommandEvent(commandType, id)
+    :wxCommandEvent(commandType, id)
 {
     //ctor
     //-m_propagationLevel = wxEVENT_PROPAGATE_MAX ;
@@ -45,14 +45,14 @@ CodeSnippetsEvent::CodeSnippetsEvent(wxEventType commandType, int id)
 // -- clone -------------------------------------------------------------------
 CodeSnippetsEvent::CodeSnippetsEvent( const CodeSnippetsEvent& Event)
 // ----------------------------------------------------------------------------
-				  :wxCommandEvent(Event)
-				  ,m_SnippetID(0)
-				  ,m_SnippetString(wxEmptyString)
+    :wxCommandEvent(Event)
+    ,m_SnippetID(0)
+    ,m_SnippetString(wxEmptyString)
 {
     // This is invoked by CodeSnippetsEvent::Clone() from AddPendingEvent etc
-	m_SnippetID = Event.GetSnippetID();
-	m_SnippetString = Event.GetSnippetString();
-	m_EventTypeLabel = Event.GetEventTypeLabel();
+    m_SnippetID = Event.GetSnippetID();
+    m_SnippetString = Event.GetSnippetString();
+    m_EventTypeLabel = Event.GetEventTypeLabel();
 }
 // ----------------------------------------------------------------------------
 CodeSnippetsEvent::~CodeSnippetsEvent()
@@ -86,28 +86,28 @@ bool CodeSnippetsEvent::PostCodeSnippetsEvent(const CodeSnippetsEvent& event)
     wxWindow* pCodeSnippetsTreeCtrl = (wxWindow*)GetConfig()->GetSnippetsTreeCtrl();
     wxWindow* pSearchPath = utils.FindWindowRecursively( (wxWindow*)GetConfig()->GetThreadSearchFrame(), _T("SCIwindow") );
 
-    #if defined(LOGGING)
+#if defined(LOGGING)
     if ( pCodeSnippetsTreeCtrl)
         LOGIT( _T("PostCodeSnippetsEvent TreeCtrl[%p][%s]"), pCodeSnippetsTreeCtrl, pCodeSnippetsTreeCtrl->GetName().c_str());
     if ( pSearchPath )
         LOGIT( _T("PostCodeSnippetsEvent SrchPath[%p][%s]"), pSearchPath, pSearchPath->GetName().c_str());
-    #endif
+#endif
     // Propagate the event to ThreadSearchFrame
     if ( pSearchPath && pCodeSnippetsTreeCtrl)
     {
-        #if wxCHECK_VERSION(3, 0, 0)
+#if wxCHECK_VERSION(3, 0, 0)
         pSearchPath->GetEventHandler()->AddPendingEvent( (wxEvent&)event );
         pCodeSnippetsTreeCtrl->GetEventHandler()->AddPendingEvent( (wxEvent&)event );
-        #else
+#else
         pSearchPath->AddPendingEvent( (wxEvent&)event );
         pCodeSnippetsTreeCtrl->AddPendingEvent( (wxEvent&)event );
-        #endif
+#endif
     }
     else
     {
-        #if defined(LOGGING)
+#if defined(LOGGING)
         LOGIT( _T("PostCodeSnippetsEvent[%s]"), _T("Failed"));
-        #endif
+#endif
         return false;
     }
 
@@ -139,28 +139,28 @@ bool CodeSnippetsEvent::ProcessCodeSnippetsEvent(const CodeSnippetsEvent& event)
 
     wxWindow* pCodeSnippetsTreeCtrl = (wxWindow*)GetConfig()->GetSnippetsTreeCtrl();
     wxWindow* pSearchPath = utils.FindWindowRecursively( GetConfig()->GetThreadSearchFrame(), _T("SCIwindow") );
-    #if defined(LOGGING)
+#if defined(LOGGING)
     if ( pCodeSnippetsTreeCtrl)
         LOGIT( _T("PostCodeSnippetsEvent TreeCtrl[%p][%s]"), pCodeSnippetsTreeCtrl, pCodeSnippetsTreeCtrl->GetName().c_str());
     if ( pSearchPath )
         LOGIT( _T("PostCodeSnippetsEvent SrchPath[%p][%s]"), pSearchPath, pSearchPath->GetName().c_str());
-    #endif
+#endif
     // Propagate the event to ThreadSearchFrame
     if ( pSearchPath && pCodeSnippetsTreeCtrl)
     {
-        #if wxCHECK_VERSION(3, 0, 0)
+#if wxCHECK_VERSION(3, 0, 0)
         pSearchPath->GetEventHandler()->ProcessEvent( (wxEvent&)event );
         pCodeSnippetsTreeCtrl->GetEventHandler()->ProcessEvent( (wxEvent&)event );
-        #else
+#else
         pSearchPath->ProcessEvent( (wxEvent&)event );
         pCodeSnippetsTreeCtrl->ProcessEvent( (wxEvent&)event );
-        #endif
+#endif
     }
     else
     {
-        #if defined(LOGGING)
+#if defined(LOGGING)
         LOGIT( _T("PostCodeSnippetsEvent[%s]"), _T("Failed"));
-        #endif
+#endif
         return false;
     }
 

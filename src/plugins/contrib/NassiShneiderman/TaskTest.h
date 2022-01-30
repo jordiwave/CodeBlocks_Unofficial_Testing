@@ -7,7 +7,7 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 #include "Task.h"
@@ -31,22 +31,22 @@ class NassiView;
 
 class TaskTest: public Task
 {
-  public:
-		TaskTest(NassiView *view);
-		virtual ~TaskTest();
+public:
+    TaskTest(NassiView *view);
+    virtual ~TaskTest();
 
-		virtual void Start();
+    virtual void Start();
 
-		virtual HooverDrawlet *OnMouseLeftUp(wxMouseEvent &event, const wxPoint &position);
-        virtual HooverDrawlet *OnMouseLeftDown(wxMouseEvent &event, const wxPoint &position);
-        virtual HooverDrawlet *OnMouseRightDown(wxMouseEvent &event, const wxPoint &position);
-        virtual HooverDrawlet *OnMouseRightUp(wxMouseEvent& event, const wxPoint &position);
-        virtual HooverDrawlet *OnMouseMove(wxMouseEvent &event, const wxPoint &position);
-        virtual HooverDrawlet *OnKeyDown(wxKeyEvent &event, const wxPoint &position);
-        virtual HooverDrawlet *OnChar(wxKeyEvent &event, const wxPoint &position);
+    virtual HooverDrawlet *OnMouseLeftUp(wxMouseEvent &event, const wxPoint &position);
+    virtual HooverDrawlet *OnMouseLeftDown(wxMouseEvent &event, const wxPoint &position);
+    virtual HooverDrawlet *OnMouseRightDown(wxMouseEvent &event, const wxPoint &position);
+    virtual HooverDrawlet *OnMouseRightUp(wxMouseEvent& event, const wxPoint &position);
+    virtual HooverDrawlet *OnMouseMove(wxMouseEvent &event, const wxPoint &position);
+    virtual HooverDrawlet *OnKeyDown(wxKeyEvent &event, const wxPoint &position);
+    virtual HooverDrawlet *OnChar(wxKeyEvent &event, const wxPoint &position);
 
-	private:
-        NassiView *m_view;
+private:
+    NassiView *m_view;
 };
 
 #endif

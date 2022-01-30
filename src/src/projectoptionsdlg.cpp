@@ -10,30 +10,30 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include "manager.h"
-    #include "logmanager.h"
-    #include "macrosmanager.h"
-    #include "pluginmanager.h"
-    #include "projectmanager.h"
-    #include "scriptingmanager.h"
-    #include "compilerfactory.h"
-    #include "globals.h"
-    #include "cbproject.h"
-    #include "cbplugin.h"
-    #include "sdk_events.h"
+#include "manager.h"
+#include "logmanager.h"
+#include "macrosmanager.h"
+#include "pluginmanager.h"
+#include "projectmanager.h"
+#include "scriptingmanager.h"
+#include "compilerfactory.h"
+#include "globals.h"
+#include "cbproject.h"
+#include "cbplugin.h"
+#include "sdk_events.h"
 
-    #include <wx/button.h>
-    #include <wx/checkbox.h>
-    #include <wx/checklst.h>
-    #include <wx/choice.h>
-    #include <wx/filedlg.h>
-    #include <wx/filefn.h> // wxMatchWild
-    #include <wx/notebook.h>
-    #include <wx/sizer.h>
-    #include <wx/spinctrl.h>
-    #include <wx/stattext.h>
-    #include <wx/treectrl.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/checklst.h>
+#include <wx/choice.h>
+#include <wx/filedlg.h>
+#include <wx/filefn.h> // wxMatchWild
+#include <wx/notebook.h>
+#include <wx/sizer.h>
+#include <wx/spinctrl.h>
+#include <wx/stattext.h>
+#include <wx/treectrl.h>
+#include <wx/xrc/xmlres.h>
 #endif
 
 #include <wx/radiobox.h>
@@ -98,8 +98,8 @@ END_EVENT_TABLE()
 // class constructor
 ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     : m_Project(project),
-    m_Current_Sel(-1),
-    m_pCompiler(nullptr)
+      m_Current_Sel(-1),
+      m_pCompiler(nullptr)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgProjectOptions"),_T("wxScrollingDialog"));
     XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
@@ -212,8 +212,8 @@ void ProjectOptionsDlg::FillScripts()
     wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
     wxTreeItemId sel = tc->GetSelection();
     CompileOptionsBase* base = sel == tc->GetRootItem()
-                                ? static_cast<CompileOptionsBase*>(m_Project)
-                                : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
+                               ? static_cast<CompileOptionsBase*>(m_Project)
+                               : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
 
     wxListBox* lstScripts = XRCCTRL(*this, "lstPreScripts", wxListBox);
     lstScripts->Clear();
@@ -288,56 +288,56 @@ void ProjectOptionsDlg::DoTargetChange(bool saveOld)
 //        Compiler* compiler = CompilerFactory::Compilers[target->GetCompilerIndex()];
         switch (targetType)
         {
-            case ttConsoleOnly:
-                chkCR->Enable(true);
-                chkCR->SetValue(target->GetUseConsoleRunner());
-                // purposely fall-through
+        case ttConsoleOnly:
+            chkCR->Enable(true);
+            chkCR->SetValue(target->GetUseConsoleRunner());
+        // purposely fall-through
 
-            case ttExecutable:
-            case ttDynamicLib:
-            case ttNative:
-            case ttStaticLib:
-                txt->SetValue(target->GetOutputFilename());
-                txt->Enable(true);
-                txtI->SetValue(target->GetDynamicLibImportFilename());
-                txtI->Enable(chkSL->IsChecked() && targetType == ttDynamicLib);
-                txtD->SetValue(target->GetDynamicLibDefFilename());
-                txtD->Enable(chkCD->IsChecked() && targetType == ttDynamicLib);
-                txtW->SetValue(target->GetWorkingDir());
-                txtW->Enable(targetType == ttExecutable ||
-                             targetType == ttConsoleOnly ||
-                             targetType == ttNative ||
-                             targetType == ttDynamicLib);
-                txtO->SetValue(target->GetObjectOutput());
-                txtO->Enable(true);
-                browse->Enable(true);
-                browseI->Enable(chkSL->IsChecked() && targetType == ttDynamicLib);
-                browseD->Enable(chkCD->IsChecked() && targetType == ttDynamicLib);
-                browseW->Enable(targetType == ttExecutable ||
-                                targetType == ttConsoleOnly ||
-                                targetType == ttNative ||
-                                targetType == ttDynamicLib);
-                browseO->Enable(true);
-                break;
+        case ttExecutable:
+        case ttDynamicLib:
+        case ttNative:
+        case ttStaticLib:
+            txt->SetValue(target->GetOutputFilename());
+            txt->Enable(true);
+            txtI->SetValue(target->GetDynamicLibImportFilename());
+            txtI->Enable(chkSL->IsChecked() && targetType == ttDynamicLib);
+            txtD->SetValue(target->GetDynamicLibDefFilename());
+            txtD->Enable(chkCD->IsChecked() && targetType == ttDynamicLib);
+            txtW->SetValue(target->GetWorkingDir());
+            txtW->Enable(targetType == ttExecutable ||
+                         targetType == ttConsoleOnly ||
+                         targetType == ttNative ||
+                         targetType == ttDynamicLib);
+            txtO->SetValue(target->GetObjectOutput());
+            txtO->Enable(true);
+            browse->Enable(true);
+            browseI->Enable(chkSL->IsChecked() && targetType == ttDynamicLib);
+            browseD->Enable(chkCD->IsChecked() && targetType == ttDynamicLib);
+            browseW->Enable(targetType == ttExecutable ||
+                            targetType == ttConsoleOnly ||
+                            targetType == ttNative ||
+                            targetType == ttDynamicLib);
+            browseO->Enable(true);
+            break;
 
-            case ttCommandsOnly: // fall-through
-            default: // for commands-only targets
-                txt->SetValue(_T(""));
-                txt->Enable(false);
-                txtI->SetValue(_T(""));
-                txtI->Enable(false);
-                txtD->SetValue(_T(""));
-                txtD->Enable(false);
-                txtW->SetValue(_T(""));
-                txtW->Enable(false);
-                txtO->SetValue(_T(""));
-                txtO->Enable(false);
-                browse->Enable(false);
-                browseI->Enable(false);
-                browseD->Enable(false);
-                browseW->Enable(false);
-                browseO->Enable(false);
-                break;
+        case ttCommandsOnly: // fall-through
+        default: // for commands-only targets
+            txt->SetValue(_T(""));
+            txt->Enable(false);
+            txtI->SetValue(_T(""));
+            txtI->Enable(false);
+            txtD->SetValue(_T(""));
+            txtD->Enable(false);
+            txtW->SetValue(_T(""));
+            txtW->Enable(false);
+            txtO->SetValue(_T(""));
+            txtO->Enable(false);
+            browse->Enable(false);
+            browseI->Enable(false);
+            browseD->Enable(false);
+            browseW->Enable(false);
+            browseO->Enable(false);
+            break;
         }
     }
 
@@ -454,8 +454,8 @@ void ProjectOptionsDlg::OnProjectTypeChanged(cb_unused wxCommandEvent& event)
     txtD->Enable(chkCD->IsChecked() && targetType == ttDynamicLib);
     txtW->SetValue(target->GetWorkingDir());
     txtW->Enable(targetType == ttExecutable ||
-                targetType == ttConsoleOnly ||
-                targetType == ttDynamicLib);
+                 targetType == ttConsoleOnly ||
+                 targetType == ttDynamicLib);
     txtO->Enable(true);
     txtO->SetValue(target->GetObjectOutput());
     browse->Enable(true);
@@ -486,87 +486,87 @@ void ProjectOptionsDlg::OnProjectTypeChanged(cb_unused wxCommandEvent& event)
 
     switch (targetType)
     {
-        case ttConsoleOnly:
-        case ttExecutable:
-            if (ext != FileFilters::EXECUTABLE_EXT)
-                fname.SetExt(FileFilters::EXECUTABLE_EXT);
-            if (!libpre.IsEmpty() && name.StartsWith(libpre))
-            {
-                name.Remove(0, libpre.Length());
-                fname.SetName(name);
-            }
-            txt->SetValue(fname.GetFullPath());
-            txtI->SetValue(_T(""));
-            txtD->SetValue(_T(""));
-            break;
-        case ttDynamicLib:
-            if (ext != FileFilters::DYNAMICLIB_EXT)
-                fname.SetExt(FileFilters::DYNAMICLIB_EXT);
-            if (extI != FileFilters::STATICLIB_EXT)
-                fnameI.SetExt(FileFilters::STATICLIB_EXT);
-            if (extD != _T("def"))
-                fnameD.SetExt(_T("def"));
-            if (!libpre.IsEmpty() && name.StartsWith(libpre))
-            {
-                name.Remove(0, libpre.Length());
-                fname.SetName(name);
-            }
-            if (!libpreI.IsEmpty() && nameI.StartsWith(libpreI))
-            {
-                nameI.Remove(0, libpreI.Length());
-                fnameI.SetName(nameI);
-            }
-            if (!libpreD.IsEmpty() && nameD.StartsWith(libpreD))
-            {
-                nameD.Remove(0, libpreD.Length());
-                fnameD.SetName(nameD);
-            }
-            txt->SetValue(fname.GetFullPath());
-            txtI->SetValue(fnameI.GetFullPath());
-            txtD->SetValue(fnameD.GetFullPath());
-            break;
-        case ttStaticLib:
-            if (ext != libext)
-                fname.SetExt(libext);
-            if (!libpre.IsEmpty() && !name.StartsWith(libpre))
-            {
-                name.Prepend(libpre);
-                fname.SetName(name);
-            }
-            txt->SetValue(fname.GetFullPath());
-            txtI->SetValue(_T(""));
-            txtD->SetValue(_T(""));
-            break;
-        case ttNative:
-            if (ext != FileFilters::NATIVE_EXT)
-                fname.SetExt(FileFilters::NATIVE_EXT);
-            if (!libpre.IsEmpty() && name.StartsWith(libpre))
-            {
-                name.Remove(0, libpre.Length());
-                fname.SetName(name);
-            }
-            txt->SetValue(fname.GetFullPath());
-            txtI->SetValue(_T(""));
-            txtD->SetValue(_T(""));
-            break;
-        case ttCommandsOnly: // fall-through
-        default:
-            txt->SetValue(_T(""));
-            txtI->SetValue(_T(""));
-            txtD->SetValue(_T(""));
-            txtW->SetValue(_T(""));
-            txtO->SetValue(_T(""));
-            txt->Enable(false);
-            txtI->Enable(false);
-            txtD->Enable(false);
-            txtW->Enable(false);
-            txtO->Enable(false);
-            browse->Enable(false);
-            browseI->Enable(false);
-            browseD->Enable(false);
-            browseW->Enable(false);
-            browseO->Enable(false);
-            break;
+    case ttConsoleOnly:
+    case ttExecutable:
+        if (ext != FileFilters::EXECUTABLE_EXT)
+            fname.SetExt(FileFilters::EXECUTABLE_EXT);
+        if (!libpre.IsEmpty() && name.StartsWith(libpre))
+        {
+            name.Remove(0, libpre.Length());
+            fname.SetName(name);
+        }
+        txt->SetValue(fname.GetFullPath());
+        txtI->SetValue(_T(""));
+        txtD->SetValue(_T(""));
+        break;
+    case ttDynamicLib:
+        if (ext != FileFilters::DYNAMICLIB_EXT)
+            fname.SetExt(FileFilters::DYNAMICLIB_EXT);
+        if (extI != FileFilters::STATICLIB_EXT)
+            fnameI.SetExt(FileFilters::STATICLIB_EXT);
+        if (extD != _T("def"))
+            fnameD.SetExt(_T("def"));
+        if (!libpre.IsEmpty() && name.StartsWith(libpre))
+        {
+            name.Remove(0, libpre.Length());
+            fname.SetName(name);
+        }
+        if (!libpreI.IsEmpty() && nameI.StartsWith(libpreI))
+        {
+            nameI.Remove(0, libpreI.Length());
+            fnameI.SetName(nameI);
+        }
+        if (!libpreD.IsEmpty() && nameD.StartsWith(libpreD))
+        {
+            nameD.Remove(0, libpreD.Length());
+            fnameD.SetName(nameD);
+        }
+        txt->SetValue(fname.GetFullPath());
+        txtI->SetValue(fnameI.GetFullPath());
+        txtD->SetValue(fnameD.GetFullPath());
+        break;
+    case ttStaticLib:
+        if (ext != libext)
+            fname.SetExt(libext);
+        if (!libpre.IsEmpty() && !name.StartsWith(libpre))
+        {
+            name.Prepend(libpre);
+            fname.SetName(name);
+        }
+        txt->SetValue(fname.GetFullPath());
+        txtI->SetValue(_T(""));
+        txtD->SetValue(_T(""));
+        break;
+    case ttNative:
+        if (ext != FileFilters::NATIVE_EXT)
+            fname.SetExt(FileFilters::NATIVE_EXT);
+        if (!libpre.IsEmpty() && name.StartsWith(libpre))
+        {
+            name.Remove(0, libpre.Length());
+            fname.SetName(name);
+        }
+        txt->SetValue(fname.GetFullPath());
+        txtI->SetValue(_T(""));
+        txtD->SetValue(_T(""));
+        break;
+    case ttCommandsOnly: // fall-through
+    default:
+        txt->SetValue(_T(""));
+        txtI->SetValue(_T(""));
+        txtD->SetValue(_T(""));
+        txtW->SetValue(_T(""));
+        txtO->SetValue(_T(""));
+        txt->Enable(false);
+        txtI->Enable(false);
+        txtD->Enable(false);
+        txtW->Enable(false);
+        txtO->Enable(false);
+        browse->Enable(false);
+        browseI->Enable(false);
+        browseD->Enable(false);
+        browseW->Enable(false);
+        browseO->Enable(false);
+        break;
     }
 }
 
@@ -673,8 +673,8 @@ void ProjectOptionsDlg::OnEditBuildTargetClick(cb_unused wxCommandEvent& event)
 
     wxString oldTargetName = target->GetTitle();
     wxString newTargetName = cbGetTextFromUser(_("Change the build target name:"),
-                                               _("Rename build target"),
-                                              oldTargetName, this);
+                             _("Rename build target"),
+                             oldTargetName, this);
     if (newTargetName == oldTargetName || !ValidateTargetName(newTargetName))
         return;
 
@@ -701,8 +701,8 @@ void ProjectOptionsDlg::OnCopyBuildTargetClick(cb_unused wxCommandEvent& event)
     }
 
     wxString newTargetName = cbGetTextFromUser(_("Enter the duplicated build target's name:"),
-                                               _("Duplicate build target"),
-                                               _("Copy of ") + target->GetTitle(), this);
+                             _("Duplicate build target"),
+                             _("Copy of ") + target->GetTitle(), this);
     if (!ValidateTargetName(newTargetName))
         return;
     if (!m_Project->DuplicateBuildTarget(targetIdx, newTargetName))
@@ -781,10 +781,10 @@ void ProjectOptionsDlg::OnExportTargetClick(cb_unused wxCommandEvent& event)
         return;
 
     AnnoyingDialog dlg(_("Create project from target confirmation"),
-                        _("This project will be saved before exporting the build target.\n"
-                        "Are you sure you want to export the selected "
-                        "build target to a new project?"),
-                        wxART_QUESTION);
+                       _("This project will be saved before exporting the build target.\n"
+                         "Are you sure you want to export the selected "
+                         "build target to a new project?"),
+                       wxART_QUESTION);
     if (dlg.ShowModal() == AnnoyingDialog::rtYES)
     {
         if (m_Project->ExportTargetAsProject(target->GetTitle()))
@@ -1114,8 +1114,8 @@ void ProjectOptionsDlg::OnAddScript(cb_unused wxCommandEvent& event)
         wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
         wxTreeItemId sel = tc->GetSelection();
         CompileOptionsBase* base = sel == tc->GetRootItem()
-                                    ? static_cast<CompileOptionsBase*>(m_Project)
-                                    : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
+                                   ? static_cast<CompileOptionsBase*>(m_Project)
+                                   : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
         base->AddBuildScript(fname.GetFullPath());
     }
 }
@@ -1133,8 +1133,8 @@ void ProjectOptionsDlg::OnRemoveScript(cb_unused wxCommandEvent& event)
     wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
     wxTreeItemId sel = tc->GetSelection();
     CompileOptionsBase* base = sel == tc->GetRootItem()
-                                ? static_cast<CompileOptionsBase*>(m_Project)
-                                : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
+                               ? static_cast<CompileOptionsBase*>(m_Project)
+                               : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
     base->RemoveBuildScript(script);
     int isel = ctrl->GetSelection();
     ctrl->Delete(isel);
@@ -1182,8 +1182,8 @@ void ProjectOptionsDlg::OnScriptMoveUp(cb_unused wxSpinEvent& event)
     wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
     wxTreeItemId sel = tc->GetSelection();
     CompileOptionsBase* base = sel == tc->GetRootItem()
-                                ? static_cast<CompileOptionsBase*>(m_Project)
-                                : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
+                               ? static_cast<CompileOptionsBase*>(m_Project)
+                               : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
 
     int isel = ctrl->GetSelection();
     wxString ssel = ctrl->GetStringSelection();
@@ -1206,8 +1206,8 @@ void ProjectOptionsDlg::OnScriptMoveDown(cb_unused wxSpinEvent& event)
     wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
     wxTreeItemId sel = tc->GetSelection();
     CompileOptionsBase* base = sel == tc->GetRootItem()
-                                ? static_cast<CompileOptionsBase*>(m_Project)
-                                : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
+                               ? static_cast<CompileOptionsBase*>(m_Project)
+                               : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
 
     int isel = ctrl->GetSelection();
     wxString ssel = ctrl->GetStringSelection();

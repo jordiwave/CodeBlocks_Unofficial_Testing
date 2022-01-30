@@ -28,44 +28,50 @@
 class wxBZipInputStream : public wxFilterInputStream
 {
 public:
-	//	if bLessMemory is true, uses decompression alg w/less mem, but less speed also
-	wxBZipInputStream(wxInputStream& stream, bool bLessMemory = false); 
-	virtual ~wxBZipInputStream();
+    //	if bLessMemory is true, uses decompression alg w/less mem, but less speed also
+    wxBZipInputStream(wxInputStream& stream, bool bLessMemory = false);
+    virtual ~wxBZipInputStream();
 
-	wxInputStream& ReadRaw(void* pBuffer, size_t size);
-	off_t TellRawI();
-	off_t SeekRawI(off_t pos, wxSeekMode sm = wxFromStart);
+    wxInputStream& ReadRaw(void* pBuffer, size_t size);
+    off_t TellRawI();
+    off_t SeekRawI(off_t pos, wxSeekMode sm = wxFromStart);
 
-	void* GetHandleI() {return hZip;}
+    void* GetHandleI()
+    {
+        return hZip;
+    }
 protected:
-	size_t OnSysRead(void *buffer, size_t size);
+    size_t OnSysRead(void *buffer, size_t size);
 
-	void* hZip;
-	char pBuffer[WXBZBS];
-	int nBufferPos;
+    void* hZip;
+    char pBuffer[WXBZBS];
+    int nBufferPos;
 };
 class wxBZipOutputStream : public wxFilterOutputStream
 {
 public:
-	wxBZipOutputStream(wxOutputStream& stream, wxInt32 nCompressionFactor = 4);
-	virtual ~wxBZipOutputStream();
+    wxBZipOutputStream(wxOutputStream& stream, wxInt32 nCompressionFactor = 4);
+    virtual ~wxBZipOutputStream();
 
-	wxOutputStream& WriteRaw(void* pBuffer, size_t size);
-	off_t TellRawO();
-	off_t SeekRawO(off_t pos, wxSeekMode sm = wxFromStart);
+    wxOutputStream& WriteRaw(void* pBuffer, size_t size);
+    off_t TellRawO();
+    off_t SeekRawO(off_t pos, wxSeekMode sm = wxFromStart);
 
-	void* GetHandleO() {return hZip;}
+    void* GetHandleO()
+    {
+        return hZip;
+    }
 protected:
-	size_t OnSysWrite(const void *buffer, size_t bufsize);
-	
-	void* hZip;
-	char pBuffer[WXBZBS];
+    size_t OnSysWrite(const void *buffer, size_t bufsize);
+
+    void* hZip;
+    char pBuffer[WXBZBS];
 };
 class wxBZipStream : public wxBZipInputStream, wxBZipOutputStream
 {
 public:
-	wxBZipStream(wxInputStream& istream, wxOutputStream& ostream);
-	virtual ~wxBZipStream();
+    wxBZipStream(wxInputStream& istream, wxOutputStream& ostream);
+    virtual ~wxBZipStream();
 };
 
 #endif

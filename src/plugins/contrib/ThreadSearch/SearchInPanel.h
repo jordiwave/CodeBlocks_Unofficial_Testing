@@ -29,7 +29,8 @@ class wxCommandEvent;
 class wxCustomButton;
 class wxImageList;
 
-class SearchInPanel: public wxPanel {
+class SearchInPanel: public wxPanel
+{
 public:
     // begin wxGlade: SearchInPanel::ids
     // end wxGlade

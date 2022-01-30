@@ -10,23 +10,23 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "cbproject.h"
-    #include "compilerfactory.h"
-    #include "editormanager.h"
-    #include "editorcolourset.h"
-    #include "logmanager.h"
-    #include "projectmanager.h"
-    #include <wx/xrc/xmlres.h>
-    #include <wx/intl.h>
-    #include <wx/choice.h>
-    #include <wx/checkbox.h>
-    #include <wx/textctrl.h>
-    #include <wx/button.h>
-    #include <wx/filename.h>
-    #include <wx/file.h>
-    #include <wx/checklst.h>
-    #include <wx/stattext.h>
-    #include <wx/sizer.h>
+#include "cbproject.h"
+#include "compilerfactory.h"
+#include "editormanager.h"
+#include "editorcolourset.h"
+#include "logmanager.h"
+#include "projectmanager.h"
+#include <wx/xrc/xmlres.h>
+#include <wx/intl.h>
+#include <wx/choice.h>
+#include <wx/checkbox.h>
+#include <wx/textctrl.h>
+#include <wx/button.h>
+#include <wx/filename.h>
+#include <wx/file.h>
+#include <wx/checklst.h>
+#include <wx/stattext.h>
+#include <wx/sizer.h>
 #endif
 
 #ifdef __WXMSW__
@@ -86,7 +86,7 @@ inline void AnalyseLine(const CommentToken &language, wxString line, bool &comme
     {
         // First comment sign found is a single line comment sign
         if ( (first_single_line_comment>-1)
-        &&((first_multi_line_comment_begin==-1)||((first_multi_line_comment_begin>-1)&&(first_single_line_comment<first_multi_line_comment_begin))) )
+                &&((first_multi_line_comment_begin==-1)||((first_multi_line_comment_begin>-1)&&(first_single_line_comment<first_multi_line_comment_begin))) )
         {
             comment = true;
             if (first_single_line_comment > 0)
@@ -343,8 +343,8 @@ void ProjectFileOptionsDlg::FillGeneralProperties()
     wxDateTime modTime = m_FileName.GetModificationTime();
     XRCCTRL(*this, "staticDateTimeStamp", wxStaticText)->SetLabel(
         wxString::Format(_("%02hd/%02hd/%d %02hd:%02hd:%02hd"), modTime.GetDay(),
-        modTime.GetMonth() + 1, modTime.GetYear(), modTime.GetHour(), // seems I have to add 1 for the month ?
-        modTime.GetMinute(), modTime.GetSecond()));                   // because the return value of GetMonth() is an enum
+                         modTime.GetMonth() + 1, modTime.GetYear(), modTime.GetHour(), // seems I have to add 1 for the month ?
+                         modTime.GetMinute(), modTime.GetSecond()));                   // because the return value of GetMonth() is an enum
 }
 
 void ProjectFileOptionsDlg::FillCompilers()
@@ -369,7 +369,7 @@ void ProjectFileOptionsDlg::UpdateBuildCommand()
     int idx = cmb->GetSelection();
     Compiler* compiler = CompilerFactory::GetCompiler(idx);
     if (!compiler)
-      return;
+        return;
 
     FileType ft = FileTypeOf(m_ProjectFile->relativeFilename);
     wxString cmd;
@@ -426,5 +426,5 @@ bool ProjectFileOptionsDlg::ToggleFileReadOnly(bool setReadOnly)
 #endif
 
     return (   ( setReadOnly && !m_FileName.IsFileWritable())
-            || (!setReadOnly &&  m_FileName.IsFileWritable()) );
+               || (!setReadOnly &&  m_FileName.IsFileWritable()) );
 }

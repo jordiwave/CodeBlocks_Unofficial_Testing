@@ -32,7 +32,10 @@ public:
     virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* prj);
 
     // Not used:
-    virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* /*parent*/) { return 0; };
+    virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* /*parent*/)
+    {
+        return 0;
+    };
 
 protected:
     virtual void OnAttach();
@@ -41,7 +44,10 @@ protected:
 
     // Not used:
     virtual void BuildModuleMenu(const ModuleType, wxMenu*, const FileTreeData* = 0) { ; };
-    virtual bool BuildToolBar(wxToolBar* /*toolBar*/)                                { return false; };
+    virtual bool BuildToolBar(wxToolBar* /*toolBar*/)
+    {
+        return false;
+    };
 
 public:
     static EditorSettings ParseProjectSettings(const cbProject &project);

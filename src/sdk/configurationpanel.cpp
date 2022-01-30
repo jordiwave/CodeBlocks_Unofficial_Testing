@@ -15,7 +15,7 @@
 
 cbConfigurationDialog::cbConfigurationDialog(wxWindow* parent, int id, const wxString& title)
     : wxScrollingDialog(parent, id, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX),
-    m_pPanel(0)
+      m_pPanel(0)
 {
 }
 

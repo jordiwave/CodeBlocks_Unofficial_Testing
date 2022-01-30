@@ -25,31 +25,32 @@
 
 namespace
 {
-    wxsRegisterItem<wxsMessageDialog> Reg(
-        _T("MessageDialog"),               // Class base name
-        wxsTTool,                                   // Item type
-        _T("Dialogs"),                          // Category in palette
-        150,                                             // Priority in palette
-        false);                                         // We do not allow this item inside XRC files
+wxsRegisterItem<wxsMessageDialog> Reg(
+    _T("MessageDialog"),               // Class base name
+    wxsTTool,                                   // Item type
+    _T("Dialogs"),                          // Category in palette
+    150,                                             // Priority in palette
+    false);                                         // We do not allow this item inside XRC files
 
 
-    WXS_ST_BEGIN(wxsMessageDialogStyles, wxT("wxOK | wxCANCEL"));
-        WXS_ST_CATEGORY("wxMessageDialog")
-        WXS_ST(wxOK)
-        WXS_ST(wxCANCEL)
-        WXS_ST(wxYES_NO)
-        WXS_ST(wxYES_DEFAULT)
-        WXS_ST(wxNO_DEFAULT)
-        WXS_ST(wxICON_EXCLAMATION)
-        WXS_ST(wxICON_HAND)
-        WXS_ST(wxICON_ERROR)
-        WXS_ST(wxICON_QUESTION)
-        WXS_ST(wxICON_INFORMATION)
-        // This style is Windows only.
-        if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
-            WXS_ST(wxSTAY_ON_TOP)
-        }
-    WXS_ST_END()
+WXS_ST_BEGIN(wxsMessageDialogStyles, wxT("wxOK | wxCANCEL"));
+WXS_ST_CATEGORY("wxMessageDialog")
+WXS_ST(wxOK)
+WXS_ST(wxCANCEL)
+WXS_ST(wxYES_NO)
+WXS_ST(wxYES_DEFAULT)
+WXS_ST(wxNO_DEFAULT)
+WXS_ST(wxICON_EXCLAMATION)
+WXS_ST(wxICON_HAND)
+WXS_ST(wxICON_ERROR)
+WXS_ST(wxICON_QUESTION)
+WXS_ST(wxICON_INFORMATION)
+// This style is Windows only.
+if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
+{
+    WXS_ST(wxSTAY_ON_TOP)
+}
+WXS_ST_END()
 }
 
 /*! \brief Ctor
@@ -63,8 +64,8 @@ wxsMessageDialog::wxsMessageDialog(wxsItemResData *Data):
             NULL,
             wxsMessageDialogStyles,
             (flVariable | flId | flSubclass | flExtraCode)),
-            m_sCaption(wxMessageBoxCaptionStr),
-            m_sMessage(wxEmptyString)
+    m_sCaption(wxMessageBoxCaptionStr),
+    m_sMessage(wxEmptyString)
 {
 }
 
@@ -77,16 +78,16 @@ void wxsMessageDialog::OnBuildCreatingCode()
 {
     switch(GetLanguage())
     {
-        case wxsCPP:
-            AddHeader(_T("<wx/msgdlg.h>"), GetInfo().ClassName, 0);
-            Codef(_T("%C(%W, %t, %t, %T, %P);\n"), m_sMessage.wx_str(), m_sCaption.wx_str());
-            BuildSetupWindowCode();
-            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-            break;
+    case wxsCPP:
+        AddHeader(_T("<wx/msgdlg.h>"), GetInfo().ClassName, 0);
+        Codef(_T("%C(%W, %t, %t, %T, %P);\n"), m_sMessage.wx_str(), m_sCaption.wx_str());
+        BuildSetupWindowCode();
+        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+        break;
 
-        case wxsUnknownLanguage: // fall-through
-        default:
-            wxsCodeMarks::Unknown(_T("wxsMessageDialog::OnBuildCreatingCode"), GetLanguage());
+    case wxsUnknownLanguage: // fall-through
+    default:
+        wxsCodeMarks::Unknown(_T("wxsMessageDialog::OnBuildCreatingCode"), GetLanguage());
     }
 }
 

@@ -15,21 +15,21 @@
 // If no selected text & Shift-middleMouse, paste clipboard data at cursor position(like ctrl-v).
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma implementation "MouseSap.h"
+#pragma implementation "MouseSap.h"
 #endif
 
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-    #include <wx/app.h>
-	#include <wx/intl.h>
-	#include <wx/listctrl.h>
-	#include "cbeditor.h"
-	#include "configmanager.h"
-	#include "editormanager.h"
-	#include "manager.h"
-	#include "personalitymanager.h"
-	#include "sdk_events.h" // EVT_APP_STARTUP_DONE
+#include <wx/app.h>
+#include <wx/intl.h>
+#include <wx/listctrl.h>
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "manager.h"
+#include "personalitymanager.h"
+#include "sdk_events.h" // EVT_APP_STARTUP_DONE
 #endif
 
 #include <wx/fileconf.h> // wxFileConfig
@@ -44,8 +44,8 @@
 namespace
 // ----------------------------------------------------------------------------
 {
-    PluginRegistrant<MouseSap> reg(_T("MouseSap"));
-    int ID_DLG_DONE = wxNewId();
+PluginRegistrant<MouseSap> reg(_T("MouseSap"));
+int ID_DLG_DONE = wxNewId();
 };
 
 int ID_DLG_DONE = wxNewId();
@@ -65,8 +65,8 @@ MouseSap* MouseSap::pMouseSap;
 MouseSap::MouseSap()
 // ----------------------------------------------------------------------------
 {
-	//ctor
-	// anchor to this one and only object
+    //ctor
+    // anchor to this one and only object
     m_pMyLog            = nullptr;
     m_bEditorsAttached  = false;
     m_pMMSapEvents      = nullptr;
@@ -77,19 +77,19 @@ MouseSap::MouseSap()
 MouseSap::~MouseSap()
 // ----------------------------------------------------------------------------
 {
-	//dtor
+    //dtor
 }
 
 // ----------------------------------------------------------------------------
 void MouseSap::OnAttach()
 // ----------------------------------------------------------------------------
 {
-	// do whatever initialization you need for your plugin
-	// NOTE: after this function, the inherited member variable
-	// IsAttached() will be TRUE...
-	// You should check for it in other functions, because if it
-	// is FALSE, it means that the application did *not* "load"
-	// (see: does not need) this plugin...
+    // do whatever initialization you need for your plugin
+    // NOTE: after this function, the inherited member variable
+    // IsAttached() will be TRUE...
+    // You should check for it in other functions, because if it
+    // is FALSE, it means that the application did *not* "load"
+    // (see: does not need) this plugin...
 
     m_pMyLog = nullptr;
     m_pMMSapEvents = nullptr;
@@ -97,50 +97,50 @@ void MouseSap::OnAttach()
     wxWindow* pcbWindow = Manager::Get()->GetAppWindow();
     m_pMS_Window = pcbWindow;
 
-    #if defined(LOGGING)
-        wxLog::EnableLogging(true);
-        /*wxLogWindow**/ m_pMyLog = new wxLogWindow(pcbWindow, wxT("MouseSap"), true, false);
-        wxLog::SetActiveTarget(m_pMyLog);
-        m_pMyLog->Flush();
-        m_pMyLog->GetFrame()->Move(20,20);
-        wxLogMessage(_T("Logging MouseSap version %s"),wxString(wxT(VERSION)).c_str());
-	#endif
+#if defined(LOGGING)
+    wxLog::EnableLogging(true);
+    /*wxLogWindow**/ m_pMyLog = new wxLogWindow(pcbWindow, wxT("MouseSap"), true, false);
+    wxLog::SetActiveTarget(m_pMyLog);
+    m_pMyLog->Flush();
+    m_pMyLog->GetFrame()->Move(20,20);
+    wxLogMessage(_T("Logging MouseSap version %s"),wxString(wxT(VERSION)).c_str());
+#endif
 
     // Set current plugin version
-	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
-	pInfo->version = wxT(VERSION);
+    PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
+    pInfo->version = wxT(VERSION);
 
-	// register event sink AppStartupDone
+    // register event sink AppStartupDone
     Manager::Get()->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<MouseSap, CodeBlocksEvent>(this, &MouseSap::OnAppStartupDone));
 
-	return ;
+    return ;
 }
 // ----------------------------------------------------------------------------
 void MouseSap::OnRelease(bool /*appShutDown*/)
 // ----------------------------------------------------------------------------
 {
-	// do de-initialization for your plugin
-	// if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,
-	// which means you must not use any of the SDK Managers
-	// NOTE: after this function, the inherited member variable
-	// IsAttached() will be FALSE...
+    // do de-initialization for your plugin
+    // if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,
+    // which means you must not use any of the SDK Managers
+    // NOTE: after this function, the inherited member variable
+    // IsAttached() will be FALSE...
 
-	// Remove all Mouse event handlers
-	DetachAllWindows();
-	#if defined(LOGGING)
-	// Reminder: deleting the log crashes CB on exit
-	//-delete pMyLog;
-	//-m_pMyLog = 0;
-    #endif
+    // Remove all Mouse event handlers
+    DetachAllWindows();
+#if defined(LOGGING)
+    // Reminder: deleting the log crashes CB on exit
+    //-delete pMyLog;
+    //-m_pMyLog = 0;
+#endif
     // Catch creation of windows
     Disconnect( wxEVT_CREATE,
-        (wxObjectEventFunction) (wxEventFunction)
-        (wxCommandEventFunction) &MouseSap::OnWindowOpen);
+                (wxObjectEventFunction) (wxEventFunction)
+                (wxCommandEventFunction) &MouseSap::OnWindowOpen);
 
     // Catch Destroyed windows
     Disconnect( wxEVT_DESTROY,
-        (wxObjectEventFunction) (wxEventFunction)
-        (wxCommandEventFunction) &MouseSap::OnWindowClose);
+                (wxObjectEventFunction) (wxEventFunction)
+                (wxCommandEventFunction) &MouseSap::OnWindowClose);
 
     if (m_pMMSapEvents)
         delete m_pMMSapEvents;
@@ -151,8 +151,11 @@ void MouseSap::OnRelease(bool /*appShutDown*/)
 cbConfigurationPanel* MouseSap::GetConfigurationPanel(wxWindow* parent)
 // ----------------------------------------------------------------------------
 {
-	//create and display the configuration dialog for your plugin
-    if(not IsAttached()) {	return 0;}
+    //create and display the configuration dialog for your plugin
+    if(not IsAttached())
+    {
+        return 0;
+    }
     // Create a configuration dialogue and hand it off to codeblocks
 
     m_bPreviousMouseSapEnabled = m_bMouseSapEnabled;
@@ -172,9 +175,9 @@ void MouseSap::OnDialogDone(cbMouseSapCfg* pdlg)
 
     m_bMouseSapEnabled  = pdlg->GetMouseSapEnabled();
 
-    #ifdef LOGGING
-     LOGIT(_T("MouseSapEnabled:%d"),    m_bMouseDragScrollEnabled);
-    #endif //LOGGING
+#ifdef LOGGING
+    LOGIT(_T("MouseSapEnabled:%d"),    m_bMouseDragScrollEnabled);
+#endif //LOGGING
 
     // Preserve setting across runs
     Manager::Get()->GetConfigManager(_T("mousesap"))->Write(_T("/enabled"), m_bMouseSapEnabled);
@@ -203,8 +206,8 @@ bool MouseSap::IsAttachedTo(wxWindow* p)
 void MouseSap::AttachWindow(wxWindow *p)
 // ----------------------------------------------------------------------------{
 {
-	if (!p || IsAttachedTo(p))
-		return;		// already attached !!!
+    if (!p || IsAttachedTo(p))
+        return;		// already attached !!!
 
     // allow only static windows to be attached by codeblocks
     // Disappearing frames/windows cause crashes
@@ -213,16 +216,16 @@ void MouseSap::AttachWindow(wxWindow *p)
     wxString windowName = p->GetName().MakeLower();
 
     if (wxNOT_FOUND == m_UsableWindows.Index(windowName,false))
-     {
-        #if defined(LOGGING)
+    {
+#if defined(LOGGING)
         LOGIT(wxT("MMSap::Attach skipping [%s]"), p->GetName().c_str());
-        #endif
+#endif
         return;
-     }
+    }
 
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT(wxT("MMSap::Attach - attaching to [%s] %p"), p->GetName().c_str(),p);
-    #endif
+#endif
 
     //add window to our array, attach a mouse event handler
     m_EditorPtrs.Add(p);
@@ -230,41 +233,41 @@ void MouseSap::AttachWindow(wxWindow *p)
     MMSapEvents* thisEvtHndlr = m_pMMSapEvents;
 
     p->Connect(wxEVT_MIDDLE_DOWN,
-                    (wxObjectEventFunction)(wxEventFunction)
-                    (wxMouseEventFunction)&MMSapEvents::OnMouseEvent,
-                     NULL, thisEvtHndlr);
+               (wxObjectEventFunction)(wxEventFunction)
+               (wxMouseEventFunction)&MMSapEvents::OnMouseEvent,
+               NULL, thisEvtHndlr);
     p->Connect(wxEVT_MIDDLE_UP,
-                    (wxObjectEventFunction)(wxEventFunction)
-                    (wxMouseEventFunction)&MMSapEvents::OnMouseEvent,
-                     NULL, thisEvtHndlr);
-    p->Connect(wxEVT_KILL_FOCUS ,
-                    (wxObjectEventFunction)(wxEventFunction)
-                    (wxFocusEventFunction)&MMSapEvents::OnKillFocusEvent,
-                     NULL, thisEvtHndlr);
-    #if defined(LOGGING)
-     LOGIT(_T("MMSap:Attach Window:%p Handler:%p"), p,thisEvtHndlr);
-    #endif
+               (wxObjectEventFunction)(wxEventFunction)
+               (wxMouseEventFunction)&MMSapEvents::OnMouseEvent,
+               NULL, thisEvtHndlr);
+    p->Connect(wxEVT_KILL_FOCUS,
+               (wxObjectEventFunction)(wxEventFunction)
+               (wxFocusEventFunction)&MMSapEvents::OnKillFocusEvent,
+               NULL, thisEvtHndlr);
+#if defined(LOGGING)
+    LOGIT(_T("MMSap:Attach Window:%p Handler:%p"), p,thisEvtHndlr);
+#endif
 }
 // ----------------------------------------------------------------------------
 void MouseSap::AttachWindowsRecursively(wxWindow *p)
 // ----------------------------------------------------------------------------{
 {
- 	if (!p)
-		return;
+    if (!p)
+        return;
 
-	AttachWindow(p);
+    AttachWindow(p);
 
- 	// this is the standard way wxWidgets uses to iterate through children...
-	for (wxWindowList::compatibility_iterator node = p->GetChildren().GetFirst();
-		node;
-		node = node->GetNext())
-	{
-		// recursively attach each child
-		wxWindow *win = (wxWindow *)node->GetData();
+    // this is the standard way wxWidgets uses to iterate through children...
+    for (wxWindowList::compatibility_iterator node = p->GetChildren().GetFirst();
+            node;
+            node = node->GetNext())
+    {
+        // recursively attach each child
+        wxWindow *win = (wxWindow *)node->GetData();
 
-		if (win)
-			AttachWindowsRecursively(win);
-	}
+        if (win)
+            AttachWindowsRecursively(win);
+    }
 }
 // ----------------------------------------------------------------------------
 wxWindow* MouseSap::FindWindowRecursively(const wxWindow* parent, const wxWindow* handle)
@@ -278,8 +281,8 @@ wxWindow* MouseSap::FindWindowRecursively(const wxWindow* parent, const wxWindow
 
         // It wasn't, so check all its children
         for ( wxWindowList::compatibility_iterator node = parent->GetChildren().GetFirst();
-              node;
-              node = node->GetNext() )
+                node;
+                node = node->GetNext() )
         {
             // recursively check each child
             wxWindow *win = (wxWindow *)node->GetData();
@@ -304,8 +307,8 @@ wxWindow* MouseSap::WindowExists(wxWindow *parent)
 
     // start at very top of wx's windows
     for ( wxWindowList::compatibility_iterator node = wxTopLevelWindows.GetFirst();
-          node;
-          node = node->GetNext() )
+            node;
+            node = node->GetNext() )
     {
         // recursively check each window & its children
         wxWindow* win = node->GetData();
@@ -322,53 +325,55 @@ void MouseSap::DetachWindow(wxWindow* thisEditor)
 {
     if ( (thisEditor) && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND))
     {
-         #if defined(LOGGING)
-          LOGIT(_T("MMSap:Detaching %p"), thisEditor);
-         #endif
+#if defined(LOGGING)
+        LOGIT(_T("MMSap:Detaching %p"), thisEditor);
+#endif
 
         MMSapEvents* thisEvtHandler = m_pMMSapEvents;
         m_EditorPtrs.Remove(thisEditor);
 
         // If win already deleted, dont worry about receiving events
-	    if ( not WindowExists(thisEditor) )
-	    {
-            #if defined(LOGGING)
-	        LOGIT(_T("MMSap:DetachAll window NOT found %p"), thisEditor);
-            #endif
-	    } else {
+        if ( not WindowExists(thisEditor) )
+        {
+#if defined(LOGGING)
+            LOGIT(_T("MMSap:DetachAll window NOT found %p"), thisEditor);
+#endif
+        }
+        else
+        {
             thisEditor->Disconnect(wxEVT_MIDDLE_DOWN,
-                            (wxObjectEventFunction)(wxEventFunction)
-                            (wxMouseEventFunction)&MMSapEvents::OnMouseEvent,
-                             NULL, thisEvtHandler);
+                                   (wxObjectEventFunction)(wxEventFunction)
+                                   (wxMouseEventFunction)&MMSapEvents::OnMouseEvent,
+                                   NULL, thisEvtHandler);
             thisEditor->Disconnect(wxEVT_MIDDLE_UP,
-                            (wxObjectEventFunction)(wxEventFunction)
-                            (wxMouseEventFunction)&MMSapEvents::OnMouseEvent,
-                             NULL, thisEvtHandler);
-            thisEditor->Disconnect(wxEVT_KILL_FOCUS ,
-                            (wxObjectEventFunction)(wxEventFunction)
-                            (wxFocusEventFunction)&MMSapEvents::OnKillFocusEvent,
-                            NULL, thisEvtHandler);
+                                   (wxObjectEventFunction)(wxEventFunction)
+                                   (wxMouseEventFunction)&MMSapEvents::OnMouseEvent,
+                                   NULL, thisEvtHandler);
+            thisEditor->Disconnect(wxEVT_KILL_FOCUS,
+                                   (wxObjectEventFunction)(wxEventFunction)
+                                   (wxFocusEventFunction)&MMSapEvents::OnKillFocusEvent,
+                                   NULL, thisEvtHandler);
 
         }//fi (not winExists
 
-        #if defined(LOGGING)
-         LOGIT(_T("Detach: Editor:%p EvtHndlr: %p"),thisEditor,thisEvtHandler);
-        #endif
+#if defined(LOGGING)
+        LOGIT(_T("Detach: Editor:%p EvtHndlr: %p"),thisEditor,thisEvtHandler);
+#endif
     }//if (thisEditor..
 }//Detach
 // ----------------------------------------------------------------------------
 void MouseSap::DetachAllWindows()
 // ----------------------------------------------------------------------------
 {
-	// delete all handlers
-    #if defined(LOGGING)
-	LOGIT(wxT("MMSap:DetachAll - detaching all [%lu] targets"), static_cast<unsigned long>(m_EditorPtrs.GetCount()) );
-    #endif
+    // delete all handlers
+#if defined(LOGGING)
+    LOGIT(wxT("MMSap:DetachAll - detaching all [%lu] targets"), static_cast<unsigned long>(m_EditorPtrs.GetCount()) );
+#endif
 
     // Detach from memorized windows and remove event handlers
     while( m_EditorPtrs.GetCount() )
     {
-	    wxWindow* pw = (wxWindow*)m_EditorPtrs.Item(0);
+        wxWindow* pw = (wxWindow*)m_EditorPtrs.Item(0);
         DetachWindow(pw);
     }//elihw
 
@@ -439,9 +444,9 @@ void MouseSap::OnAppStartupDone(CodeBlocksEvent& event)
 {
     // EVT_APP_STARTUP_DONE
     //attach windows
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT(_T("MouseSap::AppStartupDone"));
-    #endif
+#endif
 
     OnAppStartupDoneInit();
 
@@ -463,13 +468,13 @@ void MouseSap::OnAppStartupDoneInit()
 
     // Catch creation of windows
     Connect( wxEVT_CREATE,
-        (wxObjectEventFunction) (wxEventFunction)
-        (wxCommandEventFunction) &MouseSap::OnWindowOpen);
+             (wxObjectEventFunction) (wxEventFunction)
+             (wxCommandEventFunction) &MouseSap::OnWindowOpen);
 
     // Catch Destroyed windows
     Connect( wxEVT_DESTROY,
-        (wxObjectEventFunction) (wxEventFunction)
-        (wxCommandEventFunction) &MouseSap::OnWindowClose);
+             (wxObjectEventFunction) (wxEventFunction)
+             (wxCommandEventFunction) &MouseSap::OnWindowClose);
 
     if (not m_bEditorsAttached)
     {
@@ -491,7 +496,7 @@ void MouseSap::OnWindowOpen(wxEvent& event)
     // so here we do it ourselves. If not initialized and this is the first
     // scintilla window, initialize now.
     if ( (not m_bEditorsAttached)
-        && ( Window->GetName().Lower() == wxT("sciwindow")) )
+            && ( Window->GetName().Lower() == wxT("sciwindow")) )
         OnAppStartupDoneInit();
 
     // Attach a split window (or any other window)
@@ -503,11 +508,12 @@ void MouseSap::OnWindowOpen(wxEvent& event)
         if (ed)
         {
             if (pWindow->GetParent() ==  ed)
-            {   AttachWindow(pWindow);
-                #ifdef LOGGING
-                    LOGIT( _T("OnWindowOpen Attached:%p name: %s"),
-                            pWindow, pWindow->GetName().GetData() );
-                #endif //LOGGING
+            {
+                AttachWindow(pWindow);
+#ifdef LOGGING
+                LOGIT( _T("OnWindowOpen Attached:%p name: %s"),
+                       pWindow, pWindow->GetName().GetData() );
+#endif //LOGGING
             }
         }//fi (ed)
     }//fi m_bNote...
@@ -523,11 +529,12 @@ void MouseSap::OnWindowClose(wxEvent& event)
     wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
 
     if ( (pWindow) && (m_EditorPtrs.Index(pWindow) != wxNOT_FOUND))
-    {   // window is one of ours
+    {
+        // window is one of ours
         DetachWindow(pWindow);
-        #ifdef LOGGING
-         LOGIT( _T("OnWindowClose Detached %p"), pWindow);
-        #endif //LOGGING
+#ifdef LOGGING
+        LOGIT( _T("OnWindowClose Detached %p"), pWindow);
+#endif //LOGGING
     }
     event.Skip();
 }//OnWindowClose
@@ -548,9 +555,9 @@ END_EVENT_TABLE()
 MMSapEvents::~MMSapEvents()
 // ----------------------------------------------------------------------------
 {
-    #if defined(LOGGING)
-     LOGIT(_T("MMSapEvents dtor"));
-    #endif
+#if defined(LOGGING)
+    LOGIT(_T("MMSapEvents dtor"));
+#endif
     return;
 }//dtor
 
@@ -559,27 +566,39 @@ void MMSapEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
 // ----------------------------------------------------------------------------
 {
     // For windows, user must enable MiddleMousePaste thru editor configuration
-    #if defined(__WXMSW__)
+#if defined(__WXMSW__)
     if (not Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/enable_middle_mouse_paste"), false))
-        {event.Skip(); return;}
-    #endif
+    {
+        event.Skip();
+        return;
+    }
+#endif
 
     if (not MouseSap::pMouseSap->m_bMouseSapEnabled)
-        {event.Skip(); return; }
+    {
+        event.Skip();
+        return;
+    }
 
     if (not ::wxGetKeyState(WXK_SHIFT)) //2020/06/7
-        {event.Skip(); return;}
+    {
+        event.Skip();
+        return;
+    }
 
     //remember event window pointer
     //-wxObject* pEvtObject = event.GetEventObject();
     int eventType = event.GetEventType();
 
-    #if defined(__WXMSW__)
+#if defined(__WXMSW__)
     // Why is an event getting in here when this window doesnt have the OS focus
     MouseSap* pMMSap = MouseSap::pMouseSap;
     if (::wxGetActiveWindow() != pMMSap->m_pMS_Window)
-        {event.Skip(); return;}
-    #endif
+    {
+        event.Skip();
+        return;
+    }
+#endif
 
     // differentiate window, left, right split window
     cbEditor* ed = 0;
@@ -588,32 +607,43 @@ void MMSapEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
     cbStyledTextCtrl* pRightSplitWin = 0;*/
 
     ed  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if ( not ed ) { event.Skip(); return; }
+    if ( not ed )
+    {
+        event.Skip();
+        return;
+    }
 
     pControl = ed->GetControl();
     // editor must have the current focus
     if ( pControl not_eq wxWindow::FindFocus()  )
-        { event.Skip(); return; }
+    {
+        event.Skip();
+        return;
+    }
 
     /*pLeftSplitWin = ed->GetLeftSplitViewControl();
     pRightSplitWin = ed->GetRightSplitViewControl();*/
 
-    #if defined(LOGGING)
+#if defined(LOGGING)
     //LOGIT(_T("OnMouseSap[%d]"), eventType);
-    #endif
+#endif
 
     if ( eventType == wxEVT_MIDDLE_DOWN)
     {
         // shift key must be down
         if (not ::wxGetKeyState(WXK_SHIFT)) //2020/06/7
-            {event.Skip(); return;}
+        {
+            event.Skip();
+            return;
+        }
 
         OnMiddleMouseDown( event, pControl );
         return;
     }// if KeyDown
 
     else if ( eventType == wxEVT_MIDDLE_UP )
-    {   // We have to return so we can preserve the selection on gtk
+    {
+        // We have to return so we can preserve the selection on gtk
         return;
     }// if KeyUp
 
@@ -679,18 +709,18 @@ void MMSapEvents::OnMiddleMouseDown(wxMouseEvent& event, cbStyledTextCtrl* ed)
         end += selectedText.length();
     }
 
-    #if defined(LOGGING)
+#if defined(LOGGING)
     //LOGIT( _T("pos,start,end[%d][%d][%d]"), pos, start, end);
-    #endif
+#endif
 
     // paste selected text at current cursor position
     ed->InsertText(pos, selectedText);
     //-SetSelection(start, end);
     ed->GotoPos(pos);
     ed->SetSelectionVoid(pos, pos+selectedText.length());
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("OnMiddleMouseDown[%s]"), selectedText.c_str());
-    #endif
+#endif
 
 } // end of OnGPM
 // ----------------------------------------------------------------------------
@@ -711,9 +741,9 @@ void MMSapEvents::PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed,
     //        is primarily used in connection with MS Windows-style clipboard operations.
     //        Select+Copy. The data resides in the buffer.
 
-    #if defined(LOGGING)
+#if defined(LOGGING)
     LOGIT( _T("MMSapEvents pasting from Clipboard"));
-    #endif
+#endif
 
     int pos = ed->PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
     if(pos == wxSCI_INVALID_POSITION)
@@ -729,7 +759,7 @@ void MMSapEvents::PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed,
         wxTheClipboard->UsePrimarySelection(true);
         gotData = wxTheClipboard->GetData(data); //try Primary user text selection
         wxTheClipboard->UsePrimarySelection(false);
-    if ( (not gotData) or (shiftKeyState and ctrlKeyState)) //try for clipboard
+        if ( (not gotData) or (shiftKeyState and ctrlKeyState)) //try for clipboard
             gotData = wxTheClipboard->GetData(data); //try non-primary
         wxTheClipboard->Close();
     }
@@ -766,12 +796,21 @@ void MMSapEvents::OnKillFocusEvent( wxFocusEvent& event )
 //    #endif
 
     if (not platform::windows)
-        { event.Skip(); return; }
+    {
+        event.Skip();
+        return;
+    }
     if (not MouseSap::pMouseSap->m_bMouseSapEnabled)
-        { event.Skip(); return; }
+    {
+        event.Skip();
+        return;
+    }
 
     if (not ::wxGetKeyState(WXK_SHIFT))
-        {event.Skip(); return;}
+    {
+        event.Skip();
+        return;
+    }
 
     // If selected text, copy to clipboard
 
@@ -782,20 +821,21 @@ void MMSapEvents::OnKillFocusEvent( wxFocusEvent& event )
     cbEditor* ed = 0;
     wxString selectedText = wxEmptyString;
     if ( ((wxWindow*)pEvtObject)->GetName().Lower() == _T("sciwindow") )
-    {   ed = (cbEditor*)((wxWindow*)pEvtObject)->GetParent();
+    {
+        ed = (cbEditor*)((wxWindow*)pEvtObject)->GetParent();
         pControl = (cbStyledTextCtrl*)pEvtObject;
     }
 
     if ( ed ) do
-    {
-        if ( not MouseSap::pMouseSap->IsAttachedTo( pControl ) )
-            break;
+        {
+            if ( not MouseSap::pMouseSap->IsAttachedTo( pControl ) )
+                break;
 
-        selectedText = pControl->GetSelectedText();
-        if ( selectedText.IsEmpty() )
-            break;
+            selectedText = pControl->GetSelectedText();
+            if ( selectedText.IsEmpty() )
+                break;
 
-        #if defined(__WXGTK__)
+#if defined(__WXGTK__)
             //gtk_clipboard_set_text(
             //    gtk_clipboard_get(GDK_SELECTION_PRIMARY),
             //    selectedText.mb_str(wxConvUTF8),
@@ -806,20 +846,21 @@ void MMSapEvents::OnKillFocusEvent( wxFocusEvent& event )
                 wxTheClipboard->AddData(new wxTextDataObject(selectedText));
                 wxTheClipboard->Close();
             }
-        #else //__WXMSW__ //testing
-                if (wxTheClipboard->Open())
-                {
-                    wxTheClipboard->AddData(new wxTextDataObject(selectedText));
-                    wxTheClipboard->Close();
-                }
-        #endif
+#else //__WXMSW__ //testing
+            if (wxTheClipboard->Open())
+            {
+                wxTheClipboard->AddData(new wxTextDataObject(selectedText));
+                wxTheClipboard->Close();
+            }
+#endif
 
-        #if defined(LOGGING)
+#if defined(LOGGING)
             DumpClipboard();
             if (ed && pControl && (not selectedText.IsEmpty()))
-            LOGIT( _T("OnKillFocus[%s][%s]"), ed->GetTitle().c_str(),selectedText.c_str());
-        #endif
-    }while(false);
+                LOGIT( _T("OnKillFocus[%s][%s]"), ed->GetTitle().c_str(),selectedText.c_str());
+#endif
+        }
+        while(false);
 
     event.Skip();
 
@@ -828,7 +869,7 @@ void MMSapEvents::OnKillFocusEvent( wxFocusEvent& event )
 void MMSapEvents::DumpClipboard()
 // ----------------------------------------------------------------------------
 {
- #if defined(LOGGING)
+#if defined(LOGGING)
     wxTextDataObject primaryData;
     wxTextDataObject normalData;
     bool gotPrimaryData = false;
@@ -844,7 +885,8 @@ void MMSapEvents::DumpClipboard()
         gotNormalData = wxTheClipboard->GetData(normalData);
         wxTheClipboard->Close();
     }
-    else {
+    else
+    {
         LOGIT(wxT("DumpClipboard: failed to open"));
         return;
     }
@@ -855,7 +897,7 @@ void MMSapEvents::DumpClipboard()
         normalText = normalData.GetText() ;
     LOGIT(wxT("Clipboard Primary[%s]"), primaryText.c_str() );
     LOGIT(wxT("Clipboard Normal[%s]"),  normalText.c_str() );
-  #endif //defined(LOGGING)
+#endif //defined(LOGGING)
 }//DumpClipboard
 ///////////////////////////////////////////////////////////////////////////////////
 //  The way Scintilla does GPM

@@ -102,7 +102,7 @@ EditorConfigUI::EditorConfigUI(wxWindow* parent, EditorConfig* plugin, cbProject
         spnTabWidth->SetValue(es.tab_width);
         spnIndent->SetValue(es.indent);
         choEOLMode->SetSelection(es.eol_mode);
-   }
+    }
 }
 
 EditorConfigUI::~EditorConfigUI()

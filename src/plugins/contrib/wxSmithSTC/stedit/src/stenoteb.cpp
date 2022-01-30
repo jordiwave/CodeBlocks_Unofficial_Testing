@@ -107,7 +107,7 @@ void wxSTEditorNotebook::CreateOptions(const wxSTEditorOptions& options)
     // create the popupmenu if desired
     wxSTEditorMenuManager *steMM = GetOptions().GetMenuManager();
     if (steMM && GetOptions().HasNotebookOption(STN_CREATE_POPUPMENU) &&
-        !GetOptions().GetNotebookPopupMenu())
+            !GetOptions().GetNotebookPopupMenu())
     {
         GetOptions().SetNotebookPopupMenu(steMM->CreateNotebookPopupMenu(), false);
     }
@@ -209,8 +209,8 @@ int wxSTEditorNotebook::FindEditorPage(const wxSTEditor* editor)
 
     // assume that we want the selected editor so check it first
     if ((sel >= 0) && GetEditorSplitter(sel) &&
-        ((GetEditorSplitter(sel)->GetEditor1() == editor) ||
-         (GetEditorSplitter(sel)->GetEditor2() == editor)) )
+            ((GetEditorSplitter(sel)->GetEditor1() == editor) ||
+             (GetEditorSplitter(sel)->GetEditor2() == editor)) )
     {
         return sel;
     }
@@ -222,8 +222,8 @@ int wxSTEditorNotebook::FindEditorPage(const wxSTEditor* editor)
             if (n == sel) continue;
 
             if (GetEditorSplitter(n) &&
-                ((GetEditorSplitter(n)->GetEditor1() == editor) ||
-                 (GetEditorSplitter(n)->GetEditor2() == editor)) )
+                    ((GetEditorSplitter(n)->GetEditor1() == editor) ||
+                     (GetEditorSplitter(n)->GetEditor2() == editor)) )
             {
                 return n;
             }
@@ -269,7 +269,7 @@ wxSTEditorSplitter *wxSTEditorNotebook::CreateSplitter(wxWindowID id)
 
     // did anyone get the event and set their own splitter window
     if ((event.GetEventObject() != NULL) &&
-        (wxDynamicCast(event.GetEventObject(), wxSTEditorSplitter) != NULL))
+            (wxDynamicCast(event.GetEventObject(), wxSTEditorSplitter) != NULL))
     {
         newSplitter = wxDynamicCast(event.GetEventObject(), wxSTEditorSplitter);
         if (newSplitter->GetParent() != this)
@@ -289,7 +289,7 @@ wxSTEditorSplitter *wxSTEditorNotebook::CreateSplitter(wxWindowID id)
 }
 
 wxSTEditorSplitter* wxSTEditorNotebook::InsertEditorSplitter(int nPage, wxWindowID win_id,
-                                                             const wxString& title, bool bSelect)
+        const wxString& title, bool bSelect)
 {
     if (GetPageCount() >= GetMaxPageCount())
     {
@@ -304,13 +304,13 @@ wxSTEditorSplitter* wxSTEditorNotebook::InsertEditorSplitter(int nPage, wxWindow
     splitter->GetEditor()->NewFile(title);
     if (!InsertEditorSplitter(nPage, splitter, bSelect))
     {
-       wxDELETE(splitter); // failed to insert it, delete it to not leak memory
+        wxDELETE(splitter); // failed to insert it, delete it to not leak memory
     }
     return splitter;
 }
 
 bool wxSTEditorNotebook::InsertEditorSplitter(int nPage, wxSTEditorSplitter* splitter,
-                                              bool bSelect)
+        bool bSelect)
 {
     wxCHECK_MSG(splitter && (splitter->GetParent() == this), false,
                 wxT("Invalid wxSTEditorSplitter or parent"));
@@ -420,7 +420,7 @@ void wxSTEditorNotebook::SortTabs(int style)
         if (sel_changed)
         {
             wxNotebookEvent noteEvent(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, GetId(),
-                                    new_sel, new_sel);
+                                      new_sel, new_sel);
             noteEvent.SetString(wxT("wxSTEditorNotebook Page Change"));
             noteEvent.SetExtraLong(new_sel); // FIXME no Clone in wxNotebookEvent
             // NOTE: this may have to be AddPendingEvent for wx < 2.7 since gtk
@@ -584,155 +584,155 @@ bool wxSTEditorNotebook::HandleMenuEvent(wxCommandEvent &event)
 
     switch (win_id)
     {
-        case wxID_NEW:
-        {
-            NewPage();
-            return true;
-        }
-        case wxID_OPEN:
-        {
-            LoadFiles();
-            return true;
-        }
-        case wxID_SAVEAS:
-        {
-            wxSTEditor *editor = GetEditor();
-            if (!editor) return true; // event handled, but we couldn't do anything with it.
+    case wxID_NEW:
+    {
+        NewPage();
+        return true;
+    }
+    case wxID_OPEN:
+    {
+        LoadFiles();
+        return true;
+    }
+    case wxID_SAVEAS:
+    {
+        wxSTEditor *editor = GetEditor();
+        if (!editor) return true; // event handled, but we couldn't do anything with it.
 
-            if (!editor->IsFileFromDisk())
+        if (!editor->IsFileFromDisk())
+        {
+            editor->SaveFile(true);
+        }
+        else
+        {
+            wxFileName selectedFileName;
+            wxString   selectedFileEncoding;
+            bool       selected_file_bom = false;
+
+            bool ok = editor->SaveFileDialog(true, wxEmptyString, &selectedFileName, &selectedFileEncoding, &selected_file_bom);
+            if (!ok) return true; // they probably canceled the dialog
+
+            if (selectedFileName == editor->GetFileName())
             {
-                editor->SaveFile(true);
+                // They want to save to the same filename, update current editor.
+                editor->SaveFile(selectedFileName, selectedFileEncoding, selected_file_bom);
+                return true;
             }
             else
             {
-                wxFileName selectedFileName;
-                wxString   selectedFileEncoding;
-                bool       selected_file_bom = false;
+                // Make a new editor for the new filename, leave the original editor as is.
+                wxSTEditorSplitter *splitter = CreateSplitter(wxID_ANY);
+                wxCHECK_MSG(splitter, true, wxT("Invalid splitter"));
+                wxSTEditor *newEditor = splitter->GetEditor();
+                wxCHECK_MSG(newEditor, true, wxT("Invalid splitter editor"));
 
-                bool ok = editor->SaveFileDialog(true, wxEmptyString, &selectedFileName, &selectedFileEncoding, &selected_file_bom);
-                if (!ok) return true; // they probably canceled the dialog
+                // Make this new editor identical to the original one
+                // these are probably not necessary
+                //splitter->GetEditor()->SetOptions(editor->GetOptions());
+                //splitter->GetEditor()->RegisterPrefs(editor->GetEditorPrefs());
+                //splitter->GetEditor()->RegisterStyles(editor->GetEditorStyles());
+                //splitter->GetEditor()->RegisterLangs(editor->GetEditorLangs());
 
-                if (selectedFileName == editor->GetFileName())
+                newEditor->SetLanguage(editor->GetLanguageId());
+                newEditor->SetFileName(editor->GetFileName());
+                newEditor->SetFileEncoding(editor->GetFileEncoding());
+                newEditor->SetFileBOM(editor->GetFileBOM());
+
+                newEditor->SetText(editor->GetText());
+                newEditor->ColouriseDocument();
+                newEditor->GotoPos(editor->PositionFromLine(editor->LineFromPosition(editor->GetCurrentPos())));
+                newEditor->GotoPos(editor->GetCurrentPos());
+                newEditor->ScrollToLine(editor->GetFirstVisibleLine());
+
+                // if we can save it, then add it to the notebook
+                if (newEditor->SaveFile(selectedFileName, selectedFileEncoding, selected_file_bom))
                 {
-                    // They want to save to the same filename, update current editor.
-                    editor->SaveFile(selectedFileName, selectedFileEncoding, selected_file_bom);
-                    return true;
+                    if (!InsertEditorSplitter(-1, splitter, true))
+                        splitter->Destroy();
                 }
                 else
-                {
-                    // Make a new editor for the new filename, leave the original editor as is.
-                    wxSTEditorSplitter *splitter = CreateSplitter(wxID_ANY);
-                    wxCHECK_MSG(splitter, true, wxT("Invalid splitter"));
-                    wxSTEditor *newEditor = splitter->GetEditor();
-                    wxCHECK_MSG(newEditor, true, wxT("Invalid splitter editor"));
-
-                    // Make this new editor identical to the original one
-                    // these are probably not necessary
-                    //splitter->GetEditor()->SetOptions(editor->GetOptions());
-                    //splitter->GetEditor()->RegisterPrefs(editor->GetEditorPrefs());
-                    //splitter->GetEditor()->RegisterStyles(editor->GetEditorStyles());
-                    //splitter->GetEditor()->RegisterLangs(editor->GetEditorLangs());
-
-                    newEditor->SetLanguage(editor->GetLanguageId());
-                    newEditor->SetFileName(editor->GetFileName());
-                    newEditor->SetFileEncoding(editor->GetFileEncoding());
-                    newEditor->SetFileBOM(editor->GetFileBOM());
-
-                    newEditor->SetText(editor->GetText());
-                    newEditor->ColouriseDocument();
-                    newEditor->GotoPos(editor->PositionFromLine(editor->LineFromPosition(editor->GetCurrentPos())));
-                    newEditor->GotoPos(editor->GetCurrentPos());
-                    newEditor->ScrollToLine(editor->GetFirstVisibleLine());
-
-                    // if we can save it, then add it to the notebook
-                    if (newEditor->SaveFile(selectedFileName, selectedFileEncoding, selected_file_bom))
-                    {
-                        if (!InsertEditorSplitter(-1, splitter, true))
-                            splitter->Destroy();
-                    }
-                    else
-                        splitter->Destroy(); // problem saving, delete new editor
-                }
+                    splitter->Destroy(); // problem saving, delete new editor
             }
-            return true;
         }
-        case ID_STN_SAVE_ALL:
+        return true;
+    }
+    case ID_STN_SAVE_ALL:
+    {
+        SaveAllFiles();
+        return true;
+    }
+    case ID_STN_CLOSE_PAGE:
+    {
+        if ((GetSelection() != -1) && GetEditor(GetSelection()))
         {
-            SaveAllFiles();
-            return true;
+            ClosePage(GetSelection(), true);
         }
-        case ID_STN_CLOSE_PAGE:
+        return true;
+    }
+    case ID_STN_CLOSE_ALL:
+    {
+        if (wxYES == wxMessageBox(_("Close all pages?"), _("Confim closing all pages"),
+                                  wxICON_QUESTION|wxYES_NO, this))
         {
-            if ((GetSelection() != -1) && GetEditor(GetSelection()))
+            CloseAllPages(true, -1);
+        }
+        return true;
+    }
+    case ID_STN_CLOSE_ALL_OTHERS:
+    {
+        CloseAllPages(true, GetSelection());
+        return true;
+    }
+    case ID_STN_WIN_PREVIOUS:
+    {
+        if ((GetPageCount() > 0) && (GetSelection() - 1 >= 0))
+            SetSelection(GetSelection() - 1);
+        else if (GetPageCount() > 0)
+            SetSelection((int)GetPageCount() - 1);
+        return true;
+    }
+    case ID_STN_WIN_NEXT:
+    {
+        if ((GetPageCount() > 0) && (GetSelection() + 1 < (int)GetPageCount()))
+            SetSelection(GetSelection() + 1);
+        else if (GetPageCount() > 0)
+            SetSelection(0);
+        return true;
+    }
+    case ID_STN_WINDOWS:
+    {
+        wxSTEditorWindowsDialog(this, _("Windows"));
+        return true;
+    }
+    case ID_STE_PASTE_NEW:
+    {
+        wxString text;
+        if (wxSTEditor::GetClipboardText(&text))
+        {
+            NewPage();
+            wxSTEditor* editor = GetEditor();
+            if (editor)
             {
-                ClosePage(GetSelection(), true);
+                editor->SetText(text);
+                editor->SetModified(false);
             }
+        }
+        return true;
+    }
+    default:
+    {
+        if ((win_id >= ID_STN_GOTO_PAGE_START) && (win_id < ID_STN_GOTO_PAGE_START+n_page))
+        {
+            SetSelection(win_id - ID_STN_GOTO_PAGE_START);
             return true;
         }
-        case ID_STN_CLOSE_ALL:
+        else if ((win_id >= ID_STN_CLOSE_PAGE_START) && (win_id < ID_STN_CLOSE_PAGE_START+n_page))
         {
-            if (wxYES == wxMessageBox(_("Close all pages?"), _("Confim closing all pages"),
-                                   wxICON_QUESTION|wxYES_NO, this))
-            {
-                CloseAllPages(true, -1);
-            }
+            ClosePage(win_id - ID_STN_CLOSE_PAGE_START);
             return true;
         }
-        case ID_STN_CLOSE_ALL_OTHERS:
-        {
-            CloseAllPages(true, GetSelection());
-            return true;
-        }
-        case ID_STN_WIN_PREVIOUS:
-        {
-            if ((GetPageCount() > 0) && (GetSelection() - 1 >= 0))
-                SetSelection(GetSelection() - 1);
-            else if (GetPageCount() > 0)
-                SetSelection((int)GetPageCount() - 1);
-            return true;
-        }
-        case ID_STN_WIN_NEXT:
-        {
-            if ((GetPageCount() > 0) && (GetSelection() + 1 < (int)GetPageCount()))
-                SetSelection(GetSelection() + 1);
-            else if (GetPageCount() > 0)
-                SetSelection(0);
-            return true;
-        }
-        case ID_STN_WINDOWS:
-        {
-            wxSTEditorWindowsDialog(this, _("Windows"));
-            return true;
-        }
-        case ID_STE_PASTE_NEW:
-        {
-            wxString text;
-            if (wxSTEditor::GetClipboardText(&text))
-            {
-                NewPage();
-                wxSTEditor* editor = GetEditor();
-                if (editor)
-                {
-                    editor->SetText(text);
-                    editor->SetModified(false);
-                }
-            }
-            return true;
-        }
-        default:
-        {
-            if ((win_id >= ID_STN_GOTO_PAGE_START) && (win_id < ID_STN_GOTO_PAGE_START+n_page))
-            {
-                SetSelection(win_id - ID_STN_GOTO_PAGE_START);
-                return true;
-            }
-            else if ((win_id >= ID_STN_CLOSE_PAGE_START) && (win_id < ID_STN_CLOSE_PAGE_START+n_page))
-            {
-                ClosePage(win_id - ID_STN_CLOSE_PAGE_START);
-                return true;
-            }
-            break;
-        }
+        break;
+    }
     }
     return false;
 }
@@ -768,8 +768,8 @@ bool wxSTEditorNotebook::NewPage( const wxString& title_ )
     if (title.IsEmpty())
     {
         title = GetOptions().GetDefaultFileName();
-                //wxGetTextFromUser(_("New file name"), _("New file"),
-                //                  GetOptions().GetDefaultFileName(), this);
+        //wxGetTextFromUser(_("New file name"), _("New file"),
+        //                  GetOptions().GetDefaultFileName(), this);
     }
 
     if (title.Length())
@@ -795,9 +795,9 @@ bool wxSTEditorNotebook::LoadFile( const wxFileName &fileName_,
     if (fileName.GetFullPath().IsEmpty())
     {
         wxSTEditorFileDialog fileDialog( this, _("Open file into new notebook page"),
-                                 GetOptions().GetDefaultFilePath(),
-                                 extensions,
-                                 wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+                                         GetOptions().GetDefaultFilePath(),
+                                         extensions,
+                                         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
         fileDialog.m_encoding = encoding;
         if (fileDialog.ShowModal() == wxID_OK)
@@ -854,9 +854,9 @@ bool wxSTEditorNotebook::LoadFiles( wxArrayString *filePaths_,
     if (filePaths.GetCount() < 1u)
     {
         wxSTEditorFileDialog fileDialog( this, _("Open file(s) into new notebook page"),
-                                 GetOptions().GetDefaultFilePath(),
-                                 extensions,
-                                 wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
+                                         GetOptions().GetDefaultFilePath(),
+                                         extensions,
+                                         wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 
         fileDialog.m_encoding = encoding;
         if (fileDialog.ShowModal() == wxID_OK)
@@ -883,39 +883,39 @@ bool wxSTEditorNotebook::LoadFiles( wxArrayString *filePaths_,
     // block updating the pages while loading them
     if (m_editorTreeCtrl != NULL) m_editorTreeCtrl->Freeze();
     {
-    wxSTERecursionGuard guard(m_rGuard_UpdatePageState);
+        wxSTERecursionGuard guard(m_rGuard_UpdatePageState);
 
-    for (n = 0; n < count; n++)
-    {
-        wxString fileName(filePaths[n]);
-        wxString progressFileName;
-        // Ellipsize filename that are too long.
-        if (fileName.Length() > max_filename_len)
-            progressFileName = fileName.Mid(0, max_filename_len/2-2) + wxT(" ... ") + fileName.Mid(fileName.Length()-max_filename_len/2+2);
-        else
-            progressFileName = fileName;
-
-        if (!progDlg.Update((int)n, wxString::Format(wxT("%d/%d : "), (int)n+1, (int)count) + progressFileName))
-            break;
-
-        if (fileName.IsEmpty() || !wxFileExists(fileName))
+        for (n = 0; n < count; n++)
         {
-            // when selecting multiple files with file selector you can easily
-            // select the dir "..", throw it away
-            wxString theFileName(fileName.AfterLast(wxFILE_SEP_PATH));
-            if ((theFileName != wxT("..")) && (theFileName != wxT(".")))
+            wxString fileName(filePaths[n]);
+            wxString progressFileName;
+            // Ellipsize filename that are too long.
+            if (fileName.Length() > max_filename_len)
+                progressFileName = fileName.Mid(0, max_filename_len/2-2) + wxT(" ... ") + fileName.Mid(fileName.Length()-max_filename_len/2+2);
+            else
+                progressFileName = fileName;
+
+            if (!progDlg.Update((int)n, wxString::Format(wxT("%d/%d : "), (int)n+1, (int)count) + progressFileName))
+                break;
+
+            if (fileName.IsEmpty() || !wxFileExists(fileName))
             {
-                wxSTEditorSplitter *splitter = CreateSplitter(wxID_ANY);
-                wxCHECK_MSG(splitter, false, wxT("invalid splitter"));
-                splitter->GetEditor()->NewFile(fileName);
-                if (!InsertEditorSplitter(-1, splitter)) break; // checks overflow
+                // when selecting multiple files with file selector you can easily
+                // select the dir "..", throw it away
+                wxString theFileName(fileName.AfterLast(wxFILE_SEP_PATH));
+                if ((theFileName != wxT("..")) && (theFileName != wxT(".")))
+                {
+                    wxSTEditorSplitter *splitter = CreateSplitter(wxID_ANY);
+                    wxCHECK_MSG(splitter, false, wxT("invalid splitter"));
+                    splitter->GetEditor()->NewFile(fileName);
+                    if (!InsertEditorSplitter(-1, splitter)) break; // checks overflow
+                }
+            }
+            else
+            {
+                if (!LoadFile(fileName, wxEmptyString, encoding)) break;
             }
         }
-        else
-        {
-            if (!LoadFile(fileName, wxEmptyString, encoding)) break;
-        }
-    }
     }
 
     UpdatePageState();
@@ -968,36 +968,36 @@ void wxSTEditorNotebook::UpdateGotoCloseMenu(wxMenu *menu, int startID)
     size_t item_count = menu->GetMenuItemCount();
 
 // ========  Radio items have problems in gtk
-/*
-    // delete extra menu items (if any)
-    if (page_count < item_count)
-    {
-        for (n=page_count; n < item_count; n++)
+    /*
+        // delete extra menu items (if any)
+        if (page_count < item_count)
+        {
+            for (n=page_count; n < item_count; n++)
+                menu->Delete(startID+n);
+
+            item_count = page_count;
+        }
+
+        wxString label;
+
+        // change labels of existing items
+        for (n=0; n<item_count; n++)
+        {
+            label = wxString::Format(wxT("%2d : %s"), n+1, GetPageText(n).wx_str());
+            if (menu->GetLabel(startID+n) != label)
+                menu->SetLabel(startID+n, label);
+        }
+        // append new pages
+        for (n=item_count; n<page_count; n++)
+            menu->AppendRadioItem(startID+n, wxString::Format(wxT("%2d : %s"), n+1, GetPageText(n).wx_str()));
+    */
+    /*
+        // This just clears it and adds the items fresh
+        for (n=0; n<item_count; n++)
             menu->Delete(startID+n);
-
-        item_count = page_count;
-    }
-
-    wxString label;
-
-    // change labels of existing items
-    for (n=0; n<item_count; n++)
-    {
-        label = wxString::Format(wxT("%2d : %s"), n+1, GetPageText(n).wx_str());
-        if (menu->GetLabel(startID+n) != label)
-            menu->SetLabel(startID+n, label);
-    }
-    // append new pages
-    for (n=item_count; n<page_count; n++)
-        menu->AppendRadioItem(startID+n, wxString::Format(wxT("%2d : %s"), n+1, GetPageText(n).wx_str()));
-*/
-/*
-    // This just clears it and adds the items fresh
-    for (n=0; n<item_count; n++)
-        menu->Delete(startID+n);
-    for (n=0; n<page_count; n++)
-        menu->AppendRadioItem(startID+n, wxString::Format(wxT("%2d : %s"), n+1, GetPageText(n).wx_str()));
-*/
+        for (n=0; n<page_count; n++)
+            menu->AppendRadioItem(startID+n, wxString::Format(wxT("%2d : %s"), n+1, GetPageText(n).wx_str()));
+    */
 
 // ==== check items do not
 
@@ -1025,13 +1025,13 @@ void wxSTEditorNotebook::UpdateGotoCloseMenu(wxMenu *menu, int startID)
     for (n = item_count; n < page_count; n++)
         menu->AppendCheckItem(int(startID+n), wxString::Format(wxT("%2d : %s"), (int)n+1, GetPageText(n).wx_str()));
 
-/*
-    // use check items
-    for (n = 0; n < item_count; n++)
-        menu->Delete(startID+n);
-    for (n = 0; n < page_count; n++)
-        menu->AppendCheckItem(startID+n, wxString::Format(wxT("%2d : %s"), n+1, GetPageText(n).wx_str()));
-*/
+    /*
+        // use check items
+        for (n = 0; n < item_count; n++)
+            menu->Delete(startID+n);
+        for (n = 0; n < page_count; n++)
+            menu->AppendCheckItem(startID+n, wxString::Format(wxT("%2d : %s"), n+1, GetPageText(n).wx_str()));
+    */
 
     // show what page we're on
     int sel = GetSelection();
@@ -1042,7 +1042,7 @@ void wxSTEditorNotebook::UpdateGotoCloseMenu(wxMenu *menu, int startID)
 void wxSTEditorNotebook::UpdateAllItems()
 {
     UpdateItems(GetOptions().GetEditorPopupMenu(), GetOptions().GetMenuBar(),
-                                                   GetOptions().GetToolBar());
+                GetOptions().GetToolBar());
     UpdateItems(GetOptions().GetNotebookPopupMenu());
     UpdateItems(GetOptions().GetSplitterPopupMenu());
 }
@@ -1216,8 +1216,8 @@ void wxSTEditorNotebook::OnFindDialog(wxFindDialogEvent &event)
     if ((eventType == wxEVT_COMMAND_FIND_NEXT) && !STE_HASBIT(flags, wxFR_DOWN))
     {
         if ((labs(editor->GetSelectionEnd() - editor->GetSelectionStart()) == long(findString.Length()))
-            && (editor->GetFindReplaceData()->StringCmp(findString, editor->GetSelectedText(), flags)))
-                pos -= (STE_TextPos)findString.Length() + 1; // doesn't matter if it matches or not, skip it
+                && (editor->GetFindReplaceData()->StringCmp(findString, editor->GetSelectedText(), flags)))
+            pos -= (STE_TextPos)findString.Length() + 1; // doesn't matter if it matches or not, skip it
     }
 
     if ((eventType == wxEVT_COMMAND_FIND) || (eventType == wxEVT_COMMAND_FIND_NEXT))
@@ -1284,7 +1284,7 @@ void wxSTEditorNotebook::OnFindDialog(wxFindDialogEvent &event)
         wxMessageBox( msg, _("Finished replacing"),
                       wxOK|wxICON_INFORMATION|wxSTAY_ON_TOP,
                       wxGetTopLevelParent(this) ); // make it be on top in GTK
-                      //wxDynamicCast(event.GetEventObject(), wxDialog));
+        //wxDynamicCast(event.GetEventObject(), wxDialog));
     }
     else if (eventType == wxEVT_COMMAND_FIND_CLOSE)
     {
@@ -1308,8 +1308,8 @@ int wxSTEditorNotebook::FindString(const wxString &str, STE_TextPos start_pos,
 
     // search this page and later or before to end
     for (n = n_sel;
-         forward ? n < n_pages : n >= 0;
-         n = forward ? n+1 : n-1)
+            forward ? n < n_pages : n >= 0;
+            n = forward ? n+1 : n-1)
     {
         editor = GetEditor(n);
         if (!editor)
@@ -1330,8 +1330,8 @@ int wxSTEditorNotebook::FindString(const wxString &str, STE_TextPos start_pos,
 
     // search through remaining pages
     for (n = forward ? 0 : n_pages-1;
-         forward ? n < n_sel : n > n_sel;
-         n = forward ? n+1 : n-1)
+            forward ? n < n_sel : n > n_sel;
+            n = forward ? n+1 : n-1)
     {
         editor = GetEditor(n);
         if (!editor)
@@ -1362,8 +1362,8 @@ int wxSTEditorNotebook::FindString(const wxString &str, STE_TextPos start_pos,
 }
 
 int wxSTEditorNotebook::ReplaceAllStrings(const wxString &findString,
-                                          const wxString &replaceString,
-                                          int flags, int *pages_)
+        const wxString &replaceString,
+        int flags, int *pages_)
 {
     flags &= (~STE_FR_WRAPAROUND); // switch to new page
 
