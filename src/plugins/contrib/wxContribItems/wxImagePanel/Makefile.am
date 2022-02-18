@@ -1,19 +1,46 @@
-AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		-I$(srcdir)/include
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS) \
+			-I$(srcdir)/include
 
-wxcontribitemsdir=$(libdir)/codeblocks/wxContribItems
+if CODEBLOCKS_NT
+AM_CPPFLAGS += \
+			-DWXUSINGDLL \
+			-DwxUSE_UNICODE \
+			-D_WIN64 \
+			-DWXUSINGDLL
+endif
 
-wxcontribitems_LTLIBRARIES = libwximagepanel.la
+if CODEBLOCKS_NT_BUILD_INSTALLER
+wxcontribitemsdir = $(libdir)
+else
+wxcontribitemsdir = $(libdir)/codeblocks/wxContribItems
+endif
 
-libwximagepanel_la_LDFLAGS = -version-info 0:1:0
+wxcontribitems_LTLIBRARIES = \
+			libwximagepanel.la
 
-libwximagepanel_la_LIBADD = $(WX_LIBS)
+libwximagepanel_la_LDFLAGS = \
+			-version-info 0:1:0
+
+if CODEBLOCKS_NT
+libwximagepanel_la_LDFLAGS += \
+			-Wl,--export-all-symbols \
+			-enable-auto-image-base \
+			-add-stdcall-alias \
+			-enable-auto-import \
+			-no-undefined
+endif
+
+libwximagepanel_la_LIBADD = \
+			$(WX_LIBS)
 
 libwximagepanel_la_SOURCES = \
-./src/wxImagePanel.cpp
+			src/wxImagePanel.cpp
 
-sdkdir=$(includedir)/codeblocks/wxContribItems/wxImagePanel/include/wx
+sdkdir = $(includedir)/codeblocks/wxContribItems/wxImagePanel/include/wx
 
+if !CODEBLOCKS_NT_BUILD_INSTALLER
 sdk_HEADERS = \
-./include/wx/wxImagePanel.h
+			include/wx/wxImagePanel.h
+endif
 

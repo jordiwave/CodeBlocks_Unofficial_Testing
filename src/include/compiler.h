@@ -406,6 +406,8 @@ public:
         m_RegExes = regexes;
     }
 
+    /** @brief Set the compiler's master path (must contain "bin", "include" and "lib") and save to config file and returns previous master path */
+    virtual wxString SetMasterPathandSave(const wxString& newMasterPath);
 
     /** @brief Save settings */
     virtual void SaveSettings(const wxString& baseKey);

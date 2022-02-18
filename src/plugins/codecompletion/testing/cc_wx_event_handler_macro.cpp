@@ -18,14 +18,14 @@ public:
     wxEventTableEntry(wxEVT_NULL, 0, 0, 0, 0)
 
 #define wxBEGIN_EVENT_TABLE(theClass, baseClass) \
-        const wxEventTable theClass::sm_eventTable = \
-            { &baseClass::sm_eventTable, &theClass::sm_eventTableEntries[0] }; \
-        const wxEventTable *theClass::GetEventTable() const \
-            { return &theClass::sm_eventTable; } \
-        wxEventHashTable theClass::sm_eventHashTable(theClass::sm_eventTable); \
-        wxEventHashTable &theClass::GetEventHashTable() const \
-            { return theClass::sm_eventHashTable; } \
-        const wxEventTableEntry theClass::sm_eventTableEntries[] = { \
+            const wxEventTable theClass::sm_eventTable = \
+                { &baseClass::sm_eventTable, &theClass::sm_eventTableEntries[0] }; \
+            const wxEventTable *theClass::GetEventTable() const \
+                { return &theClass::sm_eventTable; } \
+            wxEventHashTable theClass::sm_eventHashTable(theClass::sm_eventTable); \
+            wxEventHashTable &theClass::GetEventHashTable() const \
+                { return theClass::sm_eventHashTable; } \
+            const wxEventTableEntry theClass::sm_eventTableEntries[] = { \
 
 // a simplified version of wxBEGIN_EVENT_TABLE
 //#define wxBEGIN_EVENT_TABLE(theClass, baseClass) \

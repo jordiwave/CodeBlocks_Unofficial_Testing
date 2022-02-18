@@ -1,17 +1,29 @@
-AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		-I$(srcdir)/../wxContribItems/wxthings/include
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS) \
+			-I$(top_srcdir)/src/include \
+			-I$(top_srcdir)/src/sdk/wxscintilla/include \
+			-I$(srcdir)/../wxContribItems/wxthings/include
 
+if CODEBLOCKS_NT_BUILD_INSTALLER
+pluginlibdir = $(pkgdatadir)/plugins
+else
 pluginlibdir = $(pkglibdir)/plugins
+endif
 
-pluginlib_LTLIBRARIES = libThreadSearch.la
+pluginlib_LTLIBRARIES = \
+			libThreadSearch.la
 
-libThreadSearch_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
+libThreadSearch_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-libThreadSearch_la_LIBADD = ../../../sdk/libcodeblocks.la ../wxContribItems/wxthings/libwxcustombutton.la $(WX_LIBS)
+libThreadSearch_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la ../wxContribItems/wxthings/libwxcustombutton.la $(WX_LIBS)
 
-libThreadSearch_la_SOURCES = DirectoryParamsPanel.cpp \
+libThreadSearch_la_SOURCES = \
+			DirectoryParamsPanel.cpp \
 			InsertIndexManager.cpp \
 			SearchInPanel.cpp \
 			TextFileSearcher.cpp \
@@ -33,7 +45,8 @@ libThreadSearch_la_SOURCES = DirectoryParamsPanel.cpp \
 			ThreadSearchViewManagerLayout.cpp \
 			ThreadSearchViewManagerMessagesNotebook.cpp
 
-noinst_HEADERS =  	DirectoryParamsPanel.h \
+noinst_HEADERS = \
+			DirectoryParamsPanel.h \
 			InsertIndexManager.h \
 			logging.h \
 			SearchInPanel.h \
@@ -58,7 +71,7 @@ noinst_HEADERS =  	DirectoryParamsPanel.h \
 			ThreadSearchViewManagerMessagesNotebook.h
 
 imagesForZip = \
-	resources/images/16x16/findfdisabled.png \
+			resources/images/16x16/findfdisabled.png \
 	resources/images/16x16/findf.png \
 	resources/images/16x16/folderdisabled.png \
 	resources/images/16x16/folder.png \
@@ -283,21 +296,24 @@ imagesForZip = \
 	resources/images/64x64/workspace.png \
 	resources/images/64x64/workspaceselected.png
 
-EXTRA_DIST = 	$(srcdir)/*.cbp \
-		$(srcdir)/ThreadSearch.wxg \
-		$(srcdir)/update* \
-		$(srcdir)/manifest.xml \
-		$(srcdir)/resources/ThreadSearch.xcf \
-		$(imagesForZip)
+EXTRA_DIST = \
+			$(srcdir)/*.cbp \
+			$(srcdir)/ThreadSearch.wxg \
+			$(srcdir)/update* \
+			$(srcdir)/manifest.xml \
+			$(srcdir)/resources/ThreadSearch.xcf \
+			$(imagesForZip)
 
-pkgdata_DATA = ThreadSearch.zip
-CLEANFILES = $(pkgdata_DATA)
+pkgdata_DATA = \
+			ThreadSearch.zip
+CLEANFILES = \
+			$(pkgdata_DATA)
 
 ThreadSearch.zip: manifest.xml $(imagesForZip)
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/ThreadSearch.zip manifest.xml > /dev/null
 	PWD=`pwd` cd $(srcdir)/resources && \
-		zip $(PWD)/ThreadSearch.zip $(imagesForZip:resources/images/%=images/%) \
-			> /dev/null
+		zip $(PWD)/ThreadSearch.zip $(imagesForZip:resources/images/%=images/%) > /dev/null
 
 confimagesdir = $(datadir)/@PACKAGE@/images/settings
-dist_confimages_DATA = $(srcdir)/resources/*.png
+dist_confimages_DATA = \
+			$(srcdir)/resources/*.png

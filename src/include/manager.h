@@ -59,7 +59,16 @@ public:
     static bool IsBatchBuild()
     {
         return m_IsBatch;
-    }
+    };
+    static void SetHeadlessBuild(bool is_headlessbuild);
+    static bool IsHeadlessBuild()
+    {
+        return m_IsHeadlessBuild;
+    };
+    static bool IsBatchHeadlessBuild()
+    {
+        return m_IsBatch && m_IsHeadlessBuild;
+    };
     /// Blocks/unblocks Manager::Yield(). Be careful when using it. Actually, do *not* use it ;)
     static void BlockYields(bool block);
     /// Whenever you need to call wxYield(), call Manager::Yield(). It's safer.
@@ -187,6 +196,7 @@ private:
     static bool            m_AppStartedUp;
     static bool            m_BlockYields;
     static bool            m_IsBatch;
+    static bool            m_IsHeadlessBuild;
     static wxCmdLineParser m_CmdLineParser;
     static wxToolBarAddOnXmlHandler *m_ToolbarHandler;
 

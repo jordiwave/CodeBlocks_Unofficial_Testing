@@ -63,9 +63,7 @@ wxString ConfigManager::config_folder;
 wxString ConfigManager::home_folder;
 wxString ConfigManager::data_path_user;
 wxString ConfigManager::data_path_global;
-#ifdef CB_AUTOCONF
 wxString ConfigManager::plugin_path_global;
-#endif
 wxString ConfigManager::app_path;
 wxString ConfigManager::temp_folder;
 
@@ -543,11 +541,7 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
         return ::wxGetCwd();
 
     case sdPluginsGlobal:
-#ifndef CB_AUTOCONF
-        return ConfigManager::data_path_global + wxFILE_SEP_PATH + _T("plugins");
-#else
         return ConfigManager::plugin_path_global;
-#endif
 
     case sdPluginsUser:
         return ConfigManager::data_path_user   + wxFILE_SEP_PATH + _T("plugins");
@@ -1534,11 +1528,15 @@ void ConfigManager::InitPaths()
     else
         ConfigManager::data_path_global = UnixFilename(data_path_global);
 
-#ifdef CB_AUTOCONF
     if (plugin_path_global.IsEmpty())
     {
         if (platform::windows)
-            ConfigManager::plugin_path_global = data_path_global;
+        {
+            if (wxDirExists(ConfigManager::data_path_global + wxFILE_SEP_PATH + _T("plugins")))
+                ConfigManager::plugin_path_global = ConfigManager::data_path_global + wxFILE_SEP_PATH + _T("plugins");
+            else
+                ConfigManager::plugin_path_global = ConfigManager::data_path_global;
+        }
         else if (platform::macosx)
             ConfigManager::plugin_path_global = data_path_global + _T("/plugins");
         else
@@ -1554,10 +1552,11 @@ void ConfigManager::InitPaths()
                 // if standard-path does not exist and we are on 64-bit system, use lib64 instead
                 ConfigManager::plugin_path_global = ((const wxStandardPaths&)wxStandardPaths::Get()).GetInstallPrefix() + _T("/lib64/codeblocks/plugins");
             }
+#else
+            ConfigManager::plugin_path_global = ConfigManager::data_path_global;
 #endif // __WXGTK__
         }
     }
-#endif
 
     wxString dataPathUser = ConfigManager::config_folder + wxFILE_SEP_PATH + _T("share");
 #ifdef __linux__

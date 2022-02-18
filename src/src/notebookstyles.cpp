@@ -68,8 +68,9 @@ void NbStyleVC71::DrawTab(wxDC& dc, wxWindow* wnd,
     int clip_width = tab_width;
     if (tab_x + clip_width > in_rect.x + in_rect.width - 4)
         clip_width = (in_rect.x + in_rect.width) - tab_x - 4;
+
     dc.SetClippingRegion(tab_x, tab_y, clip_width + 1, tab_height - 3);
-    if(m_flags & wxAUI_NB_BOTTOM)
+    if (m_flags & wxAUI_NB_BOTTOM)
         tab_y--;
 
     dc.SetPen((page.active) ? wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT)) : wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_3DSHADOW)));
@@ -124,14 +125,23 @@ void NbStyleVC71::DrawTab(wxDC& dc, wxWindow* wnd,
     if (page.bitmap.IsOk())
     {
         bitmap_offset = tab_x + 8;
-
         // draw bitmap
+#if wxCHECK_VERSION(3, 1, 6)
+        const wxBitmap bmp(page.bitmap.GetBitmapFor(wnd));
+        dc.DrawBitmap(bmp,
+                      bitmap_offset,
+                      drawn_tab_yoff + (drawn_tab_height/2) - (bmp.GetHeight()/2),
+                      true);
+
+        text_offset = bitmap_offset + bmp.GetWidth();
+#else
         dc.DrawBitmap(page.bitmap,
                       bitmap_offset,
                       drawn_tab_yoff + (drawn_tab_height/2) - (page.bitmap.GetHeight()/2),
                       true);
 
         text_offset = bitmap_offset + page.bitmap.GetWidth();
+#endif
         text_offset += 3; // bitmap padding
     }
     else
@@ -161,13 +171,23 @@ void NbStyleVC71::DrawTab(wxDC& dc, wxWindow* wnd,
     // draw 'x' on tab (if enabled)
     if (close_button_state != wxAUI_BUTTON_STATE_HIDDEN)
     {
-        int close_button_width = m_activeCloseBmp.GetWidth();
-        wxBitmap bmp = m_disabledCloseBmp;
+        wxBitmap bmp;
 
+#if wxCHECK_VERSION(3, 1, 6)
+        if ((close_button_state == wxAUI_BUTTON_STATE_HOVER) ||
+                (close_button_state == wxAUI_BUTTON_STATE_PRESSED))
+            bmp = m_activeCloseBmp.GetBitmapFor(wnd);
+        else
+            bmp = m_disabledCloseBmp.GetBitmapFor(wnd);
+#else
         if ((close_button_state == wxAUI_BUTTON_STATE_HOVER) ||
                 (close_button_state == wxAUI_BUTTON_STATE_PRESSED))
             bmp = m_activeCloseBmp;
+        else
+            bmp = m_disabledCloseBmp;
+#endif
 
+        const int close_button_width = bmp.GetWidth();
         wxRect rect(tab_x + tab_width - close_button_width - 3,
                     drawn_tab_yoff + (drawn_tab_height / 2) - (bmp.GetHeight() / 2),
                     close_button_width, tab_height);
@@ -178,6 +198,7 @@ void NbStyleVC71::DrawTab(wxDC& dc, wxWindow* wnd,
             rect.x++;
             rect.y++;
         }
+
         dc.DrawBitmap(bmp, rect.x, rect.y, true);
         *out_button_rect = rect;
     }
@@ -236,6 +257,7 @@ void NbStyleFF2::DrawTab(wxDC& dc, wxWindow* wnd,
     int clip_width = tab_width;
     if (tab_x + clip_width > in_rect.x + in_rect.width - 4)
         clip_width = (in_rect.x + in_rect.width) - tab_x - 4;
+
     dc.SetClippingRegion(tab_x, tab_y, clip_width + 1, tab_height - 3);
 
     wxPoint tabPoints[7];
@@ -285,24 +307,33 @@ void NbStyleFF2::DrawTab(wxDC& dc, wxWindow* wnd,
     int text_offset = tab_x + 8;
 
     int bitmap_offset = 0;
+
     if (page.bitmap.IsOk())
     {
         bitmap_offset = tab_x + 8;
-
         // draw bitmap
+#if wxCHECK_VERSION(3, 1, 6)
+        const wxBitmap bmp(page.bitmap.GetBitmapFor(wnd));
+        dc.DrawBitmap(bmp,
+                      bitmap_offset,
+                      drawn_tab_yoff + (drawn_tab_height/2) - (bmp.GetHeight()/2),
+                      true);
+
+        text_offset = bitmap_offset + bmp.GetWidth();
+#else
         dc.DrawBitmap(page.bitmap,
                       bitmap_offset,
                       drawn_tab_yoff + (drawn_tab_height/2) - (page.bitmap.GetHeight()/2),
                       true);
 
         text_offset = bitmap_offset + page.bitmap.GetWidth();
+#endif
         text_offset += 3; // bitmap padding
     }
     else
     {
         text_offset = tab_x + 8;
     }
-
 
     // if the caption is empty, measure some temporary text
     wxString caption = page.caption;
@@ -325,13 +356,23 @@ void NbStyleFF2::DrawTab(wxDC& dc, wxWindow* wnd,
     // draw 'x' on tab (if enabled)
     if (close_button_state != wxAUI_BUTTON_STATE_HIDDEN)
     {
-        int close_button_width = m_activeCloseBmp.GetWidth();
-        wxBitmap bmp = m_disabledCloseBmp;
+        wxBitmap bmp;
 
+#if wxCHECK_VERSION(3, 1, 6)
+        if ((close_button_state == wxAUI_BUTTON_STATE_HOVER) ||
+                (close_button_state == wxAUI_BUTTON_STATE_PRESSED))
+            bmp = m_activeCloseBmp.GetBitmapFor(wnd);
+        else
+            bmp = m_disabledCloseBmp.GetBitmapFor(wnd);
+#else
         if ((close_button_state == wxAUI_BUTTON_STATE_HOVER) ||
                 (close_button_state == wxAUI_BUTTON_STATE_PRESSED))
             bmp = m_activeCloseBmp;
+        else
+            bmp = m_disabledCloseBmp;
+#endif
 
+        const int close_button_width = bmp.GetWidth();
         wxRect rect(tab_x + tab_width - close_button_width - 3,
                     drawn_tab_yoff + (drawn_tab_height / 2) - (bmp.GetHeight() / 2),
                     close_button_width, tab_height);
@@ -342,6 +383,7 @@ void NbStyleFF2::DrawTab(wxDC& dc, wxWindow* wnd,
             rect.x++;
             rect.y++;
         }
+
         dc.DrawBitmap(bmp, rect.x, rect.y, true);
         *out_button_rect = rect;
     }

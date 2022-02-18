@@ -1,16 +1,28 @@
-AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS) \
+			-I$(top_srcdir)/src/include \
+			-I$(top_srcdir)/src/sdk/wxscintilla/include
 
+if CODEBLOCKS_NT_BUILD_INSTALLER
+pluginlibdir = $(pkgdatadir)/plugins
+else
 pluginlibdir = $(pkglibdir)/plugins
+endif
 
-pluginlib_LTLIBRARIES = libCscope.la
+pluginlib_LTLIBRARIES = \
+			libCscope.la
 
-libCscope_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
+libCscope_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-libCscope_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS)
+libCscope_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la $(WX_LIBS)
 
-libCscope_la_SOURCES = CscopeConfig.cpp \
+libCscope_la_SOURCES = \
+			CscopeConfig.cpp \
 			CscopeEntryData.cpp \
 			CscopeParserThread.cpp \
 			CscopePlugin.cpp \
@@ -20,22 +32,26 @@ libCscope_la_SOURCES = CscopeConfig.cpp \
 			CscopeView.cpp \
 			CscopeConfigPanel.cpp
 
-noinst_HEADERS = CscopeConfig.h \
-		CscopeEntryData.h \
-		CscopeParserThread.h \
-		CscopePlugin.h \
-		CscopeProcess.h \
-		CscopeStatusMessage.h \
-		CscopeTab.h \
-		CscopeView.h \
-		CscopeConfigPanel.h
+noinst_HEADERS = \
+			CscopeConfig.h \
+			CscopeEntryData.h \
+			CscopeParserThread.h \
+			CscopePlugin.h \
+			CscopeProcess.h \
+			CscopeStatusMessage.h \
+			CscopeTab.h \
+			CscopeView.h \
+			CscopeConfigPanel.h
 
-EXTRA_DIST = 	$(srcdir)/*.cbp \
-		manifest.xml
+EXTRA_DIST = \
+			$(srcdir)/*.cbp \
+			manifest.xml
 
-pkgdata_DATA = Cscope.zip
+pkgdata_DATA = \
+			Cscope.zip
 
-CLEANFILES = $(pkgdata_DATA)
+CLEANFILES = \
+			$(pkgdata_DATA)
 
 Cscope.zip: manifest.xml
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/Cscope.zip manifest.xml > /dev/null

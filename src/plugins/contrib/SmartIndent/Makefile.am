@@ -1,10 +1,16 @@
-AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS) \
+			-I$(top_srcdir)/src/include \
+			-I$(top_srcdir)/src/sdk/wxscintilla/include
 
+if CODEBLOCKS_NT_BUILD_INSTALLER
+pluginlibdir = $(pkgdatadir)/plugins
+else
 pluginlibdir = $(pkglibdir)/plugins
+endif
 
-pluginlib_LTLIBRARIES = libSmartIndentHDL.la \
+pluginlib_LTLIBRARIES = \
+			libSmartIndentHDL.la \
 			libSmartIndentPascal.la \
 			libSmartIndentCpp.la \
 			libSmartIndentPython.la \
@@ -12,92 +18,127 @@ pluginlib_LTLIBRARIES = libSmartIndentHDL.la \
 			libSmartIndentFortran.la \
 			libSmartIndentXML.la
 
-libSmartIndentHDL_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
+libSmartIndentHDL_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-libSmartIndentHDL_la_LIBADD = ../../../sdk/libcodeblocks.la \
+libSmartIndentHDL_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
 			$(WX_LIBS)
 
-libSmartIndentHDL_la_SOURCES = SmartIndentHDL.cpp
+libSmartIndentHDL_la_SOURCES = \
+			SmartIndentHDL.cpp
 
+libSmartIndentPascal_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-
-libSmartIndentPascal_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
-
-libSmartIndentPascal_la_LIBADD = ../../../sdk/libcodeblocks.la \
+libSmartIndentPascal_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
 			$(WX_LIBS)
 
-libSmartIndentPascal_la_SOURCES = SmartIndentPascal.cpp
+libSmartIndentPascal_la_SOURCES = \
+			SmartIndentPascal.cpp
 
+libSmartIndentCpp_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-
-libSmartIndentCpp_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
-
-libSmartIndentCpp_la_LIBADD = ../../../sdk/libcodeblocks.la \
+libSmartIndentCpp_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
 			$(WX_LIBS)
 
-libSmartIndentCpp_la_SOURCES = SmartIndentCpp.cpp
+libSmartIndentCpp_la_SOURCES = \
+			SmartIndentCpp.cpp
 
+libSmartIndentPython_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-
-libSmartIndentPython_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
-
-libSmartIndentPython_la_LIBADD = ../../../sdk/libcodeblocks.la \
+libSmartIndentPython_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
 			$(WX_LIBS)
 
-libSmartIndentPython_la_SOURCES = SmartIndentPython.cpp
+libSmartIndentPython_la_SOURCES = \
+			SmartIndentPython.cpp
 
+libSmartIndentLua_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-
-libSmartIndentLua_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
-
-libSmartIndentLua_la_LIBADD = ../../../sdk/libcodeblocks.la \
+libSmartIndentLua_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
 			$(WX_LIBS)
 
-libSmartIndentLua_la_SOURCES = SmartIndentLua.cpp
+libSmartIndentLua_la_SOURCES = \
+			SmartIndentLua.cpp
 
+libSmartIndentFortran_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-
-libSmartIndentFortran_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
-
-libSmartIndentFortran_la_LIBADD = ../../../sdk/libcodeblocks.la \
+libSmartIndentFortran_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
 			$(WX_LIBS)
 
-libSmartIndentFortran_la_SOURCES = SmartIndentFortran.cpp
+libSmartIndentFortran_la_SOURCES = \
+			SmartIndentFortran.cpp
 
+libSmartIndentXML_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-libSmartIndentXML_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
-
-libSmartIndentXML_la_LIBADD = ../../../sdk/libcodeblocks.la \
+libSmartIndentXML_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
 			$(WX_LIBS)
 
-libSmartIndentXML_la_SOURCES = SmartIndentXML.cpp
+libSmartIndentXML_la_SOURCES = \
+			SmartIndentXML.cpp
 
-noinst_HEADERS = SmartIndentHDL.h \
-		SmartIndentPascal.h \
-		SmartIndentCpp.h \
-		SmartIndentPython.h \
-		SmartIndentLua.h \
-		SmartIndentFortran.h \
-		SmartIndentXML.h
+noinst_HEADERS = \
+			SmartIndentHDL.h \
+			SmartIndentPascal.h \
+			SmartIndentCpp.h \
+			SmartIndentPython.h \
+			SmartIndentLua.h \
+			SmartIndentFortran.h \
+			SmartIndentXML.h
 
-EXTRA_DIST = 	$(srcdir)/*.cbp \
-		manifest_hdl.xml \
-		manifest_pascal.xml \
-		manifest_cpp.xml \
-		manifest_python.xml \
-		manifest_lua.xml \
-		manifest_fortran.xml \
-		manifest_xml.xml
+EXTRA_DIST = \
+			$(srcdir)/*.cbp \
+			manifest_hdl.xml \
+			manifest_pascal.xml \
+			manifest_cpp.xml \
+			manifest_python.xml \
+			manifest_lua.xml \
+			manifest_fortran.xml \
+			manifest_xml.xml
 
-pkgdata_DATA = SmartIndentHDL.zip \
-		SmartIndentPascal.zip \
-		SmartIndentCpp.zip \
-		SmartIndentPython.zip \
-		SmartIndentLua.zip \
-		SmartIndentFortran.zip \
-		SmartIndentXML.zip
+pkgdata_DATA = \
+			SmartIndentHDL.zip \
+			SmartIndentPascal.zip \
+			SmartIndentCpp.zip \
+			SmartIndentPython.zip \
+			SmartIndentLua.zip \
+			SmartIndentFortran.zip \
+			SmartIndentXML.zip
 
-CLEANFILES = $(pkgdata_DATA)
+CLEANFILES = \
+			$(pkgdata_DATA)
 
 .NOTPARALLEL: $(pkgdata_DATA)
 

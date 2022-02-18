@@ -115,15 +115,10 @@ Unicode True
 ###########################
 # CB BUILD Folder DEFINES #
 ###########################
-!if ${BUILD_TYPE} == 32
-    !define CB_BASE          .\..\src\output31
-    !define WX_BASE          .\..\src\output31
-    #!define WX_BASE          D:\Devel\CodeBlocks\Releases\CodeBlocks_2003
-!else
-    !define CB_BASE          .\..\src\output31_64
-    !define WX_BASE          .\..\src\output31_64
-    #!define WX_BASE          D:\Devel\CodeBlocks\Releases\CodeBlocks_2003
-!endif
+!define CB_BASE          .\..\src\output31_${BUILD_TYPE}
+!define WX_BASE          .\..\src\output31_${BUILD_TYPE}
+#!define WX_BASE          D:\Devel\CodeBlocks\Releases\CodeBlocks_2003
+
 !define CB_SHARE         \share
 !define CB_SHARE_CB      ${CB_SHARE}\CodeBlocks
 !define CB_DOCS          ${CB_SHARE_CB}\docs
@@ -181,12 +176,7 @@ BrandingText "Code::Blocks"
 
 # Installer attributes (usually these do not change)
 # Note: We can't always use "Code::Blocks" as the "::" conflicts with the file system.
-!if ${BUILD_TYPE} == 32
-    OutFile             CodeBlocks-${VERSION}-32bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
-!else
-    OutFile             CodeBlocks-${VERSION}-64bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
-!endif
-
+OutFile             CodeBlocks-${VERSION}-${BUILD_TYPE}bit-setup-${CURRENT_DATESTAMP}-NSIS.exe
 Caption           "Code::Blocks ${VERSION} ${CURRENT_DATE_YEAR}.${CURRENT_DATE_MONTH}.${CURRENT_DATE_DAY}.0 Installation"
 CRCCheck          on
 XPStyle           on
@@ -438,19 +428,11 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             ${If} ${IsWinXP}
                 # crash handler for Windows XP!!!!
                 ; File ${CB_BASE}\dbgcore.dll - N/A for XP
-                !if ${BUILD_TYPE} == 64
-                    File exchndl_xp\win64\dbghelp.dll
-                    File exchndl_xp\win64\exchndl.dll
-                    File exchndl_xp\win64\mgwhelp.dll
-                    File exchndl_xp\win64\symsrv.dll
-                    File exchndl_xp\win64\symsrv.yes
-                !else
-                    File exchndl_xp\win32\dbghelp.dll
-                    File exchndl_xp\win32\exchndl.dll
-                    File exchndl_xp\win32\mgwhelp.dll
-                    File exchndl_xp\win32\symsrv.dll
-                    File exchndl_xp\win32\symsrv.yes
-                !endif
+                File exchndl_xp\win${BUILD_TYPE}\dbghelp.dll
+                File exchndl_xp\win${BUILD_TYPE}\exchndl.dll
+                File exchndl_xp\win${BUILD_TYPE}\mgwhelp.dll
+                File exchndl_xp\win${BUILD_TYPE}\symsrv.dll
+                File exchndl_xp\win${BUILD_TYPE}\symsrv.yes
             ${Else}
                 # crash handler for Win 7+  (fails on XP!!!!)
                 File ${CB_BASE}\dbgcore.dll
@@ -3094,21 +3076,16 @@ Section "-un.Core Files (required)" UNSEC_CORE
     # WGET
     Delete /REBOOTOK $INSTDIR\wget.exe
     # crash handler
+    Delete /REBOOTOK $INSTDIR\symsrv.yes
+    Delete /REBOOTOK $INSTDIR\symsrv.dll
+    Delete /REBOOTOK $INSTDIR\mgwhelp.dll
+    Delete /REBOOTOK $INSTDIR\exchndl.dll
+    Delete /REBOOTOK $INSTDIR\dbghelp.dll
     ${If} ${IsWinXP}
         # crash handler for Windows XP!!!!
-        Delete /REBOOTOK $INSTDIR\symsrv.yes
-        Delete /REBOOTOK $INSTDIR\symsrv.dll
-        Delete /REBOOTOK $INSTDIR\mgwhelp.dll
-        Delete /REBOOTOK $INSTDIR\exchndl.dll
-        Delete /REBOOTOK $INSTDIR\dbghelp.dll
         ; Delete /REBOOTOK $INSTDIR\dbgcore.dll - N/A for XP
     ${Else}
         # crash handler for Win 7+  (fails on XP!!!!)
-        Delete /REBOOTOK $INSTDIR\symsrv.yes
-        Delete /REBOOTOK $INSTDIR\symsrv.dll
-        Delete /REBOOTOK $INSTDIR\mgwhelp.dll
-        Delete /REBOOTOK $INSTDIR\exchndl.dll
-        Delete /REBOOTOK $INSTDIR\dbghelp.dll
         Delete /REBOOTOK $INSTDIR\dbgcore.dll
     ${EndIf}
     # MinGW DLL's for thread handling etc.

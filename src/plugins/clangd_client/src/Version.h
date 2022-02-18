@@ -37,7 +37,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.99 2022/01/28")
+#define VERSION wxT("0.2.9913 2022/02/02")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -77,6 +77,22 @@ private:
 //              default is the target for the dll & zip only.
 //          Modified the clsettings.xrc to split the clang.exe and clangd.exe to have their own entry.
 //          Modified the clsettings.xrc to add a auto detect button to detect both clang.exe and clangd.exe.
+//0.2.13    2022/02/2 ph/ac
+//          Add CB fix trunk rev 12689 ticket 1152
+//0.2.12
+//          2022/01/31_14 ph
+//          Removed event.Skip() from OnReparseSelectedProject() seems to have stopped
+//              unexpected exit after changing clangd.exe path, then moving mouse to logs.
+//          Quote clangd command strings if needed.ProcessLanguageClient ctor.
+//          Fix disappearing functions in GotoPrev/NextFunction() caused by allowing
+//              callback data to be used in default event code.
+//          Add messageBox that project must be reloaded/reparsed after (re)setting the clangd
+//              location in settings.
+//          Fix loading incorrect bitmap for Settings/configuration. Should have been "codecompletion"
+//              not "clangd_client" for ConfigManager. It's a type, not a plugin.
+//          Retested auto detection with no LLVM path set.
+//          2022/01/26 ph
+//          Show clangd_client MessageBoxes in front of Plugin manager dlg.
 //0.2.11    2022/01/26 ph
 //          Add code to check for libcodecompletion.so existence in IsOldCC_Enabled()
 //          clangd_client_wx30-unix.cbp for image zipping to:

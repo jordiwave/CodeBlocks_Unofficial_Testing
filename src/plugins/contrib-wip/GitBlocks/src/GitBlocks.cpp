@@ -51,15 +51,15 @@ void GitBlocks::OnAttach()
     git = _T("git");
 
     Logger *gitBlocksLogger = new TextCtrlLogger();
-    logSlot = Manager::Get()->GetLogManager()->SetLog(gitBlocksLogger);
-    Manager::Get()->GetLogManager()->Slot(logSlot).title = _T("GitBlocks");
-    CodeBlocksLogEvent evtAdd1(cbEVT_ADD_LOG_WINDOW, gitBlocksLogger, Manager::Get()->GetLogManager()->Slot(logSlot).title);
+    m_LogIndex = Manager::Get()->GetLogManager()->SetLog(gitBlocksLogger);
+    Manager::Get()->GetLogManager()->Slot(m_LogIndex).title = _T("GitBlocks");
+    CodeBlocksLogEvent evtAdd1(cbEVT_ADD_LOG_WINDOW, gitBlocksLogger, Manager::Get()->GetLogManager()->Slot(m_LogIndex).title);
     Manager::Get()->ProcessEvent(evtAdd1);
 }
 
 void GitBlocks::OnRelease(bool appShutDown)
 {
-    Manager::Get()->GetLogManager()->DeleteLog(logSlot);
+    Manager::Get()->GetLogManager()->DeleteLog(m_LogIndex);
 }
 
 int GitBlocks::Configure()
@@ -114,8 +114,8 @@ void GitBlocks::Execute(wxString command, const wxString comment, wxString dir)
 
     wxArrayString output;
 
-    Manager::Get()->GetLogManager()->Log(comment, logSlot);
-    Manager::Get()->GetLogManager()->Log(command, logSlot);
+    Manager::Get()->GetLogManager()->Log(comment);
+    Manager::Get()->GetLogManager()->Log(command);
 
     wxString ocwd = wxGetCwd();
     wxSetWorkingDirectory(dir);
@@ -123,7 +123,7 @@ void GitBlocks::Execute(wxString command, const wxString comment, wxString dir)
     wxSetWorkingDirectory(ocwd);
 
     for(unsigned int i=0; i<output.size(); i++)
-        Manager::Get()->GetLogManager()->Log(output[i], logSlot);
+        Manager::Get()->GetLogManager()->Log(output[i]);
 }
 
 void GitBlocks::ExecuteInTerminal(wxString command, const wxString comment, wxString dir)
@@ -185,8 +185,8 @@ void GitBlocks::Destroy(wxCommandEvent &event)
 {
     if(wxMessageBox(_("Are you sure you want to destroy the local repository?"), _("Destroy local repository"), wxYES_NO) == wxYES)
     {
-        Manager::Get()->GetLogManager()->Log(_("Destroying the local repository ..."), logSlot);
-        Manager::Get()->GetLogManager()->Log(_T("<rmdir> .git"), logSlot);
+        Manager::Get()->GetLogManager()->Log(_("Destroying the local repository ..."));
+        Manager::Get()->GetLogManager()->Log(_T("<rmdir> .git"));
         wxRmdir(wxGetCwd() + _T("/.git"));
     }
 }
@@ -313,8 +313,8 @@ void GitBlocks::DiffToIndex(wxCommandEvent &event)
 
     wxArrayString output;
 
-    Manager::Get()->GetLogManager()->Log(comment, logSlot);
-    Manager::Get()->GetLogManager()->Log(command, logSlot);
+    Manager::Get()->GetLogManager()->Log(comment);
+    Manager::Get()->GetLogManager()->Log(command);
 
     wxString ocwd = wxGetCwd();
     wxSetWorkingDirectory(dir);
@@ -338,8 +338,8 @@ void GitBlocks::Log(wxCommandEvent &event)
 
     wxArrayString output;
 
-    Manager::Get()->GetLogManager()->Log(comment, logSlot);
-    Manager::Get()->GetLogManager()->Log(command, logSlot);
+    Manager::Get()->GetLogManager()->Log(comment);
+    Manager::Get()->GetLogManager()->Log(command);
 
     wxString ocwd = wxGetCwd();
     wxSetWorkingDirectory(dir);
@@ -363,8 +363,8 @@ void GitBlocks::Status(wxCommandEvent &event)
 
     wxArrayString output;
 
-    Manager::Get()->GetLogManager()->Log(comment, logSlot);
-    Manager::Get()->GetLogManager()->Log(command, logSlot);
+    Manager::Get()->GetLogManager()->Log(comment);
+    Manager::Get()->GetLogManager()->Log(command);
 
     wxString ocwd = wxGetCwd();
     wxSetWorkingDirectory(dir);

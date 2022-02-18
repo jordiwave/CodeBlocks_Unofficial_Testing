@@ -1,15 +1,22 @@
-AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS) \
+			-I$(top_srcdir)/src/include \
+			-I$(top_srcdir)/src/sdk/wxscintilla/include
 
-noinst_LTLIBRARIES = libwxsmith_wxwidgets_defitems.la
+noinst_LTLIBRARIES = \
+			libwxsmith_wxwidgets_defitems.la
 
-libwxsmith_wxwidgets_defitems_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
+libwxsmith_wxwidgets_defitems_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-libwxsmith_wxwidgets_defitems_la_LIBADD = ../../../../../sdk/libcodeblocks.la
+libwxsmith_wxwidgets_defitems_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la
 
 libwxsmith_wxwidgets_defitems_la_SOURCES = \
-./wxsdatepickerctrl.cpp \
+			wxsdatepickerctrl.cpp \
 ./wxsstatictext.cpp \
 ./wxslistctrl.cpp \
 ./wxsflexgridsizer.cpp \
@@ -107,10 +114,8 @@ libwxsmith_wxwidgets_defitems_la_SOURCES = \
 ./wxsdataviewlistctrl.cpp \
 ./wxsdataviewtreectrl.cpp
 
-
-
 noinst_HEADERS = \
-./wxsgauge.h \
+			wxsgauge.h \
 ./wxsradiobutton.h \
 ./wxsstaticline.h \
 ./wxsstaticbox.h \
@@ -208,4 +213,5 @@ noinst_HEADERS = \
 ./wxsdataviewtreectrl.h \
 ./wxsdataviewlistctrl.h
 
-EXTRA_DIST = $(srcdir)/wxsmediactrl.*
+EXTRA_DIST = \
+			$(srcdir)/wxsmediactrl.*

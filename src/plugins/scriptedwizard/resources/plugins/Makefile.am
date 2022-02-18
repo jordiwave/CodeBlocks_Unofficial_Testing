@@ -1,12 +1,14 @@
 pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/plugins
 
-dist_pkgdata_DATA = logo.png \
-		wizard.png \
-		wizard.xrc \
-		wizard.script
+dist_pkgdata_DATA = \
+			logo.png \
+			wizard.png \
+			wizard.xrc \
+			wizard.script
 
 templatesdir = $(pkgdatadir)/templates
 
-dist_templates_DATA = $(srcdir)/templates/*.cpp \
-		 $(srcdir)/templates/*.h \
-		 $(srcdir)/templates/*.xml
+dist_templates_DATA = \
+			$(srcdir)/templates/*.cpp \
+			$(srcdir)/templates/*.h \
+			$(srcdir)/templates/*.xml

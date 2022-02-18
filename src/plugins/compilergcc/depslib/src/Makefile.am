@@ -1,8 +1,19 @@
-AM_CFLAGS = -Wall -g -DDEPSLIB_UNIX -fno-strict-aliasing
+AM_CFLAGS = \
+			-Wall -g -fno-strict-aliasing
 
-noinst_LTLIBRARIES = libdepslib.la
+if CODEBLOCKS_NT
+AM_CFLAGS += \
+			-DDEPSLIB_WINDOWS
+else
+AM_CFLAGS += \
+			-DDEPSLIB_UNIX
+endif
 
-libdepslib_la_SOURCES = alloc.c \
+noinst_LTLIBRARIES = \
+			libdepslib.la
+
+libdepslib_la_SOURCES = \
+			alloc.c \
 			cache.c \
 			depslib.c \
 			filent.c \
@@ -17,7 +28,8 @@ libdepslib_la_SOURCES = alloc.c \
 			search.c \
 			timestamp.c
 
-noinst_HEADERS = alloc.h \
+noinst_HEADERS = \
+			alloc.h \
 			cache.h \
 			depslib.h \
 			filesys.h \
@@ -32,6 +44,8 @@ noinst_HEADERS = alloc.h \
 			search.h \
 			timestamp.h
 
-EXTRA_INST = main.c
+EXTRA_INST = \
+			main.c
 
-EXTRA_DIST = main.c
+EXTRA_DIST = \
+			main.c

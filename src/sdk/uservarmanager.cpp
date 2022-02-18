@@ -32,9 +32,10 @@
 #endif
 
 #include "annoyingdialog.h"
+#include "filemanager.h"
 
+#include <wx/filedlg.h>
 #include <wx/unichar.h>
-
 #include <ctype.h>
 
 #define MAX_USER_DEFINED 8
@@ -255,6 +256,29 @@ bool UserVariableManager::Exists(const wxString& variable) const
 
     wxString member(variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).BeforeFirst(wxT(')')).MakeLower());
     return m_CfgMan->Exists(cSets + m_ActiveSet + _T('/') + member + _T("/base"));
+}
+
+bool UserVariableManager::SetActiveVariableSet(const wxString& varset)
+{
+    wxArrayString setNames = m_CfgMan->EnumerateSubPaths(cSets);
+    int index = setNames.Index(varset, false, false);
+
+    if ( index == wxNOT_FOUND)
+    {
+        return false;
+    }
+    else
+    {
+        ConfigManager *cfgman_gcv = Manager::Get()->GetConfigManager(_T("gcv"));
+        cfgman_gcv->Write(_T("/active"), setNames[index]);
+        m_ActiveSet = setNames[index];
+        return true;
+    }
+}
+
+wxString UserVariableManager::GetActiveVariableSet()
+{
+    return Manager::Get()->GetConfigManager(_T("gcv"))->Read(_T("/active"));
 }
 
 void UserVariableManager::Arrogate()
@@ -857,13 +881,8 @@ wxString UsrGlblMgrEditDialog::GetExportFileName()
     wxFileDialog saveFileDialog(
         this,                           // wxWindow * parent,
         "Save global variable sets",    // const wxString & message = wxFileSelectorPromptStr,
-#if 0
         wxEmptyString,                // const wxString & defaultDir = wxEmptyString,
         defaultFile,                     // const wxString & defaultFile = wxEmptyString,
-#else
-        "D:\\temp",                      // const wxString & defaultDir = wxEmptyString,
-        "test.xml",                     // const wxString & defaultFile = wxEmptyString,
-#endif
         _("XML files (*.xml)|*.xml|All files (*.*)|*.*"),   // const wxString & wildcard = wxFileSelectorDefaultWildcardStr,
         wxFD_SAVE | wxFD_OVERWRITE_PROMPT | compatibility::wxHideReadonly   // long style = wxFD_DEFAULT_STYLE,
     );
@@ -915,9 +934,6 @@ void UsrGlblMgrEditDialog::ExportXMLtoFile(TiXmlDocument* exportXmlDoc)
 
 void UsrGlblMgrEditDialog::ExportSetData(bool exportAllSets)
 {
-    // Manager::Get()->GetLogManager()->LogError(wxString::Format(_("\n\n%s:%s:%d called"), cbC2U(__FILE__).c_str(), cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
-    // Manager::Get()->GetLogManager()->LogError(wxString::Format(_("\nSET INFO cSets : %s , m_CurrentSet :%s , m_CurrentVar %s\n"), cSets, m_CurrentSet, m_CurrentVar));
-
     TiXmlDocument* exportXmlDoc = new TiXmlDocument();
 
     if (!exportXmlDoc)
@@ -1012,7 +1028,6 @@ void UsrGlblMgrEditDialog::ExportSetData(bool exportAllSets)
 
 void UsrGlblMgrEditDialog::ExportAllSets(cb_unused wxCommandEvent& event)
 {
-    Manager::Get()->GetLogManager()->LogError(wxString::Format(_("\n\n%s:%s:%d called"), cbC2U(__FILE__).c_str(), cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     ExportSetData(true);
 }
 
@@ -1023,20 +1038,13 @@ void UsrGlblMgrEditDialog::ExportSet(cb_unused wxCommandEvent& event)
 
 void UsrGlblMgrEditDialog::ImportSet(cb_unused wxCommandEvent& event)
 {
-    Manager::Get()->GetLogManager()->LogError(wxString::Format(_("%s:%s:%d called"), cbC2U(__FILE__).c_str(), cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
-
     wxString defaultFile = wxString::Format(_("CB_GV_%s_*.xml"), m_CurrentSet);
 
     wxFileDialog loadFileDialog(
         this,                           // wxWindow * parent,
         "Load global variable set",     // const wxString & message = wxFileSelectorPromptStr,
-#if 0
         wxEmptyString,                // const wxString & defaultDir = wxEmptyString,
         defaultFile,                     // const wxString & defaultFile = wxEmptyString,
-#else
-        "D:\\temp",                      // const wxString & defaultDir = wxEmptyString,
-        "test.xml",                     // const wxString & defaultFile = wxEmptyString,
-#endif
         _("XML files (*.xml)|*.xml|All files (*.*)|*.*"),   // const wxString & wildcard = wxFileSelectorDefaultWildcardStr,
         wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly   // long style = wxFD_DEFAULT_STYLE,
     );

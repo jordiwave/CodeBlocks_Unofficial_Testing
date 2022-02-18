@@ -1,29 +1,45 @@
-AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS) \
+			-I$(top_srcdir)/src/include \
+			-I$(top_srcdir)/src/sdk/wxscintilla/include
 
+if CODEBLOCKS_NT_BUILD_INSTALLER
+pluginlibdir = $(pkgdatadir)/plugins
+else
 pluginlibdir = $(pkglibdir)/plugins
+endif
 
-pluginlib_LTLIBRARIES = libEditorTweaks.la
+pluginlib_LTLIBRARIES = \
+			libEditorTweaks.la
 
-libEditorTweaks_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
+libEditorTweaks_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-libEditorTweaks_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS)
+libEditorTweaks_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la $(WX_LIBS)
 
-libEditorTweaks_la_SOURCES = EditorTweaks.cpp \
-		EditorTweaksConfDlg.cpp
+libEditorTweaks_la_SOURCES = \
+			EditorTweaks.cpp \
+			EditorTweaksConfDlg.cpp
 
-noinst_HEADERS = EditorTweaks.h \
-		EditorTweaksConfDlg.h
+noinst_HEADERS = \
+			EditorTweaks.h \
+			EditorTweaksConfDlg.h
 
-EXTRA_DIST = 	$(srcdir)/*.cbp \
-		EditorTweaksConfDlg.xrc \
-		manifest.xml \
-		$(srcdir)/wxsmith/*.wxs
+EXTRA_DIST = \
+			$(srcdir)/*.cbp \
+			EditorTweaksConfDlg.xrc \
+			manifest.xml \
+			$(srcdir)/wxsmith/*.wxs
 
-pkgdata_DATA = EditorTweaks.zip
+pkgdata_DATA = \
+			EditorTweaks.zip
 
-CLEANFILES = $(pkgdata_DATA)
+CLEANFILES = \
+			$(pkgdata_DATA)
 
 EditorTweaks.zip: $(EXTRA_DIST)
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/EditorTweaks.zip manifest.xml *.xrc > /dev/null

@@ -1,18 +1,25 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src/include/scripting/include
+AM_CPPFLAGS = \
+			-I$(top_srcdir)/src/include/scripting/include
 
-noinst_LTLIBRARIES = libsqstdlib.la
+if CODEBLOCKS_NT
+AM_CPPFLAGS += \
+			-DEXPORT_LIB
+endif
+
+noinst_LTLIBRARIES = \
+			libsqstdlib.la
 
 noinst_HEADERS = \
-	sqstdblobimpl.h \
-	sqstdstream.h
+			sqstdblobimpl.h \
+			sqstdstream.h
 
 libsqstdlib_la_SOURCES = \
-	sqstdaux.cpp \
-	sqstdblob.cpp \
-	sqstdio.cpp \
-	sqstdlib.dsp \
-	sqstdmath.cpp \
-	sqstdrex.cpp \
-	sqstdstream.cpp \
-	sqstdstring.cpp \
-	sqstdsystem.cpp
+			sqstdaux.cpp \
+			sqstdblob.cpp \
+			sqstdio.cpp \
+			sqstdlib.dsp \
+			sqstdmath.cpp \
+			sqstdrex.cpp \
+			sqstdstream.cpp \
+			sqstdstring.cpp \
+			sqstdsystem.cpp

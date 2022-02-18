@@ -1149,8 +1149,9 @@ void ClassBrowser::SelectTargetTree(bool top)
     m_targetTreeCtrl = top ? m_CCTreeCtrl : m_CCTreeCtrlBottom;
     m_targetNode.Unset();
 }
-
+// ----------------------------------------------------------------------------
 void ClassBrowser::TreeOperation(ETreeOperator op, CCTreeItem* item)
+// ----------------------------------------------------------------------------
 {
     wxTreeItemId root;
 
@@ -1160,6 +1161,7 @@ void ClassBrowser::TreeOperation(ETreeOperator op, CCTreeItem* item)
     switch (op)
     {
     case OpClear:
+        m_targetTreeCtrl->Disable(); //fix trunk rev 12689 ticket 1152
         m_targetTreeCtrl->Freeze();
         m_targetTreeCtrl->DeleteAllItems();
         m_targetNode.Unset();
@@ -1217,6 +1219,7 @@ void ClassBrowser::TreeOperation(ETreeOperator op, CCTreeItem* item)
         break;
     case OpEnd:
         m_targetTreeCtrl->Thaw();
+        m_targetTreeCtrl->Enable(); //fix rev 12689 ticket 1152
     }
 }
 

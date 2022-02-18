@@ -1,10 +1,12 @@
-sdkdir=$(includedir)/codeblocks/wxContribItems/KWIC/include//wx/xrc
+sdkdir = $(includedir)/codeblocks/wxContribItems/KWIC/include/wx/xrc
 
+if !CODEBLOCKS_NT_BUILD_INSTALLER
 sdk_HEADERS = \
-.//xh_kwxangularmeterhandler.h \
-./xh_kwxangularregulatorhandler.h \
-./xh_kwxlcdclockhandler.h \
-./xh_kwxlcddisplayhandler.h \
-./xh_kwxlinearmeterhandler.h \
-./xh_kwxlinearregulatorhandler.h
+			./xh_kwxangularmeterhandler.h \
+			./xh_kwxangularregulatorhandler.h \
+			./xh_kwxlcdclockhandler.h \
+			./xh_kwxlcddisplayhandler.h \
+			./xh_kwxlinearmeterhandler.h \
+			./xh_kwxlinearregulatorhandler.h
+endif
 

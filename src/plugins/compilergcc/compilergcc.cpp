@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12674 $
- * $Id: compilergcc.cpp 12674 2022-01-23 10:45:09Z wh11204 $
+ * $Revision: 12711 $
+ * $Id: compilergcc.cpp 12711 2022-02-08 18:56:55Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/compilergcc/compilergcc.cpp $
  */
 
@@ -103,32 +103,52 @@ public:
 
     BuildLogger() : TextCtrlLogger(true), panel(nullptr), sizer(nullptr), progress(nullptr) {}
 
+    void   Append(const wxString& msg, Logger::level lv) override
+    {
+        if (Manager::IsBatchHeadlessBuild())
+        {
+            // Do the same as the stdout logger, to prevent loss of messages during start up!
+            fputs(wxSafeConvertWX2MB(msg.wc_str()), lv < error ? stdout : stderr);
+            fputs(::newline_string.mb_str(), lv < error ? stdout : stderr);
+        }
+        TextCtrlLogger::Append(msg, lv);
+
+    }
+
     void UpdateSettings() override
     {
-        TextCtrlLogger::UpdateSettings();
+        if (!progress && !Manager::IsBatchHeadlessBuild())
+        {
+            TextCtrlLogger::UpdateSettings();
 
-        style[caption].SetAlignment(wxTEXT_ALIGNMENT_DEFAULT);
-        style[caption].SetFont(style[error].GetFont());
-        style[error].SetFont(style[info].GetFont());
+            style[caption].SetAlignment(wxTEXT_ALIGNMENT_DEFAULT);
+            style[caption].SetFont(style[error].GetFont());
+            style[error].SetFont(style[info].GetFont());
+        }
     }
+
 
     wxWindow* CreateControl(wxWindow* parent) override
     {
-        panel = new wxPanel(parent);
+        if (!Manager::IsBatchHeadlessBuild())
+        {
+            panel = new wxPanel(parent);
 
-        TextCtrlLogger::CreateControl(panel);
-        control->SetId(idBuildLog);
+            TextCtrlLogger::CreateControl(panel);
+            control->SetId(idBuildLog);
 
-        sizer = new wxBoxSizer(wxVERTICAL);
-        sizer->Add(control, 1, wxEXPAND, 0);
-        panel->SetSizer(sizer);
+            sizer = new wxBoxSizer(wxVERTICAL);
+            sizer->Add(control, 1, wxEXPAND, 0);
+            panel->SetSizer(sizer);
 
-        return panel;
+            return panel;
+        }
+        return nullptr;
     }
 
     void AddBuildProgressBar()
     {
-        if (!progress)
+        if (!progress && !Manager::IsBatchHeadlessBuild())
         {
             progress = new wxGauge(panel, -1, 0, wxDefaultPosition, wxSize(-1, 12));
             sizer->Add(progress, 0, wxEXPAND);
@@ -138,7 +158,7 @@ public:
 
     void RemoveBuildProgressBar()
     {
-        if (progress)
+        if (!progress && !Manager::IsBatchHeadlessBuild())
         {
             sizer->Detach(progress);
             progress->Destroy();
@@ -406,13 +426,17 @@ void CompilerGCC::OnAttach()
     m_pListLog->SetCompilerErrors(&m_Errors);
     m_ListPageIndex = msgMan->SetLog(m_pListLog);
     msgMan->Slot(m_ListPageIndex).title = _("Build messages");
-    // set log image
-    bmp = new wxBitmap(cbLoadBitmapScaled(prefix + _T("flag.png"), wxBITMAP_TYPE_PNG,
-                                          uiScaleFactor));
-    msgMan->Slot(m_ListPageIndex).icon = bmp;
 
-    CodeBlocksLogEvent evtAdd1(cbEVT_ADD_LOG_WINDOW, m_pLog, msgMan->Slot(m_PageIndex).title, msgMan->Slot(m_PageIndex).icon);
-    Manager::Get()->ProcessEvent(evtAdd1);
+    if (!Manager::IsBatchHeadlessBuild())
+    {
+        // set log image
+        bmp = new wxBitmap(cbLoadBitmapScaled(prefix + _T("flag.png"), wxBITMAP_TYPE_PNG,
+                                              uiScaleFactor));
+        msgMan->Slot(m_ListPageIndex).icon = bmp;
+
+        CodeBlocksLogEvent evtAdd1(cbEVT_ADD_LOG_WINDOW, m_pLog, msgMan->Slot(m_PageIndex).title, msgMan->Slot(m_PageIndex).icon);
+        Manager::Get()->ProcessEvent(evtAdd1);
+    }
     if (!Manager::IsBatchBuild())
     {
         CodeBlocksLogEvent evtAdd2(cbEVT_ADD_LOG_WINDOW, m_pListLog, msgMan->Slot(m_ListPageIndex).title, msgMan->Slot(m_ListPageIndex).icon);
@@ -421,7 +445,7 @@ void CompilerGCC::OnAttach()
 
     m_LogBuildProgressPercentage = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/percentage"), false);
     bool hasBuildProg = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/bar"), false);
-    if (hasBuildProg)
+    if (hasBuildProg && !Manager::IsBatchHeadlessBuild())
         m_pLog->AddBuildProgressBar();
 
     // set default compiler for new projects
@@ -519,10 +543,13 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target, wxWin
         Manager::Get()->GetMacrosManager()->Reset();
 
         bool hasBuildProg = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/bar"), false);
-        if (hasBuildProg)
-            m_pLog->AddBuildProgressBar();
-        else
-            m_pLog->RemoveBuildProgressBar();
+        if (!Manager::IsBatchHeadlessBuild())
+        {
+            if (hasBuildProg)
+                m_pLog->AddBuildProgressBar();
+            else
+                m_pLog->RemoveBuildProgressBar();
+        }
 
         CodeBlocksEvent settingsEvent(cbEVT_SETTINGS_CHANGED);
         settingsEvent.SetInt(int(cbSettingsType::BuildOptions));
@@ -737,6 +764,7 @@ void CompilerGCC::TextURL(wxTextUrlEvent& event)
 
 void CompilerGCC::SetupEnvironment()
 {
+    // LogManager *log = Manager::Get()->GetLogManager();
     // Special case so "No Compiler" is valid, but I'm not sure there is
     // any valid reason to continue with this function.
     // If we do continue there are wx3 asserts, because of empty paths.
@@ -758,9 +786,7 @@ void CompilerGCC::SetupEnvironment()
                             15000, 3000);
         return;
     }
-
-//    Manager::Get()->GetLogManager()->DebugLogError(_T("PATH environment:"));
-//    Manager::Get()->GetLogManager()->DebugLogError(currentPath);
+    // log->Log(wxString::Format("PATH environment current: %s (%s %d)", currentPath, __FILE__, __LINE__));
 
     const wxString pathApp  = platform::windows ? _T(";") : _T(":");
     const wxString pathSep  = wxFileName::GetPathSeparator(); // "\" or "/"
@@ -846,8 +872,7 @@ void CompilerGCC::SetupEnvironment()
     for (size_t i=0; i<pathList.GetCount(); ++i)
         envPath += ( pathApp + pathList[i] );
 
-//    Manager::Get()->GetLogManager()->DebugLogError(_T("Updating compiler PATH environment:"));
-//    Manager::Get()->GetLogManager()->DebugLogError(envPath);
+    // log->Log(wxString::Format("PATH environment updated: %s (%s %d)", envPath, __FILE__, __LINE__));
 
     if ( !wxSetEnv(_T("PATH"), envPath) )
     {
@@ -855,6 +880,11 @@ void CompilerGCC::SetupEnvironment()
                             _("Can't set PATH environment variable! That's bad and the compiler might not work."));
         Manager::Get()->GetLogManager()->DebugLog(_T("Can't set PATH environment variable! That's bad and the compiler might not work.\n"));
     }
+}
+
+void CompilerGCC::UpdateSetupEnvironment()
+{
+    SetupEnvironment();
 }
 
 bool CompilerGCC::StopRunningDebugger()
@@ -1408,7 +1438,9 @@ int CompilerGCC::DoRunQueue()
                 LogMessage(msg, cltError, ltAll, true);
                 LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString,
                                   wxString::Format(_("=== Build failed: %s ==="), msg.wx_str()));
-                m_pListLog->AutoFitColumns(2);
+                if (!Manager::IsBatchBuild())
+                    m_pListLog->AutoFitColumns(2);
+
                 SaveBuildLog();
             }
             if (!Manager::IsBatchBuild() && m_pLog->progress)
@@ -1796,11 +1828,12 @@ void CompilerGCC::PrintBanner(BuildAction action, cbProject* prj, ProjectBuildTa
     wxString projectName = prj ? prj->GetTitle() : wxString(_("\"no project\""));
 
     wxString banner;
-    banner.Printf(_("%s: %s in %s (compiler: %s)"),
-                  Action.wx_str(), targetName.wx_str(), projectName.wx_str(), compilerName.wx_str());
-    LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, wxT("=== ") + banner + wxT(" ==="));
-    LogMessage(wxT("-------------- ") + banner + wxT("---------------"), cltNormal, ltAll, false, true);
-    m_pListLog->AutoFitColumns(2);
+    banner.Printf(_("%s: %s in %s (compiler: %s)"), Action, targetName, projectName, compilerName);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(banner);
+    LogWarningOrError(cltNormal, 0, wxString(), wxString(), "=== " + banner + " ===");
+    LogMessage("-------------- " + banner + "---------------", cltNormal, ltAll, false, true);
+    if (!Manager::IsBatchBuild())
+        m_pListLog->AutoFitColumns(2);
 }
 
 void CompilerGCC::DoGotoNextError()
@@ -2486,14 +2519,16 @@ void CompilerGCC::BuildStateManagement()
 
         if (result)
         {
-            const wxString &message = F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(),
-                                        getBuildTargetName(bt).wx_str());
+            wxString message;
+            message.Printf(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle(), getBuildTargetName(bt));
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(message);
             LogMessage(message, cltNormal);
         }
         else
         {
-            const wxString &message = F(_("Error cleaning \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(),
-                                        getBuildTargetName(bt).wx_str());
+            wxString message;
+            message.Printf(_("Error cleaning \"%s - %s\""), m_pBuildingProject->GetTitle(), getBuildTargetName(bt));
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(message);
             LogMessage(COMPILER_ERROR_LOG + message, cltError);
         }
         break;
@@ -3993,7 +4028,9 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
                 LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString,
                                   wxString::Format(_("=== Build %s: %s ==="),
                                                    wxString(m_LastExitCode == 0 ? _("finished") : _("failed")).wx_str(), msg.wx_str()));
-                m_pListLog->AutoFitColumns(2);
+                if (!Manager::IsBatchBuild())
+                    m_pListLog->AutoFitColumns(2);
+
                 SaveBuildLog();
             }
             if (!Manager::IsBatchBuild() && m_pLog->progress)

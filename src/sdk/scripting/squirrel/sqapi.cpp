@@ -576,17 +576,17 @@ SQRESULT sq_clear(HSQUIRRELVM v,SQInteger idx)
     return SQ_OK;
 }
 
-void sq_pushroottable(HSQUIRRELVM v)
+SQUIRREL_API void sq_pushroottable(HSQUIRRELVM v)
 {
     v->Push(v->_roottable);
 }
 
-void sq_pushregistrytable(HSQUIRRELVM v)
+SQUIRREL_API void sq_pushregistrytable(HSQUIRRELVM v)
 {
     v->Push(_ss(v)->_registry);
 }
 
-void sq_pushconsttable(HSQUIRRELVM v)
+SQUIRREL_API void sq_pushconsttable(HSQUIRRELVM v)
 {
     v->Push(_ss(v)->_consts);
 }

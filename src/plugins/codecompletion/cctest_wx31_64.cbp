@@ -10,7 +10,6 @@
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/codecompletion/cctest" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add directory="cctest" />
 					<Add directory="parser" />

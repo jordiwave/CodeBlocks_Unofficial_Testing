@@ -139,7 +139,7 @@ protected:
     virtual void OnRelease(bool appShutDown);
 
 private:
-    int logSlot;
+    int m_LogIndex;
     wxMenu *menu;
 
     wxString git;

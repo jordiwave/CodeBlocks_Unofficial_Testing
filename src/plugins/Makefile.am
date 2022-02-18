@@ -62,44 +62,30 @@ if BUILD_MANIFEST
 MAYBE_MANIFEST=xpmanifest
 endif
 
-SUBDIRS=$(MAYBE_ABBREVIATIONS) \
-    $(MAYBE_ASTYLE) \
-    $(MAYBE_AUTOSAVE) \
-    $(MAYBE_CLANGDCLIENT) \
-    $(MAYBE_CLASSWIZARD) \
-    $(MAYBE_CODECOMPLETION) \
-    $(MAYBE_COMPILER) \
-    $(MAYBE_DEBUGGER) \
-    $(MAYBE_DISPLAYEVENTS) \
-    $(MAYBE_MIMEHANDLER) \
-    $(MAYBE_SCRIPTEDWIZARD) \
-    $(MAYBE_PROJECTSIMPORTER) \
-    $(MAYBE_OPENFILESLIST) \
-    $(MAYBE_OCCURRENCESHIGHLIGHTING) \
-    $(MAYBE_TODO) \
-    $(MAYBE_MANIFEST) \
-    contrib
+SUBDIRS = \
+			$(MAYBE_ABBREVIATIONS) \
+			$(MAYBE_ASTYLE) \
+			$(MAYBE_AUTOSAVE) \
+			$(MAYBE_CLANGDCLIENT) \
+			$(MAYBE_CLASSWIZARD) \
+			$(MAYBE_CODECOMPLETION) \
+			$(MAYBE_COMPILER) \
+			$(MAYBE_DEBUGGER) \
+			$(MAYBE_DISPLAYEVENTS) \
+			$(MAYBE_MANIFEST) \
+			$(MAYBE_MIMEHANDLER) \
+			$(MAYBE_OCCURRENCESHIGHLIGHTING) \
+			$(MAYBE_OPENFILESLIST) \
+			$(MAYBE_PROJECTSIMPORTER) \
+			$(MAYBE_SCRIPTEDWIZARD) \
+			$(MAYBE_TODO) \
+			contrib
 # the 'contrib' subdir contains its own filtering
 
-DIST_SUBDIRS = abbreviations \
-    astyle \
-    autosave \
-    clangd_client \
-    classwizard \
-    codecompletion \
-    compilergcc \
-    debuggergdb \
-    defaultmimehandler \
-    displayevents \
-    openfileslist \
-    occurrenceshighlighting \
-    projectsimporter \
-    scriptedwizard \
-    todo \
-    xpmanifest \
-    contrib
+DIST_SUBDIRS = $(SUBDIRS)
 
-EXTRA_DIST = headerguard \
-    loghacker \
-    modpoller \
-    tidycmt
+EXTRA_DIST = \
+			headerguard \
+			loghacker \
+			modpoller \
+			tidycmt

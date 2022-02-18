@@ -106,7 +106,6 @@ AC_ARG_ENABLE(debug, [AC_HELP_STRING([--enable-debug], [turn on debugging (defau
         AC_MSG_RESULT(no)
     fi
 
-    CPPFLAGS="-DCB_AUTOCONF $CPPFLAGS"
 ])
 
 AC_DEFUN([CB_GCC_VERSION], [
@@ -333,6 +332,37 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING(whether to build windows install directory structure)
+windows_installer_build_default="yes"
+if test "x$nt" = "xtrue"; then
+    AC_ARG_ENABLE(windows-installer-build, [AC_HELP_STRING([--windows-installer-build], [build windows install directory structure (default NO)])],,
+                    enable_windows_installer_build=$windows_installer_build_default)
+fi
+AM_CONDITIONAL([CODEBLOCKS_NT_BUILD_INSTALLER], [test "x$enable_windows_installer_build" = "xyes"])
+if test "x$enable_windows_installer_build" = "xyes"; then
+    bindir='${prefix}'
+    sbindir='${prefix}'
+    libexecdir='${prefix}'
+    # datarootdir='${prefix}/share'
+    # datadir='${datarootdir}'
+    # sysconfdir='${prefix}/etc'
+    # sharedstatedir='${prefix}/com'
+    # localstatedir='${prefix}/var'
+    # docdir='${datarootdir}/doc/${PACKAGE_TARNAME}'
+    # infodir='${datarootdir}/info'
+    # htmldir='${docdir}'
+    # dvidir='${docdir}'
+    # pdfdir='${docdir}'
+    # psdir='${docdir}'
+    libdir='${prefix}'
+    # localedir='${datarootdir}/locale'
+    # mandir='${datarootdir}/man'
+    LIBTOOL=${LIBTOOL} -bindir ${bindir}
+
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
 
 case $host in
 	*-*-cygwin* | *-*-mingw*)
@@ -780,10 +810,11 @@ if test "x$enable_pch" = "x" -o "x$enable_pch" = "xyes" ; then
             ],
             [
                 AC_MSG_RESULT([yes])
-                GCC_PCH=1
-                PCH_FLAGS="-DCB_PRECOMP"
-                CPPFLAGS="${CPPFLAGS} ${PCH_FLAGS}"
-                CXXFLAGS="${CXXFLAGS} -Winvalid-pch"
+                # GCC_PCH=1
+                # PCH_FLAGS="-DCB_PRECOMP -Winvalid-pch"
+                # CPPFLAGS="${CPPFLAGS} ${PCH_FLAGS}"
+                CPPFLAGS="${CPPFLAGS}"
+                CXXFLAGS="${CXXFLAGS}"
             ],
             [
                 AC_MSG_RESULT([no])

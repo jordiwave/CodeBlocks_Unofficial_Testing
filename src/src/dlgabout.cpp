@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12593 $
- * $Id: dlgabout.cpp 12593 2021-12-18 08:32:34Z wh11204 $
+ * $Revision: 12706 $
+ * $Id: dlgabout.cpp 12706 2022-02-06 18:25:37Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/dlgabout.cpp $
  */
 
@@ -31,17 +31,46 @@
 #include <wx/dcmemory.h>    // wxMemoryDC
 #include <wx/display.h>
 #include <wx/statbmp.h>
+#include <algorithm>       // for std::sort only
 
 #include "appglobals.h"
 #include "dlgabout.h" // class's header file
 #include "configmanager.h"
+#include "pluginmanager.h"
 #include "splashscreen.h"
+
+struct Item
+{
+    wxString name, value;
+};
+
+static bool IsLess(const Item& a, const Item& b)
+{
+    return a.name.CmpNoCase(b.name) < 0;
+}
+
+static wxString FormatItems(const std::vector <Item> & items)
+{
+    int maxNameLength = 0;
+    for (const Item& item : items)
+        maxNameLength = std::max(maxNameLength, int(item.name.length()));
+
+    wxString information;
+    for (const Item& item : items)
+    {
+        information += item.name;
+        information += wxString(' ', maxNameLength - int(item.name.length()));
+        information += ": " + item.value + '\n';
+    }
+
+    return information;
+}
 
 // class constructor
 
 dlgAbout::dlgAbout(wxWindow* parent)
 {
-    if (!wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAbout"), _T("wxScrollingDialog")))
+    if (!wxXmlResource::Get()->LoadObject(this, parent, "dlgAbout", "wxScrollingDialog"))
     {
         cbMessageBox(_("There was an error loading the \"About\" dialog from XRC file."),
                      _("Information"), wxICON_EXCLAMATION);
@@ -62,7 +91,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
                                    "any kind of functionality to the core program, through the use of "
                                    "plugins...\n");
 
-    wxString file = ConfigManager::ReadDataPath() + _T("/images/splash_1312.png");
+    wxString file = ConfigManager::ReadDataPath() + "/images/splash_1312.png";
 
     wxImage im;
     im.LoadFile(file, wxBITMAP_TYPE_PNG);
@@ -82,6 +111,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
     wxTextCtrl *txtDescription = XRCCTRL(*this, "txtDescription", wxTextCtrl);
     txtDescription->SetValue(description);
 
+    // Thanks tab
     wxTextCtrl *txtThanksTo = XRCCTRL(*this, "txtThanksTo", wxTextCtrl);
     // Note: Keep this is sync with the AUTHORS file in SVN.
     txtThanksTo->SetValue(_(
@@ -141,6 +171,8 @@ dlgAbout::dlgAbout(wxWindow* parent)
                               "Squirrel scripting language (http://www.squirrel-lang.org).\n"
                               "The GNU Software Foundation (https://www.gnu.org).\n"
                               "Last, but not least, the open-source community."));
+
+    // License tab
     wxTextCtrl *txtLicense = XRCCTRL(*this, "txtLicense", wxTextCtrl);
     txtLicense->SetValue(LICENSE_GPL);
 

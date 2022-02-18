@@ -1,41 +1,57 @@
-AM_CPPFLAGS = $(WX_CXXFLAGS) \
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include
 
+if CODEBLOCKS_NT_BUILD_INSTALLER
+pluginlibdir = $(pkgdatadir)/plugins
+else
 pluginlibdir = $(pkglibdir)/plugins
+endif
 
-pluginlib_LTLIBRARIES = libheaderfixup.la
+pluginlib_LTLIBRARIES = \
+			libheaderfixup.la
 
-libheaderfixup_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
+libheaderfixup_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-libheaderfixup_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS)
+libheaderfixup_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la $(WX_LIBS)
 
-libheaderfixup_la_SOURCES = bindings.cpp \
-                            configuration.cpp \
-                            defaults.cpp \
-                            execution.cpp \
-                            fileanalysis.cpp \
-                            headerfixup.cpp \
-                            helper.cpp \
-                            protocol.cpp
+libheaderfixup_la_SOURCES = \
+			bindings.cpp \
+			configuration.cpp \
+			defaults.cpp \
+			execution.cpp \
+			fileanalysis.cpp \
+			headerfixup.cpp \
+			helper.cpp \
+			protocol.cpp
 
-noinst_HEADERS = bindings.h \
-                 configuration.h \
-                 execution.h \
-                 fileanalysis.h \
-                 headerfixup.h \
-                 helper.h \
-                 protocol.h
+noinst_HEADERS = \
+			bindings.h \
+			configuration.h \
+			execution.h \
+			fileanalysis.h \
+			headerfixup.h \
+			helper.h \
+			protocol.h
 
-EXTRA_DIST = $(srcdir)/*.cbp \
-             wxsmith/configuration.wxs \
-             wxsmith/execution.wxs \
-             wxsmith/protocol.wxs \
-             todo.txt \
-             manifest.xml
+EXTRA_DIST = \
+			$(srcdir)/*.cbp \
+			wxsmith/configuration.wxs \
+			wxsmith/execution.wxs \
+			wxsmith/protocol.wxs \
+			todo.txt \
+			manifest.xml
 
-pkgdata_DATA = headerfixup.zip
-CLEANFILES = $(pkgdata_DATA)
+pkgdata_DATA = \
+			headerfixup.zip
+CLEANFILES = \
+			$(pkgdata_DATA)
 
 headerfixup.zip:
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/headerfixup.zip manifest.xml > /dev/null

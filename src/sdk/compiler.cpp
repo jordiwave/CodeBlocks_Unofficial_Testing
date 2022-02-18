@@ -425,6 +425,28 @@ const CompilerTool* Compiler::GetCompilerTool(CommandType ct, const wxString& fi
     return &vec[catchAll];
 }
 
+wxString Compiler::SetMasterPathandSave(const wxString& newMasterPath)
+{
+    if (newMasterPath.IsEmpty())
+    {
+        return wxEmptyString;
+    }
+
+    wxString cfgMasterPath;
+
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("compiler"));
+    wxString baseKey = GetParentID().IsEmpty() ? _T("/sets") : _T("/user_sets");
+
+    cfgMasterPath.Printf(_("%s/%s/master_path"), baseKey, m_ID);
+
+    wxString previouMasterPath = cfg->Read(cfgMasterPath,m_MasterPath);
+    cfg->Write(cfgMasterPath, newMasterPath, true);
+    cfg->Flush();
+    m_MasterPath = newMasterPath;
+
+    return(previouMasterPath);
+}
+
 void Compiler::SaveSettings(const wxString& baseKey)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("compiler"));
@@ -1331,6 +1353,11 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
         wxSetEnv("PATH", path+origPath); // change path
         cmd[0] = GetExecName(cmd[0]);
 
+//LogManager *log = Manager::Get()->GetLogManager();
+//log->Log(wxString::Format("PATH environment original:  %s (%s %d)", origPath, __FILE__, __LINE__));
+//log->Log(wxString::Format("PATH environment pre-apped: %s (%s %d)", path, __FILE__, __LINE__));
+//log->Log(wxString::Format("cmd[0] : %s (%s %d)", cmd[0], __FILE__, __LINE__));
+//
         long ret = -1;
         wxArrayString output;
         if (!cmd[0].empty()) // should never be empty

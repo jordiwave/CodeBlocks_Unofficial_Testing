@@ -1,26 +1,43 @@
-AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS) \
+			-I$(top_srcdir)/src/include \
+			-I$(top_srcdir)/src/sdk/wxscintilla/include
 
+if CODEBLOCKS_NT_BUILD_INSTALLER
+pluginlibdir = $(pkgdatadir)/plugins
+else
 pluginlibdir = $(pkglibdir)/plugins
-pkgdata_DATA = RegExTestbed.zip
+endif
 
-pluginlib_LTLIBRARIES = libRegExTestbed.la
+pkgdata_DATA = \
+			RegExTestbed.zip
 
-libRegExTestbed_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
+pluginlib_LTLIBRARIES = \
+			libRegExTestbed.la
 
-libRegExTestbed_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS)
+libRegExTestbed_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-libRegExTestbed_la_SOURCES = regexdlg.cpp RegExTestbed.cpp
+libRegExTestbed_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la $(WX_LIBS)
 
-noinst_HEADERS = regexdlg.h RegExTestbed.h
+libRegExTestbed_la_SOURCES = \
+			regexdlg.cpp RegExTestbed.cpp
 
-EXTRA_DIST = $(srcdir)/*.cbp \
-	$(srcdir)/regexdlg.xrc \
-	$(srcdir)/manifest.xml \
-	$(srcdir)/wxsmith/RegExDlg.wxs
+noinst_HEADERS = \
+			regexdlg.h RegExTestbed.h
 
-CLEANFILES = $(pkgdata_DATA)
+EXTRA_DIST = \
+			$(srcdir)/*.cbp \
+			$(srcdir)/regexdlg.xrc \
+			$(srcdir)/manifest.xml \
+			$(srcdir)/wxsmith/RegExDlg.wxs
+
+CLEANFILES = \
+			$(pkgdata_DATA)
 
 RegExTestbed.zip: manifest.xml regexdlg.xrc
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/RegExTestbed.zip manifest.xml regexdlg.xrc > /dev/null

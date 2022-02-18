@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocksGlobalVariableExportConfig version="1">
+	<cb_win32>
+		<cb_build>
+			<BASE>D:\Andrew_Development\Work_Installers\CodeBLocks_Private_Experimental\src</BASE>
+			<INCLUDE>$(#CB_BUILD)\include</INCLUDE>
+			<CFLAGS>-g -O0 -ggdb</CFLAGS>
+			<OSBITS>32</OSBITS>
+			<CPP_STD>gnu++17</CPP_STD>
+		</cb_build>
+		<wxwidgets>
+			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.1.5_win$(#CB_BUILD.OSBITS)</BASE>
+			<INCLUDE>$(#WXWIDGETS)\include</INCLUDE>
+			<LIB>$(#WXWIDGETS)\lib</LIB>
+			<WX_CFG>&quot;&quot;</WX_CFG>
+			<WX_VERSION>31</WX_VERSION>
+			<WX_SUFFIX>u</WX_SUFFIX>
+		</wxwidgets>
+		<discount>
+			<BASE>D:\Andrew_Development\Libraries\discount_win$(#CB_BUILD.OSBITS)</BASE>
+			<INCLUDE>$(#DISCOUNT)</INCLUDE>
+			<LIB>$(#DISCOUNT)</LIB>
+		</discount>
+		<boost>
+			<BASE>D:\Andrew_Development\Libraries\boost</BASE>
+			<INCLUDE>$(#BOOST)</INCLUDE>
+		</boost>
+	</cb_win32>
+	<cb_win64>
+		<wxwidgets>
+			<BASE>D:\Andrew_Development\Libraries\wxWidgets-3.1.5_win64</BASE>
+			<INCLUDE>$(#WXWIDGETS)\include</INCLUDE>
+			<LIB>$(#WXWIDGETS)\lib</LIB>
+			<WX_CFG>&quot;&quot;</WX_CFG>
+			<WX_VERSION>31</WX_VERSION>
+			<WX_SUFFIX>u</WX_SUFFIX>
+		</wxwidgets>
+		<discount>
+			<BASE>D:\Andrew_Development\Libraries\discount_win64</BASE>
+			<INCLUDE>$(#DISCOUNT)</INCLUDE>
+			<LIB>$(#DISCOUNT)</LIB>
+		</discount>
+		<cb_build>
+			<BASE>D:\Andrew_Development\Work_Installers\CodeBLocks_Private_Experimental\src</BASE>
+			<INCLUDE>$(#CB_BUILD)\include</INCLUDE>
+			<CFLAGS>-g -O0 -ggdb</CFLAGS>
+			<OSBITS>64</OSBITS>
+			<CPP_STD>gnu++17</CPP_STD>
+		</cb_build>
+		<boost>
+			<BASE>D:\Andrew_Development\Libraries\boost</BASE>
+			<INCLUDE>$(#BOOST)</INCLUDE>
+		</boost>
+	</cb_win64>
+</CodeBlocksGlobalVariableExportConfig>

@@ -43,6 +43,7 @@
 #include "confirmreplacedlg.h"
 #include "filefilters.h"
 #include "filegroupsandmasks.h"
+#include "macrosmanager.h"
 #include "multiselectdlg.h"
 #include "projectdepsdlg.h"
 #include "projectfileoptionsdlg.h"
@@ -3630,8 +3631,9 @@ void ProjectManagerUI::BuildProjectTree(cbProject* project, cbTreeCtrl* tree,
 
     // add our project's root item
     FileTreeData* ftd = new FileTreeData(project, FileTreeData::ftdkProject);
-    project->SetProjectNode(tree->AppendItem(
-                                root, project->GetTitle(), prjIdx, prjIdx, ftd));
+    wxString projectTitle = project->GetTitle();
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(projectTitle);
+    project->SetProjectNode(tree->AppendItem(root, projectTitle, prjIdx, prjIdx, ftd));
     wxTreeItemId  others, generated;
     others = generated = project->GetProjectNode();
     wxTreeItemId* pGroupNodes = nullptr; // file group nodes (if enabled)

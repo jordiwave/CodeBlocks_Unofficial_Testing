@@ -2431,7 +2431,7 @@ void Parser::OnLSP_GoToPrevFunctionResponse(wxCommandEvent& event)  //response f
             for (int ii=lineNumbers.size()-1; ii >= 0; --ii)
             {
                 int funcLineNum = (lineNumbers[ii] > 0) ? (lineNumbers[ii] - 1) : 1;
-                if (lineNumbers[ii] < currLine )
+                if (funcLineNum < currLine )
                 {
                     pStc->GotoLine(funcLineNum);
                     break;
@@ -2517,7 +2517,7 @@ void Parser::OnLSP_GoToNextFunctionResponse(wxCommandEvent& event)  //response f
                 int funcLineNum = (lineNumbers[ii]<lastLineNum) ? lineNumbers[ii]-1 : lastLineNum;
                 funcLineNum = (lineNumbers[ii] <= 0) ? 1 : funcLineNum;
 
-                if (lineNumbers[ii] > (currLine+1) )
+                if (funcLineNum > (currLine+1) )
                 {
                     pStc->GotoLine(funcLineNum);
                     break;

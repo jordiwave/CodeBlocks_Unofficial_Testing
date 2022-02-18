@@ -1,8 +1,10 @@
 AM_CFLAGS = -Wall -g
 
-noinst_LTLIBRARIES = libbzip2.la
+noinst_LTLIBRARIES = \
+			libbzip2.la
 
-libbzip2_la_SOURCES = blocksort.c \
+libbzip2_la_SOURCES = \
+			blocksort.c \
 			bzlib.c \
 			compress.c \
 			crctable.c \
@@ -10,5 +12,6 @@ libbzip2_la_SOURCES = blocksort.c \
 			huffman.c \
 			randtable.c
 
-noinst_HEADERS = bzlib.h \
-		 bzlib_private.h
+noinst_HEADERS = \
+			bzlib.h \
+			 bzlib_private.h

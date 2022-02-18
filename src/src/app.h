@@ -143,8 +143,9 @@ protected:
 private:
     wxString GetAppPath() const;
     void SetupPersonality(const wxString& personality);
+    bool SetActiveVariableSet(wxString& varset);
+    wxString GetActiveVariableSet();
     void SetupImageSizes(wxToolBarAddOnXmlHandler *toolbarAddonHandler);
-
 
     wxString m_Prefix; // directory specified in --prefix switch
     wxString m_UserDataDir; // directory specified in --user-data-dir switch
@@ -153,12 +154,15 @@ private:
     wxString m_AutoFile; // --file foo.cpp[:line]
     wxString m_DebuggerAttach;
     wxString m_DebuggerConfig;
+    wxString m_GlobalVariableSetParameterOrBackup;
+    wxString m_MasterPathParameterOrBackup;
 
     wxScrollingDialog* m_pBatchBuildDialog;
     MainFrame* m_Frame;
     wxSingleInstanceChecker* m_pSingleInstance;
 
     bool m_Batch;
+    bool m_BatchHeadlessBuild;
     bool m_BatchNotify;
     bool m_BatchWindowAutoClose; // default: true
     bool m_Build;

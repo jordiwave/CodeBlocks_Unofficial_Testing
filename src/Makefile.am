@@ -1,10 +1,18 @@
 SUBDIRS = include base build_tools mime sdk src plugins tools templates scripts wxsmith
 
-dist_pkgdata_DATA = tips.txt
+dist_pkgdata_DATA = \
+			tips.txt
 
-EXTRA_DIST = $(srcdir)/*.cbp \
-		$(srcdir)/*.workspace \
-		mac_pack \
-		$(srcdir)/update* \
-		$(srcdir)/batch* \
-		sdk.doxy
+EXTRA_DIST = \
+			$(srcdir)/*.cbp \
+			$(srcdir)/*.workspace \
+			mac_pack \
+			$(srcdir)/update* \
+			$(srcdir)/batch* \
+			sdk.doxy
+
+if CODEBLOCKS_NT
+AM_CXXFLAGS = \
+			-DDEPSLIB_WINDOWS
+endif
+

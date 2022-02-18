@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12656 $
- * $Id: pluginsconfigurationdlg.cpp 12656 2022-01-16 09:56:14Z wh11204 $
+ * $Revision: 12704 $
+ * $Id: pluginsconfigurationdlg.cpp 12704 2022-02-05 12:24:59Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/pluginsconfigurationdlg.cpp $
  */
 
@@ -70,7 +70,7 @@ inline int wxCALLBACK sortByTitle(wxIntPtr item1, wxIntPtr item2, cb_unused wxIn
     const PluginElement* elem1 = (const PluginElement*)item1;
     const PluginElement* elem2 = (const PluginElement*)item2;
 
-    return elem1->info.title.CompareTo(elem2->info.title.wx_str());
+    return elem1->info.title.CmpNoCase(elem2->info.title);
 }
 
 BEGIN_EVENT_TABLE(PluginsConfigurationDlg, wxScrollingDialog)

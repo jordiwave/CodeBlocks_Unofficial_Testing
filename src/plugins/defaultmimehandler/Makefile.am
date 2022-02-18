@@ -1,22 +1,43 @@
 SUBDIRS = resources
 
-AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS) \
+			-I$(top_srcdir)/src/include \
+			-I$(top_srcdir)/src/sdk/wxscintilla/include
 
+if CODEBLOCKS_NT_BUILD_INSTALLER
+pluginlibdir = $(pkgdatadir)/plugins
+else
 pluginlibdir = $(pkglibdir)/plugins
+endif
 
-pluginlib_LTLIBRARIES = libdefaultmimehandler.la
+pluginlib_LTLIBRARIES = \
+			libdefaultmimehandler.la
 
-libdefaultmimehandler_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
+libdefaultmimehandler_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-libdefaultmimehandler_la_LIBADD = ../../sdk/libcodeblocks.la $(WX_LIBS)
+if CODEBLOCKS_NT
+libdefaultmimehandler_la_LDFLAGS += \
+			-enable-auto-image-base \
+			-add-stdcall-alias \
+			-enable-auto-import \
+			-no-undefined
+endif
 
-libdefaultmimehandler_la_SOURCES = defaultmimehandler.cpp \
+libdefaultmimehandler_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la $(WX_LIBS)
+
+libdefaultmimehandler_la_SOURCES = \
+			defaultmimehandler.cpp \
 			editmimetypesdlg.cpp \
 			EmbeddedHtmlPanel.cpp
 
-noinst_HEADERS = defaultmimehandler.h \
+noinst_HEADERS = \
+			defaultmimehandler.h \
 			editmimetypesdlg.h \
 			mimetypesarray.h \
 			EmbeddedHtmlPanel.h

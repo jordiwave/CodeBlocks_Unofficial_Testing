@@ -1,4 +1,6 @@
-AM_CPPFLAGS = $(WX_CXXFLAGS) \
+
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS) \
 			$(SCINTILLA_GTK_CFLAGS) \
 			-I$(srcdir)/include \
 			-I$(srcdir)/src/scintilla/include \
@@ -9,9 +11,20 @@ AM_CPPFLAGS = $(WX_CXXFLAGS) \
 			-DGTK \
 			-D__WX__
 
-noinst_LTLIBRARIES = libwxscintilla.la
+if CODEBLOCKS_NT
+AM_CPPFLAGS += \
+			-DwxUSE_UNICODE \
+			-D_WIN64 \
+			-DWINVER=0x0501 \
+			-DWXMAKINGDLL_SCI \
+			-DWXUSINGDLL
+endif
 
-libwxscintilla_la_SOURCES = src/PlatWX.cpp \
+noinst_LTLIBRARIES = \
+			libwxscintilla.la
+
+libwxscintilla_la_SOURCES = \
+			src/PlatWX.cpp \
 			src/ScintillaWX.cpp \
 			src/wxscintilla.cpp \
 			src/scintilla/lexers/LexA68k.cxx \
@@ -158,7 +171,8 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/src/ViewStyle.cxx \
 			src/scintilla/src/XPM.cxx
 
-noinst_HEADERS = src/PlatWX.h \
+noinst_HEADERS = \
+			src/PlatWX.h \
 			src/ScintillaWX.h \
 			src/scintilla/include/ILexer.h \
 			src/scintilla/include/Platform.h \
@@ -217,21 +231,26 @@ noinst_HEADERS = src/PlatWX.h \
 			src/scintilla/src/ViewStyle.h \
 			src/scintilla/src/XPM.h
 
-sdkdir=$(includedir)/codeblocks/wxscintilla/include/wx
+sdkdir = $(includedir)/codeblocks/wxscintilla/include/wx
 
-sdk_HEADERS = include/wx/wxscintilla.h
+if !CODEBLOCKS_NT_BUILD_INSTALLER
+sdk_HEADERS = \
+			include/wx/wxscintilla.h
+endif
 
-EXTRA_DIST = $(srcdir)/Readme \
-	$(srcdir)/build/*.txt \
-	$(srcdir)/build/Makefile \
-	$(srcdir)/build/wxscintilla.* \
-	$(srcdir)/src/scintilla/*.txt \
-	$(srcdir)/src/scintilla/README \
-	$(srcdir)/src/scintilla/include/*.iface \
-	$(srcdir)/src/scintilla/src/*.properties \
-	$(srcdir)/src/scintilla/cppcheck.suppress
+EXTRA_DIST = \
+			$(srcdir)/Readme \
+			$(srcdir)/build/*.txt \
+			$(srcdir)/build/Makefile \
+			$(srcdir)/build/wxscintilla.* \
+			$(srcdir)/src/scintilla/*.txt \
+			$(srcdir)/src/scintilla/README \
+			$(srcdir)/src/scintilla/include/*.iface \
+			$(srcdir)/src/scintilla/src/*.properties \
+			$(srcdir)/src/scintilla/cppcheck.suppress
 
 # add upper-case copy
-CLEANFILES = README
+CLEANFILES = \
+			README
 README: $(srcdir)/Readme
 	cp -p $< $@

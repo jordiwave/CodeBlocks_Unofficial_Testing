@@ -401,6 +401,9 @@ public:
       * @param target The selected target (can be NULL).
       */
     virtual int Configure(cbProject* project, ProjectBuildTarget* target, wxWindow *parent) = 0;
+
+    /** @brief Process environment update to the Compiler plugin classes */
+    virtual void UpdateSetupEnvironment() {};
 private:
 };
 

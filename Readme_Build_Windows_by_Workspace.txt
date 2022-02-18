@@ -6,6 +6,15 @@ The only external library needed to build Code::Blocks is wxWidgets.
 You must compile wxWidgets as a monolithic DLL. Refer to the build documentation in the wxWidgets
 sources on how to do it.
 
+If you want to build Code::Blocks on Windows using the workspace/project files please use the Readme_Build_Windows_by_Workspace.txt file.
+If you want to build Code::Blocks on Windows using the bootstrap/configure/make process please use the Readme_Build_Windows_MSYS2_by_Makefile.txt file.
+If you want to build Code::Blocks on Linux using the workspace/project files please use the Readme_Build_Linux_by_Workspace.txt file.
+If you want to build Code::Blocks on Linux using the bootstrap/configure/make process please use the Readme_Build_Linux_by_Makefile.txt file.
+If you want to build Code::Blocks on Linux Debian deb files please use the Readme_Build_Debian_deb_packages.txt file.
+If you want to debug Code::Blocks executable on Windows please use the Readme_Build_Windows_by_Workspace.txt file.
+If you want to debug Code::Blocks executable on Linux please use the Readme_Build_Linux_by_Workspace.txt file.
+
+
 Code::Blocks build instructions:
 --------------------------------
 This section outlines the requirements and process to build Code::Blocks from source code.
@@ -68,14 +77,29 @@ to debug problems in order to fix them or report them as a bug.
 
 The following is the process to debug Code::Blocks built form the source files:
     1) From the nightly build open the workspace (see above for the appropriate workspace)
-    2) Build Code:Blocks as per the process above
-    3) Run the update batch file using the process above
-    4) Now instead of running the Code::Blocks exe you do one of the following to run Code::Blocks 
+    2) Setup the following global environment variables via the "Setting->Global Variables..." menu option
+        Current set: default
+        Current Variable:   CB_RELEASE_TYPE
+                            Settings:
+                                    Built-in fields:
+                                        Name:       Value:
+                                        BASE        -g -O0 -ggdb
+        Current Variable:   WX31_64
+                            Settings:
+                                    Built-in fields:
+                                        Name:       Value:
+                                        base        <root directory of your wxwidget3.1.5 local build for CB)
+                                        lib         $(#WX31_64)\lib
+                                        include     $(#WX31_64)\include
+
+    3) Build Code:Blocks as per the process above
+    4) Run the update batch file using the process above
+    5) Now instead of running the Code::Blocks exe you do one of the following to run Code::Blocks 
         via the debugger in the Code::Blocks you have open:
             a) Click on the build icon in the debugger toolbar if it is shown
             b) Select the Debug->Start/Continue menu option
             c) Press F8
-    5) You are now debugging Code::Blocks within Code::Blocks. 
+    6) You are now debugging Code::Blocks within Code::Blocks. 
 
 You can also run the output\codeblocks.exe, but you will need use the following process:
     1) From the nightly build open the workspace (see above for the appropriate workspace)
@@ -117,6 +141,10 @@ NOTES:
     
 3) I also do NOT recommend using TortoiseSVN on Windows to do the initial checkout as you may encounter issues with 
      EOL if you transfer the files to Linux
+
+4) This may not be 100% right, but if you are using MSYS2 then you need to install the packages for MSYS2\MinGW64 as per the commands below:
+    pacman -S mingw-w64-x86_64-toolchain msys2-runtime-devel zip unzip mingw-w64-clang-x86_64-toolchain
+    pacman -Syu
 
 
 WIP OTHER PAGES:

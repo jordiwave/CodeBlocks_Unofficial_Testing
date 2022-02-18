@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12314 $
- * $Id: classbrowser.cpp 12314 2021-04-30 18:28:43Z fuscated $
+ * $Revision: 12689 $
+ * $Id: classbrowser.cpp 12689 2022-02-02 08:30:52Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/codecompletion/classbrowser.cpp $
  */
 
@@ -1023,6 +1023,7 @@ void ClassBrowser::TreeOperation(ETreeOperator op, CCTreeItem* item)
     switch (op)
     {
     case OpClear:
+        m_targetTreeCtrl->Disable();
         m_targetTreeCtrl->Freeze();
         m_targetTreeCtrl->DeleteAllItems();
         m_targetNode.Unset();
@@ -1080,6 +1081,7 @@ void ClassBrowser::TreeOperation(ETreeOperator op, CCTreeItem* item)
         break;
     case OpEnd:
         m_targetTreeCtrl->Thaw();
+        m_targetTreeCtrl->Enable();
     }
 }
 

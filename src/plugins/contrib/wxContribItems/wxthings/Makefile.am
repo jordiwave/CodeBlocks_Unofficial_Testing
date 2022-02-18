@@ -1,21 +1,50 @@
-AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		-I$(srcdir)/include
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS) \
+			-I$(srcdir)/include
 
-wxcontribitemsdir=$(libdir)/codeblocks/wxContribItems
+if CODEBLOCKS_NT
+AM_CPPFLAGS += \
+			-DWXUSINGDLL \
+			-DwxUSE_UNICODE \
+			-D_WIN64 \
+			-DWXUSINGDLL \
+			-DWXMAKINGDLL_THINGS
+endif
 
-wxcontribitems_LTLIBRARIES = libwxcustombutton.la
+if CODEBLOCKS_NT_BUILD_INSTALLER
+wxcontribitemsdir = $(libdir)
+else
+wxcontribitemsdir = $(libdir)/codeblocks/wxContribItems
+endif
 
-libwxcustombutton_la_LDFLAGS = -version-info 0:1:0
+wxcontribitems_LTLIBRARIES = \
+			libwxcustombutton.la
 
-libwxcustombutton_la_LIBADD = $(WX_LIBS)
+libwxcustombutton_la_LDFLAGS = \
+			-version-info 0:1:0
+
+if CODEBLOCKS_NT
+libwxcustombutton_la_LDFLAGS += \
+			-Wl,--export-all-symbols \
+			-enable-auto-image-base \
+			-add-stdcall-alias \
+			-enable-auto-import \
+			-no-undefined
+endif
+
+libwxcustombutton_la_LIBADD = \
+			$(WX_LIBS)
 
 libwxcustombutton_la_SOURCES = \
-./src/toggle.cpp
+			./src/toggle.cpp
 
-sdkdir=$(includedir)/codeblocks/wxContribItems/wxthings/include/wx/things
+sdkdir = $(includedir)/codeblocks/wxContribItems/wxthings/include/wx/things
 
+if !CODEBLOCKS_NT_BUILD_INSTALLER
 sdk_HEADERS = \
-./include/wx/things/toggle.h \
-./include/wx/things/thingdef.h
+			./include/wx/things/toggle.h \
+			./include/wx/things/thingdef.h
+endif
 
-EXTRA_DIST = ./src/precomp.cpp ./src/precomp.h
+EXTRA_DIST = \
+			./src/precomp.cpp ./src/precomp.h

@@ -1,18 +1,45 @@
-AM_CPPFLAGS = $(WX_CXXFLAGS)
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS)
 
-wxcontribitemsdir=$(libdir)/codeblocks/wxContribItems
+if CODEBLOCKS_NT
+AM_CPPFLAGS += \
+			-DWXUSINGDLL \
+			-DwxUSE_UNICODE \
+			-D_WIN64 \
+			-DWXUSINGDLL
+endif
 
-wxcontribitems_LTLIBRARIES = libwxmathplot.la
+if CODEBLOCKS_NT_BUILD_INSTALLER
+wxcontribitemsdir = $(libdir)
+else
+wxcontribitemsdir = $(libdir)/codeblocks/wxContribItems
+endif
 
-libwxmathplot_la_LDFLAGS = -version-info 0:1:0
+wxcontribitems_LTLIBRARIES = \
+			libwxmathplot.la
 
-libwxmathplot_la_LIBADD = $(WX_LIBS)
+libwxmathplot_la_LDFLAGS = \
+			-version-info 0:1:0
+
+if CODEBLOCKS_NT
+libwxmathplot_la_LDFLAGS += \
+			-Wl,--export-all-symbols \
+			-enable-auto-image-base \
+			-add-stdcall-alias \
+			-enable-auto-import \
+			-no-undefined
+endif
+
+libwxmathplot_la_LIBADD = \
+			$(WX_LIBS)
 
 libwxmathplot_la_SOURCES = \
-./mathplot.cpp
+			./mathplot.cpp
 
-sdkdir=$(includedir)/codeblocks/wxContribItems/wxMathPlot
+sdkdir = $(includedir)/codeblocks/wxContribItems/wxMathPlot
 
+if !CODEBLOCKS_NT_BUILD_INSTALLER
 sdk_HEADERS = \
-./mathplot.h
+			./mathplot.h
+endif
 

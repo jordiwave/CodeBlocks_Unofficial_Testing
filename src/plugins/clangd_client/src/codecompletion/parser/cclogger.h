@@ -254,7 +254,7 @@ private:
 //#define CC_LOCKER_TRACK_TT_MTX_LOCK(M)   M.LockTimeout(250);
 //#define CC_LOCKER_TRACK_TT_MTX_LOCK(M)   M.Lock();
 #define CC_LOCKER_TRACK_TT_MTX_LOCK(M)      \
-        {                                    \
+        {\
             auto locker_result = M.Lock();   \
             if (locker_result != wxMUTEX_NO_ERROR)  \
             {   wxString err1st = wxString::Format("Owner: %s", M##_Owner); \

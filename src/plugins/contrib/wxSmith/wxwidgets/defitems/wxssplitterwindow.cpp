@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 10959 $
-* $Id: wxssplitterwindow.cpp 10959 2017-01-14 22:40:56Z fuscated $
+* $Revision: 12685 $
+* $Id: wxssplitterwindow.cpp 12685 2022-01-31 10:58:46Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxssplitterwindow.cpp $
 */
 
@@ -50,9 +50,9 @@ WXS_EV_END()
 }
 
 wxsSplitterWindow::wxsSplitterWindow(wxsItemResData* Data):
-    wxsContainer(Data,&Reg.Info,wxsSplitterWindowEvents,wxsSplitterWindowStyles),
+    wxsContainer(Data,&Reg.Info,wxsSplitterWindowEvents,wxsSplitterWindowStyles, flContainer & ~flMinMaxSize),
     SashPos(0),
-    MinPaneSize (10),
+    MinPaneSize(10),
     Orientation(wxHORIZONTAL),
     SashGravity(0.5f)
 {
@@ -62,9 +62,9 @@ wxObject* wxsSplitterWindow::OnBuildPreview(wxWindow* Parent,long Flags)
 {
     wxSplitterWindow* Splitter = new wxSplitterWindow(Parent,GetId(),Pos(Parent),Size(Parent),Style());
     SetupWindow(Splitter,Flags);
-    if ( MinPaneSize  != -1 )
+    if ( MinPaneSize != -1 )
     {
-        Splitter->SetMinimumPaneSize(MinPaneSize );
+        Splitter->SetMinimumPaneSize(MinPaneSize);
     }
     AddChildrenPreview(Splitter,Flags);
     if ( GetChildCount() == 0 )
@@ -109,7 +109,7 @@ void wxsSplitterWindow::OnBuildCreatingCode()
         AddHeader(_T("<wx/splitter.h>"),_T("wxSplitterEvent"),0);
         Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
         BuildSetupWindowCode();
-        if ( MinPaneSize  != -1 ) Codef(_T("%ASetMinimumPaneSize(%d);\n"),MinPaneSize );
+        if ( MinPaneSize != -1 ) Codef(_T("%ASetMinimumPaneSize(%d);\n"),MinPaneSize);
         Codef(_T("%ASetSashGravity(%f);\n"),SashGravity);
         AddChildrenCode();
         if ( GetChildCount() == 0 )

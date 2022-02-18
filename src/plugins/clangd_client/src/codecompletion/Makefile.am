@@ -1,20 +1,36 @@
 SUBDIRS = resources
 
-AM_CPPFLAGS = $(WX_CXXFLAGS) \
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include
 
+if CODEBLOCKS_NT_BUILD_INSTALLER
+pluginlibdir = $(pkgdatadir)/plugins
+else
 pluginlibdir = $(pkglibdir)/plugins
+endif
 
-pluginlib_LTLIBRARIES = libcodecompletion.la
+pluginlib_LTLIBRARIES = \
+			libcodecompletion.la
 
-libcodecompletion_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
+libcodecompletion_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-libcodecompletion_la_LIBADD = ../../sdk/libcodeblocks.la\
-			$(WX_LIBS) \
+libcodecompletion_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la\
+			$(WX_LIBS)
+
+if !CODEBLOCKS_NT
+libcodecompletion_la_LIBADD += \
 			$(CB_TINYXML_LIBS)
+endif
 
-libcodecompletion_la_SOURCES = ccoptionsdlg.cpp \
+libcodecompletion_la_SOURCES = \
+			ccoptionsdlg.cpp \
 			ccoptionsprjdlg.cpp \
 			cctreectrl.cpp \
 			classbrowser.cpp \
@@ -41,7 +57,8 @@ libcodecompletion_la_SOURCES = ccoptionsdlg.cpp \
 			parser/searchtree.cpp \
 			parser/expression.cpp
 
-noinst_HEADERS = ccoptionsdlg.h \
+noinst_HEADERS = \
+			ccoptionsdlg.h \
 			ccoptionsprjdlg.h \
 			cctreectrl.h \
 			classbrowser.h \
@@ -68,7 +85,8 @@ noinst_HEADERS = ccoptionsdlg.h \
 			parser/searchtree.h \
 			parser/expression.h
 
-EXTRA_DIST = $(srcdir)/*.cbp \
-		cctest \
-		testing \
-		wxsmith
+EXTRA_DIST = \
+			$(srcdir)/*.cbp \
+			cctest \
+			testing \
+			wxsmith

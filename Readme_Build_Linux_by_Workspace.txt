@@ -6,8 +6,13 @@ THESE INSTRUCTIONS NEED TO BE:
 These notes are for developers wishing to build Code::Blocks from source on Unix using the 
 Code::Blocks workspace using an existing installed version of Code::Blocks.
 
-If you want to build Code::Blocks using a make file please use the Readme_Build_Linux_by_Makefile.txt file.
-If you want to build Code::Blocks Debian deb files please use the Readme_Build_Debian_deb_packages.txt file.
+If you want to build Code::Blocks on Windows using the workspace/project files please use the Readme_Build_Windows_by_Workspace.txt file.
+If you want to build Code::Blocks on Windows using the bootstrap/configure/make process please use the Readme_Build_Windows_MSYS2_by_Makefile.txt file.
+If you want to build Code::Blocks on Linux using the workspace/project files please use the Readme_Build_Linux_by_Workspace.txt file.
+If you want to build Code::Blocks on Linux using the bootstrap/configure/make process please use the Readme_Build_Linux_by_Makefile.txt file.
+If you want to build Code::Blocks on Linux Debian deb files please use the Readme_Build_Debian_deb_packages.txt file.
+If you want to debug Code::Blocks executable on Windows please use the Readme_Build_Windows_by_Workspace.txt file.
+If you want to debug Code::Blocks executable on Linux please use the Readme_Build_Linux_by_Workspace.txt file.
 
 Code::Blocks build instructions:
 --------------------------------

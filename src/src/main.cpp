@@ -2,36 +2,63 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12684 $
- * $Id: main.cpp 12684 2022-01-28 16:38:59Z wh11204 $
+ * $Revision: 12712 $
+ * $Id: main.cpp 12712 2022-02-09 08:42:10Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/main.cpp $
  */
 
 #include <sdk.h>
 
+#include "main.h"
+
+#include "annoyingdialog.h"
 #include "app.h"
 #include "appglobals.h"
 #include "batchbuild.h"
 #include "cbart_provider.h"
 #include "cbauibook.h"
+#include "cbcolourmanager.h"
+#include "cbexception.h"
+#include "cbplugin.h"
+#include "cbproject.h"
+#include "cbstatusbar.h"
 #include "cbstyledtextctrl.h"
+#include "cbworkspace.h"
+#include "ccmanager.h"
 #include "compilersettingsdlg.h"
+#include "configmanager.h"
+#include "debugger_interface_creator.h"
+#include "debuggermanager.h"
+#include "debuggermenu.h"
 #include "debuggersettingsdlg.h"
 #include "dlgabout.h"
 #include "dlgaboutplugin.h"
-#include "environmentsettingsdlg.h"
 #include "dlghelpsysteminformation.h"
+#include "editorcolourset.h"
+#include "editorconfigurationdlg.h"
+#include "editormanager.h"
+#include "environmentsettingsdlg.h"
+#include "filefilters.h"
+#include "globals.h"
 #include "infopane.h"
 #include "infowindow.h"
-#include "main.h"
+#include "loggers.h"
+#include "logmanager.h"
 #include "notebookstyles.h"
+#include "personalitymanager.h"
+#include "pluginmanager.h"
 #include "printdlg.h"
+#include "projectmanager.h"
+#include "projectmanagerui.h"
 #include "scriptconsole.h"
+#include "scriptingmanager.h"
 #include "scriptingsettingsdlg.h"
+#include "sdk_events.h"
 #include "startherepage.h"
 #include "switcherdlg.h"
-#include "cbstatusbar.h"
-#include "loggers.h"
+#include "templatemanager.h"
+#include "toolsmanager.h"
+#include "uservarmanager.h"
 
 #include <wx/display.h>
 #include <wx/dnd.h>
@@ -43,35 +70,6 @@
 #include <wx/tipdlg.h>
 #include <wx/tokenzr.h>
 #include <wx/xrc/xmlres.h>
-
-#include <annoyingdialog.h>
-#include <cbexception.h>
-#include <cbplugin.h>
-#include <cbproject.h>
-#include <cbworkspace.h>
-#include <ccmanager.h>
-#include <configmanager.h>
-#include <debuggermanager.h>
-#include <editorcolourset.h>
-#include <editormanager.h>
-#include <filefilters.h>
-#include <globals.h>
-#include <logmanager.h>
-#include <personalitymanager.h>
-#include <pluginmanager.h>
-#include <projectmanager.h>
-#include <scriptingmanager.h>
-#include <sdk_events.h>
-#include <templatemanager.h>
-#include <toolsmanager.h>
-#include <uservarmanager.h>
-
-#include "debugger_interface_creator.h"
-#include "debuggermenu.h"
-
-#include "cbcolourmanager.h"
-#include "editorconfigurationdlg.h"
-#include "projectmanagerui.h"
 
 #include "scripting/bindings/sc_utils.h"
 #include "scripting/bindings/sc_typeinfo_all.h"
@@ -1066,17 +1064,19 @@ void MainFrame::SetupGUILogging(int uiSize16)
     if (!Manager::IsBatchBuild())
     {
         m_pInfoPane = new InfoPane(this);
-        m_LayoutManager.AddPane(m_pInfoPane, wxAuiPaneInfo().
-                                Name(wxT("MessagesPane")).Caption(_("Logs & others")).
-                                BestSize(wxSize(clientsize.GetWidth(), bottomH)).//MinSize(wxSize(50,50)).
-                                Bottom());
+        m_LayoutManager.AddPane(    m_pInfoPane,
+                                    wxAuiPaneInfo().
+                                    Name(wxT("MessagesPane")).Caption(_("Logs & others")).
+                                    BestSize(wxSize(clientsize.GetWidth(), bottomH)).//MinSize(wxSize(50,50)).
+                                    Bottom()
+                               );
 
-        wxWindow* log;
+        wxWindow* logWindow;
 
         for (size_t i = LogManager::app_log; i < LogManager::max_logs; ++i)
         {
-            if ((log = mgr->Slot(i).GetLogger()->CreateControl(m_pInfoPane)))
-                m_pInfoPane->AddLogger(mgr->Slot(i).GetLogger(), log, mgr->Slot(i).title, mgr->Slot(i).icon);
+            if ((logWindow = mgr->Slot(i).GetLogger()->CreateControl(m_pInfoPane)))
+                m_pInfoPane->AddLogger(mgr->Slot(i).GetLogger(), logWindow, mgr->Slot(i).title, mgr->Slot(i).icon);
         }
 
         m_findReplace.CreateSearchLog();
@@ -1088,10 +1088,6 @@ void MainFrame::SetupGUILogging(int uiSize16)
         m_pInfoPane = new InfoPane(m_pBatchBuildDialog);
         s->Add(m_pInfoPane, 1, wxEXPAND);
         m_pBatchBuildDialog->SetSizer(s);
-
-        // setting &g_null_log causes the app to crash on exit for some reason...
-        mgr->SetLog(new NullLogger, LogManager::app_log);
-        mgr->SetLog(new NullLogger, LogManager::debug_log);
     }
 
     mgr->NotifyUpdate();

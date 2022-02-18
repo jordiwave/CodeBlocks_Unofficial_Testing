@@ -11,6 +11,8 @@
 #include <wx/colour.h>
 #include <wx/font.h>
 #include <wx/ffile.h>
+#include <wx/filename.h>
+#include <wx/stdpaths.h>
 #include <wx/textctrl.h>
 
 class wxListCtrl;
@@ -42,23 +44,46 @@ class DLLIMPORT FileLogger : public Logger
 protected:
     wxFFile f;
 public:
-    FileLogger(const wxString& filename) : f(filename, _T("wb")) {};
+    FileLogger(const wxString& filename)
+    {
+        f.Open(filename, _T("wb"));
+        if (f.Error())
+        {
+            wxFileName fn(wxStandardPaths::Get().GetTempDir(),filename);
+            f.Close();
+            f.Open(fn.GetFullPath(), _T("wb"));
+        }
+    };
     FileLogger() {};
 
     void Append(const wxString& msg, cb_unused Logger::level lv) override
     {
-        fputs(wxSafeConvertWX2MB(msg.wc_str()), f.fp());
-        fputs(::newline_string.mb_str(), f.fp());
+        if (f.IsOpened())
+        {
+            fputs(wxSafeConvertWX2MB(msg.wc_str()), f.fp());
+            fputs(::newline_string.mb_str(), f.fp());
+            f.Flush();
+        }
     };
 
     virtual void Open(const wxString& filename)
     {
         Close();
         f.Open(filename, _T("wb"));
+        if (f.Error())
+        {
+            wxFileName fn(wxStandardPaths::Get().GetTempDir(),filename);
+            f.Close();
+            f.Open(fn.GetFullPath(), _T("wb"));
+        }
     };
     virtual void Close()
     {
-        if(f.IsOpened()) f.Close();
+        if(f.IsOpened())
+        {
+            f.Flush();
+            f.Close();
+        }
     };
 };
 

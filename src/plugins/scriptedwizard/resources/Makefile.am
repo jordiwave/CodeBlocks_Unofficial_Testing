@@ -9,7 +9,7 @@ SUBDIRS = arduino \
 	d_source \
 	empty \
 	empty_file \
-	fltk  \
+	fltk \
 	fortran \
 	glfw \
 	glut \
@@ -41,15 +41,19 @@ SUBDIRS = arduino \
 	win32gui \
 	wxwidgets
 
-pkgdata_DATA = scriptedwizard.zip
-CLEANFILES = $(pkgdata_DATA)
+pkgdata_DATA = \
+			scriptedwizard.zip
+CLEANFILES = \
+			$(pkgdata_DATA)
 
 scriptdir = $(pkgdatadir)/templates/wizard
 
-dist_script_DATA = common_functions.script \
-		config.script
+dist_script_DATA = \
+			common_functions.script \
+			config.script
 
-EXTRA_DIST = manifest.xml
+EXTRA_DIST = \
+			manifest.xml
 
 scriptedwizard.zip: $(EXTRA_DIST)
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/scriptedwizard.zip manifest.xml > /dev/null

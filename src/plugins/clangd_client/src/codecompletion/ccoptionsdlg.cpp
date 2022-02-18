@@ -94,7 +94,9 @@ BEGIN_EVENT_TABLE(CCOptionsDlg, wxPanel)
     EVT_BUTTON(XRCID("btnClangBothAutoDetect"),     CCOptionsDlg::OnLLVM_ClangBoth_AutoDetect)
 END_EVENT_TABLE()
 
+// ----------------------------------------------------------------------------
 CCOptionsDlg::CCOptionsDlg(wxWindow* parent, ParseManager* np, CodeCompletion* cc, DocumentationHelper* dh)
+// ----------------------------------------------------------------------------
     : m_ParseManager(np),
       m_CodeCompletion(cc),
       m_Parser(np->GetParser()),
@@ -170,7 +172,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, ParseManager* np, CodeCompletion* c
     XRCCTRL(*this, "txtClangDaemonMasterPath",  wxTextCtrl)->SetValue(m_Parser.Options().LLVM_ClangDaemonMasterPath);
     XRCCTRL(*this, "txtClangMasterPath",        wxTextCtrl)->SetValue(m_Parser.Options().LLVM_ClangMasterPath);
 
-    // fixme What do with unused hidden check boxes ?
+    // FIXME (ph#): implement these unused hidden check boxes ?
     XRCCTRL(*this, "chkLocals",        wxCheckBox)->Hide(); //(ph 2021/11/9)
     XRCCTRL(*this, "chkGlobals",       wxCheckBox)->Hide();
     XRCCTRL(*this, "chkPreprocessor",  wxCheckBox)->Hide();
@@ -192,12 +194,14 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, ParseManager* np, CodeCompletion* c
 //    m_Parser.ParseBuffer(g_SampleClasses, true);
 //    m_Parser.BuildTree(*XRCCTRL(*this, "treeClasses", wxTreeCtrl));
 }
-
+// ----------------------------------------------------------------------------
 CCOptionsDlg::~CCOptionsDlg()
+// ----------------------------------------------------------------------------
 {
 }
-
+// ----------------------------------------------------------------------------
 void CCOptionsDlg::OnApply()
+// ----------------------------------------------------------------------------
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
 
@@ -262,7 +266,7 @@ void CCOptionsDlg::OnApply()
     cfg->Write(_T("/documentation_helper_text_color"),       (wxColour) XRCCTRL(*this, "btnDocTextColor", wxButton)->GetBackgroundColour());
     cfg->Write(_T("/documentation_helper_link_color"),       (wxColour) XRCCTRL(*this, "btnDocLinkColor", wxButton)->GetBackgroundColour());
     // -----------------------------------------------------------------------
-    // Handle all options that are being be read by m_Parser.ReadOptions():
+    // Handle all options that are being read by m_Parser.ReadOptions():
     // -----------------------------------------------------------------------
 
     // Force parser to read its options that we write in the config
@@ -310,7 +314,9 @@ void CCOptionsDlg::OnApply()
     m_CodeCompletion->RereadOptions();
 }
 
+// ----------------------------------------------------------------------------
 void CCOptionsDlg::OnChooseColour(wxCommandEvent& event)
+// ----------------------------------------------------------------------------
 {
     wxColourData data;
     wxWindow* sender = FindWindowById(event.GetId());
@@ -325,12 +331,16 @@ void CCOptionsDlg::OnChooseColour(wxCommandEvent& event)
     }
 }
 
+// ----------------------------------------------------------------------------
 void CCOptionsDlg::OnCCDelayScroll(cb_unused wxScrollEvent& event)
+// ----------------------------------------------------------------------------
 {
     UpdateCCDelayLabel();
 }
 
+// ----------------------------------------------------------------------------
 void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
+// ----------------------------------------------------------------------------
 {
     // ccmanager's config Settings/Editor/Code completion
     ConfigManager* ccmcfg = Manager::Get()->GetConfigManager(_T("ccmanager"));
@@ -398,7 +408,9 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     XRCCTRL(*this, "btnDocLinkColor",         wxButton)->Enable(en);
 }
 
+// ----------------------------------------------------------------------------
 void CCOptionsDlg::UpdateCCDelayLabel()
+// ----------------------------------------------------------------------------
 {
     int position = XRCCTRL(*this, "sldCCDelay", wxSlider)->GetValue();
     wxString lbl;
@@ -409,7 +421,9 @@ void CCOptionsDlg::UpdateCCDelayLabel()
     XRCCTRL(*this, "lblDelay", wxStaticText)->SetLabel(lbl);
 }
 
+// ----------------------------------------------------------------------------
 bool CCOptionsDlg::ValidateReplacementToken(wxString& from, wxString& to)
+// ----------------------------------------------------------------------------
 {
     // cut off any leading / trailing spaces
     from.Trim(true).Trim(false);
@@ -617,10 +631,6 @@ void CCOptionsDlg::OnFindClangDir_Dlg(wxCommandEvent& event)
         fname.Clear();
 
     }
-    //(ph 2021/12/18) save full path in order to get other config items (like resource dir)
-    //-wxString dir = fname.GetPath();
-    //-if (dir.EndsWith("bin"))
-    //-    dir = dir.BeforeLast(dirSep);
-    //-obj->SetValue(dir);
     obj->SetValue(fname.GetFullPath());
+
 }

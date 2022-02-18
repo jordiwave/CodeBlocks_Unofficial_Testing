@@ -1,24 +1,61 @@
 SUBDIRS = depslib resources
 
-AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		$(CB_SQUIRREL_CFLAGS) \
-		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		-I$(top_srcdir)/src/plugins/compilergcc/depslib/src
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS) \
+			$(CB_SQUIRREL_CFLAGS) \
+			-I$(top_srcdir)/src/include \
+			-I$(top_srcdir)/src/sdk/wxscintilla/include \
+			-I$(top_srcdir)/src/plugins/compilergcc/depslib/src
 
-AM_CXXFLAGS = -DDEPSLIB_UNIX
+if CODEBLOCKS_NT
+AM_CXXFLAGS = \
+			-DDEPSLIB_WINDOWS \
+			-DBUILDING_PLUGIN \
+			-m64 \
+			-pipe \
+			-fmessage-length=0 \
+			-fexceptions \
+			-DHAVE_W32API_H \
+			-D__WXMSW__ \
+			-DWXUSINGDLL \
+			-DcbDEBUG \
+			-DwxUSE_UNICODE \
+			-D_WIN64
+else
+AM_CXXFLAGS = \
+			-DDEPSLIB_UNIX
+endif
 
+if CODEBLOCKS_NT_BUILD_INSTALLER
+pluginlibdir = $(pkgdatadir)/plugins
+else
 pluginlibdir = $(pkglibdir)/plugins
+endif
 
-pluginlib_LTLIBRARIES = libcompiler.la
+pluginlib_LTLIBRARIES = \
+			libcompiler.la
 
-libcompiler_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
+libcompiler_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-libcompiler_la_LIBADD = ../../sdk/libcodeblocks.la \
-				depslib/src/libdepslib.la \
-				$(WX_LIBS)
+if CODEBLOCKS_NT
+libcompiler_la_LDFLAGS += \
+			-enable-auto-image-base \
+			-add-stdcall-alias \
+			-enable-auto-import \
+			-no-undefined
+endif
 
-libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
+libcompiler_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
+			depslib/src/libdepslib.la \
+			$(WX_LIBS)
+
+libcompiler_la_SOURCES = \
+			advancedcompileroptionsdlg.cpp \
 			compiler_defs.cpp \
 			compilerCYGWIN.cpp \
 			compilererrors.cpp \
@@ -44,7 +81,8 @@ libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
 			compilerXML.cpp \
 			directcommands.cpp
 
-noinst_HEADERS = advancedcompileroptionsdlg.h \
+noinst_HEADERS = \
+			advancedcompileroptionsdlg.h \
 			compiler_defs.h \
 			compilerCYGWIN.h \
 			compilererrors.h \
@@ -69,5 +107,3 @@ noinst_HEADERS = advancedcompileroptionsdlg.h \
 			compilerGNUFortran.h \
 			compilerXML.h \
 			directcommands.h
-
-

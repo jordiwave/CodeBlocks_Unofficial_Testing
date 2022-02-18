@@ -1,14 +1,9 @@
-Updated for the release on 28-Jan-2022
+Updated for the release on 30-Jan-2022
 
-The code and installers are *not* official and unsupported by any other Code::Blocks developer. They are NOT thoroughly tested and no code reviews on the changes have been done.
-
-Installer download link:
-========================
-https://sourceforge.net/projects/unofficial-cb-installers/
 
 C::B exe/dll changed/update highlights compared to the last nightly SVN 12675 release (23-Jan-2021):
 ====================================================================================================
-    1. Incorporated SVN changes up to and including SVN 12684. See https://sourceforge.net/p/codeblocks/code/12684/log/ for change info.
+    1. Incorporated SVN changes up to and including SVN 12686. See https://sourceforge.net/p/codeblocks/code/12686/log/ for change info.
     2. Has auto-detect/auto add GDB support when options*.xml include GDB info. (SF Ticket 1114)
     3. Auto-detect POP up condition on startup has changed. After initial install will only pop up if the default compiler has issues. (SF Ticket 1117)
     4. Auto-detect compiler dialog has the option to show the installed or all the compilers. (SF Ticket 1117).
@@ -35,6 +30,9 @@ C::B exe/dll changed/update highlights compared to the last nightly SVN 12675 re
         * https://github.com/zinnjonas/cbInno (code and installer added 25JAN2022)
     9. Modified config code so the configs for this version are installed in the codeblocks_experimental directory in order to allow nightly 
           and this version to co-exist on the one pC.
+    10. Added support for export, import and save global variables. (SF Ticket 1184)
+    11. Added nww "--variable-set" command line parameter to set the global variable set for batch building win32 & Win64 from the one workspace/project file 
+          by using different global variable sets with support for the variables in the project files used. [Trunk CB project files do not support this.]
         
 Updated installer highlights compared to the C::B 20.03 NSIS installer:
 =======================================================================
@@ -94,10 +92,8 @@ Updated installer highlights compared to the C::B 20.03 NSIS installer:
 
 SOURCE/Compiler Info:
 =====================
-1. The source code repo used to produce the installers is:
-    https://github.com/acotty/codeblocks_sf
-2. C::B x64 built with MSYS2 mingw64 GCC 11.2 using the latest MSYS 2 release at the time of the build.
-3. C::B x86 built with MingGW-32 installer using "GCC 8.1.0 , i686, posix threading, dwarf exception hading and 0 build revision" configuration.
+1. C::B x64 built with MSYS2 mingw64 GCC 11.2 using the latest MSYS 2 release at the time of the build.
+2. C::B x86 built with MingGW-32 installer using "GCC 8.1.0 , i686, posix threading, dwarf exception hading and 0 build revision" configuration.
 
 NOTES:
 ======

@@ -202,6 +202,7 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject* pProject, const ch
         clangResourceDir = fnClang.GetFullPath();
     }
 
+    // Set the clangd --query-dirver parameter
     Compiler* pCompiler = CompilerFactory::GetCompiler(pProject->GetCompilerID());
     if (not pCompiler)
     {
@@ -374,7 +375,7 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject* pProject, const ch
     // ----------------------------------------------------------------------------
     // Thread: start Language Server Process input reader
     // ----------------------------------------------------------------------------
-    // The pipe to clangd has it's own thread, this is the json analyzer.
+    // The pipe to clangd has it's own thread. This one is the json analyzer.
     // the pipe thread stuffs data in the buffer while this thread takes it out.
     // The two can fight locking the buffer while the GUI thread takes events.
     // The GUI thread gets it's jason data from a wxThreadEvent issued by this
@@ -2243,7 +2244,6 @@ void ProcessLanguageClient::LSP_RequestSymbols(cbEditor* pEd, size_t id)
 
     wxString fileURI = fileUtils.FilePathToURI(pEd->GetFilename());
     fileURI.Replace("\\", "/");
-    //-fileURI.MakeLower().Replace("f:", "");
 
     cbStyledTextCtrl* pCtrl = pEd->GetControl();
     if (not pCtrl) return;
@@ -2253,8 +2253,6 @@ void ProcessLanguageClient::LSP_RequestSymbols(cbEditor* pEd, size_t id)
 
     // Tell LSP server when text has changed
     LSP_DidChange(pEd);
-    //get symbols
-    //try { DocumentSymbol(docuri); }
 
     wxString idHdr = fileURI;
     if (id)
@@ -2275,7 +2273,6 @@ void ProcessLanguageClient::LSP_RequestSymbols(cbEditor* pEd, size_t id)
         cbMessageBox(errMsg);
     }
 
-    //-SetLSP_EditorRequest(pEd, "textDocument/documentSymbol", 0);
     SetLastLSP_Request(pEd->GetFilename(), "textDocument/documentSymbol");
 
     return ;

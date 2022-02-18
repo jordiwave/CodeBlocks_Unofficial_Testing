@@ -40,7 +40,6 @@
 								<orient>wxVERTICAL</orient>
 								<object class="sizeritem">
 									<object class="wxTextCtrl" name="txtDescription">
-										<size>-1,150</size>
 										<style>wxTE_MULTILINE|wxTE_READONLY|wxBORDER_NONE</style>
 									</object>
 									<flag>wxALL|wxEXPAND</flag>
@@ -50,6 +49,42 @@
 						</object>
 						<label>Description</label>
 						<selected>1</selected>
+					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabInfo">
+							<object class="wxBoxSizer">
+								<object class="sizeritem">
+									<object class="wxTextCtrl" name="txtInformation">
+										<font>
+											<size>8</size>
+											<family>modern</family>
+										</font>
+										<style>wxTE_MULTILINE|wxTE_READONLY|wxBORDER_NONE</style>
+									</object>
+									<flag>wxALL|wxEXPAND</flag>
+									<option>1</option>
+								</object>
+							</object>
+						</object>
+						<label>Information</label>
+					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabPlugins">
+							<object class="wxBoxSizer">
+								<object class="sizeritem">
+									<object class="wxTextCtrl" name="txtPlugins">
+										<font>
+											<size>8</size>
+											<family>modern</family>
+										</font>
+										<style>wxTE_MULTILINE|wxTE_READONLY|wxBORDER_NONE</style>
+									</object>
+									<flag>wxALL|wxEXPAND</flag>
+									<option>1</option>
+								</object>
+							</object>
+						</object>
+						<label>Plugins</label>
 					</object>
 					<object class="notebookpage">
 						<object class="wxPanel" name="tabThanksTo">
@@ -93,19 +128,18 @@
 				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 				<option>1</option>
+				<minsize>300,300</minsize>
 			</object>
 			<object class="sizeritem">
-				<object class="wxGridSizer">
-					<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer">
+					<object class="button">
 						<object class="wxButton" name="wxID_CANCEL">
 							<label>&amp;Close</label>
-							<focused>1</focused>
 						</object>
-						<flag>wxALL</flag>
-						<border>5</border>
 					</object>
 				</object>
-				<flag>wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
 			</object>
 		</object>
 	</object>

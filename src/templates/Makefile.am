@@ -1,7 +1,9 @@
 if CODEBLOCKS_NT
-TEMPLATES = win32
+TEMPLATES = \
+			win32
 else
-TEMPLATES = unix
+TEMPLATES = \
+			unix
 endif
 
 SUBDIRS = common $(TEMPLATES)

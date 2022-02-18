@@ -4,8 +4,8 @@
  *
  * Copyright: 2008 Jens Lody
  *
- * $Revision: 7443 $
- * $Id: IncrementalSearchConfDlg.h 7443 2011-09-01 16:29:16Z mortenmacfly $
+ * $Revision: 12697 $
+ * $Id: IncrementalSearchConfDlg.h 12697 2022-02-03 16:00:38Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/IncrementalSearch/IncrementalSearchConfDlg.h $
  */
 
@@ -34,7 +34,6 @@ private:
         SaveSettings();
     }
     void OnCancel() {}
-    void OnChooseColour(wxCommandEvent& event);
     void SaveSettings();
 
     DECLARE_EVENT_TABLE()

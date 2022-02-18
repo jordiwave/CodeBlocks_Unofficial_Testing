@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12640 $
- * $Id: pluginmanager.cpp 12640 2022-01-10 22:46:54Z pecanh $
+ * $Revision: 12715 $
+ * $Id: pluginmanager.cpp 12715 2022-02-14 11:32:00Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/pluginmanager.cpp $
  */
 
@@ -842,7 +842,15 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
                 if (value->Attribute("version"))
                     infoOut->version = cbC2U(value->Attribute("version"));
                 if (value->Attribute("description"))
-                    infoOut->description = cbC2U(value->Attribute("description"));
+                {
+                    wxString tmp = cbC2U(value->Attribute("description"));
+                    // Most manifest*.xml files contain a description item formatted for Windows (with \r\n)
+                    // Remove all \r so that poedit works without complaining
+                    tmp.Replace("\r", "");
+                    // Use the _() macro to be able to translate the tmp string
+                    infoOut->description = _(tmp);
+                }
+
                 if (value->Attribute("author"))
                     infoOut->author = cbC2U(value->Attribute("author"));
                 if (value->Attribute("authorEmail"))
@@ -1512,7 +1520,7 @@ void PluginManager::SetupLocaleDomain(const wxString& DomainName)
     int i = 1;
     for (; i <= catalogNum; ++i)
     {
-        wxString catalogName=Manager::Get()->GetConfigManager(_T("app"))->Read(wxString::Format(_T("/locale/Domain%d"), i), wxEmptyString);
+        wxString catalogName = Manager::Get()->GetConfigManager(_T("app"))->Read(wxString::Format(_T("/locale/Domain%d"), i), wxEmptyString);
         if (catalogName.Cmp(DomainName) == 0)
             break;
     }
@@ -1561,5 +1569,14 @@ void cbStopRunningCompilers(PluginManager *manager)
             wxMilliSleep(100);
             Manager::Yield();
         }
+    }
+}
+
+void cbUpdateCompilersSetupEnvironment(PluginManager *manager)
+{
+    for (cbCompilerPlugin *compiler : manager->GetCompilerPlugins())
+    {
+        if (compiler)
+            compiler->UpdateSetupEnvironment();
     }
 }

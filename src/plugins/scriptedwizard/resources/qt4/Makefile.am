@@ -1,9 +1,11 @@
 pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/qt4
 
-dist_pkgdata_DATA = logo.png \
-		wizard.png \
-		wizard.script
+dist_pkgdata_DATA = \
+			logo.png \
+			wizard.png \
+			wizard.script
 
-filesdir	= $(pkgdatadir)/files
+filesdir = $(pkgdatadir)/files
 
-dist_files_DATA	= files/main.cpp
+dist_files_DATA = \
+			files/main.cpp

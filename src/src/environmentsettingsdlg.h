@@ -27,12 +27,12 @@ public:
     wxColour GetValue(const wxString &id) override;
     void SetValue(const wxString &id, const wxColour &colour) override;
     void ResetDefault(const wxString &id) override;
+
 protected:
     void OnPageChanging(wxListbookEvent& event);
     void OnPageChanged(wxListbookEvent& event);
     void OnSetAssocs(wxCommandEvent& event);
     void OnManageAssocs(wxCommandEvent& event);
-    void OnChooseColour(wxCommandEvent& event);
     void OnResetDefaultColours(wxCommandEvent& event);
     void OnUseIpcCheck(wxCommandEvent& event);
     void OnPlaceCheck(wxCommandEvent& event);

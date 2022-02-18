@@ -12,7 +12,6 @@
 
 #ifndef CB_PRECOMP
 #include "globals.h"
-#include <tinyxml.h>
 #endif
 
 class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
@@ -36,8 +35,12 @@ public:
     void Arrogate();
     bool Exists(const wxString& variable) const;
 
+    bool SetActiveVariableSet(const wxString& varset);
+    wxString GetActiveVariableSet();
+
     void Configure();
     void Migrate();
+
 
     UserVariableManager& operator=(const UserVariableManager&) = delete;
     UserVariableManager(const UserVariableManager&) = delete;

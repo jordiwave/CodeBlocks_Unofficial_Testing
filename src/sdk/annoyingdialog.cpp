@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12206 $
- * $Id: annoyingdialog.cpp 12206 2020-09-26 14:23:34Z fuscated $
+ * $Revision: 12708 $
+ * $Id: annoyingdialog.cpp 12708 2022-02-08 08:42:14Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/annoyingdialog.cpp $
  */
 
@@ -52,7 +52,7 @@ void AnnoyingDialog::Init(const wxString &caption, const wxString &id, const wxS
     m_DontAnnoy = false;
     m_Id = id;
 
-    static_assert(wxMinimumVersion<2,8,12>::eval, "wxWidgets 2.8.12 is required");
+    static_assert(wxMinimumVersion<3,0,0>::eval, "wxWidgets 3.0.0 or higher is required");
 
     ConfigManagerContainer::StringSet disabled;
     ConfigManager* cfg = Manager::Get()->GetConfigManager(wxT("an_dlg"));

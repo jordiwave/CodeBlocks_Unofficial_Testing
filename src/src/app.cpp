@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12619 $
- * $Id: app.cpp 12619 2022-01-01 11:07:35Z wh11204 $
+ * $Revision: 12708 $
+ * $Id: app.cpp 12708 2022-02-08 08:42:14Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/app.cpp $
  */
 
@@ -27,27 +27,30 @@
 #include <wx/stdpaths.h>
 #include <wx/xrc/xmlres.h>
 
-#include <cbexception.h>
-#include <configmanager.h>
-#include <debuggermanager.h>
-#include <editormanager.h>
-#include <globals.h>
-#include <loggers.h>
-#include <logmanager.h>
-#include <manager.h>
-#include <personalitymanager.h>
-#include <pluginmanager.h>
-#include <projectmanager.h>
-#include <scriptingmanager.h>
-#include <sdk_events.h>
-
 #include "appglobals.h"
 #include "associations.h"
 #include "cbauibook.h"
+#include "cbexception.h"
 #include "cbstyledtextctrl.h"
+#include "configmanager.h"
+#include "compiler.h"
+#include "compilerfactory.h"
 #include "crashhandler.h"
+#include "debuggermanager.h"
+#include "editormanager.h"
+#include "globals.h"
+#include "loggers.h"
+#include "logmanager.h"
+#include "macrosmanager.h"
+#include "manager.h"
+#include "personalitymanager.h"
+#include "pluginmanager.h"
+#include "projectmanager.h"
 #include "projectmanagerui.h"
+#include "scriptingmanager.h"
+#include "sdk_events.h"
 #include "splashscreen.h"
+#include "uservarmanager.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <sys/param.h>
@@ -290,13 +293,23 @@ const wxCmdLineEntryDesc cmdLineDesc[] =
         wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
     },
     {
-        wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("log-to-file"),           CMD_ENTRY("redirect application log to a file"),
+        wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("app-log-to-file"),       CMD_ENTRY("redirect application log to a file"),
         wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
     },
     {
         wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("debug-log-to-file"),     CMD_ENTRY("redirect application debug log to a file"),
         wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
     },
+
+    {
+        wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("app-log-filename"),      CMD_ENTRY("redirect application log to a filename specified"),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_NEEDS_SEPARATOR
+    },
+    {
+        wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("debug-log-filename"),    CMD_ENTRY("redirect application debug log to a filename specified"),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_NEEDS_SEPARATOR
+    },
+
     {
         wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("profile"),               CMD_ENTRY("synonym to personality"),
         wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR
@@ -341,6 +354,21 @@ const wxCmdLineEntryDesc cmdLineDesc[] =
         wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("dbg-attach"),            CMD_ENTRY("string passed to the debugger plugin which is used for attaching to a process"),
         wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_NEEDS_SEPARATOR
     },
+
+    {
+        wxCMD_LINE_OPTION, CMD_ENTRY("vs"),  CMD_ENTRY("variable-set"),          CMD_ENTRY("the variable set to use"),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_NEEDS_SEPARATOR
+    },
+    {
+        wxCMD_LINE_OPTION, CMD_ENTRY("mp"),  CMD_ENTRY("masterpath-set"),        CMD_ENTRY("The MasterPath to use if the CompilerPrograms are still valid."),
+        wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_NEEDS_SEPARATOR
+    },
+
+    {
+        wxCMD_LINE_SWITCH, CMD_ENTRY(""),   CMD_ENTRY("batch-headless-build"), CMD_ENTRY("do not show any dialog when running in batch build modes for a headless build"),
+        wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL
+    },
+
     {
         wxCMD_LINE_PARAM,  CMD_ENTRY(""),   CMD_ENTRY(""),                      CMD_ENTRY("filename(s)"),
         wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE
@@ -473,9 +501,6 @@ bool CodeBlocksApp::LoadConfig()
 
     cfg->Write(_T("data_path"), data);
 
-    //m_HasDebugLog = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/has_debug_log"), false) || m_HasDebugLog;
-    //Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/has_debug_log"), m_HasDebugLog);
-
     return true;
 }
 
@@ -557,7 +582,7 @@ bool CodeBlocksApp::InitXRCStuff()
 
 MainFrame* CodeBlocksApp::InitFrame()
 {
-    static_assert(wxMinimumVersion<2,8,12>::eval, "wxWidgets 2.8.12 is required");
+    static_assert(wxMinimumVersion<3,0,0>::eval, "wxWidgets 3.0.0 or higher is required");
 
     MainFrame *frame = new MainFrame();
     SetTopWindow(nullptr);
@@ -640,6 +665,7 @@ bool CodeBlocksApp::OnInit()
     m_pBatchBuildDialog    = nullptr;
     m_BatchExitCode        = 0;
     m_Batch                = false;
+    m_BatchHeadlessBuild   = false;
     m_BatchNotify          = false;
     m_Build                = false;
     m_ReBuild              = false;
@@ -649,6 +675,8 @@ bool CodeBlocksApp::OnInit()
     m_SafeMode             = false;
     m_BatchWindowAutoClose = true;
     m_pSingleInstance      = nullptr;
+    m_GlobalVariableSetParameterOrBackup = wxEmptyString;
+    m_MasterPathParameterOrBackup  = wxEmptyString;
 
     wxTheClipboard->Flush();
 
@@ -672,8 +700,7 @@ bool CodeBlocksApp::OnInit()
     Manager::SetToolbarHandler(toolbarAddonHandler);
 
     LogManager *log = Manager::Get()->GetLogManager();
-    log->Log(wxString::Format(_("Starting %s %s %s"), appglobals::AppName,
-                              appglobals::AppActualVersionVerb, appglobals::AppBuildTimestamp));
+    log->Log(wxString::Format(_("Starting %s %s %s"), appglobals::AppName, appglobals::AppActualVersionVerb, appglobals::AppBuildTimestamp));
 
     try
     {
@@ -695,6 +722,20 @@ bool CodeBlocksApp::OnInit()
         // If not the "default" would be used. If not called here LoadConfig would fail.
         Manager::Get()->GetPersonalityManager()->MarkAsReady();
 
+        // This needs to be done after the PersonalityManager is ready!!!
+        if (!m_GlobalVariableSetParameterOrBackup.empty())
+        {
+            wxString variableSetBackup = GetActiveVariableSet();
+            if (SetActiveVariableSet(m_GlobalVariableSetParameterOrBackup))
+            {
+                m_GlobalVariableSetParameterOrBackup = variableSetBackup;
+            }
+            else
+            {
+                m_GlobalVariableSetParameterOrBackup = wxEmptyString;
+            }
+        }
+
         if (!LoadConfig())
             return false;
 
@@ -702,7 +743,7 @@ bool CodeBlocksApp::OnInit()
         PluginManager::SetSafeMode(m_SafeMode);
 
         // If not in batch mode, and no startup-script defined, initialise XRC
-        if(!m_Batch && m_Script.IsEmpty() && !InitXRCStuff())
+        if (!m_Batch && m_Script.IsEmpty() && !InitXRCStuff())
             return false;
 
         InitLocale();
@@ -711,7 +752,7 @@ bool CodeBlocksApp::OnInit()
         if (m_DDE && !m_Batch && appCfg->ReadBool("/environment/use_ipc", true))
         {
             // Create a new client
-            DDEClient *client = new DDEClient;
+            DDEClient* client = new DDEClient;
             DDEConnection* connection = nullptr;
             wxLogNull ln; // own error checking implemented -> avoid debug warnings
             connection = (DDEConnection *)client->MakeConnection("localhost",
@@ -781,7 +822,9 @@ bool CodeBlocksApp::OnInit()
         InitDebugConsole();
 
         Manager::SetBatchBuild(m_Batch || !m_Script.IsEmpty());
+        Manager::SetHeadlessBuild(m_BatchHeadlessBuild || !m_Script.IsEmpty());
         Manager::Get()->GetScriptingManager();
+
         MainFrame* frame = nullptr;
         frame = InitFrame();
         m_Frame = frame;
@@ -792,6 +835,93 @@ bool CodeBlocksApp::OnInit()
             log->Log(wxString::Format("Initial scaling factor is %.3f (actual: %.3f)",
                                       scalingFactor, actualScalingFactor));
         }
+
+
+// NEW CODE START ----- NEW CODE START ----- NEW CODE START ----- NEW CODE START ----- NEW CODE START -----
+// NEW CODE START ----- NEW CODE START ----- NEW CODE START ----- NEW CODE START ----- NEW CODE START -----
+// NEW CODE START ----- NEW CODE START ----- NEW CODE START ----- NEW CODE START ----- NEW CODE START -----
+
+        if (m_Batch)
+        {
+            if (!m_MasterPathParameterOrBackup.empty())
+            {
+                Compiler* defcompiler = CompilerFactory::GetDefaultCompiler();
+
+                if (defcompiler)
+                {
+                    wxString currentMasterPath =  defcompiler->GetMasterPath();
+                    if (!currentMasterPath.IsSameAs(m_MasterPathParameterOrBackup))
+                    {
+                        bool validCompilerPrograms = true;
+                        wxString compilerBinDir = wxString::Format("%s\\bin",m_MasterPathParameterOrBackup);
+                        wxFileName programCheck;
+                        const CompilerPrograms& progs = defcompiler->GetPrograms();
+
+                        programCheck.Assign(compilerBinDir, progs.C);         // C compiler
+                        if (!programCheck.FileExists())
+                        {
+                            validCompilerPrograms = false;
+                            log->LogError(wxString::Format(_("Cannot change MasterPath as the \"%s\" file does not exist"),programCheck.GetFullPath()));
+                        }
+
+                        programCheck.Assign(compilerBinDir, progs.CPP);       // C++ compiler
+                        if (!programCheck.FileExists())
+                        {
+                            validCompilerPrograms = false;
+                            log->LogError(wxString::Format(_("Cannot change MasterPath as the \"%s\" file does not exist"),programCheck.GetFullPath()));
+                        }
+
+                        programCheck.Assign(compilerBinDir, progs.LD);        // dynamic libs linker
+                        if (!programCheck.FileExists())
+                        {
+                            validCompilerPrograms = false;
+                            log->LogError(wxString::Format(_("Cannot change MasterPath as the \"%s\" file does not exist"),programCheck.GetFullPath()));
+                        }
+
+                        programCheck.Assign(compilerBinDir, progs.LIB);       // static libs linker
+                        if (!programCheck.FileExists())
+                        {
+                            validCompilerPrograms = false;
+                            log->LogError(wxString::Format(_("Cannot change MasterPath as the \"%s\" file does not exist"),programCheck.GetFullPath()));
+                        }
+
+                        programCheck.Assign(compilerBinDir, progs.WINDRES);   // resource compiler
+                        if (!programCheck.FileExists())
+                        {
+                            validCompilerPrograms = false;
+                            log->LogError(wxString::Format(_("Cannot change MasterPath as the \"%s\" file does not exist"),programCheck.GetFullPath()));
+                        }
+
+                        //                    programCheck.Assign(compilerBinDir, progs.MAKE);      // make
+                        //                    if (!programCheck.FileExists())
+                        //                    {
+                        //                        validCompilerPrograms = false;
+                        //                        log->LogError(wxString::Format(_("Cannot change MasterPath as the \"%s\" file does not exist"),programCheck.GetFullPath()));
+                        //                    }
+
+                        if (validCompilerPrograms)
+                        {
+                            m_MasterPathParameterOrBackup = defcompiler->SetMasterPathandSave(m_MasterPathParameterOrBackup);
+
+                            // Update plugin
+                            cbUpdateCompilersSetupEnvironment(Manager::Get()->GetPluginManager());
+                            Manager::Get()->GetMacrosManager()->Reset();
+
+                            currentMasterPath =  defcompiler->GetMasterPath();
+                            log->Log(wxString::Format(_("MasterPath previous path was   : \"%s\" "),currentMasterPath));
+                            log->Log(wxString::Format(_("MasterPath has been changed to : \"%s\""), m_MasterPathParameterOrBackup));
+                        }
+                        else
+                        {
+                            log->Log(wxString::Format(_("MasterPath has not changed from \"%s\" "),currentMasterPath));
+                        }
+                    }
+                }
+            }
+        }
+// NEW CODE END  -----  NEW CODE END   -----  NEW CODE END  -----  NEW CODE END  -----  NEW CODE END  -----
+// NEW CODE END  -----  NEW CODE END   -----  NEW CODE END  -----  NEW CODE END  -----  NEW CODE END  -----
+// NEW CODE END  -----  NEW CODE END   -----  NEW CODE END  -----  NEW CODE END  -----  NEW CODE END  -----
 
         // plugins loaded -> check command line arguments again
         delete wxMessageOutput::Set(new wxMessageOutputBest); // warn about unknown options
@@ -997,6 +1127,8 @@ int CodeBlocksApp::BatchJob()
     if (!compiler)
         return -3;
 
+    wxTaskBarIcon* tbIcon = nullptr;
+
     if (!m_Clean && m_BatchTarget.Lower() == _T("ask"))
     {
         m_BatchTarget.Clear();
@@ -1023,25 +1155,27 @@ int CodeBlocksApp::BatchJob()
         }
     }
 
-    m_pBatchBuildDialog = m_Frame->GetBatchBuildDialog();
-    PlaceWindow(m_pBatchBuildDialog);
+    if (!Manager::IsBatchHeadlessBuild())
+    {
+        m_pBatchBuildDialog = m_Frame->GetBatchBuildDialog();
+        PlaceWindow(m_pBatchBuildDialog);
 
-    wxString title = _("Building '") + wxFileNameFromPath(wxString(argv[argc-1])) + _("' (target '")  + m_BatchTarget + _T("')");
-    wxTaskBarIcon* tbIcon = new wxTaskBarIcon();
-    tbIcon->SetIcon(
+        wxString title = _("Building '") + wxFileNameFromPath(wxString(argv[argc-1])) + _("' (target '")  + m_BatchTarget + _T("')");
+        tbIcon = new wxTaskBarIcon();
+        tbIcon->SetIcon(
 #ifdef __WXMSW__
-        wxICON(A_MAIN_ICON),
+            wxICON(A_MAIN_ICON),
 #else
-        wxIcon(app_xpm),
+            wxIcon(app_xpm),
 #endif // __WXMSW__
-        title);
+            title);
 
-    wxString bb_title = m_pBatchBuildDialog->GetTitle();
-    m_pBatchBuildDialog->SetTitle(bb_title + _T(" - ") + title);
-    m_pBatchBuildDialog->Show();
-    // Clean up after the window is closed
-    m_pBatchBuildDialog->Bind(wxEVT_CLOSE_WINDOW, &CodeBlocksApp::OnCloseBatchBuildWindow, this);
-
+        wxString bb_title = m_pBatchBuildDialog->GetTitle();
+        m_pBatchBuildDialog->SetTitle(bb_title + _T(" - ") + title);
+        m_pBatchBuildDialog->Show();
+        // Clean up after the window is closed
+        m_pBatchBuildDialog->Bind(wxEVT_CLOSE_WINDOW, &CodeBlocksApp::OnCloseBatchBuildWindow, this);
+    }
 
     if (m_ReBuild)
     {
@@ -1115,6 +1249,46 @@ void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
     }
     else
         wxBell();
+
+    // revert the variable set change for the build if applicable
+    if (!m_GlobalVariableSetParameterOrBackup.empty())
+    {
+        SetActiveVariableSet(m_GlobalVariableSetParameterOrBackup);
+    }
+
+    // Revert the amster path change for the build if applicable
+    if (!m_MasterPathParameterOrBackup.IsEmpty())
+    {
+        cbProject *pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+
+        Compiler *selectedCompiler = nullptr;
+        if (pProject)
+        {
+            selectedCompiler = CompilerFactory::GetCompiler(pProject->GetCompilerID());
+        }
+        else
+        {
+            selectedCompiler = CompilerFactory::GetDefaultCompiler();
+        }
+
+        if (selectedCompiler)
+        {
+            LogManager *log = Manager::Get()->GetLogManager();
+
+            wxString currentMasterPath =  selectedCompiler->GetMasterPath();
+
+            if (!currentMasterPath.IsSameAs(m_MasterPathParameterOrBackup))
+            {
+                log->LogError(wxString::Format(_("MasterPath was \"%s\" "),currentMasterPath));
+
+                m_MasterPathParameterOrBackup = selectedCompiler->SetMasterPathandSave(m_MasterPathParameterOrBackup);
+                log->Log(wxString::Format(_("MasterPath has been changed back to \"%s\""), m_MasterPathParameterOrBackup));
+
+                currentMasterPath =  selectedCompiler->GetMasterPath();
+                log->LogError(wxString::Format(_("MasterPath now is \"%s\" "),currentMasterPath));
+            }
+        }
+    }
 
     // Clean up happens in in the close handler of the window
     // We can not close the window here, because the origin of this event
@@ -1271,7 +1445,18 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine
                 SetupPersonality(val);
             }
 
+            if ( parser.Found(_T("variable-set"), &val) )
+            {
+                m_GlobalVariableSetParameterOrBackup = val;
+            }
+
+            if ( parser.Found(_T("masterpath-set"), &val) )
+            {
+                m_MasterPathParameterOrBackup = val;
+            }
+
             // batch jobs
+            m_BatchHeadlessBuild   = parser.Found(_T("batch-headless-build"));
             m_BatchNotify          = parser.Found(_T("batch-build-notify"));
             m_BatchWindowAutoClose = !parser.Found(_T("no-batch-window-close"));
             m_Build                = parser.Found(_T("build"));
@@ -1282,15 +1467,42 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine
             // initial setting for batch flag (will be reset when ParseCmdLine() is called again).
             m_Batch = m_Build || m_ReBuild || m_Clean;
 
+            if (m_Batch && m_BatchHeadlessBuild)
+                Manager::Get()->GetLogManager()->SetLog(new StdoutLogger, LogManager::stdout_log);
 
-            if (parser.Found(_T("no-log")) == false)
-                Manager::Get()->GetLogManager()->SetLog(new TextCtrlLogger, LogManager::app_log);
-            if (parser.Found(_T("log-to-file")))
-                Manager::Get()->GetLogManager()->SetLog(new FileLogger(_T("codeblocks.log")), LogManager::app_log);
-            if (m_HasDebugLog)
-                Manager::Get()->GetLogManager()->SetLog(new TextCtrlLogger, LogManager::debug_log);
-            if (parser.Found(_T("debug-log-to-file")))
-                Manager::Get()->GetLogManager()->SetLog(new FileLogger(_T("codeblocks-debug.log")), LogManager::debug_log);
+            if ( parser.Found("app-log-filename", &val) )
+            {
+                Manager::Get()->GetLogManager()->SetLog(new FileLogger(val), LogManager::app_log);
+            }
+            else
+            {
+                if ( parser.Found("app-log-to-file") )
+                {
+                    Manager::Get()->GetLogManager()->SetLog(new FileLogger("codeblocks_app.log"), LogManager::app_log);
+                }
+                else
+                {
+                    if (parser.Found("no-log") == false)
+                        Manager::Get()->GetLogManager()->SetLog(new TextCtrlLogger, LogManager::app_log);
+                }
+            }
+
+            if ( parser.Found("debug-log-filename", &val) )
+            {
+                Manager::Get()->GetLogManager()->SetLog(new FileLogger(val), LogManager::app_log);
+            }
+            else
+            {
+                if ( parser.Found("debug-log-to-file") )
+                {
+                    Manager::Get()->GetLogManager()->SetLog(new FileLogger("codeblocks_debug.log"), LogManager::debug_log);
+                }
+                else
+                {
+                    if (m_HasDebugLog)
+                        Manager::Get()->GetLogManager()->SetLog(new TextCtrlLogger, LogManager::debug_log);
+                }
+            }
         }
 
         // Always parse the debugger attach parameters.
@@ -1317,6 +1529,29 @@ void CodeBlocksApp::SetupPersonality(const wxString& personality)
     }
     else
         personalityMgr->SetPersonality(personality, true);
+}
+
+bool CodeBlocksApp::SetActiveVariableSet(wxString& varset)
+{
+    UserVariableManager *userMgr = Manager::Get()->GetUserVariableManager();
+
+    if (userMgr->SetActiveVariableSet(varset))
+    {
+        return true;
+    }
+    else
+    {
+        cbMessageBox(   wxString::Format(_("The global variable set \"%s\" does not exist!!!"), varset),
+                        _("ERROR"),
+                        wxICON_EXCLAMATION);
+        return false;
+    }
+}
+
+wxString CodeBlocksApp::GetActiveVariableSet()
+{
+    return Manager::Get()->GetUserVariableManager()->GetActiveVariableSet();
+
 }
 
 void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)

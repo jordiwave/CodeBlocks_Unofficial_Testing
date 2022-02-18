@@ -215,6 +215,11 @@ void Manager::SetBatchBuild(bool is_batch)
     m_IsBatch = is_batch;
 }
 
+void Manager::SetHeadlessBuild(bool is_headlessbuild)
+{
+    m_IsHeadlessBuild = is_headlessbuild;
+}
+
 void Manager::BlockYields(bool block)
 {
     m_BlockYields = block;
@@ -669,5 +674,6 @@ bool                      Manager::m_AppShuttingDown = false;
 bool                      Manager::m_AppStartedUp    = false;
 bool                      Manager::m_BlockYields     = false;
 bool                      Manager::m_IsBatch         = false;
+bool                      Manager::m_IsHeadlessBuild = false;
 wxCmdLineParser           Manager::m_CmdLineParser;
 wxToolBarAddOnXmlHandler* Manager::m_ToolbarHandler  = nullptr;

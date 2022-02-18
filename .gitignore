@@ -26,6 +26,7 @@ Makefile.in
 /config.sub
 *.cbTemp
 *.o
+ZZ_BUILD.txt
 windows_installer/codeblocks*.exe
 windows_installer/*.7z
 windows_installer/*.7z.*

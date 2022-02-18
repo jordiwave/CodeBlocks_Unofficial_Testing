@@ -164,6 +164,7 @@ public:
     void OnClearErrors(wxCommandEvent& event);
     void OnUpdateUI(wxUpdateUIEvent& event);
     void OnConfig(wxCommandEvent& event);
+    virtual void UpdateSetupEnvironment();
 private:
     friend class CompilerOptionsDlg;
 

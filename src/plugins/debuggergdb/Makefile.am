@@ -1,22 +1,46 @@
 SUBDIRS = resources
 
-AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		$(CB_SQUIRREL_CFLAGS) \
-		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include
+AM_CPPFLAGS = \
+			$(WX_CXXFLAGS) \
+			$(CB_SQUIRREL_CFLAGS) \
+			-I$(top_srcdir)/src/include \
+			-I$(top_srcdir)/src/sdk/wxscintilla/include
 
+if CODEBLOCKS_NT_BUILD_INSTALLER
+pluginlibdir = $(pkgdatadir)/plugins
+else
 pluginlibdir = $(pkglibdir)/plugins
+endif
 
-pluginlib_LTLIBRARIES = libdebugger.la
+pluginlib_LTLIBRARIES = \
+			libdebugger.la
 
-libdebugger_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
+libdebugger_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-version-info 0:1:0 \
+			-no-undefined \
+			-avoid-version
 
-libdebugger_la_LIBADD = ../../sdk/libcodeblocks.la \
+if CODEBLOCKS_NT
+libdebugger_la_LDFLAGS += \
+			-enable-auto-image-base \
+			-add-stdcall-alias \
+			-enable-auto-import \
+			-no-undefined
+endif
+
+libdebugger_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
 			$(WX_LIBS) \
-			$(WX_GTK_LIBS) \
-			$(CB_TINYXML_LIBS)
+			$(WX_GTK_LIBS)
 
-libdebugger_la_SOURCES = cdb_driver.cpp \
+if !CODEBLOCKS_NT
+libdebugger_la_LIBADD += \
+			$(CB_TINYXML_LIBS)
+endif
+
+libdebugger_la_SOURCES = \
+			cdb_driver.cpp \
 			databreakpointdlg.cpp \
 			debugger_defs.cpp \
 			debuggerdriver.cpp \
@@ -29,7 +53,8 @@ libdebugger_la_SOURCES = cdb_driver.cpp \
 			gdb_driver.cpp \
 			parsewatchvalue.cpp
 
-noinst_HEADERS = cdb_commands.h \
+noinst_HEADERS = \
+			cdb_commands.h \
 			cdb_driver.h \
 			databreakpointdlg.h \
 			debugger_defs.h \
@@ -45,11 +70,12 @@ noinst_HEADERS = cdb_commands.h \
 			parsewatchvalue.h \
 			remotedebugging.h
 
-EXTRA_DIST = debuggergdb_test_defs.cpp \
-		debuggergdb_test_backtrace.cpp \
-		debuggergdb_test_common.h \
-		debuggergdb_test_main.cpp \
-		debuggergdb_test_parser.cpp \
-		debuggergdb_test_parser_cdb.cpp \
-		$(srcdir)/*.cbp
+EXTRA_DIST = \
+			debuggergdb_test_defs.cpp \
+			debuggergdb_test_backtrace.cpp \
+			debuggergdb_test_common.h \
+			debuggergdb_test_main.cpp \
+			debuggergdb_test_parser.cpp \
+			debuggergdb_test_parser_cdb.cpp \
+			$(srcdir)/*.cbp
 

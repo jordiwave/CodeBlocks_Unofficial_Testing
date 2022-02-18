@@ -6,8 +6,13 @@ THESE INSTRUCTIONS NEED TO BE:
 These notes are for developers wishing to build Code::Blocks from source on Unix/Linux without having 
 to install Code::Blocks.
 
-If you want to build Code::Blocks using the workspace/project files please use the Readme_Build_Linux_by_Workspace.txt file.
-If you want to build Code::Blocks Debian deb files please use the Readme_Build_Debian_deb_packages.txt file.
+If you want to build Code::Blocks on Windows using the workspace/project files please use the Readme_Build_Windows_by_Workspace.txt file.
+If you want to build Code::Blocks on Windows using the bootstrap/configure/make process please use the Readme_Build_Windows_MSYS2_by_Makefile.txt file.
+If you want to build Code::Blocks on Linux using the workspace/project files please use the Readme_Build_Linux_by_Workspace.txt file.
+If you want to build Code::Blocks on Linux using the bootstrap/configure/make process please use the Readme_Build_Linux_by_Makefile.txt file.
+If you want to build Code::Blocks on Linux Debian deb files please use the Readme_Build_Debian_deb_packages.txt file.
+If you want to debug Code::Blocks executable on Windows please use the Readme_Build_Windows_by_Workspace.txt file.
+If you want to debug Code::Blocks executable on Linux please use the Readme_Build_Linux_by_Workspace.txt file.
 
 Code::Blocks build instructions:
 --------------------------------
@@ -92,7 +97,7 @@ NOTES:
     a) Check you have install the libboost-dev package by running the following command:
         dpkg -l | grep libboost | grep dev
 
-    b) Explicitly set the boost-libdirby adding the following line to the configure-line above:
+    b) Explicitly set the boost-libdir by adding the following line to the configure-line above:
         "--with-boost-libdir=LIB_DIR"
        NOTE: Depending on your system, LIB_DIR might be "/usr/lib" or "/usr/lib64".
 

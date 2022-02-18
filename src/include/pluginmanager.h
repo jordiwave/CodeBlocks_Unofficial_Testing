@@ -238,5 +238,6 @@ private:
 
 DLLIMPORT bool cbHasRunningCompilers(const PluginManager *manager);
 DLLIMPORT void cbStopRunningCompilers(PluginManager *manager);
+DLLIMPORT void cbUpdateCompilersSetupEnvironment(PluginManager *manager);
 
 #endif // PLUGINMANAGER_H

@@ -127,6 +127,14 @@ const char STX = '\u0002';
 // LSP_Symbol identifiers
 #include "../LSP_SymbolKind.h"
 
+// get top window to use as cbMessage parent, else they hide behind dialog
+wxWindow* GetTopWindow()
+{
+    wxWindow* topWindow = wxFindWindowByName("Manage plugins");
+    if (not topWindow) topWindow = Manager::Get()->GetAppWindow();
+    return topWindow;
+}
+
 bool wxFound(int result)
 {
     return result != wxNOT_FOUND;
@@ -493,10 +501,6 @@ void CodeCompletion::OnAttach()
     PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
     pInfo->version = appVersion.GetVersion();
 
-    // get top window to use as cbMessage parent, else they hide behind dialog
-    wxWindow* topWindow = wxFindWindowByName("Manage plugins");
-    if (not topWindow) topWindow = Manager::Get()->GetAppWindow();
-
     // If old "CodeCompletion" plugin is loaded and enabled, exit with message
     PluginManager* pPlgnMgr = Manager::Get()->GetPluginManager();
     const PluginInfo* pCCinfo = pPlgnMgr->GetPluginInfo("CodeCompletion");
@@ -511,7 +515,7 @@ void CodeCompletion::OnAttach()
         {
             wxString msg = "The Clangd client plugin cannot run while the \"Code completion\" plugin is enabled.";
             msg += "\nClangd client plugin will now disable itself. :-(";
-            cbMessageBox(msg, "Clangd client", wxOK, topWindow);
+            cbMessageBox(msg, "Clangd client", wxOK, GetTopWindow());
             m_IsAttached = false;   //don't allow plugin manager to enable clangd_client
             wxWindow* window = Manager::Get()->GetAppWindow();
             if (window)
@@ -532,15 +536,15 @@ void CodeCompletion::OnAttach()
     if ((not IsOldCC_Enabled() ) and (m_CC_initDeferred or m_PluginNeedsAppRestart) )
     {
         cbMessageBox("Clang_Client plugin needs you to restart CodeBlocks before it can function properly.",
-                     "CB restart needed", wxOK, topWindow);
-        wxWindow* window = Manager::Get()->GetAppWindow();
-        if (window)
+                     "CB restart needed", wxOK, GetTopWindow());
+        wxWindow* appWindow = Manager::Get()->GetAppWindow();
+        if (appWindow)
         {
             // remove ourself from the application's event handling chain...
             // which cbPlugin.cpp just placed before this call
             // Else an attempt to re-enable this plugin will cause a hang.
             if (GetParseManager()->FindEventHandler(this))
-                window->RemoveEventHandler(this);
+                appWindow->RemoveEventHandler(this);
         }
         // set m_IsAttached=true so that plugin manager enables it in the .conf
         // else it'll be disabled after the restart and OnAttach() won't get called.
@@ -699,7 +703,6 @@ void CodeCompletion::OnRelease(bool appShutDown)
 cbConfigurationPanel* CodeCompletion::GetConfigurationPanel(wxWindow* parent)
 // ----------------------------------------------------------------------------
 {
-    //-if (not m_SettingsEditorCodeCompletionEnabled) return nullptr;
     if ( not IsAttached()) return nullptr;
     return new CCOptionsDlg(parent, GetParseManager(), this, &m_DocHelper);
 }
@@ -965,7 +968,7 @@ void CodeCompletion::OnPluginAttached(CodeBlocksEvent& event)
             wxString msg = "You should not enable 'CodeCompletion' plugin when 'clangd_client' is running.";
             msg << "\nThey are not compatible with one another.";
             msg << "\n\nPlease restart Code::Blocks to avoid the effects of these incompatibilities.";
-            cbMessageBox(msg, "ERROR");
+            cbMessageBox(msg, "ERROR", wxOK, GetTopWindow());
         }
         //Manager::Get()->GetLogManager()->DebugLog(F(_T("%s plugin activated"), msg.wx_str()));
         if ( info->name.Lower() == "clangd_client" )
@@ -2173,8 +2176,7 @@ void CodeCompletion::OnCurrentProjectReparse(wxCommandEvent& event)
 void CodeCompletion::OnReparseSelectedProject(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
-    event.Skip();
-
+    // do NOT event.skip();
     switch (1)
     {
     //(ph 2021/02/12)
@@ -2563,23 +2565,23 @@ bool CodeCompletion::DoLockClangd_CacheAccess(cbProject* pcbProject, bool releas
     long lockPid = std::stol(lockFile.GetLine(0).ToStdString());
     wxString pidProcessName = ProcUtils::GetProcessNameByPid(lockPid);
     // if pidProcessName not empty, lockPid is running
-    if (pidProcessName.Length()) switch(1)
-        {
-        default:
-            // The lockFile pid is running but is it a reused pid? (not codeblocks)
-            // if the running pid process name is different from lockFile pid process name
-            // it's a reused pid. Probably from a system reboot.
-            wxFileName fnLockFileExeName = lockFile.GetLine(LOCK_FILE_EXE);
-            wxFileName fnRunningExeName  = pidProcessName;
-            //-debugging- wxString lockExe = fnLockFileExeName.GetFullName().Lower();
-            //-debugging- wxString runExe = fnRunningExeName.GetFullName().Lower();
-            if (fnRunningExeName.GetFullName().Lower() == fnLockFileExeName.GetFullName().Lower())
-            {
-                // A running pid is using the old stale lockFile pid, and it's still running codeblocks
-                // See if the new project file is the same as the old lockFile project file.
-                bool sameProj = pcbProject->GetFilename().Lower() == lockFile.GetLine(LOCK_FILE_CBP).Lower();
-                if (not sameProj) break;
+    if (pidProcessName.Length())
+    {
+        // The lockFile pid is running but is it a reused pid? (not codeblocks)
+        // if the running pid process name is different from lockFile pid process name
+        // it's a reused pid. Probably from a system reboot.
+        wxFileName fnLockFileExeName = lockFile.GetLine(LOCK_FILE_EXE);
+        wxFileName fnRunningExeName  = pidProcessName;
+        //-debugging- wxString lockExe = fnLockFileExeName.GetFullName().Lower();
+        //-debugging- wxString runExe = fnRunningExeName.GetFullName().Lower();
 
+        if (fnRunningExeName.GetFullName().Lower() == fnLockFileExeName.GetFullName().Lower())
+        {
+            // A running pid is using the old stale lockFile pid, and it's still running codeblocks
+            // See if the new project file is the same as the old lockFile project file.
+            bool sameProj = pcbProject->GetFilename().Lower() == lockFile.GetLine(LOCK_FILE_CBP).Lower();
+            if (sameProj)
+            {
                 // Summary:
                 // These's already a running process that used to own the cache and it's running codeblocks.
                 // And THIS process is trying to access the same cache that the running process used to own.
@@ -2598,8 +2600,9 @@ bool CodeCompletion::DoLockClangd_CacheAccess(cbProject* pcbProject, bool releas
                 cbMessageBox(deniedMsg);
                 lockFile.Close();
                 return success = false;
-            }//endif execs match
-        }//endif switch
+            }
+        }
+    }
 
     // old owning pid no longer exists; Set this process as new owning pid
     lockFile[LOCK_FILE_PID] = pidStr;
@@ -2608,8 +2611,6 @@ bool CodeCompletion::DoLockClangd_CacheAccess(cbProject* pcbProject, bool releas
     lockFile.Write();
     lockFile.Close();
     return success = true;
-
-    return success = false;
 }
 // ----------------------------------------------------------------------------
 bool CodeCompletion::DoUnlockClangd_CacheAccess(cbProject* pcbProject)      //(ph 2021/02/3)
@@ -2826,8 +2827,11 @@ void CodeCompletion::OnLSP_Event(wxCommandEvent& event)
     // Invoke any queued call backs first; if none, fall into default processing
     // ----------------------------------------------------------------------------
     if (GetLSPEventSinkHandler()->Count() and lspRRID)
+    {
         GetLSPEventSinkHandler()->OnLSPEventCallback(lspRRID, event);
-
+        // FIXME (ph#): shouldn't this loop to check for more callbacks?
+        return;
+    }
     // ----------------------------------------------------
     // LSP client/server Initialized
     // ----------------------------------------------------
