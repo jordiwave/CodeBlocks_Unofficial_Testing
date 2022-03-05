@@ -94,8 +94,6 @@ kwxAngularMeter::kwxAngularMeter(wxWindow* parent, const wxWindowID id, const wx
     if (m_nTick > 0)
         DrawTicks(m_BackgroundDc);
 
-
-
     //m_BackgroundDc.DrawRectangle(wxRect(10, 10, 100, 100));
 
     /////////////// TODO : Test for BMP image loading /////////////////
@@ -103,18 +101,17 @@ kwxAngularMeter::kwxAngularMeter(wxWindow* parent, const wxWindowID id, const wx
 
     	m_pPreviewBmp = NULL ;
 
-        wxBitmap bitmap( 300, 300 );
-        wxImage image = bitmap.ConvertToImage();
+    	wxBitmap bitmap( 300, 300 );
+    	wxImage image = bitmap.ConvertToImage();
 
-        image.Destroy();
+    	image.Destroy();
 
-        if ( !image.LoadFile( "thumbnail.bmp", wxBITMAP_TYPE_BMP ) )
-            wxLogError(wxT("Can't load BMP image"));
-        else
-            m_pPreviewBmp = new wxBitmap( image );
+    	if ( !image.LoadFile( "thumbnail.bmp", wxBITMAP_TYPE_BMP ) )
+    		wxLogError(wxT("Can't load BMP image"));
+    	else
+    		m_pPreviewBmp = new wxBitmap( image );
     */
     m_bNeedRedrawBackground = false;
-
 }
 
 kwxAngularMeter::~kwxAngularMeter()
@@ -164,7 +161,7 @@ void kwxAngularMeter::OnPaint(wxPaintEvent &WXUNUSED(event))
 
 
     /*
-        if (m_pPreviewBmp && m_pPreviewBmp->Ok())
+    	if (m_pPreviewBmp && m_pPreviewBmp->Ok())
     		dc.DrawBitmap( *m_pPreviewBmp, 1, 1 );
     */
 
@@ -244,7 +241,6 @@ void kwxAngularMeter::DrawNeedle(wxDC &dc)
 
 /////////////////////////
 
-
     dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cNeedleColour,wxBRUSHSTYLE_SOLID));
 
     dc.DrawPolygon(6, ppoint, 0, 0, wxODDEVEN_RULE);
@@ -292,8 +288,6 @@ void kwxAngularMeter::DrawSectors(wxDC &dc)
         endarc += ((m_nAngleEnd - m_nAngleStart) / (double)m_nSec);
     }
 
-
-
     val = (m_nAngleStart * m_dPI) / 180.0;
     dx = cos(val) * h / 2.0;
     dy = sin(val) * h / 2.0;
@@ -305,7 +299,6 @@ void kwxAngularMeter::DrawSectors(wxDC &dc)
     dy = sin(val) * h / 2.0;
 
     dc.DrawLine(w / 2, h / 2, (w / 2) - dx, (h / 2) - dy);	//right line
-
 }
 
 void kwxAngularMeter::DrawTicks(wxDC &dc)

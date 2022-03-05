@@ -16,12 +16,13 @@ pluginlib_LTLIBRARIES = \
 
 libFileManager_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
-			-version-info 0:1:0 \
 			-no-undefined \
 			-avoid-version
 
 libFileManager_la_LIBADD = \
-			$(top_srcdir)/src/sdk/libcodeblocks.la $(WX_LIBS) $(CB_GAMIN_LIBS)
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
+			$(WX_LIBS) \
+			$(CB_GAMIN_LIBS)
 
 libFileManager_la_SOURCES = \
 			FileManager.cpp \

@@ -2,9 +2,9 @@
 #define WXSLED_H
 
 #include "wxswidget.h"
+#include "wx/dlimpexp.h"
 
-
-class wxsLed : public wxsWidget
+class WXEXPORT wxsLed : public wxsWidget
 {
 public:
     wxsLed(wxsItemResData* Data);

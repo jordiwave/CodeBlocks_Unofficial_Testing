@@ -12,7 +12,9 @@ pluginlib_LTLIBRARIES = \
 			libDisplayEvents.la
 
 libDisplayEvents_la_LDFLAGS = \
-			module -version-info 0:1:0 -shared -no-undefined -avoid-version
+			@MODULE_SHARED_LDFLAGS@ \
+			-no-undefined \
+			-avoid-version
 
 libDisplayEvents_la_LIBADD = \
 			PLUGIN_WX_LIBS) \

@@ -7,9 +7,11 @@
 #define ParseManager_H
 
 #include "parsemanager_base.h"
-#include "parser/parser.h"
+//?#include "parser/parser.h"
+#include "parser/parser_base.h"
 #include "parser/cclogger.h" //(ph 2021/07/27)
 #include "LSPEventCallbackHandler.h" //(ph 2021/10/22)
+#include "IdleCallbackHandler.h"     //(ph 2022/02/14)
 
 #include <queue>
 #include <map>
@@ -342,6 +344,22 @@ public:
         return m_pLSPEventSinkHandler;
     }
 
+    /** Set from CodeCompletion::OnCompiler{Started|Finished}() event */
+    bool IsCompilerRunning()
+    {
+        return m_CompilerIsRunning;
+    }
+    void SetCompilerIsRunning(bool torf)
+    {
+        m_CompilerIsRunning = torf;
+    }
+
+    //(ph 2021/10/23)//(ph 2022/02/14)
+    // Get pointer to Idle callbacks
+    IdleCallbackHandler* GetIdleCallbackHandler()
+    {
+        return pIdleCallbacks.get();
+    }
 
 protected:
     /** When a Parser is created, we need a full parsing stage including:
@@ -613,7 +631,10 @@ private:
     BrowserOptions  m_BrowserOptionsSaved;
     //(ph 2021/10/23)
     LSPEventCallbackHandler* m_pLSPEventSinkHandler;
+    // Idle callback Handler pointer //(ph 2022/02/14)
+    std::unique_ptr<IdleCallbackHandler> pIdleCallbacks;
 
+    bool m_CompilerIsRunning = false;
 };
 
 #endif // ParseManager_H

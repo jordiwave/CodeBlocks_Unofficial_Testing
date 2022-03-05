@@ -1898,18 +1898,21 @@ void ParserThreadF::HandleInclude()
 
 void ParserThreadF::HandlePPDirective(wxString& token)
 {
-    if (token.Matches(_T("#define")))
-        HandlePPDefine();
-    else if (token.Matches(_T("#undefine")))
-        HandlePPUndefine();
-    else if (token.Matches(_T("#if")) || token.Matches(_T("#ifdef")) || token.Matches(_T("#ifndef")))
-        HandlePPIfdef(token);
-    else if (token.Matches(_T("#endif")) || token.Matches(_T("#else")) || token.Matches(_T("#elif")))
-        HandlePPIfdef(token);
-    else if (token.Matches(_T("#include")))
-        HandleInclude();
-    else
-        m_Tokens.SkipToEOL();
+    m_Tokens.SkipToEOL();  // Just skip to the end of line. If we have # here, it means that
+    // "interpret preprocessor directives" is disabled in the settings.
+
+//    if (token.Matches(_T("#define")))
+//        HandlePPDefine();
+//    else if (token.Matches(_T("#undefine")))
+//        HandlePPUndefine();
+//    else if (token.Matches(_T("#if")) || token.Matches(_T("#ifdef")) || token.Matches(_T("#ifndef")))
+//        HandlePPIfdef(token);
+//    else if (token.Matches(_T("#endif")) || token.Matches(_T("#else")) || token.Matches(_T("#elif")))
+//        HandlePPIfdef(token);
+//    else if (token.Matches(_T("#include")))
+//        HandleInclude();
+//    else
+//        m_Tokens.SkipToEOL();
 }
 
 void ParserThreadF::HandlePPDefine()

@@ -4,7 +4,8 @@ dist_pkgdata_DATA = \
 			logo.png \
 			wizard.png \
 			wizard.xrc \
-			wizard.script
+			wizard.script \
+			plugins.xcf
 
 templatesdir = $(pkgdatadir)/templates
 

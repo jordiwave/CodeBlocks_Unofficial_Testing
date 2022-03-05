@@ -16,12 +16,12 @@ pluginlib_LTLIBRARIES = \
 
 libcodestat_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
-			-version-info 0:1:0 \
 			-no-undefined \
 			-avoid-version
 
 libcodestat_la_LIBADD = \
-			$(top_srcdir)/src/sdk/libcodeblocks.la $(WX_LIBS)
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
+			$(WX_LIBS)
 
 libcodestat_la_SOURCES = \
 			codestatconfig.cpp \

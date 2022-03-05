@@ -27,9 +27,9 @@
 #include    <wx/image.h>
 #include    <wx/bitmap.h>
 #include    <wx/dcclient.h>
+#include    <wx/dlimpexp.h>
 
-
-class wxImagePanel : public wxPanel
+class WXEXPORT wxImagePanel : public wxPanel
 {
 public:
 
@@ -42,8 +42,6 @@ public:
     bool        GetStretch(void);
 
     void        DoPaint(wxPaintEvent& event);
-
-
 
 protected:
 

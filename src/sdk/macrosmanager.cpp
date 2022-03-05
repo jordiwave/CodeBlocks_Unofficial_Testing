@@ -593,20 +593,20 @@ void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* ta
         wxString condition, trueCondition, falseCondition;
         search = ParseIfCondition(buffer, ifPosition, condition, trueCondition, falseCondition);
         replace = EvalCondition(condition, trueCondition, falseCondition, target);
-        if (!replace.IsSameAs("\"\"") && !replace.IsSameAs("''") && !replace.empty())
-            buffer.Replace(search, replace, false);
-        else
+        if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
             buffer.Replace(search, "", false);
+        else
+            buffer.Replace(search, replace, false);
         ifPosition = buffer.find(_T("$if"));
     }
     while (m_RE_Script.Matches(buffer))
     {
         search = m_RE_Script.GetMatch(buffer, 1);
         replace = Manager::Get()->GetScriptingManager()->LoadBufferRedirectOutput(m_RE_Script.GetMatch(buffer, 2));
-        if (!replace.IsSameAs("\"\"") && !replace.IsSameAs("''") && !replace.empty())
-            buffer.Replace(search, replace, false);
-        else
+        if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
             buffer.Replace(search, "", false);
+        else
+            buffer.Replace(search, replace, false);
     }
 
     while (m_RE_ToAbsolutePath.Matches(buffer))
@@ -616,10 +616,10 @@ void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* ta
         wxFileName fn(relativePath);
         fn.MakeAbsolute();
         replace = fn.GetFullPath();
-        if (!replace.IsSameAs("\"\"") && !replace.IsSameAs("''") && !replace.empty())
-            buffer.Replace(search, replace, false);
-        else
+        if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
             buffer.Replace(search, "", false);
+        else
+            buffer.Replace(search, replace, false);
     }
 
     while (m_RE_To83Path.Matches(buffer))
@@ -629,10 +629,10 @@ void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* ta
         wxFileName fn(path);
         fn.MakeAbsolute(); // make absolute before translating to 8.3 notation
         replace = fn.GetShortPath();
-        if (!replace.IsSameAs("\"\"") && !replace.IsSameAs("''") && !replace.empty())
-            buffer.Replace(search, replace, false);
-        else
+        if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
             buffer.Replace(search, "", false);
+        else
+            buffer.Replace(search, replace, false);
     }
 
     int index = wxNOT_FOUND;
@@ -642,10 +642,10 @@ void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* ta
         wxString content = buffer.Mid(index + toNativePath.Length(), end - index - toNativePath.Length());
         ReplaceMacros(content, target, true);
         replace = UnixFilename(content);
-        if (!replace.IsSameAs("\"\"") && !replace.IsSameAs("''") && !replace.empty())
-            buffer.Replace(buffer.Mid(index, end - index + 1), replace, false);
-        else
+        if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
             buffer.Replace(buffer.Mid(index, end - index + 1), "", false);
+        else
+            buffer.Replace(buffer.Mid(index, end - index + 1), replace, false);
     }
 
     while ((index = buffer.Index(toUnixPath.wx_str())) != wxNOT_FOUND)
@@ -654,10 +654,10 @@ void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* ta
         wxString content = buffer.Mid(index + toUnixPath.Length(), end - index - toUnixPath.Length());
         ReplaceMacros(content, target, true);
         replace = UnixFilename(content, wxPATH_UNIX);
-        if (!replace.IsSameAs("\"\"") && !replace.IsSameAs("''") && !replace.empty())
-            buffer.Replace(buffer.Mid(index, end - index + 1), replace, false);
-        else
+        if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
             buffer.Replace(buffer.Mid(index, end - index + 1), "", false);
+        else
+            buffer.Replace(buffer.Mid(index, end - index + 1), replace, false);
     }
 
     while ((index = buffer.Index(toWindowsPath.wx_str())) != wxNOT_FOUND)
@@ -666,10 +666,10 @@ void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* ta
         wxString content = buffer.Mid(index + toWindowsPath.Length(), end - index - toWindowsPath.Length());
         ReplaceMacros(content, target, true);
         replace = UnixFilename(content, wxPATH_WIN);
-        if (!replace.IsSameAs("\"\"") && !replace.IsSameAs("''") && !replace.empty())
-            buffer.Replace(buffer.Mid(index, end - index + 1), replace, false);
-        else
+        if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
             buffer.Replace(buffer.Mid(index, end - index + 1), "", false);
+        else
+            buffer.Replace(buffer.Mid(index, end - index + 1), replace, false);
     }
 
     while (m_RE_RemoveQuotes.Matches(buffer))
@@ -681,11 +681,18 @@ void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* ta
         if (content.Len()>2 && content.StartsWith(wxT("\"")) && content.EndsWith(wxT("\"")))
         {
             replace = content.Mid(1,content.Len()-2); // with first and last char (the quotes) removed
+            if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
+                buffer.Replace(search, "", false);
+            else
+                buffer.Replace(search, replace, false);
         }
-        if (!replace.IsSameAs("\"\"") && !replace.IsSameAs("''") && !replace.empty())
-            buffer.Replace(search, replace, false);
         else
-            buffer.Replace(search, "", false);
+        {
+            if (content.IsSameAs("\"\"") || content.IsSameAs("''") || content.empty())
+                buffer.Replace(search, "", false);
+            else
+                buffer.Replace(search, content, false);
+        }
     }
 
     while (m_RE_Unix.Matches(buffer))
@@ -718,10 +725,10 @@ void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* ta
         if (replace.IsEmpty())
             wxGetEnv(var, &replace);
 
-        if (!replace.IsSameAs("\"\"") && !replace.IsSameAs("''") && !replace.empty())
-            buffer.Replace(search, replace, false);
-        else
+        if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
             buffer.Replace(search, "", false);
+        else
+            buffer.Replace(search, replace, false);
     }
 
     while (m_RE_DOS.Matches(buffer))
@@ -750,10 +757,10 @@ void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* ta
         if (replace.IsEmpty())
             wxGetEnv(var, &replace);
 
-        if (!replace.IsSameAs("\"\"") && !replace.IsSameAs("''") && !replace.empty())
-            buffer.Replace(search, replace, false);
-        else
+        if (replace.IsSameAs("\"\"") || replace.IsSameAs("''") || replace.empty())
             buffer.Replace(search, "", false);
+        else
+            buffer.Replace(search, replace, false);
     }
 
     if (!subrequest)

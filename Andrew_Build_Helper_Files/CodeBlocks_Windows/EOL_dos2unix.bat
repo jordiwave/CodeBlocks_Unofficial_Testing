@@ -6,21 +6,16 @@
 setlocal
 
 @SET CurrentDir="%CD%"
-cd ..\..
 
-set D2U=c:\msys64\usr\bin\dos2unix.exe
+if exist bootstrap goto start
+if exist ..\..\bootstrap cd ..\..
+if exist ..\..\..\bootstrap cd ..\..\..
 
-@rem specific files 
-for /f "usebackq delims=^=^" %%a in (`"dir *.h   /b/s" 2^>nul`) do %D2U% -q %%a
-for /f "usebackq delims=^=^" %%a in (`"dir *.cpp /b/s" 2^>nul`) do %D2U% -q %%a
-for /f "usebackq delims=^=^" %%a in (`"dir *.cbp /b/s" 2^>nul`) do %D2U% -q %%a
-for /f "usebackq delims=^=^" %%a in (`"dir *.wxs /b/s" 2^>nul`) do %D2U% -q %%a
-for /f "usebackq delims=^=^" %%a in (`"dir *.xrc /b/s" 2^>nul`) do %D2U% -q %%a
-for /f "usebackq delims=^=^" %%a in (`"dir *.m4 /b/s" 2^>nul`) do %D2U% -q %%a
-for /f "usebackq delims=^=^" %%a in (`"dir Mawefile.am /b/s" 2^>nul`) do %D2U% -q %%a
-
+:start
+.\Andrew_Build_Helper_Files\CodeBlocks_Windows\CheckFilesEOL.exe 
 
 :Finish
 @echo Done
 @cd /d %CurrentDir%
+pause
 @endlocal

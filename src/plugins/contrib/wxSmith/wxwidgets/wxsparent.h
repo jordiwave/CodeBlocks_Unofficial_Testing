@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 8704 $
-* $Id: wxsparent.h 8704 2012-12-23 20:32:03Z mortenmacfly $
+* $Revision: 12722 $
+* $Id: wxsparent.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxsparent.h $
 */
 
@@ -26,6 +26,7 @@
 #include "wxsitem.h"
 
 #include <prep.h>
+#include <cbplugin.h>
 
 /** \brief This class represents widget with child items
  *
@@ -36,7 +37,7 @@
  * xml data since this will be used.
  *
  */
-class wxsParent: public wxsItem
+class PLUGIN_EXPORT wxsParent: public wxsItem
 {
 public:
 

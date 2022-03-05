@@ -82,6 +82,8 @@ protected:
     void DoIncludesOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = nullptr);
     void DoLibsOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = nullptr);
     void DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget* target = nullptr);
+    void DoExtraCommandsClean(TiXmlElement* parentNode, ProjectBuildTarget* target = nullptr);
+    void DoExtraCommandsInstall(TiXmlElement* parentNode, ProjectBuildTarget* target = nullptr);
     void DoMakeCommands(TiXmlElement* parentNode, CompileTargetBase* target);
     void DoVirtualTargets(TiXmlElement* parentNode);
 

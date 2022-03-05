@@ -1,19 +1,53 @@
 SUBDIRS = images
 
+if !CODEBLOCKS_NT
 ACLOCAL_AMFLAGS = --install -I m4
+endif
 
 AM_CPPFLAGS = \
 			$(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include
 
-cb_plugin_lib_LTLIBRARIES = \
+if CODEBLOCKS_NT
+AM_CPPFLAGS += \
+			-DBUILDING_PLUGIN \
+			-m64 \
+			-pipe \
+			-fmessage-length=0 \
+			-fexceptions \
+			-DHAVE_W32API_H \
+			-D__WXMSW__ \
+			-DWXUSINGDLL \
+			-DcbDEBUG \
+			-DwxUSE_UNICODE \
+			-D_WIN64
+endif
+
+if CODEBLOCKS_NT_BUILD_INSTALLER
+pluginlibdir = $(pkgdatadir)/plugins
+else
+pluginlibdir = $(pkglibdir)/plugins
+endif
+
+pluginlib_LTLIBRARIES = \
 			libFortranProject.la
 
 libFortranProject_la_LDFLAGS = \
-			shared -no-undefined -avoid-version
+			@MODULE_SHARED_LDFLAGS@ \
+			-no-undefined \
+			-avoid-version
+
+if CODEBLOCKS_NT
+libFortranProject_la_LDFLAGS += \
+			-enable-auto-image-base \
+			-add-stdcall-alias \
+			-enable-auto-import \
+			-no-undefined
+endif
 
 libFortranProject_la_LIBADD = \
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
 			$(WX_LIBS) 
 
 libFortranProject_la_SOURCES = \
@@ -122,33 +156,34 @@ EXTRA_DIST = \
 			resources/settings.xrc \
 			resources/tab2space.xrc \
 			resources/workspacebrowserf.xrc \
-			update* \
-			images/16x16/*.png \
-			images/20x20/*.png \
-			images/24x24/*.png \
-			images/28x28/*.png \
-			images/32x32/*.png \
-			images/40x40/*.png \
-			images/48x48/*.png \
-			images/56x56/*.png \
-			images/64x64/*.png \
-			images/fortranproject/*.py \
-			images/fortranproject/*.f90 \
-			images/fortranproject/16x16/*.png \
-			images/fortranproject/20x20/*.png \
-			images/fortranproject/24x24*.png \
-			images/fortranproject/28x28/*.png \
-			images/fortranproject/32x32/*.png \
-			images/fortranproject/40x40/*.png \
-			images/fortranproject/48x48/*.png \
-			images/fortranproject/56x56/*.png \
-			images/fortranproject/64x64/*.png
+			update*
+#			images/16x16/*.png \
+#			images/20x20/*.png \
+#			images/24x24/*.png \
+#			images/28x28/*.png \
+#			images/32x32/*.png \
+#			images/40x40/*.png \
+#			images/48x48/*.png \
+#			images/56x56/*.png \
+#			images/64x64/*.png \
+#			images/fortranproject/*.py \
+#			images/fortranproject/*.f90 \
+#			images/fortranproject/*.dem \
+#			images/fortranproject/16x16/*.png \
+#			images/fortranproject/20x20/*.png \
+#			images/fortranproject/24x24*.png \
+#			images/fortranproject/28x28/*.png \
+#			images/fortranproject/32x32/*.png \
+#			images/fortranproject/40x40/*.png \
+#			images/fortranproject/48x48/*.png \
+#			images/fortranproject/56x56/*.png \
+#			images/fortranproject/64x64/*.png
 
-cb_plugin_data_DATA = \
+pkgdata_DATA = \
 			FortranProject.zip
 
 CLEANFILES = \
-			cb_plugin_data_DATA)
+			$(pkgdata_DATA)
 
 uninstall-hook:
 	-rmdir ${cb_plugin_datadir}images/fortranproject

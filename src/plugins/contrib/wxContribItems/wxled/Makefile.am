@@ -26,7 +26,9 @@ wxcontribitems_LTLIBRARIES = \
 			libwxled.la
 
 libwxled_la_LDFLAGS = \
-			-version-info 0:1:0
+			@MODULE_SHARED_LDFLAGS@ \
+			-no-undefined \
+			-avoid-version
 
 if CODEBLOCKS_NT
 libwxled_la_LDFLAGS += \

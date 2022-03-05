@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12169 $
- * $Id: directcommands.cpp 12169 2020-06-11 22:34:52Z bluehazzard $
+ * $Revision: 12736 $
+ * $Id: directcommands.cpp 12736 2022-03-03 20:12:16Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/compilergcc/directcommands.cpp $
  */
 
@@ -886,7 +886,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         break;
     default:
         wxString ex;
-        ex.Printf(_T("Encountered invalid TargetType (value = %d)"), target->GetTargetType());
+        ex.Printf(_("Encountered invalid TargetType (value = %d)"), target->GetTargetType());
         cbThrow(ex);
         break;
     }
@@ -998,6 +998,135 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
 
     return ret;
 }
+wxArrayString DirectCommands::GetPreCleanCommands(ProjectBuildTarget* target) const
+{
+    Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
+    wxArrayString preCleanCmds = target ? target->GetCommandsBeforeClean() : m_pProject->GetCommandsBeforeClean();
+    if (!preCleanCmds.IsEmpty())
+    {
+        wxString title = target ? target->GetTitle() : m_pProject->GetTitle();
+        wxArrayString tmp;
+        for (size_t i = 0; i < preCleanCmds.GetCount(); ++i)
+        {
+            if (compiler)
+            {
+                if (target)
+                {
+                    m_pGenerator->GenerateCommandLine(  preCleanCmds[i],
+                                                        target,
+                                                        0,
+                                                        wxEmptyString,
+                                                        wxEmptyString,
+                                                        wxEmptyString,
+                                                        wxEmptyString);
+                }
+                else
+                {
+                    m_pGenerator->GenerateCommandLine(  preCleanCmds[i],
+                                                        m_pProject->GetCurrentlyCompilingTarget(),
+                                                        0,
+                                                        wxEmptyString,
+                                                        wxEmptyString,
+                                                        wxEmptyString,
+                                                        wxEmptyString);
+                }
+            }
+
+            tmp.Add(COMPILER_WAIT); // all commands should wait for queue to empty first
+            tmp.Add(COMPILER_SIMPLE_LOG + preCleanCmds[i]);
+            tmp.Add(preCleanCmds[i]);
+        }
+        preCleanCmds = tmp;
+        if (target)
+            preCleanCmds.Insert(COMPILER_SIMPLE_LOG + _("Running target pre-clean steps"), 0);
+        else
+            preCleanCmds.Insert(COMPILER_SIMPLE_LOG + _("Running project pre-clean steps"), 0);
+        if (m_doYield)
+            Manager::Yield();
+    }
+    return preCleanCmds;
+}
+
+wxArrayString DirectCommands::GetPostCleanCommands(ProjectBuildTarget* target) const
+{
+    Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
+    wxArrayString postCleanCmds = target ? target->GetCommandsAfterClean() : m_pProject->GetCommandsAfterClean();
+    if (!postCleanCmds.IsEmpty())
+    {
+        wxString title = target ? target->GetTitle() : m_pProject->GetTitle();
+        wxArrayString tmp;
+        for (size_t i = 0; i < postCleanCmds.GetCount(); ++i)
+        {
+            if (compiler)
+            {
+                CompilerCommandGenerator::Result result(&postCleanCmds[i]);
+                CompilerCommandGenerator::Params params;
+                params.target = (target ? target : m_pProject->GetCurrentlyCompilingTarget());
+                m_pGenerator->GenerateCommandLine(result, params);
+            }
+
+            tmp.Add(COMPILER_WAIT); // all commands should wait for queue to empty first
+            tmp.Add(COMPILER_SIMPLE_LOG + postCleanCmds[i]);
+            tmp.Add(postCleanCmds[i]);
+        }
+        postCleanCmds = tmp;
+        if (target)
+            postCleanCmds.Insert(COMPILER_SIMPLE_LOG + _("Running target post-clean steps"), 0);
+        else
+            postCleanCmds.Insert(COMPILER_SIMPLE_LOG + _("Running project post-clean steps"), 0);
+        if (m_doYield)
+            Manager::Yield();
+    }
+    return postCleanCmds;
+}
+wxArrayString DirectCommands::GetInstallCommands(ProjectBuildTarget* target) const
+{
+    Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
+    wxArrayString installCmds = target ? target->GetCommandsInstall() : m_pProject->GetCommandsInstall();
+    if (!installCmds.IsEmpty())
+    {
+        wxString title = target ? target->GetTitle() : m_pProject->GetTitle();
+        wxArrayString tmp;
+        for (size_t i = 0; i < installCmds.GetCount(); ++i)
+        {
+            if (compiler)
+            {
+                if (target)
+                {
+                    m_pGenerator->GenerateCommandLine(  installCmds[i],
+                                                        target,
+                                                        0,
+                                                        wxEmptyString,
+                                                        wxEmptyString,
+                                                        wxEmptyString,
+                                                        wxEmptyString);
+                }
+                else
+                {
+                    m_pGenerator->GenerateCommandLine(  installCmds[i],
+                                                        m_pProject->GetCurrentlyCompilingTarget(),
+                                                        0,
+                                                        wxEmptyString,
+                                                        wxEmptyString,
+                                                        wxEmptyString,
+                                                        wxEmptyString);
+                }
+            }
+
+            tmp.Add(COMPILER_WAIT); // all commands should wait for queue to empty first
+            tmp.Add(COMPILER_SIMPLE_LOG + installCmds[i]);
+            tmp.Add(installCmds[i]);
+        }
+        installCmds = tmp;
+        if (target)
+            installCmds.Insert(COMPILER_SIMPLE_LOG + _("Running target install steps"), 0);
+        else
+            installCmds.Insert(COMPILER_SIMPLE_LOG + _("Running project install steps"), 0);
+        if (m_doYield)
+            Manager::Yield();
+    }
+    return installCmds;
+}
 
 /** external deps are manually set by the user
   * e.g. a static library linked to the project is an external dep (if set as such by the user)
@@ -1048,10 +1177,10 @@ bool DirectCommands::AreExternalDepsOutdated(ProjectBuildTarget* target,
                     if (timeExtDep > timeOutput)
                     {
                         // force re-link
-                        Manager::Get()->GetLogManager()->DebugLog(F(_T("Forcing re-link of '%s/%s' because '%s' is newer"),
-                                target->GetParentProject()->GetTitle().wx_str(),
-                                target->GetTitle().wx_str(),
-                                lib.wx_str()));
+                        Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_("Forcing re-link of '%s/%s' because '%s' is newer"),
+                                target->GetParentProject()->GetTitle(),
+                                target->GetTitle(),
+                                lib));
                         return true;
                     }
                     continue;
@@ -1072,10 +1201,10 @@ bool DirectCommands::AreExternalDepsOutdated(ProjectBuildTarget* target,
                     if (timeExtDep > timeOutput)
                     {
                         // force re-link
-                        Manager::Get()->GetLogManager()->DebugLog(F(_T("Forcing re-link of '%s/%s' because '%s' is newer"),
-                                target->GetParentProject()->GetTitle().wx_str(),
-                                target->GetTitle().wx_str(),
-                                dir.wx_str()));
+                        Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_("Forcing re-link of '%s/%s' because '%s' is newer"),
+                                target->GetParentProject()->GetTitle(),
+                                target->GetTitle(),
+                                dir));
                         return true;
                     }
                 }

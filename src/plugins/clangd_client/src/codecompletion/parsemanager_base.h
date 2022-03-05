@@ -98,29 +98,29 @@ protected:
     /** Init cc search member variables */
     void Reset();
 
-    /**@brief Artificial Intelligence Matching
-    *
-    * All functions that call this recursive function, should already entered a critical section or
-    * a mutex to protect the TokenTree.
-    *
-    * match (consume) the ParserComponent queue from left to right,
-    * the output result becomes the search scope of the next match.
-    * finally, give the results which match the last ParserComponent.
-    * @param components input ParserComponent queue
-    * @param parentTokenIdx, initial search scope of the left most component, this is the direct
-    * parent of the current statement(expression)
-    * @param fullMatch the result should be a full text match or prefix match
-    * @return matching token number, it is the size of result
-    */
-    size_t FindAIMatches(TokenTree*                  tree,
-                         std::queue<ParserComponent> components,
-                         TokenIdxSet&                result,
-                         int                         parentTokenIdx = -1,
-                         bool                        isPrefix = false,
-                         bool                        caseSensitive = false,
-                         bool                        use_inheritance = true,
-                         short int                   kindMask = 0xFFFF,
-                         TokenIdxSet*                search_scope = 0);
+//    /**@brief Artificial Intelligence Matching
+//    *
+//    * All functions that call this recursive function, should already entered a critical section or
+//    * a mutex to protect the TokenTree.
+//    *
+//    * match (consume) the ParserComponent queue from left to right,
+//    * the output result becomes the search scope of the next match.
+//    * finally, give the results which match the last ParserComponent.
+//    * @param components input ParserComponent queue
+//    * @param parentTokenIdx, initial search scope of the left most component, this is the direct
+//    * parent of the current statement(expression)
+//    * @param fullMatch the result should be a full text match or prefix match
+//    * @return matching token number, it is the size of result
+//    */
+//    size_t FindAIMatches(TokenTree*                  tree,
+//                         std::queue<ParserComponent> components,
+//                         TokenIdxSet&                result,
+//                         int                         parentTokenIdx = -1,
+//                         bool                        isPrefix = false,
+//                         bool                        caseSensitive = false,
+//                         bool                        use_inheritance = true,
+//                         short int                   kindMask = 0xFFFF,
+//                         TokenIdxSet*                search_scope = 0);
 
 ////    /** if the expression return the container tokens, which are the
 ////     * parent of the expression.

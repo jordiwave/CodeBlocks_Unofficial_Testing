@@ -51,6 +51,8 @@
 #include "compilercommandgenerator.h"
 #include "cbcolourmanager.h"
 
+int cbProject::iSelectTargetSelection = -1;
+
 // class constructor
 cbProject::cbProject(const wxString& filename) :
     m_CustomMakefile(false),
@@ -266,14 +268,20 @@ bool cbProject::GetModified() const
 {
     // check base options
     if (CompileOptionsBase::GetModified())
+    {
+        iSelectTargetSelection = -1;
         return true;
+    }
 
     // check targets
     for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
     {
         ProjectBuildTarget* target = m_Targets[i];
         if (target->GetModified())
+        {
+            iSelectTargetSelection = -1;
             return true;
+        }
     }
 
     return false;
@@ -290,8 +298,11 @@ void cbProject::SetModified(bool modified)
         target->SetModified(modified);
     }
 
-    if (!modified)
+    if (modified)
+        iSelectTargetSelection = -1;
+    else
         m_LastSavedActiveTarget = m_ActiveTarget;
+
 }
 
 void cbProject::SetMakefileCustom(bool custom)
@@ -419,6 +430,7 @@ void cbProject::Open()
             m_LastModified = fname.GetModificationTime();
         }
     }
+    iSelectTargetSelection = -1;
 
     long time = timer.Time();
     if (time >= 100)
@@ -704,6 +716,7 @@ bool cbProject::LoadLayout()
 
 void cbProject::BeginAddFiles()
 {
+    iSelectTargetSelection = -1;
     CodeBlocksEvent event(cbEVT_PROJECT_BEGIN_ADD_FILES);
     event.SetProject(this);
     Manager::Get()->ProcessEvent(event);
@@ -718,6 +731,7 @@ void cbProject::EndAddFiles()
 
 void cbProject::BeginRemoveFiles()
 {
+    iSelectTargetSelection = -1;
     CodeBlocksEvent event(cbEVT_PROJECT_BEGIN_REMOVE_FILES);
     event.SetProject(this);
     Manager::Get()->ProcessEvent(event);
@@ -1029,6 +1043,7 @@ const wxArrayString& cbProject::GetVirtualFolders() const
 
 bool cbProject::AppendUniqueVirtualFolder(const wxString &folder)
 {
+    iSelectTargetSelection = -1;
     if (m_VirtualFolders.Index(folder)==wxNOT_FOUND)
     {
         m_VirtualFolders.push_back(folder);
@@ -1040,6 +1055,7 @@ bool cbProject::AppendUniqueVirtualFolder(const wxString &folder)
 
 void cbProject::RemoveVirtualFolders(const wxString &folder)
 {
+    iSelectTargetSelection = -1;
     for (int i = (int)m_VirtualFolders.GetCount() - 1; i >= 0; --i)
     {
         if (m_VirtualFolders[i].StartsWith(folder))
@@ -1061,6 +1077,7 @@ void cbProject::RemoveVirtualFolders(const wxString &folder)
 
 void cbProject::ReplaceVirtualFolder(const wxString &oldFolder, const wxString &newFolder)
 {
+    iSelectTargetSelection = -1;
     int idx = m_VirtualFolders.Index(oldFolder);
     if (idx != wxNOT_FOUND)
         m_VirtualFolders[idx] = newFolder;
@@ -1084,6 +1101,7 @@ void cbProject::ReplaceVirtualFolder(const wxString &oldFolder, const wxString &
 
 void cbProject::SetVirtualFolders(const wxArrayString& folders)
 {
+    iSelectTargetSelection = -1;
     m_VirtualFolders = folders;
     for (size_t i = 0; i < m_VirtualFolders.GetCount(); ++i)
     {
@@ -1252,10 +1270,21 @@ int cbProject::SelectTarget(int initial, bool evenIfOne)
     if (!evenIfOne && GetBuildTargetsCount() == 1)
         return 0;
 
-    SelectTargetDlg dlg(nullptr, this, initial);
-    PlaceWindow(&dlg);
-    if (dlg.ShowModal() == wxID_OK)
-        return dlg.GetSelection();
+    if ((iSelectTargetSelection == -1) || (initial == -1))
+    {
+        SelectTargetDlg dlg(nullptr, this, initial);
+        PlaceWindow(&dlg);
+        if (dlg.ShowModal() == wxID_OK)
+        {
+            int selection = dlg.GetSelection();
+            iSelectTargetSelection = selection;
+            return selection;
+        }
+    }
+    else
+    {
+        return iSelectTargetSelection;
+    }
 
     return -1;
 }
@@ -1297,6 +1326,7 @@ ProjectBuildTarget* cbProject::AddBuildTarget(const wxString& targetName)
 
 bool cbProject::RenameBuildTarget(int index, const wxString& targetName)
 {
+    iSelectTargetSelection = -1;
     ProjectBuildTarget* target = GetBuildTarget(index);
     if (target)
     {
@@ -1335,6 +1365,7 @@ bool cbProject::RenameBuildTarget(const wxString& oldTargetName, const wxString&
 
 ProjectBuildTarget* cbProject::DuplicateBuildTarget(int index, const wxString& newName)
 {
+    iSelectTargetSelection = -1;
     ProjectBuildTarget* newTarget = nullptr;
     ProjectBuildTarget* target = GetBuildTarget(index);
     if (target)
@@ -1403,6 +1434,7 @@ bool cbProject::ExportTargetAsProject(const wxString& targetName)
 
 bool cbProject::RemoveBuildTarget(int index)
 {
+    iSelectTargetSelection = -1;
     ProjectBuildTarget* target = GetBuildTarget(index);
     if (target)
     {
@@ -1476,6 +1508,8 @@ bool cbProject::SetActiveBuildTarget(const wxString& name)
 {
     if (name == m_ActiveTarget)
         return true;
+
+    iSelectTargetSelection = -1;
 
     wxString oldActiveTarget = m_ActiveTarget;
     m_ActiveTarget = name;
@@ -1878,6 +1912,7 @@ void cbProject::ProjectFileRenamed(ProjectFile* pf)
             break;
         }
     }
+    iSelectTargetSelection = -1;
 }
 
 void cbProject::SetGlobs(const std::vector<Glob>& globs)

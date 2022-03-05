@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12437 $
- * $Id: wiz.cpp 12437 2021-05-09 12:51:35Z fuscated $
+ * $Revision: 12733 $
+ * $Id: wiz.cpp 12733 2022-03-02 17:38:41Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/scriptedwizard/wiz.cpp $
  */
 
@@ -294,7 +294,7 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
     {
         // any errors have been displayed by ScriptingManager
         Clear();
-        InfoWindow::Display(_("Error"), _("Failed to load the common functions script.\nPlease check the debug log for details..."));
+        InfoWindow::Display(_("Error"), _("Failed to load the common functions script.\nPlease check the log for details..."));
         return nullptr;
     }
 
@@ -307,7 +307,7 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
     {
         // any errors have been displayed by ScriptingManager
         Clear();
-        InfoWindow::Display(_("Error"), _("Failed to load the wizard's script.\nPlease check the debug log for details..."));
+        InfoWindow::Display(_("Error"), _("Failed to load the wizard's script.\nPlease check the log for details..."));
         return nullptr;
     }
 

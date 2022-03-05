@@ -168,15 +168,19 @@
 					<Add directory="exchndl/win$(#CB_BUILD.OSBITS)/lib" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="cmd /c if exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\exchndl.dll del devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\exchndl.dll" />
 					<Add after="cmd /c if not exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks mkdir devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks" />
 					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\resources.zip src\resources\*.xrc" />
 					<Add after="zip -jq9 devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\start_here.zip src\resources\start_here\*.html src\resources\start_here\*.png" />
 					<Add after='cmd /c &quot;cd src\resources &amp; zip -0 -q $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\resources.zip images\*.png images\16x16\*.png&quot;' />
-					<Add after="cmd /c if not exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\exchndl.dll if exist exchndl\win$(#CB_BUILD.OSBITS)\bin\*.dll xcopy /Y exchndl\win$(#CB_BUILD.OSBITS)\bin\*.dll devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\" />
-					<Add after="cmd /c if not exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\symsrv.yes if exist exchndl\win$(#CB_BUILD.OSBITS)\bin\symsrv.yes xcopy /Y exchndl\win$(#CB_BUILD.OSBITS)\bin\symsrv.yes devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\" />
 					<Mode after="always" />
 				</ExtraCommands>
+				<CleanExtraCommands>
+					<Add before="cmd /c if exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\exchndl.dll del devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\exchndl.dll" />
+					<Add before="cmd /c if exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\symsrv.yes  del devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\symsrv.yes" />
+				</CleanExtraCommands>
+				<InstallExtraCommands>
+					<Add step="cmd /c &quot;(for /F &quot;usebackq delims=^=^ &quot; %%a in (`&quot;dir /b/s &quot;$(#CB_BUILD)\exchndl\win$(#CB_BUILD.OSBITS)\bin\*.*&quot; &quot;`) do @xcopy /Y $(#CB_BUILD)\exchndl\win$(#CB_BUILD.OSBITS)\bin\%%~nxa  $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\ )&quot;" />
+				</InstallExtraCommands>
 			</Target>
 			<Target title="Abbreviations">
 				<Option output="devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/abbreviations" prefix_auto="1" extension_auto="1" />

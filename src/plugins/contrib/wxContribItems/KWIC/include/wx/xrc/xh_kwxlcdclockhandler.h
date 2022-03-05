@@ -26,8 +26,9 @@
 #define XH_KWXLCDCLOCKHANDLER_H_INCLUDED
 
 #include <wx/xrc/xmlres.h>
+#include "wx/dlimpexp.h"
 
-class kwxLCDClockHandler : public wxXmlResourceHandler
+class WXEXPORT kwxLCDClockHandler : public wxXmlResourceHandler
 {
 public:
     // Constructor.

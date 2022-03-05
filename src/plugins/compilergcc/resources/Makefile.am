@@ -5,11 +5,11 @@ CLEANFILES = \
 
 EXTRA_DIST = \
 			advanced_compiler_options.xrc \
-	compiler_flag.xrc \
-	compiler_menu.xrc \
-	compiler_options.xrc \
-	compiler_toolbar.xrc \
-	manifest.xml \
+			compiler_flag.xrc \
+			compiler_menu.xrc \
+			compiler_options.xrc \
+			compiler_toolbar.xrc \
+			manifest.xml \
 			images/16x16/compile.png \
 			images/16x16/compilerun.png \
 			images/16x16/rebuild.png \

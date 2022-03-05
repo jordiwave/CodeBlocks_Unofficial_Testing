@@ -45,7 +45,7 @@
 #include "wx/event.h"
 #include "wx/datetime.h"
 #include "wx/dynarray.h"
-
+#include "wx/dlimpexp.h"
 
 
 
@@ -54,7 +54,7 @@
 // wxSpeedButton
 //-----------------------------------------------------------------------------
 
-class wxSpeedButton : public wxControl
+class WXEXPORT wxSpeedButton : public wxControl
 {
 public:
 

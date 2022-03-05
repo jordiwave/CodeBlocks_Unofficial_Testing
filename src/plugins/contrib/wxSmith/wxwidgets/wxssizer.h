@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 10392 $
-* $Id: wxssizer.h 10392 2015-08-15 08:49:17Z jenslody $
+* $Revision: 12722 $
+* $Id: wxssizer.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxssizer.h $
 */
 
@@ -27,11 +27,12 @@
 #include "wxsflags.h"
 
 #include <prep.h>
+#include <cbplugin.h>
 
 using namespace wxsFlags;
 
 /** \brief Structure containing additional parameters for each widget insidee sizer */
-class wxsSizerExtra: public wxsPropertyContainer
+class PLUGIN_EXPORT wxsSizerExtra: public wxsPropertyContainer
 {
 public:
     long Proportion;                ///< \brief Proportion param (see wxW documentation for details)
@@ -70,7 +71,7 @@ protected:
  *       extra information it requires, random identifier will be generated
  *       for it when editing in source mode.
  */
-class wxsSizer: public wxsParent
+class PLUGIN_EXPORT wxsSizer: public wxsParent
 {
 public:
 

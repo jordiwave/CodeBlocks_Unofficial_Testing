@@ -15,13 +15,15 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12328 $
-* $Id: wxsitemresdata.h 12328 2021-05-08 12:17:19Z fuscated $
+* $Revision: 12722 $
+* $Id: wxsitemresdata.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxsitemresdata.h $
 */
 
 #ifndef WXSITEMRESDATA_H
 #define WXSITEMRESDATA_H
+
+#include <cbplugin.h>
 
 #include "wxsitem.h"
 #include "wxsparent.h"
@@ -35,7 +37,7 @@ class wxsTool;
 class wxsItemEditor;
 
 /** \brief Class holding data for item resources and operating on it */
-class wxsItemResData
+class PLUGIN_EXPORT wxsItemResData
 {
 public:
 

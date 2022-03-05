@@ -47,6 +47,10 @@
       <label>Clean workspace</label>
       <help>Clean current project (dependencies too)</help>
     </object>
+    <object class="wxMenuItem" name="idCompilerMenuInstallWorkspace">
+      <label>Install workspace</label>
+      <help>Install all current projects in the workspace</help>
+    </object>
     <object class="separator"/>
     <object class="wxMenuItem" name="idCompilerMenuKillProcess">
       <label>&amp;Abort</label>

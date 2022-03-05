@@ -11,11 +11,15 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef ANGULARMETER_H
+#define ANGULARMETER_H
+
 #include <wx/dcmemory.h>
+#include "wx/dlimpexp.h"
 
 #define MAXSECTORCOLOR 10
 
-class kwxAngularMeter : public wxWindow
+class WXEXPORT kwxAngularMeter : public wxWindow
 {
 public:
     kwxAngularMeter(wxWindow *parent, const wxWindowID id = -1, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
@@ -108,6 +112,6 @@ private:
     wxMemoryDC m_BackgroundDc;
 
     bool m_bNeedRedrawBackground;
-
-
 };
+
+#endif

@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12553 $
-* $Id: wxsboolproperty.h 12553 2021-12-05 10:59:43Z wh11204 $
+* $Revision: 12722 $
+* $Id: wxsboolproperty.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/properties/wxsboolproperty.h $
 */
 
@@ -25,8 +25,10 @@
 
 #include "wxsproperty.h"
 
+#include <cbplugin.h>
+
 /** \brief Base boolean property */
-class wxsBoolProperty: public wxsProperty
+class PLUGIN_EXPORT wxsBoolProperty: public wxsProperty
 {
 public:
 

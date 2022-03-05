@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12607 $
- * $Id: editormanager.cpp 12607 2021-12-23 08:50:04Z wh11204 $
+ * $Revision: 12736 $
+ * $Id: editormanager.cpp 12736 2022-03-03 20:12:16Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/editormanager.cpp $
  */
 
@@ -1239,11 +1239,11 @@ bool EditorManager::OpenContainingFolder()
         path = fullPath;
 
     QuoteStringIfNeeded(path);
-    cmdData.command << wxT(" ") << path;
+    cmdData.command << ' ' << path;
 
     wxExecute(cmdData.command);
-    Manager::Get()->GetLogManager()->DebugLog(F(wxT("Executing command to open folder: '%s'"),
-            cmdData.command.wx_str()));
+    Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_("Executing command to open folder: '%s'"),
+            cmdData.command));
     return true;
 }
 

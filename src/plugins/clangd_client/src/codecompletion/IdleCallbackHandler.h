@@ -36,6 +36,7 @@ public:
     }
 
     virtual void Execute() = 0;
+    virtual wxObject* GetEventObject() = 0;
 };
 // ----------------------------------------------------------------------------
 // This is a version for calling methods without parameters.
@@ -71,6 +72,8 @@ public:
     {
         (m_object->*m_method)();
     }
+    virtual wxObject* GetEventObject() wxOVERRIDE
+    {return m_object;}
 
 private:
     ObjectType* const m_object;
@@ -114,6 +117,8 @@ public:
     {
         (m_object->*m_method)(m_param1);
     }
+    virtual wxObject* GetEventObject() wxOVERRIDE
+    {return m_object;}
 
 private:
     ObjectType* const m_object;
@@ -163,6 +168,8 @@ public:
     {
         (m_object->*m_method)(m_param1, m_param2);
     }
+    virtual wxObject* GetEventObject() wxOVERRIDE
+    {return m_object;}
 
 private:
     ObjectType* const m_object;
@@ -281,6 +288,22 @@ public:
     // ----------------------------------------------------------------------------
     {
         m_AsyncMethodCallQueue.clear();
+    }
+    // ----------------------------------------------------------------------------
+    void ClearIdleCallbacks(wxObject* pObject)
+    // ----------------------------------------------------------------------------
+    {
+        // m_AsyncMethodCallQueue contains pointers to AsyncMethodCallEvent
+        if (GetIdleCallbackQueue()->size())
+            for (std::deque<AsyncMethodCallEvent*>::iterator it = m_AsyncMethodCallQueue.end(); it-- > m_AsyncMethodCallQueue.begin();)
+            {
+                AsyncMethodCallEvent* pAsyncItem = *it;
+                if (pAsyncItem->GetEventObject() == pObject)
+                {
+                    m_AsyncMethodCallQueue.erase(it);
+                    delete(pAsyncItem);
+                }
+            }
     }
     // ----------------------------------------------------------------------------
     // Method callback with no paraeters

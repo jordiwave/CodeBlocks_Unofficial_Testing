@@ -6,6 +6,7 @@
  * $Id$
  * $HeadURL$
  */
+#define SUPPORT_COLOR
 
 #include "sdk_precomp.h"
 #include "autodetectcompilers.h"
@@ -28,6 +29,7 @@
 #include "manager.h"
 #include "macrosmanager.h"
 #endif
+#include <wx/settings.h>
 #include <wx/tooltip.h>
 
 #include "infowindow.h"
@@ -50,9 +52,14 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
     wxListCtrl* list = XRCCTRL(*this, "lcCompilers", wxListCtrl);
     if (list)
     {
+        LogManager *logMgr = Manager::Get()->GetLogManager();
         list->Connect(wxEVT_MOTION, wxMouseEventHandler(AutoDetectCompilers::OnMouseMotion));
+        list->ClearAll();
+        list->InsertColumn(ccnNameColumn, _("Compiler"), wxLIST_FORMAT_LEFT, 380);
+        list->InsertColumn(ccnStatusColumn, _("Status"), wxLIST_FORMAT_LEFT, 100);
+        list->InsertColumn(ccnDetectedPathColumn, _("Compiler Path"), wxLIST_FORMAT_LEFT, 200);
 
-        Manager::Get()->GetLogManager()->Log("AutoDetectCompilers info follows:");
+        logMgr->Log("AutoDetectCompilers info follows:");
         const size_t count = CompilerFactory::GetCompilersCount();
         for (size_t i = 0; i < count; ++i)
         {
@@ -62,7 +69,7 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
 
             CompilerItem compilerListItem;
             compilerListItem.compilerName = compiler->GetName();
-            compilerListItem.status = "Unknown";          	// Default to Unknown
+            compilerListItem.status = _("Unknown");       	// Default to Unknown
             compilerListItem.compilerPath = wxString();     // Default to empty string
             compilerListItem.detected = false;            	// Default to false
 
@@ -79,14 +86,14 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                 const bool compilerIsDefault = defaultCompilerID.IsSameAs(currentCompilerID);
                 // bool compilerSetConfigured = Manager::Get()->GetConfigManager("compiler")->Exists("/sets/" + compiler->GetID() + "/name");
 
-                Manager::Get()->GetLogManager()->Log(wxString::Format("CompilerName : '%s'   , masterPathNoMacros : '%s'", compilerListItem.compilerName, masterPathNoMacros));
-                Manager::Get()->GetLogManager()->Log(wxString::Format("Manager::Get()->GetConfigManager(\"compiler\")->Exists('%s') : %s", "/sets/" + compiler->GetID() + "/name",
-                                                     Manager::Get()->GetConfigManager("compiler")->Exists("/sets/" + compiler->GetID() + "/name")?"True":"False"));
+                logMgr->Log(wxString::Format("CompilerName : '%s'   , masterPathNoMacros : '%s'", compilerListItem.compilerName, masterPathNoMacros));
+                logMgr->Log(wxString::Format("Manager::Get()->GetConfigManager(\"compiler\")->Exists('%s') : %s", "/sets/" + compiler->GetID() + "/name",
+                                             Manager::Get()->GetConfigManager("compiler")->Exists("/sets/" + compiler->GetID() + "/name")?"True":"False"));
 
 
                 if (detectedDirectory)
                 {
-                    compilerListItem.status = "Detected";
+                    compilerListItem.status = _("Detected");
                     compilerListItem.detected = true;
                     compilerListItem.compilerPath = masterPathNoMacros;
                     compilerListItem.colorHighlight = CompilerHighlightColor::colorHighlightGreen;
@@ -99,10 +106,10 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                     wxString pathDetectedNoMacros = pathDetected;
                     Manager::Get()->GetMacrosManager()->ReplaceMacros(pathDetectedNoMacros);
 
-                    Manager::Get()->GetLogManager()->Log(wxString::Format("AutoDetectInstallationDir: pathDetected : '%s' , pathDetectedNoMacros : '%s'", pathDetected, pathDetectedNoMacros ));
+                    logMgr->Log(wxString::Format("AutoDetectInstallationDir: pathDetected : '%s' , pathDetectedNoMacros : '%s'", pathDetected, pathDetectedNoMacros ));
 
                     //Revert the detected path back to the original path!!!!
-                    if (!masterPath.IsEmpty())
+                    if (!masterPath.empty())
                         compiler->SetMasterPath(masterPath);
 
                     // In case auto-detection was successful:
@@ -110,13 +117,13 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                     {
                         if (wxFileName::DirExists(pathDetectedNoMacros))
                         {
-                            if (masterPathNoMacros.IsEmpty())
+                            if (masterPathNoMacros.empty())
                             {
-                                compilerListItem.status = "New compiler detected.";
+                                compilerListItem.status = _("New compiler detected.");
                             }
                             else
                             {
-                                compilerListItem.status = "Compiler path changed.";
+                                compilerListItem.status = _("Compiler path changed.");
                             }
                             compilerListItem.detected = true;
                             compilerListItem.compilerPath = pathDetectedNoMacros;
@@ -125,9 +132,9 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                         else
                         {
                             if (compiler->GetParentID().empty()) // built-in compiler
-                                compilerListItem.status = "Detected";
+                                compilerListItem.status = _("Detected");
                             else
-                                compilerListItem.status = "User defined detected";
+                                compilerListItem.status = _("User defined detected");
 
                             compilerListItem.detected = true;
                             compilerListItem.compilerPath = pathDetected;
@@ -140,18 +147,18 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                         if (compilerIsDefault)
                         {
                             if (compiler->GetParentID().empty()) // built-in compiler
-                                compilerListItem.status = "Default compiler not detected";
+                                compilerListItem.status = _("Default compiler not detected");
                             else
-                                compilerListItem.status = "Default compiler user defined not detected";
+                                compilerListItem.status = _("Default compiler user defined not detected");
                             compilerListItem.colorHighlight = CompilerHighlightColor::colorHighlightRed;
 
                         }
                         else
                         {
                             if (compiler->GetParentID().empty()) // built-in compiler
-                                compilerListItem.status = "Not detected";
+                                compilerListItem.status = _("Not detected");
                             else
-                                compilerListItem.status = "User defined not detected";
+                                compilerListItem.status = _("User defined not detected");
                             compilerListItem.colorHighlight = CompilerHighlightColor::colorHighlightGrey;
                         }
                     }
@@ -159,8 +166,8 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
             }
             else
             {
-                compilerListItem.status = "No compiler";
-                compilerListItem.compilerPath = "N/A";
+                compilerListItem.status = _("No compiler");
+                compilerListItem.compilerPath = _("N/A");
                 compilerListItem.detected = true;
                 compilerListItem.colorHighlight = CompilerHighlightColor::colorHighlightGreen;
             }
@@ -171,23 +178,36 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                 if (compilerListItem.detected)
                 {
                     controlLblDefCompiler->SetLabel(compilerListItem.compilerName);
+#ifdef SUPPORT_COLOR
                     controlLblDefCompiler->SetForegroundColour(XRCCTRL(*this, "ID_STATICTEXT1", wxStaticText)->GetForegroundColour());
                     controlLblDefCompiler->SetBackgroundColour(XRCCTRL(*this, "ID_STATICTEXT1", wxStaticText)->GetBackgroundColour());
+#else
+                    if (controlLblDefCompiler->GetFont().GetStrikethrough ())
+                    {
+                        wxFont font = controlLblDefCompiler->GetFont();
+                        font.SetStrikethrough(false);
+                        controlLblDefCompiler->SetFont(font);
+                    }
+#endif
                 }
                 else
                 {
                     controlLblDefCompiler->SetLabel(wxString::Format(_("INVALID: %s"),compilerListItem.compilerName));
+#ifdef SUPPORT_COLOR
                     controlLblDefCompiler->SetForegroundColour(wxColour(*wxWHITE));
                     controlLblDefCompiler->SetBackgroundColour(wxColour(*wxRED));
+#else
+                    controlLblDefCompiler->SetFont(controlLblDefCompiler->GetFont().MakeStrikethrough());
+#endif
                 }
             }
 
-            Manager::Get()->GetLogManager()->Log(wxString::Format("Compiler '%s' , status: '%s' , compilerPath: '%s' , detected: %s",
-                                                 compilerListItem.compilerName,
-                                                 compilerListItem.status,
-                                                 compilerListItem.compilerPath,
-                                                 compilerListItem.detected?"True":"False"
-                                                                 ));
+            logMgr->Log(wxString::Format("Compiler '%s' , status: '%s' , compilerPath: '%s' , detected: %s",
+                                         compilerListItem.compilerName,
+                                         compilerListItem.status,
+                                         compilerListItem.compilerPath,
+                                         compilerListItem.detected?"True":"False"
+                                        ));
             m_CompilerList.push_back(compilerListItem);
         }
         UpdateCompilerDisplayList();
@@ -208,7 +228,7 @@ bool AutoDetectCompilers::closeCheckOkay()
         // Find default compiler in the list and if it was not detected double check with the user that this is okay.
         if (it->compilerName.IsSameAs(defaultCompiler) && !it->detected)
         {
-            if (wxMessageBox("Are you sure you want to configure CodeBlocks for an invalid compiler?", "",wxYES_NO) == wxNO)
+            if (wxMessageBox(_("Are you sure you want to configure CodeBlocks for an invalid compiler?"), "",wxYES_NO) == wxNO)
             {
                 return false;
             }
@@ -256,8 +276,10 @@ void AutoDetectCompilers::OnDefaultCompilerClick(cb_unused wxCommandEvent& event
 
         wxStaticText* controlLblDefCompiler = XRCCTRL(*this, "lblDefCompiler", wxStaticText);
         controlLblDefCompiler->SetLabel(CompilerFactory::GetDefaultCompiler()->GetName());
+#ifdef SUPPORT_COLOR
         controlLblDefCompiler->SetForegroundColour(XRCCTRL(*this, "ID_STATICTEXT1", wxStaticText)->GetForegroundColour());
         controlLblDefCompiler->SetBackgroundColour(XRCCTRL(*this, "ID_STATICTEXT1", wxStaticText)->GetBackgroundColour());
+#endif
     }
 }
 
@@ -274,17 +296,17 @@ void AutoDetectCompilers::UpdateCompilerDisplayList()
     if (list)
     {
         list->ClearAll();
-        list->InsertColumn(ccnNameColumn, "Compiler", wxLIST_FORMAT_LEFT, 380);
-        list->InsertColumn(ccnStatusColumn, "Status", wxLIST_FORMAT_LEFT, 100);
-        list->InsertColumn(ccnDetectedPathColumn, "Compiler Path", wxLIST_FORMAT_LEFT, 200);
+        list->InsertColumn(ccnNameColumn, _("Compiler"), wxLIST_FORMAT_LEFT, 380);
+        list->InsertColumn(ccnStatusColumn, _("Status"), wxLIST_FORMAT_LEFT, 100);
+        list->InsertColumn(ccnDetectedPathColumn, _("Compiler Path"), wxLIST_FORMAT_LEFT, 200);
 
         for (std::vector<CompilerItem>::iterator it = m_CompilerList.begin(); it != m_CompilerList.end(); ++it)
         {
             if (bShowAllCompilerOptions && !it->detected)
                 continue;
 
-            // It is a sorted list, so we must use the returned index
-            const int idx = list->InsertItem(idx, it->compilerName);
+            int idx = list->GetItemCount();
+            idx = list->InsertItem(idx, it->compilerName);
             list->SetItem(idx, ccnStatusColumn, it->status);
             list->SetItem(idx, ccnDetectedPathColumn, it->compilerPath);
 
@@ -293,18 +315,30 @@ void AutoDetectCompilers::UpdateCompilerDisplayList()
             switch(it->colorHighlight)
             {
             case CompilerHighlightColor::colorHighlightGrey:
+#ifndef SUPPORT_COLOR
+                list->SetItemFont(idx, list->GetItemFont(idx).MakeItalic());
+#endif
                 colourText  = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
                 colourText  = wxColour(*wxLIGHT_GREY);
                 break;
             case CompilerHighlightColor::colorHighlightGreen:
+#ifndef SUPPORT_COLOR
+                list->SetItemFont(idx, list->GetItemFont(idx).MakeBold());
+#endif
                 colourText  = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
                 colourBackground  = wxColour(*wxGREEN);
                 break;
             case CompilerHighlightColor::colorHighlightRed:
+#ifndef SUPPORT_COLOR
+                list->SetItemFont(idx, list->GetItemFont(idx).MakeStrikethrough());
+#endif
                 colourText  = wxColour(*wxWHITE);
                 colourBackground  = wxColour(*wxRED);
                 break;
             case CompilerHighlightColor::colorHighlightYellow:
+#ifndef SUPPORT_COLOR
+                list->SetItemFont(idx, list->GetItemFont(idx).MakeUnderlined());
+#endif
                 colourText  = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
                 colourBackground  = wxColour(*wxYELLOW);
                 break;
@@ -314,8 +348,11 @@ void AutoDetectCompilers::UpdateCompilerDisplayList()
                 // colourBackground = wxNullColour;
                 break;
             }
+#ifdef SUPPORT_COLOR
             list->SetItemTextColour(idx, colourText);
             list->SetItemBackgroundColour(idx, colourBackground);
+
+#endif
         }
 
         // Resize columns so one can read the whole stuff:
@@ -334,42 +371,44 @@ void AutoDetectCompilers::OnMouseMotion(wxMouseEvent& event)
     if (idx != wxNOT_FOUND)
     {
         wxListItem itm;
-        itm.m_itemId = idx;
-        itm.m_col = ccnStatusColumn;
-        itm.m_mask = wxLIST_MASK_TEXT;
+        itm.SetId(idx);
+        itm.SetColumn(ccnStatusColumn);
+        itm.SetMask(wxLIST_MASK_TEXT);
         if (list->GetItem(itm))
-            txt = itm.m_text;
+            txt = itm.GetText();
     }
+
     if (txt == _("Detected") || txt == _("User-defined"))
     {
         wxListItem itm;
-        itm.m_itemId = idx;
-        itm.m_col = ccnNameColumn;
-        itm.m_mask = wxLIST_MASK_TEXT;
+        itm.SetId(idx);
+        itm.SetColumn(ccnNameColumn);
+        itm.SetMask(wxLIST_MASK_TEXT);
         if (list->GetItem(itm))
         {
-            Compiler* compiler = CompilerFactory::GetCompilerByName(itm.m_text);
+            Compiler* compiler = CompilerFactory::GetCompilerByName(itm.GetText());
             idx = CompilerFactory::GetCompilerIndex(compiler);
         }
         txt = CompilerFactory::GetCompiler(idx)->GetMasterPath();
     }
     else
         txt = wxEmptyString;
+
     if (list->GetToolTip())
     {
-        if (txt.IsEmpty())
+        if (txt.empty())
             list->UnsetToolTip();
         else if (txt != list->GetToolTip()->GetTip())
             list->SetToolTip(txt);
     }
-    else if (!txt.IsEmpty())
+    else if (!txt.empty())
         list->SetToolTip(txt);
 }
 
 void AutoDetectCompilers::OnUpdateUI(wxUpdateUIEvent& event)
 {
     wxListCtrl* list = XRCCTRL(*this, "lcCompilers", wxListCtrl);
-    bool en = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED) != -1;
+    const bool en = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED) != -1;
     XRCCTRL(*this, "btnSetDefaultCompiler", wxButton)->Enable(en);
 
     event.Skip();

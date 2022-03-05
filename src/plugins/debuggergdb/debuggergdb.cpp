@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12656 $
- * $Id: debuggergdb.cpp 12656 2022-01-16 09:56:14Z wh11204 $
+ * $Revision: 12736 $
+ * $Id: debuggergdb.cpp 12736 2022-03-03 20:12:16Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/debuggergdb/debuggergdb.cpp $
  */
 
@@ -560,7 +560,7 @@ int DebuggerGDB::LaunchProcessWithShell(const wxString &cmd, wxProcess *process,
     wxGetEnvMap(&execEnv.env);
     if (!shell.empty())
     {
-        Log(wxString::Format(wxT("Setting SHELL to '%s'"), shell.wx_str()));
+        Log(wxString::Format(_("Setting SHELL to '%s'"), shell));
         execEnv.env["SHELL"] = shell;
     }
     return wxExecute(cmd, wxEXEC_ASYNC, process, &execEnv);
@@ -783,7 +783,7 @@ int DebuggerGDB::DoDebug(bool breakOnEntry)
     // start debugger driver based on target compiler, or default compiler if no target
     if (!m_State.StartDriver(target))
     {
-        cbMessageBox(_T("Could not decide which debugger to use!"), _T("Error"), wxICON_ERROR);
+        cbMessageBox(_("Could not decide which debugger to use!"), _("Error"), wxICON_ERROR);
         m_Canceled = true;
         return -1;
     }
@@ -795,7 +795,7 @@ int DebuggerGDB::DoDebug(bool breakOnEntry)
     int nRet = evt.GetInt();
     if (nRet < 0)
     {
-        cbMessageBox(_T("A plugin interrupted the debug process."));
+        cbMessageBox(_("A plugin interrupted the debug process."));
         Log(_("Aborted by plugin"));
         m_Canceled = true;
         return -1;
@@ -915,7 +915,7 @@ int DebuggerGDB::DoDebug(bool breakOnEntry)
     if (!m_State.GetDriver()->UseDebugBreakProcess())
     {
         AllocConsole();
-        SetConsoleTitleA("Codeblocks debug console - DO NOT CLOSE!");
+        SetConsoleTitleA(_("Codeblocks debug console - DO NOT CLOSE!"));
         SetConsoleCtrlHandler(HandlerRoutine, TRUE);
         m_bIsConsole = true;
 
@@ -928,8 +928,8 @@ int DebuggerGDB::DoDebug(bool breakOnEntry)
     wxString wdir = m_State.GetDriver()->GetDebuggersWorkingDirectory();
     if (wdir.empty())
         wdir = m_pProject ? m_pProject->GetBasePath() : _T(".");
-    DebugLog(_T("Command-line: ") + cmdline);
-    DebugLog(_T("Working dir : ") + wdir);
+    DebugLog(_("Command-line: ") + cmdline);
+    DebugLog(_("Working dir : ") + wdir);
     int ret = LaunchProcess(cmdline, wdir);
 
     if (!rd.skipLDpath)

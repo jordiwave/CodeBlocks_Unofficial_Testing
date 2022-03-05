@@ -64,11 +64,11 @@ To build Code::Blocks:
 
     5) Instead of performing steps 6 through 13 you can run the following script after checking the exported environment 
         variables for your setup and updating if applicable:
-        ./windows_build_msys2.sh
+        ./codeblocks_build.sh
        
-        The windows_build_msys2.sh script checks for errors and if something fails please look at the script to find which
+        The codeblocks_build.sh script checks for errors and if something fails please look at the script to find which
           log file to check to see what failure occured so you can fix it.
-        If the windows_build_msys2.sh script passes then goto the last step
+        If the codeblocks_build.sh script passes then goto the last step
 
     6) In the bash shell set the following environment variables:
             export WX_CONFIG_NAME=$PWD/wx-config-cb-win64
@@ -143,7 +143,7 @@ To build Code::Blocks:
             
         or 
         You can run the following bash script:
-            ./windows_update_devel.sh        
+            ./codeblocks_update_devel.sh        
 
         NOTE: Future - investigate if this can be added to the "make install" process
 

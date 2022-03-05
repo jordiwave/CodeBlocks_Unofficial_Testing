@@ -25,19 +25,26 @@ AM_CPPFLAGS += \
 			-DwxUSE_UNICODE
 endif
 
-lib_LTLIBRARIES = \
+if CODEBLOCKS_NT_BUILD_INSTALLER
+codeblocksdir = $(libdir)
+codeblocks_LTLIBRARIES = \
 			libcodeblocks.la
-
-libcodeblocks_la_LDFLAGS = \
-			-version-info @CODEBLOCKS_VERSION_INFO@
+else
+lib_LTLIBRARIES = libcodeblocks.la
+endif
 
 if CODEBLOCKS_NT
-libcodeblocks_la_LDFLAGS += \
+libcodeblocks_la_LDFLAGS = \
+			@MODULE_SHARED_LDFLAGS@ \
+			-avoid-version \
 			-enable-auto-image-base \
 			-add-stdcall-alias \
 			-enable-auto-import \
 			-no-undefined \
 			-lgdi32
+else
+libcodeblocks_la_LDFLAGS = \
+			-version-info @CODEBLOCKS_VERSION_INFO@
 endif
 
 libcodeblocks_la_LIBADD = \

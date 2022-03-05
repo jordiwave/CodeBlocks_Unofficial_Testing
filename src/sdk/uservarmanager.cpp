@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 12579 $
- * $Id: uservarmanager.cpp 12579 2021-12-14 09:27:57Z wh11204 $
+ * $Revision: 12719 $
+ * $Id: uservarmanager.cpp 12719 2022-02-18 19:45:18Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/uservarmanager.cpp $
  */
 
@@ -137,8 +137,8 @@ class UsrGlblMgrEditDialog : public wxScrollingDialog
     void DeleteSet(wxCommandEvent& event);
 
     // Export, import sets
-    wxString GetExportFileName();
-    void ExportXMLtoFile(TiXmlDocument* exportXmlDoc);
+    wxString GetExportFileName(bool exportAllSets);
+    void ExportXMLtoFile(TiXmlDocument* exportXmlDoc, bool exportAllSets);
     void ExportSetData(bool exportAllSets);
     void ExportAllSets(wxCommandEvent& event);
     void ExportSet(wxCommandEvent& event);
@@ -500,7 +500,6 @@ BEGIN_EVENT_TABLE(UsrGlblMgrEditDialog, wxScrollingDialog)
     EVT_BUTTON(XRCID("importSet"), UsrGlblMgrEditDialog::ImportSet)
     EVT_BUTTON(XRCID("saveSet"), UsrGlblMgrEditDialog::SaveSet)
     EVT_CLOSE(UsrGlblMgrEditDialog::CloseHandler)
-
     EVT_BUTTON(XRCID("fs1"), UsrGlblMgrEditDialog::OnFS)
     EVT_BUTTON(XRCID("fs2"), UsrGlblMgrEditDialog::OnFS)
     EVT_BUTTON(XRCID("fs3"), UsrGlblMgrEditDialog::OnFS)
@@ -871,17 +870,17 @@ void UsrGlblMgrEditDialog::OnFS(wxCommandEvent& event)
         c->SetValue(path);
 }
 
-wxString UsrGlblMgrEditDialog::GetExportFileName()
+wxString UsrGlblMgrEditDialog::GetExportFileName(bool exportAllSet)
 {
     wxString exportFileName = wxEmptyString;
 
     wxDateTime now = wxDateTime::Now();
-    wxString defaultFile = wxString::Format(_("CB_GV_%s_%s.xml"), m_CurrentSet, now.Format("%Y%m%d-%H%M%S", wxDateTime::Local));
+    wxString defaultFile = wxString::Format(_("CB_GV_%s_%s.xml"), (exportAllSet?"ALL": m_CurrentSet), now.Format("%Y%m%d-%H%M%S", wxDateTime::Local));
 
     wxFileDialog saveFileDialog(
-        this,                           // wxWindow * parent,
-        "Save global variable sets",    // const wxString & message = wxFileSelectorPromptStr,
-        wxEmptyString,                // const wxString & defaultDir = wxEmptyString,
+        this,                            // wxWindow * parent,
+        (exportAllSet?"Save all global variable sets":"Save global variable set"),      // const wxString & message = wxFileSelectorPromptStr,
+        wxEmptyString,                   // const wxString & defaultDir = wxEmptyString,
         defaultFile,                     // const wxString & defaultFile = wxEmptyString,
         _("XML files (*.xml)|*.xml|All files (*.*)|*.*"),   // const wxString & wildcard = wxFileSelectorDefaultWildcardStr,
         wxFD_SAVE | wxFD_OVERWRITE_PROMPT | compatibility::wxHideReadonly   // long style = wxFD_DEFAULT_STYLE,
@@ -895,12 +894,12 @@ wxString UsrGlblMgrEditDialog::GetExportFileName()
     return exportFileName;
 }
 
-void UsrGlblMgrEditDialog::ExportXMLtoFile(TiXmlDocument* exportXmlDoc)
+void UsrGlblMgrEditDialog::ExportXMLtoFile(TiXmlDocument* exportXmlDoc, bool exportAllSet)
 {
     bool done = false;
     do
     {
-        wxString exportFileName = GetExportFileName();
+        wxString exportFileName = GetExportFileName(exportAllSet);
         if (!exportFileName.empty())
         {
             if (TinyXML::SaveDocument(exportFileName, exportXmlDoc))
@@ -910,7 +909,7 @@ void UsrGlblMgrEditDialog::ExportXMLtoFile(TiXmlDocument* exportXmlDoc)
             else
             {
                 AnnoyingDialog dlg(_("Error"),
-                                   F(_T("Could not export to the config file '%s'!"), exportFileName),
+                                   wxString::Format(_("Could not export to the config file '%s'!"), exportFileName),
                                    wxART_ERROR, AnnoyingDialog::TWO_BUTTONS,
                                    AnnoyingDialog::rtTWO, _("&Retry"), _("&Close"));
                 switch (dlg.ShowModal())
@@ -1022,7 +1021,7 @@ void UsrGlblMgrEditDialog::ExportSetData(bool exportAllSets)
         }
     }
 
-    ExportXMLtoFile(exportXmlDoc);
+    ExportXMLtoFile(exportXmlDoc, exportAllSets);
     delete exportXmlDoc;
 }
 

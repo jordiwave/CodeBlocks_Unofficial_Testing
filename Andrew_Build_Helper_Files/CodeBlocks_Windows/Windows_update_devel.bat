@@ -9,13 +9,17 @@ if "%BUILD_BITS%" == "32" goto BuildBits_Okay
 if "%BUILD_BITS%" == "64" goto BuildBits_Okay
 if exist "..\..\src\devel31_32\codeblocks.exe" set BUILD_BITS=32
 if exist "..\..\src\devel31_64\codeblocks.exe" set BUILD_BITS=64
+if exist "src\devel31_32\codeblocks.exe" set BUILD_BITS=32
+if exist "src\devel31_64\codeblocks.exe" set BUILD_BITS=64
 if "%BUILD_BITS%" == "32" goto BuildBits_Okay
 if "%BUILD_BITS%" == "64" goto BuildBits_Okay
 goto BuildBitError
 
 :BuildBits_Okay
 @rem change to the CB source root directory
-cd ..\..\src
+if exist bootstrap cd src
+if exist ..\..\bootstrap cd ..\..\src
+if exist ..\..\..\bootstrap cd ..\..\..\src
 
 @rem GCC_ROOT is the root directory of the compiler you are going to use to build C::B with
 set GCC_ROOT=C:\msys64\mingw%BUILD_BITS%
@@ -23,7 +27,9 @@ set GCC_ROOT=C:\msys64\mingw%BUILD_BITS%
 @rem set GCC_ROOT=C:\TDM-GCC-64
 
 @rem WXWIN is the wxWidgets root directory that you have all ready built from source 
-CALL :NORMALIZEPATH "..\..\..\Libraries\wxWidgets-3.1.5_win%BUILD_BITS%"
+if exist "..\Libraries\wxWidgets-3.1.5_win%BUILD_BITS%" CALL :NORMALIZEPATH "..\Libraries\wxWidgets-3.1.5_win%BUILD_BITS%"
+if exist "..\..\Libraries\wxWidgets-3.1.5_win%BUILD_BITS%" CALL :NORMALIZEPATH "..\..\Libraries\wxWidgets-3.1.5_win%BUILD_BITS%"
+if exist "..\..\..\Libraries\wxWidgets-3.1.5_win%BUILD_BITS%" CALL :NORMALIZEPATH "..\..\..\Libraries\wxWidgets-3.1.5_win%BUILD_BITS%"
 SET WXWIN=%RETVAL%
 if not exist "%WXWIN%" goto ErrNowxWidget
 
@@ -51,14 +57,9 @@ if exist "%WXWIN%\lib\gcc_dll\wxmsw*_gl_gcc_cb.dll" copy /Y "%WXWIN%\lib\gcc_dll
 if not exist "devel31_%BUILD_BITS%\exchndl.dll"     copy /Y "exchndl\win%BUILD_BITS%\bin\*.*" devel31_%BUILD_BITS% > nul
 
 @rem ------------------------------------------------------------------------------------------
-@rem Rename DLL files if built with MSYS 2 using bootstrap/configure/make/make install process
+@rem Check plugin DLL files were built
 @rem ------------------------------------------------------------------------------------------
 if not exist "devel31_%BUILD_BITS%\share\codeblocks\plugins\*.dll" goto NoPluginDLLFilesFound
-
-SET PrevDirectory="%CD%"
-cd "devel31_%BUILD_BITS%\share\codeblocks\plugins"
-for /f "usebackq delims=^=^" %%a in (`"dir "lib*.dll" /b" 2^>nul`) do (set fnameDLL=%%a) & call :renameDLL
-cd /d %PrevDirectory%
 
 @rem ---------------------------------------------------------------------------------------------------------
 @rem Check if MSYS 2 using bootstrap/configure/make/make install process was used and if it was cleanup files
@@ -75,9 +76,9 @@ cd /d %PrevDirectory%
 @rem Check if MSYS 2 using bootstrap/configure/make/make install process was used and if it was cleanup files
 @rem ---------------------------------------------------------------------------------------------------------
 :RunUpdateBatchFile
-@echo Start the update
-@call update31_"%BUILD_BITS%".bat C:\msys64\mingw"%BUILD_BITS%"
-@echo Finished the update
+echo Start the update
+call update31_%BUILD_BITS%.bat C:\msys64\mingw%BUILD_BITS%
+echo Finished the update
 
 @goto Finish
 
@@ -126,7 +127,7 @@ goto Finish
 @echo.
 @echo.
 @echo ^+------------------------------------------------------------------------------------------------------------^+
-@echo ^|     Error: NO "%WXWIN%" sub directory found  ^|
+@echo ^|     Error: NO WXWIN "%WXWIN%" sub directory found  ^|
 @echo ^+------------------------------------------------------------------------------------------------------------^+
 @echo. 
 @echo.

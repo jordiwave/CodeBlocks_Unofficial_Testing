@@ -56,6 +56,11 @@ private:
     CStringList m_AfterBuildCommands;
     bool m_ForceBeforeBuildCommands;
     bool m_ForceAfterBuildCommands;
+    CStringList m_BeforeCleanExtraCommands;
+    CStringList m_AfterCleanExtraCommands;
+    bool m_ForceBeforeCleanExtraCommands;
+    bool m_ForceAfterCleanExtraCommands;
+    CStringList m_InstallExtraCommands;
     std::vector<CBuildTarget*> m_BuildTargets;
     std::vector<CVirtualTarget*> m_VirtualTargets;
     std::vector<CBuildUnit*> m_Units;

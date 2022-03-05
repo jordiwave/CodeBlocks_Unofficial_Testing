@@ -54,6 +54,10 @@ public:
     wxArrayString GetCleanSingleFileCommand(const wxString& filename) const;
     wxArrayString GetTargetCleanCommands(ProjectBuildTarget* target, bool distclean = false) const;
 
+    wxArrayString GetPreCleanCommands(ProjectBuildTarget* target) const;
+    wxArrayString GetPostCleanCommands(ProjectBuildTarget* target) const;
+    wxArrayString GetInstallCommands(ProjectBuildTarget* target) const;
+
     bool m_doYield;
 protected:
     bool         AreExternalDepsOutdated(ProjectBuildTarget* target, const wxString& buildOutput, wxArrayString* filesMissing) const;

@@ -14,7 +14,6 @@ pluginlib_LTLIBRARIES = \
 
 libkeybinder_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
-			-version-info 0:1:0 \
 			-no-undefined \
 			-avoid-version
 
@@ -23,7 +22,7 @@ libkeybinder_la_LIBADD = \
 
 libkeybinder_la_SOURCES = \
 			cbkeybinder.cpp \
-			cbkeyConfigPanel.cpp \
+			cbKeyConfigPanel.cpp \
 			cJSON.cpp \
 			clKeyboardBindingConfig.cpp \
 			clKeyboardManager.cpp \

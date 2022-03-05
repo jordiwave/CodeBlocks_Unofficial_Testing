@@ -2,6 +2,7 @@
 #define __LCDWINDOW_H__
 
 #include <wx/wx.h>
+#include "wx/dlimpexp.h"
 
 // This structure is used internally by the window.
 struct wxDigitData
@@ -11,7 +12,7 @@ struct wxDigitData
 };
 
 
-class wxLCDWindow : public wxWindow
+class WXEXPORT wxLCDWindow : public wxWindow
 {
 protected:
     int mSegmentLen;

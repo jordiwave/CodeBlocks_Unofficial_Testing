@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 7109 $
-* $Id: wxspredefinedids.h 7109 2011-04-15 11:53:16Z mortenmacfly $
+* $Revision: 12722 $
+* $Id: wxspredefinedids.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxspredefinedids.h $
 */
 
@@ -24,6 +24,8 @@
 #define PREDEFINEDIDS_H
 
 #include <wx/string.h>
+
+#include <cbplugin.h>
 
 /** \brief Class managing predefined identifiers
  *
@@ -33,7 +35,7 @@
  *
  * \note This class contains static functions only - there's no instance of it.
  */
-class wxsPredefinedIDs
+class PLUGIN_EXPORT wxsPredefinedIDs
 {
 public:
 

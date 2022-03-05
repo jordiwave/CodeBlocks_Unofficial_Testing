@@ -7,6 +7,19 @@ SET CurrentDir="%CD%"
 @rem change to the CB source root directory
 cd ..\..\src
 
+set BUILD_BITS=%1
+if "%BUILD_BITS%" == "32" goto BuildBits_Okay
+if "%BUILD_BITS%" == "64" goto BuildBits_Okay
+if exist "..\..\src\devel31_32" set BUILD_BITS=32
+if exist "..\..\src\devel31_64" set BUILD_BITS=64
+if exist "src\devel31_32" set BUILD_BITS=32
+if exist "src\devel31_64" set BUILD_BITS=64
+if "%BUILD_BITS%" == "32" goto BuildBits_Okay
+if "%BUILD_BITS%" == "64" goto BuildBits_Okay
+goto BuildBitError
+
+:BuildBits_Okay
+
 @rem ----------------------------------------------------------------------------
 @rem Hopefully these variables are the only changes you need to configure for your 
 @rem Code::Blocks source build
@@ -27,13 +40,6 @@ set GCC_ROOT=C:\msys64\mingw%BUILD_BITS%
 @rem ============================================================================
 @rem Hopefully you will not have to modify anything below
 @rem ============================================================================
-
-set BUILD_BITS=%1
-IF "%BUILD_BITS%" == "32" goto BuildBits_Okay
-IF "%BUILD_BITS%" == "64" goto BuildBits_Okay
-goto BuildBitError
-
-:BuildBits_Okay
 
 set RETURN_ERROR_LEVEL=0
 

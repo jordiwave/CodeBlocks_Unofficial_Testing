@@ -5,10 +5,11 @@
 #include <wx/bitmap.h>
 #include <wx/dcclient.h>
 #include <wx/thread.h>
+#include "wx/dlimpexp.h"
 #include <map>
 
 /// Class to display a Led on the used dialogs page
-class wxStateLed : public wxWindow
+class WXEXPORT wxStateLed : public wxWindow
 {
 public :
     /** Constructor

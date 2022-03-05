@@ -26,8 +26,9 @@
 #define XH_KWXANGULARMETERHANDLER_H_INCLUDED
 
 #include <wx/xrc/xmlres.h>
+#include "wx/dlimpexp.h"
 
-class kwxAngularMeterHandler : public wxXmlResourceHandler
+class WXEXPORT kwxAngularMeterHandler : public wxXmlResourceHandler
 {
 public:
     // Constructor.

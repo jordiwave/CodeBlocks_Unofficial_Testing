@@ -23,9 +23,10 @@ static const bool s_case_sensitive = platform::windows ? false : true;
 
 CompileOptionsBase::CompileOptionsBase()
     : m_Platform(spAll),
+      m_AlwaysRunPostCmds(false),
+      m_AlwaysRunPostCmdsClean(false),
       m_LinkerExecutable(LinkerExecutableOption::AutoDetect),
-      m_Modified(false),
-      m_AlwaysRunPostCmds(false)
+      m_Modified(false)
 {
     //ctor
 }
@@ -220,6 +221,29 @@ const wxArrayString& CompileOptionsBase::GetBuildScripts() const
     return m_Scripts;
 }
 
+void CompileOptionsBase::AddBuildScript(const wxString& script)
+{
+    wxString envopt = UnixFilename(script);
+    if (m_Scripts.Index(envopt, s_case_sensitive) == wxNOT_FOUND)
+    {
+        m_Scripts.Add(envopt);
+        SetModified(true);
+    }
+}
+
+void CompileOptionsBase::RemoveBuildScript(const wxString& script)
+{
+    wxString envopt = UnixFilename(script);
+    int idx = m_Scripts.Index(envopt, s_case_sensitive);
+    if (idx != wxNOT_FOUND)
+    {
+        m_Scripts.RemoveAt(idx);
+        SetModified(true);
+    }
+}
+
+
+
 void CompileOptionsBase::SetCommandsBeforeBuild(const wxArrayString& commands)
 {
     if (m_CmdsBefore == commands)
@@ -231,6 +255,18 @@ void CompileOptionsBase::SetCommandsBeforeBuild(const wxArrayString& commands)
 const wxArrayString& CompileOptionsBase::GetCommandsBeforeBuild() const
 {
     return m_CmdsBefore;
+}
+
+void CompileOptionsBase::AddCommandsBeforeBuild(const wxString& command)
+{
+    m_CmdsBefore.Add(command);
+    SetModified(true);
+}
+
+void CompileOptionsBase::RemoveCommandsBeforeBuild(const wxString& command)
+{
+    m_CmdsBefore.Remove(command);
+    SetModified(true);
 }
 
 void CompileOptionsBase::SetCommandsAfterBuild(const wxArrayString& commands)
@@ -246,6 +282,12 @@ const wxArrayString& CompileOptionsBase::GetCommandsAfterBuild() const
     return m_CmdsAfter;
 }
 
+void CompileOptionsBase::AddCommandsAfterBuild(const wxString& command)
+{
+    m_CmdsAfter.Add(command);
+    SetModified(true);
+}
+
 bool CompileOptionsBase::GetAlwaysRunPostBuildSteps() const
 {
     return m_AlwaysRunPostCmds;
@@ -256,6 +298,103 @@ void CompileOptionsBase::SetAlwaysRunPostBuildSteps(bool always)
     if (m_AlwaysRunPostCmds == always)
         return;
     m_AlwaysRunPostCmds = always;
+    SetModified(true);
+}
+
+void CompileOptionsBase::RemoveCommandsAfterBuild(const wxString& command)
+{
+    m_CmdsAfter.Remove(command);
+    SetModified(true);
+}
+
+
+
+void CompileOptionsBase::SetCommandsBeforeClean(const wxArrayString& commands)
+{
+    if (m_CmdsBeforeClean == commands)
+        return;
+    m_CmdsBeforeClean = commands;
+    SetModified(true);
+}
+
+const wxArrayString& CompileOptionsBase::GetCommandsBeforeClean() const
+{
+    return m_CmdsBeforeClean;
+}
+
+void CompileOptionsBase::AddCommandsBeforeClean(const wxString& command)
+{
+    m_CmdsBeforeClean.Add(command);
+    SetModified(true);
+}
+
+void CompileOptionsBase::RemoveCommandsBeforeClean(const wxString& command)
+{
+    m_CmdsBeforeClean.Remove(command);
+    SetModified(true);
+}
+
+
+void CompileOptionsBase::SetCommandsAfterClean(const wxArrayString& commands)
+{
+    if (m_CmdsAfterClean == commands)
+        return;
+    m_CmdsAfterClean = commands;
+    SetModified(true);
+}
+
+const wxArrayString& CompileOptionsBase::GetCommandsAfterClean() const
+{
+    return m_CmdsAfterClean;
+}
+
+void CompileOptionsBase::AddCommandsAfterClean(const wxString& command)
+{
+    m_CmdsAfterClean.Add(command);
+    SetModified(true);
+}
+
+void CompileOptionsBase::RemoveCommandsAfterClean(const wxString& command)
+{
+    m_CmdsAfterClean.Remove(command);
+    SetModified(true);
+}
+
+
+bool CompileOptionsBase::GetAlwaysRunPostCleanSteps() const
+{
+    return m_AlwaysRunPostCmdsClean;
+}
+
+void CompileOptionsBase::SetAlwaysRunPostCleanSteps(bool always)
+{
+    if (m_AlwaysRunPostCmdsClean == always)
+        return;
+    m_AlwaysRunPostCmdsClean = always;
+    SetModified(true);
+}
+
+void CompileOptionsBase::SetCommandsInstall(const wxArrayString& commands)
+{
+    if (m_CmdsInstall == commands)
+        return;
+    m_CmdsInstall = commands;
+    SetModified(true);
+}
+
+const wxArrayString& CompileOptionsBase::GetCommandsInstall() const
+{
+    return m_CmdsInstall;
+}
+
+void CompileOptionsBase::AddCommandsInstall(const wxString& command)
+{
+    m_CmdsInstall.Add(command);
+    SetModified(true);
+}
+void CompileOptionsBase::RemoveCommandsInstall(const wxString& command)
+{
+    m_CmdsInstall.Remove(command);
     SetModified(true);
 }
 
@@ -335,27 +474,6 @@ void CompileOptionsBase::AddLibDir(const wxString& option)
     }
 }
 
-void CompileOptionsBase::AddCommandsBeforeBuild(const wxString& command)
-{
-    m_CmdsBefore.Add(command);
-    SetModified(true);
-}
-
-void CompileOptionsBase::AddCommandsAfterBuild(const wxString& command)
-{
-    m_CmdsAfter.Add(command);
-    SetModified(true);
-}
-
-void CompileOptionsBase::AddBuildScript(const wxString& script)
-{
-    wxString envopt = UnixFilename(script);
-    if (m_Scripts.Index(envopt, s_case_sensitive) == wxNOT_FOUND)
-    {
-        m_Scripts.Add(envopt);
-        SetModified(true);
-    }
-}
 
 void CompileOptionsBase::ReplaceLinkerOption(const wxString& option, const wxString& new_option)
 {
@@ -496,29 +614,6 @@ void CompileOptionsBase::RemoveLibDir(const wxString& option)
     if (idx != wxNOT_FOUND)
     {
         m_LibDirs.RemoveAt(idx);
-        SetModified(true);
-    }
-}
-
-void CompileOptionsBase::RemoveCommandsBeforeBuild(const wxString& command)
-{
-    m_CmdsBefore.Remove(command);
-    SetModified(true);
-}
-
-void CompileOptionsBase::RemoveCommandsAfterBuild(const wxString& command)
-{
-    m_CmdsAfter.Remove(command);
-    SetModified(true);
-}
-
-void CompileOptionsBase::RemoveBuildScript(const wxString& script)
-{
-    wxString envopt = UnixFilename(script);
-    int idx = m_Scripts.Index(envopt, s_case_sensitive);
-    if (idx != wxNOT_FOUND)
-    {
-        m_Scripts.RemoveAt(idx);
         SetModified(true);
     }
 }

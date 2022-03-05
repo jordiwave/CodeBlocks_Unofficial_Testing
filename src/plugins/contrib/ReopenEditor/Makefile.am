@@ -14,13 +14,13 @@ pluginlib_LTLIBRARIES = \
 
 libReopenEditor_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
-			-version-info 0:1:0 \
 			-no-undefined \
 			-avoid-version
 
 libReopenEditor_la_LIBADD = \
 			$(top_srcdir)/src/sdk/libcodeblocks.la \
 			$(WX_LIBS)
+
 libReopenEditor_la_SOURCES = \
 			ReopenEditor.cpp \
 			ReopenEditorConfDLg.cpp \

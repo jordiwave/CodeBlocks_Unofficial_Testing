@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12599 $
- * $Id: compileroptionsdlg.cpp 12599 2021-12-20 19:52:57Z wh11204 $
+ * $Revision: 12736 $
+ * $Id: compileroptionsdlg.cpp 12736 2022-03-03 20:12:16Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/compilergcc/compileroptionsdlg.cpp $
  */
 
@@ -2170,7 +2170,7 @@ void CompilerOptionsDlg::OnCopyDirsClick(cb_unused wxCommandEvent& event)
 
         if (!base)
         {
-            Manager::Get()->GetLogManager()->LogWarning(_T("Could not get build target in CompilerOptionsDlg::OnCopyLibsClick"));
+            Manager::Get()->GetLogManager()->LogWarning(_("Could not get build target in CompilerOptionsDlg::OnCopyLibsClick"));
             continue;
         }
 
@@ -2198,7 +2198,7 @@ static void QuoteString(wxString &value, const wxString &caption)
 {
     if (NeedQuotes(value))
     {
-        AnnoyingDialog dlgQuestion(caption, wxT("Variable quote string"),
+        AnnoyingDialog dlgQuestion(caption, _("Variable quote string"),
                                    _("The value contains spaces or strange characters. Do you want to quote it?"),
                                    wxART_QUESTION, AnnoyingDialog::YES_NO, AnnoyingDialog::rtSAVE_CHOICE,
                                    _("&Quote"), _("&Leave unquoted"));
@@ -2390,9 +2390,9 @@ void CompilerOptionsDlg::OnAddCompilerClick(cb_unused wxCommandEvent& event)
             DoFillCompilerDependentSettings();
             DoFillCompilerSets(m_CurrentCompilerIdx);
             if(item.detected && !newC->GetMasterPath().IsEmpty())
-                cbMessageBox("The new compiler has been added! Please update the \"Toolchain executables\" page if required....");
+                cbMessageBox(_("The new compiler has been added! Please update the \"Toolchain executables\" page if required...."));
             else
-                cbMessageBox("The new compiler has been added! It has not been detected, so please update the \"Toolchain executables\" page...");
+                cbMessageBox(_("The new compiler has been added! It has not been detected, so please update the \"Toolchain executables\" page..."));
         }
     }
 
@@ -2414,8 +2414,8 @@ void CompilerOptionsDlg::OnEditCompilerClick(cb_unused wxCommandEvent& event)
         Compiler* compiler = CompilerFactory::GetCompiler(m_CurrentCompilerIdx);
         if (!compiler)
         {
-            cbMessageBox("The compiler could not be renamed.\n(Could not find the compiler to rename is for some unknown reason)",
-                         "Error", wxICON_ERROR);
+            cbMessageBox(_("The compiler could not be renamed.\n(Could not find the compiler to rename is for some unknown reason)"),
+                         _("Error"), wxICON_ERROR);
             return;
         }
         else
@@ -2426,8 +2426,8 @@ void CompilerOptionsDlg::OnEditCompilerClick(cb_unused wxCommandEvent& event)
                 // Find default compiler in the list.
                 if (m_CompilerList[i].compilerName.IsSameAs(value))
                 {
-                    cbMessageBox("The compiler could not be renamed as there is all ready a compiler with the same name found!",
-                                 "Error", wxICON_ERROR);
+                    cbMessageBox(_("The compiler could not be renamed as there is all ready a compiler with the same name found!"),
+                                 _("Error"), wxICON_ERROR);
                     return;
                 }
             }
@@ -3307,8 +3307,8 @@ void CompilerOptionsDlg::OnFlagsPopup(wxPropertyGridEvent& event)
     else if (m_MenuOption == FMO_CPPOnly)
     {
         Compiler* compiler = CompilerFactory::GetCompiler(m_CurrentCompilerIdx);
-        wxTextEntryDialog dlg(this, wxT("List flags that will only be used during C++ compilation"),
-                              wxT("C++ - only flags"), compiler->GetCPPOnlyFlags(), wxTextEntryDialogStyle|wxTE_MULTILINE|wxRESIZE_BORDER);
+        wxTextEntryDialog dlg(this, _("List flags that will only be used during C++ compilation"),
+                              _("C++ - only flags"), compiler->GetCPPOnlyFlags(), wxTextEntryDialogStyle|wxTE_MULTILINE|wxRESIZE_BORDER);
         // TODO: Hack for Ubuntu, see here: http://forums.codeblocks.org/index.php/topic,16463.msg115270.html#msg115270 (Remove if no longer needed.)
         if (dlg.GetSize().GetHeight() < 220)
         {

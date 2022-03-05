@@ -290,8 +290,7 @@ void ClassBrowser::UpdateClassBrowserView(bool checkHeaderSwap )
     else if (m_ClassBrowserBuilderThread->IsBusy())
     {
         // re-schedule this call on the Idle time Callback queue //(ph 2021/09/27)
-        Parser* pParser = (Parser*)m_Parser;
-        pParser->GetIdleCallbackHandler()->QueueCallback(this, &ClassBrowser::UpdateClassBrowserView, checkHeaderSwap);
+        GetParseManager()->GetIdleCallbackHandler()->QueueCallback(this, &ClassBrowser::UpdateClassBrowserView, checkHeaderSwap);
         return;
     }
     else ThreadedBuildTree(activeProject); // Re-create tree UI
@@ -592,8 +591,7 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
     if (locker_result != wxMUTEX_NO_ERROR)
     {
         // lock failed, do not block the UI thread, call back when idle
-        Parser* pParser = static_cast<Parser*>(m_Parser);
-        pParser->GetIdleCallbackHandler()->QueueCallback(this, &ClassBrowser::OnTreeItemDoubleClick, event);
+        GetParseManager()->GetIdleCallbackHandler()->QueueCallback(this, &ClassBrowser::OnTreeItemDoubleClick, event);
         return;
     }
     else /*lock succeeded*/
@@ -818,8 +816,7 @@ bool ClassBrowser::GetTokenTreeLock(void (T::*method)(T1 x1), P1 event)
     if (locker_result != wxMUTEX_NO_ERROR)
     {
         // lock failed, do not block the UI thread, insead, do call back when idle
-        Parser* pParser = static_cast<Parser*>(m_Parser);
-        pParser->GetIdleCallbackHandler()->QueueCallback(this, method, event);
+        GetParseManager()->GetIdleCallbackHandler()->QueueCallback(this, method, event);
         return false;
     }
     else /*lock succeeded*/
@@ -1037,8 +1034,7 @@ void ClassBrowser::ThreadedBuildTree(cbProject* activeProject)
     if (m_ClassBrowserBuilderThread and m_ClassBrowserBuilderThread->IsBusy())
     {
         // re-schedule this call on the Idle time Callback queue //(ph 2021/09/30)
-        Parser* pParser = static_cast<Parser*>(m_Parser);
-        pParser->GetIdleCallbackHandler()->QueueCallback(this, &ClassBrowser::ThreadedBuildTree, activeProject);
+        GetParseManager()->GetIdleCallbackHandler()->QueueCallback(this, &ClassBrowser::ThreadedBuildTree, activeProject);
         return;
     }
     else if (m_ClassBrowserBuilderThread)

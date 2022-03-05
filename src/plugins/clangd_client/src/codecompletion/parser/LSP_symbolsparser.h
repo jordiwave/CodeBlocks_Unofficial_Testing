@@ -64,8 +64,10 @@ struct LSP_SymbolsParserOptions
         platformCheck(true),
         logClangdClientCheck(false),
         logClangdServerCheck(false),
-        LLVM_ClangDaemonMasterPath(""),
-        LLVM_ClangMasterPath(""),
+        LLVM_MasterPath(""),
+        LLVM_DetectedClangExeFileName(""),
+        LLVM_DetectedClangDaemonExeFileName(""),
+        LLVM_DetectedIncludeClangDirectory(""),
         handleFunctions(true),
         handleVars(true),
         handleClasses(true),
@@ -126,10 +128,23 @@ struct LSP_SymbolsParserOptions
     /** clangd server logging  */
     bool        logClangdServerCheck;
 
-    /** path to LLVM clangd executable*/
-    wxString    LLVM_ClangDaemonMasterPath;
-    /** path to LLVM clang executable*/
-    wxString    LLVM_ClangMasterPath;
+    /** clangd LSP messages tab option  */
+    bool        lspMsgsFocusOnSaveCheck;
+
+    /** clangd LSP messages tab option  */
+    bool        lspMsgsClearOnSaveCheck;
+
+    /** path to LLVM */
+    wxString    LLVM_MasterPath; //(ph 2021/11/7)
+
+    /** Filename for LLVM clang executable*/
+    wxString    LLVM_DetectedClangExeFileName;
+
+    /** Filename for LLVM clangd executable*/
+    wxString    LLVM_DetectedClangDaemonExeFileName;
+
+    /** path to the include clang directory */
+    wxString    LLVM_DetectedIncludeClangDirectory;
 
     /** whether to parse the functions */
     bool        handleFunctions;

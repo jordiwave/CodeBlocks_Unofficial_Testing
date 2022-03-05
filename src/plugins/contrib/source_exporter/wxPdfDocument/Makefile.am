@@ -17,11 +17,6 @@ libwxPdfDocument_la_LDFLAGS = \
 			-no-undefined \
 			-avoid-version
 
-if !CODEBLOCKS_NT
-libwxPdfDocument_la_LDFLAGS += \
-			-version-info 0:1:0
-endif
-
 libwxPdfDocument_la_SOURCES = \
 			src/pdfannotation.cpp \
 			src/pdfbarcode.cpp \

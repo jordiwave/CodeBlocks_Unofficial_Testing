@@ -62,6 +62,11 @@ void CCodeBlocksProject::Clear(void)
     m_AfterBuildCommands.Clear();
     m_ForceBeforeBuildCommands = false;
     m_ForceAfterBuildCommands = false;
+    m_BeforeCleanExtraCommands.Clear();
+    m_AfterCleanExtraCommands.Clear();
+    m_ForceBeforeCleanExtraCommands = false;
+    m_ForceAfterCleanExtraCommands = false;
+    m_InstallExtraCommands.Clear();
     m_Platforms.Clear();
     m_SinglePlatform = true;
     m_BuildTargetIndex.clear();
@@ -260,7 +265,8 @@ void CCodeBlocksProject::Read(const TiXmlElement *ProjectRoot)
                 TiXmlElement* option = _option->ToElement();
                 if (0!=option)
                 {
-                    if (strcmp(option->Value(),"Add")) break;
+                    if (strcmp(option->Value(),"Add"))
+                        break;
                     char *value = 0;
                     if ((value = (char *)option->Attribute("before")))
                     {
@@ -279,9 +285,10 @@ void CCodeBlocksProject::Read(const TiXmlElement *ProjectRoot)
                 TiXmlElement* option = _option->ToElement();
                 if (0!=option)
                 {
-                    if (strcmp(option->Value(),"Mode")) break;
+                    if (strcmp(option->Value(),"Mode"))
+                        break;
                     char *value = 0;
-                    if ((value = (char *)option->Attribute("before")))
+                    if ((value = (char *)option->Attribute("before")))\
                     {
                         m_ForceBeforeBuildCommands = (strcmp(value,"always")==0);
                     }
@@ -294,13 +301,79 @@ void CCodeBlocksProject::Read(const TiXmlElement *ProjectRoot)
             } // option
         } // extra commands
 
+        TiXmlNode *_clean_extra_cmd = (TiXmlNode *)_project->FirstChild("CleanExtraCommands");
+        if (0!=_clean_extra_cmd)
+        {
+            TiXmlNode *_option = (TiXmlNode *)_clean_extra_cmd->FirstChild("Add");
+            while (0!=_option)
+            {
+                TiXmlElement* option = _option->ToElement();
+                if (0!=option)
+                {
+                    if (strcmp(option->Value(),"Add"))
+                        break;
+                    char *value = 0;
+                    if ((value = (char *)option->Attribute("before")))
+                    {
+                        m_BeforeCleanExtraCommands.Insert(value);
+                    }
+                    if ((value = (char *)option->Attribute("after")))
+                    {
+                        m_AfterCleanExtraCommands.Insert(value);
+                    }
+                }
+                _option = (TiXmlNode *)_clean_extra_cmd->IterateChildren(_option);
+            } // option
+            _option = (TiXmlNode *)_extra_cmd->FirstChild("Mode");
+            while (0!=_option)
+            {
+                TiXmlElement* option = _option->ToElement();
+                if (0!=option)
+                {
+                    if (strcmp(option->Value(),"Mode"))
+                        break;
+                    char *value = 0;
+                    if ((value = (char *)option->Attribute("before")))
+                    {
+                        m_ForceBeforeCleanExtraCommands = (strcmp(value,"always")==0);
+                    }
+                    if ((value = (char *)option->Attribute("after")))
+                    {
+                        m_ForceAfterCleanExtraCommands = (strcmp(value,"always")==0);
+                    }
+                }
+                _option = (TiXmlNode *)_extra_cmd->IterateChildren(_option);
+            } // option
+        } // clean extra commands
+
+        TiXmlNode *_install_extra_cmd = (TiXmlNode *)_project->FirstChild("InstallExtraCommands");
+        if (0!=_install_extra_cmd)
+        {
+            TiXmlNode *_option = (TiXmlNode *)_install_extra_cmd->FirstChild("Add");
+            while (0!=_option)
+            {
+                TiXmlElement* option = _option->ToElement();
+                if (0!=option)
+                {
+                    if (strcmp(option->Value(),"Add"))
+                        break;
+                    char *value = 0;
+                    if ((value = (char *)option->Attribute("step")))
+                    {
+                        m_InstallExtraCommands.Insert(value);
+                    }
+                }
+                _option = (TiXmlNode *)_install_extra_cmd->IterateChildren(_option);
+            } // option
+        } // install extra commands
+
+
         TiXmlNode *_unit = (TiXmlNode *)_project->FirstChild("Unit");
         while (0 != _unit)
         {
             TiXmlElement* unit = _unit->ToElement();
             if (0 != unit)
             {
-
                 if (strcmp(unit->Value(),"Unit"))
                     break;
 
@@ -453,12 +526,25 @@ void CCodeBlocksProject::Show(void)
         CBuildUnit *build_unit = m_Units[i];
         build_unit->Show();
     }
+
+    // Build extra commands
     ShowStringList("Before-build commands","Command",m_BeforeBuildCommands);
     std::cout<<"Force before-build commands: "
              <<BooleanToYesNoString(m_ForceBeforeBuildCommands).GetCString()<<std::endl;
     ShowStringList("After-build commands","Command",m_AfterBuildCommands);
     std::cout<<"Force after-build commands: "
              <<BooleanToYesNoString(m_ForceAfterBuildCommands).GetCString()<<std::endl;
+
+    // Clean extra commands
+    ShowStringList("Before-Clean commands","Command",m_BeforeCleanExtraCommands);
+    std::cout<<"Force before-Clean commands: "
+             <<BooleanToYesNoString(m_ForceBeforeCleanExtraCommands).GetCString()<<std::endl;
+    ShowStringList("After-Clean commands","Command",m_AfterCleanExtraCommands);
+    std::cout<<"Force after-Clean commands: "
+             <<BooleanToYesNoString(m_ForceAfterCleanExtraCommands).GetCString()<<std::endl;
+
+    // Install extra commands
+    ShowStringList("Install commands","Command",m_InstallExtraCommands);
 }
 
 void CCodeBlocksProject::UpdatePlatformIndex

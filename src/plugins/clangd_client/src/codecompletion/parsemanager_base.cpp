@@ -75,234 +75,233 @@ void ParseManagerBase::Reset()
     m_LastComponent.Clear();
 }
 
-// Here's the meat of code-completion :)
-// This function decides most of what gets included in the auto-completion
-// list presented to the user.
-// It's called recursively for each component of the std::queue argument.
-// for example: objA.objB.function()
-// The queue is like: 'objA' 'objB' 'function'. We deal with objA first.
+//// Here's the meat of code-completion :)
+//// This function decides most of what gets included in the auto-completion
+//// list presented to the user.
+//// It's called recursively for each component of the std::queue argument.
+//// for example: objA.objB.function()
+//// The queue is like: 'objA' 'objB' 'function'. We deal with objA first.
+////
+//// No critical section needed in this recursive function!
+//// All functions that call this recursive function, should already entered a critical section.
+//size_t ParseManagerBase::FindAIMatches(TokenTree*                  tree,
+//                                       std::queue<ParserComponent> components,
+//                                       TokenIdxSet&                result,
+//                                       int                         parentTokenIdx,
+//                                       bool                        isPrefix,
+//                                       bool                        caseSensitive,
+//                                       bool                        use_inheritance,
+//                                       short int                   kindMask,
+//                                       TokenIdxSet*                search_scope)
+//{
+//    if (components.empty())
+//        return 0;
 //
-// No critical section needed in this recursive function!
-// All functions that call this recursive function, should already entered a critical section.
-size_t ParseManagerBase::FindAIMatches(TokenTree*                  tree,
-                                       std::queue<ParserComponent> components,
-                                       TokenIdxSet&                result,
-                                       int                         parentTokenIdx,
-                                       bool                        isPrefix,
-                                       bool                        caseSensitive,
-                                       bool                        use_inheritance,
-                                       short int                   kindMask,
-                                       TokenIdxSet*                search_scope)
-{
-    if (components.empty())
-        return 0;
-
-    if (s_DebugSmartSense)
-        CCLogger::Get()->DebugLog(_T("FindAIMatches() ----- FindAIMatches - enter -----"));
-
-    TRACE(_T("ParseManager::FindAIMatches()"));
-
-    // pop top component
-    ParserComponent parser_component = components.front();
-    components.pop();
-
-    // handle the special keyword "this".
-    if ((parentTokenIdx != -1) && (parser_component.component == _T("this")))
-    {
-        // this will make the AI behave like it's the previous scope (or the current if no previous scope)
-
-        // move on please, nothing to see here...
-        // All functions that call the recursive FindAIMatches should already entered a critical section.
-        return FindAIMatches(tree, components, result, parentTokenIdx,
-                             isPrefix, caseSensitive, use_inheritance,
-                             kindMask, search_scope);
-    }
-
-    // we 'll only add tokens in the result set if we get matches for the last token
-    bool isLastComponent = components.empty();
-    wxString searchtext = parser_component.component;
-
-    if (s_DebugSmartSense)
-        CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Search for %s, isLast = %d"),
-                                  searchtext.wx_str(), isLastComponent?1:0));
-
-    // get a set of matches for the current token
-    TokenIdxSet local_result;
-    // All functions that call the recursive GenerateResultSet should already entered a critical section.
-    GenerateResultSet(tree, searchtext, parentTokenIdx, local_result,
-                      (caseSensitive || !isLastComponent),
-                      (isLastComponent && !isPrefix), kindMask);
-
-    if (s_DebugSmartSense)
-        CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Looping %lu results"),
-                                  static_cast<unsigned long>(local_result.size())));
-
-    // loop all matches, and recurse
-    for (TokenIdxSet::const_iterator it = local_result.begin(); it != local_result.end(); it++)
-    {
-        int id = *it;
-        const Token* token = tree->at(id);
-
-        // sanity check
-        if (!token)
-        {
-            if (s_DebugSmartSense)
-                CCLogger::Get()->DebugLog(_T("FindAIMatches() Token is NULL?!"));
-            continue;
-        }
-
-        // ignore operators
-        if (token->m_IsOperator)
-            continue;
-
-        // enums children (enumerators), are added by default
-        if (token->m_TokenKind == tkEnum)
-        {
-            // insert enum type
-            result.insert(id);
-
-            // insert enumerators
-            for (TokenIdxSet::const_iterator tis_it = token->m_Children.begin();
-                    tis_it != token->m_Children.end();
-                    tis_it++)
-                result.insert(*tis_it);
-
-            continue; // done with this token
-        }
-
-        if (s_DebugSmartSense)
-            CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Match: '%s' (ID='%d') : type='%s'"),
-                                      token->m_Name.wx_str(), id, token->m_BaseType.wx_str()));
-
-
-        // is the token a function or variable (i.e. is not a type)
-        if (    !searchtext.IsEmpty()
-                && (parser_component.tokenType != pttSearchText)
-                && !token->m_BaseType.IsEmpty() )
-        {
-            // the token is not a type
-            // find its type's ID and use this as parent instead of (*it)
-            TokenIdxSet type_result;
-            std::queue<ParserComponent> type_components;
-            wxString actual = token->m_BaseType;
-
-            // TODO: ignore builtin types (void, int, etc)
-            BreakUpComponents(actual, type_components);
-            // the parent to search under is a bit troubling, because of namespaces
-            // what we 'll do is search under current parent and traverse up the parentship
-            // until we find a result, or reach -1...
-
-            if (s_DebugSmartSense)
-                CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Looking for type: '%s' (%lu components)"),
-                                          actual.wx_str(),
-                                          static_cast<unsigned long>(type_components.size())));
-
-            // search under all search-scope namespaces too
-            TokenIdxSet temp_search_scope;
-            if (search_scope)
-                temp_search_scope = *search_scope;
-
-            // add grand-parent as search scope (if none defined)
-            // this helps with namespaces when the token's type doesn't contain
-            // namespace info. In that case (with the code here) we 're searching in
-            // the parent's namespace too
-            if (parentTokenIdx != -1)
-            {
-                const Token* parentToken = tree->at(parentTokenIdx);
-                if (parentToken)
-                {
-                    const Token* parent = tree->at(parentToken->m_ParentIndex);
-                    if (parent)
-                    {
-                        temp_search_scope.insert(parent->m_Index);
-                        if (s_DebugSmartSense)
-                            CCLogger::Get()->DebugLog(_T("FindAIMatches() Implicit search scope added:") + parent->m_Name);
-                    }
-                }
-            }
-
-            TokenIdxSet::const_iterator itsearch;
-            itsearch = temp_search_scope.begin();
-            while (!search_scope || itsearch != temp_search_scope.end())
-            {
-                const Token* parent = tree->at(*itsearch);
-
-                if (s_DebugSmartSense)
-                    CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Now looking under '%s'"),
-                                              parent ? parent->m_Name.wx_str() : wxString(_("Global namespace")).wx_str()));
-
-                do
-                {
-                    // types are searched as whole words, case sensitive and only classes/namespaces
-                    // All functions that call the recursive FindAIMatches should already entered a critical section.
-                    if (FindAIMatches(tree,
-                                      type_components,
-                                      type_result,
-                                      parent ? parent->m_Index : -1,
-                                      true,
-                                      false,
-                                      false,
-                                      tkClass | tkNamespace | tkTypedef | tkEnum,
-                                      &temp_search_scope) != 0)
-                        break;
-                    if (!parent)
-                        break;
-                    parent = tree->at(parent->m_ParentIndex);
-                }
-                while (true);
-                ++itsearch;
-            }
-
-            // we got all possible types (hopefully should be just one)
-            if (!type_result.empty())
-            {
-                // this is the first result
-                id = *(type_result.begin());
-                if (type_result.size() > 1)
-                {
-                    // if we have more than one result, recurse for all of them
-                    TokenIdxSet::const_iterator tis_it = type_result.begin();
-                    ++tis_it;
-                    while (tis_it != type_result.end())
-                    {
-                        std::queue<ParserComponent> lcomp = components;
-                        // All functions that call the recursive FindAIMatches should already entered a critical section.
-                        FindAIMatches(tree, lcomp, result, *tis_it, isPrefix,
-                                      caseSensitive, use_inheritance,
-                                      kindMask, search_scope);
-                        ++tis_it;
-                    }
-                }
-
-                if (s_DebugSmartSense)
-                {
-                    CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Type: '%s' (%d)"), tree->at(id)->m_Name.wx_str(), id));
-                    if (type_result.size() > 1)
-                        CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Multiple types matched for '%s': %lu results"),
-                                                  token->m_BaseType.wx_str(),
-                                                  static_cast<unsigned long>(type_result.size())));
-                }
-            }
-            else if (s_DebugSmartSense)
-                CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() No types matched '%s'."), token->m_BaseType.wx_str()));
-        }
-
-        // if no more components, add to result set
-        if (isLastComponent)
-            result.insert(id);
-        // else recurse this function using id as a parent
-        else
-            // All functions that call the recursive FindAIMatches should already entered a critical section.
-            FindAIMatches(tree, components, result, id, isPrefix,
-                          caseSensitive, use_inheritance, kindMask,
-                          search_scope);
-    }
-
-    if (s_DebugSmartSense)
-        CCLogger::Get()->DebugLog(_T("FindAIMatches() ----- FindAIMatches - leave -----"));
-
-    return result.size();
-}
+//    if (s_DebugSmartSense)
+//        CCLogger::Get()->DebugLog(_T("FindAIMatches() ----- FindAIMatches - enter -----"));
+//
+//    TRACE(_T("ParseManager::FindAIMatches()"));
+//
+//    // pop top component
+//    ParserComponent parser_component = components.front();
+//    components.pop();
+//
+//    // handle the special keyword "this".
+//    if ((parentTokenIdx != -1) && (parser_component.component == _T("this")))
+//    {
+//        // this will make the AI behave like it's the previous scope (or the current if no previous scope)
+//
+//        // move on please, nothing to see here...
+//        // All functions that call the recursive FindAIMatches should already entered a critical section.
+//        return FindAIMatches(tree, components, result, parentTokenIdx,
+//                             isPrefix, caseSensitive, use_inheritance,
+//                             kindMask, search_scope);
+//    }
+//
+//    // we 'll only add tokens in the result set if we get matches for the last token
+//    bool isLastComponent = components.empty();
+//    wxString searchtext = parser_component.component;
+//
+//    if (s_DebugSmartSense)
+//        CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Search for %s, isLast = %d"),
+//                                    searchtext.wx_str(), isLastComponent?1:0));
+//
+//    // get a set of matches for the current token
+//    TokenIdxSet local_result;
+//    // All functions that call the recursive GenerateResultSet should already entered a critical section.
+//    GenerateResultSet(tree, searchtext, parentTokenIdx, local_result,
+//                      (caseSensitive || !isLastComponent),
+//                      (isLastComponent && !isPrefix), kindMask);
+//
+//    if (s_DebugSmartSense)
+//        CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Looping %lu results"),
+//                                    static_cast<unsigned long>(local_result.size())));
+//
+//    // loop all matches, and recurse
+//    for (TokenIdxSet::const_iterator it = local_result.begin(); it != local_result.end(); it++)
+//    {
+//        int id = *it;
+//        const Token* token = tree->at(id);
+//
+//        // sanity check
+//        if (!token)
+//        {
+//            if (s_DebugSmartSense)
+//                CCLogger::Get()->DebugLog(_T("FindAIMatches() Token is NULL?!"));
+//            continue;
+//        }
+//
+//        // ignore operators
+//        if (token->m_IsOperator)
+//            continue;
+//
+//        // enums children (enumerators), are added by default
+//        if (token->m_TokenKind == tkEnum)
+//        {
+//            // insert enum type
+//            result.insert(id);
+//
+//            // insert enumerators
+//            for (TokenIdxSet::const_iterator tis_it = token->m_Children.begin();
+//                 tis_it != token->m_Children.end();
+//                 tis_it++)
+//                result.insert(*tis_it);
+//
+//            continue; // done with this token
+//        }
+//
+//        if (s_DebugSmartSense)
+//            CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Match: '%s' (ID='%d') : type='%s'"),
+//                                        token->m_Name.wx_str(), id, token->m_BaseType.wx_str()));
+//
+//
+//        // is the token a function or variable (i.e. is not a type)
+//        if (    !searchtext.IsEmpty()
+//             && (parser_component.tokenType != pttSearchText)
+//             && !token->m_BaseType.IsEmpty() )
+//        {
+//            // the token is not a type
+//            // find its type's ID and use this as parent instead of (*it)
+//            TokenIdxSet type_result;
+//            std::queue<ParserComponent> type_components;
+//            wxString actual = token->m_BaseType;
+//
+//            // TODO: ignore builtin types (void, int, etc)
+//            BreakUpComponents(actual, type_components);
+//            // the parent to search under is a bit troubling, because of namespaces
+//            // what we 'll do is search under current parent and traverse up the parentship
+//            // until we find a result, or reach -1...
+//
+//            if (s_DebugSmartSense)
+//                CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Looking for type: '%s' (%lu components)"),
+//                                            actual.wx_str(),
+//                                            static_cast<unsigned long>(type_components.size())));
+//
+//            // search under all search-scope namespaces too
+//            TokenIdxSet temp_search_scope;
+//            if (search_scope)
+//                temp_search_scope = *search_scope;
+//
+//            // add grand-parent as search scope (if none defined)
+//            // this helps with namespaces when the token's type doesn't contain
+//            // namespace info. In that case (with the code here) we 're searching in
+//            // the parent's namespace too
+//            if (parentTokenIdx != -1)
+//            {
+//                const Token* parentToken = tree->at(parentTokenIdx);
+//                if (parentToken)
+//                {
+//                    const Token* parent = tree->at(parentToken->m_ParentIndex);
+//                    if (parent)
+//                    {
+//                        temp_search_scope.insert(parent->m_Index);
+//                        if (s_DebugSmartSense)
+//                            CCLogger::Get()->DebugLog(_T("FindAIMatches() Implicit search scope added:") + parent->m_Name);
+//                    }
+//                }
+//            }
+//
+//            TokenIdxSet::const_iterator itsearch;
+//            itsearch = temp_search_scope.begin();
+//            while (!search_scope || itsearch != temp_search_scope.end())
+//            {
+//                const Token* parent = tree->at(*itsearch);
+//
+//                if (s_DebugSmartSense)
+//                    CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Now looking under '%s'"),
+//                                                parent ? parent->m_Name.wx_str() : wxString(_("Global namespace")).wx_str()));
+//
+//                do
+//                {
+//                    // types are searched as whole words, case sensitive and only classes/namespaces
+//                    // All functions that call the recursive FindAIMatches should already entered a critical section.
+//                    if (FindAIMatches(tree,
+//                                      type_components,
+//                                      type_result,
+//                                      parent ? parent->m_Index : -1,
+//                                      true,
+//                                      false,
+//                                      false,
+//                                      tkClass | tkNamespace | tkTypedef | tkEnum,
+//                                      &temp_search_scope) != 0)
+//                        break;
+//                    if (!parent)
+//                        break;
+//                    parent = tree->at(parent->m_ParentIndex);
+//                } while (true);
+//                ++itsearch;
+//            }
+//
+//            // we got all possible types (hopefully should be just one)
+//            if (!type_result.empty())
+//            {
+//                // this is the first result
+//                id = *(type_result.begin());
+//                if (type_result.size() > 1)
+//                {
+//                    // if we have more than one result, recurse for all of them
+//                    TokenIdxSet::const_iterator tis_it = type_result.begin();
+//                    ++tis_it;
+//                    while (tis_it != type_result.end())
+//                    {
+//                        std::queue<ParserComponent> lcomp = components;
+//                        // All functions that call the recursive FindAIMatches should already entered a critical section.
+//                        FindAIMatches(tree, lcomp, result, *tis_it, isPrefix,
+//                                      caseSensitive, use_inheritance,
+//                                      kindMask, search_scope);
+//                        ++tis_it;
+//                    }
+//                }
+//
+//                if (s_DebugSmartSense)
+//                {
+//                    CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Type: '%s' (%d)"), tree->at(id)->m_Name.wx_str(), id));
+//                    if (type_result.size() > 1)
+//                        CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() Multiple types matched for '%s': %lu results"),
+//                                                    token->m_BaseType.wx_str(),
+//                                                    static_cast<unsigned long>(type_result.size())));
+//                }
+//            }
+//            else if (s_DebugSmartSense)
+//                CCLogger::Get()->DebugLog(wxString::Format(_T("FindAIMatches() No types matched '%s'."), token->m_BaseType.wx_str()));
+//        }
+//
+//        // if no more components, add to result set
+//        if (isLastComponent)
+//            result.insert(id);
+//        // else recurse this function using id as a parent
+//        else
+//            // All functions that call the recursive FindAIMatches should already entered a critical section.
+//            FindAIMatches(tree, components, result, id, isPrefix,
+//                          caseSensitive, use_inheritance, kindMask,
+//                          search_scope);
+//    }
+//
+//    if (s_DebugSmartSense)
+//        CCLogger::Get()->DebugLog(_T("FindAIMatches() ----- FindAIMatches - leave -----"));
+//
+//    return result.size();
+//}
 ////// ----------------------------------------------------------------------------
 ////void ParseManagerBase::FindCurrentFunctionScope(TokenTree*        tree,
 ////                                                const TokenIdxSet& procResult,
@@ -684,6 +683,7 @@ void ParseManagerBase::RemoveLastFunctionChildren(TokenTree* tree,
     // clangd re-parses the file and sends back all current variables which are then
     // (re)inserted by Parser::OnLSP_DocumentSymbols();
     /// Experiment, don't remove variables. This routine may not be needed for clangd
+    //(ph 2022/02/26) So far this has been working ok since 211005
     return ;
 ////    // -------------------------------------------
 ////    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)   //TokenTree lock

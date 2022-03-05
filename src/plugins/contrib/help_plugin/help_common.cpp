@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 7746 $
- * $Id: help_common.cpp 7746 2012-01-31 12:09:18Z jenslody $
+ * $Revision: 12725 $
+ * $Id: help_common.cpp 12725 2022-02-25 16:04:49Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/help_plugin/help_common.cpp $
  */
 
@@ -15,6 +15,7 @@
 #include <configmanager.h>
 
 #include "help_common.h"
+#include "logmanager.h"
 
 using std::find;
 using std::make_pair;
@@ -24,24 +25,26 @@ int HelpCommon::m_NumReadFromIni = 0;
 
 void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
 {
+    LogManager *log = Manager::Get()->GetLogManager();
+
     vect.clear();
     HelpCommon::setNumReadFromIni(0);
-    ConfigManager* conf = Manager::Get()->GetConfigManager(_T("help_plugin"));
-    m_DefaultHelpIndex = conf->ReadInt(_T("/default"), -1);
-    wxArrayString list = conf->EnumerateSubPaths(_T("/"));
+    ConfigManager* conf = Manager::Get()->GetConfigManager("help_plugin");
+    m_DefaultHelpIndex = conf->ReadInt("/default", -1);
+    wxArrayString list = conf->EnumerateSubPaths("/");
 
     for (unsigned int i = 0; i < list.GetCount(); ++i)
     {
         HelpFileAttrib hfa;
-        wxString name = conf->Read(list[i] + _T("/name"), wxEmptyString);
-        hfa.name = conf->Read(list[i] + _T("/file"), wxEmptyString);
-        conf->Read(list[i] + _T("/isexec"), &hfa.isExecutable);
-        conf->Read(list[i] + _T("/embeddedviewer"), &hfa.openEmbeddedViewer);
+        wxString name = conf->Read(list[i] + "/name", wxEmptyString);
+        hfa.name = conf->Read(list[i] + "/file", wxEmptyString);
+        conf->Read(list[i] + "/isexec", &hfa.isExecutable);
+        conf->Read(list[i] + "/embeddedviewer", &hfa.openEmbeddedViewer);
         // Patch by Yorgos Pagles: Read new attributes from settings
-        int keyWordCase=0;
-        (conf->Read(list[i] + _T("/keywordcase"), &keyWordCase));
+        int keyWordCase = 0;
+        (conf->Read(list[i] + "/keywordcase", &keyWordCase));
         hfa.keywordCase = static_cast<HelpCommon::StringCase>(keyWordCase);
-        hfa.defaultKeyword = conf->Read(list[i] + _T("/defaultkeyword"), wxEmptyString);
+        hfa.defaultKeyword = conf->Read(list[i] + "/defaultkeyword", wxEmptyString);
 
         if (!name.IsEmpty() && !hfa.name.IsEmpty())
         {
@@ -49,11 +52,13 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
         }
     }
 
-    wxString docspath = ConfigManager::GetFolder(sdBase)+_("/share/codeblocks/docs");
-    wxString iniFileName =  docspath + wxFileName::GetPathSeparator() + _T("index.ini");
+    wxString docspath = ConfigManager::GetFolder(sdDataGlobal) +  wxFileName::GetPathSeparator() + "docs";
+    wxString iniFileName =  docspath + wxFileName::GetPathSeparator() + "index.ini";
 
-    if ((wxFileName::DirExists(docspath)) && (wxFileName::FileExists(iniFileName)))
+    if (wxFileName::FileExists(iniFileName))
     {
+        log->Log(wxString::Format("Help plugin ini file: %s", iniFileName));
+
         wxTextFile hFile(iniFileName);
         hFile.Open();
         unsigned int cnt = hFile.GetLineCount();
@@ -89,12 +94,26 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
 
         hFile.Close();
     }
+    else
+    {
+        if (wxFileName::DirExists(iniFileName))
+        {
+            if (!wxFileName::FileExists(iniFileName))
+            {
+                log->LogError(wxString::Format(_("Missing Help plugin ini file: %s"), iniFileName));
+            }
+        }
+        else
+        {
+            log->LogError(wxString::Format(_("Missing Help plugin doc directory : %s"), docspath));
+        }
+    }
 }
 
 void HelpCommon::SaveHelpFilesVector(HelpCommon::HelpFilesVector &vect)
 {
-    ConfigManager* conf = Manager::Get()->GetConfigManager(_T("help_plugin"));
-    wxArrayString list = conf->EnumerateSubPaths(_T("/"));
+    ConfigManager* conf = Manager::Get()->GetConfigManager("help_plugin");
+    wxArrayString list = conf->EnumerateSubPaths("/");
 
     for (unsigned int i = 0; i < list.GetCount(); ++i)
     {
@@ -113,16 +132,17 @@ void HelpCommon::SaveHelpFilesVector(HelpCommon::HelpFilesVector &vect)
 
         if (!name.IsEmpty() && !hfa.name.IsEmpty() && !hfa.readFromIni)
         {
-            wxString key = wxString::Format(_T("/help%d/"), count++);
-            conf->Write(key + _T("name"), name);
-            conf->Write(key + _T("file"), hfa.name);
-            conf->Write(key + _T("isexec"), hfa.isExecutable);
-            conf->Write(key + _T("embeddedviewer"), hfa.openEmbeddedViewer);
+            wxString key = wxString::Format("/help%d/", count++);
+            conf->Write(key + "name", name);
+            conf->Write(key + "file", hfa.name);
+            conf->Write(key + "isexec", hfa.isExecutable);
+            conf->Write(key + "embeddedviewer", hfa.openEmbeddedViewer);
             // Patch by Yorgos Pagles: Write new attributes in settings
-            conf->Write(key + _T("keywordcase"), static_cast<int>(hfa.keywordCase));
-            conf->Write(key + _T("defaultkeyword"), hfa.defaultKeyword);
+            conf->Write(key + "keywordcase", static_cast<int>(hfa.keywordCase));
+            conf->Write(key + "defaultkeyword", hfa.defaultKeyword);
         }
     }
 
-    conf->Write(_T("/default"), m_DefaultHelpIndex);
+    conf->Write("/default", m_DefaultHelpIndex);
 }
+

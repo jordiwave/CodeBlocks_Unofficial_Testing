@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12607 $
- * $Id: nativeparser.cpp 12607 2021-12-23 08:50:04Z wh11204 $
+ * $Revision: 12736 $
+ * $Id: nativeparser.cpp 12736 2022-03-03 20:12:16Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/codecompletion/nativeparser.cpp $
  */
 
@@ -900,7 +900,7 @@ int NativeParser::GetCallTips(wxArrayString& items, int& typedCommas, cbEditor* 
 
     if (!ed || !m_Parser->Done())
     {
-        items.Add(wxT("Parsing at the moment..."));
+        items.Add(_("Parsing at the moment") + "...");
         return wxSCI_INVALID_POSITION;
     }
 

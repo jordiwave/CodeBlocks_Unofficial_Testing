@@ -12,8 +12,9 @@
 
 #include <wx/wx.h>
 #include <string.h>
+#include "wx/dlimpexp.h"
 
-class MatrixObject
+class WXEXPORT MatrixObject
 {
 public:
     MatrixObject();

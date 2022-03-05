@@ -50,7 +50,9 @@ scriptdir = $(pkgdatadir)/templates/wizard
 
 dist_script_DATA = \
 			common_functions.script \
-			config.script
+			config.script \
+			manifest.xml \
+			base_wiz.xcf
 
 EXTRA_DIST = \
 			manifest.xml

@@ -14,6 +14,7 @@
 //#include "wx/wxledpaneldef.h"
 #include <wx/wx.h>
 #include <wx/animate.h>
+#include "wx/dlimpexp.h"
 
 enum wxLEDColour
 {
@@ -26,7 +27,7 @@ enum wxLEDColour
     wxLED_COLOUR_GREY = 7
 };
 
-class wxLEDPanel : public wxControl
+class WXEXPORT wxLEDPanel : public wxControl
 {
 public:
     // Ctor

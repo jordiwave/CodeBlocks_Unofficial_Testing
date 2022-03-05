@@ -3,7 +3,8 @@ pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/arduino
 dist_pkgdata_DATA = \
 			logo.png \
 			wizard.png \
-			wizard.script
+			wizard.script \
+			wizard.xrc
 
 filesdir = $(pkgdatadir)/files
 
@@ -11,7 +12,7 @@ dist_files_DATA = \
 			files/sketch.cpp
 
 coresdir = \
-			filesdir)/cores
+			$(filesdir)/cores
 
 dist_cores_DATA = \
 			files/cores/CDC.cpp \
@@ -34,7 +35,7 @@ dist_cores_DATA = \
 			files/cores/WString.cpp
 
 librariesdir = \
-			filesdir)/cores
+			$(filesdir)/libraries
 
 dist_libraries_DATA = \
 			files/libraries/libraries.cpp

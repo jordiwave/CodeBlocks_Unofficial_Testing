@@ -26,9 +26,9 @@
 #define WXSLCDCLOCK_H
 
 #include "wxwidgets/wxswidget.h"
+#include "wx/dlimpexp.h"
 
-
-class wxsLCDClock : public wxsWidget
+class WXEXPORT wxsLCDClock : public wxsWidget
 {
 public:
     wxsLCDClock(wxsItemResData* Data);

@@ -26,8 +26,9 @@
 #define XH_KWXLINEAMETERHANDLER_H_INCLUDED
 
 #include <wx/xrc/xmlres.h>
+#include "wx/dlimpexp.h"
 
-class kwxLinearMeterHandler : public wxXmlResourceHandler
+class WXEXPORT kwxLinearMeterHandler : public wxXmlResourceHandler
 {
 public:
     // Constructor.

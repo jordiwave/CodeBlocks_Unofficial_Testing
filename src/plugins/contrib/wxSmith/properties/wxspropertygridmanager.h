@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12197 $
-* $Id: wxspropertygridmanager.h 12197 2020-08-11 08:14:14Z fuscated $
+* $Revision: 12722 $
+* $Id: wxspropertygridmanager.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/properties/wxspropertygridmanager.h $
 */
 
@@ -34,6 +34,7 @@
 #include <wx/propgrid/manager.h>
 
 #include <prep.h>
+#include <cbplugin.h>
 
 #define wxPGId wxPGProperty*
 
@@ -47,7 +48,7 @@ class wxsProperty;
  * This object is singleton and always one and not more than one should
  * be created at one time.
  */
-class wxsPropertyGridManager: public wxPropertyGridManager
+class PLUGIN_EXPORT wxsPropertyGridManager: public wxPropertyGridManager
 {
     DECLARE_CLASS(wxsPropertyGridManager)
 

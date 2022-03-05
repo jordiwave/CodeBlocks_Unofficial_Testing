@@ -26,8 +26,9 @@
 #define XH_KWXLCDDISPLAYHANDLER_H_INCLUDED
 
 #include <wx/xrc/xmlres.h>
+#include "wx/dlimpexp.h"
 
-class kwxLCDDisplayHandler : public wxXmlResourceHandler
+class WXEXPORT kwxLCDDisplayHandler : public wxXmlResourceHandler
 {
 public:
     // Constructor.

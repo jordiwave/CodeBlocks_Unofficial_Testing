@@ -26,8 +26,9 @@
 #define XH_KWXLINEAREGULATORHANDLER_H_INCLUDED
 
 #include <wx/xrc/xmlres.h>
+#include "wx/dlimpexp.h"
 
-class kwxLinearRegulatorHandler : public wxXmlResourceHandler
+class WXEXPORT kwxLinearRegulatorHandler : public wxXmlResourceHandler
 {
 public:
     // Constructor.

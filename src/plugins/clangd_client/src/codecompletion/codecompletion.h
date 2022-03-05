@@ -141,7 +141,49 @@ public:
     /** read CC's options, mostly happens the user change some setting and press APPLY */
     void RereadOptions(); // called by the configuration panel
 
+    /** Captures event cbEVT_COMPILER_STARTED & cbEVT_COMPILER_FINISHED*/
+    bool IsCompilerRunning()
+    {
+        return m_CompilerIsRunning;
+    }
+
+    // Find wxTopLevelWindow from the windows list
+    wxWindow* GetWxTopLevelWindow()
+    {
+        // travers the list of windows to get the top level window
+        wxWindowList::compatibility_iterator node = wxTopLevelWindows.GetFirst();
+        while (node)
+        {
+            wxWindow*pwin = node->GetData();
+            if (node->GetNext() == nullptr)
+                return pwin;
+            node = node->GetNext();
+        }
+        return nullptr;
+    }
+
+    // Find top parent of a window
+    wxWindow* GetTopParent(wxWindow* pWindow)
+    {
+        wxWindow* pWin = pWindow;
+        while(pWin->GetParent())
+            pWin = pWin->GetParent();
+        return pWin;
+    }
+
+    // get top window to use as cbMessage parent, else MessageBoxes hide behind dialogs
+    wxWindow* GetTopWxWindow()
+    {
+        wxWindow* appWindow = Manager::Get()->GetAppWindow();
+        wxWindow* topWindow =GetWxTopLevelWindow();
+        if (not topWindow)
+            topWindow = appWindow;
+        return topWindow;
+    }
+
 private:
+    void OnActivated(wxActivateEvent& event); //on Window activated
+
     /** update CC's ToolBar, the user may disable the first wxChoice, so we need to recreate the
      * wxChoice and measure the best fit size
      */
@@ -206,8 +248,10 @@ private:
     void OnEditorOpen(CodeBlocksEvent& event);
     void OnEditorActivated(CodeBlocksEvent& event);
     void OnEditorClosed(CodeBlocksEvent& event);
-    void OnDebuggerStarting(CodeBlocksEvent& event);                  //(ph 2021/05/11)
-    void OnDebuggerFinished(CodeBlocksEvent& event);                 //(ph 2021/05/11)
+    void OnDebuggerStarting(CodeBlocksEvent& event);
+    void OnDebuggerFinished(CodeBlocksEvent& event);
+    void OnCompilerStarted(CodeBlocksEvent& event);
+    void OnCompilerFinished(CodeBlocksEvent& event);
 
     /** CC's own logger, to handle log events sent from other worker threads or itself(the main GUI
      * thread), the log messages will be printed in the "Code::Blocks" log panel.
@@ -297,7 +341,8 @@ private:
     void OnToolbarTimer(wxCommandEvent& event);
 
     /** delayed running of editor activated event, only the last activated editor should be considered */
-    void OnEditorActivatedTimer(wxTimerEvent& event);
+    //-void OnEditorActivatedTimer(wxTimerEvent& event);
+    void OnEditorActivatedCallback(wxCommandEvent& event);
 
     /** Indicates CC's initialization is done */
     bool                    m_InitDone;
@@ -502,6 +547,11 @@ private:
     bool m_PluginNeedsAppRestart = false;
     int  m_HoverLastPosition = 0;
     bool m_HoverIsActive = false;
+    bool m_CompilerIsRunning = false;
+
+    cbProject* m_PrevProject = nullptr;
+    cbProject* m_CurrProject = nullptr;
+
     FileUtils fileUtils;
 
     // project pointers and their associated LSP client pointers
@@ -520,6 +570,20 @@ private:
 
     ProcessLanguageClient* m_pLSP_ClientForDebugging =  nullptr;
 
+    // ----------------------------------------------------------------
+    ProcessLanguageClient* GetLSPclientAllocated(cbProject* pProject)
+    // ----------------------------------------------------------------
+    {
+        ProcessLanguageClient* pClient =  nullptr;
+        if (not pProject) return nullptr;
+
+        if (m_LSP_Clients.count(pProject))
+            pClient =  m_LSP_Clients[pProject];
+        if (pClient)
+            return pClient;
+
+        return nullptr;
+    }
     // ----------------------------------------------------------------
     ProcessLanguageClient* GetLSPclient(cbProject* pProject)
     // ----------------------------------------------------------------
@@ -589,18 +653,19 @@ private:
     void OnLSP_SemanticTokenResponse(wxCommandEvent& event);                  //(ph 2021/03/16)
 
     wxString GetLineTextFromFile(const wxString& file, const int lineNum); //(ph 2020/10/26)
-    bool DoLockClangd_CacheAccess(cbProject* pcbProject, bool release = false);      //(ph 2021/02/3)
+    bool DoLockClangd_CacheAccess(cbProject* pcbProject);
     bool DoUnlockClangd_CacheAccess(cbProject* pcbProject);    //(ph 2021/03/13)
     void ShutdownLSPclient(cbProject* pProject);
     void CleanUpLSPLogs();
     void CleanOutClangdTempFiles();
     IdleCallbackHandler* GetIdleCallbackHandler(cbProject* pProjectParm = nullptr)
     {
-        cbProject* pProject = pProjectParm;
-        if (not pProject)
-            pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
-        Parser* pParser = (Parser*)GetParseManager()->GetParserByProject(pProject);
-        return pParser->GetIdleCallbackHandler();
+        //-cbProject* pProject = pProjectParm;
+        //-if (not pProject)
+        //-    pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+        //-Parser* pParser = (Parser*)GetParseManager()->GetParserByProject(pProject);
+        cbAssert(GetParseManager()->GetIdleCallbackHandler());
+        return GetParseManager()->GetIdleCallbackHandler();
     }
     // ------------------------------------------------------------------------
     //LSP callbacks             (ph 2020/11/11)

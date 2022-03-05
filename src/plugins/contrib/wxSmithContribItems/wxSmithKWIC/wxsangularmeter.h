@@ -26,9 +26,9 @@
 #define WXSANGULARMETER_H
 
 #include "wxwidgets/wxswidget.h"
+#include "wx/dlimpexp.h"
 
-
-class wxsAngularMeter : public wxsWidget
+class WXEXPORT wxsAngularMeter : public wxsWidget
 {
 public:
     wxsAngularMeter(wxsItemResData* Data);

@@ -201,6 +201,8 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
     DoIncludesOptions(proj);
     DoLibsOptions(proj);
     DoExtraCommands(proj);
+    DoExtraCommandsClean(proj);
+    DoExtraCommandsInstall(proj);
     DoUnits(proj);
 
     // if targets still use the "build with all" flag,
@@ -258,78 +260,80 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
 //        wxString minor = version->Attribute("minor");
     }
 
-    int compilerIdx = CompilerFactory::GetCompilerIndex(CompilerFactory::GetDefaultCompilerID());
-    if (m_pProject)
-        compilerIdx = CompilerFactory::GetCompilerIndex(m_pProject->GetCompilerID());
+    if (m_pProject && !(Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/ignore_invalid_targets"), true)))
+    {
+        bool allCompilersDetected = true;
+        bool compilerDetected = true;
 
-    bool detected = (compilerIdx != -1);
-    if (compilerIdx != -1)
-    {
-        detected = CompilerFactory::GetCompiler(compilerIdx)->AutoDetectInstallationDir() == adrDetected;
-    }
-    if ((m_pProject && compilerIdx == -1) || (!detected))
-    {
-        // unknown user compiler
-        // similar code can be found @ OnTreeSelectionChange()
-        // see there for more info : duplicate code now, since here we still need
-        // to fill in the compiler list for the choice control, where in
-        // OnTreeSelectionChange we just need to set an entry
-        // TODO : make 1 help method out of this, with some argument indicating
-        // to fill the choice list, or break it in 2 methods with the list filling in between them
-        // or maybe time will bring even brighter ideas
-        wxString compilerId = _("Unknown");
-        if (m_pProject)
+        // First check project global compiler is valid
+        wxString compilerID = m_pProject->GetCompilerID();
+        int compilerIdx = CompilerFactory::GetCompilerIndex(compilerID );
+        if (compilerIdx != -1)
         {
-            compilerId = m_pProject->GetCompilerID();
+            compilerDetected = (CompilerFactory::GetCompiler(compilerIdx)->AutoDetectInstallationDir() == adrDetected);
+            allCompilersDetected =  allCompilersDetected && compilerDetected;
+            if (!compilerDetected)
+                pMsg->LogError(wxString::Format(_("Project global compiler \"%s\" has not been found!"), compilerID));
+        }
+
+        // Second check all targets
+        ProjectBuildTarget* prjBuildTarget;
+        wxArrayString virtuals = m_pProject->GetVirtualBuildTargets();
+        const size_t countVBT = virtuals.GetCount();
+        if (countVBT)
+        {
+            for (size_t iVBT = 0; iVBT < countVBT; ++iVBT)
+            {
+                const wxArrayString virtTagGroup = m_pProject->GetVirtualBuildTargetGroup(virtuals[iVBT]);
+                for (size_t j = 0; j < virtTagGroup.GetCount(); ++j)
+                {
+                    prjBuildTarget = m_pProject->GetBuildTarget(virtTagGroup[j]);
+                    if (prjBuildTarget)
+                    {
+                        compilerID = prjBuildTarget->GetCompilerID();
+                        compilerIdx = CompilerFactory::GetCompilerIndex(compilerID );
+                        if (compilerIdx != -1)
+                        {
+                            compilerDetected = (CompilerFactory::GetCompiler(compilerIdx)->AutoDetectInstallationDir() == adrDetected);
+                            allCompilersDetected =  allCompilersDetected && compilerDetected;
+                            if (!compilerDetected)
+                                pMsg->LogError(wxString::Format(_("Build target \"%s\"  compiler \"%s\" has not been found!"), prjBuildTarget->GetTitle(), compilerID));
+                        }
+                    }
+                }
+            }
         }
         else
         {
-            int compilerDefId = CompilerFactory::GetCompilerIndex(CompilerFactory::GetDefaultCompiler());
-            Compiler* compilerDefault = CompilerFactory::GetCompiler(compilerDefId);
-            if (compilerDefault)
+            const int countBTC = m_pProject->GetBuildTargetsCount();
+            for (int iBuildTarget = 0; iBuildTarget < countBTC; ++iBuildTarget)
             {
-                compilerId =  compilerDefault->GetName();
-            }
-        }
-
-        wxString msg;
-        msg.Printf(_("The defined compiler cannot be located (ID: %s).\n"
-                     "Please choose the compiler you want to use instead and click \"OK\".\n"
-                     "If you click \"Cancel\", the project/target will remain configured for\n"
-                     "that compiler and consequently can not be configured and will not be built."),
-                   compilerId);
-
-        Compiler* comp = CompilerFactory::SelectCompilerUI(msg);
-
-        if (comp)
-        {
-            wxString newCompilerId = comp->GetID();
-
-            if (!newCompilerId.IsEmpty() && !newCompilerId.IsSameAs(compilerId))
-            {
-                // a new compiler was chosen
-                pMsg->DebugLog(wxString::Format(_T("Set project compiler to %s"), newCompilerId));
-                m_pProject->SetCompilerID(newCompilerId);
-                wxString msg;
-                msg.Printf( "You have changed the compiler used for the project to %s.\n"
-                            "Do you want to use the same compiler for all the project's build targets too?",
-                            newCompilerId);
-                int ret = cbMessageBox( msg,
-                                        "Question",
-                                        wxICON_QUESTION | wxYES_NO);
-                if (ret == wxID_YES)
+                ProjectBuildTarget* prjBuildTarget = m_pProject->GetBuildTarget(iBuildTarget);
+                if (prjBuildTarget)
                 {
-                    pMsg->DebugLog(wxString::Format(_("Set project target(s) compiler to %s"), newCompilerId));
-                    for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
+                    compilerID = prjBuildTarget->GetCompilerID();
+                    compilerIdx = CompilerFactory::GetCompilerIndex(compilerID );
+                    if (compilerIdx != -1)
                     {
-                        ProjectBuildTarget* target = m_pProject->GetBuildTarget(i);
-                        if (target)
-                            target->SetCompilerID(newCompilerId);
+                        compilerDetected = (CompilerFactory::GetCompiler(compilerIdx)->AutoDetectInstallationDir() == adrDetected);
+                        allCompilersDetected =  allCompilersDetected && compilerDetected;
+                        if (!compilerDetected)
+                            pMsg->LogError(wxString::Format(_("Build target \"%s\"  compiler \"%s\" has not been found!"), prjBuildTarget->GetTitle(), compilerID));
                     }
                 }
-                m_pProject->SetModified(true);
-                m_OpenDirty = true;
             }
+        }
+        if (!allCompilersDetected)
+        {
+            wxString msg(   "At least one of the compiler(s) defined in the project file cannot be located.\n"
+                            "You will need to manually fix the project compiler usage before you can build the project.\n");
+
+            AnnoyingDialog dlg( msg,
+                                "ERROR - Compiler(s) not found",
+                                wxART_ERROR,
+                                AnnoyingDialog::OK
+                              );
+            dlg.ShowModal();
         }
     }
 
@@ -593,6 +597,8 @@ void ProjectLoader::DoBuildTarget(TiXmlElement* parentNode)
             DoIncludesOptions(node, target);
             DoLibsOptions(node, target);
             DoExtraCommands(node, target);
+            DoExtraCommandsClean(node, target);
+            DoExtraCommandsInstall(node, target);
             DoEnvironment(node, target);
         }
 
@@ -936,10 +942,10 @@ void ProjectLoader::DoLibsOptions(TiXmlElement* parentNode, ProjectBuildTarget* 
 
 void ProjectLoader::DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget* target)
 {
+    CompileOptionsBase* base = target ? target : (CompileOptionsBase*)m_pProject;
     TiXmlElement* node = parentNode->FirstChildElement("ExtraCommands");
     while (node)
     {
-        CompileOptionsBase* base = target ? target : (CompileOptionsBase*)m_pProject;
         TiXmlElement* child = node->FirstChildElement("Mode");
         while (child)
         {
@@ -969,6 +975,67 @@ void ProjectLoader::DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget
             child = child->NextSiblingElement("Add");
         }
         node = node->NextSiblingElement("ExtraCommands");
+    }
+}
+
+void ProjectLoader::DoExtraCommandsClean(TiXmlElement* parentNode, ProjectBuildTarget* target)
+{
+    CompileOptionsBase* base = target ? target : (CompileOptionsBase*)m_pProject;
+    TiXmlElement* node = parentNode->FirstChildElement("CleanExtraCommands");
+    while (node)
+    {
+        TiXmlElement* child = node->FirstChildElement("Mode");
+        while (child)
+        {
+            wxString mode = cbC2U(child->Attribute("after"));
+            if (mode == _T("always"))
+                base->SetAlwaysRunPostCleanSteps(true);
+
+            child = child->NextSiblingElement("Mode");
+        }
+
+        child = node->FirstChildElement("Add");
+        while (child)
+        {
+            wxString before;
+            wxString after;
+
+            if (child->Attribute("before"))
+                before = cbC2U(child->Attribute("before"));
+            if (child->Attribute("after"))
+                after = cbC2U(child->Attribute("after"));
+
+            if (!before.IsEmpty())
+                base->AddCommandsBeforeClean(before);
+            if (!after.IsEmpty())
+                base->AddCommandsAfterClean(after);
+
+            child = child->NextSiblingElement("Add");
+        }
+        node = node->NextSiblingElement("CleanExtraCommands");
+    }
+}
+
+void ProjectLoader::DoExtraCommandsInstall(TiXmlElement* parentNode, ProjectBuildTarget* target)
+{
+    CompileOptionsBase* base = target ? target : (CompileOptionsBase*)m_pProject;
+    TiXmlElement* node = parentNode->FirstChildElement("InstallExtraCommands");
+    while (node)
+    {
+        TiXmlElement* child = node->FirstChildElement("Add");
+        while (child)
+        {
+            wxString step;
+
+            if (child->Attribute("step"))
+                step = cbC2U(child->Attribute("step"));
+
+            if (!step.IsEmpty())
+                base->AddCommandsInstall(step);
+
+            child = child->NextSiblingElement("Add");
+        }
+        node = node->NextSiblingElement("InstallExtraCommands");
     }
 }
 
@@ -1562,6 +1629,22 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
                 AddElement(node, "Mode", "after", wxString(_T("always")));
         }
 
+        node = AddElement(tgtnode, "CleanExtraCommands");
+        AddArrayOfElements(node, "Add", "before", target->GetCommandsBeforeClean());
+        AddArrayOfElements(node, "Add", "after",  target->GetCommandsAfterClean());
+        if (node->NoChildren())
+            tgtnode->RemoveChild(node);
+        else
+        {
+            if (target->GetAlwaysRunPostCleanSteps())
+                AddElement(node, "Mode", "after", wxString(_T("always")));
+        }
+
+        node = AddElement(tgtnode, "InstallExtraCommands");
+        AddArrayOfElements(node, "Add", "step", target->GetCommandsInstall());
+        if (node->NoChildren())
+            tgtnode->RemoveChild(node);
+
         SaveEnvironment(tgtnode, target);
 
         if (target->MakeCommandsModified())
@@ -1626,6 +1709,22 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         if (m_pProject->GetAlwaysRunPostBuildSteps())
             AddElement(node, "Mode", "after", wxString(_T("always")));
     }
+
+    node = AddElement(prjnode, "CleanExtraCommands");
+    AddArrayOfElements(node, "Add", "before", m_pProject->GetCommandsBeforeClean());
+    AddArrayOfElements(node, "Add", "after",  m_pProject->GetCommandsAfterClean());
+    if (node->NoChildren())
+        prjnode->RemoveChild(node);
+    else
+    {
+        if (m_pProject->GetAlwaysRunPostCleanSteps())
+            AddElement(node, "Mode", "after", wxString(_T("always")));
+    }
+
+    node = AddElement(prjnode, "InstallExtraCommands");
+    AddArrayOfElements(node, "Add", "sterp", m_pProject->GetCommandsInstall());
+    if (node->NoChildren())
+        prjnode->RemoveChild(node);
 
     std::vector<wxString> filesThrougGlobs;
     const std::vector<cbProject::Glob>& unitGlobs = m_pProject->GetGlobs();

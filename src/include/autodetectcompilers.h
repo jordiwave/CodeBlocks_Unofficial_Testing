@@ -25,10 +25,11 @@ public:
     void OnUdateCompilerListUI(wxCommandEvent& event);
     void OnMouseMotion(wxMouseEvent& event);
     void OnUpdateUI(wxUpdateUIEvent& event);
+
 private:
     DECLARE_EVENT_TABLE()
     void UpdateCompilerDisplayList();
-private:
+
     enum CompilerHighlightColor
     {
         colorHighlightNone = 0,
@@ -56,6 +57,5 @@ private:
 
     std::vector<CompilerItem> m_CompilerList;
 };
-
 
 #endif // AUTODETECTCOMPILERS_H

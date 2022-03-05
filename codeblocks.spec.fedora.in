@@ -167,9 +167,8 @@ fi
 
 
 %files
-%license COPYING
-%doc README AUTHORS BUGS COMPILERS NEWS ChangeLog
-
+%license Readme_License_GPL3.TXT
+%doc Readme_Build_Debian_deb_packages.txt Readme_Build_Linux_by_Makefile.txt Readme_Build_Linux_by_Workspace.txt Readme_Build_Windows_by_Workspace.txt Readme_Build_Windows_MSYS2_by_Makefile.txt Readme_License_GPL3.TXT Readme_Release_Checklist.txt
 %{_bindir}/*
 %{_mandir}/man1/codeblocks.*.gz
 %{_mandir}/man1/cb_console_runner.*.gz

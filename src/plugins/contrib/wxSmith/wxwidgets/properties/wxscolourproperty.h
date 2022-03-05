@@ -15,13 +15,15 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12197 $
-* $Id: wxscolourproperty.h 12197 2020-08-11 08:14:14Z fuscated $
+* $Revision: 12722 $
+* $Id: wxscolourproperty.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/properties/wxscolourproperty.h $
 */
 
 #ifndef WXSCOLOURPROPERTY_H
 #define WXSCOLOURPROPERTY_H
+
+#include <cbplugin.h>
 
 #include "../../properties/wxsproperties.h"
 #include "../wxscodercontext.h"
@@ -33,7 +35,7 @@
 #define wxsCOLOUR_DEFAULT   (wxPG_COLOUR_CUSTOM - 1)
 
 /** \brief Class handling colour data for wxSmith */
-class wxsColourData: public wxColourPropertyValue
+class PLUGIN_EXPORT wxsColourData: public wxColourPropertyValue
 {
 public:
 
@@ -58,7 +60,7 @@ public:
  *  This property uses wxColourPropertyValue to keep data
  *
  */
-class wxsColourProperty: public wxsProperty
+class PLUGIN_EXPORT wxsColourProperty: public wxsProperty
 {
 public:
 

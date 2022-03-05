@@ -21,12 +21,13 @@
 #include <cbplugin.h>
 #include "searchresultslog.h"
 
-#include "LSP_symbolsparser.h" //(ph 2021/07/27)
+#include "LSP_symbolsparser.h"          //(ph 2021/07/27)
 #include "parser_base.h"
-#include "../IdleCallbackHandler.h"    //(ph 2021/09/25)
+#include "../parsemanager.h"            //(ph 2022/02/14)
+#include "../IdleCallbackHandler.h"     //(ph 2021/09/25)
 
 #if defined(_WIN32)
-#include "winprocess/misc/fileutils.h"                 //(ph 2021/12/21)
+#include "winprocess/misc/fileutils.h"  //(ph 2021/12/21)
 #else
 #include "fileutils.h"                 //(ph 2021/12/21)
 #endif //_WIN32
@@ -210,6 +211,12 @@ public:
     {
         return m_pParseManager;   //(ph 2021/08/20)
     }
+    IdleCallbackHandler* GetIdleCallbackHandler()               //(ph 2022/02/14)
+    {
+        cbAssert(GetParseManager()->GetIdleCallbackHandler());
+        return GetParseManager()->GetIdleCallbackHandler();
+    }
+
     //(ph 2021/10/23)
     void OnLSP_ReferencesResponse(wxCommandEvent& event);
     void OnLSP_DeclDefResponse(wxCommandEvent& event);
@@ -278,8 +285,6 @@ private:
     int  m_cfg_parallel_processes;
     std::set<wxString> m_FilesParsed; // files parsed by clangd parser      //(ph 2021/10/14)
 
-    // Idle callback Handler pointer
-    std::unique_ptr<IdleCallbackHandler> pIdleCallbacks;
     //(ph 2021/10/23)
     wxArrayString* m_pReferenceValues = nullptr;
     int reportedBadFileReference = 0;
@@ -343,18 +348,19 @@ public:
     }
     bool PauseParsingForReason(wxString reason, bool increment)
     {
+        wxString the_project = m_Project->GetTitle();
         wxString the_reason = reason.MakeLower();
         if (PauseParsingExists(the_reason) and increment)
         {
             ++m_PauseParsingMap[the_reason];
-            wxString reasonMsg = wxString::Format("Pausing parser for reason %s(%d)", reason, m_PauseParsingMap[the_reason]);
+            wxString reasonMsg = wxString::Format("Pausing parser(%s) for reason %s(%d)", the_project, reason, m_PauseParsingMap[the_reason]);
             CCLogger::Get()->DebugLog(reasonMsg);
             return true;
         }
         else  if (increment) //doesnt exist and increment, creat it
         {
             m_PauseParsingMap[the_reason] = 1;
-            CCLogger::Get()->DebugLog("Pausing parser for " + reason);
+            CCLogger::Get()->DebugLog(wxString::Format("Pausing parser(%s) for %s", the_project, reason));
             return true;
         }
         else if (not PauseParsingExists(the_reason) and (increment==false))
@@ -370,7 +376,7 @@ public:
         {
             // decrement the pause reason
             --m_PauseParsingMap[the_reason];
-            wxString reasonMsg = wxString::Format("Un-pausing parser for reason %s(%d)", reason, m_PauseParsingMap[the_reason]);
+            wxString reasonMsg = wxString::Format("Un-pausing parser(%s) for reason %s(%d)", the_project, reason, m_PauseParsingMap[the_reason]);
             CCLogger::Get()->DebugLog(reasonMsg);
             if (m_PauseParsingMap[the_reason] < 0)
             {
@@ -392,12 +398,6 @@ public:
         return m_LogFileBase;
     }
 
-    //(ph 2021/10/23)
-    // Get pointer to Idle callbacks
-    IdleCallbackHandler* GetIdleCallbackHandler()
-    {
-        return pIdleCallbacks.get();
-    }
     wxString GetLineTextFromFile(const wxString& file, const int lineNum); //(ph 2020/10/26)
     bool FindDuplicateEntry(wxArrayString* pArray, wxString fullPath, wxString& lineNum, wxString& text); //(ph 2021/02/1)
 

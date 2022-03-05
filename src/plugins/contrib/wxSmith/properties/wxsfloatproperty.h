@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 8148 $
-* $Id: wxsfloatproperty.h 8148 2012-07-19 19:50:28Z mortenmacfly $
+* $Revision: 12722 $
+* $Id: wxsfloatproperty.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/properties/wxsfloatproperty.h $
 */
 
@@ -25,8 +25,10 @@
 
 #include "wxsproperty.h"
 
+#include <cbplugin.h>
+
 /** \brief Base float property */
-class wxsFloatProperty: public wxsProperty
+class PLUGIN_EXPORT wxsFloatProperty: public wxsProperty
 {
 public:
 

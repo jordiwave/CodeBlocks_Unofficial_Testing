@@ -26,8 +26,9 @@
 #define XH_KWXANGULAREGULATORHANDLER_H_INCLUDED
 
 #include <wx/xrc/xmlres.h>
+#include "wx/dlimpexp.h"
 
-class kwxAngularRegulatorHandler : public wxXmlResourceHandler
+class WXEXPORT kwxAngularRegulatorHandler : public wxXmlResourceHandler
 {
 public:
     // Constructor.

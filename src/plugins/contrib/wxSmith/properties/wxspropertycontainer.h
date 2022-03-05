@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 8704 $
-* $Id: wxspropertycontainer.h 8704 2012-12-23 20:32:03Z mortenmacfly $
+* $Revision: 12722 $
+* $Id: wxspropertycontainer.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/properties/wxspropertycontainer.h $
 */
 
@@ -27,6 +27,7 @@
 #include "wxsquickpropspanel.h"
 
 #include <prep.h>
+#include <cbplugin.h>
 
 class wxsPropertyGridManager;
 
@@ -35,7 +36,7 @@ class wxsPropertyGridManager;
  * This class is responsible for operating on properties.
  * It also creates property window.
  */
-class wxsPropertyContainer
+class PLUGIN_EXPORT wxsPropertyContainer
 {
 public:
 

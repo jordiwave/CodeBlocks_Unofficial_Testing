@@ -53,9 +53,6 @@
 				<Compiler>
 					<Add directory="wxImagePanel/include" />
 				</Compiler>
-				<Linker>
-					<Add option="-Wl,--export-all-symbols" />
-				</Linker>
 			</Target>
 			<Target title="wxSpeedButton">
 				<Option platforms="Windows;" />
@@ -64,9 +61,6 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
-				<Linker>
-					<Add option="-Wl,--export-all-symbols" />
-				</Linker>
 			</Target>
 			<Target title="wxKWIC">
 				<Option platforms="Windows;" />
@@ -78,9 +72,6 @@
 				<Compiler>
 					<Add directory="KWIC/include" />
 				</Compiler>
-				<Linker>
-					<Add option="-Wl,--export-all-symbols" />
-				</Linker>
 			</Target>
 			<Target title="wxLED">
 				<Option platforms="Windows;" />
@@ -90,14 +81,12 @@
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
 				<Compiler>
+					<Add option="-DWXMAKINGDLL_GIZMOS" />
 					<Add directory="wxled/ledpanel/include" />
 					<Add directory="wxled/lcdWindow/include" />
 					<Add directory="wxled/led/include" />
 					<Add directory="wxled/gizmosled/include" />
 				</Compiler>
-				<Linker>
-					<Add option="-Wl,--export-all-symbols" />
-				</Linker>
 			</Target>
 			<Target title="wxMathPlot">
 				<Option platforms="Windows;" />
@@ -107,11 +96,9 @@
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
 				<Compiler>
+					<Add option="-Dmathplot_EXPORTS" />
 					<Add directory="wxmathplot" />
 				</Compiler>
-				<Linker>
-					<Add option="-Wl,--export-all-symbols" />
-				</Linker>
 			</Target>
 		</Build>
 		<VirtualTargets>
@@ -123,12 +110,14 @@
 			<Add option="-mthreads" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
+			<Add option="-DDLL_EXPORT" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
 			<Add option="-DWXMAKINGDLL" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add directory="$(#CB_BUILD)/include" />
 			<Add directory="$(#WXWIDGETS.include)" />
 			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
 		</Compiler>

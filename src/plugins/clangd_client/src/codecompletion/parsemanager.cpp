@@ -47,6 +47,8 @@
 #include "classbrowser.h"
 #include "parser/parser.h"
 #include "parser/profiletimer.h"
+#include "IdleCallbackHandler.h"    //(ph 2021/09/25)//(ph 2022/02/14)
+
 
 #define CC_ParseManager_DEBUG_OUTPUT 0
 //#define CC_ParseManager_DEBUG_OUTPUT 1      //(ph 2021/05/1)
@@ -222,6 +224,10 @@ ParseManager::ParseManager( LSPEventCallbackHandler* pLSPEventSinkHandler ) :
 
     m_pLSPEventSinkHandler = pLSPEventSinkHandler; //(ph 2021/10/23)
 
+    // create Idle time CallbackHandler     //(ph 2021/09/27)
+    IdleCallbackHandler* pIdleCallBackHandler = new IdleCallbackHandler();
+    pIdleCallbacks.reset( pIdleCallBackHandler );
+
 }
 // ----------------------------------------------------------------------------
 ParseManager::~ParseManager()
@@ -230,6 +236,13 @@ ParseManager::~ParseManager()
 ////    Disconnect(ParserCommon::idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(ParseManager::OnParserStart));
 ////    Disconnect(ParserCommon::idParserEnd,   wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(ParseManager::OnParserEnd));
 ////    Disconnect(idTimerParsingOneByOne,      wxEVT_TIMER,                 wxTimerEventHandler(ParseManager::OnParsingOneByOneTimer));
+
+    // clear any Idle time callbacks
+    if (GetIdleCallbackHandler())
+    {
+        GetIdleCallbackHandler()->ClearIdleCallbacks() ;
+    }
+
     RemoveClassBrowser();
     ClearParsers();
     Delete(m_TempParser);
@@ -852,8 +865,10 @@ void ParseManager::RereadParserOptions()
             || opts.parseComplexMacros          != m_Parser->Options().parseComplexMacros
             || opts.logClangdClientCheck        != m_Parser->Options().logClangdClientCheck
             || opts.logClangdServerCheck        != m_Parser->Options().logClangdServerCheck
-            || opts.LLVM_ClangDaemonMasterPath  != m_Parser->Options().LLVM_ClangDaemonMasterPath
-            || opts.LLVM_ClangMasterPath        != m_Parser->Options().LLVM_ClangMasterPath
+            || opts.LLVM_MasterPath                     != m_Parser->Options().LLVM_MasterPath
+            || opts.LLVM_DetectedClangExeFileName       != m_Parser->Options().LLVM_DetectedClangExeFileName
+            || opts.LLVM_DetectedClangDaemonExeFileName != m_Parser->Options().LLVM_DetectedClangDaemonExeFileName
+            || opts.LLVM_DetectedIncludeClangDirectory  != m_Parser->Options().LLVM_DetectedIncludeClangDirectory
             || m_ParserPerWorkspace             != parserPerWorkspace ) //always false for clangd
     {
         // important options changed... flag for reparsing

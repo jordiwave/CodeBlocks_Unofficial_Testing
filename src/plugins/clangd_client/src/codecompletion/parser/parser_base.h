@@ -135,8 +135,12 @@ struct ParserOptions
         platformCheck(true),
         logClangdClientCheck(false),
         logClangdServerCheck(false),
-        LLVM_ClangDaemonMasterPath(""),
-        LLVM_ClangMasterPath(""),
+        lspMsgsFocusOnSaveCheck(false),
+        lspMsgsClearOnSaveCheck(false),
+        LLVM_MasterPath(""),
+        LLVM_DetectedClangExeFileName(""),
+        LLVM_DetectedClangDaemonExeFileName(""),
+        LLVM_DetectedIncludeClangDirectory(""),
         storeDocumentation(true)
     {}
 
@@ -150,8 +154,14 @@ struct ParserOptions
     bool platformCheck;        /// this will check for the platform of the project/target when adding include folders to the parser
     bool logClangdClientCheck; /// this will check for user enabled clangd client logging
     bool logClangdServerCheck; /// this will check for user enabled clangd server logging
-    wxString LLVM_ClangDaemonMasterPath;/// Path to LLVM install directory for Clangd execytable
-    wxString LLVM_ClangMasterPath;      /// Path to LLVM install directory for clang executable
+    bool lspMsgsFocusOnSaveCheck; /// this will check for user enabled Focus LSP messages tab on save text
+    bool lspMsgsClearOnSaveCheck; /// this will check for user enabled LSP messages tab clear on save text
+
+    wxString LLVM_MasterPath;                       /// Path to LLVM install directory
+    wxString LLVM_DetectedClangExeFileName;         /// Filename of the clang executable to use
+    wxString LLVM_DetectedClangDaemonExeFileName;   /// Filename of the clang daemon executable to use
+    wxString LLVM_DetectedIncludeClangDirectory;        /// Path to LLVM resouce directory
+
     bool storeDocumentation;   /// should tokenizer detect and store doxygen documentation?
 
 };

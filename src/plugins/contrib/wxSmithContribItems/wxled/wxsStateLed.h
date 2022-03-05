@@ -2,9 +2,9 @@
 #define WXSSTATELED_H
 
 #include "wxswidget.h"
+#include "wx/dlimpexp.h"
 
-
-class wxsStateLed : public wxsWidget
+class WXEXPORT wxsStateLed : public wxsWidget
 {
 public:
     wxsStateLed(wxsItemResData* Data);

@@ -393,28 +393,17 @@ AC_CONFIG_FILES([Makefile
     src/Makefile
     src/base/Makefile
     src/base/tinyxml/Makefile
-    src/build_tools/Makefile
     src/build_tools/autorevision/Makefile
+    src/build_tools/Makefile
     src/include/autorevision.h
     src/include/Makefile
-    src/include/scripting/Makefile
     src/include/scripting/bindings/Makefile
     src/include/scripting/include/Makefile
+    src/include/scripting/Makefile
     src/include/tinyxml/Makefile
-    src/sdk/Makefile
-    src/sdk/scripting/Makefile
-    src/sdk/scripting/bindings/Makefile
-    src/sdk/scripting/squirrel/Makefile
-    src/sdk/scripting/sqstdlib/Makefile
-    src/sdk/wxscintilla/Makefile
-    src/sdk/resources/Makefile
-    src/sdk/resources/lexers/Makefile
-    src/src/resources/Makefile
-    src/src/resources/icons/Makefile
-    src/src/resources/images/Makefile
-    src/src/resources/images/settings/Makefile
-    src/src/Makefile
-    src/plugins/Makefile
+    src/mime/Makefile
+    src/plugins/abbreviations/Makefile
+    src/plugins/abbreviations/resources/Makefile
     src/plugins/astyle/Makefile
     src/plugins/astyle/resources/Makefile
     src/plugins/autosave/Makefile
@@ -424,27 +413,144 @@ AC_CONFIG_FILES([Makefile
     src/plugins/classwizard/resources/Makefile
     src/plugins/codecompletion/Makefile
     src/plugins/codecompletion/resources/Makefile
-    src/plugins/compilergcc/Makefile
     src/plugins/compilergcc/depslib/Makefile
     src/plugins/compilergcc/depslib/src/Makefile
+    src/plugins/compilergcc/Makefile
     src/plugins/compilergcc/resources/Makefile
+    src/plugins/contrib/appdata/Makefile
+    src/plugins/contrib/AutoVersioning/Makefile
+    src/plugins/contrib/BrowseTracker/Makefile
+    src/plugins/contrib/byogames/Makefile
+    src/plugins/contrib/cb_koders/Makefile
+    src/plugins/contrib/Cccc/Makefile
+    src/plugins/contrib/Cccc/resources/Makefile
+    src/plugins/contrib/codesnippets/Makefile
+    src/plugins/contrib/codesnippets/resources/Makefile
+    src/plugins/contrib/codestat/Makefile
+    src/plugins/contrib/codestat/resources/Makefile
+    src/plugins/contrib/copystrings/Makefile
+    src/plugins/contrib/CppCheck/Makefile
+    src/plugins/contrib/CppCheck/resources/Makefile
+    src/plugins/contrib/Cscope/Makefile
+    src/plugins/contrib/devpak_plugin/bzip2/Makefile
+    src/plugins/contrib/devpak_plugin/Makefile
+    src/plugins/contrib/DoxyBlocks/Makefile
+    src/plugins/contrib/dragscroll/Makefile
+    src/plugins/contrib/EditorConfig/Makefile
+    src/plugins/contrib/EditorTweaks/Makefile
+    src/plugins/contrib/envvars/Makefile
+    src/plugins/contrib/FileManager/Makefile
+    src/plugins/contrib/FortranProject/images/16x16/Makefile
+    src/plugins/contrib/FortranProject/images/20x20/Makefile
+    src/plugins/contrib/FortranProject/images/24x24/Makefile
+    src/plugins/contrib/FortranProject/images/28x28/Makefile
+    src/plugins/contrib/FortranProject/images/32x32/Makefile
+    src/plugins/contrib/FortranProject/images/40x40/Makefile
+    src/plugins/contrib/FortranProject/images/48x48/Makefile
+    src/plugins/contrib/FortranProject/images/56x56/Makefile
+    src/plugins/contrib/FortranProject/images/64x64/Makefile
+    src/plugins/contrib/FortranProject/images/fortranproject/16x16/Makefile
+    src/plugins/contrib/FortranProject/images/fortranproject/20x20/Makefile
+    src/plugins/contrib/FortranProject/images/fortranproject/24x24/Makefile
+    src/plugins/contrib/FortranProject/images/fortranproject/28x28/Makefile
+    src/plugins/contrib/FortranProject/images/fortranproject/32x32/Makefile
+    src/plugins/contrib/FortranProject/images/fortranproject/40x40/Makefile
+    src/plugins/contrib/FortranProject/images/fortranproject/48x48/Makefile
+    src/plugins/contrib/FortranProject/images/fortranproject/56x56/Makefile
+    src/plugins/contrib/FortranProject/images/fortranproject/64x64/Makefile
+    src/plugins/contrib/FortranProject/images/fortranproject/Makefile
+    src/plugins/contrib/FortranProject/images/Makefile
+    src/plugins/contrib/FortranProject/Makefile
+    src/plugins/contrib/headerfixup/Makefile
+    src/plugins/contrib/help_plugin/bzip2/Makefile
+    src/plugins/contrib/help_plugin/Makefile
+    src/plugins/contrib/help_plugin/zlib/Makefile
+    src/plugins/contrib/HexEditor/Makefile
+    src/plugins/contrib/IncrementalSearch/Makefile
+    src/plugins/contrib/keybinder/Makefile
+    src/plugins/contrib/lib_finder/lib_finder/Makefile
+    src/plugins/contrib/lib_finder/Makefile
+    src/plugins/contrib/Makefile
+    src/plugins/contrib/MouseSap/Makefile
+    src/plugins/contrib/NassiShneiderman/Makefile
+    src/plugins/contrib/profiler/Makefile
+    src/plugins/contrib/profiler/resources/Makefile
+    src/plugins/contrib/ProjectOptionsManipulator/Makefile
+    src/plugins/contrib/regex_testbed/Makefile
+    src/plugins/contrib/ReopenEditor/Makefile
+    src/plugins/contrib/rndgen/Makefile
+    src/plugins/contrib/SmartIndent/Makefile
+    src/plugins/contrib/source_exporter/Makefile
+    src/plugins/contrib/source_exporter/wxPdfDocument/Makefile
+    src/plugins/contrib/SpellChecker/Makefile
+    src/plugins/contrib/SpellChecker/wxspellchecker/Makefile
+    src/plugins/contrib/symtab/Makefile
+    src/plugins/contrib/symtab/resources/Makefile
+    src/plugins/contrib/ThreadSearch/Makefile
+    src/plugins/contrib/ToolsPlus/Makefile
+    src/plugins/contrib/ToolsPlus/Resources/Makefile
+    src/plugins/contrib/Valgrind/Makefile
+    src/plugins/contrib/Valgrind/resources/Makefile
+    src/plugins/contrib/wxContribItems/cb_wxchartctrl.pc
+    src/plugins/contrib/wxContribItems/cb_wxcontrib.pc
+    src/plugins/contrib/wxContribItems/cb_wxcustombutton.pc
+    src/plugins/contrib/wxContribItems/cb_wxflatnotebook.pc
+    src/plugins/contrib/wxContribItems/cb_wximagepanel.pc
+    src/plugins/contrib/wxContribItems/cb_wxKWIC.pc
+    src/plugins/contrib/wxContribItems/cb_wxled.pc
+    src/plugins/contrib/wxContribItems/cb_wxmathplot.pc
+    src/plugins/contrib/wxContribItems/cb_wxspeedbutton.pc
+    src/plugins/contrib/wxContribItems/KWIC/include/wx/KWIC/Makefile
+    src/plugins/contrib/wxContribItems/KWIC/include/wx/xrc/Makefile
+    src/plugins/contrib/wxContribItems/KWIC/Makefile
+    src/plugins/contrib/wxContribItems/Makefile
+    src/plugins/contrib/wxContribItems/wxchart/Makefile
+    src/plugins/contrib/wxContribItems/wxFlatNotebook/Makefile
+    src/plugins/contrib/wxContribItems/wxImagePanel/Makefile
+    src/plugins/contrib/wxContribItems/wxled/gizmosled/include/wx/gizmos/Makefile
+    src/plugins/contrib/wxContribItems/wxled/lcdWindow/include/wx/Makefile
+    src/plugins/contrib/wxContribItems/wxled/led/include/wx/Makefile
+    src/plugins/contrib/wxContribItems/wxled/led/include/xrc/Makefile
+    src/plugins/contrib/wxContribItems/wxled/ledpanel/include/wx/Makefile
+    src/plugins/contrib/wxContribItems/wxled/Makefile
+    src/plugins/contrib/wxContribItems/wxmathplot/Makefile
+    src/plugins/contrib/wxContribItems/wxsmith-contrib.pc
+    src/plugins/contrib/wxContribItems/wxSpeedButton/Makefile
+    src/plugins/contrib/wxContribItems/wxthings/Makefile
+    src/plugins/contrib/wxSmith/Makefile
+    src/plugins/contrib/wxSmith/plugin/Makefile
+    src/plugins/contrib/wxSmith/properties/Makefile
+    src/plugins/contrib/wxSmith/wxsmith.pc
+    src/plugins/contrib/wxSmith/wxwidgets/defitems/Makefile
+    src/plugins/contrib/wxSmith/wxwidgets/icons/Makefile
+    src/plugins/contrib/wxSmith/wxwidgets/Makefile
+    src/plugins/contrib/wxSmith/wxwidgets/properties/Makefile
+    src/plugins/contrib/wxSmithAui/Makefile
+    src/plugins/contrib/wxSmithAui/wxsmithaui.pc
+    src/plugins/contrib/wxSmithContribItems/Makefile
+    src/plugins/contrib/wxSmithDemo/Makefile
+    src/plugins/contrib/wxSmithIExplore/Makefile
+    src/plugins/contrib/wxSmithSTC/Makefile
     src/plugins/debuggergdb/Makefile
     src/plugins/debuggergdb/resources/Makefile
     src/plugins/defaultmimehandler/Makefile
     src/plugins/defaultmimehandler/resources/Makefile
     src/plugins/displayevents/Makefile
-    src/plugins/openfileslist/Makefile
+    src/plugins/headerguard/Makefile
+    src/plugins/loghacker/Makefile
+    src/plugins/Makefile
+    src/plugins/modpoller/Makefile
     src/plugins/occurrenceshighlighting/Makefile
     src/plugins/occurrenceshighlighting/resources/Makefile
+    src/plugins/openfileslist/Makefile
     src/plugins/projectsimporter/Makefile
     src/plugins/projectsimporter/resources/Makefile
     src/plugins/scriptedwizard/Makefile
-    src/plugins/scriptedwizard/resources/Makefile
     src/plugins/scriptedwizard/resources/arduino/Makefile
     src/plugins/scriptedwizard/resources/arm/Makefile
     src/plugins/scriptedwizard/resources/avr/Makefile
-    src/plugins/scriptedwizard/resources/c_file/Makefile
     src/plugins/scriptedwizard/resources/console/Makefile
+    src/plugins/scriptedwizard/resources/c_file/Makefile
     src/plugins/scriptedwizard/resources/d/Makefile
     src/plugins/scriptedwizard/resources/directx/Makefile
     src/plugins/scriptedwizard/resources/dll/Makefile
@@ -460,6 +566,7 @@ AC_CONFIG_FILES([Makefile
     src/plugins/scriptedwizard/resources/irrlicht/Makefile
     src/plugins/scriptedwizard/resources/java/Makefile
     src/plugins/scriptedwizard/resources/lf/Makefile
+    src/plugins/scriptedwizard/resources/Makefile
     src/plugins/scriptedwizard/resources/matlab_csf/Makefile
     src/plugins/scriptedwizard/resources/mcs51/Makefile
     src/plugins/scriptedwizard/resources/msp430/Makefile
@@ -482,114 +589,34 @@ AC_CONFIG_FILES([Makefile
     src/plugins/scriptedwizard/resources/tricore/Makefile
     src/plugins/scriptedwizard/resources/win32gui/Makefile
     src/plugins/scriptedwizard/resources/wxwidgets/Makefile
+    src/plugins/tidycmt/Makefile
     src/plugins/todo/Makefile
     src/plugins/todo/resources/Makefile
-    src/plugins/abbreviations/Makefile
-    src/plugins/abbreviations/resources/Makefile
     src/plugins/xpmanifest/Makefile
-    src/plugins/contrib/Makefile
-    src/plugins/contrib/appdata/Makefile
-    src/plugins/contrib/AutoVersioning/Makefile
-    src/plugins/contrib/BrowseTracker/Makefile
-    src/plugins/contrib/byogames/Makefile
-    src/plugins/contrib/Cccc/Makefile
-    src/plugins/contrib/Cccc/resources/Makefile
-    src/plugins/contrib/CppCheck/Makefile
-    src/plugins/contrib/CppCheck/resources/Makefile
-    src/plugins/contrib/cb_koders/Makefile
-    src/plugins/contrib/codesnippets/Makefile
-    src/plugins/contrib/codesnippets/resources/Makefile
-    src/plugins/contrib/codestat/Makefile
-    src/plugins/contrib/codestat/resources/Makefile
-    src/plugins/contrib/copystrings/Makefile
-    src/plugins/contrib/Cscope/Makefile
-    src/plugins/contrib/devpak_plugin/Makefile
-    src/plugins/contrib/devpak_plugin/bzip2/Makefile
-    src/plugins/contrib/DoxyBlocks/Makefile
-    src/plugins/contrib/dragscroll/Makefile
-    src/plugins/contrib/EditorConfig/Makefile
-    src/plugins/contrib/EditorTweaks/Makefile
-    src/plugins/contrib/envvars/Makefile
-    src/plugins/contrib/FileManager/Makefile
-    src/plugins/contrib/headerfixup/Makefile
-    src/plugins/contrib/help_plugin/Makefile
-    src/plugins/contrib/help_plugin/bzip2/Makefile
-    src/plugins/contrib/help_plugin/zlib/Makefile
-    src/plugins/contrib/keybinder/Makefile
-    src/plugins/contrib/NassiShneiderman/Makefile
-    src/plugins/contrib/profiler/Makefile
-    src/plugins/contrib/profiler/resources/Makefile
-    src/plugins/contrib/ProjectOptionsManipulator/Makefile
-    src/plugins/contrib/source_exporter/Makefile
-    src/plugins/contrib/source_exporter/wxPdfDocument/Makefile
-    src/plugins/contrib/SmartIndent/Makefile
-    src/plugins/contrib/SpellChecker/Makefile
-    src/plugins/contrib/SpellChecker/wxspellchecker/Makefile
-    src/plugins/contrib/symtab/Makefile
-    src/plugins/contrib/symtab/resources/Makefile
-    src/plugins/contrib/regex_testbed/Makefile
-    src/plugins/contrib/ReopenEditor/Makefile
-    src/plugins/contrib/rndgen/Makefile
-    src/plugins/contrib/ThreadSearch/Makefile
-    src/plugins/contrib/ToolsPlus/Makefile
-    src/plugins/contrib/ToolsPlus/Resources/Makefile
-    src/plugins/contrib/Valgrind/Makefile
-    src/plugins/contrib/Valgrind/resources/Makefile
-    src/plugins/contrib/wxContribItems/Makefile
-    src/plugins/contrib/wxContribItems/wxsmith-contrib.pc
-    src/plugins/contrib/wxContribItems/cb_wxcontrib.pc
-    src/plugins/contrib/wxContribItems/cb_wxchartctrl.pc
-    src/plugins/contrib/wxContribItems/cb_wxcustombutton.pc
-    src/plugins/contrib/wxContribItems/cb_wximagepanel.pc
-    src/plugins/contrib/wxContribItems/cb_wxflatnotebook.pc
-    src/plugins/contrib/wxContribItems/cb_wxspeedbutton.pc
-    src/plugins/contrib/wxContribItems/cb_wxKWIC.pc
-    src/plugins/contrib/wxContribItems/cb_wxled.pc
-    src/plugins/contrib/wxContribItems/cb_wxmathplot.pc
-    src/plugins/contrib/wxContribItems/wxchart/Makefile
-    src/plugins/contrib/wxContribItems/wxFlatNotebook/Makefile
-    src/plugins/contrib/wxContribItems/wxImagePanel/Makefile
-    src/plugins/contrib/wxContribItems/wxthings/Makefile
-    src/plugins/contrib/wxContribItems/wxSpeedButton/Makefile
-    src/plugins/contrib/wxContribItems/KWIC/Makefile
-    src/plugins/contrib/wxContribItems/KWIC/include/wx/KWIC/Makefile
-    src/plugins/contrib/wxContribItems/KWIC/include/wx/xrc/Makefile
-    src/plugins/contrib/wxContribItems/wxled/Makefile
-    src/plugins/contrib/wxContribItems/wxled/gizmosled/include/wx/gizmos/Makefile
-    src/plugins/contrib/wxContribItems/wxled/lcdWindow/include/wx/Makefile
-    src/plugins/contrib/wxContribItems/wxled/led/include/wx/Makefile
-    src/plugins/contrib/wxContribItems/wxled/led/include/xrc/Makefile
-    src/plugins/contrib/wxContribItems/wxled/ledpanel/include/wx/Makefile
-    src/plugins/contrib/wxContribItems/wxmathplot/Makefile
-    src/plugins/contrib/wxSmith/Makefile
-    src/plugins/contrib/wxSmith/wxsmith.pc
-    src/plugins/contrib/wxSmith/plugin/Makefile
-    src/plugins/contrib/wxSmith/properties/Makefile
-    src/plugins/contrib/wxSmith/wxwidgets/Makefile
-    src/plugins/contrib/wxSmith/wxwidgets/properties/Makefile
-    src/plugins/contrib/wxSmith/wxwidgets/defitems/Makefile
-    src/plugins/contrib/wxSmith/wxwidgets/icons/Makefile
-    src/plugins/contrib/wxSmithContribItems/Makefile
-    src/plugins/contrib/wxSmithAui/Makefile
-    src/plugins/contrib/wxSmithAui/wxsmithaui.pc
-    src/plugins/contrib/wxSmithDemo/Makefile
-    src/plugins/contrib/wxSmithIExplore/Makefile
-    src/plugins/contrib/wxSmithSTC/Makefile
-    src/plugins/contrib/lib_finder/Makefile
-    src/plugins/contrib/lib_finder/lib_finder/Makefile
-    src/plugins/contrib/HexEditor/Makefile
-    src/plugins/contrib/IncrementalSearch/Makefile
-    src/plugins/contrib/MouseSap/Makefile
-    src/mime/Makefile
     src/scripts/Makefile
-    src/tools/Makefile
-    src/tools/cb_share_config/Makefile
-    src/tools/ConsoleRunner/Makefile
-    src/tools/CBLauncher/Makefile
-    src/templates/Makefile
+    src/sdk/Makefile
+    src/sdk/resources/lexers/Makefile
+    src/sdk/resources/Makefile
+    src/sdk/scripting/bindings/Makefile
+    src/sdk/scripting/Makefile
+    src/sdk/scripting/sqstdlib/Makefile
+    src/sdk/scripting/squirrel/Makefile
+    src/sdk/wxscintilla/Makefile
+    src/src/Makefile
+    src/src/resources/icons/Makefile
+    src/src/resources/images/Makefile
+    src/src/resources/images/settings/Makefile
+    src/src/resources/Makefile
     src/templates/common/Makefile
+    src/templates/Makefile
     src/templates/unix/Makefile
     src/templates/win32/Makefile
+    src/tools/Addr2LineUI/Makefile
+    src/tools/CBLauncher/Makefile
+    src/tools/cb_share_config/Makefile
+    src/tools/cbp2make/Makefile
+    src/tools/ConsoleRunner/Makefile
+    src/tools/Makefile
     src/wxsmith/Makefile
     codeblocks.pc
     codeblocks.spec.fedora

@@ -41,7 +41,6 @@ pluginlib_LTLIBRARIES = \
 
 libhelp_plugin_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
-			-version-info 0:1:0 \
 			-no-undefined \
 			-avoid-version
 
@@ -119,6 +118,17 @@ resources_forZIP = \
 			images/64x64/zoomin.png \
 			images/64x64/zoomout.png
 
+docdatadir = $(datadir)/@PACKAGE@/docs
+if CODEBLOCKS_INSTALLERDOCS_FOUND
+docdata_DATA = \
+			$(top_srcdir)/windows_installer/Documentation/index.ini \
+			$(top_srcdir)/windows_installer/Documentation/*.pdf \
+			$(top_srcdir)/windows_installer/Documentation/*.chm
+else
+docdata_DATA = \
+			index.ini
+endif
+
 if !CODEBLOCKS_NT_BUILD_INSTALLER
 EXTRA_DIST = \
 			$(srcdir)/*.cbp \
@@ -128,6 +138,7 @@ endif
 
 pkgdata_DATA = \
 			help_plugin.zip
+
 CLEANFILES = \
 			$(pkgdata_DATA)
 

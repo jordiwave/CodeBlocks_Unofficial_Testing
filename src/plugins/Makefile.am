@@ -62,6 +62,13 @@ if BUILD_MANIFEST
 MAYBE_MANIFEST=xpmanifest
 endif
 
+if CODEBLOCKS_NT
+MAYBE_HEADERGUARD=headerguard
+MAYBE_LOGHACKER=loghacker
+MAYBE_MODPOLLER=modpoller
+MAYBE_TIDYCMT=tidycmt
+endif
+
 SUBDIRS = \
 			$(MAYBE_ABBREVIATIONS) \
 			$(MAYBE_ASTYLE) \
@@ -79,6 +86,10 @@ SUBDIRS = \
 			$(MAYBE_PROJECTSIMPORTER) \
 			$(MAYBE_SCRIPTEDWIZARD) \
 			$(MAYBE_TODO) \
+			$(MAYBE_HEADERGUARD) \
+			$(MAYBE_LOGHACKER) \
+			$(MAYBE_MODPOLLER) \
+			$(MAYBE_TIDYCMT) \
 			contrib
 # the 'contrib' subdir contains its own filtering
 

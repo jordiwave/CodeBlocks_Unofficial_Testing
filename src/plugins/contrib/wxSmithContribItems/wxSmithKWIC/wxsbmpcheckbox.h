@@ -26,9 +26,9 @@
 #define WXSBMPCHECKBOX_H
 
 #include "wxwidgets/wxswidget.h"
+#include "wx/dlimpexp.h"
 
-
-class wxsBmpCheckbox : public wxsWidget
+class WXEXPORT wxsBmpCheckbox : public wxsWidget
 {
 public:
     wxsBmpCheckbox(wxsItemResData* Data);

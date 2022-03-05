@@ -14,12 +14,12 @@ pluginlib_LTLIBRARIES = \
 
 libCscope_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
-			-version-info 0:1:0 \
 			-no-undefined \
 			-avoid-version
 
 libCscope_la_LIBADD = \
-			$(top_srcdir)/src/sdk/libcodeblocks.la $(WX_LIBS)
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
+			$(WX_LIBS)
 
 libCscope_la_SOURCES = \
 			CscopeConfig.cpp \

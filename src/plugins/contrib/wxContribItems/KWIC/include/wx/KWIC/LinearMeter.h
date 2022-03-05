@@ -12,12 +12,14 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __LINEARMETER_H__
-#define __LINEARMETER_H__
+#ifndef LINEARMETER_H
+#define LINEARMETER_H
 
 #define MAX_TAGS 10
 
-class kwxLinearMeter : public wxWindow
+#include "wx/dlimpexp.h"
+
+class WXEXPORT kwxLinearMeter : public wxWindow
 {
 public:
     kwxLinearMeter() {};

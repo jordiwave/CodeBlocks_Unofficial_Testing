@@ -6,9 +6,15 @@ setlocal
 @SET CurrentDirectory="%CD%"
 
 set BUILD_BITS=%1
-IF "%BUILD_BITS%" == "32" goto BuildBits_Okay
-IF "%BUILD_BITS%" == "64" goto BuildBits_Okay
-IF "%BUILD_BITS%" == "" goto BuildBitError
+if "%BUILD_BITS%" == "32" goto BuildBits_Okay
+if "%BUILD_BITS%" == "64" goto BuildBits_Okay
+if exist "..\..\src\devel31_32" set BUILD_BITS=32
+if exist "..\..\src\devel31_64" set BUILD_BITS=64
+if exist "src\devel31_32" set BUILD_BITS=32
+if exist "src\devel31_64" set BUILD_BITS=64
+if "%BUILD_BITS%" == "32" goto BuildBits_Okay
+if "%BUILD_BITS%" == "64" goto BuildBits_Okay
+goto BuildBitError
 
 :BuildBits_Okay
 @echo on

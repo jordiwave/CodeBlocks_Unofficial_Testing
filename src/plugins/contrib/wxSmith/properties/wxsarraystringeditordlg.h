@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 10972 $
-* $Id: wxsarraystringeditordlg.h 10972 2017-01-21 10:41:43Z fuscated $
+* $Revision: 12722 $
+* $Id: wxsarraystringeditordlg.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/properties/wxsarraystringeditordlg.h $
 */
 
@@ -29,8 +29,9 @@
 #include <wx/textctrl.h>
 //*)
 
+#include <cbplugin.h>
 
-class wxsArrayStringEditorDlg: public wxScrollingDialog
+class PLUGIN_EXPORT wxsArrayStringEditorDlg: public wxScrollingDialog
 {
 public:
 

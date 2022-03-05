@@ -4,8 +4,7 @@
 #include <cstddef>
 #include <wx/string.h>
 #include <wx/filename.h>
-
-class wxArrayString;
+#include <wx/arrstr.h>
 
 // clang executable variables to simplify the code
 #ifdef __WXMSW__
@@ -22,23 +21,27 @@ public:
     ClangLocator();
     virtual ~ClangLocator();
 
-    wxString Locate_Clang();
-    wxString Locate_ClangDaemon();
-    wxString Locate_ResourceDir(wxFileName fnClangd);
+    bool LocateLLVMResources(wxString& LLVMMasterPath, wxString& clangDaemonFilename, wxString& clangExeFilename, wxString& clangIncDir);
+    static bool LocateIncludeClangDir(const wxString& LLVMMasterPath, const wxString& detectedClangVersion, wxString& clangIncClangPath);
 
-    wxString MSWLocate();
-    wxArrayString GetEnvPaths() const;
-    std::size_t ScanForFiles(wxString path, wxArrayString& foundFiles, wxString mask);
-    bool ReadMSWInstallLocation(const wxString& regkey, wxString& installPath, wxString& llvmVersion);
-    wxString GetClangVersion(const wxString& clangBinary);
-    wxString GetClangDaemonVersion(const wxString& clangDaemonBinary);
-    bool IsClangMajorVersionNumberValid(const wxString& clangBinary);
-    bool IsClangDaemonMajorVersionNumberValid(const wxString& clangBinary);
+    static wxString GetExeFileVersion(const wxString& clangExeFilename);
+    static bool IsClangFileVersionValid(const wxString& clangExeFilename);
 
 private:
-    wxString Locate_ClangxFile(wxString findClangxFileName);
-    wxString GetLLVMClangxVersion(const wxString& clangxBinary);
-    bool IsClangxMajorVersionNumberValid(const wxString& clangxBinary);
+    wxArrayString m_SearchPathsToTry;   // Paths loaded in constructor
+
+#ifdef __WXMSW__
+    void WindowsAddClangFoundSearchPaths(const wxString compilerMasterPath);
+#endif
+    void LoadSearchPaths();
+    wxArrayString GetEnvPaths() const;
+    std::size_t ScanForFiles(wxString path, wxArrayString& foundFiles, wxString mask);
+#ifdef __WXMSW__
+    bool ReadMSWInstallLocation(const wxString& regkey, wxString& installPath, wxString& llvmVersion);
+#endif
+    wxString LocateFilenameInPath(wxString findFileName);
+    bool CheckDirectoryStructureFileName(const wxString& location, const wxString& findFilename, wxString& detectedFilename, wxString& detectedeDir);
+    bool LocateLLVMFilename(const wxString& location, const wxString& findFilename, wxString& detectedFilename, wxString& detectedeDir);
 };
 
 #endif // CLANGLOCATOR_H

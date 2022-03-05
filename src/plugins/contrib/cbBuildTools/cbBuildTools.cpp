@@ -137,7 +137,8 @@ void cbBuildTools::OnProjectActivatedEvent(CodeBlocksEvent& event)
         return;
 
     cbProject* pCBProject = event.GetProject();
-    m_buildTargetsPanel->ActivateProject(pCBProject);
+    if (pCBProject)
+        m_buildTargetsPanel->ActivateProject(pCBProject);
 }
 
 void cbBuildTools::OnProjectCloseEvent(CodeBlocksEvent& event)

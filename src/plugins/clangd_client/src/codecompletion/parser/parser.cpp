@@ -139,10 +139,6 @@ Parser::Parser(ParseManager* parent, cbProject* project) :
 {
     m_LSP_ParserDone = false;
 
-    // create Idle time CallbackHandler     //(ph 2021/09/27)
-    IdleCallbackHandler* pIdleCallBackHandler = new IdleCallbackHandler();
-    pIdleCallbacks.reset( pIdleCallBackHandler );
-
     ReadOptions();
     ConnectEvents();
 }
@@ -155,7 +151,7 @@ Parser::~Parser()
     // clear any Idle time callbacks
     if (GetIdleCallbackHandler())
     {
-        GetIdleCallbackHandler()->ClearIdleCallbacks() ;
+        GetIdleCallbackHandler()->ClearIdleCallbacks(this) ;
     }
     // delete any queued/waiting json data
     for (size_t cnt=0; cnt < LSP_ParserDocumentSymbolsQueue.size(); ++cnt)
@@ -523,11 +519,17 @@ void Parser::LSP_ParseDocumentSymbols(wxCommandEvent& event) //(ph 2021/03/15)
         opts.followGlobalIncludes       = m_Options.followGlobalIncludes;
         opts.wantPreprocessor           = m_Options.wantPreprocessor;
         opts.parseComplexMacros         = m_Options.parseComplexMacros;
-        opts.LLVM_ClangDaemonMasterPath = m_Options.LLVM_ClangDaemonMasterPath;
-        opts.LLVM_ClangMasterPath       = m_Options.LLVM_ClangMasterPath;
         opts.platformCheck              = m_Options.platformCheck;
         opts.logClangdClientCheck       = m_Options.logClangdClientCheck;
         opts.logClangdServerCheck       = m_Options.logClangdServerCheck;
+        opts.lspMsgsFocusOnSaveCheck    = m_Options.lspMsgsFocusOnSaveCheck;
+        opts.lspMsgsClearOnSaveCheck    = m_Options.lspMsgsClearOnSaveCheck;
+
+        // Clang Paths
+        opts.LLVM_MasterPath                        = m_Options.LLVM_MasterPath;
+        opts.LLVM_DetectedClangExeFileName          = m_Options.LLVM_DetectedClangExeFileName;
+        opts.LLVM_DetectedClangDaemonExeFileName    = m_Options.LLVM_DetectedClangDaemonExeFileName;
+        opts.LLVM_DetectedIncludeClangDirectory     = m_Options.LLVM_DetectedIncludeClangDirectory;
 
         // whether to collect doxygen style documents.
         opts.storeDocumentation    = m_Options.storeDocumentation;
@@ -677,11 +679,17 @@ void Parser::OnLSP_ParseSemanticTokens(wxCommandEvent& event) //(ph 2021/03/17)
     opts.followGlobalIncludes       = m_Options.followGlobalIncludes;
     opts.wantPreprocessor           = m_Options.wantPreprocessor;
     opts.parseComplexMacros         = m_Options.parseComplexMacros;
-    opts.LLVM_ClangDaemonMasterPath = m_Options.LLVM_ClangDaemonMasterPath;
-    opts.LLVM_ClangMasterPath       = m_Options.LLVM_ClangMasterPath;
     opts.platformCheck              = m_Options.platformCheck;
     opts.logClangdClientCheck       = m_Options.logClangdClientCheck;
     opts.logClangdServerCheck       = m_Options.logClangdServerCheck;
+    opts.lspMsgsFocusOnSaveCheck    = m_Options.lspMsgsFocusOnSaveCheck;
+    opts.lspMsgsClearOnSaveCheck    = m_Options.lspMsgsClearOnSaveCheck;
+
+    // Clang Paths
+    opts.LLVM_MasterPath                        = m_Options.LLVM_MasterPath;
+    opts.LLVM_DetectedClangExeFileName          = m_Options.LLVM_DetectedClangExeFileName;
+    opts.LLVM_DetectedClangDaemonExeFileName    = m_Options.LLVM_DetectedClangDaemonExeFileName;
+    opts.LLVM_DetectedIncludeClangDirectory     = m_Options.LLVM_DetectedIncludeClangDirectory;
 
     // whether to collect doxygen style documents.
     opts.storeDocumentation    = m_Options.storeDocumentation;
@@ -988,55 +996,61 @@ bool Parser::IsFileParsed(const wxString& filename)
 void Parser::ReadOptions()
 // ----------------------------------------------------------------------------
 {
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
+    ConfigManager* cfg = Manager::Get()->GetConfigManager("clangd_client");
 
     // one-time default settings change: upgrade everyone
-    bool force_all_on = !cfg->ReadBool(_T("/parser_defaults_changed"), false);
+    bool force_all_on = !cfg->ReadBool("/parser_defaults_changed", false);
     if (force_all_on)
     {
-        cfg->Write(_T("/parser_defaults_changed"),       true);
+        cfg->Write("/parser_defaults_changed",          true);
 
-        cfg->Write(_T("/parser_follow_local_includes"),  true);
-        cfg->Write(_T("/parser_follow_global_includes"), true);
-        cfg->Write(_T("/want_preprocessor"),             true);
-        cfg->Write(_T("/parse_complex_macros"),          true);
-        cfg->Write(_T("/platform_check"),                true);
+        cfg->Write("/parser_follow_local_includes",     true);
+        cfg->Write("/parser_follow_global_includes",    true);
+        cfg->Write("/want_preprocessor",                true);
+        cfg->Write("/parse_complex_macros",             true);
+        cfg->Write("/platform_check",                   true);
     }
 
     // Page "clangd_client"
-    m_Options.useSmartSense             = cfg->ReadBool(_T("/use_SmartSense"),                true);
-    m_Options.whileTyping               = cfg->ReadBool(_T("/while_typing"),                  true);
+    m_Options.useSmartSense             = cfg->ReadBool("/use_SmartSense",                true);
+    m_Options.whileTyping               = cfg->ReadBool("/while_typing",                  true);
 
     // the m_Options.caseSensitive is following the global option in ccmanager
     // ccmcfg means ccmanager's config
-    ConfigManager* ccmcfg               = Manager::Get()->GetConfigManager(_T("ccmanager"));
-    m_Options.caseSensitive             = ccmcfg->ReadBool(_T("/case_sensitive"),            false);
+    ConfigManager* ccmcfg               = Manager::Get()->GetConfigManager("ccmanager");
+    m_Options.caseSensitive             = ccmcfg->ReadBool("/case_sensitive",            false);
 
     // Page "C / C++ parser"
-    m_Options.followLocalIncludes       = cfg->ReadBool(_T("/parser_follow_local_includes"),  true);
-    m_Options.followGlobalIncludes      = cfg->ReadBool(_T("/parser_follow_global_includes"), true);
-    m_Options.wantPreprocessor          = cfg->ReadBool(_T("/want_preprocessor"),             true);
-    m_Options.parseComplexMacros        = cfg->ReadBool(_T("/parse_complex_macros"),          true);
-    m_Options.platformCheck             = cfg->ReadBool(_T("/platform_check"),                true);
-    m_Options.LLVM_ClangDaemonMasterPath= cfg->Read    (_T("/LLVM_ClangDaemonMasterPath"),      "");
-    m_Options.LLVM_ClangMasterPath      = cfg->Read    (_T("/LLVM_ClangMasterPath"),            "");
-    m_Options.logClangdClientCheck      = cfg->ReadBool(_T("/logClangdClient_check"),        false);
-    m_Options.logClangdServerCheck      = cfg->ReadBool(_T("/logClangdServer_check"),        false);
+    m_Options.followLocalIncludes       = cfg->ReadBool("/parser_follow_local_includes",  true);
+    m_Options.followGlobalIncludes      = cfg->ReadBool("/parser_follow_global_includes", true);
+    m_Options.wantPreprocessor          = cfg->ReadBool("/want_preprocessor",             true);
+    m_Options.parseComplexMacros        = cfg->ReadBool("/parse_complex_macros",          true);
+    m_Options.platformCheck             = cfg->ReadBool("/platform_check",                true);
+    m_Options.logClangdClientCheck      = cfg->ReadBool("/logClangdClient_check",        false);
+    m_Options.logClangdServerCheck      = cfg->ReadBool("/logClangdServer_check",        false);
+    m_Options.lspMsgsFocusOnSaveCheck   = cfg->ReadBool("/lspMsgsFocusOnSave_check",     false);
+    m_Options.lspMsgsClearOnSaveCheck   = cfg->ReadBool("/lspMsgsClearOnSave_check",     false);
+
+    // Clang Paths
+    m_Options.LLVM_MasterPath                       = cfg->Read("/LLVM_MasterPath",                     "");
+    m_Options.LLVM_DetectedClangExeFileName         = cfg->Read("/LLVM_DetectedClangExeFileName",       "");
+    m_Options.LLVM_DetectedClangDaemonExeFileName   = cfg->Read("/LLVM_DetectedClangDaemonExeFileName", "");
+    m_Options.LLVM_DetectedIncludeClangDirectory    = cfg->Read("/LLVM_DetectedIncludeClangDirectory",  "");
 
     // Page "Symbol browser"
-    m_BrowserOptions.showInheritance        = cfg->ReadBool(_T("/browser_show_inheritance"), false);
-    m_BrowserOptions.expandNS               = cfg->ReadBool(_T("/browser_expand_ns"),        false);
-    m_BrowserOptions.treeMembers            = cfg->ReadBool(_T("/browser_tree_members"),      true);
+    m_BrowserOptions.showInheritance    = cfg->ReadBool("/browser_show_inheritance",    false);
+    m_BrowserOptions.expandNS           = cfg->ReadBool("/browser_expand_ns",           false);
+    m_BrowserOptions.treeMembers        = cfg->ReadBool("/browser_tree_members",         true);
 
     // Token tree
-    m_BrowserOptions.displayFilter          = (BrowserDisplayFilter)cfg->ReadInt(_T("/browser_display_filter"), bdfFile);
-    m_BrowserOptions.sortType               = (BrowserSortType)cfg->ReadInt(_T("/browser_sort_type"),           bstKind);
+    m_BrowserOptions.displayFilter      = (BrowserDisplayFilter)cfg->ReadInt("/browser_display_filter", bdfFile);
+    m_BrowserOptions.sortType           = (BrowserSortType)cfg->ReadInt("/browser_sort_type",           bstKind);
 
     // Page "Documentation:
-    m_Options.storeDocumentation            = cfg->ReadBool(_T("/use_documentation_helper"), false);
+    m_Options.storeDocumentation        = cfg->ReadBool("/use_documentation_helper",     false);
 
     // force re-read of file types
-    ParserCommon::EFileType ft_dummy        = ParserCommon::FileType(wxEmptyString,           true);
+    ParserCommon::EFileType ft_dummy    = ParserCommon::FileType(wxEmptyString,           true);
     wxUnusedVar(ft_dummy);
 
     // Max number of parallel files allowed to parse
@@ -1048,31 +1062,37 @@ void Parser::ReadOptions()
 void Parser::WriteOptions()
 // ----------------------------------------------------------------------------
 {
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
+    ConfigManager* cfg = Manager::Get()->GetConfigManager("clangd_client");
 
     // Page "clangd_client"
-    cfg->Write(_T("/use_SmartSense"),                m_Options.useSmartSense);
-    cfg->Write(_T("/while_typing"),                  m_Options.whileTyping);
+    cfg->Write("/use_SmartSense",                       m_Options.useSmartSense);
+    cfg->Write("/while_typing",                         m_Options.whileTyping);
 
     // Page "C / C++ parser"
-    cfg->Write(_T("/parser_follow_local_includes"),  m_Options.followLocalIncludes);
-    cfg->Write(_T("/parser_follow_global_includes"), m_Options.followGlobalIncludes);
-    cfg->Write(_T("/want_preprocessor"),             m_Options.wantPreprocessor);
-    cfg->Write(_T("/parse_complex_macros"),          m_Options.parseComplexMacros);
-    cfg->Write(_T("/platform_check"),                m_Options.platformCheck);
-    cfg->Write(_T("/LLVM_ClangDaemonMasterPath"),    m_Options.LLVM_ClangDaemonMasterPath);
-    cfg->Write(_T("/LLVM_ClangMasterPath"),          m_Options.LLVM_ClangMasterPath);
-    cfg->Write(_T("/logClangdClient_check"),         m_Options.logClangdClientCheck);
-    cfg->Write(_T("/logClangdServer_check"),         m_Options.logClangdServerCheck);
+    cfg->Write("/parser_follow_local_includes",         m_Options.followLocalIncludes);
+    cfg->Write("/parser_follow_global_includes",        m_Options.followGlobalIncludes);
+    cfg->Write("/want_preprocessor",                    m_Options.wantPreprocessor);
+    cfg->Write("/parse_complex_macros",                 m_Options.parseComplexMacros);
+    cfg->Write("/platform_check",                       m_Options.platformCheck);
+    cfg->Write("/logClangdClient_check",                m_Options.logClangdClientCheck);
+    cfg->Write("/logClangdServer_check",                m_Options.logClangdServerCheck);
+    cfg->Write("/lspMsgsFocusOnSave_check",             m_Options.lspMsgsFocusOnSaveCheck);
+    cfg->Write("/lspMsgsClearOnSave_check",             m_Options.lspMsgsClearOnSaveCheck);
+
+    // Clang Paths
+    cfg->Write("/LLVM_MasterPath",                      m_Options.LLVM_MasterPath);
+    cfg->Write("/LLVM_DetectedClangExeFileName",        m_Options.LLVM_DetectedClangExeFileName);
+    cfg->Write("/LLVM_DetectedClangDaemonExeFileName",  m_Options.LLVM_DetectedClangDaemonExeFileName);
+    cfg->Write("/LLVM_DetectedIncludeClangDirectory",   m_Options.LLVM_DetectedIncludeClangDirectory);
 
     // Page "Symbol browser"
-    cfg->Write(_T("/browser_show_inheritance"),      m_BrowserOptions.showInheritance);
-    cfg->Write(_T("/browser_expand_ns"),             m_BrowserOptions.expandNS);
-    cfg->Write(_T("/browser_tree_members"),          m_BrowserOptions.treeMembers);
+    cfg->Write("/browser_show_inheritance",             m_BrowserOptions.showInheritance);
+    cfg->Write("/browser_expand_ns",                    m_BrowserOptions.expandNS);
+    cfg->Write("/browser_tree_members",                 m_BrowserOptions.treeMembers);
 
     // Token tree
-    cfg->Write(_T("/browser_display_filter"),        m_BrowserOptions.displayFilter);
-    cfg->Write(_T("/browser_sort_type"),             m_BrowserOptions.sortType);
+    cfg->Write("/browser_display_filter",               m_BrowserOptions.displayFilter);
+    cfg->Write("/browser_sort_type",                    m_BrowserOptions.sortType);
 
     // Page "Documentation":
     // m_Options.storeDocumentation will be written by DocumentationPopup
@@ -1184,8 +1204,8 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent& event)
         // If usr didn't set "show inheritance" skip symbols request for headers
         if ( not (filetype == ftSource) )
         {
-            ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
-            bool cfgShowInheritance = cfg->ReadBool(_T("/browser_show_inheritance"),    false);
+            ConfigManager* cfg = Manager::Get()->GetConfigManager("clangd_client");
+            bool cfgShowInheritance = cfg->ReadBool("/browser_show_inheritance",    false);
             BrowserOptions& options = pParser->ClassBrowserOptions();
             if (cfgShowInheritance or options.showInheritance) cfgShowInheritance = true;
             if (not cfgShowInheritance) return;
@@ -1362,7 +1382,14 @@ void Parser::OnLSP_DiagnosticsResponse(wxCommandEvent& event)
         GetLSPClient()->LSP_GetLog()->FocusEntry(logFocusLine-1);
 
         // If last request was anything but "textDocument/didSave", don't steal the log focus.
-        if ( not popupActive ) switch(1)
+        // If the compiler is running, do not switch away from build log unless
+        // user has set option to do so.
+        bool doFocus = not GetParseManager()->IsCompilerRunning(); //set false if compiler is running
+        ConfigManager* pCfg = Manager::Get()->GetConfigManager("clangd_client");
+        // If user wants to focus anyway, set focus to true
+        bool userFocus = pCfg->ReadBool("/lspMsgsFocusOnSave_check", false);
+        if (userFocus) doFocus = true;
+        if (( not popupActive ) and doFocus ) switch(1)
             {
             default:
                 // switch to LSP messages only when user used "save"
@@ -1528,7 +1555,7 @@ void Parser::OnLSP_ReferencesResponse(wxCommandEvent& event)
                 logValues.Empty();
             }
             //focus the log
-            if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_search"), true))
+            if (Manager::Get()->GetConfigManager("message_manager")->ReadBool("/auto_show_search", true))
             {
                 CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, searchLog);
                 CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
@@ -1658,7 +1685,7 @@ void Parser::OnLSP_ReferencesResponse(wxCommandEvent& event)
                 logValues.Empty();
             }//endfor json entrycount
 
-            if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_search"), true))
+            if (Manager::Get()->GetConfigManager("message_manager")->ReadBool("/auto_show_search", true))
             {
                 CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, searchLog);
                 CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
@@ -1842,7 +1869,7 @@ void Parser::OnLSP_DeclDefResponse(wxCommandEvent& event)
             //focus the log (maybe)
             if (resultKnt > 1)
             {
-                if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_search"), true))
+                if (Manager::Get()->GetConfigManager("message_manager")->ReadBool("/auto_show_search", true))
                 {
                     CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, searchLog);
                     CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
@@ -1975,13 +2002,14 @@ void Parser::OnLSP_CompletionResponse(wxCommandEvent& event, std::vector<cbCodeC
             //pLogMgr->DebugLog("-------------------Completions-----------------");
 
             json valueItems = pJson->at("result").at("items");
-            Parser* pParser = (Parser*)GetParseManager()->GetParserByProject(pProject);
+            // -unused- Parser* pParser = (Parser*)GetParseManager()->GetParserByProject(pProject);
             wxString filename = pEditor->GetFilename();
 
             for (size_t itemNdx=0; itemNdx<valueItemsCount && itemNdx<10; ++itemNdx)
             {
                 wxString labelValue = valueItems[itemNdx].at("label").get<std::string>();
                 labelValue.Trim(true).Trim(false);
+                if (labelValue.empty()) continue; //(ph 2022/02/8) this happens on Linux clangd ver13
 
                 // Example code from old CC code:
                 // tokens.push_back(CCToken(token->m_Index, token->m_Name + dispStr, token->m_Name, token->m_IsTemp ? 0 : 5, iidx));
@@ -1990,16 +2018,10 @@ void Parser::OnLSP_CompletionResponse(wxCommandEvent& event, std::vector<cbCodeC
 
                 int labelKind = valueItems[itemNdx].at("kind").get<int>();
                 cbCodeCompletionPlugin::CCToken cctoken(labelKind, labelValue);
-                cctoken.id = -1;
-                // GetTokenInFile() can fail locking the token tree
-                // If so, it returns a null token ptr
-                Token* pTreeToken = pParser->GetTokenInFile(filename, labelValue);
-                if (pTreeToken)
-                    cctoken.id = pTreeToken->m_Index;
-                cctoken.category = 0;  //used by CB for image index
+                cctoken.id = labelKind; //needed by DoAutoComplete()
+                // cctoken.category used by CB for image index // FIXME (ph#): implement completion images?
                 cctoken.category = -1; //used by CB for image index //(ph 2021/12/31)
-                //FIXME: #ph setting category = 0 causes wxWidgets to assert (nullptr image error) and crash in AutoComplete::SeetList(...)
-                cctoken.weight = 5;
+                cctoken.weight = 5; // FIXME (ph#): could use this to good effect
                 cctoken.displayName = labelValue;
                 cctoken.name = labelValue;
                 v_CompletionTokens.push_back(cctoken);
@@ -2359,7 +2381,7 @@ void Parser::OnLSP_RenameResponse(wxCommandEvent& event)
         }//end OnLSP_RenameResponse() try
         catch (std::exception &e)
         {
-            wxString msg = wxString::Format("OnLSP_RenameResponse %s", e.what());
+            wxString msg = wxString::Format(_("OnLSP_RenameResponse %s"), e.what());
             CCLogger::Get()->DebugLog(msg);
             cbMessageBox(msg);
         }
@@ -2398,33 +2420,37 @@ void Parser::OnLSP_GoToPrevFunctionResponse(wxCommandEvent& event)  //response f
 
             if (not resultCount )
             {
-                cbMessageBox("LSP: No functions parsed in this file...");
+                cbMessageBox(_("LSP: No functions parsed in this file..."));
                 return;
             }
 
             //const size_t functionType = 12;; //defined in https://microsoft.github.io/language-server-protocol/specification
             //const size_t classType    = 5; //defined in https://microsoft.github.io/language-server-protocol/specification
             //const size_t methodType   = 6; //defined in https://microsoft.github.io/language-server-protocol/specification
+            //const size_t constructor  = 9; //defined in https://microsoft.github.io/language-server-protocol/specification
 
             std::vector<int> lineNumbers;
 
             for (size_t ii=0; ii<entryCount; ++ii)
             {
                 size_t symbolType = valueResult[ii].at("kind").get<int>();
-                if ( (symbolType == LSP_SymbolKind::Function) or (symbolType == LSP_SymbolKind::Method) )
+                if ( (symbolType == LSP_SymbolKind::Function)
+                        or (symbolType == LSP_SymbolKind::Method)
+                        or (symbolType == LSP_SymbolKind::Constructor)
+                        or (symbolType == LSP_SymbolKind::Namespace)
+                   )
                 {
                     wxString symName   = valueResult[ii].at("name").get<std::string>();
-                    //wxString symDetail = valueResult[ii].at("detail").get<std::string>(); CCLS only
                     int      symLine   = valueResult[ii].at("range").at("start").at("line").get<int>();
                     symLine += 1; //make 1 origin
                     lineNumbers.push_back(symLine);
 
-                }//end if valueResult == functionType
+                }//end if valueResult == kind
             }//endfor entryCount
 
             if (not lineNumbers.size() )
             {
-                cbMessageBox(_("LSP: No functions parsed in this file..."));
+                cbMessageBox(_("LSP: No functions parsed in this file..."),"clangd_client");
                 return;
             }
             // Reverse search for line number < current line
@@ -2491,7 +2517,11 @@ void Parser::OnLSP_GoToNextFunctionResponse(wxCommandEvent& event)  //response f
             for (size_t ii=0; ii<entryCount; ++ii)
             {
                 size_t symbolType = valueResult[ii].at("kind").get<int>();
-                if ( (symbolType == LSP_SymbolKind::Function) or (symbolType == LSP_SymbolKind::Method) )
+                if ( (symbolType == LSP_SymbolKind::Function)
+                        or (symbolType == LSP_SymbolKind::Method)
+                        or (symbolType == LSP_SymbolKind::Constructor)
+                        or (symbolType == LSP_SymbolKind::Namespace)
+                   )
                 {
                     wxString symName   = valueResult[ii].at("name").get<std::string>();
                     //-wxString symDetail = valueResult[ii].at("detail").get<std::string>(); CCLS only
@@ -2504,7 +2534,7 @@ void Parser::OnLSP_GoToNextFunctionResponse(wxCommandEvent& event)  //response f
 
             if (not lineNumbers.size() )
             {
-                cbMessageBox("LSP: No functions parsed in this file...");
+                cbMessageBox(_("LSP: No functions parsed in this file..."));
                 ;
                 return;
             }

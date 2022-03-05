@@ -32,6 +32,8 @@
 #endif
 
 #include <wx/filedlg.h>
+#include <wx/listbook.h>
+
 #include <editpairdlg.h>
 
 #include "cbcolourmanager.h"
@@ -39,45 +41,6 @@
 #include "codecompletion.h"
 #include "doxygen_parser.h" // For DocumentationHelper
 #include "../ClangLocator.h"
-
-static const wxString g_SampleClasses =
-    _T("class A_class"
-       "{"
-       "    public:"
-       "        int someInt_A;"
-       "    protected:"
-       "        bool mSomeVar_A;"
-       "    private:"
-       "        char* mData_A;"
-       "};"
-       "class B_class"
-       "{"
-       "    public:"
-       "        int someInt_B;"
-       "    protected:"
-       "        bool mSomeVar_B;"
-       "    private:"
-       "        char* mData_B;"
-       "};"
-       "class C_class : public A_class"
-       "{"
-       "    public:"
-       "        int someInt_C;"
-       "    protected:"
-       "        bool mSomeVar_C;"
-       "    private:"
-       "        char* mData_C;"
-       "};"
-       "enum SomeEnum"
-       "{"
-       "    optOne,"
-       "    optTwo,"
-       "    optThree"
-       "};"
-       "int x;"
-       "int y;"
-       "#define SOME_DEFINITION\n"
-       "#define SOME_DEFINITION_2\n\n");
 
 BEGIN_EVENT_TABLE(CCOptionsDlg, wxPanel)
     EVT_UPDATE_UI(-1,                       CCOptionsDlg::OnUpdateUI)
@@ -87,11 +50,8 @@ BEGIN_EVENT_TABLE(CCOptionsDlg, wxPanel)
     EVT_BUTTON(XRCID("btnDocTextColor"),    CCOptionsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnDocLinkColor"),    CCOptionsDlg::OnChooseColour)
 
-    EVT_BUTTON(XRCID("btnClangDaemonAutoDetect"),   CCOptionsDlg::OnLLVM_ClangDaemon_AutoDetect)
-    EVT_BUTTON(XRCID("btnClangDaemonMasterPath"),   CCOptionsDlg::OnFindClangDaemonDir_Dlg)
-    EVT_BUTTON(XRCID("btnClangAutoDetect"),         CCOptionsDlg::OnLLVM_Clang_AutoDetect)
-    EVT_BUTTON(XRCID("btnClangMasterPath"),         CCOptionsDlg::OnFindClangDir_Dlg)
-    EVT_BUTTON(XRCID("btnClangBothAutoDetect"),     CCOptionsDlg::OnLLVM_ClangBoth_AutoDetect)
+    EVT_BUTTON(XRCID("btnClangSelectMasterPath"),       CCOptionsDlg::OnLLVM_Clang_SelectMasterPath_Dlg)
+    EVT_BUTTON(XRCID("btnClangAutoDetectMasterPath"),   CCOptionsDlg::OnLLVM_Clang_AutoDetectMasterPath)
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
@@ -102,56 +62,56 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, ParseManager* np, CodeCompletion* c
       m_Parser(np->GetParser()),
       m_Documentation(dh)
 {
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
+    ConfigManager* cfg = Manager::Get()->GetConfigManager("clangd_client");
 
-    wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgCCSettings"));
+    wxXmlResource::Get()->LoadPanel(this, parent, "dlgCCSettings");
 
     // -----------------------------------------------------------------------
     // Handle all options that are being directly applied from config
     // -----------------------------------------------------------------------
 
     // Page "clangd_client"
-    XRCCTRL(*this, "chkNoSemantic",         wxCheckBox)->SetValue(!cfg->ReadBool(_T("/semantic_keywords"),   false));
-    XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_add_parentheses"), true));
-    XRCCTRL(*this, "chkDetectImpl",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/detect_implementation"),false));
-    XRCCTRL(*this, "chkAddDoxgenComment",   wxCheckBox)->SetValue(cfg->ReadBool(_T("/add_doxgen_comment"),   false));
-    XRCCTRL(*this, "chkEnableHeaders",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/enable_headers"),       true));
-    XRCCTRL(*this, "spnMaxMatches",         wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_matches"),           16384));
-    XRCCTRL(*this, "txtFillupChars",        wxTextCtrl)->SetValue(cfg->Read(_T("/fillup_chars"),             wxEmptyString));
-    XRCCTRL(*this, "sldCCDelay",            wxSlider)->SetValue(cfg->ReadInt(_T("/cc_delay"),                300) / 100);
+    XRCCTRL(*this, "chkNoSemantic",         wxCheckBox)->SetValue(!cfg->ReadBool("/semantic_keywords",   false));
+    XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->SetValue(cfg->ReadBool("/auto_add_parentheses", true));
+    XRCCTRL(*this, "chkDetectImpl",         wxCheckBox)->SetValue(cfg->ReadBool("/detect_implementation",false));
+    XRCCTRL(*this, "chkAddDoxgenComment",   wxCheckBox)->SetValue(cfg->ReadBool("/add_doxgen_comment",   false));
+    XRCCTRL(*this, "chkEnableHeaders",      wxCheckBox)->SetValue(cfg->ReadBool("/enable_headers",       true));
+    XRCCTRL(*this, "spnMaxMatches",         wxSpinCtrl)->SetValue(cfg->ReadInt("/max_matches",           16384));
+    XRCCTRL(*this, "txtFillupChars",        wxTextCtrl)->SetValue(cfg->Read("/fillup_chars",             wxEmptyString));
+    XRCCTRL(*this, "sldCCDelay",            wxSlider)->SetValue(cfg->ReadInt("/cc_delay",                300) / 100);
     UpdateCCDelayLabel();
-    XRCCTRL(*this, "chkKL_1",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set1"),  true));
-    XRCCTRL(*this, "chkKL_2",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set2"),  true));
-    XRCCTRL(*this, "chkKL_3",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set3"),  false));
-    XRCCTRL(*this, "chkKL_4",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set4"),  false));
-    XRCCTRL(*this, "chkKL_5",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set5"),  false));
-    XRCCTRL(*this, "chkKL_6",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set6"),  false));
-    XRCCTRL(*this, "chkKL_7",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set7"),  false));
-    XRCCTRL(*this, "chkKL_8",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set8"),  false));
-    XRCCTRL(*this, "chkKL_9",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set9"),  false));
+    XRCCTRL(*this, "chkKL_1",               wxCheckBox)->SetValue(cfg->ReadBool("/lexer_keywords_set1",  true));
+    XRCCTRL(*this, "chkKL_2",               wxCheckBox)->SetValue(cfg->ReadBool("/lexer_keywords_set2",  true));
+    XRCCTRL(*this, "chkKL_3",               wxCheckBox)->SetValue(cfg->ReadBool("/lexer_keywords_set3",  false));
+    XRCCTRL(*this, "chkKL_4",               wxCheckBox)->SetValue(cfg->ReadBool("/lexer_keywords_set4",  false));
+    XRCCTRL(*this, "chkKL_5",               wxCheckBox)->SetValue(cfg->ReadBool("/lexer_keywords_set5",  false));
+    XRCCTRL(*this, "chkKL_6",               wxCheckBox)->SetValue(cfg->ReadBool("/lexer_keywords_set6",  false));
+    XRCCTRL(*this, "chkKL_7",               wxCheckBox)->SetValue(cfg->ReadBool("/lexer_keywords_set7",  false));
+    XRCCTRL(*this, "chkKL_8",               wxCheckBox)->SetValue(cfg->ReadBool("/lexer_keywords_set8",  false));
+    XRCCTRL(*this, "chkKL_9",               wxCheckBox)->SetValue(cfg->ReadBool("/lexer_keywords_set9",  false));
 
     // Page "C / C++ parser"
     // NOTE (Morten#1#): Keep this in sync with files in the XRC file (settings.xrc) and ParseManager.cpp
-    XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_threads"), 1));
+    XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->SetValue(cfg->ReadInt("/max_threads", 1));
     XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->Enable(true);   //(ph 2021/07/17)
 
     // Page "C / C++ parser (adv.)"
     // NOTE (Morten#1#): Keep this in sync with files in the XRC file (settings.xrc) and parser.cpp
-    XRCCTRL(*this, "txtCCFileExtHeader",       wxTextCtrl)->SetValue(cfg->Read(_T("/header_ext"),    _T("h,hpp,hxx,hh,h++,tcc,xpm")));
-    XRCCTRL(*this, "chkCCFileExtEmpty",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/empty_ext"), true));
-    XRCCTRL(*this, "txtCCFileExtSource",       wxTextCtrl)->SetValue(cfg->Read(_T("/source_ext"),    _T("c,cpp,cxx,cc,c++")));
+    XRCCTRL(*this, "txtCCFileExtHeader",       wxTextCtrl)->SetValue(cfg->Read("/header_ext",    "h,hpp,hxx,hh,h++,tcc,xpm"));
+    XRCCTRL(*this, "chkCCFileExtEmpty",        wxCheckBox)->SetValue(cfg->ReadBool("/empty_ext", true));
+    XRCCTRL(*this, "txtCCFileExtSource",       wxTextCtrl)->SetValue(cfg->Read("/source_ext",    "c,cpp,cxx,cc,c++"));
 
     // Page "Symbol browser"
-    XRCCTRL(*this, "chkNoSB",        wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_symbols_browser"), true));
-    XRCCTRL(*this, "chkFloatCB",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/as_floating_window"), false));
+    XRCCTRL(*this, "chkNoSB",        wxCheckBox)->SetValue(!cfg->ReadBool("/use_symbols_browser", true));
+    XRCCTRL(*this, "chkFloatCB",     wxCheckBox)->SetValue(cfg->ReadBool("/as_floating_window", false));
 
     // The toolbar section
     wxCheckBox *scopeFilter = XRCCTRL(*this, "chkScopeFilter", wxCheckBox);
-    scopeFilter->SetValue(cfg->ReadBool(_T("/scope_filter"), true));
+    scopeFilter->SetValue(cfg->ReadBool("/scope_filter", true));
     wxSpinCtrl *spinScopeLength = XRCCTRL(*this, "spnChoiceScopeLength", wxSpinCtrl);
     spinScopeLength->Enable(scopeFilter->GetValue());
-    spinScopeLength->SetValue(cfg->ReadInt(_T("/toolbar_scope_length"), 280));
-    XRCCTRL(*this, "spnChoiceFunctionLength", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/toolbar_function_length"), 660));
+    spinScopeLength->SetValue(cfg->ReadInt("/toolbar_scope_length", 280));
+    XRCCTRL(*this, "spnChoiceFunctionLength", wxSpinCtrl)->SetValue(cfg->ReadInt("/toolbar_function_length", 660));
 
     // -----------------------------------------------------------------------
     // Handle all options that are being handled by m_Parser
@@ -169,8 +129,53 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, ParseManager* np, CodeCompletion* c
     XRCCTRL(*this, "chkPlatformCheck",      wxCheckBox)->SetValue(m_Parser.Options().platformCheck);
     XRCCTRL(*this, "chkLogClangdClient",    wxCheckBox)->SetValue(m_Parser.Options().logClangdClientCheck);
     XRCCTRL(*this, "chkLogClangdServer",    wxCheckBox)->SetValue(m_Parser.Options().logClangdServerCheck);
-    XRCCTRL(*this, "txtClangDaemonMasterPath",  wxTextCtrl)->SetValue(m_Parser.Options().LLVM_ClangDaemonMasterPath);
-    XRCCTRL(*this, "txtClangMasterPath",        wxTextCtrl)->SetValue(m_Parser.Options().LLVM_ClangMasterPath);
+    XRCCTRL(*this, "chkLSPMsgsFocusOnSave", wxCheckBox)->SetValue(m_Parser.Options().lspMsgsFocusOnSaveCheck);
+    XRCCTRL(*this, "chkLSPMsgsClearOnSave", wxCheckBox)->SetValue(m_Parser.Options().lspMsgsClearOnSaveCheck);
+
+    wxString LLVM_DetectedClangExeFileName = m_Parser.Options().LLVM_DetectedClangExeFileName;
+    wxString LLVM_DetectedClangDaemonExeFileName = m_Parser.Options().LLVM_DetectedClangDaemonExeFileName;
+
+    XRCCTRL(*this, "txtLLVM_MasterPath",                wxTextCtrl)->SetValue(m_Parser.Options().LLVM_MasterPath);
+    XRCCTRL(*this, "txtDetectedClangExeFileName",       wxTextCtrl)->SetValue(LLVM_DetectedClangExeFileName);
+    XRCCTRL(*this, "txtDetectedClangDaemonExeFileName", wxTextCtrl)->SetValue(LLVM_DetectedClangDaemonExeFileName);
+    XRCCTRL(*this, "txtDetectedIncludeClangDirectory",  wxTextCtrl)->SetValue(m_Parser.Options().LLVM_DetectedIncludeClangDirectory);
+
+    if (!LLVM_DetectedClangDaemonExeFileName.empty())
+    {
+        // Verify clangd version is at least 13
+        wxString ClangDaemonVersion =  ClangLocator::GetExeFileVersion(LLVM_DetectedClangDaemonExeFileName);
+        wxTextCtrl* controlClangDaemonVersionNumber = XRCCTRL(*this, "txtDetectedClangDaemonExeFileVersion", wxTextCtrl);
+        controlClangDaemonVersionNumber->SetValue(ClangDaemonVersion);
+
+        if (ClangLocator::IsClangFileVersionValid(LLVM_DetectedClangDaemonExeFileName))
+        {
+            controlClangDaemonVersionNumber->SetBackgroundColour(XRCCTRL(*this, "txtDetectedClangDaemonExeFileName", wxTextCtrl)->GetBackgroundColour());
+        }
+        else
+        {
+            controlClangDaemonVersionNumber->SetBackgroundColour(wxColour(*wxRED));
+        }
+    }
+
+
+    if (!LLVM_DetectedClangExeFileName.empty())
+    {
+        // Verify clangd version is at least 13
+        wxString ClangDaemonVersion =  ClangLocator::GetExeFileVersion(LLVM_DetectedClangExeFileName);
+        wxTextCtrl* controlClangDaemonVersionNumber = XRCCTRL(*this, "txtDetectedClangExeFileVersion", wxTextCtrl);
+        controlClangDaemonVersionNumber->SetValue(ClangDaemonVersion);
+
+        if (ClangLocator::IsClangFileVersionValid(LLVM_DetectedClangExeFileName))
+        {
+            controlClangDaemonVersionNumber->SetBackgroundColour(XRCCTRL(*this, "txtDetectedClangExeFileName", wxTextCtrl)->GetBackgroundColour());
+        }
+        else
+        {
+            controlClangDaemonVersionNumber->SetBackgroundColour(wxColour(*wxRED));
+        }
+    }
+
+    m_Old_LLVM_MasterPath = m_Parser.Options().LLVM_MasterPath; //save for onApply() check
 
     // FIXME (ph#): implement these unused hidden check boxes ?
     XRCCTRL(*this, "chkLocals",        wxCheckBox)->Hide(); //(ph 2021/11/9)
@@ -190,81 +195,105 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, ParseManager* np, CodeCompletion* c
     XRCCTRL(*this, "btnDocBgColor",         wxButton)->SetBackgroundColour(colours->GetColour(wxT("cc_docs_back")));
     XRCCTRL(*this, "btnDocTextColor",       wxButton)->SetBackgroundColour(colours->GetColour(wxT("cc_docs_fore")));
     XRCCTRL(*this, "btnDocLinkColor",       wxButton)->SetBackgroundColour(colours->GetColour(wxT("cc_docs_link")));
-
-//    m_Parser.ParseBuffer(g_SampleClasses, true);
-//    m_Parser.BuildTree(*XRCCTRL(*this, "treeClasses", wxTreeCtrl));
 }
+
 // ----------------------------------------------------------------------------
 CCOptionsDlg::~CCOptionsDlg()
 // ----------------------------------------------------------------------------
 {
 }
+
+// ----------------------------------------------------------------------------
+void CCOptionsDlg::OnPageChanging()
+// ----------------------------------------------------------------------------
+{
+    // plugin about to be shown
+    // This event does NOT occur when others get the focus
+    // so we never know if we've lost focused or not.
+}
 // ----------------------------------------------------------------------------
 void CCOptionsDlg::OnApply()
 // ----------------------------------------------------------------------------
 {
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
+    wxString activePageTitle;
+    // Get the title of the currently active/focused configuration page
+    wxWindow* pTopWindow = wxFindWindowByName(_("Configure editor"));
+    if (not pTopWindow)
+        pTopWindow = m_CodeCompletion->GetTopWxWindow();
+    if (pTopWindow)
+    {
+        wxListbook* lb = XRCCTRL(*pTopWindow, "nbMain", wxListbook);
+        wxWindow* page = lb ? lb->GetCurrentPage() : nullptr;
+        int pageID = page ? lb->FindPage(page) : 0;
+        activePageTitle = lb ? lb->GetPageText(pageID) : wxString();
+    }
+
+    ConfigManager* cfg = Manager::Get()->GetConfigManager("clangd_client");
 
     // -----------------------------------------------------------------------
     // Handle all options that are being directly applied / written from UI:
     // -----------------------------------------------------------------------
 
     // Page "clangd_client"
-    cfg->Write(_T("/semantic_keywords"),    (bool)!XRCCTRL(*this, "chkNoSemantic",         wxCheckBox)->GetValue());
-    cfg->Write(_T("/use_SmartSense"),       (bool) XRCCTRL(*this, "chkUseSmartSense",      wxCheckBox)->GetValue());
-    cfg->Write(_T("/while_typing"),         (bool) XRCCTRL(*this, "chkWhileTyping",        wxCheckBox)->GetValue());
-    cfg->Write(_T("/auto_add_parentheses"), (bool) XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->GetValue());
-    cfg->Write(_T("/detect_implementation"),(bool) XRCCTRL(*this, "chkDetectImpl",         wxCheckBox)->GetValue());
-    cfg->Write(_T("/add_doxgen_comment"),   (bool) XRCCTRL(*this, "chkAddDoxgenComment",   wxCheckBox)->GetValue());
-    cfg->Write(_T("/enable_headers"),       (bool) XRCCTRL(*this, "chkEnableHeaders",      wxCheckBox)->GetValue());
-    cfg->Write(_T("/max_matches"),          (int)  XRCCTRL(*this, "spnMaxMatches",         wxSpinCtrl)->GetValue());
-    cfg->Write(_T("/fillup_chars"),                XRCCTRL(*this, "txtFillupChars",        wxTextCtrl)->GetValue());
-    cfg->Write(_T("/cc_delay"),             (int)  XRCCTRL(*this, "sldCCDelay",            wxSlider)->GetValue() * 100);
-    cfg->Write(_T("/lexer_keywords_set1"),  (bool) XRCCTRL(*this, "chkKL_1",               wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set2"),  (bool) XRCCTRL(*this, "chkKL_2",               wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set3"),  (bool) XRCCTRL(*this, "chkKL_3",               wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set4"),  (bool) XRCCTRL(*this, "chkKL_4",               wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set5"),  (bool) XRCCTRL(*this, "chkKL_5",               wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set6"),  (bool) XRCCTRL(*this, "chkKL_6",               wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set7"),  (bool) XRCCTRL(*this, "chkKL_7",               wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set8"),  (bool) XRCCTRL(*this, "chkKL_8",               wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set9"),  (bool) XRCCTRL(*this, "chkKL_9",               wxCheckBox)->GetValue());
+    cfg->Write("/semantic_keywords",    (bool)!XRCCTRL(*this, "chkNoSemantic",         wxCheckBox)->GetValue());
+    cfg->Write("/use_SmartSense",       (bool) XRCCTRL(*this, "chkUseSmartSense",      wxCheckBox)->GetValue());
+    cfg->Write("/while_typing",         (bool) XRCCTRL(*this, "chkWhileTyping",        wxCheckBox)->GetValue());
+    cfg->Write("/auto_add_parentheses", (bool) XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->GetValue());
+    cfg->Write("/detect_implementation",(bool) XRCCTRL(*this, "chkDetectImpl",         wxCheckBox)->GetValue());
+    cfg->Write("/add_doxgen_comment",   (bool) XRCCTRL(*this, "chkAddDoxgenComment",   wxCheckBox)->GetValue());
+    cfg->Write("/enable_headers",       (bool) XRCCTRL(*this, "chkEnableHeaders",      wxCheckBox)->GetValue());
+    cfg->Write("/max_matches",          (int)  XRCCTRL(*this, "spnMaxMatches",         wxSpinCtrl)->GetValue());
+    cfg->Write("/fillup_chars",                XRCCTRL(*this, "txtFillupChars",        wxTextCtrl)->GetValue());
+    cfg->Write("/cc_delay",             (int)  XRCCTRL(*this, "sldCCDelay",            wxSlider)->GetValue() * 100);
+    cfg->Write("/lexer_keywords_set1",  (bool) XRCCTRL(*this, "chkKL_1",               wxCheckBox)->GetValue());
+    cfg->Write("/lexer_keywords_set2",  (bool) XRCCTRL(*this, "chkKL_2",               wxCheckBox)->GetValue());
+    cfg->Write("/lexer_keywords_set3",  (bool) XRCCTRL(*this, "chkKL_3",               wxCheckBox)->GetValue());
+    cfg->Write("/lexer_keywords_set4",  (bool) XRCCTRL(*this, "chkKL_4",               wxCheckBox)->GetValue());
+    cfg->Write("/lexer_keywords_set5",  (bool) XRCCTRL(*this, "chkKL_5",               wxCheckBox)->GetValue());
+    cfg->Write("/lexer_keywords_set6",  (bool) XRCCTRL(*this, "chkKL_6",               wxCheckBox)->GetValue());
+    cfg->Write("/lexer_keywords_set7",  (bool) XRCCTRL(*this, "chkKL_7",               wxCheckBox)->GetValue());
+    cfg->Write("/lexer_keywords_set8",  (bool) XRCCTRL(*this, "chkKL_8",               wxCheckBox)->GetValue());
+    cfg->Write("/lexer_keywords_set9",  (bool) XRCCTRL(*this, "chkKL_9",               wxCheckBox)->GetValue());
 
     // Page "C / C++ parser"
-    cfg->Write(_T("/parser_follow_local_includes"),  (bool) XRCCTRL(*this, "chkLocals",                wxCheckBox)->GetValue());
-    cfg->Write(_T("/parser_follow_global_includes"), (bool) XRCCTRL(*this, "chkGlobals",               wxCheckBox)->GetValue());
-    cfg->Write(_T("/want_preprocessor"),             (bool) XRCCTRL(*this, "chkPreprocessor",          wxCheckBox)->GetValue());
-    cfg->Write(_T("/parse_complex_macros"),          (bool) XRCCTRL(*this, "chkComplexMacros",         wxCheckBox)->GetValue());
-    cfg->Write(_T("/platform_check"),                (bool) XRCCTRL(*this, "chkPlatformCheck",         wxCheckBox)->GetValue());
-    cfg->Write(_T("/logClangdClient_check"),         (bool) XRCCTRL(*this, "chkLogClangdClient",       wxCheckBox)->GetValue());
-    cfg->Write(_T("/logClangdServer_check"),         (bool) XRCCTRL(*this, "chkLogClangdServer",       wxCheckBox)->GetValue());
-    cfg->Write(_T("/LLVM_ClangDaemonMasterPath"),           XRCCTRL(*this, "txtClangDaemonMasterPath", wxTextCtrl)->GetValue());
-    cfg->Write(_T("/LLVM_ClangMasterPath"),                 XRCCTRL(*this, "txtClangMasterPath",       wxTextCtrl)->GetValue());
+    cfg->Write("/parser_follow_local_includes",  (bool) XRCCTRL(*this, "chkLocals",                wxCheckBox)->GetValue());
+    cfg->Write("/parser_follow_global_includes", (bool) XRCCTRL(*this, "chkGlobals",               wxCheckBox)->GetValue());
+    cfg->Write("/want_preprocessor",             (bool) XRCCTRL(*this, "chkPreprocessor",          wxCheckBox)->GetValue());
+    cfg->Write("/parse_complex_macros",          (bool) XRCCTRL(*this, "chkComplexMacros",         wxCheckBox)->GetValue());
+    cfg->Write("/platform_check",                (bool) XRCCTRL(*this, "chkPlatformCheck",         wxCheckBox)->GetValue());
+    cfg->Write("/logClangdClient_check",         (bool) XRCCTRL(*this, "chkLogClangdClient",       wxCheckBox)->GetValue());
+    cfg->Write("/logClangdServer_check",         (bool) XRCCTRL(*this, "chkLogClangdServer",       wxCheckBox)->GetValue());
+    cfg->Write("/lspMsgsFocusOnSave_check",      (bool) XRCCTRL(*this, "chkLSPMsgsFocusOnSave",    wxCheckBox)->GetValue());
+    cfg->Write("/lspMsgsClearOnSave_check",      (bool) XRCCTRL(*this, "chkLSPMsgsClearOnSave",    wxCheckBox)->GetValue());
+    cfg->Write("/LLVM_MasterPath",                      XRCCTRL(*this, "txtLLVM_MasterPath",                wxTextCtrl)->GetValue());
+    cfg->Write("/LLVM_DetectedClangExeFileName",        XRCCTRL(*this, "txtDetectedClangExeFileName",       wxTextCtrl)->GetValue());
+    cfg->Write("/LLVM_DetectedClangDaemonExeFileName",  XRCCTRL(*this, "txtDetectedClangDaemonExeFileName", wxTextCtrl)->GetValue());
+    cfg->Write("/LLVM_DetectedIncludeClangDirectory",   XRCCTRL(*this, "txtDetectedIncludeClangDirectory",  wxTextCtrl)->GetValue());
 
-    cfg->Write(_T("/max_threads"),                   (int)  XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->GetValue());
+    cfg->Write("/max_threads",                   (int)  XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->GetValue());
 
     // Page "C / C++ parser (adv.)"
-    cfg->Write(_T("/header_ext"),        XRCCTRL(*this, "txtCCFileExtHeader", wxTextCtrl)->GetValue());
-    cfg->Write(_T("/empty_ext"),  (bool) XRCCTRL(*this, "chkCCFileExtEmpty",  wxCheckBox)->GetValue());
-    cfg->Write(_T("/source_ext"),        XRCCTRL(*this, "txtCCFileExtSource", wxTextCtrl)->GetValue());
+    cfg->Write("/header_ext",        XRCCTRL(*this, "txtCCFileExtHeader", wxTextCtrl)->GetValue());
+    cfg->Write("/empty_ext",  (bool) XRCCTRL(*this, "chkCCFileExtEmpty",  wxCheckBox)->GetValue());
+    cfg->Write("/source_ext",        XRCCTRL(*this, "txtCCFileExtSource", wxTextCtrl)->GetValue());
 
     // Page "Symbol browser"
-    cfg->Write(_T("/use_symbols_browser"),      (bool)!XRCCTRL(*this, "chkNoSB",        wxCheckBox)->GetValue());
-    cfg->Write(_T("/browser_show_inheritance"), (bool) XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue());
-    cfg->Write(_T("/browser_expand_ns"),        (bool) XRCCTRL(*this, "chkExpandNS",    wxCheckBox)->GetValue());
-    cfg->Write(_T("/as_floating_window"),       (bool) XRCCTRL(*this, "chkFloatCB",     wxCheckBox)->GetValue());
-    cfg->Write(_T("/browser_tree_members"),     (bool) XRCCTRL(*this, "chkTreeMembers", wxCheckBox)->GetValue());
+    cfg->Write("/use_symbols_browser",      (bool)!XRCCTRL(*this, "chkNoSB",        wxCheckBox)->GetValue());
+    cfg->Write("/browser_show_inheritance", (bool) XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue());
+    cfg->Write("/browser_expand_ns",        (bool) XRCCTRL(*this, "chkExpandNS",    wxCheckBox)->GetValue());
+    cfg->Write("/as_floating_window",       (bool) XRCCTRL(*this, "chkFloatCB",     wxCheckBox)->GetValue());
+    cfg->Write("/browser_tree_members",     (bool) XRCCTRL(*this, "chkTreeMembers", wxCheckBox)->GetValue());
 
     // The toolbar section
-    cfg->Write(_T("/scope_filter"), (bool) XRCCTRL(*this, "chkScopeFilter", wxCheckBox)->GetValue());
-    cfg->Write(_T("/toolbar_scope_length"), (int)XRCCTRL(*this, "spnChoiceScopeLength", wxSpinCtrl)->GetValue());
-    cfg->Write(_T("/toolbar_function_length"), (int)XRCCTRL(*this, "spnChoiceFunctionLength", wxSpinCtrl)->GetValue());
+    cfg->Write("/scope_filter", (bool) XRCCTRL(*this, "chkScopeFilter", wxCheckBox)->GetValue());
+    cfg->Write("/toolbar_scope_length", (int)XRCCTRL(*this, "spnChoiceScopeLength", wxSpinCtrl)->GetValue());
+    cfg->Write("/toolbar_function_length", (int)XRCCTRL(*this, "spnChoiceFunctionLength", wxSpinCtrl)->GetValue());
 
     // Page "Documentation"
-    cfg->Write(_T("/use_documentation_helper"), (bool) XRCCTRL(*this, "chkDocumentation", wxCheckBox)->GetValue());
-    cfg->Write(_T("/documentation_helper_background_color"), (wxColour) XRCCTRL(*this, "btnDocBgColor",   wxButton)->GetBackgroundColour());
-    cfg->Write(_T("/documentation_helper_text_color"),       (wxColour) XRCCTRL(*this, "btnDocTextColor", wxButton)->GetBackgroundColour());
-    cfg->Write(_T("/documentation_helper_link_color"),       (wxColour) XRCCTRL(*this, "btnDocLinkColor", wxButton)->GetBackgroundColour());
+    cfg->Write("/use_documentation_helper", (bool) XRCCTRL(*this, "chkDocumentation", wxCheckBox)->GetValue());
+    cfg->Write("/documentation_helper_background_color", (wxColour) XRCCTRL(*this, "btnDocBgColor",   wxButton)->GetBackgroundColour());
+    cfg->Write("/documentation_helper_text_color",       (wxColour) XRCCTRL(*this, "btnDocTextColor", wxButton)->GetBackgroundColour());
+    cfg->Write("/documentation_helper_link_color",       (wxColour) XRCCTRL(*this, "btnDocLinkColor", wxButton)->GetBackgroundColour());
     // -----------------------------------------------------------------------
     // Handle all options that are being read by m_Parser.ReadOptions():
     // -----------------------------------------------------------------------
@@ -285,8 +314,25 @@ void CCOptionsDlg::OnApply()
     m_Parser.Options().platformCheck        = XRCCTRL(*this, "chkPlatformCheck",      wxCheckBox)->GetValue();
     m_Parser.Options().logClangdClientCheck = XRCCTRL(*this, "chkLogClangdClient",    wxCheckBox)->GetValue();
     m_Parser.Options().logClangdServerCheck = XRCCTRL(*this, "chkLogClangdServer",    wxCheckBox)->GetValue();
-    m_Parser.Options().LLVM_ClangDaemonMasterPath= XRCCTRL(*this, "txtClangDaemonMasterPath",   wxTextCtrl)->GetValue();
-    m_Parser.Options().LLVM_ClangMasterPath      = XRCCTRL(*this, "txtClangMasterPath",         wxTextCtrl)->GetValue();
+    m_Parser.Options().lspMsgsFocusOnSaveCheck = XRCCTRL(*this, "chkLSPMsgsFocusOnSave",  wxCheckBox)->GetValue();
+    m_Parser.Options().lspMsgsClearOnSaveCheck = XRCCTRL(*this, "chkLSPMsgsClearOnSave",  wxCheckBox)->GetValue();
+
+    if (wxDirExists(m_Parser.Options().LLVM_MasterPath))
+    {
+        m_Parser.Options().LLVM_MasterPath                      = XRCCTRL(*this, "txtLLVM_MasterPath",                 wxTextCtrl)->GetValue();
+        m_Parser.Options().LLVM_DetectedClangExeFileName        = XRCCTRL(*this, "txtDetectedClangExeFileName",        wxTextCtrl)->GetValue();
+        m_Parser.Options().LLVM_DetectedClangDaemonExeFileName  = XRCCTRL(*this, "txtDetectedClangDaemonExeFileName",  wxTextCtrl)->GetValue();
+        m_Parser.Options().LLVM_DetectedIncludeClangDirectory   = XRCCTRL(*this, "txtDetectedIncludeClangDirectory",   wxTextCtrl)->GetValue();
+    }
+    else
+    {
+        wxString msg;
+        msg << _("The clangd path:\n") << m_Parser.Options().LLVM_MasterPath << _(" does not exist.");
+        msg << _("\nCode completion will be inoperable.");
+        if ((activePageTitle == "clangd_client") or (activePageTitle == _("clangd_client")) )
+            cbMessageBox(msg, _("ERROR: Clangd client") );
+        m_Parser.Options().LLVM_MasterPath = m_Old_LLVM_MasterPath;
+    }
 
     // Page "Symbol browser"
     m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
@@ -301,19 +347,30 @@ void CCOptionsDlg::OnApply()
 
     ColourManager *colours = Manager::Get()->GetColourManager();
     wxColor colour = XRCCTRL(*this, "btnDocBgColor",   wxButton)->GetBackgroundColour();
-    colours->SetColour(wxT("cc_docs_back"), colour);
+    colours->SetColour("cc_docs_back", colour);
     colour = XRCCTRL(*this, "btnDocTextColor",   wxButton)->GetBackgroundColour();
-    colours->SetColour(wxT("cc_docs_text"), colour);
+    colours->SetColour("cc_docs_text", colour);
     colour = XRCCTRL(*this, "btnDocLinkColor",   wxButton)->GetBackgroundColour();
-    colours->SetColour(wxT("cc_docs_link"), colour);
+    colours->SetColour("cc_docs_link", colour);
 
     // Now write the parser options and re-read them again to make sure they are up-to-date
     m_Parser.WriteOptions();
     m_ParseManager->RereadParserOptions();
     m_Documentation->WriteOptions(cfg);
     m_CodeCompletion->RereadOptions();
-}
 
+    // If a project is loaded and the clangd location changed, say something.
+    if (
+        Manager::Get()->GetProjectManager()->GetActiveProject() &&
+        (m_Old_LLVM_MasterPath != m_Parser.Options().LLVM_MasterPath)
+    )
+    {
+        wxString msg = _("Currently loaded projects need reloading or reparsing to accomodate the clangd change.");
+        if ((activePageTitle == "clangd_client") or (activePageTitle == _("clangd_client")) )
+            cbMessageBox(msg, _("Settings changed"));
+    }
+
+}
 // ----------------------------------------------------------------------------
 void CCOptionsDlg::OnChooseColour(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
@@ -343,8 +400,8 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 // ----------------------------------------------------------------------------
 {
     // ccmanager's config Settings/Editor/Code completion
-    ConfigManager* ccmcfg = Manager::Get()->GetConfigManager(_T("ccmanager"));
-    bool en = ccmcfg->ReadBool(_T("/code_completion"), false); //<==  CCManagers  main setting, NOT clangd_client's
+    ConfigManager* ccmcfg = Manager::Get()->GetConfigManager("ccmanager");
+    bool en = ccmcfg->ReadBool("/code_completion", false); //<==  CCManagers  main setting, NOT clangd_client's
     bool aap = XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->GetValue();
 
     // Page "clangd_client"
@@ -380,12 +437,15 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     XRCCTRL(*this, "chkPlatformCheck",              wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkLogClangdClient",            wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkLogClangdServer",            wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "txtClangDaemonMasterPath",      wxTextCtrl)->Enable(en);
-    XRCCTRL(*this, "txtClangMasterPath",            wxTextCtrl)->Enable(en);
+    XRCCTRL(*this, "chkLSPMsgsFocusOnSave",         wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkLSPMsgsClearOnSave",         wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "txtLLVM_MasterPath",                wxTextCtrl)->Enable(en);    //(ph 2021/11/7)
+    XRCCTRL(*this, "txtDetectedClangExeFileName",       wxTextCtrl)->Enable(en);
+    XRCCTRL(*this, "txtDetectedClangDaemonExeFileName", wxTextCtrl)->Enable(en);
 
     // Page "C / C++ parser (adv.)"
     // FIXME (ollydbg#1#01/07/15): should code_completion option affect our parser's behaviour?
-    en = ccmcfg->ReadBool(_T("/clangd_client"), true);
+    en = ccmcfg->ReadBool("/clangd_client", true);
     XRCCTRL(*this, "txtCCFileExtHeader",      wxTextCtrl)->Enable(en);
     XRCCTRL(*this, "chkCCFileExtEmpty",       wxCheckBox)->Enable(en);
     XRCCTRL(*this, "txtCCFileExtSource",      wxTextCtrl)->Enable(en);
@@ -422,215 +482,138 @@ void CCOptionsDlg::UpdateCCDelayLabel()
 }
 
 // ----------------------------------------------------------------------------
-bool CCOptionsDlg::ValidateReplacementToken(wxString& from, wxString& to)
-// ----------------------------------------------------------------------------
+void CCOptionsDlg::UpdateClangDetectedDetails(const wxString& LLVMMasterPath, const wxString& clangDaemonFilename, const wxString& clangExeFilename, const wxString& clangIncDir)
 {
-    // cut off any leading / trailing spaces
-    from.Trim(true).Trim(false);
-    to.Trim(true).Trim(false);
-
-    if (to.IsEmpty())
+    if (clangDaemonFilename.empty())
     {
-        // Allow removing a token, but ask the user if that's OK.
-        if (cbMessageBox( _("This setup will replace the token with an empty string.\n"
-                            "This will *remove* the token and probably break CC for some cases.\n"
-                            "Do you really want to *remove* that token?"),
-                          _("Confirmation"),
-                          wxICON_QUESTION | wxYES_NO ) == wxID_YES)
-        {
-            return true;
-        }
-    }
-    else if (to.Contains(from))
-    {
-        cbMessageBox(_("Replacement token cannot contain search token.\n"
-                       "This would cause an infinite loop otherwise."),
-                     _("Error"), wxICON_ERROR);
-        return false;
-    }
-
-    wxRegEx re(_T("[A-Za-z_]+[0-9]*[A-Za-z_]*"));
-    if (!re.Matches(from))
-    {
-        cbMessageBox(_("Search token can only contain alphanumeric characters and underscores."),
-                     _("Error"), wxICON_ERROR);
-        return false;
-    }
-    if (!re.Matches(to))
-    {
-        // Allow replacing with special characters only if the user says it's ok.
-        if (cbMessageBox( _("You are replacing a token with a string that contains\n"
-                            "characters other than alphanumeric and underscores.\n"
-                            "This could make parsing the file impossible.\n"
-                            "Are you sure?"),
-                          _("Confirmation"),
-                          wxICON_QUESTION | wxYES_NO ) != wxID_YES)
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-// ----------------------------------------------------------------------------
-void CCOptionsDlg::OnLLVM_ClangDaemon_AutoDetect(cb_unused wxCommandEvent& event)
-// ----------------------------------------------------------------------------
-{
-    // Locate folders for Clang Clangd
-    ClangLocator clangLocator;
-    wxString clangDaemonLocation = clangLocator.Locate_ClangDaemon();
-
-    if (clangDaemonLocation.empty())
-    {
+        XRCCTRL(*this, "txtLLVM_MasterPath", wxTextCtrl)->SetValue("");
         wxString msg;
         msg << __PRETTY_FUNCTION__ << "() Could not find clangd installation.";
         cbMessageBox( msg, "Error");
         return;
     }
-    // Verify clangd version is at least 13
-    wxString executable = clangDaemonLocation + wxFILE_SEP_PATH + CLANG_DAEMON_FILENAME;
-    if (not clangLocator.IsClangDaemonMajorVersionNumberValid(executable))
+
+    if (clangDaemonFilename.empty())
     {
-        cbMessageBox("clangd version must be 13 or above.", "Error");
-        clangDaemonLocation = wxString();
+        XRCCTRL(*this, "txtDetectedClangDaemonExeFileVersion", wxTextCtrl)->SetValue(wxEmptyString);
+    }
+    else
+    {
+        // Verify clangd version is at least 13
+        wxString ClangDaemonVersion =  ClangLocator::GetExeFileVersion(clangDaemonFilename);
+        wxTextCtrl* controlClangDaemonVersionNumber = XRCCTRL(*this, "txtDetectedClangDaemonExeFileVersion", wxTextCtrl);
+        controlClangDaemonVersionNumber->SetValue(ClangDaemonVersion);
+
+        if (ClangLocator::IsClangFileVersionValid(clangDaemonFilename))
+        {
+            controlClangDaemonVersionNumber->SetBackgroundColour(XRCCTRL(*this, "txtDetectedClangDaemonExeFileName", wxTextCtrl)->GetBackgroundColour());
+        }
+        else
+        {
+            controlClangDaemonVersionNumber->SetBackgroundColour(wxColour(*wxRED));
+        }
     }
 
-    if (clangDaemonLocation.EndsWith("bin") )
-        clangDaemonLocation = clangDaemonLocation.BeforeLast(wxFILE_SEP_PATH);
-    m_Parser.Options().LLVM_ClangDaemonMasterPath = clangDaemonLocation;
-    XRCCTRL(*this, "txtClangDaemonMasterPath", wxTextCtrl)->SetValue(m_Parser.Options().LLVM_ClangDaemonMasterPath);
+    if (clangExeFilename.empty())
+    {
+        XRCCTRL(*this, "txtDetectedClangExeFileVersion", wxTextCtrl)->SetValue(wxEmptyString);
+    }
+    else
+    {
+        // Verify clang version is at least 13
+        wxString ClangVersion =  ClangLocator::GetExeFileVersion(clangExeFilename);
+        wxTextCtrl* controlClangVersionNumber = XRCCTRL(*this, "txtDetectedClangExeFileVersion", wxTextCtrl);
+        controlClangVersionNumber->SetValue(ClangVersion);
+
+        if (ClangLocator::IsClangFileVersionValid(clangExeFilename))
+        {
+            controlClangVersionNumber->SetBackgroundColour(XRCCTRL(*this, "txtDetectedClangExeFileVersion", wxTextCtrl)->GetBackgroundColour());
+        }
+        else
+        {
+            controlClangVersionNumber->SetBackgroundColour(wxColour(*wxRED));
+        }
+    }
+
+    XRCCTRL(*this, "txtLLVM_MasterPath", wxTextCtrl)->SetValue(LLVMMasterPath);
+    XRCCTRL(*this, "txtDetectedClangExeFileName", wxTextCtrl)->SetValue(clangExeFilename);
+    XRCCTRL(*this, "txtDetectedClangDaemonExeFileName", wxTextCtrl)->SetValue(clangDaemonFilename);
+    XRCCTRL(*this, "txtDetectedIncludeClangDirectory", wxTextCtrl)->SetValue(clangIncDir);
+
+    m_Parser.Options().LLVM_MasterPath = LLVMMasterPath;
+    m_Parser.Options().LLVM_DetectedClangExeFileName = clangExeFilename;
+    m_Parser.Options().LLVM_DetectedClangDaemonExeFileName = clangDaemonFilename;
+    m_Parser.Options().LLVM_DetectedIncludeClangDirectory = clangIncDir;
 }
+
 // ----------------------------------------------------------------------------
-void CCOptionsDlg::OnLLVM_Clang_AutoDetect(cb_unused wxCommandEvent& event)
-// ----------------------------------------------------------------------------
+void CCOptionsDlg::OnLLVM_Clang_SelectMasterPath_Dlg(wxCommandEvent& event)
 {
-    // Locate folders for Clang
+    // common part follows
+    wxString file_selection = _("All files (*)|*");
+    if (platform::windows)
+    {
+        file_selection = _("Executable files (*.exe)|*.exe");
+    }
+
+    wxFileDialog dlg(this,                                  // wxWindow *  	parent,
+                     _("Select clangd executable file"),    // const wxString &  	message = wxFileSelectorPromptStr,
+#if defined(__WXGTK__)
+                     "/",                                // const wxString &  	defaultDir = wxEmptyString,
+                     CLANG_DAEMON_FILENAME,              // const wxString &  	defaultFile = wxEmptyString,
+                     "*",                                // const wxString &  	wildcard = wxFileSelectorDefaultWildcardStr,
+#else
+                     "",                                 // const wxString &  	defaultDir = wxEmptyString,
+                     CLANG_DAEMON_FILENAME,              // const wxString &  	defaultFile = wxEmptyString,
+                     "*.*",                              // const wxString &  	wildcard = wxFileSelectorDefaultWildcardStr,
+#endif
+                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly ); // long  	style = wxFD_DEFAULT_STYLE,
+    dlg.SetFilterIndex(0);
+
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() != wxID_OK)
+    {
+        return;
+    }
+
+    wxString clangDaemonFilename = dlg.GetPath();  // get path and filename
+    if (clangDaemonFilename.Contains(CLANG_DAEMON_FILENAME))
+    {
+        wxString clangExeFilename = wxEmptyString;
+        wxString detectedClangVersion = wxEmptyString;
+        wxString clangIncDir = wxEmptyString;
+
+        // Get master path
+        wxFileName fnLLVMMasterPath(clangDaemonFilename);
+        wxString LLVMMasterPath = fnLLVMMasterPath.GetPath();
+
+        // Try to find clang exe
+        const wxString clangFilenameConst(CLANG_FILENAME);
+        if (wxFileExists(fnLLVMMasterPath.GetPath() + wxFILE_SEP_PATH + clangFilenameConst))
+        {
+            clangExeFilename = fnLLVMMasterPath.GetPath() + wxFILE_SEP_PATH + clangFilenameConst;
+        }
+
+        // Try to find include clang directory
+        ClangLocator::LocateIncludeClangDir(LLVMMasterPath, detectedClangVersion, clangIncDir);
+
+        UpdateClangDetectedDetails(LLVMMasterPath, clangDaemonFilename, clangExeFilename, clangIncDir);
+    }
+    else
+    {
+        wxString msg = "Failed to select the clangd executable.";
+        cbMessageBox(msg,"ERROR");
+    }
+}
+
+// ----------------------------------------------------------------------------
+void CCOptionsDlg::OnLLVM_Clang_AutoDetectMasterPath(cb_unused wxCommandEvent& event)
+{
+    wxString LLVMMasterPath, clangDaemonFilename, clangExeFilename, clangIncDir;
+
+    // Locate folders for LLVM resources
     ClangLocator clangLocator;
-    wxString clangLocation = clangLocator.Locate_Clang();
-    wxFileName fnClangResourceDir(clangLocation); //its empty
-    wxString clangResourceDir = clangLocator.Locate_ResourceDir(fnClangResourceDir);
+    clangLocator.LocateLLVMResources(LLVMMasterPath, clangDaemonFilename, clangExeFilename, clangIncDir);
 
-    if (clangLocation.empty())
-    {
-        wxString msg;
-        msg << __PRETTY_FUNCTION__ << "() Could not find clang installation.";
-        cbMessageBox( msg, "Error");
-        return;
-    }
-
-    // Verify clangd version is at least 13
-    wxString executable = clangLocation + wxFILE_SEP_PATH + CLANG_FILENAME;
-    if (not clangLocator.IsClangMajorVersionNumberValid(executable))
-    {
-        cbMessageBox("clang version must be 13 or above.", "Error");
-        clangLocation = wxString();
-    }
-
-    if (clangLocation.EndsWith("bin") )
-        clangLocation = clangLocation.BeforeLast(wxFILE_SEP_PATH);
-    m_Parser.Options().LLVM_ClangMasterPath = clangLocation;
-    XRCCTRL(*this, "txtClangMasterPath", wxTextCtrl)->SetValue(m_Parser.Options().LLVM_ClangMasterPath);
-}
-// ----------------------------------------------------------------------------
-void CCOptionsDlg::OnLLVM_ClangBoth_AutoDetect(wxCommandEvent& event)
-// ----------------------------------------------------------------------------
-{
-    OnLLVM_ClangDaemon_AutoDetect(event);
-    OnLLVM_Clang_AutoDetect(event);
-}
-// ----------------------------------------------------------------------------
-void CCOptionsDlg::OnFindClangDaemonDir_Dlg(wxCommandEvent& event)
-// ----------------------------------------------------------------------------
-{
-    wxTextCtrl* obj = 0L;
-    if (event.GetId() == XRCID("btnClangDaemonMasterPath"))
-        obj = XRCCTRL(*this, "txtClangDaemonMasterPath", wxTextCtrl);
-
-    if (!obj)
-        return; // called from invalid caller
-
-    // common part follows
-    wxString file_selection = _("All files (*)|*");
-    if (platform::windows)
-        file_selection = _("Executable files (*.exe)|*.exe");
-    wxFileDialog dlg(this,                                   // wxWindow *  	parent,
-                     _("Select clangd executable file"),    // const wxString &  	message = wxFileSelectorPromptStr,
-#if defined(__WXGTK__)
-                     "/",                                // const wxString &  	defaultDir = wxEmptyString,
-                     CLANG_DAEMON_FILENAME,              // const wxString &  	defaultFile = wxEmptyString,
-                     "*",                                // const wxString &  	wildcard = wxFileSelectorDefaultWildcardStr,
-#else
-                     "",                                 // const wxString &  	defaultDir = wxEmptyString,
-                     CLANG_DAEMON_FILENAME,              // const wxString &  	defaultFile = wxEmptyString,
-                     "*.*",                              // const wxString &  	wildcard = wxFileSelectorDefaultWildcardStr,
-#endif
-                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly ); // long  	style = wxFD_DEFAULT_STYLE,
-    dlg.SetFilterIndex(0);
-
-    PlaceWindow(&dlg);
-    if (dlg.ShowModal() != wxID_OK)
-        return;
-
-    //-wxChar dirSep = wxFILE_SEP_PATH;
-    wxString fullPath = dlg.GetPath();
-    wxFileName fname(fullPath);
-    if (not fullPath.Contains(CLANG_DAEMON_FILENAME))
-    {
-        wxString msg = "Failed to select the clangd executable.";
-        cbMessageBox(msg,"ERROR");
-        fname.Clear();
-
-    }
-    //(ph 2021/12/18) save full path in order to get other config items (like resource dir)
-    //-wxString dir = fname.GetPath();
-    //-if (dir.EndsWith("bin"))
-    //-    dir = dir.BeforeLast(dirSep);
-    //-obj->SetValue(dir);
-    obj->SetValue(fname.GetFullPath());
-}
-// ----------------------------------------------------------------------------
-void CCOptionsDlg::OnFindClangDir_Dlg(wxCommandEvent& event)
-// ----------------------------------------------------------------------------
-{
-    wxTextCtrl* obj = 0L;
-    if (event.GetId() == XRCID("txtClangMasterPath"))
-        obj = XRCCTRL(*this, "txtClangMasterPath", wxTextCtrl);
-
-    if (!obj)
-        return; // called from invalid caller
-
-    // common part follows
-    wxString file_selection = _("All files (*)|*");
-    if (platform::windows)
-        file_selection = _("Executable files (*.exe)|*.exe");
-    wxFileDialog dlg(this,                                   // wxWindow *  	parent,
-                     _("Select clangd executable file"),    // const wxString &  	message = wxFileSelectorPromptStr,
-#if defined(__WXGTK__)
-                     "/",                                // const wxString &  	defaultDir = wxEmptyString,
-                     CLANG_FILENAME,                     // const wxString &  	defaultFile = wxEmptyString,
-                     "*",                                // const wxString &  	wildcard = wxFileSelectorDefaultWildcardStr,
-#else
-                     "",                                 // const wxString &  	defaultDir = wxEmptyString,
-                     CLANG_FILENAME,                     // const wxString &  	defaultFile = wxEmptyString,
-                     "*.*",                              // const wxString &  	wildcard = wxFileSelectorDefaultWildcardStr,
-#endif
-                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly ); // long  	style = wxFD_DEFAULT_STYLE,
-    dlg.SetFilterIndex(0);
-
-    PlaceWindow(&dlg);
-    if (dlg.ShowModal() != wxID_OK)
-        return;
-
-    //-wxChar dirSep = wxFILE_SEP_PATH;
-    wxString fullPath = dlg.GetPath();
-    wxFileName fname(fullPath);
-    if (not fullPath.Contains(CLANG_FILENAME))
-    {
-        wxString msg = "Failed to select the clangd executable.";
-        cbMessageBox(msg,"ERROR");
-        fname.Clear();
-
-    }
-    obj->SetValue(fname.GetFullPath());
-
+    UpdateClangDetectedDetails(LLVMMasterPath, clangDaemonFilename, clangExeFilename, clangIncDir);
 }

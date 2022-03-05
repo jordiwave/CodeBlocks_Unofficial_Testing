@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 7109 $
-* $Id: wxsemptyproperty.h 7109 2011-04-15 11:53:16Z mortenmacfly $
+* $Revision: 12722 $
+* $Id: wxsemptyproperty.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/properties/wxsemptyproperty.h $
 */
 
@@ -24,6 +24,8 @@
 #define WXSEMPTYPROPERTY_H
 
 #include "wxsproperty.h"
+
+#include <cbplugin.h>
 
 /** \brief Empty property with no meaning
  *
@@ -33,7 +35,7 @@
  *
  * To get an instance, use Get() function
  */
-class wxsEmptyProperty: public wxsProperty
+class PLUGIN_EXPORT wxsEmptyProperty: public wxsProperty
 {
 public:
 

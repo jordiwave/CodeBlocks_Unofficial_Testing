@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12298 $
-* $Id: wxsproperty.h 12298 2021-03-06 15:47:09Z fuscated $
+* $Revision: 12722 $
+* $Id: wxsproperty.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/properties/wxsproperty.h $
 */
 
@@ -36,6 +36,7 @@
 
 #include <tinyxml.h>
 #include <prep.h>
+#include <cbplugin.h>
 
 #include "wxspropertystream.h"
 
@@ -73,7 +74,7 @@ class wxsPropertyContainer;
  * of data (good example is wxsStyleProperty, where styles are not stored like
  * they are in wxWidgets)
  */
-class wxsProperty
+class PLUGIN_EXPORT wxsProperty
 {
 public:
 

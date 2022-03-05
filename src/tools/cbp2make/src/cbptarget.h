@@ -67,6 +67,11 @@ private:
     CStringList m_AfterBuildCommands;
     bool m_ForceBeforeBuildCommands;
     bool m_ForceAfterBuildCommands;
+    CStringList m_BeforeCleanExtraCommands;
+    CStringList m_AfterCleanExtraCommands;
+    bool m_ForceBeforeCleanExtraCommands;
+    bool m_ForceAfterCleanExtraCommands;
+    CStringList m_InstallExtraCommands;
     CStringList m_ResourceCompilerDirectories;
     CStringList m_ResourceCompilerOptions;
     OptionsRelation m_CompilerOptionsRelation;

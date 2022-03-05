@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12708 $
- * $Id: app.cpp 12708 2022-02-08 08:42:14Z wh11204 $
+ * $Revision: 12719 $
+ * $Id: app.cpp 12719 2022-02-18 19:45:18Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/app.cpp $
  */
 
@@ -489,7 +489,10 @@ bool CodeBlocksApp::LoadConfig()
             data = env;
     }
 
-    data.append(_T("/share/codeblocks"));
+    if (platform::windows)
+        data.append(_T("\\share\\CodeBlocks"));
+    else
+        data.append(_T("/share/codeblocks"));
 
     // Make sure the path to our resources is always an absolute path, because resource loading
     // would fail with a relative path if some part of the code changes the current working

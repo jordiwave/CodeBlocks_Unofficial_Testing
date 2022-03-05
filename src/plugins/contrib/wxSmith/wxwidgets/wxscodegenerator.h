@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 8704 $
-* $Id: wxscodegenerator.h 8704 2012-12-23 20:32:03Z mortenmacfly $
+* $Revision: 12722 $
+* $Id: wxscodegenerator.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxscodegenerator.h $
 */
 
@@ -26,9 +26,10 @@
 #include "wxscodercontext.h"
 
 #include <prep.h>
+#include <cbplugin.h>
 
 /** \brief Base class for items which generate source code */
-class wxsCodeGenerator
+class PLUGIN_EXPORT wxsCodeGenerator
 {
 public:
 

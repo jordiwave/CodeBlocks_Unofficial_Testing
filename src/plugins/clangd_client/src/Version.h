@@ -37,7 +37,7 @@
 #endif
 
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("0.2.9913 2022/02/02")
+#define VERSION wxT("0.2.17.99 2022/02/25")
 //------------------------------------------
 // Release - Current development identifier
 // Feature - User interface level
@@ -68,16 +68,56 @@ private:
 // ----------------------------------------------------------------------------
 // Modifications
 // ----------------------------------------------------------------------------
-//0.2.99     2022/01/26 ac
-//          Major refactor of code arround the clang/clangd/clang.exe/clangd.exe usage
-//          Fix bugs with auto detection and refactor some areas to simplify the code
-//          Allow spaces in paths in clangx executables
-//          Refactor clangx version checking to move it into ClangLocator.h
-//          Update clangd_client_wx31_64.cbp to have two targers, one for the dll & zip and the other for the zip & dll & cbplugin. The
-//              default is the target for the dll & zip only.
-//          Modified the clsettings.xrc to split the clang.exe and clangd.exe to have their own entry.
-//          Modified the clsettings.xrc to add a auto detect button to detect both clang.exe and clangd.exe.
-//0.2.13    2022/02/2 ph/ac
+//0.2.17.99     2022/03/02 ac - Experimental
+//          Major refactor of auto detection code
+//          Major refactor of aclangLocator class
+//          Refactor code to use code in clangLocator class allot more
+//          Modified the clsettings.xrc to show cland and clangd executables and their versions and also
+//            include clang directory
+//          Auto-detect runs on the plugin startup if it has not been configured.
+//0.2.17    Commit rev 45
+//          2022/02/22  2022/02/24 ph gd_on
+//          Set more strings translatable (gd_on)
+//0.2.16    commit rev 44
+//          2022/02/19
+//          Modify strings for translations (gd_on)
+//          2022/02/18 ph
+//          Reinstate OnEditorActivatedTimer() as an IdleTimeCallback to switch classBrowser view
+//              and namespace/function toolbar when activating editor of a non-active project.
+//          OnEditorActivated: allow non-active projects to parse newly opened files. cc:3562
+//              Changed because non-active projects now have "paused" flag set.
+//0.2.15    Commit r42
+//          2022/02/17
+//          For linux wx30 Add wxOVERRIDE definition to LSPEventCallbackHandler.h
+//          2022/02/16 ph
+//          Allow user to parse non-ActiveProject files.
+//          Check the server log for "Reusing preamble version" msgs to avoid hang conditions
+//              when clangd does not respond to didOpen() or other requests. Very annoying clangd bug!
+//          Remove necessity for OnEditorActivatedTimer() by using IdleTimeCallback.
+//          Fixed crash in OnEditorActivated because Parser/IdleTimeCallbackHandler was not available.
+//          Move IdleTimeCallback code to ParseManager
+//          2022/02/12 ph
+//          Add options to clear and focus the LSP messages tab/log
+//          Do not clear LSP messages on each editor save, preserving previous msgs (ollydbg)
+//          Recode clangd .cache lockFile to manage use of multiple projects in a workspace (ollydbg)
+//          Add check in OnWorkspaceChanged to avoid multiple lockfile access denied messages
+//          2022/02/9 ph
+//          Pause background parsing of non-active projects (ollydbg)
+//          Do not switch away from active compiling build log to LSP messages log (ollydbg)
+//          2022/02/8 ph
+//          Add TokenTreeLock test & IdleTimeCallback for ReParseProject functions
+//          OnLSP_CompletionResponse() - ignore null string completions (labelValue)
+//          2022/02/6 ph
+//          Erase invalid utf8 chars rather than just blanking them out: DoValidateUTF8data().
+//          These usually occur in clangd textDocument/completion symbols from non CB files.
+//          2022/02/5 ph
+//          parser.cpp - set token.id to LSP symbolKind needed by DoAutocomplete to add parens
+//0.2.14
+//          2022/02/4 ph
+//          Avoid displaying clangd_client config messages when not the selected config page
+//          Re-write clangd executable auto detect (using some AndrewCo ideas)
+//0.2.13
+//          2022/02/2 ph/ac
 //          Add CB fix trunk rev 12689 ticket 1152
 //0.2.12
 //          2022/01/31_14 ph
@@ -117,11 +157,11 @@ private:
 //          Remove LSP:Hover results debugging msgs
 //          ProcessLanguageClient dtor: allow time for pipe/ReadJson threads to terminate
 //          Linux lsof: code to avoid dumb "No such file in directory" msg
-//          Locks: Record current owner of lock for use in error msgs
+//          Locks: Record current owner of symbols tree lock for use in error msgs
 //0.2.09
 //          2022/01/22 ac
-//          Update project files to comment building clangd_client.cbplugin.
-//          Update clangd_client_wx31_64.cbp from clangd_client_wx31_64.cbp changes.
+//          Update project files to comment out the lines building clangd_client.cbplugin.
+//          Update repo clangd_client_wx31_64.cbp from work clangd_client_wx31_64.cbp changes.
 //          2022/01/15 ph
 //          Removed accidental use of older CodeCompletion image files.
 //          Moved image files in clangd_client.zip to the first level.
@@ -129,7 +169,7 @@ private:
 //          Remove .cbPlugin file. It borked my system three time. Your out!
 //0.2.08
 //          2022/01/14 ph
-//          Code to removed invalid utf8 chars from clangd responses responses
+//          Code to removed invalid utf8 chars from clangd responses
 //          cf:client.cpp DoValidateUTF8data()
 //0.2.07
 //          2022/01/13 ph
@@ -328,7 +368,7 @@ private:
 //          Added "Editor not yet parsed" and "...parsing delay" msg to find refs, goto decl/impls funcs. //(ph 2021/06/14)
 //          changed wxCheck_msg2 to cbAssertNonFatal. wxCheck did not work in release mode. //(ph 2021/06/15)
 //          For FindReferences and GotoDeclImpl, Output InfoWindow::Display() for files not contained in a project. //(ph 2021/06/15)
-//          Turned on #define CC_ENABLE_LOCKER_ASSERT   2021/06/16 // NOTE (ph#): Turn off CC_ENABLE_LOCKER_ASSERT for production ?
+//          Turned on #define CC_ENABLE_LOCKER_ASSERT   2021/06/16
 //          Added IsServerFilesParsing() to client.h 2021/06/16
 // 0.0.18
 //          Dont request symbols when only a document completion request 2021/04/6

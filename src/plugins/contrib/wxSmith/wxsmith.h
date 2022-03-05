@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12412 $
-* $Id: wxsmith.h 12412 2021-05-09 12:49:27Z fuscated $
+* $Revision: 12722 $
+* $Id: wxsmith.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxsmith.h $
 */
 
@@ -47,7 +47,7 @@ class wxsResource;
  * This class is a singleton, is registered in OnAttach and unregistered in
  * OnRelease.
  */
-class wxSmith : public cbPlugin
+class PLUGIN_EXPORT wxSmith : public cbPlugin
 {
 public:
 

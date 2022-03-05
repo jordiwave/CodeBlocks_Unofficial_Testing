@@ -11,8 +11,9 @@
 #define ADVANCEDMATRIXOBJECT_H
 
 #include "wx/matrixobject.h"
+#include "wx/dlimpexp.h"
 
-class AdvancedMatrixObject : public MatrixObject
+class WXEXPORT AdvancedMatrixObject : public MatrixObject
 {
 public:
     AdvancedMatrixObject();

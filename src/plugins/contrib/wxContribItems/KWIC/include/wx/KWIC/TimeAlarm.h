@@ -11,8 +11,12 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef TIMEALARM_H
+#define TIMEALARM_H
 
-class CTimeAlarm
+#include "wx/dlimpexp.h"
+
+class WXEXPORT CTimeAlarm
 {
 public:
     CTimeAlarm() ;
@@ -36,3 +40,5 @@ private:
     bool m_bEnable ;
 
 } ;
+
+#endif

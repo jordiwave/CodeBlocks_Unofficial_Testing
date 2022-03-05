@@ -101,6 +101,11 @@ public:
     virtual void ReplaceLibDir(const wxString& option, const wxString& new_option);
     virtual void RemoveLibDir(const wxString& option);
 
+    virtual void SetBuildScripts(const wxArrayString& scripts);
+    virtual const wxArrayString& GetBuildScripts() const;
+    virtual void AddBuildScript(const wxString& script);
+    virtual void RemoveBuildScript(const wxString& script);
+
     virtual void SetCommandsBeforeBuild(const wxArrayString& commands);
     virtual const wxArrayString& GetCommandsBeforeBuild() const;
     virtual void AddCommandsBeforeBuild(const wxString& command);
@@ -111,16 +116,29 @@ public:
     virtual void AddCommandsAfterBuild(const wxString& command);
     virtual void RemoveCommandsAfterBuild(const wxString& command);
 
-    virtual void SetBuildScripts(const wxArrayString& scripts);
-    virtual const wxArrayString& GetBuildScripts() const;
-    virtual void AddBuildScript(const wxString& script);
-    virtual void RemoveBuildScript(const wxString& script);
+    virtual bool GetAlwaysRunPostBuildSteps() const;
+    virtual void SetAlwaysRunPostBuildSteps(bool always);
+
+    virtual void SetCommandsBeforeClean(const wxArrayString& commands);
+    virtual const wxArrayString& GetCommandsBeforeClean() const;
+    virtual void AddCommandsBeforeClean(const wxString& command);
+    virtual void RemoveCommandsBeforeClean(const wxString& command);
+
+    virtual void SetCommandsAfterClean(const wxArrayString& commands);
+    virtual const wxArrayString& GetCommandsAfterClean() const;
+    virtual void AddCommandsAfterClean(const wxString& command);
+    virtual void RemoveCommandsAfterClean(const wxString& command);
+
+    virtual bool GetAlwaysRunPostCleanSteps() const;
+    virtual void SetAlwaysRunPostCleanSteps(bool always);
+
+    virtual void SetCommandsInstall(const wxArrayString& commands);
+    virtual const wxArrayString& GetCommandsInstall() const;
+    virtual void AddCommandsInstall(const wxString& command);
+    virtual void RemoveCommandsInstall(const wxString& command);
 
     virtual bool GetModified() const;
     virtual void SetModified(bool modified);
-
-    virtual bool GetAlwaysRunPostBuildSteps() const;
-    virtual void SetAlwaysRunPostBuildSteps(bool always);
 
     virtual bool SetVar(const wxString& key, const wxString& value, bool onlyIfExists = false);
     virtual bool UnsetVar(const wxString& key);
@@ -138,11 +156,15 @@ protected:
     wxArrayString m_IncludeDirs;
     wxArrayString m_ResIncludeDirs;
     wxArrayString m_LibDirs;
+    bool m_AlwaysRunPostCmds;
     wxArrayString m_CmdsBefore;
     wxArrayString m_CmdsAfter;
+    bool m_AlwaysRunPostCmdsClean;
+    wxArrayString m_CmdsBeforeClean;
+    wxArrayString m_CmdsAfterClean;
+    wxArrayString m_CmdsInstall;
     wxArrayString m_Scripts;
     bool m_Modified;
-    bool m_AlwaysRunPostCmds;
     StringHash m_Vars;
 private:
 };

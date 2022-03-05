@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12706 $
- * $Id: dlgabout.cpp 12706 2022-02-06 18:25:37Z wh11204 $
+ * $Revision: 12718 $
+ * $Id: dlgabout.cpp 12718 2022-02-18 07:39:25Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/src/dlgabout.cpp $
  */
 
@@ -31,6 +31,7 @@
 #include <wx/dcmemory.h>    // wxMemoryDC
 #include <wx/display.h>
 #include <wx/statbmp.h>
+
 #include <algorithm>       // for std::sort only
 
 #include "appglobals.h"
@@ -44,27 +45,6 @@ struct Item
     wxString name, value;
 };
 
-static bool IsLess(const Item& a, const Item& b)
-{
-    return a.name.CmpNoCase(b.name) < 0;
-}
-
-static wxString FormatItems(const std::vector <Item> & items)
-{
-    int maxNameLength = 0;
-    for (const Item& item : items)
-        maxNameLength = std::max(maxNameLength, int(item.name.length()));
-
-    wxString information;
-    for (const Item& item : items)
-    {
-        information += item.name;
-        information += wxString(' ', maxNameLength - int(item.name.length()));
-        information += ": " + item.value + '\n';
-    }
-
-    return information;
-}
 
 // class constructor
 

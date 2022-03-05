@@ -7,9 +7,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="tinyXML">
-				<Option output="devel30/txml" prefix_auto="1" extension_auto="1" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/txml" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs30" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -18,7 +18,7 @@
 			</Target>
 			<Target title="AutoRevision">
 				<Option output="$(TARGET_OBJECT_DIR)/autorevision" prefix_auto="1" extension_auto="1" />
-				<Option object_output=".objs30" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option parameters="+wx +int +t .. include/autorevision.h" />
@@ -32,9 +32,9 @@
 				</Linker>
 			</Target>
 			<Target title="ConsoleRunner">
-				<Option output="devel30/cb_console_runner" prefix_auto="1" extension_auto="1" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/cb_console_runner" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="tools/ConsoleRunner" />
-				<Option object_output=".objs30" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -46,9 +46,9 @@
 				</Linker>
 			</Target>
 			<Target title="Squirrel">
-				<Option output="devel30/squirrel" prefix_auto="1" extension_auto="1" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/squirrel" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs30" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -56,9 +56,9 @@
 				</Compiler>
 			</Target>
 			<Target title="scintilla">
-				<Option output="devel30/wxscintilla_cb" prefix_auto="1" extension_auto="1" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/wxscintilla_cb" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs30" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -77,10 +77,10 @@
 				</ResourceCompiler>
 			</Target>
 			<Target title="sdk">
-				<Option output="devel30/libcodeblocks" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libwxscintilla_cb.a;" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/libcodeblocks" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
+				<Option external_deps="devel$(#WXWIDGETS.WX_VERSION)/libwxscintilla_cb.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -113,9 +113,9 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="src">
-				<Option output="devel30/codeblocks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/codeblocks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -131,9 +131,9 @@
 				</Linker>
 			</Target>
 			<Target title="Abbreviations">
-				<Option output="devel30/share/codeblocks/plugins/abbreviations" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks/plugins/abbreviations" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -151,9 +151,9 @@
 				</Linker>
 			</Target>
 			<Target title="AStyle">
-				<Option output="devel30/share/codeblocks/plugins/Astyle" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks/plugins/Astyle" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -171,9 +171,9 @@
 				</Linker>
 			</Target>
 			<Target title="Autosave">
-				<Option output="devel30/share/codeblocks/plugins/autosave" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks/plugins/autosave" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -190,9 +190,9 @@
 				</Linker>
 			</Target>
 			<Target title="Compiler depslib">
-				<Option output="devel30/depslib" prefix_auto="1" extension_auto="1" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/depslib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs30" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -201,10 +201,10 @@
 				</Compiler>
 			</Target>
 			<Target title="Compiler">
-				<Option output="devel30/share/codeblocks/plugins/compiler" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libdepslib.a;" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks/plugins/compiler" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
+				<Option external_deps="devel$(#WXWIDGETS.WX_VERSION)/libdepslib.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -224,9 +224,9 @@
 				</Linker>
 			</Target>
 			<Target title="Debugger">
-				<Option output="devel30/share/codeblocks/plugins/debugger" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks/plugins/debugger" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -243,9 +243,9 @@
 				</Linker>
 			</Target>
 			<Target title="Code-completion">
-				<Option output="devel30/share/codeblocks/plugins/codecompletion" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks/plugins/codecompletion" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -262,9 +262,9 @@
 				</Linker>
 			</Target>
 			<Target title="Clangd_Client">
-				<Option output="devel30/share/codeblocks/plugins/clangd_client" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks/plugins/clangd_client" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance --no-splash-screen --verbose -p debug --no-ipc " />
@@ -292,19 +292,19 @@
 					<!-- debugging - <Add before="g++ version" /> -->
 					<!-- debugging - <Mode before="always" /> -->
 
-					<Add after="mkdir -p devel30/share/codeblocks" />
+					<Add after="mkdir -p devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks" />
 					
 					<!-- Create the clangd_client.zip file -->
 					<Add after='if [ -e %PROJECTDIR%plugins/clangd_client/clangd_client.zip ] ; then  rm %PROJECTDIR%plugins/clangd_client/clangd_client.zip; fi;' />
 					<Add after='zip -jq9 %PROJECTDIR%plugins/clangd_client/clangd_client.zip %PROJECTDIR%plugins/clangd_client/src/resources/manifest.xml' />
 					<Add after='zip -jq9 %PROJECTDIR%plugins/clangd_client/clangd_client.zip %PROJECTDIR%plugins/clangd_client/src/resources/*.xrc' />
 				    <Add after='cd %PROJECTDIR%plugins/clangd_client/src/resources &amp;&amp; zip -rq9 ../../clangd_client.zip images;' />
-					<Add after='cp %PROJECTDIR%plugins/clangd_client/clangd_client.zip devel30/share/codeblocks' /> -->
+					<Add after='cp %PROJECTDIR%plugins/clangd_client/clangd_client.zip devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks' /> -->
 
 					<!-- Create the clangd_client.cbplugin file using the stripped dll -->
 					<!-- clangd_client.cbplugin is NOT BUILT BY DEFAULT as requested by PECAN
 						<Add after='if [ -e %PROJECTDIR%plugins/clangd_client/clangd_client.cbplugin ] ; then  rm %PROJECTDIR%plugins/clangd_client/clangd_client.cbplugin; fi;'/>
-						<Add after='cp devel30/share/codeblocks/plugins/libclangd_client.so %PROJECTDIR%plugins/clangd_client' />
+						<Add after='cp devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks/plugins/libclangd_client.so %PROJECTDIR%plugins/clangd_client' />
 						<Add after='strip %PROJECTDIR%plugins/clangd_client/libclangd_client.so' />
 						<Add after='zip -jq9 %PROJECTDIR%plugins/clangd_client/clangd_client.cbplugin %PROJECTDIR%plugins/clangd_client/libclangd_client.so' />
 						<Add after='zip -jq9 %PROJECTDIR%plugins/clangd_client/clangd_client.cbplugin %PROJECTDIR%plugins/clangd_client/clangd_client.zip' />
@@ -317,9 +317,9 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="Class wizard">
-				<Option output="devel30/share/codeblocks/plugins/classwizard" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks/plugins/classwizard" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -336,9 +336,9 @@
 				</Linker>
 			</Target>
 			<Target title="Default MIME handler">
-				<Option output="devel30/share/codeblocks/plugins/defaultmimehandler" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks/plugins/defaultmimehandler" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -355,9 +355,9 @@
 				</Linker>
 			</Target>
 			<Target title="Occurrences Highlighting">
-				<Option output="devel30/share/codeblocks/plugins/occurrenceshighlighting" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks/plugins/occurrenceshighlighting" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -375,9 +375,9 @@
 				</Linker>
 			</Target>
 			<Target title="Open files list">
-				<Option output="devel30/share/codeblocks/plugins/openfileslist" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks/plugins/openfileslist" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -394,9 +394,9 @@
 				</Linker>
 			</Target>
 			<Target title="Projects-workspaces importer">
-				<Option output="devel30/share/codeblocks/plugins/projectsimporter" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks/plugins/projectsimporter" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -413,9 +413,9 @@
 				</Linker>
 			</Target>
 			<Target title="Scripted wizard">
-				<Option output="devel30/share/codeblocks/plugins/scriptedwizard" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks/plugins/scriptedwizard" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -433,9 +433,9 @@
 				</Linker>
 			</Target>
 			<Target title="To-do">
-				<Option output="devel30/share/codeblocks/plugins/todo" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/share/codeblocks/plugins/todo" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -453,9 +453,9 @@
 			</Target>
 			<Target title="XP look &amp; feel">
 				<Option platforms="Windows;" />
-				<Option output="devel30/share/CodeBlocks/plugins/xpmanifest" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30" />
-				<Option object_output=".objs30" />
+				<Option output="devel$(#WXWIDGETS.WX_VERSION)/share/CodeBlocks/plugins/xpmanifest" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel$(#WXWIDGETS.WX_VERSION)" />
+				<Option object_output=".objs$(#WXWIDGETS.WX_VERSION)" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -470,7 +470,7 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel30" />
+					<Add directory="devel$(#WXWIDGETS.WX_VERSION)" />
 				</Linker>
 			</Target>
 			<Environment>
@@ -489,10 +489,10 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-std=c++11" />
+			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add option="-std=c90" />
+			<Add option="$(#CB_BUILD.CFLAGS)" />
 			<Add option="-fPIC" />
-			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
@@ -507,7 +507,7 @@
 			<Add option="`$(WX_CONFIG) --libs std,aui,propgrid`" />
 			<Add option="`pkg-config --libs $(GTK_VERSION)`" />
 			<Add option="-Wl,--no-undefined" />
-			<Add directory="devel30" />
+			<Add directory="devel$(#WXWIDGETS.WX_VERSION)" />
 		</Linker>
 		<Unit filename="base/tinyxml/tinystr.cpp">
 			<Option target="tinyXML" />

@@ -7,15 +7,15 @@ struct AFX_MSGMAP
     const AFX_MSGMAP_ENTRY* lpEntries;
 };
 #define BEGIN_MESSAGE_MAP(theClass, baseClass) \
-           PTM_WARNING_DISABLE \
-           const AFX_MSGMAP* theClass::GetMessageMap() const \
-              { return GetThisMessageMap(); } \
-           const AFX_MSGMAP* theClass::GetThisMessageMap() \
-           { \
-              typedef theClass ThisClass;                     \
-              typedef baseClass TheBaseClass;                  \
-              static const AFX_MSGMAP_ENTRY _messageEntries[] =  \
-              {
+       PTM_WARNING_DISABLE \
+       const AFX_MSGMAP* theClass::GetMessageMap() const \
+          { return GetThisMessageMap(); } \
+       const AFX_MSGMAP* theClass::GetThisMessageMap() \
+       { \
+          typedef theClass ThisClass;                     \
+          typedef baseClass TheBaseClass;                  \
+          static const AFX_MSGMAP_ENTRY _messageEntries[] =  \
+          {
 #define END_MESSAGE_MAP() \
       {0, 0, 0, 0, 0, 0 } \
    }; \

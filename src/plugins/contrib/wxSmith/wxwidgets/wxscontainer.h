@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 8704 $
-* $Id: wxscontainer.h 8704 2012-12-23 20:32:03Z mortenmacfly $
+* $Revision: 12722 $
+* $Id: wxscontainer.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxscontainer.h $
 */
 
@@ -29,13 +29,14 @@
 #include "wxsflags.h"
 
 #include <prep.h>
+#include <cbplugin.h>
 
 using namespace wxsFlags;
 
 /** \brief Container is a class which represents widget that can
  *         have child items or one of root items
  */
-class wxsContainer: public wxsParent
+class PLUGIN_EXPORT wxsContainer: public wxsParent
 {
 public:
 

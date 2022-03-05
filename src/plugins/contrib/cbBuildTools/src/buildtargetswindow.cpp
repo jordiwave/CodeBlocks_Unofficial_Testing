@@ -57,7 +57,8 @@ void BuildTargetsWindow::ActivateProject(cbProject* project)
     for(unsigned int i = 0; i < target_count; i++)
     {
         ProjectBuildTarget* target = project->GetBuildTarget(i);
-        m_treeCtrl->AppendItem(root, target->GetTitle() );
+        if (target)
+            m_treeCtrl->AppendItem(root, target->GetTitle() );
     }
 
     m_treeCtrl->ExpandAll();

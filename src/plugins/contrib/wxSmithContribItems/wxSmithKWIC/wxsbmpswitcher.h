@@ -26,9 +26,9 @@
 #define WXSBMPSWITCHER_H
 
 #include "wxwidgets/wxswidget.h"
+#include "wx/dlimpexp.h"
 
-
-class wxsBmpSwitcher : public wxsWidget
+class WXEXPORT wxsBmpSwitcher : public wxsWidget
 {
 public:
     wxsBmpSwitcher(wxsItemResData* Data);

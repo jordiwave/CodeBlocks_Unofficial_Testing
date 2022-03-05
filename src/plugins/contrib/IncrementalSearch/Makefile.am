@@ -14,13 +14,13 @@ pluginlib_LTLIBRARIES = \
 
 libIncrementalSearch_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
-			-version-info 0:1:0 \
 			-no-undefined \
 			-avoid-version
 
 libIncrementalSearch_la_LIBADD = \
 			$(top_srcdir)/src/sdk/libcodeblocks.la \
 			$(WX_LIBS)
+
 libIncrementalSearch_la_SOURCES = \
 			IncrementalSearch.cpp \
 			IncrementalSearchConfDlg.cpp

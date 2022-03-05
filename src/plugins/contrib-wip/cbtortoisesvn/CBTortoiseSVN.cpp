@@ -507,6 +507,8 @@ void CBTortoiseSVN::OnUpdateUI(wxUpdateUIEvent &event)
             wxMenuBar *mbar = ((wxFrame*)pAppWin)->GetMenuBar();
             if (mbar)
             {
+                mbar->Freeze();
+
                 int plugin_pos;
                 if ((plugin_pos = mbar->FindMenu(_("TortoiseSVN")))!=wxNOT_FOUND)
                 {
@@ -543,6 +545,7 @@ void CBTortoiseSVN::OnUpdateUI(wxUpdateUIEvent &event)
                                SVN_file,
                                submenu);
                 }
+                mbar->Thaw();
             }
         }
     }

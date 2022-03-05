@@ -25,19 +25,18 @@ public:
     {
         return _("clangd_client");
     }
+    // Get png for the main settings/Editor/codecompletion image residing at
+    // ...\share\CodeBlocks\images\settings\codecompletion.png (main CB images)
     wxString GetBitmapBaseName() const override
     {
-        return _T("clangd_client");
+        return _T("codecompletion");
     }
     void OnApply() override;
     void OnCancel() override {}
+    void OnPageChanging() override;
 
-    void OnFindClangDaemonDir_Dlg(wxCommandEvent& event);
-    void OnFindClangDir_Dlg(wxCommandEvent& event);
-
-    void OnLLVM_ClangDaemon_AutoDetect(cb_unused wxCommandEvent& event);
-    void OnLLVM_Clang_AutoDetect(cb_unused wxCommandEvent& event);
-    void OnLLVM_ClangBoth_AutoDetect(cb_unused wxCommandEvent& event);
+    void OnLLVM_Clang_SelectMasterPath_Dlg(wxCommandEvent& event);
+    void OnLLVM_Clang_AutoDetectMasterPath(cb_unused wxCommandEvent& event);
 
 protected:
     void OnChooseColour(wxCommandEvent& event);
@@ -46,13 +45,14 @@ protected:
     void OnUpdateUI(wxUpdateUIEvent& event);
 
 private:
+    void UpdateClangDetectedDetails(const wxString& LLVMMasterPath, const wxString& clangDaemonFilename, const wxString& clangExeFilename, const wxString& clangIncDir);
     void UpdateCCDelayLabel();
-    bool ValidateReplacementToken(wxString& from, wxString& to);
 
     ParseManager*        m_ParseManager;
     CodeCompletion*      m_CodeCompletion;
     ParserBase&          m_Parser;
     DocumentationHelper* m_Documentation;
+    wxString             m_Old_LLVM_MasterPath = wxString();
 
     DECLARE_EVENT_TABLE()
 };

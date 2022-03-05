@@ -6,10 +6,17 @@ setlocal
 @SET CurrentDir="%CD%"
 
 set BUILD_BITS=%1
-IF "%BUILD_BITS%" == "32" goto start
-IF "%BUILD_BITS%" == "64" goto start
+if "%BUILD_BITS%" == "32" goto BuildBits_Okay
+if "%BUILD_BITS%" == "64" goto BuildBits_Okay
+if exist "..\..\src\devel31_32" set BUILD_BITS=32
+if exist "..\..\src\devel31_64" set BUILD_BITS=64
+if exist "src\devel31_32" set BUILD_BITS=32
+if exist "src\devel31_64" set BUILD_BITS=64
+if "%BUILD_BITS%" == "32" goto BuildBits_Okay
+if "%BUILD_BITS%" == "64" goto BuildBits_Okay
 goto BuildBitError
 
+:BuildBits_Okay
 
 :start
 if NOT exist "..\..\windows_installer\Build_NSIS_%BUILD_BITS%bit.bat" goto NoWindowsInstallerBatchFileFound

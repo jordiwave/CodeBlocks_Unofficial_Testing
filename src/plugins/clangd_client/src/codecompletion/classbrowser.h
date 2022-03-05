@@ -109,6 +109,11 @@ public:
     void SelectSavedItem();
     void ReselectItem();
 
+    ParseManager* GetParseManager()
+    {
+        return m_ParseManager;   //(ph 2022/02/14)
+    }
+
 private:
     /** handler for the mouse double click on a tree item, we usually make a jump to the
      *  associated token's position.

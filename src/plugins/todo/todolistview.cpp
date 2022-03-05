@@ -2,8 +2,8 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 12598 $
- * $Id: todolistview.cpp 12598 2021-12-20 19:38:25Z wh11204 $
+ * $Revision: 12736 $
+ * $Id: todolistview.cpp 12736 2022-03-03 20:12:16Z wh11204 $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/todo/todolistview.cpp $
  */
 
@@ -608,7 +608,7 @@ CheckListDialog::CheckListDialog(wxWindow*       parent,
     m_checkList = new wxCheckListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_checkList1Choices, 0 );
     boxSizer->Add( m_checkList, 1, wxEXPAND, 5 );
 
-    m_okBtn = new wxButton(this, wxID_ANY, wxT("OK"), wxDefaultPosition, wxDefaultSize, 0);
+    m_okBtn = new wxButton(this, wxID_ANY, _("OK"), wxDefaultPosition, wxDefaultSize, 0);
     boxSizer->Add( m_okBtn, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5 );
 
     SetSizer( boxSizer );

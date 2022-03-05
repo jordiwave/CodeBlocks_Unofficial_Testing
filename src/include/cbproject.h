@@ -847,6 +847,9 @@ private:
     // copy of <Extensions> element, in case certain plugins are disabled
     // so that the contents are not lost
     TiXmlElement* m_pExtensionsElement;
+
+    // This is for not showing the select target option dialog
+    static int iSelectTargetSelection;
 };
 
 /// Returns a string valid to be used as LD_LIBRARY_PATH (or equivalent).

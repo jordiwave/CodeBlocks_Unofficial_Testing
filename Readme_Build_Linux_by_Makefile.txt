@@ -52,54 +52,84 @@ Requirements:
 To build Code::Blocks:
     1) Grab the source code from https://sourceforge.net/p/codeblocks/code/HEAD/tree/ via SVN or via GIT or
         by downloading a snapshot.
+
     2) Make sure the source code directory does not have spaces or any non ASCII characters.
+
     3) In a terminal (e.g. bash) go to the top level folder you fetched the sources from SVN or GIT or the 
          directory you uncompressed the snapshot into.
-    4) Run the following to configure the project files for your environment:
+
+    4) Instead of performing steps 6 through 8 you can run the following script:
+        ./codeblocks_build.sh
+       
+        The codeblocks_build.sh script checks for errors and if something fails please look at the script to find which
+          log file to check to see what failure occured so you can fix it.
+        If the codeblocks_build.sh script passes then goto the last step
+
+    5) Run the following to configure the project files for your environment:
         ./bootstrap
 
-        NOTE: This only needs to be done once.
-    5) Run the following to produce the makefile's for your environment:
+    6) Run the following to produce the makefile's for your environment so you can test it or debug before installing it 
+        in the Linux OS directories:
+            ./configure --with-contrib-plugins=all --prefix=$PWD/src/devel31
+
+        or if you want to install the build in the Linux OS run the following:
         ./configure --with-contrib-plugins=all
+        
         NOTE: This also only needs to be done once or if you make change to the build files used by the configure process.
-    6) Run the following to build Code::Blocks
+
+        NOTES: 
+            A) This also only needs to be done once or if you make change to the build files used by the configure process.
+        
+            B) To build C::B base files with no contributed plugins use --without-contrib-plugins instead of --with-contrib-plugins=all as per the following:
+                ./configure --without-contrib-plugins
+
+            D) To build C::B base files with all contributed plugins except help use the following:
+                ./configure --with-contrib-plugins=all,-help
+
+                Where:
+                    "all" compiles all contrib plugins
+                    "all,-help" compiles all contrib plugins except the help plugin
+                    By default, no contrib plugins are compiled
+                    Plugin names are (this list may be out of date, so you may need to lookup the plugin names manually) :
+                            AutoVersioning, BrowseTracker, byogames, Cccc, CppCheck, cbkoders, codesnippets,
+                            codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorConfig, EditorTweaks, envvars, exporter,
+                            FileManager, headerfixup, help, hexeditor, incsearch, keybinder, libfinder, MouseSap,
+                            NassiShneiderman, ProjectOptionsManipulator, profiler, regex, ReopenEditor, rndgen, smartindent, spellchecker,
+                            symtab, ThreadSearch, ToolsPlus, Valgrind, wxcontrib, wxsmith, wxsmithcontrib, wxsmithaui
+
+    7) Run the following to build Code::Blocks
         make
-    7) Run the following to copy all of the relevant files into the install directory structure:
+
+        If you want to save the make results to a file then run the following command:
+            make > make_result.txt 2>&1
+
+    8) Run the following to copy all of the relevant files into the install directory structure:
         make install
        
-       Note: depending on how you have configured the system you may need to run "make install" as root (sudo).
+       Notes: 
+        a) depending on how you have configured the system you may need to run "make install" as root (sudo).
+        b) If you want to save the make results to a file then run the following command:
+            make > make_result.txt 2>&1
 
+    9) If you run the ./codeblocks_build.sh of configured C::B with the "--prefix=$PWD/src/devel31" option then run the following to 
+        test the C::B you built:
+            cd $PWD/src/devel31/bin
+            codeblocks
 
-    Other build options are:
-
-        ./configure --prefix=/usr --with-contrib-plugins=all,-help
-        make
-        make install
-
-        Where:
-            "--prefix=/usr" is where the "make install" will install the files. Use this with extreme caution.
-            "all" compiles all contrib plugins
-            "all,-help" compiles all contrib plugins except the help plugin
-            By default, no contrib plugins are compiled
-            Plugin names are (this list may be out of date, so you may need to lookup the plugin names manually) :
-                AutoVersioning, BrowseTracker, byogames, Cccc, CppCheck, cbkoders, codesnippets, codestat,
-                copystrings, Cscope, DoxyBlocks, dragscroll, EditorConfig, EditorTweaks, envvars, FileManager,
-                headerfixup, help, hexeditor, incsearch, keybinder, libfinder, MouseSap, NassiShneiderman,
-                ProjectOptionsManipulator, profiler, regex, ReopenEditor, rndgen, exporter, symtab,
-                ThreadSearch, ToolsPlus, Valgrind, wxsmith, wxsmithcontrib,wxsmithaui
-
-    To rebuild Code::Blocks run the following commands:
+Additional Notes/Info:
+- - - - - - - - - - - -
+1) To rebuild Code::Blocks run the following commands:
         make clean
         make
 
-NOTES:
-1) If the NassiShneiderman-plugin fails to build with a boost error then try the following:
+2) If the NassiShneiderman-plugin fails to build with a boost error then try the following:
     a) Check you have install the libboost-dev package by running the following command:
         dpkg -l | grep libboost | grep dev
 
     b) Explicitly set the boost-libdir by adding the following line to the configure-line above:
         "--with-boost-libdir=LIB_DIR"
        NOTE: Depending on your system, LIB_DIR might be "/usr/lib" or "/usr/lib64".
+
 
 
 Building WxWidget
@@ -144,7 +174,10 @@ NOTES:
      EOL if you transfer the files to Linux
 
 
+============================================================================================================================================
+============================================================================================================================================
+============================================================================================================================================
+
 WIP OTHER PAGES:
 ----------------
 https://github.com/bluehazzard/codeblocks_sf/wiki/build_linux_mint_18
-https://forums.codeblocks.org/index.php/topic,23689.msg161532.html#msg161532

@@ -35,7 +35,6 @@ pluginlib_LTLIBRARIES = \
 
 libSpellChecker_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
-			-version-info 0:1:0 \
 			-no-undefined \
 			-avoid-version
 

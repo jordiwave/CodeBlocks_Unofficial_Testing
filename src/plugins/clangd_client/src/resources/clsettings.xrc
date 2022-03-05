@@ -320,12 +320,11 @@
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer">
-										<label>Specify clang and clangd executable directory to use</label>
+										<label>LLVM files and directories to use:</label>
 										<orient>wxVERTICAL</orient>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXTCLANGDAEMON">
-												<label>ClangD executable directory</label>
-												<fg>#800000</fg>
+												<label>LLVM root master directory</label>
 											</object>
 											<flag>wxTOP|wxLEFT</flag>
 											<border>8</border>
@@ -333,7 +332,7 @@
 										<object class="sizeritem">
 											<object class="wxBoxSizer">
 												<object class="sizeritem">
-													<object class="wxTextCtrl" name="txtClangDaemonMasterPath" />
+													<object class="wxTextCtrl" name="txtLLVM_MasterPath" />
 													<flag>wxEXPAND</flag>
 													<option>1</option>
 												</object>
@@ -345,7 +344,7 @@
 													<flag>wxALIGN_TOP</flag>
 												</object>
 												<object class="sizeritem">
-													<object class="wxButton" name="btnClangDaemonAutoDetect">
+													<object class="wxButton" name="btnClangAutoDetectMasterPath">
 														<label>Auto-detect</label>
 														<size>-1,-1</size>
 													</object>
@@ -357,8 +356,7 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXTCLANG">
-												<label>Clang executable directory</label>
-												<fg>#800000</fg>
+												<label>Detected information:</label>
 											</object>
 											<flag>wxTOP|wxLEFT</flag>
 											<border>8</border>
@@ -366,23 +364,83 @@
 										<object class="sizeritem">
 											<object class="wxBoxSizer">
 												<object class="sizeritem">
-													<object class="wxTextCtrl" name="txtClangMasterPath" />
-													<flag>wxEXPAND</flag>
-													<option>1</option>
+													<object class="wxStaticText" name="ID_STATICTEXT13">
+														<label>Clang</label>
+														<size>50,23</size>
+													</object>
+													<flag>wxALL|wxALIGN_CENTER_VERTICAL|wxSHAPED</flag>
+													<border>5</border>
 												</object>
 												<object class="sizeritem">
-													<object class="wxButton" name="btnClangMasterPath">
-														<label>...</label>
-														<size>20,-1</size>
+													<object class="wxTextCtrl" name="txtDetectedClangExeFileName">
+														<value>Detected Clang executable filename</value>
+														<size>484,23</size>
+														<style>wxTE_READONLY</style>
 													</object>
-													<flag>wxALIGN_TOP</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
+													<option>4</option>
 												</object>
 												<object class="sizeritem">
-													<object class="wxButton" name="btnClangAutoDetect">
-														<label>Auto-detect</label>
-														<size>-1,-1</size>
+													<object class="wxTextCtrl" name="txtDetectedClangExeFileVersion">
+														<value>Detected Version</value>
+														<size>60,23</size>
+														<style>wxTE_READONLY</style>
 													</object>
-													<flag>wxALIGN_TOP</flag>
+													<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+												</object>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT14">
+														<label>ClangD</label>
+														<size>50,23</size>
+													</object>
+													<flag>wxALL|wxALIGN_CENTER_VERTICAL|wxSHAPED</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxTextCtrl" name="txtDetectedClangDaemonExeFileName">
+														<value>Detected ClangD executable filename</value>
+														<style>wxTE_READONLY</style>
+													</object>
+													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+													<option>4</option>
+												</object>
+												<object class="sizeritem">
+													<object class="wxTextCtrl" name="txtDetectedClangDaemonExeFileVersion">
+														<value>Detected Version</value>
+														<size>60,23</size>
+														<style>wxTE_READONLY</style>
+													</object>
+													<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+												</object>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT15">
+														<label>Include</label>
+														<size>50,23</size>
+													</object>
+													<flag>wxALL|wxALIGN_CENTER_VERTICAL|wxSHAPED</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxTextCtrl" name="txtDetectedIncludeClangDirectory">
+														<value>Detected LLVM Resource Directory</value>
+														<style>wxTE_READONLY</style>
+													</object>
+													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<option>4</option>
 												</object>
 											</object>
 											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
@@ -391,17 +449,9 @@
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT7">
 												<label>NOTE: Both clangd and cland executables version must be 13 or above. </label>
-												<fg>#800000</fg>
 											</object>
 											<flag>wxTOP|wxBOTTOM|wxLEFT</flag>
 											<border>8</border>
-										</object>
-										<object class="sizeritem">
-											<object class="wxButton" name="btnClangBothAutoDetect">
-												<label>Auto-detect BOTH clang and clangd executables</label>
-												<size>-1,-1</size>
-											</object>
-											<flag>wxALIGN_CENTER_HORIZONTAL</flag>
 										</object>
 									</object>
 									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
@@ -461,20 +511,49 @@
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer">
-										<label>Clangd Logging options</label>
+										<label>Clangd External file logging options</label>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkLogClangdClient">
 												<label>Enable Clangd Client logging</label>
+												<checked>0</checked>
 											</object>
 											<flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
 											<border>5</border>
+											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkLogClangdServer">
 												<label>Enable Clangd Server logging</label>
+												<checked>0</checked>
 											</object>
 											<flag>wxALIGN_LEFT</flag>
 											<border>5</border>
+											<option>1</option>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>8</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer">
+										<label>Clangd LSP messages tab options</label>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkLSPMsgsFocusOnSave">
+												<label>Focus tab when saving text</label>
+												<checked>0</checked>
+											</object>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkLSPMsgsClearOnSave">
+												<label>Clear old tab messages when saving text</label>
+												<checked>0</checked>
+											</object>
+											<flag>wxALIGN_LEFT</flag>
+											<border>5</border>
+											<option>1</option>
 										</object>
 									</object>
 									<flag>wxALL|wxEXPAND</flag>

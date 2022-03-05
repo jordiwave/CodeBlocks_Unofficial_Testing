@@ -338,8 +338,6 @@ public:
     template <typename ID, typename TP, typename T, typename T1, typename P1>
     size_t LSP_RegisterEventSink(ID id, TP* thisptr, void (T::*method)(T1 x1), P1 x1)
     {
-        /// FIXME (ph#): Make this a map <sequenceID, pCallbackEvent) //(ph 2021/11/1)
-
         //        QueueEvent(
         //            new LSPMethodCallbackEvent1<T, T1>(
         //                static_cast<T*>(this), method, x1)

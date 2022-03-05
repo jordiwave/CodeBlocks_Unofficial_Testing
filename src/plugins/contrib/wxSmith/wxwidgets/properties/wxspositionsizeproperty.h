@@ -15,19 +15,21 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 8148 $
-* $Id: wxspositionsizeproperty.h 8148 2012-07-19 19:50:28Z mortenmacfly $
+* $Revision: 12722 $
+* $Id: wxspositionsizeproperty.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/properties/wxspositionsizeproperty.h $
 */
 
 #ifndef WXSPOSITIONSIZEPROPERTY_H
 #define WXSPOSITIONSIZEPROPERTY_H
 
+#include <cbplugin.h>
+
 #include "../../properties/wxsproperties.h"
 #include "../wxscodercontext.h"
 
 /** \brief Structure holding informations about size or position and functions operating on them */
-struct wxsPositionSizeData
+struct PLUGIN_EXPORT wxsPositionSizeData
 {
     bool IsDefault;
     long X;
@@ -136,7 +138,7 @@ typedef wxsPositionSizeData wxsSizeData;
  * "default" flag is turned on, dimensions are both -1, using dialog units
  * is set to false.
  */
-class wxsPositionSizeProperty: public wxsProperty
+class PLUGIN_EXPORT wxsPositionSizeProperty: public wxsProperty
 {
 public:
 

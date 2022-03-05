@@ -11,9 +11,10 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef BMPCHECKBOX_H
+#define BMPCHECKBOX_H
 
-#ifndef KwxNewWidget_H
-#define KwxNewWidget_H
+#include "wx/dlimpexp.h"
 
 ////////////////// Custom events /////////////////////////
 
@@ -30,7 +31,7 @@ const wxEventType kwxEVT_BITBUTTON_CLICK	= kwxEVT_BITBUTTON_FIRST + 1;
 //////////////////////////////////////////////////////////
 
 
-class kwxBmpCheckBox : public wxControl
+class WXEXPORT kwxBmpCheckBox : public wxControl
 {
 
 public:
@@ -96,4 +97,4 @@ private:
 
 };
 
-#endif // KwxNewWidget_H
+#endif

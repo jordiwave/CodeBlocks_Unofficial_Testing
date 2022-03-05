@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 11442 $
-* $Id: wxsitem.h 11442 2018-08-07 07:14:29Z fuscated $
+* $Revision: 12722 $
+* $Id: wxsitem.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxsitem.h $
 */
 
@@ -37,6 +37,7 @@
 #include <stdarg.h>
 
 #include <prep.h>
+#include <cbplugin.h>
 
 class wxsItemResData;
 class wxsParent;
@@ -69,7 +70,7 @@ class wxWindow;
  * \note Parent of item is automatically set up when adding item to wxsParentClass
  *       using wxsParent::AddChild
  */
-class wxsItem: public wxsPropertyContainer, public wxsCodeGenerator
+class PLUGIN_EXPORT wxsItem: public wxsPropertyContainer, public wxsCodeGenerator
 {
 public:
 

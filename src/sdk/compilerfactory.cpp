@@ -313,10 +313,11 @@ void CompilerFactory::LoadSettings()
                 Compilers[i]->GetID().IsSameAs(defaultCompilerID)
            )
         {
+            LogManager *logMgr = Manager::Get()->GetLogManager();
             if (Compilers[i]->GetMasterPath().IsEmpty())
-                Manager::Get()->GetLogManager()->Log(wxString::Format("The master path of compiler ID \"%s\" is empty -> triggers auto-detection.", Compilers[i]->GetID()));
+                logMgr->DebugLog(F(_T("The master path of compiler ID \"%s\" is empty -> triggers auto-detection."), Compilers[i]->GetID().wx_str()));
             if (!wxFileName::DirExists(Compilers[i]->GetMasterPath()))
-                Manager::Get()->GetLogManager()->Log(wxString::Format("The master path (%s) of compiler ID \"%s\" does not exist -> triggers auto-detection.", Compilers[i]->GetMasterPath(), Compilers[i]->GetID()));
+                logMgr->DebugLog(F(_T("The master path (%s) of compiler ID \"%s\" does not exist -> triggers auto-detection."), Compilers[i]->GetMasterPath(), Compilers[i]->GetID().wx_str()));
             needAutoDetection = true;
         }
     }
@@ -337,11 +338,11 @@ Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxStr
     if (!compCount)
         return nullptr;
 
+    // first build a list of valid compilers
     int selected = -1;
-    const wxString lid = preselectedID.Lower();
-
-    // first build a list of available compilers
+    const wxString lid(preselectedID.Lower());
     wxArrayString compilerChoices;
+    compilerChoices.Alloc(compCount);
 
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {

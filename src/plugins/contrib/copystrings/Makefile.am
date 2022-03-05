@@ -14,12 +14,12 @@ pluginlib_LTLIBRARIES = \
 
 libcopystrings_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
-			-version-info 0:1:0 \
 			-no-undefined \
 			-avoid-version
 
 libcopystrings_la_LIBADD = \
-			$(top_srcdir)/src/sdk/libcodeblocks.la $(WX_LIBS)
+			$(top_srcdir)/src/sdk/libcodeblocks.la \
+			$(WX_LIBS)
 
 libcopystrings_la_SOURCES = \
 			copystrings.cpp

@@ -15,8 +15,8 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 12328 $
-* $Id: wxscodercontext.h 12328 2021-05-08 12:17:19Z fuscated $
+* $Revision: 12722 $
+* $Id: wxscodercontext.h 12722 2022-02-23 09:31:26Z wh11204 $
 * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/wxSmith/wxwidgets/wxscodercontext.h $
 */
 
@@ -29,6 +29,8 @@
 #include <wx/hashset.h>
 #include "../wxscodinglang.h"
 
+#include <cbplugin.h>
+
 /** \brief This struct is responsible for keeping current code context while generating resource
  *
  * This struct keeps information needed to properly generate and store source code.
@@ -36,7 +38,7 @@
  * It may also contain other data stored between generation of code in different items
  * in form of wxString->wxString map.
  */
-struct wxsCoderContext
+struct PLUGIN_EXPORT wxsCoderContext
 {
     WX_DECLARE_STRING_HASH_MAP(wxString,ExtraMap);
     WX_DECLARE_HASH_SET(wxString,wxStringHash,wxStringEqual,wxStringSet);

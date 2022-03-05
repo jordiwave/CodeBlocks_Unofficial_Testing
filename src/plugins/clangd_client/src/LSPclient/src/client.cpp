@@ -171,35 +171,23 @@ const wxString COMPILER_ERROR_ID_LOG = COMPILER_ERROR_LOG.AfterFirst(wxT(':'));
 ProcessLanguageClient::ProcessLanguageClient(const cbProject* pProject, const char* program, const char* arguments)
 // ----------------------------------------------------------------------------
 {
-    m_LSP_responseStatus = false;
     LogManager* pLogMgr = Manager::Get()->GetLogManager();
+    m_LSP_responseStatus = false;
 
     // Find number of running Clangd servers and use that number as part of next log name (deprecated)
     wxString sep = wxFileName::GetPathSeparator();
     wxString tempDir = wxFileName::GetTempDir();
-    wxString clangResourceDir  = wxEmptyString;
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
-    wxString cfgClangDaemonMasterPath = cfg->Read("/LLVM_ClangDaemonMasterPath", wxString());
-    wxString cfgClangMasterPath = cfg->Read("/LLVM_ClangMasterPath", wxString());
+    //wxString LLVM_MasterPath                       = cfg->Read("/LLVM_MasterPath",                     "");
+    //wxString LLVM_DetectedClangExeFileName         = cfg->Read("/LLVM_DetectedClangExeFileName",       "");
+    wxString LLVM_DetectedClangDaemonExeFileName    = cfg->Read("/LLVM_DetectedClangDaemonExeFileName", "");
+    wxString LLVM_DetectedIncludeClangDirectory         = cfg->Read("/LLVM_DetectedIncludeClangDirectory", "");
 
-    wxFileName fnClang(cfgClangMasterPath, CLANG_FILENAME);
-    wxFileName fnClangDaemon(cfgClangDaemonMasterPath, CLANG_DAEMON_FILENAME);
-
-    if (not fnClangDaemon.DirExists())
+    if (!wxFileExists(LLVM_DetectedClangDaemonExeFileName))
     {
-        pLogMgr->DebugLog("Clangd config directory invalid:" + cfgClangDaemonMasterPath);
+        pLogMgr->DebugLog("ClangD filename invalid:" + LLVM_DetectedClangDaemonExeFileName);
         return;
-    }
-    if (not fnClangDaemon.FileExists())
-    {
-        pLogMgr->DebugLog("Clangd config directory \"" + cfgClangMasterPath + "\" does not contain the clangd executable.");
-        return;
-    }
-
-    if (fnClang.FileExists())
-    {
-        clangResourceDir = fnClang.GetFullPath();
     }
 
     // Set the clangd --query-dirver parameter
@@ -207,69 +195,61 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject* pProject, const ch
     if (not pCompiler)
     {
         wxString msg;
-        msg << __FUNCTION__ << "() Could not find projects' compiler installation.";
-        cbMessageBox( msg, "Error");
+        msg << "Error: " << __FUNCTION__ << "() Could not find projects' compiler installation.";
+        pLogMgr->Log(msg);
         return;
     }
-    wxString masterPath = pCompiler ? pCompiler->GetMasterPath() : "";
+
+    wxString pgmExec = LLVM_DetectedClangDaemonExeFileName;
+    QuoteStringIfNeeded(pgmExec);
+
+    wxString command = pgmExec + " --log=verbose";
 
     // get the first char of executable name from the compiler toolchain
     CompilerPrograms toolchain = pCompiler->GetPrograms();
     wxString toolchainCPP = toolchain.CPP.Length() ? wxString(toolchain.CPP[0]) : "";
-    // " --query-driver=f:\\usr\\MinGW810_64seh\\**\\g*"
-    wxString queryDriver = masterPath + fileSep + "**" + fileSep + toolchainCPP + "*";
-    if (not platform::windows)
-        queryDriver.Replace("\\","/");
 
-    wxString command = "\"" + fnClangDaemon.GetFullPath() +"\"" + " --log=verbose";
+    // Get query driver  " --query-driver=f:\\usr\\MinGW810_64seh\\**\\g*"
+    wxString compilerMasterPath = pCompiler ? pCompiler->GetMasterPath() : "";
+    wxString queryDriver = compilerMasterPath + fileSep + "**" + fileSep + toolchainCPP + "*";
+    QuoteStringIfNeeded(queryDriver);
 
-    // Use users settings path of clangd if present (Settings=>editor=>clangd_client=>c/c++ parser=>clangd's installation location)
-    if (fnClang.FileExists())
-        command = fnClang.GetFullPath() + " --log=verbose";
-
-    command += " --query-driver=\"" + queryDriver + "\"";
-
+    queryDriver.Replace("\\","/");
+    command += " --query-driver=" + queryDriver;
 
     // suggestion: -j=# should be no more than half of processors
     int max_parallel_processes = std::max(1, wxThread::GetCPUCount());
-    if (max_parallel_processes > 1) max_parallel_processes = max_parallel_processes >> 1; //use only half of cpus
 
-    // I dont think I want to set "maximum usable threads" to the same as "max parsing threads". Some threads should
-    // be availablle to clangd for immediate foreground find/goto functions etc. while editors parse in the backgound.
-    // Currently, the parser (OnLSP_BatchTimer) is limiting parallel parsing to the user specified config max.
-    // I've been runnng 8 months with max usable threads set to 4 and max parsing threads set to 2 on my HP laptop (i7/2.5GHZ)
-    // It works well. (only runs the fan when compiling and banging on clangd at the same time.)
-    //? int cfg_parallel_processes = std::max(cfg->ReadInt("/max_threads", 1), 1);  //user specified config max, don't allow 0
-    //? max_parallel_processes = std::min(max_parallel_processes, cfg_parallel_processes);
-
+    if (max_parallel_processes > 1)
+    {
+        // Do NOT use "maximum usable threads" as you need to leave threads for C::B and OS
+        max_parallel_processes = (max_parallel_processes *2)/3; //use only 66% of cpus
+    }
     command += " -j=" + std::to_string(max_parallel_processes) ;  // Number of async workers used by clangd. Background index also uses this many workers.
 
+    // Some other parameter maybe useful in the future
     //?command += " --completion-style=bundled";   // Similar completion items (e.g. function overloads) are combined. Type information shown where possible
     //?command += " --background-index";           // Index project code in the background and persist index on disk.
     //-command += " --suggest-missing-includes";   // Attempts to fix diagnostic errors caused by missing includes using index
 
     command += " --limit-results=20";              // Limit the number of results returned by clangd. 0 means no limit (default=100)
 
-    if (wxDirExists(clangResourceDir))
-        command += " --resource-dir=\"" + clangResourceDir + "\"";  // Directory for system includes
-
-    wxString oldEnvPath;
-    wxGetEnv("PATH", &oldEnvPath);
-
-    // clear path of any unnecessary directories to avoid dll conflicts. // FIXME (ph#): Is this really necessary?
-    wxString newEnvPath = oldEnvPath;
-    if (masterPath.Length())
+    // Now check for LLVM resources
+    if (wxDirExists(LLVM_DetectedIncludeClangDirectory))
     {
-        masterPath += "\\bin";
-        if (not platform::windows) masterPath.Replace("\\", "/");
-        //-wxSetEnv("PATH", masterPath);
-        wxGetEnv("PATH", &newEnvPath);
+        // Directory for system includes
+        QuoteStringIfNeeded(LLVM_DetectedIncludeClangDirectory);
+        command += " --resource-dir=" + LLVM_DetectedIncludeClangDirectory;
     }
+
+    if (not platform::windows)
+        command.Replace("\\","/");
 
     // Show clangd start command in Code::Blocks Debug log
     pLogMgr->DebugLog("Clangd start command:" + command);
 
-#if defined(_WIN32)  //<<------------windows only -------------------
+#if defined(_WIN32)
+    //<<------------windows only -------------------
     /** Info:
      * @brief start process
      * @param parent the parent. all events will be sent to this object
@@ -294,19 +274,18 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject* pProject, const ch
                                            );
 
     wxMilliSleep(1000);
-#else // _nix //<<------------------------unix only -------------------------------
+#else
+    //<<------------------------unix only -------------------------------
     wxArrayString argsArrayString = GetArrayFromString(command, " ");
     m_pServerProcess = new UnixProcess(this, argsArrayString);
 
     if (not m_pServerProcess)
     {
         wxString msg = wxString::Format("%s: The child process for clangd failed allocation.", __PRETTY_FUNCTION__);
-        cbMessageBox(msg, "ERROR");
+        //cbMessageBox(msg, "ERROR");
+        pLogMgr->DebugLogError(msg);
     }
 #endif //_WIN32 vs _nix
-
-    // Restore the modified PATH variable
-    wxSetEnv("PATH", oldEnvPath) ;
 
     if ( (not m_pServerProcess) or (not IsAlive()) )
     {
@@ -336,7 +315,9 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject* pProject, const ch
             // write the project title to the log for identification
             wxString logLine = "Project: " + pProject->GetTitle() + ": " + pProject->GetFilename();
             writeClientLog(logLine);
-            logLine = "SystemPath: " + newEnvPath;
+            wxString envPath;
+            wxGetEnv("PATH", &envPath);
+            logLine = "SystemPath: " + envPath;
             writeClientLog(logLine);
 
         }
@@ -356,7 +337,9 @@ ProcessLanguageClient::ProcessLanguageClient(const cbProject* pProject, const ch
         // write the project title to the log for identification
         wxString logLine = "Project: " + pProject->GetTitle() + ": " + pProject->GetFilename()+ "\n";
         writeServerLog(logLine);
-        logLine = "SystemPath: " + newEnvPath + "\n";
+        wxString envPath;
+        wxGetEnv("PATH", &envPath);
+        logLine = "SystemPath: " + envPath + "\n";
         writeServerLog(logLine);
     }
 
@@ -514,6 +497,30 @@ void ProcessLanguageClient::writeServerLog(wxString logmsg)
     if (not lspServerLogFile.IsOpened()) return;
     lspServerLogFile.Write(logmsg);
     lspServerLogFile.Flush();
+
+    //(ph 2022/02/16)
+    // V[10:58:51.183] Reusing preamble version 0 for version 0 of F:\usr\Proj\HelloWorld\HelloWorld3.h
+    // clangd does not always respond when it reuses a file (esp., with didOpen() )
+    // So here we check if that's what happend by checking the server log response.
+    // If so, we clear our "waiting for response" status flags
+    if (logmsg.Contains("Reusing preamble version") and logmsg.Contains(" for version "))
+    {
+        wxString filename;
+        int filenamePosn = logmsg.Find(" of ");
+        if (wxFound(filenamePosn))
+        {
+            filename = logmsg.Mid(filenamePosn+4);
+            filename.Trim();    //remove CRLF or LF
+            filename.Replace("\\", "/");
+            cbEditor* pEditor = Manager::Get()->GetEditorManager()->IsBuiltinOpen(filename);
+            if (pEditor)
+            {
+                LSP_RemoveFromServerFilesParsing(filename);
+                SetLSP_EditorIsParsed(pEditor, true);
+            }
+        }
+    }//endIf logmsg
+
 }
 // ----------------------------------------------------------------------------
 wxString ProcessLanguageClient::GetTime()
@@ -1039,12 +1046,15 @@ bool ProcessLanguageClient::WriteHdr(const std::string &in)
     return true;
 }//end WriteHdr()
 // ----------------------------------------------------------------------------
-bool ProcessLanguageClient::DoValidateUTF8data(std::string& data)
+bool ProcessLanguageClient::DoValidateUTF8data(std::string& strdata)
 // ----------------------------------------------------------------------------
 {
+    // These invalid utr8 chars are coming from clangd textDocument/completion
+    // responses in sysmbols from non-CB files. Eg., files included by the compiler etc.
+
     // convert string data to vector
     //eg., const std::vector<int> charvect(json_str.begin(), json_str.end());
-    std::vector<int>utf8Vector(data.begin(), data.end());
+    std::vector<int>utf8Vector(strdata.begin(), strdata.end());
 
     vector<int>invalidLocs;
     ValidateUTF8vector validateUTF8;
@@ -1052,14 +1062,14 @@ bool ProcessLanguageClient::DoValidateUTF8data(std::string& data)
     if (invalidLocs.size())
     {
         ConfigManager *cfgApp = Manager::Get()->GetConfigManager(_T("app"));
+        // Avoid utf8 asserts in internationalized CodeBlocks.
         bool i18n = cfgApp->ReadBool(_T("/locale/enable"), false);
-        //const wxLanguageInfo* info = wxLocale::FindLanguageInfo(cfgApp->Read(_T("/locale/language")));
-        //wxString canonicalName = info->CanonicalName;
 
-        for (unsigned ii=0; ii<invalidLocs.size(); ++ii)
+        // Erase the invalid utf8 chars (if any) in reverse order
+        for (int ii=invalidLocs.size(); ii-- > 0; )
         {
             int invloc = invalidLocs[ii];
-            std::string invStr(&data[invloc], 1);
+            std::string invStr(&strdata[invloc], 1);
             unsigned char invChar(invStr[0]);
 
             // clangd response:
@@ -1068,15 +1078,15 @@ bool ProcessLanguageClient::DoValidateUTF8data(std::string& data)
             //  "textDocument":{"uri":"file:///F:/usr/Proj/Clangd_Client-uw/clone/src/LSPclient/src/client.cpp"}
             std::string respID;
             std::string respURI;
-            int respIDposn = data.find("textDocument/");
-            int respURIposn = data.find("{\"uri\":\"file://");
+            int respIDposn = strdata.find("textDocument/");
+            int respURIposn = strdata.find("{\"uri\":\"file://");
             if (stdFound(respIDposn))
-                respID = data.substr(respIDposn, 24);
+                respID = strdata.substr(respIDposn, 24);
             if (stdFound(respURIposn))
             {
-                int uriend = data.find("\"}", respURIposn);
+                int uriend = strdata.find("\"}", respURIposn);
                 if (wxFound(uriend))
-                    respURI = data.substr(respURIposn+7, uriend);
+                    respURI = strdata.substr(respURIposn+7, uriend);
             }
 
             wxString msg = "Error: Removed clangd response invalid utf8 char:";
@@ -1096,9 +1106,10 @@ bool ProcessLanguageClient::DoValidateUTF8data(std::string& data)
             Manager::Get()->GetLogManager()->DebugLog(msg);
             writeClientLog(msg);
 
-            data[invloc] = ' '; //clear the invalid utf8 char
-        }
-    }
+            // erase the invalid utf8 char
+            strdata.erase (invloc, 1);
+        }//endFor
+    }//endIf
     return result;
 
 }//end DoValidateUTF8data
@@ -1398,7 +1409,7 @@ void ProcessLanguageClient::OnMethodParams(wxCommandEvent& event)
 wxString ProcessLanguageClient::GetRRIDvalue(wxString& lspHdrString)
 // ----------------------------------------------------------------------------
 {
-    // RRID == RequestResponseID, and int to redirect responses to the requestor
+    // RRID == RequestResponseID, an int to redirect responses to the requestor
 
     int posn = wxNOT_FOUND;
     long lspRRID = 0;
@@ -1880,9 +1891,13 @@ void ProcessLanguageClient::LSP_DidSave(cbEditor* pcbEd)
     //        cbMessageBox(errMsg);
     //    }
 
-    // clear the "LSP messages" log
-    m_pDiagnosticsLog->Clear();
-    pcbEd->SetErrorLine(-1);            ;//clear any error indicator
+    // clear the "LSP messages" log if user set option
+    ConfigManager* pCfg = Manager::Get()->GetConfigManager("clangd_client");
+    bool doClear = pCfg->ReadBool("/lspMsgsClearOnSave_check", false);
+    if (doClear)
+        m_pDiagnosticsLog->Clear(); //(ph 2022/02/12)
+
+    pcbEd->SetErrorLine(-1);            ;//clear any error indicator in editor
 
     // There's a bug in clangd that causes completions to stop after a DidSave(uri).
     // Clangd gets an unhandled exception (see server log and clangd #320 bug),
@@ -3136,13 +3151,9 @@ bool ProcessLanguageClient::AddFileToCompileDBJson(cbProject* pProject, ProjectB
 
     size_t compileCommandDBchanged = 0;
 
-    wxString sep = "/";
-    if (platform::windows) sep = "\\";
-
     wxString newFullFilePath = argFullFilePath;
     if (platform::windows)
-        newFullFilePath.Replace(sep, "/");
-    sep = "/";
+        newFullFilePath.Replace(fileSep, "/");
 
     ProjectFile* pProjectFile = pProject->GetFileByFilename(newFullFilePath, false);
     if (not pProjectFile) return false;
@@ -3248,7 +3259,7 @@ bool ProcessLanguageClient::AddFileToCompileDBJson(cbProject* pProject, ProjectB
         std::string ccjFile    = entry["file"];
         std::string ccjCommand = entry["command"];
 
-        //-wxString ccjPath = ccjDir + sep + ccjFile ;
+        //-wxString ccjPath = ccjDir + filesep + ccjFile ;
         if (ccjFile == newFullFilePath)         //(ph 2021/01/15) make compile_commands file fullpath
         {
             // filename and directory name have matched.
@@ -3483,7 +3494,10 @@ void ProcessLanguageClient::CreateDiagnosticsLog()
         ListCtrlLogger* pLogger = (ListCtrlLogger*)logslot.GetLogger();
         // pLogger->Clear();
         if (pLogger)
+        {
             m_pDiagnosticsLog = (LSPDiagnosticsResultsLog*)pLogger;
+            m_pDiagnosticsLog->Clear();
+        }
         return;
     }
 
@@ -3516,9 +3530,7 @@ void ProcessLanguageClient::CreateDiagnosticsLog()
         {
             wxCommandEvent dsEvt(wxEVT_COMMAND_MENU_SELECTED, XRCID("idDragScrollAddWindow"));
             dsEvt.SetEventObject(pWindow);
-            //pPlgn->AddPendingEvent(dsEvt);
-            //Manager::Get()->GetAppFrame()->GetEventHandler()->AddPendingEvent(dsEvt);
-            pPlgn->ProcessEvent(dsEvt);
+            pPlgn->ProcessEvent(dsEvt); //(ph 2022/02/12)
         }
     }
 

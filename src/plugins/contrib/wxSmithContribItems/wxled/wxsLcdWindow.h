@@ -2,9 +2,9 @@
 #define WXSLCDWINDOW_H
 
 #include "wxswidget.h"
+#include "wx/dlimpexp.h"
 
-
-class wxsLcdWindow : public wxsWidget
+class WXEXPORT wxsLcdWindow : public wxsWidget
 {
 public:
     wxsLcdWindow(wxsItemResData* Data);

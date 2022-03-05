@@ -24,8 +24,9 @@ lib_LTLIBRARIES = \
 			libwxsmithlib.la
 
 libwxsmithlib_la_LDFLAGS = \
-			-version-info 0:1:0 \
-			-shared
+			@MODULE_SHARED_LDFLAGS@ \
+			-no-undefined \
+			-avoid-version
 
 if CODEBLOCKS_NT
 libwxsmithlib_la_LDFLAGS += \

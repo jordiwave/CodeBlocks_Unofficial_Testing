@@ -26,9 +26,9 @@
 #define WXSANGULARREGULATOR_H
 
 #include "wxwidgets/wxswidget.h"
+#include "wx/dlimpexp.h"
 
-
-class wxsAngularRegulator : public wxsWidget
+class WXEXPORT wxsAngularRegulator : public wxsWidget
 {
 public:
     wxsAngularRegulator(wxsItemResData* Data);

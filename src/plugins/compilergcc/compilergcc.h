@@ -52,12 +52,15 @@ enum BuildState
 {
     bsNone = 0,
     bsProjectPreBuild,
+    bsTargetPreClean,
     bsTargetClean,
+    bsTargetPostClean,
     bsTargetPreBuild,
     bsTargetBuild,
     bsTargetPostBuild,
     bsTargetDone,
     bsProjectPostBuild,
+    bsProjectInstall,
     bsProjectDone
 };
 
@@ -71,9 +74,14 @@ enum LogTarget
 
 enum BuildAction
 {
-    baClean = 0,
+    baCleanPre = 0,
+    baClean,
+    baCleanPost,
+    baBuildPre,
     baBuild,
+    baBuildPost,
     baRun,
+    baInstall,
     baBuildFile
 };
 
@@ -115,6 +123,7 @@ public:
     int CleanWorkspace(const wxString& target = wxEmptyString) override;
     int BuildWorkspace(const wxString& target = wxEmptyString) override;
     int RebuildWorkspace(const wxString& target = wxEmptyString) override;
+    int InstallWorkspace(const wxString& target = wxEmptyString);
     int CompileFile(const wxString& file) override;
     virtual int CompileFileWithoutProject(const wxString& file);
     virtual int CompileFileDefault(cbProject* project, ProjectFile* pf, ProjectBuildTarget* bt);
@@ -165,6 +174,12 @@ public:
     void OnUpdateUI(wxUpdateUIEvent& event);
     void OnConfig(wxCommandEvent& event);
     virtual void UpdateSetupEnvironment();
+
+    int Install(ProjectBuildTarget* target);
+    int Install(const wxString& target);
+    void OnInstallAll(wxCommandEvent& event);
+    void OnInstall(wxCommandEvent& event);
+
 private:
     friend class CompilerOptionsDlg;
 
@@ -219,6 +234,7 @@ private:
     void LogMessage(const wxString& message, CompilerLineType lt = cltNormal, LogTarget log = ltAll, bool forceErrorColour = false, bool isTitle = false, bool updateProgress = false);
     void SaveBuildLog();
     void InitBuildLog(bool workspaceBuild);
+    wxString GetBuildAction(BuildAction action);
     void PrintBanner(BuildAction action, cbProject* prj = 0, ProjectBuildTarget* target = 0);
     bool UseMake(cbProject* project = 0);
 
@@ -231,12 +247,12 @@ private:
     void PrintInvalidCompiler(ProjectBuildTarget *target, Compiler *compiler, const wxString &finalMessage);
     ProjectBuildTarget* GetBuildTargetForFile(ProjectFile* pf);
     wxString GetMakeCommandFor(MakeCommand cmd, cbProject* project, ProjectBuildTarget* target);
-    int DoBuild(bool clean, bool build);
-    int DoBuild(const wxString& target, bool clean, bool build, bool clearLog=true);
-    int DoWorkspaceBuild(const wxString& target, bool clean, bool build, bool clearLog=true);
+    int DoBuild(bool clean, bool build, bool install);
+    int DoBuild(const wxString& target, bool clean, bool build, bool install, bool clearLog);
+    int DoWorkspaceBuild(const wxString& target, bool clean, bool build, bool install, bool clearLog);
     void CalculateWorkspaceDependencies(wxArrayInt& deps);
     void CalculateProjectDependencies(cbProject* prj, wxArrayInt& deps);
-    void InitBuildState(BuildJob job, const wxString& target);
+    void InitBuildState(BuildJob job, const wxString& target, bool clean, bool build, bool install);
     void ResetBuildState();
     void BuildStateManagement(); ///< This uses m_BuildJob.
     BuildState GetNextStateBasedOnJob();
@@ -321,9 +337,10 @@ private:
     BuildState          m_NextBuildState;
     cbProject*          m_pLastBuildingProject;
     ProjectBuildTarget* m_pLastBuildingTarget;
-    // Clean and Build
+    // Clean and Build and install
     bool m_Clean;
     bool m_Build;
+    bool m_Install;
     // if set and we are reaching NotifyJobDone, we know that we have finished the
     // last step in a clean/build (aka rebuild)-process and send the cbEVT_COMPILER_FINISHED
     bool m_LastBuildStep;

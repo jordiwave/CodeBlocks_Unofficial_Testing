@@ -25,9 +25,13 @@ EXTRA_DIST = \
 			codeblocks.spec \
 			codeblocks.spec.fedora \
 			codeblocks.plist \
-			BUGS \
-			BUILD \
-			COMPILERS \
+			Readme_Build_Debian_deb_packages.txt
+			Readme_Build_Linux_by_Makefile.txt
+			Readme_Build_Linux_by_Workspace.txt
+			Readme_Build_Windows_by_Workspace.txt
+			Readme_Build_Windows_MSYS2_by_Makefile.txt
+			Readme_License_GPL3.TXT
+			Readme_Release_Checklist.txt
 			$(srcdir)/update* \
 			ChangeLog.xsl \
 			codeblocks.appdata.xml \

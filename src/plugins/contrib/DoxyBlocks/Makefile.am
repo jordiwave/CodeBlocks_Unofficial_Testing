@@ -14,7 +14,6 @@ pluginlib_LTLIBRARIES = \
 
 libDoxyBlocks_la_LDFLAGS = \
 			@MODULE_SHARED_LDFLAGS@ \
-			-version-info 0:1:0 \
 			-no-undefined \
 			-avoid-version
 
@@ -51,7 +50,7 @@ resources_forZIP = \
 			images/16x16/doxywizard.png \
 			images/16x16/extract.png \
 			images/16x16/html.png \
-	\
+			\
 			images/20x20/chm.png \
 			images/20x20/comment_block.png \
 			images/20x20/comment_line.png \
@@ -59,7 +58,7 @@ resources_forZIP = \
 			images/20x20/doxywizard.png \
 			images/20x20/extract.png \
 			images/20x20/html.png \
-	\
+			\
 			images/24x24/chm.png \
 			images/24x24/comment_block.png \
 			images/24x24/comment_line.png \
@@ -67,7 +66,7 @@ resources_forZIP = \
 			images/24x24/doxywizard.png \
 			images/24x24/extract.png \
 			images/24x24/html.png \
-	\
+			\
 			images/28x28/chm.png \
 			images/28x28/comment_block.png \
 			images/28x28/comment_line.png \
@@ -75,7 +74,7 @@ resources_forZIP = \
 			images/28x28/doxywizard.png \
 			images/28x28/extract.png \
 			images/28x28/html.png \
-	\
+			\
 			images/32x32/chm.png \
 			images/32x32/comment_block.png \
 			images/32x32/comment_line.png \
@@ -83,7 +82,7 @@ resources_forZIP = \
 			images/32x32/doxywizard.png \
 			images/32x32/extract.png \
 			images/32x32/html.png \
-	\
+			\
 			images/40x40/chm.png \
 			images/40x40/comment_block.png \
 			images/40x40/comment_line.png \
@@ -91,7 +90,7 @@ resources_forZIP = \
 			images/40x40/doxywizard.png \
 			images/40x40/extract.png \
 			images/40x40/html.png \
-	\
+			\
 			images/48x48/chm.png \
 			images/48x48/comment_block.png \
 			images/48x48/comment_line.png \
@@ -99,7 +98,7 @@ resources_forZIP = \
 			images/48x48/doxywizard.png \
 			images/48x48/extract.png \
 			images/48x48/html.png \
-	\
+			\
 			images/56x56/chm.png \
 			images/56x56/comment_block.png \
 			images/56x56/comment_line.png \
@@ -107,7 +106,7 @@ resources_forZIP = \
 			images/56x56/doxywizard.png \
 			images/56x56/extract.png \
 			images/56x56/html.png \
-	\
+			\
 			images/64x64/chm.png \
 			images/64x64/comment_block.png \
 			images/64x64/comment_line.png \
@@ -135,5 +134,6 @@ DoxyBlocks.zip: manifest.xml $(resources_forZIP)
 	PWD=`pwd` cd $(srcdir) && zip -R $(PWD)/DoxyBlocks.zip manifest.xml $(resources_forZIP) > /dev/null
 
 confimagesdir = $(datadir)/@PACKAGE@/images/settings
+
 dist_confimages_DATA = \
 			$(srcdir)/*.png
