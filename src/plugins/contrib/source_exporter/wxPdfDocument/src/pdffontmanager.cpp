@@ -13,11 +13,11 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 // includes
@@ -42,20 +42,20 @@
 #include "wx/pdffontparsertype1.h"
 
 #if defined(__WXMSW__)
-#include <wx/msw/registry.h>
-//  #include "wx/msw/private.h"
+    #include <wx/msw/registry.h>
+    //  #include "wx/msw/private.h"
 #elif defined(__WXGTK__)
-#include <fontconfig/fontconfig.h>
+    #include <fontconfig/fontconfig.h>
 
-// Define some FontConfig symbols if they are missing
-#ifndef FC_WEIGHT_BOOK
-#define FC_WEIGHT_BOOK 75
-#endif
-#ifndef FC_FULLNAME
-#define FC_FULLNAME "fullname"
-#endif
+    // Define some FontConfig symbols if they are missing
+    #ifndef FC_WEIGHT_BOOK
+        #define FC_WEIGHT_BOOK 75
+    #endif
+    #ifndef FC_FULLNAME
+        #define FC_FULLNAME "fullname"
+    #endif
 #elif defined(__WXMAC__)
-#include "wx/pdffontmacosx.h"
+    #include "wx/pdffontmacosx.h"
 #else
 #endif
 
@@ -68,32 +68,32 @@
 // wxPdfFontManager is a singleton.
 // Critical sections are used to make access to it thread safe if necessary.
 #if wxUSE_THREADS
-static wxCriticalSection gs_csFontManager;
-static wxCriticalSection gs_csFontData;
+    static wxCriticalSection gs_csFontManager;
+    static wxCriticalSection gs_csFontData;
 #endif
 
 // To make reference counting and encoding conversion thread safe
 // some methods of the wxFontData class use the critical section
 // associated with the font manager.
 
-wxMBConv* wxPdfFontData::ms_winEncoding = NULL;
+wxMBConv * wxPdfFontData::ms_winEncoding = NULL;
 
-wxMBConv*
-wxPdfFontData::GetWinEncodingConv()
+wxMBConv * wxPdfFontData::GetWinEncodingConv()
 {
 #if wxUSE_THREADS
     wxCriticalSectionLocker locker(gs_csFontData);
 #endif
+
     if (ms_winEncoding == NULL)
     {
         static wxCSConv winEncoding(wxFONTENCODING_CP1252);
         ms_winEncoding = &winEncoding;
     }
+
     return ms_winEncoding;
 }
 
-int
-wxPdfFontData::IncrementRefCount()
+int wxPdfFontData::IncrementRefCount()
 {
 #if wxUSE_THREADS
     wxCriticalSectionLocker locker(gs_csFontData);
@@ -103,8 +103,7 @@ wxPdfFontData::IncrementRefCount()
 
 // --- Font List
 
-int
-wxPdfFontData::DecrementRefCount()
+int wxPdfFontData::DecrementRefCount()
 {
 #if wxUSE_THREADS
     wxCriticalSectionLocker locker(gs_csFontData);
@@ -114,66 +113,69 @@ wxPdfFontData::DecrementRefCount()
 
 class wxPdfFontListEntry
 {
-public:
-    wxPdfFontListEntry(wxPdfFontData* fontData) : m_fontData(fontData)
-    {
-        if (m_fontData != NULL)
+    public:
+        wxPdfFontListEntry(wxPdfFontData * fontData) : m_fontData(fontData)
         {
-            m_fontData->IncrementRefCount();
+            if (m_fontData != NULL)
+            {
+                m_fontData->IncrementRefCount();
+            }
         }
-    }
 
-    ~wxPdfFontListEntry()
-    {
-        if (m_fontData != NULL && m_fontData->DecrementRefCount() == 0)
+        ~wxPdfFontListEntry()
         {
-            delete m_fontData;
+            if (m_fontData != NULL && m_fontData->DecrementRefCount() == 0)
+            {
+                delete m_fontData;
+            }
         }
-    }
 
-    wxPdfFontListEntry(const wxPdfFontListEntry& p) : m_fontData(p.m_fontData)
-    {
-        if (m_fontData != NULL)
+        wxPdfFontListEntry(const wxPdfFontListEntry & p) : m_fontData(p.m_fontData)
         {
-            m_fontData->IncrementRefCount();
+            if (m_fontData != NULL)
+            {
+                m_fontData->IncrementRefCount();
+            }
         }
-    }
 
-    wxPdfFontListEntry& operator=(const wxPdfFontListEntry& p)
-    {
-        // DO NOT CHANGE THE ORDER OF THESE STATEMENTS!
-        // (This order properly handles self-assignment)
-        // (This order also properly handles recursion)
-        wxPdfFontData* const prevFontData = m_fontData;
-        m_fontData = p.m_fontData;
-        if (m_fontData != NULL)
+        wxPdfFontListEntry & operator=(const wxPdfFontListEntry & p)
         {
-            m_fontData->IncrementRefCount();
+            // DO NOT CHANGE THE ORDER OF THESE STATEMENTS!
+            // (This order properly handles self-assignment)
+            // (This order also properly handles recursion)
+            wxPdfFontData * const prevFontData = m_fontData;
+            m_fontData = p.m_fontData;
+
+            if (m_fontData != NULL)
+            {
+                m_fontData->IncrementRefCount();
+            }
+
+            if (prevFontData != NULL && prevFontData->DecrementRefCount() == 0)
+            {
+                delete prevFontData;
+            }
+
+            return *this;
         }
-        if (prevFontData != NULL && prevFontData->DecrementRefCount() == 0)
+
+        wxPdfFontData * GetFontData() const
         {
-            delete prevFontData;
+            return m_fontData;
         }
-        return *this;
-    }
 
-    wxPdfFontData* GetFontData() const
-    {
-        return m_fontData;
-    }
+        wxPdfFontData * operator->()
+        {
+            return m_fontData;
+        }
 
-    wxPdfFontData* operator->()
-    {
-        return m_fontData;
-    }
+        wxPdfFontData & operator*()
+        {
+            return *m_fontData;
+        }
 
-    wxPdfFontData& operator*()
-    {
-        return *m_fontData;
-    }
-
-private:
-    wxPdfFontData* m_fontData;
+    private:
+        wxPdfFontData * m_fontData;
 };
 
 // --- Encoding checker
@@ -184,94 +186,101 @@ private:
 // Class representing a font encoding checker
 class WXDLLIMPEXP_PDFDOC wxPdfCodepageChecker : public wxPdfEncodingChecker
 {
-public:
-    /// Default constructor
-    wxPdfCodepageChecker(const wxString& encoding, int tableSize, const wxUniRangeDesc* cpTable)
-    {
-        m_encoding = encoding;
-        m_tableSize = tableSize;
-        m_cpTable = cpTable;
-    }
-
-    /// Destructor
-    virtual ~wxPdfCodepageChecker()
-    {
-    }
-
-    /// Get the name of the encoding
-    /**
-    * \return the name of the encoding
-    */
-    virtual bool IsIncluded(wxUint32 unicode) const
-    {
-        bool isIncluded = false;
-        if (unicode < 0x00010000)
+    public:
+        /// Default constructor
+        wxPdfCodepageChecker(const wxString & encoding, int tableSize, const wxUniRangeDesc * cpTable)
         {
-            unsigned short code = unicode & 0x0000ffff;
-            int lb = 0;
-            int hb = m_tableSize - 1;
-            int mid = (lb + hb) / 2;
-            while (mid != lb)
-            {
-                if (code >= m_cpTable[mid].uni1)
-                {
-                    lb = mid;
-                }
-                else
-                {
-                    hb = mid;
-                }
-                mid = (lb + hb) / 2;
-            }
-            isIncluded = (code <= m_cpTable[mid].uni2);
+            m_encoding = encoding;
+            m_tableSize = tableSize;
+            m_cpTable = cpTable;
         }
-        return isIncluded;
-    }
 
-private:
-    int                   m_tableSize;        ///< Size of the mapping table
-    const wxUniRangeDesc* m_cpTable;          ///< Table for code page
+        /// Destructor
+        virtual ~wxPdfCodepageChecker()
+        {
+        }
+
+        /// Get the name of the encoding
+        /**
+        * \return the name of the encoding
+        */
+        virtual bool IsIncluded(wxUint32 unicode) const
+        {
+            bool isIncluded = false;
+
+            if (unicode < 0x00010000)
+            {
+                unsigned short code = unicode & 0x0000ffff;
+                int lb = 0;
+                int hb = m_tableSize - 1;
+                int mid = (lb + hb) / 2;
+
+                while (mid != lb)
+                {
+                    if (code >= m_cpTable[mid].uni1)
+                    {
+                        lb = mid;
+                    }
+                    else
+                    {
+                        hb = mid;
+                    }
+
+                    mid = (lb + hb) / 2;
+                }
+
+                isIncluded = (code <= m_cpTable[mid].uni2);
+            }
+
+            return isIncluded;
+        }
+
+    private:
+        int                   m_tableSize;        ///< Size of the mapping table
+        const wxUniRangeDesc * m_cpTable;         ///< Table for code page
 };
 
 // Class representing a font encoding checker
 class WXDLLIMPEXP_PDFDOC wxPdfCjkChecker : public wxPdfEncodingChecker
 {
-public:
-    /// Default constructor
-    wxPdfCjkChecker(const wxString& encoding, const unsigned char* cjkTable)
-    {
-        m_encoding = encoding;
-        m_cjkTable = cjkTable;
-    }
-
-    /// Destructor
-    virtual ~wxPdfCjkChecker()
-    {
-    }
-
-    /// Check whether a given Unicode character is included in the encoding
-    /**
-    * \return TRUE if the Unicode character is included, FALSE otherwise
-    */
-    virtual bool IsIncluded(wxUint32 unicode) const
-    {
-        bool isIncluded = false;
-        if (unicode < 0x00010000)
+    public:
+        /// Default constructor
+        wxPdfCjkChecker(const wxString & encoding, const unsigned char * cjkTable)
         {
-            int charPos = unicode / 8;
-            unsigned char bitPos = 1 << (7 - (unicode % 8));
-            isIncluded = ((m_cjkTable[charPos] & bitPos) != 0);
+            m_encoding = encoding;
+            m_cjkTable = cjkTable;
         }
-        return isIncluded;
-    }
 
-private:
-    const unsigned char* m_cjkTable;         ///< Table for CJK encodings
+        /// Destructor
+        virtual ~wxPdfCjkChecker()
+        {
+        }
+
+        /// Check whether a given Unicode character is included in the encoding
+        /**
+        * \return TRUE if the Unicode character is included, FALSE otherwise
+        */
+        virtual bool IsIncluded(wxUint32 unicode) const
+        {
+            bool isIncluded = false;
+
+            if (unicode < 0x00010000)
+            {
+                int charPos = unicode / 8;
+                unsigned char bitPos = 1 << (7 - (unicode % 8));
+                isIncluded = ((m_cjkTable[charPos] & bitPos) != 0);
+            }
+
+            return isIncluded;
+        }
+
+    private:
+        const unsigned char * m_cjkTable;        ///< Table for CJK encodings
 };
 
 // --- Font Manager Base
 
-WX_DEFINE_ARRAY_PTR(wxPdfFontListEntry*, wxPdfFontList);
+WX_DEFINE_ARRAY_PTR(wxPdfFontListEntry *, wxPdfFontList);
 
 /// Hashmap class for mapping font families
 WX_DECLARE_STRING_HASH_MAP(wxArrayInt, wxPdfFontFamilyMap);
@@ -283,101 +292,101 @@ WX_DECLARE_STRING_HASH_MAP(int, wxPdfFontNameMap);
 WX_DECLARE_STRING_HASH_MAP(wxString, wxPdfFontAliasMap);
 
 /// Hashmap class for mapping encodings
-WX_DECLARE_STRING_HASH_MAP(wxPdfEncoding*, wxPdfEncodingMap);
+WX_DECLARE_STRING_HASH_MAP(wxPdfEncoding *, wxPdfEncodingMap);
 
 /// Hashmap class for mapping encoding checkers
-WX_DECLARE_STRING_HASH_MAP(wxPdfEncodingChecker*, wxPdfEncodingCheckerMap);
+WX_DECLARE_STRING_HASH_MAP(wxPdfEncodingChecker *, wxPdfEncodingCheckerMap);
 
 class wxPdfFontManagerBase
 {
-public:
-    /// Default constructor
-    wxPdfFontManagerBase();
+    public:
+        /// Default constructor
+        wxPdfFontManagerBase();
 
-    /// Default destructor
-    ~wxPdfFontManagerBase();
+        /// Default destructor
+        ~wxPdfFontManagerBase();
 
-    void AddSearchPath(const wxString& path);
+        void AddSearchPath(const wxString & path);
 
-    void AddSearchPath(const wxArrayString& pathArray);
+        void AddSearchPath(const wxArrayString & pathArray);
 
-    bool SetDefaultEmbed(bool embed);
+        bool SetDefaultEmbed(bool embed);
 
-    bool GetDefaultEmbed();
+        bool GetDefaultEmbed();
 
-    bool SetDefaultSubset(bool subset);
+        bool SetDefaultSubset(bool subset);
 
-    bool GetDefaultSubset();
+        bool GetDefaultSubset();
 
-    wxPdfFont RegisterFont(const wxString& fontFileName, const wxString& aliasName = wxEmptyString, int fontIndex = 0);
-
-#if wxUSE_UNICODE
-    wxPdfFont RegisterFont(const wxFont& font, const wxString& aliasName = wxEmptyString);
-
-    int RegisterFontCollection(const wxString& fontCollectionFileName);
-#endif
-
-    bool RegisterFontCJK(const wxString& family);
+        wxPdfFont RegisterFont(const wxString & fontFileName, const wxString & aliasName = wxEmptyString, int fontIndex = 0);
 
 #if wxUSE_UNICODE
-    int RegisterSystemFonts();
+        wxPdfFont RegisterFont(const wxFont & font, const wxString & aliasName = wxEmptyString);
 
-    int RegisterFontDirectory(const wxString& directory, bool recursive = false);
+        int RegisterFontCollection(const wxString & fontCollectionFileName);
 #endif
 
-    wxPdfFont GetFont(const wxString& fontName, int fontStyle = wxPDF_FONTSTYLE_REGULAR) const;
-
-    wxPdfFont GetFont(const wxString& fontName, const wxString& fontStyle) const;
-
-    wxPdfFont GetFont(size_t fontIndex) const;
-
-    size_t GetFontCount() const;
-
-    bool InitializeFontData(const wxPdfFont& font);
-
-    bool RegisterEncoding(const wxPdfEncoding& encoding);
-
-    const wxPdfEncoding* GetEncoding(const wxString& encodingName);
-
-    bool FindFile(const wxString& fileName, wxString& fullFileName) const;
-
-    static wxString ConvertStyleToString(int fontStyle);
-
-private:
-    void InitializeCoreFonts();
+        bool RegisterFontCJK(const wxString & family);
 
 #if wxUSE_UNICODE
-    void InitializeCjkFonts();
+        int RegisterSystemFonts();
+
+        int RegisterFontDirectory(const wxString & directory, bool recursive = false);
 #endif
 
-    void InitializeEncodingChecker();
+        wxPdfFont GetFont(const wxString & fontName, int fontStyle = wxPDF_FONTSTYLE_REGULAR) const;
 
-    bool RegisterEncoding(const wxString& encoding);
+        wxPdfFont GetFont(const wxString & fontName, const wxString & fontStyle) const;
 
-    void SetFontBaseEncoding(wxPdfFontData* fontData);
+        wxPdfFont GetFont(size_t fontIndex) const;
 
-    bool RegisterFontCJK(const wxString& fontFileName, const wxString& fontStyle, const wxString& alias);
+        size_t GetFontCount() const;
 
-    wxPdfFontData* LoadFontFromXML(const wxString& fontFileName);
+        bool InitializeFontData(const wxPdfFont & font);
 
-    bool IsRegistered(wxPdfFontData* fontData);
+        bool RegisterEncoding(const wxPdfEncoding & encoding);
 
-    bool AddFont(wxPdfFontData* fontData);
+        const wxPdfEncoding * GetEncoding(const wxString & encodingName);
 
-    bool AddFont(wxPdfFontData* fontData, wxPdfFont& font);
+        bool FindFile(const wxString & fileName, wxString & fullFileName) const;
 
-    wxPathList         m_searchPaths;
+        static wxString ConvertStyleToString(int fontStyle);
 
-    wxPdfFontNameMap   m_fontNameMap;
-    wxPdfFontFamilyMap m_fontFamilyMap;
-    wxPdfFontAliasMap  m_fontAliasMap;
-    wxPdfFontList      m_fontList;
+    private:
+        void InitializeCoreFonts();
 
-    bool               m_defaultEmbed;
-    bool               m_defaultSubset;
+#if wxUSE_UNICODE
+        void InitializeCjkFonts();
+#endif
 
-    wxPdfEncodingMap*        m_encodingMap;
-    wxPdfEncodingCheckerMap* m_encodingCheckerMap;
+        void InitializeEncodingChecker();
+
+        bool RegisterEncoding(const wxString & encoding);
+
+        void SetFontBaseEncoding(wxPdfFontData * fontData);
+
+        bool RegisterFontCJK(const wxString & fontFileName, const wxString & fontStyle, const wxString & alias);
+
+        wxPdfFontData * LoadFontFromXML(const wxString & fontFileName);
+
+        bool IsRegistered(wxPdfFontData * fontData);
+
+        bool AddFont(wxPdfFontData * fontData);
+
+        bool AddFont(wxPdfFontData * fontData, wxPdfFont & font);
+
+        wxPathList         m_searchPaths;
+
+        wxPdfFontNameMap   m_fontNameMap;
+        wxPdfFontFamilyMap m_fontFamilyMap;
+        wxPdfFontAliasMap  m_fontAliasMap;
+        wxPdfFontList      m_fontList;
+
+        bool               m_defaultEmbed;
+        bool               m_defaultSubset;
+
+        wxPdfEncodingMap    *    m_encodingMap;
+        wxPdfEncodingCheckerMap * m_encodingCheckerMap;
 };
 
 wxPdfFontManagerBase::wxPdfFontManagerBase()
@@ -413,32 +422,35 @@ wxPdfFontManagerBase::~wxPdfFontManagerBase()
     m_fontAliasMap.clear();
     size_t n = m_fontList.GetCount();
     size_t j;
+
     for (j = 0; j < n; ++j)
     {
         delete m_fontList[j];
     }
-    m_fontList.clear();
 
+    m_fontList.clear();
     wxPdfEncodingMap::iterator encoding;
+
     for (encoding = m_encodingMap->begin();
             encoding != m_encodingMap->end(); ++encoding)
     {
-        wxPdfEncoding* foundEncoding = encoding->second;
+        wxPdfEncoding * foundEncoding = encoding->second;
         delete foundEncoding;
     }
-    delete m_encodingMap;
 
+    delete m_encodingMap;
     wxPdfEncodingCheckerMap::iterator checker;
+
     for (checker = m_encodingCheckerMap->begin();
             checker != m_encodingCheckerMap->end(); ++checker)
     {
         delete checker->second;
     }
+
     delete m_encodingCheckerMap;
 }
 
-void
-wxPdfFontManagerBase::AddSearchPath(const wxString& path)
+void wxPdfFontManagerBase::AddSearchPath(const wxString & path)
 {
 #if wxUSE_THREADS
     wxCriticalSectionLocker locker(gs_csFontManager);
@@ -446,8 +458,7 @@ wxPdfFontManagerBase::AddSearchPath(const wxString& path)
     m_searchPaths.Add(path);
 }
 
-void
-wxPdfFontManagerBase::AddSearchPath(const wxArrayString& pathArray)
+void wxPdfFontManagerBase::AddSearchPath(const wxArrayString & pathArray)
 {
 #if wxUSE_THREADS
     wxCriticalSectionLocker locker(gs_csFontManager);
@@ -455,12 +466,12 @@ wxPdfFontManagerBase::AddSearchPath(const wxArrayString& pathArray)
     m_searchPaths.Add(pathArray);
 }
 
-bool
-wxPdfFontManagerBase::FindFile(const wxString& fileName, wxString& fullFileName) const
+bool wxPdfFontManagerBase::FindFile(const wxString & fileName, wxString & fullFileName) const
 {
     bool ok = false;
     wxFileName myFileName(fileName);
     fullFileName = wxEmptyString;
+
     if (myFileName.IsOk())
     {
         if (myFileName.IsRelative())
@@ -473,12 +484,14 @@ wxPdfFontManagerBase::FindFile(const wxString& fileName, wxString& fullFileName)
                 wxCriticalSectionLocker locker(gs_csFontManager);
 #endif
                 wxString foundFileName = m_searchPaths.FindAbsoluteValidPath(fileName);
+
                 if (!foundFileName.IsEmpty())
                 {
                     myFileName.Assign(foundFileName);
                 }
             }
         }
+
         if (myFileName.FileExists() && myFileName.IsFileReadable())
         {
             // File exists and is accessible
@@ -496,11 +509,11 @@ wxPdfFontManagerBase::FindFile(const wxString& fileName, wxString& fullFileName)
         wxLogDebug(wxString(wxS("wxPdfFontManagerBase::FindFile: ")) +
                    wxString::Format(_("File name '%s' is invalid."), fileName.c_str()));
     }
+
     return ok;
 }
 
-bool
-wxPdfFontManagerBase::SetDefaultEmbed(bool embed)
+bool wxPdfFontManagerBase::SetDefaultEmbed(bool embed)
 {
 #if wxUSE_THREADS
     wxCriticalSectionLocker locker(gs_csFontManager);
@@ -510,8 +523,7 @@ wxPdfFontManagerBase::SetDefaultEmbed(bool embed)
     return previous;
 }
 
-bool
-wxPdfFontManagerBase::GetDefaultEmbed()
+bool wxPdfFontManagerBase::GetDefaultEmbed()
 {
 #if wxUSE_THREADS
     wxCriticalSectionLocker locker(gs_csFontManager);
@@ -519,8 +531,7 @@ wxPdfFontManagerBase::GetDefaultEmbed()
     return m_defaultEmbed;
 }
 
-bool
-wxPdfFontManagerBase::SetDefaultSubset(bool subset)
+bool wxPdfFontManagerBase::SetDefaultSubset(bool subset)
 {
 #if wxUSE_THREADS
     wxCriticalSectionLocker locker(gs_csFontManager);
@@ -530,8 +541,7 @@ wxPdfFontManagerBase::SetDefaultSubset(bool subset)
     return previous;
 }
 
-bool
-wxPdfFontManagerBase::GetDefaultSubset()
+bool wxPdfFontManagerBase::GetDefaultSubset()
 {
 #if wxUSE_THREADS
     wxCriticalSectionLocker locker(gs_csFontManager);
@@ -539,27 +549,30 @@ wxPdfFontManagerBase::GetDefaultSubset()
     return m_defaultSubset;
 }
 
-wxPdfFont
-wxPdfFontManagerBase::RegisterFont(const wxString& fontFileName, const wxString& aliasName, int fontIndex)
+wxPdfFont wxPdfFontManagerBase::RegisterFont(const wxString & fontFileName, const wxString & aliasName, int fontIndex)
 {
 #if !wxUSE_UNICODE
     wxUnusedVar(fontIndex);
 #endif
     wxPdfFont font;
     wxString fullFontFileName;
+
     if (FindFile(fontFileName, fullFontFileName))
     {
         wxFileName fileName(fullFontFileName);
         wxString ext = fileName.GetExt().Lower();
+
         if (ext.IsSameAs(wxS("ttf")) || ext.IsSameAs(wxS("otf")) || ext.IsSameAs(wxS("ttc")))
         {
 #if wxUSE_UNICODE
             // TrueType font, OpenType font, or TrueType collection
             wxPdfFontParserTrueType fontParser;
-            wxPdfFontData* fontData = fontParser.IdentifyFont(fileName.GetFullPath(), fontIndex);
+            wxPdfFontData * fontData = fontParser.IdentifyFont(fileName.GetFullPath(), fontIndex);
+
             if (fontData != NULL)
             {
                 fontData->SetAlias(aliasName);
+
                 if (!AddFont(fontData, font))
                 {
                     delete fontData;
@@ -567,75 +580,85 @@ wxPdfFontManagerBase::RegisterFont(const wxString& fontFileName, const wxString&
                                wxString::Format(_("Font file '%s' already registered."), fontFileName.c_str()));
                 }
             }
+
 #else
             wxLogError(wxString(wxS("wxPdfFontManagerBase::RegisterFont: ")) +
                        wxString::Format(_("Format of font file '%s' not supported."), fontFileName.c_str()));
 #endif
-        }
-        else if (/* ext.IsSameAs(wxS("pfa")) || */ ext.IsSameAs(wxS("pfb")) || ext.IsEmpty())
-        {
-            // TODO: allow Type1 fonts in PFA format (this requires encoding the binary section)
-#if wxUSE_UNICODE
-            // Type1 font
-            wxPdfFontParserType1 fontParser;
-            wxPdfFontData* fontData = fontParser.IdentifyFont(fileName.GetFullPath(), fontIndex);
-            if (fontData != NULL)
-            {
-                fontData->SetAlias(aliasName);
-                SetFontBaseEncoding(fontData);
-                if (!AddFont(fontData, font))
-                {
-                    delete fontData;
-                    wxLogDebug(wxString(wxS("wxPdfFontManagerBase::RegisterFont: ")) +
-                               wxString::Format(_("Font file '%s' already registered."), fontFileName.c_str()));
-                }
-            }
-#else
-            wxLogError(wxString(wxS("wxPdfFontManagerBase::RegisterFont: ")) +
-                       wxString::Format(_("Format of font file '%s' not supported."), fontFileName.c_str()));
-#endif
-        }
-        else if (ext.IsSameAs(wxS("xml")))
-        {
-            // wxPdfDocument font description file
-            wxPdfFontData* fontData = LoadFontFromXML(fullFontFileName);
-            if (fontData != NULL)
-            {
-                fontData->SetAlias(aliasName);
-                SetFontBaseEncoding(fontData);
-                if (!AddFont(fontData, font))
-                {
-                    delete fontData;
-                    wxLogDebug(wxString(wxS("wxPdfFontManagerBase::RegisterFont: ")) +
-                               wxString::Format(_("Font file '%s' already registered."), fontFileName.c_str()));
-                }
-            }
         }
         else
-        {
-            wxLogError(wxString(wxS("wxPdfFontManagerBase::RegisterFont: ")) +
-                       wxString::Format(_("Format of font file '%s' not supported."), fontFileName.c_str()));
-        }
+            if (/* ext.IsSameAs(wxS("pfa")) || */ ext.IsSameAs(wxS("pfb")) || ext.IsEmpty())
+            {
+                // TODO: allow Type1 fonts in PFA format (this requires encoding the binary section)
+#if wxUSE_UNICODE
+                // Type1 font
+                wxPdfFontParserType1 fontParser;
+                wxPdfFontData * fontData = fontParser.IdentifyFont(fileName.GetFullPath(), fontIndex);
+
+                if (fontData != NULL)
+                {
+                    fontData->SetAlias(aliasName);
+                    SetFontBaseEncoding(fontData);
+
+                    if (!AddFont(fontData, font))
+                    {
+                        delete fontData;
+                        wxLogDebug(wxString(wxS("wxPdfFontManagerBase::RegisterFont: ")) +
+                                   wxString::Format(_("Font file '%s' already registered."), fontFileName.c_str()));
+                    }
+                }
+
+#else
+                wxLogError(wxString(wxS("wxPdfFontManagerBase::RegisterFont: ")) +
+                           wxString::Format(_("Format of font file '%s' not supported."), fontFileName.c_str()));
+#endif
+            }
+            else
+                if (ext.IsSameAs(wxS("xml")))
+                {
+                    // wxPdfDocument font description file
+                    wxPdfFontData * fontData = LoadFontFromXML(fullFontFileName);
+
+                    if (fontData != NULL)
+                    {
+                        fontData->SetAlias(aliasName);
+                        SetFontBaseEncoding(fontData);
+
+                        if (!AddFont(fontData, font))
+                        {
+                            delete fontData;
+                            wxLogDebug(wxString(wxS("wxPdfFontManagerBase::RegisterFont: ")) +
+                                       wxString::Format(_("Font file '%s' already registered."), fontFileName.c_str()));
+                        }
+                    }
+                }
+                else
+                {
+                    wxLogError(wxString(wxS("wxPdfFontManagerBase::RegisterFont: ")) +
+                               wxString::Format(_("Format of font file '%s' not supported."), fontFileName.c_str()));
+                }
     }
     else
     {
         wxLogError(wxString(wxS("wxPdfFontManagerBase::RegisterFont: ")) +
                    wxString::Format(_("Font file '%s' does not exist or is not readable."), fontFileName.c_str()));
     }
+
     return font;
 }
 
 #if wxUSE_UNICODE
-wxPdfFont
-wxPdfFontManagerBase::RegisterFont(const wxFont& font, const wxString& aliasName)
+wxPdfFont wxPdfFontManagerBase::RegisterFont(const wxFont & font, const wxString & aliasName)
 {
     wxPdfFont regFont;
 #if defined(__WXMSW__)
     wxPdfFontParserTrueType fontParser;
-    wxPdfFontData* fontData = fontParser.IdentifyFont(font);
+    wxPdfFontData * fontData = fontParser.IdentifyFont(font);
+
     if (fontData != NULL)
     {
         fontData->SetAlias(aliasName);
+
         if (!AddFont(fontData, regFont))
         {
             delete fontData;
@@ -643,18 +666,20 @@ wxPdfFontManagerBase::RegisterFont(const wxFont& font, const wxString& aliasName
                        wxString::Format(_("wxFont '%s' already registered."), font.GetFaceName().c_str()));
         }
     }
+
 #elif defined(__WXGTK__)
 #if 0
     // TODO: Do we need to load the fontconfig library?
-    FcConfig* fc = FcInitLoadConfigAndFonts();
+    FcConfig * fc = FcInitLoadConfigAndFonts();
+
     if (fc == NULL)
     {
         wxLogError(wxString(wxS("wxPdfFontManagerBase::RegisterFont: ")) +
                    wxString(_("FontConfig init failed.")));
         return 0;
     }
-#endif
 
+#endif
     wxString fontFileName = wxEmptyString;
     int fontFileIndex = 0;
     int slant = -1;
@@ -663,94 +688,168 @@ wxPdfFontManagerBase::RegisterFont(const wxFont& font, const wxString& aliasName
     wxString fontDesc = font.GetNativeFontInfoUserDesc();
     wxString faceName = font.GetFaceName();
     const wxScopedCharBuffer faceNameBuffer = faceName.ToUTF8();
-    const char* fontFamily = faceNameBuffer;
+    const char * fontFamily = faceNameBuffer;
 
     // Check font slant
     if (fontDesc.Find(wxS("Oblique")) != wxNOT_FOUND)
+    {
         slant = FC_SLANT_OBLIQUE;
-    else if (fontDesc.Find(wxS("Italic")) != wxNOT_FOUND)
-        slant = FC_SLANT_ITALIC;
+    }
     else
-        slant = FC_SLANT_ROMAN;
+        if (fontDesc.Find(wxS("Italic")) != wxNOT_FOUND)
+        {
+            slant = FC_SLANT_ITALIC;
+        }
+        else
+        {
+            slant = FC_SLANT_ROMAN;
+        }
 
     // Check font weight
     if (fontDesc.Find(wxS("Book")) != wxNOT_FOUND)
+    {
         weight = FC_WEIGHT_BOOK;
-    else if (fontDesc.Find(wxS("Medium")) != wxNOT_FOUND)
-        weight = FC_WEIGHT_MEDIUM;
-#ifdef FC_WEIGHT_ULTRALIGHT
-    else if (fontDesc.Find(wxS("Ultra-Light")) != wxNOT_FOUND)
-        weight = FC_WEIGHT_ULTRALIGHT;
-#endif
-    else if (fontDesc.Find(wxS("Light")) != wxNOT_FOUND)
-        weight = FC_WEIGHT_LIGHT;
-    else if (fontDesc.Find(wxS("Semi-Bold")) != wxNOT_FOUND)
-        weight = FC_WEIGHT_DEMIBOLD;
-#ifdef FC_WEIGHT_ULTRABOLD
-    else if (fontDesc.Find(wxS("Ultra-Bold")) != wxNOT_FOUND)
-        weight = FC_WEIGHT_ULTRABOLD;
-#endif
-    else if (fontDesc.Find(wxS("Bold")) != wxNOT_FOUND)
-        weight = FC_WEIGHT_BOLD;
-    else if (fontDesc.Find(wxS("Heavy")) != wxNOT_FOUND)
-        weight = FC_WEIGHT_BLACK;
+    }
     else
-        weight = FC_WEIGHT_NORMAL;
+        if (fontDesc.Find(wxS("Medium")) != wxNOT_FOUND)
+        {
+            weight = FC_WEIGHT_MEDIUM;
+        }
+
+#ifdef FC_WEIGHT_ULTRALIGHT
+        else
+            if (fontDesc.Find(wxS("Ultra-Light")) != wxNOT_FOUND)
+            {
+                weight = FC_WEIGHT_ULTRALIGHT;
+            }
+
+#endif
+            else
+                if (fontDesc.Find(wxS("Light")) != wxNOT_FOUND)
+                {
+                    weight = FC_WEIGHT_LIGHT;
+                }
+                else
+                    if (fontDesc.Find(wxS("Semi-Bold")) != wxNOT_FOUND)
+                    {
+                        weight = FC_WEIGHT_DEMIBOLD;
+                    }
+
+#ifdef FC_WEIGHT_ULTRABOLD
+                    else
+                        if (fontDesc.Find(wxS("Ultra-Bold")) != wxNOT_FOUND)
+                        {
+                            weight = FC_WEIGHT_ULTRABOLD;
+                        }
+
+#endif
+                        else
+                            if (fontDesc.Find(wxS("Bold")) != wxNOT_FOUND)
+                            {
+                                weight = FC_WEIGHT_BOLD;
+                            }
+                            else
+                                if (fontDesc.Find(wxS("Heavy")) != wxNOT_FOUND)
+                                {
+                                    weight = FC_WEIGHT_BLACK;
+                                }
+                                else
+                                {
+                                    weight = FC_WEIGHT_NORMAL;
+                                }
 
     // Check font width
     if (fontDesc.Find(wxS("Ultra-Condensed")) != wxNOT_FOUND)
+    {
         width = FC_WIDTH_ULTRACONDENSED;
-    else if (fontDesc.Find(wxS("Extra-Condensed")) != wxNOT_FOUND)
-        width = FC_WIDTH_EXTRACONDENSED;
-    else if (fontDesc.Find(wxS("Semi-Condensed")) != wxNOT_FOUND)
-        width = FC_WIDTH_SEMICONDENSED;
-    else if (fontDesc.Find(wxS("Condensed")) != wxNOT_FOUND)
-        width = FC_WIDTH_CONDENSED;
-    else if (fontDesc.Find(wxS("Ultra-Expanded")) != wxNOT_FOUND)
-        width = FC_WIDTH_ULTRAEXPANDED;
-    else if (fontDesc.Find(wxS("Extra-Expanded")) != wxNOT_FOUND)
-        width = FC_WIDTH_EXTRAEXPANDED;
-    else if (fontDesc.Find(wxS("Semi-Expanded")) != wxNOT_FOUND)
-        width = FC_WIDTH_SEMIEXPANDED;
-    else if (fontDesc.Find(wxS("Expanded")) != wxNOT_FOUND)
-        width = FC_WIDTH_EXPANDED;
+    }
     else
-        width = FC_WIDTH_NORMAL;
+        if (fontDesc.Find(wxS("Extra-Condensed")) != wxNOT_FOUND)
+        {
+            width = FC_WIDTH_EXTRACONDENSED;
+        }
+        else
+            if (fontDesc.Find(wxS("Semi-Condensed")) != wxNOT_FOUND)
+            {
+                width = FC_WIDTH_SEMICONDENSED;
+            }
+            else
+                if (fontDesc.Find(wxS("Condensed")) != wxNOT_FOUND)
+                {
+                    width = FC_WIDTH_CONDENSED;
+                }
+                else
+                    if (fontDesc.Find(wxS("Ultra-Expanded")) != wxNOT_FOUND)
+                    {
+                        width = FC_WIDTH_ULTRAEXPANDED;
+                    }
+                    else
+                        if (fontDesc.Find(wxS("Extra-Expanded")) != wxNOT_FOUND)
+                        {
+                            width = FC_WIDTH_EXTRAEXPANDED;
+                        }
+                        else
+                            if (fontDesc.Find(wxS("Semi-Expanded")) != wxNOT_FOUND)
+                            {
+                                width = FC_WIDTH_SEMIEXPANDED;
+                            }
+                            else
+                                if (fontDesc.Find(wxS("Expanded")) != wxNOT_FOUND)
+                                {
+                                    width = FC_WIDTH_EXPANDED;
+                                }
+                                else
+                                {
+                                    width = FC_WIDTH_NORMAL;
+                                }
 
     FcResult res;
-    FcPattern* matchPattern;
+    FcPattern * matchPattern;
     matchPattern = FcPatternBuild(NULL,
-                                  FC_FAMILY, FcTypeString, (FcChar8*) fontFamily,
+                                  FC_FAMILY, FcTypeString, (FcChar8 *) fontFamily,
                                   NULL);
+
     if (slant != -1)
+    {
         FcPatternAddInteger(matchPattern, FC_SLANT, slant);
+    }
+
     if (weight != -1)
+    {
         FcPatternAddInteger(matchPattern, FC_WEIGHT, weight);
+    }
+
     if (width != -1)
+    {
         FcPatternAddInteger(matchPattern, FC_WIDTH, width);
+    }
 
-    FcConfigSubstitute (NULL, matchPattern, FcMatchPattern);
-    FcDefaultSubstitute (matchPattern);
+    FcConfigSubstitute(NULL, matchPattern, FcMatchPattern);
+    FcDefaultSubstitute(matchPattern);
+    FcPattern * resultPattern = FcFontMatch(NULL, matchPattern, &res);
 
-    FcPattern* resultPattern = FcFontMatch (NULL, matchPattern, &res);
     if (resultPattern)
     {
-        FcChar8* fileName;
+        FcChar8 * fileName;
         int id = 0;
-        if (FcPatternGetString (resultPattern, FC_FILE, 0, &fileName) == FcResultMatch)
+
+        if (FcPatternGetString(resultPattern, FC_FILE, 0, &fileName) == FcResultMatch)
         {
-            fontFileName = wxString::FromUTF8((char*) fileName);
+            fontFileName = wxString::FromUTF8((char *) fileName);
         }
         else
         {
         }
-        if (FcPatternGetInteger (resultPattern, FC_INDEX, 0, &id) == FcResultMatch)
+
+        if (FcPatternGetInteger(resultPattern, FC_INDEX, 0, &id) == FcResultMatch)
         {
             fontFileIndex = id;
         }
-        FcPatternDestroy (resultPattern);
+
+        FcPatternDestroy(resultPattern);
     }
-    FcPatternDestroy (matchPattern);
+
+    FcPatternDestroy(matchPattern);
 
     if (!fontFileName.IsEmpty())
     {
@@ -761,13 +860,16 @@ wxPdfFontManagerBase::RegisterFont(const wxFont& font, const wxString& aliasName
         wxLogWarning(wxString(wxS("wxPdfFontManagerBase::RegisterFont: ")) +
                      wxString::Format(_("Font file name not found for wxFont '%s'."), fontDesc.c_str()));
     }
+
 #elif defined(__WXMAC__)
 #if wxPDFMACOSX_HAS_CORE_TEXT
     wxPdfFontParserTrueType fontParser;
-    wxPdfFontData* fontData = fontParser.IdentifyFont(font);
+    wxPdfFontData * fontData = fontParser.IdentifyFont(font);
+
     if (fontData != NULL)
     {
         fontData->SetAlias(aliasName);
+
         if (!AddFont(fontData, regFont))
         {
             delete fontData;
@@ -775,15 +877,15 @@ wxPdfFontManagerBase::RegisterFont(const wxFont& font, const wxString& aliasName
                        wxString::Format(_("wxFont '%s' already registered."), font.GetFaceName().c_str()));
         }
     }
+
 #elif wxPDFMACOSX_HAS_ATSU_TEXT
     wxString fontFileName = wxEmptyString;
-
 #if wxOSX_USE_ATSU_TEXT
     wxUint32 atsuFontID = font.MacGetATSUFontID();
 #endif
-
     FSSpec fileSpecification;
     FSRef fileReference;
+
     if (::ATSFontGetFileSpecification(::FMGetATSFontRefFromFont(atsuFontID), &fileSpecification) == noErr)
     {
         if (::FSpMakeFSRef(&fileSpecification, &fileReference) == noErr)
@@ -802,6 +904,7 @@ wxPdfFontManagerBase::RegisterFont(const wxFont& font, const wxString& aliasName
         wxLogWarning(wxString(wxS("wxPdfFontManagerBase::RegisterFont: ")) +
                      wxString::Format(_("Font file name not found for wxFont '%s'."), fontDesc.c_str()));
     }
+
 #else
     wxLogError(wxString(wxS("wxPdfFontManagerBase::RegisterFont: ")) +
                wxString(_("Method 'RegisterFont' for wxFont instances is not available for platform WXMAC.")));
@@ -813,22 +916,25 @@ wxPdfFontManagerBase::RegisterFont(const wxFont& font, const wxString& aliasName
     return regFont;
 }
 
-int
-wxPdfFontManagerBase::RegisterFontCollection(const wxString& fontCollectionFileName)
+int wxPdfFontManagerBase::RegisterFontCollection(const wxString & fontCollectionFileName)
 {
     int count = 0;
     wxString fullFontCollectionFileName;
+
     if (FindFile(fontCollectionFileName, fullFontCollectionFileName))
     {
         wxFileName fileName(fullFontCollectionFileName);
+
         if (fileName.IsOk() && fileName.GetExt().Lower().IsSameAs(wxS("ttc")))
         {
             wxPdfFontParserTrueType fontParser;
             int fontCount = fontParser.GetCollectionFontCount(fullFontCollectionFileName);
             int j;
+
             for (j = 0; j < fontCount; ++j)
             {
                 wxPdfFont registeredFont = RegisterFont(fileName.GetFullPath(), wxEmptyString, j);
+
                 if (registeredFont.IsValid())
                 {
                     ++count;
@@ -846,22 +952,25 @@ wxPdfFontManagerBase::RegisterFontCollection(const wxString& fontCollectionFileN
         wxLogError(wxString(wxS("wxPdfFontManagerBase::RegisterFontCollection: ")) +
                    wxString::Format(_("Font collection file '%s' does not exist or is not readable."), fontCollectionFileName.c_str()));
     }
+
     return count;
 }
 #endif
 
-bool
-wxPdfFontManagerBase::RegisterFontCJK(const wxString& family)
+bool wxPdfFontManagerBase::RegisterFontCJK(const wxString & family)
 {
     bool ok = false;
     wxPdfFontFamilyMap::const_iterator familyIter = m_fontFamilyMap.find(family.Lower());
+
     if (familyIter == m_fontFamilyMap.end())
     {
         wxString fontFileName = family.Lower() + wxString(wxS(".xml"));
         wxString fullFontFileName;
+
         if (FindFile(fontFileName, fullFontFileName))
         {
             ok = RegisterFontCJK(fullFontFileName, wxS(""), family);
+
             if (ok)
             {
                 // Add all available styles (bold, italic and bold-italic)
@@ -883,16 +992,17 @@ wxPdfFontManagerBase::RegisterFontCJK(const wxString& family)
                    wxString::Format(_("CJK family '%s' already registered."), family.c_str()));
         ok = true;
     }
+
     return ok;
 }
 
 #if wxUSE_UNICODE
-int
-wxPdfFontManagerBase::RegisterSystemFonts()
+int wxPdfFontManagerBase::RegisterSystemFonts()
 {
     int count = 0;
 #if defined(__WXMSW__)
     wxString strFont;
+
     if (wxGetOsVersion() == wxOS_WINDOWS_NT)
     {
         strFont = wxS("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts");
@@ -902,17 +1012,19 @@ wxPdfFontManagerBase::RegisterSystemFonts()
         strFont = wxS("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Fonts");
     }
 
-    wxRegKey* fontRegKey = new wxRegKey(strFont);
+    wxRegKey * fontRegKey = new wxRegKey(strFont);
     fontRegKey->Open(wxRegKey::Read);
     // Retrieve the number of SubKeys and enumerate them
     size_t nSubKeys = 0, nMaxKeyLen = 0;
     size_t nValues = 0, nMaxValueLen = 0;
     fontRegKey->GetKeyInfo(&nSubKeys, &nMaxKeyLen, &nValues, &nMaxValueLen);
     wxString fontDirectory = wxGetOSDirectory();
+
     if (!wxEndsWithPathSeparator(fontDirectory))
     {
         fontDirectory += wxS("\\");
     }
+
     fontDirectory += wxS("Fonts\\");
     wxString strValueName;
     wxString strValueData;
@@ -920,16 +1032,18 @@ wxPdfFontManagerBase::RegisterSystemFonts()
     long nIndex;
     fontRegKey->GetFirstValue(strValueName, nIndex);
     size_t i;
+
     for (i = 0; i < nValues; ++i)
     {
         // suppress possible error messages
         wxLogNull nolog;
-
         fontRegKey->QueryValue(strValueName, fontFileName);
+
         if (fontFileName.Find(wxS('\\')) == wxNOT_FOUND)
         {
             fontFileName.Prepend(fontDirectory);
         }
+
         if (fontFileName.Lower().EndsWith(wxS(".ttc")))
         {
             count += RegisterFontCollection(fontFileName);
@@ -937,64 +1051,77 @@ wxPdfFontManagerBase::RegisterSystemFonts()
         else
         {
             wxPdfFont registeredFont = RegisterFont(fontFileName);
+
             if (registeredFont.IsValid())
             {
                 ++count;
             }
         }
+
         fontRegKey->GetNextValue(strValueName, nIndex);
     }
+
     fontRegKey->Close();
     delete fontRegKey;
 #elif defined(__WXGTK__)
 #if 0
     // TODO: Do we need to load the fontconfig library?
-    FcConfig* fc = FcInitLoadConfigAndFonts();
+    FcConfig * fc = FcInitLoadConfigAndFonts();
+
     if (fc == NULL)
     {
         wxLogError(wxString(wxS("wxPdfFontManagerBase::RegisterSystemFonts: ")) +
                    wxString(_("FontConfig init failed.")));
         return 0;
     }
+
 #endif
-    FcPattern* pat = FcPatternBuild(NULL,
-                                    FC_OUTLINE, FcTypeBool, 1,
-                                    FC_SCALABLE, FcTypeBool, 1,
-                                    NULL);
-    FcObjectSet* os = FcObjectSetBuild (FC_FAMILY,
+    FcPattern * pat = FcPatternBuild(NULL,
+                                     FC_OUTLINE, FcTypeBool, 1,
+                                     FC_SCALABLE, FcTypeBool, 1,
+                                     NULL);
+    FcObjectSet * os = FcObjectSetBuild(FC_FAMILY,
                                         FC_STYLE,
                                         FC_FULLNAME,
                                         FC_FILE,
                                         FC_INDEX,
                                         NULL);
     // TODO: Add FC_OUTLINE, FC_WEIGHT, FC_SLANT ?
-    FcFontSet* fs = FcFontList(0, pat, os);
+    FcFontSet * fs = FcFontList(0, pat, os);
     FcObjectSetDestroy(os);
     FcPatternDestroy(pat);
+
     if (fs != NULL)
     {
         int j;
+
         for (j = 0; j < fs->nfont; ++j)
         {
-            FcChar8* file;
+            FcChar8 * file;
+
             if (FcPatternGetString(fs->fonts[j], FC_FILE, 0, &file) == FcResultMatch)
             {
                 int fontFileIndex = 0;
                 int id = 0;
-                if (FcPatternGetInteger (fs->fonts[j], FC_INDEX, 0, &id) == FcResultMatch)
+
+                if (FcPatternGetInteger(fs->fonts[j], FC_INDEX, 0, &id) == FcResultMatch)
                 {
                     fontFileIndex = id;
                 }
-                wxString fontFileName = wxString::FromUTF8((char*) file);
+
+                wxString fontFileName = wxString::FromUTF8((char *) file);
                 wxPdfFont registeredFont = RegisterFont(fontFileName, wxEmptyString, fontFileIndex);
+
                 if (registeredFont.IsValid())
                 {
                     ++count;
                 }
             }
         }
+
         FcFontSetDestroy(fs);
     }
+
 #elif defined(__WXMAC__)
     count += RegisterFontDirectory(wxS("/System/Library/Fonts"));
     count += RegisterFontDirectory(wxS("/Library/Fonts"));
@@ -1007,54 +1134,59 @@ wxPdfFontManagerBase::RegisterSystemFonts()
 
 class wxPdfFontDirTraverser : public wxDirTraverser
 {
-public:
-    wxPdfFontDirTraverser(wxPdfFontManagerBase* fontManager)
-        : m_fontManager(fontManager), m_count(0)
-    {
-    }
-
-    virtual wxDirTraverseResult OnFile(const wxString& fileName)
-    {
-        wxFileName fontFileName(fileName);
-        wxString ext = fontFileName.GetExt().Lower();
-        if (ext.IsSameAs(wxS("ttf")) || ext.IsSameAs(wxS("otf")) ||
-                /* ext.IsSameAs(wxS("pfa")) || */ ext.IsSameAs(wxS("pfb")))
+    public:
+        wxPdfFontDirTraverser(wxPdfFontManagerBase * fontManager)
+            : m_fontManager(fontManager), m_count(0)
         {
-            wxPdfFont registeredFont = m_fontManager->RegisterFont(fontFileName.GetFullPath());
-            if (registeredFont.IsValid())
+        }
+
+        virtual wxDirTraverseResult OnFile(const wxString & fileName)
+        {
+            wxFileName fontFileName(fileName);
+            wxString ext = fontFileName.GetExt().Lower();
+
+            if (ext.IsSameAs(wxS("ttf")) || ext.IsSameAs(wxS("otf")) ||
+                    /* ext.IsSameAs(wxS("pfa")) || */ ext.IsSameAs(wxS("pfb")))
             {
-                ++m_count;
+                wxPdfFont registeredFont = m_fontManager->RegisterFont(fontFileName.GetFullPath());
+
+                if (registeredFont.IsValid())
+                {
+                    ++m_count;
+                }
             }
+            else
+                if (ext.IsSameAs(wxS("ttc")))
+                {
+                    m_count += m_fontManager->RegisterFontCollection(fontFileName.GetFullPath());
+                }
+
+            return wxDIR_CONTINUE;
         }
-        else if (ext.IsSameAs(wxS("ttc")))
+
+        virtual wxDirTraverseResult OnDir(const wxString & WXUNUSED(dirname))
         {
-            m_count += m_fontManager->RegisterFontCollection(fontFileName.GetFullPath());
+            return wxDIR_CONTINUE;
         }
-        return wxDIR_CONTINUE;
-    }
 
-    virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname))
-    {
-        return wxDIR_CONTINUE;
-    }
+        int GetCount() const
+        {
+            return m_count;
+        }
 
-    int GetCount() const
-    {
-        return m_count;
-    }
-
-private:
-    wxPdfFontManagerBase* m_fontManager;
-    int                   m_count;
+    private:
+        wxPdfFontManagerBase * m_fontManager;
+        int                   m_count;
 };
 
-int
-wxPdfFontManagerBase::RegisterFontDirectory(const wxString& directory, bool recursive)
+int wxPdfFontManagerBase::RegisterFontDirectory(const wxString & directory, bool recursive)
 {
     int count = 0;
+
     if (wxDir::Exists(directory))
     {
         wxDir fontDir(directory);
+
         if (fontDir.IsOpened())
         {
             wxPdfFontDirTraverser fontDirTraverser(this);
@@ -1065,34 +1197,35 @@ wxPdfFontManagerBase::RegisterFontDirectory(const wxString& directory, bool recu
         else
         {
             wxLogWarning(wxString(wxS("wxPdfFontManagerBase::RegisterFontDirectory: ")) +
-                         wxString::Format(_("Directory '%s' could not be opened."),directory.c_str()));
+                         wxString::Format(_("Directory '%s' could not be opened."), directory.c_str()));
         }
     }
     else
     {
         wxLogWarning(wxString(wxS("wxPdfFontManagerBase::RegisterFontDirectory: ")) +
-                     wxString::Format(_("Directory '%s' does not exist."),directory.c_str()));
+                     wxString::Format(_("Directory '%s' does not exist."), directory.c_str()));
     }
+
     return count;
 }
 #endif
 
-wxPdfFont
-wxPdfFontManagerBase::GetFont(const wxString& fontName, int fontStyle) const
+wxPdfFont wxPdfFontManagerBase::GetFont(const wxString & fontName, int fontStyle) const
 {
 #if wxUSE_THREADS
     wxCriticalSectionLocker locker(gs_csFontManager);
 #endif
     wxString lcFontName = fontName.Lower();
     int searchStyle = (fontStyle & ~wxPDF_FONTSTYLE_DECORATION_MASK) & wxPDF_FONTSTYLE_MASK;
-    wxPdfFontData* fontData = NULL;
-
+    wxPdfFontData * fontData = NULL;
     // Check whether font name equals font family
     wxPdfFontFamilyMap::const_iterator familyIter = m_fontFamilyMap.find(lcFontName);
+
     if (familyIter == m_fontFamilyMap.end())
     {
         // 1. Check family alias if given name was not a family name
         wxPdfFontAliasMap::const_iterator aliasIter = m_fontAliasMap.find(lcFontName);
+
         if (aliasIter != m_fontAliasMap.end())
         {
             familyIter = m_fontFamilyMap.find(aliasIter->second);
@@ -1104,9 +1237,11 @@ wxPdfFontManagerBase::GetFont(const wxString& fontName, int fontStyle) const
         // 2. Check whether the family contains a font with the requested style
         size_t n = familyIter->second.GetCount();
         size_t j;
+
         for (j = 0; j < n && fontData == NULL; ++j)
         {
             fontData = m_fontList[familyIter->second[j]]->GetFontData();
+
             if (fontData->GetStyle() != searchStyle)
             {
                 fontData = NULL;
@@ -1118,6 +1253,7 @@ wxPdfFontManagerBase::GetFont(const wxString& fontName, int fontStyle) const
     {
         // 3. Check whether a font is registered under the given name
         wxPdfFontNameMap::const_iterator fontIter = m_fontNameMap.find(lcFontName);
+
         if (fontIter != m_fontNameMap.end())
         {
             fontData = m_fontList[fontIter->second]->GetFontData();
@@ -1129,23 +1265,25 @@ wxPdfFontManagerBase::GetFont(const wxString& fontName, int fontStyle) const
                        wxString::Format(_("Font '%s' with style '%s' not found."), fontName.c_str(), style.c_str()));
         }
     }
+
     wxPdfFont font(fontData, fontStyle);
     font.SetEmbed(m_defaultEmbed);
     font.SetSubset(m_defaultSubset);
     return font;
 }
 
-wxPdfFont
-wxPdfFontManagerBase::GetFont(const wxString& fontName, const wxString& fontStyle) const
+wxPdfFont wxPdfFontManagerBase::GetFont(const wxString & fontName, const wxString & fontStyle) const
 {
     int style = wxPDF_FONTSTYLE_REGULAR;
     wxString localStyle = fontStyle.Lower();
+
     if (localStyle.length() > 2)
     {
         if (localStyle.Find(wxS("bold")) != wxNOT_FOUND)
         {
             style |= wxPDF_FONTSTYLE_BOLD;
         }
+
         if (localStyle.Find(wxS("italic")) != wxNOT_FOUND || localStyle.Find(wxS("oblique")) != wxNOT_FOUND)
         {
             style |= wxPDF_FONTSTYLE_ITALIC;
@@ -1157,30 +1295,32 @@ wxPdfFontManagerBase::GetFont(const wxString& fontName, const wxString& fontStyl
         {
             style |= wxPDF_FONTSTYLE_BOLD;
         }
+
         if (localStyle.Find(wxS("i")) != wxNOT_FOUND)
         {
             style |= wxPDF_FONTSTYLE_ITALIC;
         }
     }
+
     return GetFont(fontName, style);
 }
 
-wxPdfFont
-wxPdfFontManagerBase::GetFont(size_t fontIndex) const
+wxPdfFont wxPdfFontManagerBase::GetFont(size_t fontIndex) const
 {
 #if wxUSE_THREADS
     wxCriticalSectionLocker locker(gs_csFontManager);
 #endif
     wxPdfFont font;
+
     if (fontIndex < m_fontList.GetCount())
     {
         font = wxPdfFont(m_fontList[fontIndex]->GetFontData());
     }
+
     return font;
 }
 
-size_t
-wxPdfFontManagerBase::GetFontCount() const
+size_t wxPdfFontManagerBase::GetFontCount() const
 {
 #if wxUSE_THREADS
     wxCriticalSectionLocker locker(gs_csFontManager);
@@ -1188,13 +1328,14 @@ wxPdfFontManagerBase::GetFontCount() const
     return m_fontList.GetCount();
 }
 
-bool
-wxPdfFontManagerBase::InitializeFontData(const wxPdfFont& font)
+bool wxPdfFontManagerBase::InitializeFontData(const wxPdfFont & font)
 {
     bool ok = false;
+
     if (font.m_fontData != NULL)
     {
         ok = font.m_fontData->IsInitialized();
+
         if (!ok)
         {
 #if wxUSE_THREADS
@@ -1203,20 +1344,22 @@ wxPdfFontManagerBase::InitializeFontData(const wxPdfFont& font)
             ok = font.m_fontData->Initialize();
         }
     }
+
     return ok;
 }
 
-bool
-wxPdfFontManagerBase::RegisterEncoding(const wxPdfEncoding& encoding)
+bool wxPdfFontManagerBase::RegisterEncoding(const wxPdfEncoding & encoding)
 {
     bool ok = true;
     wxString encodingName = encoding.GetEncodingName().Lower();
+
     if (m_encodingMap->find(encodingName) == m_encodingMap->end())
     {
 #if wxUSE_THREADS
         wxCriticalSectionLocker locker(gs_csFontManager);
 #endif
-        wxPdfEncoding* addedEncoding = new wxPdfEncoding(encoding);
+        wxPdfEncoding * addedEncoding = new wxPdfEncoding(encoding);
+
         if (addedEncoding->IsOk())
         {
             addedEncoding->InitializeEncodingMap();
@@ -1227,130 +1370,139 @@ wxPdfFontManagerBase::RegisterEncoding(const wxPdfEncoding& encoding)
             ok = false;
         }
     }
+
     return ok;
 }
 
-void
-wxPdfFontManagerBase::SetFontBaseEncoding(wxPdfFontData* fontData)
+void wxPdfFontManagerBase::SetFontBaseEncoding(wxPdfFontData * fontData)
 {
     if (fontData != NULL)
     {
         wxString fontType = fontData->GetType();
         wxString encoding = fontData->GetEncoding();
+
         if (encoding.IsEmpty())
         {
             encoding = wxS("iso-8859-1");
         }
+
         if (fontType.IsSameAs(wxS("TrueType")) || fontType.IsSameAs(wxS("Type1")))
         {
             if (RegisterEncoding(encoding))
             {
                 wxPdfEncodingMap::const_iterator beIter = m_encodingMap->find(encoding);
-                wxPdfEncoding* baseEncoding = (beIter != m_encodingMap->end()) ? beIter->second : NULL;
+                wxPdfEncoding * baseEncoding = (beIter != m_encodingMap->end()) ? beIter->second : NULL;
                 fontData->SetEncoding(baseEncoding);
             }
         }
-        else if (fontType.IsSameAs(wxS("Type0")))
-        {
-            wxPdfEncodingCheckerMap::const_iterator ecIter = m_encodingCheckerMap->find(encoding);
-            wxPdfEncodingChecker* encodingChecker = (ecIter != m_encodingCheckerMap->end()) ? ecIter->second : NULL;
-            fontData->SetEncodingChecker(encodingChecker);
-        }
+        else
+            if (fontType.IsSameAs(wxS("Type0")))
+            {
+                wxPdfEncodingCheckerMap::const_iterator ecIter = m_encodingCheckerMap->find(encoding);
+                wxPdfEncodingChecker * encodingChecker = (ecIter != m_encodingCheckerMap->end()) ? ecIter->second : NULL;
+                fontData->SetEncodingChecker(encodingChecker);
+            }
     }
 }
 
-const wxPdfEncoding*
-wxPdfFontManagerBase::GetEncoding(const wxString& encodingName)
+const wxPdfEncoding * wxPdfFontManagerBase::GetEncoding(const wxString & encodingName)
 {
 #if wxUSE_THREADS
     wxCriticalSectionLocker locker(gs_csFontManager);
 #endif
-    wxPdfEncoding* foundEncoding = NULL;
+    wxPdfEncoding * foundEncoding = NULL;
+
     if (RegisterEncoding(encodingName))
     {
         wxPdfEncodingMap::const_iterator encoding = m_encodingMap->find(encodingName.Lower());
+
         if (encoding != m_encodingMap->end())
         {
             foundEncoding = encoding->second;
         }
     }
+
     return foundEncoding;
 }
 
-wxString
-wxPdfFontManagerBase::ConvertStyleToString(int fontStyle)
+wxString wxPdfFontManagerBase::ConvertStyleToString(int fontStyle)
 {
     wxString style = wxEmptyString;
+
     if ((fontStyle & wxPDF_FONTSTYLE_BOLDITALIC) == wxPDF_FONTSTYLE_BOLDITALIC)
     {
         style = wxString(_("BoldItalic"));
     }
-    else if (fontStyle & wxPDF_FONTSTYLE_BOLD)
-    {
-        style = wxString(_("Bold"));
-    }
-    else if (fontStyle & wxPDF_FONTSTYLE_ITALIC)
-    {
-        style = wxString(_("Italic"));
-    }
     else
-    {
-        style = wxString(_("Regular"));
-    }
+        if (fontStyle & wxPDF_FONTSTYLE_BOLD)
+        {
+            style = wxString(_("Bold"));
+        }
+        else
+            if (fontStyle & wxPDF_FONTSTYLE_ITALIC)
+            {
+                style = wxString(_("Italic"));
+            }
+            else
+            {
+                style = wxString(_("Regular"));
+            }
+
     return style;
 }
 
 // --- wxPdfFontManagerBase (private)
 
-void
-wxPdfFontManagerBase::InitializeCoreFonts()
+void wxPdfFontManagerBase::InitializeCoreFonts()
 {
-    wxPdfFontDataCore* coreFontData;
+    wxPdfFontDataCore * coreFontData;
+
     if (!RegisterEncoding(wxS("winansi")) ||
             !RegisterEncoding(wxS("iso-8859-1")))
     {
         wxLogDebug(wxString(wxS("wxPdfFontManagerBase::InitializeCoreFonts: ")) +
                    wxString::Format(_("Registering encodings for core fonts failed.")));
     }
+
     int j;
+
     for (j = 0; gs_coreFontTable[j].name != wxEmptyString; ++j)
     {
-        const wxPdfCoreFontDesc& coreFontDesc = gs_coreFontTable[j];
+        const wxPdfCoreFontDesc & coreFontDesc = gs_coreFontTable[j];
         wxString family(coreFontDesc.family);
         bool isWinAnsi = !(family.IsSameAs(wxS("Symbol")) || family.IsSameAs(wxS("ZapfDingbats")));
         wxString encoding = (isWinAnsi) ? wxS("winansi") : wxS("iso-8859-1");
-
         wxPdfEncodingMap::const_iterator beIter = m_encodingMap->find(encoding);
-        wxPdfEncoding* baseEncoding = (beIter != m_encodingMap->end()) ? beIter->second : NULL;
-
+        wxPdfEncoding * baseEncoding = (beIter != m_encodingMap->end()) ? beIter->second : NULL;
         coreFontData = new wxPdfFontDataCore(coreFontDesc.family, coreFontDesc.alias, coreFontDesc.name,
                                              coreFontDesc.cwArray, coreFontDesc.kpArray,
                                              wxPdfFontDescription(coreFontDesc.ascent, coreFontDesc.descent,
-                                                     coreFontDesc.capHeight, coreFontDesc.flags,
-                                                     coreFontDesc.bbox, coreFontDesc.italicAngle,
-                                                     coreFontDesc.stemV, coreFontDesc.missingWidth,
-                                                     coreFontDesc.xHeight, coreFontDesc.underlinePosition,
-                                                     coreFontDesc.underlineThickness));
+                                                                  coreFontDesc.capHeight, coreFontDesc.flags,
+                                                                  coreFontDesc.bbox, coreFontDesc.italicAngle,
+                                                                  coreFontDesc.stemV, coreFontDesc.missingWidth,
+                                                                  coreFontDesc.xHeight, coreFontDesc.underlinePosition,
+                                                                  coreFontDesc.underlineThickness));
         coreFontData->SetEncoding(baseEncoding);
         AddFont(coreFontData);
     }
 }
 
 #if wxUSE_UNICODE
-void
-wxPdfFontManagerBase::InitializeCjkFonts()
+void wxPdfFontManagerBase::InitializeCjkFonts()
 {
-    const wxStringCharType* fontStyles[4] = { wxS(""), wxS(",Bold"), wxS(",Italic"), wxS(",BoldItalic") };
+    const wxStringCharType * fontStyles[4] = { wxS(""), wxS(",Bold"), wxS(",Italic"), wxS(",BoldItalic") };
     wxString fontName;
     wxString fontAlias;
-    wxPdfFontDataType0* cjkFontData;
+    wxPdfFontDataType0 * cjkFontData;
     bool ok;
     int j, k;
+
     for (j = 0; gs_cjkFontTable[j].name != wxEmptyString; ++j)
     {
-        const wxPdfCjkFontDesc& cjkFontDesc = gs_cjkFontTable[j];
+        const wxPdfCjkFontDesc & cjkFontDesc = gs_cjkFontTable[j];
         wxPdfEncodingCheckerMap::const_iterator ecIter = m_encodingCheckerMap->find(cjkFontDesc.encoding);
-        wxPdfEncodingChecker* encodingChecker = (ecIter != m_encodingCheckerMap->end()) ? ecIter->second : NULL;
+        wxPdfEncodingChecker * encodingChecker = (ecIter != m_encodingCheckerMap->end()) ? ecIter->second : NULL;
+
         for (k = 0; k < 4; ++k)
         {
             cjkFontData = new wxPdfFontDataType0(cjkFontDesc.family, cjkFontDesc.name,
@@ -1358,11 +1510,11 @@ wxPdfFontManagerBase::InitializeCjkFonts()
                                                  cjkFontDesc.supplement, cjkFontDesc.cmap,
                                                  cjkFontDesc.cwArray,
                                                  wxPdfFontDescription(cjkFontDesc.ascent, cjkFontDesc.descent,
-                                                         cjkFontDesc.capHeight, cjkFontDesc.flags,
-                                                         cjkFontDesc.bbox, cjkFontDesc.italicAngle,
-                                                         cjkFontDesc.stemV, cjkFontDesc.missingWidth,
-                                                         cjkFontDesc.xHeight, cjkFontDesc.underlinePosition,
-                                                         cjkFontDesc.underlineThickness));
+                                                                      cjkFontDesc.capHeight, cjkFontDesc.flags,
+                                                                      cjkFontDesc.bbox, cjkFontDesc.italicAngle,
+                                                                      cjkFontDesc.stemV, cjkFontDesc.missingWidth,
+                                                                      cjkFontDesc.xHeight, cjkFontDesc.underlinePosition,
+                                                                      cjkFontDesc.underlineThickness));
             fontName = cjkFontDesc.name;
             fontName += fontStyles[k];
             cjkFontData->SetName(fontName);
@@ -1372,6 +1524,7 @@ wxPdfFontManagerBase::InitializeCjkFonts()
             cjkFontData->SetStyleFromName();
             cjkFontData->SetEncodingChecker(encodingChecker);
             ok = AddFont(cjkFontData);
+
             if (!ok)
             {
                 delete cjkFontData;
@@ -1381,37 +1534,40 @@ wxPdfFontManagerBase::InitializeCjkFonts()
 }
 #endif
 
-void
-wxPdfFontManagerBase::InitializeEncodingChecker()
+void wxPdfFontManagerBase::InitializeEncodingChecker()
 {
     int j;
+
     for (j = 0; gs_encodingTableData[j].m_encodingName != NULL; ++j)
     {
         wxString encodingName(gs_encodingTableData[j].m_encodingName);
-        wxPdfEncodingChecker* encodingChecker;
+        wxPdfEncodingChecker * encodingChecker;
+
         if (gs_encodingTableData[j].m_encodingTable != NULL)
         {
             encodingChecker = new wxPdfCodepageChecker(gs_encodingTableData[j].m_encodingName,
-                    gs_encodingTableData[j].m_encodingTableSize,
-                    gs_encodingTableData[j].m_encodingTable);
+                                                       gs_encodingTableData[j].m_encodingTableSize,
+                                                       gs_encodingTableData[j].m_encodingTable);
         }
         else
         {
             encodingChecker = new wxPdfCjkChecker(gs_encodingTableData[j].m_encodingName,
                                                   gs_encodingTableData[j].m_encodingBase);
         }
+
         (*m_encodingCheckerMap)[encodingName] = encodingChecker;
     }
 }
 
-bool
-wxPdfFontManagerBase::RegisterEncoding(const wxString& encoding)
+bool wxPdfFontManagerBase::RegisterEncoding(const wxString & encoding)
 {
     bool ok = true;
     wxString encodingName = encoding.Lower();
+
     if (m_encodingMap->find(encodingName) == m_encodingMap->end())
     {
-        wxPdfEncoding* addedEncoding = new wxPdfEncoding();
+        wxPdfEncoding * addedEncoding = new wxPdfEncoding();
+
         if (addedEncoding->SetEncoding(encoding))
         {
             addedEncoding->InitializeEncodingMap();
@@ -1425,15 +1581,16 @@ wxPdfFontManagerBase::RegisterEncoding(const wxString& encoding)
             ok = false;
         }
     }
+
     return ok;
 }
 
-bool
-wxPdfFontManagerBase::RegisterFontCJK(const wxString& fontFileName, const wxString& fontStyle, const wxString& alias)
+bool wxPdfFontManagerBase::RegisterFontCJK(const wxString & fontFileName, const wxString & fontStyle, const wxString & alias)
 {
     bool ok = false;
-    wxPdfFontData* fontData;
+    wxPdfFontData * fontData;
     fontData = LoadFontFromXML(fontFileName);
+
     if (fontData != NULL)
     {
         wxString fontName = fontData->GetName();
@@ -1444,69 +1601,80 @@ wxPdfFontManagerBase::RegisterFontCJK(const wxString& fontFileName, const wxStri
         fontData->SetStyleFromName();
         SetFontBaseEncoding(fontData);
         ok = AddFont(fontData);
+
         if (!ok)
         {
             wxLogDebug(wxString(wxS("wxPdfFontManagerBase::RegisterFontCJK: ")) +
                        wxString::Format(_("CJK font '%s' already registered."), fontName.c_str()));
         }
     }
+
     return ok;
 }
 
-wxPdfFontData*
-wxPdfFontManagerBase::LoadFontFromXML(const wxString& fontFileName)
+wxPdfFontData * wxPdfFontManagerBase::LoadFontFromXML(const wxString & fontFileName)
 {
-    wxPdfFontData* fontData = NULL;
+    wxPdfFontData * fontData = NULL;
     wxFileName fileName(fontFileName);
     wxFileSystem fs;
-
     // Open font metrics XML file
-    wxFSFile* xmlFontMetrics = fs.OpenFile(wxFileSystem::FileNameToURL(fileName));
+    wxFSFile * xmlFontMetrics = fs.OpenFile(wxFileSystem::FileNameToURL(fileName));
+
     if (xmlFontMetrics != NULL)
     {
         // Load the XML file
         wxXmlDocument fontMetrics;
         bool loaded = fontMetrics.Load(*xmlFontMetrics->GetStream());
         delete xmlFontMetrics;
+
         if (loaded)
         {
             if (fontMetrics.IsOk() && fontMetrics.GetRoot()->GetName().IsSameAs(wxS("wxpdfdoc-font-metrics")))
             {
                 wxString fontType;
-                wxXmlNode* root = fontMetrics.GetRoot();
+                wxXmlNode * root = fontMetrics.GetRoot();
+
                 if (root->GetAttribute(wxS("type"), &fontType))
                 {
                     if (fontType.IsSameAs(wxS("TrueType")))
                     {
                         fontData = new wxPdfFontDataTrueType();
                     }
-                    else if (fontType.IsSameAs(wxS("Type1")))
-                    {
-                        fontData = new wxPdfFontDataType1();
-                    }
-#if wxUSE_UNICODE
-                    else if (fontType.IsSameAs(wxS("TrueTypeUnicode")))
-                    {
-                        fontData = new wxPdfFontDataTrueTypeUnicode();
-                    }
-                    else if (fontType.IsSameAs(wxS("OpenTypeUnicode")))
-                    {
-                        fontData = new wxPdfFontDataOpenTypeUnicode();
-                    }
-                    else if (fontType.IsSameAs(wxS("Type0")))
-                    {
-                        fontData = new wxPdfFontDataType0();
-                    }
-#endif
                     else
-                    {
-                        // Unknown font type
-                        wxLogError(wxString(wxS("wxPdfFontManagerBase::LoadFontFromXML: ")) +
-                                   wxString::Format(_("Unknown font type '%s' in font file '%s'."), fontType.c_str(), fontFileName.c_str()));
-                    }
+                        if (fontType.IsSameAs(wxS("Type1")))
+                        {
+                            fontData = new wxPdfFontDataType1();
+                        }
+
+#if wxUSE_UNICODE
+                        else
+                            if (fontType.IsSameAs(wxS("TrueTypeUnicode")))
+                            {
+                                fontData = new wxPdfFontDataTrueTypeUnicode();
+                            }
+                            else
+                                if (fontType.IsSameAs(wxS("OpenTypeUnicode")))
+                                {
+                                    fontData = new wxPdfFontDataOpenTypeUnicode();
+                                }
+                                else
+                                    if (fontType.IsSameAs(wxS("Type0")))
+                                    {
+                                        fontData = new wxPdfFontDataType0();
+                                    }
+
+#endif
+                                    else
+                                    {
+                                        // Unknown font type
+                                        wxLogError(wxString(wxS("wxPdfFontManagerBase::LoadFontFromXML: ")) +
+                                                   wxString::Format(_("Unknown font type '%s' in font file '%s'."), fontType.c_str(), fontFileName.c_str()));
+                                    }
+
                     if (fontData != NULL)
                     {
                         fontData->SetFilePath(fileName.GetPath());
+
                         if (!fontData->LoadFontMetrics(root))
                         {
                             wxLogError(wxString(wxS("wxPdfFontManagerBase::LoadFontFromXML: ")) +
@@ -1543,11 +1711,11 @@ wxPdfFontManagerBase::LoadFontFromXML(const wxString& fontFileName)
         wxLogError(wxString(wxS("wxPdfFontManagerBase::LoadFontFromXML: ")) +
                    wxString::Format(_("Font metrics file '%s' not found."), fontFileName.c_str()));
     }
+
     return fontData;
 }
 
-bool
-wxPdfFontManagerBase::IsRegistered(wxPdfFontData* fontData)
+bool wxPdfFontManagerBase::IsRegistered(wxPdfFontData * fontData)
 {
 #if wxUSE_THREADS
     wxCriticalSectionLocker locker(gs_csFontManager);
@@ -1557,15 +1725,13 @@ wxPdfFontManagerBase::IsRegistered(wxPdfFontData* fontData)
     return (font != m_fontNameMap.end());
 }
 
-bool
-wxPdfFontManagerBase::AddFont(wxPdfFontData* fontData)
+bool wxPdfFontManagerBase::AddFont(wxPdfFontData * fontData)
 {
     wxPdfFont font;
     return AddFont(fontData, font);
 }
 
-bool
-wxPdfFontManagerBase::AddFont(wxPdfFontData* fontData, wxPdfFont& font)
+bool wxPdfFontManagerBase::AddFont(wxPdfFontData * fontData, wxPdfFont & font)
 {
     bool ok = false;
 #if wxUSE_THREADS
@@ -1574,23 +1740,22 @@ wxPdfFontManagerBase::AddFont(wxPdfFontData* fontData, wxPdfFont& font)
     wxString fontName = fontData->GetName().Lower();
     wxString family = fontData->GetFamily().Lower();
     wxString alias = fontData->GetAlias().Lower();
-
     wxPdfFontNameMap::const_iterator fontIter = m_fontNameMap.find(fontName.Lower());
+
     if (fontIter == m_fontNameMap.end())
     {
         // Font not yet registered
         wxArrayString fullNames = fontData->GetFullNames();
         size_t pos = m_fontList.GetCount();
-        wxPdfFontListEntry* fontEntry = new wxPdfFontListEntry(fontData);
+        wxPdfFontListEntry * fontEntry = new wxPdfFontListEntry(fontData);
         m_fontList.Add(fontEntry);
         font = wxPdfFont(fontData);
         ok = true;
-
         // Register Postscript font name
         m_fontNameMap[fontName] = pos;
-
         // Register all full font names
         size_t j;
+
         for (j = 0; j < fullNames.GetCount(); ++j)
         {
             m_fontNameMap[fullNames[j].Lower()] = pos;
@@ -1601,10 +1766,11 @@ wxPdfFontManagerBase::AddFont(wxPdfFontData* fontData, wxPdfFont& font)
         {
             m_fontFamilyMap[family].Add(pos);
         }
-        else if (!alias.IsEmpty())
-        {
-            m_fontFamilyMap[alias].Add(pos);
-        }
+        else
+            if (!alias.IsEmpty())
+            {
+                m_fontFamilyMap[alias].Add(pos);
+            }
     }
     else
     {
@@ -1616,6 +1782,7 @@ wxPdfFontManagerBase::AddFont(wxPdfFontData* fontData, wxPdfFont& font)
     {
         // Check whether the alias is already assigned and - if so - to the same family
         wxPdfFontAliasMap::const_iterator aliasIter = m_fontAliasMap.find(alias);
+
         if (aliasIter != m_fontAliasMap.end())
         {
             if (!aliasIter->second.IsSameAs(family))
@@ -1631,6 +1798,7 @@ wxPdfFontManagerBase::AddFont(wxPdfFontData* fontData, wxPdfFont& font)
             m_fontAliasMap[alias] = family;
         }
     }
+
     return ok;
 }
 
@@ -1638,13 +1806,13 @@ wxPdfFontManagerBase::AddFont(wxPdfFontData* fontData, wxPdfFont& font)
 
 /* C::B begin */
 #ifndef wxPDF_USE_WXMODULE
-#define wxPDF_USE_WXMODULE 1
+    #define wxPDF_USE_WXMODULE 1
 #endif
 
 #if wxPDF_USE_WXMODULE
-wxPdfFontManager* wxPdfFontManager::ms_fontManager = NULL;
+    wxPdfFontManager * wxPdfFontManager::ms_fontManager = NULL;
 #else
-wxPdfFontManager* wxPdfFontManager::ms_fontManager = new wxPdfFontManager();
+    wxPdfFontManager * wxPdfFontManager::ms_fontManager = new wxPdfFontManager();
 #endif // wxPDF_USE_WXMODULE
 /* C::B end */
 
@@ -1658,66 +1826,59 @@ wxPdfFontManager::~wxPdfFontManager()
     delete m_fontManagerBase;
     /* C::B begin */
 #if !wxPDF_USE_WXMODULE
-    if ( ms_fontManager )
+
+    if (ms_fontManager)
     {
         delete ms_fontManager;
         ms_fontManager = NULL;
     }
+
 #endif // !wxPDF_USE_WXMODULE
     /* C::B end */
 }
 
-wxPdfFontManager*
-wxPdfFontManager::GetFontManager()
+wxPdfFontManager * wxPdfFontManager::GetFontManager()
 {
     return ms_fontManager;
 }
 
 
-void
-wxPdfFontManager::AddSearchPath(const wxString& path)
+void wxPdfFontManager::AddSearchPath(const wxString & path)
 {
     m_fontManagerBase->AddSearchPath(path);
 }
 
-void
-wxPdfFontManager::AddSearchPath(const wxArrayString& pathArray)
+void wxPdfFontManager::AddSearchPath(const wxArrayString & pathArray)
 {
     m_fontManagerBase->AddSearchPath(pathArray);
 }
 
-bool
-wxPdfFontManager::SetDefaultEmbed(bool embed)
+bool wxPdfFontManager::SetDefaultEmbed(bool embed)
 {
     return m_fontManagerBase->SetDefaultEmbed(embed);
 }
 
-bool
-wxPdfFontManager::GetDefaultEmbed()
+bool wxPdfFontManager::GetDefaultEmbed()
 {
     return m_fontManagerBase->GetDefaultEmbed();
 }
 
-bool
-wxPdfFontManager::SetDefaultSubset(bool subset)
+bool wxPdfFontManager::SetDefaultSubset(bool subset)
 {
     return m_fontManagerBase->SetDefaultSubset(subset);
 }
 
-bool
-wxPdfFontManager::GetDefaultSubset()
+bool wxPdfFontManager::GetDefaultSubset()
 {
     return m_fontManagerBase->GetDefaultSubset();
 }
 
-wxPdfFont
-wxPdfFontManager::RegisterFont(const wxString& fontFileName, const wxString& aliasName, int fontIndex)
+wxPdfFont wxPdfFontManager::RegisterFont(const wxString & fontFileName, const wxString & aliasName, int fontIndex)
 {
     return m_fontManagerBase->RegisterFont(fontFileName, aliasName, fontIndex);
 }
 
-wxPdfFont
-wxPdfFontManager::RegisterFont(const wxFont& font, const wxString& aliasName)
+wxPdfFont wxPdfFontManager::RegisterFont(const wxFont & font, const wxString & aliasName)
 {
 #if wxUSE_UNICODE
     return m_fontManagerBase->RegisterFont(font, aliasName);
@@ -1728,8 +1889,7 @@ wxPdfFontManager::RegisterFont(const wxFont& font, const wxString& aliasName)
 #endif
 }
 
-int
-wxPdfFontManager::RegisterFontCollection(const wxString& fontCollectionFileName)
+int wxPdfFontManager::RegisterFontCollection(const wxString & fontCollectionFileName)
 {
 #if wxUSE_UNICODE
     return m_fontManagerBase->RegisterFontCollection(fontCollectionFileName);
@@ -1739,14 +1899,12 @@ wxPdfFontManager::RegisterFontCollection(const wxString& fontCollectionFileName)
 #endif
 }
 
-bool
-wxPdfFontManager::RegisterFontCJK(const wxString& family)
+bool wxPdfFontManager::RegisterFontCJK(const wxString & family)
 {
     return m_fontManagerBase->RegisterFontCJK(family);
 }
 
-int
-wxPdfFontManager::RegisterSystemFonts()
+int wxPdfFontManager::RegisterSystemFonts()
 {
 #if wxUSE_UNICODE
     return m_fontManagerBase->RegisterSystemFonts();
@@ -1755,8 +1913,7 @@ wxPdfFontManager::RegisterSystemFonts()
 #endif
 }
 
-int
-wxPdfFontManager::RegisterFontDirectory(const wxString& directory, bool recursive)
+int wxPdfFontManager::RegisterFontDirectory(const wxString & directory, bool recursive)
 {
 #if wxUSE_UNICODE
     return m_fontManagerBase->RegisterFontDirectory(directory, recursive);
@@ -1767,49 +1924,44 @@ wxPdfFontManager::RegisterFontDirectory(const wxString& directory, bool recursiv
 #endif
 }
 
-wxPdfFont
-wxPdfFontManager::GetFont(const wxString& fontName, int fontStyle) const
+wxPdfFont wxPdfFontManager::GetFont(const wxString & fontName, int fontStyle) const
 {
     return m_fontManagerBase->GetFont(fontName, fontStyle);
 }
 
-wxPdfFont
-wxPdfFontManager::GetFont(const wxString& fontName, const wxString& fontStyle) const
+wxPdfFont wxPdfFontManager::GetFont(const wxString & fontName, const wxString & fontStyle) const
 {
     return m_fontManagerBase->GetFont(fontName, fontStyle);
 }
 
-wxPdfFont
-wxPdfFontManager::GetFont(size_t fontIndex) const
+wxPdfFont wxPdfFontManager::GetFont(size_t fontIndex) const
 {
     return m_fontManagerBase->GetFont(fontIndex);
 }
 
-size_t
-wxPdfFontManager::GetFontCount() const
+size_t wxPdfFontManager::GetFontCount() const
 {
     return m_fontManagerBase->GetFontCount();
 }
 
-bool
-wxPdfFontManager::InitializeFontData(const wxPdfFont& font)
+bool wxPdfFontManager::InitializeFontData(const wxPdfFont & font)
 {
     bool ok = false;
+
     if (font.IsValid())
     {
         ok = m_fontManagerBase->InitializeFontData(font);
     }
+
     return ok;
 }
 
-bool
-wxPdfFontManager::RegisterEncoding(const wxPdfEncoding& encoding)
+bool wxPdfFontManager::RegisterEncoding(const wxPdfEncoding & encoding)
 {
     return m_fontManagerBase->RegisterEncoding(encoding);
 }
 
-const wxPdfEncoding*
-wxPdfFontManager::GetEncoding(const wxString& encodingName)
+const wxPdfEncoding * wxPdfFontManager::GetEncoding(const wxString & encodingName)
 {
     return m_fontManagerBase->GetEncoding(encodingName);
 }
@@ -1825,11 +1977,11 @@ wxPdfFontManager::GetEncoding(const wxString& encodingName)
 
 class WXDLLIMPEXP_PDFDOC wxPdfDocumentModule : public wxModule
 {
-    DECLARE_DYNAMIC_CLASS(wxPdfDocumentModule)
-public:
-    wxPdfDocumentModule() {}
-    bool OnInit();
-    void OnExit();
+        DECLARE_DYNAMIC_CLASS(wxPdfDocumentModule)
+    public:
+        wxPdfDocumentModule() {}
+        bool OnInit();
+        void OnExit();
 };
 
 IMPLEMENT_DYNAMIC_CLASS(wxPdfDocumentModule, wxModule)

@@ -5,7 +5,7 @@ bool Global()
     return true;
 }
 
-int main (void)
+int main(void)
 {
     ImplDecl id;
     int i = 4;

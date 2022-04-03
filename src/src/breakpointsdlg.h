@@ -11,7 +11,7 @@
 #include <cbdebugger_interfaces.h>
 
 #ifndef CBPRECOMP
-#include <wx/imaglist.h>
+    #include <wx/imaglist.h>
 #endif
 
 class cbBreakpoint;
@@ -23,71 +23,71 @@ class wxListEvent;
 
 class BreakpointsDlg : public wxPanel, public cbBreakpointsDlg
 {
-public:
-    BreakpointsDlg();
+    public:
+        BreakpointsDlg();
 
-    wxWindow* GetWindow() override
-    {
-        return this;
-    }
-
-    bool AddBreakpoint(cbDebuggerPlugin *plugin, const wxString& filename, int line) override;
-    bool RemoveBreakpoint(cbDebuggerPlugin *plugin, const wxString& filename, int line) override;
-    void RemoveAllBreakpoints() override;
-    void EditBreakpoint(const wxString& filename, int line) override;
-    void EnableBreakpoint(const wxString& filename, int line, bool enable) override;
-
-    void Reload() override;
-private:
-
-    void OnRemove(wxCommandEvent& event);
-    void OnRemoveAll(wxCommandEvent& event);
-    void OnProperties(wxCommandEvent& event);
-    void OnOpen(wxCommandEvent& event);
-    void OnEnable(wxCommandEvent& event);
-    void OnShowTemp(wxCommandEvent& event);
-    void OnRightClick(wxListEvent& event);
-    void OnDoubleClick(wxListEvent& event);
-    void OnBreakpointAdd(CodeBlocksEvent& event);
-    void OnBreakpointEdit(CodeBlocksEvent& event);
-    void OnKeyUp(wxKeyEvent& event);
-    void OnUpdateUI(wxUpdateUIEvent &event);
-private:
-    enum Columns
-    {
-        Type = 0,
-        FilenameAddress,
-        Line,
-        Info,
-        Debugger
-    };
-
-    friend struct FindBreakpointPred;
-
-    struct Item
-    {
-        Item(const cb::shared_ptr<cbBreakpoint> &breakpoint_in, cbDebuggerPlugin *plugin_in, wxString const &pluginName_in) :
-            breakpoint(breakpoint_in),
-            plugin(plugin_in),
-            pluginName(pluginName_in)
+        wxWindow * GetWindow() override
         {
+            return this;
         }
 
-        cb::shared_ptr<cbBreakpoint> breakpoint;
-        cbDebuggerPlugin *plugin;
-        wxString pluginName;
-    };
-    typedef std::vector<Item> Items;
-private:
-    Items::iterator FindBreakpoint(const wxString &filename, int line);
-    void BreakpointProperties(const Item &item);
+        bool AddBreakpoint(cbDebuggerPlugin * plugin, const wxString & filename, int line) override;
+        bool RemoveBreakpoint(cbDebuggerPlugin * plugin, const wxString & filename, int line) override;
+        void RemoveAllBreakpoints() override;
+        void EditBreakpoint(const wxString & filename, int line) override;
+        void EnableBreakpoint(const wxString & filename, int line, bool enable) override;
 
-private:
-    wxListCtrl* m_pList;
-    Items m_breakpoints;
-    wxImageList m_icons;
-private:
-    DECLARE_EVENT_TABLE()
+        void Reload() override;
+    private:
+
+        void OnRemove(wxCommandEvent & event);
+        void OnRemoveAll(wxCommandEvent & event);
+        void OnProperties(wxCommandEvent & event);
+        void OnOpen(wxCommandEvent & event);
+        void OnEnable(wxCommandEvent & event);
+        void OnShowTemp(wxCommandEvent & event);
+        void OnRightClick(wxListEvent & event);
+        void OnDoubleClick(wxListEvent & event);
+        void OnBreakpointAdd(CodeBlocksEvent & event);
+        void OnBreakpointEdit(CodeBlocksEvent & event);
+        void OnKeyUp(wxKeyEvent & event);
+        void OnUpdateUI(wxUpdateUIEvent & event);
+    private:
+        enum Columns
+        {
+            Type = 0,
+            FilenameAddress,
+            Line,
+            Info,
+            Debugger
+        };
+
+        friend struct FindBreakpointPred;
+
+        struct Item
+        {
+            Item(const cb::shared_ptr<cbBreakpoint> & breakpoint_in, cbDebuggerPlugin * plugin_in, wxString const & pluginName_in) :
+                breakpoint(breakpoint_in),
+                plugin(plugin_in),
+                pluginName(pluginName_in)
+            {
+            }
+
+            cb::shared_ptr<cbBreakpoint> breakpoint;
+            cbDebuggerPlugin * plugin;
+            wxString pluginName;
+        };
+        typedef std::vector<Item> Items;
+    private:
+        Items::iterator FindBreakpoint(const wxString & filename, int line);
+        void BreakpointProperties(const Item & item);
+
+    private:
+        wxListCtrl * m_pList;
+        Items m_breakpoints;
+        wxImageList m_icons;
+    private:
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // BREAKPOINTSDLG_H

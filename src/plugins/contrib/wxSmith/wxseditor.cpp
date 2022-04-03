@@ -26,7 +26,7 @@
 
 #include <wx/wx.h>
 
-wxsEditor::wxsEditor(wxWindow* parent, const wxString& title,wxsResource* Resource):
+wxsEditor::wxsEditor(wxWindow * parent, const wxString & title, wxsResource * Resource):
     EditorBase(parent, title, true),
     m_Resource(Resource)
 {
@@ -36,7 +36,7 @@ wxsEditor::wxsEditor(wxWindow* parent, const wxString& title,wxsResource* Resour
 
 wxsEditor::~wxsEditor()
 {
-    if ( m_Resource )
+    if (m_Resource)
     {
         m_Resource->EditorClosed();
         m_Resource = 0;

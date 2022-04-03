@@ -13,11 +13,11 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 // includes
@@ -35,13 +35,13 @@ wxPdfFontDescription::wxPdfFontDescription()
 {
 }
 
-wxPdfFontDescription::wxPdfFontDescription (int ascent, int descent, int capHeight, int flags,
-        const wxString& fontBBox, int italicAngle, int stemV,
-        int missingWidth, int xHeight,
-        int underlinePosition, int underlineThickness,
-        int hheaAscender, int hheaDescender, int hheaLineGap,
-        int os2sTypoAscender, int os2sTypoDescender, int os2sTypoLineGap,
-        int os2usWinAscent, int os2usWinDescent)
+wxPdfFontDescription::wxPdfFontDescription(int ascent, int descent, int capHeight, int flags,
+                                           const wxString & fontBBox, int italicAngle, int stemV,
+                                           int missingWidth, int xHeight,
+                                           int underlinePosition, int underlineThickness,
+                                           int hheaAscender, int hheaDescender, int hheaLineGap,
+                                           int os2sTypoAscender, int os2sTypoDescender, int os2sTypoLineGap,
+                                           int os2usWinAscent, int os2usWinDescent)
     : m_ascent(ascent), m_descent(descent), m_capHeight(capHeight), m_flags(flags),
       m_fontBBox(fontBBox), m_italicAngle(italicAngle), m_stemV(stemV),
       m_missingWidth(missingWidth), m_xHeight(xHeight),
@@ -52,7 +52,7 @@ wxPdfFontDescription::wxPdfFontDescription (int ascent, int descent, int capHeig
 {
 }
 
-wxPdfFontDescription::wxPdfFontDescription(const wxPdfFontDescription& desc)
+wxPdfFontDescription::wxPdfFontDescription(const wxPdfFontDescription & desc)
 {
     m_ascent             = desc.m_ascent;
     m_descent            = desc.m_descent;
@@ -79,10 +79,9 @@ wxPdfFontDescription::~wxPdfFontDescription()
 {
 }
 
-void
-wxPdfFontDescription::SetOpenTypeMetrics(int hheaAscender, int hheaDescender, int hheaLineGap,
-        int os2sTypoAscender, int os2sTypoDescender, int os2sTypoLineGap,
-        int os2usWinAscent, int os2usWinDescent)
+void wxPdfFontDescription::SetOpenTypeMetrics(int hheaAscender, int hheaDescender, int hheaLineGap,
+                                              int os2sTypoAscender, int os2sTypoDescender, int os2sTypoLineGap,
+                                              int os2usWinAscent, int os2usWinDescent)
 {
     if (hheaAscender)
     {
@@ -125,10 +124,9 @@ wxPdfFontDescription::SetOpenTypeMetrics(int hheaAscender, int hheaDescender, in
     }
 }
 
-void
-wxPdfFontDescription::GetOpenTypeMetrics(int* hheaAscender, int* hheaDescender, int* hheaLineGap,
-        int* os2sTypoAscender, int* os2sTypoDescender, int* os2sTypoLineGap,
-        int* os2usWinAscent, int* os2usWinDescent)
+void wxPdfFontDescription::GetOpenTypeMetrics(int * hheaAscender, int * hheaDescender, int * hheaLineGap,
+                                              int * os2sTypoAscender, int * os2sTypoDescender, int * os2sTypoLineGap,
+                                              int * os2usWinAscent, int * os2usWinDescent)
 {
     if (hheaAscender)
     {

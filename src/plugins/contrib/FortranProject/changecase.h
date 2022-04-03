@@ -3,7 +3,7 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include "scrollingdialog.h"
+    #include "scrollingdialog.h"
 #endif
 
 class cbEditor;
@@ -37,40 +37,40 @@ enum ChangeCaseTo
 
 class ChangeCase: public wxScrollingDialog
 {
-public:
+    public:
 
-    ChangeCase(wxWindow* parent);
-    virtual ~ChangeCase();
+        ChangeCase(wxWindow * parent);
+        virtual ~ChangeCase();
 
-    //(*Declarations(ChangeCase)
-    wxRadioButton* rb_ChCActiveProject;
-    wxRadioButton* rb_ChCFirstCap;
-    wxRadioButton* rb_ChCAllLower;
-    wxStaticText* StaticText1;
-    wxRadioButton* rb_ChCAllCaps;
-    wxStaticText* StaticText3;
-    wxRadioButton* rb_ChCSelection;
-    wxCheckBox* cb_ChCOtherItems;
-    wxCheckBox* cb_ChCKeywords;
-    wxRadioButton* rb_ChCCurrentFile;
-    wxStaticText* StaticText2;
-    //*)
+        //(*Declarations(ChangeCase)
+        wxRadioButton * rb_ChCActiveProject;
+        wxRadioButton * rb_ChCFirstCap;
+        wxRadioButton * rb_ChCAllLower;
+        wxStaticText * StaticText1;
+        wxRadioButton * rb_ChCAllCaps;
+        wxStaticText * StaticText3;
+        wxRadioButton * rb_ChCSelection;
+        wxCheckBox * cb_ChCOtherItems;
+        wxCheckBox * cb_ChCKeywords;
+        wxRadioButton * rb_ChCCurrentFile;
+        wxStaticText * StaticText2;
+        //*)
 
-protected:
+    protected:
 
-    //(*Identifiers(ChangeCase)
-    //*)
+        //(*Identifiers(ChangeCase)
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(ChangeCase)
-    //*)
-    void OnOK(wxCommandEvent& event);
-    void MakeChangeCase(ChangeCaseIn chin, int chfor, ChangeCaseTo chto);
-    void FileChangeCase(wxString filename, ChangeCaseIn chin, int chfor, ChangeCaseTo chto);
-    bool EditorChangeCase(cbEditor* ed, ChangeCaseIn chin, int chfor, ChangeCaseTo chto);
+        //(*Handlers(ChangeCase)
+        //*)
+        void OnOK(wxCommandEvent & event);
+        void MakeChangeCase(ChangeCaseIn chin, int chfor, ChangeCaseTo chto);
+        void FileChangeCase(wxString filename, ChangeCaseIn chin, int chfor, ChangeCaseTo chto);
+        bool EditorChangeCase(cbEditor * ed, ChangeCaseIn chin, int chfor, ChangeCaseTo chto);
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

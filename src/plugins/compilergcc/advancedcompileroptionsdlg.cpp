@@ -9,18 +9,18 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/button.h>
-#include <wx/checkbox.h>
-#include <wx/choice.h>
-#include <wx/combobox.h>
-#include <wx/intl.h>
-#include <wx/listbox.h>
-#include <wx/sizer.h>
-#include <wx/spinctrl.h>
-#include <wx/textctrl.h>
-#include <wx/xrc/xmlres.h>
-#include "compilerfactory.h"
-#include "globals.h"
+    #include <wx/button.h>
+    #include <wx/checkbox.h>
+    #include <wx/choice.h>
+    #include <wx/combobox.h>
+    #include <wx/intl.h>
+    #include <wx/listbox.h>
+    #include <wx/sizer.h>
+    #include <wx/spinctrl.h>
+    #include <wx/textctrl.h>
+    #include <wx/xrc/xmlres.h>
+    #include "compilerfactory.h"
+    #include "globals.h"
 #endif
 #include "advancedcompileroptionsdlg.h"
 
@@ -30,7 +30,7 @@
 //        meaning also the changes here should not be applied, but as it is now : too late, applied (TO FIX)
 
 
-inline wxString ControlCharsToString(const wxString& src)
+inline wxString ControlCharsToString(const wxString & src)
 {
     wxString ret = src;
     ret.Replace(_T("\t"), _T("\\t"));
@@ -41,7 +41,7 @@ inline wxString ControlCharsToString(const wxString& src)
     return ret;
 }
 
-wxString StringToControlChars(const wxString& src)
+wxString StringToControlChars(const wxString & src)
 {
     wxString ret = src;
     ret.Replace(_T("\\t"), _T("\t"));
@@ -66,17 +66,16 @@ BEGIN_EVENT_TABLE(AdvancedCompilerOptionsDlg, wxScrollingDialog)
     EVT_SPIN_DOWN(XRCID("spnRegexOrder"),   AdvancedCompilerOptionsDlg::OnRegexDown)
 END_EVENT_TABLE()
 
-AdvancedCompilerOptionsDlg::AdvancedCompilerOptionsDlg(wxWindow* parent, const wxString& compilerId)
+AdvancedCompilerOptionsDlg::AdvancedCompilerOptionsDlg(wxWindow * parent, const wxString & compilerId)
     : m_CompilerId(compilerId),
       m_LastCmdIndex(-1),
       m_LastExtIndex(-1)
 {
     //ctor
-    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAdvancedCompilerOptions"),_T("wxScrollingDialog"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAdvancedCompilerOptions"), _T("wxScrollingDialog"));
     XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
     ReadCompilerOptions();
     m_bDirty = false;
-
     GetSizer()->SetSizeHints(this);
 }
 
@@ -87,23 +86,27 @@ AdvancedCompilerOptionsDlg::~AdvancedCompilerOptionsDlg()
 
 void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
 {
-    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
-    if (!compiler)
-        return;
+    Compiler * compiler = CompilerFactory::GetCompiler(m_CompilerId);
 
-    wxChoice* lst = XRCCTRL(*this, "lstCommands", wxChoice);
+    if (!compiler)
+    {
+        return;
+    }
+
+    wxChoice * lst = XRCCTRL(*this, "lstCommands", wxChoice);
     lst->Clear();
+
     for (int i = 0; i < ctCount; ++i)
     {
         m_Commands[i] = compiler->GetCommandToolsVector((CommandType)i);
         lst->Append(Compiler::CommandTypeDescriptions[i]);
     }
-    lst->SetSelection(0);
-    DisplayCommand(0,0);
-    ReadExtensions(0);
 
+    lst->SetSelection(0);
+    DisplayCommand(0, 0);
+    ReadExtensions(0);
     // switches
-    const CompilerSwitches& switches = compiler->GetSwitches();
+    const CompilerSwitches & switches = compiler->GetSwitches();
     XRCCTRL(*this, "txtAddIncludePath",       wxTextCtrl)->SetValue(switches.includeDirs);
     XRCCTRL(*this, "txtAddLibPath",           wxTextCtrl)->SetValue(switches.libDirs);
     XRCCTRL(*this, "txtAddLib",               wxTextCtrl)->SetValue(switches.linkLibs);
@@ -128,7 +131,6 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
     XRCCTRL(*this, "txtObjectSeparator",      wxTextCtrl)->SetValue(switches.objectSeparator);
     XRCCTRL(*this, "spnStatusSuccess",        wxSpinCtrl)->SetValue(switches.statusSuccess);
     XRCCTRL(*this, "chkUse83Paths",           wxCheckBox)->SetValue(switches.Use83Paths);
-
     m_Regexes = compiler->GetRegExArray();
     m_SelectedRegex = m_Regexes.size() > 0 ? 0 : -1;
     FillRegexes();
@@ -136,12 +138,17 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
 
 void AdvancedCompilerOptionsDlg::WriteCompilerOptions()
 {
-    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+    Compiler * compiler = CompilerFactory::GetCompiler(m_CompilerId);
+
     if (!compiler)
+    {
         return;
+    }
 
     for (int i = 0; i < ctCount; ++i)
+    {
         compiler->GetCommandToolsVector((CommandType)i) = m_Commands[i];
+    }
 
     // switches
     CompilerSwitches switches;
@@ -166,54 +173,74 @@ void AdvancedCompilerOptionsDlg::WriteCompilerOptions()
     switches.UseFullSourcePaths      = XRCCTRL(*this, "chkUseFullSourcePaths",   wxCheckBox)->GetValue();
     {
         wxString value               = XRCCTRL(*this, "txtIncludeDirSeparator",  wxTextCtrl)->GetValue();
+
         if (!value.IsEmpty())
+        {
             switches.includeDirSeparator = value[0];
+        }
     }
     {
         wxString value               = XRCCTRL(*this, "txtLibDirSeparator",      wxTextCtrl)->GetValue();
+
         if (!value.IsEmpty())
+        {
             switches.libDirSeparator = value[0];
+        }
     }
     {
         wxString value               = XRCCTRL(*this, "txtObjectSeparator",      wxTextCtrl)->GetValue();
+
         if (!value.IsEmpty())
+        {
             switches.objectSeparator = value[0];
+        }
     }
     switches.statusSuccess           = XRCCTRL(*this, "spnStatusSuccess",        wxSpinCtrl)->GetValue();
     switches.Use83Paths              = XRCCTRL(*this, "chkUse83Paths",           wxCheckBox)->GetValue();
-
     compiler->SetSwitches(switches);
 }
 
 void AdvancedCompilerOptionsDlg::ReadExtensions(int nr)
 {
-    wxChoice* cmb = XRCCTRL(*this, "lstExt", wxChoice);
+    wxChoice * cmb = XRCCTRL(*this, "lstExt", wxChoice);
     cmb->Clear();
+
     for (size_t i = 0; i < m_Commands[nr].size(); ++i)
+    {
         cmb->Append(GetStringFromArray(m_Commands[nr][i].extensions, DEFAULT_ARRAY_SEP, false));
+    }
+
     cmb->SetSelection(cmb->FindString(wxEmptyString));
 }
 
-CompilerTool* AdvancedCompilerOptionsDlg::GetCompilerTool(int cmd, int ext)
+CompilerTool * AdvancedCompilerOptionsDlg::GetCompilerTool(int cmd, int ext)
 {
-    const wxChoice* cmb = XRCCTRL(*this, "lstExt", wxChoice);
+    const wxChoice * cmb = XRCCTRL(*this, "lstExt", wxChoice);
+
     for (size_t i = 0; i < m_Commands[cmd].size(); ++i)
     {
         if (cmb->GetString(ext).IsEmpty() && m_Commands[cmd][i].extensions.GetCount() == 0)
+        {
             return &m_Commands[cmd][i];
+        }
 
         int selExt = m_Commands[cmd][i].extensions.Index(cmb->GetString(ext));
+
         if (selExt != -1)
+        {
             return &m_Commands[cmd][i];
+        }
     }
+
     return 0;
 }
 
 void AdvancedCompilerOptionsDlg::DisplayCommand(int cmd, int ext)
 {
-    wxTextCtrl* text = XRCCTRL(*this, "txtCommand",   wxTextCtrl);
-    wxTextCtrl* gen  = XRCCTRL(*this, "txtGenerated", wxTextCtrl);
-    if (CompilerTool* tool = GetCompilerTool(cmd,ext))
+    wxTextCtrl * text = XRCCTRL(*this, "txtCommand",   wxTextCtrl);
+    wxTextCtrl * gen  = XRCCTRL(*this, "txtGenerated", wxTextCtrl);
+
+    if (CompilerTool * tool = GetCompilerTool(cmd, ext))
     {
         text->SetValue(tool->command);
         gen->SetValue(GetStringFromArray(tool->generatedFiles, _T("\n"), false));
@@ -223,6 +250,7 @@ void AdvancedCompilerOptionsDlg::DisplayCommand(int cmd, int ext)
         text->Clear();
         gen->Clear();
     }
+
     m_LastCmdIndex = cmd;
     m_LastExtIndex = ext;
 }
@@ -231,35 +259,48 @@ void AdvancedCompilerOptionsDlg::CheckForChanges()
 {
     // changes can only happen after constructor : aka no longer (-1, -1)
     if (m_LastCmdIndex != -1 && m_LastExtIndex != -1)
+    {
         SaveCommands(m_LastCmdIndex, m_LastExtIndex);
+    }
 }
 
 void AdvancedCompilerOptionsDlg::SaveCommands(int cmd, int ext)
 {
     if (cmd == -1 || ext == -1)
-        return;
-    if (CompilerTool* tool = GetCompilerTool(cmd, ext))
     {
-        wxTextCtrl* text = XRCCTRL(*this, "txtCommand",   wxTextCtrl);
-        wxTextCtrl* gen  = XRCCTRL(*this, "txtGenerated", wxTextCtrl);
+        return;
+    }
+
+    if (CompilerTool * tool = GetCompilerTool(cmd, ext))
+    {
+        wxTextCtrl * text = XRCCTRL(*this, "txtCommand",   wxTextCtrl);
+        wxTextCtrl * gen  = XRCCTRL(*this, "txtGenerated", wxTextCtrl);
+
         if (text->GetValue() != tool->command) // last command was changed; save it
+        {
             tool->command = text->GetValue();
+        }
+
         wxString gens = GetStringFromArray(tool->generatedFiles, _T("\n"), false);
+
         if (gen->GetValue() != gens) // last genfiles are changed; save it
+        {
             tool->generatedFiles = GetArrayFromString(gen->GetValue(), _T("\n"));
+        }
     }
 }
 
 void AdvancedCompilerOptionsDlg::FillRegexes()
 {
-    wxListBox* list = XRCCTRL(*this, "lstRegex", wxListBox);
+    wxListBox * list = XRCCTRL(*this, "lstRegex", wxListBox);
     list->Clear();
 
     for (size_t i = 0; i < m_Regexes.size(); ++i)
     {
-        RegExStruct& rs = m_Regexes[i];
+        RegExStruct & rs = m_Regexes[i];
         list->Append(rs.desc);
     }
+
     list->SetSelection(m_SelectedRegex);
     FillRegexDetails(m_SelectedRegex);
 }
@@ -279,7 +320,7 @@ void AdvancedCompilerOptionsDlg::FillRegexDetails(int index)
         return;
     }
 
-    RegExStruct& rs = m_Regexes[index];
+    RegExStruct & rs = m_Regexes[index];
     XRCCTRL(*this, "txtRegexDesc",     wxTextCtrl)->SetValue(rs.desc);
     XRCCTRL(*this, "cmbRegexType",     wxComboBox)->SetSelection((int)rs.lt);
     XRCCTRL(*this, "txtRegex",         wxTextCtrl)->SetValue(ControlCharsToString(rs.GetRegExString()));
@@ -293,9 +334,11 @@ void AdvancedCompilerOptionsDlg::FillRegexDetails(int index)
 void AdvancedCompilerOptionsDlg::SaveRegexDetails(int index)
 {
     if (index == -1)
+    {
         return;
+    }
 
-    RegExStruct& rs = m_Regexes[index];
+    RegExStruct & rs = m_Regexes[index];
     rs.desc     = XRCCTRL(*this, "txtRegexDesc",     wxTextCtrl)->GetValue();
     rs.lt       = (CompilerLineType)XRCCTRL(*this, "cmbRegexType", wxComboBox)->GetSelection();
     rs.SetRegExString(StringToControlChars(XRCCTRL(*this, "txtRegex",  wxTextCtrl)->GetValue()));
@@ -306,7 +349,7 @@ void AdvancedCompilerOptionsDlg::SaveRegexDetails(int index)
     rs.line     = XRCCTRL(*this, "spnRegexLine",     wxSpinCtrl)->GetValue();
 }
 
-void AdvancedCompilerOptionsDlg::OnCommandsChange(wxCommandEvent& WXUNUSED(event))
+void AdvancedCompilerOptionsDlg::OnCommandsChange(wxCommandEvent & WXUNUSED(event))
 {
     CheckForChanges();
     int cmd = XRCCTRL(*this, "lstCommands", wxChoice)->GetSelection();
@@ -315,7 +358,7 @@ void AdvancedCompilerOptionsDlg::OnCommandsChange(wxCommandEvent& WXUNUSED(event
     DisplayCommand(cmd, ext);
 }
 
-void AdvancedCompilerOptionsDlg::OnExtChange(wxCommandEvent& WXUNUSED(event))
+void AdvancedCompilerOptionsDlg::OnExtChange(wxCommandEvent & WXUNUSED(event))
 {
     CheckForChanges();
     int cmd = XRCCTRL(*this, "lstCommands", wxChoice)->GetSelection();
@@ -323,32 +366,34 @@ void AdvancedCompilerOptionsDlg::OnExtChange(wxCommandEvent& WXUNUSED(event))
     DisplayCommand(cmd, ext);
 }
 
-void AdvancedCompilerOptionsDlg::OnAddExt(wxCommandEvent& WXUNUSED(event))
+void AdvancedCompilerOptionsDlg::OnAddExt(wxCommandEvent & WXUNUSED(event))
 {
     wxString ext = cbGetTextFromUser(_("Please enter a semi-colon separated list of extensions, without the leading dot:"),
                                      _("New extension"), wxString(), this);
     ext.Trim(false);
     ext.Trim(true);
+
     if (!ext.IsEmpty())
     {
         int nr = XRCCTRL(*this, "lstCommands", wxChoice)->GetSelection();
-        CompilerTool* ptool = GetCompilerTool(nr,0);
+        CompilerTool * ptool = GetCompilerTool(nr, 0);
         CompilerTool tool(ptool ? ptool->command : wxString(), ext);
         m_Commands[nr].push_back(tool);
         ReadExtensions(nr);
-        wxChoice* cmb = XRCCTRL(*this, "lstExt", wxChoice);
+        wxChoice * cmb = XRCCTRL(*this, "lstExt", wxChoice);
         cmb->SetStringSelection(ext);
-        DisplayCommand(nr,cmb->GetSelection());
+        DisplayCommand(nr, cmb->GetSelection());
     }
 }
 
-void AdvancedCompilerOptionsDlg::OnDelExt(wxCommandEvent& WXUNUSED(event))
+void AdvancedCompilerOptionsDlg::OnDelExt(wxCommandEvent & WXUNUSED(event))
 {
     if (cbMessageBox(_("Are you sure you want to remove this extension set from the list?"), _T("Confirmation"), wxYES_NO, this) == wxID_YES)
     {
         int nr = XRCCTRL(*this, "lstCommands", wxChoice)->GetSelection();
-        wxChoice* cmb = XRCCTRL(*this, "lstExt", wxChoice);
+        wxChoice * cmb = XRCCTRL(*this, "lstExt", wxChoice);
         wxString extS = cmb->GetStringSelection();
+
         if (!extS.IsEmpty())
         {
             int ext = cmb->GetSelection();
@@ -356,32 +401,35 @@ void AdvancedCompilerOptionsDlg::OnDelExt(wxCommandEvent& WXUNUSED(event))
             ReadExtensions(nr);
             cmb->SetSelection(0);
             m_LastExtIndex = -1;
-            DisplayCommand(nr,0);
+            DisplayCommand(nr, 0);
         }
         else
+        {
             cbMessageBox(_("Can't remove default commands!"), _("Error"), wxICON_ERROR, this);
+        }
     }
 }
 
-void AdvancedCompilerOptionsDlg::OnRegexChange(wxCommandEvent& WXUNUSED(event))
+void AdvancedCompilerOptionsDlg::OnRegexChange(wxCommandEvent & WXUNUSED(event))
 {
     // If we just have deleted the actual item or cleared the list, we should leave,
     // otherwise m_Regexes will be broken, because the regex details of an invalid
     // item will be saved
-    wxListBox* list = XRCCTRL(*this, "lstRegex", wxListBox);
+    wxListBox * list = XRCCTRL(*this, "lstRegex", wxListBox);
+
     if (list->GetSelection() == wxNOT_FOUND)
+    {
         return;
+    }
 
     SaveRegexDetails(m_SelectedRegex);
-
     // update regex list, in case desc was changed
     XRCCTRL(*this, "lstRegex", wxListBox)->SetString(m_SelectedRegex, XRCCTRL(*this, "txtRegexDesc", wxTextCtrl)->GetValue());
-
     m_SelectedRegex = XRCCTRL(*this, "lstRegex", wxListBox)->GetSelection();
     FillRegexDetails(m_SelectedRegex);
 }
 
-void AdvancedCompilerOptionsDlg::OnRegexAdd(wxCommandEvent& WXUNUSED(event))
+void AdvancedCompilerOptionsDlg::OnRegexAdd(wxCommandEvent & WXUNUSED(event))
 {
     SaveRegexDetails(m_SelectedRegex);
     m_Regexes.push_back(RegExStruct(_("New regular expression"), cltError, _T(""), 0));
@@ -389,18 +437,22 @@ void AdvancedCompilerOptionsDlg::OnRegexAdd(wxCommandEvent& WXUNUSED(event))
     FillRegexes();
 }
 
-void AdvancedCompilerOptionsDlg::OnRegexDelete(wxCommandEvent& WXUNUSED(event))
+void AdvancedCompilerOptionsDlg::OnRegexDelete(wxCommandEvent & WXUNUSED(event))
 {
     if (cbMessageBox(_("Are you sure you want to delete this regular expression?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT, this) == wxID_YES)
     {
         m_Regexes.erase((m_Regexes.begin() + m_SelectedRegex));
+
         if (m_SelectedRegex >= (int)m_Regexes.size())
+        {
             --m_SelectedRegex;
+        }
+
         FillRegexes();
     }
 }
 
-void AdvancedCompilerOptionsDlg::OnRegexDefaults(wxCommandEvent& WXUNUSED(event))
+void AdvancedCompilerOptionsDlg::OnRegexDefaults(wxCommandEvent & WXUNUSED(event))
 {
     if (cbMessageBox(_("Are you sure you want to load the default regular expressions "
                        "for this compiler?\n"
@@ -408,21 +460,31 @@ void AdvancedCompilerOptionsDlg::OnRegexDefaults(wxCommandEvent& WXUNUSED(event)
                        "counterparts!\n\n"
                        "Are you REALLY sure?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT, this) == wxID_YES)
     {
-        Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+        Compiler * compiler = CompilerFactory::GetCompiler(m_CompilerId);
+
         if (!compiler)
+        {
             return;
+        }
+
         compiler->LoadDefaultRegExArray(true);
         m_Regexes = compiler->GetRegExArray();
+
         while (m_SelectedRegex >= (int)m_Regexes.size())
+        {
             --m_SelectedRegex;
+        }
+
         FillRegexes();
     }
 }
 
-void AdvancedCompilerOptionsDlg::OnRegexUp(wxSpinEvent& WXUNUSED(event))
+void AdvancedCompilerOptionsDlg::OnRegexUp(wxSpinEvent & WXUNUSED(event))
 {
     if (m_SelectedRegex <= 0)
+    {
         return;
+    }
 
     SaveRegexDetails(m_SelectedRegex);
     RegExStruct rs = m_Regexes[m_SelectedRegex];
@@ -432,10 +494,12 @@ void AdvancedCompilerOptionsDlg::OnRegexUp(wxSpinEvent& WXUNUSED(event))
     FillRegexes();
 }
 
-void AdvancedCompilerOptionsDlg::OnRegexDown(wxSpinEvent& WXUNUSED(event))
+void AdvancedCompilerOptionsDlg::OnRegexDown(wxSpinEvent & WXUNUSED(event))
 {
     if (m_SelectedRegex >= (int)m_Regexes.size() - 1)
+    {
         return;
+    }
 
     SaveRegexDetails(m_SelectedRegex);
     RegExStruct rs = m_Regexes[m_SelectedRegex];
@@ -445,33 +509,37 @@ void AdvancedCompilerOptionsDlg::OnRegexDown(wxSpinEvent& WXUNUSED(event))
     FillRegexes();
 }
 
-void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& WXUNUSED(event))
+void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent & WXUNUSED(event))
 {
     if (m_SelectedRegex == -1)
+    {
         return;
+    }
+
     wxString text = XRCCTRL(*this, "txtRegexTest", wxTextCtrl)->GetValue();
+
     if (text.IsEmpty())
     {
         cbMessageBox(_("Please enter a compiler line in the \"Compiler output\" text box..."), _("Error"), wxICON_ERROR, this);
         return;
     }
 
-    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+    Compiler * compiler = CompilerFactory::GetCompiler(m_CompilerId);
+
     if (!compiler)
+    {
         return;
+    }
 
     // backup regexes
     RegExArray regex_copy = m_Regexes;
     SaveRegexDetails(m_SelectedRegex);
-
     // test-run
     compiler->SetRegExArray(m_Regexes);
     CompilerLineType clt = compiler->CheckForWarningsAndErrors(text);
-
     // restore regexes
     compiler->SetRegExArray(regex_copy);
     m_Regexes = regex_copy;
-
     wxString msg;
     msg.Printf(_("Regular expression analyzed as follows:\n\n"
                  "Type: %s message\n"
@@ -480,12 +548,11 @@ void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& WXUNUSED(event))
                  "Message: %s"),
                clt == cltNormal ? _("Normal")
                : (clt == cltInfo   ? _("Info")
-                  : (clt == cltError  ? _("Error") : _("Warning") ) ),
+                  : (clt == cltError  ? _("Error") : _("Warning"))),
                compiler->GetLastErrorFilename().wx_str(),
                compiler->GetLastErrorLine().wx_str(),
                compiler->GetLastError().wx_str()
               );
-
     cbMessageBox(msg, _("Test results"), wxICON_INFORMATION, this);
 }
 
@@ -494,16 +561,19 @@ void AdvancedCompilerOptionsDlg::EndModal(int retCode)
     if (retCode == wxID_OK)
     {
         m_bDirty = true;
-        Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
-
+        Compiler * compiler = CompilerFactory::GetCompiler(m_CompilerId);
         // make sure we update the first command, if it changed
         CheckForChanges();
         // write options
         WriteCompilerOptions();
         // save regexes
         SaveRegexDetails(m_SelectedRegex);
+
         if (compiler)
+        {
             compiler->SetRegExArray(m_Regexes);
+        }
     }
+
     wxScrollingDialog::EndModal(retCode);
 }

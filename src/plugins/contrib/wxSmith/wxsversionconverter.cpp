@@ -32,168 +32,202 @@
 namespace
 {
 const int CurrentVersion = 1;
-const char* CurrentVersionStr = "1";
+const char * CurrentVersionStr = "1";
 }
 
-const wxsVersionConverter& wxsVersionConverter::Get()
+const wxsVersionConverter & wxsVersionConverter::Get()
 {
     static wxsVersionConverter Singleton;
     return Singleton;
 }
 
-bool wxsVersionConverter::DetectOldConfig(TiXmlElement* Node,cb_unused wxsProject* Project) const
+bool wxsVersionConverter::DetectOldConfig(TiXmlElement * Node, cb_unused wxsProject * Project) const
 {
     // New wxSmith style has resources put into <resources> node
     // and configuration to <gui> node
-    if ( Node->FirstChildElement("dialog")        ) return true;
-    if ( Node->FirstChildElement("frame")         ) return true;
-    if ( Node->FirstChildElement("panel")         ) return true;
-    if ( Node->FirstChildElement("configuration") ) return true;
+    if (Node->FirstChildElement("dialog"))
+    {
+        return true;
+    }
+
+    if (Node->FirstChildElement("frame"))
+    {
+        return true;
+    }
+
+    if (Node->FirstChildElement("panel"))
+    {
+        return true;
+    }
+
+    if (Node->FirstChildElement("configuration"))
+    {
+        return true;
+    }
 
     return false;
 }
 
-TiXmlElement* wxsVersionConverter::ConvertFromOldConfig(TiXmlElement* ConfigNode,TiXmlDocument* Doc,wxsProject* Project) const
+TiXmlElement * wxsVersionConverter::ConvertFromOldConfig(TiXmlElement * ConfigNode, TiXmlDocument * Doc, wxsProject * Project) const
 {
-    if ( cbMessageBox(_("This project uses old wxSmith configuration format\n"
-                        "Would you like me to convert to new one?\n"),
-                      _("wxSmith: Converting from old format"),
-                      wxYES_NO) != wxID_YES ) return 0;
+    if (cbMessageBox(_("This project uses old wxSmith configuration format\n"
+                       "Would you like me to convert to new one?\n"),
+                     _("wxSmith: Converting from old format"),
+                     wxYES_NO) != wxID_YES)
+    {
+        return 0;
+    }
 
-    TiXmlElement* NewConfig = Doc->InsertEndChild(TiXmlElement("wxSmith"))->ToElement();
-    TiXmlElement* Resources = NewConfig->InsertEndChild(TiXmlElement("resources"))->ToElement();
-    NewConfig->SetAttribute("version",CurrentVersionStr);
-    for ( TiXmlElement* Node = ConfigNode->FirstChildElement(); Node; Node = Node->NextSiblingElement() )
+    TiXmlElement * NewConfig = Doc->InsertEndChild(TiXmlElement("wxSmith"))->ToElement();
+    TiXmlElement * Resources = NewConfig->InsertEndChild(TiXmlElement("resources"))->ToElement();
+    NewConfig->SetAttribute("version", CurrentVersionStr);
+
+    for (TiXmlElement * Node = ConfigNode->FirstChildElement(); Node; Node = Node->NextSiblingElement())
     {
         wxString NodeName = cbC2U(Node->Value());
-        if ( NodeName == _T("configuration") )
-        {
-            const char* AppSrc  = Node->Attribute("app_src_file");
-            const char* Main    = Node->Attribute("main_resource");
-            const char* InitAll = Node->Attribute("init_all_handlers");
 
-            if ( AppSrc )
+        if (NodeName == _T("configuration"))
+        {
+            const char * AppSrc  = Node->Attribute("app_src_file");
+            const char * Main    = Node->Attribute("main_resource");
+            const char * InitAll = Node->Attribute("init_all_handlers");
+
+            if (AppSrc)
             {
-                TiXmlElement* GUINode = NewConfig->InsertEndChild(TiXmlElement("gui"))->ToElement();
-                GUINode->SetAttribute("name","wxWidgets");
-                GUINode->SetAttribute("src",AppSrc);
-                GUINode->SetAttribute("main",Main?Main:"");
-                GUINode->SetAttribute("init_handlers",InitAll?InitAll:"necessary");
-                GUINode->SetAttribute("language","CPP");
+                TiXmlElement * GUINode = NewConfig->InsertEndChild(TiXmlElement("gui"))->ToElement();
+                GUINode->SetAttribute("name", "wxWidgets");
+                GUINode->SetAttribute("src", AppSrc);
+                GUINode->SetAttribute("main", Main ? Main : "");
+                GUINode->SetAttribute("init_handlers", InitAll ? InitAll : "necessary");
+                GUINode->SetAttribute("language", "CPP");
             }
         }
         else
         {
-            if ( NodeName == _T("dialog") ||
+            if (NodeName == _T("dialog") ||
                     NodeName == _T("frame") ||
-                    NodeName == _T("panel") )
+                    NodeName == _T("panel"))
             {
-                const char* Wxs   = Node->Attribute("wxs_file");
-                const char* Class = Node->Attribute("class");
-                const char* Src   = Node->Attribute("src_file");
-                const char* Hdr   = Node->Attribute("header_file");
-                const char* Xrc   = Node->Attribute("xrc_file");
-                const char* Mode  = Node->Attribute("edit_mode");
+                const char * Wxs   = Node->Attribute("wxs_file");
+                const char * Class = Node->Attribute("class");
+                const char * Src   = Node->Attribute("src_file");
+                const char * Hdr   = Node->Attribute("header_file");
+                const char * Xrc   = Node->Attribute("xrc_file");
+                const char * Mode  = Node->Attribute("edit_mode");
 
-                if ( Wxs && Class && Src && Hdr && Mode )
+                if (Wxs && Class && Src && Hdr && Mode)
                 {
-                    if ( cbC2U(Mode) == _T("Source") ) Xrc = 0;
-                    TiXmlElement* Res = Resources->InsertEndChild(TiXmlElement(
-                                            NodeName == _T("dialog") ? "wxDialog" :
-                                            NodeName == _T("frame")  ? "wxFrame" :
-                                            "wxPanel" ))->ToElement();
+                    if (cbC2U(Mode) == _T("Source"))
+                    {
+                        Xrc = 0;
+                    }
 
-                    Res->SetAttribute("wxs",cbU2C(_T("wxsmith/")+cbC2U(Wxs)));
-                    Res->SetAttribute("src",Src);
-                    Res->SetAttribute("hdr",Hdr);
-                    if ( Xrc ) Res->SetAttribute("xrc",Xrc);
-                    Res->SetAttribute("name",Class);
-                    Res->SetAttribute("language","CPP");
+                    TiXmlElement * Res = Resources->InsertEndChild(TiXmlElement(
+                                                                       NodeName == _T("dialog") ? "wxDialog" :
+                                                                       NodeName == _T("frame")  ? "wxFrame" :
+                                                                       "wxPanel"))->ToElement();
+                    Res->SetAttribute("wxs", cbU2C(_T("wxsmith/") + cbC2U(Wxs)));
+                    Res->SetAttribute("src", Src);
+                    Res->SetAttribute("hdr", Hdr);
 
-                    ConvertOldWxsFile(Project->GetProjectPath()+_T("wxsmith/")+cbC2U(Wxs),Xrc!=0);
-                    AdoptOldSourceFile(Project->GetProjectPath()+cbC2U(Src),cbC2U(Class));
+                    if (Xrc)
+                    {
+                        Res->SetAttribute("xrc", Xrc);
+                    }
+
+                    Res->SetAttribute("name", Class);
+                    Res->SetAttribute("language", "CPP");
+                    ConvertOldWxsFile(Project->GetProjectPath() + _T("wxsmith/") + cbC2U(Wxs), Xrc != 0);
+                    AdoptOldSourceFile(Project->GetProjectPath() + cbC2U(Src), cbC2U(Class));
                 }
             }
         }
     }
+
     return NewConfig;
 }
 
-void wxsVersionConverter::ConvertOldWxsFile(const wxString& FileName,bool UsingXrc) const
+void wxsVersionConverter::ConvertOldWxsFile(const wxString & FileName, bool UsingXrc) const
 {
     TiXmlDocument Doc;
-    if ( !TinyXML::LoadDocument(FileName,&Doc) ) return;
 
-    TiXmlElement* Smith = Doc.FirstChildElement("resource");
-    if ( Smith )
+    if (!TinyXML::LoadDocument(FileName, &Doc))
+    {
+        return;
+    }
+
+    TiXmlElement * Smith = Doc.FirstChildElement("resource");
+
+    if (Smith)
     {
         Smith->SetValue("wxsmith");
     }
 
-    if ( UsingXrc && Smith )
+    if (UsingXrc && Smith)
     {
         // Need to extract extra data from any resource's item and put into <resource_extra> node
-        TiXmlElement* Resource = Smith->FirstChildElement("object");
-        TiXmlElement* Extra = Smith->InsertEndChild(TiXmlElement("resource_extra"))->ToElement();
-        GatherExtraFromOldResourceReq(Resource,Extra,true);
+        TiXmlElement * Resource = Smith->FirstChildElement("object");
+        TiXmlElement * Extra = Smith->InsertEndChild(TiXmlElement("resource_extra"))->ToElement();
+        GatherExtraFromOldResourceReq(Resource, Extra, true);
     }
 
-    TinyXML::SaveDocument(FileName,&Doc);
+    TinyXML::SaveDocument(FileName, &Doc);
 }
 
-void wxsVersionConverter::GatherExtraFromOldResourceReq(TiXmlElement* Object,TiXmlElement* Extra,bool Root) const
+void wxsVersionConverter::GatherExtraFromOldResourceReq(TiXmlElement * Object, TiXmlElement * Extra, bool Root) const
 {
     // The only extra information in old wxSmith was:
     //  * variable / member attributes of <object> node
     //  * event handlers enteries
     // These fields are extracted and put into wxs file
-    if ( !strcmp(Object->Value(),"object") )
+    if (!strcmp(Object->Value(), "object"))
     {
-        if ( Object->Attribute("class") && (Root || Object->Attribute("name")) )
+        if (Object->Attribute("class") && (Root || Object->Attribute("name")))
         {
-            TiXmlElement* ThisExtra = 0;
+            TiXmlElement * ThisExtra = 0;
 
             // Checking if we got variable name
-            if ( Object->Attribute("variable") && Object->Attribute("member") )
+            if (Object->Attribute("variable") && Object->Attribute("member"))
             {
                 ThisExtra = Extra->InsertEndChild(TiXmlElement("object"))->ToElement();
-                ThisExtra->SetAttribute("variable",Object->Attribute("variable"));
-                ThisExtra->SetAttribute("member",Object->Attribute("member"));
+                ThisExtra->SetAttribute("variable", Object->Attribute("variable"));
+                ThisExtra->SetAttribute("member", Object->Attribute("member"));
             }
 
             // Checking for event handlers
 
-            for ( TiXmlElement* Handler = Object->FirstChildElement("handler"); Handler; Handler = Handler->NextSiblingElement("handler") )
+            for (TiXmlElement * Handler = Object->FirstChildElement("handler"); Handler; Handler = Handler->NextSiblingElement("handler"))
             {
-                if ( !ThisExtra )
+                if (!ThisExtra)
                 {
                     ThisExtra = Extra->InsertEndChild(TiXmlElement("object"))->ToElement();
                 }
+
                 ThisExtra->InsertEndChild(*Handler);
             }
 
-            if ( ThisExtra )
+            if (ThisExtra)
             {
-                if ( Root )
+                if (Root)
                 {
-                    ThisExtra->SetAttribute("root","1");
+                    ThisExtra->SetAttribute("root", "1");
                 }
                 else
                 {
-                    ThisExtra->SetAttribute("name",Object->Attribute("name"));
-                    ThisExtra->SetAttribute("class",Object->Attribute("class"));
+                    ThisExtra->SetAttribute("name", Object->Attribute("name"));
+                    ThisExtra->SetAttribute("class", Object->Attribute("class"));
                 }
             }
         }
     }
 
-    for ( TiXmlElement* Child = Object->FirstChildElement(); Child; Child = Child->NextSiblingElement() )
+    for (TiXmlElement * Child = Object->FirstChildElement(); Child; Child = Child->NextSiblingElement())
     {
-        GatherExtraFromOldResourceReq(Child,Extra,false);
+        GatherExtraFromOldResourceReq(Child, Extra, false);
     }
 }
 
-void wxsVersionConverter::AdoptOldSourceFile(const wxString& FileName,const wxString& Class) const
+void wxsVersionConverter::AdoptOldSourceFile(const wxString & FileName, const wxString & Class) const
 {
     // Need to add two new sections: //(*InternalHeaders and //(*IdInit
     // to do this //(*InternalHeaders will be added before any source code
@@ -210,103 +244,105 @@ void wxsVersionConverter::AdoptOldSourceFile(const wxString& FileName,const wxSt
     // first - convertion to version 1 of new wxsmith and then upgrading to
     // higher version so if convention of code marks will change, it will
     // break the conversion chain)
-
     bool IsInternalHeaders = wxsCoder::Get()->GetCode(
                                  FileName,
                                  _T("//(*InternalHeaders(") + Class + _T(")\n"),
                                  _T("//*)"),
-                                 true,true).Length() != 0;
-
+                                 true, true).Length() != 0;
     bool IsIdInit = wxsCoder::Get()->GetCode(
                         FileName,
                         _T("//(*IdInit(") + Class + _T(")\n"),
                         _T("//*)"),
-                        true,true).Length() != 0;
+                        true, true).Length() != 0;
 
-    if ( !IsInternalHeaders || !IsIdInit )
+    if (!IsInternalHeaders || !IsIdInit)
     {
         wxFontEncoding Encoding;
         bool UseBOM;
-        wxString Content = wxsCoder::Get()->GetFullCode(FileName,Encoding,UseBOM);
-
+        wxString Content = wxsCoder::Get()->GetFullCode(FileName, Encoding, UseBOM);
         int Pos = 0;
-        if ( !IsInternalHeaders )
+
+        if (!IsInternalHeaders)
         {
-            while ( Pos<(int)Content.Len() && LineContainDirectivesOnly(Content,Pos) );
+            while (Pos < (int)Content.Len() && LineContainDirectivesOnly(Content, Pos));
 
             wxString AddInternalHeaders =
                 _T("//(*InternalHeaders(") + Class + _T(")\n")
                 _T("//*)\n")
                 _T("\n");
-
-            Content = Content.Mid(0,Pos) + AddInternalHeaders + Content.Mid(Pos);
+            Content = Content.Mid(0, Pos) + AddInternalHeaders + Content.Mid(Pos);
         }
         else
         {
             Pos = Content.Find(_T("//(*InternalHeaders(") + Class + _T(")\n"));
             int Shift = Content.Mid(Pos).Find(_T("//*)"));
-            if ( Shift != wxNOT_FOUND )
+
+            if (Shift != wxNOT_FOUND)
             {
                 Pos += Shift;
             }
         }
 
-        if ( !IsIdInit )
+        if (!IsIdInit)
         {
-            int NewPos = Content.Find(_T("BEGIN_EVENT_TABLE(")+Class);
-            if ( NewPos!=wxNOT_FOUND )
+            int NewPos = Content.Find(_T("BEGIN_EVENT_TABLE(") + Class);
+
+            if (NewPos != wxNOT_FOUND)
             {
                 Pos = NewPos;
             }
 
             // Switching to first character in this line
             wxString Indent;
-            while ( Pos>0 &&
-                    Content.GetChar(Pos-1)!=_T('\n') &&
-                    Content.GetChar(Pos-1)!=_T('\r') )
+
+            while (Pos > 0 &&
+                    Content.GetChar(Pos - 1) != _T('\n') &&
+                    Content.GetChar(Pos - 1) != _T('\r'))
             {
                 wxChar Ch = Content.GetChar(Pos--);
-                Indent.Append((Ch==_T('\t'))?_T('\t'):_T(' '));
+                Indent.Append((Ch == _T('\t')) ? _T('\t') : _T(' '));
             }
 
             wxString AddIdInit =
                 Indent + _T("//(*IdInit(") + Class + _T(")\n") +
                 Indent + _T("//*)\n") +
                 Indent + _T("\n");
-
-            Content = Content.Mid(0,Pos) + AddIdInit + Content.Mid(Pos);
+            Content = Content.Mid(0, Pos) + AddIdInit + Content.Mid(Pos);
         }
-        wxsCoder::Get()->PutFullCode(FileName,Content,Encoding,UseBOM);
+
+        wxsCoder::Get()->PutFullCode(FileName, Content, Encoding, UseBOM);
     }
 }
 
-bool wxsVersionConverter::LineContainDirectivesOnly(const wxString& Code,int& BeginPos) const
+bool wxsVersionConverter::LineContainDirectivesOnly(const wxString & Code, int & BeginPos) const
 {
     int Pos = BeginPos;
-
     wxChar PreviousChar = _T('\0');
 
     // Processing characters in this line
-    while ( Pos < (int)Code.Len() )
+    while (Pos < (int)Code.Len())
     {
         wxChar Ch = Code.GetChar(Pos);
-        if ( Ch==_T('/') && PreviousChar==_T('/') )
+
+        if (Ch == _T('/') && PreviousChar == _T('/'))
         {
             // We got // comment, skipping till the end of line
-            while ( ++Pos < (int)Code.Len() )
+            while (++Pos < (int)Code.Len())
             {
                 PreviousChar = Ch;
                 wxChar _Ch = Code.GetChar(Pos);
-                if ( _Ch==_T('\n') || _Ch==_T('\r') )
+
+                if (_Ch == _T('\n') || _Ch == _T('\r'))
                 {
-                    if ( PreviousChar == _T('\\') )
+                    if (PreviousChar == _T('\\'))
                     {
                         // Backslash removes EOL
-                        if ( ++Pos < (int)Code.Len() )
+                        if (++Pos < (int)Code.Len())
                         {
                             PreviousChar = _Ch;
                             _Ch = Code.GetChar(Pos);
-                            if ( (_Ch!=_T('\n') && _Ch==_T('\r')) || (_Ch==PreviousChar) )
+
+                            if ((_Ch != _T('\n') && _Ch == _T('\r')) || (_Ch == PreviousChar))
                             {
                                 // One-char EOL
                                 --Pos;
@@ -316,10 +352,15 @@ bool wxsVersionConverter::LineContainDirectivesOnly(const wxString& Code,int& Be
                     else
                     {
                         // End-Of-Line and End-Of-Comment
-                        while ( Pos<(int)Code.Len() )
+                        while (Pos < (int)Code.Len())
                         {
                             wxChar __Ch = Code.GetChar(Pos);
-                            if ( __Ch!=_T('\n') && __Ch!=_T('\r') ) break;
+
+                            if (__Ch != _T('\n') && __Ch != _T('\r'))
+                            {
+                                break;
+                            }
+
                             Pos++;
                         }
 
@@ -328,82 +369,95 @@ bool wxsVersionConverter::LineContainDirectivesOnly(const wxString& Code,int& Be
                     }
                 }
             }
+
             // End of file approached
             BeginPos = Pos;
             return false;
         }
-        else if ( Ch==_T('*') && PreviousChar==_T('/') )
-        {
-            // Starting multiline comment, we skip everything till */ sequence
-            while ( ++Pos < (int)Code.Len() )
+        else
+            if (Ch == _T('*') && PreviousChar == _T('/'))
             {
-                PreviousChar = Ch;
-                wxChar _Ch = Code.GetChar(Pos);
-
-                if ( _Ch==_T('/') && PreviousChar==_T('*') )
+                // Starting multiline comment, we skip everything till */ sequence
+                while (++Pos < (int)Code.Len())
                 {
-                    // End of comment, breaking
+                    PreviousChar = Ch;
+                    wxChar _Ch = Code.GetChar(Pos);
+
+                    if (_Ch == _T('/') && PreviousChar == _T('*'))
+                    {
+                        // End of comment, breaking
+                        break;
+                    }
+                }
+
+                if (Pos >= (int)Code.Len())
+                {
+                    // Jumping out to skip another Pos++
                     break;
                 }
             }
+            else
+                if (PreviousChar == _T('/'))
+                {
+                    // Previous char was not comment beginning
+                    // need to rewind to it and jump out
+                    Pos--;
+                    break;
+                }
+                else
+                    if (Ch != _T(' ') && Ch != _T('\t'))
+                    {
+                        if (Ch != _T('/'))
+                        {
+                            // No white char, jumping out to find out what's this
+                            break;
+                        }
 
-            if ( Pos >= (int)Code.Len() )
-            {
-                // Jumping out to skip another Pos++
-                break;
-            }
-        }
-        else if ( PreviousChar==_T('/') )
-        {
-            // Previous char was not comment beginning
-            // need to rewind to it and jump out
-            Pos--;
-            break;
-        }
-        else if ( Ch!=_T(' ') && Ch!=_T('\t') )
-        {
-            if ( Ch!=_T('/') )
-            {
-                // No white char, jumping out to find out what's this
-                break;
-            }
-            // If it's '/', it may be a start
-            // of comment, we give it a try
-        }
+                        // If it's '/', it may be a start
+                        // of comment, we give it a try
+                    }
+
         PreviousChar = Ch;
         Pos++;
     }
 
-    if ( Pos<(int)Code.Len() )
+    if (Pos < (int)Code.Len())
     {
         wxChar Ch = Code.GetChar(Pos);
-        if ( (Ch!=_T('\n')) && (Ch!=_T('\r')) )
+
+        if ((Ch != _T('\n')) && (Ch != _T('\r')))
         {
             // This is no directive, jumping out of function
-            if ( Ch != _T('#') ) return false;
+            if (Ch != _T('#'))
+            {
+                return false;
+            }
         }
     }
 
     // Searching for EOL
     bool BlockMultilineComment = false;
-    while ( Pos<(int)Code.Len() )
+
+    while (Pos < (int)Code.Len())
     {
         wxChar Ch = Code.GetChar(Pos);
 
-        if ( Ch==_T('\n') || Ch==_T('\r') )
+        if (Ch == _T('\n') || Ch == _T('\r'))
         {
-            if ( PreviousChar == _T('\\') )
+            if (PreviousChar == _T('\\'))
             {
                 // Backslash removes EOL
-                if ( ++Pos >= (int)Code.Len() )
+                if (++Pos >= (int)Code.Len())
                 {
                     // EOF reached
                     BeginPos = Pos;
                     return false;
                 }
+
                 PreviousChar = Ch;
                 Ch = Code.GetChar(Pos);
-                if ( (Ch!=_T('\n') && Ch!=_T('\r')) || (Ch==PreviousChar) )
+
+                if ((Ch != _T('\n') && Ch != _T('\r')) || (Ch == PreviousChar))
                 {
                     // One-character EOL
                     Pos--;
@@ -414,51 +468,62 @@ bool wxsVersionConverter::LineContainDirectivesOnly(const wxString& Code,int& Be
                 break;
             }
         }
-        else if ( Ch==_T('/') && PreviousChar==_T('/') )
-        {
-            // Have to block any multiline comment in this line
-            BlockMultilineComment = true;
-        }
-        else if ( Ch==_T('*') && PreviousChar==_T('/') && !BlockMultilineComment )
-        {
-            // Searching for end of comment and return there
-            bool WasAnyNL = false;
-            while ( ++Pos<(int)Code.Len() )
+        else
+            if (Ch == _T('/') && PreviousChar == _T('/'))
             {
-                PreviousChar = Ch;
-                Ch = Code.GetChar(Pos);
-                if ( Ch==_T('/') && PreviousChar==_T('*') )
-                {
-                    // Comment has been finished
-                    if ( WasAnyNL )
-                    {
-                        // If there was any NL in comment, this mean that
-                        // we can start scanning new line here so we return
-                        // with true
-                        BeginPos = ++Pos;
-                        return true;
-                    }
-                    else
-                    {
-                        // There was no NL in comment, we're still inside directive
-                        break;
-                    }
-                }
-                else if ( Ch==_T('\n') || Ch==_T('\r') )
-                {
-                    WasAnyNL = true;
-                }
+                // Have to block any multiline comment in this line
+                BlockMultilineComment = true;
             }
-        }
+            else
+                if (Ch == _T('*') && PreviousChar == _T('/') && !BlockMultilineComment)
+                {
+                    // Searching for end of comment and return there
+                    bool WasAnyNL = false;
+
+                    while (++Pos < (int)Code.Len())
+                    {
+                        PreviousChar = Ch;
+                        Ch = Code.GetChar(Pos);
+
+                        if (Ch == _T('/') && PreviousChar == _T('*'))
+                        {
+                            // Comment has been finished
+                            if (WasAnyNL)
+                            {
+                                // If there was any NL in comment, this mean that
+                                // we can start scanning new line here so we return
+                                // with true
+                                BeginPos = ++Pos;
+                                return true;
+                            }
+                            else
+                            {
+                                // There was no NL in comment, we're still inside directive
+                                break;
+                            }
+                        }
+                        else
+                            if (Ch == _T('\n') || Ch == _T('\r'))
+                            {
+                                WasAnyNL = true;
+                            }
+                    }
+                }
+
         PreviousChar = Ch;
         Pos++;
     }
 
     // Skipping all NL chars left
-    while ( Pos<(int)Code.Len() )
+    while (Pos < (int)Code.Len())
     {
         wxChar Ch = Code.GetChar(Pos);
-        if ( Ch!=_T('\n') && Ch!=_T('\r') ) break;
+
+        if (Ch != _T('\n') && Ch != _T('\r'))
+        {
+            break;
+        }
+
         Pos++;
     }
 
@@ -467,7 +532,7 @@ bool wxsVersionConverter::LineContainDirectivesOnly(const wxString& Code,int& Be
 }
 
 
-TiXmlElement* wxsVersionConverter::Convert(cb_unused TiXmlElement* ConfigNode,cb_unused TiXmlDocument* Doc,cb_unused wxsProject* Project) const
+TiXmlElement * wxsVersionConverter::Convert(cb_unused TiXmlElement * ConfigNode, cb_unused TiXmlDocument * Doc, cb_unused wxsProject * Project) const
 {
     // Currently there's only one version of wxSmith, no need to convert
     return 0;

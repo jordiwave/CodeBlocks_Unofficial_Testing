@@ -9,7 +9,7 @@
 #include <wx/tokenzr.h>
 #include <wx/utils.h>
 #if defined(__WXMSW__)
-#include <wx/msw/registry.h>
+    #include <wx/msw/registry.h>
 #endif // __WXMSW__
 
 #include "ClangLocator.h"
@@ -24,9 +24,9 @@
 #include "projectmanager.h"
 
 #if defined(_WIN32)
-#include "winprocess/asyncprocess/procutils.h"
+    #include "winprocess/asyncprocess/procutils.h"
 #else
-#include "procutils.h"
+    #include "procutils.h"
 #endif
 
 
@@ -46,10 +46,12 @@ void ClangLocator::WindowsAddClangFoundSearchPaths(const wxString compilerMaster
 {
     // Check directory depth and only check if depth is 2 or more!!!!
     wxFileName fnMasterPath(compilerMasterPath);
+
     if (fnMasterPath.GetDirCount() != 0)
     {
         wxString cMPathLower(compilerMasterPath);
         cMPathLower.Lower();
+
         if (
             (cMPathLower.Find("clang") != wxNOT_FOUND)  ||
             (cMPathLower.Find("llvm") != wxNOT_FOUND)
@@ -65,6 +67,7 @@ void ClangLocator::WindowsAddClangFoundSearchPaths(const wxString compilerMaster
             // Go up one directory
             wxFileName fnMPTest(compilerMasterPath);
             fnMPTest = fnMPTest.GetPath();
+
             if (wxDirExists(fnMPTest.GetFullPath()))
             {
                 if (cMPathLower.Find("32") != wxNOT_FOUND)
@@ -79,16 +82,20 @@ void ClangLocator::WindowsAddClangFoundSearchPaths(const wxString compilerMaster
                 else
                 {
                     wxString testDir = fnMPTest.GetFullPath() + wxFILE_SEP_PATH + "clang64";
+
                     if (wxDirExists(testDir))
                     {
                         m_SearchPathsToTry.Add(testDir);
                     }
+
 #ifdef __arm__
                     testDir = fnMPTest.GetFullPath() + wxFILE_SEP_PATH + "clangarm64";
+
                     if (wxDirExists(testDir))
                     {
                         m_SearchPathsToTry.Add(testDir);
                     }
+
 #endif // #ifdef __arm__
                 }
             }
@@ -100,36 +107,40 @@ void ClangLocator::WindowsAddClangFoundSearchPaths(const wxString compilerMaster
 void ClangLocator::LoadSearchPaths()
 {
     m_SearchPathsToTry.Clear();
-
     // Add Project default compiler path to search if a project is loaded
-    cbProject* pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+    cbProject * pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+
     if (pProject)
     {
         // First check project global compiler is valid
         int compilerIdx = CompilerFactory::GetCompilerIndex(pProject->GetCompilerID());
+
         if (compilerIdx != -1)
         {
-            Compiler* prjCompiler = CompilerFactory::GetCompiler(compilerIdx);
+            Compiler * prjCompiler = CompilerFactory::GetCompiler(compilerIdx);
+
             if (prjCompiler)
             {
                 wxString mPath = prjCompiler->GetMasterPath();
+
                 if (!mPath.empty() && wxDirExists(mPath))
                 {
                     m_SearchPathsToTry.Add(mPath);
 #ifdef __WXMSW__
                     WindowsAddClangFoundSearchPaths(mPath);
 #endif // ifdef __WXMSW__
-
                 }
             }
         }
     }
 
     // Add default compiler path to search
-    Compiler* defaultCompiler = CompilerFactory::GetDefaultCompiler();
+    Compiler * defaultCompiler = CompilerFactory::GetDefaultCompiler();
+
     if (defaultCompiler)
     {
         wxString mPath = defaultCompiler->GetMasterPath();
+
         if (!mPath.empty() && wxDirExists(mPath))
         {
             m_SearchPathsToTry.Add(mPath);
@@ -140,11 +151,13 @@ void ClangLocator::LoadSearchPaths()
     }
 
 #if defined(__WXMSW__)
+
     // Add just in case
     if (wxDirExists("c:\\program files\\LLVM"))
     {
         m_SearchPathsToTry.Add("c:\\program files\\LLVM");
     }
+
     if (wxDirExists("c:\\LLVM"))
     {
         m_SearchPathsToTry.Add("c:\\LLVM");
@@ -155,9 +168,10 @@ void ClangLocator::LoadSearchPaths()
     wxArrayString regKeys;
     regKeys.Add("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\LLVM");
     regKeys.Add("Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\LLVM");
-    for(size_t i = 0; i < regKeys.size(); ++i)
+
+    for (size_t i = 0; i < regKeys.size(); ++i)
     {
-        if(ReadMSWInstallLocation(regKeys.Item(i), llvmInstallPath, llvmVersion))
+        if (ReadMSWInstallLocation(regKeys.Item(i), llvmInstallPath, llvmVersion))
         {
             if (!llvmInstallPath.empty() && wxDirExists(llvmInstallPath))
             {
@@ -169,9 +183,9 @@ void ClangLocator::LoadSearchPaths()
 #else
     m_SearchPathsToTry.Add("/usr");
 #endif
-
     // Just in case
     wxFileName cbExecFileName(wxStandardPaths::Get().GetExecutablePath());
+
     if (wxDirExists(cbExecFileName.GetPath() + "lsp"))
     {
         m_SearchPathsToTry.Add(cbExecFileName.GetPath() + "lsp");
@@ -182,17 +196,19 @@ wxString ClangLocator::LocateFilenameInPath(wxString findFileName)
 {
     wxString location = wxEmptyString;
     wxArrayString clangLocations;
-
     wxArrayString envPaths = GetEnvPaths();
+
     for (wxString path : envPaths)
     {
         wxLogNull nolog; //turn off 'not found' messages
         size_t cnt = ScanForFiles(path, clangLocations, findFileName);
-        for (size_t ii=0; ii<cnt; ++ii)
+
+        for (size_t ii = 0; ii < cnt; ++ii)
         {
             if (wxFileExists(clangLocations[ii]))
             {
                 wxString endBin = _(wxFILE_SEP_PATH) + "bin";
+
                 if (clangLocations[ii].EndsWith(endBin))
                 {
                     wxFileName fnLocation(clangLocations[ii]);
@@ -201,15 +217,18 @@ wxString ClangLocator::LocateFilenameInPath(wxString findFileName)
                 }
             }
         }
+
         if (!location.empty())
+        {
             break;
+        }
     }
 
     return location;
 }
 
 // ----------------------------------------------------------------------------
-bool ClangLocator::CheckDirectoryStructureFileName(const wxString& location, const wxString& findFilename, wxString& detectedFilename, wxString& detectedeDir)
+bool ClangLocator::CheckDirectoryStructureFileName(const wxString & location, const wxString & findFilename, wxString & detectedFilename, wxString & detectedeDir)
 {
     bool bFileNameFound = false;
     detectedFilename = wxEmptyString;
@@ -218,6 +237,7 @@ bool ClangLocator::CheckDirectoryStructureFileName(const wxString& location, con
     if (wxFileExists(location + wxFILE_SEP_PATH + findFilename))
     {
         wxString endBin = _(wxFILE_SEP_PATH) + "bin";
+
         if (location.EndsWith(endBin))
         {
             detectedFilename = location + wxFILE_SEP_PATH + findFilename;
@@ -229,21 +249,23 @@ bool ClangLocator::CheckDirectoryStructureFileName(const wxString& location, con
 
     if (!bFileNameFound && wxFileExists(location + wxFILE_SEP_PATH + "bin" + wxFILE_SEP_PATH + findFilename))
     {
-        detectedFilename =location + wxFILE_SEP_PATH + "bin" + wxFILE_SEP_PATH + findFilename;
+        detectedFilename = location + wxFILE_SEP_PATH + "bin" + wxFILE_SEP_PATH + findFilename;
         detectedeDir = location + wxFILE_SEP_PATH + "bin";
         bFileNameFound = true;
     }
+
     if (!bFileNameFound && wxDirExists(location + wxFILE_SEP_PATH + "lsp" + wxFILE_SEP_PATH + findFilename))
     {
-        detectedFilename =location + wxFILE_SEP_PATH + "lsp" + wxFILE_SEP_PATH + findFilename;
+        detectedFilename = location + wxFILE_SEP_PATH + "lsp" + wxFILE_SEP_PATH + findFilename;
         detectedeDir = location + wxFILE_SEP_PATH + "lsp";
         bFileNameFound = true;
     }
+
     return bFileNameFound;
 }
 
 // ----------------------------------------------------------------------------
-bool ClangLocator::LocateLLVMFilename(const wxString& location, const wxString& findFilename, wxString& detectedFilename, wxString& detectedeDir)
+bool ClangLocator::LocateLLVMFilename(const wxString & location, const wxString & findFilename, wxString & detectedFilename, wxString & detectedeDir)
 {
     bool bFileNameFound = false;
 
@@ -252,6 +274,7 @@ bool ClangLocator::LocateLLVMFilename(const wxString& location, const wxString& 
         if (wxFileExists(location))
         {
             wxFileName fLocation(location);
+
             if (wxFileExists(fLocation.GetPath() + wxFILE_SEP_PATH + findFilename))
             {
                 detectedFilename = fLocation.GetPath() + wxFILE_SEP_PATH + findFilename;
@@ -259,6 +282,7 @@ bool ClangLocator::LocateLLVMFilename(const wxString& location, const wxString& 
                 bFileNameFound = true;
             }
         }
+
         if (!bFileNameFound && wxDirExists(location))
         {
             bFileNameFound  = CheckDirectoryStructureFileName(location, findFilename, detectedFilename, detectedeDir);
@@ -272,6 +296,7 @@ bool ClangLocator::LocateLLVMFilename(const wxString& location, const wxString& 
             if (!bFileNameFound && wxDirExists(pathToTry))
             {
                 bFileNameFound  = CheckDirectoryStructureFileName(pathToTry, findFilename, detectedFilename, detectedeDir);
+
                 if (bFileNameFound)
                 {
                     break;
@@ -284,6 +309,7 @@ bool ClangLocator::LocateLLVMFilename(const wxString& location, const wxString& 
     {
         // Check clangd in the path
         wxString clangDaemonFilenameCheck = LocateFilenameInPath(findFilename);
+
         if (!clangDaemonFilenameCheck.empty())
         {
             wxFileName fLocation(clangDaemonFilenameCheck);
@@ -292,37 +318,33 @@ bool ClangLocator::LocateLLVMFilename(const wxString& location, const wxString& 
             bFileNameFound = true;
         }
     }
+
     return bFileNameFound;
 }
 
 // ----------------------------------------------------------------------------
-bool ClangLocator::LocateLLVMResources(wxString& LLVMMasterPath, wxString& clangDaemonFilename, wxString& clangExeFilename, wxString& clangIncDir)
+bool ClangLocator::LocateLLVMResources(wxString & LLVMMasterPath, wxString & clangDaemonFilename, wxString & clangExeFilename, wxString & clangIncDir)
 {
     // Clear detected data
     LLVMMasterPath = wxEmptyString;
     clangDaemonFilename = wxEmptyString;
     clangExeFilename = wxEmptyString;
     clangIncDir = wxEmptyString;
-
     // Load search paths
     LoadSearchPaths();
-
     // Load old path if available
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
     wxString cfgLLVM_MasterPath = cfg->Read("/LLVM_MasterPath", wxEmptyString);
-
     // need to use strings
     const wxString clangDaemonFilenameConst(CLANG_DAEMON_FILENAME);
     const wxString clangFilenameConst(CLANG_FILENAME);
-
     wxString clangDaemonDirectory = wxEmptyString;
     wxString clangDirectory = wxEmptyString;
-
     // Detect clangDaemon file
     bool bClangDaemonFound = ClangLocator::LocateLLVMFilename(cfgLLVM_MasterPath, clangDaemonFilenameConst, clangDaemonFilename, clangDaemonDirectory);
-
     // Detect clang file
     bool bClangFound;
+
     if (clangDaemonDirectory.empty())
     {
         bClangFound = ClangLocator::LocateLLVMFilename(cfgLLVM_MasterPath, clangFilenameConst, clangExeFilename, clangDirectory);
@@ -350,20 +372,20 @@ bool ClangLocator::LocateLLVMResources(wxString& LLVMMasterPath, wxString& clang
     if (!LLVMMasterPath.empty())
     {
         wxString detectedClangVersion = wxEmptyString;
+
         if (!clangDaemonFilename.empty())
         {
             detectedClangVersion =  GetExeFileVersion(clangDaemonFilename);
-
         }
+
         bLLVMResourceDirFound = LocateIncludeClangDir(LLVMMasterPath, detectedClangVersion, clangIncDir);
     }
-
 
     return (bClangDaemonFound || bClangFound || bLLVMResourceDirFound);
 }
 
 // ----------------------------------------------------------------------------
-bool ClangLocator::LocateIncludeClangDir(const wxString& LLVMMasterPath, const wxString& detectedClangVersion, wxString& clangIncClangPath)
+bool ClangLocator::LocateIncludeClangDir(const wxString & LLVMMasterPath, const wxString & detectedClangVersion, wxString & clangIncClangPath)
 {
     bool bIncludeClangDirFound = false;
     clangIncClangPath = wxEmptyString;
@@ -371,12 +393,15 @@ bool ClangLocator::LocateIncludeClangDir(const wxString& LLVMMasterPath, const w
     if (!LLVMMasterPath.empty())
     {
         wxString endBin = _(wxFILE_SEP_PATH) + "bin";
+
         if (LLVMMasterPath.EndsWith(endBin))
         {
             wxFileName fnIncClang(LLVMMasterPath);
+
             if (wxDirExists(fnIncClang.GetPath()))
             {
                 wxString clangIncClangPathChecking = fnIncClang.GetPath() + wxFILE_SEP_PATH + "lib" + wxFILE_SEP_PATH +  "clang";
+
                 if (wxDirExists(clangIncClangPathChecking))
                 {
                     if (detectedClangVersion.empty())
@@ -387,6 +412,7 @@ bool ClangLocator::LocateIncludeClangDir(const wxString& LLVMMasterPath, const w
                     else
                     {
                         clangIncClangPathChecking += (wxFILE_SEP_PATH + detectedClangVersion);
+
                         if (wxDirExists(clangIncClangPathChecking))
                         {
                             clangIncClangPath = clangIncClangPathChecking;
@@ -397,6 +423,7 @@ bool ClangLocator::LocateIncludeClangDir(const wxString& LLVMMasterPath, const w
             }
         }
     }
+
     return bIncludeClangDirFound;
 }
 
@@ -404,7 +431,8 @@ bool ClangLocator::LocateIncludeClangDir(const wxString& LLVMMasterPath, const w
 wxArrayString ClangLocator::GetEnvPaths() const
 {
     wxString path;
-    if(!::wxGetEnv("PATH", &path))
+
+    if (!::wxGetEnv("PATH", &path))
     {
         //-clWARNING() << "Could not read environment variable PATH";
         wxString msg;
@@ -419,7 +447,7 @@ wxArrayString ClangLocator::GetEnvPaths() const
 }
 
 // ----------------------------------------------------------------------------
-size_t ClangLocator::ScanForFiles(wxString path, wxArrayString& foundFiles, wxString mask)
+size_t ClangLocator::ScanForFiles(wxString path, wxArrayString & foundFiles, wxString mask)
 {
 #if defined(__WXGTK__)
     // Windows sublayer for unix places the entire windows path into the Linux $PATH environment as mount points
@@ -437,21 +465,30 @@ size_t ClangLocator::ScanForFiles(wxString path, wxArrayString& foundFiles, wxSt
 
     // Eliminate WSL windows mount points, else the search takes forever..
     if (path.Matches("/mnt/?/*"))
-        return 0; //eliminate massive number of wsl windows paths
+    {
+        return 0;    //eliminate massive number of wsl windows paths
+    }
+
 #endif
 
     if (not wxDirExists(path))
+    {
         return 0;
+    }
 
     wxString filename = wxFindFirstFile(path + wxFILE_SEP_PATH + mask, wxFILE);
-    while(filename.Length())
+
+    while (filename.Length())
     {
         wxFileName file(path + wxFILE_SEP_PATH + filename);
         file.MakeAbsolute();
         foundFiles.Add(file.GetFullPath());
         filename = wxFindNextFile();
+
         if (filename.empty())
+        {
             break;
+        }
     }
 
     return foundFiles.GetCount();
@@ -459,32 +496,35 @@ size_t ClangLocator::ScanForFiles(wxString path, wxArrayString& foundFiles, wxSt
 
 // ----------------------------------------------------------------------------
 #ifdef __WXMSW__
-bool ClangLocator::ReadMSWInstallLocation(const wxString& regkey, wxString& installPath, wxString& llvmVersion)
+bool ClangLocator::ReadMSWInstallLocation(const wxString & regkey, wxString & installPath, wxString & llvmVersion)
 {
     wxRegKey reg(wxRegKey::HKLM, regkey);
     installPath.Clear();
     llvmVersion.Clear();
-    if(reg.Exists())
+
+    if (reg.Exists())
     {
         reg.QueryValue("DisplayIcon", installPath);
         reg.QueryValue("DisplayVersion", llvmVersion);
     }
+
     return !installPath.IsEmpty() && !llvmVersion.IsEmpty();
 }
 #endif
 
 // ----------------------------------------------------------------------------
-wxString ClangLocator::GetExeFileVersion(const wxString& clangExeFilename)
+wxString ClangLocator::GetExeFileVersion(const wxString & clangExeFilename)
 {
     wxString command;
     wxArrayString stdoutArr;
     command << clangExeFilename << " --version";
     ProcUtils::SafeExecuteCommand(command, stdoutArr);
-    if(!stdoutArr.IsEmpty())
+
+    if (!stdoutArr.IsEmpty())
     {
         wxString versionString = stdoutArr.Item(0);
-
         wxRegEx reCmd("[0-9]+(\\.[0-9]+)+");
+
         if (reCmd.Matches(versionString))
         {
             versionString = reCmd.GetMatch(versionString);
@@ -498,13 +538,15 @@ wxString ClangLocator::GetExeFileVersion(const wxString& clangExeFilename)
                 versionString = versionString.BeforeFirst('(');
             }
         }
+
         return versionString;
     }
+
     return wxString();
 }
 
 // ----------------------------------------------------------------------------
-bool ClangLocator::IsClangFileVersionValid(const wxString& clangExeFilename)
+bool ClangLocator::IsClangFileVersionValid(const wxString & clangExeFilename)
 {
     wxString clangdVersion = GetExeFileVersion(clangExeFilename);
     clangdVersion = clangdVersion.BeforeFirst('.').AfterLast(' ');

@@ -45,32 +45,33 @@
  *
  */
 
-class XMLParser : public TextParser {
- public:
-  explicit XMLParser(const char* wc);
-  XMLParser(const w_char* wordchars, int len);
-  bool next_token(const char* p[][2],
-                  unsigned int len,
-                  const char* p2[][2],
-                  unsigned int len2,
-                  const char* p3[][2],
-                  unsigned int len3,
-                  std::string&);
-  virtual bool next_token(std::string&);
-  std::string get_word2(const char* p2[][2],
-                  unsigned int len2,
-                  const std::string &tok);
-  int change_token(const char* word);
-  virtual ~XMLParser();
+class XMLParser : public TextParser
+{
+    public:
+        explicit XMLParser(const char * wc);
+        XMLParser(const w_char * wordchars, int len);
+        bool next_token(const char * p[][2],
+                        unsigned int len,
+                        const char * p2[][2],
+                        unsigned int len2,
+                        const char * p3[][2],
+                        unsigned int len3,
+                        std::string &);
+        virtual bool next_token(std::string &);
+        std::string get_word2(const char * p2[][2],
+                              unsigned int len2,
+                              const std::string & tok);
+        int change_token(const char * word);
+        virtual ~XMLParser();
 
- private:
-  int look_pattern(const char* p[][2], unsigned int len, int column);
-  int pattern_num;
-  int pattern2_num;
-  int pattern3_num;
-  int prevstate;
-  int checkattr;
-  char quotmark;
+    private:
+        int look_pattern(const char * p[][2], unsigned int len, int column);
+        int pattern_num;
+        int pattern2_num;
+        int pattern3_num;
+        int prevstate;
+        int checkattr;
+        char quotmark;
 };
 
 #endif

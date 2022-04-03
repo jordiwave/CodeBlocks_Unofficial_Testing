@@ -14,19 +14,22 @@ XmlRpcServer s;
 
 class ArrayOfStructsTest : public XmlRpcServerMethod
 {
-public:
-    ArrayOfStructsTest(XmlRpcServer* s) : XmlRpcServerMethod("validator1.arrayOfStructsTest", s) {}
+    public:
+        ArrayOfStructsTest(XmlRpcServer * s) : XmlRpcServerMethod("validator1.arrayOfStructsTest", s) {}
 
-    void execute(XmlRpcValue& params, XmlRpcValue& result)
-    {
-        std::cerr << "ArrayOfStructsTest\n";
-        XmlRpcValue& arg1 = params[0];
-        int n = arg1.size(), sum = 0;
-        for (int i=0; i<n; ++i)
-            sum += int(arg1[i]["curly"]);
+        void execute(XmlRpcValue & params, XmlRpcValue & result)
+        {
+            std::cerr << "ArrayOfStructsTest\n";
+            XmlRpcValue & arg1 = params[0];
+            int n = arg1.size(), sum = 0;
 
-        result = sum;
-    }
+            for (int i = 0; i < n; ++i)
+            {
+                sum += int(arg1[i]["curly"]);
+            }
+
+            result = sum;
+        }
 } arrayOfStructsTest(&s);
 
 
@@ -38,46 +41,50 @@ public:
 
 class CountTheEntities : public XmlRpcServerMethod
 {
-public:
-    CountTheEntities(XmlRpcServer* s) : XmlRpcServerMethod("validator1.countTheEntities", s) {}
+    public:
+        CountTheEntities(XmlRpcServer * s) : XmlRpcServerMethod("validator1.countTheEntities", s) {}
 
-    void execute(XmlRpcValue& params, XmlRpcValue& result)
-    {
-        std::cerr << "CountTheEntities\n";
-        std::string& arg = params[0];
-        int ctLeftAngleBrackets = 0;
-        int ctRightAngleBrackets = 0;
-        int ctAmpersands = 0;
-        int ctApostrophes = 0;
-        int ctQuotes = 0;
+        void execute(XmlRpcValue & params, XmlRpcValue & result)
+        {
+            std::cerr << "CountTheEntities\n";
+            std::string & arg = params[0];
+            int ctLeftAngleBrackets = 0;
+            int ctRightAngleBrackets = 0;
+            int ctAmpersands = 0;
+            int ctApostrophes = 0;
+            int ctQuotes = 0;
+            int n = int(arg.length());
 
-        int n = int(arg.length());
-        for (int i=0; i<n; ++i)
-            switch (arg[i])
-            {
-            case '<':
-                ++ctLeftAngleBrackets;
-                break;
-            case '>':
-                ++ctRightAngleBrackets;
-                break;
-            case '&':
-                ++ctAmpersands;
-                break;
-            case '\'':
-                ++ctApostrophes;
-                break;
-            case '\"':
-                ++ctQuotes;
-                break;
-            }
+            for (int i = 0; i < n; ++i)
+                switch (arg[i])
+                {
+                    case '<':
+                        ++ctLeftAngleBrackets;
+                        break;
 
-        result["ctLeftAngleBrackets"] = ctLeftAngleBrackets;
-        result["ctRightAngleBrackets"] = ctRightAngleBrackets;
-        result["ctAmpersands"] = ctAmpersands;
-        result["ctApostrophes"] = ctApostrophes;
-        result["ctQuotes"] = ctQuotes;
-    }
+                    case '>':
+                        ++ctRightAngleBrackets;
+                        break;
+
+                    case '&':
+                        ++ctAmpersands;
+                        break;
+
+                    case '\'':
+                        ++ctApostrophes;
+                        break;
+
+                    case '\"':
+                        ++ctQuotes;
+                        break;
+                }
+
+            result["ctLeftAngleBrackets"] = ctLeftAngleBrackets;
+            result["ctRightAngleBrackets"] = ctRightAngleBrackets;
+            result["ctAmpersands"] = ctAmpersands;
+            result["ctApostrophes"] = ctApostrophes;
+            result["ctQuotes"] = ctQuotes;
+        }
 } countTheEntities(&s);
 
 
@@ -88,16 +95,16 @@ public:
 
 class EasyStructTest : public XmlRpcServerMethod
 {
-public:
-    EasyStructTest(XmlRpcServer* s) : XmlRpcServerMethod("validator1.easyStructTest", s) {}
+    public:
+        EasyStructTest(XmlRpcServer * s) : XmlRpcServerMethod("validator1.easyStructTest", s) {}
 
-    void execute(XmlRpcValue& params, XmlRpcValue& result)
-    {
-        std::cerr << "EasyStructTest\n";
-        XmlRpcValue& arg1 = params[0];
-        int sum = int(arg1["moe"]) + int(arg1["larry"]) + int(arg1["curly"]);
-        result = sum;
-    }
+        void execute(XmlRpcValue & params, XmlRpcValue & result)
+        {
+            std::cerr << "EasyStructTest\n";
+            XmlRpcValue & arg1 = params[0];
+            int sum = int(arg1["moe"]) + int(arg1["larry"]) + int(arg1["curly"]);
+            result = sum;
+        }
 } easyStructTest(&s);
 
 
@@ -105,14 +112,14 @@ public:
 
 class EchoStructTest : public XmlRpcServerMethod
 {
-public:
-    EchoStructTest(XmlRpcServer* s) : XmlRpcServerMethod("validator1.echoStructTest", s) {}
+    public:
+        EchoStructTest(XmlRpcServer * s) : XmlRpcServerMethod("validator1.echoStructTest", s) {}
 
-    void execute(XmlRpcValue& params, XmlRpcValue& result)
-    {
-        std::cerr << "EchoStructTest\n";
-        result = params[0];
-    }
+        void execute(XmlRpcValue & params, XmlRpcValue & result)
+        {
+            std::cerr << "EchoStructTest\n";
+            result = params[0];
+        }
 } echoStructTest(&s);
 
 
@@ -121,14 +128,14 @@ public:
 
 class ManyTypesTest : public XmlRpcServerMethod
 {
-public:
-    ManyTypesTest(XmlRpcServer* s) : XmlRpcServerMethod("validator1.manyTypesTest", s) {}
+    public:
+        ManyTypesTest(XmlRpcServer * s) : XmlRpcServerMethod("validator1.manyTypesTest", s) {}
 
-    void execute(XmlRpcValue& params, XmlRpcValue& result)
-    {
-        std::cerr << "ManyTypesTest\n";
-        result = params;
-    }
+        void execute(XmlRpcValue & params, XmlRpcValue & result)
+        {
+            std::cerr << "ManyTypesTest\n";
+            result = params;
+        }
 } manyTypesTest(&s);
 
 
@@ -140,16 +147,16 @@ public:
 
 class ModerateSizeArrayCheck : public XmlRpcServerMethod
 {
-public:
-    ModerateSizeArrayCheck(XmlRpcServer* s) : XmlRpcServerMethod("validator1.moderateSizeArrayCheck", s) {}
+    public:
+        ModerateSizeArrayCheck(XmlRpcServer * s) : XmlRpcServerMethod("validator1.moderateSizeArrayCheck", s) {}
 
-    void execute(XmlRpcValue& params, XmlRpcValue& result)
-    {
-        std::cerr << "ModerateSizeArrayCheck\n";
-        std::string s = params[0][0];
-        s += params[0][params[0].size()-1];
-        result = s;
-    }
+        void execute(XmlRpcValue & params, XmlRpcValue & result)
+        {
+            std::cerr << "ModerateSizeArrayCheck\n";
+            std::string s = params[0][0];
+            s += params[0][params[0].size() - 1];
+            result = s;
+        }
 } moderateSizeArrayCheck(&s);
 
 
@@ -162,16 +169,16 @@ public:
 
 class NestedStructTest : public XmlRpcServerMethod
 {
-public:
-    NestedStructTest(XmlRpcServer* s) : XmlRpcServerMethod("validator1.nestedStructTest", s) {}
+    public:
+        NestedStructTest(XmlRpcServer * s) : XmlRpcServerMethod("validator1.nestedStructTest", s) {}
 
-    void execute(XmlRpcValue& params, XmlRpcValue& result)
-    {
-        std::cerr << "NestedStructTest\n";
-        XmlRpcValue& dayStruct = params[0]["2000"]["04"]["01"];
-        int sum = int(dayStruct["moe"]) + int(dayStruct["larry"]) + int(dayStruct["curly"]);
-        result = sum;
-    }
+        void execute(XmlRpcValue & params, XmlRpcValue & result)
+        {
+            std::cerr << "NestedStructTest\n";
+            XmlRpcValue & dayStruct = params[0]["2000"]["04"]["01"];
+            int sum = int(dayStruct["moe"]) + int(dayStruct["larry"]) + int(dayStruct["curly"]);
+            result = sum;
+        }
 } nestedStructTest(&s);
 
 
@@ -181,38 +188,35 @@ public:
 
 class SimpleStructReturnTest : public XmlRpcServerMethod
 {
-public:
-    SimpleStructReturnTest(XmlRpcServer* s) : XmlRpcServerMethod("validator1.simpleStructReturnTest", s) {}
+    public:
+        SimpleStructReturnTest(XmlRpcServer * s) : XmlRpcServerMethod("validator1.simpleStructReturnTest", s) {}
 
-    void execute(XmlRpcValue& params, XmlRpcValue& result)
-    {
-        std::cerr << "SimpleStructReturnTest\n";
-        int n = params[0];
-        result["times10"] = n * 10;
-        result["times100"] = n * 100;
-        result["times1000"] = n * 1000;
-    }
+        void execute(XmlRpcValue & params, XmlRpcValue & result)
+        {
+            std::cerr << "SimpleStructReturnTest\n";
+            int n = params[0];
+            result["times10"] = n * 10;
+            result["times100"] = n * 100;
+            result["times1000"] = n * 1000;
+        }
 } simpleStructReturnTest(&s);
 
 
 
-int main(int argc, char* argv[])
+int main(int argc, char * argv[])
 {
     if (argc != 2)
     {
         std::cerr << "Usage: Validator port\n";
         return -1;
     }
+
     int port = atoi(argv[1]);
-
     XmlRpc::setVerbosity(5);
-
     // Create the server socket on the specified port
     s.bindAndListen(port);
-
     // Wait for requests indefinitely
     s.work(-1.0);
-
     return 0;
 }
 

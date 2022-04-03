@@ -38,7 +38,7 @@ struct  MenuItemData
 
     struct ClearParentMenu
     {
-        void operator()(std::pair<const int, MenuItemData>& iter)
+        void operator()(std::pair<const int, MenuItemData> & iter)
         {
             iter.second.parentMenu.Clear();
         }
@@ -47,11 +47,11 @@ struct  MenuItemData
     struct PrependPrefix
     {
         wxString m_prefix;
-        PrependPrefix(const wxString& prefix)
+        PrependPrefix(const wxString & prefix)
             : m_prefix(prefix)
         {
         }
-        void operator()(std::pair<const int, MenuItemData>& iter)
+        void operator()(std::pair<const int, MenuItemData> & iter)
         {
             iter.second.action.Prepend(m_prefix);
         }
@@ -86,7 +86,7 @@ struct  clKeyboardShortcut
      * @brief construct this object from string representation
      * e.g.: Ctrl-Alt-1
      */
-    void FromString(const wxString& accelString);
+    void FromString(const wxString & accelString);
     /**
      * @brief return a string representation of this accelerator
      */
@@ -99,110 +99,110 @@ struct  clKeyboardShortcut
 class  clKeyboardManager : public wxEvtHandler
 // ----------------------------------------------------------------------------
 {
-private:
-    typedef std::list<wxFrame*> FrameList_t;
-    MenuItemDataMap_t m_menuTable;
-    MenuItemDataMap_t m_globalTable;
-    wxStringSet_t m_keyCodes;
-    wxStringSet_t m_allShorcuts;
+    private:
+        typedef std::list<wxFrame *> FrameList_t;
+        MenuItemDataMap_t m_menuTable;
+        MenuItemDataMap_t m_globalTable;
+        wxStringSet_t m_keyCodes;
+        wxStringSet_t m_allShorcuts;
 
-protected:
-    /**
-     * @brief return list of frames
-     */
-    void DoGetFrames(wxFrame* parent, clKeyboardManager::FrameList_t& frames);
-    void DoUpdateMenu(wxMenu* menu, MenuItemDataIntMap_t& accels, std::vector<wxAcceleratorEntry>& table);
-    void DoUpdateFrame(wxFrame* frame, MenuItemDataIntMap_t& accels);
-    void DoConvertToIntMap(const MenuItemDataMap_t& strMap, MenuItemDataIntMap_t& intMap);
-    MenuItemDataMap_t DoLoadDefaultAccelerators();
+    protected:
+        /**
+         * @brief return list of frames
+         */
+        void DoGetFrames(wxFrame * parent, clKeyboardManager::FrameList_t & frames);
+        void DoUpdateMenu(wxMenu * menu, MenuItemDataIntMap_t & accels, std::vector<wxAcceleratorEntry> & table);
+        void DoUpdateFrame(wxFrame * frame, MenuItemDataIntMap_t & accels);
+        void DoConvertToIntMap(const MenuItemDataMap_t & strMap, MenuItemDataIntMap_t & intMap);
+        MenuItemDataMap_t DoLoadDefaultAccelerators();
 
-    clKeyboardManager();
-    virtual ~clKeyboardManager();
+        clKeyboardManager();
+        virtual ~clKeyboardManager();
 
-protected:
-    //-void OnStartupCompleted(wxCommandEvent& event);
+    protected:
+        //-void OnStartupCompleted(wxCommandEvent& event);
 
-public:
-    static void Release();
-    static clKeyboardManager* Get();
+    public:
+        static void Release();
+        static clKeyboardManager * Get();
 
-    /**
-     * @brief return an array of all unassigned keyboard shortcuts
-     */
-    wxArrayString GetAllUnasignedKeyboardShortcuts() const;
+        /**
+         * @brief return an array of all unassigned keyboard shortcuts
+         */
+        wxArrayString GetAllUnasignedKeyboardShortcuts() const;
 
-    /**
-     * @brief show a 'Add keyboard shortcut' dialog
-     */
-    int PopupNewKeyboardShortcutDlg(wxWindow* parent, MenuItemData& menuItemData);
+        /**
+         * @brief show a 'Add keyboard shortcut' dialog
+         */
+        int PopupNewKeyboardShortcutDlg(wxWindow * parent, MenuItemData & menuItemData);
 
-    /**
-     * @brief return true if the accelerator is already assigned
-     */
-    bool Exists(const wxString& accel) const;
-    MenuItemDataMap_t::iterator ExistsALikeAccel(MenuItemDataMap_t& srcMap, MenuItemDataMap_t::iterator srcMapIter) const; //(2019/04/22)
-    void CheckForDuplicateAccels(MenuItemDataMap_t& accelMap) const; //(2019/04/22)
+        /**
+         * @brief return true if the accelerator is already assigned
+         */
+        bool Exists(const wxString & accel) const;
+        MenuItemDataMap_t::iterator ExistsALikeAccel(MenuItemDataMap_t & srcMap, MenuItemDataMap_t::iterator srcMapIter) const; //(2019/04/22)
+        void CheckForDuplicateAccels(MenuItemDataMap_t & accelMap) const; //(2019/04/22)
 
-    /**
-     * @brief save the bindings to disk
-     */
-    void Save();
+        /**
+         * @brief save the bindings to disk
+         */
+        void Save();
 
-    /**
-     * @brief load bindings from the file system
-     */
-    void Initialize(bool isRefreshRequest);
+        /**
+         * @brief load bindings from the file system
+         */
+        void Initialize(bool isRefreshRequest);
 
-    /**
-     * @brief add keyboard shortcut by specifying the action ID + the shortcut combination
-     * For example: AddAccelerator("wxID_COPY", "Ctrl-Shift-C", "Copy the current selection");
-     * @return true if the action succeeded, false otherwise
-     */
-    void AddGlobalAccelerator(
-        const wxString& resourceID, const wxString& keyboardShortcut, const wxString& description);
+        /**
+         * @brief add keyboard shortcut by specifying the action ID + the shortcut combination
+         * For example: AddAccelerator("wxID_COPY", "Ctrl-Shift-C", "Copy the current selection");
+         * @return true if the action succeeded, false otherwise
+         */
+        void AddGlobalAccelerator(
+            const wxString & resourceID, const wxString & keyboardShortcut, const wxString & description);
 
-    /**
-     * @brief replace all acceleratos with 'accels'
-     */
-    void SetAccelerators(const MenuItemDataMap_t& accels);
+        /**
+         * @brief replace all acceleratos with 'accels'
+         */
+        void SetAccelerators(const MenuItemDataMap_t & accels);
 
-    /**
-     * @brief return all accelerators known to CodeLite
-     */
-    void GetAllAccelerators(MenuItemDataMap_t& accels) const;
+        /**
+         * @brief return all accelerators known to CodeLite
+         */
+        void GetAllAccelerators(MenuItemDataMap_t & accels) const;
 
-    /**
-     * @brief update accelerators
-     */
-    void Update(wxFrame* frame = NULL);
+        /**
+         * @brief update accelerators
+         */
+        void Update(wxFrame * frame = NULL);
 
-    /**
-     * @brief restore keyboard shortcuts to defaults
-     */
-    void RestoreDefaults();
+        /**
+         * @brief restore keyboard shortcuts to defaults
+         */
+        void RestoreDefaults();
 
-    bool ReadFileContent(const wxFileName& fn, wxString& data, const wxMBConv& conv = wxConvUTF8);           //(2019/04/3)
-    bool WriteFileContent(const wxFileName& fn, const wxString& content, const wxMBConv& conv = wxConvUTF8); //(2019/04/3)
+        bool ReadFileContent(const wxFileName & fn, wxString & data, const wxMBConv & conv = wxConvUTF8);        //(2019/04/3)
+        bool WriteFileContent(const wxFileName & fn, const wxString & content, const wxMBConv & conv = wxConvUTF8); //(2019/04/3)
 
-    wxString KeyCodeToString(int keyCode);              //(2019/02/25)
-    wxString NumpadKeyCodeToString(int keyCode);        //(2019/02/25)
-    void     DumpAccelerators(size_t tableCount, wxAcceleratorEntry* pEntries, wxFrame* pFrame); //(2019/10/27)
-    void     LogAccelerators(MenuItemDataMap_t& menuTable, wxString title);
+        wxString KeyCodeToString(int keyCode);              //(2019/02/25)
+        wxString NumpadKeyCodeToString(int keyCode);        //(2019/02/25)
+        void     DumpAccelerators(size_t tableCount, wxAcceleratorEntry * pEntries, wxFrame * pFrame); //(2019/10/27)
+        void     LogAccelerators(MenuItemDataMap_t & menuTable, wxString title);
 
-    MenuItemData* FindMenuTableEntryFor(MenuItemDataMap_t& hashTable, MenuItemData* pMenuMapItem);
-    MenuItemData* FindEntryByPathAndAccel(MenuItemDataMap_t& hashTable, MenuItemData* pMenuMapItem);
+        MenuItemData * FindMenuTableEntryFor(MenuItemDataMap_t & hashTable, MenuItemData * pMenuMapItem);
+        MenuItemData * FindEntryByPathAndAccel(MenuItemDataMap_t & hashTable, MenuItemData * pMenuMapItem);
 
-    wxString GetTempKeyMnuAccelsFilename() //(2020/02/25)
-    {
-        wxString userPersonality = Manager::Get()->GetPersonalityManager()->GetPersonality();
-        wxString pid_string = wxString::Format(_T("_%lu"), wxGetProcessId());
-        wxFileName fnTempKeyMnuAccels(wxStandardPaths::Get().GetTempDir(), _T("keyMnuAccels.conf"));
-        fnTempKeyMnuAccels.SetName(userPersonality + _T(".") + fnTempKeyMnuAccels.GetName() + pid_string);
-        return fnTempKeyMnuAccels.GetFullPath();
-    }
+        wxString GetTempKeyMnuAccelsFilename() //(2020/02/25)
+        {
+            wxString userPersonality = Manager::Get()->GetPersonalityManager()->GetPersonality();
+            wxString pid_string = wxString::Format(_T("_%lu"), wxGetProcessId());
+            wxFileName fnTempKeyMnuAccels(wxStandardPaths::Get().GetTempDir(), _T("keyMnuAccels.conf"));
+            fnTempKeyMnuAccels.SetName(userPersonality + _T(".") + fnTempKeyMnuAccels.GetName() + pid_string);
+            return fnTempKeyMnuAccels.GetFullPath();
+        }
 
-private:
-    DECLARE_EVENT_TABLE()
+    private:
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // KEYBOARDMANAGER_H

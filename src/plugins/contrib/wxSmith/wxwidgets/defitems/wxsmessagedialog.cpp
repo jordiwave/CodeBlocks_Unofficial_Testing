@@ -46,10 +46,11 @@ WXS_ST(wxICON_ERROR)
 WXS_ST(wxICON_QUESTION)
 WXS_ST(wxICON_INFORMATION)
 // This style is Windows only.
-if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
+if ((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
 {
     WXS_ST(wxSTAY_ON_TOP)
 }
+
 WXS_ST_END()
 }
 
@@ -58,7 +59,7 @@ WXS_ST_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsMessageDialog::wxsMessageDialog(wxsItemResData *Data):
+wxsMessageDialog::wxsMessageDialog(wxsItemResData * Data):
     wxsTool(Data,
             &Reg.Info,
             NULL,
@@ -76,18 +77,18 @@ wxsMessageDialog::wxsMessageDialog(wxsItemResData *Data):
  */
 void wxsMessageDialog::OnBuildCreatingCode()
 {
-    switch(GetLanguage())
+    switch (GetLanguage())
     {
-    case wxsCPP:
-        AddHeader(_T("<wx/msgdlg.h>"), GetInfo().ClassName, 0);
-        Codef(_T("%C(%W, %t, %t, %T, %P);\n"), m_sMessage.wx_str(), m_sCaption.wx_str());
-        BuildSetupWindowCode();
-        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-        break;
+        case wxsCPP:
+            AddHeader(_T("<wx/msgdlg.h>"), GetInfo().ClassName, 0);
+            Codef(_T("%C(%W, %t, %t, %T, %P);\n"), m_sMessage.wx_str(), m_sCaption.wx_str());
+            BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+            break;
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsMessageDialog::OnBuildCreatingCode"), GetLanguage());
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsMessageDialog::OnBuildCreatingCode"), GetLanguage());
     }
 }
 

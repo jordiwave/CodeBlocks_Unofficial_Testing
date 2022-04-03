@@ -23,13 +23,13 @@
 #include "HexEditViewBase.h"
 #include "HexEditPanel.h"
 
-HexEditViewBase::HexEditViewBase( HexEditPanel* panel )
-    : m_IsActive( false )
-    , m_ScreenStartOffset( 0 )
-    , m_CurrentOffset( 0 )
-    , m_BlockStartOffset( 0 )
-    , m_BlockEndOffset( 0 )
-    , m_Panel( panel )
+HexEditViewBase::HexEditViewBase(HexEditPanel * panel)
+    : m_IsActive(false)
+    , m_ScreenStartOffset(0)
+    , m_CurrentOffset(0)
+    , m_BlockStartOffset(0)
+    , m_BlockEndOffset(0)
+    , m_Panel(panel)
 {
 }
 
@@ -39,68 +39,90 @@ HexEditViewBase::~HexEditViewBase()
 
 bool HexEditViewBase::SetActive(bool makeMeActive)
 {
-    if ( makeMeActive == m_IsActive ) return m_IsActive;
+    if (makeMeActive == m_IsActive)
+    {
+        return m_IsActive;
+    }
 
-    OnActivate( makeMeActive );
+    OnActivate(makeMeActive);
     m_IsActive = makeMeActive;
     return !m_IsActive;
 }
 
-void HexEditViewBase::CalculateBlockSize( OffsetT screenStartOffset, OffsetT currentOffset, OffsetT& blockStart, OffsetT& blockEnd )
+void HexEditViewBase::CalculateBlockSize(OffsetT screenStartOffset, OffsetT currentOffset, OffsetT & blockStart, OffsetT & blockEnd)
 {
     m_ScreenStartOffset = screenStartOffset;
     m_CurrentOffset     = currentOffset;
-    OnCalculateBlockSize( blockStart, blockEnd );
+    OnCalculateBlockSize(blockStart, blockEnd);
 }
 
-void HexEditViewBase::JumpToOffset( OffsetT screenStartOffset, OffsetT currentOffset, OffsetT blockStart, OffsetT blockEnd, int flags )
+void HexEditViewBase::JumpToOffset(OffsetT screenStartOffset, OffsetT currentOffset, OffsetT blockStart, OffsetT blockEnd, int flags)
 {
     m_BlockStartOffset  = blockStart;
     m_BlockEndOffset    = blockEnd;
     m_CurrentOffset     = currentOffset;
     m_ScreenStartOffset = screenStartOffset;
-
-    OnOffsetChange( flags );
+    OnOffsetChange(flags);
 }
 
 void HexEditViewBase::PutChar(wxChar ch)
 {
-    if ( !m_IsActive ) return;
-    OnProcessChar( ch );
+    if (!m_IsActive)
+    {
+        return;
+    }
+
+    OnProcessChar(ch);
 }
 
 void HexEditViewBase::MoveLeft()
 {
-    if ( !m_IsActive ) return;
+    if (!m_IsActive)
+    {
+        return;
+    }
+
     OnMoveLeft();
 }
 
 void HexEditViewBase::MoveRight()
 {
-    if ( !m_IsActive ) return;
+    if (!m_IsActive)
+    {
+        return;
+    }
+
     OnMoveRight();
 }
 
 void HexEditViewBase::MoveUp()
 {
-    if ( !m_IsActive ) return;
+    if (!m_IsActive)
+    {
+        return;
+    }
+
     OnMoveUp();
 }
 
 void HexEditViewBase::MoveDown()
 {
-    if ( !m_IsActive ) return;
+    if (!m_IsActive)
+    {
+        return;
+    }
+
     OnMoveDown();
 }
 
-void HexEditViewBase::PutLine( OffsetT offs, HexEditLineBuffer& buff, char* content, int bytes )
+void HexEditViewBase::PutLine(OffsetT offs, HexEditLineBuffer & buff, char * content, int bytes)
 {
-    OnPutLine( offs, buff, content, bytes );
+    OnPutLine(offs, buff, content, bytes);
 }
 
-void HexEditViewBase::GetBlockSizes( int& blockLength, int& blockBytes, int& spacing )
+void HexEditViewBase::GetBlockSizes(int & blockLength, int & blockBytes, int & spacing)
 {
-    OnGetBlockSizes( blockLength, blockBytes, spacing );
+    OnGetBlockSizes(blockLength, blockBytes, spacing);
 }
 
 void HexEditViewBase::ContentChange()
@@ -111,7 +133,7 @@ void HexEditViewBase::ContentChange()
 void HexEditViewBase::OffsetChange(OffsetT currentOffset)
 {
     m_CurrentOffset = currentOffset;
-    m_Panel->ViewNotifyOffsetChange( currentOffset );
+    m_Panel->ViewNotifyOffsetChange(currentOffset);
 }
 
 FileContentBase * HexEditViewBase::GetContent()
@@ -124,13 +146,13 @@ unsigned int HexEditViewBase::GetLineBytes()
     return (unsigned int)m_Panel->m_LineBytes;
 }
 
-void HexEditViewBase::OnCalculateBlockSize( OffsetT& blockStart, OffsetT& blockEnd )
+void HexEditViewBase::OnCalculateBlockSize(OffsetT & blockStart, OffsetT & blockEnd)
 {
     blockStart = m_CurrentOffset;
     blockEnd   = m_CurrentOffset + 1;
 }
 
-void HexEditViewBase::OnOffsetChange( int )
+void HexEditViewBase::OnOffsetChange(int)
 {
 }
 
@@ -139,8 +161,8 @@ int HexEditViewBase::OnGetCurrentPositionFlags()
     return 0;
 }
 
-int HexEditViewBase::GetOffsetFromColumn( int column, int& positionFlags )
+int HexEditViewBase::GetOffsetFromColumn(int column, int & positionFlags)
 {
-    return OnGetOffsetFromColumn( column, positionFlags );
+    return OnGetOffsetFromColumn(column, positionFlags);
 }
 

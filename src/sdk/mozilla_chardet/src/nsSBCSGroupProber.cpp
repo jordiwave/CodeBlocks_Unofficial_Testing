@@ -18,7 +18,9 @@ nsSBCSGroupProber::nsSBCSGroupProber()
 {
     // let all probers default to nullptr (change to make use of single probers configurable in C::B, jens 2009-08-07)
     for (uint32_t i = 0; i < NUM_OF_SBCS_PROBERS; i++)
+    {
         mProbers[i] = nullptr;
+    }
 
     mProbers[0] = new nsSingleByteCharSetProber(&Win1251Model);
     mProbers[1] = new nsSingleByteCharSetProber(&Koi8rModel);
@@ -31,13 +33,13 @@ nsSBCSGroupProber::nsSBCSGroupProber()
     mProbers[8] = new nsSingleByteCharSetProber(&Latin5BulgarianModel);
     mProbers[9] = new nsSingleByteCharSetProber(&Win1251BulgarianModel);
     mProbers[10] = new nsSingleByteCharSetProber(&TIS620ThaiModel);
-
-    nsHebrewProber *hebprober = new nsHebrewProber();
+    nsHebrewProber * hebprober = new nsHebrewProber();
     // Notice: Any change in these indexes - 10,11,12 must be reflected
     // in the code below as well.
     mProbers[11] = hebprober;
     mProbers[12] = new nsSingleByteCharSetProber(&Win1255Model, false, hebprober); // Logical Hebrew
     mProbers[13] = new nsSingleByteCharSetProber(&Win1255Model, true, hebprober); // Visual Hebrew
+
     // Tell the Hebrew prober about the logical and visual probers
     if (mProbers[11] && mProbers[12] && mProbers[13]) // all are not null
     {
@@ -73,23 +75,28 @@ nsSBCSGroupProber::~nsSBCSGroupProber()
 }
 
 
-const char* nsSBCSGroupProber::GetCharSetName()
+const char * nsSBCSGroupProber::GetCharSetName()
 {
     //if we have no answer yet
     if (mBestGuess == -1)
     {
         GetConfidence();
+
         //no charset seems positive
         if (mBestGuess == -1)
             //we will use default.
+        {
             mBestGuess = 0;
+        }
     }
+
     return mProbers[mBestGuess]->GetCharSetName();
 }
 
 void  nsSBCSGroupProber::Reset(void)
 {
     mActiveNum = 0;
+
     for (uint32_t i = 0; i < NUM_OF_SBCS_PROBERS; i++)
     {
         if (mProbers[i]) // not null
@@ -99,18 +106,21 @@ void  nsSBCSGroupProber::Reset(void)
             ++mActiveNum;
         }
         else
+        {
             mIsActive[i] = false;
+        }
     }
+
     mBestGuess = -1;
     mState = eDetecting;
 }
 
 
-nsProbingState nsSBCSGroupProber::HandleData(const char* aBuf, uint32_t aLen)
+nsProbingState nsSBCSGroupProber::HandleData(const char * aBuf, uint32_t aLen)
 {
     nsProbingState st;
     uint32_t i;
-    char *newBuf1 = 0;
+    char * newBuf1 = 0;
     uint32_t newLen1 = 0;
 
     //apply filter to original buffer, and we got new buffer back
@@ -120,37 +130,46 @@ nsProbingState nsSBCSGroupProber::HandleData(const char* aBuf, uint32_t aLen)
     //of each prober since as of now, there are no probers here which
     //recognize languages with English characters.
     if (!FilterWithoutEnglishLetters(aBuf, aLen, &newBuf1, newLen1))
+    {
         goto done;
+    }
 
     if (newLen1 == 0)
-        goto done; // Nothing to see here, move on.
+    {
+        goto done;    // Nothing to see here, move on.
+    }
 
     for (i = 0; i < NUM_OF_SBCS_PROBERS; i++)
     {
         if (!mIsActive[i])
+        {
             continue;
+        }
+
         st = mProbers[i]->HandleData(newBuf1, newLen1);
+
         if (st == eFoundIt)
         {
             mBestGuess = i;
             mState = eFoundIt;
             break;
         }
-        else if (st == eNotMe)
-        {
-            mIsActive[i] = false;
-            mActiveNum--;
-            if (mActiveNum <= 0)
+        else
+            if (st == eNotMe)
             {
-                mState = eNotMe;
-                break;
+                mIsActive[i] = false;
+                mActiveNum--;
+
+                if (mActiveNum <= 0)
+                {
+                    mState = eNotMe;
+                    break;
+                }
             }
-        }
     }
 
 done:
     PR_FREEIF(newBuf1);
-
     return mState;
 }
 
@@ -161,23 +180,30 @@ float nsSBCSGroupProber::GetConfidence(void)
 
     switch (mState)
     {
-    case eFoundIt:
-        return (float)0.99; //sure yes
-    case eNotMe:
-        return (float)0.01;  //sure no
-    default:
-        for (i = 0; i < NUM_OF_SBCS_PROBERS; i++)
-        {
-            if (!mIsActive[i])
-                continue;
-            cf = mProbers[i]->GetConfidence();
-            if (bestConf < cf)
+        case eFoundIt:
+            return (float)0.99; //sure yes
+
+        case eNotMe:
+            return (float)0.01;  //sure no
+
+        default:
+            for (i = 0; i < NUM_OF_SBCS_PROBERS; i++)
             {
-                bestConf = cf;
-                mBestGuess = i;
+                if (!mIsActive[i])
+                {
+                    continue;
+                }
+
+                cf = mProbers[i]->GetConfidence();
+
+                if (bestConf < cf)
+                {
+                    bestConf = cf;
+                    mBestGuess = i;
+                }
             }
-        }
     }
+
     return bestConf;
 }
 
@@ -186,16 +212,21 @@ void nsSBCSGroupProber::DumpStatus()
 {
     uint32_t i;
     float cf;
-
     cf = GetConfidence();
     printf(" SBCS Group Prober --------begin status \r\n");
+
     for (i = 0; i < NUM_OF_SBCS_PROBERS; i++)
     {
         if (!mIsActive[i])
+        {
             printf("  inactive: [%s] (i.e. confidence is too low).\r\n", mProbers[i]->GetCharSetName());
+        }
         else
+        {
             mProbers[i]->DumpStatus();
+        }
     }
+
     printf(" SBCS Group found best match [%s] confidence %f.\r\n",
            mProbers[mBestGuess]->GetCharSetName(), cf);
 }

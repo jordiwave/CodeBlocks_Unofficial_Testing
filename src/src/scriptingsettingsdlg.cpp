@@ -15,7 +15,7 @@
 #include "filefilters.h"
 
 #ifndef CB_PRECOMP
-#include "scriptingmanager.h"
+    #include "scriptingmanager.h"
 #endif
 
 #include <wx/textctrl.h>
@@ -43,25 +43,21 @@ BEGIN_EVENT_TABLE(ScriptingSettingsDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnDeleteTrust"), ScriptingSettingsDlg::OnDeleteTrust)
 END_EVENT_TABLE()
 
-ScriptingSettingsDlg::ScriptingSettingsDlg(wxWindow* parent)
+ScriptingSettingsDlg::ScriptingSettingsDlg(wxWindow * parent)
     : m_IgnoreTextEvents(false)
 {
     //ctor
-    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgScriptingSettings"),_T("wxScrollingDialog"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgScriptingSettings"), _T("wxScrollingDialog"));
     XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
-
-    wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
+    wxListCtrl * list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
     list->InsertColumn(0, _("Script"), wxLIST_FORMAT_LEFT, 160);
     list->InsertColumn(1, _("Enabled"), wxLIST_FORMAT_LEFT, 64);
     list->InsertColumn(2, _("Menu"), wxLIST_FORMAT_LEFT, 160);
-
     FillScripts();
-
     list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);
     list->InsertColumn(0, _("Script"), wxLIST_FORMAT_LEFT, 160);
     list->InsertColumn(1, _("Signature"));
     list->InsertColumn(2, _("Temp?"));
-
     FillTrusts();
 }
 
@@ -72,21 +68,20 @@ ScriptingSettingsDlg::~ScriptingSettingsDlg()
 
 void ScriptingSettingsDlg::FillScripts()
 {
-    wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
+    wxListCtrl * list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
     list->DeleteAllItems();
-
-    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("scripting"));
+    ConfigManager * mgr = Manager::Get()->GetConfigManager(_T("scripting"));
     wxArrayString keys = mgr->EnumerateKeys(_T("/startup_scripts"));
 
     for (size_t i = 0; i < keys.GetCount(); ++i)
     {
         ScriptEntry se;
         wxString ser;
+
         if (mgr->Read(_T("/startup_scripts/") + keys[i], &ser))
         {
             se.SerializeIn(ser);
             m_ScriptsVector.push_back(se);
-
             long item = list->InsertItem(list->GetItemCount(), se.script);
             list->SetItem(item, 1, se.enabled ? _("Yes") : _("No"));
             list->SetItem(item, 2, se.registered && !se.menu.IsEmpty() ? se.menu : wxString(wxEmptyString));
@@ -98,15 +93,15 @@ void ScriptingSettingsDlg::FillScripts()
 
 void ScriptingSettingsDlg::UpdateState()
 {
-    wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
+    wxListCtrl * list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
     long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-
     bool hasSelection = false;
     bool enabled = false;
     bool registered = false;
+
     if (sel >= 0 && sel < long(m_ScriptsVector.size()))
     {
-        const ScriptEntry& se = m_ScriptsVector[sel];
+        const ScriptEntry & se = m_ScriptsVector[sel];
         enabled = se.enabled;
         registered = se.registered;
         hasSelection = true;
@@ -122,24 +117,22 @@ void ScriptingSettingsDlg::UpdateState()
 
 void ScriptingSettingsDlg::FillTrusts()
 {
-    wxListCtrl* list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);
+    wxListCtrl * list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);
     list->DeleteAllItems();
-
-    const ScriptingManager::TrustedScripts& trusts = Manager::Get()->GetScriptingManager()->GetTrustedScripts();
+    const ScriptingManager::TrustedScripts & trusts = Manager::Get()->GetScriptingManager()->GetTrustedScripts();
     ScriptingManager::TrustedScripts::const_iterator it;
+
     for (it = trusts.begin(); it != trusts.end(); ++it)
     {
-        const ScriptingManager::TrustedScriptProps& props = it->second;
-
+        const ScriptingManager::TrustedScriptProps & props = it->second;
         long item = list->InsertItem(list->GetItemCount(), it->first);
         list->SetItem(item, 1, wxString::Format("%x", props.crc));
         list->SetItem(item, 2, !props.permanent ? _("Yes") : wxString());
     }
 
     UpdateTrustsState();
-
     // fill main switches
-    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("security"));
+    ConfigManager * mgr = Manager::Get()->GetConfigManager(_T("security"));
     XRCCTRL(*this, "chkMkDir", wxCheckBox)->SetValue(mgr->ReadBool(_T("CreateDir"), false));
     XRCCTRL(*this, "chkRmDir", wxCheckBox)->SetValue(mgr->ReadBool(_T("RemoveDir"), false));
     XRCCTRL(*this, "chkCp", wxCheckBox)->SetValue(mgr->ReadBool(_T("CopyFile"), false));
@@ -151,11 +144,9 @@ void ScriptingSettingsDlg::FillTrusts()
 
 void ScriptingSettingsDlg::UpdateTrustsState()
 {
-    wxListCtrl* list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);
+    wxListCtrl * list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);
     long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-
     bool en = sel != -1;
-
     XRCCTRL(*this, "btnDeleteTrust", wxButton)->Enable(en);
     XRCCTRL(*this, "btnValidateTrusts", wxButton)->Enable(en);
 }
@@ -164,14 +155,14 @@ void ScriptingSettingsDlg::EndModal(int retCode)
 {
     if (retCode == wxID_OK)
     {
-        ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("scripting"));
+        ConfigManager * mgr = Manager::Get()->GetConfigManager(_T("scripting"));
         mgr->DeleteSubPath(_T("/startup_scripts"));
-
         ScriptsVector::iterator it;
         int i = 0;
+
         for (it = m_ScriptsVector.begin(); it != m_ScriptsVector.end(); ++it, ++i)
         {
-            ScriptEntry& se = *it;
+            ScriptEntry & se = *it;
             wxString key = wxString::Format(_T("/startup_scripts/script%d"), i);
             mgr->Write(key, se.SerializeOut());
         }
@@ -192,187 +183,192 @@ void ScriptingSettingsDlg::EndModal(int retCode)
 void ScriptingSettingsDlg::LoadItem(long item)
 {
     m_IgnoreTextEvents = true;
-
     // load
-    ScriptEntry& se = m_ScriptsVector[item];
-
+    ScriptEntry & se = m_ScriptsVector[item];
     XRCCTRL(*this, "chkEnableScript", wxCheckBox)->SetValue(se.enabled);
     XRCCTRL(*this, "txtScript", wxTextCtrl)->SetValue(se.script);
     XRCCTRL(*this, "chkRegisterScript", wxCheckBox)->SetValue(se.registered);
     XRCCTRL(*this, "txtScriptMenu", wxTextCtrl)->SetValue(se.menu);
-
     m_IgnoreTextEvents = false;
 }
 
 void ScriptingSettingsDlg::SaveItem(long item)
 {
     m_IgnoreTextEvents = true;
-
-    wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
-    ScriptEntry& se = m_ScriptsVector[item];
-
+    wxListCtrl * list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
+    ScriptEntry & se = m_ScriptsVector[item];
     se.enabled = XRCCTRL(*this, "chkEnableScript", wxCheckBox)->GetValue();
     se.script = XRCCTRL(*this, "txtScript", wxTextCtrl)->GetValue();
     se.registered = XRCCTRL(*this, "chkRegisterScript", wxCheckBox)->GetValue();
     se.menu = XRCCTRL(*this, "txtScriptMenu", wxTextCtrl)->GetValue();
-
     // update view
     list->SetItem(item, 0, se.script);
     list->SetItem(item, 1, se.enabled ? _("Yes") : _("No"));
     list->SetItem(item, 2, se.registered && !se.menu.IsEmpty() ? se.menu : wxString(wxEmptyString));
-
     m_IgnoreTextEvents = false;
 }
 
-void ScriptingSettingsDlg::OnListSelection(wxListEvent& event)
+void ScriptingSettingsDlg::OnListSelection(wxListEvent & event)
 {
-//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Selected %d"), event.GetIndex()));
-
+    //    Manager::Get()->GetLogManager()->DebugLog(F(_T("Selected %d"), event.GetIndex()));
     // load
     long sel = event.GetIndex();
     LoadItem(sel);
-
     UpdateState();
 }
 
-void ScriptingSettingsDlg::OnListDeselection(wxListEvent& event)
+void ScriptingSettingsDlg::OnListDeselection(wxListEvent & event)
 {
-//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Deselected %d"), event.GetIndex()));
-
+    //    Manager::Get()->GetLogManager()->DebugLog(F(_T("Deselected %d"), event.GetIndex()));
     // save
     long sel = event.GetIndex();
     SaveItem(sel);
-
     UpdateState();
 }
 
-void ScriptingSettingsDlg::OnScriptChanged(cb_unused wxCommandEvent& event)
+void ScriptingSettingsDlg::OnScriptChanged(cb_unused wxCommandEvent & event)
 {
     if (m_IgnoreTextEvents)
+    {
         return;
-    wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
+    }
+
+    wxListCtrl * list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
     long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     SaveItem(sel);
     UpdateState();
 }
 
-void ScriptingSettingsDlg::OnScriptMenuChanged(cb_unused wxCommandEvent& event)
+void ScriptingSettingsDlg::OnScriptMenuChanged(cb_unused wxCommandEvent & event)
 {
     if (m_IgnoreTextEvents)
+    {
         return;
-    wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
+    }
+
+    wxListCtrl * list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
     long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     SaveItem(sel);
     UpdateState();
 }
 
-void ScriptingSettingsDlg::OnEnable(cb_unused wxCommandEvent& event)
+void ScriptingSettingsDlg::OnEnable(cb_unused wxCommandEvent & event)
 {
-    wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
+    wxListCtrl * list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
     long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     SaveItem(sel);
     UpdateState();
 }
 
-void ScriptingSettingsDlg::OnRegister(cb_unused wxCommandEvent& event)
+void ScriptingSettingsDlg::OnRegister(cb_unused wxCommandEvent & event)
 {
-    wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
+    wxListCtrl * list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
     long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     SaveItem(sel);
     UpdateState();
 }
 
-void ScriptingSettingsDlg::OnAddScript(wxCommandEvent& event)
+void ScriptingSettingsDlg::OnAddScript(wxCommandEvent & event)
 {
     ScriptEntry se;
     se.script = _T("new.script");
     se.enabled = true;
     se.registered = false;
     m_ScriptsVector.push_back(se);
-
-    wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
-
+    wxListCtrl * list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
     // update view
     long item = list->InsertItem(list->GetItemCount(), se.script);
     list->SetItem(item, 1, _("No"));
     list->SetItem(item, 2, wxString(_("No")));
-
     list->SetItemState(item, wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED, wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED);
-
     OnBrowse(event);
 }
 
-void ScriptingSettingsDlg::OnRemoveScript(cb_unused wxCommandEvent& event)
+void ScriptingSettingsDlg::OnRemoveScript(cb_unused wxCommandEvent & event)
 {
-    wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
+    wxListCtrl * list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
     long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-
     list->DeleteItem(sel);
     m_ScriptsVector.erase(m_ScriptsVector.begin() + sel);
 
     if (sel > list->GetItemCount())
+    {
         --sel;
+    }
+
     list->SetItemState(sel, wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED, wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED);
+
     if (sel >= 0)
+    {
         LoadItem(sel);
+    }
+
     UpdateState();
 }
 
-void ScriptingSettingsDlg::OnBrowse(cb_unused wxCommandEvent& event)
+void ScriptingSettingsDlg::OnBrowse(cb_unused wxCommandEvent & event)
 {
     wxFileDialog dlg(this,
                      _("Select script file"),
                      XRCCTRL(*this, "txtScript", wxTextCtrl)->GetValue(),
                      XRCCTRL(*this, "txtScript", wxTextCtrl)->GetValue(),
                      FileFilters::GetFilterString(_T(".script")),
-                     wxFD_OPEN | compatibility::wxHideReadonly );
+                     wxFD_OPEN | compatibility::wxHideReadonly);
     PlaceWindow(&dlg);
+
     if (dlg.ShowModal() == wxID_OK)
     {
         wxString sel = UnixFilename(dlg.GetPath());
         wxString userdir = UnixFilename(ConfigManager::GetFolder(sdScriptsUser));
         wxString globaldir = UnixFilename(ConfigManager::GetFolder(sdScriptsGlobal));
         wxFileName f(sel);
+
         if (sel.StartsWith(userdir))
         {
             f.MakeRelativeTo(userdir);
         }
-        else if (sel.StartsWith(globaldir))
-        {
-            f.MakeRelativeTo(globaldir);
-        }
+        else
+            if (sel.StartsWith(globaldir))
+            {
+                f.MakeRelativeTo(globaldir);
+            }
+
         XRCCTRL(*this, "txtScript", wxTextCtrl)->SetValue(f.GetFullPath());
     }
 }
 
-void ScriptingSettingsDlg::OnTrustSelection(cb_unused wxListEvent& event)
+void ScriptingSettingsDlg::OnTrustSelection(cb_unused wxListEvent & event)
 {
     UpdateTrustsState();
 }
 
-void ScriptingSettingsDlg::OnDeleteTrust(cb_unused wxCommandEvent& event)
+void ScriptingSettingsDlg::OnDeleteTrust(cb_unused wxCommandEvent & event)
 {
-    wxListCtrl* list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);
+    wxListCtrl * list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);
     long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-
     wxString script = list->GetItemText(sel);
     Manager::Get()->GetScriptingManager()->RemoveTrust(script);
     list->DeleteItem(sel);
-
     UpdateTrustsState();
 }
 
-void ScriptingSettingsDlg::OnValidateTrusts(cb_unused wxCommandEvent& event)
+void ScriptingSettingsDlg::OnValidateTrusts(cb_unused wxCommandEvent & event)
 {
     bool check = true;
-    wxListCtrl* list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);
+    wxListCtrl * list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);
+
     for (int i = 0; i < list->GetItemCount(); ++i)
     {
         wxString script = list->GetItemText(i);
+
         if (!Manager::Get()->GetScriptingManager()->IsScriptTrusted(script))
+        {
             check = false;
+        }
     }
 
     if (check)
+    {
         cbMessageBox(_("All script trusts are valid!"), _("Information"), wxICON_INFORMATION, this);
+    }
 }

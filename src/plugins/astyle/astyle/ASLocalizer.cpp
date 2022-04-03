@@ -40,14 +40,14 @@
 #include "ASLocalizer.h"
 
 #ifdef _WIN32
-#include <Windows.h>
+    #include <Windows.h>
 #endif
 
 #ifdef __VMS
-#define __USE_STD_IOSTREAM 1
-#include <assert>
+    #define __USE_STD_IOSTREAM 1
+    #include <assert>
 #else
-#include <cassert>
+    #include <cassert>
 #endif
 
 #include <clocale>		// needed by some compilers
@@ -57,20 +57,20 @@
 #include <typeinfo>
 
 #ifdef _MSC_VER
-#pragma warning(disable: 4996)  // secure version deprecation warnings
+    #pragma warning(disable: 4996)  // secure version deprecation warnings
 #endif
 
 #ifdef __BORLANDC__
-#pragma warn -8104	    // Local Static with constructor dangerous for multi-threaded apps
+    #pragma warn -8104	    // Local Static with constructor dangerous for multi-threaded apps
 #endif
 
 #ifdef __INTEL_COMPILER
-// #pragma warning(disable:  383)  // value copied to temporary, reference to temporary used
-// #pragma warning(disable:  981)  // operands are evaluated in unspecified order
+    // #pragma warning(disable:  383)  // value copied to temporary, reference to temporary used
+    // #pragma warning(disable:  981)  // operands are evaluated in unspecified order
 #endif
 
 #ifdef __clang__
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"  // wcstombs
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"  // wcstombs
 #endif
 
 namespace astyle
@@ -90,15 +90,16 @@ ASLocalizer::ASLocalizer()
     m_langID = "en";
     m_subLangID.clear();
     m_translationClass = nullptr;
-
     // Not all compilers support the C++ function locale::global(locale(""));
-    char* localeName = setlocale(LC_ALL, "");
+    char * localeName = setlocale(LC_ALL, "");
+
     if (localeName == nullptr)		// use the english (ascii) defaults
     {
         fprintf(stderr, "\n%s\n\n", "Cannot set native locale, reverting to English");
         setTranslationClass();
         return;
     }
+
     // set the class variables
 #ifdef _WIN32
     size_t lcid = GetUserDefaultLCID();
@@ -124,9 +125,9 @@ struct WinLangCode
 };
 
 static WinLangCode wlc[] =
-// primary language identifier http://msdn.microsoft.com/en-us/library/aa912554.aspx
-// sublanguage identifier http://msdn.microsoft.com/en-us/library/aa913256.aspx
-// language ID http://msdn.microsoft.com/en-us/library/ee797784%28v=cs.20%29.aspx
+    // primary language identifier http://msdn.microsoft.com/en-us/library/aa912554.aspx
+    // sublanguage identifier http://msdn.microsoft.com/en-us/library/aa913256.aspx
+    // language ID http://msdn.microsoft.com/en-us/library/ee797784%28v=cs.20%29.aspx
 {
     { LANG_BULGARIAN,  "bg" },		//	bg-BG	1251
     { LANG_CHINESE,    "zh" },		//	zh-CHS, zh-CHT
@@ -160,9 +161,9 @@ void ASLocalizer::setLanguageFromLCID(size_t lcid)
 {
     m_lcid = lcid;
     m_langID = "en";	// default to english
-
     size_t lang = PRIMARYLANGID(LANGIDFROMLCID(m_lcid));
     size_t sublang = SUBLANGID(LANGIDFROMLCID(m_lcid));
+
     // find language in the wlc table
     for (WinLangCode language : wlc)
     {
@@ -172,13 +173,19 @@ void ASLocalizer::setLanguageFromLCID(size_t lcid)
             break;
         }
     }
+
     if (m_langID == "zh")
     {
         if (sublang == SUBLANG_CHINESE_SIMPLIFIED || sublang == SUBLANG_CHINESE_SINGAPORE)
+        {
             m_subLangID = "CHS";
+        }
         else
-            m_subLangID = "CHT";	// default
+        {
+            m_subLangID = "CHT";    // default
+        }
     }
+
     setTranslationClass();
 }
 
@@ -190,14 +197,14 @@ string ASLocalizer::getLanguageID() const
     return m_langID;
 }
 
-const Translation* ASLocalizer::getTranslationClass() const
+const Translation * ASLocalizer::getTranslationClass() const
 // Returns the name of the translation class in m_translation.  Used for testing.
 {
     assert(m_translationClass);
     return m_translationClass;
 }
 
-void ASLocalizer::setLanguageFromName(const char* langID)
+void ASLocalizer::setLanguageFromName(const char * langID)
 // Linux set the language to use from the langID.
 //
 // the language string has the following form
@@ -225,15 +232,21 @@ void ASLocalizer::setLanguageFromName(const char* langID)
     if (m_langID == "zh" && langStr[2] == '_')
     {
         string subLang = langStr.substr(3, 2);
+
         if (subLang == "CN" || subLang == "SG")
+        {
             m_subLangID = "CHS";
+        }
         else
-            m_subLangID = "CHT";	// default
+        {
+            m_subLangID = "CHT";    // default
+        }
     }
+
     setTranslationClass();
 }
 
-const char* ASLocalizer::settext(const char* textIn) const
+const char * ASLocalizer::settext(const char * textIn) const
 // Call the settext class and return the value.
 {
     assert(m_translationClass);
@@ -247,60 +260,132 @@ void ASLocalizer::setTranslationClass()
 // Get the language ID at http://msdn.microsoft.com/en-us/library/ee797784%28v=cs.20%29.aspx
 {
     assert(m_langID.length());
+
     // delete previously set (--ascii option)
     if (m_translationClass != nullptr)
     {
         delete m_translationClass;
         m_translationClass = nullptr;
     }
+
     if (m_langID == "bg")
+    {
         m_translationClass = new Bulgarian;
-    else if (m_langID == "zh" && m_subLangID == "CHS")
-        m_translationClass = new ChineseSimplified;
-    else if (m_langID == "zh" && m_subLangID == "CHT")
-        m_translationClass = new ChineseTraditional;
-    else if (m_langID == "nl")
-        m_translationClass = new Dutch;
-    else if (m_langID == "en")
-        m_translationClass = new English;
-    else if (m_langID == "et")
-        m_translationClass = new Estonian;
-    else if (m_langID == "fi")
-        m_translationClass = new Finnish;
-    else if (m_langID == "fr")
-        m_translationClass = new French;
-    else if (m_langID == "de")
-        m_translationClass = new German;
-    else if (m_langID == "el")
-        m_translationClass = new Greek;
-    else if (m_langID == "hi")
-        m_translationClass = new Hindi;
-    else if (m_langID == "hu")
-        m_translationClass = new Hungarian;
-    else if (m_langID == "it")
-        m_translationClass = new Italian;
-    else if (m_langID == "ja")
-        m_translationClass = new Japanese;
-    else if (m_langID == "ko")
-        m_translationClass = new Korean;
-    else if (m_langID == "nn")
-        m_translationClass = new Norwegian;
-    else if (m_langID == "pl")
-        m_translationClass = new Polish;
-    else if (m_langID == "pt")
-        m_translationClass = new Portuguese;
-    else if (m_langID == "ro")
-        m_translationClass = new Romanian;
-    else if (m_langID == "ru")
-        m_translationClass = new Russian;
-    else if (m_langID == "es")
-        m_translationClass = new Spanish;
-    else if (m_langID == "sv")
-        m_translationClass = new Swedish;
-    else if (m_langID == "uk")
-        m_translationClass = new Ukrainian;
-    else	// default
-        m_translationClass = new English;
+    }
+    else
+        if (m_langID == "zh" && m_subLangID == "CHS")
+        {
+            m_translationClass = new ChineseSimplified;
+        }
+        else
+            if (m_langID == "zh" && m_subLangID == "CHT")
+            {
+                m_translationClass = new ChineseTraditional;
+            }
+            else
+                if (m_langID == "nl")
+                {
+                    m_translationClass = new Dutch;
+                }
+                else
+                    if (m_langID == "en")
+                    {
+                        m_translationClass = new English;
+                    }
+                    else
+                        if (m_langID == "et")
+                        {
+                            m_translationClass = new Estonian;
+                        }
+                        else
+                            if (m_langID == "fi")
+                            {
+                                m_translationClass = new Finnish;
+                            }
+                            else
+                                if (m_langID == "fr")
+                                {
+                                    m_translationClass = new French;
+                                }
+                                else
+                                    if (m_langID == "de")
+                                    {
+                                        m_translationClass = new German;
+                                    }
+                                    else
+                                        if (m_langID == "el")
+                                        {
+                                            m_translationClass = new Greek;
+                                        }
+                                        else
+                                            if (m_langID == "hi")
+                                            {
+                                                m_translationClass = new Hindi;
+                                            }
+                                            else
+                                                if (m_langID == "hu")
+                                                {
+                                                    m_translationClass = new Hungarian;
+                                                }
+                                                else
+                                                    if (m_langID == "it")
+                                                    {
+                                                        m_translationClass = new Italian;
+                                                    }
+                                                    else
+                                                        if (m_langID == "ja")
+                                                        {
+                                                            m_translationClass = new Japanese;
+                                                        }
+                                                        else
+                                                            if (m_langID == "ko")
+                                                            {
+                                                                m_translationClass = new Korean;
+                                                            }
+                                                            else
+                                                                if (m_langID == "nn")
+                                                                {
+                                                                    m_translationClass = new Norwegian;
+                                                                }
+                                                                else
+                                                                    if (m_langID == "pl")
+                                                                    {
+                                                                        m_translationClass = new Polish;
+                                                                    }
+                                                                    else
+                                                                        if (m_langID == "pt")
+                                                                        {
+                                                                            m_translationClass = new Portuguese;
+                                                                        }
+                                                                        else
+                                                                            if (m_langID == "ro")
+                                                                            {
+                                                                                m_translationClass = new Romanian;
+                                                                            }
+                                                                            else
+                                                                                if (m_langID == "ru")
+                                                                                {
+                                                                                    m_translationClass = new Russian;
+                                                                                }
+                                                                                else
+                                                                                    if (m_langID == "es")
+                                                                                    {
+                                                                                        m_translationClass = new Spanish;
+                                                                                    }
+                                                                                    else
+                                                                                        if (m_langID == "sv")
+                                                                                        {
+                                                                                            m_translationClass = new Swedish;
+                                                                                        }
+                                                                                        else
+                                                                                            if (m_langID == "uk")
+                                                                                            {
+                                                                                                m_translationClass = new Ukrainian;
+                                                                                            }
+                                                                                            else	// default
+                                                                                            {
+                                                                                                m_translationClass = new English;
+                                                                                            }
 }
 
 //----------------------------------------------------------------------------
@@ -312,7 +397,7 @@ Translation::Translation()
     m_translationVector.reserve(translationElements);
 }
 
-void Translation::addPair(const string& english, const wstring& translated)
+void Translation::addPair(const string & english, const wstring & translated)
 // Add a string pair to the translation vector.
 {
     pair<string, wstring> entry(english, translated);
@@ -320,13 +405,14 @@ void Translation::addPair(const string& english, const wstring& translated)
     assert(m_translationVector.size() <= translationElements);
 }
 
-string Translation::convertToMultiByte(const wstring& wideStr) const
+string Translation::convertToMultiByte(const wstring & wideStr) const
 // Convert wchar_t to a multibyte string using the currently assigned locale.
 // Return an empty string if an error occurs.
 {
     static bool msgDisplayed = false;
     // get length of the output excluding the nullptr and validate the parameters
     size_t mbLen = wcstombs(nullptr, wideStr.c_str(), 0);
+
     if (mbLen == string::npos)
     {
         if (!msgDisplayed)
@@ -334,10 +420,13 @@ string Translation::convertToMultiByte(const wstring& wideStr) const
             fprintf(stderr, "\n%s\n\n", "Cannot convert to multi-byte string, reverting to English");
             msgDisplayed = true;
         }
+
         return "";
     }
+
     // convert the characters
-    char* mbStr = new (nothrow) char[mbLen + 1];
+    char * mbStr = new (nothrow) char[mbLen + 1];
+
     if (mbStr == nullptr)
     {
         if (!msgDisplayed)
@@ -345,8 +434,10 @@ string Translation::convertToMultiByte(const wstring& wideStr) const
             fprintf(stderr, "\n%s\n\n", "Bad memory alloc for multi-byte string, reverting to English");
             msgDisplayed = true;
         }
+
         return "";
     }
+
     wcstombs(mbStr, wideStr.c_str(), mbLen + 1);
     // return the string
     string mbTranslation = mbStr;
@@ -358,7 +449,10 @@ string Translation::getTranslationString(size_t i) const
 // Return the translation ascii value. Used for testing.
 {
     if (i >= m_translationVector.size())
+    {
         return string();
+    }
+
     return m_translationVector[i].first;
 }
 
@@ -368,10 +462,10 @@ size_t Translation::getTranslationVectorSize() const
     return m_translationVector.size();
 }
 
-bool Translation::getWideTranslation(const string& stringIn, wstring& wideOut) const
+bool Translation::getWideTranslation(const string & stringIn, wstring & wideOut) const
 // Get the wide translation string. Used for testing.
 {
-    for (const pair<string, wstring>& translation : m_translationVector)
+    for (const pair<string, wstring> & translation : m_translationVector)
     {
         if (translation.first == stringIn)
         {
@@ -379,18 +473,20 @@ bool Translation::getWideTranslation(const string& stringIn, wstring& wideOut) c
             return true;
         }
     }
+
     // not found
     wideOut = L"";
     return false;
 }
 
-string& Translation::translate(const string& stringIn) const
+string & Translation::translate(const string & stringIn) const
 // Translate a string.
 // Return a mutable string so the method can have a "const" designation.
 // This allows "settext" to be called from a "const" method.
 {
     m_mbTranslation.clear();
-    for (const pair<string, wstring>& translation : m_translationVector)
+
+    for (const pair<string, wstring> & translation : m_translationVector)
     {
         if (translation.first == stringIn)
         {
@@ -398,9 +494,13 @@ string& Translation::translate(const string& stringIn) const
             break;
         }
     }
+
     // not found, return english
     if (m_mbTranslation.empty())
+    {
         m_mbTranslation = stringIn;
+    }
+
     return m_mbTranslation;
 }
 

@@ -13,18 +13,18 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <cbproject.h>
+    #include <cbproject.h>
 #endif
 
 #include "projectdependencies.h"
 
 class MakefileGen
 {
-public:
-    static void GenerateMakefile(cbProject* project, ProjectDependencies* projDep, NativeParserF* pNativeParser);
+    public:
+        static void GenerateMakefile(cbProject * project, ProjectDependencies * projDep, NativeParserF * pNativeParser);
 
-private:
-    static bool SelectMikefileName(wxFileName& mffn);
+    private:
+        static bool SelectMikefileName(wxFileName & mffn);
 };
 
 #endif // MAKEFILEGEN_H

@@ -10,26 +10,29 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-#include "configmanager.h"
+    #include "configmanager.h"
 #endif // CB_PRECOMP
 
 #include "cbcolourmanager.h"
 
-template<> ColourManager* Mgr<ColourManager>::instance = nullptr;
+template<> ColourManager * Mgr<ColourManager>::instance = nullptr;
 template<> bool  Mgr<ColourManager>::isShutdown = false;
 
 void ColourManager::Load()
 {
-    ConfigManager *config = Manager::Get()->GetConfigManager(wxT("colours"));
-    const wxArrayString &colours = config->EnumerateKeys(wxT("list"));
+    ConfigManager * config = Manager::Get()->GetConfigManager(wxT("colours"));
+    const wxArrayString & colours = config->EnumerateKeys(wxT("list"));
+
     for (size_t ii = 0; ii < colours.GetCount(); ++ii)
     {
-        const wxString &id = colours[ii].Lower();
-        const wxColour &colour = config->ReadColour(wxT("list/") + id);
-
+        const wxString & id = colours[ii].Lower();
+        const wxColour & colour = config->ReadColour(wxT("list/") + id);
         ColourDefMap::iterator it = m_colours.find(id);
+
         if (it != m_colours.end())
+        {
             it->second.value = colour;
+        }
         else
         {
             ColourDef def;
@@ -41,21 +44,27 @@ void ColourManager::Load()
 
 void ColourManager::Save()
 {
-    ConfigManager *config = Manager::Get()->GetConfigManager(wxT("colours"));
+    ConfigManager * config = Manager::Get()->GetConfigManager(wxT("colours"));
+
     for (ColourDefMap::const_iterator it = m_colours.begin(); it != m_colours.end(); ++it)
     {
         if (it->second.value != it->second.defaultValue)
+        {
             config->Write(wxT("list/") + it->first, it->second.value);
+        }
         else
+        {
             config->UnSet(wxT("list/") + it->first);
+        }
     }
 }
 
-void ColourManager::RegisterColour(const wxString &category, const wxString &name,
-                                   const wxString &id, const wxColour &defaultColour)
+void ColourManager::RegisterColour(const wxString & category, const wxString & name,
+                                   const wxString & id, const wxColour & defaultColour)
 {
     wxString lowerID =  id.Lower();
     ColourDefMap::iterator it = m_colours.find(lowerID);
+
     if (it != m_colours.end())
     {
         it->second.name = name;
@@ -72,26 +81,29 @@ void ColourManager::RegisterColour(const wxString &category, const wxString &nam
     }
 }
 
-wxColour ColourManager::GetColour(const wxString &id) const
+wxColour ColourManager::GetColour(const wxString & id) const
 {
     ColourDefMap::const_iterator it = m_colours.find(id);
     return it != m_colours.end() ? it->second.value : *wxBLACK;
 }
 
-wxColour ColourManager::GetDefaultColour(const wxString &id) const
+wxColour ColourManager::GetDefaultColour(const wxString & id) const
 {
     ColourDefMap::const_iterator it = m_colours.find(id);
     return it != m_colours.end() ? it->second.defaultValue : *wxBLACK;
 }
 
-void ColourManager::SetColour(const wxString &id, const wxColour &colour)
+void ColourManager::SetColour(const wxString & id, const wxColour & colour)
 {
     ColourDefMap::iterator it = m_colours.find(id);
+
     if (it != m_colours.end())
+    {
         it->second.value = colour;
+    }
 }
 
-const ColourManager::ColourDefMap& ColourManager::GetColourDefinitions() const
+const ColourManager::ColourDefMap & ColourManager::GetColourDefinitions() const
 {
     return m_colours;
 }

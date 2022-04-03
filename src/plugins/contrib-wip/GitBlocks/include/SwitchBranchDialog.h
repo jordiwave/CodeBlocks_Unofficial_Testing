@@ -10,29 +10,29 @@
 
 class SwitchBranchDialog: public wxDialog
 {
-public:
+    public:
 
-    SwitchBranchDialog(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
-    virtual ~SwitchBranchDialog();
+        SwitchBranchDialog(wxWindow * parent, wxWindowID id = wxID_ANY, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize);
+        virtual ~SwitchBranchDialog();
 
-    //(*Declarations(SwitchBranchDialog)
-    wxStaticText* StaticText1;
-    wxChoice* BranchChoice;
-    //*)
+        //(*Declarations(SwitchBranchDialog)
+        wxStaticText * StaticText1;
+        wxChoice * BranchChoice;
+        //*)
 
-protected:
+    protected:
 
-    //(*Identifiers(SwitchBranchDialog)
-    static const long ID_STATICTEXT1;
-    static const long ID_CHOICE1;
-    //*)
+        //(*Identifiers(SwitchBranchDialog)
+        static const long ID_STATICTEXT1;
+        static const long ID_CHOICE1;
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(SwitchBranchDialog)
-    //*)
+        //(*Handlers(SwitchBranchDialog)
+        //*)
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

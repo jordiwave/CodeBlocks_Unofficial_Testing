@@ -4,7 +4,7 @@
 
 struct SQUserData : SQDelegable
 {
-    SQUserData(SQSharedState *ss)
+    SQUserData(SQSharedState * ss)
     {
         _delegate = 0;
         _hook = NULL;
@@ -16,16 +16,16 @@ struct SQUserData : SQDelegable
         REMOVE_FROM_CHAIN(&_ss(this)->_gc_chain, this);
         SetDelegate(NULL);
     }
-    static SQUserData* Create(SQSharedState *ss, SQInteger size)
+    static SQUserData * Create(SQSharedState * ss, SQInteger size)
     {
-        SQUserData* ud = (SQUserData*)SQ_MALLOC(sq_aligning(sizeof(SQUserData))+size);
+        SQUserData * ud = (SQUserData *)SQ_MALLOC(sq_aligning(sizeof(SQUserData)) + size);
         new (ud) SQUserData(ss);
         ud->_size = size;
         ud->_typetag = 0;
         return ud;
     }
 #ifndef NO_GARBAGE_COLLECTOR
-    void Mark(SQCollectable **chain);
+    void Mark(SQCollectable ** chain);
     void Finalize()
     {
         SetDelegate(NULL);
@@ -37,7 +37,11 @@ struct SQUserData : SQDelegable
 #endif
     void Release()
     {
-        if (_hook) _hook((SQUserPointer)sq_aligning(this + 1),_size);
+        if (_hook)
+        {
+            _hook((SQUserPointer)sq_aligning(this + 1), _size);
+        }
+
         SQInteger tsize = _size;
         this->~SQUserData();
         SQ_FREE(this, sq_aligning(sizeof(SQUserData)) + tsize);

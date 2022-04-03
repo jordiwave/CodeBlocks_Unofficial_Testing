@@ -17,7 +17,7 @@
 #include <wx/msgdlg.h>
 
 #ifdef __WXMSW__
-#include <wx/msw/registry.h>
+    #include <wx/msw/registry.h>
 #endif
 
 CompilerKeilC51::CompilerKeilC51()
@@ -27,7 +27,7 @@ CompilerKeilC51::CompilerKeilC51()
     Reset();
 }
 
-CompilerKeilC51::CompilerKeilC51(const wxString& name, const wxString& ID)
+CompilerKeilC51::CompilerKeilC51(const wxString & name, const wxString & ID)
     : Compiler(name, ID)
 {
     Reset();
@@ -50,8 +50,12 @@ AutoDetectResult CompilerKeilC51::AutoDetectInstallationDir()
 #ifdef __WXMSW__ // for wxRegKey
         wxRegKey key;   // defaults to HKCR
         key.SetName(wxT("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Keil \265Vision3")); // 'backslash265' is the mu character
+
         if (key.Exists() && key.Open(wxRegKey::Read)) // found; read it
+        {
             key.QueryValue(wxT("LastInstallDir"), m_MasterPath);
+        }
+
 #endif // __WXMSW__
 
         if (m_MasterPath.IsEmpty())
@@ -62,7 +66,7 @@ AutoDetectResult CompilerKeilC51::AutoDetectInstallationDir()
 
         m_MasterPath = m_MasterPath + wxFILE_SEP_PATH + wxT("C51");
 
-        if ( wxDirExists(m_MasterPath) )
+        if (wxDirExists(m_MasterPath))
         {
             AddIncludeDir(m_MasterPath + wxFILE_SEP_PATH + wxT("inc"));
             AddLibDir(m_MasterPath + wxFILE_SEP_PATH + wxT("lib"));
@@ -70,7 +74,9 @@ AutoDetectResult CompilerKeilC51::AutoDetectInstallationDir()
         }
     }
     else
-        m_MasterPath=_T("/usr/local"); // default
+    {
+        m_MasterPath = _T("/usr/local");    // default
+    }
 
     return wxFileExists(m_MasterPath + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + m_Programs.C) ? adrDetected : adrGuessed;
 }

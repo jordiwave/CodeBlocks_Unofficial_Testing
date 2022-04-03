@@ -36,52 +36,52 @@
  */
 class PLUGIN_EXPORT wxsEditEnumProperty: public wxsProperty
 {
-public:
+    public:
 
-    /** \brief Ctor
-     *  \param PGName           name of property used in Property Grid
-     *  \param DataName         name of property used in data structures
-     *  \param Offset           offset of long integer holding enumerated value (taken from wxsOFFSET macro)
-     *  \param Values           array of long integer values which can be enumerated
-     *  \param Names            array of names used for items in Values array, ending with 0
-     *  \param UpdateEnteries   posting true here notifies, that arrays may change while property is shown in property grid
-     *  \param Default          defaut value applied on read errors
-     *  \param UseNamesInXml    if true, names will be stored inside xml node instead of values
-     *  \param Priority         priority of this property
-     */
-    wxsEditEnumProperty(
-        const wxString& PGName,
-        const wxString& DataName,
-        long Offset,
-        const wxChar** Names,
-        bool UpdateEntries=false,
-        const wxString &Default=wxEmptyString,
-        bool XmlStoreEmpty=false,
-        bool UseNamesInXml=false,
-        int Priority=100);
+        /** \brief Ctor
+         *  \param PGName           name of property used in Property Grid
+         *  \param DataName         name of property used in data structures
+         *  \param Offset           offset of long integer holding enumerated value (taken from wxsOFFSET macro)
+         *  \param Values           array of long integer values which can be enumerated
+         *  \param Names            array of names used for items in Values array, ending with 0
+         *  \param UpdateEnteries   posting true here notifies, that arrays may change while property is shown in property grid
+         *  \param Default          defaut value applied on read errors
+         *  \param UseNamesInXml    if true, names will be stored inside xml node instead of values
+         *  \param Priority         priority of this property
+         */
+        wxsEditEnumProperty(
+            const wxString & PGName,
+            const wxString & DataName,
+            long Offset,
+            const wxChar ** Names,
+            bool UpdateEntries = false,
+            const wxString & Default = wxEmptyString,
+            bool XmlStoreEmpty = false,
+            bool UseNamesInXml = false,
+            int Priority = 100);
 
-protected:
+    protected:
 
-    virtual const wxString GetTypeName()
-    {
-        return _T("");
-    }
-    virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
-    virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id, long Index);
-    virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id, long Index);
-    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+        virtual const wxString GetTypeName()
+        {
+            return _T("");
+        }
+        virtual void PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent);
+        virtual bool PGRead(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index);
+        virtual bool PGWrite(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index);
+        virtual bool XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
+        virtual bool PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
 
-private:
-    long                    Offset;                            //!< The offset of the long integer holding the enumerated value (taken from wxsOFFSET macro).
-    wxString            Default;                            //!< The defaut value applied on read errors.
-    bool                    XmlStoreEmpty;            //!< Store empty values in XML.
-    bool            		UpdateEntries;			//!< If true, arrays may change while the property is shown in the property grid.
-    long                    Values[512];                    //!< An array of long integer values which can be enumerated.
-    const wxChar  **Names;                        //!< An array of names used for items in Values array, ending with 0.
-    bool                    UseNamesInXml;        //!< If true, names will be stored in XML nodes instead of values.
+    private:
+        long                    Offset;                            //!< The offset of the long integer holding the enumerated value (taken from wxsOFFSET macro).
+        wxString            Default;                            //!< The defaut value applied on read errors.
+        bool                    XmlStoreEmpty;            //!< Store empty values in XML.
+        bool            		UpdateEntries;			//!< If true, arrays may change while the property is shown in the property grid.
+        long                    Values[512];                    //!< An array of long integer values which can be enumerated.
+        const wxChar ** Names;                        //!< An array of names used for items in Values array, ending with 0.
+        bool                    UseNamesInXml;        //!< If true, names will be stored in XML nodes instead of values.
 };
 
 /** \addtogroup properties_macros Macros automatically defining standard properties
@@ -100,7 +100,7 @@ private:
  */
 #define WXS_EDITENUM(ClassName,VarName,PGName,DataName,Names,Default) \
     { static wxsEditEnumProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Names,true,Default,true); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \brief Macro automatically declaring enum property with custom priority
  *  \param ClassName name of class holding this property
@@ -116,7 +116,7 @@ private:
  */
 #define WXS_EDITENUM_P(ClassName,VarName,PGName,DataName,Names,Default,Priority) \
     { static wxsEditEnumProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Names,true,Default,true,Priority); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \} */
 

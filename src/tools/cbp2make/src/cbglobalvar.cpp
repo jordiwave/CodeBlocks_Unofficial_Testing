@@ -50,85 +50,104 @@ CString CGlobalVariable::GetValue(const int Index)
     return m_Fields.Variable(Index).GetString();
 }
 
-CString CGlobalVariable::Convert(const CString& Value, const int Case)
+CString CGlobalVariable::Convert(const CString & Value, const int Case)
 {
     CString result, tmp;
     int state = 0;
+
     for (int i = 0, n = Value.GetLength(); i < n; i++)
     {
         switch (state)
         {
-        case 0:
-        {
-            if (Value[i]=='$')
+            case 0:
             {
-                state = 1;
+                if (Value[i] == '$')
+                {
+                    state = 1;
+                    tmp += Value[i];
+                }
+                else
+                {
+                    result += Value[i];
+                }
+
+                break;
+            }
+
+            case 1:
+            {
                 tmp += Value[i];
-            }
-            else result += Value[i];
-            break;
-        }
-        case 1:
-        {
-            tmp += Value[i];
-            if (Value[i]=='(')
-            {
-                state = 2;
-            }
-            else
-            {
-                state = 0;
-                result += tmp;
-                tmp.Clear();
-            }
-            break;
-        }
-        case 2:
-        {
-            tmp += Value[i];
-            if (Value[i]=='#')
-            {
-                state = 3;
-            }
-            else
-            {
-                state = 0;
-                result += tmp;
-                tmp.Clear();
-            }
-            break;
-        }
-        case 3:
-        {
-            tmp += Value[i];
-            if (Value[i]==')')
-            {
-                state = 0;
-                CString gcv_name = SubStr(tmp,3,tmp.GetLength()-2);
-                //CString mfv_name = UpperCase(MakefileFriendly(gcv_name));
-                CString mfv_name = MakefileFriendly(gcv_name);
-                switch (Case)
+
+                if (Value[i] == '(')
                 {
-                case 1:
+                    state = 2;
+                }
+                else
                 {
-                    mfv_name = LowerCase(mfv_name);
-                    break;
+                    state = 0;
+                    result += tmp;
+                    tmp.Clear();
                 }
-                case 2:
-                {
-                    mfv_name = UpperCase(mfv_name);
-                    break;
-                }
-                default:
-                    break;
-                }
-                result += "$("+mfv_name+")";
-                tmp.Clear();
+
+                break;
             }
-            break;
-        }
+
+            case 2:
+            {
+                tmp += Value[i];
+
+                if (Value[i] == '#')
+                {
+                    state = 3;
+                }
+                else
+                {
+                    state = 0;
+                    result += tmp;
+                    tmp.Clear();
+                }
+
+                break;
+            }
+
+            case 3:
+            {
+                tmp += Value[i];
+
+                if (Value[i] == ')')
+                {
+                    state = 0;
+                    CString gcv_name = SubStr(tmp, 3, tmp.GetLength() - 2);
+                    //CString mfv_name = UpperCase(MakefileFriendly(gcv_name));
+                    CString mfv_name = MakefileFriendly(gcv_name);
+
+                    switch (Case)
+                    {
+                        case 1:
+                        {
+                            mfv_name = LowerCase(mfv_name);
+                            break;
+                        }
+
+                        case 2:
+                        {
+                            mfv_name = UpperCase(mfv_name);
+                            break;
+                        }
+
+                        default:
+                            break;
+                    }
+
+                    result += "$(" + mfv_name + ")";
+                    tmp.Clear();
+                }
+
+                break;
+            }
         }
     }
+
     return result;
 }
 
@@ -138,6 +157,7 @@ CString CGlobalVariable::Base(void)
     {
         return ".";
     }
+
     return m_Base;
 }
 
@@ -151,9 +171,10 @@ CString CGlobalVariable::Include(void)
         }
         else
         {
-            return JoinPaths(Base(),"/include");
+            return JoinPaths(Base(), "/include");
         }
     }
+
     return m_Include;
 }
 
@@ -167,9 +188,10 @@ CString CGlobalVariable::Lib(void)
         }
         else
         {
-            return JoinPaths(Base(),"/lib");
+            return JoinPaths(Base(), "/lib");
         }
     }
+
     return m_Lib;
 }
 
@@ -185,104 +207,123 @@ void CGlobalVariable::Clear(void)
     m_Fields.Clear();
 }
 
-void CGlobalVariable::Add(const CString& Name, const CString& Value)
+void CGlobalVariable::Add(const CString & Name, const CString & Value)
 {
     CString name = Name;
-    int field = GuessStr(Name,"base include lib obj cflags lflags",
-                         name,false);
+    int field = GuessStr(Name, "base include lib obj cflags lflags",
+                         name, false);
+
     switch (field)
     {
-    case 0:
-    {
-        m_Base = Value;
-        break;
-    }
-    case 1:
-    {
-        m_Include = Value;
-        break;
-    }
-    case 2:
-    {
-        m_Lib = Value;
-        break;
-    }
-    case 3:
-    {
-        m_Obj = Value;
-        break;
-    }
-    case 4:
-    {
-        m_Cflags = Value;
-        break;
-    }
-    case 5:
-    {
-        m_Lflags = Value;
-        break;
-    }
-    default:
-    {
-        field = m_Fields.VarIndex(Name);
-        if (field >= 0)
+        case 0:
         {
-            m_Fields.Variable(field).SetString(Value);
+            m_Base = Value;
+            break;
         }
-        else
+
+        case 1:
         {
-            m_Fields.InsertStringVariable(Name,Value);
+            m_Include = Value;
+            break;
         }
-    }
+
+        case 2:
+        {
+            m_Lib = Value;
+            break;
+        }
+
+        case 3:
+        {
+            m_Obj = Value;
+            break;
+        }
+
+        case 4:
+        {
+            m_Cflags = Value;
+            break;
+        }
+
+        case 5:
+        {
+            m_Lflags = Value;
+            break;
+        }
+
+        default:
+        {
+            field = m_Fields.VarIndex(Name);
+
+            if (field >= 0)
+            {
+                m_Fields.Variable(field).SetString(Value);
+            }
+            else
+            {
+                m_Fields.InsertStringVariable(Name, Value);
+            }
+        }
     }
 }
 
-void CGlobalVariable::Remove(const CString& Name)
+void CGlobalVariable::Remove(const CString & Name)
 {
     m_Fields.RemoveVariable(Name);
 }
 
-void CGlobalVariable::Read(const TiXmlElement *GlobalVariableRoot)
+void CGlobalVariable::Read(const TiXmlElement * GlobalVariableRoot)
 {
-    char *value = 0;
+    char * value = 0;
+
     if ((value = (char *)GlobalVariableRoot->Attribute("name")))
     {
         m_Name = value;
     }
+
     if ((value = (char *)GlobalVariableRoot->Attribute("description")))
     {
         m_Description = value;
     }
-    const TiXmlNode *_built_in = GlobalVariableRoot->FirstChild("builtin");
-    if (0!=_built_in)
+
+    const TiXmlNode * _built_in = GlobalVariableRoot->FirstChild("builtin");
+
+    if (0 != _built_in)
     {
-        TiXmlElement *built_in = (TiXmlElement *)_built_in->ToElement();
-        if (0!=built_in)
+        TiXmlElement * built_in = (TiXmlElement *)_built_in->ToElement();
+
+        if (0 != built_in)
         {
             if ((value = (char *)built_in->Attribute("base")))
             {
                 m_Base = value;
             }
+
             if ((value = (char *)built_in->Attribute("include")))
             {
                 m_Include = value;
             }
+
             if ((value = (char *)built_in->Attribute("lib")))
             {
                 m_Lib = value;
             }
+
             if ((value = (char *)built_in->Attribute("obj")))
             {
                 m_Obj = value;
             }
+
             if ((value = (char *)built_in->Attribute("cflags")))
             {
                 m_Cflags = value;
             }
+
             if ((value = (char *)built_in->Attribute("lflags")))
             {
                 m_Lflags = value;
             }
+
             /*
             if ((value = (char *)built_in->Attribute("")))
             {
@@ -291,29 +332,37 @@ void CGlobalVariable::Read(const TiXmlElement *GlobalVariableRoot)
             */
         } // built_in
     } // _built_in
-    const TiXmlNode *_user = GlobalVariableRoot->FirstChild("user");
-    if (0!=_user)
+
+    const TiXmlNode * _user = GlobalVariableRoot->FirstChild("user");
+
+    if (0 != _user)
     {
-        TiXmlElement *user = (TiXmlElement *)_user->ToElement();
-        if (0!=user)
+        TiXmlElement * user = (TiXmlElement *)_user->ToElement();
+
+        if (0 != user)
         {
-            TiXmlNode *_field = user->FirstChild("field");
-            while (0!=_field)
+            TiXmlNode * _field = user->FirstChild("field");
+
+            while (0 != _field)
             {
-                TiXmlElement *field = (TiXmlElement *)_field->ToElement();
-                if (0!=field)
+                TiXmlElement * field = (TiXmlElement *)_field->ToElement();
+
+                if (0 != field)
                 {
                     CString field_name, field_value;
-                    char *value = 0;
+                    char * value = 0;
+
                     if ((value = (char *)field->Attribute("name")))
                     {
                         field_name = value;
                     }
+
                     if ((value = (char *)field->Attribute("value")))
                     {
                         field_value = value;
                     }
-                    m_Fields.InsertStringVariable(field_name,field_value);
+
+                    m_Fields.InsertStringVariable(field_name, field_value);
                     /*
                     if ((value = (char *)field->Attribute("")))
                     {
@@ -321,59 +370,64 @@ void CGlobalVariable::Read(const TiXmlElement *GlobalVariableRoot)
                     }
                     */
                 }
+
                 _field = user->IterateChildren(_field);
             }
         } // user
     } // _user
 }
 
-void CGlobalVariable::Write(TiXmlElement *GlobalVariableRoot)
+void CGlobalVariable::Write(TiXmlElement * GlobalVariableRoot)
 {
-    GlobalVariableRoot->SetAttribute("name",m_Name.GetCString());
-    GlobalVariableRoot->SetAttribute("description",m_Description.GetCString());
-    TiXmlElement *built_in = new TiXmlElement("builtin");
+    GlobalVariableRoot->SetAttribute("name", m_Name.GetCString());
+    GlobalVariableRoot->SetAttribute("description", m_Description.GetCString());
+    TiXmlElement * built_in = new TiXmlElement("builtin");
     //built_in->SetAttribute("name",m_Name.GetCString());
-    built_in->SetAttribute("base",m_Base.GetCString());
-    built_in->SetAttribute("include",m_Include.GetCString());
-    built_in->SetAttribute("lib",m_Lib.GetCString());
-    built_in->SetAttribute("obj",m_Obj.GetCString());
-    built_in->SetAttribute("cflags",m_Cflags.GetCString());
-    built_in->SetAttribute("lflags",m_Lflags.GetCString());
+    built_in->SetAttribute("base", m_Base.GetCString());
+    built_in->SetAttribute("include", m_Include.GetCString());
+    built_in->SetAttribute("lib", m_Lib.GetCString());
+    built_in->SetAttribute("obj", m_Obj.GetCString());
+    built_in->SetAttribute("cflags", m_Cflags.GetCString());
+    built_in->SetAttribute("lflags", m_Lflags.GetCString());
     //built_in->SetAttribute("",m_.GetCString());
     GlobalVariableRoot->LinkEndChild(built_in);
-    TiXmlElement *fields = new TiXmlElement("user");
+    TiXmlElement * fields = new TiXmlElement("user");
     GlobalVariableRoot->LinkEndChild(fields);
+
     for (int i = 0, n = m_Fields.GetCount(); i < n; i++)
     {
-        CVariable& v = m_Fields.Variable(i);
-        TiXmlElement *field = new TiXmlElement("field");
-        field->SetAttribute("name",v.GetName().GetCString());
-        field->SetAttribute("value",v.GetString().GetCString());
+        CVariable & v = m_Fields.Variable(i);
+        TiXmlElement * field = new TiXmlElement("field");
+        field->SetAttribute("name", v.GetName().GetCString());
+        field->SetAttribute("value", v.GetString().GetCString());
         fields->LinkEndChild(field);
     }
 }
 
 void CGlobalVariable::Show(void)
 {
-    std::cout<<"Name: "<<m_Name.GetString()<<std::endl;
-    std::cout<<"Descriprion: "<<m_Description.GetString()<<std::endl;
-    std::cout<<"Built-in fields: "<<std::endl;
-    std::cout<<"base: "<<m_Base.GetString()<<std::endl;
-    std::cout<<"include: "<<m_Include.GetString()<<std::endl;
-    std::cout<<"lib: "<<m_Lib.GetString()<<std::endl;
-    std::cout<<"obj: "<<m_Obj.GetString()<<std::endl;
-    std::cout<<"cflags: "<<m_Cflags.GetString()<<std::endl;
-    std::cout<<"lflags: "<<m_Lflags.GetString()<<std::endl;
+    std::cout << "Name: " << m_Name.GetString() << std::endl;
+    std::cout << "Descriprion: " << m_Description.GetString() << std::endl;
+    std::cout << "Built-in fields: " << std::endl;
+    std::cout << "base: " << m_Base.GetString() << std::endl;
+    std::cout << "include: " << m_Include.GetString() << std::endl;
+    std::cout << "lib: " << m_Lib.GetString() << std::endl;
+    std::cout << "obj: " << m_Obj.GetString() << std::endl;
+    std::cout << "cflags: " << m_Cflags.GetString() << std::endl;
+    std::cout << "lflags: " << m_Lflags.GetString() << std::endl;
+
     if (m_Fields.GetCount())
     {
-        std::cout<<"User fields: "<<std::endl;
+        std::cout << "User fields: " << std::endl;
+
         for (int i = 0, n = m_Fields.GetCount(); i < n; i++)
         {
-            CVariable& field = m_Fields.Variable(i);
-            std::cout<<field.GetName().GetString()<<": "<<field.GetString().GetString()<<std::endl;
+            CVariable & field = m_Fields.Variable(i);
+            std::cout << field.GetName().GetString() << ": " << field.GetString().GetString() << std::endl;
         }
     }
-//std::cout<<": "<<m_.GetString()<<std::endl;
+
+    //std::cout<<": "<<m_.GetString()<<std::endl;
 }
 
 //------------------------------------------------------------------------------
@@ -391,82 +445,102 @@ CGlobalVariableSet::~CGlobalVariableSet(void)
 void CGlobalVariableSet::Clear(void)
 {
     m_Name = "default";
-    for (size_t i = 0; i < m_Variables.size(); i++) delete m_Variables[i];
+
+    for (size_t i = 0; i < m_Variables.size(); i++)
+    {
+        delete m_Variables[i];
+    }
+
     m_Variables.clear();
     m_Active = false;
 }
 
-CGlobalVariable* CGlobalVariableSet::Get(const size_t Index)
+CGlobalVariable * CGlobalVariableSet::Get(const size_t Index)
 {
-    if (Index<m_Variables.size())
+    if (Index < m_Variables.size())
     {
         return m_Variables[Index];
     }
+
     return 0;
 }
 
-CGlobalVariable *CGlobalVariableSet::Find(const CString& Name)
+CGlobalVariable * CGlobalVariableSet::Find(const CString & Name)
 {
     for (size_t i = 0; i < m_Variables.size(); i++)
     {
-        CGlobalVariable *v = m_Variables[i];
-        if (v->Name() == Name) return v;
+        CGlobalVariable * v = m_Variables[i];
+
+        if (v->Name() == Name)
+        {
+            return v;
+        }
     }
+
     return 0;
 }
 
-CGlobalVariable *CGlobalVariableSet::Add(const CString& Name, const CString& Description)
+CGlobalVariable * CGlobalVariableSet::Add(const CString & Name, const CString & Description)
 {
-    CGlobalVariable *v = Find(Name);
-    if (0==v)
+    CGlobalVariable * v = Find(Name);
+
+    if (0 == v)
     {
         v = new CGlobalVariable();
         v->Name() = Name;
         v->Description() = Description;
         m_Variables.push_back(v);
     }
+
     return v;
 }
 
-void CGlobalVariableSet::Remove(const CString& Name)
+void CGlobalVariableSet::Remove(const CString & Name)
 {
-    CGlobalVariable *v = Find(Name);
-    if (0!=v)
+    CGlobalVariable * v = Find(Name);
+
+    if (0 != v)
     {
-        m_Variables.erase(std::find(m_Variables.begin(),m_Variables.end(),v));
+        m_Variables.erase(std::find(m_Variables.begin(), m_Variables.end(), v));
         delete v;
     }
 }
 
-void CGlobalVariableSet::Read(const TiXmlElement *GlobalVariableSetRoot)
+void CGlobalVariableSet::Read(const TiXmlElement * GlobalVariableSetRoot)
 {
-    char *value = 0;
+    char * value = 0;
+
     if ((value = (char *)GlobalVariableSetRoot->Attribute("name")))
     {
         m_Name = value;
     }
-    TiXmlNode *_v_root = (TiXmlNode *)GlobalVariableSetRoot->FirstChild("variable");
-    while (0!=_v_root)
+
+    TiXmlNode * _v_root = (TiXmlNode *)GlobalVariableSetRoot->FirstChild("variable");
+
+    while (0 != _v_root)
     {
-        TiXmlElement *v_root = _v_root->ToElement();
-        if (0!=v_root)
+        TiXmlElement * v_root = _v_root->ToElement();
+
+        if (0 != v_root)
         {
-            CGlobalVariable *v = new CGlobalVariable();
+            CGlobalVariable * v = new CGlobalVariable();
             v->Read(v_root);
             m_Variables.push_back(v);
         }
+
         _v_root = (TiXmlNode *)GlobalVariableSetRoot->IterateChildren(_v_root);
     }
 }
 
-void CGlobalVariableSet::Write(TiXmlElement *GlobalVariableSetRoot)
+void CGlobalVariableSet::Write(TiXmlElement * GlobalVariableSetRoot)
 {
-    GlobalVariableSetRoot->SetAttribute("name",m_Name.GetCString());
+    GlobalVariableSetRoot->SetAttribute("name", m_Name.GetCString());
+
     for (size_t i = 0, n = m_Variables.size(); i < n; i++)
     {
-        CGlobalVariable *v = m_Variables[i];
-        TiXmlElement *v_root = new TiXmlElement("variable");
-        v_root->SetAttribute("name",m_Name.GetCString());
+        CGlobalVariable * v = m_Variables[i];
+        TiXmlElement * v_root = new TiXmlElement("variable");
+        v_root->SetAttribute("name", m_Name.GetCString());
         v->Write(v_root);
         GlobalVariableSetRoot->LinkEndChild(v_root);
     }
@@ -474,12 +548,13 @@ void CGlobalVariableSet::Write(TiXmlElement *GlobalVariableSetRoot)
 
 void CGlobalVariableSet::Show(void)
 {
-    std::cout<<"Variable set name: "<<m_Name.GetString()<<std::endl;
-    std::cout<<"Variables: "<<m_Variables.size()<<std::endl;
+    std::cout << "Variable set name: " << m_Name.GetString() << std::endl;
+    std::cout << "Variables: " << m_Variables.size() << std::endl;
+
     for (size_t i = 0, n = m_Variables.size(); i < n; i++)
     {
-        CGlobalVariable *v = m_Variables[i];
-        std::cout<<"Variable #"<<(i+1)<<":"<<std::endl;
+        CGlobalVariable * v = m_Variables[i];
+        std::cout << "Variable #" << (i + 1) << ":" << std::endl;
         v->Show();
     }
 }
@@ -498,102 +573,126 @@ CGlobalVariableConfig::~CGlobalVariableConfig(void)
 
 void CGlobalVariableConfig::Clear(void)
 {
-    for (size_t i = 0; i < m_VariableSets.size(); i++) delete m_VariableSets[i];
+    for (size_t i = 0; i < m_VariableSets.size(); i++)
+    {
+        delete m_VariableSets[i];
+    }
+
     m_VariableSets.clear();
-//m_HaveDefaults = false;
+    //m_HaveDefaults = false;
 }
 
-CGlobalVariableSet* CGlobalVariableConfig::Get(const size_t Index)
+CGlobalVariableSet * CGlobalVariableConfig::Get(const size_t Index)
 {
-    if (Index<m_VariableSets.size())
+    if (Index < m_VariableSets.size())
     {
         return m_VariableSets[Index];
     }
+
     return 0;
 }
 
-CGlobalVariableSet* CGlobalVariableConfig::Find(const CString& Name)
+CGlobalVariableSet * CGlobalVariableConfig::Find(const CString & Name)
 {
     for (size_t i = 0, n = m_VariableSets.size(); i < n; i++)
     {
-        CGlobalVariableSet *vset = m_VariableSets[i];
-        if (vset->Name() == Name) return vset;
+        CGlobalVariableSet * vset = m_VariableSets[i];
+
+        if (vset->Name() == Name)
+        {
+            return vset;
+        }
     }
+
     return 0;
 }
 
-CGlobalVariableSet* CGlobalVariableConfig::Add(const CString& Name)
+CGlobalVariableSet * CGlobalVariableConfig::Add(const CString & Name)
 {
-    CGlobalVariableSet *vset = Find(Name);
-    if (0==vset)
+    CGlobalVariableSet * vset = Find(Name);
+
+    if (0 == vset)
     {
         vset = new CGlobalVariableSet();
         vset->Name() = Name;
         m_VariableSets.push_back(vset);
     }
+
     return vset;
 }
 
 void CGlobalVariableConfig::AddDefault(void)
 {
-//if (m_HaveDefaults) return;
-    CGlobalVariableSet *vset = Find("default");
-    if (0==vset)
+    //if (m_HaveDefaults) return;
+    CGlobalVariableSet * vset = Find("default");
+
+    if (0 == vset)
     {
         vset = new CGlobalVariableSet();
         vset->Name() = "default";
         m_VariableSets.push_back(vset);
     }
-//m_HaveDefaults = true;
+
+    //m_HaveDefaults = true;
 }
 
-void CGlobalVariableConfig::Remove(const CString& Name)
+void CGlobalVariableConfig::Remove(const CString & Name)
 {
-    CGlobalVariableSet *vset = Find(Name);
-    if (0!=vset)
+    CGlobalVariableSet * vset = Find(Name);
+
+    if (0 != vset)
     {
-        m_VariableSets.erase(std::find(m_VariableSets.begin(),m_VariableSets.end(),vset));
+        m_VariableSets.erase(std::find(m_VariableSets.begin(), m_VariableSets.end(), vset));
         delete vset;
     }
 }
 
-void CGlobalVariableConfig::Read(const TiXmlElement *GlobalVariableConfigRoot)
+void CGlobalVariableConfig::Read(const TiXmlElement * GlobalVariableConfigRoot)
 {
-    TiXmlNode *_vset_root = (TiXmlNode *)GlobalVariableConfigRoot->FirstChild("variableset");
-    while (0!=_vset_root)
+    TiXmlNode * _vset_root = (TiXmlNode *)GlobalVariableConfigRoot->FirstChild("variableset");
+
+    while (0 != _vset_root)
     {
-        TiXmlElement *vset_root = _vset_root->ToElement();
-        if (0!=vset_root)
+        TiXmlElement * vset_root = _vset_root->ToElement();
+
+        if (0 != vset_root)
         {
-            char *value = 0;
+            char * value = 0;
             CString name;
+
             if ((value = (char *)vset_root->Attribute("name")))
             {
                 name = value;
             }
-            CGlobalVariableSet *vset = Find(name);
-            bool custom_vset = (0==vset);
+
+            CGlobalVariableSet * vset = Find(name);
+            bool custom_vset = (0 == vset);
+
             if (custom_vset)
             {
                 vset = new CGlobalVariableSet();
             }
+
             vset->Read(vset_root);
+
             if (custom_vset)
             {
                 m_VariableSets.push_back(vset);
             }
         }
+
         _vset_root = (TiXmlNode *)GlobalVariableConfigRoot->IterateChildren(_vset_root);
     }
+
     AddDefault();
 }
 
-void CGlobalVariableConfig::Write(TiXmlElement *GlobalVariableConfigRoot)
+void CGlobalVariableConfig::Write(TiXmlElement * GlobalVariableConfigRoot)
 {
     for (size_t i = 0, n = m_VariableSets.size(); i < n; i++)
     {
-        CGlobalVariableSet *vset = m_VariableSets[i];
-        TiXmlElement *vset_root = new TiXmlElement("variableset");
+        CGlobalVariableSet * vset = m_VariableSets[i];
+        TiXmlElement * vset_root = new TiXmlElement("variableset");
         vset->Write(vset_root);
         GlobalVariableConfigRoot->LinkEndChild(vset_root);
     }
@@ -601,11 +700,12 @@ void CGlobalVariableConfig::Write(TiXmlElement *GlobalVariableConfigRoot)
 
 void CGlobalVariableConfig::Show(void)
 {
-    std::cout<<"Global compiler variables: "<<m_VariableSets.size()<<" set(s)"<<std::endl;
+    std::cout << "Global compiler variables: " << m_VariableSets.size() << " set(s)" << std::endl;
+
     for (size_t i = 0, n = m_VariableSets.size(); i < n; i++)
     {
-        CGlobalVariableSet *vset = m_VariableSets[i];
-        std::cout<<"Variable set #"<<(i+1)<<": "<<std::endl;
+        CGlobalVariableSet * vset = m_VariableSets[i];
+        std::cout << "Variable set #" << (i + 1) << ": " << std::endl;
         vset->Show();
     }
 }

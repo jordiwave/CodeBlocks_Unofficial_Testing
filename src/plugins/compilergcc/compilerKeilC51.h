@@ -10,25 +10,25 @@
 
 class CompilerKeilC51 : public Compiler
 {
-public:
-    CompilerKeilC51();
-    ~CompilerKeilC51() override;
-    AutoDetectResult AutoDetectInstallationDir() override;
-protected:
-    CompilerKeilC51(const wxString& name, const wxString& ID);
-    Compiler* CreateCopy() override;
-    AutoDetectResult AutoDetectInstallationDir(bool keilx);
-private:
+    public:
+        CompilerKeilC51();
+        ~CompilerKeilC51() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
+    protected:
+        CompilerKeilC51(const wxString & name, const wxString & ID);
+        Compiler * CreateCopy() override;
+        AutoDetectResult AutoDetectInstallationDir(bool keilx);
+    private:
 };
 
 class CompilerKeilCX51 : public CompilerKeilC51
 {
-public:
-    CompilerKeilCX51();
-    ~CompilerKeilCX51() override;
-protected:
-    Compiler* CreateCopy() override;
-private:
+    public:
+        CompilerKeilCX51();
+        ~CompilerKeilCX51() override;
+    protected:
+        Compiler * CreateCopy() override;
+    private:
 };
 
 #endif // COMPILER_KEILC51_H

@@ -30,22 +30,22 @@
 
 class WXEXPORT wxsBmpCheckbox : public wxsWidget
 {
-public:
-    wxsBmpCheckbox(wxsItemResData* Data);
-    virtual ~wxsBmpCheckbox();
-protected:
-private:
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+    public:
+        wxsBmpCheckbox(wxsItemResData * Data);
+        virtual ~wxsBmpCheckbox();
+    protected:
+    private:
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
-    wxsBitmapData			m_bdOn;					//!< The bitmap shown when the control is checked.
-    wxsBitmapData			m_bdOff;					//!< The bitmap shown when the control is unchecked.
-    wxsBitmapData			m_bdOnSel;				//!< The bitmap shown when the control is checked and the mouse is over it.
-    wxsBitmapData			m_bdOffSel;				//!< The bitmap shown when the control is unchecked and the mouse is over it.
-    bool								m_bBorder;				//!< Whether to show the control border.
-    wxPenStyle					m_iBorderStyle;		//!< The border style.
-    bool								m_bChecked;			//!< Whether the control is checked or not.
+        wxsBitmapData			m_bdOn;					//!< The bitmap shown when the control is checked.
+        wxsBitmapData			m_bdOff;					//!< The bitmap shown when the control is unchecked.
+        wxsBitmapData			m_bdOnSel;				//!< The bitmap shown when the control is checked and the mouse is over it.
+        wxsBitmapData			m_bdOffSel;				//!< The bitmap shown when the control is unchecked and the mouse is over it.
+        bool								m_bBorder;				//!< Whether to show the control border.
+        wxPenStyle					m_iBorderStyle;		//!< The border style.
+        bool								m_bChecked;			//!< Whether the control is checked or not.
 };
 
 #endif // WXSBMPCHECKBOX_H

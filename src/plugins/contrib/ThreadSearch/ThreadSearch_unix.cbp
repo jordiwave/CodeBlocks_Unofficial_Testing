@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ThreadSearch Unix" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/ThreadSearch" prefix_auto="1" extension_auto="1" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/ThreadSearch" />
+				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxcustombutton.so;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
+				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
+				<ExtraCommands>
+					<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks ; fi" />
+					<Add after="zip $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/ThreadSearch.zip manifest.xml" />
+					<Add after="zip $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/ThreadSearch.zip manifest.xml" />
+					<Add after="cd src/resources &amp;&amp; zip -rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/ThreadSearch.zip images &amp;&amp; cd ../.." />
+					<Mode before="always" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fPIC" />
+			<Add option="$(#CB_BUILD.CFLAGS)" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DcbDEBUG" />
+			<Add directory="$(#CB_BUILD.INCLUDE)" />
+			<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
+			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
+			<Add directory="../wxContribItems/wxthings/include" />
+		</Compiler>
+		<Linker>
+			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs`" />
+			<Add option="-Wl,--no-undefined" />
+			<Add library="codeblocks" />
+			<Add library="wxcustombutton" />
+			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+		</Linker>
+		<ExtraCommands>
+			<Add before="if [ ! -d $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/images/settings ] ; then mkdir -p $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/images/settings ; fi" />
+			<Add after="cp ./resources/*.png $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/images/settings/ > /dev/null 2> /dev/null" />
+			<Mode before="always" />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="DirectoryParamsPanel.cpp" />
+		<Unit filename="DirectoryParamsPanel.h" />
+		<Unit filename="InsertIndexManager.cpp" />
+		<Unit filename="InsertIndexManager.h" />
+		<Unit filename="SearchInPanel.cpp" />
+		<Unit filename="SearchInPanel.h" />
+		<Unit filename="TextFileSearcher.cpp" />
+		<Unit filename="TextFileSearcher.h" />
+		<Unit filename="TextFileSearcherRegEx.cpp" />
+		<Unit filename="TextFileSearcherRegEx.h" />
+		<Unit filename="TextFileSearcherText.cpp" />
+		<Unit filename="TextFileSearcherText.h" />
+		<Unit filename="ThreadSearch.cpp" />
+		<Unit filename="ThreadSearch.h" />
+		<Unit filename="ThreadSearchCommon.h" />
+		<Unit filename="ThreadSearchConfPanel.cpp" />
+		<Unit filename="ThreadSearchConfPanel.h" />
+		<Unit filename="ThreadSearchControlIds.cpp" />
+		<Unit filename="ThreadSearchControlIds.h" />
+		<Unit filename="ThreadSearchEvent.cpp" />
+		<Unit filename="ThreadSearchEvent.h" />
+		<Unit filename="ThreadSearchFindData.cpp" />
+		<Unit filename="ThreadSearchFindData.h" />
+		<Unit filename="ThreadSearchLoggerBase.cpp" />
+		<Unit filename="ThreadSearchLoggerBase.h" />
+		<Unit filename="ThreadSearchLoggerList.cpp" />
+		<Unit filename="ThreadSearchLoggerList.h" />
+		<Unit filename="ThreadSearchLoggerSTC.cpp" />
+		<Unit filename="ThreadSearchLoggerSTC.h" />
+		<Unit filename="ThreadSearchLoggerTree.cpp" />
+		<Unit filename="ThreadSearchLoggerTree.h" />
+		<Unit filename="ThreadSearchThread.cpp" />
+		<Unit filename="ThreadSearchThread.h" />
+		<Unit filename="ThreadSearchView.cpp" />
+		<Unit filename="ThreadSearchView.h" />
+		<Unit filename="ThreadSearchViewManagerBase.cpp" />
+		<Unit filename="ThreadSearchViewManagerBase.h" />
+		<Unit filename="ThreadSearchViewManagerLayout.cpp" />
+		<Unit filename="ThreadSearchViewManagerLayout.h" />
+		<Unit filename="ThreadSearchViewManagerMessagesNotebook.cpp" />
+		<Unit filename="ThreadSearchViewManagerMessagesNotebook.h" />
+		<Unit filename="logging.h" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="update" />
+		<Unit filename="update.bat" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

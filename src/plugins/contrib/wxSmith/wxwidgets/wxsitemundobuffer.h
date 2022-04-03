@@ -36,66 +36,66 @@
  */
 class wxsItemUndoBuffer
 {
-public:
+    public:
 
-    /** \brief Ctor */
-    wxsItemUndoBuffer(int MaxEnteries=100);
+        /** \brief Ctor */
+        wxsItemUndoBuffer(int MaxEnteries = 100);
 
-    /** \brief Dctor */
-    ~wxsItemUndoBuffer();
+        /** \brief Dctor */
+        ~wxsItemUndoBuffer();
 
-    /** \brief Checking if we can undo */
-    inline bool CanUndo()
-    {
-        return m_CurrentPos > 0;
-    }
+        /** \brief Checking if we can undo */
+        inline bool CanUndo()
+        {
+            return m_CurrentPos > 0;
+        }
 
-    /** \brief Checking if we can redo */
-    inline bool CanRedo()
-    {
-        return m_CurrentPos < GetCount() - 1;
-    }
+        /** \brief Checking if we can redo */
+        inline bool CanRedo()
+        {
+            return m_CurrentPos < GetCount() - 1;
+        }
 
-    /** \brief Checking if current undo position is modified relatively to form saved on disk */
-    inline bool IsModified()
-    {
-        return m_CurrentPos != m_SavedPos;
-    }
+        /** \brief Checking if current undo position is modified relatively to form saved on disk */
+        inline bool IsModified()
+        {
+            return m_CurrentPos != m_SavedPos;
+        }
 
-    /** \brief Adding new undo position
-     *  \param XmlData xml form of resource stored inside string
-     */
-    void StoreChange(const wxString& XmlData);
+        /** \brief Adding new undo position
+         *  \param XmlData xml form of resource stored inside string
+         */
+        void StoreChange(const wxString & XmlData);
 
 
-    /** \brief Setting lastest undo buffer to saved state (equivalent to content on files) */
-    inline void Saved()
-    {
-        m_SavedPos = m_CurrentPos;
-    }
+        /** \brief Setting lastest undo buffer to saved state (equivalent to content on files) */
+        inline void Saved()
+        {
+            m_SavedPos = m_CurrentPos;
+        }
 
-    /** \brief Undoing
-     * \return Xml data previously provided in StoreChange or empty string if can not undo
-     */
-    const wxString& Undo();
+        /** \brief Undoing
+         * \return Xml data previously provided in StoreChange or empty string if can not undo
+         */
+        const wxString & Undo();
 
-    /** \brief Redoing
-     * \return Xml data previously provided in StoreChange or empty string if can not undo
-     */
-    const wxString& Redo();
+        /** \brief Redoing
+         * \return Xml data previously provided in StoreChange or empty string if can not undo
+         */
+        const wxString & Redo();
 
-private:
+    private:
 
-    /** \brief Getting number of entries in undo array */
-    inline int GetCount()
-    {
-        return (int)m_Enteries.Count();
-    }
+        /** \brief Getting number of entries in undo array */
+        inline int GetCount()
+        {
+            return (int)m_Enteries.Count();
+        }
 
-    wxArrayString m_Enteries;   ///< \brief Array entries
-    int m_CurrentPos;           ///< \brief Current position in undo buffer
-    int m_SavedPos;             ///< \brief Undo position representing not-changed resource (in form it's on disk)
-    int m_MaxEnteries;          ///< \brief Max entries in undo buffer
+        wxArrayString m_Enteries;   ///< \brief Array entries
+        int m_CurrentPos;           ///< \brief Current position in undo buffer
+        int m_SavedPos;             ///< \brief Undo position representing not-changed resource (in form it's on disk)
+        int m_MaxEnteries;          ///< \brief Max entries in undo buffer
 };
 
 #endif

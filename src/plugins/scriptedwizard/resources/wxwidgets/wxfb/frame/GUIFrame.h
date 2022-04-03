@@ -14,9 +14,9 @@
 // Then, compile it and place the file "wx_pch.h.gch" into the same
 // directory that "wx_pch.h".
 #ifdef WX_GCH
-#include <wx_pch.h>
+    #include <wx_pch.h>
 #else
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #include <wx/menu.h>
@@ -31,45 +31,45 @@
 ///////////////////////////////////////////////////////////////////////////////
 class GUIFrame : public wxFrame
 {
-    DECLARE_EVENT_TABLE()
-private:
+        DECLARE_EVENT_TABLE()
+    private:
 
-    // Private event handlers
-    void _wxFB_OnClose( wxCloseEvent& event )
-    {
-        OnClose( event );
-    }
-    void _wxFB_OnQuit( wxCommandEvent& event )
-    {
-        OnQuit( event );
-    }
-    void _wxFB_OnAbout( wxCommandEvent& event )
-    {
-        OnAbout( event );
-    }
-
-
-protected:
-    wxMenuBar* mbar;
-    wxStatusBar* statusBar;
-
-    // Virtual event handlers, overide them in your derived class
-    virtual void OnClose( wxCloseEvent& event )
-    {
-        event.Skip();
-    }
-    virtual void OnQuit( wxCommandEvent& event )
-    {
-        event.Skip();
-    }
-    virtual void OnAbout( wxCommandEvent& event )
-    {
-        event.Skip();
-    }
+        // Private event handlers
+        void _wxFB_OnClose(wxCloseEvent & event)
+        {
+            OnClose(event);
+        }
+        void _wxFB_OnQuit(wxCommandEvent & event)
+        {
+            OnQuit(event);
+        }
+        void _wxFB_OnAbout(wxCommandEvent & event)
+        {
+            OnAbout(event);
+        }
 
 
-public:
-    GUIFrame( wxWindow* parent, int id = wxID_ANY, wxString title = wxT("wxWidgets Application Template"), wxPoint pos = wxDefaultPosition, wxSize size = wxSize( 481,466 ), int style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+    protected:
+        wxMenuBar * mbar;
+        wxStatusBar * statusBar;
+
+        // Virtual event handlers, overide them in your derived class
+        virtual void OnClose(wxCloseEvent & event)
+        {
+            event.Skip();
+        }
+        virtual void OnQuit(wxCommandEvent & event)
+        {
+            event.Skip();
+        }
+        virtual void OnAbout(wxCommandEvent & event)
+        {
+            event.Skip();
+        }
+
+
+    public:
+        GUIFrame(wxWindow * parent, int id = wxID_ANY, wxString title = wxT("wxWidgets Application Template"), wxPoint pos = wxDefaultPosition, wxSize size = wxSize(481, 466), int style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
 
 };
 

@@ -75,7 +75,7 @@ WXS_EVI(EVT_TREE_ITEM_MENU, wxEVT_COMMAND_TREE_ITEM_MENU, wxTreeEvent, ItemMenu)
 WXS_EV_END()
 }
 
-wxsTreeCtrl::wxsTreeCtrl(wxsItemResData *Data):
+wxsTreeCtrl::wxsTreeCtrl(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -97,7 +97,7 @@ void wxsTreeCtrl::OnBuildCreatingCode()
 {
     int             i, n;
     int             iRed, iGreen, iBlue;
-    wxsImageList   *ilist;
+    wxsImageList  * ilist;
     int             iLevel, iImg1, iImg2, iImg3, iImg4;
     wxColor         colour;
     bool            bBold;
@@ -109,126 +109,133 @@ void wxsTreeCtrl::OnBuildCreatingCode()
     wxString        sItem;
     wxString        sPrevItem;
 
-
-    switch(GetLanguage())
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/treectrl.h>"), GetInfo().ClassName, 0);
-        AddHeader(_T("<wx/treectrl.h>"), _T("wxTreeEvent"), 0);
-        Codef(_T("%C(%W, %I, %P, %S, %T, %V, %N);\n"));
-
-        // assign the image-list -- AFTER the image list has been built
-        sVarName = GetVarName();
-        ilist = (wxsImageList *) wxsImageListEditorDlg::FindTool(this, m_sImageList);
-        if(ilist != NULL)
+        case wxsCPP:
         {
-            // Locator comment.
-            AddEventCode(wxString::Format(_("// Set the images for %s.\n"), sVarName.wx_str()));
-            sSource.Printf(_T("%s->SetImageList(%s);\n"), sVarName.wx_str(), m_sImageList.wx_str());
-            AddEventCode(sSource);
+            AddHeader(_T("<wx/treectrl.h>"), GetInfo().ClassName, 0);
+            AddHeader(_T("<wx/treectrl.h>"), _T("wxTreeEvent"), 0);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %V, %N);\n"));
+            // assign the image-list -- AFTER the image list has been built
+            sVarName = GetVarName();
+            ilist = (wxsImageList *) wxsImageListEditorDlg::FindTool(this, m_sImageList);
+
+            if (ilist != NULL)
+            {
+                // Locator comment.
+                AddEventCode(wxString::Format(_("// Set the images for %s.\n"), sVarName.wx_str()));
+                sSource.Printf(_T("%s->SetImageList(%s);\n"), sVarName.wx_str(), m_sImageList.wx_str());
+                AddEventCode(sSource);
+            }
+
+            // and now each item in the tree data list
+            sTop = wxEmptyString;
+            arrItems[0] = wxEmptyString;
+            n = 0;
+
+            for (i = 2; i < (int)m_arrItems.GetCount(); i++)
+            {
+                // the string, broken into pieces
+                sSource = m_arrItems.Item(i);
+                wxsImageTreeEditorDlg::ParseTreeItem(sSource, iLevel, colour, bBold, iImg1, iImg2, iImg3, iImg4, sText);
+                // make a name for the new item
+                n += 1;
+                sItem.Printf(_("_Item%d"), n);
+                sItem = sVarName + sItem;
+                arrItems[iLevel] = sItem;
+
+                // there is a problem with wxTR_HIDE_ROOT and ScrollTo(root), so make sure that
+                // we only scroll to first shown item
+                if (i == 3)
+                {
+                    sTop = sItem;
+                }
+
+                // ID of parent item
+                if (iLevel <= 0)
+                {
+                    sPrevItem = wxEmptyString;
+                }
+                else
+                {
+                    sPrevItem = arrItems[iLevel - 1];
+                }
+
+                // make the new item -- level 0 is the root item
+                if (iLevel <= 0)
+                {
+                    Codef(_T("wxTreeItemId %s = %s->AddRoot(%n);\n"), sItem.wx_str(), sVarName.wx_str(), sText.wx_str());
+                }
+                else
+                {
+                    Codef(_T("wxTreeItemId %s = %s->AppendItem(%s, %n);\n"), sItem.wx_str(), sVarName.wx_str(), sPrevItem.wx_str(), sText.wx_str());
+                }
+
+                // set text color of current item if not the default color of black
+                iRed = colour.Red();
+                iGreen = colour.Green();
+                iBlue = colour.Blue();
+
+                if ((colour.IsOk()) && ((iRed + iGreen + iBlue) != 0))
+                {
+                    sSource.Printf(_("%d,%d,%d"), iRed, iGreen, iBlue);
+                    Codef(_T("%ASetItemTextColour(%s, wxColour(%s));\n"), sItem.wx_str(), sSource.wx_str());
+                }
+
+                if (bBold)
+                {
+                    Codef(_T("%ASetItemBold(%s, true);\n"), sItem.wx_str());
+                }
+
+                // and the image-list indices
+                if (ilist != NULL)
+                {
+                    if (iImg1 >= 0)
+                    {
+                        sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_Normal);\n"), sVarName.wx_str(), sItem.wx_str(), iImg1);
+                        AddEventCode(sSource);
+                    }
+
+                    if (iImg2 >= 0)
+                    {
+                        sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_Selected);\n"), sVarName.wx_str(), sItem.wx_str(), iImg2);
+                        AddEventCode(sSource);
+                    }
+
+                    if (iImg3 >= 0)
+                    {
+                        sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_Expanded);\n"), sVarName.wx_str(), sItem.wx_str(), iImg3);
+                        AddEventCode(sSource);
+                    }
+
+                    if (iImg4 >= 0)
+                    {
+                        sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_SelectedExpanded);\n"), sVarName.wx_str(), sItem.wx_str(), iImg4);
+                        AddEventCode(sSource);
+                    }
+                }
+            }
+
+            // show everything
+            if (m_bExpand)
+            {
+                Codef(_T("%AExpandAll();\n"));
+            }
+
+            if (sTop.Length() > 0)
+            {
+                Codef(_T("%AScrollTo(%s);\n"), sTop.wx_str());
+            }
+
+            BuildSetupWindowCode();
+            return;
         }
 
-        // and now each item in the tree data list
-        sTop = wxEmptyString;
-        arrItems[0] = wxEmptyString;
-        n = 0;
-        for(i = 2; i < (int)m_arrItems.GetCount(); i++)
+        case wxsUnknownLanguage: // fall-through
+        default:
         {
-            // the string, broken into pieces
-            sSource = m_arrItems.Item(i);
-            wxsImageTreeEditorDlg::ParseTreeItem(sSource, iLevel, colour, bBold, iImg1, iImg2, iImg3, iImg4, sText);
-
-            // make a name for the new item
-            n += 1;
-            sItem.Printf(_("_Item%d"), n);
-            sItem = sVarName + sItem;
-
-            arrItems[iLevel] = sItem;
-
-            // there is a problem with wxTR_HIDE_ROOT and ScrollTo(root), so make sure that
-            // we only scroll to first shown item
-            if(i == 3)
-            {
-                sTop = sItem;
-            }
-
-            // ID of parent item
-            if(iLevel <= 0)
-            {
-                sPrevItem = wxEmptyString;
-            }
-            else
-            {
-                sPrevItem = arrItems[iLevel - 1];
-            }
-
-            // make the new item -- level 0 is the root item
-            if(iLevel <= 0)
-                Codef(_T("wxTreeItemId %s = %s->AddRoot(%n);\n"), sItem.wx_str(), sVarName.wx_str(), sText.wx_str());
-            else
-                Codef(_T("wxTreeItemId %s = %s->AppendItem(%s, %n);\n"), sItem.wx_str(), sVarName.wx_str(), sPrevItem.wx_str(), sText.wx_str());
-
-            // set text color of current item if not the default color of black
-            iRed = colour.Red();
-            iGreen = colour.Green();
-            iBlue = colour.Blue();
-            if((colour.IsOk()) && ((iRed + iGreen + iBlue) != 0))
-            {
-                sSource.Printf(_("%d,%d,%d"), iRed, iGreen, iBlue);
-                Codef(_T("%ASetItemTextColour(%s, wxColour(%s));\n"), sItem.wx_str(), sSource.wx_str());
-            }
-
-            if(bBold)
-            {
-                Codef(_T("%ASetItemBold(%s, true);\n"), sItem.wx_str());
-            }
-
-            // and the image-list indices
-            if(ilist != NULL)
-            {
-                if(iImg1 >= 0)
-                {
-                    sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_Normal);\n"), sVarName.wx_str(), sItem.wx_str(), iImg1);
-                    AddEventCode(sSource);
-                }
-                if(iImg2 >= 0)
-                {
-                    sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_Selected);\n"), sVarName.wx_str(), sItem.wx_str(), iImg2);
-                    AddEventCode(sSource);
-                }
-                if(iImg3 >= 0)
-                {
-                    sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_Expanded);\n"), sVarName.wx_str(), sItem.wx_str(), iImg3);
-                    AddEventCode(sSource);
-                }
-                if(iImg4 >= 0)
-                {
-                    sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_SelectedExpanded);\n"), sVarName.wx_str(), sItem.wx_str(), iImg4);
-                    AddEventCode(sSource);
-                }
-            }
+            wxsCodeMarks::Unknown(_T("wxsTreeCtrl::OnBuildCreatingCode"), GetLanguage());
         }
-
-        // show everything
-        if(m_bExpand)
-        {
-            Codef(_T("%AExpandAll();\n"));
-        }
-        if(sTop.Length() > 0)
-        {
-            Codef(_T("%AScrollTo(%s);\n"), sTop.wx_str());
-        }
-
-        BuildSetupWindowCode();
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsTreeCtrl::OnBuildCreatingCode"), GetLanguage());
-    }
     }
 }
 
@@ -239,10 +246,10 @@ void wxsTreeCtrl::OnBuildCreatingCode()
  * \return wxObject*                     The constructed control.
  *
  */
-wxObject *wxsTreeCtrl::OnBuildPreview(wxWindow *Parent, long Flags)
+wxObject * wxsTreeCtrl::OnBuildPreview(wxWindow * Parent, long Flags)
 {
     int             i, n;
-    wxsImageList   *ilist;
+    wxsImageList  * ilist;
     int             iLevel, iImg1, iImg2, iImg3, iImg4;
     wxColor         colour;
     bool            bBold;
@@ -251,48 +258,50 @@ wxObject *wxsTreeCtrl::OnBuildPreview(wxWindow *Parent, long Flags)
     wxString        sSource;
     wxTreeItemId    item;
     wxTreeItemId    top;
-
-    wxTreeCtrl *preview = new wxTreeCtrl(Parent, GetId(), Pos(Parent), Size(Parent), Style());
+    wxTreeCtrl * preview = new wxTreeCtrl(Parent, GetId(), Pos(Parent), Size(Parent), Style());
     preview->DeleteAllItems();
-
     // make an image list
     m_imageList.RemoveAll();
     ilist = (wxsImageList *) wxsImageListEditorDlg::FindTool(this, m_sImageList);
-    if(ilist != NULL)
+
+    if (ilist != NULL)
     {
         ilist->GetImageList(m_imageList);
     }
 
     preview->SetImageList(&m_imageList);
-
     // and all of the items
     n = m_arrItems.GetCount();
-    for(i=2; i < n; i++)
+
+    for (i = 2; i < n; i++)
     {
         sSource = m_arrItems.Item(i);
         wxsImageTreeEditorDlg::ParseTreeItem(sSource, iLevel, colour, bBold, iImg1, iImg2, iImg3, iImg4, sText);
-        if(iLevel == 0)
+
+        if (iLevel == 0)
         {
             item = preview->AddRoot(sText);
         }
         else
         {
-            item = preview->AppendItem(idItems[iLevel-1], sText);
+            item = preview->AppendItem(idItems[iLevel - 1], sText);
         }
+
         idItems[iLevel] = item;
 
         // there is a problem with wxTR_HIDE_ROOT and ScrollTo(root), so make sure that
         // we only scroll to first shown item
-        if(i == 3)
+        if (i == 3)
         {
             top = item;
         }
 
         // set colors and images
-        if(colour.IsOk())
+        if (colour.IsOk())
         {
             preview->SetItemTextColour(item, colour);
         }
+
         preview->SetItemBold(item, bBold);
         preview->SetItemImage(item, iImg1, wxTreeItemIcon_Normal);
         preview->SetItemImage(item, iImg2, wxTreeItemIcon_Selected);
@@ -301,18 +310,18 @@ wxObject *wxsTreeCtrl::OnBuildPreview(wxWindow *Parent, long Flags)
     };
 
     // show it
-    if(m_bExpand)
+    if (m_bExpand)
     {
         preview->ExpandAll();
     }
-    if(top.IsOk())
+
+    if (top.IsOk())
     {
         preview->ScrollTo(top);
     }
 
     // save the hide-root flag
     top.Unset();
-
     return SetupWindow(preview, Flags);
 }
 
@@ -325,16 +334,17 @@ wxObject *wxsTreeCtrl::OnBuildPreview(wxWindow *Parent, long Flags)
 void wxsTreeCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
     static wxString      sImageNames[128];
-    static const wxChar *pImageNames[128];
-
+    static const wxChar * pImageNames[128];
     wxString            ss, tt;
     wxArrayString       aa;
-
     // find available image lists and store them in our local static arrays
     FindAllImageLists(aa);
     int n = aa.GetCount();
+
     if (n > 127)
+    {
         n = 127;
+    }
 
     for (int i = 0; i < n; ++i)
     {
@@ -344,12 +354,9 @@ void wxsTreeCtrl::OnEnumWidgetProperties(cb_unused long Flags)
     }
 
     pImageNames[n] = nullptr;
-
     WXS_EDITENUM(wxsTreeCtrl, m_sImageList, _("Image List"), _T("image_list"), pImageNames, _("<none>"))
-
     // The list of items to appear in the tree.
     UpdateTreeItemList();
-
     WXS_IMAGETREE(wxsTreeCtrl, m_arrItems, _("Tree Items"), wxT("tree_items"));
     WXS_ARRAYSTRING(wxsTreeCtrl, m_arrItems, _("Items as Text"), wxT("items_text"), _("item2"));
     WXS_BOOL(wxsTreeCtrl, m_bExpand, _("Expand All"), _("expand_all"), false);
@@ -361,20 +368,19 @@ void wxsTreeCtrl::OnEnumWidgetProperties(cb_unused long Flags)
  * \return void
  *
  */
-void wxsTreeCtrl::FindAllImageLists(wxArrayString &aNames)
+void wxsTreeCtrl::FindAllImageLists(wxArrayString & aNames)
 {
     int             i, n;
-    wxsItemResData  *res;
-    wxsTool         *tool;
+    wxsItemResData * res;
+    wxsTool     *    tool;
     wxString        ss, tt;
-
     // start the list with a chance to de-select any old list
     aNames.Clear();
     aNames.Add(_("<none>"));
-
     // find all tools that are "wxImageList"
     res = GetResourceData();
     n   = res->GetToolsCount();
+
     for (i = 0; i < n; i++)
     {
         tool = res->GetTool(i);
@@ -398,17 +404,16 @@ void wxsTreeCtrl::UpdateTreeItemList()
     int              i, n;
     wxString         ss, tt;
     wxArrayString    aa;
-
     // first 2 items are always our var name and the name of the image list
     aa.Clear();
     ss = GetVarName();
     aa.Add(ss);
     ss = m_sImageList;
     aa.Add(ss);
-
     // then copy over everything else the user entered last time
     n = m_arrItems.GetCount();
-    for(i = 2; i < n; i++)
+
+    for (i = 2; i < n; i++)
     {
         ss = m_arrItems.Item(i);
         aa.Add(ss);
@@ -417,7 +422,8 @@ void wxsTreeCtrl::UpdateTreeItemList()
     // then put back in original list
     m_arrItems.Clear();
     n = aa.GetCount();
-    for(i = 0; i < n; i++)
+
+    for (i = 0; i < n; i++)
     {
         ss = aa.Item(i);
         m_arrItems.Add(ss);

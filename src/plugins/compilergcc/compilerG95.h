@@ -11,13 +11,13 @@
 
 class CompilerG95 : public Compiler
 {
-public:
-    CompilerG95();
-    ~CompilerG95() override;
-    AutoDetectResult AutoDetectInstallationDir() override;
-protected:
-    Compiler* CreateCopy() override;
-private:
+    public:
+        CompilerG95();
+        ~CompilerG95() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
+    protected:
+        Compiler * CreateCopy() override;
+    private:
 };
 
 #endif // COMPILER_G95_H

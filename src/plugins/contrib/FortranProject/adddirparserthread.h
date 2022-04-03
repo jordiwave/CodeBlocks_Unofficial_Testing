@@ -3,8 +3,8 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/thread.h>
-#include <wx/event.h>
+    #include <wx/thread.h>
+    #include <wx/event.h>
 #endif
 
 #include <cbthreadpool.h>
@@ -16,15 +16,15 @@ class NativeParserF;
 
 class ADirParserThread : public cbThreadedTask
 {
-public:
-    ADirParserThread(NativeParserF* parent, int idADPThreadEvent);
-    virtual ~ADirParserThread();
-    int Execute();
-    void ParseFiles();
+    public:
+        ADirParserThread(NativeParserF * parent, int idADPThreadEvent);
+        virtual ~ADirParserThread();
+        int Execute();
+        void ParseFiles();
 
-private:
-    NativeParserF* m_pNativeParser;
-    int m_idADPThreadEvent;
+    private:
+        NativeParserF * m_pNativeParser;
+        int m_idADPThreadEvent;
 };
 
 #endif // ADDITIONALDIRPARSERTHREAD_H

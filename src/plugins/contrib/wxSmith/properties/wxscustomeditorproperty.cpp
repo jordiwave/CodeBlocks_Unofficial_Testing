@@ -34,72 +34,76 @@ namespace
 {
 class wxsCustomEditorPropertyPropClass: public wxCustomPropertyClass
 {
-public:
-    /** \brief Standard property editor */
-    wxsCustomEditorPropertyPropClass(
-        const wxString& label,
-        const wxString& name,
-        wxsCustomEditorProperty* property,
-        wxsPropertyContainer* object):
-        wxCustomPropertyClass(label,name),
-        Property(property),
-        Object(object)
-    {
-        SetEditor(wxPG_EDITOR(TextCtrlAndButton));
-        SetValue(Property->GetStr(Object));
-    }
-
-    virtual bool OnEvent(
-        wxPropertyGrid* propgrid,
-        wxWindow* wnd_primary,
-        wxEvent& event)
-    {
-        if ( event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED )
+    public:
+        /** \brief Standard property editor */
+        wxsCustomEditorPropertyPropClass(
+            const wxString & label,
+            const wxString & name,
+            wxsCustomEditorProperty * property,
+            wxsPropertyContainer * object):
+            wxCustomPropertyClass(label, name),
+            Property(property),
+            Object(object)
         {
-            if(Property->ShowEditor(Object))
-            {
-                SetValueInEvent (Property->GetStr(Object));
-                return true;
-            }
-            return false;
+            SetEditor(wxPG_EDITOR(TextCtrlAndButton));
+            SetValue(Property->GetStr(Object));
         }
-        return wxCustomPropertyClass::OnEvent(propgrid,wnd_primary,event);
-    }
 
-    virtual wxString ValueToString(cb_unused wxVariant& value, cb_unused int argFlags = 0) const
-    {
-        return Property->GetStr(Object);
-    }
+        virtual bool OnEvent(
+            wxPropertyGrid * propgrid,
+            wxWindow * wnd_primary,
+            wxEvent & event)
+        {
+            if (event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED)
+            {
+                if (Property->ShowEditor(Object))
+                {
+                    SetValueInEvent(Property->GetStr(Object));
+                    return true;
+                }
 
-    /** \brief Pointer to wxsProperty which created this
-     *
-     * Pointer will be used to call ShowEditor
-     */
-    wxsCustomEditorProperty* Property;
-    wxsPropertyContainer* Object;
+                return false;
+            }
+
+            return wxCustomPropertyClass::OnEvent(propgrid, wnd_primary, event);
+        }
+
+        virtual wxString ValueToString(cb_unused wxVariant & value, cb_unused int argFlags = 0) const
+        {
+            return Property->GetStr(Object);
+        }
+
+        /** \brief Pointer to wxsProperty which created this
+         *
+         * Pointer will be used to call ShowEditor
+         */
+        wxsCustomEditorProperty * Property;
+        wxsPropertyContainer * Object;
 };
 }
 
-void wxsCustomEditorProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
+void wxsCustomEditorProperty::PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent)
 {
-    wxPGId PGId = Grid->AppendIn(Parent,new wxsCustomEditorPropertyPropClass(GetPGName(),wxPG_LABEL,this,Object));
-    if ( !CanParseStr() )
+    wxPGId PGId = Grid->AppendIn(Parent, new wxsCustomEditorPropertyPropClass(GetPGName(), wxPG_LABEL, this, Object));
+
+    if (!CanParseStr())
     {
         Grid->LimitPropertyEditing(PGId);
     }
-    PGRegister(Object,Grid,PGId);
+
+    PGRegister(Object, Grid, PGId);
 }
 
-bool wxsCustomEditorProperty::PGRead(cb_unused wxsPropertyContainer* Object,
-                                     wxPropertyGridManager*          Grid,
-                                     wxPGId PGId,cb_unused long Index)
+bool wxsCustomEditorProperty::PGRead(cb_unused wxsPropertyContainer * Object,
+                                     wxPropertyGridManager     *     Grid,
+                                     wxPGId PGId, cb_unused long Index)
 {
-    return CanParseStr() && ParseStr(Object,Grid->GetPropertyValue(PGId).GetString());
+    return CanParseStr() && ParseStr(Object, Grid->GetPropertyValue(PGId).GetString());
 }
 
-bool wxsCustomEditorProperty::PGWrite(cb_unused wxsPropertyContainer*  Object,
-                                      cb_unused wxPropertyGridManager* Grid,
-                                      cb_unused wxPGId PGId,cb_unused long Index)
+bool wxsCustomEditorProperty::PGWrite(cb_unused wxsPropertyContainer * Object,
+                                      cb_unused wxPropertyGridManager * Grid,
+                                      cb_unused wxPGId PGId, cb_unused long Index)
 {
     return true;
 }

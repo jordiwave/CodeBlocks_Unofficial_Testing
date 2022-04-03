@@ -14,39 +14,39 @@
 
 class HelpPlugin : public cbPlugin
 {
-public:
-    HelpPlugin();
-    ~HelpPlugin();
-    virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
-    void BuildMenu(wxMenuBar *menuBar);
-    void BuildHelpMenu();
-    void BuildModuleMenu(const ModuleType type, wxMenu *menu, const FileTreeData* data = 0);
-    bool BuildToolBar(wxToolBar *toolBar);
-    void OnAttach(); // fires when the plugin is attached to the application
-    void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-    void Reload(); // called after the settings have been applied
-    void OnUpdateUI(wxUpdateUIEvent& event); // called when showing View menu
+    public:
+        HelpPlugin();
+        ~HelpPlugin();
+        virtual cbConfigurationPanel * GetConfigurationPanel(wxWindow * parent);
+        void BuildMenu(wxMenuBar * menuBar);
+        void BuildHelpMenu();
+        void BuildModuleMenu(const ModuleType type, wxMenu * menu, const FileTreeData * data = 0);
+        bool BuildToolBar(wxToolBar * toolBar);
+        void OnAttach(); // fires when the plugin is attached to the application
+        void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+        void Reload(); // called after the settings have been applied
+        void OnUpdateUI(wxUpdateUIEvent & event); // called when showing View menu
 
-protected:
-    void OnViewMANViewer(wxCommandEvent &event);
-    void ShowMANViewer(bool show = true);
-    void OnFindItem(wxCommandEvent &event);
-    void AddToPopupMenu(wxMenu *menu, int id, const wxString &help, bool fromIni = false);
-    void AddToHelpMenu(int id, const wxString &help, bool fromIni = false);
-    void RemoveFromHelpMenu(int id, const wxString &help);
-    void AddFile();
-    HelpCommon::HelpFileAttrib HelpFileFromId(int id);
-    // Patch from Yorgos Pagles: Take into consideration the new attributes when launching a help file
-    void LaunchHelp(const wxString &helpfile, bool isExecutable, bool openEmbeddedViewer, HelpCommon::StringCase keyCase = HelpCommon::Preserve, const wxString &defkeyword = wxEmptyString, const wxString &keyword = wxEmptyString);
-    void SetManPageDirs(MANFrame *manFrame);
+    protected:
+        void OnViewMANViewer(wxCommandEvent & event);
+        void ShowMANViewer(bool show = true);
+        void OnFindItem(wxCommandEvent & event);
+        void AddToPopupMenu(wxMenu * menu, int id, const wxString & help, bool fromIni = false);
+        void AddToHelpMenu(int id, const wxString & help, bool fromIni = false);
+        void RemoveFromHelpMenu(int id, const wxString & help);
+        void AddFile();
+        HelpCommon::HelpFileAttrib HelpFileFromId(int id);
+        // Patch from Yorgos Pagles: Take into consideration the new attributes when launching a help file
+        void LaunchHelp(const wxString & helpfile, bool isExecutable, bool openEmbeddedViewer, HelpCommon::StringCase keyCase = HelpCommon::Preserve, const wxString & defkeyword = wxEmptyString, const wxString & keyword = wxEmptyString);
+        void SetManPageDirs(MANFrame * manFrame);
 
-private:
-    wxMenuBar *m_pMenuBar;
-    HelpCommon::HelpFilesVector m_Vector;
-    int m_LastId;
-    MANFrame *m_manFrame;
+    private:
+        wxMenuBar * m_pMenuBar;
+        HelpCommon::HelpFilesVector m_Vector;
+        int m_LastId;
+        MANFrame * m_manFrame;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // HELP_PLUGIN_H

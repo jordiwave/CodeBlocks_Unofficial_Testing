@@ -49,123 +49,123 @@ class wxsResource;
  */
 class PLUGIN_EXPORT wxSmith : public cbPlugin
 {
-public:
+    public:
 
-    /** \brief Ctor */
-    wxSmith();
+        /** \brief Ctor */
+        wxSmith();
 
-    /** \brief Dctor */
-    ~wxSmith();
+        /** \brief Dctor */
+        ~wxSmith();
 
-    /** \brief Function returning singleton instance */
-    static wxSmith* Get()
-    {
-        return m_Singleton;
-    }
+        /** \brief Function returning singleton instance */
+        static wxSmith * Get()
+        {
+            return m_Singleton;
+        }
 
-    /** \brief Getting group in configuration dialog */
-    int GetConfigurationGroup()  const
-    {
-        return cgEditor;
-    }
+        /** \brief Getting group in configuration dialog */
+        int GetConfigurationGroup()  const
+        {
+            return cgEditor;
+        }
 
-    /** \brief Creating configuration panel */
-    cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+        /** \brief Creating configuration panel */
+        cbConfigurationPanel * GetConfigurationPanel(wxWindow * parent);
 
-    /** \brief Generating extra configuration panel inside project options */
-    virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
+        /** \brief Generating extra configuration panel inside project options */
+        virtual cbConfigurationPanel * GetProjectConfigurationPanel(wxWindow * parent, cbProject * project);
 
-    /** \brief This function will add entries into menu */
-    void BuildMenu(wxMenuBar* menuBar);
+        /** \brief This function will add entries into menu */
+        void BuildMenu(wxMenuBar * menuBar);
 
-    void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
-    bool BuildToolBar(wxToolBar* toolBar);
-    void OnAttach();
-    void OnRelease(bool appShutDown);
+        void BuildModuleMenu(const ModuleType type, wxMenu * menu, const FileTreeData * data = 0);
+        bool BuildToolBar(wxToolBar * toolBar);
+        void OnAttach();
+        void OnRelease(bool appShutDown);
 
-    /** \brief Registering scripting stuff */
-    void RegisterScripting();
+        /** \brief Registering scripting stuff */
+        void RegisterScripting();
 
-    /** \brief unregistering scripting stuff */
-    void UnregisterScripting();
+        /** \brief unregistering scripting stuff */
+        void UnregisterScripting();
 
-    /** \brief Getting wxsProject addition for given cbProject */
-    wxsProject* GetSmithProject(cbProject* Proj);
+        /** \brief Getting wxsProject addition for given cbProject */
+        wxsProject * GetSmithProject(cbProject * Proj);
 
-    /** \brief Getting cbProject class from wxsProject addition */
-    cbProject* GetCBProject(wxsProject* Proj);
+        /** \brief Getting cbProject class from wxsProject addition */
+        cbProject * GetCBProject(wxsProject * Proj);
 
-    /** \brief Helper operator used to convert C::B projects to wxS projects */
-    inline wxsProject* operator[](cbProject* Proj)
-    {
-        return GetSmithProject(Proj);
-    }
+        /** \brief Helper operator used to convert C::B projects to wxS projects */
+        inline wxsProject * operator[](cbProject * Proj)
+        {
+            return GetSmithProject(Proj);
+        }
 
-    /** \brief Helper operator used to convert wxS projects to C::B projects */
-    inline cbProject* operator[](wxsProject* Proj)
-    {
-        return GetCBProject(Proj);
-    }
+        /** \brief Helper operator used to convert wxS projects to C::B projects */
+        inline cbProject * operator[](wxsProject * Proj)
+        {
+            return GetCBProject(Proj);
+        }
 
-    /** \brief Bringing up the resources tab to the view */
-    void ShowResourcesTab();
+        /** \brief Bringing up the resources tab to the view */
+        void ShowResourcesTab();
 
-private:
+    private:
 
-    WX_DECLARE_HASH_MAP(cbProject*,wxsProject*,wxPointerHash,wxPointerEqual,ProjectMapT);
-    typedef ProjectMapT::iterator ProjectMapI;
+        WX_DECLARE_HASH_MAP(cbProject *, wxsProject *, wxPointerHash, wxPointerEqual, ProjectMapT);
+        typedef ProjectMapT::iterator ProjectMapI;
 
-    ProjectMapT m_ProjectMap;               ///< \brief Map binding all cbProject classes with wxsProject ones
-    wxsStoringSplitterWindow* m_Splitter;   ///< \brief Splitter window used to divide resource browser and property grid
-    wxPanel* m_ResourceBrowserParent;       ///< \brief Parent panel for resource browser
-    wxPanel* m_PropertyBrowserParent;       ///< \brief Parent for property browser
-    int m_HookId;                           ///< \brief Project hook identifier used when deleting hook
-    static wxSmith* m_Singleton;            ///< \brief Singleton object
+        ProjectMapT m_ProjectMap;               ///< \brief Map binding all cbProject classes with wxsProject ones
+        wxsStoringSplitterWindow * m_Splitter;  ///< \brief Splitter window used to divide resource browser and property grid
+        wxPanel * m_ResourceBrowserParent;      ///< \brief Parent panel for resource browser
+        wxPanel * m_PropertyBrowserParent;      ///< \brief Parent for property browser
+        int m_HookId;                           ///< \brief Project hook identifier used when deleting hook
+        static wxSmith * m_Singleton;           ///< \brief Singleton object
 
-    /** \brief Procedure called when loading/saving project, used to load/save additional configuration from/to .cbp file */
-    void OnProjectHook(cbProject*,TiXmlElement*,bool);
+        /** \brief Procedure called when loading/saving project, used to load/save additional configuration from/to .cbp file */
+        void OnProjectHook(cbProject *, TiXmlElement *, bool);
 
-    /** \brief Procedure called when project has been loaded */
-    void OnProjectOpened(CodeBlocksEvent& event);
+        /** \brief Procedure called when project has been loaded */
+        void OnProjectOpened(CodeBlocksEvent & event);
 
-    /** \brief Procedure called when closing project, removes additional stuff associated with project */
-    void OnProjectClose(CodeBlocksEvent& event);
+        /** \brief Procedure called when closing project, removes additional stuff associated with project */
+        void OnProjectClose(CodeBlocksEvent & event);
 
-    /** \brief Procedure called when some project has been renamed - it will update resource browser */
-    void OnProjectRenamed(CodeBlocksEvent& event);
+        /** \brief Procedure called when some project has been renamed - it will update resource browser */
+        void OnProjectRenamed(CodeBlocksEvent & event);
 
-    /** \brief Procedure called when a file in some project has been renamed - it will update resource list */
-    void OnProjectFileRenamed(CodeBlocksEvent& event);
+        /** \brief Procedure called when a file in some project has been renamed - it will update resource list */
+        void OnProjectFileRenamed(CodeBlocksEvent & event);
 
-    /** \brief Called when clicked "Configure..." from wxSmith menu */
-    void OnConfigure(wxCommandEvent& event);
+        /** \brief Called when clicked "Configure..." from wxSmith menu */
+        void OnConfigure(wxCommandEvent & event);
 
-    /** \brief Called for any menu, used to find possible "Add ...." entries */
-    void OnMenu(wxCommandEvent& event);
+        /** \brief Called for any menu, used to find possible "Add ...." entries */
+        void OnMenu(wxCommandEvent & event);
 
-    /** \brief Function building resource and properties browser */
-    void BuildBrowsers();
+        /** \brief Function building resource and properties browser */
+        void BuildBrowsers();
 
-    /** \brief Function Generating background panes for resource and property browsers */
-    void BuildBrowserParents();
+        /** \brief Function Generating background panes for resource and property browsers */
+        void BuildBrowserParents();
 
-    void OnViewBrowsers(wxCommandEvent& event);
-    void OnViewResourceBrowser(wxCommandEvent& event);
-    void OnViewPropertyBrowser(wxCommandEvent& event);
-    void OnUpdateUI(wxUpdateUIEvent& event);
+        void OnViewBrowsers(wxCommandEvent & event);
+        void OnViewResourceBrowser(wxCommandEvent & event);
+        void OnViewPropertyBrowser(wxCommandEvent & event);
+        void OnUpdateUI(wxUpdateUIEvent & event);
 
-    friend class wxSmithMime;
-    DECLARE_EVENT_TABLE()
+        friend class wxSmithMime;
+        DECLARE_EVENT_TABLE()
 };
 
 /** \brief Helper function to easily access wxSmith plugin */
-inline wxSmith* wxsPlugin()
+inline wxSmith * wxsPlugin()
 {
     return wxSmith::Get();
 }
 
 /** \brief Helper function to access project converter (wxSmith project <-> C::B project) */
-inline wxSmith* wxsProjectConv()
+inline wxSmith * wxsProjectConv()
 {
     return wxSmith::Get();
 }

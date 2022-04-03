@@ -25,9 +25,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsStaticBox> Reg(_T("StaticBox"),wxsTWidget,_T("Standard"),70);
+wxsRegisterItem<wxsStaticBox> Reg(_T("StaticBox"), wxsTWidget, _T("Standard"), 70);
 
-WXS_ST_BEGIN(wxsStaticBoxStyles,_T(""))
+WXS_ST_BEGIN(wxsStaticBoxStyles, _T(""))
 WXS_ST_CATEGORY("wxStaticBox")
 WXS_ST_DEFAULTS()
 WXS_ST_END()
@@ -36,7 +36,7 @@ WXS_EV_BEGIN(wxsStaticBoxEvents)
 WXS_EV_END()
 }
 
-wxsStaticBox::wxsStaticBox(wxsItemResData* Data):
+wxsStaticBox::wxsStaticBox(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -47,31 +47,31 @@ wxsStaticBox::wxsStaticBox(wxsItemResData* Data):
 
 void wxsStaticBox::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/statbox.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%W, %I, %t, %P, %S, %T, %N);\n"),Label.wx_str());
-        BuildSetupWindowCode();
-        return;
-    }
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/statbox.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %N);\n"), Label.wx_str());
+            BuildSetupWindowCode();
+            return;
+        }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsStaticBox::OnBuildCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsStaticBox::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
-wxObject* wxsStaticBox::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsStaticBox::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxStaticBox* Preview = new wxStaticBox(Parent,GetId(),Label,Pos(Parent),Size(Parent),Style());
-    return SetupWindow(Preview,Flags);
+    wxStaticBox * Preview = new wxStaticBox(Parent, GetId(), Label, Pos(Parent), Size(Parent), Style());
+    return SetupWindow(Preview, Flags);
 }
 
 void wxsStaticBox::OnEnumWidgetProperties(cb_unused long Flags)
 {
-    WXS_SHORT_STRING(wxsStaticBox,Label,_("Label"),_T("label"),_T(""),false)
+    WXS_SHORT_STRING(wxsStaticBox, Label, _("Label"), _T("label"), _T(""), false)
 }

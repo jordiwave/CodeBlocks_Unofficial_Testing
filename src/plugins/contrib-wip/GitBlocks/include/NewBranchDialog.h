@@ -11,32 +11,32 @@
 
 class NewBranchDialog: public wxDialog
 {
-public:
+    public:
 
-    NewBranchDialog(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
-    virtual ~NewBranchDialog();
+        NewBranchDialog(wxWindow * parent, wxWindowID id = wxID_ANY, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize);
+        virtual ~NewBranchDialog();
 
-    //(*Declarations(NewBranchDialog)
-    wxStaticText* StaticText1;
-    wxCheckBox* Switch;
-    wxTextCtrl* Name;
-    //*)
+        //(*Declarations(NewBranchDialog)
+        wxStaticText * StaticText1;
+        wxCheckBox * Switch;
+        wxTextCtrl * Name;
+        //*)
 
-protected:
+    protected:
 
-    //(*Identifiers(NewBranchDialog)
-    static const long ID_STATICTEXT1;
-    static const long ID_NAME;
-    static const long ID_SWITCH;
-    //*)
+        //(*Identifiers(NewBranchDialog)
+        static const long ID_STATICTEXT1;
+        static const long ID_NAME;
+        static const long ID_SWITCH;
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(NewBranchDialog)
-    void OnCheckBox1Click(wxCommandEvent& event);
-    //*)
+        //(*Handlers(NewBranchDialog)
+        void OnCheckBox1Click(wxCommandEvent & event);
+        //*)
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

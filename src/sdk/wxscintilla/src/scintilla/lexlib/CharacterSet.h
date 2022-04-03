@@ -15,103 +15,124 @@ namespace Scintilla
 
 class CharacterSet
 {
-    int size;
-    bool valueAfter;
-    bool *bset;
-public:
-    enum setBase
-    {
-        setNone=0,
-        setLower=1,
-        setUpper=2,
-        setDigits=4,
-        setAlpha=setLower|setUpper,
-        setAlphaNum=setAlpha|setDigits
-    };
-    CharacterSet(setBase base=setNone, const char *initialSet="", int size_=0x80, bool valueAfter_=false)
-    {
-        size = size_;
-        valueAfter = valueAfter_;
-        bset = new bool[size];
-        for (int i=0; i < size; i++)
+        int size;
+        bool valueAfter;
+        bool * bset;
+    public:
+        enum setBase
         {
-            bset[i] = false;
-        }
-        AddString(initialSet);
-        if (base & setLower)
-            AddString("abcdefghijklmnopqrstuvwxyz");
-        if (base & setUpper)
-            AddString("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-        if (base & setDigits)
-            AddString("0123456789");
-    }
-    CharacterSet(const CharacterSet &other)
-    {
-        size = other.size;
-        valueAfter = other.valueAfter;
-        bset = new bool[size];
-        for (int i=0; i < size; i++)
+            setNone = 0,
+            setLower = 1,
+            setUpper = 2,
+            setDigits = 4,
+            setAlpha = setLower | setUpper,
+            setAlphaNum = setAlpha | setDigits
+        };
+        CharacterSet(setBase base = setNone, const char * initialSet = "", int size_ = 0x80, bool valueAfter_ = false)
         {
-            bset[i] = other.bset[i];
-        }
-    }
-    CharacterSet &operator=(CharacterSet &&other)
-    {
-        if (this != &other)
-        {
-            delete []bset;
-            size = other.size;
-            valueAfter = other.valueAfter;
-            bset = other.bset;
-            other.size = 0;
-            other.bset = nullptr;
-        }
-        return *this;
-    }
-    ~CharacterSet()
-    {
-        delete []bset;
-        bset = 0;
-        size = 0;
-    }
-    CharacterSet &operator=(const CharacterSet &other)
-    {
-        if (this != &other)
-        {
-            bool *bsetNew = new bool[other.size];
-            for (int i=0; i < other.size; i++)
+            size = size_;
+            valueAfter = valueAfter_;
+            bset = new bool[size];
+
+            for (int i = 0; i < size; i++)
             {
-                bsetNew[i] = other.bset[i];
+                bset[i] = false;
             }
-            delete []bset;
+
+            AddString(initialSet);
+
+            if (base & setLower)
+            {
+                AddString("abcdefghijklmnopqrstuvwxyz");
+            }
+
+            if (base & setUpper)
+            {
+                AddString("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+            }
+
+            if (base & setDigits)
+            {
+                AddString("0123456789");
+            }
+        }
+        CharacterSet(const CharacterSet & other)
+        {
             size = other.size;
             valueAfter = other.valueAfter;
-            bset = bsetNew;
+            bset = new bool[size];
+
+            for (int i = 0; i < size; i++)
+            {
+                bset[i] = other.bset[i];
+            }
         }
-        return *this;
-    }
-    void Add(int val)
-    {
-        assert(val >= 0);
-        assert(val < size);
-        bset[val] = true;
-    }
-    void AddString(const char *setToAdd)
-    {
-        for (const char *cp=setToAdd; *cp; cp++)
+        CharacterSet & operator=(CharacterSet && other)
         {
-            int val = static_cast<unsigned char>(*cp);
+            if (this != &other)
+            {
+                delete []bset;
+                size = other.size;
+                valueAfter = other.valueAfter;
+                bset = other.bset;
+                other.size = 0;
+                other.bset = nullptr;
+            }
+
+            return *this;
+        }
+        ~CharacterSet()
+        {
+            delete []bset;
+            bset = 0;
+            size = 0;
+        }
+        CharacterSet & operator=(const CharacterSet & other)
+        {
+            if (this != &other)
+            {
+                bool * bsetNew = new bool[other.size];
+
+                for (int i = 0; i < other.size; i++)
+                {
+                    bsetNew[i] = other.bset[i];
+                }
+
+                delete []bset;
+                size = other.size;
+                valueAfter = other.valueAfter;
+                bset = bsetNew;
+            }
+
+            return *this;
+        }
+        void Add(int val)
+        {
             assert(val >= 0);
             assert(val < size);
             bset[val] = true;
         }
-    }
-    bool Contains(int val) const
-    {
-        assert(val >= 0);
-        if (val < 0) return false;
-        return (val < size) ? bset[val] : valueAfter;
-    }
+        void AddString(const char * setToAdd)
+        {
+            for (const char * cp = setToAdd; *cp; cp++)
+            {
+                int val = static_cast<unsigned char>(*cp);
+                assert(val >= 0);
+                assert(val < size);
+                bset[val] = true;
+            }
+        }
+        bool Contains(int val) const
+        {
+            assert(val >= 0);
+
+            if (val < 0)
+            {
+                return false;
+            }
+
+            return (val < size) ? bset[val] : valueAfter;
+        }
 };
 
 // Functions for classifying characters
@@ -190,14 +211,20 @@ inline bool iswordstart(int ch)
 inline bool isoperator(int ch)
 {
     if (IsAlphaNumeric(ch))
+    {
         return false;
+    }
+
     if (ch == '%' || ch == '^' || ch == '&' || ch == '*' ||
             ch == '(' || ch == ')' || ch == '-' || ch == '+' ||
             ch == '=' || ch == '|' || ch == '{' || ch == '}' ||
             ch == '[' || ch == ']' || ch == ':' || ch == ';' ||
             ch == '<' || ch == '>' || ch == ',' || ch == '/' ||
             ch == '?' || ch == '!' || ch == '.' || ch == '~')
+    {
         return true;
+    }
+
     return false;
 }
 
@@ -206,21 +233,29 @@ inline bool isoperator(int ch)
 inline int MakeUpperCase(int ch)
 {
     if (ch < 'a' || ch > 'z')
+    {
         return ch;
+    }
     else
+    {
         return static_cast<char>(ch - 'a' + 'A');
+    }
 }
 
 inline int MakeLowerCase(int ch)
 {
     if (ch < 'A' || ch > 'Z')
+    {
         return ch;
+    }
     else
+    {
         return ch - 'A' + 'a';
+    }
 }
 
-int CompareCaseInsensitive(const char *a, const char *b);
-int CompareNCaseInsensitive(const char *a, const char *b, size_t len);
+int CompareCaseInsensitive(const char * a, const char * b);
+int CompareNCaseInsensitive(const char * a, const char * b, size_t len);
 
 #ifdef SCI_NAMESPACE
 }

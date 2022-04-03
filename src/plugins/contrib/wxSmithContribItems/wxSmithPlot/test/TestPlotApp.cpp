@@ -21,13 +21,14 @@ bool TestPlotApp::OnInit()
     //(*AppInitialize
     bool wxsOK = true;
     wxInitAllImageHandlers();
-    if ( wxsOK )
+
+    if (wxsOK)
     {
-        TestPlotFrame* Frame = new TestPlotFrame(0);
+        TestPlotFrame * Frame = new TestPlotFrame(0);
         Frame->Show();
         SetTopWindow(Frame);
     }
+
     //*)
     return wxsOK;
-
 }

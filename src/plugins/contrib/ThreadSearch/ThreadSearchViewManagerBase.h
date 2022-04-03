@@ -17,75 +17,75 @@ class ThreadSearchView;
 
 class ThreadSearchViewManagerBase
 {
-public:
-    enum eManagerTypes
-    {
-        TypeMessagesNotebook = 0,
-        TypeLayout
-    };
+    public:
+        enum eManagerTypes
+        {
+            TypeMessagesNotebook = 0,
+            TypeLayout
+        };
 
-    /** BuildThreadSearchViewManagerBase
-      * Builds a ThreadSearchViewManagerMessagesNotebook or a ThreadSearchViewManagerAui pointer depending
-      * on managerType.
-      * @return ThreadSearchViewManagerBase*
-      */
-    static ThreadSearchViewManagerBase* BuildThreadSearchViewManagerBase(ThreadSearchView* pView,
-            bool              addViewToManager,
-            eManagerTypes     managerType);
+        /** BuildThreadSearchViewManagerBase
+          * Builds a ThreadSearchViewManagerMessagesNotebook or a ThreadSearchViewManagerAui pointer depending
+          * on managerType.
+          * @return ThreadSearchViewManagerBase*
+          */
+        static ThreadSearchViewManagerBase * BuildThreadSearchViewManagerBase(ThreadSearchView * pView,
+                bool              addViewToManager,
+                eManagerTypes     managerType);
 
-    /** Destructor. */
-    virtual ~ThreadSearchViewManagerBase() {}
+        /** Destructor. */
+        virtual ~ThreadSearchViewManagerBase() {}
 
-    eManagerTypes virtual GetManagerType() = 0;
+        eManagerTypes virtual GetManagerType() = 0;
 
-    /** By default, view is not managed by the manager.
-      * This method adds view to manager if not already managed
-      * and given in constructor.
-      * No parameters because only m_pThreadSearchView is managed.
-      */
-    virtual void AddViewToManager() = 0;
+        /** By default, view is not managed by the manager.
+          * This method adds view to manager if not already managed
+          * and given in constructor.
+          * No parameters because only m_pThreadSearchView is managed.
+          */
+        virtual void AddViewToManager() = 0;
 
-    /** By default, view is not managed by the manager.
-      * This method removes view from manager if managed.
-      * No parameters because only m_pThreadSearchView is managed
-      * and given in constructor.
-      * m_pThreadSearchView is not modified.
-      */
-    virtual void RemoveViewFromManager() = 0;
+        /** By default, view is not managed by the manager.
+          * This method removes view from manager if managed.
+          * No parameters because only m_pThreadSearchView is managed
+          * and given in constructor.
+          * m_pThreadSearchView is not modified.
+          */
+        virtual void RemoveViewFromManager() = 0;
 
-    enum ShowViewFlags : uint32_t
-    {
-        None = 0,
-        Show = 1, ///< Shows the view
-        PreserveFocus = 2 ///< Tries to preserve the focus after the show operation.
-    };
+        enum ShowViewFlags : uint32_t
+        {
+            None = 0,
+            Show = 1, ///< Shows the view
+            PreserveFocus = 2 ///< Tries to preserve the focus after the show operation.
+        };
 
-    /** Return true if success. Fails if view is not managed.
-      * @param flags Specifies the behaviour of the call. @sa ShowViewFlags
-      * @return true if success.
-      */
-    virtual bool ShowView(uint32_t flags) = 0;
+        /** Return true if success. Fails if view is not managed.
+          * @param flags Specifies the behaviour of the call. @sa ShowViewFlags
+          * @return true if success.
+          */
+        virtual bool ShowView(uint32_t flags) = 0;
 
-    /** Return true if view is visible.
-      * @return true if view is visible.
-      */
-    virtual bool IsViewShown() = 0;
+        /** Return true if view is visible.
+          * @return true if view is visible.
+          */
+        virtual bool IsViewShown() = 0;
 
-    /** Try to rise the panel the view is in */
-    virtual void Raise() = 0;
+        /** Try to rise the panel the view is in */
+        virtual void Raise() = 0;
 
-protected:
-    /** Constructor. */
-    ThreadSearchViewManagerBase(ThreadSearchView* pThreadSearchView)
-        : m_pThreadSearchView(pThreadSearchView)
-        , m_IsManaged(false)
-        , m_IsShown(false)
-    {
-    }
+    protected:
+        /** Constructor. */
+        ThreadSearchViewManagerBase(ThreadSearchView * pThreadSearchView)
+            : m_pThreadSearchView(pThreadSearchView)
+            , m_IsManaged(false)
+            , m_IsShown(false)
+        {
+        }
 
-    ThreadSearchView* m_pThreadSearchView;
-    bool              m_IsManaged;
-    bool              m_IsShown;
+        ThreadSearchView * m_pThreadSearchView;
+        bool              m_IsManaged;
+        bool              m_IsShown;
 };
 
 #endif // THREAD_SEARCH_VIEW_MANAGER_BASE_H

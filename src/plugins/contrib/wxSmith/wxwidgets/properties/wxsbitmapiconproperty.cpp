@@ -31,107 +31,114 @@
 
 using namespace wxsFlags;
 
-wxBitmap wxsBitmapIconData::GetPreview(const wxSize& Size,const wxString& DefaultClient)
+wxBitmap wxsBitmapIconData::GetPreview(const wxSize & Size, const wxString & DefaultClient)
 {
-    if ( Id.empty() )
+    if (Id.empty())
     {
-        if ( FileName.empty() )
+        if (FileName.empty())
         {
             return wxNullBitmap;
         }
 
         wxImage Img(FileName);
-        if ( !Img.Ok() ) return wxNullBitmap;
-        if ( Size != wxDefaultSize )
+
+        if (!Img.Ok())
         {
-            Img.Rescale(Size.GetWidth(),Size.GetHeight());
+            return wxNullBitmap;
         }
+
+        if (Size != wxDefaultSize)
+        {
+            Img.Rescale(Size.GetWidth(), Size.GetHeight());
+        }
+
         return wxBitmap(Img);
     }
 
     wxString TempClient = Client.empty() ? DefaultClient : Client;
-    return wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(Id),wxART_MAKE_CLIENT_ID_FROM_STR(TempClient),Size);
+    return wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(Id), wxART_MAKE_CLIENT_ID_FROM_STR(TempClient), Size);
 }
 
-wxString wxsBitmapIconData::BuildCode(bool NoResize,const wxString& SizeCode,wxsCoderContext* Ctx,const wxString& DefaultClient)
+wxString wxsBitmapIconData::BuildCode(bool NoResize, const wxString & SizeCode, wxsCoderContext * Ctx, const wxString & DefaultClient)
 {
-    switch ( Ctx->m_Language )
+    switch (Ctx->m_Language)
     {
-    case wxsCPP:
-    {
-        Ctx->AddHeader(_T("<wx/bitmap.h>"),_T(""),hfLocal);
-        Ctx->AddHeader(_T("<wx/image.h>"),_T(""),hfLocal);
-        wxString Code;
-        if ( Id.empty() )
+        case wxsCPP:
         {
-            if ( FileName.empty() )
+            Ctx->AddHeader(_T("<wx/bitmap.h>"), _T(""), hfLocal);
+            Ctx->AddHeader(_T("<wx/image.h>"), _T(""), hfLocal);
+            wxString Code;
+
+            if (Id.empty())
             {
-                if ( CodeText.empty() )
+                if (FileName.empty())
                 {
-                    return wxEmptyString;
+                    if (CodeText.empty())
+                    {
+                        return wxEmptyString;
+                    }
+                    else
+                    {
+                        Code << CodeText;
+                    }
                 }
                 else
                 {
-                    Code << CodeText;
+                    if (NoResize)
+                    {
+                        Code << _T("wxBitmap(wxImage(") << wxsCodeMarks::WxString(wxsCPP, FileName, false) << _T("))");
+                    }
+                    else
+                    {
+                        Code << _T("wxBitmap(wxImage(") << wxsCodeMarks::WxString(wxsCPP, FileName, false) << _T(").Rescale(")
+                             << SizeCode << _T(".GetWidth(),") << SizeCode << _T(".GetHeight()))");
+                    }
                 }
             }
             else
             {
-                if ( NoResize )
+                Ctx->AddHeader(_T("<wx/artprov.h>"), _T(""), hfLocal);
+                Code << _T("wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(") << wxsCodeMarks::WxString(wxsCPP, Id, false) << _T("),");
+                wxString UsedClient = Client.empty() ? DefaultClient : Client;
+
+                if (UsedClient == _T("wxART_TOOLBAR") ||
+                        UsedClient == _T("wxART_MENU") ||
+                        UsedClient == _T("wxART_FRAME_ICON") ||
+                        UsedClient == _T("wxART_CMN_DIALOG") ||
+                        UsedClient == _T("wxART_HELP_BROWSER") ||
+                        UsedClient == _T("wxART_MESSAGE_BO") ||
+                        UsedClient == _T("wxART_BUTTON") ||
+                        UsedClient == _T("wxART_OTHER"))
                 {
-                    Code << _T("wxBitmap(wxImage(") << wxsCodeMarks::WxString(wxsCPP,FileName,false) << _T("))");
+                    // One of predefined client ids so we can use name directly
+                    Code << UsedClient;
                 }
                 else
                 {
-                    Code << _T("wxBitmap(wxImage(") << wxsCodeMarks::WxString(wxsCPP,FileName,false) << _T(").Rescale(")
-                         << SizeCode << _T(".GetWidth(),") << SizeCode << _T(".GetHeight()))");
+                    // Not standard client id, we have to use macro
+                    // but because wxART_MAKE_CLIENT_ID_FROM_STR uses + operator
+                    // we additionally have to convert text to wxString
+                    Code << _T("wxART_MAKE_CLIENT_ID_FROM_STR(wxString(");
+                    Code << wxsCodeMarks::WxString(wxsCPP, Client, false);
+                    Code << _T("))");
                 }
+
+                if (!NoResize)
+                {
+                    Code << _T(",") << SizeCode;
+                }
+
+                Code << _T(")");
             }
+
+            return Code;
         }
-        else
+
+        case wxsUnknownLanguage: // fall-through
+        default:
         {
-            Ctx->AddHeader(_T("<wx/artprov.h>"),_T(""),hfLocal);
-            Code << _T("wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(") << wxsCodeMarks::WxString(wxsCPP,Id,false) << _T("),");
-            wxString UsedClient = Client.empty() ? DefaultClient : Client;
-
-            if ( UsedClient == _T("wxART_TOOLBAR") ||
-                    UsedClient == _T("wxART_MENU") ||
-                    UsedClient == _T("wxART_FRAME_ICON") ||
-                    UsedClient == _T("wxART_CMN_DIALOG") ||
-                    UsedClient == _T("wxART_HELP_BROWSER") ||
-                    UsedClient == _T("wxART_MESSAGE_BO") ||
-                    UsedClient == _T("wxART_BUTTON") ||
-                    UsedClient == _T("wxART_OTHER") )
-            {
-                // One of predefined client ids so we can use name directly
-                Code << UsedClient;
-            }
-            else
-            {
-                // Not standard client id, we have to use macro
-                // but because wxART_MAKE_CLIENT_ID_FROM_STR uses + operator
-                // we additionally have to convert text to wxString
-                Code << _T("wxART_MAKE_CLIENT_ID_FROM_STR(wxString(");
-                Code << wxsCodeMarks::WxString(wxsCPP,Client,false);
-                Code << _T("))");
-            }
-
-            if ( !NoResize )
-            {
-                Code << _T(",") << SizeCode;
-            }
-
-            Code << _T(")");
+            wxsCodeMarks::Unknown(_T("wxsBitmapIconData::BuildCode"), Ctx->m_Language);
         }
-
-        return Code;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsBitmapIconData::BuildCode"),Ctx->m_Language);
-    }
     }
 
     return wxEmptyString;
@@ -146,30 +153,34 @@ bool wxsBitmapIconData::IsEmpty()
 // Helper macros for fetching variables
 #define VALUE   wxsVARIABLE(Object,Offset,wxsBitmapIconData)
 
-wxsBitmapIconProperty::wxsBitmapIconProperty(const wxString& PGName,const wxString& DataName,long _Offset,const wxString& _DefaultClient,int Priority):
-    wxsCustomEditorProperty(PGName,DataName,Priority),
+wxsBitmapIconProperty::wxsBitmapIconProperty(const wxString & PGName, const wxString & DataName, long _Offset, const wxString & _DefaultClient, int Priority):
+    wxsCustomEditorProperty(PGName, DataName, Priority),
     Offset(_Offset),
     DefaultClient(_DefaultClient)
 {}
 
-wxString wxsBitmapIconProperty::GetStr(wxsPropertyContainer* Object)
+wxString wxsBitmapIconProperty::GetStr(wxsPropertyContainer * Object)
 {
     wxString res = VALUE.Id;
-    if(res.IsEmpty())
+
+    if (res.IsEmpty())
+    {
         res = VALUE.FileName;
-    return res.IsEmpty()?wxString(_("Click to add")):res;
+    }
+
+    return res.IsEmpty() ? wxString(_("Click to add")) : res;
 }
 
-bool wxsBitmapIconProperty::ShowEditor(wxsPropertyContainer* Object)
+bool wxsBitmapIconProperty::ShowEditor(wxsPropertyContainer * Object)
 {
-    wxsBitmapIconEditorDlg Dlg(0,VALUE,DefaultClient);
+    wxsBitmapIconEditorDlg Dlg(0, VALUE, DefaultClient);
     PlaceWindow(&Dlg);
     return Dlg.ShowModal() == wxID_OK;
 }
 
-bool wxsBitmapIconProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsBitmapIconProperty::XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
-    if ( !Element )
+    if (!Element)
     {
         return false;
     }
@@ -180,27 +191,28 @@ bool wxsBitmapIconProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* E
 
     // If failed, trying to read from child elements
     // (previous buggy style)
-    if ( VALUE.Id.IsEmpty() )
+    if (VALUE.Id.IsEmpty())
     {
-        XmlGetString(Element,VALUE.Id,_T("stock_id"));
-    }
-    if ( VALUE.Client.IsEmpty() )
-    {
-        XmlGetString(Element,VALUE.Client,_T("stock_client"));
+        XmlGetString(Element, VALUE.Id, _T("stock_id"));
     }
 
-    if ( VALUE.Id.IsEmpty() )
+    if (VALUE.Client.IsEmpty())
+    {
+        XmlGetString(Element, VALUE.Client, _T("stock_client"));
+    }
+
+    if (VALUE.Id.IsEmpty())
     {
         // No wxART_PROVIDER Id, so it must be a filename or code
         VALUE.Id.Clear();
         VALUE.Client.Clear();
-
         VALUE.CodeText = cbC2U(Element->Attribute("code"));
-        if ( VALUE.CodeText.IsEmpty() )
+
+        if (VALUE.CodeText.IsEmpty())
         {
             // It's a filename
             VALUE.CodeText.Clear();
-            return XmlGetString(Element,VALUE.FileName);
+            return XmlGetString(Element, VALUE.FileName);
         }
     }
 
@@ -208,63 +220,81 @@ bool wxsBitmapIconProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* E
     return true;
 }
 
-bool wxsBitmapIconProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsBitmapIconProperty::XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
-    if ( !VALUE.Id.empty() )
+    if (!VALUE.Id.empty())
     {
-        Element->SetAttribute("stock_id",cbU2C(VALUE.Id));
-        if ( !VALUE.Client.empty() )
+        Element->SetAttribute("stock_id", cbU2C(VALUE.Id));
+
+        if (!VALUE.Client.empty())
         {
-            Element->SetAttribute("stock_client",cbU2C(VALUE.Client));
+            Element->SetAttribute("stock_client", cbU2C(VALUE.Client));
         }
+
         return true;
     }
 
-    if ( !VALUE.FileName.empty() )
+    if (!VALUE.FileName.empty())
     {
-        XmlSetString(Element,VALUE.FileName);
+        XmlSetString(Element, VALUE.FileName);
         return true;
     }
 
-    if ( !VALUE.CodeText.empty() )
+    if (!VALUE.CodeText.empty())
     {
-        Element->SetAttribute("code",cbU2C(VALUE.CodeText));
+        Element->SetAttribute("code", cbU2C(VALUE.CodeText));
         return true;
     }
 
     return false;
 }
 
-bool wxsBitmapIconProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsBitmapIconProperty::PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
     bool Ret = true;
     Stream->SubCategory(GetDataName());
-    if ( Stream->GetString(_T("id"),VALUE.Id,wxEmptyString) )
+
+    if (Stream->GetString(_T("id"), VALUE.Id, wxEmptyString))
     {
-        Stream->GetString(_T("client"),VALUE.Client,wxEmptyString);
+        Stream->GetString(_T("client"), VALUE.Client, wxEmptyString);
     }
     else
     {
-        if ( !Stream->GetString(_T("file_name"),VALUE.FileName,wxEmptyString) ) Ret = false;
+        if (!Stream->GetString(_T("file_name"), VALUE.FileName, wxEmptyString))
+        {
+            Ret = false;
+        }
     }
+
     Stream->PopCategory();
     return Ret;
 }
 
-bool wxsBitmapIconProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsBitmapIconProperty::PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
     bool Ret = true;
     Stream->SubCategory(GetDataName());
-    if ( VALUE.Id.empty() )
+
+    if (VALUE.Id.empty())
     {
-        if ( !Stream->PutString(_T("file_name"),VALUE.FileName,wxEmptyString) ) Ret = false;
+        if (!Stream->PutString(_T("file_name"), VALUE.FileName, wxEmptyString))
+        {
+            Ret = false;
+        }
     }
     else
     {
+        if (!Stream->PutString(_T("id"), VALUE.Id, wxEmptyString))
+        {
+            Ret = false;
+        }
 
-        if ( !Stream->PutString(_T("id"),VALUE.Id,wxEmptyString) ) Ret = false;
-        if ( !Stream->PutString(_T("client"),VALUE.Client,wxEmptyString) ) Ret = false;
+        if (!Stream->PutString(_T("client"), VALUE.Client, wxEmptyString))
+        {
+            Ret = false;
+        }
     }
+
     Stream->PopCategory();
     return Ret;
 }

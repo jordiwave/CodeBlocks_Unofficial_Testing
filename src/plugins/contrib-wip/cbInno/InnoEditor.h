@@ -27,58 +27,58 @@
 
 class InnoEditor: public cbEditor
 {
-public:
+    public:
 
-    InnoEditor( wxWindow* parent, const wxString& filename, int log);
-    virtual ~InnoEditor();
+        InnoEditor(wxWindow * parent, const wxString & filename, int log);
+        virtual ~InnoEditor();
 
-    void UpdateView();
+        void UpdateView();
 
-    //(*Declarations(InnoEditor)
-    wxListCtrl* ListCtrl1;
-    wxButton* Button1;
-    wxImageList* ImageList;
-    wxPanel* Panel1;
-    wxBitmapButton* m_build;
-    wxTreeCtrl* TreeCtrl1;
-    //*)
+        //(*Declarations(InnoEditor)
+        wxListCtrl * ListCtrl1;
+        wxButton * Button1;
+        wxImageList * ImageList;
+        wxPanel * Panel1;
+        wxBitmapButton * m_build;
+        wxTreeCtrl * TreeCtrl1;
+        //*)
 
-    bool Save();
+        bool Save();
 
-    void OnProcessEnd(cb_unused wxProcessEvent& evt);
+        void OnProcessEnd(cb_unused wxProcessEvent & evt);
 
-protected:
+    protected:
 
-    //(*Identifiers(InnoEditor)
-    static const long ID_BUILDBUTTON;
-    static const long ID_TREECTRL1;
-    static const long ID_BUTTON1;
-    static const long ID_LISTCTRL1;
-    static const long ID_PANEL1;
-    //*)
+        //(*Identifiers(InnoEditor)
+        static const long ID_BUILDBUTTON;
+        static const long ID_TREECTRL1;
+        static const long ID_BUTTON1;
+        static const long ID_LISTCTRL1;
+        static const long ID_PANEL1;
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(InnoEditor)
-    void OnTreeCtrl1ItemActivated(wxTreeEvent& event);
-    void OnbuildClick(wxCommandEvent& event);
-    //*)
+        //(*Handlers(InnoEditor)
+        void OnTreeCtrl1ItemActivated(wxTreeEvent & event);
+        void OnbuildClick(wxCommandEvent & event);
+        //*)
 
-    int m_log_pos;
+        int m_log_pos;
 
-    wxString m_name;
+        wxString m_name;
 
-    wxString m_file;
-    InnoPart inno_part;
-    InnoScript m_script;
-    bool m_running;
-    wxInputStream* m_out;
-    wxInputStream* m_err;
-    Consume* m_consume;
+        wxString m_file;
+        InnoPart inno_part;
+        InnoScript m_script;
+        bool m_running;
+        wxInputStream * m_out;
+        wxInputStream * m_err;
+        Consume * m_consume;
 
-    wxString m_content;
+        wxString m_content;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

@@ -15,7 +15,7 @@
 
 // wx
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "chartsizes.h"
+    #pragma implementation "chartsizes.h"
 #endif
 
 #include "wx/chartsizes.h"

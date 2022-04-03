@@ -12,14 +12,14 @@ class wxWindow;
 
 class dlgHelpSystemInformation : public wxScrollingDialog
 {
-public:
-    // class constructor
-    dlgHelpSystemInformation(wxWindow* parent);
-    // class destructor
-    ~dlgHelpSystemInformation();
-private:
-    void CopyInfoToClipbaord(cb_unused wxCommandEvent& event);
-    DECLARE_EVENT_TABLE()
+    public:
+        // class constructor
+        dlgHelpSystemInformation(wxWindow * parent);
+        // class destructor
+        ~dlgHelpSystemInformation();
+    private:
+        void CopyInfoToClipbaord(cb_unused wxCommandEvent & event);
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // __DLGHELPSYSTEMINFORMATION_H__

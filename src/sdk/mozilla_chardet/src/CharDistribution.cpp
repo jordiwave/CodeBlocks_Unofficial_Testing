@@ -22,15 +22,20 @@ float CharDistributionAnalysis::GetConfidence(void)
     // number of frequent characters is below the minimum threshold, return
     // negative answer
     if (mTotalChars <= 0 || mFreqChars <= mDataThreshold)
+    {
         return SURE_NO;
+    }
 
     if (mTotalChars != mFreqChars)
     {
         float r = mFreqChars / ((mTotalChars - mFreqChars) * mTypicalDistributionRatio);
 
         if (r < SURE_YES)
+        {
             return r;
+        }
     }
+
     //normalize confidence, (we don't want to be 100% sure)
     return SURE_YES;
 }

@@ -10,19 +10,19 @@
 #define NSUBEXP  10
 typedef struct regexp
 {
-    const char *startp[NSUBEXP];
-    const char *endp[NSUBEXP];
+    const char * startp[NSUBEXP];
+    const char * endp[NSUBEXP];
     char regstart;		/* Internal use only. */
     char reganch;		/* Internal use only. */
-    char *regmust;		/* Internal use only. */
+    char * regmust;		/* Internal use only. */
     int regmlen;		/* Internal use only. */
     char program[1];	/* Unwarranted chumminess with compiler. */
 } regexp;
 
-regexp *my_regcomp( const char *exp );
-int my_regexec( regexp *prog, const char *string );
-void my_regerror( const char *s );
-void my_redone( regexp *prog ); /* TNB */
+regexp * my_regcomp(const char * exp);
+int my_regexec(regexp * prog, const char * string);
+void my_regerror(const char * s);
+void my_redone(regexp * prog);  /* TNB */
 
 /*
  * The first byte of the regexp internal "program" is actually this magic

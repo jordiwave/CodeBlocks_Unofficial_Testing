@@ -40,35 +40,38 @@
 
 #include <string>
 
-class AffEntry {
- private:
-  AffEntry(const AffEntry&);
-  AffEntry& operator=(const AffEntry&);
+class AffEntry
+{
+    private:
+        AffEntry(const AffEntry &);
+        AffEntry & operator=(const AffEntry &);
 
- public:
-  AffEntry()
-      : numconds(0),
-        opts(0),
-        aflag(0),
-        morphcode(0),
-        contclass(NULL),
-        contclasslen(0) {}
-  virtual ~AffEntry();
-  std::string appnd;
-  std::string strip;
-  unsigned char numconds;
-  char opts;
-  unsigned short aflag;
-  union {
-    char conds[MAXCONDLEN];
-    struct {
-      char conds1[MAXCONDLEN_1];
-      char* conds2;
-    } l;
-  } c;
-  char* morphcode;
-  unsigned short* contclass;
-  short contclasslen;
+    public:
+        AffEntry()
+            : numconds(0),
+              opts(0),
+              aflag(0),
+              morphcode(0),
+              contclass(NULL),
+              contclasslen(0) {}
+        virtual ~AffEntry();
+        std::string appnd;
+        std::string strip;
+        unsigned char numconds;
+        char opts;
+        unsigned short aflag;
+        union
+        {
+            char conds[MAXCONDLEN];
+            struct
+            {
+                char conds1[MAXCONDLEN_1];
+                char * conds2;
+            } l;
+        } c;
+        char * morphcode;
+        unsigned short * contclass;
+        short contclasslen;
 };
 
 #endif

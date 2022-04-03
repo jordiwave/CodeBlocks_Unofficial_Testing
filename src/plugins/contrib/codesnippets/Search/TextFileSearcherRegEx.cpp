@@ -9,41 +9,42 @@
  **************************************************************/
 
 #if defined(CB_PRECOMP)
-#include "sdk.h"
+    #include "sdk.h"
 #endif
 //#include "sdk.h"
 #ifndef CB_PRECOMP
-// Required extra includes
-#include <wx/string.h>
+    // Required extra includes
+    #include <wx/string.h>
 #endif
 
 #include "TextFileSearcherRegEx.h"
 
 
-TextFileSearcherRegEx::TextFileSearcherRegEx(const wxString& searchText, bool matchCase, bool matchWordBegin,
-        bool matchWord)
-    :TextFileSearcher(searchText, matchCase, matchWordBegin, matchWord)
+TextFileSearcherRegEx::TextFileSearcherRegEx(const wxString & searchText, bool matchCase, bool matchWordBegin,
+                                             bool matchWord)
+    : TextFileSearcher(searchText, matchCase, matchWordBegin, matchWord)
 {
     wxString pattern = searchText;
-
 #ifdef wxHAS_REGEX_ADVANCED
     int flags = wxRE_ADVANCED;
 #else
     int flags = wxRE_EXTENDED;
 #endif
-    if ( matchCase == false )
+
+    if (matchCase == false)
     {
         flags |= wxRE_ICASE;
     }
 
-    if ( matchWord == true )
+    if (matchWord == true)
     {
         pattern = _T("([^[:alnum:]_]|^)") + pattern + _T("([^[:alnum:]_]|$)");
     }
-    else if ( matchWordBegin == true )
-    {
-        pattern = _T("([^[:alnum:]_]|^)") + pattern;
-    }
+    else
+        if (matchWordBegin == true)
+        {
+            pattern = _T("([^[:alnum:]_]|^)") + pattern;
+        }
 
     m_RegEx.Compile(pattern, flags);
 }
@@ -52,20 +53,24 @@ TextFileSearcherRegEx::TextFileSearcherRegEx(const wxString& searchText, bool ma
 bool TextFileSearcherRegEx::MatchLine(wxString line)
 {
     bool match = false;
-    if ( m_RegEx.IsValid() )
+
+    if (m_RegEx.IsValid())
     {
         match = m_RegEx.Matches(line.c_str());
     }
+
     return match;
 }
 
 
-bool TextFileSearcherRegEx::IsOk(wxString* pErrorMessage)
+bool TextFileSearcherRegEx::IsOk(wxString * pErrorMessage)
 {
     bool ok = m_RegEx.IsValid();
-    if ( !ok && pErrorMessage )
+
+    if (!ok && pErrorMessage)
     {
         *pErrorMessage = _T("Bad regular expression.");
     }
+
     return ok;
 }

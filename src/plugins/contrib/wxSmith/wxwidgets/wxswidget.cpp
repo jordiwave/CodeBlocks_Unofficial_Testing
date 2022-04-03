@@ -25,14 +25,13 @@
 #include <logmanager.h>
 
 wxsWidget::wxsWidget(
-    wxsItemResData* Data,
-    const wxsItemInfo* Info,
-    const wxsEventDesc* EventArray,
-    const wxsStyleSet* StyleSet,
+    wxsItemResData * Data,
+    const wxsItemInfo * Info,
+    const wxsEventDesc * EventArray,
+    const wxsStyleSet * StyleSet,
     long PropertiesFlags):
-    wxsItem(Data,Info,PropertiesFlags,EventArray,StyleSet)
+    wxsItem(Data, Info, PropertiesFlags, EventArray, StyleSet)
 {
-
 }
 
 void wxsWidget::OnEnumItemProperties(long Flags)
@@ -40,7 +39,7 @@ void wxsWidget::OnEnumItemProperties(long Flags)
     OnEnumWidgetProperties(Flags);
 }
 
-void wxsWidget::OnAddItemQPP(wxsAdvQPP* QPP)
+void wxsWidget::OnAddItemQPP(wxsAdvQPP * QPP)
 {
     OnAddWidgetQPP(QPP);
 }

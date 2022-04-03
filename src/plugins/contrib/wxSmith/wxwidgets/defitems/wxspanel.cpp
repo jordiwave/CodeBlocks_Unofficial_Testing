@@ -26,9 +26,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsPanel> Reg(_T("Panel"),wxsTContainer, _T("Standard"), 190);
+wxsRegisterItem<wxsPanel> Reg(_T("Panel"), wxsTContainer, _T("Standard"), 190);
 
-WXS_ST_BEGIN(wxsPanelStyles,_T("wxTAB_TRAVERSAL"))
+WXS_ST_BEGIN(wxsPanelStyles, _T("wxTAB_TRAVERSAL"))
 WXS_ST_CATEGORY("wxPanel")
 WXS_ST_DEFAULTS()
 WXS_ST_END()
@@ -39,25 +39,25 @@ WXS_EV_END()
 
 class PanelPreview: public wxsGridPanel
 {
-public:
+    public:
 
-    PanelPreview(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size,long style,bool IsRoot):
-        wxsGridPanel(parent,id,pos,size,style),
-        m_IsRoot(IsRoot)
-    {}
+        PanelPreview(wxWindow * parent, wxWindowID id, const wxPoint & pos, const wxSize & size, long style, bool IsRoot):
+            wxsGridPanel(parent, id, pos, size, style),
+            m_IsRoot(IsRoot)
+        {}
 
-private:
+    private:
 
-    bool DrawBorder()
-    {
-        return !m_IsRoot;
-    }
+        bool DrawBorder()
+        {
+            return !m_IsRoot;
+        }
 
-    bool m_IsRoot;
+        bool m_IsRoot;
 };
 }
 
-wxsPanel::wxsPanel(wxsItemResData* Data):
+wxsPanel::wxsPanel(wxsItemResData * Data):
     wxsContainer(
         Data,
         &Reg.Info,
@@ -67,39 +67,41 @@ wxsPanel::wxsPanel(wxsItemResData* Data):
 
 void wxsPanel::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/panel.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-        BuildSetupWindowCode();
-        AddChildrenCode();
-        return;
-    }
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/panel.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+            BuildSetupWindowCode();
+            AddChildrenCode();
+            return;
+        }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsPanel::OnBuildCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsPanel::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
-wxObject* wxsPanel::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsPanel::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxWindow* NewItem = 0;
-    if ( Flags & pfExact )
+    wxWindow * NewItem = 0;
+
+    if (Flags & pfExact)
     {
-        NewItem = new wxPanel(Parent,GetId(),Pos(Parent),Size(Parent),Style());
+        NewItem = new wxPanel(Parent, GetId(), Pos(Parent), Size(Parent), Style());
     }
     else
     {
-        NewItem = new PanelPreview(Parent,GetId(),Pos(Parent),Size(Parent),Style(),IsRootItem());
+        NewItem = new PanelPreview(Parent, GetId(), Pos(Parent), Size(Parent), Style(), IsRootItem());
     }
+
     NewItem->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-    SetupWindow(NewItem,Flags);
-    AddChildrenPreview(NewItem,Flags);
+    SetupWindow(NewItem, Flags);
+    AddChildrenPreview(NewItem, Flags);
     return NewItem;
 }
 

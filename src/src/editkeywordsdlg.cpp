@@ -10,14 +10,14 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-#include <wx/button.h>
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/spinctrl.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-#include <wx/wxscintilla.h>
-#include "editorcolourset.h"
+    #include <wx/button.h>
+    #include <wx/intl.h>
+    #include <wx/xrc/xmlres.h>
+    #include <wx/spinctrl.h>
+    #include <wx/stattext.h>
+    #include <wx/textctrl.h>
+    #include <wx/wxscintilla.h>
+    #include "editorcolourset.h"
 #endif
 
 #include "editkeywordsdlg.h"
@@ -27,16 +27,15 @@ BEGIN_EVENT_TABLE(EditKeywordsDlg, wxScrollingDialog)
     EVT_BUTTON(wxID_OK, EditKeywordsDlg::OnExit)
 END_EVENT_TABLE()
 
-EditKeywordsDlg::EditKeywordsDlg(wxWindow* parent, EditorColourSet* theme, HighlightLanguage lang, const wxArrayString& descr)
+EditKeywordsDlg::EditKeywordsDlg(wxWindow * parent, EditorColourSet * theme, HighlightLanguage lang, const wxArrayString & descr)
     : m_pTheme(theme),
       m_Lang(lang),
       m_LastSet(0),
       descriptions(descr)
 {
     //ctor
-    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditLangKeywords"),_T("wxScrollingDialog"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditLangKeywords"), _T("wxScrollingDialog"));
     XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
-
     spnSet      = XRCCTRL(*this, "spnSet",      wxSpinCtrl);
     txtKeywords = XRCCTRL(*this, "txtKeywords", wxTextCtrl);
     UpdateDlg();
@@ -47,16 +46,16 @@ EditKeywordsDlg::~EditKeywordsDlg()
     //dtor
 }
 
-void EditKeywordsDlg::OnExit(wxCommandEvent& event)
+void EditKeywordsDlg::OnExit(wxCommandEvent & event)
 {
     SaveKeywords(m_LastSet);
     event.Skip();
 }
 
-void EditKeywordsDlg::OnSetChange(cb_unused wxSpinEvent& event)
+void EditKeywordsDlg::OnSetChange(cb_unused wxSpinEvent & event)
 {
     SaveKeywords(m_LastSet);
-    m_LastSet = event.GetPosition()-1;
+    m_LastSet = event.GetPosition() - 1;
     UpdateDlg();
 }
 
@@ -72,9 +71,14 @@ void EditKeywordsDlg::SaveKeywords(int index)
 void EditKeywordsDlg::UpdateDlg()
 {
     txtKeywords->SetValue(m_pTheme->GetKeywords(m_Lang, m_LastSet));
-    wxStaticText* txtDescription = XRCCTRL(*this, "txtDescription", wxStaticText);
+    wxStaticText * txtDescription = XRCCTRL(*this, "txtDescription", wxStaticText);
+
     if ((size_t)m_LastSet < descriptions.GetCount())
+    {
         txtDescription->SetLabel(descriptions[m_LastSet] + ":");
+    }
     else
+    {
         txtDescription->SetLabel(_("Not highlighted keywords") + ":");
+    }
 }

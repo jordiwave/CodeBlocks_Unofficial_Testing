@@ -42,7 +42,7 @@ if we would want to get rid of the console window, which pops up when
 starting a program with main(), but to keep this example simple,
 we use main().
 */
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
     /*
     The most important function of the engine is the 'createDevice'
@@ -65,34 +65,29 @@ int main(int argc, char** argv)
     eventReceiver: An object to receive events. We do not want to use this
        parameter here, and set it to 0.
     */
-
-    IrrlichtDevice *device =
+    IrrlichtDevice * device =
         createDevice(EDT_SOFTWARE, dimension2d<s32>(640, 480), 16,
                      false, false, false, 0);
-
     /*
     Set the caption of the window to some nice text. Note that there is
     a 'L' in front of the string. The Irrlicht Engine uses wide character
     strings when displaying text.
     */
     device->setWindowCaption(L"Hello World! - Irrlicht Engine Demo");
-
     /*
     Get a pointer to the video driver, the SceneManager and the
     graphical user interface environment, so that
     we do not always have to write device->getVideoDriver(),
     device->getSceneManager() and device->getGUIEnvironment().
     */
-    IVideoDriver* driver = device->getVideoDriver();
-    ISceneManager* smgr = device->getSceneManager();
-    IGUIEnvironment* guienv = device->getGUIEnvironment();
-
+    IVideoDriver * driver = device->getVideoDriver();
+    ISceneManager * smgr = device->getSceneManager();
+    IGUIEnvironment * guienv = device->getGUIEnvironment();
     /*
     We add a hello world label to the window, using the GUI environment.
     */
     guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!",
-                          rect<int>(10,10,200,22), true);
-
+                          rect<int>(10, 10, 200, 22), true);
     /*
     To display something interesting, we load a Quake 2 model
     and display it. We only have to get the Mesh from the Scene
@@ -103,8 +98,8 @@ int main(int argc, char** argv)
     By the way, that cool Quake 2 model called sydney was modelled
     by Brian Collins.
     */
-    IAnimatedMesh* mesh = smgr->getMesh("../../media/sydney.md2");
-    IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode( mesh );
+    IAnimatedMesh * mesh = smgr->getMesh("../../media/sydney.md2");
+    IAnimatedMeshSceneNode * node = smgr->addAnimatedMeshSceneNode(mesh);
 
     /*
     To let the mesh look a little bit nicer, we change its material a
@@ -118,14 +113,14 @@ int main(int argc, char** argv)
     {
         node->setMaterialFlag(EMF_LIGHTING, false);
         node->setFrameLoop(0, 310);
-        node->setMaterialTexture( 0, driver->getTexture("../../media/sydney.bmp") );
+        node->setMaterialTexture(0, driver->getTexture("../../media/sydney.bmp"));
     }
 
     /*
     To look at the mesh, we place a camera into 3d space at the position
     (0, 30, -40). The camera looks from there to (0,5,0).
     */
-    smgr->addCameraSceneNode(0, vector3df(0,30,-40), vector3df(0,5,0));
+    smgr->addCameraSceneNode(0, vector3df(0, 30, -40), vector3df(0, 5, 0));
 
     /*
     Ok, now we have set up the scene, lets draw everything:
@@ -133,7 +128,7 @@ int main(int argc, char** argv)
     want to run any more. This would be when the user closed the window
     or pressed ALT+F4 in windows.
     */
-    while(device->run())
+    while (device->run())
     {
         /*
         Anything can be drawn between a beginScene() and an endScene()
@@ -142,11 +137,9 @@ int main(int argc, char** argv)
         GUI Environment draw their content. With the endScene() call
         everything is presented on the screen.
         */
-        driver->beginScene(true, true, SColor(0,200,200,200));
-
+        driver->beginScene(true, true, SColor(0, 200, 200, 200));
         smgr->drawAll();
         guienv->drawAll();
-
         driver->endScene();
     }
 
@@ -161,7 +154,6 @@ int main(int argc, char** argv)
     for more information.
     */
     device->drop();
-
     return 0;
 }
 

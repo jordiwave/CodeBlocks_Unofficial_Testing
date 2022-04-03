@@ -15,15 +15,15 @@ using dtl::Diff;
 using dtl::elemInfo;
 using dtl::uniHunk;
 
-static void showStats (string fp1, string fp2);
-static void unifiedDiff (string fp1, string fp2);
+static void showStats(string fp1, string fp2);
+static void unifiedDiff(string fp1, string fp2);
 
-static void showStats (string fp1, string fp2)
+static void showStats(string fp1, string fp2)
 {
     const int    MAX_LENGTH    = 255;
     char         time_format[] = "%Y-%m-%d %H:%M:%S %z";
     time_t       rawtime[2];
-    struct tm   *timeinfo[2];
+    struct tm  * timeinfo[2];
     struct stat  st[2];
 
     if (stat(fp1.c_str(), &st[0]) == -1)
@@ -31,6 +31,7 @@ static void showStats (string fp1, string fp2)
         cerr << "argv1 is invalid." << endl;
         exit(-1);
     }
+
     if (stat(fp2.c_str(), &st[1]) == -1)
     {
         cerr << "argv2 is invalid" << endl;
@@ -48,22 +49,22 @@ static void showStats (string fp1, string fp2)
     cout << "+++ " << fp2 << '\t' << buf[1] << endl;
 }
 
-static void unifiedDiff (string fp1, string fp2)
+static void unifiedDiff(string fp1, string fp2)
 {
     typedef string                 elem;
     typedef vector< elem >         sequence;
     typedef pair< elem, elemInfo > sesElem;
-
     ifstream      Aifs(fp1.c_str());
     ifstream      Bifs(fp2.c_str());
     elem          buf;
     sequence      ALines, BLines;
 
-    while(getline(Aifs, buf))
+    while (getline(Aifs, buf))
     {
         ALines.push_back(buf);
     }
-    while(getline(Bifs, buf))
+
+    while (getline(Bifs, buf))
     {
         BLines.push_back(buf);
     }
@@ -72,7 +73,6 @@ static void unifiedDiff (string fp1, string fp2)
     diff.onHuge();
     //diff.onUnserious();
     diff.compose();
-
     // type unihunk definition test
     uniHunk< sesElem > hunk;
 
@@ -86,7 +86,7 @@ static void unifiedDiff (string fp1, string fp2)
 }
 
 
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
     if (isFewArgs(argc))
     {

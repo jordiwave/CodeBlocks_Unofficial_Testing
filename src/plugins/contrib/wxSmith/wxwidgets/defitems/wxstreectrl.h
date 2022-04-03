@@ -29,22 +29,22 @@
 /** \brief Class for wxsTreeCtrl widget */
 class wxsTreeCtrl: public wxsWidget
 {
-public:
+    public:
 
-    wxsTreeCtrl(wxsItemResData* Data);
+        wxsTreeCtrl(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
-    void FindAllImageLists(wxArrayString &aNames);
-    void UpdateTreeItemList(void);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
+        void FindAllImageLists(wxArrayString & aNames);
+        void UpdateTreeItemList(void);
 
-    wxArrayString    m_arrItems;            //!< Individual items for the tree control.
-    wxString            m_sImageList;    //!< The name of the image list to use for images.
-    wxImageList        m_imageList;        //!< The image list.
-    bool                    m_bExpand;            //!< Start with everything expanded?
+        wxArrayString    m_arrItems;            //!< Individual items for the tree control.
+        wxString            m_sImageList;    //!< The name of the image list to use for images.
+        wxImageList        m_imageList;        //!< The image list.
+        bool                    m_bExpand;            //!< Start with everything expanded?
 
 };
 

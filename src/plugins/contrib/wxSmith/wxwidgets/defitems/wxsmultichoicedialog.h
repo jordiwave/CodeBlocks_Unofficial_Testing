@@ -28,18 +28,18 @@
 
 class wxsMultiChoiceDialog: public wxsTool
 {
-public:
+    public:
 
-    wxsMultiChoiceDialog(wxsItemResData* Data);
+        wxsMultiChoiceDialog(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual void OnEnumToolProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual void OnEnumToolProperties(long Flags);
 
-    wxString m_Message;
-    wxString m_Caption;
-    wxArrayString m_Content;
+        wxString m_Message;
+        wxString m_Caption;
+        wxArrayString m_Content;
 };
 
 #endif

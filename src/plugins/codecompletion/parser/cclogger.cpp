@@ -44,7 +44,7 @@ long           g_idCCDebugLogger      = wxNewId();
         {                                                            \
             f.AddLine(msg);                                          \
             bool exp = f.Write() && f.Close()                        \
-            cbAssert(exp);                                           \
+                       cbAssert(exp);                                           \
         }                                                            \
     }                                                                \
 
@@ -57,16 +57,18 @@ CCLogger::CCLogger() :
 {
 }
 
-/*static*/ CCLogger* CCLogger::Get()
+/*static*/ CCLogger * CCLogger::Get()
 {
     if (!s_Inst.get())
+    {
         s_Inst.reset(new CCLogger);
+    }
 
     return s_Inst.get();
 }
 
 // Initialized from CodeCompletion constructor
-void CCLogger::Init(wxEvtHandler* parent, int logId, int debugLogId, int addTokenId)
+void CCLogger::Init(wxEvtHandler * parent, int logId, int debugLogId, int addTokenId)
 {
     m_Parent     = parent;
     m_LogId      = logId;
@@ -74,9 +76,12 @@ void CCLogger::Init(wxEvtHandler* parent, int logId, int debugLogId, int addToke
     m_AddTokenId = addTokenId;
 }
 
-void CCLogger::AddToken(const wxString& msg)
+void CCLogger::AddToken(const wxString & msg)
 {
-    if (!m_Parent || m_AddTokenId<1) return;
+    if (!m_Parent || m_AddTokenId < 1)
+    {
+        return;
+    }
 
     CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_AddTokenId);
     evt.SetString(msg);
@@ -87,13 +92,18 @@ void CCLogger::AddToken(const wxString& msg)
 #endif
 }
 
-void CCLogger::Log(const wxString& msg)
+void CCLogger::Log(const wxString & msg)
 {
     //Could crash here; should check if shutting down
     if (Manager::IsAppShuttingDown())
+    {
         return;
+    }
 
-    if (!m_Parent || m_LogId<1) return;
+    if (!m_Parent || m_LogId < 1)
+    {
+        return;
+    }
 
     CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_LogId);
     evt.SetString(msg);
@@ -104,13 +114,18 @@ void CCLogger::Log(const wxString& msg)
 #endif
 }
 
-void CCLogger::DebugLog(const wxString& msg)
+void CCLogger::DebugLog(const wxString & msg)
 {
     // Could crash here; should check if shutting down
     if (Manager::IsAppShuttingDown())
+    {
         return;
+    }
 
-    if (!m_Parent || m_DebugLogId<1) return;
+    if (!m_Parent || m_DebugLogId < 1)
+    {
+        return;
+    }
 
     CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_DebugLogId);
     evt.SetString(msg);

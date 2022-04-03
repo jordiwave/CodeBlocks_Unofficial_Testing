@@ -1,6 +1,6 @@
 
 #ifdef __GNUG__
-// #pragma interface
+    // #pragma interface
 #endif
 
 //#include <wx/dcmemory.h>
@@ -14,7 +14,7 @@
 #include "NassiDiagramWindow.h"
 
 
-NassiDropTarget::NassiDropTarget(NassiDiagramWindow *window, NassiView *view):
+NassiDropTarget::NassiDropTarget(NassiDiagramWindow * window, NassiView * view):
     wxDropTarget(new NassiDataObject(nullptr, view)),
     m_window(window)
 {}
@@ -32,17 +32,17 @@ void NassiDropTarget::OnLeave()
 
 wxDragResult NassiDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult def)
 {
-    if ( !GetData() )
+    if (!GetData())
     {
-        wxMessageBox(_("Failed to get drag and drop data") );
+        wxMessageBox(_("Failed to get drag and drop data"));
         return wxDragNone;
     }
 
-    return m_window->OnDrop(wxPoint(x,y),
+    return m_window->OnDrop(wxPoint(x, y),
                             ((NassiDataObject *)GetDataObject())->GetBrick(),
                             ((NassiDataObject *)GetDataObject())->GetText(0),
                             ((NassiDataObject *)GetDataObject())->GetText(1),
-                            def );
+                            def);
 }
 
 wxDragResult NassiDropTarget::OnDragOver(wxCoord x, wxCoord y, wxDragResult def)

@@ -13,11 +13,11 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #include "wx/pdfpattern.h"
@@ -32,17 +32,18 @@ wxPdfPattern::wxPdfPattern(int index, double width, double height, int templateI
 {
 }
 
-wxPdfPattern::wxPdfPattern(int index, double width, double height, wxPdfPatternStyle patternStyle, const wxColour& drawColour, const wxColour& fillColour)
+wxPdfPattern::wxPdfPattern(int index, double width, double height, wxPdfPatternStyle patternStyle, const wxColour & drawColour, const wxColour & fillColour)
     : m_objIndex(0), m_index(index), m_width(width), m_height(height), m_patternStyle(patternStyle), m_drawColour(drawColour)
 {
     m_hasFillColour = fillColour.IsOk();
+
     if (m_hasFillColour)
     {
         m_fillColour = fillColour;
     }
 }
 
-wxPdfPattern::wxPdfPattern(const wxPdfPattern& pattern)
+wxPdfPattern::wxPdfPattern(const wxPdfPattern & pattern)
 {
     m_objIndex = pattern.m_objIndex;
     m_index    = pattern.m_index;

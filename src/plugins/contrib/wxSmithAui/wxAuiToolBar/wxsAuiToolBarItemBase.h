@@ -26,23 +26,23 @@
 /** \brief Base class for wxsAuiToolBarItem widgets */
 class wxsAuiToolBarItemBase: public wxsItem
 {
-public:
+    public:
 
-    wxWindowID m_ItemId;
-    long m_HasGripper;
-    int  m_GripperSize;
+        wxWindowID m_ItemId;
+        long m_HasGripper;
+        int  m_GripperSize;
 
-    wxsAuiToolBarItemBase(wxsItemResData* Data,const wxsItemInfo* Info,long PropertiesFlags,const wxsEventDesc* Events,const wxsStyleSet* StyleSet)
-        : wxsItem(Data,Info,PropertiesFlags,Events,StyleSet)
-    {}
+        wxsAuiToolBarItemBase(wxsItemResData * Data, const wxsItemInfo * Info, long PropertiesFlags, const wxsEventDesc * Events, const wxsStyleSet * StyleSet)
+            : wxsItem(Data, Info, PropertiesFlags, Events, StyleSet)
+        {}
 
-private:
+    private:
 
-    virtual void OnBuildDeclarationsCode() {};
-    virtual void OnBuildCreatingCode() {};
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumItemProperties(cb_unused long Flags) {};
-    virtual bool OnCanAddToParent(wxsParent* Parent,bool ShowMessage);
+        virtual void OnBuildDeclarationsCode() {};
+        virtual void OnBuildCreatingCode() {};
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumItemProperties(cb_unused long Flags) {};
+        virtual bool OnCanAddToParent(wxsParent * Parent, bool ShowMessage);
 };
 
 #endif

@@ -30,35 +30,35 @@
 /** \brief Base boolean property */
 class PLUGIN_EXPORT wxsBoolProperty: public wxsProperty
 {
-public:
+    public:
 
-    /** \brief Ctor
-     *  \param PGName   name of property in Property Grid
-     *  \param DataName name of property in data stuctures
-     *  \param Offset   offset of boolean (taken from wxsOFFSET macro)
-     *  \param Default  default value applied on read errors
-     */
-    wxsBoolProperty(const wxString& PGName,const wxString& DataName,long Offset,bool Default=0,int Priority=100);
+        /** \brief Ctor
+         *  \param PGName   name of property in Property Grid
+         *  \param DataName name of property in data stuctures
+         *  \param Offset   offset of boolean (taken from wxsOFFSET macro)
+         *  \param Default  default value applied on read errors
+         */
+        wxsBoolProperty(const wxString & PGName, const wxString & DataName, long Offset, bool Default = 0, int Priority = 100);
 
-    /** \brief Returning type name */
-    virtual const wxString GetTypeName()
-    {
-        return _T("bool");
-    }
+        /** \brief Returning type name */
+        virtual const wxString GetTypeName()
+        {
+            return _T("bool");
+        }
 
-protected:
+    protected:
 
-    virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
-    virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-    virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+        virtual void PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent);
+        virtual bool PGRead(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index);
+        virtual bool PGWrite(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index);
+        virtual bool XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
+        virtual bool PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
 
-private:
-    long Offset;
-    bool Default;
+    private:
+        long Offset;
+        bool Default;
 };
 
 /** \addtogroup properties_macros Macros automatically defining standard properties
@@ -73,7 +73,7 @@ private:
  */
 #define WXS_BOOL(ClassName,VarName,PGName,DataName,Default) \
     { static wxsBoolProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Default); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \brief Macro automatically declaring boolean property with custom priority
  *  \param ClassName name of class holding this property
@@ -85,7 +85,7 @@ private:
  */
 #define WXS_BOOL_P(ClassName,VarName,PGName,DataName,Default,Priority) \
     { static wxsBoolProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Default,Priority); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \brief Macro automatically declaring boolean property with help string (tooltip)
  *  \param ClassName name of class holding this property
@@ -97,8 +97,8 @@ private:
  */
 #define WXS_BOOL_T(ClassName,VarName,PGName,DataName,Default,HelpString) \
     { static wxsBoolProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Default); \
-      _Property.SetHelpString(HelpString); \
-      Property(_Property); }
+        _Property.SetHelpString(HelpString); \
+        Property(_Property); }
 
 /** \brief Macro automatically declaring boolean property with custom priority and help string (tooltip)
  *  \param ClassName name of class holding this property
@@ -111,8 +111,8 @@ private:
  */
 #define WXS_BOOL_PT(ClassName,VarName,PGName,DataName,Default,Priority,HelpString) \
     { static wxsBoolProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Default,Priority); \
-      _Property.SetHelpString(HelpString); \
-      Property(_Property); }
+        _Property.SetHelpString(HelpString); \
+        Property(_Property); }
 
 /** \} */
 

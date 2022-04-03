@@ -35,25 +35,25 @@ wxsItemResDataObject::~wxsItemResDataObject()
 {
 }
 
-void wxsItemResDataObject::GetAllFormats(wxDataFormat *formats, cb_unused Direction dir) const
+void wxsItemResDataObject::GetAllFormats(wxDataFormat * formats, cb_unused Direction dir) const
 {
     formats[0] = wxDataFormat(wxDF_TEXT);
     formats[1] = wxDataFormat(wxsDF_WIDGET);
 }
 
-bool wxsItemResDataObject::GetDataHere(cb_unused const wxDataFormat& format,void *buf) const
+bool wxsItemResDataObject::GetDataHere(cb_unused const wxDataFormat & format, void * buf) const
 {
     wxString XmlData = GetXmlData();
     const wxWX2MBbuf str = cbU2C(XmlData);
-    memcpy(buf,str,strlen(str)+1);
+    memcpy(buf, str, strlen(str) + 1);
     return true;
 }
 
-size_t wxsItemResDataObject::GetDataSize(cb_unused const wxDataFormat& format) const
+size_t wxsItemResDataObject::GetDataSize(cb_unused const wxDataFormat & format) const
 {
     wxString XmlData = GetXmlData();
     const wxWX2MBbuf str = cbU2C(XmlData);
-    return strlen(str)+1;
+    return strlen(str) + 1;
 }
 
 size_t wxsItemResDataObject::GetFormatCount(cb_unused Direction dir) const
@@ -66,14 +66,12 @@ wxDataFormat wxsItemResDataObject::GetPreferredFormat(cb_unused Direction dir) c
     return wxDataFormat(wxsDF_WIDGET);
 }
 
-bool wxsItemResDataObject::SetData(cb_unused const wxDataFormat& format, size_t len, const void *buf)
+bool wxsItemResDataObject::SetData(cb_unused const wxDataFormat & format, size_t len, const void * buf)
 {
-    char* CharBuff = new char[len+1];
-    memcpy(CharBuff,buf,len);
-
+    char * CharBuff = new char[len + 1];
+    memcpy(CharBuff, buf, len);
     // Just to make sure we won't go out of buffer
     CharBuff[len] = '\0';
-
     bool Ret = SetXmlData(cbC2U(CharBuff));
     delete[] CharBuff;
     return Ret;
@@ -86,16 +84,26 @@ void wxsItemResDataObject::Clear()
     m_ItemCount = 0;
 }
 
-bool wxsItemResDataObject::AddItem(wxsItem* Item)
+bool wxsItemResDataObject::AddItem(wxsItem * Item)
 {
-    if ( !Item ) return false;
-    TiXmlElement* Elem = m_XmlElem->InsertEndChild(TiXmlElement("object"))->ToElement();
-    if ( !Elem ) return false;
-    if ( !Item->XmlWrite(Elem,true,true) )
+    if (!Item)
+    {
+        return false;
+    }
+
+    TiXmlElement * Elem = m_XmlElem->InsertEndChild(TiXmlElement("object"))->ToElement();
+
+    if (!Elem)
+    {
+        return false;
+    }
+
+    if (!Item->XmlWrite(Elem, true, true))
     {
         m_XmlElem->RemoveChild(Elem);
         return false;
     }
+
     m_ItemCount++;
     return true;
 }
@@ -105,38 +113,61 @@ int wxsItemResDataObject::GetItemCount() const
     return m_ItemCount;
 }
 
-wxsItem* wxsItemResDataObject::BuildItem(wxsItemResData* Data,int Index) const
+wxsItem * wxsItemResDataObject::BuildItem(wxsItemResData * Data, int Index) const
 {
-    if ( Index < 0 || Index >= m_ItemCount ) return 0;
+    if (Index < 0 || Index >= m_ItemCount)
+    {
+        return 0;
+    }
 
-    TiXmlElement* Root = m_XmlElem->FirstChildElement("object");
-    if ( !Root ) return 0;
-    while ( Index )
+    TiXmlElement * Root = m_XmlElem->FirstChildElement("object");
+
+    if (!Root)
+    {
+        return 0;
+    }
+
+    while (Index)
     {
         Index--;
         Root = Root->NextSiblingElement("object");
-        if ( !Root ) return 0;
-    }
-    const char* Class = Root->Attribute("class");
-    if ( !Class || !*Class ) return 0;
 
-    wxsItem* Item = wxsItemFactory::Build(cbC2U(Class),Data);
-    if ( !Item )
+        if (!Root)
+        {
+            return 0;
+        }
+    }
+
+    const char * Class = Root->Attribute("class");
+
+    if (!Class || !*Class)
     {
-        Item = wxsItemFactory::Build(_T("Custom"),Data);
-        if ( !Item ) return 0;
+        return 0;
     }
 
-    Item->XmlRead(Root,true,true);
+    wxsItem * Item = wxsItemFactory::Build(cbC2U(Class), Data);
+
+    if (!Item)
+    {
+        Item = wxsItemFactory::Build(_T("Custom"), Data);
+
+        if (!Item)
+        {
+            return 0;
+        }
+    }
+
+    Item->XmlRead(Root, true, true);
     return Item;
 }
 
-bool wxsItemResDataObject::SetXmlData(const wxString& Data)
+bool wxsItemResDataObject::SetXmlData(const wxString & Data)
 {
     m_XmlDoc.Clear();
     m_ItemCount = 0;
     m_XmlDoc.Parse(cbU2C(Data));
-    if ( m_XmlDoc.Error() )
+
+    if (m_XmlDoc.Error())
     {
         Manager::Get()->GetLogManager()->DebugLog(_T("wxSmith: Error loading Xml data -> ") + cbC2U(m_XmlDoc.ErrorDesc()));
         Clear();
@@ -144,15 +175,16 @@ bool wxsItemResDataObject::SetXmlData(const wxString& Data)
     }
 
     m_XmlElem = m_XmlDoc.FirstChildElement("resource");
-    if ( !m_XmlElem )
+
+    if (!m_XmlElem)
     {
         Clear();
         return false;
     }
 
-    for ( TiXmlElement* Elem = m_XmlElem->FirstChildElement("object");
+    for (TiXmlElement * Elem = m_XmlElem->FirstChildElement("object");
             Elem;
-            Elem = Elem->NextSiblingElement("object") )
+            Elem = Elem->NextSiblingElement("object"))
     {
         m_ItemCount++;
     }

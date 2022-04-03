@@ -12,22 +12,22 @@
 
 class DLLIMPORT EditArrayStringDlg : public wxScrollingDialog
 {
-public:
-    EditArrayStringDlg(wxWindow* parent, wxArrayString& array);
-    ~EditArrayStringDlg() override;
-    EditArrayStringDlg& operator=(const EditArrayStringDlg&)
-    {
-        return *this;    // just to satisfy script bindings (never used)
-    }
-    void EndModal(int retCode) override;
-protected:
-    void OnAdd(wxCommandEvent& event);
-    void OnEdit(wxCommandEvent& event);
-    void OnDelete(wxCommandEvent& event);
-    void OnUpdateUI(wxUpdateUIEvent& event);
-    wxArrayString& m_Array;
-private:
-    DECLARE_EVENT_TABLE()
+    public:
+        EditArrayStringDlg(wxWindow * parent, wxArrayString & array);
+        ~EditArrayStringDlg() override;
+        EditArrayStringDlg & operator=(const EditArrayStringDlg &)
+        {
+            return *this;    // just to satisfy script bindings (never used)
+        }
+        void EndModal(int retCode) override;
+    protected:
+        void OnAdd(wxCommandEvent & event);
+        void OnEdit(wxCommandEvent & event);
+        void OnDelete(wxCommandEvent & event);
+        void OnUpdateUI(wxUpdateUIEvent & event);
+        wxArrayString & m_Array;
+    private:
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // EDITARRAYSTRINGDLG_H

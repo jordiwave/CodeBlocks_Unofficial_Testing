@@ -23,7 +23,7 @@ DLLIMPORT void AddDefaultFileFilters();
   * @param mask The extension masks comma-separated string (i.e. "*.cpp,*.c").
   * @return True if added sucessfully, false if not (i.e. empty arguments).
   */
-DLLIMPORT bool Add(const wxString& name, const wxString& mask);
+DLLIMPORT bool Add(const wxString & name, const wxString & mask);
 
 /** @brief Generates and returns the filter string for use
   * in file dialogs.
@@ -32,7 +32,7 @@ DLLIMPORT bool Add(const wxString& name, const wxString& mask);
   * if you want, but it *cannot* be just the extension (without the separating dot).
   * @return The filter string.
   */
-DLLIMPORT wxString GetFilterString(const wxString& ext = wxEmptyString);
+DLLIMPORT wxString GetFilterString(const wxString & ext = wxEmptyString);
 
 /** @brief Generates a simple special filter "All files". No other filters are added.
   * @return the "All files" filter.
@@ -51,7 +51,7 @@ DLLIMPORT size_t GetIndexForFilterAll();
   * @param FilterName Receives the filters name if found
   * @return filter found : yes/no.
   */
-DLLIMPORT bool GetFilterNameFromIndex(const wxString& FiltersList, int Index, wxString& FilterName);
+DLLIMPORT bool GetFilterNameFromIndex(const wxString & FiltersList, int Index, wxString & FilterName);
 
 /** @brief Get the index of the filter 'FilterName' in the FiltersList
   * @param FiltersList The list of Filters
@@ -59,7 +59,7 @@ DLLIMPORT bool GetFilterNameFromIndex(const wxString& FiltersList, int Index, wx
   * @param Index Receives the index of the filter if found
   * @return filter found : yes/no.
   */
-DLLIMPORT bool GetFilterIndexFromName(const wxString& FiltersList, const wxString& FilterName, int& Index);
+DLLIMPORT bool GetFilterIndexFromName(const wxString & FiltersList, const wxString & FilterName, int & Index);
 
 // file extension constants
 // *just* the extension, e.g. "exe"

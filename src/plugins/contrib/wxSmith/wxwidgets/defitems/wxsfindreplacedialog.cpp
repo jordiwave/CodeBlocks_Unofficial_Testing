@@ -55,7 +55,7 @@ WXS_EV_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsFindReplaceDialog::wxsFindReplaceDialog(wxsItemResData *Data):
+wxsFindReplaceDialog::wxsFindReplaceDialog(wxsItemResData * Data):
     wxsTool(Data,
             &Reg.Info,
             wxsFindReplaceDialogEvents,
@@ -74,24 +74,22 @@ void wxsFindReplaceDialog::OnBuildCreatingCode()
 {
     wxString sfindReplaceData;
     wxString sNote(_("// NOTE: In order for events to connect properly you must set the ID of this wxFindReplaceDialog to -1 in wxSmith."));
-    switch(GetLanguage())
+
+    switch (GetLanguage())
     {
-    case wxsCPP:
-        AddHeader(_T("<wx/fdrepdlg.h>"), GetInfo().ClassName, 0);
+        case wxsCPP:
+            AddHeader(_T("<wx/fdrepdlg.h>"), GetInfo().ClassName, 0);
+            sfindReplaceData = GetCoderContext()->GetUniqueName(_T("findReplaceData"));
+            AddDeclaration(wxString::Format(wxT("wxFindReplaceData %s;"), sfindReplaceData.wx_str()));
+            Codef(_T("\t%s\n"), sNote.wx_str());
+            Codef(_T("%C(%W, &%s, %t, %T);\n"), sfindReplaceData.wx_str(), m_sCaption.wx_str());
+            BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+            break;
 
-        sfindReplaceData = GetCoderContext()->GetUniqueName(_T("findReplaceData"));
-        AddDeclaration(wxString::Format(wxT("wxFindReplaceData %s;"), sfindReplaceData.wx_str()));
-
-        Codef(_T("\t%s\n"), sNote.wx_str());
-        Codef(_T("%C(%W, &%s, %t, %T);\n"), sfindReplaceData.wx_str(), m_sCaption.wx_str());
-
-        BuildSetupWindowCode();
-        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-        break;
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsFindReplaceDialog::OnBuildCreatingCode"), GetLanguage());
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsFindReplaceDialog::OnBuildCreatingCode"), GetLanguage());
     }
 }
 

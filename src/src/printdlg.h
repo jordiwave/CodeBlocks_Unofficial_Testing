@@ -11,15 +11,15 @@
 
 class PrintDialog : public wxScrollingDialog
 {
-public:
-    PrintDialog(wxWindow* parent);
-    ~PrintDialog() override;
+    public:
+        PrintDialog(wxWindow * parent);
+        ~PrintDialog() override;
 
-    void EndModal(int retCode) override;
+        void EndModal(int retCode) override;
 
-    PrintScope GetPrintScope() const;
-    PrintColourMode GetPrintColourMode() const;
-    bool GetPrintLineNumbers() const;
+        PrintScope GetPrintScope() const;
+        PrintColourMode GetPrintColourMode() const;
+        bool GetPrintLineNumbers() const;
 };
 
 #endif // PRINTDLG_H

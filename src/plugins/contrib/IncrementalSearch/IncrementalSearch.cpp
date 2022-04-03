@@ -14,16 +14,16 @@
 #include "IncrementalSearch.h"
 
 #ifndef CB_PRECOMP
-#include <wx/menu.h>
-#include <wx/settings.h>
-#include <wx/toolbar.h>
-#include <wx/textctrl.h>
-#include <wx/xrc/xmlres.h>
+    #include <wx/menu.h>
+    #include <wx/settings.h>
+    #include <wx/toolbar.h>
+    #include <wx/textctrl.h>
+    #include <wx/xrc/xmlres.h>
 
-#include <configmanager.h>
-#include <editormanager.h>
-#include <cbeditor.h>
-#include <logmanager.h>
+    #include <configmanager.h>
+    #include <editormanager.h>
+    #include <cbeditor.h>
+    #include <logmanager.h>
 #endif
 
 #include <wx/combo.h>
@@ -46,85 +46,83 @@ class cbIncSearchComboPopUp :
     public wxListBox,
     public wxComboPopup
 {
-public:
+    public:
 
-    // Create popup control
-    virtual bool Create(wxWindow* parent)
-    {
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-        wxArrayString choices = cfg->ReadArrayString(_T("/incremental_search/last_searched_items"));
-        m_MaxHistoryLen = cfg->ReadInt(_T("/incremental_search/max_items_in_history"),20);
-
-        return wxListBox::Create(parent,wxID_ANY,wxPoint(0,0),wxSize(250,-1), choices, wxLB_SINGLE);
-    }
-
-    virtual wxWindow *GetControl()
-    {
-        return this;
-    }
-
-    virtual void SetStringValue(const wxString& s)
-    {
-        if (s.Length() > 0)
+        // Create popup control
+        virtual bool Create(wxWindow * parent)
         {
-            // Search item index
-            int index = FindString(s);
+            ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("editor"));
+            wxArrayString choices = cfg->ReadArrayString(_T("/incremental_search/last_searched_items"));
+            m_MaxHistoryLen = cfg->ReadInt(_T("/incremental_search/max_items_in_history"), 20);
+            return wxListBox::Create(parent, wxID_ANY, wxPoint(0, 0), wxSize(250, -1), choices, wxLB_SINGLE);
+        }
 
-            // Removes item if already in combos box
-            if ( index != wxNOT_FOUND )
+        virtual wxWindow * GetControl()
+        {
+            return this;
+        }
+
+        virtual void SetStringValue(const wxString & s)
+        {
+            if (s.Length() > 0)
             {
-                Delete(index);
-            }
+                // Search item index
+                int index = FindString(s);
 
-            // Removes last item if max nb item is reached
-            if ( GetCount() >= m_MaxHistoryLen)
+                // Removes item if already in combos box
+                if (index != wxNOT_FOUND)
+                {
+                    Delete(index);
+                }
+
+                // Removes last item if max nb item is reached
+                if (GetCount() >= m_MaxHistoryLen)
+                {
+                    // Removes last one
+                    Delete(GetCount() - 1);
+                }
+
+                // Adds it to combos
+                Insert(s, 0);
+                Select(0);
+            }
+        }
+
+        virtual wxString GetStringValue() const
+        {
+            return wxListBox::GetStringSelection();
+        }
+
+        void SetMaxHistoryLen(int len)
+        {
+            m_MaxHistoryLen = len;
+
+            // Removes last item until max len is reached
+            while (GetCount() > m_MaxHistoryLen)
             {
                 // Removes last one
-                Delete(GetCount()-1);
+                Delete(GetCount() - 1);
             }
-
-            // Adds it to combos
-            Insert(s, 0);
-            Select(0);
         }
-    }
-
-    virtual wxString GetStringValue() const
-    {
-        return wxListBox::GetStringSelection();
-    }
-
-    void SetMaxHistoryLen(int len)
-    {
-        m_MaxHistoryLen = len;
-        // Removes last item until max len is reached
-        while ( GetCount() > m_MaxHistoryLen)
+    private:
+        // Do mouse hot-tracking (which is typical in list popups)
+        // and needed for wxMSW
+        void OnMouseMove(wxMouseEvent & event)
         {
-            // Removes last one
-            Delete(GetCount()-1);
+            SetSelection(HitTest(wxPoint(event.GetX(), event.GetY())));
         }
-    }
-private:
-    // Do mouse hot-tracking (which is typical in list popups)
-    // and needed for wxMSW
-    void OnMouseMove(wxMouseEvent& event)
-    {
-        SetSelection(HitTest(wxPoint(event.GetX(), event.GetY())));
-    }
 
-    // On mouse left up, set the value and close the popup
-    void OnMouseClick(cb_unused wxMouseEvent& event)
-    {
-        Dismiss();
+        // On mouse left up, set the value and close the popup
+        void OnMouseClick(cb_unused wxMouseEvent & event)
+        {
+            Dismiss();
+            wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, idIncSearchCombo);
+            Manager::Get()->GetAppFrame()->GetEventHandler()->ProcessEvent(evt);
+        }
 
-        wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, idIncSearchCombo);
-        Manager::Get()->GetAppFrame()->GetEventHandler()->ProcessEvent(evt);
+        unsigned int m_MaxHistoryLen;
 
-    }
-
-    unsigned int m_MaxHistoryLen;
-
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 BEGIN_EVENT_TABLE(cbIncSearchComboPopUp, wxListBox)
@@ -151,7 +149,7 @@ END_EVENT_TABLE()
 // constructor
 IncrementalSearch::IncrementalSearch():
     m_SearchText(wxEmptyString),
-    m_textCtrlBG_Default( wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW) ),
+    m_textCtrlBG_Default(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)),
     m_pToolbar(nullptr),
     m_pTextCtrl(nullptr),
     m_pEditor(nullptr),
@@ -192,39 +190,37 @@ void IncrementalSearch::OnAttach()
     // You should check for it in other functions, because if it
     // is FALSE, it means that the application did *not* "load"
     // (see: does not need) this plugin...
-
     {
         const wxString prefix = ConfigManager::GetDataFolder() + wxT("/IncrementalSearch.zip#zip:/images");
         m_ArtProvider = new cbArtProvider(prefix);
-
         m_ArtProvider->AddMapping(wxT("incremental_search/highlight"), wxT("incsearchhighlight.png"));
         m_ArtProvider->AddMapping(wxT("incremental_search/selected_only"), wxT("incsearchselectedonly.png"));
         m_ArtProvider->AddMapping(wxT("incremental_search/case"), wxT("incsearchcase.png"));
         m_ArtProvider->AddMapping(wxT("incremental_search/regex"), wxT("incsearchregex.png"));
-
         wxArtProvider::Push(m_ArtProvider);
     }
-
     m_pEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
+    wxMenuBar * mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
+
     if (mbar->FindItem(idIncSearchFocus)) // if BuildMenu is called afterwards this may not exist yet
+    {
         mbar->Enable(idIncSearchFocus, m_pEditor && m_pEditor->GetControl());
+    }
 
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<IncrementalSearch, CodeBlocksEvent>(this, &IncrementalSearch::OnEditorEvent));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_DEACTIVATED, new cbEventFunctor<IncrementalSearch, CodeBlocksEvent>(this, &IncrementalSearch::OnEditorEvent));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<IncrementalSearch, CodeBlocksEvent>(this, &IncrementalSearch::OnEditorEvent));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<IncrementalSearch, CodeBlocksEvent>(this, &IncrementalSearch::OnEditorEvent));
-
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-    int sel=-1;
-    sel = cfg->ReadInt(_T("/incremental_search/highlight_default_state"),0);
-    m_Highlight = (sel == 1) || ((sel == 2) && cfg->ReadBool(_T("/incremental_search/highlight_all_occurrences"),false));
-    sel = cfg->ReadInt(_T("/incremental_search/selected_default_state"),0);
-    m_SelectedOnly = (sel == 1) || ((sel == 2) && cfg->ReadBool(_T("/incremental_search/search_selected_only"),false));
-    sel = cfg->ReadInt(_T("/incremental_search/match_case_default_state"),0);
-    m_flags |= ((sel == 1) || ((sel == 2) && cfg->ReadInt(_T("/incremental_search/match_case"),false)))?wxSCI_FIND_MATCHCASE:0;
-    sel = cfg->ReadInt(_T("/incremental_search/regex_default_state"),0);
-    m_flags |= ((sel == 1) || ((sel == 2) && cfg->ReadInt(_T("/incremental_search/regex"),false)))?wxSCI_FIND_REGEXP:0;
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("editor"));
+    int sel = -1;
+    sel = cfg->ReadInt(_T("/incremental_search/highlight_default_state"), 0);
+    m_Highlight = (sel == 1) || ((sel == 2) && cfg->ReadBool(_T("/incremental_search/highlight_all_occurrences"), false));
+    sel = cfg->ReadInt(_T("/incremental_search/selected_default_state"), 0);
+    m_SelectedOnly = (sel == 1) || ((sel == 2) && cfg->ReadBool(_T("/incremental_search/search_selected_only"), false));
+    sel = cfg->ReadInt(_T("/incremental_search/match_case_default_state"), 0);
+    m_flags |= ((sel == 1) || ((sel == 2) && cfg->ReadInt(_T("/incremental_search/match_case"), false))) ? wxSCI_FIND_MATCHCASE : 0;
+    sel = cfg->ReadInt(_T("/incremental_search/regex_default_state"), 0);
+    m_flags |= ((sel == 1) || ((sel == 2) && cfg->ReadInt(_T("/incremental_search/regex"), false))) ? wxSCI_FIND_REGEXP : 0;
 }
 
 void IncrementalSearch::OnRelease(bool /*appShutDown*/)
@@ -234,44 +230,49 @@ void IncrementalSearch::OnRelease(bool /*appShutDown*/)
     // which means you must not use any of the SDK Managers
     // NOTE: after this function, the inherited member variable
     // m_IsAttached will be FALSE...
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-    if (cfg->ReadInt(_T("/incremental_search/highlight_default_state"),0) == 2)
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("editor"));
+
+    if (cfg->ReadInt(_T("/incremental_search/highlight_default_state"), 0) == 2)
     {
-        cfg->Write(_T("/incremental_search/highlight_all_occurrences"),m_Highlight);
+        cfg->Write(_T("/incremental_search/highlight_all_occurrences"), m_Highlight);
     }
-    if (cfg->ReadInt(_T("/incremental_search/selected_default_state"),0) == 2)
+
+    if (cfg->ReadInt(_T("/incremental_search/selected_default_state"), 0) == 2)
     {
-        cfg->Write(_T("/incremental_search/search_selected_only"),m_SelectedOnly);
+        cfg->Write(_T("/incremental_search/search_selected_only"), m_SelectedOnly);
     }
-    if (cfg->ReadInt(_T("/incremental_search/match_case_default_state"),0) == 2)
+
+    if (cfg->ReadInt(_T("/incremental_search/match_case_default_state"), 0) == 2)
     {
-        cfg->Write(_T("/incremental_search/match_case"),m_flags & wxSCI_FIND_MATCHCASE);
+        cfg->Write(_T("/incremental_search/match_case"), m_flags & wxSCI_FIND_MATCHCASE);
     }
-    if (cfg->ReadInt(_T("/incremental_search/regex_default_state"),0) == 2)
+
+    if (cfg->ReadInt(_T("/incremental_search/regex_default_state"), 0) == 2)
     {
-        cfg->Write(_T("/incremental_search/regex"),m_flags & wxSCI_FIND_REGEXP);
+        cfg->Write(_T("/incremental_search/regex"), m_flags & wxSCI_FIND_REGEXP);
     }
+
     cfg->Write(_T("/incremental_search/last_searched_items"), m_pChoice->GetStrings());
     m_pTextCtrl->Disconnect(wxEVT_KEY_DOWN);
     m_pTextCtrl->Disconnect(wxEVT_KILL_FOCUS);
-
     wxArtProvider::Delete(m_ArtProvider);
     m_ArtProvider = nullptr;
-
     // TODO : KILLERBOT : menu entries should be removed, right ?????
     // TODO : JENS : no, the menubar gets recreated after a plugin changes (install, uninstall or unload), see MainFrame::PluginsUpdated(plugin, status)
 }
 
-cbConfigurationPanel* IncrementalSearch::GetConfigurationPanel(wxWindow* parent)
+cbConfigurationPanel * IncrementalSearch::GetConfigurationPanel(wxWindow * parent)
 {
-    if ( !IsAttached() )
+    if (!IsAttached())
+    {
         return NULL;
+    }
 
-    IncrementalSearchConfDlg* cfg = new IncrementalSearchConfDlg(parent);
+    IncrementalSearchConfDlg * cfg = new IncrementalSearchConfDlg(parent);
     return cfg;
 }
 
-void IncrementalSearch::BuildMenu(wxMenuBar* menuBar)
+void IncrementalSearch::BuildMenu(wxMenuBar * menuBar)
 {
     //The application is offering its menubar for your plugin,
     //to add any menu items you want...
@@ -281,27 +282,28 @@ void IncrementalSearch::BuildMenu(wxMenuBar* menuBar)
     {
         return;
     }
+
     int idx = menuBar->FindMenu(_("Sea&rch"));
+
     if (idx != wxNOT_FOUND)
     {
-        wxMenu* menu = menuBar->GetMenu(idx);
-        wxMenuItemList& items = menu->GetMenuItems();
-        wxMenuItem* itemTmp = new wxMenuItem(   menu,
-                                                idIncSearchFocus,
-                                                _("&Incremental search\tCtrl-I"),
-                                                _("Set focus on Incremental Search input and show the toolbar, if hidden") );
-
+        wxMenu * menu = menuBar->GetMenu(idx);
+        wxMenuItemList & items = menu->GetMenuItems();
+        wxMenuItem * itemTmp = new wxMenuItem(menu,
+                                              idIncSearchFocus,
+                                              _("&Incremental search\tCtrl-I"),
+                                              _("Set focus on Incremental Search input and show the toolbar, if hidden"));
         const int imageSize = Manager::Get()->GetImageSize(Manager::UIComponent::Menus);
         const double uiScale = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::Menus);
         const wxString prefix = ConfigManager::GetDataFolder()
                                 + wxString::Format(wxT("/IncrementalSearch.zip#zip:/images/%dx%d/"),
-                                        imageSize, imageSize);
+                                                   imageSize, imageSize);
         wxBitmap image = cbLoadBitmapScaled(prefix + wxT("incsearchfocus.png"), wxBITMAP_TYPE_PNG,
                                             uiScale);
         itemTmp->SetBitmap(image);
-
         // find "Find previous" and insert after it
         size_t i = 0;
+
         for (i = 0; i < items.GetCount(); ++i)
         {
             if (items[i]->GetLabelText(items[i]->GetItemLabelText()) == _("Find previous"))
@@ -310,78 +312,83 @@ void IncrementalSearch::BuildMenu(wxMenuBar* menuBar)
                 break;
             }
         }
+
         // if not found, just append with seperator
-        if(i == items.GetCount())
+        if (i == items.GetCount())
         {
             menu->InsertSeparator(i++);
         }
+
         menu->Insert(i, itemTmp);
         menuBar->Enable(idIncSearchFocus, m_pEditor && m_pEditor->GetControl());
     }
 }
 
-void IncrementalSearch::OnEditorEvent(CodeBlocksEvent& event)
+void IncrementalSearch::OnEditorEvent(CodeBlocksEvent & event)
 {
     if (!m_pToolbar || !m_pComboCtrl || !m_pTextCtrl) // skip if toolBar is not (yet) build
     {
         event.Skip();
         return;
     }
+
     m_pEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     m_pComboCtrl->Enable(m_pEditor && m_pEditor->GetControl());
-    wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
+    wxMenuBar * mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
     mbar->Enable(idIncSearchFocus, m_pComboCtrl->IsEnabled());
-
     m_pToolbar->EnableTool(XRCID("idIncSearchClear"), !m_SearchText.empty());
 
     if (m_pComboCtrl->IsEnabled())
     {
-        m_SearchText=m_pTextCtrl->GetValue();
+        m_SearchText = m_pTextCtrl->GetValue();
         m_pToolbar->EnableTool(XRCID("idIncSearchPrev"), !m_SearchText.empty() && ((m_flags & wxSCI_FIND_REGEXP) == 0));
         m_pToolbar->EnableTool(XRCID("idIncSearchNext"), !m_SearchText.empty());
-        m_NewPos=m_pEditor->GetControl()->GetCurrentPos();
-        m_OldPos=m_NewPos;
+        m_NewPos = m_pEditor->GetControl()->GetCurrentPos();
+        m_OldPos = m_NewPos;
     }
     else
     {
         m_pToolbar->EnableTool(XRCID("idIncSearchPrev"), false);
         m_pToolbar->EnableTool(XRCID("idIncSearchNext"), false);
     }
+
     event.Skip();
 }
 
-bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
+bool IncrementalSearch::BuildToolBar(wxToolBar * toolBar)
 {
     //The application is offering its toolbar for your plugin,
     //to add any toolbar items you want...
     //Append any items you need on the toolbar...
-//    return false;
+    //    return false;
     //Build toolbar
     if (!m_IsAttached || !toolBar)
     {
         return false;
     }
+
     Manager::Get()->AddonToolBar(toolBar, _T("incremental_search_toolbar"));
     m_pToolbar = toolBar;
     m_pToolbar->EnableTool(XRCID("idIncSearchClear"), false);
     m_pToolbar->EnableTool(XRCID("idIncSearchPrev"), false);
     m_pToolbar->EnableTool(XRCID("idIncSearchNext"), false);
     m_pToolbar->SetInitialSize();
-
     m_pComboCtrl = new wxComboCtrl(toolBar, idIncSearchCombo, wxEmptyString, wxDefaultPosition,
-                                   wxSize(160,-1), wxTE_PROCESS_ENTER);
+                                   wxSize(160, -1), wxTE_PROCESS_ENTER);
+
     if (m_pComboCtrl)
     {
         m_pToolbar->InsertControl(1, m_pComboCtrl);
         m_pToolbar->Realize();
         m_pTextCtrl = m_pComboCtrl->GetTextCtrl();
+
         if (m_pTextCtrl)
         {
-            m_pTextCtrl->SetWindowStyleFlag(wxTE_PROCESS_ENTER|wxTE_NOHIDESEL|wxBORDER_NONE);
+            m_pTextCtrl->SetWindowStyleFlag(wxTE_PROCESS_ENTER | wxTE_NOHIDESEL | wxBORDER_NONE);
             m_pChoice = new cbIncSearchComboPopUp();
             m_pComboCtrl->SetPopupControl(m_pChoice);
             m_pTextCtrl->Connect(wxEVT_KEY_DOWN,
-                                 (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
+                                 (wxObjectEventFunction)(wxEventFunction)(wxCharEventFunction)
                                  &IncrementalSearch::OnKeyDown, 0, this);
             m_pTextCtrl->Connect(wxEVT_KILL_FOCUS,
                                  (wxObjectEventFunction)(wxEventFunction)(wxFocusEventFunction)
@@ -393,84 +400,94 @@ bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
             m_pTextCtrl->Connect(wxEVT_COMMAND_TEXT_ENTER,
                                  (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
                                  &IncrementalSearch::OnSearchNext, 0, this);
-
             m_textCtrlBG_Default = m_pTextCtrl->GetBackgroundColour();
             m_pComboCtrl->Enable(m_pEditor && m_pEditor->GetControl());
-            m_pToolbar->ToggleTool(XRCID("idIncSearchHighlight"),m_Highlight);
-            m_pToolbar->ToggleTool(XRCID("idIncSearchSelectOnly"),m_SelectedOnly);
-            m_pToolbar->ToggleTool(XRCID("idIncSearchMatchCase"),m_flags & wxSCI_FIND_MATCHCASE);
-            m_pToolbar->ToggleTool(XRCID("idIncSearchUseRegex"),m_flags & wxSCI_FIND_REGEXP);
+            m_pToolbar->ToggleTool(XRCID("idIncSearchHighlight"), m_Highlight);
+            m_pToolbar->ToggleTool(XRCID("idIncSearchSelectOnly"), m_SelectedOnly);
+            m_pToolbar->ToggleTool(XRCID("idIncSearchMatchCase"), m_flags & wxSCI_FIND_MATCHCASE);
+            m_pToolbar->ToggleTool(XRCID("idIncSearchUseRegex"), m_flags & wxSCI_FIND_REGEXP);
             return true;
         }
     }
+
     return false;
 }
 
 void IncrementalSearch::SetMaxHistoryLen(int len)
 {
     if (!m_pChoice)
+    {
         return;
+    }
 
     m_pChoice->SetMaxHistoryLen(len);
 }
 
-void IncrementalSearch::OnKeyDown(wxKeyEvent& event)
+void IncrementalSearch::OnKeyDown(wxKeyEvent & event)
 {
-    if(m_pTextCtrl)
+    if (m_pTextCtrl)
     {
         m_LastInsertionPoint = m_pTextCtrl->GetInsertionPoint();
     }
 
-    if(!m_IsAttached || !m_pEditor || !m_pEditor->GetControl() )
+    if (!m_IsAttached || !m_pEditor || !m_pEditor->GetControl())
     {
         event.Skip();
         return;
     }
-    if(event.GetModifiers() == wxMOD_ALT && event.GetKeyCode() == WXK_DELETE)
+
+    if (event.GetModifiers() == wxMOD_ALT && event.GetKeyCode() == WXK_DELETE)
     {
         DoClearText();
     }
-    else if(event.GetModifiers() == wxMOD_SHIFT && event.GetKeyCode() == WXK_RETURN)
-    {
-        if(m_pToolbar->GetToolEnabled(XRCID("idIncSearchPrev")))
-            DoSearchPrev();
-    }
-    else if(event.GetModifiers() == wxMOD_NONE && event.GetKeyCode() == WXK_ESCAPE)
-    {
-        cbStyledTextCtrl* control = m_pEditor->GetControl();
-        // delete all stylings for found phrases
-        control->SetIndicatorCurrent(m_IndicFound);
-        control->IndicatorClearRange(0, control->GetLength());
-        // then for highlighted phrases
-        control->SetIndicatorCurrent(m_IndicHighlight);
-        control->IndicatorClearRange(0, control->GetLength());
-        control->GotoPos(m_NewPos);
-        if(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/incremental_search/select_found_text_on_escape"),false))
-        {
-            m_SelStart = m_NewPos;
-            m_SelEnd = m_SelStart + m_LengthFound;
-            m_OldPos = m_NewPos;
-            control->SetSelectionVoid(m_SelStart, m_SelEnd);
-        }
-        control->SetFocus();
-    }
     else
-    {
-        event.Skip();
-    }
+        if (event.GetModifiers() == wxMOD_SHIFT && event.GetKeyCode() == WXK_RETURN)
+        {
+            if (m_pToolbar->GetToolEnabled(XRCID("idIncSearchPrev")))
+            {
+                DoSearchPrev();
+            }
+        }
+        else
+            if (event.GetModifiers() == wxMOD_NONE && event.GetKeyCode() == WXK_ESCAPE)
+            {
+                cbStyledTextCtrl * control = m_pEditor->GetControl();
+                // delete all stylings for found phrases
+                control->SetIndicatorCurrent(m_IndicFound);
+                control->IndicatorClearRange(0, control->GetLength());
+                // then for highlighted phrases
+                control->SetIndicatorCurrent(m_IndicHighlight);
+                control->IndicatorClearRange(0, control->GetLength());
+                control->GotoPos(m_NewPos);
+
+                if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/incremental_search/select_found_text_on_escape"), false))
+                {
+                    m_SelStart = m_NewPos;
+                    m_SelEnd = m_SelStart + m_LengthFound;
+                    m_OldPos = m_NewPos;
+                    control->SetSelectionVoid(m_SelStart, m_SelEnd);
+                }
+
+                control->SetFocus();
+            }
+            else
+            {
+                event.Skip();
+            }
 }
 
-void IncrementalSearch::OnFocusToolbar(wxCommandEvent& /*event*/)
+void IncrementalSearch::OnFocusToolbar(wxCommandEvent & /*event*/)
 {
     if (!m_IsAttached)
     {
         return;
     }
+
     DoFocusToolbar();
 
     if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/incremental_search/select_text_on_focus"), false))
     {
-        m_pTextCtrl->SetSelection(-1,-1);
+        m_pTextCtrl->SetSelection(-1, -1);
     }
     else
     {
@@ -483,13 +500,14 @@ void IncrementalSearch::DoFocusToolbar()
     if (!IsWindowReallyShown(m_pToolbar))
     {
         CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
-        evt.pWindow = (wxWindow*)m_pToolbar;
+        evt.pWindow = (wxWindow *)m_pToolbar;
         Manager::Get()->ProcessEvent(evt);
     }
+
     m_pTextCtrl->SetFocus();
 }
 
-void IncrementalSearch::OnToggleHighlight(wxCommandEvent& /*event*/)
+void IncrementalSearch::OnToggleHighlight(wxCommandEvent & /*event*/)
 {
     DoToggleHighlight(m_pToolbar->GetToolState(XRCID("idIncSearchHighlight")));
 }
@@ -497,14 +515,16 @@ void IncrementalSearch::OnToggleHighlight(wxCommandEvent& /*event*/)
 void IncrementalSearch::DoToggleHighlight(bool checked)
 {
     m_Highlight = checked;
-    if ( !m_pEditor || !m_pEditor->GetControl())
+
+    if (!m_pEditor || !m_pEditor->GetControl())
     {
         return;
     }
+
     SearchText();
 }
 
-void IncrementalSearch::OnToggleSelectedOnly(wxCommandEvent& /*event*/)
+void IncrementalSearch::OnToggleSelectedOnly(wxCommandEvent & /*event*/)
 {
     DoToggleSelectedOnly(m_pToolbar->GetToolState(XRCID("idIncSearchSelectOnly")));
 }
@@ -512,21 +532,23 @@ void IncrementalSearch::OnToggleSelectedOnly(wxCommandEvent& /*event*/)
 void IncrementalSearch::DoToggleSelectedOnly(bool checked)
 {
     m_SelectedOnly = checked;
+
     if (!m_pEditor || !m_pEditor->GetControl())
     {
         return;
     }
+
     SearchText();
 }
 
-void IncrementalSearch::OnToggleMatchCase(wxCommandEvent& /*event*/)
+void IncrementalSearch::OnToggleMatchCase(wxCommandEvent & /*event*/)
 {
     DoToggleMatchCase(m_pToolbar->GetToolState(XRCID("idIncSearchMatchCase")));
 }
 
 void IncrementalSearch::DoToggleMatchCase(bool checked)
 {
-    if(checked)
+    if (checked)
     {
         m_flags |= wxSCI_FIND_MATCHCASE;
     }
@@ -534,21 +556,23 @@ void IncrementalSearch::DoToggleMatchCase(bool checked)
     {
         m_flags &=  ~wxSCI_FIND_MATCHCASE;
     }
+
     if (!m_pEditor || !m_pEditor->GetControl())
     {
         return;
     }
+
     SearchText();
 }
 
-void IncrementalSearch::OnToggleUseRegex(wxCommandEvent& /*event*/)
+void IncrementalSearch::OnToggleUseRegex(wxCommandEvent & /*event*/)
 {
     DoToggleUseRegex(m_pToolbar->GetToolState(XRCID("idIncSearchUseRegex")));
 }
 
 void IncrementalSearch::DoToggleUseRegex(bool checked)
 {
-    if(checked)
+    if (checked)
     {
         m_flags |= wxSCI_FIND_REGEXP;
     }
@@ -556,31 +580,37 @@ void IncrementalSearch::DoToggleUseRegex(bool checked)
     {
         m_flags &=  ~wxSCI_FIND_REGEXP;
     }
+
     if (!m_pEditor || !m_pEditor->GetControl())
     {
         return;
     }
+
     SearchText();
 }
 
-void IncrementalSearch::OnTextChanged(wxCommandEvent& /*event*/)
+void IncrementalSearch::OnTextChanged(wxCommandEvent & /*event*/)
 {
     if (!m_pEditor || !m_pEditor->GetControl())
     {
         return;
     }
+
     SearchText();
 }
 
-void IncrementalSearch::OnKillFocus(wxCommandEvent& event)
+void IncrementalSearch::OnKillFocus(wxCommandEvent & event)
 {
     if (!m_SearchText.empty())
+    {
         m_pChoice->SetStringValue(m_SearchText);
+    }
 
-    if(m_pTextCtrl)
+    if (m_pTextCtrl)
     {
         m_LastInsertionPoint = m_pTextCtrl->GetInsertionPoint();
     }
+
     event.Skip();
 }
 
@@ -590,15 +620,17 @@ void IncrementalSearch::VerifyPosition()
     {
         return;
     }
+
     // if selection changed, the user has clicked with the mous inside the editor
     // so set new startposition for search and remember it
-    cbStyledTextCtrl* control = m_pEditor->GetControl();
-    m_SelStart=control->GetSelectionStart();
-    m_SelEnd=control->GetSelectionEnd();
+    cbStyledTextCtrl * control = m_pEditor->GetControl();
+    m_SelStart = control->GetSelectionStart();
+    m_SelEnd = control->GetSelectionEnd();
+
     if (m_OldPos != m_SelEnd)
     {
-        m_OldPos=m_SelEnd;
-        m_NewPos=m_SelEnd;
+        m_OldPos = m_SelEnd;
+        m_NewPos = m_SelEnd;
     }
 }
 
@@ -608,27 +640,30 @@ void IncrementalSearch::SetRange()
     {
         return;
     }
-    if ( m_SelectedOnly)
+
+    if (m_SelectedOnly)
     {
-        m_MinPos=m_SelStart;
-        m_MaxPos=m_SelEnd;
+        m_MinPos = m_SelStart;
+        m_MaxPos = m_SelEnd;
     }
     else
     {
-        m_MinPos=0;
-        m_MaxPos=m_pEditor->GetControl()->GetLength();
+        m_MinPos = 0;
+        m_MaxPos = m_pEditor->GetControl()->GetLength();
     }
-    m_NewPos=std::min(m_NewPos, m_MaxPos);
-    m_NewPos=std::max(m_NewPos, m_MinPos);
+
+    m_NewPos = std::min(m_NewPos, m_MaxPos);
+    m_NewPos = std::max(m_NewPos, m_MinPos);
 }
 
 void IncrementalSearch::SearchText()
 {
     // fetch the entered text
-    m_SearchText=m_pTextCtrl->GetValue();
+    m_SearchText = m_pTextCtrl->GetValue();
     // renew the start position, the user might have changed it by moving the caret
     VerifyPosition();
     SetRange();
+
     if (!m_SearchText.empty())
     {
         // perform search
@@ -651,10 +686,11 @@ void IncrementalSearch::SearchText()
         m_pTextCtrl->Update();
 #endif
     }
+
     HighlightText();
 }
 
-void IncrementalSearch::OnClearText(wxCommandEvent& /*event*/)
+void IncrementalSearch::OnClearText(wxCommandEvent & /*event*/)
 {
     DoClearText();
 }
@@ -662,13 +698,15 @@ void IncrementalSearch::OnClearText(wxCommandEvent& /*event*/)
 void IncrementalSearch::DoClearText()
 {
     if (!m_SearchText.empty())
+    {
         m_pChoice->SetStringValue(m_SearchText);
+    }
 
     m_pTextCtrl->Clear();
     SearchText();
 }
 
-void IncrementalSearch::OnSearchPrev(wxCommandEvent& /*event*/)
+void IncrementalSearch::OnSearchPrev(wxCommandEvent & /*event*/)
 {
     DoSearchPrev();
 }
@@ -676,7 +714,9 @@ void IncrementalSearch::OnSearchPrev(wxCommandEvent& /*event*/)
 void IncrementalSearch::DoSearchPrev()
 {
     if (!m_SearchText.empty())
+    {
         m_pChoice->SetStringValue(m_SearchText);
+    }
 
     VerifyPosition();
     // (re-)define m_MinPos and m_MaxPos, they might have changed
@@ -686,7 +726,7 @@ void IncrementalSearch::DoSearchPrev()
     HighlightText();
 }
 
-void IncrementalSearch::OnSearchNext(wxCommandEvent& /*event*/)
+void IncrementalSearch::OnSearchNext(wxCommandEvent & /*event*/)
 {
     DoSearchNext();
 }
@@ -694,7 +734,9 @@ void IncrementalSearch::OnSearchNext(wxCommandEvent& /*event*/)
 void IncrementalSearch::DoSearchNext()
 {
     if (!m_SearchText.empty())
+    {
         m_pChoice->SetStringValue(m_SearchText);
+    }
 
     VerifyPosition();
     // start search from the next character
@@ -705,7 +747,7 @@ void IncrementalSearch::DoSearchNext()
     HighlightText();
 }
 
-static void SetupIndicator(cbStyledTextCtrl *control, int indicator, const wxColor &colour)
+static void SetupIndicator(cbStyledTextCtrl * control, int indicator, const wxColor & colour)
 {
     control->IndicatorSetForeground(indicator, colour);
     control->IndicatorSetStyle(indicator, wxSCI_INDIC_ROUNDBOX);
@@ -726,17 +768,19 @@ void IncrementalSearch::HighlightText()
     {
         return;
     }
-    cbStyledTextCtrl* control = m_pEditor->GetControl();
+
+    cbStyledTextCtrl * control = m_pEditor->GetControl();
     // first delete all stylings for found phrases
     control->SetIndicatorCurrent(m_IndicFound);
     control->IndicatorClearRange(0, control->GetLength());
     // then for highlighted phrases
     control->SetIndicatorCurrent(m_IndicHighlight);
     control->IndicatorClearRange(0, control->GetLength());
+
     // then set the new ones (if any)
     if (m_NewPos != wxSCI_INVALID_POSITION && !m_SearchText.empty())
     {
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+        ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("editor"));
         wxColour colourTextFound(cfg->ReadColour(_T("/incremental_search/text_found_colour"), wxColour(160, 32, 240)));
 
         // center last found phrase on the screen, if wanted
@@ -746,22 +790,31 @@ void IncrementalSearch::HighlightText()
             int onScreen = control->LinesOnScreen() >> 1;
             int l1 = line - onScreen;
             int l2 = line + onScreen;
-            for (int l=l1; l<=l2; l+=2)     // unfold visible lines on screen
+
+            for (int l = l1; l <= l2; l += 2) // unfold visible lines on screen
+            {
                 control->EnsureVisible(l);
+            }
+
             control->GotoLine(l1);          // center selection on screen
             control->GotoLine(l2);
         }
+
         // make sure found text is visible, even if it's in a column far right
-        control->GotoPos(m_NewPos+m_SearchText.length());
+        control->GotoPos(m_NewPos + m_SearchText.length());
         control->EnsureCaretVisible();
         control->GotoPos(m_NewPos);
         control->SearchAnchor();
         // and highlight it
-        cbStyledTextCtrl* ctrlLeft = m_pEditor->GetLeftSplitViewControl();
+        cbStyledTextCtrl * ctrlLeft = m_pEditor->GetLeftSplitViewControl();
         SetupIndicator(ctrlLeft, m_IndicFound, colourTextFound);
-        cbStyledTextCtrl* ctrlRight = m_pEditor->GetRightSplitViewControl();
-        if(ctrlRight)
+        cbStyledTextCtrl * ctrlRight = m_pEditor->GetRightSplitViewControl();
+
+        if (ctrlRight)
+        {
             SetupIndicator(ctrlRight, m_IndicFound, colourTextFound);
+        }
+
         control->IndicatorFillRange(m_NewPos, m_LengthFound);
 
         if (m_Highlight)
@@ -769,15 +822,20 @@ void IncrementalSearch::HighlightText()
             // highlight all occurrences of the found phrase if wanted
             wxColour colourTextHighlight(cfg->ReadColour(_T("/incremental_search/highlight_colour"), wxColour(255, 165, 0)));
             SetupIndicator(ctrlLeft, m_IndicHighlight, colourTextHighlight);
-            if(ctrlRight)
+
+            if (ctrlRight)
+            {
                 SetupIndicator(ctrlRight, m_IndicHighlight, colourTextHighlight);
-            int endPos=0; // needed for regex-search, because the length of found text can vary
-            for ( int pos = control->FindText(m_MinPos, m_MaxPos, m_SearchText, m_flags, &endPos);
+            }
+
+            int endPos = 0; // needed for regex-search, because the length of found text can vary
+
+            for (int pos = control->FindText(m_MinPos, m_MaxPos, m_SearchText, m_flags, &endPos);
                     pos != wxSCI_INVALID_POSITION && endPos > 0;
-                    pos = control->FindText(pos+=1, m_MaxPos, m_SearchText, m_flags, &endPos) )
+                    pos = control->FindText(pos += 1, m_MaxPos, m_SearchText, m_flags, &endPos))
             {
                 // check that this occurrence is not the same as the one we just found
-                if ( pos > (m_NewPos + m_LengthFound) || pos < m_NewPos )
+                if (pos > (m_NewPos + m_LengthFound) || pos < m_NewPos)
                 {
                     // highlight it
                     control->EnsureVisible(control->LineFromPosition(pos)); // make sure line is Visible, if it was folded
@@ -786,6 +844,7 @@ void IncrementalSearch::HighlightText()
             }
         }
     }
+
     // reset selection, without moving caret, as SetSelection does
     control->SetAnchor(m_SelStart);
     control->SetCurrentPos(m_SelEnd);
@@ -799,29 +858,32 @@ void IncrementalSearch::DoSearch(int fromPos, int startPos, int endPos)
     {
         return;
     }
-    cbStyledTextCtrl* control = m_pEditor->GetControl();
+
+    cbStyledTextCtrl * control = m_pEditor->GetControl();
+
     if (startPos == wxSCI_INVALID_POSITION && endPos == wxSCI_INVALID_POSITION)
     {
         startPos = m_MinPos;
         endPos = m_MaxPos;
     }
+
     // reset the backgroundcolor of the text-control
     m_pTextCtrl->SetBackgroundColour(m_textCtrlBG_Default);
-
     int newEndPos;
-    m_NewPos=control->FindText(fromPos, endPos, m_SearchText, m_flags, &newEndPos);
+    m_NewPos = control->FindText(fromPos, endPos, m_SearchText, m_flags, &newEndPos);
     m_LengthFound = newEndPos - m_NewPos;
 
     if (m_NewPos == wxSCI_INVALID_POSITION || m_LengthFound == 0)
     {
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+        ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("editor"));
         wxColour colourTextCtrlBG_Wrapped(cfg->ReadColour(_T("/incremental_search/wrapped_colour"), wxColour(127, 127, 255)));
         // if not found or out of range, wrap search
         // show that search wrapped, by colouring the textCtrl
         m_pTextCtrl->SetBackgroundColour(colourTextCtrlBG_Wrapped);
         // search again
-        m_NewPos=control->FindText(startPos, endPos, m_SearchText, m_flags, &newEndPos);
+        m_NewPos = control->FindText(startPos, endPos, m_SearchText, m_flags, &newEndPos);
         m_LengthFound = newEndPos - m_NewPos;
+
         if (m_NewPos == wxSCI_INVALID_POSITION  || m_LengthFound == 0)
         {
             wxColour colourTextCtrlBG_NotFound(cfg->ReadColour(_T("/incremental_search/text_not_found_colour"), wxColour(255, 127, 127)));
@@ -829,6 +891,7 @@ void IncrementalSearch::DoSearch(int fromPos, int startPos, int endPos)
             m_pTextCtrl->SetBackgroundColour(colourTextCtrlBG_NotFound);
         }
     }
+
     // windows does not update the backgroundcolor immediately, so we have to force it here
 #ifdef __WXMSW__
     m_pTextCtrl->Refresh();
@@ -837,16 +900,17 @@ void IncrementalSearch::DoSearch(int fromPos, int startPos, int endPos)
 }
 
 #ifndef __WXMSW__
-void IncrementalSearch::OnMenuEditPaste(wxCommandEvent& event)
+void IncrementalSearch::OnMenuEditPaste(wxCommandEvent & event)
 {
     // Process clipboard data only if we have the focus
-    if ( !IsAttached() )
+    if (!IsAttached())
     {
         event.Skip();
         return;
     }
 
-    wxWindow* pFocused = wxWindow::FindFocus();
+    wxWindow * pFocused = wxWindow::FindFocus();
+
     if (!pFocused)
     {
         event.Skip();
@@ -854,8 +918,12 @@ void IncrementalSearch::OnMenuEditPaste(wxCommandEvent& event)
     }
 
     if (pFocused == m_pTextCtrl)
+    {
         m_pTextCtrl->Paste();
+    }
     else
+    {
         event.Skip();
+    }
 }
 #endif

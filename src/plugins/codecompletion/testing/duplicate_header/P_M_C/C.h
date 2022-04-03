@@ -5,9 +5,9 @@ namespace P_M_C
 {
 class C : public P::M_C
 {
-public:
-    C();
-    virtual ~C() {};
+    public:
+        C();
+        virtual ~C() {};
 };
 }
 

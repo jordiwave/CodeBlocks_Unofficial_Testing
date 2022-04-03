@@ -9,20 +9,20 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/button.h>
-#include <wx/dir.h>
-#include <wx/event.h>
-#include <wx/font.h>
-#include <wx/intl.h>
-#include <wx/listctrl.h>
-#include <wx/notebook.h>
-#include <wx/textctrl.h>
-#include <wx/stattext.h>
-#include <wx/utils.h>
-#include <wx/xrc/xmlres.h>
-#include "globals.h" // cbMessageBox
-#include "manager.h"
-#include "logmanager.h"
+    #include <wx/button.h>
+    #include <wx/dir.h>
+    #include <wx/event.h>
+    #include <wx/font.h>
+    #include <wx/intl.h>
+    #include <wx/listctrl.h>
+    #include <wx/notebook.h>
+    #include <wx/textctrl.h>
+    #include <wx/stattext.h>
+    #include <wx/utils.h>
+    #include <wx/xrc/xmlres.h>
+    #include "globals.h" // cbMessageBox
+    #include "manager.h"
+    #include "logmanager.h"
 #endif
 
 //#define TRACE_SYMTAB_EXE
@@ -39,10 +39,10 @@
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
 BEGIN_EVENT_TABLE(SymTabExecDlg, wxScrollingDialog)
-    EVT_BUTTON         (XRCID("btnExport"),     SymTabExecDlg::OnWriteToFile)
-    EVT_BUTTON         (XRCID("btnNext"),       SymTabExecDlg::OnNext)
-    EVT_BUTTON         (XRCID("btnCancel"),     SymTabExecDlg::OnCancel)
-    EVT_LIST_COL_CLICK (XRCID("lstLib2Symbol"), SymTabExecDlg::OnColumnClick)
+    EVT_BUTTON(XRCID("btnExport"),     SymTabExecDlg::OnWriteToFile)
+    EVT_BUTTON(XRCID("btnNext"),       SymTabExecDlg::OnNext)
+    EVT_BUTTON(XRCID("btnCancel"),     SymTabExecDlg::OnCancel)
+    EVT_LIST_COL_CLICK(XRCID("lstLib2Symbol"), SymTabExecDlg::OnColumnClick)
 END_EVENT_TABLE()
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
@@ -66,41 +66,74 @@ int SymTabExecDlg::Execute(struct_config config)
 #ifdef TRACE_SYMTAB_EXE
     Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::Execute"));
 #endif
-
     // Intialise GUI (does nothing if already done)
     DoInitDialog();
-
     // nm optional parameters
     wxString param(_T(""));
-    if (config.chkDebug)     param << _T(" --debug-syms");
-    if (config.chkDefined)   param << _T(" --defined-only");
-    if (config.chkDemangle)  param << _T(" --demangle");
-    if (config.chkExtern)    param << _T(" --extern-only");
-    if (config.chkSpecial)   param << _T(" --special-syms");
-    if (config.chkSynthetic) param << _T(" --synthetic");
-    if (config.chkUndefined) param << _T(" --undefined-only");
+
+    if (config.chkDebug)
+    {
+        param << _T(" --debug-syms");
+    }
+
+    if (config.chkDefined)
+    {
+        param << _T(" --defined-only");
+    }
+
+    if (config.chkDemangle)
+    {
+        param << _T(" --demangle");
+    }
+
+    if (config.chkExtern)
+    {
+        param << _T(" --extern-only");
+    }
+
+    if (config.chkSpecial)
+    {
+        param << _T(" --special-syms");
+    }
+
+    if (config.chkSynthetic)
+    {
+        param << _T(" --synthetic");
+    }
+
+    if (config.chkUndefined)
+    {
+        param << _T(" --undefined-only");
+    }
 
     wxString cmd;
+
     if (config.txtNM.Trim().IsEmpty())
+    {
         cmd << _T("nm")                         << param;
+    }
     else
+    {
         cmd << (config.txtNM.Trim()) << _T(" ") << param;
+    }
 
     int retval = -1;
+
     // Search for a symbol given a library path
-    if      (config.choWhatToDo == 0)
+    if (config.choWhatToDo == 0)
     {
         retval = ExecuteMulti(config, cmd);
     }// if
     // Search for all symbols in a given library
-    else if (config.choWhatToDo == 1)
-    {
-        retval = ExecuteSingle(config, cmd);
-    }// else if
     else
-    {
-        Manager::Get()->GetLogManager()->DebugLog(_T("SymTab: Invalid (unsupported) choice."));
-    }// else
+        if (config.choWhatToDo == 1)
+        {
+            retval = ExecuteSingle(config, cmd);
+        }// else if
+        else
+        {
+            Manager::Get()->GetLogManager()->DebugLog(_T("SymTab: Invalid (unsupported) choice."));
+        }// else
 
     CleanUp(); // free memory
     return retval;
@@ -119,10 +152,8 @@ void SymTabExecDlg::DoInitDialog()
     {
         // Instantiate and initialise dialog
         SymTabExecDlgLoaded =
-            wxXmlResource::Get()->LoadObject(this, parent, _T("dlgSymTabExec"),_T("wxScrollingDialog"));
-
+            wxXmlResource::Get()->LoadObject(this, parent, _T("dlgSymTabExec"), _T("wxScrollingDialog"));
         wxFont font(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-
         m_ListCtrl = XRCCTRL(*this, "lstLib2Symbol",     wxListCtrl);
         // Setting colums names
         m_ListCtrl->InsertColumn(0, _T("item"),  wxLIST_FORMAT_RIGHT);
@@ -144,53 +175,52 @@ void SymTabExecDlg::EndModal(int retCode)
 #ifdef TRACE_SYMTAB_EXE
     Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::EndModal"));
 #endif
-
     wxScrollingDialog::EndModal(retCode);
 }// EndModal
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
 // This function writes the nm output to a file
-void SymTabExecDlg::OnWriteToFile(wxCommandEvent& WXUNUSED(event))
+void SymTabExecDlg::OnWriteToFile(wxCommandEvent & WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_EXE
     Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::OnWriteToFile"));
 #endif
-
     wxString     es = wxEmptyString;
     wxFileDialog fd(parent, _("Save NM output to file"), es, es, _T("*.*"), wxFD_SAVE);
     PlaceWindow(&fd);
+
     if (fd.ShowModal() == wxID_OK)
     {
         wxFFile file(fd.GetPath().c_str(), _T("w"));
-        for (size_t n=0; n<nm_result.GetCount(); ++n)
+
+        for (size_t n = 0; n < nm_result.GetCount(); ++n)
         {
             file.Write(nm_result[n]);
             file.Write(_T("\n"));
         }
+
         file.Close();
     }
 }// OnWriteToFile
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTabExecDlg::OnNext(wxCommandEvent& WXUNUSED(event))
+void SymTabExecDlg::OnNext(wxCommandEvent & WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_EXE
     Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::OnNext"));
 #endif
-
     wxScrollingDialog::EndModal(wxID_OK);
 }// OnNext
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTabExecDlg::OnCancel(wxCommandEvent& WXUNUSED(event))
+void SymTabExecDlg::OnCancel(wxCommandEvent & WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_EXE
     Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::OnCancel"));
 #endif
-
     wxScrollingDialog::EndModal(wxID_CANCEL);
 }// OnCancel
 
@@ -199,7 +229,7 @@ void SymTabExecDlg::OnCancel(wxCommandEvent& WXUNUSED(event))
 // struct used as user-data for columns
 struct customListEntry
 {
-    customListEntry(long i, const wxString& col1, const wxString& col2, const wxString& col3)
+    customListEntry(long i, const wxString & col1, const wxString & col2, const wxString & col3)
     {
         index = i;
         column_texts[0] = col1; // value
@@ -230,9 +260,10 @@ void SymTabExecDlg::ClearUserData()
 {
     for (long i = 0; i < m_ListCtrl->GetItemCount(); ++i)
     {
-        customListEntry* data = (customListEntry*)m_ListCtrl->GetItemData(i);
+        customListEntry * data = (customListEntry *)m_ListCtrl->GetItemData(i);
         delete data;
     }
+
     m_ListCtrl->DeleteAllItems();
 }// ClearUserData
 
@@ -241,50 +272,69 @@ void SymTabExecDlg::ClearUserData()
 // Sorting function of the nm output columns
 inline int wxCALLBACK SortFunction(wxIntPtr item1, wxIntPtr item2, wxIntPtr dlg)
 {
-    SymTabExecDlg   *dialog = (SymTabExecDlg*)   dlg;
-    customListEntry *data1  = (customListEntry*) item1;
-    customListEntry *data2  = (customListEntry*) item2;
+    SymTabExecDlg  * dialog = (SymTabExecDlg *)   dlg;
+    customListEntry * data1  = (customListEntry *) item1;
+    customListEntry * data2  = (customListEntry *) item2;
 
     if (!data1)
+    {
         return -1;
+    }
+
     if (!data2)
+    {
         return 1;
+    }
 
     // All the columns are composed with characters, except the first column
     long col       = dialog->GetSortColumn();
     bool ascending = dialog->GetSortAscending();
+
     if (col == 0)
     {
         int ret = data1->index - data2->index; // simple arithmetic
+
         if (ascending)
+        {
             return ret;
+        }
         else
+        {
             return -ret;
+        }
     }
 
     // adjust
     col -= 1;
-
     int ret = data1->column_texts[col].CmpNoCase(data2->column_texts[col]);
+
     if (ascending)
+    {
         return ret;
+    }
     else
+    {
         return -ret;
+    }
 }// SortFunction
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
 // Function called when a column header is clicked
-void SymTabExecDlg::OnColumnClick(wxListEvent& event)
+void SymTabExecDlg::OnColumnClick(wxListEvent & event)
 {
 #ifdef TRACE_SYMTAB_EXE
     Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::OnColumnClick"));
 #endif
 
     if (event.GetColumn() != ms_iSortColumn)
+    {
         ms_bSortAscending = true;
+    }
     else
+    {
         ms_bSortAscending = !ms_bSortAscending;
+    }
 
     ms_iSortColumn = event.GetColumn();
     wxBusyInfo wait(_("Please wait, sorting..."));
@@ -295,77 +345,106 @@ void SymTabExecDlg::OnColumnClick(wxListEvent& event)
 /* ----- ----- ----- ----- -----PRIVATE----- ----- ----- ----- ----- ----- */
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-int SymTabExecDlg::ExecuteMulti(struct_config &config, wxString cmd)
+int SymTabExecDlg::ExecuteMulti(struct_config & config, wxString cmd)
 {
     wxString the_symbol = config.txtSymbol.Trim();
     wxDir dir(config.txtLibraryPath);
+
     // wxDir failed (already has logged an error message with the exact failure)
     if (!dir.IsOpened())
+    {
         return -1;
+    }
 
     size_t        num_files = 0;
     wxArrayString files;
 
     // Note: GetAllFiles *appends* to an wxArrayString
     if (config.chkIncludeA)
+    {
         num_files += wxDir::GetAllFiles(config.txtLibraryPath, &files, _T("*.a"));
+    }
+
     if (config.chkIncludeLib)
+    {
         num_files += wxDir::GetAllFiles(config.txtLibraryPath, &files, _T("*.lib"));
+    }
+
     if (config.chkIncludeO)
+    {
         num_files += wxDir::GetAllFiles(config.txtLibraryPath, &files, _T("*.o"));
+    }
+
     if (config.chkIncludeObj)
+    {
         num_files += wxDir::GetAllFiles(config.txtLibraryPath, &files, _T("*.obj"));
+    }
+
     if (config.chkIncludeDll)
+    {
         num_files += wxDir::GetAllFiles(config.txtLibraryPath, &files, _T("*.dll"));
+    }
 
     if (!num_files)
     {
         cbMessageBox(_("Could not find any files matching the criteria."), _("Error"),
-                     wxICON_ERROR | wxOK, (wxWindow*)Manager::Get()->GetAppWindow());
+                     wxICON_ERROR | wxOK, (wxWindow *)Manager::Get()->GetAppWindow());
     }// if
     else
     {
         XRCCTRL(*this, "btnNext", wxButton)->Enable(true);
-
         bool something_found = false;
-        for (size_t i=0; i<num_files; i++)
+
+        for (size_t i = 0; i < num_files; i++)
         {
             // Compile nm command for this library (file)
             wxString this_cmd = cmd;
             this_cmd << _T(" \"") << files[i] << _T("\"");
 
             if (!ExecuteNM(files[i], this_cmd)) // fatal.
+            {
                 return -1;
+            }
 
             int parse_result = ParseOutput(files[i], the_symbol);
+
             if (parse_result != 0)
             {
                 something_found = true;
+
                 // In the last step, disable the "Next" button
-                if (i==(num_files-1))
+                if (i == (num_files - 1))
+                {
                     XRCCTRL(*this, "btnNext", wxButton)->Enable(false);
+                }
+
                 XRCCTRL(*this, "stxtFile", wxStaticText)->SetLabel(_("File: ") + files[i]);
                 int retval = wxScrollingDialog::ShowModal();
-                if      (retval == wxID_OK)
+
+                if (retval == wxID_OK)
                     ;      // continue
-                else if (retval == wxID_CANCEL)
-                {
-//          cbMessageBox(_("Operation cancelled."), _("Info"),
-//                       wxICON_INFORMATION | wxOK,
-//                       (wxWindow*)Manager::Get()->GetAppWindow());
-                    break; // cancel operation on any further files
-                }
                 else
-                    return -1;
+                    if (retval == wxID_CANCEL)
+                    {
+                        //          cbMessageBox(_("Operation cancelled."), _("Info"),
+                        //                       wxICON_INFORMATION | wxOK,
+                        //                       (wxWindow*)Manager::Get()->GetAppWindow());
+                        break; // cancel operation on any further files
+                    }
+                    else
+                    {
+                        return -1;
+                    }
             }
         }// for
+
         if (!something_found)
         {
             wxString msg;
             msg << _("The search for \"") << the_symbol
                 << _("\" produced no results.");
             cbMessageBox(msg, _("Info"), wxICON_INFORMATION | wxOK,
-                         (wxWindow*)Manager::Get()->GetAppWindow());
+                         (wxWindow *)Manager::Get()->GetAppWindow());
         }
     }// else
 
@@ -374,22 +453,26 @@ int SymTabExecDlg::ExecuteMulti(struct_config &config, wxString cmd)
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-int SymTabExecDlg::ExecuteSingle(struct_config &config, wxString cmd)
+int SymTabExecDlg::ExecuteSingle(struct_config & config, wxString cmd)
 {
     wxString the_library = config.txtLibrary.Trim();
     wxString the_symbol  = config.txtSymbol.Trim();
     cmd << _T(" \"") << the_library << _T("\"");
+
     if (!ExecuteNM(the_library, cmd))
+    {
         return -1;
+    }
 
     int retval = ParseOutput(the_library, the_symbol);
+
     if (retval == 0)
     {
         wxString msg;
         msg << _("The search in:\n") << the_library
             << _("\nfor \"") << the_symbol << _("\" produced no results.");
         cbMessageBox(msg, _("Info"), wxICON_INFORMATION | wxOK,
-                     (wxWindow*)Manager::Get()->GetAppWindow());
+                     (wxWindow *)Manager::Get()->GetAppWindow());
     }
     else
     {
@@ -410,16 +493,17 @@ bool SymTabExecDlg::ExecuteNM(wxString lib, wxString cmd)
     Manager::Get()->GetLogManager()->(_T("Library: ")   + lib);
 #endif
     Manager::Get()->GetLogManager()->DebugLog(_T("SymTab: Executing: ") + cmd);
-
     wxString p_msg;
     p_msg << _("Launching NM tool for:\n") << lib
           << _("\nPlease wait, this can take a long time...");
-    wxBusyInfo* wait = new wxBusyInfo(p_msg);
-
+    wxBusyInfo * wait = new wxBusyInfo(p_msg);
     CleanUp(); // Clean any old outputs
     int pid = wxExecute(cmd, nm_result, nm_errors);
 
-    if (wait) delete wait;
+    if (wait)
+    {
+        delete wait;
+    }
 
     // Process could not be launched.
     if (pid == -1)
@@ -429,7 +513,7 @@ bool SymTabExecDlg::ExecuteNM(wxString lib, wxString cmd)
             << _("Be sure it is in the OS global path.\n")
             << _("SymTab could not complete the operation.");
         cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK,
-                     (wxWindow*)Manager::Get()->GetAppWindow());
+                     (wxWindow *)Manager::Get()->GetAppWindow());
         return false;
     }
 
@@ -443,18 +527,23 @@ int SymTabExecDlg::ParseOutput(wxString lib, wxString filter)
 #ifdef TRACE_SYMTAB_EXE
     Manager::Get()->GetLogManager()->(_T("SymTabExecDlg::ParseOutput"));
 #endif
-
     int symbols_processed = -1;
 
     // No output to std::cout -> error, show error message
-    if(nm_result.IsEmpty())
+    if (nm_result.IsEmpty())
+    {
         ParseOutputError();
+    }
     // Output to std::cout    -> success, process
     else
+    {
         symbols_processed = ParseOutputSuccess(lib, filter);
+    }
 
     if (symbols_processed == 0)
+    {
         Manager::Get()->GetLogManager()->DebugLog(_T("SymTab: Parsing produced no match (no results)."));
+    }
 
     return symbols_processed;
 }// ParseOutput
@@ -466,14 +555,15 @@ void SymTabExecDlg::ParseOutputError()
 #ifdef TRACE_SYMTAB_EXE
     Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::ParseOutputError"));
 #endif
-
     wxString output;
     size_t   count = nm_errors.GetCount();
 
     if (count)
     {
-        for (size_t n = 0; n < count; ++n )
+        for (size_t n = 0; n < count; ++n)
+        {
             output << nm_errors[n] << _T("\n");
+        }
     }
     else
     {
@@ -481,9 +571,8 @@ void SymTabExecDlg::ParseOutputError()
     }
 
     m_TextMisc->SetValue(output);
-    wxColour colour(255,0,0);
+    wxColour colour(255, 0, 0);
     m_TextMisc->SetForegroundColour(colour);
-
     // Select tab with error message.
     XRCCTRL(*this, "nbTabs", wxNotebook)->SetSelection(1);
 }// ParseOutputError
@@ -495,8 +584,8 @@ int SymTabExecDlg::ParseOutputSuccess(wxString lib, wxString filter)
 #ifdef TRACE_SYMTAB_EXE
     Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::ParseOutputSuccess"));
 #endif
-
     size_t count = nm_result.GetCount();
+
     if (!count)
     {
 #ifdef TRACE_SYMTAB_EXE
@@ -506,9 +595,9 @@ int SymTabExecDlg::ParseOutputSuccess(wxString lib, wxString filter)
     }
 
     Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTab: Parsing %lu items..."), static_cast<unsigned long>(count)));
+    wxProgressDialog * progress = nullptr;
 
-    wxProgressDialog* progress = nullptr;
-    if (count>2000) // avoid flickering for small libs
+    if (count > 2000) // avoid flickering for small libs
     {
         wxString p_msg;
         p_msg << _("Parsing NM information for:\n") << lib << _("\nPlease wait...");
@@ -525,19 +614,22 @@ int SymTabExecDlg::ParseOutputSuccess(wxString lib, wxString filter)
     wxString s_item;
 
     // Parsing output
-    for (size_t n = 0 ; n < count; ++n )
+    for (size_t n = 0 ; n < count; ++n)
     {
         the_line = nm_result[n];
+
         if (!the_line.IsEmpty())
         {
             if (!filter.IsEmpty())
+            {
                 do_show = the_line.Contains(filter);
+            }
 
             if (do_show)
             {
                 long item = m_ListCtrl->InsertItem(entries, _T(""));
 
-                if (item!=-1)
+                if (item != -1)
                 {
                     s_item.Printf(_T("%6ld"), item);
                     m_ListCtrl->SetItem(item, 0, s_item);
@@ -552,14 +644,13 @@ int SymTabExecDlg::ParseOutputSuccess(wxString lib, wxString filter)
                     }
                     else
                     {
-                        the_value = ((the_line.Mid( 0,8)).Trim(true)).Trim();
+                        the_value = ((the_line.Mid(0, 8)).Trim(true)).Trim();
                         m_ListCtrl->SetItem(item, 1, the_value);
-
-                        the_type  = ((the_line.Mid( 9,1)).Trim(true)).Trim();
+                        the_type  = ((the_line.Mid(9, 1)).Trim(true)).Trim();
                         m_ListCtrl->SetItem(item, 2, the_type);
-
-                        the_name  = ((the_line.Mid(11  )).Trim(true)).Trim();
+                        the_name  = ((the_line.Mid(11)).Trim(true)).Trim();
                         m_ListCtrl->SetItem(item, 3, the_name);
+
                         if (the_name.IsEmpty())
                             m_ListCtrl->SetItemBackgroundColour(item,
                                                                 wxTheColourDatabase->Find(_T("RED")));
@@ -567,14 +658,15 @@ int SymTabExecDlg::ParseOutputSuccess(wxString lib, wxString filter)
 
                     // now associate a user-data with this entry
                     m_ListCtrl->SetItemPtrData(item, (wxUIntPtr)new customListEntry(n, the_value, the_type, the_name));
-
                     ++entries;
                 }
             }// if
         }// if
 
         if (progress)
-            progress->Update((100*n)/(count-1));
+        {
+            progress->Update((100 * n) / (count - 1));
+        }
     }// for
 
 #ifdef TRACE_SYMTAB_EXE
@@ -584,10 +676,10 @@ int SymTabExecDlg::ParseOutputSuccess(wxString lib, wxString filter)
     if (entries)
     {
         // Resize columns
-        m_ListCtrl->SetColumnWidth(0, wxLIST_AUTOSIZE           );
-        m_ListCtrl->SetColumnWidth(1, wxLIST_AUTOSIZE_USEHEADER );
-        m_ListCtrl->SetColumnWidth(2, wxLIST_AUTOSIZE_USEHEADER );
-        m_ListCtrl->SetColumnWidth(3, wxLIST_AUTOSIZE           );
+        m_ListCtrl->SetColumnWidth(0, wxLIST_AUTOSIZE);
+        m_ListCtrl->SetColumnWidth(1, wxLIST_AUTOSIZE_USEHEADER);
+        m_ListCtrl->SetColumnWidth(2, wxLIST_AUTOSIZE_USEHEADER);
+        m_ListCtrl->SetColumnWidth(3, wxLIST_AUTOSIZE);
     }
 
     if (progress)

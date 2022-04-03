@@ -28,15 +28,15 @@ wxsRegisterItem<wxsRichTextCtrl> Reg(_T("RichTextCtrl"), wxsTWidget, _T("Standar
 // Commented items are currently unimplemented in wx.
 static const long arrAlignmentStates[] =
 {
-//        wxTEXT_ALIGNMENT_DEFAULT,
+    //        wxTEXT_ALIGNMENT_DEFAULT,
     wxTEXT_ALIGNMENT_LEFT,
     wxTEXT_ALIGNMENT_CENTRE,
     wxTEXT_ALIGNMENT_RIGHT
-//        wxTEXT_ALIGNMENT_JUSTIFIED
+    //        wxTEXT_ALIGNMENT_JUSTIFIED
 };
-static const wxChar* arrAlignmentNames[]  =
+static const wxChar * arrAlignmentNames[]  =
 {
-//        wxT("wxTEXT_ALIGNMENT_DEFAULT"),
+    //        wxT("wxTEXT_ALIGNMENT_DEFAULT"),
     wxT("wxTEXT_ALIGNMENT_LEFT"),
     wxT("wxTEXT_ALIGNMENT_CENTRE"),
     wxT("wxTEXT_ALIGNMENT_RIGHT"),
@@ -73,7 +73,7 @@ static const long arrAttributeStates[] =
     wxTEXT_ATTR_EFFECTS,
     wxTEXT_ATTR_OUTLINE_LEVEL
 };
-static const wxChar* arrAttributeNames[]  =
+static const wxChar * arrAttributeNames[]  =
 {
     wxT("wxTEXT_ATTR_TEXT_COLOUR"),
     wxT("wxTEXT_ATTR_BACKGROUND_COLOUR"),
@@ -113,7 +113,7 @@ static const long arrBulletStates[] =
     wxTEXT_ATTR_BULLET_STYLE_ROMAN_UPPER,
     wxTEXT_ATTR_BULLET_STYLE_ROMAN_LOWER,
     wxTEXT_ATTR_BULLET_STYLE_SYMBOL,
-//        wxTEXT_ATTR_BULLET_STYLE_BITMAP,
+    //        wxTEXT_ATTR_BULLET_STYLE_BITMAP,
     wxTEXT_ATTR_BULLET_STYLE_PARENTHESES,
     wxTEXT_ATTR_BULLET_STYLE_PERIOD,
     wxTEXT_ATTR_BULLET_STYLE_STANDARD,
@@ -123,7 +123,7 @@ static const long arrBulletStates[] =
     wxTEXT_ATTR_BULLET_STYLE_ALIGN_RIGHT,
     wxTEXT_ATTR_BULLET_STYLE_ALIGN_CENTRE
 };
-static const wxChar* arrBulletNames[]  =
+static const wxChar * arrBulletNames[]  =
 {
     wxT("wxTEXT_ATTR_BULLET_STYLE_ARABIC"),
     wxT("wxTEXT_ATTR_BULLET_STYLE_LETTERS_UPPER"),
@@ -131,7 +131,7 @@ static const wxChar* arrBulletNames[]  =
     wxT("wxTEXT_ATTR_BULLET_STYLE_ROMAN_UPPER"),
     wxT("wxTEXT_ATTR_BULLET_STYLE_ROMAN_LOWER"),
     wxT("wxTEXT_ATTR_BULLET_STYLE_SYMBOL"),
-//        wxT("wxTEXT_ATTR_BULLET_STYLE_BITMAP"),
+    //        wxT("wxTEXT_ATTR_BULLET_STYLE_BITMAP"),
     wxT("wxTEXT_ATTR_BULLET_STYLE_PARENTHESES"),
     wxT("wxTEXT_ATTR_BULLET_STYLE_PERIOD"),
     wxT("wxTEXT_ATTR_BULLET_STYLE_STANDARD"),
@@ -149,7 +149,7 @@ static const long arrSpacingStates[] =
     wxTEXT_ATTR_LINE_SPACING_HALF,
     wxTEXT_ATTR_LINE_SPACING_TWICE,
 };
-static const wxChar* arrSpacingNames[]  =
+static const wxChar * arrSpacingNames[]  =
 {
     wxT("wxTEXT_ATTR_LINE_SPACING_NORMAL"),
     wxT("wxTEXT_ATTR_LINE_SPACING_HALF"),
@@ -160,34 +160,34 @@ static const wxChar* arrSpacingNames[]  =
 static const long arrEffectStates[] =
 {
     wxTEXT_ATTR_EFFECT_CAPITALS,
-//        wxTEXT_ATTR_EFFECT_SMALL_CAPITALS,
+    //        wxTEXT_ATTR_EFFECT_SMALL_CAPITALS,
     wxTEXT_ATTR_EFFECT_STRIKETHROUGH
-//        wxTEXT_ATTR_EFFECT_DOUBLE_STRIKETHROUGH,
-//        wxTEXT_ATTR_EFFECT_SHADOW,
-//        wxTEXT_ATTR_EFFECT_EMBOSS,
-//        wxTEXT_ATTR_EFFECT_OUTLINE,
-//        wxTEXT_ATTR_EFFECT_ENGRAVE,
-//        wxTEXT_ATTR_EFFECT_SUPERSCRIPT,
-//        wxTEXT_ATTR_EFFECT_SUBSCRIPT
+    //        wxTEXT_ATTR_EFFECT_DOUBLE_STRIKETHROUGH,
+    //        wxTEXT_ATTR_EFFECT_SHADOW,
+    //        wxTEXT_ATTR_EFFECT_EMBOSS,
+    //        wxTEXT_ATTR_EFFECT_OUTLINE,
+    //        wxTEXT_ATTR_EFFECT_ENGRAVE,
+    //        wxTEXT_ATTR_EFFECT_SUPERSCRIPT,
+    //        wxTEXT_ATTR_EFFECT_SUBSCRIPT
 };
-static const wxChar* arrEffectNames[]  =
+static const wxChar * arrEffectNames[]  =
 {
     wxT("wxTEXT_ATTR_EFFECT_CAPITALS"),
-//        wxT("wxTEXT_ATTR_EFFECT_SMALL_CAPITALS"),
+    //        wxT("wxTEXT_ATTR_EFFECT_SMALL_CAPITALS"),
     wxT("wxTEXT_ATTR_EFFECT_STRIKETHROUGH"),
-//        wxT("wxTEXT_ATTR_EFFECT_DOUBLE_STRIKETHROUGH"),
-//        wxT("wxTEXT_ATTR_EFFECT_SHADOW"),
-//        wxT("wxTEXT_ATTR_EFFECT_EMBOSS"),
-//        wxT("wxTEXT_ATTR_EFFECT_OUTLINE"),
-//        wxT("wxTEXT_ATTR_EFFECT_ENGRAVE"),
-//        wxT("wxTEXT_ATTR_EFFECT_SUPERSCRIPT"),
-//        wxT("wxTEXT_ATTR_EFFECT_SUBSCRIPT"),
+    //        wxT("wxTEXT_ATTR_EFFECT_DOUBLE_STRIKETHROUGH"),
+    //        wxT("wxTEXT_ATTR_EFFECT_SHADOW"),
+    //        wxT("wxTEXT_ATTR_EFFECT_EMBOSS"),
+    //        wxT("wxTEXT_ATTR_EFFECT_OUTLINE"),
+    //        wxT("wxTEXT_ATTR_EFFECT_ENGRAVE"),
+    //        wxT("wxTEXT_ATTR_EFFECT_SUPERSCRIPT"),
+    //        wxT("wxTEXT_ATTR_EFFECT_SUBSCRIPT"),
     NULL
 };
 
 WXS_ST_BEGIN(wxsRichTextCtrlStyles, _T("wxRE_MULTILINE"))
 #ifndef __WXMAC__
-WXS_ST(wxRE_CENTRE_CARET)
+    WXS_ST(wxRE_CENTRE_CARET)
 #endif
 WXS_ST(wxRE_MULTILINE)
 WXS_ST(wxRE_READONLY)
@@ -216,13 +216,13 @@ WXS_EV_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsRichTextCtrl::wxsRichTextCtrl(wxsItemResData* Data):
+wxsRichTextCtrl::wxsRichTextCtrl(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
         wxsRichTextCtrlEvents,
         wxsRichTextCtrlStyles,
-        flWidget&~(flFont)),
+        flWidget & ~(flFont)),
     m_sText(_("Text")),
     m_iAlignment(wxTEXT_ALIGNMENT_LEFT),
     m_iAttribute(0),
@@ -241,120 +241,135 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
     wxString sFlags;
     bool bClrChanged = false;
 
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/richtext/richtextctrl.h>"),GetInfo().ClassName,hfInPCH);
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/richtext/richtextctrl.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"), m_sText.wx_str());
+            wxString sAttrName = GetCoderContext()->GetUniqueName(_T("rchtxtAttr"));
+            Codef(_T("wxRichTextAttr %s;\n"), sAttrName.wx_str());
 
-        Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"), m_sText.wx_str());
-
-        wxString sAttrName = GetCoderContext()->GetUniqueName(_T("rchtxtAttr"));
-        Codef(_T("wxRichTextAttr %s;\n"), sAttrName.wx_str());
-        // Alignment.
-        // wxTEXT_ALIGNMENT_LEFT is the default.
-        if (m_iAlignment == wxTEXT_ALIGNMENT_CENTRE)
-        {
-            Codef( _T("%s.SetAlignment(wxTEXT_ALIGNMENT_CENTRE);\n"), sAttrName.wx_str());
-        }
-        else if (m_iAlignment == wxTEXT_ALIGNMENT_RIGHT)
-        {
-            Codef( _T("%s.SetAlignment(wxTEXT_ALIGNMENT_RIGHT);\n"), sAttrName.wx_str());
-        }
-        // Attribute flags.
-        for(int i = 0; arrAttributeNames[i]; i++)
-        {
-            if ((m_iAttribute & arrAttributeStates[i]) == arrAttributeStates[i])
+            // Alignment.
+            // wxTEXT_ALIGNMENT_LEFT is the default.
+            if (m_iAlignment == wxTEXT_ALIGNMENT_CENTRE)
             {
-                sFlags << arrAttributeNames[i] << _T("|");
+                Codef(_T("%s.SetAlignment(wxTEXT_ALIGNMENT_CENTRE);\n"), sAttrName.wx_str());
             }
-        }
-        if (!sFlags.IsEmpty())
-        {
-            sFlags.RemoveLast();
-            Codef( _T("%s.SetFlags(%s);\n"), sAttrName.wx_str(), sFlags.wx_str());
-        }
-        // Bullet flags.
-        sFlags.Clear();
-        for(int i = 0; arrBulletNames[i]; i++)
-        {
-            if ((m_iBullets & arrBulletStates[i]) == arrBulletStates[i])
+            else
+                if (m_iAlignment == wxTEXT_ALIGNMENT_RIGHT)
+                {
+                    Codef(_T("%s.SetAlignment(wxTEXT_ALIGNMENT_RIGHT);\n"), sAttrName.wx_str());
+                }
+
+            // Attribute flags.
+            for (int i = 0; arrAttributeNames[i]; i++)
             {
-                sFlags << arrBulletNames[i] << _T("|");
+                if ((m_iAttribute & arrAttributeStates[i]) == arrAttributeStates[i])
+                {
+                    sFlags << arrAttributeNames[i] << _T("|");
+                }
             }
-        }
-        if (!sFlags.IsEmpty())
-        {
-            sFlags.RemoveLast();
-            Codef( _T("%s.SetBulletStyle(%s);\n"), sAttrName.wx_str(), sFlags.wx_str());
-        }
-        // Line spacing.
-        // wxTEXT_ATTR_LINE_SPACING_NORMAL is the default.
-        if (m_iSpacing == wxTEXT_ATTR_LINE_SPACING_HALF)
-        {
-            Codef( _T("%s.SetLineSpacing(wxTEXT_ATTR_LINE_SPACING_HALF);\n"), sAttrName.wx_str());
-        }
-        else if (m_iSpacing== wxTEXT_ATTR_LINE_SPACING_TWICE)
-        {
-            Codef( _T("%s.SetLineSpacing(wxTEXT_ATTR_LINE_SPACING_TWICE);\n"), sAttrName.wx_str());
-        }
-        // Text effect flags.
-        sFlags.Clear();
-        for(int i = 0; arrEffectNames[i]; i++)
-        {
-            if ((m_iEffects & arrEffectStates[i]) == arrEffectStates[i])
+
+            if (!sFlags.IsEmpty())
             {
-                sFlags << arrEffectNames[i] << _T("|");
+                sFlags.RemoveLast();
+                Codef(_T("%s.SetFlags(%s);\n"), sAttrName.wx_str(), sFlags.wx_str());
             }
-        }
-        if (!sFlags.IsEmpty())
-        {
-            sFlags.RemoveLast();
 
-            Codef( _T("%s.SetTextEffects(%s);\n"), sAttrName.wx_str(), sFlags.wx_str());
-            Codef( _T("%s.SetTextEffectFlags(%s);\n"), sAttrName.wx_str(), sFlags.wx_str());
-        }
-        // Text colours.
-        wxString ss = m_cdTextColour.BuildCode(GetCoderContext());
-        if (!ss.IsEmpty())
-        {
-            bClrChanged = true;
-            Codef( _T("%s.SetTextColour(%s);\n"), sAttrName.wx_str(), ss.wx_str());
-        }
-        ss = m_cdTextBackground.BuildCode(GetCoderContext());
-        if (!ss.IsEmpty())
-        {
-            bClrChanged = true;
-            Codef( _T("%s.SetBackgroundColour(%s);\n"), sAttrName.wx_str(), ss.wx_str());
-        }
-        // Font characteristics.
-        wxString sFntName = GetCoderContext()->GetUniqueName(_T("Font"));
-        wxString sFnt = m_fdFont.BuildFontCode(sFntName, GetCoderContext());
-        if (sFnt.Len() > 0)
-        {
-            Codef(_T("%s"), sFnt.wx_str());
-            Codef( _T("%s.SetFontFaceName(%s.GetFaceName());\n"), sAttrName.wx_str(), sFntName.wx_str());
-            Codef( _T("%s.SetFontSize(%s.GetPointSize());\n"), sAttrName.wx_str(), sFntName.wx_str());
-            Codef( _T("%s.SetFontStyle(%s.GetStyle());\n"), sAttrName.wx_str(), sFntName.wx_str());
-            Codef( _T("%s.SetFontUnderlined(%s.GetUnderlined());\n"), sAttrName.wx_str(), sFntName.wx_str());
-            Codef( _T("%s.SetFontWeight(%s.GetWeight());\n"), sAttrName.wx_str(), sFntName.wx_str());
+            // Bullet flags.
+            sFlags.Clear();
+
+            for (int i = 0; arrBulletNames[i]; i++)
+            {
+                if ((m_iBullets & arrBulletStates[i]) == arrBulletStates[i])
+                {
+                    sFlags << arrBulletNames[i] << _T("|");
+                }
+            }
+
+            if (!sFlags.IsEmpty())
+            {
+                sFlags.RemoveLast();
+                Codef(_T("%s.SetBulletStyle(%s);\n"), sAttrName.wx_str(), sFlags.wx_str());
+            }
+
+            // Line spacing.
+            // wxTEXT_ATTR_LINE_SPACING_NORMAL is the default.
+            if (m_iSpacing == wxTEXT_ATTR_LINE_SPACING_HALF)
+            {
+                Codef(_T("%s.SetLineSpacing(wxTEXT_ATTR_LINE_SPACING_HALF);\n"), sAttrName.wx_str());
+            }
+            else
+                if (m_iSpacing == wxTEXT_ATTR_LINE_SPACING_TWICE)
+                {
+                    Codef(_T("%s.SetLineSpacing(wxTEXT_ATTR_LINE_SPACING_TWICE);\n"), sAttrName.wx_str());
+                }
+
+            // Text effect flags.
+            sFlags.Clear();
+
+            for (int i = 0; arrEffectNames[i]; i++)
+            {
+                if ((m_iEffects & arrEffectStates[i]) == arrEffectStates[i])
+                {
+                    sFlags << arrEffectNames[i] << _T("|");
+                }
+            }
+
+            if (!sFlags.IsEmpty())
+            {
+                sFlags.RemoveLast();
+                Codef(_T("%s.SetTextEffects(%s);\n"), sAttrName.wx_str(), sFlags.wx_str());
+                Codef(_T("%s.SetTextEffectFlags(%s);\n"), sAttrName.wx_str(), sFlags.wx_str());
+            }
+
+            // Text colours.
+            wxString ss = m_cdTextColour.BuildCode(GetCoderContext());
+
+            if (!ss.IsEmpty())
+            {
+                bClrChanged = true;
+                Codef(_T("%s.SetTextColour(%s);\n"), sAttrName.wx_str(), ss.wx_str());
+            }
+
+            ss = m_cdTextBackground.BuildCode(GetCoderContext());
+
+            if (!ss.IsEmpty())
+            {
+                bClrChanged = true;
+                Codef(_T("%s.SetBackgroundColour(%s);\n"), sAttrName.wx_str(), ss.wx_str());
+            }
+
+            // Font characteristics.
+            wxString sFntName = GetCoderContext()->GetUniqueName(_T("Font"));
+            wxString sFnt = m_fdFont.BuildFontCode(sFntName, GetCoderContext());
+
+            if (sFnt.Len() > 0)
+            {
+                Codef(_T("%s"), sFnt.wx_str());
+                Codef(_T("%s.SetFontFaceName(%s.GetFaceName());\n"), sAttrName.wx_str(), sFntName.wx_str());
+                Codef(_T("%s.SetFontSize(%s.GetPointSize());\n"), sAttrName.wx_str(), sFntName.wx_str());
+                Codef(_T("%s.SetFontStyle(%s.GetStyle());\n"), sAttrName.wx_str(), sFntName.wx_str());
+                Codef(_T("%s.SetFontUnderlined(%s.GetUnderlined());\n"), sAttrName.wx_str(), sFntName.wx_str());
+                Codef(_T("%s.SetFontWeight(%s.GetWeight());\n"), sAttrName.wx_str(), sFntName.wx_str());
+            }
+
+            if (m_iAlignment != wxTEXT_ALIGNMENT_LEFT || m_iAttribute != 0 || m_iBullets != wxTEXT_ATTR_BULLET_STYLE_NONE ||
+                    m_iSpacing != wxTEXT_ATTR_LINE_SPACING_NORMAL || m_iEffects != wxTEXT_ATTR_EFFECT_NONE || bClrChanged || !sFnt.IsEmpty())
+            {
+                Codef(_T("%ASetBasicStyle(%s);\n"), sAttrName.wx_str());
+            }
+
+            BuildSetupWindowCode();
+            return;
         }
 
-        if (m_iAlignment != wxTEXT_ALIGNMENT_LEFT || m_iAttribute != 0 || m_iBullets != wxTEXT_ATTR_BULLET_STYLE_NONE ||
-                m_iSpacing != wxTEXT_ATTR_LINE_SPACING_NORMAL || m_iEffects != wxTEXT_ATTR_EFFECT_NONE || bClrChanged || !sFnt.IsEmpty())
+        case wxsUnknownLanguage: // fall-through
+        default:
         {
-            Codef( _T("%ASetBasicStyle(%s);\n"), sAttrName.wx_str());
+            wxsCodeMarks::Unknown(_T("wxsRichTextCtrl::OnBuildCreatingCode"), GetLanguage());
         }
-
-        BuildSetupWindowCode();
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsRichTextCtrl::OnBuildCreatingCode"), GetLanguage());
-    }
     }
 }
 
@@ -365,42 +380,49 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
  * \return wxObject*                 The constructed control.
  *
  */
-wxObject* wxsRichTextCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsRichTextCtrl::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxRichTextCtrl* Preview = new wxRichTextCtrl(Parent, GetId(), m_sText, Pos(Parent), Size(Parent), Style());
+    wxRichTextCtrl * Preview = new wxRichTextCtrl(Parent, GetId(), m_sText, Pos(Parent), Size(Parent), Style());
     wxRichTextAttr rchtxtAttr;
     bool bClrChanged = false;
-
     // Attribute flags.
     rchtxtAttr.SetFlags(m_iAttribute);
+
     // Alignment.
     // wxTEXT_ALIGNMENT_LEFT is the default.
     if (m_iAlignment == wxTEXT_ALIGNMENT_CENTRE)
     {
         rchtxtAttr.SetAlignment(wxTEXT_ALIGNMENT_CENTRE);
     }
-    else if (m_iAlignment == wxTEXT_ALIGNMENT_RIGHT)
-    {
-        rchtxtAttr.SetAlignment(wxTEXT_ALIGNMENT_RIGHT);
-    }
+    else
+        if (m_iAlignment == wxTEXT_ALIGNMENT_RIGHT)
+        {
+            rchtxtAttr.SetAlignment(wxTEXT_ALIGNMENT_RIGHT);
+        }
+
     rchtxtAttr.SetFlags(m_iBullets);
     rchtxtAttr.SetLineSpacing(m_iSpacing);
     wxColour cc = m_cdTextColour.GetColour();
+
     if (cc.IsOk())
     {
         bClrChanged = true;
         rchtxtAttr.SetTextColour(cc);
     }
+
     cc = m_cdTextBackground.GetColour();
+
     if (cc.IsOk())
     {
         bClrChanged = true;
         rchtxtAttr.SetBackgroundColour(cc);
     }
+
     rchtxtAttr.SetTextEffects(m_iEffects);
     rchtxtAttr.SetTextEffectFlags(m_iEffects);
     // Font characteristics.
     wxFont fnt = m_fdFont.BuildFont();
+
     if (fnt.IsOk())
     {
         rchtxtAttr.SetFontFaceName(fnt.GetFaceName());

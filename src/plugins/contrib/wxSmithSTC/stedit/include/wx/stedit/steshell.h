@@ -47,134 +47,134 @@ enum STE_CaretPos_Type
 
 class WXDLLIMPEXP_STEDIT wxSTEditorShell : public wxSTEditor
 {
-public :
-    wxSTEditorShell() : wxSTEditor()
-    {
-        Init();
-    }
+    public :
+        wxSTEditorShell() : wxSTEditor()
+        {
+            Init();
+        }
 
-    wxSTEditorShell( wxWindow *parent, wxWindowID id = wxID_ANY,
-                     const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxDefaultSize,
-                     long style = 0,
-                     const wxString& name = wxT("wxSTEditorShell") )
-    {
-        Init();
-        Create(parent, id, pos, size, style, name);
-    }
+        wxSTEditorShell(wxWindow * parent, wxWindowID id = wxID_ANY,
+                        const wxPoint & pos = wxDefaultPosition,
+                        const wxSize & size = wxDefaultSize,
+                        long style = 0,
+                        const wxString & name = wxT("wxSTEditorShell"))
+        {
+            Init();
+            Create(parent, id, pos, size, style, name);
+        }
 
-    virtual ~wxSTEditorShell();
+        virtual ~wxSTEditorShell();
 
-    bool Create( wxWindow *parent, wxWindowID id = wxID_ANY,
-                 const wxPoint& pos = wxDefaultPosition,
-                 const wxSize& size = wxDefaultSize,
-                 long style = 0,
-                 const wxString& name = wxT("wxSTEditorShell") );
+        bool Create(wxWindow * parent, wxWindowID id = wxID_ANY,
+                    const wxPoint & pos = wxDefaultPosition,
+                    const wxSize & size = wxDefaultSize,
+                    long style = 0,
+                    const wxString & name = wxT("wxSTEditorShell"));
 
-    enum margin_markerType
-    {
-        PROMPT_MARGIN = STE_MARGIN_MARKER, ///< The margin number to use to show the prompt markers
-        PROMPT_MARKER = STE_MARKER__MAX    ///< The marker number displayed at the prompt
-    };
+        enum margin_markerType
+        {
+            PROMPT_MARGIN = STE_MARGIN_MARKER, ///< The margin number to use to show the prompt markers
+            PROMPT_MARKER = STE_MARKER__MAX    ///< The marker number displayed at the prompt
+        };
 
-    /// The preferred method to append text to the shell.
-    /// If you wish to write to the shell in your own routine be sure to
-    ///   take note of the code in this function.
-    virtual void AppendText(const wxString &text);
+        /// The preferred method to append text to the shell.
+        /// If you wish to write to the shell in your own routine be sure to
+        ///   take note of the code in this function.
+        virtual void AppendText(const wxString & text);
 
-    /// Set the text currently at the prompt, may be multiline.
-    virtual void SetPromptText(const wxString& text);
+        /// Set the text currently at the prompt, may be multiline.
+        virtual void SetPromptText(const wxString & text);
 
-    /// Get the text currently on the "cursor" line. The text may be multiline
-    ///   if the user has pasted multiline text into the shell.
-    virtual wxString GetPromptText();
+        /// Get the text currently on the "cursor" line. The text may be multiline
+        ///   if the user has pasted multiline text into the shell.
+        virtual wxString GetPromptText();
 
-    /// Block internal updates to the readonly state, surround all cursor
-    ///   movements or programmatic writes with a begin and endwriteable and
-    ///   the readonly state will not be updated during your work.
-    /// For BeginWriteable(make_writeable=true) the editor will be made writeable,
-    ///   else left in the current state if make_writeable=false.
-    void BeginWriteable(bool make_writeable = true);
-    /// For EndWriteable(check_ro=true) the editor will be set back to readonly
-    ///   if appropriate or left as is if check_ro = false.
-    void EndWriteable(bool check_ro = true);
+        /// Block internal updates to the readonly state, surround all cursor
+        ///   movements or programmatic writes with a begin and endwriteable and
+        ///   the readonly state will not be updated during your work.
+        /// For BeginWriteable(make_writeable=true) the editor will be made writeable,
+        ///   else left in the current state if make_writeable=false.
+        void BeginWriteable(bool make_writeable = true);
+        /// For EndWriteable(check_ro=true) the editor will be set back to readonly
+        ///   if appropriate or left as is if check_ro = false.
+        void EndWriteable(bool check_ro = true);
 
-    /// Get the last line with a prompt on it. It may not be the actual last
-    ///  line for multiline entries.
-    int GetPromptLine();
+        /// Get the last line with a prompt on it. It may not be the actual last
+        ///  line for multiline entries.
+        int GetPromptLine();
 
-    /// Is the caret on the last line with a prompt marker?
-    /// @param option Sets what to do with it if not already on the last line.
-    /// @returns True if it is on the last line after any changes due to option
-    bool CaretOnPromptLine(STE_CaretPos_Type option = STE_CARET_MOVE_NONE);
+        /// Is the caret on the last line with a prompt marker?
+        /// @param option Sets what to do with it if not already on the last line.
+        /// @returns True if it is on the last line after any changes due to option
+        bool CaretOnPromptLine(STE_CaretPos_Type option = STE_CARET_MOVE_NONE);
 
-    /// Get the previous/next string last typed in, for up/dn arrows.
-    /// line is the current string at the cursor for comparison.
-    wxString GetNextHistoryLine(bool fowards, const wxString &line);
-    /// Get the current index into the prompt history
-    size_t GetHistoryIndex() const
-    {
-        return m_line_history_index;
-    }
-    /// Get the total number of history items
-    size_t GetHistoryCount() const
-    {
-        return m_lineHistoryArray.GetCount();
-    }
-    /// Get the maximum number of history lines to store, < 0 means unlimited.
-    int  GetMaxHistoryLines() const
-    {
-        return m_max_history_lines;
-    }
-    /// Set the maximum number of history lines to store, < 0 means unlimited.
-    void SetMaxHistoryLines(int max_lines);
-    /// Add a line to the history lines, checks for duplicates.
-    /// If set_index_to_last put current history index at end.
-    void AddHistoryLine(const wxString& string, bool set_index_to_last);
+        /// Get the previous/next string last typed in, for up/dn arrows.
+        /// line is the current string at the cursor for comparison.
+        wxString GetNextHistoryLine(bool fowards, const wxString & line);
+        /// Get the current index into the prompt history
+        size_t GetHistoryIndex() const
+        {
+            return m_line_history_index;
+        }
+        /// Get the total number of history items
+        size_t GetHistoryCount() const
+        {
+            return m_lineHistoryArray.GetCount();
+        }
+        /// Get the maximum number of history lines to store, < 0 means unlimited.
+        int  GetMaxHistoryLines() const
+        {
+            return m_max_history_lines;
+        }
+        /// Set the maximum number of history lines to store, < 0 means unlimited.
+        void SetMaxHistoryLines(int max_lines);
+        /// Add a line to the history lines, checks for duplicates.
+        /// If set_index_to_last put current history index at end.
+        void AddHistoryLine(const wxString & string, bool set_index_to_last);
 
-    /// Get/Set the maximum number of lines to store.
-    ///   < 0 for no max number (don't let it get out of hand) default is 10000
-    ///   overflow_lines allows extra lines to be added beyond max_lines
-    ///     before deleting a chunk to get back down to max lines.
-    ///     If overflow_lines = 0 then only max_lines are allowed which can make
-    ///     continuously appending lines once you reach max_lines slow.
-    bool SetMaxLines(int max_lines, int overflow_lines = 2000);
-    int  GetMaxLines() const
-    {
-        return m_max_lines;
-    }
-    int  GetOverflowLines() const
-    {
-        return m_overflow_lines;
-    }
+        /// Get/Set the maximum number of lines to store.
+        ///   < 0 for no max number (don't let it get out of hand) default is 10000
+        ///   overflow_lines allows extra lines to be added beyond max_lines
+        ///     before deleting a chunk to get back down to max lines.
+        ///     If overflow_lines = 0 then only max_lines are allowed which can make
+        ///     continuously appending lines once you reach max_lines slow.
+        bool SetMaxLines(int max_lines, int overflow_lines = 2000);
+        int  GetMaxLines() const
+        {
+            return m_max_lines;
+        }
+        int  GetOverflowLines() const
+        {
+            return m_overflow_lines;
+        }
 
-    // implementation
+        // implementation
 
-    /// returns if the editor should be readonly (is on last line)
-    ///    if set then set the proper readonly state
-    virtual bool CheckReadOnly(bool set);
+        /// returns if the editor should be readonly (is on last line)
+        ///    if set then set the proper readonly state
+        virtual bool CheckReadOnly(bool set);
 
-    /// returns if the last line needs a prompt (margin marker)
-    ///   if set then set the marker if needed
-    virtual bool CheckPrompt(bool set);
+        /// returns if the last line needs a prompt (margin marker)
+        ///   if set then set the marker if needed
+        virtual bool CheckPrompt(bool set);
 
-    void OnKeyDown(wxKeyEvent &event);
-    void OnSTCUpdateUI(wxStyledTextEvent &event);
+        void OnKeyDown(wxKeyEvent & event);
+        void OnSTCUpdateUI(wxStyledTextEvent & event);
 
-protected:
-    wxArrayString m_lineHistoryArray;
-    int m_line_history_index;
-    int m_max_history_lines;
+    protected:
+        wxArrayString m_lineHistoryArray;
+        int m_line_history_index;
+        int m_max_history_lines;
 
-    int m_max_lines;
-    int m_overflow_lines;
+        int m_max_lines;
+        int m_overflow_lines;
 
-    int m_writeable_count;
+        int m_writeable_count;
 
-private:
-    void Init();
-    DECLARE_EVENT_TABLE();
-    DECLARE_DYNAMIC_CLASS(wxSTEditorShell);
+    private:
+        void Init();
+        DECLARE_EVENT_TABLE();
+        DECLARE_DYNAMIC_CLASS(wxSTEditorShell);
 };
 
 #endif  // _STESHELL_H_

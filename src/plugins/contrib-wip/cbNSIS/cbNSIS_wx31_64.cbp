@@ -50,9 +50,9 @@
 			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
 			<Add directory="$(#WXWIDGETS.include)" />
 			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
-			<Add directory="$(#CB_BUILD)/include" />
+			<Add directory="$(#CB_BUILD.INCLUDE)" />
 			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
-			<Add directory="$(#CB_BUILD)/include/tinyxml" />
+			<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
 			<Add directory="$(#CB_BUILD)/src" />
 			<Add directory="include" />
 		</Compiler>

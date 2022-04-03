@@ -44,114 +44,114 @@
 
 class wxsImageTreeEditorDlg: public wxScrollingDialog
 {
-public:
+    public:
 
-    wxsImageTreeEditorDlg(wxWindow* parent);
-    virtual ~wxsImageTreeEditorDlg();
+        wxsImageTreeEditorDlg(wxWindow * parent);
+        virtual ~wxsImageTreeEditorDlg();
 
-    bool Execute(wxArrayString &aItems);
-    static void ParseTreeItem(wxString aSource, int &outLevel, wxColour &outColour, bool &outBold, int &outImage1, int &outImage2, int &outImage3, int &outImage4, wxString &outText);
-
-
-
-    //(*Declarations(wxsImageTreeEditorDlg)
-    wxStaticText* StaticText10;
-    wxStaticBoxSizer* StaticBoxSizer2;
-    wxStaticText* StaticText9;
-    wxButton* bOK;
-    wxBitmapComboBox* cbSelected;
-    wxBitmapComboBox* cbExpanded;
-    wxBitmapButton        *bAddSubItem;
-    wxButton* bCancel;
-    wxStaticText* StaticText13;
-    wxStaticText* StaticText2;
-    wxStaticText* StaticText6;
-    wxTreeCtrl* Tree1;
-    wxStaticText* StaticText8;
-    wxStaticText* StaticText11;
-    wxImageList* ImageList1;
-    wxBitmapButton        *bEditItem;
-    wxColourDialog* ColourDialog1;
-    wxStaticText* StaticText1;
-    wxStaticText* StaticText3;
-    wxBitmapButton        *bDelAllItems;
-    wxBitmapButton        *bDelItem;
-    wxCheckBox* cxItemBold;
-    wxStaticText* StaticText5;
-    wxStaticText* StaticText7;
-    wxStaticText* StaticText12;
-    wxStaticBoxSizer* StaticBoxSizer1;
-    wxBitmapComboBox* cbSelExpanded;
-    wxStaticText* StaticText4;
-    wxButton* bItemColor;
-    wxBitmapButton        *bAddItem;
-    wxBitmapComboBox* cbNormal;
-    //*)
+        bool Execute(wxArrayString & aItems);
+        static void ParseTreeItem(wxString aSource, int & outLevel, wxColour & outColour, bool & outBold, int & outImage1, int & outImage2, int & outImage3, int & outImage4, wxString & outText);
 
 
 
-protected:
-
-    //(*Identifiers(wxsImageTreeEditorDlg)
-    static const long ID_STATICTEXT1;
-    static const long ID_TREECTRL1;
-    static const long ID_IMAGEBUTTON1;
-    static const long ID_IMAGEBUTTON2;
-    static const long ID_STATICTEXT3;
-    static const long ID_IMAGEBUTTON3;
-    static const long ID_STATICTEXT4;
-    static const long ID_IMAGEBUTTON4;
-    static const long ID_STATICTEXT5;
-    static const long ID_BUTTON3;
-    static const long ID_STATICTEXT6;
-    static const long ID_CHECKBOX1;
-    static const long ID_IMAGEBUTTON5;
-    static const long ID_STATICTEXT11;
-    static const long ID_STATICTEXT12;
-    static const long ID_STATICTEXT13;
-    static const long ID_COMBOBOX1;
-    static const long ID_STATICTEXT7;
-    static const long ID_COMBOBOX2;
-    static const long ID_STATICTEXT8;
-    static const long ID_COMBOBOX3;
-    static const long ID_STATICTEXT9;
-    static const long ID_COMBOBOX4;
-    static const long ID_STATICTEXT10;
-    static const long ID_BUTTON1;
-    static const long ID_BUTTON2;
-    //*)
-
-private:
-
-    //(*Handlers(wxsImageTreeEditorDlg)
-    void OnbAddItemClick(wxCommandEvent& event);
-    void OnbAddSubItemClick(wxCommandEvent& event);
-    void OnbDelItemClick(wxCommandEvent& event);
-    void OnbDelAllItemsClick(wxCommandEvent& event);
-    void OnbItemColorClick(wxCommandEvent& event);
-    void OncxItemBoldClick(wxCommandEvent& event);
-    void OnbEditItemClick(wxCommandEvent& event);
-    void OncbNormalSelect(wxCommandEvent& event);
-    void OncbSelectedSelect(wxCommandEvent& event);
-    void OncbExpandedSelect(wxCommandEvent& event);
-    void OncbSelExpandedSelect(wxCommandEvent& event);
-    void OnTreeCtrl1SelectionChanged(wxTreeEvent& event);
-    void OnbOKClick(wxCommandEvent& event);
-    void OnbCancelClick(wxCommandEvent& event);
-    //*)
-
-    void        SetImageList(wxImageList &inImageList);
-    void        AddItem(wxTreeItemId &inParent);
-    void        EncodeTreeItems(wxTreeItemId inParent, int inLevel, wxArrayString &outList);
+        //(*Declarations(wxsImageTreeEditorDlg)
+        wxStaticText * StaticText10;
+        wxStaticBoxSizer * StaticBoxSizer2;
+        wxStaticText * StaticText9;
+        wxButton * bOK;
+        wxBitmapComboBox * cbSelected;
+        wxBitmapComboBox * cbExpanded;
+        wxBitmapButton    *    bAddSubItem;
+        wxButton * bCancel;
+        wxStaticText * StaticText13;
+        wxStaticText * StaticText2;
+        wxStaticText * StaticText6;
+        wxTreeCtrl * Tree1;
+        wxStaticText * StaticText8;
+        wxStaticText * StaticText11;
+        wxImageList * ImageList1;
+        wxBitmapButton    *    bEditItem;
+        wxColourDialog * ColourDialog1;
+        wxStaticText * StaticText1;
+        wxStaticText * StaticText3;
+        wxBitmapButton    *    bDelAllItems;
+        wxBitmapButton    *    bDelItem;
+        wxCheckBox * cxItemBold;
+        wxStaticText * StaticText5;
+        wxStaticText * StaticText7;
+        wxStaticText * StaticText12;
+        wxStaticBoxSizer * StaticBoxSizer1;
+        wxBitmapComboBox * cbSelExpanded;
+        wxStaticText * StaticText4;
+        wxButton * bItemColor;
+        wxBitmapButton    *    bAddItem;
+        wxBitmapComboBox * cbNormal;
+        //*)
 
 
 
-    wxString                m_sTreeName;            //!< The tree name.
-    wxString                m_sImageName;        //!< The image list's name.
-    wxImageList            m_imageList;                //!< The image list used to provide state images.
+    protected:
+
+        //(*Identifiers(wxsImageTreeEditorDlg)
+        static const long ID_STATICTEXT1;
+        static const long ID_TREECTRL1;
+        static const long ID_IMAGEBUTTON1;
+        static const long ID_IMAGEBUTTON2;
+        static const long ID_STATICTEXT3;
+        static const long ID_IMAGEBUTTON3;
+        static const long ID_STATICTEXT4;
+        static const long ID_IMAGEBUTTON4;
+        static const long ID_STATICTEXT5;
+        static const long ID_BUTTON3;
+        static const long ID_STATICTEXT6;
+        static const long ID_CHECKBOX1;
+        static const long ID_IMAGEBUTTON5;
+        static const long ID_STATICTEXT11;
+        static const long ID_STATICTEXT12;
+        static const long ID_STATICTEXT13;
+        static const long ID_COMBOBOX1;
+        static const long ID_STATICTEXT7;
+        static const long ID_COMBOBOX2;
+        static const long ID_STATICTEXT8;
+        static const long ID_COMBOBOX3;
+        static const long ID_STATICTEXT9;
+        static const long ID_COMBOBOX4;
+        static const long ID_STATICTEXT10;
+        static const long ID_BUTTON1;
+        static const long ID_BUTTON2;
+        //*)
+
+    private:
+
+        //(*Handlers(wxsImageTreeEditorDlg)
+        void OnbAddItemClick(wxCommandEvent & event);
+        void OnbAddSubItemClick(wxCommandEvent & event);
+        void OnbDelItemClick(wxCommandEvent & event);
+        void OnbDelAllItemsClick(wxCommandEvent & event);
+        void OnbItemColorClick(wxCommandEvent & event);
+        void OncxItemBoldClick(wxCommandEvent & event);
+        void OnbEditItemClick(wxCommandEvent & event);
+        void OncbNormalSelect(wxCommandEvent & event);
+        void OncbSelectedSelect(wxCommandEvent & event);
+        void OncbExpandedSelect(wxCommandEvent & event);
+        void OncbSelExpandedSelect(wxCommandEvent & event);
+        void OnTreeCtrl1SelectionChanged(wxTreeEvent & event);
+        void OnbOKClick(wxCommandEvent & event);
+        void OnbCancelClick(wxCommandEvent & event);
+        //*)
+
+        void        SetImageList(wxImageList & inImageList);
+        void        AddItem(wxTreeItemId & inParent);
+        void        EncodeTreeItems(wxTreeItemId inParent, int inLevel, wxArrayString & outList);
 
 
-    DECLARE_EVENT_TABLE()
+
+        wxString                m_sTreeName;            //!< The tree name.
+        wxString                m_sImageName;        //!< The image list's name.
+        wxImageList            m_imageList;                //!< The image list used to provide state images.
+
+
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

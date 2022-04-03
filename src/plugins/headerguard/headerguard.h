@@ -21,24 +21,24 @@ class FileTreeData;
 
 class HeaderGuard : public cbPlugin
 {
-public:
-    HeaderGuard() {};
-    virtual ~HeaderGuard() {};
+    public:
+        HeaderGuard() {};
+        virtual ~HeaderGuard() {};
 
-    virtual void BuildMenu(cb_unused wxMenuBar* menuBar) {}
-    virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0) {}
-    virtual bool BuildToolBar(cb_unused wxToolBar* toolBar)
-    {
-        return false;
-    }
+        virtual void BuildMenu(cb_unused wxMenuBar * menuBar) {}
+        virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu * menu, cb_unused const FileTreeData * data = 0) {}
+        virtual bool BuildToolBar(cb_unused wxToolBar * toolBar)
+        {
+            return false;
+        }
 
-private:
+    private:
 
-    virtual void OnAttach();
+        virtual void OnAttach();
 
-    void OnSave(CodeBlocksEvent& event);
+        void OnSave(CodeBlocksEvent & event);
 
-    virtual void OnRelease(cb_unused bool appShutDown) {};
+        virtual void OnRelease(cb_unused bool appShutDown) {};
 };
 
 #endif // header guard

@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Help wx3.1.x (64 bit)" />
+		<Option title="Help Windows" />
 		<Option pch_mode="0" />
 		<Option default_target="help_plugin" />
 		<Option compiler="gcc" />
@@ -68,15 +68,18 @@
 					<Add library="z" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
-					<Add before="cmd /c if exist $(TARGET_OUTPUT_FILE) del $(TARGET_OUTPUT_FILE)" />
-					<Add before="cmd /c if exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\help_plugin.zip del $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\help_plugin.zip" />
+					<!-- Create output directories -->
+					<Add before="cmd /c &quot;if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)&quot;" />
+					<Add before="cmd /c &quot;if not exist $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\docs\ mkdir $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\docs\&quot;" />
+					<Mode before="always" />
 
+					<!-- Create help_plugin.zip -->
 					<Add after="zip -j9  $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\help_plugin.zip manifest.xml *.xrc" />
 					<Add after="zip -rq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\help_plugin.zip .\images" />
 
-					<Add after="cmd /c if not exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\docs mkdir $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\docs" />
-					<Add after="xcopy /Y index.ini $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\docs\" />
+					<!-- Copy file to docs directory -->
+					<Add before="cmd /c &quot;if not exist $(#CB_BUILD)\..\windows_installer xcopy /Y index.ini $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\docs\&quot;" />
+					<Add before="cmd /c &quot;if exist $(#CB_BUILD)\..\windows_installer xcopy /Y $(#CB_BUILD)\..\windows_installer\Documentation\*.* $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\docs\&quot;" />
 
 					<Mode after="always" />
 				</ExtraCommands>
@@ -89,10 +92,10 @@
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add directory="$(#WXWIDGETS.include)" />
 			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
-			<Add directory="$(#CB_BUILD)/include" />
-			<Add directory="$(#CB_BUILD)/include/tinyxml" />
+			<Add directory="$(#CB_BUILD.INCLUDE)" />
+			<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
 			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
-			<Add directory="$(#CB_BUILD)/include/scripting/include" />
+			<Add directory="$(#CB_BUILD.INCLUDE)/scripting/include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WXWIDGETS.include)" />

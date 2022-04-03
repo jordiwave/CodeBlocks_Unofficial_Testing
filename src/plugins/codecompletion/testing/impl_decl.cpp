@@ -5,36 +5,36 @@ bool              ImplDecl::MethodA()
     return true;
 }
 void              ImplDecl::MethodB() const                { ;            }
-const void*       ImplDecl::MethodC() const
+const void    *   ImplDecl::MethodC() const
 {
     return 0;
 }
-bool              ImplDecl::MethodD(const    int      i  )
+bool              ImplDecl::MethodD(const    int      i)
 {
     return true;
 }
-bool              ImplDecl::MethodE(const    int&     i  )
+bool              ImplDecl::MethodE(const    int   &  i)
 {
     return true;
 }
-ImplDecl::int_foo ImplDecl::MethodF(const    int_foo  i  )
+ImplDecl::int_foo ImplDecl::MethodF(const    int_foo  i)
 {
     int_foo l = 0;
     return l;
 }
-bool              ImplDecl::MethodG(volatile float    f  )
+bool              ImplDecl::MethodG(volatile float    f)
 {
     return true;
 }
-bool              ImplDecl::MethodH(         float    FF )
+bool              ImplDecl::MethodH(float    FF)
 {
     return true;    // different name of variable
 }
-bool              ImplDecl::MethodI(         float /*FF*/)
+bool              ImplDecl::MethodI(float /*FF*/)
 {
     return true;
 }
-bool              ImplDecl::MethodJ(         float UN(FF))
+bool              ImplDecl::MethodJ(float UN(FF))
 {
     return true;
 }

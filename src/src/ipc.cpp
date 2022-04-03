@@ -14,10 +14,12 @@
 const wxString g_failed_shm(_T("Failed creating shared memory initialising IPC (error 0x00000d04)."));
 const wxString g_failed_sem(_T("Failed creating semaphore/mutex initialising IPC (error 0x007f0002)."));
 
-void IPC::Send(const wxString& in)
+void IPC::Send(const wxString & in)
 {
     if (in.length() * sizeof(wxChar) > shm.Size())
+    {
         cbThrow(_T("Input exceeds shared memory size (error 0x0000cde0)."));
+    }
 
     if (shm.Lock(SharedMemory::writer) == 0)
     {
@@ -33,7 +35,7 @@ void IPC::Send(const wxString& in)
         cbThrow(_T("Congrats, you managed to kill process 1 within nanoseconds after launching process 2, which is quite hard to do.\n\nPlease inform the Code::Blocks team of your achievement."));
     }
 
-    memcpy(shm.BasePointer(), in.c_str(), (in.length()+1) * sizeof(wxChar));
+    memcpy(shm.BasePointer(), in.c_str(), (in.length() + 1) * sizeof(wxChar));
     shm.Unlock(SharedMemory::writer);
 }
 
@@ -50,21 +52,27 @@ void IPC::Shutdown()
 
 wxThread::ExitCode IPC::Entry() /* this is the receiving end */
 {
-    for(;;)
+    for (;;)
     {
         if (shm.Lock(SharedMemory::reader) == 0 || is_shutdown)
+        {
             return 0;
+        }
 
-        MainFrame* cbframe = static_cast<MainFrame*>(Manager::Get()->GetAppFrame());
+        MainFrame * cbframe = static_cast<MainFrame *>(Manager::Get()->GetAppFrame());
+
         if (cbframe == nullptr)
+        {
             return 0;
+        }
 
-        cbframe->OnDropFiles(0,0, wxStringTokenize((const wxChar*) shm.BasePointer(), _T("\n"), wxTOKEN_STRTOK));
-
+        cbframe->OnDropFiles(0, 0, wxStringTokenize((const wxChar *) shm.BasePointer(), _T("\n"), wxTOKEN_STRTOK));
         shm.Unlock(SharedMemory::reader);
 
         if (is_shutdown)
+        {
             return 0;
+        }
     }
 }
 
@@ -152,7 +160,7 @@ SharedMemory::SharedMemory() : handle(0), semid(0), shared(0), ok(false), server
         if (readlink("/proc/self/file", file, sizeof(file)) < 0)  /* failed, try BSD style */
         {
             strcpy(file, "/tmp/fuckyou");                        /* failed again, use some bullshit */
-            close(open(file, O_CREAT, O_RDONLY|O_WRONLY));
+            close(open(file, O_CREAT, O_RDONLY | O_WRONLY));
         }
     }
 
@@ -173,11 +181,13 @@ SharedMemory::SharedMemory() : handle(0), semid(0), shared(0), ok(false), server
         if (errno == EEXIST) /* EEXIST ---> server already running */
         {
             handle = shmget(key, ipc_buf_size, 0666);
+
             if (handle == -1)
             {
                 LogManager::Get()->Panic(g_failed_shm);
                 return;
             }
+
             ok = true;
             server = false;
         }
@@ -191,23 +201,23 @@ SharedMemory::SharedMemory() : handle(0), semid(0), shared(0), ok(false), server
     {
         ok = true;
         server = true;
-
         unsigned short int v[2] = {0, 1};
         semctl(semid, 0, SETALL, v);
     }
 
     shared = shmat(handle, nullptr, 0);
-    ok = (shared != (void*) -1) ? ok : false;
+    ok = (shared != (void *) -1) ? ok : false;
 }
 
 
 SharedMemory::~SharedMemory()
 {
     shmdt(shared);
+
     if (server)
     {
         shmctl(handle, IPC_RMID, 0);
-        semctl(semid, 0, IPC_RMID );    /* this will wake up the thread blocking in semop() */
+        semctl(semid, 0, IPC_RMID);     /* this will wake up the thread blocking in semop() */
     }
 }
 
@@ -216,15 +226,12 @@ bool SharedMemory::Lock(rw_t rw)
     if (rw == reader)
     {
         sembuf op[2];
-
         op[0].sem_num = reader;
         op[0].sem_op  = -1;
         op[0].sem_flg = 0;
-
         op[1].sem_num = writer;
         op[1].sem_op  = -1;
         op[1].sem_flg = 0;
-
         return semop(semid, op, 2) == 0;    /* if semaphore is deleted, EIDRM or EINVAL will be returned */
     }
 
@@ -234,7 +241,6 @@ bool SharedMemory::Lock(rw_t rw)
         op[0].sem_num = writer;
         op[0].sem_op  = -1;
         op[0].sem_flg = 0;
-
         return semop(semid, op, 1) == 0;
     }
 
@@ -249,11 +255,9 @@ void SharedMemory::Unlock(rw_t rw)
         op[0].sem_num = reader;
         op[0].sem_op  = 1;
         op[0].sem_flg = 0;
-
         op[1].sem_num = writer;
         op[1].sem_op  = 1;
         op[1].sem_flg = 0;
-
         semop(semid, op, 2);
     }
 
@@ -263,7 +267,6 @@ void SharedMemory::Unlock(rw_t rw)
         op[0].sem_num = writer;
         op[0].sem_op  = 1;
         op[0].sem_flg = 0;
-
         semop(semid, op, 1);
     }
 }

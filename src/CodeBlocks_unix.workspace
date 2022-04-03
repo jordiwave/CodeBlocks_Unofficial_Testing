@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="CodeBlocks Workspace Unix">
+		<Project filename="CodeBlocks_unix.cbp" active="1"  />
+		<!-- Windows only Project filename="tools/Addr2LineUI/Addr2LineUI_unix.cbp" -->
+		<Project filename="tools/cb_share_config/cb_share_config_unix.cbp" >
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<!-- Windows only Project filename="tools/CBLauncher/CbLauncher_unix.cbp" -->
+		<Project filename="tools/cbp2make/cbp2make_unix.cbp" >
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/displayevents/cbDisplayEvents_unix.cbp" >
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/codecompletion/cctest_unix.cbp" >
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxContribItems/wxContribItems_unix.cbp" >
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxSmith/wxSmith_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems_unix.cbp">
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_unix.cbp" />
+			<Depends filename="plugins/contrib/wxSmith/wxSmith_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui_unix.cbp">
+			<Depends filename="plugins/contrib/wxSmith/wxSmith_unix.cbp" />
+		</Project>
+		<!-- NOT built by default >
+			<Project filename="plugins/headerguard/headerguard_unix.cbp">
+				<Depends filename="CodeBlocks_unix.cbp" />
+			</Project>
+		< -->
+		<!-- NOT built by default >
+			<Project filename="plugins/loghacker/loghacker_unix.cbp">
+				<Depends filename="CodeBlocks_unix.cbp" />
+			</Project>
+		< -->
+		<!-- NOT built by default >
+			<Project filename="plugins/ModPoller/ModPoller_unix.cbp">
+				<Depends filename="CodeBlocks_unix.cbp" />
+			</Project>
+		< -->
+		<!-- NOT built by default >
+			<Project filename="plugins/tidycmt/tidycmt_unix.cbp">
+				<Depends filename="CodeBlocks_unix.cbp" />
+			</Project>
+		< -->
+		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/byogames/byogames_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/Cccc/Cccc_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/codesnippets/codesnippets_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/codestat/codestat_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/copystrings/copystrings_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/CppCheck/CppCheck_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/Cscope/Cscope_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<!-- NOT built by default >
+			<Project filename="plugins/contrib/devpak_plugin/DevPakPlugin_unix.cbp">
+				<Depends filename="CodeBlocks_unix.cbp" />
+			</Project>
+		< -->
+		<Project filename="plugins/contrib/DoxyBlocks/DoxyBlocks_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/dragscroll/DragScroll_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/EditorConfig/EditorConfig_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/envvars/envvars_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/FileManager/FileManager_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+        <!-->
+ 		<Project filename="plugins/contrib/FortranProject/FortranProject_cbsvn_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>    
+        <-->
+		<Project filename="plugins/contrib/headerfixup/headerfixup_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/help_plugin/help-plugin_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/HexEditor/HexEditor_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/keybinder/keybinder_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/lib_finder/lib_finder_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/MouseSap/MouseSap_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/NassiShneiderman/NassiShneiderman_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/profiler/cbprofiler_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ProjectOptionsManipulator/ProjectOptionsManipulator_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/regex_testbed/RegExTestbed_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/rndgen/rndgen_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/SmartIndent/SmartIndent_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/source_exporter/Exporter_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/SpellChecker/SpellChecker_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/symtab/symtab_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/Valgrind/Valgrind_unix.cbp">
+			<Depends filename="CodeBlocks_unix.cbp" />
+		</Project>
+	</Workspace>
+</CodeBlocks_workspace_file>

@@ -24,16 +24,16 @@
 /** \brief Class for wxsAuiToolBarSpacer widget */
 class wxsAuiToolBarSpacer: public wxsAuiToolBarItemBase
 {
-public:
-    bool m_Stretch;
-    long m_Pixels;
-    long m_Proportion;
+    public:
+        bool m_Stretch;
+        long m_Pixels;
+        long m_Proportion;
 
-    wxsAuiToolBarSpacer(wxsItemResData* Data);
+        wxsAuiToolBarSpacer(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnEnumItemProperties(long Flags);
+        virtual void OnEnumItemProperties(long Flags);
 };
 
 #endif

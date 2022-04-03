@@ -30,7 +30,7 @@ wxsRegisterItem<wxsHtmlEasyPrinting> Reg(_T("HtmlEasyPrinting"), wxsTTool, _T("T
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsHtmlEasyPrinting::wxsHtmlEasyPrinting(wxsItemResData* Data):
+wxsHtmlEasyPrinting::wxsHtmlEasyPrinting(wxsItemResData * Data):
     wxsTool(
         Data,
         &Reg.Info,
@@ -49,32 +49,32 @@ wxsHtmlEasyPrinting::wxsHtmlEasyPrinting(wxsItemResData* Data):
  */
 void wxsHtmlEasyPrinting::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/html/htmprint.h>"),GetInfo().ClassName,hfInPCH);
-
-        Codef(_T("%C(%N, %W);\n"));
-
-        if(!m_sHeader.IsEmpty())
+        case wxsCPP:
         {
-            Codef(_T("%ASetHeader(%s, %d);\n"), m_sHeader.wx_str(), m_iHeaderPages);
+            AddHeader(_T("<wx/html/htmprint.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%N, %W);\n"));
+
+            if (!m_sHeader.IsEmpty())
+            {
+                Codef(_T("%ASetHeader(%s, %d);\n"), m_sHeader.wx_str(), m_iHeaderPages);
+            }
+
+            if (!m_sFooter.IsEmpty())
+            {
+                Codef(_T("%ASetHeader(%s, %d);\n"), m_sFooter.wx_str(), m_iFooterPages);
+            }
+
+            BuildSetupWindowCode();
+            return;
         }
-        if(!m_sFooter.IsEmpty())
+
+        case wxsUnknownLanguage: // fall-through
+        default:
         {
-            Codef(_T("%ASetHeader(%s, %d);\n"), m_sFooter.wx_str(), m_iFooterPages);
+            wxsCodeMarks::Unknown(_T("wxsHtmlEasyPrinting::OnBuildCreatingCode"), GetLanguage());
         }
-
-        BuildSetupWindowCode();
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsHtmlEasyPrinting::OnBuildCreatingCode"),GetLanguage());
-    }
     }
 }
 
@@ -87,8 +87,7 @@ void wxsHtmlEasyPrinting::OnBuildCreatingCode()
 void wxsHtmlEasyPrinting::OnEnumToolProperties(cb_unused long Flags)
 {
     static const long arrHeaderPages[] = {wxPAGE_ALL, wxPAGE_EVEN, wxPAGE_ODD};                                                                            //!< Header and footer page values.
-    static const wxChar* arrHeaderPageNames[]  = {wxT("wxPAGE_ALL"), wxT("wxPAGE_EVEN"), wxT("wxPAGE_ODD"), NULL};        //!< Header and footer page value names.
-
+    static const wxChar * arrHeaderPageNames[]  = {wxT("wxPAGE_ALL"), wxT("wxPAGE_EVEN"), wxT("wxPAGE_ODD"), NULL};       //!< Header and footer page value names.
     WXS_SHORT_STRING(wxsHtmlEasyPrinting, m_sHeader, _("Header"), _T("header"), wxEmptyString, false)
     WXS_SHORT_STRING(wxsHtmlEasyPrinting, m_sFooter, _("Footer"), _T("footer"), wxEmptyString, false)
     WXS_ENUM(wxsHtmlEasyPrinting, m_iHeaderPages, _("Header Pages"), _T("header_pages"), arrHeaderPages, arrHeaderPageNames, wxPAGE_ALL);

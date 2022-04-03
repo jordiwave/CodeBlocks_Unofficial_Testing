@@ -23,11 +23,11 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-#include <cbeditor.h>
-#include <configmanager.h>
-#include <editormanager.h>
-#include <editorcolourset.h>
-#include <logmanager.h>
+    #include <cbeditor.h>
+    #include <configmanager.h>
+    #include <editormanager.h>
+    #include <editorcolourset.h>
+    #include <logmanager.h>
 #endif
 #include <wx/tokenzr.h>
 
@@ -43,24 +43,27 @@ void DoxyBlocks::OnBlockComment(wxCommandEvent & WXUNUSED(event))
  */
 void DoxyBlocks::DoBlockComment()
 {
-    if ( !IsProjectOpen() )
+    if (!IsProjectOpen())
+    {
         return;
+    }
 
     AppendToLog(_("Writing block comment..."));
     int iBlockComment = m_pConfig->GetBlockComment();
     bool bUseAtInTags = m_pConfig->GetUseAtInTags();
-    cbEditor *cbEd = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    cbEditor * cbEd = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+
     if (!cbEd)
+    {
         return;
+    }
 
-    cbStyledTextCtrl *control = cbEd->GetControl();
-
+    cbStyledTextCtrl * control = cbEd->GetControl();
     // Get the position of the beginning of the current line and insert.
     wxInt32 line = control->GetCurrentLine();
     int iPos = control->PositionFromLine(line);
     int iIndent = control->GetLineIndentation(line);
     wxString sIndent(wxT(' '), iIndent);
-
     // Comment strings.
     wxString sTagChar;
     sTagChar = bUseAtInTags ? wxT("@") : wxT("\\");
@@ -71,10 +74,8 @@ void DoxyBlocks::DoBlockComment()
     wxString sStartComment;
     wxString sMidComment;
     wxString sEndComment;
-
     GetBlockCommentStrings(iBlockComment, sStartComment, sMidComment, sEndComment);
     wxString sLine = control->GetLine(control->GetCurrentLine());
-
     // Make the changes undoable in one step.
     control->BeginUndoAction();
 
@@ -84,69 +85,81 @@ void DoxyBlocks::DoBlockComment()
         sMidComment = wxT("!!");
         sEndComment = wxT("!!");
         StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
-        CommentFortran(control, line+1, iPos, sMidComment, sTagParam, sTagReturn, sIndent);
+        CommentFortran(control, line + 1, iPos, sMidComment, sTagParam, sTagReturn, sIndent);
         AddCommentLine(control, iPos, sIndent + sEndComment);
     }
-    else if (reClass.Matches(sLine))                                  // Class MyClass : public ParentClass
-    {
-        StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
-        AddCommentLine(control, iPos, sIndent + sEndComment);
-    }
-    else if (reStruct.Matches(sLine))                                 // struct
-    {
-        StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
-        AddCommentLine(control, iPos, sIndent + sEndComment);
-    }
-    else if (reTypedef.Matches(sLine))                                // typedef
-    {
-        StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
-        AddCommentLine(control, iPos, sIndent + sEndComment);
-    }
-    else if (reEnum.Matches(sLine))                                   // enum
-    {
-        StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
-        AddCommentLine(control, iPos, sIndent + sEndComment);
-    }
-    else if (reClassFunctionNoRet.Matches(sLine))                     // class::function(type param, ...) statement
-    {
-        // THIS SHOULD BE CHECKED BEFORE THE OTHER FUNCTION COMPARISONS.
-        StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
-        wxString sParams = reClassFunctionNoRet.GetMatch(sLine, 3);
-        CommentFunction(control, iPos, sMidComment, sTagParam, sTagReturn, sIndent, sParams, wxEmptyString, wxEmptyString);
-        if (!sParams.IsEmpty())
-            AddCommentLine(control, iPos, sIndent + sMidComment);
+    else
+        if (reClass.Matches(sLine))                                  // Class MyClass : public ParentClass
+        {
+            StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
+            AddCommentLine(control, iPos, sIndent + sEndComment);
+        }
+        else
+            if (reStruct.Matches(sLine))                                 // struct
+            {
+                StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
+                AddCommentLine(control, iPos, sIndent + sEndComment);
+            }
+            else
+                if (reTypedef.Matches(sLine))                                // typedef
+                {
+                    StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
+                    AddCommentLine(control, iPos, sIndent + sEndComment);
+                }
+                else
+                    if (reEnum.Matches(sLine))                                   // enum
+                    {
+                        StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
+                        AddCommentLine(control, iPos, sIndent + sEndComment);
+                    }
+                    else
+                        if (reClassFunctionNoRet.Matches(sLine))                     // class::function(type param, ...) statement
+                        {
+                            // THIS SHOULD BE CHECKED BEFORE THE OTHER FUNCTION COMPARISONS.
+                            StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
+                            wxString sParams = reClassFunctionNoRet.GetMatch(sLine, 3);
+                            CommentFunction(control, iPos, sMidComment, sTagParam, sTagReturn, sIndent, sParams, wxEmptyString, wxEmptyString);
 
-        AddCommentLine(control, iPos, sIndent + sEndComment);
-    }
-    else if (reClassFunction.Matches(sLine))                          // ret class::function(type param, ...) statement
-    {
-        StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
-        CommentFunction(control, iPos, sMidComment, sTagParam, sTagReturn, sIndent, reClassFunction.GetMatch(sLine, 6), reClassFunction.GetMatch(sLine, 1), reClassFunction.GetMatch(sLine, 4));
-        AddCommentLine(control, iPos, sIndent + sMidComment);
-        AddCommentLine(control, iPos, sIndent + sEndComment);
-    }
-    else if (reFunction.Matches(sLine))                               // ret function(type param, ...) statement
-    {
-        StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
-        CommentFunction(control, iPos, sMidComment, sTagParam, sTagReturn, sIndent, reFunction.GetMatch(sLine, 5), reFunction.GetMatch(sLine, 1), reFunction.GetMatch(sLine, 4));
-        AddCommentLine(control, iPos, sIndent + sMidComment);
-        AddCommentLine(control, iPos, sIndent + sEndComment);
-    }
-    else                                                             // Unmatched, use default block.
-    {
-        StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
-        AddCommentLine(control, iPos, sIndent + sMidComment);
-        AddCommentLine(control, iPos, sIndent + sMidComment + sTagParam + sSpace);
-        AddCommentLine(control, iPos, sIndent + sMidComment + sTagParam + sSpace);
-        AddCommentLine(control, iPos, sIndent + sMidComment + sTagReturn + sSpace);
-        AddCommentLine(control, iPos, sIndent + sMidComment);
-        AddCommentLine(control, iPos, sIndent + sEndComment);
-    }
+                            if (!sParams.IsEmpty())
+                            {
+                                AddCommentLine(control, iPos, sIndent + sMidComment);
+                            }
+
+                            AddCommentLine(control, iPos, sIndent + sEndComment);
+                        }
+                        else
+                            if (reClassFunction.Matches(sLine))                          // ret class::function(type param, ...) statement
+                            {
+                                StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
+                                CommentFunction(control, iPos, sMidComment, sTagParam, sTagReturn, sIndent, reClassFunction.GetMatch(sLine, 6), reClassFunction.GetMatch(sLine, 1), reClassFunction.GetMatch(sLine, 4));
+                                AddCommentLine(control, iPos, sIndent + sMidComment);
+                                AddCommentLine(control, iPos, sIndent + sEndComment);
+                            }
+                            else
+                                if (reFunction.Matches(sLine))                               // ret function(type param, ...) statement
+                                {
+                                    StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
+                                    CommentFunction(control, iPos, sMidComment, sTagParam, sTagReturn, sIndent, reFunction.GetMatch(sLine, 5), reFunction.GetMatch(sLine, 1), reFunction.GetMatch(sLine, 4));
+                                    AddCommentLine(control, iPos, sIndent + sMidComment);
+                                    AddCommentLine(control, iPos, sIndent + sEndComment);
+                                }
+                                else                                                             // Unmatched, use default block.
+                                {
+                                    StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
+                                    AddCommentLine(control, iPos, sIndent + sMidComment);
+                                    AddCommentLine(control, iPos, sIndent + sMidComment + sTagParam + sSpace);
+                                    AddCommentLine(control, iPos, sIndent + sMidComment + sTagParam + sSpace);
+                                    AddCommentLine(control, iPos, sIndent + sMidComment + sTagReturn + sSpace);
+                                    AddCommentLine(control, iPos, sIndent + sMidComment);
+                                    AddCommentLine(control, iPos, sIndent + sEndComment);
+                                }
 
     // Position the cursor at the first text entry position.
     // Skip the first line of visible-style comments.
     if (iBlockComment == 4 || iBlockComment == 5)
+    {
         line += 1;
+    }
 
     iPos = control->GetLineEndPosition(line);
     control->GotoPos(iPos);
@@ -162,39 +175,49 @@ void DoxyBlocks::OnLineComment(wxCommandEvent & WXUNUSED(event))
  */
 void DoxyBlocks::DoLineComment()
 {
-    if ( !IsProjectOpen() )
+    if (!IsProjectOpen())
+    {
         return;
+    }
 
     AppendToLog(_("Writing line comment..."));
     int iLineComment = m_pConfig->GetLineComment();
-    cbEditor *cbEd = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    cbEditor * cbEd = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+
     if (!cbEd)
+    {
         return;
+    }
 
-    cbStyledTextCtrl *control = cbEd->GetControl();
+    cbStyledTextCtrl * control = cbEd->GetControl();
     int iPos = control->GetCurrentPos();
-
     wxString sComment;
+
     switch (iLineComment)
     {
-    case 0:            //C/Javadoc.
-        sComment = wxT("/**<  */");
-        break;
-    case 1:            // C++ exclamation.
-        sComment = wxT("//!< ");
-        break;
-    case 2:            // C++ slash.
-        sComment = wxT("///< ");
-        break;
-    case 3:            // Qt.
-        sComment = wxT("/*!<  */");
-        break;
-    default:
-        break;
+        case 0:            //C/Javadoc.
+            sComment = wxT("/**<  */");
+            break;
+
+        case 1:            // C++ exclamation.
+            sComment = wxT("//!< ");
+            break;
+
+        case 2:            // C++ slash.
+            sComment = wxT("///< ");
+            break;
+
+        case 3:            // Qt.
+            sComment = wxT("/*!<  */");
+            break;
+
+        default:
+            break;
     }
 
     int iMax = 5;
-    if ( IsLanguageFortran(cbEd) )
+
+    if (IsLanguageFortran(cbEd))
     {
         sComment = wxT("!< ");
         iMax = 3;
@@ -202,15 +225,16 @@ void DoxyBlocks::DoLineComment()
 
     // Make the changes undoable in one step.
     control->BeginUndoAction();
-
     control->InsertText(iPos, sComment);
     // Position the cursor at the text entry position.
     int i = 0;
+
     while (i < iMax)
     {
         control->CharRight();
         i++;
     }
+
     control->EndUndoAction();
 }
 
@@ -223,42 +247,48 @@ void DoxyBlocks::DoLineComment()
  * \return    void
  *
  */
-void DoxyBlocks::GetBlockCommentStrings(int iBlockComment, wxString &sStartComment, wxString &sMidComment, wxString &sEndComment)
+void DoxyBlocks::GetBlockCommentStrings(int iBlockComment, wxString & sStartComment, wxString & sMidComment, wxString & sEndComment)
 {
-    switch(iBlockComment)
+    switch (iBlockComment)
     {
-    case 0:            //C/Javadoc.
-        sStartComment = wxT("/**");
-        sMidComment = wxT(" *");
-        sEndComment = wxT(" */");
-        break;
-    case 1:            // C++ exclamation.
-        sStartComment = wxT("//!");
-        sMidComment = wxT("//!");
-        sEndComment = wxT("//!");
-        break;
-    case 2:            // C++ slash.
-        sStartComment = wxT("///");
-        sMidComment = wxT("///");
-        sEndComment = wxT("///");
-        break;
-    case 3:            // Qt.
-        sStartComment = wxT("/*!");
-        sMidComment = wxT(" *");
-        sEndComment = wxT(" */");
-        break;
-    case 4:            // Visible C.
-        sStartComment = wxT("/********************************************//**");
-        sMidComment = wxT(" *");
-        sEndComment = wxT(" ***********************************************/");
-        break;
-    case 5:            // Visible C++.
-        sStartComment = wxT("/////////////////////////////////////////////////");
-        sMidComment = wxT("///");
-        sEndComment = wxT("/////////////////////////////////////////////////");
-        break;
-    default:
-        break;
+        case 0:            //C/Javadoc.
+            sStartComment = wxT("/**");
+            sMidComment = wxT(" *");
+            sEndComment = wxT(" */");
+            break;
+
+        case 1:            // C++ exclamation.
+            sStartComment = wxT("//!");
+            sMidComment = wxT("//!");
+            sEndComment = wxT("//!");
+            break;
+
+        case 2:            // C++ slash.
+            sStartComment = wxT("///");
+            sMidComment = wxT("///");
+            sEndComment = wxT("///");
+            break;
+
+        case 3:            // Qt.
+            sStartComment = wxT("/*!");
+            sMidComment = wxT(" *");
+            sEndComment = wxT(" */");
+            break;
+
+        case 4:            // Visible C.
+            sStartComment = wxT("/********************************************//**");
+            sMidComment = wxT(" *");
+            sEndComment = wxT(" ***********************************************/");
+            break;
+
+        case 5:            // Visible C++.
+            sStartComment = wxT("/////////////////////////////////////////////////");
+            sMidComment = wxT("///");
+            sEndComment = wxT("/////////////////////////////////////////////////");
+            break;
+
+        default:
+            break;
     }
 }
 
@@ -274,14 +304,14 @@ void DoxyBlocks::GetBlockCommentStrings(int iBlockComment, wxString &sStartComme
  * \return     void
  *
  */
-void DoxyBlocks::StartComment(cbStyledTextCtrl *control, int &iPos, int iBlockComment, wxString sStartComment, wxString sMidComment, wxString sTagBrief, wxString sIndent)
+void DoxyBlocks::StartComment(cbStyledTextCtrl * control, int & iPos, int iBlockComment, wxString sStartComment, wxString sMidComment, wxString sTagBrief, wxString sIndent)
 {
     wxString sSpace(wxT(" "));
-
     control->GotoPos(iPos);
     // Doing this first prevents me ending up with the function declaration indented i.e. I work in the blank line.
     control->NewLine();
     control->LineUp();
+
     if (iBlockComment == 4 || iBlockComment == 5)
     {
         control->AddText(sIndent + sStartComment);
@@ -290,7 +320,9 @@ void DoxyBlocks::StartComment(cbStyledTextCtrl *control, int &iPos, int iBlockCo
         control->AddText(sIndent + sMidComment + sTagBrief + sSpace);
     }
     else
+    {
         control->AddText(sIndent + sStartComment + sTagBrief + sSpace);
+    }
 }
 
 /*! \brief    Add comment lines for a function's parameters and return type in the selected style.
@@ -307,111 +339,128 @@ void DoxyBlocks::StartComment(cbStyledTextCtrl *control, int &iPos, int iBlockCo
  * \return     void
  *
  */
-void DoxyBlocks::CommentFunction(cbStyledTextCtrl * control, int &iPos, wxString sMidComment, wxString sTagParam, wxString sTagReturn, wxString sIndent, wxString sParams, wxString sReturn, wxString sFunction)
+void DoxyBlocks::CommentFunction(cbStyledTextCtrl * control, int & iPos, wxString sMidComment, wxString sTagParam, wxString sTagReturn, wxString sIndent, wxString sParams, wxString sReturn, wxString sFunction)
 {
     wxString sSpace(wxT(" "));
+
     // Write an empty comment line to terminate "\brief" if we have params or a return value.
     if (!sParams.IsEmpty() || !sReturn.IsEmpty())
+    {
         AddCommentLine(control, iPos, sIndent + sMidComment);
+    }
 
     // Extract the functions parameters from the parameter string and write a "\param" line for each.
     wxStringTokenizer tokenizer(sParams, wxT(","));
+
     while (tokenizer.HasMoreTokens())
     {
         wxString sParam = tokenizer.GetNextToken();
         sParam.Trim();
         sParam.Trim(false);
-
         // Split on spaces.
         wxStringTokenizer tokenizerParam(sParam, wxT(" "));
         wxArrayString arElements;
+
         while (tokenizerParam.HasMoreTokens())
         {
             wxString sElement = tokenizerParam.GetNextToken();
             arElements.Add(sElement);
         }
+
         // Reorder the elements.
         if (arElements.GetCount() == 4)
         {
             // "const type * name" or "const type & name".
             sParam = arElements[3] + sSpace + arElements[0] + sSpace + arElements[1] + arElements[2];
         }
-        else if (arElements.GetCount() == 3)
-        {
-            if (arElements[1] == wxT("*") || arElements[1] == wxT("&") || arElements[1].StartsWith(wxT("**")))
+        else
+            if (arElements.GetCount() == 3)
             {
-                // "type * name" or "type ** name" or "type & name".
-                sParam = arElements[2] + sSpace + arElements[0] + arElements[1];
-            }
-            else
-            {
-                // "const type name" or "const type *name" or "const type* name".
-                wxString sRightFirst = arElements[2].Left(1);
-                wxString sLeftLast = arElements[1].Right(1);
-                // "type *name" or "type **name" or "type &name".
-                if (sRightFirst == wxT("*") || sRightFirst  == wxT("&"))
+                if (arElements[1] == wxT("*") || arElements[1] == wxT("&") || arElements[1].StartsWith(wxT("**")))
                 {
-                    if (arElements[2].StartsWith(wxT("**")))
+                    // "type * name" or "type ** name" or "type & name".
+                    sParam = arElements[2] + sSpace + arElements[0] + arElements[1];
+                }
+                else
+                {
+                    // "const type name" or "const type *name" or "const type* name".
+                    wxString sRightFirst = arElements[2].Left(1);
+                    wxString sLeftLast = arElements[1].Right(1);
+
+                    // "type *name" or "type **name" or "type &name".
+                    if (sRightFirst == wxT("*") || sRightFirst  == wxT("&"))
                     {
-                        arElements[2].Remove(0, 2);
-                        sParam = arElements[2] + sSpace + arElements[0] + sSpace + arElements[1] + wxT("**");
+                        if (arElements[2].StartsWith(wxT("**")))
+                        {
+                            arElements[2].Remove(0, 2);
+                            sParam = arElements[2] + sSpace + arElements[0] + sSpace + arElements[1] + wxT("**");
+                        }
+                        else
+                        {
+                            arElements[2].Remove(0, 1);
+                            sParam = arElements[2] + sSpace + arElements[0] + sSpace + arElements[1] + sRightFirst;
+                        }
                     }
+                    // "type* name" or "type& name".
                     else
-                    {
-                        arElements[2].Remove(0, 1);
-                        sParam = arElements[2] + sSpace + arElements[0] + sSpace + arElements[1] + sRightFirst;
-                    }
+                        if (sLeftLast == wxT("*") || sLeftLast  == wxT("&"))
+                        {
+                            arElements[1].RemoveLast();
+                            sParam = arElements[2] + sSpace + arElements[0] + sSpace + arElements[1] + sLeftLast;
+                        }
+                        else
+                        {
+                            sParam = arElements[2] + sSpace + arElements[0] + sSpace + arElements[1];
+                        }
                 }
-                // "type* name" or "type& name".
-                else if (sLeftLast == wxT("*") || sLeftLast  == wxT("&"))
-                {
-                    arElements[1].RemoveLast();
-                    sParam = arElements[2] + sSpace + arElements[0] + sSpace + arElements[1] + sLeftLast;
-                }
-                else
-                    sParam = arElements[2] + sSpace + arElements[0] + sSpace + arElements[1];
-            }
-        }
-        else if (arElements.GetCount() == 2)
-        {
-            wxString sRightFirst = arElements[1].Left(1);
-            wxString sLeftLast = arElements[0].Right(1);
-            // "type *name" or "type **name" or "type &name".
-            if (sRightFirst == wxT("*") || sRightFirst  == wxT("&"))
-            {
-                if (arElements[1].StartsWith(wxT("**")))
-                {
-                    arElements[1].Remove(0, 2);
-                    sParam = arElements[1] + sSpace + arElements[0] + wxT("**");
-                }
-                else
-                {
-                    arElements[1].Remove(0, 1);
-                    sParam = arElements[1] + sSpace + arElements[0] + sRightFirst;
-                }
-            }
-            // "type* name" or "type& name".
-            else if (sLeftLast == wxT("*") || sLeftLast  == wxT("&"))
-            {
-                arElements[0].RemoveLast();
-                sParam = arElements[1] + sSpace + arElements[0] + sLeftLast;
             }
             else
-                sParam = arElements[1] + sSpace + arElements[0];
-        }
+                if (arElements.GetCount() == 2)
+                {
+                    wxString sRightFirst = arElements[1].Left(1);
+                    wxString sLeftLast = arElements[0].Right(1);
+
+                    // "type *name" or "type **name" or "type &name".
+                    if (sRightFirst == wxT("*") || sRightFirst  == wxT("&"))
+                    {
+                        if (arElements[1].StartsWith(wxT("**")))
+                        {
+                            arElements[1].Remove(0, 2);
+                            sParam = arElements[1] + sSpace + arElements[0] + wxT("**");
+                        }
+                        else
+                        {
+                            arElements[1].Remove(0, 1);
+                            sParam = arElements[1] + sSpace + arElements[0] + sRightFirst;
+                        }
+                    }
+                    // "type* name" or "type& name".
+                    else
+                        if (sLeftLast == wxT("*") || sLeftLast  == wxT("&"))
+                        {
+                            arElements[0].RemoveLast();
+                            sParam = arElements[1] + sSpace + arElements[0] + sLeftLast;
+                        }
+                        else
+                        {
+                            sParam = arElements[1] + sSpace + arElements[0];
+                        }
+                }
+
         // The regex ensures that we don't have any other arrangements of params.
-
         // Remove comment tokens
-        sParam.Replace( wxT("/*"), wxT(""), true );
-        sParam.Replace( wxT("*/"), wxT(""), true );
-
+        sParam.Replace(wxT("/*"), wxT(""), true);
+        sParam.Replace(wxT("*/"), wxT(""), true);
         AddCommentLine(control, iPos, sIndent + sMidComment + sTagParam + sSpace + sParam);
     }
 
     sReturn = ProcessReturnString(sReturn, sFunction);
+
     // Don't write a "\return" line if there is no return value.
-    if ( !sReturn.IsEmpty() )
+    if (!sReturn.IsEmpty())
+    {
         AddCommentLine(control, iPos, sIndent + sMidComment + sTagReturn + sSpace + sReturn);
+    }
 }
 
 /*! \brief Add a line to a comment block in the selected style.
@@ -422,7 +471,7 @@ void DoxyBlocks::CommentFunction(cbStyledTextCtrl * control, int &iPos, wxString
  * \return     void
  *
  */
-void DoxyBlocks::AddCommentLine(cbStyledTextCtrl *control, int& iPos, wxString sText)
+void DoxyBlocks::AddCommentLine(cbStyledTextCtrl * control, int & iPos, wxString sText)
 {
     // Use NewLine() to get the correct line ending chars.
     control->NewLine();
@@ -445,10 +494,14 @@ wxString DoxyBlocks::ProcessReturnString(wxString sReturn, wxString sFunction)
     // Do some preprocessing. Remove static and inline keywords and any leftover space
     // so that the return field won't be written if there is no return value.
     if (sReturn.Contains(wxT("static")))
+    {
         sReturn.Replace(wxT("static"), wxT(""));
+    }
 
     if (sReturn.Contains(wxT("inline")))
+    {
         sReturn.Replace(wxT("inline"), wxT(""));
+    }
 
     sReturn.Trim(false);
 
@@ -456,6 +509,7 @@ wxString DoxyBlocks::ProcessReturnString(wxString sReturn, wxString sFunction)
     {
         // Handle pointers and references. Symbols in sReturn are already in the right place.
         wxString sFuncFirst = sFunction.Left(1);
+
         if (sFuncFirst == wxT("*") || sFuncFirst == wxT("&"))
         {
             // "ret *func" or "ret **func" or "ret &func".
@@ -475,6 +529,7 @@ wxString DoxyBlocks::ProcessReturnString(wxString sReturn, wxString sFunction)
         sReturn.Trim();
         int l = sReturn.Length();
         int i = sReturn.rfind(' ', l);
+
         if (i == l - 2 || i == l - 3)
         {
             // The last space appears before *, ** or &, so remove it.
@@ -498,15 +553,15 @@ wxString DoxyBlocks::ProcessReturnString(wxString sReturn, wxString sFunction)
  * \return    void
  *
  */
-void DoxyBlocks::CommentFortran(cbStyledTextCtrl *control, int iLine, int &iPos, wxString sMidComment, wxString sTagParam, wxString sTagReturn, wxString sIndent)
+void DoxyBlocks::CommentFortran(cbStyledTextCtrl * control, int iLine, int & iPos, wxString sMidComment, wxString sTagParam, wxString sTagReturn, wxString sIndent)
 {
     wxString sSpace(wxT(" "));
     wxString sLine = control->GetLine(iLine);
     sLine = sLine.BeforeFirst('!'); // cut comments
     wxString sLineLw = sSpace + sLine.Lower().Trim(false);
 
-    if (   (sLineLw.Find(_T(" function "))   == wxNOT_FOUND)
-            && (sLineLw.Find(_T(" subroutine ")) == wxNOT_FOUND) )
+    if ((sLineLw.Find(_T(" function "))   == wxNOT_FOUND)
+            && (sLineLw.Find(_T(" subroutine ")) == wxNOT_FOUND))
     {
         return; // nothing to do -> no function or subroutine
     }
@@ -515,33 +570,46 @@ void DoxyBlocks::CommentFortran(cbStyledTextCtrl *control, int iLine, int &iPos,
     {
         iLine++;
         wxString contLine = control->GetLine(iLine);
+
         if (contLine.IsEmpty())
+        {
             break;
+        }
+
         sLine.Append(contLine.BeforeFirst('!').Trim().Trim(false));
     }
 
-    sLine.Replace(_T("&&"),wxEmptyString);
+    sLine.Replace(_T("&&"), wxEmptyString);
     bool isFunction = false;
     int idxW = sLineLw.Find(_T(" function "));
-    if (idxW == wxNOT_FOUND)
-        idxW = sLineLw.Find(_T(" subroutine "));
-    else
-        isFunction = true;
 
     if (idxW == wxNOT_FOUND)
-        return; // bug in this function
+    {
+        idxW = sLineLw.Find(_T(" subroutine "));
+    }
+    else
+    {
+        isFunction = true;
+    }
+
+    if (idxW == wxNOT_FOUND)
+    {
+        return;    // bug in this function
+    }
 
     wxString sLineShort = sLine.Mid(idxW);
     int idxParStart = sLineShort.Find(_T("("));
     int idxParEnd = sLineShort.Find(_T(")"));
+
     if (idxParStart == wxNOT_FOUND || idxParEnd == wxNOT_FOUND)
+    {
         return;
+    }
 
-    wxString sParams = sLineShort.Mid(idxParStart+1, idxParEnd-idxParStart-1);
-
+    wxString sParams = sLineShort.Mid(idxParStart + 1, idxParEnd - idxParStart - 1);
     AddCommentLine(control, iPos, sIndent + sMidComment);
-
     wxStringTokenizer tokenizerParam(sParams, wxT(" \t\r\n&,"), wxTOKEN_STRTOK);
+
     while (tokenizerParam.HasMoreTokens())
     {
         wxString sParam = tokenizerParam.GetNextToken();
@@ -549,7 +617,9 @@ void DoxyBlocks::CommentFortran(cbStyledTextCtrl *control, int iLine, int &iPos,
     }
 
     if (isFunction)
+    {
         AddCommentLine(control, iPos, sIndent + sMidComment + sTagReturn + sSpace);
+    }
 }
 
 /*! \brief    Determine if current editor's language is Fortran.
@@ -558,17 +628,23 @@ void DoxyBlocks::CommentFortran(cbStyledTextCtrl *control, int iLine, int &iPos,
  * \return    bool        True if language is Fortran, else returns false.
  *
  */
-bool DoxyBlocks::IsLanguageFortran(cbEditor *cbEd)
+bool DoxyBlocks::IsLanguageFortran(cbEditor * cbEd)
 {
     if (!cbEd)
+    {
         return false;
+    }
 
-    EditorColourSet* colour_set = cbEd->GetColourSet();
+    EditorColourSet * colour_set = cbEd->GetColourSet();
+
     if (colour_set)
     {
         wxString strLang = colour_set->GetLanguageName(cbEd->GetLanguage());
-        if (strLang==_T("Fortran") || strLang==_T("Fortran77"))
+
+        if (strLang == _T("Fortran") || strLang == _T("Fortran77"))
+        {
             return true;
+        }
     }
 
     return false;

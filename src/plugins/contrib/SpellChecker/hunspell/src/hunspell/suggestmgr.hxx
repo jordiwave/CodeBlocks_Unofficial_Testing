@@ -90,94 +90,95 @@
 
 enum { LCS_UP, LCS_LEFT, LCS_UPLEFT };
 
-class SuggestMgr {
- private:
-  SuggestMgr(const SuggestMgr&);
-  SuggestMgr& operator=(const SuggestMgr&);
+class SuggestMgr
+{
+    private:
+        SuggestMgr(const SuggestMgr &);
+        SuggestMgr & operator=(const SuggestMgr &);
 
- private:
-  char* ckey;
-  size_t ckeyl;
-  std::vector<w_char> ckey_utf;
+    private:
+        char * ckey;
+        size_t ckeyl;
+        std::vector<w_char> ckey_utf;
 
-  char* ctry;
-  size_t ctryl;
-  std::vector<w_char> ctry_utf;
-  bool lang_with_dash_usage;
+        char * ctry;
+        size_t ctryl;
+        std::vector<w_char> ctry_utf;
+        bool lang_with_dash_usage;
 
-  AffixMgr* pAMgr;
-  unsigned int maxSug;
-  struct cs_info* csconv;
-  int utf8;
-  int langnum;
-  int nosplitsugs;
-  int maxngramsugs;
-  int maxcpdsugs;
-  int complexprefixes;
+        AffixMgr * pAMgr;
+        unsigned int maxSug;
+        struct cs_info * csconv;
+        int utf8;
+        int langnum;
+        int nosplitsugs;
+        int maxngramsugs;
+        int maxcpdsugs;
+        int complexprefixes;
 
- public:
-  SuggestMgr(const char* tryme, unsigned int maxn, AffixMgr* aptr);
-  ~SuggestMgr();
+    public:
+        SuggestMgr(const char * tryme, unsigned int maxn, AffixMgr * aptr);
+        ~SuggestMgr();
 
-  bool suggest(std::vector<std::string>& slst, const char* word, int* onlycmpdsug);
-  void ngsuggest(std::vector<std::string>& slst, const char* word, const std::vector<HashMgr*>& rHMgr, int captype);
+        bool suggest(std::vector<std::string> & slst, const char * word, int * onlycmpdsug);
+        void ngsuggest(std::vector<std::string> & slst, const char * word, const std::vector<HashMgr *> & rHMgr, int captype);
 
-  std::string suggest_morph(const std::string& word);
-  std::string suggest_gen(const std::vector<std::string>& pl, const std::string& pattern);
+        std::string suggest_morph(const std::string & word);
+        std::string suggest_gen(const std::vector<std::string> & pl, const std::string & pattern);
 
- private:
-  void testsug(std::vector<std::string>& wlst,
-               const std::string& candidate,
-               int cpdsuggest,
-               int* timer,
-               clock_t* timelimit);
-  int checkword(const std::string& word, int, int*, clock_t*);
-  int check_forbidden(const char*, int);
+    private:
+        void testsug(std::vector<std::string> & wlst,
+                     const std::string & candidate,
+                     int cpdsuggest,
+                     int * timer,
+                     clock_t * timelimit);
+        int checkword(const std::string & word, int, int *, clock_t *);
+        int check_forbidden(const char *, int);
 
-  void capchars(std::vector<std::string>&, const char*, int);
-  int replchars(std::vector<std::string>&, const char*, int);
-  int doubletwochars(std::vector<std::string>&, const char*, int);
-  int forgotchar(std::vector<std::string>&, const char*, int);
-  int swapchar(std::vector<std::string>&, const char*, int);
-  int longswapchar(std::vector<std::string>&, const char*, int);
-  int movechar(std::vector<std::string>&, const char*, int);
-  int extrachar(std::vector<std::string>&, const char*, int);
-  int badcharkey(std::vector<std::string>&, const char*, int);
-  int badchar(std::vector<std::string>&, const char*, int);
-  bool twowords(std::vector<std::string>&, const char*, int, bool);
+        void capchars(std::vector<std::string> &, const char *, int);
+        int replchars(std::vector<std::string> &, const char *, int);
+        int doubletwochars(std::vector<std::string> &, const char *, int);
+        int forgotchar(std::vector<std::string> &, const char *, int);
+        int swapchar(std::vector<std::string> &, const char *, int);
+        int longswapchar(std::vector<std::string> &, const char *, int);
+        int movechar(std::vector<std::string> &, const char *, int);
+        int extrachar(std::vector<std::string> &, const char *, int);
+        int badcharkey(std::vector<std::string> &, const char *, int);
+        int badchar(std::vector<std::string> &, const char *, int);
+        bool twowords(std::vector<std::string> &, const char *, int, bool);
 
-  void capchars_utf(std::vector<std::string>&, const w_char*, int wl, int);
-  int doubletwochars_utf(std::vector<std::string>&, const w_char*, int wl, int);
-  int forgotchar_utf(std::vector<std::string>&, const w_char*, int wl, int);
-  int extrachar_utf(std::vector<std::string>&, const w_char*, int wl, int);
-  int badcharkey_utf(std::vector<std::string>&, const w_char*, int wl, int);
-  int badchar_utf(std::vector<std::string>&, const w_char*, int wl, int);
-  int swapchar_utf(std::vector<std::string>&, const w_char*, int wl, int);
-  int longswapchar_utf(std::vector<std::string>&, const w_char*, int, int);
-  int movechar_utf(std::vector<std::string>&, const w_char*, int, int);
+        void capchars_utf(std::vector<std::string> &, const w_char *, int wl, int);
+        int doubletwochars_utf(std::vector<std::string> &, const w_char *, int wl, int);
+        int forgotchar_utf(std::vector<std::string> &, const w_char *, int wl, int);
+        int extrachar_utf(std::vector<std::string> &, const w_char *, int wl, int);
+        int badcharkey_utf(std::vector<std::string> &, const w_char *, int wl, int);
+        int badchar_utf(std::vector<std::string> &, const w_char *, int wl, int);
+        int swapchar_utf(std::vector<std::string> &, const w_char *, int wl, int);
+        int longswapchar_utf(std::vector<std::string> &, const w_char *, int, int);
+        int movechar_utf(std::vector<std::string> &, const w_char *, int, int);
 
-  int mapchars(std::vector<std::string>&, const char*, int);
-  int map_related(const char*,
-                  std::string&,
-                  int,
-                  std::vector<std::string>& wlst,
-                  int,
-                  const std::vector<mapentry>&,
-                  int*,
-                  clock_t*);
-  int ngram(int n, const std::vector<w_char>& su1,
-            const std::vector<w_char>& su2, int opt);
-  int ngram(int n, const std::string& s1, const std::string& s2, int opt);
-  int mystrlen(const char* word);
-  int leftcommonsubstring(const std::vector<w_char>& su1,
-                          const std::vector<w_char>& su2);
-  int leftcommonsubstring(const char* s1, const char* s2);
-  int commoncharacterpositions(const char* s1, const char* s2, int* is_swap);
-  void bubblesort(char** rwd, char** rwd2, int* rsc, int n);
-  void lcs(const char* s, const char* s2, int* l1, int* l2, char** result);
-  int lcslen(const char* s, const char* s2);
-  int lcslen(const std::string& s, const std::string& s2);
-  std::string suggest_hentry_gen(hentry* rv, const char* pattern);
+        int mapchars(std::vector<std::string> &, const char *, int);
+        int map_related(const char *,
+                        std::string &,
+                        int,
+                        std::vector<std::string> & wlst,
+                        int,
+                        const std::vector<mapentry> &,
+                        int *,
+                        clock_t *);
+        int ngram(int n, const std::vector<w_char> & su1,
+                  const std::vector<w_char> & su2, int opt);
+        int ngram(int n, const std::string & s1, const std::string & s2, int opt);
+        int mystrlen(const char * word);
+        int leftcommonsubstring(const std::vector<w_char> & su1,
+                                const std::vector<w_char> & su2);
+        int leftcommonsubstring(const char * s1, const char * s2);
+        int commoncharacterpositions(const char * s1, const char * s2, int * is_swap);
+        void bubblesort(char ** rwd, char ** rwd2, int * rsc, int n);
+        void lcs(const char * s, const char * s2, int * l1, int * l2, char ** result);
+        int lcslen(const char * s, const char * s2);
+        int lcslen(const std::string & s, const std::string & s2);
+        std::string suggest_hentry_gen(hentry * rv, const char * pattern);
 };
 
 #endif

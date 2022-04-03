@@ -10,29 +10,29 @@
 
 class RemoveDialog: public wxDialog
 {
-public:
+    public:
 
-    RemoveDialog(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
-    virtual ~RemoveDialog();
+        RemoveDialog(wxWindow * parent, wxWindowID id = wxID_ANY, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize);
+        virtual ~RemoveDialog();
 
-    //(*Declarations(RemoveDialog)
-    wxStaticText* StaticText1;
-    wxChoice* FileChoice;
-    //*)
+        //(*Declarations(RemoveDialog)
+        wxStaticText * StaticText1;
+        wxChoice * FileChoice;
+        //*)
 
-protected:
+    protected:
 
-    //(*Identifiers(RemoveDialog)
-    static const long ID_STATICTEXT1;
-    static const long ID_CHOICE1;
-    //*)
+        //(*Identifiers(RemoveDialog)
+        static const long ID_STATICTEXT1;
+        static const long ID_CHOICE1;
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(RemoveDialog)
-    //*)
+        //(*Handlers(RemoveDialog)
+        //*)
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

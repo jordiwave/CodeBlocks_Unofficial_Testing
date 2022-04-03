@@ -44,17 +44,14 @@ void DoxyBlocksLogger::UpdateSettings()
  * \return virtual wxWindow*    The newly created log window.
  *
  */
-wxWindow* DoxyBlocksLogger::CreateControl(wxWindow* parent)
+wxWindow * DoxyBlocksLogger::CreateControl(wxWindow * parent)
 {
     panel = new wxPanel(parent);
-
     TextCtrlLogger::CreateControl(panel);
     control->SetId(ID_LOG_DOXYBLOCKS);
-
     sizer = new wxBoxSizer(wxVERTICAL);
     sizer->Add(control, 1, wxEXPAND, 0);
     panel->SetSizer(sizer);
-
     return panel;
 }
 
@@ -68,18 +65,21 @@ wxWindow* DoxyBlocksLogger::CreateControl(wxWindow* parent)
  */
 void DoxyBlocksLogger::OpenLink(long urlStart, long urlEnd, bool bUseInternalViewer)
 {
-    if(!control)
+    if (!control)
     {
         return;
     }
+
     wxString url = control->GetRange(urlStart, urlEnd);
+
     if (platform::windows && url.StartsWith(_T("file://")))
     {
         url.Remove(0, 7);
     }
-    if(bUseInternalViewer)
+
+    if (bUseInternalViewer)
     {
-        cbMimePlugin* p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(url);
+        cbMimePlugin * p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(url);
         p->OpenFile(url);
     }
     else

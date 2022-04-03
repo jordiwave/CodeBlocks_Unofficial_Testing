@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Code Snippets wx3.1.x (64 bit)" />
+		<Option title="Code Snippets Windows" />
 		<Option default_target="Plugin - Win32" />
 		<Option compiler="gcc" />
 		<Build>
@@ -38,8 +38,8 @@
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add directory="$(#CB_BUILD)/include" />
-			<Add directory="$(#CB_BUILD)/include/tinyxml" />
+			<Add directory="$(#CB_BUILD.INCLUDE)" />
+			<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
 			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
 			<Add directory="$(#CB_BUILD)/src" />
 			<Add directory="$(#WXWIDGETS.include)" />

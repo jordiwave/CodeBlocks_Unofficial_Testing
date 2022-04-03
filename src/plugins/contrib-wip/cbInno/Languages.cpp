@@ -22,31 +22,40 @@ void CLanguages::Set(wxString name, wxString messagesFile)
     m_MessagesFile = messagesFile;
 }
 
-void CLanguages::WriteInFile(wxTextFile* File)
+void CLanguages::WriteInFile(wxTextFile * File)
 {
-    if( !m_Name.IsEmpty() && !m_MessagesFile.IsEmpty())
+    if (!m_Name.IsEmpty() && !m_MessagesFile.IsEmpty())
     {
         wxString Text;
+        Text = _T("Name: \"") + m_Name + _T("\"") + _T("MessagesFile: \"") + m_MessagesFile + _T("\"");
 
-        Text = _T("Name: \"") + m_Name +_T("\"") + _T("MessagesFile: \"") + m_MessagesFile +_T("\"");
-        if( !m_LicenseFile.IsEmpty())
-            Text +=_T("; LicenseFile: \"") + m_LicenseFile +_T("\"");
-        if( !m_InfoBeforeFile.IsEmpty())
-            Text +=_T("; InfoBeforeFile: \"") + m_InfoBeforeFile +_T("\"");
-        if( !m_InfoAfterFile.IsEmpty())
-            Text +=_T("; InfoAfterFile: \"") + m_InfoAfterFile +_T("\"");
+        if (!m_LicenseFile.IsEmpty())
+        {
+            Text += _T("; LicenseFile: \"") + m_LicenseFile + _T("\"");
+        }
 
-        File->AddLine( Text);
+        if (!m_InfoBeforeFile.IsEmpty())
+        {
+            Text += _T("; InfoBeforeFile: \"") + m_InfoBeforeFile + _T("\"");
+        }
+
+        if (!m_InfoAfterFile.IsEmpty())
+        {
+            Text += _T("; InfoAfterFile: \"") + m_InfoAfterFile + _T("\"");
+        }
+
+        File->AddLine(Text);
     }
 }
 
-void CLanguages::Analize(const wxString& content, const wxString& line)
+void CLanguages::Analize(const wxString & content, const wxString & line)
 {
     wxString cont = content;
     wxString part;
     wxString settings;
     SetLinenumber(line);
-    while( !cont.empty())
+
+    while (!cont.empty())
     {
         part = cont.BeforeFirst(':');
         settings = cont.AfterFirst(':').BeforeFirst(';');
@@ -55,30 +64,34 @@ void CLanguages::Analize(const wxString& content, const wxString& line)
         settings = settings.Trim(false);
         cont = cont.Trim(false);
 
-        if( part.CmpNoCase(_T("Name")) == 0)
+        if (part.CmpNoCase(_T("Name")) == 0)
         {
             SetName(settings);
         }
-        else if( part.CmpNoCase(_T("MessagesFile")) == 0)
-        {
-            SetMessagesFile(settings);
-        }
-        else if( part.CmpNoCase(_T("LicenseFile")) == 0)
-        {
-            SetLicenseFile(settings);
-        }
-        else if( part.CmpNoCase(_T("InfoBeforeFile")) == 0)
-        {
-            SetInfoBeforeFile(settings);
-        }
-        else if( part.CmpNoCase(_T("InfoAfterFile")) == 0)
-        {
-            SetInfoAfterFile(settings);
-        }
+        else
+            if (part.CmpNoCase(_T("MessagesFile")) == 0)
+            {
+                SetMessagesFile(settings);
+            }
+            else
+                if (part.CmpNoCase(_T("LicenseFile")) == 0)
+                {
+                    SetLicenseFile(settings);
+                }
+                else
+                    if (part.CmpNoCase(_T("InfoBeforeFile")) == 0)
+                    {
+                        SetInfoBeforeFile(settings);
+                    }
+                    else
+                        if (part.CmpNoCase(_T("InfoAfterFile")) == 0)
+                        {
+                            SetInfoAfterFile(settings);
+                        }
     }
 }
 
-void CLanguages::AddHeader(wxListCtrl* liste)
+void CLanguages::AddHeader(wxListCtrl * liste)
 {
     InsertHeader(liste);
     m_index_name    = liste->InsertColumn(liste->GetColumnCount(), _T("Name"));
@@ -88,7 +101,7 @@ void CLanguages::AddHeader(wxListCtrl* liste)
     m_index_after   = liste->InsertColumn(liste->GetColumnCount(), _T("InfoAfterFile"));
 }
 
-void CLanguages::FillContent(wxListCtrl* liste)
+void CLanguages::FillContent(wxListCtrl * liste)
 {
     liste->SetItem(GetIndex(), m_index_name, m_Name);
     liste->SetItem(GetIndex(), m_index_msg, m_MessagesFile);

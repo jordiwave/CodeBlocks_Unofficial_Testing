@@ -20,62 +20,72 @@ nsUniversalDetector::nsUniversalDetector(uint32_t aLanguageFilter)
     mBestGuess = -1;   //illegal value as signal
     mInTag = false;
     mEscCharSetProber = nullptr;
-
-//  mStart = true; // not needed for C::B (jens 2009-08-05)
+    //  mStart = true; // not needed for C::B (jens 2009-08-05)
     mDetectedCharset = nullptr;
     mGotData = false;
     mInputState = ePureAscii;
     mLastChar = '\0';
     mLanguageFilter = aLanguageFilter;
-
     uint32_t i;
+
     for (i = 0; i < NUM_OF_CHARSET_PROBERS; i++)
+    {
         mCharSetProbers[i] = nullptr;
+    }
 }
 
 nsUniversalDetector::~nsUniversalDetector()
 {
     for (int32_t i = 0; i < NUM_OF_CHARSET_PROBERS; i++)
+    {
         delete mCharSetProbers[i];
+    }
 
     delete mEscCharSetProber;
 }
 
-void
-nsUniversalDetector::Reset()
+void nsUniversalDetector::Reset()
 {
     mDone = false;
     mBestGuess = -1;   //illegal value as signal
     mInTag = false;
-
-//  mStart = true; // not needed for C::B (jens 2009-08-05)
+    //  mStart = true; // not needed for C::B (jens 2009-08-05)
     mDetectedCharset = nullptr;
     mGotData = false;
     mInputState = ePureAscii;
     mLastChar = '\0';
 
     if (mEscCharSetProber)
+    {
         mEscCharSetProber->Reset();
+    }
 
     uint32_t i;
+
     for (i = 0; i < NUM_OF_CHARSET_PROBERS; i++)
         if (mCharSetProbers[i])
+        {
             mCharSetProbers[i]->Reset();
+        }
 }
 
 //---------------------------------------------------------------------
 #define SHORTCUT_THRESHOLD      (float)0.95
 #define MINIMUM_THRESHOLD      (float)0.20
 
-nsresult nsUniversalDetector::HandleData(const char* aBuf, uint32_t aLen)
+nsresult nsUniversalDetector::HandleData(const char * aBuf, uint32_t aLen)
 {
-    if(mDone)
+    if (mDone)
+    {
         return NS_OK;
+    }
 
     if (aLen > 0)
+    {
         mGotData = true;
+    }
 
-// don't need to check for BOM, C::B does it itself (jens 2009-08-05)
+    // don't need to check for BOM, C::B does it itself (jens 2009-08-05)
     /*
       //If the data starts with BOM, we know it is UTF
       if (mStart)
@@ -112,6 +122,7 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, uint32_t aLen)
       }
     */
     uint32_t i;
+
     for (i = 0; i < aLen; i++)
     {
         //other than 0xa0, if every othe character is ascii, the page is ascii
@@ -134,74 +145,97 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, uint32_t aLen)
                 if (nullptr == mCharSetProbers[0])
                 {
                     mCharSetProbers[0] = new nsMBCSGroupProber(mLanguageFilter);
+
                     if (nullptr == mCharSetProbers[0])
+                    {
                         return nsMBCSGroupProberFailed;
+                    }
                 }
+
                 if (nullptr == mCharSetProbers[1] &&
                         (mLanguageFilter & NS_FILTER_NON_CJK))
                 {
                     mCharSetProbers[1] = new nsSBCSGroupProber;
+
                     if (nullptr == mCharSetProbers[1])
+                    {
                         return nsSBCSGroupProberFailed;
+                    }
                 }
+
                 if (nullptr == mCharSetProbers[2])
                 {
                     mCharSetProbers[2] = new nsLatin1Prober;
+
                     if (nullptr == mCharSetProbers[2])
+                    {
                         return nsLatin1ProberFailed;
+                    }
                 }
             }
         }
         else
         {
             //ok, just pure ascii so far
-            if ( ePureAscii == mInputState &&
-                    (aBuf[i] == '\033' || (aBuf[i] == '{' && mLastChar == '~')) )
+            if (ePureAscii == mInputState &&
+                    (aBuf[i] == '\033' || (aBuf[i] == '{' && mLastChar == '~')))
             {
                 //found escape character or HZ "~{"
                 mInputState = eEscAscii;
             }
+
             mLastChar = aBuf[i];
         }
     }
 
     nsProbingState st;
+
     switch (mInputState)
     {
-    case eEscAscii:
-        if (nullptr == mEscCharSetProber)
-        {
-            mEscCharSetProber = new nsEscCharSetProber(mLanguageFilter);
+        case eEscAscii:
             if (nullptr == mEscCharSetProber)
-                return nsEscCharSetProberFailed;
-        }
-        st = mEscCharSetProber->HandleData(aBuf, aLen);
-        if (st == eFoundIt)
-        {
-            mDone = true;
-            mDetectedCharset = mEscCharSetProber->GetCharSetName();
-        }
-        break;
-    case eHighbyte:
-        for (i = 0; i < NUM_OF_CHARSET_PROBERS; i++)
-        {
-            if (mCharSetProbers[i])
             {
-                st = mCharSetProbers[i]->HandleData(aBuf, aLen);
-                if (st == eFoundIt)
+                mEscCharSetProber = new nsEscCharSetProber(mLanguageFilter);
+
+                if (nullptr == mEscCharSetProber)
                 {
-                    mDone = true;
-                    mDetectedCharset = mCharSetProbers[i]->GetCharSetName();
-                    return NS_OK;
+                    return nsEscCharSetProberFailed;
                 }
             }
-        }
-        break;
 
-    case ePureAscii: // fall-through
-    default:  //pure ascii
-        ;//do nothing here
+            st = mEscCharSetProber->HandleData(aBuf, aLen);
+
+            if (st == eFoundIt)
+            {
+                mDone = true;
+                mDetectedCharset = mEscCharSetProber->GetCharSetName();
+            }
+
+            break;
+
+        case eHighbyte:
+            for (i = 0; i < NUM_OF_CHARSET_PROBERS; i++)
+            {
+                if (mCharSetProbers[i])
+                {
+                    st = mCharSetProbers[i]->HandleData(aBuf, aLen);
+
+                    if (st == eFoundIt)
+                    {
+                        mDone = true;
+                        mDetectedCharset = mCharSetProbers[i]->GetCharSetName();
+                        return NS_OK;
+                    }
+                }
+            }
+
+            break;
+
+        case ePureAscii: // fall-through
+        default:  //pure ascii
+            ;//do nothing here
     }
+
     return NS_OK;
 }
 
@@ -225,37 +259,45 @@ void nsUniversalDetector::DataEnd()
 
     switch (mInputState)
     {
-    case eHighbyte:
-    {
-        float proberConfidence;
-        float maxProberConfidence = (float)0.0;
-        int32_t maxProber = 0;
-
-        for (int32_t i = 0; i < NUM_OF_CHARSET_PROBERS; i++)
+        case eHighbyte:
         {
-            if (mCharSetProbers[i])
+            float proberConfidence;
+            float maxProberConfidence = (float)0.0;
+            int32_t maxProber = 0;
+
+            for (int32_t i = 0; i < NUM_OF_CHARSET_PROBERS; i++)
             {
-                proberConfidence = mCharSetProbers[i]->GetConfidence();
-                if (proberConfidence > maxProberConfidence)
+                if (mCharSetProbers[i])
                 {
-                    maxProberConfidence = proberConfidence;
-                    maxProber = i;
+                    proberConfidence = mCharSetProbers[i]->GetConfidence();
+
+                    if (proberConfidence > maxProberConfidence)
+                    {
+                        maxProberConfidence = proberConfidence;
+                        maxProber = i;
+                    }
                 }
             }
+
+            //do not report anything because we are not confident of it, that's in fact a negative answer
+            if (maxProberConfidence > MINIMUM_THRESHOLD)
+            {
+                Report(mCharSetProbers[maxProber]->GetCharSetName());
+            }
         }
-        //do not report anything because we are not confident of it, that's in fact a negative answer
-        if (maxProberConfidence > MINIMUM_THRESHOLD)
-            Report(mCharSetProbers[maxProber]->GetCharSetName());
-    }
-    break;
-    case eEscAscii:
-        Report("Escaped *ASCII*");
         break;
-    case ePureAscii:
-        Report("Pure *ASCII*");
-        break;
-    default:
-        ;
+
+        case eEscAscii:
+            Report("Escaped *ASCII*");
+            break;
+
+        case ePureAscii:
+            Report("Pure *ASCII*");
+            break;
+
+        default:
+            ;
     }
+
     return;
 }

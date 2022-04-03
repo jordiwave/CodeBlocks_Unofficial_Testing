@@ -26,7 +26,7 @@ CGenericProcessingMachine::CGenericProcessingMachine(void)
 {
     m_FileConfiguration.Clear();
     m_ParameterStringConfiguration.Clear();
-//m_ParameterString.Clear();
+    //m_ParameterString.Clear();
     m_InputFileList.Clear();
     m_OutputFileList.Clear();
     m_FileIndex = 0;
@@ -39,7 +39,7 @@ CGenericProcessingMachine::CGenericProcessingMachine(void)
 
 CGenericProcessingMachine::~CGenericProcessingMachine(void)
 {
-//
+    //
 }
 
 void CGenericProcessingMachine::Initialize(void)
@@ -52,11 +52,11 @@ void CGenericProcessingMachine::Initialize(void)
 
 void CGenericProcessingMachine::Initialize(int argc, char * argv[])
 {
-    PS().SetParameters(argc,argv);
+    PS().SetParameters(argc, argv);
     Initialize();
 }
 
-void CGenericProcessingMachine::Initialize(const CParameterString& Parameters)
+void CGenericProcessingMachine::Initialize(const CParameterString & Parameters)
 {
     PS().SetParameters(Parameters);
     Initialize();
@@ -64,7 +64,7 @@ void CGenericProcessingMachine::Initialize(const CParameterString& Parameters)
 
 void CGenericProcessingMachine::DisplayHelpMessage(void)
 {
-// do nothing //
+    // do nothing //
 }
 
 void CGenericProcessingMachine::CreateConfiguration(void)
@@ -78,6 +78,7 @@ void CGenericProcessingMachine::CreateConfiguration(void)
     PSC().InsertFlagVariable(GPM_VAR_NAME_HELP);
     PSC().InsertFlagVariable(GPM_VAR_NAME_VERBOSE);
     PSC().InsertFlagVariable(GPM_VAR_NAME_QUIET);
+
     if (m_AliasesEnabled)
     {
         PSC().InsertFlagVariable(GPM_VAR_NAME_HELP_ALIAS);
@@ -88,7 +89,7 @@ void CGenericProcessingMachine::CreateConfiguration(void)
 
 CString CGenericProcessingMachine::DefaultConfigurationName(void)
 {
-    return ChangeFileExt(ExtractFileName(PS().Parameter(0)),".cfg");
+    return ChangeFileExt(ExtractFileName(PS().Parameter(0)), ".cfg");
 }
 
 CString CGenericProcessingMachine::ConfigurationName(void)
@@ -103,10 +104,11 @@ CString CGenericProcessingMachine::ConfigurationName(void)
     }
 }
 
-bool CGenericProcessingMachine::Configure(const CString& FileName)
+bool CGenericProcessingMachine::Configure(const CString & FileName)
 {
     bool result = true;
-//
+
+    //
     if (m_AliasesEnabled)
     {
         m_VerboseMode = PSC().VarDefined(GPM_VAR_NAME_VERBOSE_ALIAS);
@@ -119,8 +121,9 @@ bool CGenericProcessingMachine::Configure(const CString& FileName)
         m_QuietMode = PSC().VarDefined(GPM_VAR_NAME_QUIET);
         m_HelpMode = PSC().VarDefined(GPM_VAR_NAME_HELP);
     }
-//PSC().ProcessParameters(m_ParameterString);
-    if ((FileName.GetLength()>0)&&(FileExists(FileName.GetString())))
+
+    //PSC().ProcessParameters(m_ParameterString);
+    if ((FileName.GetLength() > 0) && (FileExists(FileName.GetString())))
     {
         CFG().LoadFromFile(FileName);
     }
@@ -128,94 +131,115 @@ bool CGenericProcessingMachine::Configure(const CString& FileName)
     {
         result = false;
     }
+
     if (PSC().VarDefined(GPM_VAR_NAME_LIST))
     {
         ILST().Clear();
         ILST().LoadFromFile(PSC().VarNamed(GPM_VAR_NAME_IN).GetString());
     }
-    else if (PSC().VarDefined(GPM_VAR_NAME_IN))
-    {
-        ILST().Clear();
-        ILST().Insert(PSC().VarNamed(GPM_VAR_NAME_IN).GetString());
-    }
+    else
+        if (PSC().VarDefined(GPM_VAR_NAME_IN))
+        {
+            ILST().Clear();
+            ILST().Insert(PSC().VarNamed(GPM_VAR_NAME_IN).GetString());
+        }
+
     return result;
 }
 
 int CGenericProcessingMachine::SetFileNameLength(const int FileNameLength)
 {
-    m_FileNameLength = std::max(FileNameLength,1);
+    m_FileNameLength = std::max(FileNameLength, 1);
     return m_FileNameLength;
 }
 
-CString CGenericProcessingMachine::TargetName(const int FileIndex, const CString& SourceFileName)
+CString CGenericProcessingMachine::TargetName(const int FileIndex, const CString & SourceFileName)
 {
     (void)SourceFileName;
-    return EnumStr("",FileIndex,".out",m_FileNameLength);
+    return EnumStr("", FileIndex, ".out", m_FileNameLength);
 }
 
-bool CGenericProcessingMachine::ProcessFile(const CString& SourceFileName, CString& TargetFileName)
+bool CGenericProcessingMachine::ProcessFile(const CString & SourceFileName, CString & TargetFileName)
 {
     (void)SourceFileName;
     (void)TargetFileName;
-// override this function //
+    // override this function //
     return true;
 }
 
 bool CGenericProcessingMachine::PreProcess(void)
 {
-// override this function //
+    // override this function //
     return true;
 }
 
 bool CGenericProcessingMachine::Run(void)
 {
-    if (!PreProcess()) return false;
-//
+    if (!PreProcess())
+    {
+        return false;
+    }
+
+    //
     bool result = true;
     CString source_directory;
     CString target_directory;
+
     if (PSC().VarDefined(GPM_VAR_NAME_INDIR))
     {
-        source_directory = CheckLastChar(PSC().VarNamed(GPM_VAR_NAME_INDIR).GetString(),'/');
+        source_directory = CheckLastChar(PSC().VarNamed(GPM_VAR_NAME_INDIR).GetString(), '/');
         PSC().VarNamed(GPM_VAR_NAME_INDIR).SetString(source_directory);
     }
+
     if (PSC().VarDefined(GPM_VAR_NAME_OUTDIR))
     {
-        target_directory = CheckLastChar(PSC().VarNamed(GPM_VAR_NAME_OUTDIR).GetString(),'/');
+        target_directory = CheckLastChar(PSC().VarNamed(GPM_VAR_NAME_OUTDIR).GetString(), '/');
         PSC().VarNamed(GPM_VAR_NAME_OUTDIR).SetString(target_directory);
     }
-    bool do_rename_outfile = ((!PSC().VarDefined(GPM_VAR_NAME_LIST))&&(PSC().VarDefined(GPM_VAR_NAME_OUT)));
-    bool do_create_outlist = ((PSC().VarDefined(GPM_VAR_NAME_LIST))&&(PSC().VarDefined(GPM_VAR_NAME_OUT)));
-//if ((ILST().GetCount()>1)||(!PSC().VarDefined(GPM_VAR_NAME_OUT)))
+
+    bool do_rename_outfile = ((!PSC().VarDefined(GPM_VAR_NAME_LIST)) && (PSC().VarDefined(GPM_VAR_NAME_OUT)));
+    bool do_create_outlist = ((PSC().VarDefined(GPM_VAR_NAME_LIST)) && (PSC().VarDefined(GPM_VAR_NAME_OUT)));
+
+    //if ((ILST().GetCount()>1)||(!PSC().VarDefined(GPM_VAR_NAME_OUT)))
     for (int i = 0; i < ILST().GetCount(); i++)
     {
         m_FileIndex = i;
-        if (ILST().GetString(i).GetLength()==0) continue;
+
+        if (ILST().GetString(i).GetLength() == 0)
+        {
+            continue;
+        }
+
         CString source_file_name = source_directory + ILST().GetString(i);
-        CString target_name = TargetName(i,ILST().GetString(i));
+        CString target_name = TargetName(i, ILST().GetString(i));
+
         if (do_rename_outfile)
         {
             target_name = PSC().VarNamed(GPM_VAR_NAME_OUT).GetString();
         }
+
         CString target_file_name = target_directory + target_name;
-        result = result && ProcessFile(source_file_name,target_file_name);
+        result = result && ProcessFile(source_file_name, target_file_name);
+
         if (!target_file_name.IsEmpty())
         {
             OLST().Insert(target_name);
         }
     }
+
     if (do_create_outlist)
     {
         OLST().SaveToFile(PSC().VarNamed(GPM_VAR_NAME_OUT).GetString());
     }
-//
+
+    //
     result = result && PostProcess();
     return result;
 }
 
 bool CGenericProcessingMachine::PostProcess(void)
 {
-// override this function //
+    // override this function //
     return true;
 }
 

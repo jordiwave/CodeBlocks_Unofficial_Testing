@@ -24,35 +24,47 @@ CIni::~CIni()
     //dtor
 }
 
-void CIni::WriteInFile(wxTextFile* File)
+void CIni::WriteInFile(wxTextFile * File)
 {
-    if( !m_Filename.IsEmpty())
+    if (!m_Filename.IsEmpty())
     {
         wxString Text;
+        Text = _T("Filename: \"") + m_Filename + _T("\"");
 
-        Text =_T("Filename: \"") + m_Filename +_T("\"");
-        if( !m_Section.IsEmpty())
-            Text +=_T("; Section; \"") + m_Section +_T("\"");
-        if( !m_Key.IsEmpty())
-            Text +=_T("; Key: \"") + m_Key +_T("\"");
-        if( !m_String.IsEmpty())
-            Text +=_T("; String: \"") + m_String +_T("\"");
-        if( !m_Flags.IsEmpty())
-            Text +=_T("; Flags: ") + m_Flags;
+        if (!m_Section.IsEmpty())
+        {
+            Text += _T("; Section; \"") + m_Section + _T("\"");
+        }
+
+        if (!m_Key.IsEmpty())
+        {
+            Text += _T("; Key: \"") + m_Key + _T("\"");
+        }
+
+        if (!m_String.IsEmpty())
+        {
+            Text += _T("; String: \"") + m_String + _T("\"");
+        }
+
+        if (!m_Flags.IsEmpty())
+        {
+            Text += _T("; Flags: ") + m_Flags;
+        }
 
         CCompTask::AddText(Text);
         CCommon::AddText(Text);
-        File->AddLine( Text);
+        File->AddLine(Text);
     }
 }
 
-void CIni::Analize(const wxString& content, const wxString& line)
+void CIni::Analize(const wxString & content, const wxString & line)
 {
     wxString cont = content;
     wxString part;
     wxString settings;
     SetLinenumber(line);
-    while( !cont.empty())
+
+    while (!cont.empty())
     {
         part = cont.BeforeFirst(':');
         settings = cont.AfterFirst(':').BeforeFirst(';');
@@ -61,32 +73,39 @@ void CIni::Analize(const wxString& content, const wxString& line)
         settings = settings.Trim(false);
         cont = cont.Trim(false);
 
-        if( part.CmpNoCase(_T("Filename")) == 0)
+        if (part.CmpNoCase(_T("Filename")) == 0)
         {
             SetFilename(settings);
         }
-        else if( part.CmpNoCase(_T("Section")) == 0)
-        {
-            SetSection(settings);
-        }
-        else if( part.CmpNoCase(_T("Key")) == 0)
-        {
-            SetKey(settings);
-        }
-        else if( part.CmpNoCase(_T("String")) == 0)
-        {
-            SetString(settings);
-        }
-        else if( part.CmpNoCase(_T("flags")) == 0)
-        {
-            SetFlags(settings);
-        }
-        else if( !CCompTask::Analize(part, settings))
-            CCommon::Analize(part, settings);
+        else
+            if (part.CmpNoCase(_T("Section")) == 0)
+            {
+                SetSection(settings);
+            }
+            else
+                if (part.CmpNoCase(_T("Key")) == 0)
+                {
+                    SetKey(settings);
+                }
+                else
+                    if (part.CmpNoCase(_T("String")) == 0)
+                    {
+                        SetString(settings);
+                    }
+                    else
+                        if (part.CmpNoCase(_T("flags")) == 0)
+                        {
+                            SetFlags(settings);
+                        }
+                        else
+                            if (!CCompTask::Analize(part, settings))
+                            {
+                                CCommon::Analize(part, settings);
+                            }
     }
 }
 
-void CIni::FillContent(wxListCtrl* liste)
+void CIni::FillContent(wxListCtrl * liste)
 {
     liste->SetItem(GetIndex(), m_index_filename, m_Filename);
     liste->SetItem(GetIndex(), m_index_section, m_Section);
@@ -97,7 +116,7 @@ void CIni::FillContent(wxListCtrl* liste)
     CCommon::FillContent(liste, GetIndex());
 }
 
-void CIni::AddHeader(wxListCtrl* liste)
+void CIni::AddHeader(wxListCtrl * liste)
 {
     InsertHeader(liste);
     m_index_filename = liste->InsertColumn(liste->GetColumnCount(), _T("Filename"));

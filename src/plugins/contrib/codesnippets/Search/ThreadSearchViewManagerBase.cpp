@@ -12,14 +12,14 @@
 #include "ThreadSearchViewManagerMessagesNotebook.h"
 #include "ThreadSearchViewManagerLayout.h"
 
-ThreadSearchViewManagerBase* ThreadSearchViewManagerBase::BuildThreadSearchViewManagerBase(
-    ThreadSearchView* pView,
+ThreadSearchViewManagerBase * ThreadSearchViewManagerBase::BuildThreadSearchViewManagerBase(
+    ThreadSearchView * pView,
     bool              addViewToManager,
     eManagerTypes     managerType)
 {
-    ThreadSearchViewManagerBase* pMgr = 0;
+    ThreadSearchViewManagerBase * pMgr = 0;
 
-    if ( managerType == TypeMessagesNotebook )
+    if (managerType == TypeMessagesNotebook)
     {
         pMgr = new ThreadSearchViewManagerMessagesNotebook(pView);
     }
@@ -29,9 +29,11 @@ ThreadSearchViewManagerBase* ThreadSearchViewManagerBase::BuildThreadSearchViewM
         // No error management on managerType
         pMgr = new ThreadSearchViewManagerLayout(pView);
     }
-    if ( addViewToManager == true )
+
+    if (addViewToManager == true)
     {
         pMgr->AddViewToManager();
     }
+
     return pMgr;
 }

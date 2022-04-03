@@ -39,11 +39,11 @@ struct PLUGIN_EXPORT wxsPositionSizeData
     inline wxsPositionSizeData(): IsDefault(true), X(0), Y(0), DialogUnits(false) {}
 
     /** \brief Function returning position from data */
-    inline wxPoint GetPosition(wxWindow* Parent)
+    inline wxPoint GetPosition(wxWindow * Parent)
     {
         return IsDefault ?
-               wxDefaultPosition:
-               DialogUnits ? wxDLG_UNIT(Parent,wxPoint(X,Y)) : wxPoint(X,Y);
+               wxDefaultPosition :
+               DialogUnits ? wxDLG_UNIT(Parent, wxPoint(X, Y)) : wxPoint(X, Y);
     }
 
     /** \brief Function fetching data from given position
@@ -52,16 +52,17 @@ struct PLUGIN_EXPORT wxsPositionSizeData
      * when we have wxPoint value. Thsi function takes care of converting
      * to valid units and check if value is default.
      */
-    inline void SetPosition(const wxPoint& Point,wxWindow* Parent)
+    inline void SetPosition(const wxPoint & Point, wxWindow * Parent)
     {
-        if ( Point == wxDefaultPosition )
+        if (Point == wxDefaultPosition)
         {
             IsDefault = true;
         }
         else
         {
             IsDefault = false;
-            if ( DialogUnits )
+
+            if (DialogUnits)
             {
                 wxPoint Temp = Parent->ConvertPixelsToDialog(Point);
                 X = Temp.x;
@@ -79,14 +80,14 @@ struct PLUGIN_EXPORT wxsPositionSizeData
      *
      * This representatin may be used in generated code.
      */
-    wxString GetPositionCode(wxsCoderContext* Context);
+    wxString GetPositionCode(wxsCoderContext * Context);
 
     /** \brief Function returnign size from data */
-    inline wxSize GetSize(wxWindow* Parent)
+    inline wxSize GetSize(wxWindow * Parent)
     {
         return IsDefault ?
                wxDefaultSize :
-               DialogUnits ? wxDLG_UNIT(Parent,wxSize(X,Y)) : wxSize(X,Y);
+               DialogUnits ? wxDLG_UNIT(Parent, wxSize(X, Y)) : wxSize(X, Y);
     }
 
     /** \brief Function fetching data from given size
@@ -95,16 +96,17 @@ struct PLUGIN_EXPORT wxsPositionSizeData
      * when we have wxSize value. Thsi function takes care of converting
      * to valid units and check if value is default.
      */
-    inline void SetSize(const wxSize& Size,wxWindow* Parent)
+    inline void SetSize(const wxSize & Size, wxWindow * Parent)
     {
-        if ( Size == wxDefaultSize )
+        if (Size == wxDefaultSize)
         {
             IsDefault = true;
         }
         else
         {
             IsDefault = false;
-            if ( DialogUnits )
+
+            if (DialogUnits)
             {
                 wxSize Temp = Parent->ConvertPixelsToDialog(Size);
                 X = Temp.GetWidth();
@@ -122,7 +124,7 @@ struct PLUGIN_EXPORT wxsPositionSizeData
      *
      * This representatin may be used in generated code.
      */
-    wxString GetSizeCode(wxsCoderContext* Context);
+    wxString GetSizeCode(wxsCoderContext * Context);
 
 };
 
@@ -140,48 +142,48 @@ typedef wxsPositionSizeData wxsSizeData;
  */
 class PLUGIN_EXPORT wxsPositionSizeProperty: public wxsProperty
 {
-public:
+    public:
 
-    /** \brief Ctor
-     *  \param PGUseDefName name of "use default value" property
-     *  \param PGXName      name of x/width property
-     *  \param PGYName      name of y/height property
-     *  \param PGDUName     name of "use dialog units" property
-     *  \param DataName     name of property in data stuctures
-     *  \param Offset       offset to wxsPositionSizeData structure
-     *  \param Priority     priority of this property
-     */
-    wxsPositionSizeProperty(
-        const wxString& PGUseDefName,
-        const wxString& PGXName,
-        const wxString& PGYName,
-        const wxString& PGDUName,
-        const wxString& DataName,
-        long Offset,
-        int Priority=100);
+        /** \brief Ctor
+         *  \param PGUseDefName name of "use default value" property
+         *  \param PGXName      name of x/width property
+         *  \param PGYName      name of y/height property
+         *  \param PGDUName     name of "use dialog units" property
+         *  \param DataName     name of property in data stuctures
+         *  \param Offset       offset to wxsPositionSizeData structure
+         *  \param Priority     priority of this property
+         */
+        wxsPositionSizeProperty(
+            const wxString & PGUseDefName,
+            const wxString & PGXName,
+            const wxString & PGYName,
+            const wxString & PGDUName,
+            const wxString & DataName,
+            long Offset,
+            int Priority = 100);
 
-    /** \brief Returning type name */
-    virtual const wxString GetTypeName()
-    {
-        return _T("wxPosition wxSize");
-    }
+        /** \brief Returning type name */
+        virtual const wxString GetTypeName()
+        {
+            return _T("wxPosition wxSize");
+        }
 
-protected:
+    protected:
 
-    virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
-    virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-    virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+        virtual void PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent);
+        virtual bool PGRead(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index);
+        virtual bool PGWrite(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index);
+        virtual bool XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
+        virtual bool PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
 
-private:
-    wxString PGXName;
-    wxString PGYName;
-    wxString PGDUName;
-    wxString DataName;
-    long Offset;
+    private:
+        wxString PGXName;
+        wxString PGYName;
+        wxString PGDUName;
+        wxString DataName;
+        long Offset;
 };
 
 typedef wxsPositionSizeProperty wxsPositionProperty;
@@ -201,7 +203,7 @@ typedef wxsPositionSizeProperty wxsSizeProperty;
  */
 #define WXS_POSITION(ClassName,VarName,PGDefName,PGXName,PGYName,PGDUName,DataName) \
     { static wxsPositionProperty _Property(PGDefName,PGXName,PGYName,PGDUName,DataName,wxsOFFSET(ClassName,VarName)); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \brief Macro automatically declaring position property with custom priority
  *  \param ClassName name of class holding this property
@@ -215,7 +217,7 @@ typedef wxsPositionSizeProperty wxsSizeProperty;
  */
 #define WXS_POSITION_P(ClassName,VarName,PGDefName,PGXName,PGYName,PGDUName,DataName,Priority) \
     { static wxsPositionProperty _Property(PGDefName,PGXName,PGYName,PGDUName,DataName,wxsOFFSET(ClassName,VarName),Priority); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \brief Macro automatically declaring size property
  *  \param ClassName name of class holding this property
@@ -228,7 +230,7 @@ typedef wxsPositionSizeProperty wxsSizeProperty;
  */
 #define WXS_SIZE(ClassName,VarName,PGDefName,PGWidthName,PGHeightName,PGDUName,DataName) \
     { static wxsSizeProperty _Property(PGDefName,PGWidthName,PGHeightName,PGDUName,DataName,wxsOFFSET(ClassName,VarName)); \
-      Property(_Property); }
+        Property(_Property); }
 
 
 /** \brief Macro automatically declaring size property with custom priority
@@ -243,7 +245,7 @@ typedef wxsPositionSizeProperty wxsSizeProperty;
  */
 #define WXS_SIZE_P(ClassName,VarName,PGDefName,PGWidthName,PGHeightName,PGDUName,DataName,Priority) \
     { static wxsSizeProperty _Property(PGDefName,PGWidthName,PGHeightName,PGDUName,DataName,wxsOFFSET(ClassName,VarName),Priority); \
-      Property(_Property); }/** \} */
+        Property(_Property); }/** \} */
 
 
 #endif

@@ -21,9 +21,9 @@
 #include <wx/stc/stc.h>
 
 #if (wxVERSION_NUMBER >= 2900)
-// #include <wx/stc/private.h> // wx2stc() has been moved here, but isn't exported
-#define wx2stc(wxstr)    (wxstr).mb_str()
-#define stc2wx(char_str) wxString(char_str)
+    // #include <wx/stc/private.h> // wx2stc() has been moved here, but isn't exported
+    #define wx2stc(wxstr)    (wxstr).mb_str()
+    #define stc2wx(char_str) wxString(char_str)
 #endif
 
 //-----------------------------------------------------------------------------
@@ -38,11 +38,11 @@
 /// If you get an error on this line, you probably forgot to copy
 ///   include/wx/stedit/setup0.h to include/wx/stedit/setup.h
 #if !defined(_STESETUP_H_)
-#include "wx/stedit/setup.h"
+    #include "wx/stedit/setup.h"
 #endif // !defined(_STESETUP_H_)
 
 #ifndef ID_STE__FIRST
-#   error "Your wx/stedit/setup.h file is out of date, please update to wx/stedit/setup0.h."
+    #   error "Your wx/stedit/setup.h file is out of date, please update to wx/stedit/setup0.h."
 #endif
 
 //-----------------------------------------------------------------------------
@@ -62,8 +62,8 @@
 /// Use the following macro to check if the current version is at least major minor release.
 #define wxCHECK_STE_VERSION(major, minor, release) \
     (STE_MAJOR_VERSION > (major) || \
-    (STE_MAJOR_VERSION == (major) && STE_MINOR_VERSION > (minor)) || \
-    (STE_MAJOR_VERSION == (major) && STE_MINOR_VERSION == (minor) && STE_RELEASE_VERSION >= (release)))
+     (STE_MAJOR_VERSION == (major) && STE_MINOR_VERSION > (minor)) || \
+     (STE_MAJOR_VERSION == (major) && STE_MINOR_VERSION == (minor) && STE_RELEASE_VERSION >= (release)))
 
 //-----------------------------------------------------------------------------
 /// @name DLL Import and Export macros (see the contrib libs like wxPlot)
@@ -71,21 +71,21 @@
 /// @{
 
 #ifdef WXMAKINGDLL_STEDIT
-#define WXDLLIMPEXP_STEDIT WXEXPORT
-#define WXDLLIMPEXP_DATA_STEDIT(type) WXEXPORT type
+    #define WXDLLIMPEXP_STEDIT WXEXPORT
+    #define WXDLLIMPEXP_DATA_STEDIT(type) WXEXPORT type
 #elif defined(WXUSINGDLL_STEDIT)
-#define WXDLLIMPEXP_STEDIT WXIMPORT
-#define WXDLLIMPEXP_DATA_STEDIT(type) WXIMPORT type
+    #define WXDLLIMPEXP_STEDIT WXIMPORT
+    #define WXDLLIMPEXP_DATA_STEDIT(type) WXIMPORT type
 #else // not making nor using DLL
-#define WXDLLIMPEXP_STEDIT
-#define WXDLLIMPEXP_DATA_STEDIT(type) type
+    #define WXDLLIMPEXP_STEDIT
+    #define WXDLLIMPEXP_DATA_STEDIT(type) type
 #endif
 
 /// Forward declare all wxStEdit classes with this macro
 #if defined(HAVE_VISIBILITY) || (defined(__WINDOWS__) && defined(__GNUC__))
-#define WXDLLIMPEXP_FWD_STEDIT
+    #define WXDLLIMPEXP_FWD_STEDIT
 #else
-#define WXDLLIMPEXP_FWD_STEDIT WXDLLIMPEXP_STEDIT
+    #define WXDLLIMPEXP_FWD_STEDIT WXDLLIMPEXP_STEDIT
 #endif
 
 /// @}
@@ -419,10 +419,10 @@ enum STE_WindowId_Type
     ID_STN_WIN_PREVIOUS,
     ID_STN_WIN_NEXT,
     ID_STN_GOTO_PAGE_START,
-    ID_STN_CLOSE_PAGE_START = ID_STN_GOTO_PAGE_START+STN_NOTEBOOK_PAGES_MAX,
+    ID_STN_CLOSE_PAGE_START = ID_STN_GOTO_PAGE_START + STN_NOTEBOOK_PAGES_MAX,
 
     // Menu items used for wxSTEditorFrame
-    ID_STF_SHOW_SIDEBAR = ID_STN_CLOSE_PAGE_START+STN_NOTEBOOK_PAGES_MAX,
+    ID_STF_SHOW_SIDEBAR = ID_STN_CLOSE_PAGE_START + STN_NOTEBOOK_PAGES_MAX,
 
     // Menu items for the insert character menu for dialogs
     ID_STEDLG_INSERTMENU_TAB,
@@ -697,7 +697,7 @@ enum STE_FoldStyleType
     STE_FOLD_TABTIMMY      = 0x0200, ///< "tab.timmy.whinge.level" python indent check
 
     // everything set
-    STE_FOLD_STYLE_DEFAULT = STE_FOLD_COMPACT|STE_FOLD_COMMENT|STE_FOLD_PREPROC|STE_FOLD_ATELSE|STE_FOLD_HTML|STE_FOLD_HTMLPREP|STE_FOLD_DIRECTIVE|STE_FOLD_COMMENTPY|STE_FOLD_QUOTESPY|STE_FOLD_TABTIMMY
+    STE_FOLD_STYLE_DEFAULT = STE_FOLD_COMPACT | STE_FOLD_COMMENT | STE_FOLD_PREPROC | STE_FOLD_ATELSE | STE_FOLD_HTML | STE_FOLD_HTMLPREP | STE_FOLD_DIRECTIVE | STE_FOLD_COMMENTPY | STE_FOLD_QUOTESPY | STE_FOLD_TABTIMMY
 };
 
 //-----------------------------------------------------------------------------
@@ -707,7 +707,7 @@ enum STE_FoldStyleType
 
 enum STE_FoldMarginStyleType
 {
-    STE_FOLDMARGIN_STYLE_UNSET     =-1, ///< the fold code won't be run
+    STE_FOLDMARGIN_STYLE_UNSET     = -1, ///< the fold code won't be run
     STE_FOLDMARGIN_STYLE_ARROWS    = 0, ///< "..." for contracted folders, arrow pointing down for expanded
     STE_FOLDMARGIN_STYLE_CIRCLES   = 1, ///< Like a flattened tree control using circular headers and curved joins
     STE_FOLDMARGIN_STYLE_SQUARES   = 2, ///< Like a flattened tree control using square headers (default)
@@ -846,7 +846,7 @@ enum STE_FontAttrType
     STE_STYLE_FONT_CASEUPPER  = 0x0080,
     STE_STYLE_FONT_CASELOWER  = 0x0100,
 
-    STE_STYLE_FONT_MASK       = (STE_STYLE_FONT_BOLD|STE_STYLE_FONT_ITALIC|STE_STYLE_FONT_UNDERLINED|STE_STYLE_FONT_HIDDEN|STE_STYLE_FONT_EOLFILLED|STE_STYLE_FONT_HOTSPOT|STE_STYLE_FONT_CASEMIXED|STE_STYLE_FONT_CASEUPPER|STE_STYLE_FONT_CASELOWER)
+    STE_STYLE_FONT_MASK       = (STE_STYLE_FONT_BOLD | STE_STYLE_FONT_ITALIC | STE_STYLE_FONT_UNDERLINED | STE_STYLE_FONT_HIDDEN | STE_STYLE_FONT_EOLFILLED | STE_STYLE_FONT_HOTSPOT | STE_STYLE_FONT_CASEMIXED | STE_STYLE_FONT_CASEUPPER | STE_STYLE_FONT_CASELOWER)
 };
 
 // ----------------------------------------------------------------------------
@@ -864,7 +864,7 @@ enum STE_StyleUseDefaultType
     STE_STYLE_USEDEFAULT_FONTSIZE     = 0x0010,
     STE_STYLE_USEDEFAULT_FONTSTYLE    = 0x0020,
 
-    STE_STYLE_USEDEFAULT_MASK         = (STE_STYLE_USEDEFAULT_FORECOLOUR|STE_STYLE_USEDEFAULT_BACKCOLOUR|STE_STYLE_USEDEFAULT_FACENAME|STE_STYLE_USEDEFAULT_FONTSIZE|STE_STYLE_USEDEFAULT_FONTSTYLE),
+    STE_STYLE_USEDEFAULT_MASK         = (STE_STYLE_USEDEFAULT_FORECOLOUR | STE_STYLE_USEDEFAULT_BACKCOLOUR | STE_STYLE_USEDEFAULT_FACENAME | STE_STYLE_USEDEFAULT_FONTSIZE | STE_STYLE_USEDEFAULT_FONTSTYLE),
 
     // Convenience enums - what default values should be used
     STE_STYLE_USEDEFAULT_ALL          = STE_STYLE_USEDEFAULT_MASK,
@@ -886,9 +886,9 @@ enum STE_StyleUsesType
     STE_STYLE_USES_FONTSTYLE  = 0x0010,
     STE_STYLE_USES_STYLE      = 0x0020, // special for indicators and markers
 
-    STE_STYLE_USES_FONT       = (STE_STYLE_USES_FACENAME|STE_STYLE_USES_FONTSIZE|STE_STYLE_USES_FONTSTYLE),
-    STE_STYLE_USES_COLOUR     = (STE_STYLE_USES_FORECOLOUR|STE_STYLE_USES_BACKCOLOUR),
-    STE_STYLE_USES_ALL        = (STE_STYLE_USES_COLOUR|STE_STYLE_USES_FONT),
+    STE_STYLE_USES_FONT       = (STE_STYLE_USES_FACENAME | STE_STYLE_USES_FONTSIZE | STE_STYLE_USES_FONTSTYLE),
+    STE_STYLE_USES_COLOUR     = (STE_STYLE_USES_FORECOLOUR | STE_STYLE_USES_BACKCOLOUR),
+    STE_STYLE_USES_ALL        = (STE_STYLE_USES_COLOUR | STE_STYLE_USES_FONT),
 
     STE_STYLE_USES_MASK       = STE_STYLE_USES_ALL
 };

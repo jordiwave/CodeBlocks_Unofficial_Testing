@@ -27,9 +27,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsBitmapButton> Reg(_T("BitmapButton"),wxsTWidget,_T("Standard"),360);
+wxsRegisterItem<wxsBitmapButton> Reg(_T("BitmapButton"), wxsTWidget, _T("Standard"), 360);
 
-WXS_ST_BEGIN(wxsBitmapButtonStyles,_T("wxBU_AUTODRAW"))
+WXS_ST_BEGIN(wxsBitmapButtonStyles, _T("wxBU_AUTODRAW"))
 WXS_ST_CATEGORY("wxBitmapButton")
 WXS_ST(wxBU_LEFT)
 WXS_ST(wxBU_TOP)
@@ -43,11 +43,11 @@ WXS_ST_END()
 
 
 WXS_EV_BEGIN(wxsBitmapButtonEvents)
-WXS_EVI(EVT_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEvent,Click)
+WXS_EVI(EVT_BUTTON, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEvent, Click)
 WXS_EV_END()
 }
 
-wxsBitmapButton::wxsBitmapButton(wxsItemResData* Data):
+wxsBitmapButton::wxsBitmapButton(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -58,75 +58,79 @@ wxsBitmapButton::wxsBitmapButton(wxsItemResData* Data):
 
 void wxsBitmapButton::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/bmpbuttn.h>"),GetInfo().ClassName,hfInPCH);
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/bmpbuttn.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %i, %P, %S, %T, %V, %N);\n"), &BitmapLabel, _T("wxART_BUTTON"));
 
-        Codef(_T("%C(%W, %I, %i, %P, %S, %T, %V, %N);\n"), &BitmapLabel, _T("wxART_BUTTON"));
-        if ( !BitmapDisabled.IsEmpty() )
-        {
-            Codef(_T("%ASetBitmapDisabled(%i);\n"), &BitmapDisabled, _T("wxART_BUTTON"));
-        }
-        if ( !BitmapSelected.IsEmpty() )
-        {
-            Codef(_T("%ASetBitmapSelected(%i);\n"), &BitmapSelected, _T("wxART_BUTTON"));
-        }
-        if ( !BitmapFocus.IsEmpty() )
-        {
-            Codef(_T("%ASetBitmapFocus(%i);\n"), &BitmapFocus, _T("wxART_BUTTON"));
+            if (!BitmapDisabled.IsEmpty())
+            {
+                Codef(_T("%ASetBitmapDisabled(%i);\n"), &BitmapDisabled, _T("wxART_BUTTON"));
+            }
+
+            if (!BitmapSelected.IsEmpty())
+            {
+                Codef(_T("%ASetBitmapSelected(%i);\n"), &BitmapSelected, _T("wxART_BUTTON"));
+            }
+
+            if (!BitmapFocus.IsEmpty())
+            {
+                Codef(_T("%ASetBitmapFocus(%i);\n"), &BitmapFocus, _T("wxART_BUTTON"));
+            }
+
+            if (IsDefault)
+            {
+                Codef(_T("%ASetDefault();\n"));
+            }
+
+            BuildSetupWindowCode();
+            return;
         }
 
-        if ( IsDefault )
+        case wxsUnknownLanguage: // fall through
+        default:
         {
-            Codef(_T("%ASetDefault();\n"));
+            wxsCodeMarks::Unknown(_T("wxsBitmapButton::OnBuildCreatingCode"), GetLanguage());
         }
-        BuildSetupWindowCode();
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsBitmapButton::OnBuildCreatingCode"),GetLanguage());
-    }
     }
 }
 
 
-wxObject* wxsBitmapButton::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsBitmapButton::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxBitmapButton* Preview = new wxBitmapButton(Parent,GetId(),BitmapLabel.GetPreview(wxDefaultSize),Pos(Parent),Size(Parent),Style());
+    wxBitmapButton * Preview = new wxBitmapButton(Parent, GetId(), BitmapLabel.GetPreview(wxDefaultSize), Pos(Parent), Size(Parent), Style());
 
-    if ( !BitmapDisabled.IsEmpty() )
+    if (!BitmapDisabled.IsEmpty())
     {
         Preview->SetBitmapDisabled(BitmapDisabled.GetPreview(wxDefaultSize));
     }
 
-    if ( !BitmapSelected.IsEmpty() )
+    if (!BitmapSelected.IsEmpty())
     {
         Preview->SetBitmapSelected(BitmapSelected.GetPreview(wxDefaultSize));
     }
 
-    if ( !BitmapFocus.IsEmpty() )
+    if (!BitmapFocus.IsEmpty())
     {
         Preview->SetBitmapFocus(BitmapFocus.GetPreview(wxDefaultSize));
     }
 
-    if ( IsDefault )
+    if (IsDefault)
     {
         Preview->SetDefault();
     }
-    return SetupWindow(Preview,Flags);
+
+    return SetupWindow(Preview, Flags);
 }
 
 
 void wxsBitmapButton::OnEnumWidgetProperties(cb_unused long Flags)
 {
-    WXS_BITMAP(wxsBitmapButton,BitmapLabel,_("Bitmap"),_T("bitmap"),_T("wxART_OTHER"))
-    WXS_BITMAP(wxsBitmapButton,BitmapDisabled,_("Disabled bmp."),_T("disabled"),_T("wxART_OTHER"))
-    WXS_BITMAP(wxsBitmapButton,BitmapSelected,_("Pressed bmp."),_T("selected"),_T("wxART_OTHER"))
-    WXS_BITMAP(wxsBitmapButton,BitmapFocus,_("Focused bmp."),_T("focus"),_T("wxART_OTHER"))
-    WXS_BOOL  (wxsBitmapButton,IsDefault,_("Is default"),_T("default"),false)
+    WXS_BITMAP(wxsBitmapButton, BitmapLabel, _("Bitmap"), _T("bitmap"), _T("wxART_OTHER"))
+    WXS_BITMAP(wxsBitmapButton, BitmapDisabled, _("Disabled bmp."), _T("disabled"), _T("wxART_OTHER"))
+    WXS_BITMAP(wxsBitmapButton, BitmapSelected, _("Pressed bmp."), _T("selected"), _T("wxART_OTHER"))
+    WXS_BITMAP(wxsBitmapButton, BitmapFocus, _("Focused bmp."), _T("focus"), _T("wxART_OTHER"))
+    WXS_BOOL(wxsBitmapButton, IsDefault, _("Is default"), _T("default"), false)
 }

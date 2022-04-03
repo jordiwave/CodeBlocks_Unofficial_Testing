@@ -7,7 +7,7 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 
@@ -24,52 +24,52 @@ class HooverDrawlet;
 
 class NassiDiagramWindow: public wxScrolledWindow
 {
-    friend class TextCtrl;
-public:
-    NassiDiagramWindow(wxWindow *parent, NassiView *view);
-    ~NassiDiagramWindow();
-private:
-    NassiDiagramWindow(const NassiDiagramWindow &p);
-    NassiDiagramWindow &operator=(const NassiDiagramWindow &rhs);
-private:
-    void OnDraw(wxDC& /*dc*/) {} //virtual
-    void OnMouseWheel(wxMouseEvent& event);
-    void OnMouseLeftUp(wxMouseEvent &event);
-    void OnMouseLeftDown(wxMouseEvent &event);
-    void OnMouseRightDown(wxMouseEvent &event);
-    void OnMouseRightUp(wxMouseEvent& event);
-    void OnMouseMove(wxMouseEvent &event);
-    void OnEnter(wxMouseEvent &event);
-    void OnLeave(wxMouseEvent &event);
-    void OnKeyDown(wxKeyEvent &event);
-    void OnChar(wxKeyEvent &event);
+        friend class TextCtrl;
+    public:
+        NassiDiagramWindow(wxWindow * parent, NassiView * view);
+        ~NassiDiagramWindow();
+    private:
+        NassiDiagramWindow(const NassiDiagramWindow & p);
+        NassiDiagramWindow & operator=(const NassiDiagramWindow & rhs);
+    private:
+        void OnDraw(wxDC & /*dc*/) {} //virtual
+        void OnMouseWheel(wxMouseEvent & event);
+        void OnMouseLeftUp(wxMouseEvent & event);
+        void OnMouseLeftDown(wxMouseEvent & event);
+        void OnMouseRightDown(wxMouseEvent & event);
+        void OnMouseRightUp(wxMouseEvent & event);
+        void OnMouseMove(wxMouseEvent & event);
+        void OnEnter(wxMouseEvent & event);
+        void OnLeave(wxMouseEvent & event);
+        void OnKeyDown(wxKeyEvent & event);
+        void OnChar(wxKeyEvent & event);
 
-    void RemoveDrawlet(wxDC &dc);
+        void RemoveDrawlet(wxDC & dc);
 
-    void OnErase(wxEraseEvent &event);
-    void OnPaint(wxPaintEvent &event);
-    void PaintBackground(wxDC &dc);
-    void Draw(wxDC &dc);
+        void OnErase(wxEraseEvent & event);
+        void OnPaint(wxPaintEvent & event);
+        void PaintBackground(wxDC & dc);
+        void Draw(wxDC & dc);
 
-    bool HasFocus()
-    {
-        return this == this->FindFocus();
-    }
-    void OnKillFocus(wxFocusEvent &event);
-    void OnSetFocus(wxFocusEvent &event);
+        bool HasFocus()
+        {
+            return this == this->FindFocus();
+        }
+        void OnKillFocus(wxFocusEvent & event);
+        void OnSetFocus(wxFocusEvent & event);
 
-private:
-    NassiView *m_view;
-    HooverDrawlet *m_hd;
+    private:
+        NassiView * m_view;
+        HooverDrawlet * m_hd;
 
-public:
-    wxDragResult OnDrop(const wxPoint &pt, NassiBrick *brick, wxString strc, wxString strs, wxDragResult def);
-    wxDragResult OnDragOver(const wxPoint &pt, wxDragResult def, bool HasNoBricks);
-    void OnDragLeave();
-    void OnDragEnter();
+    public:
+        wxDragResult OnDrop(const wxPoint & pt, NassiBrick * brick, wxString strc, wxString strs, wxDragResult def);
+        wxDragResult OnDragOver(const wxPoint & pt, wxDragResult def, bool HasNoBricks);
+        void OnDragLeave();
+        void OnDragEnter();
 
-protected:
-    DECLARE_EVENT_TABLE()
+    protected:
+        DECLARE_EVENT_TABLE()
 };
 
 

@@ -15,22 +15,22 @@
  * License:   GPL
  **************************************************************/
 #if defined(CB_PRECOMP)
-#include "sdk.h"
+    #include "sdk.h"
 #endif
 #ifndef CB_PRECOMP
-#include <wx/textctrl.h>
-#include <wx/button.h>
-#include <wx/checkbox.h>
-#include <wx/dirdlg.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
+    #include <wx/textctrl.h>
+    #include <wx/button.h>
+    #include <wx/checkbox.h>
+    #include <wx/dirdlg.h>
+    #include <wx/sizer.h>
+    #include <wx/stattext.h>
 #endif
 
 #include "DirectoryParamsPanel.h"
 #include "ThreadSearchControlIds.h"
 
 
-DirectoryParamsPanel::DirectoryParamsPanel(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long WXUNUSED(style)):
+DirectoryParamsPanel::DirectoryParamsPanel(wxWindow * parent, int id, const wxPoint & pos, const wxSize & size, long WXUNUSED(style)):
     wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL)
 {
     // begin wxGlade: DirectoryParamsPanel::DirectoryParamsPanel
@@ -39,7 +39,6 @@ DirectoryParamsPanel::DirectoryParamsPanel(wxWindow* parent, int id, const wxPoi
     m_pChkSearchDirRecursively = new wxCheckBox(this, idChkSearchDirRecurse, _("Recurse"));
     m_pChkSearchDirHiddenFiles = new wxCheckBox(this, idChkSearchDirHidden, _("Hidden"));
     m_pTxtMask = new wxTextCtrl(this, idTxtSearchMask, wxT("*.*"));
-
     set_properties();
     do_layout();
     // end wxGlade
@@ -57,17 +56,18 @@ BEGIN_EVENT_TABLE(DirectoryParamsPanel, wxPanel)
 END_EVENT_TABLE();
 
 
-void DirectoryParamsPanel::OnTxtTextEvent(wxCommandEvent &event)
+void DirectoryParamsPanel::OnTxtTextEvent(wxCommandEvent & event)
 {
     event.Skip();
 }
 
 
-void DirectoryParamsPanel::OnBtnDirSelectClick(wxCommandEvent &event)
+void DirectoryParamsPanel::OnBtnDirSelectClick(wxCommandEvent & event)
 {
     wxDirDialog DlgDir(this, _("Select directory"), wxGetCwd());
     PlaceWindow(&DlgDir);
-    if ( DlgDir.ShowModal() == wxID_OK )
+
+    if (DlgDir.ShowModal() == wxID_OK)
     {
         m_pTxtSearchDirPath->SetValue(DlgDir.GetPath());
     }
@@ -76,7 +76,7 @@ void DirectoryParamsPanel::OnBtnDirSelectClick(wxCommandEvent &event)
 }
 
 
-void DirectoryParamsPanel::OnChkClickEvent(wxCommandEvent &event)
+void DirectoryParamsPanel::OnChkClickEvent(wxCommandEvent & event)
 {
     event.Skip();
 }
@@ -102,14 +102,14 @@ void DirectoryParamsPanel::set_properties()
 void DirectoryParamsPanel::do_layout()
 {
     // begin wxGlade: DirectoryParamsPanel::do_layout
-    wxBoxSizer* SizerTop = new wxBoxSizer(wxHORIZONTAL);
-    SizerTop->Add(m_pTxtSearchDirPath, 2, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 4);
-    SizerTop->Add(m_pBtnSelectDir, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 4);
-    SizerTop->Add(m_pChkSearchDirRecursively, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 4);
-    SizerTop->Add(m_pChkSearchDirHiddenFiles, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 4);
-    SizerTop->Add(m_pTxtMask, 1, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 4);
-    wxStaticText* m_pStatTxtMask = new wxStaticText(this, -1, _("mask"));
-    SizerTop->Add(m_pStatTxtMask, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 4);
+    wxBoxSizer * SizerTop = new wxBoxSizer(wxHORIZONTAL);
+    SizerTop->Add(m_pTxtSearchDirPath, 2, wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, 4);
+    SizerTop->Add(m_pBtnSelectDir, 0, wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, 4);
+    SizerTop->Add(m_pChkSearchDirRecursively, 0, wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, 4);
+    SizerTop->Add(m_pChkSearchDirHiddenFiles, 0, wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, 4);
+    SizerTop->Add(m_pTxtMask, 1, wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, 4);
+    wxStaticText * m_pStatTxtMask = new wxStaticText(this, -1, _("mask"));
+    SizerTop->Add(m_pStatTxtMask, 0, wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, 4);
     SetAutoLayout(true);
     SetSizer(SizerTop);
     SizerTop->Fit(this);
@@ -136,7 +136,7 @@ wxString DirectoryParamsPanel::GetSearchMask()           const
 }
 
 // Setters
-void     DirectoryParamsPanel::SetSearchDirPath(const wxString& sDirPath)
+void     DirectoryParamsPanel::SetSearchDirPath(const wxString & sDirPath)
 {
     m_pTxtSearchDirPath->SetValue(sDirPath);
 }
@@ -148,7 +148,7 @@ void     DirectoryParamsPanel::SetSearchDirHidden(bool bSearchHidden)
 {
     m_pChkSearchDirHiddenFiles->SetValue(bSearchHidden);
 }
-void     DirectoryParamsPanel::SetSearchMask(const wxString& sMask)
+void     DirectoryParamsPanel::SetSearchMask(const wxString & sMask)
 {
     m_pTxtMask->SetValue(sMask);
 }

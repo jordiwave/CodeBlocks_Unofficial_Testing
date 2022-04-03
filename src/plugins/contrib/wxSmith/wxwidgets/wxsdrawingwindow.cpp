@@ -57,13 +57,13 @@ inline RepaintDelayType GetDelayType()
 }
 }
 
-BEGIN_EVENT_TABLE(wxsDrawingWindow,wxScrolledWindow)
+BEGIN_EVENT_TABLE(wxsDrawingWindow, wxScrolledWindow)
     EVT_PAINT(wxsDrawingWindow::OnPaint)
     EVT_ERASE_BACKGROUND(wxsDrawingWindow::OnEraseBack)
 END_EVENT_TABLE()
 
-wxsDrawingWindow::wxsDrawingWindow(wxWindow* Parent,wxWindowID id,const wxPoint& pos,const wxSize& size,long style,const wxString& name):
-    wxScrolledWindow(Parent,id,pos,size,style,name),
+wxsDrawingWindow::wxsDrawingWindow(wxWindow * Parent, wxWindowID id, const wxPoint & pos, const wxSize & size, long style, const wxString & name):
+    wxScrolledWindow(Parent, id, pos, size, style, name),
     m_Bitmap(0),
     m_IsBlockFetch(false),
     m_DuringFetch(false),
@@ -74,12 +74,12 @@ wxsDrawingWindow::wxsDrawingWindow(wxWindow* Parent,wxWindowID id,const wxPoint&
     m_LastVirtY(0),
     m_WasContentChanged(false),
     m_IsDestroyed(false),
-    m_RefreshTimer(this,RefreshTimerId)
+    m_RefreshTimer(this, RefreshTimerId)
 {
     // Strange - it seems that by declaring this event in event table, it's not processed
-    Connect(-1,wxEVT_FETCH_SEQUENCE,(wxObjectEventFunction)&wxsDrawingWindow::OnFetchSequence);
-    Connect(RefreshTimerId,wxEVT_TIMER,(wxObjectEventFunction)&wxsDrawingWindow::OnRefreshTimer);
-    SetScrollbars(5,5,1,1,0,0,true);
+    Connect(-1, wxEVT_FETCH_SEQUENCE, (wxObjectEventFunction)&wxsDrawingWindow::OnFetchSequence);
+    Connect(RefreshTimerId, wxEVT_TIMER, (wxObjectEventFunction)&wxsDrawingWindow::OnRefreshTimer);
+    SetScrollbars(5, 5, 1, 1, 0, 0, true);
 }
 
 wxsDrawingWindow::~wxsDrawingWindow()
@@ -96,33 +96,32 @@ void wxsDrawingWindow::BeforeContentChanged()
 
 void wxsDrawingWindow::AfterContentChanged()
 {
-    if ( !--m_DuringChangeCnt )
+    if (!--m_DuringChangeCnt)
     {
         m_WasContentChanged = true;
         wxSize Size = GetVirtualSize();
-
         // Generating new bitmap
         delete m_Bitmap;
-        m_Bitmap = new wxBitmap(Size.GetWidth(),Size.GetHeight());
-
+        m_Bitmap = new wxBitmap(Size.GetWidth(), Size.GetHeight());
         // Resizing panel to cover whole window
         int X, Y;
-        CalcScrolledPosition(0,0,&X,&Y);
+        CalcScrolledPosition(0, 0, &X, &Y);
         StartFetchingSequence();
     }
 }
 
-void wxsDrawingWindow::OnPaint(wxPaintEvent& event)
+void wxsDrawingWindow::OnPaint(wxPaintEvent & event)
 {
-    if ( !m_DuringFetch )
+    if (!m_DuringFetch)
     {
         wxPaintDC PaintDC(this);
         PrepareDC(PaintDC);
-        if ( m_IsBlockFetch || NoNeedToRefetch() )
+
+        if (m_IsBlockFetch || NoNeedToRefetch())
         {
-            if ( m_Bitmap )
+            if (m_Bitmap)
             {
-                wxBitmap BmpCopy = m_Bitmap->GetSubBitmap(wxRect(0,0,m_Bitmap->GetWidth(),m_Bitmap->GetHeight()));
+                wxBitmap BmpCopy = m_Bitmap->GetSubBitmap(wxRect(0, 0, m_Bitmap->GetWidth(), m_Bitmap->GetHeight()));
                 wxBufferedDC DC(&PaintDC, BmpCopy, wxBUFFER_VIRTUAL_AREA);
                 PaintExtra(&DC);
             }
@@ -138,31 +137,37 @@ void wxsDrawingWindow::OnPaint(wxPaintEvent& event)
     }
 }
 
-void wxsDrawingWindow::OnEraseBack(wxEraseEvent& event)
+void wxsDrawingWindow::OnEraseBack(wxEraseEvent & event)
 {
     // Let the background be cleared when screenshoot is in progress
-    if ( m_DuringFetch ) event.Skip();
+    if (m_DuringFetch)
+    {
+        event.Skip();
+    }
 }
 
 void wxsDrawingWindow::StartFetchingSequence()
 {
-    if ( m_DuringFetch )
+    if (m_DuringFetch)
     {
         return;
     }
-    m_DuringFetch = true;
 
+    m_DuringFetch = true;
     // Fetching sequence will end after quitting
     // this event handler. This will be done
     // by adding some pending event
-    wxCommandEvent event(wxEVT_FETCH_SEQUENCE,GetId());
+    wxCommandEvent event(wxEVT_FETCH_SEQUENCE, GetId());
     event.SetEventObject(this);
     GetEventHandler()->AddPendingEvent(event);
 }
 
-void wxsDrawingWindow::OnFetchSequence(cb_unused wxCommandEvent& event)
+void wxsDrawingWindow::OnFetchSequence(cb_unused wxCommandEvent & event)
 {
-    if ( m_IsDestroyed ) return;
+    if (m_IsDestroyed)
+    {
+        return;
+    }
 
     ShowChildren();
     Refresh();
@@ -172,54 +177,57 @@ void wxsDrawingWindow::OnFetchSequence(cb_unused wxCommandEvent& event)
     // But since wxWidges does some updates on events, we
     // have to introduce some delay and allow wxWidgets to
     // do it's stuff before we can read bitmap directly from screen
-    switch ( GetDelayType() )
+    switch (GetDelayType())
     {
-    case None:
-        // We don't wait at all assuming that everything is
-        // shown now
-        FetchSequencePhase2();
-        break;
+        case None:
+            // We don't wait at all assuming that everything is
+            // shown now
+            FetchSequencePhase2();
+            break;
 
-    case Yield:
-        // We call Yield() to let wxWidgets process all messages
-        // This can be dangerous in some environments when calling
-        // Yield() may internally destroy this class (happens on Linux)
-        Manager::Yield();
-        FetchSequencePhase2();
-        break;
+        case Yield:
+            // We call Yield() to let wxWidgets process all messages
+            // This can be dangerous in some environments when calling
+            // Yield() may internally destroy this class (happens on Linux)
+            Manager::Yield();
+            FetchSequencePhase2();
+            break;
 
-    case TimerNormal:
-        // We start timer that will send event after some time.
-        // We assume here that before timer event is processed,
-        // all events used to udpate screen will be processed.
-        m_RefreshTimer.Start(50,true);
-        break;
+        case TimerNormal:
+            // We start timer that will send event after some time.
+            // We assume here that before timer event is processed,
+            // all events used to udpate screen will be processed.
+            m_RefreshTimer.Start(50, true);
+            break;
 
-    case TimerFast:
-        // This version is simillar to TimerNormal, but with the difference is
-        // that here's almost no gap between refresh request and refresh
-        // execution. This may not be preffered on some platforms where
-        // timer events have high priority and are called before processing
-        // any pending events on queue. In such situation, it may lead to
-        // some unprocessed events which should update screen's content
-        // while fetching bitmap.
-        m_RefreshTimer.Start(1,true);
-        break;
+        case TimerFast:
+            // This version is simillar to TimerNormal, but with the difference is
+            // that here's almost no gap between refresh request and refresh
+            // execution. This may not be preffered on some platforms where
+            // timer events have high priority and are called before processing
+            // any pending events on queue. In such situation, it may lead to
+            // some unprocessed events which should update screen's content
+            // while fetching bitmap.
+            m_RefreshTimer.Start(1, true);
+            break;
 
-    default:
-        break;
+        default:
+            break;
     }
-
 }
 
-void wxsDrawingWindow::OnRefreshTimer(cb_unused wxTimerEvent& event)
+void wxsDrawingWindow::OnRefreshTimer(cb_unused wxTimerEvent & event)
 {
     FetchSequencePhase2();
 }
 
 void wxsDrawingWindow::FetchSequencePhase2()
 {
-    if ( m_IsDestroyed ) return;
+    if (m_IsDestroyed)
+    {
+        return;
+    }
+
     FetchScreen();
     ScreenShootTaken();
     HideChildren();
@@ -228,15 +236,18 @@ void wxsDrawingWindow::FetchSequencePhase2()
 
 void wxsDrawingWindow::FetchScreen()
 {
-    if ( !m_Bitmap ) return;
+    if (!m_Bitmap)
+    {
+        return;
+    }
 
     wxClientDC DC(this);
     wxMemoryDC DestDC;
     int X = 0, Y = 0;
     int DX = 0, DY = 0;
-    CalcUnscrolledPosition(0,0,&DX,&DY);
+    CalcUnscrolledPosition(0, 0, &DX, &DY);
     DestDC.SelectObject(*m_Bitmap);
-    DestDC.Blit(DX,DY,GetSize().GetWidth(),GetSize().GetHeight(),&DC,X,Y);
+    DestDC.Blit(DX, DY, GetSize().GetWidth(), GetSize().GetHeight(), &DC, X, Y);
     DestDC.SelectObject(wxNullBitmap);
 }
 
@@ -244,15 +255,16 @@ void wxsDrawingWindow::FastRepaint()
 {
     wxClientDC ClientDC(this);
     PrepareDC(ClientDC);
-    wxBitmap BmpCopy = m_Bitmap->GetSubBitmap(wxRect(0,0,m_Bitmap->GetWidth(),m_Bitmap->GetHeight()));
-    wxBufferedDC DC(&ClientDC,BmpCopy, wxBUFFER_VIRTUAL_AREA);
+    wxBitmap BmpCopy = m_Bitmap->GetSubBitmap(wxRect(0, 0, m_Bitmap->GetWidth(), m_Bitmap->GetHeight()));
+    wxBufferedDC DC(&ClientDC, BmpCopy, wxBUFFER_VIRTUAL_AREA);
     PaintExtra(&DC);
 }
 
 void wxsDrawingWindow::ShowChildren()
 {
-    wxWindowList& Children = GetChildren();
-    for ( size_t i=0; i<Children.GetCount(); i++ )
+    wxWindowList & Children = GetChildren();
+
+    for (size_t i = 0; i < Children.GetCount(); i++)
     {
         Children[i]->Show();
     }
@@ -260,8 +272,9 @@ void wxsDrawingWindow::ShowChildren()
 
 void wxsDrawingWindow::HideChildren()
 {
-    wxWindowList& Children = GetChildren();
-    for ( size_t i=0; i<Children.GetCount(); i++ )
+    wxWindowList & Children = GetChildren();
+
+    for (size_t i = 0; i < Children.GetCount(); i++)
     {
         Children[i]->Hide();
     }
@@ -272,7 +285,7 @@ bool wxsDrawingWindow::NoNeedToRefetch()
     // Testing current application is not active, If it's not,
     // We block any fetches because fetching may read part
     // of other application
-    if ( wxTheApp && !wxTheApp->IsActive() )
+    if (wxTheApp && !wxTheApp->IsActive())
     {
         m_WasContentChanged = true;
         return true;
@@ -283,9 +296,9 @@ bool wxsDrawingWindow::NoNeedToRefetch()
     // modal dialogs may cause some artefacts on editor so we will
     // block any refetching while they're shown and will force
     // updating content when dialog will be hidden
-    for ( wxWindow* Window = this; Window; Window = Window->GetParent() )
+    for (wxWindow * Window = this; Window; Window = Window->GetParent())
     {
-        if ( !Window->IsEnabled() || !Window->IsShown() )
+        if (!Window->IsEnabled() || !Window->IsShown())
         {
             m_WasContentChanged = true;
             return true;
@@ -295,17 +308,16 @@ bool wxsDrawingWindow::NoNeedToRefetch()
     // If there's no risk that some dialog is shown in modal,
     // we check if WasContentChanged flag is set or position / size
     // of area is changed.
-    int NewSizeX=0, NewSizeY=0;
-    int NewVirtX=0, NewVirtY=0;
+    int NewSizeX = 0, NewSizeY = 0;
+    int NewVirtX = 0, NewVirtY = 0;
+    GetClientSize(&NewSizeX, &NewSizeY);
+    GetViewStart(&NewVirtX, &NewVirtY);
 
-    GetClientSize(&NewSizeX,&NewSizeY);
-    GetViewStart(&NewVirtX,&NewVirtY);
-
-    if ( m_WasContentChanged ||
+    if (m_WasContentChanged ||
             NewSizeX != m_LastSizeX ||
             NewSizeY != m_LastSizeY ||
             NewVirtX != m_LastVirtX ||
-            NewVirtY != m_LastVirtY )
+            NewVirtY != m_LastVirtY)
     {
         m_WasContentChanged = false;
         m_LastSizeX = NewSizeX;

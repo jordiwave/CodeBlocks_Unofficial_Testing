@@ -45,13 +45,14 @@
  *
  */
 
-class ODFParser : public XMLParser {
- public:
-  explicit ODFParser(const char* wc);
-  ODFParser(const w_char* wordchars, int len);
-  virtual bool next_token(std::string&);
-  virtual std::string get_word(const std::string &tok);
-  virtual ~ODFParser();
+class ODFParser : public XMLParser
+{
+    public:
+        explicit ODFParser(const char * wc);
+        ODFParser(const w_char * wordchars, int len);
+        virtual bool next_token(std::string &);
+        virtual std::string get_word(const std::string & tok);
+        virtual ~ODFParser();
 };
 
 #endif

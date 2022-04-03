@@ -43,23 +43,22 @@ const long wxsSimpleFontEditorDlg::ID_STATICTEXT2 = wxNewId();
 const long wxsSimpleFontEditorDlg::ID_STATICTEXT3 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(wxsSimpleFontEditorDlg,wxScrollingDialog)
+BEGIN_EVENT_TABLE(wxsSimpleFontEditorDlg, wxScrollingDialog)
     //(*EventTable(wxsSimpleFontEditorDlg)
     //*)
-    EVT_BUTTON(wxID_OK,wxsSimpleFontEditorDlg::OnOK)
+    EVT_BUTTON(wxID_OK, wxsSimpleFontEditorDlg::OnOK)
 END_EVENT_TABLE()
 
-wxsSimpleFontEditorDlg::wxsSimpleFontEditorDlg(wxWindow* parent,wxsFontData& Data,wxWindowID id):
+wxsSimpleFontEditorDlg::wxsSimpleFontEditorDlg(wxWindow * parent, wxsFontData & Data, wxWindowID id):
     m_Data(Data)
 {
     //(*Initialize(wxsSimpleFontEditorDlg)
-    wxBoxSizer* BoxSizer4;
-    wxStaticBoxSizer* StaticBoxSizer2;
-    wxBoxSizer* BoxSizer1;
-    wxFlexGridSizer* FlexGridSizer1;
-    wxBoxSizer* BoxSizer3;
-    wxStdDialogButtonSizer* StdDialogButtonSizer1;
-
+    wxBoxSizer * BoxSizer4;
+    wxStaticBoxSizer * StaticBoxSizer2;
+    wxBoxSizer * BoxSizer1;
+    wxFlexGridSizer * FlexGridSizer1;
+    wxBoxSizer * BoxSizer3;
+    wxStdDialogButtonSizer * StdDialogButtonSizer1;
     Create(parent, id, _("Font settings"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
     FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
     BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
@@ -68,49 +67,47 @@ wxsSimpleFontEditorDlg::wxsSimpleFontEditorDlg(wxWindow* parent,wxsFontData& Dat
     FlexGridSizer2->AddGrowableCol(0);
     FlexGridSizer2->AddGrowableRow(0);
     FontDescription = new wxStaticText(this, ID_STATICTEXT1, _("-- None --"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-    FlexGridSizer2->Add(FontDescription, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer2->Add(FontDescription, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer1->Add(FlexGridSizer2, 1, wxEXPAND, 5);
     StaticLine2 = new wxStaticLine(this, ID_STATICLINE2, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL, _T("ID_STATICLINE2"));
-    StaticBoxSizer1->Add(StaticLine2, 0, wxLEFT|wxEXPAND, 5);
+    StaticBoxSizer1->Add(StaticLine2, 0, wxLEFT | wxEXPAND, 5);
     BoxSizer2 = new wxBoxSizer(wxVERTICAL);
     Button1 = new wxButton(this, ID_BUTTON1, _("Change"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
     BoxSizer2->Add(Button1, 0, wxALIGN_CENTER_HORIZONTAL, 5);
     Button3 = new wxButton(this, ID_BUTTON3, _("Clear"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
-    BoxSizer2->Add(Button3, 1, wxTOP|wxALIGN_CENTER_HORIZONTAL, 5);
-    StaticLine1 = new wxStaticLine(this, ID_STATICLINE1, wxDefaultPosition, wxSize(10,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE1"));
-    BoxSizer2->Add(StaticLine1, 0, wxTOP|wxEXPAND, 5);
+    BoxSizer2->Add(Button3, 1, wxTOP | wxALIGN_CENTER_HORIZONTAL, 5);
+    StaticLine1 = new wxStaticLine(this, ID_STATICLINE1, wxDefaultPosition, wxSize(10, -1), wxLI_HORIZONTAL, _T("ID_STATICLINE1"));
+    BoxSizer2->Add(StaticLine1, 0, wxTOP | wxEXPAND, 5);
     Button2 = new wxButton(this, ID_BUTTON2, _("Advanced"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
-    BoxSizer2->Add(Button2, 0, wxTOP|wxALIGN_CENTER_HORIZONTAL, 5);
-    StaticBoxSizer1->Add(BoxSizer2, 0, wxLEFT|wxEXPAND, 5);
+    BoxSizer2->Add(Button2, 0, wxTOP | wxALIGN_CENTER_HORIZONTAL, 5);
+    StaticBoxSizer1->Add(BoxSizer2, 0, wxLEFT | wxEXPAND, 5);
     BoxSizer4->Add(StaticBoxSizer1, 1, wxEXPAND, 5);
     FlexGridSizer1->Add(BoxSizer4, 1, wxEXPAND, 4);
     StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Test area"));
-    TestArea = new wxTextCtrl(this, ID_TEXTCTRL1, _("This is sample text"), wxDefaultPosition, wxSize(275,71), wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    TestArea = new wxTextCtrl(this, ID_TEXTCTRL1, _("This is sample text"), wxDefaultPosition, wxSize(275, 71), wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL1"));
     StaticBoxSizer2->Add(TestArea, 1, wxEXPAND, 4);
     FlexGridSizer1->Add(StaticBoxSizer2, 1, wxEXPAND, 5);
     BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
     StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("Note:"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE, _T("ID_STATICTEXT2"));
     BoxSizer3->Add(StaticText2, 0, wxEXPAND, 5);
     StaticText3 = new wxStaticText(this, ID_STATICTEXT3, _("In order to provide best cross-platform compatibility\nyou should use either system-based font or multiple \nface names. You can change it in advanced options."), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
-    BoxSizer3->Add(StaticText3, 1, wxLEFT|wxEXPAND, 5);
-    FlexGridSizer1->Add(BoxSizer3, 1, wxTOP|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer3->Add(StaticText3, 1, wxLEFT | wxEXPAND, 5);
+    FlexGridSizer1->Add(BoxSizer3, 1, wxTOP | wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
     StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
     StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
     StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
     StdDialogButtonSizer1->Realize();
     BoxSizer1->Add(StdDialogButtonSizer1, 0, wxEXPAND, 5);
-    FlexGridSizer1->Add(BoxSizer1, 0, wxTOP|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer1->Add(BoxSizer1, 0, wxTOP | wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(FlexGridSizer1);
     FlexGridSizer1->Fit(this);
     FlexGridSizer1->SetSizeHints(this);
     Center();
-
-    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsSimpleFontEditorDlg::OnButton1Click));
-    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsSimpleFontEditorDlg::OnButton3Click));
-    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsSimpleFontEditorDlg::OnButton2Click));
+    Connect(ID_BUTTON1, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(wxsSimpleFontEditorDlg::OnButton1Click));
+    Connect(ID_BUTTON3, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(wxsSimpleFontEditorDlg::OnButton3Click));
+    Connect(ID_BUTTON2, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(wxsSimpleFontEditorDlg::OnButton2Click));
     //*)
-
     m_WorkingCopy = m_Data;
     UpdateFontDescription();
 }
@@ -124,66 +121,83 @@ wxsSimpleFontEditorDlg::~wxsSimpleFontEditorDlg()
 void wxsSimpleFontEditorDlg::UpdateFontDescription()
 {
     wxString Description = _("-- None --");
-    if ( !m_WorkingCopy.IsDefault )
+
+    if (!m_WorkingCopy.IsDefault)
     {
         Description.Clear();
-        if ( m_WorkingCopy.HasSysFont )
-        {
-            Description << wxString::Format(_("System-based (%s)\n"),m_WorkingCopy.SysFont.c_str());
-        }
-        else if ( m_WorkingCopy.Faces.Count() > 0 )
-        {
-            Description << wxString::Format(_("Face: %s%s\n"),m_WorkingCopy.Faces[0].c_str(),(m_WorkingCopy.Faces.Count()>1)?_T(", ..."):_T(""));
-        }
 
-        if ( m_WorkingCopy.HasSize )
+        if (m_WorkingCopy.HasSysFont)
         {
-            Description << wxString::Format(_("Size: %ld\n"),m_WorkingCopy.Size);
+            Description << wxString::Format(_("System-based (%s)\n"), m_WorkingCopy.SysFont.c_str());
         }
-        else if ( m_WorkingCopy.HasRelativeSize && m_WorkingCopy.HasSysFont )
-        {
-            Description << wxString::Format(_("Relative size: %.2f"),m_WorkingCopy.RelativeSize);
-        }
+        else
+            if (m_WorkingCopy.Faces.Count() > 0)
+            {
+                Description << wxString::Format(_("Face: %s%s\n"), m_WorkingCopy.Faces[0].c_str(), (m_WorkingCopy.Faces.Count() > 1) ? _T(", ...") : _T(""));
+            }
 
-        if ( m_WorkingCopy.HasWeight )
+        if (m_WorkingCopy.HasSize)
+        {
+            Description << wxString::Format(_("Size: %ld\n"), m_WorkingCopy.Size);
+        }
+        else
+            if (m_WorkingCopy.HasRelativeSize && m_WorkingCopy.HasSysFont)
+            {
+                Description << wxString::Format(_("Relative size: %.2f"), m_WorkingCopy.RelativeSize);
+            }
+
+        if (m_WorkingCopy.HasWeight)
         {
             Description << _("Weight: ");
-            switch ( m_WorkingCopy.Weight )
+
+            switch (m_WorkingCopy.Weight)
             {
-            case wxFONTWEIGHT_BOLD:
-                Description << _("Bold\n");
-                break;
-            case wxFONTWEIGHT_LIGHT:
-                Description << _("Light\n");
-                break;
-            case wxFONTWEIGHT_NORMAL: // fall-through
-            default:
-                Description << _("Normal\n");
+                case wxFONTWEIGHT_BOLD:
+                    Description << _("Bold\n");
+                    break;
+
+                case wxFONTWEIGHT_LIGHT:
+                    Description << _("Light\n");
+                    break;
+
+                case wxFONTWEIGHT_NORMAL: // fall-through
+                default:
+                    Description << _("Normal\n");
             }
         }
 
-        if ( m_WorkingCopy.HasStyle )
+        if (m_WorkingCopy.HasStyle)
         {
             Description << _("Style: ");
-            switch ( m_WorkingCopy.Style )
+
+            switch (m_WorkingCopy.Style)
             {
-            case wxFONTSTYLE_ITALIC:
-                Description << _("Italic\n");
-                break;
-            case wxFONTSTYLE_SLANT:
-                Description << _("Slant\n");
-                break;
-            case wxFONTSTYLE_NORMAL: // fall-through
-            default:
-                Description << _("Normal\n");
+                case wxFONTSTYLE_ITALIC:
+                    Description << _("Italic\n");
+                    break;
+
+                case wxFONTSTYLE_SLANT:
+                    Description << _("Slant\n");
+                    break;
+
+                case wxFONTSTYLE_NORMAL: // fall-through
+                default:
+                    Description << _("Normal\n");
             }
         }
 
-        if ( m_WorkingCopy.HasUnderlined )
+        if (m_WorkingCopy.HasUnderlined)
         {
             Description << _("Underlined: ");
-            if ( m_WorkingCopy.Underlined ) Description << _("Yes\n");
-            else                            Description << _("No\n");
+
+            if (m_WorkingCopy.Underlined)
+            {
+                Description << _("Yes\n");
+            }
+            else
+            {
+                Description << _("No\n");
+            }
         }
     }
 
@@ -193,17 +207,21 @@ void wxsSimpleFontEditorDlg::UpdateFontDescription()
     TestArea->SetFont(m_WorkingCopy.BuildFont());
 }
 
-void wxsSimpleFontEditorDlg::OnOK(cb_unused wxCommandEvent& event)
+void wxsSimpleFontEditorDlg::OnOK(cb_unused wxCommandEvent & event)
 {
     m_Data = m_WorkingCopy;
     EndModal(wxID_OK);
 }
 
 
-void wxsSimpleFontEditorDlg::OnButton1Click(cb_unused wxCommandEvent& event)
+void wxsSimpleFontEditorDlg::OnButton1Click(cb_unused wxCommandEvent & event)
 {
-    wxFont Font = ::wxGetFontFromUser(0,m_WorkingCopy.BuildFont());
-    if ( !Font.Ok() ) return;
+    wxFont Font = ::wxGetFontFromUser(0, m_WorkingCopy.BuildFont());
+
+    if (!Font.Ok())
+    {
+        return;
+    }
 
     m_WorkingCopy.Size = Font.GetPointSize();
     m_WorkingCopy.Style = Font.GetStyle();
@@ -221,19 +239,18 @@ void wxsSimpleFontEditorDlg::OnButton1Click(cb_unused wxCommandEvent& event)
     m_WorkingCopy.HasEncoding = false;
     m_WorkingCopy.HasSysFont = false;
     m_WorkingCopy.HasRelativeSize = false;
-
     UpdateFontDescription();
 }
 
-void wxsSimpleFontEditorDlg::OnButton2Click(cb_unused wxCommandEvent& event)
+void wxsSimpleFontEditorDlg::OnButton2Click(cb_unused wxCommandEvent & event)
 {
-    wxsFontEditorDlg Dlg(this,m_WorkingCopy);
+    wxsFontEditorDlg Dlg(this, m_WorkingCopy);
     PlaceWindow(&Dlg);
     Dlg.ShowModal();
     UpdateFontDescription();
 }
 
-void wxsSimpleFontEditorDlg::OnButton3Click(cb_unused wxCommandEvent& event)
+void wxsSimpleFontEditorDlg::OnButton3Click(cb_unused wxCommandEvent & event)
 {
     m_WorkingCopy.IsDefault = true;
     UpdateFontDescription();

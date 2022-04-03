@@ -50,7 +50,7 @@ wxsRegisterItem<wxsImageButton> Reg(
     false);                         // We do not allow this item inside XRC files
 
 
-WXS_ST_BEGIN(wxsImageButtonStyles,_T("wxBU_AUTODRAW"))
+WXS_ST_BEGIN(wxsImageButtonStyles, _T("wxBU_AUTODRAW"))
 WXS_ST_CATEGORY("wxImageButton")
 WXS_ST(wxBU_LEFT)
 WXS_ST(wxBU_TOP)
@@ -64,28 +64,26 @@ WXS_ST_END()
 
 
 WXS_EV_BEGIN(wxsImageButtonEvents)
-WXS_EVI(EVT_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEvent,Click)
+WXS_EVI(EVT_BUTTON, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEvent, Click)
 WXS_EV_END()
 }
 
 //------------------------------------------------------------------------------
 
-wxsImageButton::wxsImageButton(wxsItemResData* Data):
+wxsImageButton::wxsImageButton(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
         wxsImageButtonEvents,
         wxsImageButtonStyles)
 {
-// default values
-
+    // default values
     mIsDefault      = false;
     mImageList      = _("<none>");
     mLabelIndex     = _("<none>");
     mDisabledIndex  = _("<none>");
     mSelectedIndex  = _("<none>");
     mFocusIndex     = _("<none>");
-
     mCount = 0;
 }
 
@@ -93,27 +91,29 @@ wxsImageButton::wxsImageButton(wxsItemResData* Data):
 
 void wxsImageButton::OnBuildCreatingCode()
 {
-// we only handle C++ constructs here
+    // we only handle C++ constructs here
+    if (GetLanguage() != wxsCPP)
+    {
+        wxsCodeMarks::Unknown(_T("wxsImageButton"), GetLanguage());
+    }
 
-    if (GetLanguage() != wxsCPP) wxsCodeMarks::Unknown(_T("wxsImageButton"),GetLanguage());
-
-// header files
-
-    AddHeader(_T("<wx/bmpbuttn.h>"),GetInfo().ClassName,hfInPCH);
-
-// the basic constructor
-
+    // header files
+    AddHeader(_T("<wx/bmpbuttn.h>"), GetInfo().ClassName, hfInPCH);
+    // the basic constructor
     const wxString vv = GetVarName();
     Codef(_T("%s = new wxBitmapButton(%W, %I, wxNullBitmap, %P, %S, %T, %V, %N);\n"), vv.wx_str());
 
-// default button?
+    // default button?
 
-    if (mIsDefault) Codef(_T("%ASetDefault();\n"));
+    if (mIsDefault)
+    {
+        Codef(_T("%ASetDefault();\n"));
+    }
 
-// add all the bitmaps at the bottom of the code... after the wxsImage's and wxsImageList's
-// have been coded
+    // add all the bitmaps at the bottom of the code... after the wxsImage's and wxsImageList's
+    // have been coded
+    wxsImageList * ilist = (wxsImageList *) wxsImageListEditorDlg::FindTool(this, mImageList);
 
-    wxsImageList* ilist = (wxsImageList *) wxsImageListEditorDlg::FindTool(this, mImageList);
     if (ilist != NULL)
     {
         const wxString ss = ilist->GetVarName();
@@ -121,8 +121,8 @@ void wxsImageButton::OnBuildCreatingCode()
         wxString tt;
         tt.Printf(_("// Set the bitmaps for %s.\n"), vv.wx_str());
         AddEventCode(tt);
-
         long ll = 0;
+
         if (mLabelIndex.ToLong(&ll))
         {
             tt.Printf(_T("%s->SetBitmapLabel(%s->GetBitmap(%ld));\n"), vv.wx_str(), ss.wx_str(), ll);
@@ -148,41 +148,53 @@ void wxsImageButton::OnBuildCreatingCode()
         };
     };
 
-
-// finish setup
-
+    // finish setup
     BuildSetupWindowCode();
-
 }
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsImageButton::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsImageButton::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-// the basic button
+    // the basic button
+    wxBitmapButton * button = new wxBitmapButton(Parent, GetId(), wxNullBitmap, Pos(Parent), Size(Parent), Style());
+    // find the image list
+    wxsImageList * ilist = (wxsImageList *) wxsImageListEditorDlg::FindTool(this, mImageList);
 
-    wxBitmapButton* button = new wxBitmapButton(Parent, GetId(), wxNullBitmap,Pos(Parent),Size(Parent),Style());
-
-// find the image list
-
-    wxsImageList* ilist = (wxsImageList *) wxsImageListEditorDlg::FindTool(this, mImageList);
-
-// make the preview bitmaps
+    // make the preview bitmaps
 
     if (ilist != NULL)
     {
         long ll = 0;
-        if (mLabelIndex.ToLong(&ll))    button->SetBitmapLabel(ilist->GetPreview(ll));
-        if (mDisabledIndex.ToLong(&ll)) button->SetBitmapDisabled(ilist->GetPreview(ll));
-        if (mSelectedIndex.ToLong(&ll)) button->SetBitmapSelected(ilist->GetPreview(ll));
-        if (mFocusIndex.ToLong(&ll))    button->SetBitmapFocus(ilist->GetPreview(ll));
+
+        if (mLabelIndex.ToLong(&ll))
+        {
+            button->SetBitmapLabel(ilist->GetPreview(ll));
+        }
+
+        if (mDisabledIndex.ToLong(&ll))
+        {
+            button->SetBitmapDisabled(ilist->GetPreview(ll));
+        }
+
+        if (mSelectedIndex.ToLong(&ll))
+        {
+            button->SetBitmapSelected(ilist->GetPreview(ll));
+        }
+
+        if (mFocusIndex.ToLong(&ll))
+        {
+            button->SetBitmapFocus(ilist->GetPreview(ll));
+        }
     };
 
-    if (mIsDefault) button->SetDefault();
+    if (mIsDefault)
+    {
+        button->SetDefault();
+    }
 
-// done
-
-    return SetupWindow(button,Flags);
+    // done
+    return SetupWindow(button, Flags);
 }
 
 //------------------------------------------------------------------------------
@@ -190,22 +202,22 @@ wxObject* wxsImageButton::OnBuildPreview(wxWindow* Parent,long Flags)
 void wxsImageButton::OnEnumWidgetProperties(cb_unused long Flags)
 {
     static wxString         sImageNames[128];
-    static const wxChar    *pImageNames[128];
+    static const wxChar  *  pImageNames[128];
     static wxString         sIndexNames[1024];
-    static const wxChar    *pIndexNames[1024];
-
-// find available images, and pointer to current imagelist
-
-    wxsImageList* ilist = nullptr;
-    wxsItemResData* res = GetResourceData();
+    static const wxChar  *  pIndexNames[1024];
+    // find available images, and pointer to current imagelist
+    wxsImageList * ilist = nullptr;
+    wxsItemResData * res = GetResourceData();
     sImageNames[0] = _("<none>");
     pImageNames[0] = sImageNames[0].wx_str();
     int n = 1;
     int k = res->GetToolsCount();
+
     for (int i = 0; i < k; ++i)
     {
-        wxsTool* tool = res->GetTool(i);
+        wxsTool * tool = res->GetTool(i);
         wxString ss(tool->GetUserClass());
+
         if ((ss == "wxImageList") && (n < 127))
         {
             ss = tool->GetVarName();
@@ -214,22 +226,23 @@ void wxsImageButton::OnEnumWidgetProperties(cb_unused long Flags)
             ++n;
 
             if (ss == mImageList)
+            {
                 ilist = (wxsImageList *)tool;
+            }
         }
     }
 
     pImageNames[n] = nullptr;
-
     WXS_EDITENUM(wxsImageButton, mImageList, _("Image List"), _T("image_list"), pImageNames, _("<none>"))
-
-// make drop-down list for image index selection
-
+    // make drop-down list for image index selection
     sIndexNames[0] = _("<none>");
     pIndexNames[0] = sIndexNames[0].wx_str();
     n = 1;
+
     if (ilist)
     {
         k = ilist->GetCount();
+
         for (int i = 0; i < k; ++i)
         {
             sIndexNames[n].Printf("%d", i);
@@ -239,15 +252,12 @@ void wxsImageButton::OnEnumWidgetProperties(cb_unused long Flags)
     }
 
     pIndexNames[n] = nullptr;
-
     WXS_EDITENUM(wxsImageButton, mLabelIndex,    _("Label Index"),    _T("label_index"),    pIndexNames, _("<none>"));
     WXS_EDITENUM(wxsImageButton, mDisabledIndex, _("Disabled Index"), _T("disabled_index"), pIndexNames, _("<none>"));
     WXS_EDITENUM(wxsImageButton, mSelectedIndex, _("Selected Index"), _T("selected_index"), pIndexNames, _("<none>"));
     WXS_EDITENUM(wxsImageButton, mFocusIndex,    _("Focus Index"),    _T("focus_index"),    pIndexNames, _("<none>"));
-
-// the only "normal" property here
-
-    WXS_BOOL(wxsImageButton,mIsDefault,_("Is default"),_T("is_default"),false)
+    // the only "normal" property here
+    WXS_BOOL(wxsImageButton, mIsDefault, _("Is default"), _T("is_default"), false)
 }
 
 //------------------------------------------------------------------------------

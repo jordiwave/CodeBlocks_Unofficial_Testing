@@ -42,38 +42,50 @@ bool CompilerQueue::LastCommandWasRun() const
     return m_LastWasRun;
 }
 
-void CompilerQueue::Add(CompilerCommand* cmd)
+void CompilerQueue::Add(CompilerCommand * cmd)
 {
     if (cmd)
     {
         if (cmd->dir.IsEmpty() && cmd->project)
+        {
             cmd->dir = cmd->project->GetExecutionDir();
+        }
+
         m_Commands.Append(cmd);
     }
 }
 
-void CompilerQueue::Add(CompilerQueue* queue)
+void CompilerQueue::Add(CompilerQueue * queue)
 {
     for (CompilerCommands::iterator it = queue->m_Commands.begin(); it != queue->m_Commands.end(); ++it)
     {
         if (*it)
+        {
             Add(new CompilerCommand(**it));
+        }
     }
 }
 
-CompilerCommand* CompilerQueue::Peek()
+CompilerCommand * CompilerQueue::Peek()
 {
     if (m_Commands.empty())
+    {
         return nullptr;
+    }
     else
+    {
         return m_Commands.front();
+    }
 }
 
-CompilerCommand* CompilerQueue::Next()
+CompilerCommand * CompilerQueue::Next()
 {
     if (m_Commands.empty())
+    {
         return nullptr;
-    CompilerCommand* cmd = m_Commands.front();
+    }
+
+    CompilerCommand * cmd = m_Commands.front();
     m_Commands.pop_front();
     m_LastWasRun = cmd ? cmd->isRun : false;
     return cmd;

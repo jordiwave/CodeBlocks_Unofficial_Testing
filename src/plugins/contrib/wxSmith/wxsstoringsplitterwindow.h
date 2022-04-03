@@ -32,32 +32,32 @@
  */
 class wxsStoringSplitterWindow : public wxPanel
 {
-public:
+    public:
 
-    /** \brief Ctor */
-    wxsStoringSplitterWindow(wxWindow* Parent);
+        /** \brief Ctor */
+        wxsStoringSplitterWindow(wxWindow * Parent);
 
-    /** \brief Function splitting window */
-    void Split(wxWindow* Top,wxWindow* Bottom,int SashPosition = 0);
+        /** \brief Function splitting window */
+        void Split(wxWindow * Top, wxWindow * Bottom, int SashPosition = 0);
 
-    /** \brief Getting splitter window associated with this object */
-    inline wxSplitterWindow* GetSplitter()
-    {
-        return Splitter;
-    }
+        /** \brief Getting splitter window associated with this object */
+        inline wxSplitterWindow * GetSplitter()
+        {
+            return Splitter;
+        }
 
-private:
+    private:
 
-    void OnSize(wxSizeEvent& event);
-    void OnSplitterDClick(wxSplitterEvent& event);
-    void OnSplitterChanging(wxSplitterEvent& event);
-    void OnSplitterChanged(wxSplitterEvent& event);
+        void OnSize(wxSizeEvent & event);
+        void OnSplitterDClick(wxSplitterEvent & event);
+        void OnSplitterChanging(wxSplitterEvent & event);
+        void OnSplitterChanged(wxSplitterEvent & event);
 
-    int SplitterFixup(int ProposedPosition);
+        int SplitterFixup(int ProposedPosition);
 
-    wxSplitterWindow* Splitter;
-    int SplitPosition;
-    DECLARE_EVENT_TABLE()
+        wxSplitterWindow * Splitter;
+        int SplitPosition;
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

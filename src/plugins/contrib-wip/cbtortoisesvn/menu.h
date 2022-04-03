@@ -21,7 +21,7 @@ struct MenuEntry
 {
     enum MenuEntryKind
     {
-        mekNormal=0,
+        mekNormal = 0,
         mekCheck,
         mekRadio
     };
@@ -64,55 +64,55 @@ struct MenuEntry
     {}
 };
 
-bool GetIndex(const std::vector<CBTSVN::MenuEntry>& menu, const wxString& item, int& index);
+bool GetIndex(const std::vector<CBTSVN::MenuEntry> & menu, const wxString & item, int & index);
 
 std::vector<wxString> ConvertMenuItemsToStrings(const CBSvnPluginManager::SourceMenu source,
-        const std::vector<MenuEntry>& menu);
+                                                const std::vector<MenuEntry> & menu);
 
-void ConvertMenuItemsToIndices(const std::vector<MenuEntry>& menu,
-                               const std::vector<wxString>& items,
-                               std::vector<int>& indices);
+void ConvertMenuItemsToIndices(const std::vector<MenuEntry> & menu,
+                               const std::vector<wxString> & items,
+                               std::vector<int> & indices);
 
-void ConvertIndicesToMenuItems(const std::vector<MenuEntry>& menu,
-                               const std::vector<int>& indices,
-                               std::vector<wxString>& items);
+void ConvertIndicesToMenuItems(const std::vector<MenuEntry> & menu,
+                               const std::vector<int> & indices,
+                               std::vector<wxString> & items);
 
 void MakeMenu(const CBSvnPluginManager::SourceMenu source,
-              const std::vector<MenuEntry>& menu,
+              const std::vector<MenuEntry> & menu,
               const std::vector<int> indices,
               bool file_based,
               bool project_based,
               bool workspace_based,
               bool under_version_control,
-              wxMenu& out_menu);
+              wxMenu & out_menu);
 
 void MakeMenu(const CBSvnPluginManager::SourceMenu source,
-              const std::vector<MenuEntry>& menu,
-              const std::vector<wxString>& items,
+              const std::vector<MenuEntry> & menu,
+              const std::vector<wxString> & items,
               bool file_based,
               bool project_based,
               bool workspace_based,
               bool under_version_control,
-              wxMenu& out_menu);
+              wxMenu & out_menu);
 
 void UpdateMenu(const CBSvnPluginManager::SourceMenu source,
-                const std::vector<MenuEntry>& menu,
-                const std::vector<wxString>& items,
+                const std::vector<MenuEntry> & menu,
+                const std::vector<wxString> & items,
                 bool file_based,
                 bool project_based,
                 bool workspace_based,
                 bool under_version_control,
-                wxMenu* in_menu);
+                wxMenu * in_menu);
 
 
 void UpdateMenu(const CBSvnPluginManager::SourceMenu source,
-                const std::vector<MenuEntry>& menu,
+                const std::vector<MenuEntry> & menu,
                 const std::vector<int> indices,
                 bool file_based,
                 bool project_based,
                 bool workspace_based,
                 bool under_version_control,
-                wxMenu* in_menu);
+                wxMenu * in_menu);
 }
 
 #endif // MENU_H

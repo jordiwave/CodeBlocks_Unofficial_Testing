@@ -34,120 +34,135 @@
 
 class AbstractJob
 {
-public:
-    AbstractJob() {};
-    virtual ~AbstractJob() {};
-    virtual void operator()() = 0;
+    public:
+        AbstractJob() {};
+        virtual ~AbstractJob() {};
+        virtual void operator()() = 0;
 };
 
 
 
-class JobQueue : public std::deque<AbstractJob*>
+class JobQueue : public std::deque<AbstractJob *>
 {
-    wxCriticalSection c;
+        wxCriticalSection c;
 
-public:
-    void Push(AbstractJob *j)
-    {
-        wxCriticalSectionLocker l(c);
-        push_back(j);
-    };
-    AbstractJob* Pop()
-    {
-        wxCriticalSectionLocker l(c);
-        AbstractJob* j = front();
-        pop_front();
-        return j;
-    };
+    public:
+        void Push(AbstractJob * j)
+        {
+            wxCriticalSectionLocker l(c);
+            push_back(j);
+        };
+        AbstractJob * Pop()
+        {
+            wxCriticalSectionLocker l(c);
+            AbstractJob * j = front();
+            pop_front();
+            return j;
+        };
 };
 
 
 
 class BackgroundThread : public wxThread
 {
-    JobQueue *queue;
-    wxSemaphore *semaphore;
-    bool die;
-    const bool ownsQueue;
-    const bool ownsSemaphore;
-    const bool ownsJobs;
+        JobQueue * queue;
+        wxSemaphore * semaphore;
+        bool die;
+        const bool ownsQueue;
+        const bool ownsSemaphore;
+        const bool ownsJobs;
 
-public:
-    BackgroundThread(JobQueue *q, wxSemaphore *s, const bool owns_jobs = true)
-        : queue(q), semaphore(s), die(false), ownsQueue(false), ownsSemaphore(false), ownsJobs(owns_jobs)
-    {
-        Create();
-        Run();
-    };
-
-    BackgroundThread(wxSemaphore *s, const bool owns_jobs = true)
-        : queue(new JobQueue), semaphore(s), die(false), ownsQueue(true), ownsSemaphore(false), ownsJobs(owns_jobs)
-    {
-        Create();
-        Run();
-    };
-
-    BackgroundThread(JobQueue *q, const bool owns_jobs = true)
-        : queue(q), semaphore(new wxSemaphore), die(false), ownsQueue(false), ownsSemaphore(true), ownsJobs(owns_jobs)
-    {
-        Create();
-        Run();
-    };
-
-    BackgroundThread(const bool owns_jobs = true)
-        : queue(new JobQueue), semaphore(new wxSemaphore), die(false), ownsQueue(true), ownsSemaphore(true), ownsJobs(owns_jobs)
-    {
-        Create();
-        Run();
-    };
-
-    ~BackgroundThread() override
-    {
-        if (ownsSemaphore)
-            ::Delete(semaphore);
-        if (ownsQueue)
-            ::Delete(queue);
-    };
-
-
-    void Queue(AbstractJob* j)
-    {
-        queue->Push(j);
-        semaphore->Post();
-    };
-
-    void Die()
-    {
-        die = true;
-        semaphore->Post();
-        wxMilliSleep(0);
-    };
-
-
-    void MarkDying() // Need this for threadpool. Die() alone does not work in shared context (for obvious reason).
-    {
-        die = true;
-    };
-
-
-    ExitCode Entry() override
-    {
-        AbstractJob* job;
-        for (;;)
+    public:
+        BackgroundThread(JobQueue * q, wxSemaphore * s, const bool owns_jobs = true)
+            : queue(q), semaphore(s), die(false), ownsQueue(false), ownsSemaphore(false), ownsJobs(owns_jobs)
         {
-            semaphore->Wait();
-            if (die)
-                break;
+            Create();
+            Run();
+        };
 
-            job = queue->Pop();
-            if ( job )
-                (*job)();
+        BackgroundThread(wxSemaphore * s, const bool owns_jobs = true)
+            : queue(new JobQueue), semaphore(s), die(false), ownsQueue(true), ownsSemaphore(false), ownsJobs(owns_jobs)
+        {
+            Create();
+            Run();
+        };
 
-            if (ownsJobs)
-                delete job;
-        }
-        return nullptr;
-    };
+        BackgroundThread(JobQueue * q, const bool owns_jobs = true)
+            : queue(q), semaphore(new wxSemaphore), die(false), ownsQueue(false), ownsSemaphore(true), ownsJobs(owns_jobs)
+        {
+            Create();
+            Run();
+        };
+
+        BackgroundThread(const bool owns_jobs = true)
+            : queue(new JobQueue), semaphore(new wxSemaphore), die(false), ownsQueue(true), ownsSemaphore(true), ownsJobs(owns_jobs)
+        {
+            Create();
+            Run();
+        };
+
+        ~BackgroundThread() override
+        {
+            if (ownsSemaphore)
+            {
+                ::Delete(semaphore);
+            }
+
+            if (ownsQueue)
+            {
+                ::Delete(queue);
+            }
+        };
+
+
+        void Queue(AbstractJob * j)
+        {
+            queue->Push(j);
+            semaphore->Post();
+        };
+
+        void Die()
+        {
+            die = true;
+            semaphore->Post();
+            wxMilliSleep(0);
+        };
+
+
+        void MarkDying() // Need this for threadpool. Die() alone does not work in shared context (for obvious reason).
+        {
+            die = true;
+        };
+
+
+        ExitCode Entry() override
+        {
+            AbstractJob * job;
+
+            for (;;)
+            {
+                semaphore->Wait();
+
+                if (die)
+                {
+                    break;
+                }
+
+                job = queue->Pop();
+
+                if (job)
+                {
+                    (*job)();
+                }
+
+                if (ownsJobs)
+                {
+                    delete job;
+                }
+            }
+
+            return nullptr;
+        };
 };
 
 
@@ -156,14 +171,14 @@ public:
 
 struct Agony
 {
-    inline void operator()(BackgroundThread* t)
+    inline void operator()(BackgroundThread * t)
     {
         t->MarkDying();
     };
 };
 struct Death
 {
-    inline void operator()(BackgroundThread* t)
+    inline void operator()(BackgroundThread * t)
     {
         t->Die();
     };
@@ -171,37 +186,39 @@ struct Death
 
 class BackgroundThreadPool
 {
-    typedef std::list<BackgroundThread*> ThreadList;
+        typedef std::list<BackgroundThread *> ThreadList;
 
-    JobQueue queue;
-    wxSemaphore semaphore;
-    ThreadList threadList;
+        JobQueue queue;
+        wxSemaphore semaphore;
+        ThreadList threadList;
 
-public:
-    BackgroundThreadPool(size_t num_threads = 4)
-    {
-        for (unsigned int i = 0; i < num_threads; ++i)
-            AddThread(new BackgroundThread(&queue, &semaphore));
-    };
+    public:
+        BackgroundThreadPool(size_t num_threads = 4)
+        {
+            for (unsigned int i = 0; i < num_threads; ++i)
+            {
+                AddThread(new BackgroundThread(&queue, &semaphore));
+            }
+        };
 
-    ~BackgroundThreadPool()
-    {
-        for_each(threadList.begin(), threadList.end(), Agony());
-        for_each(threadList.begin(), threadList.end(), Death());
-        Delete(queue);
-        wxMilliSleep(0);
-    };
+        ~BackgroundThreadPool()
+        {
+            for_each(threadList.begin(), threadList.end(), Agony());
+            for_each(threadList.begin(), threadList.end(), Death());
+            Delete(queue);
+            wxMilliSleep(0);
+        };
 
-    void AddThread(BackgroundThread * t)
-    {
-        threadList.push_back(t);
-    };
+        void AddThread(BackgroundThread * t)
+        {
+            threadList.push_back(t);
+        };
 
-    void Queue(AbstractJob* j)
-    {
-        queue.Push(j);
-        semaphore.Post();
-    };
+        void Queue(AbstractJob * j)
+        {
+            queue.Push(j);
+            semaphore.Post();
+        };
 };
 
 

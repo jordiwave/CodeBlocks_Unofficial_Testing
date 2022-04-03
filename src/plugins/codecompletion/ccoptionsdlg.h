@@ -17,36 +17,36 @@ class DocumentationHelper;
 
 class CCOptionsDlg : public cbConfigurationPanel
 {
-public:
-    CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* cc, DocumentationHelper* dh);
-    ~CCOptionsDlg() override;
+    public:
+        CCOptionsDlg(wxWindow * parent, NativeParser * np, CodeCompletion * cc, DocumentationHelper * dh);
+        ~CCOptionsDlg() override;
 
-    wxString GetTitle() const override
-    {
-        return _("Code completion");
-    }
-    wxString GetBitmapBaseName() const override
-    {
-        return _T("codecompletion");
-    }
-    void OnApply() override;
-    void OnCancel() override {}
+        wxString GetTitle() const override
+        {
+            return _("Code completion");
+        }
+        wxString GetBitmapBaseName() const override
+        {
+            return _T("codecompletion");
+        }
+        void OnApply() override;
+        void OnCancel() override {}
 
-protected:
-    void OnCCDelayScroll(wxScrollEvent& event);
+    protected:
+        void OnCCDelayScroll(wxScrollEvent & event);
 
-    void OnUpdateUI(wxUpdateUIEvent& event);
+        void OnUpdateUI(wxUpdateUIEvent & event);
 
-private:
-    void UpdateCCDelayLabel();
-    bool ValidateReplacementToken(wxString& from, wxString& to);
+    private:
+        void UpdateCCDelayLabel();
+        bool ValidateReplacementToken(wxString & from, wxString & to);
 
-    NativeParser*        m_NativeParser;
-    CodeCompletion*      m_CodeCompletion;
-    ParserBase&          m_Parser;
-    DocumentationHelper* m_Documentation;
+        NativeParser    *    m_NativeParser;
+        CodeCompletion   *   m_CodeCompletion;
+        ParserBase     &     m_Parser;
+        DocumentationHelper * m_Documentation;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // CCOPTIONSDLG_H

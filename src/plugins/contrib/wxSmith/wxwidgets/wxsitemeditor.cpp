@@ -44,16 +44,16 @@ const long wxsQuickPropsId = wxNewId();
 
 inline int ToolIconSize()
 {
-    return Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/tooliconsize"),32L);
+    return Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/tooliconsize"), 32L);
 }
 inline int PalIconSize()
 {
-    return Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/paletteiconsize"),16L);
+    return Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/paletteiconsize"), 16L);
 }
 }
 
-wxsItemEditor::wxsItemEditor(wxWindow* parent,wxsItemRes* Resource):
-    wxsEditor(parent,wxEmptyString,Resource),
+wxsItemEditor::wxsItemEditor(wxWindow * parent, wxsItemRes * Resource):
+    wxsEditor(parent, wxEmptyString, Resource),
     m_Data(0),
     m_Content(0),
     m_WidgetsSet(0),
@@ -90,12 +90,12 @@ void wxsItemEditor::InitializeResourceData()
 {
     m_Data = GetItemRes()->BuildResData(this);
 
-    if ( !m_Data->IsOk() )
+    if (!m_Data->IsOk())
     {
         // TODO: Some communicate (couldn't load resource) ?
     }
 
-    if ( GetItemRes()->GetEditMode() == wxsItemRes::File )
+    if (GetItemRes()->GetEditMode() == wxsItemRes::File)
     {
         InitFilename(UnixFilename(m_Data->GetXrcFileName()));
         SetTitle(m_Shortname);
@@ -105,45 +105,39 @@ void wxsItemEditor::InitializeResourceData()
         InitFilename(UnixFilename(m_Data->GetWxsFileName()));
         SetTitle(m_Shortname);
     }
-
 }
 
 void wxsItemEditor::InitializeVisualStuff()
 {
     // Loading images if needed
     InitializeImages();
-
     // Creating content of editor window
     m_VertSizer = new wxBoxSizer(wxVERTICAL);
-    m_WidgetsSet = new wxNotebook(this,-1);
+    m_WidgetsSet = new wxNotebook(this, -1);
     BuildPalette(m_WidgetsSet);
-    m_ToolSpace = new wxsToolSpace(this,m_Data);
-    m_VertSizer->Add(m_ToolSpace,0,wxEXPAND);
+    m_ToolSpace = new wxsToolSpace(this, m_Data);
+    m_VertSizer->Add(m_ToolSpace, 0, wxEXPAND);
     m_HorizSizer = new wxBoxSizer(wxHORIZONTAL);
-    m_VertSizer->Add(m_HorizSizer,1,wxEXPAND);
-    m_VertSizer->Add(m_WidgetsSet,0,wxEXPAND);
-
-    m_Content = new wxsItemEditorContent(this,m_Data,this);
-    m_HorizSizer->Add(m_Content,1,wxEXPAND);
-
-    m_QPArea = new wxScrolledWindow(this,-1,wxDefaultPosition,wxDefaultSize,wxVSCROLL|wxHSCROLL|wxSUNKEN_BORDER/*|wxALWAYS_SHOW_SB*/);
-    m_QPArea->SetScrollbars(0,5,0,0);
-    m_HorizSizer->Add(m_QPArea,0,wxEXPAND);
+    m_VertSizer->Add(m_HorizSizer, 1, wxEXPAND);
+    m_VertSizer->Add(m_WidgetsSet, 0, wxEXPAND);
+    m_Content = new wxsItemEditorContent(this, m_Data, this);
+    m_HorizSizer->Add(m_Content, 1, wxEXPAND);
+    m_QPArea = new wxScrolledWindow(this, -1, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxHSCROLL | wxSUNKEN_BORDER/*|wxALWAYS_SHOW_SB*/);
+    m_QPArea->SetScrollbars(0, 5, 0, 0);
+    m_HorizSizer->Add(m_QPArea, 0, wxEXPAND);
     m_QPSizer = new wxBoxSizer(wxVERTICAL);
     m_QPArea->SetSizer(m_QPSizer);
-
     m_OpsSizer = new wxBoxSizer(wxVERTICAL);
-    m_HorizSizer->Add(m_OpsSizer,0,wxEXPAND);
-
-    m_OpsSizer->Add(m_InsPointBtn  = new wxBitmapButton(this,wxsInsPointId,m_InsPointImg));
-    m_OpsSizer->Add(m_InsIntoBtn   = new wxBitmapButton(this,wxsInsIntoId,m_InsIntoImg));
-    m_OpsSizer->Add(m_InsBeforeBtn = new wxBitmapButton(this,wxsInsBeforeId,m_InsBeforeImg));
-    m_OpsSizer->Add(m_InsAfterBtn  = new wxBitmapButton(this,wxsInsAfterId,m_InsAfterImg));
-    m_OpsSizer->Add(1,5);
-    m_OpsSizer->Add(m_DelBtn       = new wxBitmapButton(this,wxsDelId,m_DelImg));
-    m_OpsSizer->Add(m_PreviewBtn   = new wxBitmapButton(this,wxsPreviewId,m_PreviewImg));
-    m_OpsSizer->Add(1,5);
-    m_OpsSizer->Add(m_QuickPanelBtn = new wxBitmapButton(this,wxsQuickPropsId,m_QuickPropsImgOpen));
+    m_HorizSizer->Add(m_OpsSizer, 0, wxEXPAND);
+    m_OpsSizer->Add(m_InsPointBtn  = new wxBitmapButton(this, wxsInsPointId, m_InsPointImg));
+    m_OpsSizer->Add(m_InsIntoBtn   = new wxBitmapButton(this, wxsInsIntoId, m_InsIntoImg));
+    m_OpsSizer->Add(m_InsBeforeBtn = new wxBitmapButton(this, wxsInsBeforeId, m_InsBeforeImg));
+    m_OpsSizer->Add(m_InsAfterBtn  = new wxBitmapButton(this, wxsInsAfterId, m_InsAfterImg));
+    m_OpsSizer->Add(1, 5);
+    m_OpsSizer->Add(m_DelBtn       = new wxBitmapButton(this, wxsDelId, m_DelImg));
+    m_OpsSizer->Add(m_PreviewBtn   = new wxBitmapButton(this, wxsPreviewId, m_PreviewImg));
+    m_OpsSizer->Add(1, 5);
+    m_OpsSizer->Add(m_QuickPanelBtn = new wxBitmapButton(this, wxsQuickPropsId, m_QuickPropsImgOpen));
     m_InsPointBtn  ->SetToolTip(_("Insert new widgets by pointing with mouse"));
     m_InsIntoBtn   ->SetToolTip(_("Insert new widgets into current selection"));
     m_InsBeforeBtn ->SetToolTip(_("Insert new widgets before current selection"));
@@ -152,10 +146,8 @@ void wxsItemEditor::InitializeVisualStuff()
     m_PreviewBtn   ->SetToolTip(_("Show preview"));
     m_QuickPanelBtn->SetToolTip(_("Open / Close Quick Properties panel"));
     SetSizer(m_VertSizer);
-
     SetInsertionTypeMask(0);
     ToggleQuickPropsPanel(false);       // TODO: Shouldn't store initial state of panel somewhere?
-
     RebuildPreview();
     UpdateSelection();
 }
@@ -170,7 +162,8 @@ void wxsItemEditor::ReloadImages()
 {
     m_ImagesLoaded = false;
     InitializeImages();
-    for ( WindowSet::iterator i=m_AllEditors.begin(); i!=m_AllEditors.end(); ++i )
+
+    for (WindowSet::iterator i = m_AllEditors.begin(); i != m_AllEditors.end(); ++i)
     {
         (*i)->RebuildIcons();
     }
@@ -178,7 +171,7 @@ void wxsItemEditor::ReloadImages()
 
 void wxsItemEditor::RefreshContents()
 {
-    for ( WindowSet::iterator i=m_AllEditors.begin(); i!=m_AllEditors.end(); ++i )
+    for (WindowSet::iterator i = m_AllEditors.begin(); i != m_AllEditors.end(); ++i)
     {
         (*i)->RebuildPreview();
     }
@@ -187,15 +180,17 @@ void wxsItemEditor::RefreshContents()
 void wxsItemEditor::RebuildPreview()
 {
     // Checking if we've already initialized visual stuff
-    if ( !m_Content ) return;
+    if (!m_Content)
+    {
+        return;
+    }
 
     m_Content->BeforePreviewChanged();
     m_ToolSpace->BeforePreviewChanged();
-
     Freeze();
 
     // If there's previous preview, deleting it
-    if ( m_PreviewBackground )
+    if (m_PreviewBackground)
     {
         m_Content->SetSizer(0);
         m_PreviewBackground->Destroy();
@@ -204,10 +199,11 @@ void wxsItemEditor::RebuildPreview()
     }
 
     // Generating preview
-    m_PreviewBackground = new wxPanel(m_Content,-1,wxDefaultPosition,wxDefaultSize,wxRAISED_BORDER);
-    wxObject* TopPreviewObject = m_Data->GetRootItem()->BuildPreview(m_PreviewBackground,0);
-    m_TopPreview = wxDynamicCast(TopPreviewObject,wxWindow);
-    if ( !m_TopPreview )
+    m_PreviewBackground = new wxPanel(m_Content, -1, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER);
+    wxObject * TopPreviewObject = m_Data->GetRootItem()->BuildPreview(m_PreviewBackground, 0);
+    m_TopPreview = wxDynamicCast(TopPreviewObject, wxWindow);
+
+    if (!m_TopPreview)
     {
         Manager::Get()->GetLogManager()->DebugLog(_T("One of root items returned class not derived from wxWindow"));
         m_PreviewBackground->Destroy();
@@ -216,12 +212,12 @@ void wxsItemEditor::RebuildPreview()
     }
     else
     {
-        wxSizer* BackgroundSizer = new wxBoxSizer(wxHORIZONTAL);
-        BackgroundSizer->Add(m_TopPreview,0,0,0);
+        wxSizer * BackgroundSizer = new wxBoxSizer(wxHORIZONTAL);
+        BackgroundSizer->Add(m_TopPreview, 0, 0, 0);
         m_PreviewBackground->SetSizer(BackgroundSizer);
         BackgroundSizer->Fit(m_PreviewBackground);
-        wxSizer* NewSizer = new wxGridSizer(1);
-        NewSizer->Add(m_PreviewBackground,0,wxALL,10);
+        wxSizer * NewSizer = new wxGridSizer(1);
+        NewSizer->Add(m_PreviewBackground, 0, wxALL, 10);
         m_Content->SetSizer(NewSizer);
         NewSizer->FitInside(m_Content);
         m_PreviewBackground->Layout();
@@ -230,20 +226,20 @@ void wxsItemEditor::RebuildPreview()
     }
 
     m_ToolSpace->AfterPreviewChanged();
-    if ( m_ToolSpace->AreAnyTools() )
+
+    if (m_ToolSpace->AreAnyTools())
     {
-        m_VertSizer->Show(m_ToolSpace,true,false);
+        m_VertSizer->Show(m_ToolSpace, true, false);
     }
     else
     {
-        m_VertSizer->Show(m_ToolSpace,false,false);
+        m_VertSizer->Show(m_ToolSpace, false, false);
     }
-    m_VertSizer->Layout();
 
+    m_VertSizer->Layout();
     Layout();
     Thaw();
     Refresh();
-
     // Updating all informations in Content
     m_Content->AfterPreviewChanged();
 }
@@ -251,50 +247,54 @@ void wxsItemEditor::RebuildPreview()
 void wxsItemEditor::UpdateSelection()
 {
     // Checking if we've already initialized visual stuff
-    if ( !m_Content ) return;
+    if (!m_Content)
+    {
+        return;
+    }
 
     // Updating drag point data
     m_Content->RefreshSelection();
     m_ToolSpace->RefreshSelection();
-
     // Updating insertion type mask
-    wxsItem* Item = m_Data->GetRootSelection();
+    wxsItem * Item = m_Data->GetRootSelection();
     int itMask = 0;
-    if ( Item )
+
+    if (Item)
     {
-        if ( Item->GetParent() )
+        if (Item->GetParent())
         {
             // When sizer is added into non-sizer parent, no other items can be added to
             // this parent
-            if ( Item->GetType() != wxsTSizer ||
-                    Item->GetParent()->GetType() == wxsTSizer )
+            if (Item->GetType() != wxsTSizer ||
+                    Item->GetParent()->GetType() == wxsTSizer)
             {
                 itMask |= itBefore | itAfter;
             }
         }
 
-        if ( Item->ConvertToParent() )
+        if (Item->ConvertToParent())
         {
             itMask |= itInto;
         }
     }
-    if ( m_Data->GetRootItem()->ConvertToParent() )
+
+    if (m_Data->GetRootItem()->ConvertToParent())
     {
         itMask |= itPoint;
     }
 
     SetInsertionTypeMask(itMask);
     RebuildQuickProps(Item);
-
     // TODO: Refresh set of available items inside palette
 }
 
 bool wxsItemEditor::Save()
 {
-    if ( !m_Data->Save() )
+    if (!m_Data->Save())
     {
         // TODO: Some message here please
     }
+
     UpdateModified();
     return true;
 }
@@ -306,7 +306,7 @@ bool wxsItemEditor::GetModified() const
 
 void wxsItemEditor::UpdateModified()
 {
-    if ( m_Data && m_Data->GetModified() )
+    if (m_Data && m_Data->GetModified())
     {
         SetTitle(_T("*") + GetShortName());
     }
@@ -328,12 +328,18 @@ bool wxsItemEditor::CanRedo() const
 
 void wxsItemEditor::Undo()
 {
-    if ( m_Data ) m_Data->Undo();
+    if (m_Data)
+    {
+        m_Data->Undo();
+    }
 }
 
 void wxsItemEditor::Redo()
 {
-    if ( m_Data ) m_Data->Redo();
+    if (m_Data)
+    {
+        m_Data->Redo();
+    }
 }
 
 bool wxsItemEditor::HasSelection() const
@@ -353,158 +359,184 @@ bool wxsItemEditor::IsReadOnly() const
 
 void wxsItemEditor::Cut()
 {
-    if ( m_Data ) m_Data->Cut();
+    if (m_Data)
+    {
+        m_Data->Cut();
+    }
 }
 
 void wxsItemEditor::Copy()
 {
-    if ( m_Data ) m_Data->Copy();
+    if (m_Data)
+    {
+        m_Data->Copy();
+    }
 }
 
 void wxsItemEditor::Paste()
 {
-    if ( !m_Data ) return;
-
-    wxsItem* Reference = GetReferenceItem(m_InsType);
-    if ( !Reference ) return;
-    wxsParent* Parent = Reference->GetParent();
-    int RefIndex = Parent ? Parent->GetChildIndex(Reference) : -1;
-
-    switch ( m_InsType )
+    if (!m_Data)
     {
-    case itAfter:
-        RefIndex++;
-        break;
-
-    case itInto:
-        Parent = Reference->ConvertToParent();
-        RefIndex = Parent ? Parent->GetChildCount() : 0;
-        break;
-
-    default:
-        break;
+        return;
     }
 
-    m_Data->Paste(Parent,RefIndex);
+    wxsItem * Reference = GetReferenceItem(m_InsType);
+
+    if (!Reference)
+    {
+        return;
+    }
+
+    wxsParent * Parent = Reference->GetParent();
+    int RefIndex = Parent ? Parent->GetChildIndex(Reference) : -1;
+
+    switch (m_InsType)
+    {
+        case itAfter:
+            RefIndex++;
+            break;
+
+        case itInto:
+            Parent = Reference->ConvertToParent();
+            RefIndex = Parent ? Parent->GetChildCount() : 0;
+            break;
+
+        default:
+            break;
+    }
+
+    m_Data->Paste(Parent, RefIndex);
 }
 
-void wxsItemEditor::InsertRequest(const wxString& Name)
+void wxsItemEditor::InsertRequest(const wxString & Name)
 {
-    const wxsItemInfo* Info = wxsItemFactory::GetInfo(Name);
-    if ( !Info ) return;
+    const wxsItemInfo * Info = wxsItemFactory::GetInfo(Name);
+
+    if (!Info)
+    {
+        return;
+    }
+
     bool IsTool = Info->Type == wxsTTool;
 
-    if ( !IsTool && m_InsType==itPoint )
+    if (!IsTool && m_InsType == itPoint)
     {
         StartInsertPointSequence(Info);
         return;
     }
 
-    wxsItem* Reference = GetReferenceItem(m_InsType);
-    if ( !Reference )
+    wxsItem * Reference = GetReferenceItem(m_InsType);
+
+    if (!Reference)
     {
         Manager::Get()->GetLogManager()->DebugLog(_T("wxSmith: No item selected - couldn't create new item"));
         return;
     }
 
-    wxsItem* New = wxsItemFactory::Build(Name,m_Data);
-    if ( !New )
+    wxsItem * New = wxsItemFactory::Build(Name, m_Data);
+
+    if (!New)
     {
         Manager::Get()->GetLogManager()->DebugLog(_T("wxSmith: Couldn't generate item inside factory"));
         return;
     }
 
     m_Data->BeginChange();
-    wxsParent* Parent = Reference->GetParent();
+    wxsParent * Parent = Reference->GetParent();
     int RefIndex = Parent ? Parent->GetChildIndex(Reference) : -1;
 
-    switch ( m_InsType )
+    switch (m_InsType)
     {
-    case itAfter:
-        RefIndex++;
-    // We don't break here - continuing on itBefore code
+        case itAfter:
+            RefIndex++;
 
-    case itBefore:
-        if ( Parent )
-        {
-            // Checking if this is tool, tools can be added
-            // into other tools or into resource only
-            if ( IsTool &&
-                    ( !Parent->ConvertToTool() ||
-                      !New->CanAddToParent(Parent,false)) )
+        // We don't break here - continuing on itBefore code
+
+        case itBefore:
+            if (Parent)
             {
-                // Trying to add to resource
-                if ( !New->ConvertToTool()->CanAddToResource(m_Data,true) )
+                // Checking if this is tool, tools can be added
+                // into other tools or into resource only
+                if (IsTool &&
+                        (!Parent->ConvertToTool() ||
+                         !New->CanAddToParent(Parent, false)))
                 {
-                    delete New;
+                    // Trying to add to resource
+                    if (!New->ConvertToTool()->CanAddToResource(m_Data, true))
+                    {
+                        delete New;
+                    }
+                    else
+                    {
+                        if (m_Data->InsertNewTool(New->ConvertToTool()))
+                        {
+                            m_Data->SelectItem(New, true);
+                        }
+                    }
                 }
                 else
                 {
-                    if ( m_Data->InsertNewTool(New->ConvertToTool()) )
+                    if (m_Data->InsertNew(New, Parent, RefIndex))
                     {
-                        m_Data->SelectItem(New,true);
+                        m_Data->SelectItem(New, true);
                     }
                 }
             }
             else
             {
-                if ( m_Data->InsertNew(New,Parent,RefIndex) )
-                {
-                    m_Data->SelectItem(New,true);
-                }
+                delete New;
             }
 
-        }
-        else
-        {
-            delete New;
-        }
-        break;
+            break;
 
-    case itInto:
-    case itPoint:       // This will cover tools when itPoint is used
-    {
-        if ( IsTool &&
-                (!Reference->ConvertToTool() ||
-                 !New->CanAddToParent(Reference->ConvertToParent(),false)) )
+        case itInto:
+        case itPoint:       // This will cover tools when itPoint is used
         {
-            // Trying to add to resource
-            if ( !New->ConvertToTool()->CanAddToResource(m_Data,true) )
+            if (IsTool &&
+                    (!Reference->ConvertToTool() ||
+                     !New->CanAddToParent(Reference->ConvertToParent(), false)))
             {
-                delete New;
+                // Trying to add to resource
+                if (!New->ConvertToTool()->CanAddToResource(m_Data, true))
+                {
+                    delete New;
+                }
+                else
+                {
+                    if (m_Data->InsertNewTool(New->ConvertToTool()))
+                    {
+                        m_Data->SelectItem(New, true);
+                    }
+                }
             }
             else
             {
-                if ( m_Data->InsertNewTool(New->ConvertToTool()) )
+                if (m_Data->InsertNew(New, Reference->ConvertToParent(), -1))
                 {
-                    m_Data->SelectItem(New,true);
+                    m_Data->SelectItem(New, true);
                 }
             }
+
+            break;
         }
-        else
+
+        default:
         {
-            if ( m_Data->InsertNew(New,Reference->ConvertToParent(),-1) )
-            {
-                m_Data->SelectItem(New,true);
-            }
+            delete New;
         }
-        break;
     }
 
-    default:
-    {
-        delete New;
-    }
-
-    }
     m_Data->EndChange();
 }
 
 void wxsItemEditor::InitializeImages()
 {
-    if ( m_ImagesLoaded ) return;
-    wxString basePath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
+    if (m_ImagesLoaded)
+    {
+        return;
+    }
 
+    wxString basePath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
     static const wxString NormalNames[] =
     {
         _T("insertpoint32.png"),
@@ -517,7 +549,6 @@ void wxsItemEditor::InitializeImages()
         _T("quickpropsclose32.png"),
         _T("selected32.png")
     };
-
     static const wxString SmallNames[] =
     {
         _T("insertpoint16.png"),
@@ -530,9 +561,7 @@ void wxsItemEditor::InitializeImages()
         _T("quickpropsclose16.png"),
         _T("selected16.png")
     };
-
-    const wxString* Array = ( ToolIconSize() == 16L ) ? SmallNames : NormalNames;
-
+    const wxString * Array = (ToolIconSize() == 16L) ? SmallNames : NormalNames;
     m_InsPointImg.LoadFile(basePath + Array[0]);
     m_InsIntoImg.LoadFile(basePath + Array[1]);
     m_InsAfterImg.LoadFile(basePath + Array[2]);
@@ -542,14 +571,14 @@ void wxsItemEditor::InitializeImages()
     m_QuickPropsImgOpen.LoadFile(basePath + Array[6]);
     m_QuickPropsImgClose.LoadFile(basePath + Array[7]);
     m_SelectedImg.LoadFile(basePath + Array[8]);
-
     m_ImagesLoaded = true;
 }
 
-void wxsItemEditor::OnButton(wxCommandEvent& event)
+void wxsItemEditor::OnButton(wxCommandEvent & event)
 {
-    wxWindow* Btn = (wxWindow*)event.GetEventObject();
-    if ( Btn )
+    wxWindow * Btn = (wxWindow *)event.GetEventObject();
+
+    if (Btn)
     {
         InsertRequest(Btn->GetName());
     }
@@ -565,49 +594,52 @@ void wxsItemEditor::SetInsertionType(int Type)
 {
     Type &= m_InsTypeMask;
 
-    if ( !Type )
+    if (!Type)
     {
         Type = m_InsTypeMask;
     }
 
-    if ( Type & itPoint )
+    if (Type & itPoint)
     {
         m_InsType = itPoint;
     }
-    else if ( Type & itInto )
-    {
-        m_InsType = itInto;
-    }
-    else if ( Type & itAfter )
-    {
-        m_InsType = itAfter;
-    }
-    else if ( Type & itBefore )
-    {
-        m_InsType = itBefore;
-    }
     else
-    {
-        m_InsType = 0;
-    }
+        if (Type & itInto)
+        {
+            m_InsType = itInto;
+        }
+        else
+            if (Type & itAfter)
+            {
+                m_InsType = itAfter;
+            }
+            else
+                if (Type & itBefore)
+                {
+                    m_InsType = itBefore;
+                }
+                else
+                {
+                    m_InsType = 0;
+                }
 
     RebuildInsTypeIcons();
 }
 
 void wxsItemEditor::RebuildInsTypeIcons()
 {
-    BuildInsTypeIcon(m_InsPointBtn,m_InsPointImg,itPoint);
-    BuildInsTypeIcon(m_InsIntoBtn,m_InsIntoImg,itInto);
-    BuildInsTypeIcon(m_InsBeforeBtn,m_InsBeforeImg,itBefore);
-    BuildInsTypeIcon(m_InsAfterBtn,m_InsAfterImg,itAfter);
+    BuildInsTypeIcon(m_InsPointBtn, m_InsPointImg, itPoint);
+    BuildInsTypeIcon(m_InsIntoBtn, m_InsIntoImg, itInto);
+    BuildInsTypeIcon(m_InsBeforeBtn, m_InsBeforeImg, itBefore);
+    BuildInsTypeIcon(m_InsAfterBtn, m_InsAfterImg, itAfter);
 }
 
-void wxsItemEditor::BuildInsTypeIcon(wxBitmapButton* Btn,const wxImage& Original,int ButtonType)
+void wxsItemEditor::BuildInsTypeIcon(wxBitmapButton * Btn, const wxImage & Original, int ButtonType)
 {
     const bool Selected = (m_InsType & ButtonType) != 0;
     const bool Enabled = (m_InsTypeMask & ButtonType) != 0;
 
-    if ( !Enabled || !Selected )
+    if (!Enabled || !Selected)
     {
         Btn->SetBitmapLabel(Original);
     }
@@ -627,7 +659,7 @@ void wxsItemEditor::BuildInsTypeIcon(wxBitmapButton* Btn,const wxImage& Original
 
 void wxsItemEditor::RebuildQuickPropsIcon()
 {
-    m_QuickPanelBtn->SetBitmapLabel( m_QuickPropsOpen ? m_QuickPropsImgClose : m_QuickPropsImgOpen );
+    m_QuickPanelBtn->SetBitmapLabel(m_QuickPropsOpen ? m_QuickPropsImgClose : m_QuickPropsImgOpen);
 }
 
 void wxsItemEditor::RebuildIcons()
@@ -642,125 +674,138 @@ void wxsItemEditor::RebuildIcons()
 
 namespace
 {
-int PrioritySort(const wxsItemInfo** it1,const wxsItemInfo** it2)
+int PrioritySort(const wxsItemInfo ** it1, const wxsItemInfo ** it2)
 {
     return (*it1)->Priority - (*it2)->Priority;
 }
 
-WX_DEFINE_ARRAY(const wxsItemInfo*,ItemsT);
+WX_DEFINE_ARRAY(const wxsItemInfo *, ItemsT);
 
-int CategorySort(ItemsT* it1, ItemsT* it2)
+int CategorySort(ItemsT * it1, ItemsT * it2)
 {
     if (it1->Item(0)->Category.IsSameAs(_T("Standard")))
+    {
         return -1;
+    }
 
     if (it2->Item(0)->Category.IsSameAs(_T("Standard")))
+    {
         return 1;
+    }
 
     return wxStrcmp(it1->Item(0)->Category, it2->Item(0)->Category);
 }
 
-WX_DECLARE_STRING_HASH_MAP(ItemsT,MapT);
-WX_DEFINE_SORTED_ARRAY(ItemsT*,ArrayOfItemsT);
+WX_DECLARE_STRING_HASH_MAP(ItemsT, MapT);
+WX_DEFINE_SORTED_ARRAY(ItemsT *, ArrayOfItemsT);
 }
 
-void wxsItemEditor::BuildPalette(wxNotebook* Palette)
+void wxsItemEditor::BuildPalette(wxNotebook * Palette)
 {
     Palette->DeleteAllPages();
     bool AllowNonXRCItems = (m_Data->GetPropertiesFilter() & flSource);
-
     // First we need to split all widgets into groups
     // it will be done using multimap (map of arrays)
-
     MapT Map;
     ArrayOfItemsT aoi(CategorySort);
 
-    for ( const wxsItemInfo* Info = wxsItemFactory::GetFirstInfo(); Info; Info = wxsItemFactory::GetNextInfo() )
+    for (const wxsItemInfo * Info = wxsItemFactory::GetFirstInfo(); Info; Info = wxsItemFactory::GetNextInfo())
     {
-        if ( !Info->Category.empty() )
+        if (!Info->Category.empty())
         {
             Map[Info->Category].Add(Info);
         }
     }
 
-    for ( MapT::iterator i = Map.begin(); i!=Map.end(); ++i )
+    for (MapT::iterator i = Map.begin(); i != Map.end(); ++i)
     {
         aoi.Add(&(i->second));
     }
+
     for (size_t i = 0; i < aoi.Count(); ++i)
     {
-        ItemsT* Items = aoi.Item(i);
+        ItemsT * Items = aoi.Item(i);
         Items->Sort(PrioritySort);
-        wxScrolledWindow* CurrentPanel = new wxScrolledWindow(Palette,-1,wxDefaultPosition,wxDefaultSize,0/*wxALWAYS_SHOW_SB|wxHSCROLL*/);
-        CurrentPanel->SetScrollRate(1,0);
-        Palette->AddPage(CurrentPanel,Items->Item(0)->Category);
-        wxSizer* RowSizer = new wxBoxSizer(wxHORIZONTAL);
+        wxScrolledWindow * CurrentPanel = new wxScrolledWindow(Palette, -1, wxDefaultPosition, wxDefaultSize, 0/*wxALWAYS_SHOW_SB|wxHSCROLL*/);
+        CurrentPanel->SetScrollRate(1, 0);
+        Palette->AddPage(CurrentPanel, Items->Item(0)->Category);
+        wxSizer * RowSizer = new wxBoxSizer(wxHORIZONTAL);
 
-        for ( size_t j=Items->Count(); j-->0; )
+        for (size_t j = Items->Count(); j-- > 0;)
         {
-            const wxsItemInfo* Info = Items->Item(j);
-            const wxBitmap& Icon = ( PalIconSize() == 16L ) ? Info->Icon16 : Info->Icon32;
+            const wxsItemInfo * Info = Items->Item(j);
+            const wxBitmap & Icon = (PalIconSize() == 16L) ? Info->Icon16 : Info->Icon32;
 
-            if ( AllowNonXRCItems || Info->AllowInXRC )
+            if (AllowNonXRCItems || Info->AllowInXRC)
             {
-                wxWindow* Btn;
-                if ( Icon.Ok() )
+                wxWindow * Btn;
+
+                if (Icon.Ok())
                 {
-                    Btn = new wxBitmapButton(CurrentPanel,-1,Icon,
-                                             wxDefaultPosition,wxDefaultSize,wxBU_AUTODRAW,
+                    Btn = new wxBitmapButton(CurrentPanel, -1, Icon,
+                                             wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW,
                                              wxDefaultValidator, Info->ClassName);
-                    RowSizer->Add(Btn,0,wxALIGN_CENTER);
+                    RowSizer->Add(Btn, 0, wxALIGN_CENTER);
                 }
                 else
                 {
-                    Btn = new wxButton(CurrentPanel,-1,Info->ClassName,
-                                       wxDefaultPosition,wxDefaultSize,0,
-                                       wxDefaultValidator,Info->ClassName);
-                    RowSizer->Add(Btn,0,wxGROW);
+                    Btn = new wxButton(CurrentPanel, -1, Info->ClassName,
+                                       wxDefaultPosition, wxDefaultSize, 0,
+                                       wxDefaultValidator, Info->ClassName);
+                    RowSizer->Add(Btn, 0, wxGROW);
                 }
+
                 Btn->SetToolTip(Info->ClassName);
             }
         }
+
         CurrentPanel->SetSizer(RowSizer);
         RowSizer->FitInside(CurrentPanel);
     }
 }
 
-void wxsItemEditor::OnInsPoint(cb_unused wxCommandEvent& event)
+void wxsItemEditor::OnInsPoint(cb_unused wxCommandEvent & event)
 {
     SetInsertionType(itPoint);
 }
 
-void wxsItemEditor::OnInsInto(cb_unused wxCommandEvent& event)
+void wxsItemEditor::OnInsInto(cb_unused wxCommandEvent & event)
 {
     SetInsertionType(itInto);
 }
 
-void wxsItemEditor::OnInsAfter(cb_unused wxCommandEvent& event)
+void wxsItemEditor::OnInsAfter(cb_unused wxCommandEvent & event)
 {
     SetInsertionType(itAfter);
 }
 
-void wxsItemEditor::OnInsBefore(cb_unused wxCommandEvent& event)
+void wxsItemEditor::OnInsBefore(cb_unused wxCommandEvent & event)
 {
     SetInsertionType(itBefore);
 }
 
-void wxsItemEditor::OnDelete(cb_unused wxCommandEvent& event)
+void wxsItemEditor::OnDelete(cb_unused wxCommandEvent & event)
 {
-    if ( !m_Data ) return;
+    if (!m_Data)
+    {
+        return;
+    }
+
     m_Data->BeginChange();
     m_Data->DeleteSelected();
     m_Data->EndChange();
 }
 
-void wxsItemEditor::OnPreview(cb_unused wxCommandEvent& event)
+void wxsItemEditor::OnPreview(cb_unused wxCommandEvent & event)
 {
-    if ( !m_Data ) return;
+    if (!m_Data)
+    {
+        return;
+    }
 
     m_Content->BlockFetch(true);
 
-    if ( m_Data->IsPreview() )
+    if (m_Data->IsPreview())
     {
         m_Data->HidePreview();
     }
@@ -772,7 +817,7 @@ void wxsItemEditor::OnPreview(cb_unused wxCommandEvent& event)
     m_Content->BlockFetch(false);
 }
 
-void wxsItemEditor::OnQuickProps(cb_unused wxCommandEvent& event)
+void wxsItemEditor::OnQuickProps(cb_unused wxCommandEvent & event)
 {
     m_QuickPropsOpen = !m_QuickPropsOpen;
     RebuildQuickPropsIcon();
@@ -781,94 +826,105 @@ void wxsItemEditor::OnQuickProps(cb_unused wxCommandEvent& event)
 
 void wxsItemEditor::ToggleQuickPropsPanel(bool Open)
 {
-    m_HorizSizer->Show(m_QPArea,Open,true);
+    m_HorizSizer->Show(m_QPArea, Open, true);
     Layout();
 }
 
-void wxsItemEditor::RebuildQuickProps(wxsItem* Selection)
+void wxsItemEditor::RebuildQuickProps(wxsItem * Selection)
 {
     // Checking if we've already initialized visual stuff
-    if ( !m_Content ) return;
+    if (!m_Content)
+    {
+        return;
+    }
 
     Freeze();
-
     int QPx, QPy;
     // TODO: Check if content of previous QPPanel shouldn't be stored into item
-    m_QPArea->GetViewStart(&QPx,&QPy);
+    m_QPArea->GetViewStart(&QPx, &QPy);
     m_QPArea->SetSizer(0);
     m_QPArea->DestroyChildren();
     m_QPSizer = new wxBoxSizer(wxVERTICAL);
     m_QPArea->SetSizer(m_QPSizer);
 
-    if ( Selection )
+    if (Selection)
     {
-        wxWindow* QPPanel = Selection->BuildQuickPropertiesPanel(m_QPArea);
-        if ( QPPanel )
+        wxWindow * QPPanel = Selection->BuildQuickPropertiesPanel(m_QPArea);
+
+        if (QPPanel)
         {
-            m_QPSizer->Add(QPPanel,0,wxEXPAND);
+            m_QPSizer->Add(QPPanel, 0, wxEXPAND);
         }
     }
+
     m_QPSizer->Layout();
     m_QPSizer->Fit(m_QPArea);
     Layout();
-    m_QPArea->Scroll(QPx,QPy);
+    m_QPArea->Scroll(QPx, QPy);
     Thaw();
 }
 
-wxsItem* wxsItemEditor::GetReferenceItem(int& InsertionType)
+wxsItem * wxsItemEditor::GetReferenceItem(int & InsertionType)
 {
-    wxsItem* Reference = m_Data->GetLastSelection();
-    if ( !Reference )
+    wxsItem * Reference = m_Data->GetLastSelection();
+
+    if (!Reference)
     {
         // Fixing up reference item when there's nothing selected
         InsertionType = itInto;
         Reference = m_Data->GetRootItem();
-        wxsParent* AsParent = Reference->ConvertToParent();
-        if ( AsParent &&
+        wxsParent * AsParent = Reference->ConvertToParent();
+
+        if (AsParent &&
                 AsParent->GetChildCount() == 1 &&
-                AsParent->GetChild(0)->GetType() == wxsTSizer )
+                AsParent->GetChild(0)->GetType() == wxsTSizer)
         {
             Reference = AsParent->GetChild(0);
         }
     }
+
     return Reference;
 }
 
-void wxsItemEditor::OnKeyDown(wxKeyEvent& event)
+void wxsItemEditor::OnKeyDown(wxKeyEvent & event)
 {
-    switch ( event.GetKeyCode() )
+    switch (event.GetKeyCode())
     {
-    case WXK_DELETE:
-        if ( !m_Data ) break;
-        m_Data->BeginChange();
-        m_Data->DeleteSelected();
-        m_Data->EndChange();
-        break;
+        case WXK_DELETE:
+            if (!m_Data)
+            {
+                break;
+            }
 
-    default:
-        break;
+            m_Data->BeginChange();
+            m_Data->DeleteSelected();
+            m_Data->EndChange();
+            break;
+
+        default:
+            break;
     }
 }
 
-void wxsItemEditor::StartInsertPointSequence(const wxsItemInfo* Info)
+void wxsItemEditor::StartInsertPointSequence(const wxsItemInfo * Info)
 {
-    if ( m_Content )
+    if (m_Content)
     {
         m_Content->InsertByPointing(Info);
     }
 }
 
-void wxsItemEditor::ShowPopup(wxsItem* Item,wxMenu* Popup)
+void wxsItemEditor::ShowPopup(wxsItem * Item, wxMenu * Popup)
 {
     m_PopupCaller = Item;
     PopupMenu(Popup);
 }
 
-void wxsItemEditor::OnPopup(wxCommandEvent& event)
+void wxsItemEditor::OnPopup(wxCommandEvent & event)
 {
-    if ( m_PopupCaller )
+    if (m_PopupCaller)
     {
-        if ( !m_PopupCaller->PopupMenu(event.GetId()) )
+        if (!m_PopupCaller->PopupMenu(event.GetId()))
         {
             event.Skip();
         }
@@ -887,15 +943,15 @@ wxImage wxsItemEditor::m_SelectedImg;
 wxsItemEditor::WindowSet wxsItemEditor::m_AllEditors;
 bool wxsItemEditor::m_ImagesLoaded = false;
 
-BEGIN_EVENT_TABLE(wxsItemEditor,wxsEditor)
-    EVT_BUTTON(wxsInsPointId,wxsItemEditor::OnInsPoint)
-    EVT_BUTTON(wxsInsIntoId,wxsItemEditor::OnInsInto)
-    EVT_BUTTON(wxsInsBeforeId,wxsItemEditor::OnInsBefore)
-    EVT_BUTTON(wxsInsAfterId,wxsItemEditor::OnInsAfter)
-    EVT_BUTTON(wxsDelId,wxsItemEditor::OnDelete)
-    EVT_BUTTON(wxsPreviewId,wxsItemEditor::OnPreview)
-    EVT_BUTTON(wxsQuickPropsId,wxsItemEditor::OnQuickProps)
-    EVT_BUTTON(-1,wxsItemEditor::OnButton)
+BEGIN_EVENT_TABLE(wxsItemEditor, wxsEditor)
+    EVT_BUTTON(wxsInsPointId, wxsItemEditor::OnInsPoint)
+    EVT_BUTTON(wxsInsIntoId, wxsItemEditor::OnInsInto)
+    EVT_BUTTON(wxsInsBeforeId, wxsItemEditor::OnInsBefore)
+    EVT_BUTTON(wxsInsAfterId, wxsItemEditor::OnInsAfter)
+    EVT_BUTTON(wxsDelId, wxsItemEditor::OnDelete)
+    EVT_BUTTON(wxsPreviewId, wxsItemEditor::OnPreview)
+    EVT_BUTTON(wxsQuickPropsId, wxsItemEditor::OnQuickProps)
+    EVT_BUTTON(-1, wxsItemEditor::OnButton)
     EVT_KEY_DOWN(wxsItemEditor::OnKeyDown)
-    EVT_MENU(wxID_ANY,wxsItemEditor::OnPopup)
+    EVT_MENU(wxID_ANY, wxsItemEditor::OnPopup)
 END_EVENT_TABLE()

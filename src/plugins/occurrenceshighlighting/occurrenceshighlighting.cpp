@@ -10,11 +10,11 @@
 #include <sdk.h> // Code::Blocks SDK
 
 #ifndef CB_PRECOMP
-#include <algorithm>
-#include <wx/listctrl.h>
-#include <configmanager.h>
-#include <cbeditor.h>
-#include <editormanager.h>
+    #include <algorithm>
+    #include <wx/listctrl.h>
+    #include <configmanager.h>
+    #include <cbeditor.h>
+    #include <editormanager.h>
 #endif
 
 #include <configurationpanel.h>
@@ -46,7 +46,7 @@ const int idContextRemove                     = wxNewId();
 BEGIN_EVENT_TABLE(OccurrencesHighlighting, cbPlugin)
     // add any events you want to handle here
     EVT_MENU(idViewOccurencesPanel,      OccurrencesHighlighting::OnViewOccurrencesPanel)
-    EVT_UPDATE_UI(idViewOccurencesPanel, OccurrencesHighlighting::OnUpdateViewMenu      )
+    EVT_UPDATE_UI(idViewOccurencesPanel, OccurrencesHighlighting::OnUpdateViewMenu)
 END_EVENT_TABLE()
 
 // constructor
@@ -59,9 +59,11 @@ OccurrencesHighlighting::OccurrencesHighlighting():
     // In the generated boilerplate code we have no resources but when
     // we add some, it will be nice that this code is in place already ;)
     if (!Manager::LoadResource(_T("occurrenceshighlighting.zip")))
+    {
         NotifyMissingFile(_T("occurrenceshighlighting.zip"));
+    }
 
-    ColourManager* cm = Manager::Get()->GetColourManager();
+    ColourManager * cm = Manager::Get()->GetColourManager();
     cm->RegisterColour(_("Editor"), _("Highlight occurrence"),      wxT("editor_highlight_occurrence"), *wxRED);
     cm->RegisterColour(_("Editor"), _("Highlight occurrence text"), wxT("editor_highlight_occurrence_text"), *wxWHITE);
     cm->RegisterColour(_("Editor"), _("Permanently highlighted occurrences"), wxT("editor_highlight_occurrence_permanently"), *wxGREEN);
@@ -81,20 +83,15 @@ void OccurrencesHighlighting::OnAttach()
     // You should check for it in other functions, because if it
     // is FALSE, it means that the application did *not* "load"
     // (see: does not need) this plugin...
-
     m_pHighlighter = new Highlighter(m_texts);
-
-    EditorHooks::HookFunctorBase *editor_hook = new EditorHooks::HookFunctor<OccurrencesHighlighting>(this, &OccurrencesHighlighting::OnEditorHook);
+    EditorHooks::HookFunctorBase * editor_hook = new EditorHooks::HookFunctor<OccurrencesHighlighting>(this, &OccurrencesHighlighting::OnEditorHook);
     m_FunctorId = EditorHooks::RegisterHook(editor_hook);
-
     typedef cbEventFunctor<OccurrencesHighlighting, CodeBlocksEvent> EditFunctor;
-    auto *handler = new EditFunctor(this, &OccurrencesHighlighting::OnEditorEvent);
+    auto * handler = new EditFunctor(this, &OccurrencesHighlighting::OnEditorEvent);
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, handler);
     handler = new EditFunctor(this, &OccurrencesHighlighting::OnEditorEvent);
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_SPLIT, handler);
-
     m_pPanel = new OccurrencesPanel(Manager::Get()->GetAppWindow());
-
     // add the foldpanel to the docking system
     CodeBlocksDockEvent dockevt(cbEVT_ADD_DOCK_WINDOW);
     dockevt.name = _T("HighlightedOccurrences");
@@ -106,11 +103,9 @@ void OccurrencesHighlighting::OnAttach()
     dockevt.dockSide = CodeBlocksDockEvent::dsLeft;
     dockevt.stretch = true;
     Manager::Get()->ProcessEvent(dockevt);
-
     m_pPanel->GetListCtrl()->Connect(wxEVT_COMMAND_LIST_KEY_DOWN, wxListEventHandler(OccurrencesHighlighting::OnListKeyDown), NULL, this);
     Connect(idMenuEntryPermanent, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(OccurrencesHighlighting::OnHighlightPermanently), NULL, this);
     Connect(idMenuEntryRemove,    wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(OccurrencesHighlighting::OnHighlightRemove),      NULL, this);
-
     m_pPanel->GetListCtrl()->Connect(wxEVT_CONTEXT_MENU, wxContextMenuEventHandler(OccurrencesHighlighting::OnPanelPopupMenu), NULL, this);
     Connect(idContextRemove, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(OccurrencesHighlighting::OnRemove), NULL, this);
 }
@@ -122,23 +117,18 @@ void OccurrencesHighlighting::OnRelease(bool appShutDown)
     // which means you must not use any of the SDK Managers
     // NOTE: after this function, the inherited member variable
     // m_IsAttached will be FALSE...
-
     Manager::Get()->RemoveAllEventSinksFor(this);
-
     EditorHooks::UnregisterHook(m_FunctorId);
-
     delete m_pHighlighter;
     m_pHighlighter = NULL;
-
     m_pPanel->GetListCtrl()->Disconnect(wxEVT_COMMAND_LIST_KEY_DOWN, wxListEventHandler(OccurrencesHighlighting::OnListKeyDown), NULL, this);
-    Disconnect(idMenuEntryPermanent, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(OccurrencesHighlighting::OnHighlightPermanently), NULL, (wxEvtHandler*)this);
-    Disconnect(idMenuEntryRemove,    wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(OccurrencesHighlighting::OnHighlightRemove),      NULL, (wxEvtHandler*)this);
-
+    Disconnect(idMenuEntryPermanent, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(OccurrencesHighlighting::OnHighlightPermanently), NULL, (wxEvtHandler *)this);
+    Disconnect(idMenuEntryRemove,    wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(OccurrencesHighlighting::OnHighlightRemove),      NULL, (wxEvtHandler *)this);
     m_pPanel->GetListCtrl()->Disconnect(wxEVT_CONTEXT_MENU, wxContextMenuEventHandler(OccurrencesHighlighting::OnPanelPopupMenu), NULL, this);
     Disconnect(idContextRemove, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(OccurrencesHighlighting::OnRemove), NULL, this);
 
     // remove panel from docking system
-    if ( m_pPanel && !appShutDown )
+    if (m_pPanel && !appShutDown)
     {
         CodeBlocksDockEvent docevt(cbEVT_REMOVE_DOCK_WINDOW);
         docevt.pWindow = m_pPanel;
@@ -149,29 +139,51 @@ void OccurrencesHighlighting::OnRelease(bool appShutDown)
     }
 }
 
-void OccurrencesHighlighting::BuildModuleMenu(const ModuleType type, wxMenu* menu, cb_unused const FileTreeData* data)
+void OccurrencesHighlighting::BuildModuleMenu(const ModuleType type, wxMenu * menu, cb_unused const FileTreeData * data)
 {
     // Some library module is ready to display a pop-up menu.
     // Check the parameter \"type\" and see which module it is
     // and append any items you need in the menu...
     // TIP: for consistency, add a separator as the first item...
+    if (!IsAttached())
+    {
+        return;
+    }
 
-    if ( !IsAttached() ) return;
-    if (type != mtEditorManager || !menu) return;
+    if (type != mtEditorManager || !menu)
+    {
+        return;
+    }
 
-    EditorManager* emngr = Manager::Get()->GetEditorManager();
-    if ( !emngr ) return;
+    EditorManager * emngr = Manager::Get()->GetEditorManager();
 
-    EditorBase *edb = emngr->GetActiveEditor();
-    if ( !edb || !edb->IsBuiltinEditor() ) return;
+    if (!emngr)
+    {
+        return;
+    }
 
-    cbStyledTextCtrl* stc = ((cbEditor*)edb)->GetControl();
-    if ( !stc ) return;
+    EditorBase * edb = emngr->GetActiveEditor();
+
+    if (!edb || !edb->IsBuiltinEditor())
+    {
+        return;
+    }
+
+    cbStyledTextCtrl * stc = ((cbEditor *)edb)->GetControl();
+
+    if (!stc)
+    {
+        return;
+    }
 
     wxString word = GetWordAtCaret();
-    if ( word.IsEmpty() ) return;
 
-    if ( m_texts.find(word) == m_texts.end() )
+    if (word.IsEmpty())
+    {
+        return;
+    }
+
+    if (m_texts.find(word) == m_texts.end())
     {
         const wxString label = _("Permanently Highlight '") + word + _T("'");
         const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
@@ -183,16 +195,17 @@ void OccurrencesHighlighting::BuildModuleMenu(const ModuleType type, wxMenu* men
         const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
         menu->Insert(position, idMenuEntryRemove, label);
     }
-
 }
-void OccurrencesHighlighting::BuildMenu(wxMenuBar* menuBar)
+void OccurrencesHighlighting::BuildMenu(wxMenuBar * menuBar)
 {
     // insert entry in the View menu
     int ViewPos = menuBar->FindMenu(_("&View"));
+
     if (ViewPos != wxNOT_FOUND)
     {
         m_pViewMenu = menuBar->GetMenu(ViewPos);
-        wxMenuItemList& items = m_pViewMenu->GetMenuItems();
+        wxMenuItemList & items = m_pViewMenu->GetMenuItems();
+
         // find the first separator and insert before it
         for (size_t i = 0; i < items.GetCount(); ++i)
         {
@@ -202,23 +215,24 @@ void OccurrencesHighlighting::BuildMenu(wxMenuBar* menuBar)
                 return;
             }
         }
+
         // not found so just append
         m_pViewMenu->AppendCheckItem(idViewOccurencesPanel, _("&Highlighted Occurrences"), _("Toggle displaying the highlighted occurrences"));
     }
 }
 
-void OccurrencesHighlighting::OnViewOccurrencesPanel(wxCommandEvent& event)
+void OccurrencesHighlighting::OnViewOccurrencesPanel(wxCommandEvent & event)
 {
     CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = m_pPanel;
     Manager::Get()->ProcessEvent(evt);
 }
 
-void OccurrencesHighlighting::OnUpdateViewMenu(wxUpdateUIEvent &event)
+void OccurrencesHighlighting::OnUpdateViewMenu(wxUpdateUIEvent & event)
 {
     if (m_pViewMenu)
     {
-        bool isVis = IsWindowReallyShown((wxWindow*)m_pPanel);
+        bool isVis = IsWindowReallyShown((wxWindow *)m_pPanel);
         m_pViewMenu->Check(idViewOccurencesPanel, isVis);
         //event.Check(isVis);
     }
@@ -227,72 +241,72 @@ void OccurrencesHighlighting::OnUpdateViewMenu(wxUpdateUIEvent &event)
     event.Skip();
 }
 
-void OccurrencesHighlighting::OnListKeyDown(wxListEvent &event)
+void OccurrencesHighlighting::OnListKeyDown(wxListEvent & event)
 {
-    switch ( event.GetKeyCode() )
+    switch (event.GetKeyCode())
     {
-    case WXK_DELETE:
-        RemoveSelected();
-        break;
+        case WXK_DELETE:
+            RemoveSelected();
+            break;
 
-    case WXK_INSERT:
-//            if ( GetWindowStyle() & wxLC_REPORT )
-//            {
-//                if ( GetWindowStyle() & wxLC_VIRTUAL )
-//                {
-//                    SetItemCount(GetItemCount() + 1);
-//                }
-//                else // !virtual
-//                {
-//                    InsertItemInReportView(event.GetIndex());
-//                }
-//            }
-    //else: fall through
+        case WXK_INSERT:
 
-    default:
-
-        event.Skip();
+        //            if ( GetWindowStyle() & wxLC_REPORT )
+        //            {
+        //                if ( GetWindowStyle() & wxLC_VIRTUAL )
+        //                {
+        //                    SetItemCount(GetItemCount() + 1);
+        //                }
+        //                else // !virtual
+        //                {
+        //                    InsertItemInReportView(event.GetIndex());
+        //                }
+        //            }
+        //else: fall through
+        default:
+            event.Skip();
     }
 }
 
 wxString OccurrencesHighlighting::GetWordAtCaret()const
 {
-    cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    cbEditor * ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
-    if ( ed )
+    if (ed)
     {
-        cbStyledTextCtrl *control = ed->GetControl();
+        cbStyledTextCtrl * control = ed->GetControl();
+
         if (control)
         {
             wxString selectedText = control->GetSelectedText();
 
-            if ( selectedText.IsEmpty() ||
-                    selectedText.Contains(_T(" ")) ||selectedText.Contains(_T("\t")) )
+            if (selectedText.IsEmpty() ||
+                    selectedText.Contains(_T(" ")) || selectedText.Contains(_T("\t")))
             {
                 const int pos = control->GetCurrentPos();
                 const int ws = control->WordStartPosition(pos, true);
                 const int we = control->WordEndPosition(pos, true);
                 selectedText = control->GetTextRange(ws, we);
             }
+
             return selectedText;
         }
     }
+
     return wxEmptyString;
 }
 
-void OccurrencesHighlighting::OnHighlightPermanently(wxCommandEvent& WXUNUSED(event))
+void OccurrencesHighlighting::OnHighlightPermanently(wxCommandEvent & WXUNUSED(event))
 {
     wxString word = GetWordAtCaret();
-
     m_texts.insert(word);
     m_pHighlighter->TextsChanged();
     UpdatePanel();
 }
 
-void OccurrencesHighlighting::OnHighlightRemove(wxCommandEvent& WXUNUSED(event))
+void OccurrencesHighlighting::OnHighlightRemove(wxCommandEvent & WXUNUSED(event))
 {
     wxString word = GetWordAtCaret();
-
     m_texts.erase(word);
     m_pHighlighter->TextsChanged();
     UpdatePanel();
@@ -300,32 +314,32 @@ void OccurrencesHighlighting::OnHighlightRemove(wxCommandEvent& WXUNUSED(event))
 
 void OccurrencesHighlighting::UpdatePanel()
 {
-    wxListCtrl *list = m_pPanel->GetListCtrl();
+    wxListCtrl * list = m_pPanel->GetListCtrl();
     list->Freeze();
     list->DeleteAllItems();
-
     wxListItem item;
+
     for (std::set<wxString>::iterator it = m_texts.begin(); it != m_texts.end(); it++)
     {
         item.SetText(*it);
         item.SetId(std::max(list->GetItemCount(), 0));
         list->InsertItem(item);
     }
+
     list->Thaw();
 }
 
-void OccurrencesHighlighting::OnPanelPopupMenu(wxContextMenuEvent& WXUNUSED(event))
+void OccurrencesHighlighting::OnPanelPopupMenu(wxContextMenuEvent & WXUNUSED(event))
 {
     if (m_pPanel->GetListCtrl()->GetSelectedItemCount() > 0)
     {
-        wxMenu *menu = new wxMenu;
+        wxMenu * menu = new wxMenu;
         menu->Append(idContextRemove, _T("Remove"), _T(""));
-
         m_pPanel->GetListCtrl()->PopupMenu(menu);
     }
 }
 
-void OccurrencesHighlighting::OnRemove(wxCommandEvent& WXUNUSED(event))
+void OccurrencesHighlighting::OnRemove(wxCommandEvent & WXUNUSED(event))
 {
     RemoveSelected();
 }
@@ -333,31 +347,31 @@ void OccurrencesHighlighting::OnRemove(wxCommandEvent& WXUNUSED(event))
 void OccurrencesHighlighting::RemoveSelected()
 {
     long item;
-
     item = m_pPanel->GetListCtrl()->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+
     while (item != -1)
     {
         m_texts.erase(m_pPanel->GetListCtrl()->GetItemText(item));
         m_pPanel->GetListCtrl()->DeleteItem(item);
-
         // -1 because the indices were shifted by DeleteItem()
         item = m_pPanel->GetListCtrl()->GetNextItem(item - 1,
-                wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+                                                    wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     }
+
     m_pHighlighter->TextsChanged();
 }
 
-void OccurrencesHighlighting::OnEditorHook(cbEditor* editor, wxScintillaEvent& event)
+void OccurrencesHighlighting::OnEditorHook(cbEditor * editor, wxScintillaEvent & event)
 {
     m_pHighlighter->Call(editor, event);
 }
 
-void OccurrencesHighlighting::OnEditorEvent(cb_unused CodeBlocksEvent& event)
+void OccurrencesHighlighting::OnEditorEvent(cb_unused CodeBlocksEvent & event)
 {
     m_pHighlighter->TextsChanged();
 }
 
-cbConfigurationPanel* OccurrencesHighlighting::GetConfigurationPanel(wxWindow* parent)
+cbConfigurationPanel * OccurrencesHighlighting::GetConfigurationPanel(wxWindow * parent)
 {
     return new OccurrencesHighlightingConfigurationPanel(parent);
 }

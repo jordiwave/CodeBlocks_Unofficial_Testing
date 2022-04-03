@@ -15,26 +15,26 @@ class wxCommandEvent;
 
 class OccurrencesHighlightingConfigurationPanel : public cbConfigurationPanel
 {
-public:
-    OccurrencesHighlightingConfigurationPanel(wxWindow* parent);
-    ~OccurrencesHighlightingConfigurationPanel() override;
+    public:
+        OccurrencesHighlightingConfigurationPanel(wxWindow * parent);
+        ~OccurrencesHighlightingConfigurationPanel() override;
 
-    /// @return the panel's title.
-    wxString GetTitle() const override;
-    /// @return the panel's bitmap base name. You must supply two bitmaps: \<basename\>.png and \<basename\>-off.png...
-    wxString GetBitmapBaseName() const override;
-    /// Called when the user chooses to apply the configuration.
-    void OnApply() override;
-    /// Called when the user chooses to cancel the configuration.
-    void OnCancel() override;
+        /// @return the panel's title.
+        wxString GetTitle() const override;
+        /// @return the panel's bitmap base name. You must supply two bitmaps: \<basename\>.png and \<basename\>-off.png...
+        wxString GetBitmapBaseName() const override;
+        /// Called when the user chooses to apply the configuration.
+        void OnApply() override;
+        /// Called when the user chooses to cancel the configuration.
+        void OnCancel() override;
 
-private:
-    void OnCheck(wxCommandEvent& event);
+    private:
+        void OnCheck(wxCommandEvent & event);
 
-    void UpdateUI();
-private:
+        void UpdateUI();
+    private:
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

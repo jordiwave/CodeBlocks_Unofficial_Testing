@@ -71,36 +71,36 @@ struct ARM_MMU_FIRST_LEVEL_FINE_PAGE_TABLE
 #define ARM_MMU_FIRST_LEVEL_FINE_PAGE_ID	0x3
 
 #define ARM_MMU_FIRST_LEVEL_DESCRIPTOR_ADDRESS(ttb_base, table_index) \
-	(unsigned int *)((unsigned int)(ttb_base) + ((table_index) << 2))
+    (unsigned int *)((unsigned int)(ttb_base) + ((table_index) << 2))
 
 #define ARM_FIRST_LEVEL_PAGE_TABLE_SIZE		0x4000
 
 
 #define ARM_MMU_SECTION(ttb_base, actual_base, virtual_base,				\
-						cacheable, bufferable, perm)						\
-	do {																	\
-		register union ARM_MMU_FIRST_LEVEL_DESCRIPTOR desc;					\
-																			\
-		desc.word = 0;														\
-		desc.section.id = ARM_MMU_FIRST_LEVEL_SECTION_ID;					\
-		desc.section.imp = 1;												\
-		desc.section.domain = 0;											\
-		desc.section.c = (cacheable);										\
-		desc.section.b = (bufferable);										\
-		desc.section.ap = (perm);											\
-		desc.section.base_address = (actual_base);							\
-		*ARM_MMU_FIRST_LEVEL_DESCRIPTOR_ADDRESS(ttb_base, (virtual_base))	\
-							= desc.word;									\
-	} while (0)
+                        cacheable, bufferable, perm)						\
+do {																	\
+    register union ARM_MMU_FIRST_LEVEL_DESCRIPTOR desc;					\
+    \
+    desc.word = 0;														\
+    desc.section.id = ARM_MMU_FIRST_LEVEL_SECTION_ID;					\
+    desc.section.imp = 1;												\
+    desc.section.domain = 0;											\
+    desc.section.c = (cacheable);										\
+    desc.section.b = (bufferable);										\
+    desc.section.ap = (perm);											\
+    desc.section.base_address = (actual_base);							\
+    *ARM_MMU_FIRST_LEVEL_DESCRIPTOR_ADDRESS(ttb_base, (virtual_base))	\
+        = desc.word;									\
+} while (0)
 
 #define X_ARM_MMU_SECTION(abase,vbase,size,cache,buff,access)		\
-	{																\
-		int i; int j = abase; int k = vbase;						\
-		for (i = size; i > 0 ; i--,j++,k++)							\
-		{															\
-			ARM_MMU_SECTION(ttb_base, j, k, cache, buff, access);	\
-		}															\
-	}
+    {																\
+        int i; int j = abase; int k = vbase;						\
+        for (i = size; i > 0 ; i--,j++,k++)							\
+        {															\
+            ARM_MMU_SECTION(ttb_base, j, k, cache, buff, access);	\
+        }															\
+    }
 
 union ARM_MMU_FIRST_LEVEL_DESCRIPTOR
 {
@@ -127,22 +127,22 @@ union ARM_MMU_FIRST_LEVEL_DESCRIPTOR
  * Initialization for the Domain Access Control Register
  */
 #define ARM_ACCESS_DACR_DEFAULT		(	\
-		ARM_ACCESS_TYPE_MANAGER(0)    |	\
-		ARM_ACCESS_TYPE_NO_ACCESS(1)  |	\
-		ARM_ACCESS_TYPE_NO_ACCESS(2)  |	\
-		ARM_ACCESS_TYPE_NO_ACCESS(3)  |	\
-		ARM_ACCESS_TYPE_NO_ACCESS(4)  |	\
-		ARM_ACCESS_TYPE_NO_ACCESS(5)  |	\
-		ARM_ACCESS_TYPE_NO_ACCESS(6)  |	\
-		ARM_ACCESS_TYPE_NO_ACCESS(7)  |	\
-		ARM_ACCESS_TYPE_NO_ACCESS(8)  |	\
-		ARM_ACCESS_TYPE_NO_ACCESS(9)  |	\
-		ARM_ACCESS_TYPE_NO_ACCESS(10) |	\
-		ARM_ACCESS_TYPE_NO_ACCESS(11) |	\
-		ARM_ACCESS_TYPE_NO_ACCESS(12) |	\
-		ARM_ACCESS_TYPE_NO_ACCESS(13) |	\
-		ARM_ACCESS_TYPE_NO_ACCESS(14) |	\
-		ARM_ACCESS_TYPE_NO_ACCESS(15)  )
+                                        ARM_ACCESS_TYPE_MANAGER(0)    |	\
+                                        ARM_ACCESS_TYPE_NO_ACCESS(1)  |	\
+                                        ARM_ACCESS_TYPE_NO_ACCESS(2)  |	\
+                                        ARM_ACCESS_TYPE_NO_ACCESS(3)  |	\
+                                        ARM_ACCESS_TYPE_NO_ACCESS(4)  |	\
+                                        ARM_ACCESS_TYPE_NO_ACCESS(5)  |	\
+                                        ARM_ACCESS_TYPE_NO_ACCESS(6)  |	\
+                                        ARM_ACCESS_TYPE_NO_ACCESS(7)  |	\
+                                        ARM_ACCESS_TYPE_NO_ACCESS(8)  |	\
+                                        ARM_ACCESS_TYPE_NO_ACCESS(9)  |	\
+                                        ARM_ACCESS_TYPE_NO_ACCESS(10) |	\
+                                        ARM_ACCESS_TYPE_NO_ACCESS(11) |	\
+                                        ARM_ACCESS_TYPE_NO_ACCESS(12) |	\
+                                        ARM_ACCESS_TYPE_NO_ACCESS(13) |	\
+                                        ARM_ACCESS_TYPE_NO_ACCESS(14) |	\
+                                        ARM_ACCESS_TYPE_NO_ACCESS(15)  )
 
 
 #ifdef __cplusplus

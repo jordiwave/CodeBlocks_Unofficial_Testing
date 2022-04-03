@@ -9,9 +9,9 @@
 
 #include "sdk_precomp.h"
 #ifndef CB_PRECOMP
-#include <wx/gdicmn.h>
-#include <wx/intl.h>
-#include <wx/string.h>
+    #include <wx/gdicmn.h>
+    #include <wx/intl.h>
+    #include <wx/string.h>
 #endif
 
 #include "scripting/bindings/sc_utils.h"
@@ -30,9 +30,12 @@ SQInteger static_T(HSQUIRRELVM v)
 {
     // The first parameter is a environment table, because this is a global function.
     // We don't care about it, so we skip it.
-    ExtractParams2<SkipParam, const SQChar*> extractor(v);
+    ExtractParams2<SkipParam, const SQChar *> extractor(v);
+
     if (!extractor.Process("_T"))
+    {
         return extractor.ErrorMessage();
+    }
 
     return ConstructAndReturnInstance(v, cbC2U(extractor.p1));
 }
@@ -42,9 +45,12 @@ SQInteger static_(HSQUIRRELVM v)
 {
     // The first parameter is a environment table, because this is a global function.
     // We don't care about it, so we skip it.
-    ExtractParams2<SkipParam, const SQChar*> extractor(v);
+    ExtractParams2<SkipParam, const SQChar *> extractor(v);
+
     if (!extractor.Process("_T"))
+    {
         return extractor.ErrorMessage();
+    }
 
     return ConstructAndReturnInstance(v, wxGetTranslation(cbC2U(extractor.p1)));
 }
@@ -52,16 +58,24 @@ SQInteger static_(HSQUIRRELVM v)
 SQInteger wxString_ctor(HSQUIRRELVM v)
 {
     ExtractParamsBase extractor(v);
+
     if (!extractor.CheckNumArguments(1, 2, "wxString_ctor"))
+    {
         return extractor.ErrorMessage();
+    }
+
     const int numArgs = sq_gettop(v);
 
     if (numArgs == 1) // empty ctor
     {
-        UserDataForType<wxString> *data;
+        UserDataForType<wxString> * data;
         data = SetupUserPointer<wxString, InstanceAllocationMode::InstanceIsInline>(v, 1);
+
         if (!data)
-            return -1; // SetupUserPointer should have called sq_throwerror!
+        {
+            return -1;    // SetupUserPointer should have called sq_throwerror!
+        }
+
         new (&(data->userdata)) wxString();
         return 0;
     }
@@ -69,35 +83,50 @@ SQInteger wxString_ctor(HSQUIRRELVM v)
     {
         // 1 argument ctor
         const SQObjectType type = sq_gettype(v, 2);
+
         switch (type)
         {
-        case OT_STRING:
-        {
-            // Construct from Squirrel string
-            const SQChar *value = extractor.GetParamString(2);
-            cbAssert(value);
-            UserDataForType<wxString> *data;
-            data = SetupUserPointer<wxString, InstanceAllocationMode::InstanceIsInline>(v, 1);
-            if (!data)
-                return -1; // SetupUserPointer should have called sq_throwerror!
-            new (&(data->userdata)) wxString(value);
-            return 0;
-        }
-        case OT_INSTANCE:
-        {
-            // Construct from wxString
-            wxString *value;
-            if (!extractor.ProcessParam(value, 2, "wxString_ctor"))
-                return extractor.ErrorMessage();
-            UserDataForType<wxString> *data;
-            data = SetupUserPointer<wxString, InstanceAllocationMode::InstanceIsInline>(v, 1);
-            if (!data)
-                return -1; // SetupUserPointer should have called sq_throwerror!
-            new (&(data->userdata)) wxString(*value);
-            return 0;
-        }
-        default:
-            return sq_throwerror(v, _SC("Unsupported argument type passed to wxString constructor!"));
+            case OT_STRING:
+            {
+                // Construct from Squirrel string
+                const SQChar * value = extractor.GetParamString(2);
+                cbAssert(value);
+                UserDataForType<wxString> * data;
+                data = SetupUserPointer<wxString, InstanceAllocationMode::InstanceIsInline>(v, 1);
+
+                if (!data)
+                {
+                    return -1;    // SetupUserPointer should have called sq_throwerror!
+                }
+
+                new (&(data->userdata)) wxString(value);
+                return 0;
+            }
+
+            case OT_INSTANCE:
+            {
+                // Construct from wxString
+                wxString * value;
+
+                if (!extractor.ProcessParam(value, 2, "wxString_ctor"))
+                {
+                    return extractor.ErrorMessage();
+                }
+
+                UserDataForType<wxString> * data;
+                data = SetupUserPointer<wxString, InstanceAllocationMode::InstanceIsInline>(v, 1);
+
+                if (!data)
+                {
+                    return -1;    // SetupUserPointer should have called sq_throwerror!
+                }
+
+                new (&(data->userdata)) wxString(*value);
+                return 0;
+            }
+
+            default:
+                return sq_throwerror(v, _SC("Unsupported argument type passed to wxString constructor!"));
         }
     }
 }
@@ -106,52 +135,79 @@ SQInteger wxString_OpAdd(HSQUIRRELVM v)
 {
     // TODO: Optional Args
     ExtractParamsBase extractor(v);
+
     if (!extractor.CheckNumArguments(2, "wxString_OpAdd"))
+    {
         return extractor.ErrorMessage();
+    }
 
     // Squirrel doesn't call us, the first parameter is not a wxString.
-    const wxString *s1 = nullptr;
+    const wxString * s1 = nullptr;
+
     if (!extractor.ProcessParam(s1, 1, "wxString_OpAdd"))
+    {
         return extractor.ErrorMessage();
+    }
 
     wxString result = *s1;
     const SQObjectType type2 = sq_gettype(v, 2);
+
     switch (type2)
     {
-    case OT_INSTANCE:
-    {
-        const wxString *s2 = nullptr;
-        if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
-            return extractor.ErrorMessage();
-        result += *s2;
-        break;
-    }
-    case OT_STRING:
-    {
-        const SQChar *s2 = nullptr;
-        if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
-            return extractor.ErrorMessage();
-        result << s2;
-        break;
-    }
-    case OT_INTEGER:
-    {
-        SQInteger s2;
-        if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
-            return extractor.ErrorMessage();
-        result << s2;
-        break;
-    }
-    case OT_FLOAT:
-    {
-        SQFloat s2;
-        if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
-            return extractor.ErrorMessage();
-        result << s2;
-        break;
-    }
-    default:
-        return sq_throwerror(v, _SC("Unknown type"));
+        case OT_INSTANCE:
+        {
+            const wxString * s2 = nullptr;
+
+            if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
+            {
+                return extractor.ErrorMessage();
+            }
+
+            result += *s2;
+            break;
+        }
+
+        case OT_STRING:
+        {
+            const SQChar * s2 = nullptr;
+
+            if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
+            {
+                return extractor.ErrorMessage();
+            }
+
+            result << s2;
+            break;
+        }
+
+        case OT_INTEGER:
+        {
+            SQInteger s2;
+
+            if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
+            {
+                return extractor.ErrorMessage();
+            }
+
+            result << s2;
+            break;
+        }
+
+        case OT_FLOAT:
+        {
+            SQFloat s2;
+
+            if (!extractor.ProcessParam(s2, 2, "wxString_OpAdd"))
+            {
+                return extractor.ErrorMessage();
+            }
+
+            result << s2;
+            break;
+        }
+
+        default:
+            return sq_throwerror(v, _SC("Unknown type"));
     }
 
     return ConstructAndReturnInstance(v, result);
@@ -161,6 +217,7 @@ SQInteger wxString_OpCompare(HSQUIRRELVM v)
 {
     // TODO: Optional Args
     ExtractParamsBase extractor(v);
+
     if (!extractor.CheckNumArguments(2, "wxString_OpCompare"))
     {
         extractor.ErrorMessage();
@@ -172,8 +229,9 @@ SQInteger wxString_OpCompare(HSQUIRRELVM v)
 
     if (type1 == OT_STRING && type2 == OT_INSTANCE)
     {
-        const SQChar *s1;
-        const wxString *s2;
+        const SQChar * s1;
+        const wxString * s2;
+
         if (extractor.ProcessParam(s1, 1, "wxString_OpCompare")
                 && extractor.ProcessParam(s2, 2, "wxString_OpCompare"))
         {
@@ -182,36 +240,52 @@ SQInteger wxString_OpCompare(HSQUIRRELVM v)
             return 1;
         }
         else
+        {
             return extractor.ErrorMessage();
+        }
     }
 
     // At least one of the parameters is a wxString. It is not the seconds, so at least the first
     // one is a wxString.
-    const wxString *s1 = nullptr;
+    const wxString * s1 = nullptr;
+
     if (!extractor.ProcessParam(s1, 1, "wxString_OpCompare"))
+    {
         return extractor.ErrorMessage();
+    }
 
     if (type2 == OT_STRING)
     {
-        const SQChar *s2;
+        const SQChar * s2;
+
         if (!extractor.ProcessParam(s2, 2, "wxString_OpCompare"))
+        {
             return extractor.ErrorMessage();
+        }
+
         sq_pushinteger(v, s1->Cmp(wxString(s2)));
         return 1;
     }
 
-    const wxString *s2;
+    const wxString * s2;
+
     if (!extractor.ProcessParam(s2, 2, "wxString_OpCompare"))
+    {
         return extractor.ErrorMessage();
+    }
+
     sq_pushinteger(v, s1->Cmp(*s2));
     return 1;
 }
 
 SQInteger wxString_OpToString(HSQUIRRELVM v)
 {
-    ExtractParams1<const wxString*> extractor(v);
+    ExtractParams1<const wxString *> extractor(v);
+
     if (!extractor.Process("wxString::_tostring"))
+    {
         return extractor.ErrorMessage();
+    }
 
     sq_pushstring(v, extractor.p0->utf8_str().data(), -1);
     return 1;
@@ -219,9 +293,12 @@ SQInteger wxString_OpToString(HSQUIRRELVM v)
 
 SQInteger wxString_Find(HSQUIRRELVM v)
 {
-    ExtractParams2<const wxString*, const wxString*> extractor(v);
+    ExtractParams2<const wxString *, const wxString *> extractor(v);
+
     if (!extractor.Process("wxString_Find"))
+    {
         return extractor.ErrorMessage();
+    }
 
     sq_pushinteger(v, extractor.p0->Find(*extractor.p1));
     return 1;
@@ -229,9 +306,12 @@ SQInteger wxString_Find(HSQUIRRELVM v)
 
 SQInteger wxString_Matches(HSQUIRRELVM v)
 {
-    ExtractParams2<const wxString*, const wxString*> extractor(v);
+    ExtractParams2<const wxString *, const wxString *> extractor(v);
+
     if (!extractor.Process("wxString_Matches"))
+    {
         return extractor.ErrorMessage();
+    }
 
     sq_pushbool(v, extractor.p0->Matches(*extractor.p1));
     return 1;
@@ -239,9 +319,13 @@ SQInteger wxString_Matches(HSQUIRRELVM v)
 
 SQInteger wxString_AddChar(HSQUIRRELVM v)
 {
-    ExtractParams2<wxString*, SQInteger> extractor(v);
+    ExtractParams2<wxString *, SQInteger> extractor(v);
+
     if (!extractor.Process("wxString_AddChar"))
+    {
         return extractor.ErrorMessage();
+    }
+
     char tmp[8];
     snprintf(tmp, 8, "%c", char(extractor.p1));
     *extractor.p0 += cbC2U(tmp);
@@ -250,29 +334,43 @@ SQInteger wxString_AddChar(HSQUIRRELVM v)
 
 SQInteger wxString_GetChar(HSQUIRRELVM v)
 {
-    ExtractParams2<const wxString*, SQInteger> extractor(v);
+    ExtractParams2<const wxString *, SQInteger> extractor(v);
+
     if (!extractor.Process("wxString_GetChar"))
+    {
         return extractor.ErrorMessage();
+    }
+
     if (extractor.p1 < 0 || wxString::size_type(extractor.p1) >= extractor.p0->length())
+    {
         return sq_throwerror(v, _SC("wxString_GetChar: Index outside of valid range!"));
+    }
+
     sq_pushinteger(v, extractor.p0->GetChar(extractor.p1));
     return 1;
 }
 
 SQInteger wxString_Set(HSQUIRRELVM v)
 {
-    ExtractParams2<wxString*, const wxString*> extractor(v);
+    ExtractParams2<wxString *, const wxString *> extractor(v);
+
     if (!extractor.Process("wxString_Set"))
+    {
         return extractor.ErrorMessage();
+    }
+
     *extractor.p0 = *extractor.p1;
     return 0;
 }
 
 SQInteger wxString_IsEmpty(HSQUIRRELVM v)
 {
-    ExtractParams1<const wxString*> extractor(v);
+    ExtractParams1<const wxString *> extractor(v);
+
     if (!extractor.Process("wxString::IsEmpty"))
+    {
         return extractor.ErrorMessage();
+    }
 
     sq_pushbool(v, extractor.p0->empty());
     return 1;
@@ -280,34 +378,44 @@ SQInteger wxString_IsEmpty(HSQUIRRELVM v)
 
 SQInteger wxString_Length(HSQUIRRELVM v)
 {
-    ExtractParams1<const wxString*> extractor(v);
+    ExtractParams1<const wxString *> extractor(v);
+
     if (!extractor.Process("wxString_Length"))
+    {
         return extractor.ErrorMessage();
+    }
 
     sq_pushinteger(v, extractor.p0->Length());
     return 1;
 }
 
-using wxStringMakeFunc = wxString& (wxString::*)();
+using wxStringMakeFunc = wxString & (wxString::*)();
 
 template<wxStringMakeFunc func>
 SQInteger wxString_Make(HSQUIRRELVM v)
 {
-    ExtractParams1<wxString*> extractor(v);
+    ExtractParams1<wxString *> extractor(v);
+
     if (!extractor.Process("wxString_Make"))
+    {
         return extractor.ErrorMessage();
-    wxString &ref = (extractor.p0->*func)();
+    }
+
+    wxString & ref = (extractor.p0->*func)();
     return ConstructAndReturnNonOwnedPtr(v, &ref);
 }
 
-using wxStringCaseFunc = wxString (wxString::*)() const;
+using wxStringCaseFunc = wxString(wxString::*)() const;
 
 template<wxStringCaseFunc func>
 SQInteger wxString_Case(HSQUIRRELVM v)
 {
-    ExtractParams1<wxString*> extractor(v);
+    ExtractParams1<wxString *> extractor(v);
+
     if (!extractor.Process("wxString_Case"))
+    {
         return extractor.ErrorMessage();
+    }
 
     return ConstructAndReturnInstance(v, (extractor.p0->*func)());
 }
@@ -317,91 +425,125 @@ using wxStringDoSomethingNoReturnFunc = void (wxString::*)();
 template<wxStringDoSomethingNoReturnFunc func>
 SQInteger wxString_NoParamNoReturn(HSQUIRRELVM v)
 {
-    ExtractParams1<wxString*> extractor(v);
+    ExtractParams1<wxString *> extractor(v);
+
     if (!extractor.Process("wxString_NoParamNoReturn"))
+    {
         return extractor.ErrorMessage();
+    }
+
     (extractor.p0->*func)();
     return 0;
 }
 
 SQInteger wxString_Mid(HSQUIRRELVM v)
 {
-    ExtractParams3<const wxString*, SQInteger, SQInteger> extractor(v);
+    ExtractParams3<const wxString *, SQInteger, SQInteger> extractor(v);
+
     if (!extractor.Process("wxString_Mid"))
+    {
         return extractor.ErrorMessage();
+    }
 
     return ConstructAndReturnInstance(v, extractor.p0->Mid(extractor.p1, extractor.p2));
 }
 
 SQInteger wxString_Remove(HSQUIRRELVM v)
 {
-    ExtractParams3<wxString*, SQInteger, SQInteger> extractor(v);
+    ExtractParams3<wxString *, SQInteger, SQInteger> extractor(v);
+
     if (!extractor.Process("wxString_Remove"))
+    {
         return extractor.ErrorMessage();
+    }
+
     if (extractor.p1 < 0)
+    {
         return sq_throwerror(v, _SC("wxString::Remove: Parameter nStart needs to be non-negative!"));
+    }
+
     if (extractor.p2 < 0)
+    {
         return sq_throwerror(v, _SC("wxString::Remove: Parameter nLen needs to be non-negative!"));
-    wxString &res = extractor.p0->Remove(extractor.p1, extractor.p2);
+    }
+
+    wxString & res = extractor.p0->Remove(extractor.p1, extractor.p2);
     assert(&res == extractor.p0);
-
     DuplicateInstance(v, 1);
-
     return 1;
 }
 
 SQInteger wxString_RemoveLast(HSQUIRRELVM v)
 {
-    ExtractParams2<wxString*, SQInteger> extractor(v);
+    ExtractParams2<wxString *, SQInteger> extractor(v);
+
     if (!extractor.Process("wxString_RemoveLast"))
+    {
         return extractor.ErrorMessage();
+    }
+
     if (extractor.p1 < 0)
+    {
         return sq_throwerror(v, _SC("wxString::RemoveLast: Parameter n needs to be non-negative!"));
-    wxString &res = extractor.p0->RemoveLast(extractor.p1);
+    }
+
+    wxString & res = extractor.p0->RemoveLast(extractor.p1);
     assert(&res == extractor.p0);
-
     DuplicateInstance(v, 1);
-
     return 1;
 }
 
 SQInteger wxString_Replace(HSQUIRRELVM v)
 {
     SQInteger result = -1;
-
     // TODO: Optional Args
     const int numArgs = sq_gettop(v);
+
     if (numArgs == 3)
     {
-        ExtractParams3<wxString*, const wxString*, const wxString*> extractor(v);
+        ExtractParams3<wxString *, const wxString *, const wxString *> extractor(v);
+
         if (!extractor.Process("wxString_Replace"))
+        {
             return extractor.ErrorMessage();
+        }
+
         result = extractor.p0->Replace(*extractor.p1, *extractor.p2);
     }
-    else if (numArgs == 4)
-    {
-        ExtractParams4<wxString*, const wxString*, const wxString*, bool> extractor(v);
-        if (!extractor.Process("wxString_Replace"))
-            return extractor.ErrorMessage();
-        result = extractor.p0->Replace(*extractor.p1, *extractor.p2, extractor.p3);
-    }
+    else
+        if (numArgs == 4)
+        {
+            ExtractParams4<wxString *, const wxString *, const wxString *, bool> extractor(v);
+
+            if (!extractor.Process("wxString_Replace"))
+            {
+                return extractor.ErrorMessage();
+            }
+
+            result = extractor.p0->Replace(*extractor.p1, *extractor.p2, extractor.p3);
+        }
 
     DuplicateInstance(v, 1);
     sq_pushinteger(v, result);
-
     return 1;
 }
 
-using wxStringLeftRightFunc = wxString (wxString::*)(size_t) const;
+using wxStringLeftRightFunc = wxString(wxString::*)(size_t) const;
 
 template<wxStringLeftRightFunc func>
 SQInteger wxString_LeftRight(HSQUIRRELVM v)
 {
-    ExtractParams2<const wxString*, SQInteger> extractor(v);
+    ExtractParams2<const wxString *, SQInteger> extractor(v);
+
     if (!extractor.Process("wxString_LeftRight"))
+    {
         return extractor.ErrorMessage();
+    }
+
     if (extractor.p1 < 0)
+    {
         return sq_throwerror(v, _SC("wxString_LeftRight: nCount should be non-negative integer!"));
+    }
 
     return ConstructAndReturnInstance(v, (extractor.p0->*func)(extractor.p1));
 }
@@ -411,10 +553,11 @@ SQInteger wxString_LeftRight(HSQUIRRELVM v)
 /// The second parameter is the search character. Currently we support an int (for some kind of
 /// ascii, untested), const wxString*, const string. For both kind of strings we extract the first
 /// character.
-bool SetupFirstLastParams(HSQUIRRELVM v, const wxString *&self, wxUniChar &searchChar)
+bool SetupFirstLastParams(HSQUIRRELVM v, const wxString *& self, wxUniChar & searchChar)
 {
     // TODO: Optional Args
     ExtractParamsBase extractor(v);
+
     if (!extractor.CheckNumArguments(2, "SetupFirstLastParams"))
     {
         extractor.ErrorMessage();
@@ -422,6 +565,7 @@ bool SetupFirstLastParams(HSQUIRRELVM v, const wxString *&self, wxUniChar &searc
     }
 
     self = nullptr;
+
     if (!extractor.ProcessParam(self, 1, "SetupFirstLastParams"))
     {
         extractor.ErrorMessage();
@@ -429,80 +573,100 @@ bool SetupFirstLastParams(HSQUIRRELVM v, const wxString *&self, wxUniChar &searc
     }
 
     const SQObjectType charParamType = sq_gettype(v, 2);
+
     switch (charParamType)
     {
-    case OT_INTEGER:
-    {
-        SQInteger temp;
-        if (!extractor.ProcessParam(temp, 2, "SetupFirstLastParams"))
+        case OT_INTEGER:
         {
-            extractor.ErrorMessage();
-            return false;
+            SQInteger temp;
+
+            if (!extractor.ProcessParam(temp, 2, "SetupFirstLastParams"))
+            {
+                extractor.ErrorMessage();
+                return false;
+            }
+
+            searchChar = temp;
+            return true;
         }
-        searchChar = temp;
-        return true;
-    }
-    case OT_INSTANCE:
-    {
-        const wxString *search = nullptr;
-        if (!extractor.ProcessParam(search, 2, "SetupFirstLastParams"))
+
+        case OT_INSTANCE:
         {
-            extractor.ErrorMessage();
-            return false;
+            const wxString * search = nullptr;
+
+            if (!extractor.ProcessParam(search, 2, "SetupFirstLastParams"))
+            {
+                extractor.ErrorMessage();
+                return false;
+            }
+
+            if (search->length() < 1)
+            {
+                sq_throwerror(v, _SC("SetupFirstLastParams: String length too short!"));
+                return false;
+            }
+
+            searchChar = search->GetChar(0);
+            return true;
         }
-        if (search->length() < 1)
+
+        case OT_STRING:
         {
-            sq_throwerror(v, _SC("SetupFirstLastParams: String length too short!"));
-            return false;
+            const SQChar * search = nullptr;
+
+            if (!extractor.ProcessParam(search, 2, "SetupFirstLastParams"))
+            {
+                extractor.ErrorMessage();
+                return false;
+            }
+
+            if (search && search[0] != _SC('\0'))
+            {
+                searchChar = search[0];
+            }
+            else
+            {
+                sq_throwerror(v, _SC("SetupFirstLastParams: Invalid searchChar parameter!"));
+                return false;
+            }
+
+            return true;
         }
-        searchChar = search->GetChar(0);
-        return true;
-    }
-    case OT_STRING:
-    {
-        const SQChar *search = nullptr;
-        if (!extractor.ProcessParam(search, 2, "SetupFirstLastParams"))
-        {
-            extractor.ErrorMessage();
-            return false;
-        }
-        if (search && search[0] != _SC('\0'))
-            searchChar = search[0];
-        else
-        {
+
+        default:
             sq_throwerror(v, _SC("SetupFirstLastParams: Invalid searchChar parameter!"));
             return false;
-        }
-        return true;
-    }
-    default:
-        sq_throwerror(v, _SC("SetupFirstLastParams: Invalid searchChar parameter!"));
-        return false;
     }
 }
 
-using wxStringDoAfterFirstLastFunc = wxString (wxString::*)(wxUniChar) const;
+using wxStringDoAfterFirstLastFunc = wxString(wxString::*)(wxUniChar) const;
 
 template<wxStringDoAfterFirstLastFunc func>
 SQInteger wxString_DoAfterFirstLast(HSQUIRRELVM v)
 {
-    const wxString *self;
+    const wxString * self;
     wxUniChar searchChar;
+
     if (!SetupFirstLastParams(v, self, searchChar))
-        return -1; // An error should have been logged already.
+    {
+        return -1;    // An error should have been logged already.
+    }
 
     return ConstructAndReturnInstance(v, (self->*func)(searchChar));
 }
 
-using wxStringDoBeforeFirstLastFunc = wxString (wxString::*)(wxUniChar, wxString *) const;
+using wxStringDoBeforeFirstLastFunc = wxString(wxString::*)(wxUniChar, wxString *) const;
 
 template<wxStringDoBeforeFirstLastFunc func>
 SQInteger wxString_DoBeforeFirstLast(HSQUIRRELVM v)
 {
-    const wxString *self;
+    const wxString * self;
     wxUniChar searchChar;
+
     if (!SetupFirstLastParams(v, self, searchChar))
-        return -1; // An error should have been logged already.
+    {
+        return -1;    // An error should have been logged already.
+    }
 
     return ConstructAndReturnInstance(v, (self->*func)(searchChar, nullptr));
 }
@@ -510,13 +674,20 @@ SQInteger wxString_DoBeforeFirstLast(HSQUIRRELVM v)
 SQInteger wxString_ToLong(HSQUIRRELVM v)
 {
     // env table, string
-    ExtractParams2<SkipParam, const wxString*> extractor(v);
+    ExtractParams2<SkipParam, const wxString *> extractor(v);
+
     if (!extractor.Process("wxString_ToLong"))
+    {
         return extractor.ErrorMessage();
+    }
 
     long value;
+
     if (!extractor.p1->ToLong(&value))
+    {
         value = -1;
+    }
+
     sq_pushinteger(v, value);
     return 1;
 }
@@ -524,49 +695,76 @@ SQInteger wxString_ToLong(HSQUIRRELVM v)
 SQInteger wxColour_ctor(HSQUIRRELVM v)
 {
     ExtractParamsBase extractor(v);
+
     if (!extractor.CheckNumArguments(1, 5, "wxColour_ctor"))
+    {
         return extractor.ErrorMessage();
+    }
 
     const int numArgs = sq_gettop(v);
+
     switch (numArgs)
     {
-    case 1: // empty ctor
-    {
-        UserDataForType<wxColour> *data;
-        data = SetupUserPointer<wxColour, InstanceAllocationMode::InstanceIsInline>(v, 1);
-        if (!data)
-            return -1; // SetupUserPointer should have called sq_throwerror!
-        new (&(data->userdata)) wxColour();
-        return 0;
-    }
-    case 4: // 3 ints
-    {
-        // env table, red, green, blue
-        ExtractParams4<SkipParam, SQInteger, SQInteger, SQInteger> extractor(v);
-        if (!extractor.Process("wxColour_ctor(3 ints)"))
-            return extractor.ErrorMessage();
-        UserDataForType<wxColour> *data;
-        data = SetupUserPointer<wxColour, InstanceAllocationMode::InstanceIsInline>(v, 1);
-        if (!data)
-            return -1; // SetupUserPointer should have called sq_throwerror!
-        new (&(data->userdata)) wxColour(extractor.p1, extractor.p2, extractor.p3);
-        return 0;
-    }
-    case 5: // 4 ints
-    {
-        // env table, red, green, blue, alpha
-        ExtractParams5<SkipParam, SQInteger, SQInteger, SQInteger, SQInteger> extractor(v);
-        if (!extractor.Process("wxColour_ctor(4 ints)"))
-            return extractor.ErrorMessage();
-        UserDataForType<wxColour> *data;
-        data = SetupUserPointer<wxColour, InstanceAllocationMode::InstanceIsInline>(v, 1);
-        if (!data)
-            return -1; // SetupUserPointer should have called sq_throwerror!
-        new (&(data->userdata)) wxColour(extractor.p1, extractor.p2, extractor.p3, extractor.p4);
-        return 0;
-    }
-    default:
-        return sq_throwerror(v, _SC("Unsupported number of arguments passed wxString()!"));
+        case 1: // empty ctor
+        {
+            UserDataForType<wxColour> * data;
+            data = SetupUserPointer<wxColour, InstanceAllocationMode::InstanceIsInline>(v, 1);
+
+            if (!data)
+            {
+                return -1;    // SetupUserPointer should have called sq_throwerror!
+            }
+
+            new (&(data->userdata)) wxColour();
+            return 0;
+        }
+
+        case 4: // 3 ints
+        {
+            // env table, red, green, blue
+            ExtractParams4<SkipParam, SQInteger, SQInteger, SQInteger> extractor(v);
+
+            if (!extractor.Process("wxColour_ctor(3 ints)"))
+            {
+                return extractor.ErrorMessage();
+            }
+
+            UserDataForType<wxColour> * data;
+            data = SetupUserPointer<wxColour, InstanceAllocationMode::InstanceIsInline>(v, 1);
+
+            if (!data)
+            {
+                return -1;    // SetupUserPointer should have called sq_throwerror!
+            }
+
+            new (&(data->userdata)) wxColour(extractor.p1, extractor.p2, extractor.p3);
+            return 0;
+        }
+
+        case 5: // 4 ints
+        {
+            // env table, red, green, blue, alpha
+            ExtractParams5<SkipParam, SQInteger, SQInteger, SQInteger, SQInteger> extractor(v);
+
+            if (!extractor.Process("wxColour_ctor(4 ints)"))
+            {
+                return extractor.ErrorMessage();
+            }
+
+            UserDataForType<wxColour> * data;
+            data = SetupUserPointer<wxColour, InstanceAllocationMode::InstanceIsInline>(v, 1);
+
+            if (!data)
+            {
+                return -1;    // SetupUserPointer should have called sq_throwerror!
+            }
+
+            new (&(data->userdata)) wxColour(extractor.p1, extractor.p2, extractor.p3, extractor.p4);
+            return 0;
+        }
+
+        default:
+            return sq_throwerror(v, _SC("Unsupported number of arguments passed wxString()!"));
     }
 }
 
@@ -574,28 +772,38 @@ SQInteger wxColour_ctor(HSQUIRRELVM v)
 SQInteger wxColour_Set(HSQUIRRELVM v)
 {
     // this, red, green, blue, alpha
-    ExtractParams5<wxColour*, SQInteger, SQInteger, SQInteger, SQInteger> extractor(v);
+    ExtractParams5<wxColour *, SQInteger, SQInteger, SQInteger, SQInteger> extractor(v);
+
     if (!extractor.Process("wxColour_Set"))
+    {
         return extractor.ErrorMessage();
+    }
+
     extractor.p0->Set(extractor.p1, extractor.p2, extractor.p3, extractor.p4);
     return 0;
 }
 
 SQInteger wxColour_IsOk(HSQUIRRELVM v)
 {
-    ExtractParams1<const wxColour*> extractor(v);
-    if (!extractor.Process("wxColour_IsOk"))
-        return extractor.ErrorMessage();
-    sq_pushbool(v, extractor.p0->IsOk());
+    ExtractParams1<const wxColour *> extractor(v);
 
+    if (!extractor.Process("wxColour_IsOk"))
+    {
+        return extractor.ErrorMessage();
+    }
+
+    sq_pushbool(v, extractor.p0->IsOk());
     return 1;
 }
 
 SQInteger wxColour_ToString(HSQUIRRELVM v)
 {
-    ExtractParams1<const wxColour*> extractor(v);
+    ExtractParams1<const wxColour *> extractor(v);
+
     if (!extractor.Process("wxColour_ToString"))
+    {
         return extractor.ErrorMessage();
+    }
 
     SQChar buf[100];
     scsprintf(buf, 100, _SC("[r=%d, g=%d, b=%d, a=%d]"), extractor.p0->Red(), extractor.p0->Green(),
@@ -606,64 +814,93 @@ SQInteger wxColour_ToString(HSQUIRRELVM v)
 
 SQInteger wxPoint_get(HSQUIRRELVM v)
 {
-    ExtractParams2<const wxPoint*, const SQChar*> extractor(v);
-    if (!extractor.Process("wxPoint_get"))
-        return extractor.ErrorMessage();
+    ExtractParams2<const wxPoint *, const SQChar *> extractor(v);
 
-    const SQChar *fieldName = extractor.p1;
+    if (!extractor.Process("wxPoint_get"))
+    {
+        return extractor.ErrorMessage();
+    }
+
+    const SQChar * fieldName = extractor.p1;
+
     if (scstrcmp(fieldName, _SC("x")) == 0)
     {
         sq_pushinteger(v, extractor.p0->x);
         return 1;
     }
+
     if (scstrcmp(fieldName, _SC("y")) == 0)
     {
         sq_pushinteger(v, extractor.p0->y);
         return 1;
     }
+
     return sq_throwerror(v, _SC("wxPoint_get: Unknown field"));
 }
 
 SQInteger wxPoint_set(HSQUIRRELVM v)
 {
-    ExtractParams3<wxPoint*, const SQChar*, SQInteger> extractor(v);
-    if (!extractor.Process("wxPoint_set"))
-        return extractor.ErrorMessage();
+    ExtractParams3<wxPoint *, const SQChar *, SQInteger> extractor(v);
 
-    const SQChar *fieldName = extractor.p1;
+    if (!extractor.Process("wxPoint_set"))
+    {
+        return extractor.ErrorMessage();
+    }
+
+    const SQChar * fieldName = extractor.p1;
+
     if (scstrcmp(fieldName, _SC("x")) == 0)
     {
         extractor.p0->x = extractor.p2;
         return 0;
     }
+
     if (scstrcmp(fieldName, _SC("y")) == 0)
     {
         extractor.p0->y = extractor.p2;
         return 0;
     }
+
     return sq_throwerror(v, _SC("wxPoint_set: Unknown field"));
 }
 
 SQInteger wxPoint_cmp(HSQUIRRELVM v)
 {
-    ExtractParams2<const wxPoint*, const wxPoint*> extractor(v);
+    ExtractParams2<const wxPoint *, const wxPoint *> extractor(v);
+
     if (!extractor.Process("wxPoint_cmp"))
+    {
         return extractor.ErrorMessage();
+    }
 
     int res;
+
     if (extractor.p0->x < extractor.p1->x)
-        res = -1;
-    else if (extractor.p0->x > extractor.p1->x)
-        res = 1;
-    else
     {
-        if (extractor.p0->y < extractor.p1->y)
-            res = -1;
-        else if (extractor.p0->y > extractor.p1->y)
-            res = 1;
-        else
-            res = 0;
+        res = -1;
     }
+    else
+        if (extractor.p0->x > extractor.p1->x)
+        {
+            res = 1;
+        }
+        else
+        {
+            if (extractor.p0->y < extractor.p1->y)
+            {
+                res = -1;
+            }
+            else
+                if (extractor.p0->y > extractor.p1->y)
+                {
+                    res = 1;
+                }
+                else
+                {
+                    res = 0;
+                }
+        }
+
     sq_pushinteger(v, res);
     return 1;
 }
@@ -671,9 +908,12 @@ SQInteger wxPoint_cmp(HSQUIRRELVM v)
 template<typename Type>
 SQInteger wxPointSize_tostring(HSQUIRRELVM v)
 {
-    ExtractParams1<const Type*> extractor(v);
+    ExtractParams1<const Type *> extractor(v);
+
     if (!extractor.Process("wxPointSize_tostring"))
+    {
         return extractor.ErrorMessage();
+    }
 
     SQChar buf[100];
     scsprintf(buf, 100, _SC("[%d,%d]"), extractor.p0->x, extractor.p0->y);
@@ -683,9 +923,13 @@ SQInteger wxPointSize_tostring(HSQUIRRELVM v)
 
 SQInteger wxSize_Set(HSQUIRRELVM v)
 {
-    ExtractParams3<wxSize*, SQInteger, SQInteger> extractor(v);
+    ExtractParams3<wxSize *, SQInteger, SQInteger> extractor(v);
+
     if (!extractor.Process("wxSize_Set"))
+    {
         return extractor.ErrorMessage();
+    }
+
     extractor.p0->Set(extractor.p1, extractor.p2);
     return 0;
 }
@@ -693,27 +937,39 @@ SQInteger wxSize_Set(HSQUIRRELVM v)
 template<void (wxSize::*func)(int)>
 SQInteger wxSize_SetWidthHeight(HSQUIRRELVM v)
 {
-    ExtractParams2<wxSize*, SQInteger> extractor(v);
+    ExtractParams2<wxSize *, SQInteger> extractor(v);
+
     if (!extractor.Process("wxSize_SetWidthHeight"))
+    {
         return extractor.ErrorMessage();
+    }
+
     (extractor.p0->*func)(extractor.p1);
     return 0;
 }
 
 SQInteger wxArrayString_Add(HSQUIRRELVM v)
 {
-    ExtractParams3<wxArrayString*, const wxString*, SQInteger> extractor(v);
+    ExtractParams3<wxArrayString *, const wxString *, SQInteger> extractor(v);
+
     if (!extractor.Process("wxArrayString_Add"))
+    {
         return extractor.ErrorMessage();
+    }
+
     sq_pushinteger(v, extractor.p0->Add(*extractor.p1, extractor.p2));
     return 1;
 }
 
 SQInteger wxArrayString_Clear(HSQUIRRELVM v)
 {
-    ExtractParams1<wxArrayString*> extractor(v);
+    ExtractParams1<wxArrayString *> extractor(v);
+
     if (!extractor.Process("wxArrayString_Clear"))
+    {
         return extractor.ErrorMessage();
+    }
+
     extractor.p0->Clear();
     return 0;
 }
@@ -722,29 +978,44 @@ SQInteger wxArrayString_Index(HSQUIRRELVM v)
 {
     // TODO: Optional Args
     ExtractParamsBase extractor(v);
+
     if (!extractor.CheckNumArguments(2, 4, "wxArrayString_Index"))
+    {
         return extractor.ErrorMessage();
+    }
 
-    wxArrayString *self = nullptr;
+    wxArrayString * self = nullptr;
+
     if (!extractor.ProcessParam(self, 1, "wxArrayString_Index"))
+    {
         return extractor.ErrorMessage();
+    }
 
-    const wxString *str = nullptr;
+    const wxString * str = nullptr;
+
     if (!extractor.ProcessParam(str, 2, "wxArrayString_Index"))
+    {
         return extractor.ErrorMessage();
+    }
 
     bool bCase = true;
     bool bFromEnd = false;
     const int numArgs = sq_gettop(v);
+
     if (numArgs >= 3)
     {
         if (!extractor.ProcessParam(bCase, 3, "wxArrayString_Index"))
+        {
             return extractor.ErrorMessage();
+        }
     }
+
     if (numArgs == 4)
     {
         if (!extractor.ProcessParam(bFromEnd, 4, "wxArrayString_Index"))
+        {
             return extractor.ErrorMessage();
+        }
     }
 
     sq_pushinteger(v, self->Index(*str, bCase, bFromEnd));
@@ -753,36 +1024,53 @@ SQInteger wxArrayString_Index(HSQUIRRELVM v)
 
 SQInteger wxArrayString_GetCount(HSQUIRRELVM v)
 {
-    ExtractParams1<const wxArrayString*> extractor(v);
+    ExtractParams1<const wxArrayString *> extractor(v);
+
     if (!extractor.Process("wxArrayString_GetCount"))
+    {
         return extractor.ErrorMessage();
+    }
+
     sq_pushinteger(v, extractor.p0->GetCount());
     return 1;
 }
 
 SQInteger wxArrayString_Item(HSQUIRRELVM v)
 {
-    ExtractParams2<wxArrayString*, SQInteger> extractor(v);
+    ExtractParams2<wxArrayString *, SQInteger> extractor(v);
+
     if (!extractor.Process("wxArrayString_Item"))
+    {
         return extractor.ErrorMessage();
+    }
+
     const SQInteger index = extractor.p1;
+
     if (index < 0 || size_t(index) >= extractor.p0->GetCount())
+    {
         return sq_throwerror(v, _SC("wxArrayString_Item: index out of bounds!"));
+    }
 
     // Create an instance for the return value.
-    wxString *ref = &((*extractor.p0)[index]);
+    wxString * ref = &((*extractor.p0)[index]);
     return ConstructAndReturnNonOwnedPtr(v, ref);
 }
 
 SQInteger wxArrayString_SetItem(HSQUIRRELVM v)
 {
-    ExtractParams3<wxArrayString*, SQInteger, const wxString*> extractor(v);
+    ExtractParams3<wxArrayString *, SQInteger, const wxString *> extractor(v);
+
     if (!extractor.Process("wxArrayString_SetItem"))
+    {
         return extractor.ErrorMessage();
+    }
 
     const SQInteger index = extractor.p1;
+
     if (index < 0 || size_t(index) >= extractor.p0->GetCount())
+    {
         return sq_throwerror(v, _SC("wxArrayString_SetItem: index out of bounds!"));
+    }
 
     (*extractor.p0)[index] = *extractor.p2;
     return 0;
@@ -790,35 +1078,49 @@ SQInteger wxArrayString_SetItem(HSQUIRRELVM v)
 
 SQInteger wxFileName_Assign(HSQUIRRELVM v)
 {
-    ExtractParams3<wxFileName*, const wxString *, SQInteger> extractor(v);
+    ExtractParams3<wxFileName *, const wxString *, SQInteger> extractor(v);
+
     if (!extractor.Process("wxFileName_Assign"))
+    {
         return extractor.ErrorMessage();
+    }
 
     if (extractor.p2 < wxPATH_NATIVE || extractor.p2 >= wxPATH_MAX)
+    {
         return sq_throwerror(v, _SC("wxFileName_Assign: format out of range!"));
+    }
 
     extractor.p0->Assign(*extractor.p1, wxPathFormat(extractor.p2));
     return 0;
 }
 
-template<void (wxFileName::*func)(const wxString&)>
+template<void (wxFileName::*func)(const wxString &)>
 SQInteger wxFileName_SetWxString(HSQUIRRELVM v)
 {
-    ExtractParams2<wxFileName*, const wxString *> extractor(v);
+    ExtractParams2<wxFileName *, const wxString *> extractor(v);
+
     if (!extractor.Process("wxFileName_SetWxString"))
+    {
         return extractor.ErrorMessage();
+    }
+
     (extractor.p0->*func)(*extractor.p1);
     return 0;
 }
 
 SQInteger wxFileName_AssignDir(HSQUIRRELVM v)
 {
-    ExtractParams3<wxFileName*, const wxString *, SQInteger> extractor(v);
+    ExtractParams3<wxFileName *, const wxString *, SQInteger> extractor(v);
+
     if (!extractor.Process("wxFileName_AssignDir"))
+    {
         return extractor.ErrorMessage();
+    }
 
     if (extractor.p2 < wxPATH_NATIVE || extractor.p2 >= wxPATH_MAX)
+    {
         return sq_throwerror(v, _SC("wxFileName_Assign: format out of range!"));
+    }
 
     extractor.p0->AssignDir(*extractor.p1, wxPathFormat(extractor.p2));
     return 0;
@@ -827,9 +1129,13 @@ SQInteger wxFileName_AssignDir(HSQUIRRELVM v)
 template<void (wxFileName::*func)()>
 SQInteger wxFileName_Action(HSQUIRRELVM v)
 {
-    ExtractParams1<wxFileName*> extractor(v);
+    ExtractParams1<wxFileName *> extractor(v);
+
     if (!extractor.Process("wxFileName_Action"))
+    {
         return extractor.ErrorMessage();
+    }
+
     (extractor.p0->*func)();
     return 0;
 }
@@ -837,76 +1143,104 @@ SQInteger wxFileName_Action(HSQUIRRELVM v)
 SQInteger wxFileName_GetCwd(HSQUIRRELVM v)
 {
     ExtractParams2<SkipParam, const wxString *> extractor(v);
+
     if (!extractor.Process("wxFileName_GetCwd"))
+    {
         return extractor.ErrorMessage();
+    }
 
     return ConstructAndReturnInstance(v, wxFileName::GetCwd(*extractor.p1));
 }
 
 SQInteger wxFileName_tostring(HSQUIRRELVM v)
 {
-    ExtractParams1<const wxFileName*> extractor(v);
+    ExtractParams1<const wxFileName *> extractor(v);
+
     if (!extractor.Process("wxFileName_tostring"))
+    {
         return extractor.ErrorMessage();
-    sq_pushstring(v, (const SQChar*)extractor.p0->GetFullPath().mb_str(wxConvUTF8), -1);
+    }
+
+    sq_pushstring(v, (const SQChar *)extractor.p0->GetFullPath().mb_str(wxConvUTF8), -1);
     return 1;
 }
 
 SQInteger wxFileName_GetDirs(HSQUIRRELVM v)
 {
-    ExtractParams1<const wxFileName*> extractor(v);
+    ExtractParams1<const wxFileName *> extractor(v);
+
     if (!extractor.Process("wxFileName_GetDirs"))
+    {
         return extractor.ErrorMessage();
+    }
 
     // FIXME (squirrel) This doesn't matter much, because squirrel doesn't care for constness.
-    wxArrayString *dirs = &const_cast<wxArrayString&>(extractor.p0->GetDirs());
+    wxArrayString * dirs = &const_cast<wxArrayString &>(extractor.p0->GetDirs());
     return ConstructAndReturnNonOwnedPtr(v, dirs);
 }
 
 /// TODO: Probably simplify by removing the generic ClassType support.
-template<typename ReturnType, typename ClassType, ReturnType (ClassType::*func)() const>
+template<typename ReturnType, typename ClassType, ReturnType(ClassType::*func)() const>
 SQInteger NoParamReturnWxString(HSQUIRRELVM v)
 {
-    ExtractParams1<const ClassType*> extractor(v);
+    ExtractParams1<const ClassType *> extractor(v);
+
     if (!extractor.Process("NoParamReturnWxString"))
+    {
         return extractor.ErrorMessage();
+    }
 
     return ConstructAndReturnInstance(v, (extractor.p0->*func)());
 }
 
 SQInteger wxFileName_GetFullPath(HSQUIRRELVM v)
 {
-    ExtractParams2<const wxFileName*, SQInteger> extractor(v);
+    ExtractParams2<const wxFileName *, SQInteger> extractor(v);
+
     if (!extractor.Process("wxFileName_GetFullPath"))
+    {
         return extractor.ErrorMessage();
+    }
 
     if (extractor.p1 < wxPATH_NATIVE || extractor.p1 >= wxPATH_MAX)
+    {
         return sq_throwerror(v, _SC("wxFileName_GetFullPath: format out of range!"));
+    }
 
     return ConstructAndReturnInstance(v, extractor.p0->GetFullPath(wxPathFormat(extractor.p1)));
 }
 
 SQInteger wxFileName_GetPath(HSQUIRRELVM v)
 {
-    ExtractParams3<const wxFileName*, SQInteger, SQInteger> extractor(v);
+    ExtractParams3<const wxFileName *, SQInteger, SQInteger> extractor(v);
+
     if (!extractor.Process("wxFileName_GetPath"))
+    {
         return extractor.ErrorMessage();
+    }
 
     if (extractor.p2 < wxPATH_NATIVE || extractor.p2 >= wxPATH_MAX)
+    {
         return sq_throwerror(v, _SC("wxFileName_GetPath: format out of range!"));
+    }
 
     return ConstructAndReturnInstance(v, extractor.p0->GetPath(int(extractor.p1),
-                                      wxPathFormat(extractor.p2)));
+                                                               wxPathFormat(extractor.p2)));
 }
 
 SQInteger wxFileName_InsertDir(HSQUIRRELVM v)
 {
-    ExtractParams3<wxFileName*, SQInteger, const wxString *> extractor(v);
+    ExtractParams3<wxFileName *, SQInteger, const wxString *> extractor(v);
+
     if (!extractor.Process("wxFileName_InsertDir"))
+    {
         return extractor.ErrorMessage();
+    }
 
     if (extractor.p1 < 0)
+    {
         return sq_throwerror(v, _SC("wxFileName_InsertDir: parameter before must be non-negative!"));
+    }
 
     sq_pushbool(v, extractor.p0->InsertDir(extractor.p1, *extractor.p2));
     return 1;
@@ -916,12 +1250,17 @@ template<bool (wxFileName::*func)(wxPathFormat) const>
 SQInteger wxFileName_Is(HSQUIRRELVM v)
 {
     /// TODO: Consider adding a modifier which checks for wxPathFormat range.
-    ExtractParams2<const wxFileName*, SQInteger> extractor(v);
+    ExtractParams2<const wxFileName *, SQInteger> extractor(v);
+
     if (!extractor.Process("wxFileName_Is"))
+    {
         return extractor.ErrorMessage();
+    }
 
     if (extractor.p1 < wxPATH_NATIVE || extractor.p1 >= wxPATH_MAX)
+    {
         return sq_throwerror(v, _SC("wxFileName_Is: format out of range!"));
+    }
 
     sq_pushbool(v, (extractor.p0->*func)(wxPathFormat(extractor.p1)));
     return 1;
@@ -930,9 +1269,13 @@ SQInteger wxFileName_Is(HSQUIRRELVM v)
 template<bool (wxFileName::*func)() const>
 SQInteger wxFileName_ReturnBool(HSQUIRRELVM v)
 {
-    ExtractParams1<const wxFileName*> extractor(v);
+    ExtractParams1<const wxFileName *> extractor(v);
+
     if (!extractor.Process("wxFileName_ReturnBool"))
+    {
         return extractor.ErrorMessage();
+    }
+
     sq_pushbool(v, (extractor.p0->*func)());
     return 1;
 }
@@ -941,12 +1284,17 @@ template<bool (wxFileName::*func)(const wxString &, wxPathFormat)>
 SQInteger wxFileName_Make(HSQUIRRELVM v)
 {
     /// TODO: Consider adding a modifier which checks for wxPathFormat range.
-    ExtractParams3<wxFileName*, const wxString *, SQInteger> extractor(v);
+    ExtractParams3<wxFileName *, const wxString *, SQInteger> extractor(v);
+
     if (!extractor.Process("wxFileName_Make"))
+    {
         return extractor.ErrorMessage();
+    }
 
     if (extractor.p2 < wxPATH_NATIVE || extractor.p2 >= wxPATH_MAX)
+    {
         return sq_throwerror(v, _SC("wxFileName_Make: format out of range!"));
+    }
 
     sq_pushbool(v, (extractor.p0->*func)(*extractor.p1, wxPathFormat(extractor.p2)));
     return 1;
@@ -955,12 +1303,17 @@ SQInteger wxFileName_Make(HSQUIRRELVM v)
 SQInteger wxFileName_Normalize(HSQUIRRELVM v)
 {
     /// TODO: Consider adding a modifier which checks for wxPathFormat range.
-    ExtractParams4<wxFileName*, SQInteger, const wxString *, SQInteger> extractor(v);
+    ExtractParams4<wxFileName *, SQInteger, const wxString *, SQInteger> extractor(v);
+
     if (!extractor.Process("wxFileName_MakeRelativeTo"))
+    {
         return extractor.ErrorMessage();
+    }
 
     if (extractor.p3 < wxPATH_NATIVE || extractor.p3 >= wxPATH_MAX)
+    {
         return sq_throwerror(v, _SC("wxFileName_MakeRelativeTo: format out of range!"));
+    }
 
     sq_pushbool(v, extractor.p0->Normalize(extractor.p1, *extractor.p2,
                                            wxPathFormat(extractor.p3)));
@@ -969,39 +1322,56 @@ SQInteger wxFileName_Normalize(HSQUIRRELVM v)
 
 SQInteger wxFileName_AppendDir(HSQUIRRELVM v)
 {
-    ExtractParams2<wxFileName*, const wxString *> extractor(v);
+    ExtractParams2<wxFileName *, const wxString *> extractor(v);
+
     if (!extractor.Process("wxFileName_AppendDir"))
+    {
         return extractor.ErrorMessage();
+    }
+
     sq_pushbool(v, extractor.p0->AppendDir(*extractor.p1));
     return 1;
 }
 
 SQInteger wxFileName_RemoveDir(HSQUIRRELVM v)
 {
-    ExtractParams2<wxFileName*, SQInteger> extractor(v);
+    ExtractParams2<wxFileName *, SQInteger> extractor(v);
+
     if (!extractor.Process("wxFileName_RemoveDir"))
+    {
         return extractor.ErrorMessage();
+    }
+
     extractor.p0->RemoveDir(extractor.p1);
     return 0;
 }
 
 SQInteger wxFileName_RemoveLastDir(HSQUIRRELVM v)
 {
-    ExtractParams1<wxFileName*> extractor(v);
+    ExtractParams1<wxFileName *> extractor(v);
+
     if (!extractor.Process("wxFileName_RemoveLastDir"))
+    {
         return extractor.ErrorMessage();
+    }
+
     extractor.p0->RemoveLastDir();
     return 0;
 }
 
 SQInteger wxFileName_SameAs(HSQUIRRELVM v)
 {
-    ExtractParams3<wxFileName*, const wxFileName*, SQInteger> extractor(v);
+    ExtractParams3<wxFileName *, const wxFileName *, SQInteger> extractor(v);
+
     if (!extractor.Process("wxFileName_SameAs"))
+    {
         return extractor.ErrorMessage();
+    }
 
     if (extractor.p2 < wxPATH_NATIVE || extractor.p2 >= wxPATH_MAX)
+    {
         return sq_throwerror(v, _SC("wxFileName_MakeRelativeTo: format out of range!"));
+    }
 
     sq_pushbool(v, extractor.p0->SameAs(*extractor.p1, wxPathFormat(extractor.p2)));
     return 1;
@@ -1030,28 +1400,24 @@ void Register_wxTypes(HSQUIRRELVM v)
         BindMethod(v, _SC("length"), wxString_Length, _SC("wxString::length"));
         BindMethod(v, _SC("len"), wxString_Length, _SC("wxString::len"));
         BindMethod(v, _SC("size"), wxString_Length, _SC("wxString::size"));
-
         BindMethod(v, _SC("Lower"), wxString_Case<&wxString::Lower>,
                    _SC("wxString::Lower"));
         BindMethod(v, _SC("MakeLower"), wxString_Make<&wxString::MakeLower>,
                    _SC("wxString::MakeLower"));
         BindMethod(v, _SC("LowerCase"), wxString_NoParamNoReturn<&wxString::LowerCase>,
                    _SC("wxString::LowerCase"));
-
         BindMethod(v, _SC("Upper"), wxString_Case<&wxString::Upper>,
                    _SC("wxString::Upper"));
         BindMethod(v, _SC("MakeUpper"), wxString_Make<&wxString::MakeUpper>,
                    _SC("wxString::MakeUpper"));
         BindMethod(v, _SC("UpperCase"), wxString_NoParamNoReturn<&wxString::UpperCase>,
                    _SC("wxString::UpperCase"));
-
         BindMethod(v, _SC("Mid"), wxString_Mid, _SC("wxString::Mid"));
         BindMethod(v, _SC("Remove"), wxString_Remove, _SC("wxString::Remove"));
         BindMethod(v, _SC("RemoveLast"), wxString_RemoveLast, _SC("wxString::RemoveLast"));
         BindMethod(v, _SC("Replace"), wxString_Replace, _SC("wxString::Replace"));
         BindMethod(v, _SC("Left"), wxString_LeftRight<&wxString::Left>, _SC("wxString::Left"));
         BindMethod(v, _SC("Right"), wxString_LeftRight<&wxString::Right>, _SC("wxString::Right"));
-
         BindMethod(v, _SC("AfterFirst"), wxString_DoAfterFirstLast<&wxString::AfterFirst>,
                    _SC("wxString::AfterFirst"));
         BindMethod(v, _SC("AfterLast"), wxString_DoAfterFirstLast<&wxString::AfterLast>,
@@ -1060,20 +1426,16 @@ void Register_wxTypes(HSQUIRRELVM v)
                    _SC("wxString::BeforeFirst"));
         BindMethod(v, _SC("BeforeLast"), wxString_DoBeforeFirstLast<&wxString::BeforeLast>,
                    _SC("wxString::BeforeLast"));
-
         sq_newslot(v, classDecl, SQFalse); // Put the class in the root table. This must be last!
     }
-
     BindMethod(v, _SC("_T"), static_T, nullptr);
     BindMethod(v, _SC("_"), static_, nullptr);
     BindMethod(v, _SC("wxString_ToLong"), wxString_ToLong, nullptr);
-
     {
         // Register wxColour
         const SQInteger classDecl = CreateClassDecl<wxColour>(v);
         BindMethod(v, _SC("constructor"), wxColour_ctor, _SC("wxColour::constructor"));
         BindDefaultClone<wxColour>(v);
-
         BindMethod(v, _SC("_tostring"), wxColour_ToString, _SC("wxColour::_tostring"));
         BindMethod(v, _SC("Blue"), NoParamGetterInt<wxColour::ChannelType, wxColour, &wxColour::Blue>, _SC("wxColour::Blue"));
         BindMethod(v, _SC("Green"), NoParamGetterInt<wxColour::ChannelType, wxColour, &wxColour::Green>, _SC("wxColour::Green"));
@@ -1081,10 +1443,8 @@ void Register_wxTypes(HSQUIRRELVM v)
         BindMethod(v, _SC("Alpha"), NoParamGetterInt<wxColour::ChannelType, wxColour, &wxColour::Alpha>, _SC("wxColour::Alpha"));
         BindMethod(v, _SC("IsOk"), wxColour_IsOk, _SC("wxColour::IsOk"));
         BindMethod(v, _SC("Set"), wxColour_Set, _SC("wxColour::Set"));
-
         sq_newslot(v, classDecl, SQFalse); // Put the class in the root table. This must be last!
     }
-
     {
         // Register wxPoint
         const SQInteger classDecl = CreateClassDecl<wxPoint>(v);
@@ -1094,10 +1454,8 @@ void Register_wxTypes(HSQUIRRELVM v)
         BindMethod(v, _SC("_cmp"), wxPoint_cmp, _SC("wxPoint::_cmp"));
         BindMethod(v, _SC("_get"), wxPoint_get, _SC("wxPoint::_get"));
         BindMethod(v, _SC("_set"), wxPoint_set, _SC("wxPoint::_set"));
-
         sq_newslot(v, classDecl, SQFalse); // Put the class in the root table. This must be last!
     }
-
     {
         // Register wxSize
         const SQInteger classDecl = CreateClassDecl<wxSize>(v);
@@ -1113,10 +1471,8 @@ void Register_wxTypes(HSQUIRRELVM v)
                    _SC("wxSize::SetHeight"));
         BindMethod(v, _SC("SetWidth"), wxSize_SetWidthHeight<&wxSize::SetWidth>,
                    _SC("wxSize::SetWidth"));
-
         sq_newslot(v, classDecl, SQFalse); // Put the class in the root table. This must be last!
     }
-
     {
         // Register wxSize
         const SQInteger classDecl = CreateClassDecl<wxArrayString>(v);
@@ -1128,10 +1484,8 @@ void Register_wxTypes(HSQUIRRELVM v)
         BindMethod(v, _SC("GetCount"), wxArrayString_GetCount, _SC("wxArrayString::GetCount"));
         BindMethod(v, _SC("Item"), wxArrayString_Item, _SC("wxArrayString::Item"));
         BindMethod(v, _SC("SetItem"), wxArrayString_SetItem, _SC("wxArrayString::SetItem"));
-
         sq_newslot(v, classDecl, SQFalse); // Put the class in the root table. This must be last!
     }
-
     {
         // Register wxFileName
         const SQInteger classDecl = CreateClassDecl<wxFileName>(v);
@@ -1209,22 +1563,18 @@ void Register_wxTypes(HSQUIRRELVM v)
                    _SC("wxFileName::SetName"));
         BindMethod(v, _SC("SetVolume"), wxFileName_SetWxString<&wxFileName::SetVolume>,
                    _SC("wxFileName::SetVolume"));
-
         BindMethod(v, _SC("IsFileWritable"), wxFileName_ReturnBool<&wxFileName::IsFileWritable>,
                    _SC("wxFileName::IsFileWritable"));
         BindMethod(v, _SC("IsFileReadable"), wxFileName_ReturnBool<&wxFileName::IsFileReadable>,
                    _SC("wxFileName::IsFileReadable"));
         BindMethod(v, _SC("IsFileExecutable"), wxFileName_ReturnBool<&wxFileName::IsFileExecutable>,
                    _SC("wxFileName::IsFileExecutable"));
-
         BindMethod(v, _SC("IsDirWritable"), wxFileName_ReturnBool<&wxFileName::IsDirWritable>,
                    _SC("wxFileName::IsDirWritable"));
         BindMethod(v, _SC("IsDirReadable"), wxFileName_ReturnBool<&wxFileName::IsDirReadable>,
                    _SC("wxFileName::IsDirReadable"));
-
         sq_newslot(v, classDecl, SQFalse); // Put the class in the root table. This must be last!
     }
-
     sq_pop(v, 1); // Pop root table.
 }
 

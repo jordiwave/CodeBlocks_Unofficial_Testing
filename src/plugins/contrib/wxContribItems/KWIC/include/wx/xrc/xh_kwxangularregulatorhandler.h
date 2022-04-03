@@ -30,18 +30,18 @@
 
 class WXEXPORT kwxAngularRegulatorHandler : public wxXmlResourceHandler
 {
-public:
-    // Constructor.
-    kwxAngularRegulatorHandler();
+    public:
+        // Constructor.
+        kwxAngularRegulatorHandler();
 
-    // Creates the control and returns a pointer to it.
-    virtual wxObject *DoCreateResource();
+        // Creates the control and returns a pointer to it.
+        virtual wxObject * DoCreateResource();
 
-    // Returns true if we know how to create a control for the given node.
-    virtual bool CanHandle(wxXmlNode *node);
+        // Returns true if we know how to create a control for the given node.
+        virtual bool CanHandle(wxXmlNode * node);
 
-    // Register with wxWidgets' dynamic class subsystem.
-    DECLARE_DYNAMIC_CLASS(kwxAngularRegulatorHandler)
+        // Register with wxWidgets' dynamic class subsystem.
+        DECLARE_DYNAMIC_CLASS(kwxAngularRegulatorHandler)
 };
 
 

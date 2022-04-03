@@ -72,17 +72,17 @@
  */
 
 #ifdef HAVE_VISIBILITY_HIDDEN_ATTRIBUTE
-#define NS_VISIBILITY_HIDDEN   __attribute__ ((visibility ("hidden")))
+    #define NS_VISIBILITY_HIDDEN   __attribute__ ((visibility ("hidden")))
 #else
-#define NS_VISIBILITY_HIDDEN
+    #define NS_VISIBILITY_HIDDEN
 #endif
 
 #if defined(HAVE_VISIBILITY_ATTRIBUTE)
-#define NS_VISIBILITY_DEFAULT __attribute__ ((visibility ("default")))
+    #define NS_VISIBILITY_DEFAULT __attribute__ ((visibility ("default")))
 #elif defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-#define NS_VISIBILITY_DEFAULT __global
+    #define NS_VISIBILITY_DEFAULT __global
 #else
-#define NS_VISIBILITY_DEFAULT
+    #define NS_VISIBILITY_DEFAULT
 #endif
 
 #define NS_HIDDEN_(type)   NS_VISIBILITY_HIDDEN type
@@ -267,22 +267,22 @@
 */
 
 #ifdef MOZILLA_INTERNAL_API
-#  define NS_COM_GLUE
-/*
-  The frozen string API has different definitions of nsAC?String
-  classes than the internal API. On systems that explicitly declare
-  dllexport symbols this is not a problem, but on ELF systems
-  internal symbols can accidentally "shine through"; we rename the
-  internal classes to avoid symbol conflicts.
-*/
-#  define nsAString nsAString_internal
-#  define nsACString nsACString_internal
+    #define NS_COM_GLUE
+    /*
+    The frozen string API has different definitions of nsAC?String
+    classes than the internal API. On systems that explicitly declare
+    dllexport symbols this is not a problem, but on ELF systems
+    internal symbols can accidentally "shine through"; we rename the
+    internal classes to avoid symbol conflicts.
+    */
+    #define nsAString nsAString_internal
+    #define nsACString nsACString_internal
 #else
-#  ifdef HAVE_VISIBILITY_ATTRIBUTE
-#    define NS_COM_GLUE NS_VISIBILITY_HIDDEN
-#  else
-#    define NS_COM_GLUE
-#  endif
+    #ifdef HAVE_VISIBILITY_ATTRIBUTE
+        #define NS_COM_GLUE NS_VISIBILITY_HIDDEN
+    #else
+        #define NS_COM_GLUE
+    #endif
 #endif
 
 /*

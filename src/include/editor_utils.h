@@ -14,9 +14,9 @@ namespace cb
 {
 /// Function which is used to setup the markers for the folding margin in an editor control.
 /// The id is the value stored in editor:folding/indicator config
-DLLIMPORT void SetFoldingMarkers(wxScintilla *stc, int id);
+DLLIMPORT void SetFoldingMarkers(wxScintilla * stc, int id);
 
-DLLIMPORT void UnderlineFoldedLines(wxScintilla *stc, bool underline);
+DLLIMPORT void UnderlineFoldedLines(wxScintilla * stc, bool underline);
 } // namespace cb
 
 #endif // CODEBLOCKS_EDITOR_HELPER_H

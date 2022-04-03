@@ -46,23 +46,22 @@ wxsRegisterItem<wxsAuiToolBarItem> Reg(
     false);
 
 WXS_EV_BEGIN(wxsAuiToolBarItemEvents)
-WXS_EVI(EVT_TOOL,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEvent,Click)
+WXS_EVI(EVT_TOOL, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEvent, Click)
 WXS_EV_END()
 }
 
-wxsAuiToolBarItem::wxsAuiToolBarItem(wxsItemResData* Data):
-    wxsAuiToolBarItemBase(Data,&Reg.Info,flVariable|flId,wxsAuiToolBarItemEvents,0),
+wxsAuiToolBarItem::wxsAuiToolBarItem(wxsItemResData * Data):
+    wxsAuiToolBarItemBase(Data, &Reg.Info, flVariable | flId, wxsAuiToolBarItemEvents, 0),
     m_ItemKind(wxITEM_NORMAL),
     m_DropDown(false)
 {}
 
 void wxsAuiToolBarItem::OnEnumItemProperties(long Flags)
 {
-    WXS_BITMAP(wxsAuiToolBarItem, m_Bitmap, _("Bitmap"), _T("bitmap"),wxART_TOOLBAR)
-    WXS_BITMAP(wxsAuiToolBarItem, m_DisabledBitmap, _("Disabled bitmap"), _T("disabledbitmap"),wxART_TOOLBAR)
+    WXS_BITMAP(wxsAuiToolBarItem, m_Bitmap, _("Bitmap"), _T("bitmap"), wxART_TOOLBAR)
+    WXS_BITMAP(wxsAuiToolBarItem, m_DisabledBitmap, _("Disabled bitmap"), _T("disabledbitmap"), wxART_TOOLBAR)
     WXS_SHORT_STRING(wxsAuiToolBarItem, m_ShortHelp, _("Short help"), _T("shorthelp"), wxEmptyString, false)
     WXS_STRING(wxsAuiToolBarItem, m_LongHelp, _("Long help"), _T("longhelp"), wxEmptyString, false)
-
     static const long    ItemKindValues[] =
     {
         wxITEM_NORMAL,
@@ -70,11 +69,10 @@ void wxsAuiToolBarItem::OnEnumItemProperties(long Flags)
         wxITEM_RADIO,
         0
     };
-
 #pragma push_macro("_")
 #undef _
 #define _(x)   L##x
-    static const wxChar* ItemKindNames[]  =
+    static const wxChar * ItemKindNames[]  =
     {
         _("Normal"),
         _("Check"),
@@ -82,8 +80,6 @@ void wxsAuiToolBarItem::OnEnumItemProperties(long Flags)
         nullptr
     };
 #pragma pop_macro("_")
-
     WXS_ENUM(wxsAuiToolBarItem, m_ItemKind, _("Item kind"), _T("itemkind"), ItemKindValues, ItemKindNames, wxITEM_NORMAL)
-
-    WXS_BOOL(wxsAuiToolBarItem,m_DropDown,_("DropDown"),_T("dropdown"),false);
+    WXS_BOOL(wxsAuiToolBarItem, m_DropDown, _("DropDown"), _T("dropdown"), false);
 }

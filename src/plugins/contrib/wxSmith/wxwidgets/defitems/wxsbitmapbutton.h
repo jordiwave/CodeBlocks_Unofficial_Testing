@@ -28,21 +28,21 @@
 /** \brief Class for wxButton widget */
 class wxsBitmapButton: public wxsWidget
 {
-public:
+    public:
 
-    wxsBitmapButton(wxsItemResData* Data);
+        wxsBitmapButton(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
-    bool IsDefault;
-    wxsBitmapData BitmapLabel;
-    wxsBitmapData BitmapDisabled;
-    wxsBitmapData BitmapSelected;
-    wxsBitmapData BitmapFocus;
+        bool IsDefault;
+        wxsBitmapData BitmapLabel;
+        wxsBitmapData BitmapDisabled;
+        wxsBitmapData BitmapSelected;
+        wxsBitmapData BitmapFocus;
 };
 
 #endif

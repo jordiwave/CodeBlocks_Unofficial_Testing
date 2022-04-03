@@ -14,47 +14,47 @@ Modification from frank tang's original work:
 
 static const uint32_t BIG5_cls [ 256 / 8 ] =
 {
-//PCK4BITS(0,1,1,1,1,1,1,1),  // 00 - 07
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 00 - 07    //allow 0x00 as legal value
-    PCK4BITS(1,1,1,1,1,1,0,0),  // 08 - 0f
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 10 - 17
-    PCK4BITS(1,1,1,0,1,1,1,1),  // 18 - 1f
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 20 - 27
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 28 - 2f
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 30 - 37
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 38 - 3f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 40 - 47
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 48 - 4f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 50 - 57
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 58 - 5f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 60 - 67
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 68 - 6f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 70 - 77
-    PCK4BITS(2,2,2,2,2,2,2,1),  // 78 - 7f
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 80 - 87
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 88 - 8f
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 90 - 97
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 98 - 9f
-    PCK4BITS(4,3,3,3,3,3,3,3),  // a0 - a7
-    PCK4BITS(3,3,3,3,3,3,3,3),  // a8 - af
-    PCK4BITS(3,3,3,3,3,3,3,3),  // b0 - b7
-    PCK4BITS(3,3,3,3,3,3,3,3),  // b8 - bf
-    PCK4BITS(3,3,3,3,3,3,3,3),  // c0 - c7
-    PCK4BITS(3,3,3,3,3,3,3,3),  // c8 - cf
-    PCK4BITS(3,3,3,3,3,3,3,3),  // d0 - d7
-    PCK4BITS(3,3,3,3,3,3,3,3),  // d8 - df
-    PCK4BITS(3,3,3,3,3,3,3,3),  // e0 - e7
-    PCK4BITS(3,3,3,3,3,3,3,3),  // e8 - ef
-    PCK4BITS(3,3,3,3,3,3,3,3),  // f0 - f7
-    PCK4BITS(3,3,3,3,3,3,3,0)   // f8 - ff
+    //PCK4BITS(0,1,1,1,1,1,1,1),  // 00 - 07
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 00 - 07    //allow 0x00 as legal value
+    PCK4BITS(1, 1, 1, 1, 1, 1, 0, 0), // 08 - 0f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 10 - 17
+    PCK4BITS(1, 1, 1, 0, 1, 1, 1, 1), // 18 - 1f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 20 - 27
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 28 - 2f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 30 - 37
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 38 - 3f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 40 - 47
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 48 - 4f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 50 - 57
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 58 - 5f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 60 - 67
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 68 - 6f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 70 - 77
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 1), // 78 - 7f
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 80 - 87
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 88 - 8f
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 90 - 97
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 98 - 9f
+    PCK4BITS(4, 3, 3, 3, 3, 3, 3, 3), // a0 - a7
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // a8 - af
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // b0 - b7
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // b8 - bf
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // c0 - c7
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // c8 - cf
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // d0 - d7
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // d8 - df
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // e0 - e7
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // e8 - ef
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // f0 - f7
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 0) // f8 - ff
 };
 
 
 static const uint32_t BIG5_st [ 3] =
 {
-    PCK4BITS(eError,eStart,eStart,     3,eError,eError,eError,eError),//00-07
-    PCK4BITS(eError,eError,eItsMe,eItsMe,eItsMe,eItsMe,eItsMe,eError),//08-0f
-    PCK4BITS(eError,eStart,eStart,eStart,eStart,eStart,eStart,eStart) //10-17
+    PCK4BITS(eError, eStart, eStart,     3, eError, eError, eError, eError), //00-07
+    PCK4BITS(eError, eError, eItsMe, eItsMe, eItsMe, eItsMe, eItsMe, eError), //08-0f
+    PCK4BITS(eError, eStart, eStart, eStart, eStart, eStart, eStart, eStart) //10-17
 };
 
 static const uint32_t Big5CharLenTable[] = {0, 1, 1, 2, 0};
@@ -70,49 +70,49 @@ SMModel const Big5SMModel =
 
 static const uint32_t EUCJP_cls [ 256 / 8 ] =
 {
-//PCK4BITS(5,4,4,4,4,4,4,4),  // 00 - 07
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 00 - 07
-    PCK4BITS(4,4,4,4,4,4,5,5),  // 08 - 0f
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 10 - 17
-    PCK4BITS(4,4,4,5,4,4,4,4),  // 18 - 1f
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 20 - 27
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 28 - 2f
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 30 - 37
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 38 - 3f
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 40 - 47
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 48 - 4f
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 50 - 57
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 58 - 5f
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 60 - 67
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 68 - 6f
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 70 - 77
-    PCK4BITS(4,4,4,4,4,4,4,4),  // 78 - 7f
-    PCK4BITS(5,5,5,5,5,5,5,5),  // 80 - 87
-    PCK4BITS(5,5,5,5,5,5,1,3),  // 88 - 8f
-    PCK4BITS(5,5,5,5,5,5,5,5),  // 90 - 97
-    PCK4BITS(5,5,5,5,5,5,5,5),  // 98 - 9f
-    PCK4BITS(5,2,2,2,2,2,2,2),  // a0 - a7
-    PCK4BITS(2,2,2,2,2,2,2,2),  // a8 - af
-    PCK4BITS(2,2,2,2,2,2,2,2),  // b0 - b7
-    PCK4BITS(2,2,2,2,2,2,2,2),  // b8 - bf
-    PCK4BITS(2,2,2,2,2,2,2,2),  // c0 - c7
-    PCK4BITS(2,2,2,2,2,2,2,2),  // c8 - cf
-    PCK4BITS(2,2,2,2,2,2,2,2),  // d0 - d7
-    PCK4BITS(2,2,2,2,2,2,2,2),  // d8 - df
-    PCK4BITS(0,0,0,0,0,0,0,0),  // e0 - e7
-    PCK4BITS(0,0,0,0,0,0,0,0),  // e8 - ef
-    PCK4BITS(0,0,0,0,0,0,0,0),  // f0 - f7
-    PCK4BITS(0,0,0,0,0,0,0,5)   // f8 - ff
+    //PCK4BITS(5,4,4,4,4,4,4,4),  // 00 - 07
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 00 - 07
+    PCK4BITS(4, 4, 4, 4, 4, 4, 5, 5), // 08 - 0f
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 10 - 17
+    PCK4BITS(4, 4, 4, 5, 4, 4, 4, 4), // 18 - 1f
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 20 - 27
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 28 - 2f
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 30 - 37
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 38 - 3f
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 40 - 47
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 48 - 4f
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 50 - 57
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 58 - 5f
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 60 - 67
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 68 - 6f
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 70 - 77
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // 78 - 7f
+    PCK4BITS(5, 5, 5, 5, 5, 5, 5, 5), // 80 - 87
+    PCK4BITS(5, 5, 5, 5, 5, 5, 1, 3), // 88 - 8f
+    PCK4BITS(5, 5, 5, 5, 5, 5, 5, 5), // 90 - 97
+    PCK4BITS(5, 5, 5, 5, 5, 5, 5, 5), // 98 - 9f
+    PCK4BITS(5, 2, 2, 2, 2, 2, 2, 2), // a0 - a7
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // a8 - af
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // b0 - b7
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // b8 - bf
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // c0 - c7
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // c8 - cf
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // d0 - d7
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // d8 - df
+    PCK4BITS(0, 0, 0, 0, 0, 0, 0, 0), // e0 - e7
+    PCK4BITS(0, 0, 0, 0, 0, 0, 0, 0), // e8 - ef
+    PCK4BITS(0, 0, 0, 0, 0, 0, 0, 0), // f0 - f7
+    PCK4BITS(0, 0, 0, 0, 0, 0, 0, 5) // f8 - ff
 };
 
 
 static const uint32_t EUCJP_st [ 5] =
 {
-    PCK4BITS(     3,     4,     3,     5,eStart,eError,eError,eError),//00-07
-    PCK4BITS(eError,eError,eError,eError,eItsMe,eItsMe,eItsMe,eItsMe),//08-0f
-    PCK4BITS(eItsMe,eItsMe,eStart,eError,eStart,eError,eError,eError),//10-17
-    PCK4BITS(eError,eError,eStart,eError,eError,eError,     3,eError),//18-1f
-    PCK4BITS(     3,eError,eError,eError,eStart,eStart,eStart,eStart) //20-27
+    PCK4BITS(3,     4,     3,     5, eStart, eError, eError, eError), //00-07
+    PCK4BITS(eError, eError, eError, eError, eItsMe, eItsMe, eItsMe, eItsMe), //08-0f
+    PCK4BITS(eItsMe, eItsMe, eStart, eError, eStart, eError, eError, eError), //10-17
+    PCK4BITS(eError, eError, eStart, eError, eError, eError,     3, eError), //18-1f
+    PCK4BITS(3, eError, eError, eError, eStart, eStart, eStart, eStart) //20-27
 };
 
 static const uint32_t EUCJPCharLenTable[] = {2, 2, 2, 3, 1, 0};
@@ -128,46 +128,46 @@ const SMModel EUCJPSMModel =
 
 static const uint32_t EUCKR_cls [ 256 / 8 ] =
 {
-//PCK4BITS(0,1,1,1,1,1,1,1),  // 00 - 07
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 00 - 07
-    PCK4BITS(1,1,1,1,1,1,0,0),  // 08 - 0f
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 10 - 17
-    PCK4BITS(1,1,1,0,1,1,1,1),  // 18 - 1f
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 20 - 27
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 28 - 2f
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 30 - 37
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 38 - 3f
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 40 - 47
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 48 - 4f
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 50 - 57
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 58 - 5f
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 60 - 67
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 68 - 6f
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 70 - 77
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 78 - 7f
-    PCK4BITS(0,0,0,0,0,0,0,0),  // 80 - 87
-    PCK4BITS(0,0,0,0,0,0,0,0),  // 88 - 8f
-    PCK4BITS(0,0,0,0,0,0,0,0),  // 90 - 97
-    PCK4BITS(0,0,0,0,0,0,0,0),  // 98 - 9f
-    PCK4BITS(0,2,2,2,2,2,2,2),  // a0 - a7
-    PCK4BITS(2,2,2,2,2,3,3,3),  // a8 - af
-    PCK4BITS(2,2,2,2,2,2,2,2),  // b0 - b7
-    PCK4BITS(2,2,2,2,2,2,2,2),  // b8 - bf
-    PCK4BITS(2,2,2,2,2,2,2,2),  // c0 - c7
-    PCK4BITS(2,3,2,2,2,2,2,2),  // c8 - cf
-    PCK4BITS(2,2,2,2,2,2,2,2),  // d0 - d7
-    PCK4BITS(2,2,2,2,2,2,2,2),  // d8 - df
-    PCK4BITS(2,2,2,2,2,2,2,2),  // e0 - e7
-    PCK4BITS(2,2,2,2,2,2,2,2),  // e8 - ef
-    PCK4BITS(2,2,2,2,2,2,2,2),  // f0 - f7
-    PCK4BITS(2,2,2,2,2,2,2,0)   // f8 - ff
+    //PCK4BITS(0,1,1,1,1,1,1,1),  // 00 - 07
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 00 - 07
+    PCK4BITS(1, 1, 1, 1, 1, 1, 0, 0), // 08 - 0f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 10 - 17
+    PCK4BITS(1, 1, 1, 0, 1, 1, 1, 1), // 18 - 1f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 20 - 27
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 28 - 2f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 30 - 37
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 38 - 3f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 40 - 47
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 48 - 4f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 50 - 57
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 58 - 5f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 60 - 67
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 68 - 6f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 70 - 77
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 78 - 7f
+    PCK4BITS(0, 0, 0, 0, 0, 0, 0, 0), // 80 - 87
+    PCK4BITS(0, 0, 0, 0, 0, 0, 0, 0), // 88 - 8f
+    PCK4BITS(0, 0, 0, 0, 0, 0, 0, 0), // 90 - 97
+    PCK4BITS(0, 0, 0, 0, 0, 0, 0, 0), // 98 - 9f
+    PCK4BITS(0, 2, 2, 2, 2, 2, 2, 2), // a0 - a7
+    PCK4BITS(2, 2, 2, 2, 2, 3, 3, 3), // a8 - af
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // b0 - b7
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // b8 - bf
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // c0 - c7
+    PCK4BITS(2, 3, 2, 2, 2, 2, 2, 2), // c8 - cf
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // d0 - d7
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // d8 - df
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // e0 - e7
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // e8 - ef
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // f0 - f7
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 0) // f8 - ff
 };
 
 
 static const uint32_t EUCKR_st [ 2] =
 {
-    PCK4BITS(eError,eStart,     3,eError,eError,eError,eError,eError),//00-07
-    PCK4BITS(eItsMe,eItsMe,eItsMe,eItsMe,eError,eError,eStart,eStart) //08-0f
+    PCK4BITS(eError, eStart,     3, eError, eError, eError, eError, eError), //00-07
+    PCK4BITS(eItsMe, eItsMe, eItsMe, eItsMe, eError, eError, eStart, eStart) //08-0f
 };
 
 static const uint32_t EUCKRCharLenTable[] = {0, 1, 2, 0};
@@ -183,50 +183,50 @@ const SMModel EUCKRSMModel =
 
 static const uint32_t EUCTW_cls [ 256 / 8 ] =
 {
-//PCK4BITS(0,2,2,2,2,2,2,2),  // 00 - 07
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 00 - 07
-    PCK4BITS(2,2,2,2,2,2,0,0),  // 08 - 0f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 10 - 17
-    PCK4BITS(2,2,2,0,2,2,2,2),  // 18 - 1f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 20 - 27
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 28 - 2f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 30 - 37
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 38 - 3f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 40 - 47
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 48 - 4f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 50 - 57
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 58 - 5f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 60 - 67
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 68 - 6f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 70 - 77
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 78 - 7f
-    PCK4BITS(0,0,0,0,0,0,0,0),  // 80 - 87
-    PCK4BITS(0,0,0,0,0,0,6,0),  // 88 - 8f
-    PCK4BITS(0,0,0,0,0,0,0,0),  // 90 - 97
-    PCK4BITS(0,0,0,0,0,0,0,0),  // 98 - 9f
-    PCK4BITS(0,3,4,4,4,4,4,4),  // a0 - a7
-    PCK4BITS(5,5,1,1,1,1,1,1),  // a8 - af
-    PCK4BITS(1,1,1,1,1,1,1,1),  // b0 - b7
-    PCK4BITS(1,1,1,1,1,1,1,1),  // b8 - bf
-    PCK4BITS(1,1,3,1,3,3,3,3),  // c0 - c7
-    PCK4BITS(3,3,3,3,3,3,3,3),  // c8 - cf
-    PCK4BITS(3,3,3,3,3,3,3,3),  // d0 - d7
-    PCK4BITS(3,3,3,3,3,3,3,3),  // d8 - df
-    PCK4BITS(3,3,3,3,3,3,3,3),  // e0 - e7
-    PCK4BITS(3,3,3,3,3,3,3,3),  // e8 - ef
-    PCK4BITS(3,3,3,3,3,3,3,3),  // f0 - f7
-    PCK4BITS(3,3,3,3,3,3,3,0)   // f8 - ff
+    //PCK4BITS(0,2,2,2,2,2,2,2),  // 00 - 07
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 00 - 07
+    PCK4BITS(2, 2, 2, 2, 2, 2, 0, 0), // 08 - 0f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 10 - 17
+    PCK4BITS(2, 2, 2, 0, 2, 2, 2, 2), // 18 - 1f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 20 - 27
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 28 - 2f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 30 - 37
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 38 - 3f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 40 - 47
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 48 - 4f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 50 - 57
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 58 - 5f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 60 - 67
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 68 - 6f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 70 - 77
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 78 - 7f
+    PCK4BITS(0, 0, 0, 0, 0, 0, 0, 0), // 80 - 87
+    PCK4BITS(0, 0, 0, 0, 0, 0, 6, 0), // 88 - 8f
+    PCK4BITS(0, 0, 0, 0, 0, 0, 0, 0), // 90 - 97
+    PCK4BITS(0, 0, 0, 0, 0, 0, 0, 0), // 98 - 9f
+    PCK4BITS(0, 3, 4, 4, 4, 4, 4, 4), // a0 - a7
+    PCK4BITS(5, 5, 1, 1, 1, 1, 1, 1), // a8 - af
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // b0 - b7
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // b8 - bf
+    PCK4BITS(1, 1, 3, 1, 3, 3, 3, 3), // c0 - c7
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // c8 - cf
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // d0 - d7
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // d8 - df
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // e0 - e7
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // e8 - ef
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // f0 - f7
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 0) // f8 - ff
 };
 
 
 static const uint32_t EUCTW_st [ 6] =
 {
-    PCK4BITS(eError,eError,eStart,     3,     3,     3,     4,eError),//00-07
-    PCK4BITS(eError,eError,eError,eError,eError,eError,eItsMe,eItsMe),//08-0f
-    PCK4BITS(eItsMe,eItsMe,eItsMe,eItsMe,eItsMe,eError,eStart,eError),//10-17
-    PCK4BITS(eStart,eStart,eStart,eError,eError,eError,eError,eError),//18-1f
-    PCK4BITS(     5,eError,eError,eError,eStart,eError,eStart,eStart),//20-27
-    PCK4BITS(eStart,eError,eStart,eStart,eStart,eStart,eStart,eStart) //28-2f
+    PCK4BITS(eError, eError, eStart,     3,     3,     3,     4, eError), //00-07
+    PCK4BITS(eError, eError, eError, eError, eError, eError, eItsMe, eItsMe), //08-0f
+    PCK4BITS(eItsMe, eItsMe, eItsMe, eItsMe, eItsMe, eError, eStart, eError), //10-17
+    PCK4BITS(eStart, eStart, eStart, eError, eError, eError, eError, eError), //18-1f
+    PCK4BITS(5, eError, eError, eError, eStart, eError, eStart, eStart), //20-27
+    PCK4BITS(eStart, eError, eStart, eStart, eStart, eStart, eStart, eStart) //28-2f
 };
 
 static const uint32_t EUCTWCharLenTable[] = {0, 0, 1, 2, 2, 2, 3};
@@ -298,49 +298,49 @@ SMModel GB2312SMModel = {
 // intl/chardet/tools. It should be the same as in PSM detector.
 static const uint32_t GB18030_cls [ 256 / 8 ] =
 {
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 00 - 07
-    PCK4BITS(1,1,1,1,1,1,0,0),  // 08 - 0f
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 10 - 17
-    PCK4BITS(1,1,1,0,1,1,1,1),  // 18 - 1f
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 20 - 27
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 28 - 2f
-    PCK4BITS(3,3,3,3,3,3,3,3),  // 30 - 37
-    PCK4BITS(3,3,1,1,1,1,1,1),  // 38 - 3f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 40 - 47
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 48 - 4f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 50 - 57
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 58 - 5f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 60 - 67
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 68 - 6f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 70 - 77
-    PCK4BITS(2,2,2,2,2,2,2,4),  // 78 - 7f
-    PCK4BITS(5,6,6,6,6,6,6,6),  // 80 - 87
-    PCK4BITS(6,6,6,6,6,6,6,6),  // 88 - 8f
-    PCK4BITS(6,6,6,6,6,6,6,6),  // 90 - 97
-    PCK4BITS(6,6,6,6,6,6,6,6),  // 98 - 9f
-    PCK4BITS(6,6,6,6,6,6,6,6),  // a0 - a7
-    PCK4BITS(6,6,6,6,6,6,6,6),  // a8 - af
-    PCK4BITS(6,6,6,6,6,6,6,6),  // b0 - b7
-    PCK4BITS(6,6,6,6,6,6,6,6),  // b8 - bf
-    PCK4BITS(6,6,6,6,6,6,6,6),  // c0 - c7
-    PCK4BITS(6,6,6,6,6,6,6,6),  // c8 - cf
-    PCK4BITS(6,6,6,6,6,6,6,6),  // d0 - d7
-    PCK4BITS(6,6,6,6,6,6,6,6),  // d8 - df
-    PCK4BITS(6,6,6,6,6,6,6,6),  // e0 - e7
-    PCK4BITS(6,6,6,6,6,6,6,6),  // e8 - ef
-    PCK4BITS(6,6,6,6,6,6,6,6),  // f0 - f7
-    PCK4BITS(6,6,6,6,6,6,6,0)   // f8 - ff
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 00 - 07
+    PCK4BITS(1, 1, 1, 1, 1, 1, 0, 0), // 08 - 0f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 10 - 17
+    PCK4BITS(1, 1, 1, 0, 1, 1, 1, 1), // 18 - 1f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 20 - 27
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 28 - 2f
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // 30 - 37
+    PCK4BITS(3, 3, 1, 1, 1, 1, 1, 1), // 38 - 3f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 40 - 47
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 48 - 4f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 50 - 57
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 58 - 5f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 60 - 67
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 68 - 6f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 70 - 77
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 4), // 78 - 7f
+    PCK4BITS(5, 6, 6, 6, 6, 6, 6, 6), // 80 - 87
+    PCK4BITS(6, 6, 6, 6, 6, 6, 6, 6), // 88 - 8f
+    PCK4BITS(6, 6, 6, 6, 6, 6, 6, 6), // 90 - 97
+    PCK4BITS(6, 6, 6, 6, 6, 6, 6, 6), // 98 - 9f
+    PCK4BITS(6, 6, 6, 6, 6, 6, 6, 6), // a0 - a7
+    PCK4BITS(6, 6, 6, 6, 6, 6, 6, 6), // a8 - af
+    PCK4BITS(6, 6, 6, 6, 6, 6, 6, 6), // b0 - b7
+    PCK4BITS(6, 6, 6, 6, 6, 6, 6, 6), // b8 - bf
+    PCK4BITS(6, 6, 6, 6, 6, 6, 6, 6), // c0 - c7
+    PCK4BITS(6, 6, 6, 6, 6, 6, 6, 6), // c8 - cf
+    PCK4BITS(6, 6, 6, 6, 6, 6, 6, 6), // d0 - d7
+    PCK4BITS(6, 6, 6, 6, 6, 6, 6, 6), // d8 - df
+    PCK4BITS(6, 6, 6, 6, 6, 6, 6, 6), // e0 - e7
+    PCK4BITS(6, 6, 6, 6, 6, 6, 6, 6), // e8 - ef
+    PCK4BITS(6, 6, 6, 6, 6, 6, 6, 6), // f0 - f7
+    PCK4BITS(6, 6, 6, 6, 6, 6, 6, 0) // f8 - ff
 };
 
 
 static const uint32_t GB18030_st [ 6] =
 {
-    PCK4BITS(eError,eStart,eStart,eStart,eStart,eStart,     3,eError),//00-07
-    PCK4BITS(eError,eError,eError,eError,eError,eError,eItsMe,eItsMe),//08-0f
-    PCK4BITS(eItsMe,eItsMe,eItsMe,eItsMe,eItsMe,eError,eError,eStart),//10-17
-    PCK4BITS(     4,eError,eStart,eStart,eError,eError,eError,eError),//18-1f
-    PCK4BITS(eError,eError,     5,eError,eError,eError,eItsMe,eError),//20-27
-    PCK4BITS(eError,eError,eStart,eStart,eStart,eStart,eStart,eStart) //28-2f
+    PCK4BITS(eError, eStart, eStart, eStart, eStart, eStart,     3, eError), //00-07
+    PCK4BITS(eError, eError, eError, eError, eError, eError, eItsMe, eItsMe), //08-0f
+    PCK4BITS(eItsMe, eItsMe, eItsMe, eItsMe, eItsMe, eError, eError, eStart), //10-17
+    PCK4BITS(4, eError, eStart, eStart, eError, eError, eError, eError), //18-1f
+    PCK4BITS(eError, eError,     5, eError, eError, eError, eItsMe, eError), //20-27
+    PCK4BITS(eError, eError, eStart, eStart, eStart, eStart, eStart, eStart) //28-2f
 };
 
 // To be accurate, the length of class 6 can be either 2 or 4.
@@ -363,49 +363,49 @@ const SMModel GB18030SMModel =
 
 static const uint32_t SJIS_cls [ 256 / 8 ] =
 {
-//PCK4BITS(0,1,1,1,1,1,1,1),  // 00 - 07
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 00 - 07
-    PCK4BITS(1,1,1,1,1,1,0,0),  // 08 - 0f
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 10 - 17
-    PCK4BITS(1,1,1,0,1,1,1,1),  // 18 - 1f
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 20 - 27
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 28 - 2f
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 30 - 37
-    PCK4BITS(1,1,1,1,1,1,1,1),  // 38 - 3f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 40 - 47
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 48 - 4f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 50 - 57
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 58 - 5f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 60 - 67
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 68 - 6f
-    PCK4BITS(2,2,2,2,2,2,2,2),  // 70 - 77
-    PCK4BITS(2,2,2,2,2,2,2,1),  // 78 - 7f
-    PCK4BITS(3,3,3,3,3,3,3,3),  // 80 - 87
-    PCK4BITS(3,3,3,3,3,3,3,3),  // 88 - 8f
-    PCK4BITS(3,3,3,3,3,3,3,3),  // 90 - 97
-    PCK4BITS(3,3,3,3,3,3,3,3),  // 98 - 9f
-//0xa0 is illegal in sjis encoding, but some pages does
-//contain such byte. We need to be more error forgiven.
-    PCK4BITS(2,2,2,2,2,2,2,2),  // a0 - a7
-    PCK4BITS(2,2,2,2,2,2,2,2),  // a8 - af
-    PCK4BITS(2,2,2,2,2,2,2,2),  // b0 - b7
-    PCK4BITS(2,2,2,2,2,2,2,2),  // b8 - bf
-    PCK4BITS(2,2,2,2,2,2,2,2),  // c0 - c7
-    PCK4BITS(2,2,2,2,2,2,2,2),  // c8 - cf
-    PCK4BITS(2,2,2,2,2,2,2,2),  // d0 - d7
-    PCK4BITS(2,2,2,2,2,2,2,2),  // d8 - df
-    PCK4BITS(3,3,3,3,3,3,3,3),  // e0 - e7
-    PCK4BITS(3,3,3,3,3,4,4,4),  // e8 - ef
-    PCK4BITS(4,4,4,4,4,4,4,4),  // f0 - f7
-    PCK4BITS(4,4,4,4,4,0,0,0)   // f8 - ff
+    //PCK4BITS(0,1,1,1,1,1,1,1),  // 00 - 07
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 00 - 07
+    PCK4BITS(1, 1, 1, 1, 1, 1, 0, 0), // 08 - 0f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 10 - 17
+    PCK4BITS(1, 1, 1, 0, 1, 1, 1, 1), // 18 - 1f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 20 - 27
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 28 - 2f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 30 - 37
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1), // 38 - 3f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 40 - 47
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 48 - 4f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 50 - 57
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 58 - 5f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 60 - 67
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 68 - 6f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // 70 - 77
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 1), // 78 - 7f
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // 80 - 87
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // 88 - 8f
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // 90 - 97
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // 98 - 9f
+    //0xa0 is illegal in sjis encoding, but some pages does
+    //contain such byte. We need to be more error forgiven.
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // a0 - a7
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // a8 - af
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // b0 - b7
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // b8 - bf
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // c0 - c7
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // c8 - cf
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // d0 - d7
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2), // d8 - df
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3), // e0 - e7
+    PCK4BITS(3, 3, 3, 3, 3, 4, 4, 4), // e8 - ef
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4), // f0 - f7
+    PCK4BITS(4, 4, 4, 4, 4, 0, 0, 0) // f8 - ff
 };
 
 
 static const uint32_t SJIS_st [ 3] =
 {
-    PCK4BITS(eError,eStart,eStart,     3,eError,eError,eError,eError),//00-07
-    PCK4BITS(eError,eError,eError,eError,eItsMe,eItsMe,eItsMe,eItsMe),//08-0f
-    PCK4BITS(eItsMe,eItsMe,eError,eError,eStart,eStart,eStart,eStart) //10-17
+    PCK4BITS(eError, eStart, eStart,     3, eError, eError, eError, eError), //00-07
+    PCK4BITS(eError, eError, eError, eError, eItsMe, eItsMe, eItsMe, eItsMe), //08-0f
+    PCK4BITS(eItsMe, eItsMe, eError, eError, eStart, eStart, eStart, eStart) //10-17
 };
 
 static const uint32_t SJISCharLenTable[] = {0, 1, 1, 2, 0, 0};
@@ -422,58 +422,58 @@ const SMModel SJISSMModel =
 
 static const uint32_t UTF8_cls [ 256 / 8 ] =
 {
-    PCK4BITS( 1, 1, 1, 1, 1, 1, 1, 1),  // 00 - 07
-    PCK4BITS( 1, 1, 1, 1, 1, 1, 0, 0),  // 08 - 0f
-    PCK4BITS( 1, 1, 1, 1, 1, 1, 1, 1),  // 10 - 17
-    PCK4BITS( 1, 1, 1, 0, 1, 1, 1, 1),  // 18 - 1f
-    PCK4BITS( 1, 1, 1, 1, 1, 1, 1, 1),  // 20 - 27
-    PCK4BITS( 1, 1, 1, 1, 1, 1, 1, 1),  // 28 - 2f
-    PCK4BITS( 1, 1, 1, 1, 1, 1, 1, 1),  // 30 - 37
-    PCK4BITS( 1, 1, 1, 1, 1, 1, 1, 1),  // 38 - 3f
-    PCK4BITS( 1, 1, 1, 1, 1, 1, 1, 1),  // 40 - 47
-    PCK4BITS( 1, 1, 1, 1, 1, 1, 1, 1),  // 48 - 4f
-    PCK4BITS( 1, 1, 1, 1, 1, 1, 1, 1),  // 50 - 57
-    PCK4BITS( 1, 1, 1, 1, 1, 1, 1, 1),  // 58 - 5f
-    PCK4BITS( 1, 1, 1, 1, 1, 1, 1, 1),  // 60 - 67
-    PCK4BITS( 1, 1, 1, 1, 1, 1, 1, 1),  // 68 - 6f
-    PCK4BITS( 1, 1, 1, 1, 1, 1, 1, 1),  // 70 - 77
-    PCK4BITS( 1, 1, 1, 1, 1, 1, 1, 1),  // 78 - 7f
-    PCK4BITS( 2, 2, 2, 2, 2, 2, 2, 2),  // 80 - 87
-    PCK4BITS( 2, 2, 2, 2, 2, 2, 2, 2),  // 88 - 8f
-    PCK4BITS( 3, 3, 3, 3, 3, 3, 3, 3),  // 90 - 97
-    PCK4BITS( 3, 3, 3, 3, 3, 3, 3, 3),  // 98 - 9f
-    PCK4BITS( 4, 4, 4, 4, 4, 4, 4, 4),  // a0 - a7
-    PCK4BITS( 4, 4, 4, 4, 4, 4, 4, 4),  // a8 - af
-    PCK4BITS( 4, 4, 4, 4, 4, 4, 4, 4),  // b0 - b7
-    PCK4BITS( 4, 4, 4, 4, 4, 4, 4, 4),  // b8 - bf
-    PCK4BITS( 0, 0, 5, 5, 5, 5, 5, 5),  // c0 - c7
-    PCK4BITS( 5, 5, 5, 5, 5, 5, 5, 5),  // c8 - cf
-    PCK4BITS( 5, 5, 5, 5, 5, 5, 5, 5),  // d0 - d7
-    PCK4BITS( 5, 5, 5, 5, 5, 5, 5, 5),  // d8 - df
-    PCK4BITS( 6, 7, 7, 7, 7, 7, 7, 7),  // e0 - e7
-    PCK4BITS( 7, 7, 7, 7, 7, 8, 7, 7),  // e8 - ef
-    PCK4BITS( 9,10,10,10,11, 0, 0, 0),  // f0 - f7
-    PCK4BITS( 0, 0, 0, 0, 0, 0, 0, 0)   // f8 - ff
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1),   // 00 - 07
+    PCK4BITS(1, 1, 1, 1, 1, 1, 0, 0),   // 08 - 0f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1),   // 10 - 17
+    PCK4BITS(1, 1, 1, 0, 1, 1, 1, 1),   // 18 - 1f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1),   // 20 - 27
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1),   // 28 - 2f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1),   // 30 - 37
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1),   // 38 - 3f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1),   // 40 - 47
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1),   // 48 - 4f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1),   // 50 - 57
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1),   // 58 - 5f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1),   // 60 - 67
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1),   // 68 - 6f
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1),   // 70 - 77
+    PCK4BITS(1, 1, 1, 1, 1, 1, 1, 1),   // 78 - 7f
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2),   // 80 - 87
+    PCK4BITS(2, 2, 2, 2, 2, 2, 2, 2),   // 88 - 8f
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3),   // 90 - 97
+    PCK4BITS(3, 3, 3, 3, 3, 3, 3, 3),   // 98 - 9f
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4),   // a0 - a7
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4),   // a8 - af
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4),   // b0 - b7
+    PCK4BITS(4, 4, 4, 4, 4, 4, 4, 4),   // b8 - bf
+    PCK4BITS(0, 0, 5, 5, 5, 5, 5, 5),   // c0 - c7
+    PCK4BITS(5, 5, 5, 5, 5, 5, 5, 5),   // c8 - cf
+    PCK4BITS(5, 5, 5, 5, 5, 5, 5, 5),   // d0 - d7
+    PCK4BITS(5, 5, 5, 5, 5, 5, 5, 5),   // d8 - df
+    PCK4BITS(6, 7, 7, 7, 7, 7, 7, 7),   // e0 - e7
+    PCK4BITS(7, 7, 7, 7, 7, 8, 7, 7),   // e8 - ef
+    PCK4BITS(9, 10, 10, 10, 11, 0, 0, 0), // f0 - f7
+    PCK4BITS(0, 0, 0, 0, 0, 0, 0, 0)    // f8 - ff
 };
 
 
 static const uint32_t UTF8_st [ 15] =
 {
-    PCK4BITS(eError,eStart,eError,eError,eError,     3,     4,     5),  // 00 - 07
-    PCK4BITS(     6,     7,     8,     9,eError,eError,eError,eError),  // 08 - 0f
-    PCK4BITS(eError,eError,eError,eError,eError,eError,eError,eError),  // 10 - 17
-    PCK4BITS(eItsMe,eItsMe,eItsMe,eItsMe,eItsMe,eItsMe,eItsMe,eItsMe),  // 18 - 1f
-    PCK4BITS(eItsMe,eItsMe,eItsMe,eItsMe,eError,eError,eStart,eStart),  // 20 - 27
-    PCK4BITS(eStart,eError,eError,eError,eError,eError,eError,eError),  // 28 - 2f
-    PCK4BITS(eError,eError,eError,eError,     3,eError,eError,eError),  // 30 - 37
-    PCK4BITS(eError,eError,eError,eError,eError,eError,     3,     3),  // 38 - 3f
-    PCK4BITS(     3,eError,eError,eError,eError,eError,eError,eError),  // 40 - 47
-    PCK4BITS(eError,eError,     3,     3,eError,eError,eError,eError),  // 48 - 4f
-    PCK4BITS(eError,eError,eError,eError,eError,eError,     5,     5),  // 50 - 57
-    PCK4BITS(eError,eError,eError,eError,eError,eError,eError,eError),  // 58 - 5f
-    PCK4BITS(eError,eError,     5,     5,     5,eError,eError,eError),  // 60 - 67
-    PCK4BITS(eError,eError,eError,eError,eError,eError,     5,eError),  // 68 - 6f
-    PCK4BITS(eError,eError,eError,eError,eError,eError,eError,eError)   // 70 - 77
+    PCK4BITS(eError, eStart, eError, eError, eError,     3,     4,     5), // 00 - 07
+    PCK4BITS(6,     7,     8,     9, eError, eError, eError, eError),   // 08 - 0f
+    PCK4BITS(eError, eError, eError, eError, eError, eError, eError, eError), // 10 - 17
+    PCK4BITS(eItsMe, eItsMe, eItsMe, eItsMe, eItsMe, eItsMe, eItsMe, eItsMe), // 18 - 1f
+    PCK4BITS(eItsMe, eItsMe, eItsMe, eItsMe, eError, eError, eStart, eStart), // 20 - 27
+    PCK4BITS(eStart, eError, eError, eError, eError, eError, eError, eError), // 28 - 2f
+    PCK4BITS(eError, eError, eError, eError,     3, eError, eError, eError), // 30 - 37
+    PCK4BITS(eError, eError, eError, eError, eError, eError,     3,     3), // 38 - 3f
+    PCK4BITS(3, eError, eError, eError, eError, eError, eError, eError), // 40 - 47
+    PCK4BITS(eError, eError,     3,     3, eError, eError, eError, eError), // 48 - 4f
+    PCK4BITS(eError, eError, eError, eError, eError, eError,     5,     5), // 50 - 57
+    PCK4BITS(eError, eError, eError, eError, eError, eError, eError, eError), // 58 - 5f
+    PCK4BITS(eError, eError,     5,     5,     5, eError, eError, eError), // 60 - 67
+    PCK4BITS(eError, eError, eError, eError, eError, eError,     5, eError), // 68 - 6f
+    PCK4BITS(eError, eError, eError, eError, eError, eError, eError, eError) // 70 - 77
 };
 
 static const uint32_t UTF8CharLenTable[] = {0, 1, 0, 0, 0, 2, 3, 3, 3, 4, 4, 4};

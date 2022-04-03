@@ -32,8 +32,8 @@ wxsRegisterItem<wxsFontDialog> Reg(_T("FontDialog"), wxsTTool, _T("Dialogs"), 16
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsFontDialog::wxsFontDialog(wxsItemResData* Data):
-    wxsTool(Data,&Reg.Info),
+wxsFontDialog::wxsFontDialog(wxsItemResData * Data):
+    wxsTool(Data, &Reg.Info),
     m_bAllowSymbols(true),
     m_bEnableEffects(true),
     m_bShowHelp(false),
@@ -49,52 +49,57 @@ wxsFontDialog::wxsFontDialog(wxsItemResData* Data):
  */
 void wxsFontDialog::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/fontdlg.h>"),GetInfo().ClassName,hfInPCH);
-
-        wxString sfontName = GetCoderContext()->GetUniqueName(_T("fontData"));
-        Codef(_T("\twxFontData %s;\n"), sfontName.wx_str());
-
-        wxString sClr = m_cdColour.BuildCode(GetCoderContext());
-        if(!sClr.IsEmpty())
-            Codef(_T("\t%s.SetColour(%s);\n"), sfontName.wx_str(), sClr.wx_str());
-
-        if(!m_bEnableEffects)
-            Codef(_T("\t%s.EnableEffects(%b);\n"), sfontName.wx_str(), m_bEnableEffects);
-
-        Codef(_T("\t%s.SetInitialFont(*wxNORMAL_FONT);\n"), sfontName.wx_str());
-
-        // These functions are Windows only.
-        if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
+        case wxsCPP:
         {
-            if(!m_bShowHelp)
+            AddHeader(_T("<wx/fontdlg.h>"), GetInfo().ClassName, hfInPCH);
+            wxString sfontName = GetCoderContext()->GetUniqueName(_T("fontData"));
+            Codef(_T("\twxFontData %s;\n"), sfontName.wx_str());
+            wxString sClr = m_cdColour.BuildCode(GetCoderContext());
+
+            if (!sClr.IsEmpty())
             {
-                Codef(_T("\t%s.SetAllowSymbols(%b);\n"), sfontName.wx_str(), m_bAllowSymbols);
+                Codef(_T("\t%s.SetColour(%s);\n"), sfontName.wx_str(), sClr.wx_str());
             }
-            if(m_iMinSize > 0 || m_iMaxSize > 0)
+
+            if (!m_bEnableEffects)
             {
-                Codef(_T("\t%s.SetRange(%d, %d);\n"), sfontName.wx_str(), m_iMinSize, m_iMaxSize);
+                Codef(_T("\t%s.EnableEffects(%b);\n"), sfontName.wx_str(), m_bEnableEffects);
             }
-            if(m_bShowHelp)
+
+            Codef(_T("\t%s.SetInitialFont(*wxNORMAL_FONT);\n"), sfontName.wx_str());
+
+            // These functions are Windows only.
+            if ((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
             {
-                Codef(_T("\t%s.SetShowHelp(%b);\n"), sfontName.wx_str(), m_bShowHelp);
+                if (!m_bShowHelp)
+                {
+                    Codef(_T("\t%s.SetAllowSymbols(%b);\n"), sfontName.wx_str(), m_bAllowSymbols);
+                }
+
+                if (m_iMinSize > 0 || m_iMaxSize > 0)
+                {
+                    Codef(_T("\t%s.SetRange(%d, %d);\n"), sfontName.wx_str(), m_iMinSize, m_iMaxSize);
+                }
+
+                if (m_bShowHelp)
+                {
+                    Codef(_T("\t%s.SetShowHelp(%b);\n"), sfontName.wx_str(), m_bShowHelp);
+                }
             }
+
+            Codef(_T("%C(%W, %s);\n"), sfontName.wx_str());
+            BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+            return;
         }
 
-        Codef(_T("%C(%W, %s);\n"), sfontName.wx_str());
-        BuildSetupWindowCode();
-        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsFontDialog::OnBuildCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsFontDialog::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
@@ -107,15 +112,17 @@ void wxsFontDialog::OnBuildCreatingCode()
 void wxsFontDialog::OnEnumToolProperties(cb_unused long Flags)
 {
     // These functions are Windows only.
-    if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
+    if ((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
     {
         WXS_BOOL(wxsFontDialog, m_bAllowSymbols, _("Allow Symbols"), _T("allow_symbols"), true)
     }
+
     WXS_COLOUR(wxsFontDialog, m_cdColour, _("Colour"), _T("colour"));
     // This one is used by generic as well as Windows, so keep it available.
     WXS_BOOL(wxsFontDialog, m_bEnableEffects, _("Enable Effects"), _T("enable_effects"), true)
+
     // These functions are Windows only.
-    if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
+    if ((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
     {
         WXS_LONG(wxsFontDialog, m_iMinSize,  _("Min. Size"), _T("min_size"), 0)
         WXS_LONG(wxsFontDialog, m_iMaxSize,  _("Max. Size"), _T("max_size"), 0)

@@ -31,17 +31,17 @@
 #define BASE_THIRD_PARTY_NSPR_PRCPUCFG_H__
 
 #if defined(WINNT) || defined(_WIN32) || defined(__WIN32__) || defined(__MINGW32__)
-#include "prcpucfg_winnt.h"
+    #include "prcpucfg_winnt.h"
 #elif defined(WIN95) || defined(WINCE)
-#include "prcpucfg_win95.h"
+    #include "prcpucfg_win95.h"
 #elif defined(__APPLE__) || defined(__MACH__) || defined(__MACOSX__) || defined(DARWIN)
-#include "prcpucfg_darwin.h"
+    #include "prcpucfg_darwin.h"
 #elif defined(linux) || defined(__linux) || defined(__linux__) || defined(LINUX) || defined(__GNUC__)
-#include "prcpucfg_linux.h"
+    #include "prcpucfg_linux.h"
 #elif defined(__OpenBSD__)
-#include "prcpucfg_openbsd.h"
+    #include "prcpucfg_openbsd.h"
 #else
-#error Provide a prcpucfg.h appropriate for your platform
+    #error Provide a prcpucfg.h appropriate for your platform
 #endif
 
 #endif  // BASE_THIRD_PARTY_NSPR_PRCPUCFG_H__

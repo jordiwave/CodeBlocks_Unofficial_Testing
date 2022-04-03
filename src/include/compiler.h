@@ -75,101 +75,100 @@ enum CompilerLineType
 // regexes array declaration
 struct RegExStruct
 {
-    RegExStruct()
-        : desc(_("Unknown")), lt(cltError), filename(0), line(0), regex(_T("")), regexCompiled(false)
-    {
-        memset(msg, 0, sizeof(msg));
-    }
-    RegExStruct(const RegExStruct& rhs)
-        : desc(rhs.desc), lt(rhs.lt), filename(rhs.filename), line(rhs.line), regex(rhs.regex), regexCompiled(false)
-    {
-        memcpy(msg, rhs.msg, sizeof(msg));
-    }
-    RegExStruct(const wxString&  _desc,
-                CompilerLineType _lt,
-                const wxString&  _regex,
-                int              _msg,
-                int              _filename = 0,
-                int              _line     = 0,
-                int              _msg2     = 0,
-                int              _msg3     = 0)
-        : desc(_desc), lt(_lt), filename(_filename), line(_line), regex(_regex), regexCompiled(false)
-    {
-        msg[0] = _msg;
-        msg[1] = _msg2;
-        msg[2] = _msg3;
-    }
-    RegExStruct& operator=(const RegExStruct &obj)
-    {
-        desc          = obj.desc;
-        lt            = obj.lt;
-        regex         = obj.regex;
-        regexCompiled = false;
-        filename      = obj.filename;
-        line          = obj.line;
-        memcpy(msg, obj.msg, sizeof(msg));
-
-        return *this;
-    }
-
-    bool operator!=(const RegExStruct& other)
-    {
-        return !(*this == other);
-    }
-    bool operator==(const RegExStruct& other)
-    {
-        return (   desc     == other.desc
-                   && lt       == other.lt
-                   && regex    == other.regex
-                   && msg[0]   == other.msg[0]
-                   && msg[1]   == other.msg[1]
-                   && msg[2]   == other.msg[2]
-                   && filename == other.filename
-                   && line     == other.line );
-    }
-
-    wxString GetRegExString() const
-    {
-        return regex;
-    }
-    void SetRegExString(const wxString &str)
-    {
-        if (regex != str)
+        RegExStruct()
+            : desc(_("Unknown")), lt(cltError), filename(0), line(0), regex(_T("")), regexCompiled(false)
         {
-            regex = str;
+            memset(msg, 0, sizeof(msg));
+        }
+        RegExStruct(const RegExStruct & rhs)
+            : desc(rhs.desc), lt(rhs.lt), filename(rhs.filename), line(rhs.line), regex(rhs.regex), regexCompiled(false)
+        {
+            memcpy(msg, rhs.msg, sizeof(msg));
+        }
+        RegExStruct(const wxString & _desc,
+                    CompilerLineType _lt,
+                    const wxString & _regex,
+                    int              _msg,
+                    int              _filename = 0,
+                    int              _line     = 0,
+                    int              _msg2     = 0,
+                    int              _msg3     = 0)
+            : desc(_desc), lt(_lt), filename(_filename), line(_line), regex(_regex), regexCompiled(false)
+        {
+            msg[0] = _msg;
+            msg[1] = _msg2;
+            msg[2] = _msg3;
+        }
+        RegExStruct & operator=(const RegExStruct & obj)
+        {
+            desc          = obj.desc;
+            lt            = obj.lt;
+            regex         = obj.regex;
             regexCompiled = false;
+            filename      = obj.filename;
+            line          = obj.line;
+            memcpy(msg, obj.msg, sizeof(msg));
+            return *this;
         }
-    }
-    bool HasRegEx() const
-    {
-        return !regex.empty();
-    }
-    const wxRegEx& GetRegEx() const
-    {
-        CompileRegEx();
-        return regexObject;
-    }
 
-    wxString         desc;     // title of this regex
-    CompilerLineType lt;       // classify the line, if regex matches
-    int              msg[3];   // up-to 3 sub-expression nr for warning/error message
-    int              filename; // sub-expression nr for filename
-    int              line;     // sub-expression nr for line number
-    // if more than one sub-expressions are entered for msg,
-    // they are appended to each other, with one space in between.
-    // Appending takes place in the same order...
-private:
-    void CompileRegEx() const
-    {
-        if (!regex.empty() && !regexCompiled)
+        bool operator!=(const RegExStruct & other)
         {
-            regexObject.Compile(regex);
-            regexCompiled=true;
+            return !(*this == other);
         }
-    }
-    wxString        regex;    // the regex to match
-    mutable wxRegEx regexObject;
-    mutable bool    regexCompiled;
+        bool operator==(const RegExStruct & other)
+        {
+            return (desc     == other.desc
+                    && lt       == other.lt
+                    && regex    == other.regex
+                    && msg[0]   == other.msg[0]
+                    && msg[1]   == other.msg[1]
+                    && msg[2]   == other.msg[2]
+                    && filename == other.filename
+                    && line     == other.line);
+        }
+
+        wxString GetRegExString() const
+        {
+            return regex;
+        }
+        void SetRegExString(const wxString & str)
+        {
+            if (regex != str)
+            {
+                regex = str;
+                regexCompiled = false;
+            }
+        }
+        bool HasRegEx() const
+        {
+            return !regex.empty();
+        }
+        const wxRegEx & GetRegEx() const
+        {
+            CompileRegEx();
+            return regexObject;
+        }
+
+        wxString         desc;     // title of this regex
+        CompilerLineType lt;       // classify the line, if regex matches
+        int              msg[3];   // up-to 3 sub-expression nr for warning/error message
+        int              filename; // sub-expression nr for filename
+        int              line;     // sub-expression nr for line number
+        // if more than one sub-expressions are entered for msg,
+        // they are appended to each other, with one space in between.
+        // Appending takes place in the same order...
+    private:
+        void CompileRegEx() const
+        {
+            if (!regex.empty() && !regexCompiled)
+            {
+                regexObject.Compile(regex);
+                regexCompiled = true;
+            }
+        }
+        wxString        regex;    // the regex to match
+        mutable wxRegEx regexObject;
+        mutable bool    regexCompiled;
 };
 typedef std::vector<RegExStruct> RegExArray;
 
@@ -261,17 +260,17 @@ struct CompilerTool
 {
     // extensions string will be converted to array by GetArrayFromString using DEFAULT_ARRAY_SEP (;)
     // as separator
-    CompilerTool(const wxString& command_in = wxEmptyString, const wxString& extensions_in = wxEmptyString, const wxString& generatedFiles_in = wxEmptyString)
+    CompilerTool(const wxString & command_in = wxEmptyString, const wxString & extensions_in = wxEmptyString, const wxString & generatedFiles_in = wxEmptyString)
         : command(command_in), extensions(GetArrayFromString(extensions_in)), generatedFiles(GetArrayFromString(generatedFiles_in))
     {}
-    CompilerTool(const CompilerTool& rhs)
+    CompilerTool(const CompilerTool & rhs)
         : command(rhs.command), extensions(rhs.extensions), generatedFiles(rhs.generatedFiles)
     {}
-    bool operator==(const CompilerTool& rhs) const
+    bool operator==(const CompilerTool & rhs) const
     {
         return command == rhs.command && extensions == rhs.extensions && generatedFiles == rhs.generatedFiles;
     }
-    bool operator!=(const CompilerTool& rhs) const
+    bool operator!=(const CompilerTool & rhs) const
     {
         return !(*this == rhs);
     }
@@ -290,255 +289,255 @@ typedef std::vector<CompilerTool> CompilerToolsVector;
   */
 class DLLIMPORT Compiler : public CompileOptionsBase
 {
-public:
-    static const wxString FilePathWithSpaces;
-    Compiler(const wxString& name, const wxString& ID, const wxString& parentID = wxEmptyString, int weight = 50);
-    ~Compiler() override;
+    public:
+        static const wxString FilePathWithSpaces;
+        Compiler(const wxString & name, const wxString & ID, const wxString & parentID = wxEmptyString, int weight = 50);
+        ~Compiler() override;
 
-    /** @brief Complete any compiler set-up that requires access to virtual functions. */
-    virtual void PostRegisterCompilerSetup() ;
-    /** @brief Check if the compiler is actually valid (installed). */
-    virtual bool IsValid();
+        /** @brief Complete any compiler set-up that requires access to virtual functions. */
+        virtual void PostRegisterCompilerSetup() ;
+        /** @brief Check if the compiler is actually valid (installed). */
+        virtual bool IsValid();
 
-    /** @brief Check if the supplied string is a compiler warning/error */
-    virtual CompilerLineType CheckForWarningsAndErrors(const wxString& line);
-    /** @brief Returns warning/error filename. Use it after a call to CheckForWarningsAndErrors() */
-    virtual wxString GetLastErrorFilename()
-    {
-        return m_ErrorFilename;
-    }
-    /** @brief Returns warning/error line number (as a string). Use it after a call to CheckForWarningsAndErrors() */
-    virtual wxString GetLastErrorLine()
-    {
-        return m_ErrorLine;
-    }
-    /** @brief Returns warning/error actual string. Use it after a call to CheckForWarningsAndErrors() */
-    virtual wxString GetLastError()
-    {
-        return m_Error;
-    }
-    /** @brief Get the compiler's name */
-    virtual const wxString& GetName() const
-    {
-        return m_Name;
-    }
-    /** @brief Get the compiler's master path (must contain "bin", "include" and "lib") */
-    virtual const wxString& GetMasterPath() const
-    {
-        return m_MasterPath;
-    }
-    /** @brief Get the compiler's extra paths */
-    virtual const wxArrayString& GetExtraPaths() const
-    {
-        return m_ExtraPaths;
-    }
-    /** @brief Get the compiler's programs */
-    virtual const CompilerPrograms& GetPrograms() const
-    {
-        return m_Programs;
-    }
-    /** @brief Get the compiler's generic switches */
-    virtual const CompilerSwitches& GetSwitches() const
-    {
-        return m_Switches;
-    }
-    /** @brief Get the compiler's options */
-    virtual const CompilerOptions& GetOptions() const
-    {
-        return m_Options;
-    }
-    /** @brief Get a command based on CommandType
-      * @param ct The command type to process
-      * @param fileExtension the file's extension (no leading dot)
-      */
-    virtual const wxString& GetCommand(CommandType ct, const wxString& fileExtension = wxEmptyString) const;
-    /** @brief Get a compiler tool based on CommandType */
-    virtual const CompilerTool* GetCompilerTool(CommandType ct, const wxString& fileExtension = wxEmptyString) const;
-    /** @brief Get a command tool vector based on CommandType (used by advanced compiler dialog) */
-    virtual CompilerToolsVector& GetCommandToolsVector(CommandType ct)
-    {
-        return m_Commands[ct];
-    }
-    /** @brief Get the array of regexes used in errors/warnings recognition */
-    virtual const RegExArray& GetRegExArray()
-    {
-        return m_RegExes;
-    }
-    /** @brief Load the default (preset) array of regexes used in errors/warnings recognition */
-    virtual void LoadDefaultRegExArray(bool globalPrecedence = false);
+        /** @brief Check if the supplied string is a compiler warning/error */
+        virtual CompilerLineType CheckForWarningsAndErrors(const wxString & line);
+        /** @brief Returns warning/error filename. Use it after a call to CheckForWarningsAndErrors() */
+        virtual wxString GetLastErrorFilename()
+        {
+            return m_ErrorFilename;
+        }
+        /** @brief Returns warning/error line number (as a string). Use it after a call to CheckForWarningsAndErrors() */
+        virtual wxString GetLastErrorLine()
+        {
+            return m_ErrorLine;
+        }
+        /** @brief Returns warning/error actual string. Use it after a call to CheckForWarningsAndErrors() */
+        virtual wxString GetLastError()
+        {
+            return m_Error;
+        }
+        /** @brief Get the compiler's name */
+        virtual const wxString & GetName() const
+        {
+            return m_Name;
+        }
+        /** @brief Get the compiler's master path (must contain "bin", "include" and "lib") */
+        virtual const wxString & GetMasterPath() const
+        {
+            return m_MasterPath;
+        }
+        /** @brief Get the compiler's extra paths */
+        virtual const wxArrayString & GetExtraPaths() const
+        {
+            return m_ExtraPaths;
+        }
+        /** @brief Get the compiler's programs */
+        virtual const CompilerPrograms & GetPrograms() const
+        {
+            return m_Programs;
+        }
+        /** @brief Get the compiler's generic switches */
+        virtual const CompilerSwitches & GetSwitches() const
+        {
+            return m_Switches;
+        }
+        /** @brief Get the compiler's options */
+        virtual const CompilerOptions & GetOptions() const
+        {
+            return m_Options;
+        }
+        /** @brief Get a command based on CommandType
+          * @param ct The command type to process
+          * @param fileExtension the file's extension (no leading dot)
+          */
+        virtual const wxString & GetCommand(CommandType ct, const wxString & fileExtension = wxEmptyString) const;
+        /** @brief Get a compiler tool based on CommandType */
+        virtual const CompilerTool * GetCompilerTool(CommandType ct, const wxString & fileExtension = wxEmptyString) const;
+        /** @brief Get a command tool vector based on CommandType (used by advanced compiler dialog) */
+        virtual CompilerToolsVector & GetCommandToolsVector(CommandType ct)
+        {
+            return m_Commands[ct];
+        }
+        /** @brief Get the array of regexes used in errors/warnings recognition */
+        virtual const RegExArray & GetRegExArray()
+        {
+            return m_RegExes;
+        }
+        /** @brief Load the default (preset) array of regexes used in errors/warnings recognition */
+        virtual void LoadDefaultRegExArray(bool globalPrecedence = false);
 
-    /** @brief Set the compiler's name */
-    virtual void SetName(const wxString& name)
-    {
-        m_Name = name;
-    }
-    /** @brief Set the compiler's master path (must contain "bin", "include" and "lib") */
-    virtual void SetMasterPath(const wxString& path)
-    {
-        m_MasterPath = path;
-        m_NeedValidityCheck = true;
-    }
-    /** @brief Set the compiler's extra paths */
-    virtual void SetExtraPaths(const wxArrayString& paths)
-    {
-        m_ExtraPaths = paths;
-        m_NeedValidityCheck = true;
-    }
-    /** @brief Set the compiler's programs */
-    virtual void SetPrograms(const CompilerPrograms& programs)
-    {
-        m_Programs = programs;
-        m_NeedValidityCheck = true;
-    }
-    /** @brief Set the compiler's generic switches */
-    virtual void SetSwitches(const CompilerSwitches& switches)
-    {
-        m_Switches = switches;
-    }
-    /** @brief Set the compiler's options */
-    virtual void SetOptions(const CompilerOptions& options)
-    {
-        m_Options = options;
-    }
-    /** @brief Set the array of regexes used in errors/warnings recognition */
-    virtual void SetRegExArray(const RegExArray& regexes)
-    {
-        m_RegExes = regexes;
-    }
+        /** @brief Set the compiler's name */
+        virtual void SetName(const wxString & name)
+        {
+            m_Name = name;
+        }
+        /** @brief Set the compiler's master path (must contain "bin", "include" and "lib") */
+        virtual void SetMasterPath(const wxString & path)
+        {
+            m_MasterPath = path;
+            m_NeedValidityCheck = true;
+        }
+        /** @brief Set the compiler's extra paths */
+        virtual void SetExtraPaths(const wxArrayString & paths)
+        {
+            m_ExtraPaths = paths;
+            m_NeedValidityCheck = true;
+        }
+        /** @brief Set the compiler's programs */
+        virtual void SetPrograms(const CompilerPrograms & programs)
+        {
+            m_Programs = programs;
+            m_NeedValidityCheck = true;
+        }
+        /** @brief Set the compiler's generic switches */
+        virtual void SetSwitches(const CompilerSwitches & switches)
+        {
+            m_Switches = switches;
+        }
+        /** @brief Set the compiler's options */
+        virtual void SetOptions(const CompilerOptions & options)
+        {
+            m_Options = options;
+        }
+        /** @brief Set the array of regexes used in errors/warnings recognition */
+        virtual void SetRegExArray(const RegExArray & regexes)
+        {
+            m_RegExes = regexes;
+        }
 
-    /** @brief Set the compiler's master path (must contain "bin", "include" and "lib") and save to config file and returns previous master path */
-    virtual wxString SetMasterPathandSave(const wxString& newMasterPath);
+        /** @brief Set the compiler's master path (must contain "bin", "include" and "lib") and save to config file and returns previous master path */
+        virtual wxString SetMasterPathandSave(const wxString & newMasterPath);
 
-    /** @brief Save settings */
-    virtual void SaveSettings(const wxString& baseKey);
-    /** @brief Load settings */
-    virtual void LoadSettings(const wxString& baseKey);
-    /** @brief Reset settings to defaults.
-      * Put initialization code here or leave blank for standard XML loading.
-      * Call this from the default constructor.
-      */
-    virtual void Reset();
-    /** @brief Reload option flags (for copied compilers).
-      * Override if not using standard XML loading.
-      */
-    virtual void ReloadOptions();
-    /** @brief Try to auto-detect the compiler's installation directory */
-    virtual AutoDetectResult AutoDetectInstallationDir() = 0;
+        /** @brief Save settings */
+        virtual void SaveSettings(const wxString & baseKey);
+        /** @brief Load settings */
+        virtual void LoadSettings(const wxString & baseKey);
+        /** @brief Reset settings to defaults.
+          * Put initialization code here or leave blank for standard XML loading.
+          * Call this from the default constructor.
+          */
+        virtual void Reset();
+        /** @brief Reload option flags (for copied compilers).
+          * Override if not using standard XML loading.
+          */
+        virtual void ReloadOptions();
+        /** @brief Try to auto-detect the compiler's installation directory */
+        virtual AutoDetectResult AutoDetectInstallationDir() = 0;
 
-    /** @brief Get this compiler's unique ID */
-    const wxString& GetID() const
-    {
-        return m_ID;
-    }
-    /** @brief Get this compiler's parent's unique ID */
-    const wxString& GetParentID() const
-    {
-        return m_ParentID;
-    }
+        /** @brief Get this compiler's unique ID */
+        const wxString & GetID() const
+        {
+            return m_ID;
+        }
+        /** @brief Get this compiler's parent's unique ID */
+        const wxString & GetParentID() const
+        {
+            return m_ParentID;
+        }
 
-    /** @brief Get the command type descriptions (used in advanced compiler options) */
-    static wxString CommandTypeDescriptions[ctCount];
+        /** @brief Get the command type descriptions (used in advanced compiler options) */
+        static wxString CommandTypeDescriptions[ctCount];
 
-    /** @brief Set the compiler version string. Please override this virtual function
-      * with your own compiler-version detection code if you want to use this.
-      *
-      * By default this function does nothing. */
-    virtual void SetVersionString()
-    {
-        return;
-    };
+        /** @brief Set the compiler version string. Please override this virtual function
+          * with your own compiler-version detection code if you want to use this.
+          *
+          * By default this function does nothing. */
+        virtual void SetVersionString()
+        {
+            return;
+        };
 
-    /** @brief Get the compiler version string */
-    const wxString GetVersionString() const
-    {
-        return m_VersionString;
-    };
+        /** @brief Get the compiler version string */
+        const wxString GetVersionString() const
+        {
+            return m_VersionString;
+        };
 
-    /** This is to be overridden, if compiler needs to alter the default
-      * command line generation.
-      */
-    virtual CompilerCommandGenerator* GetCommandGenerator(cbProject *project);
+        /** This is to be overridden, if compiler needs to alter the default
+          * command line generation.
+          */
+        virtual CompilerCommandGenerator * GetCommandGenerator(cbProject * project);
 
-    void SetCOnlyFlags(const wxString& flags)
-    {
-        m_SortOptions[0] = flags;
-    };
-    void SetCPPOnlyFlags(const wxString& flags)
-    {
-        m_SortOptions[1] = flags;
-    };
+        void SetCOnlyFlags(const wxString & flags)
+        {
+            m_SortOptions[0] = flags;
+        };
+        void SetCPPOnlyFlags(const wxString & flags)
+        {
+            m_SortOptions[1] = flags;
+        };
 
-    const wxString& GetCOnlyFlags()
-    {
-        return m_SortOptions[0];
-    };
-    const wxString& GetCPPOnlyFlags()
-    {
-        return m_SortOptions[1];
-    };
+        const wxString & GetCOnlyFlags()
+        {
+            return m_SortOptions[0];
+        };
+        const wxString & GetCPPOnlyFlags()
+        {
+            return m_SortOptions[1];
+        };
 
-    /** @brief Do compiler writes multi-line messages? */
-    bool WithMultiLineMsg()
-    {
-        return m_MultiLineMessages;
-    };
+        /** @brief Do compiler writes multi-line messages? */
+        bool WithMultiLineMsg()
+        {
+            return m_MultiLineMessages;
+        };
 
-    /// @brief Returns messages which might be useful to the use for debugging why the
-    /// compiler is invalid. Call only after IsValid returns false.
-    wxString MakeInvalidCompilerMessages() const;
-protected:
-    friend class CompilerFactory;
-    Compiler(const Compiler& other); // copy ctor to copy everything but update m_ID
+        /// @brief Returns messages which might be useful to the use for debugging why the
+        /// compiler is invalid. Call only after IsValid returns false.
+        wxString MakeInvalidCompilerMessages() const;
+    protected:
+        friend class CompilerFactory;
+        Compiler(const Compiler & other); // copy ctor to copy everything but update m_ID
 
-    /** @brief Implement this in new compilers, to return a new copy */
-    virtual Compiler* CreateCopy() = 0;
+        /** @brief Implement this in new compilers, to return a new copy */
+        virtual Compiler * CreateCopy() = 0;
 
-    // purposely non-virtual
-    bool IsUniqueID(const wxString& ID)
-    {
-        return m_CompilerIDs.Index(ID) == wxNOT_FOUND;
-    }
-    // converts, if needed, m_ID to something that is valid
-    void MakeValidID();
+        // purposely non-virtual
+        bool IsUniqueID(const wxString & ID)
+        {
+            return m_CompilerIDs.Index(ID) == wxNOT_FOUND;
+        }
+        // converts, if needed, m_ID to something that is valid
+        void MakeValidID();
 
-    // load options from the corresponding options_<name>.xml
-    void LoadDefaultOptions(const wxString& name, int recursion = 0);
-    // load array of regexes from the corresponding options_<name>.xml
-    void LoadRegExArray(const wxString& name, bool globalPrecedence = false, int recursion = 0);
+        // load options from the corresponding options_<name>.xml
+        void LoadDefaultOptions(const wxString & name, int recursion = 0);
+        // load array of regexes from the corresponding options_<name>.xml
+        void LoadRegExArray(const wxString & name, bool globalPrecedence = false, int recursion = 0);
 
-    bool EvalXMLCondition(const wxXmlNode* node);
-    wxString GetExecName(const wxString& name);
+        bool EvalXMLCondition(const wxXmlNode * node);
+        wxString GetExecName(const wxString & name);
 
-    // keeps a copy of current settings (works only the first time it's called)
-    void MirrorCurrentSettings();
+        // keeps a copy of current settings (works only the first time it's called)
+        void MirrorCurrentSettings();
 
-    // execute without creating taskbar icon
-    long Execute(const wxString& cmd, wxArrayString& output);
+        // execute without creating taskbar icon
+        long Execute(const wxString & cmd, wxArrayString & output);
 
-    // set the following members in your class
-    wxString            m_Name;
-    wxString            m_MasterPath;
-    wxArrayString       m_ExtraPaths;
-    CompilerToolsVector m_Commands[ctCount];
-    CompilerPrograms    m_Programs;
-    CompilerSwitches    m_Switches;
-    CompilerOptions     m_Options;
-    DebuggerManager::CompilerDebuggerOptions m_DebuggerInitialConfiguation;
-    RegExArray          m_RegExes;
-    wxString            m_ErrorFilename;
-    wxString            m_ErrorLine;
-    wxString            m_Error;
-    wxString            m_VersionString;
-    wxString            m_SortOptions[2]; // m_SortOptions[0] == C-only flags; m_SortOptions[1] == C++-only flags
+        // set the following members in your class
+        wxString            m_Name;
+        wxString            m_MasterPath;
+        wxArrayString       m_ExtraPaths;
+        CompilerToolsVector m_Commands[ctCount];
+        CompilerPrograms    m_Programs;
+        CompilerSwitches    m_Switches;
+        CompilerOptions     m_Options;
+        DebuggerManager::CompilerDebuggerOptions m_DebuggerInitialConfiguation;
+        RegExArray          m_RegExes;
+        wxString            m_ErrorFilename;
+        wxString            m_ErrorLine;
+        wxString            m_Error;
+        wxString            m_VersionString;
+        wxString            m_SortOptions[2]; // m_SortOptions[0] == C-only flags; m_SortOptions[1] == C++-only flags
 
-    int m_Weight; // lower means listed sooner (try to keep between 0 and 100)
-    bool m_MultiLineMessages; // true if the compiler writes multi-line error/warning messages
-private:
-    wxString m_ID;
-    wxString m_ParentID; // -1 for builtin compilers, the builtin compiler's ID to derive from for user compilers...
-    static wxArrayString m_CompilerIDs; // map to guarantee unique IDs
-    bool m_Valid; // 'valid' flag
-    bool m_NeedValidityCheck; // flag to re-check validity (raised when changing compiler paths)
+        int m_Weight; // lower means listed sooner (try to keep between 0 and 100)
+        bool m_MultiLineMessages; // true if the compiler writes multi-line error/warning messages
+    private:
+        wxString m_ID;
+        wxString m_ParentID; // -1 for builtin compilers, the builtin compiler's ID to derive from for user compilers...
+        static wxArrayString m_CompilerIDs; // map to guarantee unique IDs
+        bool m_Valid; // 'valid' flag
+        bool m_NeedValidityCheck; // flag to re-check validity (raised when changing compiler paths)
 };
 
 #endif // COMPILER_H

@@ -26,18 +26,18 @@
 /** \brief Class for wxsSimpleHtmlListBox widget */
 class wxsSimpleHtmlListBox: public wxsWidget
 {
-public:
+    public:
 
-    wxsSimpleHtmlListBox(wxsItemResData* Data);
+        wxsSimpleHtmlListBox(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
-    wxArrayString ArrayChoices;        //!< The choice list.
-    long DefaultSelection;                //!< The default list selection.
+        wxArrayString ArrayChoices;        //!< The choice list.
+        long DefaultSelection;                //!< The default list selection.
 };
 
 #endif

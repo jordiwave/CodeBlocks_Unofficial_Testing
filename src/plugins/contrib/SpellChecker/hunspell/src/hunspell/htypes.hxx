@@ -41,7 +41,7 @@
 #define ROTATE_LEN 5
 
 #define ROTATE(v, q) \
-  (v) = ((v) << (q)) | (((v) >> (32 - q)) & ((1 << (q)) - 1));
+    (v) = ((v) << (q)) | (((v) >> (32 - q)) & ((1 << (q)) - 1));
 
 // hentry options
 #define H_OPT (1 << 0)          // is there optional morphological data?
@@ -56,20 +56,21 @@
 #define USERWORD 1000
 
 #if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1900)
-#  define HUNSPELL_THREAD_LOCAL thread_local
+    #define HUNSPELL_THREAD_LOCAL thread_local
 #else
-#  define HUNSPELL_THREAD_LOCAL static
+    #define HUNSPELL_THREAD_LOCAL static
 #endif
 
-struct hentry {
-  unsigned char blen;    // word length in bytes
-  unsigned char clen;    // word length in characters (different for UTF-8 enc.)
-  short alen;            // length of affix flag vector
-  unsigned short* astr;  // affix flag vector
-  struct hentry* next;   // next word with same hash code
-  struct hentry* next_homonym;  // next homonym word (with same hash code)
-  char var;      // bit vector of H_OPT hentry options
-  char word[1];  // variable-length word (8-bit or UTF-8 encoding)
+struct hentry
+{
+    unsigned char blen;    // word length in bytes
+    unsigned char clen;    // word length in characters (different for UTF-8 enc.)
+    short alen;            // length of affix flag vector
+    unsigned short * astr; // affix flag vector
+    struct hentry * next;  // next word with same hash code
+    struct hentry * next_homonym; // next homonym word (with same hash code)
+    char var;      // bit vector of H_OPT hentry options
+    char word[1];  // variable-length word (8-bit or UTF-8 encoding)
 };
 
 #endif

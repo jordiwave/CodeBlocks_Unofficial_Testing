@@ -49,139 +49,139 @@ enum wxMenuButton_Styles
 
 class WXDLLIMPEXP_THINGS wxMenuButton : public wxControl
 {
-public:
+    public:
 
-    wxMenuButton() : wxControl()
-    {
-        Init();
-    }
+        wxMenuButton() : wxControl()
+        {
+            Init();
+        }
 
-    // Use this constructor if you need one compatible with a wxButton
-    //   setup the button later with AssignMenu
-    wxMenuButton( wxWindow* parent,
-                  wxWindowID id,
-                  const wxString &label,
-                  const wxPoint& pos = wxDefaultPosition,
-                  const wxSize& size = wxDefaultSize,
-                  long style = 0,
-                  const wxValidator& val = wxDefaultValidator,
-                  const wxString& name = wxT("wxMenuButton"))
-        : wxControl()
-    {
-        Init();
-        Create(parent,id,label,wxNullBitmap,pos,size,style,val,name);
-    }
+        // Use this constructor if you need one compatible with a wxButton
+        //   setup the button later with AssignMenu
+        wxMenuButton(wxWindow * parent,
+                     wxWindowID id,
+                     const wxString & label,
+                     const wxPoint & pos = wxDefaultPosition,
+                     const wxSize & size = wxDefaultSize,
+                     long style = 0,
+                     const wxValidator & val = wxDefaultValidator,
+                     const wxString & name = wxT("wxMenuButton"))
+            : wxControl()
+        {
+            Init();
+            Create(parent, id, label, wxNullBitmap, pos, size, style, val, name);
+        }
 
-    // Use this constructor if you need one compatible with a wxBitmapButton
-    //   setup the button later with AssignMenu
-    wxMenuButton( wxWindow* parent, wxWindowID id,
-                  const wxBitmap &bitmap,
-                  const wxPoint& pos = wxDefaultPosition,
-                  const wxSize& size = wxDefaultSize,
-                  long style = 0,
-                  const wxValidator& val = wxDefaultValidator,
-                  const wxString& name = wxT("wxMenuButton"))
-        : wxControl()
-    {
-        Init();
-        Create(parent,id,wxEmptyString,bitmap,pos,size,style,val,name);
-    }
+        // Use this constructor if you need one compatible with a wxBitmapButton
+        //   setup the button later with AssignMenu
+        wxMenuButton(wxWindow * parent, wxWindowID id,
+                     const wxBitmap & bitmap,
+                     const wxPoint & pos = wxDefaultPosition,
+                     const wxSize & size = wxDefaultSize,
+                     long style = 0,
+                     const wxValidator & val = wxDefaultValidator,
+                     const wxString & name = wxT("wxMenuButton"))
+            : wxControl()
+        {
+            Init();
+            Create(parent, id, wxEmptyString, bitmap, pos, size, style, val, name);
+        }
 
-    // wxComboBox constructor, completely setup later
-    wxMenuButton( wxWindow *parent, wxWindowID id,
-                  const wxString& value = wxEmptyString,
-                  const wxPoint& pos = wxDefaultPosition,
-                  const wxSize& size = wxDefaultSize,
-                  int n = 0, const wxString choices[] = (const wxString *) NULL,
-                  long style = 0,
-                  const wxValidator& val = wxDefaultValidator,
-                  const wxString& name = wxT("wxMenuButton"))
-        : wxControl()
-    {
-        n = n;
-        choices = choices; // get rid of unused warning
-        Init();
-        Create(parent, id, value, wxNullBitmap, pos, size, style, val, name);
-    }
+        // wxComboBox constructor, completely setup later
+        wxMenuButton(wxWindow * parent, wxWindowID id,
+                     const wxString & value = wxEmptyString,
+                     const wxPoint & pos = wxDefaultPosition,
+                     const wxSize & size = wxDefaultSize,
+                     int n = 0, const wxString choices[] = (const wxString *) NULL,
+                     long style = 0,
+                     const wxValidator & val = wxDefaultValidator,
+                     const wxString & name = wxT("wxMenuButton"))
+            : wxControl()
+        {
+            n = n;
+            choices = choices; // get rid of unused warning
+            Init();
+            Create(parent, id, value, wxNullBitmap, pos, size, style, val, name);
+        }
 
-    // Native constructor
-    wxMenuButton( wxWindow* parent, wxWindowID id,
-                  const wxString &label, const wxBitmap &bitmap,
-                  wxMenu *menu, bool static_menu = false,
-                  const wxPoint& pos = wxDefaultPosition,
-                  const wxSize& size = wxDefaultSize,
-                  long style = 0,
-                  const wxValidator& val = wxDefaultValidator,
-                  const wxString& name = wxT("wxMenuButton"))
-        : wxControl()
-    {
-        Init();
-        AssignMenu(menu, static_menu);
-        Create(parent,id,label,bitmap,pos,size,style,val,name);
-    }
+        // Native constructor
+        wxMenuButton(wxWindow * parent, wxWindowID id,
+                     const wxString & label, const wxBitmap & bitmap,
+                     wxMenu * menu, bool static_menu = false,
+                     const wxPoint & pos = wxDefaultPosition,
+                     const wxSize & size = wxDefaultSize,
+                     long style = 0,
+                     const wxValidator & val = wxDefaultValidator,
+                     const wxString & name = wxT("wxMenuButton"))
+            : wxControl()
+        {
+            Init();
+            AssignMenu(menu, static_menu);
+            Create(parent, id, label, bitmap, pos, size, style, val, name);
+        }
 
-    virtual ~wxMenuButton();
+        virtual ~wxMenuButton();
 
-    bool Create( wxWindow* parent,
-                 wxWindowID id,
-                 const wxString &label,
-                 const wxBitmap &bitmap,
-                 const wxPoint& pos = wxDefaultPosition,
-                 const wxSize& size = wxDefaultSize,
-                 long style = wxNO_BORDER,
-                 const wxValidator& val = wxDefaultValidator,
-                 const wxString& name = wxT("wxMenuButton"));
+        bool Create(wxWindow * parent,
+                    wxWindowID id,
+                    const wxString & label,
+                    const wxBitmap & bitmap,
+                    const wxPoint & pos = wxDefaultPosition,
+                    const wxSize & size = wxDefaultSize,
+                    long style = wxNO_BORDER,
+                    const wxValidator & val = wxDefaultValidator,
+                    const wxString & name = wxT("wxMenuButton"));
 
-    // Gets the id of the first selected radio item or wxNOT_FOUND (-1) if none
-    int GetSelection() const;
+        // Gets the id of the first selected radio item or wxNOT_FOUND (-1) if none
+        int GetSelection() const;
 
-    // This menu will be displayed when the dropdown button is pressed.
-    //   if static_menu is false it will be deleted when the buttton is destroyed.
-    void AssignMenu(wxMenu *menu, bool static_menu = false);
+        // This menu will be displayed when the dropdown button is pressed.
+        //   if static_menu is false it will be deleted when the buttton is destroyed.
+        void AssignMenu(wxMenu * menu, bool static_menu = false);
 
-    wxMenu *GetMenu() const
-    {
-        return m_menu;
-    }
+        wxMenu * GetMenu() const
+        {
+            return m_menu;
+        }
 
-    // get a pointer to the label button, for turning it into a toggle perhaps
-    wxCustomButton *GetLabelButton() const
-    {
-        return m_labelButton;
-    }
-    wxCustomButton *GetDropDownButton() const
-    {
-        return m_dropdownButton;
-    }
+        // get a pointer to the label button, for turning it into a toggle perhaps
+        wxCustomButton * GetLabelButton() const
+        {
+            return m_labelButton;
+        }
+        wxCustomButton * GetDropDownButton() const
+        {
+            return m_dropdownButton;
+        }
 
-    void SetToolTip(const wxString &tip);
-    void SetToolTip(wxToolTip *tip);
+        void SetToolTip(const wxString & tip);
+        void SetToolTip(wxToolTip * tip);
 
-protected:
-    void OnButton(wxCommandEvent &event);
+    protected:
+        void OnButton(wxCommandEvent & event);
 
-    virtual void DoSetSize(int x, int y, int width, int height,
-                           int sizeFlags = wxSIZE_AUTO);
+        virtual void DoSetSize(int x, int y, int width, int height,
+                               int sizeFlags = wxSIZE_AUTO);
 
-    virtual wxSize DoGetBestSize();
+        virtual wxSize DoGetBestSize();
 
-// FIXME! - in MSW the radio items don't check themselves
+        // FIXME! - in MSW the radio items don't check themselves
 #ifdef __WXMSW__
-    void OnMenu( wxCommandEvent &event );
+        void OnMenu(wxCommandEvent & event);
 #endif
 
 
-    wxCustomButton *m_labelButton;
-    wxCustomButton *m_dropdownButton;
+        wxCustomButton * m_labelButton;
+        wxCustomButton * m_dropdownButton;
 
-    wxMenu *m_menu;
-    bool m_menu_static;
-    long m_style;
+        wxMenu * m_menu;
+        bool m_menu_static;
+        long m_style;
 
-private:
-    void Init();
-    DECLARE_DYNAMIC_CLASS(wxMenuButton)
-    DECLARE_EVENT_TABLE()
+    private:
+        void Init();
+        DECLARE_DYNAMIC_CLASS(wxMenuButton)
+        DECLARE_EVENT_TABLE()
 };
 
 //-----------------------------------------------------------------------------

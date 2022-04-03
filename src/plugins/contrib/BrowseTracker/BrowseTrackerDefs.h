@@ -13,7 +13,7 @@ const int MaxEntries = 20;
 const int BROWSETRACKER_MARKER       = 9 ;
 const int BROWSETRACKER_MARKER_STYLE = wxSCI_MARK_DOTDOTDOT ;
 const int BROWSETRACKER_HIDDEN_STYLE = wxSCI_MARK_EMPTY ;
-const int BROWSETRACKER_MARKER_MASK  = 1<<BROWSETRACKER_MARKER ;
+const int BROWSETRACKER_MARKER_MASK  = 1 << BROWSETRACKER_MARKER ;
 
 class EditorBase;
 class BrowseMarks;
@@ -21,14 +21,14 @@ class ProjectData;
 class cbProject;
 // ----------------------------------------------------------------------------
 // active editors
-WX_DEFINE_ARRAY_PTR(EditorBase*, ArrayOfEditorBasePtrs);
+WX_DEFINE_ARRAY_PTR(EditorBase *, ArrayOfEditorBasePtrs);
 // a hash containing pointers to cursor positions indexed by EditorBase pointers.
-WX_DECLARE_HASH_MAP(EditorBase*, BrowseMarks*, wxPointerHash, wxPointerEqual, EbBrowse_MarksHash);
+WX_DECLARE_HASH_MAP(EditorBase *, BrowseMarks *, wxPointerHash, wxPointerEqual, EbBrowse_MarksHash);
 // ProjectData class pointers associating files to a loaded project
-WX_DECLARE_HASH_MAP(cbProject*, ProjectData*, wxPointerHash, wxPointerEqual, ProjectDataHash);
+WX_DECLARE_HASH_MAP(cbProject *, ProjectData *, wxPointerHash, wxPointerEqual, ProjectDataHash);
 // ----------------------------------------------------------------------------
 // hashmap for fast searches: filename, BrowseMark*
-WX_DECLARE_STRING_HASH_MAP(BrowseMarks*, FileBrowse_MarksHash);
+WX_DECLARE_STRING_HASH_MAP(BrowseMarks *, FileBrowse_MarksHash);
 
 enum
 {

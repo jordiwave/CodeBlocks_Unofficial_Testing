@@ -17,11 +17,11 @@ enum TypeCorrection
 
 class AskTypeDlg : public wxScrollingDialog
 {
-public:
-    AskTypeDlg(wxWindow* parent, const wxString StreamStart = _T(""), const wxString StreamEnd = _T("") );
-    virtual ~AskTypeDlg();
+    public:
+        AskTypeDlg(wxWindow * parent, const wxString StreamStart = _T(""), const wxString StreamEnd = _T(""));
+        virtual ~AskTypeDlg();
 
-    TypeCorrection GetTypeCorrection() const;
+        TypeCorrection GetTypeCorrection() const;
 };
 
 #endif // ASKTYPEDLG_H

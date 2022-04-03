@@ -16,11 +16,11 @@
 #define MouseSap_H
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "MouseSap.h"
+    #pragma interface "MouseSap.h"
 #endif
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #include <wx/arrstr.h>
@@ -42,10 +42,10 @@
 #undef LOGGING
 #define LOGIT wxLogDebug
 #if defined(dsLOGGING)
-#define LOGGING 1
-#undef LOGIT
-#define LOGIT wxLogMessage
-#define TRAP asm("int3")
+    #define LOGGING 1
+    #undef LOGIT
+    #define LOGIT wxLogMessage
+    #define TRAP asm("int3")
 #endif
 
 // anchor to one and only MouseSap object
@@ -61,80 +61,80 @@ class cbStyledTextCtrl;
 // ----------------------------------------------------------------------------
 class MouseSap : public cbPlugin
 {
-public:
-    MouseSap();
-    ~MouseSap();
-    int  GetConfigurationGroup() const
-    {
-        return cgEditor;
-    }
-    void BuildMenu(wxMenuBar* /*menuBar*/)
-    {
-        return;
-    }
-    void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/)
-    {
-        return;
-    }
-    bool BuildToolBar(wxToolBar* /*toolBar*/)
-    {
-        return false;
-    }
-    void OnAttach(); // fires when the plugin is attached to the application
-    void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-    virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+    public:
+        MouseSap();
+        ~MouseSap();
+        int  GetConfigurationGroup() const
+        {
+            return cgEditor;
+        }
+        void BuildMenu(wxMenuBar * /*menuBar*/)
+        {
+            return;
+        }
+        void BuildModuleMenu(const ModuleType /*type*/, wxMenu * /*menu*/, const FileTreeData * /*data*/)
+        {
+            return;
+        }
+        bool BuildToolBar(wxToolBar * /*toolBar*/)
+        {
+            return false;
+        }
+        void OnAttach(); // fires when the plugin is attached to the application
+        void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+        virtual cbConfigurationPanel * GetConfigurationPanel(wxWindow * parent);
 
-    static MouseSap* pMouseSap;
-protected:
-    cbConfigurationPanel* CreatecbCfgPanel(wxWindow* parent);
+        static MouseSap * pMouseSap;
+    protected:
+        cbConfigurationPanel * CreatecbCfgPanel(wxWindow * parent);
 
-public:
+    public:
 
-    void OnDialogDone(cbMouseSapCfg* pdlg);
-    bool GetMouseSapEnabled() const
-    {
-        return m_bMouseSapEnabled;
-    }
-    bool IsAttachedTo(wxWindow* p);
+        void OnDialogDone(cbMouseSapCfg * pdlg);
+        bool GetMouseSapEnabled() const
+        {
+            return m_bMouseSapEnabled;
+        }
+        bool IsAttachedTo(wxWindow * p);
 
-    wxWindow* m_pMS_Window;
-    bool      m_bMouseSapEnabled ;  //Current Enable/Disable plugin state
-    bool      m_bPreviousMouseSapEnabled ;  //Previous Enable/Disable plugin state
-
-
-private:
-    void OnAppStartupDone(CodeBlocksEvent& event);
-    void OnAppStartupDoneInit();
-    void OnDoConfigRequests(wxUpdateUIEvent& event);
-
-    void AttachWindowsRecursively(wxWindow *p);
-    void DetachWindow(wxWindow* thisEditor);
-    void DetachAllWindows();
-    void AttachWindow(wxWindow *p);
-    void DisconnectEvtHandler(MMSapEvents* thisEvtHandler);
-
-    wxWindow* WindowExists(wxWindow *parent);
-    wxWindow* FindWindowRecursively(const wxWindow* parent, const wxWindow* handle);
-    wxString  FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
-    void      OnWindowOpen(wxEvent& event);
-    void      OnWindowClose(wxEvent& event);
-    void      OnEditorEventHook(cbEditor* pcbEditor, wxScintillaEvent& event);
+        wxWindow * m_pMS_Window;
+        bool      m_bMouseSapEnabled ;  //Current Enable/Disable plugin state
+        bool      m_bPreviousMouseSapEnabled ;  //Previous Enable/Disable plugin state
 
 
-    wxString        m_ConfigFolder;
-    wxString        m_ExecuteFolder;
-    wxString        m_DataFolder;
-    wxString        m_CfgFilenameStr;
+    private:
+        void OnAppStartupDone(CodeBlocksEvent & event);
+        void OnAppStartupDoneInit();
+        void OnDoConfigRequests(wxUpdateUIEvent & event);
 
-    wxArrayString   m_UsableWindows;
-    wxArrayPtrVoid  m_EditorPtrs;
-    wxLogWindow*    m_pMyLog;
-    bool            m_bEditorsAttached;
+        void AttachWindowsRecursively(wxWindow * p);
+        void DetachWindow(wxWindow * thisEditor);
+        void DetachAllWindows();
+        void AttachWindow(wxWindow * p);
+        void DisconnectEvtHandler(MMSapEvents * thisEvtHandler);
 
-    MMSapEvents*    m_pMMSapEvents;
+        wxWindow * WindowExists(wxWindow * parent);
+        wxWindow * FindWindowRecursively(const wxWindow * parent, const wxWindow * handle);
+        wxString  FindAppPath(const wxString & argv0, const wxString & cwd, const wxString & appVariableName);
+        void      OnWindowOpen(wxEvent & event);
+        void      OnWindowClose(wxEvent & event);
+        void      OnEditorEventHook(cbEditor * pcbEditor, wxScintillaEvent & event);
 
-private:
-    DECLARE_EVENT_TABLE()
+
+        wxString        m_ConfigFolder;
+        wxString        m_ExecuteFolder;
+        wxString        m_DataFolder;
+        wxString        m_CfgFilenameStr;
+
+        wxArrayString   m_UsableWindows;
+        wxArrayPtrVoid  m_EditorPtrs;
+        wxLogWindow  *  m_pMyLog;
+        bool            m_bEditorsAttached;
+
+        MMSapEvents  *  m_pMMSapEvents;
+
+    private:
+        DECLARE_EVENT_TABLE()
 
 };//MouseSap
 ////// ----------------------------------------------------------------------------
@@ -160,21 +160,21 @@ class MMSapEvents : public wxEvtHandler
 // ----------------------------------------------------------------------------
 {
 
-public:
-    MMSapEvents(wxWindow * /*window*/) { }
-    ~MMSapEvents();
+    public:
+        MMSapEvents(wxWindow * /*window*/) { }
+        ~MMSapEvents();
 
-    void OnMouseEvent(wxMouseEvent& event);
-    void OnMiddleMouseDown(wxMouseEvent& event, cbStyledTextCtrl* ed);
-    void PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed, bool shiftKeyState, bool ctrlKeyState );
-    void OnKillFocusEvent( wxFocusEvent& event );
-    void DumpClipboard();
+        void OnMouseEvent(wxMouseEvent & event);
+        void OnMiddleMouseDown(wxMouseEvent & event, cbStyledTextCtrl * ed);
+        void PasteFromClipboard(wxMouseEvent & event, cbStyledTextCtrl * ed, bool shiftKeyState, bool ctrlKeyState);
+        void OnKillFocusEvent(wxFocusEvent & event);
+        void DumpClipboard();
 
-private:
-    //-MMClipboard OurClipBoard;
+    private:
+        //-MMClipboard OurClipBoard;
 
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 // ----------------------------------------------------------------------------
 //  Modification/ToDo History

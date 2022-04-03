@@ -44,13 +44,13 @@ struct PLUGIN_EXPORT wxsBitmapIconData
     wxString CodeText;
 
     /** \brief Generating preview for this bitmap / icon */
-    wxBitmap GetPreview(const wxSize& Size,const wxString& DefaultClient = wxART_OTHER);
+    wxBitmap GetPreview(const wxSize & Size, const wxString & DefaultClient = wxART_OTHER);
 
     /** \brief Generating code building this bitmap / icon.
      *
      * Empty code is returned when there's no valid bitmap.
      */
-    wxString BuildCode(bool NoResize,const wxString& SizeCode,wxsCoderContext* Context,const wxString& DefaultClient = wxART_OTHER);
+    wxString BuildCode(bool NoResize, const wxString & SizeCode, wxsCoderContext * Context, const wxString & DefaultClient = wxART_OTHER);
 
     /** \brief Checking if this is empty bitmap/icon */
     bool IsEmpty();
@@ -66,43 +66,43 @@ typedef wxsBitmapIconData wxsIconData;
  */
 class PLUGIN_EXPORT wxsBitmapIconProperty: public wxsCustomEditorProperty
 {
-public:
+    public:
 
-    /** \brief Ctor
-     *  \param PGName           name of property in Property Grid
-     *  \param DataName         name of property in data stuctures
-     *  \param Offset           offset of wxsBitmapIconData structure (returned from wxsOFFSET macro)
-     *  \param DefaultClient    name of default art provider client
-     *  \param Priority         priority of this property
-     */
-    wxsBitmapIconProperty(
-        const wxString& PGName,
-        const wxString& DataName,
-        long Offset,
-        const wxString& DefaultClient = _T("wxART_OTHER"),
-        int Priority=100);
+        /** \brief Ctor
+         *  \param PGName           name of property in Property Grid
+         *  \param DataName         name of property in data stuctures
+         *  \param Offset           offset of wxsBitmapIconData structure (returned from wxsOFFSET macro)
+         *  \param DefaultClient    name of default art provider client
+         *  \param Priority         priority of this property
+         */
+        wxsBitmapIconProperty(
+            const wxString & PGName,
+            const wxString & DataName,
+            long Offset,
+            const wxString & DefaultClient = _T("wxART_OTHER"),
+            int Priority = 100);
 
-    /** \brief Returning type name */
-    virtual const wxString GetTypeName()
-    {
-        return _T("wxBitmapIcon");
-    }
+        /** \brief Returning type name */
+        virtual const wxString GetTypeName()
+        {
+            return _T("wxBitmapIcon");
+        }
 
-    /** \brief Showing editor for this property */
-    virtual bool ShowEditor(wxsPropertyContainer* Object);
+        /** \brief Showing editor for this property */
+        virtual bool ShowEditor(wxsPropertyContainer * Object);
 
-protected:
+    protected:
 
-    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-    virtual wxString GetStr(wxsPropertyContainer* Object);
+        virtual bool XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
+        virtual bool PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
+        virtual wxString GetStr(wxsPropertyContainer * Object);
 
-private:
+    private:
 
-    long Offset;
-    wxString DefaultClient;
+        long Offset;
+        wxString DefaultClient;
 };
 
 typedef wxsBitmapIconProperty wxsBitmapProperty;
@@ -121,7 +121,7 @@ typedef wxsBitmapIconProperty wxsIconProperty;
  */
 #define WXS_BITMAP(ClassName,VarName,PGName,DataName,DefaultArtClient) \
     { static wxsBitmapProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),DefaultArtClient); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \brief Macro automatically declaring bitmap property with custom priority
  *  \param ClassName name of class holding this property
@@ -133,7 +133,7 @@ typedef wxsBitmapIconProperty wxsIconProperty;
  */
 #define WXS_BITMAP_P(ClassName,VarName,PGName,DataName,DefaultArtClient,Priority) \
     { static wxsBitmapProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),DefaultArtClient,Priority); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \brief Macro automatically declaring icon property
  *  \param ClassName name of class holding this property
@@ -144,7 +144,7 @@ typedef wxsBitmapIconProperty wxsIconProperty;
  */
 #define WXS_ICON(ClassName,VarName,PGName,DataName,DefaultArtClient) \
     { static wxsIconProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),DefaultArtClient); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \brief Macro automatically declaring icon property with custom priority
  *  \param ClassName name of class holding this property
@@ -156,7 +156,7 @@ typedef wxsBitmapIconProperty wxsIconProperty;
  */
 #define WXS_ICON_P(ClassName,VarName,PGName,DataName,DefaultArtClient,Priority) \
     { static wxsIconProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),DefaultArtClient,Priority); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \} */
 

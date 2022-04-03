@@ -34,146 +34,146 @@
 //-----------------------------------------------------------------------------
 class WXDLLIMPEXP_STEDIT wxSTEditorSplitter : public wxSplitterWindow
 {
-public:
-    wxSTEditorSplitter() : wxSplitterWindow()
-    {
-        Init();
-    }
-    wxSTEditorSplitter( wxWindow *parent, wxWindowID id = wxID_ANY,
-                        const wxPoint& pos = wxDefaultPosition,
-                        const wxSize& size = wxDefaultSize,
-                        long style = wxSP_3DSASH|wxNO_BORDER,
-                        const wxString& name = wxT("wxSTEditorSplitter") )
-    {
-        Init();
-        Create(parent, id, pos, size, style, name);
-    }
+    public:
+        wxSTEditorSplitter() : wxSplitterWindow()
+        {
+            Init();
+        }
+        wxSTEditorSplitter(wxWindow * parent, wxWindowID id = wxID_ANY,
+                           const wxPoint & pos = wxDefaultPosition,
+                           const wxSize & size = wxDefaultSize,
+                           long style = wxSP_3DSASH | wxNO_BORDER,
+                           const wxString & name = wxT("wxSTEditorSplitter"))
+        {
+            Init();
+            Create(parent, id, pos, size, style, name);
+        }
 
-    virtual ~wxSTEditorSplitter();
-    virtual bool Destroy();
+        virtual ~wxSTEditorSplitter();
+        virtual bool Destroy();
 
-    bool Create( wxWindow *parent, wxWindowID id = wxID_ANY,
-                 const wxPoint& pos = wxDefaultPosition,
-                 const wxSize& size = wxDefaultSize,
-                 long style = wxSP_3DSASH|wxNO_BORDER,
-                 const wxString& name = wxT("wxSTEditorSplitter"));
+        bool Create(wxWindow * parent, wxWindowID id = wxID_ANY,
+                    const wxPoint & pos = wxDefaultPosition,
+                    const wxSize & size = wxDefaultSize,
+                    long style = wxSP_3DSASH | wxNO_BORDER,
+                    const wxString & name = wxT("wxSTEditorSplitter"));
 
-    /// Create and set the wxSTEditorOptions, call this after creation.
-    virtual void CreateOptions(const wxSTEditorOptions& options);
-    /// GetOptions, use this to change editor option values
-    const wxSTEditorOptions& GetOptions() const
-    {
-        return m_options;
-    }
-    wxSTEditorOptions& GetOptions()
-    {
-        return m_options;
-    }
-    /// Set the options, the options will now be refed copies of the ones you send in.
-    /// This can be used to detach the options for a particular editor from
-    ///   the rest of them.
-    void SetOptions(const wxSTEditorOptions& options)
-    {
-        m_options = options;
-    }
+        /// Create and set the wxSTEditorOptions, call this after creation.
+        virtual void CreateOptions(const wxSTEditorOptions & options);
+        /// GetOptions, use this to change editor option values
+        const wxSTEditorOptions & GetOptions() const
+        {
+            return m_options;
+        }
+        wxSTEditorOptions & GetOptions()
+        {
+            return m_options;
+        }
+        /// Set the options, the options will now be refed copies of the ones you send in.
+        /// This can be used to detach the options for a particular editor from
+        ///   the rest of them.
+        void SetOptions(const wxSTEditorOptions & options)
+        {
+            m_options = options;
+        }
 
-    /// enable/disable sending wxSTEditor events from children editors
-    void SetSendSTEEvents(bool send);
+        /// enable/disable sending wxSTEditor events from children editors
+        void SetSendSTEEvents(bool send);
 
-    /// Set the editor to use for the splitter, use STS_NO_EDITOR as option
-    ///   and add one just after creation. Will delete old editor if necessary.
-    /// You must make this the parent of the editor.
-    void Initialize(wxSTEditor* editor);
+        /// Set the editor to use for the splitter, use STS_NO_EDITOR as option
+        ///   and add one just after creation. Will delete old editor if necessary.
+        /// You must make this the parent of the editor.
+        void Initialize(wxSTEditor * editor);
 
-    /// Get the editor that last had the focus or editor 1, always valid if initialized.
-    wxSTEditor *GetEditor();
-    /// Get a pointer to the first (left or top) editor, always valid if initialized.
-    wxSTEditor *GetEditor1() const
-    {
-        return m_editorOne;
-    }
-    /// Get a pointer to the second (right or bottom) editor, NULL when unsplit.
-    wxSTEditor *GetEditor2() const
-    {
-        return m_editorTwo;
-    }
+        /// Get the editor that last had the focus or editor 1, always valid if initialized.
+        wxSTEditor * GetEditor();
+        /// Get a pointer to the first (left or top) editor, always valid if initialized.
+        wxSTEditor * GetEditor1() const
+        {
+            return m_editorOne;
+        }
+        /// Get a pointer to the second (right or bottom) editor, NULL when unsplit.
+        wxSTEditor * GetEditor2() const
+        {
+            return m_editorTwo;
+        }
 
-    /// @name Splitting and Unsplitting
-    /// Use these methods to control splitting/unsplitting NOT wxSplitterWindow's
-    /// They handle resplitting and switching orientation so you don't need to
-    /// unsplit before changing orientation.
-    /// @{
-    virtual bool SplitVertically(int pos = 0)
-    {
-        return DoSplit(wxSPLIT_VERTICAL, pos);
-    }
-    virtual bool SplitHorizontally(int pos = 0)
-    {
-        return DoSplit(wxSPLIT_HORIZONTAL, pos);
-    }
-    virtual bool Unsplit()
-    {
-        return wxSplitterWindow::Unsplit(m_editorTwo);
-    }
-    /// @}
+        /// @name Splitting and Unsplitting
+        /// Use these methods to control splitting/unsplitting NOT wxSplitterWindow's
+        /// They handle resplitting and switching orientation so you don't need to
+        /// unsplit before changing orientation.
+        /// @{
+        virtual bool SplitVertically(int pos = 0)
+        {
+            return DoSplit(wxSPLIT_VERTICAL, pos);
+        }
+        virtual bool SplitHorizontally(int pos = 0)
+        {
+            return DoSplit(wxSPLIT_HORIZONTAL, pos);
+        }
+        virtual bool Unsplit()
+        {
+            return wxSplitterWindow::Unsplit(m_editorTwo);
+        }
+        /// @}
 
-    /// Update all the menu/tool items in the wxSTEditorOptions.
-    virtual void UpdateAllItems();
-    /// Update popupmenu, menubar, toolbar if any.
-    virtual void UpdateItems(wxMenu *menu=NULL, wxMenuBar *menuBar=NULL, wxToolBar *toolBar=NULL);
+        /// Update all the menu/tool items in the wxSTEditorOptions.
+        virtual void UpdateAllItems();
+        /// Update popupmenu, menubar, toolbar if any.
+        virtual void UpdateItems(wxMenu * menu = NULL, wxMenuBar * menuBar = NULL, wxToolBar * toolBar = NULL);
 
-    // -----------------------------------------------------------------------
-    // implementation
-    virtual wxSTEditor *CreateEditor(wxWindowID id = wxID_ANY);
+        // -----------------------------------------------------------------------
+        // implementation
+        virtual wxSTEditor * CreateEditor(wxWindowID id = wxID_ANY);
 
-    virtual void OnUnsplit( wxWindow *removed ); ///< override wxSplitterWindow's func
+        virtual void OnUnsplit(wxWindow * removed);  ///< override wxSplitterWindow's func
 
-    bool DoSplit(wxSplitMode mode, int sashPosition);
+        bool DoSplit(wxSplitMode mode, int sashPosition);
 
-    void OnMenu(wxCommandEvent &event);
-    virtual bool HandleMenuEvent(wxCommandEvent &event);
+        void OnMenu(wxCommandEvent & event);
+        virtual bool HandleMenuEvent(wxCommandEvent & event);
 
-    void OnSTEFocus(wxSTEditorEvent &event);
-    void OnSplitBegin(wxCommandEvent& event);
-    void OnRightUp(wxMouseEvent &event);
+        void OnSTEFocus(wxSTEditorEvent & event);
+        void OnSplitBegin(wxCommandEvent & event);
+        void OnRightUp(wxMouseEvent & event);
 
-    void OnFindDialog(wxFindDialogEvent &event);
+        void OnFindDialog(wxFindDialogEvent & event);
 
-    void OnPaint(wxPaintEvent& event);
-    void DoPaint(wxDC& dc);
-    void OnSize(wxSizeEvent& event);
-    void DoSize();
-    virtual void SizeWindows(); ///< override wxSplitterWindow's func
+        void OnPaint(wxPaintEvent & event);
+        void DoPaint(wxDC & dc);
+        void OnSize(wxSizeEvent & event);
+        void DoSize();
+        virtual void SizeWindows(); ///< override wxSplitterWindow's func
 
-    void OnSplitButtonLeftDown(wxMouseEvent& event);
-    void OnMouse(wxMouseEvent& event);
-    void OnScroll(wxScrollEvent& event);
-    virtual void SetUseSplitScrollbars(bool use_scrollbars);
+        void OnSplitButtonLeftDown(wxMouseEvent & event);
+        void OnMouse(wxMouseEvent & event);
+        void OnScroll(wxScrollEvent & event);
+        virtual void SetUseSplitScrollbars(bool use_scrollbars);
 
-protected:
-    wxSTEditorOptions m_options;
-    bool m_is_resplitting;
-    bool m_focus_one;
-    wxSTEditor *m_editorOne;
-    wxSTEditor *m_editorTwo;
+    protected:
+        wxSTEditorOptions m_options;
+        bool m_is_resplitting;
+        bool m_focus_one;
+        wxSTEditor * m_editorOne;
+        wxSTEditor * m_editorTwo;
 
-    wxScrollBar* m_vScrollBar;     // our scrollbars used to show split buttons
-    wxScrollBar* m_hScrollBar;
-    wxButton*    m_vSplitButton;
-    wxButton*    m_hSplitButton;
-    int          m_splitting_mode; // wxSPLIT_VERTICAL/HORIZONTAL
-    wxPoint      m_lastSplittingPos;
-    int          m_old_caret_period;
+        wxScrollBar * m_vScrollBar;    // our scrollbars used to show split buttons
+        wxScrollBar * m_hScrollBar;
+        wxButton  *  m_vSplitButton;
+        wxButton  *  m_hSplitButton;
+        int          m_splitting_mode; // wxSPLIT_VERTICAL/HORIZONTAL
+        wxPoint      m_lastSplittingPos;
+        int          m_old_caret_period;
 
-    wxSTERecursionGuardFlag m_rGuard_OnMenu;
-    wxSTERecursionGuardFlag m_rGuard_HandleMenuEvent;
-    wxSTERecursionGuardFlag m_rGuard_OnFindDialog;
-    wxSTERecursionGuardFlag m_rGuard_OnScroll;
+        wxSTERecursionGuardFlag m_rGuard_OnMenu;
+        wxSTERecursionGuardFlag m_rGuard_HandleMenuEvent;
+        wxSTERecursionGuardFlag m_rGuard_OnFindDialog;
+        wxSTERecursionGuardFlag m_rGuard_OnScroll;
 
-private:
-    void Init();
-    DECLARE_EVENT_TABLE()
-    DECLARE_DYNAMIC_CLASS(wxSTEditorSplitter)
+    private:
+        void Init();
+        DECLARE_EVENT_TABLE()
+        DECLARE_DYNAMIC_CLASS(wxSTEditorSplitter)
 };
 
 #endif  // _STESPLIT_H_

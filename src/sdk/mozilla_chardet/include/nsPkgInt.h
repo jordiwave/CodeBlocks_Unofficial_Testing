@@ -41,7 +41,7 @@ typedef struct nsPkgInt
     nsSftMsk  sftmsk;
     nsBitSft  bitsft;
     nsUnitMsk unitmsk;
-    const uint32_t* const data;
+    const uint32_t * const data;
 } nsPkgInt;
 
 
@@ -56,7 +56,7 @@ typedef struct nsPkgInt
                                              ((uint32_t)(((h) << 4) | (g))) )
 
 #define GETFROMPCK(i, c) \
- (((((c).data)[(i)>>(c).idxsft])>>(((i)&(c).sftmsk)<<(c).bitsft))&(c).unitmsk)
+    (((((c).data)[(i)>>(c).idxsft])>>(((i)&(c).sftmsk)<<(c).bitsft))&(c).unitmsk)
 
 #endif /* nsPkgInt_h__ */
 

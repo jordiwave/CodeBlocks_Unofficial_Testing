@@ -26,146 +26,146 @@
 
 class  JSONElement
 {
-protected:
-    cJSON* _json;
-    int _type;
-    wxString _name;
+    protected:
+        cJSON * _json;
+        int _type;
+        wxString _name;
 
-    // Values
-    wxVariant _value;
-    cJSON* _walker;
+        // Values
+        wxVariant _value;
+        cJSON * _walker;
 
-public:
-    JSONElement(cJSON* json);
-    JSONElement(const wxString& name, const wxVariant& val, int type);
+    public:
+        JSONElement(cJSON * json);
+        JSONElement(const wxString & name, const wxVariant & val, int type);
 
-    virtual ~JSONElement() {}
+        virtual ~JSONElement() {}
 
-    // Walkers
-    JSONElement firstChild();
-    JSONElement nextChild();
+        // Walkers
+        JSONElement firstChild();
+        JSONElement nextChild();
 
-    // Setters
-    ////////////////////////////////////////////////
-    void setName(const wxString& _name)
-    {
-        this->_name = _name;
-    }
-    void setType(int _type)
-    {
-        this->_type = _type;
-    }
-    int getType() const
-    {
-        return _type;
-    }
-    const wxString& getName() const
-    {
-        return _name;
-    }
-    const wxVariant& getValue() const
-    {
-        return _value;
-    }
-    void setValue(const wxVariant& _value)
-    {
-        this->_value = _value;
-    }
-    // Readers
-    ////////////////////////////////////////////////
-    JSONElement namedObject(const wxString& name) const;
-    bool hasNamedObject(const wxString& name) const;
+        // Setters
+        ////////////////////////////////////////////////
+        void setName(const wxString & _name)
+        {
+            this->_name = _name;
+        }
+        void setType(int _type)
+        {
+            this->_type = _type;
+        }
+        int getType() const
+        {
+            return _type;
+        }
+        const wxString & getName() const
+        {
+            return _name;
+        }
+        const wxVariant & getValue() const
+        {
+            return _value;
+        }
+        void setValue(const wxVariant & _value)
+        {
+            this->_value = _value;
+        }
+        // Readers
+        ////////////////////////////////////////////////
+        JSONElement namedObject(const wxString & name) const;
+        bool hasNamedObject(const wxString & name) const;
 
-    bool toBool(bool defaultValue = false) const;
-    wxString toString(const wxString& defaultValue = wxEmptyString) const;
-    wxArrayString toArrayString(const wxArrayString& defaultValue = wxArrayString()) const;
-    JSONElement arrayItem(int pos) const;
+        bool toBool(bool defaultValue = false) const;
+        wxString toString(const wxString & defaultValue = wxEmptyString) const;
+        wxArrayString toArrayString(const wxArrayString & defaultValue = wxArrayString()) const;
+        JSONElement arrayItem(int pos) const;
 
-    // Retuen the object type
-    bool isNull() const;
-    bool isBool() const;
-    bool isString() const;
-    bool isNumber() const;
-    bool isArray() const;
+        // Retuen the object type
+        bool isNull() const;
+        bool isBool() const;
+        bool isString() const;
+        bool isNumber() const;
+        bool isArray() const;
 
-    wxString format() const;
-    /**
-     * @brief format the JSON into a raw c string
-     * The caller should free the pointer (using free())
-     */
-    char* FormatRawString(bool formatted = true) const;
-    int arraySize() const;
-    int toInt(int defaultVal = -1) const;
-    size_t toSize_t(size_t defaultVal = 0) const;
-    double toDouble(double defaultVal = -1.0) const;
-    wxSize toSize() const;
-    wxPoint toPoint() const;
-    wxColour toColour(const wxColour& defaultColour = wxNullColour) const;
-    wxFont toFont(const wxFont& defaultFont = wxNullFont) const;
+        wxString format() const;
+        /**
+         * @brief format the JSON into a raw c string
+         * The caller should free the pointer (using free())
+         */
+        char * FormatRawString(bool formatted = true) const;
+        int arraySize() const;
+        int toInt(int defaultVal = -1) const;
+        size_t toSize_t(size_t defaultVal = 0) const;
+        double toDouble(double defaultVal = -1.0) const;
+        wxSize toSize() const;
+        wxPoint toPoint() const;
+        wxColour toColour(const wxColour & defaultColour = wxNullColour) const;
+        wxFont toFont(const wxFont & defaultFont = wxNullFont) const;
 
-    wxStringMap_t toStringMap() const;
+        wxStringMap_t toStringMap() const;
 
-    // Writers
-    ////////////////////////////////////////////////
-    /**
-     * @brief create new named object and append it to this json element
-     * @return the newly created object
-     */
-    static JSONElement createObject(const wxString& name = wxT(""));
-    /**
-     * @brief create new named array and append it to this json element
-     * @return the newly created array
-     */
-    static JSONElement createArray(const wxString& name = wxT(""));
+        // Writers
+        ////////////////////////////////////////////////
+        /**
+         * @brief create new named object and append it to this json element
+         * @return the newly created object
+         */
+        static JSONElement createObject(const wxString & name = wxT(""));
+        /**
+         * @brief create new named array and append it to this json element
+         * @return the newly created array
+         */
+        static JSONElement createArray(const wxString & name = wxT(""));
 
-    /**
-     * @brief append new element to this json element
-     */
-    void append(const JSONElement& element);
+        /**
+         * @brief append new element to this json element
+         */
+        void append(const JSONElement & element);
 
-    JSONElement& addProperty(const wxString& name, const wxString& value);
-    JSONElement& addProperty(const wxString& name, const wxChar* value);
-    JSONElement& addProperty(const wxString& name, int value)
-    {
-        return addProperty(name, (long)value);
-    }
-    JSONElement& addProperty(const wxString& name, long value);
-    JSONElement& addProperty(const wxString& name, size_t value);
-    JSONElement& addProperty(const wxString& name, bool value);
-    JSONElement& addProperty(const wxString& name, const wxSize& sz);
-    JSONElement& addProperty(const wxString& name, const wxPoint& pt);
-    JSONElement& addProperty(const wxString& name, const wxColour& colour);
-    JSONElement& addProperty(const wxString& name, const wxArrayString& arr);
-    JSONElement& addProperty(const wxString& name, const wxStringMap_t& stringMap);
-    JSONElement& addProperty(const wxString& name, const JSONElement& element);
-    JSONElement& addProperty(const wxString& name, const char* value, const wxMBConv& conv = wxConvUTF8);
-    JSONElement& addProperty(const wxString& name, const wxFont& font);
+        JSONElement & addProperty(const wxString & name, const wxString & value);
+        JSONElement & addProperty(const wxString & name, const wxChar * value);
+        JSONElement & addProperty(const wxString & name, int value)
+        {
+            return addProperty(name, (long)value);
+        }
+        JSONElement & addProperty(const wxString & name, long value);
+        JSONElement & addProperty(const wxString & name, size_t value);
+        JSONElement & addProperty(const wxString & name, bool value);
+        JSONElement & addProperty(const wxString & name, const wxSize & sz);
+        JSONElement & addProperty(const wxString & name, const wxPoint & pt);
+        JSONElement & addProperty(const wxString & name, const wxColour & colour);
+        JSONElement & addProperty(const wxString & name, const wxArrayString & arr);
+        JSONElement & addProperty(const wxString & name, const wxStringMap_t & stringMap);
+        JSONElement & addProperty(const wxString & name, const JSONElement & element);
+        JSONElement & addProperty(const wxString & name, const char * value, const wxMBConv & conv = wxConvUTF8);
+        JSONElement & addProperty(const wxString & name, const wxFont & font);
 
-    /**
-     * @brief delete property by name
-     */
-    void removeProperty(const wxString& name);
+        /**
+         * @brief delete property by name
+         */
+        void removeProperty(const wxString & name);
 
-    //////////////////////////////////////////////////
-    // Array operations
-    //////////////////////////////////////////////////
+        //////////////////////////////////////////////////
+        // Array operations
+        //////////////////////////////////////////////////
 
-    /**
-     * @brief append new number
-     * @return the newly added property
-     */
-    void arrayAppend(const JSONElement& element);
-    void arrayAppend(const wxString& value);
+        /**
+         * @brief append new number
+         * @return the newly added property
+         */
+        void arrayAppend(const JSONElement & element);
+        void arrayAppend(const wxString & value);
 
-    bool isOk() const
-    {
-        return _json != NULL;
-    }
+        bool isOk() const
+        {
+            return _json != NULL;
+        }
 
-    // serialize font into wxString
-    wxString ToString(const wxFont& font);             //(2019/04/3)
-    // unserialize and construct a wxFont from
-    wxFont FromString(const wxString& str) const;       //(2019/04/3)
+        // serialize font into wxString
+        wxString ToString(const wxFont & font);            //(2019/04/3)
+        // unserialize and construct a wxFont from
+        wxFont FromString(const wxString & str) const;      //(2019/04/3)
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -173,30 +173,30 @@ public:
 
 class  JSONRoot
 {
-    cJSON* _json;
-    wxString _errorString;
+        cJSON * _json;
+        wxString _errorString;
 
-public:
-    JSONRoot(int type);
-    JSONRoot(const wxString& text);
-    JSONRoot(const wxFileName& filename);
-    virtual ~JSONRoot();
+    public:
+        JSONRoot(int type);
+        JSONRoot(const wxString & text);
+        JSONRoot(const wxFileName & filename);
+        virtual ~JSONRoot();
 
-    void save(const wxFileName& fn) const;
-    wxString errorString() const;
-    bool isOk() const
-    {
-        return _json != NULL;
-    }
+        void save(const wxFileName & fn) const;
+        wxString errorString() const;
+        bool isOk() const
+        {
+            return _json != NULL;
+        }
 
-    JSONElement toElement() const;
+        JSONElement toElement() const;
 
-    void clear();
+        void clear();
 
-private:
-    // Make this class not copyable
-    JSONRoot(const JSONRoot& src);
-    JSONRoot& operator=(const JSONRoot& src);
+    private:
+        // Make this class not copyable
+        JSONRoot(const JSONRoot & src);
+        JSONRoot & operator=(const JSONRoot & src);
 };
 
 #endif // ZJSONNODE_H

@@ -35,25 +35,25 @@
 
 namespace
 {
-PluginRegistrant<HexEditor> reg( _T("HexEditor") );
+PluginRegistrant<HexEditor> reg(_T("HexEditor"));
 
 const int idOpenHexEdit = wxNewId();
 const int idOpenWithHE = wxNewId();
 const int idOpenHexEditFileBrowser = wxNewId();
 }
 
-BEGIN_EVENT_TABLE( HexEditor, cbPlugin )
-    EVT_MENU( idOpenHexEdit, HexEditor::OnOpenHexEdit )
-    EVT_MENU( idOpenHexEditFileBrowser, HexEditor::OnOpenHexEditFileBrowser )
-    EVT_MENU( idOpenWithHE,  HexEditor::OnOpenWithHE )
+BEGIN_EVENT_TABLE(HexEditor, cbPlugin)
+    EVT_MENU(idOpenHexEdit, HexEditor::OnOpenHexEdit)
+    EVT_MENU(idOpenHexEditFileBrowser, HexEditor::OnOpenHexEditFileBrowser)
+    EVT_MENU(idOpenWithHE,  HexEditor::OnOpenWithHE)
 END_EVENT_TABLE()
 
 HexEditor::HexEditor()
 {
-//    if ( !Manager::LoadResource(_T("HexEditor.zip")) )
-//    {
-//        NotifyMissingFile(_T("HexEditor.zip"));
-//    }
+    //    if ( !Manager::LoadResource(_T("HexEditor.zip")) )
+    //    {
+    //        NotifyMissingFile(_T("HexEditor.zip"));
+    //    }
 }
 
 HexEditor::~HexEditor()
@@ -66,128 +66,154 @@ void HexEditor::OnAttach()
 
 void HexEditor::OnRelease(bool appShutDown)
 {
-    if ( !appShutDown )
+    if (!appShutDown)
     {
         CloseMyEditors();
     }
 }
 
-bool HexEditor::BuildToolBar(wxToolBar* /*toolBar*/)
+bool HexEditor::BuildToolBar(wxToolBar * /*toolBar*/)
 {
     return false;
 }
 
-void HexEditor::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
+void HexEditor::BuildModuleMenu(const ModuleType type, wxMenu * menu, const FileTreeData * data)
 {
-    if ( !menu || !IsAttached() ) return;
-
-    switch ( type )
+    if (!menu || !IsAttached())
     {
-    case mtProjectManager:
+        return;
+    }
 
-        if ( data && data->GetKind()==FileTreeData::ftdkFile )
-        {
-            wxMenuItem* child = menu->FindItem( menu->FindItem( _("Open with") ) );
-            if ( child && child->IsSubMenu() )
+    switch (type)
+    {
+        case mtProjectManager:
+            if (data && data->GetKind() == FileTreeData::ftdkFile)
             {
-                menu = child->GetSubMenu();
+                wxMenuItem * child = menu->FindItem(menu->FindItem(_("Open with")));
+
+                if (child && child->IsSubMenu())
+                {
+                    menu = child->GetSubMenu();
+                }
+
+                menu->AppendSeparator();
+                menu->Append(idOpenHexEdit, _("Hex editor"), _("Open this file in hex editor"));
             }
 
-            menu->AppendSeparator();
-            menu->Append( idOpenHexEdit, _( "Hex editor" ), _( "Open this file in hex editor" ) );
-        }
-        break;
+            break;
 
-    case mtFileExplorer: //filetreedata filled with ftdkFile or ftdkFolder as "kind", the file/folder selected is the "FullPath" of the entry
-        if(data && data->GetKind()==FileTreeData::ftdkFile)  //right clicked on folder in file explorer
-        {
-            wxFileName f(data->GetFolder());
-            m_browserselectedfile=f.GetFullPath();
-            wxMenuItem* child = menu->FindItem( menu->FindItem( _("Open with") ) );
-            if ( child && child->IsSubMenu() )
+        case mtFileExplorer: //filetreedata filled with ftdkFile or ftdkFolder as "kind", the file/folder selected is the "FullPath" of the entry
+            if (data && data->GetKind() == FileTreeData::ftdkFile) //right clicked on folder in file explorer
             {
-                menu = child->GetSubMenu();
+                wxFileName f(data->GetFolder());
+                m_browserselectedfile = f.GetFullPath();
+                wxMenuItem * child = menu->FindItem(menu->FindItem(_("Open with")));
+
+                if (child && child->IsSubMenu())
+                {
+                    menu = child->GetSubMenu();
+                }
+
+                menu->Append(idOpenHexEditFileBrowser, _("Open With Hex Editor"), _("Open this file in hex editor"));
             }
-            menu->Append( idOpenHexEditFileBrowser, _( "Open With Hex Editor" ), _( "Open this file in hex editor" ) );
-        }
-        break;
 
+            break;
 
-    case mtEditorManager:
-    case mtLogManager:
-    case mtOpenFilesList:
-    case mtEditorTab:
-    default:
-        break;
+        case mtEditorManager:
+        case mtLogManager:
+        case mtOpenFilesList:
+        case mtEditorTab:
+        default:
+            break;
     }
 }
 
-void HexEditor::BuildMenu(wxMenuBar* menuBar)
+void HexEditor::BuildMenu(wxMenuBar * menuBar)
 {
-    int fileMenuIndex = menuBar->FindMenu( _("&File") );
-    if ( fileMenuIndex == wxNOT_FOUND ) return;
+    int fileMenuIndex = menuBar->FindMenu(_("&File"));
 
-    wxMenu* fileMenu = menuBar->GetMenu( fileMenuIndex );
-    if ( !fileMenu ) return;
-
-    wxMenuItemList& list = fileMenu->GetMenuItems();
-    int pos = 0;
-    for ( wxMenuItemList::iterator i = list.begin(); i != list.end(); ++i, ++pos )
+    if (fileMenuIndex == wxNOT_FOUND)
     {
-        wxMenuItem* item = *i;
+        return;
+    }
+
+    wxMenu * fileMenu = menuBar->GetMenu(fileMenuIndex);
+
+    if (!fileMenu)
+    {
+        return;
+    }
+
+    wxMenuItemList & list = fileMenu->GetMenuItems();
+    int pos = 0;
+
+    for (wxMenuItemList::iterator i = list.begin(); i != list.end(); ++i, ++pos)
+    {
+        wxMenuItem * item = *i;
         wxString label = item->GetItemLabelText();
-        label.Replace( _T("_"), _T("") );
-        if ( label.Contains( _("Open...")) )
+        label.Replace(_T("_"), _T(""));
+
+        if (label.Contains(_("Open...")))
         {
-            fileMenu->Insert( pos+1, idOpenWithHE, _("Open With Hex Editor"), _("Open file using hex editor") );
+            fileMenu->Insert(pos + 1, idOpenWithHE, _("Open With Hex Editor"), _("Open file using hex editor"));
             return;
         }
     }
 
-    fileMenu->Append( idOpenWithHE, _("Open With Hex Editor"), _("Open file using hex editor") );
+    fileMenu->Append(idOpenWithHE, _("Open With Hex Editor"), _("Open file using hex editor"));
 }
 
-void HexEditor::OnOpenHexEditFileBrowser( wxCommandEvent& /*event*/ )
+void HexEditor::OnOpenHexEditFileBrowser(wxCommandEvent & /*event*/)
 {
     OpenFileFromName(m_browserselectedfile);
 }
 
-void HexEditor::OnOpenHexEdit( wxCommandEvent& /*event*/ )
+void HexEditor::OnOpenHexEdit(wxCommandEvent & /*event*/)
 {
-    cbProjectManagerUI &managerUI = Manager::Get()->GetProjectManager()->GetUI();
-    wxTreeCtrl *tree = managerUI.GetTree();
+    cbProjectManagerUI & managerUI = Manager::Get()->GetProjectManager()->GetUI();
+    wxTreeCtrl * tree = managerUI.GetTree();
 
-    if ( !tree )
+    if (!tree)
+    {
         return;
+    }
 
     wxTreeItemId treeItem =  managerUI.GetTreeSelection();
 
-    if ( !treeItem.IsOk() )
-        return;
-
-    const FileTreeData *data = static_cast<FileTreeData*>( tree->GetItemData( treeItem ) );
-
-    if ( !data )
-        return;
-
-    if ( data->GetKind() == FileTreeData::ftdkFile )
+    if (!treeItem.IsOk())
     {
-        OpenProjectFile( data->GetProjectFile() );
+        return;
+    }
+
+    const FileTreeData * data = static_cast<FileTreeData *>(tree->GetItemData(treeItem));
+
+    if (!data)
+    {
+        return;
+    }
+
+    if (data->GetKind() == FileTreeData::ftdkFile)
+    {
+        OpenProjectFile(data->GetProjectFile());
     }
 }
 
-void HexEditor::OpenProjectFile( ProjectFile* f )
+void HexEditor::OpenProjectFile(ProjectFile * f)
 {
-    if ( !f ) return;
-
-    if ( Manager::Get()->GetEditorManager()->IsOpen( f->file.GetFullPath() ) )
+    if (!f)
     {
-        wxMessageBox( _("This file is already opened inside editor.") );
+        return;
+    }
+
+    if (Manager::Get()->GetEditorManager()->IsOpen(f->file.GetFullPath()))
+    {
+        wxMessageBox(_("This file is already opened inside editor."));
         return;
     }
 
     wxString title;
-    if ( Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/tab_text_relative"), true) )
+
+    if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/tab_text_relative"), true))
     {
         title = f->relativeToCommonTopLevelPath;
     }
@@ -196,48 +222,66 @@ void HexEditor::OpenProjectFile( ProjectFile* f )
         title = f->file.GetFullName();
     }
 
-    new HexEditPanel( f->file.GetFullPath(), title );
+    new HexEditPanel(f->file.GetFullPath(), title);
 }
 
-void HexEditor::OpenFileFromName(const wxString& fileName)
+void HexEditor::OpenFileFromName(const wxString & fileName)
 {
-    if ( Manager::Get()->GetEditorManager()->IsOpen( fileName ) )
+    if (Manager::Get()->GetEditorManager()->IsOpen(fileName))
     {
-        wxMessageBox( _("This file is already opened inside editor.") );
+        wxMessageBox(_("This file is already opened inside editor."));
         return;
     }
 
-    wxString title = wxFileName( fileName ).GetFullName();
-    new HexEditPanel( fileName, title );
+    wxString title = wxFileName(fileName).GetFullName();
+    new HexEditPanel(fileName, title);
 }
 
-void HexEditor::OnOpenWithHE(wxCommandEvent& /*event*/)
+void HexEditor::OnOpenWithHE(wxCommandEvent & /*event*/)
 {
-    wxString file = ::wxFileSelector( _("Open file with HexEditor" ) );
-    if ( file.IsEmpty() ) return;
+    wxString file = ::wxFileSelector(_("Open file with HexEditor"));
 
-    ProjectFile* f = FindProjectFile( file );
-    if ( f )
+    if (file.IsEmpty())
     {
-        OpenProjectFile( f );
+        return;
+    }
+
+    ProjectFile * f = FindProjectFile(file);
+
+    if (f)
+    {
+        OpenProjectFile(f);
     }
     else
     {
-        OpenFileFromName( file );
+        OpenFileFromName(file);
     }
 }
 
-ProjectFile* HexEditor::FindProjectFile(const wxString& fileName)
+ProjectFile * HexEditor::FindProjectFile(const wxString & fileName)
 {
-    ProjectsArray* projects = ProjectManager::Get()->GetProjects();
-    if ( !projects ) return 0;
+    ProjectsArray * projects = ProjectManager::Get()->GetProjects();
 
-    for ( size_t i=0; i<projects->Count(); ++i )
+    if (!projects)
     {
-        cbProject* project = (*projects)[i];
-        if ( !project ) continue;
-        ProjectFile* file = project->GetFileByFilename( fileName, false, false );
-        if ( file ) return file;
+        return 0;
+    }
+
+    for (size_t i = 0; i < projects->Count(); ++i)
+    {
+        cbProject * project = (*projects)[i];
+
+        if (!project)
+        {
+            continue;
+        }
+
+        ProjectFile * file = project->GetFileByFilename(fileName, false, false);
+
+        if (file)
+        {
+            return file;
+        }
     }
 
     return 0;

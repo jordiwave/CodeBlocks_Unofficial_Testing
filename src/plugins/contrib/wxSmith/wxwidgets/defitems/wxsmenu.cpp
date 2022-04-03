@@ -30,41 +30,41 @@
 
 namespace
 {
-wxsRegisterItem<wxsMenu> Reg(_T("Menu"),wxsTTool,_T("Tools"),70,false);
+wxsRegisterItem<wxsMenu> Reg(_T("Menu"), wxsTTool, _T("Tools"), 70, false);
 
 class MenuEditorDialog: public wxScrollingDialog
 {
-public:
+    public:
 
-    wxsMenuEditor* Editor;
+        wxsMenuEditor * Editor;
 
-    MenuEditorDialog(wxsMenu* Menu):
-        wxScrollingDialog(0,-1,_("Menu editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
-    {
-        wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
-        Sizer->Add(Editor = new wxsMenuEditor(this,Menu),1,wxEXPAND,0);
-        Sizer->Add(CreateButtonSizer(wxOK|wxCANCEL),0,wxEXPAND,15);
-        SetSizer(Sizer);
-        Sizer->SetSizeHints(this);
-        PlaceWindow(this,pdlCentre,true);
-    }
+        MenuEditorDialog(wxsMenu * Menu):
+            wxScrollingDialog(0, -1, _("Menu editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
+        {
+            wxBoxSizer * Sizer = new wxBoxSizer(wxVERTICAL);
+            Sizer->Add(Editor = new wxsMenuEditor(this, Menu), 1, wxEXPAND, 0);
+            Sizer->Add(CreateButtonSizer(wxOK | wxCANCEL), 0, wxEXPAND, 15);
+            SetSizer(Sizer);
+            Sizer->SetSizeHints(this);
+            PlaceWindow(this, pdlCentre, true);
+        }
 
-    void OnOK(cb_unused wxCommandEvent& event)
-    {
-        Editor->ApplyChanges();
-        EndModal(wxID_OK);
-    }
+        void OnOK(cb_unused wxCommandEvent & event)
+        {
+            Editor->ApplyChanges();
+            EndModal(wxID_OK);
+        }
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
-BEGIN_EVENT_TABLE(MenuEditorDialog,wxScrollingDialog)
-    EVT_BUTTON(wxID_OK,MenuEditorDialog::OnOK)
+BEGIN_EVENT_TABLE(MenuEditorDialog, wxScrollingDialog)
+    EVT_BUTTON(wxID_OK, MenuEditorDialog::OnOK)
 END_EVENT_TABLE()
 }
 
-wxsMenu::wxsMenu(wxsItemResData* Data):
-    wxsTool(Data,&Reg.Info,0,0,flVariable|flSubclass|flExtraCode)
+wxsMenu::wxsMenu(wxsItemResData * Data):
+    wxsTool(Data, &Reg.Info, 0, 0, flVariable | flSubclass | flExtraCode)
 {
 }
 
@@ -202,42 +202,46 @@ wxsMenu::wxsMenu(wxsItemResData* Data):
 
 void wxsMenu::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-        AddHeader(_T("<wx/menu.h>"),GetInfo().ClassName,hfInPCH);
-        if ( IsPointer() )
-        {
-            // There's no Create() method for wxMenu so we call ctor only when creating pointer
-            Codef(_T("%C();\n"));
-        }
-        for ( int i=0; i<GetChildCount(); i++ )
-        {
-            GetChild(i)->BuildCode(GetCoderContext());
-        }
-        if ( GetParent() && GetParent()->GetClassName()==_T("wxMenuBar") )
-        {
-            Codef(_T("%MAppend(%O, %t);\n"),m_Label.wx_str());
-        }
-        BuildSetupWindowCode();
-        break;
+        case wxsCPP:
+            AddHeader(_T("<wx/menu.h>"), GetInfo().ClassName, hfInPCH);
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsMenu::OnBuildCreatingCode"),GetLanguage());
+            if (IsPointer())
+            {
+                // There's no Create() method for wxMenu so we call ctor only when creating pointer
+                Codef(_T("%C();\n"));
+            }
+
+            for (int i = 0; i < GetChildCount(); i++)
+            {
+                GetChild(i)->BuildCode(GetCoderContext());
+            }
+
+            if (GetParent() && GetParent()->GetClassName() == _T("wxMenuBar"))
+            {
+                Codef(_T("%MAppend(%O, %t);\n"), m_Label.wx_str());
+            }
+
+            BuildSetupWindowCode();
+            break;
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsMenu::OnBuildCreatingCode"), GetLanguage());
     }
 }
 
 void wxsMenu::OnEnumToolProperties(cb_unused long Flags)
 {
-    if ( GetParent() )
+    if (GetParent())
     {
         // If there's parent we got label for this menu
-        WXS_SHORT_STRING(wxsMenu,m_Label,_("Title"),_T("label"),_T(""),true);
+        WXS_SHORT_STRING(wxsMenu, m_Label, _("Title"), _T("label"), _T(""), true);
     }
 }
 
-bool wxsMenu::OnMouseDClick(cb_unused wxWindow* Preview,cb_unused int PosX,cb_unused int PosY)
+bool wxsMenu::OnMouseDClick(cb_unused wxWindow * Preview, cb_unused int PosX, cb_unused int PosY)
 {
     MenuEditorDialog Dlg(this);
     Dlg.ShowModal();
@@ -247,64 +251,72 @@ bool wxsMenu::OnMouseDClick(cb_unused wxWindow* Preview,cb_unused int PosX,cb_un
 bool wxsMenu::OnIsPointer()
 {
     // Must be object if parentless (tool)
-    if ( !GetParent() ) return false;
+    if (!GetParent())
+    {
+        return false;
+    }
 
     // Otherwise must be a pointer (child of wxMenuBar)
     return true;
 }
 
-bool wxsMenu::OnCanAddChild(wxsItem* Item,bool ShowMessage)
+bool wxsMenu::OnCanAddChild(wxsItem * Item, bool ShowMessage)
 {
-    if ( Item->GetInfo().ClassName != _T("wxMenuItem") )
+    if (Item->GetInfo().ClassName != _T("wxMenuItem"))
     {
-        if ( ShowMessage )
+        if (ShowMessage)
         {
             cbMessageBox(_("Only wxMenuItem classes can be added into wxMenu"));
         }
+
         return false;
     }
+
     return true;
 }
 
-bool wxsMenu::OnCanAddToParent(wxsParent* Parent,bool ShowMessage)
+bool wxsMenu::OnCanAddToParent(wxsParent * Parent, bool ShowMessage)
 {
-    if ( Parent->GetClassName() != _T("wxMenuBar") )
+    if (Parent->GetClassName() != _T("wxMenuBar"))
     {
-        if ( ShowMessage )
+        if (ShowMessage)
         {
             cbMessageBox(_("wxMenu can be added into wxMenuBar only"));
         }
+
         return false;
     }
+
     return true;
 }
 
-bool wxsMenu::OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra)
+bool wxsMenu::OnXmlReadChild(TiXmlElement * Elem, bool IsXRC, bool IsExtra)
 {
-    if ( IsXRC )
+    if (IsXRC)
     {
         wxString ClassName = cbC2U(Elem->Attribute("class"));
-        if ( ClassName == _T("separator") || ClassName == _T("break") )
+
+        if (ClassName == _T("separator") || ClassName == _T("break"))
         {
-            wxsMenuItem* Child = new wxsMenuItem(GetResourceData(),true);
+            wxsMenuItem * Child = new wxsMenuItem(GetResourceData(), true);
             AddChild(Child);
-            return Child->XmlRead(Elem,IsXRC,IsExtra);
+            return Child->XmlRead(Elem, IsXRC, IsExtra);
         }
 
-        if ( ClassName == _T("wxMenu") || ClassName == _T("wxMenuItem") )
+        if (ClassName == _T("wxMenu") || ClassName == _T("wxMenuItem"))
         {
-            wxsMenuItem* Child = new wxsMenuItem(GetResourceData(),false);
+            wxsMenuItem * Child = new wxsMenuItem(GetResourceData(), false);
             AddChild(Child);
-            return Child->XmlRead(Elem,IsXRC,IsExtra);
+            return Child->XmlRead(Elem, IsXRC, IsExtra);
         }
     }
 
     return true;
 }
 
-wxString wxsMenu::OnGetTreeLabel(int& Image)
+wxString wxsMenu::OnGetTreeLabel(int & Image)
 {
-    if ( GetParent() )
+    if (GetParent())
     {
         // This is internal item of wxMenuBar,
         // we give the description like in wxMenuItem

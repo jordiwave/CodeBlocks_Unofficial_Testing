@@ -5,7 +5,7 @@ typedef struct _UnicodeBlock
 {
     wxUint32    start;
     wxUint32    end;
-    const char* name;
+    const char * name;
 } UnicodeBlock;
 
 static const UnicodeBlock unicodeBlocks[] =

@@ -11,11 +11,11 @@
 #include "TextFileSearcherText.h"
 
 
-TextFileSearcherText::TextFileSearcherText(const wxString& searchText, bool matchCase, bool matchWordBegin,
-        bool matchWord)
-    :TextFileSearcher(searchText, matchCase, matchWordBegin, matchWord)
+TextFileSearcherText::TextFileSearcherText(const wxString & searchText, bool matchCase, bool matchWordBegin,
+                                           bool matchWord)
+    : TextFileSearcher(searchText, matchCase, matchWordBegin, matchWord)
 {
-    if ( matchCase == false )
+    if (matchCase == false)
     {
         m_SearchText.LowerCase();
     }
@@ -25,40 +25,48 @@ TextFileSearcherText::TextFileSearcherText(const wxString& searchText, bool matc
 bool TextFileSearcherText::MatchLine(wxString line)
 {
     bool match = false;
-    if ( m_MatchCase == false )
+
+    if (m_MatchCase == false)
     {
         line.LowerCase();
     }
+
     int pos = line.Find(m_SearchText.c_str());
     int nextPos;
-    while ( (match == false) && (pos >= 0) )
+
+    while ((match == false) && (pos >= 0))
     {
         char c = ' '; // c is either the preceeding char or a virtual char
         // that matches systematically the required conditions
         match = true; // pos > 0 => expr found => Matches. Let's test start word
+
         // and whole words conditions.
-        if ( (m_MatchWordBegin == true) || (m_MatchWord == true) )
+        if ((m_MatchWordBegin == true) || (m_MatchWord == true))
         {
-            if ( pos > 0 )
+            if (pos > 0)
             {
                 c = line.GetChar(pos - 1);
             }
+
             //match = (__iscsym(c) == 0);
-            match = !(isalnum(c) || ( c == '_' ));
+            match = !(isalnum(c) || (c == '_'));
         }
 
-        if ( (match == true) && (m_MatchWord == true) )
+        if ((match == true) && (m_MatchWord == true))
         {
             c = ' ';
-            if ( (pos + m_SearchText.Length()) < line.Length() )
+
+            if ((pos + m_SearchText.Length()) < line.Length())
             {
                 c = line.GetChar(pos + m_SearchText.Length());
             }
-            match = !(isalnum(c) || ( c == '_' ));
+
+            match = !(isalnum(c) || (c == '_'));
         }
 
-        nextPos = line.Mid(pos+1).Find(m_SearchText.c_str());
-        if ( nextPos >= 0 )
+        nextPos = line.Mid(pos + 1).Find(m_SearchText.c_str());
+
+        if (nextPos >= 0)
         {
             pos += nextPos + 1;
         }

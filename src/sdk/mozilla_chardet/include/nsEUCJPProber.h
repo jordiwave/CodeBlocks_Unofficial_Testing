@@ -18,38 +18,38 @@
 
 class nsEUCJPProber: public nsCharSetProber
 {
-public:
-    nsEUCJPProber(bool aIsPreferredLanguage)
-        :mIsPreferredLanguage(aIsPreferredLanguage)
-    {
-        mCodingSM = new nsCodingStateMachine(&EUCJPSMModel);
-        Reset();
-    }
-    virtual ~nsEUCJPProber(void)
-    {
-        delete mCodingSM;
-    }
-    nsProbingState HandleData(const char* aBuf, uint32_t aLen);
-    const char* GetCharSetName()
-    {
-        return "EUC-JP";
-    }
-    nsProbingState GetState(void)
-    {
-        return mState;
-    }
-    void      Reset(void);
-    float     GetConfidence(void);
+    public:
+        nsEUCJPProber(bool aIsPreferredLanguage)
+            : mIsPreferredLanguage(aIsPreferredLanguage)
+        {
+            mCodingSM = new nsCodingStateMachine(&EUCJPSMModel);
+            Reset();
+        }
+        virtual ~nsEUCJPProber(void)
+        {
+            delete mCodingSM;
+        }
+        nsProbingState HandleData(const char * aBuf, uint32_t aLen);
+        const char * GetCharSetName()
+        {
+            return "EUC-JP";
+        }
+        nsProbingState GetState(void)
+        {
+            return mState;
+        }
+        void      Reset(void);
+        float     GetConfidence(void);
 
-protected:
-    nsCodingStateMachine* mCodingSM;
-    nsProbingState mState;
+    protected:
+        nsCodingStateMachine * mCodingSM;
+        nsProbingState mState;
 
-    EUCJPContextAnalysis mContextAnalyser;
-    EUCJPDistributionAnalysis mDistributionAnalyser;
+        EUCJPContextAnalysis mContextAnalyser;
+        EUCJPDistributionAnalysis mDistributionAnalyser;
 
-    char mLastChar[2];
-    bool mIsPreferredLanguage;
+        char mLastChar[2];
+        bool mIsPreferredLanguage;
 };
 
 

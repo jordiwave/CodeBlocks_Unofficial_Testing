@@ -38,75 +38,75 @@ const int DeleteId = wxNewId();
 // when it's clicked in resource tree
 class wxsResource::wxsResourceRootTreeItemData: public wxsResourceTreeItemData
 {
-public:
-    wxsResourceRootTreeItemData(wxsResource* Resource):
-        wxsResourceTreeItemData(),
-        m_Resource(Resource)
-    {
-    }
-
-private:
-
-    virtual void OnSelect()
-    {
-        m_Resource->EditOpen();
-    }
-
-    virtual void OnRightClick()
-    {
-        // Build menu allowing to close this resource
-        wxMenu Menu;
-        if ( m_Resource->GetEditor() )
+    public:
+        wxsResourceRootTreeItemData(wxsResource * Resource):
+            wxsResourceTreeItemData(),
+            m_Resource(Resource)
         {
-            Menu.Append(EditCloseId,_("Close editor"));
         }
-        else
-        {
-            Menu.Append(EditOpenId,_("Open editor"));
-        }
-        Menu.AppendSeparator();
-        Menu.Append(DeleteId,_("Delete this resource"));
 
-        m_Resource->OnFillPopupMenu(&Menu);
+    private:
 
-        PopupMenu(&Menu);
-    }
-
-    virtual bool OnPopup(long Id)
-    {
-        if ( Id == EditOpenId )
+        virtual void OnSelect()
         {
             m_Resource->EditOpen();
-            return true;
         }
 
-        if ( Id == EditCloseId )
+        virtual void OnRightClick()
         {
-            m_Resource->EditClose();
-            return true;
+            // Build menu allowing to close this resource
+            wxMenu Menu;
+
+            if (m_Resource->GetEditor())
+            {
+                Menu.Append(EditCloseId, _("Close editor"));
+            }
+            else
+            {
+                Menu.Append(EditOpenId, _("Open editor"));
+            }
+
+            Menu.AppendSeparator();
+            Menu.Append(DeleteId, _("Delete this resource"));
+            m_Resource->OnFillPopupMenu(&Menu);
+            PopupMenu(&Menu);
         }
 
-        if ( Id == DeleteId )
+        virtual bool OnPopup(long Id)
         {
-            DeleteResource();
-            return true;
+            if (Id == EditOpenId)
+            {
+                m_Resource->EditOpen();
+                return true;
+            }
+
+            if (Id == EditCloseId)
+            {
+                m_Resource->EditClose();
+                return true;
+            }
+
+            if (Id == DeleteId)
+            {
+                DeleteResource();
+                return true;
+            }
+
+            return m_Resource->OnPopupMenu(Id);
         }
 
-        return m_Resource->OnPopupMenu(Id);
-    }
-
-    void DeleteResource()
-    {
-        if ( m_Resource->DeleteCleanup(true) )
+        void DeleteResource()
         {
-            m_Resource->GetProject()->DelResource(m_Resource);
+            if (m_Resource->DeleteCleanup(true))
+            {
+                m_Resource->GetProject()->DelResource(m_Resource);
+            }
         }
-    }
 
-    wxsResource* m_Resource;
+        wxsResource * m_Resource;
 };
 
-wxsResource::wxsResource(wxsProject* Owner,const wxString& ResourceType,const wxString& GUI):
+wxsResource::wxsResource(wxsProject * Owner, const wxString & ResourceType, const wxString & GUI):
     m_ResourceType(ResourceType),
     m_ResourceName(wxEmptyString),
     m_GUI(GUI),
@@ -117,14 +117,14 @@ wxsResource::wxsResource(wxsProject* Owner,const wxString& ResourceType,const wx
 
 wxsResource::~wxsResource()
 {
-    if ( m_Editor )
+    if (m_Editor)
     {
-        wxsEditor* EditorStore = m_Editor;
+        wxsEditor * EditorStore = m_Editor;
         m_Editor = 0;
         EditorStore->Close();
     }
 
-    if ( m_TreeItemId.IsOk() )
+    if (m_TreeItemId.IsOk())
     {
         wxsTree()->Delete(m_TreeItemId);
     }
@@ -132,7 +132,7 @@ wxsResource::~wxsResource()
 
 void wxsResource::EditOpen()
 {
-    if ( m_Editor )
+    if (m_Editor)
     {
         m_Editor->Activate();
     }
@@ -146,7 +146,7 @@ void wxsResource::EditOpen()
 
 void wxsResource::EditClose()
 {
-    if ( m_Editor )
+    if (m_Editor)
     {
         m_Editor->Close();
         // Inside Close() m_Editor should be zeroed
@@ -156,13 +156,14 @@ void wxsResource::EditClose()
 void wxsResource::EditorClosed()
 {
     m_Editor = 0;
-    if ( !m_Owner )
+
+    if (!m_Owner)
     {
         wxsExtRes()->EditorClosed(this);
     }
 }
 
-void wxsResource::BuildTreeEntry(const wxsResourceItemId& Parent)
+void wxsResource::BuildTreeEntry(const wxsResourceItemId & Parent)
 {
     m_TreeItemId = wxsTree()->AppendItem(
                        Parent,
@@ -171,20 +172,25 @@ void wxsResource::BuildTreeEntry(const wxsResourceItemId& Parent)
                        new wxsResourceRootTreeItemData(this));
 }
 
-bool wxsResource::ReadConfig(const TiXmlElement* Node)
+bool wxsResource::ReadConfig(const TiXmlElement * Node)
 {
     m_ResourceName = cbC2U(Node->Attribute("name"));
     m_Language = wxsCodeMarks::Id(cbC2U(Node->Attribute("language")));
-    if ( GetResourceName().empty() ) return false;
+
+    if (GetResourceName().empty())
+    {
+        return false;
+    }
+
     return OnReadConfig(Node);
 }
 
-bool wxsResource::WriteConfig(TiXmlElement* Node)
+bool wxsResource::WriteConfig(TiXmlElement * Node)
 {
     bool Result = OnWriteConfig(Node);
-    Node->SetAttribute("name",cbU2C(m_ResourceName));
-    Node->SetAttribute("language",cbU2C(wxsCodeMarks::Name(m_Language)));
+    Node->SetAttribute("name", cbU2C(m_ResourceName));
+    Node->SetAttribute("language", cbU2C(wxsCodeMarks::Name(m_Language)));
     return Result;
 }
 
-IMPLEMENT_CLASS(wxsResource,wxObject)
+IMPLEMENT_CLASS(wxsResource, wxObject)

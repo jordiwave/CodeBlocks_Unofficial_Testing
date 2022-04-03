@@ -13,16 +13,16 @@ class cbProject;
 
 class DevCppLoader : public IBaseLoader
 {
-public:
-    DevCppLoader(cbProject* project);
-    ~DevCppLoader() override;
+    public:
+        DevCppLoader(cbProject * project);
+        ~DevCppLoader() override;
 
-    bool Open(const wxString& filename) override;
-    bool Save(const wxString& filename) override;
-protected:
-    cbProject* m_pProject;
-private:
-    DevCppLoader() {} // no default ctor
+        bool Open(const wxString & filename) override;
+        bool Save(const wxString & filename) override;
+    protected:
+        cbProject * m_pProject;
+    private:
+        DevCppLoader() {} // no default ctor
 };
 
 #endif // DEVCPPLOADER_H

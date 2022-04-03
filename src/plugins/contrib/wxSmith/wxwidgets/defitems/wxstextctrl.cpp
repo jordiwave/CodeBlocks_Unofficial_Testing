@@ -24,9 +24,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsTextCtrl> Reg(_T("TextCtrl"),wxsTWidget,_T("Standard"),40);
+wxsRegisterItem<wxsTextCtrl> Reg(_T("TextCtrl"), wxsTWidget, _T("Standard"), 40);
 
-WXS_ST_BEGIN(wxsTextCtrlStyles,_T(""))
+WXS_ST_BEGIN(wxsTextCtrlStyles, _T(""))
 WXS_ST(wxTE_NO_VSCROLL)
 WXS_ST(wxTE_PROCESS_ENTER)
 WXS_ST(wxTE_PROCESS_TAB)
@@ -47,15 +47,15 @@ WXS_ST_DEFAULTS()
 WXS_ST_END()
 
 WXS_EV_BEGIN(wxsTextCtrlEvents)
-WXS_EVI(EVT_TEXT,wxEVT_COMMAND_TEXT_UPDATED,wxCommandEvent,Text)
-WXS_EVI(EVT_TEXT_ENTER,wxEVT_COMMAND_TEXT_ENTER,wxCommandEvent,TextEnter)
-WXS_EVI(EVT_TEXT_URL,wxEVT_COMMAND_TEXT_URL,wxTextUrlEvent,TextUrl)
-WXS_EVI(EVT_TEXT_MAXLEN,wxEVT_COMMAND_TEXT_MAXLEN,wxCommandEvent,TextMaxLen)
+WXS_EVI(EVT_TEXT, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEvent, Text)
+WXS_EVI(EVT_TEXT_ENTER, wxEVT_COMMAND_TEXT_ENTER, wxCommandEvent, TextEnter)
+WXS_EVI(EVT_TEXT_URL, wxEVT_COMMAND_TEXT_URL, wxTextUrlEvent, TextUrl)
+WXS_EVI(EVT_TEXT_MAXLEN, wxEVT_COMMAND_TEXT_MAXLEN, wxCommandEvent, TextMaxLen)
 WXS_EV_END()
 
 }
 
-wxsTextCtrl::wxsTextCtrl(wxsItemResData* Data):
+wxsTextCtrl::wxsTextCtrl(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -67,33 +67,38 @@ wxsTextCtrl::wxsTextCtrl(wxsItemResData* Data):
 
 void wxsTextCtrl::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/textctrl.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Text.wx_str());
-        if ( MaxLength > 0 ) Codef(_T("%ASetMaxLength(%d);\n"),MaxLength);
-        BuildSetupWindowCode();
-        return;
-    }
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/textctrl.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"), Text.wx_str());
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsTextCtrl::OnBuildCreatingCode"),GetLanguage());
-    }
+            if (MaxLength > 0)
+            {
+                Codef(_T("%ASetMaxLength(%d);\n"), MaxLength);
+            }
+
+            BuildSetupWindowCode();
+            return;
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsTextCtrl::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
-wxObject* wxsTextCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsTextCtrl::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxTextCtrl* Preview = new wxTextCtrl(Parent,GetId(),Text,Pos(Parent),Size(Parent),Style());
-    return SetupWindow(Preview,Flags);
+    wxTextCtrl * Preview = new wxTextCtrl(Parent, GetId(), Text, Pos(Parent), Size(Parent), Style());
+    return SetupWindow(Preview, Flags);
 }
 
 void wxsTextCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
-    WXS_STRING(wxsTextCtrl,Text,_("Text"),_T("value"),_T(""),false)
-    WXS_LONG(wxsTextCtrl,MaxLength,_("Max Length"),_T("maxlength"),0)
+    WXS_STRING(wxsTextCtrl, Text, _("Text"), _T("value"), _T(""), false)
+    WXS_LONG(wxsTextCtrl, MaxLength, _("Max Length"), _T("maxlength"), 0)
 }

@@ -14,7 +14,7 @@
 
 #include <cbdebugger_interfaces.h>
 
-DebuggerDriver::DebuggerDriver(DebuggerGDB* plugin)
+DebuggerDriver::DebuggerDriver(DebuggerGDB * plugin)
     : m_pDBG(plugin),
       m_ProgramIsStopped(true),
       m_ChildPID(0),
@@ -29,16 +29,19 @@ DebuggerDriver::~DebuggerDriver()
 {
     //dtor
     for (size_t ii = 0; ii < m_DCmds.GetCount(); ++ii)
+    {
         delete m_DCmds[ii];
+    }
+
     m_DCmds.Clear();
 }
 
-void DebuggerDriver::Log(const wxString& msg)
+void DebuggerDriver::Log(const wxString & msg)
 {
     m_pDBG->Log(msg);
 }
 
-void DebuggerDriver::DebugLog(const wxString& msg)
+void DebuggerDriver::DebugLog(const wxString & msg)
 {
     m_pDBG->DebugLog(msg);
 }
@@ -48,13 +51,15 @@ void DebuggerDriver::ClearDirectories()
     m_Dirs.Clear();
 }
 
-void DebuggerDriver::AddDirectory(const wxString& dir)
+void DebuggerDriver::AddDirectory(const wxString & dir)
 {
     if (m_Dirs.Index(dir) == wxNOT_FOUND)
+    {
         m_Dirs.Add(dir);
+    }
 }
 
-void DebuggerDriver::SetWorkingDirectory(const wxString& dir)
+void DebuggerDriver::SetWorkingDirectory(const wxString & dir)
 {
     m_WorkingDir = dir;
 }
@@ -62,7 +67,10 @@ void DebuggerDriver::SetWorkingDirectory(const wxString& dir)
 wxString DebuggerDriver::GetDebuggersWorkingDirectory() const
 {
     if (m_WorkingDir.empty())
+    {
         return wxEmptyString;
+    }
+
     wxString oldDir = wxGetCwd();
     wxSetWorkingDirectory(m_WorkingDir);
     wxString newDir = wxGetCwd();
@@ -70,13 +78,13 @@ wxString DebuggerDriver::GetDebuggersWorkingDirectory() const
     return newDir;
 }
 
-void DebuggerDriver::SetArguments(const wxString& args)
+void DebuggerDriver::SetArguments(const wxString & args)
 {
     m_Args = args;
     Manager::Get()->GetMacrosManager()->ReplaceMacros(m_Args);
 }
 
-void DebuggerDriver::ShowFile(const wxString& file, int line)
+void DebuggerDriver::ShowFile(const wxString & file, int line)
 {
     wxCommandEvent event(DEBUGGER_SHOW_FILE_LINE);
     event.SetString(file);
@@ -87,7 +95,10 @@ void DebuggerDriver::ShowFile(const wxString& file, int line)
 void DebuggerDriver::NotifyCursorChanged()
 {
     if (!m_Cursor.changed || m_LastCursorAddress == m_Cursor.address)
+    {
         return;
+    }
+
     m_LastCursorAddress = m_Cursor.address;
     wxCommandEvent event(DEBUGGER_CURSOR_CHANGED);
     m_pDBG->ProcessEvent(event);
@@ -109,17 +120,22 @@ void DebuggerDriver::ResetCursor()
     m_Cursor.changed = false;
 }
 
-void DebuggerDriver::QueueCommand(DebuggerCmd* dcmd, QueuePriority prio)
+void DebuggerDriver::QueueCommand(DebuggerCmd * dcmd, QueuePriority prio)
 {
-//    DebugLog(_T("Queueing command: ") + dcmd->m_Cmd);
+    //    DebugLog(_T("Queueing command: ") + dcmd->m_Cmd);
     if (prio == Low)
+    {
         m_DCmds.Add(dcmd);
+    }
     else
+    {
         m_DCmds.Insert(dcmd, 0);
+    }
+
     RunQueue();
 }
 
-DebuggerCmd* DebuggerDriver::CurrentCommand()
+DebuggerCmd * DebuggerDriver::CurrentCommand()
 {
     return m_DCmds.GetCount() ? m_DCmds[0] : 0;
 }
@@ -127,18 +143,23 @@ DebuggerCmd* DebuggerDriver::CurrentCommand()
 void DebuggerDriver::RunQueue()
 {
     if (m_QueueBusy || !m_DCmds.GetCount() || !IsProgramStopped())
+    {
         return;
+    }
 
-    DebuggerCmd *command = CurrentCommand();
+    DebuggerCmd * command = CurrentCommand();
 
-//    Log(_T("Running command: ") + CurrentCommand()->m_Cmd);
+    //    Log(_T("Running command: ") + CurrentCommand()->m_Cmd);
     // don't send a command if empty; most debuggers repeat the last command this way...
     if (!command->m_Cmd.IsEmpty())
     {
         m_QueueBusy = true;
         m_pDBG->DoSendCommand(command->m_Cmd);
+
         if (command->IsContinueCommand())
+        {
             m_ProgramIsStopped = false;
+        }
     }
 
     // Call Action()
@@ -157,11 +178,16 @@ void DebuggerDriver::RunQueue()
 void DebuggerDriver::RemoveTopCommand(bool deleteIt)
 {
     if (m_QueueBusy || !m_DCmds.GetCount())
+    {
         return;
+    }
 
-//    Log(_T("Removing command: ") + CurrentCommand()->m_Cmd);
+    //    Log(_T("Removing command: ") + CurrentCommand()->m_Cmd);
     if (deleteIt)
+    {
         delete m_DCmds[0];
+    }
+
     m_DCmds.RemoveAt(0);
 }
 
@@ -170,7 +196,7 @@ DebuggerDriver::StackFrameContainer const & DebuggerDriver::GetStackFrames() con
     return m_backtrace;
 }
 
-DebuggerDriver::StackFrameContainer& DebuggerDriver::GetStackFrames()
+DebuggerDriver::StackFrameContainer & DebuggerDriver::GetStackFrames()
 {
     return m_backtrace;
 }
@@ -188,8 +214,11 @@ DebuggerDriver::ThreadsContainer & DebuggerDriver::GetThreads()
 void DebuggerDriver::SetCurrentFrame(int number, bool user_selected)
 {
     m_currentFrameNo = number;
+
     if (user_selected)
+    {
         m_userSelectedFrameNo = number;
+    }
 }
 
 void DebuggerDriver::ResetCurrentFrame()
@@ -198,6 +227,8 @@ void DebuggerDriver::ResetCurrentFrame()
     m_userSelectedFrameNo = -1;
 
     if (Manager::Get()->GetDebuggerManager()->UpdateBacktrace())
+    {
         Manager::Get()->GetDebuggerManager()->GetBacktraceDialog()->Reload();
+    }
 }
 

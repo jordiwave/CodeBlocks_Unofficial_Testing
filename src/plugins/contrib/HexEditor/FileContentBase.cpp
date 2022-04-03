@@ -34,34 +34,34 @@ const FileContentBase::OffsetT maxAnySize      = 0x8000000000000000ULL;//1024L *
 
 FileContentBase::InvalidModificationData FileContentBase::m_UndoInvalid;
 
-FileContentBase* FileContentBase::BuildInstance( const wxString& fileName )
+FileContentBase * FileContentBase::BuildInstance(const wxString & fileName)
 {
-    wxFile fl( fileName );
-    if ( !fl.IsOpened() )
+    wxFile fl(fileName);
+
+    if (!fl.IsOpened())
     {
         return NULL;
     }
 
-    if ( (OffsetT)fl.Length() <= maxBufferedSize )
+    if ((OffsetT)fl.Length() <= maxBufferedSize)
     {
         return new FileContentBuffered();
     }
 
-    if ( (OffsetT)fl.Length() <= maxAnySize )
+    if ((OffsetT)fl.Length() <= maxAnySize)
     {
         return new FileContentDisk();
     }
-
 
     return NULL;
 }
 
 
 FileContentBase::FileContentBase()
-    : m_UndoBuffer ( 0 )
-    , m_UndoLast   ( 0 )
-    , m_UndoCurrent( 0 )
-    , m_UndoSaved  ( 0 )
+    : m_UndoBuffer(0)
+    , m_UndoLast(0)
+    , m_UndoCurrent(0)
+    , m_UndoSaved(0)
 {
 }
 
@@ -70,14 +70,13 @@ FileContentBase::~FileContentBase()
     UndoClear();
 }
 
-void FileContentBase::InsertAndApplyModification( ModificationData* mod )
+void FileContentBase::InsertAndApplyModification(ModificationData * mod)
 {
-    RemoveUndoFrom( m_UndoCurrent );
-
+    RemoveUndoFrom(m_UndoCurrent);
     mod->m_Next = 0;
     mod->m_Prev = m_UndoLast;
 
-    if ( m_UndoLast )
+    if (m_UndoLast)
     {
         m_UndoLast->m_Next = mod;
     }
@@ -86,34 +85,36 @@ void FileContentBase::InsertAndApplyModification( ModificationData* mod )
         m_UndoBuffer = mod;
     }
 
-    if ( !m_UndoSaved )
+    if (!m_UndoSaved)
     {
         m_UndoSaved = mod;
     }
 
-    ApplyModification( mod );
-
+    ApplyModification(mod);
     m_UndoLast = mod;
     m_UndoCurrent = 0;
 }
 
-void FileContentBase::ApplyModification( ModificationData* mod )
+void FileContentBase::ApplyModification(ModificationData * mod)
 {
     mod->Apply();
 }
 
-void FileContentBase::RevertModification( ModificationData* mod )
+void FileContentBase::RevertModification(ModificationData * mod)
 {
     mod->Revert();
 }
 
-void FileContentBase::RemoveUndoFrom( ModificationData* mod )
+void FileContentBase::RemoveUndoFrom(ModificationData * mod)
 {
-    if ( !mod ) return;
+    if (!mod)
+    {
+        return;
+    }
 
     m_UndoLast = mod->m_Prev;
 
-    if ( m_UndoLast )
+    if (m_UndoLast)
     {
         m_UndoLast->m_Next = 0;
     }
@@ -122,59 +123,78 @@ void FileContentBase::RemoveUndoFrom( ModificationData* mod )
         m_UndoBuffer = 0;
     }
 
-    while ( mod )
+    while (mod)
     {
-        if ( mod == m_UndoSaved )
+        if (mod == m_UndoSaved)
         {
             m_UndoSaved = &m_UndoInvalid;
         }
 
-        ModificationData* tmp = mod;
+        ModificationData * tmp = mod;
         mod = mod->m_Next;
         delete tmp;
     }
 }
 
-FileContentBase::OffsetT FileContentBase::Remove( const ExtraUndoData& extraUndoData, OffsetT position, OffsetT length )
+FileContentBase::OffsetT FileContentBase::Remove(const ExtraUndoData & extraUndoData, OffsetT position, OffsetT length)
 {
-    if ( !length ) return 0;
+    if (!length)
+    {
+        return 0;
+    }
 
-    ModificationData* mod = BuildRemoveModification( position, length );
-    if ( !mod ) return 0;
+    ModificationData * mod = BuildRemoveModification(position, length);
+
+    if (!mod)
+    {
+        return 0;
+    }
 
     mod->m_Data = extraUndoData;
-
-    InsertAndApplyModification( mod );
-
+    InsertAndApplyModification(mod);
     return mod->Length();
 }
 
-FileContentBase::OffsetT FileContentBase::Add( const ExtraUndoData& extraUndoData, OffsetT position, OffsetT length, void* data)
+FileContentBase::OffsetT FileContentBase::Add(const ExtraUndoData & extraUndoData, OffsetT position, OffsetT length, void * data)
 {
-    if ( !length ) return 0;
+    if (!length)
+    {
+        return 0;
+    }
 
-    ModificationData* mod = BuildAddModification( position, length, data );
-    if ( !mod ) return 0;
+    ModificationData * mod = BuildAddModification(position, length, data);
+
+    if (!mod)
+    {
+        return 0;
+    }
 
     mod->m_Data = extraUndoData;
-
-    InsertAndApplyModification( mod );
-
+    InsertAndApplyModification(mod);
     return mod->Length();
 }
 
-FileContentBase::OffsetT FileContentBase::Write( const ExtraUndoData& extraUndoData, const void* buff, OffsetT position, OffsetT length )
+FileContentBase::OffsetT FileContentBase::Write(const ExtraUndoData & extraUndoData, const void * buff, OffsetT position, OffsetT length)
 {
-    if ( !buff ) return 0;
-    if ( !length ) return 0;
+    if (!buff)
+    {
+        return 0;
+    }
 
-    ModificationData* mod = BuildChangeModification( position, length, buff );
-    if ( !mod ) return 0;
+    if (!length)
+    {
+        return 0;
+    }
+
+    ModificationData * mod = BuildChangeModification(position, length, buff);
+
+    if (!mod)
+    {
+        return 0;
+    }
 
     mod->m_Data = extraUndoData;
-
-    InsertAndApplyModification( mod );
-
+    InsertAndApplyModification(mod);
     return mod->Length();
 }
 
@@ -183,39 +203,43 @@ bool FileContentBase::Modified()
     return m_UndoSaved != m_UndoCurrent;
 }
 
-void FileContentBase::SetModified( bool modified )
+void FileContentBase::SetModified(bool modified)
 {
     m_UndoSaved = modified ? &m_UndoInvalid : m_UndoCurrent;
 }
 
-const FileContentBase::ExtraUndoData* FileContentBase::Redo()
+const FileContentBase::ExtraUndoData * FileContentBase::Redo()
 {
-    if ( !m_UndoCurrent ) return 0;
+    if (!m_UndoCurrent)
+    {
+        return 0;
+    }
 
-    ApplyModification( m_UndoCurrent );
-    const ExtraUndoData* ret = &m_UndoCurrent->m_Data;
-
+    ApplyModification(m_UndoCurrent);
+    const ExtraUndoData * ret = &m_UndoCurrent->m_Data;
     m_UndoCurrent = m_UndoCurrent->m_Next;
-
     return ret;
 }
 
-const FileContentBase::ExtraUndoData* FileContentBase::Undo()
+const FileContentBase::ExtraUndoData * FileContentBase::Undo()
 {
-    if ( m_UndoCurrent == m_UndoBuffer ) return 0;
+    if (m_UndoCurrent == m_UndoBuffer)
+    {
+        return 0;
+    }
 
-    if ( !m_UndoCurrent )
+    if (!m_UndoCurrent)
     {
         m_UndoCurrent = m_UndoLast;
-        assert ( m_UndoCurrent->m_Next == 0 );
+        assert(m_UndoCurrent->m_Next == 0);
     }
     else
     {
-        assert( m_UndoCurrent->m_Prev != 0 );
+        assert(m_UndoCurrent->m_Prev != 0);
         m_UndoCurrent = m_UndoCurrent->m_Prev;
     }
-    RevertModification( m_UndoCurrent );
 
+    RevertModification(m_UndoCurrent);
     return &m_UndoCurrent->m_Data;
 }
 

@@ -25,39 +25,39 @@ class wxCommandEvent;
  */
 class CodeStatConfigDlg : public cbConfigurationPanel
 {
-public:
-    CodeStatConfigDlg(wxWindow* parent);
-    virtual ~CodeStatConfigDlg();
+    public:
+        CodeStatConfigDlg(wxWindow * parent);
+        virtual ~CodeStatConfigDlg();
 
-protected:
-    void ComboBoxEvent(wxCommandEvent & event);
-    void PrintLanguageInfo(int id);
-    void SaveSettings();
-    void Add(wxCommandEvent& event);
-    void Remove(wxCommandEvent& event);
-    void RestoreDefault(wxCommandEvent& event);
-    void SaveCurrentLanguage();
-    void ReInitDialog();
+    protected:
+        void ComboBoxEvent(wxCommandEvent & event);
+        void PrintLanguageInfo(int id);
+        void SaveSettings();
+        void Add(wxCommandEvent & event);
+        void Remove(wxCommandEvent & event);
+        void RestoreDefault(wxCommandEvent & event);
+        void SaveCurrentLanguage();
+        void ReInitDialog();
 
-    virtual wxString GetTitle() const
-    {
-        return _("Code statistics settings");
-    }
-    virtual wxString GetBitmapBaseName() const
-    {
-        return _T("codestats");
-    }
-    virtual void OnApply()
-    {
-        SaveSettings();
-    };
-    virtual void OnCancel() {}
+        virtual wxString GetTitle() const
+        {
+            return _("Code statistics settings");
+        }
+        virtual wxString GetBitmapBaseName() const
+        {
+            return _T("codestats");
+        }
+        virtual void OnApply()
+        {
+            SaveSettings();
+        };
+        virtual void OnCancel() {}
 
-private:
-    LanguageDef m_languages[NB_FILETYPES_MAX]; /**< Languages settings. */
-    int m_nb_languages;                        /**< Number of languages defined in 'languages'. */
-    int m_selected_language;                   /**< Language currently selected in the combo-box. */
-    DECLARE_EVENT_TABLE()
+    private:
+        LanguageDef m_languages[NB_FILETYPES_MAX]; /**< Languages settings. */
+        int m_nb_languages;                        /**< Number of languages defined in 'languages'. */
+        int m_selected_language;                   /**< Language currently selected in the combo-box. */
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // CODESTATCONFIG_H

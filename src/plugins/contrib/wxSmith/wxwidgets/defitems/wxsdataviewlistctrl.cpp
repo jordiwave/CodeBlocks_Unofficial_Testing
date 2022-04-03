@@ -57,14 +57,13 @@ WXS_EVI_STD_TYPE(EVT_DATAVIEW_ITEM_DROP, wxDataViewEvent, ItemDrop)
 WXS_EV_END()
 }
 
-wxsDataViewListCtrl::wxsDataViewListCtrl(wxsItemResData *Data):
+wxsDataViewListCtrl::wxsDataViewListCtrl(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
         wxsDataViewListCtrlEvents,
         wxsDataViewListCtrlStyles)
 {
-
 }
 
 /*! \brief Create the initial control.
@@ -74,25 +73,23 @@ wxsDataViewListCtrl::wxsDataViewListCtrl(wxsItemResData *Data):
  */
 void wxsDataViewListCtrl::OnBuildCreatingCode()
 {
-
-    switch(GetLanguage())
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/dataview.h>"), GetInfo().ClassName, 0);
-        AddHeader(_T("<wx/dataview.h>"), _T("wxDataViewCtrl"), 0);
-        Codef(_T("%C(%W, %I, %P, %S, %T, %V);\n"));
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/dataview.h>"), GetInfo().ClassName, 0);
+            AddHeader(_T("<wx/dataview.h>"), _T("wxDataViewCtrl"), 0);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %V);\n"));
+            // assign the image-list -- AFTER the image list has been built
+            BuildSetupWindowCode();
+            return;
+        }
 
-        // assign the image-list -- AFTER the image list has been built
-        BuildSetupWindowCode();
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsDataViewListCtrl::OnBuildCreatingCode"), GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsDataViewListCtrl::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
@@ -103,10 +100,9 @@ void wxsDataViewListCtrl::OnBuildCreatingCode()
  * \return wxObject*          The constructed control.
  *
  */
-wxObject *wxsDataViewListCtrl::OnBuildPreview(wxWindow *Parent, long Flags)
+wxObject * wxsDataViewListCtrl::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxDataViewCtrl *preview = new wxDataViewCtrl(Parent, GetId(), Pos(Parent), Size(Parent), Style());
-
+    wxDataViewCtrl * preview = new wxDataViewCtrl(Parent, GetId(), Pos(Parent), Size(Parent), Style());
     return SetupWindow(preview, Flags);
 }
 
@@ -118,7 +114,6 @@ wxObject *wxsDataViewListCtrl::OnBuildPreview(wxWindow *Parent, long Flags)
  */
 void wxsDataViewListCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
-
 }
 
 /*! \brief Find all tools that are image lists and return their names.
@@ -127,9 +122,8 @@ void wxsDataViewListCtrl::OnEnumWidgetProperties(cb_unused long Flags)
  * \return void
  *
  */
-void wxsDataViewListCtrl::FindAllImageLists(wxArrayString &aNames)
+void wxsDataViewListCtrl::FindAllImageLists(wxArrayString & aNames)
 {
-
 }
 
 /*! \brief .Update the list of combo items to send to the wsxImageTreeEditorDlg.
@@ -139,5 +133,4 @@ void wxsDataViewListCtrl::FindAllImageLists(wxArrayString &aNames)
  */
 void wxsDataViewListCtrl::UpdateTreeItemList()
 {
-
 }

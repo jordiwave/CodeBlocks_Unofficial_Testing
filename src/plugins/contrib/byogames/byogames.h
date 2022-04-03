@@ -10,7 +10,7 @@
 #define BYOGAMES_H
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #include <wx/timer.h>
@@ -18,35 +18,35 @@
 
 class BYOGames : public cbToolPlugin
 {
-public:
+    public:
 
-    BYOGames();
-    ~BYOGames();
-    int Configure()
-    {
-        return  0;
-    }
-    int GetConfigurationPriority() const
-    {
-        return  25;
-    }
-    int GetConfigurationGroup() const
-    {
-        return cgContribPlugin;
-    }
-    cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
-    int Execute();
-    void OnAttach(); // fires when the plugin is attached to the application
-    void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+        BYOGames();
+        ~BYOGames();
+        int Configure()
+        {
+            return  0;
+        }
+        int GetConfigurationPriority() const
+        {
+            return  25;
+        }
+        int GetConfigurationGroup() const
+        {
+            return cgContribPlugin;
+        }
+        cbConfigurationPanel * GetConfigurationPanel(wxWindow * parent);
+        int Execute();
+        void OnAttach(); // fires when the plugin is attached to the application
+        void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 
-private:
+    private:
 
-    wxTimer SecondTick;
-    void OnTimer(wxTimerEvent& event);
+        wxTimer SecondTick;
+        void OnTimer(wxTimerEvent & event);
 
-    int SelectGame();
+        int SelectGame();
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

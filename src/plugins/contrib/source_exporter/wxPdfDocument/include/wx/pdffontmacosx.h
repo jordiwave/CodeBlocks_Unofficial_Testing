@@ -17,10 +17,10 @@
 
 #if defined(__WXMAC__)
 
-// Using CoreText fonts is now the default for wxWidgets 3.x
-#include <wx/osx/private.h>
-#define wxPDFMACOSX_HAS_CORE_TEXT 1
-#define wxPDFMACOSX_HAS_ATSU_TEXT 0
+    // Using CoreText fonts is now the default for wxWidgets 3.x
+    #include <wx/osx/private.h>
+    #define wxPDFMACOSX_HAS_CORE_TEXT 1
+    #define wxPDFMACOSX_HAS_ATSU_TEXT 0
 
 #endif
 

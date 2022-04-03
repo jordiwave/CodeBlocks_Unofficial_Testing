@@ -28,17 +28,17 @@
 /** \brief Class for wxsStaticBitmap widget */
 class wxsStaticBitmap: public wxsWidget
 {
-public:
+    public:
 
-    wxsStaticBitmap(wxsItemResData* Data);
+        wxsStaticBitmap(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
-    wxsBitmapData Bitmap;
+        wxsBitmapData Bitmap;
 };
 
 #endif

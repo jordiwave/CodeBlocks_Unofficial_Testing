@@ -4,7 +4,6 @@
 	<Project>
 		<Option title="wxWidgets - Contrib Items wx3.0.x (Unix)" />
 		<Option platforms="Unix;Mac;" />
-		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="wxFlatNoteBook">

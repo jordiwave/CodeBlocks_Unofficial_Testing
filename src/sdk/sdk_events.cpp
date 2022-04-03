@@ -10,11 +10,11 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-#include "sdk_events.h"
-#include "cbproject.h"
-#include "editorbase.h"
-#include "cbplugin.h"
-#include "logmanager.h"
+    #include "sdk_events.h"
+    #include "cbproject.h"
+    #include "editorbase.h"
+    #include "cbplugin.h"
+    #include "logmanager.h"
 #endif
 
 
@@ -25,7 +25,7 @@ IMPLEMENT_DYNAMIC_CLASS(CodeBlocksLogEvent, wxEvent)
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksThreadEvent, wxCommandEvent)
 
 
-CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, Logger* logger_in, const wxString& title_in, wxBitmap *icon_in)
+CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, Logger * logger_in, const wxString & title_in, wxBitmap * icon_in)
     : wxEvent(wxID_ANY, commandType),
       logger(logger_in), logIndex(-1), icon(icon_in), title(title_in), window(nullptr)
 {
@@ -45,20 +45,20 @@ CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, Logger* logger_i
     logIndex = Manager::Get()->GetLogManager()->FindIndex(logger);
 }
 
-CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, int logIndex_in, const wxString& title_in, wxBitmap *icon_in)
+CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, int logIndex_in, const wxString & title_in, wxBitmap * icon_in)
     : wxEvent(wxID_ANY, commandType),
       logger(nullptr), logIndex(logIndex_in), icon(icon_in), title(title_in), window(nullptr)
 {
     logger = Manager::Get()->GetLogManager()->Slot(logIndex).GetLogger();
 }
 
-CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, wxWindow* window_in, const wxString& title_in, wxBitmap *icon_in)
+CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, wxWindow * window_in, const wxString & title_in, wxBitmap * icon_in)
     : wxEvent(wxID_ANY, commandType),
       logger(nullptr), logIndex(-1), icon(icon_in), title(title_in), window(window_in)
 {
 }
 
-CodeBlocksLogEvent::CodeBlocksLogEvent(const CodeBlocksLogEvent& rhs)
+CodeBlocksLogEvent::CodeBlocksLogEvent(const CodeBlocksLogEvent & rhs)
     : wxEvent(wxID_ANY, rhs.GetEventType()), logger(rhs.logger), logIndex(rhs.logIndex), icon(rhs.icon), title(rhs.title), window(rhs.window)
 {
 }

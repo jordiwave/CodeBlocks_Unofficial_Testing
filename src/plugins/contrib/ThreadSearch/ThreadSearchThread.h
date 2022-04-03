@@ -40,81 +40,81 @@ class ThreadSearchThread;
 
 class ThreadSearchThread : public wxThread, public wxDirTraverser
 {
-public:
-    /** Constructor.
-      * @param pThreadSearchView : worker thread caller
-      * @param findData          : search informations (text, dir, case)
-      */
-    ThreadSearchThread(ThreadSearchView* pThreadSearchView, const ThreadSearchFindData& findData);
+    public:
+        /** Constructor.
+          * @param pThreadSearchView : worker thread caller
+          * @param findData          : search informations (text, dir, case)
+          */
+        ThreadSearchThread(ThreadSearchView * pThreadSearchView, const ThreadSearchFindData & findData);
 
-    /** Destructor. */
-    ~ThreadSearchThread();
+        /** Destructor. */
+        ~ThreadSearchThread();
 
-    /** OnExit wxThread override. Used to inform pThreadSearchView
-      * from thread termination.
-      */
-    void OnExit() override;
+        /** OnExit wxThread override. Used to inform pThreadSearchView
+          * from thread termination.
+          */
+        void OnExit() override;
 
-protected:
-    /** Entry wxThread override. Entry point of the thread.
-      */
-    void *Entry() override;
+    protected:
+        /** Entry wxThread override. Entry point of the thread.
+          */
+        void * Entry() override;
 
-private:
-    /** wxDirTraverser OnDir override.
-      * @param dirName : current directory path.
-      */
-    wxDirTraverseResult OnDir(const wxString& dirName) override;
+    private:
+        /** wxDirTraverser OnDir override.
+          * @param dirName : current directory path.
+          */
+        wxDirTraverseResult OnDir(const wxString & dirName) override;
 
-    /** wxDirTraverser OnFile override.
-      * @param fileName : current file path.
-      */
-    wxDirTraverseResult OnFile(const wxString& fileName) override;
+        /** wxDirTraverser OnFile override.
+          * @param fileName : current file path.
+          */
+        wxDirTraverseResult OnFile(const wxString & fileName) override;
 
-    /** FindInFile
-      * Uses the TextFileSearcher to search in the specified file
-      * for expression and sends one event to the view if one or
-      * more occurrences are found.
-      * @param path : file path to search in.
-      */
-    void FindInFile(const wxString& path);
+        /** FindInFile
+          * Uses the TextFileSearcher to search in the specified file
+          * for expression and sends one event to the view if one or
+          * more occurrences are found.
+          * @param path : file path to search in.
+          */
+        void FindInFile(const wxString & path);
 
-    /** Adds item to strings array only if it does not exist and matches an entry in the mask
-      * @param sortedArrayString : strings array to which item may be added.
-      * @param newItem           : item to add if not present in array and if it matches an entry in the mask
-      * @param mask              : strings with file masks that are tested against the item
-      * @return true if added to array.
-      */
-    static bool AddNewItem(wxSortedArrayString& sortedArrayString, const wxString& newItem, const wxArrayString& mask);
+        /** Adds item to strings array only if it does not exist and matches an entry in the mask
+          * @param sortedArrayString : strings array to which item may be added.
+          * @param newItem           : item to add if not present in array and if it matches an entry in the mask
+          * @param mask              : strings with file masks that are tested against the item
+          * @return true if added to array.
+          */
+        static bool AddNewItem(wxSortedArrayString & sortedArrayString, const wxString & newItem, const wxArrayString & mask);
 
-    /** Adds project file paths to the strings array avoiding duplicated paths.
-      * @param sortedArrayString : strings array containing file paths.
-      * @param project           : project whose file paths will be added to sortedArrayString
-      */
-    void AddProjectFiles(wxSortedArrayString& sortedArrayString, cbProject& project);
+        /** Adds project file paths to the strings array avoiding duplicated paths.
+          * @param sortedArrayString : strings array containing file paths.
+          * @param project           : project whose file paths will be added to sortedArrayString
+          */
+        void AddProjectFiles(wxSortedArrayString & sortedArrayString, cbProject & project);
 
-    /** Adds target file paths to the strings array avoiding duplicated paths.
-      * @param sortedArrayString : strings array containing file paths.
-      * @param target            : target whose file paths will be added to sortedArrayString
-      */
-    void AddTargetFiles(wxSortedArrayString& sortedArrayString, ProjectBuildTarget& target);
+        /** Adds target file paths to the strings array avoiding duplicated paths.
+          * @param sortedArrayString : strings array containing file paths.
+          * @param target            : target whose file paths will be added to sortedArrayString
+          */
+        void AddTargetFiles(wxSortedArrayString & sortedArrayString, ProjectBuildTarget & target);
 
-    ThreadSearchView*    m_pThreadSearchView; // Worker thread caller
-    ThreadSearchFindData m_FindData;          // Structure containing search parameters
+        ThreadSearchView  *  m_pThreadSearchView; // Worker thread caller
+        ThreadSearchFindData m_FindData;          // Structure containing search parameters
 
-    wxDirTraverseResult  m_DefaultDirResult;  // Used to recurse or not in directory search
-    wxArrayString        m_LineTextArray;     // Array containing one file search results.
-    // Succession of 'line number' and line of text
-    std::vector<int> m_MatchedPositions;
-    wxArrayString        m_Masks;             // Used in directory search to filter file paths.
-    wxSortedArrayString  m_FilePaths;         // Array containing all file paths that will be
-    // searched in.
-    TextFileSearcher*    m_pTextFileSearcher; // Searcher object
-    bool m_ShowFileMissingError;
-    bool m_ShowCantOpenFileError;
+        wxDirTraverseResult  m_DefaultDirResult;  // Used to recurse or not in directory search
+        wxArrayString        m_LineTextArray;     // Array containing one file search results.
+        // Succession of 'line number' and line of text
+        std::vector<int> m_MatchedPositions;
+        wxArrayString        m_Masks;             // Used in directory search to filter file paths.
+        wxSortedArrayString  m_FilePaths;         // Array containing all file paths that will be
+        // searched in.
+        TextFileSearcher  *  m_pTextFileSearcher; // Searcher object
+        bool m_ShowFileMissingError;
+        bool m_ShowCantOpenFileError;
 
-    /// Set of already visited directories (stored as absolute paths).
-    std::set<wxString>      m_VisitedDirs;
+        /// Set of already visited directories (stored as absolute paths).
+        std::set<wxString>      m_VisitedDirs;
 };
 
 

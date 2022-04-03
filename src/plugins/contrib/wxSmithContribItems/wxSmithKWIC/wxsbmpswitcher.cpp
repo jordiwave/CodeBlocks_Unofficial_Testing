@@ -55,7 +55,7 @@ wxsRegisterItem<wxsBmpSwitcher> Reg(
  * \param Data wxsItemResData*    Pointer to a resource data object.
  *
  */
-wxsBmpSwitcher::wxsBmpSwitcher(wxsItemResData *Data) :
+wxsBmpSwitcher::wxsBmpSwitcher(wxsItemResData * Data) :
     wxsWidget(
         Data,
         &Reg.Info,
@@ -69,10 +69,11 @@ wxsBmpSwitcher::wxsBmpSwitcher(wxsItemResData *Data) :
  */
 wxsBmpSwitcher::~wxsBmpSwitcher()
 {
-    for(size_t i = 0; i < m_arrBmps.Count(); i++)
+    for (size_t i = 0; i < m_arrBmps.Count(); i++)
     {
         delete m_arrBmps[i];
     }
+
     m_arrBmps.Clear();
 }
 
@@ -83,33 +84,35 @@ wxsBmpSwitcher::~wxsBmpSwitcher()
  */
 void wxsBmpSwitcher::OnBuildCreatingCode()
 {
-    switch(GetLanguage())
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("\"wx/KWIC/BmpSwitcher.h\""), GetInfo().ClassName);
-        Codef(_T("%C(%W, %I, %P, %S);\n"));
-
-        for(size_t i = 0; i < m_arrBmps.Count(); i++)
+        case wxsCPP:
         {
-            BmpDesc *Desc = m_arrBmps[i];
-            // Escape Windows path separators.
-            wxString sPath = Desc->sPath;
-            sPath.Replace(wxT("\\"), wxT("\\\\"));
-            Codef(_T("\t%AAddBitmap(new wxBitmap(wxImage(wxT(\"%s\"))));\n"), sPath.wx_str());
-        }
-        // Default is 0. If state <= 0 or > number of bitmaps, use default.
-        if(m_iState > 0 && m_iState < (long)m_arrBmps.Count())
-        {
-            Codef(_T("\t%ASetState(%d);\n"), static_cast<int>(m_iState));
+            AddHeader(_T("\"wx/KWIC/BmpSwitcher.h\""), GetInfo().ClassName);
+            Codef(_T("%C(%W, %I, %P, %S);\n"));
+
+            for (size_t i = 0; i < m_arrBmps.Count(); i++)
+            {
+                BmpDesc * Desc = m_arrBmps[i];
+                // Escape Windows path separators.
+                wxString sPath = Desc->sPath;
+                sPath.Replace(wxT("\\"), wxT("\\\\"));
+                Codef(_T("\t%AAddBitmap(new wxBitmap(wxImage(wxT(\"%s\"))));\n"), sPath.wx_str());
+            }
+
+            // Default is 0. If state <= 0 or > number of bitmaps, use default.
+            if (m_iState > 0 && m_iState < (long)m_arrBmps.Count())
+            {
+                Codef(_T("\t%ASetState(%d);\n"), static_cast<int>(m_iState));
+            }
+
+            BuildSetupWindowCode();
+            break;
         }
 
-        BuildSetupWindowCode();
-        break;
-    }
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsBmpSwitcher::OnBuildCreatingCode"), GetLanguage());
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsBmpSwitcher::OnBuildCreatingCode"), GetLanguage());
     }
 }
 
@@ -120,20 +123,20 @@ void wxsBmpSwitcher::OnBuildCreatingCode()
  * \return wxObject                        The control preview object.
  *
  */
-wxObject *wxsBmpSwitcher::OnBuildPreview(wxWindow *parent, long flags)
+wxObject * wxsBmpSwitcher::OnBuildPreview(wxWindow * parent, long flags)
 {
-    kwxBmpSwitcher *preview = new kwxBmpSwitcher(parent, GetId(), Pos(parent), Size(parent));
+    kwxBmpSwitcher * preview = new kwxBmpSwitcher(parent, GetId(), Pos(parent), Size(parent));
 
-    for(size_t i = 0; i < m_arrBmps.Count(); i++)
+    for (size_t i = 0; i < m_arrBmps.Count(); i++)
     {
-        BmpDesc *Desc = m_arrBmps[i];
+        BmpDesc * Desc = m_arrBmps[i];
         preview->AddBitmap(new wxBitmap(wxImage(Desc->sPath)));
     }
-    // Default is 0. If state <= 0 or > number of bitmaps, use default.
-//    if(m_iState > 0 && m_iState < (long)m_arrBmps.Count()){
-    preview->SetState((int)m_iState);
-//    }
 
+    // Default is 0. If state <= 0 or > number of bitmaps, use default.
+    //    if(m_iState > 0 && m_iState < (long)m_arrBmps.Count()){
+    preview->SetState((int)m_iState);
+    //    }
     return SetupWindow(preview, flags);
 }
 
@@ -156,14 +159,16 @@ void wxsBmpSwitcher::OnEnumWidgetProperties(cb_unused long Flags)
  * \return void
  *
  */
-void wxsBmpSwitcher::OnAddExtraProperties(wxsPropertyGridManager *Grid)
+void wxsBmpSwitcher::OnAddExtraProperties(wxsPropertyGridManager * Grid)
 {
     Grid->SelectPage(0);
     m_BmpCountId = Grid->GetGrid()->Insert(_("Var name"), new wxIntProperty(_("Number Of Bitmaps"), wxPG_LABEL, (int)m_arrBmps.Count()));
-    for(int i = 0; i < (int)m_arrBmps.Count(); i++)
+
+    for (int i = 0; i < (int)m_arrBmps.Count(); i++)
     {
         InsertPropertyForBmp(Grid, i);
     }
+
     wxsWidget::OnAddExtraProperties(Grid);
 }
 
@@ -174,49 +179,55 @@ void wxsBmpSwitcher::OnAddExtraProperties(wxsPropertyGridManager *Grid)
  * \return void
  *
  */
-void wxsBmpSwitcher::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId id)
+void wxsBmpSwitcher::OnExtraPropertyChanged(wxsPropertyGridManager * Grid, wxPGId id)
 {
     Grid->SelectPage(0);
-    if(id == m_BmpCountId)
+
+    if (id == m_BmpCountId)
     {
         int OldValue = (int)m_arrBmps.Count();
         int NewValue = Grid->GetPropertyValueAsInt(id);
 
-        if(NewValue < 0)
+        if (NewValue < 0)
         {
             NewValue = 0;
             Grid->SetPropertyValue(id, NewValue);
         }
 
-        if(NewValue > OldValue)
+        if (NewValue > OldValue)
         {
             // We have to generate new entries
-            for(int i = OldValue; i < NewValue; i++)
+            for (int i = OldValue; i < NewValue; i++)
             {
                 m_arrBmps.Add(new BmpDesc());
                 InsertPropertyForBmp(Grid, i);
             }
         }
-        else if(NewValue < OldValue)
-        {
-            // We have to remove some entries
-            for(int i = NewValue; i < OldValue; i++)
+        else
+            if (NewValue < OldValue)
             {
-                Grid->DeleteProperty(m_arrBmps[i]->id);
-                delete m_arrBmps[i];
-            }
+                // We have to remove some entries
+                for (int i = NewValue; i < OldValue; i++)
+                {
+                    Grid->DeleteProperty(m_arrBmps[i]->id);
+                    delete m_arrBmps[i];
+                }
 
-            m_arrBmps.RemoveAt(NewValue, OldValue - NewValue);
-        }
+                m_arrBmps.RemoveAt(NewValue, OldValue - NewValue);
+            }
 
         NotifyPropertyChange(true);
         return;
     }
 
-    for(int i = 0; i < (int)m_arrBmps.Count(); i++)
+    for (int i = 0; i < (int)m_arrBmps.Count(); i++)
     {
-        if(HandleChangeInBmp(Grid, id, i)) return;
+        if (HandleChangeInBmp(Grid, id, i))
+        {
+            return;
+        }
     }
+
     wxsWidget::OnExtraPropertyChanged(Grid, id);
 }
 
@@ -228,23 +239,24 @@ void wxsBmpSwitcher::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId
  * \return bool                                            Success or failure.
  *
  */
-bool wxsBmpSwitcher::OnXmlRead(TiXmlElement *Element, bool IsXRC, bool IsExtra)
+bool wxsBmpSwitcher::OnXmlRead(TiXmlElement * Element, bool IsXRC, bool IsExtra)
 {
-    for(size_t i = 0; i < m_arrBmps.Count(); i++)
+    for (size_t i = 0; i < m_arrBmps.Count(); i++)
     {
         delete m_arrBmps[i];
     }
-    m_arrBmps.Clear();
 
-    TiXmlElement *BmpElem = Element->FirstChildElement("bitmaps");
+    m_arrBmps.Clear();
+    TiXmlElement * BmpElem = Element->FirstChildElement("bitmaps");
+
     // Avoid crash if bmps element doesn't exist.
-    if(BmpElem)
+    if (BmpElem)
     {
-        for(TiXmlElement *PathElem = BmpElem->FirstChildElement();
+        for (TiXmlElement * PathElem = BmpElem->FirstChildElement();
                 PathElem;
                 PathElem = PathElem->NextSiblingElement())
         {
-            BmpDesc *Desc = new BmpDesc;
+            BmpDesc * Desc = new BmpDesc;
             wxString sBmp(PathElem->GetText(), wxConvUTF8);
             Desc->sPath = sBmp;
             m_arrBmps.Add(Desc);
@@ -262,16 +274,16 @@ bool wxsBmpSwitcher::OnXmlRead(TiXmlElement *Element, bool IsXRC, bool IsExtra)
  * \return bool                                            Success or failure.
  *
  */
-bool wxsBmpSwitcher::OnXmlWrite(TiXmlElement *Element, bool IsXRC, bool IsExtra)
+bool wxsBmpSwitcher::OnXmlWrite(TiXmlElement * Element, bool IsXRC, bool IsExtra)
 {
-    TiXmlElement *tags = new TiXmlElement("bitmaps");
+    TiXmlElement * tags = new TiXmlElement("bitmaps");
     Element->LinkEndChild(tags);
 
-    for(size_t i = 0; i < m_arrBmps.Count(); i++)
+    for (size_t i = 0; i < m_arrBmps.Count(); i++)
     {
-        BmpDesc *Desc = m_arrBmps[i];
+        BmpDesc * Desc = m_arrBmps[i];
         wxString s = wxString::Format(wxT("bitmap_%lu"), static_cast<unsigned long>(i + 1));
-        TiXmlElement *msg = new TiXmlElement(s.mb_str());
+        TiXmlElement * msg = new TiXmlElement(s.mb_str());
         msg->LinkEndChild(new TiXmlText(Desc->sPath.mb_str()));
         tags->LinkEndChild(msg);
     }
@@ -286,11 +298,10 @@ bool wxsBmpSwitcher::OnXmlWrite(TiXmlElement *Element, bool IsXRC, bool IsExtra)
  * \return void
  *
  */
-void wxsBmpSwitcher::InsertPropertyForBmp(wxsPropertyGridManager *Grid, int Position)
+void wxsBmpSwitcher::InsertPropertyForBmp(wxsPropertyGridManager * Grid, int Position)
 {
-    BmpDesc *Desc = m_arrBmps[Position];
+    BmpDesc * Desc = m_arrBmps[Position];
     wxString sBmpName = wxString::Format(_("Bitmap %d"), Position + 1);
-
     Desc->id = Grid->GetGrid()->Insert(_("Var name"), new wxImageFileProperty(sBmpName, wxPG_LABEL));
     // Set the property's image path.
     Grid->SetPropertyValueString(Desc->id, Desc->sPath);
@@ -304,18 +315,18 @@ void wxsBmpSwitcher::InsertPropertyForBmp(wxsPropertyGridManager *Grid, int Posi
  * \return bool            True if a change was recorded, false otherwise.
  *
  */
-bool wxsBmpSwitcher::HandleChangeInBmp(wxsPropertyGridManager *Grid, wxPGId id, int Position)
+bool wxsBmpSwitcher::HandleChangeInBmp(wxsPropertyGridManager * Grid, wxPGId id, int Position)
 {
-    BmpDesc *Desc = m_arrBmps[Position];
+    BmpDesc * Desc = m_arrBmps[Position];
     bool Changed = false;
 
-    if(Desc->id == id)
+    if (Desc->id == id)
     {
         Desc->sPath = Grid->GetPropertyValueAsString(id);
         Changed = true;
     }
 
-    if(Changed)
+    if (Changed)
     {
         NotifyPropertyChange(true);
         return true;

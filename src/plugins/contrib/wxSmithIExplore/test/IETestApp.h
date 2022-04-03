@@ -14,8 +14,8 @@
 
 class IETestApp : public wxApp
 {
-public:
-    virtual bool OnInit();
+    public:
+        virtual bool OnInit();
 };
 
 #endif // IETESTAPP_H

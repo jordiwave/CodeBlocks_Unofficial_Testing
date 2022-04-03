@@ -7,7 +7,7 @@ struct AAA
     float y;
 };
 
-struct AAA a1 = {.x = 1, .y=0.2}; // first line
-struct AAA a2 = {.x = 1, .y=0.2}; // second line
+struct AAA a1 = {.x = 1, .y = 0.2}; // first line
+struct AAA a2 = {.x = 1, .y = 0.2}; // second line
 
 //a  //a1,a2

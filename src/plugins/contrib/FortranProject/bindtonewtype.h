@@ -10,36 +10,36 @@
 
 class BindtoNewType: public wxDialog
 {
-public:
+    public:
 
-    BindtoNewType(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
-    virtual ~BindtoNewType();
+        BindtoNewType(wxWindow * parent, wxWindowID id = wxID_ANY, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize);
+        virtual ~BindtoNewType();
 
-    //(*Declarations(BindtoNewType)
-    wxTextCtrl* tc_Fortran;
-    wxTextCtrl* tc_C;
-    wxTextCtrl* tc_BindC;
-    //*)
-    void SetEditType(const wxString& ft, const wxString& bt, const wxString& ct);
-    wxString GetFortranType();
-    wxString GetBindCType();
-    wxString GetCType();
+        //(*Declarations(BindtoNewType)
+        wxTextCtrl * tc_Fortran;
+        wxTextCtrl * tc_C;
+        wxTextCtrl * tc_BindC;
+        //*)
+        void SetEditType(const wxString & ft, const wxString & bt, const wxString & ct);
+        wxString GetFortranType();
+        wxString GetBindCType();
+        wxString GetCType();
 
-protected:
+    protected:
 
-    //(*Identifiers(BindtoNewType)
-    static const long ID_TEXTCTRL1;
-    static const long ID_TEXTCTRL2;
-    static const long ID_TEXTCTRL3;
-    //*)
+        //(*Identifiers(BindtoNewType)
+        static const long ID_TEXTCTRL1;
+        static const long ID_TEXTCTRL2;
+        static const long ID_TEXTCTRL3;
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(BindtoNewType)
-    //*)
-    void OnOK(wxCommandEvent& event);
+        //(*Handlers(BindtoNewType)
+        //*)
+        void OnOK(wxCommandEvent & event);
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

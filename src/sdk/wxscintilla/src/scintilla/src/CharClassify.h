@@ -15,25 +15,25 @@ namespace Scintilla
 
 class CharClassify
 {
-public:
-    CharClassify();
+    public:
+        CharClassify();
 
-    enum cc { ccSpace, ccNewLine, ccWord, ccPunctuation };
-    void SetDefaultCharClasses(bool includeWordClass);
-    void SetCharClasses(const unsigned char *chars, cc newCharClass);
-    int GetCharsOfClass(cc characterClass, unsigned char *buffer) const;
-    cc GetClass(unsigned char ch) const
-    {
-        return static_cast<cc>(charClass[ch]);
-    }
-    bool IsWord(unsigned char ch) const
-    {
-        return static_cast<cc>(charClass[ch]) == ccWord;
-    }
+        enum cc { ccSpace, ccNewLine, ccWord, ccPunctuation };
+        void SetDefaultCharClasses(bool includeWordClass);
+        void SetCharClasses(const unsigned char * chars, cc newCharClass);
+        int GetCharsOfClass(cc characterClass, unsigned char * buffer) const;
+        cc GetClass(unsigned char ch) const
+        {
+            return static_cast<cc>(charClass[ch]);
+        }
+        bool IsWord(unsigned char ch) const
+        {
+            return static_cast<cc>(charClass[ch]) == ccWord;
+        }
 
-private:
-    enum { maxChar=256 };
-    unsigned char charClass[maxChar];    // not type cc to save space
+    private:
+        enum { maxChar = 256 };
+        unsigned char charClass[maxChar];    // not type cc to save space
 };
 
 #ifdef SCI_NAMESPACE

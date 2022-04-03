@@ -8,119 +8,119 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/string.h>
-#include <wx/regex.h>
-#include <wx/hashmap.h>
-#include <wx/arrstr.h>
+    #include <wx/string.h>
+    #include <wx/regex.h>
+    #include <wx/hashmap.h>
+    #include <wx/arrstr.h>
 #endif
 #include <vector>
 
 class FormatIndentCodeTree
 {
-public:
-    enum CodeTreeKind
-    {
-        ctcProgramBlock,
-        ctcEndProgramBlockSubFun,
-        ctcModule,
-        ctcEndModule,
-        ctcInterface,
-        ctcEndInterface,
-        ctcSubroutine,
-        ctcFunction,
-        ctcTypeDefine,
-        ctcEndTypeDefine,
-        ctcDoForall,
-        ctcEndDoForall,
-        ctcSeclectCase,
-        ctcSeclectType,
-        ctcEndSeclectCase,
-        ctcIfThen,
-        ctcEndIf,
-        ctcWhere,
-        ctcEndWhere,
-        ctcAssociate,
-        ctcEndAssociate,
-        ctcCritical,
-        ctcEndCritical,
-        ctcSubmodule,
-        ctcEndSubmodule,
-        ctcEnum,
-        ctcEndEnum,
-        ctcEnd,
-        ctcModuleProcedure,
-        ctcEndProcedure,
+    public:
+        enum CodeTreeKind
+        {
+            ctcProgramBlock,
+            ctcEndProgramBlockSubFun,
+            ctcModule,
+            ctcEndModule,
+            ctcInterface,
+            ctcEndInterface,
+            ctcSubroutine,
+            ctcFunction,
+            ctcTypeDefine,
+            ctcEndTypeDefine,
+            ctcDoForall,
+            ctcEndDoForall,
+            ctcSeclectCase,
+            ctcSeclectType,
+            ctcEndSeclectCase,
+            ctcIfThen,
+            ctcEndIf,
+            ctcWhere,
+            ctcEndWhere,
+            ctcAssociate,
+            ctcEndAssociate,
+            ctcCritical,
+            ctcEndCritical,
+            ctcSubmodule,
+            ctcEndSubmodule,
+            ctcEnum,
+            ctcEndEnum,
+            ctcEnd,
+            ctcModuleProcedure,
+            ctcEndProcedure,
 
-        ctcNone
-    };
+            ctcNone
+        };
 
-public:
-    FormatIndentCodeTree();
-    ~FormatIndentCodeTree();
-    void Initialize(int firstLineIndent);
-    void GetCodeTreeIndent(CodeTreeKind iKind, int& myIndent);
-    CodeTreeKind GetParentKind();
+    public:
+        FormatIndentCodeTree();
+        ~FormatIndentCodeTree();
+        void Initialize(int firstLineIndent);
+        void GetCodeTreeIndent(CodeTreeKind iKind, int & myIndent);
+        CodeTreeKind GetParentKind();
 
-private:
-    typedef struct
-    {
-        CodeTreeKind kind;
-        int indent;
-    } treeNode;
+    private:
+        typedef struct
+        {
+            CodeTreeKind kind;
+            int indent;
+        } treeNode;
 
-    std::vector<treeNode> m_Tree;
-    int m_RootIndent;
+        std::vector<treeNode> m_Tree;
+        int m_RootIndent;
 };
 
 /// declaration
-WX_DECLARE_STRING_HASH_MAP( wxRegEx *, FormatIndentRegEx );
+WX_DECLARE_STRING_HASH_MAP(wxRegEx *, FormatIndentRegEx);
 
 class IndentEstimator
 {
-public:
+    public:
 
-    /** Constructor. */
-    IndentEstimator( )
-    {
-        CreateFormatIndentRegEx();
-    }
+        /** Constructor. */
+        IndentEstimator()
+        {
+            CreateFormatIndentRegEx();
+        }
 
-    /** Destructor. */
-    ~IndentEstimator( )
-    {
-        DelFormatIndentRegEx();
-    }
+        /** Destructor. */
+        ~IndentEstimator()
+        {
+            DelFormatIndentRegEx();
+        }
 
-    void CreateFormatIndentRegEx();
-    void DelFormatIndentRegEx();
-    void Initialize(int firstLineIndent);
+        void CreateFormatIndentRegEx();
+        void DelFormatIndentRegEx();
+        void Initialize(int firstLineIndent);
 
-    bool BuffersDiffer( const wxString &a, const wxString &b );
-    bool GetIsHasLineContinuation( const wxString & srcLine );
-    bool GetIsHasPreprocessor( const wxString & srcLine );
-    void DelLineContinuation( wxString & srcLine );
-    void DelComment( wxString & srcLine );
-    void GetFortranIndentLine( const wxString& src, int& indentNum, int& indentNumNext);
-    void CutStringAndComment(wxString& src);
-    void ReadConfig();
+        bool BuffersDiffer(const wxString & a, const wxString & b);
+        bool GetIsHasLineContinuation(const wxString & srcLine);
+        bool GetIsHasPreprocessor(const wxString & srcLine);
+        void DelLineContinuation(wxString & srcLine);
+        void DelComment(wxString & srcLine);
+        void GetFortranIndentLine(const wxString & src, int & indentNum, int & indentNumNext);
+        void CutStringAndComment(wxString & src);
+        void ReadConfig();
 
-protected:
-    void CalcFortranIndentLine( const wxString & srcLine, int & deltaIndentCur, int & deltaIndentNext, FormatIndentCodeTree::CodeTreeKind & iKind );
-    void PrepareLine(const wxString & srcIn, wxArrayString & srcLines);
+    protected:
+        void CalcFortranIndentLine(const wxString & srcLine, int & deltaIndentCur, int & deltaIndentNext, FormatIndentCodeTree::CodeTreeKind & iKind);
+        void PrepareLine(const wxString & srcIn, wxArrayString & srcLines);
 
-    FormatIndentRegEx m_RegEx;
-    FormatIndentCodeTree m_CodeTree;
+        FormatIndentRegEx m_RegEx;
+        FormatIndentCodeTree m_CodeTree;
 
-    bool m_IndentProgFunSub;
-    bool m_IndentModule;
-    bool m_IndentContainsModule;
-    bool m_IndentContainsModuleAfter;
-    bool m_IndentContainsProcedure;
-    bool m_IndentContainsProcedureAfter;
-    bool m_IndentContainsTypedef;
-    bool m_IndentContainsTypedefAfter;
-    bool m_IndentSelectCaseAfter;
-    bool m_IndentSelectTypeAfter;
+        bool m_IndentProgFunSub;
+        bool m_IndentModule;
+        bool m_IndentContainsModule;
+        bool m_IndentContainsModuleAfter;
+        bool m_IndentContainsProcedure;
+        bool m_IndentContainsProcedureAfter;
+        bool m_IndentContainsTypedef;
+        bool m_IndentContainsTypedefAfter;
+        bool m_IndentSelectCaseAfter;
+        bool m_IndentSelectTypeAfter;
 };
 
 

@@ -49,30 +49,29 @@ inline string to_string(int i, int width = 0)
     }
 
     ostr << i;
-
     return ostr.str();
 }
 };
 
-const char *HTMLExporter::HTMLHeaderBEG =
+const char * HTMLExporter::HTMLHeaderBEG =
     "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"
     "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
     "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
     "<head>\n";
 
-const char *HTMLExporter::HTMLMeta =
+const char * HTMLExporter::HTMLMeta =
     "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\" />\n"
     "<meta name=\"generator\" content=\"Code::Blocks Exporter plugin\" />\n";
 
-const char *HTMLExporter::HTMLStyleBEG =
+const char * HTMLExporter::HTMLStyleBEG =
     "<style type=\"text/css\">\n"
     "<!--\n";
 
-string HTMLExporter::HTMLStyle(const EditorColourSet *c_color_set, HighlightLanguage lang)
+string HTMLExporter::HTMLStyle(const EditorColourSet * c_color_set, HighlightLanguage lang)
 {
     string style_list;
     string style_body("body { color: #000000; background-color: #FFFFFF; }\n");
-    EditorColourSet *color_set = const_cast<EditorColourSet *>(c_color_set);
+    EditorColourSet * color_set = const_cast<EditorColourSet *>(c_color_set);
 
     if (lang == HL_NONE)
     {
@@ -83,7 +82,7 @@ string HTMLExporter::HTMLStyle(const EditorColourSet *c_color_set, HighlightLang
 
     for (int i = 0; i < count; ++i)
     {
-        OptionColour *optc = color_set->GetOptionByIndex(lang, i);
+        OptionColour * optc = color_set->GetOptionByIndex(lang, i);
 
         if (!optc->isStyle)
         {
@@ -150,25 +149,24 @@ string HTMLExporter::HTMLStyle(const EditorColourSet *c_color_set, HighlightLang
     return style_body + style_list;
 }
 
-const char *HTMLExporter::HTMLStyleEND =
+const char * HTMLExporter::HTMLStyleEND =
     "-->"
     "</style>";
 
-const char *HTMLExporter::HTMLHeaderEND =
+const char * HTMLExporter::HTMLHeaderEND =
     "</head>\n";
 
-const char *HTMLExporter::HTMLBodyBEG =
+const char * HTMLExporter::HTMLBodyBEG =
     "<body>\n"
     "<pre>\n";
 
-string HTMLExporter::HTMLBody(const wxMemoryBuffer &styled_text, int lineCount, int tabWidth)
+string HTMLExporter::HTMLBody(const wxMemoryBuffer & styled_text, int lineCount, int tabWidth)
 {
     string html_body("<code><span style=\"font: 8pt Courier New;\">");
-    const char *buffer = reinterpret_cast<char *>(styled_text.GetData());
+    const char * buffer = reinterpret_cast<char *>(styled_text.GetData());
     const size_t buffer_size = styled_text.GetDataLen();
     int lineno = 1;
     int width = calcWidth(lineCount);
-
     wxString fontstring = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/font"), wxEmptyString);
 
     if (!fontstring.IsEmpty())
@@ -177,7 +175,6 @@ string HTMLExporter::HTMLBody(const wxMemoryBuffer &styled_text, int lineCount, 
         wxNativeFontInfo nfi;
         nfi.FromString(fontstring);
         tmpFont.SetNativeFontInfo(nfi);
-
         int pt = tmpFont.GetPointSize();
         wxString faceName = tmpFont.GetFaceName();
 
@@ -230,70 +227,68 @@ string HTMLExporter::HTMLBody(const wxMemoryBuffer &styled_text, int lineCount, 
 
         switch (buffer[i])
         {
-        case '<':
-            html_body += "&lt;";
-            break;
+            case '<':
+                html_body += "&lt;";
+                break;
 
-        case '>':
-            html_body += "&gt;";
-            break;
+            case '>':
+                html_body += "&gt;";
+                break;
 
-        case '&':
-            html_body += "&amp;";
-            break;
+            case '&':
+                html_body += "&amp;";
+                break;
 
-        case '\r':
-            --charLinePos; // account for auto-increment
-            break;
+            case '\r':
+                --charLinePos; // account for auto-increment
+                break;
 
-        case '\t':
-        {
-            const int extraSpaces = tabWidth - charLinePos % tabWidth;
-            html_body += std::string(extraSpaces, ' ');
-            charLinePos += extraSpaces - 1; // account for auto-increment
-        }
-        break;
-
-        case '\n':
-            if (lineCount != -1)
+            case '\t':
             {
-                html_body += "</span>\n";
-                current_style = 0;
-                html_body += string("<span class=\"body\">");
-                html_body += to_string(lineno, width);
-                html_body += "  ";
-                ++lineno;
+                const int extraSpaces = tabWidth - charLinePos % tabWidth;
+                html_body += std::string(extraSpaces, ' ');
+                charLinePos += extraSpaces - 1; // account for auto-increment
             }
-            else
-            {
-                html_body += "\n";
-            }
-
-            charLinePos = -1; // account for auto-increment
             break;
 
-        default:
-            html_body += buffer[i];
-            break;
+            case '\n':
+                if (lineCount != -1)
+                {
+                    html_body += "</span>\n";
+                    current_style = 0;
+                    html_body += string("<span class=\"body\">");
+                    html_body += to_string(lineno, width);
+                    html_body += "  ";
+                    ++lineno;
+                }
+                else
+                {
+                    html_body += "\n";
+                }
+
+                charLinePos = -1; // account for auto-increment
+                break;
+
+            default:
+                html_body += buffer[i];
+                break;
         }
     }
 
     html_body += "</span>";
-
     return html_body;
 }
 
-const char *HTMLExporter::HTMLBodyEND =
+const char * HTMLExporter::HTMLBodyEND =
     "</span>\n"
     "</code></pre>\n"
     "</body>\n"
     "</html>\n";
 
-void HTMLExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount, int tabWidth)
+void HTMLExporter::Export(const wxString & filename, const wxString & title, const wxMemoryBuffer & styled_text, const EditorColourSet * color_set, int lineCount, int tabWidth)
 {
     string html_code;
     HighlightLanguage lang = const_cast<EditorColourSet *>(color_set)->GetLanguageForFilename(title);
-
     html_code += HTMLHeaderBEG;
     html_code += string("<title>") + string(cbU2C(title.c_str())) + string("</title>\n");
     html_code += HTMLMeta;
@@ -304,7 +299,6 @@ void HTMLExporter::Export(const wxString &filename, const wxString &title, const
     html_code += HTMLBodyBEG;
     html_code += HTMLBody(styled_text, lineCount, tabWidth);
     html_code += HTMLBodyEND;
-
     wxFile file(filename, wxFile::write);
     file.Write(html_code.c_str(), html_code.size());
 }

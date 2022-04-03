@@ -41,9 +41,9 @@ long IdToFront = wxNewId();
 long IdToBottom = wxNewId();
 }
 
-wxsItem::wxsItem(wxsItemResData* ResourceData,const wxsItemInfo* Info,long PropertiesFlags,const wxsEventDesc* Events,const wxsStyleSet* StyleSet):
+wxsItem::wxsItem(wxsItemResData * ResourceData, const wxsItemInfo * Info, long PropertiesFlags, const wxsEventDesc * Events, const wxsStyleSet * StyleSet):
     m_Info(Info),
-    m_Events(Events,this),
+    m_Events(Events, this),
     m_Parent(0),
     m_ResourceData(ResourceData),
     m_PropertiesFlags(PropertiesFlags),
@@ -53,7 +53,8 @@ wxsItem::wxsItem(wxsItemResData* ResourceData,const wxsItemInfo* Info,long Prope
 {
     m_BaseProperties.m_Subclass = GetClassName();
     m_BaseProperties.m_StyleSet = StyleSet;
-    if ( StyleSet )
+
+    if (StyleSet)
     {
         m_BaseProperties.m_StyleBits = StyleSet->GetDefaultBits(false);
         m_BaseProperties.m_ExStyleBits = StyleSet->GetDefaultBits(true);
@@ -66,11 +67,11 @@ wxsItem::~wxsItem()
 
 void wxsItem::OnEnumProperties(long Flags)
 {
-    if ( (Flags & flPropGrid) && (m_Parent != 0) )
+    if ((Flags & flPropGrid) && (m_Parent != 0))
     {
         // Parent item does take care of enumerating properties if we are
         // creating property grid
-        m_Parent->OnEnumChildProperties(this,Flags);
+        m_Parent->OnEnumChildProperties(this, Flags);
     }
     else
     {
@@ -78,14 +79,14 @@ void wxsItem::OnEnumProperties(long Flags)
     }
 }
 
-wxsQuickPropsPanel* wxsItem::OnCreateQuickProperties(wxWindow* ParentWnd)
+wxsQuickPropsPanel * wxsItem::OnCreateQuickProperties(wxWindow * ParentWnd)
 {
-    wxsAdvQPP* Panel = new wxsAdvQPP(ParentWnd,this);
+    wxsAdvQPP * Panel = new wxsAdvQPP(ParentWnd, this);
 
-    if ( m_Parent != 0 )
+    if (m_Parent != 0)
     {
         // Parent item does take care of inserting QPP Children
-        m_Parent->OnAddChildQPP(this,Panel);
+        m_Parent->OnAddChildQPP(this, Panel);
     }
     else
     {
@@ -93,8 +94,7 @@ wxsQuickPropsPanel* wxsItem::OnCreateQuickProperties(wxWindow* ParentWnd)
     }
 
     // Appending qpp's from base properties
-    m_BaseProperties.AddQPPChild(Panel,GetPropertiesFlags());
-
+    m_BaseProperties.AddQPPChild(Panel, GetPropertiesFlags());
     return Panel;
 }
 
@@ -102,9 +102,20 @@ long wxsItem::OnGetPropertiesFlags()
 {
     long ExtraFlags = 0;
 
-    if ( IsRootItem() )   ExtraFlags |= flRoot;
-    if ( IsPointer()  )   ExtraFlags |= flPointer;
-    if ( !GetIsMember() ) ExtraFlags |= flLocal;
+    if (IsRootItem())
+    {
+        ExtraFlags |= flRoot;
+    }
+
+    if (IsPointer())
+    {
+        ExtraFlags |= flPointer;
+    }
+
+    if (!GetIsMember())
+    {
+        ExtraFlags |= flLocal;
+    }
 
     return m_ResourceData->GetPropertiesFilter() | m_PropertiesFlags | ExtraFlags;
 }
@@ -112,98 +123,108 @@ long wxsItem::OnGetPropertiesFlags()
 void wxsItem::EnumItemProperties(long Flags)
 {
     OnEnumItemProperties(Flags);
-
     // Now enumerating all properties from wxsBaseProperties
-    SubContainer(m_BaseProperties,Flags);
+    SubContainer(m_BaseProperties, Flags);
 }
 
 void wxsItem::OnBuildDeclarationsCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-        AddDeclaration(GetUserClass() + (IsPointer() ? _T("* ") : _T(" ") ) + GetVarName() + _T(";"));
-        return;
+        case wxsCPP:
+            AddDeclaration(GetUserClass() + (IsPointer() ? _T("* ") : _T(" ")) + GetVarName() + _T(";"));
+            return;
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsItem::OnBuildDeclarationsCode"),GetLanguage());
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsItem::OnBuildDeclarationsCode"), GetLanguage());
     }
 }
 
 void wxsItem::OnBuildEventsConnectingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        wxsEvents& Events = GetEvents();
-        wxString IdString;
-        wxString VarNameString;
-        if ( IsRootItem() )
+        case wxsCPP:
         {
-            IdString = _T("wxID_ANY");
-        }
-        else if ( GetCoderFlags() & flSource )
-        {
-            IdString = GetIdName();
-            VarNameString = GetVarName();
-        }
-        else
-        {
-            IdString = _T("XRCID(\"") + GetIdName() + _T("\")");
-            if ( GetIsMember() )
+            wxsEvents & Events = GetEvents();
+            wxString IdString;
+            wxString VarNameString;
+
+            if (IsRootItem())
             {
-                VarNameString = GetVarName();
+                IdString = _T("wxID_ANY");
             }
             else
-            {
-                VarNameString = _T("FindWindow(XRCID(\"") + GetIdName() + _T("\"))");
-            }
+                if (GetCoderFlags() & flSource)
+                {
+                    IdString = GetIdName();
+                    VarNameString = GetVarName();
+                }
+                else
+                {
+                    IdString = _T("XRCID(\"") + GetIdName() + _T("\")");
+
+                    if (GetIsMember())
+                    {
+                        VarNameString = GetVarName();
+                    }
+                    else
+                    {
+                        VarNameString = _T("FindWindow(XRCID(\"") + GetIdName() + _T("\"))");
+                    }
+                }
+
+            Events.GenerateBindingCode(GetCoderContext(), IdString, VarNameString);
+            return;
         }
 
-        Events.GenerateBindingCode(GetCoderContext(),IdString,VarNameString);
-        return;
-    }
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsItem::OnBuildEventsConnectingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsItem::OnBuildEventsConnectingCode"), GetLanguage());
+        }
     }
 }
 
 void wxsItem::OnBuildIdCode()
 {
-    if ( !(GetPropertiesFlags() & flId) ) return;
-
-    switch ( GetLanguage() )
+    if (!(GetPropertiesFlags() & flId))
     {
-    case wxsCPP:
-    {
-        wxString Name = GetIdName();
-        if ( !wxsPredefinedIDs::Check(Name) )
-        {
-            wxString Enumeration = _T("static const long ") + Name + _T(";");
-            wxString Initialization =  + _T("const long ") + GetResourceData()->GetClassName() + _T("::") + Name + _T(" = wxNewId();");
-            if ( GetCoderContext()->m_IdEnumerations.Index(Enumeration) == wxNOT_FOUND )
-            {
-                AddIdCode(Enumeration,Initialization);
-            }
-        }
         return;
     }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsItem::OnBuildIdCode"),GetLanguage());
+    switch (GetLanguage())
+    {
+        case wxsCPP:
+        {
+            wxString Name = GetIdName();
+
+            if (!wxsPredefinedIDs::Check(Name))
+            {
+                wxString Enumeration = _T("static const long ") + Name + _T(";");
+                wxString Initialization =  + _T("const long ") + GetResourceData()->GetClassName() + _T("::") + Name + _T(" = wxNewId();");
+
+                if (GetCoderContext()->m_IdEnumerations.Index(Enumeration) == wxNOT_FOUND)
+                {
+                    AddIdCode(Enumeration, Initialization);
+                }
+            }
+
+            return;
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsItem::OnBuildIdCode"), GetLanguage());
     }
 }
 
 void wxsItem::OnBuildXRCFetchingCode()
 {
     long Flags = GetPropertiesFlags();
-    if ( (Flags&flVariable) && (Flags&flId) )
+
+    if ((Flags & flVariable) && (Flags & flId))
     {
         AddXRCFetchingCode(
             GetVarName() + _T(" = ")
@@ -214,94 +235,126 @@ void wxsItem::OnBuildXRCFetchingCode()
 
 void wxsItem::BuildSetupWindowCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        long PropertiesFlags = GetPropertiesFlags();
-
-        if ( PropertiesFlags&flMinMaxSize )
+        case wxsCPP:
         {
-            if ( !m_BaseProperties.m_MinSize.IsDefault )
+            long PropertiesFlags = GetPropertiesFlags();
+
+            if (PropertiesFlags & flMinMaxSize)
             {
-                Codef(_T("%ASetMinSize(%z);\n"),&m_BaseProperties.m_MinSize);
+                if (!m_BaseProperties.m_MinSize.IsDefault)
+                {
+                    Codef(_T("%ASetMinSize(%z);\n"), &m_BaseProperties.m_MinSize);
+                }
+
+                if (!m_BaseProperties.m_MaxSize.IsDefault)
+                {
+                    Codef(_T("%ASetMaxSize(%z);\n"), &m_BaseProperties.m_MaxSize);
+                }
             }
 
-            if ( !m_BaseProperties.m_MaxSize.IsDefault )
+            if ((PropertiesFlags & flEnabled) && !m_BaseProperties.m_Enabled)
             {
-                Codef(_T("%ASetMaxSize(%z);\n"),&m_BaseProperties.m_MaxSize);
+                Codef(_T("%ADisable();\n"));
             }
-        }
 
-        if ( (PropertiesFlags&flEnabled) && !m_BaseProperties.m_Enabled ) Codef(_T("%ADisable();\n"));
-        if ( (PropertiesFlags&flFocused) && m_BaseProperties.m_Focused  ) Codef(_T("%ASetFocus();\n"));
-        if ( (PropertiesFlags&flHidden)  && m_BaseProperties.m_Hidden   ) Codef(_T("%AHide();\n"));
-
-        if ( PropertiesFlags&flColours )
-        {
-            wxString FGCol = m_BaseProperties.m_Fg.BuildCode(GetCoderContext());
-            if ( !FGCol.empty() ) Codef(_T("%ASetForegroundColour(%s);\n"),FGCol.wx_str());
-
-            wxString BGCol = m_BaseProperties.m_Bg.BuildCode(GetCoderContext());
-            if ( !BGCol.empty() ) Codef(_T("%ASetBackgroundColour(%s);\n"),BGCol.wx_str());
-        }
-
-        if ( PropertiesFlags&flFont )
-        {
-            wxString FontVal = m_BaseProperties.m_Font.BuildFontCode(GetVarName() + _T("Font"), GetCoderContext());
-            if ( !FontVal.empty() )
-                Codef(_T("%s%ASetFont(%sFont);\n"),FontVal.wx_str(),GetVarName().wx_str());
-        }
-
-        if ( (PropertiesFlags&flToolTip)   && !m_BaseProperties.m_ToolTip.IsEmpty()  )
-            Codef(_T("%ASetToolTip(%t);\n"),m_BaseProperties.m_ToolTip.wx_str());
-        if ( (PropertiesFlags&flHelpText)  && !m_BaseProperties.m_HelpText.IsEmpty() )
-            Codef(_T("%ASetHelpText(%t);\n"),m_BaseProperties.m_HelpText.wx_str());
-        if ( (PropertiesFlags&flExtraCode) && !m_BaseProperties.m_ExtraCode.IsEmpty() )
-        {
-            wxString& ExtraCode = m_BaseProperties.m_ExtraCode;
-            AddBuildingCode(ExtraCode);
-            // Adding extra \n character if it's not presend in extra code
-            if ( ExtraCode.GetChar(ExtraCode.Length()-1) != _T('\n') )
-                AddBuildingCode(_T("\n"));
-        }
-
-        if ( m_BaseProperties.m_StyleSet && m_BaseProperties.m_ExStyleBits )
-        {
-            wxString ExStyleStr = m_BaseProperties.m_StyleSet->GetString(m_BaseProperties.m_ExStyleBits,true,wxsCPP);
-            if ( ExStyleStr != _T("0") )
+            if ((PropertiesFlags & flFocused) && m_BaseProperties.m_Focused)
             {
-                Codef(_T("%ASetExtraStyle( %AGetExtraStyle() | %s );\n"),ExStyleStr.wx_str());
+                Codef(_T("%ASetFocus();\n"));
             }
+
+            if ((PropertiesFlags & flHidden)  && m_BaseProperties.m_Hidden)
+            {
+                Codef(_T("%AHide();\n"));
+            }
+
+            if (PropertiesFlags & flColours)
+            {
+                wxString FGCol = m_BaseProperties.m_Fg.BuildCode(GetCoderContext());
+
+                if (!FGCol.empty())
+                {
+                    Codef(_T("%ASetForegroundColour(%s);\n"), FGCol.wx_str());
+                }
+
+                wxString BGCol = m_BaseProperties.m_Bg.BuildCode(GetCoderContext());
+
+                if (!BGCol.empty())
+                {
+                    Codef(_T("%ASetBackgroundColour(%s);\n"), BGCol.wx_str());
+                }
+            }
+
+            if (PropertiesFlags & flFont)
+            {
+                wxString FontVal = m_BaseProperties.m_Font.BuildFontCode(GetVarName() + _T("Font"), GetCoderContext());
+
+                if (!FontVal.empty())
+                {
+                    Codef(_T("%s%ASetFont(%sFont);\n"), FontVal.wx_str(), GetVarName().wx_str());
+                }
+            }
+
+            if ((PropertiesFlags & flToolTip)   && !m_BaseProperties.m_ToolTip.IsEmpty())
+            {
+                Codef(_T("%ASetToolTip(%t);\n"), m_BaseProperties.m_ToolTip.wx_str());
+            }
+
+            if ((PropertiesFlags & flHelpText)  && !m_BaseProperties.m_HelpText.IsEmpty())
+            {
+                Codef(_T("%ASetHelpText(%t);\n"), m_BaseProperties.m_HelpText.wx_str());
+            }
+
+            if ((PropertiesFlags & flExtraCode) && !m_BaseProperties.m_ExtraCode.IsEmpty())
+            {
+                wxString & ExtraCode = m_BaseProperties.m_ExtraCode;
+                AddBuildingCode(ExtraCode);
+
+                // Adding extra \n character if it's not presend in extra code
+                if (ExtraCode.GetChar(ExtraCode.Length() - 1) != _T('\n'))
+                {
+                    AddBuildingCode(_T("\n"));
+                }
+            }
+
+            if (m_BaseProperties.m_StyleSet && m_BaseProperties.m_ExStyleBits)
+            {
+                wxString ExStyleStr = m_BaseProperties.m_StyleSet->GetString(m_BaseProperties.m_ExStyleBits, true, wxsCPP);
+
+                if (ExStyleStr != _T("0"))
+                {
+                    Codef(_T("%ASetExtraStyle( %AGetExtraStyle() | %s );\n"), ExStyleStr.wx_str());
+                }
+            }
+
+            return;
         }
 
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsItem::BuildSetupWindowCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsItem::BuildSetupWindowCode"), GetLanguage());
+        }
     }
 }
 
-bool wxsItem::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
+bool wxsItem::OnXmlRead(TiXmlElement * Element, bool IsXRC, bool IsExtra)
 {
-    if ( IsXRC )
+    if (IsXRC)
     {
         wxsPropertyContainer::XmlRead(Element);
     }
 
-    if ( IsExtra )
+    if (IsExtra)
     {
         m_Events.XmlLoadFunctions(Element);
     }
 
-    m_BaseProperties.SpecialXmlRead(Element,IsXRC,IsExtra);
+    m_BaseProperties.SpecialXmlRead(Element, IsXRC, IsExtra);
 
     // Some small fix to subclass property
-    if ( m_BaseProperties.m_Subclass.IsEmpty() )
+    if (m_BaseProperties.m_Subclass.IsEmpty())
     {
         m_BaseProperties.m_Subclass = GetClassName();
     }
@@ -309,60 +362,63 @@ bool wxsItem::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
     return true;
 }
 
-bool wxsItem::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
+bool wxsItem::OnXmlWrite(TiXmlElement * Element, bool IsXRC, bool IsExtra)
 {
-    if ( IsXRC )
+    if (IsXRC)
     {
-        Element->SetAttribute("class",cbU2C(GetClassName()));
+        Element->SetAttribute("class", cbU2C(GetClassName()));
         wxsPropertyContainer::XmlWrite(Element);
     }
 
-    if ( IsExtra )
+    if (IsExtra)
     {
         m_Events.XmlSaveFunctions(Element);
     }
 
-    m_BaseProperties.SpecialXmlWrite(Element,IsXRC,IsExtra,GetPropertiesFlags(),GetClassName());
-
+    m_BaseProperties.SpecialXmlWrite(Element, IsXRC, IsExtra, GetPropertiesFlags(), GetClassName());
     return true;
 }
 
-void wxsItem::BuildItemTree(wxsResourceTree* Tree,wxsResourceItemId Parent,int Position)
+void wxsItem::BuildItemTree(wxsResourceTree * Tree, wxsResourceItemId Parent, int Position)
 {
     int Image = GetInfo().TreeIconId;
     wxString Label = OnGetTreeLabel(Image);
-    if ( Position<0 || Position>=(int)Tree->GetChildrenCount(Parent) )
+
+    if (Position < 0 || Position >= (int)Tree->GetChildrenCount(Parent))
     {
-        m_LastTreeId = Tree->AppendItem(Parent,Label,Image,Image,new wxsItemResTreeData(this));
+        m_LastTreeId = Tree->AppendItem(Parent, Label, Image, Image, new wxsItemResTreeData(this));
     }
     else
     {
-        m_LastTreeId = Tree->InsertItem(Parent,Position,Label,Image,Image,new wxsItemResTreeData(this));
+        m_LastTreeId = Tree->InsertItem(Parent, Position, Label, Image, Image, new wxsItemResTreeData(this));
     }
 
-    wxsParent* ParentItem = ConvertToParent();
-    if ( ParentItem )
+    wxsParent * ParentItem = ConvertToParent();
+
+    if (ParentItem)
     {
         int Count = ParentItem->GetChildCount();
-        for ( int i=0; i<Count; i++ )
+
+        for (int i = 0; i < Count; i++)
         {
-            ParentItem->GetChild(i)->BuildItemTree(Tree,m_LastTreeId);
+            ParentItem->GetChild(i)->BuildItemTree(Tree, m_LastTreeId);
         }
     }
-//
-//    if ( GetIsExpanded() )
-//    {
-//        Tree->Expand(m_LastTreeId);
-//    }
-//    else
-//    {
-//        Tree->Collapse(m_LastTreeId);
-//    }
+
+    //
+    //    if ( GetIsExpanded() )
+    //    {
+    //        Tree->Expand(m_LastTreeId);
+    //    }
+    //    else
+    //    {
+    //        Tree->Collapse(m_LastTreeId);
+    //    }
 }
 
-wxObject* wxsItem::BuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsItem::BuildPreview(wxWindow * Parent, long Flags)
 {
-    wxObject* Preview = OnBuildPreview(Parent,Flags);
+    wxObject * Preview = OnBuildPreview(Parent, Flags);
     m_LastPreview = Preview;
     return Preview;
 }
@@ -370,10 +426,11 @@ wxObject* wxsItem::BuildPreview(wxWindow* Parent,long Flags)
 void wxsItem::ClearSelection()
 {
     m_IsSelected = false;
-    wxsParent* Parent = ConvertToParent();
-    if ( Parent )
+    wxsParent * Parent = ConvertToParent();
+
+    if (Parent)
     {
-        for ( int i = Parent->GetChildCount(); i-->0; )
+        for (int i = Parent->GetChildCount(); i-- > 0;)
         {
             Parent->GetChild(i)->ClearSelection();
         }
@@ -386,23 +443,23 @@ void wxsItem::OnPropertyChanged()
     UpdateTreeLabel();
 }
 
-void wxsItem::OnSubPropertyChanged(wxsPropertyContainer*)
+void wxsItem::OnSubPropertyChanged(wxsPropertyContainer *)
 {
     // Forwarding this to standard property changed handler
     OnPropertyChanged();
 }
 
-void wxsItem::OnAddExtraProperties(wxsPropertyGridManager* Grid)
+void wxsItem::OnAddExtraProperties(wxsPropertyGridManager * Grid)
 {
-    if ( !(GetPropertiesFlags() & flFile) )
+    if (!(GetPropertiesFlags() & flFile))
     {
-        wxsEventsEditor::Get().BuildEvents(this,Grid);
+        wxsEventsEditor::Get().BuildEvents(this, Grid);
     }
 }
 
-void wxsItem::OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id)
+void wxsItem::OnExtraPropertyChanged(wxsPropertyGridManager * Grid, wxPGId Id)
 {
-    wxsEventsEditor::Get().PGChanged(this,Grid,Id);
+    wxsEventsEditor::Get().PGChanged(this, Grid, Id);
 }
 
 bool wxsItem::IsRootItem()
@@ -410,7 +467,7 @@ bool wxsItem::IsRootItem()
     return m_ResourceData->GetRootItem() == this;
 }
 
-void wxsItem::SetVarName(const wxString& NewName)
+void wxsItem::SetVarName(const wxString & NewName)
 {
     m_BaseProperties.m_VarName = NewName;
     UpdateTreeLabel();
@@ -419,46 +476,66 @@ void wxsItem::SetVarName(const wxString& NewName)
 void wxsItem::UpdateTreeLabel()
 {
     wxsResourceItemId Id;
-    if ( GetResourceData()->GetTreeId(Id,this) )
+
+    if (GetResourceData()->GetTreeId(Id, this))
     {
         int IconId;
         wxString NewLabel = OnGetTreeLabel(IconId);
-        if ( wxsResourceTree::Get()->GetItemText(Id) != NewLabel )
+
+        if (wxsResourceTree::Get()->GetItemText(Id) != NewLabel)
         {
-            wxsResourceTree::Get()->SetItemText(Id,NewLabel);
+            wxsResourceTree::Get()->SetItemText(Id, NewLabel);
         }
     }
 }
 
 wxString wxsItem::GetCreatePrefix(wxsCodingLang Language)
 {
-    switch ( Language )
+    switch (Language)
     {
-    case wxsCPP:
-        if ( IsRootItem() ) return _T("Create");
-        if ( IsPointer()  ) return GetVarName() + _T(" = new ") + GetUserClass();
-        return GetVarName() + _T(".Create");
+        case wxsCPP:
+            if (IsRootItem())
+            {
+                return _T("Create");
+            }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsItem::GetCreatePrefix"),Language);
+            if (IsPointer())
+            {
+                return GetVarName() + _T(" = new ") + GetUserClass();
+            }
+
+            return GetVarName() + _T(".Create");
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsItem::GetCreatePrefix"), Language);
     }
+
     return wxEmptyString;
 }
 
 wxString wxsItem::GetAccessPrefix(wxsCodingLang Language)
 {
-    switch ( Language )
+    switch (Language)
     {
-    case wxsCPP:
-        if ( IsRootItem() ) return wxEmptyString;
-        if ( IsPointer()  ) return GetVarName() + _T("->");
-        return GetVarName() + _T(".");
+        case wxsCPP:
+            if (IsRootItem())
+            {
+                return wxEmptyString;
+            }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsItem::GetAccessPrefix"),Language);
+            if (IsPointer())
+            {
+                return GetVarName() + _T("->");
+            }
+
+            return GetVarName() + _T(".");
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsItem::GetAccessPrefix"), Language);
     }
+
     return wxEmptyString;
 }
 
@@ -468,578 +545,651 @@ bool wxsItem::OnIsPointer()
     return true;
 }
 
-wxString wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,...)
+wxString wxsItem::Codef(wxsCoderContext * Context, const wxChar * Fmt, ...)
 {
     wxString Result;
     va_list ap;
-    va_start(ap,Fmt);
-
-    Codef(Context,Fmt,Result,ap);
-
+    va_start(ap, Fmt);
+    Codef(Context, Fmt, Result, ap);
     va_end(ap);
     return Result;
 }
 
-void wxsItem::Codef(const wxChar* Fmt,...)
+void wxsItem::Codef(const wxChar * Fmt, ...)
 {
-    if ( !GetCoderContext() )
+    if (!GetCoderContext())
     {
         // TODO: Debug log
         return;
     }
 
     va_list ap;
-    va_start(ap,Fmt);
-
+    va_start(ap, Fmt);
     Codef(GetCoderContext(), Fmt, GetCoderContext()->m_BuildingCode, ap);
-
     va_end(ap);
 }
-void wxsItem::Codef(const wxString &Fmt,...)
+void wxsItem::Codef(const wxString & Fmt, ...)
 {
-    if ( !GetCoderContext() )
+    if (!GetCoderContext())
     {
         // TODO: Debug log
         return;
     }
 
     va_list ap;
-    va_start(ap,Fmt.wx_str());
-
+    va_start(ap, Fmt);
     Codef(GetCoderContext(), Fmt.c_str(), GetCoderContext()->m_BuildingCode, ap);
-
     va_end(ap);
 }
 
-void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,va_list ap)
+void wxsItem::Codef(wxsCoderContext * Context, const wxChar * Fmt, wxString & Result, va_list ap)
 {
-    if ( !Context ) return;
+    if (!Context)
+    {
+        return;
+    }
 
     wxsCodingLang Language = Context->m_Language;
     wxString WindowParent = Context->m_WindowParent;
     long Flags = Context->m_Flags;
     const bool Translation = m_ResourceData->GetTranslation();
 
-    while ( *Fmt )
+    while (*Fmt)
     {
-        if ( *Fmt == _T('%') )
+        if (*Fmt == _T('%'))
         {
             Fmt++;
-            if ( *Fmt )
+
+            if (*Fmt)
             {
-                if ( !OnCodefExtension(Language,Result,Fmt,ap) )
+                if (!OnCodefExtension(Language, Result, Fmt, ap))
                 {
-                    switch ( *Fmt )
+                    switch (*Fmt)
                     {
-                    case _T('A'):
-                    {
-                        Result << GetAccessPrefix(Language);
-                        break;
-                    }
-
-                    case _T('C'):
-                    {
-                        Result << GetCreatePrefix(Language);
-                        break;
-                    }
-
-                    case _T('E'):
-                    {
-                        if ( GetParent() && (GetParent()->GetPropertiesFlags()&flVariable) )
+                        case _T('A'):
                         {
-                            if ( GetParent()->IsPointer() )
-                            {
-                                switch ( Language )
-                                {
-                                case wxsCPP:
-                                    Result << GetParent()->GetVarName();
-                                    break;
-                                case wxsUnknownLanguage: // fall-through
-                                default:
-                                    wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
-                                }
-                            }
-                            else
-                            {
-                                switch ( Language )
-                                {
-                                case wxsCPP:
-                                    Result << _T("(&") << GetParent()->GetVarName() << _T(")");
-                                    break;
-                                case wxsUnknownLanguage: // fall-through
-                                default:
-                                    wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
-                                }
-                            }
-                        }
-                        else if ( GetType()==wxsTTool && !IsRootItem() )
-                        {
-                            // For tools let's return this
-                            switch ( Language )
-                            {
-                            case wxsCPP:
-                                Result << _T("this");
-                                break;
-                            case wxsUnknownLanguage: // fall-through
-                            default:
-                                wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
-                            }
-                        }
-                        break;
-                    }
-
-                    case _T('F'):
-                    {
-                        if ( GetParent() && (GetParent()->GetPropertiesFlags()&flVariable) )
-                        {
-                            if ( GetParent()->IsPointer() )
-                            {
-                                switch ( Language )
-                                {
-                                case wxsCPP:
-                                    Result << _T("(*") << GetParent()->GetVarName() << _T(")");
-                                    break;
-                                case wxsUnknownLanguage: // fall-through
-                                default:
-                                    wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
-                                }
-                            }
-                            else
-                            {
-                                switch ( Language )
-                                {
-                                case wxsCPP:
-                                    Result << GetParent()->GetVarName();
-                                    break;
-                                case wxsUnknownLanguage: // fall-through
-                                default:
-                                    wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
-                                }
-                            }
-                        }
-                        else if ( GetType()==wxsTTool && !IsRootItem() )
-                        {
-                            // For tools let's return *this
-                            switch ( Language )
-                            {
-                            case wxsCPP:
-                                Result << _T("(*this)");
-                                break;
-                            case wxsUnknownLanguage: // fall-through
-                            default:
-                                wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
-                            }
-                        }
-                        break;
-                    }
-
-                    case _T('I'):
-                    {
-                        switch ( Language )
-                        {
-                        case wxsCPP:
-                            Result << GetIdName();
+                            Result << GetAccessPrefix(Language);
                             break;
-                        case wxsUnknownLanguage: // fall-through
-                        default:
-                            wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                         }
-                        break;
-                    }
 
-                    case _T('M'):
-                    {
-                        if ( GetParent() )
+                        case _T('C'):
                         {
-                            Result << GetParent()->GetAccessPrefix(Language);
+                            Result << GetCreatePrefix(Language);
+                            break;
                         }
-                        break;
-                    }
 
-                    case _T('N'):
-                    {
-                        if ( Flags & flId )
+                        case _T('E'):
                         {
-                            Result << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false);
-                        }
-                        else
-                        {
-                            Result << wxsCodeMarks::WxString(wxsCPP,GetClassName(),false);
-                        }
-                        break;
-                    }
-
-                    case _T('O'):
-                    {
-                        if ( IsRootItem() )
-                        {
-                            switch ( Language )
+                            if (GetParent() && (GetParent()->GetPropertiesFlags()&flVariable))
                             {
-                            case wxsCPP:
-                                Result << _T("this");
-                                break;
-                            case wxsUnknownLanguage: // fall-through
-                            default:
-                                wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
-                            }
-                        }
-                        else if ( Flags & flVariable )
-                        {
-                            if ( IsPointer() )
-                            {
-                                switch ( Language )
+                                if (GetParent()->IsPointer())
                                 {
-                                case wxsCPP:
-                                    Result << GetVarName();
-                                    break;
-                                case wxsUnknownLanguage: // fall-through
-                                default:
-                                    wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
+                                    switch (Language)
+                                    {
+                                        case wxsCPP:
+                                            Result << GetParent()->GetVarName();
+                                            break;
+
+                                        case wxsUnknownLanguage: // fall-through
+                                        default:
+                                            wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                    }
+                                }
+                                else
+                                {
+                                    switch (Language)
+                                    {
+                                        case wxsCPP:
+                                            Result << _T("(&") << GetParent()->GetVarName() << _T(")");
+                                            break;
+
+                                        case wxsUnknownLanguage: // fall-through
+                                        default:
+                                            wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                    }
                                 }
                             }
                             else
-                            {
-                                switch ( Language )
+                                if (GetType() == wxsTTool && !IsRootItem())
                                 {
-                                case wxsCPP:
-                                    Result << _T("(&") << GetVarName() << _T(")");
-                                    break;
-                                case wxsUnknownLanguage: // fall-through
-                                default:
-                                    wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
+                                    // For tools let's return this
+                                    switch (Language)
+                                    {
+                                        case wxsCPP:
+                                            Result << _T("this");
+                                            break;
+
+                                        case wxsUnknownLanguage: // fall-through
+                                        default:
+                                            wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                    }
                                 }
-                            }
-                        }
-                        break;
-                    }
 
-                    case _T('P'):
-                    {
-                        if ( Flags & flPosition )
-                        {
-                            Result << m_BaseProperties.m_Position.GetPositionCode(Context);
+                            break;
                         }
-                        else
-                        {
-                            Result << _T("wxDefaultPosition");
-                        }
-                        break;
-                    }
 
-                    case _T('R'):
-                    {
-                        if ( IsRootItem() )
+                        case _T('F'):
                         {
-                            switch ( Language )
+                            if (GetParent() && (GetParent()->GetPropertiesFlags()&flVariable))
                             {
-                            case wxsCPP:
-                                Result << _T("(*this)");
-                                break;
-                            case wxsUnknownLanguage: // fall-through
-                            default:
-                                wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
-                            }
-                        }
-                        else if ( Flags & flVariable )
-                        {
-                            if ( IsPointer() )
-                            {
-                                switch ( Language )
+                                if (GetParent()->IsPointer())
                                 {
-                                case wxsCPP:
-                                    Result << _T("(*") << GetVarName() << _T(")");
-                                    break;
-                                case wxsUnknownLanguage: // fall-through
-                                default:
-                                    wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
+                                    switch (Language)
+                                    {
+                                        case wxsCPP:
+                                            Result << _T("(*") << GetParent()->GetVarName() << _T(")");
+                                            break;
+
+                                        case wxsUnknownLanguage: // fall-through
+                                        default:
+                                            wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                    }
+                                }
+                                else
+                                {
+                                    switch (Language)
+                                    {
+                                        case wxsCPP:
+                                            Result << GetParent()->GetVarName();
+                                            break;
+
+                                        case wxsUnknownLanguage: // fall-through
+                                        default:
+                                            wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                    }
                                 }
                             }
                             else
-                            {
-                                switch ( Language )
+                                if (GetType() == wxsTTool && !IsRootItem())
                                 {
+                                    // For tools let's return *this
+                                    switch (Language)
+                                    {
+                                        case wxsCPP:
+                                            Result << _T("(*this)");
+                                            break;
+
+                                        case wxsUnknownLanguage: // fall-through
+                                        default:
+                                            wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                    }
+                                }
+
+                            break;
+                        }
+
+                        case _T('I'):
+                        {
+                            switch (Language)
+                            {
                                 case wxsCPP:
-                                    Result << GetVarName();
+                                    Result << GetIdName();
                                     break;
+
                                 case wxsUnknownLanguage: // fall-through
                                 default:
-                                    wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
+                                    wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                            }
+
+                            break;
+                        }
+
+                        case _T('M'):
+                        {
+                            if (GetParent())
+                            {
+                                Result << GetParent()->GetAccessPrefix(Language);
+                            }
+
+                            break;
+                        }
+
+                        case _T('N'):
+                        {
+                            if (Flags & flId)
+                            {
+                                Result << wxsCodeMarks::WxString(wxsCPP, GetIdName(), false);
+                            }
+                            else
+                            {
+                                Result << wxsCodeMarks::WxString(wxsCPP, GetClassName(), false);
+                            }
+
+                            break;
+                        }
+
+                        case _T('O'):
+                        {
+                            if (IsRootItem())
+                            {
+                                switch (Language)
+                                {
+                                    case wxsCPP:
+                                        Result << _T("this");
+                                        break;
+
+                                    case wxsUnknownLanguage: // fall-through
+                                    default:
+                                        wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
                                 }
                             }
-                        }
-                        break;
-                    }
+                            else
+                                if (Flags & flVariable)
+                                {
+                                    if (IsPointer())
+                                    {
+                                        switch (Language)
+                                        {
+                                            case wxsCPP:
+                                                Result << GetVarName();
+                                                break;
 
-                    case _T('S'):
-                    {
-                        if ( Flags & flSize )
-                        {
-                            Result << m_BaseProperties.m_Size.GetSizeCode(Context);
-                        }
-                        else
-                        {
-                            Result << _T("wxDefaultSize");
-                        }
-                        break;
-                    }
+                                            case wxsUnknownLanguage: // fall-through
+                                            default:
+                                                wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        switch (Language)
+                                        {
+                                            case wxsCPP:
+                                                Result << _T("(&") << GetVarName() << _T(")");
+                                                break;
 
-                    case _T('T'):
-                    {
-                        if ( m_BaseProperties.m_StyleSet )
-                        {
-                            Result << m_BaseProperties.m_StyleSet->GetString(m_BaseProperties.m_StyleBits,false,Language);
+                                            case wxsUnknownLanguage: // fall-through
+                                            default:
+                                                wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                        }
+                                    }
+                                }
+
+                            break;
                         }
-                        else
+
+                        case _T('P'):
                         {
+                            if (Flags & flPosition)
+                            {
+                                Result << m_BaseProperties.m_Position.GetPositionCode(Context);
+                            }
+                            else
+                            {
+                                Result << _T("wxDefaultPosition");
+                            }
+
+                            break;
+                        }
+
+                        case _T('R'):
+                        {
+                            if (IsRootItem())
+                            {
+                                switch (Language)
+                                {
+                                    case wxsCPP:
+                                        Result << _T("(*this)");
+                                        break;
+
+                                    case wxsUnknownLanguage: // fall-through
+                                    default:
+                                        wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                }
+                            }
+                            else
+                                if (Flags & flVariable)
+                                {
+                                    if (IsPointer())
+                                    {
+                                        switch (Language)
+                                        {
+                                            case wxsCPP:
+                                                Result << _T("(*") << GetVarName() << _T(")");
+                                                break;
+
+                                            case wxsUnknownLanguage: // fall-through
+                                            default:
+                                                wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        switch (Language)
+                                        {
+                                            case wxsCPP:
+                                                Result << GetVarName();
+                                                break;
+
+                                            case wxsUnknownLanguage: // fall-through
+                                            default:
+                                                wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                        }
+                                    }
+                                }
+
+                            break;
+                        }
+
+                        case _T('S'):
+                        {
+                            if (Flags & flSize)
+                            {
+                                Result << m_BaseProperties.m_Size.GetSizeCode(Context);
+                            }
+                            else
+                            {
+                                Result << _T("wxDefaultSize");
+                            }
+
+                            break;
+                        }
+
+                        case _T('T'):
+                        {
+                            if (m_BaseProperties.m_StyleSet)
+                            {
+                                Result << m_BaseProperties.m_StyleSet->GetString(m_BaseProperties.m_StyleBits, false, Language);
+                            }
+                            else
+                            {
+                                Result << _T("0");
+                            }
+
+                            break;
+                        }
+
+                        case _T('V'):
+                        {
+                            if (Flags & flValidator && !m_BaseProperties.m_Validator.IsEmpty())
+                            {
+                                Result << m_BaseProperties.m_Validator;
+                            }
+                            else
+                            {
+                                Result << _T("wxDefaultValidator");
+                            }
+
+                            break;
+                        }
+
+                        case _T('W'):
+                        {
+                            switch (Language)
+                            {
+                                case wxsCPP:
+                                    Result << WindowParent;
+                                    break;
+
+                                case wxsUnknownLanguage: // fall-through
+                                default:
+                                    wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                            }
+
+                            break;
+                        }
+
+                        case _T('b'):
+                        {
+                            bool Bool = va_arg(ap, int) != 0;
+
+                            if (Bool)
+                            {
+                                Result << _T("true");
+                            }
+                            else
+                            {
+                                Result << _T("false");
+                            }
+
+                            break;
+                        }
+
+                        case _T('c'):
+                        {
+                            wxChar Ch = (wxChar)va_arg(ap, int);
+                            Result << Ch;
+                            break;
+                        }
+
+                        case _T('d'):
+                        {
+                            wxChar Buff[0x20];
+                            int Dec = va_arg(ap, int);
+
+                            if (Dec < 0)
+                            {
+                                Result.Append(_T('-'));
+                                Dec = -Dec;
+                            }
+
+                            int iPos = 0;
+
+                            do
+                            {
+                                Buff[iPos++] = _T('0') + (Dec % 10), Dec /= 10;
+                            } while (Dec);
+
+                            while (--iPos >= 0)
+                            {
+                                Result.Append(Buff[iPos]);
+                            }
+
+                            break;
+                        }
+
+                        case _T('f'):
+                        {
+                            double F = va_arg(ap, double);
+                            // handle locale decimal points correctly (always convert them to "dot")
+                            wxString sF;
+                            sF << F;
+                            sF.Replace(wxString::FromUTF8(localeconv()->decimal_point), wxT("."));
+                            Result << sF;
+                            break;
+                        }
+
+                        case _T('i'):
+                        {
+                            wxsBitmapIconData * Image = va_arg(ap, wxsBitmapIconData *);
+
+                            if (Image)
+                            {
+                                const wxChar * ArtProvider = va_arg(ap, wxChar *);
+
+                                if (!ArtProvider)
+                                {
+                                    ArtProvider = _T("wxART_OTHER");
+                                }
+
+                                if (!Image->IsEmpty())
+                                {
+                                    Result << Image->BuildCode(true, _T("wxDefaultSize"), GetCoderContext(), ArtProvider);
+                                }
+                                else
+                                {
+                                    Result << _T("wxNullBitmap");
+                                }
+                            }
+
+                            break;
+                        }
+
+                        case _T('l'):
+                        {
+                            wxsColourData * Data = va_arg(ap, wxsColourData *);
+                            wxString Code = Data->BuildCode(GetCoderContext());
+
+                            if (Code.IsEmpty())
+                            {
+                                Result << _T("wxNullColour");
+                            }
+                            else
+                            {
+                                Result << Code;
+                            }
+
+                            break;
+                        }
+
+                        case _T('n'):
+                        {
+                            wxChar * String = va_arg(ap, wxChar *);
+                            Result << wxsCodeMarks::WxString(Language, String ? String : _T(""), false);
+                            break;
+                        }
+
+                        case _T('o'):
+                        {
+                            int ChildIndex = va_arg(ap, int);
+                            wxsParent * This = ConvertToParent();
+
+                            if (This && ChildIndex >= 0 && ChildIndex < This->GetChildCount())
+                            {
+                                wxsItem * Child = This->GetChild(ChildIndex);
+
+                                if (Child->GetPropertiesFlags() & flVariable)
+                                {
+                                    if (Child->IsPointer())
+                                    {
+                                        switch (Language)
+                                        {
+                                            case wxsCPP:
+                                                Result << Child->GetVarName();
+                                                break;
+
+                                            case wxsUnknownLanguage: // fall-through
+                                            default:
+                                                wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        switch (Language)
+                                        {
+                                            case wxsCPP:
+                                                Result << _T("(&") << Child->GetVarName() << _T(")");
+                                                break;
+
+                                            case wxsUnknownLanguage: // fall-through
+                                            default:
+                                                wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                        }
+                                    }
+
+                                    break;
+                                }
+                            }
+
                             Result << _T("0");
-                        }
-                        break;
-                    }
-
-                    case _T('V'):
-                    {
-                        if ( Flags & flValidator && !m_BaseProperties.m_Validator.IsEmpty() )
-                        {
-                            Result << m_BaseProperties.m_Validator;
-                        }
-                        else
-                        {
-                            Result << _T("wxDefaultValidator");
-                        }
-                        break;
-                    }
-
-                    case _T('W'):
-                    {
-                        switch ( Language )
-                        {
-                        case wxsCPP:
-                            Result << WindowParent;
                             break;
-                        case wxsUnknownLanguage: // fall-through
+                        }
+
+                        case _T('p'):
+                        {
+                            wxsPositionData * PosD = va_arg(ap, wxsPositionData *);
+                            Result << PosD->GetPositionCode(Context);
+                            break;
+                        }
+
+                        case _T('r'):
+                        {
+                            int ChildIndex = va_arg(ap, int);
+                            wxsParent * This = ConvertToParent();
+
+                            if (This && ChildIndex >= 0 && ChildIndex < This->GetChildCount())
+                            {
+                                wxsItem * Child = This->GetChild(ChildIndex);
+
+                                if (Child->GetPropertiesFlags() & flVariable)
+                                {
+                                    if (Child->IsPointer())
+                                    {
+                                        switch (Language)
+                                        {
+                                            case wxsCPP:
+                                                Result << _T("(*") << Child->GetVarName() << _T(")");
+                                                break;
+
+                                            case wxsUnknownLanguage: // fall-through
+                                            default:
+                                                wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        switch (Language)
+                                        {
+                                            case wxsCPP:
+                                                Result << Child->GetVarName();
+                                                break;
+
+                                            case wxsUnknownLanguage: // fall-through
+                                            default:
+                                                wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                        }
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            Result << _T("0");
+                            break;
+                        }
+
+                        case _T('s'):
+                        {
+                            wxChar * String = va_arg(ap, wxChar *);
+
+                            if (String)
+                            {
+                                Result << String;
+                            }
+
+                            break;
+                        }
+
+                        case _T('t'):
+                        {
+                            wxChar * String = va_arg(ap, wxChar *);
+                            Result << wxsCodeMarks::WxString(Language, String ? String : _T(""), Translation);
+                            break;
+                        }
+
+                        case _T('v'):
+                        {
+                            wxChar * Var = va_arg(ap, wxChar *);
+
+                            if (Var)
+                            {
+                                switch (Language)
+                                {
+                                    case wxsCPP:
+                                        Result << Var;
+                                        break;
+
+                                    case wxsUnknownLanguage: // fall-through
+                                    default:
+                                        wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"), Language);
+                                }
+                            }
+
+                            break;
+                        }
+
+                        case _T('z'):
+                        {
+                            wxsSizeData * SizeD = va_arg(ap, wxsSizeData *);
+                            Result << SizeD->GetSizeCode(Context);
+                            break;
+                        }
+
                         default:
-                            wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
-                        }
-                        break;
-                    }
-
-                    case _T('b'):
-                    {
-                        bool Bool = va_arg(ap,int)!=0;
-                        if ( Bool ) Result << _T("true");
-                        else        Result << _T("false");
-                        break;
-                    }
-
-                    case _T('c'):
-                    {
-                        wxChar Ch = (wxChar)va_arg(ap,int);
-                        Result << Ch;
-                        break;
-                    }
-
-                    case _T('d'):
-                    {
-                        wxChar Buff[0x20];
-                        int Dec = va_arg(ap,int);
-                        if ( Dec < 0 )
                         {
-                            Result.Append(_T('-'));
-                            Dec = -Dec;
+                            Result.Append(*Fmt);
                         }
-                        int iPos = 0;
-                        do Buff[iPos++] = _T('0') + (Dec%10), Dec /= 10;
-                        while ( Dec );
-                        while ( --iPos>=0 ) Result.Append(Buff[iPos]);
-                        break;
                     }
 
-                    case _T('f'):
-                    {
-                        double F = va_arg(ap,double);
-                        // handle locale decimal points correctly (always convert them to "dot")
-                        wxString sF;
-                        sF << F;
-                        sF.Replace(wxString::FromUTF8(localeconv()->decimal_point), wxT("."));
-                        Result << sF;
-                        break;
-                    }
-
-                    case _T('i'):
-                    {
-                        wxsBitmapIconData* Image = va_arg(ap,wxsBitmapIconData*);
-                        if ( Image )
-                        {
-                            const wxChar* ArtProvider = va_arg(ap,wxChar*);
-                            if ( !ArtProvider ) ArtProvider = _T("wxART_OTHER");
-                            if ( !Image->IsEmpty() )
-                            {
-                                Result << Image->BuildCode(true,_T("wxDefaultSize"),GetCoderContext(),ArtProvider);
-                            }
-                            else
-                            {
-                                Result << _T("wxNullBitmap");
-                            }
-                        }
-                        break;
-                    }
-
-                    case _T('l'):
-                    {
-                        wxsColourData* Data = va_arg(ap,wxsColourData*);
-                        wxString Code = Data->BuildCode(GetCoderContext());
-                        if ( Code.IsEmpty() )
-                        {
-                            Result << _T("wxNullColour");
-                        }
-                        else
-                        {
-                            Result << Code;
-                        }
-                        break;
-                    }
-
-                    case _T('n'):
-                    {
-                        wxChar* String = va_arg(ap,wxChar*);
-                        Result << wxsCodeMarks::WxString(Language,String?String:_T(""),false);
-                        break;
-                    }
-
-                    case _T('o'):
-                    {
-                        int ChildIndex = va_arg(ap,int);
-                        wxsParent* This = ConvertToParent();
-                        if ( This && ChildIndex>=0 && ChildIndex<This->GetChildCount() )
-                        {
-                            wxsItem* Child = This->GetChild(ChildIndex);
-                            if ( Child->GetPropertiesFlags() & flVariable )
-                            {
-                                if ( Child->IsPointer() )
-                                {
-                                    switch ( Language )
-                                    {
-                                    case wxsCPP:
-                                        Result << Child->GetVarName();
-                                        break;
-                                    case wxsUnknownLanguage: // fall-through
-                                    default:
-                                        wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
-                                    }
-                                }
-                                else
-                                {
-                                    switch ( Language )
-                                    {
-                                    case wxsCPP:
-                                        Result << _T("(&") << Child->GetVarName() << _T(")");
-                                        break;
-                                    case wxsUnknownLanguage: // fall-through
-                                    default:
-                                        wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                        Result << _T("0");
-                        break;
-                    }
-
-                    case _T('p'):
-                    {
-                        wxsPositionData* PosD = va_arg(ap,wxsPositionData*);
-                        Result << PosD->GetPositionCode(Context);
-                        break;
-                    }
-
-                    case _T('r'):
-                    {
-                        int ChildIndex = va_arg(ap,int);
-                        wxsParent* This = ConvertToParent();
-                        if ( This && ChildIndex>=0 && ChildIndex<This->GetChildCount() )
-                        {
-                            wxsItem* Child = This->GetChild(ChildIndex);
-                            if ( Child->GetPropertiesFlags() & flVariable )
-                            {
-                                if ( Child->IsPointer() )
-                                {
-                                    switch ( Language )
-                                    {
-                                    case wxsCPP:
-                                        Result << _T("(*") << Child->GetVarName() << _T(")");
-                                        break;
-                                    case wxsUnknownLanguage: // fall-through
-                                    default:
-                                        wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
-                                    }
-                                }
-                                else
-                                {
-                                    switch ( Language )
-                                    {
-                                    case wxsCPP:
-                                        Result << Child->GetVarName();
-                                        break;
-                                    case wxsUnknownLanguage: // fall-through
-                                    default:
-                                        wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                        Result << _T("0");
-                        break;
-                    }
-
-                    case _T('s'):
-                    {
-                        wxChar* String = va_arg(ap,wxChar*);
-                        if ( String )
-                        {
-                            Result << String;
-                        }
-                        break;
-                    }
-
-                    case _T('t'):
-                    {
-                        wxChar* String = va_arg(ap,wxChar*);
-                        Result << wxsCodeMarks::WxString(Language,String?String:_T(""),Translation);
-                        break;
-                    }
-
-                    case _T('v'):
-                    {
-                        wxChar* Var = va_arg(ap,wxChar*);
-                        if ( Var )
-                        {
-                            switch ( Language )
-                            {
-                            case wxsCPP:
-                                Result << Var;
-                                break;
-                            case wxsUnknownLanguage: // fall-through
-                            default:
-                                wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
-                            }
-                        }
-                        break;
-                    }
-
-                    case _T('z'):
-                    {
-                        wxsSizeData* SizeD = va_arg(ap,wxsSizeData*);
-                        Result << SizeD->GetSizeCode(Context);
-                        break;
-                    }
-
-                    default:
-                    {
-                        Result.Append(*Fmt);
-                    }
-                    }
                     Fmt++;
                 }
             }
@@ -1051,68 +1201,102 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
     }
 }
 
-wxWindow* wxsItem::SetupWindow(wxWindow* Window,long Flags)
+wxWindow * wxsItem::SetupWindow(wxWindow * Window, long Flags)
 {
-    bool IsExact = (Flags&pfExact) != 0;
+    bool IsExact = (Flags & pfExact) != 0;
     long PropertiesFlags = GetPropertiesFlags();
 
-    if ( PropertiesFlags&flMinMaxSize && IsExact )
+    if (PropertiesFlags & flMinMaxSize && IsExact)
     {
-        if ( !m_BaseProperties.m_MinSize.IsDefault )
+        if (!m_BaseProperties.m_MinSize.IsDefault)
         {
             Window->SetMinSize(m_BaseProperties.m_MinSize.GetSize(Window->GetParent()));
         }
 
-        if ( !m_BaseProperties.m_MaxSize.IsDefault )
+        if (!m_BaseProperties.m_MaxSize.IsDefault)
         {
             Window->SetMaxSize(m_BaseProperties.m_MaxSize.GetSize(Window->GetParent()));
         }
     }
 
-    if ( (PropertiesFlags&flEnabled) && !m_BaseProperties.m_Enabled ) Window->Disable();
-    if ( (PropertiesFlags&flFocused) && m_BaseProperties.m_Focused  ) Window->SetFocus();
-    if ( (PropertiesFlags&flHidden)  && m_BaseProperties.m_Hidden && IsExact ) Window->Hide();
+    if ((PropertiesFlags & flEnabled) && !m_BaseProperties.m_Enabled)
+    {
+        Window->Disable();
+    }
 
-    if ( PropertiesFlags&flColours )
+    if ((PropertiesFlags & flFocused) && m_BaseProperties.m_Focused)
+    {
+        Window->SetFocus();
+    }
+
+    if ((PropertiesFlags & flHidden)  && m_BaseProperties.m_Hidden && IsExact)
+    {
+        Window->Hide();
+    }
+
+    if (PropertiesFlags & flColours)
     {
         wxColour FGCol = m_BaseProperties.m_Fg.GetColour();
-        if ( FGCol.Ok() ) Window->SetForegroundColour(FGCol);
+
+        if (FGCol.Ok())
+        {
+            Window->SetForegroundColour(FGCol);
+        }
+
         wxColour BGCol = m_BaseProperties.m_Bg.GetColour();
-        if ( BGCol.Ok() ) Window->SetBackgroundColour(BGCol);
+
+        if (BGCol.Ok())
+        {
+            Window->SetBackgroundColour(BGCol);
+        }
     }
 
-    if ( PropertiesFlags&flFont )
+    if (PropertiesFlags & flFont)
     {
         wxFont FontVal = m_BaseProperties.m_Font.BuildFont();
-        if ( FontVal.Ok() ) Window->SetFont(FontVal);
+
+        if (FontVal.Ok())
+        {
+            Window->SetFont(FontVal);
+        }
     }
 
-    if ( (PropertiesFlags&flToolTip)  && !m_BaseProperties.m_ToolTip.empty() ) Window->SetToolTip(m_BaseProperties.m_ToolTip);
-    if ( (PropertiesFlags&flHelpText) && !m_BaseProperties.m_HelpText.empty() ) Window->SetHelpText(m_BaseProperties.m_HelpText);
+    if ((PropertiesFlags & flToolTip)  && !m_BaseProperties.m_ToolTip.empty())
+    {
+        Window->SetToolTip(m_BaseProperties.m_ToolTip);
+    }
 
-    long ExStyle = m_BaseProperties.m_StyleSet ? m_BaseProperties.m_StyleSet->GetWxStyle(m_BaseProperties.m_ExStyleBits,true) : 0;
-    if ( ExStyle != 0 )
+    if ((PropertiesFlags & flHelpText) && !m_BaseProperties.m_HelpText.empty())
+    {
+        Window->SetHelpText(m_BaseProperties.m_HelpText);
+    }
+
+    long ExStyle = m_BaseProperties.m_StyleSet ? m_BaseProperties.m_StyleSet->GetWxStyle(m_BaseProperties.m_ExStyleBits, true) : 0;
+
+    if (ExStyle != 0)
     {
         Window->SetExtraStyle(Window->GetExtraStyle() | ExStyle);
     }
+
     return Window;
 }
 
 wxString wxsItem::GetUserClass()
 {
-    if ( GetPropertiesFlags() & flSubclass )
+    if (GetPropertiesFlags() & flSubclass)
     {
-        if ( !m_BaseProperties.m_Subclass.IsEmpty() )
+        if (!m_BaseProperties.m_Subclass.IsEmpty())
         {
             return m_BaseProperties.m_Subclass;
         }
     }
+
     return GetClassName();
 }
 
-wxString wxsItem::OnGetTreeLabel(cb_unused int& Image)
+wxString wxsItem::OnGetTreeLabel(cb_unused int & Image)
 {
-    if ( GetPropertiesFlags()&flVariable && !IsRootItem() )
+    if (GetPropertiesFlags()&flVariable && !IsRootItem())
     {
         return GetClassName() + _T(": ") + GetVarName();
     }
@@ -1125,9 +1309,10 @@ wxString wxsItem::OnGetTreeLabel(cb_unused int& Image)
 wxString wxsItem::GetIdName()
 {
     wxString Code = m_BaseProperties.m_IdName;
-    if ( IsRootItem() )
+
+    if (IsRootItem())
     {
-        if ( GetPropertiesFlags()&flSource && !m_BaseProperties.m_IdFromArg )
+        if (GetPropertiesFlags()&flSource && !m_BaseProperties.m_IdFromArg)
         {
             // TODO: Do we use the same identifier in other coding languages ?
             Code = _T("wxID_ANY");
@@ -1137,65 +1322,74 @@ wxString wxsItem::GetIdName()
             Code = _T("id");
         }
     }
+
     return Code;
 }
 
-wxSize wxsItem::Size(wxWindow* Parent)
+wxSize wxsItem::Size(wxWindow * Parent)
 {
     const wxSize minSize = GetBaseProps()->m_MinSize.GetSize(Parent);
+
     if (minSize != wxDefaultSize)
+    {
         return minSize;
+    }
 
     return GetBaseProps()->m_Size.GetSize(Parent);
 }
 
-bool wxsItem::OnMouseDClick(cb_unused wxWindow* Preview,cb_unused int PosX,int cb_unused PosY)
+bool wxsItem::OnMouseDClick(cb_unused wxWindow * Preview, cb_unused int PosX, int cb_unused PosY)
 {
     // Search for first event (skip all categories)
-    for ( int i=0; i<GetEvents().GetCount(); i++ )
+    for (int i = 0; i < GetEvents().GetCount(); i++)
     {
-        switch ( GetEvents().GetDesc(i)->ET )
+        switch (GetEvents().GetDesc(i)->ET)
         {
-        case wxsEventDesc::Category:
-        case wxsEventDesc::EndOfList:
-            break;
+            case wxsEventDesc::Category:
+            case wxsEventDesc::EndOfList:
+                break;
 
-        case wxsEventDesc::Id:      // fall-through
-        case wxsEventDesc::IdRange: // fall-through
-        case wxsEventDesc::NoId:    // fall-through
-        default:
-            // Found event, now let's try to add handler for it
-            return wxsEventsEditor::Get().GotoOrBuildEvent(this,i,wxsPGRID());
+            case wxsEventDesc::Id:      // fall-through
+            case wxsEventDesc::IdRange: // fall-through
+            case wxsEventDesc::NoId:    // fall-through
+            default:
+                // Found event, now let's try to add handler for it
+                return wxsEventsEditor::Get().GotoOrBuildEvent(this, i, wxsPGRID());
         }
     }
 
     return false;
 }
 
-bool wxsItem::OnMouseRightClick(cb_unused wxWindow* Preview,cb_unused int PosX,cb_unused int PosY)
+bool wxsItem::OnMouseRightClick(cb_unused wxWindow * Preview, cb_unused int PosX, cb_unused int PosY)
 {
     wxMenu Popup;
     OnPreparePopup(&Popup);
-    if ( Popup.GetMenuItemCount() )
+
+    if (Popup.GetMenuItemCount())
     {
         ShowPopup(&Popup);
     }
+
     return false;
 }
 
-void wxsItem::OnPreparePopup(wxMenu* Popup)
+void wxsItem::OnPreparePopup(wxMenu * Popup)
 {
-    if ( GetType() != wxsTSizer )
+    if (GetType() != wxsTSizer)
     {
-        if ( GetParent() && GetParent()->GetType() != wxsTSizer )
+        if (GetParent() && GetParent()->GetType() != wxsTSizer)
         {
-            wxMenuItem* Item = Popup->Append(IdToFront,_("Bring to front"));
-            if ( GetParent()->GetChildIndex(this) == GetParent()->GetChildCount()-1 )
+            wxMenuItem * Item = Popup->Append(IdToFront, _("Bring to front"));
+
+            if (GetParent()->GetChildIndex(this) == GetParent()->GetChildCount() - 1)
             {
                 Item->Enable(false);
             }
-            Item = Popup->Append(IdToBottom,_("Send to back"));
-            if ( GetParent()->GetChildIndex(this) == 0 )
+
+            Item = Popup->Append(IdToBottom, _("Send to back"));
+
+            if (GetParent()->GetChildIndex(this) == 0)
             {
                 Item->Enable(false);
             }
@@ -1205,18 +1399,18 @@ void wxsItem::OnPreparePopup(wxMenu* Popup)
 
 bool wxsItem::OnPopup(long Id)
 {
-    if ( Id == IdToFront )
+    if (Id == IdToFront)
     {
         GetResourceData()->BeginChange();
-        GetParent()->MoveChild(GetParent()->GetChildIndex(this),GetParent()->GetChildCount()-1);
+        GetParent()->MoveChild(GetParent()->GetChildIndex(this), GetParent()->GetChildCount() - 1);
         GetResourceData()->EndChange();
         return true;
     }
 
-    if ( Id == IdToBottom )
+    if (Id == IdToBottom)
     {
         GetResourceData()->BeginChange();
-        GetParent()->MoveChild(GetParent()->GetChildIndex(this),0);
+        GetParent()->MoveChild(GetParent()->GetChildIndex(this), 0);
         GetResourceData()->EndChange();
         return true;
     }
@@ -1224,15 +1418,15 @@ bool wxsItem::OnPopup(long Id)
     return false;
 }
 
-void wxsItem::ShowPopup(wxMenu* Menu)
+void wxsItem::ShowPopup(wxMenu * Menu)
 {
-    if ( GetResourceData()->GetEditor() )
+    if (GetResourceData()->GetEditor())
     {
-        GetResourceData()->GetEditor()->ShowPopup(this,Menu);
+        GetResourceData()->GetEditor()->ShowPopup(this, Menu);
     }
 }
 
-void wxsItem::OnUpdateFlags(long& Flags)
+void wxsItem::OnUpdateFlags(long & Flags)
 {
     Flags = GetPropertiesFlags();
 }

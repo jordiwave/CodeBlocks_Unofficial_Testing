@@ -8,62 +8,64 @@
 #include "NassiFileContent.h"
 
 
-BEGIN_EVENT_TABLE(NassiEditorPanel,cbEditorPanel)
+BEGIN_EVENT_TABLE(NassiEditorPanel, cbEditorPanel)
 
 END_EVENT_TABLE()
 
 
 NassiEditorPanel::EditorsSet NassiEditorPanel::m_AllEditors;
 
-NassiEditorPanel::NassiEditorPanel( const wxString &fileName, const wxString &title ):
-    cbEditorPanel( fileName, title, new NassiFileContent() ),
-    m_view(new NassiView((NassiFileContent *)m_filecontent )),
+NassiEditorPanel::NassiEditorPanel(const wxString & fileName, const wxString & title):
+    cbEditorPanel(fileName, title, new NassiFileContent()),
+    m_view(new NassiView((NassiFileContent *)m_filecontent)),
     m_diagramwindow(0)
 {
     //m_view = new NassiView((NassiFileContent *)m_filecontent);
     m_diagramwindow = m_view->CreateDiagramWindow(this);
     m_view->Update();
-
-    wxBoxSizer *BoxSizer = new wxBoxSizer(wxVERTICAL);
-    BoxSizer->Add((wxWindow *)m_diagramwindow,1, wxALL|wxEXPAND, 5);
+    wxBoxSizer * BoxSizer = new wxBoxSizer(wxVERTICAL);
+    BoxSizer->Add((wxWindow *)m_diagramwindow, 1, wxALL | wxEXPAND, 5);
     SetSizer(BoxSizer);
     BoxSizer->SetSizeHints(this);
-    ((wxWindow*)Manager::Get()->GetEditorManager()->GetNotebook())->Layout();
-
-    m_AllEditors.insert( this );
-
+    ((wxWindow *)Manager::Get()->GetEditorManager()->GetNotebook())->Layout();
+    m_AllEditors.insert(this);
     m_filecontent->AddObserver(this);
 }
 
 NassiEditorPanel::~NassiEditorPanel()
 {
     m_filecontent->RemoveObserver(this);
-    m_AllEditors.erase( this );
+    m_AllEditors.erase(this);
 
-    if ( m_view ) delete m_view;
+    if (m_view)
+    {
+        delete m_view;
+    }
+
     // diagram window will be deleted by its parent
 }
 
-void NassiEditorPanel::Update(wxObject* /*hint*/)
+void NassiEditorPanel::Update(wxObject * /*hint*/)
 {
     UpdateModified();
 }
 
-bool NassiEditorPanel::IsNassiEditor( EditorBase* editor )
+bool NassiEditorPanel::IsNassiEditor(EditorBase * editor)
 {
-    return m_AllEditors.find( editor ) != m_AllEditors.end();
+    return m_AllEditors.find(editor) != m_AllEditors.end();
 }
 
 void NassiEditorPanel::CloseAllNassiEditors()
 {
     EditorsSet s = m_AllEditors;
-    for ( EditorsSet::iterator i = s.begin(); i != s.end(); ++i )
+
+    for (EditorsSet::iterator i = s.begin(); i != s.end(); ++i)
     {
-        EditorManager::Get()->QueryClose( *i );
+        EditorManager::Get()->QueryClose(*i);
         (*i)->Close();
     }
 
-    assert( m_AllEditors.empty() );
+    assert(m_AllEditors.empty());
 }
 
 bool NassiEditorPanel::IsDrawingSource()
@@ -173,7 +175,7 @@ void NassiEditorPanel::SelectAll()
 
 bool NassiEditorPanel::CanExport()
 {
-    NassiFileContent *nfc = (NassiFileContent *)m_filecontent;
+    NassiFileContent * nfc = (NassiFileContent *)m_filecontent;
     return m_view->HasSelectedBricks() || nfc->GetFirstBrick();
 }
 
@@ -209,9 +211,9 @@ void NassiEditorPanel::ExportBitmap()
     m_view->ExportBitmap();
 }
 
-bool NassiEditorPanel::GetCSource(wxTextOutputStream &text_stream, wxUint32 n)
+bool NassiEditorPanel::GetCSource(wxTextOutputStream & text_stream, wxUint32 n)
 {
-    return m_view->ExportCSource(text_stream,n);
+    return m_view->ExportCSource(text_stream, n);
 }
 
 void NassiEditorPanel::UpdateColors()

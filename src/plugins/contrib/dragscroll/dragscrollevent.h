@@ -30,44 +30,44 @@ const int idDragScrollInvokeConfig = XRCID("idDragScrollInvokeConfig");
 class DragScrollEvent : public wxCommandEvent
 // ----------------------------------------------------------------------------
 {
-public:
-    /** Constructor. */
-    DragScrollEvent(wxEventType commandType = wxEVT_NULL, int id = 0);
+    public:
+        /** Constructor. */
+        DragScrollEvent(wxEventType commandType = wxEVT_NULL, int id = 0);
 
-    /** Copy constructor. */
-    DragScrollEvent( const DragScrollEvent& event);
+        /** Copy constructor. */
+        DragScrollEvent(const DragScrollEvent & event);
 
-    /** Destructor. */
-    ~DragScrollEvent();
+        /** Destructor. */
+        ~DragScrollEvent();
 
-    virtual wxEvent* Clone() const
-    {
-        return new DragScrollEvent(*this);
-    }
+        virtual wxEvent * Clone() const
+        {
+            return new DragScrollEvent(*this);
+        }
 
-    DECLARE_DYNAMIC_CLASS(DragScrollEvent);
+        DECLARE_DYNAMIC_CLASS(DragScrollEvent);
 
-    wxString  GetEventTypeLabel() const
-    {
-        return m_EventTypeLabel;
-    }
+        wxString  GetEventTypeLabel() const
+        {
+            return m_EventTypeLabel;
+        }
 
-    bool      PostDragScrollEvent(const cbPlugin* targetWin);
-    bool      ProcessDragScrollEvent(const cbPlugin* targetWin);
+        bool      PostDragScrollEvent(const cbPlugin * targetWin);
+        bool      ProcessDragScrollEvent(const cbPlugin * targetWin);
 
-private:
-    //-int        m_WindowID;
-    //-wxWindow*  m_pWindow;
-    wxString   m_EventTypeLabel;
+    private:
+        //-int        m_WindowID;
+        //-wxWindow*  m_pWindow;
+        wxString   m_EventTypeLabel;
 };
 
-typedef void (wxEvtHandler::*DragScrollEventFunction)(DragScrollEvent&);
+typedef void (wxEvtHandler::*DragScrollEventFunction)(DragScrollEvent &);
 
 
 extern const wxEventType wxEVT_DRAGSCROLL_EVENT;
 #define EVT_DRAGSCROLL_EVENT(id, fn) \
-	DECLARE_EVENT_TABLE_ENTRY(wxEVT_DRAGSCROLL_EVENT, id, -1, \
-	(wxObjectEventFunction)(wxEventFunction) (DragScrollEventFunction) & fn,(wxObject *) NULL ),
+    DECLARE_EVENT_TABLE_ENTRY(wxEVT_DRAGSCROLL_EVENT, id, -1, \
+                              (wxObjectEventFunction)(wxEventFunction) (DragScrollEventFunction) & fn,(wxObject *) NULL ),
 
 #endif // DRAGSCROLL_EVENT_H
 

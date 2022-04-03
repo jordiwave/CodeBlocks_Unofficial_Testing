@@ -9,21 +9,21 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/dynarray.h>
+    #include <wx/dynarray.h>
 #endif
 #include <vector>
 
 #include "tokenf.h"
 
-typedef std::vector<TokensArrayFlat*> PassedTokensArray2D;
-typedef std::vector<ArrOfSizeT*> ArrOfSizeT2D;
+typedef std::vector<TokensArrayFlat *> PassedTokensArray2D;
+typedef std::vector<ArrOfSizeT *> ArrOfSizeT2D;
 typedef std::vector<bool> BoolArray1D;
-typedef std::vector<BoolArray1D*> BoolArray2D;
-typedef std::vector<BoolArray2D*> BoolArray3D;
+typedef std::vector<BoolArray1D *> BoolArray2D;
+typedef std::vector<BoolArray2D *> BoolArray3D;
 
-void ClearPassedTokensArray2D(PassedTokensArray2D &array);
-void ClearArrOfSizeT2D(ArrOfSizeT2D &array);
-void ClearBoolArray3D(BoolArray3D &array);
-void ClearBoolArray2D(BoolArray2D &array);
+void ClearPassedTokensArray2D(PassedTokensArray2D & array);
+void ClearArrOfSizeT2D(ArrOfSizeT2D & array);
+void ClearBoolArray3D(BoolArray3D & array);
+void ClearBoolArray2D(BoolArray2D & array);
 
 #endif // FARRAYS_H

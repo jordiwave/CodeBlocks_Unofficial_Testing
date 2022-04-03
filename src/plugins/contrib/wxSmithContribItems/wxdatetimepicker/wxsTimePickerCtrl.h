@@ -6,15 +6,15 @@
 
 class wxsTimePickerCtrl : public wxsWidget
 {
-public:
-    wxsTimePickerCtrl(wxsItemResData* Data);
-    virtual ~wxsTimePickerCtrl();
+    public:
+        wxsTimePickerCtrl(wxsItemResData * Data);
+        virtual ~wxsTimePickerCtrl();
 
-protected:
+    protected:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 };
 
 #endif // WXSTIMEPICKERCTRL_H

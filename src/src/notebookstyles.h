@@ -14,35 +14,35 @@ class wxRect;
 class wxString;
 class wxBitmap;
 
-wxColor wxAuiStepColour(const wxColor& c, int percent);
+wxColor wxAuiStepColour(const wxColor & c, int percent);
 
 class NbStyleVC71 : public wxAuiDefaultTabArt
 {
-public:
-    NbStyleVC71();
-    wxAuiTabArt* Clone() override;
+    public:
+        NbStyleVC71();
+        wxAuiTabArt * Clone() override;
 
-    void DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
-                 const wxRect& in_rect, int close_button_state,
-                 wxRect* out_tab_rect, wxRect* out_button_rect,
-                 int* x_extent) override;
+        void DrawTab(wxDC & dc, wxWindow * wnd, const wxAuiNotebookPage & page,
+                     const wxRect & in_rect, int close_button_state,
+                     wxRect * out_tab_rect, wxRect * out_button_rect,
+                     int * x_extent) override;
 
-    int GetBestTabCtrlSize(wxWindow* wnd, const wxAuiNotebookPageArray& pages,
-                           const wxSize& required_bmp_size) override;
+        int GetBestTabCtrlSize(wxWindow * wnd, const wxAuiNotebookPageArray & pages,
+                               const wxSize & required_bmp_size) override;
 };
 
 class NbStyleFF2 : public wxAuiDefaultTabArt
 {
-public:
-    NbStyleFF2();
-    wxAuiTabArt* Clone() override;
-    void DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
-                 const wxRect& in_rect, int close_button_state,
-                 wxRect* out_tab_rect, wxRect* out_button_rect,
-                 int* x_extent) override;
+    public:
+        NbStyleFF2();
+        wxAuiTabArt * Clone() override;
+        void DrawTab(wxDC & dc, wxWindow * wnd, const wxAuiNotebookPage & page,
+                     const wxRect & in_rect, int close_button_state,
+                     wxRect * out_tab_rect, wxRect * out_button_rect,
+                     int * x_extent) override;
 
-    int GetBestTabCtrlSize(wxWindow* wnd, const wxAuiNotebookPageArray& pages,
-                           const wxSize& required_bmp_size) override;
+        int GetBestTabCtrlSize(wxWindow * wnd, const wxAuiNotebookPageArray & pages,
+                               const wxSize & required_bmp_size) override;
 };
 
 #endif // NOTEBOOKSTYLES_H

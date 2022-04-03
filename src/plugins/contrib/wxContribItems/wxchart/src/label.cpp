@@ -15,18 +15,18 @@
 
 // wx
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "label.h"
+    #pragma implementation "label.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #include "wx/chartcolors.h"
@@ -54,7 +54,7 @@ void wxLabel::Draw(
     int x,
     int y,
     ChartColor c,
-    wxString& lbl,
+    wxString & lbl,
     LABEL_POSITION pos
 )
 {
@@ -64,55 +64,67 @@ void wxLabel::Draw(
     wxFont oldFont = hp->GetFont();
     wxBrush oldBrush = hp->GetBrush();
     wxPen oldPen = hp->GetPen();
-
     //-----------------------------------------------------------------------
     // Set new values
     //-----------------------------------------------------------------------
-    wxFont font( 8, wxFONTFAMILY_ROMAN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
-    hp->SetFont( font );
-    hp->SetBrush( wxBrush(c, wxBRUSHSTYLE_SOLID));
-    hp->SetPen( wxPen(LBL_LINE_COL, 1, wxPENSTYLE_SOLID));
-
+    wxFont font(8, wxFONTFAMILY_ROMAN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+    hp->SetFont(font);
+    hp->SetBrush(wxBrush(c, wxBRUSHSTYLE_SOLID));
+    hp->SetPen(wxPen(LBL_LINE_COL, 1, wxPENSTYLE_SOLID));
     //-----------------------------------------------------------------------
     // Get the size of the label for the specify font
     //-----------------------------------------------------------------------
     int w, h;
-    hp->GetTextExtent( lbl, &w, &h );
-
+    hp->GetTextExtent(lbl, &w, &h);
     //-----------------------------------------------------------------------
     // Add boarder
     //-----------------------------------------------------------------------
     w += 5;
     h += 5;
-
     //-----------------------------------------------------------------------
     // Get the left-top rectangle point
     //-----------------------------------------------------------------------
     int xr = x, yr = y;
-    if ( pos & UP )
+
+    if (pos & UP)
+    {
         yr -= LBL_GAP;
-    if ( pos & DOWN )
+    }
+
+    if (pos & DOWN)
+    {
         yr += LBL_GAP;
-    if ( pos & LEFT )
+    }
+
+    if (pos & LEFT)
+    {
         xr -= LBL_GAP;
-    if ( pos & RIGHT )
+    }
+
+    if (pos & RIGHT)
+    {
         xr += LBL_GAP;
+    }
 
     //-----------------------------------------------------------------------
     // Draw all
     //-----------------------------------------------------------------------
-    hp->DrawRectangle( xr, yr, w, h );
-    if ( pos & DOWN )
-        hp->DrawLine( x, y, xr + w/2, yr );
+    hp->DrawRectangle(xr, yr, w, h);
+
+    if (pos & DOWN)
+    {
+        hp->DrawLine(x, y, xr + w / 2, yr);
+    }
     else
-        hp->DrawLine( x, y, xr + w/2, yr + h);
-    hp->DrawText( lbl, xr+2, yr );
+    {
+        hp->DrawLine(x, y, xr + w / 2, yr + h);
+    }
 
-
+    hp->DrawText(lbl, xr + 2, yr);
     //-----------------------------------------------------------------------
     // Set old configuration
     //-----------------------------------------------------------------------
-    hp->SetFont( oldFont );
-    hp->SetBrush( oldBrush );
-    hp->SetPen( oldPen );
+    hp->SetFont(oldFont);
+    hp->SetBrush(oldBrush);
+    hp->SetPen(oldPen);
 }

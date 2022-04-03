@@ -17,20 +17,20 @@
 #include <time.h>
 
 #if !defined(DEPSLIB_WINDOWS) && !defined(DEPSLIB_UNIX)
-#error "must define one of DEPSLIB_WINDOWS or DEPSLIB_UNIX"
+    #error "must define one of DEPSLIB_WINDOWS or DEPSLIB_UNIX"
 #endif
 
 #ifdef DEPSLIB_WINDOWS
-#define USE_PATHUNIX
-#define PATH_DELIM '\\'
-#define OS_NT
-#define DOWNSHIFT_PATHS
+    #define USE_PATHUNIX
+    #define PATH_DELIM '\\'
+    #define OS_NT
+    #define DOWNSHIFT_PATHS
 #endif
 
 #ifdef DEPSLIB_UNIX
-#define USE_FILEUNIX
-#define USE_PATHUNIX
-#define PATH_DELIM '/'
+    #define USE_FILEUNIX
+    #define USE_PATHUNIX
+    #define PATH_DELIM '/'
 #endif
 
 #define DEBUG_BINDSCAN 0
@@ -44,13 +44,13 @@
 
 #define USE_CACHE
 
-extern const char *search(const char *source, const char *_header, time_t *time);
+extern const char * search(const char * source, const char * _header, time_t * time);
 
 #ifdef DBALLOC
-extern void *_db_malloc(size_t siz, char *file, int line);
-extern void *_db_realloc(void *ptr, size_t siz, char *file, int line);
-extern void _db_free(void *ptr, char *file, int line);
-#define malloc(siz) _db_malloc(siz,__FILE__,__LINE__)
-#define realloc(str,siz) _db_realloc(str,siz,__FILE__,__LINE__)
-#define free(str) _db_free(str,__FILE__,__LINE__)
+    extern void * _db_malloc(size_t siz, char * file, int line);
+    extern void * _db_realloc(void * ptr, size_t siz, char * file, int line);
+    extern void _db_free(void * ptr, char * file, int line);
+    #define malloc(siz) _db_malloc(siz,__FILE__,__LINE__)
+    #define realloc(str,siz) _db_realloc(str,siz,__FILE__,__LINE__)
+    #define free(str) _db_free(str,__FILE__,__LINE__)
 #endif

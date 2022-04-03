@@ -5,7 +5,7 @@
 #include "wx/wxprec.h"
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+    #include "wx/wx.h"
 #endif
 
 #include "wx/dialog.h"
@@ -15,12 +15,12 @@
 
 class wxSpellCheckDialogInterface : public wxDialog, public wxSpellCheckUserInterface
 {
-public:
-    wxSpellCheckDialogInterface(wxWindow *parent, wxSpellCheckEngineInterface* SpellChecker = NULL);
-    virtual ~wxSpellCheckDialogInterface();
+    public:
+        wxSpellCheckDialogInterface(wxWindow * parent, wxSpellCheckEngineInterface * SpellChecker = NULL);
+        virtual ~wxSpellCheckDialogInterface();
 
-public:
-    virtual int PresentSpellCheckUserInterface(const wxString& strMisspelling);
+    public:
+        virtual int PresentSpellCheckUserInterface(const wxString & strMisspelling);
 };
 
 #endif  // __SPELL_CHECK_DIALOG_INTERFACE__

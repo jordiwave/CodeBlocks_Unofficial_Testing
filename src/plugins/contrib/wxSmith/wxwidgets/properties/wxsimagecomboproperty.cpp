@@ -29,14 +29,14 @@
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,wxArrayString)
 
-wxsImageComboProperty::wxsImageComboProperty(const wxString& PGName,const wxString& _DataName,const wxString& _DataSubName,long _Offset,int Priority):
-    wxsCustomEditorProperty(PGName,_DataName,Priority),
+wxsImageComboProperty::wxsImageComboProperty(const wxString & PGName, const wxString & _DataName, const wxString & _DataSubName, long _Offset, int Priority):
+    wxsCustomEditorProperty(PGName, _DataName, Priority),
     Offset(_Offset),
     DataSubName(_DataSubName),
     DataName(_DataName)
 {}
 
-bool wxsImageComboProperty::ShowEditor(wxsPropertyContainer* Object)
+bool wxsImageComboProperty::ShowEditor(wxsPropertyContainer * Object)
 {
     wxsImageComboEditorDlg Dlg(0);
     return Dlg.Execute(VALUE);
@@ -49,21 +49,22 @@ bool wxsImageComboProperty::ShowEditor(wxsPropertyContainer* Object)
  * \return bool
  *
  */
-bool wxsImageComboProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsImageComboProperty::XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
     VALUE.Clear();
 
-    if ( !Element )
+    if (!Element)
     {
         return false;
     }
 
-    for ( TiXmlElement* Item = Element->FirstChildElement(cbU2C(DataSubName));
+    for (TiXmlElement * Item = Element->FirstChildElement(cbU2C(DataSubName));
             Item;
-            Item = Item->NextSiblingElement(cbU2C(DataSubName)) )
+            Item = Item->NextSiblingElement(cbU2C(DataSubName)))
     {
-        const char* Text = Item->GetText();
-        if ( Text )
+        const char * Text = Item->GetText();
+
+        if (Text)
         {
             VALUE.Add(cbC2U(Text));
         }
@@ -72,6 +73,7 @@ bool wxsImageComboProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* E
             VALUE.Add(wxEmptyString);
         }
     }
+
     return true;
 }
 
@@ -82,13 +84,15 @@ bool wxsImageComboProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* E
  * \return bool
  *
  */
-bool wxsImageComboProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsImageComboProperty::XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
     size_t Count = VALUE.Count();
-    for ( size_t i = 0; i < Count; i++ )
+
+    for (size_t i = 0; i < Count; i++)
     {
-        XmlSetString(Element,VALUE[i],DataSubName);
+        XmlSetString(Element, VALUE[i], DataSubName);
     }
+
     return Count != 0;
 }
 
@@ -99,16 +103,23 @@ bool wxsImageComboProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* 
  * \return bool
  *
  */
-bool wxsImageComboProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsImageComboProperty::PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
     VALUE.Clear();
     Stream->SubCategory(GetDataName());
-    for(;;)
+
+    for (;;)
     {
         wxString Item;
-        if ( !Stream->GetString(DataSubName,Item,wxEmptyString) ) break;
+
+        if (!Stream->GetString(DataSubName, Item, wxEmptyString))
+        {
+            break;
+        }
+
         VALUE.Add(Item);
     }
+
     Stream->PopCategory();
     return true;
 }
@@ -120,14 +131,16 @@ bool wxsImageComboProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPrope
  * \return bool
  *
  */
-bool wxsImageComboProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsImageComboProperty::PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
     Stream->SubCategory(GetDataName());
     size_t Count = VALUE.GetCount();
-    for ( size_t i=0; i<Count; i++ )
+
+    for (size_t i = 0; i < Count; i++)
     {
-        Stream->PutString(DataSubName,VALUE[i],wxEmptyString);
+        Stream->PutString(DataSubName, VALUE[i], wxEmptyString);
     }
+
     Stream->PopCategory();
     return true;
 }
@@ -138,27 +151,30 @@ bool wxsImageComboProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsProp
  * \return wxString
  *
  */
-wxString wxsImageComboProperty::GetStr(wxsPropertyContainer* Object)
+wxString wxsImageComboProperty::GetStr(wxsPropertyContainer * Object)
 {
     wxString Result;
     size_t Count = VALUE.Count();
 
-    if ( Count == 0 )
+    if (Count == 0)
     {
         return _("Click to add items");
     }
 
-    for ( size_t i = 0; i < Count; i++ )
+    for (size_t i = 0; i < Count; i++)
     {
         wxString Item = VALUE[i];
-        Item.Replace(_T("\""),_T("\\\""));
-        if ( i > 0 )
+        Item.Replace(_T("\""), _T("\\\""));
+
+        if (i > 0)
         {
             Result.Append(_T(' '));
         }
+
         Result.Append(wxEmptyString);
         Result.Append(Item);
         Result.Append(wxEmptyString);
     }
+
     return Result;
 }

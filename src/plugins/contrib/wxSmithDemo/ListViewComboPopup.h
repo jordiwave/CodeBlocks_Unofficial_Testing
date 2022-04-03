@@ -2,33 +2,33 @@
 #define LISTVIEWCOMBOPOPUP_H
 
 #ifndef WX_PRECOMP
-//(*HeadersPCH(ListViewComboPopup)
-//*)
+    //(*HeadersPCH(ListViewComboPopup)
+    //*)
 #endif
 //(*Headers(ListViewComboPopup)
 //*)
 
 class ListViewComboPopup: public wxComboPopup
 {
-public:
+    public:
 
-    ListViewComboPopup(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
-    virtual ~ListViewComboPopup();
+        ListViewComboPopup(wxWindow * parent, wxWindowID id = wxID_ANY, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize);
+        virtual ~ListViewComboPopup();
 
-    //(*Declarations(ListViewComboPopup)
-    //*)
+        //(*Declarations(ListViewComboPopup)
+        //*)
 
-protected:
+    protected:
 
-    //(*Identifiers(ListViewComboPopup)
-    //*)
+        //(*Identifiers(ListViewComboPopup)
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(ListViewComboPopup)
-    //*)
+        //(*Handlers(ListViewComboPopup)
+        //*)
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

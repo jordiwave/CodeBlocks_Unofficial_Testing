@@ -10,15 +10,15 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-#include <wx/dir.h>
-#include <wx/settings.h>
+    #include <wx/dir.h>
+    #include <wx/settings.h>
 
-#include "globals.h"
-#include "cbeditor.h"
-#include "configmanager.h"
-#include "logmanager.h"
-#include "filemanager.h"
-#include "manager.h"
+    #include "globals.h"
+    #include "cbeditor.h"
+    #include "configmanager.h"
+    #include "logmanager.h"
+    #include "filemanager.h"
+    #include "manager.h"
 #endif
 
 #include <wx/regex.h>
@@ -32,18 +32,22 @@
 #include "editorlexerloader.h"
 #include "filefilters.h"
 
-EditorColourSet::EditorColourSet(const wxString& setName)
+EditorColourSet::EditorColourSet(const wxString & setName)
     : m_Name(setName)
 {
     LoadAvailableSets();
 
     if (setName.IsEmpty())
+    {
         m_Name = COLORSET_DEFAULT;
+    }
     else
+    {
         Load();
+    }
 }
 
-EditorColourSet::EditorColourSet(const EditorColourSet& other) :// copy ctor
+EditorColourSet::EditorColourSet(const EditorColourSet & other) : // copy ctor
     m_Name(other.m_Name),
     m_PlainTextLexerID(other.m_PlainTextLexerID)
 {
@@ -51,15 +55,16 @@ EditorColourSet::EditorColourSet(const EditorColourSet& other) :// copy ctor
 
     for (OptionSetsMap::const_iterator it = other.m_Sets.begin(); it != other.m_Sets.end(); ++it)
     {
-        OptionSet& mset = m_Sets[it->first];
-
+        OptionSet & mset = m_Sets[it->first];
         mset.m_Langs = it->second.m_Langs;
         mset.m_Lexers = it->second.m_Lexers;
+
         for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
         {
             mset.m_Keywords[i] = it->second.m_Keywords[i];
             mset.m_originalKeywords[i] = it->second.m_originalKeywords[i];
         }
+
         mset.m_FileMasks = it->second.m_FileMasks;
         mset.m_originalFileMasks = it->second.m_originalFileMasks;
         mset.m_SampleCode = it->second.m_SampleCode;
@@ -68,7 +73,8 @@ EditorColourSet::EditorColourSet(const EditorColourSet& other) :// copy ctor
         mset.m_ErrorLine = it->second.m_ErrorLine;
         mset.comment = it->second.comment;
         mset.m_CaseSensitive = it->second.m_CaseSensitive;
-        const OptionColours& value = it->second.m_Colours;
+        const OptionColours & value = it->second.m_Colours;
+
         for (unsigned int i = 0; i < value.GetCount(); ++i)
         {
             AddOption(it->first, value[i]);
@@ -92,6 +98,7 @@ void EditorColourSet::ClearAllOptionColours()
             delete (*vec_it);
         }
     }
+
     m_Sets.clear();
 }
 
@@ -99,70 +106,84 @@ void EditorColourSet::LoadAvailableSets()
 {
     // no need for syntax highlighting if batch building
     if (Manager::IsBatchBuild())
+    {
         return;
+    }
 
     wxDir dir;
     wxString filename;
-    FileManager *fm = FileManager::Get();
-    std::list<LoaderBase*> loaders;
+    FileManager * fm = FileManager::Get();
+    std::list<LoaderBase *> loaders;
     int count = 0;
-
     // user paths first
     wxString path = ConfigManager::GetFolder(sdDataUser) + _T("/lexers/");
+
     if (wxDirExists(path) && dir.Open(path))
     {
         Manager::Get()->GetLogManager()->Log(F(_("Scanning for lexers in %s..."), path.wx_str()));
         bool ok = dir.GetFirst(&filename, _T("lexer_*.xml"), wxDIR_FILES);
+
         while (ok)
         {
             loaders.push_back(fm->Load(path + filename));
             ok = dir.GetNext(&filename);
             ++count;
         }
+
         Manager::Get()->GetLogManager()->Log(F(_("Found %d lexers"), count));
         count = 0;
     }
 
     // global paths next
     path = ConfigManager::GetFolder(sdDataGlobal) + _T("/lexers/");
+
     if (wxDirExists(path) && dir.Open(path))
     {
         Manager::Get()->GetLogManager()->Log(F(_("Scanning for lexers in %s..."), path.wx_str()));
         bool ok = dir.GetFirst(&filename, _T("lexer_*.xml"), wxDIR_FILES);
+
         while (ok)
         {
             loaders.push_back(fm->Load(path + filename));
             ok = dir.GetNext(&filename);
             ++count;
         }
+
         Manager::Get()->GetLogManager()->Log(F(_("Found %d lexers"), count));
     }
 
     EditorLexerLoader lex(this);
-    for (std::list<LoaderBase*>::iterator it = loaders.begin(); it != loaders.end(); ++it)
+
+    for (std::list<LoaderBase *>::iterator it = loaders.begin(); it != loaders.end(); ++it)
+    {
         lex.Load(*it);
+    }
 
     ::Delete(loaders);
-
 
     for (OptionSetsMap::iterator it = m_Sets.begin(); it != m_Sets.end(); ++it)
     {
         wxString lang = it->second.m_Langs;
+
         if (lang.IsEmpty())
+        {
             continue;
+        }
 
         // keep the original filemasks and keywords, so we know what needs saving later
         for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
         {
             it->second.m_originalKeywords[i] = it->second.m_Keywords[i];
         }
-        it->second.m_originalFileMasks = it->second.m_FileMasks;
 
+        it->second.m_originalFileMasks = it->second.m_FileMasks;
         // remove old settings, no longer used
         unsigned int i = 0;
+
         while (i < it->second.m_Colours.GetCount())
         {
-            OptionColour* opt = it->second.m_Colours.Item(i);
+            OptionColour * opt = it->second.m_Colours.Item(i);
+
             // valid values are:
             if (opt->value < 0 &&               // styles >= 0
                     opt->value != cbSELECTION &&    // cbSELECTION
@@ -172,16 +193,18 @@ void EditorColourSet::LoadAvailableSets()
                 delete opt;
             }
             else
+            {
                 ++i;
+            }
         }
     }
 }
 
-HighlightLanguage EditorColourSet::AddHighlightLanguage(int lexer, const wxString& name)
+HighlightLanguage EditorColourSet::AddHighlightLanguage(int lexer, const wxString & name)
 {
-    if (   lexer < wxSCI_LEX_NULL
+    if (lexer < wxSCI_LEX_NULL
             || lexer >  wxSCI_LEX_LAST // this is a C::B extension to wxscintilla.h
-            || name.IsEmpty() )
+            || name.IsEmpty())
     {
         return HL_NONE;
     }
@@ -189,39 +212,57 @@ HighlightLanguage EditorColourSet::AddHighlightLanguage(int lexer, const wxStrin
     // fix name to be XML compliant
     wxString newID;
     size_t pos = 0;
+
     while (pos < name.Length())
     {
         wxChar ch = name[pos];
-        if      (wxIsalnum(ch) || ch == _T('_'))
-            newID.Append(ch); // valid character
-        else if (wxIsspace(ch))
-            newID.Append(_T('_')); // convert spaces to underscores
+
+        if (wxIsalnum(ch) || ch == _T('_'))
+        {
+            newID.Append(ch);    // valid character
+        }
+        else
+            if (wxIsspace(ch))
+            {
+                newID.Append(_T('_'));    // convert spaces to underscores
+            }
+
         ++pos;
     }
+
     // make sure it's not starting with a number or underscore.
     // if it is, prepend an 'A'
     if (wxIsdigit(newID.GetChar(0)) || newID.GetChar(0) == _T('_'))
+    {
         newID.Prepend(_T('A'));
+    }
 
     if (GetHighlightLanguage(newID) != HL_NONE)
+    {
         return HL_NONE;
+    }
 
     m_Sets[newID].m_Langs = name;
     m_Sets[newID].m_Lexers = lexer;
 
     if (lexer == wxSCI_LEX_NULL && name == wxT("Plain text files"))
+    {
         m_PlainTextLexerID = newID;
+    }
 
     return newID;
 }
 
-HighlightLanguage EditorColourSet::GetHighlightLanguage(const wxString& name)
+HighlightLanguage EditorColourSet::GetHighlightLanguage(const wxString & name)
 {
     for (OptionSetsMap::iterator it = m_Sets.begin(); it != m_Sets.end(); ++it)
     {
         if (it->second.m_Langs.CmpNoCase(name) == 0)
+        {
             return it->first;
+        }
     }
+
     return HL_NONE;
 }
 
@@ -232,13 +273,16 @@ HighlightLanguage EditorColourSet::GetHighlightLanguage(int lexer)
     for (OptionSetsMap::iterator it = m_Sets.begin(); it != m_Sets.end(); ++it)
     {
         if (it->second.m_Lexers == lexer)
+        {
             return it->first;
+        }
     }
+
     return HL_NONE;
 }
 
 // sorting helper function
-static int CompareStringNoCase(const wxString& first, const wxString& second)
+static int CompareStringNoCase(const wxString & first, const wxString & second)
 {
     return first.CmpNoCase(second);
 }
@@ -246,44 +290,63 @@ static int CompareStringNoCase(const wxString& first, const wxString& second)
 wxArrayString EditorColourSet::GetAllHighlightLanguages()
 {
     wxArrayString ret;
+
     for (OptionSetsMap::iterator it = m_Sets.begin(); it != m_Sets.end(); ++it)
     {
         // Make sure to skip the "plain text files", because we don't want it in the list. We
         // manually add "Plain text" to the appropriate places.
         if (!it->second.m_Langs.IsEmpty() && it->first != m_PlainTextLexerID)
+        {
             ret.Add(it->second.m_Langs);
+        }
     }
+
     ret.Sort(CompareStringNoCase);
     return ret;
 }
 
-void EditorColourSet::UpdateOptionsWithSameName(HighlightLanguage lang, OptionColour* base)
+void EditorColourSet::UpdateOptionsWithSameName(HighlightLanguage lang, OptionColour * base)
 {
     if (!base)
+    {
         return;
+    }
+
     // first find the index of this option
     int idx = -1;
-    OptionSet& mset = m_Sets[lang];
+    OptionSet & mset = m_Sets[lang];
+
     for (unsigned int i = 0; i < mset.m_Colours.GetCount(); ++i)
     {
-        OptionColour* opt = mset.m_Colours.Item(i);
+        OptionColour * opt = mset.m_Colours.Item(i);
+
         if (opt == base)
         {
             idx = i;
             break;
         }
     }
+
     if (idx == -1)
+    {
         return;
+    }
 
     // now loop again, but update the other options with the same name
     for (unsigned int i = 0; i < mset.m_Colours.GetCount(); ++i)
     {
         if ((int)i == idx)
-            continue; // skip the base option
-        OptionColour* opt = mset.m_Colours.Item(i);
+        {
+            continue;    // skip the base option
+        }
+
+        OptionColour * opt = mset.m_Colours.Item(i);
+
         if (!opt->name.Matches(base->name))
+        {
             continue;
+        }
+
         opt->fore       = base->fore;
         opt->back       = base->back;
         opt->bold       = base->bold;
@@ -292,21 +355,25 @@ void EditorColourSet::UpdateOptionsWithSameName(HighlightLanguage lang, OptionCo
     }
 }
 
-bool EditorColourSet::AddOption(HighlightLanguage lang, OptionColour* option, bool checkIfExists)
+bool EditorColourSet::AddOption(HighlightLanguage lang, OptionColour * option, bool checkIfExists)
 {
     if (lang == HL_NONE)
+    {
         lang = m_PlainTextLexerID;
+    }
 
     if (checkIfExists && GetOptionByValue(lang, option->value))
+    {
         return false;
+    }
 
-    OptionColours& colours =  m_Sets[lang].m_Colours;
+    OptionColours & colours =  m_Sets[lang].m_Colours;
     colours.Add(new OptionColour(*option));
     return true;
 }
 
 void EditorColourSet::AddOption(HighlightLanguage lang,
-                                const wxString&   name,
+                                const wxString  & name,
                                 int               value,
                                 wxColour          fore,
                                 wxColour          back,
@@ -316,9 +383,11 @@ void EditorColourSet::AddOption(HighlightLanguage lang,
                                 bool              isStyle)
 {
     if (lang == HL_NONE)
+    {
         lang = m_PlainTextLexerID;
+    }
 
-    OptionColour* opt = new OptionColour;
+    OptionColour * opt = new OptionColour;
     opt->name = name;
     opt->value = value;
     opt->fore = fore;
@@ -327,85 +396,114 @@ void EditorColourSet::AddOption(HighlightLanguage lang,
     opt->italics = italics;
     opt->underlined = underlined;
     opt->isStyle = isStyle;
-
     opt->originalfore = fore;
     opt->originalback = back;
     opt->originalbold = bold;
     opt->originalitalics = italics;
     opt->originalunderlined = underlined;
     opt->originalisStyle = isStyle;
-
     AddOption(lang, opt);
     delete opt;
 }
 
-OptionColour* EditorColourSet::GetOptionByName(HighlightLanguage lang, const wxString& name)
+OptionColour * EditorColourSet::GetOptionByName(HighlightLanguage lang, const wxString & name)
 {
     if (lang == HL_NONE)
+    {
         lang = m_PlainTextLexerID;
+    }
 
-    OptionSet& mset = m_Sets[lang];
+    OptionSet & mset = m_Sets[lang];
+
     for (unsigned int i = 0; i < mset.m_Colours.GetCount(); ++i)
     {
-        OptionColour* opt = mset.m_Colours.Item(i);
+        OptionColour * opt = mset.m_Colours.Item(i);
+
         if (opt->name == name)
+        {
             return opt;
+        }
     }
+
     return nullptr;
 }
 
-OptionColour* EditorColourSet::GetOptionByValue(HighlightLanguage lang, int value)
+OptionColour * EditorColourSet::GetOptionByValue(HighlightLanguage lang, int value)
 {
     if (lang == HL_NONE)
+    {
         lang = m_PlainTextLexerID;
+    }
 
-    OptionSet& mset = m_Sets[lang];
+    OptionSet & mset = m_Sets[lang];
+
     for (unsigned int i = 0; i < mset.m_Colours.GetCount(); ++i)
     {
-        OptionColour* opt = mset.m_Colours.Item(i);
+        OptionColour * opt = mset.m_Colours.Item(i);
+
         if (opt->value == value)
+        {
             return opt;
+        }
     }
+
     return nullptr;
 }
 
-OptionColour* EditorColourSet::GetOptionByIndex(HighlightLanguage lang, int index)
+OptionColour * EditorColourSet::GetOptionByIndex(HighlightLanguage lang, int index)
 {
     if (lang == HL_NONE)
+    {
         return m_Sets[m_PlainTextLexerID].m_Colours.Item(index);
+    }
+
     return m_Sets[lang].m_Colours.Item(index);
 }
 
 int EditorColourSet::GetOptionCount(HighlightLanguage lang)
 {
     if (lang != HL_NONE)
+    {
         return m_Sets[lang].m_Colours.GetCount();
+    }
     else
+    {
         return m_Sets[m_PlainTextLexerID].m_Colours.GetCount();
+    }
 }
 
 // Encapsulate the getter for the default option. The default option
 // is the option named "Default" and if there is no such option we use
 // the option with value/index equal to 0.
-OptionColour* EditorColourSet::GetDefaultOption(HighlightLanguage lang)
+OptionColour * EditorColourSet::GetDefaultOption(HighlightLanguage lang)
 {
     if (lang == HL_NONE)
+    {
         lang = m_PlainTextLexerID;
+    }
 
-    OptionSet& mset = m_Sets[lang];
-    OptionColour *defaultOpt = nullptr;
+    OptionSet & mset = m_Sets[lang];
+    OptionColour * defaultOpt = nullptr;
+
     for (size_t i = 0; i < mset.m_Colours.GetCount(); ++i)
     {
-        OptionColour* opt = mset.m_Colours.Item(i);
+        OptionColour * opt = mset.m_Colours.Item(i);
+
         if (opt->name == wxT("Default"))
+        {
             return opt;
+        }
+
         if (opt->value == 0)
+        {
             defaultOpt = opt;
+        }
     }
+
     return defaultOpt;
 }
 
-HighlightLanguage EditorColourSet::GetLanguageForFilename(const wxString& filename)
+HighlightLanguage EditorColourSet::GetLanguageForFilename(const wxString & filename)
 {
     // convert filename to lowercase first (m_FileMasks already contains
     // lowercase-only strings) and allow for filemasks like Makefile.*:
@@ -417,37 +515,62 @@ HighlightLanguage EditorColourSet::GetLanguageForFilename(const wxString& filena
         for (unsigned int x = 0; x < it->second.m_FileMasks.GetCount(); ++x)
         {
             if (lfname.Matches(it->second.m_FileMasks.Item(x)))
+            {
                 return it->first;
+            }
         }
     }
+
     // parse #! directive
-    if ( wxFileExists(filename) )
+    if (wxFileExists(filename))
     {
         wxFileInputStream input(filename);
         wxTextInputStream text(input);
         wxString line;
-        if (input.IsOk() && !input.Eof() )
+
+        if (input.IsOk() && !input.Eof())
+        {
             line = text.ReadLine();
+        }
+
         if (!line.IsEmpty())
         {
             wxRegEx reSheBang("#![[:blank:]]*([a-zA-Z/]+)[[:blank:]]*([a-zA-Z/]*)");
+
             if (reSheBang.Matches(line))
             {
                 wxString prog = reSheBang.GetMatch(line, 1);
+
                 if (prog.EndsWith(wxT("env")))
+                {
                     prog = reSheBang.GetMatch(line, 2);
+                }
+
                 if (prog.Find(wxT('/')) != wxNOT_FOUND)
+                {
                     prog = prog.AfterLast(wxT('/'));
+                }
+
                 if (prog == wxT("sh"))
+                {
                     prog = wxT("bash");
+                }
+
                 HighlightLanguage lang = GetHighlightLanguage(prog);
+
                 if (lang !=  HL_NONE)
+                {
                     return lang;
+                }
             }
-            else if (line.Trim().StartsWith(wxT("<?xml")))
-                return GetHighlightLanguage(wxT("XML"));
+            else
+                if (line.Trim().StartsWith(wxT("<?xml")))
+                {
+                    return GetHighlightLanguage(wxT("XML"));
+                }
         }
     }
+
     // standard headers
     const wxString cppNames = wxT("|"
                                   "algorithm|"  "atomic|"       "array|"              "bitset|"
@@ -463,14 +586,16 @@ HighlightLanguage EditorColourSet::GetLanguageForFilename(const wxString& filena
                                   "strstream|"  "system_error|" "thread|"             "tuple|"
                                   "typeinfo|"   "type_traits|"  "unordered_map|"      "unordered_set|"
                                   "utility|"    "valarray|"     "vector|"
-
                                   "cassert|"   "cctype|"  "cerrno|"  "cfenv|"    "cfloat|"
                                   "cinttypes|" "ciso646|" "climits|" "clocale|"  "cmath|"
                                   "csetjmp|"   "csignal|" "cstdarg|" "cstdbool|" "cstddef|"
                                   "cstdint|"   "cstdio|"  "cstdlib|" "cstring|"  "ctgmath|"
-                                  "ctime|"     "cuchar|"  "cwchar|"  "cwctype|"            );
+                                  "ctime|"     "cuchar|"  "cwchar|"  "cwctype|");
+
     if (cppNames.Find(wxT("|") + lfname + wxT("|")) != wxNOT_FOUND)
+    {
         return GetHighlightLanguage(wxT("C/C++"));
+    }
 
     return HL_NONE;
 }
@@ -480,41 +605,52 @@ wxString EditorColourSet::GetLanguageName(HighlightLanguage lang)
     if (lang != HL_NONE && lang != m_PlainTextLexerID)
     {
         wxString name = m_Sets[lang].m_Langs;
+
         if (!name.empty())
+        {
             return name;
+        }
     }
 
     return _("Plain text");
 }
 
-void EditorColourSet::DoApplyStyle(cbStyledTextCtrl* control, int value, OptionColour* option)
+void EditorColourSet::DoApplyStyle(cbStyledTextCtrl * control, int value, OptionColour * option)
 {
     // option->value is ignored here...
     // value is used instead
     if (option->fore != wxNullColour)
+    {
         control->StyleSetForeground(value, option->fore);
+    }
+
     if (option->back != wxNullColour)
+    {
         control->StyleSetBackground(value, option->back);
+    }
+
     control->StyleSetBold(value, option->bold);
     control->StyleSetItalic(value, option->italics);
     control->StyleSetUnderline(value, option->underlined);
 }
 
-HighlightLanguage EditorColourSet::Apply(cbEditor* editor, HighlightLanguage lang, bool colourise)
+HighlightLanguage EditorColourSet::Apply(cbEditor * editor, HighlightLanguage lang, bool colourise)
 {
     if (!editor)
+    {
         return HL_NONE;
+    }
 
     if (lang == HL_AUTO)
+    {
         lang = GetLanguageForFilename(editor->GetFilename());
+    }
 
-    const bool isC = (   Manager::Get()->GetConfigManager(wxT("editor"))->ReadBool(wxT("no_stl_in_c"), true)
-                         && lang == GetHighlightLanguage(wxT("C/C++"))
-                         && editor->GetFilename().Lower().EndsWith(wxT(".c")) );
-
+    const bool isC = (Manager::Get()->GetConfigManager(wxT("editor"))->ReadBool(wxT("no_stl_in_c"), true)
+                      && lang == GetHighlightLanguage(wxT("C/C++"))
+                      && editor->GetFilename().Lower().EndsWith(wxT(".c")));
     Apply(lang, editor->GetLeftSplitViewControl(),  isC, colourise);
     Apply(lang, editor->GetRightSplitViewControl(), isC, colourise);
-
     return lang;
 }
 
@@ -523,51 +659,66 @@ HighlightLanguage EditorColourSet::Apply(cbEditor* editor, HighlightLanguage lan
 // Encapsulate the getter for the default option. The default option
 // is the option named "Default" and if there is no such option we use
 // the option with value/index equal to 0.
-static OptionColour* GetDefaultOption(OptionSet& mset)
+static OptionColour * GetDefaultOption(OptionSet & mset)
 {
-    OptionColour *defaultOpt = nullptr;
+    OptionColour * defaultOpt = nullptr;
+
     for (size_t i = 0; i < mset.m_Colours.GetCount(); ++i)
     {
-        OptionColour* opt = mset.m_Colours.Item(i);
+        OptionColour * opt = mset.m_Colours.Item(i);
+
         if (opt->name == wxT("Default"))
+        {
             return opt;
+        }
+
         if (opt->value == 0)
+        {
             defaultOpt = opt;
+        }
     }
+
     return defaultOpt;
 }
 
-void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control, bool isC,
+void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl * control, bool isC,
                             bool colourise)
 {
     if (!control)
+    {
         return;
+    }
 
     if (lang == HL_NONE)
     {
         if (m_PlainTextLexerID.empty())
+        {
             return;
+        }
+
         lang = m_PlainTextLexerID;
     }
 
     // First we set the style for the "Default" style, then the call to StyleClearAll would
     // replicate it to all the other styles.
-    OptionSet& mset = m_Sets[lang];
-    OptionColour* defaults = ::GetDefaultOption(mset);
+    OptionSet & mset = m_Sets[lang];
+    OptionColour * defaults = ::GetDefaultOption(mset);
+
     if (defaults)
+    {
         DoApplyStyle(control, wxSCI_STYLE_DEFAULT, defaults);
+    }
+
     control->StyleClearAll();
-
     control->SetLexer(mset.m_Lexers);
-
     // Calling StyleClearAll above clears the style for the line numbers, so we have to re-apply it.
-    ColourManager *colours = Manager::Get()->GetColourManager();
+    ColourManager * colours = Manager::Get()->GetColourManager();
     control->StyleSetForeground(wxSCI_STYLE_LINENUMBER, colours->GetColour(wxT("editor_linenumbers_fg")));
     control->StyleSetBackground(wxSCI_STYLE_LINENUMBER, colours->GetColour(wxT("editor_linenumbers_bg")));
 
     for (unsigned int i = 0; i < mset.m_Colours.GetCount(); ++i)
     {
-        OptionColour* opt = mset.m_Colours.Item(i);
+        OptionColour * opt = mset.m_Colours.Item(i);
 
         if (opt->isStyle)
         {
@@ -579,73 +730,85 @@ void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control, b
             {
                 control->SetCaretLineBackground(opt->back);
             }
-            else if (opt->value == cbSELECTION)
-            {
-                if (opt->back != wxNullColour)
+            else
+                if (opt->value == cbSELECTION)
                 {
-                    control->SetSelBackground(true, opt->back);
-//                    Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/selection_colour"), opt->back);
-                }
-                else
-                    control->SetSelBackground(false, wxColour(0xD9, 0xD9, 0xD9));
+                    if (opt->back != wxNullColour)
+                    {
+                        control->SetSelBackground(true, opt->back);
+                        //                    Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/selection_colour"), opt->back);
+                    }
+                    else
+                    {
+                        control->SetSelBackground(false, wxColour(0xD9, 0xD9, 0xD9));
+                    }
 
-                if (opt->fore != wxNullColour)
-                {
-                    control->SetSelForeground(true, opt->fore);
-//                    Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/selection_fgcolour"), opt->fore);
+                    if (opt->fore != wxNullColour)
+                    {
+                        control->SetSelForeground(true, opt->fore);
+                        //                    Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/selection_fgcolour"), opt->fore);
+                    }
+                    else
+                    {
+                        control->SetSelForeground(false, *wxBLACK);
+                    }
                 }
-                else
-                    control->SetSelForeground(false, *wxBLACK);
-            }
-//            else
-//            {
-//                control->MarkerDefine(-opt->value, 1);
-//                control->MarkerSetBackground(-opt->value, opt->back);
-//            }
+
+            //            else
+            //            {
+            //                control->MarkerDefine(-opt->value, 1);
+            //                control->MarkerSetBackground(-opt->value, opt->back);
+            //            }
         }
     }
+
     for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
     {
         if (!isC || i != 1) // exclude stl highlights for C
+        {
             control->SetKeyWords(i, mset.m_Keywords[i]);
+        }
     }
 
     if (colourise)
-        control->Colourise(0, -1); // the *most* important part!
+    {
+        control->Colourise(0, -1);    // the *most* important part!
+    }
 }
 
 void EditorColourSet::Save()
 {
     // no need for syntax highlighting if batch building
     if (Manager::IsBatchBuild())
+    {
         return;
+    }
 
     wxString key;
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("editor"));
     //FIXME: Commenting out the following line is no definite cure, but it hides the annoying disappearing colourset for now
     //NOTE (mandrav): uncommenting it doesn't seem to cause any trouble (at least now). What was the problem?
     cfg->DeleteSubPath(_T("/colour_sets/") + m_Name);
-
     // write the theme name
     cfg->Write(_T("/colour_sets/") + m_Name + _T("/name"), m_Name);
 
     for (OptionSetsMap::iterator it = m_Sets.begin(); it != m_Sets.end(); ++it)
     {
         if (it->first == HL_NONE || it->first == HL_AUTO)
+        {
             continue;
+        }
+
         wxString lang = it->first;
-
         bool gsaved = false;
-
         key.Clear();
         key << _T("/colour_sets/") << m_Name << _T('/') << lang;
+
         for (unsigned int i = 0; i < it->second.m_Colours.GetCount(); ++i)
         {
-            OptionColour* opt = it->second.m_Colours.Item(i);
+            OptionColour * opt = it->second.m_Colours.Item(i);
             wxString tmpKey;
             tmpKey << key << _T("/style") << wxString::Format(_T("%u"), i);
-
             bool saved = false;
 
             if (opt->fore != opt->originalfore)
@@ -653,26 +816,31 @@ void EditorColourSet::Save()
                 cfg->Write(tmpKey + _T("/fore"), opt->fore);
                 saved = true;
             }
+
             if (opt->back != opt->originalback)
             {
                 cfg->Write(tmpKey + _T("/back"), opt->back);
                 saved = true;
             }
+
             if (opt->bold != opt->originalbold)
             {
                 cfg->Write(tmpKey + _T("/bold"),       opt->bold);
                 saved = true;
             }
+
             if (opt->italics != opt->originalitalics)
             {
                 cfg->Write(tmpKey + _T("/italics"),    opt->italics);
                 saved = true;
             }
+
             if (opt->underlined != opt->originalunderlined)
             {
                 cfg->Write(tmpKey + _T("/underlined"), opt->underlined);
                 saved = true;
             }
+
             if (opt->isStyle != opt->originalisStyle)
             {
                 cfg->Write(tmpKey + _T("/isStyle"),    opt->isStyle);
@@ -685,7 +853,9 @@ void EditorColourSet::Save()
                 gsaved = true;
             }
         }
+
         wxString tmpkey;
+
         for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
         {
             if (it->second.m_Keywords[i] != it->second.m_originalKeywords[i])
@@ -695,9 +865,11 @@ void EditorColourSet::Save()
                 gsaved = true;
             }
         }
+
         tmpkey.Printf(_T("%s/editor/filemasks"), key.c_str());
         wxString tmparr = GetStringFromArray(it->second.m_FileMasks, _T(","));
         wxString tmparrorig = GetStringFromArray(it->second.m_originalFileMasks, _T(","));
+
         if (tmparr != tmparrorig)
         {
             cfg->Write(tmpkey, tmparr);
@@ -705,7 +877,9 @@ void EditorColourSet::Save()
         }
 
         if (gsaved)
+        {
             cfg->Write(key + _T("/name"), it->second.m_Langs);
+        }
     }
 }
 
@@ -713,30 +887,34 @@ void EditorColourSet::Load()
 {
     // no need for syntax highlighting if batch building
     if (Manager::IsBatchBuild())
+    {
         return;
+    }
 
     static bool s_notifiedUser = false;
-
     wxString key;
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("editor"));
     // read the theme name
     m_Name = cfg->Read(_T("/colour_sets/") + m_Name + _T("/name"), m_Name);
-
     int x = 0;
+
     for (OptionSetsMap::iterator it = m_Sets.begin(); it != m_Sets.end(); ++it)
     {
         if (it->first == HL_NONE || it->first == HL_AUTO)
+        {
             continue;
+        }
 
         // look for old-style configuration
         key.Clear();
         key << _T("/colour_sets/") << m_Name << _T("/set") << wxString::Format(_T("%d"), x++);
+
         if (cfg->Exists(key + _T("/name")))
         {
             // old-style configuration
             // delete it and tell the user about it
             cfg->DeleteSubPath(key);
+
             if (!s_notifiedUser)
             {
                 cbMessageBox(_("The way editor syntax highlighting configuration is saved, has changed.\n"
@@ -746,14 +924,16 @@ void EditorColourSet::Load()
                              wxICON_INFORMATION);
                 s_notifiedUser = true;
             }
+
             continue;
         }
+
         // make sure we didn't create it accidentally
         cfg->DeleteSubPath(key);
-
         // new-style configuration key
         key.Clear();
         key << _T("/colour_sets/") << m_Name << _T('/') << it->first;
+
         if (!cfg->Exists(key + _T("/name")))
         {
             // make sure we didn't create it accidentally
@@ -765,43 +945,75 @@ void EditorColourSet::Load()
         {
             wxString tmpKey;
             tmpKey << key << _T("/style") << wxString::Format(_T("%u"), i);
+
             if (!cfg->Exists(tmpKey + _T("/name")))
             {
                 // make sure we didn't create it accidentally
                 cfg->DeleteSubPath(tmpKey);
                 continue;
             }
+
             wxString name = cfg->Read(tmpKey + _T("/name"));
+
             for (size_t j = 0; j < it->second.m_Colours.GetCount(); ++j)
             {
-                OptionColour* opt = it->second.m_Colours.Item(j);
+                OptionColour * opt = it->second.m_Colours.Item(j);
+
                 if (!opt || opt->name != name)
+                {
                     continue;
+                }
 
                 if (cfg->Exists(tmpKey + _T("/fore")))
+                {
                     opt->fore = cfg->ReadColour(tmpKey     + _T("/fore"),       opt->fore);
+                }
+
                 if (cfg->Exists(tmpKey + _T("/back")))
+                {
                     opt->back = cfg->ReadColour(tmpKey     + _T("/back"),       opt->back);
+                }
+
                 if (cfg->Exists(tmpKey + _T("/bold")))
+                {
                     opt->bold = cfg->ReadBool(tmpKey       + _T("/bold"),       opt->bold);
+                }
+
                 if (cfg->Exists(tmpKey + _T("/italics")))
+                {
                     opt->italics = cfg->ReadBool(tmpKey    + _T("/italics"),    opt->italics);
+                }
+
                 if (cfg->Exists(tmpKey + _T("/underlined")))
+                {
                     opt->underlined = cfg->ReadBool(tmpKey + _T("/underlined"), opt->underlined);
+                }
+
                 if (cfg->Exists(tmpKey + _T("/isStyle")))
+                {
                     opt->isStyle = cfg->ReadBool(tmpKey    + _T("/isStyle"),    opt->isStyle);
+                }
             }
         }
+
         wxString tmpkey;
+
         for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
         {
             tmpkey.Printf(_T("%s/editor/keywords/set%d"), key.c_str(), i);
+
             if (cfg->Exists(tmpkey))
+            {
                 it->second.m_Keywords[i] = cfg->Read(tmpkey, wxEmptyString);
+            }
         }
+
         tmpkey.Printf(_T("%s/editor/filemasks"), key.c_str());
+
         if (cfg->Exists(tmpkey))
+        {
             it->second.m_FileMasks = GetArrayFromString(cfg->Read(tmpkey, wxEmptyString), _T(","));
+        }
     }
 }
 
@@ -809,46 +1021,59 @@ void EditorColourSet::Reset(HighlightLanguage lang)
 {
     // no need for syntax highlighting if batch building
     if (Manager::IsBatchBuild())
+    {
         return;
+    }
 
     wxString key;
     key << _T("/colour_sets/") << m_Name << _T('/') << lang;
+
     if (Manager::Get()->GetConfigManager(_T("editor"))->Exists(key + _T("/name")))
+    {
         Manager::Get()->GetConfigManager(_T("editor"))->DeleteSubPath(key);
+    }
 
     ClearAllOptionColours();
     LoadAvailableSets();
     Load();
 }
 
-wxString& EditorColourSet::GetKeywords(HighlightLanguage lang, int idx)
+wxString & EditorColourSet::GetKeywords(HighlightLanguage lang, int idx)
 {
     if (idx < 0 || idx > wxSCI_KEYWORDSET_MAX)
+    {
         idx = 0;
+    }
+
     return m_Sets[lang].m_Keywords[idx];
 }
 
-void EditorColourSet::SetKeywords(HighlightLanguage lang, int idx, const wxString& keywords)
+void EditorColourSet::SetKeywords(HighlightLanguage lang, int idx, const wxString & keywords)
 {
-    if (lang != HL_NONE && idx >=0 && idx <= wxSCI_KEYWORDSET_MAX)
+    if (lang != HL_NONE && idx >= 0 && idx <= wxSCI_KEYWORDSET_MAX)
     {
         wxString tmp(_T(' '), keywords.length()); // faster than using Alloc()
-
-        const wxChar *src = keywords.c_str();
-        wxStringCharType *dst = const_cast<wxStringCharType*>(tmp.wx_str());
+        const wxChar * src = keywords.c_str();
+        wxStringCharType * dst = const_cast<wxStringCharType *>(tmp.wx_str());
         wxChar c;
         size_t len = 0;
 
         while ((c = *src))
         {
             ++src;
+
             if (c > _T(' '))
+            {
                 *dst = c;
+            }
             else // white space
             {
                 *dst = _T(' ');
+
                 while (*src && *src < _T(' '))
+                {
                     ++src;
+                }
             }
 
             ++dst;
@@ -856,65 +1081,92 @@ void EditorColourSet::SetKeywords(HighlightLanguage lang, int idx, const wxStrin
         }
 
         tmp.Truncate(len);
-
-        OptionSet& mset = m_Sets[lang];
+        OptionSet & mset = m_Sets[lang];
         mset.m_Keywords[idx] = tmp;
     }
 }
 
-const wxArrayString& EditorColourSet::GetFileMasks(HighlightLanguage lang)
+const wxArrayString & EditorColourSet::GetFileMasks(HighlightLanguage lang)
 {
     return m_Sets[lang].m_FileMasks;
 }
 
-void EditorColourSet::SetFileMasks(HighlightLanguage lang, const wxString& masks, const wxString& separator)
+void EditorColourSet::SetFileMasks(HighlightLanguage lang, const wxString & masks, const wxString & separator)
 {
     if (lang == HL_NONE)
+    {
         lang = m_PlainTextLexerID;
+    }
 
     m_Sets[lang].m_FileMasks = GetArrayFromString(masks.Lower(), separator);
-
     // let's add these filemasks in the file filters master list ;)
     FileFilters::Add(wxString::Format(_("%s files"), m_Sets[lang].m_Langs.c_str()), masks);
 }
 
-wxString EditorColourSet::GetSampleCode(HighlightLanguage lang, int* breakLine, int* debugLine, int* errorLine)
+wxString EditorColourSet::GetSampleCode(HighlightLanguage lang, int * breakLine, int * debugLine, int * errorLine)
 {
     if (lang == HL_NONE)
+    {
         lang = m_PlainTextLexerID;
-    OptionSet& mset = m_Sets[lang];
+    }
+
+    OptionSet & mset = m_Sets[lang];
+
     if (breakLine)
+    {
         *breakLine = mset.m_BreakLine;
+    }
+
     if (debugLine)
+    {
         *debugLine = mset.m_DebugLine;
+    }
+
     if (errorLine)
+    {
         *errorLine = mset.m_ErrorLine;
+    }
 
     wxString shortname;
+
     if (mset.m_SampleCode.IsEmpty())
+    {
         shortname = _T("lexer_") + lang + _T(".sample");
+    }
     else
+    {
         shortname = mset.m_SampleCode;
+    }
 
     // user path first
     wxString path = ConfigManager::GetFolder(sdDataUser) + _T("/lexers/");
+
     if (wxFileExists(path + shortname))
+    {
         return path + shortname;
+    }
     else
     {
         // global path next
         path = ConfigManager::GetFolder(sdDataGlobal) + _T("/lexers/");
+
         if (wxFileExists(path + shortname))
+        {
             return path + shortname;
+        }
     }
+
     return wxEmptyString;
 }
 
-void EditorColourSet::SetSampleCode(HighlightLanguage lang, const wxString& sample, int breakLine, int debugLine, int errorLine)
+void EditorColourSet::SetSampleCode(HighlightLanguage lang, const wxString & sample, int breakLine, int debugLine, int errorLine)
 {
     if (lang == HL_NONE)
+    {
         lang = m_PlainTextLexerID;
-    OptionSet& mset = m_Sets[lang];
+    }
+
+    OptionSet & mset = m_Sets[lang];
     mset.m_SampleCode = sample;
     mset.m_BreakLine = breakLine;
     mset.m_DebugLine = debugLine;
@@ -924,7 +1176,9 @@ void EditorColourSet::SetSampleCode(HighlightLanguage lang, const wxString& samp
 void EditorColourSet::SetCommentToken(HighlightLanguage lang, CommentToken token)
 {
     if (lang == HL_NONE)
+    {
         lang = m_PlainTextLexerID;
+    }
 
     m_Sets[lang].comment = token;
 }
@@ -943,55 +1197,69 @@ CommentToken EditorColourSet::GetCommentToken(HighlightLanguage lang)
     com.boxCommentEnd             = _T("");
 
     if (lang != HL_NONE)
+    {
         com = m_Sets[lang].comment;
+    }
 
     return com;
 }
 
 void EditorColourSet::SetCaseSensitivity(HighlightLanguage lang, bool CaseSensitive)
 {
-    if ( lang == HL_NONE )
+    if (lang == HL_NONE)
+    {
         lang = m_PlainTextLexerID;
+    }
 
     m_Sets[lang].m_CaseSensitive = CaseSensitive;
 }
 
 bool EditorColourSet::GetCaseSensitivity(HighlightLanguage lang)
 {
-    if ( lang == HL_NONE )
+    if (lang == HL_NONE)
+    {
         lang = m_PlainTextLexerID;
+    }
 
     return m_Sets[lang].m_CaseSensitive;
 }
 
-void EditorColourSet::SetStringLexerStyles(HighlightLanguage lang, const std::set<int> &styles)
+void EditorColourSet::SetStringLexerStyles(HighlightLanguage lang, const std::set<int> & styles)
 {
-    if ( lang == HL_NONE )
+    if (lang == HL_NONE)
+    {
         lang = m_PlainTextLexerID;
+    }
 
     cbStyledTextCtrl::GetStringLexerStyles()[m_Sets[lang].m_Lexers] = styles;
 }
 
-void EditorColourSet::SetCommentLexerStyles(HighlightLanguage lang, const std::set<int> &styles)
+void EditorColourSet::SetCommentLexerStyles(HighlightLanguage lang, const std::set<int> & styles)
 {
-    if ( lang == HL_NONE )
+    if (lang == HL_NONE)
+    {
         lang = m_PlainTextLexerID;
+    }
 
     cbStyledTextCtrl::GetCommentLexerStyles()[m_Sets[lang].m_Lexers] = styles;
 }
 
-void EditorColourSet::SetCharacterLexerStyles(HighlightLanguage lang, const std::set<int> &styles)
+void EditorColourSet::SetCharacterLexerStyles(HighlightLanguage lang, const std::set<int> & styles)
 {
-    if ( lang == HL_NONE )
+    if (lang == HL_NONE)
+    {
         lang = m_PlainTextLexerID;
+    }
 
     cbStyledTextCtrl::GetCharacterLexerStyles()[m_Sets[lang].m_Lexers] = styles;
 }
 
-void EditorColourSet::SetPreprocessorLexerStyles(HighlightLanguage lang, const std::set<int> &styles)
+void EditorColourSet::SetPreprocessorLexerStyles(HighlightLanguage lang, const std::set<int> & styles)
 {
-    if ( lang == HL_NONE )
+    if (lang == HL_NONE)
+    {
         lang = m_PlainTextLexerID;
+    }
 
     cbStyledTextCtrl::GetPreprocessorLexerStyles()[m_Sets[lang].m_Lexers] = styles;
 }

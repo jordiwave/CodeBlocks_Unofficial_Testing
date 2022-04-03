@@ -2,27 +2,12 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="CodeBlocks Workspace wx3.1.x (64 bit)">
 		<Project filename="CodeBlocks_wx31_64.cbp" active="1" />
-		<Project filename="tools/Addr2LineUI/Addr2LineUI_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
-		<Project filename="tools/cb_share_config/cb_share_config_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
-		<Project filename="tools/CBLauncher/CbLauncher_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
-		<Project filename="tools/cbp2make/cbp2make_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
-		<Project filename="plugins/displayevents/cbDisplayEvents_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
-		<Project filename="plugins/codecompletion/cctest_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
-		<Project filename="plugins/contrib/wxContribItems/wxContribItems_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
+		<Project filename="tools/Addr2LineUI/Addr2LineUI_wx31_64.cbp" />
+		<Project filename="tools/cb_share_config/cb_share_config_wx31_64.cbp" />
+		<Project filename="tools/CBLauncher/CbLauncher_wx31_64.cbp" />
+		<Project filename="tools/cbp2make/cbp2make_wx31_64.cbp" />
+		<Project filename="plugins/codecompletion/cctest_wx31_64.cbp" />
+		<Project filename="plugins/contrib/wxContribItems/wxContribItems_wx31_64.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith_wx31_64.cbp">
 			<Depends filename="CodeBlocks_wx31_64.cbp" />
 		</Project>
@@ -52,6 +37,9 @@
 			<Depends filename="CodeBlocks_wx31_64.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/byogames/byogames_wx31_64.cbp">
+			<Depends filename="CodeBlocks_wx31_64.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/cb_koders/cb_koders_wx31_64.cbp">
 			<Depends filename="CodeBlocks_wx31_64.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/Cccc/Cccc_wx31_64.cbp">
@@ -93,6 +81,9 @@
 		<Project filename="plugins/contrib/FileManager/FileManager_wx31_64.cbp">
 			<Depends filename="CodeBlocks_wx31_64.cbp" />
 		</Project>
+ 		<Project filename="plugins/contrib/FortranProject/FortranProject_cbsvn_wx31_64.cbp">
+			<Depends filename="CodeBlocks_wx31_64.cbp" />
+		</Project>    
 		<Project filename="plugins/contrib/headerfixup/headerfixup_wx31_64.cbp">
 			<Depends filename="CodeBlocks_wx31_64.cbp" />
 		</Project>
@@ -152,45 +143,5 @@
 		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus_wx31_64.cbp">
 			<Depends filename="CodeBlocks_wx31_64.cbp" />
 		</Project>
-
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE SVN EXTERN PLUGINS <=<=<=<=<=<=<=<=<=<= -->
-		<Project filename="plugins/contrib/FortranProject/FortranProject_cbsvn_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>    
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE WIP EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<Project filename="plugins/contrib-wip/cbDiff/cbDiff_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
-		<Project filename="plugins/contrib-wip/GitBlocks/GitBlocks_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
-		<Project filename="plugins/contrib-wip/cbInno/cbInno_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
-		<Project filename="plugins/contrib-wip/cbNSIS/cbNSIS_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
-		<Project filename="plugins/contrib-wip/cbtortoisesvn/cbtortoisesvn_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<Project filename="plugins/contrib/cbBuildTools/cbBuildTools_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
-		<Project filename="plugins/contrib/cbMarkdown/cbMarkdown_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
-		<Project filename="plugins/contrib/cbMemoryView/cbMemoryView_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
-		<Project filename="plugins/contrib/cbSystemView/cbSystemView_wx31_64.cbp">
-			<Depends filename="CodeBlocks_wx31_64.cbp" />
-		</Project>
-		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-
 	</Workspace>
 </CodeBlocks_workspace_file>

@@ -11,11 +11,11 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/string.h>
-#include <wx/event.h>
-#include <wx/file.h>
+    #include <wx/string.h>
+    #include <wx/event.h>
+    #include <wx/file.h>
 
-#include <cbeditor.h>
+    #include <cbeditor.h>
 #endif
 #include <set>
 #include <vector>
@@ -36,13 +36,13 @@ enum kindOfCCList
 
 class CCSmartFilter
 {
-public:
-    static void GetTokenKind(wxArrayString& words, int& kindFilter, bool& allowVariables, kindOfCCList& kindCC);
-    static bool FitsToContext(const wxString& kw, const wxArrayString& firstWords);
+    public:
+        static void GetTokenKind(wxArrayString & words, int & kindFilter, bool & allowVariables, kindOfCCList & kindCC);
+        static bool FitsToContext(const wxString & kw, const wxArrayString & firstWords);
 
-protected:
-private:
-    static bool hasWord(const wxString& word, const wxArrayString& wordArr);
+    protected:
+    private:
+        static bool hasWord(const wxString & word, const wxArrayString & wordArr);
 
 };
 

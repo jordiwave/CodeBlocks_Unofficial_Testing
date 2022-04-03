@@ -34,17 +34,17 @@
 
 using namespace wxsFlags;
 
-wxsEvents::wxsEvents(const wxsEventDesc* Events,wxsItem* Item):
+wxsEvents::wxsEvents(const wxsEventDesc * Events, wxsItem * Item):
     m_Item(Item),
     m_EventArray(Events),
     m_Count(0)
 {
     // Counting number of events
-    if ( m_EventArray )
+    if (m_EventArray)
     {
-        for ( const wxsEventDesc* Event = m_EventArray;
+        for (const wxsEventDesc * Event = m_EventArray;
                 Event->ET != wxsEventDesc::EndOfList;
-                Event++ )
+                Event++)
         {
             m_Count++;
         }
@@ -53,26 +53,30 @@ wxsEvents::wxsEvents(const wxsEventDesc* Events,wxsItem* Item):
     m_Functions.SetCount(m_Count);
 }
 
-void wxsEvents::XmlLoadFunctions(TiXmlElement* Element)
+void wxsEvents::XmlLoadFunctions(TiXmlElement * Element)
 {
-    for ( TiXmlElement* Handler = Element->FirstChildElement(HandlerXmlElementName);
+    for (TiXmlElement * Handler = Element->FirstChildElement(HandlerXmlElementName);
             Handler;
-            Handler = Handler->NextSiblingElement(HandlerXmlElementName) )
+            Handler = Handler->NextSiblingElement(HandlerXmlElementName))
     {
-        const char* EntryName    = Handler->Attribute(HandlerXmlEntryName);
-        const char* TypeName     = Handler->Attribute(HandlerXmlTypeName);
-        const char* FunctionName = Handler->Attribute(HandlerXmlFunctionName);
+        const char * EntryName    = Handler->Attribute(HandlerXmlEntryName);
+        const char * TypeName     = Handler->Attribute(HandlerXmlTypeName);
+        const char * FunctionName = Handler->Attribute(HandlerXmlFunctionName);
 
         // There must be function name, otherwise this handler definition is useless
-        if ( !FunctionName ) continue;
+        if (!FunctionName)
+        {
+            continue;
+        }
 
-        if ( EntryName )
+        if (EntryName)
         {
             // Function given by event entry
             wxString Name = cbC2U(EntryName);
-            for ( int i=0; i<m_Count; i++ )
+
+            for (int i = 0; i < m_Count; i++)
             {
-                if ( (m_EventArray[i].Entry == Name) && (m_EventArray[i].ET != wxsEventDesc::Category) )
+                if ((m_EventArray[i].Entry == Name) && (m_EventArray[i].ET != wxsEventDesc::Category))
                 {
                     m_Functions[i] = cbC2U(FunctionName);
                     break;
@@ -83,9 +87,10 @@ void wxsEvents::XmlLoadFunctions(TiXmlElement* Element)
         {
             // Function given by event type
             wxString Name = cbC2U(TypeName);
-            for ( int i=0; i<m_Count; i++ )
+
+            for (int i = 0; i < m_Count; i++)
             {
-                if ( (m_EventArray[i].Type == Name) && (m_EventArray[i].ET != wxsEventDesc::Category) )
+                if ((m_EventArray[i].Type == Name) && (m_EventArray[i].ET != wxsEventDesc::Category))
                 {
                     m_Functions[i] = cbC2U(FunctionName);
                 }
@@ -94,81 +99,84 @@ void wxsEvents::XmlLoadFunctions(TiXmlElement* Element)
     }
 }
 
-void wxsEvents::XmlSaveFunctions(TiXmlElement* Element)
+void wxsEvents::XmlSaveFunctions(TiXmlElement * Element)
 {
-    for ( int i=0; i<m_Count; i++ )
+    for (int i = 0; i < m_Count; i++)
     {
-        if ( !m_Functions[i].empty() && (m_EventArray[i].ET != wxsEventDesc::Category) )
+        if (!m_Functions[i].empty() && (m_EventArray[i].ET != wxsEventDesc::Category))
         {
-            TiXmlElement* Handler = Element->InsertEndChild( TiXmlElement(HandlerXmlElementName) ) -> ToElement();
-            Handler->SetAttribute(HandlerXmlFunctionName,cbU2C(m_Functions[i]));
-            if ( !m_EventArray[i].Entry.empty() )
+            TiXmlElement * Handler = Element->InsertEndChild(TiXmlElement(HandlerXmlElementName)) -> ToElement();
+            Handler->SetAttribute(HandlerXmlFunctionName, cbU2C(m_Functions[i]));
+
+            if (!m_EventArray[i].Entry.empty())
             {
-                Handler->SetAttribute(HandlerXmlEntryName,cbU2C(m_EventArray[i].Entry));
+                Handler->SetAttribute(HandlerXmlEntryName, cbU2C(m_EventArray[i].Entry));
             }
             else
             {
-                Handler->SetAttribute(HandlerXmlTypeName,cbU2C(m_EventArray[i].Type));
+                Handler->SetAttribute(HandlerXmlTypeName, cbU2C(m_EventArray[i].Type));
             }
         }
     }
 }
 
-void wxsEvents::GenerateBindingCode(wxsCoderContext* Context,const wxString& IdString,const wxString& VarNameString)
+void wxsEvents::GenerateBindingCode(wxsCoderContext * Context, const wxString & IdString, const wxString & VarNameString)
 {
     wxString ClassName = m_Item->GetResourceData()->GetClassName();
-    switch ( Context->m_Language )
+
+    switch (Context->m_Language)
     {
-    case wxsCPP:
-    {
-        for ( int i=0; i<m_Count; i++ )
+        case wxsCPP:
         {
-            if ( !m_Functions[i].empty() )
+            for (int i = 0; i < m_Count; i++)
             {
-                switch ( m_EventArray[i].ET )
+                if (!m_Functions[i].empty())
                 {
-                case wxsEventDesc::Id:
-                    Context->m_EventsConnectingCode
-                            << _T("Connect(") << IdString << _T(",")
-                            << m_EventArray[i].Type << _T(",(wxObjectEventFunction)&")
-                            << ClassName << _T("::") << m_Functions[i] << _T(");\n");
-                    break;
-
-                case wxsEventDesc::NoId:
-
-                    if ( Context->m_Flags & flRoot )
+                    switch (m_EventArray[i].ET)
                     {
-                        // If this is root item, it's threaded as Id one
-                        Context->m_EventsConnectingCode
-                                << _T("Connect(")
-                                << m_EventArray[i].Type << _T(",(wxObjectEventFunction)&")
-                                << ClassName << _T("::") << m_Functions[i] << _T(");\n");
-                    }
-                    else
-                    {
-                        Context->m_EventsConnectingCode
-                                << VarNameString << _T("->Connect(")
-                                << m_EventArray[i].Type
-                                << _T(",(wxObjectEventFunction)&") << ClassName << _T("::") << m_Functions[i]
-                                << _T(",0,this);\n");
-                    }
-                    break;
+                        case wxsEventDesc::Id:
+                            Context->m_EventsConnectingCode
+                                    << _T("Connect(") << IdString << _T(",")
+                                    << m_EventArray[i].Type << _T(",(wxObjectEventFunction)&")
+                                    << ClassName << _T("::") << m_Functions[i] << _T(");\n");
+                            break;
 
-                case wxsEventDesc::IdRange:   // fall-through
-                case wxsEventDesc::Category:  // fall-through
-                case wxsEventDesc::EndOfList: // fall-through
-                default:
-                    break;
+                        case wxsEventDesc::NoId:
+                            if (Context->m_Flags & flRoot)
+                            {
+                                // If this is root item, it's threaded as Id one
+                                Context->m_EventsConnectingCode
+                                        << _T("Connect(")
+                                        << m_EventArray[i].Type << _T(",(wxObjectEventFunction)&")
+                                        << ClassName << _T("::") << m_Functions[i] << _T(");\n");
+                            }
+                            else
+                            {
+                                Context->m_EventsConnectingCode
+                                        << VarNameString << _T("->Connect(")
+                                        << m_EventArray[i].Type
+                                        << _T(",(wxObjectEventFunction)&") << ClassName << _T("::") << m_Functions[i]
+                                        << _T(",0,this);\n");
+                            }
+
+                            break;
+
+                        case wxsEventDesc::IdRange:   // fall-through
+                        case wxsEventDesc::Category:  // fall-through
+                        case wxsEventDesc::EndOfList: // fall-through
+                        default:
+                            break;
+                    }
                 }
             }
-        }
-        return;
-    }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsEvents::GenerateBindingCode"),Context->m_Language);
-    }
+            return;
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsEvents::GenerateBindingCode"), Context->m_Language);
+        }
     }
 }

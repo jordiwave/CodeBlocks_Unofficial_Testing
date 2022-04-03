@@ -26,7 +26,7 @@
 #include <logmanager.h>
 #include <wx/choicdlg.h>
 
-wxsGUIFactory::wxsGUIFactory(const wxString& Name): m_Name(Name)
+wxsGUIFactory::wxsGUIFactory(const wxString & Name): m_Name(Name)
 {
     // Registering this gui in new hash
     GetHash()[m_Name] = this;
@@ -39,12 +39,17 @@ wxsGUIFactory::~wxsGUIFactory()
     // necessarry to remove any bindings
 }
 
-wxsGUI* wxsGUIFactory::Build(const wxString& Name,wxsProject* Project)
+wxsGUI * wxsGUIFactory::Build(const wxString & Name, wxsProject * Project)
 {
-    if ( GetHash().find(Name) == GetHash().end() ) return 0;
-    wxsGUIFactory* Factory = GetHash()[Name];
-    wxsGUI* NewGUI = Factory->OnCreate(Project);
-    if ( NewGUI->GetName() != Name )
+    if (GetHash().find(Name) == GetHash().end())
+    {
+        return 0;
+    }
+
+    wxsGUIFactory * Factory = GetHash()[Name];
+    wxsGUI * NewGUI = Factory->OnCreate(Project);
+
+    if (NewGUI->GetName() != Name)
     {
         // Some hack? Bug in factory?
         Manager::Get()->GetLogManager()->DebugLog(_T("wxSmith: Error while creating wxsGUI object (name mismatch)."));
@@ -53,36 +58,40 @@ wxsGUI* wxsGUIFactory::Build(const wxString& Name,wxsProject* Project)
         delete NewGUI;
         return 0;
     }
+
     return NewGUI;
 }
 
-wxsGUI* wxsGUIFactory::SelectNew(const wxString& Message,wxsProject* Project)
+wxsGUI * wxsGUIFactory::SelectNew(const wxString & Message, wxsProject * Project)
 {
-    if ( GetHash().empty() )
+    if (GetHash().empty())
     {
         return 0;
     }
-    if ( GetHash().size() == 1 )
+
+    if (GetHash().size() == 1)
     {
-        return Build(GetHash().begin()->first,Project);
+        return Build(GetHash().begin()->first, Project);
     }
 
     wxArrayString GUIList;
-    for ( GUIItemHashT::iterator i = GetHash().begin(); i!=GetHash().end(); ++i )
+
+    for (GUIItemHashT::iterator i = GetHash().begin(); i != GetHash().end(); ++i)
     {
         GUIList.Add(i->first);
     }
 
-    wxString SelectedGUI = ::wxGetSingleChoice(Message,_("Select GUI"), GUIList);
-    if ( SelectedGUI.empty() )
+    wxString SelectedGUI = ::wxGetSingleChoice(Message, _("Select GUI"), GUIList);
+
+    if (SelectedGUI.empty())
     {
         return 0;
     }
 
-    return Build(SelectedGUI,Project);
+    return Build(SelectedGUI, Project);
 }
 
-inline wxsGUIFactory::GUIItemHashT& wxsGUIFactory::GetHash()
+inline wxsGUIFactory::GUIItemHashT & wxsGUIFactory::GetHash()
 {
     static GUIItemHashT Hash;
     return Hash;

@@ -10,14 +10,14 @@
 
 class CompilerIAR : public Compiler
 {
-public:
-    CompilerIAR(wxString arch);
-    ~CompilerIAR() override;
-    AutoDetectResult AutoDetectInstallationDir() override;
-protected:
-    Compiler* CreateCopy() override;
-    wxString m_Arch;
-private:
+    public:
+        CompilerIAR(wxString arch);
+        ~CompilerIAR() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
+    protected:
+        Compiler * CreateCopy() override;
+        wxString m_Arch;
+    private:
 };
 
 #endif // COMPILER_IAR_H

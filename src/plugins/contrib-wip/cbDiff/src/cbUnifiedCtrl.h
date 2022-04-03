@@ -7,93 +7,93 @@ class cbStyledTextCtrl;
 
 class cbUnifiedCtrl : public cbDiffCtrl
 {
-public:
-    cbUnifiedCtrl(cbDiffEditor *parent);
-    virtual ~cbUnifiedCtrl() {}
-    virtual void Init(cbDiffColors colset) override;
-    virtual void ShowDiff(const wxDiff &diff) override;
-    virtual void UpdateDiff(const wxDiff &diff) override;
+    public:
+        cbUnifiedCtrl(cbDiffEditor * parent);
+        virtual ~cbUnifiedCtrl() {}
+        virtual void Init(cbDiffColors colset) override;
+        virtual void ShowDiff(const wxDiff & diff) override;
+        virtual void UpdateDiff(const wxDiff & diff) override;
 
-    virtual void NextDifference()override {}
-    virtual bool CanGotoNextDiff()override
-    {
-        return false;
-    }
-    virtual void PrevDifference()override {}
-    virtual bool CanGotoPrevDiff()override
-    {
-        return false;
-    }
-    virtual void FirstDifference()override {}
-    virtual bool CanGotoFirstDiff()override
-    {
-        return false;
-    }
-    virtual void LastDifference()override {}
-    virtual bool CanGotoLastDiff()override
-    {
-        return false;
-    }
+        virtual void NextDifference()override {}
+        virtual bool CanGotoNextDiff()override
+        {
+            return false;
+        }
+        virtual void PrevDifference()override {}
+        virtual bool CanGotoPrevDiff()override
+        {
+            return false;
+        }
+        virtual void FirstDifference()override {}
+        virtual bool CanGotoFirstDiff()override
+        {
+            return false;
+        }
+        virtual void LastDifference()override {}
+        virtual bool CanGotoLastDiff()override
+        {
+            return false;
+        }
 
-    virtual void CopyToLeft()override {}
-    virtual bool CanCopyToLeft()override
-    {
-        return false;
-    }
-    virtual void CopyToRight()override {}
-    virtual bool CanCopyToRight()override
-    {
-        return false;
-    }
-    virtual void CopyToLeftNext()override {}
-    virtual bool CanCopyToLeftNext()override
-    {
-        return false;
-    }
-    virtual void CopyToRightNext()override {}
-    virtual bool CanCopyToRightNext()override
-    {
-        return false;
-    }
+        virtual void CopyToLeft()override {}
+        virtual bool CanCopyToLeft()override
+        {
+            return false;
+        }
+        virtual void CopyToRight()override {}
+        virtual bool CanCopyToRight()override
+        {
+            return false;
+        }
+        virtual void CopyToLeftNext()override {}
+        virtual bool CanCopyToLeftNext()override
+        {
+            return false;
+        }
+        virtual void CopyToRightNext()override {}
+        virtual bool CanCopyToRightNext()override
+        {
+            return false;
+        }
 
-    virtual bool GetModified() const override
-    {
-        return false;
-    }
-    virtual bool QueryClose() override
-    {
-        return true;
-    }
-    virtual bool Save() override
-    {
-        return true;
-    }
+        virtual bool GetModified() const override
+        {
+            return false;
+        }
+        virtual bool QueryClose() override
+        {
+            return true;
+        }
+        virtual bool Save() override
+        {
+            return true;
+        }
 
-    virtual void Copy()override;
-    virtual bool HasSelection() const override;
-    virtual bool CanSelectAll() const override;
-    virtual void SelectAll() override;
+        virtual void Copy()override;
+        virtual bool HasSelection() const override;
+        virtual bool CanSelectAll() const override;
+        virtual void SelectAll() override;
 
-    virtual std::vector<std::string> *GetLeftLines()override
-    {
-        return nullptr;
-    }
-    virtual std::vector<std::string> *GetRightLines()override
-    {
-        return nullptr;
-    }
-protected:
-    virtual bool LeftModified() override
-    {
-        return false;
-    }
-    virtual bool RightModified() override
-    {
-        return false;
-    }
+        virtual std::vector<std::string> * GetLeftLines()override
+        {
+            return nullptr;
+        }
+        virtual std::vector<std::string> * GetRightLines()override
+        {
+            return nullptr;
+        }
+    protected:
+        virtual bool LeftModified() override
+        {
+            return false;
+        }
+        virtual bool RightModified() override
+        {
+            return false;
+        }
 
-private:
-    cbStyledTextCtrl *txtctrl_;
+    private:
+        cbStyledTextCtrl * txtctrl_;
 };
 
 #endif

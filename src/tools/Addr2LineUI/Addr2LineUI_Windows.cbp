@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Addr2LineUI wx3.1.x (64 bit)" />
+		<Option title="Addr2LineUI Windows" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">

@@ -40,8 +40,8 @@ extern wxSTEditorLangs  s_wxSTEditorLangs;
 //    If you can think of a smaller, faster, easier way please tell me.
 //----------------------------------------------------------------------------
 
-const char* STE_CharsAlpha   = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const char* STE_CharsNumeric = "0123456789";
+const char * STE_CharsAlpha   = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const char * STE_CharsNumeric = "0123456789";
 
 //----------------------------------------------------------------------------
 // keywordlists - these are const char and not wxChar since they don't need
@@ -53,14 +53,14 @@ const char* STE_CharsNumeric = "0123456789";
 //static const char* STE_WordList1_STE_LANG_NULL
 
 #if STE_USE_LANG_PYTHON
-static const char* STE_WordList1_STE_LANG_PYTHON =
+    static const char * STE_WordList1_STE_LANG_PYTHON =
     "and assert break class continue def del elif "
     "else except exec finally for from global if import in is lambda None "
     "not or pass print raise return try while yield";
 #endif //STE_USE_LANG_PYTHON
 
 #if STE_USE_LANG_CPP || STE_USE_LANG_CPPNOCASE
-static const char* STE_WordList1_STE_LANG_CPP =
+    static const char * STE_WordList1_STE_LANG_CPP =
     "and and_eq asm auto bitand bitor bool break case catch char class "
     "compl const const_cast continue default delete do double "
     "dynamic_cast else enum explicit export extern false float "
@@ -70,9 +70,9 @@ static const char* STE_WordList1_STE_LANG_CPP =
     "struct switch template this throw true try typedef typeid "
     "typename union unsigned using virtual void volatile wchar_t while "
     "xor xor_eq";
-static const char* STE_WordList2_STE_LANG_CPP = // user defined keywords
+    static const char * STE_WordList2_STE_LANG_CPP = // user defined keywords
     "file";
-static const char* STE_WordList3_STE_LANG_CPP =
+    static const char * STE_WordList3_STE_LANG_CPP =
     "a addindex addtogroup anchor arg attention author b brief bug c "
     "class code date def defgroup deprecated dontinclude e em endcode "
     "endhtmlonly endif endlatexonly endlink endverbatim enum example "
@@ -86,7 +86,7 @@ static const char* STE_WordList3_STE_LANG_CPP =
 #endif //STE_USE_LANG_CPP || STE_USE_LANG_CPPNOCASE
 
 #if STE_USE_LANG_HTML
-static const char* STE_WordList1_STE_LANG_HTML =
+    static const char * STE_WordList1_STE_LANG_HTML =
     // hypertext.elements
     "a abbr acronym address applet area b base basefont bdo big "
     "blockquote body br button caption center cite code col colgroup "
@@ -125,7 +125,7 @@ static const char* STE_WordList1_STE_LANG_HTML =
 //static const char* STE_WordList1_STE_LANG_XML no keywords
 
 #if STE_USE_LANG_PERL
-static const char* STE_WordList1_STE_LANG_PERL = // 1.65
+    static const char * STE_WordList1_STE_LANG_PERL = // 1.65
     "NULL __FILE__ __LINE__ __PACKAGE__ __DATA__ __END__ AUTOLOAD "
     "BEGIN CORE DESTROY END EQ GE GT INIT LE LT NE CHECK abs accept "
     "alarm and atan2 bind binmode bless caller chdir chmod chomp chop "
@@ -156,7 +156,7 @@ static const char* STE_WordList1_STE_LANG_PERL = // 1.65
 #endif //STE_USE_LANG_PERL
 
 #if STE_USE_LANG_SQL
-static const char* STE_WordList1_STE_LANG_SQL =
+    static const char * STE_WordList1_STE_LANG_SQL =
     "absolute action add admin after aggregate alias all allocate alter and any "
     "are array as asc assertion at authorization before begin binary bit blob "
     "boolean both breadth by call cascade cascaded case cast catalog char "
@@ -190,7 +190,7 @@ static const char* STE_WordList1_STE_LANG_SQL =
 #endif //STE_USE_LANG_SQL
 
 #if STE_USE_LANG_VB || STE_USE_LANG_HTML
-static const char* STE_WordList1_STE_LANG_VB =
+    static const char * STE_WordList1_STE_LANG_VB =
     "addhandler addressof andalso alias and ansi as assembly auto "
     "boolean byref byte byval call case catch cbool cbyte cchar cdate "
     "cdec cdbl char cint class clng cobj const cshort csng cstr ctype "
@@ -215,7 +215,7 @@ static const char* STE_WordList1_STE_LANG_VB =
 //static const char* STE_WordList1_STE_LANG_MAKEFILE
 
 #if STE_USE_LANG_BATCH
-static const char* STE_WordList1_STE_LANG_BATCH =
+    static const char * STE_WordList1_STE_LANG_BATCH =
     "rem set if exist errorlevel for in do break call chcp cd chdir "
     "choice cls country ctty date del erase dir echo exit goto loadfix "
     "loadhigh mkdir md move path pause prompt rename ren rmdir rd shift "
@@ -226,7 +226,7 @@ static const char* STE_WordList1_STE_LANG_BATCH =
 //static const char* STE_WordList1_STE_LANG_XCODE
 
 #if STE_USE_LANG_LATEX || STE_USE_LANG_TEX
-static const char* STE_WordList1_STE_LANG_LATEX =
+    static const char * STE_WordList1_STE_LANG_LATEX =
     "above abovedisplayshortskip abovedisplayskip "
     "abovewithdelims accent adjdemerits advance afterassignment "
     "aftergroup atop atopwithdelims "
@@ -363,16 +363,16 @@ static const char* STE_WordList1_STE_LANG_LATEX =
 #endif //STE_USE_LANG_LATEX || STE_USE_LANG_TEX
 
 #if STE_USE_LANG_LUA
-static const char* STE_WordList1_STE_LANG_LUA =
+    static const char * STE_WordList1_STE_LANG_LUA =
     "and break do else elseif end false for function if "
     "in local nil not or repeat return then true until while";
-static const char* STE_WordList2_STE_LANG_LUA =
+    static const char * STE_WordList2_STE_LANG_LUA =
     "_VERSION assert collectgarbage dofile error gcinfo loadfile loadstring "
     "print tonumber tostring type unpack "
     "_G getfenv getmetatable ipairs loadlib next pairs pcall rawequal rawget "
     "rawset require setfenv setmetatable xpcall string table math coroutine "
     "io os debug";
-static const char* STE_WordList3_STE_LANG_LUA =
+    static const char * STE_WordList3_STE_LANG_LUA =
     "string.byte string.char string.dump string.find string.len "
     "string.lower string.rep string.sub string.upper string.format "
     "string.gfind string.gsub table.concat table.foreach table.foreachi "
@@ -381,7 +381,7 @@ static const char* STE_WordList3_STE_LANG_LUA =
     "math.exp math.floor math.frexp math.ldexp math.log math.log10 math.max "
     "math.min math.mod math.pi math.pow math.rad math.random math.randomseed "
     "math.sin math.sqrt math.tan";
-static const char* STE_WordList4_STE_LANG_LUA =
+    static const char * STE_WordList4_STE_LANG_LUA =
     "coroutine.create coroutine.resume coroutine.status coroutine.wrap "
     "coroutine.yield io.close io.flush io.input io.lines io.open io.output "
     "io.read io.tmpfile io.type io.write io.stdin io.stdout io.stderr "
@@ -390,30 +390,30 @@ static const char* STE_WordList4_STE_LANG_LUA =
     "coroutine.running package.cpath package.loaded package.loadlib package.path "
     "package.preload package.seeall io.popen";
 
-// lua 4
-//       "_ALERT _ERRORMESSAGE _INPUT _PROMPT _OUTPUT _STDERR _STDIN _STDOUT "
-//       "call dostring foreach foreachi getn globals newtype rawget rawset "
-//       "require sort tinsert tremove")
-// old lua 4
-//       "ALERT _ERRORMESSAGE _INPUT _PROMPT _OUTPUT _STDERR _STDIN _STDOUT "
-//       "_VERSION assert call collectgarbage dofile dostring error foreach "
-//       "foreachi gcinfo getn globals loadfile loadstring newtype print "
-//       "rawget rawset require sort tonumber tostring tinsert tremove type "
-//       "unpack";
-// lua 4
-//       "abs acos asin atan atan2 ceil cos deg exp floor format frexp gsub "
-//       "ldexp log log10 max min mod rad random randomseed sin sqrt strbyte "
-//       "strchar strfind strlen strlower strrep strsub strupper tan";
-// lua 4
-//       "openfile closefile readfrom writeto appendto remove rename flush seek "
-//       "tmpfile tmpname read write clock date difftime execute exit getenv "
-//       "setlocale time";
+    // lua 4
+    //       "_ALERT _ERRORMESSAGE _INPUT _PROMPT _OUTPUT _STDERR _STDIN _STDOUT "
+    //       "call dostring foreach foreachi getn globals newtype rawget rawset "
+    //       "require sort tinsert tremove")
+    // old lua 4
+    //       "ALERT _ERRORMESSAGE _INPUT _PROMPT _OUTPUT _STDERR _STDIN _STDOUT "
+    //       "_VERSION assert call collectgarbage dofile dostring error foreach "
+    //       "foreachi gcinfo getn globals loadfile loadstring newtype print "
+    //       "rawget rawset require sort tonumber tostring tinsert tremove type "
+    //       "unpack";
+    // lua 4
+    //       "abs acos asin atan atan2 ceil cos deg exp floor format frexp gsub "
+    //       "ldexp log log10 max min mod rad random randomseed sin sqrt strbyte "
+    //       "strchar strfind strlen strlower strrep strsub strupper tan";
+    // lua 4
+    //       "openfile closefile readfrom writeto appendto remove rename flush seek "
+    //       "tmpfile tmpname read write clock date difftime execute exit getenv "
+    //       "setlocale time";
 #endif //STE_USE_LANG_LUA
 
 //static const char* STE_WordList1_STE_LANG_DIFF
 
 #if STE_USE_LANG_CONF
-static const char* STE_WordList1_STE_LANG_CONF =  // actually Apache
+    static const char * STE_WordList1_STE_LANG_CONF = // actually Apache
     "acceptmutex acceptpathinfo accessconfig accessfilename "
     "action addalt addaltbyencoding addaltbytype addcharset "
     "adddefaultcharset adddescription addencoding "
@@ -530,14 +530,14 @@ static const char* STE_WordList1_STE_LANG_CONF =  // actually Apache
     "virtualdocumentroot virtualdocumentrootip virtualhost "
     "virtualscriptalias virtualscriptaliasip "
     "win32disableacceptex xbithack";
-static const char* STE_WordList2_STE_LANG_CONF =
+    static const char * STE_WordList2_STE_LANG_CONF =
     "on off standalone inetd force-response-1.0 downgrade-1.0 "
     "nokeepalive indexes includes followsymlinks none "
     "x-compress x-gzip";
 #endif //STE_USE_LANG_CONF
 
 #if STE_USE_LANG_PASCAL
-static const char* STE_WordList1_STE_LANG_PASCAL =
+    static const char * STE_WordList1_STE_LANG_PASCAL =
     "program const type var begin end array set packed record string "
     "if then else while for to downto do with repeat until case of "
     "goto exit label procedure function nil file and or not xor div "
@@ -549,12 +549,12 @@ static const char* STE_WordList1_STE_LANG_PASCAL =
 #endif //STE_USE_LANG_PASCAL
 
 #if STE_USE_LANG_AVE
-static const char* STE_WordList1_STE_LANG_AVE =
+    static const char * STE_WordList1_STE_LANG_AVE =
     "nil true false else for if while then elseif end av self in exit";
 #endif //STE_USE_LANG_AVE
 
 #if STE_USE_LANG_ADA
-static const char* STE_WordList1_STE_LANG_ADA =
+    static const char * STE_WordList1_STE_LANG_ADA =
     "abort abstract accept access aliased all array at begin body case "
     "constant declare delay delta digits do else elsif end entry "
     "exception exit for function generic goto if in is limited loop "
@@ -565,7 +565,7 @@ static const char* STE_WordList1_STE_LANG_ADA =
 #endif //STE_USE_LANG_ADA
 
 #if STE_USE_LANG_LISP
-static const char* STE_WordList1_STE_LANG_LISP =
+    static const char * STE_WordList1_STE_LANG_LISP =
     "not defun + - * / = < > <= >= princ eval apply funcall quote "
     "identity function complement backquote lambda set setq setf defun "
     "defmacro gensym make symbol intern symbol name symbol value "
@@ -585,7 +585,7 @@ static const char* STE_WordList1_STE_LANG_LISP =
 #endif //STE_USE_LANG_LISP
 
 #if STE_USE_LANG_RUBY
-static const char* STE_WordList1_STE_LANG_RUBY =
+    static const char * STE_WordList1_STE_LANG_RUBY =
     "__FILE__ and def end in or self unless __LINE__ begin defined? "
     "ensure module redo super until BEGIN break do false next rescue "
     "then when END case else for nil retry true while alias class "
@@ -593,7 +593,7 @@ static const char* STE_WordList1_STE_LANG_RUBY =
 #endif //STE_USE_LANG_RUBY
 
 #if STE_USE_LANG_EIFFEL || STE_USE_LANG_EIFFELKW
-static const char* STE_WordList1_STE_LANG_EIFFEL =
+    static const char * STE_WordList1_STE_LANG_EIFFEL =
     "alias all and any as bit boolean check class character clone "
     "create creation current debug deferred div do double else elseif "
     "end ensure equal expanded export external false feature forget "
@@ -604,11 +604,11 @@ static const char* STE_WordList1_STE_LANG_EIFFEL =
     "string strip then true undefine unique until variant void when "
     "xor";
 
-//static const char* STE_WordList1_STE_LANG_EIFFELKW uses EIFFEL
+    //static const char* STE_WordList1_STE_LANG_EIFFELKW uses EIFFEL
 #endif //STE_USE_LANG_EIFFEL || STE_USE_LANG_EIFFELKW
 
 #if STE_USE_LANG_TCL
-static const char* STE_WordList1_STE_LANG_TCL =
+    static const char * STE_WordList1_STE_LANG_TCL =
     // keywordclass.tcl
     "after append array auto_execok "
     "auto_import auto_load auto_load_index auto_qualify "
@@ -687,12 +687,12 @@ static const char* STE_WordList1_STE_LANG_TCL =
 #endif //STE_USE_LANG_TCL
 
 #if STE_USE_LANG_NNCRONTAB
-static const char* STE_WordList1_STE_LANG_NNCRONTAB =
+    static const char * STE_WordList1_STE_LANG_NNCRONTAB =
     "AGAIN ALLOT AND Action BEGIN CASE COMPARE CONSTANT CREATE DO Days "
     "ELSE ENDCASE ENDOF EVAL-SUBST EVALUATE FALSE Hours I IF LEAVE "
     "LOOP Minutes Months NOT OF OFF ON OR PAD REPEAT Rule SET THEN "
     "TRUE Time UNTIL VALUE VARIABLE WHILE WeekDays Years";
-static const char* STE_WordList2_STE_LANG_NNCRONTAB =
+    static const char * STE_WordList2_STE_LANG_NNCRONTAB =
     "</JScript> </SCRIPT> </VBScript> <JScript> <VBScript> ACCESS-DATE "
     "BEEP CALL_DIAL CALL_HANGUP CHAR CLIPBOARD CONSOLE CREATION-DATE "
     "CUR-DATE DATE- DATE-INTERVAL DELAY DIAL DIR-CREATE DIR-DELETE "
@@ -722,7 +722,7 @@ static const char* STE_WordList2_STE_LANG_NNCRONTAB =
     "WatchDriveInsert WatchDriveRemove WatchFile WatchProc "
     "WatchProcStop WatchWinActivate WatchWinCreate WatchWinDestroy "
     "WatchWindow WinNT Year@ Yes";
-static const char* STE_WordList3_STE_LANG_NNCRONTAB =
+    static const char * STE_WordList3_STE_LANG_NNCRONTAB =
     "ALL AboveNormalPriority AsService BelowNormalPriority FILESONLY "
     "HighPriority IdlePriority LoadProfile NoActive NoDel NoLog "
     "NoRunAs NormalPriority OnceADay OnceAHour OnceAMonth OnceAWeek "
@@ -735,7 +735,7 @@ static const char* STE_WordList3_STE_LANG_NNCRONTAB =
 #endif //STE_USE_LANG_NNCRONTAB
 
 #if STE_USE_LANG_BULLANT
-static const char* STE_WordList1_STE_LANG_BULLANT =
+    static const char * STE_WordList1_STE_LANG_BULLANT =
     "abstract all ancestor and application assert attributes author "
     "begin callback class concrete config constants construct continue "
     "depends description downcast driver elif else ensures error "
@@ -752,7 +752,7 @@ static const char* STE_WordList1_STE_LANG_BULLANT =
 #endif //STE_USE_LANG_BULLANT
 
 #if STE_USE_LANG_VBSCRIPT
-static const char* STE_WordList1_STE_LANG_VBSCRIPT =
+    static const char * STE_WordList1_STE_LANG_VBSCRIPT =
     "and begin case call continue do each else elseif end erase error "
     "event exit false for function get gosub goto if implement in load "
     "loop lset me mid new next not nothing on or property raiseevent "
@@ -767,7 +767,7 @@ static const char* STE_WordList1_STE_LANG_VBSCRIPT =
 //static const char* STE_WordList1_STE_LANG_ASP
 
 #if STE_USE_LANG_PHP
-static const char* STE_WordList1_STE_LANG_PHP =
+    static const char * STE_WordList1_STE_LANG_PHP =
     "and array as bool boolean break case cfunction class const continue declare "
     "default die directory do double echo else elseif empty enddeclare endfor "
     "endforeach endif endswitch endwhile eval exit extends false float for "
@@ -783,13 +783,13 @@ static const char* STE_WordList1_STE_LANG_PHP =
 //static const char* STE_WordList1_STE_LANG_BAAN = "";
 
 #if STE_USE_LANG_MATLAB || STE_USE_LANG_OCTAVE
-static const char* STE_WordList1_STE_LANG_MATLAB =
+    static const char * STE_WordList1_STE_LANG_MATLAB =
     "break case catch continue else elseif end for function global if "
     "otherwise persistent return switch try while";
 #endif //STE_USE_LANG_MATLAB || STE_USE_LANG_OCTAVE
 
 #if STE_USE_LANG_SCRIPTOL
-static const char* STE_WordList1_STE_LANG_SCRIPTOL =
+    static const char * STE_WordList1_STE_LANG_SCRIPTOL =
     "act action alias always and array as bool boolean break by byte "
     "class case catch const constant continue dyn def define dict do "
     "double echo else elsif end enum error false file for float forever "
@@ -801,7 +801,7 @@ static const char* STE_WordList1_STE_LANG_SCRIPTOL =
 #endif //STE_USE_LANG_SCRIPTOL
 
 #if STE_USE_LANG_ASM
-static const char* STE_WordList1_STE_LANG_ASM =
+    static const char * STE_WordList1_STE_LANG_ASM =
     "aaa aad aam aas adc add and call cbw clc cld cli cmc cmp cmps "
     "cmpsb cmpsw cwd daa das dec div esc hlt idiv imul in inc int into "
     "iret ja jae jb jbe jc jcxz je jg jge jl jle jmp jna jnae jnb jnbe "
@@ -821,7 +821,7 @@ static const char* STE_WordList1_STE_LANG_ASM =
     "setnp setns setnz seto setp setpe setpo sets setz shld shrd stosd "
     "bswap cmpxchg invd  invlpg  wbinvd  xadd lock rep repe repne "
     "repnz repz";
-static const char* STE_WordList2_STE_LANG_ASM =
+    static const char * STE_WordList2_STE_LANG_ASM =
     "f2xm1 fabs fadd faddp fbld fbstp fchs fclex fcom fcomp fcompp "
     "fdecstp fdisi fdiv fdivp fdivr fdivrp feni ffree fiadd ficom "
     "ficomp fidiv fidivr fild fimul fincstp finit fist fistp fisub "
@@ -832,11 +832,11 @@ static const char* STE_WordList2_STE_LANG_ASM =
     "fstp fstsw fsub fsubp fsubr fsubrp ftst fwait fxam fxch fxtract "
     "fyl2x fyl2xp1 fsetpm fcos fldenvd fnsaved fnstenvd fprem1 frstord "
     "fsaved fsin fsincos fstenvd fucom fucomp fucompp";
-static const char* STE_WordList3_STE_LANG_ASM =
+    static const char * STE_WordList3_STE_LANG_ASM =
     "ah al ax bh bl bp bx ch cl cr0 cr2 cr3 cs cx dh di dl dr0 dr1 dr2 "
     "dr3 dr6 dr7 ds dx eax ebp ebx ecx edi edx es esi esp fs gs si sp "
     "ss st tr3 tr4 tr5 tr6 tr7";
-static const char* STE_WordList4_STE_LANG_ASM =
+    static const char * STE_WordList4_STE_LANG_ASM =
     ".186 .286 .286c .286p .287 .386 .386c .386p .387 .486 .486p .8086 "
     ".8087 .alpha .break .code .const .continue .cref .data .data?  "
     ".dosseg .else .elseif .endif .endw .err .err1 .err2 .errb .errdef "
@@ -857,7 +857,7 @@ static const char* STE_WordList4_STE_LANG_ASM =
     "record repeat rept seg segment short size sizeof sizestr struc "
     "struct substr subtitle subttl textequ this title type typedef "
     "union while width";
-static const char* STE_WordList5_STE_LANG_ASM =
+    static const char * STE_WordList5_STE_LANG_ASM =
     "$ ? @b @f addr basic byte c carry? dword far far16 fortran fword "
     "near near16 overflow? parity? pascal qword real4 real8 real10 "
     "sbyte sdword sign? stdcall sword syscall tbyte vararg word zero? "
@@ -874,7 +874,7 @@ static const char* STE_WordList5_STE_LANG_ASM =
 //static const char* STE_WordList5_STE_LANG_CPPNOCASE uses cpp
 
 #if STE_USE_LANG_FORTRAN || STE_USE_LANG_F77
-static const char* STE_WordList1_STE_LANG_FORTRAN =
+    static const char * STE_WordList1_STE_LANG_FORTRAN =
     "allocatable allocate assignment backspace block blockdata call "
     "case character close common complex contains continue cycle data "
     "deallocate default dimension direct do double doubleprecision "
@@ -890,7 +890,7 @@ static const char* STE_WordList1_STE_LANG_FORTRAN =
     "return rewind save select selectcase sequence sequential stat "
     "status stop subroutine target then to type unformatted unit use "
     "where while write";
-static const char* STE_WordList2_STE_LANG_FORTRAN =
+    static const char * STE_WordList2_STE_LANG_FORTRAN =
     "abs achar acos acosd adjustl adjustr aimag aimax0 aimin0 aint "
     "ajmax0 ajmin0 akmax0 akmin0 all allocated alog alog10 amax0 amax1 "
     "amin0 amin1 amod anint any asin asind associated atan atan2 "
@@ -924,11 +924,11 @@ static const char* STE_WordList2_STE_LANG_FORTRAN =
     "system_clock tan tand tanh tiny transfer transpose trim ubound "
     "unpack verify";
 
-// static const char* STE_WordList1_STE_LANG_F77 uses FORTRAN
+    // static const char* STE_WordList1_STE_LANG_F77 uses FORTRAN
 #endif //STE_USE_LANG_FORTRAN || STE_USE_LANG_F77
 
 #if STE_USE_LANG_CSS
-static const char* STE_WordList1_STE_LANG_CSS =
+    static const char * STE_WordList1_STE_LANG_CSS =
     "left right top bottom position font-family font-style font-variant "
     "font-weight font-size font color background-color background-image "
     "background-repeat background-attachment background-position background "
@@ -940,16 +940,16 @@ static const char* STE_WordList1_STE_LANG_CSS =
     "border-left border border-color border-style width height float clear "
     "display white-space list-style-type list-style-image list-style-position "
     "list-style";
-static const char* STE_WordList2_STE_LANG_CSS =
+    static const char * STE_WordList2_STE_LANG_CSS =
     "first-letter first-line active link visited";
 #endif //STE_USE_LANG_CSS
 
 #if STE_USE_LANG_POV
-static const char* STE_WordList1_STE_LANG_POV =
+    static const char * STE_WordList1_STE_LANG_POV =
     "declare local include undef fopen fclose read write default version "
     "case range break debug error warning if ifdef ifndef switch while "
     "macro else end";
-static const char* STE_WordList2_STE_LANG_POV =
+    static const char * STE_WordList2_STE_LANG_POV =
     "camera light_source light_group object blob sphere cylinder box cone "
     "sor height_field julia_fractal lathe prism sphere_sweep superellipsoid "
     "text torus bicubic_patch disc mesh mesh2 polygon triangle "
@@ -963,7 +963,7 @@ static const char* STE_WordList2_STE_LANG_POV =
     "scattering density background fog sky_sphere rainbow global_settings "
     "radiosity photons pattern transform looks_like projected_through "
     "contained_by clipped_by bounded_by";
-static const char* STE_WordList3_STE_LANG_POV =
+    static const char * STE_WordList3_STE_LANG_POV =
     "linear_spline quadratic_spline cubic_spline natural_spline "
     "bezier_spline b_spline read write append inverse open perspective "
     "orthographic fisheye ultra_wide_angle omnimax panoramic spherical "
@@ -1001,11 +1001,11 @@ static const char* STE_WordList3_STE_LANG_POV =
     "gray_threshold load_file low_error_factor max_sample minimum_reuse "
     "nearest_count pretrace_end pretrace_start recursion_limit save_file "
     "spacing gather max_trace_level autostop expand_thresholds";
-static const char* STE_WordList4_STE_LANG_POV =
+    static const char * STE_WordList4_STE_LANG_POV =
     "x y z t u v yes no true false on off clock clock_delta clock_on "
     "final_clock final_frame frame_number image_height image_width "
     "initial_clock initial_frame pi version";
-static const char* STE_WordList5_STE_LANG_POV =
+    static const char * STE_WordList5_STE_LANG_POV =
     "abs acos acosh asc asin asinh atan atanh atan2 ceil cos cosh defined "
     "degrees dimensions dimension_size div exp file_exists floor inside "
     "int ln log max min mod pow prod radians rand seed select sin sinh "
@@ -1015,7 +1015,7 @@ static const char* STE_WordList5_STE_LANG_POV =
 #endif //STE_USE_LANG_POV
 
 #if STE_USE_LANG_LOUT
-static const char* STE_WordList1_STE_LANG_LOUT =
+    static const char * STE_WordList1_STE_LANG_LOUT =
     "@OptGall @Filter @FilterIn @FilterOut @FilterErr @FontDef @Family "
     "@Face @Name @Metrics @ExtraMetrics @Mapping @Recode @Common @Rump "
     "@Meld @Insert @OneOf @Next @Plus @Minus @Wide @High @HShift @VShift "
@@ -1035,16 +1035,16 @@ static const char* STE_WordList1_STE_LANG_LOUT =
     "@LInput @Split @Tag @Key @Optimize @Merge @Enclose @Begin @End "
     "@Moment @Second @Minute @Hour @Day @Month @Year @Century @WeekDay "
     "@YearDay @DaylightSaving @@A @@B @@C @@D @@E @@V";
-static const char* STE_WordList2_STE_LANG_LOUT =
+    static const char * STE_WordList2_STE_LANG_LOUT =
     "&&& && & ^// ^/ ^|| ^| ^& // / || |";
-static const char* STE_WordList3_STE_LANG_LOUT =
+    static const char * STE_WordList3_STE_LANG_LOUT =
     "def langdef force horizontally into extend import export precedence "
     "associativity left right body macro named compulsory following "
     "preceding foll_or_prec now";
 #endif //STE_USE_LANG_LOUT
 
 #if STE_USE_LANG_ESCRIPT
-static const char* STE_WordList1_STE_LANG_ESCRIPT =
+    static const char * STE_WordList1_STE_LANG_ESCRIPT =
     "basic basicio boats cfgfile file http npc os uo util accessible "
     "addmenuitem appendconfigfileelem applyconstraint applydamage "
     "applyrawdamage assignrecttoweatherregion append baseskilltorawskill "
@@ -1104,16 +1104,16 @@ static const char* STE_WordList1_STE_LANG_ESCRIPT =
     "te_cancel_disable te_cancel_enable te_style_disable te_style_normal "
     "te_style_numerical tgtopt_check_los tgtopt_harmful tgtopt_helpful "
     "tgtopt_neutral tgtopt_nocheck_los setprop getprop";
-static const char* STE_WordList2_STE_LANG_ESCRIPT =
+    static const char * STE_WordList2_STE_LANG_ESCRIPT =
     "array const dictionary global local var and default in next not "
     "or return to include use enum";
-static const char* STE_WordList3_STE_LANG_ESCRIPT =
+    static const char * STE_WordList3_STE_LANG_ESCRIPT =
     "while for endfor function program endprogram endfunction foreach "
     "case else elseif if endcase endenum endforeach endif endwhile";
 #endif //STE_USE_LANG_ESCRIPT
 
 #if STE_USE_LANG_PS
-static const char* STE_WordList1_STE_LANG_PS =
+    static const char * STE_WordList1_STE_LANG_PS =
     "$error = == FontDirectory StandardEncoding UserObjects abs add "
     "aload anchorsearch and arc arcn arcto array ashow astore atan "
     "awidthshow begin bind bitshift bytesavailable cachestatus ceiling "
@@ -1146,7 +1146,7 @@ static const char* STE_WordList1_STE_LANG_PS =
     "token transform translate true truncate type ueofill "
     "undefineresource userdict usertime version vmstatus wcheck where "
     "widthshow write writehexstring writestring xcheck xor";
-static const char* STE_WordList2_STE_LANG_PS =
+    static const char * STE_WordList2_STE_LANG_PS =
     "GlobalFontDirectory ISOLatin1Encoding SharedFontDirectory UserObject "
     "arct colorimage cshow currentblackgeneration currentcacheparams "
     "currentcmykcolor currentcolor currentcolorrendering "
@@ -1171,10 +1171,10 @@ static const char* STE_WordList2_STE_LANG_PS =
     "ucachestatus ueofill ufill undef undefinefont undefineresource "
     "undefineuserobject upath ustroke ustrokepath vmreclaim writeobject "
     "xshow xyshow yshow";
-static const char* STE_WordList3_STE_LANG_PS =
+    static const char * STE_WordList3_STE_LANG_PS =
     "cliprestore clipsave composefont currentsmoothness "
     "findcolorrendering setsmoothness shfill";
-static const char* STE_WordList4_STE_LANG_PS =
+    static const char * STE_WordList4_STE_LANG_PS =
     ".begintransparencygroup .begintransparencymask .bytestring "
     ".charboxpath .currentaccuratecurves .currentblendmode "
     ".currentcurvejoin .currentdashadapt .currentdotlength "
@@ -1200,7 +1200,7 @@ static const char* STE_WordList4_STE_LANG_PS =
 #endif //STE_USE_LANG_PS
 
 #if STE_USE_LANG_NSIS
-static const char* STE_WordList1_STE_LANG_NSIS =
+    static const char * STE_WordList1_STE_LANG_NSIS =
     "What Abort AddSize AllowRootDirInstall AutoCloseWindow BGGradient "
     "BrandingText BringToFront CRCCheck Call CallInstDLL Caption "
     "ClearErrors CompletedText ComponentText CopyFiles CreateDirectory "
@@ -1233,12 +1233,12 @@ static const char* STE_WordList1_STE_LANG_NSIS =
     "AddBrandingImage XPStyle LangString !define !undef !ifdef !ifndef "
     "!endif !else !macro !echo !warning !error !verbose !macroend "
     "!insertmacro !system !include !cd !packhdr";
-static const char* STE_WordList2_STE_LANG_NSIS =
+    static const char * STE_WordList2_STE_LANG_NSIS =
     "$0 $1 $2 $3 $4 $5 $6 $7 $8 $9 $R0 $R1 $R2 $R3 $R4 $R5 $R6 $R7 $R8 "
     "$R9 $CMDLINE $DESKTOP $EXEDIR $HWNDPARENT $INSTDIR $OUTDIR "
     "$PROGRAMFILES ${NSISDIR} $\n $\r $QUICKLAUNCH $SMPROGRAMS $SMSTARTUP "
     "$STARTMENU $SYSDIR $TEMP $WINDIR";
-static const char* STE_WordList3_STE_LANG_NSIS =
+    static const char * STE_WordList3_STE_LANG_NSIS =
     "ARCHIVE FILE_ATTRIBUTE_ARCHIVE FILE_ATTRIBUTE_HIDDEN "
     "FILE_ATTRIBUTE_NORMAL FILE_ATTRIBUTE_OFFLINE FILE_ATTRIBUTE_READONLY "
     "FILE_ATTRIBUTE_SYSTEM FILE_ATTRIBUTE_TEMPORARY HIDDEN HKCC HKCR HKCU "
@@ -1252,12 +1252,12 @@ static const char* STE_WordList3_STE_LANG_NSIS =
     "READONLY SW_SHOWMAXIMIZED SW_SHOWMINIMIZED SW_SHOWNORMAL SYSTEM "
     "TEMPORARY auto colored false force hide ifnewer nevershow normal off "
     "on show silent silentlog smooth true try";
-static const char* STE_WordList4_STE_LANG_NSIS =
+    static const char * STE_WordList4_STE_LANG_NSIS =
     "MyFunction MySomethingElse";
 #endif //STE_USE_LANG_NSIS
 
 #if STE_USE_LANG_MMIXAL
-static const char* STE_WordList1_STE_LANG_MMIXAL =
+    static const char * STE_WordList1_STE_LANG_MMIXAL =
     "2ADDU 4ADDU 8ADDU 16ADDU ADD ADDU AND ANDNH ANDNL ANDNMH ANDNML "
     "BDIF BEV BN BNN BNP BNZ BOD BP BSPEC BYTE BZ CMP CMPU CSEV CSN "
     "CSNN CSNP CSNZ CSOD CSP CSWAP CSZ DIV DIVU ESPEC EXPR FADD FCMP "
@@ -1271,10 +1271,10 @@ static const char* STE_WordList1_STE_LANG_MMIXAL =
     "STCO STHT STO STOU STSF STT STTU STUNC STW STWU SUB SUBU SWYM "
     "SYNC SYNCD TDIF TETRA TRAP TRIP UNSAVE WDIF WYDEXOR ZSEV ZSN ZSNN "
     "ZSNP ZSNZ ZSOD ZSP ZSZ";
-static const char* STE_WordList2_STE_LANG_MMIXAL =
+    static const char * STE_WordList2_STE_LANG_MMIXAL =
     "rA rB rC rD rE rF rG rH rI rJ rK rL rM rN rO rP rQ rR rS rT rU rV "
     "rW rX rY rZ rBB rTT rWW rXX rYY rZZ";
-static const char* STE_WordList3_STE_LANG_MMIXAL =
+    static const char * STE_WordList3_STE_LANG_MMIXAL =
     "@ Text_Segment Data_Segment Pool_Segment Stack_Segment "
     "StdErr StdIn StdOut Fopen Fclose Fread Fwrite Fgets Fputs Fgetws "
     "Fputws Ftell Fseek TextRead TextWrite BinaryRead BinaryWrite "
@@ -1289,14 +1289,14 @@ static const char* STE_WordList3_STE_LANG_MMIXAL =
 //static const char* STE_WordList1_STE_LANG_LOT - nothing in scite
 
 #if STE_USE_LANG_YAML
-static const char* STE_WordList1_STE_LANG_YAML =
+    static const char * STE_WordList1_STE_LANG_YAML =
     "true false yes no";
 #endif //STE_USE_LANG_YAML
 
 //static const char* STE_WordList1_STE_LANG_TEX - uses LATEX
 
 #if STE_USE_LANG_METAPOST
-static const char* STE_WordList1_STE_LANG_METAPOST =
+    static const char * STE_WordList1_STE_LANG_METAPOST =
     // keywordclass.metapost.tex
     "btex verbatimtex etex "
     // keywordclass.metapost.primitives
@@ -1369,10 +1369,10 @@ static const char* STE_WordList1_STE_LANG_METAPOST =
 //static const char* STE_WordList1_STE_LANG_POWERBASIC
 
 #if STE_USE_LANG_FORTH
-static const char* STE_WordList1_STE_LANG_FORTH =
+    static const char * STE_WordList1_STE_LANG_FORTH =
     "AGAIN BEGIN CASE DO ELSE ENDCASE ENDOF IF LOOP OF REPEAT THEN UNTIL  WHILE "
     "[IF] [ELSE] [THEN] ?DO";
-static const char* STE_WordList2_STE_LANG_FORTH =
+    static const char * STE_WordList2_STE_LANG_FORTH =
     "DUP DROP ROT SWAP OVER @ ! 2@ 2! 2DUP 2DROP 2SWAP 2OVER NIP R@ >R R> 2R@ 2>R 2R> "
     "0= 0< SP@ SP! W@ W! C@ C! < > = <> 0<> "
     "SPACE SPACES KEY? KEY THROW CATCH ABORT */ 2* /MOD CELL+ CELLS CHAR+ "
@@ -1394,7 +1394,7 @@ static const char* STE_WordList2_STE_LANG_FORTH =
     "DOS-LINES UNIX-LINES READ-LINE WRITE-FILE RESIZE-FILE WRITE-LINE ALLOCATE FREE RESIZE "
     "START SUSPEND RESUME STOP PAUSE MIN MAX TRUE FALSE ASCIIZ> "
     "R/O W/O ;CLASS ENDWITH OR AND /STRING SEARCH COMPARE EXPORT ;MODULE SPACE";
-static const char* STE_WordList3_STE_LANG_FORTH =
+    static const char * STE_WordList3_STE_LANG_FORTH =
     "VARIABLE CREATE : VALUE CONSTANT VM: M: var dvar chars OBJ "
     "CONSTR: DESTR: CLASS: OBJECT: POINTER "
     "USER USER-CREATE USER-VALUE VECT "
@@ -1402,7 +1402,7 @@ static const char* STE_WordList3_STE_LANG_FORTH =
 #endif //STE_USE_LANG_FORTH
 
 #if STE_USE_LANG_ERLANG
-static const char* STE_WordList1_STE_LANG_ERLANG =
+    static const char * STE_WordList1_STE_LANG_ERLANG =
     "after begin case catch cond end fun if let of query receive when "
     "define record export import include include_lib ifdef ifndef else endif undef "
     "apply attribute call do in letrec module primop try";
@@ -1413,7 +1413,7 @@ static const char* STE_WordList1_STE_LANG_ERLANG =
 //static const char* STE_WordList1_STE_LANG_MSSQL - no words in scite
 
 #if STE_USE_LANG_VERILOG
-static const char* STE_WordList1_STE_LANG_VERILOG =
+    static const char * STE_WordList1_STE_LANG_VERILOG =
     "always and assign begin "
     "xbuf buf bufif0 bufif1 case casex casez cmos "
     "default defparam else end endcase "
@@ -1429,8 +1429,8 @@ static const char* STE_WordList1_STE_LANG_VERILOG =
     "task time tran tranif0 tranif1 tri tri0 "
     "tri1 triand trior trireg vectored wait "
     "wand while wire wor xnor xor";
-static const char* STE_WordList2_STE_LANG_VERILOG = "";
-static const char* STE_WordList3_STE_LANG_VERILOG =
+    static const char * STE_WordList2_STE_LANG_VERILOG = "";
+    static const char * STE_WordList3_STE_LANG_VERILOG =
     "$readmemb $readmemh $sreadmemb $sreadmemh $display $write $strobe $monitor $fdisplay $fwrite $fstrobe "
     "$fmonitor $fopen $fclose $time $stime $realtime $scale $printtimescale $timeformat $stop $finish $save "
     "$incsave $restart $input $log $nolog $key $nokey $scope $showscopes $showscopes $showvars $showvars "
@@ -1440,13 +1440,13 @@ static const char* STE_WordList3_STE_LANG_VERILOG =
 #endif //STE_USE_LANG_VERILOG
 
 #if STE_USE_LANG_KIX
-static const char* STE_WordList1_STE_LANG_KIX =
+    static const char * STE_WordList1_STE_LANG_KIX =
     "? and beep big break call cd cls color cookie1 copy "
     "debug del dim display do until exit flushkb for each next function endfunction "
     "get gets global go gosub goto if else endif md or password play quit "
     "rd redim return run select case endselect set setl setm settime "
     "shell sleep small use while loop";
-static const char* STE_WordList2_STE_LANG_KIX =
+    static const char * STE_WordList2_STE_LANG_KIX =
     "abs addkey addprinterconnection addprogramgroup "
     "addprogramitem asc ascan at backupeventlog box cdbl chr cint cleareventlog "
     "close comparefiletimes createobject cstr dectohex delkey delprinterconnection "
@@ -1461,7 +1461,7 @@ static const char* STE_WordList2_STE_LANG_KIX =
     "settitle setwallpaper showprogramgroup shutdown sidtoname split srnd substr "
     "trim ubound ucase unloadhive val vartype vartypename writeline "
     "writeprofilestring writevalue";
-static const char* STE_WordList3_STE_LANG_KIX =
+    static const char * STE_WordList3_STE_LANG_KIX =
     "address build color comment cpu crlf csd curdir "
     "date day domain dos error fullname homedir homedrive homeshr hostname "
     "inwin ipaddress0 ipaddress1 ipaddress2 ipaddress3 kix lanroot ldomain "
@@ -1474,7 +1474,7 @@ static const char* STE_WordList3_STE_LANG_KIX =
 //static const char* STE_WordList1_STE_LANG_GUI4CLI - nothing in scite
 
 #if STE_USE_LANG_SPECMAN
-static const char* STE_WordList1_STE_LANG_SPECMAN =
+    static const char * STE_WordList1_STE_LANG_SPECMAN =
     "struct unit "
     "integer real bool int long uint nibble byte bits bytes bit time string "
     "var instance event "
@@ -1520,9 +1520,9 @@ static const char* STE_WordList1_STE_LANG_SPECMAN =
     "files load module ntv source_ref script read write "
     "initial idle others posedge clock cycles "
     "statement action command member exp block num file";
-static const char* STE_WordList2_STE_LANG_SPECMAN =
+    static const char * STE_WordList2_STE_LANG_SPECMAN =
     "TRUE FALSE MAX_INT MIN_INT NULL UNDEF ";
-static const char* STE_WordList3_STE_LANG_SPECMAN =
+    static const char * STE_WordList3_STE_LANG_SPECMAN =
     "any_sequence_item sequence any_sequence_driver driver "
     "created_driver  parent_sequence "
     "bfm_interaction_mode PULL_MODE PUSH_MODE MAIN SIMPLE RANDOM "
@@ -1546,10 +1546,10 @@ static const char* STE_WordList3_STE_LANG_SPECMAN =
 #endif //STE_USE_LANG_SPECMAN
 
 #if STE_USE_LANG_AU3
-static const char* STE_WordList1_STE_LANG_AU3 =
+    static const char * STE_WordList1_STE_LANG_AU3 =
     "and byref case continueloop dim do else elseif endfunc endif endselect exit exitloop for func "
     "global if local next not or return select step then to until wend while exit";
-static const char* STE_WordList2_STE_LANG_AU3 =
+    static const char * STE_WordList2_STE_LANG_AU3 =
     "abs acos adlibdisable adlibenable asc asin atan autoitsetoption autoitwingettitle autoitwinsettitle "
     "bitand bitnot bitor bitshift bitxor blockinput break call cdtray chr clipget clipput controlclick "
     "controlcommand controldisable controlenable controlfocus controlgetfocus controlgetpos controlgettext "
@@ -1576,7 +1576,7 @@ static const char* STE_WordList2_STE_LANG_AU3 =
     "wingetclasslist wingetclientsize wingethandle wingetpos wingetstate wingettext wingettitle "
     "winkill winmenuselectitem winminimizeall winminimizeallundo winmove winsetontop winsetstate "
     "winsettitle winwait winwaitactive winwaitclose winwaitnotactive";
-static const char* STE_WordList3_STE_LANG_AU3 =
+    static const char * STE_WordList3_STE_LANG_AU3 =
     "@appdatacommondir @appdatadir @autoitversion @commonfilesdir @compiled @computername @comspec "
     "@cr @crlf @desktopcommondir @desktopdir @desktopheight @desktopwidth @documentscommondir @error "
     "@favoritescommondir @favoritesdir @homedrive @homepath @homeshare @hour @ipaddress1 @ipaddress2 "
@@ -1585,7 +1585,7 @@ static const char* STE_WordList3_STE_LANG_AU3 =
     "@scriptdir @scriptfullpath @scriptname @sec @startmenucommondir @startmenudir @startupcommondir "
     "@startupdir @sw_hide @sw_maximize @sw_minimize @sw_restore @sw_show @systemdir @tab @tempdir "
     "@userprofiledir @username @wday @windowsdir @workingdir @yday @year";
-static const char* STE_WordList4_STE_LANG_AU3 =
+    static const char * STE_WordList4_STE_LANG_AU3 =
     "{!} {#} {^} {{} {}} {+} {alt} {altdown} {altup} {appskey} {asc} {backspace} {browser_back} "
     "{browser_favorites} {browser_forward} {browser_home} {browser_refresh} {browser_search} {browser_stop} {bs} {capslock} {ctrlbreak} "
     "{ctrldown} {ctrlup} {del} {delete} {down} {end} {enter} {esc} {escape} {f1} {f10} {f11} {f12} {f2} {f3} {f4} {f5} {f6} {f7} {f8} {f9} "
@@ -1600,7 +1600,7 @@ static const char* STE_WordList4_STE_LANG_AU3 =
 //static const char* STE_WordList1_STE_LANG_APDL - nothing in scite
 
 #if STE_USE_LANG_BASH
-static const char* STE_WordList1_STE_LANG_BASH =
+    static const char * STE_WordList1_STE_LANG_BASH =
     "alias ar asa awk banner basename bash bc bdiff break bunzip2 "
     "bzip2 cal calendar case cat cc cd chmod cksum clear cmp col comm "
     "compress continue cp cpio crypt csplit ctags cut date dc dd "
@@ -1620,7 +1620,7 @@ static const char* STE_WordList1_STE_LANG_BASH =
 #endif //STE_USE_LANG_BASH
 
 #if STE_USE_LANG_ASN1
-static const char* STE_WordList1_STE_LANG_ASN1 =
+    static const char * STE_WordList1_STE_LANG_ASN1 =
     "ACCESS AGENT AUGMENTS "
     "BEGIN BITS "
     "CAPABILITIES CHOICE COMPLIANCE CONTACT CONVENTION "
@@ -1641,50 +1641,50 @@ static const char* STE_WordList1_STE_LANG_ASN1 =
     "UPDATED "
     "VALUE VARIABLES VARIATION "
     "WRITE";
-static const char* STE_WordList2_STE_LANG_ASN1 =
+    static const char * STE_WordList2_STE_LANG_ASN1 =
     "accessible create current deprecated for mandatory "
     "not notify not-accessible obsolete only optional "
     "read read-only read-write write";
-static const char* STE_WordList3_STE_LANG_ASN1 =
+    static const char * STE_WordList3_STE_LANG_ASN1 =
     "ABSENT ANY APPLICATION BIT BOOLEAN BY COMPONENT COMPONENTS "
     "DEFAULT DEFINED ENUMERATED EXPLICIT EXTERNAL IMPLICIT INIFINITY "
     "MAX MIN MINUS OPTIONAL PRESENT PRIVATE REAL SET TAGS TRUE";
-static const char* STE_WordList4_STE_LANG_ASN1 =
+    static const char * STE_WordList4_STE_LANG_ASN1 =
     "Counter Counter32 Counter64 DisplayString Gauge Gauge32 "
     "IDENTIFIER INTEGER Integer32 IpAddress NetworkAddress NsapAddress "
     "OBJECT OCTET Opaque PhysAddress STRING TimeTicks UInteger32 UNITS Unsigned32";
 #endif //STE_USE_LANG_ASN1
 
 #if STE_USE_LANG_VHDL
-static const char* STE_WordList1_STE_LANG_VHDL =
+    static const char * STE_WordList1_STE_LANG_VHDL =
     "keywords.$(file.patterns.vhdl)=access after alias all architecture array assert attribute begin block "
     "body buffer bus case component configuration constant disconnect downto else elsif end entity exit file "
     "for function generate generic group guarded if impure in inertial inout is label library linkage literal "
     "loop map new next null of on open others out package port postponed procedure process pure range record "
     "register reject report return select severity shared signal subtype then to transport type unaffected "
     "units until use variable wait when while with";
-static const char* STE_WordList2_STE_LANG_VHDL =
+    static const char * STE_WordList2_STE_LANG_VHDL =
     "abs and mod nand nor not or rem rol ror sla sll sra srl xnor xor";
-static const char* STE_WordList3_STE_LANG_VHDL =
+    static const char * STE_WordList3_STE_LANG_VHDL =
     "left right low high ascending image value pos val succ pred leftof rightof base range reverse_range "
     "length delayed stable quiet transaction event active last_event last_active last_value driving "
     "driving_value simple_name path_name instance_name";
-static const char* STE_WordList4_STE_LANG_VHDL =
+    static const char * STE_WordList4_STE_LANG_VHDL =
     "now readline read writeline write endfile resolved to_bit to_bitvector to_stdulogic to_stdlogicvector "
     "to_stdulogicvector to_x01 to_x01z to_UX01 rising_edge falling_edge is_x shift_left shift_right rotate_left "
     "rotate_right resize to_integer to_unsigned to_signed std_match to_01";
-static const char* STE_WordList5_STE_LANG_VHDL =
+    static const char * STE_WordList5_STE_LANG_VHDL =
     "std ieee work standard textio std_logic_1164 std_logic_arith std_logic_misc std_logic_signed "
     "std_logic_textio std_logic_unsigned numeric_bit numeric_std math_complex math_real vital_primitives "
     "vital_timing";
-static const char* STE_WordList6_STE_LANG_VHDL =
+    static const char * STE_WordList6_STE_LANG_VHDL =
     "boolean bit character severity_level integer real time delay_length natural positive string bit_vector "
     "file_open_kind file_open_status line text side width std_ulogic std_ulogic_vector std_logic "
     "std_logic_vector X01 X01Z UX01 UX01Z unsigned signed";
 #endif //STE_USE_LANG_VHDL
 
 #if STE_USE_LANG_JAVA
-static const char* STE_WordList1_STE_LANG_JAVA =
+    static const char * STE_WordList1_STE_LANG_JAVA =
     "abstract assert boolean break byte case catch char class const "
     "continue default do double else extends final finally float for "
     "future generic goto if implements import inner instanceof int "
@@ -1694,7 +1694,7 @@ static const char* STE_WordList1_STE_LANG_JAVA =
 #endif //STE_USE_LANG_JAVA
 
 #if STE_USE_LANG_JAVASCRIPT
-static const char* STE_WordList1_STE_LANG_JAVASCRIPT =
+    static const char * STE_WordList1_STE_LANG_JAVASCRIPT =
     "abstract boolean break byte case catch char class const continue "
     "debugger default delete do double else enum export extends final "
     "finally float for function goto if implements import in "
@@ -1705,7 +1705,7 @@ static const char* STE_WordList1_STE_LANG_JAVASCRIPT =
 #endif //STE_USE_LANG_JAVASCRIPT
 
 #if STE_USE_LANG_RC
-static const char* STE_WordList1_STE_LANG_RC =
+    static const char * STE_WordList1_STE_LANG_RC =
     "ACCELERATORS ALT AUTO3STATE AUTOCHECKBOX AUTORADIOBUTTON BEGIN "
     "BITMAP BLOCK BUTTON CAPTION CHARACTERISTICS CHECKBOX CLASS "
     "COMBOBOX CONTROL CTEXT CURSOR DEFPUSHBUTTON DIALOG DIALOGEX "
@@ -1716,7 +1716,7 @@ static const char* STE_WordList1_STE_LANG_RC =
 #endif //STE_USE_LANG_RC
 
 #if STE_USE_LANG_CS
-static const char* STE_WordList1_STE_LANG_CS =
+    static const char * STE_WordList1_STE_LANG_CS =
     "abstract as base bool break byte case catch char checked class "
     "const continue decimal default delegate do double else enum event "
     "explicit extern false finally fixed float for foreach goto if "
@@ -1728,7 +1728,7 @@ static const char* STE_WordList1_STE_LANG_CS =
 #endif //STE_USE_LANG_CS
 
 #if STE_USE_LANG_D
-static const char* STE_WordList1_STE_LANG_D =
+    static const char * STE_WordList1_STE_LANG_D =
     "abstract alias align asm assert auto "
     "bit body break byte case cast catch cdouble cent cfloat char class const continue creal "
     "dchar debug default delegate delete deprecated do double "
@@ -1741,7 +1741,7 @@ static const char* STE_WordList1_STE_LANG_D =
 #endif //STE_USE_LANG_D
 
 #if STE_USE_LANG_IDL
-static const char* STE_WordList1_STE_LANG_IDL =
+    static const char * STE_WordList1_STE_LANG_IDL =
     "aggregatable allocate appobject arrays async async_uuid "
     "uto_handle bindable boolean broadcast byte byte_count call_as "
     "callback char coclass code comm_status const context_handle "
@@ -1771,7 +1771,7 @@ static const char* STE_WordList1_STE_LANG_IDL =
 #endif //STE_USE_LANG_IDL
 
 #if STE_USE_LANG_PLSQL
-static const char* STE_WordList1_STE_LANG_PLSQL =
+    static const char * STE_WordList1_STE_LANG_PLSQL =
     "all alter and any array as asc at authid avg begin between binary_integer "
     "body boolean bulk by char char_base check close cluster collect comment "
     "commit compress connect constant create current currval cursor date day "
@@ -1792,7 +1792,7 @@ static const char* STE_WordList1_STE_LANG_PLSQL =
 #endif //STE_USE_LANG_PLSQL
 
 #if STE_USE_LANG_SQUIRREL
-static const char* STE_WordList1_STE_LANG_SQUIRREL =
+    static const char * STE_WordList1_STE_LANG_SQUIRREL =
     "break case catch class clone constructor continue "
     "default delegate delete do else extends false for foreach function "
     "if in instanceof local null parent "
@@ -1816,16 +1816,16 @@ static const char* STE_WordList1_STE_LANG_SQUIRREL =
 #define STE_LexerWords_STE_LANG_CPP_COUNT 3
 #define DefSTE_LexerWords_STE_LANG_CPP \
     STE_LexerWords STE_LexerWords_STE_LANG_CPP[]        = { { 1, STE_WordList1_STE_LANG_CPP }, \
-                                                            { 1, STE_WordList2_STE_LANG_CPP }, \
-                                                            { 1, STE_WordList3_STE_LANG_CPP } };
+        { 1, STE_WordList2_STE_LANG_CPP }, \
+        { 1, STE_WordList3_STE_LANG_CPP } };
 
 #define STE_LexerWords_STE_LANG_HTML_COUNT 5
 #define DefSTE_LexerWords_STE_LANG_HTML \
     STE_LexerWords STE_LexerWords_STE_LANG_HTML[]       = { { 1, STE_WordList1_STE_LANG_HTML }, \
-                                                            { 1, STE_WordList1_STE_LANG_JAVASCRIPT }, \
-                                                            { 1, STE_WordList1_STE_LANG_VB }, \
-                                                            { 1, STE_WordList1_STE_LANG_PYTHON }, \
-                                                            { 1, STE_WordList1_STE_LANG_PHP } };
+        { 1, STE_WordList1_STE_LANG_JAVASCRIPT }, \
+        { 1, STE_WordList1_STE_LANG_VB }, \
+        { 1, STE_WordList1_STE_LANG_PYTHON }, \
+        { 1, STE_WordList1_STE_LANG_PHP } };
 
 #define STE_LexerWords_STE_LANG_XML_COUNT 0
 #define DefSTE_LexerWords_STE_LANG_XML \
@@ -1870,9 +1870,9 @@ static const char* STE_WordList1_STE_LANG_SQUIRREL =
 #define STE_LexerWords_STE_LANG_LUA_COUNT 4
 #define DefSTE_LexerWords_STE_LANG_LUA \
     STE_LexerWords STE_LexerWords_STE_LANG_LUA[]        = { { 1, STE_WordList1_STE_LANG_LUA }, \
-                                                            { 1, STE_WordList2_STE_LANG_LUA }, \
-                                                            { 1, STE_WordList3_STE_LANG_LUA }, \
-                                                            { 1, STE_WordList4_STE_LANG_LUA } };
+        { 1, STE_WordList2_STE_LANG_LUA }, \
+        { 1, STE_WordList3_STE_LANG_LUA }, \
+        { 1, STE_WordList4_STE_LANG_LUA } };
 
 #define STE_LexerWords_STE_LANG_DIFF_COUNT 0
 #define DefSTE_LexerWords_STE_LANG_DIFF \
@@ -1881,7 +1881,7 @@ static const char* STE_WordList1_STE_LANG_SQUIRREL =
 #define STE_LexerWords_STE_LANG_CONF_COUNT 2
 #define DefSTE_LexerWords_STE_LANG_CONF \
     STE_LexerWords STE_LexerWords_STE_LANG_CONF[]       = { { 1, STE_WordList1_STE_LANG_CONF }, \
-                                                            { 1, STE_WordList2_STE_LANG_CONF } };
+        { 1, STE_WordList2_STE_LANG_CONF } };
 
 #define STE_LexerWords_STE_LANG_PASCAL_COUNT 1
 #define DefSTE_LexerWords_STE_LANG_PASCAL \
@@ -1918,8 +1918,8 @@ static const char* STE_WordList1_STE_LANG_SQUIRREL =
 #define STE_LexerWords_STE_LANG_NNCRONTAB_COUNT 3
 #define DefSTE_LexerWords_STE_LANG_NNCRONTAB \
     STE_LexerWords STE_LexerWords_STE_LANG_NNCRONTAB[]  = { { 1, STE_WordList1_STE_LANG_NNCRONTAB }, \
-                                                            { 1, STE_WordList2_STE_LANG_NNCRONTAB }, \
-                                                            { 1, STE_WordList3_STE_LANG_NNCRONTAB } };
+        { 1, STE_WordList2_STE_LANG_NNCRONTAB }, \
+        { 1, STE_WordList3_STE_LANG_NNCRONTAB } };
 
 #define STE_LexerWords_STE_LANG_BULLANT_COUNT 1
 #define DefSTE_LexerWords_STE_LANG_BULLANT \
@@ -1952,71 +1952,71 @@ static const char* STE_WordList1_STE_LANG_SQUIRREL =
 #define STE_LexerWords_STE_LANG_ASM_COUNT 5
 #define DefSTE_LexerWords_STE_LANG_ASM \
     STE_LexerWords STE_LexerWords_STE_LANG_ASM[]        = { { 1, STE_WordList1_STE_LANG_ASM }, \
-                                                            { 1, STE_WordList2_STE_LANG_ASM }, \
-                                                            { 1, STE_WordList3_STE_LANG_ASM }, \
-                                                            { 1, STE_WordList4_STE_LANG_ASM }, \
-                                                            { 1, STE_WordList5_STE_LANG_ASM } };
+        { 1, STE_WordList2_STE_LANG_ASM }, \
+        { 1, STE_WordList3_STE_LANG_ASM }, \
+        { 1, STE_WordList4_STE_LANG_ASM }, \
+        { 1, STE_WordList5_STE_LANG_ASM } };
 
 #define STE_LexerWords_STE_LANG_CPPNOCASE_COUNT 3
 #define DefSTE_LexerWords_STE_LANG_CPPNOCASE \
     STE_LexerWords STE_LexerWords_STE_LANG_CPPNOCASE[]  = { { 1, STE_WordList1_STE_LANG_CPP }, \
-                                                            { 1, STE_WordList2_STE_LANG_CPP }, \
-                                                            { 1, STE_WordList3_STE_LANG_CPP } };
+        { 1, STE_WordList2_STE_LANG_CPP }, \
+        { 1, STE_WordList3_STE_LANG_CPP } };
 
 #define STE_LexerWords_STE_LANG_FORTRAN_COUNT 2
 #define DefSTE_LexerWords_STE_LANG_FORTRAN \
     STE_LexerWords STE_LexerWords_STE_LANG_FORTRAN[]    = { { 1, STE_WordList1_STE_LANG_FORTRAN }, \
-                                                            { 1, STE_WordList2_STE_LANG_FORTRAN } };
+        { 1, STE_WordList2_STE_LANG_FORTRAN } };
 
 #define STE_LexerWords_STE_LANG_F77_COUNT 2
 #define DefSTE_LexerWords_STE_LANG_F77 \
     STE_LexerWords STE_LexerWords_STE_LANG_F77[]        = { { 1, STE_WordList1_STE_LANG_FORTRAN }, \
-                                                            { 1, STE_WordList2_STE_LANG_FORTRAN } };
+        { 1, STE_WordList2_STE_LANG_FORTRAN } };
 
 #define STE_LexerWords_STE_LANG_CSS_COUNT 2
 #define DefSTE_LexerWords_STE_LANG_CSS \
     STE_LexerWords STE_LexerWords_STE_LANG_CSS[]        = { { 1, STE_WordList1_STE_LANG_CSS }, \
-                                                            { 1, STE_WordList2_STE_LANG_CSS } };
+        { 1, STE_WordList2_STE_LANG_CSS } };
 
 #define STE_LexerWords_STE_LANG_POV_COUNT 5
 #define DefSTE_LexerWords_STE_LANG_POV \
     STE_LexerWords STE_LexerWords_STE_LANG_POV[]        = { { 1, STE_WordList1_STE_LANG_POV }, \
-                                                            { 1, STE_WordList2_STE_LANG_POV }, \
-                                                            { 1, STE_WordList3_STE_LANG_POV }, \
-                                                            { 1, STE_WordList4_STE_LANG_POV }, \
-                                                            { 1, STE_WordList5_STE_LANG_POV } };
+        { 1, STE_WordList2_STE_LANG_POV }, \
+        { 1, STE_WordList3_STE_LANG_POV }, \
+        { 1, STE_WordList4_STE_LANG_POV }, \
+        { 1, STE_WordList5_STE_LANG_POV } };
 
 #define STE_LexerWords_STE_LANG_LOUT_COUNT 3
 #define DefSTE_LexerWords_STE_LANG_LOUT \
     STE_LexerWords STE_LexerWords_STE_LANG_LOUT[]       = { { 1, STE_WordList1_STE_LANG_LOUT }, \
-                                                            { 1, STE_WordList2_STE_LANG_LOUT }, \
-                                                            { 1, STE_WordList3_STE_LANG_LOUT } };
+        { 1, STE_WordList2_STE_LANG_LOUT }, \
+        { 1, STE_WordList3_STE_LANG_LOUT } };
 
 #define STE_LexerWords_STE_LANG_ESCRIPT_COUNT 3
 #define DefSTE_LexerWords_STE_LANG_ESCRIPT \
     STE_LexerWords STE_LexerWords_STE_LANG_ESCRIPT[]    = { { 1, STE_WordList1_STE_LANG_ESCRIPT }, \
-                                                            { 1, STE_WordList2_STE_LANG_ESCRIPT }, \
-                                                            { 1, STE_WordList3_STE_LANG_ESCRIPT } };
+        { 1, STE_WordList2_STE_LANG_ESCRIPT }, \
+        { 1, STE_WordList3_STE_LANG_ESCRIPT } };
 
 #define STE_LexerWords_STE_LANG_PS_COUNT 4
 #define DefSTE_LexerWords_STE_LANG_PS \
     STE_LexerWords STE_LexerWords_STE_LANG_PS[]         = { { 1, STE_WordList1_STE_LANG_PS }, \
-                                                            { 1, STE_WordList2_STE_LANG_PS }, \
-                                                            { 1, STE_WordList3_STE_LANG_PS }, \
-                                                            { 1, STE_WordList4_STE_LANG_PS } };
+        { 1, STE_WordList2_STE_LANG_PS }, \
+        { 1, STE_WordList3_STE_LANG_PS }, \
+        { 1, STE_WordList4_STE_LANG_PS } };
 
 #define STE_LexerWords_STE_LANG_NSIS_COUNT 4
 #define DefSTE_LexerWords_STE_LANG_NSIS \
     STE_LexerWords STE_LexerWords_STE_LANG_NSIS[]       = { { 1, STE_WordList1_STE_LANG_NSIS }, \
-                                                            { 1, STE_WordList2_STE_LANG_NSIS }, \
-                                                            { 1, STE_WordList3_STE_LANG_NSIS }, \
-                                                            { 1, STE_WordList4_STE_LANG_NSIS } };
+        { 1, STE_WordList2_STE_LANG_NSIS }, \
+        { 1, STE_WordList3_STE_LANG_NSIS }, \
+        { 1, STE_WordList4_STE_LANG_NSIS } };
 
 #define STE_LexerWords_STE_LANG_MMIXAL_COUNT 3
 #define DefSTE_LexerWords_STE_LANG_MMIXAL \
     STE_LexerWords STE_LexerWords_STE_LANG_MMIXAL[]     = { { 1, STE_WordList1_STE_LANG_MMIXAL }, \
-                                                            { 1, STE_WordList2_STE_LANG_MMIXAL }, \
-                                                            { 1, STE_WordList3_STE_LANG_MMIXAL } };
+        { 1, STE_WordList2_STE_LANG_MMIXAL }, \
+        { 1, STE_WordList3_STE_LANG_MMIXAL } };
 
 #define STE_LexerWords_STE_LANG_CLW_COUNT 0
 #define DefSTE_LexerWords_STE_LANG_CLW  \
@@ -2049,8 +2049,8 @@ static const char* STE_WordList1_STE_LANG_SQUIRREL =
 #define STE_LexerWords_STE_LANG_FORTH_COUNT 3
 #define DefSTE_LexerWords_STE_LANG_FORTH \
     STE_LexerWords STE_LexerWords_STE_LANG_FORTH[]      = { { 1, STE_WordList1_STE_LANG_FORTH }, \
-                                                            { 1, STE_WordList2_STE_LANG_FORTH }, \
-                                                            { 1, STE_WordList3_STE_LANG_FORTH } };
+        { 1, STE_WordList2_STE_LANG_FORTH }, \
+        { 1, STE_WordList3_STE_LANG_FORTH } };
 
 #define STE_LexerWords_STE_LANG_ERLANG_COUNT 1
 #define DefSTE_LexerWords_STE_LANG_ERLANG \
@@ -2067,14 +2067,14 @@ static const char* STE_WordList1_STE_LANG_SQUIRREL =
 #define STE_LexerWords_STE_LANG_VERILOG_COUNT 3
 #define DefSTE_LexerWords_STE_LANG_VERILOG \
     STE_LexerWords STE_LexerWords_STE_LANG_VERILOG[]    = { { 1, STE_WordList1_STE_LANG_VERILOG }, \
-                                                            { 1, STE_WordList2_STE_LANG_VERILOG }, \
-                                                            { 1, STE_WordList3_STE_LANG_VERILOG } };
+        { 1, STE_WordList2_STE_LANG_VERILOG }, \
+        { 1, STE_WordList3_STE_LANG_VERILOG } };
 
 #define STE_LexerWords_STE_LANG_KIX_COUNT 3
 #define DefSTE_LexerWords_STE_LANG_KIX \
     STE_LexerWords STE_LexerWords_STE_LANG_KIX[]        = { { 1, STE_WordList1_STE_LANG_KIX }, \
-                                                            { 1, STE_WordList2_STE_LANG_KIX }, \
-                                                            { 1, STE_WordList3_STE_LANG_KIX } };
+        { 1, STE_WordList2_STE_LANG_KIX }, \
+        { 1, STE_WordList3_STE_LANG_KIX } };
 
 #define STE_LexerWords_STE_LANG_GUI4CLI_COUNT 0
 #define DefSTE_LexerWords_STE_LANG_GUI4CLI \
@@ -2083,15 +2083,15 @@ static const char* STE_WordList1_STE_LANG_SQUIRREL =
 #define STE_LexerWords_STE_LANG_SPECMAN_COUNT 3
 #define DefSTE_LexerWords_STE_LANG_SPECMAN \
     STE_LexerWords STE_LexerWords_STE_LANG_SPECMAN[]    = { { 1, STE_WordList1_STE_LANG_SPECMAN }, \
-                                                            { 1, STE_WordList2_STE_LANG_SPECMAN }, \
-                                                            { 1, STE_WordList3_STE_LANG_SPECMAN } };
+        { 1, STE_WordList2_STE_LANG_SPECMAN }, \
+        { 1, STE_WordList3_STE_LANG_SPECMAN } };
 
 #define STE_LexerWords_STE_LANG_AU3_COUNT 4
 #define DefSTE_LexerWords_STE_LANG_AU3 \
     STE_LexerWords STE_LexerWords_STE_LANG_AU3[]        = { { 1, STE_WordList1_STE_LANG_AU3 }, \
-                                                            { 1, STE_WordList2_STE_LANG_AU3 }, \
-                                                            { 1, STE_WordList3_STE_LANG_AU3 }, \
-                                                            { 1, STE_WordList4_STE_LANG_AU3 } };
+        { 1, STE_WordList2_STE_LANG_AU3 }, \
+        { 1, STE_WordList3_STE_LANG_AU3 }, \
+        { 1, STE_WordList4_STE_LANG_AU3 } };
 
 #define STE_LexerWords_STE_LANG_APDL_COUNT 0
 #define DefSTE_LexerWords_STE_LANG_APDL \
@@ -2104,18 +2104,18 @@ static const char* STE_WordList1_STE_LANG_SQUIRREL =
 #define STE_LexerWords_STE_LANG_ASN1_COUNT 4
 #define DefSTE_LexerWords_STE_LANG_ASN1 \
     STE_LexerWords STE_LexerWords_STE_LANG_ASN1[]       = { { 1, STE_WordList1_STE_LANG_ASN1 }, \
-                                                            { 1, STE_WordList2_STE_LANG_ASN1 }, \
-                                                            { 1, STE_WordList3_STE_LANG_ASN1 }, \
-                                                            { 1, STE_WordList4_STE_LANG_ASN1 } };
+        { 1, STE_WordList2_STE_LANG_ASN1 }, \
+        { 1, STE_WordList3_STE_LANG_ASN1 }, \
+        { 1, STE_WordList4_STE_LANG_ASN1 } };
 
 #define STE_LexerWords_STE_LANG_VHDL_COUNT 6
 #define DefSTE_LexerWords_STE_LANG_VHDL \
     STE_LexerWords STE_LexerWords_STE_LANG_VHDL[]       = { { 1, STE_WordList1_STE_LANG_VHDL }, \
-                                                            { 1, STE_WordList2_STE_LANG_VHDL }, \
-                                                            { 1, STE_WordList3_STE_LANG_VHDL }, \
-                                                            { 1, STE_WordList4_STE_LANG_VHDL }, \
-                                                            { 1, STE_WordList5_STE_LANG_VHDL }, \
-                                                            { 1, STE_WordList6_STE_LANG_VHDL } };
+        { 1, STE_WordList2_STE_LANG_VHDL }, \
+        { 1, STE_WordList3_STE_LANG_VHDL }, \
+        { 1, STE_WordList4_STE_LANG_VHDL }, \
+        { 1, STE_WordList5_STE_LANG_VHDL }, \
+        { 1, STE_WordList6_STE_LANG_VHDL } };
 
 #define STE_LexerWords_STE_LANG_JAVA_COUNT 1
 #define DefSTE_LexerWords_STE_LANG_JAVA \
@@ -2633,9 +2633,9 @@ static const char* STE_WordList1_STE_LANG_SQUIRREL =
 #define STE_LexerBraces_STE_LANG_EIFFEL     6
 #define STE_LexerBraces_STE_LANG_EIFFELKW   6
 #if defined(wxSTC_TCL_DEFAULT)
-#define STE_LexerBraces_STE_LANG_TCL        6
+    #define STE_LexerBraces_STE_LANG_TCL        6
 #else
-#define STE_LexerBraces_STE_LANG_TCL        10
+    #define STE_LexerBraces_STE_LANG_TCL        10
 #endif // defined(wxSTC_TCL_DEFAULT)
 #define STE_LexerBraces_STE_LANG_NNCRONTAB  0
 #define STE_LexerBraces_STE_LANG_BULLANT    0
@@ -3147,7 +3147,7 @@ Case Else EndIf ElseIf EndFunc EndSelect Next Until Wend CASE ELSE ENDIF ELSEIF 
 //----------------------------------------------------------------------------
 
 #define STE_LexerStyles_STE_LANG_CONTAINER_COUNT 0
-STE_LexerStyles *STE_LexerStyles_STE_LANG_CONTAINER = NULL;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_CONTAINER = NULL;
 
 #define STE_LexerStyles_STE_LANG_NULL_COUNT 1
 static STE_LexerStyles STE_LexerStyles_STE_LANG_NULL[STE_LexerStyles_STE_LANG_NULL_COUNT] =
@@ -3328,7 +3328,7 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_HTML[STE_LexerStyles_STE_LANG_HT
     // PHP
     { STE_STYLE_DEFAULT,        wxSTC_HPHP_DEFAULT,     "PHP Default" },
     { STE_STYLE_STRING,         wxSTC_HPHP_HSTRING,     "PHP Double quoted String" },
-    { STE_STYLE_STRING,         wxSTC_HPHP_SIMPLESTRING,"PHP Single quoted string" },
+    { STE_STYLE_STRING,         wxSTC_HPHP_SIMPLESTRING, "PHP Single quoted string" },
     { STE_STYLE_KEYWORD1,       wxSTC_HPHP_WORD,        "PHP Keyword" },
     { STE_STYLE_NUMBER,         wxSTC_HPHP_NUMBER,      "PHP Number" },
     { STE_STYLE_VALUE,          wxSTC_HPHP_VARIABLE,    "PHP Variable" },
@@ -3339,7 +3339,7 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_HTML[STE_LexerStyles_STE_LANG_HT
 };
 
 #define STE_LexerStyles_STE_LANG_XML_COUNT 32 // only use first 32
-STE_LexerStyles *STE_LexerStyles_STE_LANG_XML = STE_LexerStyles_STE_LANG_HTML;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_XML = STE_LexerStyles_STE_LANG_HTML;
 
 #define STE_LexerStyles_STE_LANG_PERL_COUNT 30
 static STE_LexerStyles STE_LexerStyles_STE_LANG_PERL[STE_LexerStyles_STE_LANG_PERL_COUNT] =
@@ -3595,7 +3595,7 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_AVE[STE_LexerStyles_STE_LANG_AVE
     { STE_STYLE_STRING,        wxSTC_AVE_STRING,    "String" }, // 6
     { STE_STYLE_NUMBER,        wxSTC_AVE_ENUM,      "Enumeration" }, // 7
     { STE_STYLE_STRINGEOL,     wxSTC_AVE_STRINGEOL, "End of line where string is not closed" }, // 8
-    { STE_STYLE_IDENTIFIER,    wxSTC_AVE_IDENTIFIER,"Operators" }, // 9
+    { STE_STYLE_IDENTIFIER,    wxSTC_AVE_IDENTIFIER, "Operators" }, // 9
     { STE_STYLE_OPERATOR,      wxSTC_AVE_OPERATOR,  "Identifier (everything else...)" }, // 10
     { STE_STYLE_KEYWORD1,      wxSTC_AVE_WORD1,     "Keywords 1" }, // 11
     { STE_STYLE_KEYWORD2,      wxSTC_AVE_WORD2,     "Keywords 2" }, // 12
@@ -3798,10 +3798,10 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_VBSCRIPT[STE_LexerStyles_STE_LAN
 };
 
 #define STE_LexerStyles_STE_LANG_ASP_COUNT STE_LexerStyles_STE_LANG_HTML_COUNT
-STE_LexerStyles* STE_LexerStyles_STE_LANG_ASP = STE_LexerStyles_STE_LANG_HTML;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_ASP = STE_LexerStyles_STE_LANG_HTML;
 
 #define STE_LexerStyles_STE_LANG_PHP_COUNT STE_LexerStyles_STE_LANG_HTML_COUNT
-STE_LexerStyles* STE_LexerStyles_STE_LANG_PHP = STE_LexerStyles_STE_LANG_HTML;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_PHP = STE_LexerStyles_STE_LANG_HTML;
 
 
 #define STE_LexerStyles_STE_LANG_BAAN_COUNT 11
@@ -3846,7 +3846,7 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_SCRIPTOL[STE_LexerStyles_STE_LAN
     { STE_STYLE_COMMENTLINE,    wxSTC_SCRIPTOL_COMMENTLINE, "Scriptol style comment line" }, // 2
     { STE_STYLE_COMMENTLINE,    wxSTC_SCRIPTOL_PERSISTENT,  "Persistent comment line" }, // 3
     { STE_STYLE_COMMENTLINE,    wxSTC_SCRIPTOL_CSTYLE,      "C style comment line" }, // 4
-    { STE_STYLE_COMMENTDOC,     wxSTC_SCRIPTOL_COMMENTBLOCK,"Comment-blocks" }, // 5
+    { STE_STYLE_COMMENTDOC,     wxSTC_SCRIPTOL_COMMENTBLOCK, "Comment-blocks" }, // 5
     { STE_STYLE_NUMBER,         wxSTC_SCRIPTOL_NUMBER,      "Number" }, // 6
     { STE_STYLE_STRING,         wxSTC_SCRIPTOL_STRING,      "String" }, // 7
     { STE_STYLE_CHARACTER,      wxSTC_SCRIPTOL_CHARACTER,   "Character/Single quoted string" }, // 8
@@ -3856,7 +3856,7 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_SCRIPTOL[STE_LexerStyles_STE_LAN
     { STE_STYLE_IDENTIFIER,     wxSTC_SCRIPTOL_IDENTIFIER,  "Identifiers" }, // 12
     { STE_STYLE_NUMBER,         wxSTC_SCRIPTOL_TRIPLE,      "Triple quotes" }, // 13
     { STE_STYLE_LABEL,          wxSTC_SCRIPTOL_CLASSNAME,   "Class name definition" }, // 14
-    { STE_STYLE_PREPROCESSOR,   wxSTC_SCRIPTOL_PREPROCESSOR,"Preprocessor" }, // 15
+    { STE_STYLE_PREPROCESSOR,   wxSTC_SCRIPTOL_PREPROCESSOR, "Preprocessor" }, // 15
 };
 
 #define STE_LexerStyles_STE_LANG_ASM_COUNT 15
@@ -3881,7 +3881,7 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_ASM[STE_LexerStyles_STE_LANG_ASM
 };
 
 #define STE_LexerStyles_STE_LANG_CPPNOCASE_COUNT STE_LexerStyles_STE_LANG_CPP_COUNT
-STE_LexerStyles *STE_LexerStyles_STE_LANG_CPPNOCASE = STE_LexerStyles_STE_LANG_CPP;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_CPPNOCASE = STE_LexerStyles_STE_LANG_CPP;
 
 #define STE_LexerStyles_STE_LANG_FORTRAN_COUNT 15
 static STE_LexerStyles STE_LexerStyles_STE_LANG_FORTRAN[STE_LexerStyles_STE_LANG_FORTRAN_COUNT] =
@@ -3905,7 +3905,7 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_FORTRAN[STE_LexerStyles_STE_LANG
 };
 
 #define STE_LexerStyles_STE_LANG_F77_COUNT STE_LexerStyles_STE_LANG_FORTRAN_COUNT
-STE_LexerStyles *STE_LexerStyles_STE_LANG_F77 = STE_LexerStyles_STE_LANG_FORTRAN;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_F77 = STE_LexerStyles_STE_LANG_FORTRAN;
 
 #define STE_LexerStyles_STE_LANG_CSS_COUNT 16
 static STE_LexerStyles STE_LexerStyles_STE_LANG_CSS[STE_LexerStyles_STE_LANG_CSS_COUNT] =
@@ -4045,7 +4045,7 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_MMIXAL[STE_LexerStyles_STE_LANG_
     { STE_STYLE_KEYWORD1,   wxSTC_MMIXAL_OPCODE,        "Opcode (not validated)" }, // 3
     { STE_STYLE_DEFAULT,    wxSTC_MMIXAL_OPCODE_PRE,    "Division between Label and Opcode" }, // 4
     { STE_STYLE_DEFAULT,    wxSTC_MMIXAL_OPCODE_VALID,  "Valid Opcode" }, // 5
-    { STE_STYLE_DEFAULT,    wxSTC_MMIXAL_OPCODE_UNKNOWN,"Unknown Opcode" }, // 6
+    { STE_STYLE_DEFAULT,    wxSTC_MMIXAL_OPCODE_UNKNOWN, "Unknown Opcode" }, // 6
     { STE_STYLE_DEFAULT,    wxSTC_MMIXAL_OPCODE_POST,   "Division between Opcode and Operands" }, // 7
     { STE_STYLE_OPERATOR,   wxSTC_MMIXAL_OPERANDS,      "Division of Operands" }, // 8
     { STE_STYLE_NUMBER,     wxSTC_MMIXAL_NUMBER,        "Number" }, // 9
@@ -4081,7 +4081,7 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_CLW[STE_LexerStyles_STE_LANG_CLW
 };
 
 #define STE_LexerStyles_STE_LANG_CLWNOCASE_COUNT STE_LexerStyles_STE_LANG_CLW_COUNT
-STE_LexerStyles* STE_LexerStyles_STE_LANG_CLWNOCASE = STE_LexerStyles_STE_LANG_CLW;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_CLWNOCASE = STE_LexerStyles_STE_LANG_CLW;
 
 #define STE_LexerStyles_STE_LANG_LOT_COUNT 7
 static STE_LexerStyles STE_LexerStyles_STE_LANG_LOT[STE_LexerStyles_STE_LANG_LOT_COUNT] =
@@ -4136,7 +4136,7 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_METAPOST[STE_LexerStyles_STE_LAN
 };
 
 #define STE_LexerStyles_STE_LANG_POWERBASIC_COUNT STE_LexerStyles_STE_LANG_VB_COUNT
-STE_LexerStyles* STE_LexerStyles_STE_LANG_POWERBASIC = STE_LexerStyles_STE_LANG_VB;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_POWERBASIC = STE_LexerStyles_STE_LANG_VB;
 
 #define STE_LexerStyles_STE_LANG_FORTH_COUNT 12
 static STE_LexerStyles STE_LexerStyles_STE_LANG_FORTH[STE_LexerStyles_STE_LANG_FORTH_COUNT] =
@@ -4157,9 +4157,9 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_FORTH[STE_LexerStyles_STE_LANG_F
 };
 
 #if (wxVERSION_NUMBER < 2901)
-#define STE_LexerStyles_STE_LANG_ERLANG_COUNT 15
+    #define STE_LexerStyles_STE_LANG_ERLANG_COUNT 15
 #else
-#define STE_LexerStyles_STE_LANG_ERLANG_COUNT 14
+    #define STE_LexerStyles_STE_LANG_ERLANG_COUNT 14
 #endif
 static STE_LexerStyles STE_LexerStyles_STE_LANG_ERLANG[STE_LexerStyles_STE_LANG_ERLANG_COUNT] =
 {
@@ -4184,7 +4184,7 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_ERLANG[STE_LexerStyles_STE_LANG_
 };
 
 #define STE_LexerStyles_STE_LANG_OCTAVE_COUNT STE_LexerStyles_STE_LANG_MATLAB_COUNT
-STE_LexerStyles* STE_LexerStyles_STE_LANG_OCTAVE = STE_LexerStyles_STE_LANG_MATLAB;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_OCTAVE = STE_LexerStyles_STE_LANG_MATLAB;
 
 #define STE_LexerStyles_STE_LANG_MSSQL_COUNT 17
 static STE_LexerStyles STE_LexerStyles_STE_LANG_MSSQL[STE_LexerStyles_STE_LANG_MSSQL_COUNT] =
@@ -4216,7 +4216,7 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_VERILOG[STE_LexerStyles_STE_LANG
     { STE_STYLE_DEFAULT,    wxSTC_V_DEFAULT,        "White space" }, // 0
     { STE_STYLE_DEFAULT,    wxSTC_V_COMMENT,        "Comment" }, // 1
     { STE_STYLE_DEFAULT,    wxSTC_V_COMMENTLINE,    "Line comment" }, // 2
-    { STE_STYLE_DEFAULT,    wxSTC_V_COMMENTLINEBANG,"Bang comment" }, // 3
+    { STE_STYLE_DEFAULT,    wxSTC_V_COMMENTLINEBANG, "Bang comment" }, // 3
     { STE_STYLE_DEFAULT,    wxSTC_V_NUMBER,         "Number" }, // 4
     { STE_STYLE_DEFAULT,    wxSTC_V_WORD,           "Keyword" }, // 5
     { STE_STYLE_DEFAULT,    wxSTC_V_STRING,         "Double quoted string" }, // 6
@@ -4301,8 +4301,8 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_AU3[STE_LexerStyles_STE_LANG_AU3
     { STE_STYLE_DEFAULT,    wxSTC_AU3_SENT,         "Sent keys in string" }, // 10
     { STE_STYLE_DEFAULT,    wxSTC_AU3_PREPROCESSOR, "Pre-Processor" }, // 11
     { STE_STYLE_DEFAULT,    wxSTC_AU3_SPECIAL,      "Special" }, // 12
-//    { STE_STYLE_DEFAULT,    wxSTC_AU3_?,      "Expand abbreviations" }, // 13 FIXME sci 1.66
-//    { STE_STYLE_DEFAULT,    wxSTC_AU3_?,      "ComObjects" }, // 14 FIXME sci 1.66
+    //    { STE_STYLE_DEFAULT,    wxSTC_AU3_?,      "Expand abbreviations" }, // 13 FIXME sci 1.66
+    //    { STE_STYLE_DEFAULT,    wxSTC_AU3_?,      "ComObjects" }, // 14 FIXME sci 1.66
 };
 
 #define STE_LexerStyles_STE_LANG_APDL_COUNT 13
@@ -4383,28 +4383,28 @@ static STE_LexerStyles STE_LexerStyles_STE_LANG_VHDL[STE_LexerStyles_STE_LANG_VH
 };
 
 #define STE_LexerStyles_STE_LANG_JAVA_COUNT STE_LexerStyles_STE_LANG_CPP_COUNT
-STE_LexerStyles* STE_LexerStyles_STE_LANG_JAVA = STE_LexerStyles_STE_LANG_CPP;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_JAVA = STE_LexerStyles_STE_LANG_CPP;
 
 #define STE_LexerStyles_STE_LANG_JAVASCRIPT_COUNT STE_LexerStyles_STE_LANG_CPP_COUNT
-STE_LexerStyles* STE_LexerStyles_STE_LANG_JAVASCRIPT = STE_LexerStyles_STE_LANG_CPP;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_JAVASCRIPT = STE_LexerStyles_STE_LANG_CPP;
 
 #define STE_LexerStyles_STE_LANG_RC_COUNT STE_LexerStyles_STE_LANG_CPP_COUNT
-STE_LexerStyles* STE_LexerStyles_STE_LANG_RC = STE_LexerStyles_STE_LANG_CPP;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_RC = STE_LexerStyles_STE_LANG_CPP;
 
 #define STE_LexerStyles_STE_LANG_CS_COUNT STE_LexerStyles_STE_LANG_CPP_COUNT
-STE_LexerStyles* STE_LexerStyles_STE_LANG_CS = STE_LexerStyles_STE_LANG_CPP;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_CS = STE_LexerStyles_STE_LANG_CPP;
 
 #define STE_LexerStyles_STE_LANG_D_COUNT STE_LexerStyles_STE_LANG_CPP_COUNT
-STE_LexerStyles* STE_LexerStyles_STE_LANG_D = STE_LexerStyles_STE_LANG_CPP;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_D = STE_LexerStyles_STE_LANG_CPP;
 
 #define STE_LexerStyles_STE_LANG_IDL_COUNT STE_LexerStyles_STE_LANG_CPP_COUNT
-STE_LexerStyles* STE_LexerStyles_STE_LANG_IDL = STE_LexerStyles_STE_LANG_CPP;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_IDL = STE_LexerStyles_STE_LANG_CPP;
 
 #define STE_LexerStyles_STE_LANG_PLSQL_COUNT STE_LexerStyles_STE_LANG_SQL_COUNT
-STE_LexerStyles* STE_LexerStyles_STE_LANG_PLSQL = STE_LexerStyles_STE_LANG_SQL;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_PLSQL = STE_LexerStyles_STE_LANG_SQL;
 
 #define STE_LexerStyles_STE_LANG_SQUIRREL_COUNT STE_LexerStyles_STE_LANG_CPP_COUNT
-STE_LexerStyles* STE_LexerStyles_STE_LANG_SQUIRREL = STE_LexerStyles_STE_LANG_CPP;
+STE_LexerStyles * STE_LexerStyles_STE_LANG_SQUIRREL = STE_LexerStyles_STE_LANG_CPP;
 
 // ---------------------------------------------------------------------------
 
@@ -4414,467 +4414,467 @@ STE_LexerStyles* STE_LexerStyles_STE_LANG_SQUIRREL = STE_LexerStyles_STE_LANG_CP
     DefSTE_LexerBlock_##TYPE \
     DefSTE_LexerPreproc_##TYPE \
     STE_Language _STE_Lang_##TYPE = { \
-        STE_LexerName_##TYPE, \
-        STE_LexerLang_##TYPE, \
-        STE_LexerFilePatterns_##TYPE, \
-        STE_LexerStyles_##TYPE, \
-        STE_LexerStyles_##TYPE##_COUNT, \
-        STE_LexerWords_##TYPE, \
-        STE_LexerWords_##TYPE##_COUNT, \
-        STE_LexerComments_##TYPE, \
-        STE_LexerBlock_##TYPE, \
-        STE_LexerPreproc_##TYPE, \
-        STE_LexerBraces_##TYPE, \
-        STE_LexerFolds_##TYPE, \
-        STE_LexerFlags_##TYPE };
+                                      STE_LexerName_##TYPE, \
+                                      STE_LexerLang_##TYPE, \
+                                      STE_LexerFilePatterns_##TYPE, \
+                                      STE_LexerStyles_##TYPE, \
+                                      STE_LexerStyles_##TYPE##_COUNT, \
+                                      STE_LexerWords_##TYPE, \
+                                      STE_LexerWords_##TYPE##_COUNT, \
+                                      STE_LexerComments_##TYPE, \
+                                      STE_LexerBlock_##TYPE, \
+                                      STE_LexerPreproc_##TYPE, \
+                                      STE_LexerBraces_##TYPE, \
+                                      STE_LexerFolds_##TYPE, \
+                                      STE_LexerFlags_##TYPE };
 
 
 // CREATE LEXERS ------------------------
 #if STE_USE_LANG_CONTAINER
-DEFINE_STE_LANG(STE_LANG_CONTAINER )
-#define STE_Lang_STE_LANG_CONTAINER  &_STE_Lang_STE_LANG_CONTAINER
+    DEFINE_STE_LANG(STE_LANG_CONTAINER)
+    #define STE_Lang_STE_LANG_CONTAINER  &_STE_Lang_STE_LANG_CONTAINER
 #else
-#define STE_Lang_STE_LANG_CONTAINER  NULL
+    #define STE_Lang_STE_LANG_CONTAINER  NULL
 #endif
 #if STE_USE_LANG_NULL
-DEFINE_STE_LANG(STE_LANG_NULL      )
-#define STE_Lang_STE_LANG_NULL       &_STE_Lang_STE_LANG_NULL
+    DEFINE_STE_LANG(STE_LANG_NULL)
+    #define STE_Lang_STE_LANG_NULL       &_STE_Lang_STE_LANG_NULL
 #else
-#define STE_Lang_STE_LANG_NULL       NULL
+    #define STE_Lang_STE_LANG_NULL       NULL
 #endif
 #if STE_USE_LANG_PYTHON
-DEFINE_STE_LANG(STE_LANG_PYTHON    )
-#define STE_Lang_STE_LANG_PYTHON     &_STE_Lang_STE_LANG_PYTHON
+    DEFINE_STE_LANG(STE_LANG_PYTHON)
+    #define STE_Lang_STE_LANG_PYTHON     &_STE_Lang_STE_LANG_PYTHON
 #else
-#define STE_Lang_STE_LANG_PYTHON     NULL
+    #define STE_Lang_STE_LANG_PYTHON     NULL
 #endif
 #if STE_USE_LANG_CPP
-DEFINE_STE_LANG(STE_LANG_CPP       )
-#define STE_Lang_STE_LANG_CPP        &_STE_Lang_STE_LANG_CPP
+    DEFINE_STE_LANG(STE_LANG_CPP)
+    #define STE_Lang_STE_LANG_CPP        &_STE_Lang_STE_LANG_CPP
 #else
-#define STE_Lang_STE_LANG_CPP        NULL
+    #define STE_Lang_STE_LANG_CPP        NULL
 #endif
 #if STE_USE_LANG_HTML
-DEFINE_STE_LANG(STE_LANG_HTML      )
-#define STE_Lang_STE_LANG_HTML       &_STE_Lang_STE_LANG_HTML
+    DEFINE_STE_LANG(STE_LANG_HTML)
+    #define STE_Lang_STE_LANG_HTML       &_STE_Lang_STE_LANG_HTML
 #else
-#define STE_Lang_STE_LANG_HTML       NULL
+    #define STE_Lang_STE_LANG_HTML       NULL
 #endif
 #if STE_USE_LANG_XML
-DEFINE_STE_LANG(STE_LANG_XML       )
-#define STE_Lang_STE_LANG_XML        &_STE_Lang_STE_LANG_XML
+    DEFINE_STE_LANG(STE_LANG_XML)
+    #define STE_Lang_STE_LANG_XML        &_STE_Lang_STE_LANG_XML
 #else
-#define STE_Lang_STE_LANG_XML        NULL
+    #define STE_Lang_STE_LANG_XML        NULL
 #endif
 #if STE_USE_LANG_PERL
-DEFINE_STE_LANG(STE_LANG_PERL      )
-#define STE_Lang_STE_LANG_PERL       &_STE_Lang_STE_LANG_PERL
+    DEFINE_STE_LANG(STE_LANG_PERL)
+    #define STE_Lang_STE_LANG_PERL       &_STE_Lang_STE_LANG_PERL
 #else
-#define STE_Lang_STE_LANG_PERL       NULL
+    #define STE_Lang_STE_LANG_PERL       NULL
 #endif
 #if STE_USE_LANG_SQL
-DEFINE_STE_LANG(STE_LANG_SQL       )
-#define STE_Lang_STE_LANG_SQL        &_STE_Lang_STE_LANG_SQL
+    DEFINE_STE_LANG(STE_LANG_SQL)
+    #define STE_Lang_STE_LANG_SQL        &_STE_Lang_STE_LANG_SQL
 #else
-#define STE_Lang_STE_LANG_SQL        NULL
+    #define STE_Lang_STE_LANG_SQL        NULL
 #endif
 #if STE_USE_LANG_VB
-DEFINE_STE_LANG(STE_LANG_VB        )
-#define STE_Lang_STE_LANG_VB         &_STE_Lang_STE_LANG_VB
+    DEFINE_STE_LANG(STE_LANG_VB)
+    #define STE_Lang_STE_LANG_VB         &_STE_Lang_STE_LANG_VB
 #else
-#define STE_Lang_STE_LANG_VB         NULL
+    #define STE_Lang_STE_LANG_VB         NULL
 #endif
 #if STE_USE_LANG_PROPERTIES
-DEFINE_STE_LANG(STE_LANG_PROPERTIES)
-#define STE_Lang_STE_LANG_PROPERTIES &_STE_Lang_STE_LANG_PROPERTIES
+    DEFINE_STE_LANG(STE_LANG_PROPERTIES)
+    #define STE_Lang_STE_LANG_PROPERTIES &_STE_Lang_STE_LANG_PROPERTIES
 #else
-#define STE_Lang_STE_LANG_PROPERTIES NULL
+    #define STE_Lang_STE_LANG_PROPERTIES NULL
 #endif
 #if STE_USE_LANG_ERRORLIST
-DEFINE_STE_LANG(STE_LANG_ERRORLIST )
-#define STE_Lang_STE_LANG_ERRORLIST  &_STE_Lang_STE_LANG_ERRORLIST
+    DEFINE_STE_LANG(STE_LANG_ERRORLIST)
+    #define STE_Lang_STE_LANG_ERRORLIST  &_STE_Lang_STE_LANG_ERRORLIST
 #else
-#define STE_Lang_STE_LANG_ERRORLIST  NULL
+    #define STE_Lang_STE_LANG_ERRORLIST  NULL
 #endif
 #if STE_USE_LANG_MAKEFILE
-DEFINE_STE_LANG(STE_LANG_MAKEFILE  )
-#define STE_Lang_STE_LANG_MAKEFILE   &_STE_Lang_STE_LANG_MAKEFILE
+    DEFINE_STE_LANG(STE_LANG_MAKEFILE)
+    #define STE_Lang_STE_LANG_MAKEFILE   &_STE_Lang_STE_LANG_MAKEFILE
 #else
-#define STE_Lang_STE_LANG_MAKEFILE   NULL
+    #define STE_Lang_STE_LANG_MAKEFILE   NULL
 #endif
 #if STE_USE_LANG_BATCH
-DEFINE_STE_LANG(STE_LANG_BATCH     )
-#define STE_Lang_STE_LANG_BATCH      &_STE_Lang_STE_LANG_BATCH
+    DEFINE_STE_LANG(STE_LANG_BATCH)
+    #define STE_Lang_STE_LANG_BATCH      &_STE_Lang_STE_LANG_BATCH
 #else
-#define STE_Lang_STE_LANG_BATCH      NULL
+    #define STE_Lang_STE_LANG_BATCH      NULL
 #endif
 #if STE_USE_LANG_XCODE
-DEFINE_STE_LANG(STE_LANG_XCODE     )
-#define STE_Lang_STE_LANG_XCODE      &_STE_Lang_STE_LANG_XCODE
+    DEFINE_STE_LANG(STE_LANG_XCODE)
+    #define STE_Lang_STE_LANG_XCODE      &_STE_Lang_STE_LANG_XCODE
 #else
-#define STE_Lang_STE_LANG_XCODE      NULL
+    #define STE_Lang_STE_LANG_XCODE      NULL
 #endif
 #if STE_USE_LANG_LATEX
-DEFINE_STE_LANG(STE_LANG_LATEX     )
-#define STE_Lang_STE_LANG_LATEX      &_STE_Lang_STE_LANG_LATEX
+    DEFINE_STE_LANG(STE_LANG_LATEX)
+    #define STE_Lang_STE_LANG_LATEX      &_STE_Lang_STE_LANG_LATEX
 #else
-#define STE_Lang_STE_LANG_LATEX      NULL
+    #define STE_Lang_STE_LANG_LATEX      NULL
 #endif
 #if STE_USE_LANG_LUA
-DEFINE_STE_LANG(STE_LANG_LUA       )
-#define STE_Lang_STE_LANG_LUA        &_STE_Lang_STE_LANG_LUA
+    DEFINE_STE_LANG(STE_LANG_LUA)
+    #define STE_Lang_STE_LANG_LUA        &_STE_Lang_STE_LANG_LUA
 #else
-#define STE_Lang_STE_LANG_LUA        NULL
+    #define STE_Lang_STE_LANG_LUA        NULL
 #endif
 #if STE_USE_LANG_DIFF
-DEFINE_STE_LANG(STE_LANG_DIFF      )
-#define STE_Lang_STE_LANG_DIFF       &_STE_Lang_STE_LANG_DIFF
+    DEFINE_STE_LANG(STE_LANG_DIFF)
+    #define STE_Lang_STE_LANG_DIFF       &_STE_Lang_STE_LANG_DIFF
 #else
-#define STE_Lang_STE_LANG_DIFF       NULL
+    #define STE_Lang_STE_LANG_DIFF       NULL
 #endif
 #if STE_USE_LANG_CONF
-DEFINE_STE_LANG(STE_LANG_CONF      )
-#define STE_Lang_STE_LANG_CONF       &_STE_Lang_STE_LANG_CONF
+    DEFINE_STE_LANG(STE_LANG_CONF)
+    #define STE_Lang_STE_LANG_CONF       &_STE_Lang_STE_LANG_CONF
 #else
-#define STE_Lang_STE_LANG_CONF       NULL
+    #define STE_Lang_STE_LANG_CONF       NULL
 #endif
 #if STE_USE_LANG_PASCAL
-DEFINE_STE_LANG(STE_LANG_PASCAL    )
-#define STE_Lang_STE_LANG_PASCAL     &_STE_Lang_STE_LANG_PASCAL
+    DEFINE_STE_LANG(STE_LANG_PASCAL)
+    #define STE_Lang_STE_LANG_PASCAL     &_STE_Lang_STE_LANG_PASCAL
 #else
-#define STE_Lang_STE_LANG_PASCAL     NULL
+    #define STE_Lang_STE_LANG_PASCAL     NULL
 #endif
 #if STE_USE_LANG_AVE
-DEFINE_STE_LANG(STE_LANG_AVE       )
-#define STE_Lang_STE_LANG_AVE        &_STE_Lang_STE_LANG_AVE
+    DEFINE_STE_LANG(STE_LANG_AVE)
+    #define STE_Lang_STE_LANG_AVE        &_STE_Lang_STE_LANG_AVE
 #else
-#define STE_Lang_STE_LANG_AVE        NULL
+    #define STE_Lang_STE_LANG_AVE        NULL
 #endif
 #if STE_USE_LANG_ADA
-DEFINE_STE_LANG(STE_LANG_ADA       )
-#define STE_Lang_STE_LANG_ADA        &_STE_Lang_STE_LANG_ADA
+    DEFINE_STE_LANG(STE_LANG_ADA)
+    #define STE_Lang_STE_LANG_ADA        &_STE_Lang_STE_LANG_ADA
 #else
-#define STE_Lang_STE_LANG_ADA        NULL
+    #define STE_Lang_STE_LANG_ADA        NULL
 #endif
 #if STE_USE_LANG_LISP
-DEFINE_STE_LANG(STE_LANG_LISP      )
-#define STE_Lang_STE_LANG_LISP       &_STE_Lang_STE_LANG_LISP
+    DEFINE_STE_LANG(STE_LANG_LISP)
+    #define STE_Lang_STE_LANG_LISP       &_STE_Lang_STE_LANG_LISP
 #else
-#define STE_Lang_STE_LANG_LISP       NULL
+    #define STE_Lang_STE_LANG_LISP       NULL
 #endif
 #if STE_USE_LANG_RUBY
-DEFINE_STE_LANG(STE_LANG_RUBY      )
-#define STE_Lang_STE_LANG_RUBY       &_STE_Lang_STE_LANG_RUBY
+    DEFINE_STE_LANG(STE_LANG_RUBY)
+    #define STE_Lang_STE_LANG_RUBY       &_STE_Lang_STE_LANG_RUBY
 #else
-#define STE_Lang_STE_LANG_RUBY       NULL
+    #define STE_Lang_STE_LANG_RUBY       NULL
 #endif
 #if STE_USE_LANG_EIFFEL
-DEFINE_STE_LANG(STE_LANG_EIFFEL    )
-#define STE_Lang_STE_LANG_EIFFEL     &_STE_Lang_STE_LANG_EIFFEL
+    DEFINE_STE_LANG(STE_LANG_EIFFEL)
+    #define STE_Lang_STE_LANG_EIFFEL     &_STE_Lang_STE_LANG_EIFFEL
 #else
-#define STE_Lang_STE_LANG_EIFFEL     NULL
+    #define STE_Lang_STE_LANG_EIFFEL     NULL
 #endif
 #if STE_USE_LANG_EIFFELKW
-DEFINE_STE_LANG(STE_LANG_EIFFELKW  )
-#define STE_Lang_STE_LANG_EIFFELKW   &_STE_Lang_STE_LANG_EIFFELKW
+    DEFINE_STE_LANG(STE_LANG_EIFFELKW)
+    #define STE_Lang_STE_LANG_EIFFELKW   &_STE_Lang_STE_LANG_EIFFELKW
 #else
-#define STE_Lang_STE_LANG_EIFFELKW   NULL
+    #define STE_Lang_STE_LANG_EIFFELKW   NULL
 #endif
 #if STE_USE_LANG_TCL
-DEFINE_STE_LANG(STE_LANG_TCL       )
-#define STE_Lang_STE_LANG_TCL        &_STE_Lang_STE_LANG_TCL
+    DEFINE_STE_LANG(STE_LANG_TCL)
+    #define STE_Lang_STE_LANG_TCL        &_STE_Lang_STE_LANG_TCL
 #else
-#define STE_Lang_STE_LANG_TCL        NULL
+    #define STE_Lang_STE_LANG_TCL        NULL
 #endif
 #if STE_USE_LANG_NNCRONTAB
-DEFINE_STE_LANG(STE_LANG_NNCRONTAB )
-#define STE_Lang_STE_LANG_NNCRONTAB  &_STE_Lang_STE_LANG_NNCRONTAB
+    DEFINE_STE_LANG(STE_LANG_NNCRONTAB)
+    #define STE_Lang_STE_LANG_NNCRONTAB  &_STE_Lang_STE_LANG_NNCRONTAB
 #else
-#define STE_Lang_STE_LANG_NNCRONTAB  NULL
+    #define STE_Lang_STE_LANG_NNCRONTAB  NULL
 #endif
 #if STE_USE_LANG_BULLANT
-DEFINE_STE_LANG(STE_LANG_BULLANT   )
-#define STE_Lang_STE_LANG_BULLANT    &_STE_Lang_STE_LANG_BULLANT
+    DEFINE_STE_LANG(STE_LANG_BULLANT)
+    #define STE_Lang_STE_LANG_BULLANT    &_STE_Lang_STE_LANG_BULLANT
 #else
-#define STE_Lang_STE_LANG_BULLANT    NULL
+    #define STE_Lang_STE_LANG_BULLANT    NULL
 #endif
 #if STE_USE_LANG_VBSCRIPT
-DEFINE_STE_LANG(STE_LANG_VBSCRIPT  )
-#define STE_Lang_STE_LANG_VBSCRIPT   &_STE_Lang_STE_LANG_VBSCRIPT
+    DEFINE_STE_LANG(STE_LANG_VBSCRIPT)
+    #define STE_Lang_STE_LANG_VBSCRIPT   &_STE_Lang_STE_LANG_VBSCRIPT
 #else
-#define STE_Lang_STE_LANG_VBSCRIPT   NULL
+    #define STE_Lang_STE_LANG_VBSCRIPT   NULL
 #endif
 
 #if STE_USE_LANG_ASP && defined(wxSTC_LEX_ASP) // not in 2.7.0
-DEFINE_STE_LANG(STE_LANG_ASP       )
-#define STE_Lang_STE_LANG_ASP        &_STE_Lang_STE_LANG_ASP
+    DEFINE_STE_LANG(STE_LANG_ASP)
+    #define STE_Lang_STE_LANG_ASP        &_STE_Lang_STE_LANG_ASP
 #else
-#define STE_Lang_STE_LANG_ASP        NULL
+    #define STE_Lang_STE_LANG_ASP        NULL
 #endif
 #if STE_USE_LANG_PHP && defined(wxSTC_LEX_PHP) // not in 2.7.0
-DEFINE_STE_LANG(STE_LANG_PHP       )
-#define STE_Lang_STE_LANG_PHP        &_STE_Lang_STE_LANG_PHP
+    DEFINE_STE_LANG(STE_LANG_PHP)
+    #define STE_Lang_STE_LANG_PHP        &_STE_Lang_STE_LANG_PHP
 #else
-#define STE_Lang_STE_LANG_PHP        NULL
+    #define STE_Lang_STE_LANG_PHP        NULL
 #endif
 
 #if STE_USE_LANG_BAAN
-DEFINE_STE_LANG(STE_LANG_BAAN      )
-#define STE_Lang_STE_LANG_BAAN       &_STE_Lang_STE_LANG_BAAN
+    DEFINE_STE_LANG(STE_LANG_BAAN)
+    #define STE_Lang_STE_LANG_BAAN       &_STE_Lang_STE_LANG_BAAN
 #else
-#define STE_Lang_STE_LANG_BAAN       NULL
+    #define STE_Lang_STE_LANG_BAAN       NULL
 #endif
 #if STE_USE_LANG_MATLAB
-DEFINE_STE_LANG(STE_LANG_MATLAB    )
-#define STE_Lang_STE_LANG_MATLAB     &_STE_Lang_STE_LANG_MATLAB
+    DEFINE_STE_LANG(STE_LANG_MATLAB)
+    #define STE_Lang_STE_LANG_MATLAB     &_STE_Lang_STE_LANG_MATLAB
 #else
-#define STE_Lang_STE_LANG_MATLAB     NULL
+    #define STE_Lang_STE_LANG_MATLAB     NULL
 #endif
 #if STE_USE_LANG_SCRIPTOL
-DEFINE_STE_LANG(STE_LANG_SCRIPTOL  )
-#define STE_Lang_STE_LANG_SCRIPTOL   &_STE_Lang_STE_LANG_SCRIPTOL
+    DEFINE_STE_LANG(STE_LANG_SCRIPTOL)
+    #define STE_Lang_STE_LANG_SCRIPTOL   &_STE_Lang_STE_LANG_SCRIPTOL
 #else
-#define STE_Lang_STE_LANG_SCRIPTOL   NULL
+    #define STE_Lang_STE_LANG_SCRIPTOL   NULL
 #endif
 #if STE_USE_LANG_ASM
-DEFINE_STE_LANG(STE_LANG_ASM       )
-#define STE_Lang_STE_LANG_ASM        &_STE_Lang_STE_LANG_ASM
+    DEFINE_STE_LANG(STE_LANG_ASM)
+    #define STE_Lang_STE_LANG_ASM        &_STE_Lang_STE_LANG_ASM
 #else
-#define STE_Lang_STE_LANG_ASM        NULL
+    #define STE_Lang_STE_LANG_ASM        NULL
 #endif
 #if STE_USE_LANG_CPPNOCASE
-DEFINE_STE_LANG(STE_LANG_CPPNOCASE )
-#define STE_Lang_STE_LANG_CPPNOCASE  &_STE_Lang_STE_LANG_CPPNOCASE
+    DEFINE_STE_LANG(STE_LANG_CPPNOCASE)
+    #define STE_Lang_STE_LANG_CPPNOCASE  &_STE_Lang_STE_LANG_CPPNOCASE
 #else
-#define STE_Lang_STE_LANG_CPPNOCASE  NULL
+    #define STE_Lang_STE_LANG_CPPNOCASE  NULL
 #endif
 #if STE_USE_LANG_FORTRAN
-DEFINE_STE_LANG(STE_LANG_FORTRAN   )
-#define STE_Lang_STE_LANG_FORTRAN    &_STE_Lang_STE_LANG_FORTRAN
+    DEFINE_STE_LANG(STE_LANG_FORTRAN)
+    #define STE_Lang_STE_LANG_FORTRAN    &_STE_Lang_STE_LANG_FORTRAN
 #else
-#define STE_Lang_STE_LANG_FORTRAN    NULL
+    #define STE_Lang_STE_LANG_FORTRAN    NULL
 #endif
 #if STE_USE_LANG_F77
-DEFINE_STE_LANG(STE_LANG_F77       )
-#define STE_Lang_STE_LANG_F77        &_STE_Lang_STE_LANG_F77
+    DEFINE_STE_LANG(STE_LANG_F77)
+    #define STE_Lang_STE_LANG_F77        &_STE_Lang_STE_LANG_F77
 #else
-#define STE_Lang_STE_LANG_F77        NULL
+    #define STE_Lang_STE_LANG_F77        NULL
 #endif
 #if STE_USE_LANG_CSS
-DEFINE_STE_LANG(STE_LANG_CSS       )
-#define STE_Lang_STE_LANG_CSS        &_STE_Lang_STE_LANG_CSS
+    DEFINE_STE_LANG(STE_LANG_CSS)
+    #define STE_Lang_STE_LANG_CSS        &_STE_Lang_STE_LANG_CSS
 #else
-#define STE_Lang_STE_LANG_CSS        NULL
+    #define STE_Lang_STE_LANG_CSS        NULL
 #endif
 #if STE_USE_LANG_POV
-DEFINE_STE_LANG(STE_LANG_POV       )
-#define STE_Lang_STE_LANG_POV        &_STE_Lang_STE_LANG_POV
+    DEFINE_STE_LANG(STE_LANG_POV)
+    #define STE_Lang_STE_LANG_POV        &_STE_Lang_STE_LANG_POV
 #else
-#define STE_Lang_STE_LANG_POV        NULL
+    #define STE_Lang_STE_LANG_POV        NULL
 #endif
 #if STE_USE_LANG_LOUT
-DEFINE_STE_LANG(STE_LANG_LOUT      )
-#define STE_Lang_STE_LANG_LOUT       &_STE_Lang_STE_LANG_LOUT
+    DEFINE_STE_LANG(STE_LANG_LOUT)
+    #define STE_Lang_STE_LANG_LOUT       &_STE_Lang_STE_LANG_LOUT
 #else
-#define STE_Lang_STE_LANG_LOUT       NULL
+    #define STE_Lang_STE_LANG_LOUT       NULL
 #endif
 #if STE_USE_LANG_ESCRIPT
-DEFINE_STE_LANG(STE_LANG_ESCRIPT   )
-#define STE_Lang_STE_LANG_ESCRIPT    &_STE_Lang_STE_LANG_ESCRIPT
+    DEFINE_STE_LANG(STE_LANG_ESCRIPT)
+    #define STE_Lang_STE_LANG_ESCRIPT    &_STE_Lang_STE_LANG_ESCRIPT
 #else
-#define STE_Lang_STE_LANG_ESCRIPT    NULL
+    #define STE_Lang_STE_LANG_ESCRIPT    NULL
 #endif
 #if STE_USE_LANG_PS
-DEFINE_STE_LANG(STE_LANG_PS        )
-#define STE_Lang_STE_LANG_PS         &_STE_Lang_STE_LANG_PS
+    DEFINE_STE_LANG(STE_LANG_PS)
+    #define STE_Lang_STE_LANG_PS         &_STE_Lang_STE_LANG_PS
 #else
-#define STE_Lang_STE_LANG_PS         NULL
+    #define STE_Lang_STE_LANG_PS         NULL
 #endif
 #if STE_USE_LANG_NSIS
-DEFINE_STE_LANG(STE_LANG_NSIS      )
-#define STE_Lang_STE_LANG_NSIS       &_STE_Lang_STE_LANG_NSIS
+    DEFINE_STE_LANG(STE_LANG_NSIS)
+    #define STE_Lang_STE_LANG_NSIS       &_STE_Lang_STE_LANG_NSIS
 #else
-#define STE_Lang_STE_LANG_NSIS       NULL
+    #define STE_Lang_STE_LANG_NSIS       NULL
 #endif
 #if STE_USE_LANG_MMIXAL
-DEFINE_STE_LANG(STE_LANG_MMIXAL    )
-#define STE_Lang_STE_LANG_MMIXAL     &_STE_Lang_STE_LANG_MMIXAL
+    DEFINE_STE_LANG(STE_LANG_MMIXAL)
+    #define STE_Lang_STE_LANG_MMIXAL     &_STE_Lang_STE_LANG_MMIXAL
 #else
-#define STE_Lang_STE_LANG_MMIXAL     NULL
+    #define STE_Lang_STE_LANG_MMIXAL     NULL
 #endif
 #if STE_USE_LANG_CLW
-DEFINE_STE_LANG(STE_LANG_CLW       )
-#define STE_Lang_STE_LANG_CLW        &_STE_Lang_STE_LANG_CLW
+    DEFINE_STE_LANG(STE_LANG_CLW)
+    #define STE_Lang_STE_LANG_CLW        &_STE_Lang_STE_LANG_CLW
 #else
-#define STE_Lang_STE_LANG_CLW        NULL
+    #define STE_Lang_STE_LANG_CLW        NULL
 #endif
 #if STE_USE_LANG_CLWNOCASE
-DEFINE_STE_LANG(STE_LANG_CLWNOCASE )
-#define STE_Lang_STE_LANG_CLWNOCASE  &_STE_Lang_STE_LANG_CLWNOCASE
+    DEFINE_STE_LANG(STE_LANG_CLWNOCASE)
+    #define STE_Lang_STE_LANG_CLWNOCASE  &_STE_Lang_STE_LANG_CLWNOCASE
 #else
-#define STE_Lang_STE_LANG_CLWNOCASE  NULL
+    #define STE_Lang_STE_LANG_CLWNOCASE  NULL
 #endif
 #if STE_USE_LANG_LOT
-DEFINE_STE_LANG(STE_LANG_LOT       )
-#define STE_Lang_STE_LANG_LOT        &_STE_Lang_STE_LANG_LOT
+    DEFINE_STE_LANG(STE_LANG_LOT)
+    #define STE_Lang_STE_LANG_LOT        &_STE_Lang_STE_LANG_LOT
 #else
-#define STE_Lang_STE_LANG_LOT        NULL
+    #define STE_Lang_STE_LANG_LOT        NULL
 #endif
 #if STE_USE_LANG_YAML
-DEFINE_STE_LANG(STE_LANG_YAML      )
-#define STE_Lang_STE_LANG_YAML       &_STE_Lang_STE_LANG_YAML
+    DEFINE_STE_LANG(STE_LANG_YAML)
+    #define STE_Lang_STE_LANG_YAML       &_STE_Lang_STE_LANG_YAML
 #else
-#define STE_Lang_STE_LANG_YAML       NULL
+    #define STE_Lang_STE_LANG_YAML       NULL
 #endif
 #if STE_USE_LANG_TEX
-DEFINE_STE_LANG(STE_LANG_TEX       )
-#define STE_Lang_STE_LANG_TEX        &_STE_Lang_STE_LANG_TEX
+    DEFINE_STE_LANG(STE_LANG_TEX)
+    #define STE_Lang_STE_LANG_TEX        &_STE_Lang_STE_LANG_TEX
 #else
-#define STE_Lang_STE_LANG_TEX        NULL
+    #define STE_Lang_STE_LANG_TEX        NULL
 #endif
 #if STE_USE_LANG_METAPOST
-DEFINE_STE_LANG(STE_LANG_METAPOST  )
-#define STE_Lang_STE_LANG_METAPOST   &_STE_Lang_STE_LANG_METAPOST
+    DEFINE_STE_LANG(STE_LANG_METAPOST)
+    #define STE_Lang_STE_LANG_METAPOST   &_STE_Lang_STE_LANG_METAPOST
 #else
-#define STE_Lang_STE_LANG_METAPOST   NULL
+    #define STE_Lang_STE_LANG_METAPOST   NULL
 #endif
 #if STE_USE_LANG_POWERBASIC
-DEFINE_STE_LANG(STE_LANG_POWERBASIC)
-#define STE_Lang_STE_LANG_POWERBASIC &_STE_Lang_STE_LANG_POWERBASIC
+    DEFINE_STE_LANG(STE_LANG_POWERBASIC)
+    #define STE_Lang_STE_LANG_POWERBASIC &_STE_Lang_STE_LANG_POWERBASIC
 #else
-#define STE_Lang_STE_LANG_POWERBASIC NULL
+    #define STE_Lang_STE_LANG_POWERBASIC NULL
 #endif
 #if STE_USE_LANG_FORTH
-DEFINE_STE_LANG(STE_LANG_FORTH     )
-#define STE_Lang_STE_LANG_FORTH      &_STE_Lang_STE_LANG_FORTH
+    DEFINE_STE_LANG(STE_LANG_FORTH)
+    #define STE_Lang_STE_LANG_FORTH      &_STE_Lang_STE_LANG_FORTH
 #else
-#define STE_Lang_STE_LANG_FORTH      NULL
+    #define STE_Lang_STE_LANG_FORTH      NULL
 #endif
 #if STE_USE_LANG_ERLANG
-DEFINE_STE_LANG(STE_LANG_ERLANG    )
-#define STE_Lang_STE_LANG_ERLANG     &_STE_Lang_STE_LANG_ERLANG
+    DEFINE_STE_LANG(STE_LANG_ERLANG)
+    #define STE_Lang_STE_LANG_ERLANG     &_STE_Lang_STE_LANG_ERLANG
 #else
-#define STE_Lang_STE_LANG_ERLANG     NULL
+    #define STE_Lang_STE_LANG_ERLANG     NULL
 #endif
 #if STE_USE_LANG_OCTAVE
-DEFINE_STE_LANG(STE_LANG_OCTAVE    )
-#define STE_Lang_STE_LANG_OCTAVE     &_STE_Lang_STE_LANG_OCTAVE
+    DEFINE_STE_LANG(STE_LANG_OCTAVE)
+    #define STE_Lang_STE_LANG_OCTAVE     &_STE_Lang_STE_LANG_OCTAVE
 #else
-#define STE_Lang_STE_LANG_OCTAVE     NULL
+    #define STE_Lang_STE_LANG_OCTAVE     NULL
 #endif
 #if STE_USE_LANG_MSSQL
-DEFINE_STE_LANG(STE_LANG_MSSQL     )
-#define STE_Lang_STE_LANG_MSSQL      &_STE_Lang_STE_LANG_MSSQL
+    DEFINE_STE_LANG(STE_LANG_MSSQL)
+    #define STE_Lang_STE_LANG_MSSQL      &_STE_Lang_STE_LANG_MSSQL
 #else
-#define STE_Lang_STE_LANG_MSSQL      NULL
+    #define STE_Lang_STE_LANG_MSSQL      NULL
 #endif
 #if STE_USE_LANG_VERILOG
-DEFINE_STE_LANG(STE_LANG_VERILOG   )
-#define STE_Lang_STE_LANG_VERILOG    &_STE_Lang_STE_LANG_VERILOG
+    DEFINE_STE_LANG(STE_LANG_VERILOG)
+    #define STE_Lang_STE_LANG_VERILOG    &_STE_Lang_STE_LANG_VERILOG
 #else
-#define STE_Lang_STE_LANG_VERILOG    NULL
+    #define STE_Lang_STE_LANG_VERILOG    NULL
 #endif
 #if STE_USE_LANG_KIX
-DEFINE_STE_LANG(STE_LANG_KIX       )
-#define STE_Lang_STE_LANG_KIX        &_STE_Lang_STE_LANG_KIX
+    DEFINE_STE_LANG(STE_LANG_KIX)
+    #define STE_Lang_STE_LANG_KIX        &_STE_Lang_STE_LANG_KIX
 #else
-#define STE_Lang_STE_LANG_KIX        NULL
+    #define STE_Lang_STE_LANG_KIX        NULL
 #endif
 #if STE_USE_LANG_GUI4CLI
-DEFINE_STE_LANG(STE_LANG_GUI4CLI   )
-#define STE_Lang_STE_LANG_GUI4CLI    &_STE_Lang_STE_LANG_GUI4CLI
+    DEFINE_STE_LANG(STE_LANG_GUI4CLI)
+    #define STE_Lang_STE_LANG_GUI4CLI    &_STE_Lang_STE_LANG_GUI4CLI
 #else
-#define STE_Lang_STE_LANG_GUI4CLI    NULL
+    #define STE_Lang_STE_LANG_GUI4CLI    NULL
 #endif
 #if STE_USE_LANG_SPECMAN
-DEFINE_STE_LANG(STE_LANG_SPECMAN   )
-#define STE_Lang_STE_LANG_SPECMAN    &_STE_Lang_STE_LANG_SPECMAN
+    DEFINE_STE_LANG(STE_LANG_SPECMAN)
+    #define STE_Lang_STE_LANG_SPECMAN    &_STE_Lang_STE_LANG_SPECMAN
 #else
-#define STE_Lang_STE_LANG_SPECMAN    NULL
+    #define STE_Lang_STE_LANG_SPECMAN    NULL
 #endif
 #if STE_USE_LANG_AU3
-DEFINE_STE_LANG(STE_LANG_AU3       )
-#define STE_Lang_STE_LANG_AU3        &_STE_Lang_STE_LANG_AU3
+    DEFINE_STE_LANG(STE_LANG_AU3)
+    #define STE_Lang_STE_LANG_AU3        &_STE_Lang_STE_LANG_AU3
 #else
-#define STE_Lang_STE_LANG_AU3        NULL
+    #define STE_Lang_STE_LANG_AU3        NULL
 #endif
 #if STE_USE_LANG_APDL
-DEFINE_STE_LANG(STE_LANG_APDL      )
-#define STE_Lang_STE_LANG_APDL       &_STE_Lang_STE_LANG_APDL
+    DEFINE_STE_LANG(STE_LANG_APDL)
+    #define STE_Lang_STE_LANG_APDL       &_STE_Lang_STE_LANG_APDL
 #else
-#define STE_Lang_STE_LANG_APDL       NULL
+    #define STE_Lang_STE_LANG_APDL       NULL
 #endif
 #if STE_USE_LANG_BASH
-DEFINE_STE_LANG(STE_LANG_BASH      )
-#define STE_Lang_STE_LANG_BASH       &_STE_Lang_STE_LANG_BASH
+    DEFINE_STE_LANG(STE_LANG_BASH)
+    #define STE_Lang_STE_LANG_BASH       &_STE_Lang_STE_LANG_BASH
 #else
-#define STE_Lang_STE_LANG_BASH       NULL
+    #define STE_Lang_STE_LANG_BASH       NULL
 #endif
 #if STE_USE_LANG_ASN1
-DEFINE_STE_LANG(STE_LANG_ASN1      )
-#define STE_Lang_STE_LANG_ASN1       &_STE_Lang_STE_LANG_ASN1
+    DEFINE_STE_LANG(STE_LANG_ASN1)
+    #define STE_Lang_STE_LANG_ASN1       &_STE_Lang_STE_LANG_ASN1
 #else
-#define STE_Lang_STE_LANG_ASN1       NULL
+    #define STE_Lang_STE_LANG_ASN1       NULL
 #endif
 #if STE_USE_LANG_VHDL
-DEFINE_STE_LANG(STE_LANG_VHDL      )
-#define STE_Lang_STE_LANG_VHDL       &_STE_Lang_STE_LANG_VHDL
+    DEFINE_STE_LANG(STE_LANG_VHDL)
+    #define STE_Lang_STE_LANG_VHDL       &_STE_Lang_STE_LANG_VHDL
 #else
-#define STE_Lang_STE_LANG_VHDL       NULL
+    #define STE_Lang_STE_LANG_VHDL       NULL
 #endif
 #if STE_USE_LANG_JAVA
-DEFINE_STE_LANG(STE_LANG_JAVA      )
-#define STE_Lang_STE_LANG_JAVA       &_STE_Lang_STE_LANG_JAVA
+    DEFINE_STE_LANG(STE_LANG_JAVA)
+    #define STE_Lang_STE_LANG_JAVA       &_STE_Lang_STE_LANG_JAVA
 #else
-#define STE_Lang_STE_LANG_JAVA       NULL
+    #define STE_Lang_STE_LANG_JAVA       NULL
 #endif
 #if STE_USE_LANG_JAVASCRIPT
-DEFINE_STE_LANG(STE_LANG_JAVASCRIPT)
-#define STE_Lang_STE_LANG_JAVASCRIPT &_STE_Lang_STE_LANG_JAVASCRIPT
+    DEFINE_STE_LANG(STE_LANG_JAVASCRIPT)
+    #define STE_Lang_STE_LANG_JAVASCRIPT &_STE_Lang_STE_LANG_JAVASCRIPT
 #else
-#define STE_Lang_STE_LANG_JAVASCRIPT NULL
+    #define STE_Lang_STE_LANG_JAVASCRIPT NULL
 #endif
 #if STE_USE_LANG_RC
-DEFINE_STE_LANG(STE_LANG_RC        )
-#define STE_Lang_STE_LANG_RC         &_STE_Lang_STE_LANG_RC
+    DEFINE_STE_LANG(STE_LANG_RC)
+    #define STE_Lang_STE_LANG_RC         &_STE_Lang_STE_LANG_RC
 #else
-#define STE_Lang_STE_LANG_RC         NULL
+    #define STE_Lang_STE_LANG_RC         NULL
 #endif
 #if STE_USE_LANG_CS
-DEFINE_STE_LANG(STE_LANG_CS        )
-#define STE_Lang_STE_LANG_CS         &_STE_Lang_STE_LANG_CS
+    DEFINE_STE_LANG(STE_LANG_CS)
+    #define STE_Lang_STE_LANG_CS         &_STE_Lang_STE_LANG_CS
 #else
-#define STE_Lang_STE_LANG_CS         NULL
+    #define STE_Lang_STE_LANG_CS         NULL
 #endif
 #if STE_USE_LANG_D
-DEFINE_STE_LANG(STE_LANG_D        )
-#define STE_Lang_STE_LANG_D         &_STE_Lang_STE_LANG_D
+    DEFINE_STE_LANG(STE_LANG_D)
+    #define STE_Lang_STE_LANG_D         &_STE_Lang_STE_LANG_D
 #else
-#define STE_Lang_STE_LANG_D         NULL
+    #define STE_Lang_STE_LANG_D         NULL
 #endif
 #if STE_USE_LANG_IDL
-DEFINE_STE_LANG(STE_LANG_IDL       )
-#define STE_Lang_STE_LANG_IDL        &_STE_Lang_STE_LANG_IDL
+    DEFINE_STE_LANG(STE_LANG_IDL)
+    #define STE_Lang_STE_LANG_IDL        &_STE_Lang_STE_LANG_IDL
 #else
-#define STE_Lang_STE_LANG_IDL        NULL
+    #define STE_Lang_STE_LANG_IDL        NULL
 #endif
 
 #if STE_USE_LANG_PLSQL
-DEFINE_STE_LANG(STE_LANG_PLSQL     )
-#define STE_Lang_STE_LANG_PLSQL      &_STE_Lang_STE_LANG_PLSQL
+    DEFINE_STE_LANG(STE_LANG_PLSQL)
+    #define STE_Lang_STE_LANG_PLSQL      &_STE_Lang_STE_LANG_PLSQL
 #else
-#define STE_Lang_STE_LANG_PLSQL      NULL
+    #define STE_Lang_STE_LANG_PLSQL      NULL
 #endif
 
 #if STE_USE_LANG_SQUIRREL
-DEFINE_STE_LANG(STE_LANG_SQUIRREL  )
-#define STE_Lang_STE_LANG_SQUIRREL   &_STE_Lang_STE_LANG_SQUIRREL
+    DEFINE_STE_LANG(STE_LANG_SQUIRREL)
+    #define STE_Lang_STE_LANG_SQUIRREL   &_STE_Lang_STE_LANG_SQUIRREL
 #else
-#define STE_Lang_STE_LANG_SQUIRREL   NULL
+    #define STE_Lang_STE_LANG_SQUIRREL   NULL
 #endif
 
 // CREATE LEXER ARRAY ------------------------
-STE_Language *s_STE_Languages[STE_LANG__MAX] =
+STE_Language * s_STE_Languages[STE_LANG__MAX] =
 {
     STE_Lang_STE_LANG_CONTAINER,
     STE_Lang_STE_LANG_NULL,
@@ -4957,21 +4957,24 @@ STE_Language *s_STE_Languages[STE_LANG__MAX] =
 
 class wxSTEditorLangs_RefData : public wxSTEditorPrefBase_RefData
 {
-public:
-    wxSTEditorLangs_RefData()
-    {
-        size_t n, count = WXSIZEOF(s_STE_Languages);
-        m_langs.Alloc(count);
-        for (n = 0; n < count; n++)
-            m_langs.Add(s_STE_Languages[n]);
-    }
+    public:
+        wxSTEditorLangs_RefData()
+        {
+            size_t n, count = WXSIZEOF(s_STE_Languages);
+            m_langs.Alloc(count);
 
-    wxArrayPtrVoid          m_langs;
-    wxSTEPairArrayIntString m_userFilePatterns; // user defined file patterns
-    wxSTEPairArrayIntString m_userStyles;       // user defined styles
-    //   mapped langID*1000+style_n
-    wxSTEPairArrayIntString m_userKeyWords;     // user defined extra words
-    //   mapped langID*1000+word_n
+            for (n = 0; n < count; n++)
+            {
+                m_langs.Add(s_STE_Languages[n]);
+            }
+        }
+
+        wxArrayPtrVoid          m_langs;
+        wxSTEPairArrayIntString m_userFilePatterns; // user defined file patterns
+        wxSTEPairArrayIntString m_userStyles;       // user defined styles
+        //   mapped langID*1000+style_n
+        wxSTEPairArrayIntString m_userKeyWords;     // user defined extra words
+        //   mapped langID*1000+word_n
 };
 
 //-----------------------------------------------------------------------------
@@ -4982,7 +4985,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxSTEditorLangs, wxSTEditorPrefBase)
 
 #define M_LANGDATA ((wxSTEditorLangs_RefData *)m_refData)
 
-wxSTEditorLangs& wxSTEditorLangs::GetGlobalEditorLangs()
+wxSTEditorLangs & wxSTEditorLangs::GetGlobalEditorLangs()
 {
     return s_wxSTEditorLangs;
 }
@@ -4994,20 +4997,27 @@ bool wxSTEditorLangs::Create()
     return true;
 }
 
-bool wxSTEditorLangs::Create(const wxSTEditorLangs &other)
+bool wxSTEditorLangs::Create(const wxSTEditorLangs & other)
 {
     Ref(other);
     return true;
 }
 
-void wxSTEditorLangs::Copy(const wxSTEditorLangs &other)
+void wxSTEditorLangs::Copy(const wxSTEditorLangs & other)
 {
     wxCHECK_RET(other.IsOk(), wxT("Langs not created"));
-    if (!IsOk()) Create();
-    if (*this == other) return;
 
-    wxSTEditorLangs_RefData *otherLangData = (wxSTEditorLangs_RefData *)other.GetRefData();
+    if (!IsOk())
+    {
+        Create();
+    }
 
+    if (*this == other)
+    {
+        return;
+    }
+
+    wxSTEditorLangs_RefData * otherLangData = (wxSTEditorLangs_RefData *)other.GetRefData();
     M_LANGDATA->m_langs            = otherLangData->m_langs;
     M_LANGDATA->m_userFilePatterns = otherLangData->m_userFilePatterns;
     M_LANGDATA->m_userStyles       = otherLangData->m_userStyles;
@@ -5022,27 +5032,33 @@ void wxSTEditorLangs::Reset()
     M_LANGDATA->m_userKeyWords.Clear();
 }
 
-bool wxSTEditorLangs::IsEqualTo(const wxSTEditorLangs &langs) const
+bool wxSTEditorLangs::IsEqualTo(const wxSTEditorLangs & langs) const
 {
     wxCHECK_MSG(IsOk() && langs.IsOk(), false, wxT("Langs not created"));
-    wxSTEditorLangs_RefData *otherLangData = (wxSTEditorLangs_RefData *)langs.GetRefData();
+    wxSTEditorLangs_RefData * otherLangData = (wxSTEditorLangs_RefData *)langs.GetRefData();
 
     if ((M_LANGDATA->m_langs.GetCount() != otherLangData->m_langs.GetCount()) ||
             (M_LANGDATA->m_userFilePatterns != otherLangData->m_userFilePatterns) ||
             (M_LANGDATA->m_userStyles       != otherLangData->m_userStyles) ||
             (M_LANGDATA->m_userKeyWords     != otherLangData->m_userKeyWords))
+    {
         return false;
+    }
 
     size_t n, count = M_LANGDATA->m_langs.GetCount();
+
     for (n = 0; n < count; n++)
     {
-        if (M_LANGDATA->m_langs[n] != otherLangData->m_langs[n]) return false;
+        if (M_LANGDATA->m_langs[n] != otherLangData->m_langs[n])
+        {
+            return false;
+        }
     }
 
     return true;
 }
 
-int wxSTEditorLangs::AddLanguage(STE_Language* lang)
+int wxSTEditorLangs::AddLanguage(STE_Language * lang)
 {
     wxCHECK_MSG(IsOk() && lang, -1, wxT("Langs not created"));
     M_LANGDATA->m_langs.Add(lang);
@@ -5055,27 +5071,32 @@ size_t wxSTEditorLangs::GetCount() const
     return M_LANGDATA->m_langs.GetCount();
 }
 
-int wxSTEditorLangs::FindLanguageByFilename(const wxFileName& fileName_) const
+int wxSTEditorLangs::FindLanguageByFilename(const wxFileName & fileName_) const
 {
     int fallback = STE_LANG_NULL;
-
     wxCHECK_MSG(IsOk(), fallback, wxT("Langs not created"));
-
     wxString fileName = fileName_.GetFullPath();
+
     if (fileName.Find(wxFILE_SEP_PATH) != wxNOT_FOUND)
+    {
         fileName = fileName.AfterLast(wxFILE_SEP_PATH);
+    }
 
     wxFileName wxFN(fileName);
     wxString name = wxFN.GetName().Lower();
     wxString ext  = wxFN.GetExt().Lower();
-
     // determine language from filepatterns
     size_t lang_n, lang_count = GetCount();
+
     for (lang_n = 0; lang_n < lang_count; lang_n++)
     {
-        if (!HasLanguage(lang_n) || !GetUseLanguage(lang_n)) continue;
+        if (!HasLanguage(lang_n) || !GetUseLanguage(lang_n))
+        {
+            continue;
+        }
 
         wxString filePattern = GetFilePattern(lang_n).Lower();
+
         for (wxStringTokenizer tokenizer(filePattern, wxT(";"));
                 tokenizer.HasMoreTokens();
             )
@@ -5089,21 +5110,22 @@ int wxSTEditorLangs::FindLanguageByFilename(const wxFileName& fileName_) const
             {
                 fallback = (int)lang_n; // try for better match
             }
-            else if ( ((wildExt  == wxT("*")) || (wildExt  == ext )) &&
-                      ((wildName == wxT("*")) || (wildName == name)) )
-            {
-                return (int)lang_n;
-            }
+            else
+                if (((wildExt  == wxT("*")) || (wildExt  == ext)) &&
+                        ((wildName == wxT("*")) || (wildName == name)))
+                {
+                    return (int)lang_n;
+                }
         }
     }
 
     return fallback;
 }
 
-STE_Language* wxSTEditorLangs::GetLanguage(size_t lang_n) const
+STE_Language * wxSTEditorLangs::GetLanguage(size_t lang_n) const
 {
     wxCHECK_MSG(IsOk(), NULL, wxT("Langs not created"));
-    wxCHECK_MSG(lang_n<GetCount(), NULL, wxT("Invalid language index"));
+    wxCHECK_MSG(lang_n < GetCount(), NULL, wxT("Invalid language index"));
     return ((STE_Language *)(M_LANGDATA->m_langs.Item(lang_n)));
 }
 
@@ -5116,7 +5138,11 @@ wxString wxSTEditorLangs::GetFilePattern(size_t lang_n, bool get_default) const
     if (!get_default)
     {
         wxString userFilePatterns = GetUserFilePattern(lang_n);
-        if (userFilePatterns.Length()) return userFilePatterns;
+
+        if (userFilePatterns.Length())
+        {
+            return userFilePatterns;
+        }
     }
 
     return GetLanguage(lang_n) ? stc2wx(GetLanguage(lang_n)->filePattern) : wxString();
@@ -5124,7 +5150,9 @@ wxString wxSTEditorLangs::GetFilePattern(size_t lang_n, bool get_default) const
 wxString wxSTEditorLangs::GetUserFilePattern(size_t lang_n) const
 {
     if (M_LANGDATA->m_userFilePatterns.HasKey(lang_n))
+    {
         return M_LANGDATA->m_userFilePatterns.GetValue(lang_n);
+    }
 
     return wxEmptyString;
 }
@@ -5132,8 +5160,11 @@ wxString wxSTEditorLangs::GetUserFilePattern(size_t lang_n) const
 wxString wxSTEditorLangs::GetFileFilter(size_t lang_n) const
 {
     wxString filePattern(GetFilePattern(lang_n));
+
     if (filePattern.IsEmpty())
+    {
         return wxEmptyString;
+    }
 
     return GetName(lang_n) + wxT(" (") + filePattern + wxT(")|") + filePattern;
 }
@@ -5148,29 +5179,37 @@ size_t wxSTEditorLangs::GetStyleCount(size_t lang_n) const
 }
 int wxSTEditorLangs::GetSciStyle(size_t lang_n, size_t style_n) const
 {
-    wxCHECK_MSG(style_n<GetStyleCount(lang_n), 0, wxT("Invalid language style type"));
+    wxCHECK_MSG(style_n < GetStyleCount(lang_n), 0, wxT("Invalid language style type"));
     return GetLanguage(lang_n) ? GetLanguage(lang_n)->styles[style_n].sci_style : 0;
 }
 int wxSTEditorLangs::GetSTEStyle(size_t lang_n, size_t style_n, bool get_default) const
 {
-    wxCHECK_MSG(style_n<GetStyleCount(lang_n), 0, wxT("Invalid language style type"));
+    wxCHECK_MSG(style_n < GetStyleCount(lang_n), 0, wxT("Invalid language style type"));
 
     if (!get_default)
     {
         int user_style = GetUserSTEStyle(lang_n, style_n);
-        if (user_style != -1) return user_style;
+
+        if (user_style != -1)
+        {
+            return user_style;
+        }
     }
 
     return GetLanguage(lang_n) ? GetLanguage(lang_n)->styles[style_n].ste_style : 0;
 }
 int wxSTEditorLangs::GetUserSTEStyle(size_t lang_n, size_t style_n) const
 {
-    wxCHECK_MSG(style_n<GetStyleCount(lang_n), -1, wxT("Invalid language style type"));
-    if (M_LANGDATA->m_userStyles.HasKey(lang_n*1000+style_n))
+    wxCHECK_MSG(style_n < GetStyleCount(lang_n), -1, wxT("Invalid language style type"));
+
+    if (M_LANGDATA->m_userStyles.HasKey(lang_n * 1000 + style_n))
     {
         long val = -1;
-        if (M_LANGDATA->m_userStyles.GetValue(lang_n*1000+style_n).ToLong(&val))
+
+        if (M_LANGDATA->m_userStyles.GetValue(lang_n * 1000 + style_n).ToLong(&val))
+        {
             return int(val);
+        }
     }
 
     return -1;
@@ -5180,28 +5219,41 @@ int wxSTEditorLangs::SciToSTEStyle(size_t lang_n, int sci_style) const
     // these are the same for all languages
     switch (sci_style)
     {
-    case wxSTC_STYLE_DEFAULT     :
-        return STE_STYLE_DEFAULT;
-    case wxSTC_STYLE_LINENUMBER  :
-        return STE_STYLE_LINENUMBER;
-    case wxSTC_STYLE_BRACELIGHT  :
-        return STE_STYLE_BRACELIGHT;
-    case wxSTC_STYLE_BRACEBAD    :
-        return STE_STYLE_BRACEBAD;
-    case wxSTC_STYLE_CONTROLCHAR :
-        return STE_STYLE_CONTROLCHAR;
-    case wxSTC_STYLE_INDENTGUIDE :
-        return STE_STYLE_INDENTGUIDE;
-    default :
-        break;
+        case wxSTC_STYLE_DEFAULT     :
+            return STE_STYLE_DEFAULT;
+
+        case wxSTC_STYLE_LINENUMBER  :
+            return STE_STYLE_LINENUMBER;
+
+        case wxSTC_STYLE_BRACELIGHT  :
+            return STE_STYLE_BRACELIGHT;
+
+        case wxSTC_STYLE_BRACEBAD    :
+            return STE_STYLE_BRACEBAD;
+
+        case wxSTC_STYLE_CONTROLCHAR :
+            return STE_STYLE_CONTROLCHAR;
+
+        case wxSTC_STYLE_INDENTGUIDE :
+            return STE_STYLE_INDENTGUIDE;
+
+        default :
+            break;
     }
 
-    if (!GetLanguage(lang_n)) return -1;
+    if (!GetLanguage(lang_n))
+    {
+        return -1;
+    }
+
     size_t style_n, style_count = GetStyleCount(lang_n);
+
     for (style_n = 0; style_n < style_count; style_n++)
     {
         if (GetSciStyle(lang_n, style_n) == sci_style)
+        {
             return GetSTEStyle(lang_n, style_n);
+        }
     }
 
     return -1;
@@ -5209,7 +5261,7 @@ int wxSTEditorLangs::SciToSTEStyle(size_t lang_n, int sci_style) const
 
 wxString wxSTEditorLangs::GetStyleDescription(size_t lang_n, size_t style_n) const
 {
-    wxCHECK_MSG(style_n<GetStyleCount(lang_n), wxEmptyString, wxT("Invalid language style type"));
+    wxCHECK_MSG(style_n < GetStyleCount(lang_n), wxEmptyString, wxT("Invalid language style type"));
     return GetLanguage(lang_n) ? stc2wx(GetLanguage(lang_n)->styles[style_n].description) : wxString();
 }
 
@@ -5219,15 +5271,22 @@ size_t wxSTEditorLangs::GetKeyWordsCount(size_t lang_n) const
 }
 wxString wxSTEditorLangs::GetKeyWords(size_t lang_n, size_t word_n, bool get_default) const
 {
-    wxCHECK_MSG(word_n<GetKeyWordsCount(lang_n), wxEmptyString, wxT("Invalid language keyword"));
+    wxCHECK_MSG(word_n < GetKeyWordsCount(lang_n), wxEmptyString, wxT("Invalid language keyword"));
     wxString words;
-    if (GetLanguage(lang_n)) words = stc2wx(GetLanguage(lang_n)->words[word_n].words);
+
+    if (GetLanguage(lang_n))
+    {
+        words = stc2wx(GetLanguage(lang_n)->words[word_n].words);
+    }
 
     if (!get_default)
     {
         wxString userWords = GetUserKeyWords(lang_n, word_n);
+
         if (words.Length() && userWords.Length())
+        {
             words += wxT(" ");
+        }
 
         words += userWords;
     }
@@ -5236,9 +5295,12 @@ wxString wxSTEditorLangs::GetKeyWords(size_t lang_n, size_t word_n, bool get_def
 }
 wxString wxSTEditorLangs::GetUserKeyWords(size_t lang_n, size_t word_n) const
 {
-    wxCHECK_MSG(word_n<GetKeyWordsCount(lang_n), wxEmptyString, wxT("Invalid language keyword"));
-    if (M_LANGDATA->m_userKeyWords.HasKey(lang_n*1000+word_n))
-        return M_LANGDATA->m_userKeyWords.GetValue(lang_n*1000+word_n);
+    wxCHECK_MSG(word_n < GetKeyWordsCount(lang_n), wxEmptyString, wxT("Invalid language keyword"));
+
+    if (M_LANGDATA->m_userKeyWords.HasKey(lang_n * 1000 + word_n))
+    {
+        return M_LANGDATA->m_userKeyWords.GetValue(lang_n * 1000 + word_n);
+    }
 
     return wxEmptyString;
 }
@@ -5334,140 +5396,172 @@ int wxSTEditorLangs::GetFlags(size_t lang_n) const
     return GetLanguage(lang_n) ? GetLanguage(lang_n)->flags : 0;
 }
 
-void wxSTEditorLangs::SetUserFilePattern(size_t lang_n, const wxString &filePattern)
+void wxSTEditorLangs::SetUserFilePattern(size_t lang_n, const wxString & filePattern)
 {
     wxCHECK_RET(GetLanguage(lang_n), wxT("Langs not created"));
-    wxCHECK_RET(lang_n<GetCount(), wxT("Invalid language info item"));
-
+    wxCHECK_RET(lang_n < GetCount(), wxT("Invalid language info item"));
     bool is_default = (filePattern == GetFilePattern(lang_n, true));
 
     if (M_LANGDATA->m_userFilePatterns.HasKey(lang_n))
     {
-        if ( is_default )
+        if (is_default)
+        {
             M_LANGDATA->m_userFilePatterns.Remove(lang_n);
+        }
         else
+        {
             M_LANGDATA->m_userFilePatterns.Add(lang_n, filePattern);
+        }
     }
-    else if (!is_default)
-    {
-        M_LANGDATA->m_userFilePatterns.Add(lang_n, filePattern);
-    }
+    else
+        if (!is_default)
+        {
+            M_LANGDATA->m_userFilePatterns.Add(lang_n, filePattern);
+        }
 }
 
 void wxSTEditorLangs::SetSTEStyle(size_t lang_n, size_t style_n, int ste_style)
 {
     wxCHECK_RET(GetLanguage(lang_n), wxT("Langs not created"));
-    wxCHECK_RET(style_n<GetStyleCount(lang_n), wxT("Invalid language style type"));
+    wxCHECK_RET(style_n < GetStyleCount(lang_n), wxT("Invalid language style type"));
     GetLanguage(lang_n)->styles[style_n].ste_style = ste_style;
 }
 
 void wxSTEditorLangs::SetUserSTEStyle(size_t lang_n, size_t style_n, int ste_style)
 {
     wxCHECK_RET(GetLanguage(lang_n), wxT("Langs not created"));
-    wxCHECK_RET(style_n<GetStyleCount(lang_n), wxT("Invalid language style type"));
-
+    wxCHECK_RET(style_n < GetStyleCount(lang_n), wxT("Invalid language style type"));
     bool is_default = (ste_style == GetSTEStyle(lang_n, style_n, true));
-
     wxString strStyle = wxString::Format(wxT("%d"), (int)ste_style);
 
-    if (M_LANGDATA->m_userStyles.HasKey(lang_n*1000+style_n))
+    if (M_LANGDATA->m_userStyles.HasKey(lang_n * 1000 + style_n))
     {
-        if ( is_default )
-            M_LANGDATA->m_userStyles.Remove(lang_n*1000+style_n);
+        if (is_default)
+        {
+            M_LANGDATA->m_userStyles.Remove(lang_n * 1000 + style_n);
+        }
         else
-            M_LANGDATA->m_userStyles.Add(lang_n*1000+style_n, strStyle);
+        {
+            M_LANGDATA->m_userStyles.Add(lang_n * 1000 + style_n, strStyle);
+        }
     }
-    else if (!is_default)
-    {
-        M_LANGDATA->m_userStyles.Add(lang_n*1000+style_n, strStyle);
-    }
+    else
+        if (!is_default)
+        {
+            M_LANGDATA->m_userStyles.Add(lang_n * 1000 + style_n, strStyle);
+        }
 }
 
-void wxSTEditorLangs::SetUserKeyWords(size_t lang_n, size_t word_n, const wxString& words)
+void wxSTEditorLangs::SetUserKeyWords(size_t lang_n, size_t word_n, const wxString & words)
 {
     wxCHECK_RET(GetLanguage(lang_n), wxT("Langs not created"));
-    wxCHECK_RET(lang_n<GetCount(), wxT("Invalid language info item"));
-    wxCHECK_RET(word_n<GetKeyWordsCount(lang_n), wxT("Invalid language keyword"));
-
+    wxCHECK_RET(lang_n < GetCount(), wxT("Invalid language info item"));
+    wxCHECK_RET(word_n < GetKeyWordsCount(lang_n), wxT("Invalid language keyword"));
     bool is_default = (words == GetKeyWords(lang_n, word_n, true));
 
-    if (M_LANGDATA->m_userKeyWords.HasKey(lang_n*1000+word_n))
+    if (M_LANGDATA->m_userKeyWords.HasKey(lang_n * 1000 + word_n))
     {
-        if ( is_default || words.IsEmpty() )
-            M_LANGDATA->m_userKeyWords.Remove(lang_n*1000+word_n);
+        if (is_default || words.IsEmpty())
+        {
+            M_LANGDATA->m_userKeyWords.Remove(lang_n * 1000 + word_n);
+        }
         else
-            M_LANGDATA->m_userKeyWords.Add(lang_n*1000+word_n, words);
+        {
+            M_LANGDATA->m_userKeyWords.Add(lang_n * 1000 + word_n, words);
+        }
     }
-    else if (!is_default && words.Length())
-    {
-        M_LANGDATA->m_userKeyWords.Add(lang_n*1000+word_n, words);
-    }
+    else
+        if (!is_default && words.Length())
+        {
+            M_LANGDATA->m_userKeyWords.Add(lang_n * 1000 + word_n, words);
+        }
 }
 
-void wxSTEditorLangs::LoadConfig( wxConfigBase &config,
-                                  const wxString &configPath )
+void wxSTEditorLangs::LoadConfig(wxConfigBase & config,
+                                 const wxString & configPath)
 {
     wxCHECK_RET(IsOk(), wxT("Langs not created"));
     wxString group = wxSTEditorOptions::FixConfigPath(configPath, false);
     wxString key   = wxSTEditorOptions::FixConfigPath(configPath, true);
 
     if (!config.Exists(group))
+    {
         return;
+    }
 
     for (size_t lang_n = 0; lang_n < GetCount(); lang_n++)
     {
-        if (!HasLanguage(lang_n)) continue;
+        if (!HasLanguage(lang_n))
+        {
+            continue;
+        }
 
         wxString keyBase = key + GetName(lang_n);
         wxString keyName;
         wxString value;
-
         // Read in the file patterns
         keyName = keyBase + wxT("/FilePattern");
+
         if (config.Read(keyName, &value))
+        {
             SetUserFilePattern(lang_n, value);
+        }
 
         // Read in the styles
         for (size_t style_n = 0; style_n < GetStyleCount(lang_n); style_n++)
         {
             keyName = keyBase + wxString::Format(wxT("/Style_%d"), (int)style_n);
             long l_value = 0;
+
             if (config.Read(keyName, &l_value))
+            {
                 SetUserSTEStyle(lang_n, style_n, l_value);
+            }
         }
 
         // Read in the keywords
         for (size_t word_n = 0; word_n < GetKeyWordsCount(lang_n); word_n++)
         {
             keyName = keyBase + wxString::Format(wxT("/Keyword_%d"), (int)word_n);
+
             if (config.Read(keyName, &value))
+            {
                 SetUserKeyWords(lang_n, word_n, value);
+            }
         }
     }
 }
 
-void wxSTEditorLangs::SaveConfig( wxConfigBase &config,
-                                  const wxString &configPath,
-                                  int WXUNUSED(flags) ) const
+void wxSTEditorLangs::SaveConfig(wxConfigBase & config,
+                                 const wxString & configPath,
+                                 int WXUNUSED(flags)) const
 {
     wxCHECK_RET(IsOk(), wxT("Langs not created"));
     wxString key = wxSTEditorOptions::FixConfigPath(configPath, true);
 
     for (size_t lang_n = 0; lang_n < GetCount(); lang_n++)
     {
-        if (!HasLanguage(lang_n)) continue;
+        if (!HasLanguage(lang_n))
+        {
+            continue;
+        }
 
         wxString keyBase = key + GetName(lang_n);
         wxString keyName;
         wxString value;
-
         // Write out the file patterns if not default
         keyName = keyBase + wxT("/FilePattern");
         value   = GetUserFilePattern(lang_n);
+
         if (!value.IsEmpty())
+        {
             config.Write(keyName, value);
-        else if (config.HasEntry(keyName))
-            config.DeleteEntry(keyName);
+        }
+        else
+            if (config.HasEntry(keyName))
+            {
+                config.DeleteEntry(keyName);
+            }
 
         // Write out the styles if not default
         for (size_t style_n = 0; style_n < GetStyleCount(lang_n); style_n++)
@@ -5477,9 +5571,14 @@ void wxSTEditorLangs::SaveConfig( wxConfigBase &config,
             value          = wxString::Format(wxT("%d"), user_style);
 
             if (user_style >= 0)
+            {
                 config.Write(keyName, value);
-            else if (config.HasEntry(keyName))
-                config.DeleteEntry(keyName);
+            }
+            else
+                if (config.HasEntry(keyName))
+                {
+                    config.DeleteEntry(keyName);
+                }
         }
 
         // Write out the keywords if not default
@@ -5489,55 +5588,71 @@ void wxSTEditorLangs::SaveConfig( wxConfigBase &config,
             keyName = keyBase + wxString::Format(wxT("/Keyword_%d"), (int)word_n);
 
             if (value.Length())
+            {
                 config.Write(keyName, value);
-            else if (config.HasEntry(keyName))
-                config.DeleteEntry(keyName);
+            }
+            else
+                if (config.HasEntry(keyName))
+                {
+                    config.DeleteEntry(keyName);
+                }
         }
     }
 }
 
-void wxSTEditorLangs::UpdateEditor( wxSTEditor *editor )
+void wxSTEditorLangs::UpdateEditor(wxSTEditor * editor)
 {
     wxCHECK_RET(IsOk(), wxT("Langs not created"));
     wxCHECK_RET(editor, wxT("Invalid wxSTEditor"));
-
     int lang_n = editor->GetLanguageId();
     wxCHECK_RET(HasLanguage(lang_n), wxT("Invalid language id"));
-
     editor->SetLexer(GetLexer(lang_n));
-
     // initialize settings
     wxSTEditorPrefs stePrefs = editor->GetEditorPrefs();
     bool syntax_enable = stePrefs.IsOk() ? stePrefs.GetPrefBool(STE_PREF_HIGHLIGHT_SYNTAX) : true;
     wxSTEditorStyles steStyles = editor->GetEditorStyles();
+
     if (!steStyles.IsOk())
+    {
         return;
+    }
 
     size_t style_n, style_count = GetStyleCount(lang_n);
-
     // Match the style bits of the editor with that of the lexer
     // typically only 5 bits are needed, but HTML requires all 7
     // resets it to use as few bits as possible.
     int current_style_bits = editor->GetStyleBits();
     int style_bits = style_count <= 32 ? 5 : (style_count <= 64 ? 6 : 7);
+
     if (style_bits != current_style_bits)
+    {
         editor->SetStyleBits(style_bits);
+    }
 
     for (style_n = 0; style_n < style_count; style_n++)
     {
         int sci_style = GetSciStyle(lang_n, style_n);
         int ste_style = GetSTEStyle(lang_n, style_n);
+
         if ((sci_style == -1) || (ste_style == -1))
+        {
             continue;
+        }
+
         if (!syntax_enable)
+        {
             ste_style = STE_STYLE_DEFAULT;
+        }
 
         steStyles.SetEditorStyle(sci_style, ste_style, editor);
     }
 
     size_t word_n, keyword_count = GetKeyWordsCount(lang_n);
+
     for (word_n = 0; word_n < keyword_count; word_n++)
+    {
         editor->SetKeyWords((int)word_n, GetKeyWords(lang_n, word_n));
+    }
 
     editor->ColouriseDocument(); // FIXME this can take awhile! but otherwise it gets garbled
 }
@@ -5552,21 +5667,17 @@ void LangConfig()
     wxFileConfig c(wxT("wxStEditLangs"), wxT("wxWidgets"),
                    wxT("stelangsfconfig.txt"), wxEmptyString,
                    wxCONFIG_USE_RELATIVE_PATH);
-
-    wxFileConfig *config = &c;
-
+    wxFileConfig * config = &c;
     wxString configRoot = wxT("wxSTEditor");
     wxString configGroup = wxT("/Languages");
     wxString key = configRoot + configGroup + wxT("/");
-
     size_t n, i;
-
     wxSTEditorLangs langs(s_wxSTEditorLangs);
+
     for (n = 0; n < langs.GetCount(); n++)
     {
         // wxString::Format(wxT("%d "), n) +
         wxString keyName = key + langs.GetName(n) + wxT("/");
-
         config->Write(keyName + wxT("File_Patterns"), langs.GetFilePattern(n));
         config->Write(keyName + wxT("File_Filters"),  langs.GetFileFilter(n));
         config->Write(keyName + wxT("Lexer"),         langs.GetLexer(n));
@@ -5577,37 +5688,73 @@ void LangConfig()
 
         //config->Write(keyName + wxT("Keyword_Count"),  langs.GetKeyWordsCount(n));
         for (i = 0; i < langs.GetKeyWordsCount(n); i++)
+        {
             config->Write(keyName + wxString::Format(wxT("Keyword%d"), (int)i), langs.GetKeyWords(n, i));
+        }
 
         if (langs.GetBlockStart(n).Length())
+        {
             config->Write(keyName + wxT("BlockStart"),         langs.GetBlockStart(n));
+        }
+
         if (langs.GetBlockEnd(n).Length())
+        {
             config->Write(keyName + wxT("BlockEnd"),           langs.GetBlockEnd(n));
+        }
 
         if (langs.GetPreprocessorSymbol(n).Length())
+        {
             config->Write(keyName + wxT("PreprocessorSymbol"), langs.GetPreprocessorSymbol(n));
+        }
+
         if (langs.GetPreprocessorStart(n).Length())
+        {
             config->Write(keyName + wxT("PreprocessorStart"),  langs.GetPreprocessorStart(n));
+        }
+
         if (langs.GetPreprocessorMid(n).Length())
+        {
             config->Write(keyName + wxT("PreprocessorMid"),    langs.GetPreprocessorMid(n));
+        }
+
         if (langs.GetPreprocessorEnd(n).Length())
+        {
             config->Write(keyName + wxT("PreprocessorEnd"),    langs.GetPreprocessorEnd(n));
+        }
 
         if (langs.HasComments(n))
         {
             config->Write(keyName + wxT("CommentBlockAtLineStart"),    langs.GetCommentBlockAtLineStart(n));
+
             if (langs.GetCommentBlock(n).Length())
+            {
                 config->Write(keyName + wxT("CommentBlock"),    langs.GetCommentBlock(n));
+            }
+
             if (langs.GetCommentBoxStart(n).Length())
+            {
                 config->Write(keyName + wxT("CommentBoxStart"),    langs.GetCommentBoxStart(n));
+            }
+
             if (langs.GetCommentBoxMiddle(n).Length())
+            {
                 config->Write(keyName + wxT("CommentBoxMiddle"),    langs.GetCommentBoxMiddle(n));
+            }
+
             if (langs.GetCommentBoxEnd(n).Length())
+            {
                 config->Write(keyName + wxT("CommentBoxEnd"),    langs.GetCommentBoxEnd(n));
+            }
+
             if (langs.GetCommentStreamStart(n).Length())
+            {
                 config->Write(keyName + wxT("CommentStreamStart"),    langs.GetCommentStreamStart(n));
+            }
+
             if (langs.GetCommentStreamEnd(n).Length())
+            {
                 config->Write(keyName + wxT("CommentStreamEnd"),    langs.GetCommentStreamEnd(n));
+            }
         }
 
         config->Write(keyName + wxT("Folds"),              langs.GetFolds(n));

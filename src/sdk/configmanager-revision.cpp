@@ -15,16 +15,15 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-#include "configmanager.h"
-#include <wx/string.h>
+    #include "configmanager.h"
+    #include <wx/string.h>
 #endif
 
 #include "autorevision.h"
 
 wxString ConfigManager::GetRevisionString()
 {
-    static_assert(wxMinimumVersion<3,0,0>::eval, "wxWidgets 3.0.0 or higher is required");
-
+    static_assert(wxMinimumVersion<3, 0, 0>::eval, "wxWidgets 3.0.0 or higher is required");
     return autorevision::svnRevision;
 }
 

@@ -64,10 +64,10 @@ struct LibraryResult
     wxArrayString Headers;
     wxArrayString Require;
 
-    bool operator == ( const LibraryResult& compareWith ) const;
+    bool operator == (const LibraryResult & compareWith) const;
     void SetGlobalVar() const;
 
-    void DebugDump(const wxString& Prefix = wxEmptyString);
+    void DebugDump(const wxString & Prefix = wxEmptyString);
 };
 
 #endif

@@ -129,21 +129,21 @@ VS_VERSION_INFO    VERSIONINFO
   #if defined(WX_CPU_AMD64)
     #if defined(cbDPI_AWARE_ON)
         wxMANIFEST_ID RT_MANIFEST "amd64_dpi_aware_on.manifest"
-        #warning Manifest: amd64_dpi_aware_on.manifest
+        //#warning Manifest: amd64_dpi_aware_on.manifest
     #else
         wxMANIFEST_ID RT_MANIFEST "amd64.manifest"
-        #warning Manifest: amd64.manifest
+        //#warning Manifest: amd64.manifest
     #endif
   #elif defined(WX_CPU_IA64)
     wxMANIFEST_ID RT_MANIFEST "ia64.manifest"
-    #warning Manifest: ia64.manifest
+    //#warning Manifest: ia64.manifest
   #elif defined(WX_CPU_X86)
     #if defined(cbDPI_AWARE_ON)
         wxMANIFEST_ID RT_MANIFEST "x86_dpi_aware_on.manifest"
-        #warning Manifest: x86_dpi_aware_on.manifest
+        //#warning Manifest: x86_dpi_aware_on.manifest
     #else
         wxMANIFEST_ID RT_MANIFEST "x86.manifest"
-        #warning Manifest: x86.manifest
+        //#warning Manifest: x86.manifest
     #endif
   #else
     #error No platform defined! Unable to embed manifest file.

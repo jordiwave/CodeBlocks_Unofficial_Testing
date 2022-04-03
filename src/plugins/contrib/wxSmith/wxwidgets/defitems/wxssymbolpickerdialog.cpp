@@ -34,7 +34,7 @@ wxsRegisterItem<wxsSymbolPickerDialog> Reg(
     false);                         // We do not allow this item inside XRC files
 
 
-WXS_ST_BEGIN(wxsSymbolPickerDialogStyles,_T("wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX"))
+WXS_ST_BEGIN(wxsSymbolPickerDialogStyles, _T("wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX"))
 WXS_ST_CATEGORY("wxSymbolPickerDialog")
 WXS_ST(wxSTAY_ON_TOP)
 WXS_ST(wxCAPTION)
@@ -55,8 +55,8 @@ WXS_ST_END()
 
 //------------------------------------------------------------------------------
 
-wxsSymbolPickerDialog::wxsSymbolPickerDialog(wxsItemResData* Data):
-    wxsTool(Data,&Reg.Info,0,wxsSymbolPickerDialogStyles, (flVariable|flId|flSubclass|flExtraCode))
+wxsSymbolPickerDialog::wxsSymbolPickerDialog(wxsItemResData * Data):
+    wxsTool(Data, &Reg.Info, 0, wxsSymbolPickerDialogStyles, (flVariable | flId | flSubclass | flExtraCode))
 {
 }
 
@@ -64,18 +64,18 @@ wxsSymbolPickerDialog::wxsSymbolPickerDialog(wxsItemResData* Data):
 
 void wxsSymbolPickerDialog::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-        AddHeader(_T("<wx/richtext/richtextsymboldlg.h>"),GetInfo().ClassName, 0);
-        Codef(_T("%C( %t, %t, %t, %W, %I, %t, %P, %S, %T);\n"), _T(""), _T(""), _T(""), _T("Title") );
-        BuildSetupWindowCode();
-        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-        break;
+        case wxsCPP:
+            AddHeader(_T("<wx/richtext/richtextsymboldlg.h>"), GetInfo().ClassName, 0);
+            Codef(_T("%C( %t, %t, %t, %W, %I, %t, %P, %S, %T);\n"), _T(""), _T(""), _T(""), _T("Title"));
+            BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+            break;
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsSymbolPickerDialog::OnBuildCreatingCode"),GetLanguage());
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsSymbolPickerDialog::OnBuildCreatingCode"), GetLanguage());
     }
 }
 

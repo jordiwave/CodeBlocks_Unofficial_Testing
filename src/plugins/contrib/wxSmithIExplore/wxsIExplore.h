@@ -36,15 +36,15 @@ class wxWindow;
 
 class wxsIExplore : public wxsWidget
 {
-public:
-    wxsIExplore(wxsItemResData* Data);
+    public:
+        wxsIExplore(wxsItemResData * Data);
 
-protected:
-    virtual wxObject*   OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void        OnBuildCreatingCode();
-    virtual void        OnEnumWidgetProperties(long Flags);
+    protected:
+        virtual wxObject  * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void        OnBuildCreatingCode();
+        virtual void        OnEnumWidgetProperties(long Flags);
 
-    wxString            mStartPage;
+        wxString            mStartPage;
 };
 
 #endif      // wxsIExplore_H

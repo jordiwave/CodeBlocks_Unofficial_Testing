@@ -36,66 +36,66 @@
 
 class TestCasesDlg: public wxScrollingDialog, public TestCasesBase::Output
 {
-public:
-
-    TestCasesDlg(wxWindow* parent, TestCasesBase& tests);
-    virtual ~TestCasesDlg();
-
-protected:
-
-    virtual void AddLog( const wxString& logLine );
-    virtual bool StopTest();
-
-private:
-
-    //(*Declarations(TestCasesDlg)
-    wxListBox* ListBox1;
-    wxButton* Button1;
-    wxTimer Timer1;
-    //*)
-
-    //(*Identifiers(TestCasesDlg)
-    static const long ID_LISTBOX1;
-    static const long ID_BUTTON1;
-    static const long ID_TIMER1;
-    //*)
-
-    //(*Handlers(TestCasesDlg)
-    void OnButton1Click(wxCommandEvent& event);
-    void OnTimer1Trigger(wxTimerEvent& event);
-    void OnClose(wxCloseEvent& event);
-    //*)
-
-    virtual int Entry();
-
-    void BuildContent(wxWindow* parent);
-
-    class MyThread: public wxThread
-    {
     public:
 
-        MyThread( TestCasesDlg* dlg ): wxThread(wxTHREAD_JOINABLE), m_Dlg( dlg ) {}
+        TestCasesDlg(wxWindow * parent, TestCasesBase & tests);
+        virtual ~TestCasesDlg();
+
+    protected:
+
+        virtual void AddLog(const wxString & logLine);
+        virtual bool StopTest();
 
     private:
 
-        TestCasesDlg* m_Dlg;
+        //(*Declarations(TestCasesDlg)
+        wxListBox * ListBox1;
+        wxButton * Button1;
+        wxTimer Timer1;
+        //*)
 
-        virtual ExitCode Entry()
+        //(*Identifiers(TestCasesDlg)
+        static const long ID_LISTBOX1;
+        static const long ID_BUTTON1;
+        static const long ID_TIMER1;
+        //*)
+
+        //(*Handlers(TestCasesDlg)
+        void OnButton1Click(wxCommandEvent & event);
+        void OnTimer1Trigger(wxTimerEvent & event);
+        void OnClose(wxCloseEvent & event);
+        //*)
+
+        virtual int Entry();
+
+        void BuildContent(wxWindow * parent);
+
+        class MyThread: public wxThread
         {
-            return reinterpret_cast<ExitCode>(m_Dlg->Entry());
-        }
-    };
+            public:
 
-    TestCasesBase&    m_Tests;
-    MyThread*         m_Thread;
-    wxCriticalSection m_Section;
-    wxArrayString     m_NewLogs;
-    bool              m_Running;
-    bool              m_StopRequest;
-    bool              m_Result;
-    bool              m_BtnChanged;
+                MyThread(TestCasesDlg * dlg): wxThread(wxTHREAD_JOINABLE), m_Dlg(dlg) {}
 
-    DECLARE_EVENT_TABLE()
+            private:
+
+                TestCasesDlg * m_Dlg;
+
+                virtual ExitCode Entry()
+                {
+                    return reinterpret_cast<ExitCode>(m_Dlg->Entry());
+                }
+        };
+
+        TestCasesBase  &  m_Tests;
+        MyThread     *    m_Thread;
+        wxCriticalSection m_Section;
+        wxArrayString     m_NewLogs;
+        bool              m_Running;
+        bool              m_StopRequest;
+        bool              m_Result;
+        bool              m_BtnChanged;
+
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

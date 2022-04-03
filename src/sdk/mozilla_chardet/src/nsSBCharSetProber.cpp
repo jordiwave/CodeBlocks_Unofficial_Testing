@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "nsSBCharSetProber.h"
 
-nsProbingState nsSingleByteCharSetProber::HandleData(const char* aBuf, uint32_t aLen)
+nsProbingState nsSingleByteCharSetProber::HandleData(const char * aBuf, uint32_t aLen)
 {
     unsigned char order;
 
@@ -14,7 +14,10 @@ nsProbingState nsSingleByteCharSetProber::HandleData(const char* aBuf, uint32_t 
         order = mModel->charToOrderMap[(unsigned char)aBuf[i]];
 
         if (order < SYMBOL_CAT_ORDER)
+        {
             mTotalChar++;
+        }
+
         if (order < SAMPLE_SIZE)
         {
             mFreqChar++;
@@ -22,12 +25,18 @@ nsProbingState nsSingleByteCharSetProber::HandleData(const char* aBuf, uint32_t 
             if (mLastOrder < SAMPLE_SIZE)
             {
                 mTotalSeqs++;
+
                 if (!mReversed)
-                    ++(mSeqCounters[(int)mModel->precedenceMatrix[mLastOrder*SAMPLE_SIZE+order]]); // added (int) to avoid warnings , jens 2009 02 26
+                {
+                    ++(mSeqCounters[(int)mModel->precedenceMatrix[mLastOrder * SAMPLE_SIZE + order]]);    // added (int) to avoid warnings , jens 2009 02 26
+                }
                 else // reverse the order of the letters in the lookup
-                    ++(mSeqCounters[(int)mModel->precedenceMatrix[order*SAMPLE_SIZE+mLastOrder]]); // added (int) to avoid warnings , jens 2009 02 26
+                {
+                    ++(mSeqCounters[(int)mModel->precedenceMatrix[order * SAMPLE_SIZE + mLastOrder]]);    // added (int) to avoid warnings , jens 2009 02 26
+                }
             }
         }
+
         mLastOrder = order;
     }
 
@@ -35,10 +44,16 @@ nsProbingState nsSingleByteCharSetProber::HandleData(const char* aBuf, uint32_t 
         if (mTotalSeqs > SB_ENOUGH_REL_THRESHOLD)
         {
             float cf = GetConfidence();
+
             if (cf > POSITIVE_SHORTCUT_THRESHOLD)
+            {
                 mState = eFoundIt;
-            else if (cf < NEGATIVE_SHORTCUT_THRESHOLD)
-                mState = eNotMe;
+            }
+            else
+                if (cf < NEGATIVE_SHORTCUT_THRESHOLD)
+                {
+                    mState = eNotMe;
+                }
         }
 
     return mState;
@@ -48,8 +63,12 @@ void  nsSingleByteCharSetProber::Reset(void)
 {
     mState = eDetecting;
     mLastOrder = 255;
+
     for (uint32_t i = 0; i < NUMBER_OF_SEQ_CAT; i++)
+    {
         mSeqCounters[i] = 0;
+    }
+
     mTotalSeqs = 0;
     mTotalChar = 0;
     mFreqChar = 0;
@@ -60,9 +79,13 @@ void  nsSingleByteCharSetProber::Reset(void)
 float nsSingleByteCharSetProber::GetConfidence(void)
 {
 #ifdef NEGATIVE_APPROACH
+
     if (mTotalSeqs > 0)
-        if (mTotalSeqs > mSeqCounters[NEGATIVE_CAT]*10 )
-            return ((float)(mTotalSeqs - mSeqCounters[NEGATIVE_CAT]*10))/mTotalSeqs * mFreqChar / mTotalChar;
+        if (mTotalSeqs > mSeqCounters[NEGATIVE_CAT] * 10)
+        {
+            return ((float)(mTotalSeqs - mSeqCounters[NEGATIVE_CAT] * 10)) / mTotalSeqs * mFreqChar / mTotalChar;
+        }
+
     return (float)0.01;
 #else  //POSITIVE_APPROACH
     float r;
@@ -70,19 +93,27 @@ float nsSingleByteCharSetProber::GetConfidence(void)
     if (mTotalSeqs > 0)
     {
         r = ((float)1.0) * mSeqCounters[POSITIVE_CAT] / mTotalSeqs / mModel->mTypicalPositiveRatio;
-        r = r*mFreqChar/mTotalChar;
+        r = r * mFreqChar / mTotalChar;
+
         if (r >= (float)1.00)
+        {
             r = (float)0.99;
+        }
+
         return r;
     }
+
     return (float)0.01;
 #endif
 }
 
-const char* nsSingleByteCharSetProber::GetCharSetName()
+const char * nsSingleByteCharSetProber::GetCharSetName()
 {
     if (!mNameProber)
+    {
         return mModel->charsetName;
+    }
+
     return mNameProber->GetCharSetName();
 }
 

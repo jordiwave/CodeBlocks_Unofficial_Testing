@@ -29,9 +29,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsMultiChoiceDialog> Reg(_T("MultiChoiceDialog"),wxsTTool,_T("Dialogs"),140,false);
+wxsRegisterItem<wxsMultiChoiceDialog> Reg(_T("MultiChoiceDialog"), wxsTTool, _T("Dialogs"), 140, false);
 
-WXS_ST_BEGIN(wxsMultiChoiceDialogStyles,_T("wxCHOICEDLG_STYLE"))
+WXS_ST_BEGIN(wxsMultiChoiceDialogStyles, _T("wxCHOICEDLG_STYLE"))
 WXS_ST_CATEGORY("wxMultiChoiceDialog")
 WXS_ST(wxCHOICEDLG_STYLE)
 WXS_ST(wxOK)
@@ -41,54 +41,55 @@ WXS_ST_DEFAULTS()
 WXS_ST_END()
 }
 
-wxsMultiChoiceDialog::wxsMultiChoiceDialog(wxsItemResData* Data):
-    wxsTool(Data,&Reg.Info,0,wxsMultiChoiceDialogStyles)
+wxsMultiChoiceDialog::wxsMultiChoiceDialog(wxsItemResData * Data):
+    wxsTool(Data, &Reg.Info, 0, wxsMultiChoiceDialogStyles)
 {
     m_Message = _("Select items");
 }
 
 void wxsMultiChoiceDialog::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/choicdlg.h>"),GetInfo().ClassName,hfInPCH);
-
-        wxString ChoicesName;
-        if ( m_Content.GetCount() > 0 )
+        case wxsCPP:
         {
-            ChoicesName = GetCoderContext()->GetUniqueName(_T("__wxMultiChoiceDialogChoices"));
-            Codef(_T("wxString %s[%d] = \n{\n"),ChoicesName.wx_str(),(int)m_Content.GetCount());
-            for ( size_t i = 0; i < m_Content.GetCount(); ++i )
+            AddHeader(_T("<wx/choicdlg.h>"), GetInfo().ClassName, hfInPCH);
+            wxString ChoicesName;
+
+            if (m_Content.GetCount() > 0)
             {
-                Codef(_T("\t%t%s\n"),m_Content[i].wx_str(),((i!=m_Content.GetCount()-1)?_T(","):_T("")));
+                ChoicesName = GetCoderContext()->GetUniqueName(_T("__wxMultiChoiceDialogChoices"));
+                Codef(_T("wxString %s[%d] = \n{\n"), ChoicesName.wx_str(), (int)m_Content.GetCount());
+
+                for (size_t i = 0; i < m_Content.GetCount(); ++i)
+                {
+                    Codef(_T("\t%t%s\n"), m_Content[i].wx_str(), ((i != m_Content.GetCount() - 1) ? _T(",") : _T("")));
+                }
+
+                Codef(_T("};\n"));
             }
-            Codef(_T("};\n"));
+
+            Codef(_T("%C(%W, %t, %t, %d, %s, %T, %P);\n"),
+                  m_Message.wx_str(),
+                  m_Caption.wx_str(),
+                  (int)m_Content.GetCount(),
+                  (m_Content.IsEmpty() ? _T("0") : ChoicesName.wx_str()));
+            BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+            return;
         }
 
-        Codef(_T("%C(%W, %t, %t, %d, %s, %T, %P);\n"),
-              m_Message.wx_str(),
-              m_Caption.wx_str(),
-              (int)m_Content.GetCount(),
-              (m_Content.IsEmpty()?_T("0"):ChoicesName.wx_str()));
-
-        BuildSetupWindowCode();
-        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsMultiChoiceDialog::OnBuildCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsMultiChoiceDialog::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
 void wxsMultiChoiceDialog::OnEnumToolProperties(cb_unused long Flags)
 {
-    WXS_SHORT_STRING(wxsMultiChoiceDialog,m_Message,_("Message"),_T("message"),_T(""),false);
-    WXS_SHORT_STRING(wxsMultiChoiceDialog,m_Caption,_("Caption"),_T("caption"),_T(""),false);
-    WXS_ARRAYSTRING (wxsMultiChoiceDialog,m_Content,_("Items"),  _T("content"),_T("item"));
+    WXS_SHORT_STRING(wxsMultiChoiceDialog, m_Message, _("Message"), _T("message"), _T(""), false);
+    WXS_SHORT_STRING(wxsMultiChoiceDialog, m_Caption, _("Caption"), _T("caption"), _T(""), false);
+    WXS_ARRAYSTRING(wxsMultiChoiceDialog, m_Content, _("Items"),  _T("content"), _T("item"));
 }

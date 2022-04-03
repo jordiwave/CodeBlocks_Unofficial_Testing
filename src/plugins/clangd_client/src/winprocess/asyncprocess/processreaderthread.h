@@ -27,74 +27,74 @@ class IProcess;
  */
 class /*WXDLLIMPEXP_CL*/ ProcessReaderThread : public wxThread
 {
-protected:
-    wxEvtHandler* m_notifiedWindow = nullptr;
-    IProcess* m_process = nullptr;
-    std::atomic_bool m_suspend;
-    std::atomic_bool m_is_suspended;
+    protected:
+        wxEvtHandler * m_notifiedWindow = nullptr;
+        IProcess * m_process = nullptr;
+        std::atomic_bool m_suspend;
+        std::atomic_bool m_is_suspended;
 
-protected:
-    void NotifyTerminated();
+    protected:
+        void NotifyTerminated();
 
-public:
-    /**
-     * Default constructor.
-     */
-    ProcessReaderThread();
+    public:
+        /**
+         * Default constructor.
+         */
+        ProcessReaderThread();
 
-    /**
-     * Destructor.
-     */
-    virtual ~ProcessReaderThread();
+        /**
+         * Destructor.
+         */
+        virtual ~ProcessReaderThread();
 
-    /**
-     * Thread execution point.
-     */
-    virtual void* Entry();
+        /**
+         * Thread execution point.
+         */
+        virtual void * Entry();
 
-    /**
-     * Called when the thread exits
-     * whether it terminates normally or is stopped with Delete() (but not when it is Kill()'ed!)
-     */
-    virtual void OnExit() {};
+        /**
+         * Called when the thread exits
+         * whether it terminates normally or is stopped with Delete() (but not when it is Kill()'ed!)
+         */
+        virtual void OnExit() {};
 
-    /**
-     * Set the window to be notified when a change was done
-     * between current source file tree and the actual tree.
-     * \param evtHandler
-     */
-    void SetNotifyWindow(wxEvtHandler* evtHandler)
-    {
-        m_notifiedWindow = evtHandler;
-    }
+        /**
+         * Set the window to be notified when a change was done
+         * between current source file tree and the actual tree.
+         * \param evtHandler
+         */
+        void SetNotifyWindow(wxEvtHandler * evtHandler)
+        {
+            m_notifiedWindow = evtHandler;
+        }
 
-    /**
-     * Stops the thread
-     * This function returns only when the thread is terminated.
-     * \note This call must be called from the context of other thread (e.g. main thread)
-     */
-    void Stop();
+        /**
+         * Stops the thread
+         * This function returns only when the thread is terminated.
+         * \note This call must be called from the context of other thread (e.g. main thread)
+         */
+        void Stop();
 
-    /**
-     * Start the thread as joinable thread.
-     * \note This call must be called from the context of other thread (e.g. main thread)
-     */
-    void Start(int priority = WXTHREAD_DEFAULT_PRIORITY);
+        /**
+         * Start the thread as joinable thread.
+         * \note This call must be called from the context of other thread (e.g. main thread)
+         */
+        void Start(int priority = WXTHREAD_DEFAULT_PRIORITY);
 
-    void SetProcess(IProcess* proc)
-    {
-        m_process = proc;
-    }
+        void SetProcess(IProcess * proc)
+        {
+            m_process = proc;
+        }
 
-    /**
-     * @brief suspend the reader thread
-     */
-    void Suspend();
+        /**
+         * @brief suspend the reader thread
+         */
+        void Suspend();
 
-    /**
-     * @brief resume the reader thread
-     */
-    void Resume();
+        /**
+         * @brief resume the reader thread
+         */
+        void Resume();
 };
 
 //wxDECLARE_EXPORTED_EVENT(/*WXDLLIMPEXP_CL*/, wxEVT_ASYNC_PROCESS_OUTPUT, clProcessEvent);

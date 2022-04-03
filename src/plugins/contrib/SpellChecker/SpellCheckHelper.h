@@ -23,7 +23,7 @@
 #include "wx/wxprec.h"
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+    #include "wx/wx.h"
 #endif
 
 
@@ -38,17 +38,17 @@
 
 class SpellCheckHelper
 {
-public:
-    SpellCheckHelper();
-    virtual ~SpellCheckHelper();
+    public:
+        SpellCheckHelper();
+        virtual ~SpellCheckHelper();
 
-    bool HasStyleToBeChecked(wxString langname, int style)const;
-    static bool IsEscapeSequenceStart(wxChar ch, wxString langname, int style);
-    void LoadConfiguration();
+        bool HasStyleToBeChecked(wxString langname, int style)const;
+        static bool IsEscapeSequenceStart(wxChar ch, wxString langname, int style);
+        void LoadConfiguration();
 
-protected:
-private:
-    std::map<wxString, std::set<long> > m_LanguageIndices;
+    protected:
+    private:
+        std::map<wxString, std::set<long> > m_LanguageIndices;
 };
 
 #endif // SPELLCHECKHELPER_H

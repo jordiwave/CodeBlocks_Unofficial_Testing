@@ -39,7 +39,7 @@ wxsRegisterItem<wxsStopWatch> Reg(
 
 //------------------------------------------------------------------------------
 
-wxsStopWatch::wxsStopWatch(wxsItemResData* Data):
+wxsStopWatch::wxsStopWatch(wxsItemResData * Data):
     wxsTool(
         Data,
         &Reg.Info,
@@ -52,16 +52,16 @@ wxsStopWatch::wxsStopWatch(wxsItemResData* Data):
 
 void wxsStopWatch::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-        AddHeader(_T("<wx/stopwatch.h>"),GetInfo().ClassName, 0);
-        BuildSetupWindowCode();
-        break;
+        case wxsCPP:
+            AddHeader(_T("<wx/stopwatch.h>"), GetInfo().ClassName, 0);
+            BuildSetupWindowCode();
+            break;
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsStopWatch::OnBuildCreatingCode"),GetLanguage());
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsStopWatch::OnBuildCreatingCode"), GetLanguage());
     }
 }
 

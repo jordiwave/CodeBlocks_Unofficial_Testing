@@ -2,10 +2,11 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="ThreadSearch wx3.1.x (64 bit)" />
+		<Option title="ThreadSearch Windows" />
+		<Option default_target="ThreadSearch" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="default">
+			<Target title="ThreadSearch">
 				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/ThreadSearch.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/ThreadSearch" />
 				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxcustombutton.dll;" />
@@ -14,10 +15,19 @@
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
 				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
+				<ExtraCommands>
+					<!-- Create output directory -->
+					<Add before="cmd /c if not exist $(TARGET_OUTPUT_DIR) mkdir $(TARGET_OUTPUT_DIR)" />
+					<Mode before="always" />
+					
+					<Add after="zip $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\codeblocks\ThreadSearch.zip manifest.xml" />
+					<Add after="cmd /c &quot;cd resources &amp;&amp; zip -rq9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\codeblocks\ThreadSearch.zip images&quot;" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="default;" />
+			<Add alias="All" targets="ThreadSearch;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -38,8 +48,8 @@
 			<Add option="-DNO_LOGGING" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
 			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add directory="$(#CB_BUILD)/include" />
-			<Add directory="$(#CB_BUILD)/include/tinyxml" />
+			<Add directory="$(#CB_BUILD.INCLUDE)" />
+			<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
 			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
 			<Add directory="$(#WXWIDGETS.include)" />
 			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
@@ -54,7 +64,11 @@
 			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="update$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS).bat" />
+			<!-- Create output directory -->
+			<Add before="cmd /c if not exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\codeblocks\images\settings mkdir $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\codeblocks\images\settings" />
+			<Mode before="always" />
+
+			<Add after="cmd /c xcopy /Y /Q .\resources\*.png $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\codeblocks\images\settings\  > nul 2>&amp;1" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="DirectoryParamsPanel.cpp" />

@@ -17,7 +17,7 @@
 //----------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "yaxis.h"
+    #pragma interface "yaxis.h"
 #endif
 
 #include "wx/axis.h"
@@ -33,13 +33,13 @@ class WXDLLIMPEXP_CHART wxYAxis : public wxAxis
 /* C::B end */
 {
 
-public:
-    wxYAxis(ChartValue max = 0, ChartValue min = 0);
-    ~wxYAxis() {};
+    public:
+        wxYAxis(ChartValue max = 0, ChartValue min = 0);
+        ~wxYAxis() {};
 
-    // Draw xaxis area
-    //-----------------
-    void Draw(CHART_HPAINT hp, CHART_HRECT hr);
+        // Draw xaxis area
+        //-----------------
+        void Draw(CHART_HPAINT hp, CHART_HRECT hr);
 };
 
 #endif // __WXXAXIS_H__

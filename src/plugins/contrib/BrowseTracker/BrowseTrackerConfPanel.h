@@ -21,60 +21,60 @@ class BrowseTracker;
 class BrowseTrackerConfPanel: public cbConfigurationPanel
 // ----------------------------------------------------------------------------
 {
-public:
+    public:
 
-    /** Constructor. */
-    BrowseTrackerConfPanel(BrowseTracker& browseTrackerPlugin, wxWindow* parent = NULL, wxWindowID id = -1);
+        /** Constructor. */
+        BrowseTrackerConfPanel(BrowseTracker & browseTrackerPlugin, wxWindow * parent = NULL, wxWindowID id = -1);
 
-    /** Returns the title displayed in the left column of the "Settings/Environment" dialog. */
-    wxString GetTitle()          const
-    {
-        return wxT("BrowseTracker");
-    }
+        /** Returns the title displayed in the left column of the "Settings/Environment" dialog. */
+        wxString GetTitle()          const
+        {
+            return wxT("BrowseTracker");
+        }
 
-    /** Returns string used to build active/inactive images path in the left column
-      * of the "Settings/Environment" dialog.
-      */
-    wxString GetBitmapBaseName() const
-    {
-        return wxT("BrowseTracker");
-    }
+        /** Returns string used to build active/inactive images path in the left column
+          * of the "Settings/Environment" dialog.
+          */
+        wxString GetBitmapBaseName() const
+        {
+            return wxT("BrowseTracker");
+        }
 
-    /** Called automatically when user clicks on OK
-      */
-    void OnApply();
+        /** Called automatically when user clicks on OK
+          */
+        void OnApply();
 
-    /** Called automatically when user clicks on Cancel
-      */
-    void OnCancel() {}
+        /** Called automatically when user clicks on Cancel
+          */
+        void OnCancel() {}
 
-private:
+    private:
 
-    BrowseTracker& m_BrowseTrackerPlugin;  // Reference on the BrowseTracker plugin we configure
+        BrowseTracker & m_BrowseTrackerPlugin; // Reference on the BrowseTracker plugin we configure
 
-protected:
+    protected:
 
-    DECLARE_EVENT_TABLE();
+        DECLARE_EVENT_TABLE();
 
-    // -----------------------------------------------------
-    // Shell class for wxFormBuilder generated CfgPanel.cpp/h
-    // -----------------------------------------------------
-public:
+        // -----------------------------------------------------
+        // Shell class for wxFormBuilder generated CfgPanel.cpp/h
+        // -----------------------------------------------------
+    public:
 
-    void GetUserOptions( wxString cfgFullPath);
+        void GetUserOptions(wxString cfgFullPath);
 
-protected:
-    ConfigPanel* m_pConfigPanel;
-    bool bEdMultiSelOn;
-private:
+    protected:
+        ConfigPanel * m_pConfigPanel;
+        bool bEdMultiSelOn;
+    private:
 
-    // Virtual event handlers, overriden fron ConfigPanel.h
-    virtual void OnEnableBrowseMarks( wxCommandEvent& event );
-    virtual void OnToggleBrowseMarkKey( wxCommandEvent& event );
-    virtual void OnClearAllBrowseMarksKey( wxCommandEvent& event );
-    virtual void OnWrapJumpEntries( wxCommandEvent& event );
-    virtual void OnShowToolbar( wxCommandEvent& event );
-    virtual void OnActivatePrevEd( wxCommandEvent& event );
+        // Virtual event handlers, overriden fron ConfigPanel.h
+        virtual void OnEnableBrowseMarks(wxCommandEvent & event);
+        virtual void OnToggleBrowseMarkKey(wxCommandEvent & event);
+        virtual void OnClearAllBrowseMarksKey(wxCommandEvent & event);
+        virtual void OnWrapJumpEntries(wxCommandEvent & event);
+        virtual void OnShowToolbar(wxCommandEvent & event);
+        virtual void OnActivatePrevEd(wxCommandEvent & event);
 
 };
 #endif // THREAD_SEARCH_CONF_PANEL_H

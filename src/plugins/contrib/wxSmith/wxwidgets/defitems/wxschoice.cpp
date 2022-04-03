@@ -25,9 +25,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsChoice> Reg(_T("Choice"),wxsTWidget,_T("Standard"),310);
+wxsRegisterItem<wxsChoice> Reg(_T("Choice"), wxsTWidget, _T("Standard"), 310);
 
-WXS_ST_BEGIN(wxsChoiceStyles,_T(""))
+WXS_ST_BEGIN(wxsChoiceStyles, _T(""))
 WXS_ST_CATEGORY("wxChoice")
 WXS_ST(wxCB_SORT)
 WXS_ST_DEFAULTS()
@@ -35,11 +35,11 @@ WXS_ST_END()
 
 
 WXS_EV_BEGIN(wxsChoiceEvents)
-WXS_EVI(EVT_CHOICE,wxEVT_COMMAND_CHOICE_SELECTED,wxCommandEvent,Select)
+WXS_EVI(EVT_CHOICE, wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEvent, Select)
 WXS_EV_END()
 }
 
-wxsChoice::wxsChoice(wxsItemResData* Data):
+wxsChoice::wxsChoice(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -51,56 +51,61 @@ wxsChoice::wxsChoice(wxsItemResData* Data):
 
 void wxsChoice::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/choice.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
-
-        for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
+        case wxsCPP:
         {
-            if ( DefaultSelection == (int)i )
+            AddHeader(_T("<wx/choice.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
+
+            for (size_t i = 0; i <  ArrayChoices.GetCount(); ++i)
             {
-                Codef(_T("%ASetSelection( "));
+                if (DefaultSelection == (int)i)
+                {
+                    Codef(_T("%ASetSelection( "));
+                }
+
+                Codef(_T("%AAppend(%t)"), ArrayChoices[i].wx_str());
+
+                if (DefaultSelection == (int)i)
+                {
+                    Codef(_T(" )"));
+                }
+
+                Codef(_T(";\n"));
             }
-            Codef(_T("%AAppend(%t)"),ArrayChoices[i].wx_str());
-            if ( DefaultSelection == (int)i )
-            {
-                Codef(_T(" )"));
-            }
-            Codef(_T(";\n"));
+
+            BuildSetupWindowCode();
+            return;
         }
 
-        BuildSetupWindowCode();
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsChoice::OnBuildCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsChoice::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
-wxObject* wxsChoice::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsChoice::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxChoice* Preview = new wxChoice(Parent,GetId(),Pos(Parent),Size(Parent),0,0,Style());
+    wxChoice * Preview = new wxChoice(Parent, GetId(), Pos(Parent), Size(Parent), 0, 0, Style());
 
-    for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
+    for (size_t i = 0; i <  ArrayChoices.GetCount(); ++i)
     {
         int Val = Preview->Append(ArrayChoices[i]);
-        if ( (int)i == DefaultSelection )
+
+        if ((int)i == DefaultSelection)
         {
             Preview->SetSelection(Val);
         }
     }
-    return SetupWindow(Preview,Flags);
+
+    return SetupWindow(Preview, Flags);
 }
 
 void wxsChoice::OnEnumWidgetProperties(cb_unused long Flags)
 {
-    WXS_ARRAYSTRING(wxsChoice,ArrayChoices,_("Choices"),_T("content"),_T("item"))
-    WXS_LONG(wxsChoice,DefaultSelection,_("Selection"),_T("selection"),-1)
+    WXS_ARRAYSTRING(wxsChoice, ArrayChoices, _("Choices"), _T("content"), _T("item"))
+    WXS_LONG(wxsChoice, DefaultSelection, _("Selection"), _T("selection"), -1)
 }

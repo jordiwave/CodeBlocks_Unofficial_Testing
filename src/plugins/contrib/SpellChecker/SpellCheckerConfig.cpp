@@ -20,9 +20,9 @@
 #include "SpellCheckerPlugin.h"
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-#include <wx/dir.h>
-#include <logmanager.h>
-#include <macrosmanager.h>
+    #include <wx/dir.h>
+    #include <logmanager.h>
+    #include <macrosmanager.h>
 #endif
 
 #include <configmanager.h>
@@ -35,7 +35,7 @@
 #define CFG_SPELLCHECK_THESAURI_PATH            _T("/SpellChecker/ThesPath")
 #define CFG_SPELLCHECK_BITMAPS_PATH             _T("/SpellChecker/BitmPath")
 
-SpellCheckerConfig::SpellCheckerConfig(SpellCheckerPlugin *plugin)
+SpellCheckerConfig::SpellCheckerConfig(SpellCheckerPlugin * plugin)
     ://m_DictionaryPath(plugin->GetDic),
      selectedDictionary(-1),
      m_pPlugin(plugin)
@@ -100,38 +100,43 @@ void SpellCheckerConfig::ScanForDictionaries()
     ScanForDictionaries(GetDictionaryPath());
 }
 
-void SpellCheckerConfig::ScanForDictionaries(const wxString &path)
+void SpellCheckerConfig::ScanForDictionaries(const wxString & path)
 {
     m_dictionaries.clear();
     selectedDictionary = wxNOT_FOUND;
     //wxString filespec(_T("??_??.dic"));
     wxString filespec(_T("*.dic"));
-
     wxDir dir;
-    if ( dir.Open(path) )
+
+    if (dir.Open(path))
     {
         wxString strfilename;
         bool cont = dir.GetFirst(&strfilename, filespec, wxDIR_FILES);
-        while ( cont )
+
+        while (cont)
         {
             wxFileName fname(strfilename);
             wxString afffilename = path + wxFileName::GetPathSeparator() + fname.GetName() + _T(".aff");
-            if ( wxFileName::FileExists(afffilename) )
+
+            if (wxFileName::FileExists(afffilename))
             {
-                if ( fname.GetName() == m_strDictionaryName )
+                if (fname.GetName() == m_strDictionaryName)
                 {
                     Manager::Get()->GetLogManager()->DebugLog(_T("Selected dictionary: ") + fname.GetName());
                     selectedDictionary = m_dictionaries.size();
                 }
+
                 Manager::Get()->GetLogManager()->DebugLog(_T("Found dictionary: ") + fname.GetName());
                 m_dictionaries.push_back(fname.GetName());
-
             }
+
             cont = dir.GetNext(&strfilename);
         }
     }
     else
+    {
         Manager::Get()->GetLogManager()->DebugLog(_T("Could not open path to dictionaries: ") + path);
+    }
 
     // disable online checker if there are no dictionaries found
     if (selectedDictionary == wxNOT_FOUND)
@@ -140,7 +145,7 @@ void SpellCheckerConfig::ScanForDictionaries(const wxString &path)
     }
 }
 
-const std::vector<wxString> &SpellCheckerConfig::GetPossibleDictionaries()const
+const std::vector<wxString> & SpellCheckerConfig::GetPossibleDictionaries()const
 {
     return m_dictionaries;
 }
@@ -164,6 +169,7 @@ void SpellCheckerConfig::DetectDictionaryPath()
     wxArrayString dictPaths;
     dictPaths.Add(m_DictPath);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dictPaths[0]);
+
     if (platform::windows)
     {
         wxString programs = wxT("C:\\Program Files");
@@ -175,12 +181,18 @@ void SpellCheckerConfig::DetectDictionaryPath()
         wxString libreOffice = wxFindFirstFile(programs + wxT("\\*LibreOffice*"), wxDIR);
         wxString openOffice = wxFindFirstFile(programs + wxT("\\*OpenOffice*"), wxDIR);
         wxArrayString langs = GetArrayFromString(wxT("en;fr;es;de"));
+
         for (size_t i = 0; i < langs.GetCount(); ++i)
         {
             if (!libreOffice.IsEmpty())
+            {
                 dictPaths.Add(libreOffice + wxT("\\share\\extensions\\dict-") + langs[i]);
+            }
+
             if (!openOffice.IsEmpty())
+            {
                 dictPaths.Add(openOffice + wxT("\\share\\extensions\\dict-") + langs[i]);
+            }
         }
     }
     else
@@ -189,14 +201,19 @@ void SpellCheckerConfig::DetectDictionaryPath()
         dictPaths.Add(wxT("/usr/share/myspell/dicts"));
         dictPaths.Add(wxT("/usr/share/myspell"));
     }
+
     dictPaths.Add(m_pPlugin->GetOnlineCheckerConfigPath());
+
     for (size_t i = 0; i < dictPaths.GetCount(); ++i)
     {
-        if (    wxDirExists(dictPaths[i])
-                && !wxFindFirstFile(dictPaths[i] + wxFILE_SEP_PATH + wxT("*.dic"), wxFILE).IsEmpty() )
+        if (wxDirExists(dictPaths[i])
+                && !wxFindFirstFile(dictPaths[i] + wxFILE_SEP_PATH + wxT("*.dic"), wxFILE).IsEmpty())
         {
             if (i != 0)
+            {
                 m_DictPath = dictPaths[i];
+            }
+
             Manager::Get()->GetLogManager()->DebugLog(_T("Detected dict path: ") + m_DictPath);
             break;
         }
@@ -208,6 +225,7 @@ void SpellCheckerConfig::DetectThesaurusPath()
     wxArrayString thesPaths;
     thesPaths.Add(m_ThesPath);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(thesPaths[0]);
+
     if (platform::windows)
     {
         wxString programs = wxT("C:\\Program Files");
@@ -215,12 +233,18 @@ void SpellCheckerConfig::DetectThesaurusPath()
         wxString libreOffice = wxFindFirstFile(programs + wxT("\\*LibreOffice*"), wxDIR);
         wxString openOffice = wxFindFirstFile(programs + wxT("\\*OpenOffice*"), wxDIR);
         wxArrayString langs = GetArrayFromString(wxT("en;fr;es;de"));
+
         for (size_t i = 0; i < langs.GetCount(); ++i)
         {
             if (!libreOffice.IsEmpty())
+            {
                 thesPaths.Add(libreOffice + wxT("\\share\\extensions\\dict-") + langs[i]);
+            }
+
             if (!openOffice.IsEmpty())
+            {
                 thesPaths.Add(openOffice + wxT("\\share\\extensions\\dict-") + langs[i]);
+            }
         }
     }
     else
@@ -228,14 +252,19 @@ void SpellCheckerConfig::DetectThesaurusPath()
         thesPaths.Add(wxT("/usr/share/myspell/dicts"));
         thesPaths.Add(wxT("/usr/share/mythes"));
     }
+
     thesPaths.Add(m_pPlugin->GetOnlineCheckerConfigPath());
+
     for (size_t i = 0; i < thesPaths.GetCount(); ++i)
     {
-        if (    wxDirExists(thesPaths[i])
-                && !wxFindFirstFile(thesPaths[i] + wxFILE_SEP_PATH + wxT("th*.dat"), wxFILE).IsEmpty() )
+        if (wxDirExists(thesPaths[i])
+                && !wxFindFirstFile(thesPaths[i] + wxFILE_SEP_PATH + wxT("th*.dat"), wxFILE).IsEmpty())
         {
             if (i != 0)
+            {
                 m_ThesPath = thesPaths[i];
+            }
+
             Manager::Get()->GetLogManager()->DebugLog(_T("Detected thes path: ") + m_ThesPath);
             break;
         }
@@ -257,41 +286,53 @@ const wxString SpellCheckerConfig::GetRawBitmapPath()const
     return m_BitmPath;
 }
 
-void SpellCheckerConfig::SetDictionaryPath(const wxString &path)
+void SpellCheckerConfig::SetDictionaryPath(const wxString & path)
 {
     m_DictPath = path;
 }
 
-void SpellCheckerConfig::SetThesaurusPath(const wxString &path)
+void SpellCheckerConfig::SetThesaurusPath(const wxString & path)
 {
     m_ThesPath = path;
 }
 
-void SpellCheckerConfig::SetBitmapPath(const wxString &path)
+void SpellCheckerConfig::SetBitmapPath(const wxString & path)
 {
     m_BitmPath = path;
 }
 
 const wxString SpellCheckerConfig::GetPersonalDictionaryFilename()const
 {
-    wxString dfile = ConfigManager::LocateDataFile(GetDictionaryName() + _T("_personaldictionary.dic"), sdConfig );
+    wxString dfile = ConfigManager::LocateDataFile(GetDictionaryName() + _T("_personaldictionary.dic"), sdConfig);
+
     if (dfile == _T(""))
+    {
         dfile = ConfigManager::GetFolder(sdConfig) + wxFILE_SEP_PATH + GetDictionaryName() + _T("_personaldictionary.dic");
+    }
+
     return dfile;
 }
 
 void SpellCheckerConfig::Load()
 {
     m_EnableOnlineChecker = true;
-    const wxLanguageInfo* langInfo = wxLocale::GetLanguageInfo(wxLANGUAGE_DEFAULT); // current system locale
+    const wxLanguageInfo * langInfo = wxLocale::GetLanguageInfo(wxLANGUAGE_DEFAULT); // current system locale
+
     if (langInfo)
+    {
         m_strDictionaryName = langInfo->CanonicalName;
+    }
+
     if (!m_strDictionaryName.StartsWith(_T("en"))) // default language is English (system designation preferred)
+    {
         m_strDictionaryName = _T("en_US");
+    }
+
     m_DictPath = m_pPlugin->GetOnlineCheckerConfigPath();
     m_ThesPath = m_pPlugin->GetOnlineCheckerConfigPath();
     m_BitmPath = m_pPlugin->GetOnlineCheckerConfigPath();
-    if (ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor")))
+
+    if (ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("editor")))
     {
         m_EnableOnlineChecker = cfg->ReadBool(CFG_SPELLCHECK_ENABLE_ONLINE_CHECK, true);
         m_EnableSpellTooltips = cfg->ReadBool(CFG_SPELLCHECK_SPELL_TOOLTIPS_CHECK, true);
@@ -301,13 +342,14 @@ void SpellCheckerConfig::Load()
         m_ThesPath = cfg->Read(CFG_SPELLCHECK_THESAURI_PATH, m_pPlugin->GetOnlineCheckerConfigPath());
         m_BitmPath = cfg->Read(CFG_SPELLCHECK_BITMAPS_PATH, m_pPlugin->GetOnlineCheckerConfigPath());
     }
+
     DetectDictionaryPath();
     DetectThesaurusPath();
 }
 
 void SpellCheckerConfig::Save()
 {
-    if(ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor")))
+    if (ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("editor")))
     {
         cfg->Write(CFG_SPELLCHECK_ENABLE_ONLINE_CHECK, m_EnableOnlineChecker);
         cfg->Write(CFG_SPELLCHECK_SPELL_TOOLTIPS_CHECK, m_EnableSpellTooltips);
@@ -317,6 +359,7 @@ void SpellCheckerConfig::Save()
         cfg->Write(CFG_SPELLCHECK_THESAURI_PATH, m_ThesPath);
         cfg->Write(CFG_SPELLCHECK_BITMAPS_PATH, m_BitmPath);
     }
+
     m_pPlugin->ReloadSettings();
 }
 
@@ -331,8 +374,8 @@ void SpellCheckerConfig::PopulateLanguageNamesMap()
     m_LanguageNamesMap[_T("de_AT")] = _T("German (Austria)");
     m_LanguageNamesMap[_T("de_CH")] = _T("German (Switzerland)");
     m_LanguageNamesMap[_T("de_DE")] = _T("German (Germany-orig dict)");
-    m_LanguageNamesMap[_T("de_DE_comb")] =_T("German (Germany-old & neu ortho)");
-    m_LanguageNamesMap[_T("de_DE_neu")] =_T("German (Germany-neu ortho)");
+    m_LanguageNamesMap[_T("de_DE_comb")] = _T("German (Germany-old & neu ortho)");
+    m_LanguageNamesMap[_T("de_DE_neu")] = _T("German (Germany-neu ortho)");
     m_LanguageNamesMap[_T("el_GR")] = _T("Greek (Greece)");
     m_LanguageNamesMap[_T("en")]    = _T("English");
     m_LanguageNamesMap[_T("en_AU")] = _T("English (Australia)");
@@ -352,10 +395,10 @@ void SpellCheckerConfig::PopulateLanguageNamesMap()
     m_LanguageNamesMap[_T("he_IL")] = _T("Hebrew (Israel)");
     m_LanguageNamesMap[_T("hr_HR")] = _T("Croatian (Croatia)");
     m_LanguageNamesMap[_T("hu_HU")] = _T("Hungarian (Hungaria)");
-    m_LanguageNamesMap[_T("ia")]    =_T("Interligua (x-register)");
+    m_LanguageNamesMap[_T("ia")]    = _T("Interligua (x-register)");
     m_LanguageNamesMap[_T("id_ID")] = _T("Indonesian (Indonesia)");
     m_LanguageNamesMap[_T("it_IT")] = _T("Italian (Italy)");
-    m_LanguageNamesMap[_T("la")]    =_T("Latin (x-register)");
+    m_LanguageNamesMap[_T("la")]    = _T("Latin (x-register)");
     m_LanguageNamesMap[_T("lt_LT")] = _T("Lithuanian (Lithuania)");
     m_LanguageNamesMap[_T("lv_LV")] = _T("Latvian (Latvia)");
     m_LanguageNamesMap[_T("mg_MG")] = _T("Malagasy (Madagascar)");
@@ -370,8 +413,8 @@ void SpellCheckerConfig::PopulateLanguageNamesMap()
     m_LanguageNamesMap[_T("pt_PT")] = _T("Portuguese (Portugal)");
     m_LanguageNamesMap[_T("ro_RO")] = _T("Romanian (Romania)");
     m_LanguageNamesMap[_T("ru_RU")] = _T("Russian (Russia)");
-    m_LanguageNamesMap[_T("ru_RU_ye")] =_T("Russian ye (Russia)");
-    m_LanguageNamesMap[_T("ru_RU_yo")] =_T("Russian yo (Russia)");
+    m_LanguageNamesMap[_T("ru_RU_ye")] = _T("Russian ye (Russia)");
+    m_LanguageNamesMap[_T("ru_RU_yo")] = _T("Russian yo (Russia)");
     m_LanguageNamesMap[_T("rw_RW")] = _T("Kinyarwanda (Rwanda)");
     m_LanguageNamesMap[_T("sk_SK")] = _T("Slovak (Slovakia)");
     m_LanguageNamesMap[_T("sl_SI")] = _T("Slovenian (Slovenia)");
@@ -384,40 +427,59 @@ void SpellCheckerConfig::PopulateLanguageNamesMap()
     m_LanguageNamesMap[_T("zu_ZA")] = _T("Zulu (South Africa)");
 }
 
-wxString SpellCheckerConfig::GetLanguageName(const wxString& language_id)
+wxString SpellCheckerConfig::GetLanguageName(const wxString & language_id)
 {
-    if(language_id.empty())
+    if (language_id.empty())
+    {
         return language_id;
+    }
 
     std::map<wxString, wxString>::iterator it;
     // m_LanguageNamesMap[] is probably obsolete because of FindLanguageInfo()... consider removing m_LanguageNamesMap[]
     it = m_LanguageNamesMap.find(language_id);
-    if (it != m_LanguageNamesMap.end() )
+
+    if (it != m_LanguageNamesMap.end())
+    {
         return it->second;
+    }
 
     wxString id_fix = language_id;
     id_fix.Replace(wxT("-"), wxT("_")); // some dictionaries are distributed with hyphens
-
     it = m_LanguageNamesMap.find(id_fix);
-    if (it != m_LanguageNamesMap.end() )
-        return it->second;
 
-    const wxLanguageInfo* langInfo = wxLocale::FindLanguageInfo(language_id); // ask wxWidgets if it knows the name
+    if (it != m_LanguageNamesMap.end())
+    {
+        return it->second;
+    }
+
+    const wxLanguageInfo * langInfo = wxLocale::FindLanguageInfo(language_id); // ask wxWidgets if it knows the name
+
     if (langInfo)
+    {
         return langInfo->Description;
+    }
+
     langInfo = wxLocale::FindLanguageInfo(id_fix);
+
     if (langInfo)
+    {
         return langInfo->Description;
+    }
 
     id_fix = id_fix.BeforeLast(wxT('_')); // may be "*_v2", or root language may be known even if this specification is not
-
     it = m_LanguageNamesMap.find(id_fix);
-    if (it != m_LanguageNamesMap.end() )
-        return it->second + wxT(" (") + language_id + wxT(")"); // but may be incorrect, so specify the original name
+
+    if (it != m_LanguageNamesMap.end())
+    {
+        return it->second + wxT(" (") + language_id + wxT(")");    // but may be incorrect, so specify the original name
+    }
 
     langInfo = wxLocale::FindLanguageInfo(id_fix);
+
     if (langInfo)
+    {
         return langInfo->Description + wxT(" (") + language_id + wxT(")");
+    }
 
     return language_id;
 }

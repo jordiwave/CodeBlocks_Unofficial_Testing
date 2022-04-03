@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="CodeBlocks Workspace Windows">
+		<Project filename="CodeBlocks_Windows.cbp" active="1" />
+		<Project filename="plugins/contrib/wxContribItems/wxContribItems_Windows.cbp">
+			<Depends filename="CodeBlocks_Windows.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxSmith/wxSmith_Windows.cbp">
+			<Depends filename="CodeBlocks_Windows.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems_Windows.cbp">
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_Windows.cbp" />
+			<Depends filename="plugins/contrib/wxSmith/wxSmith_Windows.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui_Windows.cbp">
+			<Depends filename="plugins/contrib/wxSmith/wxSmith_Windows.cbp" />
+		</Project>
+		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<Project filename="plugins/contrib-wip/debuggerGDB_MI/debbugger_gdbmi_Windows.cbp">
+			<Depends filename="CodeBlocks_Windows.cbp" />
+		</Project>
+		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+
+	</Workspace>
+</CodeBlocks_workspace_file>

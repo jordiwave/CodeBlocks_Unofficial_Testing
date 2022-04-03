@@ -43,7 +43,7 @@ WXS_EV_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsColourPickerCtrl::wxsColourPickerCtrl(wxsItemResData* Data):
+wxsColourPickerCtrl::wxsColourPickerCtrl(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -59,24 +59,22 @@ wxsColourPickerCtrl::wxsColourPickerCtrl(wxsItemResData* Data):
  */
 void wxsColourPickerCtrl::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/clrpicker.h>"),GetInfo().ClassName,0);
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/clrpicker.h>"), GetInfo().ClassName, 0);
+            wxString ss = m_cdColour.BuildCode(GetCoderContext());
+            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), ss.wx_str());
+            BuildSetupWindowCode();
+            return;
+        }
 
-        wxString ss = m_cdColour.BuildCode(GetCoderContext());
-        Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), ss.wx_str());
-
-        BuildSetupWindowCode();
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsColourPickerCtrl::OnBuildCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsColourPickerCtrl::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
@@ -87,11 +85,12 @@ void wxsColourPickerCtrl::OnBuildCreatingCode()
  * \return wxObject*                 The constructed control.
  *
  */
-wxObject* wxsColourPickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsColourPickerCtrl::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxColourPickerCtrl* Preview;
+    wxColourPickerCtrl * Preview;
     wxColour clr = m_cdColour.GetColour();
-    if(clr.IsOk())
+
+    if (clr.IsOk())
     {
         Preview = new wxColourPickerCtrl(Parent, GetId(), clr, Pos(Parent), Size(Parent), Style());
     }
@@ -99,7 +98,8 @@ wxObject* wxsColourPickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
     {
         Preview = new wxColourPickerCtrl(Parent, GetId(), *wxBLACK, Pos(Parent), Size(Parent), Style());
     }
-    return SetupWindow(Preview,Flags);
+
+    return SetupWindow(Preview, Flags);
 }
 
 /*! \brief Enumerate the control's properties.

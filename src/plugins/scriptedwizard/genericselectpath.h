@@ -19,42 +19,41 @@ class wxString;
 
 class GenericSelectPath: public wxPanel
 {
-public:
+    public:
 
-    GenericSelectPath(wxWindow* parent,wxWindowID id = -1);
-    virtual ~GenericSelectPath();
+        GenericSelectPath(wxWindow * parent, wxWindowID id = -1);
+        virtual ~GenericSelectPath();
 
-    // use this because it adjusts the sizer too
-    void SetDescription(const wxString& descr)
-    {
-        lblDescr->SetLabel(descr);
+        // use this because it adjusts the sizer too
+        void SetDescription(const wxString & descr)
+        {
+            lblDescr->SetLabel(descr);
+            GetSizer()->Fit(this);
+            GetSizer()->SetSizeHints(this);
+        }
 
-        GetSizer()->Fit(this);
-        GetSizer()->SetSizeHints(this);
-    }
+        //(*Identifiers(GenericSelectPath)
+        static const long ID_STATICTEXT1;
+        static const long ID_STATICTEXT2;
+        static const long ID_TEXTCTRL1;
+        static const long ID_BUTTON1;
+        //*)
 
-    //(*Identifiers(GenericSelectPath)
-    static const long ID_STATICTEXT1;
-    static const long ID_STATICTEXT2;
-    static const long ID_TEXTCTRL1;
-    static const long ID_BUTTON1;
-    //*)
+        //(*Handlers(GenericSelectPath)
+        //*)
 
-    //(*Handlers(GenericSelectPath)
-    //*)
+        //(*Declarations(GenericSelectPath)
+        wxBoxSizer * BoxSizer2;
+        wxButton * btnBrowse;
+        wxTextCtrl * txtFolder;
+        wxStaticText * lblLabel;
+        wxBoxSizer * BoxSizer1;
+        wxStaticText * lblDescr;
+        //*)
 
-    //(*Declarations(GenericSelectPath)
-    wxBoxSizer* BoxSizer2;
-    wxButton* btnBrowse;
-    wxTextCtrl* txtFolder;
-    wxStaticText* lblLabel;
-    wxBoxSizer* BoxSizer1;
-    wxStaticText* lblDescr;
-    //*)
+    private:
 
-private:
-
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

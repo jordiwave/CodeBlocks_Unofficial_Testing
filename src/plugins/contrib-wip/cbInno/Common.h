@@ -6,42 +6,42 @@
 
 class CCommon
 {
-public:
+    public:
 
-    CCommon();
-    virtual ~CCommon();
+        CCommon();
+        virtual ~CCommon();
 
-    void SetLanguages(wxString lang);
-    void SetMinVersion(wxString version);
-    void SetOnlyBelowVersion(wxString version);
+        void SetLanguages(wxString lang);
+        void SetMinVersion(wxString version);
+        void SetOnlyBelowVersion(wxString version);
 
-    bool HasLanguages();
-    bool HasMinVersion();
-    bool HasOnlyBelowVersion();
+        bool HasLanguages();
+        bool HasMinVersion();
+        bool HasOnlyBelowVersion();
 
-    wxString GetLanguages();
-    wxString GetMinVersion();
-    wxString GetOnlyBelowVersion();
+        wxString GetLanguages();
+        wxString GetMinVersion();
+        wxString GetOnlyBelowVersion();
 
-    void AddText( wxString& text);
+        void AddText(wxString & text);
 
-    bool Analize(const wxString& part, const wxString& settings);
+        bool Analize(const wxString & part, const wxString & settings);
 
-    void FillContent(wxListCtrl* liste, int index);
+        void FillContent(wxListCtrl * liste, int index);
 
-    static void AddHeader(wxListCtrl* liste);
+        static void AddHeader(wxListCtrl * liste);
 
-protected:
+    protected:
 
-private:
+    private:
 
-    wxString m_Languages;
-    wxString m_MinVersion;
-    wxString m_OnlyBelow;
+        wxString m_Languages;
+        wxString m_MinVersion;
+        wxString m_OnlyBelow;
 
-    static int m_index_lang;
-    static int m_index_min;
-    static int m_index_only;
+        static int m_index_lang;
+        static int m_index_min;
+        static int m_index_only;
 };
 
 #endif // header guard

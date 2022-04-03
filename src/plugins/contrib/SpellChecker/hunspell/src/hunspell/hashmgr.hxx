@@ -87,72 +87,73 @@ enum flag { FLAG_CHAR, FLAG_LONG, FLAG_NUM, FLAG_UNI };
 // ratio of lines/lines with "ph:" in the dic file: 1/MORPH_PHON_RATIO
 #define MORPH_PHON_RATIO 500
 
-class HashMgr {
-  int tablesize;
-  struct hentry** tableptr;
-  flag flag_mode;
-  int complexprefixes;
-  int utf8;
-  unsigned short forbiddenword;
-  int langnum;
-  std::string enc;
-  std::string lang;
-  struct cs_info* csconv;
-  std::string ignorechars;
-  std::vector<w_char> ignorechars_utf16;
-  int numaliasf;  // flag vector `compression' with aliases
-  unsigned short** aliasf;
-  unsigned short* aliasflen;
-  int numaliasm;  // morphological desciption `compression' with aliases
-  char** aliasm;
-  // reptable created from REP table of aff file and from "ph:" fields
-  // of the dic file. It contains phonetic and other common misspellings
-  // (letters, letter groups and words) for better suggestions
-  std::vector<replentry> reptable;
+class HashMgr
+{
+        int tablesize;
+        struct hentry ** tableptr;
+        flag flag_mode;
+        int complexprefixes;
+        int utf8;
+        unsigned short forbiddenword;
+        int langnum;
+        std::string enc;
+        std::string lang;
+        struct cs_info * csconv;
+        std::string ignorechars;
+        std::vector<w_char> ignorechars_utf16;
+        int numaliasf;  // flag vector `compression' with aliases
+        unsigned short ** aliasf;
+        unsigned short * aliasflen;
+        int numaliasm;  // morphological desciption `compression' with aliases
+        char ** aliasm;
+        // reptable created from REP table of aff file and from "ph:" fields
+        // of the dic file. It contains phonetic and other common misspellings
+        // (letters, letter groups and words) for better suggestions
+        std::vector<replentry> reptable;
 
- public:
-  HashMgr(const char* tpath, const char* apath, const char* key = NULL);
-  ~HashMgr();
+    public:
+        HashMgr(const char * tpath, const char * apath, const char * key = NULL);
+        ~HashMgr();
 
-  struct hentry* lookup(const char*) const;
-  int hash(const char*) const;
-  struct hentry* walk_hashtable(int& col, struct hentry* hp) const;
+        struct hentry * lookup(const char *) const;
+        int hash(const char *) const;
+        struct hentry * walk_hashtable(int & col, struct hentry * hp) const;
 
-  int add(const std::string& word);
-  int add_with_affix(const std::string& word, const std::string& pattern);
-  int remove(const std::string& word);
-  int decode_flags(unsigned short** result, const std::string& flags, FileMgr* af) const;
-  bool decode_flags(std::vector<unsigned short>& result, const std::string& flags, FileMgr* af) const;
-  unsigned short decode_flag(const char* flag) const;
-  char* encode_flag(unsigned short flag) const;
-  int is_aliasf() const;
-  int get_aliasf(int index, unsigned short** fvec, FileMgr* af) const;
-  int is_aliasm() const;
-  char* get_aliasm(int index) const;
-  const std::vector<replentry>& get_reptable() const;
+        int add(const std::string & word);
+        int add_with_affix(const std::string & word, const std::string & pattern);
+        int remove(const std::string & word);
+        int decode_flags(unsigned short ** result, const std::string & flags, FileMgr * af) const;
+        bool decode_flags(std::vector<unsigned short> & result, const std::string & flags, FileMgr * af) const;
+        unsigned short decode_flag(const char * flag) const;
+        char * encode_flag(unsigned short flag) const;
+        int is_aliasf() const;
+        int get_aliasf(int index, unsigned short ** fvec, FileMgr * af) const;
+        int is_aliasm() const;
+        char * get_aliasm(int index) const;
+        const std::vector<replentry> & get_reptable() const;
 
- private:
-  int get_clen_and_captype(const std::string& word, int* captype);
-  int get_clen_and_captype(const std::string& word, int* captype, std::vector<w_char> &workbuf);
-  int load_tables(const char* tpath, const char* key);
-  int add_word(const std::string& word,
-               int wcl,
-               unsigned short* ap,
-               int al,
-               const std::string* desc,
-               bool onlyupcase,
-               int captype);
-  int load_config(const char* affpath, const char* key);
-  bool parse_aliasf(const std::string& line, FileMgr* af);
-  int add_hidden_capitalized_word(const std::string& word,
-                                  int wcl,
-                                  unsigned short* flags,
-                                  int al,
-                                  const std::string* dp,
-                                  int captype);
-  bool parse_aliasm(const std::string& line, FileMgr* af);
-  bool parse_reptable(const std::string& line, FileMgr* af);
-  int remove_forbidden_flag(const std::string& word);
+    private:
+        int get_clen_and_captype(const std::string & word, int * captype);
+        int get_clen_and_captype(const std::string & word, int * captype, std::vector<w_char> & workbuf);
+        int load_tables(const char * tpath, const char * key);
+        int add_word(const std::string & word,
+                     int wcl,
+                     unsigned short * ap,
+                     int al,
+                     const std::string * desc,
+                     bool onlyupcase,
+                     int captype);
+        int load_config(const char * affpath, const char * key);
+        bool parse_aliasf(const std::string & line, FileMgr * af);
+        int add_hidden_capitalized_word(const std::string & word,
+                                        int wcl,
+                                        unsigned short * flags,
+                                        int al,
+                                        const std::string * dp,
+                                        int captype);
+        bool parse_aliasm(const std::string & line, FileMgr * af);
+        bool parse_reptable(const std::string & line, FileMgr * af);
+        int remove_forbidden_flag(const std::string & word);
 };
 
 #endif

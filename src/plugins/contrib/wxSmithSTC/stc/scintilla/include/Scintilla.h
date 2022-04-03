@@ -12,13 +12,13 @@
 #define SCINTILLA_H
 
 #if defined(LCCWIN) && LCCWIN
-typedef BOOL bool;
+    typedef BOOL bool;
 #endif
 
 #if PLAT_WIN
-// Return false on failure:
-bool Scintilla_RegisterClasses(void *hInstance);
-bool Scintilla_ReleaseResources();
+    // Return false on failure:
+    bool Scintilla_RegisterClasses(void * hInstance);
+    bool Scintilla_ReleaseResources();
 #endif
 int Scintilla_LinkLexers();
 
@@ -26,14 +26,14 @@ int Scintilla_LinkLexers();
 // hold a pointer and sptr_t, a signed integer large enough to hold a pointer.
 // May need to be changed for 64 bit platforms.
 #if defined(_MSC_VER) && _MSC_VER >= 1300
-#include <BaseTsd.h>
+    #include <BaseTsd.h>
 #endif
 #ifdef MAXULONG_PTR
-typedef ULONG_PTR uptr_t;
-typedef LONG_PTR sptr_t;
+    typedef ULONG_PTR uptr_t;
+    typedef LONG_PTR sptr_t;
 #else
-typedef unsigned long uptr_t;
-typedef long sptr_t;
+    typedef unsigned long uptr_t;
+    typedef long sptr_t;
 #endif
 
 typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, sptr_t lParam);
@@ -709,13 +709,13 @@ struct CharacterRange
 struct TextRange
 {
     struct CharacterRange chrg;
-    char *lpstrText;
+    char * lpstrText;
 };
 
 struct TextToFind
 {
     struct CharacterRange chrg;
-    char *lpstrText;
+    char * lpstrText;
     struct CharacterRange chrgText;
 };
 
@@ -740,7 +740,7 @@ struct NotifyHeader
     // Compatible with Windows NMHDR.
     // hwndFrom is really an environment specific window handle or pointer
     // but most clients of Scintilla.h do not have this type visible.
-    void *hwndFrom;
+    void * hwndFrom;
     uptr_t idFrom;
     unsigned int code;
 };
@@ -752,7 +752,7 @@ struct SCNotification
     int ch;		// SCN_CHARADDED, SCN_KEY
     int modifiers;	// SCN_KEY
     int modificationType;	// SCN_MODIFIED
-    const char *text;	// SCN_MODIFIED, SCN_USERLISTSELECTION, SCN_AUTOCSELECTION
+    const char * text;	// SCN_MODIFIED, SCN_USERLISTSELECTION, SCN_AUTOCSELECTION
     int length;		// SCN_MODIFIED
     int linesAdded;	// SCN_MODIFIED
     int message;	// SCN_MACRORECORD
@@ -773,13 +773,13 @@ struct SCNotification
 
 #ifdef INCLUDE_DEPRECATED_FEATURES
 
-#define SCI_SETCARETPOLICY 2369
-#define CARET_CENTER 0x02
-#define CARET_XEVEN 0x08
-#define CARET_XJUMPS 0x10
+    #define SCI_SETCARETPOLICY 2369
+    #define CARET_CENTER 0x02
+    #define CARET_XEVEN 0x08
+    #define CARET_XJUMPS 0x10
 
-#define SCN_POSCHANGED 2012
-#define SCN_CHECKBRACE 2007
+    #define SCN_POSCHANGED 2012
+    #define SCN_CHECKBRACE 2007
 
 #endif
 

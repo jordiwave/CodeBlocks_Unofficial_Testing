@@ -1,6 +1,6 @@
 # Debugging:
 #!define BUILD_TYPE 64
-#!define NIGHTLY_BUILD_SVN 12680_EXPERIMENTAL_PLUS
+#!define NIGHTLY_BUILD_SVN 12776_EXPERIMENTAL_PLUS
 
 #####################################################################
 # The installer is divided into 5 main sections (section groups):   #
@@ -335,22 +335,23 @@ RequestExecutionLevel user
 !macroend
 !define !defineifexist "!insertmacro !defineifexist"
 
-${!defineifexist} FORTRAN_PLUGIN_FOUND      ${CB_BASE}${CB_SHARE_CB}\FortranProject.zip
-${!defineifexist} CBKODERS_PLUGIN_FOUND     ${CB_BASE}${CB_SHARE_CB}\cb_koders.zip
+${!defineifexist} FORTRAN_PLUGIN_FOUND          ${CB_BASE}${CB_SHARE_CB}\FortranProject.zip
+${!defineifexist} CBKODERS_PLUGIN_FOUND         ${CB_BASE}${CB_SHARE_CB}\cb_koders.zip
 
-${!defineifexist} CLANGD_PLUGIN_FOUND       ${CB_BASE}${CB_SHARE_CB}\clangd_client.zip
-${!defineifexist} DISPLAYEVENTS_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\DisplayEvents.zip
+${!defineifexist} CLANGD_PLUGIN_FOUND           ${CB_BASE}${CB_SHARE_CB}\clangd_client.zip
+${!defineifexist} DISPLAYEVENTS_PLUGIN_FOUND    ${CB_BASE}${CB_SHARE_CB}\DisplayEvents.zip
 
-${!defineifexist} CBBUILDTOOLS_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\cbBuildTools.zip
-${!defineifexist} CBMARKDOWN_PLUGIN_FOUND   ${CB_BASE}${CB_SHARE_CB}\cbMarkdown.zip
-${!defineifexist} CBMEMORYVIEW_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\cbMemoryView.zip
-${!defineifexist} CBSYSTEMVIEW_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\cbSystemView.zip
+${!defineifexist} CBBUILDTOOLS_PLUGIN_FOUND     ${CB_BASE}${CB_SHARE_CB}\cbBuildTools.zip
+${!defineifexist} CBMARKDOWN_PLUGIN_FOUND       ${CB_BASE}${CB_SHARE_CB}\cbMarkdown.zip
+${!defineifexist} CBMEMORYVIEW_PLUGIN_FOUND     ${CB_BASE}${CB_SHARE_CB}\cbMemoryView.zip
+${!defineifexist} CBSYSTEMVIEW_PLUGIN_FOUND     ${CB_BASE}${CB_SHARE_CB}\cbSystemView.zip
 
-${!defineifexist} CBDIFF_PLUGIN_FOUND       ${CB_BASE}${CB_SHARE_CB}\cbDiff.zip
-${!defineifexist} GITBLOCKS_PLUGIN_FOUND    ${CB_BASE}${CB_SHARE_CB}\GitBlocks.zip
-${!defineifexist} CBTORTOISESVN_PLUGIN_FOUND ${CB_BASE}${CB_SHARE_CB}\CBTortoiseSVN.zip
-${!defineifexist} CBINNO_PLUGIN_FOUND       ${CB_BASE}${CB_SHARE_CB}\cbInno.zip
-${!defineifexist} CBNSIS_PLUGIN_FOUND       ${CB_BASE}${CB_SHARE_CB}\cbNSIS.zip
+${!defineifexist} CBDIFF_PLUGIN_FOUND           ${CB_BASE}${CB_SHARE_CB}\cbDiff.zip
+${!defineifexist} GITBLOCKS_PLUGIN_FOUND        ${CB_BASE}${CB_SHARE_CB}\GitBlocks.zip
+${!defineifexist} CBTORTOISESVN_PLUGIN_FOUND    ${CB_BASE}${CB_SHARE_CB}\CBTortoiseSVN.zip
+${!defineifexist} CBINNO_PLUGIN_FOUND           ${CB_BASE}${CB_SHARE_CB}\cbInno.zip
+${!defineifexist} CBNSIS_PLUGIN_FOUND           ${CB_BASE}${CB_SHARE_CB}\cbNSIS.zip
+${!defineifexist} DEBUGGER_GDBMI_PLUGIN_FOUND   ${CB_BASE}${CB_SHARE_CB}\debugger_gdbmi.zip
 
 ################################################################################
 # Logging macro - from https://nsis.sourceforge.io/Logging:Enable_Logs_Quickly #
@@ -428,19 +429,28 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             ${If} ${IsWinXP}
                 # crash handler for Windows XP!!!!
                 ; File ${CB_BASE}\dbgcore.dll - N/A for XP
-                File exchndl_xp\win${BUILD_TYPE}\dbghelp.dll
-                File exchndl_xp\win${BUILD_TYPE}\exchndl.dll
-                File exchndl_xp\win${BUILD_TYPE}\mgwhelp.dll
-                File exchndl_xp\win${BUILD_TYPE}\symsrv.dll
-                File exchndl_xp\win${BUILD_TYPE}\symsrv.yes
+                File exchndl\Win_XP\win${BUILD_TYPE}\dbghelp.dll
+                File exchndl\Win_XP\win${BUILD_TYPE}\exchndl.dll
+                File exchndl\Win_XP\win${BUILD_TYPE}\mgwhelp.dll
+                File exchndl\Win_XP\win${BUILD_TYPE}\symsrv.dll
+                File exchndl\Win_XP\win${BUILD_TYPE}\symsrv.yes
+            ${ElseIf} ${IsWin7} 
+            ${OrIf} ${IsWin8}
+                # crash handler for Win 7 or 8  (fails on XP!!!!)
+                File exchndl\Win_7\win${BUILD_TYPE}\bin\dbgcore.dll
+                File exchndl\Win_7\win${BUILD_TYPE}\bin\dbghelp.dll
+                File exchndl\Win_7\win${BUILD_TYPE}\bin\exchndl.dll
+                File exchndl\Win_7\win${BUILD_TYPE}\bin\mgwhelp.dll
+                File exchndl\Win_7\win${BUILD_TYPE}\bin\symsrv.dll
+                File exchndl\Win_7\win${BUILD_TYPE}\bin\symsrv.yes
             ${Else}
-                # crash handler for Win 7+  (fails on XP!!!!)
-                File ${CB_BASE}\dbgcore.dll
-                File ${CB_BASE}\dbghelp.dll
-                File ${CB_BASE}\exchndl.dll
-                File ${CB_BASE}\mgwhelp.dll
-                File ${CB_BASE}\symsrv.dll
-                File ${CB_BASE}\symsrv.yes
+                # crash handler for Win 10 +
+                File exchndl\Win_10\win${BUILD_TYPE}\dbgcore.dll
+                File exchndl\Win_10\win${BUILD_TYPE}\dbghelp.dll
+                File exchndl\Win_10\win${BUILD_TYPE}\exchndl.dll
+                File exchndl\Win_10\win${BUILD_TYPE}\mgwhelp.dll
+                File exchndl\Win_10\win${BUILD_TYPE}\symsrv.dll
+                File exchndl\Win_10\win${BUILD_TYPE}\symsrv.yes
             ${EndIf}
             # Licenses
             File ${CB_INSTALL_LICENSES_DIR}\gpl-3.0.txt
@@ -1284,6 +1294,18 @@ SectionGroup "!Default install" SECGRP_DEFAULT
             SetOutPath $INSTDIR${CB_PLUGINS}
             File ${CB_BASE}${CB_PLUGINS}\cbNSIS.dll
             WriteRegStr HKCU "${REGKEY}\Components" "cbNSIS plugin" 1
+        SectionEnd
+!endif
+
+!ifdef DEBUGGER_GDBMI_PLUGIN_FOUND
+        Section "debugger_gdbmi plugin" SEC_DEBUGGER_GDBMI_PLUGIN
+            SectionIn 1 2
+            SetOutPath $INSTDIR${CB_SHARE_CB}
+            SetOverwrite on
+            File ${CB_BASE}${CB_SHARE_CB}\debugger_gdbmi.zip
+            SetOutPath $INSTDIR${CB_PLUGINS}
+            File ${CB_BASE}${CB_PLUGINS}\debugger_gdbmi.dll
+            WriteRegStr HKCU "${REGKEY}\Components" "debugger_gdbmi plugin" 1
         SectionEnd
 !endif
 
@@ -2515,6 +2537,14 @@ Section "-un.cbNSIS plugin" UNSEC_CBNSIS_PLUGIN
 SectionEnd
 !endif
 
+!ifdef DEBUGGER_GDBMI_PLUGIN_FOUND
+Section "-un.debugger_gdbmi plugin" UNSEC_DEBUGGER_GDBMI_PLUGIN
+    Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\debugger_gdbmi.dll
+    Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\debugger_gdbmi.zip
+    DeleteRegValue HKCU "${REGKEY}\Components" "debugger_gdbmi plugin"
+SectionEnd
+!endif
+
 Section "-un.headerguard plugin" UNSEC_HEADERGUARD_PLUGIN
     Delete /REBOOTOK $INSTDIR${CB_PLUGINS}\headerguard.dll
     Delete /REBOOTOK $INSTDIR${CB_SHARE_CB}\headerguard.zip
@@ -3469,6 +3499,9 @@ CheckUserTypeDone:
 !ifdef CBNSIS_PLUGIN_FOUND
     !insertmacro SELECT_UNSECTION "cbNSIS plugin"                       ${UNSEC_CBNSIS_PLUGIN}
 !endif
+!ifdef DEBUGGER_GDBMI_PLUGIN_FOUND
+    !insertmacro SELECT_UNSECTION "debugger_gdbmi plugin"               ${UNSEC_DEBUGGER_GDBMI_PLUGIN}
+!endif
     !insertmacro SELECT_UNSECTION "headerguard plugin"                  ${UNSEC_HEADERGUARD_PLUGIN}
     !insertmacro SELECT_UNSECTION "loghacker plugin"                    ${UNSEC_LOGHACKER_PLUGIN}
     !insertmacro SELECT_UNSECTION "ModPoller plugin"                    ${UNSEC_MODPOLLER_PLUGIN}
@@ -3580,13 +3613,16 @@ FunctionEnd
     !insertmacro MUI_DESCRIPTION_TEXT ${SEC_GITBLOCKS_PLUGIN}       "GitBlocks plugin"
 !endif
 !ifdef CBTORTOISESVN_PLUGIN_FOUND
-    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBTORTOISESVN_PLUGIN}       "CBTortoiseSVN plugin"
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBTORTOISESVN_PLUGIN}   "CBTortoiseSVN plugin"
 !endif
 !ifdef CBINNO_PLUGIN_FOUND
-    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBINNO_PLUGIN}       "cbInno plugin"
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBINNO_PLUGIN}          "cbInno plugin"
 !endif
 !ifdef CBNSIS_PLUGIN_FOUND
-    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBNSIS_PLUGIN}       "cbNSIS plugin"
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_CBNSIS_PLUGIN}          "cbNSIS plugin"
+!endif
+!ifdef DEBUGGER_GDBMI_PLUGIN_FOUND
+    !insertmacro MUI_DESCRIPTION_TEXT ${SEC_DEBUGGER_GDBMI_PLUGIN}  "debugger_gdbmi plugin"
 !endif
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_HEADERGUARD_PLUGIN}  "headerguard plugin"
 !insertmacro MUI_DESCRIPTION_TEXT ${SEC_LOGHACKER_PLUGIN}    "loghacker plugin"

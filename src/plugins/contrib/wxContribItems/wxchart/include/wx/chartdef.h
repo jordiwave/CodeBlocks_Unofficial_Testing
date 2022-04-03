@@ -19,14 +19,14 @@
 
 // Defines for shared builds
 #ifdef WXMAKINGDLL_CHART
-#define WXDLLIMPEXP_CHART                  WXEXPORT
-#define WXDLLIMPEXP_DATA_CHART(type)       WXEXPORT type
+    #define WXDLLIMPEXP_CHART                  WXEXPORT
+    #define WXDLLIMPEXP_DATA_CHART(type)       WXEXPORT type
 #elif defined(WXUSINGDLL)
-#define WXDLLIMPEXP_CHART                  WXIMPORT
-#define WXDLLIMPEXP_DATA_CHART(type)       WXIMPORT type
+    #define WXDLLIMPEXP_CHART                  WXIMPORT
+    #define WXDLLIMPEXP_DATA_CHART(type)       WXIMPORT type
 #else // not making nor using DLL
-#define WXDLLIMPEXP_CHART
-#define WXDLLIMPEXP_DATA_CHART(type)       type
+    #define WXDLLIMPEXP_CHART
+    #define WXDLLIMPEXP_DATA_CHART(type)       type
 #endif
 
 

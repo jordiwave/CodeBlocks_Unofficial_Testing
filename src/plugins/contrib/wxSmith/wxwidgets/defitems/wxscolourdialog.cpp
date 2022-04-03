@@ -27,64 +27,71 @@
 
 namespace
 {
-wxsRegisterItem<wxsColourDialog> Reg(_T("ColourDialog"),wxsTTool,_T("Dialogs"),200,false);
+wxsRegisterItem<wxsColourDialog> Reg(_T("ColourDialog"), wxsTTool, _T("Dialogs"), 200, false);
 }
 
-wxsColourDialog::wxsColourDialog(wxsItemResData* Data):
-    wxsTool(Data,&Reg.Info)
+wxsColourDialog::wxsColourDialog(wxsItemResData * Data):
+    wxsTool(Data, &Reg.Info)
 {
     m_ChooseFull = true;
 }
 
 void wxsColourDialog::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/colordlg.h>"),GetInfo().ClassName,hfInPCH);
-
-        bool Defaults = true;
-        if ( !m_ChooseFull ) Defaults = false;
-        if ( m_Colour.m_type!=wxsCOLOUR_DEFAULT ) Defaults = false;
-
-        if ( !Defaults )
+        case wxsCPP:
         {
-            wxString ColourDataName = GetCoderContext()->GetUniqueName(_T("__ColourData"));
+            AddHeader(_T("<wx/colordlg.h>"), GetInfo().ClassName, hfInPCH);
+            bool Defaults = true;
 
-            Codef(_T("wxColourData %v;\n"),ColourDataName.wx_str());
-
-            if ( !m_ChooseFull )
+            if (!m_ChooseFull)
             {
-                Codef(_T("%v.SetChooseFull(%b);\n"),ColourDataName.wx_str(),m_ChooseFull);
+                Defaults = false;
             }
 
-            if ( m_Colour.m_type != wxsCOLOUR_DEFAULT )
+            if (m_Colour.m_type != wxsCOLOUR_DEFAULT)
             {
-                Codef(_T("%v.SetColour(%l);\n"),ColourDataName.wx_str(),&m_Colour);
+                Defaults = false;
             }
 
-            Codef(_T("%C(%W, &%v);\n"),ColourDataName.wx_str());
-        }
-        else
-        {
-            Codef(_T("%C(%W);\n"));
-        }
-        BuildSetupWindowCode();
-        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-        return;
-    }
+            if (!Defaults)
+            {
+                wxString ColourDataName = GetCoderContext()->GetUniqueName(_T("__ColourData"));
+                Codef(_T("wxColourData %v;\n"), ColourDataName.wx_str());
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsColourDialog::OnBuildCreatingCode"),GetLanguage());
-    }
+                if (!m_ChooseFull)
+                {
+                    Codef(_T("%v.SetChooseFull(%b);\n"), ColourDataName.wx_str(), m_ChooseFull);
+                }
+
+                if (m_Colour.m_type != wxsCOLOUR_DEFAULT)
+                {
+                    Codef(_T("%v.SetColour(%l);\n"), ColourDataName.wx_str(), &m_Colour);
+                }
+
+                Codef(_T("%C(%W, &%v);\n"), ColourDataName.wx_str());
+            }
+            else
+            {
+                Codef(_T("%C(%W);\n"));
+            }
+
+            BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+            return;
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsColourDialog::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
 void wxsColourDialog::OnEnumToolProperties(cb_unused long Flags)
 {
-    WXS_BOOL(wxsColourDialog,m_ChooseFull,_("Full dialog"),_T("choosefull"),true);
-    WXS_COLOUR(wxsColourDialog,m_Colour,_("Colour"),_T("colour"));
+    WXS_BOOL(wxsColourDialog, m_ChooseFull, _("Full dialog"), _T("choosefull"), true);
+    WXS_COLOUR(wxsColourDialog, m_Colour, _("Colour"), _T("colour"));
 }

@@ -10,16 +10,16 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-#include <wx/button.h>
-#include <wx/checkbox.h>
-#include <wx/intl.h>
-#include <wx/radiobox.h>
-#include <wx/string.h>
-#include <wx/textctrl.h>
-#include <wx/xrc/xmlres.h>
-#include "cbtool.h"
-#include "cbexception.h"
-#include "globals.h"
+    #include <wx/button.h>
+    #include <wx/checkbox.h>
+    #include <wx/intl.h>
+    #include <wx/radiobox.h>
+    #include <wx/string.h>
+    #include <wx/textctrl.h>
+    #include <wx/xrc/xmlres.h>
+    #include "cbtool.h"
+    #include "cbexception.h"
+    #include "globals.h"
 #endif
 
 #include "edittooldlg.h"
@@ -32,13 +32,15 @@ BEGIN_EVENT_TABLE(EditToolDlg, wxScrollingDialog)
     EVT_UPDATE_UI(-1,                        EditToolDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
-EditToolDlg::EditToolDlg(wxWindow* parent, cbTool* tool)
+EditToolDlg::EditToolDlg(wxWindow * parent, cbTool * tool)
     : m_Tool(tool)
 {
     if (!tool)
+    {
         cbThrow(_T("Tool* parameter is mandatory in EditToolDlg()"));
+    }
 
-    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditTool"),_T("wxScrollingDialog"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditTool"), _T("wxScrollingDialog"));
     XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
     XRCCTRL(*this, "txtName", wxTextCtrl)->SetValue(m_Tool->GetName());
     XRCCTRL(*this, "txtCommand", wxTextCtrl)->SetValue(m_Tool->GetCommand());
@@ -54,7 +56,7 @@ EditToolDlg::~EditToolDlg()
 
 // events
 
-void EditToolDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
+void EditToolDlg::OnUpdateUI(cb_unused wxUpdateUIEvent & event)
 {
     const wxString name = XRCCTRL(*this, "txtName", wxTextCtrl)->GetValue();
     const wxString command = XRCCTRL(*this, "txtCommand", wxTextCtrl)->GetValue();
@@ -62,19 +64,25 @@ void EditToolDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     XRCCTRL(*this, "wxID_OK", wxButton)->Enable(en);
 } // end of OnUpdateUI
 
-void EditToolDlg::OnBrowseCommand(cb_unused wxCommandEvent& event)
+void EditToolDlg::OnBrowseCommand(cb_unused wxCommandEvent & event)
 {
     const wxFileName file(XRCCTRL(*this, "txtCommand", wxTextCtrl)->GetValue());
     wxString filename = wxFileSelector(_("Select executable"), file.GetPath(wxPATH_GET_VOLUME), file.GetFullName());
+
     if (!filename.IsEmpty())
+    {
         XRCCTRL(*this, "txtCommand", wxTextCtrl)->SetValue(filename);
+    }
 } // end of OnBrowseCommand
 
-void EditToolDlg::OnBrowseDir(cb_unused wxCommandEvent& event)
+void EditToolDlg::OnBrowseDir(cb_unused wxCommandEvent & event)
 {
     const wxString dir = ChooseDirectory(this, _("Select working directory"), XRCCTRL(*this, "txtDir", wxTextCtrl)->GetValue());
+
     if (!dir.IsEmpty())
+    {
         XRCCTRL(*this, "txtDir", wxTextCtrl)->SetValue(dir);
+    }
 } // end of OnBrowseDir
 
 void EditToolDlg::EndModal(int retCode)

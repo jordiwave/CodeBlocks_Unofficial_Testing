@@ -12,20 +12,20 @@
 
 class ToDoSettingsDlg : public cbConfigurationPanel
 {
-public:
-    ToDoSettingsDlg(wxWindow* parent);
-    ~ToDoSettingsDlg() override;
+    public:
+        ToDoSettingsDlg(wxWindow * parent);
+        ~ToDoSettingsDlg() override;
 
-    wxString GetTitle() const override
-    {
-        return _("Todo list");
-    }
-    wxString GetBitmapBaseName() const override
-    {
-        return _T("todo");
-    }
-    void OnApply() override;
-    void OnCancel() override {}
+        wxString GetTitle() const override
+        {
+            return _("Todo list");
+        }
+        wxString GetBitmapBaseName() const override
+        {
+            return _T("todo");
+        }
+        void OnApply() override;
+        void OnCancel() override {}
 };
 
 #endif // TODOSETTINGSDLG_H

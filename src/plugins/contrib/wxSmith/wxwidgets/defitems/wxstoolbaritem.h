@@ -28,48 +28,48 @@
 /** \brief Items inside toolbar (f.ex button) which are not wxContainer) */
 class wxsToolBarItem : public wxsTool
 {
-public:
+    public:
 
-    // Order must match that of the m_Type wxChoice in wxsToolBarEditor
-    enum ToolType : int32_t
-    {
-        Normal,
-        Radio,
-        Check,
-        Separator,
-        Stretchable,
-        Control
-    };
+        // Order must match that of the m_Type wxChoice in wxsToolBarEditor
+        enum ToolType : int32_t
+        {
+            Normal,
+            Radio,
+            Check,
+            Separator,
+            Stretchable,
+            Control
+        };
 
-    wxsToolBarItem(wxsItemResData* Data, ToolType Tool);
+        wxsToolBarItem(wxsItemResData * Data, ToolType Tool);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual void OnEnumToolProperties(long Flags);
-    virtual bool OnIsPointer()
-    {
-        return true;
-    }
-    virtual bool OnCanAddToResource(cb_unused wxsItemResData* Data,cb_unused bool ShowMessage)
-    {
-        return false;
-    }
-    virtual bool OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra);
-    virtual bool OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra);
-    virtual bool OnCanAddToParent(wxsParent* Parent,bool ShowMessage);
-    virtual void OnBuildDeclarationsCode();
-    virtual wxString OnGetTreeLabel(int& Image);
+        virtual void OnBuildCreatingCode();
+        virtual void OnEnumToolProperties(long Flags);
+        virtual bool OnIsPointer()
+        {
+            return true;
+        }
+        virtual bool OnCanAddToResource(cb_unused wxsItemResData * Data, cb_unused bool ShowMessage)
+        {
+            return false;
+        }
+        virtual bool OnXmlWrite(TiXmlElement * Element, bool IsXRC, bool IsExtra);
+        virtual bool OnXmlRead(TiXmlElement * Element, bool IsXRC, bool IsExtra);
+        virtual bool OnCanAddToParent(wxsParent * Parent, bool ShowMessage);
+        virtual void OnBuildDeclarationsCode();
+        virtual wxString OnGetTreeLabel(int & Image);
 
-    ToolType      m_Type;
-    wxString      m_Variable;
-    wxString      m_Label;
-    wxsBitmapData m_Bitmap;
-    wxsBitmapData m_Bitmap2;
-    wxString      m_ToolTip;
-    wxString      m_HelpText;
+        ToolType      m_Type;
+        wxString      m_Variable;
+        wxString      m_Label;
+        wxsBitmapData m_Bitmap;
+        wxsBitmapData m_Bitmap2;
+        wxString      m_ToolTip;
+        wxString      m_HelpText;
 
-    friend class wxsToolBarEditor;
+        friend class wxsToolBarEditor;
 };
 
 #endif

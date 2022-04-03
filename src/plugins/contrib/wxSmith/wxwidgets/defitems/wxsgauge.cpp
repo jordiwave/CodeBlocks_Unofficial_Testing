@@ -25,9 +25,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsGauge> Reg(_T("Gauge"),wxsTWidget,_T("Standard"),270);
+wxsRegisterItem<wxsGauge> Reg(_T("Gauge"), wxsTWidget, _T("Standard"), 270);
 
-WXS_ST_BEGIN(wxsGaugeStyles,_T(""))
+WXS_ST_BEGIN(wxsGaugeStyles, _T(""))
 WXS_ST(wxGA_HORIZONTAL)
 WXS_ST(wxGA_VERTICAL)
 WXS_ST(wxGA_SMOOTH)
@@ -39,7 +39,7 @@ WXS_EV_BEGIN(wxsGaugeEvents)
 WXS_EV_END()
 }
 
-wxsGauge::wxsGauge(wxsItemResData* Data):
+wxsGauge::wxsGauge(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -53,36 +53,46 @@ wxsGauge::wxsGauge(wxsItemResData* Data):
 
 void wxsGauge::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/gauge.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%W, %I, %d, %P, %S, %T, %V, %N);\n"),Range);
-        if ( Value )  Codef(_T("%ASetValue(%d);\n"),Value);
-        BuildSetupWindowCode();
-        return;
-    }
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/gauge.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %d, %P, %S, %T, %V, %N);\n"), Range);
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsGauge::OnBuildCreatingCode"),GetLanguage());
-    }
+            if (Value)
+            {
+                Codef(_T("%ASetValue(%d);\n"), Value);
+            }
+
+            BuildSetupWindowCode();
+            return;
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsGauge::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
 
-wxObject* wxsGauge::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsGauge::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxGauge* Preview = new wxGauge(Parent,GetId(),Range,Pos(Parent),Size(Parent),Style());
-    if ( Value )  Preview->SetValue(Value);
-    return SetupWindow(Preview,Flags);
+    wxGauge * Preview = new wxGauge(Parent, GetId(), Range, Pos(Parent), Size(Parent), Style());
+
+    if (Value)
+    {
+        Preview->SetValue(Value);
+    }
+
+    return SetupWindow(Preview, Flags);
 }
 
 
 void wxsGauge::OnEnumWidgetProperties(cb_unused long Flags)
 {
-    WXS_LONG(wxsGauge,Value,_("Value"),_T("value"),0)
-    WXS_LONG(wxsGauge,Range,_("Range"),_T("range"),100)
+    WXS_LONG(wxsGauge, Value, _("Value"), _T("value"), 0)
+    WXS_LONG(wxsGauge, Range, _("Range"), _T("range"), 100)
 }

@@ -11,11 +11,11 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+    #include "wx/wx.h"
 #endif
 
 #include "wx/pdfdoc.h"
@@ -27,8 +27,7 @@
 * i.e. cells containing a subset of HTML markup.
 */
 
-int
-xmlwrite(bool testMode)
+int xmlwrite(bool testMode)
 {
     wxString xmlString1 = wxString(wxS("<p align=\"justify\">This example shows text <b>styling</b> with <i>simple</i> XML. ")) +
                           wxString(wxS("H<sub>2</sub>SO<sub>4</sub> is an acid. Nesting of super- or subscripting is possible: x<sup>i<sup>2</sup></sup> + y<sub>k<sub>3</sub></sub>. ")) +
@@ -66,18 +65,20 @@ xmlwrite(bool testMode)
                           wxString(wxS("<code>    // 4 leading spaces\n    <b>if</b> (condition)\n      x++;\n    <b>else</b>&#160;\n      x--;</code>")) +
                           wxString(wxS("<br/></font></td></tr></tbody></table>")) +
                           wxString(wxS("<code>    // 4 leading spaces\n    <b>if</b> (condition)\n      x++;\n    <b>else</b>&#160;\n      x--;</code>"));
-
     int rc = 0;
+
     if (wxFileName::IsFileReadable(wxS("wxpdfdoc.png")))
     {
         wxPdfDocument pdf;
+
         if (testMode)
         {
             pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
             pdf.SetCompression(false);
         }
+
         pdf.AddPage();
-        pdf.SetFont(wxS("Helvetica"),wxS(""),10);
+        pdf.SetFont(wxS("Helvetica"), wxS(""), 10);
         pdf.SetRightMargin(50);
         pdf.WriteXml(wxS("<a name=\"top\">Top of first page</a><br/>"));
         pdf.WriteXml(wxS("<a href=\"#bottom\">Jump to bottom of last page</a><br/>"));
@@ -90,7 +91,7 @@ xmlwrite(bool testMode)
         pdf.AddPage();
         pdf.SetLeftMargin(20);
         pdf.SetRightMargin(20);
-        pdf.SetFont(wxS("Helvetica"),wxS(""),10);
+        pdf.SetFont(wxS("Helvetica"), wxS(""), 10);
         pdf.WriteXml(wxS("<a name=\"fourth\">Fourth anchor</a><br/>"));
         pdf.WriteXml(xmlString4);
         pdf.Ln(20);
@@ -103,13 +104,13 @@ xmlwrite(bool testMode)
         pdf.WriteXml(wxS("<a href=\"#top\">Jump to top of first page</a><br/>"));
         pdf.WriteXml(wxS("<a href=\"#second\">Jump to second anchor</a><br/>"));
         pdf.WriteXml(wxS("<a href=\"#third\">Jump to third anchor</a><br/>"));
-
         pdf.SaveAsFile(wxS("xmlwrite.pdf"));
     }
     else
     {
         rc = 1;
     }
+
     return rc;
 }
 

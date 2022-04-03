@@ -12,24 +12,24 @@
 
 class CrashHandler
 {
-//    typedef PVOID  (*AddHandler_t)(ULONG, PVECTORED_EXCEPTION_HANDLER);
-//    typedef ULONG  (*RemoveHandler_t)(PVOID);
-    typedef void *  (*AddHandler_t)(unsigned long, PVECTORED_EXCEPTION_HANDLER);
-    typedef unsigned long  (*RemoveHandler_t)(void *);
+        //    typedef PVOID  (*AddHandler_t)(ULONG, PVECTORED_EXCEPTION_HANDLER);
+        //    typedef ULONG  (*RemoveHandler_t)(PVOID);
+        typedef void  * (*AddHandler_t)(unsigned long, PVECTORED_EXCEPTION_HANDLER);
+        typedef unsigned long (*RemoveHandler_t)(void *);
 
-    void * handler;
-public:
-    CrashHandler(bool bDisabled);
-    ~CrashHandler();
+        void * handler;
+    public:
+        CrashHandler(bool bDisabled);
+        ~CrashHandler();
 };
 
 #else
 
 class CrashHandler
 {
-public:
-    CrashHandler(cb_unused bool bDisabled) {};
-    ~CrashHandler() {};
+    public:
+        CrashHandler(cb_unused bool bDisabled) {};
+        ~CrashHandler() {};
 };
 
 #endif

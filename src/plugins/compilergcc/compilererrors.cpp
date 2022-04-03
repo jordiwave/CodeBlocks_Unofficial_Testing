@@ -9,12 +9,12 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include "cbeditor.h"
-#include "cbproject.h"
-#include "editormanager.h"
-#include "manager.h"
-#include "projectfile.h"
-#include "projectmanager.h"
+    #include "cbeditor.h"
+    #include "cbproject.h"
+    #include "editormanager.h"
+    #include "manager.h"
+    #include "projectfile.h"
+    #include "projectmanager.h"
 #endif
 #include "compilererrors.h"
 #include <wx/arrimpl.cpp>
@@ -32,8 +32,8 @@ CompilerErrors::~CompilerErrors()
     //dtor
 }
 
-void CompilerErrors::AddError(CompilerLineType lt, cbProject* project, const wxString& filename,
-                              long int line, const wxString& error)
+void CompilerErrors::AddError(CompilerLineType lt, cbProject * project, const wxString & filename,
+                              long int line, const wxString & error)
 {
     CompileError err;
     err.lineType = lt;
@@ -47,7 +47,10 @@ void CompilerErrors::AddError(CompilerLineType lt, cbProject* project, const wxS
 void CompilerErrors::GotoError(int nr)
 {
     if (m_Errors.GetCount() == 0 || nr < 0 || nr > (int)m_Errors.GetCount() - 1)
+    {
         return;
+    }
+
     m_ErrorIndex = nr;
     DoGotoError(m_Errors[m_ErrorIndex]);
 }
@@ -55,57 +58,71 @@ void CompilerErrors::GotoError(int nr)
 void CompilerErrors::Next()
 {
     if (m_ErrorIndex >= (int)m_Errors.GetCount() - 1)
+    {
         return;
+    }
 
     // locate next *error* (not warning), if there is any
     bool found = false;
     int bkp = m_ErrorIndex + 1;
+
     while (bkp < (int)m_Errors.GetCount())
     {
         if (m_Errors[bkp].lineType == cltError)
         {
-            const bool isNote = ((m_Errors[bkp].errors.GetCount()>0)
+            const bool isNote = ((m_Errors[bkp].errors.GetCount() > 0)
                                  && m_Errors[bkp].errors[0].StartsWith(_T("note:")));
-            if(!isNote)
+
+            if (!isNote)
             {
                 found = true;
                 m_ErrorIndex = bkp;
                 break;
             }
         }
+
         ++bkp;
     }
 
     if (found)
+    {
         DoGotoError(m_Errors[m_ErrorIndex]);
+    }
 }
 
 void CompilerErrors::Previous()
 {
     if (m_ErrorIndex <= 0)
+    {
         return;
+    }
 
     // locate previous *error* (not warning), if there is any
     bool found = false;
     int bkp = m_ErrorIndex - 1;
+
     while (bkp >= 0)
     {
         if (m_Errors[bkp].lineType == cltError)
         {
-            const bool isNote = ((m_Errors[bkp].errors.GetCount()>0)
+            const bool isNote = ((m_Errors[bkp].errors.GetCount() > 0)
                                  && m_Errors[bkp].errors[0].StartsWith(_T("note:")));
-            if(!isNote)
+
+            if (!isNote)
             {
                 found = true;
                 m_ErrorIndex = bkp;
                 break;
             }
         }
+
         --bkp;
     }
 
     if (found)
+    {
         DoGotoError(m_Errors[m_ErrorIndex]);
+    }
 }
 
 void CompilerErrors::Clear()
@@ -115,46 +132,55 @@ void CompilerErrors::Clear()
     m_ErrorIndex = -1;
 }
 
-void CompilerErrors::DoAddError(const CompileError& error)
+void CompilerErrors::DoAddError(const CompileError & error)
 {
-//    int index = ErrorLineHasMore(error.filename, error.line);
-//    if (index != -1)
-//    {
-//        for (unsigned int i = 0; i < error.errors.GetCount(); ++i)
-//            m_Errors[index].errors.Add(error.errors[i]);
-//    }
-//    else
+    //    int index = ErrorLineHasMore(error.filename, error.line);
+    //    if (index != -1)
+    //    {
+    //        for (unsigned int i = 0; i < error.errors.GetCount(); ++i)
+    //            m_Errors[index].errors.Add(error.errors[i]);
+    //    }
+    //    else
     m_Errors.Add(error);
 }
 
-int CompilerErrors::ErrorLineHasMore(const wxString& filename, long int line) const
+int CompilerErrors::ErrorLineHasMore(const wxString & filename, long int line) const
 {
     for (unsigned int i = 0; i < m_Errors.GetCount(); ++i)
     {
         if (m_Errors[i].filename.Matches(filename) &&
                 m_Errors[i].line == line)
+        {
             return i;
+        }
     }
+
     return -1;
 }
 
-void CompilerErrors::DoGotoError(const CompileError& error)
+void CompilerErrors::DoGotoError(const CompileError & error)
 {
     if (error.line <= 0)
+    {
         return;
+    }
+
     DoClearErrorMarkFromAllEditors();
-    cbEditor* ed = 0;
-    cbProject* project = error.project ? error.project : Manager::Get()->GetProjectManager()->GetActiveProject();
+    cbEditor * ed = 0;
+    cbProject * project = error.project ? error.project : Manager::Get()->GetProjectManager()->GetActiveProject();
+
     if (project && Manager::Get()->GetProjectManager()->IsProjectStillOpen(project))
     {
         wxString filename = error.filename;
         bool isAbsolute = (filename.Length() > 1 && filename.GetChar(1) == ':') ||
                           filename.StartsWith(_T("/")) ||
                           filename.StartsWith(_T("\\"));
-        ProjectFile* f = project->GetFileByFilename(error.filename, !isAbsolute, true);
+        ProjectFile * f = project->GetFileByFilename(error.filename, !isAbsolute, true);
+
         if (f)
         {
             ed = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
+
             if (ed)
             {
                 ed->SetProjectFile(f);
@@ -162,8 +188,10 @@ void CompilerErrors::DoGotoError(const CompileError& error)
         }
         else
         {
-            if(!isAbsolute) // this is always the case, except for system headers
+            if (!isAbsolute) // this is always the case, except for system headers
+            {
                 filename.Prepend(project->GetCommonTopLevelPath());
+            }
 
             ed = Manager::Get()->GetEditorManager()->Open(filename);
         }
@@ -174,7 +202,9 @@ void CompilerErrors::DoGotoError(const CompileError& error)
 
     // first check if we can open it directly...
     if (!ed)
+    {
         ed = Manager::Get()->GetEditorManager()->Open(error.filename);
+    }
 
     // check if we find the file among opened files (highly probable for error
     // messages since we are getting error for something we have just screwed up)
@@ -182,13 +212,19 @@ void CompilerErrors::DoGotoError(const CompileError& error)
     {
         for (int i = 0; i < Manager::Get()->GetEditorManager()->GetEditorsCount(); ++i)
         {
-            cbEditor* edit = Manager::Get()->GetEditorManager()->GetBuiltinEditor(i);
-            if (!edit)
-                continue;
+            cbEditor * edit = Manager::Get()->GetEditorManager()->GetBuiltinEditor(i);
 
-            ProjectFile* pf = edit->GetProjectFile();
-            if (!pf)
+            if (!edit)
+            {
                 continue;
+            }
+
+            ProjectFile * pf = edit->GetProjectFile();
+
+            if (!pf)
+            {
+                continue;
+            }
 
             if (IsSuffixOfPath(error.filename, pf->file.GetFullPath()))
             {
@@ -203,9 +239,12 @@ void CompilerErrors::DoGotoError(const CompileError& error)
     {
         for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
         {
-            ProjectFile* pf = *it;
+            ProjectFile * pf = *it;
+
             if (!pf)
+            {
                 continue;
+            }
 
             if (IsSuffixOfPath(error.filename, pf->file.GetFullPath()))
             {
@@ -226,12 +265,16 @@ void CompilerErrors::DoGotoError(const CompileError& error)
 
 void CompilerErrors::DoClearErrorMarkFromAllEditors()
 {
-    EditorManager* edMan = Manager::Get()->GetEditorManager();
+    EditorManager * edMan = Manager::Get()->GetEditorManager();
+
     for (int i = 0; i < edMan->GetEditorsCount(); ++i)
     {
-        cbEditor* ed = edMan->GetBuiltinEditor(i);
+        cbEditor * ed = edMan->GetBuiltinEditor(i);
+
         if (ed)
+        {
             ed->SetErrorLine(-1);
+        }
     }
 }
 
@@ -248,11 +291,18 @@ bool CompilerErrors::HasPreviousError() const
 wxString CompilerErrors::GetErrorString(int index)
 {
     if (m_Errors.GetCount() == 0 || index < 0 || index > (int)m_Errors.GetCount() - 1)
+    {
         return wxEmptyString;
-    wxArrayString& errors = m_Errors[index].errors;
+    }
+
+    wxArrayString & errors = m_Errors[index].errors;
     wxString error;
+
     if (errors.GetCount())
+    {
         error = errors[0];
+    }
+
     return error;
 }
 
@@ -261,18 +311,25 @@ int CompilerErrors::GetFirstError() const
     for (unsigned int i = 0; i < m_Errors.GetCount(); ++i)
     {
         if (m_Errors[i].lineType == cltError)
+        {
             return i;
+        }
     }
+
     return -1;
 }
 
 unsigned int CompilerErrors::GetCount(CompilerLineType lt) const
 {
     unsigned int count = 0;
+
     for (unsigned int i = 0; i < m_Errors.GetCount(); ++i)
     {
         if (m_Errors[i].lineType == lt)
+        {
             ++count;
+        }
     }
+
     return count;
 }

@@ -10,15 +10,15 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-#include "cbexception.h"
-#include "globals.h"
-#include "configmanager.h"
-#include <wx/log.h> // for wxSafeShowMessage()
+    #include "cbexception.h"
+    #include "globals.h"
+    #include "configmanager.h"
+    #include <wx/log.h> // for wxSafeShowMessage()
 #endif
 
 #include <wx/intl.h>
 
-cbException::cbException(const wxString& msg, const wxString& file, int line)
+cbException::cbException(const wxString & msg, const wxString & file, int line)
     : Message(msg),
       File(file),
       Line(line)
@@ -37,7 +37,6 @@ void cbException::ShowErrorMessage(bool safe)
 #elif defined(__GNUC__)
     compilerVersion.Printf(_T("gcc %d.%d.%d"), __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
 #endif
-
     wxString title = _("Exception");
     wxString err;
     err.Printf(_("An exception has been raised!\n\n"
@@ -48,8 +47,13 @@ void cbException::ShowErrorMessage(bool safe)
                File.c_str(), Line, Message.c_str(),
                ConfigManager::GetRevisionNumber(), compilerVersion.c_str(),
                wxT(__DATE__), wxT(__TIME__));
+
     if (safe)
+    {
         wxSafeShowMessage(title, err);
+    }
     else
+    {
         cbMessageBox(err, title, wxICON_ERROR);
+    }
 }

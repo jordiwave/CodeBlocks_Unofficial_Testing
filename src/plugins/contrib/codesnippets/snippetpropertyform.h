@@ -36,9 +36,9 @@
 // Then, compile it and place the file "wx_pch.h.gch" into the same
 // directory that "wx_pch.h".
 #ifdef WX_GCH
-#include <wx_pch.h>
+    #include <wx_pch.h>
 #else
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #include <wx/button.h>
@@ -57,20 +57,20 @@ class wxScintilla;
  */
 class SnippetPropertyForm : public wxScrollingDialog
 {
-    friend class CodeSnippetsTreeCtrl;
-private:
+        friend class CodeSnippetsTreeCtrl;
+    private:
 
-protected:
-    wxStaticText*   m_ItemLabelStaticText;
-    wxTextCtrl*     m_ItemLabelTextCtrl;
-    wxStaticText*   m_SnippetStaticText;
-    wxScintilla*    m_SnippetEditCtrl;
-    wxButton*       m_SnippetButton;
-    wxButton*       m_FileSelectButton;
-    wxStdDialogButtonSizer* m_sdbSizer1;
+    protected:
+        wxStaticText  * m_ItemLabelStaticText;
+        wxTextCtrl   *  m_ItemLabelTextCtrl;
+        wxStaticText  * m_SnippetStaticText;
+        wxScintilla  *  m_SnippetEditCtrl;
+        wxButton    *   m_SnippetButton;
+        wxButton    *   m_FileSelectButton;
+        wxStdDialogButtonSizer * m_sdbSizer1;
 
-public:
-    SnippetPropertyForm( wxWindow* parent, int id = -1, wxString title = wxT("Properties"), wxPoint pos = wxDefaultPosition, wxSize size = wxSize( 527,212 ), int style = wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER );
+    public:
+        SnippetPropertyForm(wxWindow * parent, int id = -1, wxString title = wxT("Properties"), wxPoint pos = wxDefaultPosition, wxSize size = wxSize(527, 212), int style = wxDEFAULT_DIALOG_STYLE | wxMAXIMIZE_BOX | wxRESIZE_BORDER);
 
 };
 

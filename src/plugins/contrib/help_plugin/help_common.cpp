@@ -23,13 +23,12 @@ using std::make_pair;
 int HelpCommon::m_DefaultHelpIndex = -1;
 int HelpCommon::m_NumReadFromIni = 0;
 
-void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
+void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector & vect)
 {
-    LogManager *log = Manager::Get()->GetLogManager();
-
+    LogManager * log = Manager::Get()->GetLogManager();
     vect.clear();
     HelpCommon::setNumReadFromIni(0);
-    ConfigManager* conf = Manager::Get()->GetConfigManager("help_plugin");
+    ConfigManager * conf = Manager::Get()->GetConfigManager("help_plugin");
     m_DefaultHelpIndex = conf->ReadInt("/default", -1);
     wxArrayString list = conf->EnumerateSubPaths("/");
 
@@ -58,12 +57,11 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
     if (wxFileName::FileExists(iniFileName))
     {
         log->Log(wxString::Format("Help plugin ini file: %s", iniFileName));
-
         wxTextFile hFile(iniFileName);
         hFile.Open();
         unsigned int cnt = hFile.GetLineCount();
 
-        for(unsigned int i = 0; i < cnt; i++)
+        for (unsigned int i = 0; i < cnt; i++)
         {
             wxString line = hFile.GetLine(i);
 
@@ -80,7 +78,7 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
                     hfa.isExecutable = false;
                     hfa.openEmbeddedViewer = false;
                     hfa.readFromIni = true;
-                    hfa.keywordCase = static_cast<HelpCommon::StringCase> (0);
+                    hfa.keywordCase = static_cast<HelpCommon::StringCase>(0);
                     hfa.defaultKeyword = wxEmptyString;
 
                     if (!hfa.name.IsEmpty())
@@ -110,9 +108,9 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
     }
 }
 
-void HelpCommon::SaveHelpFilesVector(HelpCommon::HelpFilesVector &vect)
+void HelpCommon::SaveHelpFilesVector(HelpCommon::HelpFilesVector & vect)
 {
-    ConfigManager* conf = Manager::Get()->GetConfigManager("help_plugin");
+    ConfigManager * conf = Manager::Get()->GetConfigManager("help_plugin");
     wxArrayString list = conf->EnumerateSubPaths("/");
 
     for (unsigned int i = 0; i < list.GetCount(); ++i)
@@ -121,7 +119,6 @@ void HelpCommon::SaveHelpFilesVector(HelpCommon::HelpFilesVector &vect)
     }
 
     HelpFilesVector::iterator it;
-
     int count = 0;
 
     for (it = vect.begin(); it != vect.end(); ++it)

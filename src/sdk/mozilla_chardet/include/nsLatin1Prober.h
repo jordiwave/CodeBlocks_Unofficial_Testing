@@ -12,33 +12,33 @@
 
 class nsLatin1Prober: public nsCharSetProber
 {
-public:
-    nsLatin1Prober(void)
-    {
-        Reset();
-    }
-    virtual ~nsLatin1Prober(void) {}
-    nsProbingState HandleData(const char* aBuf, uint32_t aLen);
-    const char* GetCharSetName()
-    {
-        return "windows-1252";
-    }
-    nsProbingState GetState(void)
-    {
-        return mState;
-    }
-    void      Reset(void);
-    float     GetConfidence(void);
+    public:
+        nsLatin1Prober(void)
+        {
+            Reset();
+        }
+        virtual ~nsLatin1Prober(void) {}
+        nsProbingState HandleData(const char * aBuf, uint32_t aLen);
+        const char * GetCharSetName()
+        {
+            return "windows-1252";
+        }
+        nsProbingState GetState(void)
+        {
+            return mState;
+        }
+        void      Reset(void);
+        float     GetConfidence(void);
 
 #ifdef DEBUG_chardet
-    virtual void  DumpStatus();
+        virtual void  DumpStatus();
 #endif
 
-protected:
+    protected:
 
-    nsProbingState mState;
-    char mLastCharClass;
-    uint32_t mFreqCounter[FREQ_CAT_NUM];
+        nsProbingState mState;
+        char mLastCharClass;
+        uint32_t mFreqCounter[FREQ_CAT_NUM];
 };
 
 

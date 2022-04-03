@@ -38,43 +38,43 @@
 /** \brief Configuration panel for wxWidgetsGUI class */
 class wxWidgetsGUIConfigPanel: public cbConfigurationPanel
 {
-public:
+    public:
 
-    wxWidgetsGUIConfigPanel(wxWindow* parent,wxWidgetsGUI* GUI);
-    virtual ~wxWidgetsGUIConfigPanel();
+        wxWidgetsGUIConfigPanel(wxWindow * parent, wxWidgetsGUI * GUI);
+        virtual ~wxWidgetsGUIConfigPanel();
 
-    //(*Identifiers(wxWidgetsGUIConfigPanel)
-    static const long ID_TEXTCTRL1;
-    static const long ID_BUTTON1;
-    static const long ID_BUTTON2;
-    static const long ID_COMBOBOX1;
-    static const long ID_CHECKBOX2;
-    static const long ID_CHECKBOX1;
-    //*)
+        //(*Identifiers(wxWidgetsGUIConfigPanel)
+        static const long ID_TEXTCTRL1;
+        static const long ID_BUTTON1;
+        static const long ID_BUTTON2;
+        static const long ID_COMBOBOX1;
+        static const long ID_CHECKBOX2;
+        static const long ID_CHECKBOX1;
+        //*)
 
-private:
+    private:
 
-    virtual wxString GetTitle() const;
-    virtual wxString GetBitmapBaseName() const;
-    virtual void OnApply();
-    virtual void OnCancel();
+        virtual wxString GetTitle() const;
+        virtual wxString GetBitmapBaseName() const;
+        virtual void OnApply();
+        virtual void OnCancel();
 
-    //(*Handlers(wxWidgetsGUIConfigPanel)
-    void OnInitAllChange(wxCommandEvent& event);
-    void OnButton1Click(wxCommandEvent& event);
-    void OnButton2Click(wxCommandEvent& event);
-    //*)
+        //(*Handlers(wxWidgetsGUIConfigPanel)
+        void OnInitAllChange(wxCommandEvent & event);
+        void OnButton1Click(wxCommandEvent & event);
+        void OnButton2Click(wxCommandEvent & event);
+        //*)
 
-    //(*Declarations(wxWidgetsGUIConfigPanel)
-    wxTextCtrl* AutoLoad;
-    wxComboBox* MainRes;
-    wxCheckBox* InitAll;
-    wxCheckBox* InitAllNecessary;
-    //*)
+        //(*Declarations(wxWidgetsGUIConfigPanel)
+        wxTextCtrl * AutoLoad;
+        wxComboBox * MainRes;
+        wxCheckBox * InitAll;
+        wxCheckBox * InitAllNecessary;
+        //*)
 
-    wxWidgetsGUI* m_GUI;
+        wxWidgetsGUI * m_GUI;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

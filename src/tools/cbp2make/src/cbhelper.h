@@ -31,11 +31,11 @@ static const int QUOTE_AUTO   = 0;
 static const int QUOTE_NEVER  = 1;
 static const int QUOTE_ALWAYS = 2;
 
-void ShowStringList(const CString& Title, const CString& LinePrefix,
-                    const CStringList& StringList);
-CString MakefileFriendly(const CString& AString);
-CString XMLFriendly(const CString& AString);
-CString FlatFileName(const CString& FileName);
+void ShowStringList(const CString & Title, const CString & LinePrefix,
+                    const CStringList & StringList);
+CString MakefileFriendly(const CString & AString);
+CString XMLFriendly(const CString & AString);
+CString FlatFileName(const CString & FileName);
 
 #endif
 //------------------------------------------------------------------------------

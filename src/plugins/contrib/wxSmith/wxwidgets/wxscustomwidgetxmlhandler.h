@@ -5,10 +5,10 @@
 
 class wxsCustomWidgetXmlHandler : public wxXmlResourceHandler
 {
-public:
-    wxsCustomWidgetXmlHandler();
-    virtual wxObject *DoCreateResource();
-    virtual bool CanHandle(wxXmlNode *node);
+    public:
+        wxsCustomWidgetXmlHandler();
+        virtual wxObject * DoCreateResource();
+        virtual bool CanHandle(wxXmlNode * node);
 };
 
 #endif

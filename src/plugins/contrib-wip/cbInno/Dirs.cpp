@@ -16,49 +16,47 @@ const wxString CDirs::Flags[] =
 
 CDirs::CDirs()
 {
-
 }
 
 CDirs::~CDirs()
 {
-
 }
 
-void CDirs::SetName(const wxString& Name)
+void CDirs::SetName(const wxString & Name)
 {
     m_Name = Name;
 }
 
-void CDirs::SetAttribs(const wxString& Attribs)
+void CDirs::SetAttribs(const wxString & Attribs)
 {
     m_Attribs = Attribs;
 }
 
-void CDirs::SetPermissions(const wxString& Permissions)
+void CDirs::SetPermissions(const wxString & Permissions)
 {
     m_Permissions = Permissions;
 }
 
-void CDirs::SetFlags(const wxString& Flags)
+void CDirs::SetFlags(const wxString & Flags)
 {
     m_Flags = Flags;
 }
 
-void CDirs::WriteInFile(wxTextFile* File)
+void CDirs::WriteInFile(wxTextFile * File)
 {
-
 }
 #include <manager.h>
 #include <logmanager.h>
 
-void CDirs::Analize(const wxString& content, const wxString& line)
+void CDirs::Analize(const wxString & content, const wxString & line)
 {
     Manager::Get()->GetLogManager()->Log(content);
     wxString cont = content;
     wxString part;
     wxString settings;
     SetLinenumber(line);
-    while( !cont.empty())
+
+    while (!cont.empty())
     {
         part = cont.BeforeFirst(':');
         settings = cont.AfterFirst(':').BeforeFirst(';');
@@ -67,28 +65,34 @@ void CDirs::Analize(const wxString& content, const wxString& line)
         settings = settings.Trim(false);
         cont = cont.Trim(false);
 
-        if( part.CmpNoCase(_T("name")) == 0)
+        if (part.CmpNoCase(_T("name")) == 0)
         {
             SetName(settings);
         }
-        else if( part.CmpNoCase(_T("attribs")) == 0)
-        {
-            SetAttribs(settings);
-        }
-        else if( part.CmpNoCase(_T("permissions")) == 0)
-        {
-            SetPermissions(settings);
-        }
-        else if( part.CmpNoCase(_T("flags")) == 0)
-        {
-            SetFlags(settings);
-        }
-        else if( !CCompTask::Analize(part, settings))
-            CCommon::Analize(part, settings);
+        else
+            if (part.CmpNoCase(_T("attribs")) == 0)
+            {
+                SetAttribs(settings);
+            }
+            else
+                if (part.CmpNoCase(_T("permissions")) == 0)
+                {
+                    SetPermissions(settings);
+                }
+                else
+                    if (part.CmpNoCase(_T("flags")) == 0)
+                    {
+                        SetFlags(settings);
+                    }
+                    else
+                        if (!CCompTask::Analize(part, settings))
+                        {
+                            CCommon::Analize(part, settings);
+                        }
     }
 }
 
-void CDirs::FillContent(wxListCtrl* liste)
+void CDirs::FillContent(wxListCtrl * liste)
 {
     liste->SetItem(GetIndex(), m_index_name, m_Name);
     liste->SetItem(GetIndex(), m_index_attribs, m_Attribs);
@@ -98,7 +102,7 @@ void CDirs::FillContent(wxListCtrl* liste)
     CCommon::FillContent(liste, GetIndex());
 }
 
-void CDirs::AddHeader(wxListCtrl* liste)
+void CDirs::AddHeader(wxListCtrl * liste)
 {
     InsertHeader(liste);
     m_index_name        = liste->InsertColumn(liste->GetColumnCount(), _T("Name"));

@@ -24,9 +24,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsHyperlinkCtrl> Reg(_T("HyperlinkCtrl"),wxsTWidget,_T("Standard"),260);
+wxsRegisterItem<wxsHyperlinkCtrl> Reg(_T("HyperlinkCtrl"), wxsTWidget, _T("Standard"), 260);
 
-WXS_ST_BEGIN(wxsHyperlinkCtrlStyles,_T("wxHL_CONTEXTMENU|wxNO_BORDER|wxHL_ALIGN_CENTRE"))
+WXS_ST_BEGIN(wxsHyperlinkCtrlStyles, _T("wxHL_CONTEXTMENU|wxNO_BORDER|wxHL_ALIGN_CENTRE"))
 WXS_ST_CATEGORY("wxHyperlinkCtrl")
 WXS_ST(wxHL_CONTEXTMENU)
 WXS_ST(wxHL_ALIGN_LEFT)
@@ -36,7 +36,7 @@ WXS_ST_DEFAULTS()
 WXS_ST_END()
 
 WXS_EV_BEGIN(wxsHyperlinkCtrlEvents)
-WXS_EVI(EVT_HYPERLINK,wxEVT_COMMAND_HYPERLINK,wxCommandEvent,Click)
+WXS_EVI(EVT_HYPERLINK, wxEVT_COMMAND_HYPERLINK, wxCommandEvent, Click)
 WXS_EV_END()
 }
 
@@ -45,7 +45,7 @@ WXS_EV_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsHyperlinkCtrl::wxsHyperlinkCtrl(wxsItemResData* Data):
+wxsHyperlinkCtrl::wxsHyperlinkCtrl(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -61,32 +61,42 @@ wxsHyperlinkCtrl::wxsHyperlinkCtrl(wxsItemResData* Data):
  */
 void wxsHyperlinkCtrl::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/hyperlink.h>"),GetInfo().ClassName,hfInPCH);
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/hyperlink.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %t, %t, %P, %S, %T, %N);\n"), m_Label.wx_str(), m_URL.wx_str());
+            wxString ss = m_NormalColour.BuildCode(GetCoderContext());
 
-        Codef(_T("%C(%W, %I, %t, %t, %P, %S, %T, %N);\n"),m_Label.wx_str(), m_URL.wx_str());
+            if (!ss.IsEmpty())
+            {
+                Codef(_T("%ASetNormalColour(%s);\n"), ss.wx_str());
+            }
 
-        wxString ss = m_NormalColour.BuildCode( GetCoderContext() );
-        if (!ss.IsEmpty()) Codef(_T("%ASetNormalColour(%s);\n"), ss.wx_str());
+            ss = m_HoverColour.BuildCode(GetCoderContext());
 
-        ss = m_HoverColour.BuildCode( GetCoderContext() );
-        if (!ss.IsEmpty()) Codef(_T("%ASetHoverColour(%s);\n"), ss.wx_str());
+            if (!ss.IsEmpty())
+            {
+                Codef(_T("%ASetHoverColour(%s);\n"), ss.wx_str());
+            }
 
-        ss = m_VisitedColour.BuildCode( GetCoderContext() );
-        if (!ss.IsEmpty()) Codef(_T("%ASetVisitedColour(%s);\n"), ss.wx_str());
+            ss = m_VisitedColour.BuildCode(GetCoderContext());
 
-        BuildSetupWindowCode();
-        return;
-    }
+            if (!ss.IsEmpty())
+            {
+                Codef(_T("%ASetVisitedColour(%s);\n"), ss.wx_str());
+            }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsHyperlinkCtrl::OnBuildCreatingCode"),GetLanguage());
-    }
+            BuildSetupWindowCode();
+            return;
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsHyperlinkCtrl::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
@@ -97,26 +107,31 @@ void wxsHyperlinkCtrl::OnBuildCreatingCode()
  * \return wxObject*                 The constructed control.
  *
  */
-wxObject* wxsHyperlinkCtrl::OnBuildPreview(wxWindow* parent,long flags)
+wxObject * wxsHyperlinkCtrl::OnBuildPreview(wxWindow * parent, long flags)
 {
-    wxHyperlinkCtrl* preview = new wxHyperlinkCtrl(parent,GetId(),m_Label,m_URL,Pos(parent),Size(parent),Style());
+    wxHyperlinkCtrl * preview = new wxHyperlinkCtrl(parent, GetId(), m_Label, m_URL, Pos(parent), Size(parent), Style());
     wxColour cc = m_NormalColour.GetColour();
-    if ( cc.IsOk() )
+
+    if (cc.IsOk())
     {
         preview->SetNormalColour(cc);
     }
+
     cc = m_HoverColour.GetColour();
-    if ( cc.IsOk() )
+
+    if (cc.IsOk())
     {
         preview->SetHoverColour(cc);
     }
+
     cc = m_VisitedColour.GetColour();
-    if ( cc.IsOk() )
+
+    if (cc.IsOk())
     {
         preview->SetVisitedColour(cc);
     }
 
-    return SetupWindow(preview,flags);
+    return SetupWindow(preview, flags);
 }
 
 /*! \brief Enumerate the control's properties.
@@ -127,10 +142,10 @@ wxObject* wxsHyperlinkCtrl::OnBuildPreview(wxWindow* parent,long flags)
  */
 void wxsHyperlinkCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
-    WXS_STRING(wxsHyperlinkCtrl,m_Label,_("Label"),_T("label"),_T(""),false)
-    WXS_SHORT_STRING(wxsHyperlinkCtrl,m_URL,_("URL"),_T("url"),_T(""),false)
-    WXS_COLOUR(wxsHyperlinkCtrl, m_NormalColour,_T("Normal"),_T("normal_colour"))
-    WXS_COLOUR(wxsHyperlinkCtrl, m_HoverColour,_T("Hover"),_T("hover_colour"))
-    WXS_COLOUR(wxsHyperlinkCtrl, m_VisitedColour,_T("Visited"),_T("visited_colour"))
+    WXS_STRING(wxsHyperlinkCtrl, m_Label, _("Label"), _T("label"), _T(""), false)
+    WXS_SHORT_STRING(wxsHyperlinkCtrl, m_URL, _("URL"), _T("url"), _T(""), false)
+    WXS_COLOUR(wxsHyperlinkCtrl, m_NormalColour, _T("Normal"), _T("normal_colour"))
+    WXS_COLOUR(wxsHyperlinkCtrl, m_HoverColour, _T("Hover"), _T("hover_colour"))
+    WXS_COLOUR(wxsHyperlinkCtrl, m_VisitedColour, _T("Visited"), _T("visited_colour"))
 }
 

@@ -10,12 +10,12 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-#include <wx/arrstr.h>
-#include <wx/filename.h>
-#include <wx/listctrl.h>
-#include "manager.h"
-#include "editormanager.h"
-#include "cbeditor.h"
+    #include <wx/arrstr.h>
+    #include <wx/filename.h>
+    #include <wx/listctrl.h>
+    #include "manager.h"
+    #include "editormanager.h"
+    #include "cbeditor.h"
 #endif
 #include "cbstyledtextctrl.h"
 
@@ -27,10 +27,10 @@ const int ID_List = wxNewId();
 }
 
 BEGIN_EVENT_TABLE(cbSearchResultsLog, wxEvtHandler)
-//
+    //
 END_EVENT_TABLE()
 
-cbSearchResultsLog::cbSearchResultsLog(const wxArrayString& titles_in, wxArrayInt& widths_in)
+cbSearchResultsLog::cbSearchResultsLog(const wxArrayString & titles_in, wxArrayInt & widths_in)
     : ListCtrlLogger(titles_in, widths_in)
 {
     //ctor
@@ -41,12 +41,12 @@ cbSearchResultsLog::~cbSearchResultsLog()
     //dtor
 }
 
-wxWindow* cbSearchResultsLog::CreateControl(wxWindow* parent)
+wxWindow * cbSearchResultsLog::CreateControl(wxWindow * parent)
 {
     ListCtrlLogger::CreateControl(parent);
     control->SetId(ID_List);
     Connect(ID_List, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
             &cbSearchResultsLog::OnDoubleClick);
     Manager::Get()->GetAppWindow()->PushEventHandler(this);
     return control;
@@ -66,10 +66,13 @@ void cbSearchResultsLog::SyncEditor(int selIndex)
 {
     wxFileName filename(control->GetItemText(selIndex));
     wxString file;
-    if (!filename.IsAbsolute())
-        filename.MakeAbsolute(m_Base);
-    file = filename.GetFullPath();
 
+    if (!filename.IsAbsolute())
+    {
+        filename.MakeAbsolute(m_Base);
+    }
+
+    file = filename.GetFullPath();
     wxListItem li;
     li.SetId(selIndex);
     li.SetColumn(1);
@@ -77,30 +80,34 @@ void cbSearchResultsLog::SyncEditor(int selIndex)
     control->GetItem(li);
     long line = 0;
     li.GetText().ToLong(&line);
-    cbEditor* ed = Manager::Get()->GetEditorManager()->Open(file);
+    cbEditor * ed = Manager::Get()->GetEditorManager()->Open(file);
+
     if (!line || !ed)
+    {
         return;
+    }
 
     line -= 1;
     ed->Activate();
     ed->GotoLine(line);
 
-    if (cbStyledTextCtrl* ctrl = ed->GetControl())
+    if (cbStyledTextCtrl * ctrl = ed->GetControl())
     {
         ctrl->EnsureVisible(line);
     }
 }
 
-void cbSearchResultsLog::OnDoubleClick(cb_unused wxCommandEvent& event)
+void cbSearchResultsLog::OnDoubleClick(cb_unused wxCommandEvent & event)
 {
     // go to the relevant file/line
     if (control->GetSelectedItemCount() == 0)
+    {
         return;
+    }
 
     // find selected item index
     int index = control->GetNextItem(-1,
                                      wxLIST_NEXT_ALL,
                                      wxLIST_STATE_SELECTED);
-
     SyncEditor(index);
 } // end of OnDoubleClick

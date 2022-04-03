@@ -17,58 +17,58 @@ class wxListbookEvent;
 
 class EnvironmentSettingsDlg : public wxScrollingDialog, public cbConfigurationPanelColoursInterface
 {
-public:
-    EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* art);
-    ~EnvironmentSettingsDlg() override;
-    void EndModal(int retCode) override;
+    public:
+        EnvironmentSettingsDlg(wxWindow * parent, wxAuiDockArt * art);
+        ~EnvironmentSettingsDlg() override;
+        void EndModal(int retCode) override;
 
-public:
-    // From cbConfigurationPanelColoursInterface
-    wxColour GetValue(const wxString &id) override;
-    void SetValue(const wxString &id, const wxColour &colour) override;
-    void ResetDefault(const wxString &id) override;
+    public:
+        // From cbConfigurationPanelColoursInterface
+        wxColour GetValue(const wxString & id) override;
+        void SetValue(const wxString & id, const wxColour & colour) override;
+        void ResetDefault(const wxString & id) override;
 
-protected:
-    void OnPageChanging(wxListbookEvent& event);
-    void OnPageChanged(wxListbookEvent& event);
-    void OnSetAssocs(wxCommandEvent& event);
-    void OnManageAssocs(wxCommandEvent& event);
-    void OnResetDefaultColours(wxCommandEvent& event);
-    void OnUseIpcCheck(wxCommandEvent& event);
-    void OnPlaceCheck(wxCommandEvent& event);
-    void OnHeadCheck(wxCommandEvent& event);
-    void OnAutoHide(wxCommandEvent& event);
-    void OnI18NCheck(wxCommandEvent& event);
-    void OnSettingsIconsSize(wxCommandEvent& event);
-    void OnDblClickMaximizes(wxCommandEvent& event);
-    void OnMousewheelModifier(wxKeyEvent& event);
-    void OnUseTabMousewheel(wxCommandEvent& event);
+    protected:
+        void OnPageChanging(wxListbookEvent & event);
+        void OnPageChanged(wxListbookEvent & event);
+        void OnSetAssocs(wxCommandEvent & event);
+        void OnManageAssocs(wxCommandEvent & event);
+        void OnResetDefaultColours(wxCommandEvent & event);
+        void OnUseIpcCheck(wxCommandEvent & event);
+        void OnPlaceCheck(wxCommandEvent & event);
+        void OnHeadCheck(wxCommandEvent & event);
+        void OnAutoHide(wxCommandEvent & event);
+        void OnI18NCheck(wxCommandEvent & event);
+        void OnSettingsIconsSize(wxCommandEvent & event);
+        void OnDblClickMaximizes(wxCommandEvent & event);
+        void OnMousewheelModifier(wxKeyEvent & event);
+        void OnUseTabMousewheel(wxCommandEvent & event);
 
-    void OnChooseAppColourCategory(wxCommandEvent &event);
-    void OnChooseAppColourItem(wxCommandEvent &event);
-    void OnClickAppColour(wxColourPickerEvent &event);
-    void OnClickAppColourDefault(wxCommandEvent &event);
-    void OnClickAppResetAll(wxCommandEvent &event);
+        void OnChooseAppColourCategory(wxCommandEvent & event);
+        void OnChooseAppColourItem(wxCommandEvent & event);
+        void OnClickAppColour(wxColourPickerEvent & event);
+        void OnClickAppColourDefault(wxCommandEvent & event);
+        void OnClickAppResetAll(wxCommandEvent & event);
 
-private:
-    void AddPluginPanels();
-    void DoChooseAppColourItem(int index);
-    void LoadListbookImages();
-    void UpdateListbookImages();
+    private:
+        void AddPluginPanels();
+        void DoChooseAppColourItem(int index);
+        void LoadListbookImages();
+        void UpdateListbookImages();
 
-    void FillApplicationColours();
-    void WriteApplicationColours();
-    wxString AnnoyingDlgReturnToString(const wxString& caption);
-    wxString StringToAnnoyingDlgReturn(const wxString& caption);
+        void FillApplicationColours();
+        void WriteApplicationColours();
+        wxString AnnoyingDlgReturnToString(const wxString & caption);
+        wxString StringToAnnoyingDlgReturn(const wxString & caption);
 
-private:
-    wxAuiDockArt* m_pArt;
-    ConfigurationPanelsArray m_PluginPanels;
-    std::map<wxString, wxColour> m_ChangedAppColours;
-    std::map<wxString, wxString> m_AnnoyingDlgReturnMap;
-    wxImageList* m_pImageList;
+    private:
+        wxAuiDockArt * m_pArt;
+        ConfigurationPanelsArray m_PluginPanels;
+        std::map<wxString, wxColour> m_ChangedAppColours;
+        std::map<wxString, wxString> m_AnnoyingDlgReturnMap;
+        wxImageList * m_pImageList;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 

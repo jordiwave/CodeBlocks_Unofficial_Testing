@@ -25,17 +25,23 @@
 #include "cbEditorPanel.h"
 
 
-cbEditorPanel::cbEditorPanel( const wxString& fileName, const wxString& /*title*/, FileContent *fc ):
-    EditorBase( (wxWindow*)Manager::Get()->GetEditorManager()->GetNotebook(), fileName, true),
+cbEditorPanel::cbEditorPanel(const wxString & fileName, const wxString & /*title*/, FileContent * fc):
+    EditorBase((wxWindow *)Manager::Get()->GetEditorManager()->GetNotebook(), fileName, true),
     m_IsOK(false),
     m_filecontent(fc)
     //m_cmdprocessor(0)
 {
-    if ( !m_filecontent ) return;
+    if (!m_filecontent)
+    {
+        return;
+    }
+
     /*m_cmdprocessor = */fc->CreateCommandProcessor();
 
-    if ( !fileName.IsEmpty() )
+    if (!fileName.IsEmpty())
+    {
         m_IsOK = m_filecontent->Open(GetFilename());
+    }
 
     // if !m_IsOK then it's a new file, so set the modified flag ON
     if (!m_IsOK || fileName.IsEmpty())
@@ -47,27 +53,43 @@ cbEditorPanel::cbEditorPanel( const wxString& fileName, const wxString& /*title*
 
 cbEditorPanel::~cbEditorPanel()
 {
-    if ( m_filecontent ) delete m_filecontent;
+    if (m_filecontent)
+    {
+        delete m_filecontent;
+    }
 }
 
 bool cbEditorPanel::GetModified() const
 {
-    if ( !m_filecontent ) return false;
+    if (!m_filecontent)
+    {
+        return false;
+    }
+
     return m_filecontent->GetModified();
 }
 
 void cbEditorPanel::SetModified(bool modified)
 {
-    if ( !m_filecontent ) return;
+    if (!m_filecontent)
+    {
+        return;
+    }
+
     m_filecontent->SetModified(modified);
 }
 
 bool cbEditorPanel::Save()
 {
-    if ( !m_filecontent ) return false;
+    if (!m_filecontent)
+    {
+        return false;
+    }
 
     if (!m_IsOK)
+    {
         return SaveAs();
+    }
 
     bool ret = m_filecontent->Save(GetFilename());
     m_IsOK = ret;
@@ -79,13 +101,14 @@ bool cbEditorPanel::SaveAs()
 {
     wxFileName fname;
     fname.Assign(GetFilename());
-    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("app"));
-
+    ConfigManager * mgr = Manager::Get()->GetConfigManager(_T("app"));
     wxString Path = fname.GetPath();
     wxString Extension = _T("nsd");
 
-    if(mgr && Path.IsEmpty())
+    if (mgr && Path.IsEmpty())
+    {
         Path = mgr->Read(_T("/file_dialogs/save_file_as/directory"), Path);
+    }
 
     wxFileDialog dlg(Manager::Get()->GetAppWindow(),
                      _("Save file"),
@@ -94,6 +117,7 @@ bool cbEditorPanel::SaveAs()
                      m_filecontent->GetWildcard(),
                      wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     PlaceWindow(&dlg);
+
     if (dlg.ShowModal() != wxID_OK) // cancelled out
     {
         UpdateModified();
@@ -132,13 +156,17 @@ void cbEditorPanel::Redo()
 
 void cbEditorPanel::UpdateModified()
 {
-    if ( GetModified() )
-        SetTitle( _T("*") + GetShortName() );
+    if (GetModified())
+    {
+        SetTitle(_T("*") + GetShortName());
+    }
     else
-        SetTitle( GetShortName() );
+    {
+        SetTitle(GetShortName());
+    }
 }
 
-void cbEditorPanel::SetFilename(const wxString& filename)
+void cbEditorPanel::SetFilename(const wxString & filename)
 {
     m_Filename = filename;
     wxFileName fname;

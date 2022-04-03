@@ -13,7 +13,7 @@
 #include "regexdlg.h"
 
 #ifndef CB_PRECOMP
-#include <globals.h>
+    #include <globals.h>
 #endif
 
 // Register the plugin with Code::Blocks.
@@ -29,7 +29,7 @@ RegExTestbed::RegExTestbed()
     // Make sure our resources are available.
     // In the generated boilerplate code we have no resources but when
     // we add some, it will be nice that this code is in place already ;)
-    if(!Manager::LoadResource(_T("RegExTestbed.zip")))
+    if (!Manager::LoadResource(_T("RegExTestbed.zip")))
     {
         NotifyMissingFile(_T("RegExTestbed.zip"));
     }
@@ -65,7 +65,7 @@ int RegExTestbed::Execute()
 {
     try
     {
-        RegExDlg *dlg = new RegExDlg(Manager::Get()->GetAppWindow(), -1);
+        RegExDlg * dlg = new RegExDlg(Manager::Get()->GetAppWindow(), -1);
         PlaceWindow(dlg);
         dlg->Show();
     }
@@ -75,5 +75,6 @@ int RegExTestbed::Execute()
                      _("Error"), wxICON_ERROR);
         return -1;
     }
+
     return 0;
 }

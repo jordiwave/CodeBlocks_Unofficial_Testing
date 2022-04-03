@@ -14,117 +14,117 @@
 
 #ifdef __WIN32__
 
-#define WIN32_LEAN_AND_MEAN
-#define NOGDI
-#include <windows.h>
-typedef HANDLE shm_handle_t;
-typedef HANDLE semaphore_t;
+    #define WIN32_LEAN_AND_MEAN
+    #define NOGDI
+    #include <windows.h>
+    typedef HANDLE shm_handle_t;
+    typedef HANDLE semaphore_t;
 
 #else
 
-#include <fcntl.h>
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/sem.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
+    #include <fcntl.h>
+    #include <errno.h>
+    #include <sys/types.h>
+    #include <sys/sem.h>
+    #include <sys/ipc.h>
+    #include <sys/shm.h>
 
-#if defined(__APPLE__) && defined(__MACH__)
-typedef int shm_handle_t;
-typedef mach_port_t semaphore_t;
-#else
-typedef int shm_handle_t;
-typedef int semaphore_t;
+    #if defined(__APPLE__) && defined(__MACH__)
+        typedef int shm_handle_t;
+        typedef mach_port_t semaphore_t;
+    #else
+        typedef int shm_handle_t;
+        typedef int semaphore_t;
+    #endif
+
 #endif
 
-#endif
-
-static const int ipc_buf_size = 1024*64;
+static const int ipc_buf_size = 1024 * 64;
 
 
 class SharedMemory
 {
-    shm_handle_t handle;
+        shm_handle_t handle;
 
-    union
-    {
-        semaphore_t semid;
-        semaphore_t sem[2];
-    };
+        union
+        {
+            semaphore_t semid;
+            semaphore_t sem[2];
+        };
 
-    void* shared;
-    bool ok;
-    bool server;
+        void * shared;
+        bool ok;
+        bool server;
 
-public:
+    public:
 
-    enum rw_t { reader, writer };
+        enum rw_t { reader, writer };
 
-    SharedMemory();
-    ~SharedMemory();
+        SharedMemory();
+        ~SharedMemory();
 
-    bool OK() const
-    {
-        return ok;
-    };
+        bool OK() const
+        {
+            return ok;
+        };
 
-    void* BasePointer() const
-    {
-        return shared;
-    };
-    size_t Size() const
-    {
-        return ipc_buf_size;
-    };
+        void * BasePointer() const
+        {
+            return shared;
+        };
+        size_t Size() const
+        {
+            return ipc_buf_size;
+        };
 
-    bool Server() const
-    {
-        return server;
-    };
-    bool Client() const
-    {
-        return !server;
-    };
+        bool Server() const
+        {
+            return server;
+        };
+        bool Client() const
+        {
+            return !server;
+        };
 
 
-    /*
-     * Lock(reader) locks "as reader", not "the reader semaphore", i.e. it
-     *   1. locks the reader semaphore
-     *   2. locks the writer mutex, so the shared memory cannot be written while we read it
-     *
-     * Lock(writer) locks "as writer", this is equivalent to locking "the writer mutex"
-     *
-     * Unlock(reader) unlocks "as reader", i.e. it actually unlocks the writer mutex
-     *   which the caller is still holding, so another process can write to the shared memory area again.
-     *   It does not release the reader semaphore, since it should block on it on the next iteration.
-     *
-     * Unlock(writer) locks "as writer", i.e. it
-     *   1. unlocks the reader semaphore, waking up the Server thread
-     *   2. unlocks the writer mutex, so the Server thread can acquire it and prevent other processes from writing
-     */
-    bool Lock(rw_t rw);
-    void Unlock(rw_t rw);
+        /*
+         * Lock(reader) locks "as reader", not "the reader semaphore", i.e. it
+         *   1. locks the reader semaphore
+         *   2. locks the writer mutex, so the shared memory cannot be written while we read it
+         *
+         * Lock(writer) locks "as writer", this is equivalent to locking "the writer mutex"
+         *
+         * Unlock(reader) unlocks "as reader", i.e. it actually unlocks the writer mutex
+         *   which the caller is still holding, so another process can write to the shared memory area again.
+         *   It does not release the reader semaphore, since it should block on it on the next iteration.
+         *
+         * Unlock(writer) locks "as writer", i.e. it
+         *   1. unlocks the reader semaphore, waking up the Server thread
+         *   2. unlocks the writer mutex, so the Server thread can acquire it and prevent other processes from writing
+         */
+        bool Lock(rw_t rw);
+        void Unlock(rw_t rw);
 };
 
 
 class IPC : public wxThread
 {
-    volatile bool is_shutdown;
-    SharedMemory  shm;
+        volatile bool is_shutdown;
+        SharedMemory  shm;
 
-public:
-    IPC() : is_shutdown(false) {};
+    public:
+        IPC() : is_shutdown(false) {};
 
-    virtual ExitCode Entry();
+        virtual ExitCode Entry();
 
-    bool Server() const
-    {
-        return shm.Server();
-    };
+        bool Server() const
+        {
+            return shm.Server();
+        };
 
-    void Shutdown();
+        void Shutdown();
 
-    void Send(const wxString& value);
+        void Send(const wxString & value);
 };
 
 

@@ -3,19 +3,19 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/arrstr.h>
+    #include <wx/arrstr.h>
 #endif
 
 #include "tokenf.h"
 
 class SubmoduleTokenF : public TokenF
 {
-public:
-    SubmoduleTokenF() {};
-    virtual ~SubmoduleTokenF() {};
+    public:
+        SubmoduleTokenF() {};
+        virtual ~SubmoduleTokenF() {};
 
-    wxString m_AncestorModuleName;
-    wxString m_ParentSubmoduleName;
+        wxString m_AncestorModuleName;
+        wxString m_ParentSubmoduleName;
 };
 
 #endif // SUBMODULETOKENF_H

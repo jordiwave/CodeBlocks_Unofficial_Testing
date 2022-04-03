@@ -26,37 +26,37 @@
 /** \brief Class for wxsCLCanvas widget */
 class wxsGLCanvas: public wxsWidget
 {
-public:
+    public:
 
-    wxsGLCanvas(wxsItemResData* Data);
+        wxsGLCanvas(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
-    void FillNewAttributes(const wxString& aname);
-    void FillOldAttributes(const wxString& aname);
+        void FillNewAttributes(const wxString & aname);
+        void FillOldAttributes(const wxString & aname);
 
-    bool        mRGBA;
-    int         mBufferSize;
-    int         mLevel;
-    bool        mDoubleBuffer;
-    bool        mStereo;
-    int         mAuxBuffers;
-    int         mMinRed;
-    int         mMinGreen;
-    int         mMinBlue;
-    int         mMinAlpha;
-    int         mDepthSize;
-    int         mStencilSize;
-    int         mMinAccumRed;
-    int         mMinAccumGreen;
-    int         mMinAccumBlue;
-    int         mMinAccumAlpha;
-    int         mSampleBuffers;
-    int         mSamples;
+        bool        mRGBA;
+        int         mBufferSize;
+        int         mLevel;
+        bool        mDoubleBuffer;
+        bool        mStereo;
+        int         mAuxBuffers;
+        int         mMinRed;
+        int         mMinGreen;
+        int         mMinBlue;
+        int         mMinAlpha;
+        int         mDepthSize;
+        int         mStencilSize;
+        int         mMinAccumRed;
+        int         mMinAccumGreen;
+        int         mMinAccumBlue;
+        int         mMinAccumAlpha;
+        int         mSampleBuffers;
+        int         mSamples;
 
 };
 

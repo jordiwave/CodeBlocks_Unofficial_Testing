@@ -28,9 +28,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsDialog> Reg( _T("Dialog"), wxsTContainer, _T(""), 0 );
+wxsRegisterItem<wxsDialog> Reg(_T("Dialog"), wxsTContainer, _T(""), 0);
 
-WXS_ST_BEGIN(wxsDialogStyles,_T("wxDEFAULT_DIALOG_STYLE"))
+WXS_ST_BEGIN(wxsDialogStyles, _T("wxDEFAULT_DIALOG_STYLE"))
 WXS_ST_CATEGORY("wxDialog")
 WXS_ST(wxSTAY_ON_TOP)
 WXS_ST(wxCAPTION)
@@ -49,13 +49,13 @@ WXS_ST_DEFAULTS()
 WXS_ST_END()
 
 WXS_EV_BEGIN(wxsDialogEvents)
-WXS_EVI(EVT_INIT_DIALOG,wxEVT_INIT_DIALOG,wxInitDialogEvent,Init)
-WXS_EVI(EVT_CLOSE,wxEVT_CLOSE_WINDOW,wxCloseEvent,Close)
+WXS_EVI(EVT_INIT_DIALOG, wxEVT_INIT_DIALOG, wxInitDialogEvent, Init)
+WXS_EVI(EVT_CLOSE, wxEVT_CLOSE_WINDOW, wxCloseEvent, Close)
 WXS_EV_DEFAULTS()
 WXS_EV_END()
 }
 
-wxsDialog::wxsDialog(wxsItemResData* Data):
+wxsDialog::wxsDialog(wxsItemResData * Data):
     wxsContainer(
         Data,
         &Reg.Info,
@@ -67,86 +67,96 @@ wxsDialog::wxsDialog(wxsItemResData* Data):
 
 void wxsDialog::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/dialog.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%W, %I, %t, wxDefaultPosition, wxDefaultSize, %T, %N);\n"),Title.wx_str());
-        if ( !GetBaseProps()->m_Size.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_SizeFromArg) )
+        case wxsCPP:
         {
-            Codef(_T("%ASetClientSize(%S);\n"));
-        }
-        if ( !GetBaseProps()->m_Position.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_PositionFromArg) )
-        {
-            Codef(_T("%AMove(%P);\n"));
-        }
-        BuildSetupWindowCode();
-        AddChildrenCode();
-        if ( Centered )
-        {
-            Codef(_T("%ACenter();\n"));
+            AddHeader(_T("<wx/dialog.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %t, wxDefaultPosition, wxDefaultSize, %T, %N);\n"), Title.wx_str());
+
+            if (!GetBaseProps()->m_Size.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_SizeFromArg))
+            {
+                Codef(_T("%ASetClientSize(%S);\n"));
+            }
+
+            if (!GetBaseProps()->m_Position.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_PositionFromArg))
+            {
+                Codef(_T("%AMove(%P);\n"));
+            }
+
+            BuildSetupWindowCode();
+            AddChildrenCode();
+
+            if (Centered)
+            {
+                Codef(_T("%ACenter();\n"));
+            }
+
+            return;
         }
 
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsDialog::OnBuildCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsDialog::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
-wxObject* wxsDialog::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsDialog::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxWindow* NewItem = 0;
-    wxDialog* Dlg = 0;
+    wxWindow * NewItem = 0;
+    wxDialog * Dlg = 0;
 
     // In case of frame and dialog when in "Exact" mode, we do not create
     // new object, but use Parent and call Create for it.
-    if ( Flags & pfExact )
+    if (Flags & pfExact)
     {
-        Dlg = wxDynamicCast(Parent,wxDialog);
-        if ( Dlg )
+        Dlg = wxDynamicCast(Parent, wxDialog);
+
+        if (Dlg)
         {
-            Dlg->Create(0,GetId(),Title,wxDefaultPosition,wxDefaultSize,Style());
+            Dlg->Create(0, GetId(), Title, wxDefaultPosition, wxDefaultSize, Style());
             Dlg->SetClientSize(Size(wxTheApp->GetTopWindow()));
             Dlg->Move(Pos(wxTheApp->GetTopWindow()));
         }
+
         NewItem = Dlg;
-        SetupWindow(NewItem,Flags);
-        AddChildrenPreview(NewItem,Flags);
-        if ( Centered )
+        SetupWindow(NewItem, Flags);
+        AddChildrenPreview(NewItem, Flags);
+
+        if (Centered)
         {
             Dlg->Centre();
         }
     }
     else
     {
-        NewItem = new wxsGridPanel(Parent,GetId(),wxPoint(0,0),Size(Parent),0);
+        NewItem = new wxsGridPanel(Parent, GetId(), wxPoint(0, 0), Size(Parent), 0);
         NewItem->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-        SetupWindow(NewItem,Flags);
-        AddChildrenPreview(NewItem,Flags);
+        SetupWindow(NewItem, Flags);
+        AddChildrenPreview(NewItem, Flags);
 
         // wxPanel tends to behave very strange when it has children and no sizer,
         // we have to manually resize it's content
-        if ( !GetChildCount() || GetChild(0)->GetType()!=wxsTSizer )
+        if (!GetChildCount() || GetChild(0)->GetType() != wxsTSizer)
         {
             wxSize NewSize = Size(Parent);
-            if ( !NewSize.IsFullySpecified() )
+
+            if (!NewSize.IsFullySpecified())
             {
-                NewSize.SetDefaults(wxSize(400,450));
+                NewSize.SetDefaults(wxSize(400, 450));
                 NewItem->SetSize(NewSize);
                 NewItem->SetInitialSize(NewSize);
-                if ( GetChildCount() == 1 )
+
+                if (GetChildCount() == 1)
                 {
                     // If there's only one child it's size gets dialog's size
-                    wxWindow* ChildPreview = wxDynamicCast(GetChild(0)->GetLastPreview(),wxWindow);
-                    if ( ChildPreview )
+                    wxWindow * ChildPreview = wxDynamicCast(GetChild(0)->GetLastPreview(), wxWindow);
+
+                    if (ChildPreview)
                     {
-                        ChildPreview->SetSize(0,0,NewItem->GetClientSize().GetWidth(),NewItem->GetClientSize().GetHeight());
+                        ChildPreview->SetSize(0, 0, NewItem->GetClientSize().GetWidth(), NewItem->GetClientSize().GetHeight());
                     }
                 }
             }
@@ -163,6 +173,6 @@ wxObject* wxsDialog::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsDialog::OnEnumContainerProperties(cb_unused long Flags)
 {
-    WXS_SHORT_STRING(wxsDialog,Title,_("Title"),_T("title"),_T(""),false)
-    WXS_BOOL(wxsDialog,Centered,_("Centered"),_T("centered"),false);
+    WXS_SHORT_STRING(wxsDialog, Title, _("Title"), _T("title"), _T(""), false)
+    WXS_BOOL(wxsDialog, Centered, _("Centered"), _T("centered"), false);
 }

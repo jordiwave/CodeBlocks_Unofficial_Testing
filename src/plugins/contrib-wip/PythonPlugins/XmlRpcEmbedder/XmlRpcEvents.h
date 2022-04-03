@@ -62,55 +62,55 @@ enum JobStates {XMLRPC_STATE_STARTEDJOB, XMLRPC_STATE_FINISHEDJOB, XMLRPC_STATE_
 // indicating job completion, interpreter shutdown etc
 class XmlRpcResponseEvent: public wxEvent
 {
-    friend class XmlRpcInstance;
-public:
-    XmlRpcResponseEvent(int id=-1): wxEvent(id,wxEVT_XMLRPC_RESPONSE) {}
-    XmlRpcResponseEvent(int id, XmlRpcInstance *instance, wxEvtHandler *parent, JobStates jobstate, XmlRpc::XmlRpcValue value);
-    XmlRpcResponseEvent(const XmlRpcResponseEvent& c) : wxEvent(c)
-    {
-        jobstate = c.jobstate;
-        job= c.job;
-        instance= c.instance;
-        parent= c.parent;
-        value=c.value;
-    }
-    wxEvent *Clone() const
-    {
-        return new XmlRpcResponseEvent(*this);
-    }
-    ~XmlRpcResponseEvent() {}
-    XmlRpcJob *GetJob()
-    {
-        return job;
-    }
-    XmlRpcInstance *GetInterpreter();
-    XmlRpc::XmlRpcValue GetResponse()
-    {
-        return value;
-    }
-    void SetState(JobStates s)
-    {
-        jobstate=s;
-    }
-    JobStates GetState()
-    {
-        return jobstate;
-    }
-protected:
-    JobStates jobstate;
-    XmlRpcInstance *instance;
-    XmlRpcJob *job;
-    wxEvtHandler *parent;
-    XmlRpc::XmlRpcValue value;
+        friend class XmlRpcInstance;
+    public:
+        XmlRpcResponseEvent(int id = -1): wxEvent(id, wxEVT_XMLRPC_RESPONSE) {}
+        XmlRpcResponseEvent(int id, XmlRpcInstance * instance, wxEvtHandler * parent, JobStates jobstate, XmlRpc::XmlRpcValue value);
+        XmlRpcResponseEvent(const XmlRpcResponseEvent & c) : wxEvent(c)
+        {
+            jobstate = c.jobstate;
+            job = c.job;
+            instance = c.instance;
+            parent = c.parent;
+            value = c.value;
+        }
+        wxEvent * Clone() const
+        {
+            return new XmlRpcResponseEvent(*this);
+        }
+        ~XmlRpcResponseEvent() {}
+        XmlRpcJob * GetJob()
+        {
+            return job;
+        }
+        XmlRpcInstance * GetInterpreter();
+        XmlRpc::XmlRpcValue GetResponse()
+        {
+            return value;
+        }
+        void SetState(JobStates s)
+        {
+            jobstate = s;
+        }
+        JobStates GetState()
+        {
+            return jobstate;
+        }
+    protected:
+        JobStates jobstate;
+        XmlRpcInstance * instance;
+        XmlRpcJob * job;
+        wxEvtHandler * parent;
+        XmlRpc::XmlRpcValue value;
 };
 
 
-typedef void (wxEvtHandler::*XmlRpcResponseEventFunction)(XmlRpcResponseEvent&);
+typedef void (wxEvtHandler::*XmlRpcResponseEventFunction)(XmlRpcResponseEvent &);
 
 #define EVT_XMLRPC_RESPONSE(id, fn) \
     DECLARE_EVENT_TABLE_ENTRY( wxEVT_XMLRPC_RESPONSE, id, -1, \
-    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( XmlRpcResponseEventFunction, & fn ), (wxObject *) NULL ),
+                               (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+                               wxStaticCastEvent( XmlRpcResponseEventFunction, & fn ), (wxObject *) NULL ),
 
 
 

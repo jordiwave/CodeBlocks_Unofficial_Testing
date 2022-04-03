@@ -27,21 +27,21 @@
 
 class wxsSplitterWindow: public wxsContainer
 {
-public:
+    public:
 
-    wxsSplitterWindow(wxsItemResData* Data);
+        wxsSplitterWindow(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnBuildCreatingCode();
-    virtual void OnEnumContainerProperties(long Flags);
-    virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual void OnEnumContainerProperties(long Flags);
+        virtual bool OnCanAddChild(wxsItem * Item, bool ShowMessage);
 
-    long SashPos;
-    long MinPaneSize;
-    long Orientation;
-    double SashGravity;
+        long SashPos;
+        long MinPaneSize;
+        long Orientation;
+        double SashGravity;
 };
 
 

@@ -75,7 +75,7 @@ enum STE_EditorOptionsType
     ///< NOTE: this has problems so it's not enabled
     ///< by default.
 
-    STE_DEFAULT_OPTIONS     = STE_CREATE_POPUPMENU|STE_QUERY_SAVE_MODIFIED
+    STE_DEFAULT_OPTIONS     = STE_CREATE_POPUPMENU | STE_QUERY_SAVE_MODIFIED
 };
 
 /// Options for the wxSTEditorSplitter
@@ -90,7 +90,7 @@ enum STE_SplitterOptionsType
     STS_DO_DRAG_AND_DROP    = 0x0008, ///< Create a wxSTEditorFileDropTarget for the splitter.
     ///< For read-only editors you probably don't want this.
 
-    STS_DEFAULT_OPTIONS     = STS_CREATE_POPUPMENU|STS_SPLITBUTTONS|STS_DO_DRAG_AND_DROP
+    STS_DEFAULT_OPTIONS     = STS_CREATE_POPUPMENU | STS_SPLITBUTTONS | STS_DO_DRAG_AND_DROP
 };
 
 /// Options for the wxSTEditorNotebook
@@ -103,7 +103,7 @@ enum STE_NotebookOptionsType
     STN_ALLOW_NO_PAGES      = 0x0008, ///< Allow having no pages.
     STN_DO_DRAG_AND_DROP    = 0x0010, ///< Create a wxSTEditorFileDropTarget for the notebook.
 
-    STN_DEFAULT_OPTIONS     = STN_CREATE_POPUPMENU|STN_ALPHABETICAL_TABS|STN_UPDATE_TITLES|STN_DO_DRAG_AND_DROP
+    STN_DEFAULT_OPTIONS     = STN_CREATE_POPUPMENU | STN_ALPHABETICAL_TABS | STN_UPDATE_TITLES | STN_DO_DRAG_AND_DROP
 };
 
 /// Options for the wxSTEditorFrame.
@@ -125,7 +125,7 @@ enum STE_FrameOptionsType
     ///< if one doesn't already exist and you have wxID_OPEN.
     STF_DO_DRAG_AND_DROP    = 0x0100, ///< Create a wxSTEditorFileDropTarget for the frame.
 
-    STF_DEFAULT_OPTIONS     = STF_CREATE_NOTEBOOK|STF_CREATE_TOOLBAR|STF_CREATE_MENUBAR|STF_CREATE_STATUSBAR|STF_CREATE_FILEHISTORY|STF_DO_DRAG_AND_DROP
+    STF_DEFAULT_OPTIONS     = STF_CREATE_NOTEBOOK | STF_CREATE_TOOLBAR | STF_CREATE_MENUBAR | STF_CREATE_STATUSBAR | STF_CREATE_FILEHISTORY | STF_DO_DRAG_AND_DROP
 };
 
 /// Options for using wxConfig to save preferences.
@@ -151,7 +151,7 @@ enum STE_ConfigOptionsType
     ///< You may want to remove the menu item
     ///<   ID_STE_SAVE_PREFERENCES.
 
-    STE_CONFIG_DEFAULT_OPTIONS = STF_CONFIG|STE_CONFIG_FILEHISTORY|STE_CONFIG_FINDREPLACE|STE_CONFIG_PREFS|STE_CONFIG_STYLES|STE_CONFIG_LANGS
+    STE_CONFIG_DEFAULT_OPTIONS = STF_CONFIG | STE_CONFIG_FILEHISTORY | STE_CONFIG_FINDREPLACE | STE_CONFIG_PREFS | STE_CONFIG_STYLES | STE_CONFIG_LANGS
 };
 
 /// Same as STEFindReplaceDialogStyles
@@ -210,338 +210,341 @@ WXDLLIMPEXP_DATA_STEDIT(extern wxString) STE_DefaultFileName;
 WXDLLIMPEXP_DATA_STEDIT(extern wxString) STE_DefaultFileExtensions;
 
 /// wxSTEditorRefData run-time class information.
-WXDLLIMPEXP_DATA_STEDIT(extern const wxClassInfo*) STE_GlobalRefDataClassInfo;
+WXDLLIMPEXP_DATA_STEDIT(extern const wxClassInfo *) STE_GlobalRefDataClassInfo;
 
 class WXDLLIMPEXP_STEDIT wxSTEditorOptions : public wxObject
 {
-public:
-    /// Default with nothing set at all.
-    wxSTEditorOptions();
+    public:
+        /// Default with nothing set at all.
+        wxSTEditorOptions();
 
-    /// Everything setup, new menu manager and global prefs/styles/langs.
-    /// Globals refed from wxSTEditor::GetGlobalEditorPrefs/Styles/Langs()
-    /// Ueses the static global wxSTEditorFindReplaceData.
-    wxSTEditorOptions( long editor_opt, // = STE_DEFAULT_OPTIONS,
-                       long splitter_opt = STS_DEFAULT_OPTIONS,
-                       long notebook_opt = STN_DEFAULT_OPTIONS,
-                       long frame_opt    = STF_DEFAULT_OPTIONS,
-                       long config_opt   = STE_CONFIG_DEFAULT_OPTIONS,
-                       const wxString& defaultFileName = GetGlobalDefaultFileName(),
-                       const wxString& defaultFilePath = wxEmptyString,
-                       const wxString& defaultFileExt  = GetGlobalDefaultExtensions() );
+        /// Everything setup, new menu manager and global prefs/styles/langs.
+        /// Globals refed from wxSTEditor::GetGlobalEditorPrefs/Styles/Langs()
+        /// Ueses the static global wxSTEditorFindReplaceData.
+        wxSTEditorOptions(long editor_opt,  // = STE_DEFAULT_OPTIONS,
+                          long splitter_opt = STS_DEFAULT_OPTIONS,
+                          long notebook_opt = STN_DEFAULT_OPTIONS,
+                          long frame_opt    = STF_DEFAULT_OPTIONS,
+                          long config_opt   = STE_CONFIG_DEFAULT_OPTIONS,
+                          const wxString & defaultFileName = GetGlobalDefaultFileName(),
+                          const wxString & defaultFilePath = wxEmptyString,
+                          const wxString & defaultFileExt  = GetGlobalDefaultExtensions());
 
-    // -----------------------------------------------------------------------
-    /// @name Get/Set/Has option values (option is enum STE_OptionType)
-    /// @{
+        // -----------------------------------------------------------------------
+        /// @name Get/Set/Has option values (option is enum STE_OptionType)
+        /// @{
 
-    size_t GetOptionCount() const;
+        size_t GetOptionCount() const;
 
-    wxString GetOption(size_t option_n) const;
-    int      GetOptionInt(size_t option_n) const
-    {
-        long n = 0;
-        GetOption(option_n).ToLong(&n);
-        return int(n);
-    }
-    bool     HasOptionIntFlag(size_t option_n, int flag) const
-    {
-        return STE_HASBIT(GetOptionInt(option_n), flag);
-    }
-    bool     GetOptionBool(size_t option_n) const
-    {
-        return GetOptionInt(option_n) != 0;
-    }
+        wxString GetOption(size_t option_n) const;
+        int      GetOptionInt(size_t option_n) const
+        {
+            long n = 0;
+            GetOption(option_n).ToLong(&n);
+            return int(n);
+        }
+        bool     HasOptionIntFlag(size_t option_n, int flag) const
+        {
+            return STE_HASBIT(GetOptionInt(option_n), flag);
+        }
+        bool     GetOptionBool(size_t option_n) const
+        {
+            return GetOptionInt(option_n) != 0;
+        }
 
-    void SetOption(size_t option_n, const wxString& value);
-    void SetOptionInt(size_t option_n, int value)
-    {
-        SetOption(option_n, wxString::Format(wxT("%d"), value));
-    }
-    void SetOptionIntFlag(size_t option_n, int flag, bool set)
-    {
-        SetOptionInt(option_n, STE_SETBIT(GetOptionInt(option_n), flag, set));
-    }
-    void SetOptionBool(size_t option_n, bool value)
-    {
-        SetOptionInt(option_n, value ? 1 : 0);
-    }
+        void SetOption(size_t option_n, const wxString & value);
+        void SetOptionInt(size_t option_n, int value)
+        {
+            SetOption(option_n, wxString::Format(wxT("%d"), value));
+        }
+        void SetOptionIntFlag(size_t option_n, int flag, bool set)
+        {
+            SetOptionInt(option_n, STE_SETBIT(GetOptionInt(option_n), flag, set));
+        }
+        void SetOptionBool(size_t option_n, bool value)
+        {
+            SetOptionInt(option_n, value ? 1 : 0);
+        }
 
-    /// @}
-    // -----------------------------------------------------------------------
-    /// @name Get/Set/Has option values (option is enum STE_OptionType)
-    /// @{
+        /// @}
+        // -----------------------------------------------------------------------
+        /// @name Get/Set/Has option values (option is enum STE_OptionType)
+        /// @{
 
-    /// The options can also be accessed using named values.
-    /// The original values are the names of the enum STE_OptionType names.
-    wxString GetOptionName(size_t option_n) const;
-    void SetOptionName(size_t option_n, const wxString& name);
-    int FindOptionByName(const wxString& name) const;
-    bool HasNamedOption(const wxString& name) const
-    {
-        return FindOptionByName(name) != wxNOT_FOUND;
-    }
+        /// The options can also be accessed using named values.
+        /// The original values are the names of the enum STE_OptionType names.
+        wxString GetOptionName(size_t option_n) const;
+        void SetOptionName(size_t option_n, const wxString & name);
+        int FindOptionByName(const wxString & name) const;
+        bool HasNamedOption(const wxString & name) const
+        {
+            return FindOptionByName(name) != wxNOT_FOUND;
+        }
 
-    /// Add a new option with a given name, returning the index.
-    /// The name is useful when your derived class wants to store values,
-    ///   but you cannot be sure if the option may be set or what index it'll have.
-    size_t AddOption(const wxString& name, const wxString& value);
+        /// Add a new option with a given name, returning the index.
+        /// The name is useful when your derived class wants to store values,
+        ///   but you cannot be sure if the option may be set or what index it'll have.
+        size_t AddOption(const wxString & name, const wxString & value);
 
-    /// @}
-    // -----------------------------------------------------------------------
-    /// @name Get/Set/Has integer option flags.
-    /// @{
+        /// @}
+        // -----------------------------------------------------------------------
+        /// @name Get/Set/Has integer option flags.
+        /// @{
 
-    int GetEditorOptions()   const
-    {
-        return GetOptionInt(STE_OPTION_EDITOR);    ///< STE_EditorOptionsType
-    }
-    int GetSplitterOptions() const
-    {
-        return GetOptionInt(STE_OPTION_SPLITTER);    ///< STE_SplitterOptionsType
-    }
-    int GetNotebookOptions() const
-    {
-        return GetOptionInt(STE_OPTION_NOTEBOOK);    ///< STE_NotebookOptionsType
-    }
-    int GetFrameOptions()    const
-    {
-        return GetOptionInt(STE_OPTION_FRAME);    ///< STE_FrameOptionsType
-    }
-    int GetConfigOptions()   const
-    {
-        return GetOptionInt(STE_OPTION_CONFIG);    ///< STE_ConfigOptionsType
-    }
+        int GetEditorOptions()   const
+        {
+            return GetOptionInt(STE_OPTION_EDITOR);    ///< STE_EditorOptionsType
+        }
+        int GetSplitterOptions() const
+        {
+            return GetOptionInt(STE_OPTION_SPLITTER);    ///< STE_SplitterOptionsType
+        }
+        int GetNotebookOptions() const
+        {
+            return GetOptionInt(STE_OPTION_NOTEBOOK);    ///< STE_NotebookOptionsType
+        }
+        int GetFrameOptions()    const
+        {
+            return GetOptionInt(STE_OPTION_FRAME);    ///< STE_FrameOptionsType
+        }
+        int GetConfigOptions()   const
+        {
+            return GetOptionInt(STE_OPTION_CONFIG);    ///< STE_ConfigOptionsType
+        }
 
-    bool HasEditorOption(  int opt) const
-    {
-        return STE_HASBIT(opt, GetEditorOptions());
-    }
-    bool HasSplitterOption(int opt) const
-    {
-        return STE_HASBIT(opt, GetSplitterOptions());
-    }
-    bool HasNotebookOption(int opt) const
-    {
-        return STE_HASBIT(opt, GetNotebookOptions());
-    }
-    bool HasFrameOption(   int opt) const
-    {
-        return STE_HASBIT(opt, GetFrameOptions());
-    }
-    bool HasConfigOption(  int opt) const
-    {
-        return STE_HASBIT(opt, GetConfigOptions());
-    }
+        bool HasEditorOption(int opt) const
+        {
+            return STE_HASBIT(opt, GetEditorOptions());
+        }
+        bool HasSplitterOption(int opt) const
+        {
+            return STE_HASBIT(opt, GetSplitterOptions());
+        }
+        bool HasNotebookOption(int opt) const
+        {
+            return STE_HASBIT(opt, GetNotebookOptions());
+        }
+        bool HasFrameOption(int opt) const
+        {
+            return STE_HASBIT(opt, GetFrameOptions());
+        }
+        bool HasConfigOption(int opt) const
+        {
+            return STE_HASBIT(opt, GetConfigOptions());
+        }
 
-    void SetEditorOption(   int opt, bool val )
-    {
-        SetEditorOptions(STE_SETBIT(GetEditorOptions(), opt, val));
-    }
-    void SetSplitterOption( int opt, bool val )
-    {
-        SetSplitterOptions(STE_SETBIT(GetSplitterOptions(), opt, val));
-    }
-    void SetNotebookOption( int opt, bool val )
-    {
-        SetNotebookOptions(STE_SETBIT(GetNotebookOptions(), opt, val));
-    }
-    void SetFrameOption(    int opt, bool val )
-    {
-        SetFrameOptions(STE_SETBIT(GetFrameOptions(), opt, val));
-    }
-    void SetConfigOption(   int opt, bool val )
-    {
-        SetConfigOptions(STE_SETBIT(GetConfigOptions(), opt, val));
-    }
+        void SetEditorOption(int opt, bool val)
+        {
+            SetEditorOptions(STE_SETBIT(GetEditorOptions(), opt, val));
+        }
+        void SetSplitterOption(int opt, bool val)
+        {
+            SetSplitterOptions(STE_SETBIT(GetSplitterOptions(), opt, val));
+        }
+        void SetNotebookOption(int opt, bool val)
+        {
+            SetNotebookOptions(STE_SETBIT(GetNotebookOptions(), opt, val));
+        }
+        void SetFrameOption(int opt, bool val)
+        {
+            SetFrameOptions(STE_SETBIT(GetFrameOptions(), opt, val));
+        }
+        void SetConfigOption(int opt, bool val)
+        {
+            SetConfigOptions(STE_SETBIT(GetConfigOptions(), opt, val));
+        }
 
-    void SetEditorOptions(   int editOptions )
-    {
-        SetOptionInt(STE_OPTION_EDITOR, editOptions);    ///< STE_EditorOptionsType
-    }
-    void SetSplitterOptions( int splitterOptions )
-    {
-        SetOptionInt(STE_OPTION_SPLITTER, splitterOptions);    ///< STE_SplitterOptionsType
-    }
-    void SetNotebookOptions( int notebookOptions )
-    {
-        SetOptionInt(STE_OPTION_NOTEBOOK, notebookOptions);    ///< STE_NotebookOptionsType
-    }
-    void SetFrameOptions(    int frameOptions )
-    {
-        SetOptionInt(STE_OPTION_FRAME, frameOptions);    ///< STE_FrameOptionsType
-    }
-    void SetConfigOptions(   int configOptions )
-    {
-        SetOptionInt(STE_OPTION_CONFIG, configOptions);    ///< STE_ConfigOptionsType
-    }
+        void SetEditorOptions(int editOptions)
+        {
+            SetOptionInt(STE_OPTION_EDITOR, editOptions);    ///< STE_EditorOptionsType
+        }
+        void SetSplitterOptions(int splitterOptions)
+        {
+            SetOptionInt(STE_OPTION_SPLITTER, splitterOptions);    ///< STE_SplitterOptionsType
+        }
+        void SetNotebookOptions(int notebookOptions)
+        {
+            SetOptionInt(STE_OPTION_NOTEBOOK, notebookOptions);    ///< STE_NotebookOptionsType
+        }
+        void SetFrameOptions(int frameOptions)
+        {
+            SetOptionInt(STE_OPTION_FRAME, frameOptions);    ///< STE_FrameOptionsType
+        }
+        void SetConfigOptions(int configOptions)
+        {
+            SetOptionInt(STE_OPTION_CONFIG, configOptions);    ///< STE_ConfigOptionsType
+        }
 
-    /// @}
-    // -----------------------------------------------------------------------
-    /// @name Default filenames.
-    /// @{
+        /// @}
+        // -----------------------------------------------------------------------
+        /// @name Default filenames.
+        /// @{
 
-    /// The default filename to use when creating a new editor.
-    wxString GetDefaultFileName() const
-    {
-        return GetOption(STE_OPTION_DEFAULT_FILENAME);
-    }
-    /// The default and (updated by filedialog) last path for the the load/save dialog.
-    wxString GetDefaultFilePath() const
-    {
-        return GetOption(STE_OPTION_DEFAULT_FILEPATH);
-    }
-    /// The default extensions to use in the load/save dialog.
-    wxString GetDefaultFileExtensions() const
-    {
-        return GetOption(STE_OPTION_DEFAULT_FILEEXTS);
-    }
+        /// The default filename to use when creating a new editor.
+        wxString GetDefaultFileName() const
+        {
+            return GetOption(STE_OPTION_DEFAULT_FILENAME);
+        }
+        /// The default and (updated by filedialog) last path for the the load/save dialog.
+        wxString GetDefaultFilePath() const
+        {
+            return GetOption(STE_OPTION_DEFAULT_FILEPATH);
+        }
+        /// The default extensions to use in the load/save dialog.
+        wxString GetDefaultFileExtensions() const
+        {
+            return GetOption(STE_OPTION_DEFAULT_FILEEXTS);
+        }
 
-    void SetDefaultFileName( const wxString& fileName )
-    {
-        SetOption(STE_OPTION_DEFAULT_FILENAME, fileName);
-    }
-    void SetDefaultFilePath( const wxString& filePath )
-    {
-        SetOption(STE_OPTION_DEFAULT_FILEPATH, filePath);
-    }
-    void SetDefaultFileExtensions( const wxString& fileExt )
-    {
-        SetOption(STE_OPTION_DEFAULT_FILEEXTS, fileExt);
-    }
+        void SetDefaultFileName(const wxString & fileName)
+        {
+            SetOption(STE_OPTION_DEFAULT_FILENAME, fileName);
+        }
+        void SetDefaultFilePath(const wxString & filePath)
+        {
+            SetOption(STE_OPTION_DEFAULT_FILEPATH, filePath);
+        }
+        void SetDefaultFileExtensions(const wxString & fileExt)
+        {
+            SetOption(STE_OPTION_DEFAULT_FILEEXTS, fileExt);
+        }
 
-    /// @}
+        /// @}
 
-    /// Optional slash/backslash
-    wxPathFormat GetDisplayPathSeparator() const;
-    void SetDisplayPathSeparator(wxPathFormat);
+        /// Optional slash/backslash
+        wxPathFormat GetDisplayPathSeparator() const;
+        void SetDisplayPathSeparator(wxPathFormat);
 
-    // -----------------------------------------------------------------------
-    /// @name Get the prefs/styles/langs to use in the editors (may be !IsOk()).
-    /// @{
-    wxSTEditorPrefs&  GetEditorPrefs() const;
-    wxSTEditorStyles& GetEditorStyles() const;
-    wxSTEditorLangs&  GetEditorLangs() const;
-    /// @}
+        // -----------------------------------------------------------------------
+        /// @name Get the prefs/styles/langs to use in the editors (may be !IsOk()).
+        /// @{
+        wxSTEditorPrefs & GetEditorPrefs() const;
+        wxSTEditorStyles & GetEditorStyles() const;
+        wxSTEditorLangs & GetEditorLangs() const;
+        /// @}
 
-    /// @name Set the prefs/styles/langs to use in the editors (may be !IsOk()).
-    /// @{
-    void SetEditorPrefs( const wxSTEditorPrefs& prefs);
-    void SetEditorStyles(const wxSTEditorStyles& styles);
-    void SetEditorLangs( const wxSTEditorLangs& langs);
-    /// @}
+        /// @name Set the prefs/styles/langs to use in the editors (may be !IsOk()).
+        /// @{
+        void SetEditorPrefs(const wxSTEditorPrefs & prefs);
+        void SetEditorStyles(const wxSTEditorStyles & styles);
+        void SetEditorLangs(const wxSTEditorLangs & langs);
+        /// @}
 
-    /// Ref the global prefs/styles/langs see wxSTEditor::GetGlobalEditorXXX()
-    void SetUseGlobalPrefsStylesLangs();
+        /// Ref the global prefs/styles/langs see wxSTEditor::GetGlobalEditorXXX()
+        void SetUseGlobalPrefsStylesLangs();
 
-    // -----------------------------------------------------------------------
-    /// Get the find/replace data to use, by default use the global version.
-    wxSTEditorFindReplaceData* GetFindReplaceData() const;
-    /// Set a "new" find/replace data to use, if !is_static it'll be deleted, NULL for none.
-    void SetFindReplaceData(wxSTEditorFindReplaceData* frData, bool is_static);
+        // -----------------------------------------------------------------------
+        /// Get the find/replace data to use, by default use the global version.
+        wxSTEditorFindReplaceData * GetFindReplaceData() const;
+        /// Set a "new" find/replace data to use, if !is_static it'll be deleted, NULL for none.
+        void SetFindReplaceData(wxSTEditorFindReplaceData * frData, bool is_static);
 
-    // -----------------------------------------------------------------------
-    /// Get the menu manager used to create the menu's (may be NULL).
-    wxSTEditorMenuManager* GetMenuManager() const;
-    /// Set a "new" menu manager to use, if !is_static it'll be deleted, NULL for none.
-    void SetMenuManager(wxSTEditorMenuManager* steMM, bool is_static);
+        // -----------------------------------------------------------------------
+        /// Get the menu manager used to create the menu's (may be NULL).
+        wxSTEditorMenuManager * GetMenuManager() const;
+        /// Set a "new" menu manager to use, if !is_static it'll be deleted, NULL for none.
+        void SetMenuManager(wxSTEditorMenuManager * steMM, bool is_static);
 
-    // -----------------------------------------------------------------------
-    /// Get the wxFileHistory that stores recently opened files (may be NULL).
-    wxFileHistory* GetFileHistory() const;
-    /// Set a "new" wxFileHistory to use, if !is_static it'll be deleted, NULL for none.
-    void SetFileHistory(wxFileHistory* fileHistory, bool is_static);
+        // -----------------------------------------------------------------------
+        /// Get the wxFileHistory that stores recently opened files (may be NULL).
+        wxFileHistory * GetFileHistory() const;
+        /// Set a "new" wxFileHistory to use, if !is_static it'll be deleted, NULL for none.
+        void SetFileHistory(wxFileHistory * fileHistory, bool is_static);
 
-    // -----------------------------------------------------------------------
-    /// Get the wxMenuBar to be updated (or NULL for none)
-    wxMenuBar* GetMenuBar() const;
-    /// Get the toolbar to be updated (or NULL for none)
-    wxToolBar* GetToolBar() const;
-    /// Get the statusbar to be updated (or NULL for none)
-    wxStatusBar* GetStatusBar() const;
-    /// Get the menu to popup in the editor(s), may be null for none
-    wxMenu* GetEditorPopupMenu() const;
-    /// Get the menu to popup on the splitter(s) sash, may be null for none
-    wxMenu* GetSplitterPopupMenu() const;
-    /// Get the menu to popup on the notebook tabs, maybe be null for none
-    wxMenu* GetNotebookPopupMenu() const;
+        // -----------------------------------------------------------------------
+        /// Get the wxMenuBar to be updated (or NULL for none)
+        wxMenuBar * GetMenuBar() const;
+        /// Get the toolbar to be updated (or NULL for none)
+        wxToolBar * GetToolBar() const;
+        /// Get the statusbar to be updated (or NULL for none)
+        wxStatusBar * GetStatusBar() const;
+        /// Get the menu to popup in the editor(s), may be null for none
+        wxMenu * GetEditorPopupMenu() const;
+        /// Get the menu to popup on the splitter(s) sash, may be null for none
+        wxMenu * GetSplitterPopupMenu() const;
+        /// Get the menu to popup on the notebook tabs, maybe be null for none
+        wxMenu * GetNotebookPopupMenu() const;
 
-    /// Set a menubar and toolbar to be updated as necessary (won't be deleted)
-    void SetMenuBar(  wxMenuBar*   menuBar);
-    void SetToolBar(  wxToolBar*   toolBar);
-    void SetStatusBar(wxStatusBar* statusBar);
-    /// Set a "new" wxMenu to use as a popup menu, it'll be deleted if !is_static
-    void SetEditorPopupMenu(  wxMenu* menu, bool is_static);
-    void SetSplitterPopupMenu(wxMenu* menu, bool is_static);
-    void SetNotebookPopupMenu(wxMenu* menu, bool is_static);
+        /// Set a menubar and toolbar to be updated as necessary (won't be deleted)
+        void SetMenuBar(wxMenuBar  * menuBar);
+        void SetToolBar(wxToolBar  * toolBar);
+        void SetStatusBar(wxStatusBar * statusBar);
+        /// Set a "new" wxMenu to use as a popup menu, it'll be deleted if !is_static
+        void SetEditorPopupMenu(wxMenu * menu, bool is_static);
+        void SetSplitterPopupMenu(wxMenu * menu, bool is_static);
+        void SetNotebookPopupMenu(wxMenu * menu, bool is_static);
 
-    //-------------------------------------------------------------------------
-    /// @name Get/Set the ClientData in the ref data - see wxClientDataContainer.
-    /// You can store any extra info here, don't forget to delete void data.
-    /// @{
+        //-------------------------------------------------------------------------
+        /// @name Get/Set the ClientData in the ref data - see wxClientDataContainer.
+        /// You can store any extra info here, don't forget to delete void data.
+        /// @{
 
-    void          SetClientObject( wxClientData *data );
-    wxClientData *GetClientObject() const;
+        void          SetClientObject(wxClientData * data);
+        wxClientData * GetClientObject() const;
 
-    void  SetClientData( void *data );
-    void *GetClientData() const;
+        void  SetClientData(void * data);
+        void * GetClientData() const;
 
-    /// @}
-    // -----------------------------------------------------------------------
-    /// @name Global settings, these are values that this class will be initialized with
-    /// @{
+        /// @}
+        // -----------------------------------------------------------------------
+        /// @name Global settings, these are values that this class will be initialized with
+        /// @{
 
-    static wxString GetGlobalDefaultFileName();
-    static void     SetGlobalDefaultFileName(const wxString& fileName);
+        static wxString GetGlobalDefaultFileName();
+        static void     SetGlobalDefaultFileName(const wxString & fileName);
 
-    static wxString GetGlobalDefaultExtensions();
-    static void     SetGlobalDefaultFileExtensions(const wxString& fileExt);
+        static wxString GetGlobalDefaultExtensions();
+        static void     SetGlobalDefaultFileExtensions(const wxString & fileExt);
 
-    /// @}
-    // -----------------------------------------------------------------------
-    /// Register wxStEdits menu id's so that they do not collide with the id's of the calling app.
-    /// Calls wxRegisterId(ID_STE__LAST) to make the wxNewId() counter start at ID_STE__LAST + 1.
-    static void RegisterIds();
+        /// @}
+        // -----------------------------------------------------------------------
+        /// Register wxStEdits menu id's so that they do not collide with the id's of the calling app.
+        /// Calls wxRegisterId(ID_STE__LAST) to make the wxNewId() counter start at ID_STE__LAST + 1.
+        static void RegisterIds();
 
-    // -----------------------------------------------------------------------
-    /// @name Load/Save the config for the prefs/styles/langs, see CFGPATH options
-    /// @{
+        // -----------------------------------------------------------------------
+        /// @name Load/Save the config for the prefs/styles/langs, see CFGPATH options
+        /// @{
 
-    /// Get the full path of the path_option_n STE_OPTION_CFGPATH_XXX where the
-    ///  full path is the basePath + optionPath.
-    wxString GetConfigPath(size_t path_option_n) const;
+        /// Get the full path of the path_option_n STE_OPTION_CFGPATH_XXX where the
+        ///  full path is the basePath + optionPath.
+        wxString GetConfigPath(size_t path_option_n) const;
 
-    /// Add or remove the trailing '/' use this liberally since sometimes you
-    ///  will want the trailing '/' sometimes not, just run this to be sure.
-    static wxString FixConfigPath(const wxString& path, bool add_sep);
+        /// Add or remove the trailing '/' use this liberally since sometimes you
+        ///  will want the trailing '/' sometimes not, just run this to be sure.
+        static wxString FixConfigPath(const wxString & path, bool add_sep);
 
-    void LoadConfig(wxConfigBase &config);
-    void SaveConfig(wxConfigBase &config);
+        void LoadConfig(wxConfigBase & config);
+        void SaveConfig(wxConfigBase & config);
 
-    /// Load the wxFileHistory files (recently opened files)
-    void LoadFileConfig(wxConfigBase &config);
-    /// Save the wxFileHistory files (recently opened files)
-    void SaveFileConfig(wxConfigBase &config);
+        /// Load the wxFileHistory files (recently opened files)
+        void LoadFileConfig(wxConfigBase & config);
+        /// Save the wxFileHistory files (recently opened files)
+        void SaveFileConfig(wxConfigBase & config);
 
-    /// @}
-    // -----------------------------------------------------------------------
-    /// @name Operators
-    /// @{
-    wxSTEditorOptions& operator = (const wxSTEditorOptions& steOpts)
-    {
-        if ( (*this) != steOpts )
-            Ref(steOpts);
-        return *this;
-    }
+        /// @}
+        // -----------------------------------------------------------------------
+        /// @name Operators
+        /// @{
+        wxSTEditorOptions & operator = (const wxSTEditorOptions & steOpts)
+        {
+            if ((*this) != steOpts)
+            {
+                Ref(steOpts);
+            }
 
-    bool operator == (const wxSTEditorOptions& steOpts) const
-    {
-        return m_refData == steOpts.m_refData;
-    }
-    bool operator != (const wxSTEditorOptions& steOpts) const
-    {
-        return m_refData != steOpts.m_refData;
-    }
-    /// @}
+            return *this;
+        }
+
+        bool operator == (const wxSTEditorOptions & steOpts) const
+        {
+            return m_refData == steOpts.m_refData;
+        }
+        bool operator != (const wxSTEditorOptions & steOpts) const
+        {
+            return m_refData != steOpts.m_refData;
+        }
+        /// @}
 };
 
 #endif  // _STEOPTS_H_

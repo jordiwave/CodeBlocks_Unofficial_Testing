@@ -3,15 +3,15 @@
 
 class AffEntry
 {
-protected:
-       char *       appnd;
-       char *       strip;
-       short        appndl;
-       short        stripl;
-       short        numconds;
-       short        xpflg;
-       char         achar;
-       char         conds[SETSIZE];
+    protected:
+        char    *    appnd;
+        char    *    strip;
+        short        appndl;
+        short        stripl;
+        short        numconds;
+        short        xpflg;
+        char         achar;
+        char         conds[SETSIZE];
 };
 
 #endif

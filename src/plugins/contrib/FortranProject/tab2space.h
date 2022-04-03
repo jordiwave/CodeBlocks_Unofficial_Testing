@@ -3,7 +3,7 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-#include "scrollingdialog.h"
+    #include "scrollingdialog.h"
 #endif
 
 
@@ -26,35 +26,35 @@ enum Tab2SpaceIn
 
 class Tab2Space: public wxScrollingDialog
 {
-public:
+    public:
 
-    Tab2Space(wxWindow* parent);
-    virtual ~Tab2Space();
+        Tab2Space(wxWindow * parent);
+        virtual ~Tab2Space();
 
-    //(*Declarations(Tab2Space)
-    wxRadioButton* rb_ChCActiveProject;
-    wxRadioButton* rb_ChCCurrentFile;
-    wxRadioButton* rb_ChCSelection;
-    wxStaticText* StaticText1;
-    wxStaticText* StaticText2;
-    wxSpinCtrl* sc_TabSize;
-    //*)
+        //(*Declarations(Tab2Space)
+        wxRadioButton * rb_ChCActiveProject;
+        wxRadioButton * rb_ChCCurrentFile;
+        wxRadioButton * rb_ChCSelection;
+        wxStaticText * StaticText1;
+        wxStaticText * StaticText2;
+        wxSpinCtrl * sc_TabSize;
+        //*)
 
-protected:
+    protected:
 
-    //(*Identifiers(Tab2Space)
-    //*)
+        //(*Identifiers(Tab2Space)
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(Tab2Space)
-    //*)
-    void OnOK(wxCommandEvent& event);
-    void MakeTab2Space(Tab2SpaceIn chin, int tabSize);
-    void FileTab2Space(wxString filename, Tab2SpaceIn chin, int tabSize);
-    bool EditorTab2Space(cbEditor* ed, Tab2SpaceIn chin, int tabSize);
+        //(*Handlers(Tab2Space)
+        //*)
+        void OnOK(wxCommandEvent & event);
+        void MakeTab2Space(Tab2SpaceIn chin, int tabSize);
+        void FileTab2Space(wxString filename, Tab2SpaceIn chin, int tabSize);
+        bool EditorTab2Space(cbEditor * ed, Tab2SpaceIn chin, int tabSize);
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

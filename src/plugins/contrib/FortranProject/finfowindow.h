@@ -12,24 +12,24 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/panel.h>
-#include <cbstyledtextctrl.h>
+    #include <wx/panel.h>
+    #include <cbstyledtextctrl.h>
 #endif
 
 
 class FInfoWindow : public wxPanel
 {
-public:
-    FInfoWindow();
-    ~FInfoWindow();
-    void RemoveFromNotebook();
-    void WriteToInfoWindow(const wxString& text);
-protected:
-private:
-    void SetFoldingIndicator();
-    void SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor back);
+    public:
+        FInfoWindow();
+        ~FInfoWindow();
+        void RemoveFromNotebook();
+        void WriteToInfoWindow(const wxString & text);
+    protected:
+    private:
+        void SetFoldingIndicator();
+        void SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor back);
 
-    cbStyledTextCtrl* m_pView;
+        cbStyledTextCtrl * m_pView;
 };
 
 #endif // FINFOWINDOW_H

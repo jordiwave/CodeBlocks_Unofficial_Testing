@@ -260,9 +260,9 @@ if "%DEBUG%" == "On" echo "Transferring DLL plugin files from devel to output fo
 xcopy /D /y "%CB_DEVEL_RESDIR%\plugins\*.dll" "%CB_OUTPUT_RESDIR%\plugins" > nul
 
 if "%DEBUG%" == "On" echo Stripping debug info from output tree
-%STRIP_EXE% "%CB_OUTPUT_DIR%\*.exe"             > nul
-%STRIP_EXE% "%CB_OUTPUT_DIR%\*.dll"             > nul
-%STRIP_EXE% "%CB_OUTPUT_RESDIR%\plugins\*.dll"  > nul
+@rem %STRIP_EXE% "%CB_OUTPUT_DIR%\*.exe"             > nul
+@rem %STRIP_EXE% "%CB_OUTPUT_DIR%\*.dll"             > nul
+@rem %STRIP_EXE% "%CB_OUTPUT_RESDIR%\plugins\*.dll"  > nul
 
 if "%DEBUG%" == "On" echo Copying help files
 if not exist "%CB_OUTPUT_RESDIR%\docs" md "%CB_OUTPUT_RESDIR%\docs" > nul

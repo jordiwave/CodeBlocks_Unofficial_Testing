@@ -51,7 +51,7 @@ WXS_EV_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsSearchCtrl::wxsSearchCtrl(wxsItemResData* Data):
+wxsSearchCtrl::wxsSearchCtrl(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -69,32 +69,32 @@ wxsSearchCtrl::wxsSearchCtrl(wxsItemResData* Data):
  */
 void wxsSearchCtrl::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/srchctrl.h>"),GetInfo().ClassName,hfInPCH);
-
-        Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"), m_sValue.wx_str());
-
-        if(!m_bShowSearchBtn)
+        case wxsCPP:
         {
-            Codef(_T("%AShowSearchButton(%b);\n"), m_bShowSearchBtn);
+            AddHeader(_T("<wx/srchctrl.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"), m_sValue.wx_str());
+
+            if (!m_bShowSearchBtn)
+            {
+                Codef(_T("%AShowSearchButton(%b);\n"), m_bShowSearchBtn);
+            }
+
+            if (m_bShowCancelBtn)
+            {
+                Codef(_T("%AShowCancelButton(%b);\n"), m_bShowCancelBtn);
+            }
+
+            BuildSetupWindowCode();
+            return;
         }
-        if(m_bShowCancelBtn)
+
+        case wxsUnknownLanguage: // fall-through
+        default:
         {
-            Codef(_T("%AShowCancelButton(%b);\n"), m_bShowCancelBtn);
+            wxsCodeMarks::Unknown(_T("wxsSearchCtrl::OnBuildCreatingCode"), GetLanguage());
         }
-
-        BuildSetupWindowCode();
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsSearchCtrl::OnBuildCreatingCode"),GetLanguage());
-    }
     }
 }
 
@@ -105,20 +105,21 @@ void wxsSearchCtrl::OnBuildCreatingCode()
  * \return wxObject*                     The constructed control.
  *
  */
-wxObject* wxsSearchCtrl::OnBuildPreview(wxWindow* parent,long flags)
+wxObject * wxsSearchCtrl::OnBuildPreview(wxWindow * parent, long flags)
 {
-    wxSearchCtrl* preview = new wxSearchCtrl(parent, GetId(), m_sValue, Pos(parent), Size(parent), Style());
+    wxSearchCtrl * preview = new wxSearchCtrl(parent, GetId(), m_sValue, Pos(parent), Size(parent), Style());
 
-    if(!m_bShowSearchBtn)
+    if (!m_bShowSearchBtn)
     {
         preview->ShowSearchButton(m_bShowSearchBtn);
     }
-    if(m_bShowCancelBtn)
+
+    if (m_bShowCancelBtn)
     {
         preview->ShowCancelButton(m_bShowCancelBtn);
     }
 
-    return SetupWindow(preview,flags);
+    return SetupWindow(preview, flags);
 }
 
 /*! \brief Enumerate the control's properties.

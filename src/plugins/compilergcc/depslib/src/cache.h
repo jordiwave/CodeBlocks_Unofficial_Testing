@@ -10,9 +10,9 @@
  * ALL WARRANTIES ARE HEREBY DISCLAIMED.
  */
 
-extern void cache_read(const char *path);
-extern void cache_write(const char *path);
-extern int cache_check(const char *path, time_t time, LIST **includes);
-extern void cache_enter(const char *path, time_t time, LIST *includes);
+extern void cache_read(const char * path);
+extern void cache_write(const char * path);
+extern int cache_check(const char * path, time_t time, LIST ** includes);
+extern void cache_enter(const char * path, time_t time, LIST * includes);
 extern void donecache(void);
 

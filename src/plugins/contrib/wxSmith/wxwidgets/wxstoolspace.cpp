@@ -34,7 +34,7 @@ const int IconSize = 32;
 const int DragBoxSize = 6;
 }
 
-BEGIN_EVENT_TABLE(wxsToolSpace,wxScrolledWindow)
+BEGIN_EVENT_TABLE(wxsToolSpace, wxScrolledWindow)
     EVT_PAINT(wxsToolSpace::OnPaint)
     EVT_LEFT_DOWN(wxsToolSpace::OnMouseClick)
     EVT_LEFT_DCLICK(wxsToolSpace::OnMouseDClick)
@@ -43,23 +43,23 @@ BEGIN_EVENT_TABLE(wxsToolSpace,wxScrolledWindow)
     EVT_MOUSE_EVENTS(wxsToolSpace::OnMouse)
 END_EVENT_TABLE()
 
-wxsToolSpace::wxsToolSpace(wxWindow* Parent,wxsItemResData* Data):
+wxsToolSpace::wxsToolSpace(wxWindow * Parent, wxsItemResData * Data):
     wxScrolledWindow(Parent),
     m_First(0),
     m_Count(0),
     m_Data(Data),
     m_Unstable(false)
 {
-    SetScrollbars(5,0,1,1);
-    SetClientSize(wxSize(2*ExtraBorderSize+IconSize,2*ExtraBorderSize+IconSize));
-    SetVirtualSize(1,1);
+    SetScrollbars(5, 0, 1, 1);
+    SetClientSize(wxSize(2 * ExtraBorderSize + IconSize, 2 * ExtraBorderSize + IconSize));
+    SetVirtualSize(1, 1);
 }
 
 wxsToolSpace::~wxsToolSpace()
 {
-    while ( m_First )
+    while (m_First)
     {
-        Entry* Next = m_First->m_Next;
+        Entry * Next = m_First->m_Next;
         delete m_First;
         m_First = Next;
     }
@@ -72,27 +72,27 @@ void wxsToolSpace::BeforePreviewChanged()
 
 void wxsToolSpace::AfterPreviewChanged()
 {
-    Entry* Last = 0;
+    Entry * Last = 0;
 
     // Clearing current content
-    while ( m_First )
+    while (m_First)
     {
-        Entry* Next = m_First->m_Next;
+        Entry * Next = m_First->m_Next;
         delete m_First;
         m_First = Next;
     }
 
     // Iterating through all children of root item searching for tools
     m_Count = 0;
-    for ( int i=0; i<m_Data->GetToolsCount(); i++ )
-    {
-        wxsTool* Tool = m_Data->GetTool(i);
 
-        Entry* NewEntry = new Entry;
+    for (int i = 0; i < m_Data->GetToolsCount(); i++)
+    {
+        wxsTool * Tool = m_Data->GetTool(i);
+        Entry * NewEntry = new Entry;
         NewEntry->m_Tool = Tool;
         m_Count++;
 
-        if ( Last )
+        if (Last)
         {
             Last->m_Next = NewEntry;
         }
@@ -104,7 +104,7 @@ void wxsToolSpace::AfterPreviewChanged()
         Last = NewEntry;
     }
 
-    if ( Last )
+    if (Last)
     {
         Last->m_Next = 0;
     }
@@ -119,35 +119,37 @@ void wxsToolSpace::RefreshSelection()
     Refresh();
 }
 
-void wxsToolSpace::OnPaint(cb_unused wxPaintEvent& event)
+void wxsToolSpace::OnPaint(cb_unused wxPaintEvent & event)
 {
     wxPaintDC DC(this);
 
-    if ( m_Unstable ) return;
+    if (m_Unstable)
+    {
+        return;
+    }
 
     DoPrepareDC(DC);
     wxSize VirtualSize = GetVirtualSize();
-
     DC.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
     DC.SetPen(*wxBLACK);
-    DC.DrawRectangle(0,0,VirtualSize.GetWidth(),VirtualSize.GetHeight());
-
+    DC.DrawRectangle(0, 0, VirtualSize.GetWidth(), VirtualSize.GetHeight());
     int i = 0;
-    for ( Entry* Tool = m_First; Tool; Tool = Tool->m_Next, i++ )
+
+    for (Entry * Tool = m_First; Tool; Tool = Tool->m_Next, i++)
     {
-        wxsTool* Item = Tool->m_Tool;
-        int BeginX = i*(ExtraBorderSize+IconSize) + ExtraBorderSize;
+        wxsTool * Item = Tool->m_Tool;
+        int BeginX = i * (ExtraBorderSize + IconSize) + ExtraBorderSize;
         int BeginY = ExtraBorderSize;
         int EndX = BeginX + IconSize;
         int EndY = BeginY + IconSize;
         DC.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-        DC.DrawRectangle(BeginX-1,BeginY-1,EndX-BeginX+2,EndY-BeginY+2);
-        DC.DrawBitmap(Item->GetInfo().Icon32,BeginX,BeginY,true);
+        DC.DrawRectangle(BeginX - 1, BeginY - 1, EndX - BeginX + 2, EndY - BeginY + 2);
+        DC.DrawBitmap(Item->GetInfo().Icon32, BeginX, BeginY, true);
 
-        if ( Item->GetIsSelected() )
+        if (Item->GetIsSelected())
         {
             // Drawing fout drag boxes
-            if ( m_Data->GetRootSelection() != Item )
+            if (m_Data->GetRootSelection() != Item)
             {
                 DC.SetPen(*wxGREY_PEN);
                 DC.SetBrush(*wxGREY_BRUSH);
@@ -158,85 +160,92 @@ void wxsToolSpace::OnPaint(cb_unused wxPaintEvent& event)
                 DC.SetBrush(*wxBLACK_BRUSH);
             }
 
-            DC.DrawRectangle(BeginX-DragBoxSize/2,BeginY-DragBoxSize/2,DragBoxSize,DragBoxSize);
-            DC.DrawRectangle(BeginX-DragBoxSize/2,EndY-DragBoxSize/2,DragBoxSize,DragBoxSize);
-            DC.DrawRectangle(EndX-DragBoxSize/2,BeginY-DragBoxSize/2,DragBoxSize,DragBoxSize);
-            DC.DrawRectangle(EndX-DragBoxSize/2,EndY-DragBoxSize/2,DragBoxSize,DragBoxSize);
+            DC.DrawRectangle(BeginX - DragBoxSize / 2, BeginY - DragBoxSize / 2, DragBoxSize, DragBoxSize);
+            DC.DrawRectangle(BeginX - DragBoxSize / 2, EndY - DragBoxSize / 2, DragBoxSize, DragBoxSize);
+            DC.DrawRectangle(EndX - DragBoxSize / 2, BeginY - DragBoxSize / 2, DragBoxSize, DragBoxSize);
+            DC.DrawRectangle(EndX - DragBoxSize / 2, EndY - DragBoxSize / 2, DragBoxSize, DragBoxSize);
         }
     }
 }
 
-void wxsToolSpace::OnMouseClick(wxMouseEvent& event)
+void wxsToolSpace::OnMouseClick(wxMouseEvent & event)
 {
     SetFocus();
 
-    if ( m_Unstable ) return;
+    if (m_Unstable)
+    {
+        return;
+    }
 
     // Finding out which tool has been clicked
     int PosX = event.GetX();
     int PosY = event.GetY();
+    Entry * Tool = FindEntry(PosX, PosY);
 
-    Entry* Tool = FindEntry(PosX,PosY);
-
-    if ( Tool )
+    if (Tool)
     {
-        if ( !Tool->m_Tool->GetIsSelected() )
+        if (!Tool->m_Tool->GetIsSelected())
         {
-            m_Data->SelectItem(Tool->m_Tool,!event.ControlDown());
+            m_Data->SelectItem(Tool->m_Tool, !event.ControlDown());
         }
         else
         {
-            m_Data->SelectItem(Tool->m_Tool,false);
+            m_Data->SelectItem(Tool->m_Tool, false);
         }
 
-        Tool->m_Tool->MouseClick(0,PosX,PosY);
+        Tool->m_Tool->MouseClick(0, PosX, PosY);
     }
 }
 
-void wxsToolSpace::OnMouseDClick(wxMouseEvent& event)
+void wxsToolSpace::OnMouseDClick(wxMouseEvent & event)
 {
-    if ( m_Unstable ) return;
+    if (m_Unstable)
+    {
+        return;
+    }
 
     // Finding out which tool has been clicked
     int PosX = event.GetX();
     int PosY = event.GetY();
+    Entry * Tool = FindEntry(PosX, PosY);
 
-    Entry* Tool = FindEntry(PosX,PosY);
-
-    if ( Tool )
+    if (Tool)
     {
-        Tool->m_Tool->MouseDClick(0,PosX,PosY);
+        Tool->m_Tool->MouseDClick(0, PosX, PosY);
     }
 }
 
-void wxsToolSpace::OnMouseRight(wxMouseEvent& event)
+void wxsToolSpace::OnMouseRight(wxMouseEvent & event)
 {
     SetFocus();
 
-    if ( m_Unstable ) return;
+    if (m_Unstable)
+    {
+        return;
+    }
 
     // Finding out which tool has been clicked
     int PosX = event.GetX();
     int PosY = event.GetY();
+    Entry * Tool = FindEntry(PosX, PosY);
 
-    Entry* Tool = FindEntry(PosX,PosY);
-
-    if ( Tool )
+    if (Tool)
     {
-        Tool->m_Tool->MouseRightClick(0,PosX,PosY);
+        Tool->m_Tool->MouseRightClick(0, PosX, PosY);
     }
 }
 
-void wxsToolSpace::OnMouse(wxMouseEvent& event)
+void wxsToolSpace::OnMouse(wxMouseEvent & event)
 {
-    if ( event.ButtonDown() )
+    if (event.ButtonDown())
     {
         SetFocus();
     }
+
     event.Skip();
 }
 
-void wxsToolSpace::OnKeyDown(wxKeyEvent& event)
+void wxsToolSpace::OnKeyDown(wxKeyEvent & event)
 {
     GetParent()->GetEventHandler()->ProcessEvent(event);
 }
@@ -244,26 +253,41 @@ void wxsToolSpace::OnKeyDown(wxKeyEvent& event)
 void wxsToolSpace::RecalculateVirtualSize()
 {
     SetSizeHints(
-        m_Count*(ExtraBorderSize + IconSize) + ExtraBorderSize,
-        2*ExtraBorderSize + IconSize);
+        m_Count * (ExtraBorderSize + IconSize) + ExtraBorderSize,
+        2 * ExtraBorderSize + IconSize);
 }
 
-wxsToolSpace::Entry* wxsToolSpace::FindEntry(int& PosX,int& PosY)
+wxsToolSpace::Entry * wxsToolSpace::FindEntry(int & PosX, int & PosY)
 {
     // TODO: Check if mouse coordinates are yet shifted to virtual area
-    if ( PosY < ExtraBorderSize ) return 0;
-    if ( PosY >= ExtraBorderSize + IconSize ) return 0;
+    if (PosY < ExtraBorderSize)
+    {
+        return 0;
+    }
+
+    if (PosY >= ExtraBorderSize + IconSize)
+    {
+        return 0;
+    }
 
     int ToolNumber = PosX / (ExtraBorderSize + IconSize);
     int InToolPos  = PosX % (ExtraBorderSize + IconSize);
 
-    if ( ToolNumber >= m_Count ) return 0;
-    if ( InToolPos < ExtraBorderSize ) return 0;
+    if (ToolNumber >= m_Count)
+    {
+        return 0;
+    }
+
+    if (InToolPos < ExtraBorderSize)
+    {
+        return 0;
+    }
 
     PosY -= ExtraBorderSize;
-    PosX -= ExtraBorderSize + ToolNumber*(ExtraBorderSize+IconSize);
+    PosX -= ExtraBorderSize + ToolNumber * (ExtraBorderSize + IconSize);
+    Entry * Tool;
 
-    Entry* Tool;
-    for ( Tool = m_First; Tool && ToolNumber--; Tool = Tool->m_Next );
+    for (Tool = m_First; Tool && ToolNumber--; Tool = Tool->m_Next);
+
     return Tool;
 }

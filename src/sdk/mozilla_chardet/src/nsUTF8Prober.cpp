@@ -12,28 +12,35 @@ void  nsUTF8Prober::Reset(void)
     mState = eDetecting;
 }
 
-nsProbingState nsUTF8Prober::HandleData(const char* aBuf, uint32_t aLen)
+nsProbingState nsUTF8Prober::HandleData(const char * aBuf, uint32_t aLen)
 {
     nsSMState codingState;
 
     for (uint32_t i = 0; i < aLen; i++)
     {
         codingState = mCodingSM->NextState(aBuf[i]);
+
         if (codingState == eItsMe)
         {
             mState = eFoundIt;
             break;
         }
+
         if (codingState == eStart)
         {
             if (mCodingSM->GetCurrentCharLen() >= 2)
+            {
                 mNumOfMBChar++;
+            }
         }
     }
 
     if (mState == eDetecting)
         if (GetConfidence() > SHORTCUT_THRESHOLD)
+        {
             mState = eFoundIt;
+        }
+
     return mState;
 }
 
@@ -46,10 +53,15 @@ float nsUTF8Prober::GetConfidence(void)
     if (mNumOfMBChar < 6)
     {
         for (uint32_t i = 0; i < mNumOfMBChar; i++)
+        {
             unlike *= ONE_CHAR_PROB;
+        }
+
         return (float)1.0 - unlike;
     }
     else
+    {
         return (float)0.99;
+    }
 }
 

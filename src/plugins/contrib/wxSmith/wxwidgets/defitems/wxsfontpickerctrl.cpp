@@ -26,7 +26,7 @@ namespace
 {
 wxsRegisterItem<wxsFontPickerCtrl> Reg(_T("FontPickerCtrl"), wxsTWidget, _T("Advanced"), 100);
 
-WXS_ST_BEGIN(wxsFontPickerCtrlStyles,_T("wxFNTP_FONTDESC_AS_LABEL|wxFNTP_USEFONT_FOR_LABEL"))
+WXS_ST_BEGIN(wxsFontPickerCtrlStyles, _T("wxFNTP_FONTDESC_AS_LABEL|wxFNTP_USEFONT_FOR_LABEL"))
 WXS_ST_CATEGORY("wxFontPickerCtrl")
 WXS_ST(wxFNTP_FONTDESC_AS_LABEL)
 WXS_ST(wxFNTP_USEFONT_FOR_LABEL)
@@ -44,7 +44,7 @@ WXS_EV_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsFontPickerCtrl::wxsFontPickerCtrl(wxsItemResData* Data):
+wxsFontPickerCtrl::wxsFontPickerCtrl(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -59,29 +59,30 @@ wxsFontPickerCtrl::wxsFontPickerCtrl(wxsItemResData* Data):
  */
 void wxsFontPickerCtrl::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/fontpicker.h>"),GetInfo().ClassName,0);
-
-        wxString sFntName = GetCoderContext()->GetUniqueName(_T("PickerFont"));
-        wxString sFnt = m_fdFont.BuildFontCode(sFntName, GetCoderContext());
-        if ( sFnt.Len()==0 )
+        case wxsCPP:
         {
-            sFntName = wxT("wxNullFont");
-        }
-        Codef(_T("%s"), sFnt.wx_str());
-        Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), sFntName.wx_str());
-        BuildSetupWindowCode();
-        return;
-    }
+            AddHeader(_T("<wx/fontpicker.h>"), GetInfo().ClassName, 0);
+            wxString sFntName = GetCoderContext()->GetUniqueName(_T("PickerFont"));
+            wxString sFnt = m_fdFont.BuildFontCode(sFntName, GetCoderContext());
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsFontPickerCtrl::OnBuildCreatingCode"),GetLanguage());
-    }
+            if (sFnt.Len() == 0)
+            {
+                sFntName = wxT("wxNullFont");
+            }
+
+            Codef(_T("%s"), sFnt.wx_str());
+            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), sFntName.wx_str());
+            BuildSetupWindowCode();
+            return;
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsFontPickerCtrl::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
@@ -92,12 +93,12 @@ void wxsFontPickerCtrl::OnBuildCreatingCode()
  * \return wxObject*                     The constructed control.
  *
  */
-wxObject* wxsFontPickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsFontPickerCtrl::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxFontPickerCtrl* Preview;
+    wxFontPickerCtrl * Preview;
     wxFont fnt = m_fdFont.BuildFont();
     Preview = new wxFontPickerCtrl(Parent, GetId(), fnt, Pos(Parent), Size(Parent), Style());
-    return SetupWindow(Preview,Flags);
+    return SetupWindow(Preview, Flags);
 }
 
 /*! \brief Enumerate the control's properties.

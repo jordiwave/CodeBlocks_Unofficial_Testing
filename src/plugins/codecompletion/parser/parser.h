@@ -70,21 +70,21 @@
 /** Tree data associate with the symbol tree item */
 class ClassTreeData : public wxTreeItemData
 {
-public:
-    ClassTreeData(Token* token)
-    {
-        m_Token = token;
-    }
-    Token* GetToken()
-    {
-        return m_Token;
-    }
-    void   SetToken(Token* token)
-    {
-        m_Token = token;
-    }
-private:
-    Token* m_Token;
+    public:
+        ClassTreeData(Token * token)
+        {
+            m_Token = token;
+        }
+        Token * GetToken()
+        {
+            return m_Token;
+        }
+        void   SetToken(Token * token)
+        {
+            m_Token = token;
+        }
+    private:
+        Token * m_Token;
 };
 
 class ClassBrowser;
@@ -125,265 +125,265 @@ enum ParserState
   */
 class Parser : public ParserBase
 {
-    friend class ParserThreadedTask;
+        friend class ParserThreadedTask;
 
-public:
-    /** constructor
-     * @param parent which is actually a NativeParser object
-     * @param project the C::B project associated with the current Parser
-     */
-    Parser(wxEvtHandler* parent, cbProject* project);
-    /** destructor */
-    ~Parser() override;
+    public:
+        /** constructor
+         * @param parent which is actually a NativeParser object
+         * @param project the C::B project associated with the current Parser
+         */
+        Parser(wxEvtHandler * parent, cbProject * project);
+        /** destructor */
+        ~Parser() override;
 
-    /** Add files to batch parse mode, internally. The files will be parsed sequentially.
-     * @param filenames input files name array
-     */
-    void AddBatchParse(const StringList& filenames) override;
+        /** Add files to batch parse mode, internally. The files will be parsed sequentially.
+         * @param filenames input files name array
+         */
+        void AddBatchParse(const StringList & filenames) override;
 
-    /** Add one file to Batch mode Parsing, this is the bridge between the main thread and the
-     * thread pool, after this function call, the file(Parserthread) will be run from the thread
-     * pool.
-     * @param filenames input file name
-     */
-    void AddParse(const wxString& filename) override;
+        /** Add one file to Batch mode Parsing, this is the bridge between the main thread and the
+         * thread pool, after this function call, the file(Parserthread) will be run from the thread
+         * pool.
+         * @param filenames input file name
+         */
+        void AddParse(const wxString & filename) override;
 
-    /** set the predefined macro definition string was collected from the GCC command line,
-     *  this function adds the string to an internal m_PredefinedMacros, and switch the ParserState
-     */
-    void AddPredefinedMacros(const wxString& defs) override;
+        /** set the predefined macro definition string was collected from the GCC command line,
+         *  this function adds the string to an internal m_PredefinedMacros, and switch the ParserState
+         */
+        void AddPredefinedMacros(const wxString & defs) override;
 
-    /** clears the list of predefined macros after it has been parsed */
-    virtual void ClearPredefinedMacros();
+        /** clears the list of predefined macros after it has been parsed */
+        virtual void ClearPredefinedMacros();
 
-    /** return the predefined macro definition string that has been collected */
-    const wxString GetPredefinedMacros() const override;
+        /** return the predefined macro definition string that has been collected */
+        const wxString GetPredefinedMacros() const override;
 
-    /** set the associated C::B project pointer. (only used by one parser for whole workspace)
-     *  @return true if it can do the switch, other wise, return false, and print some debug logs.
-     */
-    bool UpdateParsingProject(cbProject* project) override;
+        /** set the associated C::B project pointer. (only used by one parser for whole workspace)
+         *  @return true if it can do the switch, other wise, return false, and print some debug logs.
+         */
+        bool UpdateParsingProject(cbProject * project) override;
 
-    /** Must add a locker before call all named ParseBufferXXX functions, ParseBuffer function will
-     * directly run the parsing in the same thread as the caller. So, take care if the time is limited.
-     * this function usually used to parse the function body to fetch the local variable information.
-     */
-    bool ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks = false,
-                     bool isTemp = false, const wxString& filename = wxEmptyString,
-                     int parentIdx = -1, int initLine = 0) override;
+        /** Must add a locker before call all named ParseBufferXXX functions, ParseBuffer function will
+         * directly run the parsing in the same thread as the caller. So, take care if the time is limited.
+         * this function usually used to parse the function body to fetch the local variable information.
+         */
+        bool ParseBuffer(const wxString & buffer, bool isLocal, bool bufferSkipBlocks = false,
+                         bool isTemp = false, const wxString & filename = wxEmptyString,
+                         int parentIdx = -1, int initLine = 0) override;
 
-    /** parser the current editor control, this function is used to list all the functions in the
-     * current code editor
-     */
-    bool ParseBufferForFunctions(const wxString& buffer) override;
+        /** parser the current editor control, this function is used to list all the functions in the
+         * current code editor
+         */
+        bool ParseBufferForFunctions(const wxString & buffer) override;
 
-    /** parse the buffer for collecting exposed namespace scopes*/
-    bool ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result) override;
+        /** parse the buffer for collecting exposed namespace scopes*/
+        bool ParseBufferForNamespaces(const wxString & buffer, NameSpaceVec & result) override;
 
-    /** parse the buffer for collecting using namespace directive*/
-    bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result,
-                                      bool bufferSkipBlocks = true) override;
+        /** parse the buffer for collecting using namespace directive*/
+        bool ParseBufferForUsingNamespace(const wxString & buffer, wxArrayString & result,
+                                          bool bufferSkipBlocks = true) override;
 
-    /** mark this file to be re-parsed in the TokenTree, tick the reparse timer, note it looks like
-     * the isLocal parameter is not used in Parser::Reparse function.
-     * A better function name could be: MarkFileNeedToBeReParsed()
-     */
-    bool Reparse(const wxString& filename, bool isLocal = true) override;
+        /** mark this file to be re-parsed in the TokenTree, tick the reparse timer, note it looks like
+         * the isLocal parameter is not used in Parser::Reparse function.
+         * A better function name could be: MarkFileNeedToBeReParsed()
+         */
+        bool Reparse(const wxString & filename, bool isLocal = true) override;
 
-    /** this usually happens when user adds some files to an existing project, it just use AddParse()
-     * function internally to add the file. and switch the ParserState to ParserCommon::ptAddFileToParser.
-     */
-    bool AddFile(const wxString& filename, cbProject* project, bool isLocal = true) override;
+        /** this usually happens when user adds some files to an existing project, it just use AddParse()
+         * function internally to add the file. and switch the ParserState to ParserCommon::ptAddFileToParser.
+         */
+        bool AddFile(const wxString & filename, cbProject * project, bool isLocal = true) override;
 
-    /** this usually happens when the user removes a file from the existing project, it will remove
-     * all the tokens belong to the file.
-     */
-    bool RemoveFile(const wxString& filename) override;
+        /** this usually happens when the user removes a file from the existing project, it will remove
+         * all the tokens belong to the file.
+         */
+        bool RemoveFile(const wxString & filename) override;
 
-    /** check to see a file is parsed already, it first check the TokenTree to see whether it has
-     * the specified file, but if a file is already queued (put in m_BatchParseFiles), we regard it
-     * as already parsed.
-     */
-    bool IsFileParsed(const wxString& filename) override;
+        /** check to see a file is parsed already, it first check the TokenTree to see whether it has
+         * the specified file, but if a file is already queued (put in m_BatchParseFiles), we regard it
+         * as already parsed.
+         */
+        bool IsFileParsed(const wxString & filename) override;
 
-    /** check to see whether Parser is in Idle mode, there is no work need to be done in the Parser*/
-    bool Done() override;
+        /** check to see whether Parser is in Idle mode, there is no work need to be done in the Parser*/
+        bool Done() override;
 
-    /** if the Parser is not in Idle mode, show which need to be done */
-    wxString NotDoneReason() override;
+        /** if the Parser is not in Idle mode, show which need to be done */
+        wxString NotDoneReason() override;
 
-protected:
-    // used for measuring the batch parsing time
-    void StartStopWatch();
-    // used for measuring the batch parsing time
-    void EndStopWatch();
+    protected:
+        // used for measuring the batch parsing time
+        void StartStopWatch();
+        // used for measuring the batch parsing time
+        void EndStopWatch();
 
-    /** Node: Currently, the max. concurrent ParserThread number should be ONE, CC does not support
-     * multiply threads parsing.
-     */
-    unsigned int GetMaxThreads() const
-    {
-        return m_Pool.GetConcurrentThreads();
-    }
+        /** Node: Currently, the max. concurrent ParserThread number should be ONE, CC does not support
+         * multiply threads parsing.
+         */
+        unsigned int GetMaxThreads() const
+        {
+            return m_Pool.GetConcurrentThreads();
+        }
 
-    /** Not used, because the ThreadPool only support running ONE ParserThread concurrently */
-    void SetMaxThreads(unsigned int max)
-    {
-        m_Pool.SetConcurrentThreads(max);
-    }
+        /** Not used, because the ThreadPool only support running ONE ParserThread concurrently */
+        void SetMaxThreads(unsigned int max)
+        {
+            m_Pool.SetConcurrentThreads(max);
+        }
 
-    /** parse the file, either immediately or delayed.
-     * @param isLocal true if the file belong to a C::B project
-     * @param locked give the status of the Tokentree, false means the tree is not locked
-     */
-    bool Parse(const wxString& filename, bool isLocal = true, bool locked = false);
+        /** parse the file, either immediately or delayed.
+         * @param isLocal true if the file belong to a C::B project
+         * @param locked give the status of the Tokentree, false means the tree is not locked
+         */
+        bool Parse(const wxString & filename, bool isLocal = true, bool locked = false);
 
-    /** delete those files from the TokenTree, and add them again through AddParse() function */
-    void ReparseModifiedFiles();
+        /** delete those files from the TokenTree, and add them again through AddParse() function */
+        void ReparseModifiedFiles();
 
-    /** cancel all the tasks in the thread pool m_Pool*/
-    void TerminateAllThreads();
+        /** cancel all the tasks in the thread pool m_Pool*/
+        void TerminateAllThreads();
 
-    /** When a ThreadPool batch parse stage is done, it will issue a cbEVT_THREADTASK_ALLDONE message.
-     * In some situations this event will be triggered, such as:
-     * - batch parsing for cpp source files
-     * - mark tokens belong to the cb project as local tokens
-     */
-    void OnAllThreadsDone(CodeBlocksEvent& event);
+        /** When a ThreadPool batch parse stage is done, it will issue a cbEVT_THREADTASK_ALLDONE message.
+         * In some situations this event will be triggered, such as:
+         * - batch parsing for cpp source files
+         * - mark tokens belong to the cb project as local tokens
+         */
+        void OnAllThreadsDone(CodeBlocksEvent & event);
 
-    /** some files in the Tokentree is marked as need to be reparsed, this can be done by a call
-     * of Reparse() before. So, in this timer event handler, we need to remove all the tokens of
-     * files in the Tree, and then re-parse them again. This is done by AddParse() again. the Parser
-     * status now switch to ParserCommon::ptReparseFile.
-     */
-    void OnReparseTimer(wxTimerEvent& event);
+        /** some files in the Tokentree is marked as need to be reparsed, this can be done by a call
+         * of Reparse() before. So, in this timer event handler, we need to remove all the tokens of
+         * files in the Tree, and then re-parse them again. This is done by AddParse() again. the Parser
+         * status now switch to ParserCommon::ptReparseFile.
+         */
+        void OnReparseTimer(wxTimerEvent & event);
 
-    /** A timer is used to optimized the event handling for parsing, e.g. several files/projects
-     * were added to the project, so we don't start the real parsing stage until the last
-     * file/project was added,
-     */
-    void OnBatchTimer(wxTimerEvent& event);
+        /** A timer is used to optimized the event handling for parsing, e.g. several files/projects
+         * were added to the project, so we don't start the real parsing stage until the last
+         * file/project was added,
+         */
+        void OnBatchTimer(wxTimerEvent & event);
 
-    /** The parser will let its parent (NativeParser) to handle the event, as the CodeCompletion instance
-     * was set as the next handler of the NativeParser. Those events can finally go to the CodeCompletion's
-     * event handler.
-     * @param state the state of the Parser, it could be any kind of enum ParserState
-     * @param id either idParserStart or idParserEnd
-     * @param info the log message
-     */
-    void ProcessParserEvent(ParserCommon::ParserState state, int id, const wxString& info = wxEmptyString);
+        /** The parser will let its parent (NativeParser) to handle the event, as the CodeCompletion instance
+         * was set as the next handler of the NativeParser. Those events can finally go to the CodeCompletion's
+         * event handler.
+         * @param state the state of the Parser, it could be any kind of enum ParserState
+         * @param id either idParserStart or idParserEnd
+         * @param info the log message
+         */
+        void ProcessParserEvent(ParserCommon::ParserState state, int id, const wxString & info = wxEmptyString);
 
-    /** read Parser options from configure file */
-    void ReadOptions() override;
-    /** write Parse options to configure file */
-    void WriteOptions() override;
+        /** read Parser options from configure file */
+        void ReadOptions() override;
+        /** write Parse options to configure file */
+        void WriteOptions() override;
 
-private:
-    /** the only usage of this function is in the Parserthread class, when handling include directives
-     * the parserthread use some call like m_Parent->ParseFile() to call this function, but this function
-     * just call Parser::Parse() function, which either run the syntax analysis immediately or create
-     * a parsing task in the Pool.
-     * @param filename the file we want to parse
-     * @param isGlobal true if the file is not belong to a C::B project
-     * @param locked true if the TokenTree is locked. when initially parse a translation unit file
-     * the locked should be set as false, but if you want to recursive parse to an include file
-     * the locked value should be set as true.
-     */
-    bool ParseFile(const wxString& filename, bool isGlobal, bool locked = false) override;
+    private:
+        /** the only usage of this function is in the Parserthread class, when handling include directives
+         * the parserthread use some call like m_Parent->ParseFile() to call this function, but this function
+         * just call Parser::Parse() function, which either run the syntax analysis immediately or create
+         * a parsing task in the Pool.
+         * @param filename the file we want to parse
+         * @param isGlobal true if the file is not belong to a C::B project
+         * @param locked true if the TokenTree is locked. when initially parse a translation unit file
+         * the locked should be set as false, but if you want to recursive parse to an include file
+         * the locked value should be set as true.
+         */
+        bool ParseFile(const wxString & filename, bool isGlobal, bool locked = false) override;
 
-    /** connect event handlers of the timers and thread pool */
-    void ConnectEvents();
+        /** connect event handlers of the timers and thread pool */
+        void ConnectEvents();
 
-    /** connect event handlers of the timers and thread pool */
-    void DisconnectEvents();
+        /** connect event handlers of the timers and thread pool */
+        void DisconnectEvents();
 
-    /** when initialized, this variable will be an instance of a NativeParser */
-    wxEvtHandler*             m_Parent;
+        /** when initialized, this variable will be an instance of a NativeParser */
+        wxEvtHandler       *      m_Parent;
 
-    /** referring to the C::B cbp project currently parsing in one parser per workspace mode */
-    cbProject*                m_Project;
+        /** referring to the C::B cbp project currently parsing in one parser per workspace mode */
+        cbProject        *        m_Project;
 
-protected:
-    /** used to detect changes between in-memory data and cache, true if loaded from cache */
-    bool                      m_UsingCache;
+    protected:
+        /** used to detect changes between in-memory data and cache, true if loaded from cache */
+        bool                      m_UsingCache;
 
-    /** Thread Pool, executing all the ParserThread, used in batch parse mode. The thread pool can
-     * add/remove/execute the ParserThread tasks, it will also notify the Parser that all the thread
-     * are done.
-     */
-    cbThreadPool              m_Pool;
+        /** Thread Pool, executing all the ParserThread, used in batch parse mode. The thread pool can
+         * add/remove/execute the ParserThread tasks, it will also notify the Parser that all the thread
+         * are done.
+         */
+        cbThreadPool              m_Pool;
 
-    /** true, if the parser is still busy with parsing, false if the parsing stage has finished
-     * this value is set in parserthreadedtask after putting all the batchFiles to pool(task)
-     * it was reset after the last stage (mark tokens as local)
-     */
-    bool                      m_IsParsing;
+        /** true, if the parser is still busy with parsing, false if the parsing stage has finished
+         * this value is set in parserthreadedtask after putting all the batchFiles to pool(task)
+         * it was reset after the last stage (mark tokens as local)
+         */
+        bool                      m_IsParsing;
 
 
-    /** Indicates some files in the current project need to be re-parsed, this is commonly caused
-      * that the "real-time parsing option" is enabled, and user is editing source file.
-      */
-    bool                      m_NeedsReparse;
+        /** Indicates some files in the current project need to be re-parsed, this is commonly caused
+          * that the "real-time parsing option" is enabled, and user is editing source file.
+          */
+        bool                      m_NeedsReparse;
 
-    /** batch Parse mode flag. It was set after consuming m_PredefinedMacros, it was reset after the
-     * final stage (mark token as local).
-     */
-    bool                      m_IsFirstBatch;
+        /** batch Parse mode flag. It was set after consuming m_PredefinedMacros, it was reset after the
+         * final stage (mark token as local).
+         */
+        bool                      m_IsFirstBatch;
 
-private:
+    private:
 
-    /** a file is need to be reparsed, maybe another file will to be reparsed very soon, so use
-     * a timer to collect all the files need to be reparsed. This avoid starting running the thread
-     * pool to quickly
-     */
-    wxTimer                   m_ReparseTimer;
+        /** a file is need to be reparsed, maybe another file will to be reparsed very soon, so use
+         * a timer to collect all the files need to be reparsed. This avoid starting running the thread
+         * pool to quickly
+         */
+        wxTimer                   m_ReparseTimer;
 
-    /** a timer to delay the operation of batch parsing, see OnBatchTimer() member function as a
-     * reference
-     */
-    wxTimer                   m_BatchTimer;
+        /** a timer to delay the operation of batch parsing, see OnBatchTimer() member function as a
+         * reference
+         */
+        wxTimer                   m_BatchTimer;
 
-    /** a stop watch to measure parsing time*/
-    wxStopWatch               m_StopWatch;
-    bool                      m_StopWatchRunning;
-    long                      m_LastStopWatchTime;
+        /** a stop watch to measure parsing time*/
+        wxStopWatch               m_StopWatch;
+        bool                      m_StopWatchRunning;
+        long                      m_LastStopWatchTime;
 
-    /** Parser::OnAllThreadsDone will be called when m_Pool finished its job, but when we run a
-     * batch parsing, we may receive several such event from the m_Pool, because
-     * 1, when ParserThreadedTask finished
-     * 2, when batchFiles get finished
-     * 3, mark C::B project files's token as local
-     */
-    bool                      m_IgnoreThreadEvents;
+        /** Parser::OnAllThreadsDone will be called when m_Pool finished its job, but when we run a
+         * batch parsing, we may receive several such event from the m_Pool, because
+         * 1, when ParserThreadedTask finished
+         * 2, when batchFiles get finished
+         * 3, mark C::B project files's token as local
+         */
+        bool                      m_IgnoreThreadEvents;
 
-    /** All other batch parse files, like the normal headers/sources */
-    StringList                m_BatchParseFiles;
+        /** All other batch parse files, like the normal headers/sources */
+        StringList                m_BatchParseFiles;
 
-    /** Pre-defined macros, its a buffer queried from the compiler command line */
-    wxString                  m_PredefinedMacros;
-    wxString                  m_LastPredefinedMacros; // for debugging
+        /** Pre-defined macros, its a buffer queried from the compiler command line */
+        wxString                  m_PredefinedMacros;
+        wxString                  m_LastPredefinedMacros; // for debugging
 
-    /** used to measure batch parse time*/
-    bool                      m_IsBatchParseDone;
+        /** used to measure batch parse time*/
+        bool                      m_IsBatchParseDone;
 
-    /** indicated the current state the parser */
-    ParserCommon::ParserState m_ParserState;
+        /** indicated the current state the parser */
+        ParserCommon::ParserState m_ParserState;
 
-    /** if true, all the files of the current project will be labeled as "local" */
-    bool                      m_NeedMarkFileAsLocal;
+        /** if true, all the files of the current project will be labeled as "local" */
+        bool                      m_NeedMarkFileAsLocal;
 
-    /** A list to contain pointers to internal running threads*/
-    typedef std::list<cbThreadedTask*> TasksQueue;
-    TasksQueue                m_tasksQueue;
+        /** A list to contain pointers to internal running threads*/
+        typedef std::list<cbThreadedTask *> TasksQueue;
+        TasksQueue                m_tasksQueue;
 
-    /** Remember a newly created internal running threads*/
-    void AddParserThread(cbThreadedTask* task);
+        /** Remember a newly created internal running threads*/
+        void AddParserThread(cbThreadedTask * task);
 
-    /** Remove a completed internal running threads*/
-    void RemoveParserThread(cbThreadedTask* task);
+        /** Remove a completed internal running threads*/
+        void RemoveParserThread(cbThreadedTask * task);
 
-    /** Tell internal running threads to abort further processing*/
-    void AbortParserThreads();
+        /** Tell internal running threads to abort further processing*/
+        void AbortParserThreads();
 };
 
 #endif // PARSER_H

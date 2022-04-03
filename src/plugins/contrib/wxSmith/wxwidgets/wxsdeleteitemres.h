@@ -32,30 +32,30 @@
 
 class wxsDeleteItemRes: public wxScrollingDialog
 {
-public:
+    public:
 
-    wxsDeleteItemRes();
-    virtual ~wxsDeleteItemRes();
+        wxsDeleteItemRes();
+        virtual ~wxsDeleteItemRes();
 
-    //(*Identifiers(wxsDeleteItemRes)
-    static const long ID_CHECKBOX1;
-    static const long ID_CHECKBOX2;
-    static const long ID_CHECKBOX3;
-    //*)
+        //(*Identifiers(wxsDeleteItemRes)
+        static const long ID_CHECKBOX1;
+        static const long ID_CHECKBOX2;
+        static const long ID_CHECKBOX3;
+        //*)
 
-    //(*Handlers(wxsDeleteItemRes)
-    void Onm_DeleteSourcesClick(wxCommandEvent& event);
-    //*)
+        //(*Handlers(wxsDeleteItemRes)
+        void Onm_DeleteSourcesClick(wxCommandEvent & event);
+        //*)
 
-    //(*Declarations(wxsDeleteItemRes)
-    wxCheckBox* m_PhysDeleteSources;
-    wxCheckBox* m_DeleteSources;
-    wxCheckBox* m_PhysDeleteWXS;
-    //*)
+        //(*Declarations(wxsDeleteItemRes)
+        wxCheckBox * m_PhysDeleteSources;
+        wxCheckBox * m_DeleteSources;
+        wxCheckBox * m_PhysDeleteWXS;
+        //*)
 
-private:
+    private:
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

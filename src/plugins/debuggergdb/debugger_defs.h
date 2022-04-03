@@ -50,39 +50,39 @@ struct Cursor
   */
 class DebuggerCmd
 {
-public:
-    DebuggerCmd(DebuggerDriver* driver, const wxString& cmd = _T(""), bool logToNormalLog = false);
-    virtual ~DebuggerCmd() {}
+    public:
+        DebuggerCmd(DebuggerDriver * driver, const wxString & cmd = _T(""), bool logToNormalLog = false);
+        virtual ~DebuggerCmd() {}
 
-    /** Executes an action.
-      *
-      * This allows for "dummy" debugger commands to enter the commands queue.
-      * You can, for example, leave m_Cmd empty and just have Action()
-      * do something GUI-related (like the watches command does).
-      * Action() is called when the debugger command becomes current in the
-      * commands queue. It is called after sending m_Cmd to the debugger (if not empty).
-      */
-    virtual void Action() {}
+        /** Executes an action.
+          *
+          * This allows for "dummy" debugger commands to enter the commands queue.
+          * You can, for example, leave m_Cmd empty and just have Action()
+          * do something GUI-related (like the watches command does).
+          * Action() is called when the debugger command becomes current in the
+          * commands queue. It is called after sending m_Cmd to the debugger (if not empty).
+          */
+        virtual void Action() {}
 
-    /** Parses the command's output.
-      * @param The output. This is the full output up to
-      * (and including) the prompt.
-      */
-    virtual void ParseOutput(const wxString& output);
+        /** Parses the command's output.
+          * @param The output. This is the full output up to
+          * (and including) the prompt.
+          */
+        virtual void ParseOutput(const wxString & output);
 
-    /** Tells if the command is a continue type command (continue, step, next and run to cursor
-      * commands should be marked as such)
-      * @return true if the command is continue type command
-      */
-    virtual bool IsContinueCommand() const
-    {
-        return false;
-    }
+        /** Tells if the command is a continue type command (continue, step, next and run to cursor
+          * commands should be marked as such)
+          * @return true if the command is continue type command
+          */
+        virtual bool IsContinueCommand() const
+        {
+            return false;
+        }
 
-    wxString m_Cmd;         ///< the actual command
-protected:
-    DebuggerDriver* m_pDriver; ///< the driver
-    bool m_LogToNormalLog;  ///< if true, log to normal log, else the debug log
+        wxString m_Cmd;         ///< the actual command
+    protected:
+        DebuggerDriver * m_pDriver; ///< the driver
+        bool m_LogToNormalLog;  ///< if true, log to normal log, else the debug log
 };
 
 /** This command is similar to DebuggerCmd
@@ -91,43 +91,43 @@ protected:
   */
 class DebuggerInfoCmd : public DebuggerCmd
 {
-public:
-    DebuggerInfoCmd(DebuggerDriver* driver, const wxString& cmd, const wxString& title)
-        : DebuggerCmd(driver, cmd),
-          m_Title(title)
-    {
-        m_Cmd = cmd;
-    }
-    ~DebuggerInfoCmd() override {}
+    public:
+        DebuggerInfoCmd(DebuggerDriver * driver, const wxString & cmd, const wxString & title)
+            : DebuggerCmd(driver, cmd),
+              m_Title(title)
+        {
+            m_Cmd = cmd;
+        }
+        ~DebuggerInfoCmd() override {}
 
-    void ParseOutput(const wxString& output) override;
-    wxString m_Title;
+        void ParseOutput(const wxString & output) override;
+        wxString m_Title;
 };
 
 /** Base class for all Continue type of commands */
 class DebuggerContinueBaseCmd : public DebuggerCmd
 {
-public:
-    DebuggerContinueBaseCmd(DebuggerDriver* driver, const wxString& cmd = _T(""), bool logToNormalLog = false) :
-        DebuggerCmd(driver, cmd, logToNormalLog)
-    {
-    }
+    public:
+        DebuggerContinueBaseCmd(DebuggerDriver * driver, const wxString & cmd = _T(""), bool logToNormalLog = false) :
+            DebuggerCmd(driver, cmd, logToNormalLog)
+        {
+        }
 
-    bool IsContinueCommand() const override
-    {
-        return true;
-    }
+        bool IsContinueCommand() const override
+        {
+            return true;
+        }
 };
 
 /** Action-only debugger command to signal the watches tree to update. */
 class DbgCmd_UpdateWindow : public DebuggerCmd
 {
-public:
-    DbgCmd_UpdateWindow(DebuggerDriver* driver, cbDebuggerPlugin::DebugWindows windowToUpdate);
-    void Action() override;
+    public:
+        DbgCmd_UpdateWindow(DebuggerDriver * driver, cbDebuggerPlugin::DebugWindows windowToUpdate);
+        void Action() override;
 
-private:
-    cbDebuggerPlugin::DebugWindows m_windowToUpdate;
+    private:
+        cbDebuggerPlugin::DebugWindows m_windowToUpdate;
 };
 
 /** Debugger breakpoint interface.
@@ -196,7 +196,7 @@ struct DebuggerBreakpoint : cbBreakpoint
     wxString breakAddress; ///< Valid only for type==bptData: address to break when read/written.
     bool breakOnRead; ///< Valid only for type==bptData: break when memory is read from.
     bool breakOnWrite; ///< Valid only for type==bptData: break when memory is written to.
-    void* userData; ///< Custom user data.
+    void * userData; ///< Custom user data.
 };
 typedef std::deque<cb::shared_ptr<DebuggerBreakpoint> > BreakpointsList;
 
@@ -221,103 +221,103 @@ enum WatchFormat
 
 class GDBWatch : public cbWatch
 {
-public:
-    GDBWatch(wxString const &symbol);
-    ~GDBWatch() override;
-public:
+    public:
+        GDBWatch(wxString const & symbol);
+        ~GDBWatch() override;
+    public:
 
-    void GetSymbol(wxString &symbol) const override;
-    void GetValue(wxString &value) const override;
-    bool SetValue(const wxString &value) override;
-    void GetFullWatchString(wxString &full_watch) const override;
-    void GetType(wxString &type) const override;
-    void SetType(const wxString &type) override;
+        void GetSymbol(wxString & symbol) const override;
+        void GetValue(wxString & value) const override;
+        bool SetValue(const wxString & value) override;
+        void GetFullWatchString(wxString & full_watch) const override;
+        void GetType(wxString & type) const override;
+        void SetType(const wxString & type) override;
 
-    wxString GetDebugString() const override;
+        wxString GetDebugString() const override;
 
-    wxString MakeSymbolToAddress() const override;
-    bool IsPointerType() const override;
-public:
-    void SetDebugValue(wxString const &value);
-    void SetSymbol(const wxString& symbol);
+        wxString MakeSymbolToAddress() const override;
+        bool IsPointerType() const override;
+    public:
+        void SetDebugValue(wxString const & value);
+        void SetSymbol(const wxString & symbol);
 
-    void SetFormat(WatchFormat format);
-    WatchFormat GetFormat() const;
+        void SetFormat(WatchFormat format);
+        WatchFormat GetFormat() const;
 
-    void SetArray(bool flag);
-    bool IsArray() const;
-    void SetArrayParams(int start, int count);
-    int GetArrayStart() const;
-    int GetArrayCount() const;
+        void SetArray(bool flag);
+        bool IsArray() const;
+        void SetArrayParams(int start, int count);
+        int GetArrayStart() const;
+        int GetArrayCount() const;
 
-    void SetForTooltip(bool flag = true);
-    bool GetForTooltip() const;
+        void SetForTooltip(bool flag = true);
+        bool GetForTooltip() const;
 
-protected:
-    virtual void DoDestroy();
+    protected:
+        virtual void DoDestroy();
 
-private:
-    wxString m_symbol;
-    wxString m_type;
-    wxString m_raw_value;
-    wxString m_debug_value;
-    WatchFormat m_format;
-    int m_array_start;
-    int m_array_count;
-    bool m_is_array;
-    bool m_forTooltip;
+    private:
+        wxString m_symbol;
+        wxString m_type;
+        wxString m_raw_value;
+        wxString m_debug_value;
+        WatchFormat m_format;
+        int m_array_start;
+        int m_array_count;
+        bool m_is_array;
+        bool m_forTooltip;
 };
 
 class GDBMemoryRangeWatch  : public cbWatch
 {
-public:
-    GDBMemoryRangeWatch(uint64_t address, uint64_t size, const wxString& symbol);
+    public:
+        GDBMemoryRangeWatch(uint64_t address, uint64_t size, const wxString & symbol);
 
-public:
-    void GetSymbol(wxString &symbol) const override
-    {
-        symbol = m_symbol;
-    }
-    void GetValue(wxString &value) const override
-    {
-        value = m_value;
-    }
-    bool SetValue(const wxString &value) override;
-    void GetFullWatchString(wxString &full_watch) const override
-    {
-        full_watch = wxEmptyString;
-    }
-    void GetType(wxString &type) const override
-    {
-        type = wxT("Memory range");
-    }
-    void SetType(cb_unused const wxString &type) override {}
+    public:
+        void GetSymbol(wxString & symbol) const override
+        {
+            symbol = m_symbol;
+        }
+        void GetValue(wxString & value) const override
+        {
+            value = m_value;
+        }
+        bool SetValue(const wxString & value) override;
+        void GetFullWatchString(wxString & full_watch) const override
+        {
+            full_watch = wxEmptyString;
+        }
+        void GetType(wxString & type) const override
+        {
+            type = wxT("Memory range");
+        }
+        void SetType(cb_unused const wxString & type) override {}
 
-    wxString GetDebugString() const override
-    {
-        return wxString();
-    }
+        wxString GetDebugString() const override
+        {
+            return wxString();
+        }
 
-    wxString MakeSymbolToAddress() const override;
-    bool IsPointerType() const override
-    {
-        return false;
-    }
+        wxString MakeSymbolToAddress() const override;
+        bool IsPointerType() const override
+        {
+            return false;
+        }
 
-    uint64_t GetAddress() const
-    {
-        return m_address;
-    }
-    uint64_t GetSize() const
-    {
-        return m_size;
-    }
+        uint64_t GetAddress() const
+        {
+            return m_address;
+        }
+        uint64_t GetSize() const
+        {
+            return m_size;
+        }
 
-private:
-    uint64_t m_address;
-    uint64_t m_size;
-    wxString m_symbol;
-    wxString m_value;
+    private:
+        uint64_t m_address;
+        uint64_t m_size;
+        wxString m_symbol;
+        wxString m_value;
 };
 
 typedef std::vector<cb::shared_ptr<GDBWatch>> WatchesContainer;
@@ -332,7 +332,7 @@ enum class WatchType
 
 typedef std::unordered_map<cb::shared_ptr<cbWatch>, WatchType> MapWatchesToType;
 
-bool IsPointerType(const wxString &type);
+bool IsPointerType(const wxString & type);
 wxString CleanStringValue(wxString value);
 
 enum DebuggerLanguage

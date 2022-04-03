@@ -3,11 +3,11 @@
 #include <sdk.h> // Code::Blocks SDK
 
 #ifndef CB_PRECOMP
-#include <cbeditor.h>
-#include <configmanager.h>
-#include <editormanager.h>
-#include <editorcolourset.h>
-#include <manager.h>
+    #include <cbeditor.h>
+    #include <configmanager.h>
+    #include <editormanager.h>
+    #include <editorcolourset.h>
+    #include <manager.h>
 #endif
 
 #include <cbstyledtextctrl.h>
@@ -19,43 +19,56 @@ namespace
 PluginRegistrant<SmartIndentLua> reg(wxT("SmartIndentLua"));
 }
 
-void SmartIndentLua::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
+void SmartIndentLua::OnEditorHook(cbEditor * ed, wxScintillaEvent & event) const
 {
     // check if smart indent is enabled
     // check the event type and the currently set language
     // if it is not a CharAdded event or the language is not Lua return
-
     if (!ed)
+    {
         return;
+    }
 
-    if ( !SmartIndentEnabled() )
+    if (!SmartIndentEnabled())
+    {
         return;
+    }
 
     wxEventType type = event.GetEventType();
-    if ( type != wxEVT_SCI_CHARADDED )
-        return;
 
-    cbStyledTextCtrl *stc = ed->GetControl();
-    if (!stc)
+    if (type != wxEVT_SCI_CHARADDED)
+    {
         return;
+    }
+
+    cbStyledTextCtrl * stc = ed->GetControl();
+
+    if (!stc)
+    {
+        return;
+    }
 
     wxString langname = Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageName(ed->GetLanguage());
-    if ( langname != wxT("Lua") )
+
+    if (langname != wxT("Lua"))
+    {
         return;
+    }
 
     ed->AutoIndentDone(); // we are responsible.
-
     // if a newline was added
     const int pos = stc->GetCurrentPos();
     int currLine = stc->LineFromPosition(pos);
 
     if (currLine == 0)
+    {
         return;
+    }
 
     wxChar ch = event.GetKey();
 
     // indent
-    if ( (ch == wxT('\n')) || ( (stc->GetEOLMode() == wxSCI_EOL_CR) && (ch == wxT('\r')) ) )
+    if ((ch == wxT('\n')) || ((stc->GetEOLMode() == wxSCI_EOL_CR) && (ch == wxT('\r'))))
     {
         if (AutoIndentEnabled())
         {
@@ -70,20 +83,26 @@ void SmartIndentLua::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
     }
 
     bool braceCompleted = false;
-    if ( SelectionBraceCompletionEnabled() || stc->IsBraceShortcutActive() )
+
+    if (SelectionBraceCompletionEnabled() || stc->IsBraceShortcutActive())
+    {
         braceCompleted = stc->DoSelectionBraceCompletion(ch);
+    }
+
     if (!braceCompleted && BraceCompletionEnabled())
+    {
         stc->DoBraceCompletion(ch);
+    }
 }
 
-bool SmartIndentLua::BraceIndent(cbStyledTextCtrl *stc, wxString &indent)const
+bool SmartIndentLua::BraceIndent(cbStyledTextCtrl * stc, wxString & indent)const
 {
-    if ( BraceSmartIndentEnabled() )
+    if (BraceSmartIndentEnabled())
     {
         int style = wxSCI_LUA_STRING;
-
         int brace_position = GetFirstBraceInLine(stc, style);
         return Indent(stc, indent, brace_position);
     }
+
     return false;
 }

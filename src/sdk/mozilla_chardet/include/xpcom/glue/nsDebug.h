@@ -7,11 +7,11 @@
 #define nsDebug_h___
 
 #ifndef nscore_h___
-#include "nscore.h"
+    #include "nscore.h"
 #endif
 
 #ifndef nsError_h__
-#include "nsError.h"
+    #include "nsError.h"
 #endif
 
 /*
@@ -24,12 +24,12 @@
 // We do not want to (and can not) use mozilla's debug stuff
 // in case we run ./configure with --enable-debug, we have to undefine it here or building breaks
 #ifdef DEBUG
-#undef DEBUG
+    #undef DEBUG
 #endif
 /* C::B end */
 
 #ifdef DEBUG
-#include "prprf.h"
+    #include "prprf.h"
 #endif
 
 #ifdef DEBUG
@@ -51,11 +51,11 @@
  * evaluate the message argument.
  */
 #define NS_ABORT_IF_FALSE(_expr, _msg)                        \
-  do {                                                        \
-    if (!(_expr)) {                                           \
-      NS_DebugBreak(NS_DEBUG_ABORT, _msg, #_expr, __FILE__, __LINE__); \
-    }                                                         \
-  } while(0)
+    do {                                                        \
+        if (!(_expr)) {                                           \
+            NS_DebugBreak(NS_DEBUG_ABORT, _msg, #_expr, __FILE__, __LINE__); \
+        }                                                         \
+    } while(0)
 
 /**
  * Warn if a given condition is false.
@@ -66,82 +66,82 @@
  * evaluate the message argument.
  */
 #define NS_WARN_IF_FALSE(_expr,_msg)                          \
-  do {                                                        \
-    if (!(_expr)) {                                           \
-      NS_DebugBreak(NS_DEBUG_WARNING, _msg, #_expr, __FILE__, __LINE__); \
-    }                                                         \
-  } while(0)
+    do {                                                        \
+        if (!(_expr)) {                                           \
+            NS_DebugBreak(NS_DEBUG_WARNING, _msg, #_expr, __FILE__, __LINE__); \
+        }                                                         \
+    } while(0)
 
 /**
  * Test a precondition for truth. If the expression is not true then
  * trigger a program failure.
  */
 #define NS_PRECONDITION(expr, str)                            \
-  do {                                                        \
-    if (!(expr)) {                                            \
-      NS_DebugBreak(NS_DEBUG_ASSERTION, str, #expr, __FILE__, __LINE__); \
-    }                                                         \
-  } while(0)
+    do {                                                        \
+        if (!(expr)) {                                            \
+            NS_DebugBreak(NS_DEBUG_ASSERTION, str, #expr, __FILE__, __LINE__); \
+        }                                                         \
+    } while(0)
 
 /**
  * Test an assertion for truth. If the expression is not true then
  * trigger a program failure.
  */
 #define NS_ASSERTION(expr, str)                               \
-  do {                                                        \
-    if (!(expr)) {                                            \
-      NS_DebugBreak(NS_DEBUG_ASSERTION, str, #expr, __FILE__, __LINE__); \
-    }                                                         \
-  } while(0)
+    do {                                                        \
+        if (!(expr)) {                                            \
+            NS_DebugBreak(NS_DEBUG_ASSERTION, str, #expr, __FILE__, __LINE__); \
+        }                                                         \
+    } while(0)
 
 /**
  * Test a post-condition for truth. If the expression is not true then
  * trigger a program failure.
  */
 #define NS_POSTCONDITION(expr, str)                           \
-  do {                                                        \
-    if (!(expr)) {                                            \
-      NS_DebugBreak(NS_DEBUG_ASSERTION, str, #expr, __FILE__, __LINE__); \
-    }                                                         \
-  } while(0)
+    do {                                                        \
+        if (!(expr)) {                                            \
+            NS_DebugBreak(NS_DEBUG_ASSERTION, str, #expr, __FILE__, __LINE__); \
+        }                                                         \
+    } while(0)
 
 /**
  * This macros triggers a program failure if executed. It indicates that
  * an attempt was made to execute some unimplemented functionality.
  */
 #define NS_NOTYETIMPLEMENTED(str)                             \
-  NS_DebugBreak(NS_DEBUG_ASSERTION, str, "NotYetImplemented", __FILE__, __LINE__)
+    NS_DebugBreak(NS_DEBUG_ASSERTION, str, "NotYetImplemented", __FILE__, __LINE__)
 
 /**
  * This macros triggers a program failure if executed. It indicates that
  * an attempt was made to execute some unimplemented functionality.
  */
 #define NS_NOTREACHED(str)                                    \
-  NS_DebugBreak(NS_DEBUG_ASSERTION, str, "Not Reached", __FILE__, __LINE__)
+    NS_DebugBreak(NS_DEBUG_ASSERTION, str, "Not Reached", __FILE__, __LINE__)
 
 /**
  * Log an error message.
  */
 #define NS_ERROR(str)                                         \
-  NS_DebugBreak(NS_DEBUG_ASSERTION, str, "Error", __FILE__, __LINE__)
+    NS_DebugBreak(NS_DEBUG_ASSERTION, str, "Error", __FILE__, __LINE__)
 
 /**
  * Log a warning message.
  */
 #define NS_WARNING(str)                                       \
-  NS_DebugBreak(NS_DEBUG_WARNING, str, nullptr, __FILE__, __LINE__)
+    NS_DebugBreak(NS_DEBUG_WARNING, str, nullptr, __FILE__, __LINE__)
 
 /**
  * Trigger an abort
  */
 #define NS_ABORT()                                            \
-  NS_DebugBreak(NS_DEBUG_ABORT, nullptr, nullptr, __FILE__, __LINE__)
+    NS_DebugBreak(NS_DEBUG_ABORT, nullptr, nullptr, __FILE__, __LINE__)
 
 /**
  * Cause a break
  */
 #define NS_BREAK()                                            \
-  NS_DebugBreak(NS_DEBUG_BREAK, nullptr, nullptr, __FILE__, __LINE__)
+    NS_DebugBreak(NS_DEBUG_BREAK, nullptr, nullptr, __FILE__, __LINE__)
 
 #else /* DEBUG */
 
@@ -186,22 +186,22 @@
 #define STATIC_PASTE1(X,Y) STATIC_PASTE2(X,Y)
 
 #define STATIC_ASSERT(COND)                          \
-  do {                                               \
-    __attribute__((assert_static(#COND), unused))    \
-    int STATIC_PASTE1(assert_static_, __COUNTER__);  \
-  } while(0)
+    do {                                               \
+        __attribute__((assert_static(#COND), unused))    \
+        int STATIC_PASTE1(assert_static_, __COUNTER__);  \
+    } while(0)
 
 #define STATIC_ASSUME(COND)                          \
-  do {                                               \
-    __attribute__((assume_static(#COND), unused))    \
-    int STATIC_PASTE1(assume_static_, __COUNTER__);  \
-  } while(0)
+    do {                                               \
+        __attribute__((assume_static(#COND), unused))    \
+        int STATIC_PASTE1(assume_static_, __COUNTER__);  \
+    } while(0)
 
 #define STATIC_ASSERT_RUNTIME(COND)                         \
-  do {                                                      \
-    __attribute__((assert_static_runtime(#COND), unused))   \
-    int STATIC_PASTE1(assert_static_runtime_, __COUNTER__); \
-  } while(0)
+    do {                                                      \
+        __attribute__((assert_static_runtime(#COND), unused))   \
+        int STATIC_PASTE1(assert_static_runtime_, __COUNTER__); \
+    } while(0)
 
 #else /* XGILL_PLUGIN */
 
@@ -224,17 +224,17 @@
 
 #ifdef XGILL_PLUGIN
 
-/* Redefine runtime assertion macros to perform static assertions, for both
- * debug and release builds. Don't include the original runtime assertions;
- * this ensures the tool will consider cases where the assertion fails. */
+    /* Redefine runtime assertion macros to perform static assertions, for both
+    * debug and release builds. Don't include the original runtime assertions;
+    * this ensures the tool will consider cases where the assertion fails. */
 
-#undef NS_PRECONDITION
-#undef NS_ASSERTION
-#undef NS_POSTCONDITION
+    #undef NS_PRECONDITION
+    #undef NS_ASSERTION
+    #undef NS_POSTCONDITION
 
-#define NS_PRECONDITION(expr, str)   STATIC_ASSERT_RUNTIME(expr)
-#define NS_ASSERTION(expr, str)      STATIC_ASSERT_RUNTIME(expr)
-#define NS_POSTCONDITION(expr, str)  STATIC_ASSERT_RUNTIME(expr)
+    #define NS_PRECONDITION(expr, str)   STATIC_ASSERT_RUNTIME(expr)
+    #define NS_ASSERTION(expr, str)      STATIC_ASSERT_RUNTIME(expr)
+    #define NS_POSTCONDITION(expr, str)  STATIC_ASSERT_RUNTIME(expr)
 
 #endif /* XGILL_PLUGIN */
 
@@ -249,7 +249,7 @@
  * code (e.g., by intercepting a signal).
  */
 #define NS_RUNTIMEABORT(msg)                                    \
-  NS_DebugBreak(NS_DEBUG_ABORT, msg, nullptr, __FILE__, __LINE__)
+    NS_DebugBreak(NS_DEBUG_ABORT, msg, nullptr, __FILE__, __LINE__)
 
 
 /* Macros for checking the trueness of an expression passed in within an
@@ -258,26 +258,26 @@
 ******************************************************************************/
 
 #define NS_ENSURE_TRUE(x, ret)                                \
-  do {                                                        \
-    if (MOZ_UNLIKELY(!(x))) {                                 \
-       NS_WARNING("NS_ENSURE_TRUE(" #x ") failed");           \
-       return ret;                                            \
-    }                                                         \
-  } while(0)
+    do {                                                        \
+        if (MOZ_UNLIKELY(!(x))) {                                 \
+            NS_WARNING("NS_ENSURE_TRUE(" #x ") failed");           \
+            return ret;                                            \
+        }                                                         \
+    } while(0)
 
 #define NS_ENSURE_FALSE(x, ret)                               \
-  NS_ENSURE_TRUE(!(x), ret)
+    NS_ENSURE_TRUE(!(x), ret)
 
 #define NS_ENSURE_TRUE_VOID(x)                                \
-  do {                                                        \
-    if (MOZ_UNLIKELY(!(x))) {                                 \
-       NS_WARNING("NS_ENSURE_TRUE(" #x ") failed");           \
-       return;                                                \
-    }                                                         \
-  } while(0)
+    do {                                                        \
+        if (MOZ_UNLIKELY(!(x))) {                                 \
+            NS_WARNING("NS_ENSURE_TRUE(" #x ") failed");           \
+            return;                                                \
+        }                                                         \
+    } while(0)
 
 #define NS_ENSURE_FALSE_VOID(x)                               \
-  NS_ENSURE_TRUE_VOID(!(x))
+    NS_ENSURE_TRUE_VOID(!(x))
 
 /******************************************************************************
 ** Macros for checking results
@@ -308,50 +308,50 @@
 #endif
 
 #define NS_ENSURE_SUCCESS(res, ret)                                       \
-  do {                                                                    \
-    nsresult __rv = res; /* Don't evaluate |res| more than once */        \
-    if (NS_FAILED(__rv)) {                                                \
-      NS_ENSURE_SUCCESS_BODY(res, ret)                                    \
-      return ret;                                                         \
-    }                                                                     \
-  } while(0)
+    do {                                                                    \
+        nsresult __rv = res; /* Don't evaluate |res| more than once */        \
+        if (NS_FAILED(__rv)) {                                                \
+            NS_ENSURE_SUCCESS_BODY(res, ret)                                    \
+            return ret;                                                         \
+        }                                                                     \
+    } while(0)
 
 #define NS_ENSURE_SUCCESS_VOID(res)                                       \
-  do {                                                                    \
-    nsresult __rv = res;                                                  \
-    if (NS_FAILED(__rv)) {                                                \
-      NS_ENSURE_SUCCESS_BODY_VOID(res)                                    \
-      return;                                                             \
-    }                                                                     \
-  } while(0)
+    do {                                                                    \
+        nsresult __rv = res;                                                  \
+        if (NS_FAILED(__rv)) {                                                \
+            NS_ENSURE_SUCCESS_BODY_VOID(res)                                    \
+            return;                                                             \
+        }                                                                     \
+    } while(0)
 
 /******************************************************************************
 ** Macros for checking state and arguments upon entering interface boundaries
 ******************************************************************************/
 
 #define NS_ENSURE_ARG(arg)                                    \
-  NS_ENSURE_TRUE(arg, NS_ERROR_INVALID_ARG)
+    NS_ENSURE_TRUE(arg, NS_ERROR_INVALID_ARG)
 
 #define NS_ENSURE_ARG_POINTER(arg)                            \
-  NS_ENSURE_TRUE(arg, NS_ERROR_INVALID_POINTER)
+    NS_ENSURE_TRUE(arg, NS_ERROR_INVALID_POINTER)
 
 #define NS_ENSURE_ARG_MIN(arg, min)                           \
-  NS_ENSURE_TRUE((arg) >= min, NS_ERROR_INVALID_ARG)
+    NS_ENSURE_TRUE((arg) >= min, NS_ERROR_INVALID_ARG)
 
 #define NS_ENSURE_ARG_MAX(arg, max)                           \
-  NS_ENSURE_TRUE((arg) <= max, NS_ERROR_INVALID_ARG)
+    NS_ENSURE_TRUE((arg) <= max, NS_ERROR_INVALID_ARG)
 
 #define NS_ENSURE_ARG_RANGE(arg, min, max)                    \
-  NS_ENSURE_TRUE(((arg) >= min) && ((arg) <= max), NS_ERROR_INVALID_ARG)
+    NS_ENSURE_TRUE(((arg) >= min) && ((arg) <= max), NS_ERROR_INVALID_ARG)
 
 #define NS_ENSURE_STATE(state)                                \
-  NS_ENSURE_TRUE(state, NS_ERROR_UNEXPECTED)
+    NS_ENSURE_TRUE(state, NS_ERROR_UNEXPECTED)
 
 #define NS_ENSURE_NO_AGGREGATION(outer)                       \
-  NS_ENSURE_FALSE(outer, NS_ERROR_NO_AGGREGATION)
+    NS_ENSURE_FALSE(outer, NS_ERROR_NO_AGGREGATION)
 
 #define NS_ENSURE_PROPER_AGGREGATION(outer, iid)              \
-  NS_ENSURE_FALSE(outer && !iid.Equals(NS_GET_IID(nsISupports)), NS_ERROR_INVALID_ARG)
+    NS_ENSURE_FALSE(outer && !iid.Equals(NS_GET_IID(nsISupports)), NS_ERROR_INVALID_ARG)
 
 /*****************************************************************************/
 
@@ -360,7 +360,7 @@
 #else
 #define NS_CheckThreadSafe(owningThread, msg)                 \
     if (MOZ_UNLIKELY(owningThread != PR_GetCurrentThread())) {  \
-      MOZ_CRASH(msg);                                           \
+        MOZ_CRASH(msg);                                           \
     }
 #endif
 
@@ -374,7 +374,7 @@ extern "C" {
 #endif
 
 NS_COM_GLUE void
-printf_stderr(const char *fmt, ...);
+printf_stderr(const char * fmt, ...);
 
 #ifdef __cplusplus
 }

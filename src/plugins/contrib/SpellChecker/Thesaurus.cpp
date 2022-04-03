@@ -25,14 +25,14 @@
 #include <wx/file.h>
 
 
-Thesaurus::Thesaurus(wxWindow *dialogsparent):
+Thesaurus::Thesaurus(wxWindow * dialogsparent):
     m_pT(NULL),
     m_pDialogsParent(dialogsparent)
 {
     //ctor
 }
 
-Thesaurus::Thesaurus(wxWindow *dialogsparent,const wxString idxpath, const wxString datpath):
+Thesaurus::Thesaurus(wxWindow * dialogsparent, const wxString idxpath, const wxString datpath):
     m_pT(NULL),
     m_pDialogsParent(dialogsparent)
 {
@@ -52,16 +52,21 @@ void Thesaurus::SetFiles(wxString idxpath, const wxString datpath)
     delete m_pT;
     m_pT = NULL;
 
-    if ( wxFile::Exists(idxpath) && wxFile::Exists(datpath) )
+    if (wxFile::Exists(idxpath) && wxFile::Exists(datpath))
     {
-        m_pT = new wxThes( idxpath, datpath );
+        m_pT = new wxThes(idxpath, datpath);
     }
     else
     {
         Manager::Get()->GetLogManager()->Log(_T("SpellChecker: Thesaurus files '") + idxpath + _T("' not found!"));
+
         if (!wxDirExists(idxpath.BeforeLast(wxFILE_SEP_PATH)) || !wxDirExists(datpath.BeforeLast(wxFILE_SEP_PATH)))
-            return; // path does not exist, silence invalid directory warnings
+        {
+            return;    // path does not exist, silence invalid directory warnings
+        }
+
         wxString altIdx = wxFindFirstFile(idxpath.BeforeLast(wxT('.')) + wxT("*.idx"), wxFILE); // "*_v2.idx"
+
         if (altIdx.IsEmpty()) // try again with more wildcards
         {
             altIdx = idxpath.AfterLast(wxFILE_SEP_PATH).BeforeLast(wxT('.')) + wxT("*.idx");
@@ -69,6 +74,7 @@ void Thesaurus::SetFiles(wxString idxpath, const wxString datpath)
             altIdx.Replace(wxT("-"), wxT("*"));
             altIdx = wxFindFirstFile(idxpath.BeforeLast(wxFILE_SEP_PATH) + wxFILE_SEP_PATH + altIdx, wxFILE);
         }
+
         if (altIdx.IsEmpty()) // try to find the thesaurus of a related language (something is better than nothing)
         {
             altIdx = idxpath.AfterLast(wxFILE_SEP_PATH);
@@ -79,6 +85,7 @@ void Thesaurus::SetFiles(wxString idxpath, const wxString datpath)
         }
 
         wxString altDat = wxFindFirstFile(datpath.BeforeLast(wxT('.')) + wxT("*.dat"), wxFILE); // "*_v2.dat"
+
         if (altDat.IsEmpty()) // try again with more wildcards
         {
             altDat = datpath.AfterLast(wxFILE_SEP_PATH).BeforeLast(wxT('.')) + wxT("*.dat");
@@ -86,6 +93,7 @@ void Thesaurus::SetFiles(wxString idxpath, const wxString datpath)
             altDat.Replace(wxT("-"), wxT("*"));
             altDat = wxFindFirstFile(datpath.BeforeLast(wxFILE_SEP_PATH) + wxFILE_SEP_PATH + altDat, wxFILE);
         }
+
         if (altDat.IsEmpty()) // try to find the thesaurus of a related language (something is better than nothing)
         {
             altDat = datpath.AfterLast(wxFILE_SEP_PATH);
@@ -103,32 +111,39 @@ void Thesaurus::SetFiles(wxString idxpath, const wxString datpath)
     }
 }
 
-bool Thesaurus::GetSynonym(const wxString Word, wxString &Syn)
+bool Thesaurus::GetSynonym(const wxString Word, wxString & Syn)
 {
-    if ( m_pT )
+    if (m_pT)
     {
         synonyms syn = m_pT->Lookup(Word);
-        if ( syn.size() )
+
+        if (syn.size())
         {
             Syn = wxEmptyString;
             ThesaurusDialog dlg(m_pDialogsParent, Word, syn);
             PlaceWindow(&dlg);
-            if ( dlg.ShowModal() == wxID_OK )
+
+            if (dlg.ShowModal() == wxID_OK)
             {
                 Syn = dlg.GetSelection();
             }
+
             return true;
         }
     }
-    return false;
 
+    return false;
 }
 
-synonyms Thesaurus::GetSynonyms(const wxString& Word)
+synonyms Thesaurus::GetSynonyms(const wxString & Word)
 {
     synonyms syn;
+
     if (m_pT)
+    {
         syn = m_pT->Lookup(Word);
+    }
+
     return syn;
 }
 

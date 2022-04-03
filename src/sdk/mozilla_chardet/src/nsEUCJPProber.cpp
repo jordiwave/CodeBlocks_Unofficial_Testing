@@ -19,7 +19,7 @@ void  nsEUCJPProber::Reset(void)
     mDistributionAnalyser.Reset(mIsPreferredLanguage);
 }
 
-nsProbingState nsEUCJPProber::HandleData(const char* aBuf, uint32_t aLen)
+nsProbingState nsEUCJPProber::HandleData(const char * aBuf, uint32_t aLen)
 {
     NS_ASSERTION(aLen, "HandleData called with empty buffer");
     nsSMState codingState;
@@ -27,11 +27,13 @@ nsProbingState nsEUCJPProber::HandleData(const char* aBuf, uint32_t aLen)
     for (uint32_t i = 0; i < aLen; i++)
     {
         codingState = mCodingSM->NextState(aBuf[i]);
+
         if (codingState == eItsMe)
         {
             mState = eFoundIt;
             break;
         }
+
         if (codingState == eStart)
         {
             uint32_t charLen = mCodingSM->GetCurrentCharLen();
@@ -44,17 +46,19 @@ nsProbingState nsEUCJPProber::HandleData(const char* aBuf, uint32_t aLen)
             }
             else
             {
-                mContextAnalyser.HandleOneChar(aBuf+i-1, charLen);
-                mDistributionAnalyser.HandleOneChar(aBuf+i-1, charLen);
+                mContextAnalyser.HandleOneChar(aBuf + i - 1, charLen);
+                mDistributionAnalyser.HandleOneChar(aBuf + i - 1, charLen);
             }
         }
     }
 
-    mLastChar[0] = aBuf[aLen-1];
+    mLastChar[0] = aBuf[aLen - 1];
 
     if (mState == eDetecting)
         if (mContextAnalyser.GotEnoughData() && GetConfidence() > SHORTCUT_THRESHOLD)
+        {
             mState = eFoundIt;
+        }
 
     return mState;
 }
@@ -63,7 +67,6 @@ float nsEUCJPProber::GetConfidence(void)
 {
     float contxtCf = mContextAnalyser.GetConfidence();
     float distribCf = mDistributionAnalyser.GetConfidence();
-
     return (contxtCf > distribCf ? contxtCf : distribCf);
 }
 

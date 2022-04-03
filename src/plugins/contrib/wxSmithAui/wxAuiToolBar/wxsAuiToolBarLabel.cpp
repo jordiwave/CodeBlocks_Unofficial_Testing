@@ -47,14 +47,14 @@ wxsRegisterItem<wxsAuiToolBarLabel> Reg(
     false);
 }
 
-wxsAuiToolBarLabel::wxsAuiToolBarLabel(wxsItemResData* Data)
-    : wxsAuiToolBarItemBase(Data,&Reg.Info,flId,0,0),
+wxsAuiToolBarLabel::wxsAuiToolBarLabel(wxsItemResData * Data)
+    : wxsAuiToolBarItemBase(Data, &Reg.Info, flId, 0, 0),
       m_IsDefault(true),
       m_Width(0)
 {}
 
 void wxsAuiToolBarLabel::OnEnumItemProperties(long Flags)
 {
-    WXS_BOOL(wxsAuiToolBarLabel,m_IsDefault,_("Default width"),_T("isdefault"),true)
-    WXS_LONG(wxsAuiToolBarLabel,m_Width,_("Width"),_T("width"),0)
+    WXS_BOOL(wxsAuiToolBarLabel, m_IsDefault, _("Default width"), _T("isdefault"), true)
+    WXS_LONG(wxsAuiToolBarLabel, m_Width, _("Width"), _T("width"), 0)
 }

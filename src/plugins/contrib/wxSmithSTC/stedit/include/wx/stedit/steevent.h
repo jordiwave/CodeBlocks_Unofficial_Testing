@@ -27,65 +27,65 @@ class WXDLLIMPEXP_FWD_STEDIT wxSTEditor;
 //-----------------------------------------------------------------------------
 class WXDLLIMPEXP_STEDIT wxSTEditorEvent : public wxCommandEvent
 {
-public:
-    wxSTEditorEvent() : wxCommandEvent() {}
-    wxSTEditorEvent(const wxSTEditorEvent& event) : wxCommandEvent(event) {}
-    wxSTEditorEvent( int id, wxEventType type, wxObject* obj,
-                     int stateChange, int stateValues,
-                     const wxString& fileName );
+    public:
+        wxSTEditorEvent() : wxCommandEvent() {}
+        wxSTEditorEvent(const wxSTEditorEvent & event) : wxCommandEvent(event) {}
+        wxSTEditorEvent(int id, wxEventType type, wxObject * obj,
+                        int stateChange, int stateValues,
+                        const wxString & fileName);
 
-    virtual ~wxSTEditorEvent() {}
+        virtual ~wxSTEditorEvent() {}
 
-    /// Has the state of the editor changed see STE_StateType for different states.
-    /// Can OR states together to see if any of them have changed.
-    bool HasStateChange(int stateChange) const
-    {
-        return (GetStateChange() & stateChange) != 0;
-    }
-    bool GetStateValue(STE_StateType stateValue) const
-    {
-        return (GetStateValues() & stateValue)  != 0;
-    }
+        /// Has the state of the editor changed see STE_StateType for different states.
+        /// Can OR states together to see if any of them have changed.
+        bool HasStateChange(int stateChange) const
+        {
+            return (GetStateChange() & stateChange) != 0;
+        }
+        bool GetStateValue(STE_StateType stateValue) const
+        {
+            return (GetStateValues() & stateValue)  != 0;
+        }
 
-    /// Get the changes of the wxSTEditor::GetState() for the wxEVT_STEDITOR_STATE_CHANGED.
-    int  GetStateChange() const
-    {
-        return GetInt();
-    }
-    /// Get the wxSTEditor::GetState() for any wxEVT_STEDITOR_* events.
-    int  GetStateValues() const
-    {
-        return int(GetExtraLong());
-    }
-    void SetStateChange(int stateChange)
-    {
-        SetInt(stateChange);
-    }
-    void SetStateValues(int stateValues)
-    {
-        SetExtraLong(stateValues);
-    }
+        /// Get the changes of the wxSTEditor::GetState() for the wxEVT_STEDITOR_STATE_CHANGED.
+        int  GetStateChange() const
+        {
+            return GetInt();
+        }
+        /// Get the wxSTEditor::GetState() for any wxEVT_STEDITOR_* events.
+        int  GetStateValues() const
+        {
+            return int(GetExtraLong());
+        }
+        void SetStateChange(int stateChange)
+        {
+            SetInt(stateChange);
+        }
+        void SetStateValues(int stateValues)
+        {
+            SetExtraLong(stateValues);
+        }
 
-    ///. Get the filename of the wxStEditor for wxEVT_STEDITOR_* events.
-    wxFileName GetFileName() const
-    {
-        return wxFileName(GetString());
-    }
-    void SetFileName( const wxFileName& fileName )
-    {
-        SetString( fileName.GetFullPath() );
-    }
+        ///. Get the filename of the wxStEditor for wxEVT_STEDITOR_* events.
+        wxFileName GetFileName() const
+        {
+            return wxFileName(GetString());
+        }
+        void SetFileName(const wxFileName & fileName)
+        {
+            SetString(fileName.GetFullPath());
+        }
 
-    wxSTEditor* GetEditor() const;
+        wxSTEditor * GetEditor() const;
 
-    // implementation
-    virtual wxEvent *Clone() const
-    {
-        return new wxSTEditorEvent(*this);
-    }
+        // implementation
+        virtual wxEvent * Clone() const
+        {
+            return new wxSTEditorEvent(*this);
+        }
 
-private:
-    DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxSTEditorEvent)
+    private:
+        DECLARE_DYNAMIC_CLASS_NO_ASSIGN(wxSTEditorEvent)
 };
 
 // --------------------------------------------------------------------------
@@ -177,14 +177,14 @@ END_DECLARE_EVENT_TYPES()
 
 
 #if !defined(wxStyledTextEventHandler) // not in < wx29
-typedef void (wxEvtHandler::*wxStyledTextEventFunction)(wxStyledTextEvent&);
+typedef void (wxEvtHandler::*wxStyledTextEventFunction)(wxStyledTextEvent &);
 
 #define wxStyledTextEventHandler( func ) \
     (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxStyledTextEventFunction, &func)
 //wxEVENT_HANDLER_CAST( wxStyledTextEventFunction, func )
 #endif // !defined(wxStyledTextEventHandler)
 
-typedef void (wxEvtHandler::*wxSTEditorEventFunction)(wxSTEditorEvent&);
+typedef void (wxEvtHandler::*wxSTEditorEventFunction)(wxSTEditorEvent &);
 
 #define wxSTEditorEventHandler(func) \
     (wxObjectEventFunction)(wxEventFunction)wxStaticCastEvent(wxSTEditorEventFunction, &func)

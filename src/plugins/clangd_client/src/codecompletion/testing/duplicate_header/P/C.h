@@ -5,8 +5,8 @@ namespace P
 {
 class C
 {
-public:
-    virtual void init() const = 0;
+    public:
+        virtual void init() const = 0;
 };
 }
 

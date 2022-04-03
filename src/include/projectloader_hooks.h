@@ -17,9 +17,9 @@ namespace ProjectLoaderHooks
 /** Abstract base hook functor interface. */
 class DLLIMPORT HookFunctorBase
 {
-public:
-    virtual ~HookFunctorBase() {}
-    virtual void Call(cbProject*, TiXmlElement*, bool) const = 0;
+    public:
+        virtual ~HookFunctorBase() {}
+        virtual void Call(cbProject *, TiXmlElement *, bool) const = 0;
 };
 
 /** Functor class for use as a project loading/saving hook.
@@ -42,32 +42,34 @@ public:
   */
 template<class T> class HookFunctor : public HookFunctorBase
 {
-public:
-    typedef void (T::*Func)(cbProject*, TiXmlElement*, bool);
-    HookFunctor(T* obj, Func func) : m_pObj(obj), m_pFunc(func)
-    { ; }
-    void Call(cbProject* project, TiXmlElement* elem, bool isLoading) const override
-    {
-        if (m_pObj && m_pFunc)
-            (m_pObj->*m_pFunc)(project, elem, isLoading);
-    }
-protected:
-    T* m_pObj;
-    Func m_pFunc;
+    public:
+        typedef void (T::*Func)(cbProject *, TiXmlElement *, bool);
+        HookFunctor(T * obj, Func func) : m_pObj(obj), m_pFunc(func)
+        { ; }
+        void Call(cbProject * project, TiXmlElement * elem, bool isLoading) const override
+        {
+            if (m_pObj && m_pFunc)
+            {
+                (m_pObj->*m_pFunc)(project, elem, isLoading);
+            }
+        }
+    protected:
+        T * m_pObj;
+        Func m_pFunc;
 };
 
 /** Register a project loading/saving hook.
   * @param functor The functor to use as a callback.
   * @return An ID. Use this to unregister your hook later.
   */
-extern DLLIMPORT int RegisterHook(HookFunctorBase* functor);
+extern DLLIMPORT int RegisterHook(HookFunctorBase * functor);
 /** Unregister a previously registered project loading/saving hook.
   * @param id The hook's ID. You should have the ID from when RegisterHook() was called.
   * @param deleteHook If true, the hook will be deleted (default). If not, it's
   * up to you to delete it.
   * @return The functor. If @c deleteHook was true, it always returns NULL.
   */
-extern DLLIMPORT HookFunctorBase* UnregisterHook(int id, bool deleteHook = true);
+extern DLLIMPORT HookFunctorBase * UnregisterHook(int id, bool deleteHook = true);
 /** Are there any hooks registered?
   * @return True if any hooks are registered, false if none.
   */
@@ -78,7 +80,7 @@ extern DLLIMPORT bool HasRegisteredHooks();
   * @param elem The XML element under which the called hook can read/write.
   * @param isLoading True if the project is being loaded, false if being saved.
   */
-extern DLLIMPORT void CallHooks(cbProject* project, TiXmlElement* elem, bool isLoading);
+extern DLLIMPORT void CallHooks(cbProject * project, TiXmlElement * elem, bool isLoading);
 }
 
 #endif // PROJECTLOADER_HOOKS_H

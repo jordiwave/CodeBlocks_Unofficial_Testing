@@ -26,65 +26,69 @@
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,double)
 
-wxsFloatProperty::wxsFloatProperty(const wxString& PGName, const wxString& DataName,long _Offset,double _Default,int Priority):
-    wxsProperty(PGName,DataName,Priority),
+wxsFloatProperty::wxsFloatProperty(const wxString & PGName, const wxString & DataName, long _Offset, double _Default, int Priority):
+    wxsProperty(PGName, DataName, Priority),
     Offset(_Offset),
     Default(_Default)
 {}
 
 
-void wxsFloatProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
+void wxsFloatProperty::PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent)
 {
-    PGRegister(Object,Grid,Grid->AppendIn(Parent,new wxFloatProperty(GetPGName(),wxPG_LABEL,VALUE)));
+    PGRegister(Object, Grid, Grid->AppendIn(Parent, new wxFloatProperty(GetPGName(), wxPG_LABEL, VALUE)));
 }
 
-bool wxsFloatProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,
+bool wxsFloatProperty::PGRead(wxsPropertyContainer * Object, wxPropertyGridManager * Grid,
                               wxPGId Id, cb_unused long Index)
 {
     VALUE = Grid->GetPropertyValue(Id).GetDouble();
     return true;
 }
 
-bool wxsFloatProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,
+bool wxsFloatProperty::PGWrite(wxsPropertyContainer * Object, wxPropertyGridManager * Grid,
                                wxPGId Id, cb_unused long Index)
 {
-    Grid->SetPropertyValue(Id,VALUE);
+    Grid->SetPropertyValue(Id, VALUE);
     return true;
 }
 
-bool wxsFloatProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsFloatProperty::XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
-    if ( !Element )
+    if (!Element)
     {
         VALUE = Default;
         return false;
     }
-    const char* Text = Element->GetText();
-    if ( !Text )
+
+    const char * Text = Element->GetText();
+
+    if (!Text)
     {
         VALUE = Default;
         return false;
     }
+
     VALUE = atof(Text);
     return true;
 }
 
-bool wxsFloatProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsFloatProperty::XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
-    if ( VALUE != Default )
+    if (VALUE != Default)
     {
-        Element->InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%lf"),VALUE))));
+        Element->InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%lf"), VALUE))));
         return true;
     }
+
     return false;
 }
 
-bool wxsFloatProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsFloatProperty::PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
     return Stream->GetDouble(GetDataName(), VALUE, Default);
 }
 
-bool wxsFloatProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsFloatProperty::PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
-    return Stream->PutDouble(GetDataName(),VALUE,Default);
+    return Stream->PutDouble(GetDataName(), VALUE, Default);
 }

@@ -23,9 +23,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsRichTextStyleListBox> Reg(_T("RichTextStyleListBox"),wxsTWidget,_T("Standard"),155);
+wxsRegisterItem<wxsRichTextStyleListBox> Reg(_T("RichTextStyleListBox"), wxsTWidget, _T("Standard"), 155);
 
-WXS_ST_BEGIN(wxsRichTextStyleListBoxStyles,_T(""))
+WXS_ST_BEGIN(wxsRichTextStyleListBoxStyles, _T(""))
 WXS_ST_CATEGORY("wxsRichTextStyleListBox")
 WXS_ST_DEFAULTS()
 WXS_ST_END()
@@ -36,7 +36,7 @@ WXS_ST_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsRichTextStyleListBox::wxsRichTextStyleListBox(wxsItemResData* Data):
+wxsRichTextStyleListBox::wxsRichTextStyleListBox(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -55,58 +55,62 @@ wxsRichTextStyleListBox::wxsRichTextStyleListBox(wxsItemResData* Data):
  */
 void wxsRichTextStyleListBox::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/richtext/richtextstyles.h>"),GetInfo().ClassName,hfInPCH);
-
-        Codef(_T("%C(%W, %I, %P, %S, %T);\n"));
-
-        wxString sVarName = GetVarName();
-        // Add the control and stylesheet setting calls at the bottom of the code, hopefully after the control and stylesheet have been declared.
-        if (!m_sControl.IsEmpty())
+        case wxsCPP:
         {
-            AddEventCode(wxString::Format(_("// Set the wxRichtTextCtrl for %s. \n"), sVarName.wx_str()));
-            AddEventCode(wxString::Format(wxT("%s->SetRichTextCtrl(%s);\n"), sVarName.wx_str(), m_sControl.wx_str()));
+            AddHeader(_T("<wx/richtext/richtextstyles.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %P, %S, %T);\n"));
+            wxString sVarName = GetVarName();
+
+            // Add the control and stylesheet setting calls at the bottom of the code, hopefully after the control and stylesheet have been declared.
+            if (!m_sControl.IsEmpty())
+            {
+                AddEventCode(wxString::Format(_("// Set the wxRichtTextCtrl for %s. \n"), sVarName.wx_str()));
+                AddEventCode(wxString::Format(wxT("%s->SetRichTextCtrl(%s);\n"), sVarName.wx_str(), m_sControl.wx_str()));
+            }
+
+            if (!m_sStyleSheet.IsEmpty())
+            {
+                AddEventCode(wxString::Format(_("// Set the wxRichTextStyleSheet for %s. \n"), sVarName.wx_str()));
+                AddEventCode(wxString::Format(wxT("%s->SetStyleSheet(%s);\n"), sVarName.wx_str(), m_sStyleSheet.wx_str()));
+                AddEventCode(wxString::Format(wxT("%s->UpdateStyles();\n"), sVarName.wx_str()));
+            }
+
+            // wxRichTextStyleListBox::wxRICHTEXT_STYLE_PARAGRAPH is the default value.
+            switch (m_iStyleType)
+            {
+                case wxRichTextStyleListBox::wxRICHTEXT_STYLE_ALL:
+                    Codef(_T("%ASetStyleType(%s);\n"), wxT("wxRichTextStyleListBox::wxRICHTEXT_STYLE_ALL"));
+                    break;
+
+                case wxRichTextStyleListBox::wxRICHTEXT_STYLE_CHARACTER:
+                    Codef(_T("%ASetStyleType(%s);\n"), wxT("wxRichTextStyleListBox::wxRICHTEXT_STYLE_CHARACTER"));
+                    break;
+
+                case wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST:
+                    Codef(_T("%ASetStyleType(%s);\n"), wxT("wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST"));
+                    break;
+
+                default:
+                    break;
+            }
+
+            // Default is false.
+            if (m_bApplyOnSelection)
+            {
+                Codef(_T("%ASetApplyOnSelection(%b);\n"), m_bApplyOnSelection);
+            }
+
+            BuildSetupWindowCode();
+            return;
         }
-        if (!m_sStyleSheet.IsEmpty())
-        {
-            AddEventCode(wxString::Format(_("// Set the wxRichTextStyleSheet for %s. \n"), sVarName.wx_str()));
-            AddEventCode(wxString::Format(wxT("%s->SetStyleSheet(%s);\n"), sVarName.wx_str(), m_sStyleSheet.wx_str()));
-            AddEventCode(wxString::Format(wxT("%s->UpdateStyles();\n"), sVarName.wx_str()));
-        }
 
-        // wxRichTextStyleListBox::wxRICHTEXT_STYLE_PARAGRAPH is the default value.
-        switch(m_iStyleType)
-        {
-        case wxRichTextStyleListBox::wxRICHTEXT_STYLE_ALL:
-            Codef(_T("%ASetStyleType(%s);\n"), wxT("wxRichTextStyleListBox::wxRICHTEXT_STYLE_ALL"));
-            break;
-        case wxRichTextStyleListBox::wxRICHTEXT_STYLE_CHARACTER:
-            Codef(_T("%ASetStyleType(%s);\n"), wxT("wxRichTextStyleListBox::wxRICHTEXT_STYLE_CHARACTER"));
-            break;
-        case wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST:
-            Codef(_T("%ASetStyleType(%s);\n"), wxT("wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST"));
-            break;
+        case wxsUnknownLanguage: // fall-through
         default:
-            break;
-        }
-        // Default is false.
-        if (m_bApplyOnSelection)
         {
-            Codef( _T("%ASetApplyOnSelection(%b);\n"), m_bApplyOnSelection);
+            wxsCodeMarks::Unknown(_T("wxsRichTextStyleListBox::OnBuildCreatingCode"), GetLanguage());
         }
-
-        BuildSetupWindowCode();
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsRichTextStyleListBox::OnBuildCreatingCode"),GetLanguage());
-    }
     }
 }
 
@@ -117,39 +121,43 @@ void wxsRichTextStyleListBox::OnBuildCreatingCode()
  * \return wxObject*                 The constructed control.
  *
  */
-wxObject* wxsRichTextStyleListBox::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsRichTextStyleListBox::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxRichTextStyleListBox *Preview = new wxRichTextStyleListBox(Parent, GetId(), Pos(Parent), Size(Parent), Style());
+    wxRichTextStyleListBox * Preview = new wxRichTextStyleListBox(Parent, GetId(), Pos(Parent), Size(Parent), Style());
 
-//    if (!m_sControl.IsEmpty()){
-//        Preview->SetRichTextCtrl(m_sControl);
-//    }
-//    if (!m_sStyleSheet.IsEmpty()){
-//        Preview->SetStyleSheet(m_sStyleSheet);
-//        Preview->UpdateStyles();
-//    }
+    //    if (!m_sControl.IsEmpty()){
+    //        Preview->SetRichTextCtrl(m_sControl);
+    //    }
+    //    if (!m_sStyleSheet.IsEmpty()){
+    //        Preview->SetStyleSheet(m_sStyleSheet);
+    //        Preview->UpdateStyles();
+    //    }
 
     // wxRichTextStyleListBox::wxRICHTEXT_STYLE_PARAGRAPH is the default value.
-    switch(m_iStyleType)
+    switch (m_iStyleType)
     {
-    case wxRichTextStyleListBox::wxRICHTEXT_STYLE_ALL:
-        Preview->SetStyleType(wxRichTextStyleListBox::wxRICHTEXT_STYLE_ALL);
-        break;
-    case wxRichTextStyleListBox::wxRICHTEXT_STYLE_CHARACTER:
-        Preview->SetStyleType(wxRichTextStyleListBox::wxRICHTEXT_STYLE_CHARACTER);
-        break;
-    case wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST:
-        Preview->SetStyleType(wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST);
-        break;
-    default:
-        break;
+        case wxRichTextStyleListBox::wxRICHTEXT_STYLE_ALL:
+            Preview->SetStyleType(wxRichTextStyleListBox::wxRICHTEXT_STYLE_ALL);
+            break;
+
+        case wxRichTextStyleListBox::wxRICHTEXT_STYLE_CHARACTER:
+            Preview->SetStyleType(wxRichTextStyleListBox::wxRICHTEXT_STYLE_CHARACTER);
+            break;
+
+        case wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST:
+            Preview->SetStyleType(wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST);
+            break;
+
+        default:
+            break;
     }
+
     if (m_bApplyOnSelection)
     {
         Preview->SetApplyOnSelection(m_bApplyOnSelection);
     }
 
-    return SetupWindow(Preview,Flags);
+    return SetupWindow(Preview, Flags);
 }
 
 /*! \brief Enumerate the control's properties.
@@ -165,8 +173,7 @@ void wxsRichTextStyleListBox::OnEnumWidgetProperties(cb_unused long Flags)
                                        wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST,
                                        wxRichTextStyleListBox::wxRICHTEXT_STYLE_PARAGRAPH
                                       };
-    static const wxChar* StyleNames[]  = {wxT("wxRICHTEXT_STYLE_ALL"), wxT("wxRICHTEXT_STYLE_CHARACTER"), wxT("wxRICHTEXT_STYLE_LIST"), wxT("wxRICHTEXT_STYLE_PARAGRAPH"), NULL};
-
+    static const wxChar * StyleNames[]  = {wxT("wxRICHTEXT_STYLE_ALL"), wxT("wxRICHTEXT_STYLE_CHARACTER"), wxT("wxRICHTEXT_STYLE_LIST"), wxT("wxRICHTEXT_STYLE_PARAGRAPH"), NULL};
     WXS_SHORT_STRING(wxsRichTextStyleListBox, m_sControl, _("Control"), _T("control"), wxEmptyString, true)
     WXS_SHORT_STRING(wxsRichTextStyleListBox, m_sStyleSheet, _("Style Sheet"), _T("style_sheet"), wxEmptyString, true)
     WXS_ENUM(wxsRichTextStyleListBox, m_iStyleType, _("Style Type"), _T("style_type"), StyleStates, StyleNames, wxRichTextStyleListBox::wxRICHTEXT_STYLE_PARAGRAPH)

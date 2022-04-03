@@ -60,7 +60,7 @@ WXS_ST_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsTextEntryDialog::wxsTextEntryDialog(wxsItemResData *Data):
+wxsTextEntryDialog::wxsTextEntryDialog(wxsItemResData * Data):
     wxsTool(Data,
             &Reg.Info,
             NULL,
@@ -79,18 +79,18 @@ wxsTextEntryDialog::wxsTextEntryDialog(wxsItemResData *Data):
  */
 void wxsTextEntryDialog::OnBuildCreatingCode()
 {
-    switch(GetLanguage())
+    switch (GetLanguage())
     {
-    case wxsCPP:
-        AddHeader(_T("<wx/textdlg.h>"), GetInfo().ClassName, 0);
-        Codef(_T("%C(%W, %t, %t, %t, %T, %P);\n"), m_sMessage.wx_str(), m_sCaption.wx_str(), m_sDefaultValue.wx_str());
-        BuildSetupWindowCode();
-        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-        break;
+        case wxsCPP:
+            AddHeader(_T("<wx/textdlg.h>"), GetInfo().ClassName, 0);
+            Codef(_T("%C(%W, %t, %t, %t, %T, %P);\n"), m_sMessage.wx_str(), m_sCaption.wx_str(), m_sDefaultValue.wx_str());
+            BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+            break;
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsTextEntryDialog::OnBuildCreatingCode"), GetLanguage());
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsTextEntryDialog::OnBuildCreatingCode"), GetLanguage());
     }
 }
 

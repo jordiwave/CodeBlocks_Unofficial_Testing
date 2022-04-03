@@ -5,7 +5,7 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-#include <wx/string.h>
+    #include <wx/string.h>
 #endif
 
 #include <cbplugin.h> // for "class cbSmartIndentPlugin"
@@ -15,11 +15,11 @@ class wxScintillaEvent;
 
 class SmartIndentFortran : public cbSmartIndentPlugin
 {
-public:
-    virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
+    public:
+        virtual void OnEditorHook(cbEditor * ed, wxScintillaEvent & event) const;
 
-private:
-    void DoBraceCompletion(cbStyledTextCtrl* control, const wxChar& ch) const;
+    private:
+        void DoBraceCompletion(cbStyledTextCtrl * control, const wxChar & ch) const;
 };
 
 #endif // SMARTINDENTFORTRAN_H_INCLUDED

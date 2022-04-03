@@ -6,16 +6,14 @@ CEditor::CEditor()
     Manager::Get()->GetEditorManager()->SetActiveEditor(m_editor);
 }
 
-CEditor::CEditor( const wxString& file, int log)
+CEditor::CEditor(const wxString & file, int log)
 {
     wxFileName fn(realpath(file));
     wxString fname = UnixFilename(fn.GetFullPath());
-
     m_editor = new InnoEditor(Manager::Get()->GetEditorManager()->GetNotebook(), file, log);
     Manager::Get()->GetEditorManager()->SetActiveEditor(m_editor);
 }
 
 CEditor::~CEditor()
 {
-
 }

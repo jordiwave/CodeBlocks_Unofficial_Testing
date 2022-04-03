@@ -42,71 +42,71 @@ class TiXmlElement;
  */
 class LibraryDetectionManager
 {
-public:
+    public:
 
-    /** \brief Ctor */
-    LibraryDetectionManager(TypedResults& Results);
+        /** \brief Ctor */
+        LibraryDetectionManager(TypedResults & Results);
 
-    /** \brief Dctor */
-    ~LibraryDetectionManager();
+        /** \brief Dctor */
+        ~LibraryDetectionManager();
 
-    /** \brief Function returning number of loaded library configurations */
-    inline int GetLibraryCount() const
-    {
-        return (int)Libraries.Count();
-    }
+        /** \brief Function returning number of loaded library configurations */
+        inline int GetLibraryCount() const
+        {
+            return (int)Libraries.Count();
+        }
 
-    /** \brief Function returning configuration for one library */
-    const LibraryDetectionConfigSet* GetLibrary(int Index);
+        /** \brief Function returning configuration for one library */
+        const LibraryDetectionConfigSet * GetLibrary(int Index);
 
-    /** \brief Getting library settings by name */
-    const LibraryDetectionConfigSet* GetLibrary(const wxString& Shortcut);
+        /** \brief Getting library settings by name */
+        const LibraryDetectionConfigSet * GetLibrary(const wxString & Shortcut);
 
-    /** \brief Load search filters from configuration directories */
-    bool LoadSearchFilters();
+        /** \brief Load search filters from configuration directories */
+        bool LoadSearchFilters();
 
-    /** \brief Function clearing current library set */
-    void Clear();
+        /** \brief Function clearing current library set */
+        void Clear();
 
-    /** \brief Storing new library settings
-     *  \return -1 - invalid data, -2 - couldn't write file, >= 0 - ok
-     */
-    int StoreNewSettingsFile( const wxString& shortcut, const std::vector< char >& content );
+        /** \brief Storing new library settings
+         *  \return -1 - invalid data, -2 - couldn't write file, >= 0 - ok
+         */
+        int StoreNewSettingsFile(const wxString & shortcut, const std::vector< char > & content);
 
-private:
+    private:
 
-    /** \brief Function loading xml configuration files from specified directory */
-    int LoadXmlConfig(const wxString& Dir);
+        /** \brief Function loading xml configuration files from specified directory */
+        int LoadXmlConfig(const wxString & Dir);
 
-    /** \brief Loading configuration from given filename */
-    int LoadXmlFile(const wxString& Name);
+        /** \brief Loading configuration from given filename */
+        int LoadXmlFile(const wxString & Name);
 
-    /** \brief Loading configuration from xml document */
-    int LoadXmlDoc(TiXmlDocument& Doc);
+        /** \brief Loading configuration from xml document */
+        int LoadXmlDoc(TiXmlDocument & Doc);
 
-    /** \brief Loading configuration from given Xml node
-     *
-     * \param Elem xml node
-     * \param Config storage for configuration (data read from node will be appended to current configuration)
-     * \param ConfigSet current configurations set
-     * \param Filters if true, load settings for filters
-     * \param Settings if true, load library settings
-     */
-    int LoadXml(TiXmlElement* Elem,LibraryDetectionConfig& Config,LibraryDetectionConfigSet* ConfigSet,bool Filters=true,bool Settings=true);
+        /** \brief Loading configuration from given Xml node
+         *
+         * \param Elem xml node
+         * \param Config storage for configuration (data read from node will be appended to current configuration)
+         * \param ConfigSet current configurations set
+         * \param Filters if true, load settings for filters
+         * \param Settings if true, load library settings
+         */
+        int LoadXml(TiXmlElement * Elem, LibraryDetectionConfig & Config, LibraryDetectionConfigSet * ConfigSet, bool Filters = true, bool Settings = true);
 
-    /** \brief Test if configuration is valid */
-    bool CheckConfig(const LibraryDetectionConfig& Cfg) const;
+        /** \brief Test if configuration is valid */
+        bool CheckConfig(const LibraryDetectionConfig & Cfg) const;
 
-    /** \brief Testing if there's library configuration in pkg-config database */
-    bool IsPkgConfigEntry(const wxString& Name);
+        /** \brief Testing if there's library configuration in pkg-config database */
+        bool IsPkgConfigEntry(const wxString & Name);
 
-    /** \brief Adding configuration, if it's not valid it will be deleted */
-    bool AddConfig(LibraryDetectionConfig& Cfg, LibraryDetectionConfigSet* Set);
+        /** \brief Adding configuration, if it's not valid it will be deleted */
+        bool AddConfig(LibraryDetectionConfig & Cfg, LibraryDetectionConfigSet * Set);
 
-    WX_DEFINE_ARRAY(LibraryDetectionConfigSet*,LCArray);
+        WX_DEFINE_ARRAY(LibraryDetectionConfigSet *, LCArray);
 
-    LCArray Libraries;
-    TypedResults& m_CurrentResults;
+        LCArray Libraries;
+        TypedResults & m_CurrentResults;
 };
 
 #endif

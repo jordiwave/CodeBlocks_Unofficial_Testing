@@ -17,53 +17,53 @@ namespace Scintilla
 */
 class Caret
 {
-public:
-    bool active;
-    bool on;
-    int period;
+    public:
+        bool active;
+        bool on;
+        int period;
 
-    Caret();
+        Caret();
 };
 
 class EditModel
 {
-public:
-    bool inOverstrike;
-    int xOffset;		///< Horizontal scrolled amount in pixels
-    bool trackLineWidth;
+    public:
+        bool inOverstrike;
+        int xOffset;		///< Horizontal scrolled amount in pixels
+        bool trackLineWidth;
 
-    SpecialRepresentations reprs;
-    Caret caret;
-    SelectionPosition posDrag;
-    Sci::Position braces[2];
-    int bracesMatchStyle;
-    int highlightGuideColumn;
-    Selection sel;
-    bool primarySelection;
+        SpecialRepresentations reprs;
+        Caret caret;
+        SelectionPosition posDrag;
+        Sci::Position braces[2];
+        int bracesMatchStyle;
+        int highlightGuideColumn;
+        Selection sel;
+        bool primarySelection;
 
-    enum IMEInteraction { imeWindowed, imeInline } imeInteraction;
+        enum IMEInteraction { imeWindowed, imeInline } imeInteraction;
 
-    int foldFlags;
-    int foldDisplayTextStyle;
-    ContractionState cs;
-    // Hotspot support
-    Range hotspot;
-    Sci::Position hoverIndicatorPos;
+        int foldFlags;
+        int foldDisplayTextStyle;
+        ContractionState cs;
+        // Hotspot support
+        Range hotspot;
+        Sci::Position hoverIndicatorPos;
 
-    // Wrapping support
-    int wrapWidth;
+        // Wrapping support
+        int wrapWidth;
 
-    Document *pdoc;
+        Document * pdoc;
 
-    EditModel();
-    // Deleted so EditModel objects can not be copied.
-    explicit EditModel(const EditModel &) = delete;
-    EditModel &operator=(const EditModel &) = delete;
-    virtual ~EditModel();
-    virtual Sci::Line TopLineOfMain() const = 0;
-    virtual Point GetVisibleOriginInMain() const = 0;
-    virtual Sci::Line LinesOnScreen() const = 0;
-    virtual Range GetHotSpotRange() const = 0;
+        EditModel();
+        // Deleted so EditModel objects can not be copied.
+        explicit EditModel(const EditModel &) = delete;
+        EditModel & operator=(const EditModel &) = delete;
+        virtual ~EditModel();
+        virtual Sci::Line TopLineOfMain() const = 0;
+        virtual Point GetVisibleOriginInMain() const = 0;
+        virtual Sci::Line LinesOnScreen() const = 0;
+        virtual Range GetHotSpotRange() const = 0;
 };
 
 #ifdef SCI_NAMESPACE

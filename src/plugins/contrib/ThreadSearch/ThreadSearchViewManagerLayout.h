@@ -18,21 +18,21 @@ class ThreadSearchView;
 
 class ThreadSearchViewManagerLayout : public ThreadSearchViewManagerBase
 {
-public:
-    ThreadSearchViewManagerLayout(ThreadSearchView* pThreadSearchView)
-        : ThreadSearchViewManagerBase(pThreadSearchView)
-    {}
-    ~ThreadSearchViewManagerLayout() override;
+    public:
+        ThreadSearchViewManagerLayout(ThreadSearchView * pThreadSearchView)
+            : ThreadSearchViewManagerBase(pThreadSearchView)
+        {}
+        ~ThreadSearchViewManagerLayout() override;
 
-    eManagerTypes GetManagerType() override
-    {
-        return TypeLayout;
-    }
-    void AddViewToManager() override;
-    void RemoveViewFromManager() override;
-    bool ShowView(uint32_t flags) override;
-    bool IsViewShown() override;
-    void Raise() override;
+        eManagerTypes GetManagerType() override
+        {
+            return TypeLayout;
+        }
+        void AddViewToManager() override;
+        void RemoveViewFromManager() override;
+        bool ShowView(uint32_t flags) override;
+        bool IsViewShown() override;
+        void Raise() override;
 };
 
 #endif // THREAD_SEARCH_VIEW_MANAGER_LAYOUT_H

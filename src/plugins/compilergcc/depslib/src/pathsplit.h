@@ -11,13 +11,13 @@
  */
 
 #ifdef DEPSLIB_WINDOWS
-#define SEP1 '\\'
-#define SEP2 '/'
+    #define SEP1 '\\'
+    #define SEP2 '/'
 #endif
 
 #ifdef DEPSLIB_UNIX
-#define SEP1 '/'
-#define SEP2 '/'
+    #define SEP1 '/'
+    #define SEP2 '/'
 #endif
 
 typedef struct _pathsplit PATHSPLIT;
@@ -28,10 +28,10 @@ struct _pathsplit
     int count;
 };
 
-extern void path_split(const char *path, PATHSPLIT *f);
-extern int path_normalize(PATHSPLIT *f, PATHSPLIT *cwd);
-extern char *path_tostring(PATHSPLIT *f, char *buf);
-extern void path_setcwd(const char *cwd);
-extern void path_print(PATHSPLIT *f);
+extern void path_split(const char * path, PATHSPLIT * f);
+extern int path_normalize(PATHSPLIT * f, PATHSPLIT * cwd);
+extern char * path_tostring(PATHSPLIT * f, char * buf);
+extern void path_setcwd(const char * cwd);
+extern void path_print(PATHSPLIT * f);
 extern void donepath(void);
 

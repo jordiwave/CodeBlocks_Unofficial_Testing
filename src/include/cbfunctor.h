@@ -10,56 +10,59 @@
 //#define PPRCESS_EVENT_PERFORMANCE_MEASURE
 
 #ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
-#include <typeinfo> // typeid()
+    #include <typeinfo> // typeid()
 #endif // PPRCESS_EVENT_PERFORMANCE_MEASURE
 
 /** Base abstract functor class. All functors must extend this interface. */
 class IFunctorBase
 {
-public:
-    virtual ~IFunctorBase() {}
-    virtual void* GetThis() = 0;
+    public:
+        virtual ~IFunctorBase() {}
+        virtual void * GetThis() = 0;
 
 #ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
-    // return the function name, this is used for Functor performance measure
-    virtual const char* GetTypeName() = 0;
+        // return the function name, this is used for Functor performance measure
+        virtual const char * GetTypeName() = 0;
 #endif // PPRCESS_EVENT_PERFORMANCE_MEASURE
 };
 
 /** Base abstract event functor class. All event functors must extend this interface.*/
 template<typename EventType> class IEventFunctorBase : public IFunctorBase
 {
-public:
-    virtual void Call(EventType& event) = 0;
+    public:
+        virtual void Call(EventType & event) = 0;
 };
 
 /** Event functor class. */
 template<class ClassType, typename EventType> class cbEventFunctor : public IEventFunctorBase<EventType>
 {
-private:
-    typedef void (ClassType::*Member)(EventType&);
-    ClassType* m_pThis;
-    Member m_pMember;
-public:
-    cbEventFunctor(ClassType* this_, Member member) : m_pThis(this_), m_pMember(member) {}
-    cbEventFunctor(const cbEventFunctor<ClassType, EventType>& rhs) : m_pThis(rhs.m_pThis), m_pMember(rhs.m_pMember) {}
-    void* GetThis() override
-    {
-        return m_pThis;
-    }
-    // usually the m_pThis is a pointer the instance of a specified class of ClassType
-    // the m_pMember is a member function of the ClassType, so just call this member function
-    void Call(EventType& event) override
-    {
-        if (m_pThis) (m_pThis->*m_pMember)(event);
-    }
+    private:
+        typedef void (ClassType::*Member)(EventType &);
+        ClassType * m_pThis;
+        Member m_pMember;
+    public:
+        cbEventFunctor(ClassType * this_, Member member) : m_pThis(this_), m_pMember(member) {}
+        cbEventFunctor(const cbEventFunctor<ClassType, EventType> & rhs) : m_pThis(rhs.m_pThis), m_pMember(rhs.m_pMember) {}
+        void * GetThis() override
+        {
+            return m_pThis;
+        }
+        // usually the m_pThis is a pointer the instance of a specified class of ClassType
+        // the m_pMember is a member function of the ClassType, so just call this member function
+        void Call(EventType & event) override
+        {
+            if (m_pThis)
+            {
+                (m_pThis->*m_pMember)(event);
+            }
+        }
 
 #ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
-    // show the name by typeid operator
-    virtual const char* GetTypeName()
-    {
-        return typeid(m_pMember).name();
-    }
+        // show the name by typeid operator
+        virtual const char * GetTypeName()
+        {
+            return typeid(m_pMember).name();
+        }
 #endif // PPRCESS_EVENT_PERFORMANCE_MEASURE
 };
 

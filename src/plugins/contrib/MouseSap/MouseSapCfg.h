@@ -2,7 +2,7 @@
 #define MouseSapCfg_H
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #include <wx/sizer.h>
@@ -19,46 +19,46 @@ class cbMouseSapCfg: public cbConfigurationPanel
 // ----------------------------------------------------------------------------
 {
 
-public:
-    cbMouseSapCfg(wxWindow* parent, MouseSap* pOwnerClass, wxWindowID id = -1);
-    virtual ~cbMouseSapCfg();
-public:
-    // virtual routines required by cbConfigurationPanel
-    wxString GetTitle() const
-    {
-        return _("MouseSap");
-    }
-    wxString GetBitmapBaseName() const;
-    void OnApply();
-    void OnCancel() {}
-    virtual void InitDialog() { } /*trap*/
+    public:
+        cbMouseSapCfg(wxWindow * parent, MouseSap * pOwnerClass, wxWindowID id = -1);
+        virtual ~cbMouseSapCfg();
+    public:
+        // virtual routines required by cbConfigurationPanel
+        wxString GetTitle() const
+        {
+            return _("MouseSap");
+        }
+        wxString GetBitmapBaseName() const;
+        void OnApply();
+        void OnCancel() {}
+        virtual void InitDialog() { } /*trap*/
 
-    // pointer to owner of the configuration diaglog needed to
-    // complete the OnApply/OnCancel EndModal() logic
-    MouseSap* pOwnerClass;
+        // pointer to owner of the configuration diaglog needed to
+        // complete the OnApply/OnCancel EndModal() logic
+        MouseSap * pOwnerClass;
 
-    bool GetMouseSapEnabled()
-    {
-        return m_pluginEnabled->GetValue();
-    }
+        bool GetMouseSapEnabled()
+        {
+            return m_pluginEnabled->GetValue();
+        }
 
-    void SetMouseSapEnabled(bool value)
-    {
-        m_pluginEnabled->SetValue(value);
-    }
+        void SetMouseSapEnabled(bool value)
+        {
+            m_pluginEnabled->SetValue(value);
+        }
 
-protected:
+    protected:
 
-    void OnDoneButtonClick(wxCommandEvent& event);
+        void OnDoneButtonClick(wxCommandEvent & event);
 
-    //Declarations(cbMouseSapCfg)
-    wxFlexGridSizer* FlexGridSizer1;
-    wxStaticText* StaticText1;
-    wxCheckBox* m_pluginEnabled;
+        //Declarations(cbMouseSapCfg)
+        wxFlexGridSizer * FlexGridSizer1;
+        wxStaticText * StaticText1;
+        wxCheckBox * m_pluginEnabled;
 
-private:
+    private:
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // MouseSapCfg_H

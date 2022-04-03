@@ -24,20 +24,20 @@ enum ConfirmResponse
 
 class DLLIMPORT ConfirmReplaceDlg : public wxScrollingDialog
 {
-public:
-    ConfirmReplaceDlg(wxWindow* parent, bool replaceInFiles = false,
-                      const wxString& label = _("Replace this occurrence?"));
-    ~ConfirmReplaceDlg() override;
-    void OnYes(wxCommandEvent& event);
-    void OnNo(wxCommandEvent& event);
-    void OnAllInFile(wxCommandEvent& event);
-    void OnSkipFile(wxCommandEvent& event);
-    void OnAll(wxCommandEvent& event);
-    void OnCancel(wxCommandEvent& event);
-    void CalcPosition(cbStyledTextCtrl* ed);
+    public:
+        ConfirmReplaceDlg(wxWindow * parent, bool replaceInFiles = false,
+                          const wxString & label = _("Replace this occurrence?"));
+        ~ConfirmReplaceDlg() override;
+        void OnYes(wxCommandEvent & event);
+        void OnNo(wxCommandEvent & event);
+        void OnAllInFile(wxCommandEvent & event);
+        void OnSkipFile(wxCommandEvent & event);
+        void OnAll(wxCommandEvent & event);
+        void OnCancel(wxCommandEvent & event);
+        void CalcPosition(cbStyledTextCtrl * ed);
 
-private:
-    DECLARE_EVENT_TABLE()
+    private:
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // CONFIRMREPLACEDLG_H

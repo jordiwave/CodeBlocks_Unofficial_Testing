@@ -51,31 +51,31 @@
 
 class wxsSpeedButton : public wxsWidget
 {
-public:
+    public:
 
-    wxsSpeedButton(wxsItemResData* Data);
+        wxsSpeedButton(wxsItemResData * Data);
 
 
-protected:
+    protected:
 
-    virtual wxObject*   OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void        OnBuildCreatingCode();
-    virtual void        OnEnumWidgetProperties(long Flags);
+        virtual wxObject  * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void        OnBuildCreatingCode();
+        virtual void        OnEnumWidgetProperties(long Flags);
 
-    void        BuildBitmap(void);
-    bool        IsImageXPM(wxsBitmapData &inData);
-    wxString    GetXPMName(wxsBitmapData &inData);
+        void        BuildBitmap(void);
+        bool        IsImageXPM(wxsBitmapData & inData);
+        wxString    GetXPMName(wxsBitmapData & inData);
 
-    wxString            mLabel;                 // text on button
-    wxsBitmapData       mGlyph;                 // image on button
-    int                 mGlyphCount;            // number of images
-    bool                mUseInclude;            // #include XPM file?
-    int                 mMargin;                // spacing between components
-    int                 mGroupIndex;            // group ID
-    bool                mAllowAllUp;            // all in group can be up?
-    long                mUserData;              // anything the user wants
-    long                mButtonType;            // quick ref to update GroupIndex
-    bool                mButtonDown;            // start off DOWN or UP ?
+        wxString            mLabel;                 // text on button
+        wxsBitmapData       mGlyph;                 // image on button
+        int                 mGlyphCount;            // number of images
+        bool                mUseInclude;            // #include XPM file?
+        int                 mMargin;                // spacing between components
+        int                 mGroupIndex;            // group ID
+        bool                mAllowAllUp;            // all in group can be up?
+        long                mUserData;              // anything the user wants
+        long                mButtonType;            // quick ref to update GroupIndex
+        bool                mButtonDown;            // start off DOWN or UP ?
 
 };
 

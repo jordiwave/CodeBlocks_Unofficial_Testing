@@ -32,28 +32,27 @@ BEGIN_EVENT_TABLE(EditorConfigUI, wxPanel)
     //*)
 END_EVENT_TABLE()
 
-EditorConfigUI::EditorConfigUI(wxWindow* parent, EditorConfig* plugin, cbProject* prj,
-                               const EditorSettings& es) :
+EditorConfigUI::EditorConfigUI(wxWindow * parent, EditorConfig * plugin, cbProject * prj,
+                               const EditorSettings & es) :
     m_Plugin(plugin),
     m_Project(prj)
 {
     //(*Initialize(EditorConfigUI)
-    wxBoxSizer* bszTab;
-    wxFlexGridSizer* flsMain;
-    wxStaticText* lblEOLMode;
-    wxStaticText* lblIndent;
-    wxStaticText* lblTab;
-    wxStaticText* lblTabWidth;
-
+    wxBoxSizer * bszTab;
+    wxFlexGridSizer * flsMain;
+    wxStaticText * lblEOLMode;
+    wxStaticText * lblIndent;
+    wxStaticText * lblTab;
+    wxStaticText * lblTabWidth;
     Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
     flsMain = new wxFlexGridSizer(5, 2, 0, 0);
     flsMain->AddGrowableCol(1);
     chkActive = new wxCheckBox(this, ID_CHK_ACTIVE, _("Activate for project"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_ACTIVE"));
     chkActive->SetValue(false);
-    flsMain->Add(chkActive, 1, wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
-    flsMain->Add(-1,-1,1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    flsMain->Add(chkActive, 1, wxTOP | wxLEFT | wxALIGN_CENTER_VERTICAL, 5);
+    flsMain->Add(-1, -1, 1, wxTOP | wxLEFT | wxRIGHT | wxEXPAND, 5);
     lblTab = new wxStaticText(this, wxID_ANY, _("Specify tab behaviour:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    flsMain->Add(lblTab, 1, wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
+    flsMain->Add(lblTab, 1, wxTOP | wxLEFT | wxALIGN_CENTER_VERTICAL, 5);
     bszTab = new wxBoxSizer(wxHORIZONTAL);
     chkUseTabs = new wxCheckBox(this, ID_CHK_USE_TABS, _("Use tabs"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_USE_TABS"));
     chkUseTabs->SetValue(false);
@@ -62,40 +61,38 @@ EditorConfigUI::EditorConfigUI(wxWindow* parent, EditorConfig* plugin, cbProject
     chkTabIndents = new wxCheckBox(this, ID_CHK_TAB_INDENTS, _("Tab indents"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_TAB_INDENTS"));
     chkTabIndents->SetValue(true);
     chkTabIndents->Disable();
-    bszTab->Add(chkTabIndents, 1, wxLEFT|wxEXPAND, 5);
-    flsMain->Add(bszTab, 1, wxTOP|wxLEFT|wxRIGHT|wxALIGN_BOTTOM, 5);
+    bszTab->Add(chkTabIndents, 1, wxLEFT | wxEXPAND, 5);
+    flsMain->Add(bszTab, 1, wxTOP | wxLEFT | wxRIGHT | wxALIGN_BOTTOM, 5);
     lblTabWidth = new wxStaticText(this, wxID_ANY, _("Specify tab width:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    flsMain->Add(lblTabWidth, 1, wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
+    flsMain->Add(lblTabWidth, 1, wxTOP | wxLEFT | wxALIGN_CENTER_VERTICAL, 5);
     spnTabWidth = new wxSpinCtrl(this, ID_SPN_TAB_WIDTH, _T("4"), wxDefaultPosition, wxDefaultSize, 0, 0, 10, 4, _T("ID_SPN_TAB_WIDTH"));
     spnTabWidth->SetValue(_T("4"));
     spnTabWidth->Disable();
-    flsMain->Add(spnTabWidth, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    flsMain->Add(spnTabWidth, 1, wxTOP | wxLEFT | wxRIGHT | wxEXPAND, 5);
     lblIndent = new wxStaticText(this, wxID_ANY, _("Specify indent width:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    flsMain->Add(lblIndent, 1, wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
+    flsMain->Add(lblIndent, 1, wxTOP | wxLEFT | wxALIGN_CENTER_VERTICAL, 5);
     spnIndent = new wxSpinCtrl(this, ID_SPN_INDENT, _T("4"), wxDefaultPosition, wxDefaultSize, 0, 0, 10, 4, _T("ID_SPN_INDENT"));
     spnIndent->SetValue(_T("4"));
     spnIndent->Disable();
-    flsMain->Add(spnIndent, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    flsMain->Add(spnIndent, 1, wxTOP | wxLEFT | wxRIGHT | wxEXPAND, 5);
     lblEOLMode = new wxStaticText(this, wxID_ANY, _("Specify EOL mode:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    flsMain->Add(lblEOLMode, 1, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
+    flsMain->Add(lblEOLMode, 1, wxTOP | wxBOTTOM | wxLEFT | wxALIGN_CENTER_VERTICAL, 5);
     choEOLMode = new wxChoice(this, ID_CHO_EOL_MODE, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHO_EOL_MODE"));
-    choEOLMode->SetSelection( choEOLMode->Append(_("CR/LF")) );
+    choEOLMode->SetSelection(choEOLMode->Append(_("CR/LF")));
     choEOLMode->Append(_("CR"));
     choEOLMode->Append(_("LF"));
     choEOLMode->Append(_("Use from settings > Editor"));
     choEOLMode->Disable();
-    flsMain->Add(choEOLMode, 1, wxALL|wxEXPAND, 5);
+    flsMain->Add(choEOLMode, 1, wxALL | wxEXPAND, 5);
     SetSizer(flsMain);
     flsMain->Fit(this);
     flsMain->SetSizeHints(this);
-
-    Connect(ID_CHK_ACTIVE,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&EditorConfigUI::OnActiveClick);
+    Connect(ID_CHK_ACTIVE, wxEVT_COMMAND_CHECKBOX_CLICKED, (wxObjectEventFunction)&EditorConfigUI::OnActiveClick);
     //*)
 
     if (es.active)
     {
         DoActive(true);
-
         chkActive->SetValue(true);
         chkUseTabs->SetValue(es.use_tabs);
         chkTabIndents->SetValue(es.tab_indents);
@@ -111,7 +108,7 @@ EditorConfigUI::~EditorConfigUI()
     //*)
 }
 
-void EditorConfigUI::OnActiveClick(wxCommandEvent& event)
+void EditorConfigUI::OnActiveClick(wxCommandEvent & event)
 {
     DoActive(event.IsChecked());
 }
@@ -128,7 +125,6 @@ void EditorConfigUI::OnApply()
     // #define wxSCI_EOL_CRLF 0
     // #define wxSCI_EOL_CR 1
     // #define wxSCI_EOL_LF 2
-
     EditorConfig::SetProjectSettings(*m_Project, es);
 }
 

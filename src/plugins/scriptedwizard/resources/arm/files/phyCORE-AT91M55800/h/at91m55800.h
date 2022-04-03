@@ -767,25 +767,25 @@
 
 /* Standard Asynchronous Mode : 8 bits , 1 stop , no parity */
 #define US_ASYNC_MODE		( US_CHMODE_NORMAL + \
-							  US_NBSTOP_1 + \
-							  US_PAR_NO + \
-							  US_CHRL_8 + \
-							  US_CLKS_MCK )
+                              US_NBSTOP_1 + \
+                              US_PAR_NO + \
+                              US_CHRL_8 + \
+                              US_CLKS_MCK )
 
 /* Standard External Asynchronous Mode : 8 bits , 1 stop , no parity */
 #define US_ASYNC_SCK_MODE	( US_CHMODE_NORMAL + \
-							  US_NBSTOP_1 + \
-							  US_PAR_NO + \
-							  US_CHRL_8 + \
-							  US_CLKS_SCK )
+                              US_NBSTOP_1 + \
+                              US_PAR_NO + \
+                              US_CHRL_8 + \
+                              US_CLKS_SCK )
 
 /* Standard Synchronous Mode : 8 bits , 1 stop , no parity */
 #define US_SYNC_MODE		( US_SYNC + \
-							  US_CHMODE_NORMAL + \
-							  US_NBSTOP_1 + \
-							  US_PAR_NO + \
-							  US_CHRL_8 + \
-							  US_CLKS_MCK )
+                              US_CHMODE_NORMAL + \
+                              US_NBSTOP_1 + \
+                              US_PAR_NO + \
+                              US_CHRL_8 + \
+                              US_CLKS_MCK )
 
 /* SCK used Label */
 #define SCK_USED			(US_CLKO | US_CLKS_SCK)

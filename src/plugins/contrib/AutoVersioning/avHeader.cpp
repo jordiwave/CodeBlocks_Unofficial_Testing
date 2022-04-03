@@ -14,7 +14,7 @@
 
 
 //{Constructor
-avHeader::avHeader(const wxString& text )
+avHeader::avHeader(const wxString & text)
 {
     m_text = text;
 }
@@ -22,16 +22,17 @@ avHeader::avHeader(const wxString& text )
 
 
 //{Setter functions
-void avHeader::SetString(const wxString& text )
+void avHeader::SetString(const wxString & text)
 {
     m_text = text;
 }
 
-bool avHeader::LoadFile(const wxString& fileName)
+bool avHeader::LoadFile(const wxString & fileName)
 {
     if (!fileName.IsEmpty())
     {
-        wxFFile file( fileName, _T("r") );
+        wxFFile file(fileName, _T("r"));
+
         if (file.IsOpened())
         {
             file.ReadAll(&m_text);
@@ -45,13 +46,14 @@ bool avHeader::LoadFile(const wxString& fileName)
     {
         return false;
     }
+
     return true;
 }
 //}
 
 
 //{Getter functions
-long avHeader::GetValue(const wxString& nameOfVariable ) const
+long avHeader::GetValue(const wxString & nameOfVariable) const
 {
     wxString strExpression;
     strExpression << _T("(") << nameOfVariable << _T(")");
@@ -76,7 +78,7 @@ long avHeader::GetValue(const wxString& nameOfVariable ) const
     return 0;
 }
 
-wxString avHeader::GetString(const wxString& nameOfVariable ) const
+wxString avHeader::GetString(const wxString & nameOfVariable) const
 {
     wxString strExpression;
     strExpression << _T("(") << nameOfVariable << _T(")");

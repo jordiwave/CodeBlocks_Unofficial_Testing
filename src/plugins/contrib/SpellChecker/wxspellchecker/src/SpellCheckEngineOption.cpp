@@ -102,7 +102,9 @@ SpellCheckEngineOption::SpellCheckEngineOption(wxString strName, wxString strTex
 void SpellCheckEngineOption::AddPossibleValue(wxString strValue)
 {
     if (m_nOptionType == SpellCheckEngineOption::UNDEFINED)
+    {
         m_nOptionType = SpellCheckEngineOption::STRING;
+    }
 
     if ((m_nOptionType == SpellCheckEngineOption::STRING) || (m_nOptionType == SpellCheckEngineOption::DIR) || (m_nOptionType == SpellCheckEngineOption::FILE))
     {
@@ -119,7 +121,9 @@ void SpellCheckEngineOption::AddPossibleValue(wxString strValue)
 void SpellCheckEngineOption::AddPossibleValue(long nValue)
 {
     if (m_nOptionType == SpellCheckEngineOption::UNDEFINED)
+    {
         m_nOptionType = SpellCheckEngineOption::LONG;
+    }
 
     if (m_nOptionType == SpellCheckEngineOption::LONG)
     {
@@ -136,7 +140,9 @@ void SpellCheckEngineOption::AddPossibleValue(long nValue)
 void SpellCheckEngineOption::AddPossibleValue(double dblValue)
 {
     if (m_nOptionType == SpellCheckEngineOption::UNDEFINED)
+    {
         m_nOptionType = SpellCheckEngineOption::DOUBLE;
+    }
 
     if (m_nOptionType == SpellCheckEngineOption::DOUBLE)
     {
@@ -153,7 +159,9 @@ void SpellCheckEngineOption::AddPossibleValue(double dblValue)
 void SpellCheckEngineOption::AddPossibleValue(bool bValue)
 {
     if (m_nOptionType == SpellCheckEngineOption::UNDEFINED)
+    {
         m_nOptionType = SpellCheckEngineOption::BOOLEAN;
+    }
 
     if (m_nOptionType == SpellCheckEngineOption::BOOLEAN)
     {
@@ -176,33 +184,49 @@ void SpellCheckEngineOption::SetOptionType(int nType)
 wxString SpellCheckEngineOption::GetStringValue()
 {
     if ((m_nOptionType == SpellCheckEngineOption::STRING) || (m_nOptionType == SpellCheckEngineOption::DIR) || (m_nOptionType == SpellCheckEngineOption::FILE))
+    {
         return m_OptionValue.GetString();
+    }
     else
+    {
         return wxEmptyString;
+    }
 }
 
 long SpellCheckEngineOption::GetLongValue()
 {
     if (m_nOptionType == SpellCheckEngineOption::LONG)
+    {
         return m_OptionValue.GetLong();
+    }
     else
+    {
         return 0;
+    }
 }
 
 double SpellCheckEngineOption::GetDoubleValue()
 {
     if (m_nOptionType == SpellCheckEngineOption::DOUBLE)
+    {
         return m_OptionValue.GetDouble();
+    }
     else
+    {
         return 0;
+    }
 }
 
 bool SpellCheckEngineOption::GetBoolValue()
 {
     if (m_nOptionType == SpellCheckEngineOption::BOOLEAN)
+    {
         return m_OptionValue.GetBool();
+    }
     else
+    {
         return false;
+    }
 }
 
 void SpellCheckEngineOption::SetValue(wxString strValue, int nType/* = SpellCheckEngineOption::STRING*/)

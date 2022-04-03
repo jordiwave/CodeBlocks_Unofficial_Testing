@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="wxWidgets - Contrib Items wx3.1.x (64 bit)" />
+		<Option title="wxWidgets - Contrib Items Windows" />
 		<Option platforms="Windows;" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
@@ -117,7 +117,7 @@
 			<Add option="-DWXMAKINGDLL" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
-			<Add directory="$(#CB_BUILD)/include" />
+			<Add directory="$(#CB_BUILD.INCLUDE)" />
 			<Add directory="$(#WXWIDGETS.include)" />
 			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
 		</Compiler>

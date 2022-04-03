@@ -10,44 +10,40 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <cbeditor.h>
-#include <configmanager.h>
-#include <editorcolourset.h>
-#include <manager.h>
+    #include <cbeditor.h>
+    #include <configmanager.h>
+    #include <editorcolourset.h>
+    #include <manager.h>
 
-#include <wx/sizer.h>
+    #include <wx/sizer.h>
 #endif
 
 #include <cbstyledtextctrl.h>
 
 FInfoWindow::FInfoWindow()
-    :wxPanel(Manager::Get()->GetAppWindow())
+    : wxPanel(Manager::Get()->GetAppWindow())
 {
     //ctor
-    m_pView = new cbStyledTextCtrl(this, wxID_ANY, wxDefaultPosition, wxSize(1,1));
-    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+    m_pView = new cbStyledTextCtrl(this, wxID_ANY, wxDefaultPosition, wxSize(1, 1));
+    wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
     sizer->Add(m_pView, 1, wxEXPAND, 0);
     SetSizer(sizer);
     sizer->Fit(this);
     sizer->SetSizeHints(this);
-
     m_pView->SetReadOnly(true);
-
     // Colorize
     cbEditor::ApplyStyles(m_pView);
     EditorColourSet edColSet;
     edColSet.Apply(edColSet.GetLanguageForFilename(_T("name.f90")), m_pView, false, true);
     SetFoldingIndicator();
-
     // Creates log image
     const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
     const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
     const wxString imgFile = ConfigManager::GetDataFolder()
                              + wxString::Format(_T("/FortranProject.zip#zip:/images/%dx%d/info_f.png"),
-                                     uiSize, uiSize);
-    wxBitmap* bmp = new wxBitmap(cbLoadBitmapScaled(imgFile, wxBITMAP_TYPE_PNG,
-                                 uiScaleFactor));
-
+                                                uiSize, uiSize);
+    wxBitmap * bmp = new wxBitmap(cbLoadBitmapScaled(imgFile, wxBITMAP_TYPE_PNG,
+                                                     uiScaleFactor));
     CodeBlocksLogEvent evtAdd(cbEVT_ADD_LOG_WINDOW, this, _("Fortran info"), bmp);
     Manager::Get()->ProcessEvent(evtAdd);
 }
@@ -59,20 +55,18 @@ FInfoWindow::~FInfoWindow()
 
 void FInfoWindow::RemoveFromNotebook()
 {
-    if(Manager::Get()->GetLogManager())
+    if (Manager::Get()->GetLogManager())
     {
         CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, this);
         Manager::Get()->ProcessEvent(evt);
     }
 }
 
-void FInfoWindow::WriteToInfoWindow(const wxString& text)
+void FInfoWindow::WriteToInfoWindow(const wxString & text)
 {
     m_pView->Enable(false);
     m_pView->SetReadOnly(false);
-
     m_pView->SetText(text);
-
     m_pView->SetReadOnly(true);
     m_pView->Enable(true);
 }

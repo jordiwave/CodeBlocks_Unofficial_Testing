@@ -22,13 +22,13 @@ DEFINE_EVENT_TYPE(wxEVT_S_THREAD_SEARCH_SHOWMSG)
 IMPLEMENT_DYNAMIC_CLASS(sThreadSearchEvent, wxCommandEvent)
 
 sThreadSearchEvent::sThreadSearchEvent(wxEventType commandType, int id)
-    :wxCommandEvent(commandType, id)
+    : wxCommandEvent(commandType, id)
 {
 }
 
 
-sThreadSearchEvent::sThreadSearchEvent(const sThreadSearchEvent& Event)
-    :wxCommandEvent(Event)
+sThreadSearchEvent::sThreadSearchEvent(const sThreadSearchEvent & Event)
+    : wxCommandEvent(Event)
 {
     m_LineTextArray = Event.GetLineTextArray();
 }

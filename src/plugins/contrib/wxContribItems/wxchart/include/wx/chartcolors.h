@@ -60,16 +60,16 @@ class WXDLLIMPEXP_CHART wxChartColors
 /* C::B end */
 {
 
-public:
-    static ChartColor GetColor();
+    public:
+        static ChartColor GetColor();
 
-    // Get shadow Color for 3D part of chart
-    //--------------------------------------
-    static ChartColor GetDarkColor(ChartColor c, int step);
+        // Get shadow Color for 3D part of chart
+        //--------------------------------------
+        static ChartColor GetDarkColor(ChartColor c, int step);
 
-private:
-    static ChartColor vColors[];
-    static size_t colPos;
+    private:
+        static ChartColor vColors[];
+        static size_t colPos;
 };
 
 

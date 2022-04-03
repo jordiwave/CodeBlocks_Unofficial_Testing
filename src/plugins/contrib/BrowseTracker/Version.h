@@ -30,33 +30,33 @@
 
 #define LOGIT wxLogDebug
 #if defined(LOGGING)
-#define LOGGING 1
-#undef LOGIT
-#define LOGIT wxLogMessage
-#define TRAP asm("int3")
+    #define LOGGING 1
+    #undef LOGIT
+    #define LOGIT wxLogMessage
+    #define TRAP asm("int3")
 #endif
 
 // ----------------------------------------------------------------------------
 #if LOGGING
-extern wxLogWindow*    m_pLog;
+    extern wxLogWindow  *  m_pLog;
 #endif
 // ----------------------------------------------------------------------------
 class AppVersion
 // ----------------------------------------------------------------------------
 {
-public:
-    AppVersion();
-    ~AppVersion();
+    public:
+        AppVersion();
+        ~AppVersion();
 
-    wxString GetVersion()
-    {
-        return m_version;
-    }
+        wxString GetVersion()
+        {
+            return m_version;
+        }
 
-    wxString m_version;
+        wxString m_version;
 
-protected:
-private:
+    protected:
+    private:
 };
 
 #include <wx/string.h>

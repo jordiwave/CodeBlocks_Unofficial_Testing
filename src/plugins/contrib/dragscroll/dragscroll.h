@@ -10,11 +10,11 @@
 #define DRAGSCROLL_H
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "dragscroll.h"
+    #pragma interface "dragscroll.h"
 #endif
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #include <wx/arrstr.h>
@@ -37,7 +37,7 @@
 //-#undef LOGGING
 //-#define LOGIT wxLogDebug
 #if defined(LOGGING)
-#define LOGIT wxLogMessage
+    #define LOGIT wxLogMessage
 #endif
 
 // anchor to one and only DragScroll object
@@ -52,169 +52,169 @@ class dsTextCtrlLogger;
 // ----------------------------------------------------------------------------
 class cbDragScroll : public cbPlugin
 {
-public:
-    cbDragScroll();
-    ~cbDragScroll();
-    int GetConfigurationGroup() const
-    {
-        return cgEditor;
-    }
-    void BuildMenu(wxMenuBar* /*menuBar*/)
-    {
-        return;
-    }
-    void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/)
-    {
-        return;
-    }
-    bool BuildToolBar(wxToolBar* /*toolBar*/)
-    {
-        return false;
-    }
-    void OnAttach(); // fires when the plugin is attached to the application
-    void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-    virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
-    virtual int Configure(wxWindow* parent = 0);
+    public:
+        cbDragScroll();
+        ~cbDragScroll();
+        int GetConfigurationGroup() const
+        {
+            return cgEditor;
+        }
+        void BuildMenu(wxMenuBar * /*menuBar*/)
+        {
+            return;
+        }
+        void BuildModuleMenu(const ModuleType /*type*/, wxMenu * /*menu*/, const FileTreeData * /*data*/)
+        {
+            return;
+        }
+        bool BuildToolBar(wxToolBar * /*toolBar*/)
+        {
+            return false;
+        }
+        void OnAttach(); // fires when the plugin is attached to the application
+        void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+        virtual cbConfigurationPanel * GetConfigurationPanel(wxWindow * parent);
+        virtual int Configure(wxWindow * parent = 0);
 
-    static cbDragScroll* pDragScroll;
-protected:
-    cbConfigurationPanel* CreatecbCfgPanel(wxWindow* parent);
+        static cbDragScroll * pDragScroll;
+    protected:
+        cbConfigurationPanel * CreatecbCfgPanel(wxWindow * parent);
 
-public:
-    void SearchForScrollableWindows()
-    {
-        OnAppStartupDoneInit();
-    }
-    void OnDialogDone(cbDragScrollCfg* pdlg);
+    public:
+        void SearchForScrollableWindows()
+        {
+            OnAppStartupDoneInit();
+        }
+        void OnDialogDone(cbDragScrollCfg * pdlg);
 
-    bool GetMouseDragScrollEnabled() const
-    {
-        return MouseDragScrollEnabled;
-    }
-    bool GetMouseEditorFocusEnabled() const
-    {
-        return MouseEditorFocusEnabled;
-    }
-    bool GetMouseFocusEnabled()      const
-    {
-        return MouseFocusEnabled;
-    }
-    int  GetMouseDragDirection()     const
-    {
-        return MouseDragDirection;
-    }
-    int  GetMouseDragKey()           const
-    {
-        return MouseDragKey;
-    }
-    int  GetMouseDragSensitivity()   const
-    {
-        return MouseDragSensitivity;
-    }
-    int  GetMouseToLineRatio()       const
-    {
-        return MouseToLineRatio;
-    }
-    int  GetMouseContextDelay()      const
-    {
-        return MouseContextDelay;
-    }
-    int  GetMouseWheelZoom()         const
-    {
-        return MouseWheelZoom;
-    }
-    int  IsLogZoomSizePropagated()   const
-    {
-        return PropagateLogZoomSize;
-    }
-    int  GetMouseHtmlFontSize()      const
-    {
-        return m_MouseHtmlFontSize;
-    }
-    bool GetMouseWheelZoomReverse()  const
-    {
-        return m_MouseWheelZoomReverse;    //2019/03/30
-    }
+        bool GetMouseDragScrollEnabled() const
+        {
+            return MouseDragScrollEnabled;
+        }
+        bool GetMouseEditorFocusEnabled() const
+        {
+            return MouseEditorFocusEnabled;
+        }
+        bool GetMouseFocusEnabled()      const
+        {
+            return MouseFocusEnabled;
+        }
+        int  GetMouseDragDirection()     const
+        {
+            return MouseDragDirection;
+        }
+        int  GetMouseDragKey()           const
+        {
+            return MouseDragKey;
+        }
+        int  GetMouseDragSensitivity()   const
+        {
+            return MouseDragSensitivity;
+        }
+        int  GetMouseToLineRatio()       const
+        {
+            return MouseToLineRatio;
+        }
+        int  GetMouseContextDelay()      const
+        {
+            return MouseContextDelay;
+        }
+        int  GetMouseWheelZoom()         const
+        {
+            return MouseWheelZoom;
+        }
+        int  IsLogZoomSizePropagated()   const
+        {
+            return PropagateLogZoomSize;
+        }
+        int  GetMouseHtmlFontSize()      const
+        {
+            return m_MouseHtmlFontSize;
+        }
+        bool GetMouseWheelZoomReverse()  const
+        {
+            return m_MouseWheelZoomReverse;    //2019/03/30
+        }
 
-    wxWindow* m_pCB_AppWindow;
-    //-wxWindow* m_pSearchResultsWindow;
+        wxWindow * m_pCB_AppWindow;
+        //-wxWindow* m_pSearchResultsWindow;
 
-private:
-    void OnAppStartupDone(CodeBlocksEvent& event);
-    void OnAppStartupDoneInit();
-    void OnDoConfigRequests(wxUpdateUIEvent& event);
+    private:
+        void OnAppStartupDone(CodeBlocksEvent & event);
+        void OnAppStartupDoneInit();
+        void OnDoConfigRequests(wxUpdateUIEvent & event);
 
-    bool IsAttachedTo(wxWindow* p);
-    void AttachRecursively(wxWindow *p);
-    void Detach(wxWindow* thisEditor);
-    void DetachAll();
-    void Attach(wxWindow *p);
-    void DisconnectEvtHandler(MouseEventsHandler* thisEvtHandler);
-    void CenterChildOnParent(wxWindow* parent, wxWindow* child);
-    dsTextCtrlLogger* IsLoggerControl(const wxTextCtrl* pControl);
-    bool OnMouseWheelInHtmlWindowEvent(wxMouseEvent& event);
-    void OnProjectClose(CodeBlocksEvent& event);
-    void OnStartShutdown(CodeBlocksEvent& event);
-    //-void UpdateAllLoggerWindowFonts(const int pointSize);
+        bool IsAttachedTo(wxWindow * p);
+        void AttachRecursively(wxWindow * p);
+        void Detach(wxWindow * thisEditor);
+        void DetachAll();
+        void Attach(wxWindow * p);
+        void DisconnectEvtHandler(MouseEventsHandler * thisEvtHandler);
+        void CenterChildOnParent(wxWindow * parent, wxWindow * child);
+        dsTextCtrlLogger * IsLoggerControl(const wxTextCtrl * pControl);
+        bool OnMouseWheelInHtmlWindowEvent(wxMouseEvent & event);
+        void OnProjectClose(CodeBlocksEvent & event);
+        void OnStartShutdown(CodeBlocksEvent & event);
+        //-void UpdateAllLoggerWindowFonts(const int pointSize);
 
-    void OnDragScrollEvent_Dispatcher(wxCommandEvent& event );
-    void OnDragScrollEventAddWindow(wxCommandEvent& event );
-    void OnDragScrollEventRemoveWindow(wxCommandEvent& event );
-    void OnDragScrollEventRescan(wxCommandEvent& event );
-    void OnDragScrollEvent_RereadConfig(wxCommandEvent& event );
-    void OnDragScrollEvent_InvokeConfig(wxCommandEvent& event );
-    void OnMouseWheelEvent(wxMouseEvent& event);
+        void OnDragScrollEvent_Dispatcher(wxCommandEvent & event);
+        void OnDragScrollEventAddWindow(wxCommandEvent & event);
+        void OnDragScrollEventRemoveWindow(wxCommandEvent & event);
+        void OnDragScrollEventRescan(wxCommandEvent & event);
+        void OnDragScrollEvent_RereadConfig(wxCommandEvent & event);
+        void OnDragScrollEvent_InvokeConfig(wxCommandEvent & event);
+        void OnMouseWheelEvent(wxMouseEvent & event);
 
-    void OnDragScrollTestRescan(DragScrollEvent& event );
+        void OnDragScrollTestRescan(DragScrollEvent & event);
 
-    wxWindow* winExists(wxWindow *parent);
-    wxWindow* FindWindowRecursively(const wxWindow* parent, const wxWindow* handle);
-    wxString  FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
-    void      OnWindowOpen(wxEvent& event);
-    void      OnWindowClose(wxEvent& event);
+        wxWindow * winExists(wxWindow * parent);
+        wxWindow * FindWindowRecursively(const wxWindow * parent, const wxWindow * handle);
+        wxString  FindAppPath(const wxString & argv0, const wxString & cwd, const wxString & appVariableName);
+        void      OnWindowOpen(wxEvent & event);
+        void      OnWindowClose(wxEvent & event);
 
-    MouseEventsHandler* GetMouseEventsHandler();
-    void      CleanUpWindowPointerArray();
-    void      SetZoomWindowsStrings(wxString zoomWindowIds, wxString zoomFontSizes)
-    {
-        m_ZoomWindowIds = zoomWindowIds;
-        m_ZoomFontSizes = zoomFontSizes;
-    }
-    int       GetZoomWindowsArraysFrom(wxString zoomWindowIds, wxString zoomFontSizes);
-    void      UpdateConfigFile();
+        MouseEventsHandler * GetMouseEventsHandler();
+        void      CleanUpWindowPointerArray();
+        void      SetZoomWindowsStrings(wxString zoomWindowIds, wxString zoomFontSizes)
+        {
+            m_ZoomWindowIds = zoomWindowIds;
+            m_ZoomFontSizes = zoomFontSizes;
+        }
+        int       GetZoomWindowsArraysFrom(wxString zoomWindowIds, wxString zoomFontSizes);
+        void      UpdateConfigFile();
 
-    wxString        m_ConfigFolder;
-    wxString        m_ExecuteFolder;
-    wxString        m_DataFolder;
-    wxString        m_CfgFilenameStr;
+        wxString        m_ConfigFolder;
+        wxString        m_ExecuteFolder;
+        wxString        m_DataFolder;
+        wxString        m_CfgFilenameStr;
 
-    wxArrayString   m_UsableWindows;
-    wxArrayPtrVoid  m_WindowPtrs;
-    wxLogWindow*    pMyLog;
-    bool            m_bNotebooksAttached;
+        wxArrayString   m_UsableWindows;
+        wxArrayPtrVoid  m_WindowPtrs;
+        wxLogWindow  *  pMyLog;
+        bool            m_bNotebooksAttached;
 
-    MouseEventsHandler* m_pMouseEventsHandler; //one and only
-    wxString            m_DragScrollFirstId;
-    wxString            m_ZoomWindowIds;
-    wxString            m_ZoomFontSizes;
-    wxArrayInt          m_ZoomWindowIdsAry;
-    wxArrayInt          m_ZoomFontSizesAry;
+        MouseEventsHandler * m_pMouseEventsHandler; //one and only
+        wxString            m_DragScrollFirstId;
+        wxString            m_ZoomWindowIds;
+        wxString            m_ZoomFontSizes;
+        wxArrayInt          m_ZoomWindowIdsAry;
+        wxArrayInt          m_ZoomFontSizesAry;
 
-    bool MouseDragScrollEnabled ;   //Enable/Disable mouse event handler
-    bool MouseEditorFocusEnabled;   //Enable/Disable mouse focus() editor
-    bool MouseFocusEnabled      ;   //Enable/Disable focus follows mouse
-    int  MouseDragDirection     ;   //Move with or opposite mouse
-    int  MouseDragKey           ;   //Right or Middle mouse key
-    int  MouseDragSensitivity   ;   //Adaptive speed sensitivity
-    int  MouseToLineRatio       ;   //Percentage of mouse moves that make a line
-    int  MouseContextDelay      ;   //Linux context menu delay to catch possible mouse scroll move
-    int  MouseWheelZoom         ;   //MouseWheel zooms tree, text, list controls
-    int  PropagateLogZoomSize   ;   //Propagate Zoom Font size for all logs
-    int  m_MouseHtmlFontSize    ;   //Ctrl-MouseWheel zoomed htmlWindow font size
-    bool m_MouseWheelZoomReverse;   //ctrl-MouseWheel zoom reverse default direction //2019/03/30
+        bool MouseDragScrollEnabled ;   //Enable/Disable mouse event handler
+        bool MouseEditorFocusEnabled;   //Enable/Disable mouse focus() editor
+        bool MouseFocusEnabled      ;   //Enable/Disable focus follows mouse
+        int  MouseDragDirection     ;   //Move with or opposite mouse
+        int  MouseDragKey           ;   //Right or Middle mouse key
+        int  MouseDragSensitivity   ;   //Adaptive speed sensitivity
+        int  MouseToLineRatio       ;   //Percentage of mouse moves that make a line
+        int  MouseContextDelay      ;   //Linux context menu delay to catch possible mouse scroll move
+        int  MouseWheelZoom         ;   //MouseWheel zooms tree, text, list controls
+        int  PropagateLogZoomSize   ;   //Propagate Zoom Font size for all logs
+        int  m_MouseHtmlFontSize    ;   //Ctrl-MouseWheel zoomed htmlWindow font size
+        bool m_MouseWheelZoomReverse;   //ctrl-MouseWheel zoom reverse default direction //2019/03/30
 
-private:
-    DECLARE_EVENT_TABLE()
+    private:
+        DECLARE_EVENT_TABLE()
 
 };//cbDragScroll
 
@@ -230,59 +230,68 @@ class MouseEventsHandler : public wxEvtHandler
 // ----------------------------------------------------------------------------
 {
 
-public:
-    MouseEventsHandler()
-    {
-        m_DragMode       = DRAG_NONE;
-        m_MouseHasMoved  = false;
-        m_RatioX = 1;
-        m_RatioY = 1;
-        m_MouseMoveToLineMoveRatio    = 0.30;
-        m_Direction      = -1;
-        m_gtkContextDelay = 240 ;
-    }
-    ~MouseEventsHandler();
+    public:
+        MouseEventsHandler()
+        {
+            m_DragMode       = DRAG_NONE;
+            m_MouseHasMoved  = false;
+            m_RatioX = 1;
+            m_RatioY = 1;
+            m_MouseMoveToLineMoveRatio    = 0.30;
+            m_Direction      = -1;
+            m_gtkContextDelay = 240 ;
+        }
+        ~MouseEventsHandler();
 
-    void OnMouseEvent(wxMouseEvent& event);
+        void OnMouseEvent(wxMouseEvent & event);
 
-private:
-    wxWindow*   m_Window;
-    int         m_DragMode;
-    wxPoint     m_DragStartPos;
-    bool        m_MouseHasMoved;
-    double      m_MouseMoveToLineMoveRatio;
-    double      m_RatioX, m_RatioY;
-    int         m_StartX, m_StartY;
-    int         m_InitX,  m_InitY;
+    private:
+        wxWindow  * m_Window;
+        int         m_DragMode;
+        wxPoint     m_DragStartPos;
+        bool        m_MouseHasMoved;
+        double      m_MouseMoveToLineMoveRatio;
+        double      m_RatioX, m_RatioY;
+        int         m_StartX, m_StartY;
+        int         m_InitX,  m_InitY;
 
-    // Scroll Direction move -1(mouse direction) +1(reverse mouse direction)
-    int         m_Direction;
-    unsigned    m_gtkContextDelay;
+        // Scroll Direction move -1(mouse direction) +1(reverse mouse direction)
+        int         m_Direction;
+        unsigned    m_gtkContextDelay;
 
-    bool KeyDown(wxMouseEvent& event)
-    {
-        if ( 0 ==  cbDragScroll::pDragScroll->GetMouseDragKey() )
-            return event.RightDown();
-        return event.MiddleDown();
-    }
-    bool KeyIsDown(wxMouseEvent& event)
-    {
-        if ( 0 ==  cbDragScroll::pDragScroll->GetMouseDragKey() )
-            return event.RightIsDown();
-        return event.MiddleIsDown();
-    }
-    bool KeyUp(wxMouseEvent& event)
-    {
-        if ( 0 ==  cbDragScroll::pDragScroll->GetMouseDragKey() )
-            return event.RightUp();
-        return event.MiddleUp();
-    }
-    int GetUserDragKey()
-    {
-        return ( cbDragScroll::pDragScroll->GetMouseDragKey() ? wxMOUSE_BTN_MIDDLE:wxMOUSE_BTN_RIGHT );
-    }
+        bool KeyDown(wxMouseEvent & event)
+        {
+            if (0 ==  cbDragScroll::pDragScroll->GetMouseDragKey())
+            {
+                return event.RightDown();
+            }
 
-    DECLARE_EVENT_TABLE()
+            return event.MiddleDown();
+        }
+        bool KeyIsDown(wxMouseEvent & event)
+        {
+            if (0 ==  cbDragScroll::pDragScroll->GetMouseDragKey())
+            {
+                return event.RightIsDown();
+            }
+
+            return event.MiddleIsDown();
+        }
+        bool KeyUp(wxMouseEvent & event)
+        {
+            if (0 ==  cbDragScroll::pDragScroll->GetMouseDragKey())
+            {
+                return event.RightUp();
+            }
+
+            return event.MiddleUp();
+        }
+        int GetUserDragKey()
+        {
+            return (cbDragScroll::pDragScroll->GetMouseDragKey() ? wxMOUSE_BTN_MIDDLE : wxMOUSE_BTN_RIGHT);
+        }
+
+        DECLARE_EVENT_TABLE()
 };
 
 // ----------------------------------------------------------------------------

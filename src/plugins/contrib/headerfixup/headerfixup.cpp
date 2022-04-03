@@ -55,11 +55,14 @@ void HeaderFixup::OnRelease(bool /*appShutDown*/)
 int HeaderFixup::Execute()
 {
     // if not attached, exit
-    if ( !IsAttached() )
+    if (!IsAttached())
+    {
         return -1;
+    }
 
     // if no project is opened -> inform the user and do not operate
-    const cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+    const cbProject * prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+
     if (!prj)
     {
         cbMessageBox(_("You need to open a project/workspace before using this plugin!"),
@@ -75,7 +78,7 @@ int HeaderFixup::Execute()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-cbConfigurationPanel* HeaderFixup::GetConfigurationPanel(wxWindow* parent)
+cbConfigurationPanel * HeaderFixup::GetConfigurationPanel(wxWindow * parent)
 {
     return new Configuration(parent);
 }// GetConfigurationPanel

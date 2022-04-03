@@ -16,7 +16,7 @@
 // Headers
 //----------------------------------------------------------------------------
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "xaxis.h"
+    #pragma interface "xaxis.h"
 #endif
 
 #include "wx/axis.h"
@@ -32,12 +32,12 @@ class WXDLLIMPEXP_CHART wxXAxis : public wxAxis
 /* C::B end */
 {
 
-public:
-    ~wxXAxis() {};
+    public:
+        ~wxXAxis() {};
 
-    // Draw xaxis area
-    //-----------------
-    void Draw(CHART_HPAINT hp, CHART_HRECT hr);
+        // Draw xaxis area
+        //-----------------
+        void Draw(CHART_HPAINT hp, CHART_HRECT hr);
 };
 
 #endif // __WXXAXIS_H__

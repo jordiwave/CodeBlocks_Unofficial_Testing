@@ -41,32 +41,38 @@
 #include <string>
 
 #ifndef GCC
-struct w_char {
+struct w_char
+{
 #else
-struct __attribute__((packed)) w_char {
+struct __attribute__((packed)) w_char
+{
 #endif
-  unsigned char l;
-  unsigned char h;
+    unsigned char l;
+    unsigned char h;
 
-  friend bool operator<(const w_char a, const w_char b) {
-    unsigned short a_idx = (a.h << 8) + a.l;
-    unsigned short b_idx = (b.h << 8) + b.l;
-    return a_idx < b_idx;
-  }
+    friend bool operator<(const w_char a, const w_char b)
+    {
+        unsigned short a_idx = (a.h << 8) + a.l;
+        unsigned short b_idx = (b.h << 8) + b.l;
+        return a_idx < b_idx;
+    }
 
-  friend bool operator==(const w_char a, const w_char b) {
-    return (((a).l == (b).l) && ((a).h == (b).h));
-  }
+    friend bool operator==(const w_char a, const w_char b)
+    {
+        return (((a).l == (b).l) && ((a).h == (b).h));
+    }
 
-  friend bool operator!=(const w_char a, const w_char b) {
-    return !(a == b);;
-  }
+    friend bool operator!=(const w_char a, const w_char b)
+    {
+        return !(a == b);;
+    }
 };
 
 // two character arrays
-struct replentry {
-  std::string pattern;
-  std::string outstrings[4]; // med, ini, fin, isol
+struct replentry
+{
+    std::string pattern;
+    std::string outstrings[4]; // med, ini, fin, isol
 };
 
 #endif

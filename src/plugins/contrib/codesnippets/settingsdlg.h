@@ -27,26 +27,26 @@
 class SettingsDlg : public SettingsDlgForm
 // ----------------------------------------------------------------------------
 {
-public:
-    SettingsDlg(wxWindow* parent);
-    virtual ~SettingsDlg();
-protected:
-    wxPoint pos;
-    void OnOk(wxCommandEvent& event);
-    void OnExtEditorButton(wxCommandEvent& event);
-    void OnSnippetFolderButton(wxCommandEvent& event);
+    public:
+        SettingsDlg(wxWindow * parent);
+        virtual ~SettingsDlg();
+    protected:
+        wxPoint pos;
+        void OnOk(wxCommandEvent & event);
+        void OnExtEditorButton(wxCommandEvent & event);
+        void OnSnippetFolderButton(wxCommandEvent & event);
 
-    //-void     OnSettingsSave(wxCommandEvent& event);
-    void     GetFileName(wxString& newFileName);
-    wxString AskForPathName();
+        //-void     OnSettingsSave(wxCommandEvent& event);
+        void     GetFileName(wxString & newFileName);
+        wxString AskForPathName();
 
 
-private:
-    wxTreeItemId        m_TreeItemId;
-    SnippetTreeItemData*    m_pSnippetDataItem;
-    wxTreeCtrl*         m_pTreeCtrl;
+    private:
+        wxTreeItemId        m_TreeItemId;
+        SnippetTreeItemData  *  m_pSnippetDataItem;
+        wxTreeCtrl     *    m_pTreeCtrl;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // SETTINGSDLG_H

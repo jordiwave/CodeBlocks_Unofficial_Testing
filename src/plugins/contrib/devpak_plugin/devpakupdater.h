@@ -5,11 +5,11 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #include <cbplugin.h> // the base class we 're inheriting
@@ -17,16 +17,16 @@
 
 class DevPakUpdater : public cbToolPlugin
 {
-public:
-    DevPakUpdater();
-    ~DevPakUpdater();
-    int Configure();
-    int Execute();
-    void OnAttach(); // fires when the plugin is attached to the application
-    void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-protected:
-    bool ConfigurationValid();
-private:
+    public:
+        DevPakUpdater();
+        ~DevPakUpdater();
+        int Configure();
+        int Execute();
+        void OnAttach(); // fires when the plugin is attached to the application
+        void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+    protected:
+        bool ConfigurationValid();
+    private:
 };
 
 #endif // DEVPAKUPDATER_H

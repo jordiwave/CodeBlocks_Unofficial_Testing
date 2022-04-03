@@ -11,67 +11,65 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #ifdef __WXMSW__
-#include <windows.h>
-#include <conio.h>
-#define wait_key getch
+    #include <windows.h>
+    #include <conio.h>
+    #define wait_key getch
 #else
-#define wait_key getchar
+    #define wait_key getchar
 #endif
 #if defined(__unix__) || defined(__unix)
-#include <sys/wait.h>
+    #include <sys/wait.h>
 #endif
 #include <string.h>
 
 #ifdef __MINGW32__
-int _CRT_glob = 0;
+    int _CRT_glob = 0;
 #endif
 
-bool hasSpaces(const char* str)
+bool hasSpaces(const char * str)
 {
     char last = 0;
+
     while (str && *str)
     {
         if ((*str == ' ' || *str == '\t') && last != '\\')
+        {
             return true;
+        }
+
         last = *str++;
     }
+
     return false;
 }
 
-int execute_command(char *cmdline)
+int execute_command(char * cmdline)
 {
 #ifdef __WXMSW__
     //Windows's system() seems to not be able to handle parentheses in
     //the path, so we have to launch the program a different way.
-
     SetConsoleTitle(cmdline);
-
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
-
-    ZeroMemory( &si, sizeof(si) );
+    ZeroMemory(&si, sizeof(si));
     si.cb = sizeof(si);
-    ZeroMemory( &pi, sizeof(pi) );
-
+    ZeroMemory(&pi, sizeof(pi));
     // Start the child process.
-    CreateProcess( NULL, TEXT(cmdline), NULL, NULL, FALSE, 0,
-                   NULL, NULL, &si, &pi );
-
+    CreateProcess(NULL, TEXT(cmdline), NULL, NULL, FALSE, 0,
+                  NULL, NULL, &si, &pi);
     // Wait until child process exits.
-    WaitForSingleObject( pi.hProcess, INFINITE );
-
+    WaitForSingleObject(pi.hProcess, INFINITE);
     // Get the return value of the child process
     DWORD ret;
-    GetExitCodeProcess( pi.hProcess, &ret );
-
+    GetExitCodeProcess(pi.hProcess, &ret);
     // Close process and thread handles.
-    CloseHandle( pi.hProcess );
-    CloseHandle( pi.hThread );
-
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
     return ret;
 #else
     int ret = system(cmdline);
-    if(WIFEXITED(ret))
+
+    if (WIFEXITED(ret))
     {
         return WEXITSTATUS(ret);
     }
@@ -79,10 +77,11 @@ int execute_command(char *cmdline)
     {
         return -1;
     }
+
 #endif
 }
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
     if (argc < 2)
     {
@@ -92,45 +91,58 @@ int main(int argc, char** argv)
 
     // count size of arguments
     size_t fullsize = 0;
+
     for (int i = 1; i < argc; ++i)
     {
         fullsize += strlen(argv[i]);
     }
+
     // add some slack for spaces between args plus quotes around executable
     fullsize += argc + 32;
-
-    char* cmdline = new char[fullsize];
+    char * cmdline = new char[fullsize];
     memset(cmdline, 0, fullsize);
-
     // 1st arg (executable) enclosed in quotes to support filenames with spaces
     bool sp = hasSpaces(argv[1]);
+
     if (sp)
+    {
         strcat(cmdline, "\"");
+    }
+
     strcat(cmdline, argv[1]);
+
     if (sp)
+    {
         strcat(cmdline, "\"");
+    }
+
     strcat(cmdline, " ");
 
     for (int i = 2; i < argc; ++i)
     {
         sp = hasSpaces(argv[i]);
+
         if (sp)
+        {
             strcat(cmdline, "\"");
+        }
+
         strcat(cmdline, argv[i]);
+
         if (sp)
+        {
             strcat(cmdline, "\"");
+        }
+
         strcat(cmdline, " ");
     }
 
     timeval tv;
     gettimeofday(&tv, NULL);
     double cl = tv.tv_sec + (double)tv.tv_usec / 1000000;
-
     int ret = execute_command(cmdline);
-
     gettimeofday(&tv, NULL);
     cl = (tv.tv_sec + (double)tv.tv_usec / 1000000) - cl;
-
     printf("\nProcess returned %d (0x%X)   execution time : %0.3f s", ret, ret, cl);
     printf
     (
@@ -142,9 +154,7 @@ int main(int argc, char** argv)
 #endif
         " to continue.\n"
     );
-
     wait_key();
-
     delete[] cmdline;
     return ret;
 }

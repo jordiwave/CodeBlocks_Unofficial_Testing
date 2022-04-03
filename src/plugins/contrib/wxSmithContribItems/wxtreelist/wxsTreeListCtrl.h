@@ -29,30 +29,30 @@
 /** \brief Class for wxsTreeCtrl widget */
 class wxsTreeListCtrl: public wxsWidget
 {
-public:
+    public:
 
-    wxsTreeListCtrl (wxsItemResData* Data);
+        wxsTreeListCtrl(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview (wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties (long Flags);
-
-
-    void BuildItemCode (void);
-    void PreviewItemCode (wxTreeListCtrl* inPreview);
-    void ParseItems (wxString inSource, int& outLevel, wxArrayString& outItems);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
 
+        void BuildItemCode(void);
+        void PreviewItemCode(wxTreeListCtrl * inPreview);
+        void ParseItems(wxString inSource, int & outLevel, wxArrayString & outItems);
 
 
-    long m_ColCount;                  // number of columns
-    long m_ColWidth;                  // size of the columns
-    wxArrayString m_ColTitles;        // heading at top of each column
-    long m_TabChar;                   // what separates items?
-    wxArrayString m_TreeData;         // text items in the tree
-    bool m_ReadOnly;                  // can edit data in tree?
+
+
+        long m_ColCount;                  // number of columns
+        long m_ColWidth;                  // size of the columns
+        wxArrayString m_ColTitles;        // heading at top of each column
+        long m_TabChar;                   // what separates items?
+        wxArrayString m_TreeData;         // text items in the tree
+        bool m_ReadOnly;                  // can edit data in tree?
 
 
 };

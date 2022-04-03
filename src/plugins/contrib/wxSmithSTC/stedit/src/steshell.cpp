@@ -20,37 +20,36 @@
 IMPLEMENT_DYNAMIC_CLASS(wxSTEditorShell, wxSTEditor)
 
 BEGIN_EVENT_TABLE(wxSTEditorShell, wxSTEditor)
-    EVT_KEY_DOWN     (          wxSTEditorShell::OnKeyDown)
-    EVT_STC_UPDATEUI (wxID_ANY, wxSTEditorShell::OnSTCUpdateUI)
+    EVT_KEY_DOWN(wxSTEditorShell::OnKeyDown)
+    EVT_STC_UPDATEUI(wxID_ANY, wxSTEditorShell::OnSTCUpdateUI)
 END_EVENT_TABLE()
 
 void wxSTEditorShell::Init()
 {
     m_line_history_index = 0;
     m_max_history_lines  = 100;
-
     m_max_lines          = 10000; // arbitrary, seems reasonable
     m_overflow_lines     = 2000;
-
     m_writeable_count    = 0;
 }
 
-bool wxSTEditorShell::Create(wxWindow *parent, wxWindowID id,
-                             const wxPoint& pos, const wxSize& size,
-                             long style, const wxString& name)
+bool wxSTEditorShell::Create(wxWindow * parent, wxWindowID id,
+                             const wxPoint & pos, const wxSize & size,
+                             long style, const wxString & name)
 {
     if (!wxSTEditor::Create(parent, id, pos, size, style, name))
+    {
         return false;
+    }
 
     // set this up in case they don't want to bother with the preferences
     SetMarginWidth(STE_MARGIN_NUMBER, 0);
     SetMarginWidth(STE_MARGIN_FOLD,   0);
     SetMarginWidth(PROMPT_MARGIN,     16);
-
     SetMarginType(PROMPT_MARGIN, wxSTC_MARGIN_SYMBOL);
-    SetMarginMask(PROMPT_MARGIN, 1<<PROMPT_MARKER);
+    SetMarginMask(PROMPT_MARGIN, 1 << PROMPT_MARKER);
     // after creation you can change this to whatever prompt you prefer
-    MarkerDefine(PROMPT_MARKER, wxSTC_MARK_ARROWS, *wxBLACK, wxColour(255,255,0));
+    MarkerDefine(PROMPT_MARKER, wxSTC_MARK_ARROWS, *wxBLACK, wxColour(255, 255, 0));
     return true;
 }
 
@@ -58,20 +57,18 @@ wxSTEditorShell::~wxSTEditorShell()
 {
 }
 
-void wxSTEditorShell::AppendText(const wxString &text)
+void wxSTEditorShell::AppendText(const wxString & text)
 {
     BeginWriteable();                   // make it writeable
-
     wxSTEditor::AppendText(text);       // write the text
     SetMaxLines(m_max_lines, m_overflow_lines); // check for line count overflow
     GotoPos(GetLength());               // put cursor at end
     EmptyUndoBuffer();                  // don't let them undo what you wrote!
     //   but they can undo their own typing
-
     EndWriteable();                     // end the writeable state
 }
 
-void wxSTEditorShell::SetPromptText(const wxString& text)
+void wxSTEditorShell::SetPromptText(const wxString & text)
 {
     BeginWriteable();
     int length      = GetLength();
@@ -96,23 +93,29 @@ wxString wxSTEditorShell::GetPromptText()
 void wxSTEditorShell::BeginWriteable(bool make_writeable)
 {
     m_writeable_count++;
+
     if (make_writeable && GetReadOnly())
+    {
         SetReadOnly(false);
+    }
 }
 void wxSTEditorShell::EndWriteable(bool check_ro)
 {
     if (m_writeable_count > 0)
+    {
         m_writeable_count--;
+    }
 
     if (check_ro && (m_writeable_count == 0))
+    {
         CheckReadOnly(true);
+    }
 }
 
 int wxSTEditorShell::GetPromptLine()
 {
     int total_lines = GetLineCount();
-    return MarkerPrevious(total_lines+1, (1<<PROMPT_MARKER));
-
+    return MarkerPrevious(total_lines + 1, (1 << PROMPT_MARKER));
     // single line entry, return text on last line  FIXME - double check this
     // Scintilla doesn't complain if you enter a line greater than the length to get last prompt
     //int marker = MarkerGet(total_lines);
@@ -136,9 +139,14 @@ bool wxSTEditorShell::CaretOnPromptLine(STE_CaretPos_Type option)
     if (!on_last && (option != STE_CARET_MOVE_NONE))
     {
         if ((option & STE_CARET_MOVE_LASTLINE) != 0)
+        {
             GotoLine(prompt_line);
-        else if ((option & STE_CARET_MOVE_ENDTEXT) != 0)
-            GotoPos(GetLength());
+        }
+        else
+            if ((option & STE_CARET_MOVE_ENDTEXT) != 0)
+            {
+                GotoPos(GetLength());
+            }
     }
 
     return GetCurrentLine() >= prompt_line;
@@ -157,7 +165,9 @@ bool wxSTEditorShell::CheckReadOnly(bool set)
     }
 
     if (set && (make_ro != GetReadOnly()))
+    {
         SetReadOnly(make_ro);
+    }
 
     return make_ro;
 }
@@ -165,8 +175,8 @@ bool wxSTEditorShell::CheckReadOnly(bool set)
 bool wxSTEditorShell::CheckPrompt(bool set)
 {
     int total_lines = GetLineCount();
-    total_lines     = wxMax(0, total_lines-1);
-    bool has_prompt = (MarkerGet(total_lines) & (1<<PROMPT_MARKER)) != 0;
+    total_lines     = wxMax(0, total_lines - 1);
+    bool has_prompt = (MarkerGet(total_lines) & (1 << PROMPT_MARKER)) != 0;
 
     if (set && !has_prompt)
     {
@@ -177,25 +187,32 @@ bool wxSTEditorShell::CheckPrompt(bool set)
     return has_prompt;
 }
 
-void wxSTEditorShell::OnSTCUpdateUI(wxStyledTextEvent &event)
+void wxSTEditorShell::OnSTCUpdateUI(wxStyledTextEvent & event)
 {
     event.Skip();
+
     if (m_writeable_count == 0)
+    {
         CheckReadOnly(true);
+    }
 }
 
-wxString wxSTEditorShell::GetNextHistoryLine(bool forwards, const wxString &line)
+wxString wxSTEditorShell::GetNextHistoryLine(bool forwards, const wxString & line)
 {
     int count = (int)m_lineHistoryArray.GetCount();
 
     // no history, just return ""
     if (count == 0)
+    {
         return wxEmptyString;
+    }
 
     // return current one if it's different
     if ((m_line_history_index >= 0) && (m_line_history_index < count) &&
             (line != m_lineHistoryArray[m_line_history_index]))
+    {
         return m_lineHistoryArray[m_line_history_index];
+    }
 
     if (forwards)
     {
@@ -221,17 +238,22 @@ wxString wxSTEditorShell::GetNextHistoryLine(bool forwards, const wxString &line
     return m_lineHistoryArray[m_line_history_index];
 }
 
-void wxSTEditorShell::AddHistoryLine(const wxString& string, bool set_index_to_last)
+void wxSTEditorShell::AddHistoryLine(const wxString & string, bool set_index_to_last)
 {
     size_t count = m_lineHistoryArray.GetCount();
 
     // don't add same line twice
-    if ((count > 0) && (string == m_lineHistoryArray[count-1]))
+    if ((count > 0) && (string == m_lineHistoryArray[count - 1]))
+    {
         return;
+    }
 
     m_lineHistoryArray.Add(string);
+
     if (set_index_to_last)
+    {
         m_line_history_index = (int)(m_lineHistoryArray.GetCount() - 1);
+    }
 
     SetMaxHistoryLines(GetMaxHistoryLines()); // remove any extra
 }
@@ -239,37 +261,43 @@ void wxSTEditorShell::AddHistoryLine(const wxString& string, bool set_index_to_l
 void wxSTEditorShell::SetMaxHistoryLines(int max_lines)
 {
     m_max_history_lines = max_lines;
-
     int extra = int(m_lineHistoryArray.GetCount()) - m_max_history_lines;
-    if ((m_max_history_lines >= 0) && (extra > 0))
-        m_lineHistoryArray.RemoveAt(0, extra);
 
-    m_line_history_index = wxMin(m_line_history_index, int(m_lineHistoryArray.GetCount())-1);
+    if ((m_max_history_lines >= 0) && (extra > 0))
+    {
+        m_lineHistoryArray.RemoveAt(0, extra);
+    }
+
+    m_line_history_index = wxMin(m_line_history_index, int(m_lineHistoryArray.GetCount()) - 1);
 }
 
 bool wxSTEditorShell::SetMaxLines(int max_lines, int overflow_lines)
 {
     m_max_lines      = max_lines;
     m_overflow_lines = overflow_lines;
-    if (m_max_lines < 0) return false;
+
+    if (m_max_lines < 0)
+    {
+        return false;
+    }
 
     int total_lines = GetLineCount();
-    total_lines     = wxMax(0, total_lines-1);
+    total_lines     = wxMax(0, total_lines - 1);
 
     // delete lines when more than m_max_lines, you'll eventually crash otherwise
     if (total_lines > m_max_lines + m_overflow_lines)
     {
         BeginWriteable();
-
         int marker = MarkerGet(total_lines - m_max_lines);
-
         SetTargetStart(0);
         SetTargetEnd(PositionFromLine(total_lines - m_max_lines));
         ReplaceTarget(wxEmptyString);
 
         // wipe marker that has moved up if there shouldn't be a marker
-        if ((marker & (1<<PROMPT_MARKER)) == 0)
+        if ((marker & (1 << PROMPT_MARKER)) == 0)
+        {
             MarkerDelete(0, PROMPT_MARKER);
+        }
 
         EndWriteable();
         return true;
@@ -278,7 +306,7 @@ bool wxSTEditorShell::SetMaxLines(int max_lines, int overflow_lines)
     return false;
 }
 
-void wxSTEditorShell::OnKeyDown(wxKeyEvent &event)
+void wxSTEditorShell::OnKeyDown(wxKeyEvent & event)
 {
     // don't steal any keys from the autocomplete dropdown
     if (AutoCompActive())
@@ -292,125 +320,144 @@ void wxSTEditorShell::OnKeyDown(wxKeyEvent &event)
 
     switch (event.GetKeyCode())
     {
-    case WXK_UP :
-    case WXK_NUMPAD_UP :
-    {
-        // you can scroll up through multiline entry
-        int current_line = GetCurrentLine();
-        int prompt_line  = GetPromptLine();
-        if ((current_line < prompt_line) || (current_line > prompt_line))
-            break;
-
-        // up/down arrows go through the history buffer
-        wxString promptText = GetPromptText();
-        SetPromptText(GetNextHistoryLine(false, promptText));
-        return;
-    }
-    case WXK_DOWN :
-    case WXK_NUMPAD_DOWN :
-    {
-        // you can scroll down through multiline entry
-        int total_lines  = GetLineCount();
-        total_lines      = wxMax(0, total_lines - 1);
-        int current_line = GetCurrentLine();
-        if (current_line < total_lines)
-            break;
-
-        // up/down arrows go through the history buffer
-        wxString promptText = GetPromptText();
-        SetPromptText(GetNextHistoryLine(true, promptText));
-        return;
-    }
-    case WXK_LEFT :
-    case WXK_NUMPAD_LEFT :
-    {
-        int current_line = GetCurrentLine();
-        int prompt_line  = GetPromptLine();
-        if (current_line >= prompt_line)
+        case WXK_UP :
+        case WXK_NUMPAD_UP :
         {
-            int caret_pos = 0;
-            GetCurLine(&caret_pos);
-            if (caret_pos < 1)
-                return;
-        }
-        break;
-    }
+            // you can scroll up through multiline entry
+            int current_line = GetCurrentLine();
+            int prompt_line  = GetPromptLine();
 
-    case WXK_PAGEUP   :
-    case WXK_NUMPAD_PAGEUP   :
-    case WXK_PAGEDOWN :
-    case WXK_NUMPAD_PAGEDOWN :
-    case WXK_END      :
-    case WXK_NUMPAD_END   :
-    case WXK_HOME     :
-    case WXK_NUMPAD_HOME  :
-    case WXK_RIGHT    :
-    case WXK_NUMPAD_RIGHT :
+            if ((current_line < prompt_line) || (current_line > prompt_line))
+            {
+                break;
+            }
 
-    case WXK_SHIFT   :
-    case WXK_CONTROL :
-    case WXK_ALT     :
-    {
-        // default processing for these keys
-        event.Skip();
-        return;
-    }
-
-    case WXK_RETURN :
-    case WXK_NUMPAD_ENTER :
-    {
-        // put cursor at end if not already on the last line
-        if (!CaretOnPromptLine(STE_CARET_MOVE_NONE))
-        {
-            GotoPos(GetLength());
+            // up/down arrows go through the history buffer
+            wxString promptText = GetPromptText();
+            SetPromptText(GetNextHistoryLine(false, promptText));
             return;
         }
 
-        int current_line = GetCurrentLine();
-        int prompt_line  = GetPromptLine();
-
-        // allow multiline entry for shift+enter
-        if ((current_line >= prompt_line) && event.ShiftDown())
+        case WXK_DOWN :
+        case WXK_NUMPAD_DOWN :
         {
+            // you can scroll down through multiline entry
+            int total_lines  = GetLineCount();
+            total_lines      = wxMax(0, total_lines - 1);
+            int current_line = GetCurrentLine();
+
+            if (current_line < total_lines)
+            {
+                break;
+            }
+
+            // up/down arrows go through the history buffer
+            wxString promptText = GetPromptText();
+            SetPromptText(GetNextHistoryLine(true, promptText));
+            return;
+        }
+
+        case WXK_LEFT :
+        case WXK_NUMPAD_LEFT :
+        {
+            int current_line = GetCurrentLine();
+            int prompt_line  = GetPromptLine();
+
+            if (current_line >= prompt_line)
+            {
+                int caret_pos = 0;
+                GetCurLine(&caret_pos);
+
+                if (caret_pos < 1)
+                {
+                    return;
+                }
+            }
+
+            break;
+        }
+
+        case WXK_PAGEUP   :
+        case WXK_NUMPAD_PAGEUP   :
+        case WXK_PAGEDOWN :
+        case WXK_NUMPAD_PAGEDOWN :
+        case WXK_END      :
+        case WXK_NUMPAD_END   :
+        case WXK_HOME     :
+        case WXK_NUMPAD_HOME  :
+        case WXK_RIGHT    :
+        case WXK_NUMPAD_RIGHT :
+        case WXK_SHIFT   :
+        case WXK_CONTROL :
+        case WXK_ALT     :
+        {
+            // default processing for these keys
             event.Skip();
             return;
         }
 
-        wxString promptText = GetPromptText();
-
-        // goto the end of the line and store the line for the history
-        LineEnd();
-        if (promptText.Length())
-            AddHistoryLine(promptText, true);
-
-        // just send the event, the receiver can do what they like
-        SendEvent(wxEVT_STESHELL_ENTER, 0, GetState(), promptText);
-        return;
-    }
-    case WXK_BACK :
-    {
-        // go to the end of the last line if not on last line
-        if (!CaretOnPromptLine(STE_CARET_MOVE_NONE))
+        case WXK_RETURN :
+        case WXK_NUMPAD_ENTER :
         {
-            GotoPos(GetLength());
+            // put cursor at end if not already on the last line
+            if (!CaretOnPromptLine(STE_CARET_MOVE_NONE))
+            {
+                GotoPos(GetLength());
+                return;
+            }
+
+            int current_line = GetCurrentLine();
+            int prompt_line  = GetPromptLine();
+
+            // allow multiline entry for shift+enter
+            if ((current_line >= prompt_line) && event.ShiftDown())
+            {
+                event.Skip();
+                return;
+            }
+
+            wxString promptText = GetPromptText();
+            // goto the end of the line and store the line for the history
+            LineEnd();
+
+            if (promptText.Length())
+            {
+                AddHistoryLine(promptText, true);
+            }
+
+            // just send the event, the receiver can do what they like
+            SendEvent(wxEVT_STESHELL_ENTER, 0, GetState(), promptText);
             return;
         }
-        // don't let them backspace into previous line
-        int caret_pos = 0;
-        GetCurLine(&caret_pos);
-        if (caret_pos < 1)
-            return;
 
-        break;
-    }
-    default : // move cursor to end if not already there
-    {
-        // reset history to start at most recent again
-        m_line_history_index = (int)(m_lineHistoryArray.GetCount() - 1);
+        case WXK_BACK :
+        {
+            // go to the end of the last line if not on last line
+            if (!CaretOnPromptLine(STE_CARET_MOVE_NONE))
+            {
+                GotoPos(GetLength());
+                return;
+            }
 
-        CaretOnPromptLine(STE_CARET_MOVE_ENDTEXT);
-        break;
-    }
+            // don't let them backspace into previous line
+            int caret_pos = 0;
+            GetCurLine(&caret_pos);
+
+            if (caret_pos < 1)
+            {
+                return;
+            }
+
+            break;
+        }
+
+        default : // move cursor to end if not already there
+        {
+            // reset history to start at most recent again
+            m_line_history_index = (int)(m_lineHistoryArray.GetCount() - 1);
+            CaretOnPromptLine(STE_CARET_MOVE_ENDTEXT);
+            break;
+        }
     }
 
     event.Skip();

@@ -29,39 +29,39 @@ namespace
 wxsRegisterItem<wxsBoxSizer> Reg(_T("BoxSizer"), wxsTSizer, _T("Layout"), 90);
 }
 
-wxsBoxSizer::wxsBoxSizer(wxsItemResData* Data):
-    wxsSizer(Data,&Reg.Info),
+wxsBoxSizer::wxsBoxSizer(wxsItemResData * Data):
+    wxsSizer(Data, &Reg.Info),
     Orient(wxHORIZONTAL)
 {
 }
 
-wxSizer* wxsBoxSizer::OnBuildSizerPreview(cb_unused wxWindow* Parent)
+wxSizer * wxsBoxSizer::OnBuildSizerPreview(cb_unused wxWindow * Parent)
 {
     return new wxBoxSizer(Orient);
 }
 
 void wxsBoxSizer::OnBuildSizerCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%s);\n"),(Orient!=wxHORIZONTAL)?_T("wxVERTICAL"):_T("wxHORIZONTAL"));
-        return;
-    }
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/sizer.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%s);\n"), (Orient != wxHORIZONTAL) ? _T("wxVERTICAL") : _T("wxHORIZONTAL"));
+            return;
+        }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsBoxSizer::OnBuildSizerCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsBoxSizer::OnBuildSizerCreatingCode"), GetLanguage());
+        }
     }
 }
 
 void wxsBoxSizer::OnEnumSizerProperties(cb_unused long Flags)
 {
     static const long    OrientValues[] = { wxHORIZONTAL, wxVERTICAL, 0 };
-    static const wxChar* OrientNames[]  = { _T("wxHORIZONTAL"), _T("wxVERTICAL"), 0 };
-    WXS_ENUM(wxsBoxSizer,Orient,_("Orientation"),_T("orient"),OrientValues,OrientNames,wxHORIZONTAL);
+    static const wxChar * OrientNames[]  = { _T("wxHORIZONTAL"), _T("wxVERTICAL"), 0 };
+    WXS_ENUM(wxsBoxSizer, Orient, _("Orientation"), _T("orient"), OrientValues, OrientNames, wxHORIZONTAL);
 }

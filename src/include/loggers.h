@@ -23,68 +23,70 @@ class wxListCtrl;
 /** a logger simply does nothing */
 class DLLIMPORT NullLogger : public Logger
 {
-public:
-    void Append(cb_unused const wxString& msg, cb_unused Logger::level lv) override {};
+    public:
+        void Append(cb_unused const wxString & msg, cb_unused Logger::level lv) override {};
 };
 
 /** a logger which prints messages to the standard console IO */
 class DLLIMPORT StdoutLogger : public Logger
 {
-public:
-    void Append(const wxString& msg, Logger::level lv) override
-    {
-        fputs(wxSafeConvertWX2MB(msg.wc_str()), lv < error ? stdout : stderr);
-        fputs(::newline_string.mb_str(), lv < error ? stdout : stderr);
-    }
+    public:
+        void Append(const wxString & msg, Logger::level lv) override
+        {
+            fputs(wxSafeConvertWX2MB(msg.wc_str()), lv < error ? stdout : stderr);
+            fputs(::newline_string.mb_str(), lv < error ? stdout : stderr);
+        }
 };
 
 /** a logger which prints messages to a file */
 class DLLIMPORT FileLogger : public Logger
 {
-protected:
-    wxFFile f;
-public:
-    FileLogger(const wxString& filename)
-    {
-        f.Open(filename, _T("wb"));
-        if (f.Error())
+    protected:
+        wxFFile f;
+    public:
+        FileLogger(const wxString & filename)
         {
-            wxFileName fn(wxStandardPaths::Get().GetTempDir(),filename);
-            f.Close();
-            f.Open(fn.GetFullPath(), _T("wb"));
-        }
-    };
-    FileLogger() {};
+            f.Open(filename, _T("wb"));
 
-    void Append(const wxString& msg, cb_unused Logger::level lv) override
-    {
-        if (f.IsOpened())
-        {
-            fputs(wxSafeConvertWX2MB(msg.wc_str()), f.fp());
-            fputs(::newline_string.mb_str(), f.fp());
-            f.Flush();
-        }
-    };
+            if (f.Error())
+            {
+                wxFileName fn(wxStandardPaths::Get().GetTempDir(), filename);
+                f.Close();
+                f.Open(fn.GetFullPath(), _T("wb"));
+            }
+        };
+        FileLogger() {};
 
-    virtual void Open(const wxString& filename)
-    {
-        Close();
-        f.Open(filename, _T("wb"));
-        if (f.Error())
+        void Append(const wxString & msg, cb_unused Logger::level lv) override
         {
-            wxFileName fn(wxStandardPaths::Get().GetTempDir(),filename);
-            f.Close();
-            f.Open(fn.GetFullPath(), _T("wb"));
-        }
-    };
-    virtual void Close()
-    {
-        if(f.IsOpened())
+            if (f.IsOpened())
+            {
+                fputs(wxSafeConvertWX2MB(msg.wc_str()), f.fp());
+                fputs(::newline_string.mb_str(), f.fp());
+                f.Flush();
+            }
+        };
+
+        virtual void Open(const wxString & filename)
         {
-            f.Flush();
-            f.Close();
-        }
-    };
+            Close();
+            f.Open(filename, _T("wb"));
+
+            if (f.Error())
+            {
+                wxFileName fn(wxStandardPaths::Get().GetTempDir(), filename);
+                f.Close();
+                f.Open(fn.GetFullPath(), _T("wb"));
+            }
+        };
+        virtual void Close()
+        {
+            if (f.IsOpened())
+            {
+                f.Flush();
+                f.Close();
+            }
+        };
 };
 
 /** Cascading Style Sheets class for HTML logger */
@@ -108,81 +110,81 @@ struct CSS
 /** a logger which prints messages to an HTML file */
 class DLLIMPORT HTMLFileLogger : public FileLogger
 {
-    CSS css;
-public:
-    HTMLFileLogger(const wxString& filename);
-    void SetCSS(const CSS& in_css)
-    {
-        css = in_css;
-    };
+        CSS css;
+    public:
+        HTMLFileLogger(const wxString & filename);
+        void SetCSS(const CSS & in_css)
+        {
+            css = in_css;
+        };
 
-    void Append(const wxString& msg, Logger::level lv) override;
-    void Open(const wxString& filename) override;
-    void Close() override;
+        void Append(const wxString & msg, Logger::level lv) override;
+        void Open(const wxString & filename) override;
+        void Close() override;
 };
 
 /** a logger which prints messages to a wxTextCtrl */
 class DLLIMPORT TextCtrlLogger : public Logger
 {
-protected:
+    protected:
 
-    wxTextCtrl* control;
-    bool        fixed;
-    wxTextAttr  style[num_levels];
+        wxTextCtrl * control;
+        bool        fixed;
+        wxTextAttr  style[num_levels];
 
-public:
-    TextCtrlLogger(bool fixedPitchFont = false);
-    ~TextCtrlLogger() override;
+    public:
+        TextCtrlLogger(bool fixedPitchFont = false);
+        ~TextCtrlLogger() override;
 
-    void      CopyContentsToClipboard(bool selectionOnly = false) override;
-    void      UpdateSettings() override;
-    void      Append(const wxString& msg, Logger::level lv = info) override;
-    void      Clear() override;
-    wxWindow* CreateControl(wxWindow* parent) override;
-    bool      GetWrapMode() const override;
-    virtual void      ToggleWrapMode();
-    bool      HasFeature(Feature::Enum feature) const override;
+        void      CopyContentsToClipboard(bool selectionOnly = false) override;
+        void      UpdateSettings() override;
+        void      Append(const wxString & msg, Logger::level lv = info) override;
+        void      Clear() override;
+        wxWindow * CreateControl(wxWindow * parent) override;
+        bool      GetWrapMode() const override;
+        virtual void      ToggleWrapMode();
+        bool      HasFeature(Feature::Enum feature) const override;
 };
 
 /** an extended logger from TextCtrlLogger, since it add time stamps for each log message */
 class DLLIMPORT TimestampTextCtrlLogger : public TextCtrlLogger
 {
-public:
-    void Append(const wxString& msg, Logger::level lv = info) override;
+    public:
+        void Append(const wxString & msg, Logger::level lv = info) override;
 };
 
 /** a logger which prints messages to a wxListCtrl */
 class DLLIMPORT ListCtrlLogger : public Logger
 {
-protected:
+    protected:
 
-    wxListCtrl*   control;
-    bool          fixed;
-    wxArrayString titles;
-    wxArrayInt    widths;
+        wxListCtrl  * control;
+        bool          fixed;
+        wxArrayString titles;
+        wxArrayInt    widths;
 
-    struct ListStyles
-    {
-        wxFont font;
-        wxColour colour;
-    };
-    ListStyles style[num_levels];
+        struct ListStyles
+        {
+            wxFont font;
+            wxColour colour;
+        };
+        ListStyles style[num_levels];
 
-    wxString GetItemAsText(long item) const;
-public:
+        wxString GetItemAsText(long item) const;
+    public:
 
-    ListCtrlLogger(const wxArrayString& titles, const wxArrayInt& widths, bool fixedPitchFont = false);
-    ~ListCtrlLogger() override;
+        ListCtrlLogger(const wxArrayString & titles, const wxArrayInt & widths, bool fixedPitchFont = false);
+        ~ListCtrlLogger() override;
 
-    void      CopyContentsToClipboard(bool selectionOnly = false) override;
-    void      UpdateSettings() override;
-    void      Append(const wxString& msg, Logger::level lv = info) override;
-    virtual void      Append(const wxArrayString& colValues, Logger::level lv = info, int autoSize = -1);
-    virtual size_t    GetItemsCount() const;
-    void      Clear() override;
-    wxWindow* CreateControl(wxWindow* parent) override;
-    bool      HasFeature(Feature::Enum feature) const override;
-    virtual void      AutoFitColumns(int column);
+        void      CopyContentsToClipboard(bool selectionOnly = false) override;
+        void      UpdateSettings() override;
+        void      Append(const wxString & msg, Logger::level lv = info) override;
+        virtual void      Append(const wxArrayString & colValues, Logger::level lv = info, int autoSize = -1);
+        virtual size_t    GetItemsCount() const;
+        void      Clear() override;
+        wxWindow * CreateControl(wxWindow * parent) override;
+        bool      HasFeature(Feature::Enum feature) const override;
+        virtual void      AutoFitColumns(int column);
 };
 
 #endif // LOGGERS_H

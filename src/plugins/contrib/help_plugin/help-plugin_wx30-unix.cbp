@@ -3,7 +3,6 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="Help Plugin wx3.0.x (Unix)" />
-		<Option pch_mode="0" />
 		<Option default_target="help_plugin" />
 		<Option compiler="gcc" />
 		<Build>

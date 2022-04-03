@@ -28,7 +28,7 @@ struct depsStats
     long cache_updated; /* This many files had entries in the cache updated */
 };
 
-typedef struct _depsRef *depsRef;
+typedef struct _depsRef * depsRef;
 
 /*
  * -- depsStart --
@@ -46,7 +46,7 @@ extern void depsStart(void);
  *
  * arg cwd (in) -> the absolute pathname of a directory.
  */
-extern void depsSetCWD(const char *cwd);
+extern void depsSetCWD(const char * cwd);
 
 /*
  * -- depsCacheRead() --
@@ -54,7 +54,7 @@ extern void depsSetCWD(const char *cwd);
  *
  * arg path (in) -> the path of a header cache file
  */
-extern void depsCacheRead(const char *path);
+extern void depsCacheRead(const char * path);
 
 /*
  * -- depsCacheWrite() --
@@ -62,7 +62,7 @@ extern void depsCacheRead(const char *path);
  *
  * arg path (in) -> the path of a header cache file
  */
-extern void depsCacheWrite(const char *path);
+extern void depsCacheWrite(const char * path);
 
 /*
  * -- depsSearchStart --
@@ -77,7 +77,7 @@ extern void depsSearchStart(void);
  *
  * arg path (in) -> the relative (or absolute) directory path
  */
-extern void depsAddSearchDir(const char *path);
+extern void depsAddSearchDir(const char * path);
 
 /*
  * -- depsScanForHeaders --
@@ -91,7 +91,7 @@ extern void depsAddSearchDir(const char *path);
  * result -> an opaque pointer to information about the given file, or NULL
  *   if the file was not found
  */
-extern depsRef depsScanForHeaders(const char *path);
+extern depsRef depsScanForHeaders(const char * path);
 
 /*
  * -- depsGetNewest --
@@ -104,7 +104,7 @@ extern depsRef depsScanForHeaders(const char *path);
  * result -> the absolute path of the most-recent file. On Windows this will
  *   be all lower-case.
  */
-extern const char *depsGetNewest(depsRef ref, time_t *time);
+extern const char * depsGetNewest(depsRef ref, time_t * time);
 
 /*
  * -- depsTimeStamp --
@@ -113,7 +113,7 @@ extern const char *depsGetNewest(depsRef ref, time_t *time);
  * arg path (in) -> the relative (or absolute) file path
  * arg time (out) -> the file modification time or zero if not found
  */
-extern void depsTimeStamp(const char *path, time_t *time);
+extern void depsTimeStamp(const char * path, time_t * time);
 
 /*
  * -- depsGetStats --
@@ -121,7 +121,7 @@ extern void depsTimeStamp(const char *path, time_t *time);
  *
  * arg stats (out) -> pointer to stats info
  */
-extern void depsGetStats(struct depsStats *stats);
+extern void depsGetStats(struct depsStats * stats);
 
 /*
  * -- depsDone --

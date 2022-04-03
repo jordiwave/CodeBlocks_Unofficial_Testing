@@ -25,107 +25,116 @@
 
 namespace
 {
-wxArrayInt GetArray(const wxString& String,bool* Valid = 0)
+wxArrayInt GetArray(const wxString & String, bool * Valid = 0)
 {
-    wxStringTokenizer Tokens(String,_T(","));
+    wxStringTokenizer Tokens(String, _T(","));
     wxArrayInt Array;
-    if ( Valid )
+
+    if (Valid)
     {
         *Valid = true;
     }
 
-    while ( Tokens.HasMoreTokens() )
+    while (Tokens.HasMoreTokens())
     {
         long Value;
         wxString Token = Tokens.GetNextToken();
         Token.Trim(true);
         Token.Trim(false);
-        if ( !Token.ToLong(&Value) && Valid )
+
+        if (!Token.ToLong(&Value) && Valid)
         {
             *Valid = false;
         }
+
         Array.Add((int)Value);
     }
 
     return Array;
 }
 
-bool FixupList(wxString& List)
+bool FixupList(wxString & List)
 {
     bool Ret;
-    wxArrayInt Array = GetArray(List,&Ret);
+    wxArrayInt Array = GetArray(List, &Ret);
     List.Clear();
-    for ( size_t i=0; i<Array.Count(); i++ )
+
+    for (size_t i = 0; i < Array.Count(); i++)
     {
-        List.Append(wxString::Format(_T("%d"),Array[i]));
-        if ( i < Array.Count() - 1 )
+        List.Append(wxString::Format(_T("%d"), Array[i]));
+
+        if (i < Array.Count() - 1)
         {
             List.Append(_T(','));
         }
     }
+
     return Ret;
 }
 
-wxsRegisterItem<wxsFlexGridSizer> Reg(_T("FlexGridSizer"),wxsTSizer,_T("Layout"),80);
+wxsRegisterItem<wxsFlexGridSizer> Reg(_T("FlexGridSizer"), wxsTSizer, _T("Layout"), 80);
 }
 
-wxsFlexGridSizer::wxsFlexGridSizer(wxsItemResData* Data):
-    wxsSizer(Data,&Reg.Info),
+wxsFlexGridSizer::wxsFlexGridSizer(wxsItemResData * Data):
+    wxsSizer(Data, &Reg.Info),
     Cols(3),
     Rows(0)
 {
 }
 
-wxSizer* wxsFlexGridSizer::OnBuildSizerPreview(wxWindow* Parent)
+wxSizer * wxsFlexGridSizer::OnBuildSizerPreview(wxWindow * Parent)
 {
-    wxFlexGridSizer* Sizer = new wxFlexGridSizer(Rows,Cols,
-            VGap.GetPixels(Parent),HGap.GetPixels(Parent));
-
+    wxFlexGridSizer * Sizer = new wxFlexGridSizer(Rows, Cols,
+                                                  VGap.GetPixels(Parent), HGap.GetPixels(Parent));
     wxArrayInt _Cols = GetArray(GrowableCols);
-    for ( size_t i=0; i<_Cols.Count(); i++ )
+
+    for (size_t i = 0; i < _Cols.Count(); i++)
     {
         Sizer->AddGrowableCol(_Cols[i]);
     }
 
     wxArrayInt _Rows = GetArray(GrowableRows);
-    for ( size_t i=0; i<_Rows.Count(); i++ )
+
+    for (size_t i = 0; i < _Rows.Count(); i++)
     {
         Sizer->AddGrowableRow(_Rows[i]);
     }
+
     return Sizer;
 }
 
 void wxsFlexGridSizer::OnBuildSizerCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%d, %d, %s, %s);\n"),Rows,Cols,
-              VGap.GetPixelsCode(GetCoderContext()).wx_str(),
-              HGap.GetPixelsCode(GetCoderContext()).wx_str());
-
-        wxArrayInt _Cols = GetArray(GrowableCols);
-        for ( size_t i=0; i<_Cols.Count(); i++ )
+        case wxsCPP:
         {
-            Codef(_T("%AAddGrowableCol(%d);\n"),_Cols[i]);
+            AddHeader(_T("<wx/sizer.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%d, %d, %s, %s);\n"), Rows, Cols,
+                  VGap.GetPixelsCode(GetCoderContext()).wx_str(),
+                  HGap.GetPixelsCode(GetCoderContext()).wx_str());
+            wxArrayInt _Cols = GetArray(GrowableCols);
+
+            for (size_t i = 0; i < _Cols.Count(); i++)
+            {
+                Codef(_T("%AAddGrowableCol(%d);\n"), _Cols[i]);
+            }
+
+            wxArrayInt _Rows = GetArray(GrowableRows);
+
+            for (size_t i = 0; i < _Rows.Count(); i++)
+            {
+                Codef(_T("%AAddGrowableRow(%d);\n"), _Rows[i]);
+            }
+
+            return;
         }
 
-        wxArrayInt _Rows = GetArray(GrowableRows);
-        for ( size_t i=0; i<_Rows.Count(); i++ )
+        case wxsUnknownLanguage: // fall-through
+        default:
         {
-            Codef(_T("%AAddGrowableRow(%d);\n"),_Rows[i]);
+            wxsCodeMarks::Unknown(_T("wxsFlexGridSizer::OnBuildSizerCreatingCode"), GetLanguage());
         }
-
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsFlexGridSizer::OnBuildSizerCreatingCode"),GetLanguage());
-    }
     }
 }
 
@@ -133,12 +142,12 @@ void wxsFlexGridSizer::OnEnumSizerProperties(cb_unused long Flags)
 {
     FixupList(GrowableCols);
     FixupList(GrowableRows);
-    WXS_LONG(wxsFlexGridSizer,Cols,_("Cols"),_T("cols"),0);
-    WXS_LONG(wxsFlexGridSizer,Rows,_("Rows"),_T("rows"),0);
-    WXS_DIMENSION(wxsFlexGridSizer,VGap,_("V-Gap"),_("V-Gap in dialog units"),_T("vgap"),0,false);
-    WXS_DIMENSION(wxsFlexGridSizer,HGap,_("H-Gap"),_("H,y-Gap in dialog units"),_T("hgap"),0,false);
-    WXS_SHORT_STRING(wxsFlexGridSizer,GrowableCols,_("Growable cols"),_T("growablecols"),_T(""),false);
-    WXS_SHORT_STRING(wxsFlexGridSizer,GrowableRows,_("Growable rows"),_T("growablerows"),_T(""),false);
+    WXS_LONG(wxsFlexGridSizer, Cols, _("Cols"), _T("cols"), 0);
+    WXS_LONG(wxsFlexGridSizer, Rows, _("Rows"), _T("rows"), 0);
+    WXS_DIMENSION(wxsFlexGridSizer, VGap, _("V-Gap"), _("V-Gap in dialog units"), _T("vgap"), 0, false);
+    WXS_DIMENSION(wxsFlexGridSizer, HGap, _("H-Gap"), _("H,y-Gap in dialog units"), _T("hgap"), 0, false);
+    WXS_SHORT_STRING(wxsFlexGridSizer, GrowableCols, _("Growable cols"), _T("growablecols"), _T(""), false);
+    WXS_SHORT_STRING(wxsFlexGridSizer, GrowableRows, _("Growable rows"), _T("growablerows"), _T(""), false);
     FixupList(GrowableCols);
     FixupList(GrowableRows);
 }

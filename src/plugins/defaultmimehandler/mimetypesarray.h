@@ -10,11 +10,11 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #include <wx/dynarray.h>
@@ -39,6 +39,6 @@ struct cbMimeType
     // valid only for external programs...
     bool programIsModal;
 };
-WX_DEFINE_ARRAY(cbMimeType*, MimeTypesArray);
+WX_DEFINE_ARRAY(cbMimeType *, MimeTypesArray);
 
 #endif // MIMETYPESARRAY_H

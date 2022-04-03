@@ -10,7 +10,7 @@
 #define ROTATE_LEN      5
 
 #define ROTATE(v,q) \
-   (v) = ((v) << (q)) | (((v) >> (32 - q)) & ((1 << (q))-1));
+    (v) = ((v) << (q)) | (((v) >> (32 - q)) & ((1 << (q))-1));
 
 #define SET_SIZE      256
 
@@ -20,8 +20,8 @@
 
 struct affent
 {
-    char *  appnd;
-    char *  strip;
+    char  * appnd;
+    char  * strip;
     short   appndl;
     short   stripl;
     char    achar;
@@ -87,7 +87,7 @@ struct dwords  wlist[MAX_WORDS]; /* list words found */
 
 /* the routines */
 
-void parse_aff_file(FILE* afflst);
+void parse_aff_file(FILE * afflst);
 
 void encodeit(struct affent * ptr, char * cs);
 
@@ -99,20 +99,20 @@ int add_word(char *);
 
 struct hentry * lookup(const char *);
 
-void aff_chk (const char * word, int len);
+void aff_chk(const char * word, int len);
 
-void pfx_chk (const char * word, int len, struct affent* ep, int num);
+void pfx_chk(const char * word, int len, struct affent * ep, int num);
 
-void suf_chk (const char * word, int len, struct affent * ep, int num,
-              struct affent * pfxent, int cpflag);
+void suf_chk(const char * word, int len, struct affent * ep, int num,
+             struct affent * pfxent, int cpflag);
 
 void add_affix_char(struct hentry * hent, char ac);
 
-int expand_rootword(const char *, int, const char*, int);
+int expand_rootword(const char *, int, const char *, int);
 
-void pfx_add (const char * word, int len, struct affent* ep, int num);
+void pfx_add(const char * word, int len, struct affent * ep, int num);
 
-void suf_add (const char * word, int len, struct affent * ep, int num);
+void suf_add(const char * word, int len, struct affent * ep, int num);
 
 char * mystrsep(char ** stringp, const char delim);
 

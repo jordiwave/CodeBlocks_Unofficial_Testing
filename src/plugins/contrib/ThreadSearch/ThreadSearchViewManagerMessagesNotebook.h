@@ -24,23 +24,23 @@ class ThreadSearchLogger;
 
 class ThreadSearchViewManagerMessagesNotebook : public ThreadSearchViewManagerBase
 {
-public:
-    ThreadSearchViewManagerMessagesNotebook(ThreadSearchView* pThreadSearchView)
-        : ThreadSearchViewManagerBase(pThreadSearchView), m_Bitmap(nullptr)
-    {}
-    ~ThreadSearchViewManagerMessagesNotebook() override;
+    public:
+        ThreadSearchViewManagerMessagesNotebook(ThreadSearchView * pThreadSearchView)
+            : ThreadSearchViewManagerBase(pThreadSearchView), m_Bitmap(nullptr)
+        {}
+        ~ThreadSearchViewManagerMessagesNotebook() override;
 
-    eManagerTypes GetManagerType() override
-    {
-        return TypeMessagesNotebook;
-    }
-    void AddViewToManager() override;
-    void RemoveViewFromManager() override;
-    bool ShowView(uint32_t flags) override;
-    bool IsViewShown() override;
-    void Raise() override;
-private:
-    wxBitmap *m_Bitmap;
+        eManagerTypes GetManagerType() override
+        {
+            return TypeMessagesNotebook;
+        }
+        void AddViewToManager() override;
+        void RemoveViewFromManager() override;
+        bool ShowView(uint32_t flags) override;
+        bool IsViewShown() override;
+        void Raise() override;
+    private:
+        wxBitmap * m_Bitmap;
 };
 
 #endif // THREAD_SEARCH_VIEW_MANAGER_MESSAGES_NOTEBOOK_H

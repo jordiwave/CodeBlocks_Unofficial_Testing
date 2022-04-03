@@ -15,21 +15,21 @@
 /// Class representing a kerning pair (For internal use only)
 class wxPdfKernPairDesc
 {
-public:
-    wxUint32 unicode1; ///< first unicode character in kerning pair
-    wxUint32 unicode2; ///< second unicode character in kerning pair
-    int      kerning;  ///< kerning measure
+    public:
+        wxUint32 unicode1; ///< first unicode character in kerning pair
+        wxUint32 unicode2; ///< second unicode character in kerning pair
+        int      kerning;  ///< kerning measure
 };
 
 /// Structure describing core fonts (For internal use only)
 typedef struct _wxPdfCoreFontDesc
 {
-    const wxStringCharType*  family;             ///< font family
-    const wxStringCharType*  alias;              ///< font family alias
-    const wxStringCharType*  name;               ///< font name
-    short*                   cwArray;            ///< array of character widths
-    const wxPdfKernPairDesc* kpArray;            ///< array of kerning pairs
-    const wxStringCharType*  bbox;               ///< bounding box
+    const wxStringCharType * family;             ///< font family
+    const wxStringCharType * alias;              ///< font family alias
+    const wxStringCharType * name;               ///< font name
+    short          *         cwArray;            ///< array of character widths
+    const wxPdfKernPairDesc * kpArray;           ///< array of kerning pairs
+    const wxStringCharType * bbox;               ///< bounding box
     int                      ascent;             ///< ascender
     int                      descent;            ///< descender
     int                      capHeight;          ///< height of capital characters

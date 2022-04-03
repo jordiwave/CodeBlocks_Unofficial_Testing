@@ -31,67 +31,70 @@
 #include "globals.h"
 
 #if defined(__WXMSW__) && defined(LoadImage)
-// Fix Windows winuser.h Header define of LoadImage.
-#undef LoadImage
+    // Fix Windows winuser.h Header define of LoadImage.
+    #undef LoadImage
 #endif
 
 namespace
 {
 class wxsResourceTreeProjectData: public wxsResourceTreeItemData
 {
-public:
-    wxsResourceTreeProjectData(wxsProject* Project): m_Project(Project) {}
-    wxsProject* m_Project;
-    virtual void OnRightClick()
-    {
-
-    }
+    public:
+        wxsResourceTreeProjectData(wxsProject * Project): m_Project(Project) {}
+        wxsProject * m_Project;
+        virtual void OnRightClick()
+        {
+        }
 
 };
 }
 
-wxsResourceTree* wxsResourceTree::m_Singleton = 0;
+wxsResourceTree * wxsResourceTree::m_Singleton = 0;
 int wxsResourceTree::m_RootImageId = LoadImage(_T("/images/wxsmith/wxSmith16.png"));
 int wxsResourceTree::m_ProjectImageId = LoadImage(_T("/images/codeblocks.png"));
 int wxsResourceTree::m_ExternalImageId = LoadImage(_T("/images/wxsmith/deletewidget16.png"));
 
 
-BEGIN_EVENT_TABLE(wxsResourceTree,wxTreeCtrl)
-    EVT_TREE_SEL_CHANGED(wxID_ANY,wxsResourceTree::OnSelect)
-    EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY,wxsResourceTree::OnRightClick)
-    EVT_MENU(wxID_ANY,wxsResourceTree::OnPopupMenu)
+BEGIN_EVENT_TABLE(wxsResourceTree, wxTreeCtrl)
+    EVT_TREE_SEL_CHANGED(wxID_ANY, wxsResourceTree::OnSelect)
+    EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY, wxsResourceTree::OnRightClick)
+    EVT_MENU(wxID_ANY, wxsResourceTree::OnPopupMenu)
 END_EVENT_TABLE()
 
 
-wxsResourceTree::wxsResourceTree(wxWindow* Parent)
-    : wxTreeCtrl(Parent,-1)
+wxsResourceTree::wxsResourceTree(wxWindow * Parent)
+    : wxTreeCtrl(Parent, -1)
     , m_IsExt(false)
     , m_BlockCount(0)
     , m_Data(0)
 {
     m_Singleton = this;
     SetImageList(&GetGlobalImageList());
-    Expand(AddRoot(_("Resources"),m_RootImageId));
+    Expand(AddRoot(_("Resources"), m_RootImageId));
 }
 
 wxsResourceTree::~wxsResourceTree()
 {
-    if ( m_Singleton == this ) m_Singleton = 0;
+    if (m_Singleton == this)
+    {
+        m_Singleton = 0;
+    }
 }
 
-wxsResourceItemId wxsResourceTree::NewProjectItem(const wxString& ProjectTitle,wxsProject* Project)
+wxsResourceItemId wxsResourceTree::NewProjectItem(const wxString & ProjectTitle, wxsProject * Project)
 {
     wxsResourceItemId Id;
-    if ( !m_IsExt )
+
+    if (!m_IsExt)
     {
         Id = AppendItem(GetRootItem(),
-                        ProjectTitle,m_ProjectImageId,m_ProjectImageId,
+                        ProjectTitle, m_ProjectImageId, m_ProjectImageId,
                         new wxsResourceTreeProjectData(Project));
     }
     else
     {
-        Id = InsertItem(GetRootItem(),GetChildrenCount(GetRootItem(),false),
-                        ProjectTitle,m_ProjectImageId,m_ProjectImageId,
+        Id = InsertItem(GetRootItem(), GetChildrenCount(GetRootItem(), false),
+                        ProjectTitle, m_ProjectImageId, m_ProjectImageId,
                         new wxsResourceTreeProjectData(Project));
     }
 
@@ -101,78 +104,93 @@ wxsResourceItemId wxsResourceTree::NewProjectItem(const wxString& ProjectTitle,w
 
 wxsResourceItemId wxsResourceTree::ExternalResourcesId()
 {
-    if ( !m_IsExt )
+    if (!m_IsExt)
     {
         m_ExtId = AppendItem(GetRootItem(),
-                             _("External resources"),m_ExternalImageId,m_ExternalImageId,
+                             _("External resources"), m_ExternalImageId, m_ExternalImageId,
                              0);
         m_IsExt = true;
     }
+
     return m_ExtId;
 }
 
 void wxsResourceTree::DeleteExternalResourcesId()
 {
-    if ( m_IsExt )
+    if (m_IsExt)
     {
         Delete(m_ExtId);
         m_IsExt = false;
     }
 }
 
-void wxsResourceTree::OnSelect(wxTreeEvent& event)
+void wxsResourceTree::OnSelect(wxTreeEvent & event)
 {
-    if ( m_BlockCount ) return;
-    wxsResourceTreeItemData* Data = (wxsResourceTreeItemData*)GetItemData(event.GetItem());
-    if ( Data ) Data->OnSelect();
+    if (m_BlockCount)
+    {
+        return;
+    }
+
+    wxsResourceTreeItemData * Data = (wxsResourceTreeItemData *)GetItemData(event.GetItem());
+
+    if (Data)
+    {
+        Data->OnSelect();
+    }
 }
 
-void wxsResourceTree::OnRightClick(wxTreeEvent& event)
+void wxsResourceTree::OnRightClick(wxTreeEvent & event)
 {
-    wxsResourceTreeItemData* Data = (wxsResourceTreeItemData*)GetItemData(event.GetItem());
-    if ( Data ) Data->OnRightClick();
+    wxsResourceTreeItemData * Data = (wxsResourceTreeItemData *)GetItemData(event.GetItem());
+
+    if (Data)
+    {
+        Data->OnRightClick();
+    }
 }
 
-wxImageList& wxsResourceTree::GetGlobalImageList()
+wxImageList & wxsResourceTree::GetGlobalImageList()
 {
-    static wxImageList List(16,16);
+    static wxImageList List(16, 16);
     static bool FirstTime = true;
-    if ( FirstTime )
+
+    if (FirstTime)
     {
         // Adding some zero-index image
-        List.Add(wxBitmap(wxImage(16,16)),*wxBLACK);
-
+        List.Add(wxBitmap(wxImage(16, 16)), *wxBLACK);
         FirstTime = false;
     }
+
     return List;
 }
 
-int wxsResourceTree::LoadImage(const wxString& FileName)
+int wxsResourceTree::LoadImage(const wxString & FileName)
 {
-    wxBitmap Bmp(cbLoadBitmap(ConfigManager::GetDataFolder()+_T("/")+FileName,wxBITMAP_TYPE_ANY));
+    wxBitmap Bmp(cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/") + FileName, wxBITMAP_TYPE_ANY));
     return InsertImage(Bmp);
 }
 
-int wxsResourceTree::InsertImage(const wxBitmap& Bitmap)
+int wxsResourceTree::InsertImage(const wxBitmap & Bitmap)
 {
-    if ( !Bitmap.Ok() )
+    if (!Bitmap.Ok())
     {
         return 0;
     }
 
     int Index = 0;
+
     do
     {
-        if ( GetFreedList().IsEmpty() )
+        if (GetFreedList().IsEmpty())
         {
             return GetGlobalImageList().Add(Bitmap);
         }
-        Index = GetFreedList().Last();
-        GetFreedList().RemoveAt(GetFreedList().Count()-1);
-    }
-    while ( Index<=0 || Index>=GetGlobalImageList().GetImageCount() );
 
-    if ( GetGlobalImageList().Replace(Index,Bitmap) )
+        Index = GetFreedList().Last();
+        GetFreedList().RemoveAt(GetFreedList().Count() - 1);
+    } while (Index <= 0 || Index >= GetGlobalImageList().GetImageCount());
+
+    if (GetGlobalImageList().Replace(Index, Bitmap))
     {
         return Index;
     }
@@ -180,7 +198,7 @@ int wxsResourceTree::InsertImage(const wxBitmap& Bitmap)
     return GetGlobalImageList().Add(Bitmap);
 }
 
-wxArrayInt& wxsResourceTree::GetFreedList()
+wxArrayInt & wxsResourceTree::GetFreedList()
 {
     static wxArrayInt List;
     return List;
@@ -201,28 +219,29 @@ void wxsResourceTree::UnblockSelect()
     m_BlockCount--;
 }
 
-void wxsResourceTree::PopupMenu(wxMenu* Menu,wxsResourceTreeItemData* ItemData)
+void wxsResourceTree::PopupMenu(wxMenu * Menu, wxsResourceTreeItemData * ItemData)
 {
     m_Data = ItemData;
-    wxWindow::PopupMenu(Menu,wxDefaultPosition);
+    wxWindow::PopupMenu(Menu, wxDefaultPosition);
 }
 
-void wxsResourceTree::InvalidateItemData(wxsResourceTreeItemData* ItemData)
+void wxsResourceTree::InvalidateItemData(wxsResourceTreeItemData * ItemData)
 {
-    if ( m_Data == ItemData )
+    if (m_Data == ItemData)
     {
         m_Data = 0;
     }
 }
 
-void wxsResourceTree::OnPopupMenu(wxCommandEvent& event)
+void wxsResourceTree::OnPopupMenu(wxCommandEvent & event)
 {
-    if ( m_Data )
+    if (m_Data)
     {
-        if ( m_Data->OnPopup(event.GetId()) )
+        if (m_Data->OnPopup(event.GetId()))
         {
             return;
         }
     }
+
     event.Skip();
 }

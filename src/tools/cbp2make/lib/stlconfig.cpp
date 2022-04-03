@@ -35,7 +35,11 @@ CConfiguration::~CConfiguration(void)
 
 void CConfiguration::Clear(void)
 {
-    for (size_t i = 0; i < m_Variables.size(); i++) delete m_Variables[i];
+    for (size_t i = 0; i < m_Variables.size(); i++)
+    {
+        delete m_Variables[i];
+    }
+
     m_Variables.clear();
     m_NullVariable.SetName("NULL");
     m_DefinedPrefix = "~";
@@ -48,143 +52,162 @@ int CConfiguration::GetCount(void) const
 
 bool CConfiguration::ValidIndex(const int Index) const
 {
-    return ((Index>=0)&&(Index<GetCount()));
+    return ((Index >= 0) && (Index < GetCount()));
 }
 
-bool CConfiguration::VarDefined(const CString& Name) const
+bool CConfiguration::VarDefined(const CString & Name) const
 {
-    int index = VarIndex(DefinedPrefix()+Name);
-    return (INVALID_INDEX!=index);
+    int index = VarIndex(DefinedPrefix() + Name);
+    return (INVALID_INDEX != index);
 }
 
-void CConfiguration::SetDefined(const CString& Name)
+void CConfiguration::SetDefined(const CString & Name)
 {
-    int index = VarIndex(DefinedPrefix()+Name);
-    if (INVALID_INDEX==index) InsertBooleanVariable(DefinedPrefix()+Name,true);
+    int index = VarIndex(DefinedPrefix() + Name);
+
+    if (INVALID_INDEX == index)
+    {
+        InsertBooleanVariable(DefinedPrefix() + Name, true);
+    }
 }
 
-void CConfiguration::SetUndefined(const CString& Name)
+void CConfiguration::SetUndefined(const CString & Name)
 {
-    RemoveVariable(DefinedPrefix()+Name);
+    RemoveVariable(DefinedPrefix() + Name);
 }
 
-CVariable& CConfiguration::Variable(const int Index)
+CVariable & CConfiguration::Variable(const int Index)
 {
-    if (ValidIndex(Index)) return *m_Variables[Index];
-    else return m_NullVariable;
+    if (ValidIndex(Index))
+    {
+        return *m_Variables[Index];
+    }
+    else
+    {
+        return m_NullVariable;
+    }
 }
 
-CVariable& CConfiguration::VarNamed(const CString& Name)
+CVariable & CConfiguration::VarNamed(const CString & Name)
 {
     return Variable(VarIndex(Name));
 }
 
-int CConfiguration::VarIndex(const CString& Name) const
+int CConfiguration::VarIndex(const CString & Name) const
 {
     for (size_t i = 0; i < m_Variables.size(); i++)
     {
-        CVariable *variable = m_Variables[i];
-        if (variable->GetName()==Name) return i;
+        CVariable * variable = m_Variables[i];
+
+        if (variable->GetName() == Name)
+        {
+            return i;
+        }
     }
+
     return INVALID_INDEX;
 }
 
-int CConfiguration::InsertIntegerVariable(const CString& Name, const int Value)
+int CConfiguration::InsertIntegerVariable(const CString & Name, const int Value)
 {
-    m_Variables.push_back(new CIntegerVariable(Name,Value));
-    return GetCount()-1;
+    m_Variables.push_back(new CIntegerVariable(Name, Value));
+    return GetCount() - 1;
 }
 
-int CConfiguration::InsertFloatVariable(const CString& Name, const double Value)
+int CConfiguration::InsertFloatVariable(const CString & Name, const double Value)
 {
-    m_Variables.push_back(new CFloatVariable(Name,Value));
-    return GetCount()-1;
+    m_Variables.push_back(new CFloatVariable(Name, Value));
+    return GetCount() - 1;
 }
 
-int CConfiguration::InsertBooleanVariable(const CString& Name, const bool Value)
+int CConfiguration::InsertBooleanVariable(const CString & Name, const bool Value)
 {
-    m_Variables.push_back(new CBooleanVariable(Name,Value));
-    return GetCount()-1;
+    m_Variables.push_back(new CBooleanVariable(Name, Value));
+    return GetCount() - 1;
 }
 
-int CConfiguration::InsertFlagVariable(const CString& Name, const bool Value)
+int CConfiguration::InsertFlagVariable(const CString & Name, const bool Value)
 {
-    m_Variables.push_back(new CFlagVariable(Name,Value));
-    return GetCount()-1;
+    m_Variables.push_back(new CFlagVariable(Name, Value));
+    return GetCount() - 1;
 }
 
-int CConfiguration::InsertStringVariable(const CString& Name, const CString& Value)
+int CConfiguration::InsertStringVariable(const CString & Name, const CString & Value)
 {
-    m_Variables.push_back(new CStringVariable(Name,Value));
-    return GetCount()-1;
+    m_Variables.push_back(new CStringVariable(Name, Value));
+    return GetCount() - 1;
 }
 
-int CConfiguration::InsertCharVariable(const CString& Name, const char Value)
+int CConfiguration::InsertCharVariable(const CString & Name, const char Value)
 {
-    m_Variables.push_back(new CCharVariable(Name,Value));
-    return GetCount()-1;
+    m_Variables.push_back(new CCharVariable(Name, Value));
+    return GetCount() - 1;
 }
 
 void CConfiguration::RemoveVariable(const int Index)
 {
     if (ValidIndex(Index))
     {
-        CVariable *variable = m_Variables[Index];
-        m_Variables.erase(m_Variables.begin()+Index);
+        CVariable * variable = m_Variables[Index];
+        m_Variables.erase(m_Variables.begin() + Index);
         delete variable;
     }
 }
 
-void CConfiguration::RemoveVariable(const CString& Name)
+void CConfiguration::RemoveVariable(const CString & Name)
 {
     RemoveVariable(VarIndex(Name));
 }
 
-void CConfiguration::SetIntegerVariable(const CString& Name, const int Value)
+void CConfiguration::SetIntegerVariable(const CString & Name, const int Value)
 {
     int index = VarIndex(Name);
+
     if (ValidIndex(index))
     {
-        CVariable *variable = m_Variables[index];
+        CVariable * variable = m_Variables[index];
         variable->SetInteger(Value);
     }
     else
     {
-        InsertIntegerVariable(Name,Value);
+        InsertIntegerVariable(Name, Value);
     }
 }
 
-void CConfiguration::SetFloatVariable(const CString& Name, const double Value)
+void CConfiguration::SetFloatVariable(const CString & Name, const double Value)
 {
     int index = VarIndex(Name);
+
     if (ValidIndex(index))
     {
-        CVariable *variable = m_Variables[index];
+        CVariable * variable = m_Variables[index];
         variable->SetFloat(Value);
     }
     else
     {
-        InsertFloatVariable(Name,Value);
+        InsertFloatVariable(Name, Value);
     }
 }
 
-void CConfiguration::SetBooleanVariable(const CString& Name, const bool Value)
+void CConfiguration::SetBooleanVariable(const CString & Name, const bool Value)
 {
     int index = VarIndex(Name);
+
     if (ValidIndex(index))
     {
-        CVariable *variable = m_Variables[index];
+        CVariable * variable = m_Variables[index];
         variable->SetBoolean(Value);
     }
     else
     {
-        InsertBooleanVariable(Name,Value);
+        InsertBooleanVariable(Name, Value);
     }
 }
 
-void CConfiguration::SetFlagVariable(const CString& Name, const bool Value)
+void CConfiguration::SetFlagVariable(const CString & Name, const bool Value)
 {
     int index = VarIndex(Name);
+
     if (ValidIndex(index))
     {
         if (!Value)
@@ -196,114 +219,126 @@ void CConfiguration::SetFlagVariable(const CString& Name, const bool Value)
     {
         if (Value)
         {
-            InsertFlagVariable(Name,true);
+            InsertFlagVariable(Name, true);
         }
     }
 }
 
-void CConfiguration::SetStringVariable(const CString& Name, const CString& Value)
+void CConfiguration::SetStringVariable(const CString & Name, const CString & Value)
 {
     int index = VarIndex(Name);
+
     if (ValidIndex(index))
     {
-        CVariable *variable = m_Variables[index];
+        CVariable * variable = m_Variables[index];
         variable->SetString(Value);
     }
     else
     {
-        InsertStringVariable(Name,Value);
+        InsertStringVariable(Name, Value);
     }
 }
 
-void CConfiguration::SetCharVariable(const CString& Name, const char Value)
+void CConfiguration::SetCharVariable(const CString & Name, const char Value)
 {
     int index = VarIndex(Name);
+
     if (ValidIndex(index))
     {
-        CVariable *variable = m_Variables[index];
+        CVariable * variable = m_Variables[index];
         variable->SetChar(Value);
     }
     else
     {
-        InsertCharVariable(Name,Value);
+        InsertCharVariable(Name, Value);
     }
 }
 
-void CConfiguration::Print(std::ostream& out)
+void CConfiguration::Print(std::ostream & out)
 {
     for (size_t i = 0; i < m_Variables.size(); i++)
     {
-        CVariable *variable = m_Variables[i];
-        out<<variable->GetTypeName().GetCString()<<" "<<variable->GetName().GetCString()<<"=";
+        CVariable * variable = m_Variables[i];
+        out << variable->GetTypeName().GetCString() << " " << variable->GetName().GetCString() << "=";
+
         if (VARIABLE_TYPE_STRING == variable->GetType())
         {
-            out<<"\""<<variable->GetString().GetCString()<<"\";"<<std::endl;
-        }
-        else if (VARIABLE_TYPE_CHAR == variable->GetType())
-        {
-            out<<"'"<<variable->GetString().GetCString()<<"';"<<std::endl;
+            out << "\"" << variable->GetString().GetCString() << "\";" << std::endl;
         }
         else
-        {
-            out<<variable->GetString().GetCString()<<";"<<std::endl;
-        }
+            if (VARIABLE_TYPE_CHAR == variable->GetType())
+            {
+                out << "'" << variable->GetString().GetCString() << "';" << std::endl;
+            }
+            else
+            {
+                out << variable->GetString().GetCString() << ";" << std::endl;
+            }
     }
 }
 
-void CConfiguration::LoadFromFile(const CString& FileName)
+void CConfiguration::LoadFromFile(const CString & FileName)
 {
     CStringList configuration, sub_strings;
     CStringListIterator iterator(&configuration);
     configuration.LoadFromFile(FileName);
-//
+
+    //
     for (int i = 0; i < configuration.GetCount(); i++)
     {
-        ParseStr(configuration[i],"=;",sub_strings);
+        ParseStr(configuration[i], "=;", sub_strings);
         CVariable variable = VarNamed(sub_strings[0]);
-        if (variable.GetType()==VARIABLE_TYPE_CHAR)
+
+        if (variable.GetType() == VARIABLE_TYPE_CHAR)
         {
             CStringList sub_strings2;
-            ParseStr(sub_strings[1],"''",sub_strings2);
+            ParseStr(sub_strings[1], "''", sub_strings2);
             variable.SetString(sub_strings2[1]);
         }
-        else if (variable.GetType()==VARIABLE_TYPE_STRING)
-        {
-            CStringList sub_strings2;
-            ParseStr(sub_strings[1],"\"\"",sub_strings2);
-            variable.SetString(sub_strings2[1]);
-        }
+        else
+            if (variable.GetType() == VARIABLE_TYPE_STRING)
+            {
+                CStringList sub_strings2;
+                ParseStr(sub_strings[1], "\"\"", sub_strings2);
+                variable.SetString(sub_strings2[1]);
+            }
+
         sub_strings.Clear();
     }
 }
 
-void CConfiguration::SaveToFile(const CString& FileName)
+void CConfiguration::SaveToFile(const CString & FileName)
 {
-    FILE *stream = fopen(FileName.GetCString(),"wt");
+    FILE * stream = fopen(FileName.GetCString(), "wt");
+
     for (size_t i = 0; i < m_Variables.size(); i++)
     {
-        CVariable *variable = m_Variables[i];
-        CString string = variable->GetName()+"=";
-        if ((variable->GetType()==VARIABLE_TYPE_STRING)||
-                (variable->GetType()==VARIABLE_TYPE_CHAR))
+        CVariable * variable = m_Variables[i];
+        CString string = variable->GetName() + "=";
+
+        if ((variable->GetType() == VARIABLE_TYPE_STRING) ||
+                (variable->GetType() == VARIABLE_TYPE_CHAR))
         {
-            string+="\""+variable->GetString()+"\"";
+            string += "\"" + variable->GetString() + "\"";
         }
         else
         {
-            string+=variable->GetString();
+            string += variable->GetString();
         }
+
         string.Append(';').AppendEOL();
-        fwrite(string.GetCString(),string.GetLength(),1,stream);
+        fwrite(string.GetCString(), string.GetLength(), 1, stream);
     }
+
     fclose(stream);
 }
 
-CParameterString::CParameterString(int argc, char* argv[])
+CParameterString::CParameterString(int argc, char * argv[])
 {
-    SetParameters(argc,argv);
+    SetParameters(argc, argv);
 }
 
-CParameterString::CParameterString(const CString& Parameters)
+CParameterString::CParameterString(const CString & Parameters)
 {
     SetParameters(Parameters);
 }
@@ -318,31 +353,35 @@ CParameterString::~CParameterString(void)
 {
 }
 
-void CParameterString::SetParameters(int argc, char* argv[])
+void CParameterString::SetParameters(int argc, char * argv[])
 {
     m_Parameters.Clear();
-    for (int i = 0; i < argc; i++) m_Parameters.Insert(CString(argv[i]));
+
+    for (int i = 0; i < argc; i++)
+    {
+        m_Parameters.Insert(CString(argv[i]));
+    }
 }
 
-void CParameterString::SetParameters(const CString& Parameters)
+void CParameterString::SetParameters(const CString & Parameters)
 {
     m_Parameters.Clear();
-    ParseStr(Parameters,' ',m_Parameters);
+    ParseStr(Parameters, ' ', m_Parameters);
 }
 
-void CParameterString::SetParameters(const CParameterString& Parameters)
+void CParameterString::SetParameters(const CParameterString & Parameters)
 {
     m_Parameters = Parameters.m_Parameters;
 }
 
-void CParameterString::AddParameters(const CString& Parameters)
+void CParameterString::AddParameters(const CString & Parameters)
 {
     CStringList l_Parameters;
-    ParseStr(Parameters,' ',l_Parameters);
+    ParseStr(Parameters, ' ', l_Parameters);
     m_Parameters.Insert(l_Parameters);
 }
 
-void CParameterString::AddParameters(const CParameterString& Parameters)
+void CParameterString::AddParameters(const CParameterString & Parameters)
 {
     m_Parameters.Insert(Parameters.m_Parameters);
 }
@@ -352,48 +391,60 @@ CString CParameterString::Parameter(const int Index) const
     return m_Parameters[Index];
 }
 
-bool CParameterStringConfiguration::VarDefined(const CString& Name)
+bool CParameterStringConfiguration::VarDefined(const CString & Name)
 {
-    int index = VarIndex(DefinedPrefix()+Name);
-    return (INVALID_INDEX!=index);
+    int index = VarIndex(DefinedPrefix() + Name);
+    return (INVALID_INDEX != index);
 }
 
-void CParameterStringConfiguration::SetDefined(const CString& Name)
+void CParameterStringConfiguration::SetDefined(const CString & Name)
 {
-    int index = VarIndex(DefinedPrefix()+Name);
-    if (INVALID_INDEX==index) InsertFlagVariable(DefinedPrefix()+Name,true);
+    int index = VarIndex(DefinedPrefix() + Name);
+
+    if (INVALID_INDEX == index)
+    {
+        InsertFlagVariable(DefinedPrefix() + Name, true);
+    }
 }
 
-void CParameterStringConfiguration::SetUndefined(const CString& Name)
+void CParameterStringConfiguration::SetUndefined(const CString & Name)
 {
-    RemoveVariable(DefinedPrefix()+Name);
+    RemoveVariable(DefinedPrefix() + Name);
 }
 
-void CParameterStringConfiguration::ProcessParameters(const CParameterString& Parameters)
+void CParameterStringConfiguration::ProcessParameters(const CParameterString & Parameters)
 {
     int j = 1; // parameterIndex
+
     while (j < Parameters.GetCount())
     {
         CString parameter = Parameters.Parameter(j);
+
         for (size_t i = 0; i < m_Variables.size(); i++)
         {
-            CVariable& variable = Variable(i);
-            if (variable.GetName()==parameter)
+            CVariable & variable = Variable(i);
+
+            if (variable.GetName() == parameter)
             {
-                if (variable.GetType()==VARIABLE_TYPE_FLAG) variable.SetBoolean(true);
+                if (variable.GetType() == VARIABLE_TYPE_FLAG)
+                {
+                    variable.SetBoolean(true);
+                }
                 else
                 {
                     variable.SetString(Parameters.Parameter(++j));
                 }
-                m_Variables.push_back(new CFlagVariable(m_DefinedPrefix+variable.GetName(),true));
+
+                m_Variables.push_back(new CFlagVariable(m_DefinedPrefix + variable.GetName(), true));
                 break;
             }
         }
+
         j++;
     }
 }
 
-void CParameterStringConfiguration::ProcessParameters(const CString& Parameters)
+void CParameterStringConfiguration::ProcessParameters(const CString & Parameters)
 {
     CParameterString parameterString(Parameters);
     ProcessParameters(parameterString);

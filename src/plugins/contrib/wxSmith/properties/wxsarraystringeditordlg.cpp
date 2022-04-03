@@ -36,40 +36,38 @@ const long wxsArrayStringEditorDlg::ID_TEXTCTRL1 = wxNewId();
 
 #include "prep.h"
 
-BEGIN_EVENT_TABLE(wxsArrayStringEditorDlg,wxScrollingDialog)
+BEGIN_EVENT_TABLE(wxsArrayStringEditorDlg, wxScrollingDialog)
     //(*EventTable(wxsArrayStringEditorDlg)
     //*)
 END_EVENT_TABLE()
 
-wxsArrayStringEditorDlg::wxsArrayStringEditorDlg(wxWindow* parent,wxArrayString& _Data,wxWindowID id):
+wxsArrayStringEditorDlg::wxsArrayStringEditorDlg(wxWindow * parent, wxArrayString & _Data, wxWindowID id):
     Data(_Data)
 {
     //(*Initialize(wxsArrayStringEditorDlg)
-    wxBoxSizer* BoxSizer1;
-    wxStdDialogButtonSizer* StdDialogButtonSizer1;
-    wxStaticBoxSizer* StaticBoxSizer1;
-
-    Create(parent, id, _("Edit items"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX, _T("id"));
+    wxBoxSizer * BoxSizer1;
+    wxStdDialogButtonSizer * StdDialogButtonSizer1;
+    wxStaticBoxSizer * StaticBoxSizer1;
+    Create(parent, id, _("Edit items"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX, _T("id"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Enter items (one item per line)"));
-    Items = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxSize(350,200), wxTE_MULTILINE|wxVSCROLL|wxHSCROLL, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    Items = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxSize(350, 200), wxTE_MULTILINE | wxVSCROLL | wxHSCROLL, wxDefaultValidator, _T("ID_TEXTCTRL1"));
     StaticBoxSizer1->Add(Items, 1, wxEXPAND, 2);
     BoxSizer1->Add(StaticBoxSizer1, 1, wxEXPAND, 5);
     StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
     StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
     StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
     StdDialogButtonSizer1->Realize();
-    BoxSizer1->Add(StdDialogButtonSizer1, 0, wxALL|wxEXPAND, 5);
+    BoxSizer1->Add(StdDialogButtonSizer1, 0, wxALL | wxEXPAND, 5);
     SetSizer(BoxSizer1);
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
     //*)
-
-    Connect(wxID_OK,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringEditorDlg::OnOK);
-    Connect(wxID_CANCEL,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringEditorDlg::OnCancel);
-
+    Connect(wxID_OK, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&wxsArrayStringEditorDlg::OnOK);
+    Connect(wxID_CANCEL, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&wxsArrayStringEditorDlg::OnCancel);
     size_t Count = Data.Count();
-    for ( size_t i = 0; i<Count; i++ )
+
+    for (size_t i = 0; i < Count; i++)
     {
         Items->AppendText(Data[i]);
         Items->AppendText(_T('\n'));
@@ -83,12 +81,12 @@ wxsArrayStringEditorDlg::~wxsArrayStringEditorDlg()
 }
 
 
-void wxsArrayStringEditorDlg::OnOK(cb_unused wxCommandEvent& event)
+void wxsArrayStringEditorDlg::OnOK(cb_unused wxCommandEvent & event)
 {
-    wxStringTokenizer Tknz(Items->GetValue(),_T("\n"),wxTOKEN_RET_EMPTY);
+    wxStringTokenizer Tknz(Items->GetValue(), _T("\n"), wxTOKEN_RET_EMPTY);
     Data.Clear();
 
-    while ( Tknz.HasMoreTokens() )
+    while (Tknz.HasMoreTokens())
     {
         wxString Line = Tknz.GetNextToken();
         Data.Add(Line);
@@ -97,7 +95,7 @@ void wxsArrayStringEditorDlg::OnOK(cb_unused wxCommandEvent& event)
     EndModal(wxID_OK);
 }
 
-void wxsArrayStringEditorDlg::OnCancel(cb_unused wxCommandEvent& event)
+void wxsArrayStringEditorDlg::OnCancel(cb_unused wxCommandEvent & event)
 {
     EndModal(wxID_CANCEL);
 }

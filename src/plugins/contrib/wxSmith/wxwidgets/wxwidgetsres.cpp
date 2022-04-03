@@ -22,4 +22,4 @@
 
 #include "wxwidgetsres.h"
 
-IMPLEMENT_CLASS(wxWidgetsRes,wxsResource)
+IMPLEMENT_CLASS(wxWidgetsRes, wxsResource)

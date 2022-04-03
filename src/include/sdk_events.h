@@ -19,235 +19,235 @@ class Logger;
 /** A generic Code::Blocks event. */
 class EVTIMPORT CodeBlocksEvent : public wxCommandEvent
 {
-public:
-    CodeBlocksEvent(wxEventType commandType = wxEVT_NULL, int id = 0, cbProject* project = nullptr, EditorBase* editor = nullptr, cbPlugin* plugin = nullptr, EditorBase* old_editor = nullptr)
-        : wxCommandEvent(commandType, id),
-          m_pProject(project),
-          m_pEditor(editor),
-          m_pOldEditor(old_editor),
-          m_pPlugin(plugin),
-          m_X(0),
-          m_Y(0) {}
-    CodeBlocksEvent(const CodeBlocksEvent& event)
-        : wxCommandEvent(event),
-          m_pProject(event.m_pProject),
-          m_pEditor(event.m_pEditor),
-          m_pOldEditor(event.m_pOldEditor),
-          m_pPlugin(event.m_pPlugin),
-          m_X(event.m_X),
-          m_Y(event.m_Y) {}
-    wxEvent *Clone() const override
-    {
-        return new CodeBlocksEvent(*this);
-    }
+    public:
+        CodeBlocksEvent(wxEventType commandType = wxEVT_NULL, int id = 0, cbProject * project = nullptr, EditorBase * editor = nullptr, cbPlugin * plugin = nullptr, EditorBase * old_editor = nullptr)
+            : wxCommandEvent(commandType, id),
+              m_pProject(project),
+              m_pEditor(editor),
+              m_pOldEditor(old_editor),
+              m_pPlugin(plugin),
+              m_X(0),
+              m_Y(0) {}
+        CodeBlocksEvent(const CodeBlocksEvent & event)
+            : wxCommandEvent(event),
+              m_pProject(event.m_pProject),
+              m_pEditor(event.m_pEditor),
+              m_pOldEditor(event.m_pOldEditor),
+              m_pPlugin(event.m_pPlugin),
+              m_X(event.m_X),
+              m_Y(event.m_Y) {}
+        wxEvent * Clone() const override
+        {
+            return new CodeBlocksEvent(*this);
+        }
 
-    cbProject* GetProject() const
-    {
-        return m_pProject;
-    }
-    void       SetProject(cbProject* project)
-    {
-        m_pProject = project;
-    }
+        cbProject * GetProject() const
+        {
+            return m_pProject;
+        }
+        void       SetProject(cbProject * project)
+        {
+            m_pProject = project;
+        }
 
-    EditorBase* GetEditor() const
-    {
-        return m_pEditor;
-    }
-    void        SetEditor(EditorBase* editor)
-    {
-        m_pEditor = editor;
-    }
+        EditorBase * GetEditor() const
+        {
+            return m_pEditor;
+        }
+        void        SetEditor(EditorBase * editor)
+        {
+            m_pEditor = editor;
+        }
 
-    EditorBase* GetOldEditor() const
-    {
-        return m_pOldEditor;
-    }
-    void        SetOldEditor(EditorBase* editor)
-    {
-        m_pOldEditor = editor;
-    }
+        EditorBase * GetOldEditor() const
+        {
+            return m_pOldEditor;
+        }
+        void        SetOldEditor(EditorBase * editor)
+        {
+            m_pOldEditor = editor;
+        }
 
-    cbPlugin* GetPlugin() const
-    {
-        return m_pPlugin;
-    }
-    void      SetPlugin(cbPlugin* plugin)
-    {
-        m_pPlugin = plugin;
-    }
+        cbPlugin * GetPlugin() const
+        {
+            return m_pPlugin;
+        }
+        void      SetPlugin(cbPlugin * plugin)
+        {
+            m_pPlugin = plugin;
+        }
 
-    int  GetX() const
-    {
-        return m_X;
-    }
-    void SetX(int x)
-    {
-        m_X = x;
-    }
+        int  GetX() const
+        {
+            return m_X;
+        }
+        void SetX(int x)
+        {
+            m_X = x;
+        }
 
-    int  GetY() const
-    {
-        return m_Y;
-    }
-    void SetY(int y)
-    {
-        m_Y = y;
-    }
+        int  GetY() const
+        {
+            return m_Y;
+        }
+        void SetY(int y)
+        {
+            m_Y = y;
+        }
 
-    const wxString& GetBuildTargetName() const
-    {
-        return m_NewName;
-    }
-    void            SetBuildTargetName(const wxString& target)
-    {
-        m_NewName = target;
-    }
+        const wxString & GetBuildTargetName() const
+        {
+            return m_NewName;
+        }
+        void            SetBuildTargetName(const wxString & target)
+        {
+            m_NewName = target;
+        }
 
-    // the following two functions are only valid for EVT_BUILDTARGET_RENAMED
-    // and EVT_BUILDTARGET_SELECTED events
-    const wxString& GetOldBuildTargetName() const
-    {
-        return m_OldName;
-    }
-    void            SetOldBuildTargetName(const wxString& target)
-    {
-        m_OldName = target;
-    }
+        // the following two functions are only valid for EVT_BUILDTARGET_RENAMED
+        // and EVT_BUILDTARGET_SELECTED events
+        const wxString & GetOldBuildTargetName() const
+        {
+            return m_OldName;
+        }
+        void            SetOldBuildTargetName(const wxString & target)
+        {
+            m_OldName = target;
+        }
 
-    // the following four functions are only valid for EVT_PROJECT_FILE_RENAMED event
-    const wxString& GetNewFileName() const
-    {
-        return m_NewName;
-    }
-    void            SetNewFileName(const wxString& target)
-    {
-        m_NewName = target;
-    }
-    const wxString& GetOldFileName() const
-    {
-        return m_OldName;
-    }
-    void            SetOldFileName(const wxString& target)
-    {
-        m_OldName = target;
-    }
+        // the following four functions are only valid for EVT_PROJECT_FILE_RENAMED event
+        const wxString & GetNewFileName() const
+        {
+            return m_NewName;
+        }
+        void            SetNewFileName(const wxString & target)
+        {
+            m_NewName = target;
+        }
+        const wxString & GetOldFileName() const
+        {
+            return m_OldName;
+        }
+        void            SetOldFileName(const wxString & target)
+        {
+            m_OldName = target;
+        }
 
-protected:
-    cbProject*  m_pProject;
-    EditorBase* m_pEditor;
-    EditorBase* m_pOldEditor;
-    cbPlugin*   m_pPlugin;
-    // for some editor events
-    int m_X;
-    int m_Y;
+    protected:
+        cbProject * m_pProject;
+        EditorBase * m_pEditor;
+        EditorBase * m_pOldEditor;
+        cbPlugin  * m_pPlugin;
+        // for some editor events
+        int m_X;
+        int m_Y;
 
-    wxString m_NewName;
-    wxString m_OldName;
-private:
-    DECLARE_DYNAMIC_CLASS(CodeBlocksEvent)
+        wxString m_NewName;
+        wxString m_OldName;
+    private:
+        DECLARE_DYNAMIC_CLASS(CodeBlocksEvent)
 };
-typedef void (wxEvtHandler::*CodeBlocksEventFunction)(CodeBlocksEvent&);
+typedef void (wxEvtHandler::*CodeBlocksEventFunction)(CodeBlocksEvent &);
 
 /** Event used to request from the main app to add a window to the docking system. */
 class EVTIMPORT CodeBlocksDockEvent : public wxEvent
 {
-public:
-    enum DockSide
-    {
-        dsLeft = 0,
-        dsRight,
-        dsTop,
-        dsBottom,
-        dsFloating,
-        dsUndefined
-    };
+    public:
+        enum DockSide
+        {
+            dsLeft = 0,
+            dsRight,
+            dsTop,
+            dsBottom,
+            dsFloating,
+            dsUndefined
+        };
 
-    CodeBlocksDockEvent(wxEventType commandType = wxEVT_NULL, int id = 0)
-        : wxEvent(id, commandType),
-          title(_("Untitled")),
-          pWindow(nullptr),
-          desiredSize(100, 100),
-          floatingSize(150, 150),
-          minimumSize(40, 40),
-          floatingPos(200, 150),
-          dockSide(dsUndefined),
-          row(-1),
-          column(-1),
-          shown(false),
-          stretch(false),
-          hideable(true),
-          asTab(false)
+        CodeBlocksDockEvent(wxEventType commandType = wxEVT_NULL, int id = 0)
+            : wxEvent(id, commandType),
+              title(_("Untitled")),
+              pWindow(nullptr),
+              desiredSize(100, 100),
+              floatingSize(150, 150),
+              minimumSize(40, 40),
+              floatingPos(200, 150),
+              dockSide(dsUndefined),
+              row(-1),
+              column(-1),
+              shown(false),
+              stretch(false),
+              hideable(true),
+              asTab(false)
 
-    {
-    }
-    CodeBlocksDockEvent(const CodeBlocksDockEvent& rhs)
-        : wxEvent(rhs),
-          name(rhs.name),
-          title(rhs.title),
-          pWindow(rhs.pWindow),
-          desiredSize(rhs.desiredSize),
-          floatingSize(rhs.floatingSize),
-          minimumSize(rhs.minimumSize),
-          floatingPos(rhs.floatingPos),
-          dockSide(rhs.dockSide),
-          row(rhs.row),
-          column(rhs.column),
-          shown(rhs.shown),
-          stretch(rhs.stretch),
-          hideable(rhs.hideable),
-          asTab(rhs.asTab),
-          bitmap(rhs.bitmap)
-    {
-    }
-    wxEvent *Clone() const override
-    {
-        return new CodeBlocksDockEvent(*this);
-    }
+        {
+        }
+        CodeBlocksDockEvent(const CodeBlocksDockEvent & rhs)
+            : wxEvent(rhs),
+              name(rhs.name),
+              title(rhs.title),
+              pWindow(rhs.pWindow),
+              desiredSize(rhs.desiredSize),
+              floatingSize(rhs.floatingSize),
+              minimumSize(rhs.minimumSize),
+              floatingPos(rhs.floatingPos),
+              dockSide(rhs.dockSide),
+              row(rhs.row),
+              column(rhs.column),
+              shown(rhs.shown),
+              stretch(rhs.stretch),
+              hideable(rhs.hideable),
+              asTab(rhs.asTab),
+              bitmap(rhs.bitmap)
+        {
+        }
+        wxEvent * Clone() const override
+        {
+            return new CodeBlocksDockEvent(*this);
+        }
 
-    wxString name;      ///< Dock's name. Must be unique. If empty, a unique name will be assigned.
-    wxString title;     ///< Dock's title.
-    wxWindow* pWindow;  ///< The window to dock.
-    wxSize desiredSize; ///< The desired size.
-    wxSize floatingSize;///< The desired floating size.
-    wxSize minimumSize; ///< The minimum allowed size.
-    wxPoint floatingPos;///< The desired floating position.
-    DockSide dockSide;  ///< The side to dock it.
-    int row;            ///< The row to dock it.
-    int column;         ///< The column to dock it.
-    bool shown;         ///< If true, initially shown.
-    bool stretch;       ///< If true, the dock will stretch to fill the @c dockSide
-    bool hideable;      ///< If true, the dock will be allowed to be closed by the user.
-    bool asTab;         ///< Add this window as a tab of an existing docked window (NOT IMPLEMENTED).
-    wxString bitmap;    ///< The bitmap to use.
+        wxString name;      ///< Dock's name. Must be unique. If empty, a unique name will be assigned.
+        wxString title;     ///< Dock's title.
+        wxWindow * pWindow; ///< The window to dock.
+        wxSize desiredSize; ///< The desired size.
+        wxSize floatingSize;///< The desired floating size.
+        wxSize minimumSize; ///< The minimum allowed size.
+        wxPoint floatingPos;///< The desired floating position.
+        DockSide dockSide;  ///< The side to dock it.
+        int row;            ///< The row to dock it.
+        int column;         ///< The column to dock it.
+        bool shown;         ///< If true, initially shown.
+        bool stretch;       ///< If true, the dock will stretch to fill the @c dockSide
+        bool hideable;      ///< If true, the dock will be allowed to be closed by the user.
+        bool asTab;         ///< Add this window as a tab of an existing docked window (NOT IMPLEMENTED).
+        wxString bitmap;    ///< The bitmap to use.
 
-    char padding[64];    ///< Unused space in this class for later enhancements.
-private:
-    DECLARE_DYNAMIC_CLASS(CodeBlocksDockEvent)
+        char padding[64];    ///< Unused space in this class for later enhancements.
+    private:
+        DECLARE_DYNAMIC_CLASS(CodeBlocksDockEvent)
 };
-typedef void (wxEvtHandler::*CodeBlocksDockEventFunction)(CodeBlocksDockEvent&);
+typedef void (wxEvtHandler::*CodeBlocksDockEventFunction)(CodeBlocksDockEvent &);
 
 /** Event used to request from the main app to manage the view layouts. */
 class EVTIMPORT CodeBlocksLayoutEvent : public wxEvent
 {
-public:
-    CodeBlocksLayoutEvent(wxEventType commandType = wxEVT_NULL, const wxString& layout_name = wxEmptyString)
-        : wxEvent(wxID_ANY, commandType),
-          layout(layout_name)
-    {}
-    CodeBlocksLayoutEvent(const CodeBlocksLayoutEvent& rhs)
-        : wxEvent(rhs), layout(rhs.layout)
-    {}
-    wxEvent *Clone() const override
-    {
-        return new CodeBlocksLayoutEvent(*this);
-    }
+    public:
+        CodeBlocksLayoutEvent(wxEventType commandType = wxEVT_NULL, const wxString & layout_name = wxEmptyString)
+            : wxEvent(wxID_ANY, commandType),
+              layout(layout_name)
+        {}
+        CodeBlocksLayoutEvent(const CodeBlocksLayoutEvent & rhs)
+            : wxEvent(rhs), layout(rhs.layout)
+        {}
+        wxEvent * Clone() const override
+        {
+            return new CodeBlocksLayoutEvent(*this);
+        }
 
-    wxString layout;      ///< Layout's name.
-private:
-    DECLARE_DYNAMIC_CLASS(CodeBlocksLayoutEvent)
+        wxString layout;      ///< Layout's name.
+    private:
+        DECLARE_DYNAMIC_CLASS(CodeBlocksLayoutEvent)
 };
-typedef void (wxEvtHandler::*CodeBlocksLayoutEventFunction)(CodeBlocksLayoutEvent&);
+typedef void (wxEvtHandler::*CodeBlocksLayoutEventFunction)(CodeBlocksLayoutEvent &);
 
 /** Event used to request from the main app to add a log.
   *
@@ -257,26 +257,26 @@ typedef void (wxEvtHandler::*CodeBlocksLayoutEventFunction)(CodeBlocksLayoutEven
   */
 class EVTIMPORT CodeBlocksLogEvent : public wxEvent
 {
-public:
-    CodeBlocksLogEvent(wxEventType commandType = wxEVT_NULL, Logger* logger = nullptr, const wxString& title = wxEmptyString, wxBitmap *icon = nullptr);
-    CodeBlocksLogEvent(wxEventType commandType, wxWindow* window, const wxString& title = wxEmptyString, wxBitmap *icon = nullptr);
-    CodeBlocksLogEvent(wxEventType commandType, int logIndex, const wxString& title = wxEmptyString, wxBitmap *icon = nullptr);
-    CodeBlocksLogEvent(const CodeBlocksLogEvent& rhs);
+    public:
+        CodeBlocksLogEvent(wxEventType commandType = wxEVT_NULL, Logger * logger = nullptr, const wxString & title = wxEmptyString, wxBitmap * icon = nullptr);
+        CodeBlocksLogEvent(wxEventType commandType, wxWindow * window, const wxString & title = wxEmptyString, wxBitmap * icon = nullptr);
+        CodeBlocksLogEvent(wxEventType commandType, int logIndex, const wxString & title = wxEmptyString, wxBitmap * icon = nullptr);
+        CodeBlocksLogEvent(const CodeBlocksLogEvent & rhs);
 
-    wxEvent *Clone() const override
-    {
-        return new CodeBlocksLogEvent(*this);
-    }
+        wxEvent * Clone() const override
+        {
+            return new CodeBlocksLogEvent(*this);
+        }
 
-    Logger* logger; ///< The logger.
-    int logIndex; ///< The logger's index.
-    wxBitmap *icon; ///< The logger's icon. Valid only for cbEVT_ADD_LOG_WINDOW.
-    wxString title; ///< The logger's title. Valid only for cbEVT_ADD_LOG_WINDOW.
-    wxWindow* window; ///< A non-logger window. Needed at least by cbEVT_REMOVE_LOG_WINDOW.
-private:
-    DECLARE_DYNAMIC_CLASS(CodeBlocksLogEvent)
+        Logger * logger; ///< The logger.
+        int logIndex; ///< The logger's index.
+        wxBitmap * icon; ///< The logger's icon. Valid only for cbEVT_ADD_LOG_WINDOW.
+        wxString title; ///< The logger's title. Valid only for cbEVT_ADD_LOG_WINDOW.
+        wxWindow * window; ///< A non-logger window. Needed at least by cbEVT_REMOVE_LOG_WINDOW.
+    private:
+        DECLARE_DYNAMIC_CLASS(CodeBlocksLogEvent)
 };
-typedef void (wxEvtHandler::*CodeBlocksLogEventFunction)(CodeBlocksLogEvent&);
+typedef void (wxEvtHandler::*CodeBlocksLogEventFunction)(CodeBlocksLogEvent &);
 
 
 // Thread event, this is basically a derived wxCommandEvent but enforce a deep copy of its
@@ -287,40 +287,40 @@ typedef void (wxEvtHandler::*CodeBlocksLogEventFunction)(CodeBlocksLogEvent&);
 
 class EVTIMPORT CodeBlocksThreadEvent : public wxCommandEvent
 {
-public:
-    CodeBlocksThreadEvent(wxEventType eventType = wxEVT_NULL, int id = wxID_ANY)
-        : wxCommandEvent(eventType,id)
-    { }
+    public:
+        CodeBlocksThreadEvent(wxEventType eventType = wxEVT_NULL, int id = wxID_ANY)
+            : wxCommandEvent(eventType, id)
+        { }
 
-    CodeBlocksThreadEvent(const CodeBlocksThreadEvent& event)
-        : wxCommandEvent(event)
-    {
-        // make sure our string member (which uses COW, aka refcounting) is not
-        // shared by other wxString instances:
-        SetString(GetString().c_str());
-    }
+        CodeBlocksThreadEvent(const CodeBlocksThreadEvent & event)
+            : wxCommandEvent(event)
+        {
+            // make sure our string member (which uses COW, aka refcounting) is not
+            // shared by other wxString instances:
+            SetString(GetString().c_str());
+        }
 
-    wxEvent *Clone() const override
-    {
-        return new CodeBlocksThreadEvent(*this);
-    }
+        wxEvent * Clone() const override
+        {
+            return new CodeBlocksThreadEvent(*this);
+        }
 
 
-private:
-    DECLARE_DYNAMIC_CLASS_NO_ASSIGN(CodeBlocksThreadEvent)
+    private:
+        DECLARE_DYNAMIC_CLASS_NO_ASSIGN(CodeBlocksThreadEvent)
 };
 
-typedef void ( wxEvtHandler::*CodeblocksThreadEventFunction) ( CodeBlocksThreadEvent&);
+typedef void (wxEvtHandler::*CodeblocksThreadEventFunction)(CodeBlocksThreadEvent &);
 
 #define CodeBlocksThreadEventHandler(func)  \
-	(wxObjectEventFunction)(wxEventFunction) \
-	wxStaticCastEvent(CodeblocksThreadEventFunction, &func)
+    (wxObjectEventFunction)(wxEventFunction) \
+    wxStaticCastEvent(CodeblocksThreadEventFunction, &func)
 
 
 #define EVT_CODEBLOCKS_THREAD(id, fn) \
     DECLARE_EVENT_TABLE_ENTRY(wxEVT_COMMAND_MENU_SELECTED, id, wxID_ANY, \
-    (wxObjectEventFunction) (wxEventFunction) (CodeblocksThreadEventFunction) \
-    wxStaticCastEvent( ThreadEventFunction, & fn ), (wxObject *) NULL ),
+                              (wxObjectEventFunction) (wxEventFunction) (CodeblocksThreadEventFunction) \
+                              wxStaticCastEvent( ThreadEventFunction, & fn ), (wxObject *) NULL ),
 
 //
 // if you add more event types, remember to add event sinks in Manager...

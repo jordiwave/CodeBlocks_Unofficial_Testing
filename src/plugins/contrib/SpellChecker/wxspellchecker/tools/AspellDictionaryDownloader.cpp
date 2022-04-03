@@ -14,29 +14,42 @@
 #include "AspellInterface.h"
 
 
-bool AspellDictionaryDownloader::RetrieveDictionaryList(wxArrayString& DictionaryArray)
+bool AspellDictionaryDownloader::RetrieveDictionaryList(wxArrayString & DictionaryArray)
 {
     if (UseWin32Dictionaries())
+    {
         return RetrieveDictionaryListFromWin32Aspell(DictionaryArray);
+    }
     else
+    {
         return RetrieveDictionaryListFromStandardAspell(DictionaryArray);
+    }
 }
 
-wxString AspellDictionaryDownloader::DownloadDictionary(wxString& strDictionary)
+wxString AspellDictionaryDownloader::DownloadDictionary(wxString & strDictionary)
 {
     if (UseWin32Dictionaries())
+    {
         return DownloadDictionaryFromWin32Aspell(strDictionary);
+    }
     else
+    {
         return DownloadDictionaryFromStandardAspell(strDictionary);
+    }
 }
 
-bool AspellDictionaryDownloader::InstallDictionary(wxString& strFileName, bool bDeleteFileAfterInstall /*= false*/)
+bool AspellDictionaryDownloader::InstallDictionary(wxString & strFileName, bool bDeleteFileAfterInstall /*= false*/)
 {
     bool bReturn = false;
+
     if (UseWin32Dictionaries())
+    {
         bReturn = InstallDictionaryFromWin32Aspell(strFileName);
+    }
     else
+    {
         bReturn = InstallDictionaryFromStandardAspell(strFileName);
+    }
 
     if (bReturn)
     {
@@ -49,14 +62,14 @@ bool AspellDictionaryDownloader::InstallDictionary(wxString& strFileName, bool b
     return true;
 }
 
-wxString AspellDictionaryDownloader::SelectDictionaryToDownload(wxArrayString& FileArray)
+wxString AspellDictionaryDownloader::SelectDictionaryToDownload(wxArrayString & FileArray)
 {
     // Loop through the array and return the most recent file
     // Eventually, we might want to check the Aspell version and make sure
     //  that we're getting a compatible version
     if (FileArray.GetCount() > 0)
     {
-        return FileArray[FileArray.GetCount()-1]; // Just return the last file name in the array
+        return FileArray[FileArray.GetCount() - 1]; // Just return the last file name in the array
     }
     else
     {
@@ -64,33 +77,32 @@ wxString AspellDictionaryDownloader::SelectDictionaryToDownload(wxArrayString& F
     }
 }
 
-bool AspellDictionaryDownloader::RetrieveDictionaryListFromStandardAspell(wxArrayString& DictionaryArray)
+bool AspellDictionaryDownloader::RetrieveDictionaryListFromStandardAspell(wxArrayString & DictionaryArray)
 {
     return RetrieveDictionaryList(_("/gnu/aspell/dict/"), _("*"), DictionaryArray);
 }
 
-wxString AspellDictionaryDownloader::DownloadDictionaryFromStandardAspell(wxString& strDictionary)
+wxString AspellDictionaryDownloader::DownloadDictionaryFromStandardAspell(wxString & strDictionary)
 {
     return DownloadDictionary(_("/gnu/aspell/dict/") + strDictionary, _("*.bz2"));
 }
 
-bool AspellDictionaryDownloader::RetrieveDictionaryListFromWin32Aspell(wxArrayString& DictionaryArray)
+bool AspellDictionaryDownloader::RetrieveDictionaryListFromWin32Aspell(wxArrayString & DictionaryArray)
 {
     return RetrieveDictionaryList(_("/gnu/aspell/w32/"), _("Aspell-*-*.exe"), DictionaryArray);
 }
 
-wxString AspellDictionaryDownloader::DownloadDictionaryFromWin32Aspell(wxString& strDictionary)
+wxString AspellDictionaryDownloader::DownloadDictionaryFromWin32Aspell(wxString & strDictionary)
 {
     return DownloadDictionary(_("/gnu/aspell/w32/"), _("Aspell-") + strDictionary + _("-*.exe"));
 }
 
-bool AspellDictionaryDownloader::InstallDictionaryFromStandardAspell(wxString& strFileName)
+bool AspellDictionaryDownloader::InstallDictionaryFromStandardAspell(wxString & strFileName)
 {
     // The API to wxTarInputStream will hopefully be like
     //  wxZipInputStream so coding to the zip API will be sufficient
     wxFileInputStream FileIn(strFileName);
     wxBZipInputStream BZipIn(FileIn);
-
     wxString strTempFile = wxFileName::CreateTempFileName(_("tar"));
     wxFileOutputStream TempFileStream(strTempFile);
     wxBufferedOutputStream TempBufferedStream(TempFileStream);
@@ -98,29 +110,30 @@ bool AspellDictionaryDownloader::InstallDictionaryFromStandardAspell(wxString& s
     //  progress indicator feedback.  For now, just one time it though.
     BZipIn.Read(TempBufferedStream);
     TempBufferedStream.Sync();
-
     return true;
 }
 
-bool AspellDictionaryDownloader::InstallDictionaryFromWin32Aspell(wxString& strFileName)
+bool AspellDictionaryDownloader::InstallDictionaryFromWin32Aspell(wxString & strFileName)
 {
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxFileSystem fs;
-
-    AspellInterface* pAspellInterface = new AspellInterface();
+    AspellInterface * pAspellInterface = new AspellInterface();
 
     if (pAspellInterface)
     {
         wxString strDataDirectory = _T("");
-        OptionsMap* pOptions = pAspellInterface->GetOptions();
+        OptionsMap * pOptions = pAspellInterface->GetOptions();
         OptionsMap::iterator it = pOptions->find("data-dir");
+
         if (it != pOptions->end())
         {
             strDataDirectory = it->second.GetValueAsString();
         }
+
         wxString strDictDirectory = _T("");
         pOptions = pAspellInterface->GetOptions();
         it = pOptions->find("dict-dir");
+
         if (it != pOptions->end())
         {
             strDictDirectory = it->second.GetValueAsString();
@@ -136,8 +149,9 @@ bool AspellDictionaryDownloader::InstallDictionaryFromWin32Aspell(wxString& strF
             wxString wildcard = wxString::Format(_("%s#zip:TmpInstall/data/*"), strFileName.c_str());
             wxPrintf(_T("%s\n"), wildcard.c_str());
             wxString filename = fs.FindFirst(wildcard, wxFILE);
+
             // Loop through the files in the directory
-            while ( !filename.empty() )
+            while (!filename.empty())
             {
                 wxPrintf(_T("%s\n"), filename.c_str());
                 // Copy the file
@@ -151,8 +165,9 @@ bool AspellDictionaryDownloader::InstallDictionaryFromWin32Aspell(wxString& strF
             wildcard = wxString::Format(_("%s#zip:TmpInstall/dict/*"), strFileName.c_str());
             wxPrintf(_T("%s\n"), wildcard.c_str());
             filename = fs.FindFirst(wildcard, wxFILE);
+
             // Loop through the files in the directory
-            while ( !filename.empty() )
+            while (!filename.empty())
             {
                 wxPrintf(_T("%s\n"), filename.c_str());
                 wxString strDestDir = strDictDirectory + wxFileName::GetPathSeparator();
@@ -165,16 +180,18 @@ bool AspellDictionaryDownloader::InstallDictionaryFromWin32Aspell(wxString& strF
     return true;
 }
 
-bool AspellDictionaryDownloader::CopyFromZipFile(wxFileSystem& fs, wxString& strFileInZip, wxString& strDestDir)
+bool AspellDictionaryDownloader::CopyFromZipFile(wxFileSystem & fs, wxString & strFileInZip, wxString & strDestDir)
 {
     // Create the output file
     wxString strOutputFile = strDestDir + strFileInZip.AfterLast('/');
     wxFileOutputStream OutputFileStream(strOutputFile);
     wxBufferedOutputStream OutputBufferedStream(OutputFileStream);
-    wxFSFile* pFile = fs.OpenFile(strFileInZip);
+    wxFSFile * pFile = fs.OpenFile(strFileInZip);
+
     if (pFile)
     {
-        wxInputStream* pInputStream = pFile->GetStream();
+        wxInputStream * pInputStream = pFile->GetStream();
+
         if (pInputStream)
         {
             // It might be better to switch to reading into a buffer so that we can provide
@@ -186,13 +203,15 @@ bool AspellDictionaryDownloader::CopyFromZipFile(wxFileSystem& fs, wxString& str
             return (nServerSideSize == nDownloadedFileSize);
         }
     }
+
     return false;
 }
 
-bool AspellDictionaryDownloader::RetrieveDictionaryList(wxString strServerPath, wxString strFileMask, wxArrayString& DictionaryArray)
+bool AspellDictionaryDownloader::RetrieveDictionaryList(wxString strServerPath, wxString strFileMask, wxArrayString & DictionaryArray)
 {
     wxFTP ftp;
-    if ( !ftp.Connect(GetServer()) )
+
+    if (!ftp.Connect(GetServer()))
     {
         wxLogError("Couldn't connect");
         return false;
@@ -200,18 +219,23 @@ bool AspellDictionaryDownloader::RetrieveDictionaryList(wxString strServerPath, 
 
     ftp.ChDir(strServerPath);
     wxArrayString FtpListing;
+
     if (ftp.GetFilesList(FtpListing, strFileMask))
     {
         int FileCount = FtpListing.Count();
-        for (int i=0; i<FileCount; i++)
+
+        for (int i = 0; i < FileCount; i++)
         {
             // Here we let the dictionary downloader interpret the directory name
             //  and (if desireable) give back more descriptive text.  Also, the
             //  downloader can return an empty string if we don't want this
             //  dictionary in the list.
             wxString DictionaryListEntry = GetDictionaryNameFromFileName(FtpListing[i]);
+
             if (DictionaryListEntry != wxEmptyString)
+            {
                 DictionaryArray.Add((DictionaryListEntry));
+            }
         }
     }
     else
@@ -219,24 +243,27 @@ bool AspellDictionaryDownloader::RetrieveDictionaryList(wxString strServerPath, 
         ::wxMessageBox("Unable to retrieve listing of available dictionaries");
         return false;
     }
+
     return true;
 }
 
 wxString AspellDictionaryDownloader::DownloadDictionary(wxString strServerPath, wxString strFileMask)
 {
     wxFTP ftp;
-    if ( !ftp.Connect(GetServer()) )
+
+    if (!ftp.Connect(GetServer()))
     {
         wxLogError("Couldn't connect");
         return wxEmptyString;
     }
+
     ftp.ChDir(strServerPath);
     wxArrayString DictionaryFileList;
+
     if (ftp.GetFilesList(DictionaryFileList, strFileMask))
     {
         wxString strDictionaryToDownload = SelectDictionaryToDownload(DictionaryFileList);
-        wxInputStream *in = ftp.GetInputStream(strDictionaryToDownload);
-
+        wxInputStream * in = ftp.GetInputStream(strDictionaryToDownload);
         wxString strTempFile = wxFileName::CreateTempFileName(_("dict"));
         wxFileOutputStream TempFileStream(strTempFile);
         wxBufferedOutputStream TempBufferedStream(TempFileStream);
@@ -246,28 +273,33 @@ wxString AspellDictionaryDownloader::DownloadDictionary(wxString strServerPath, 
         TempBufferedStream.Sync();
         int nServerSideSize = in->GetSize();
         int nDownloadedFileSize = wxFile(strTempFile).Length();
+
         if (nServerSideSize != nDownloadedFileSize)
         {
             ::wxMessageBox("Error downloading dictionary ");// + strDictionary);
             return wxEmptyString;
         }
         else
+        {
             return strTempFile;
+        }
     }
     else
     {
         ::wxMessageBox("Unable to retrieve listing of available dictionary files for ");// + strDictionary);
         return wxEmptyString;
     }
+
     return wxEmptyString;
 }
 
-wxString AspellDictionaryDownloader::GetDictionaryNameFromFileName(wxString& strFileName)
+wxString AspellDictionaryDownloader::GetDictionaryNameFromFileName(wxString & strFileName)
 {
     if (UseWin32Dictionaries())
     {
         wxRegEx RegExpDict("Aspell-(..)-.*exe");
-        if  (RegExpDict.Matches(strFileName))
+
+        if (RegExpDict.Matches(strFileName))
         {
             wxString strMatch = RegExpDict.GetMatch(strFileName, 1);
             return strMatch;

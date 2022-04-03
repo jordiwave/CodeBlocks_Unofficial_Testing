@@ -9,14 +9,14 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xh_notbk.h"
+    #pragma implementation "xh_notbk.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #if wxUSE_XRC
@@ -50,46 +50,53 @@ wxFlatNotebookXmlHandler::wxFlatNotebookXmlHandler()
     XRC_ADD_STYLE(wxFNB_SMART_TABS);
     XRC_ADD_STYLE(wxFNB_DROPDOWN_TABS_LIST);
     XRC_ADD_STYLE(wxFNB_ALLOW_FOREIGN_DND);
-
     AddWindowStyles();
 }
 
-wxObject *wxFlatNotebookXmlHandler::DoCreateResource()
+wxObject * wxFlatNotebookXmlHandler::DoCreateResource()
 {
     if (m_class == wxT("notebookpage"))
     {
-        wxXmlNode *n = GetParamNode(wxT("object"));
+        wxXmlNode * n = GetParamNode(wxT("object"));
 
-        if ( !n )
+        if (!n)
+        {
             n = GetParamNode(wxT("object_ref"));
+        }
 
         if (n)
         {
             bool old_ins = m_isInside;
             m_isInside = false;
-            wxObject *item = CreateResFromNode(n, m_notebook, NULL);
+            wxObject * item = CreateResFromNode(n, m_notebook, NULL);
             m_isInside = old_ins;
-            wxWindow *wnd = wxDynamicCast(item, wxWindow);
+            wxWindow * wnd = wxDynamicCast(item, wxWindow);
 
             if (wnd)
             {
                 m_notebook->AddPage(wnd, GetText(wxT("label")),
                                     GetBool(wxT("selected")));
-                if ( HasParam(wxT("bitmap")) )
+
+                if (HasParam(wxT("bitmap")))
                 {
                     wxBitmap bmp = GetBitmap(wxT("bitmap"), wxART_OTHER);
-                    wxFlatNotebookImageList *imgList = m_notebook->GetImageList();
-                    if ( imgList == NULL )
+                    wxFlatNotebookImageList * imgList = m_notebook->GetImageList();
+
+                    if (imgList == NULL)
                     {
-                        imgList = new wxFlatNotebookImageList ( );
-                        m_notebook->SetImageList( imgList );
+                        imgList = new wxFlatNotebookImageList();
+                        m_notebook->SetImageList(imgList);
                     }
+
                     imgList->Add(bmp);
-                    m_notebook->SetPageImageIndex(m_notebook->GetPageCount()-1, (int)imgList->Count()-1 );
+                    m_notebook->SetPageImageIndex(m_notebook->GetPageCount() - 1, (int)imgList->Count() - 1);
                 }
             }
             else
+            {
                 wxLogError(_("Error in resource."));
+            }
+
             return wnd;
         }
         else
@@ -98,32 +105,27 @@ wxObject *wxFlatNotebookXmlHandler::DoCreateResource()
             return NULL;
         }
     }
-
     else
     {
         XRC_MAKE_INSTANCE(nb, wxFlatNotebook)
-
         nb->Create(m_parentAsWindow,
                    GetID(),
                    GetPosition(), GetSize(),
                    GetStyle(wxT("style")),
                    GetName());
-
         SetupWindow(nb);
-
-        wxFlatNotebook *old_par = m_notebook;
+        wxFlatNotebook * old_par = m_notebook;
         m_notebook = nb;
         bool old_ins = m_isInside;
         m_isInside = true;
         CreateChildren(m_notebook, true/*only this handler*/);
         m_isInside = old_ins;
         m_notebook = old_par;
-
         return nb;
     }
 }
 
-bool wxFlatNotebookXmlHandler::CanHandle(wxXmlNode *node)
+bool wxFlatNotebookXmlHandler::CanHandle(wxXmlNode * node)
 {
     return ((!m_isInside && IsOfClass(node, wxT("wxFlatNotebook"))) ||
             (m_isInside && IsOfClass(node, wxT("notebookpage"))));

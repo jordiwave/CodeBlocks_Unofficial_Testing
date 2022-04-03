@@ -15,21 +15,21 @@ class wxUpdateUIEvent;
 
 class ConfigureToolsDlg : public wxScrollingDialog
 {
-public:
-    ConfigureToolsDlg(wxWindow* parent);
-    ~ConfigureToolsDlg() override;
-private:
-    void DoFillList();
-    bool DoEditTool(cbTool* tool);
-    void OnAdd(wxCommandEvent& event);
-    void OnEdit(wxCommandEvent& event);
-    void OnRemove(wxCommandEvent& event);
-    void OnAddSeparator(wxCommandEvent& event);
-    void OnUp(wxCommandEvent& event);
-    void OnDown(wxCommandEvent& event);
-    void OnUpdateUI(wxUpdateUIEvent& event);
+    public:
+        ConfigureToolsDlg(wxWindow * parent);
+        ~ConfigureToolsDlg() override;
+    private:
+        void DoFillList();
+        bool DoEditTool(cbTool * tool);
+        void OnAdd(wxCommandEvent & event);
+        void OnEdit(wxCommandEvent & event);
+        void OnRemove(wxCommandEvent & event);
+        void OnAddSeparator(wxCommandEvent & event);
+        void OnUp(wxCommandEvent & event);
+        void OnDown(wxCommandEvent & event);
+        void OnUpdateUI(wxUpdateUIEvent & event);
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // CONFIGURETOOLSDLG_H

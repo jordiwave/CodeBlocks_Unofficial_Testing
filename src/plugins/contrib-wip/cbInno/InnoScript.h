@@ -51,41 +51,41 @@ enum InnoPart
 
 class InnoScript
 {
-public:
-    /** Default constructor */
-    InnoScript();
-    /** Default destructor */
-    virtual ~InnoScript();
+    public:
+        /** Default constructor */
+        InnoScript();
+        /** Default destructor */
+        virtual ~InnoScript();
 
-    void Read(const wxString& filename);
+        void Read(const wxString & filename);
 
-    void Analize(const wxString& content, const wxString& line);
-    void AnalizePreprocessor(const wxString& content);
-    void AnalizeSection(const wxString& content, const wxString& line);
+        void Analize(const wxString & content, const wxString & line);
+        void AnalizePreprocessor(const wxString & content);
+        void AnalizeSection(const wxString & content, const wxString & line);
 
-    void Write(wxString filename);
+        void Write(wxString filename);
 
-    void Show(wxListCtrl* liste, const InnoPart& part);
+        void Show(wxListCtrl * liste, const InnoPart & part);
 
-protected:
-private:
+    protected:
+    private:
 
-    InnoPart m_part;
-    list<CFiles>           m_files;
-    list<CDirs>            m_dirs;
-    list<CIcons>           m_icons;
-    list<CIni>             m_ini;
-    list<CTasks>           m_tasks;
-    list<CRegistry>        m_registry;
-    list<CLanguages>       m_languages;
-    list<CTypes>           m_types;
-    list<CComponents>      m_components;
-    list<CMessages>        m_messages;
-    list<CCustomMessages>  m_cmessages;
-    list<CRun>             m_runs;
-    list<CInstallDelete>   m_instal_del;
-    list<CUninstallDelete> m_uninstal_del;
-    list<CRun>             m_uninstal_run;
+        InnoPart m_part;
+        list<CFiles>           m_files;
+        list<CDirs>            m_dirs;
+        list<CIcons>           m_icons;
+        list<CIni>             m_ini;
+        list<CTasks>           m_tasks;
+        list<CRegistry>        m_registry;
+        list<CLanguages>       m_languages;
+        list<CTypes>           m_types;
+        list<CComponents>      m_components;
+        list<CMessages>        m_messages;
+        list<CCustomMessages>  m_cmessages;
+        list<CRun>             m_runs;
+        list<CInstallDelete>   m_instal_del;
+        list<CUninstallDelete> m_uninstal_del;
+        list<CRun>             m_uninstal_run;
 };
 
 #endif // INNOSCRIPT_H

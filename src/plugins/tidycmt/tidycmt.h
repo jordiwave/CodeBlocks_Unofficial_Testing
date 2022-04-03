@@ -16,38 +16,38 @@ class FileTreeData;
 
 class TidyCmt : public cbPlugin
 {
-public:
-    TidyCmt() { ; }
-    virtual ~TidyCmt() { ; }
+    public:
+        TidyCmt() { ; }
+        virtual ~TidyCmt() { ; }
 
-    virtual int GetConfigurationGroup() const
-    {
-        return cgEditor;
-    }
-    virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
-    static void ConfigurePlugin(const TidyCmtConfig& tcc);
+        virtual int GetConfigurationGroup() const
+        {
+            return cgEditor;
+        }
+        virtual cbConfigurationPanel * GetConfigurationPanel(wxWindow * parent);
+        static void ConfigurePlugin(const TidyCmtConfig & tcc);
 
-    // Not used:
-    virtual cbConfigurationPanel* GetProjectConfigurationPanel(cb_unused wxWindow* parent, cb_unused cbProject* prj)
-    {
-        return 0;
-    }
+        // Not used:
+        virtual cbConfigurationPanel * GetProjectConfigurationPanel(cb_unused wxWindow * parent, cb_unused cbProject * prj)
+        {
+            return 0;
+        }
 
-protected:
-    virtual void OnAttach();
-    virtual void OnRelease(bool appShutDown);
+    protected:
+        virtual void OnAttach();
+        virtual void OnRelease(bool appShutDown);
 
-    // Not used:
-    virtual void BuildMenu(cb_unused wxMenuBar* menuBar) { ; }
-    virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0) { ; }
-    virtual bool BuildToolBar(cb_unused wxToolBar* toolBar)
-    {
-        return false;
-    }
+        // Not used:
+        virtual void BuildMenu(cb_unused wxMenuBar * menuBar) { ; }
+        virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu * menu, cb_unused const FileTreeData * data = 0) { ; }
+        virtual bool BuildToolBar(cb_unused wxToolBar * toolBar)
+        {
+            return false;
+        }
 
-private:
+    private:
 
-    void OnSave(CodeBlocksEvent& event);
+        void OnSave(CodeBlocksEvent & event);
 };
 
 #endif // TIDYCMT_H

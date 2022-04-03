@@ -25,65 +25,65 @@ class sThreadSearchEvent;
 
 class ThreadSearchLoggerBase
 {
-public:
-    enum eLoggerTypes
-    {
-        TypeList = 0,
-        TypeTree
-    };
+    public:
+        enum eLoggerTypes
+        {
+            TypeList = 0,
+            TypeTree
+        };
 
-    /** BuildThreadSearchLoggerBase
-      * Builds a ThreadSearchLoggerList or a ThreadSearchLoggerTree pointer depending on loggerType.
-      * @return ThreadSearchLoggerBase*
-      */
-    static ThreadSearchLoggerBase* BuildThreadSearchLoggerBase(ThreadSearchView& threadSearchView,
-            ThreadSearch&     threadSearchPlugin,
-            eLoggerTypes      loggerType,
-            InsertIndexManager::eFileSorting fileSorting,
-            wxPanel* pParent,
-            long id);
+        /** BuildThreadSearchLoggerBase
+          * Builds a ThreadSearchLoggerList or a ThreadSearchLoggerTree pointer depending on loggerType.
+          * @return ThreadSearchLoggerBase*
+          */
+        static ThreadSearchLoggerBase * BuildThreadSearchLoggerBase(ThreadSearchView & threadSearchView,
+                                                                    ThreadSearch   &  threadSearchPlugin,
+                                                                    eLoggerTypes      loggerType,
+                                                                    InsertIndexManager::eFileSorting fileSorting,
+                                                                    wxPanel * pParent,
+                                                                    long id);
 
-    /** Destructor. */
-    virtual ~ThreadSearchLoggerBase() {}
+        /** Destructor. */
+        virtual ~ThreadSearchLoggerBase() {}
 
-    eLoggerTypes virtual GetLoggerType() = 0;
+        eLoggerTypes virtual GetLoggerType() = 0;
 
-    /** Called by ThreadSearchView when new settings are applied. */
-    virtual void Update();
+        /** Called by ThreadSearchView when new settings are applied. */
+        virtual void Update();
 
-    /** Called by ThreadSearchView to process a sThreadSearchEvent
-      * sent by worker thread.
-      */
-    virtual void OnThreadSearchEvent(const sThreadSearchEvent& event) = 0;
+        /** Called by ThreadSearchView to process a sThreadSearchEvent
+          * sent by worker thread.
+          */
+        virtual void OnThreadSearchEvent(const sThreadSearchEvent & event) = 0;
 
-    /** Removes all items from logger. */
-    virtual void Clear() = 0;
+        /** Removes all items from logger. */
+        virtual void Clear() = 0;
 
-    /** Returns logger window. */
-    virtual wxWindow* GetWindow() = 0;
+        /** Returns logger window. */
+        virtual wxWindow * GetWindow() = 0;
 
-    /** Sets focus on logger window. */
-    virtual void      SetFocus()  = 0;
+        /** Sets focus on logger window. */
+        virtual void      SetFocus()  = 0;
 
-protected:
-    /** Constructor. */
-    ThreadSearchLoggerBase(ThreadSearchView& threadSearchView,
-                           ThreadSearch&                    threadSearchPlugin,
-                           InsertIndexManager::eFileSorting fileSorting)
-        : m_ThreadSearchView  (threadSearchView)
-        , m_ThreadSearchPlugin(threadSearchPlugin)
-        , m_IndexManager(fileSorting)
-    {}
+    protected:
+        /** Constructor. */
+        ThreadSearchLoggerBase(ThreadSearchView & threadSearchView,
+                               ThreadSearch          &          threadSearchPlugin,
+                               InsertIndexManager::eFileSorting fileSorting)
+            : m_ThreadSearchView(threadSearchView)
+            , m_ThreadSearchPlugin(threadSearchPlugin)
+            , m_IndexManager(fileSorting)
+        {}
 
-    /** Dynamic events connection. */
-    virtual void ConnectEvents(wxEvtHandler* pEvtHandler) = 0;
+        /** Dynamic events connection. */
+        virtual void ConnectEvents(wxEvtHandler * pEvtHandler) = 0;
 
-    /** Dynamic events disconnection. */
-    virtual void DisconnectEvents(wxEvtHandler* pEvtHandler) = 0;
+        /** Dynamic events disconnection. */
+        virtual void DisconnectEvents(wxEvtHandler * pEvtHandler) = 0;
 
-    ThreadSearchView& m_ThreadSearchView;
-    ThreadSearch&     m_ThreadSearchPlugin;
-    InsertIndexManager m_IndexManager;
+        ThreadSearchView & m_ThreadSearchView;
+        ThreadSearch   &  m_ThreadSearchPlugin;
+        InsertIndexManager m_IndexManager;
 };
 
 #endif // THREAD_SEARCH_LOGGER_BASE_H

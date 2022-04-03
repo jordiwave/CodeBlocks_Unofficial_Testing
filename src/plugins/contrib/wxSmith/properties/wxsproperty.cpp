@@ -26,60 +26,75 @@
 
 #include <globals.h>
 
-wxsProperty::wxsProperty(const wxString& PGName, const wxString& DataName,int Priority):
+wxsProperty::wxsProperty(const wxString & PGName, const wxString & DataName, int Priority):
     m_PGName(PGName), m_DataName(DataName), m_Priority(Priority)
 {
 }
 
-long wxsProperty::PGRegister(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId ID,long Index)
+long wxsProperty::PGRegister(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId ID, long Index)
 {
-    wxsPropertyGridManager* wxsGrid = wxDynamicCast(Grid,wxsPropertyGridManager);
-    if ( !wxsGrid ) return -1;
-    return wxsGrid->Register(Object,this,ID,Index);
+    wxsPropertyGridManager * wxsGrid = wxDynamicCast(Grid, wxsPropertyGridManager);
+
+    if (!wxsGrid)
+    {
+        return -1;
+    }
+
+    return wxsGrid->Register(Object, this, ID, Index);
 }
 
-long wxsProperty::GetPropertiesFlags(wxsPropertyContainer* Object)
+long wxsProperty::GetPropertiesFlags(wxsPropertyContainer * Object)
 {
     return Object->GetPropertiesFlags();
 }
 
-bool wxsProperty::XmlGetString(TiXmlElement* Element,wxString& Value,const wxString& SubChild)
+bool wxsProperty::XmlGetString(TiXmlElement * Element, wxString & Value, const wxString & SubChild)
 {
     Value.Clear();
 
-    if ( !Element )
+    if (!Element)
     {
         return false;
     }
 
-    if ( !SubChild.empty() )
+    if (!SubChild.empty())
     {
         Element = Element->FirstChildElement(cbU2C(SubChild));
-        if ( !Element ) return false;
+
+        if (!Element)
+        {
+            return false;
+        }
     }
 
-    const char* Text = Element->GetText();
-    if ( !Text )
+    const char * Text = Element->GetText();
+
+    if (!Text)
     {
         // Element does exist but doesn't contain text - in this
         // case we return true, because it's case of empty string
         return true;
     }
+
     Value = cbC2U(Text);
     return true;
 }
 
-void wxsProperty::XmlSetString(TiXmlElement* Element,const wxString& Value,const wxString& SubChild)
+void wxsProperty::XmlSetString(TiXmlElement * Element, const wxString & Value, const wxString & SubChild)
 {
-    if ( !Element )
+    if (!Element)
     {
         return;
     }
 
-    if ( !SubChild.empty() )
+    if (!SubChild.empty())
     {
         Element = Element->InsertEndChild(TiXmlElement(cbU2C(SubChild)))->ToElement();
-        if ( !Element ) return;
+
+        if (!Element)
+        {
+            return;
+        }
     }
 
     Element->InsertEndChild(TiXmlText(cbU2C(Value)));

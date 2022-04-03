@@ -77,22 +77,23 @@
 #include <string>
 #include <fstream>
 
-class FileMgr {
- private:
-  FileMgr(const FileMgr&);
-  FileMgr& operator=(const FileMgr&);
+class FileMgr
+{
+    private:
+        FileMgr(const FileMgr &);
+        FileMgr & operator=(const FileMgr &);
 
- protected:
-  std::ifstream fin;
-  Hunzip* hin;
-  char in[BUFSIZE + 50];  // input buffer
-  int fail(const char* err, const char* par);
-  int linenum;
+    protected:
+        std::ifstream fin;
+        Hunzip * hin;
+        char in[BUFSIZE + 50];  // input buffer
+        int fail(const char * err, const char * par);
+        int linenum;
 
- public:
-  FileMgr(const char* filename, const char* key = NULL);
-  ~FileMgr();
-  bool getline(std::string&);
-  int getlinenum();
+    public:
+        FileMgr(const char * filename, const char * key = NULL);
+        ~FileMgr();
+        bool getline(std::string &);
+        int getlinenum();
 };
 #endif

@@ -17,38 +17,46 @@ JumpTracker::~JumpTracker()
 {
 }
 
-void JumpTracker::TakeJump(LineAddress& jumpStart, LineAddress& jumpFinish)
+void JumpTracker::TakeJump(LineAddress & jumpStart, LineAddress & jumpFinish)
 {
     if (jumpStart.IsSameAs(jumpFinish) && jumpStart.IsSameAs(m_JumpHome))
     {
         //do nothing
     }
-    else if (jumpStart.IsSameAs(jumpFinish) && !m_JumpHome.GetFilename().IsEmpty())
-    {
-        if (m_JumpHome.IsFinish())
-            m_JumpBack.push_front(m_JumpHome);
-        m_JumpHome = jumpFinish;
-    }
-    else if ( m_JumpHome.IsSameAs(jumpStart) && !m_JumpForward.empty() && jumpFinish.IsSameAs(m_JumpForward.front()) )
-    {
-        m_JumpBack.push_front(m_JumpHome);
-        m_JumpHome = m_JumpForward.front();
-        m_JumpForward.pop_front();
-    }
-    else if (m_JumpHome.IsSameAs(jumpFinish) && !m_JumpBack.empty() && m_JumpBack.front().IsSameAs(jumpStart))
-    {
-        // jump was repeated. Do nothing.
-    }
     else
-    {
-        if (!m_JumpHome.GetFilename().IsEmpty() && m_JumpHome.IsFinish() && !m_JumpHome.IsSameAs(jumpStart))
+        if (jumpStart.IsSameAs(jumpFinish) && !m_JumpHome.GetFilename().IsEmpty())
         {
-            m_JumpBack.push_front(m_JumpHome);
+            if (m_JumpHome.IsFinish())
+            {
+                m_JumpBack.push_front(m_JumpHome);
+            }
+
+            m_JumpHome = jumpFinish;
         }
-        m_JumpBack.push_front(jumpStart);
-        m_JumpHome = jumpFinish;
-        m_JumpForward.clear();
-    }
+        else
+            if (m_JumpHome.IsSameAs(jumpStart) && !m_JumpForward.empty() && jumpFinish.IsSameAs(m_JumpForward.front()))
+            {
+                m_JumpBack.push_front(m_JumpHome);
+                m_JumpHome = m_JumpForward.front();
+                m_JumpForward.pop_front();
+            }
+            else
+                if (m_JumpHome.IsSameAs(jumpFinish) && !m_JumpBack.empty() && m_JumpBack.front().IsSameAs(jumpStart))
+                {
+                    // jump was repeated. Do nothing.
+                }
+                else
+                {
+                    if (!m_JumpHome.GetFilename().IsEmpty() && m_JumpHome.IsFinish() && !m_JumpHome.IsSameAs(jumpStart))
+                    {
+                        m_JumpBack.push_front(m_JumpHome);
+                    }
+
+                    m_JumpBack.push_front(jumpStart);
+                    m_JumpHome = jumpFinish;
+                    m_JumpForward.clear();
+                }
+
     while (m_JumpBack.size() > 50)
     {
         m_JumpBack.pop_back();
@@ -90,7 +98,7 @@ void JumpTracker::MakeJumpForward()
     }
 }
 
-const LineAddress& JumpTracker::GetHomeAddress()
+const LineAddress & JumpTracker::GetHomeAddress()
 {
     return m_JumpHome;
 }

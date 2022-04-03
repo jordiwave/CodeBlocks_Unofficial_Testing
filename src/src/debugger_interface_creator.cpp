@@ -7,8 +7,8 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-#include "cbeditor.h"
-#include "editormanager.h"
+    #include "cbeditor.h"
+    #include "editormanager.h"
 #endif
 
 #include "debugger_interface_creator.h"
@@ -22,7 +22,7 @@
 #include "threadsdlg.h"
 #include "watchesdlg.h"
 
-inline void RemoveDockWindow(wxWindow *window)
+inline void RemoveDockWindow(wxWindow * window)
 {
     if (window)
     {
@@ -45,9 +45,9 @@ DebugInterfaceFactory::~DebugInterfaceFactory()
     Manager::Get()->RemoveAllEventSinksFor(this);
 }
 
-cbBacktraceDlg* DebugInterfaceFactory::CreateBacktrace()
+cbBacktraceDlg * DebugInterfaceFactory::CreateBacktrace()
 {
-    BacktraceDlg *dialog = new BacktraceDlg(Manager::Get()->GetAppWindow());
+    BacktraceDlg * dialog = new BacktraceDlg(Manager::Get()->GetAppWindow());
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
     evt.name = _T("CallStackPane");
     evt.title = _("Call stack");
@@ -60,16 +60,17 @@ cbBacktraceDlg* DebugInterfaceFactory::CreateBacktrace()
     return dialog;
 }
 
-void DebugInterfaceFactory::DeleteBacktrace(cbBacktraceDlg *dialog)
+void DebugInterfaceFactory::DeleteBacktrace(cbBacktraceDlg * dialog)
 {
     if (dialog)
+    {
         RemoveDockWindow(dialog->GetWindow());
+    }
 }
 
-cbBreakpointsDlg* DebugInterfaceFactory::CreateBreapoints()
+cbBreakpointsDlg * DebugInterfaceFactory::CreateBreapoints()
 {
-    BreakpointsDlg *dialog = new BreakpointsDlg;
-
+    BreakpointsDlg * dialog = new BreakpointsDlg;
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
     evt.name = _T("BreakpointsPane");
     evt.title = _("Breakpoints");
@@ -82,16 +83,17 @@ cbBreakpointsDlg* DebugInterfaceFactory::CreateBreapoints()
     return dialog;
 }
 
-void DebugInterfaceFactory::DeleteBreakpoints(cbBreakpointsDlg *dialog)
+void DebugInterfaceFactory::DeleteBreakpoints(cbBreakpointsDlg * dialog)
 {
     if (dialog)
+    {
         RemoveDockWindow(dialog->GetWindow());
+    }
 }
 
-cbCPURegistersDlg* DebugInterfaceFactory::CreateCPURegisters()
+cbCPURegistersDlg * DebugInterfaceFactory::CreateCPURegisters()
 {
-    CPURegistersDlg *dialog = new CPURegistersDlg(Manager::Get()->GetAppWindow());
-
+    CPURegistersDlg * dialog = new CPURegistersDlg(Manager::Get()->GetAppWindow());
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
     evt.name = _T("CPURegistersPane");
     evt.title = _("CPU Registers");
@@ -104,17 +106,18 @@ cbCPURegistersDlg* DebugInterfaceFactory::CreateCPURegisters()
     return dialog;
 }
 
-void DebugInterfaceFactory::DeleteCPURegisters(cbCPURegistersDlg *dialog)
+void DebugInterfaceFactory::DeleteCPURegisters(cbCPURegistersDlg * dialog)
 {
     if (dialog)
+    {
         RemoveDockWindow(dialog->GetWindow());
+    }
 }
 
-cbDisassemblyDlg* DebugInterfaceFactory::CreateDisassembly()
+cbDisassemblyDlg * DebugInterfaceFactory::CreateDisassembly()
 {
-    DisassemblyDlg *dialog = new DisassemblyDlg(Manager::Get()->GetAppWindow());
+    DisassemblyDlg * dialog = new DisassemblyDlg(Manager::Get()->GetAppWindow());
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
-
     evt.name = _T("DisassemblyPane");
     evt.title = _("Disassembly");
     evt.pWindow = dialog;
@@ -126,15 +129,17 @@ cbDisassemblyDlg* DebugInterfaceFactory::CreateDisassembly()
     return dialog;
 }
 
-void DebugInterfaceFactory::DeleteDisassembly(cbDisassemblyDlg *dialog)
+void DebugInterfaceFactory::DeleteDisassembly(cbDisassemblyDlg * dialog)
 {
     if (dialog)
+    {
         RemoveDockWindow(dialog->GetWindow());
+    }
 }
 
-cbExamineMemoryDlg* DebugInterfaceFactory::CreateMemory()
+cbExamineMemoryDlg * DebugInterfaceFactory::CreateMemory()
 {
-    ExamineMemoryDlg *dialog = new ExamineMemoryDlg(Manager::Get()->GetAppWindow());
+    ExamineMemoryDlg * dialog = new ExamineMemoryDlg(Manager::Get()->GetAppWindow());
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
     evt.name = _T("ExamineMemoryPane");
     evt.title = _("Memory");
@@ -147,16 +152,17 @@ cbExamineMemoryDlg* DebugInterfaceFactory::CreateMemory()
     return dialog;
 }
 
-void DebugInterfaceFactory::DeleteMemory(cbExamineMemoryDlg *dialog)
+void DebugInterfaceFactory::DeleteMemory(cbExamineMemoryDlg * dialog)
 {
     if (dialog)
+    {
         RemoveDockWindow(dialog->GetWindow());
+    }
 }
 
-cbThreadsDlg* DebugInterfaceFactory::CreateThreads()
+cbThreadsDlg * DebugInterfaceFactory::CreateThreads()
 {
-    ThreadsDlg *dialog = new ThreadsDlg(Manager::Get()->GetAppWindow());
-
+    ThreadsDlg * dialog = new ThreadsDlg(Manager::Get()->GetAppWindow());
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
     evt.name = _T("ThreadsPane");
     evt.title = _("Running threads");
@@ -169,15 +175,17 @@ cbThreadsDlg* DebugInterfaceFactory::CreateThreads()
     return dialog;
 }
 
-void DebugInterfaceFactory::DeleteThreads(cbThreadsDlg *dialog)
+void DebugInterfaceFactory::DeleteThreads(cbThreadsDlg * dialog)
 {
     if (dialog)
+    {
         RemoveDockWindow(dialog->GetWindow());
+    }
 }
 
-cbWatchesDlg* DebugInterfaceFactory::CreateWatches()
+cbWatchesDlg * DebugInterfaceFactory::CreateWatches()
 {
-    WatchesDlg *dialog = new WatchesDlg;
+    WatchesDlg * dialog = new WatchesDlg;
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
     evt.name = _T("WatchesPane");
     evt.title = _("Watches");
@@ -190,28 +198,35 @@ cbWatchesDlg* DebugInterfaceFactory::CreateWatches()
     return dialog;
 }
 
-void DebugInterfaceFactory::DeleteWatches(cbWatchesDlg *dialog)
+void DebugInterfaceFactory::DeleteWatches(cbWatchesDlg * dialog)
 {
     if (dialog)
+    {
         RemoveDockWindow(dialog->GetWindow());
+    }
 }
 
-bool DebugInterfaceFactory::ShowValueTooltip(const cb::shared_ptr<cbWatch> &watch, const wxRect &rect)
+bool DebugInterfaceFactory::ShowValueTooltip(const cb::shared_ptr<cbWatch> & watch, const wxRect & rect)
 {
     delete m_tooltip;
     m_tooltip = nullptr;
-
     wxPoint pt = wxGetMousePosition();
+
     if (!rect.Contains(pt))
+    {
         return false;
+    }
     else
     {
         m_tooltip = new ValueTooltip(watch, Manager::Get()->GetAppWindow(), pt);
         // hide any other tooltips
-        EditorBase *base = Manager::Get()->GetEditorManager()->GetActiveEditor();
-        cbEditor *ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : nullptr;
+        EditorBase * base = Manager::Get()->GetEditorManager()->GetActiveEditor();
+        cbEditor * ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor *>(base) : nullptr;
+
         if (ed && ed->GetControl()->CallTipActive())
+        {
             ed->GetControl()->CallTipCancel();
+        }
 
         m_tooltip->Show();
         return true;
@@ -221,13 +236,17 @@ bool DebugInterfaceFactory::ShowValueTooltip(const cb::shared_ptr<cbWatch> &watc
 void DebugInterfaceFactory::HideValueTooltip()
 {
     if (m_tooltip)
+    {
         m_tooltip->Dismiss();
+    }
 }
 
 void DebugInterfaceFactory::UpdateValueTooltip()
 {
     if (m_tooltip)
+    {
         m_tooltip->UpdateWatch();
+    }
 }
 
 bool DebugInterfaceFactory::IsValueTooltipShown()
@@ -235,7 +254,7 @@ bool DebugInterfaceFactory::IsValueTooltipShown()
     return m_tooltip && m_tooltip->IsShown();
 }
 
-void DebugInterfaceFactory::OnEditorDeactivate(cb_unused CodeBlocksEvent &event)
+void DebugInterfaceFactory::OnEditorDeactivate(cb_unused CodeBlocksEvent & event)
 {
     HideValueTooltip();
 }

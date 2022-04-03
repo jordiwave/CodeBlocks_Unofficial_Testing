@@ -7,7 +7,7 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #include "HooverDrawlet.h"
@@ -16,16 +16,16 @@
 
 class HooverLine : public HooverDrawlet
 {
-public:
-    HooverLine(wxPoint start, wxPoint stop);
-    virtual ~HooverLine();
+    public:
+        HooverLine(wxPoint start, wxPoint stop);
+        virtual ~HooverLine();
 
 
-    virtual bool Draw(wxDC &dc);
-    virtual void UnDraw(wxDC &dc);
+        virtual bool Draw(wxDC & dc);
+        virtual void UnDraw(wxDC & dc);
 
-private:
-    wxPoint m_start, m_stop;
+    private:
+        wxPoint m_start, m_stop;
 };
 
 #endif

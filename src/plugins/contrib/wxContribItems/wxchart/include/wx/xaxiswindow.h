@@ -17,7 +17,7 @@
 //----------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "xaxiswindow.h"
+    #pragma interface "xaxiswindow.h"
 #endif
 
 #include <wx/window.h>
@@ -44,41 +44,41 @@ const int XAXIS_HEIGHT	= 60;	// height in pixels
 class WXDLLIMPEXP_CHART wxXAxisWindow : public wxWindow
 /* C::B end */
 {
-public:
-    wxXAxisWindow() {};	// for IMPLEMENT_DYNAMIC_CLASS
-    wxXAxisWindow(wxScrolledWindow *parent);
+    public:
+        wxXAxisWindow() {};	// for IMPLEMENT_DYNAMIC_CLASS
+        wxXAxisWindow(wxScrolledWindow * parent);
 
-    // access CWxXAxis's Get/Set virtual size
-    //---------------------------------------
-    void SetVirtualMax(ChartValue v);
-    void SetVirtualMin(ChartValue v);
-    ChartValue GetVirtualMax() const;
-    ChartValue GetVirtualMin() const;
+        // access CWxXAxis's Get/Set virtual size
+        //---------------------------------------
+        void SetVirtualMax(ChartValue v);
+        void SetVirtualMin(ChartValue v);
+        ChartValue GetVirtualMax() const;
+        ChartValue GetVirtualMin() const;
 
-    // access CWxXAxis's Get/Set zoom
-    //---------------------------------------
-    void SetZoom(double z);
-    double GetZoom();
-    void SetSizes(wxChartSizes *sizes);
-    const wxChartSizes* GetSizes() const;
+        // access CWxXAxis's Get/Set zoom
+        //---------------------------------------
+        void SetZoom(double z);
+        double GetZoom();
+        void SetSizes(wxChartSizes * sizes);
+        const wxChartSizes * GetSizes() const;
 
-    // Draw y-axis window
-    //-------------------
-    void Draw(CHART_HPAINT hp, int x = 0, int y = 0);
+        // Draw y-axis window
+        //-------------------
+        void Draw(CHART_HPAINT hp, int x = 0, int y = 0);
 
-private:
-    wxXAxis m_XAxis;
-    wxScrolledWindow *m_WinParent;
+    private:
+        wxXAxis m_XAxis;
+        wxScrolledWindow * m_WinParent;
 
-    // events
-    //-------
-    void OnPaint(wxPaintEvent &event);
-    void OnMouse(wxMouseEvent &event);
+        // events
+        //-------
+        void OnPaint(wxPaintEvent & event);
+        void OnMouse(wxMouseEvent & event);
 
-    /* C::B begin */
-    DECLARE_DYNAMIC_CLASS(wxXAxisWindow)
-    /* C::B end */
-    DECLARE_EVENT_TABLE()
+        /* C::B begin */
+        DECLARE_DYNAMIC_CLASS(wxXAxisWindow)
+        /* C::B end */
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // __WXXAXISWINDOW_H__

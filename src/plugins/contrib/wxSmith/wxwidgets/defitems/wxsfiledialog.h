@@ -28,19 +28,19 @@
 
 class wxsFileDialog: public wxsTool
 {
-public:
+    public:
 
-    wxsFileDialog(wxsItemResData* Data);
+        wxsFileDialog(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual void OnEnumToolProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual void OnEnumToolProperties(long Flags);
 
-    wxString m_Message;
-    wxString m_DefaultDir;
-    wxString m_DefaultFile;
-    wxString m_Wildcard;
+        wxString m_Message;
+        wxString m_DefaultDir;
+        wxString m_DefaultFile;
+        wxString m_Wildcard;
 };
 
 #endif

@@ -42,25 +42,25 @@ END_DECLARE_EVENT_TYPES()
 
 class wxDirectoryMonitorEvent: public wxNotifyEvent
 {
-public:
-    wxDirectoryMonitorEvent(const wxString &mon_dir, int event_type, const wxString &uri);
-    wxDirectoryMonitorEvent(const wxDirectoryMonitorEvent& c);
-    wxEvent *Clone() const
-    {
-        return new wxDirectoryMonitorEvent(*this);
-    }
-    ~wxDirectoryMonitorEvent() {}
-    wxString m_mon_dir;
-    int m_event_type;
-    wxString m_info_uri;
+    public:
+        wxDirectoryMonitorEvent(const wxString & mon_dir, int event_type, const wxString & uri);
+        wxDirectoryMonitorEvent(const wxDirectoryMonitorEvent & c);
+        wxEvent * Clone() const
+        {
+            return new wxDirectoryMonitorEvent(*this);
+        }
+        ~wxDirectoryMonitorEvent() {}
+        wxString m_mon_dir;
+        int m_event_type;
+        wxString m_info_uri;
 };
 
-typedef void (wxEvtHandler::*wxDirectoryMonitorEventFunction)(wxDirectoryMonitorEvent&);
+typedef void (wxEvtHandler::*wxDirectoryMonitorEventFunction)(wxDirectoryMonitorEvent &);
 
 #define EVT_MONITOR_NOTIFY(id, fn) \
     DECLARE_EVENT_TABLE_ENTRY( wxEVT_MONITOR_NOTIFY, id, -1, \
-    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-    wxStaticCastEvent( wxDirectoryMonitorEventFunction, & fn ), (wxObject *) NULL ),
+                               (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+                               wxStaticCastEvent( wxDirectoryMonitorEventFunction, & fn ), (wxObject *) NULL ),
 
 ///////////////////////////////////////
 // DIRECTORY MONITOR CLASS ////////////
@@ -68,19 +68,19 @@ typedef void (wxEvtHandler::*wxDirectoryMonitorEventFunction)(wxDirectoryMonitor
 
 class wxDirectoryMonitor: public wxEvtHandler
 {
-public:
-    wxDirectoryMonitor(wxEvtHandler *parent, const wxArrayString &uri, int eventfilter=DEFAULT_MONITOR_FILTER);
-    virtual ~wxDirectoryMonitor();
-    bool Start();
-    void ChangePaths(const wxArrayString &uri);
-    void OnMonitorEvent(wxDirectoryMonitorEvent &e);
-    void OnMonitorEvent2(wxCommandEvent &e);
-private:
-    wxArrayString m_uri;
-    wxEvtHandler *m_parent;
-    int m_eventfilter;
-    DirMonitorThread *m_monitorthread;
-    DECLARE_EVENT_TABLE()
+    public:
+        wxDirectoryMonitor(wxEvtHandler * parent, const wxArrayString & uri, int eventfilter = DEFAULT_MONITOR_FILTER);
+        virtual ~wxDirectoryMonitor();
+        bool Start();
+        void ChangePaths(const wxArrayString & uri);
+        void OnMonitorEvent(wxDirectoryMonitorEvent & e);
+        void OnMonitorEvent2(wxCommandEvent & e);
+    private:
+        wxArrayString m_uri;
+        wxEvtHandler * m_parent;
+        int m_eventfilter;
+        DirMonitorThread * m_monitorthread;
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // WXFILESYSTEMMONITOR_H

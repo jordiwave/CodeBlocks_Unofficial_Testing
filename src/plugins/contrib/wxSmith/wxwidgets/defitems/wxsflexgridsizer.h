@@ -28,26 +28,26 @@
 
 class wxsFlexGridSizer: public wxsSizer
 {
-public:
+    public:
 
-    wxsFlexGridSizer(wxsItemResData* Data);
+        wxsFlexGridSizer(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual wxSizer* OnBuildSizerPreview(wxWindow* Parent);
-    virtual void OnBuildSizerCreatingCode();
-    virtual void OnEnumSizerProperties(long Flags);
-    virtual bool OnIsPointer()
-    {
-        return true;
-    }
+        virtual wxSizer * OnBuildSizerPreview(wxWindow * Parent);
+        virtual void OnBuildSizerCreatingCode();
+        virtual void OnEnumSizerProperties(long Flags);
+        virtual bool OnIsPointer()
+        {
+            return true;
+        }
 
-    long Cols;
-    long Rows;
-    wxsDimensionData VGap;
-    wxsDimensionData HGap;
-    wxString GrowableRows;
-    wxString GrowableCols;
+        long Cols;
+        long Rows;
+        wxsDimensionData VGap;
+        wxsDimensionData HGap;
+        wxString GrowableRows;
+        wxString GrowableCols;
 };
 
 #endif

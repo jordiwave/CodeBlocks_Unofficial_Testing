@@ -9,7 +9,7 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #include <cbplugin.h>
@@ -17,29 +17,29 @@
 
 class ModPoller : public cbPlugin
 {
-public:
-    ModPoller() {};
-    virtual ~ModPoller() {};
+    public:
+        ModPoller() {};
+        virtual ~ModPoller() {};
 
-    virtual void BuildMenu(cb_unused wxMenuBar* menuBar) {}
-    virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0) {}
-    virtual bool BuildToolBar(cb_unused wxToolBar* toolBar)
-    {
-        return false;
-    }
+        virtual void BuildMenu(cb_unused wxMenuBar * menuBar) {}
+        virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu * menu, cb_unused const FileTreeData * data = 0) {}
+        virtual bool BuildToolBar(cb_unused wxToolBar * toolBar)
+        {
+            return false;
+        }
 
-protected:
+    protected:
 
-    virtual void OnAttach()
-    {
-        Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<ModPoller, CodeBlocksEvent>(this, &ModPoller::OnEditorActivated));
-    }
-    void OnEditorActivated(cb_unused CodeBlocksEvent& event)
-    {
-        EditorManager::Get()->CheckForExternallyModifiedFiles();
-    }
+        virtual void OnAttach()
+        {
+            Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<ModPoller, CodeBlocksEvent>(this, &ModPoller::OnEditorActivated));
+        }
+        void OnEditorActivated(cb_unused CodeBlocksEvent & event)
+        {
+            EditorManager::Get()->CheckForExternallyModifiedFiles();
+        }
 
-    virtual void OnRelease(cb_unused bool appShutDown) {};
+        virtual void OnRelease(cb_unused bool appShutDown) {};
 };
 
 #endif

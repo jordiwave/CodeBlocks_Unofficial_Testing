@@ -6,16 +6,23 @@ namespace XmlRpc
 {
 
 
-XmlRpcServerMethod::XmlRpcServerMethod(std::string const& name, XmlRpcServer* server)
+XmlRpcServerMethod::XmlRpcServerMethod(std::string const & name, XmlRpcServer * server)
 {
     _name = name;
     _server = server;
-    if (_server) _server->addMethod(this);
+
+    if (_server)
+    {
+        _server->addMethod(this);
+    }
 }
 
 XmlRpcServerMethod::~XmlRpcServerMethod()
 {
-    if (_server) _server->removeMethod(this);
+    if (_server)
+    {
+        _server->removeMethod(this);
+    }
 }
 
 

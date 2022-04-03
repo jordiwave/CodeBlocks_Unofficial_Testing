@@ -5,11 +5,11 @@
 // XmlRpc++ Copyright (c) 2002-2003 by Chris Morley
 //
 #if defined(_MSC_VER)
-# pragma warning(disable:4786)    // identifier was truncated in debug info
+    #pragma warning(disable:4786)    // identifier was truncated in debug info
 #endif
 
 #ifndef MAKEDEPEND
-# include <string>
+    #include <string>
 #endif
 
 
@@ -21,28 +21,28 @@ namespace XmlRpc
 //! to the client.
 class XmlRpcException
 {
-public:
-    //! Constructor
-    //!   @param message  A descriptive error message
-    //!   @param code     An integer error code
-    XmlRpcException(const std::string& message, int code=-1) :
-        _message(message), _code(code) {}
+    public:
+        //! Constructor
+        //!   @param message  A descriptive error message
+        //!   @param code     An integer error code
+        XmlRpcException(const std::string & message, int code = -1) :
+            _message(message), _code(code) {}
 
-    //! Return the error message.
-    const std::string& getMessage() const
-    {
-        return _message;
-    }
+        //! Return the error message.
+        const std::string & getMessage() const
+        {
+            return _message;
+        }
 
-    //! Return the error code.
-    int getCode() const
-    {
-        return _code;
-    }
+        //! Return the error code.
+        int getCode() const
+        {
+            return _code;
+        }
 
-private:
-    std::string _message;
-    int _code;
+    private:
+        std::string _message;
+        int _code;
 };
 
 }

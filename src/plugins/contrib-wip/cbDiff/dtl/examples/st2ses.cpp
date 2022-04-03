@@ -10,9 +10,8 @@
 using namespace std;
 using namespace dtl;
 
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
-
     if (isFewArgs(argc, 2))
     {
         cerr << "Too few arguments." << endl;
@@ -21,7 +20,6 @@ int main(int argc, char *argv[])
 
     typedef string elem;
     typedef vector< string > sequence;
-
     string s(argv[1]);
 
     if (!isFileExist(s))
@@ -33,6 +31,5 @@ int main(int argc, char *argv[])
     ifstream fs(s.c_str());
     const Ses< elem > ses = Diff< elem, sequence >::composeSesFromStream< ifstream >(fs);
     dtl::Diff< elem, sequence >::printSES(ses);
-
     return 0;
 }

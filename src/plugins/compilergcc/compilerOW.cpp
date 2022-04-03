@@ -38,10 +38,10 @@ Compiler * CompilerOW::CreateCopy()
     return (new CompilerOW(*this));
 }
 
-CompilerCommandGenerator* CompilerOW::GetCommandGenerator(cbProject *project)
+CompilerCommandGenerator * CompilerOW::GetCommandGenerator(cbProject * project)
 {
     // also see hack in: DirectCommands::GetTargetLinkCommands()
-    CompilerOWGenerator *generator = new CompilerOWGenerator;
+    CompilerOWGenerator * generator = new CompilerOWGenerator;
     generator->Init(project);
     return generator;
 }
@@ -55,10 +55,11 @@ AutoDetectResult CompilerOW::AutoDetectInstallationDir()
     if (key.Open())
         // found; read it
         key.QueryValue(wxT("Install Location"), m_MasterPath);*/
-
     if (m_MasterPath.IsEmpty())
         // just a guess; the default installation dir
+    {
         m_MasterPath = wxT("C:\\watcom");
+    }
 
     if (!m_MasterPath.IsEmpty())
     {
@@ -71,18 +72,18 @@ AutoDetectResult CompilerOW::AutoDetectInstallationDir()
         m_ExtraPaths.Add(m_MasterPath + wxFILE_SEP_PATH + wxT("binnt"));
         m_ExtraPaths.Add(m_MasterPath + wxFILE_SEP_PATH + wxT("binw"));
     }
-    wxSetEnv(wxT("WATCOM"), m_MasterPath);
 
+    wxSetEnv(wxT("WATCOM"), m_MasterPath);
     return wxFileExists(m_MasterPath + wxFILE_SEP_PATH + wxT("binnt") + wxFILE_SEP_PATH + m_Programs.C) ? adrDetected : adrGuessed;
 }
 
-void CompilerOW::LoadSettings(const wxString& baseKey)
+void CompilerOW::LoadSettings(const wxString & baseKey)
 {
     Compiler::LoadSettings(baseKey);
     wxSetEnv(wxT("WATCOM"), m_MasterPath);
 }
 
-void CompilerOW::SetMasterPath(const wxString& path)
+void CompilerOW::SetMasterPath(const wxString & path)
 {
     Compiler::SetMasterPath(path);
     wxSetEnv(wxT("WATCOM"), m_MasterPath);

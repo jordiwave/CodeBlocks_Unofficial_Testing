@@ -6,11 +6,11 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #include <wx/txtstrm.h>
@@ -23,37 +23,52 @@
 /// - the Brick is the first of a list of child (a leaf in composite), or
 /// - the brick is the first of a diagram.
 
-NassiInsertBrickBefore::NassiInsertBrickBefore(NassiFileContent *nfc, NassiBrick *brick, NassiBrick *InsrBrick):
-    wxCommand(true, _("Insert Brick") )
+NassiInsertBrickBefore::NassiInsertBrickBefore(NassiFileContent * nfc, NassiBrick * brick, NassiBrick * InsrBrick):
+    wxCommand(true, _("Insert Brick"))
 {
     m_nfc = nfc;
     m_brick = brick;
     m_done = false;
     m_nbrk = InsrBrick;
     m_nlbrk = m_nbrk;
-    while ( m_nlbrk->GetNext() )
+
+    while (m_nlbrk->GetNext())
+    {
         m_nlbrk = m_nlbrk->GetNext();
+    }
 }
 
 NassiInsertBrickBefore::~NassiInsertBrickBefore()
 {
-    if ( !m_done )
+    if (!m_done)
     {
-        if ( m_nbrk != nullptr )
+        if (m_nbrk != nullptr)
+        {
             delete m_nbrk;
+        }
     }
 }
 
 bool NassiInsertBrickBefore::Do()
 {
-    if ( m_done )
-        return(false);
+    if (m_done)
+    {
+        return (false);
+    }
+
     if (!m_brick)
-        return(false);
-    if ( !m_nbrk )
-        return(false);
-    NassiBrick *prev = m_brick->GetPrevious();
-    if ( prev )
+    {
+        return (false);
+    }
+
+    if (!m_nbrk)
+    {
+        return (false);
+    }
+
+    NassiBrick * prev = m_brick->GetPrevious();
+
+    if (prev)
     {
         prev->SetNext(m_nbrk);
         //m_nbrk->SetNext(m_brick);
@@ -62,16 +77,18 @@ bool NassiInsertBrickBefore::Do()
         m_done = true;
         m_nfc->Modify(true);
         m_nfc->NotifyObservers();
-        return(true);
+        return (true);
     }
-    NassiBrick *par = m_brick->GetParent();
-    if ( par )
+
+    NassiBrick * par = m_brick->GetParent();
+
+    if (par)
     {
         //wxMessageDialog dlg(0, _T("has Parent"), _T("Info"));
         //tdlg.ShowModal();
-        for ( wxUint32 n = 0 ; n < par->GetChildCount() ; n++ )
+        for (wxUint32 n = 0 ; n < par->GetChildCount() ; n++)
         {
-            if ( par->GetChild(n) == m_brick ) // both pointers point to the same brick
+            if (par->GetChild(n) == m_brick)   // both pointers point to the same brick
             {
                 par->SetChild(m_nbrk, n);
                 //m_nbrk->SetNext(m_brick);
@@ -82,12 +99,14 @@ bool NassiInsertBrickBefore::Do()
                 m_done = true;
                 m_nfc->Modify(true);
                 m_nfc->NotifyObservers();
-                return(true);
+                return (true);
             }
         }
-        return(false);
+
+        return (false);
     }
-    if ( m_nfc->GetFirstBrick() == m_brick ) // no previos and no parent
+
+    if (m_nfc->GetFirstBrick() == m_brick)   // no previos and no parent
     {
         m_nfc->SetFirstBrick(m_nbrk);
         //m_nbrk->SetNext(m_brick);
@@ -98,63 +117,69 @@ bool NassiInsertBrickBefore::Do()
         m_done = true;
         m_nfc->Modify(true);
         m_nfc->NotifyObservers();
-        return(true);
+        return (true);
     }
 
-    return(false);
+    return (false);
 }
 
 bool NassiInsertBrickBefore::Undo()
 {
-    if ( !m_done)
-        return(false);
-    if ( !m_brick )
-        return(false);
-    NassiBrick *prev = m_nbrk->GetPrevious();
-    if ( prev )
+    if (!m_done)
+    {
+        return (false);
+    }
+
+    if (!m_brick)
+    {
+        return (false);
+    }
+
+    NassiBrick * prev = m_nbrk->GetPrevious();
+
+    if (prev)
     {
         prev->SetNext(m_brick);
         m_brick->SetParent(nullptr);
-
         //m_nbrk->SetNext(nullptr);
         m_nlbrk->SetNext(nullptr);
         m_nbrk->SetPrevious(nullptr);
         m_nbrk->SetParent(nullptr);
-
         m_done = false;
         m_nfc->Modify(true);
         m_nfc->NotifyObservers();
-        return(true);
+        return (true);
     }
-    NassiBrick *par = m_nbrk->GetParent();
-    if ( par )
-    {
-        for ( wxUint32 n = 0 ; n < par->GetChildCount() ; n++ )
-        {
-            if ( par->GetChild(n) == m_nbrk )
-            {
-                par->SetChild(m_brick,n);
-                m_brick->SetPrevious(nullptr);
 
+    NassiBrick * par = m_nbrk->GetParent();
+
+    if (par)
+    {
+        for (wxUint32 n = 0 ; n < par->GetChildCount() ; n++)
+        {
+            if (par->GetChild(n) == m_nbrk)
+            {
+                par->SetChild(m_brick, n);
+                m_brick->SetPrevious(nullptr);
                 m_nbrk->SetPrevious(nullptr);
                 m_nbrk->SetParent(nullptr);
                 //m_nbrk->SetNext(nullptr);
                 m_nlbrk->SetNext(nullptr);
-
                 m_done = false;
                 m_nfc->Modify(true);
                 m_nfc->NotifyObservers();
-                return(true);
+                return (true);
             }
         }
-        return(false);
+
+        return (false);
     }
-    if ( m_nfc->GetFirstBrick() == m_nbrk )
+
+    if (m_nfc->GetFirstBrick() == m_nbrk)
     {
         m_nfc->SetFirstBrick(m_brick);
         m_brick->SetPrevious(nullptr);
         m_brick->SetParent(nullptr);
-
         //m_nbrk->SetNext(nullptr);
         m_nlbrk->SetNext(nullptr);
         m_nbrk->SetPrevious(nullptr);
@@ -162,16 +187,17 @@ bool NassiInsertBrickBefore::Undo()
         m_done = false;
         m_nfc->Modify(true);
         m_nfc->NotifyObservers();
-        return(true);
+        return (true);
     }
-    return(false);
+
+    return (false);
 }
 
 
 /// this command will insert a brick after another brick
 /// nothing to check
-NassiInsertBrickAfter::NassiInsertBrickAfter( NassiFileContent *nfc, NassiBrick *brick, NassiBrick *InsrBrick):
-    wxCommand(true, _("Insert Brick") )
+NassiInsertBrickAfter::NassiInsertBrickAfter(NassiFileContent * nfc, NassiBrick * brick, NassiBrick * InsrBrick):
+    wxCommand(true, _("Insert Brick"))
 {
     m_nfc = nfc;
     m_brick = brick;
@@ -179,27 +205,39 @@ NassiInsertBrickAfter::NassiInsertBrickAfter( NassiFileContent *nfc, NassiBrick 
     m_done = false;
     m_nbrk = InsrBrick;
     m_nlbrk = m_nbrk;
-    while ( m_nlbrk->GetNext() != nullptr )
+
+    while (m_nlbrk->GetNext() != nullptr)
+    {
         m_nlbrk = m_nlbrk->GetNext();
+    }
 }
 
 NassiInsertBrickAfter::~NassiInsertBrickAfter()
 {
-    if ( !m_done )
+    if (!m_done)
     {
-        if ( m_nbrk != nullptr )
+        if (m_nbrk != nullptr)
+        {
             delete m_nbrk;
+        }
     }
 }
 
 bool NassiInsertBrickAfter::Do()
 {
-    if ( m_done )
-        return(false);
-    if ( !m_brick )
-        return(false);
-    NassiBrick *next = m_brick->GetNext();
-    if ( next != nullptr )
+    if (m_done)
+    {
+        return (false);
+    }
+
+    if (!m_brick)
+    {
+        return (false);
+    }
+
+    NassiBrick * next = m_brick->GetNext();
+
+    if (next != nullptr)
     {
         m_brick->SetNext(m_nbrk);
         //m_nbrk->SetNext(next);
@@ -213,18 +251,25 @@ bool NassiInsertBrickAfter::Do()
         m_nlbrk->SetNext(nullptr);
         m_nbrk->SetParent(nullptr);
     }
+
     m_done = true;
     m_nfc->Modify(true);
     m_nfc->NotifyObservers();
-    return(true);
+    return (true);
 }
 
 bool NassiInsertBrickAfter::Undo()
 {
-    if ( !m_done )
-        return(false);
-    if ( !m_brick )
-        return(false);
+    if (!m_done)
+    {
+        return (false);
+    }
+
+    if (!m_brick)
+    {
+        return (false);
+    }
+
     //m_brick->SetNext(m_nbrk->GetNext());
     m_brick->SetNext(m_nlbrk->GetNext());
     //m_nbrk->SetNext(nullptr);
@@ -232,38 +277,49 @@ bool NassiInsertBrickAfter::Undo()
     m_done = false;
     m_nfc->Modify(true);
     m_nfc->NotifyObservers();
-    return(true);
+    return (true);
 }
 
 
 ///this command will insert a brick as the first of a diagram
-NassiInsertFirstBrick::NassiInsertFirstBrick( NassiFileContent *nfc, NassiBrick *InsrBrick,  bool CanUndoIn):
-    wxCommand(CanUndoIn, _("Insert Brick") )
+NassiInsertFirstBrick::NassiInsertFirstBrick(NassiFileContent * nfc, NassiBrick * InsrBrick,  bool CanUndoIn):
+    wxCommand(CanUndoIn, _("Insert Brick"))
 {
     m_nfc = nfc;
     //m_tool = tool;
     m_done = false;
     m_nbrk = InsrBrick;
     m_nlbrk = m_nbrk;
-    while ( m_nlbrk->GetNext() )
+
+    while (m_nlbrk->GetNext())
+    {
         m_nlbrk = m_nlbrk->GetNext();
+    }
 }
 
 NassiInsertFirstBrick::~NassiInsertFirstBrick()
 {
-    if ( !m_done )
+    if (!m_done)
     {
-        if ( m_nbrk != nullptr )
+        if (m_nbrk != nullptr)
+        {
             delete m_nbrk;
+        }
     }
 }
 
 bool NassiInsertFirstBrick::Do()
 {
-    if ( m_done )
-        return(false);
-    if ( m_nbrk == nullptr )
-        return(false);
+    if (m_done)
+    {
+        return (false);
+    }
+
+    if (m_nbrk == nullptr)
+    {
+        return (false);
+    }
+
     m_nbrk->SetPrevious(nullptr);
     m_nbrk->SetParent(nullptr);
     m_nfc->SetFirstBrick(m_nbrk);
@@ -272,13 +328,16 @@ bool NassiInsertFirstBrick::Do()
     m_done = true;
     m_nfc->Modify(true);
     m_nfc->NotifyObservers();
-    return(true);
+    return (true);
 }
 
 bool NassiInsertFirstBrick::Undo()
 {
-    if ( !m_done )
-        return(false);
+    if (!m_done)
+    {
+        return (false);
+    }
+
     m_nbrk = m_nfc->GetFirstBrick();
     m_nfc->SetFirstBrick(nullptr);
     //m_nbrk->SetNext(nullptr);
@@ -287,13 +346,13 @@ bool NassiInsertFirstBrick::Undo()
     m_done = false;
     m_nfc->Modify(true);
     m_nfc->NotifyObservers();
-    return(true);
+    return (true);
 }
 
 
 ///this command will add a child a new case of a switch command
-NassiAddChildIndicatorCommand::NassiAddChildIndicatorCommand( NassiFileContent *nfc, NassiBrick *brick, NassiBrick *InsrBrick, wxUint32 ChildAddNumber, wxString _strc, wxString _strs ):
-    wxCommand(true, _("Insert Brick") ),
+NassiAddChildIndicatorCommand::NassiAddChildIndicatorCommand(NassiFileContent * nfc, NassiBrick * brick, NassiBrick * InsrBrick, wxUint32 ChildAddNumber, wxString _strc, wxString _strs):
+    wxCommand(true, _("Insert Brick")),
     m_nfc(nfc),
     m_brick(brick),
     m_done(false),
@@ -303,26 +362,32 @@ NassiAddChildIndicatorCommand::NassiAddChildIndicatorCommand( NassiFileContent *
     strc(_strc),
     strs(_strs)
 {
-    if ( m_nlbrk )
-        while ( m_nlbrk->GetNext() )
+    if (m_nlbrk)
+        while (m_nlbrk->GetNext())
+        {
             m_nlbrk = m_nlbrk->GetNext();
+        }
 }
 
 NassiAddChildIndicatorCommand::~NassiAddChildIndicatorCommand()
 {
-    if ( !m_done && m_nbrk )
+    if (!m_done && m_nbrk)
+    {
         delete m_nbrk;
+    }
 }
 
 bool NassiAddChildIndicatorCommand::Do()
 {
-    if ( m_done || !m_brick || (m_ChildAddNumber > m_brick->GetChildCount()) ) return false;
+    if (m_done || !m_brick || (m_ChildAddNumber > m_brick->GetChildCount()))
+    {
+        return false;
+    }
 
-    m_brick->AddChild( m_ChildAddNumber );
-    m_brick->SetChild( m_nbrk, m_ChildAddNumber );
-
-    m_brick->SetTextByNumber( strc, 2*(m_ChildAddNumber+1) );
-    m_brick->SetTextByNumber( strs, 2*(m_ChildAddNumber+1)+1 );
+    m_brick->AddChild(m_ChildAddNumber);
+    m_brick->SetChild(m_nbrk, m_ChildAddNumber);
+    m_brick->SetTextByNumber(strc, 2 * (m_ChildAddNumber + 1));
+    m_brick->SetTextByNumber(strs, 2 * (m_ChildAddNumber + 1) + 1);
     m_done = true;
     m_nfc->Modify(true);
     m_nfc->NotifyObservers();
@@ -331,7 +396,11 @@ bool NassiAddChildIndicatorCommand::Do()
 
 bool NassiAddChildIndicatorCommand::Undo()
 {
-    if ( !m_done ||  !m_brick || m_ChildAddNumber >= m_brick->GetChildCount() ) return false;
+    if (!m_done ||  !m_brick || m_ChildAddNumber >= m_brick->GetChildCount())
+    {
+        return false;
+    }
+
     m_brick->SetChild(nullptr, m_ChildAddNumber);
     m_brick->RemoveChild(m_ChildAddNumber);
     m_done = false;
@@ -340,8 +409,8 @@ bool NassiAddChildIndicatorCommand::Undo()
     return true;
 }
 
-NassiInsertChildBrickCommand::NassiInsertChildBrickCommand( NassiFileContent *nfc, NassiBrick *brick, NassiBrick *InsrBrick, wxUint32 ChildNumber):
-    wxCommand(true, _("Insert Brick") ),
+NassiInsertChildBrickCommand::NassiInsertChildBrickCommand(NassiFileContent * nfc, NassiBrick * brick, NassiBrick * InsrBrick, wxUint32 ChildNumber):
+    wxCommand(true, _("Insert Brick")),
     m_nfc(nfc),
     m_brick(brick),
     m_done(false),
@@ -349,51 +418,66 @@ NassiInsertChildBrickCommand::NassiInsertChildBrickCommand( NassiFileContent *nf
     m_nlbrk(InsrBrick),
     m_childNumber(ChildNumber)
 {
-    if ( m_nlbrk )
-        while ( m_nlbrk->GetNext() )
+    if (m_nlbrk)
+        while (m_nlbrk->GetNext())
+        {
             m_nlbrk = m_nlbrk->GetNext();
+        }
 }
 
 NassiInsertChildBrickCommand::~NassiInsertChildBrickCommand()
 {
-    if ( !m_done && m_nbrk != nullptr )
+    if (!m_done && m_nbrk != nullptr)
+    {
         delete m_nbrk;
+    }
 }
 
 bool NassiInsertChildBrickCommand::Do()
 {
-    if ( m_done || !m_brick || m_childNumber >= m_brick->GetChildCount() )
+    if (m_done || !m_brick || m_childNumber >= m_brick->GetChildCount())
+    {
         return false;
-    m_brick->SetChild( m_nbrk, m_childNumber );
+    }
+
+    m_brick->SetChild(m_nbrk, m_childNumber);
     m_nbrk->SetParent(m_brick);
     m_nlbrk->SetNext(nullptr);
     m_nbrk->SetPrevious(nullptr);
-
     m_done = true;
     m_nfc->Modify(true);
     m_nfc->NotifyObservers();
-    return(true);
+    return (true);
 }
 
 bool NassiInsertChildBrickCommand::Undo()
 {
-    if ( ! m_done )
-        return(false);
-    if ( !m_brick )
-        return(false);
-    if ((m_childNumber >= m_brick->GetChildCount())  )
-        return(false);
+    if (! m_done)
+    {
+        return (false);
+    }
+
+    if (!m_brick)
+    {
+        return (false);
+    }
+
+    if ((m_childNumber >= m_brick->GetChildCount()))
+    {
+        return (false);
+    }
+
     m_brick->SetChild(nullptr, m_childNumber);
     m_done = false;
     m_nfc->Modify(true);
     m_nfc->NotifyObservers();
-    return(true);
+    return (true);
 }
 
 
 /// used command to change text
-NassiEditTextCommand::NassiEditTextCommand( NassiFileContent *nfc, NassiBrick *brick, const wxString &str, wxInt32 nmbr):
-    wxCommand(true, _("Change Text") )
+NassiEditTextCommand::NassiEditTextCommand(NassiFileContent * nfc, NassiBrick * brick, const wxString & str, wxInt32 nmbr):
+    wxCommand(true, _("Change Text"))
 {
     m_nfc = nfc;
     m_str = str;
@@ -406,26 +490,27 @@ NassiEditTextCommand::~NassiEditTextCommand()
 
 bool NassiEditTextCommand::Do()
 {
-    if ( m_brick )
+    if (m_brick)
     {
         wxString str;
         str = *(m_brick->GetTextByNumber(m_nmbr));
-        m_brick->SetTextByNumber(m_str,m_nmbr);
+        m_brick->SetTextByNumber(m_str, m_nmbr);
         m_str = str;
         m_nfc->Modify(true);
         m_nfc->NotifyObservers();
         return true;
     }
+
     return false;
 }
 
 bool NassiEditTextCommand::Undo()
 {
-    return(Do());
+    return (Do());
 }
 
 /// will delete a brick (and the following ,first till (including) last )
-NassiDeleteCommand::NassiDeleteCommand( NassiFileContent *nfc, NassiBrick *first, NassiBrick *last):
+NassiDeleteCommand::NassiDeleteCommand(NassiFileContent * nfc, NassiBrick * first, NassiBrick * last):
     wxCommand(true, _("Delete selected bricks"))
 {
     m_nfc = nfc;
@@ -442,120 +527,131 @@ NassiDeleteCommand::NassiDeleteCommand( NassiFileContent *nfc, NassiBrick *first
 
 NassiDeleteCommand::~NassiDeleteCommand()
 {
-    if ( m_done )
+    if (m_done)
     {
         m_last->SetNext(nullptr);
-        if ( m_first )
+
+        if (m_first)
+        {
             delete m_first;
+        }
     }
 }
 
 bool NassiDeleteCommand::Do()
 {
-    if ( !m_done && m_first && m_last )
+    if (!m_done && m_first && m_last)
     {
-        if ( m_first->GetPrevious() )
+        if (m_first->GetPrevious())
         {
             m_childnmbr = -1;
             parPrev = m_first->GetPrevious();
-            parPrev->SetNext( m_last->GetNext() );
+            parPrev->SetNext(m_last->GetNext());
             m_last->SetNext(nullptr);
-
             m_nfc->Modify(true);
             m_nfc->NotifyObservers();
             m_done = true;
-            return(true);
+            return (true);
         }
         else
         {
-            if ( m_first->GetParent() )
+            if (m_first->GetParent())
             {
                 parPrev = m_first->GetParent();
-                for ( wxUint32 n = 0 ; n < parPrev->GetChildCount() ; n++ )
+
+                for (wxUint32 n = 0 ; n < parPrev->GetChildCount() ; n++)
                 {
-                    if ( parPrev->GetChild(n) == m_first)
+                    if (parPrev->GetChild(n) == m_first)
                     {
                         m_childnmbr = n;
-                        strc = *(parPrev->GetTextByNumber( 2*(n+1) ));
-                        strs = *(parPrev->GetTextByNumber( 2*(n+1)+1 ));
+                        strc = *(parPrev->GetTextByNumber(2 * (n + 1)));
+                        strs = *(parPrev->GetTextByNumber(2 * (n + 1) + 1));
                         parPrev->SetChild(m_last->GetNext(), n);
-                        if ( ! m_last->GetNext() ) // for a switch Brick:
+
+                        if (! m_last->GetNext())   // for a switch Brick:
                         {
                             //parPrev->RemoveChild(n);
                         }
+
                         m_last->SetNext(nullptr);
                         m_nfc->Modify(true);
                         m_nfc->NotifyObservers();
                         m_done = true;
-                        return(true);
+                        return (true);
                     }
                 }
             }
             else
             {
                 m_childnmbr = -1;
-                NassiBrick *newfirst = m_last->GetNext();
-                if ( newfirst )
+                NassiBrick * newfirst = m_last->GetNext();
+
+                if (newfirst)
                 {
-                    newfirst->SetPrevious( nullptr );
-                    newfirst->SetParent( nullptr );
+                    newfirst->SetPrevious(nullptr);
+                    newfirst->SetParent(nullptr);
                 }
-                m_nfc->SetFirstBrick( newfirst );
+
+                m_nfc->SetFirstBrick(newfirst);
                 m_last->SetNext(nullptr);
                 m_nfc->Modify(true);
                 m_nfc->NotifyObservers();
                 m_done = true;
-                return(true);
+                return (true);
             }
         }
     }
+
     m_done = false;
     return false ;
 }
 
 bool NassiDeleteCommand::Undo()
 {
-    if ( m_done )
+    if (m_done)
     {
-        if ( m_first->GetPrevious() && parPrev )
+        if (m_first->GetPrevious() && parPrev)
         {
             m_last->SetNext(parPrev->GetNext());
             parPrev->SetNext(m_first);
             m_nfc->Modify(true);
             m_nfc->NotifyObservers();
             m_done = false;
-            return(true);
-        }
-        else if ( m_first->GetParent() && parPrev )
-        {
-            if ( ! m_last->GetNext() )
-            {
-                //parPrev->AddChild(m_childnmbr);
-            }
-            m_last->SetNext(parPrev->GetChild(m_childnmbr));
-            parPrev->SetChild( m_first, m_childnmbr);
-            parPrev->SetTextByNumber(strc, 2*(m_childnmbr+1) );
-            parPrev->SetTextByNumber(strs, 2*(m_childnmbr+1)+1 );
-            m_nfc->Modify(true);
-            m_nfc->NotifyObservers();
-            m_done = false;
-            return(true);
+            return (true);
         }
         else
-        {
-            NassiBrick *oldfirst = m_nfc->GetFirstBrick();
-            m_last->SetNext(oldfirst);
-            m_nfc->SetFirstBrick(m_first);
-            m_nfc->Modify(true);
-            m_nfc->NotifyObservers();
-            m_done = false;
-            return(true);
-        }
+            if (m_first->GetParent() && parPrev)
+            {
+                if (! m_last->GetNext())
+                {
+                    //parPrev->AddChild(m_childnmbr);
+                }
+
+                m_last->SetNext(parPrev->GetChild(m_childnmbr));
+                parPrev->SetChild(m_first, m_childnmbr);
+                parPrev->SetTextByNumber(strc, 2 * (m_childnmbr + 1));
+                parPrev->SetTextByNumber(strs, 2 * (m_childnmbr + 1) + 1);
+                m_nfc->Modify(true);
+                m_nfc->NotifyObservers();
+                m_done = false;
+                return (true);
+            }
+            else
+            {
+                NassiBrick * oldfirst = m_nfc->GetFirstBrick();
+                m_last->SetNext(oldfirst);
+                m_nfc->SetFirstBrick(m_first);
+                m_nfc->Modify(true);
+                m_nfc->NotifyObservers();
+                m_done = false;
+                return (true);
+            }
     }
-    return( false );
+
+    return (false);
 }
 
-NassiDeleteChildRootCommand::NassiDeleteChildRootCommand(NassiFileContent *nfc, NassiBrick *parent, wxInt32 childNumber):
+NassiDeleteChildRootCommand::NassiDeleteChildRootCommand(NassiFileContent * nfc, NassiBrick * parent, wxInt32 childNumber):
     wxCommand(true, _("Delete selected bricks")),
     m_nfc(nfc),
     m_parent(parent),
@@ -563,33 +659,41 @@ NassiDeleteChildRootCommand::NassiDeleteChildRootCommand(NassiFileContent *nfc, 
     m_delcmd(0),
     m_childNmbr(childNumber)
 {
-    m_strC = *parent->GetTextByNumber( 2*(childNumber+1) );
-    m_strS = *parent->GetTextByNumber( 2*(childNumber+1)+1 );
+    m_strC = *parent->GetTextByNumber(2 * (childNumber + 1));
+    m_strS = *parent->GetTextByNumber(2 * (childNumber + 1) + 1);
 }
 
 NassiDeleteChildRootCommand::~NassiDeleteChildRootCommand()
 {
-    if ( m_delcmd )
+    if (m_delcmd)
+    {
         delete m_delcmd;
+    }
 }
 
 bool NassiDeleteChildRootCommand::Do()
 {
-    if ( !m_done )
+    if (!m_done)
     {
         m_done = true;
-        if ( !m_delcmd )
+
+        if (!m_delcmd)
         {
             delete m_delcmd;
             m_delcmd = 0;
         }
 
-        NassiBrick *first = m_parent->GetChild(m_childNmbr);
-        NassiBrick *last = first;
-        if ( first )
+        NassiBrick * first = m_parent->GetChild(m_childNmbr);
+        NassiBrick * last = first;
+
+        if (first)
         {
-            while ( last->GetNext() ) last = last->GetNext();
-            m_delcmd = new NassiDeleteCommand( m_nfc, first, last);
+            while (last->GetNext())
+            {
+                last = last->GetNext();
+            }
+
+            m_delcmd = new NassiDeleteCommand(m_nfc, first, last);
             m_done = m_delcmd->Do();
         }
 
@@ -603,18 +707,23 @@ bool NassiDeleteChildRootCommand::Do()
 
 bool NassiDeleteChildRootCommand::Undo()
 {
-    if ( m_done )
+    if (m_done)
     {
         m_parent->AddChild(m_childNmbr);
-        m_parent->SetTextByNumber(m_strC, 2*( m_childNmbr + 1 ) );
-        m_parent->SetTextByNumber(m_strS, 2*( m_childNmbr + 1 ) + 1 );
+        m_parent->SetTextByNumber(m_strC, 2 * (m_childNmbr + 1));
+        m_parent->SetTextByNumber(m_strS, 2 * (m_childNmbr + 1) + 1);
         m_nfc->Modify(true);
         m_nfc->NotifyObservers();
         m_done = false;
-        if ( m_delcmd )
+
+        if (m_delcmd)
+        {
             return m_delcmd->Undo();
+        }
+
         return true;
     }
+
     return false;
 }
 
@@ -622,7 +731,7 @@ bool NassiDeleteChildRootCommand::Undo()
 /// moving a brick will add a copy of the brick to move and
 /// deletes the original brick.
 ///////////////////////////
-NassiMoveBrick::NassiMoveBrick( wxCommand *addCmd, wxCommand *delCmd):
+NassiMoveBrick::NassiMoveBrick(wxCommand * addCmd, wxCommand * delCmd):
     wxCommand(true, _("Drag n Drop Brick"))
 {
     m_delCmd = delCmd;
@@ -631,34 +740,59 @@ NassiMoveBrick::NassiMoveBrick( wxCommand *addCmd, wxCommand *delCmd):
 
 NassiMoveBrick::~NassiMoveBrick()
 {
-    if ( m_addCmd )
+    if (m_addCmd)
+    {
         delete m_addCmd;
-    if ( m_delCmd )
+    }
+
+    if (m_delCmd)
+    {
         delete m_delCmd;
+    }
 }
 
 bool NassiMoveBrick::Do()
 {
-    if ( ! m_addCmd )
-        return(false);
+    if (! m_addCmd)
+    {
+        return (false);
+    }
+
     bool res = true;
-    if ( res )
+
+    if (res)
+    {
         res = m_addCmd->Do();
-    if ( m_delCmd )
+    }
+
+    if (m_delCmd)
+    {
         res = m_delCmd->Do();
-    return( res );
+    }
+
+    return (res);
 }
 
 bool NassiMoveBrick::Undo()
 {
-    if ( ! m_addCmd )
-        return(false);
+    if (! m_addCmd)
+    {
+        return (false);
+    }
+
     bool res = true;
-    if ( m_delCmd )
+
+    if (m_delCmd)
+    {
         res = m_delCmd->Undo();
-    if ( res )
+    }
+
+    if (res)
+    {
         res = m_addCmd->Undo();
-    return( res );
+    }
+
+    return (res);
 }
 
 /*NassiAddFunctionCommand::NassiAddFunctionCommand( NassiDocument *doc, wxInt32 nmbr):

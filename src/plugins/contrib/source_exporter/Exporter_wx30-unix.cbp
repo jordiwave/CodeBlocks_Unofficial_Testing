@@ -3,7 +3,6 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="Exporter wx3.0.x (Unix)" />
-		<Option pch_mode="0" />
 		<Option default_target="default" />
 		<Option compiler="gcc" />
 		<Build>
@@ -144,12 +143,6 @@
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/include/wx/pdfdc.h">
-			<Option target="wxPdfDocument" />
-		</Unit>
-		<Unit filename="wxPdfDocument/include/wx/pdfdc28.h">
-			<Option target="wxPdfDocument" />
-		</Unit>
-		<Unit filename="wxPdfDocument/include/wx/pdfdc29.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/include/wx/pdfdoc.h">
@@ -315,12 +308,6 @@
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/src/pdfdc.cpp">
-			<Option target="wxPdfDocument" />
-		</Unit>
-		<Unit filename="wxPdfDocument/src/pdfdc28.inc">
-			<Option target="wxPdfDocument" />
-		</Unit>
-		<Unit filename="wxPdfDocument/src/pdfdc29.inc">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/src/pdfdecode.cpp">

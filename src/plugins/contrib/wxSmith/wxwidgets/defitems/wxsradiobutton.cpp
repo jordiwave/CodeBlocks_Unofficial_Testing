@@ -25,9 +25,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsRadioButton> Reg(_T("RadioButton"),wxsTWidget,_T("Standard"),170);
+wxsRegisterItem<wxsRadioButton> Reg(_T("RadioButton"), wxsTWidget, _T("Standard"), 170);
 
-WXS_ST_BEGIN(wxsRadioButtonStyles,_T(""))
+WXS_ST_BEGIN(wxsRadioButtonStyles, _T(""))
 WXS_ST_CATEGORY("wxRadioButton")
 WXS_ST(wxRB_GROUP)
 WXS_ST(wxRB_SINGLE)
@@ -36,11 +36,11 @@ WXS_ST_END()
 
 
 WXS_EV_BEGIN(wxsRadioButtonEvents)
-WXS_EVI(EVT_RADIOBUTTON,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEvent,Select)
+WXS_EVI(EVT_RADIOBUTTON, wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEvent, Select)
 WXS_EV_END()
 }
 
-wxsRadioButton::wxsRadioButton(wxsItemResData* Data):
+wxsRadioButton::wxsRadioButton(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -53,34 +53,39 @@ wxsRadioButton::wxsRadioButton(wxsItemResData* Data):
 
 void wxsRadioButton::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/radiobut.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.wx_str());
-        if ( IsSelected ) Codef( _T("%ASetValue(%b);\n"), true);
-        BuildSetupWindowCode();
-        return;
-    }
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/radiobut.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"), Label.wx_str());
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsRadioButton::OnBuildCreatingCode"),GetLanguage());
-    }
+            if (IsSelected)
+            {
+                Codef(_T("%ASetValue(%b);\n"), true);
+            }
+
+            BuildSetupWindowCode();
+            return;
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsRadioButton::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
-wxObject* wxsRadioButton::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsRadioButton::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxRadioButton* Preview = new wxRadioButton(Parent,GetId(),Label,Pos(Parent),Size(Parent),Style());
+    wxRadioButton * Preview = new wxRadioButton(Parent, GetId(), Label, Pos(Parent), Size(Parent), Style());
     Preview->SetValue(IsSelected);
-    return SetupWindow(Preview,Flags);
+    return SetupWindow(Preview, Flags);
 }
 
 void wxsRadioButton::OnEnumWidgetProperties(cb_unused long Flags)
 {
-    WXS_SHORT_STRING(wxsRadioButton,Label,_("Label"),_T("label"),_T(""),true)
-    WXS_BOOL(wxsRadioButton,IsSelected,_("Is Selected"),_T("selected"),false)
+    WXS_SHORT_STRING(wxsRadioButton, Label, _("Label"), _T("label"), _T(""), true)
+    WXS_BOOL(wxsRadioButton, IsSelected, _("Is Selected"), _T("selected"), false)
 }

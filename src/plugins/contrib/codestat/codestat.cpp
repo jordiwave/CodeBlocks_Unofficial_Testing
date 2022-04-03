@@ -8,15 +8,15 @@
   **************************************************************/
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/fs_zip.h>
-#include <wx/intl.h>
-#include <wx/string.h>
-#include <wx/xrc/xmlres.h>
-#include "cbproject.h"
-#include "configmanager.h"
-#include "manager.h"
-#include "logmanager.h"
-#include "projectmanager.h"
+    #include <wx/fs_zip.h>
+    #include <wx/intl.h>
+    #include <wx/string.h>
+    #include <wx/xrc/xmlres.h>
+    #include "cbproject.h"
+    #include "configmanager.h"
+    #include "manager.h"
+    #include "logmanager.h"
+    #include "projectmanager.h"
 #endif
 #include "codestat.h"
 #include "codestatconfig.h"
@@ -31,7 +31,7 @@ PluginRegistrant<CodeStat> reg(_T("CodeStat"));
 
 CodeStat::CodeStat()
 {
-    if(!Manager::LoadResource(_T("codestat.zip")))
+    if (!Manager::LoadResource(_T("codestat.zip")))
     {
         NotifyMissingFile(_T("codestat.zip"));
     }
@@ -39,7 +39,6 @@ CodeStat::CodeStat()
 
 CodeStat::~CodeStat()
 {
-
 }
 
 void CodeStat::OnAttach()
@@ -63,13 +62,15 @@ void CodeStat::OnRelease(bool /*appShutDown*/)
 
 /** Open the plugin configuration panel.
  */
-cbConfigurationPanel* CodeStat::GetConfigurationPanel(wxWindow* parent)
+cbConfigurationPanel * CodeStat::GetConfigurationPanel(wxWindow * parent)
 {
     // if not attached, exit
     if (!IsAttached())
+    {
         return 0;
+    }
 
-    CodeStatConfigDlg* ConfigDialog = new CodeStatConfigDlg(parent);
+    CodeStatConfigDlg * ConfigDialog = new CodeStatConfigDlg(parent);
     return ConfigDialog;
 }
 
@@ -80,9 +81,12 @@ int CodeStat::Execute()
 {
     // if not attached, exit
     if (!IsAttached())
+    {
         return -1;
+    }
 
-    const cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+    const cbProject * project = Manager::Get()->GetProjectManager()->GetActiveProject();
+
     // if no project open, exit
     if (!project)
     {
@@ -93,15 +97,16 @@ int CodeStat::Execute()
     }
 
     m_dlg = new CodeStatExecDlg(Manager::Get()->GetAppWindow());
-
     // Load the language settings and launch the main function
     LanguageDef languages[NB_FILETYPES_MAX];
     int nb_languages = LoadSettings(languages);
     int dlgReturnCode = 0;
-    if(m_dlg->Execute(languages,nb_languages) != 0)
+
+    if (m_dlg->Execute(languages, nb_languages) != 0)
     {
         dlgReturnCode = -1;
     }
+
     m_dlg->Destroy();
     return dlgReturnCode;
 } // end of Execute

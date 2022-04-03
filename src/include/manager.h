@@ -10,9 +10,9 @@
 #include <vector>
 
 #ifndef WX_PRECOMP
-#   ifdef __WXMSW__
-#       include <wx/msw/wrapwin.h>  // Needed to prevent Yield define bug.
-#   endif
+    #ifdef __WXMSW__
+        #include <wx/msw/wrapwin.h>  // Needed to prevent Yield define bug.
+    #endif
 #endif
 #include <wx/event.h>
 #include <wx/cmdline.h>
@@ -47,222 +47,227 @@ class wxToolBarAddOnXmlHandler;
 
 class DLLIMPORT Manager
 {
-    Manager();
-    ~Manager();
+        Manager();
+        ~Manager();
 
-    void OnMenu(wxCommandEvent& event);
+        void OnMenu(wxCommandEvent & event);
 
-public:
-    static void SetAppStartedUp(bool app_started_up);
-    static void SetAppShuttingDown(bool app_shutting_down);
-    static void SetBatchBuild(bool is_batch);
-    static bool IsBatchBuild()
-    {
-        return m_IsBatch;
-    };
-    static void SetHeadlessBuild(bool is_headlessbuild);
-    static bool IsHeadlessBuild()
-    {
-        return m_IsHeadlessBuild;
-    };
-    static bool IsBatchHeadlessBuild()
-    {
-        return m_IsBatch && m_IsHeadlessBuild;
-    };
-    /// Blocks/unblocks Manager::Yield(). Be careful when using it. Actually, do *not* use it ;)
-    static void BlockYields(bool block);
-    /// Whenever you need to call wxYield(), call Manager::Yield(). It's safer.
-    static void Yield();
-    static void ProcessPendingEvents();
-    static void Shutdown();
+    public:
+        static void SetAppStartedUp(bool app_started_up);
+        static void SetAppShuttingDown(bool app_shutting_down);
+        static void SetBatchBuild(bool is_batch);
+        static bool IsBatchBuild()
+        {
+            return m_IsBatch;
+        };
+        static void SetHeadlessBuild(bool is_headlessbuild);
+        static bool IsHeadlessBuild()
+        {
+            return m_IsHeadlessBuild;
+        };
+        static bool IsBatchHeadlessBuild()
+        {
+            return m_IsBatch && m_IsHeadlessBuild;
+        };
+        /// Blocks/unblocks Manager::Yield(). Be careful when using it. Actually, do *not* use it ;)
+        static void BlockYields(bool block);
+        /// Whenever you need to call wxYield(), call Manager::Yield(). It's safer.
+        static void Yield();
+        static void ProcessPendingEvents();
+        static void Shutdown();
 
-    bool ProcessEvent(CodeBlocksEvent&       event);
-    bool ProcessEvent(CodeBlocksDockEvent&   event);
-    bool ProcessEvent(CodeBlocksLayoutEvent& event);
-    bool ProcessEvent(CodeBlocksLogEvent&    event);
-
-
-    /** Use Manager::Get() to get a pointer to its instance
-     * Manager::Get() is guaranteed to never return an invalid pointer.
-     */
-    static Manager* Get();
-
-    /** Never, EVER, call this function! It is the last function called on shutdown.... */
-    static void Free();
-
-    wxFrame*  GetAppFrame()  const;
-    wxWindow* GetAppWindow() const;
-
-    static bool IsAppShuttingDown();
-    static bool IsAppStartedUp();
-
-    /** Functions returning pointers to the respective sub-manager instances.
-     * During application startup as well as during runtime, these functions will always return a valid pointer.
-     * During application shutdown, these functions will continue to return a valid pointer until the requested manager shuts down.
-     * From that point, the below functions will return null. If there is any chance that your code might execute
-     * during application shutdown, you MUST check for a null pointer.
-     * The one notable exception to this rule is ConfigManager, which has the same lifetime as Manager itself.
-     *
-     * The order of destruction is:
-     * ----------------------------
-     *   ToolsManager,       TemplateManager, PluginManager,
-     *   ScriptingManager,   ProjectManager,  EditorManager,
-     *   PersonalityManager, MacrosManager,   UserVariableManager,
-     *   LogManager
-     *   The ConfigManager is destroyed immediately before the application terminates, so it can be
-     *   considered being omnipresent.
-     *
-     * For plugin developers, this means that most managers (except for the ones you probably don't use anyway)
-     * will be available throughout the entire lifetime of your plugins.
-     */
-
-    ProjectManager*      GetProjectManager()                          const;
-    EditorManager*       GetEditorManager()                           const;
-    LogManager*          GetLogManager()                              const;
-    PluginManager*       GetPluginManager()                           const;
-    ToolsManager*        GetToolsManager()                            const;
-    MacrosManager*       GetMacrosManager()                           const;
-    PersonalityManager*  GetPersonalityManager()                      const;
-    UserVariableManager* GetUserVariableManager()                     const;
-    ScriptingManager*    GetScriptingManager()                        const;
-    ConfigManager*       GetConfigManager(const wxString& name_space) const;
-    FileManager*         GetFileManager()                             const;
-    DebuggerManager*     GetDebuggerManager()                         const;
-    ColourManager*       GetColourManager()                           const;
-    CCManager*           GetCCManager()                               const;
+        bool ProcessEvent(CodeBlocksEvent    &   event);
+        bool ProcessEvent(CodeBlocksDockEvent  & event);
+        bool ProcessEvent(CodeBlocksLayoutEvent & event);
+        bool ProcessEvent(CodeBlocksLogEvent  &  event);
 
 
-    /// Loads XRC file(s) using data_path
-    static void LoadXRC(wxString relpath);
-    static bool LoadResource(const wxString& file);
+        /** Use Manager::Get() to get a pointer to its instance
+         * Manager::Get() is guaranteed to never return an invalid pointer.
+         */
+        static Manager * Get();
 
-    /// Loads Menubar from XRC
-    static wxMenuBar* LoadMenuBar(wxString resid, bool createonfailure = false);
-    /// Loads Menu from XRC
-    static wxMenu*    LoadMenu(wxString menu_id, bool createonfailure = false);
+        /** Never, EVER, call this function! It is the last function called on shutdown.... */
+        static void Free();
 
-    // Do not use this, use Get()
-    static Manager* Get(wxFrame* appWindow);
+        wxFrame * GetAppFrame()  const;
+        wxWindow * GetAppWindow() const;
 
-    wxToolBar* CreateEmptyToolbar();
-    static void AddonToolBar(wxToolBar* toolBar,wxString resid);
-    static void SetToolbarHandler(wxToolBarAddOnXmlHandler *handler);
+        static bool IsAppShuttingDown();
+        static bool IsAppStartedUp();
 
-    enum UIComponent
-    {
-        Toolbars,
-        Menus,
-        InfoPaneNotebooks,
-        Main,
+        /** Functions returning pointers to the respective sub-manager instances.
+         * During application startup as well as during runtime, these functions will always return a valid pointer.
+         * During application shutdown, these functions will continue to return a valid pointer until the requested manager shuts down.
+         * From that point, the below functions will return null. If there is any chance that your code might execute
+         * during application shutdown, you MUST check for a null pointer.
+         * The one notable exception to this rule is ConfigManager, which has the same lifetime as Manager itself.
+         *
+         * The order of destruction is:
+         * ----------------------------
+         *   ToolsManager,       TemplateManager, PluginManager,
+         *   ScriptingManager,   ProjectManager,  EditorManager,
+         *   PersonalityManager, MacrosManager,   UserVariableManager,
+         *   LogManager
+         *   The ConfigManager is destroyed immediately before the application terminates, so it can be
+         *   considered being omnipresent.
+         *
+         * For plugin developers, this means that most managers (except for the ones you probably don't use anyway)
+         * will be available throughout the entire lifetime of your plugins.
+         */
 
-        Last // Just a marker for the last element
-    };
+        ProjectManager   *   GetProjectManager()                          const;
+        EditorManager    *   GetEditorManager()                           const;
+        LogManager     *     GetLogManager()                              const;
+        PluginManager    *   GetPluginManager()                           const;
+        ToolsManager    *    GetToolsManager()                            const;
+        MacrosManager    *   GetMacrosManager()                           const;
+        PersonalityManager * GetPersonalityManager()                      const;
+        UserVariableManager * GetUserVariableManager()                     const;
+        ScriptingManager  *  GetScriptingManager()                        const;
+        ConfigManager    *   GetConfigManager(const wxString & name_space) const;
+        FileManager     *    GetFileManager()                             const;
+        DebuggerManager   *  GetDebuggerManager()                         const;
+        ColourManager    *   GetColourManager()                           const;
+        CCManager      *     GetCCManager()                               const;
 
-    /// Sets the global variable which stores the size of images for the given UI component.
-    /// @note If you're not in app.cpp or main.cpp DO NOT call this!
-    void SetImageSize(int size, UIComponent component);
-    /// @return The size in pixels of images in the specified UI component.
-    int GetImageSize(UIComponent component) const;
 
-    /// Sets the global variable which stores the scale factor for the given UI component.
-    /// @note If you're not in app.cpp or main.cpp DO NOT call this!
-    void SetUIScaleFactor(double scaleFactor, UIComponent component);
-    /// @return The scale factor of the specified UI component.
-    double GetUIScaleFactor(UIComponent component) const;
+        /// Loads XRC file(s) using data_path
+        static void LoadXRC(wxString relpath);
+        static bool LoadResource(const wxString & file);
 
-    static wxCmdLineParser* GetCmdLineParser();
+        /// Loads Menubar from XRC
+        static wxMenuBar * LoadMenuBar(wxString resid, bool createonfailure = false);
+        /// Loads Menu from XRC
+        static wxMenu  *  LoadMenu(wxString menu_id, bool createonfailure = false);
 
-    // event sinks
-    void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksEvent>*       functor);
-    void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksDockEvent>*   functor);
-    void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLayoutEvent>* functor);
-    void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLogEvent>*    functor);
-    void RemoveAllEventSinksFor(void* owner);
+        // Do not use this, use Get()
+        static Manager * Get(wxFrame * appWindow);
 
-    /// Returns pointer to the search result logger, might be nullptr or hidden.
-    cbSearchResultsLog* GetSearchResultLogger() const
-    {
-        return m_SearchResultLog;
-    }
-    /// Sets the pointer to the search result logger, users must not call this method.
-    void SetSearchResultLogger(cbSearchResultsLog *log)
-    {
-        m_SearchResultLog = log;
-    }
+        wxToolBar * CreateEmptyToolbar();
+        static void AddonToolBar(wxToolBar * toolBar, wxString resid);
+        static void SetToolbarHandler(wxToolBarAddOnXmlHandler * handler);
 
-private:
-    wxFrame*               m_pAppWindow;
-    static bool            m_AppShuttingDown;
-    static bool            m_AppStartedUp;
-    static bool            m_BlockYields;
-    static bool            m_IsBatch;
-    static bool            m_IsHeadlessBuild;
-    static wxCmdLineParser m_CmdLineParser;
-    static wxToolBarAddOnXmlHandler *m_ToolbarHandler;
+        enum UIComponent
+        {
+            Toolbars,
+            Menus,
+            InfoPaneNotebooks,
+            Main,
 
-    int m_ImageSizes[UIComponent::Last];
-    double m_UIScaleFactor[UIComponent::Last];
+            Last // Just a marker for the last element
+        };
 
-    // event sinks
-    typedef std::vector< IEventFunctorBase<CodeBlocksEvent>* >       EventSinksArray;
-    typedef std::map< wxEventType, EventSinksArray >                 EventSinksMap;
-    typedef std::vector< IEventFunctorBase<CodeBlocksDockEvent>* >   DockEventSinksArray;
-    typedef std::map< wxEventType, DockEventSinksArray >             DockEventSinksMap;
-    typedef std::vector< IEventFunctorBase<CodeBlocksLayoutEvent>* > LayoutEventSinksArray;
-    typedef std::map< wxEventType, LayoutEventSinksArray >           LayoutEventSinksMap;
-    typedef std::vector< IEventFunctorBase<CodeBlocksLogEvent>* >    LogEventSinksArray;
-    typedef std::map< wxEventType, LogEventSinksArray >              LogEventSinksMap;
+        /// Sets the global variable which stores the size of images for the given UI component.
+        /// @note If you're not in app.cpp or main.cpp DO NOT call this!
+        void SetImageSize(int size, UIComponent component);
+        /// @return The size in pixels of images in the specified UI component.
+        int GetImageSize(UIComponent component) const;
 
-    EventSinksMap       m_EventSinks;
-    DockEventSinksMap   m_DockEventSinks;
-    LayoutEventSinksMap m_LayoutEventSinks;
-    LogEventSinksMap    m_LogEventSinks;
-    cbSearchResultsLog *m_SearchResultLog;
+        /// Sets the global variable which stores the scale factor for the given UI component.
+        /// @note If you're not in app.cpp or main.cpp DO NOT call this!
+        void SetUIScaleFactor(double scaleFactor, UIComponent component);
+        /// @return The scale factor of the specified UI component.
+        double GetUIScaleFactor(UIComponent component) const;
+
+        static wxCmdLineParser * GetCmdLineParser();
+
+        // event sinks
+        void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksEvent>    *   functor);
+        void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksDockEvent>  * functor);
+        void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLayoutEvent> * functor);
+        void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLogEvent>  *  functor);
+        void RemoveAllEventSinksFor(void * owner);
+
+        /// Returns pointer to the search result logger, might be nullptr or hidden.
+        cbSearchResultsLog * GetSearchResultLogger() const
+        {
+            return m_SearchResultLog;
+        }
+        /// Sets the pointer to the search result logger, users must not call this method.
+        void SetSearchResultLogger(cbSearchResultsLog * log)
+        {
+            m_SearchResultLog = log;
+        }
+
+    private:
+        wxFrame        *       m_pAppWindow;
+        static bool            m_AppShuttingDown;
+        static bool            m_AppStartedUp;
+        static bool            m_BlockYields;
+        static bool            m_IsBatch;
+        static bool            m_IsHeadlessBuild;
+        static wxCmdLineParser m_CmdLineParser;
+        static wxToolBarAddOnXmlHandler * m_ToolbarHandler;
+
+        int m_ImageSizes[UIComponent::Last];
+        double m_UIScaleFactor[UIComponent::Last];
+
+        // event sinks
+        typedef std::vector< IEventFunctorBase<CodeBlocksEvent>* >       EventSinksArray;
+        typedef std::map< wxEventType, EventSinksArray >                 EventSinksMap;
+        typedef std::vector< IEventFunctorBase<CodeBlocksDockEvent>* >   DockEventSinksArray;
+        typedef std::map< wxEventType, DockEventSinksArray >             DockEventSinksMap;
+        typedef std::vector< IEventFunctorBase<CodeBlocksLayoutEvent>* > LayoutEventSinksArray;
+        typedef std::map< wxEventType, LayoutEventSinksArray >           LayoutEventSinksMap;
+        typedef std::vector< IEventFunctorBase<CodeBlocksLogEvent>* >    LogEventSinksArray;
+        typedef std::map< wxEventType, LogEventSinksArray >              LogEventSinksMap;
+
+        EventSinksMap       m_EventSinks;
+        DockEventSinksMap   m_DockEventSinks;
+        LayoutEventSinksMap m_LayoutEventSinks;
+        LogEventSinksMap    m_LogEventSinks;
+        cbSearchResultsLog * m_SearchResultLog;
 };
 
 template <class MgrT> class DLLIMPORT Mgr
 {
-    static MgrT *instance;
-    static bool isShutdown;
-    explicit Mgr(const Mgr<MgrT>&)         { ; };
-    Mgr<MgrT>& operator=(Mgr<MgrT> const&) { ; };
+        static MgrT * instance;
+        static bool isShutdown;
+        explicit Mgr(const Mgr<MgrT> &)         { ; };
+        Mgr<MgrT> & operator=(Mgr<MgrT> const &) { ; };
 
-protected:
+    protected:
 
-    Mgr()
-    {
-        assert(Mgr<MgrT>::instance == nullptr);
-    }
-    virtual ~Mgr()
-    {
-        Mgr<MgrT>::instance = nullptr;
-    }
-
-public:
-
-    static bool Valid()
-    {
-        return instance;
-    }
-
-    static MgrT* Get()
-    {
-        if (instance == nullptr)
+        Mgr()
         {
-            if (isShutdown == false)
-                instance = new MgrT();
-            else
-                cbAssert(false && "Calling Get after the subsystem has been shutdown is an error!");
+            assert(Mgr<MgrT>::instance == nullptr);
         }
-        return instance;
-    }
+        virtual ~Mgr()
+        {
+            Mgr<MgrT>::instance = nullptr;
+        }
 
-    static void Free()
-    {
-        isShutdown = true;
-        delete instance;
-        instance = nullptr;
-    }
+    public:
+
+        static bool Valid()
+        {
+            return instance;
+        }
+
+        static MgrT * Get()
+        {
+            if (instance == nullptr)
+            {
+                if (isShutdown == false)
+                {
+                    instance = new MgrT();
+                }
+                else
+                {
+                    cbAssert(false && "Calling Get after the subsystem has been shutdown is an error!");
+                }
+            }
+
+            return instance;
+        }
+
+        static void Free()
+        {
+            isShutdown = true;
+            delete instance;
+            instance = nullptr;
+        }
 };
 
 #endif // MANAGER_H

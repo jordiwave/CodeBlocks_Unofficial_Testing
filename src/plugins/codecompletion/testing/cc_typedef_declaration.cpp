@@ -3,22 +3,22 @@
 
 class string
 {
-public:
-    int m_aaa;
+    public:
+        int m_aaa;
 };
 
 class c1
 {
-public:
-    typedef string s1;
+    public:
+        typedef string s1;
 };
 
 
 template<typename _Tp>
 class c2
 {
-public:
-    typedef string s2;
+    public:
+        typedef string s2;
 };
 
 

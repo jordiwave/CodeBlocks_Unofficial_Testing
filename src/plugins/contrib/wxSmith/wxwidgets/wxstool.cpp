@@ -26,40 +26,41 @@
 #include <logmanager.h>
 
 wxsTool::wxsTool(
-    wxsItemResData* Data,
-    const wxsItemInfo* Info,
-    const wxsEventDesc* EventArray,
-    const wxsStyleSet* StyleSet,
+    wxsItemResData * Data,
+    const wxsItemInfo * Info,
+    const wxsEventDesc * EventArray,
+    const wxsStyleSet * StyleSet,
     long PropertiesFlags):
-    wxsParent(Data,Info,PropertiesFlags,EventArray,StyleSet)
+    wxsParent(Data, Info, PropertiesFlags, EventArray, StyleSet)
 {
 }
 
-bool wxsTool::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
+bool wxsTool::OnCanAddToResource(wxsItemResData * Data, bool ShowMessage)
 {
-    if ( GetInfo().AllowInXRC )
+    if (GetInfo().AllowInXRC)
     {
         // We do not filter if we can use this tool in XRC mode
         return true;
     }
 
-    switch ( Data->GetPropertiesFilter() & (flSource|flMixed|flFile) )
+    switch (Data->GetPropertiesFilter() & (flSource | flMixed | flFile))
     {
-    case flSource:
-        return true;
+        case flSource:
+            return true;
 
-    case flMixed:
-    case flFile:
-        if ( ShowMessage )
-        {
-            cbMessageBox(
-                wxString::Format(_("%s is not supported in XRC"),GetInfo().ClassName.c_str()),
-                _("Tool insertion error"));
-        }
-        return false;
+        case flMixed:
+        case flFile:
+            if (ShowMessage)
+            {
+                cbMessageBox(
+                    wxString::Format(_("%s is not supported in XRC"), GetInfo().ClassName.c_str()),
+                    _("Tool insertion error"));
+            }
 
-    default:
-        break;
+            return false;
+
+        default:
+            break;
     }
 
     return false;
@@ -70,7 +71,7 @@ void wxsTool::OnEnumItemProperties(long Flags)
     OnEnumToolProperties(Flags);
 }
 
-void wxsTool::OnAddItemQPP(wxsAdvQPP* QPP)
+void wxsTool::OnAddItemQPP(wxsAdvQPP * QPP)
 {
     OnAddToolQPP(QPP);
 }

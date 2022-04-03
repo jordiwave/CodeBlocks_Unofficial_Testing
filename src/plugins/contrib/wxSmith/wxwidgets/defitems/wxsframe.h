@@ -27,22 +27,22 @@
 
 class wxsFrame : public wxsContainer
 {
-public:
+    public:
 
-    wxsFrame(wxsItemResData* Data);
+        wxsFrame(wxsItemResData * Data);
 
-private:
-    virtual long OnGetPropertiesFlags()
-    {
-        return wxsContainer::OnGetPropertiesFlags() | flTopLevel;
-    }
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnBuildCreatingCode();
-    virtual void OnEnumContainerProperties(long Flags);
+    private:
+        virtual long OnGetPropertiesFlags()
+        {
+            return wxsContainer::OnGetPropertiesFlags() | flTopLevel;
+        }
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual void OnEnumContainerProperties(long Flags);
 
-    wxString Title;
-    bool Centered;
-    wxsIconData Icon;
+        wxString Title;
+        bool Centered;
+        wxsIconData Icon;
 };
 
 #endif

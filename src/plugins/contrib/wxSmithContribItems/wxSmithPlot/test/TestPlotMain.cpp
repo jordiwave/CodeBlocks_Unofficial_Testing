@@ -26,14 +26,13 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 {
     wxString wxbuild(wxVERSION_STRING);
 
-    if (format == long_f )
+    if (format == long_f)
     {
 #if defined(__WXMSW__)
         wxbuild << _T("-Windows");
 #elif defined(__UNIX__)
         wxbuild << _T("-Linux");
 #endif
-
 #if wxUSE_UNICODE
         wxbuild << _T("-Unicode build");
 #else
@@ -58,45 +57,44 @@ const long TestPlotFrame::idMenuQuit = wxNewId();
 const long TestPlotFrame::idMenuAbout = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(TestPlotFrame,wxFrame)
+BEGIN_EVENT_TABLE(TestPlotFrame, wxFrame)
     //(*EventTable(TestPlotFrame)
     //*)
 END_EVENT_TABLE()
 
-TestPlotFrame::TestPlotFrame(wxWindow* parent,wxWindowID id)
+TestPlotFrame::TestPlotFrame(wxWindow * parent, wxWindowID id)
 {
     //(*Initialize(TestPlotFrame)
-    wxMenuItem* MenuItem2;
-    wxMenuItem* MenuItem1;
-    wxMenu* Menu1;
-    wxMenuBar* MenuBar1;
-    wxMenu* Menu2;
-
+    wxMenuItem * MenuItem2;
+    wxMenuItem * MenuItem1;
+    wxMenu * Menu1;
+    wxMenuBar * MenuBar1;
+    wxMenu * Menu2;
     Create(parent, id, _("Test of MathPlot"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("id"));
-    SetClientSize(wxSize(380,420));
-    Panel1 = new wxPanel(this, ID_PANEL1, wxPoint(72,96), wxSize(360,400), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
-    MathPlot1 = new mpWindow(Panel1, ID_MATHPLOT1, wxPoint(8,8), wxSize(360,400), wxRAISED_BORDER|wxTAB_TRAVERSAL);
-    MathPlot1->SetBackgroundColour(wxColour(0,0,0));
+    SetClientSize(wxSize(380, 420));
+    Panel1 = new wxPanel(this, ID_PANEL1, wxPoint(72, 96), wxSize(360, 400), wxTAB_TRAVERSAL, _T("ID_PANEL1"));
+    MathPlot1 = new mpWindow(Panel1, ID_MATHPLOT1, wxPoint(8, 8), wxSize(360, 400), wxRAISED_BORDER | wxTAB_TRAVERSAL);
+    MathPlot1->SetBackgroundColour(wxColour(0, 0, 0));
     Axis1 = new mpScaleX(_("Deg"), 4, true);
-    wxPen   Axis1_PEN(wxColour(255,255,255));
+    wxPen   Axis1_PEN(wxColour(255, 255, 255));
     Axis1->SetPen(Axis1_PEN);
-    wxFont Axis1_FONT(10,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_T("Arial"),wxFONTENCODING_DEFAULT);
+    wxFont Axis1_FONT(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, _T("Arial"), wxFONTENCODING_DEFAULT);
     Axis1->SetFont(Axis1_FONT);
     MathPlot1->AddLayer(Axis1);
     Axis2 = new mpScaleY(_("Range"), 5, true);
-    wxPen   Axis2_PEN(wxColour(255,255,255));
+    wxPen   Axis2_PEN(wxColour(255, 255, 255));
     Axis2->SetPen(Axis2_PEN);
-    wxFont Axis2_FONT(10,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_T("Arial"),wxFONTENCODING_DEFAULT);
+    wxFont Axis2_FONT(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, _T("Arial"), wxFONTENCODING_DEFAULT);
     Axis2->SetFont(Axis2_FONT);
     MathPlot1->AddLayer(Axis2);
     Marker1 = new mpMarker(_("Trig Curves"), 180, 1.5);
-    wxPen   Marker1_PEN(wxColour(255,255,0));
+    wxPen   Marker1_PEN(wxColour(255, 255, 0));
     Marker1->SetPen(Marker1_PEN);
-    wxFont Marker1_FONT(12,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_T("Arial"),wxFONTENCODING_DEFAULT);
+    wxFont Marker1_FONT(12, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, _T("Arial"), wxFONTENCODING_DEFAULT);
     Marker1->SetFont(Marker1_FONT);
     MathPlot1->AddLayer(Marker1);
     Vector1 = new mpFXYVector(_("Sin"), 0);
-    wxPen   Vector1_PEN(wxColour(255,0,0));
+    wxPen   Vector1_PEN(wxColour(255, 0, 0));
     Vector1->SetPen(Vector1_PEN);
     Vector1_X.push_back(1);
     Vector1_Y.push_back(0.02);
@@ -824,7 +822,7 @@ TestPlotFrame::TestPlotFrame(wxWindow* parent,wxWindowID id)
     Vector1->SetContinuity(true);
     MathPlot1->AddLayer(Vector1);
     Vector2 = new mpFXYVector(_("Cos"), 1);
-    wxPen   Vector2_PEN(wxColour(0,0,255));
+    wxPen   Vector2_PEN(wxColour(0, 0, 255));
     Vector2->SetPen(Vector2_PEN);
     Vector2_X.push_back(1);
     Vector2_Y.push_back(1);
@@ -1552,7 +1550,7 @@ TestPlotFrame::TestPlotFrame(wxWindow* parent,wxWindowID id)
     Vector2->SetContinuity(true);
     MathPlot1->AddLayer(Vector2);
     Vector3 = new mpFXYVector(_("Sin+Cos"), 3);
-    wxPen   Vector3_PEN(wxColour(255,128,255));
+    wxPen   Vector3_PEN(wxColour(255, 128, 255));
     Vector3->SetPen(Vector3_PEN);
     Vector3_X.push_back(1);
     Vector3_Y.push_back(1.02);
@@ -2280,7 +2278,7 @@ TestPlotFrame::TestPlotFrame(wxWindow* parent,wxWindowID id)
     Vector3->SetContinuity(true);
     MathPlot1->AddLayer(Vector3);
     Vector4 = new mpFXYVector(_("Sin-Cos"), 2);
-    wxPen   Vector4_PEN(wxColour(0,255,0));
+    wxPen   Vector4_PEN(wxColour(0, 255, 0));
     Vector4->SetPen(Vector4_PEN);
     Vector4_X.push_back(1);
     Vector4_Y.push_back(-0.98);
@@ -3019,11 +3017,9 @@ TestPlotFrame::TestPlotFrame(wxWindow* parent,wxWindowID id)
     Menu2->Append(MenuItem2);
     MenuBar1->Append(Menu2, _("Help"));
     SetMenuBar(MenuBar1);
-
-    Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&TestPlotFrame::OnQuit);
-    Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&TestPlotFrame::OnAbout);
+    Connect(idMenuQuit, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&TestPlotFrame::OnQuit);
+    Connect(idMenuAbout, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&TestPlotFrame::OnAbout);
     //*)
-
     MathPlot1->Fit();
 }
 
@@ -3033,12 +3029,12 @@ TestPlotFrame::~TestPlotFrame()
     //*)
 }
 
-void TestPlotFrame::OnQuit(wxCommandEvent& event)
+void TestPlotFrame::OnQuit(wxCommandEvent & event)
 {
     Close();
 }
 
-void TestPlotFrame::OnAbout(wxCommandEvent& event)
+void TestPlotFrame::OnAbout(wxCommandEvent & event)
 {
     wxString msg = wxbuildinfo(long_f);
     wxMessageBox(msg, _("Welcome to..."));

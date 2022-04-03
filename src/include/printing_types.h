@@ -10,10 +10,10 @@
 #include <wx/print.h>
 
 // Global printer
-extern wxPrinter* g_printer;
+extern wxPrinter * g_printer;
 
 // Global page setup data
-extern wxPageSetupData* g_pageSetupData;
+extern wxPageSetupData * g_pageSetupData;
 
 // printing scope for print dialog
 enum PrintScope

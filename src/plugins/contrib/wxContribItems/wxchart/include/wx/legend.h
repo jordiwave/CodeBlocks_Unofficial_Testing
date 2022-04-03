@@ -16,18 +16,18 @@
 // Headers
 //----------------------------------------------------------------------------
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "legend.h"
+    #pragma interface "legend.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/dynarray.h>
+    #include <wx/dynarray.h>
 #endif
 
 #include "wx/charttypes.h"
@@ -79,53 +79,53 @@ WX_DECLARE_OBJARRAY(DescLegend, ListLegendDesc);
 class WXDLLIMPEXP_CHART wxLegend
 /* C::B end */
 {
-public:
+    public:
 
-    // ctor
-    //-----
-    wxLegend();
-    ~wxLegend();
+        // ctor
+        //-----
+        wxLegend();
+        ~wxLegend();
 
-    // Draw legend area
-    //-----------------
-    void Draw(CHART_HPAINT hp, CHART_HRECT hr);
+        // Draw legend area
+        //-----------------
+        void Draw(CHART_HPAINT hp, CHART_HRECT hr);
 
-    // Redraw arraw whne mouse over
-    //-----------------------------
-    void DrawArrow(CHART_HPAINT hp, int pos, bool over);
+        // Redraw arraw whne mouse over
+        //-----------------------------
+        void DrawArrow(CHART_HPAINT hp, int pos, bool over);
 
-    // Dec/Inc page
-    //-------------
-    void IncPage();
-    void DecPage();
+        // Dec/Inc page
+        //-------------
+        void IncPage();
+        void DecPage();
 
-    // Mouse utilities
-    bool IsInArrowUp(int x, int y);
-    bool IsInArrowDown(int x, int y);
+        // Mouse utilities
+        bool IsInArrowUp(int x, int y);
+        bool IsInArrowDown(int x, int y);
 
-    // List descriptos utilities
-    //--------------------------
-    void Add(const wxString &lbl, const ChartColor &col);
-    void Clear();
-    int GetCount() const;
-    ChartColor GetColor(int n) const;
-    wxString GetLabel(int n) const;
+        // List descriptos utilities
+        //--------------------------
+        void Add(const wxString & lbl, const ChartColor & col);
+        void Clear();
+        int GetCount() const;
+        ChartColor GetColor(int n) const;
+        wxString GetLabel(int n) const;
 
-private:
-    ListLegendDesc m_lDescs;
-    int m_Page;
-    ArrowDescriptor m_ArrowUp;
-    ArrowDescriptor m_ArrowDown;
+    private:
+        ListLegendDesc m_lDescs;
+        int m_Page;
+        ArrowDescriptor m_ArrowUp;
+        ArrowDescriptor m_ArrowDown;
 
-    // Drawing Utilities
-    //------------------
-    void DrawArrow(CHART_HPAINT hp, int x, int y, int size,
-                   int pos, bool over);
-    void WriteLabel(CHART_HPAINT hp, int x, int y, int page);
+        // Drawing Utilities
+        //------------------
+        void DrawArrow(CHART_HPAINT hp, int x, int y, int size,
+                       int pos, bool over);
+        void WriteLabel(CHART_HPAINT hp, int x, int y, int page);
 
-    // Get number of pages
-    //--------------------
-    int NumPages() const;
+        // Get number of pages
+        //--------------------
+        int NumPages() const;
 
 };
 

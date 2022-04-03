@@ -3,15 +3,15 @@
 #ifndef main_h
 #define main_h
 #include <FL/Fl.H>
-void bt_callback(Fl_Widget*, void* userdata);
+void bt_callback(Fl_Widget *, void * userdata);
 #include <FL/Fl_Double_Window.H>
-extern Fl_Double_Window *window_main;
+extern Fl_Double_Window * window_main;
 #include <FL/Fl_Input.H>
-extern Fl_Input *input;
+extern Fl_Input * input;
 #include <FL/Fl_Button.H>
-extern void bt_callback(Fl_Button*, void*);
-extern Fl_Button *btnTest;
+extern void bt_callback(Fl_Button *, void *);
+extern Fl_Button * btnTest;
 #include <FL/Fl_Return_Button.H>
-extern void bt_callback(Fl_Return_Button*, void*);
-extern Fl_Return_Button *btnClose;
+extern void bt_callback(Fl_Return_Button *, void *);
+extern Fl_Return_Button * btnClose;
 #endif

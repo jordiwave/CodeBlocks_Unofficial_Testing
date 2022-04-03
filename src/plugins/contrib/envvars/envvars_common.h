@@ -29,7 +29,7 @@ bool          EnvVarsDebugLog();
   * \param str String to tokenise (envvars set format to array string)
   * \return Tokenised envars as array string
   */
-wxArrayString EnvvarStringTokeniser(const wxString& str);
+wxArrayString EnvvarStringTokeniser(const wxString & str);
 /** Returns all envvars sets available
   * \return All envvars sets available in the config
   */
@@ -44,68 +44,68 @@ wxString      GetActiveSetName();
   * \param return_default Return the default envvar set if the set to query has not been found in the config
   * \return Name of the envvar set
   */
-wxString      GetSetPathByName(const wxString& set_name,
+wxString      GetSetPathByName(const wxString & set_name,
                                bool check_exists = true,
                                bool return_default = true);
 /** Returns the envvars of an envvars set path in the config
   * \param set_path Path to the envvars set in the config to query
   * \return All envvars that belong to the envvar set in the config
   */
-wxArrayString GetEnvvarsBySetPath(const wxString& set_path);
+wxArrayString GetEnvvarsBySetPath(const wxString & set_path);
 /** Verifies if an envvars set really exists in the config
   * \param set_name Name of the set to query/find in the config
   * \return Has the set been found / does it exist in the config?
   */
-bool          EnvvarSetExists(const wxString& set_name);
+bool          EnvvarSetExists(const wxString & set_name);
 /** Allows the user to veto overwriting an existing envvar with a new value
   * \param key envvar key to set (overwrite)
   * \param lstEnvVars Pointer to a check-listbox to update (envvar settings dialog)
   * \param sel Selection in the check listbox to update
   * \return Has the user vetoed to update the envvar?
   */
-bool          EnvvarVetoUI(const wxString& key, wxCheckListBox* lstEnvVars, int sel);
+bool          EnvvarVetoUI(const wxString & key, wxCheckListBox * lstEnvVars, int sel);
 /** Clears all envvars of a checklist box
   * \param lstEnvVars Pointer to a check-listbox to update (envvar settings dialog)
   * \return Has the check listbox been updated successfully?
   */
-bool          EnvvarsClearUI(wxCheckListBox* lstEnvVars);
+bool          EnvvarsClearUI(wxCheckListBox * lstEnvVars);
 /** Checks, if an envvar is recursive, like PATH=%PATH%;C:\Folder
   * \param key   envvar to check
   * \param value value of the envvar to check for recursion
   * \return Is this a recursive envvar?
   */
-bool          EnvvarIsRecursive(const wxString& key, const wxString& value);
+bool          EnvvarIsRecursive(const wxString & key, const wxString & value);
 /** Discards an envvar
   * \param key envvar to discard (erase)
   * \return Has the envvar been discarded successfully?
   */
-bool          EnvvarDiscard(const wxString& key);
+bool          EnvvarDiscard(const wxString & key);
 /** Applies a specific envvar
   * \param key envvar key to set
   * \param value envvar value to set (value of the key)
   * \return Has the envvar been applied successfully?
   */
-bool          EnvvarApply(const wxString& key, const wxString& value);
+bool          EnvvarApply(const wxString & key, const wxString & value);
 /** Applies a specific envvar array (and appends (checks) the envvar in a checklist box accordingly)
   * \param envvar Set of 1..n envvars to apply
   * \param lstEnvVars Pointer to a check-listbox to update (envvar settings dialog)
   * \return Have all envvars been applied successfully?
   */
-bool          EnvvarArrayApply(const wxArrayString& envvar,
-                               wxCheckListBox*      lstEnvVars = NULL);
+bool          EnvvarArrayApply(const wxArrayString & envvar,
+                               wxCheckListBox   *   lstEnvVars = NULL);
 /** Applies a specific envvar set from the config (without UI interaction)
   * \param set_name Name of the set to apply (maps to a path in the config)
   * \param even_if_active Apply the envvar set even if it is active (it might have changed!)
   */
-void          EnvvarSetApply(const wxString& set_name, bool even_if_active);
+void          EnvvarSetApply(const wxString & set_name, bool even_if_active);
 /** Discards a specific envvar set from the config (without UI interaction)
   * \param set_name envvar set to discard completely
   */
-void          EnvvarSetDiscard(const wxString& set_name);
+void          EnvvarSetDiscard(const wxString & set_name);
 
 struct EnvVariableListClientData : wxClientData
 {
-    EnvVariableListClientData(const wxString &_key, const wxString &_value) : key(_key), value(_value) {}
+    EnvVariableListClientData(const wxString & _key, const wxString & _value) : key(_key), value(_value) {}
     wxString key, value;
 };
 

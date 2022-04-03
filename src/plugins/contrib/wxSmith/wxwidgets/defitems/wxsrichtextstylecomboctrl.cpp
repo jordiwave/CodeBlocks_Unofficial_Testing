@@ -23,10 +23,10 @@
 
 namespace
 {
-wxsRegisterItem<wxsRichTextStyleComboCtrl> Reg(_T("RichTextStyleComboCtrl"),wxsTWidget,_T("Standard"),157);
+wxsRegisterItem<wxsRichTextStyleComboCtrl> Reg(_T("RichTextStyleComboCtrl"), wxsTWidget, _T("Standard"), 157);
 
 
-WXS_ST_BEGIN(wxsRichTextStyleComboCtrlStyles,_T(""))
+WXS_ST_BEGIN(wxsRichTextStyleComboCtrlStyles, _T(""))
 WXS_ST_CATEGORY("wxRichTextStyleComboCtrl")
 WXS_ST_DEFAULTS()
 WXS_ST_END()
@@ -37,7 +37,7 @@ WXS_ST_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsRichTextStyleComboCtrl::wxsRichTextStyleComboCtrl(wxsItemResData* Data):
+wxsRichTextStyleComboCtrl::wxsRichTextStyleComboCtrl(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -54,33 +54,33 @@ wxsRichTextStyleComboCtrl::wxsRichTextStyleComboCtrl(wxsItemResData* Data):
  */
 void wxsRichTextStyleComboCtrl::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/richtext/richtextstyles.h>"),GetInfo().ClassName,hfInPCH);
-
-        Codef(_T("%C(%W, %I, %P, %S, %T);\n"));
-
-        if(!m_sControl.IsEmpty())
+        case wxsCPP:
         {
-            Codef( _T("%ASetRichTextCtrl(%s);\n"), m_sControl.wx_str());
+            AddHeader(_T("<wx/richtext/richtextstyles.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %P, %S, %T);\n"));
+
+            if (!m_sControl.IsEmpty())
+            {
+                Codef(_T("%ASetRichTextCtrl(%s);\n"), m_sControl.wx_str());
+            }
+
+            if (!m_sStyleSheet.IsEmpty())
+            {
+                Codef(_T("%ASetStyleSheet(%s);\n"), m_sStyleSheet.wx_str());
+                Codef(_T("%AUpdateStyles();\n"));
+            }
+
+            BuildSetupWindowCode();
+            return;
         }
-        if(!m_sStyleSheet.IsEmpty())
+
+        case wxsUnknownLanguage: // fall-through
+        default:
         {
-            Codef( _T("%ASetStyleSheet(%s);\n"), m_sStyleSheet.wx_str());
-            Codef( _T("%AUpdateStyles();\n"));
+            wxsCodeMarks::Unknown(_T("wxsRichTextStyleComboCtrl::OnBuildCreatingCode"), GetLanguage());
         }
-
-        BuildSetupWindowCode();
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsRichTextStyleComboCtrl::OnBuildCreatingCode"),GetLanguage());
-    }
     }
 }
 
@@ -91,11 +91,10 @@ void wxsRichTextStyleComboCtrl::OnBuildCreatingCode()
  * \return wxObject*                 The constructed control.
  *
  */
-wxObject* wxsRichTextStyleComboCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsRichTextStyleComboCtrl::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxRichTextStyleComboCtrl* Preview = new wxRichTextStyleComboCtrl(Parent, GetId(), Pos(Parent), Size(Parent), Style());
-
-    return SetupWindow(Preview,Flags);
+    wxRichTextStyleComboCtrl * Preview = new wxRichTextStyleComboCtrl(Parent, GetId(), Pos(Parent), Size(Parent), Style());
+    return SetupWindow(Preview, Flags);
 }
 
 /*! \brief Enumerate the control's properties.

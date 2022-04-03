@@ -97,46 +97,46 @@ WXDLLIMPEXP_DATA_STEDIT(extern const wxSize) wxSTESmallIconSize;
 
 class WXDLLIMPEXP_STEDIT wxSTEditorArtProvider : public wxArtProvider
 {
-public:
-    wxSTEditorArtProvider();
-    virtual ~wxSTEditorArtProvider() {}
+    public:
+        wxSTEditorArtProvider();
+        virtual ~wxSTEditorArtProvider() {}
 
-    // ----------------------------------------------------------------------
+        // ----------------------------------------------------------------------
 
-    /// Get a wxBitmap for one of the wxART_STEDIT_* wxArtIDs.
-    ///   returns an invalid bitmap for all other wxArtIDs.
-    /// Respects GetSizeHint(client) if size == wxDefaultSize
-    /// User created wxArtProviders may call this function to guarantee that
-    ///   they get one of our bitmaps if they wish.
-    /// @see wxART_STEDIT_defines
-    static wxBitmap DoGetBitmap(const wxArtID& id,
-                                const wxArtClient& client,
-                                const wxSize& size = wxDefaultSize);
+        /// Get a wxBitmap for one of the wxART_STEDIT_* wxArtIDs.
+        ///   returns an invalid bitmap for all other wxArtIDs.
+        /// Respects GetSizeHint(client) if size == wxDefaultSize
+        /// User created wxArtProviders may call this function to guarantee that
+        ///   they get one of our bitmaps if they wish.
+        /// @see wxART_STEDIT_defines
+        static wxBitmap DoGetBitmap(const wxArtID & id,
+                                    const wxArtClient & client,
+                                    const wxSize & size = wxDefaultSize);
 
-    /// Helper function to resize the input bitmap to have the given size.
-    static wxBitmap Resize(const wxBitmap& bmp, const wxSize& size);
+        /// Helper function to resize the input bitmap to have the given size.
+        static wxBitmap Resize(const wxBitmap & bmp, const wxSize & size);
 
-    /// Get a wxIconBundle of the wxART_STEDIT_APP icon for wxSTEdit dialogs
-    /// This function exists since static wxArtProvider::GetIconBundle()
-    ///  is only in >= 2.9.
-    static wxIconBundle GetDialogIconBundle();
+        /// Get a wxIconBundle of the wxART_STEDIT_APP icon for wxSTEdit dialogs
+        /// This function exists since static wxArtProvider::GetIconBundle()
+        ///  is only in >= 2.9.
+        static wxIconBundle GetDialogIconBundle();
 
-protected:
+    protected:
 
-    // ----------------------------------------------------------------------
-    /// Overridden virtual functions from wxArtProvider to get bitmaps
-    /// Always use the static wxArtProvider functions to get bitmaps
+        // ----------------------------------------------------------------------
+        /// Overridden virtual functions from wxArtProvider to get bitmaps
+        /// Always use the static wxArtProvider functions to get bitmaps
 
-    virtual wxBitmap CreateBitmap(const wxArtID& id,
-                                  const wxArtClient& client,
-                                  const wxSize& size);
+        virtual wxBitmap CreateBitmap(const wxArtID & id,
+                                      const wxArtClient & client,
+                                      const wxSize & size);
 
-    /// This function is in wx >= 29.
-    virtual wxIconBundle CreateIconBundle(const wxArtID& id,
-                                          const wxArtClient& client);
+        /// This function is in wx >= 29.
+        virtual wxIconBundle CreateIconBundle(const wxArtID & id,
+                                              const wxArtClient & client);
 
-    static wxBitmap m_app_large;
-    static wxBitmap m_app_small;
+        static wxBitmap m_app_large;
+        static wxBitmap m_app_small;
 };
 
 #endif  // _STEART_H_

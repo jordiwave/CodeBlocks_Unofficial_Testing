@@ -14,20 +14,20 @@ typedef struct _header HEADER;
 
 struct _headers
 {
-    HEADERS *next;
-    HEADERS *tail;
-    HEADER *header;
+    HEADERS * next;
+    HEADERS * tail;
+    HEADER * header;
 };
 
 struct _header
 {
-    const char *key;
-    LIST *includes;
+    const char * key;
+    LIST * includes;
     time_t time;
-    HEADERS *headers;
-    HEADER *newest;
+    HEADERS * headers;
+    HEADER * newest;
 };
 
-extern HEADER *headers(const char *t, time_t time);
-extern void headernewest(HEADER *h);
+extern HEADER * headers(const char * t, time_t time);
+extern void headernewest(HEADER * h);
 extern void donehdrs(void);

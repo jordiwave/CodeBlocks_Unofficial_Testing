@@ -28,68 +28,72 @@
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,long)
 
-wxsLongProperty::wxsLongProperty(const wxString& PGName, const wxString& DataName,long _Offset,long _Default,int Priority):
-    wxsProperty(PGName,DataName,Priority),
+wxsLongProperty::wxsLongProperty(const wxString & PGName, const wxString & DataName, long _Offset, long _Default, int Priority):
+    wxsProperty(PGName, DataName, Priority),
     Offset(_Offset),
     Default(_Default)
 {}
 
 
-void wxsLongProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
+void wxsLongProperty::PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent)
 {
-    wxIntProperty* Property = new wxIntProperty(GetPGName(), wxPG_LABEL,VALUE);
+    wxIntProperty * Property = new wxIntProperty(GetPGName(), wxPG_LABEL, VALUE);
     Property->SetHelpString(m_HelpString);
     wxPGId ID = Grid->AppendIn(Parent, Property);
     PGRegister(Object, Grid, ID);
 }
 
-bool wxsLongProperty::PGRead(wxsPropertyContainer* Object, wxPropertyGridManager* Grid,
+bool wxsLongProperty::PGRead(wxsPropertyContainer * Object, wxPropertyGridManager * Grid,
                              wxPGId Id, cb_unused long Index)
 {
     VALUE = Grid->GetPropertyValue(Id).GetLong();
     return true;
 }
 
-bool wxsLongProperty::PGWrite(wxsPropertyContainer* Object, wxPropertyGridManager* Grid,
+bool wxsLongProperty::PGWrite(wxsPropertyContainer * Object, wxPropertyGridManager * Grid,
                               wxPGId Id, cb_unused long Index)
 {
-    Grid->SetPropertyValue(Id,VALUE);
+    Grid->SetPropertyValue(Id, VALUE);
     return true;
 }
 
-bool wxsLongProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsLongProperty::XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
-    if ( !Element )
+    if (!Element)
     {
         VALUE = Default;
         return false;
     }
-    const char* Text = Element->GetText();
-    if ( !Text )
+
+    const char * Text = Element->GetText();
+
+    if (!Text)
     {
         VALUE = Default;
         return false;
     }
+
     VALUE = atol(Text);
     return true;
 }
 
-bool wxsLongProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsLongProperty::XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
-    if ( VALUE != Default )
+    if (VALUE != Default)
     {
-        Element->InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%ld"),VALUE))));
+        Element->InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%ld"), VALUE))));
         return true;
     }
+
     return false;
 }
 
-bool wxsLongProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsLongProperty::PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
-    return Stream->GetLong(GetDataName(),VALUE,Default);
+    return Stream->GetLong(GetDataName(), VALUE, Default);
 }
 
-bool wxsLongProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsLongProperty::PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
-    return Stream->PutLong(GetDataName(),VALUE,Default);
+    return Stream->PutLong(GetDataName(), VALUE, Default);
 }

@@ -37,56 +37,56 @@ class wxStdDialogButtonSizer;
 
 class LibSelectDlg: public wxScrollingDialog
 {
-public:
+    public:
 
-    LibSelectDlg(wxWindow* parent,const wxArrayString& Names,bool addOnly);
-    virtual ~LibSelectDlg();
+        LibSelectDlg(wxWindow * parent, const wxArrayString & Names, bool addOnly);
+        virtual ~LibSelectDlg();
 
-    /** \brief Set list of selected items */
-    void SetSelections(const wxArrayInt& Selections);
+        /** \brief Set list of selected items */
+        void SetSelections(const wxArrayInt & Selections);
 
-    /** \brief Get lis of selected items */
-    wxArrayInt GetSelections();
+        /** \brief Get lis of selected items */
+        wxArrayInt GetSelections();
 
-    /** \brief Check if we should setup global variables */
-    bool GetSetupGlobalVars();
+        /** \brief Check if we should setup global variables */
+        bool GetSetupGlobalVars();
 
-    /** \brief Check if we should not clear previous results */
-    bool GetDontClearPrevious();
+        /** \brief Check if we should not clear previous results */
+        bool GetDontClearPrevious();
 
-    /** \brief Check if we should clear previous results only for selected items */
-    bool GetClearSelectedPrevious();
+        /** \brief Check if we should clear previous results only for selected items */
+        bool GetClearSelectedPrevious();
 
-    /** \brief Check if we should clear all previous results */
-    bool GetClearAllPrevious();
+        /** \brief Check if we should clear all previous results */
+        bool GetClearAllPrevious();
 
-private:
+    private:
 
-    //(*Declarations(LibSelectDlg)
-    wxCheckBox* m_SetupGlobalVars;
-    wxCheckListBox* m_Libraries;
-    wxRadioButton* m_ClearAll;
-    wxRadioButton* m_ClearSelected;
-    wxRadioButton* m_DontClear;
-    wxStaticText* StaticText1;
-    //*)
+        //(*Declarations(LibSelectDlg)
+        wxCheckBox * m_SetupGlobalVars;
+        wxCheckListBox * m_Libraries;
+        wxRadioButton * m_ClearAll;
+        wxRadioButton * m_ClearSelected;
+        wxRadioButton * m_DontClear;
+        wxStaticText * StaticText1;
+        //*)
 
-    //(*Identifiers(LibSelectDlg)
-    static const long ID_STATICTEXT1;
-    static const long ID_CHECKLISTBOX1;
-    static const long ID_RADIOBUTTON1;
-    static const long ID_RADIOBUTTON2;
-    static const long ID_RADIOBUTTON3;
-    static const long ID_CHECKBOX1;
-    //*)
+        //(*Identifiers(LibSelectDlg)
+        static const long ID_STATICTEXT1;
+        static const long ID_CHECKLISTBOX1;
+        static const long ID_RADIOBUTTON1;
+        static const long ID_RADIOBUTTON2;
+        static const long ID_RADIOBUTTON3;
+        static const long ID_CHECKBOX1;
+        //*)
 
-    //(*Handlers(LibSelectDlg)
-    void OnOk(wxCommandEvent& event);
-    //*)
+        //(*Handlers(LibSelectDlg)
+        void OnOk(wxCommandEvent & event);
+        //*)
 
-    bool m_AddOnly;
+        bool m_AddOnly;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

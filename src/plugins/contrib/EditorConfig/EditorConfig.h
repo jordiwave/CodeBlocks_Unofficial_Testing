@@ -24,42 +24,42 @@ class CodeBlocksEvent;
 
 class EditorConfig : public cbPlugin
 {
-public:
-    EditorConfig();
-    virtual ~EditorConfig() { ; };
+    public:
+        EditorConfig();
+        virtual ~EditorConfig() { ; };
 
-    virtual int GetConfigurationGroup() const;
-    virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* prj);
+        virtual int GetConfigurationGroup() const;
+        virtual cbConfigurationPanel * GetProjectConfigurationPanel(wxWindow * parent, cbProject * prj);
 
-    // Not used:
-    virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* /*parent*/)
-    {
-        return 0;
-    };
+        // Not used:
+        virtual cbConfigurationPanel * GetConfigurationPanel(wxWindow * /*parent*/)
+        {
+            return 0;
+        };
 
-protected:
-    virtual void OnAttach();
-    virtual void OnRelease(bool appShutDown);
-    virtual void BuildMenu(wxMenuBar* /*menuBar*/);
+    protected:
+        virtual void OnAttach();
+        virtual void OnRelease(bool appShutDown);
+        virtual void BuildMenu(wxMenuBar * /*menuBar*/);
 
-    // Not used:
-    virtual void BuildModuleMenu(const ModuleType, wxMenu*, const FileTreeData* = 0) { ; };
-    virtual bool BuildToolBar(wxToolBar* /*toolBar*/)
-    {
-        return false;
-    };
+        // Not used:
+        virtual void BuildModuleMenu(const ModuleType, wxMenu *, const FileTreeData * = 0) { ; };
+        virtual bool BuildToolBar(wxToolBar * /*toolBar*/)
+        {
+            return false;
+        };
 
-public:
-    static EditorSettings ParseProjectSettings(const cbProject &project);
-    static void SetProjectSettings(cbProject &project, const EditorSettings &es);
-private:
+    public:
+        static EditorSettings ParseProjectSettings(const cbProject & project);
+        static void SetProjectSettings(cbProject & project, const EditorSettings & es);
+    private:
 
-    void OnEditorActivated(CodeBlocksEvent& event);
+        void OnEditorActivated(CodeBlocksEvent & event);
 
-    bool ApplyEditorSettings(EditorBase* eb);
+        bool ApplyEditorSettings(EditorBase * eb);
 
-    // Reload Editor Config menu item
-    void OnReloadEditorConfig(wxCommandEvent& event);
+        // Reload Editor Config menu item
+        void OnReloadEditorConfig(wxCommandEvent & event);
 };
 
 #endif // EDITORCONFIG_H

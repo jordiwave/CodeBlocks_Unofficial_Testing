@@ -36,4 +36,4 @@ ExcHndlInit(void);
 //
 // You can also pass "-" for stderr.
 EXTERN_C BOOL APIENTRY
-ExcHndlSetLogFileNameA(const char *szLogFileName);
+ExcHndlSetLogFileNameA(const char * szLogFileName);

@@ -30,46 +30,46 @@
 
 class WXEXPORT wxsAngularRegulator : public wxsWidget
 {
-public:
-    wxsAngularRegulator(wxsItemResData* Data);
-    virtual ~wxsAngularRegulator();
-protected:
-private:
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+    public:
+        wxsAngularRegulator(wxsItemResData * Data);
+        virtual ~wxsAngularRegulator();
+    protected:
+    private:
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
-    long						m_iValue;									//!< The regulator's initial value.
-    long						m_iRangeMin;							//!< The regulator's minimum range value.
-    long						m_iRangeMax;						//!< The regulator's maximum range value.
-    long						m_iAngleMin;							//!< The regulator's minimum angle value.
-    long						m_iAngleMax;							//!< The regulator's maximum angle value.
-    wxsColourData	m_cdExternalCircleColour;	//!< The regulator's bar colour.
-    wxsColourData	m_cdInternalCircleColour;	//!< The regulator's background colour.
-    wxsColourData	m_cdKnobBorderColour;		//!< The regulator's border colour.
-    wxsColourData	m_cdKnobColour;					//!< The regulator's border colour.
-    wxsColourData	m_cdLimitTextColour;			//!< The colour of the limit values.
-    wxsColourData	m_cdTagColour;						//!< The regulator's tag colour.
+        long						m_iValue;									//!< The regulator's initial value.
+        long						m_iRangeMin;							//!< The regulator's minimum range value.
+        long						m_iRangeMax;						//!< The regulator's maximum range value.
+        long						m_iAngleMin;							//!< The regulator's minimum angle value.
+        long						m_iAngleMax;							//!< The regulator's maximum angle value.
+        wxsColourData	m_cdExternalCircleColour;	//!< The regulator's bar colour.
+        wxsColourData	m_cdInternalCircleColour;	//!< The regulator's background colour.
+        wxsColourData	m_cdKnobBorderColour;		//!< The regulator's border colour.
+        wxsColourData	m_cdKnobColour;					//!< The regulator's border colour.
+        wxsColourData	m_cdLimitTextColour;			//!< The colour of the limit values.
+        wxsColourData	m_cdTagColour;						//!< The regulator's tag colour.
 
-    // Dynamic properties.
-    /*! \brief Tag value enum.
-     */
-    struct TagDesc
-    {
-        wxPGId 	id;															//!< Tag property ID.
-        int			val;															//!< Tag value.
-    };
-    WX_DEFINE_ARRAY(TagDesc*, TagArray);
+        // Dynamic properties.
+        /*! \brief Tag value enum.
+         */
+        struct TagDesc
+        {
+            wxPGId 	id;															//!< Tag property ID.
+            int			val;															//!< Tag value.
+        };
+        WX_DEFINE_ARRAY(TagDesc *, TagArray);
 
-    TagArray m_arrTags;												//!< Array of tag description structs.
-    wxPGId m_TagCountId;											//!< The ID of the tag count property.
+        TagArray m_arrTags;												//!< Array of tag description structs.
+        wxPGId m_TagCountId;											//!< The ID of the tag count property.
 
-    void OnAddExtraProperties(wxsPropertyGridManager* Grid);
-    void OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId id);
-    bool OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra);
-    bool OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra);
-    void InsertPropertyForTag(wxsPropertyGridManager* Grid,int Position);
-    bool HandleChangeInTag(wxsPropertyGridManager* Grid,wxPGId id,int Position);
+        void OnAddExtraProperties(wxsPropertyGridManager * Grid);
+        void OnExtraPropertyChanged(wxsPropertyGridManager * Grid, wxPGId id);
+        bool OnXmlRead(TiXmlElement * Element, bool IsXRC, bool IsExtra);
+        bool OnXmlWrite(TiXmlElement * Element, bool IsXRC, bool IsExtra);
+        void InsertPropertyForTag(wxsPropertyGridManager * Grid, int Position);
+        bool HandleChangeInTag(wxsPropertyGridManager * Grid, wxPGId id, int Position);
 
 };
 

@@ -1,12 +1,12 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-#include <wx/arrstr.h>
-#include <wx/filename.h>
-#include <wx/listctrl.h>
-#include "manager.h"
-#include "editormanager.h"
-#include "cbeditor.h"
+    #include <wx/arrstr.h>
+    #include <wx/filename.h>
+    #include <wx/listctrl.h>
+    #include "manager.h"
+    #include "editormanager.h"
+    #include "cbeditor.h"
 #endif
 #include "cbstyledtextctrl.h"
 
@@ -18,10 +18,10 @@ const int ID_List = wxNewId();
 };
 
 BEGIN_EVENT_TABLE(CppCheckListLog, wxEvtHandler)
-//
+    //
 END_EVENT_TABLE()
 
-CppCheckListLog::CppCheckListLog(const wxArrayString& Titles, wxArrayInt& Widths)
+CppCheckListLog::CppCheckListLog(const wxArrayString & Titles, wxArrayInt & Widths)
     : ListCtrlLogger(Titles, Widths)
 {
     //ctor
@@ -31,19 +31,19 @@ CppCheckListLog::~CppCheckListLog()
 {
     //dtor
     Disconnect(ID_List, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
-               (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+               (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
                &CppCheckListLog::OnDoubleClick);
 }
 
 
 // TODO : use Getter instead of protected 'control'
 
-wxWindow* CppCheckListLog::CreateControl(wxWindow* parent)
+wxWindow * CppCheckListLog::CreateControl(wxWindow * parent)
 {
     ListCtrlLogger::CreateControl(parent);
     control->SetId(ID_List);
     Connect(ID_List, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
             &CppCheckListLog::OnDoubleClick);
     Manager::Get()->GetAppWindow()->PushEventHandler(this);
     return control;
@@ -51,17 +51,19 @@ wxWindow* CppCheckListLog::CreateControl(wxWindow* parent)
 
 void CppCheckListLog::DestroyControls()
 {
-    if ( !Manager::Get()->IsAppShuttingDown() )
+    if (!Manager::Get()->IsAppShuttingDown())
     {
         Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
     }
 }
 
-void CppCheckListLog::OnDoubleClick(wxCommandEvent& /*event*/)
+void CppCheckListLog::OnDoubleClick(wxCommandEvent & /*event*/)
 {
     // go to the relevant file/line
     if (control->GetSelectedItemCount() == 0)
+    {
         return;
+    }
 
     // find selected item index
     const int Index = control->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
@@ -73,23 +75,26 @@ void CppCheckListLog::SyncEditor(int SelIndex)
     wxFileName Filename(control->GetItemText(SelIndex));
     wxString File;
     File = Filename.GetFullPath();
-
     wxListItem li;
     li.SetId(SelIndex);
     li.SetColumn(1);
     li.SetMask(wxLIST_MASK_TEXT);
     control->GetItem(li);
-
     long Line = 0;
     li.GetText().ToLong(&Line);
-    cbEditor* Editor = Manager::Get()->GetEditorManager()->Open(File);
+    cbEditor * Editor = Manager::Get()->GetEditorManager()->Open(File);
+
     if (!Line || !Editor)
+    {
         return;
+    }
 
     Line -= 1;
     Editor->Activate();
     Editor->GotoLine(Line);
 
-    if (cbStyledTextCtrl* Control = Editor->GetControl())
+    if (cbStyledTextCtrl * Control = Editor->GetControl())
+    {
         Control->EnsureVisible(Line);
+    }
 }

@@ -27,58 +27,63 @@
 #include <logmanager.h>
 
 wxsContainer::wxsContainer(
-    wxsItemResData* Data,
-    const wxsItemInfo* Info,
-    const wxsEventDesc* EventArray,
-    const wxsStyleSet* StyleSet,
+    wxsItemResData * Data,
+    const wxsItemInfo * Info,
+    const wxsEventDesc * EventArray,
+    const wxsStyleSet * StyleSet,
     long PropertiesFlags):
-    wxsParent(Data,Info,PropertiesFlags,EventArray,StyleSet)
+    wxsParent(Data, Info, PropertiesFlags, EventArray, StyleSet)
 {
 }
 
-bool wxsContainer::OnCanAddChild(wxsItem* Item,bool ShowMessage)
+bool wxsContainer::OnCanAddChild(wxsItem * Item, bool ShowMessage)
 {
-    if ( Item->GetType() == wxsTSpacer )
+    if (Item->GetType() == wxsTSpacer)
     {
-        if ( ShowMessage )
+        if (ShowMessage)
         {
             wxMessageBox(_("Spacer can be added into sizer only"));
         }
+
         return false;
     }
 
-    if ( Item->GetType() == wxsTSizer )
+    if (Item->GetType() == wxsTSizer)
     {
-        if ( GetChildCount() > 0 )
+        if (GetChildCount() > 0)
         {
-            if ( GetChild(0)->GetType() == wxsTSizer )
+            if (GetChild(0)->GetType() == wxsTSizer)
             {
-                if ( ShowMessage )
+                if (ShowMessage)
                 {
                     wxMessageBox(_("This item can contain only one sizer"));
                 }
+
                 return false;
             }
             else
             {
-                if ( ShowMessage )
+                if (ShowMessage)
                 {
                     wxMessageBox(_("Item can not contain sizer if it has other items inside"));
                 }
+
                 return false;
             }
         }
+
         return true;
     }
 
-    if ( GetChildCount() > 0 )
+    if (GetChildCount() > 0)
     {
-        if ( GetChild(0)->GetType() == wxsTSizer )
+        if (GetChild(0)->GetType() == wxsTSizer)
         {
-            if ( ShowMessage )
+            if (ShowMessage)
             {
                 wxMessageBox(_("Item contains sizer, can not add other items into it."));
             }
+
             return false;
         }
     }
@@ -91,152 +96,166 @@ void wxsContainer::OnEnumItemProperties(long Flags)
     OnEnumContainerProperties(Flags);
 }
 
-void wxsContainer::OnAddItemQPP(wxsAdvQPP* QPP)
+void wxsContainer::OnAddItemQPP(wxsAdvQPP * QPP)
 {
     OnAddContainerQPP(QPP);
 }
 
-void wxsContainer::AddChildrenPreview(wxWindow* This,long Flags)
+void wxsContainer::AddChildrenPreview(wxWindow * This, long Flags)
 {
-    for ( int i=0; i<GetChildCount(); i++ )
+    for (int i = 0; i < GetChildCount(); i++)
     {
-        wxsItem* Child = GetChild(i);
-        wxObject* ChildPreviewAsObject = Child->BuildPreview(This,Flags);
-        if ( Child->GetType() == wxsTSizer )
+        wxsItem * Child = GetChild(i);
+        wxObject * ChildPreviewAsObject = Child->BuildPreview(This, Flags);
+
+        if (Child->GetType() == wxsTSizer)
         {
-            wxSizer* ChildPreviewAsSizer = wxDynamicCast(ChildPreviewAsObject,wxSizer);
-            if ( ChildPreviewAsSizer )
+            wxSizer * ChildPreviewAsSizer = wxDynamicCast(ChildPreviewAsObject, wxSizer);
+
+            if (ChildPreviewAsSizer)
             {
                 This->SetSizer(ChildPreviewAsSizer);
             }
         }
     }
 
-    if ( IsRootItem() )
+    if (IsRootItem())
     {
         // Adding all tools before calling Fit and SetSizeHints()
+        wxsItemResData * Data = GetResourceData();
 
-        wxsItemResData* Data = GetResourceData();
-        if ( Data )
+        if (Data)
         {
-            for ( int i=0; i<Data->GetToolsCount(); i++ )
+            for (int i = 0; i < Data->GetToolsCount(); i++)
             {
-                Data->GetTool(i)->BuildPreview(This,Flags);
+                Data->GetTool(i)->BuildPreview(This, Flags);
             }
         }
-
     }
 
-    for ( int i=0; i<GetChildCount(); i++ )
+    for (int i = 0; i < GetChildCount(); i++)
     {
-        wxsItem* Child = GetChild(i);
-        if ( Child->GetType() == wxsTSizer )
-        {
-            wxObject* ChildPreviewAsObject = Child->GetLastPreview();
-            wxSizer*  ChildPreviewAsSizer  = wxDynamicCast(ChildPreviewAsObject,wxSizer);
-            wxWindow* ChildPreviewAsWindow = wxDynamicCast(ChildPreviewAsObject,wxWindow);
+        wxsItem * Child = GetChild(i);
 
-            if ( ChildPreviewAsSizer )
+        if (Child->GetType() == wxsTSizer)
+        {
+            wxObject * ChildPreviewAsObject = Child->GetLastPreview();
+            wxSizer * ChildPreviewAsSizer  = wxDynamicCast(ChildPreviewAsObject, wxSizer);
+            wxWindow * ChildPreviewAsWindow = wxDynamicCast(ChildPreviewAsObject, wxWindow);
+
+            if (ChildPreviewAsSizer)
             {
                 // Child preview was created directly as sizer, we use it to
                 // call Fit() and SetSizeHints() directly
-                if ( GetBaseProps()->m_Size.IsDefault )
+                if (GetBaseProps()->m_Size.IsDefault)
                 {
                     ChildPreviewAsSizer->Fit(This);
                 }
+
                 ChildPreviewAsSizer->SetSizeHints(This);
             }
-            else if ( ChildPreviewAsWindow )
-            {
-                // Preview of sizer is given actually as some kind of panel which paints
-                // some extra data of sizer. So we have to create out own sizer to call
-                // Fit and SetSizeHints
-
-                wxSizer* IndirectSizer = new wxBoxSizer(wxHORIZONTAL);
-                IndirectSizer->Add(ChildPreviewAsWindow,1,wxEXPAND,0);
-                This->SetSizer(IndirectSizer);
-
-                if ( GetBaseProps()->m_Size.IsDefault )
+            else
+                if (ChildPreviewAsWindow)
                 {
-                    IndirectSizer->Fit(This);
-                }
+                    // Preview of sizer is given actually as some kind of panel which paints
+                    // some extra data of sizer. So we have to create out own sizer to call
+                    // Fit and SetSizeHints
+                    wxSizer * IndirectSizer = new wxBoxSizer(wxHORIZONTAL);
+                    IndirectSizer->Add(ChildPreviewAsWindow, 1, wxEXPAND, 0);
+                    This->SetSizer(IndirectSizer);
 
-                IndirectSizer->SetSizeHints(This);
-            }
+                    if (GetBaseProps()->m_Size.IsDefault)
+                    {
+                        IndirectSizer->Fit(This);
+                    }
+
+                    IndirectSizer->SetSizeHints(This);
+                }
         }
     }
 }
 
 void wxsContainer::AddChildrenCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        wxsCoderContext* Context = GetCoderContext();
-        if ( !Context ) return;
-
-        // Update parent in context and clear flRoot flag
-        wxString PreviousParent = Context->m_WindowParent;
-        Context->m_WindowParent = Codef(Context,_T("%O"));
-
-        for ( int i=0; i<GetChildCount(); i++ )
+        case wxsCPP:
         {
-            wxsItem* Child = GetChild(i);
-            Child->BuildCode(Context);
-            if ( Child->GetType() == wxsTSizer )
+            wxsCoderContext * Context = GetCoderContext();
+
+            if (!Context)
             {
-                // TODO: Is this right place to set-up sizer ?
-                Codef(_T("%ASetSizer(%o);\n"),i);
+                return;
             }
-        }
 
-        if ( IsRootItem() )
-        {
-            // Adding all tools before calling Fit and SetSizeHints()
-            wxsItemResData* Data = GetResourceData();
-            if ( Data )
+            // Update parent in context and clear flRoot flag
+            wxString PreviousParent = Context->m_WindowParent;
+            Context->m_WindowParent = Codef(Context, _T("%O"));
+
+            for (int i = 0; i < GetChildCount(); i++)
             {
-                for ( int i=0; i<Data->GetToolsCount(); i++ )
+                wxsItem * Child = GetChild(i);
+                Child->BuildCode(Context);
+
+                if (Child->GetType() == wxsTSizer)
                 {
-                    Data->GetTool(i)->BuildCode(Context);
+                    // TODO: Is this right place to set-up sizer ?
+                    Codef(_T("%ASetSizer(%o);\n"), i);
                 }
             }
 
-            wxsBaseProperties* Props = GetBaseProps();
-            if ((GetPropertiesFlags() & flTopLevel) &&  Props->m_UseLayout)
+            if (IsRootItem())
             {
-                for ( int i=0; i<GetChildCount(); i++ ) //See if item contains a sizer
+                // Adding all tools before calling Fit and SetSizeHints()
+                wxsItemResData * Data = GetResourceData();
+
+                if (Data)
                 {
-                    wxsItem* Child = GetChild(i);
-                    if ( Child->GetType() == wxsTSizer )
+                    for (int i = 0; i < Data->GetToolsCount(); i++)
                     {
-                        if ( Props->m_Size.IsDefault && Props->m_MinSize.IsDefault && Props->m_MaxSize.IsDefault)
+                        Data->GetTool(i)->BuildCode(Context);
+                    }
+                }
+
+                wxsBaseProperties * Props = GetBaseProps();
+
+                if ((GetPropertiesFlags() & flTopLevel) &&  Props->m_UseLayout)
+                {
+                    for (int i = 0; i < GetChildCount(); i++) //See if item contains a sizer
+                    {
+                        wxsItem * Child = GetChild(i);
+
+                        if (Child->GetType() == wxsTSizer)
                         {
-                            wxString ChildAccessPrefix = Child->GetAccessPrefix(GetLanguage());
-                            Codef(_T("%sSetSizeHints(%O);\n"),ChildAccessPrefix.wx_str());
+                            if (Props->m_Size.IsDefault && Props->m_MinSize.IsDefault && Props->m_MaxSize.IsDefault)
+                            {
+                                wxString ChildAccessPrefix = Child->GetAccessPrefix(GetLanguage());
+                                Codef(_T("%sSetSizeHints(%O);\n"), ChildAccessPrefix.wx_str());
+                            }
+                            else
+                                if (Props->m_Size.IsDefault)
+                                {
+                                    Codef(_T("Fit();\n"));
+                                }
+                                else
+                                {
+                                    Codef(_T("Layout();\n"));
+                                }
+
+                            break;
                         }
-                        else if ( Props->m_Size.IsDefault )
-                        {
-                            Codef(_T("Fit();\n"));
-                        }
-                        else
-                        {
-                            Codef(_T("Layout();\n"));
-                        }
-                        break;
                     }
                 }
             }
-        }
-        Context->m_WindowParent = PreviousParent;
-        return;
-    }
 
-    case wxsUnknownLanguage:
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsContainer::AddChildrenCode"),GetLanguage());
-    }
+            Context->m_WindowParent = PreviousParent;
+            return;
+        }
+
+        case wxsUnknownLanguage:
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsContainer::AddChildrenCode"), GetLanguage());
+        }
     }
 }

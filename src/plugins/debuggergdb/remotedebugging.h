@@ -30,7 +30,7 @@ struct RemoteDebugging
                : (!ip.IsEmpty() && !ipPort.IsEmpty());
     }
 
-    void MergeWith(const RemoteDebugging& other)
+    void MergeWith(const RemoteDebugging & other)
     {
         if (other.IsOk())
         {
@@ -42,30 +42,50 @@ struct RemoteDebugging
         }
 
         if (!additionalCmds.IsEmpty() && !other.additionalCmds.IsEmpty())
+        {
             additionalCmds += _T('\n');
+        }
+
         if (!other.additionalCmds.IsEmpty())
+        {
             additionalCmds += other.additionalCmds;
+        }
 
         if (!additionalCmdsBefore.IsEmpty() && !other.additionalCmdsBefore.IsEmpty())
+        {
             additionalCmdsBefore += _T('\n');
+        }
+
         if (!other.additionalCmdsBefore.IsEmpty())
+        {
             additionalCmdsBefore += other.additionalCmdsBefore;
+        }
 
         skipLDpath = other.skipLDpath;
         extendedRemote = other.extendedRemote;
 
         if (!additionalShellCmdsAfter.IsEmpty() && !other.additionalShellCmdsAfter.IsEmpty())
+        {
             additionalShellCmdsAfter += _T('\n');
+        }
+
         if (!other.additionalShellCmdsAfter.IsEmpty())
+        {
             additionalShellCmdsAfter += other.additionalShellCmdsAfter;
+        }
 
         if (!additionalShellCmdsBefore.IsEmpty() && !other.additionalShellCmdsBefore.IsEmpty())
+        {
             additionalShellCmdsBefore += _T('\n');
+        }
+
         if (!other.additionalShellCmdsBefore.IsEmpty())
+        {
             additionalShellCmdsBefore += other.additionalShellCmdsBefore;
+        }
     }
 
-    bool operator == (const RemoteDebugging &rd) const
+    bool operator == (const RemoteDebugging & rd) const
     {
         return (connType == rd.connType
                 && serialPort == rd.serialPort
@@ -93,7 +113,7 @@ struct RemoteDebugging
     bool extendedRemote;//!< connect with extended remote or not
 };
 
-typedef std::map<ProjectBuildTarget*, RemoteDebugging> RemoteDebuggingMap;
+typedef std::map<ProjectBuildTarget *, RemoteDebugging> RemoteDebuggingMap;
 
 
 #endif // REMOTEDEBUGGING_H

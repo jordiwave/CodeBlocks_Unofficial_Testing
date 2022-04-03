@@ -50,7 +50,7 @@ class EngineDictionaryDownloader;
  */
 
 #ifndef wxCLOSE_BOX
-#define wxCLOSE_BOX 0x1000
+    #define wxCLOSE_BOX 0x1000
 #endif
 
 /*!
@@ -59,52 +59,52 @@ class EngineDictionaryDownloader;
 
 class DictionaryWizard: public wxWizard
 {
-    DECLARE_CLASS( DictionaryWizard )
-    DECLARE_EVENT_TABLE()
+        DECLARE_CLASS(DictionaryWizard)
+        DECLARE_EVENT_TABLE()
 
-public:
-    /// Constructors
-    DictionaryWizard( );
-    DictionaryWizard( wxWindow* parent, wxWindowID id = DictionaryDownloadWizard, const wxPoint& pos = wxDefaultPosition );
+    public:
+        /// Constructors
+        DictionaryWizard();
+        DictionaryWizard(wxWindow * parent, wxWindowID id = DictionaryDownloadWizard, const wxPoint & pos = wxDefaultPosition);
 
-    /// Creation
-    bool Create( wxWindow* parent, wxWindowID id = DictionaryDownloadWizard, const wxPoint& pos = wxDefaultPosition );
+        /// Creation
+        bool Create(wxWindow * parent, wxWindowID id = DictionaryDownloadWizard, const wxPoint & pos = wxDefaultPosition);
 
-    /// Creates the controls and sizers
-    void CreateControls();
+        /// Creates the controls and sizers
+        void CreateControls();
 
-////@begin DictionaryWizard event handler declarations
-////@end DictionaryWizard event handler declarations
+        ////@begin DictionaryWizard event handler declarations
+        ////@end DictionaryWizard event handler declarations
 
-////@begin DictionaryWizard member function declarations
-    /// Runs the wizard.
-    bool Run();
+        ////@begin DictionaryWizard member function declarations
+        /// Runs the wizard.
+        bool Run();
 
-////@end DictionaryWizard member function declarations
+        ////@end DictionaryWizard member function declarations
 
-    /// Should we show tooltips?
-    static bool ShowToolTips();
+        /// Should we show tooltips?
+        static bool ShowToolTips();
 
-    void SetEngineDownloader(EngineDictionaryDownloader* pDownloader)
-    {
-        m_pDownloader = pDownloader;
-    }
-    EngineDictionaryDownloader* GetEngineDownloader()
-    {
-        return m_pDownloader;
-    }
-    wxArrayString* GetDictionariesToDownload()
-    {
-        return &m_DictionariesToDownload;
-    }
-    void PopulateDictionariesToDownload();
+        void SetEngineDownloader(EngineDictionaryDownloader * pDownloader)
+        {
+            m_pDownloader = pDownloader;
+        }
+        EngineDictionaryDownloader * GetEngineDownloader()
+        {
+            return m_pDownloader;
+        }
+        wxArrayString * GetDictionariesToDownload()
+        {
+            return &m_DictionariesToDownload;
+        }
+        void PopulateDictionariesToDownload();
 
-////@begin DictionaryWizard member variables
-////@end DictionaryWizard member variables
+        ////@begin DictionaryWizard member variables
+        ////@end DictionaryWizard member variables
 
-private:
-    EngineDictionaryDownloader* m_pDownloader;
-    wxArrayString m_DictionariesToDownload;
+    private:
+        EngineDictionaryDownloader * m_pDownloader;
+        wxArrayString m_DictionariesToDownload;
 };
 
 /*!
@@ -113,33 +113,33 @@ private:
 
 class WizardPage1: public wxWizardPageSimple
 {
-    DECLARE_DYNAMIC_CLASS( WizardPage1 )
-    DECLARE_EVENT_TABLE()
+        DECLARE_DYNAMIC_CLASS(WizardPage1)
+        DECLARE_EVENT_TABLE()
 
-public:
-    /// Constructors
-    WizardPage1( );
+    public:
+        /// Constructors
+        WizardPage1();
 
-    WizardPage1( wxWizard* parent );
+        WizardPage1(wxWizard * parent);
 
-    /// Creation
-    bool Create( wxWizard* parent );
+        /// Creation
+        bool Create(wxWizard * parent);
 
-    /// Creates the controls and sizers
-    void CreateControls();
+        /// Creates the controls and sizers
+        void CreateControls();
 
-////@begin WizardPage1 event handler declarations
-////@end WizardPage1 event handler declarations
-    void OnButtonDownloadListClick( wxCommandEvent& event );
+        ////@begin WizardPage1 event handler declarations
+        ////@end WizardPage1 event handler declarations
+        void OnButtonDownloadListClick(wxCommandEvent & event);
 
-////@begin WizardPage1 member function declarations
-////@end WizardPage1 member function declarations
+        ////@begin WizardPage1 member function declarations
+        ////@end WizardPage1 member function declarations
 
-    /// Should we show tooltips?
-    static bool ShowToolTips();
+        /// Should we show tooltips?
+        static bool ShowToolTips();
 
-////@begin WizardPage1 member variables
-////@end WizardPage1 member variables
+        ////@begin WizardPage1 member variables
+        ////@end WizardPage1 member variables
 };
 
 /*!
@@ -148,34 +148,34 @@ public:
 
 class WizardPage2: public wxWizardPageSimple
 {
-    DECLARE_DYNAMIC_CLASS( WizardPage2 )
-    DECLARE_EVENT_TABLE()
+        DECLARE_DYNAMIC_CLASS(WizardPage2)
+        DECLARE_EVENT_TABLE()
 
-public:
-    /// Constructors
-    WizardPage2( );
+    public:
+        /// Constructors
+        WizardPage2();
 
-    WizardPage2( wxWizard* parent );
+        WizardPage2(wxWizard * parent);
 
-    /// Creation
-    bool Create( wxWizard* parent );
+        /// Creation
+        bool Create(wxWizard * parent);
 
-    /// Creates the controls and sizers
-    void CreateControls();
+        /// Creates the controls and sizers
+        void CreateControls();
 
-////@begin WizardPage2 event handler declarations
-////@end WizardPage2 event handler declarations
-    void OnPageChanged(wxWizardEvent& event);
-    void OnButtonDownloadClick( wxCommandEvent& event );
+        ////@begin WizardPage2 event handler declarations
+        ////@end WizardPage2 event handler declarations
+        void OnPageChanged(wxWizardEvent & event);
+        void OnButtonDownloadClick(wxCommandEvent & event);
 
-////@begin WizardPage2 member function declarations
-////@end WizardPage2 member function declarations
+        ////@begin WizardPage2 member function declarations
+        ////@end WizardPage2 member function declarations
 
-    /// Should we show tooltips?
-    static bool ShowToolTips();
-    wxString GenerateDictionarySummary();
+        /// Should we show tooltips?
+        static bool ShowToolTips();
+        wxString GenerateDictionarySummary();
 
-////@begin WizardPage2 member variables
-////@end WizardPage2 member variables
+        ////@begin WizardPage2 member variables
+        ////@end WizardPage2 member variables
 };
 

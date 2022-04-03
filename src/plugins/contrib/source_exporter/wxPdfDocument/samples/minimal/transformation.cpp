@@ -11,11 +11,11 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+    #include "wx/wx.h"
 #endif
 
 #include "wx/pdfdoc.h"
@@ -26,18 +26,18 @@
 * This example shows the effects of various geometric transformations
 */
 
-int
-transformation(bool testMode)
+int transformation(bool testMode)
 {
     wxPdfDocument pdf;
+
     if (testMode)
     {
         pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
         pdf.SetCompression(false);
     }
-    pdf.AddPage();
-    pdf.SetFont(wxS("Helvetica"),wxS(""),12);
 
+    pdf.AddPage();
+    pdf.SetFont(wxS("Helvetica"), wxS(""), 12);
     // Scaling
     pdf.SetDrawColour(200);
     pdf.SetTextColour(200);
@@ -53,7 +53,6 @@ transformation(bool testMode)
     pdf.Text(50, 19, wxS("Scale"));
     // Stop Transformation
     pdf.StopTransform();
-
     // Translation
     pdf.SetDrawColour(200);
     pdf.SetTextColour(200);
@@ -69,7 +68,6 @@ transformation(bool testMode)
     pdf.Text(125, 19, wxS("Translate"));
     // Stop Transformation
     pdf.StopTransform();
-
     //Rotation
     pdf.SetDrawColour(200);
     pdf.SetTextColour(200);
@@ -86,7 +84,6 @@ transformation(bool testMode)
     pdf.Text(50, 49, wxS("Rotate"));
     // Stop Transformation
     pdf.StopTransform();
-
     // Skewing
     pdf.SetDrawColour(200);
     pdf.SetTextColour(200);
@@ -103,7 +100,6 @@ transformation(bool testMode)
     pdf.Text(125, 49, wxS("Skew"));
     // Stop Transformation
     pdf.StopTransform();
-
     // Mirroring horizontally
     pdf.SetDrawColour(200);
     pdf.SetTextColour(200);
@@ -119,7 +115,6 @@ transformation(bool testMode)
     pdf.Text(50, 79, wxS("MirrorH"));
     // Stop Transformation
     pdf.StopTransform();
-
     // Mirroring vertically
     pdf.SetDrawColour(200);
     pdf.SetTextColour(200);
@@ -135,9 +130,7 @@ transformation(bool testMode)
     pdf.Text(125, 79, wxS("MirrorV"));
     // Stop Transformation
     pdf.StopTransform();
-
     pdf.SaveAsFile(wxS("transformation.pdf"));
-
     return 0;
 }
 

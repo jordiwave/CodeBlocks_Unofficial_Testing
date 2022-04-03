@@ -37,55 +37,55 @@
 
 class wxsArrayStringCheckEditorDlg: public wxScrollingDialog
 {
-public:
+    public:
 
-    wxsArrayStringCheckEditorDlg(wxWindow* parent,wxArrayString& Strings,wxArrayBool& Bools,wxWindowID id = -1);
-    virtual ~wxsArrayStringCheckEditorDlg();
+        wxsArrayStringCheckEditorDlg(wxWindow * parent, wxArrayString & Strings, wxArrayBool & Bools, wxWindowID id = -1);
+        virtual ~wxsArrayStringCheckEditorDlg();
 
-    //(*Identifiers(wxsArrayStringCheckEditorDlg)
-    static const long ID_TEXTCTRL1;
-    static const long ID_BUTTON1;
-    static const long ID_CHECKLISTBOX1;
-    static const long ID_BUTTON2;
-    static const long ID_BUTTON4;
-    static const long ID_BUTTON3;
-    static const long ID_BUTTON5;
-    static const long ID_BUTTON6;
-    static const long ID_BUTTON7;
-    //*)
+        //(*Identifiers(wxsArrayStringCheckEditorDlg)
+        static const long ID_TEXTCTRL1;
+        static const long ID_BUTTON1;
+        static const long ID_CHECKLISTBOX1;
+        static const long ID_BUTTON2;
+        static const long ID_BUTTON4;
+        static const long ID_BUTTON3;
+        static const long ID_BUTTON5;
+        static const long ID_BUTTON6;
+        static const long ID_BUTTON7;
+        //*)
 
-protected:
+    protected:
 
-    //(*Handlers(wxsArrayStringCheckEditorDlg)
-    void OnButton1Click(wxCommandEvent& event);
-    void OnButton2Click(wxCommandEvent& event);
-    void OnButton4Click(wxCommandEvent& event);
-    void OnButton3Click(wxCommandEvent& event);
-    void OnButton5Click(wxCommandEvent& event);
-    void OnButton6Click(wxCommandEvent& event);
-    void OnButton7Click(wxCommandEvent& event);
-    void OnStringListToggled(wxCommandEvent& event);
-    //*)
+        //(*Handlers(wxsArrayStringCheckEditorDlg)
+        void OnButton1Click(wxCommandEvent & event);
+        void OnButton2Click(wxCommandEvent & event);
+        void OnButton4Click(wxCommandEvent & event);
+        void OnButton3Click(wxCommandEvent & event);
+        void OnButton5Click(wxCommandEvent & event);
+        void OnButton6Click(wxCommandEvent & event);
+        void OnButton7Click(wxCommandEvent & event);
+        void OnStringListToggled(wxCommandEvent & event);
+        //*)
 
-    //(*Declarations(wxsArrayStringCheckEditorDlg)
-    wxBoxSizer* BoxSizer4;
-    wxButton* Button4;
-    wxButton* Button1;
-    wxButton* Button2;
-    wxButton* Button6;
-    wxButton* Button5;
-    wxButton* Button3;
-    wxButton* Button7;
-    wxCheckListBox* StringList;
-    wxTextCtrl* EditArea;
-    //*)
+        //(*Declarations(wxsArrayStringCheckEditorDlg)
+        wxBoxSizer * BoxSizer4;
+        wxButton * Button4;
+        wxButton * Button1;
+        wxButton * Button2;
+        wxButton * Button6;
+        wxButton * Button5;
+        wxButton * Button3;
+        wxButton * Button7;
+        wxCheckListBox * StringList;
+        wxTextCtrl * EditArea;
+        //*)
 
-private:
+    private:
 
-    wxArrayString& Strings;
-    wxArrayBool& Bools;
+        wxArrayString & Strings;
+        wxArrayBool & Bools;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

@@ -30,19 +30,19 @@
 
 class wxsLCDDisplay : public wxsWidget
 {
-public:
-    wxsLCDDisplay(wxsItemResData* Data);
-    virtual ~wxsLCDDisplay();
-protected:
-private:
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+    public:
+        wxsLCDDisplay(wxsItemResData * Data);
+        virtual ~wxsLCDDisplay();
+    protected:
+    private:
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
-    long						m_iNumDigits;			//!< The number of digits displayed.
-    wxsColourData	m_cdLightColour;		//!< The colour which the lighted parts of the display should have.
-    wxsColourData	m_cdGrayColour;		//!< The colour that the greyed parts of the display will have.
-    wxString				m_sValue;					//!< The display's initial value.
+        long						m_iNumDigits;			//!< The number of digits displayed.
+        wxsColourData	m_cdLightColour;		//!< The colour which the lighted parts of the display should have.
+        wxsColourData	m_cdGrayColour;		//!< The colour that the greyed parts of the display will have.
+        wxString				m_sValue;					//!< The display's initial value.
 };
 
 #endif // WXSLCDDISPLAY_H

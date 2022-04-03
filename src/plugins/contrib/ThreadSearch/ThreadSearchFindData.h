@@ -28,138 +28,138 @@ enum eSearchScope
 // No comments, basic class
 class ThreadSearchFindData
 {
-public:
-    ThreadSearchFindData();
-    ThreadSearchFindData(const ThreadSearchFindData& findData);
-    ThreadSearchFindData& operator= (const ThreadSearchFindData& findData);
+    public:
+        ThreadSearchFindData();
+        ThreadSearchFindData(const ThreadSearchFindData & findData);
+        ThreadSearchFindData & operator= (const ThreadSearchFindData & findData);
 
-    ~ThreadSearchFindData() {}
+        ~ThreadSearchFindData() {}
 
-    void UpdateSearchScope(eSearchScope scope, bool bValue);
-    bool MustSearchInOpenFiles()
-    {
-        return (m_Scope & ScopeOpenFiles)      != 0;
-    }
-    bool MustSearchInProject  ()
-    {
-        return (m_Scope & ScopeProjectFiles)   != 0;
-    }
-    bool MustSearchInWorkspace()
-    {
-        return (m_Scope & ScopeWorkspaceFiles) != 0;
-    }
-    bool MustSearchInDirectory()
-    {
-        return (m_Scope & ScopeDirectoryFiles) != 0;
-    }
-    bool MustSearchInTarget   ()
-    {
-        return (m_Scope & ScopeTargetFiles)    != 0;
-    }
+        void UpdateSearchScope(eSearchScope scope, bool bValue);
+        bool MustSearchInOpenFiles()
+        {
+            return (m_Scope & ScopeOpenFiles)      != 0;
+        }
+        bool MustSearchInProject()
+        {
+            return (m_Scope & ScopeProjectFiles)   != 0;
+        }
+        bool MustSearchInWorkspace()
+        {
+            return (m_Scope & ScopeWorkspaceFiles) != 0;
+        }
+        bool MustSearchInDirectory()
+        {
+            return (m_Scope & ScopeDirectoryFiles) != 0;
+        }
+        bool MustSearchInTarget()
+        {
+            return (m_Scope & ScopeTargetFiles)    != 0;
+        }
 
-    // Setters
-    void SetFindText       (const wxString& findText)
-    {
-        m_FindText        = findText;
-    }
-    void SetMatchWord      (bool matchWord)
-    {
-        m_MatchWord       = matchWord;
-    }
-    void SetStartWord      (bool startWord)
-    {
-        m_StartWord       = startWord;
-    }
-    void SetMatchCase      (bool matchCase)
-    {
-        m_MatchCase       = matchCase;
-    }
-    void SetRegEx          (bool regEx)
-    {
-        m_RegEx           = regEx;
-    }
-    void SetScope          (int scope)
-    {
-        m_Scope           = scope;
-    }
-    void SetSearchPath     (const wxString& searchPath)
-    {
-        m_SearchPath      = searchPath;
-    }
-    void SetSearchPathFullList(const wxArrayString &searchPaths)
-    {
-        m_SearchPathFullList = searchPaths;
-    }
-    void SetSearchMask     (const wxString& searchMask)
-    {
-        m_SearchMask      = searchMask;
-    }
-    void SetRecursiveSearch(bool recursiveSearch)
-    {
-        m_RecursiveSearch = recursiveSearch;
-    }
-    void SetHiddenSearch   (bool hiddenSearch)
-    {
-        m_HiddenSearch    = hiddenSearch;
-    }
+        // Setters
+        void SetFindText(const wxString & findText)
+        {
+            m_FindText        = findText;
+        }
+        void SetMatchWord(bool matchWord)
+        {
+            m_MatchWord       = matchWord;
+        }
+        void SetStartWord(bool startWord)
+        {
+            m_StartWord       = startWord;
+        }
+        void SetMatchCase(bool matchCase)
+        {
+            m_MatchCase       = matchCase;
+        }
+        void SetRegEx(bool regEx)
+        {
+            m_RegEx           = regEx;
+        }
+        void SetScope(int scope)
+        {
+            m_Scope           = scope;
+        }
+        void SetSearchPath(const wxString & searchPath)
+        {
+            m_SearchPath      = searchPath;
+        }
+        void SetSearchPathFullList(const wxArrayString & searchPaths)
+        {
+            m_SearchPathFullList = searchPaths;
+        }
+        void SetSearchMask(const wxString & searchMask)
+        {
+            m_SearchMask      = searchMask;
+        }
+        void SetRecursiveSearch(bool recursiveSearch)
+        {
+            m_RecursiveSearch = recursiveSearch;
+        }
+        void SetHiddenSearch(bool hiddenSearch)
+        {
+            m_HiddenSearch    = hiddenSearch;
+        }
 
-    wxString GetFindText()        const
-    {
-        return m_FindText;
-    }
-    bool     GetMatchWord()       const
-    {
-        return m_MatchWord;
-    }
-    bool     GetStartWord()       const
-    {
-        return m_StartWord;
-    }
-    bool     GetMatchCase()       const
-    {
-        return m_MatchCase;
-    }
-    bool     GetRegEx()           const
-    {
-        return m_RegEx;
-    }
-    int      GetScope()           const
-    {
-        return m_Scope;
-    }
-    wxString GetSearchMask()      const
-    {
-        return m_SearchMask;
-    }
-    bool     GetRecursiveSearch() const
-    {
-        return m_RecursiveSearch;
-    }
-    bool     GetHiddenSearch()    const
-    {
-        return m_HiddenSearch;
-    }
+        wxString GetFindText()        const
+        {
+            return m_FindText;
+        }
+        bool     GetMatchWord()       const
+        {
+            return m_MatchWord;
+        }
+        bool     GetStartWord()       const
+        {
+            return m_StartWord;
+        }
+        bool     GetMatchCase()       const
+        {
+            return m_MatchCase;
+        }
+        bool     GetRegEx()           const
+        {
+            return m_RegEx;
+        }
+        int      GetScope()           const
+        {
+            return m_Scope;
+        }
+        wxString GetSearchMask()      const
+        {
+            return m_SearchMask;
+        }
+        bool     GetRecursiveSearch() const
+        {
+            return m_RecursiveSearch;
+        }
+        bool     GetHiddenSearch()    const
+        {
+            return m_HiddenSearch;
+        }
 
-    wxString GetSearchPath(bool bExpanded = false) const;
-    wxArrayString GetSearchPathFullList() const
-    {
-        return m_SearchPathFullList;
-    }
+        wxString GetSearchPath(bool bExpanded = false) const;
+        wxArrayString GetSearchPathFullList() const
+        {
+            return m_SearchPathFullList;
+        }
 
-    bool IsOptionEnabled() const;
+        bool IsOptionEnabled() const;
 
-private:
-    wxString m_FindText;
-    bool     m_MatchWord;
-    bool     m_StartWord;
-    bool     m_MatchCase;
-    bool     m_RegEx;
-    int      m_Scope;
-    wxString m_SearchPath;
-    wxArrayString m_SearchPathFullList;
-    wxString m_SearchMask;
-    bool     m_RecursiveSearch;
-    bool     m_HiddenSearch;
+    private:
+        wxString m_FindText;
+        bool     m_MatchWord;
+        bool     m_StartWord;
+        bool     m_MatchCase;
+        bool     m_RegEx;
+        int      m_Scope;
+        wxString m_SearchPath;
+        wxArrayString m_SearchPathFullList;
+        wxString m_SearchMask;
+        bool     m_RecursiveSearch;
+        bool     m_HiddenSearch;
 };
 
 #endif // THREAD_SEARCH_FIND_DATA_H

@@ -157,7 +157,9 @@
 		<Project filename="plugins/contrib/FortranProject/FortranProject_cbsvn_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>    
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE WIP EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
+		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
 		<Project filename="plugins/contrib-wip/cbDiff/cbDiff_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
@@ -173,19 +175,19 @@
 		<Project filename="plugins/contrib-wip/cbtortoisesvn/cbtortoisesvn_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<!--  =>=>=>=>=>=>=>=>=>=> BELOW ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->
-		<Project filename="plugins/contrib/cbBuildTools/cbBuildTools_Windows.cbp">
+		<Project filename="plugins/contrib-wip/debuggerGDB_MI/debbugger_gdbmi_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
-		<Project filename="plugins/contrib/cbMarkdown/cbMarkdown_Windows.cbp">
+		<Project filename="plugins/contrib-wip/cbBuildTools/cbBuildTools_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
-		<Project filename="plugins/contrib/cbMemoryView/cbMemoryView_Windows.cbp">
+		<Project filename="plugins/contrib-wip/cbMarkdown/cbMarkdown_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
-		<Project filename="plugins/contrib/cbSystemView/cbSystemView_Windows.cbp">
+		<Project filename="plugins/contrib-wip/cbMemoryView/cbMemoryView_Windows.cbp">
+			<Depends filename="CodeBlocks_Windows.cbp" />
+		</Project>
+		<Project filename="plugins/contrib-wip/cbSystemView/cbSystemView_Windows.cbp">
 			<Depends filename="CodeBlocks_Windows.cbp" />
 		</Project>
 		<!--  =>=>=>=>=>=>=>=>=>=> ABOVE ARE EXTERNAL PLUGINS ADDED <=<=<=<=<=<=<=<=<=<= -->

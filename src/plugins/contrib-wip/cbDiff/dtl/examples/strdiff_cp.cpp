@@ -15,9 +15,8 @@ using dtl::Printer;
 
 #include "printers.hpp"
 
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
-
     if (isFewArgs(argc))
     {
         cerr << "Too few arguments." << endl;
@@ -26,17 +25,12 @@ int main(int argc, char *argv[])
 
     typedef char   elem;
     typedef string sequence;
-
     sequence A(argv[1]);
     sequence B(argv[2]);
-
     Diff< elem, sequence > d(A, B);
     d.compose();
-
     // Shortest Edit Script
     cout << "SES" << endl;
-
     d.printSES < ostream, customChangePrinter > (cout);
-
     return 0;
 }

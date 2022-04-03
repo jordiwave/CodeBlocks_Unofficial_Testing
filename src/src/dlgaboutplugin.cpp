@@ -9,23 +9,22 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/button.h>
-#include <wx/intl.h>
-#include <wx/stattext.h>
-#include <wx/string.h>
-#include <wx/textctrl.h>
-#include <wx/xrc/xmlres.h>
+    #include <wx/button.h>
+    #include <wx/intl.h>
+    #include <wx/stattext.h>
+    #include <wx/string.h>
+    #include <wx/textctrl.h>
+    #include <wx/xrc/xmlres.h>
 #endif
 
 #include "cbplugin.h"
 #include "dlgaboutplugin.h" // class's header file
 
 // class constructor
-dlgAboutPlugin::dlgAboutPlugin(wxWindow* parent, const PluginInfo* pi)
+dlgAboutPlugin::dlgAboutPlugin(wxWindow * parent, const PluginInfo * pi)
 {
-    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAboutPlugin"),_T("wxScrollingDialog"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAboutPlugin"), _T("wxScrollingDialog"));
     XRCCTRL(*this, "wxID_CANCEL", wxButton)->SetDefault();
-
     XRCCTRL(*this, "lblTitle", wxStaticText)->SetLabel(pi->title);
     XRCCTRL(*this, "txtDescription", wxTextCtrl)->SetValue(pi->description);
     XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetValue(pi->thanksTo);
@@ -35,7 +34,6 @@ dlgAboutPlugin::dlgAboutPlugin(wxWindow* parent, const PluginInfo* pi)
     XRCCTRL(*this, "lblAuthor", wxStaticText)->SetLabel(pi->author);
     XRCCTRL(*this, "lblEmail", wxStaticText)->SetLabel(pi->authorEmail);
     XRCCTRL(*this, "lblWebsite", wxStaticText)->SetLabel(pi->authorWebsite);
-
     Fit();
 }
 

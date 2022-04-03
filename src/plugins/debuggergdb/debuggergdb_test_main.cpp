@@ -3,7 +3,7 @@
 
 struct RunAll
 {
-    bool operator()(UnitTest::Test const* /*test*/) const
+    bool operator()(UnitTest::Test const * /*test*/) const
     {
         return true;
     }
@@ -11,7 +11,7 @@ struct RunAll
 
 int main()
 {
-//    return UnitTest::RunAllTests();
+    //    return UnitTest::RunAllTests();
     UnitTest::TestReporterStdout reporter;
     UnitTest::TestRunner runner(reporter);
     return runner.RunTestsIf(UnitTest::Test::GetTestList(), NULL, RunAll(), 1000);

@@ -17,18 +17,18 @@
 //----------------------------------------------------------------------------
 // wx
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "points.h"
+    #pragma implementation "points.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/dynarray.h>
+    #include <wx/dynarray.h>
 #endif
 
 #include "wx/charttypes.h"
@@ -45,7 +45,7 @@ struct Point
     ChartValue m_xval;
     ChartValue m_yval;
     ChartColor m_col;
-    Point(wxString name=wxEmptyString, ChartValue x=0, ChartValue y=0,
+    Point(wxString name = wxEmptyString, ChartValue x = 0, ChartValue y = 0,
           ChartColor c = 0);
 };
 
@@ -64,53 +64,53 @@ WX_DECLARE_OBJARRAY(Point, ListPoints);
 class WXDLLIMPEXP_CHART wxPoints
 /* C::B end */
 {
-public:
-    wxPoints();
-    ~wxPoints();
+    public:
+        wxPoints();
+        ~wxPoints();
 
-    // Add Point to vector (sort by xval)
-    //-----------------------------------
-    void Add(const Point &p);
-    void Add(const wxString s, const ChartValue x, const ChartValue y,
-             const ChartColor c = 0);
+        // Add Point to vector (sort by xval)
+        //-----------------------------------
+        void Add(const Point & p);
+        void Add(const wxString s, const ChartValue x, const ChartValue y,
+                 const ChartColor c = 0);
 
-    // remove points from vector
-    //--------------------------
-    void Clear();
+        // remove points from vector
+        //--------------------------
+        void Clear();
 
-    // Get points (vals) from vector
-    //------------------------------
-    Point GetPoint(size_t n) const;
-    wxString GetName(size_t n) const;
-    ChartValue GetXVal(size_t n) const;
-    ChartValue GetYVal(size_t n) const;
-    ChartColor GetColor(size_t n) const;
+        // Get points (vals) from vector
+        //------------------------------
+        Point GetPoint(size_t n) const;
+        wxString GetName(size_t n) const;
+        ChartValue GetXVal(size_t n) const;
+        ChartValue GetYVal(size_t n) const;
+        ChartColor GetColor(size_t n) const;
 
-    // Get stat values
-    //------------------------------
-    size_t GetCount() const;
-    ChartValue GetMaxX() const;
-    ChartValue GetMaxY() const;
-    ChartValue GetMinX() const;
-    ChartValue GetMinY() const;
+        // Get stat values
+        //------------------------------
+        size_t GetCount() const;
+        ChartValue GetMaxX() const;
+        ChartValue GetMaxY() const;
+        ChartValue GetMinX() const;
+        ChartValue GetMinY() const;
 
-    // Test
-    //-----
-    //void Dump();
+        // Test
+        //-----
+        //void Dump();
 
-private:
+    private:
 
-    ListPoints m_vPoints;
+        ListPoints m_vPoints;
 
-    // Utility list manipolation
-    //--------------------------
-    size_t GetInsertPosition(const Point& p);
-    //size_t GetPosition(int n);
+        // Utility list manipolation
+        //--------------------------
+        size_t GetInsertPosition(const Point & p);
+        //size_t GetPosition(int n);
 
-    // copy ctor & op= NOT allow
-    //--------------------------
-    wxPoints(const wxPoints&);
-    wxPoints& operator=(const wxPoints&);
+        // copy ctor & op= NOT allow
+        //--------------------------
+        wxPoints(const wxPoints &);
+        wxPoints & operator=(const wxPoints &);
 };
 
 

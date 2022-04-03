@@ -38,226 +38,229 @@ class wxsPropertyGridManager;
  */
 class PLUGIN_EXPORT wxsPropertyContainer
 {
-public:
+    public:
 
-    /** \brief Ctor */
-    wxsPropertyContainer();
+        /** \brief Ctor */
+        wxsPropertyContainer();
 
-    /** \brief Dctor */
-    virtual ~wxsPropertyContainer();
+        /** \brief Dctor */
+        virtual ~wxsPropertyContainer();
 
-    /** \brief Changing Property Grid focus to this object
-     *
-     * This function can be used when this object is selected
-     * to make main property grid point to it.
-     */
-    void ShowInPropertyGrid();
+        /** \brief Changing Property Grid focus to this object
+         *
+         * This function can be used when this object is selected
+         * to make main property grid point to it.
+         */
+        void ShowInPropertyGrid();
 
-    /** \brief Function reading all properties from Xml node
-     *  \param Element Xml element containing all elements of properties
-     *         as child nodes
-     */
-    void XmlRead(TiXmlElement* Element);
+        /** \brief Function reading all properties from Xml node
+         *  \param Element Xml element containing all elements of properties
+         *         as child nodes
+         */
+        void XmlRead(TiXmlElement * Element);
 
-    /** \brief Function writing all properties to Xml node
-     *  \param Element Xml element where all elements of properties
-     *         will be added
-     */
-    void XmlWrite(TiXmlElement* Element);
+        /** \brief Function writing all properties to Xml node
+         *  \param Element Xml element where all elements of properties
+         *         will be added
+         */
+        void XmlWrite(TiXmlElement * Element);
 
-    /** \brief Function reading all properties from property stream */
-    void PropStreamRead(wxsPropertyStream* Stream);
+        /** \brief Function reading all properties from property stream */
+        void PropStreamRead(wxsPropertyStream * Stream);
 
-    /** \brief Function writing all properties to property stream */
-    void PropStreamWrite(wxsPropertyStream* Stream);
+        /** \brief Function writing all properties to property stream */
+        void PropStreamWrite(wxsPropertyStream * Stream);
 
-    /** \brief Function building new quick properties panel.
-     *
-     * If there was panel before, it will be unbinded from current object
-     * (and thus become useless) and new one will be binded.
-     */
-    wxsQuickPropsPanel* BuildQuickPropertiesPanel(wxWindow* Parent);
+        /** \brief Function building new quick properties panel.
+         *
+         * If there was panel before, it will be unbinded from current object
+         * (and thus become useless) and new one will be binded.
+         */
+        wxsQuickPropsPanel * BuildQuickPropertiesPanel(wxWindow * Parent);
 
-    /** \brief Function notifying about property change
-     *
-     * This function must be called when value of any property
-     * has been changed externally (not from property grid nor
-     * quick properties - there are special functions for them)
-     * It causes property grid and quick properties panel to
-     * reread it's content.
-     *
-     * \param CallPropertyChangeHandler - if true, PropertyChangeHandler will be called.
-     */
-    void NotifyPropertyChange(bool CallPropertyChangeHandler=false);
+        /** \brief Function notifying about property change
+         *
+         * This function must be called when value of any property
+         * has been changed externally (not from property grid nor
+         * quick properties - there are special functions for them)
+         * It causes property grid and quick properties panel to
+         * reread it's content.
+         *
+         * \param CallPropertyChangeHandler - if true, PropertyChangeHandler will be called.
+         */
+        void NotifyPropertyChange(bool CallPropertyChangeHandler = false);
 
-    /** \brief Operator reading from property stream */
-    inline wxsPropertyStream& operator>>(wxsPropertyStream& Stream)
-    {
-        PropStreamRead(&Stream);
-        return Stream;
-    }
+        /** \brief Operator reading from property stream */
+        inline wxsPropertyStream & operator>>(wxsPropertyStream & Stream)
+        {
+            PropStreamRead(&Stream);
+            return Stream;
+        }
 
-    /** \brief Operator writing to property stream */
-    inline wxsPropertyStream& operator<<(wxsPropertyStream& Stream)
-    {
-        PropStreamWrite(&Stream);
-        return Stream;
-    }
+        /** \brief Operator writing to property stream */
+        inline wxsPropertyStream & operator<<(wxsPropertyStream & Stream)
+        {
+            PropStreamWrite(&Stream);
+            return Stream;
+        }
 
-    /** \brief Function returning flags of availability for this object
-     *
-     * These flags are passed to OnEnumProperties function and are used for
-     * filtering flags inside Property function.
-     * Using flags one can easily filter used properties.
-     *
-     * There are special reserved flags, which are put over properties
-     * returned here before using flags:
-     *  \li flPropGrid - this flag is set when operating on property grid
-     *  \li flXml - this flag is set when current operation is XmlRead or XmlWrite
-     *  \li flPropStream - this flag is set when operating on property stream
-     * These flags are available only from OnEnumProperties or Property
-     * functions, there's no way to check them outside.
-     */
-    inline long GetPropertiesFlags()
-    {
-        return OnGetPropertiesFlags();
-    }
+        /** \brief Function returning flags of availability for this object
+         *
+         * These flags are passed to OnEnumProperties function and are used for
+         * filtering flags inside Property function.
+         * Using flags one can easily filter used properties.
+         *
+         * There are special reserved flags, which are put over properties
+         * returned here before using flags:
+         *  \li flPropGrid - this flag is set when operating on property grid
+         *  \li flXml - this flag is set when current operation is XmlRead or XmlWrite
+         *  \li flPropStream - this flag is set when operating on property stream
+         * These flags are available only from OnEnumProperties or Property
+         * functions, there's no way to check them outside.
+         */
+        inline long GetPropertiesFlags()
+        {
+            return OnGetPropertiesFlags();
+        }
 
-protected:
+    protected:
 
-    /** \copydoc wxsPropertyContainer::GetPropertiesFlags() */
-    virtual long OnGetPropertiesFlags()
-    {
-        return -1;
-    }
+        /** \copydoc wxsPropertyContainer::GetPropertiesFlags() */
+        virtual long OnGetPropertiesFlags()
+        {
+            return -1;
+        }
 
-    /** \brief Function enumerating properties
-     *
-     * This function MUST call Property or one of SubContainer functions
-     * for each  property or sub container which will be used. Properties
-     * must be declared as static objects - static class members or static
-     * function variables (the second one is preferred since properties will
-     * be created when they are really needed).
-     *
-     * Example of registering function:
-     *  \code
-     *  void SomeClass::OnEnumProperties(long Flags)
-     *  {
-     *      static wxsLongProperty Prop1(_("Long value"),_T("value"),wxsOFFSET(SomeClass,VariableName));
-     *      if ( Flags & flXrc )
-     *      {
-     *          Property(Prop1);
-     *      }
-     *      ... or equal to previous 3 lines ...
-     *      Property(Prop1,flXrc);
-     *  }
-     *  \endcode
-     */
-    virtual void OnEnumProperties(long Flags) = 0;
+        /** \brief Function enumerating properties
+         *
+         * This function MUST call Property or one of SubContainer functions
+         * for each  property or sub container which will be used. Properties
+         * must be declared as static objects - static class members or static
+         * function variables (the second one is preferred since properties will
+         * be created when they are really needed).
+         *
+         * Example of registering function:
+         *  \code
+         *  void SomeClass::OnEnumProperties(long Flags)
+         *  {
+         *      static wxsLongProperty Prop1(_("Long value"),_T("value"),wxsOFFSET(SomeClass,VariableName));
+         *      if ( Flags & flXrc )
+         *      {
+         *          Property(Prop1);
+         *      }
+         *      ... or equal to previous 3 lines ...
+         *      Property(Prop1,flXrc);
+         *  }
+         *  \endcode
+         */
+        virtual void OnEnumProperties(long Flags) = 0;
 
-    /** \brief Function registering property
-     *
-     * \note This function may be called only inside OnEnumProperties function
-     *
-     * \param Prop reference to property object which will be used
-     * \param Priority priority of this property, it's used while creating property grid
-     *        to arrange properties.
-     */
-    void Property(wxsProperty& Prop);
+        /** \brief Function registering property
+         *
+         * \note This function may be called only inside OnEnumProperties function
+         *
+         * \param Prop reference to property object which will be used
+         * \param Priority priority of this property, it's used while creating property grid
+         *        to arrange properties.
+         */
+        void Property(wxsProperty & Prop);
 
-    /** \brief Function enumerating properties of other container
-     * \note This function may be called only inside OnEnumProperties function
-     */
-    inline void SubContainer(wxsPropertyContainer* Container)
-    {
-        if ( Container ) SubContainer(Container,Container->GetPropertiesFlags());
-    }
+        /** \brief Function enumerating properties of other container
+         * \note This function may be called only inside OnEnumProperties function
+         */
+        inline void SubContainer(wxsPropertyContainer * Container)
+        {
+            if (Container)
+            {
+                SubContainer(Container, Container->GetPropertiesFlags());
+            }
+        }
 
-    /** \brief Function enumerating properties of other container from it's reference
-     * \note This function may be called only inside OnEnumProperties function
-     */
-    inline void SubContainer(wxsPropertyContainer& Container)
-    {
-        SubContainer(&Container);
-    }
+        /** \brief Function enumerating properties of other container from it's reference
+         * \note This function may be called only inside OnEnumProperties function
+         */
+        inline void SubContainer(wxsPropertyContainer & Container)
+        {
+            SubContainer(&Container);
+        }
 
-    /** \brief Function enumerating properties of other container overriding it's flags
-     * \note This function may be called only inside OnEnumProperties function
-     */
-    void SubContainer(wxsPropertyContainer* Container,long NewFlags);
+        /** \brief Function enumerating properties of other container overriding it's flags
+         * \note This function may be called only inside OnEnumProperties function
+         */
+        void SubContainer(wxsPropertyContainer * Container, long NewFlags);
 
-    /** \brief Function enumerating properties of other container overriding it's flags
-     * \note This function may be called only inside OnEnumProperties function
-     */
-    inline void SubContainer(wxsPropertyContainer& Container,long NewFlags)
-    {
-        SubContainer(&Container,NewFlags);
-    }
+        /** \brief Function enumerating properties of other container overriding it's flags
+         * \note This function may be called only inside OnEnumProperties function
+         */
+        inline void SubContainer(wxsPropertyContainer & Container, long NewFlags)
+        {
+            SubContainer(&Container, NewFlags);
+        }
 
-    /** \brief Function building quick properties window */
-    virtual wxsQuickPropsPanel* OnCreateQuickProperties(cb_unused wxWindow* Parent)
-    {
-        return 0;
-    }
+        /** \brief Function building quick properties window */
+        virtual wxsQuickPropsPanel * OnCreateQuickProperties(cb_unused wxWindow * Parent)
+        {
+            return 0;
+        }
 
-    /** \brief Function notifying that one of properties has changed
-     *
-     * This function may be redefined in derived classes to get notified
-     * about change of it's properties.
-     */
-    virtual void OnPropertyChanged() {}
+        /** \brief Function notifying that one of properties has changed
+         *
+         * This function may be redefined in derived classes to get notified
+         * about change of it's properties.
+         */
+        virtual void OnPropertyChanged() {}
 
-    /** \brief Function notifying that one of properties in sub-containers has changed
-     *
-     * This function may be redefined in derived classes to get notified
-     * about change of sub-container property change.
-     * Sub-container is other container called in OnEnumProperties using
-     * SubContainer method.
-     */
-    virtual void OnSubPropertyChanged(cb_unused wxsPropertyContainer* sc) {}
+        /** \brief Function notifying that one of properties in sub-containers has changed
+         *
+         * This function may be redefined in derived classes to get notified
+         * about change of sub-container property change.
+         * Sub-container is other container called in OnEnumProperties using
+         * SubContainer method.
+         */
+        virtual void OnSubPropertyChanged(cb_unused wxsPropertyContainer * sc) {}
 
-    /** \brief Flag set when operating on property grid */
-    static const long flPropGrid   = 0x40000000;
+        /** \brief Flag set when operating on property grid */
+        static const long flPropGrid   = 0x40000000;
 
-    /** \brief Flag set when operating on xml */
-    static const long flXml        = 0x20000000;
+        /** \brief Flag set when operating on xml */
+        static const long flXml        = 0x20000000;
 
-    /** \brief Flag set when operating on property stream */
-    static const long flPropStream = 0x10000000;
+        /** \brief Flag set when operating on property stream */
+        static const long flPropStream = 0x10000000;
 
-    /** \brief In this function derived classes may add extra tabs to property grid
-     *
-     * \warning This function is not called for sub-containers.
-     */
-    virtual void OnAddExtraProperties(cb_unused wxsPropertyGridManager* Grid) {}
+        /** \brief In this function derived classes may add extra tabs to property grid
+         *
+         * \warning This function is not called for sub-containers.
+         */
+        virtual void OnAddExtraProperties(cb_unused wxsPropertyGridManager * Grid) {}
 
-    /** \brief Function notifying that some extra property (which could be added
-     *         inside OnAddExtraProperties call) has changed.
-     */
-    virtual void OnExtraPropertyChanged(cb_unused wxsPropertyGridManager* Grid,
-                                        cb_unused wxPGId                  Id) {}
+        /** \brief Function notifying that some extra property (which could be added
+         *         inside OnAddExtraProperties call) has changed.
+         */
+        virtual void OnExtraPropertyChanged(cb_unused wxsPropertyGridManager * Grid,
+                                            cb_unused wxPGId                  Id) {}
 
-private:
+    private:
 
-    /** \brief Function notifying change of any property inside property grid */
-    void NotifyPropertyChangeFromPropertyGrid();
+        /** \brief Function notifying change of any property inside property grid */
+        void NotifyPropertyChangeFromPropertyGrid();
 
-    /** \brief Function notifying change of any property inside quick properties panel */
-    void NotifyPropertyChangeFromQuickProps();
+        /** \brief Function notifying change of any property inside quick properties panel */
+        void NotifyPropertyChangeFromQuickProps();
 
-    wxsQuickPropsPanel* CurrentQP;          /// \brief Currently associated quick properties panel
-    bool BlockChangeCallback;               /// \brief set to true if should block NotifyChange functions -
-    ///        it will be used to avoid recursive calling of property
-    ///        change when updating editors
-    static long Flags;                      /// \brief Local cache of availability flags
-    static bool IsRead;                     /// \brief Used to determine whether we are reading or writing data
-    static TiXmlElement* CurrentElement;    /// \brief Local cache of current xml node
-    static wxsPropertyStream* CurrentStream;/// \brief Local cache of current property stream
-    static wxMutex Mutex;                   /// \brief Mutex used when operating on properties
+        wxsQuickPropsPanel * CurrentQP;         /// \brief Currently associated quick properties panel
+        bool BlockChangeCallback;               /// \brief set to true if should block NotifyChange functions -
+        ///        it will be used to avoid recursive calling of property
+        ///        change when updating editors
+        static long Flags;                      /// \brief Local cache of availability flags
+        static bool IsRead;                     /// \brief Used to determine whether we are reading or writing data
+        static TiXmlElement * CurrentElement;   /// \brief Local cache of current xml node
+        static wxsPropertyStream * CurrentStream; /// \brief Local cache of current property stream
+        static wxMutex Mutex;                   /// \brief Mutex used when operating on properties
 
-    friend class wxsPropertyGridManager;
-    friend class wxsQuickPropsPanel;
-    friend class wxsProperty;
+        friend class wxsPropertyGridManager;
+        friend class wxsQuickPropsPanel;
+        friend class wxsProperty;
 };
 
 #endif

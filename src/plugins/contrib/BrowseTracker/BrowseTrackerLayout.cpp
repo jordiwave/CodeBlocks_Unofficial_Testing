@@ -34,15 +34,15 @@
 #include "BrowseTrackerLayout.h"
 
 #ifndef CB_PRECOMP
-#include <wx/confbase.h>
-#include <wx/fileconf.h>
-#include <wx/intl.h>
-#include "manager.h"
-#include "projectmanager.h"
-#include "logmanager.h"
-#include "editormanager.h"
-#include "cbeditor.h"
-#include "cbproject.h"
+    #include <wx/confbase.h>
+    #include <wx/fileconf.h>
+    #include <wx/intl.h>
+    #include "manager.h"
+    #include "projectmanager.h"
+    #include "logmanager.h"
+    #include "editormanager.h"
+    #include "cbeditor.h"
+    #include "cbproject.h"
 #endif
 
 #include <wx/tokenzr.h>
@@ -54,7 +54,7 @@
 #include "Version.h"
 
 // ----------------------------------------------------------------------------
-BrowseTrackerLayout::BrowseTrackerLayout(cbProject* project)
+BrowseTrackerLayout::BrowseTrackerLayout(cbProject * project)
 // ----------------------------------------------------------------------------
     : m_pProject(project)
 {
@@ -71,29 +71,35 @@ BrowseTrackerLayout::~BrowseTrackerLayout()
 // IMPORTANT! We have to be careful of what to unicode and what not to.
 // TinyXML must use NON-unicode strings!
 // ----------------------------------------------------------------------------
-bool BrowseTrackerLayout::Open(const wxString& filename, FileBrowse_MarksHash& m_FileBrowse_MarksArchive )
+bool BrowseTrackerLayout::Open(const wxString & filename, FileBrowse_MarksHash & m_FileBrowse_MarksArchive)
 // ----------------------------------------------------------------------------
 {
     TiXmlDocument doc;
+
     if (!TinyXML::LoadDocument(filename, &doc))
+    {
         return false;
+    }
 
-    ProjectManager* pMan = Manager::Get()->GetProjectManager();
-    LogManager* pMsg = Manager::Get()->GetLogManager();
+    ProjectManager * pMan = Manager::Get()->GetProjectManager();
+    LogManager * pMsg = Manager::Get()->GetLogManager();
+
     if (!pMan || !pMsg)
+    {
         return false;
+    }
 
-    TiXmlElement* root;
-    TiXmlElement* elem;
+    TiXmlElement * root;
+    TiXmlElement * elem;
     wxString fname;
-    ProjectFile* pf;
-
-
+    ProjectFile * pf;
     root = doc.FirstChildElement("BrowseTracker_layout_file");
+
     if (!root)
     {
         // old tag
         root = doc.FirstChildElement("BrowseTracker_layout_file");
+
         if (!root)
         {
             pMsg->DebugLog(_T("Not a valid BrowseTracker layout file..."));
@@ -102,6 +108,7 @@ bool BrowseTrackerLayout::Open(const wxString& filename, FileBrowse_MarksHash& m
     }
 
     elem = root->FirstChildElement("ActiveTarget");
+
     if (elem)
     {
         if (elem->Attribute("name"))
@@ -111,6 +118,7 @@ bool BrowseTrackerLayout::Open(const wxString& filename, FileBrowse_MarksHash& m
     }
 
     elem = root->FirstChildElement("File");
+
     if (!elem)
     {
         //pMsg->DebugLog(_T("No 'File' element in file..."));
@@ -121,13 +129,16 @@ bool BrowseTrackerLayout::Open(const wxString& filename, FileBrowse_MarksHash& m
     {
         //pMsg->DebugLog(elem->Value());
         fname = cbC2U(elem->Attribute("name"));
+
         if (fname.IsEmpty())
         {
             //pMsg->DebugLog(_T("'File' node exists, but no filename?!?"));
             pf = nullptr;
         }
         else
+        {
             pf = m_pProject->GetFileByFilename(fname);
+        }
 
         if (pf)
         {
@@ -137,29 +148,37 @@ bool BrowseTrackerLayout::Open(const wxString& filename, FileBrowse_MarksHash& m
             int open = 0;
             int top = 0;
             int tabpos = 0;
+
             if (elem->QueryIntAttribute("open", &open) == TIXML_SUCCESS)
             {
                 ;//pf->editorOpen = open != 0;
             }
+
             if (elem->QueryIntAttribute("top", &top) == TIXML_SUCCESS)
             {
-                if(top)
+                if (top)
+                {
                     m_TopProjectFile = pf;
+                }
             }
+
             if (elem->QueryIntAttribute("tabpos", &tabpos) == TIXML_SUCCESS)
             {
                 ;//pf->editorTabPos = tabpos;
             }
 
-            TiXmlElement* cursor = elem->FirstChildElement();
+            TiXmlElement * cursor = elem->FirstChildElement();
+
             if (cursor)
             {
                 int pos = 0;
                 int topline = 0;
+
                 if (cursor->QueryIntAttribute("position", &pos) == TIXML_SUCCESS)
                 {
                     ;//pf->editorPos = pos;
                 }
+
                 if (cursor->QueryIntAttribute("topLine", &topline) == TIXML_SUCCESS)
                 {
                     ;//pf->editorTopLine = topline;
@@ -169,8 +188,8 @@ bool BrowseTrackerLayout::Open(const wxString& filename, FileBrowse_MarksHash& m
 #if defined(LOGGING)
             ///LOGIT( _T("Open Layout processing for[%s]"),fname.c_str() );
 #endif
+            TiXmlElement * browsemarks = cursor->NextSiblingElement("BrowseMarks");
 
-            TiXmlElement* browsemarks = cursor->NextSiblingElement("BrowseMarks");
             //if (not browsemarks)
             //    LOGIT( _T("OPEN LAYOUT failed for BrowseMarks") );
             if (browsemarks)
@@ -179,7 +198,7 @@ bool BrowseTrackerLayout::Open(const wxString& filename, FileBrowse_MarksHash& m
 #if defined(LOGGING)
                 //LOGIT( _T("OPEN_LAYOUT BROWSEMarksStrng[%s][%s]"), fname.c_str(), marksString.c_str() );
 #endif
-                ParseBrowse_MarksString( fname, marksString, m_FileBrowse_MarksArchive );
+                ParseBrowse_MarksString(fname, marksString, m_FileBrowse_MarksArchive);
             }
         }
 
@@ -189,115 +208,139 @@ bool BrowseTrackerLayout::Open(const wxString& filename, FileBrowse_MarksHash& m
     return true;
 }//Open
 // ----------------------------------------------------------------------------
-bool BrowseTrackerLayout::ParseBrowse_MarksString(const wxString& filename, wxString BrowseMarksString, FileBrowse_MarksHash& m_EdMarksArchive)
+bool BrowseTrackerLayout::ParseBrowse_MarksString(const wxString & filename, wxString BrowseMarksString, FileBrowse_MarksHash & m_EdMarksArchive)
 // ----------------------------------------------------------------------------
 {
-    if (filename.IsEmpty()) return false;
-    if ( BrowseMarksString.IsEmpty() ) return false;
-    ProjectFile* pf = m_pProject->GetFileByFilename( filename, true, true);
-    if ( not pf ) return false;
-    wxString filenamePath = pf->file.GetFullPath();
+    if (filename.IsEmpty())
+    {
+        return false;
+    }
 
+    if (BrowseMarksString.IsEmpty())
+    {
+        return false;
+    }
+
+    ProjectFile * pf = m_pProject->GetFileByFilename(filename, true, true);
+
+    if (not pf)
+    {
+        return false;
+    }
+
+    wxString filenamePath = pf->file.GetFullPath();
     // parse the comma delimited string
-    BrowseMarks*  pEdPosnArchive = new BrowseMarks(filenamePath );
+    BrowseMarks * pEdPosnArchive = new BrowseMarks(filenamePath);
     wxStringTokenizer tkz(BrowseMarksString, wxT(","));
-    while ( tkz.HasMoreTokens() )
+
+    while (tkz.HasMoreTokens())
     {
         long longnum;
         tkz.GetNextToken().ToLong(&longnum);
         pEdPosnArchive->RecordMark(longnum);
     }//while
+
     m_EdMarksArchive[filenamePath] = pEdPosnArchive;
     return true;
 }//ParseBrowse_MarksString
 // ----------------------------------------------------------------------------
-bool BrowseTrackerLayout::Save(const wxString& filename, FileBrowse_MarksHash& m_FileBrowse_MarksArchive)
+bool BrowseTrackerLayout::Save(const wxString & filename, FileBrowse_MarksHash & m_FileBrowse_MarksArchive)
 // ----------------------------------------------------------------------------
 {
     //DumpBrowse_Marks(wxT("BookMarks"), m_FileBrowse_MarksArchive, m_EdBook_MarksArchive);
-
-    const char* ROOT_TAG = "BrowseTracker_layout_file";
-
+    const char * ROOT_TAG = "BrowseTracker_layout_file";
     TiXmlDocument doc;
     doc.SetCondenseWhiteSpace(false);
     doc.InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
-    TiXmlElement* rootnode = static_cast<TiXmlElement*>(doc.InsertEndChild(TiXmlElement(ROOT_TAG)));
+    TiXmlElement * rootnode = static_cast<TiXmlElement *>(doc.InsertEndChild(TiXmlElement(ROOT_TAG)));
+
     if (!rootnode)
+    {
         return false;
+    }
 
-    TiXmlElement* tgtidx = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("ActiveTarget")));
+    TiXmlElement * tgtidx = static_cast<TiXmlElement *>(rootnode->InsertEndChild(TiXmlElement("ActiveTarget")));
     tgtidx->SetAttribute("name", cbU2C(m_pProject->GetActiveBuildTarget()));
+    ProjectFile * active = nullptr;
+    cbEditor * ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
-    ProjectFile* active = nullptr;
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
+    {
         active = ed->GetProjectFile();
+    }
 
     for (FilesList::iterator it = m_pProject->GetFilesList().begin(); it != m_pProject->GetFilesList().end(); ++it)
     {
-        ProjectFile* f = *it;
+        ProjectFile * f = *it;
 
         if (f->editorOpen || f->editorPos || f->editorTopLine || f->editorTabPos)
         {
-            TiXmlElement* node = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("File")));
+            TiXmlElement * node = static_cast<TiXmlElement *>(rootnode->InsertEndChild(TiXmlElement("File")));
             node->SetAttribute("name", cbU2C(f->relativeFilename));
             node->SetAttribute("open", f->editorOpen);
             node->SetAttribute("top", (f == active));
             node->SetAttribute("tabpos", f->editorTabPos);
-
-            TiXmlElement* cursor = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("Cursor")));
+            TiXmlElement * cursor = static_cast<TiXmlElement *>(node->InsertEndChild(TiXmlElement("Cursor")));
             cursor->SetAttribute("position", f->editorPos);
             cursor->SetAttribute("topLine", f->editorTopLine);
-
             // Save the BrowseMarks
             FileBrowse_MarksHash::iterator it2 = m_FileBrowse_MarksArchive.find(f->file.GetFullPath());
-            if (it2 != m_FileBrowse_MarksArchive.end() ) do
+
+            if (it2 != m_FileBrowse_MarksArchive.end())
+                do
                 {
-                    const BrowseMarks* pBrowse_Marks = it2->second;
-                    if (not pBrowse_Marks) break;
+                    const BrowseMarks * pBrowse_Marks = it2->second;
+
+                    if (not pBrowse_Marks)
+                    {
+                        break;
+                    }
+
                     wxString browseMarks = pBrowse_Marks->GetStringOfBrowse_Marks();
 #if defined(LOGGING)
                     //LOGIT( _T("Layout writing BROWSEMarkString [%p]is[%s]"), pBrowse_Marks, browseMarks.c_str());
 #endif
-                    TiXmlElement* btMarks = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("BrowseMarks")));
+                    TiXmlElement * btMarks = static_cast<TiXmlElement *>(node->InsertEndChild(TiXmlElement("BrowseMarks")));
                     btMarks->SetAttribute("positions", cbU2C(browseMarks));
-                }
-                while(0);
+                } while (0);
         }
     }//for
 
-    const wxArrayString& en = m_pProject->ExpandedNodes();
+    const wxArrayString & en = m_pProject->ExpandedNodes();
+
     for (unsigned int i = 0; i < en.GetCount(); ++i)
     {
         if (!en[i].IsEmpty())
         {
-            TiXmlElement* node = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("Expand")));
+            TiXmlElement * node = static_cast<TiXmlElement *>(rootnode->InsertEndChild(TiXmlElement("Expand")));
             node->SetAttribute("folder", cbU2C(en[i]));
         }
     }
+
     return cbSaveTinyXMLDocument(&doc, filename);
 }
 // ----------------------------------------------------------------------------
 #if defined(LOGGING)
-void BrowseTrackerLayout::DumpBrowse_Marks( const wxString hashType, FileBrowse_MarksHash& m_FileBrowse_MarksArchive )
+    void BrowseTrackerLayout::DumpBrowse_Marks(const wxString hashType, FileBrowse_MarksHash & m_FileBrowse_MarksArchive)
 #else
-void BrowseTrackerLayout::DumpBrowse_Marks( const wxString /*hashType*/, FileBrowse_MarksHash& /*m_FileBrowse_MarksArchive*/ )
+    void BrowseTrackerLayout::DumpBrowse_Marks(const wxString /*hashType*/, FileBrowse_MarksHash & /*m_FileBrowse_MarksArchive*/)
 #endif
 // ----------------------------------------------------------------------------
 {
 #if defined(LOGGING)
-    LOGIT( _T("--- DumpBrowseData ---[%s]"), hashType.c_str()  );
-
-    FileBrowse_MarksHash* phash = &m_FileBrowse_MarksArchive;
+    LOGIT(_T("--- DumpBrowseData ---[%s]"), hashType.c_str());
+    FileBrowse_MarksHash * phash = &m_FileBrowse_MarksArchive;
 #if defined(LOGGING)
-    LOGIT( _T("Dump_%s Size[%lu]"), hashType.wx_str(), static_cast<unsigned long>(phash->size()) );
+    LOGIT(_T("Dump_%s Size[%lu]"), hashType.wx_str(), static_cast<unsigned long>(phash->size()));
 #endif
+
     for (FileBrowse_MarksHash::iterator it = phash->begin(); it != phash->end(); ++it)
     {
         wxString filename = it->first;
-        BrowseMarks* p = it->second;
-        LOGIT( _T("Filename[%s]%s*[%p]name[%s]"), filename.c_str(), hashType.c_str(), p,
-               (p ? p->GetFilePath().c_str() : ""));
+        BrowseMarks * p = it->second;
+        LOGIT(_T("Filename[%s]%s*[%p]name[%s]"), filename.c_str(), hashType.c_str(), p,
+              (p ? p->GetFilePath().c_str() : ""));
+
         if (p)
         {
             //dump the browse marks

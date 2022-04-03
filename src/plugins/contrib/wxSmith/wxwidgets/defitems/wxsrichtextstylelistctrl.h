@@ -31,19 +31,19 @@
 */
 class wxsRichTextStyleListCtrl: public wxsWidget
 {
-public:
+    public:
 
-    wxsRichTextStyleListCtrl(wxsItemResData* Data);
+        wxsRichTextStyleListCtrl(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
-    wxString    m_sControl;                            //!< The associated wxRichTextCtrl.
-    wxString    m_sStyleSheet;                    //!< The associated style sheet.
-    int                m_iStyleType;                        //!< The style type to display.
+        wxString    m_sControl;                            //!< The associated wxRichTextCtrl.
+        wxString    m_sStyleSheet;                    //!< The associated style sheet.
+        int                m_iStyleType;                        //!< The style type to display.
 };
 
 #endif

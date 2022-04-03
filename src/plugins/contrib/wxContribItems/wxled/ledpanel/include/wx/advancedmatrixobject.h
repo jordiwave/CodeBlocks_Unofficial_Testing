@@ -15,38 +15,38 @@
 
 class WXEXPORT AdvancedMatrixObject : public MatrixObject
 {
-public:
-    AdvancedMatrixObject();
-    AdvancedMatrixObject(const MatrixObject& mo);
-    AdvancedMatrixObject(const char* data, int width, int height=0);
-    virtual ~AdvancedMatrixObject();
+    public:
+        AdvancedMatrixObject();
+        AdvancedMatrixObject(const MatrixObject & mo);
+        AdvancedMatrixObject(const char * data, int width, int height = 0);
+        virtual ~AdvancedMatrixObject();
 
-    // Rotierefunktionen
-    void RotateLeft();
-    void RotateRight();
+        // Rotierefunktionen
+        void RotateLeft();
+        void RotateRight();
 
-    // Shiftfunktionen
-    void ShiftLeft();
-    void ShiftRight();
-    void ShiftUp();
-    void ShiftDown();
+        // Shiftfunktionen
+        void ShiftLeft();
+        void ShiftRight();
+        void ShiftUp();
+        void ShiftDown();
 
-    // Fitfunktionen
-    void FitLeft();
-    void FitRight();
-    void FitTop();
-    void FitBottom();
+        // Fitfunktionen
+        void FitLeft();
+        void FitRight();
+        void FitTop();
+        void FitBottom();
 
-    // Füllfunktionen
-    void FillLine(int y, char d);
-    void FillRow(int x, char d);
-    void FillAll(char d);
+        // Füllfunktionen
+        void FillLine(int y, char d);
+        void FillRow(int x, char d);
+        void FillAll(char d);
 
-    // Löschfunktionen
-    void ClearLine(int y);
-    void ClearRow(int x);
+        // Löschfunktionen
+        void ClearLine(int y);
+        void ClearRow(int x);
 
-    //
+        //
 
 };
 

@@ -6,7 +6,7 @@
 // The License.txt file describes the conditions under which this software may be distributed.
 
 typedef void (*LexerFunction)(unsigned int startPos, int lengthDoc, int initStyle,
-                              WordList *keywordlists[], Accessor &styler);
+                              WordList * keywordlists[], Accessor & styler);
 
 /**
  * A LexerModule is responsible for lexing and folding a particular language.
@@ -15,45 +15,45 @@ typedef void (*LexerFunction)(unsigned int startPos, int lengthDoc, int initStyl
  */
 class LexerModule
 {
-protected:
-    const LexerModule *next;
-    int language;
-    LexerFunction fnLexer;
-    LexerFunction fnFolder;
-    const char * const * wordListDescriptions;
-    int styleBits;
+    protected:
+        const LexerModule * next;
+        int language;
+        LexerFunction fnLexer;
+        LexerFunction fnFolder;
+        const char * const * wordListDescriptions;
+        int styleBits;
 
-    static const LexerModule *base;
-    static int nextLanguage;
+        static const LexerModule * base;
+        static int nextLanguage;
 
-public:
-    const char *languageName;
-    LexerModule(int language_,
-                LexerFunction fnLexer_,
-                const char *languageName_=0,
-                LexerFunction fnFolder_=0,
-                const char * const wordListDescriptions_[] = NULL,
-                int styleBits_=5);
-    virtual ~LexerModule()
-    {
-    }
-    int GetLanguage() const
-    {
-        return language;
-    }
+    public:
+        const char * languageName;
+        LexerModule(int language_,
+                    LexerFunction fnLexer_,
+                    const char * languageName_ = 0,
+                    LexerFunction fnFolder_ = 0,
+                    const char * const wordListDescriptions_[] = NULL,
+                    int styleBits_ = 5);
+        virtual ~LexerModule()
+        {
+        }
+        int GetLanguage() const
+        {
+            return language;
+        }
 
-    // -1 is returned if no WordList information is available
-    int GetNumWordLists() const;
-    const char *GetWordListDescription(int index) const;
+        // -1 is returned if no WordList information is available
+        int GetNumWordLists() const;
+        const char * GetWordListDescription(int index) const;
 
-    int GetStyleBitsNeeded() const;
+        int GetStyleBitsNeeded() const;
 
-    virtual void Lex(unsigned int startPos, int lengthDoc, int initStyle,
-                     WordList *keywordlists[], Accessor &styler) const;
-    virtual void Fold(unsigned int startPos, int lengthDoc, int initStyle,
-                      WordList *keywordlists[], Accessor &styler) const;
-    static const LexerModule *Find(int language);
-    static const LexerModule *Find(const char *languageName);
+        virtual void Lex(unsigned int startPos, int lengthDoc, int initStyle,
+                         WordList * keywordlists[], Accessor & styler) const;
+        virtual void Fold(unsigned int startPos, int lengthDoc, int initStyle,
+                          WordList * keywordlists[], Accessor & styler) const;
+        static const LexerModule * Find(int language);
+        static const LexerModule * Find(const char * languageName);
 };
 
 /**
@@ -78,7 +78,10 @@ inline bool iswordstart(char ch)
 inline bool isoperator(char ch)
 {
     if (isascii(ch) && isalnum(ch))
+    {
         return false;
+    }
+
     // '.' left out as it is used to make up numbers
     if (ch == '%' || ch == '^' || ch == '&' || ch == '*' ||
             ch == '(' || ch == ')' || ch == '-' || ch == '+' ||
@@ -86,6 +89,9 @@ inline bool isoperator(char ch)
             ch == '[' || ch == ']' || ch == ':' || ch == ';' ||
             ch == '<' || ch == '>' || ch == ',' || ch == '/' ||
             ch == '?' || ch == '!' || ch == '.' || ch == '~')
+    {
         return true;
+    }
+
     return false;
 }

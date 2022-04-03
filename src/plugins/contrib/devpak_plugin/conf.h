@@ -31,8 +31,8 @@ struct UpdateRec
 
 extern wxString g_MasterPath;
 
-UpdateRec* ReadConf(const IniParser& ini, int* recCount, const wxString& currentServer, const wxString& appPath);
-UpdateRec* FindRec(const wxString& title, const wxString& version, const wxString& revision, UpdateRec* list, int count);
+UpdateRec * ReadConf(const IniParser & ini, int * recCount, const wxString & currentServer, const wxString & appPath);
+UpdateRec * FindRec(const wxString & title, const wxString & version, const wxString & revision, UpdateRec * list, int count);
 // utility
 wxString GetSizeString(int bytes);
 

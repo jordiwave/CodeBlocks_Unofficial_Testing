@@ -44,101 +44,101 @@ const wxString separator                 = _("-----------------");
 
 class IMenuCmd : public IInterfaceBase
 {
-public:
-    virtual bool GetFileBased() const=0;
-    virtual void SetFileBased(bool FileBased)=0;
-    virtual bool GetProjectBased() const=0;
-    virtual void SetProjectBased(bool ProjectBased)=0;
-    virtual bool GetWorkspaceBased() const=0;
-    virtual void SetWorkspaceBased(bool ProjectBased)=0;
-    virtual void SetCustom(bool custom)=0;
-    virtual bool GetCustom() const=0;
-    virtual wxString GetFilename() const=0;
-    virtual void SetFilename(const wxString& filename)=0;
+    public:
+        virtual bool GetFileBased() const = 0;
+        virtual void SetFileBased(bool FileBased) = 0;
+        virtual bool GetProjectBased() const = 0;
+        virtual void SetProjectBased(bool ProjectBased) = 0;
+        virtual bool GetWorkspaceBased() const = 0;
+        virtual void SetWorkspaceBased(bool ProjectBased) = 0;
+        virtual void SetCustom(bool custom) = 0;
+        virtual bool GetCustom() const = 0;
+        virtual wxString GetFilename() const = 0;
+        virtual void SetFilename(const wxString & filename) = 0;
 };
 
 class CBSvnPluginManager :
     ILogSink,
     Noncopyable
 {
-public:
-    static CBSvnPluginManager& GetInstance();
+    public:
+        static CBSvnPluginManager & GetInstance();
 
-    // location svn.exe
-    wxString GetSvn() const;
-    void SetSvn(const wxString& svn);
+        // location svn.exe
+        wxString GetSvn() const;
+        void SetSvn(const wxString & svn);
 
-    // location GetTortoiseproc.exe
-    wxString GetTortoiseproc() const;
-    void SetTortoiseproc(const wxString& svn);
+        // location GetTortoiseproc.exe
+        wxString GetTortoiseproc() const;
+        void SetTortoiseproc(const wxString & svn);
 
-    // integration
-    bool GetMainMenuIntegration() const;
-    void SetMainMenuIntegration(bool enabled);
+        // integration
+        bool GetMainMenuIntegration() const;
+        void SetMainMenuIntegration(bool enabled);
 
-    bool GetEditorIntegration() const;
-    void SetEditorIntegration(bool enabled);
+        bool GetEditorIntegration() const;
+        void SetEditorIntegration(bool enabled);
 
-    bool GetProjectManagerIntegration() const;
-    void SetProjectManagerIntegration(bool enabled);
+        bool GetProjectManagerIntegration() const;
+        void SetProjectManagerIntegration(bool enabled);
 
-    bool GetMaxIntegrationPerformance() const;
-    void SetMaxIntegrationPerformance(bool max);
+        bool GetMaxIntegrationPerformance() const;
+        void SetMaxIntegrationPerformance(bool max);
 
-    // menu
-    wxString GetMainMenu() const;
-    void SetMainMenu(const wxString& s);
+        // menu
+        wxString GetMainMenu() const;
+        void SetMainMenu(const wxString & s);
 
-    wxString GetPopupMenu() const;
-    void SetPopupMenu(const wxString& s);
+        wxString GetPopupMenu() const;
+        void SetPopupMenu(const wxString & s);
 
-    // FileProjectWorkspaceBased
-    enum SourceMenu
-    {
-        smMainMenu=0,
-        smPopupMenu,
-        smNumSourceMenu
-    };
+        // FileProjectWorkspaceBased
+        enum SourceMenu
+        {
+            smMainMenu = 0,
+            smPopupMenu,
+            smNumSourceMenu
+        };
 
-    IMenuCmd& GetMenu(const SourceMenu& menu)
-    {
-        return *menus[menu];
-    }
+        IMenuCmd & GetMenu(const SourceMenu & menu)
+        {
+            return *menus[menu];
+        }
 
-    // logging
-    void Togglelogging(bool debug)
-    {
-        m_debug=!m_debug;
-    }
+        // logging
+        void Togglelogging(bool debug)
+        {
+            m_debug = !m_debug;
+        }
 
-    // lifecycle
-    void Initialise();
-    void Shutdown();
+        // lifecycle
+        void Initialise();
+        void Shutdown();
 
-    // misc.
-    bool FileUnderVersionControl(const wxString& filename);
-    void RunSimpleTortoiseSVNCommand(const IMenuCmd& menu, const wxString& command, const wxString& special_command=_(""));
+        // misc.
+        bool FileUnderVersionControl(const wxString & filename);
+        void RunSimpleTortoiseSVNCommand(const IMenuCmd & menu, const wxString & command, const wxString & special_command = _(""));
 
-private:
-    void OnLogEvent(const wxString& msg);
+    private:
+        void OnLogEvent(const wxString & msg);
 
-    CBSvnPluginManager();
-    ~CBSvnPluginManager() {};
-    std::unique_ptr<IMenuCmd> menus[smNumSourceMenu];
-    wxString    m_svn;
-    wxString    m_tortoisesvnpath;
-    bool        m_MainMenuIntegration;
-    bool        m_EditorIntegration;
-    bool        m_ProjectManagerIntegration;
-    bool        m_MaxIntegrationPerformance;
-    bool        m_expert;
-    bool        m_debug;
-    wxString    m_mainmenu;
-    wxString    m_popupmenu;
+        CBSvnPluginManager();
+        ~CBSvnPluginManager() {};
+        std::unique_ptr<IMenuCmd> menus[smNumSourceMenu];
+        wxString    m_svn;
+        wxString    m_tortoisesvnpath;
+        bool        m_MainMenuIntegration;
+        bool        m_EditorIntegration;
+        bool        m_ProjectManagerIntegration;
+        bool        m_MaxIntegrationPerformance;
+        bool        m_expert;
+        bool        m_debug;
+        wxString    m_mainmenu;
+        wxString    m_popupmenu;
 };
 
 // support functions
-void LogMenu(const IMenuCmd& menu);
+void LogMenu(const IMenuCmd & menu);
 
 };
 

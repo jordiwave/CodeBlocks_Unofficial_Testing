@@ -27,7 +27,6 @@ extern "C"
     int SampleFunction2()
     {
         // insert code here
-
         return 0;
     }
 }

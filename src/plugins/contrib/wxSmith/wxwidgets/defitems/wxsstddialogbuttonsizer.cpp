@@ -31,29 +31,29 @@ using namespace wxsFlags;
 
 namespace
 {
-wxsRegisterItem<wxsStdDialogButtonSizer> Reg(_T("StdDialogButtonSizer"),wxsTSizer,_T("Layout"),10);
+wxsRegisterItem<wxsStdDialogButtonSizer> Reg(_T("StdDialogButtonSizer"), wxsTSizer, _T("Layout"), 10);
 
 class wxsSizerPreview: public wxPanel
 {
-public:
-    wxsSizerPreview(wxWindow* Parent): wxPanel(Parent,-1,wxDefaultPosition,wxDefaultSize, wxTAB_TRAVERSAL)
-    {
-        InheritAttributes();
-        Connect(wxID_ANY,wxEVT_PAINT,(wxObjectEventFunction)&wxsSizerPreview::OnPaint);
-    }
+    public:
+        wxsSizerPreview(wxWindow * Parent): wxPanel(Parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL)
+        {
+            InheritAttributes();
+            Connect(wxID_ANY, wxEVT_PAINT, (wxObjectEventFunction)&wxsSizerPreview::OnPaint);
+        }
 
-private:
+    private:
 
-    void OnPaint(cb_unused wxPaintEvent& event)
-    {
-        // Drawing additional border around te panel
-        wxPaintDC DC(this);
-        int W, H;
-        GetSize(&W,&H);
-        DC.SetBrush(*wxTRANSPARENT_BRUSH);
-        DC.SetPen(*wxRED_PEN);
-        DC.DrawRectangle(0,0,W,H);
-    }
+        void OnPaint(cb_unused wxPaintEvent & event)
+        {
+            // Drawing additional border around te panel
+            wxPaintDC DC(this);
+            int W, H;
+            GetSize(&W, &H);
+            DC.SetBrush(*wxTRANSPARENT_BRUSH);
+            DC.SetPen(*wxRED_PEN);
+            DC.DrawRectangle(0, 0, W, H);
+        }
 };
 
 enum ButtonType
@@ -61,7 +61,7 @@ enum ButtonType
     Ok = 0, Yes, No, Cancel, Aply, Save, Help, ContextHelp
 };
 
-const wxChar* IdNames[] =
+const wxChar * IdNames[] =
 {
     _T("wxID_OK"),
     _T("wxID_YES"),
@@ -72,7 +72,7 @@ const wxChar* IdNames[] =
     _T("wxID_HELP"),
     _T("wxID_CONTEXT_HELP")
 };
-const wxChar* IdLabels[] =
+const wxChar * IdLabels[] =
 {
     _T("OK Label:"),
     _T("YES Label:"),
@@ -98,12 +98,12 @@ const wxWindowID IdValues[] =
 
 }
 
-wxsStdDialogButtonSizer::wxsStdDialogButtonSizer(wxsItemResData* Data):
-    wxsItem(Data,&Reg.Info,flVariable|flSubclass,0,0)
+wxsStdDialogButtonSizer::wxsStdDialogButtonSizer(wxsItemResData * Data):
+    wxsItem(Data, &Reg.Info, flVariable | flSubclass, 0, 0)
 {
     GetBaseProps()->m_IsMember = false;
 
-    for ( int i=0; i<NumButtons; i++ )
+    for (int i = 0; i < NumButtons; i++)
     {
         m_Use[i] = false;
         m_Label[i] = _T("");
@@ -115,7 +115,7 @@ wxsStdDialogButtonSizer::wxsStdDialogButtonSizer(wxsItemResData* Data):
 
 long wxsStdDialogButtonSizer::OnGetPropertiesFlags()
 {
-    if ( !(wxsItem::OnGetPropertiesFlags() & flSource) )
+    if (!(wxsItem::OnGetPropertiesFlags() & flSource))
     {
         return wxsItem::OnGetPropertiesFlags() & ~flVariable;
     }
@@ -127,159 +127,174 @@ void wxsStdDialogButtonSizer::OnEnumItemProperties(cb_unused long Flags)
 {
 }
 
-wxObject* wxsStdDialogButtonSizer::OnBuildPreview(wxWindow* Parent,long PreviewFlags)
+wxObject * wxsStdDialogButtonSizer::OnBuildPreview(wxWindow * Parent, long PreviewFlags)
 {
-    wxWindow* NewParent = Parent;
+    wxWindow * NewParent = Parent;
 
-    if ( !(PreviewFlags & pfExact) )
+    if (!(PreviewFlags & pfExact))
     {
         NewParent = new wxsSizerPreview(Parent);
     }
 
-    wxStdDialogButtonSizer* Sizer = new wxStdDialogButtonSizer();
+    wxStdDialogButtonSizer * Sizer = new wxStdDialogButtonSizer();
 
-    for ( int i=0; i<NumButtons; i++ )
+    for (int i = 0; i < NumButtons; i++)
     {
-        if ( m_Use[i] )
+        if (m_Use[i])
         {
-            wxButton* Button = new wxButton(NewParent,IdValues[i],m_Label[i]);
+            wxButton * Button = new wxButton(NewParent, IdValues[i], m_Label[i]);
             Sizer->AddButton(Button);
         }
     }
 
     Sizer->Realize();
 
-    if ( !(PreviewFlags & pfExact) )
+    if (!(PreviewFlags & pfExact))
     {
         NewParent->SetSizer(Sizer);
         Sizer->Fit(NewParent);
         Sizer->SetSizeHints(NewParent);
-        wxSizer* OutSizer = new wxBoxSizer(wxHORIZONTAL);
+        wxSizer * OutSizer = new wxBoxSizer(wxHORIZONTAL);
         Parent->SetSizer(OutSizer);
         OutSizer->SetSizeHints(Parent);
         return NewParent;
     }
 
-    if ( GetParent() && GetParent()->GetType()!=wxsTSizer )
+    if (GetParent() && GetParent()->GetType() != wxsTSizer)
     {
         Parent->SetSizer(Sizer);
         Sizer->SetSizeHints(Parent);
     }
+
     return Sizer;
 }
 
 void wxsStdDialogButtonSizer::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
-        AddHeader(_T("<wx/button.h>"),GetInfo().ClassName,hfLocal);
-
-        if ( IsPointer() ) Codef(_T("%C();\n"));
-
-        for ( int i=0; i<NumButtons; i++ )
+        case wxsCPP:
         {
-            if ( m_Use[i] )
+            AddHeader(_T("<wx/sizer.h>"), GetInfo().ClassName, hfInPCH);
+            AddHeader(_T("<wx/button.h>"), GetInfo().ClassName, hfLocal);
+
+            if (IsPointer())
             {
-                Codef(_T("%AAddButton(new wxButton(%W, %v, %t));\n"),IdNames[i],m_Label[i].wx_str());
+                Codef(_T("%C();\n"));
             }
+
+            for (int i = 0; i < NumButtons; i++)
+            {
+                if (m_Use[i])
+                {
+                    Codef(_T("%AAddButton(new wxButton(%W, %v, %t));\n"), IdNames[i], m_Label[i].wx_str());
+                }
+            }
+
+            Codef(_T("%ARealize();\n"));
+            break;
         }
-        Codef(_T("%ARealize();\n"));
-        break;
 
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsStdDialogButtonSizer::OnBuildCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsStdDialogButtonSizer::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
-bool wxsStdDialogButtonSizer::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
+bool wxsStdDialogButtonSizer::OnXmlRead(TiXmlElement * Element, bool IsXRC, bool IsExtra)
 {
-    if ( IsXRC )
+    if (IsXRC)
     {
-
-        for ( int i=0; i<NumButtons; i++ )
+        for (int i = 0; i < NumButtons; i++)
         {
             m_Use[i] = false;
             m_Label[i] = wxEmptyString;
         }
 
-        for ( TiXmlElement* Object = Element->FirstChildElement("object"); Object; Object = Object->NextSiblingElement("object") )
+        for (TiXmlElement * Object = Element->FirstChildElement("object"); Object; Object = Object->NextSiblingElement("object"))
         {
-            TiXmlElement* Button = Object->FirstChildElement("object");
-            if ( !Button ) continue;
-            if ( cbC2U(Button->Attribute("class")) != _T("wxButton") ) continue;
+            TiXmlElement * Button = Object->FirstChildElement("object");
+
+            if (!Button)
+            {
+                continue;
+            }
+
+            if (cbC2U(Button->Attribute("class")) != _T("wxButton"))
+            {
+                continue;
+            }
 
             wxString Id = cbC2U(Button->Attribute("name"));
-            for ( int i=0; i<NumButtons; i++ )
+
+            for (int i = 0; i < NumButtons; i++)
             {
-                if ( Id == IdNames[i] )
+                if (Id == IdNames[i])
                 {
                     m_Use[i] = true;
-                    TiXmlElement* Label = Button->FirstChildElement("label");
-                    if ( Label )
+                    TiXmlElement * Label = Button->FirstChildElement("label");
+
+                    if (Label)
                     {
                         m_Label[i] = cbC2U(Label->GetText());
                     }
+
                     break;
                 }
             }
         }
     }
 
-    return wxsItem::OnXmlRead(Element,IsXRC,IsExtra);
+    return wxsItem::OnXmlRead(Element, IsXRC, IsExtra);
 }
 
-bool wxsStdDialogButtonSizer::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
+bool wxsStdDialogButtonSizer::OnXmlWrite(TiXmlElement * Element, bool IsXRC, bool IsExtra)
 {
-    if ( IsXRC )
+    if (IsXRC)
     {
-        for ( int i=0; i<NumButtons; i++ )
+        for (int i = 0; i < NumButtons; i++)
         {
-            if ( m_Use[i] )
+            if (m_Use[i])
             {
-                TiXmlElement* Object = Element->InsertEndChild(TiXmlElement("object"))->ToElement();
-                Object->SetAttribute("class","button");
-                TiXmlElement* Button = Object->InsertEndChild(TiXmlElement("object"))->ToElement();
-                Button->SetAttribute("class","wxButton");
-                Button->SetAttribute("name",cbU2C(IdNames[i]));
+                TiXmlElement * Object = Element->InsertEndChild(TiXmlElement("object"))->ToElement();
+                Object->SetAttribute("class", "button");
+                TiXmlElement * Button = Object->InsertEndChild(TiXmlElement("object"))->ToElement();
+                Button->SetAttribute("class", "wxButton");
+                Button->SetAttribute("name", cbU2C(IdNames[i]));
                 Button->InsertEndChild(TiXmlElement("label"))->InsertEndChild(TiXmlText(cbU2C(m_Label[i])));
             }
         }
     }
 
-    return wxsItem::OnXmlWrite(Element,IsXRC,IsExtra);
+    return wxsItem::OnXmlWrite(Element, IsXRC, IsExtra);
 }
 
-void wxsStdDialogButtonSizer::OnAddExtraProperties(wxsPropertyGridManager* Grid )
+void wxsStdDialogButtonSizer::OnAddExtraProperties(wxsPropertyGridManager * Grid)
 {
-    for ( int i=0; i<NumButtons; i++ )
+    for (int i = 0; i < NumButtons; i++)
     {
-        m_UseId[i] = Grid->Append(new wxBoolProperty(IdNames[i],wxPG_LABEL,m_Use[i]));
-        Grid->SetPropertyAttribute(m_UseId[i],wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
-        m_LabelId[i] = Grid->Append(new wxStringProperty(IdLabels[i],wxPG_LABEL,m_Label[i]));
+        m_UseId[i] = Grid->Append(new wxBoolProperty(IdNames[i], wxPG_LABEL, m_Use[i]));
+        Grid->SetPropertyAttribute(m_UseId[i], wxPG_BOOL_USE_CHECKBOX, 1L, wxPG_RECURSE);
+        m_LabelId[i] = Grid->Append(new wxStringProperty(IdLabels[i], wxPG_LABEL, m_Label[i]));
     }
+
     wxsItem::OnAddExtraProperties(Grid);
 }
 
-void wxsStdDialogButtonSizer::OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id)
+void wxsStdDialogButtonSizer::OnExtraPropertyChanged(wxsPropertyGridManager * Grid, wxPGId Id)
 {
-    for ( int i=0; i<NumButtons; i++ )
+    for (int i = 0; i < NumButtons; i++)
     {
-        if ( Id == m_UseId[i] )
+        if (Id == m_UseId[i])
         {
             m_Use[i] = Grid->GetPropertyValueAsBool(Id);
             NotifyPropertyChange(true);
             return;
         }
 
-        if ( Id == m_LabelId[i] )
+        if (Id == m_LabelId[i])
         {
             m_Label[i] = Grid->GetPropertyValueAsString(Id);
             NotifyPropertyChange(true);
@@ -287,13 +302,13 @@ void wxsStdDialogButtonSizer::OnExtraPropertyChanged(wxsPropertyGridManager* Gri
         }
     }
 
-    wxsItem::OnExtraPropertyChanged(Grid,Id);
+    wxsItem::OnExtraPropertyChanged(Grid, Id);
 }
 
 void wxsStdDialogButtonSizer::OnBuildDeclarationsCode()
 {
     // Add declaration only when not using XRC file
-    if ( GetCoderFlags() & flSource )
+    if (GetCoderFlags() & flSource)
     {
         wxsItem::OnBuildDeclarationsCode();
     }

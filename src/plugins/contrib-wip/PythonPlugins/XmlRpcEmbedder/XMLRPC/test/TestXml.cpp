@@ -16,7 +16,7 @@
 using namespace XmlRpc;
 
 
-int main(int argc, char* argv[])
+int main(int argc, char * argv[])
 {
     // Basic tests
     std::string empty;
@@ -24,19 +24,21 @@ int main(int argc, char* argv[])
     assert(empty == XmlRpcUtil::xmlDecode(empty));
     assert(empty == XmlRpcUtil::xmlEncode(""));
     assert(empty == XmlRpcUtil::xmlDecode(""));
-
     std::string raw("<>&'\"");
     assert(XmlRpcUtil::xmlDecode(XmlRpcUtil::xmlEncode(raw)) == raw);
-
     std::cout << "Basic tests passed.\n";
-
     // Interactive tests
     std::string s;
+
     for (;;)
     {
         std::cout << "\nEnter line of raw text to encode:\n";
         std::getline(std::cin, s);
-        if (s.empty()) break;
+
+        if (s.empty())
+        {
+            break;
+        }
 
         std::cout << XmlRpcUtil::xmlEncode(s) << std::endl;
     }
@@ -45,7 +47,11 @@ int main(int argc, char* argv[])
     {
         std::cout << "\nEnter line of xml-encoded text to decode:\n";
         std::getline(std::cin, s);
-        if (s.empty()) break;
+
+        if (s.empty())
+        {
+            break;
+        }
 
         std::cout << XmlRpcUtil::xmlDecode(s) << std::endl;
     }

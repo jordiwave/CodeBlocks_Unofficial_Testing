@@ -18,7 +18,7 @@
 // ----------------------------------------------------------------------------
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+    #include "wx/wx.h"
 #endif
 
 #include <wx/image.h>
@@ -28,48 +28,46 @@
 #include "wx/KWIC/LinearMeter.h"
 #include <wx/event.h>
 
-BEGIN_EVENT_TABLE(kwxLinearMeter,wxWindow)
+BEGIN_EVENT_TABLE(kwxLinearMeter, wxWindow)
     EVT_PAINT(kwxLinearMeter::OnPaint)
 END_EVENT_TABLE()
 
-kwxLinearMeter::kwxLinearMeter(wxWindow* parent, const wxWindowID id, const wxPoint& pos, const wxSize& size)
+kwxLinearMeter::kwxLinearMeter(wxWindow * parent, const wxWindowID id, const wxPoint & pos, const wxSize & size)
 {
     Create(parent, id, pos, size);
 }
 
-bool kwxLinearMeter::Create(wxWindow* parent, const wxWindowID id, const wxPoint& pos, const wxSize& size)
+bool kwxLinearMeter::Create(wxWindow * parent, const wxWindowID id, const wxPoint & pos, const wxSize & size)
 {
-    if(!wxWindow::Create(parent, id, pos, size, 0))
+    if (!wxWindow::Create(parent, id, pos, size, 0))
+    {
         return false;
+    }
 
     if (parent)
+    {
         SetBackgroundColour(parent->GetBackgroundColour());
+    }
     else
+    {
         SetBackgroundColour(*wxLIGHT_GREY);
+    }
 
     SetAutoLayout(TRUE);
     Refresh();
-
     m_id = id;
-
     membitmap = new wxBitmap(size.GetWidth(), size.GetHeight());
-
     m_cActiveBar = *wxGREEN;
     m_cPassiveBar = *wxWHITE;
-
     m_cValueColour = *wxRED;
     m_cBorderColour = *wxRED;
     m_cLimitColour = *wxBLACK;
     m_cTagsColour = *wxGREEN;
-
     m_nScaledVal = 0;
     m_nRealVal = 0;
-
     m_nTagsNum = 0;
-
     m_nMax = 100;
     m_nMin = 0;
-
     m_bDirOrizFlag = true;
     m_bShowCurrent = true;
     m_bShowLimits = true;
@@ -83,15 +81,18 @@ kwxLinearMeter::~kwxLinearMeter()
 
 void kwxLinearMeter::SetValue(int val)
 {
-    int w,h;
+    int w, h;
     double coeff;
+    GetClientSize(&w, &h);
 
-    GetClientSize(&w,&h);
-
-    if(m_bDirOrizFlag)
+    if (m_bDirOrizFlag)
+    {
         coeff = (w - 2) / (double)(m_nMax - m_nMin);
+    }
     else
+    {
         coeff = (h - 2) / (double)(m_nMax - m_nMin);
+    }
 
     m_nScaledVal = ceil((val - m_nMin) * coeff);
     m_nRealVal = val;
@@ -99,44 +100,38 @@ void kwxLinearMeter::SetValue(int val)
 }
 
 
-void kwxLinearMeter::OnPaint(wxPaintEvent &WXUNUSED(event))
+void kwxLinearMeter::OnPaint(wxPaintEvent & WXUNUSED(event))
 {
     wxPaintDC dc(this);
-
-    int w,h;
+    int w, h;
     int yPoint, rectHeight ;
-
-    GetClientSize(&w,&h);
-
+    GetClientSize(&w, &h);
     /////////////////
-
     // Create a memory DC
     wxMemoryDC temp_dc;
     temp_dc.SelectObject(*membitmap);
-
-
     temp_dc.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_cPassiveBar, wxBRUSHSTYLE_SOLID));
     temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cPassiveBar, wxBRUSHSTYLE_SOLID));
     temp_dc.Clear();
-
-
     ///////////////////
-
     temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cBorderColour, 1, wxPENSTYLE_SOLID));
     temp_dc.DrawRectangle(0, 0, w, h);
-
     temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cActiveBar, 1, wxPENSTYLE_SOLID));
     temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cActiveBar, wxBRUSHSTYLE_SOLID));
     temp_dc.SetFont(m_Font);
 
-    if(m_bDirOrizFlag)
+    if (m_bDirOrizFlag)
+    {
         temp_dc.DrawRectangle(1, 1, m_nScaledVal, h - 2);
+    }
     else
     {
         yPoint = h - m_nScaledVal ;
 
-        if (m_nScaledVal == 0 )
+        if (m_nScaledVal == 0)
+        {
             rectHeight = m_nScaledVal ;
+        }
         else
         {
             if (m_nRealVal == m_nMax)
@@ -145,35 +140,40 @@ void kwxLinearMeter::OnPaint(wxPaintEvent &WXUNUSED(event))
                 yPoint -= 1 ;
             }
             else
+            {
                 rectHeight = m_nScaledVal - 1 ;
+            }
         }
 
         temp_dc.DrawRectangle(1, yPoint, w - 2, rectHeight);
     }
 
     if (m_bShowCurrent)
-        DrawCurrent(temp_dc);	//valore attuale
+    {
+        DrawCurrent(temp_dc);    //valore attuale
+    }
 
     if (m_bShowLimits)
-        DrawLimits(temp_dc);	//valore minimo e massimo
+    {
+        DrawLimits(temp_dc);    //valore minimo e massimo
+    }
 
-    if (m_nTagsNum > 0 )
+    if (m_nTagsNum > 0)
+    {
         DrawTags(temp_dc) ;
-
+    }
 
     // We can now draw into the memory DC...
     // Copy from this DC to another DC.
     dc.Blit(0, 0, w, h, &temp_dc, 0, 0);
 }
 
-void kwxLinearMeter::DrawCurrent(wxDC &temp_dc)
+void kwxLinearMeter::DrawCurrent(wxDC & temp_dc)
 {
-    int w,h;
-    int tw,th;
+    int w, h;
+    int tw, th;
     wxString s;
-
     GetClientSize(&w, &h);
-
     //valore attuale
     s.Printf(wxT("%d"), m_nRealVal);
     temp_dc.GetTextExtent(s, &tw, &th);
@@ -181,27 +181,24 @@ void kwxLinearMeter::DrawCurrent(wxDC &temp_dc)
     temp_dc.DrawText(s, w / 2 - tw / 2, h / 2 - th / 2);
 }
 
-void kwxLinearMeter::DrawLimits(wxDC &temp_dc)
+void kwxLinearMeter::DrawLimits(wxDC & temp_dc)
 {
-    int w,h;
-    int tw,th;
+    int w, h;
+    int tw, th;
     wxString s;
-
     GetClientSize(&w, &h);
-
     temp_dc.SetTextForeground(m_cLimitColour);
 
-    if(m_bDirOrizFlag)
+    if (m_bDirOrizFlag)
     {
         //valore minimo
         s.Printf(wxT("%d"), m_nMin);
         temp_dc.GetTextExtent(s, &tw, &th);
         temp_dc.DrawText(s, 5, h / 2 - th / 2);
-
         //valore massimo
         s.Printf(wxT("%d"), m_nMax);
         temp_dc.GetTextExtent(s, &tw, &th);
-        temp_dc.DrawText(s,w - tw - 5, h / 2 - th / 2);
+        temp_dc.DrawText(s, w - tw - 5, h / 2 - th / 2);
     }
     else
     {
@@ -209,7 +206,6 @@ void kwxLinearMeter::DrawLimits(wxDC &temp_dc)
         s.Printf(wxT("%d"), m_nMin);
         temp_dc.GetTextExtent(s, &tw, &th);
         temp_dc.DrawText(s, w / 2 - tw / 2, h - th - 5);
-
         //valore massimo
         s.Printf(wxT("%d"), m_nMax);
         temp_dc.GetTextExtent(s, &tw, &th);
@@ -217,21 +213,24 @@ void kwxLinearMeter::DrawLimits(wxDC &temp_dc)
     }
 }
 
-void kwxLinearMeter::DrawTags(wxDC &temp_dc)
+void kwxLinearMeter::DrawTags(wxDC & temp_dc)
 {
     int ntag = 0 ;
     int w, h ;
-    int tw,th;
+    int tw, th;
     int scalval = 0 ;
     double tcoeff ;
-
     wxString text ;
+    GetClientSize(&w, &h);
 
-    GetClientSize(&w,&h);
-    if(m_bDirOrizFlag)
+    if (m_bDirOrizFlag)
+    {
         tcoeff = (w - 2) / (double)(m_nMax - m_nMin);
+    }
     else
+    {
         tcoeff = (h - 2) / (double)(m_nMax - m_nMin);
+    }
 
     temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cTagsColour, 1, wxPENSTYLE_SOLID));
     temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cTagsColour, wxBRUSHSTYLE_SOLID));
@@ -242,17 +241,17 @@ void kwxLinearMeter::DrawTags(wxDC &temp_dc)
         scalval = ceil((m_aTagsVal[ ntag] - m_nMin) * tcoeff);
         text.Printf(wxT("%d"), m_aTagsVal[ ntag]) ;
 
-        if(m_bDirOrizFlag)
+        if (m_bDirOrizFlag)
         {
             temp_dc.DrawLine(scalval + 1, h - 2, scalval + 1, h - 10);
             temp_dc.GetTextExtent(text, &tw, &th);
-            temp_dc.DrawText(text, scalval + 1 - (tw / 2 ), h - 10 - th);
+            temp_dc.DrawText(text, scalval + 1 - (tw / 2), h - 10 - th);
         }
         else
         {
             temp_dc.DrawLine(w - 2, h - scalval, w - 10, h - scalval);
             temp_dc.GetTextExtent(text, &tw, &th);
-            temp_dc.DrawText(text, w - 10 - tw, h - scalval - (th / 2) );
+            temp_dc.DrawText(text, w - 10 - tw, h - scalval - (th / 2));
         }
 
         ntag++ ;

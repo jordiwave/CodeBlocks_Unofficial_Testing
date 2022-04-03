@@ -5,7 +5,7 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-#include <wx/string.h>
+    #include <wx/string.h>
 #endif
 
 #include <cbplugin.h> // for "class cbSmartIndentPlugin"
@@ -15,8 +15,8 @@ class wxScintillaEvent;
 
 class SmartIndentXML : public cbSmartIndentPlugin
 {
-public:
-    virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
+    public:
+        virtual void OnEditorHook(cbEditor * ed, wxScintillaEvent & event) const;
 };
 
 #endif // SMARTINDENTXML_H_INCLUDED

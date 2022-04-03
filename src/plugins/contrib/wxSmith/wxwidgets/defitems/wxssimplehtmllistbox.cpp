@@ -48,7 +48,7 @@ WXS_EV_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsSimpleHtmlListBox::wxsSimpleHtmlListBox(wxsItemResData *Data):
+wxsSimpleHtmlListBox::wxsSimpleHtmlListBox(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -65,35 +65,39 @@ wxsSimpleHtmlListBox::wxsSimpleHtmlListBox(wxsItemResData *Data):
  */
 void wxsSimpleHtmlListBox::OnBuildCreatingCode()
 {
-    switch(GetLanguage())
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/htmllbox.h>"), GetInfo().ClassName, hfInPCH);
-        Codef(_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
-        for(size_t i = 0; i <  ArrayChoices.GetCount(); ++i)
+        case wxsCPP:
         {
-            if(DefaultSelection == (int)i)
+            AddHeader(_T("<wx/htmllbox.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
+
+            for (size_t i = 0; i <  ArrayChoices.GetCount(); ++i)
             {
-                Codef(_T("%ASetSelection( "));
+                if (DefaultSelection == (int)i)
+                {
+                    Codef(_T("%ASetSelection( "));
+                }
+
+                Codef(_T("%AAppend(%t)"), ArrayChoices[i].wx_str());
+
+                if (DefaultSelection == (int)i)
+                {
+                    Codef(_T(" )"));
+                }
+
+                Codef(_T(";\n"));
             }
-            Codef(_T("%AAppend(%t)"), ArrayChoices[i].wx_str());
-            if(DefaultSelection == (int)i)
-            {
-                Codef(_T(" )"));
-            }
-            Codef(_T(";\n"));
+
+            BuildSetupWindowCode();
+            return;
         }
 
-        BuildSetupWindowCode();
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsSimpleHtmlListBox::OnBuildCreatingCode"), GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsSimpleHtmlListBox::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
@@ -104,13 +108,15 @@ void wxsSimpleHtmlListBox::OnBuildCreatingCode()
  * \return wxObject*                 The constructed control.
  *
  */
-wxObject *wxsSimpleHtmlListBox::OnBuildPreview(wxWindow *Parent, long Flags)
+wxObject * wxsSimpleHtmlListBox::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxSimpleHtmlListBox *Preview = new wxSimpleHtmlListBox(Parent, GetId(), Pos(Parent), Size(Parent), 0, 0, Style());
-    for(size_t i = 0; i <  ArrayChoices.GetCount(); ++i)
+    wxSimpleHtmlListBox * Preview = new wxSimpleHtmlListBox(Parent, GetId(), Pos(Parent), Size(Parent), 0, 0, Style());
+
+    for (size_t i = 0; i <  ArrayChoices.GetCount(); ++i)
     {
         int Val = Preview->Append(ArrayChoices[i]);
-        if((int)i == DefaultSelection)
+
+        if ((int)i == DefaultSelection)
         {
             Preview->SetSelection(Val);
         }

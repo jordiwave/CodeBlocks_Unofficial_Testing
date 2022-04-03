@@ -9,14 +9,14 @@
 
 #include "sdk.h" // Code::Blocks SDK
 #ifndef CB_PRECOMP
-#include <wx/intl.h>
-#include <wx/menu.h>
-#include <wx/string.h>
-#include <wx/utils.h> // wxLaunchDefaultBrowser
-#include "globals.h"
-#include "manager.h"
-#include "editormanager.h"
-#include "cbeditor.h"
+    #include <wx/intl.h>
+    #include <wx/menu.h>
+    #include <wx/string.h>
+    #include <wx/utils.h> // wxLaunchDefaultBrowser
+    #include "globals.h"
+    #include "manager.h"
+    #include "editormanager.h"
+    #include "cbeditor.h"
 #endif
 #include "cbstyledtextctrl.h"
 
@@ -45,7 +45,9 @@ CB_Koders::CB_Koders() :
 CB_Koders::~CB_Koders()
 {
     if (TheDialog)
+    {
         TheDialog->Destroy();
+    }
 }
 
 void CB_Koders::OnAttach()
@@ -69,9 +71,10 @@ void CB_Koders::OnRelease(bool /*appShutDown*/)
 
 int CB_Koders::Execute()
 {
-    if (IsReady() && TheDialog->ShowModal()==wxID_OK)
+    if (IsReady() && TheDialog->ShowModal() == wxID_OK)
     {
         const wxString search = TheDialog->GetSearch();
+
         if (search.IsEmpty())
         {
             cbMessageBox(_("Cannot search for an empty expression."), _("Error"), wxICON_ERROR);
@@ -79,9 +82,9 @@ int CB_Koders::Execute()
         else
         {
             const wxString language = TheDialog->GetLanguage();
-
             wxString query;
-            if ( language.IsEmpty() )
+
+            if (language.IsEmpty())
             {
                 query.Printf("http://code.openhub.net/search?s=%s", search.c_str());
             }
@@ -92,17 +95,21 @@ int CB_Koders::Execute()
             }
 
             if (!wxLaunchDefaultBrowser(query))
+            {
                 cbMessageBox(_("Could not launch the default browser of your system."), _("Error"), wxICON_ERROR);
+            }
         }
     }
 
     return 0;
 }
 
-void CB_Koders::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* /*data*/)
+void CB_Koders::BuildModuleMenu(const ModuleType type, wxMenu * menu, const FileTreeData * /*data*/)
 {
     if (!menu || !IsAttached())
+    {
         return;
+    }
 
     if (type == mtEditorManager)
     {
@@ -115,30 +122,38 @@ void CB_Koders::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
 bool CB_Koders::IsReady()
 {
     if (!IsAttached())
+    {
         return false;
+    }
 
     if (!TheDialog)
+    {
         TheDialog = new KodersDialog(Manager::Get()->GetAppWindow());
+    }
 
     if (TheDialog)
+    {
         return true;
+    }
     else
+    {
         cbMessageBox(_("Could not initialise CB_Koders plugin."), _("Error"), wxICON_ERROR);
+    }
 
     return false;
 }
 
-void CB_Koders::OnSearchKoders(wxCommandEvent& /*event*/)
+void CB_Koders::OnSearchKoders(wxCommandEvent & /*event*/)
 {
     if (IsReady())
     {
         wxString search(_T("")); // the word to search for (if any)
-        cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+        cbEditor * ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
         if (ed)
         {
             // check if there is any text selected
-            cbStyledTextCtrl *control = ed->GetControl();
+            cbStyledTextCtrl * control = ed->GetControl();
             search = control->GetSelectedText();
 
             // if no selection, take the word under the cursor

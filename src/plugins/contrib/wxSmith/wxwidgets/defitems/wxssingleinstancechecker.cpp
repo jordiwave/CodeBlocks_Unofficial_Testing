@@ -35,7 +35,7 @@ wxsRegisterItem<wxsSingleInstanceChecker> Reg(
 
 //------------------------------------------------------------------------------
 
-wxsSingleInstanceChecker::wxsSingleInstanceChecker(wxsItemResData* Data):
+wxsSingleInstanceChecker::wxsSingleInstanceChecker(wxsItemResData * Data):
     wxsTool(
         Data,
         &Reg.Info,
@@ -50,31 +50,32 @@ wxsSingleInstanceChecker::wxsSingleInstanceChecker(wxsItemResData* Data):
 
 void wxsSingleInstanceChecker::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/utils.h>"),   GetInfo().ClassName, 0);
-        AddHeader(_T("<wx/snglinst.h>"),GetInfo().ClassName, 0);
-
-        if ( AppName.IsEmpty() )
+        case wxsCPP:
         {
-            AddHeader(_T("<wx/app.h>"), GetInfo().ClassName, 0);
-            Codef( _T("%C(wxTheApp->GetAppName() + _T(\"_\") + wxGetUserId() + _T(\"_Guard\"));\n") );
-        }
-        else
-        {
-            Codef(_T("%C(%n + wxGetUserId() + _T(\"_Guard\"));\n"), ( AppName + _T("_") ).wx_str() );
-        }
-        BuildSetupWindowCode();
-        break;
-    }
+            AddHeader(_T("<wx/utils.h>"),   GetInfo().ClassName, 0);
+            AddHeader(_T("<wx/snglinst.h>"), GetInfo().ClassName, 0);
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown( _T("wxsSingleInstanceChecker::OnBuildCreatingCode"), GetLanguage() );
-    }
+            if (AppName.IsEmpty())
+            {
+                AddHeader(_T("<wx/app.h>"), GetInfo().ClassName, 0);
+                Codef(_T("%C(wxTheApp->GetAppName() + _T(\"_\") + wxGetUserId() + _T(\"_Guard\"));\n"));
+            }
+            else
+            {
+                Codef(_T("%C(%n + wxGetUserId() + _T(\"_Guard\"));\n"), (AppName + _T("_")).wx_str());
+            }
+
+            BuildSetupWindowCode();
+            break;
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsSingleInstanceChecker::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
@@ -82,5 +83,5 @@ void wxsSingleInstanceChecker::OnBuildCreatingCode()
 
 void wxsSingleInstanceChecker::OnEnumToolProperties(cb_unused long Flags)
 {
-    WXS_SHORT_STRING( wxsSingleInstanceChecker, AppName, _("Custom app name"), _T("appname"), wxEmptyString, false );
+    WXS_SHORT_STRING(wxsSingleInstanceChecker, AppName, _("Custom app name"), _T("appname"), wxEmptyString, false);
 }

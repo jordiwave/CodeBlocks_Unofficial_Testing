@@ -19,40 +19,40 @@ class CodeBlocksEvent;
 
 class DebuggerOptionsProjectDlg : public cbConfigurationPanel
 {
-public:
-    DebuggerOptionsProjectDlg(wxWindow* parent, DebuggerGDB* debugger, cbProject* project);
-    ~DebuggerOptionsProjectDlg() override;
+    public:
+        DebuggerOptionsProjectDlg(wxWindow * parent, DebuggerGDB * debugger, cbProject * project);
+        ~DebuggerOptionsProjectDlg() override;
 
-    wxString GetTitle() const override
-    {
-        return _("Debugger");
-    }
-    wxString GetBitmapBaseName() const override
-    {
-        return _T("debugger");
-    }
-    void OnApply() override;
-    void OnCancel() override {}
-protected:
-    void OnTargetSel(wxCommandEvent& event);
-    void OnAdd(wxCommandEvent& event);
-    void OnEdit(wxCommandEvent& event);
-    void OnDelete(wxCommandEvent& event);
-    void OnUpdateUI(wxUpdateUIEvent& event);
-private:
-    void OnBuildTargetRemoved(CodeBlocksEvent& event);
-    void OnBuildTargetAdded(CodeBlocksEvent& event);
-    void OnBuildTargetRenamed(CodeBlocksEvent& event);
-    void LoadCurrentRemoteDebuggingRecord();
-    void SaveCurrentRemoteDebuggingRecord();
+        wxString GetTitle() const override
+        {
+            return _("Debugger");
+        }
+        wxString GetBitmapBaseName() const override
+        {
+            return _T("debugger");
+        }
+        void OnApply() override;
+        void OnCancel() override {}
+    protected:
+        void OnTargetSel(wxCommandEvent & event);
+        void OnAdd(wxCommandEvent & event);
+        void OnEdit(wxCommandEvent & event);
+        void OnDelete(wxCommandEvent & event);
+        void OnUpdateUI(wxUpdateUIEvent & event);
+    private:
+        void OnBuildTargetRemoved(CodeBlocksEvent & event);
+        void OnBuildTargetAdded(CodeBlocksEvent & event);
+        void OnBuildTargetRenamed(CodeBlocksEvent & event);
+        void LoadCurrentRemoteDebuggingRecord();
+        void SaveCurrentRemoteDebuggingRecord();
 
-    DebuggerGDB* m_pDBG;
-    cbProject* m_pProject;
-    wxArrayString m_OldPaths;
-    RemoteDebuggingMap m_OldRemoteDebugging;
-    RemoteDebuggingMap m_CurrentRemoteDebugging;
-    int m_LastTargetSel;
-    DECLARE_EVENT_TABLE()
+        DebuggerGDB * m_pDBG;
+        cbProject * m_pProject;
+        wxArrayString m_OldPaths;
+        RemoteDebuggingMap m_OldRemoteDebugging;
+        RemoteDebuggingMap m_CurrentRemoteDebugging;
+        int m_LastTargetSel;
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // DEBUGGEROPTIONSPRJDLG_H

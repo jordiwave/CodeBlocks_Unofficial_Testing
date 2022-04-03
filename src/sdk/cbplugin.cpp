@@ -10,25 +10,25 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-#include <wx/frame.h> // wxFrame
-#include <wx/menu.h>
-#include <wx/process.h>
+    #include <wx/frame.h> // wxFrame
+    #include <wx/menu.h>
+    #include <wx/process.h>
 
-#include "cbeditor.h"
-#include "cbplugin.h"
-#include "cbproject.h"
-#include "compiler.h" // GetSwitches
-#include "configmanager.h"
-#include "debuggermanager.h"
-#include "editorcolourset.h"
-#include "editormanager.h"
-#include "infowindow.h"
-#include "logmanager.h"
-#include "macrosmanager.h"
-#include "manager.h"
-#include "projectbuildtarget.h"
-#include "projectmanager.h"
-#include "sdk_events.h"
+    #include "cbeditor.h"
+    #include "cbplugin.h"
+    #include "cbproject.h"
+    #include "compiler.h" // GetSwitches
+    #include "configmanager.h"
+    #include "debuggermanager.h"
+    #include "editorcolourset.h"
+    #include "editormanager.h"
+    #include "infowindow.h"
+    #include "logmanager.h"
+    #include "macrosmanager.h"
+    #include "manager.h"
+    #include "projectbuildtarget.h"
+    #include "projectmanager.h"
+    #include "sdk_events.h"
 #endif
 
 #include <wx/toolbar.h>
@@ -42,10 +42,10 @@
 #include "loggers.h"
 
 #ifndef __WXMSW__
-#include <errno.h>
-// needed for the kill system call
-#include <signal.h>
-#include <sys/types.h>
+    #include <errno.h>
+    // needed for the kill system call
+    #include <signal.h>
+    #include <sys/types.h>
 #endif
 
 cbPlugin::cbPlugin() :
@@ -62,17 +62,21 @@ cbPlugin::~cbPlugin()
 void cbPlugin::Attach()
 {
     if (m_IsAttached)
+    {
         return;
-    wxWindow* window = Manager::Get()->GetAppWindow();
+    }
+
+    wxWindow * window = Manager::Get()->GetAppWindow();
+
     if (window)
     {
         // push ourself in the application's event handling chain...
         window->PushEventHandler(this);
     }
+
     m_IsAttached = true;
     OnAttach();
     SetEvtHandlerEnabled(true);
-
     CodeBlocksEvent event(cbEVT_PLUGIN_ATTACHED);
     event.SetPlugin(this);
     // post event in the host's event queue
@@ -82,11 +86,13 @@ void cbPlugin::Attach()
 void cbPlugin::Release(bool appShutDown)
 {
     if (!m_IsAttached)
+    {
         return;
+    }
+
     m_IsAttached = false;
     SetEvtHandlerEnabled(false);
     OnRelease(appShutDown);
-
     CodeBlocksEvent event(cbEVT_PLUGIN_RELEASED);
     event.SetPlugin(this);
     // ask the host to process this event immediately
@@ -96,9 +102,12 @@ void cbPlugin::Release(bool appShutDown)
     Manager::Get()->ProcessEvent(event);
 
     if (appShutDown)
-        return; // nothing more to do, if the app is shutting down
+    {
+        return;    // nothing more to do, if the app is shutting down
+    }
 
-    wxWindow* window = Manager::Get()->GetAppWindow();
+    wxWindow * window = Manager::Get()->GetAppWindow();
+
     if (window)
     {
         // remove ourself from the application's event handling chain...
@@ -106,7 +115,7 @@ void cbPlugin::Release(bool appShutDown)
     }
 }
 
-void cbPlugin::NotImplemented(const wxString& log) const
+void cbPlugin::NotImplemented(const wxString & log) const
 {
     Manager::Get()->GetLogManager()->DebugLog(log + _T(" : not implemented"));
 }
@@ -124,7 +133,7 @@ cbCompilerPlugin::cbCompilerPlugin()
 ///// cbDebuggerPlugin
 /////
 
-cbDebuggerPlugin::cbDebuggerPlugin(const wxString &guiName, const wxString &settingsName) :
+cbDebuggerPlugin::cbDebuggerPlugin(const wxString & guiName, const wxString & settingsName) :
     m_pCompiler(nullptr),
     m_WaitingCompilerToFinish(false),
     m_StartType(StartTypeUnknown),
@@ -141,76 +150,93 @@ cbDebuggerPlugin::cbDebuggerPlugin(const wxString &guiName, const wxString &sett
 void cbDebuggerPlugin::OnAttach()
 {
     Manager::Get()->GetDebuggerManager()->RegisterDebugger(this);
-
     OnAttachReal();
-
     typedef cbEventFunctor<cbDebuggerPlugin, CodeBlocksEvent> Event;
-
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, new Event(this, &cbDebuggerPlugin::OnEditorOpened));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new Event(this, &cbDebuggerPlugin::OnProjectActivated));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new Event(this, &cbDebuggerPlugin::OnProjectClosed));
-
     Manager::Get()->RegisterEventSink(cbEVT_COMPILER_FINISHED, new Event(this, &cbDebuggerPlugin::OnCompilerFinished));
-
     m_StartType = StartTypeUnknown;
 
     if (SupportsFeature(cbDebuggerFeature::ValueTooltips))
+    {
         RegisterValueTooltip();
+    }
 }
 
 void cbDebuggerPlugin::OnRelease(bool appShutDown)
 {
     Manager::Get()->RemoveAllEventSinksFor(this);
-
     OnReleaseReal(appShutDown);
-
     Manager::Get()->GetDebuggerManager()->UnregisterDebugger(this);
 }
 
-void cbDebuggerPlugin::BuildMenu(cb_unused wxMenuBar* menuBar)
+void cbDebuggerPlugin::BuildMenu(cb_unused wxMenuBar * menuBar)
 {
     if (!IsAttached())
+    {
         return;
+    }
+
     Manager::Get()->GetDebuggerManager()->GetMenu();
 }
 
-wxString cbDebuggerPlugin::GetEditorWordAtCaret(const wxPoint* mousePosition)
+wxString cbDebuggerPlugin::GetEditorWordAtCaret(const wxPoint * mousePosition)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    cbEditor * ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+
     if (!ed)
+    {
         return wxString();
-    cbStyledTextCtrl* stc = ed->GetControl();
+    }
+
+    cbStyledTextCtrl * stc = ed->GetControl();
+
     if (!stc)
+    {
         return wxString();
+    }
 
     wxString selected_text = stc->GetSelectedText();
+
     if (!selected_text.empty())
     {
         selected_text.Trim(true);
         selected_text.Trim(false);
-
         wxString::size_type pos = selected_text.find(wxT('\n'));
+
         if (pos != wxString::npos)
         {
             selected_text.Remove(pos, selected_text.length() - pos);
             selected_text.Trim(true);
             selected_text.Trim(false);
         }
+
         // check if the mouse is over the selected text
         if (mousePosition)
         {
             int startPos = stc->GetSelectionStart();
             int endPos = stc->GetSelectionEnd();
             int mousePos = stc->PositionFromPointClose(mousePosition->x, mousePosition->y);
+
             if (mousePos == wxSCI_INVALID_POSITION)
+            {
                 return wxString();
-            else if (startPos <= mousePos && mousePos <= endPos)
-                return selected_text;
+            }
             else
-                return wxString();
+                if (startPos <= mousePos && mousePos <= endPos)
+                {
+                    return selected_text;
+                }
+                else
+                {
+                    return wxString();
+                }
         }
         else
+        {
             return selected_text;
+        }
     }
 
     if (mousePosition)
@@ -226,55 +252,74 @@ wxString cbDebuggerPlugin::GetEditorWordAtCaret(const wxPoint* mousePosition)
         int end = stc->WordEndPosition(stc->GetCurrentPos(), true);
         selected_text = stc->GetTextRange(start, end);
     }
+
     return selected_text;
 }
 
-void cbDebuggerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, cb_unused const FileTreeData* data)
+void cbDebuggerPlugin::BuildModuleMenu(const ModuleType type, wxMenu * menu, cb_unused const FileTreeData * data)
 {
     if (!IsAttached())
+    {
         return;
+    }
+
     // we 're only interested in editor menus
     // we 'll add a "debug watches" entry only when the debugger is running...
     if (type != mtEditorManager || !menu)
+    {
         return;
-    cbDebuggerPlugin *active_plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+    }
+
+    cbDebuggerPlugin * active_plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+
     if (active_plugin != this)
+    {
         return;
+    }
 
     wxString word;
+
     if (IsRunning())
     {
         // has to have a word under the caret...
         word = GetEditorWordAtCaret();
     }
+
     Manager::Get()->GetDebuggerManager()->BuildContextMenu(*menu, word, IsRunning());
 }
 
-bool cbDebuggerPlugin::BuildToolBar(cb_unused wxToolBar* toolBar)
+bool cbDebuggerPlugin::BuildToolBar(cb_unused wxToolBar * toolBar)
 {
     return false;
 }
 
 bool cbDebuggerPlugin::ToolMenuEnabled() const
 {
-    cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-
+    cbProject * prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     bool en = (prj && !prj->GetCurrentlyCompilingTarget()) || IsAttachedToProcess();
     return IsRunning() && en;
 }
 
-cbDebuggerConfiguration& cbDebuggerPlugin::GetActiveConfig()
+cbDebuggerConfiguration & cbDebuggerPlugin::GetActiveConfig()
 {
-    DebuggerManager::RegisteredPlugins &allPlugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
-
+    DebuggerManager::RegisteredPlugins & allPlugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
     DebuggerManager::RegisteredPlugins::iterator it = allPlugins.find(this);
+
     if (it == allPlugins.end())
+    {
         cbAssert(false);
-    cbDebuggerConfiguration *config = it->second.GetConfiguration(m_ActiveConfig);
+    }
+
+    cbDebuggerConfiguration * config = it->second.GetConfiguration(m_ActiveConfig);
+
     if (!config)
+    {
         return *it->second.GetConfigurations().front();
+    }
     else
+    {
         return *config;
+    }
 }
 
 void cbDebuggerPlugin::SetActiveConfig(int index)
@@ -289,28 +334,38 @@ int cbDebuggerPlugin::GetIndexOfActiveConfig() const
 
 void cbDebuggerPlugin::ClearActiveMarkFromAllEditors()
 {
-    EditorManager* edMan = Manager::Get()->GetEditorManager();
+    EditorManager * edMan = Manager::Get()->GetEditorManager();
+
     for (int i = 0; i < edMan->GetEditorsCount(); ++i)
     {
-        cbEditor* ed = edMan->GetBuiltinEditor(i);
+        cbEditor * ed = edMan->GetBuiltinEditor(i);
+
         if (ed)
+        {
             ed->SetDebugLine(-1);
+        }
     }
 }
 
-cbDebuggerPlugin::SyncEditorResult cbDebuggerPlugin::SyncEditor(const wxString& filename, int line, bool setMarker)
+cbDebuggerPlugin::SyncEditorResult cbDebuggerPlugin::SyncEditor(const wxString & filename, int line, bool setMarker)
 {
     if (setMarker)
     {
-        EditorManager* edMan = Manager::Get()->GetEditorManager();
+        EditorManager * edMan = Manager::Get()->GetEditorManager();
+
         for (int i = 0; i < edMan->GetEditorsCount(); ++i)
         {
-            cbEditor* ed = edMan->GetBuiltinEditor(i);
+            cbEditor * ed = edMan->GetBuiltinEditor(i);
+
             if (ed)
+            {
                 ed->SetDebugLine(-1);
+            }
         }
     }
+
     FileType ft = FileTypeOf(filename);
+
     if (ft != ftSource && ft != ftHeader && ft != ftResource && ft != ftTemplateSource)
     {
         // if the line is >= 0 and ft == ftOther assume, that we are in header without extension
@@ -319,32 +374,41 @@ cbDebuggerPlugin::SyncEditorResult cbDebuggerPlugin::SyncEditor(const wxString& 
             ShowLog(false);
             Log(_("Unknown file: ") + filename, Logger::error);
             InfoWindow::Display(_("Unknown file"), _("File: ") + filename, 5000);
-
             return SyncFileUnknown; // don't try to open unknown files
         }
     }
 
-    cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
-    ProjectFile* f = project ? project->GetFileByFilename(filename, false, true) : nullptr;
-
+    cbProject * project = Manager::Get()->GetProjectManager()->GetActiveProject();
+    ProjectFile * f = project ? project->GetFileByFilename(filename, false, true) : nullptr;
     wxString unixfilename = UnixFilename(filename);
     wxFileName fname(unixfilename);
 
     if (project && fname.IsRelative())
+    {
         fname.MakeAbsolute(project->GetBasePath());
+    }
 
     // gdb can't work with spaces in filenames, so we have passed it the shorthand form (C:\MYDOCU~1 etc)
     // revert this change now so the file can be located and opened...
     // we do this by calling GetLongPath()
-    cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetLongPath());
+    cbEditor * ed = Manager::Get()->GetEditorManager()->Open(fname.GetLongPath());
+
     if (ed)
     {
         ed->Show(true);
+
         if (f && !ed->GetProjectFile())
+        {
             ed->SetProjectFile(f);
+        }
+
         ed->GotoLine(line - 1, false);
+
         if (setMarker)
+        {
             ed->SetDebugLine(line - 1);
+        }
+
         return SyncOk;
     }
     else
@@ -352,38 +416,43 @@ cbDebuggerPlugin::SyncEditorResult cbDebuggerPlugin::SyncEditor(const wxString& 
         ShowLog(false);
         Log(_("Cannot open file: ") + filename, Logger::error);
         InfoWindow::Display(_("Cannot open file"), _("File: ") + filename, 5000);
-
         return SyncFileNotFound;
     }
 }
 
-inline bool HasBreakpoint(cbDebuggerPlugin &plugin, wxString const &filename, int line)
+inline bool HasBreakpoint(cbDebuggerPlugin & plugin, wxString const & filename, int line)
 {
     int count = plugin.GetBreakpointsCount();
+
     for (int ii = 0; ii < count; ++ii)
     {
-        const cb::shared_ptr<cbBreakpoint> &b = plugin.GetBreakpoint(ii);
+        const cb::shared_ptr<cbBreakpoint> & b = plugin.GetBreakpoint(ii);
 
         if (b->GetLocation() == filename && b->GetLine() == line)
+        {
             return true;
+        }
     }
+
     return false;
 }
 
-void cbDebuggerPlugin::EditorLinesAddedOrRemoved(cbEditor* editor, int startline, int lines)
+void cbDebuggerPlugin::EditorLinesAddedOrRemoved(cbEditor * editor, int startline, int lines)
 {
     // here we keep the breakpoints in sync with the editors
     // (whenever lines are added or removed)
     if (!editor || lines == 0)
+    {
         return;
+    }
 
-    const wxString& filename = editor->GetFilename();
-
+    const wxString & filename = editor->GetFilename();
     std::vector<int> breakpoints_for_file;
     int count = GetBreakpointsCount();
+
     for (int ii = 0; ii < count; ++ii)
     {
-        const cb::shared_ptr<cbBreakpoint> &b = GetBreakpoint(ii);
+        const cb::shared_ptr<cbBreakpoint> & b = GetBreakpoint(ii);
 
         if (b->GetLocation() == filename)
         {
@@ -397,40 +466,51 @@ void cbDebuggerPlugin::EditorLinesAddedOrRemoved(cbEditor* editor, int startline
         // make "lines" positive, for easier reading below
         lines = -lines;
         int endline = startline + lines - 1;
-
         std::vector<cb::shared_ptr<cbBreakpoint> > to_remove;
 
         for (std::vector<int>::iterator it = breakpoints_for_file.begin(); it != breakpoints_for_file.end(); ++it)
         {
-            const cb::shared_ptr<cbBreakpoint> &b = GetBreakpoint(*it);
+            const cb::shared_ptr<cbBreakpoint> & b = GetBreakpoint(*it);
+
             if (b->GetLine() > endline)
+            {
                 ShiftBreakpoint(*it, -lines);
-            else if (b->GetLine() >= startline && b->GetLine() <= endline)
-                to_remove.push_back(b);
+            }
+            else
+                if (b->GetLine() >= startline && b->GetLine() <= endline)
+                {
+                    to_remove.push_back(b);
+                }
         }
 
         for (std::vector<cb::shared_ptr<cbBreakpoint> >::iterator it = to_remove.begin(); it != to_remove.end(); ++it)
+        {
             DeleteBreakpoint(*it);
+        }
     }
     else
     {
         for (std::vector<int>::iterator it = breakpoints_for_file.begin(); it != breakpoints_for_file.end(); ++it)
         {
-            const cb::shared_ptr<cbBreakpoint> &b = GetBreakpoint(*it);
+            const cb::shared_ptr<cbBreakpoint> & b = GetBreakpoint(*it);
+
             if (b->GetLine() > startline)
+            {
                 ShiftBreakpoint(*it, lines);
+            }
         }
     }
 }
 
-void cbDebuggerPlugin::OnEditorOpened(CodeBlocksEvent& event)
+void cbDebuggerPlugin::OnEditorOpened(CodeBlocksEvent & event)
 {
     // when an editor opens, look if we have breakpoints for it
     // and notify it...
-    EditorBase* ed = event.GetEditor();
+    EditorBase * ed = event.GetEditor();
+
     if (ed && ed->IsBuiltinEditor())
     {
-        cbEditor *editor = static_cast<cbEditor*>(ed);
+        cbEditor * editor = static_cast<cbEditor *>(ed);
         editor->RefreshBreakpointMarkers();
 
         if (IsRunning())
@@ -438,39 +518,45 @@ void cbDebuggerPlugin::OnEditorOpened(CodeBlocksEvent& event)
             wxString filename;
             int line;
             GetCurrentPosition(filename, line);
-
             wxFileName edFileName(ed->GetFilename());
             edFileName.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT);
-
             wxFileName dbgFileName(filename);
             dbgFileName.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT);
+
             if (dbgFileName.GetFullPath().IsSameAs(edFileName.GetFullPath()) && line != -1)
             {
                 editor->SetDebugLine(line - 1);
             }
         }
     }
+
     event.Skip(); // must do
 }
 
-void cbDebuggerPlugin::OnProjectActivated(CodeBlocksEvent& event)
+void cbDebuggerPlugin::OnProjectActivated(CodeBlocksEvent & event)
 {
     // allow others to catch this
     event.Skip();
 
-    if(this != Manager::Get()->GetDebuggerManager()->GetActiveDebugger())
+    if (this != Manager::Get()->GetDebuggerManager()->GetActiveDebugger())
+    {
         return;
+    }
+
     // when a project is activated and it's not the actively debugged project,
     // ask the user to end debugging or re-activate the debugged project.
 
     if (!IsRunning())
+    {
         return;
+    }
 
     if (event.GetProject() != GetProject() && GetProject())
     {
         wxString msg = _("You can't change the active project while you're actively debugging another.\n"
                          "Do you want to stop debugging?\n\n"
                          "Click \"Yes\" to stop debugging now or click \"No\" to re-activate the debuggee.");
+
         if (cbMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO) == wxID_YES)
         {
             Stop();
@@ -482,19 +568,24 @@ void cbDebuggerPlugin::OnProjectActivated(CodeBlocksEvent& event)
     }
 }
 
-void cbDebuggerPlugin::OnProjectClosed(CodeBlocksEvent& event)
+void cbDebuggerPlugin::OnProjectClosed(CodeBlocksEvent & event)
 {
     // allow others to catch this
     event.Skip();
 
-    if(this != Manager::Get()->GetDebuggerManager()->GetActiveDebugger())
+    if (this != Manager::Get()->GetDebuggerManager()->GetActiveDebugger())
+    {
         return;
+    }
+
     CleanupWhenProjectClosed(event.GetProject());
 
     // when a project closes, make sure it's not the actively debugged project.
     // if so, end debugging immediately!
     if (!IsRunning())
+    {
         return;
+    }
 
     if (event.GetProject() == GetProject())
     {
@@ -513,7 +604,8 @@ void cbDebuggerPlugin::OnProjectClosed(CodeBlocksEvent& event)
 
 void cbDebuggerPlugin::ShowLog(bool clear)
 {
-    TextCtrlLogger *log = Manager::Get()->GetDebuggerManager()->GetLogger();
+    TextCtrlLogger * log = Manager::Get()->GetDebuggerManager()->GetLogger();
+
     if (log)
     {
         // switch to the debugger log
@@ -523,11 +615,13 @@ void cbDebuggerPlugin::ShowLog(bool clear)
         Manager::Get()->ProcessEvent(eventShowLog);
 
         if (clear)
+        {
             log->Clear();
+        }
     }
 }
 
-void cbDebuggerPlugin::Log(const wxString& msg, Logger::level level)
+void cbDebuggerPlugin::Log(const wxString & msg, Logger::level level)
 {
     if (IsAttached())
     {
@@ -537,7 +631,7 @@ void cbDebuggerPlugin::Log(const wxString& msg, Logger::level level)
     }
 }
 
-void cbDebuggerPlugin::DebugLog(const wxString& msg, Logger::level level)
+void cbDebuggerPlugin::DebugLog(const wxString & msg, Logger::level level)
 {
     // gdb debug messages
     if (IsAttached() && HasDebugLog())
@@ -566,34 +660,33 @@ void cbDebuggerPlugin::SetupLog(int normalIndex)
 void cbDebuggerPlugin::SwitchToDebuggingLayout()
 {
     CodeBlocksLayoutEvent queryEvent(cbEVT_QUERY_VIEW_LAYOUT);
-
-    const cbDebuggerConfiguration &config = GetActiveConfig();
-
+    const cbDebuggerConfiguration & config = GetActiveConfig();
     wxString perspectiveName;
+
     switch (cbDebuggerCommonConfig::GetPerspective())
     {
-    case cbDebuggerCommonConfig::OnePerDebugger:
-        perspectiveName = GetGUIName();
-        break;
-    case cbDebuggerCommonConfig::OnePerDebuggerConfig:
-        perspectiveName = GetGUIName() + wxT(":") + config.GetName();
-        break;
-    case cbDebuggerCommonConfig::UseCurrent:
-        m_PreviousLayout = wxString();
-        return;
-    case cbDebuggerCommonConfig::OnlyOne:
-    default:
-        perspectiveName = _("Debugging");
+        case cbDebuggerCommonConfig::OnePerDebugger:
+            perspectiveName = GetGUIName();
+            break;
+
+        case cbDebuggerCommonConfig::OnePerDebuggerConfig:
+            perspectiveName = GetGUIName() + wxT(":") + config.GetName();
+            break;
+
+        case cbDebuggerCommonConfig::UseCurrent:
+            m_PreviousLayout = wxString();
+            return;
+
+        case cbDebuggerCommonConfig::OnlyOne:
+        default:
+            perspectiveName = _("Debugging");
     }
 
     CodeBlocksLayoutEvent switchEvent(cbEVT_SWITCH_VIEW_LAYOUT, perspectiveName);
-
     Manager::Get()->GetLogManager()->DebugLog(F(_("Switching layout to \"%s\""), switchEvent.layout.wx_str()));
-
     // query the current layout
     Manager::Get()->ProcessEvent(queryEvent);
     m_PreviousLayout = queryEvent.layout;
-
     // switch to debugging layout
     Manager::Get()->ProcessEvent(switchEvent);
 }
@@ -601,59 +694,64 @@ void cbDebuggerPlugin::SwitchToDebuggingLayout()
 void cbDebuggerPlugin::SwitchToPreviousLayout()
 {
     if (m_PreviousLayout.empty())
+    {
         return;
+    }
 
     CodeBlocksLayoutEvent switchEvent(cbEVT_SWITCH_VIEW_LAYOUT, m_PreviousLayout);
-
-    wxString const &name = !switchEvent.layout.IsEmpty() ? switchEvent.layout : wxString(_("Code::Blocks default"));
-
+    wxString const & name = !switchEvent.layout.IsEmpty() ? switchEvent.layout : wxString(_("Code::Blocks default"));
     Manager::Get()->GetLogManager()->DebugLog(F(_("Switching layout to \"%s\""), name.wx_str()));
-
     // switch to previous layout
     Manager::Get()->ProcessEvent(switchEvent);
 }
 
-bool cbDebuggerPlugin::GetDebuggee(wxString &pathToDebuggee, wxString &workingDirectory, ProjectBuildTarget* target)
+bool cbDebuggerPlugin::GetDebuggee(wxString & pathToDebuggee, wxString & workingDirectory, ProjectBuildTarget * target)
 {
     if (!target)
+    {
         return false;
+    }
 
     wxString out;
+
     switch (target->GetTargetType())
     {
-    case ttExecutable:
-    case ttConsoleOnly:
-    case ttNative:
-    {
-        out = UnixFilename(target->GetOutputFilename());
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
-        wxFileName f(out);
-        f.MakeAbsolute(target->GetParentProject()->GetBasePath());
-        out = f.GetFullPath();
-        Log(_("Adding file: ") + out);
-        ConvertDirectory(out);
-    }
-    break;
-
-    case ttStaticLib:
-    case ttDynamicLib:
-        // check for hostapp
-        if (target->GetHostApplication().IsEmpty())
+        case ttExecutable:
+        case ttConsoleOnly:
+        case ttNative:
         {
-            cbMessageBox(_("You must select a host application to \"run\" a library..."));
-            return false;
+            out = UnixFilename(target->GetOutputFilename());
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
+            wxFileName f(out);
+            f.MakeAbsolute(target->GetParentProject()->GetBasePath());
+            out = f.GetFullPath();
+            Log(_("Adding file: ") + out);
+            ConvertDirectory(out);
         }
-        out = UnixFilename(target->GetHostApplication());
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
-        Log(_("Adding file: ") + out);
-        ConvertDirectory(out);
         break;
 
-    case ttCommandsOnly: // fall through:
-    default:
-        Log(_("Unsupported target type (Project -> Properties -> Build Targets -> Type)"), Logger::error);
-        return false;
+        case ttStaticLib:
+        case ttDynamicLib:
+
+            // check for hostapp
+            if (target->GetHostApplication().IsEmpty())
+            {
+                cbMessageBox(_("You must select a host application to \"run\" a library..."));
+                return false;
+            }
+
+            out = UnixFilename(target->GetHostApplication());
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
+            Log(_("Adding file: ") + out);
+            ConvertDirectory(out);
+            break;
+
+        case ttCommandsOnly: // fall through:
+        default:
+            Log(_("Unsupported target type (Project -> Properties -> Build Targets -> Type)"), Logger::error);
+            return false;
     }
+
     if (out.empty())
     {
         Log(_("Couldn't find the path to the debuggee!"), Logger::error);
@@ -663,10 +761,13 @@ bool cbDebuggerPlugin::GetDebuggee(wxString &pathToDebuggee, wxString &workingDi
     workingDirectory = target->GetWorkingDir();
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(workingDirectory);
     wxFileName cd(workingDirectory);
-    if (cd.IsRelative())
-        cd.MakeAbsolute(target->GetParentProject()->GetBasePath());
-    workingDirectory = cd.GetFullPath();
 
+    if (cd.IsRelative())
+    {
+        cd.MakeAbsolute(target->GetParentProject()->GetBasePath());
+    }
+
+    workingDirectory = cd.GetFullPath();
     pathToDebuggee = out;
     return true;
 }
@@ -688,11 +789,17 @@ bool cbDebuggerPlugin::EnsureBuildUpToDate(StartType startType)
         }
 
         // make sure the target is compiled
-        const std::vector<cbCompilerPlugin*> &compilers = Manager::Get()->GetPluginManager()->GetCompilerPlugins();
+        const std::vector<cbCompilerPlugin *> & compilers = Manager::Get()->GetPluginManager()->GetCompilerPlugins();
+
         if (compilers.empty())
+        {
             m_pCompiler = nullptr;
+        }
         else
+        {
             m_pCompiler = compilers.front();
+        }
+
         if (m_pCompiler)
         {
             // is the compiler already running?
@@ -711,15 +818,17 @@ bool cbDebuggerPlugin::EnsureBuildUpToDate(StartType startType)
             // now, when the build is finished, DoDebug will be launched in OnCompilerFinished()
         }
     }
+
     return true;
 }
 
-void cbDebuggerPlugin::OnCompilerFinished(cb_unused CodeBlocksEvent& event)
+void cbDebuggerPlugin::OnCompilerFinished(cb_unused CodeBlocksEvent & event)
 {
     if (m_WaitingCompilerToFinish)
     {
         m_WaitingCompilerToFinish = false;
         bool compilerFailed = false;
+
         // only proceed if build succeeded
         if (m_pCompiler && m_pCompiler->GetExitCode() != 0)
         {
@@ -727,20 +836,30 @@ void cbDebuggerPlugin::OnCompilerFinished(cb_unused CodeBlocksEvent& event)
                                _("Build failed, do you want to debug the program?"),
                                wxART_QUESTION, AnnoyingDialog::YES_NO, AnnoyingDialog::rtNO,
                                _("&Debug anyway"));
+
             if (dlg.ShowModal() != AnnoyingDialog::rtYES)
             {
-                ProjectManager *manager = Manager::Get()->GetProjectManager();
+                ProjectManager * manager = Manager::Get()->GetProjectManager();
+
                 if (manager->GetIsRunning() && manager->GetIsRunning() == this)
+                {
                     manager->SetIsRunning(nullptr);
+                }
+
                 compilerFailed = true;
             }
         }
+
         ShowLog(false);
+
         if (!CompilerFinished(compilerFailed, m_StartType))
         {
-            ProjectManager *manager = Manager::Get()->GetProjectManager();
+            ProjectManager * manager = Manager::Get()->GetProjectManager();
+
             if (manager->GetIsRunning() && manager->GetIsRunning() == this)
+            {
                 manager->SetIsRunning(nullptr);
+            }
         }
     }
 }
@@ -755,7 +874,7 @@ wxString MakeSleepCommand()
 
 struct ConsoleInfo
 {
-    ConsoleInfo(const wxString &path = wxEmptyString, int pid = -1) : ttyPath(path), sleepPID(pid) {}
+    ConsoleInfo(const wxString & path = wxEmptyString, int pid = -1) : ttyPath(path), sleepPID(pid) {}
 
     bool IsValid() const
     {
@@ -771,16 +890,18 @@ ConsoleInfo GetConsoleTty(int consolePID)
     // execute the ps x -o command  and read PS output to get the /dev/tty field
     wxArrayString psOutput;
     wxArrayString psErrors;
-
     int result = wxExecute(wxT("ps x -o tty,pid,command"), psOutput, psErrors, wxEXEC_SYNC);
+
     if (result != 0)
+    {
         return ConsoleInfo();
+    }
 
     // find task with our unique sleep time
-    const wxString &uniqueSleepTimeStr = MakeSleepCommand();
-
+    const wxString & uniqueSleepTimeStr = MakeSleepCommand();
     // search the output of "ps pid" command
     int count = psOutput.GetCount();
+
     for (int i = count - 1; i > -1; --i)
     {
         // find the pts/# or tty/# or whatever it's called
@@ -794,22 +915,26 @@ ConsoleInfo GetConsoleTty(int consolePID)
         // pts/2    13363 sleep 93343
         // ?        13365 /home/pecan/proj/conio/conio
         // pts/1    13370 ps x -o tty,pid,command
+        const wxString & psCmd = psOutput.Item(i);
 
-        const wxString &psCmd = psOutput.Item(i);
         if (psCmd.Contains(uniqueSleepTimeStr))
         {
             // Extract the pid for the line
             long pidForLine;
+
             if (psCmd.AfterFirst(' ').Trim(false).BeforeFirst(' ').Trim(true).ToLong(&pidForLine))
             {
                 // Check if we are at the correct line. It is possible that there are two lines which contain the
                 // "sleep" string. One for the sleep process and one for the terminal process. We want to skip the
                 // line for the terminal process.
                 if (pidForLine != consolePID)
+                {
                     return ConsoleInfo(wxT("/dev/") + psCmd.BeforeFirst(' '), pidForLine);
+                }
             }
         }
     }
+
     return ConsoleInfo();
 }
 
@@ -840,34 +965,32 @@ struct ConsoleProcess : wxProcess
 } // namespace
 #endif
 
-int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
+int cbDebuggerPlugin::RunNixConsole(wxString & consoleTty)
 {
     consoleTty = wxEmptyString;
 #ifndef __WXMSW__
     // Start a terminal and put the shell to sleep with -e sleep 80000.
     // Fetch the terminal's tty, so we can tell the debugger what TTY to use,
     // thus redirecting program's stdin/stdout/stderr to the terminal.
-
     wxString cmd;
     int consolePid = 0;
     // Use the terminal specified by the user in the Settings -> Environment.
     wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
-
-    term.Replace(_T("$TITLE"), wxString(wxT("'"))+_("Program Console")+wxT("'"));
+    term.Replace(_T("$TITLE"), wxString(wxT("'")) + _("Program Console") + wxT("'"));
     cmd << term << _T(" ");
-
-    const wxString &sleepCommand = MakeSleepCommand();
+    const wxString & sleepCommand = MakeSleepCommand();
     cmd << sleepCommand;
-
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(cmd);
-
     // The lifetime of wxProcess objects is very uncertain, so we are using a shared pointer to
     // prevent us accessing deleted objects.
     cb::shared_ptr<ConsoleProcessTerminationInfo> processInfo(new ConsoleProcessTerminationInfo);
-    ConsoleProcess *process = new ConsoleProcess(processInfo);
+    ConsoleProcess * process = new ConsoleProcess(processInfo);
     consolePid = wxExecute(cmd, wxEXEC_ASYNC, process);
+
     if (consolePid <= 0)
+    {
         return -1;
+    }
 
     // Try to find the TTY. We're using a loop, because some slow machines might make the check fail due
     // to a slow starting terminal.
@@ -886,11 +1009,13 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
         }
 
         // Try to find tty path and pid for the sleep command we've just executed.
-        const ConsoleInfo &info = GetConsoleTty(consolePid);
+        const ConsoleInfo & info = GetConsoleTty(consolePid);
 
         // If there is no sleep command yet, do another iteration after a small delay.
         if (!info.IsValid())
+        {
             continue;
+        }
 
         // Try to find if the console window is still alive. Newer terminals like gnome-terminal
         // try to be easier on resources and use a shared server process. For these terminals the
@@ -911,9 +1036,13 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
             return consolePid;
         }
     }
+
     // failed to find the console tty
     if (consolePid != 0)
+    {
         ::wxKill(consolePid);
+    }
+
 #endif // !__WWXMSW__
     return -1;
 }
@@ -925,15 +1054,20 @@ void cbDebuggerPlugin::MarkAsStopped()
 
 void cbDebuggerPlugin::BringCBToFront()
 {
-    wxWindow* app = Manager::Get()->GetAppWindow();
+    wxWindow * app = Manager::Get()->GetAppWindow();
+
     if (app)
+    {
         app->Raise();
+    }
 }
 
-void cbDebuggerPlugin::UpdateWatches(const std::vector<cb::shared_ptr<cbWatch>> &watches)
+void cbDebuggerPlugin::UpdateWatches(const std::vector<cb::shared_ptr<cbWatch>> & watches)
 {
-    for (const cb::shared_ptr<cbWatch>& watch : watches)
+    for (const cb::shared_ptr<cbWatch> & watch : watches)
+    {
         UpdateWatch(watch);
+    }
 }
 
 void cbDebuggerPlugin::RegisterValueTooltip()
@@ -950,43 +1084,57 @@ bool cbDebuggerPlugin::ShowValueTooltip(cb_unused int style)
 }
 
 // Default implementation does nothing
-void cbDebuggerPlugin::OnValueTooltip(cb_unused const wxString& token, cb_unused const wxRect& evalRect)
+void cbDebuggerPlugin::OnValueTooltip(cb_unused const wxString & token, cb_unused const wxRect & evalRect)
 {
 }
 
-void cbDebuggerPlugin::ProcessValueTooltip(CodeBlocksEvent& event)
+void cbDebuggerPlugin::ProcessValueTooltip(CodeBlocksEvent & event)
 {
     event.Skip();
+
     if (cbDebuggerCommonConfig::GetFlag(cbDebuggerCommonConfig::RequireCtrlForTooltips))
     {
         if (!wxGetKeyState(WXK_CONTROL))
+        {
             return;
+        }
     }
 
     if (Manager::Get()->GetDebuggerManager()->GetInterfaceFactory()->IsValueTooltipShown())
+    {
         return;
+    }
 
     if (!ShowValueTooltip(event.GetInt()))
+    {
         return;
+    }
 
-    EditorBase* base = event.GetEditor();
-    cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : nullptr;
+    EditorBase * base = event.GetEditor();
+    cbEditor * ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor *>(base) : nullptr;
+
     if (!ed)
+    {
         return;
+    }
 
     if (ed->IsContextMenuOpened())
+    {
         return;
+    }
 
     // get rid of other calltips (if any) [for example the code completion one, at this time we
     // want the debugger value call/tool-tip to win and be shown]
     if (ed->GetControl()->CallTipActive())
+    {
         ed->GetControl()->CallTipCancel();
+    }
 
     wxPoint pt;
     pt.x = event.GetX();
     pt.y = event.GetY();
+    const wxString & token = GetEditorWordAtCaret(&pt);
 
-    const wxString &token = GetEditorWordAtCaret(&pt);
     if (!token.empty())
     {
         pt = ed->GetControl()->ClientToScreen(pt);
@@ -994,7 +1142,7 @@ void cbDebuggerPlugin::ProcessValueTooltip(CodeBlocksEvent& event)
     }
 }
 
-void cbDebuggerPlugin::CancelValueTooltip(cb_unused CodeBlocksEvent& event)
+void cbDebuggerPlugin::CancelValueTooltip(cb_unused CodeBlocksEvent & event)
 {
     Manager::Get()->GetDebuggerManager()->GetInterfaceFactory()->HideValueTooltip();
 }
@@ -1025,17 +1173,17 @@ cbCodeCompletionPlugin::cbCodeCompletionPlugin()
     m_Type = ptCodeCompletion;
 }
 
-void cbCodeCompletionPlugin::DoAutocomplete(cb_unused const CCToken& token, cb_unused cbEditor* ed)
+void cbCodeCompletionPlugin::DoAutocomplete(cb_unused const CCToken & token, cb_unused cbEditor * ed)
 {
     // do nothing: allow (wx)Scintilla to handle the insert
 }
 
-void cbCodeCompletionPlugin::DoAutocomplete(const wxString& token, cbEditor* ed)
+void cbCodeCompletionPlugin::DoAutocomplete(const wxString & token, cbEditor * ed)
 {
     DoAutocomplete(CCToken(-1, token), ed);
 }
 
-bool cbCodeCompletionPlugin::IsProviderFor(cbEditor* ed)
+bool cbCodeCompletionPlugin::IsProviderFor(cbEditor * ed)
 {
     return (Manager::Get()->GetCCManager()->GetProviderFor(ed) == this);
 }
@@ -1060,7 +1208,7 @@ cbSmartIndentPlugin::cbSmartIndentPlugin()
 
 void cbSmartIndentPlugin::OnAttach()
 {
-    m_FunctorId = EditorHooks::RegisterHook( new EditorHooks::cbSmartIndentEditorHookFunctor(this) );
+    m_FunctorId = EditorHooks::RegisterHook(new EditorHooks::cbSmartIndentEditorHookFunctor(this));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CC_DONE, new cbEventFunctor<cbSmartIndentPlugin, CodeBlocksEvent>(this, &cbSmartIndentPlugin::OnCCDoneEvent));
 }
 
@@ -1094,182 +1242,262 @@ bool cbSmartIndentPlugin::SelectionBraceCompletionEnabled()const
     return Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/selection_brace_completion"), false);
 }
 
-void cbSmartIndentPlugin::Indent(cbStyledTextCtrl* stc, wxString &indent)const
+void cbSmartIndentPlugin::Indent(cbStyledTextCtrl * stc, wxString & indent)const
 {
     if (stc->GetUseTabs())
-        indent << _T('\t'); // 1 tab
+    {
+        indent << _T('\t');    // 1 tab
+    }
     else
-        indent << wxString(_T(' '), stc->GetTabWidth()); // n spaces
+    {
+        indent << wxString(_T(' '), stc->GetTabWidth());    // n spaces
+    }
 }
 
-bool cbSmartIndentPlugin::Indent(cbStyledTextCtrl* stc, wxString &indent, int posInLine)const
+bool cbSmartIndentPlugin::Indent(cbStyledTextCtrl * stc, wxString & indent, int posInLine)const
 {
     if (posInLine >= 0)
     {
         if (stc->GetUseTabs())
-            indent = wxString(_T('\t'), posInLine/stc->GetTabWidth());
+        {
+            indent = wxString(_T('\t'), posInLine / stc->GetTabWidth());
+        }
         else
-            indent = wxString(_T(' '), posInLine); // n spaces
+        {
+            indent = wxString(_T(' '), posInLine);    // n spaces
+        }
+
         return true;
     }
+
     return false;
 }
 
-wxString cbSmartIndentPlugin::GetLastNonCommentWord(cbEditor* ed, int position, unsigned int NumberOfWords)const
+wxString cbSmartIndentPlugin::GetLastNonCommentWord(cbEditor * ed, int position, unsigned int NumberOfWords)const
 {
-    cbStyledTextCtrl* stc = ed->GetControl();
-    if ( !stc )
+    cbStyledTextCtrl * stc = ed->GetControl();
+
+    if (!stc)
+    {
         return wxEmptyString;
+    }
 
-    if ( position == -1 )
+    if (position == -1)
+    {
         position = stc->GetCurrentPos();
-
+    }
 
     wxString str;
     str.Empty();
     int count = 0;
     bool foundlf = false; // For the rare case of CR's without LF's
+
     while (position)
     {
         wxChar c = stc->GetCharAt(--position);
         int style = stc->GetStyleAt(position);
         bool inComment = stc->IsComment(style);
+
         if (c == _T('\n'))
         {
             count++;
             foundlf = true;
         }
-        else if (c == _T('\r') && !foundlf)
-            count++;
         else
-            foundlf = false;
+            if (c == _T('\r') && !foundlf)
+            {
+                count++;
+            }
+            else
+            {
+                foundlf = false;
+            }
 
-        if (count > 1) return str;
-        if (!inComment && c != _T(' ') && c != _T('\t') && c != _T('\n') && c != _T('\r') )
+        if (count > 1)
         {
-            int startpos = stc->WordStartPosition( position, true );
-            for ( unsigned int i = 1; i < NumberOfWords ; ++i )
-                startpos = stc->WordStartPosition( startpos - 1, true );
+            return str;
+        }
+
+        if (!inComment && c != _T(' ') && c != _T('\t') && c != _T('\n') && c != _T('\r'))
+        {
+            int startpos = stc->WordStartPosition(position, true);
+
+            for (unsigned int i = 1; i < NumberOfWords ; ++i)
+            {
+                startpos = stc->WordStartPosition(startpos - 1, true);
+            }
+
             int endpos = stc->WordEndPosition(startpos, true);
             str = stc->GetTextRange(startpos, endpos);
             return str;
         }
     }
+
     return str;
 }
 
-wxChar cbSmartIndentPlugin::GetLastNonWhitespaceChar(cbEditor* ed, int position)const
+wxChar cbSmartIndentPlugin::GetLastNonWhitespaceChar(cbEditor * ed, int position)const
 {
     return GetLastNonWhitespaceChars(ed, position, 1)[0];
 }
 
-wxString cbSmartIndentPlugin::GetLastNonWhitespaceChars(cbEditor* ed, int position, unsigned int NumberOfChars)const
+wxString cbSmartIndentPlugin::GetLastNonWhitespaceChars(cbEditor * ed, int position, unsigned int NumberOfChars)const
 {
-    cbStyledTextCtrl* stc = ed->GetControl();
-    if ( !stc )
+    cbStyledTextCtrl * stc = ed->GetControl();
+
+    if (!stc)
+    {
         return wxEmptyString;
+    }
 
     if (position == -1)
+    {
         position = stc->GetCurrentPos();
+    }
 
     int count = 0; // Used to count the number of blank lines
     bool foundlf = false; // For the rare case of CR's without LF's
+
     while (position)
     {
         wxChar c = stc->GetCharAt(--position);
         int style = stc->GetStyleAt(position);
         bool inComment = stc->IsComment(style);
+
         if (c == _T('\n'))
         {
             count++;
             foundlf = true;
         }
-        else if (c == _T('\r') && !foundlf)
-            count++;
         else
-            foundlf = false;
-        if (count > 1) return wxEmptyString;
+            if (c == _T('\r') && !foundlf)
+            {
+                count++;
+            }
+            else
+            {
+                foundlf = false;
+            }
+
+        if (count > 1)
+        {
+            return wxEmptyString;
+        }
+
         if (!inComment && c != _T(' ') && c != _T('\t') && c != _T('\n') && c != _T('\r'))
-            return stc->GetTextRange(position-NumberOfChars+1, position+1);
+        {
+            return stc->GetTextRange(position - NumberOfChars + 1, position + 1);
+        }
     }
+
     return wxEmptyString;
 }
 
-wxChar cbSmartIndentPlugin::GetNextNonWhitespaceCharOnLine(cbStyledTextCtrl* stc, int position, int *pos)const
+wxChar cbSmartIndentPlugin::GetNextNonWhitespaceCharOnLine(cbStyledTextCtrl * stc, int position, int * pos)const
 {
     if (position == -1)
+    {
         position = stc->GetCurrentPos();
+    }
 
     while (position < stc->GetLength())
     {
         wxChar c = stc->GetCharAt(position);
-        if ( c == _T('\n') || c ==  _T('\r') )
+
+        if (c == _T('\n') || c ==  _T('\r'))
         {
-            if ( pos ) *pos = position;
+            if (pos)
+            {
+                *pos = position;
+            }
+
             return 0;
         }
-        if ( c !=  _T(' ') && c != _T('\t') )
+
+        if (c !=  _T(' ') && c != _T('\t'))
         {
-            if ( pos ) *pos = position;
+            if (pos)
+            {
+                *pos = position;
+            }
+
             return c;
         }
+
         position++;
     }
 
     return 0;
 }
 
-int cbSmartIndentPlugin::FindBlockStart(cbStyledTextCtrl* stc, int position, wxChar blockStart, wxChar blockEnd, cb_unused bool skipNested)const
+int cbSmartIndentPlugin::FindBlockStart(cbStyledTextCtrl * stc, int position, wxChar blockStart, wxChar blockEnd, cb_unused bool skipNested)const
 {
     int lvl = 0;
     wxChar b = stc->GetCharAt(position);
+
     while (b)
     {
         if (b == blockEnd)
-            ++lvl;
-        else if (b == blockStart)
         {
-            if (lvl == 0)
-                return position;
-            --lvl;
+            ++lvl;
         }
+        else
+            if (b == blockStart)
+            {
+                if (lvl == 0)
+                {
+                    return position;
+                }
+
+                --lvl;
+            }
+
         --position;
         b = stc->GetCharAt(position);
     }
+
     return -1;
 }
 
-int cbSmartIndentPlugin::FindBlockStart(cbStyledTextCtrl* stc, int position, wxString blockStart, wxString blockEnd, bool CaseSensitive)const
+int cbSmartIndentPlugin::FindBlockStart(cbStyledTextCtrl * stc, int position, wxString blockStart, wxString blockEnd, bool CaseSensitive)const
 {
     int pos = position;
     int pb, pe;
     int lvl = 0;
-
     int flags = wxSCI_FIND_WHOLEWORD;
-    if ( CaseSensitive )
+
+    if (CaseSensitive)
+    {
         flags |= wxSCI_FIND_MATCHCASE;
+    }
 
     do
     {
         pb =  stc->FindText(pos, 0, blockStart, flags);
         pe =  stc->FindText(pos, 0, blockEnd, flags);
-        if ( pe > pb )
+
+        if (pe > pb)
         {
             pos = pe;
             ++lvl;
             continue;
         }
+
         pos = pb;
-        if ( lvl == 0 ) return pb;
+
+        if (lvl == 0)
+        {
+            return pb;
+        }
+
         --lvl;
-    }
-    while( pos != -1 );
+    } while (pos != -1);
 
     return -1;
 }
 
 //ToDo: Is this c++ only?
-int cbSmartIndentPlugin::GetFirstBraceInLine(cbStyledTextCtrl* stc, int string_style)const
+int cbSmartIndentPlugin::GetFirstBraceInLine(cbStyledTextCtrl * stc, int string_style)const
 {
     int curr_position = stc->GetCurrentPos();
     int position = curr_position;
@@ -1281,92 +1509,122 @@ int cbSmartIndentPlugin::GetFirstBraceInLine(cbStyledTextCtrl* stc, int string_s
     while (position)
     {
         wxChar c = stc->GetCharAt(--position);
-
         int style = stc->GetStyleAt(position);
+
         if (style == string_style)
+        {
             continue;
+        }
 
         if (c == _T(';'))
         {
             found_brace = false;
             break;
         }
-        else if (c == _T(')'))
-        {
-            ++closing_braces;
-            has_braces = true;
-        }
-        else if (c == _T('('))
-        {
-            has_braces = true;
-            if (closing_braces > 0)
-                --closing_braces;
-            else if (!found_brace)
+        else
+            if (c == _T(')'))
             {
-                min_brace_position = position + 1;
-                found_brace = true;
-                break;
+                ++closing_braces;
+                has_braces = true;
             }
-        }
-        else if (c == _T('\n') && position + 1 != curr_position && !has_braces)
-        {
-            break;
-        }
+            else
+                if (c == _T('('))
+                {
+                    has_braces = true;
+
+                    if (closing_braces > 0)
+                    {
+                        --closing_braces;
+                    }
+                    else
+                        if (!found_brace)
+                        {
+                            min_brace_position = position + 1;
+                            found_brace = true;
+                            break;
+                        }
+                }
+                else
+                    if (c == _T('\n') && position + 1 != curr_position && !has_braces)
+                    {
+                        break;
+                    }
     }
 
     if (!found_brace)
+    {
         return -1;
+    }
 
     int tab_characters = 0;
 
     while (position)
     {
         wxChar c = stc->GetCharAt(--position);
+
         if (c == _T('\n') && position + 1 != curr_position)
         {
             break;
         }
-        else if (c == _T('\t'))
-            ++tab_characters;
+        else
+            if (c == _T('\t'))
+            {
+                ++tab_characters;
+            }
     }
 
     if (stc->GetUseTabs())
     {
         position -= tab_characters * stc->GetTabWidth();
     }
+
     return min_brace_position - position - 1;
 }
 
-wxChar cbSmartIndentPlugin::GetNextNonWhitespaceCharOfLine(cbStyledTextCtrl* stc, int position, int *pos)const
+wxChar cbSmartIndentPlugin::GetNextNonWhitespaceCharOfLine(cbStyledTextCtrl * stc, int position, int * pos)const
 {
     if (position == -1)
+    {
         position = stc->GetCurrentPos();
+    }
 
     while (position < stc->GetLength())
     {
         wxChar c = stc->GetCharAt(position);
-        if ( c == _T('\n') || c ==  _T('\r') )
+
+        if (c == _T('\n') || c ==  _T('\r'))
         {
-            if ( pos ) *pos = position;
+            if (pos)
+            {
+                *pos = position;
+            }
+
             return 0;
         }
-        if ( c !=  _T(' ') && c != _T('\t') )
+
+        if (c !=  _T(' ') && c != _T('\t'))
         {
-            if ( pos ) *pos = position;
+            if (pos)
+            {
+                *pos = position;
+            }
+
             return c;
         }
+
         position++;
     }
 
     return 0;
 }
 
-void cbSmartIndentPlugin::OnCCDoneEvent(CodeBlocksEvent& event)
+void cbSmartIndentPlugin::OnCCDoneEvent(CodeBlocksEvent & event)
 {
-    EditorBase* eb = event.GetEditor();
+    EditorBase * eb = event.GetEditor();
+
     if (eb && eb->IsBuiltinEditor())
     {
-        cbEditor* ed = static_cast<cbEditor *>(eb);
+        cbEditor * ed = static_cast<cbEditor *>(eb);
         OnCCDone(ed);
     }
 }

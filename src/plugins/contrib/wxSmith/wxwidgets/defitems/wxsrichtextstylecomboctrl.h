@@ -26,18 +26,18 @@
 /** \brief Class for wxsRichTextStyleComboCtrl widget */
 class wxsRichTextStyleComboCtrl: public wxsWidget
 {
-public:
+    public:
 
-    wxsRichTextStyleComboCtrl(wxsItemResData* Data);
+        wxsRichTextStyleComboCtrl(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
-    wxString    m_sControl;
-    wxString    m_sStyleSheet;
+        wxString    m_sControl;
+        wxString    m_sStyleSheet;
 };
 
 #endif

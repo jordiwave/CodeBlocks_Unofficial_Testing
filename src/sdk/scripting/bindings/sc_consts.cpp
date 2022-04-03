@@ -10,14 +10,14 @@
 
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP
-#include <wx/string.h>
-#include "cbplugin.h"
-#include "cbproject.h"
-#include "configmanager.h"
-#include "globals.h"
-#include "printing_types.h"
-#include "scriptingmanager.h"
-#include "settings.h"
+    #include <wx/string.h>
+    #include "cbplugin.h"
+    #include "cbproject.h"
+    #include "configmanager.h"
+    #include "globals.h"
+    #include "printing_types.h"
+    #include "scriptingmanager.h"
+    #include "settings.h"
 #endif
 
 #include <filefilters.h>
@@ -31,7 +31,7 @@ namespace ScriptBindings
 
 wxString s_PathSep = wxFILE_SEP_PATH;
 
-void Register_Constants(ScriptingManager *manager)
+void Register_Constants(ScriptingManager * manager)
 {
     // platform constants
     BIND_INT_CONSTANT_NAMED(0,  "PLATFORM_MSW");
@@ -40,7 +40,6 @@ void Register_Constants(ScriptingManager *manager)
     BIND_INT_CONSTANT_NAMED(3,  "PLATFORM_OS2");
     BIND_INT_CONSTANT_NAMED(4,  "PLATFORM_X11");
     BIND_INT_CONSTANT_NAMED(99, "PLATFORM_UNKNOWN");
-
 #if   defined(__WXMSW__)
     BIND_INT_CONSTANT_NAMED(0, "PLATFORM");
 #elif defined(__WXGTK__)
@@ -54,14 +53,11 @@ void Register_Constants(ScriptingManager *manager)
 #else
     BIND_INT_CONSTANT_NAMED(99, "PLATFORM");
 #endif
-
     BIND_INT_CONSTANT_NAMED(PLUGIN_SDK_VERSION_MAJOR, "PLUGIN_SDK_VERSION_MAJOR");
     BIND_INT_CONSTANT_NAMED(PLUGIN_SDK_VERSION_MINOR, "PLUGIN_SDK_VERSION_MINOR");
     BIND_INT_CONSTANT_NAMED(PLUGIN_SDK_VERSION_RELEASE, "PLUGIN_SDK_VERSION_RELEASE");
-
     // path separator for filenames
     BIND_WXSTR_CONSTANT_NAMED(s_PathSep, "wxFILE_SEP_PATH");
-
     // dialog buttons
     BIND_INT_CONSTANT(wxOK);
     BIND_INT_CONSTANT(wxYES_NO);
@@ -74,7 +70,6 @@ void Register_Constants(ScriptingManager *manager)
     BIND_INT_CONSTANT(wxICON_INFORMATION);
     BIND_INT_CONSTANT(wxICON_WARNING);
     BIND_INT_CONSTANT(wxICON_ERROR);
-
     // wxPathFormat
     BIND_INT_CONSTANT(wxPATH_NATIVE);
     BIND_INT_CONSTANT(wxPATH_UNIX);
@@ -84,11 +79,9 @@ void Register_Constants(ScriptingManager *manager)
     BIND_INT_CONSTANT(wxPATH_WIN);
     BIND_INT_CONSTANT(wxPATH_OS2);
     BIND_INT_CONSTANT(wxPATH_VMS);
-
     // for wxFileName::GetPath()
     BIND_INT_CONSTANT(wxPATH_GET_VOLUME);
     BIND_INT_CONSTANT(wxPATH_GET_SEPARATOR);
-
     // wxPathNormalize
     BIND_INT_CONSTANT(wxPATH_NORM_ENV_VARS);
     BIND_INT_CONSTANT(wxPATH_NORM_DOTS);
@@ -98,20 +91,17 @@ void Register_Constants(ScriptingManager *manager)
     BIND_INT_CONSTANT(wxPATH_NORM_LONG);
     BIND_INT_CONSTANT(wxPATH_NORM_SHORTCUT);
     BIND_INT_CONSTANT(wxPATH_NORM_ALL);
-
     // OptionsRelationType
     BIND_INT_CONSTANT(ortCompilerOptions);
     BIND_INT_CONSTANT(ortLinkerOptions);
     BIND_INT_CONSTANT(ortIncludeDirs);
     BIND_INT_CONSTANT(ortLibDirs);
     BIND_INT_CONSTANT(ortResDirs);
-
     // OptionsRelation
     BIND_INT_CONSTANT(orUseParentOptionsOnly);
     BIND_INT_CONSTANT(orUseTargetOptionsOnly);
     BIND_INT_CONSTANT(orPrependToParentOptions);
     BIND_INT_CONSTANT(orAppendToParentOptions);
-
     // TargetType
     BIND_INT_CONSTANT(ttExecutable);
     BIND_INT_CONSTANT(ttConsoleOnly);
@@ -119,7 +109,6 @@ void Register_Constants(ScriptingManager *manager)
     BIND_INT_CONSTANT(ttDynamicLib);
     BIND_INT_CONSTANT(ttCommandsOnly);
     BIND_INT_CONSTANT(ttNative);
-
     // MakeCommand
     BIND_INT_CONSTANT(mcClean);
     BIND_INT_CONSTANT(mcDistClean);
@@ -127,29 +116,24 @@ void Register_Constants(ScriptingManager *manager)
     BIND_INT_CONSTANT(mcCompileFile);
     BIND_INT_CONSTANT(mcAskRebuildNeeded);
     BIND_INT_CONSTANT(mcSilentBuild);
-
     // PCHMode
     BIND_INT_CONSTANT(pchSourceDir);
     BIND_INT_CONSTANT(pchObjectDir);
     BIND_INT_CONSTANT(pchSourceFile);
-
     // printing scope for print dialog
     BIND_INT_CONSTANT(psSelection);
     BIND_INT_CONSTANT(psActiveEditor);
     BIND_INT_CONSTANT(psAllOpenEditors);
-
     // printing colour mode
     BIND_INT_CONSTANT(pcmBlackAndWhite);
     BIND_INT_CONSTANT(pcmColourOnWhite);
     BIND_INT_CONSTANT(pcmInvertColours);
     BIND_INT_CONSTANT(pcmAsIs);
-
     // TemplateOutputType
     BIND_INT_CONSTANT_NAMED(totProject, "wizProject");
     BIND_INT_CONSTANT_NAMED(totTarget, "wizTarget");
     BIND_INT_CONSTANT_NAMED(totFiles, "wizFiles");
     BIND_INT_CONSTANT_NAMED(totCustom, "wizCustom");
-
     // SearchDirs
     BIND_INT_CONSTANT(sdHome);
     BIND_INT_CONSTANT(sdBase);
@@ -166,17 +150,14 @@ void Register_Constants(ScriptingManager *manager)
     BIND_INT_CONSTANT(sdDataGlobal);
     BIND_INT_CONSTANT(sdAllGlobal);
     BIND_INT_CONSTANT(sdAllKnown);
-
     // SupportedPlatforms
     BIND_INT_CONSTANT(spWindows);
     BIND_INT_CONSTANT(spUnix);
     BIND_INT_CONSTANT(spMac);
     BIND_INT_CONSTANT(spAll);
-
     // TargetFilenameGenerationPolicy
     BIND_INT_CONSTANT(tgfpPlatformDefault);
     BIND_INT_CONSTANT(tgfpNone);
-
     // ModuleType
     BIND_INT_CONSTANT(mtProjectManager);
     BIND_INT_CONSTANT(mtEditorManager);
@@ -185,7 +166,6 @@ void Register_Constants(ScriptingManager *manager)
     BIND_INT_CONSTANT(mtEditorTab);
     BIND_INT_CONSTANT(mtFileExplorer);
     BIND_INT_CONSTANT(mtUnknown);
-
     // FileTreeDataKind
     BIND_INT_CONSTANT_NAMED(FileTreeData::ftdkUndefined, "ftdkUndefined");
     BIND_INT_CONSTANT_NAMED(FileTreeData::ftdkProject, "ftdkProject");
@@ -193,7 +173,6 @@ void Register_Constants(ScriptingManager *manager)
     BIND_INT_CONSTANT_NAMED(FileTreeData::ftdkFile, "ftdkFile");
     BIND_INT_CONSTANT_NAMED(FileTreeData::ftdkVirtualGroup, "ftdkVirtualGroup");
     BIND_INT_CONSTANT_NAMED(FileTreeData::ftdkVirtualFolder, "ftdkVirtualFolder");
-
     // file extensions
     BIND_WXSTR_CONSTANT_NAMED(FileFilters::WORKSPACE_EXT, "EXT_WORKSPACE");
     BIND_WXSTR_CONSTANT_NAMED(FileFilters::CODEBLOCKS_EXT, "EXT_CODEBLOCKS");
@@ -284,7 +263,6 @@ void Register_Constants(ScriptingManager *manager)
     BIND_WXSTR_CONSTANT_NAMED(FileFilters::RESOURCEBIN_DOT_EXT, "DOT_EXT_RESOURCEBIN");
     BIND_WXSTR_CONSTANT_NAMED(FileFilters::XML_DOT_EXT, "DOT_EXT_XML");
     BIND_WXSTR_CONSTANT_NAMED(FileFilters::SCRIPT_DOT_EXT, "DOT_EXT_SCRIPT");
-
     // LinkerExecutableOption
     BIND_INT_CONSTANT_NAMED(int32_t(LinkerExecutableOption::AutoDetect), "leoAutoDetect");
     BIND_INT_CONSTANT_NAMED(int32_t(LinkerExecutableOption::CCompiler), "leoCCompiler");

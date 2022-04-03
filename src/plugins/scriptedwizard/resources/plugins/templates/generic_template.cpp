@@ -21,7 +21,7 @@ END_EVENT_TABLE()[ENDIF NEED_EVENTS]
     // Make sure our resources are available.
     // In the generated boilerplate code we have no resources but when
     // we add some, it will be nice that this code is in place already ;)
-    if(!Manager::LoadResource(_T("[PLUGIN_NAME].zip")))
+    if (!Manager::LoadResource(_T("[PLUGIN_NAME].zip")))
     {
         NotifyMissingFile(_T("[PLUGIN_NAME].zip"));
     }
@@ -51,7 +51,7 @@ void [PLUGIN_NAME]::OnRelease(bool appShutDown)
     // m_IsAttached will be FALSE...
 }
 [IF HAS_MENU]
-void [PLUGIN_NAME]::BuildMenu(wxMenuBar* menuBar)
+void [PLUGIN_NAME]::BuildMenu(wxMenuBar * menuBar)
 {
     //The application is offering its menubar for your plugin,
     //to add any menu items you want...
@@ -60,7 +60,7 @@ void [PLUGIN_NAME]::BuildMenu(wxMenuBar* menuBar)
     NotImplemented(_T("[PLUGIN_NAME]::BuildMenu()"));
 }[ENDIF HAS_MENU]
 [IF HAS_MODULE_MENU]
-void [PLUGIN_NAME]::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
+void [PLUGIN_NAME]::BuildModuleMenu(const ModuleType type, wxMenu * menu, const FileTreeData * data)
 {
     //Some library module is ready to display a pop-up menu.
     //Check the parameter \"type\" and see which module it is
@@ -69,13 +69,12 @@ void [PLUGIN_NAME]::BuildModuleMenu(const ModuleType type, wxMenu* menu, const F
     NotImplemented(_T("[PLUGIN_NAME]::BuildModuleMenu()"));
 }[ENDIF HAS_MODULE_MENU]
 [IF HAS_TOOLBAR]
-bool [PLUGIN_NAME]::BuildToolBar(wxToolBar* toolBar)
+bool [PLUGIN_NAME]::BuildToolBar(wxToolBar * toolBar)
 {
     //The application is offering its toolbar for your plugin,
     //to add any toolbar items you want...
     //Append any items you need on the toolbar...
     NotImplemented(_T("[PLUGIN_NAME]::BuildToolBar()"));
-
     // return true if you add toolbar items
     return false;
 }[ENDIF HAS_TOOLBAR]

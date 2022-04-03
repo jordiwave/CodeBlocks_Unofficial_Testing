@@ -74,33 +74,44 @@ bool nsHebrewProber::isNonFinal(char c)
  * The input buffer should not contain any white spaces that are not (' ')
  * or any low-ascii punctuation marks.
  */
-nsProbingState nsHebrewProber::HandleData(const char* aBuf, uint32_t aLen)
+nsProbingState nsHebrewProber::HandleData(const char * aBuf, uint32_t aLen)
 {
     // Both model probers say it's not them. No reason to continue.
     if (GetState() == eNotMe)
+    {
         return eNotMe;
+    }
 
-    const char *curPtr, *endPtr = aBuf+aLen;
+    const char * curPtr, *endPtr = aBuf + aLen;
     char cur;
 
-    for (curPtr = (char*)aBuf; curPtr < endPtr; ++curPtr)
+    for (curPtr = (char *)aBuf; curPtr < endPtr; ++curPtr)
     {
         cur = *curPtr;
+
         if (cur == ' ') // We stand on a space - a word just ended
         {
             if (mBeforePrev != ' ') // *(curPtr-2) was not a space so prev is not a 1 letter word
             {
                 if (isFinal(mPrev)) // case (1) [-2:not space][-1:final letter][cur:space]
+                {
                     ++mFinalCharLogicalScore;
-                else if (isNonFinal(mPrev)) // case (2) [-2:not space][-1:Non-Final letter][cur:space]
-                    ++mFinalCharVisualScore;
+                }
+                else
+                    if (isNonFinal(mPrev)) // case (2) [-2:not space][-1:Non-Final letter][cur:space]
+                    {
+                        ++mFinalCharVisualScore;
+                    }
             }
         }
         else  // Not standing on a space
         {
             if ((mBeforePrev == ' ') && (isFinal(mPrev)) && (cur != ' ')) // case (3) [-2:space][-1:final letter][cur:not space]
+            {
                 ++mFinalCharVisualScore;
+            }
         }
+
         mBeforePrev = mPrev;
         mPrev = cur;
     }
@@ -110,25 +121,39 @@ nsProbingState nsHebrewProber::HandleData(const char* aBuf, uint32_t aLen)
 }
 
 // Make the decision: is it Logical or Visual?
-const char* nsHebrewProber::GetCharSetName()
+const char * nsHebrewProber::GetCharSetName()
 {
     // If the final letter score distance is dominant enough, rely on it.
     int32_t finalsub = mFinalCharLogicalScore - mFinalCharVisualScore;
+
     if (finalsub >= MIN_FINAL_CHAR_DISTANCE)
+    {
         return LOGICAL_HEBREW_NAME;
+    }
+
     if (finalsub <= -(MIN_FINAL_CHAR_DISTANCE))
+    {
         return VISUAL_HEBREW_NAME;
+    }
 
     // It's not dominant enough, try to rely on the model scores instead.
     float modelsub = mLogicalProb->GetConfidence() - mVisualProb->GetConfidence();
+
     if (modelsub > MIN_MODEL_DISTANCE)
+    {
         return LOGICAL_HEBREW_NAME;
+    }
+
     if (modelsub < -(MIN_MODEL_DISTANCE))
+    {
         return VISUAL_HEBREW_NAME;
+    }
 
     // Still no good, back to final letter distance, maybe it'll save the day.
     if (finalsub < 0)
+    {
         return VISUAL_HEBREW_NAME;
+    }
 
     // (finalsub > 0 - Logical) or (don't know what to do) default to Logical.
     return LOGICAL_HEBREW_NAME;
@@ -139,7 +164,6 @@ void nsHebrewProber::Reset(void)
 {
     mFinalCharLogicalScore = 0;
     mFinalCharVisualScore = 0;
-
     // mPrev and mBeforePrev are initialized to space in order to simulate a word
     // delimiter at the beginning of the data
     mPrev = ' ';
@@ -150,7 +174,10 @@ nsProbingState nsHebrewProber::GetState(void)
 {
     // Remain active as long as any of the model probers are active.
     if ((mLogicalProb->GetState() == eNotMe) && (mVisualProb->GetState() == eNotMe))
+    {
         return eNotMe;
+    }
+
     return eDetecting;
 }
 

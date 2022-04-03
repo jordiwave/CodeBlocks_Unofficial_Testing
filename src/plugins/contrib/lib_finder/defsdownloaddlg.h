@@ -17,41 +17,41 @@ class wxCheckBox;
 
 class DefsDownloadDlg: public wxScrollingDialog
 {
-public:
+    public:
 
-    DefsDownloadDlg(wxWindow* parent);
-    virtual ~DefsDownloadDlg();
+        DefsDownloadDlg(wxWindow * parent);
+        virtual ~DefsDownloadDlg();
 
-private:
+    private:
 
-    //(*Declarations(DefsDownloadDlg)
-    wxButton* Button1;
-    wxStaticText* StaticText1;
-    wxButton* m_Remove;
-    wxTreeCtrl* m_KnownLibrariesTree;
-    wxTextCtrl* m_Filter;
-    wxButton* m_Add;
-    wxCheckBox* m_Tree;
-    wxListBox* m_UsedLibraries;
-    //*)
+        //(*Declarations(DefsDownloadDlg)
+        wxButton * Button1;
+        wxStaticText * StaticText1;
+        wxButton * m_Remove;
+        wxTreeCtrl * m_KnownLibrariesTree;
+        wxTextCtrl * m_Filter;
+        wxButton * m_Add;
+        wxCheckBox * m_Tree;
+        wxListBox * m_UsedLibraries;
+        //*)
 
-    //(*Identifiers(DefsDownloadDlg)
-    static const long ID_LISTBOX1;
-    static const long ID_BUTTON1;
-    static const long ID_BUTTON2;
-    static const long ID_TREECTRL1;
-    static const long ID_STATICTEXT1;
-    static const long ID_TEXTCTRL2;
-    static const long ID_CHECKBOX1;
-    static const long ID_BUTTON3;
-    //*)
+        //(*Identifiers(DefsDownloadDlg)
+        static const long ID_LISTBOX1;
+        static const long ID_BUTTON1;
+        static const long ID_BUTTON2;
+        static const long ID_TREECTRL1;
+        static const long ID_STATICTEXT1;
+        static const long ID_TEXTCTRL2;
+        static const long ID_CHECKBOX1;
+        static const long ID_BUTTON3;
+        //*)
 
-    //(*Handlers(DefsDownloadDlg)
-    //*)
+        //(*Handlers(DefsDownloadDlg)
+        //*)
 
-    void FetchList();
+        void FetchList();
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

@@ -8,17 +8,17 @@
   **************************************************************/
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/arrstr.h>
-#include <wx/dir.h>
-#include <wx/fs_zip.h>
-#include <wx/intl.h>
-#include <wx/menu.h>
-#include <wx/string.h>
-#include <wx/xrc/xmlres.h>
-#include "cbproject.h"
-#include "manager.h"
-#include "logmanager.h"
-#include "projectmanager.h"
+    #include <wx/arrstr.h>
+    #include <wx/dir.h>
+    #include <wx/fs_zip.h>
+    #include <wx/intl.h>
+    #include <wx/menu.h>
+    #include <wx/string.h>
+    #include <wx/xrc/xmlres.h>
+    #include "cbproject.h"
+    #include "manager.h"
+    #include "logmanager.h"
+    #include "projectmanager.h"
 #endif
 #include <wx/busyinfo.h>
 #include <wx/filedlg.h>
@@ -52,7 +52,7 @@ void Cccc::OnAttach()
     // You should check for it in other functions, because if it
     // is FALSE, it means that the application did *not* "load"
     // (see: does not need) this plugin...
-    if(LogManager* LogMan = Manager::Get()->GetLogManager())
+    if (LogManager * LogMan = Manager::Get()->GetLogManager())
     {
         m_CcccLog = new TextCtrlLogger();
         m_LogPageIndex = LogMan->SetLog(m_CcccLog);
@@ -69,20 +69,21 @@ void Cccc::OnRelease(bool /*appShutDown*/)
     // which means you must not use any of the SDK Managers
     // NOTE: after this function, the inherited member variable
     // IsAttached() will be FALSE...
-    if(Manager::Get()->GetLogManager())
+    if (Manager::Get()->GetLogManager())
     {
-        if(m_CcccLog)
+        if (m_CcccLog)
         {
             CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_CcccLog);
             Manager::Get()->ProcessEvent(evt);
         }
     }
+
     m_CcccLog = 0;
 } // end of OnRelease
 
-void Cccc::AppendToLog(const wxString& Text)
+void Cccc::AppendToLog(const wxString & Text)
 {
-    if(LogManager* LogMan = Manager::Get()->GetLogManager())
+    if (LogManager * LogMan = Manager::Get()->GetLogManager())
     {
         CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_CcccLog);
         Manager::Get()->ProcessEvent(evtSwitch);
@@ -94,7 +95,8 @@ namespace
 {
 bool CheckRequirements()
 {
-    cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
+    cbProject * Project = Manager::Get()->GetProjectManager()->GetActiveProject();
+
     // if no project open, exit
     if (!Project)
     {
@@ -103,23 +105,25 @@ bool CheckRequirements()
         Manager::Get()->GetLogManager()->DebugLog(msg);
         return false;
     }
+
     return true;
 }  // end of CheckRequirements
 }
 
 int Cccc::Execute()
 {
-    if(!CheckRequirements())
+    if (!CheckRequirements())
     {
         return -1;
     }
 
-    cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
+    cbProject * Project = Manager::Get()->GetProjectManager()->GetActiveProject();
     ::wxSetWorkingDirectory(Project->GetBasePath());
     wxString ListOfFileNames;
+
     for (FilesList::iterator it = Project->GetFilesList().begin(); it != Project->GetFilesList().end(); ++it)
     {
-        ProjectFile* pf = *it;
+        ProjectFile * pf = *it;
         ListOfFileNames += _T("\"") + pf->relativeFilename + _T("\" ");
     }
 
@@ -133,13 +137,16 @@ int Cccc::Execute()
                            Manager::Get()->GetAppWindow());
         pid = wxExecute(CommandLine, Output, Errors);
     } // end lifetime of wxWindowDisabler, wxBusyInfo
-    if (pid==-1)
+
+    if (pid == -1)
     {
         bool failed = true;
+
         if (cbMessageBox(_("Failed to lauch cccc.\nDo you want to select the cccc executable?"),
                          _("Question"), wxICON_QUESTION | wxYES_NO, Manager::Get()->GetAppWindow()) == wxID_YES)
         {
             wxString filename = wxFileSelector(_("Select the cccc executable"));
+
             if (!filename.empty()) // otherwise the user selected cancel
             {
                 // try again using the user-provided executable
@@ -151,7 +158,8 @@ int Cccc::Execute()
                                        Manager::Get()->GetAppWindow());
                     pid = wxExecute(CommandLine, Output, Errors);
                 } // end lifetime of wxWindowDisabler, wxBusyInfo
-                if (pid==-1)
+
+                if (pid == -1)
                 {
                     failed = true;
                 }
@@ -162,6 +170,7 @@ int Cccc::Execute()
                 }
             }
         }
+
         if (failed)
         {
             AppendToLog(_("Failed to lauch cccc."));
@@ -171,19 +180,24 @@ int Cccc::Execute()
     }
 
     size_t Count = Output.GetCount();
-    for(size_t idxCount = 0; idxCount < Count; ++idxCount)
+
+    for (size_t idxCount = 0; idxCount < Count; ++idxCount)
     {
         AppendToLog(Output[idxCount]);
     } // end for : idx: idxCount
+
     Count = Errors.GetCount();
-    for(size_t idxCount = 0; idxCount < Count; ++idxCount)
+
+    for (size_t idxCount = 0; idxCount < Count; ++idxCount)
     {
         AppendToLog(Errors[idxCount]);
     } // end for : idx: idxCount
+
     const wxString FileName = _T("./.cccc/cccc.html");
-    if(wxFile::Exists(FileName))
+
+    if (wxFile::Exists(FileName))
     {
-        if (cbMimePlugin* p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(FileName))
+        if (cbMimePlugin * p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(FileName))
         {
             p->OpenFile(FileName);
         }

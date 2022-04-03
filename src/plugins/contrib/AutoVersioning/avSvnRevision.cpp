@@ -6,7 +6,7 @@
 #include <tinyxml.h>
 #include <globals.h>
 
-bool QuerySvn(const wxString& workingDir, wxString& revision, wxString& date)
+bool QuerySvn(const wxString & workingDir, wxString & revision, wxString & date)
 {
     revision = _T("0");
     date = _T("unknown date");
@@ -16,10 +16,9 @@ bool QuerySvn(const wxString& workingDir, wxString& revision, wxString& date)
 
     if (wxExecute(svncmd, xmlOutput) != -1)
     {
-
         wxString buf = _T("");
 
-        for(unsigned int i=0; i<xmlOutput.GetCount(); ++i)
+        for (unsigned int i = 0; i < xmlOutput.GetCount(); ++i)
         {
             buf << xmlOutput[i];
         }
@@ -28,19 +27,26 @@ bool QuerySvn(const wxString& workingDir, wxString& revision, wxString& date)
         doc.Parse(cbU2C(buf));
 
         if (doc.Error())
+        {
             return 0;
+        }
 
         TiXmlHandle hCommit(&doc);
         hCommit = hCommit.FirstChildElement("info").FirstChildElement("entry").FirstChildElement("commit");
-        if(const TiXmlElement* e = hCommit.ToElement())
+
+        if (const TiXmlElement * e = hCommit.ToElement())
         {
             revision = e->Attribute("revision") ? cbC2U(e->Attribute("revision")) : _T("");
-            const TiXmlElement* d = e->FirstChildElement("date");
-            if(d && d->GetText())
+            const TiXmlElement * d = e->FirstChildElement("date");
+
+            if (d && d->GetText())
+            {
                 date = cbC2U(d->GetText());
+            }
 
             return 1;
         }
     }
+
     return 0;
 }

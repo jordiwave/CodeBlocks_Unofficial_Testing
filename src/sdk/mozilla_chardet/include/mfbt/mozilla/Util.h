@@ -30,8 +30,7 @@ namespace mozilla
  * size_t(-1), instead of the real difference.
  */
 template<class T>
-MOZ_ALWAYS_INLINE size_t
-PointerRangeSize(T* begin, T* end)
+MOZ_ALWAYS_INLINE size_t PointerRangeSize(T * begin, T * end)
 {
     MOZ_ASSERT(end >= begin);
     return (size_t(end) - size_t(begin)) / sizeof(T);
@@ -44,8 +43,7 @@ PointerRangeSize(T* begin, T* end)
  * Beware of the implicit trailing '\0' when using this with string constants.
  */
 template<typename T, size_t N>
-MOZ_CONSTEXPR size_t
-ArrayLength(T (&arr)[N])
+MOZ_CONSTEXPR size_t ArrayLength(T(&arr)[N])
 {
     return N;
 }
@@ -56,8 +54,7 @@ ArrayLength(T (&arr)[N])
  * Beware of the implicit trailing '\0' when using this with string constants.
  */
 template<typename T, size_t N>
-MOZ_CONSTEXPR T*
-ArrayEnd(T (&arr)[N])
+MOZ_CONSTEXPR T * ArrayEnd(T(&arr)[N])
 {
     return arr + ArrayLength(arr);
 }
@@ -72,9 +69,9 @@ ArrayEnd(T (&arr)[N])
  * can't call ArrayLength() when it is not a C++11 constexpr function.
  */
 #ifdef MOZ_HAVE_CXX11_CONSTEXPR
-#  define MOZ_ARRAY_LENGTH(array)   mozilla::ArrayLength(array)
+    #define MOZ_ARRAY_LENGTH(array)   mozilla::ArrayLength(array)
 #else
-#  define MOZ_ARRAY_LENGTH(array)   (sizeof(array)/sizeof((array)[0]))
+    #define MOZ_ARRAY_LENGTH(array)   (sizeof(array)/sizeof((array)[0]))
 #endif
 
 #endif /* mozilla_Util_h */

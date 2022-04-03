@@ -14,7 +14,7 @@
 #include <wx/regex.h>
 #include <wx/config.h>
 #ifdef __WXMSW__
-#include <wx/msw/registry.h>
+    #include <wx/msw/registry.h>
 #endif // __WXMSW__
 
 CompilerMSVC::CompilerMSVC()
@@ -37,7 +37,6 @@ Compiler * CompilerMSVC::CreateCopy()
 AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
 {
     wxString sep = wxFileName::GetPathSeparator();
-
     // Read the VCToolkitInstallDir environment variable
     wxGetEnv(_T("VCToolkitInstallDir"), &m_MasterPath);
 
@@ -51,23 +50,28 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
         wxGetEnv(_T("ProgramFiles"), &Programs);
         m_MasterPath = Programs + _T("\\Microsoft Visual C++ Toolkit 2003");
     }
+
     if (!m_MasterPath.IsEmpty())
     {
         AddIncludeDir(m_MasterPath + sep + _T("include"));
         AddLibDir(m_MasterPath + sep + _T("lib"));
-
 #ifdef __WXMSW__
         // add include dirs for MS Platform SDK too
         wxRegKey key; // defaults to HKCR
         key.SetName(_T("HKEY_CURRENT_USER\\Software\\Microsoft\\Win32SDK\\Directories"));
+
         if (key.Exists() && key.Open(wxRegKey::Read))
         {
             wxString dir;
             key.QueryValue(_T("Install Dir"), dir);
+
             if (!dir.IsEmpty())
             {
                 if (dir.GetChar(dir.Length() - 1) != '\\')
+                {
                     dir += sep;
+                }
+
                 AddIncludeDir(dir + _T("include"));
                 AddLibDir(dir + _T("lib"));
                 m_ExtraPaths.Add(dir + _T("bin"));
@@ -76,17 +80,23 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
 
         // add extra paths for "Debugging tools" too
         key.SetName(_T("HKEY_CURRENT_USER\\Software\\Microsoft\\DebuggingTools"));
+
         if (key.Exists() && key.Open(wxRegKey::Read))
         {
             wxString dir;
             key.QueryValue(_T("WinDbg"), dir);
+
             if (!dir.IsEmpty())
             {
                 if (dir.GetChar(dir.Length() - 1) == '\\')
+                {
                     dir.Remove(dir.Length() - 1, 1);
+                }
+
                 m_ExtraPaths.Add(dir);
             }
         }
+
 #endif // __WXMSW__
     }
 

@@ -24,47 +24,47 @@
 
 namespace
 {
-wxsRegisterItem<wxsGridSizer> Reg(_T("GridSizer"),wxsTSizer,_T("Layout"),60);
+wxsRegisterItem<wxsGridSizer> Reg(_T("GridSizer"), wxsTSizer, _T("Layout"), 60);
 }
 
-wxsGridSizer::wxsGridSizer(wxsItemResData* Data):
-    wxsSizer(Data,&Reg.Info),
+wxsGridSizer::wxsGridSizer(wxsItemResData * Data):
+    wxsSizer(Data, &Reg.Info),
     Cols(3),
     Rows(0)
 {
 }
 
-wxSizer* wxsGridSizer::OnBuildSizerPreview(wxWindow* Parent)
+wxSizer * wxsGridSizer::OnBuildSizerPreview(wxWindow * Parent)
 {
-    return new wxGridSizer(Rows,Cols,
-                           VGap.GetPixels(Parent),HGap.GetPixels(Parent));
+    return new wxGridSizer(Rows, Cols,
+                           VGap.GetPixels(Parent), HGap.GetPixels(Parent));
 }
 
 void wxsGridSizer::OnBuildSizerCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%d, %d, %s, %s);\n"),Rows,Cols,
-              VGap.GetPixelsCode(GetCoderContext()).wx_str(),
-              HGap.GetPixelsCode(GetCoderContext()).wx_str());
-        return;
-    }
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/sizer.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%d, %d, %s, %s);\n"), Rows, Cols,
+                  VGap.GetPixelsCode(GetCoderContext()).wx_str(),
+                  HGap.GetPixelsCode(GetCoderContext()).wx_str());
+            return;
+        }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsGridSizer::OnBuildSizerCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsGridSizer::OnBuildSizerCreatingCode"), GetLanguage());
+        }
     }
 }
 
 void wxsGridSizer::OnEnumSizerProperties(cb_unused long Flags)
 {
-    WXS_LONG(wxsGridSizer,Cols,_("Cols"),_T("cols"),0);
-    WXS_LONG(wxsGridSizer,Rows,_("Rows"),_T("rows"),0);
-    WXS_DIMENSION(wxsGridSizer,VGap,_("V-Gap"),_("V-Gap in dialog units"),_T("vgap"),0,false);
-    WXS_DIMENSION(wxsGridSizer,HGap,_("H-Gap"),_("H,y-Gap in dialog units"),_T("hgap"),0,false);
+    WXS_LONG(wxsGridSizer, Cols, _("Cols"), _T("cols"), 0);
+    WXS_LONG(wxsGridSizer, Rows, _("Rows"), _T("rows"), 0);
+    WXS_DIMENSION(wxsGridSizer, VGap, _("V-Gap"), _("V-Gap in dialog units"), _T("vgap"), 0, false);
+    WXS_DIMENSION(wxsGridSizer, HGap, _("H-Gap"), _("H,y-Gap in dialog units"), _T("hgap"), 0, false);
 }

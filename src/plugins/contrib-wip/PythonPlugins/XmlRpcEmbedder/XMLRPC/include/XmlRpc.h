@@ -18,11 +18,11 @@
 //
 
 #if defined(_MSC_VER)
-# pragma warning(disable:4786)    // identifier was truncated in debug info
+    #pragma warning(disable:4786)    // identifier was truncated in debug info
 #endif
 
 #ifndef MAKEDEPEND
-# include <string>
+    #include <string>
 #endif
 
 #include "XmlRpcClient.h"
@@ -39,60 +39,60 @@ namespace XmlRpc
 //! An interface allowing custom handling of error message reporting.
 class XmlRpcErrorHandler
 {
-public:
-    //! Returns a pointer to the currently installed error handling object.
-    static XmlRpcErrorHandler* getErrorHandler()
-    {
-        return _errorHandler;
-    }
+    public:
+        //! Returns a pointer to the currently installed error handling object.
+        static XmlRpcErrorHandler * getErrorHandler()
+        {
+            return _errorHandler;
+        }
 
-    //! Specifies the error handler.
-    static void setErrorHandler(XmlRpcErrorHandler* eh)
-    {
-        _errorHandler = eh;
-    }
+        //! Specifies the error handler.
+        static void setErrorHandler(XmlRpcErrorHandler * eh)
+        {
+            _errorHandler = eh;
+        }
 
-    //! Report an error. Custom error handlers should define this method.
-    virtual void error(const char* msg) = 0;
+        //! Report an error. Custom error handlers should define this method.
+        virtual void error(const char * msg) = 0;
 
-protected:
-    static XmlRpcErrorHandler* _errorHandler;
+    protected:
+        static XmlRpcErrorHandler * _errorHandler;
 };
 
 //! An interface allowing custom handling of informational message reporting.
 class XmlRpcLogHandler
 {
-public:
-    //! Returns a pointer to the currently installed message reporting object.
-    static XmlRpcLogHandler* getLogHandler()
-    {
-        return _logHandler;
-    }
+    public:
+        //! Returns a pointer to the currently installed message reporting object.
+        static XmlRpcLogHandler * getLogHandler()
+        {
+            return _logHandler;
+        }
 
-    //! Specifies the message handler.
-    static void setLogHandler(XmlRpcLogHandler* lh)
-    {
-        _logHandler = lh;
-    }
+        //! Specifies the message handler.
+        static void setLogHandler(XmlRpcLogHandler * lh)
+        {
+            _logHandler = lh;
+        }
 
-    //! Returns the level of verbosity of informational messages. 0 is no output, 5 is very verbose.
-    static int getVerbosity()
-    {
-        return _verbosity;
-    }
+        //! Returns the level of verbosity of informational messages. 0 is no output, 5 is very verbose.
+        static int getVerbosity()
+        {
+            return _verbosity;
+        }
 
-    //! Specify the level of verbosity of informational messages. 0 is no output, 5 is very verbose.
-    static void setVerbosity(int v)
-    {
-        _verbosity = v;
-    }
+        //! Specify the level of verbosity of informational messages. 0 is no output, 5 is very verbose.
+        static void setVerbosity(int v)
+        {
+            _verbosity = v;
+        }
 
-    //! Output a message. Custom error handlers should define this method.
-    virtual void log(int level, const char* msg) = 0;
+        //! Output a message. Custom error handlers should define this method.
+        virtual void log(int level, const char * msg) = 0;
 
-protected:
-    static XmlRpcLogHandler* _logHandler;
-    static int _verbosity;
+    protected:
+        static XmlRpcLogHandler * _logHandler;
+        static int _verbosity;
 };
 
 //! Returns log message verbosity. This is short for XmlRpcLogHandler::getVerbosity()

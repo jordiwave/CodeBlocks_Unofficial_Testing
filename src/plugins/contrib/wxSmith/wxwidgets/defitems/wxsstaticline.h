@@ -29,15 +29,15 @@
 
 class wxsStaticLine: public wxsWidget
 {
-public:
+    public:
 
-    wxsStaticLine(wxsItemResData* Data);
+        wxsStaticLine(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
 };
 

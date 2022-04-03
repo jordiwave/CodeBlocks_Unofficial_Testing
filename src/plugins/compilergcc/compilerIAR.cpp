@@ -18,7 +18,7 @@
 #include <wx/msgdlg.h>
 
 #ifdef __WXMSW__
-#include <wx/msw/registry.h>
+    #include <wx/msw/registry.h>
 #endif
 
 CompilerIAR::CompilerIAR(wxString arch)
@@ -47,61 +47,77 @@ AutoDetectResult CompilerIAR::AutoDetectInstallationDir()
 #ifdef __WXMSW__ // for wxRegKey
         wxRegKey key;   // defaults to HKCR
         key.SetName(wxT("HKEY_LOCAL_MACHINE\\Software\\IAR Systems\\Installed Products"));
+
         if (key.Exists() && key.Open(wxRegKey::Read))
         {
             wxString subkeyname;
             long idx;
+
             if (key.GetFirstKey(subkeyname, idx))
             {
                 do
                 {
                     wxRegKey keys;
                     keys.SetName(key.GetName() + wxFILE_SEP_PATH + subkeyname);
+
                     if (!keys.Exists() || !keys.Open(wxRegKey::Read))
+                    {
                         continue;
+                    }
+
                     keys.QueryValue(wxT("TargetDir"), m_MasterPath);
+
                     if (!m_MasterPath.IsEmpty())
                     {
                         if (wxFileExists(m_MasterPath + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + m_Programs.C))
+                        {
                             break;
+                        }
+
                         m_MasterPath.Clear();
                     }
-                }
-                while (key.GetNextKey(subkeyname, idx));
+                } while (key.GetNextKey(subkeyname, idx));
             }
         }
+
 #endif // __WXMSW__
         wxString env_path = wxGetenv(_T("ProgramFiles(x86)"));
+
         if (m_MasterPath.IsEmpty())
         {
             wxDir dir(env_path + wxT("\\IAR Systems"));
+
             if (wxDirExists(dir.GetName()) && dir.IsOpened())
             {
                 wxString filename;
                 bool cont = dir.GetFirst(&filename, wxEmptyString, wxDIR_DIRS);
+
                 while (cont)
                 {
-                    if ( filename.StartsWith(wxT("Embedded Workbench")) )
+                    if (filename.StartsWith(wxT("Embedded Workbench")))
                     {
                         wxFileName fn(dir.GetName() + wxFILE_SEP_PATH + filename + wxFILE_SEP_PATH +
                                       m_Arch + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + m_Programs.C);
-                        if (   wxFileName::IsFileExecutable(fn.GetFullPath())
-                                && (m_MasterPath.IsEmpty() || fn.GetPath() > m_MasterPath) )
+
+                        if (wxFileName::IsFileExecutable(fn.GetFullPath())
+                                && (m_MasterPath.IsEmpty() || fn.GetPath() > m_MasterPath))
                         {
                             m_MasterPath = dir.GetName() + wxFILE_SEP_PATH + filename + wxFILE_SEP_PATH + m_Arch;
                         }
                     }
+
                     cont = dir.GetNext(&filename);
                 }
             }
         }
+
         if (m_MasterPath.IsEmpty())
         {
             // just a guess; the default installation dir
             m_MasterPath = env_path + wxT("\\IAR Systems\\Embedded Workbench\\" + m_Arch);
         }
 
-        if ( wxDirExists(m_MasterPath) )
+        if (wxDirExists(m_MasterPath))
         {
             AddIncludeDir(m_MasterPath + wxFILE_SEP_PATH + wxT("include"));
             AddLibDir(m_MasterPath + wxFILE_SEP_PATH + wxT("lib") + wxFILE_SEP_PATH + wxT("clib"));
@@ -110,8 +126,9 @@ AutoDetectResult CompilerIAR::AutoDetectInstallationDir()
     }
     else
     {
-        m_MasterPath=_T("/usr/local"); // default
+        m_MasterPath = _T("/usr/local"); // default
     }
+
     if (m_Arch == wxT("8051"))
     {
         AddLinkerOption(wxT("-f \"") + m_MasterPath + wxFILE_SEP_PATH + wxT("config") + wxFILE_SEP_PATH +
@@ -122,5 +139,6 @@ AutoDetectResult CompilerIAR::AutoDetectInstallationDir()
     {
         AddCompilerOption(wxT("--no_wrap_diagnostics"));
     }
+
     return wxFileExists(m_MasterPath + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + m_Programs.C) ? adrDetected : adrGuessed;
 }

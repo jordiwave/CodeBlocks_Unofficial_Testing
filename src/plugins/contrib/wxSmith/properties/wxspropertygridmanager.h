@@ -50,153 +50,153 @@ class wxsProperty;
  */
 class PLUGIN_EXPORT wxsPropertyGridManager: public wxPropertyGridManager
 {
-    DECLARE_CLASS(wxsPropertyGridManager)
+        DECLARE_CLASS(wxsPropertyGridManager)
 
-public:
+    public:
 
-    /** \brief Ctor */
-    wxsPropertyGridManager(
-        wxWindow* parent,
-        wxWindowID id = -1,
-        const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxDefaultSize,
-        long style = wxPGMAN_DEFAULT_STYLE|wxPG_SPLITTER_AUTO_CENTER,
-        const char* name = wxPropertyGridManagerNameStr);
+        /** \brief Ctor */
+        wxsPropertyGridManager(
+            wxWindow * parent,
+            wxWindowID id = -1,
+            const wxPoint & pos = wxDefaultPosition,
+            const wxSize & size = wxDefaultSize,
+            long style = wxPGMAN_DEFAULT_STYLE | wxPG_SPLITTER_AUTO_CENTER,
+            const char * name = wxPropertyGridManagerNameStr);
 
-    /** \brief Dctor */
-    virtual ~wxsPropertyGridManager();
+        /** \brief Dctor */
+        virtual ~wxsPropertyGridManager();
 
-    /** \brief Getting singleton object */
-    static inline wxsPropertyGridManager* Get()
-    {
-        return Singleton;
-    }
+        /** \brief Getting singleton object */
+        static inline wxsPropertyGridManager * Get()
+        {
+            return Singleton;
+        }
 
-    /** \brief Getting main container
-     *
-     * Returned container is the one which was activated using
-     * ShowInPropertyGrid() method.
-     */
-    inline wxsPropertyContainer* GetContainer()
-    {
-        return MainContainer;
-    }
+        /** \brief Getting main container
+         *
+         * Returned container is the one which was activated using
+         * ShowInPropertyGrid() method.
+         */
+        inline wxsPropertyContainer * GetContainer()
+        {
+            return MainContainer;
+        }
 
-protected:
+    protected:
 
-    /** \brief Function notifying about change of main wxsPropertyContainer
-     *
-     * \param NewContainer new container associated with this manager,
-     *        if 0, container has been unbinded and manager must be cleared.
-     */
-    virtual void OnContainerChanged(cb_unused wxsPropertyContainer* NewContainer) {}
+        /** \brief Function notifying about change of main wxsPropertyContainer
+         *
+         * \param NewContainer new container associated with this manager,
+         *        if 0, container has been unbinded and manager must be cleared.
+         */
+        virtual void OnContainerChanged(cb_unused wxsPropertyContainer * NewContainer) {}
 
-private:
+    private:
 
-    /** \brief Function clearing current content of property grid */
-    void UnbindAll();
+        /** \brief Function clearing current content of property grid */
+        void UnbindAll();
 
-    /** \brief Function unbinding given container
-     *
-     * This function destroys all property entries using given container.
-     * It's automatically called in container's destructor but it may
-     * be used in other places too.
-     *
-     * \param PC pointer to property container
-     */
-    void UnbindPropertyContainer(wxsPropertyContainer* PC, bool doFreeze = true);
+        /** \brief Function unbinding given container
+         *
+         * This function destroys all property entries using given container.
+         * It's automatically called in container's destructor but it may
+         * be used in other places too.
+         *
+         * \param PC pointer to property container
+         */
+        void UnbindPropertyContainer(wxsPropertyContainer * PC, bool doFreeze = true);
 
-    /** \brief Function updating content of property grid
-     *  \param PC container which changed it's content, if 0, content
-     *         will always be updated, no matter if it's shown in grid
-     */
-    void Update(wxsPropertyContainer* PC);
+        /** \brief Function updating content of property grid
+         *  \param PC container which changed it's content, if 0, content
+         *         will always be updated, no matter if it's shown in grid
+         */
+        void Update(wxsPropertyContainer * PC);
 
-    // prevent warning for overloaded virtual that is hiding the method in the base class.
-    using wxPropertyGridManager::Update;
+        // prevent warning for overloaded virtual that is hiding the method in the base class.
+        using wxPropertyGridManager::Update;
 
-    /** \brief Function used when adding new property to grid
-     *
-     * It should be called from wxsProperty::PGRegister() only !!!
-     */
-    long Register(wxsPropertyContainer* Container,wxsProperty* Property,wxPGId Id,long Index);
+        /** \brief Function used when adding new property to grid
+         *
+         * It should be called from wxsProperty::PGRegister() only !!!
+         */
+        long Register(wxsPropertyContainer * Container, wxsProperty * Property, wxPGId Id, long Index);
 
-    /** \brief Starting enumeration of properties for new property container */
-    void NewPropertyContainerStart();
+        /** \brief Starting enumeration of properties for new property container */
+        void NewPropertyContainerStart();
 
-    /** \brief Adding new property into temporary list of properties */
-    void NewPropertyContainerAddProperty(wxsProperty* Property,wxsPropertyContainer* Container);
+        /** \brief Adding new property into temporary list of properties */
+        void NewPropertyContainerAddProperty(wxsProperty * Property, wxsPropertyContainer * Container);
 
-    /** \brief Finish enumeration of properties for new property container */
-    void NewPropertyContainerFinish(wxsPropertyContainer* Container);
+        /** \brief Finish enumeration of properties for new property container */
+        void NewPropertyContainerFinish(wxsPropertyContainer * Container);
 
-    /** \brief Deleting temporary list used while changing container */
-    void DeleteTemporaryPropertiesList();
+        /** \brief Deleting temporary list used while changing container */
+        void DeleteTemporaryPropertiesList();
 
-    /** \brief Changing main property container */
-    void SetNewMainContainer(wxsPropertyContainer* NewMain);
+        /** \brief Changing main property container */
+        void SetNewMainContainer(wxsPropertyContainer * NewMain);
 
-    /** \brief Handler for reporting change event */
-    void OnChange(wxPropertyGridEvent& event);
+        /** \brief Handler for reporting change event */
+        void OnChange(wxPropertyGridEvent & event);
 
-    /** \brief Handler for jumping to event handler when user double click on the event name */
-    void OnDoubleClick(wxPropertyGridEvent& event);
+        /** \brief Handler for jumping to event handler when user double click on the event name */
+        void OnDoubleClick(wxPropertyGridEvent & event);
 
-    /** \brief Data of selected property */
-    struct SelectionData
-    {
-        int m_PageIndex;
-        wxString m_PropertyName;
-    };
+        /** \brief Data of selected property */
+        struct SelectionData
+        {
+            int m_PageIndex;
+            wxString m_PropertyName;
+        };
 
-    /** \brief Storing currently selected property
-     *
-     * \param Data place where selection should be stored, if NULL,
-     *        selection will be stored in internal variable
-     */
-    void StoreSelected(SelectionData* Data=0);
+        /** \brief Storing currently selected property
+         *
+         * \param Data place where selection should be stored, if NULL,
+         *        selection will be stored in internal variable
+         */
+        void StoreSelected(SelectionData * Data = 0);
 
-    /** \brief Restoring selected property
-     *
-     * \param Data structure containing selection data, if NULL,
-     *        selection will be restored from internal variable
-     */
-    void RestoreSelected(const SelectionData* Data=0);
+        /** \brief Restoring selected property
+         *
+         * \param Data structure containing selection data, if NULL,
+         *        selection will be restored from internal variable
+         */
+        void RestoreSelected(const SelectionData * Data = 0);
 
-    /** \brief Singleton object */
-    static wxsPropertyGridManager* Singleton;
+        /** \brief Singleton object */
+        static wxsPropertyGridManager * Singleton;
 
-    struct TemporaryPropertiesList
-    {
-        wxsProperty* Property;
-        wxsPropertyContainer* Container;
-        int Priority;
-        TemporaryPropertiesList* Next;
-    };
+        struct TemporaryPropertiesList
+        {
+            wxsProperty * Property;
+            wxsPropertyContainer * Container;
+            int Priority;
+            TemporaryPropertiesList * Next;
+        };
 
-    WX_DEFINE_ARRAY(wxPGId,wxArrayPGId);
-    WX_DEFINE_ARRAY(wxsProperty*,wxArrayProps);
-    WX_DEFINE_ARRAY(wxsPropertyContainer*,wxArrayCont);
-    WX_DECLARE_HASH_SET(wxsPropertyContainer*,wxPointerHash,wxPointerEqual,wxSetCont);
+        WX_DEFINE_ARRAY(wxPGId, wxArrayPGId);
+        WX_DEFINE_ARRAY(wxsProperty *, wxArrayProps);
+        WX_DEFINE_ARRAY(wxsPropertyContainer *, wxArrayCont);
+        WX_DECLARE_HASH_SET(wxsPropertyContainer *, wxPointerHash, wxPointerEqual, wxSetCont);
 
-    wxArrayPGId  PGIDs;                         ///< \brief Array of property identifiers
-    wxArrayProps PGEntries;                     ///< \brief Array mapping entries in grid to properties
-    wxArrayLong  PGIndexes;                     ///< \brief Array of internal property indexes used inside wxsProperty
-    wxArrayCont  PGContainers;                  ///< \brief Array of container objects associated with properties
-    wxSetCont    PGContainersSet;               ///< \brief Set of used containers, will be used to quickly determine if given container is used in manager
-    wxsProperty* PreviousProperty;              ///< \brief Previous property used in Register()
-    long         PreviousIndex;                 ///< \brief Previous index used when automatically calculating property indexes
+        wxArrayPGId  PGIDs;                         ///< \brief Array of property identifiers
+        wxArrayProps PGEntries;                     ///< \brief Array mapping entries in grid to properties
+        wxArrayLong  PGIndexes;                     ///< \brief Array of internal property indexes used inside wxsProperty
+        wxArrayCont  PGContainers;                  ///< \brief Array of container objects associated with properties
+        wxSetCont    PGContainersSet;               ///< \brief Set of used containers, will be used to quickly determine if given container is used in manager
+        wxsProperty * PreviousProperty;             ///< \brief Previous property used in Register()
+        long         PreviousIndex;                 ///< \brief Previous index used when automatically calculating property indexes
 
-    wxsPropertyContainer* MainContainer;        ///< \brief Main container
+        wxsPropertyContainer * MainContainer;       ///< \brief Main container
 
-    TemporaryPropertiesList* PropertiesList;    ///< \brief List used while generating sorted properties list
+        TemporaryPropertiesList * PropertiesList;   ///< \brief List used while generating sorted properties list
 
-    SelectionData LastSelection;                ///< \brief Internal selection structure used to restore selected property
+        SelectionData LastSelection;                ///< \brief Internal selection structure used to restore selected property
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 
-    friend class wxsProperty;
-    friend class wxsPropertyContainer;
+        friend class wxsProperty;
+        friend class wxsPropertyContainer;
 };
 
 /** \brief Macro for easy acces to property grid manager */

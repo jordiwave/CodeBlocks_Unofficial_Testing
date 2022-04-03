@@ -12,31 +12,31 @@ class ConfigManagerWrapper;
 
 class DebuggerConfiguration : public cbDebuggerConfiguration
 {
-public:
-    explicit DebuggerConfiguration(const ConfigManagerWrapper &config);
+    public:
+        explicit DebuggerConfiguration(const ConfigManagerWrapper & config);
 
-    cbDebuggerConfiguration* Clone() const override;
-    wxPanel* MakePanel(wxWindow *parent) override;
-    bool SaveChanges(wxPanel *panel) override;
-public:
-    enum Flags
-    {
-        DisableInit,
-        WatchFuncArgs,
-        WatchLocals,
-        CatchExceptions,
-        EvalExpression,
-        AddOtherProjectDirs,
-        DoNotRun
-    };
+        cbDebuggerConfiguration * Clone() const override;
+        wxPanel * MakePanel(wxWindow * parent) override;
+        bool SaveChanges(wxPanel * panel) override;
+    public:
+        enum Flags
+        {
+            DisableInit,
+            WatchFuncArgs,
+            WatchLocals,
+            CatchExceptions,
+            EvalExpression,
+            AddOtherProjectDirs,
+            DoNotRun
+        };
 
-    bool GetFlag(Flags flag);
-    void SetFlag(Flags flag, bool value);
-    bool IsGDB();
-    wxString GetDebuggerExecutable(bool expandMacro = true);
-    wxString GetUserArguments(bool expandMacro = true);
-    wxString GetDisassemblyFlavorCommand();
-    wxString GetInitCommands();
+        bool GetFlag(Flags flag);
+        void SetFlag(Flags flag, bool value);
+        bool IsGDB();
+        wxString GetDebuggerExecutable(bool expandMacro = true);
+        wxString GetUserArguments(bool expandMacro = true);
+        wxString GetDisassemblyFlavorCommand();
+        wxString GetInitCommands();
 
 };
 

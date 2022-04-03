@@ -12,7 +12,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+    #include "wx/wx.h"
 #endif
 
 #include <wx/datetime.h>
@@ -39,9 +39,7 @@ wxString CTimeAlarm::GetAlarmString()
 {
     wxString sDate ;
     wxDateTime jdate ;
-
     jdate.Set(m_dJAlarmTime) ;
     sDate = jdate.Format(wxT("%d-%m-%Y %H:%M:%S")) ;
-
     return sDate ;
 }

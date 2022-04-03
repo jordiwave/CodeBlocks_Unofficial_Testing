@@ -12,21 +12,21 @@ extern int wxEVT_CSCOPE_THREAD_DONE;
 class wxInputStream;
 class CscopeParserThread : public wxThread
 {
-public:
-    CscopeParserThread(wxEvtHandler *evtHandler, const wxArrayString &output);
-    CscopeParserThread(wxEvtHandler *evtHandler, wxInputStream *input);
-    ~CscopeParserThread();
+    public:
+        CscopeParserThread(wxEvtHandler * evtHandler, const wxArrayString & output);
+        CscopeParserThread(wxEvtHandler * evtHandler, wxInputStream * input);
+        ~CscopeParserThread();
 
-    virtual void *Entry();
-    virtual void OnExit();
+        virtual void * Entry();
+        virtual void OnExit();
 
-protected:
-    CscopeResultTable* ParseResults();
+    protected:
+        CscopeResultTable * ParseResults();
 
-protected:
-    wxEvtHandler *m_notifiedWindow;
-    const wxArrayString &m_CscopeOutput;
-    CscopeResultTable *m_result;
+    protected:
+        wxEvtHandler * m_notifiedWindow;
+        const wxArrayString & m_CscopeOutput;
+        CscopeResultTable * m_result;
 };
 
 

@@ -19,18 +19,18 @@ class cbProject;
  */
 class ParserThreadedTask : public cbThreadedTask
 {
-public:
-    ParserThreadedTask(Parser* parser, wxMutex& parserCS);
+    public:
+        ParserThreadedTask(Parser * parser, wxMutex & parserCS);
 
-    // this function really do the following jobs:
-    // run sequence parsing jobs in a single thread, those include
-    // 1, parsing predefined macro buffers
-    // 2, parsing project files(mainly the implementation source files)
-    int Execute() override;
+        // this function really do the following jobs:
+        // run sequence parsing jobs in a single thread, those include
+        // 1, parsing predefined macro buffers
+        // 2, parsing project files(mainly the implementation source files)
+        int Execute() override;
 
-private:
-    Parser*  m_Parser; /// a Parser object which contain TokenTree
-    wxMutex& m_ParserMutex; /// mutex to access the Parser object
+    private:
+        Parser * m_Parser; /// a Parser object which contain TokenTree
+        wxMutex & m_ParserMutex; /// mutex to access the Parser object
 };
 
 /** mark all the tokens belong to the project as "local"
@@ -40,14 +40,14 @@ private:
  */
 class MarkFileAsLocalThreadedTask : public cbThreadedTask
 {
-public:
-    MarkFileAsLocalThreadedTask(Parser* parser, cbProject* project);
+    public:
+        MarkFileAsLocalThreadedTask(Parser * parser, cbProject * project);
 
-    int Execute() override;
+        int Execute() override;
 
-private:
-    Parser*    m_Parser;  /// a Parser object which contain TokenTree
-    cbProject* m_Project; /// mutex to access the Parser object
+    private:
+        Parser  *  m_Parser;  /// a Parser object which contain TokenTree
+        cbProject * m_Project; /// mutex to access the Parser object
 };
 
 #endif // PARSERTHREADEDTASK_H

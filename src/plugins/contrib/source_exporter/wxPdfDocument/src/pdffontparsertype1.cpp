@@ -13,13 +13,13 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #if wxUSE_UNICODE
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 // includes
@@ -65,53 +65,64 @@ wxPdfFontParserType1::~wxPdfFontParserType1()
     {
         delete m_privateDict;
     }
+
     delete m_charStringsIndex;
     delete m_subrsIndex;
+
     if (m_glyphWidthMap != NULL)
     {
         delete m_glyphWidthMap;
     }
 }
 
-bool
-wxPdfFontParserType1::ParseFont(const wxString& fileName, wxInputStream* fontFile, wxInputStream* metricFile, bool onlyNames)
+bool wxPdfFontParserType1::ParseFont(const wxString & fileName, wxInputStream * fontFile, wxInputStream * metricFile, bool onlyNames)
 {
     bool ok = false;
     m_fileName = fileName;
+
     if (fontFile != NULL && metricFile != NULL)
     {
         ok = ReadPFX(fontFile, onlyNames);
+
         if (ok && !onlyNames)
         {
             ok = false;
+
             if (MetricIsAFM(metricFile))
             {
                 ok = ReadAFM(*metricFile);
             }
-            else if (MetricIsPFM(metricFile))
-            {
-                ok = ReadPFM(*metricFile);
-            }
+            else
+                if (MetricIsPFM(metricFile))
+                {
+                    ok = ReadPFM(*metricFile);
+                }
+
             if (ok)
             {
                 // Initialize char width array
                 // TODO: Handle different Type1 encodings
                 wxArrayString glyphNames;
+
                 if (!m_encoding.IsSameAs(wxS("ArrayEncoding")))
                 {
                     wxPdfEncoding encoding;
+
                     if (m_encoding.IsSameAs(wxS("StandardEncoding")))
                     {
                         encoding.SetEncoding(wxS("standard"));
                     }
-                    else if (m_encoding.IsSameAs(wxS("ISOLatin1Encoding")))
-                    {
-                        encoding.SetEncoding(wxS("isolatin1"));
-                    }
-                    else if (m_encoding.IsSameAs(wxS("ExpertEncoding")))
-                    {
-                        encoding.SetEncoding(wxS("winansi"));
-                    }
+                    else
+                        if (m_encoding.IsSameAs(wxS("ISOLatin1Encoding")))
+                        {
+                            encoding.SetEncoding(wxS("isolatin1"));
+                        }
+                        else
+                            if (m_encoding.IsSameAs(wxS("ExpertEncoding")))
+                            {
+                                encoding.SetEncoding(wxS("winansi"));
+                            }
+
                     m_fontData->SetEncoding(wxS("cp-1252"));
                     glyphNames = encoding.GetGlyphNames();
                 }
@@ -120,15 +131,18 @@ wxPdfFontParserType1::ParseFont(const wxString& fileName, wxInputStream* fontFil
                     m_fontData->SetEncoding(wxEmptyString);
                     glyphNames = m_encodingVector;
                 }
-                wxPdfGlyphWidthMap* widthMap = new wxPdfGlyphWidthMap();
+
+                wxPdfGlyphWidthMap * widthMap = new wxPdfGlyphWidthMap();
                 wxPdfFontType1GlyphWidthMap::const_iterator glyphIter;
                 wxString glyph;
                 size_t n = glyphNames.GetCount();
                 size_t j;
+
                 for (j = 0; j < n; ++j)
                 {
                     glyph = glyphNames[j];
                     glyphIter = m_glyphWidthMap->find(glyph);
+
                     if (glyphIter != m_glyphWidthMap->end())
                     {
                         (*widthMap)[j] = (wxUint16) glyphIter->second;
@@ -138,6 +152,7 @@ wxPdfFontParserType1::ParseFont(const wxString& fileName, wxInputStream* fontFil
                         (*widthMap)[j] = (wxUint16) m_missingWidth;
                     }
                 }
+
                 m_fontData->SetGlyphWidthMap(widthMap);
                 m_fontData->SetType1GlyphWidthMap(m_glyphWidthMap);
                 m_fontData->CreateDefaultEncodingConv();
@@ -154,20 +169,19 @@ wxPdfFontParserType1::ParseFont(const wxString& fileName, wxInputStream* fontFil
     return ok;
 }
 
-wxPdfFontData*
-wxPdfFontParserType1::IdentifyFont(const wxString& fontFileName, int fontIndex)
+wxPdfFontData * wxPdfFontParserType1::IdentifyFont(const wxString & fontFileName, int fontIndex)
 {
     wxFileSystem fs;
     bool ok = true;
-    wxPdfFontData* fontData = NULL;
+    wxPdfFontData * fontData = NULL;
     wxUnusedVar(fontIndex);
     m_fileName = fontFileName;
     wxFileName fileNameFont(fontFileName);
-
     // Check for existance of metric file
-    wxFSFile* metricFile = NULL;
+    wxFSFile * metricFile = NULL;
     wxFileName fileNameMetric(fontFileName);
     fileNameMetric.SetExt(wxS("afm"));
+
     if (fileNameMetric.IsFileReadable())
     {
         metricFile = fs.OpenFile(wxFileSystem::FileNameToURL(fileNameMetric));
@@ -175,23 +189,26 @@ wxPdfFontParserType1::IdentifyFont(const wxString& fontFileName, int fontIndex)
     else
     {
         fileNameMetric.SetExt(wxS("pfm"));
+
         if (fileNameMetric.IsFileReadable())
         {
             metricFile = fs.OpenFile(wxFileSystem::FileNameToURL(fileNameMetric));
         }
     }
+
     if (metricFile != NULL)
     {
-        wxInputStream* metricStream = metricFile->GetStream();
-        wxMemoryInputStream* pfbStream = NULL;
-
+        wxInputStream * metricStream = metricFile->GetStream();
+        wxMemoryInputStream * pfbStream = NULL;
         // Open font file
-        wxFSFile* fontFile = fs.OpenFile(wxFileSystem::FileNameToURL(fileNameFont));
+        wxFSFile * fontFile = fs.OpenFile(wxFileSystem::FileNameToURL(fileNameFont));
+
         if (fontFile != NULL)
         {
             if (fileNameFont.GetExt().IsEmpty())
             {
-                wxMemoryOutputStream* pfbOutputStream = ConvertMACtoPFB(fontFile->GetStream());
+                wxMemoryOutputStream * pfbOutputStream = ConvertMACtoPFB(fontFile->GetStream());
+
                 if (pfbOutputStream != NULL)
                 {
                     pfbStream = new wxMemoryInputStream(*pfbOutputStream);
@@ -207,14 +224,14 @@ wxPdfFontParserType1::IdentifyFont(const wxString& fontFileName, int fontIndex)
             {
                 m_inFont = fontFile->GetStream();
             }
+
             if (m_inFont != NULL)
             {
                 m_inFont->SeekI(0);
-
                 // Identify single font
                 m_fontData = new wxPdfFontDataType1(pfbStream);
-
                 ok = ParseFont(fontFileName, m_inFont, metricStream, true);
+
                 if (ok)
                 {
                     fontData = m_fontData;
@@ -229,6 +246,7 @@ wxPdfFontParserType1::IdentifyFont(const wxString& fontFileName, int fontIndex)
                                wxString::Format(_("Reading of font directory failed for font file '%s'."), fontFileName.c_str()));
                 }
             }
+
             delete fontFile;
         }
         else
@@ -236,6 +254,7 @@ wxPdfFontParserType1::IdentifyFont(const wxString& fontFileName, int fontIndex)
             wxLogError(wxString(wxS("wxPdfFontParserType1::IdentifyFont: ")) +
                        wxString::Format(_("Font file '%s' not accessible."), fontFileName.c_str()));
         }
+
         delete metricFile;
     }
     else
@@ -243,24 +262,25 @@ wxPdfFontParserType1::IdentifyFont(const wxString& fontFileName, int fontIndex)
         wxLogError(wxString(wxS("wxPdfFontParserType1::IdentifyFont: ")) +
                    wxString::Format(_("Metric file of font file '%s' not accessible."), fontFileName.c_str()));
     }
+
     return fontData;
 }
 
-bool
-wxPdfFontParserType1::LoadFontData(wxPdfFontData* fontData)
+bool wxPdfFontParserType1::LoadFontData(wxPdfFontData * fontData)
 {
     wxFileSystem fs;
     bool ok = false;
+
     if (fontData->GetType().IsSameAs(wxS("Type1")))
     {
         m_fileName = fontData->GetFontFileName();
-        m_fontData = (wxPdfFontDataType1*) fontData;
+        m_fontData = (wxPdfFontDataType1 *) fontData;
         wxFileName fileNameFont(m_fileName);
-
         // Check for existance of metric file
-        wxFSFile* metricFile = NULL;
+        wxFSFile * metricFile = NULL;
         wxFileName fileNameMetric(m_fileName);
         fileNameMetric.SetExt(wxS("afm"));
+
         if (fileNameMetric.IsFileReadable())
         {
             metricFile = fs.OpenFile(wxFileSystem::FileNameToURL(fileNameMetric));
@@ -268,17 +288,19 @@ wxPdfFontParserType1::LoadFontData(wxPdfFontData* fontData)
         else
         {
             fileNameMetric.SetExt(wxS("pfm"));
+
             if (fileNameMetric.IsFileReadable())
             {
                 metricFile = fs.OpenFile(wxFileSystem::FileNameToURL(fileNameMetric));
             }
         }
+
         if (metricFile != NULL)
         {
-            wxInputStream* metricStream = metricFile->GetStream();
-
+            wxInputStream * metricStream = metricFile->GetStream();
             // Open font file
-            wxFSFile* fontFile = fs.OpenFile(wxFileSystem::FileNameToURL(fileNameFont));
+            wxFSFile * fontFile = fs.OpenFile(wxFileSystem::FileNameToURL(fileNameFont));
+
             if (fontFile != NULL)
             {
                 m_inFont = fontFile->GetStream();
@@ -291,6 +313,7 @@ wxPdfFontParserType1::LoadFontData(wxPdfFontData* fontData)
                 wxLogError(wxString(wxS("wxPdfFontParserType1::LoadFontData: ")) +
                            wxString::Format(_("Font file '%s' not accessible."), m_fileName.c_str()));
             }
+
             delete metricFile;
         }
         else
@@ -304,28 +327,29 @@ wxPdfFontParserType1::LoadFontData(wxPdfFontData* fontData)
         wxLogError(wxString(wxS("wxPdfFontParserType1::LoadFontData: ")) +
                    wxString::Format(_("Type1 font parser called for wrong font type '%s'."), fontData->GetType().c_str()));
     }
+
     return ok;
 }
 
 class GlyphListEntry
 {
-public:
-    GlyphListEntry() {};
-    ~GlyphListEntry() {};
-    int m_gid;
-    int m_uid;
+    public:
+        GlyphListEntry() {};
+        ~GlyphListEntry() {};
+        int m_gid;
+        int m_uid;
 };
 
-WX_DEFINE_SORTED_ARRAY(GlyphListEntry*, GlyphList);
+WX_DEFINE_SORTED_ARRAY(GlyphListEntry *, GlyphList);
 
 WX_DECLARE_HASH_MAP(long, wxString, wxIntegerHash, wxIntegerEqual, CTGMap);
 WX_DECLARE_STRING_HASH_MAP(wxString, FixGlyphMap);
 
-bool
-wxPdfFontParserType1::MetricIsAFM(wxInputStream* stream)
+bool wxPdfFontParserType1::MetricIsAFM(wxInputStream * stream)
 {
     bool ok = false;
     size_t fileSize = stream->GetSize();
+
     if (fileSize > 16)
     {
         wxString keyword;
@@ -336,14 +360,15 @@ wxPdfFontParserType1::MetricIsAFM(wxInputStream* stream)
         ok = keyword.IsSameAs(wxS("StartFontMetrics"));
         stream->SeekI(0);
     }
+
     return ok;
 }
 
-bool
-wxPdfFontParserType1::MetricIsPFM(wxInputStream* stream)
+bool wxPdfFontParserType1::MetricIsPFM(wxInputStream * stream)
 {
     bool ok = false;
     size_t fileSize = stream->GetSize();
+
     if (fileSize > 147)
     {
         stream->SeekI(2);
@@ -357,13 +382,14 @@ wxPdfFontParserType1::MetricIsPFM(wxInputStream* stream)
         ok = (fileSize == len) && (extlen == 30) && (fontname >= 75) /* && (fontname <= 512) */;
         stream->SeekI(0);
     }
+
     return ok;
 }
 
-bool
-wxPdfFontParserType1::ReadAFM(wxInputStream& afmFile)
+bool wxPdfFontParserType1::ReadAFM(wxInputStream & afmFile)
 {
     bool ok = false;
+
     if (afmFile.IsOk())
     {
         // Initialize font description
@@ -376,10 +402,8 @@ wxPdfFontParserType1::ReadAFM(wxInputStream& afmFile)
         fd.SetMissingWidth(600);
         fd.SetUnderlinePosition(-100);
         fd.SetUnderlineThickness(50);
-
-        wxPdfKernPairMap* kpMap = NULL;
+        wxPdfKernPairMap * kpMap = NULL;
         wxString encodingScheme;
-
         bool hasCapHeight = false;
         bool hasXCapHeight = false;
         bool hasXHeight = false;
@@ -387,7 +411,6 @@ wxPdfFontParserType1::ReadAFM(wxInputStream& afmFile)
         bool hasStemV = false;
         bool hasMissingWidth = false;
         int flags = 0;
-
         wxTextInputStream text(afmFile);
         wxString line;
         wxString charcode, glyphname;
@@ -395,232 +418,266 @@ wxPdfFontParserType1::ReadAFM(wxInputStream& afmFile)
         wxString token, tokenBoxHeight;
         long nParam;
         long cc, width, boxHeight, glyphNumber;
-
         bool inHeader = true;
         bool inMetrics = false;
         bool inKerning = false;
+
         while (!afmFile.Eof())
         {
             line = text.ReadLine();
             line.Trim();
-
             wxStringTokenizer tkz(line, wxS(" "));
             int count = tkz.CountTokens();
-            if (count < 2) continue;
+
+            if (count < 2)
+            {
+                continue;
+            }
+
             code  = tkz.GetNextToken(); // 0
             param = tkz.GetNextToken(); // 1
+
             if (inHeader)
             {
                 if (code.IsSameAs(wxS("FontName")))
                 {
                     m_fontData->SetName(param);
                 }
-                else if (code.IsSameAs(wxS("FullName")))
-                {
-                    wxArrayString fullNames;
-                    fullNames.Add(param);
-                    m_fontData->SetFullNames(fullNames);
-                }
-                else if (code.IsSameAs(wxS("FamilyName")))
-                {
-                    m_fontData->SetFamily(param);
-                }
-                else if (code.IsSameAs(wxS("Weight")))
-                {
-                    wxString weight = param.Lower();
-                    if (!hasStemV && (weight.IsSameAs(wxS("black")) || weight.IsSameAs(wxS("bold"))))
+                else
+                    if (code.IsSameAs(wxS("FullName")))
                     {
-                        fd.SetStemV(120);
+                        wxArrayString fullNames;
+                        fullNames.Add(param);
+                        m_fontData->SetFullNames(fullNames);
                     }
-                }
-                else if (code.IsSameAs(wxS("ItalicAngle")))
-                {
-                    double italic;
-                    param.ToDouble(&italic);
-                    int italicAngle = int(italic);
-                    fd.SetItalicAngle(italicAngle);
-                    if (italicAngle > 0)
-                    {
-                        flags += 1 << 6;
-                    }
-                }
-                else if (code.IsSameAs(wxS("Ascender")))
-                {
-                    long ascent;
-                    param.ToLong(&ascent);
-                    fd.SetAscent(ascent);
-                }
-                else if (code.IsSameAs(wxS("Descender")))
-                {
-                    param.ToLong(&nParam);
-                    fd.SetDescent(nParam);
-                }
-                else if (code.IsSameAs(wxS("UnderlineThickness")))
-                {
-                    param.ToLong(&nParam);
-                    fd.SetUnderlineThickness(nParam);
-                }
-                else if (code.IsSameAs(wxS("UnderlinePosition")))
-                {
-                    param.ToLong(&nParam);
-                    fd.SetUnderlinePosition(nParam);
-                }
-                else if (code.IsSameAs(wxS("IsFixedPitch")))
-                {
-                    if (param == wxS("true"))
-                    {
-                        flags += 1 << 0;
-                    }
-                }
-                else if (code.IsSameAs(wxS("FontBBox")))
-                {
-                    hasFontBBox = true;
-                    wxString bbox2 = tkz.GetNextToken();
-                    wxString bbox3 = tkz.GetNextToken();
-                    wxString bbox4 = tkz.GetNextToken();
-                    wxString bBox = wxS("[") + param + wxS(" ") + bbox2 + wxS(" ") + bbox3 + wxS(" ") + bbox4 + wxS("]");
-                    fd.SetFontBBox(bBox);
-                }
-                else if (code.IsSameAs(wxS("CapHeight")))
-                {
-                    hasCapHeight = true;
-                    long capHeight;
-                    param.ToLong(&capHeight);
-                    fd.SetCapHeight(capHeight);
-                }
-                else if (code.IsSameAs(wxS("XHeight")))
-                {
-                    hasXHeight = true;
-                    long xHeight;
-                    param.ToLong(&xHeight);
-                    fd.SetXHeight(xHeight);
-                }
-                else if (code.IsSameAs(wxS("StdVW")))
-                {
-                    hasStemV = true;
-                    long stemV;
-                    param.ToLong(&stemV);
-                    fd.SetStemV(stemV);
-                }
-                else if (code.IsSameAs(wxS("EncodingScheme")))
-                {
-                    encodingScheme = param;
-                }
-                else if (code.IsSameAs(wxS("StartCharMetrics")))
-                {
-                    inHeader = false;
-                    inMetrics = true;
-                }
-            }
-            else if (inMetrics)
-            {
-                if (code.IsSameAs(wxS("C")))
-                {
-                    width = -1;
-                    glyphNumber = 0;
-                    boxHeight = 0;
-                    tokenBoxHeight = wxEmptyString;
-                    // Character metrics
-                    param.ToLong(&cc);
-                    dummy = tkz.GetNextToken(); // 2
-                    while (tkz.HasMoreTokens())
-                    {
-                        token = tkz.GetNextToken();
-                        if (token.IsSameAs(wxS("WX"))) // Character width
+                    else
+                        if (code.IsSameAs(wxS("FamilyName")))
                         {
-                            param = tkz.GetNextToken(); // Width
-                            param.ToLong(&width);
-                            dummy = tkz.GetNextToken(); // Semicolon
-
-                            if (!hasMissingWidth && glyphname.IsSameAs(wxS(".notdef")))
+                            m_fontData->SetFamily(param);
+                        }
+                        else
+                            if (code.IsSameAs(wxS("Weight")))
                             {
-                                hasMissingWidth = true;
-                                m_missingWidth = width;
-                                fd.SetMissingWidth(width);
+                                wxString weight = param.Lower();
+
+                                if (!hasStemV && (weight.IsSameAs(wxS("black")) || weight.IsSameAs(wxS("bold"))))
+                                {
+                                    fd.SetStemV(120);
+                                }
                             }
-                        }
-                        else if (token.IsSameAs(wxS("N"))) // Glyph name
+                            else
+                                if (code.IsSameAs(wxS("ItalicAngle")))
+                                {
+                                    double italic;
+                                    param.ToDouble(&italic);
+                                    int italicAngle = int(italic);
+                                    fd.SetItalicAngle(italicAngle);
+
+                                    if (italicAngle > 0)
+                                    {
+                                        flags += 1 << 6;
+                                    }
+                                }
+                                else
+                                    if (code.IsSameAs(wxS("Ascender")))
+                                    {
+                                        long ascent;
+                                        param.ToLong(&ascent);
+                                        fd.SetAscent(ascent);
+                                    }
+                                    else
+                                        if (code.IsSameAs(wxS("Descender")))
+                                        {
+                                            param.ToLong(&nParam);
+                                            fd.SetDescent(nParam);
+                                        }
+                                        else
+                                            if (code.IsSameAs(wxS("UnderlineThickness")))
+                                            {
+                                                param.ToLong(&nParam);
+                                                fd.SetUnderlineThickness(nParam);
+                                            }
+                                            else
+                                                if (code.IsSameAs(wxS("UnderlinePosition")))
+                                                {
+                                                    param.ToLong(&nParam);
+                                                    fd.SetUnderlinePosition(nParam);
+                                                }
+                                                else
+                                                    if (code.IsSameAs(wxS("IsFixedPitch")))
+                                                    {
+                                                        if (param == wxS("true"))
+                                                        {
+                                                            flags += 1 << 0;
+                                                        }
+                                                    }
+                                                    else
+                                                        if (code.IsSameAs(wxS("FontBBox")))
+                                                        {
+                                                            hasFontBBox = true;
+                                                            wxString bbox2 = tkz.GetNextToken();
+                                                            wxString bbox3 = tkz.GetNextToken();
+                                                            wxString bbox4 = tkz.GetNextToken();
+                                                            wxString bBox = wxS("[") + param + wxS(" ") + bbox2 + wxS(" ") + bbox3 + wxS(" ") + bbox4 + wxS("]");
+                                                            fd.SetFontBBox(bBox);
+                                                        }
+                                                        else
+                                                            if (code.IsSameAs(wxS("CapHeight")))
+                                                            {
+                                                                hasCapHeight = true;
+                                                                long capHeight;
+                                                                param.ToLong(&capHeight);
+                                                                fd.SetCapHeight(capHeight);
+                                                            }
+                                                            else
+                                                                if (code.IsSameAs(wxS("XHeight")))
+                                                                {
+                                                                    hasXHeight = true;
+                                                                    long xHeight;
+                                                                    param.ToLong(&xHeight);
+                                                                    fd.SetXHeight(xHeight);
+                                                                }
+                                                                else
+                                                                    if (code.IsSameAs(wxS("StdVW")))
+                                                                    {
+                                                                        hasStemV = true;
+                                                                        long stemV;
+                                                                        param.ToLong(&stemV);
+                                                                        fd.SetStemV(stemV);
+                                                                    }
+                                                                    else
+                                                                        if (code.IsSameAs(wxS("EncodingScheme")))
+                                                                        {
+                                                                            encodingScheme = param;
+                                                                        }
+                                                                        else
+                                                                            if (code.IsSameAs(wxS("StartCharMetrics")))
+                                                                            {
+                                                                                inHeader = false;
+                                                                                inMetrics = true;
+                                                                            }
+            }
+            else
+                if (inMetrics)
+                {
+                    if (code.IsSameAs(wxS("C")))
+                    {
+                        width = -1;
+                        glyphNumber = 0;
+                        boxHeight = 0;
+                        tokenBoxHeight = wxEmptyString;
+                        // Character metrics
+                        param.ToLong(&cc);
+                        dummy = tkz.GetNextToken(); // 2
+
+                        while (tkz.HasMoreTokens())
                         {
-                            glyphname = tkz.GetNextToken(); // Glyph name
-                            dummy = tkz.GetNextToken(); // Semicolon
+                            token = tkz.GetNextToken();
+
+                            if (token.IsSameAs(wxS("WX"))) // Character width
+                            {
+                                param = tkz.GetNextToken(); // Width
+                                param.ToLong(&width);
+                                dummy = tkz.GetNextToken(); // Semicolon
+
+                                if (!hasMissingWidth && glyphname.IsSameAs(wxS(".notdef")))
+                                {
+                                    hasMissingWidth = true;
+                                    m_missingWidth = width;
+                                    fd.SetMissingWidth(width);
+                                }
+                            }
+                            else
+                                if (token.IsSameAs(wxS("N"))) // Glyph name
+                                {
+                                    glyphname = tkz.GetNextToken(); // Glyph name
+                                    dummy = tkz.GetNextToken(); // Semicolon
+                                }
+                                else
+                                    if (token.IsSameAs(wxS("G"))) // Glyph number
+                                    {
+                                        param = tkz.GetNextToken(); // Number
+                                        param.ToLong(&glyphNumber);
+                                        dummy = tkz.GetNextToken(); // Semicolon
+                                    }
+                                    else
+                                        if (token.IsSameAs(wxS("B"))) // Character bounding box
+                                        {
+                                            dummy = tkz.GetNextToken(); // x left
+                                            dummy = tkz.GetNextToken(); // y bottom
+                                            dummy = tkz.GetNextToken(); // x right
+                                            tokenBoxHeight = tkz.GetNextToken(); // y top
+                                            tokenBoxHeight.ToLong(&boxHeight);
+                                            dummy = tkz.GetNextToken(); // Semicolon
+
+                                            if (!tokenBoxHeight.IsEmpty())
+                                            {
+                                                if (!hasCapHeight && !hasXCapHeight && glyphname.IsSameAs(wxS("X")))
+                                                {
+                                                    hasXCapHeight = true;
+                                                    fd.SetCapHeight(boxHeight);
+                                                }
+
+                                                if (!hasXHeight && glyphname.IsSameAs(wxS("x")))
+                                                {
+                                                    hasXHeight = true;
+                                                    fd.SetXHeight(boxHeight);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            while (tkz.HasMoreTokens() && tkz.GetNextToken() != wxS(";"))
+                                            {
+                                            }
+                                        }
                         }
-                        else if (token.IsSameAs(wxS("G"))) // Glyph number
+                    }
+                    else
+                        if (code.IsSameAs(wxS("EndCharMetrics")))
                         {
+                            inMetrics = false;
+                            inKerning = true;
+                        }
+                }
+                else
+                    if (inKerning)
+                    {
+                        if (code.IsSameAs(wxS("KPX")))
+                        {
+                            if (kpMap == NULL)
+                            {
+                                kpMap = new wxPdfKernPairMap();
+                            }
+
+                            wxString t1 = param;
+                            wxString t2 = tkz.GetNextToken();
                             param = tkz.GetNextToken(); // Number
-                            param.ToLong(&glyphNumber);
-                            dummy = tkz.GetNextToken(); // Semicolon
-                        }
-                        else if (token.IsSameAs(wxS("B"))) // Character bounding box
-                        {
-                            dummy = tkz.GetNextToken(); // x left
-                            dummy = tkz.GetNextToken(); // y bottom
-                            dummy = tkz.GetNextToken(); // x right
-                            tokenBoxHeight = tkz.GetNextToken(); // y top
-                            tokenBoxHeight.ToLong(&boxHeight);
-                            dummy = tkz.GetNextToken(); // Semicolon
+                            long delta;
+                            param.ToLong(&delta);
+                            wxUint32 u1, u2;
+                            bool g1 = wxPdfEncoding::GlyphName2Unicode(t1, u1);
+                            bool g2 = wxPdfEncoding::GlyphName2Unicode(t2, u2);
 
-                            if (!tokenBoxHeight.IsEmpty())
+                            if (g1 && g2)
                             {
-                                if (!hasCapHeight && !hasXCapHeight && glyphname.IsSameAs(wxS("X")))
+                                wxPdfKernWidthMap * kwMap = NULL;
+                                wxPdfKernPairMap::iterator kp = (*kpMap).find(u1);
+
+                                if (kp == (*kpMap).end())
                                 {
-                                    hasXCapHeight = true;
-                                    fd.SetCapHeight(boxHeight);
+                                    kwMap = new wxPdfKernWidthMap();
+                                    (*kpMap)[u1] = kwMap;
                                 }
-                                if (!hasXHeight && glyphname.IsSameAs(wxS("x")))
+                                else
                                 {
-                                    hasXHeight = true;
-                                    fd.SetXHeight(boxHeight);
+                                    kwMap = kp->second;
                                 }
-                            }
-                        }
-                        else
-                        {
-                            while (tkz.HasMoreTokens() && tkz.GetNextToken() != wxS(";"))
-                            {
+
+                                (*kwMap)[u2] = delta;
                             }
                         }
                     }
-                }
-                else if (code.IsSameAs(wxS("EndCharMetrics")))
-                {
-                    inMetrics = false;
-                    inKerning = true;
-                }
-            }
-            else if (inKerning)
-            {
-                if (code.IsSameAs(wxS("KPX")))
-                {
-                    if (kpMap == NULL)
-                    {
-                        kpMap = new wxPdfKernPairMap();
-                    }
-                    wxString t1 = param;
-                    wxString t2 = tkz.GetNextToken();
-                    param = tkz.GetNextToken(); // Number
-                    long delta;
-                    param.ToLong(&delta);
-
-                    wxUint32 u1, u2;
-                    bool g1 = wxPdfEncoding::GlyphName2Unicode(t1, u1);
-                    bool g2 = wxPdfEncoding::GlyphName2Unicode(t2, u2);
-                    if (g1 && g2)
-                    {
-                        wxPdfKernWidthMap* kwMap = NULL;
-                        wxPdfKernPairMap::iterator kp = (*kpMap).find(u1);
-                        if (kp == (*kpMap).end())
-                        {
-                            kwMap = new wxPdfKernWidthMap();
-                            (*kpMap)[u1] = kwMap;
-                        }
-                        else
-                        {
-                            kwMap = kp->second;
-                        }
-                        (*kwMap)[u2] = delta;
-                    }
-                }
-            }
         }
 
         if (kpMap != NULL)
@@ -643,20 +700,24 @@ wxPdfFontParserType1::ReadAFM(wxInputStream& afmFile)
             // Symbolic font
             flags += 1 << 2;
         }
+
         fd.SetFlags(flags);
 
         if (!hasCapHeight && !hasXCapHeight)
         {
             fd.SetCapHeight(fd.GetAscent());
         }
+
         if (!hasFontBBox)
         {
-            wxString fbb = wxString::Format(wxS("[0 %d 1000 %d]"), fd.GetDescent()-100, fd.GetAscent()+100);
+            wxString fbb = wxString::Format(wxS("[0 %d 1000 %d]"), fd.GetDescent() - 100, fd.GetAscent() + 100);
             fd.SetFontBBox(fbb);
         }
+
         m_fontData->SetDescription(fd);
         ok = true;
     }
+
     return ok;
 }
 
@@ -1114,16 +1175,13 @@ static const wxUint16 gs_winchar_map[256] =
     0x00F8, 0x00F9, 0x00FA, 0x00FB, 0x00FC, 0x00FD, 0x00FE, 0x00FF
 };
 
-bool
-wxPdfFontParserType1::ReadPFM(wxInputStream& pfmFile)
+bool wxPdfFontParserType1::ReadPFM(wxInputStream & pfmFile)
 {
     bool ok = true;
     int len = pfmFile.GetSize();
     wxPdfPfmHeader hdr;
     wxPdfPfmExtension ext;
-
-    wxPdfKernPairMap* kpMap = NULL;
-
+    wxPdfKernPairMap * kpMap = NULL;
     // Read Header
     hdr.vers       = ReadUShortLE(&pfmFile);
     hdr.len        = ReadUIntLE(&pfmFile);
@@ -1174,8 +1232,7 @@ wxPdfFontParserType1::ReadPFM(wxInputStream& pfmFile)
 
     // The mono flag in the pfm actually indicates whether there is a
     // table of font widths, not if they are all the same.
-    bool isMono = (!(hdr.kind & 1) || hdr.avgwidth == hdr.maxwidth );
-
+    bool isMono = (!(hdr.kind & 1) || hdr.avgwidth == hdr.maxwidth);
     // Read extension
     pfmFile.SeekI(hdr.psext);
     ext.len             = ReadUShortLE(&pfmFile);
@@ -1191,20 +1248,18 @@ wxPdfFontParserType1::ReadPFM(wxInputStream& pfmFile)
     ext.subscriptsize   = ReadUShortLE(&pfmFile);
     ext.underlineoffset = ReadUShortLE(&pfmFile);
     ext.underlinewidth  = ReadUShortLE(&pfmFile);
-
     // Initialize font description
     wxPdfFontDescription fd;
-
     // Font name
     pfmFile.SeekI(hdr.fontname);
     wxString fontName = ReadString(pfmFile);
     m_fontData->SetName(fontName);
     wxString fontNameLower = fontName.Lower();
-
     // The .pfm is missing full name, so construct from font name by changing
     // the hyphen to a space.  This actually works in a lot of cases.
     wxString fullName = fontName;
     fullName.Replace(wxS("-"), wxS(" "));
+
     if (hdr.face != 0)
     {
         pfmFile.SeekI(hdr.face);
@@ -1212,29 +1267,27 @@ wxPdfFontParserType1::ReadPFM(wxInputStream& pfmFile)
     }
 
     wxString encodingScheme = (hdr.charset != 0) ? wxString(wxS("FontSpecific")) : wxString(wxS("AdobeStandardEncoding"));
-
     int stemV = (hdr.weight > 475 ||
                  fontNameLower.Find(wxS("bold")) != wxNOT_FOUND ||
                  fontNameLower.Find(wxS("black")) != wxNOT_FOUND)  ? 120 : 80;
     fd.SetStemV(stemV);
-
     int italicAngle = 0;
+
     if (hdr.italic != 0 || fontNameLower.Find(wxS("italic")) != wxNOT_FOUND)
     {
         italicAngle = int(ext.slant / 10);
         // -12.00 - this is a typical value
     }
-    fd.SetItalicAngle(italicAngle);
 
+    fd.SetItalicAngle(italicAngle);
     // The .pfm file does not conatin the font bounding box.
     // The font bounding box is reconstructed by guessing reasonable values.
     int bbox1 = (isMono) ? -20 : -100;
-    int bbox2 = -(ext.descender+5);
-    int bbox3 = hdr.maxwidth+10;
-    int bbox4 = hdr.ascent+5;
+    int bbox2 = -(ext.descender + 5);
+    int bbox3 = hdr.maxwidth + 10;
+    int bbox4 = hdr.ascent + 5;
     wxString bBox = wxString::Format(wxS("[%d %d %d %d]"), bbox1, bbox2, bbox3, bbox4);
     fd.SetFontBBox(bBox);
-
     fd.SetAscent(ext.ascender);
     fd.SetDescent(ext.descender);
     fd.SetCapHeight(ext.capheight);
@@ -1242,12 +1295,13 @@ wxPdfFontParserType1::ReadPFM(wxInputStream& pfmFile)
     fd.SetUnderlinePosition(ext.underlineoffset);
     fd.SetUnderlineThickness(ext.underlinewidth);
     fd.SetMissingWidth(600);
-
     int flags = 0;
+
     if (isMono)
     {
         flags += 1 << 0; // Fixed pitch
     }
+
     if (hdr.charset != 0)
     {
         flags += 1 << 2; // Symbolic font
@@ -1256,19 +1310,19 @@ wxPdfFontParserType1::ReadPFM(wxInputStream& pfmFile)
     {
         flags += 1 << 5; // Non-symbolic font
     }
+
     if (italicAngle > 0)
     {
         flags += 1 << 6; // italic
     }
-    fd.SetFlags(flags);
 
+    fd.SetFlags(flags);
 #if 0
     // Character table
     // currently ignored
     pfmFile.SeekI(hdr.chartab);
     int count = hdr.lastchar - hdr.firstchar + 1;
 #endif
-
     m_fontData->SetDescription(fd);
 
     if (hdr.kernpairs != 0)
@@ -1278,23 +1332,28 @@ wxPdfFontParserType1::ReadPFM(wxInputStream& pfmFile)
         unsigned char code1, code2;
         short delta;
         int k;
+
         for (k = 0; k < count; ++k)
         {
             pfmFile.Read(&code1, 1);
             pfmFile.Read(&code2, 1);
             delta = ReadShortLE(&pfmFile);
+
             if (delta != 0)
             {
                 wxUint32 u1 = (wxUint32) gs_winchar_map[code1];
                 wxUint32 u2 = (wxUint32) gs_winchar_map[code2];
+
                 if (u1 != 0 && u2 != 0)
                 {
                     if (kpMap == NULL)
                     {
                         kpMap = new wxPdfKernPairMap();
                     }
-                    wxPdfKernWidthMap* kwMap = NULL;
+
+                    wxPdfKernWidthMap * kwMap = NULL;
                     wxPdfKernPairMap::iterator kp = (*kpMap).find(u1);
+
                     if (kp == (*kpMap).end())
                     {
                         kwMap = new wxPdfKernWidthMap();
@@ -1304,10 +1363,12 @@ wxPdfFontParserType1::ReadPFM(wxInputStream& pfmFile)
                     {
                         kwMap = kp->second;
                     }
+
                     (*kwMap)[u2] = delta;
                 }
             }
         }
+
         if (kpMap != NULL)
         {
             m_fontData->SetKernPairMap(kpMap);
@@ -1319,20 +1380,22 @@ wxPdfFontParserType1::ReadPFM(wxInputStream& pfmFile)
 
 // -- Parse Postscript font (PFA or PFB plus AFM or PFM) ---
 
-bool
-wxPdfFontParserType1::ReadPFX(wxInputStream* pfxFile, bool onlyNames)
+bool wxPdfFontParserType1::ReadPFX(wxInputStream * pfxFile, bool onlyNames)
 {
     int start;
     int length;
     bool ok = CheckType1Format(pfxFile, start, length);
+
     if (ok)
     {
         m_skipArray = true;
         ok = ParseDict(pfxFile, start, length, onlyNames);
+
         if (ok && !onlyNames)
         {
-            start = (m_isPFB) ? start+length : 0;
+            start = (m_isPFB) ? start + length : 0;
             ok = GetPrivateDict(pfxFile, start);
+
             if (ok)
             {
                 m_glyphWidthMap = new wxPdfFontType1GlyphWidthMap();
@@ -1341,17 +1404,18 @@ wxPdfFontParserType1::ReadPFX(wxInputStream* pfxFile, bool onlyNames)
             }
         }
     }
+
     return ok;
 }
 
-bool
-wxPdfFontParserType1::CheckType1Format(wxInputStream* stream, int& start, int& length)
+bool wxPdfFontParserType1::CheckType1Format(wxInputStream * stream, int & start, int & length)
 {
     // Check for PFB or PFA file format
     int limit = (int) stream->GetSize();
     unsigned char blocktype;
     SeekI(0, stream);
     m_isPFB = ReadPfbTag(stream, blocktype, length);
+
     if (!m_isPFB)
     {
         // Assume PFA file format
@@ -1363,55 +1427,61 @@ wxPdfFontParserType1::CheckType1Format(wxInputStream* stream, int& start, int& l
     start = TellI(stream);
     wxString str = ReadString(14, stream);
     bool ok = str.IsSameAs(wxS("%!PS-AdobeFont"));
+
     if (!ok)
     {
         SeekI(start, stream);
         str = ReadString(10, stream);
         ok = str.IsSameAs(wxS("%!FontType"));
     }
+
     if (ok)
     {
         // Is stream size large enough?
-        ok = (start+length <= limit);
+        ok = (start + length <= limit);
     }
+
     stream->SeekI(start);
     return ok;
 }
 
-bool
-wxPdfFontParserType1::GetPrivateDict(wxInputStream* stream, int start)
+bool wxPdfFontParserType1::GetPrivateDict(wxInputStream * stream, int start)
 {
     bool ok = false;
     wxMemoryOutputStream privateDict;
-    wxMemoryOutputStream* eexecStream = new wxMemoryOutputStream();
+    wxMemoryOutputStream * eexecStream = new wxMemoryOutputStream();
     stream->SeekI(start);
+
     if (m_isPFB)
     {
         // The private dictionary can be made of several segments
         // All binary segements are read in and concatenated
         unsigned char blocktype;
         int length;
+
         do
         {
             ok = ReadPfbTag(stream, blocktype, length);
+
             if (ok && blocktype == PFB_BLOCK_BINARY)
             {
-                char* buf = new char[length];
+                char * buf = new char[length];
                 stream->Read(buf, length);
                 eexecStream->Write(buf, length);
                 delete [] buf;
             }
-        }
-        while (ok && blocktype == PFB_BLOCK_BINARY);
+        } while (ok && blocktype == PFB_BLOCK_BINARY);
     }
     else
     {
         bool found = false;
         wxString token = wxEmptyString;
         int limit = (int) stream->GetSize();
-        while(!found && stream->TellI() < limit)
+
+        while (!found && stream->TellI() < limit)
         {
             token = GetToken(stream);
+
             if (token.IsSameAs(wxS("eexec")))
             {
                 found = true;
@@ -1421,18 +1491,22 @@ wxPdfFontParserType1::GetPrivateDict(wxInputStream* stream, int start)
                 SkipToNextToken(stream);
             }
         }
+
         if (found)
         {
             char ch = stream->GetC();
+
             if (ch == '\r' || ch == '\n')
             {
                 if (ch == '\r' && stream->Peek() == '\n')
                 {
                     ch = stream->GetC();
                 }
+
                 int offset = stream->TellI();
                 char prefix[4];
-                stream->Read(prefix,4);
+                stream->Read(prefix, 4);
+
                 if (IsHexDigit(prefix[0]) && IsHexDigit(prefix[1]) &&
                         IsHexDigit(prefix[2]) && IsHexDigit(prefix[3]))
                 {
@@ -1444,6 +1518,7 @@ wxPdfFontParserType1::GetPrivateDict(wxInputStream* stream, int start)
                     stream->SeekI(offset);
                     eexecStream->Write(*stream);
                 }
+
                 ok = true;
             }
             else
@@ -1452,6 +1527,7 @@ wxPdfFontParserType1::GetPrivateDict(wxInputStream* stream, int start)
             }
         }
     }
+
     if (ok && eexecStream->GetSize() > 0)
     {
         // decrypt the encoded binary private dictionary
@@ -1465,38 +1541,54 @@ wxPdfFontParserType1::GetPrivateDict(wxInputStream* stream, int start)
         pfbPrivateDict.Close();
 #endif
     }
+
     return ok;
 }
 
-bool
-wxPdfFontParserType1::IsHexDigit(char digit)
+bool wxPdfFontParserType1::IsHexDigit(char digit)
 {
     return ('0' <= digit && digit <= '9') || ('A' <= digit && digit <= 'F') || ('a' <= digit && digit <= 'f');
 }
 
-void
-wxPdfFontParserType1::DecodeHex(wxInputStream* inStream, wxOutputStream* outStream)
+void wxPdfFontParserType1::DecodeHex(wxInputStream * inStream, wxOutputStream * outStream)
 {
     char ic, oc;
     char value = 0;
     int limit = (int) inStream->GetSize();
     bool ok = true;
     bool second = false;
+
     while (ok && inStream->TellI() < limit)
     {
         ic = inStream->GetC();
+
         if (ic == ' '  || ic == '\r' || ic == '\n' ||
-                ic == '\t' || ic == '\f' || ic == '\0' )
-            continue;
-        if      ('0' <= ic && ic <= '9') value = ic - '0';
-        else if ('A' <= ic && ic <= 'F') value = ic - 'A' + 10;
-        else if ('a' <= ic && ic <= 'f') value = ic - 'a' + 10;
-        else
+                ic == '\t' || ic == '\f' || ic == '\0')
         {
-            // Invalid character encountered
-            ok = false;
-            break;
+            continue;
         }
+
+        if ('0' <= ic && ic <= '9')
+        {
+            value = ic - '0';
+        }
+        else
+            if ('A' <= ic && ic <= 'F')
+            {
+                value = ic - 'A' + 10;
+            }
+            else
+                if ('a' <= ic && ic <= 'f')
+                {
+                    value = ic - 'a' + 10;
+                }
+                else
+                {
+                    // Invalid character encountered
+                    ok = false;
+                    break;
+                }
+
         if (!second)
         {
             oc = (value & 0x0f) << 4;
@@ -1506,16 +1598,17 @@ wxPdfFontParserType1::DecodeHex(wxInputStream* inStream, wxOutputStream* outStre
             oc |= (value & 0x0f);
             outStream->Write(&oc, 1);
         }
+
         second = !second;
     }
+
     if (ok && second)
     {
         outStream->Write(&oc, 1);
     }
 }
 
-void
-wxPdfFontParserType1::DecodeEExec(wxMemoryOutputStream* eexecStream, wxOutputStream* outStream, unsigned short seed, int lenIV)
+void wxPdfFontParserType1::DecodeEExec(wxMemoryOutputStream * eexecStream, wxOutputStream * outStream, unsigned short seed, int lenIV)
 {
     wxMemoryInputStream inStream(*eexecStream);
     int limit = (int) inStream.GetSize();
@@ -1523,11 +1616,13 @@ wxPdfFontParserType1::DecodeEExec(wxMemoryOutputStream* eexecStream, wxOutputStr
     unsigned int val;
     char b;
     int j;
+
     for (j = 0; j < limit; j++)
     {
         val = (unsigned int) inStream.GetC();
         b   = (val ^ (s >> 8)) & 0xff;
-        s         = ((val + s)*52845U + 22719) & 0xFFFFU;
+        s         = ((val + s) * 52845U + 22719) & 0xFFFFU;
+
         // ignore the four random bytes at the beginning
         if (j >= lenIV)
         {
@@ -1536,25 +1631,25 @@ wxPdfFontParserType1::DecodeEExec(wxMemoryOutputStream* eexecStream, wxOutputStr
     }
 }
 
-bool
-wxPdfFontParserType1::ReadPfbTag(wxInputStream* stream, unsigned char& blocktype, int& blocksize)
+bool wxPdfFontParserType1::ReadPfbTag(wxInputStream * stream, unsigned char & blocktype, int & blocksize)
 {
     bool ok = false;
     blocktype = 0;
     blocksize = 0;
     unsigned char b1 = ReadByte(stream);
     unsigned char b2 = ReadByte(stream);
+
     if (b1 == PFB_BLOCK_MARKER && (b2 == PFB_BLOCK_ASCII || b2 == PFB_BLOCK_BINARY))
     {
         blocktype = b2;
         blocksize = (int) ReadUIntLE(stream);
         ok = true;
     }
+
     return ok;
 }
 
-void
-wxPdfFontParserType1::CheckRestrictions(long fsType)
+void wxPdfFontParserType1::CheckRestrictions(long fsType)
 {
     bool rl = (fsType & 0x0002) != 0; // restricted license
     bool pp = (fsType & 0x0004) != 0; // preview and print embedding
@@ -1565,21 +1660,25 @@ wxPdfFontParserType1::CheckRestrictions(long fsType)
     m_subsetAllowed = !ns;
 }
 
-void
-wxPdfFontParserType1::SkipComment(wxInputStream* stream)
+void wxPdfFontParserType1::SkipComment(wxInputStream * stream)
 {
     unsigned char ch = ReadByte(stream);
+
     while (!stream->Eof())
     {
-        if (ch == '\r' || ch == '\n') break;
+        if (ch == '\r' || ch == '\n')
+        {
+            break;
+        }
+
         ch = ReadByte(stream);
     }
 }
 
-void
-wxPdfFontParserType1::SkipSpaces(wxInputStream* stream)
+void wxPdfFontParserType1::SkipSpaces(wxInputStream * stream)
 {
     char ch = (char) ReadByte(stream);
+
     while (!stream->Eof())
     {
         if (!(ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t' || ch == '\f' || ch == '\0'))
@@ -1603,13 +1702,13 @@ wxPdfFontParserType1::SkipSpaces(wxInputStream* stream)
     }
 }
 
-void
-wxPdfFontParserType1::SkipLiteralString(wxInputStream* stream)
+void wxPdfFontParserType1::SkipLiteralString(wxInputStream * stream)
 {
     // first character must be `('
     int embed = 1;
     int j;
     char ch = (char) ReadByte(stream);
+
     while (!stream->Eof())
     {
         if (ch == '\\')
@@ -1620,53 +1719,69 @@ wxPdfFontParserType1::SkipLiteralString(wxInputStream* stream)
             /*   - a special escaped char like \r, \n, etc.                 */
             /*   - a one-, two-, or three-digit octal number                */
             /*   - none of the above in which case the backslash is ignored */
-
             ch = (char) ReadByte(stream);
-            if (stream->Eof()) break;
-            switch (ch)
-            {
-            /* skip `special' escape */
-            case 'n':
-            case 'r':
-            case 't':
-            case 'b':
-            case 'f':
-            case '\\':
-            case '(':
-            case ')':
-                ch = (char) ReadByte(stream);
-                break;
 
-            default:
-                /* skip octal escape or ignore backslash */
-                for (j = 0; j < 3 && !stream->Eof(); ++j)
-                {
-                    if (!('0' <= ch && ch <= '7')) break;
-                    ch = (char) ReadByte(stream);
-                }
+            if (stream->Eof())
+            {
                 break;
             }
-        }
-        else if (ch == '(')
-        {
-            embed++;
-            ch = (char) ReadByte(stream);
-        }
-        else if (ch == ')')
-        {
-            embed--;
-            if (embed == 0) break;
-            ch = (char) ReadByte(stream);
+
+            switch (ch)
+            {
+                /* skip `special' escape */
+                case 'n':
+                case 'r':
+                case 't':
+                case 'b':
+                case 'f':
+                case '\\':
+                case '(':
+                case ')':
+                    ch = (char) ReadByte(stream);
+                    break;
+
+                default:
+
+                    /* skip octal escape or ignore backslash */
+                    for (j = 0; j < 3 && !stream->Eof(); ++j)
+                    {
+                        if (!('0' <= ch && ch <= '7'))
+                        {
+                            break;
+                        }
+
+                        ch = (char) ReadByte(stream);
+                    }
+
+                    break;
+            }
         }
         else
-        {
-            ch = (char) ReadByte(stream);
-        }
+            if (ch == '(')
+            {
+                embed++;
+                ch = (char) ReadByte(stream);
+            }
+            else
+                if (ch == ')')
+                {
+                    embed--;
+
+                    if (embed == 0)
+                    {
+                        break;
+                    }
+
+                    ch = (char) ReadByte(stream);
+                }
+                else
+                {
+                    ch = (char) ReadByte(stream);
+                }
     }
 }
 
-wxString
-wxPdfFontParserType1::GetLiteralString(wxInputStream* stream)
+wxString wxPdfFontParserType1::GetLiteralString(wxInputStream * stream)
 {
     wxString literalString;
     SkipSpaces(stream);
@@ -1674,6 +1789,7 @@ wxPdfFontParserType1::GetLiteralString(wxInputStream* stream)
     int embed = 0;
     int j;
     unsigned char ch = ReadByte(stream);
+
     while (!stream->Eof())
     {
         if (ch == '\\')
@@ -1684,78 +1800,101 @@ wxPdfFontParserType1::GetLiteralString(wxInputStream* stream)
             /*   - a special escaped char like \r, \n, etc.                 */
             /*   - a one-, two-, or three-digit octal number                */
             /*   - none of the above in which case the backslash is ignored */
-
             ch = ReadByte(stream);
-            if (stream->Eof()) break;
+
+            if (stream->Eof())
+            {
+                break;
+            }
+
             switch (ch)
             {
-            /* skip `special' escape */
-            case 'n':
-                literalString.Append(wxS("\n"));
-                ch = ReadByte(stream);
-                break;
-            case 'r':
-                literalString.Append(wxS("\r"));
-                ch = ReadByte(stream);
-                break;
-            case 't':
-                literalString.Append(wxS("\t"));
-                ch = ReadByte(stream);
-                break;
-            case 'b':
-                literalString.Append(wxS("\b"));
-                ch = ReadByte(stream);
-                break;
-            case 'f':
-                literalString.Append(wxS("\f"));
-                ch = ReadByte(stream);
-                break;
-            case '\\':
-            case '(':
-            case ')':
-                literalString.Append(wxUniChar((unsigned int) ch));
-                ch = ReadByte(stream);
-                break;
-
-            default:
-                /* skip octal escape or ignore backslash */
-                int value = 0;
-                for (j = 0; j < 3 && !stream->Eof(); ++j)
-                {
-                    if (!('0' <= ch && ch <= '7')) break;
-                    value = value * 8 + (ch - '0');
+                /* skip `special' escape */
+                case 'n':
+                    literalString.Append(wxS("\n"));
                     ch = ReadByte(stream);
-                }
-                literalString.Append(wxUniChar(value));
-                break;
+                    break;
+
+                case 'r':
+                    literalString.Append(wxS("\r"));
+                    ch = ReadByte(stream);
+                    break;
+
+                case 't':
+                    literalString.Append(wxS("\t"));
+                    ch = ReadByte(stream);
+                    break;
+
+                case 'b':
+                    literalString.Append(wxS("\b"));
+                    ch = ReadByte(stream);
+                    break;
+
+                case 'f':
+                    literalString.Append(wxS("\f"));
+                    ch = ReadByte(stream);
+                    break;
+
+                case '\\':
+                case '(':
+                case ')':
+                    literalString.Append(wxUniChar((unsigned int) ch));
+                    ch = ReadByte(stream);
+                    break;
+
+                default:
+                    /* skip octal escape or ignore backslash */
+                    int value = 0;
+
+                    for (j = 0; j < 3 && !stream->Eof(); ++j)
+                    {
+                        if (!('0' <= ch && ch <= '7'))
+                        {
+                            break;
+                        }
+
+                        value = value * 8 + (ch - '0');
+                        ch = ReadByte(stream);
+                    }
+
+                    literalString.Append(wxUniChar(value));
+                    break;
             }
-        }
-        else if (ch == '(')
-        {
-            if (embed > 0)
-            {
-                literalString.Append(wxUniChar((unsigned int) ch));
-            }
-            embed++;
-            ch = ReadByte(stream);
-        }
-        else if (ch == ')')
-        {
-            embed--;
-            if (embed == 0) break;
-            ch = ReadByte(stream);
         }
         else
-        {
-            literalString.Append(wxUniChar((unsigned int) ch));
-            ch = ReadByte(stream);
-        }
+            if (ch == '(')
+            {
+                if (embed > 0)
+                {
+                    literalString.Append(wxUniChar((unsigned int) ch));
+                }
+
+                embed++;
+                ch = ReadByte(stream);
+            }
+            else
+                if (ch == ')')
+                {
+                    embed--;
+
+                    if (embed == 0)
+                    {
+                        break;
+                    }
+
+                    ch = ReadByte(stream);
+                }
+                else
+                {
+                    literalString.Append(wxUniChar((unsigned int) ch));
+                    ch = ReadByte(stream);
+                }
     }
+
     return literalString;
 }
 
-wxString
-wxPdfFontParserType1::GetArray(wxInputStream* stream)
+wxString wxPdfFontParserType1::GetArray(wxInputStream * stream)
 {
     wxString arrayString;
     SkipSpaces(stream);
@@ -1763,6 +1902,7 @@ wxPdfFontParserType1::GetArray(wxInputStream* stream)
     unsigned char ch = ReadByte(stream);
     unsigned char delimBeg = ch;
     unsigned char delimEnd = (ch == '[') ? ']' : '}';
+
     while (!stream->Eof())
     {
         if (ch == delimBeg)
@@ -1771,41 +1911,56 @@ wxPdfFontParserType1::GetArray(wxInputStream* stream)
             {
                 arrayString.Append(wxUniChar((unsigned int) ch));
             }
+
             embed++;
             ch = ReadByte(stream);
         }
-        else if (ch == delimEnd)
-        {
-            embed--;
-            if (embed == 0) break;
-            arrayString.Append(wxUniChar((unsigned int) ch));
-            ch = ReadByte(stream);
-        }
         else
-        {
-            arrayString.Append(wxUniChar((unsigned int) ch));
-            ch = ReadByte(stream);
-        }
+            if (ch == delimEnd)
+            {
+                embed--;
+
+                if (embed == 0)
+                {
+                    break;
+                }
+
+                arrayString.Append(wxUniChar((unsigned int) ch));
+                ch = ReadByte(stream);
+            }
+            else
+            {
+                arrayString.Append(wxUniChar((unsigned int) ch));
+                ch = ReadByte(stream);
+            }
     }
+
     return arrayString;
 }
 
-void
-wxPdfFontParserType1::SkipString(wxInputStream* stream)
+void wxPdfFontParserType1::SkipString(wxInputStream * stream)
 {
     // first character must be `<'
     char ch = (char) ReadByte(stream);
+
     while (!stream->Eof())
     {
         // All whitespace characters are ignored.
         SkipSpaces(stream);
-        if (stream->Eof()) break;
+
+        if (stream->Eof())
+        {
+            break;
+        }
+
         ch = (char) ReadByte(stream);
-        if (!((ch >= '0' && ch <= '9') || (ch >='A' && ch <='F') || (ch >= 'a' && ch <= 'f')))
+
+        if (!((ch >= '0' && ch <= '9') || (ch >= 'A' && ch <= 'F') || (ch >= 'a' && ch <= 'f')))
         {
             break;
         }
     }
+
     if (!stream->Eof() && ch != '>')
     {
         wxLogError(wxString(wxS("wxPdfFontParserType1::SkipString: ")) +
@@ -1813,47 +1968,54 @@ wxPdfFontParserType1::SkipString(wxInputStream* stream)
     }
 }
 
-void
-wxPdfFontParserType1::SkipProcedure(wxInputStream* stream)
+void wxPdfFontParserType1::SkipProcedure(wxInputStream * stream)
 {
     /* first character must be the opening brace that */
     /* starts the procedure                           */
-
     /* NB: [ and ] need not match:                    */
     /* `/foo {[} def' is a valid PostScript fragment, */
     /* even within a Type1 font                       */
     bool endFound = false;
     int embed = 1;
     char ch = (char) ReadByte(stream);
+
     while (!endFound && !stream->Eof())
     {
         switch (ch)
         {
-        case '{':
-            ++embed;
-            break;
-        case '}':
-            --embed;
-            if (embed == 0)
-            {
-                endFound = true;
-            }
-            break;
-        case '(':
-            SkipLiteralString(stream);
-            break;
-        case '<':
-            SkipString(stream);
-            break;
-        case '%':
-            SkipComment(stream);
-            break;
+            case '{':
+                ++embed;
+                break;
+
+            case '}':
+                --embed;
+
+                if (embed == 0)
+                {
+                    endFound = true;
+                }
+
+                break;
+
+            case '(':
+                SkipLiteralString(stream);
+                break;
+
+            case '<':
+                SkipString(stream);
+                break;
+
+            case '%':
+                SkipComment(stream);
+                break;
         }
+
         if (!endFound)
         {
             ch = (char) ReadByte(stream);
         }
     }
+
     if (!endFound)
     {
         wxLogError(wxString(wxS("wxPdfFontParserType1::SkipProcedure: ")) +
@@ -1861,47 +2023,54 @@ wxPdfFontParserType1::SkipProcedure(wxInputStream* stream)
     }
 }
 
-void
-wxPdfFontParserType1::SkipArray(wxInputStream* stream)
+void wxPdfFontParserType1::SkipArray(wxInputStream * stream)
 {
     /* first character must be the opening brace that */
     /* starts the procedure                           */
-
     /* NB: [ and ] need not match:                    */
     /* `/foo {[} def' is a valid PostScript fragment, */
     /* even within a Type1 font                       */
     bool endFound = false;
     int embed = 1;
     char ch = (char) ReadByte(stream);
+
     while (!endFound && !stream->Eof())
     {
         switch (ch)
         {
-        case '[':
-            ++embed;
-            break;
-        case ']':
-            --embed;
-            if (embed == 0)
-            {
-                endFound = true;
-            }
-            break;
-        case '(':
-            SkipLiteralString(stream);
-            break;
-        case '<':
-            SkipString(stream);
-            break;
-        case '%':
-            SkipComment(stream);
-            break;
+            case '[':
+                ++embed;
+                break;
+
+            case ']':
+                --embed;
+
+                if (embed == 0)
+                {
+                    endFound = true;
+                }
+
+                break;
+
+            case '(':
+                SkipLiteralString(stream);
+                break;
+
+            case '<':
+                SkipString(stream);
+                break;
+
+            case '%':
+                SkipComment(stream);
+                break;
         }
+
         if (!endFound)
         {
             ch = (char) ReadByte(stream);
         }
     }
+
     if (!endFound)
     {
         wxLogError(wxString(wxS("wxPdfFontParserType1::SkipArray: ")) +
@@ -1909,70 +2078,81 @@ wxPdfFontParserType1::SkipArray(wxInputStream* stream)
     }
 }
 
-void
-wxPdfFontParserType1::SkipToNextToken(wxInputStream* stream)
+void wxPdfFontParserType1::SkipToNextToken(wxInputStream * stream)
 {
     SkipSpaces(stream);
+
     if (!stream->Eof())
     {
         unsigned char ch = ReadByte(stream);
 
         if (ch == '[')
         {
-            if (m_skipArray) SkipArray(stream);
-        }
-        else if (ch == ']')
-        {
-            //ch = (char) ReadByte(stream);
-        }
-        else if (ch == '{')
-        {
-            SkipProcedure(stream);
-        }
-        else if (ch == '(')
-        {
-            SkipLiteralString(stream);
-        }
-        else if (ch == '<')
-        {
-            ch = stream->Peek();
-            if (!stream->Eof() && ch == '<' )
+            if (m_skipArray)
             {
-                ch = ReadByte(stream);
-            }
-            else
-            {
-                SkipString(stream);
-            }
-        }
-        else if (ch == '>')
-        {
-            ch = ReadByte(stream);
-            if (stream->Eof() || ch != '>' )   /* >> */
-            {
-//      FT_ERROR(( "ps_parser_skip_PS_token: unexpected closing delimiter `>'\n" ));
-                wxLogError(wxString(wxS("wxPdfFontParserType1::SkipToNextToken: ")) +
-                           wxString(_("Invalid File Format")));
+                SkipArray(stream);
             }
         }
         else
-        {
-            stream->SeekI(-1, wxFromCurrent);
-        }
+            if (ch == ']')
+            {
+                //ch = (char) ReadByte(stream);
+            }
+            else
+                if (ch == '{')
+                {
+                    SkipProcedure(stream);
+                }
+                else
+                    if (ch == '(')
+                    {
+                        SkipLiteralString(stream);
+                    }
+                    else
+                        if (ch == '<')
+                        {
+                            ch = stream->Peek();
+
+                            if (!stream->Eof() && ch == '<')
+                            {
+                                ch = ReadByte(stream);
+                            }
+                            else
+                            {
+                                SkipString(stream);
+                            }
+                        }
+                        else
+                            if (ch == '>')
+                            {
+                                ch = ReadByte(stream);
+
+                                if (stream->Eof() || ch != '>')    /* >> */
+                                {
+                                    //      FT_ERROR(( "ps_parser_skip_PS_token: unexpected closing delimiter `>'\n" ));
+                                    wxLogError(wxString(wxS("wxPdfFontParserType1::SkipToNextToken: ")) +
+                                               wxString(_("Invalid File Format")));
+                                }
+                            }
+                            else
+                            {
+                                stream->SeekI(-1, wxFromCurrent);
+                            }
     }
 }
 
-wxString
-wxPdfFontParserType1::GetToken(wxInputStream* stream)
+wxString wxPdfFontParserType1::GetToken(wxInputStream * stream)
 {
     wxString str = wxEmptyString;
     SkipSpaces(stream);
     unsigned char ch = ReadByte(stream);
+
     if (ch == '/')
     {
         str.Append(wxUniChar((unsigned int) ch));
         ch = ReadByte(stream);
     }
+
     while (!stream->Eof())
     {
         if (ch == ' '  || ch == '\r' || ch == '\n' ||
@@ -1982,7 +2162,7 @@ wxPdfFontParserType1::GetToken(wxInputStream* stream)
                 ch == ']'  || ch == '{'  || ch == '}'  ||
                 ch == '%')
         {
-            if (str.IsEmpty() && (ch == '[' || ch == ']' /* || ch == '{' || ch == '}' */ ))
+            if (str.IsEmpty() && (ch == '[' || ch == ']' /* || ch == '{' || ch == '}' */))
             {
                 str.Append(wxUniChar((unsigned int) ch));
             }
@@ -1990,16 +2170,18 @@ wxPdfFontParserType1::GetToken(wxInputStream* stream)
             {
                 stream->SeekI(-1, wxFromCurrent);
             }
+
             break;
         }
+
         str.Append(wxUniChar((unsigned int) ch));
         ch = ReadByte(stream);
     }
+
     return str;
 }
 
-bool
-wxPdfFontParserType1::ParseDict(wxInputStream* stream, int start, int length, bool onlyNames)
+bool wxPdfFontParserType1::ParseDict(wxInputStream * stream, int start, int length, bool onlyNames)
 {
 #if 0
     // Currently not used
@@ -2018,9 +2200,11 @@ wxPdfFontParserType1::ParseDict(wxInputStream* stream, int start, int length, bo
     long intValue = 0;
     int limit = start + length;
     stream->SeekI(start);
+
     while (!ready && stream->TellI() < limit)
     {
         wxString token = GetToken(stream);
+
         // Check for the keywords 'eexec' or 'closefile',
         // either of those terminates a section
         if (token.IsSameAs(wxS("eexec")) ||
@@ -2028,182 +2212,210 @@ wxPdfFontParserType1::ParseDict(wxInputStream* stream, int start, int length, bo
         {
             break;
         }
-        else if (token.IsSameAs(wxS("FontDirectory")))
-        {
-            // Check whether the keyword 'FontDictionary' occurred after a Private
-            // dictionary (in that case only the charstrings are taken from the
-            // base font of a synthetic font
-            if (m_privateFound) m_fontDirAfterPrivate = true;
-        }
-        else if (!token.IsEmpty() && token.GetChar(0) >= wxS('0') && token.GetChar(0) <= wxS('9'))
-        {
-            // The token is an integer
-            token.ToLong(&intValue);
-            haveInteger = true;
-        }
-        else if ((token.StartsWith(wxS("RD")) || token.StartsWith(wxS("-|"))) && haveInteger )
-        {
-            // The keywords 'RD' or '-|' are not encountered directly in valid fonts,
-            // since they are handled by one of the methods ParseSubrs and ParseCharStrings
-            stream->SeekI(intValue+1, wxFromCurrent);
-            haveInteger = false;
-        }
-        else if (!token.IsEmpty() && token.GetChar(0) == wxS('/'))
-        {
-            // Parse keyword value pairs
-            wxString param;
-            if (!m_privateFound)
+        else
+            if (token.IsSameAs(wxS("FontDirectory")))
             {
-                if (token.IsSameAs(wxS("/FontMatrix")))
+                // Check whether the keyword 'FontDictionary' occurred after a Private
+                // dictionary (in that case only the charstrings are taken from the
+                // base font of a synthetic font
+                if (m_privateFound)
                 {
-                    ParseFontMatrix(stream);
-                }
-                else if (token.IsSameAs(wxS("/Encoding")))
-                {
-                    ParseEncoding(stream);
-                }
-                else if (token.IsSameAs(wxS("/Private")))
-                {
-                    m_privateFound = true;
-                }
-                else if (token.IsSameAs(wxS("/FontName")))
-                {
-                    hasFontName = true;
-                    param = GetToken(stream);
-                    m_fontData->SetName(param.substr(1));
-                }
-                else if (token.IsSameAs(wxS("/FullName")))
-                {
-                    hasFullName = true;
-                    param = GetLiteralString(stream);
-                    wxArrayString fullNames;
-                    fullNames.Add(param);
-                    m_fontData->SetFullNames(fullNames);
-                }
-                else if (token.IsSameAs(wxS("/FamilyName")))
-                {
-                    hasFamilyName = true;
-                    param = GetLiteralString(stream);
-                    m_fontData->SetFamily(param);
-                }
-                else if (token.IsSameAs(wxS("/Weight")))
-                {
-                    hasWeight = true;
-                    param = GetLiteralString(stream);
-                    m_fontData->SetStyle(param);
-                }
-
-#if 0
-                // For now most parameters are read from the metric file
-                else if (token.IsSameAs(wxS("/ItalicAngle")))
-                {
-                    param = GetToken(stream);
-                    double italic = wxPdfUtility::String2Double(param);
-                    int italicAngle = int(italic);
-                    m_fontDesc.SetItalicAngle(italicAngle);
-                    if (italicAngle > 0)
-                    {
-                        flags += 1 << 6;
-                    }
-                }
-                else if (token.IsSameAs(wxS("/isFixedPitch")))
-                {
-                    param = GetToken(stream);
-                    if (param.IsSameAs(wxS("true")))
-                    {
-                        flags += 1 << 0;
-                    }
-                }
-                else if (token.IsSameAs(wxS("/UnderlinePosition")))
-                {
-                    param = GetToken(stream);
-                    long nParam;
-                    param.ToLong(&nParam);
-                    m_fontDesc.SetUnderlinePosition(nParam);
-                }
-                else if (token.IsSameAs(wxS("/UnderlineThickness")))
-                {
-                    param = GetToken(stream);
-                    long nParam;
-                    param.ToLong(&nParam);
-                    m_fontDesc.SetUnderlineThickness(nParam);
-                }
-#endif
-                else if (token.IsSameAs(wxS("/FSType")))
-                {
-                    hasFSType = true;
-                    param = GetToken(stream);
-                    long fsType = 0;
-                    param.ToLong(&fsType);
-                    CheckRestrictions(fsType);
-                    m_fontData->SetEmbedSupported(m_embedAllowed);
-// TODO: Support subsetting for Type1
-//          fontData->SetSubsetSupported(m_subsetAllowed);
-// For now subsetting is not supported for Type1 fonts,
-// so set the font data flag to 'false'
-                    m_fontData->SetSubsetSupported(false);
-                }
-                else if (token.IsSameAs(wxS("/FontBBox")))
-                {
-                    if (!hasFontBBox)
-                    {
-                        param = GetArray(stream);
-                        if (param.Find(wxS('{')) == wxNOT_FOUND &&
-                                param.Find(wxS('[')) == wxNOT_FOUND)
-                        {
-                            hasFontBBox = true;
-                            m_fontDesc.SetFontBBox(wxString(wxS("["))+param+wxString(wxS("]")));
-                        }
-                    }
-                    else
-                    {
-                        SkipToNextToken(stream);
-                    }
-                }
-                else
-                {
-                    SkipToNextToken(stream);
+                    m_fontDirAfterPrivate = true;
                 }
             }
             else
-            {
-                // If the keyword 'FontDirectory' is encountered after the keyword
-                // '/Private', the font file represents a synthetic font and all
-                // keywords except '/CharStrings' are ignored
-                if (token.IsSameAs(wxS("/CharStrings")))
+                if (!token.IsEmpty() && token.GetChar(0) >= wxS('0') && token.GetChar(0) <= wxS('9'))
                 {
-                    ParseCharStrings(stream);
-                }
-                else if (!m_fontDirAfterPrivate)
-                {
-                    if (token.IsSameAs(wxS("/Subrs")))
-                    {
-                        ParseSubrs(stream);
-                    }
-                    else if (token.IsSameAs(wxS("/lenIV")))
-                    {
-                        param = GetToken(stream);
-                        long lenIV;
-                        param.ToLong(&lenIV);
-                        // maybe the keyword 'password' should be read. too
-                    }
-                    else
-                    {
-                        SkipToNextToken(stream);
-                    }
+                    // The token is an integer
+                    token.ToLong(&intValue);
+                    haveInteger = true;
                 }
                 else
-                {
-                    SkipToNextToken(stream);
-                }
-            }
-            haveInteger = false;
-        }
-        else
-        {
-            SkipToNextToken(stream);
-            haveInteger = false;
-        }
+                    if ((token.StartsWith(wxS("RD")) || token.StartsWith(wxS("-|"))) && haveInteger)
+                    {
+                        // The keywords 'RD' or '-|' are not encountered directly in valid fonts,
+                        // since they are handled by one of the methods ParseSubrs and ParseCharStrings
+                        stream->SeekI(intValue + 1, wxFromCurrent);
+                        haveInteger = false;
+                    }
+                    else
+                        if (!token.IsEmpty() && token.GetChar(0) == wxS('/'))
+                        {
+                            // Parse keyword value pairs
+                            wxString param;
+
+                            if (!m_privateFound)
+                            {
+                                if (token.IsSameAs(wxS("/FontMatrix")))
+                                {
+                                    ParseFontMatrix(stream);
+                                }
+                                else
+                                    if (token.IsSameAs(wxS("/Encoding")))
+                                    {
+                                        ParseEncoding(stream);
+                                    }
+                                    else
+                                        if (token.IsSameAs(wxS("/Private")))
+                                        {
+                                            m_privateFound = true;
+                                        }
+                                        else
+                                            if (token.IsSameAs(wxS("/FontName")))
+                                            {
+                                                hasFontName = true;
+                                                param = GetToken(stream);
+                                                m_fontData->SetName(param.substr(1));
+                                            }
+                                            else
+                                                if (token.IsSameAs(wxS("/FullName")))
+                                                {
+                                                    hasFullName = true;
+                                                    param = GetLiteralString(stream);
+                                                    wxArrayString fullNames;
+                                                    fullNames.Add(param);
+                                                    m_fontData->SetFullNames(fullNames);
+                                                }
+                                                else
+                                                    if (token.IsSameAs(wxS("/FamilyName")))
+                                                    {
+                                                        hasFamilyName = true;
+                                                        param = GetLiteralString(stream);
+                                                        m_fontData->SetFamily(param);
+                                                    }
+                                                    else
+                                                        if (token.IsSameAs(wxS("/Weight")))
+                                                        {
+                                                            hasWeight = true;
+                                                            param = GetLiteralString(stream);
+                                                            m_fontData->SetStyle(param);
+                                                        }
+
+#if 0
+                                                        // For now most parameters are read from the metric file
+                                                        else
+                                                            if (token.IsSameAs(wxS("/ItalicAngle")))
+                                                            {
+                                                                param = GetToken(stream);
+                                                                double italic = wxPdfUtility::String2Double(param);
+                                                                int italicAngle = int(italic);
+                                                                m_fontDesc.SetItalicAngle(italicAngle);
+
+                                                                if (italicAngle > 0)
+                                                                {
+                                                                    flags += 1 << 6;
+                                                                }
+                                                            }
+                                                            else
+                                                                if (token.IsSameAs(wxS("/isFixedPitch")))
+                                                                {
+                                                                    param = GetToken(stream);
+
+                                                                    if (param.IsSameAs(wxS("true")))
+                                                                    {
+                                                                        flags += 1 << 0;
+                                                                    }
+                                                                }
+                                                                else
+                                                                    if (token.IsSameAs(wxS("/UnderlinePosition")))
+                                                                    {
+                                                                        param = GetToken(stream);
+                                                                        long nParam;
+                                                                        param.ToLong(&nParam);
+                                                                        m_fontDesc.SetUnderlinePosition(nParam);
+                                                                    }
+                                                                    else
+                                                                        if (token.IsSameAs(wxS("/UnderlineThickness")))
+                                                                        {
+                                                                            param = GetToken(stream);
+                                                                            long nParam;
+                                                                            param.ToLong(&nParam);
+                                                                            m_fontDesc.SetUnderlineThickness(nParam);
+                                                                        }
+
+#endif
+                                                                        else
+                                                                            if (token.IsSameAs(wxS("/FSType")))
+                                                                            {
+                                                                                hasFSType = true;
+                                                                                param = GetToken(stream);
+                                                                                long fsType = 0;
+                                                                                param.ToLong(&fsType);
+                                                                                CheckRestrictions(fsType);
+                                                                                m_fontData->SetEmbedSupported(m_embedAllowed);
+                                                                                // TODO: Support subsetting for Type1
+                                                                                //          fontData->SetSubsetSupported(m_subsetAllowed);
+                                                                                // For now subsetting is not supported for Type1 fonts,
+                                                                                // so set the font data flag to 'false'
+                                                                                m_fontData->SetSubsetSupported(false);
+                                                                            }
+                                                                            else
+                                                                                if (token.IsSameAs(wxS("/FontBBox")))
+                                                                                {
+                                                                                    if (!hasFontBBox)
+                                                                                    {
+                                                                                        param = GetArray(stream);
+
+                                                                                        if (param.Find(wxS('{')) == wxNOT_FOUND &&
+                                                                                                param.Find(wxS('[')) == wxNOT_FOUND)
+                                                                                        {
+                                                                                            hasFontBBox = true;
+                                                                                            m_fontDesc.SetFontBBox(wxString(wxS("[")) + param + wxString(wxS("]")));
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        SkipToNextToken(stream);
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    SkipToNextToken(stream);
+                                                                                }
+                            }
+                            else
+                            {
+                                // If the keyword 'FontDirectory' is encountered after the keyword
+                                // '/Private', the font file represents a synthetic font and all
+                                // keywords except '/CharStrings' are ignored
+                                if (token.IsSameAs(wxS("/CharStrings")))
+                                {
+                                    ParseCharStrings(stream);
+                                }
+                                else
+                                    if (!m_fontDirAfterPrivate)
+                                    {
+                                        if (token.IsSameAs(wxS("/Subrs")))
+                                        {
+                                            ParseSubrs(stream);
+                                        }
+                                        else
+                                            if (token.IsSameAs(wxS("/lenIV")))
+                                            {
+                                                param = GetToken(stream);
+                                                long lenIV;
+                                                param.ToLong(&lenIV);
+                                                // maybe the keyword 'password' should be read. too
+                                            }
+                                            else
+                                            {
+                                                SkipToNextToken(stream);
+                                            }
+                                    }
+                                    else
+                                    {
+                                        SkipToNextToken(stream);
+                                    }
+                            }
+
+                            haveInteger = false;
+                        }
+                        else
+                        {
+                            SkipToNextToken(stream);
+                            haveInteger = false;
+                        }
+
         ready = onlyNames && hasFontName && hasFamilyName && hasFullName && hasWeight && hasFSType;
     }
 
@@ -2211,11 +2423,11 @@ wxPdfFontParserType1::ParseDict(wxInputStream* stream, int start, int length, bo
     {
         ok = hasFontName;
     }
+
     return ok;
 }
 
-void
-wxPdfFontParserType1::ParseFontMatrix(wxInputStream* stream)
+void wxPdfFontParserType1::ParseFontMatrix(wxInputStream * stream)
 {
     wxString matrix = GetArray(stream);
 #if 0
@@ -2224,6 +2436,7 @@ wxPdfFontParserType1::ParseFontMatrix(wxInputStream* stream)
     int unitsPerEm;
     wxStringTokenizer tkz(matrix, wxS(" "));
     int count = tkz.CountTokens();
+
     if (count == 6)
     {
         double xx = wxPdfUtility::String2Double(tkz.GetNextToken());
@@ -2232,24 +2445,24 @@ wxPdfFontParserType1::ParseFontMatrix(wxInputStream* stream)
         double yy = wxPdfUtility::String2Double(tkz.GetNextToken());
         double xo = wxPdfUtility::String2Double(tkz.GetNextToken());
         double yo = wxPdfUtility::String2Double(tkz.GetNextToken());
-        unitsPerEm = (int) floor((1. / yy)+0.5);
+        unitsPerEm = (int) floor((1. / yy) + 0.5);
     }
     else
     {
         unitPerEm = 1000;
     }
+
 #endif
 }
 
-void
-wxPdfFontParserType1::ParseEncoding(wxInputStream* stream)
+void wxPdfFontParserType1::ParseEncoding(wxInputStream * stream)
 {
     wxString token;
     long count, n, code;
     bool onlyImmediates = false;
-
     SkipSpaces(stream);
     char ch = stream->Peek();
+
     if (('0' <= ch && ch <= '9') || ch == '[')
     {
         // A number or `[' indicates that the encoding is an array
@@ -2265,17 +2478,17 @@ wxPdfFontParserType1::ParseEncoding(wxInputStream* stream)
             token = GetToken(stream);
             token.ToLong(&count);
         }
+
         SkipSpaces(stream);
         // Allocate table with count entries
         m_encodingVector.Alloc(count);
         m_encodingVector.Insert(wxS(".notdef"), 0, count);
-
         // For each entry a record of the form 'charcode /charname' is read,
         // i.e. look for a number followed by an immediate name.
         // If the array is given in the form '/Encoding [ ... ]' read immediates only.
-
         n = 0;
         SkipSpaces(stream);
+
         while (true)
         {
             // Stop when next token is 'def' or ']'
@@ -2283,11 +2496,14 @@ wxPdfFontParserType1::ParseEncoding(wxInputStream* stream)
             {
                 break;
             }
+
             token = GetToken(stream);
+
             if (token.IsSameAs(wxS("def")) || token.IsSameAs(wxS("]")))
             {
                 break;
             }
+
             if ((wxS('0') <= token[0] && token[0] <= wxS('9')) || onlyImmediates)
             {
                 if (onlyImmediates)
@@ -2299,6 +2515,7 @@ wxPdfFontParserType1::ParseEncoding(wxInputStream* stream)
                     token.ToLong(&code);
                     token = GetToken(stream);
                 }
+
                 if (token[0] == wxS('/') && n < count)
                 {
                     m_encodingVector[code] = token;
@@ -2311,6 +2528,7 @@ wxPdfFontParserType1::ParseEncoding(wxInputStream* stream)
                 SkipToNextToken(stream);
             }
         }
+
         m_encoding = wxS("ArrayEncoding");
         m_fontData->SetEncodingType(m_encoding);
         m_fontData->SetEncodingMap(m_encodingVector);
@@ -2318,6 +2536,7 @@ wxPdfFontParserType1::ParseEncoding(wxInputStream* stream)
     else
     {
         token = GetToken(stream);
+
         if (token.IsSameAs(wxS("StandardEncoding"))   ||
                 token.IsSameAs(wxS("ExpertEncoding"))     ||
                 token.IsSameAs(wxS("ISOLatin1Encoding")))
@@ -2328,22 +2547,25 @@ wxPdfFontParserType1::ParseEncoding(wxInputStream* stream)
     }
 }
 
-void
-wxPdfFontParserType1::ParseSubrs(wxInputStream* stream)
+void wxPdfFontParserType1::ParseSubrs(wxInputStream * stream)
 {
     // test for empty array
     wxString token = GetToken(stream);
+
     if (token[0] == wxS('['))
     {
         SkipToNextToken(stream);
         token = GetToken(stream);
+
         if (token[0] != wxS(']'))
         {
             wxLogError(wxString(wxS("wxPdfFontParserType1::ParseSubrs: ")) +
                        wxString(_("Invalid Type1 format")));
         }
+
         return;
     }
+
     long numSubrs, n, subrno;
     token.ToLong(&numSubrs);
     token = GetToken(stream); // 'array'
@@ -2353,6 +2575,7 @@ wxPdfFontParserType1::ParseSubrs(wxInputStream* stream)
     for (n = 0; n < numSubrs; n++)
     {
         token = GetToken(stream);
+
         /* If the next token isn't `dup', we are also done.  This */
         /* happens when there are `holes' in the Subrs array.     */
         if (!token.IsSameAs(wxS("dup")))
@@ -2361,8 +2584,12 @@ wxPdfFontParserType1::ParseSubrs(wxInputStream* stream)
         }
 
         token = GetToken(stream); // subr index
+
         if (token.ToLong(&subrno))
-            token = GetToken(stream); // size
+        {
+            token = GetToken(stream);    // size
+        }
+
         long binarySize;
         token.ToLong(&binarySize);
         token = GetToken(stream);
@@ -2379,6 +2606,7 @@ wxPdfFontParserType1::ParseSubrs(wxInputStream* stream)
                            wxString(_("Invalid Type1 file format")));
                 break;
             }
+
             wxMemoryOutputStream subrDecoded;
             DecodeEExec(&subr, &subrDecoded, 4330, m_lenIV);
             //binarySize -= m_lenIV;
@@ -2390,12 +2618,13 @@ wxPdfFontParserType1::ParseSubrs(wxInputStream* stream)
             m_subrsIndex->Add(wxPdfCffIndexElement(subr));
         }
 
-        stream->SeekI(binaryStart+binarySize);
+        stream->SeekI(binaryStart + binarySize);
         /* The binary string is followed by one token, e.g. `NP' */
         /* (bound to `noaccess put') or by two separate tokens:  */
         /* `noaccess' & `put'.  We position the parser right     */
         /* before the next `dup', if any.                        */
         token = GetToken(stream); // `NP' or `|' or `noaccess'
+
         if (token.IsSameAs(wxS("noaccess")))
         {
             // skip 'put'
@@ -2404,41 +2633,52 @@ wxPdfFontParserType1::ParseSubrs(wxInputStream* stream)
     }
 }
 
-void
-wxPdfFontParserType1::ReadBinary(wxInputStream& inStream, int start, int size, wxOutputStream& outStream)
+void wxPdfFontParserType1::ReadBinary(wxInputStream & inStream, int start, int size, wxOutputStream & outStream)
 {
-    char* buffer = new char[size];
+    char * buffer = new char[size];
     inStream.SeekI(start);
     inStream.Read(buffer, size);
     outStream.Write(buffer, size);
     delete [] buffer;
 }
 
-void
-wxPdfFontParserType1::ParseCharStrings(wxInputStream* stream)
+void wxPdfFontParserType1::ParseCharStrings(wxInputStream * stream)
 {
     long numGlyphs, n;
     wxString token;
-
     token = GetToken(stream);
     token.ToLong(&numGlyphs);
-    if (numGlyphs == 0) return;
+
+    if (numGlyphs == 0)
+    {
+        return;
+    }
 
     wxPdfCffDecoder decoder;
     n = 0;
+
     for (;;)
     {
         // Format of charstrings dictionary entries: '/glyphname' + binary data
         SkipSpaces(stream);
-        if (stream->Eof()) break;
+
+        if (stream->Eof())
+        {
+            break;
+        }
 
         // All charstrings have been read when the keyword `def' or `end' is found
         token = GetToken(stream);
+
         if (token.IsSameAs(wxS("def")))
         {
             // Ignore 'def' if no charstring has been seen yet
-            if (n > 0) break;
+            if (n > 0)
+            {
+                break;
+            }
         }
+
         if (token.IsSameAs(wxS("end")))
         {
             break;
@@ -2449,6 +2689,7 @@ wxPdfFontParserType1::ParseCharStrings(wxInputStream* stream)
             wxString glyphName = token.substr(1);
             token = GetToken(stream);
             long binarySize;
+
             if (token.ToLong(&binarySize))
             {
                 token = GetToken(stream);
@@ -2465,6 +2706,7 @@ wxPdfFontParserType1::ParseCharStrings(wxInputStream* stream)
                                    wxString(_("Invalid Type1 file format")));
                         break;
                     }
+
                     wxMemoryOutputStream charstringDecoded;
                     DecodeEExec(&charstring, &charstringDecoded, 4330, m_lenIV);
                     // skip lenIV bytes
@@ -2475,15 +2717,18 @@ wxPdfFontParserType1::ParseCharStrings(wxInputStream* stream)
                 {
                     m_charStringsIndex->Add(wxPdfCffIndexElement(charstring));
                 }
-                wxPdfCffIndexElement& element = (*m_charStringsIndex).Last();
+
+                wxPdfCffIndexElement & element = (*m_charStringsIndex).Last();
                 int width, bchar, achar;
                 bool isComposite;
                 bool ok = decoder.GetCharWidthAndComposite(element, width, isComposite, bchar, achar);
+
                 if (ok)
                 {
                     (*m_glyphWidthMap)[glyphName] = (wxUint16) width;
                 }
-                stream->SeekI(binaryStart+binarySize);
+
+                stream->SeekI(binaryStart + binarySize);
             }
             else
             {
@@ -2491,13 +2736,13 @@ wxPdfFontParserType1::ParseCharStrings(wxInputStream* stream)
                            wxString(_("Invalid Type1 file format")));
                 break;
             }
+
             n++;
         }
     }
 }
 
-void
-wxPdfFontParserType1::ParsePrivate(wxInputStream* stream)
+void wxPdfFontParserType1::ParsePrivate(wxInputStream * stream)
 {
     wxUnusedVar(stream);
     m_privateFound = true;
@@ -2545,12 +2790,15 @@ static unsigned short crctab[256] =
 
 // Update a CRC check on the given buffer.
 
-static int
-crcbuf(int crc, unsigned int len, const char* buf)
+static int crcbuf(int crc, unsigned int len, const char * buf)
 {
-    const unsigned char *ubuf = (const unsigned char *)buf;
+    const unsigned char * ubuf = (const unsigned char *)buf;
+
     while (len--)
+    {
         crc = ((crc << 8) & 0xFF00) ^ crctab[((crc >> 8) & 0xFF) ^ *ubuf++];
+    }
+
     return crc;
 }
 
@@ -2558,32 +2806,33 @@ crcbuf(int crc, unsigned int len, const char* buf)
 #define APPLEDOUBLE_MAGIC 0x00051607
 #define POST_TYPE         0x504F5354
 
-wxMemoryOutputStream*
-wxPdfFontParserType1::ConvertMACtoPFB(wxInputStream* macFontStream)
+wxMemoryOutputStream * wxPdfFontParserType1::ConvertMACtoPFB(wxInputStream * macFontStream)
 {
-    wxMemoryOutputStream* pfbStream = NULL;
+    wxMemoryOutputStream * pfbStream = NULL;
     bool ok = true;
     m_inFont = macFontStream;
-
     // check magic number
     SeekI(0);
     int magic = ReadInt();
-
     int resourceOffset = -1;
+
     if (magic == APPLESINGLE_MAGIC || magic == APPLEDOUBLE_MAGIC)
     {
         // AppleSingle or AppleDouble file
         int i, n;
         SeekI(24);
         n = ReadShort();
+
         for (i = 0; i < n; ++i)
         {
             int type = ReadInt();
+
             if (type == 0)
             {
                 // bad entry descriptor
                 break;
             }
+
             if (type == 2)
             {
                 // resource fork entry
@@ -2593,92 +2842,95 @@ wxPdfFontParserType1::ConvertMACtoPFB(wxInputStream* macFontStream)
             {
                 ReadInt();
             }
+
             ReadInt();
         }
+
         ok = (resourceOffset >= 0);
     }
-    else if ((magic & 0xFF000000) == 0)
-    {
-        // MacBinary (I or II) file
-
-        // Check "version" bytes at offsets 0 and 74
-        SeekI(0);
-        ok = (ReadByte() == 0);
-        if (ok)
+    else
+        if ((magic & 0xFF000000) == 0)
         {
-            SeekI(74);
-            ok = (ReadByte() == 0);
-        }
-
-        // Check file length
-        if (ok)
-        {
-            SeekI(1);
-            int i = ReadByte();
-            ok = (i >= 0 && i <= 63);
-        }
-        if (ok)
-        {
-            SeekI(83);
-            int i = ReadInt();
-            int j = ReadInt();
-            ok = (i >= 0 && j >= 0 && i < 0x800000 && j < 0x800000);
-        }
-
-        // Check CRC
-        if (ok)
-        {
-            char buf[124];
+            // MacBinary (I or II) file
+            // Check "version" bytes at offsets 0 and 74
             SeekI(0);
-            m_inFont->Read(buf, 124);
-            if (crcbuf(0, 124, buf) != ReadShort())
+            ok = (ReadByte() == 0);
+
+            if (ok)
             {
-                SeekI(82);
+                SeekI(74);
                 ok = (ReadByte() == 0);
             }
-        }
 
-        // Calculate resource offset
-        if (ok)
-        {
-            SeekI(83);
-            int dataForkSize = ReadInt();
-            ReadInt();
-
-            // round data_fork_size up to multiple of 128
-            if (dataForkSize % 128 != 0)
+            // Check file length
+            if (ok)
             {
-                dataForkSize += 128 - dataForkSize % 128;
+                SeekI(1);
+                int i = ReadByte();
+                ok = (i >= 0 && i <= 63);
             }
-            resourceOffset = 128 + dataForkSize;
+
+            if (ok)
+            {
+                SeekI(83);
+                int i = ReadInt();
+                int j = ReadInt();
+                ok = (i >= 0 && j >= 0 && i < 0x800000 && j < 0x800000);
+            }
+
+            // Check CRC
+            if (ok)
+            {
+                char buf[124];
+                SeekI(0);
+                m_inFont->Read(buf, 124);
+
+                if (crcbuf(0, 124, buf) != ReadShort())
+                {
+                    SeekI(82);
+                    ok = (ReadByte() == 0);
+                }
+            }
+
+            // Calculate resource offset
+            if (ok)
+            {
+                SeekI(83);
+                int dataForkSize = ReadInt();
+                ReadInt();
+
+                // round data_fork_size up to multiple of 128
+                if (dataForkSize % 128 != 0)
+                {
+                    dataForkSize += 128 - dataForkSize % 128;
+                }
+
+                resourceOffset = 128 + dataForkSize;
+            }
         }
-    }
-    else
-    {
-        ok = false;
-    }
+        else
+        {
+            ok = false;
+        }
 
     if (ok)
     {
         pfbStream = new wxMemoryOutputStream();
         int resourceDataOffset, resourceMapOffset, typeListOffset;
-
         // read offsets from resource fork header
         SeekI(resourceOffset);
         resourceDataOffset = resourceOffset + ReadInt();
         resourceMapOffset = resourceOffset + ReadInt();
-
         // read type list offset from resource map header
         SeekI(resourceMapOffset + 24);
         typeListOffset = resourceMapOffset + ReadShort();
-
         // read type list
         SeekI(typeListOffset);
         int numTypes = ReadShort() + 1;
-
-        wxMemoryOutputStream* currentBlock = NULL;
+        wxMemoryOutputStream * currentBlock = NULL;
         unsigned char lastBlockType = 0xFF;
         int numExtracted = 0;
+
         // find POST type
         while (numTypes--)
         {
@@ -2690,12 +2942,14 @@ wxPdfFontParserType1::ConvertMACtoPFB(wxInputStream* macFontStream)
                 int idWanted = 501;
                 bool secondTime = true;
                 SeekI(listOffset);
+
                 // Read resources sequentially, starting with ID 501
                 // until "end" resource or no next resource is found
                 while (posResource < nResource)
                 {
                     int offset = TellI();
                     int id = ReadShort();
+
                     if (id == idWanted)
                     {
                         ReadShort();
@@ -2705,7 +2959,6 @@ wxPdfFontParserType1::ConvertMACtoPFB(wxInputStream* macFontStream)
                         unsigned char b2 = ReadByte();
                         unsigned char b3 = ReadByte();
                         int relOffset = (b1 << 16) | (b2 << 8) | b3;
-
                         SeekI(resourceDataOffset + relOffset);
                         int blockLen = ReadInt() - 2;   // subtract type field
                         unsigned char blockType = ReadByte();
@@ -2714,6 +2967,7 @@ wxPdfFontParserType1::ConvertMACtoPFB(wxInputStream* macFontStream)
                         if (blockType != lastBlockType)
                         {
                             unsigned char b;
+
                             if (currentBlock != NULL)
                             {
                                 wxMemoryInputStream block(*currentBlock);
@@ -2736,6 +2990,7 @@ wxPdfFontParserType1::ConvertMACtoPFB(wxInputStream* macFontStream)
                                 pfbStream->Write(block);
                                 delete currentBlock;
                             }
+
                             if (blockType != PFB_BLOCK_END)
                             {
                                 currentBlock = new wxMemoryOutputStream();
@@ -2748,8 +3003,10 @@ wxPdfFontParserType1::ConvertMACtoPFB(wxInputStream* macFontStream)
                                 pfbStream->Write(&b, 1);
                                 currentBlock = NULL;
                             }
+
                             lastBlockType = blockType;
                         }
+
                         if (blockType != PFB_BLOCK_END)
                         {
                             ReadBinary(*m_inFont, TellI(), blockLen, *currentBlock);
@@ -2762,14 +3019,17 @@ wxPdfFontParserType1::ConvertMACtoPFB(wxInputStream* macFontStream)
                         secondTime = false;
                         ++idWanted;
                     }
+
                     SeekI(offset + 12);
                     posResource++;
+
                     if (posResource >= nResource && !secondTime)
                     {
                         SeekI(listOffset);
                         posResource = 0;
                     }
                 }
+
                 break;
             }
             else
@@ -2778,10 +3038,12 @@ wxPdfFontParserType1::ConvertMACtoPFB(wxInputStream* macFontStream)
                 ReadShort();
             }
         }
+
         if (numExtracted == 0)
         {
         }
     }
+
     return pfbStream;
 }
 

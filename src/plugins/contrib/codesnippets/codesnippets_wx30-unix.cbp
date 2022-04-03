@@ -3,7 +3,6 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="CodeSnippets wx3.0.x (Unix)" />
-		<Option pch_mode="2" />
 		<Option default_target="Plugin-unix" />
 		<Option compiler="gcc" />
 		<Build>

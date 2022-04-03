@@ -10,11 +10,11 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-#include "filemanager.h"
-#include "safedelete.h"
-#include "cbeditor.h"
-#include "editormanager.h"
-#include "infowindow.h"
+    #include "filemanager.h"
+    #include "safedelete.h"
+    #include "cbeditor.h"
+    #include "editormanager.h"
+    #include "infowindow.h"
 #endif
 #include "cbstyledtextctrl.h"
 
@@ -23,7 +23,7 @@
 
 #include <memory>
 
-template<> FileManager* Mgr<FileManager>::instance = nullptr;
+template<> FileManager * Mgr<FileManager>::instance = nullptr;
 template<> bool  Mgr<FileManager>::isShutdown = false;
 
 // ***** class: LoaderBase *****
@@ -39,7 +39,7 @@ bool LoaderBase::Sync()
     return data;
 }
 
-char* LoaderBase::GetData()
+char * LoaderBase::GetData()
 {
     WaitReady();
     return data;
@@ -62,9 +62,8 @@ void FileLoader::operator()()
 
     wxFile file(fileName);
     len = file.Length();
-
-    data = new char[len+4];
-    char *dp = data + len;
+    data = new char[len + 4];
+    char * dp = data + len;
     *dp++ = '\0';
     *dp++ = '\0';
     *dp++ = '\0';
@@ -76,6 +75,7 @@ void FileLoader::operator()()
         data = nullptr;
         len = 0;
     }
+
     Ready();
 }
 
@@ -128,29 +128,35 @@ FileManager::FileManager()
 
 FileManager::~FileManager()
 {
-//  fileLoaderThread.Die();
-//  uncLoaderThread.Die();
-//  urlLoaderThread.Die();
+    //  fileLoaderThread.Die();
+    //  uncLoaderThread.Die();
+    //  urlLoaderThread.Die();
 }
 
-LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
+LoaderBase * FileManager::Load(const wxString & file, bool reuseEditors)
 {
     if (reuseEditors)
     {
         // if a file is opened in the editor, and the file get modified, we use the content of the
         // editor, otherwise, we still use the original file
-        EditorManager* em = Manager::Get()->GetEditorManager();
+        EditorManager * em = Manager::Get()->GetEditorManager();
+
         if (em)
         {
             wxFileName fileName(file);
+
             for (int i = 0; i < em->GetEditorsCount(); ++i)
             {
-                cbEditor* ed = em->GetBuiltinEditor(em->GetEditor(i));
+                cbEditor * ed = em->GetBuiltinEditor(em->GetEditor(i));
+
                 if (ed && fileName == ed->GetFilename())
                 {
                     if (!ed->GetModified())
+                    {
                         break;
-                    EditorReuser *nl = new EditorReuser(file, ed->GetControl()->GetText());
+                    }
+
+                    EditorReuser * nl = new EditorReuser(file, ed->GetControl()->GetText());
                     return nl;
                 }
             }
@@ -159,12 +165,12 @@ LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
 
     if (file.StartsWith("http://"))
     {
-        URLLoader *ul = new URLLoader(file);
+        URLLoader * ul = new URLLoader(file);
         urlLoaderThread.Queue(ul);
         return ul;
     }
 
-    FileLoader *fl = new FileLoader(file);
+    FileLoader * fl = new FileLoader(file);
 
     if (file.length() > 2 && file[0] == '\\' && file[1] == '\\')
     {
@@ -181,7 +187,7 @@ LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
 
 namespace platform
 {
-inline bool move(wxString const& old_name, wxString const& new_name)
+inline bool move(wxString const & old_name, wxString const & new_name)
 {
     return ::wxRenameFile(old_name, new_name, true);
 };
@@ -203,70 +209,94 @@ inline bool move(wxString const& old_name, wxString const& new_name)
 //    and only lends to race conditions and a possible crash-on-exit.
 //    If you can't trust your computer to sync data to disk properly, you already lost.
 
-bool FileManager::SaveUTF8(const wxString& name, const char* data, size_t len)
+bool FileManager::SaveUTF8(const wxString & name, const char * data, size_t len)
 {
     if (wxFileExists(name) == false)
     {
         wxFile file(name, wxFile::write_excl);
+
         if (!file.IsOpened())
+        {
             return false;
+        }
+
         if (!data)
+        {
             return false;
-        return file.Write(data, len) == len;
-    }
-    else if (wxFileName::Exists(name, wxFILE_EXISTS_SYMLINK))
-    {
-        // Enable editing symlinks. Do not use temp file->replace procedure
-        // since that would get rid of the symlink. Writing directly causes
-        // edits to reflect to the target file.
-        wxFile file(name, wxFile::write);
-        if (!file.IsOpened())
-            return false;
-        if (!data)
-            return false;
+        }
+
         return file.Write(data, len) == len;
     }
     else
-    {
-        if (!wxFile::Access(name, wxFile::write))
-            return false;
-
-        wxString temp(name);
-        temp.append(".temp");
-
-        wxStructStat buff;
-        wxLstat( name, &buff );
-
-        wxFile f;
-        if (!f.Create(temp, true, buff.st_mode))
-            return false;
-
-        if (f.Write(data, len) == len)
+        if (wxFileName::Exists(name, wxFILE_EXISTS_SYMLINK))
         {
-            f.Close();
-            if (platform::move(temp, name))
+            // Enable editing symlinks. Do not use temp file->replace procedure
+            // since that would get rid of the symlink. Writing directly causes
+            // edits to reflect to the target file.
+            wxFile file(name, wxFile::write);
+
+            if (!file.IsOpened())
             {
-                return true;
+                return false;
             }
-            else
+
+            if (!data)
             {
-                wxString failed(name);
-                failed.append(".save-failed");
-                platform::move(temp, failed);
+                return false;
             }
+
+            return file.Write(data, len) == len;
         }
-        return false;
-    }
+        else
+        {
+            if (!wxFile::Access(name, wxFile::write))
+            {
+                return false;
+            }
+
+            wxString temp(name);
+            temp.append(".temp");
+            wxStructStat buff;
+            wxLstat(name, &buff);
+            wxFile f;
+
+            if (!f.Create(temp, true, buff.st_mode))
+            {
+                return false;
+            }
+
+            if (f.Write(data, len) == len)
+            {
+                f.Close();
+
+                if (platform::move(temp, name))
+                {
+                    return true;
+                }
+                else
+                {
+                    wxString failed(name);
+                    failed.append(".save-failed");
+                    platform::move(temp, failed);
+                }
+            }
+
+            return false;
+        }
 }
 
-bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncoding encoding,
+bool FileManager::Save(const wxString & name, const wxString & data, wxFontEncoding encoding,
                        bool bom, bool robust)
 {
     if (wxFileExists(name) == false)
     {
         wxFile f(name, wxFile::write_excl);
+
         if (!f.IsOpened())
+        {
             return false;
+        }
+
         return WriteWxStringToFile(f, data, encoding, bom);
     }
 
@@ -284,28 +314,36 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
     if (directWrite)
     {
         wxFile f(name, wxFile::write);
+
         if (!f.IsOpened())
+        {
             return false;
+        }
+
         return WriteWxStringToFile(f, data, encoding, bom);
     }
     else
     {
         if (!wxFile::Access(name, wxFile::write))
+        {
             return false;
+        }
 
         wxString temp(name);
         temp.append(".temp");
-
         wxStructStat buff;
-        wxLstat( name, &buff );
-
+        wxLstat(name, &buff);
         wxFile f;
+
         if (!f.Create(temp, true, buff.st_mode))
+        {
             return false;
+        }
 
         if (WriteWxStringToFile(f, data, encoding, bom))
         {
             f.Close();
+
             if (platform::move(temp, name))
             {
                 return true;
@@ -317,110 +355,130 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
                 platform::move(temp, failed);
             }
         }
+
         return false;
     }
 }
 
 
-bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding encoding, bool bom)
+bool FileManager::WriteWxStringToFile(wxFile & f, const wxString & data, wxFontEncoding encoding, bool bom)
 {
-    const char* mark = nullptr;
+    const char * mark = nullptr;
     size_t mark_length = 0;
+
     if (bom)
     {
         switch (encoding)
         {
-        case wxFONTENCODING_UTF8:
-            mark = "\xEF\xBB\xBF";
-            mark_length = 3;
-            break;
-        case wxFONTENCODING_UTF16BE:
-            mark = "\xFE\xFF";
-            mark_length = 2;
-            break;
-        case wxFONTENCODING_UTF16LE:
-            mark = "\xFF\xFE";
-            mark_length = 2;
-            break;
-        case wxFONTENCODING_UTF32BE:
-            mark = "\x00\x00\xFE\xFF";
-            mark_length = 4;
-            break;
-        case wxFONTENCODING_UTF32LE:
-            mark = "\xFF\xFE\x00\x00";
-            mark_length = 4;
-            break;
-        case wxFONTENCODING_SYSTEM:
-        default:
-            break;
+            case wxFONTENCODING_UTF8:
+                mark = "\xEF\xBB\xBF";
+                mark_length = 3;
+                break;
+
+            case wxFONTENCODING_UTF16BE:
+                mark = "\xFE\xFF";
+                mark_length = 2;
+                break;
+
+            case wxFONTENCODING_UTF16LE:
+                mark = "\xFF\xFE";
+                mark_length = 2;
+                break;
+
+            case wxFONTENCODING_UTF32BE:
+                mark = "\x00\x00\xFE\xFF";
+                mark_length = 4;
+                break;
+
+            case wxFONTENCODING_UTF32LE:
+                mark = "\xFF\xFE\x00\x00";
+                mark_length = 4;
+                break;
+
+            case wxFONTENCODING_SYSTEM:
+            default:
+                break;
         }
 
         if (f.Write(mark, mark_length) != mark_length)
+        {
             return false;
+        }
     }
 
     if (data.length() == 0)
+    {
         return true;
+    }
 
 #if defined(UNICODE) || defined(_UNICODE)
-
     size_t inlen = data.Len(), outlen = 0;
     wxCharBuffer mbBuff;
-    if ( encoding == wxFONTENCODING_UTF7 )
+
+    if (encoding == wxFONTENCODING_UTF7)
     {
         wxMBConvUTF7 conv;
         mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
     }
-    else if ( encoding == wxFONTENCODING_UTF8 )
-    {
-        wxMBConvUTF8 conv;
-        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
-    }
-    else if ( encoding == wxFONTENCODING_UTF16BE )
-    {
-        wxMBConvUTF16BE conv;
-        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
-    }
-    else if ( encoding == wxFONTENCODING_UTF16LE )
-    {
-        wxMBConvUTF16LE conv;
-        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
-    }
-    else if ( encoding == wxFONTENCODING_UTF32BE )
-    {
-        wxMBConvUTF32BE conv;
-        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
-    }
-    else if ( encoding == wxFONTENCODING_UTF32LE )
-    {
-        wxMBConvUTF32LE conv;
-        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
-    }
     else
-    {
-        // try wxEncodingConverter first, even it it only works for
-        // wxFONTENCODING_ISO8859_1..15, wxFONTENCODING_CP1250..1257 and wxFONTENCODING_KOI8
-        // but it's much, much faster than wxCSConv (at least on linux)
-        wxEncodingConverter conv;
-        // should be long enough
-        char* tmp = new char[2*inlen];
-
-        if (conv.Init(wxFONTENCODING_UNICODE, encoding) && conv.Convert(data.wx_str(), tmp))
+        if (encoding == wxFONTENCODING_UTF8)
         {
-            mbBuff = tmp;
-            outlen = strlen(mbBuff); // should be correct, because Convert has returned true
+            wxMBConvUTF8 conv;
+            mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
         }
         else
-        {
-            // try wxCSConv, if nothing else works
-            wxCSConv csconv(encoding);
-            mbBuff = csconv.cWC2MB(data.c_str(), inlen, &outlen);
-        }
-        delete[] tmp;
-    }
+            if (encoding == wxFONTENCODING_UTF16BE)
+            {
+                wxMBConvUTF16BE conv;
+                mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+            }
+            else
+                if (encoding == wxFONTENCODING_UTF16LE)
+                {
+                    wxMBConvUTF16LE conv;
+                    mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+                }
+                else
+                    if (encoding == wxFONTENCODING_UTF32BE)
+                    {
+                        wxMBConvUTF32BE conv;
+                        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+                    }
+                    else
+                        if (encoding == wxFONTENCODING_UTF32LE)
+                        {
+                            wxMBConvUTF32LE conv;
+                            mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+                        }
+                        else
+                        {
+                            // try wxEncodingConverter first, even it it only works for
+                            // wxFONTENCODING_ISO8859_1..15, wxFONTENCODING_CP1250..1257 and wxFONTENCODING_KOI8
+                            // but it's much, much faster than wxCSConv (at least on linux)
+                            wxEncodingConverter conv;
+                            // should be long enough
+                            char * tmp = new char[2 * inlen];
+
+                            if (conv.Init(wxFONTENCODING_UNICODE, encoding) && conv.Convert(data.wx_str(), tmp))
+                            {
+                                mbBuff = tmp;
+                                outlen = strlen(mbBuff); // should be correct, because Convert has returned true
+                            }
+                            else
+                            {
+                                // try wxCSConv, if nothing else works
+                                wxCSConv csconv(encoding);
+                                mbBuff = csconv.cWC2MB(data.c_str(), inlen, &outlen);
+                            }
+
+                            delete[] tmp;
+                        }
+
     // if conversion to chosen encoding succeeded, we write the file to disk
     if (outlen > 0)
+    {
         return f.Write(mbBuff, outlen) == outlen;
+    }
 
     // if conversion to chosen encoding does not succeed, we try UTF-8 instead
     size_t size = 0;
@@ -438,7 +496,7 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
                            "nor be converted to UTF-8.\n"
                            "The latter should actually not be possible.\n\n"
                            "Please check your language/encoding settings and try saving again."),
-                         _("Failure"), wxICON_WARNING | wxOK );
+                         _("Failure"), wxICON_WARNING | wxOK);
             return false;
         }
         else
@@ -452,11 +510,8 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
     }
 
     return f.Write(buf, size) == size;
-
 #else
-
     // For ANSI builds, dump the char* to file.
     return f.Write(data.c_str(), data.Length()) == data.Length();
-
 #endif
 }

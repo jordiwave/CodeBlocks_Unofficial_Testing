@@ -74,114 +74,114 @@ enum myFindReplaceDialogStyles
 //! myFindReplaceDlg
 class myFindReplaceDlg: public wxScrollingDialog
 {
-public:
+    public:
 
-    //! constructor
-    myFindReplaceDlg (wxWindow *parent,
-                      const wxString &findstr = wxEmptyString,
-                      const wxString &replacestr = wxEmptyString,
-                      wxUint32 flags = 0,
-                      long style = wxDEFAULT_DIALOG_STYLE);
+        //! constructor
+        myFindReplaceDlg(wxWindow * parent,
+                         const wxString & findstr = wxEmptyString,
+                         const wxString & replacestr = wxEmptyString,
+                         wxUint32 flags = 0,
+                         long style = wxDEFAULT_DIALOG_STYLE);
 
-    //! destructor
-    ~myFindReplaceDlg ();
+        //! destructor
+        ~myFindReplaceDlg();
 
-    // event handlers
-    void OnCancel (wxCommandEvent& event);
-    void OnOkay (wxCommandEvent& event);
-    void OnHelp (wxCommandEvent &event);
-    void OnReplace (wxCommandEvent& event);
-    void OnReplaceAll (wxCommandEvent& event);
+        // event handlers
+        void OnCancel(wxCommandEvent & event);
+        void OnOkay(wxCommandEvent & event);
+        void OnHelp(wxCommandEvent & event);
+        void OnReplace(wxCommandEvent & event);
+        void OnReplaceAll(wxCommandEvent & event);
 
-    //! get and set variables
-    wxString GetFindDirectory ();
-    void SetFindDirectory (const wxString &str);
-    wxString GetFindFilespec ();
-    void SetFindFilespec (const wxString &str);
-    wxString GetFindString ();
-    void SetFindString (const wxString &str);
-    wxString GetReplaceString ();
-    void SetReplaceString (const wxString &str);
-    int GetFlags ();
-    void SetFlags (int flags);
+        //! get and set variables
+        wxString GetFindDirectory();
+        void SetFindDirectory(const wxString & str);
+        wxString GetFindFilespec();
+        void SetFindFilespec(const wxString & str);
+        wxString GetFindString();
+        void SetFindString(const wxString & str);
+        wxString GetReplaceString();
+        void SetReplaceString(const wxString & str);
+        int GetFlags();
+        void SetFlags(int flags);
 
-    // show dialog according to style
-    int ShowModal (long style = wxDEFAULT_DIALOG_STYLE);
+        // show dialog according to style
+        int ShowModal(long style = wxDEFAULT_DIALOG_STYLE);
 
-private:
-    long m_style;
+    private:
+        long m_style;
 
-    // variables
-    wxComboBox *m_finddir;
-    wxTextCtrl *m_findspec;
-    wxComboBox *m_findstr;
-    wxComboBox *m_replacestr;
-    wxCheckBox *m_matchcase;
-    wxCheckBox *m_wholeword;
-    wxCheckBox *m_findregex;
-    wxCheckBox *m_subfolder;
-    wxRadioBox *m_direction;
+        // variables
+        wxComboBox * m_finddir;
+        wxTextCtrl * m_findspec;
+        wxComboBox * m_findstr;
+        wxComboBox * m_replacestr;
+        wxCheckBox * m_matchcase;
+        wxCheckBox * m_wholeword;
+        wxCheckBox * m_findregex;
+        wxCheckBox * m_subfolder;
+        wxRadioBox * m_direction;
 
-    // buttons
-    wxButton *m_cancelButton;
-    wxButton *m_findButton;
-    wxButton *m_replaceButton;
-    wxButton *m_replaceAllButton;
+        // buttons
+        wxButton * m_cancelButton;
+        wxButton * m_findButton;
+        wxButton * m_replaceButton;
+        wxButton * m_replaceAllButton;
 
-    // optional sizer items
-    wxBoxSizer *m_totalpane;
-    wxBoxSizer *m_findpane;
-    wxBoxSizer *m_fdirsizer;
-    wxBoxSizer *m_specsizer;
-    wxBoxSizer *m_replsizer;
-    wxBoxSizer *m_buttonpane;
-    wxBoxSizer *m_optionpane;
-    wxBoxSizer *m_optionsizer;
-    wxBoxSizer *m_dirssizer;
+        // optional sizer items
+        wxBoxSizer * m_totalpane;
+        wxBoxSizer * m_findpane;
+        wxBoxSizer * m_fdirsizer;
+        wxBoxSizer * m_specsizer;
+        wxBoxSizer * m_replsizer;
+        wxBoxSizer * m_buttonpane;
+        wxBoxSizer * m_optionpane;
+        wxBoxSizer * m_optionsizer;
+        wxBoxSizer * m_dirssizer;
 
-    void LoadDirHistory ();
-    void StoreDirHistory ();
-    void UpdateDirHistory (wxString item = wxEmptyString);
-    void LoadFindHistory ();
-    void StoreFindHistory ();
-    void UpdateFindHistory (wxString item = wxEmptyString);
-    void LoadReplaceHistory ();
-    void StoreReplaceHistory ();
-    void UpdateReplaceHistory (wxString item = wxEmptyString);
+        void LoadDirHistory();
+        void StoreDirHistory();
+        void UpdateDirHistory(wxString item = wxEmptyString);
+        void LoadFindHistory();
+        void StoreFindHistory();
+        void UpdateFindHistory(wxString item = wxEmptyString);
+        void LoadReplaceHistory();
+        void StoreReplaceHistory();
+        void UpdateReplaceHistory(wxString item = wxEmptyString);
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 //----------------------------------------------------------------------------
 //! myGotoDlg
 class myGotoDlg: public wxScrollingDialog
 {
-public:
+    public:
 
-    //! constructor
-    myGotoDlg (wxWindow *parent,
-               long style = wxDEFAULT_DIALOG_STYLE);
+        //! constructor
+        myGotoDlg(wxWindow * parent,
+                  long style = wxDEFAULT_DIALOG_STYLE);
 
-    // event handlers
-    void OnHelp (wxCommandEvent &event);
+        // event handlers
+        void OnHelp(wxCommandEvent & event);
 
-    //! get and set variables
-    int GetPosition ();
-    void SetPosition (int position);
+        //! get and set variables
+        int GetPosition();
+        void SetPosition(int position);
 
-    // show dialog according to style
-    int ShowModal (long style = wxDEFAULT_DIALOG_STYLE);
+        // show dialog according to style
+        int ShowModal(long style = wxDEFAULT_DIALOG_STYLE);
 
-private:
+    private:
 
-    // variables
-    wxTextCtrl *m_position;
+        // variables
+        wxTextCtrl * m_position;
 
-    // buttons
-    wxButton *m_cancelButton;
-    wxButton *m_gotoButton;
+        // buttons
+        wxButton * m_cancelButton;
+        wxButton * m_gotoButton;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // _DIALOGS_H_

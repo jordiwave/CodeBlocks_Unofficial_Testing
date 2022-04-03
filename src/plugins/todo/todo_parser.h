@@ -24,14 +24,14 @@ struct ToDoItem
     int priority;
 };
 // each source file can have several ToDoItems, so we use a Map structure to record all the items
-typedef std::map<wxString,std::vector<ToDoItem> > TodoItemsMap;
+typedef std::map<wxString, std::vector<ToDoItem> > TodoItemsMap;
 WX_DECLARE_OBJARRAY(ToDoItem, ToDoItems);
 
 /// Parses the buffer and fills itemsMap and items with the results.
-void ParseBufferForTODOs(TodoItemsMap &itemsMap, ToDoItems &items,
-                         const wxArrayString &startStrings,
-                         const wxArrayString &allowedTypes, const wxString& buffer,
-                         const wxString& filename);
+void ParseBufferForTODOs(TodoItemsMap & itemsMap, ToDoItems & items,
+                         const wxArrayString & startStrings,
+                         const wxArrayString & allowedTypes, const wxString & buffer,
+                         const wxString & filename);
 
 
 #endif // CB_TODO_PLUGIN_PARSER_H

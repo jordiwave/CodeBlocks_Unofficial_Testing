@@ -19,11 +19,11 @@
 // RCS-ID: $Id: snippetsimages.cpp 10362 2015-07-26 08:13:33Z jenslody $
 
 #ifdef WX_PRECOMP
-#include "wx_pch.h"
+    #include "wx_pch.h"
 #else
-#include <wx/mstream.h>
-#include <wx/icon.h>
-#include <wx/colour.h>
+    #include <wx/mstream.h>
+    #include <wx/icon.h>
+    #include <wx/colour.h>
 #endif
 #include <wx/image.h>
 
@@ -32,32 +32,30 @@
 #include "version.h"
 
 // forward declarations to keep data at bottom of this file
-extern const char* allsnippets[];
-extern const char* category[];
-extern const char* snippet[];
-extern const char* snippetText[];
-extern const char* snippetFile[];
-extern const char* snippetURL[];
-extern const char* xpm_data_ptrs[] ;
+extern const char * allsnippets[];
+extern const char * category[];
+extern const char * snippet[];
+extern const char * snippetText[];
+extern const char * snippetFile[];
+extern const char * snippetURL[];
+extern const char * xpm_data_ptrs[] ;
 // ----------------------------------------------------------------------------
 SnipImages::SnipImages()
 // ----------------------------------------------------------------------------
 {
     //ctor
-
     m_pSnippetsTreeImageList = new wxImageList(16, 16, true, SNIPPETS_TREE_IMAGE_COUNT);
     // Load images
     //wxImage::AddHandler( new wxPNGHandler );
-    wxImage::AddHandler( new wxXPMHandler );
-
+    wxImage::AddHandler(new wxXPMHandler);
 
     for (int i = 0; i < SNIPPETS_TREE_IMAGE_COUNT; ++i)
     {
-        RegisterImage( (char**)xpm_data_ptrs[i]);
+        RegisterImage((char **)xpm_data_ptrs[i]);
     }
 }
 // ----------------------------------------------------------------------------
-void SnipImages::RegisterImage(char** xpm_data )
+void SnipImages::RegisterImage(char ** xpm_data)
 // ----------------------------------------------------------------------------
 {
     //wxMemoryInputStream stream(xpm_data, strlen(xpm_data)+1);
@@ -68,13 +66,12 @@ void SnipImages::RegisterImage(char** xpm_data )
     wxColor maskColor(255, 0, 255);
     //int idx =
     m_pSnippetsTreeImageList->Add(bmp, maskColor);
-
 }
 // ----------------------------------------------------------------------------
 wxIcon SnipImages::GetSnipListIcon(int index)
 // ----------------------------------------------------------------------------
 {
-    return wxIcon((char**)xpm_data_ptrs[index]);
+    return wxIcon((char **)xpm_data_ptrs[index]);
 }
 // ----------------------------------------------------------------------------
 
@@ -89,10 +86,10 @@ SnipImages::~SnipImages()
 //  XPM image definitions for AllSnippets, Category, Snippet, SnippetText, SnippetFile
 // ----------------------------------------------------------------------------
 // array holding pointers to XPM char arrays
-const char* xpm_data_ptrs[ SNIPPETS_TREE_IMAGE_COUNT ]
-    = {(const char*)allsnippets,(const char*)category,(const char*)snippet,(const char*)snippetText,(const char*)snippetFile,(const char*)snippetURL};
+const char * xpm_data_ptrs[ SNIPPETS_TREE_IMAGE_COUNT ]
+    = {(const char *)allsnippets, (const char *)category, (const char *)snippet, (const char *)snippetText, (const char *)snippetFile, (const char *)snippetURL};
 /* XPM */
-const char *allsnippets[] =
+const char * allsnippets[] =
 {
     /* columns rows colors chars-per-pixel */
     "16 16 93 2",
@@ -209,7 +206,7 @@ const char *allsnippets[] =
 };
 // ----------------------------------------------------------------------------
 /* XPM */
-const char *category[] =
+const char * category[] =
 {
     /* columns rows colors chars-per-pixel */
     "16 16 93 2",
@@ -326,7 +323,7 @@ const char *category[] =
 };
 // ----------------------------------------------------------------------------
 /* XPM */
-const char *snippet[] =
+const char * snippet[] =
 {
     /* columns rows colors chars-per-pixel */
     "16 16 111 2",
@@ -461,7 +458,7 @@ const char *snippet[] =
 };
 // ----------------------------------------------------------------------------
 /* XPM */
-const char *snippetText[] =
+const char * snippetText[] =
 {
     /* columns rows colors chars-per-pixel */
     "16 16 98 2",
@@ -583,7 +580,7 @@ const char *snippetText[] =
 };
 // ----------------------------------------------------------------------------
 /* XPM */
-const char *snippetFile[] =
+const char * snippetFile[] =
 {
     /* columns rows colors chars-per-pixel */
     "16 16 96 2",
@@ -702,7 +699,7 @@ const char *snippetFile[] =
     "E                             E "
 };
 /* XPM */
-const char *snippetURL[] =
+const char * snippetURL[] =
 {
     /* columns rows colors chars-per-pixel */
     "16 16 71 1",

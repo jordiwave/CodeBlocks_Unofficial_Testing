@@ -43,16 +43,14 @@ inline int calcWidth(int num)
 inline string to_string(int i)
 {
     ostringstream ostr;
-
     ostr << i;
-
     return ostr.str();
 }
 
 // Helper function that returns a number of spaces as <text:s text:c="#"/> or " " and updates the index
 // When called, str[*index] must be a space
 // If force is true, it'll return in the form <text:s text:c="#"/> even if it's one space
-inline string fix_spaces(const char *str, size_t *index, size_t max, bool force = false)
+inline string fix_spaces(const char * str, size_t * index, size_t max, bool force = false)
 {
     int counter = 0;
 
@@ -73,7 +71,7 @@ inline string fix_spaces(const char *str, size_t *index, size_t max, bool force 
 }
 };
 
-const char *ODTExporter::ODTManifestFile =
+const char * ODTExporter::ODTManifestFile =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<!DOCTYPE manifest:manifest PUBLIC \"-//OpenOffice.org//DTD Manifest 1.0//EN\" \"Manifest.dtd\">\n"
     "<manifest:manifest xmlns:manifest=\"urn:oasis:names:tc:opendocument:xmlns:manifest:1.0\">\n"
@@ -87,7 +85,7 @@ const char *ODTExporter::ODTManifestFile =
     "  <manifest:file-entry manifest:media-type=\"text/xml\" manifest:full-path=\"settings.xml\"/>\n"
     "</manifest:manifest>";
 
-const char *ODTExporter::ODTMetaFile =
+const char * ODTExporter::ODTMetaFile =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<office:document-meta\n"
     "  xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\"\n"
@@ -101,10 +99,10 @@ const char *ODTExporter::ODTMetaFile =
     "  </office:meta>\n"
     "</office:document-meta>";
 
-const char *ODTExporter::ODTMIMETypeFile =
+const char * ODTExporter::ODTMIMETypeFile =
     "application/vnd.oasis.opendocument.text";
 
-const char *ODTExporter::ODTSettingsFile =
+const char * ODTExporter::ODTSettingsFile =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<office:document-settings\n"
     "  xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\"\n"
@@ -114,7 +112,7 @@ const char *ODTExporter::ODTSettingsFile =
     "<office:settings/>\n"
     "</office:document-settings>";
 
-const char *ODTExporter::ODTStylesFileBEG =
+const char * ODTExporter::ODTStylesFileBEG =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<office:document-styles\n"
     "  xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\"\n"
@@ -130,14 +128,14 @@ const char *ODTExporter::ODTStylesFileBEG =
     "  xmlns:dom=\"http://www.w3.org/2001/xml-events\"\n"
     "  office:version=\"1.0\">\n";
 
-string ODTExporter::ODTStylesFileMID(wxZipOutputStream &zout)
+string ODTExporter::ODTStylesFileMID(wxZipOutputStream & zout)
 {
-    static const char *t1 =
+    static const char * t1 =
         "<office:font-face-decls>\n"
         "  <style:font-face style:name=\""; // FontName
-    static const char *t2 =
+    static const char * t2 =
         "\" svg:font-family=\""; // FontName
-    static const char *t3 =
+    static const char * t3 =
         "\"/>\n"
         "</office:font-face-decls>\n"
         "<office:styles>\n"
@@ -147,15 +145,13 @@ string ODTExporter::ODTStylesFileMID(wxZipOutputStream &zout)
         "  style:parent-style-name=\"Standard\"\n"
         "  style:class=\"text\">\n"
         "  <style:text-properties style:font-name=\""; // FontName
-    static const char *t4 =
+    static const char * t4 =
         "\" fo:font-size=\""; // Pt
-    static const char *t5 =
+    static const char * t5 =
         "pt\"/>\n"
         "</style:style>\n";
-
     string theFont("Courier New");
     string thePt("8");
-
     wxString fontstring = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/font"), wxEmptyString);
 
     if (!fontstring.IsEmpty())
@@ -164,7 +160,6 @@ string ODTExporter::ODTStylesFileMID(wxZipOutputStream &zout)
         wxNativeFontInfo nfi;
         nfi.FromString(fontstring);
         tmpFont.SetNativeFontInfo(nfi);
-
         thePt = to_string(tmpFont.GetPointSize());
         wxString faceName = tmpFont.GetFaceName();
 
@@ -183,15 +178,14 @@ string ODTExporter::ODTStylesFileMID(wxZipOutputStream &zout)
     zout.Write(t4, strlen(t4));
     zout.Write(thePt.c_str(), thePt.size());
     zout.Write(t5, strlen(t5));
-
     return theFont;
 }
 
-const char *ODTExporter::ODTStylesFileEND =
+const char * ODTExporter::ODTStylesFileEND =
     "</office:styles>\n"
     "</office:document-styles>";
 
-const char *ODTExporter::ODTContentFileBEG =
+const char * ODTExporter::ODTContentFileBEG =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<office:document-content\n"
     "  xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\"\n"
@@ -213,12 +207,12 @@ const char *ODTExporter::ODTContentFileBEG =
     "<office:body>\n"
     "<office:text>\n";
 
-const char *ODTExporter::ODTContentFileEND =
+const char * ODTExporter::ODTContentFileEND =
     "</office:text>\n"
     "</office:body>\n"
     "</office:document-content>";
 
-void ODTExporter::ODTCreateDirectoryStructure(wxZipOutputStream &zout)
+void ODTExporter::ODTCreateDirectoryStructure(wxZipOutputStream & zout)
 {
     zout.PutNextEntry(_T("META-INF/"));
     zout.PutNextEntry(_T("Thumbnails/"));
@@ -226,7 +220,7 @@ void ODTExporter::ODTCreateDirectoryStructure(wxZipOutputStream &zout)
     zout.PutNextEntry(_T("Configurations2/"));
 }
 
-void ODTExporter::ODTCreateCommonFiles(wxZipOutputStream &zout)
+void ODTExporter::ODTCreateCommonFiles(wxZipOutputStream & zout)
 {
     zout.PutNextEntry(_T("META-INF/manifest.xml"));
     zout.Write(ODTManifestFile, strlen(ODTManifestFile));
@@ -238,7 +232,7 @@ void ODTExporter::ODTCreateCommonFiles(wxZipOutputStream &zout)
     zout.Write(ODTSettingsFile, strlen(ODTSettingsFile));
 }
 
-void ODTExporter::ODTCreateStylesFile(wxZipOutputStream &zout, const EditorColourSet *color_set, HighlightLanguage lang)
+void ODTExporter::ODTCreateStylesFile(wxZipOutputStream & zout, const EditorColourSet * color_set, HighlightLanguage lang)
 {
     zout.PutNextEntry(_T("styles.xml"));
     zout.Write(ODTStylesFileBEG, strlen(ODTStylesFileBEG));
@@ -250,7 +244,7 @@ void ODTExporter::ODTCreateStylesFile(wxZipOutputStream &zout, const EditorColou
 
         for (int i = 0; i < count; ++i)
         {
-            OptionColour *optc = const_cast<EditorColourSet *>(color_set)->GetOptionByIndex(lang, i);
+            OptionColour * optc = const_cast<EditorColourSet *>(color_set)->GetOptionByIndex(lang, i);
 
             if (!optc->isStyle)
             {
@@ -258,7 +252,6 @@ void ODTExporter::ODTCreateStylesFile(wxZipOutputStream &zout, const EditorColou
             }
 
             ostringstream ostr;
-
             ostr << "<style:style style:name=\"style" << optc->value << "\" style:family=\"text\">\n"
                  << "  <style:text-properties\n"
                  << "    style:font-name=\"" << fontName << "\"\n"
@@ -297,7 +290,6 @@ void ODTExporter::ODTCreateStylesFile(wxZipOutputStream &zout, const EditorColou
 
             ostr << " />\n"
                  << "</style:style>\n";
-
             zout.Write(ostr.str().c_str(), ostr.str().size());
         }
     }
@@ -305,13 +297,12 @@ void ODTExporter::ODTCreateStylesFile(wxZipOutputStream &zout, const EditorColou
     zout.Write(ODTStylesFileEND, strlen(ODTStylesFileEND));
 }
 
-void ODTExporter::ODTCreateContentFile(wxZipOutputStream &zout, const wxMemoryBuffer &styled_text, int lineCount, int tabWidth)
+void ODTExporter::ODTCreateContentFile(wxZipOutputStream & zout, const wxMemoryBuffer & styled_text, int lineCount, int tabWidth)
 {
-    const char *buffer = reinterpret_cast<char *>(styled_text.GetData());
+    const char * buffer = reinterpret_cast<char *>(styled_text.GetData());
     const size_t buffer_size = styled_text.GetDataLen();
     int lineno = 1;
     int width = calcWidth(lineCount);
-
     zout.PutNextEntry(_T("content.xml"));
     zout.Write(ODTContentFileBEG, strlen(ODTContentFileBEG));
 
@@ -370,80 +361,80 @@ void ODTExporter::ODTCreateContentFile(wxZipOutputStream &zout, const wxMemoryBu
 
             switch (buffer[i])
             {
-            case '<':
-                content += "&lt;";
-                break;
+                case '<':
+                    content += "&lt;";
+                    break;
 
-            case '>':
-                content += "&gt;";
-                break;
+                case '>':
+                    content += "&gt;";
+                    break;
 
-            case '&':
-                content += "&amp;";
-                break;
+                case '&':
+                    content += "&amp;";
+                    break;
 
-            case '\'':
-                content += "&apos;";
-                break;
+                case '\'':
+                    content += "&apos;";
+                    break;
 
-            case '"':
-                content += "&quot;";
-                break;
+                case '"':
+                    content += "&quot;";
+                    break;
 
-            case ' ':
-                content += fix_spaces(buffer, &i, buffer_size);
-                break;
+                case ' ':
+                    content += fix_spaces(buffer, &i, buffer_size);
+                    break;
 
-            case '\t':
-            {
-                const int extraSpaces = tabWidth - charLinePos % tabWidth;
-                size_t dummy = 0;
-                const std::string extraSpacesStr(extraSpaces * 2, ' '); // imitates buffer (char + style)
-                content += fix_spaces(extraSpacesStr.c_str(), &dummy, extraSpacesStr.size());
-                charLinePos += extraSpaces - 1; // account for auto-increment
-            }
-            break;
-
-            case '\r':
-                --charLinePos; // account for auto-increment
-                break;
-
-            case '\n':
-                if (current_style != 0)
+                case '\t':
                 {
-                    content += string("</text:span>");
-                    current_style = 0;
+                    const int extraSpaces = tabWidth - charLinePos % tabWidth;
+                    size_t dummy = 0;
+                    const std::string extraSpacesStr(extraSpaces * 2, ' '); // imitates buffer (char + style)
+                    content += fix_spaces(extraSpacesStr.c_str(), &dummy, extraSpacesStr.size());
+                    charLinePos += extraSpaces - 1; // account for auto-increment
                 }
+                break;
 
-                content += "</text:h>\n";
-                content += "<text:h text:style-name=\"Default\">";
+                case '\r':
+                    --charLinePos; // account for auto-increment
+                    break;
 
-                if (lineCount != -1)
-                {
-                    int difWidth = width - calcWidth(lineno);
-
-                    if (difWidth > 0)
+                case '\n':
+                    if (current_style != 0)
                     {
-                        content += string("<text:s text:c=\"") + to_string(difWidth) + string("\"/>");
+                        content += string("</text:span>");
+                        current_style = 0;
                     }
 
-                    content += to_string(lineno);
-                    ++lineno;
-                    content += "<text:s text:c=\"2\"/>";
-                }
+                    content += "</text:h>\n";
+                    content += "<text:h text:style-name=\"Default\">";
 
-                if (i + 2 < buffer_size && buffer[i + 2] == ' ')
-                {
-                    i += 2;
-                    content += fix_spaces(buffer, &i, buffer_size, true);
-                }
+                    if (lineCount != -1)
+                    {
+                        int difWidth = width - calcWidth(lineno);
 
-                charLinePos = -1; // account for auto-increment
-                break;
+                        if (difWidth > 0)
+                        {
+                            content += string("<text:s text:c=\"") + to_string(difWidth) + string("\"/>");
+                        }
 
-            default:
-                content += buffer[i];
-                break;
+                        content += to_string(lineno);
+                        ++lineno;
+                        content += "<text:s text:c=\"2\"/>";
+                    }
+
+                    if (i + 2 < buffer_size && buffer[i + 2] == ' ')
+                    {
+                        i += 2;
+                        content += fix_spaces(buffer, &i, buffer_size, true);
+                    }
+
+                    charLinePos = -1; // account for auto-increment
+                    break;
+
+                default:
+                    content += buffer[i];
+                    break;
             }
         }
 
@@ -453,20 +444,17 @@ void ODTExporter::ODTCreateContentFile(wxZipOutputStream &zout, const wxMemoryBu
         }
 
         content += "</text:h>\n";
-
         zout.Write(content.c_str(), content.size());
     }
 
     zout.Write(ODTContentFileEND, strlen(ODTContentFileEND));
 }
 
-void ODTExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount, int tabWidth)
+void ODTExporter::Export(const wxString & filename, const wxString & title, const wxMemoryBuffer & styled_text, const EditorColourSet * color_set, int lineCount, int tabWidth)
 {
     HighlightLanguage lang = const_cast<EditorColourSet *>(color_set)->GetLanguageForFilename(title);
-
     wxFileOutputStream file(filename);
     wxZipOutputStream zout(file);
-
     ODTCreateDirectoryStructure(zout);
     ODTCreateCommonFiles(zout);
     ODTCreateStylesFile(zout, color_set, lang);

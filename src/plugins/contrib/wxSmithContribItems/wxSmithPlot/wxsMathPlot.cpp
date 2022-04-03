@@ -45,7 +45,7 @@ wxsRegisterItem<wxsMathPlot> Reg(
     false);                         // We do not allow this item inside XRC files
 
 
-WXS_ST_BEGIN(wxsMathPlotStyles,_T("wxRAISED_BORDER|wxTAB_TRAVERSAL"))
+WXS_ST_BEGIN(wxsMathPlotStyles, _T("wxRAISED_BORDER|wxTAB_TRAVERSAL"))
 WXS_ST_CATEGORY("wxMathPlot")
 WXS_ST_DEFAULTS()
 WXS_ST_END()
@@ -57,19 +57,16 @@ WXS_EV_END()
 
 //------------------------------------------------------------------------------
 
-wxsMathPlot::wxsMathPlot(wxsItemResData* Data):
+wxsMathPlot::wxsMathPlot(wxsItemResData * Data):
     wxsContainer(
         Data,
         &Reg.Info,
         wxsMathPlotEvents,
         wxsMathPlotStyles)
 {
-
-// these not used yet ... in the future
-
+    // these not used yet ... in the future
     mXScale = 1.0;
     mYScale = 1.0;
-
 }
 
 //------------------------------------------------------------------------------
@@ -82,56 +79,47 @@ void wxsMathPlot::OnBuildCreatingCode()
     wxString    aname;
     wxString    cname;
 
-// we only know C++ language
+    // we only know C++ language
 
-    if (GetLanguage() != wxsCPP) wxsCodeMarks::Unknown(_T("wxsMathPlot::OnBuildCreatingCode"),GetLanguage());
+    if (GetLanguage() != wxsCPP)
+    {
+        wxsCodeMarks::Unknown(_T("wxsMathPlot::OnBuildCreatingCode"), GetLanguage());
+    }
 
-// who we are
-
+    // who we are
     vname = GetVarName();
-
-// include files
-
+    // include files
     AddHeader(_("<mathplot.h>"), GetInfo().ClassName, 0);
-
-// create the panel
-
+    // create the panel
     Codef(_T("%s = new mpWindow(%W, %I, %P, %S, %T);\n"), vname.wx_str());
     BuildSetupWindowCode();
-
-// add children
-
+    // add children
     AddChildrenCode();
-
-// and do it all
-
+    // and do it all
     Codef(_T("%AUpdateAll();\n"));
     Codef(_T("%AFit();\n"));
 }
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsMathPlot::OnBuildPreview(wxWindow* Parent, long Flags)
+wxObject * wxsMathPlot::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    mpWindow        *mp;
-
-// make a panel
-
+    mpWindow    *    mp;
+    // make a panel
     mp = new mpWindow(Parent, GetId(), Pos(Parent), Size(Parent), Style());
-    if (mp == NULL) return NULL;
+
+    if (mp == NULL)
+    {
+        return NULL;
+    }
+
     SetupWindow(mp, Flags);
-
-// add kids
-
+    // add kids
     AddChildrenPreview(mp, Flags);
-
-// and update the display
-
+    // and update the display
     mp->UpdateAll();
     mp->Fit();
-
-// done
-
+    // done
     return mp;
 }
 
@@ -143,9 +131,8 @@ void wxsMathPlot::OnEnumContainerProperties(cb_unused long Flags)
 
 //------------------------------------------------------------------------------
 
-bool wxsMathPlot::OnCanAddChild(cb_unused wxsItem* Item, cb_unused bool ShowMessage)
+bool wxsMathPlot::OnCanAddChild(cb_unused wxsItem * Item, cb_unused bool ShowMessage)
 {
-
     /**
         b = (Item->GetClassName() == _("mpFXYVector")) ||
             (Item->GetClassName() == _("mpScaleX")) ||
@@ -158,6 +145,5 @@ bool wxsMathPlot::OnCanAddChild(cb_unused wxsItem* Item, cb_unused bool ShowMess
             return false;
         };
     **/
-
     return true;
 }

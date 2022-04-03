@@ -25,9 +25,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsCheckBox> Reg(_T("CheckBox"),wxsTWidget,_T("Standard"),330);
+wxsRegisterItem<wxsCheckBox> Reg(_T("CheckBox"), wxsTWidget, _T("Standard"), 330);
 
-WXS_ST_BEGIN(wxsCheckBoxStyles,_T(""))
+WXS_ST_BEGIN(wxsCheckBoxStyles, _T(""))
 WXS_ST_CATEGORY("wxCheckBox")
 WXS_ST(wxCHK_2STATE)
 WXS_ST(wxCHK_3STATE)
@@ -37,11 +37,11 @@ WXS_ST_DEFAULTS()
 WXS_ST_END()
 
 WXS_EV_BEGIN(wxsCheckBoxEvents)
-WXS_EVI(EVT_CHECKBOX,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEvent,Click)
+WXS_EVI(EVT_CHECKBOX, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEvent, Click)
 WXS_EV_END()
 }
 
-wxsCheckBox::wxsCheckBox(wxsItemResData* Data):
+wxsCheckBox::wxsCheckBox(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -54,35 +54,40 @@ wxsCheckBox::wxsCheckBox(wxsItemResData* Data):
 
 void wxsCheckBox::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/checkbox.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.wx_str());
-        Codef(_T("%ASetValue(%b);\n"),IsChecked);
-        BuildSetupWindowCode();
-        return;
-    }
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/checkbox.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"), Label.wx_str());
+            Codef(_T("%ASetValue(%b);\n"), IsChecked);
+            BuildSetupWindowCode();
+            return;
+        }
 
-    case wxsUnknownLanguage: // fall through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsCheckBox::OnBuildCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsCheckBox::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
 
-wxObject* wxsCheckBox::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsCheckBox::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxCheckBox* Preview = new wxCheckBox(Parent,GetId(),Label,Pos(Parent),Size(Parent),Style());
-    if ( IsChecked ) Preview->SetValue(IsChecked);
-    return SetupWindow(Preview,Flags);
+    wxCheckBox * Preview = new wxCheckBox(Parent, GetId(), Label, Pos(Parent), Size(Parent), Style());
+
+    if (IsChecked)
+    {
+        Preview->SetValue(IsChecked);
+    }
+
+    return SetupWindow(Preview, Flags);
 }
 
 void wxsCheckBox::OnEnumWidgetProperties(cb_unused long Flags)
 {
-    WXS_SHORT_STRING(wxsCheckBox,Label,_("Label"),_T("label"),_T(""),false)
-    WXS_BOOL(wxsCheckBox,IsChecked,_("Checked"),_T("checked"),false)
+    WXS_SHORT_STRING(wxsCheckBox, Label, _("Label"), _T("label"), _T(""), false)
+    WXS_BOOL(wxsCheckBox, IsChecked, _("Checked"), _T("checked"), false)
 }

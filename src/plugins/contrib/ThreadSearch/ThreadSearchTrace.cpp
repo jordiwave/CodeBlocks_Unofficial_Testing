@@ -18,22 +18,23 @@
 #include "ThreadSearchTrace.h"
 
 
-ThreadSearchTrace* ThreadSearchTrace::ms_Tracer = NULL;
+ThreadSearchTrace * ThreadSearchTrace::ms_Tracer = NULL;
 
 
-bool ThreadSearchTrace::Trace(const wxString& str)
+bool ThreadSearchTrace::Trace(const wxString & str)
 {
     wxASSERT(ms_Tracer != NULL);
     wxMutexLocker mutexLocker(*ms_Tracer);
-    if ( mutexLocker.IsOk() )
+
+    if (mutexLocker.IsOk())
     {
-        if ( (ms_Tracer != NULL) && (ms_Tracer->IsOpened() == true) )
+        if ((ms_Tracer != NULL) && (ms_Tracer->IsOpened() == true))
         {
             wxDateTime now = wxDateTime::Now();
             //ms_Tracer->Write(_T(" ") + now.FormatISOTime() + _T(" "));
             ms_Tracer->Write(_T(" ") + wxString::Format(wxT("%d:%d:%d:%d %s\n"), now.GetHour(), now.GetMinute(), now.GetSecond(), now.GetMillisecond(), str.c_str()));
-//            ms_Tracer->Write(str);
-//            ms_Tracer->Write(_T("\n"));
+            //            ms_Tracer->Write(str);
+            //            ms_Tracer->Write(_T("\n"));
         }
     }
 
@@ -41,14 +42,16 @@ bool ThreadSearchTrace::Trace(const wxString& str)
 }
 
 
-bool ThreadSearchTrace::Init(const wxString& path)
+bool ThreadSearchTrace::Init(const wxString & path)
 {
     wxASSERT(ms_Tracer == NULL);
     ms_Tracer = new ThreadSearchTrace();
-    if ( wxFile::Exists(path) )
+
+    if (wxFile::Exists(path))
     {
         wxRemoveFile(path);
     }
+
     return ms_Tracer->Open(path.c_str(), wxFile::write_excl);
 }
 
@@ -57,14 +60,16 @@ void ThreadSearchTrace::Uninit()
 {
     wxASSERT(ms_Tracer != NULL);
     wxMutexLocker mutexLocker(*ms_Tracer);
-    if ( mutexLocker.IsOk() )
+
+    if (mutexLocker.IsOk())
     {
-        if ( ms_Tracer != NULL )
+        if (ms_Tracer != NULL)
         {
-            if ( ms_Tracer->IsOpened() == true )
+            if (ms_Tracer->IsOpened() == true)
             {
                 ms_Tracer->Close();
             }
+
             delete ms_Tracer;
             ms_Tracer = NULL;
         }
@@ -72,8 +77,8 @@ void ThreadSearchTrace::Uninit()
 }
 
 
-TraceBeginEndOfMethod::TraceBeginEndOfMethod(const wxString& method)
-    :m_Method(method)
+TraceBeginEndOfMethod::TraceBeginEndOfMethod(const wxString & method)
+    : m_Method(method)
 {
     wxString begin(_("Begin of "));
     begin += m_Method;

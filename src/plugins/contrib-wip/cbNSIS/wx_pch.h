@@ -14,20 +14,20 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #ifdef WX_PRECOMP
-#include <wx/treectrl.h>
-#include <wx/textfile.h>
-#include <wx/filename.h>
-#include <wx/stdpaths.h>
-#include <wx/dynarray.h>
-#include <wx/ffile.h>
+    #include <wx/treectrl.h>
+    #include <wx/textfile.h>
+    #include <wx/filename.h>
+    #include <wx/stdpaths.h>
+    #include <wx/dynarray.h>
+    #include <wx/ffile.h>
 #endif // WX_PRECOMP
 
 #endif // WX_PCH_H_INCLUDED

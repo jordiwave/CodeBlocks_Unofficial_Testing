@@ -46,25 +46,24 @@ const long LibSelectDlg::ID_RADIOBUTTON3 = wxNewId();
 const long LibSelectDlg::ID_CHECKBOX1 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(LibSelectDlg,wxScrollingDialog)
+BEGIN_EVENT_TABLE(LibSelectDlg, wxScrollingDialog)
     //(*EventTable(LibSelectDlg)
     //*)
-    EVT_BUTTON(wxID_OK,LibSelectDlg::OnOk)
+    EVT_BUTTON(wxID_OK, LibSelectDlg::OnOk)
 END_EVENT_TABLE()
 
-LibSelectDlg::LibSelectDlg(wxWindow* parent,const wxArrayString& Names,bool addOnly)
+LibSelectDlg::LibSelectDlg(wxWindow * parent, const wxArrayString & Names, bool addOnly)
 {
     //(*Initialize(LibSelectDlg)
-    wxBoxSizer* BoxSizer1;
-    wxStaticBoxSizer* StaticBoxSizer1;
-    wxStdDialogButtonSizer* StdDialogButtonSizer1;
-
+    wxBoxSizer * BoxSizer1;
+    wxStaticBoxSizer * StaticBoxSizer1;
+    wxStdDialogButtonSizer * StdDialogButtonSizer1;
     Create(parent, wxID_ANY, _("Setting up libraries"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Select libraries You want to set up:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-    BoxSizer1->Add(StaticText1, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 10);
-    m_Libraries = new wxCheckListBox(this, ID_CHECKLISTBOX1, wxDefaultPosition, wxSize(361,251), 0, 0, 0, wxDefaultValidator, _T("ID_CHECKLISTBOX1"));
-    BoxSizer1->Add(m_Libraries, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 10);
+    BoxSizer1->Add(StaticText1, 0, wxTOP | wxLEFT | wxRIGHT | wxEXPAND, 10);
+    m_Libraries = new wxCheckListBox(this, ID_CHECKLISTBOX1, wxDefaultPosition, wxSize(361, 251), 0, 0, 0, wxDefaultValidator, _T("ID_CHECKLISTBOX1"));
+    BoxSizer1->Add(m_Libraries, 1, wxTOP | wxLEFT | wxRIGHT | wxEXPAND, 10);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Previous settings"));
     m_DontClear = new wxRadioButton(this, ID_RADIOBUTTON1, _("Do not clear previous results (but remove duplicates)"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP, wxDefaultValidator, _T("ID_RADIOBUTTON1"));
     StaticBoxSizer1->Add(m_DontClear, 0, wxEXPAND, 10);
@@ -73,47 +72,50 @@ LibSelectDlg::LibSelectDlg(wxWindow* parent,const wxArrayString& Names,bool addO
     StaticBoxSizer1->Add(m_ClearSelected, 0, wxEXPAND, 10);
     m_ClearAll = new wxRadioButton(this, ID_RADIOBUTTON3, _("Clear all previous libraries settings"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON3"));
     StaticBoxSizer1->Add(m_ClearAll, 0, wxEXPAND, 10);
-    BoxSizer1->Add(StaticBoxSizer1, 0, wxALL|wxEXPAND, 10);
+    BoxSizer1->Add(StaticBoxSizer1, 0, wxALL | wxEXPAND, 10);
     m_SetupGlobalVars = new wxCheckBox(this, ID_CHECKBOX1, _("Set up Global Variables"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
     m_SetupGlobalVars->SetValue(true);
-    BoxSizer1->Add(m_SetupGlobalVars, 0, wxLEFT|wxRIGHT|wxEXPAND, 10);
+    BoxSizer1->Add(m_SetupGlobalVars, 0, wxLEFT | wxRIGHT | wxEXPAND, 10);
     StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
     StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
     StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
     StdDialogButtonSizer1->Realize();
-    BoxSizer1->Add(StdDialogButtonSizer1, 0, wxLEFT|wxRIGHT|wxEXPAND, 10);
+    BoxSizer1->Add(StdDialogButtonSizer1, 0, wxLEFT | wxRIGHT | wxEXPAND, 10);
     SetSizer(BoxSizer1);
     BoxSizer1->SetSizeHints(this);
     Center();
     //*)
 
-    if ( (m_AddOnly = addOnly) )
+    if ((m_AddOnly = addOnly))
     {
-        m_DontClear->SetValue( true );
-        m_ClearSelected->SetValue( false );
-        m_ClearAll->SetValue( false );
+        m_DontClear->SetValue(true);
+        m_ClearSelected->SetValue(false);
+        m_ClearAll->SetValue(false);
         m_DontClear->Disable();
         m_ClearSelected->Disable();
         m_ClearAll->Disable();
     }
 
     m_Libraries->Append(Names);
+    ConfigManager * Cfg = Manager::Get()->GetConfigManager(_T("lib_finder"));
 
-    ConfigManager* Cfg = Manager::Get()->GetConfigManager(_T("lib_finder"));
-    switch ( Cfg->ReadInt(_T("libselect/previous"),1) )
+    switch (Cfg->ReadInt(_T("libselect/previous"), 1))
     {
-    case 0:
-        m_DontClear->SetValue(true);
-        break;
-    case 2:
-        m_ClearAll->SetValue(true);
-        break;
-    case 1:
-    default:
-        m_ClearSelected->SetValue(true);
-        break;
+        case 0:
+            m_DontClear->SetValue(true);
+            break;
+
+        case 2:
+            m_ClearAll->SetValue(true);
+            break;
+
+        case 1:
+        default:
+            m_ClearSelected->SetValue(true);
+            break;
     }
-    m_SetupGlobalVars->SetValue(Cfg->ReadBool(_T("libselect/setup_global_vars"),true));
+
+    m_SetupGlobalVars->SetValue(Cfg->ReadBool(_T("libselect/setup_global_vars"), true));
 }
 
 LibSelectDlg::~LibSelectDlg()
@@ -122,20 +124,20 @@ LibSelectDlg::~LibSelectDlg()
     //*)
 }
 
-void LibSelectDlg::SetSelections(const wxArrayInt& Selections)
+void LibSelectDlg::SetSelections(const wxArrayInt & Selections)
 {
     m_Libraries->Freeze();
 
     // First clear all
-    for ( size_t i=0; i<m_Libraries->GetCount(); i++ )
+    for (size_t i = 0; i < m_Libraries->GetCount(); i++)
     {
-        m_Libraries->Check(i,false);
+        m_Libraries->Check(i, false);
     }
 
     // Next select only those which are on the list
-    for ( size_t i=0; i<Selections.Count(); i++ )
+    for (size_t i = 0; i < Selections.Count(); i++)
     {
-        m_Libraries->Check(Selections[i],true);
+        m_Libraries->Check(Selections[i], true);
     }
 
     m_Libraries->Thaw();
@@ -144,13 +146,15 @@ void LibSelectDlg::SetSelections(const wxArrayInt& Selections)
 wxArrayInt LibSelectDlg::GetSelections()
 {
     wxArrayInt Ret;
-    for ( size_t i=0; i<m_Libraries->GetCount(); i++ )
+
+    for (size_t i = 0; i < m_Libraries->GetCount(); i++)
     {
-        if ( m_Libraries->IsChecked(i) )
+        if (m_Libraries->IsChecked(i))
         {
             Ret.Add((int)i);
         }
     }
+
     return Ret;
 }
 
@@ -174,16 +178,28 @@ bool LibSelectDlg::GetClearAllPrevious()
     return m_ClearAll->GetValue();
 }
 
-void LibSelectDlg::OnOk(wxCommandEvent& event)
+void LibSelectDlg::OnOk(wxCommandEvent & event)
 {
-    ConfigManager* Cfg = Manager::Get()->GetConfigManager(_T("lib_finder"));
+    ConfigManager * Cfg = Manager::Get()->GetConfigManager(_T("lib_finder"));
 
-    if ( !m_DontClear )
+    if (!m_DontClear)
     {
-        if ( m_DontClear->GetValue()     ) Cfg->Write(_T("libselect/previous"),0);
-        if ( m_ClearSelected->GetValue() ) Cfg->Write(_T("libselect/previous"),1);
-        if ( m_ClearAll->GetValue()      ) Cfg->Write(_T("libselect/previous"),2);
+        if (m_DontClear->GetValue())
+        {
+            Cfg->Write(_T("libselect/previous"), 0);
+        }
+
+        if (m_ClearSelected->GetValue())
+        {
+            Cfg->Write(_T("libselect/previous"), 1);
+        }
+
+        if (m_ClearAll->GetValue())
+        {
+            Cfg->Write(_T("libselect/previous"), 2);
+        }
     }
-    Cfg->Write(_T("libselect/setup_global_vars"),m_SetupGlobalVars->GetValue());
+
+    Cfg->Write(_T("libselect/setup_global_vars"), m_SetupGlobalVars->GetValue());
     event.Skip();
 }

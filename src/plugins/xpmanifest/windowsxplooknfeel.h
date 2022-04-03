@@ -9,15 +9,15 @@
 #include "cbplugin.h" // the base class we 're inheriting
 
 #ifndef __WXMSW__
-#error This plugin is for use under Win32 only!
+    #error This plugin is for use under Win32 only!
 #endif
 
 class WindowsXPLookNFeel : public cbToolPlugin
 {
-public:
-    WindowsXPLookNFeel();
-    ~WindowsXPLookNFeel();
-    int Execute();
+    public:
+        WindowsXPLookNFeel();
+        ~WindowsXPLookNFeel();
+        int Execute();
 };
 
 #endif // WINDOWSXPLOOKNFEEL_H

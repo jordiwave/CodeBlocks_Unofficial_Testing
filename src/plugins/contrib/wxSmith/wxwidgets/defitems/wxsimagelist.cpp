@@ -29,27 +29,24 @@ namespace
 wxsRegisterItem<wxsImageList> Reg(_T("ImageList"), wxsTTool, _T("Tools"), 72);
 }
 
-wxsImageList::wxsImageList(wxsItemResData *Data):
+wxsImageList::wxsImageList(wxsItemResData * Data):
     wxsTool(Data, &Reg.Info, 0, 0)
 {
     int         n;
     wxString    ss, tt;
     wxFileName  fn;
-
     m_IsBuilt = false;
     m_ImageData.Clear();
     m_Width   = 16;
     m_Height  = 16;
     m_Count   = 0;
     m_Include = false;
-
     // make the absolute directory path where we store XPM image files
     // this directory is always a sub-dir where the source code file is stored
     fn = Data->GetSrcFileName();
     ss = fn.GetPath((wxPATH_GET_VOLUME + wxPATH_GET_SEPARATOR));
     n  = ss.Len();
-    ss = ss + _T("wximages") + ss[n-1];
-
+    ss = ss + _T("wximages") + ss[n - 1];
     m_IDir = ss;
     m_RDir = _T("./wximages/");
     m_Base = fn.GetName();
@@ -74,47 +71,48 @@ void wxsImageList::OnBuildCreatingCode()
     wxString    ss, tt; // general use
 
     // have we already been here?
-    if(m_IsBuilt)
+    if (m_IsBuilt)
     {
         return;
     }
+
     m_IsBuilt = true;
 
-    switch(GetLanguage())
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_("<wx/imaglist.h>"), GetInfo().ClassName, 0);
-
-        // store the XPM data someplace
-        StoreXpmData();
-
-        vname = GetVarName();
-        // if there is no data, then just make empty image and bitmap
-        if(m_Count == 0)
+        case wxsCPP:
         {
-            Codef(_T("%s = new wxImageList(%d, %d, 1);\n"), vname.wx_str(), m_Width, m_Height);
-        }
-        // else fill it with XPM data
-        else
-        {
-            Codef(_T("%s = new wxImageList(%d, %d, %d);\n"),  vname.wx_str(), m_Width, m_Height, (m_Count + 1));
-            for(i = 0; i < m_Count; i++)
+            AddHeader(_("<wx/imaglist.h>"), GetInfo().ClassName, 0);
+            // store the XPM data someplace
+            StoreXpmData();
+            vname = GetVarName();
+
+            // if there is no data, then just make empty image and bitmap
+            if (m_Count == 0)
             {
-                ss.Printf(_("%s_%d_XPM"), vname.wx_str(), i);
-                Codef(_T("%s->Add(wxBitmap(%s));\n"), vname.wx_str(), ss.wx_str());
+                Codef(_T("%s = new wxImageList(%d, %d, 1);\n"), vname.wx_str(), m_Width, m_Height);
             }
+            // else fill it with XPM data
+            else
+            {
+                Codef(_T("%s = new wxImageList(%d, %d, %d);\n"),  vname.wx_str(), m_Width, m_Height, (m_Count + 1));
+
+                for (i = 0; i < m_Count; i++)
+                {
+                    ss.Printf(_("%s_%d_XPM"), vname.wx_str(), i);
+                    Codef(_T("%s->Add(wxBitmap(%s));\n"), vname.wx_str(), ss.wx_str());
+                }
+            }
+
+            BuildSetupWindowCode();
+            return;
         }
 
-        BuildSetupWindowCode();
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsImageList::OnBuildCreatingCode"), GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsImageList::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
@@ -129,7 +127,6 @@ void wxsImageList::OnEnumToolProperties(cb_unused long Flags)
     // starting a new build cycle
     m_IsBuilt = false;
     m_Context = GetCoderContext();
-
     // details for the image list
     WXS_IMAGELIST(wxsImageList, m_ImageData, _T("Image List"), _T("image_list"));
     WXS_ARRAYSTRING(wxsImageList, m_ImageData, _("Images as Text"), _T("image_text"), _T("item2"));
@@ -153,22 +150,27 @@ void wxsImageList::StoreXpmData(void)
     wxString    xname;
     wxString    ss, tt, vv;
     wxFile      ff;
-
     // important names
     vname = GetVarName();
-
     // if no XPM images, then just store the image size
     n = m_ImageData.GetCount();
-    if(n <= 2)
-    {
-        if(m_Width <= 0) m_Width = 16;
-        if(m_Height <= 0) m_Height = 16;
-        m_Count = 0;
 
+    if (n <= 2)
+    {
+        if (m_Width <= 0)
+        {
+            m_Width = 16;
+        }
+
+        if (m_Height <= 0)
+        {
+            m_Height = 16;
+        }
+
+        m_Count = 0;
         m_ImageData.Clear();
         ss.Printf(_T("%ld"), m_Width);
         m_ImageData.Add(ss);
-
         ss.Printf(_T("%ld"), m_Height);
         m_ImageData.Add(ss);
     }
@@ -176,16 +178,26 @@ void wxsImageList::StoreXpmData(void)
     else
     {
         ss = m_ImageData.Item(0);
-        if(ss.ToLong(&ll)) m_Width = ll;
+
+        if (ss.ToLong(&ll))
+        {
+            m_Width = ll;
+        }
 
         ss = m_ImageData.Item(1);
-        if(ss.ToLong(&ll)) m_Height = ll;
+
+        if (ss.ToLong(&ll))
+        {
+            m_Height = ll;
+        }
 
         m_Count = 0;
-        for(i = 0; i < (int)m_ImageData.GetCount(); i++)
+
+        for (i = 0; i < (int)m_ImageData.GetCount(); i++)
         {
             ss = m_ImageData.Item(i);
-            if(ss.Find(_T("xpm_data")) >= 0)
+
+            if (ss.Find(_T("xpm_data")) >= 0)
             {
                 m_Count += 1;
             }
@@ -193,15 +205,19 @@ void wxsImageList::StoreXpmData(void)
     };
 
     // are we finished?
-    if(m_Count == 0)
+    if (m_Count == 0)
     {
         return;
     }
 
     // need to create a #include file?
-    if(m_Include)
+    if (m_Include)
     {
-        if(! wxFileName::DirExists(m_IDir)) wxFileName::Mkdir(m_IDir);
+        if (! wxFileName::DirExists(m_IDir))
+        {
+            wxFileName::Mkdir(m_IDir);
+        }
+
         ss  = m_IDir;
         ss += m_Base;
         ss += _T("_");
@@ -214,21 +230,22 @@ void wxsImageList::StoreXpmData(void)
     n = 0;
     i = 2;
     tt = wxString();
-    while(i < (int)m_ImageData.GetCount())
+
+    while (i < (int)m_ImageData.GetCount())
     {
         ss = m_ImageData.Item(i);
         i += 1;
 
         // the beginning of a new XPM image means the end of the previous image
-        if(ss.Find(_T("xpm_data")) >= 0)
+        if (ss.Find(_T("xpm_data")) >= 0)
         {
             vv.Printf(_T("%s_%d_XPM"), vname.wx_str(), n);
             ss.Replace(_T("xpm_data"), vv);
             n += 1;
 
-            if(tt.Length() > 0)
+            if (tt.Length() > 0)
             {
-                if(m_Include)
+                if (m_Include)
                 {
                     ff.Write(tt);
                 }
@@ -250,9 +267,9 @@ void wxsImageList::StoreXpmData(void)
     }
 
     // the left-overs
-    if(tt.Length() > 0)
+    if (tt.Length() > 0)
     {
-        if(m_Include)
+        if (m_Include)
         {
             ff.Write(tt);
         }
@@ -263,10 +280,9 @@ void wxsImageList::StoreXpmData(void)
     }
 
     // include the #include file
-    if(m_Include)
+    if (m_Include)
     {
         ff.Close();
-
         ss = _T("\"");
         ss += m_RDir;
         ss += m_Base;
@@ -274,7 +290,6 @@ void wxsImageList::StoreXpmData(void)
         ss += vname;
         ss += _T(".xpm");
         ss += _T("\"");
-
         AddHeader(ss, GetInfo().ClassName, 0);
     }
 }
@@ -298,11 +313,12 @@ wxBitmap wxsImageList::GetPreview(int inIndex)
     wxBitmap        bmp;
 
     // no such image?
-    if((inIndex < 0) || (inIndex >= m_Count))
+    if ((inIndex < 0) || (inIndex >= m_Count))
     {
         return wxNullBitmap;
     }
-    if(m_ImageData.GetCount() == 0)
+
+    if (m_ImageData.GetCount() == 0)
     {
         return wxNullBitmap;
     }
@@ -312,23 +328,24 @@ wxBitmap wxsImageList::GetPreview(int inIndex)
     j = 0;              // counter of data blocks
     i = 0;              // index into m_ImageData
 
-    while((i < (int)m_ImageData.GetCount()) && (n < 0))
+    while ((i < (int)m_ImageData.GetCount()) && (n < 0))
     {
         ss = m_ImageData.Item(i);
         i += 1;
 
-        if(ss.Find(_T("xpm_data")) >= 0)
+        if (ss.Find(_T("xpm_data")) >= 0)
         {
-            if(j == inIndex)
+            if (j == inIndex)
             {
                 n = i;
             }
+
             j += 1;
         }
     }
 
     // still no data block?
-    if(n < 0)
+    if (n < 0)
     {
         return wxNullBitmap;
         \
@@ -337,16 +354,16 @@ wxBitmap wxsImageList::GetPreview(int inIndex)
     // save that first line
     aa.Clear();
     aa.Add(ss);
-
     // copy out the data block (until the next "xpm_data")
     i = n;
     n = -1;
-    while((i < (int)m_ImageData.GetCount()) && (n < 0))
+
+    while ((i < (int)m_ImageData.GetCount()) && (n < 0))
     {
         ss = m_ImageData.Item(i);
         i += 1;
 
-        if(ss.Find(_T("xpm_data")) >= 0)
+        if (ss.Find(_T("xpm_data")) >= 0)
         {
             n = i;
         }
@@ -358,7 +375,6 @@ wxBitmap wxsImageList::GetPreview(int inIndex)
 
     // turn that data block into a bitmap
     wxsImageListEditorDlg::ArrayToBitmap(aa, bmp);
-
     // done
     return bmp;
 }
@@ -369,7 +385,7 @@ wxBitmap wxsImageList::GetPreview(int inIndex)
  * \return void
  *
  */
-void wxsImageList::GetImageList(wxImageList &aImageList)
+void wxsImageList::GetImageList(wxImageList & aImageList)
 {
     aImageList.RemoveAll();
     wxsImageListEditorDlg::ArrayToImageList(m_ImageData, aImageList);

@@ -3,7 +3,6 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="todo_parser_fuzzer_wx30-unix.cbp" />
-		<Option pch_mode="2" />
 		<Option compiler="afl_gnu_gcc_compiler" />
 		<Build>
 			<Target title="Debug">

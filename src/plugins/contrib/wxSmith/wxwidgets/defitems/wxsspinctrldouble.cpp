@@ -46,7 +46,7 @@ WXS_EVI(EVT_SPINCTRLDOUBLE, wxEVT_SPINCTRLDOUBLE, wxSpinDoubleEvent, Change)
 WXS_EV_END()
 }
 
-wxsSpinCtrlDouble::wxsSpinCtrlDouble(wxsItemResData* Data):
+wxsSpinCtrlDouble::wxsSpinCtrlDouble(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -61,34 +61,42 @@ wxsSpinCtrlDouble::wxsSpinCtrlDouble(wxsItemResData* Data):
 
 void wxsSpinCtrlDouble::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/spinctrl.h>"), GetInfo().ClassName, 0);
-        AddHeader(_T("<wx/spinctrl.h>"), _T("wxSpinEvent"), 0);
-        long ValueLong = 0;
-        Value.ToLong(&ValueLong);
-        Codef(_T("%C(%W, %I, %n, %P, %S, %T, %f, %f, %f, %f, %N);\n"),Value.wx_str(), Min, Max, Initial, Increment);
-        if ( !Value.empty() )
-            Codef(_T("%ASetValue(%n);\n"), Value.wx_str());
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/spinctrl.h>"), GetInfo().ClassName, 0);
+            AddHeader(_T("<wx/spinctrl.h>"), _T("wxSpinEvent"), 0);
+            long ValueLong = 0;
+            Value.ToLong(&ValueLong);
+            Codef(_T("%C(%W, %I, %n, %P, %S, %T, %f, %f, %f, %f, %N);\n"), Value.wx_str(), Min, Max, Initial, Increment);
 
-        BuildSetupWindowCode();
-        return;
-    }
+            if (!Value.empty())
+            {
+                Codef(_T("%ASetValue(%n);\n"), Value.wx_str());
+            }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsSpinCtrlDouble::OnBuildCreatingCode"), GetLanguage());
-    }
+            BuildSetupWindowCode();
+            return;
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsSpinCtrlDouble::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
-wxObject* wxsSpinCtrlDouble::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsSpinCtrlDouble::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxSpinCtrlDouble* Preview = new wxSpinCtrlDouble(Parent, GetId(), Value, Pos(Parent), Size(Parent), Style(), Min, Max, Initial, Increment);
-    if ( !Value.empty() ) Preview->SetValue(Value);
+    wxSpinCtrlDouble * Preview = new wxSpinCtrlDouble(Parent, GetId(), Value, Pos(Parent), Size(Parent), Style(), Min, Max, Initial, Increment);
+
+    if (!Value.empty())
+    {
+        Preview->SetValue(Value);
+    }
+
     return SetupWindow(Preview, Flags);
 }
 

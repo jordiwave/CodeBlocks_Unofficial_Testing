@@ -54,31 +54,31 @@ struct ProjectCodeStats
  */
 class CodeStatExecDlg : public wxScrollingDialog
 {
-public:
-    typedef std::set<wxString> ParsedFileNamesSet;
-public:
-    CodeStatExecDlg(wxWindow* parent);
-    virtual ~CodeStatExecDlg();
-    int Execute(LanguageDef languages[NB_FILETYPES_MAX], int numLanguages);
-private:
-    void EndModal(int retCode);
-    void OnSelectProject(wxCommandEvent& evt);
-    void OnIdle(wxIdleEvent& evt);
-    ProjectCodeStats ParseProject(int index, ParsedFileNamesSet *parsedFileNames);
-    void DoParseProject(int index);
-    void DoParseWorkspace();
-    void UpdateProgress();
-    void ShowResults(int index);
+    public:
+        typedef std::set<wxString> ParsedFileNamesSet;
+    public:
+        CodeStatExecDlg(wxWindow * parent);
+        virtual ~CodeStatExecDlg();
+        int Execute(LanguageDef languages[NB_FILETYPES_MAX], int numLanguages);
+    private:
+        void EndModal(int retCode);
+        void OnSelectProject(wxCommandEvent & evt);
+        void OnIdle(wxIdleEvent & evt);
+        ProjectCodeStats ParseProject(int index, ParsedFileNamesSet * parsedFileNames);
+        void DoParseProject(int index);
+        void DoParseWorkspace();
+        void UpdateProgress();
+        void ShowResults(int index);
 
-private:
-    wxChoice* m_choice;
-    wxProgressDialog* m_progress;
-    std::vector<ProjectCodeStats> m_cache;
-    LanguageDef* m_languages;
-    int m_numLanguages;
-    int m_numFiles;
-    int m_currentFile;
-    bool m_changed;
+    private:
+        wxChoice * m_choice;
+        wxProgressDialog * m_progress;
+        std::vector<ProjectCodeStats> m_cache;
+        LanguageDef * m_languages;
+        int m_numLanguages;
+        int m_numFiles;
+        int m_currentFile;
+        bool m_changed;
 };
 
 #endif // CODESTATEXEC_H

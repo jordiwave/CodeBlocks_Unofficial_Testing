@@ -12,8 +12,8 @@
 // #define RELEASE "20.03"
 
 #ifndef RELEASE
-#define RELEASE "svn"
-#define SVN_BUILD 1
+    #define RELEASE "svn"
+    #define SVN_BUILD 1
 #endif
 
 namespace appglobals

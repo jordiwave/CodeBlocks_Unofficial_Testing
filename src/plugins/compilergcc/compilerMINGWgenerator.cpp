@@ -31,14 +31,18 @@ CompilerMINGWGenerator::~CompilerMINGWGenerator()
     //dtor
 }
 
-wxString CompilerMINGWGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* target)
+wxString CompilerMINGWGenerator::SetupIncludeDirs(Compiler * compiler, ProjectBuildTarget * target)
 {
     wxString result = CompilerCommandGenerator::SetupIncludeDirs(compiler, target);
     m_VerStr = compiler->GetVersionString();
     wxString pch_prepend = wxEmptyString;
     long gcc_major = 4;
-    if ( !m_VerStr.IsEmpty() )
+
+    if (!m_VerStr.IsEmpty())
+    {
         m_VerStr.BeforeFirst('.').ToLong(&gcc_major);
+    }
+
     bool HasPCH = false; // We don't know yet if there are any header files to be compiled...
 
     // for PCH to work, the very first include dir *must* be the object output dir
@@ -48,8 +52,9 @@ wxString CompilerMINGWGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBui
     {
         wxArrayString includedDirs; // avoid adding duplicate dirs...
         wxString sep = wxFILE_SEP_PATH;
+
         // find all PCH in project
-        for (ProjectFile *f : target->GetParentProject()->GetFilesList())
+        for (ProjectFile * f : target->GetParentProject()->GetFilesList())
         {
             if (f->compile && FileTypeOf(f->relativeFilename) == ftHeader)
             {
@@ -57,35 +62,50 @@ wxString CompilerMINGWGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBui
                 wxFileName fn(f->GetObjName());
                 wxString objName = (compiler->GetSwitches().UseFlatObjects) ? fn.GetFullName() : fn.GetFullPath();
                 wxString dir = wxFileName(target->GetObjectOutput() + sep + objName).GetPath();
+
                 if (includedDirs.Index(dir) == wxNOT_FOUND)
                 {
                     includedDirs.Add(dir);
                     QuoteStringIfNeeded(dir);
-                    if ( gcc_major < 4 )
+
+                    if (gcc_major < 4)
+                    {
                         pch_prepend << compiler->GetSwitches().includeDirs << dir << _T(' ');
+                    }
                     else
+                    {
                         pch_prepend << _T("-iquote") << dir << _T(' ');
+                    }
                 }
+
                 HasPCH = true; // there is at least one header file to be compiled
             }
         }
+
         // for gcc-4.0+, use the following:
         // pch_prepend << _T("-iquote") << dir << _T(' ');
         // for earlier versions, -I- must be used
-        if ( gcc_major < 4 )
+        if (gcc_major < 4)
+        {
             pch_prepend << _T("-I- ");
+        }
+
         int count = (int)includedDirs.GetCount();
+
         for (int i = 0; i < count; ++i)
         {
             QuoteStringIfNeeded(includedDirs[i]);
             pch_prepend << compiler->GetSwitches().includeDirs << includedDirs[i] << _T(' ');
         }
+
         pch_prepend << _T("-I. ");
     }
 
     // add in array
     if (HasPCH)
+    {
         result.Prepend(pch_prepend);
+    }
 
     return result;
 }

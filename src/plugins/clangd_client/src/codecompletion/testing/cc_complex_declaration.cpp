@@ -1,18 +1,18 @@
 //Code::Blocks / Tickets / #127 Code completion fails with complex declarations/definitions - https://sourceforge.net/p/codeblocks/tickets/127/
 
 int test01;
-int *test02;
+int * test02;
 int (*test03);
 int (*test04)();
 int test05();
 int (test06)();
 int (test07);
-int *const test08 = 0;
+int * const test08 = 0;
 int (*const test09) = 0;
 int test10[1] = {0};
-int *test11[1] = {0};
+int * test11[1] = {0};
 int (*test12)[1];
-int *test13();
+int * test13();
 int (*test14());
 int (*test15())();
 

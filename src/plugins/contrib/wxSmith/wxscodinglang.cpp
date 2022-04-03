@@ -30,212 +30,241 @@ namespace wxsCodeMarks
 {
 wxString Name(wxsCodingLang Lang)
 {
-    switch ( Lang )
+    switch (Lang)
     {
-    case wxsCPP:
-        return _T("CPP");
-    case wxsUnknownLanguage: // fall-through
-    default:
-        break;
+        case wxsCPP:
+            return _T("CPP");
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+            break;
     }
+
     return wxEmptyString;
 }
 
-wxsCodingLang Id(const wxString& Name)
+wxsCodingLang Id(const wxString & Name)
 {
-    if ( Name == _T("CPP") ) return wxsCPP;
+    if (Name == _T("CPP"))
+    {
+        return wxsCPP;
+    }
+
     return wxsUnknownLanguage;
 }
 
-wxsCodingLang IdFromExt(const wxString& Extension)
+wxsCodingLang IdFromExt(const wxString & Extension)
 {
     wxString ExtLower = Extension.Lower();
-    if ( (ExtLower==_T("c")) ||
-            (ExtLower==_T("h")) ||
-            (ExtLower==_T("cpp")) ||
-            (ExtLower==_T("hpp")) ) return wxsCPP;
+
+    if ((ExtLower == _T("c")) ||
+            (ExtLower == _T("h")) ||
+            (ExtLower == _T("cpp")) ||
+            (ExtLower == _T("hpp")))
+    {
+        return wxsCPP;
+    }
+
     return wxsUnknownLanguage;
 }
 
-wxString Beg(wxsCodingLang Lang,const wxString& BlockName)
+wxString Beg(wxsCodingLang Lang, const wxString & BlockName)
 {
-    switch ( Lang )
+    switch (Lang)
     {
-    case wxsCPP:
-        return _T("//(*") + BlockName;
-    case wxsUnknownLanguage: // fall-through
-    default:
-        return wxEmptyString;
+        case wxsCPP:
+            return _T("//(*") + BlockName;
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+            return wxEmptyString;
     }
 }
 
-wxString Beg(wxsCodingLang Lang,const wxString& BlockName,const wxString& Param)
+wxString Beg(wxsCodingLang Lang, const wxString & BlockName, const wxString & Param)
 {
-    switch ( Lang )
+    switch (Lang)
     {
-    case wxsCPP:
-        return wxString::Format(_T("//(*%s(%s)"),BlockName.c_str(),Param.c_str());
-    case wxsUnknownLanguage: // fall-through
-    default:
-        return wxEmptyString;
+        case wxsCPP:
+            return wxString::Format(_T("//(*%s(%s)"), BlockName.c_str(), Param.c_str());
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+            return wxEmptyString;
     }
 }
 
 wxString End(wxsCodingLang Lang)
 {
-    switch ( Lang )
+    switch (Lang)
     {
-    case wxsCPP:
-        return _T("//*)");
-    case wxsUnknownLanguage: // fall-through
-    default:
-        return wxEmptyString;
+        case wxsCPP:
+            return _T("//*)");
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+            return wxEmptyString;
     }
 }
 
-void Unknown(const wxString& Function,wxsCodingLang Lang)
+void Unknown(const wxString & Function, wxsCodingLang Lang)
 {
     Manager::Get()->GetLogManager()->DebugLog(F(
-                _T("Unknown coding language %s (%d) in function %s"),
-                Name(Lang).wx_str(),
-                (int)Lang,
-                Function.wx_str()));
+                                                  _T("Unknown coding language %s (%d) in function %s"),
+                                                  Name(Lang).wx_str(),
+                                                  (int)Lang,
+                                                  Function.wx_str()));
 }
 
-wxString String(wxsCodingLang Lang,const wxString& Source)
+wxString String(wxsCodingLang Lang, const wxString & Source)
 {
-    switch ( Lang )
+    switch (Lang)
     {
-    case wxsCPP:
-    {
-        wxString Result = _T("\"");
-
-        int Len = Source.Length();
-
-        for ( int i=0; i<Len; i++ )
+        case wxsCPP:
         {
-            wxChar ch = Source.GetChar(i);
+            wxString Result = _T("\"");
+            int Len = Source.Length();
 
-            if ( (unsigned)ch < _T(' ') )
+            for (int i = 0; i < Len; i++)
             {
-                switch ( ch )
+                wxChar ch = Source.GetChar(i);
+
+                if ((unsigned)ch < _T(' '))
                 {
-                case _T('\n') :
-                    Result.Append(_T("\\n"));
-                    break;
-                case _T('\t') :
-                    Result.Append(_T("\\t"));
-                    break;
-                case _T('\v') :
-                    Result.Append(_T("\\v"));
-                    break;
-                case _T('\b') :
-                    Result.Append(_T("\\b"));
-                    break;
-                case _T('\r') :
-                    Result.Append(_T("\\r"));
-                    break;
-                case _T('\f') :
-                    Result.Append(_T("\\f"));
-                    break;
-                case _T('\a') :
-                    Result.Append(_T("\\a"));
-                    break;
-                default   :
-                {
-                    wxString Formater = wxString::Format(_T("\\%d%d%d"),
-                                                         ( ch >> 6 ) & 7,
-                                                         ( ch >> 3 ) & 7,
-                                                         ( ch >> 0 ) & 7 );
-                    Result.Append(Formater.c_str());
+                    switch (ch)
+                    {
+                        case _T('\n') :
+                            Result.Append(_T("\\n"));
+                            break;
+
+                        case _T('\t') :
+                            Result.Append(_T("\\t"));
+                            break;
+
+                        case _T('\v') :
+                            Result.Append(_T("\\v"));
+                            break;
+
+                        case _T('\b') :
+                            Result.Append(_T("\\b"));
+                            break;
+
+                        case _T('\r') :
+                            Result.Append(_T("\\r"));
+                            break;
+
+                        case _T('\f') :
+                            Result.Append(_T("\\f"));
+                            break;
+
+                        case _T('\a') :
+                            Result.Append(_T("\\a"));
+                            break;
+
+                        default   :
+                        {
+                            wxString Formater = wxString::Format(_T("\\%d%d%d"),
+                                                                 (ch >> 6) & 7,
+                                                                 (ch >> 3) & 7,
+                                                                 (ch >> 0) & 7);
+                            Result.Append(Formater.c_str());
+                        }
+                    }
                 }
+                else
+                {
+                    switch (ch)
+                    {
+                        case _T('\\'):
+                            Result.Append(_T("\\\\"));
+                            break;
+
+                        case _T('\?'):
+                            Result.Append(_T("\\\?"));
+                            break;
+
+                        case _T('\''):
+                            Result.Append(_T("\\\'"));
+                            break;
+
+                        case _T('\"'):
+                            Result.Append(_T("\\\""));
+                            break;
+
+                        default  :
+                            Result.Append(ch);
+                    }
                 }
             }
-            else
-            {
-                switch ( ch )
-                {
-                case _T('\\'):
-                    Result.Append(_T("\\\\"));
-                    break;
-                case _T('\?'):
-                    Result.Append(_T("\\\?"));
-                    break;
-                case _T('\''):
-                    Result.Append(_T("\\\'"));
-                    break;
-                case _T('\"'):
-                    Result.Append(_T("\\\""));
-                    break;
-                default  :
-                    Result.Append(ch);
-                }
-            }
+
+            Result.Append(_T('\"'));
+            return Result;
         }
 
-        Result.Append(_T('\"'));
-        return Result;
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            Unknown(_T("wxsCodeMarks::String"), Lang);
+        }
     }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        Unknown(_T("wxsCodeMarks::String"),Lang);
-    }
-    }
     return wxEmptyString;
 }
 
-wxString WxString(wxsCodingLang Lang, const wxString& Source, bool WithTranslation)
+wxString WxString(wxsCodingLang Lang, const wxString & Source, bool WithTranslation)
 {
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("wxsmith"));
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("wxsmith"));
     bool DoTranslation = WithTranslation && (cfg->ReadBool(_T("/useI18N"), true));
-
     wxString NonTransPrefix = _T("_T(");
     wxString NonTransPostfix = _T(")");
-    switch (cfg->ReadInt(_T("/noneI18N"),0))
+
+    switch (cfg->ReadInt(_T("/noneI18N"), 0))
     {
-    case 1:
-        NonTransPrefix = _T("wxT(");
-        break;
-    case 2:
-        NonTransPrefix = _T("");
-        NonTransPostfix = _T("");
-        break;
-    case 3:
-        NonTransPrefix = _T("wxS(");
-        break;
-    case 0: // fall-through
-    default:
-        break;
+        case 1:
+            NonTransPrefix = _T("wxT(");
+            break;
+
+        case 2:
+            NonTransPrefix = _T("");
+            NonTransPostfix = _T("");
+            break;
+
+        case 3:
+            NonTransPrefix = _T("wxS(");
+            break;
+
+        case 0: // fall-through
+        default:
+            break;
     }
 
-    switch ( Lang )
+    switch (Lang)
     {
-    case wxsCPP:
-    {
-        if ( Source.empty() )
+        case wxsCPP:
         {
-            // Always empty string, no matter if we have translation
-            return _T("wxEmptyString");
+            if (Source.empty())
+            {
+                // Always empty string, no matter if we have translation
+                return _T("wxEmptyString");
+            }
+
+            if (DoTranslation)
+            {
+                return _T("_(") + String(Lang, Source) + _T(")");
+            }
+            else
+            {
+                return NonTransPrefix + String(Lang, Source) + NonTransPostfix;
+            }
         }
 
-        if ( DoTranslation )
+        case wxsUnknownLanguage: // fall-through
+        default:
         {
-            return _T("_(") + String(Lang,Source) + _T(")");
-        }
-        else
-        {
-            return NonTransPrefix + String(Lang,Source) + NonTransPostfix;
+            Unknown(_T("wxsCodeMarks::WxString"), Lang);
         }
     }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        Unknown(_T("wxsCodeMarks::WxString"),Lang);
-    }
-    }
     return wxEmptyString;
 }
 
@@ -245,7 +274,7 @@ namespace
  *
  * This names must be placed in alphabetical order
  */
-static const wxChar* DeadNamesCPP[] =
+static const wxChar * DeadNamesCPP[] =
 {
     _T("asm"),          _T("auto"),      _T("bool"),     _T("break"),            _T("case"),
     _T("catch"),        _T("char"),      _T("class"),    _T("const"),            _T("const_cast"),
@@ -266,65 +295,68 @@ static const wxChar* DeadNamesCPP[] =
 static const int DeadNamesCPPLen = sizeof(DeadNamesCPP) / sizeof(DeadNamesCPP[0]);
 }
 
-bool ValidateIdentifier(wxsCodingLang Lang, const wxString& NameStr)
+bool ValidateIdentifier(wxsCodingLang Lang, const wxString & NameStr)
 {
-    switch ( Lang )
+    switch (Lang)
     {
-    case wxsCPP:
-    {
-        const wxChar* Name = NameStr.c_str();
-        if ( !Name ) return false;
-
-        if (( *Name < _T('a') || *Name > _T('z') ) &&
-                ( *Name < _T('A') || *Name > _T('Z') ) &&
-                ( *Name != _T('_') ))
+        case wxsCPP:
         {
-            return false;
-        }
+            const wxChar * Name = NameStr.c_str();
 
-        while ( *++Name )
-        {
-            if (( *Name < _T('a') || *Name > _T('z') ) &&
-                    ( *Name < _T('A') || *Name > _T('Z') ) &&
-                    ( *Name < _T('0') || *Name > _T('9') ) &&
-                    ( *Name != _T('_') ))
-            {
-                return false;
-            }
-        }
-
-        int Begin = 0;
-        int End = DeadNamesCPPLen-1;
-
-        while ( Begin <= End )
-        {
-            int Middle = ( Begin + End ) >> 1;
-
-            int Res = wxStrcmp(DeadNamesCPP[Middle],NameStr);
-
-            if ( Res < 0 )
-            {
-                Begin = Middle+1;
-            }
-            else if ( Res > 0 )
-            {
-                End = Middle-1;
-            }
-            else
+            if (!Name)
             {
                 return false;
             }
 
+            if ((*Name < _T('a') || *Name > _T('z')) &&
+                    (*Name < _T('A') || *Name > _T('Z')) &&
+                    (*Name != _T('_')))
+            {
+                return false;
+            }
+
+            while (*++Name)
+            {
+                if ((*Name < _T('a') || *Name > _T('z')) &&
+                        (*Name < _T('A') || *Name > _T('Z')) &&
+                        (*Name < _T('0') || *Name > _T('9')) &&
+                        (*Name != _T('_')))
+                {
+                    return false;
+                }
+            }
+
+            int Begin = 0;
+            int End = DeadNamesCPPLen - 1;
+
+            while (Begin <= End)
+            {
+                int Middle = (Begin + End) >> 1;
+                int Res = wxStrcmp(DeadNamesCPP[Middle], NameStr);
+
+                if (Res < 0)
+                {
+                    Begin = Middle + 1;
+                }
+                else
+                    if (Res > 0)
+                    {
+                        End = Middle - 1;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+            }
+
+            return true;
         }
 
-        return true;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        Unknown(_T("wxscodeMarks::ValidateIdentifier"),Lang);
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            Unknown(_T("wxscodeMarks::ValidateIdentifier"), Lang);
+        }
     }
 
     return false;

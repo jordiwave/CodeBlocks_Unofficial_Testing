@@ -16,23 +16,23 @@ class FileTreeData;
 
 class RndGen : public cbPlugin
 {
-public:
-    RndGen() : RandGen(time(0)) {}
-    virtual ~RndGen() {}
+    public:
+        RndGen() : RandGen(time(0)) {}
+        virtual ~RndGen() {}
 
-    virtual void BuildMenu(cb_unused wxMenuBar* menuBar) {}
-    virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0) {}
-    virtual bool BuildToolBar(cb_unused wxToolBar* toolBar)
-    {
-        return false;
-    }
+        virtual void BuildMenu(cb_unused wxMenuBar * menuBar) {}
+        virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu * menu, cb_unused const FileTreeData * data = 0) {}
+        virtual bool BuildToolBar(cb_unused wxToolBar * toolBar)
+        {
+            return false;
+        }
 
-private:
-    std::mt19937 RandGen;
+    private:
+        std::mt19937 RandGen;
 
-    virtual void OnAttach();
-    void OnSave(CodeBlocksEvent& event);
-    virtual void OnRelease(cb_unused bool appShutDown) {}
+        virtual void OnAttach();
+        void OnSave(CodeBlocksEvent & event);
+        virtual void OnRelease(cb_unused bool appShutDown) {}
 };
 
 #endif // header guard

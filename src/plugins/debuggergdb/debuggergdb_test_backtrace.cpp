@@ -4,7 +4,6 @@
 
 SUITE(GDBStackFrameParser)
 {
-
     TEST(match0_flag)
     {
         cbStackFrame sf;
@@ -34,8 +33,7 @@ SUITE(GDBStackFrameParser)
         CHECK_EQUAL(wxT("main.cpp"), sf.GetFilename());
         CHECK_EQUAL(wxT("5"), sf.GetLine());
     }
-
-//#8  0x77d48734 in USER32!GetDC () from C:\\WINDOWS\\system32\\user32.dll
+    //#8  0x77d48734 in USER32!GetDC () from C:\\WINDOWS\\system32\\user32.dll
     TEST(match1_flag)
     {
         cbStackFrame sf;
@@ -72,9 +70,8 @@ SUITE(GDBStackFrameParser)
         CHECK_EQUAL(wxT("C:\\WINDOWS\\system32\\user32.dll"), sf.GetFilename());
         CHECK_EQUAL(wxEmptyString, sf.GetLine());
     }
-
-//#9  0x001b04fe in ?? ()
-//#11  0x00406810 in main ()
+    //#9  0x001b04fe in ?? ()
+    //#11  0x00406810 in main ()
     TEST(match2_flag)
     {
         cbStackFrame sf;
@@ -111,8 +108,7 @@ SUITE(GDBStackFrameParser)
         CHECK_EQUAL(wxEmptyString, sf.GetFilename());
         CHECK_EQUAL(wxEmptyString, sf.GetLine());
     }
-
-//#30 0x00403c0a in WinMain (hInstance=0x400000, hPrevInstance=0x0, lpCmdLine=0x241ef9 "", nCmdShow=10) at C:/Devel/wxSmithTest/app.cpp:297
+    //#30 0x00403c0a in WinMain (hInstance=0x400000, hPrevInstance=0x0, lpCmdLine=0x241ef9 "", nCmdShow=10) at C:/Devel/wxSmithTest/app.cpp:297
     TEST(match3_flag)
     {
         cbStackFrame sf;
@@ -149,8 +145,7 @@ SUITE(GDBStackFrameParser)
         CHECK_EQUAL(wxT("C:/Devel/wxSmithTest/app.cpp"), sf.GetFilename());
         CHECK_EQUAL(wxT("297"), sf.GetLine());
     }
-
-//#31 0x004076ca in main () at C:/Devel/wxWidgets-2.6.1/include/wx/intl.h:555
+    //#31 0x004076ca in main () at C:/Devel/wxWidgets-2.6.1/include/wx/intl.h:555
     TEST(match4_flag)
     {
         cbStackFrame sf;
@@ -187,8 +182,7 @@ SUITE(GDBStackFrameParser)
         CHECK_EQUAL(wxT("C:/Devel/wxWidgets-2.6.1/include/wx/intl.h"), sf.GetFilename());
         CHECK_EQUAL(wxT("555"), sf.GetLine());
     }
-
-//#50  0x00410c8c in one::~one() (this=0x3d24c8) at main.cpp:14
+    //#50  0x00410c8c in one::~one() (this=0x3d24c8) at main.cpp:14
     TEST(match5_flag)
     {
         cbStackFrame sf;
@@ -225,8 +219,7 @@ SUITE(GDBStackFrameParser)
         CHECK_EQUAL(wxT("main.cpp"), sf.GetFilename());
         CHECK_EQUAL(wxT("14"), sf.GetLine());
     }
-
-// #0  Foo::Bar::(anonymous namespace)::apply (this=0xbaf6cf0, stmt=0xb9d7160, stmtSubsts=...) at Foo/Bar/apply.cpp:219
+    // #0  Foo::Bar::(anonymous namespace)::apply (this=0xbaf6cf0, stmt=0xb9d7160, stmtSubsts=...) at Foo/Bar/apply.cpp:219
     TEST(match6_flag)
     {
         cbStackFrame sf;
@@ -274,5 +267,4 @@ SUITE(GDBStackFrameParser)
         CHECK_EQUAL(wxT("Foo/Bar/apply.cpp"), sf.GetFilename());
         CHECK_EQUAL(wxT("219"), sf.GetLine());
     }
-
 } // SUITE(GDBStackFrameParser)

@@ -33,15 +33,15 @@ inline double IntToFloat(const int Value)
 
 inline bool IntToBool(const int Value)
 {
-    return (0!=Value);
+    return (0 != Value);
 }
 
 inline std::string IntToStr(const int Value)
 {
     std::string result;
     std::stringstream tmp;
-    tmp<<Value;
-    tmp>>result;
+    tmp << Value;
+    tmp >> result;
     return result;
 }
 
@@ -57,15 +57,15 @@ inline int FloatToInt(const double Value)
 
 inline bool FloatToBool(const double Value)
 {
-    return (0.0!=Value);
+    return (0.0 != Value);
 }
 
 inline std::string FloatToStr(const double Value)
 {
     std::string result;
     std::stringstream tmp;
-    tmp<<Value;
-    tmp>>result;
+    tmp << Value;
+    tmp >> result;
     return result;
 }
 
@@ -86,43 +86,60 @@ inline int BoolToInt(const bool Value)
 
 inline std::string BoolToStr(const bool Value)
 {
-    if (Value) return "true";
-    else return "false";
+    if (Value)
+    {
+        return "true";
+    }
+    else
+    {
+        return "false";
+    }
 }
 
 inline char BoolToChar(const bool Value)
 {
-    if (Value) return '1';
-    else return '0';
+    if (Value)
+    {
+        return '1';
+    }
+    else
+    {
+        return '0';
+    }
 }
 
-inline double StrToFloat(const std::string& Value)
+inline double StrToFloat(const std::string & Value)
 {
     double result;
     std::stringstream tmp;
-    tmp<<Value;
-    tmp>>result;
+    tmp << Value;
+    tmp >> result;
     return result;
 }
 
-inline int StrToInt(const std::string& Value)
+inline int StrToInt(const std::string & Value)
 {
     int result;
     std::stringstream tmp;
-    tmp<<Value;
-    tmp>>result;
+    tmp << Value;
+    tmp >> result;
     return result;
 }
 
-inline bool StrToBool(const std::string& Value)
+inline bool StrToBool(const std::string & Value)
 {
-    return (UpperCase(Value).GetString().compare("TRUE")==0);
+    return (UpperCase(Value).GetString().compare("TRUE") == 0);
 }
 
-inline char StrToChar(const std::string& Value)
+inline char StrToChar(const std::string & Value)
 {
     char result = 0;
-    if (Value.size()) result = Value[0];
+
+    if (Value.size())
+    {
+        result = Value[0];
+    }
+
     return result;
 }
 
@@ -138,7 +155,7 @@ inline int CharToInt(const char Value)
 
 inline bool CharToBool(const char Value)
 {
-    return ('0'!=Value);
+    return ('0' != Value);
 }
 
 inline std::string CharToStr(const char Value)
@@ -172,43 +189,55 @@ inline CString FloatToString(const double Value)
     return result;
 }
 
-inline CString FloatToString(const double Value, const CString& Format)
+inline CString FloatToString(const double Value, const CString & Format)
 {
     CString result;
     result.SetLength(MAX_SHORTSTRING_LENGTH);
-    sprintf(result.GetCString(),Format.GetCString(),Value);
+    sprintf(result.GetCString(), Format.GetCString(), Value);
     result.SetLength();
     return result;
 }
 
 inline CString BooleanToString(const bool Value)
 {
-    if (Value) return CString("true");
-    else return CString("false");
+    if (Value)
+    {
+        return CString("true");
+    }
+    else
+    {
+        return CString("false");
+    }
 }
 
 inline CString BooleanToYesNoString(const bool Value)
 {
-    if (Value) return CString("yes");
-    else return CString("no");
+    if (Value)
+    {
+        return CString("yes");
+    }
+    else
+    {
+        return CString("no");
+    }
 }
 
-inline double StringToFloat(const CString& Value)
+inline double StringToFloat(const CString & Value)
 {
     return Value.GetFloat();
 }
 
-inline int StringToInteger(const CString& Value)
+inline int StringToInteger(const CString & Value)
 {
     return Value.GetInteger();
 }
 
-inline bool StringToBoolean(const CString& Value)
+inline bool StringToBoolean(const CString & Value)
 {
-    return ((CString(Value)=="1")||(UpperCase(Value)=="TRUE")||(UpperCase(Value)=="YES"));
+    return ((CString(Value) == "1") || (UpperCase(Value) == "TRUE") || (UpperCase(Value) == "YES"));
 }
 
-inline char StringToChar(const CString& Value)
+inline char StringToChar(const CString & Value)
 {
     return Value.GetChar(0);
 }

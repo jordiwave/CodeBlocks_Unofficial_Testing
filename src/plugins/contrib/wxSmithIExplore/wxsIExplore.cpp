@@ -50,7 +50,7 @@ wxsRegisterItem<wxsIExplore> Reg(
     wxBitmap(IE16_xpm),             // 16x16 bitmap
     false);                         // We do not allow this item inside XRC files
 
-WXS_ST_BEGIN(wxsIExploreStyles,_T("wxRAISED_BORDER|wxTAB_TRAVERSAL"))
+WXS_ST_BEGIN(wxsIExploreStyles, _T("wxRAISED_BORDER|wxTAB_TRAVERSAL"))
 WXS_ST_CATEGORY("wxIEHtmlWin")
 WXS_ST_DEFAULTS()
 WXS_ST_END()
@@ -67,14 +67,14 @@ WXS_EV_END()
 
 //------------------------------------------------------------------------------
 
-wxsIExplore::wxsIExplore(wxsItemResData* Data):
+wxsIExplore::wxsIExplore(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
         wxsIExploreEvents,
         wxsIExploreStyles)
 {
-// start with a clean slate
+    // start with a clean slate
     mStartPage = _T("");
 }
 
@@ -82,25 +82,31 @@ wxsIExplore::wxsIExplore(wxsItemResData* Data):
 
 void wxsIExplore::OnBuildCreatingCode()
 {
-// valid language?
-    if (GetLanguage() != wxsCPP) wxsCodeMarks::Unknown(_T("wxsIExplore::OnBuildCreatingCode"),GetLanguage());
+    // valid language?
+    if (GetLanguage() != wxsCPP)
+    {
+        wxsCodeMarks::Unknown(_T("wxsIExplore::OnBuildCreatingCode"), GetLanguage());
+    }
 
-// who we are
+    // who we are
     wxString vname = GetVarName(); // name of this var
-
-// include files
+    // include files
     AddHeader(_("<IEHtmlWin.h>"), GetInfo().ClassName, 0);
-
-// create the explorer
+    // create the explorer
     Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
     BuildSetupWindowCode();
 
-// start page (if given) must have a protocol
-// if none given, use "http://"
-    if ( !mStartPage.IsEmpty())
+    // start page (if given) must have a protocol
+    // if none given, use "http://"
+    if (!mStartPage.IsEmpty())
     {
         int i = mStartPage.Find(_T("//"));
-        if (i == wxNOT_FOUND) mStartPage = _T("http://") + mStartPage;
+
+        if (i == wxNOT_FOUND)
+        {
+            mStartPage = _T("http://") + mStartPage;
+        }
+
         Codef(_T("%s->LoadUrl(%t);\n"), vname.c_str(), mStartPage.c_str());
     }
 }
@@ -109,21 +115,29 @@ void wxsIExplore::OnBuildCreatingCode()
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsIExplore::OnBuildPreview(wxWindow* Parent, long Flags)
+wxObject * wxsIExplore::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-// make it
-    wxIEHtmlWin *ie = new wxIEHtmlWin(Parent, GetId(), Pos(Parent), Size(Parent), Style(), _T("IExplore"));
+    // make it
+    wxIEHtmlWin * ie = new wxIEHtmlWin(Parent, GetId(), Pos(Parent), Size(Parent), Style(), _T("IExplore"));
     SetupWindow(ie, Flags);
 
-// start page
+    // start page
     if (! mStartPage.IsEmpty())
     {
         int i = mStartPage.Find(_T("//"));
-        if (i == wxNOT_FOUND) mStartPage = _T("http://") + mStartPage;
-        if ((Flags & pfExact) != 0) ie->LoadUrl(mStartPage);
+
+        if (i == wxNOT_FOUND)
+        {
+            mStartPage = _T("http://") + mStartPage;
+        }
+
+        if ((Flags & pfExact) != 0)
+        {
+            ie->LoadUrl(mStartPage);
+        }
     };
 
-// done
+    // done
     return ie;
 }
 

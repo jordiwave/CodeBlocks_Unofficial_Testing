@@ -6,7 +6,7 @@ UseTokenF::UseTokenF():
     m_HasOnly = false;
 }
 
-UseTokenF::UseTokenF(const wxString& name, const wxString& filename, unsigned int line):
+UseTokenF::UseTokenF(const wxString & name, const wxString & filename, unsigned int line):
     TokenF(name, filename, line)
 {
     m_HasOnly = false;
@@ -27,12 +27,12 @@ void UseTokenF::SetModuleNature(ModuleNature modNature)
     m_ModuleNature = modNature;
 }
 
-void UseTokenF::AddToNamesList(wxString& localName)
+void UseTokenF::AddToNamesList(wxString & localName)
 {
     m_NamesList.insert(localName.Lower());
 }
 
-void UseTokenF::AddToRenameList(wxString& localName, wxString& externalName)
+void UseTokenF::AddToRenameList(wxString & localName, wxString & externalName)
 {
     wxArrayString pair;
     pair.Add(localName);

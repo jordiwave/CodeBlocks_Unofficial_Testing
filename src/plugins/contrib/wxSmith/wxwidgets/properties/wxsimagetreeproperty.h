@@ -33,37 +33,37 @@
  */
 class wxsImageTreeProperty: public wxsCustomEditorProperty
 {
-public:
+    public:
 
-    /** \brief Ctor
-     *  \param PGName       name of property in Property Grid
-     *  \param DataName     name of property in data stuctures
-     *  \param DataSubName  name of name applied for each array element
-     *  \param Offset       offset of value (returned from wxsOFFSET macro)
-     */
-    wxsImageTreeProperty(const wxString& PGName,const wxString& DataName,const wxString& DataSubName,long Offset,int Priority=100);
+        /** \brief Ctor
+         *  \param PGName       name of property in Property Grid
+         *  \param DataName     name of property in data stuctures
+         *  \param DataSubName  name of name applied for each array element
+         *  \param Offset       offset of value (returned from wxsOFFSET macro)
+         */
+        wxsImageTreeProperty(const wxString & PGName, const wxString & DataName, const wxString & DataSubName, long Offset, int Priority = 100);
 
-    /** \brief Returning type name */
-    virtual const wxString GetTypeName()
-    {
-        return _T("wxArrayString");
-    }
+        /** \brief Returning type name */
+        virtual const wxString GetTypeName()
+        {
+            return _T("wxArrayString");
+        }
 
-    /** \brief Showing editor for this property */
-    virtual bool ShowEditor(wxsPropertyContainer* Object);
+        /** \brief Showing editor for this property */
+        virtual bool ShowEditor(wxsPropertyContainer * Object);
 
-protected:
+    protected:
 
-    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-    virtual wxString GetStr(wxsPropertyContainer* Object);
+        virtual bool XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
+        virtual bool PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
+        virtual wxString GetStr(wxsPropertyContainer * Object);
 
-private:
-    long Offset;
-    wxString DataSubName;
-    wxString DataName;
+    private:
+        long Offset;
+        wxString DataSubName;
+        wxString DataName;
 };
 
 /** \addtogroup ext_properties_macros
@@ -78,7 +78,7 @@ private:
  */
 #define WXS_IMAGETREE(ClassName,VarName,PGName,DataName) \
     { static wxsImageTreeProperty _Property(PGName,DataName,_("item"),wxsOFFSET(ClassName,VarName)); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \brief Macro automatically declaring wxArrayString property with custom priority
  *  \param ClassName name of class holding this property
@@ -90,7 +90,7 @@ private:
  */
 #define WXS_IMAGETREE_P(ClassName,VarName,PGName,DataName,Priority) \
     { static wxsImageTreeProperty _Property(PGName,DataName,_("item"),wxsOFFSET(ClassName,VarName),Priority); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \} */
 

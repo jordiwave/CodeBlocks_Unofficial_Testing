@@ -33,46 +33,46 @@
 
 class wxsScintilla : public wxsWidget
 {
-public:
-    wxsScintilla(wxsItemResData* Data);
+    public:
+        wxsScintilla(wxsItemResData * Data);
 
-protected:
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnBuildCreatingCode();
-    virtual void OnEnumWidgetProperties(long Flags);
+    protected:
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual void OnEnumWidgetProperties(long Flags);
 
 
-    wxSize          mSize;                          // used to check for default size
-    wxArrayString   mText;                          // initial text contents
-    wxsColourData   mCaretFG, mCaretBG;             // line with caret background color
-    long            mViewWS;                        // when to view white-space
-    long            mEOL;                           // type of end-of-line chars
-    bool            mBuffered;                      // double-buffered drawing?
-    long            mTabWidth;                      // size of a tab in spaces
-    long            mCase;                          // set letter case
-    wxsColourData   mSelFG, mSelBG;                 // selection are colors
-    long            mBlinkRate;                     // caret period
-    bool            mInsert;                        // insert or over-write mode
-    long            mCaretWidth;                    // size of the insert caret
-    long            mIndent;                        // indent size in pixels
-    bool            mReadOnly;                      // allowed to modify?
-    bool            mBSUndent;                      // backspace un-indents?
-    long            mWrapMode;                      // type of wrapping to allow
-    long            mWrapIndent;                    // how to indent wrapped lines
-    wxsColourData   mFoldFG, mFoldBG;               // fold margin colors
-    long            mMarginLeft, mMarginRight;      // lef and right wrap-margins
-    long            mGutterType1, mGutterWidth1;    // far-left margin
-    long            mGutterType2, mGutterWidth2;    // far-left margin
-    long            mGutterType3, mGutterWidth3;    // far-left margin
-    long            mEdgeMode;                      // how to display right edge (margin?)
-    wxsColourData   mEdgeBG;                        // color of the edge
-    long            mZoom;                          // zoom the text
-    long            mSelMode;                       // selection mode
-    long            mCaretStyle;                    // what the caret looks like
-    long            mLexer;                         // language lexer to use
-    wxArrayString   mKeywords1;                     // set of lexer keywords
-    wxArrayString   mKeywords2;                     // set of lexer keywords
-    wxsPositionSizeData     mVirtualSize;
+        wxSize          mSize;                          // used to check for default size
+        wxArrayString   mText;                          // initial text contents
+        wxsColourData   mCaretFG, mCaretBG;             // line with caret background color
+        long            mViewWS;                        // when to view white-space
+        long            mEOL;                           // type of end-of-line chars
+        bool            mBuffered;                      // double-buffered drawing?
+        long            mTabWidth;                      // size of a tab in spaces
+        long            mCase;                          // set letter case
+        wxsColourData   mSelFG, mSelBG;                 // selection are colors
+        long            mBlinkRate;                     // caret period
+        bool            mInsert;                        // insert or over-write mode
+        long            mCaretWidth;                    // size of the insert caret
+        long            mIndent;                        // indent size in pixels
+        bool            mReadOnly;                      // allowed to modify?
+        bool            mBSUndent;                      // backspace un-indents?
+        long            mWrapMode;                      // type of wrapping to allow
+        long            mWrapIndent;                    // how to indent wrapped lines
+        wxsColourData   mFoldFG, mFoldBG;               // fold margin colors
+        long            mMarginLeft, mMarginRight;      // lef and right wrap-margins
+        long            mGutterType1, mGutterWidth1;    // far-left margin
+        long            mGutterType2, mGutterWidth2;    // far-left margin
+        long            mGutterType3, mGutterWidth3;    // far-left margin
+        long            mEdgeMode;                      // how to display right edge (margin?)
+        wxsColourData   mEdgeBG;                        // color of the edge
+        long            mZoom;                          // zoom the text
+        long            mSelMode;                       // selection mode
+        long            mCaretStyle;                    // what the caret looks like
+        long            mLexer;                         // language lexer to use
+        wxArrayString   mKeywords1;                     // set of lexer keywords
+        wxArrayString   mKeywords2;                     // set of lexer keywords
+        wxsPositionSizeData     mVirtualSize;
 };
 
 #endif      // wxsSCINTILLA_H

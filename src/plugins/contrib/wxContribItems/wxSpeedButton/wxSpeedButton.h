@@ -56,145 +56,145 @@
 
 class WXEXPORT wxSpeedButton : public wxControl
 {
-public:
+    public:
 
-// default contructor
+        // default contructor
 
-    wxSpeedButton()
-    {
-        Create();
-    }
+        wxSpeedButton()
+        {
+            Create();
+        }
 
-// destructor
+        // destructor
 
-    virtual    ~wxSpeedButton();
+        virtual    ~wxSpeedButton();
 
-// basic constructor
+        // basic constructor
 
-    wxSpeedButton(  wxWindow       *inParent,                               // parent window
-                    wxWindowID      inID,                                   // id of this button
-                    const wxString &inLabel         = wxString(),           // button text
-                    const wxBitmap &inGlyph         = wxNullBitmap,         // bitmaps displayed on button
+        wxSpeedButton(wxWindow    *   inParent,                                 // parent window
+                      wxWindowID      inID,                                   // id of this button
+                      const wxString & inLabel         = wxString(),          // button text
+                      const wxBitmap & inGlyph         = wxNullBitmap,        // bitmaps displayed on button
+                      int             inGlyphCount    = 0,                    // number of images in inGlyph
+                      int             inMargin        = 2,                    // area around image and text
+                      int             inGroupIndex    = 0,                    // ident of a group of buttons
+                      bool            inAllowAllUp    = true,                 // allow all buttons up
+                      const wxPoint & inPos           = wxDefaultPosition,    // button position
+                      const wxSize  & inSize          = wxDefaultSize,        // button size
+                      long            inStyle         = 0,                    // border styles
+                      const wxValidator & inVal        = wxDefaultValidator,  // validator
+                      const wxString & inName          = _("SpeedButton"));   // name of button
+
+        // a constructor that creates a bitmap from a filename
+
+        wxSpeedButton(wxWindow    *    inParent,                                // parent window
+                      wxWindowID      inID,                                   // id of this button
+                      const wxString & inLabel         = wxString(),          // button text
+                      const wxString & inGlyphFile     = wxString(),          // bitmaps displayed on button
+                      int             inGlyphCount    = 0,                    // number of images in inGlyph
+                      int             inMargin        = 2,                    // area around image and tex
+                      int             inGroupIndex    = 0,                    // ident of a group of buttons
+                      bool            inAllowAllUp    = true,                 // allow all buttons up
+                      const wxPoint & inPos           = wxDefaultPosition,    // button position
+                      const wxSize  & inSize          = wxDefaultSize,        // button size
+                      long            inStyle         = 0,                    // border styles
+                      const wxValidator & inVal        = wxDefaultValidator,  // validator
+                      const wxString & inName          = _("SpeedButton"));   // name of button
+
+
+
+        // create the basic speed-button object
+
+        bool Create(wxWindow     *     inParent        = NULL,                  // parent window
+                    wxWindowID      inID            = wxNewId(),            // id of this button
+                    const wxString & inLabel         = wxString(),          // button text
+                    const wxBitmap & inGlyph         = wxNullBitmap,        // bitmaps displayed on button
                     int             inGlyphCount    = 0,                    // number of images in inGlyph
-                    int             inMargin        = 2,                    // area around image and text
+                    int             inMargin        = 1,                    // area around image and text
                     int             inGroupIndex    = 0,                    // ident of a group of buttons
                     bool            inAllowAllUp    = true,                 // allow all buttons up
-                    const wxPoint  &inPos           = wxDefaultPosition,    // button position
-                    const wxSize   &inSize          = wxDefaultSize,        // button size
+                    const wxPoint & inPos           = wxDefaultPosition,    // button position
+                    const wxSize  & inSize          = wxDefaultSize,        // button size
                     long            inStyle         = 0,                    // border styles
-                    const wxValidator &inVal        = wxDefaultValidator,   // validator
-                    const wxString &inName          = _("SpeedButton"));    // name of button
-
-// a constructor that creates a bitmap from a filename
-
-    wxSpeedButton( wxWindow        *inParent,                               // parent window
-                   wxWindowID      inID,                                   // id of this button
-                   const wxString &inLabel         = wxString(),           // button text
-                   const wxString &inGlyphFile     = wxString(),           // bitmaps displayed on button
-                   int             inGlyphCount    = 0,                    // number of images in inGlyph
-                   int             inMargin        = 2,                    // area around image and tex
-                   int             inGroupIndex    = 0,                    // ident of a group of buttons
-                   bool            inAllowAllUp    = true,                 // allow all buttons up
-                   const wxPoint  &inPos           = wxDefaultPosition,    // button position
-                   const wxSize   &inSize          = wxDefaultSize,        // button size
-                   long            inStyle         = 0,                    // border styles
-                   const wxValidator &inVal        = wxDefaultValidator,   // validator
-                   const wxString &inName          = _("SpeedButton"));    // name of button
-
-
-
-// create the basic speed-button object
-
-    bool Create( wxWindow          *inParent        = NULL,                 // parent window
-                 wxWindowID      inID            = wxNewId(),            // id of this button
-                 const wxString &inLabel         = wxString(),           // button text
-                 const wxBitmap &inGlyph         = wxNullBitmap,         // bitmaps displayed on button
-                 int             inGlyphCount    = 0,                    // number of images in inGlyph
-                 int             inMargin        = 1,                    // area around image and text
-                 int             inGroupIndex    = 0,                    // ident of a group of buttons
-                 bool            inAllowAllUp    = true,                 // allow all buttons up
-                 const wxPoint  &inPos           = wxDefaultPosition,    // button position
-                 const wxSize   &inSize          = wxDefaultSize,        // button size
-                 long            inStyle         = 0,                    // border styles
-                 const wxValidator &inVal        = wxDefaultValidator,   // validator
-                 const wxString &inName          = _("SpeedButton"));    // name of button
+                    const wxValidator & inVal        = wxDefaultValidator,  // validator
+                    const wxString & inName          = _("SpeedButton"));   // name of button
 
 
 
 
 
-    void        SetLabel(wxString &inLabel);
-    void        SetGlyphUp(wxBitmap &inBitmap);
-    wxBitmap   &GetGlyphUp(void);
-    void        SetGlyphDown(wxBitmap &inBitmap);
-    wxBitmap   &GetGlyphDown(void);
-    void        SetGlyphDisabled(wxBitmap &inBitmap);
-    wxBitmap   &GetGlyphDisabled(void);
+        void        SetLabel(wxString & inLabel);
+        void        SetGlyphUp(wxBitmap & inBitmap);
+        wxBitmap  & GetGlyphUp(void);
+        void        SetGlyphDown(wxBitmap & inBitmap);
+        wxBitmap  & GetGlyphDown(void);
+        void        SetGlyphDisabled(wxBitmap & inBitmap);
+        wxBitmap  & GetGlyphDisabled(void);
 
-    void        SetAlign(int inAlign);
-    int         GetAlign(void);
-    void        SetMargin(int inMargin);
-    int         GetMargin(void);
-    void        SetGroupIndex(bool inIndex);
-    int         GetGroupIndex(void);
-    void        SetDown(bool inDown);
-    bool        GetDown(void);
-    void        SetValue(bool inDown);
-    bool        GetValue(void);
-    void        SetAllowAllUp(bool inAllUp);
-    bool        GetAllowAllUp(void);
-    void        SetUserData(long inData);
-    long        GetUserData(void);
+        void        SetAlign(int inAlign);
+        int         GetAlign(void);
+        void        SetMargin(int inMargin);
+        int         GetMargin(void);
+        void        SetGroupIndex(bool inIndex);
+        int         GetGroupIndex(void);
+        void        SetDown(bool inDown);
+        bool        GetDown(void);
+        void        SetValue(bool inDown);
+        bool        GetValue(void);
+        void        SetAllowAllUp(bool inAllUp);
+        bool        GetAllowAllUp(void);
+        void        SetUserData(long inData);
+        long        GetUserData(void);
 
-    void        DoClick(bool inLeft);
-
-
-protected:
-
-    void        SplitGlyphs(const wxBitmap &inBitmap, int inCount);
-    void        MakeTransparent(wxBitmap &inBitmap);
-    void        GetGlyphSize(wxBitmap &inGlyph, int &outWidth, int &outHeight);
-    virtual     wxSize      DoGetBestSize(void);            // calculate best button size given the current state
-    virtual     void        CalcLayout(bool inRefresh);     // calculate position for bitmap and label
-    void        OnSetFocus(wxFocusEvent& event);
-    void        OnKillFocus(wxFocusEvent& event);
-    void        OnPaint(wxPaintEvent &event);
-    void        Redraw();
-    virtual     void        Paint( wxDC &dc );
-    virtual     void        SendEvent(bool inLeft);
-    void        OnMouseEvents(wxMouseEvent &event);
-    void        OnSize( wxSizeEvent &event );
-    void        SetAllUp(wxSpeedButton *inButton);
-    void        OnKey(wxKeyEvent& event);
+        void        DoClick(bool inLeft);
 
 
+    protected:
 
-// button data
+        void        SplitGlyphs(const wxBitmap & inBitmap, int inCount);
+        void        MakeTransparent(wxBitmap & inBitmap);
+        void        GetGlyphSize(wxBitmap & inGlyph, int & outWidth, int & outHeight);
+        virtual     wxSize      DoGetBestSize(void);            // calculate best button size given the current state
+        virtual     void        CalcLayout(bool inRefresh);     // calculate position for bitmap and label
+        void        OnSetFocus(wxFocusEvent & event);
+        void        OnKillFocus(wxFocusEvent & event);
+        void        OnPaint(wxPaintEvent & event);
+        void        Redraw();
+        virtual     void        Paint(wxDC & dc);
+        virtual     void        SendEvent(bool inLeft);
+        void        OnMouseEvents(wxMouseEvent & event);
+        void        OnSize(wxSizeEvent & event);
+        void        SetAllUp(wxSpeedButton * inButton);
+        void        OnKey(wxKeyEvent & event);
 
-    wxBitmap                mGlyphUp;               // image when button is UP
-    wxBitmap                mGlyphDown;             // image when button is DOWN
-    wxBitmap                mGlyphDisabled;         // image when button is disabled
-    int                     mMargin;                // area around image and text
-    wxSize                  mGlyphSize;             // max area used by bitmaps
-    wxSize                  mLabelSize;             // max area used by text label
-    wxSize                  mBestSize;              // calculated best size of button
-    wxPoint                 mGlyphPos;              // position of the bitmap
-    wxPoint                 mLabelPos;              // position of the label
-    wxSize                  mCurrentSize;           // current size of the button
-    bool                    mCalcBusy;              // avoid recursive calls to CalcLayout
-    int                     mGroupIndex;            // ID for a group of buttons
-    bool                    mAllowAllUp;            // all in a group can be UP?
-    bool                    mMouseDown;             // mouse button is down?
-    bool                    mMouseOver;             // mouse of over the button?
-    bool                    mButtonDown;            // button is clicked DOWN?
-    bool                    mButtonFocused;         // does the button have input focus?
-    wxWindow                *mParent;               // keep track of parent
-    wxWindow                *mTopParent;            // and the top-most parent
-    long                    mUserData;              // anything you want
 
-private:
-    DECLARE_DYNAMIC_CLASS(wxSpeedButton)
-    DECLARE_EVENT_TABLE()
+
+        // button data
+
+        wxBitmap                mGlyphUp;               // image when button is UP
+        wxBitmap                mGlyphDown;             // image when button is DOWN
+        wxBitmap                mGlyphDisabled;         // image when button is disabled
+        int                     mMargin;                // area around image and text
+        wxSize                  mGlyphSize;             // max area used by bitmaps
+        wxSize                  mLabelSize;             // max area used by text label
+        wxSize                  mBestSize;              // calculated best size of button
+        wxPoint                 mGlyphPos;              // position of the bitmap
+        wxPoint                 mLabelPos;              // position of the label
+        wxSize                  mCurrentSize;           // current size of the button
+        bool                    mCalcBusy;              // avoid recursive calls to CalcLayout
+        int                     mGroupIndex;            // ID for a group of buttons
+        bool                    mAllowAllUp;            // all in a group can be UP?
+        bool                    mMouseDown;             // mouse button is down?
+        bool                    mMouseOver;             // mouse of over the button?
+        bool                    mButtonDown;            // button is clicked DOWN?
+        bool                    mButtonFocused;         // does the button have input focus?
+        wxWindow        *        mParent;               // keep track of parent
+        wxWindow        *        mTopParent;            // and the top-most parent
+        long                    mUserData;              // anything you want
+
+    private:
+        DECLARE_DYNAMIC_CLASS(wxSpeedButton)
+        DECLARE_EVENT_TABLE()
 };
 
 #endif  // _WX_SPEEDBUTTON_H_

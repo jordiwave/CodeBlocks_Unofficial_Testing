@@ -12,45 +12,45 @@
 // It is a helper prober for the use of the Hebrew model probers
 class nsHebrewProber: public nsCharSetProber
 {
-public:
-    nsHebrewProber(void) :mLogicalProb(0), mVisualProb(0)
-    {
-        Reset();
-    }
+    public:
+        nsHebrewProber(void) : mLogicalProb(0), mVisualProb(0)
+        {
+            Reset();
+        }
 
-    virtual ~nsHebrewProber(void) {}
-    virtual nsProbingState HandleData(const char* aBuf, uint32_t aLen);
-    virtual const char* GetCharSetName();
-    virtual void Reset(void);
+        virtual ~nsHebrewProber(void) {}
+        virtual nsProbingState HandleData(const char * aBuf, uint32_t aLen);
+        virtual const char * GetCharSetName();
+        virtual void Reset(void);
 
-    virtual nsProbingState GetState(void);
+        virtual nsProbingState GetState(void);
 
-    virtual float     GetConfidence(void)
-    {
-        return (float)0.0;
-    }
+        virtual float     GetConfidence(void)
+        {
+            return (float)0.0;
+        }
 
-    void SetModelProbers(nsCharSetProber *logicalPrb, nsCharSetProber *visualPrb)
-    {
-        mLogicalProb = logicalPrb;
-        mVisualProb = visualPrb;
-    }
+        void SetModelProbers(nsCharSetProber * logicalPrb, nsCharSetProber * visualPrb)
+        {
+            mLogicalProb = logicalPrb;
+            mVisualProb = visualPrb;
+        }
 
 #ifdef DEBUG_chardet
-    virtual void  DumpStatus();
+        virtual void  DumpStatus();
 #endif
 
-protected:
-    static bool isFinal(char c);
-    static bool isNonFinal(char c);
+    protected:
+        static bool isFinal(char c);
+        static bool isNonFinal(char c);
 
-    int32_t mFinalCharLogicalScore, mFinalCharVisualScore;
+        int32_t mFinalCharLogicalScore, mFinalCharVisualScore;
 
-    // The two last characters seen in the previous buffer.
-    char mPrev, mBeforePrev;
+        // The two last characters seen in the previous buffer.
+        char mPrev, mBeforePrev;
 
-    // These probers are owned by the group prober.
-    nsCharSetProber *mLogicalProb, *mVisualProb;
+        // These probers are owned by the group prober.
+        nsCharSetProber * mLogicalProb, *mVisualProb;
 };
 
 /**

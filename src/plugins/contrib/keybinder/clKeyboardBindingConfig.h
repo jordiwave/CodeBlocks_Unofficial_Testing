@@ -22,37 +22,36 @@
 
 class  clKeyboardBindingConfig
 {
-    MenuItemDataMap_t m_bindings;
-public:
-    clKeyboardBindingConfig();
-    virtual ~clKeyboardBindingConfig();
+        MenuItemDataMap_t m_bindings;
+    public:
+        clKeyboardBindingConfig();
+        virtual ~clKeyboardBindingConfig();
 
-    clKeyboardBindingConfig& Load();
-    clKeyboardBindingConfig& Save();
-    bool SortBindings( std::vector<MenuItemDataMap_t::iterator>& sortedIters);
+        clKeyboardBindingConfig & Load();
+        clKeyboardBindingConfig & Save();
+        bool SortBindings(std::vector<MenuItemDataMap_t::iterator> & sortedIters);
 
-    bool Exists() const
-    {
-        wxFileName fn(ConfigManager::GetConfigFolder(), _T("cbKeyBinder20.conf"));
-        wxString personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
-        fn.SetName(personality + _T(".") + fn.GetName());
-
+        bool Exists() const
+        {
+            wxFileName fn(ConfigManager::GetConfigFolder(), _T("cbKeyBinder20.conf"));
+            wxString personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
+            fn.SetName(personality + _T(".") + fn.GetName());
 #if defined(LOGGING)
-        wxString look = fn.GetFullPath(); ;
+            wxString look = fn.GetFullPath(); ;
 #endif
-        return fn.FileExists();
-    }
+            return fn.FileExists();
+        }
 
-    clKeyboardBindingConfig& SetBindings(const MenuItemDataMap_t& menus, const MenuItemDataMap_t& globals)
-    {
-        this->m_bindings = menus;
-        this->m_bindings.insert(globals.begin(), globals.end());
-        return *this;
-    }
-    const MenuItemDataMap_t& GetBindings() const
-    {
-        return m_bindings;
-    }
+        clKeyboardBindingConfig & SetBindings(const MenuItemDataMap_t & menus, const MenuItemDataMap_t & globals)
+        {
+            this->m_bindings = menus;
+            this->m_bindings.insert(globals.begin(), globals.end());
+            return *this;
+        }
+        const MenuItemDataMap_t & GetBindings() const
+        {
+            return m_bindings;
+        }
 
 };
 

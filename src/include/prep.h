@@ -10,7 +10,7 @@
 
 #include <wx/defs.h> // wxIntPtr
 #ifndef wxMAJOR_VERSION
-#include <wx/version.h>
+    #include <wx/version.h>
 #endif
 
 // The Code::Blocks doesn't officially support wxWidgets versions lower than 3.0.0 on Unix and 3.1.3
@@ -18,15 +18,15 @@
 // keep in mind that any bug you report with these versions might be ignored. Patches to fix the
 // build with such versions might also be ignored.
 #if (defined(__WXMSW__) || defined(__WXOSX_COCOA__))
-#if !wxCHECK_VERSION(3, 1, 3)
-#pragma message("Unsupported wxWidgets Version: " wxVERSION_NUM_DOT_STRING)
-#error "Unsupported wxWidgets Version"
-#endif
+    #if !wxCHECK_VERSION(3, 1, 3)
+        #pragma message("Unsupported wxWidgets Version: " wxVERSION_NUM_DOT_STRING)
+        #error "Unsupported wxWidgets Version"
+    #endif
 #else
-#if !wxCHECK_VERSION(3, 0, 0)
-#pragma message("Unsupported wxWidgets Version: " wxVERSION_NUM_DOT_STRING)
-#error "Unsupported wxWidgets Version"
-#endif
+    #if !wxCHECK_VERSION(3, 0, 0)
+        #pragma message("Unsupported wxWidgets Version: " wxVERSION_NUM_DOT_STRING)
+        #error "Unsupported wxWidgets Version"
+    #endif
 #endif
 
 /*  ---------------------------------------------------------------------------------------------------------
@@ -46,13 +46,13 @@
 */
 template <int major, int minor = 0, int revision = 0> struct Version
 {
-    enum { eval = (major<<25) + (minor<<15) + revision };
+    enum { eval = (major << 25) + (minor << 15) + revision };
 };
-inline void Version2MMR(int v, int& major, int& minor, int& revision)
+inline void Version2MMR(int v, int & major, int & minor, int & revision)
 {
-    major = v>>25;
-    minor = (v>>15) & ((1<<10) -1);
-    revision = v & ((1<<15) -1);
+    major = v >> 25;
+    minor = (v >> 15) & ((1 << 10) - 1);
+    revision = v & ((1 << 15) - 1);
 }
 
 template <int major, int minor, int rel = 0> struct wxMinimumVersion
@@ -101,7 +101,7 @@ template <class true_t, class false_t> struct TernaryCondTypedef<false, true_t, 
         int widths[] = {5, 3, 8};
         myListControl->SetWidths(widths, 4); // oh crap, why does this crash?
 */
-template <typename T> unsigned int array_size(const T& array)
+template <typename T> unsigned int array_size(const T & array)
 {
     enum {result = sizeof(array) / sizeof(array[0])};
     return result;
@@ -115,12 +115,12 @@ template <typename T> unsigned int array_size(const T& array)
     to set a pointer to zero in the destructor, as it can never be used again).
     In _all_ other cases, use Delete(), which prevents accidential double-deletes.
 */
-template<typename T>inline void Delete(T*& p)
+template<typename T>inline void Delete(T *& p)
 {
     delete p;
     p = nullptr;
 }
-template<typename T>inline void DeleteArray(T*& p)
+template<typename T>inline void DeleteArray(T *& p)
 {
     delete[] p;
     p = nullptr;
@@ -170,47 +170,47 @@ enum identifier
 
 // unfortunately we still need to use the preprocessor here...
 #if ( wxUSE_UNICODE )
-const bool unicode = true;
+    const bool unicode = true;
 #else
-const bool unicode = false;
+    const bool unicode = false;
 #endif
 
 #if   defined ( __WIN32__ ) || defined ( _WIN64 )
-const identifier id = platform_windows;
+    const identifier id = platform_windows;
 #elif defined ( __WXMAC__ )  || defined ( __WXCOCOA__ )
-const identifier id = platform_macosx;
+    const identifier id = platform_macosx;
 #elif defined ( __linux__ )  || defined ( LINUX )
-const identifier id = platform_linux;
+    const identifier id = platform_linux;
 #elif defined ( FREEBSD )    || defined ( __FREEBSD__ )
-const identifier id = platform_freebsd;
+    const identifier id = platform_freebsd;
 #elif defined ( NETBSD )     || defined ( __NETBSD__ )
-const identifier id = platform_netbsd;
+    const identifier id = platform_netbsd;
 #elif defined ( OPENBSD )    || defined ( __OPENBSD__ )
-const identifier id = platform_openbsd;
+    const identifier id = platform_openbsd;
 #elif defined ( DARWIN )     || defined ( __APPLE__ )
-const identifier id = platform_darwin;
+    const identifier id = platform_darwin;
 #elif defined(sun) || defined(__sun)
-const identifier id = platform_solaris;
+    const identifier id = platform_solaris;
 #else
-const identifier id = platform_unknown;
+    const identifier id = platform_unknown;
 #endif
 
 #if   defined ( __WXGTK__ )
-const bool gtk = true;
+    const bool gtk = true;
 #else
-const bool gtk = false;
+    const bool gtk = false;
 #endif
 
 #if   defined ( __WXMAC__ )
-const bool carbon = true;
+    const bool carbon = true;
 #else
-const bool carbon = false;
+    const bool carbon = false;
 #endif
 
 #if   defined ( __WXCOCOA__ )
-const bool cocoa = true;
+    const bool cocoa = true;
 #else
-const bool cocoa = false;
+    const bool cocoa = false;
 #endif
 
 const bool windows = (id == platform_windows);
@@ -223,7 +223,7 @@ const bool darwin  = (id == platform_darwin);
 const bool solaris = (id == platform_solaris);
 const bool Unix    = (Linux | freebsd | netbsd | openbsd | darwin | solaris);
 
-const int bits = 8*sizeof(void*);
+const int bits = 8 * sizeof(void *);
 
 // Function and parameter attributes
 // ----------------------------------
@@ -265,22 +265,22 @@ const int bits = 8*sizeof(void*);
 //                         Use this if you want to convey that you are aware of a parameter but you are intentionally not using it.
 
 #if defined(__GNUC__)
-const int gcc = Version<__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__>::eval;
-#define cb_pure_function       __attribute__ ((__pure__,  __nothrow__))
-#define cb_const_function      __attribute__ ((__const__, __nothrow__))
-#define cb_force_inline        __attribute__ ((__always_inline__))
-#define cb_must_consume_result __attribute__ ((__warn_unused_result__))
-#define cb_deprecated_function __attribute__ ((__deprecated__))
-#define cb_unused              __attribute__ ((__unused__))
+    const int gcc = Version<__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__>::eval;
+    #define cb_pure_function       __attribute__ ((__pure__,  __nothrow__))
+    #define cb_const_function      __attribute__ ((__const__, __nothrow__))
+    #define cb_force_inline        __attribute__ ((__always_inline__))
+    #define cb_must_consume_result __attribute__ ((__warn_unused_result__))
+    #define cb_deprecated_function __attribute__ ((__deprecated__))
+    #define cb_unused              __attribute__ ((__unused__))
 #else
-const int gcc = 0;
-#define cb_pure_function
-#define cb_const_function
-#define cb_force_inline
-#define cb_must_consume_result
-#define cb_deprecated_function
-#define cb_unused
-#define POISON(message)
+    const int gcc = 0;
+    #define cb_pure_function
+    #define cb_const_function
+    #define cb_force_inline
+    #define cb_must_consume_result
+    #define cb_deprecated_function
+    #define cb_unused
+    #define POISON(message)
 #endif
 
 #define cb_optional cb_unused
@@ -295,7 +295,7 @@ namespace sdk
 {
 const int version             = Version<1>::eval;
 const int buildsystem_version = Version<1>::eval;
-const int plugin_api_version  = Version<1,11,10>::eval;
+const int plugin_api_version  = Version<1, 11, 10>::eval;
 }
 
 
@@ -312,9 +312,9 @@ const int plugin_api_version  = Version<1,11,10>::eval;
 namespace compatibility
 {
 #if defined(WXWIN_COMPATIBILITY_2_4) && defined(wxHIDE_READONLY)
-const int wxHideReadonly = wxHIDE_READONLY;
+    const int wxHideReadonly = wxHIDE_READONLY;
 #else
-const int wxHideReadonly = 0;
+    const int wxHideReadonly = 0;
 #endif
 }
 
@@ -360,58 +360,58 @@ const int wxHideReadonly = 0;
 
 class ID
 {
-    wxIntPtr value;
+        wxIntPtr value;
 
-    ID(wxIntPtr in) : value(in) {};
+        ID(wxIntPtr in) : value(in) {};
 
-    template<typename> friend ID GetID();
-    friend ID ConstructID(wxIntPtr);
+        template<typename> friend ID GetID();
+        friend ID ConstructID(wxIntPtr);
 
-public:
+    public:
 
-    ID() : value ((wxIntPtr) -1) {};
+        ID() : value((wxIntPtr) - 1) {};
 
-    operator wxIntPtr() const
-    {
-        return value;
-    };
-    operator void*() const
-    {
-        return reinterpret_cast<void*>(static_cast<uintptr_t>(value));
-    };
+        operator wxIntPtr() const
+        {
+            return value;
+        };
+        operator void * () const
+        {
+            return reinterpret_cast<void *>(static_cast<uintptr_t>(value));
+        };
 
-    bool Valid() const
-    {
-        return value != ((wxIntPtr) -1);
-    };
-    bool operator!() const
-    {
-        return !Valid();
-    };
+        bool Valid() const
+        {
+            return value != ((wxIntPtr) - 1);
+        };
+        bool operator!() const
+        {
+            return !Valid();
+        };
 
-    friend bool operator==(ID a, ID b)
-    {
-        return a.value      == b.value;
-    };
-    friend bool operator==(ID a, int b)
-    {
-        return a.value      == (wxIntPtr) b;
-    };
+        friend bool operator==(ID a, ID b)
+        {
+            return a.value      == b.value;
+        };
+        friend bool operator==(ID a, int b)
+        {
+            return a.value      == (wxIntPtr) b;
+        };
 
-    friend bool operator!=(ID a, ID b)
-    {
-        return a.value      != b.value;
-    };
-    friend bool operator!=(ID a, int b)
-    {
-        return a.value      != (wxIntPtr) b;
-    };
+        friend bool operator!=(ID a, ID b)
+        {
+            return a.value      != b.value;
+        };
+        friend bool operator!=(ID a, int b)
+        {
+            return a.value      != (wxIntPtr) b;
+        };
 };
 
 
 template<typename whatever> inline ID GetID()
 {
-    static wxIntPtr id = (wxIntPtr) -1;
+    static wxIntPtr id = (wxIntPtr) - 1;
     return ID(++id);
 }
 
@@ -438,11 +438,11 @@ using std::weak_ptr;
 }
 
 #if defined(__APPLE__) && defined(__MACH__)
-#define CB_LIBRARY_ENVVAR _T("DYLD_LIBRARY_PATH")
+    #define CB_LIBRARY_ENVVAR _T("DYLD_LIBRARY_PATH")
 #elif !defined(__WXMSW__)
-#define CB_LIBRARY_ENVVAR _T("LD_LIBRARY_PATH")
+    #define CB_LIBRARY_ENVVAR _T("LD_LIBRARY_PATH")
 #else
-#define CB_LIBRARY_ENVVAR _T("PATH")
+    #define CB_LIBRARY_ENVVAR _T("PATH")
 #endif
 
 #endif

@@ -46,8 +46,8 @@ wxsRegisterItem<wxsAuiToolBarSpacer> Reg(
     false);
 }
 
-wxsAuiToolBarSpacer::wxsAuiToolBarSpacer(wxsItemResData* Data)
-    : wxsAuiToolBarItemBase(Data,&Reg.Info,flId,0,0),
+wxsAuiToolBarSpacer::wxsAuiToolBarSpacer(wxsItemResData * Data)
+    : wxsAuiToolBarItemBase(Data, &Reg.Info, flId, 0, 0),
       m_Stretch(false),
       m_Pixels(0),
       m_Proportion(1)
@@ -55,7 +55,7 @@ wxsAuiToolBarSpacer::wxsAuiToolBarSpacer(wxsItemResData* Data)
 
 void wxsAuiToolBarSpacer::OnEnumItemProperties(long Flags)
 {
-    WXS_BOOL(wxsAuiToolBarSpacer,m_Stretch,_("Is strecht spacer"),_T("stretch"),false)
-    WXS_LONG(wxsAuiToolBarSpacer,m_Pixels,_("Pixels"),_T("pixels"),0)
-    WXS_LONG(wxsAuiToolBarSpacer,m_Proportion,_("Proportion"),_T("proportion"),1)
+    WXS_BOOL(wxsAuiToolBarSpacer, m_Stretch, _("Is strecht spacer"), _T("stretch"), false)
+    WXS_LONG(wxsAuiToolBarSpacer, m_Pixels, _("Pixels"), _T("pixels"), 0)
+    WXS_LONG(wxsAuiToolBarSpacer, m_Proportion, _("Proportion"), _T("proportion"), 1)
 }

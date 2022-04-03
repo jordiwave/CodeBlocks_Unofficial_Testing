@@ -43,7 +43,7 @@ static const long arrPageValues[] =
     wxRICHTEXT_FORMAT_TABS
 };
 
-static const wxChar* arrPageValueNames[] =
+static const wxChar * arrPageValueNames[] =
 {
     _T("wxRICHTEXT_FORMAT_BULLETS"),
     _T("wxRICHTEXT_FORMAT_FONT"),
@@ -61,14 +61,14 @@ static const wxChar* arrPageValueNames[] =
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsRichTextFormattingDialog::wxsRichTextFormattingDialog(wxsItemResData *Data):
+wxsRichTextFormattingDialog::wxsRichTextFormattingDialog(wxsItemResData * Data):
     wxsTool(Data,
             &Reg.Info,
             NULL,
             NULL,
             (flVariable | flId | flSubclass | flExtraCode)),
     m_sTitle(_T("Formatting")),
-    m_iFlags(wxRICHTEXT_FORMAT_FONT|wxRICHTEXT_FORMAT_TABS|wxRICHTEXT_FORMAT_BULLETS|wxRICHTEXT_FORMAT_INDENTS_SPACING)
+    m_iFlags(wxRICHTEXT_FORMAT_FONT | wxRICHTEXT_FORMAT_TABS | wxRICHTEXT_FORMAT_BULLETS | wxRICHTEXT_FORMAT_INDENTS_SPACING)
 {
 }
 
@@ -80,35 +80,37 @@ wxsRichTextFormattingDialog::wxsRichTextFormattingDialog(wxsItemResData *Data):
 void wxsRichTextFormattingDialog::OnBuildCreatingCode()
 {
     wxString sFlags;
-    switch(GetLanguage())
+
+    switch (GetLanguage())
     {
-    case wxsCPP:
-        AddHeader(_T("<wx/richtext/richtextformatdlg.h>"), GetInfo().ClassName, 0);
+        case wxsCPP:
+            AddHeader(_T("<wx/richtext/richtextformatdlg.h>"), GetInfo().ClassName, 0);
 
-        for(int i = 0; arrPageValueNames[i]; i++)
-        {
-            if((m_iFlags & arrPageValues[i]) == arrPageValues[i])
+            for (int i = 0; arrPageValueNames[i]; i++)
             {
-                sFlags << arrPageValueNames[i] << _T("|");
+                if ((m_iFlags & arrPageValues[i]) == arrPageValues[i])
+                {
+                    sFlags << arrPageValueNames[i] << _T("|");
+                }
             }
-        }
-        if(sFlags.IsEmpty())
-        {
-            sFlags = _T("0");
-        }
-        else
-        {
-            sFlags.RemoveLast();
-        }
 
-        Codef(_T("%C(%s, %W, %t, %I, %P, %S);\n"), sFlags.wx_str(), m_sTitle.wx_str());
-        BuildSetupWindowCode();
-        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-        break;
+            if (sFlags.IsEmpty())
+            {
+                sFlags = _T("0");
+            }
+            else
+            {
+                sFlags.RemoveLast();
+            }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsRichTextFormattingDialog::OnBuildCreatingCode"), GetLanguage());
+            Codef(_T("%C(%s, %W, %t, %I, %P, %S);\n"), sFlags.wx_str(), m_sTitle.wx_str());
+            BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+            break;
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsRichTextFormattingDialog::OnBuildCreatingCode"), GetLanguage());
     }
 }
 
@@ -121,6 +123,6 @@ void wxsRichTextFormattingDialog::OnBuildCreatingCode()
 void wxsRichTextFormattingDialog::OnEnumToolProperties(cb_unused long Flags)
 {
     WXS_FLAGS(wxsRichTextFormattingDialog, m_iFlags, _("Page Flags"), _T("page_flags"), arrPageValues, arrPageValueNames,
-              wxRICHTEXT_FORMAT_FONT|wxRICHTEXT_FORMAT_TABS|wxRICHTEXT_FORMAT_BULLETS|wxRICHTEXT_FORMAT_INDENTS_SPACING )
+              wxRICHTEXT_FORMAT_FONT | wxRICHTEXT_FORMAT_TABS | wxRICHTEXT_FORMAT_BULLETS | wxRICHTEXT_FORMAT_INDENTS_SPACING)
     WXS_SHORT_STRING(wxsRichTextFormattingDialog, m_sTitle, _("Title"), _T("title"), _("Formatting"), true);
 }

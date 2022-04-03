@@ -10,15 +10,15 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-#include <wx/string.h>
-#include "cbproject.h"
-#include "compilerfactory.h"
-#include "logmanager.h"
-#include <map>
+    #include <wx/string.h>
+    #include "cbproject.h"
+    #include "compilerfactory.h"
+    #include "logmanager.h"
+    #include <map>
 #endif
 
 #if defined(__WXMSW__)
-#include <wx/msw/registry.h>
+    #include <wx/msw/registry.h>
 #endif // defined(__WXMSW__)
 
 #include "cygwin.h"
@@ -34,7 +34,10 @@ static wxString g_CygwinCompilerPathRoot; // Assume no directory until Cygwin ha
 wxString cbGetCygwinCompilerPathRoot(void)
 {
     if (g_CygwinPresent == false)
+    {
         g_CygwinPresent = cbIsDetectedCygwinCompiler();
+    }
+
     return g_CygwinCompilerPathRoot;
 }
 
@@ -42,28 +45,29 @@ wxString cbGetCygwinCompilerPathRoot(void)
 bool cbIsDetectedCygwinCompiler(void)
 {
     if (!platform::windows)
+    {
         return false;
+    }
 
-    LogManager *pMsg = Manager::Get()->GetLogManager();
-
+    LogManager * pMsg = Manager::Get()->GetLogManager();
     // can only debug projects or attach to processes
-    ProjectManager *prjMan = Manager::Get()->GetProjectManager();
-    cbProject *pProject = prjMan->GetActiveProject();
+    ProjectManager * prjMan = Manager::Get()->GetProjectManager();
+    cbProject * pProject = prjMan->GetActiveProject();
 
     if (pProject && prjMan->IsProjectStillOpen(pProject))
     {
-        ProjectBuildTarget *ActiveBuildTarget = nullptr;
-
+        ProjectBuildTarget * ActiveBuildTarget = nullptr;
         wxString sActiveBuildTarget = pProject->GetActiveBuildTarget();
         ActiveBuildTarget = pProject->GetBuildTarget(sActiveBuildTarget);
-
         wxString compilerID;
         pMsg->DebugLog(wxString::Format("sActiveBuildTarget : %s", sActiveBuildTarget));
+
         if (ActiveBuildTarget)
         {
             pMsg->DebugLog(wxString::Format("ActiveBuildTarget->GetTitle() : %s",
                                             ActiveBuildTarget->GetTitle()));
             compilerID = ActiveBuildTarget->GetCompilerID();
+
             if (!compilerID.IsSameAs("cygwin"))
             {
                 pMsg->DebugLog("ActiveBuildTarget->GetCompilerID().IsSameAs(cygwin) is FALSE!");
@@ -75,6 +79,7 @@ bool cbIsDetectedCygwinCompiler(void)
         {
             pMsg->DebugLog(wxString::Format("pProject->GetTitle() : %s", pProject->GetTitle()));
             compilerID = pProject->GetCompilerID();
+
             if (!compilerID.IsSameAs("cygwin"))
             {
                 pMsg->DebugLog("pProject->GetCompilerID().IsSameAs(cygwin) is FALSE!");
@@ -84,7 +89,8 @@ bool cbIsDetectedCygwinCompiler(void)
         }
 
         // find the target's compiler (to see which debugger to use)
-        Compiler *actualCompiler = CompilerFactory::GetCompiler(compilerID);
+        Compiler * actualCompiler = CompilerFactory::GetCompiler(compilerID);
+
         if (!actualCompiler)
         {
             pMsg->DebugLog("Could not find actual CygWin compiler!!!");
@@ -102,29 +108,36 @@ bool cbIsDetectedCygwinCompiler(void)
     //  See
     //  https://github.com/mirror/newlib-cygwin/blob/30782f7de4936bbc4c2e666cbaf587039c895fd3/winsup/utils/path.cc
     //  for RegQueryValueExW (...)
-
     bool present = false; // Assume not found as starting point
-
 #if defined(__WXMSW__)
     wxString masterPath("C:\\cygwin64");
     wxRegKey key; // defaults to HKCR
     key.SetName("HKEY_LOCAL_MACHINE\\Software\\Cygwin\\setup");
+
     if (key.Exists() && key.Open(wxRegKey::Read))
     {
         // found CygWin version 1.7 or newer; read it
         key.QueryValue("rootdir", masterPath);
+
         if (wxDirExists(masterPath + wxFILE_SEP_PATH + "bin"))
+        {
             present = true;
+        }
     }
+
     if (!present)
     {
         key.SetName("HKEY_LOCAL_MACHINE\\Software\\Cygnus Solutions\\Cygwin\\mounts v2\\/");
+
         if (key.Exists() && key.Open(wxRegKey::Read))
         {
             // found CygWin version 1.5 or older; read it
             key.QueryValue("native", masterPath);
+
             if (wxDirExists(masterPath + wxFILE_SEP_PATH + "bin"))
+            {
                 present = true;
+            }
         }
     }
 
@@ -138,21 +151,23 @@ bool cbIsDetectedCygwinCompiler(void)
     {
         g_CygwinCompilerPathRoot = wxString();
     }
+
 #else
     g_CygwinCompilerPathRoot = wxString();
 #endif // defined(__WXMSW__)
-
     return present;
 }
 
-static wxString GetCygwinPath(const wxString& path, bool windowsPath)
+static wxString GetCygwinPath(const wxString & path, bool windowsPath)
 {
-    std::map<wxString, wxString> &fileCache = (windowsPath ? g_WindowsFileCache : g_CygwinFileCache);
-
+    std::map<wxString, wxString> & fileCache = (windowsPath ? g_WindowsFileCache : g_CygwinFileCache);
     // Check if we already have the file cached before
     std::map<wxString, wxString>::const_iterator it = fileCache.find(path);
+
     if (it != fileCache.end())
+    {
         return it->second;
+    }
 
     wxString resultPath = path;
 
@@ -169,7 +184,6 @@ static wxString GetCygwinPath(const wxString& path, bool windowsPath)
     //    "/bin"
     //    "/sbin"
     //    other "/..."
-
 
     // As we are under Windows we check 'resultPath' to see if it starts with '/cygdrive' and
     // if it does then process the path as a cygwin path.
@@ -194,29 +208,41 @@ static wxString GetCygwinPath(const wxString& path, bool windowsPath)
             {
                 // file attribute also contains cygwin path
                 wxString cygwinConvertCMD = g_CygwinCompilerPathRoot + "\\bin\\cygpath.exe";
+
                 if (wxFileName::FileExists(cygwinConvertCMD))
                 {
                     cygwinConvertCMD.Trim().Trim(false);
+
                     // we got a conversion command from the user, use it
                     if (windowsPath)
+                    {
                         cygwinConvertCMD.Append(" -w ");
+                    }
                     else
+                    {
                         cygwinConvertCMD.Append(" -u ");
-                    cygwinConvertCMD.Append(resultPath);
+                    }
 
+                    cygwinConvertCMD.Append(resultPath);
                     wxArrayString cmdOutput;
                     const long resExecute = wxExecute("cmd /c " + cygwinConvertCMD, cmdOutput,
                                                       wxEXEC_SYNC, nullptr);
-                    if ((resExecute== 0) && (!cmdOutput.IsEmpty()))
+
+                    if ((resExecute == 0) && (!cmdOutput.IsEmpty()))
                     {
                         cmdOutput.Item(0).Trim().Trim(false);
-                        const wxString &outputPath = cmdOutput.Item(0);
+                        const wxString & outputPath = cmdOutput.Item(0);
 
                         // Check if path or file exists on the disk
                         if ((wxDirExists(outputPath)) || (wxFileName::FileExists(outputPath)))
+                        {
                             resultPath = outputPath;
-                        else if (!windowsPath)
-                            resultPath = outputPath;
+                        }
+                        else
+                            if (!windowsPath)
+                            {
+                                resultPath = outputPath;
+                            }
                     }
                     else
                     {
@@ -239,11 +265,11 @@ static wxString GetCygwinPath(const wxString& path, bool windowsPath)
     return resultPath;
 }
 
-void cbGetWindowsPathFromCygwinPath(wxString& path)
+void cbGetWindowsPathFromCygwinPath(wxString & path)
 {
     path = GetCygwinPath(path, true);
 }
-void cbGetCygwinPathFromWindowsPath(wxString& path)
+void cbGetCygwinPathFromWindowsPath(wxString & path)
 {
     path = GetCygwinPath(path, false);
 }

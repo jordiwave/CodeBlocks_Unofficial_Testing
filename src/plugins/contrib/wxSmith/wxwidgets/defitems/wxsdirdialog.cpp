@@ -27,9 +27,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsDirDialog> Reg(_T("DirDialog"),wxsTTool,_T("Dialogs"),190,false);
+wxsRegisterItem<wxsDirDialog> Reg(_T("DirDialog"), wxsTTool, _T("Dialogs"), 190, false);
 
-WXS_ST_BEGIN(wxsDirDialogStyles,_T("wxDD_DEFAULT_STYLE"))
+WXS_ST_BEGIN(wxsDirDialogStyles, _T("wxDD_DEFAULT_STYLE"))
 WXS_ST_CATEGORY("wxDirDialog")
 WXS_ST(wxDD_DEFAULT_STYLE)
 WXS_ST(wxDD_DIR_MUST_EXIST)
@@ -38,35 +38,35 @@ WXS_ST_DEFAULTS()
 WXS_ST_END()
 }
 
-wxsDirDialog::wxsDirDialog(wxsItemResData* Data):
-    wxsTool(Data,&Reg.Info,0,wxsDirDialogStyles)
+wxsDirDialog::wxsDirDialog(wxsItemResData * Data):
+    wxsTool(Data, &Reg.Info, 0, wxsDirDialogStyles)
 {
     m_Message = _("Select directory");
 }
 
 void wxsDirDialog::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/dirdlg.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%W, %t, %t, %T, %P, %S, %N);\n"),m_Message.wx_str(),m_DefaultPath.wx_str());
-        BuildSetupWindowCode();
-        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-        return;
-    }
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/dirdlg.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %t, %t, %T, %P, %S, %N);\n"), m_Message.wx_str(), m_DefaultPath.wx_str());
+            BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+            return;
+        }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsDirDialog::OnBuildCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsDirDialog::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
 void wxsDirDialog::OnEnumToolProperties(cb_unused long Flags)
 {
-    WXS_SHORT_STRING(wxsDirDialog,m_Message,_("Message"),_T("message"),_T(""),false);
-    WXS_SHORT_STRING(wxsDirDialog,m_DefaultPath,_("Default path"),_T("default_path"),_T(""),false);
+    WXS_SHORT_STRING(wxsDirDialog, m_Message, _("Message"), _T("message"), _T(""), false);
+    WXS_SHORT_STRING(wxsDirDialog, m_DefaultPath, _("Default path"), _T("default_path"), _T(""), false);
 }

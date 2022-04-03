@@ -10,21 +10,21 @@
 
 class ClassWizard : public cbPlugin
 {
-public:
-    ClassWizard();
-    ~ClassWizard() override;
+    public:
+        ClassWizard();
+        ~ClassWizard() override;
 
-    void OnAttach() override;
-    void OnRelease(bool appShutDown) override;
+        void OnAttach() override;
+        void OnRelease(bool appShutDown) override;
 
-    void BuildMenu(wxMenuBar* menuBar) override;
+        void BuildMenu(wxMenuBar * menuBar) override;
 
-    void OnLaunch(wxCommandEvent& event);
+        void OnLaunch(wxCommandEvent & event);
 
-protected:
-    wxMenu* m_FileNewMenu;
+    protected:
+        wxMenu * m_FileNewMenu;
 
-    DECLARE_EVENT_TABLE();
+        DECLARE_EVENT_TABLE();
 };
 
 #endif // CLASSWIZARD_H

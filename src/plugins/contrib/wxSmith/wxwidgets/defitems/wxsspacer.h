@@ -27,16 +27,16 @@
 
 class wxsSpacer: public wxsItem
 {
-public:
+    public:
 
-    wxsSpacer(wxsItemResData* Data);
+        wxsSpacer(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnEnumItemProperties(long Flags);
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnBuildCreatingCode();
-    virtual void OnBuildDeclarationsCode() {}
+        virtual void OnEnumItemProperties(long Flags);
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual void OnBuildDeclarationsCode() {}
 };
 
 #endif

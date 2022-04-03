@@ -14,14 +14,14 @@
 //----------------------------------------------------------------------------
 // wx
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "points.h"
+    #pragma implementation "points.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #include "wx/points.h"
@@ -82,10 +82,10 @@ wxPoints::~wxPoints()
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPoints::Add(
-    const Point &p
+    const Point & p
 )
 {
-    m_vPoints.Insert( p, GetInsertPosition(p) );
+    m_vPoints.Insert(p, GetInsertPosition(p));
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -104,8 +104,7 @@ void wxPoints::Add(
 )
 {
     Point p(s, x, y, c);
-
-    Add( p );
+    Add(p);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -129,13 +128,14 @@ Point wxPoints::GetPoint(
     size_t n
 ) const
 {
-
     size_t num = m_vPoints.GetCount();
 
-    if ( num > n )
-        return m_vPoints.Item( n );
+    if (num > n)
+    {
+        return m_vPoints.Item(n);
+    }
 
-    return Point( wxEmptyString, 0, 0 );
+    return Point(wxEmptyString, 0, 0);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -150,10 +150,12 @@ wxString wxPoints::GetName(
 {
     size_t num = m_vPoints.GetCount();
 
-    if ( num > n )
-        return m_vPoints.Item( n ).m_name;
+    if (num > n)
+    {
+        return m_vPoints.Item(n).m_name;
+    }
 
-    return ( wxEmptyString );
+    return (wxEmptyString);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -168,11 +170,12 @@ ChartValue wxPoints::GetXVal(
 {
     size_t num = m_vPoints.GetCount();
 
-    if ( num > n )
-        return m_vPoints.Item( n ).m_xval;
+    if (num > n)
+    {
+        return m_vPoints.Item(n).m_xval;
+    }
 
     return 0;
-
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -187,8 +190,10 @@ ChartValue wxPoints::GetYVal(
 {
     size_t num = m_vPoints.GetCount();
 
-    if ( num > n )
-        return m_vPoints.Item( n ).m_yval;
+    if (num > n)
+    {
+        return m_vPoints.Item(n).m_yval;
+    }
 
     return 0;
 }
@@ -205,8 +210,10 @@ ChartColor wxPoints::GetColor(
 {
     size_t num = m_vPoints.GetCount();
 
-    if ( num > n )
-        return m_vPoints.Item( n ).m_col;
+    if (num > n)
+    {
+        return m_vPoints.Item(n).m_col;
+    }
 
     return 0;
 }
@@ -232,8 +239,10 @@ ChartValue wxPoints::GetMaxX() const
 {
     int n = GetCount();
 
-    if ( n > 0 )
-        return m_vPoints.Item( n - 1 ).m_xval;
+    if (n > 0)
+    {
+        return m_vPoints.Item(n - 1).m_xval;
+    }
 
     return 0;
 }
@@ -248,8 +257,10 @@ ChartValue wxPoints::GetMinX() const
 {
     int n = GetCount();
 
-    if ( n > 0 )
-        return m_vPoints.Item( 0 ).m_xval;
+    if (n > 0)
+    {
+        return m_vPoints.Item(0).m_xval;
+    }
 
     return 0;
 }
@@ -264,15 +275,17 @@ ChartValue wxPoints::GetMaxY() const
 {
     ChartValue iRes = 0;
 
-    for ( size_t iLoop = 0;
+    for (size_t iLoop = 0;
             iLoop < GetCount();
-            ++iLoop )
+            ++iLoop)
     {
-        if ( GetYVal(iLoop) > iRes )
-            iRes = GetYVal( iLoop );
+        if (GetYVal(iLoop) > iRes)
+        {
+            iRes = GetYVal(iLoop);
+        }
     }
 
-    return ( iRes );
+    return (iRes);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -285,17 +298,22 @@ ChartValue wxPoints::GetMinY() const
 {
     ChartValue iRes = 0;
 
-    for ( size_t iLoop = 0;
+    for (size_t iLoop = 0;
             iLoop < GetCount();
-            ++iLoop )
+            ++iLoop)
     {
-        if ( iLoop == 0 )
+        if (iLoop == 0)
+        {
             iRes = GetYVal(iLoop);
-        else if ( GetYVal(iLoop) < iRes )
-            iRes = GetYVal( iLoop );
+        }
+        else
+            if (GetYVal(iLoop) < iRes)
+            {
+                iRes = GetYVal(iLoop);
+            }
     }
 
-    return ( iRes );
+    return (iRes);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -307,22 +325,23 @@ ChartValue wxPoints::GetMinY() const
 //	RETURN:		itListPoints&
 //----------------------------------------------------------------------E-+++
 size_t wxPoints::GetInsertPosition(
-    const Point& p
+    const Point & p
 )
 {
-
     size_t num = m_vPoints.GetCount();
     size_t loop;
 
-    for ( loop = 0;
+    for (loop = 0;
             loop < num;
-            loop++ )
+            loop++)
     {
-        if ( m_vPoints.Item( loop ).m_xval > p.m_xval )
+        if (m_vPoints.Item(loop).m_xval > p.m_xval)
+        {
             break;
+        }
     }
 
-    return ( loop );
+    return (loop);
 }
 
 //+++-S-cf-------------------------------------------------------------------

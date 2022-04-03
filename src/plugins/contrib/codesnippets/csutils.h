@@ -27,16 +27,16 @@ class wxString;
 class Utils
 // ----------------------------------------------------------------------------
 {
-public:
-    Utils();
-    virtual ~Utils();
+    public:
+        Utils();
+        virtual ~Utils();
 
-    wxWindow* FindWindowRecursively(const wxWindow* parent, const wxString& partialLabel);
-    wxWindow* FindWindowRecursively(const wxWindow* parent, const wxWindow* handle);
-    wxWindow* WinExists(wxWindow *parent);
+        wxWindow * FindWindowRecursively(const wxWindow * parent, const wxString & partialLabel);
+        wxWindow * FindWindowRecursively(const wxWindow * parent, const wxWindow * handle);
+        wxWindow * WinExists(wxWindow * parent);
 
-protected:
-private:
+    protected:
+    private:
 };
 
 #endif // UTILS_H

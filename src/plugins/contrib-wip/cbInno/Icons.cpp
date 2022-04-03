@@ -23,7 +23,7 @@ const wxString CIcons::Flags[] =
     wxT("useapppaths")
 };
 
-CIcons::CIcons( void)
+CIcons::CIcons(void)
 {
     //ctor
 }
@@ -33,71 +33,91 @@ CIcons::~CIcons()
     //dtor
 }
 
-void CIcons::WriteInFile( wxTextFile* File)
+void CIcons::WriteInFile(wxTextFile * File)
 {
-    if( !m_Name.IsEmpty() && !m_Filename.IsEmpty())
+    if (!m_Name.IsEmpty() && !m_Filename.IsEmpty())
     {
         wxString Text;
+        Text = _T("Name: \"") + m_Name + _T("\"; Filename: \"") + m_Filename + _T("\"");
 
-        Text =_T("Name: \"") + m_Name +_T("\"; Filename: \"") + m_Filename +_T("\"");
-        if( !m_Parameters.IsEmpty())
-            Text +=_T("; Parameters; \"") + m_Parameters +_T("\"");
-        if( !m_WorkingDir.IsEmpty())
-            Text +=_T("; WorkingDir: \"") + m_WorkingDir +_T("\"");
-        if( !m_HotKey.IsEmpty())
-            Text +=_T("; HotKey: \"") + m_HotKey +_T("\"");
-        if( !m_Commentar.IsEmpty())
-            Text +=_T("; Comment: \"") + m_Commentar +_T("\"");
-        if( !m_IconFilename.IsEmpty())
-            Text +=_T("; IconFilename: \"") + m_IconFilename +_T("\"");
-        if( !m_IconIndex.IsEmpty())
-            Text +=_T("; IconIndex: ") + m_IconIndex;
-        if( !m_Flags.IsEmpty())
-            Text +=_T("; Flags: ") + m_Flags;
+        if (!m_Parameters.IsEmpty())
+        {
+            Text += _T("; Parameters; \"") + m_Parameters + _T("\"");
+        }
+
+        if (!m_WorkingDir.IsEmpty())
+        {
+            Text += _T("; WorkingDir: \"") + m_WorkingDir + _T("\"");
+        }
+
+        if (!m_HotKey.IsEmpty())
+        {
+            Text += _T("; HotKey: \"") + m_HotKey + _T("\"");
+        }
+
+        if (!m_Commentar.IsEmpty())
+        {
+            Text += _T("; Comment: \"") + m_Commentar + _T("\"");
+        }
+
+        if (!m_IconFilename.IsEmpty())
+        {
+            Text += _T("; IconFilename: \"") + m_IconFilename + _T("\"");
+        }
+
+        if (!m_IconIndex.IsEmpty())
+        {
+            Text += _T("; IconIndex: ") + m_IconIndex;
+        }
+
+        if (!m_Flags.IsEmpty())
+        {
+            Text += _T("; Flags: ") + m_Flags;
+        }
 
         CCompTask::AddText(Text);
         CCommon::AddText(Text);
-        File->AddLine( Text);
+        File->AddLine(Text);
     }
 }
 
-void CIcons::Set( wxString name, wxString filename)
+void CIcons::Set(wxString name, wxString filename)
 {
     m_Name = name;
     m_Filename = filename;
 }
 
-void CIcons::SetParameters( wxString parameters)
+void CIcons::SetParameters(wxString parameters)
 {
     m_Parameters = parameters;
 }
 
-void CIcons::SetWorkingDir( wxString workingDir)
+void CIcons::SetWorkingDir(wxString workingDir)
 {
     m_WorkingDir = workingDir;
 }
 
-void CIcons::SetHotKey( wxString hotKey)
+void CIcons::SetHotKey(wxString hotKey)
 {
     m_HotKey = hotKey;
 }
 
-void CIcons::SetCommentar( wxString commentar)
+void CIcons::SetCommentar(wxString commentar)
 {
     m_Commentar = commentar;
 }
 
-void CIcons::SetIconFilename( wxString iconFilename)
+void CIcons::SetIconFilename(wxString iconFilename)
 {
     m_IconFilename = iconFilename;
 }
 
-void CIcons::SetAppUserModelID( wxString app)
+void CIcons::SetAppUserModelID(wxString app)
 {
     m_AppUserModelId = app;
 }
 
-void CIcons::SetFlags( wxString flags)
+void CIcons::SetFlags(wxString flags)
 {
     m_Flags = flags;
 }
@@ -117,13 +137,14 @@ void CIcons::SetIconIndex(wxString iconIndex)
     m_IconIndex = iconIndex;
 }
 
-void CIcons::Analize(const wxString& content, const wxString& line)
+void CIcons::Analize(const wxString & content, const wxString & line)
 {
     wxString cont = content;
     wxString part;
     wxString settings;
     SetLinenumber(line);
-    while( !cont.empty())
+
+    while (!cont.empty())
     {
         part = cont.BeforeFirst(':');
         settings = cont.AfterFirst(':').BeforeFirst(';');
@@ -132,52 +153,64 @@ void CIcons::Analize(const wxString& content, const wxString& line)
         settings = settings.Trim(false);
         cont = cont.Trim(false);
 
-        if( part.CmpNoCase(_T("name")) == 0)
+        if (part.CmpNoCase(_T("name")) == 0)
         {
             SetName(settings);
         }
-        else if( part.CmpNoCase(_T("Filename")) == 0)
-        {
-            SetFilename(settings);
-        }
-        else if( part.CmpNoCase(_T("parameters")) == 0)
-        {
-            SetParameters(settings);
-        }
-        else if( part.CmpNoCase(_T("workingdir")) == 0)
-        {
-            SetWorkingDir(settings);
-        }
-        else if( part.CmpNoCase(_T("hotkey")) == 0)
-        {
-            SetHotKey(settings);
-        }
-        else if( part.CmpNoCase(_T("comment")) == 0)
-        {
-            SetCommentar(settings);
-        }
-        else if( part.CmpNoCase(_T("iconfilename")) == 0)
-        {
-            SetIconFilename(settings);
-        }
-        else if( part.CmpNoCase(_T("iconindex")) == 0)
-        {
-            SetIconIndex(settings);
-        }
-        else if( part.CmpNoCase(_T("appusermodelid")) == 0)
-        {
-            SetAppUserModelID(settings);
-        }
-        else if( part.CmpNoCase(_T("flags")) == 0)
-        {
-            SetFlags(settings);
-        }
-        else if( !CCompTask::Analize(part, settings))
-            CCommon::Analize(part, settings);
+        else
+            if (part.CmpNoCase(_T("Filename")) == 0)
+            {
+                SetFilename(settings);
+            }
+            else
+                if (part.CmpNoCase(_T("parameters")) == 0)
+                {
+                    SetParameters(settings);
+                }
+                else
+                    if (part.CmpNoCase(_T("workingdir")) == 0)
+                    {
+                        SetWorkingDir(settings);
+                    }
+                    else
+                        if (part.CmpNoCase(_T("hotkey")) == 0)
+                        {
+                            SetHotKey(settings);
+                        }
+                        else
+                            if (part.CmpNoCase(_T("comment")) == 0)
+                            {
+                                SetCommentar(settings);
+                            }
+                            else
+                                if (part.CmpNoCase(_T("iconfilename")) == 0)
+                                {
+                                    SetIconFilename(settings);
+                                }
+                                else
+                                    if (part.CmpNoCase(_T("iconindex")) == 0)
+                                    {
+                                        SetIconIndex(settings);
+                                    }
+                                    else
+                                        if (part.CmpNoCase(_T("appusermodelid")) == 0)
+                                        {
+                                            SetAppUserModelID(settings);
+                                        }
+                                        else
+                                            if (part.CmpNoCase(_T("flags")) == 0)
+                                            {
+                                                SetFlags(settings);
+                                            }
+                                            else
+                                                if (!CCompTask::Analize(part, settings))
+                                                {
+                                                    CCommon::Analize(part, settings);
+                                                }
     }
 }
 
-void CIcons::FillContent(wxListCtrl* liste)
+void CIcons::FillContent(wxListCtrl * liste)
 {
     liste->SetItem(GetIndex(), m_index_name, m_Name);
     liste->SetItem(GetIndex(), m_index_filename, m_Filename);
@@ -193,7 +226,7 @@ void CIcons::FillContent(wxListCtrl* liste)
     CCommon::FillContent(liste, GetIndex());
 }
 
-void CIcons::AddHeader(wxListCtrl* liste)
+void CIcons::AddHeader(wxListCtrl * liste)
 {
     InsertHeader(liste);
     m_index_name              = liste->InsertColumn(liste->GetColumnCount(), _T("Name"));

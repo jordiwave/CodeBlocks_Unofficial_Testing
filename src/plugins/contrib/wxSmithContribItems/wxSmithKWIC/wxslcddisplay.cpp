@@ -55,13 +55,13 @@ wxsRegisterItem<wxsLCDDisplay> Reg(
  * \param Data wxsItemResData*    Pointer to a resource data object.
  *
  */
-wxsLCDDisplay::wxsLCDDisplay(wxsItemResData* Data) :
+wxsLCDDisplay::wxsLCDDisplay(wxsItemResData * Data) :
     wxsWidget(
         Data,
         &Reg.Info,
         NULL,
         NULL,
-        flVariable|flId|flPosition|flSize|flEnabled|flFocused|flHidden|flColours|flToolTip|flHelpText|flSubclass|flMinMaxSize),
+        flVariable | flId | flPosition | flSize | flEnabled | flFocused | flHidden | flColours | flToolTip | flHelpText | flSubclass | flMinMaxSize),
     m_iNumDigits(6)
 {
 }
@@ -79,31 +79,44 @@ wxsLCDDisplay::~wxsLCDDisplay()
  */
 void wxsLCDDisplay::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("\"wx/KWIC/LCDWindow.h\""),GetInfo().ClassName);
-        Codef(_T("%C(%W,%P,%S);\n"));
-
-        wxString ss = m_cdLightColour.BuildCode( GetCoderContext() );
-        if (!ss.IsEmpty()) Codef(_T("%ASetLightColour(%s);\n"), ss.wx_str());
-
-        ss = m_cdGrayColour.BuildCode( GetCoderContext() );
-        if (!ss.IsEmpty()) Codef(_T("%ASetGrayColour(%s);\n"), ss.wx_str());
-        // 6 digits is the default value.
-        if (m_iNumDigits && m_iNumDigits != 6)
+        case wxsCPP:
         {
-            Codef(_T("%ASetNumberDigits(%d);\n"), static_cast<int>(m_iNumDigits));
-        }
-        if (!m_sValue.IsEmpty()) Codef(_T("%ASetValue(wxT(\"%s\");\n"), m_sValue.wx_str());
+            AddHeader(_T("\"wx/KWIC/LCDWindow.h\""), GetInfo().ClassName);
+            Codef(_T("%C(%W,%P,%S);\n"));
+            wxString ss = m_cdLightColour.BuildCode(GetCoderContext());
 
-        BuildSetupWindowCode();
-        break;
-    }
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsLCDDisplay::OnBuildCreatingCode"),GetLanguage());
+            if (!ss.IsEmpty())
+            {
+                Codef(_T("%ASetLightColour(%s);\n"), ss.wx_str());
+            }
+
+            ss = m_cdGrayColour.BuildCode(GetCoderContext());
+
+            if (!ss.IsEmpty())
+            {
+                Codef(_T("%ASetGrayColour(%s);\n"), ss.wx_str());
+            }
+
+            // 6 digits is the default value.
+            if (m_iNumDigits && m_iNumDigits != 6)
+            {
+                Codef(_T("%ASetNumberDigits(%d);\n"), static_cast<int>(m_iNumDigits));
+            }
+
+            if (!m_sValue.IsEmpty())
+            {
+                Codef(_T("%ASetValue(wxT(\"%s\");\n"), m_sValue.wx_str());
+            }
+
+            BuildSetupWindowCode();
+            break;
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsLCDDisplay::OnBuildCreatingCode"), GetLanguage());
     }
 }
 
@@ -114,31 +127,35 @@ void wxsLCDDisplay::OnBuildCreatingCode()
  * \return wxObject                        The control preview object.
  *
  */
-wxObject* wxsLCDDisplay::OnBuildPreview(wxWindow* parent, long flags)
+wxObject * wxsLCDDisplay::OnBuildPreview(wxWindow * parent, long flags)
 {
-    kwxLCDDisplay* preview = new kwxLCDDisplay(parent, Pos(parent), Size(parent));
-
+    kwxLCDDisplay * preview = new kwxLCDDisplay(parent, Pos(parent), Size(parent));
     wxColour cc = m_cdLightColour.GetColour();
-    if(cc.IsOk())
+
+    if (cc.IsOk())
     {
         preview->SetLightColour(cc);
     }
+
     cc = m_cdGrayColour.GetColour();
-    if(cc.IsOk())
+
+    if (cc.IsOk())
     {
         preview->SetGrayColour(cc);
     }
+
     // 6 digits is the default value.
-    if(m_iNumDigits && m_iNumDigits != 6)
+    if (m_iNumDigits && m_iNumDigits != 6)
     {
         preview->SetNumberDigits(m_iNumDigits);
     }
-    if(!m_sValue.IsEmpty())
+
+    if (!m_sValue.IsEmpty())
     {
         preview->SetValue(m_sValue);
     }
 
-    return SetupWindow(preview,flags);
+    return SetupWindow(preview, flags);
 }
 
 /*! \brief Enumerate the control's custom properties.

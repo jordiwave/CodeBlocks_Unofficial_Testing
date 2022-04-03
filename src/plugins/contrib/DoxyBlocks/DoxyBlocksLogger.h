@@ -38,16 +38,16 @@ const long ID_LOG_DOXYBLOCKS = wxNewId(); //!< The all-important control ID.
  */
 class DoxyBlocksLogger : public TextCtrlLogger
 {
-    wxPanel    *panel; //!< The log's panel.
-    wxBoxSizer *sizer; //!< The panel's sizer.
-public:
-    /*! \brief Constructor
-     */
-    DoxyBlocksLogger() : TextCtrlLogger(false), panel(0), sizer(0) {}
+        wxPanel  *  panel; //!< The log's panel.
+        wxBoxSizer * sizer; //!< The panel's sizer.
+    public:
+        /*! \brief Constructor
+         */
+        DoxyBlocksLogger() : TextCtrlLogger(false), panel(0), sizer(0) {}
 
-    void UpdateSettings();
-    virtual wxWindow* CreateControl(wxWindow* parent);
-    void OpenLink(long urlStart, long urlEnd, bool bUseInternalViewer);
+        void UpdateSettings();
+        virtual wxWindow * CreateControl(wxWindow * parent);
+        void OpenLink(long urlStart, long urlEnd, bool bUseInternalViewer);
 };
 
 #endif // DOXYBLOCKSLOGGER_H_INCLUDED

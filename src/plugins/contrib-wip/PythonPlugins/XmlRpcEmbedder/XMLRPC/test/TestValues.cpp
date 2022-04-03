@@ -25,10 +25,14 @@ void testBoolean()
     assert(booleanFalse != booleanTrueXml);
 
     if (bool(booleanFalse))
+    {
         assert(false);
+    }
 
-    if ( ! bool(booleanTrue))
+    if (! bool(booleanTrue))
+    {
         assert(false);
+    }
 }
 
 // Int
@@ -72,14 +76,12 @@ void testString()
     offset = 0;
     XmlRpcValue fromXml(vssXml.toXml(), &offset);
     assert(s == fromXml);
-
     // Empty or blank strings with no <string> tags
     std::string emptyStringXml("<value></value>");
     offset = 0;
     XmlRpcValue emptyStringVal1(emptyStringXml, &offset);
     XmlRpcValue emptyStringVal2("");
     assert(emptyStringVal1 == emptyStringVal2);
-
     emptyStringXml = "<value>  </value>";
     offset = 0;
     XmlRpcValue blankStringVal(emptyStringXml, &offset);
@@ -92,12 +94,12 @@ void testDateTime()
     // DateTime
     int offset = 0;
     XmlRpcValue dateTime("<value><dateTime.iso8601>19040101T03:12:35</dateTime.iso8601></value>", &offset);
-    struct tm &t = dateTime;
+    struct tm & t = dateTime;
     assert(t.tm_year == 1904 && t.tm_min == 12);
 }
 
 
-void testArray(XmlRpcValue const& d)
+void testArray(XmlRpcValue const & d)
 {
     // Array
     XmlRpcValue a;
@@ -108,7 +110,6 @@ void testArray(XmlRpcValue const& d)
     a[3] = "four";
     assert(int(a[0]) == 1);
     assert(a[2] == d);
-
     char csaXml[] =
         "<value><array>\n"
         "  <data>\n"
@@ -118,7 +119,6 @@ void testArray(XmlRpcValue const& d)
         "    <value>four</value>\n"
         "  </data>\n"
         "</array></value>";
-
     int offset = 0;
     XmlRpcValue aXml(csaXml, &offset);
     assert(a == aXml);
@@ -131,16 +131,13 @@ void testStruct()
     struct1["i4"] = 1;
     struct1["str"] = "two";
     struct1["d"] = 43.7;
-
     XmlRpcValue a;
     a.setSize(4);
     a[0] = 1;
     a[1] = std::string("two");
     a[2] = 43.7;
     a[3] = "four";
-
     assert(struct1["d"] == a[2]);
-
     char csStructXml[] =
         "<value><struct>\n"
         "  <member>\n"
@@ -156,83 +153,75 @@ void testStruct()
         "    <value> <string>two</string></value>\n"
         "  </member>\n"
         "</struct></value>";
-
     int offset = 0;
     XmlRpcValue structXml(csStructXml, &offset);
     assert(struct1 == structXml);
-
     XmlRpcValue astruct;
     astruct["array"] = a;
     assert(astruct["array"][2] == struct1["d"]);
 
-    for (int i=0; i<10; i++)
+    for (int i = 0; i < 10; i++)
     {
         XmlRpcValue Event;
         Event["Name"] = "string";
-
         Event.clear();
-
         const int NELMTS = 100;
         int ii;
 
-        for (ii=0; ii< NELMTS; ++ii)
+        for (ii = 0; ii < NELMTS; ++ii)
         {
             char buf[40];
-            sprintf(buf,"%d", ii);
+            sprintf(buf, "%d", ii);
             Event[std::string(buf)] = buf;
         }
 
         Event.clear();
 
-        for (ii=0; ii< NELMTS; ++ii)
+        for (ii = 0; ii < NELMTS; ++ii)
         {
             char buf[40];
-            sprintf(buf,"%d", ii);
-            if (ii != NELMTS/2)
+            sprintf(buf, "%d", ii);
+
+            if (ii != NELMTS / 2)
+            {
                 Event[std::string(buf)] = ii;
+            }
             else
-                for (int jj=0; jj< NELMTS; ++jj)
+                for (int jj = 0; jj < NELMTS; ++jj)
                 {
                     char bufj[40];
-                    sprintf(bufj,"%d", jj);
+                    sprintf(bufj, "%d", jj);
                     Event[std::string(buf)][std::string(bufj)] = bufj;
                 }
         }
 
-        for (ii=0; ii< NELMTS; ++ii)
+        for (ii = 0; ii < NELMTS; ++ii)
         {
             char buf[40];
-            sprintf(buf,"%d", ii);
-            if (ii != NELMTS/2)
+            sprintf(buf, "%d", ii);
+
+            if (ii != NELMTS / 2)
+            {
                 assert(Event[std::string(buf)] == XmlRpcValue(ii));
+            }
             else
+            {
                 assert(Event[std::string(buf)].size() == NELMTS);
+            }
         }
     }
 }
 
 
 
-int main(int argc, char* argv[])
+int main(int argc, char * argv[])
 {
     testBoolean();
-
     testInt();
-
-
     testDouble();
-
-
     testString();
-
-
     testDateTime();
-
-
     testArray(43.7);
-
-
     testStruct();
-
     return 0;
 }

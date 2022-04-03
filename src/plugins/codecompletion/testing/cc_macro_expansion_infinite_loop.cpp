@@ -22,7 +22,7 @@ struct DD
 
 #define member FF.member
 
-DD* g(const char*);
+DD * g(const char *);
 
 int aaa;
 int f()

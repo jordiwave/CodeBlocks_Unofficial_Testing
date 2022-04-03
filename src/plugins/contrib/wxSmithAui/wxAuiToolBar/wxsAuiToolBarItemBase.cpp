@@ -27,51 +27,63 @@ namespace
 {
 class wxSmithWindow : public wxWindow
 {
-public:
-    wxSmithWindow(wxWindow *parent,
-                  const wxPoint& pos = wxDefaultPosition,
-                  const wxSize& size = wxDefaultSize)
-        : wxWindow(parent,-1,pos,size)
-    {
-        Show(false);
-    }
+    public:
+        wxSmithWindow(wxWindow * parent,
+                      const wxPoint & pos = wxDefaultPosition,
+                      const wxSize & size = wxDefaultSize)
+            : wxWindow(parent, -1, pos, size)
+        {
+            Show(false);
+        }
 
-    virtual bool IsShown() const
-    {
-        return true;
-    }
+        virtual bool IsShown() const
+        {
+            return true;
+        }
 };
 }
 
-wxObject* wxsAuiToolBarItemBase::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsAuiToolBarItemBase::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxSmithAuiToolBar* ParentToolBar = wxDynamicCast(Parent,wxSmithAuiToolBar);
-    if ( !ParentToolBar ) return NULL;
+    wxSmithAuiToolBar * ParentToolBar = wxDynamicCast(Parent, wxSmithAuiToolBar);
+
+    if (!ParentToolBar)
+    {
+        return NULL;
+    }
 
     wxRect  ItemRect     = ParentToolBar->GetToolRect(m_ItemId);
     wxPoint ItemPosition = ItemRect.GetPosition();
     wxSize  ItemSize     = ItemRect.GetSize();
 
-
-    if ( GetClassName() == _T("wxAuiToolBarSpacer") )
+    if (GetClassName() == _T("wxAuiToolBarSpacer"))
     {
         int Margin = Parent->ClientToScreen(ItemPosition).y - Parent->GetParent()->ClientToScreen(ParentToolBar->GetPosition()).y;
-        ItemSize.y = ParentToolBar->GetClientSize().y - 2*Margin;
+        ItemSize.y = ParentToolBar->GetClientSize().y - 2 * Margin;
     }
-    if ( m_HasGripper == wxLEFT ) ItemPosition.x += m_GripperSize;
-    if ( m_HasGripper == wxTOP  ) ItemPosition.y += m_GripperSize;
 
-    return new wxSmithWindow(Parent,ItemPosition,ItemSize);
+    if (m_HasGripper == wxLEFT)
+    {
+        ItemPosition.x += m_GripperSize;
+    }
+
+    if (m_HasGripper == wxTOP)
+    {
+        ItemPosition.y += m_GripperSize;
+    }
+
+    return new wxSmithWindow(Parent, ItemPosition, ItemSize);
 }
 
-bool wxsAuiToolBarItemBase::OnCanAddToParent(wxsParent* Parent,bool ShowMessage)
+bool wxsAuiToolBarItemBase::OnCanAddToParent(wxsParent * Parent, bool ShowMessage)
 {
-    if ( Parent->GetClassName() != _T("wxAuiToolBar") )
+    if (Parent->GetClassName() != _T("wxAuiToolBar"))
     {
-        if ( ShowMessage )
+        if (ShowMessage)
         {
             wxMessageBox(_("wxAuiToolBarItems can only be added to an wxAuiToolBar."));
         }
+
         return false;
     }
 

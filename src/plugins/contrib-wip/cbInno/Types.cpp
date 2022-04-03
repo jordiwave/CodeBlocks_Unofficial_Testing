@@ -9,7 +9,7 @@ const wxString CTypes::Flags[] =
     wxT("iscustom")
 };
 
-CTypes::CTypes( void)
+CTypes::CTypes(void)
 {
     //ctor
 }
@@ -20,18 +20,18 @@ CTypes::~CTypes()
 }
 
 
-void CTypes::Set( wxString name, wxString description)
+void CTypes::Set(wxString name, wxString description)
 {
     m_Name       = name;
     m_Description = description;
 }
 
-void CTypes::SetFlags( wxString Flags)
+void CTypes::SetFlags(wxString Flags)
 {
     m_Flags = Flags;
 }
 
-wxString CTypes::GetName( void)
+wxString CTypes::GetName(void)
 {
     return m_Name;
 }
@@ -46,13 +46,14 @@ void CTypes::SetDescription(wxString description)
     m_Description = description;
 }
 
-void CTypes::Analize(const wxString& content, const wxString& line)
+void CTypes::Analize(const wxString & content, const wxString & line)
 {
     wxString cont = content;
     wxString part;
     wxString settings;
     SetLinenumber(line);
-    while( !cont.empty())
+
+    while (!cont.empty())
     {
         part = cont.BeforeFirst(':');
         settings = cont.AfterFirst(':').BeforeFirst(';');
@@ -61,24 +62,27 @@ void CTypes::Analize(const wxString& content, const wxString& line)
         settings = settings.Trim(false);
         cont = cont.Trim(false);
 
-        if( part.CmpNoCase(_T("Name")) == 0)
+        if (part.CmpNoCase(_T("Name")) == 0)
         {
             SetName(settings);
         }
-        else if( part.CmpNoCase(_T("Description")) == 0)
-        {
-            SetDescription(settings);
-        }
-        else if( part.CmpNoCase(_T("flags")) == 0)
-        {
-            SetFlags(settings);
-        }
-        else if( CCommon::Analize(part, settings))
-            ;
+        else
+            if (part.CmpNoCase(_T("Description")) == 0)
+            {
+                SetDescription(settings);
+            }
+            else
+                if (part.CmpNoCase(_T("flags")) == 0)
+                {
+                    SetFlags(settings);
+                }
+                else
+                    if (CCommon::Analize(part, settings))
+                        ;
     }
 }
 
-void CTypes::FillContent(wxListCtrl* liste)
+void CTypes::FillContent(wxListCtrl * liste)
 {
     liste->SetItem(GetIndex(), m_index_name, m_Name);
     liste->SetItem(GetIndex(), m_index_desc, m_Description);
@@ -86,7 +90,7 @@ void CTypes::FillContent(wxListCtrl* liste)
     CCommon::FillContent(liste, GetIndex());
 }
 
-void CTypes::AddHeader(wxListCtrl* liste)
+void CTypes::AddHeader(wxListCtrl * liste)
 {
     InsertHeader(liste);
     m_index_name  = liste->InsertColumn(liste->GetColumnCount(), _T("Name"));
@@ -96,17 +100,19 @@ void CTypes::AddHeader(wxListCtrl* liste)
 }
 
 
-void CTypes::WriteInFile( wxTextFile* File)
+void CTypes::WriteInFile(wxTextFile * File)
 {
-    if( !m_Name.IsEmpty() && !m_Description.IsEmpty())
+    if (!m_Name.IsEmpty() && !m_Description.IsEmpty())
     {
         wxString Text;
-
         Text = _T("Name: \"") + m_Name + _T("\"; Description: \"") + m_Description + _T("\"");
 
-        if( !m_Flags.IsEmpty())
+        if (!m_Flags.IsEmpty())
+        {
             Text += _T("; Flags: ") + m_Flags;
+        }
+
         CCommon::AddText(Text);
-        File->AddLine( Text);
+        File->AddLine(Text);
     }
 }

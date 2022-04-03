@@ -5,7 +5,7 @@
 
 class CompItem;
 
-WX_DECLARE_OBJARRAY(CompItem*, CompItemArray);
+WX_DECLARE_OBJARRAY(CompItem *, CompItemArray);
 
 struct CompItem
 {

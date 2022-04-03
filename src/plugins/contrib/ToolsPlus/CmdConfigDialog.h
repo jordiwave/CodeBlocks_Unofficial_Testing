@@ -14,9 +14,9 @@
 // Then, compile it and place the file "wx_pch.h.gch" into the same
 // directory that "wx_pch.h".
 #ifdef WX_GCH
-#include <wx_pch.h>
+    #include <wx_pch.h>
 #else
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #include <wx/button.h>
@@ -57,75 +57,75 @@ class CommandCollection;
 
 class CmdConfigDialog : public wxDialog
 {
-public:
-    CmdConfigDialog(CmdConfigDialog &/*dlg*/) : wxDialog() {}
-    CmdConfigDialog( wxWindow* parent, ToolsPlus* plugin);
-    virtual ~CmdConfigDialog() {}
+    public:
+        CmdConfigDialog(CmdConfigDialog & /*dlg*/) : wxDialog() {}
+        CmdConfigDialog(wxWindow * parent, ToolsPlus * plugin);
+        virtual ~CmdConfigDialog() {}
 
-    wxString GetTitle() const
-    {
-        return _("User-defined Tools");
-    }
-    wxString GetBitmapBaseName() const
-    {
-        return _("ToolsPlus");
-    }
-    void OnApply();
-    void OnCancel() {}
-    bool ReUseToolsPage() const;
+        wxString GetTitle() const
+        {
+            return _("User-defined Tools");
+        }
+        wxString GetBitmapBaseName() const
+        {
+            return _("ToolsPlus");
+        }
+        void OnApply();
+        void OnCancel() {}
+        bool ReUseToolsPage() const;
 
-private:
-    CommandCollection m_ic;
-    CommandCollection *m_icperm;
-    ToolsPlus *m_plugin;
-    int m_activeinterp;
-    bool m_ReUseToolsPageValue;
-//        void UpdateEntry(int index);
-//        void ChooseFile();
+    private:
+        CommandCollection m_ic;
+        CommandCollection * m_icperm;
+        ToolsPlus * m_plugin;
+        int m_activeinterp;
+        bool m_ReUseToolsPageValue;
+        //        void UpdateEntry(int index);
+        //        void ChooseFile();
 
-protected:
-    void New(wxCommandEvent &event);
-    void Copy(wxCommandEvent &event);
-    void Delete(wxCommandEvent &event);
-    void ChangeSelection(wxCommandEvent &event);
-    void NameChange(wxCommandEvent &event);
-    void OnUp(wxCommandEvent &event);
-    void OnDown(wxCommandEvent &event);
-    void OnImport(wxCommandEvent &event);
-    void OnExport(wxCommandEvent &event);
-    void SetDialogItems();
-    void GetDialogItems();
-    wxStaticText* m_staticText27;
-    wxListBox* m_commandlist;
-    wxButton* m_butnew;
-    wxButton* m_butcopy;
-    wxButton* m_butdelete;
-    wxButton* m_butup;
-    wxButton* m_butdown;
-    wxStaticText* m_staticText11;
-    wxTextCtrl* m_commandname;
-    wxStaticText* m_staticText12;
-    wxTextCtrl* m_command;
-    wxStaticText* m_staticText28;
-    wxTextCtrl* m_wildcards;
-    wxStaticText* m_staticText112;
-    wxTextCtrl* m_workdir;
-    wxStaticText* m_staticText13;
-    wxTextCtrl* m_menuloc;
-    wxStaticText* m_staticText16;
-    wxSpinCtrl* m_menulocpriority;
-    wxStaticText* m_staticText131;
-    wxTextCtrl* m_cmenuloc;
-    wxStaticText* m_staticText161;
-    wxSpinCtrl* m_cmenulocpriority;
-    wxStaticText* m_staticText111;
-    wxChoice* m_mode;
-    wxStaticText* m_staticText1111;
-    wxChoice* m_envvars;
-    wxWindow *m_prop_panel;
-    wxCheckBox *m_replace_tools;
-    wxCheckBox *m_ReuseToolsPage;
-    DECLARE_EVENT_TABLE()
+    protected:
+        void New(wxCommandEvent & event);
+        void Copy(wxCommandEvent & event);
+        void Delete(wxCommandEvent & event);
+        void ChangeSelection(wxCommandEvent & event);
+        void NameChange(wxCommandEvent & event);
+        void OnUp(wxCommandEvent & event);
+        void OnDown(wxCommandEvent & event);
+        void OnImport(wxCommandEvent & event);
+        void OnExport(wxCommandEvent & event);
+        void SetDialogItems();
+        void GetDialogItems();
+        wxStaticText * m_staticText27;
+        wxListBox * m_commandlist;
+        wxButton * m_butnew;
+        wxButton * m_butcopy;
+        wxButton * m_butdelete;
+        wxButton * m_butup;
+        wxButton * m_butdown;
+        wxStaticText * m_staticText11;
+        wxTextCtrl * m_commandname;
+        wxStaticText * m_staticText12;
+        wxTextCtrl * m_command;
+        wxStaticText * m_staticText28;
+        wxTextCtrl * m_wildcards;
+        wxStaticText * m_staticText112;
+        wxTextCtrl * m_workdir;
+        wxStaticText * m_staticText13;
+        wxTextCtrl * m_menuloc;
+        wxStaticText * m_staticText16;
+        wxSpinCtrl * m_menulocpriority;
+        wxStaticText * m_staticText131;
+        wxTextCtrl * m_cmenuloc;
+        wxStaticText * m_staticText161;
+        wxSpinCtrl * m_cmenulocpriority;
+        wxStaticText * m_staticText111;
+        wxChoice * m_mode;
+        wxStaticText * m_staticText1111;
+        wxChoice * m_envvars;
+        wxWindow * m_prop_panel;
+        wxCheckBox * m_replace_tools;
+        wxCheckBox * m_ReuseToolsPage;
+        DECLARE_EVENT_TABLE()
 
 };
 

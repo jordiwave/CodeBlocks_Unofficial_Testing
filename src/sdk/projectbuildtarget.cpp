@@ -10,18 +10,18 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-#include "projectbuildtarget.h" // class's header file
-#include "cbproject.h"
-#include "manager.h"
-#include "projectmanager.h"
-#include "macrosmanager.h"
-#include "globals.h"
+    #include "projectbuildtarget.h" // class's header file
+    #include "cbproject.h"
+    #include "manager.h"
+    #include "projectmanager.h"
+    #include "macrosmanager.h"
+    #include "globals.h"
 #endif
 
 
 
 // class constructor
-ProjectBuildTarget::ProjectBuildTarget(cbProject* parentProject)
+ProjectBuildTarget::ProjectBuildTarget(cbProject * parentProject)
     : m_Project(parentProject),
       m_FileArray(ProjectFile::CompareProjectFiles)
 {
@@ -32,7 +32,7 @@ ProjectBuildTarget::ProjectBuildTarget(cbProject* parentProject)
     m_FileArray.Clear();
 }
 
-ProjectBuildTarget::ProjectBuildTarget(const ProjectBuildTarget &bt, cbProject* parentProject) :
+ProjectBuildTarget::ProjectBuildTarget(const ProjectBuildTarget & bt, cbProject * parentProject) :
     CompileTargetBase(bt),
     m_Project(parentProject),
     m_ExternalDeps(bt.m_ExternalDeps),
@@ -50,12 +50,12 @@ ProjectBuildTarget::~ProjectBuildTarget()
 {
 }
 
-cbProject* ProjectBuildTarget::GetParentProject()
+cbProject * ProjectBuildTarget::GetParentProject()
 {
     return m_Project;
 }
 
-const cbProject* ProjectBuildTarget::GetParentProject() const
+const cbProject * ProjectBuildTarget::GetParentProject() const
 {
     return m_Project;
 }
@@ -70,7 +70,7 @@ const wxString & ProjectBuildTarget::GetExternalDeps() const
     return m_ExternalDeps;
 }
 
-void ProjectBuildTarget::SetExternalDeps(const wxString& deps)
+void ProjectBuildTarget::SetExternalDeps(const wxString & deps)
 {
     if (m_ExternalDeps != deps)
     {
@@ -84,7 +84,7 @@ const wxString & ProjectBuildTarget::GetAdditionalOutputFiles() const
     return m_AdditionalOutputFiles;
 }
 
-void ProjectBuildTarget::SetAdditionalOutputFiles(const wxString& files)
+void ProjectBuildTarget::SetAdditionalOutputFiles(const wxString & files)
 {
     if (m_AdditionalOutputFiles != files)
     {
@@ -138,7 +138,9 @@ void ProjectBuildTarget::SetCreateStaticLib(bool createIt)
 bool ProjectBuildTarget::GetUseConsoleRunner() const
 {
     if (GetTargetType() == ttConsoleOnly || GetRunHostApplicationInTerminal())
+    {
         return m_UseConsoleRunner;
+    }
 
     return false;
 }
@@ -156,35 +158,49 @@ void ProjectBuildTarget::SetTargetType(TargetType pt)
 {
     TargetType ttold = GetTargetType();
     CompileTargetBase::SetTargetType(pt);
+
     if (ttold != GetTargetType() && GetTargetType() == ttConsoleOnly)
-        SetUseConsoleRunner(true); // by default, use console runner
+    {
+        SetUseConsoleRunner(true);    // by default, use console runner
+    }
 }
 
-ProjectFile* ProjectBuildTarget::GetFile(int index)
+ProjectFile * ProjectBuildTarget::GetFile(int index)
 {
     if (m_FileArray.GetCount() == 0)
     {
         for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
         {
             if (!*it)
+            {
                 continue;
+            }
+
             m_FileArray.Add(*it);
         }
     }
 
     if (index < 0 || static_cast<size_t>(index) >= m_FileArray.GetCount())
+    {
         return nullptr;
+    }
 
     return m_FileArray.Item(index);
 }
 
-bool ProjectBuildTarget::RemoveFile(ProjectFile* pf)
+bool ProjectBuildTarget::RemoveFile(ProjectFile * pf)
 {
     if (!pf)
+    {
         return false;
+    }
+
     m_Files.erase(pf);
+
     if (m_FileArray.GetCount() > 0)
+    {
         m_FileArray.Remove(pf);
+    }
 
     return true;
 }

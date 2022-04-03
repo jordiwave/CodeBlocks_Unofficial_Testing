@@ -15,135 +15,159 @@
  */
 class SVector
 {
-    enum { allocSize = 4000 };
+        enum { allocSize = 4000 };
 
-    int *v;				///< The vector
-    unsigned int size;	///< Number of elements allocated
-    unsigned int len;	///< Number of elements used in vector
-    bool allocFailure;	///< A memory allocation call has failed
+        int * v;				///< The vector
+        unsigned int size;	///< Number of elements allocated
+        unsigned int len;	///< Number of elements used in vector
+        bool allocFailure;	///< A memory allocation call has failed
 
-    /** Internally allocate more elements than the user wants
-     * to avoid thrashing the memory allocator. */
-    void SizeTo(int newSize)
-    {
-        if (newSize < allocSize)
-            newSize += allocSize;
-        else
-            newSize = (newSize * 3) / 2;
-        int* newv = new int[newSize];
-        if (!newv)
+        /** Internally allocate more elements than the user wants
+         * to avoid thrashing the memory allocator. */
+        void SizeTo(int newSize)
         {
-            allocFailure = true;
-            return;
-        }
-        size = newSize;
-        unsigned int i=0;
-        for (; i<len; i++)
-        {
-            newv[i] = v[i];
-        }
-        for (; i<size; i++)
-        {
-            newv[i] = 0;
-        }
-        delete []v;
-        v = newv;
-    }
-
-public:
-    SVector()
-    {
-        allocFailure = false;
-        v = 0;
-        len = 0;
-        size = 0;
-    }
-    ~SVector()
-    {
-        Free();
-    }
-    /// Constructor from another vector.
-    SVector(const SVector &other)
-    {
-        allocFailure = false;
-        v = 0;
-        len = 0;
-        size = 0;
-        if (other.Length() > 0)
-        {
-            SizeTo(other.Length());
-            if (!allocFailure)
+            if (newSize < allocSize)
             {
-                for (int i=0; i<other.Length(); i++)
-                    v[i] = other.v[i];
-                len = other.Length();
+                newSize += allocSize;
             }
-        }
-    }
-    /// Copy constructor.
-    SVector &operator=(const SVector &other)
-    {
-        if (this != &other)
-        {
+            else
+            {
+                newSize = (newSize * 3) / 2;
+            }
+
+            int * newv = new int[newSize];
+
+            if (!newv)
+            {
+                allocFailure = true;
+                return;
+            }
+
+            size = newSize;
+            unsigned int i = 0;
+
+            for (; i < len; i++)
+            {
+                newv[i] = v[i];
+            }
+
+            for (; i < size; i++)
+            {
+                newv[i] = 0;
+            }
+
             delete []v;
+            v = newv;
+        }
+
+    public:
+        SVector()
+        {
             allocFailure = false;
             v = 0;
             len = 0;
             size = 0;
+        }
+        ~SVector()
+        {
+            Free();
+        }
+        /// Constructor from another vector.
+        SVector(const SVector & other)
+        {
+            allocFailure = false;
+            v = 0;
+            len = 0;
+            size = 0;
+
             if (other.Length() > 0)
             {
                 SizeTo(other.Length());
+
                 if (!allocFailure)
                 {
-                    for (int i=0; i<other.Length(); i++)
+                    for (int i = 0; i < other.Length(); i++)
+                    {
                         v[i] = other.v[i];
+                    }
+
+                    len = other.Length();
                 }
-                len = other.Length();
             }
         }
-        return *this;
-    }
-    /** @brief Accessor.
-     * Allows to access values from the list, and grows it if accessing
-     * outside the current bounds. The returned value in this case is 0. */
-    int &operator[](unsigned int i)
-    {
-        if (i >= len)
+        /// Copy constructor.
+        SVector & operator=(const SVector & other)
         {
-            if (i >= size)
+            if (this != &other)
             {
-                SizeTo(i);
+                delete []v;
+                allocFailure = false;
+                v = 0;
+                len = 0;
+                size = 0;
+
+                if (other.Length() > 0)
+                {
+                    SizeTo(other.Length());
+
+                    if (!allocFailure)
+                    {
+                        for (int i = 0; i < other.Length(); i++)
+                        {
+                            v[i] = other.v[i];
+                        }
+                    }
+
+                    len = other.Length();
+                }
             }
-            len = i+1;
+
+            return *this;
         }
-        return v[i];
-    }
-    /// Reset vector.
-    void Free()
-    {
-        delete []v;
-        v = 0;
-        size = 0;
-        len = 0;
-    }
-    /** @brief Grow vector size.
-     * Doesn't allow a vector to be shrinked. */
-    void SetLength(unsigned int newLength)
-    {
-        if (newLength > len)
+        /** @brief Accessor.
+         * Allows to access values from the list, and grows it if accessing
+         * outside the current bounds. The returned value in this case is 0. */
+        int & operator[](unsigned int i)
         {
-            if (newLength >= size)
+            if (i >= len)
             {
-                SizeTo(newLength);
+                if (i >= size)
+                {
+                    SizeTo(i);
+                }
+
+                len = i + 1;
             }
+
+            return v[i];
         }
-        len = newLength;
-    }
-    /// Get the current length (number of used elements) of the vector.
-    int Length() const
-    {
-        return len;
-    }
+        /// Reset vector.
+        void Free()
+        {
+            delete []v;
+            v = 0;
+            size = 0;
+            len = 0;
+        }
+        /** @brief Grow vector size.
+         * Doesn't allow a vector to be shrinked. */
+        void SetLength(unsigned int newLength)
+        {
+            if (newLength > len)
+            {
+                if (newLength >= size)
+                {
+                    SizeTo(newLength);
+                }
+            }
+
+            len = newLength;
+        }
+        /// Get the current length (number of used elements) of the vector.
+        int Length() const
+        {
+            return len;
+        }
 };
 
 #endif

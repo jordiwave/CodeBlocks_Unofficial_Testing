@@ -24,8 +24,8 @@
 /** \brief Class for wxsAuiToolBarSeparator widget */
 class wxsAuiToolBarSeparator: public wxsAuiToolBarItemBase
 {
-public:
-    wxsAuiToolBarSeparator(wxsItemResData* Data);
+    public:
+        wxsAuiToolBarSeparator(wxsItemResData * Data);
 };
 
 #endif

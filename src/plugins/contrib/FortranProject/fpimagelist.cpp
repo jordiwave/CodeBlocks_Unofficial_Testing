@@ -3,10 +3,10 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/string.h>
-#include <wx/bitmap.h>
+    #include <wx/string.h>
+    #include <wx/bitmap.h>
 
-#include <configmanager.h>
+    #include <configmanager.h>
 #endif
 
 FPImageList::FPImageList(int imSize)
@@ -24,53 +24,61 @@ FPImageList::~FPImageList()
 void FPImageList::CreateImageList(int imSize)
 {
     wxString prefix2;
+
     if (imSize <= 19)
     {
         m_pImlist = new wxImageList(16, 16);
         prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/16x16/");
     }
-    else if (imSize <= 23)
-    {
-        m_pImlist = new wxImageList(20, 20);
-        prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/20x20/");
-    }
-    else if (imSize <= 27)
-    {
-        m_pImlist = new wxImageList(24, 24);
-        prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/24x24/");
-    }
-    else if (imSize <= 31)
-    {
-        m_pImlist = new wxImageList(28, 28);
-        prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/28x28/");
-    }
-    else if (imSize <= 39)
-    {
-        m_pImlist = new wxImageList(32, 32);
-        prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/32x32/");
-    }
-    else if (imSize <= 47)
-    {
-        m_pImlist = new wxImageList(40, 40);
-        prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/40x40/");
-    }
-    else if (imSize <= 55)
-    {
-        m_pImlist = new wxImageList(48, 48);
-        prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/48x48/");
-    }
-    else if (imSize <= 63)
-    {
-        m_pImlist = new wxImageList(56, 56);
-        prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/56x56/");
-    }
     else
-    {
-        m_pImlist = new wxImageList(64, 64);
-        prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/64x64/");
-    }
-    wxBitmap bmp;
+        if (imSize <= 23)
+        {
+            m_pImlist = new wxImageList(20, 20);
+            prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/20x20/");
+        }
+        else
+            if (imSize <= 27)
+            {
+                m_pImlist = new wxImageList(24, 24);
+                prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/24x24/");
+            }
+            else
+                if (imSize <= 31)
+                {
+                    m_pImlist = new wxImageList(28, 28);
+                    prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/28x28/");
+                }
+                else
+                    if (imSize <= 39)
+                    {
+                        m_pImlist = new wxImageList(32, 32);
+                        prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/32x32/");
+                    }
+                    else
+                        if (imSize <= 47)
+                        {
+                            m_pImlist = new wxImageList(40, 40);
+                            prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/40x40/");
+                        }
+                        else
+                            if (imSize <= 55)
+                            {
+                                m_pImlist = new wxImageList(48, 48);
+                                prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/48x48/");
+                            }
+                            else
+                                if (imSize <= 63)
+                                {
+                                    m_pImlist = new wxImageList(56, 56);
+                                    prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/56x56/");
+                                }
+                                else
+                                {
+                                    m_pImlist = new wxImageList(64, 64);
+                                    prefix2 = ConfigManager::GetDataFolder() + _T("/images/fortranproject/64x64/");
+                                }
 
+    wxBitmap bmp;
     bmp = cbLoadBitmap(prefix2 + _T("ctor_public.png"), wxBITMAP_TYPE_PNG);
     m_pImlist->Add(bmp);
     m_ImgNr["use"] = 0;
@@ -116,7 +124,6 @@ void FPImageList::CreateImageList(int imSize)
     bmp = cbLoadBitmap(prefix2 + _T("procedure.png"), wxBITMAP_TYPE_PNG);
     m_pImlist->Add(bmp);
     m_ImgNr["procedure"] = 14;
-
     bmp = cbLoadBitmap(prefix2 + _T("subroutine_private.png"), wxBITMAP_TYPE_PNG);
     m_pImlist->Add(bmp);
     m_ImgNr["subroutine_private"] = 15;
@@ -192,172 +199,242 @@ void FPImageList::CreateImageList(int imSize)
     bmp = cbLoadBitmap(prefix2 + _T("typedefs_folder.png"), wxBITMAP_TYPE_PNG);
     m_pImlist->Add(bmp);
     m_ImgNr["typedefs_folder"] = 39;
-
     bmp = cbLoadBitmap(prefix2 + _T("unknown.png"), wxBITMAP_TYPE_PNG);
     m_pImlist->Add(bmp);
     m_ImgNr["unknown"] = 40;
-
     m_ImgNr["none"] = -1;
 }
 
-int FPImageList::GetImageIdx(const std::string& name)
+int FPImageList::GetImageIdx(const std::string & name)
 {
     int idx;
+
     if (m_ImgNr.count(name) == 0)
+    {
         idx = m_ImgNr["none"];
+    }
     else
+    {
         idx = m_ImgNr[name];
+    }
+
     return idx;
 }
 
-int FPImageList::GetTokenKindImageIdx(TokenF* token)
+int FPImageList::GetTokenKindImageIdx(TokenF * token)
 {
     if (!token)
+    {
         return m_ImgNr["none"];
+    }
 
     switch (token->m_TokenKind)
     {
-    case tkUse:
-        return m_ImgNr["use"];
+        case tkUse:
+            return m_ImgNr["use"];
 
-    case tkModule:
-        return m_ImgNr["module"];
+        case tkModule:
+            return m_ImgNr["module"];
 
-    case tkSubroutine:
-    {
-        if (token->m_TokenAccess == taPrivate)
-            return m_ImgNr["subroutine_private"];
-        else
-            return m_ImgNr["subroutine"];
-    }
-    case tkFunction:
-    {
-        if (token->m_TokenAccess == taPrivate)
-            return m_ImgNr["function_private"];
-        else
-            return m_ImgNr["function"];
-    }
-    case tkProgram:
-        return m_ImgNr["program"];
-
-    case tkType:
-    {
-        if (token->m_TokenAccess == taPrivate)
-        {
-            if (token->m_IsAbstract)
-                return m_ImgNr["type_abstract_private"];
-            else
-                return m_ImgNr["type_private"];
-        }
-        else
-        {
-            if (token->m_IsAbstract)
-                return m_ImgNr["type_abstract"];
-            else
-                return m_ImgNr["type"];
-        }
-    }
-    case tkInterface:
-    {
-        if (token->m_TypeDefinition.IsSameAs(_T("subroutine")))
+        case tkSubroutine:
         {
             if (token->m_TokenAccess == taPrivate)
-                return m_ImgNr["interface_sub_gen_private"];
-            else
-                return m_ImgNr["interface_sub_gen"];
-        }
-        else if (token->m_TypeDefinition.IsSameAs(_T("function")))
-        {
-            if (token->m_TokenAccess == taPrivate)
-                return m_ImgNr["interface_fun_gen_private"];
-            else
-                return m_ImgNr["interface_fun_gen"];
-        }
-        else
-        {
-            if (token->m_TokenAccess == taPrivate)
-                return m_ImgNr["interface_private"];
-            else
-                return m_ImgNr["interface"];
-        }
-    }
-    case tkInterfaceExplicit:
-    {
-        if (token->m_TokenAccess == taPrivate)
-            return m_ImgNr["interface_private"];
-        else
-            return m_ImgNr["interface"];
-    }
-
-    case tkCommonblock:
-        return m_ImgNr["none"];
-
-    case tkPreprocessor:
-        return m_ImgNr["preproc"];
-
-    case tkMacroDefine:
-        return m_ImgNr["preproc"];
-
-    case tkFile:
-        return m_ImgNr["none"];
-
-    case tkVariable:
-    {
-        if (token->m_TokenAccess == taPrivate)
-            return m_ImgNr["variable_private"];
-        else if (token->m_TokenAccess == taProtected)
-            return m_ImgNr["variable_protected"];
-        else
-            return m_ImgNr["variable"];
-    }
-
-    //case tkInterfaceFunction: return m_ImgNr["interface_function"];
-
-    //case tkInterfaceSubroutine: return m_ImgNr["interface_subroutine"];
-
-    case tkProcedure:
-    {
-        if (token->m_TypeDefinition.IsSameAs(_T("subroutine")))
-        {
-            if (token->m_TokenAccess == taPrivate)
+            {
                 return m_ImgNr["subroutine_private"];
+            }
             else
+            {
                 return m_ImgNr["subroutine"];
+            }
         }
-        else if (token->m_TypeDefinition.IsSameAs(_T("function")))
+
+        case tkFunction:
         {
             if (token->m_TokenAccess == taPrivate)
+            {
                 return m_ImgNr["function_private"];
+            }
             else
+            {
                 return m_ImgNr["function"];
+            }
         }
-        else
+
+        case tkProgram:
+            return m_ImgNr["program"];
+
+        case tkType:
         {
             if (token->m_TokenAccess == taPrivate)
-                return m_ImgNr["procedure_private"];
+            {
+                if (token->m_IsAbstract)
+                {
+                    return m_ImgNr["type_abstract_private"];
+                }
+                else
+                {
+                    return m_ImgNr["type_private"];
+                }
+            }
             else
-                return m_ImgNr["procedure"];
+            {
+                if (token->m_IsAbstract)
+                {
+                    return m_ImgNr["type_abstract"];
+                }
+                else
+                {
+                    return m_ImgNr["type"];
+                }
+            }
         }
-    }
 
-    case tkAccessList:
-    {
-        if (token->m_TokenAccess == taPrivate)
-            return m_ImgNr["access_list_private"];
-        else if (token->m_TokenAccess == taProtected)
-            return m_ImgNr["access_list_protected"];
-        else
-            return m_ImgNr["access_list_public"];
-    }
+        case tkInterface:
+        {
+            if (token->m_TypeDefinition.IsSameAs(_T("subroutine")))
+            {
+                if (token->m_TokenAccess == taPrivate)
+                {
+                    return m_ImgNr["interface_sub_gen_private"];
+                }
+                else
+                {
+                    return m_ImgNr["interface_sub_gen"];
+                }
+            }
+            else
+                if (token->m_TypeDefinition.IsSameAs(_T("function")))
+                {
+                    if (token->m_TokenAccess == taPrivate)
+                    {
+                        return m_ImgNr["interface_fun_gen_private"];
+                    }
+                    else
+                    {
+                        return m_ImgNr["interface_fun_gen"];
+                    }
+                }
+                else
+                {
+                    if (token->m_TokenAccess == taPrivate)
+                    {
+                        return m_ImgNr["interface_private"];
+                    }
+                    else
+                    {
+                        return m_ImgNr["interface"];
+                    }
+                }
+        }
 
-    case tkSubmodule:
-        return m_ImgNr["submodule"];
+        case tkInterfaceExplicit:
+        {
+            if (token->m_TokenAccess == taPrivate)
+            {
+                return m_ImgNr["interface_private"];
+            }
+            else
+            {
+                return m_ImgNr["interface"];
+            }
+        }
 
-    case tkProcedureFinal:
-        return m_ImgNr["procedure_final"];
+        case tkCommonblock:
+            return m_ImgNr["none"];
 
-    default:
-        return m_ImgNr["unknown"];
+        case tkPreprocessor:
+            return m_ImgNr["preproc"];
+
+        case tkMacroDefine:
+            return m_ImgNr["preproc"];
+
+        case tkFile:
+            return m_ImgNr["none"];
+
+        case tkVariable:
+        {
+            if (token->m_TokenAccess == taPrivate)
+            {
+                return m_ImgNr["variable_private"];
+            }
+            else
+                if (token->m_TokenAccess == taProtected)
+                {
+                    return m_ImgNr["variable_protected"];
+                }
+                else
+                {
+                    return m_ImgNr["variable"];
+                }
+        }
+
+        //case tkInterfaceFunction: return m_ImgNr["interface_function"];
+
+        //case tkInterfaceSubroutine: return m_ImgNr["interface_subroutine"];
+
+        case tkProcedure:
+        {
+            if (token->m_TypeDefinition.IsSameAs(_T("subroutine")))
+            {
+                if (token->m_TokenAccess == taPrivate)
+                {
+                    return m_ImgNr["subroutine_private"];
+                }
+                else
+                {
+                    return m_ImgNr["subroutine"];
+                }
+            }
+            else
+                if (token->m_TypeDefinition.IsSameAs(_T("function")))
+                {
+                    if (token->m_TokenAccess == taPrivate)
+                    {
+                        return m_ImgNr["function_private"];
+                    }
+                    else
+                    {
+                        return m_ImgNr["function"];
+                    }
+                }
+                else
+                {
+                    if (token->m_TokenAccess == taPrivate)
+                    {
+                        return m_ImgNr["procedure_private"];
+                    }
+                    else
+                    {
+                        return m_ImgNr["procedure"];
+                    }
+                }
+        }
+
+        case tkAccessList:
+        {
+            if (token->m_TokenAccess == taPrivate)
+            {
+                return m_ImgNr["access_list_private"];
+            }
+            else
+                if (token->m_TokenAccess == taProtected)
+                {
+                    return m_ImgNr["access_list_protected"];
+                }
+                else
+                {
+                    return m_ImgNr["access_list_public"];
+                }
+        }
+
+        case tkSubmodule:
+            return m_ImgNr["submodule"];
+
+        case tkProcedureFinal:
+            return m_ImgNr["procedure_final"];
+
+        default:
+            return m_ImgNr["unknown"];
     }
 }
 

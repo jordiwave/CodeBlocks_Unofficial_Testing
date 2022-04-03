@@ -24,13 +24,13 @@ WX_DECLARE_OBJARRAY(ShellCommand, ShellCommandVec);
 
 class CommandCollection
 {
-public:
-    bool WriteConfig(); //TODO: pass handle to config manager
-    bool ReadConfig(); // ditto
-    bool ImportLegacyConfig();
-    bool ExportConfig(const wxString &filename);
-    bool ImportConfig(const wxString &filename);
-    ShellCommandVec interps;
+    public:
+        bool WriteConfig(); //TODO: pass handle to config manager
+        bool ReadConfig(); // ditto
+        bool ImportLegacyConfig();
+        bool ExportConfig(const wxString & filename);
+        bool ImportConfig(const wxString & filename);
+        ShellCommandVec interps;
 };
 
 

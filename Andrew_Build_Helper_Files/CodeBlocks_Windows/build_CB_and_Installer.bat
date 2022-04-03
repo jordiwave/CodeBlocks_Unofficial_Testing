@@ -14,7 +14,7 @@ if exist "src\devel31_32" set BUILD_BITS=32
 if exist "src\devel31_64" set BUILD_BITS=64
 if "%BUILD_BITS%" == "32" goto BuildBits_Okay
 if "%BUILD_BITS%" == "64" goto BuildBits_Okay
-goto BuildBitError
+set BUILD_BITS=64
 
 :BuildBits_Okay
 @echo on

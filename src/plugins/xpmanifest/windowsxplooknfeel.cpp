@@ -9,18 +9,18 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/arrstr.h>
-#include <wx/file.h>
-#include <wx/filename.h>
-#include <wx/intl.h>
-#include <wx/msgdlg.h>
-#include <wx/string.h>
-#include "cbproject.h"
-#include "globals.h"
-#include "manager.h"
-#include "logmanager.h"
-#include "projectbuildtarget.h"
-#include "projectmanager.h"
+    #include <wx/arrstr.h>
+    #include <wx/file.h>
+    #include <wx/filename.h>
+    #include <wx/intl.h>
+    #include <wx/msgdlg.h>
+    #include <wx/string.h>
+    #include "cbproject.h"
+    #include "globals.h"
+    #include "manager.h"
+    #include "logmanager.h"
+    #include "projectbuildtarget.h"
+    #include "projectmanager.h"
 #endif
 #include "windowsxplooknfeel.h"
 
@@ -42,9 +42,12 @@ WindowsXPLookNFeel::~WindowsXPLookNFeel()
 int WindowsXPLookNFeel::Execute()
 {
     if (!IsAttached())
+    {
         return -1;
+    }
 
-    cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+    cbProject * project = Manager::Get()->GetProjectManager()->GetActiveProject();
+
     if (!project)
     {
         wxString msg = _("No active project!");
@@ -54,10 +57,12 @@ int WindowsXPLookNFeel::Execute()
     }
 
     wxArrayString targetNames;
-    ProjectBuildTarget* target = nullptr;
+    ProjectBuildTarget * target = nullptr;
+
     for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
     {
-        ProjectBuildTarget* tgt = project->GetBuildTarget(i);
+        ProjectBuildTarget * tgt = project->GetBuildTarget(i);
+
         if (tgt)
         {
             if (tgt->GetTargetType() != ttExecutable)
@@ -65,6 +70,7 @@ int WindowsXPLookNFeel::Execute()
                 Manager::Get()->GetLogManager()->DebugLog(F(_T("WindowsXPLookNFeel: Ignoring target '%s'"), tgt->GetTitle().wx_str()));
                 continue;
             }
+
             targetNames.Add(tgt->GetTitle());
             target = tgt;
         }
@@ -76,29 +82,34 @@ int WindowsXPLookNFeel::Execute()
         Manager::Get()->GetLogManager()->DebugLog(_T("WindowsXPLookNFeel: No executable targets in project"));
         return -1;
     }
-    else if (targetNames.GetCount() > 1)
-    {
-        // more than one executable target... ask...
-        target = nullptr;
-        int targetIndex = project->SelectTarget(-1, true);
-        if (targetIndex > -1)
-            target = project->GetBuildTarget(targetIndex);
-    }
+    else
+        if (targetNames.GetCount() > 1)
+        {
+            // more than one executable target... ask...
+            target = nullptr;
+            int targetIndex = project->SelectTarget(-1, true);
 
+            if (targetIndex > -1)
+            {
+                target = project->GetBuildTarget(targetIndex);
+            }
+        }
 
     if (target)
     {
         if (cbMessageBox(_("Do you want to create the manifest file?"),
                          _("Confirmation"),
                          wxYES_NO | wxICON_QUESTION) == wxID_NO)
+        {
             return -2;
+        }
+
         wxString filename = target->GetOutputFilename();
         filename << _T(".Manifest");
         wxFileName fname(filename);
         fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE | wxPATH_NORM_ABSOLUTE | wxPATH_NORM_LONG | wxPATH_NORM_SHORTCUT, project->GetBasePath());
         filename = fname.GetFullPath();
         Manager::Get()->GetLogManager()->DebugLog(F(_T("WindowsXPLookNFeel: Creating Manifest '%s'"), filename.wx_str()));
-
         wxString buffer;
         buffer << _T("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>") << _T('\n');
         buffer << _T("<assembly") << _T('\n');
@@ -125,10 +136,8 @@ int WindowsXPLookNFeel::Execute()
         buffer << _T("    </dependentAssembly>") << _T('\n');
         buffer << _T("</dependency>") << _T('\n');
         buffer << _T("</assembly>") << _T('\n');
-
         wxFile file(filename, wxFile::write);
-        cbWrite(file,buffer);
-
+        cbWrite(file, buffer);
         cbMessageBox(_("Manifest file created"), _("Information"), wxICON_INFORMATION | wxOK);
     }
 

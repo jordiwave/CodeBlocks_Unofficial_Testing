@@ -27,8 +27,8 @@
 extern "C" {
 #  endif
 __declspec(dllimport) int __stdcall
-TerminateProcess(void* hProcess, unsigned int uExitCode);
-__declspec(dllimport) void* __stdcall GetCurrentProcess(void);
+TerminateProcess(void * hProcess, unsigned int uExitCode);
+__declspec(dllimport) void * __stdcall GetCurrentProcess(void);
 #  ifdef __cplusplus
 }
 #  endif
@@ -36,7 +36,7 @@ __declspec(dllimport) void* __stdcall GetCurrentProcess(void);
 #  include <signal.h>
 #endif
 #ifdef ANDROID
-#  include <android/log.h>
+    #include <android/log.h>
 #endif
 
 /*
@@ -63,11 +63,11 @@ __declspec(dllimport) void* __stdcall GetCurrentProcess(void);
  * triggers compiler warnings with some versions of gcc, so mark the typedefs
  * as permissibly-unused to disable the warnings.
  */
-#  if defined(__GNUC__)
-#    define MOZ_STATIC_ASSERT_UNUSED_ATTRIBUTE __attribute__((unused))
-#  else
-#    define MOZ_STATIC_ASSERT_UNUSED_ATTRIBUTE /* nothing */
-#  endif
+#if defined(__GNUC__)
+    #define MOZ_STATIC_ASSERT_UNUSED_ATTRIBUTE __attribute__((unused))
+#else
+    #define MOZ_STATIC_ASSERT_UNUSED_ATTRIBUTE /* nothing */
+#endif
 #  define MOZ_STATIC_ASSERT_GLUE1(x, y)          x##y
 #  define MOZ_STATIC_ASSERT_GLUE(x, y)           MOZ_STATIC_ASSERT_GLUE1(x, y)
 #  if defined(__SUNPRO_CC)
@@ -83,7 +83,7 @@ __declspec(dllimport) void* __stdcall GetCurrentProcess(void);
  * to avoid conflicts (see below).
  */
 #    define MOZ_STATIC_ASSERT(cond, reason) \
-       extern char MOZ_STATIC_ASSERT_GLUE(moz_static_assert, __LINE__)[(cond) ? 1 : -1]
+    extern char MOZ_STATIC_ASSERT_GLUE(moz_static_assert, __LINE__)[(cond) ? 1 : -1]
 #  elif defined(__COUNTER__)
 /*
  * If there was no preferred alternative, use a compiler-agnostic version.
@@ -100,10 +100,10 @@ __declspec(dllimport) void* __stdcall GetCurrentProcess(void);
  * code.
  */
 #    define MOZ_STATIC_ASSERT(cond, reason) \
-       typedef int MOZ_STATIC_ASSERT_GLUE(moz_static_assert, __COUNTER__)[(cond) ? 1 : -1] MOZ_STATIC_ASSERT_UNUSED_ATTRIBUTE
+    typedef int MOZ_STATIC_ASSERT_GLUE(moz_static_assert, __COUNTER__)[(cond) ? 1 : -1] MOZ_STATIC_ASSERT_UNUSED_ATTRIBUTE
 #  else
 #    define MOZ_STATIC_ASSERT(cond, reason) \
-       extern void MOZ_STATIC_ASSERT_GLUE(moz_static_assert, __LINE__)(int arg[(cond) ? 1 : -1]) MOZ_STATIC_ASSERT_UNUSED_ATTRIBUTE
+    extern void MOZ_STATIC_ASSERT_GLUE(moz_static_assert, __LINE__)(int arg[(cond) ? 1 : -1]) MOZ_STATIC_ASSERT_UNUSED_ATTRIBUTE
 #  endif
 
 #define MOZ_STATIC_ASSERT_IF(cond, expr, reason)  MOZ_STATIC_ASSERT(!(cond) || (expr), reason)
@@ -124,7 +124,7 @@ extern "C" {
  * for use in implementing release-build assertions.
  */
 static MOZ_ALWAYS_INLINE void
-MOZ_ReportAssertionFailure(const char* s, const char* file, int ln)
+MOZ_ReportAssertionFailure(const char * s, const char * file, int ln)
 {
 #ifdef ANDROID
     __android_log_print(ANDROID_LOG_FATAL, "MOZ_Assert",
@@ -136,7 +136,7 @@ MOZ_ReportAssertionFailure(const char* s, const char* file, int ln)
 }
 
 static MOZ_ALWAYS_INLINE void
-MOZ_ReportCrash(const char* s, const char* file, int ln)
+MOZ_ReportCrash(const char * s, const char * file, int ln)
 {
 #ifdef ANDROID
     __android_log_print(ANDROID_LOG_FATAL, "MOZ_CRASH",
@@ -179,34 +179,34 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
 
 #  ifdef __cplusplus
 #    define MOZ_REALLY_CRASH() \
-       do { \
-         __debugbreak(); \
-         *((volatile int*) NULL) = 123; \
-         ::TerminateProcess(::GetCurrentProcess(), 3); \
-         ::MOZ_NoReturn(); \
-       } while (0)
+    do { \
+        __debugbreak(); \
+        *((volatile int*) NULL) = 123; \
+        ::TerminateProcess(::GetCurrentProcess(), 3); \
+        ::MOZ_NoReturn(); \
+    } while (0)
 #  else
 #    define MOZ_REALLY_CRASH() \
-       do { \
-         __debugbreak(); \
-         *((volatile int*) NULL) = 123; \
-         TerminateProcess(GetCurrentProcess(), 3); \
-         MOZ_NoReturn(); \
-       } while (0)
+    do { \
+        __debugbreak(); \
+        *((volatile int*) NULL) = 123; \
+        TerminateProcess(GetCurrentProcess(), 3); \
+        MOZ_NoReturn(); \
+    } while (0)
 #  endif
 #else
 #  ifdef __cplusplus
 #    define MOZ_REALLY_CRASH() \
-       do { \
-         *((volatile int*) NULL) = 123; \
-         ::abort(); \
-       } while (0)
+    do { \
+        *((volatile int*) NULL) = 123; \
+        ::abort(); \
+    } while (0)
 #  else
 #    define MOZ_REALLY_CRASH() \
-       do { \
-         *((volatile int*) NULL) = 123; \
-         abort(); \
-       } while (0)
+    do { \
+        *((volatile int*) NULL) = 123; \
+        abort(); \
+    } while (0)
 #  endif
 #endif
 
@@ -235,10 +235,10 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
 #  define MOZ_CRASH(...) MOZ_REALLY_CRASH()
 #else
 #  define MOZ_CRASH(...) \
-     do { \
-       MOZ_ReportCrash("" __VA_ARGS__, __FILE__, __LINE__); \
-       MOZ_REALLY_CRASH(); \
-     } while(0)
+    do { \
+        MOZ_ReportCrash("" __VA_ARGS__, __FILE__, __LINE__); \
+        MOZ_REALLY_CRASH(); \
+    } while(0)
 #endif
 
 #ifdef __cplusplus
@@ -280,20 +280,20 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
 #ifdef DEBUG
 /* First the single-argument form. */
 #  define MOZ_ASSERT_HELPER1(expr) \
-     do { \
-       if (MOZ_UNLIKELY(!(expr))) { \
-         MOZ_ReportAssertionFailure(#expr, __FILE__, __LINE__); \
-         MOZ_REALLY_CRASH(); \
-       } \
-     } while (0)
+    do { \
+        if (MOZ_UNLIKELY(!(expr))) { \
+            MOZ_ReportAssertionFailure(#expr, __FILE__, __LINE__); \
+            MOZ_REALLY_CRASH(); \
+        } \
+    } while (0)
 /* Now the two-argument form. */
 #  define MOZ_ASSERT_HELPER2(expr, explain) \
-     do { \
-       if (MOZ_UNLIKELY(!(expr))) { \
-         MOZ_ReportAssertionFailure(#expr " (" explain ")", __FILE__, __LINE__); \
-         MOZ_REALLY_CRASH(); \
-       } \
-     } while (0)
+    do { \
+        if (MOZ_UNLIKELY(!(expr))) { \
+            MOZ_ReportAssertionFailure(#expr " (" explain ")", __FILE__, __LINE__); \
+            MOZ_REALLY_CRASH(); \
+        } \
+    } while (0)
 /* And now, helper macrology up the wazoo. */
 /*
  * Count the number of arguments passed to MOZ_ASSERT, very carefully
@@ -304,11 +304,11 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
  *   http://cplusplus.co.il/2010/07/17/variadic-macro-to-count-number-of-arguments/#comment-644
  */
 #  define MOZ_COUNT_ASSERT_ARGS_IMPL2(_1, _2, count, ...) \
-     count
+    count
 #  define MOZ_COUNT_ASSERT_ARGS_IMPL(args) \
-	 MOZ_COUNT_ASSERT_ARGS_IMPL2 args
+    MOZ_COUNT_ASSERT_ARGS_IMPL2 args
 #  define MOZ_COUNT_ASSERT_ARGS(...) \
-     MOZ_COUNT_ASSERT_ARGS_IMPL((__VA_ARGS__, 2, 1, 0))
+    MOZ_COUNT_ASSERT_ARGS_IMPL((__VA_ARGS__, 2, 1, 0))
 /* Pick the right helper macro to invoke. */
 #  define MOZ_ASSERT_CHOOSE_HELPER2(count) MOZ_ASSERT_HELPER##count
 #  define MOZ_ASSERT_CHOOSE_HELPER1(count) MOZ_ASSERT_CHOOSE_HELPER2(count)
@@ -316,8 +316,8 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
 /* The actual macro. */
 #  define MOZ_ASSERT_GLUE(x, y) x y
 #  define MOZ_ASSERT(...) \
-     MOZ_ASSERT_GLUE(MOZ_ASSERT_CHOOSE_HELPER(MOZ_COUNT_ASSERT_ARGS(__VA_ARGS__)), \
-                     (__VA_ARGS__))
+    MOZ_ASSERT_GLUE(MOZ_ASSERT_CHOOSE_HELPER(MOZ_COUNT_ASSERT_ARGS(__VA_ARGS__)), \
+                    (__VA_ARGS__))
 #else
 #  define MOZ_ASSERT(...) do { } while(0)
 #endif /* DEBUG */
@@ -333,10 +333,10 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
  */
 #ifdef DEBUG
 #  define MOZ_ASSERT_IF(cond, expr) \
-     do { \
-       if (cond) \
-         MOZ_ASSERT(expr); \
-     } while (0)
+    do { \
+        if (cond) \
+            MOZ_ASSERT(expr); \
+    } while (0)
 #else
 #  define MOZ_ASSERT_IF(cond, expr)  do { } while (0)
 #endif
@@ -349,30 +349,30 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
  * appropriate.
  */
 #if defined(__clang__)
-#  define MOZ_ASSUME_UNREACHABLE_MARKER() __builtin_unreachable()
+    #define MOZ_ASSUME_UNREACHABLE_MARKER() __builtin_unreachable()
 #elif defined(__GNUC__)
-/*
- * __builtin_unreachable() was implemented in gcc 4.5.  If we don't have
- * that, call a noreturn function; abort() will do nicely.  Qualify the call
- * in C++ in case there's another abort() visible in local scope.
- */
-#  if MOZ_GCC_VERSION_AT_LEAST(4, 5, 0)
-#    define MOZ_ASSUME_UNREACHABLE_MARKER() __builtin_unreachable()
-#  else
-#    ifdef __cplusplus
-#      define MOZ_ASSUME_UNREACHABLE_MARKER() ::abort()
-#    else
-#      define MOZ_ASSUME_UNREACHABLE_MARKER() abort()
-#    endif
-#  endif
+    /*
+    * __builtin_unreachable() was implemented in gcc 4.5.  If we don't have
+    * that, call a noreturn function; abort() will do nicely.  Qualify the call
+    * in C++ in case there's another abort() visible in local scope.
+    */
+    #if MOZ_GCC_VERSION_AT_LEAST(4, 5, 0)
+        #define MOZ_ASSUME_UNREACHABLE_MARKER() __builtin_unreachable()
+    #else
+        #ifdef __cplusplus
+            #define MOZ_ASSUME_UNREACHABLE_MARKER() ::abort()
+        #else
+            #define MOZ_ASSUME_UNREACHABLE_MARKER() abort()
+        #endif
+    #endif
 #elif defined(_MSC_VER)
-#  define MOZ_ASSUME_UNREACHABLE_MARKER() __assume(0)
+    #define MOZ_ASSUME_UNREACHABLE_MARKER() __assume(0)
 #else
-#  ifdef __cplusplus
-#    define MOZ_ASSUME_UNREACHABLE_MARKER() ::abort()
-#  else
-#    define MOZ_ASSUME_UNREACHABLE_MARKER() abort()
-#  endif
+    #ifdef __cplusplus
+        #define MOZ_ASSUME_UNREACHABLE_MARKER() ::abort()
+    #else
+        #define MOZ_ASSUME_UNREACHABLE_MARKER() abort()
+    #endif
 #endif
 
 /*
@@ -416,10 +416,10 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
  */
 #if defined(DEBUG)
 #  define MOZ_ASSUME_UNREACHABLE(...) \
-     do { \
-       MOZ_ASSERT(false, "MOZ_ASSUME_UNREACHABLE(" __VA_ARGS__ ")"); \
-       MOZ_ASSUME_UNREACHABLE_MARKER(); \
-     } while (0)
+    do { \
+        MOZ_ASSERT(false, "MOZ_ASSUME_UNREACHABLE(" __VA_ARGS__ ")"); \
+        MOZ_ASSUME_UNREACHABLE_MARKER(); \
+    } while (0)
 #else
 #  define MOZ_ASSUME_UNREACHABLE(reason)  MOZ_ASSUME_UNREACHABLE_MARKER()
 #endif
@@ -431,11 +431,11 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
  * using MOZ_ASSERT.
  */
 #ifdef DEBUG
-#  define MOZ_ALWAYS_TRUE(expr)      MOZ_ASSERT((expr))
-#  define MOZ_ALWAYS_FALSE(expr)     MOZ_ASSERT(!(expr))
+    #define MOZ_ALWAYS_TRUE(expr)      MOZ_ASSERT((expr))
+    #define MOZ_ALWAYS_FALSE(expr)     MOZ_ASSERT(!(expr))
 #else
-#  define MOZ_ALWAYS_TRUE(expr)      ((void)(expr))
-#  define MOZ_ALWAYS_FALSE(expr)     ((void)(expr))
+    #define MOZ_ALWAYS_TRUE(expr)      ((void)(expr))
+    #define MOZ_ALWAYS_FALSE(expr)     ((void)(expr))
 #endif
 
 #endif /* mozilla_Assertions_h */

@@ -9,14 +9,14 @@
 
 class cbSplashScreen : public wxSplashScreen
 {
-public:
-    cbSplashScreen(const wxBitmap& bitmap);
-    static void DrawReleaseInfo(class wxDC &dc);
-private:
+    public:
+        cbSplashScreen(const wxBitmap & bitmap);
+        static void DrawReleaseInfo(class wxDC & dc);
+    private:
 
-    void OnCloseWindow(wxCloseEvent &event);
+        void OnCloseWindow(wxCloseEvent & event);
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // CBSPLASH_SCREEN_H

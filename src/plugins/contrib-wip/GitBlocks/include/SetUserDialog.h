@@ -10,33 +10,33 @@
 
 class SetUserDialog: public wxDialog
 {
-public:
+    public:
 
-    SetUserDialog(wxWindow* parent,wxWindowID id=wxID_ANY);
-    virtual ~SetUserDialog();
+        SetUserDialog(wxWindow * parent, wxWindowID id = wxID_ANY);
+        virtual ~SetUserDialog();
 
-    //(*Declarations(SetUserDialog)
-    wxStaticText* StaticText1;
-    wxTextCtrl* TextCtrl1;
-    wxStaticText* StaticText2;
-    wxTextCtrl* TextCtrl2;
-    //*)
+        //(*Declarations(SetUserDialog)
+        wxStaticText * StaticText1;
+        wxTextCtrl * TextCtrl1;
+        wxStaticText * StaticText2;
+        wxTextCtrl * TextCtrl2;
+        //*)
 
-protected:
+    protected:
 
-    //(*Identifiers(SetUserDialog)
-    static const long ID_STATICTEXT1;
-    static const long ID_TEXTCTRL1;
-    static const long ID_STATICTEXT2;
-    static const long ID_TEXTCTRL2;
-    //*)
+        //(*Identifiers(SetUserDialog)
+        static const long ID_STATICTEXT1;
+        static const long ID_TEXTCTRL1;
+        static const long ID_STATICTEXT2;
+        static const long ID_TEXTCTRL2;
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(SetUserDialog)
-    //*)
+        //(*Handlers(SetUserDialog)
+        //*)
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

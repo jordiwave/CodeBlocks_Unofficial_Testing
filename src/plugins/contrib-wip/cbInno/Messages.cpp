@@ -14,24 +14,28 @@ CMessages::~CMessages()
     //dtor
 }
 
-void CMessages::WriteInFile(wxTextFile* File)
+void CMessages::WriteInFile(wxTextFile * File)
 {
     wxString Text = wxT("");
-    if(!m_Language.empty())
-        Text += m_Language + wxT(".");
-    Text += m_Key + _T(" = ") + m_Value;
 
-    File->AddLine( Text);
+    if (!m_Language.empty())
+    {
+        Text += m_Language + wxT(".");
+    }
+
+    Text += m_Key + _T(" = ") + m_Value;
+    File->AddLine(Text);
 }
 
-void CMessages::Analize(const wxString& content, const wxString& line)
+void CMessages::Analize(const wxString & content, const wxString & line)
 {
     wxString cont = content;
     wxString part;
     wxString lang;
     wxString settings;
     SetLinenumber(line);
-    while( !cont.empty())
+
+    while (!cont.empty())
     {
         lang = cont.BeforeFirst('.');
         part = cont.BeforeFirst('=');
@@ -40,21 +44,20 @@ void CMessages::Analize(const wxString& content, const wxString& line)
         part = part.Trim(false);
         settings = settings.Trim(false);
         cont = cont.Trim(false);
-
         SetKey(part);
         SetValue(settings);
         SetLanguage(lang);
     }
 }
 
-void CMessages::FillContent(wxListCtrl* liste)
+void CMessages::FillContent(wxListCtrl * liste)
 {
     liste->SetItem(GetIndex(), m_index_lang, m_Language);
     liste->SetItem(GetIndex(), m_index_key, m_Key);
     liste->SetItem(GetIndex(), m_index_value, m_Value);
 }
 
-void CMessages::AddHeader(wxListCtrl* liste)
+void CMessages::AddHeader(wxListCtrl * liste)
 {
     InsertHeader(liste);
     m_index_lang  = liste->InsertColumn(liste->GetColumnCount(), _T("Lang"));

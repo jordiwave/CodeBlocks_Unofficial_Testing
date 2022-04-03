@@ -22,51 +22,51 @@ class CppCheckListLog;
 
 class CppCheck : public cbToolPlugin
 {
-public:
-    CppCheck();
-    ~CppCheck();
-    void OnAttach(); // fires when the plugin is attached to the application
-    void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+    public:
+        CppCheck();
+        ~CppCheck();
+        void OnAttach(); // fires when the plugin is attached to the application
+        void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 
-    int Execute();
+        int Execute();
 
-    virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* /*parent*/);
-private:
-    void WriteToLog(const wxString& Text);
-    void AppendToLog(const wxString& Text);
+        virtual cbConfigurationPanel * GetConfigurationPanel(wxWindow * /*parent*/);
+    private:
+        void WriteToLog(const wxString & Text);
+        void AppendToLog(const wxString & Text);
 
-    //{ CppCheck
-    struct SCppCheckAttribs
-    {
-        wxString InputFileName;
-        wxString IncludeList;
-        wxString DefineList;
-    };
-    typedef struct SCppCheckAttribs TCppCheckAttribs;
+        //{ CppCheck
+        struct SCppCheckAttribs
+        {
+            wxString InputFileName;
+            wxString IncludeList;
+            wxString DefineList;
+        };
+        typedef struct SCppCheckAttribs TCppCheckAttribs;
 
-    int ExecuteCppCheck(cbProject* Project);
-    int  DoCppCheckExecute(TCppCheckAttribs& CppCheckAttribs);
-    void DoCppCheckAnalysis(const wxString& Xml);
-    bool DoCppCheckParseXMLv1(TiXmlHandle& Handle);
-    bool DoCppCheckParseXMLv2(TiXmlHandle& Handle);
-    //} CppCheck
+        int ExecuteCppCheck(cbProject * Project);
+        int  DoCppCheckExecute(TCppCheckAttribs & CppCheckAttribs);
+        void DoCppCheckAnalysis(const wxString & Xml);
+        bool DoCppCheckParseXMLv1(TiXmlHandle & Handle);
+        bool DoCppCheckParseXMLv2(TiXmlHandle & Handle);
+        //} CppCheck
 
-    //{ Vera
-    int ExecuteVera(cbProject* Project);
-    int  DoVeraExecute(const wxString& InputsFile);
-    void DoVeraAnalysis(const wxArrayString& Result);
-    //} Vera
+        //{ Vera
+        int ExecuteVera(cbProject * Project);
+        int  DoVeraExecute(const wxString & InputsFile);
+        void DoVeraAnalysis(const wxArrayString & Result);
+        //} Vera
 
-    bool DoVersion(const wxString& app, const wxString& app_cfg);
-    bool AppExecute(const wxString& app, const wxString& CommandLine, wxArrayString& Output, wxArrayString& Errors);
-    wxString GetAppExecutable(const wxString& app, const wxString& app_cfg);
+        bool DoVersion(const wxString & app, const wxString & app_cfg);
+        bool AppExecute(const wxString & app, const wxString & CommandLine, wxArrayString & Output, wxArrayString & Errors);
+        wxString GetAppExecutable(const wxString & app, const wxString & app_cfg);
 
-    TextCtrlLogger*  m_CppCheckLog;      //!< log tab in the message pane
-    CppCheckListLog* m_ListLog;          //!< log tab to click/double click to take you to offending line of code
-    int              m_LogPageIndex;     //!< index of our log tab (can this change during run time ??)
-    int              m_ListLogPageIndex; //!< index of our list log tab
+        TextCtrlLogger * m_CppCheckLog;      //!< log tab in the message pane
+        CppCheckListLog * m_ListLog;         //!< log tab to click/double click to take you to offending line of code
+        int              m_LogPageIndex;     //!< index of our log tab (can this change during run time ??)
+        int              m_ListLogPageIndex; //!< index of our list log tab
 
-    wxString         m_PATH;
+        wxString         m_PATH;
 };
 
 #endif // CPPCHECK_H_INCLUDED

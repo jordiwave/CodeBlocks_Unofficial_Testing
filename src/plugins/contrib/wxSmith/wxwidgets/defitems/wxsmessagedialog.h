@@ -26,17 +26,17 @@
 /** \brief Class for wxMessageDialog dialogue. */
 class wxsMessageDialog: public wxsTool
 {
-public:
+    public:
 
-    wxsMessageDialog(wxsItemResData* Data);
+        wxsMessageDialog(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual void OnEnumToolProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual void OnEnumToolProperties(long Flags);
 
-    wxString     m_sCaption;            //!< The dialogue's caption.
-    wxString     m_sMessage;            //!< The dialogue message.
+        wxString     m_sCaption;            //!< The dialogue's caption.
+        wxString     m_sMessage;            //!< The dialogue message.
 };
 
 #endif      //  WXSMESSAGEDIALOG_H

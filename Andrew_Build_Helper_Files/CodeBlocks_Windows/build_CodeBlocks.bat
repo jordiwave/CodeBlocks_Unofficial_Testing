@@ -141,8 +141,8 @@ set CB_PARAMS=%CB_PARAMS% --variable-set=cb_win%BUILD_BITS% --masterpath-set=%GC
 @rem debugging:
 @rem set CB_PARAMS=%CB_PARAMS% --no-batch-window-close
 @rem FUTURE: set CB_PARAMS=%CB_PARAMS%  --batch-headless-build
-if  not exist "CodeBlocks_wx31_64.workspace" goto ErrProjectFile
-set CB_TARGET=--target=All %BUILD_TYPE% "CodeBlocks_wx31_64.workspace"
+if  not exist "CodeBlocks_Windows.workspace" goto ErrProjectFile
+set CB_TARGET=--target=All %BUILD_TYPE% "CodeBlocks_Windows.workspace"
 
 @echo Building Code::Blocks. Please wait for the Code::Blocks compilation to finish.
 set CB_RUN_COMMAND_LINE=%CB_EXE% %CB_PARAMS% %CB_TARGET%

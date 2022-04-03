@@ -22,17 +22,17 @@
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 #if defined(_APPLE_) || defined(_MACH_)
-#define OS_MAC
+    #define OS_MAC
 #endif
 
 #if defined(_WIN32) || defined(WIN32) || defined(__CYGWIN__) || defined(__MINGW32__)
-#define OS_WIN
+    #define OS_WIN
 #endif
 
 #ifndef OS_MAC
-#ifndef OS_WIN
-#define OS_UNIX
-#endif
+    #ifndef OS_WIN
+        #define OS_UNIX
+    #endif
 #endif
 
 #define SHOW_MODE_ONELINE
@@ -44,15 +44,15 @@ namespace std
 {
 
 template <typename T1, typename T2>
-inline T1 const& min (T1 const& a, T2 const& b)
+inline T1 const & min(T1 const & a, T2 const & b)
 {
-    return (((a)<(b))?(a):(b));
+    return (((a) < (b)) ? (a) : (b));
 }
 
 template <typename T1, typename T2>
-inline T1 const& max (T1 const& a, T2 const& b)
+inline T1 const & max(T1 const & a, T2 const & b)
 {
-    return (((a)>(b))?(a):(b));
+    return (((a) > (b)) ? (a) : (b));
 }
 
 }

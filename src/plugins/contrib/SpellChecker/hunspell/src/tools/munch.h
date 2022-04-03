@@ -50,7 +50,7 @@
 #define ROTATE_LEN 5
 
 #define ROTATE(v, q) \
-  (v) = ((v) << (q)) | (((v) >> (32 - q)) & ((1 << (q)) - 1));
+    (v) = ((v) << (q)) | (((v) >> (32 - q)) & ((1 << (q)) - 1));
 
 #define SET_SIZE 256
 
@@ -60,8 +60,8 @@
 
 struct affent
 {
-    char* appnd;
-    char* strip;
+    char * appnd;
+    char * strip;
     short appndl;
     short stripl;
     char achar;
@@ -72,7 +72,7 @@ struct affent
 
 struct affixptr
 {
-    struct affent* aep;
+    struct affent * aep;
     int num;
 };
 
@@ -89,9 +89,9 @@ struct affixptr stable[MAX_SUFFIXES];
 /* data structure to store results of lookups */
 struct matches
 {
-    struct hentry* hashent; /* hash table entry */
-    struct affent* prefix;  /* Prefix used, or NULL */
-    struct affent* suffix;  /* Suffix used, or NULL */
+    struct hentry * hashent; /* hash table entry */
+    struct affent * prefix; /* Prefix used, or NULL */
+    struct affent * suffix; /* Suffix used, or NULL */
 };
 
 int numroots;                    /* number of root words found */
@@ -101,21 +101,21 @@ struct matches roots[MAX_ROOTS]; /* list of root words found */
 
 struct hentry
 {
-    char* word;
-    char* affstr;
-    struct hentry* next;
+    char * word;
+    char * affstr;
+    struct hentry * next;
     int keep;
 };
 
 int tablesize;
-struct hentry* tableptr;
+struct hentry * tableptr;
 
 /* unmunch stuff */
 
 int numwords; /* number of words found */
 struct dwords
 {
-    char* word;
+    char * word;
     int pallow;
 };
 
@@ -123,39 +123,39 @@ struct dwords wlist[MAX_WORDS]; /* list words found */
 
 /* the routines */
 
-int parse_aff_file(FILE* afflst);
+int parse_aff_file(FILE * afflst);
 
-void encodeit(struct affent* ptr, char* cs);
+void encodeit(struct affent * ptr, char * cs);
 
-int load_tables(FILE* wrdlst);
+int load_tables(FILE * wrdlst);
 
-int hash(const char*);
+int hash(const char *);
 
-int add_word(char*);
+int add_word(char *);
 
-struct hentry* lookup(const char*);
+struct hentry * lookup(const char *);
 
-void aff_chk(const char* word, int len);
+void aff_chk(const char * word, int len);
 
-void pfx_chk(const char* word, int len, struct affent* ep, int num);
+void pfx_chk(const char * word, int len, struct affent * ep, int num);
 
-void suf_chk(const char* word,
+void suf_chk(const char * word,
              int len,
-             struct affent* ep,
+             struct affent * ep,
              int num,
-             struct affent* pfxent,
+             struct affent * pfxent,
              int cpflag);
 
-void add_affix_char(struct hentry* hent, char ac);
+void add_affix_char(struct hentry * hent, char ac);
 
-int expand_rootword(const char*, int, const char*);
+int expand_rootword(const char *, int, const char *);
 
-void pfx_add(const char* word, int len, struct affent* ep, int num);
+void pfx_add(const char * word, int len, struct affent * ep, int num);
 
-void suf_add(const char* word, int len, struct affent* ep, int num);
+void suf_add(const char * word, int len, struct affent * ep, int num);
 
-char* mystrsep(char** stringp, const char delim);
+char * mystrsep(char ** stringp, const char delim);
 
-char* mystrdup(const char* s);
+char * mystrdup(const char * s);
 
-void mychomp(char* s);
+void mychomp(char * s);

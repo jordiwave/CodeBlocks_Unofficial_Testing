@@ -12,7 +12,7 @@
 #define _WX_XH_FLATNOTBK_H_
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "xh_notbk.h"
+    #pragma interface "xh_notbk.h"
 #endif
 
 #include "wx/xrc/xmlres.h"
@@ -21,19 +21,20 @@
 
 #include "wx/wxFlatNotebook/wxFlatNotebook.h"
 
-class WXDLLIMPEXP_FNB wxFlatNotebook;
+//class WXDLLIMPEXP_FNB wxFlatNotebook;
+class wxFlatNotebook;
 
 class WXDLLIMPEXP_FNB wxFlatNotebookXmlHandler : public wxXmlResourceHandler
 {
-    DECLARE_DYNAMIC_CLASS(wxFlatNotebookXmlHandler)
-public:
-    wxFlatNotebookXmlHandler();
-    virtual wxObject *DoCreateResource();
-    virtual bool CanHandle(wxXmlNode *node);
+        DECLARE_DYNAMIC_CLASS(wxFlatNotebookXmlHandler)
+    public:
+        wxFlatNotebookXmlHandler();
+        virtual wxObject * DoCreateResource();
+        virtual bool CanHandle(wxXmlNode * node);
 
-private:
-    bool m_isInside;
-    wxFlatNotebook *m_notebook;
+    private:
+        bool m_isInside;
+        wxFlatNotebook * m_notebook;
 };
 
 #endif

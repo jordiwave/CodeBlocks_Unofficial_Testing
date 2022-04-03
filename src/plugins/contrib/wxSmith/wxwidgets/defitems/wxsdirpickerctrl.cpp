@@ -26,10 +26,10 @@ namespace
 wxsRegisterItem<wxsDirPickerCtrl> Reg(_T("DirPickerCtrl"), wxsTWidget, _T("Advanced"), 120);
 
 #ifdef __WXGTK__
-// GTK apps usually don't have a textctrl next to the picker
-WXS_ST_BEGIN(wxsDirPickerCtrlStyles,_T("wxDIRP_DIR_MUST_EXIST"))
+    // GTK apps usually don't have a textctrl next to the picker
+    WXS_ST_BEGIN(wxsDirPickerCtrlStyles, _T("wxDIRP_DIR_MUST_EXIST"))
 #else
-WXS_ST_BEGIN(wxsDirPickerCtrlStyles,_T("wxDIRP_USE_TEXTCTRL|wxDIRP_DIR_MUST_EXIST"))
+    WXS_ST_BEGIN(wxsDirPickerCtrlStyles, _T("wxDIRP_USE_TEXTCTRL|wxDIRP_DIR_MUST_EXIST"))
 #endif
 WXS_ST_CATEGORY("wxDirPickerCtrl")
 WXS_ST(wxDIRP_CHANGE_DIR)
@@ -49,7 +49,7 @@ WXS_EV_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsDirPickerCtrl::wxsDirPickerCtrl(wxsItemResData* Data):
+wxsDirPickerCtrl::wxsDirPickerCtrl(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -66,21 +66,21 @@ wxsDirPickerCtrl::wxsDirPickerCtrl(wxsItemResData* Data):
  */
 void wxsDirPickerCtrl::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/filepicker.h>"),GetInfo().ClassName,0);
-        Codef(_T("%C(%W, %I, %n, %t, %P, %S, %T, %V, %N);\n"), m_sPath.wx_str(), m_sMessage.wx_str());
-        BuildSetupWindowCode();
-        return;
-    }
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/filepicker.h>"), GetInfo().ClassName, 0);
+            Codef(_T("%C(%W, %I, %n, %t, %P, %S, %T, %V, %N);\n"), m_sPath.wx_str(), m_sMessage.wx_str());
+            BuildSetupWindowCode();
+            return;
+        }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsDirPickerCtrl::OnBuildCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsDirPickerCtrl::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
@@ -91,11 +91,11 @@ void wxsDirPickerCtrl::OnBuildCreatingCode()
  * \return wxObject*                     The constructed control.
  *
  */
-wxObject* wxsDirPickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsDirPickerCtrl::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxDirPickerCtrl* Preview;
+    wxDirPickerCtrl * Preview;
     Preview = new wxDirPickerCtrl(Parent, GetId(), m_sPath, m_sMessage, Pos(Parent), Size(Parent), Style());
-    return SetupWindow(Preview,Flags);
+    return SetupWindow(Preview, Flags);
 }
 
 /*! \brief Enumerate the control's properties.

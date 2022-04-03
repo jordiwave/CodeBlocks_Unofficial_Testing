@@ -42,7 +42,7 @@
 #define MAXPREVLINE 4
 
 #ifndef MAXLNLEN
-#define MAXLNLEN 8192
+    #define MAXLNLEN 8192
 #endif
 
 #include "../hunspell/w_char.hxx"
@@ -54,46 +54,50 @@
  *
  */
 
-class TextParser {
- protected:
-  std::vector<int> wordcharacters;// for detection of the word boundaries
-  std::string line[MAXPREVLINE];  // parsed and previous lines
-  std::vector<bool> urlline;      // mask for url detection
-  int checkurl;
-  int actual;  // actual line
-  size_t head; // head position
-  size_t token;// begin of token
-  int state;   // state of automata
-  int utf8;    // UTF-8 character encoding
-  int next_char(const char* line, size_t* pos);
-  const w_char* wordchars_utf16;
-  int wclen;
+class TextParser
+{
+    protected:
+        std::vector<int> wordcharacters;// for detection of the word boundaries
+        std::string line[MAXPREVLINE];  // parsed and previous lines
+        std::vector<bool> urlline;      // mask for url detection
+        int checkurl;
+        int actual;  // actual line
+        size_t head; // head position
+        size_t token;// begin of token
+        int state;   // state of automata
+        int utf8;    // UTF-8 character encoding
+        int next_char(const char * line, size_t * pos);
+        const w_char * wordchars_utf16;
+        int wclen;
 
- public:
-  TextParser(const w_char* wordchars, int len);
-  explicit TextParser(const char* wc);
-  virtual ~TextParser();
+    public:
+        TextParser(const w_char * wordchars, int len);
+        explicit TextParser(const char * wc);
+        virtual ~TextParser();
 
-  void put_line(const char* line);
-  std::string get_line() const;
-  std::string get_prevline(int n) const;
-  virtual bool next_token(std::string&);
-  virtual std::string get_word(const std::string &tok);
-  virtual int change_token(const char* word);
-  void set_url_checking(int check);
+        void put_line(const char * line);
+        std::string get_line() const;
+        std::string get_prevline(int n) const;
+        virtual bool next_token(std::string &);
+        virtual std::string get_word(const std::string & tok);
+        virtual int change_token(const char * word);
+        void set_url_checking(int check);
 
-  size_t get_tokenpos();
-  int is_wordchar(const char* w);
-  inline int is_utf8() { return utf8; }
-  const char* get_latin1(const char* s);
-  char* next_char();
-  int tokenize_urls();
-  void check_urls();
-  int get_url(size_t token_pos, size_t* head);
-  bool alloc_token(size_t token, size_t* head, std::string& out);
-private:
-  void init(const char*);
-  void init(const w_char* wordchars, int len);
+        size_t get_tokenpos();
+        int is_wordchar(const char * w);
+        inline int is_utf8()
+        {
+            return utf8;
+        }
+        const char * get_latin1(const char * s);
+        char * next_char();
+        int tokenize_urls();
+        void check_urls();
+        int get_url(size_t token_pos, size_t * head);
+        bool alloc_token(size_t token, size_t * head, std::string & out);
+    private:
+        void init(const char *);
+        void init(const w_char * wordchars, int len);
 };
 
 #endif

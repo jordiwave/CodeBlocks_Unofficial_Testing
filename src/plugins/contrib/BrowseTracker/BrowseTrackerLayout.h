@@ -13,24 +13,24 @@ class cbProject;
 class BrowseTrackerLayout
 // ----------------------------------------------------------------------------
 {
-public:
-    BrowseTrackerLayout(cbProject* project);
-    virtual ~BrowseTrackerLayout();
+    public:
+        BrowseTrackerLayout(cbProject * project);
+        virtual ~BrowseTrackerLayout();
 
-    bool Open(const wxString& filename, FileBrowse_MarksHash& m_EdBrowse_MarksArchive );
-    bool Save(const wxString& filename, FileBrowse_MarksHash& m_EdBrowse_MarksArchive);
+        bool Open(const wxString & filename, FileBrowse_MarksHash & m_EdBrowse_MarksArchive);
+        bool Save(const wxString & filename, FileBrowse_MarksHash & m_EdBrowse_MarksArchive);
 
-    ProjectFile* GetTopProjectFile()
-    {
-        return m_TopProjectFile;
-    }
-    bool ParseBrowse_MarksString(const wxString& filename, wxString BrowseMarksString, FileBrowse_MarksHash& m_EdBrowse_MarksArchive);
-    void DumpBrowse_Marks( const wxString hashType, FileBrowse_MarksHash& m_FileBrowse_MarksArchive );
+        ProjectFile * GetTopProjectFile()
+        {
+            return m_TopProjectFile;
+        }
+        bool ParseBrowse_MarksString(const wxString & filename, wxString BrowseMarksString, FileBrowse_MarksHash & m_EdBrowse_MarksArchive);
+        void DumpBrowse_Marks(const wxString hashType, FileBrowse_MarksHash & m_FileBrowse_MarksArchive);
 
-protected:
-private:
-    cbProject*      m_pProject;
-    ProjectFile*    m_TopProjectFile;
+    protected:
+    private:
+        cbProject   *   m_pProject;
+        ProjectFile  *  m_TopProjectFile;
 };
 
 #endif // BROWSETRACKERLAYOUT_H

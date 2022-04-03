@@ -9,7 +9,7 @@
 
 extern DLLIMPORT bool cbIsDetectedCygwinCompiler(void);
 extern DLLIMPORT wxString cbGetCygwinCompilerPathRoot(void);
-extern DLLIMPORT void cbGetWindowsPathFromCygwinPath(wxString& path);
-extern DLLIMPORT void cbGetCygwinPathFromWindowsPath(wxString& path);
+extern DLLIMPORT void cbGetWindowsPathFromCygwinPath(wxString & path);
+extern DLLIMPORT void cbGetCygwinPathFromWindowsPath(wxString & path);
 
 #endif // CODEBLOCKS_SDK_CYGWIN_H

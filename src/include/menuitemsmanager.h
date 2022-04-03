@@ -9,7 +9,7 @@
 #include "settings.h"
 #include <wx/menu.h>
 
-WX_DEFINE_ARRAY(wxMenuItem*, MenuItemsList);
+WX_DEFINE_ARRAY(wxMenuItem *, MenuItemsList);
 
 /**
   * @brief Manager for wxMenuItem pointers.
@@ -27,19 +27,19 @@ WX_DEFINE_ARRAY(wxMenuItem*, MenuItemsList);
   */
 class DLLIMPORT MenuItemsManager
 {
-public:
-    MenuItemsManager(bool autoClearOnDestroy = true);
-    virtual ~MenuItemsManager();
+    public:
+        MenuItemsManager(bool autoClearOnDestroy = true);
+        virtual ~MenuItemsManager();
 
-    virtual int CreateFromString(const wxString& menuPath, int id);
+        virtual int CreateFromString(const wxString & menuPath, int id);
 
-    virtual wxMenuItem* Add(wxMenu* parent, int id, const wxString& caption, const wxString& helptext);
-    virtual wxMenuItem* Insert(wxMenu* parent, int index, int id, const wxString& caption, const wxString& helptext);
-    virtual void Clear();
-protected:
-    MenuItemsList m_MenuItems; // The managed array of wxMenuItem pointers
-    bool m_AutoClearOnDestroy; // if true, the menus are cleared in the destructor
-private:
+        virtual wxMenuItem * Add(wxMenu * parent, int id, const wxString & caption, const wxString & helptext);
+        virtual wxMenuItem * Insert(wxMenu * parent, int index, int id, const wxString & caption, const wxString & helptext);
+        virtual void Clear();
+    protected:
+        MenuItemsList m_MenuItems; // The managed array of wxMenuItem pointers
+        bool m_AutoClearOnDestroy; // if true, the menus are cleared in the destructor
+    private:
 };
 
 #endif // MENUITEMSMANAGER_H

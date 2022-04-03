@@ -7,14 +7,14 @@
 
 class Consume : public wxThread
 {
-public:
-    Consume(wxInputStream* out, int log);
+    public:
+        Consume(wxInputStream * out, int log);
 
-protected:
+    protected:
 
-    virtual ExitCode Entry();
-    wxInputStream* m_out;
-    int m_log;
+        virtual ExitCode Entry();
+        wxInputStream * m_out;
+        int m_log;
 };
 
 #endif // header guard

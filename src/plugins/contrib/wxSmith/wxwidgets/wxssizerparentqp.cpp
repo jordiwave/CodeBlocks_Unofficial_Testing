@@ -50,32 +50,31 @@ const long wxsSizerParentQP::ID_CHECKBOX5 = wxNewId();
 const long wxsSizerParentQP::ID_SPINCTRL2 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(wxsSizerParentQP,wxPanel)
+BEGIN_EVENT_TABLE(wxsSizerParentQP, wxPanel)
     //(*EventTable(wxsSizerParentQP)
     //*)
 END_EVENT_TABLE()
 
-wxsSizerParentQP::wxsSizerParentQP(wxsAdvQPP* parent,wxsSizerExtra* Extra):
-    wxsAdvQPPChild(parent,_("Sizer")),
+wxsSizerParentQP::wxsSizerParentQP(wxsAdvQPP * parent, wxsSizerExtra * Extra):
+    wxsAdvQPPChild(parent, _("Sizer")),
     m_Extra(Extra)
 {
     //(*Initialize(wxsSizerParentQP)
-    wxStaticBoxSizer* StaticBoxSizer2;
-    wxStaticBoxSizer* StaticBoxSizer3;
-    wxGridSizer* GridSizer1;
-    wxBoxSizer* BoxSizer1;
-    wxStaticBoxSizer* StaticBoxSizer1;
-    wxGridSizer* GridSizer2;
-
+    wxStaticBoxSizer * StaticBoxSizer2;
+    wxStaticBoxSizer * StaticBoxSizer3;
+    wxGridSizer * GridSizer1;
+    wxBoxSizer * BoxSizer1;
+    wxStaticBoxSizer * StaticBoxSizer1;
+    wxGridSizer * GridSizer2;
     Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Border"));
     GridSizer1 = new wxGridSizer(3, 3, 0, 0);
-    GridSizer1->Add(-1,-1,0, wxALIGN_CENTER_VERTICAL, 5);
+    GridSizer1->Add(-1, -1, 0, wxALIGN_CENTER_VERTICAL, 5);
     BrdTop = new wxCheckBox(this, ID_CHECKBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
     BrdTop->SetValue(false);
     GridSizer1->Add(BrdTop, 0, wxALIGN_CENTER_VERTICAL, 5);
-    GridSizer1->Add(-1,-1,0, wxALIGN_CENTER_VERTICAL, 5);
+    GridSizer1->Add(-1, -1, 0, wxALIGN_CENTER_VERTICAL, 5);
     BrdLeft = new wxCheckBox(this, ID_CHECKBOX2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
     BrdLeft->SetValue(false);
     GridSizer1->Add(BrdLeft, 0, wxALIGN_CENTER_VERTICAL, 5);
@@ -85,17 +84,17 @@ wxsSizerParentQP::wxsSizerParentQP(wxsAdvQPP* parent,wxsSizerExtra* Extra):
     BrdRight = new wxCheckBox(this, ID_CHECKBOX3, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX3"));
     BrdRight->SetValue(false);
     GridSizer1->Add(BrdRight, 0, wxALIGN_CENTER_VERTICAL, 5);
-    GridSizer1->Add(-1,-1,0, wxALIGN_CENTER_VERTICAL, 5);
+    GridSizer1->Add(-1, -1, 0, wxALIGN_CENTER_VERTICAL, 5);
     BrdBottom = new wxCheckBox(this, ID_CHECKBOX4, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX4"));
     BrdBottom->SetValue(false);
     GridSizer1->Add(BrdBottom, 0, wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer1->Add(GridSizer1, 0, wxEXPAND, 5);
-    BrdSize = new wxSpinCtrl(this, ID_SPINCTRL1, _T("0"), wxDefaultPosition, wxDLG_UNIT(this,wxSize(38,-1)), 0, 0, 100, 0, _T("ID_SPINCTRL1"));
+    BrdSize = new wxSpinCtrl(this, ID_SPINCTRL1, _T("0"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(38, -1)), 0, 0, 100, 0, _T("ID_SPINCTRL1"));
     BrdSize->SetValue(_T("0"));
-    StaticBoxSizer1->Add(BrdSize, 0, wxTOP|wxEXPAND, 5);
+    StaticBoxSizer1->Add(BrdSize, 0, wxTOP | wxEXPAND, 5);
     BrdDlg = new wxCheckBox(this, ID_CHECKBOX7, _("Dialog Units"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX7"));
     BrdDlg->SetValue(false);
-    StaticBoxSizer1->Add(BrdDlg, 0, wxTOP|wxEXPAND, 5);
+    StaticBoxSizer1->Add(BrdDlg, 0, wxTOP | wxEXPAND, 5);
     BoxSizer1->Add(StaticBoxSizer1, 0, wxEXPAND, 5);
     StaticBoxSizer2 = new wxStaticBoxSizer(wxVERTICAL, this, _("Placement"));
     GridSizer2 = new wxGridSizer(3, 3, 0, 0);
@@ -118,87 +117,85 @@ wxsSizerParentQP::wxsSizerParentQP(wxsAdvQPP* parent,wxsSizerExtra* Extra):
     PlaceRB = new wxRadioButton(this, ID_RADIOBUTTON12, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON12"));
     GridSizer2->Add(PlaceRB, 0, wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer2->Add(GridSizer2, 0, wxEXPAND, 5);
-    StaticLine1 = new wxStaticLine(this, ID_STATICLINE1, wxDefaultPosition, wxSize(10,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE1"));
-    StaticBoxSizer2->Add(StaticLine1, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
+    StaticLine1 = new wxStaticLine(this, ID_STATICLINE1, wxDefaultPosition, wxSize(10, -1), wxLI_HORIZONTAL, _T("ID_STATICLINE1"));
+    StaticBoxSizer2->Add(StaticLine1, 0, wxTOP | wxBOTTOM | wxEXPAND, 5);
     PlaceShp = new wxCheckBox(this, ID_CHECKBOX6, _("Shaped"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX6"));
     PlaceShp->SetValue(false);
     StaticBoxSizer2->Add(PlaceShp, 0, wxEXPAND, 5);
     PlaceExp = new wxCheckBox(this, ID_CHECKBOX5, _("Expand"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX5"));
     PlaceExp->SetValue(false);
-    StaticBoxSizer2->Add(PlaceExp, 0, wxTOP|wxEXPAND, 5);
+    StaticBoxSizer2->Add(PlaceExp, 0, wxTOP | wxEXPAND, 5);
     BoxSizer1->Add(StaticBoxSizer2, 0, wxEXPAND, 5);
     StaticBoxSizer3 = new wxStaticBoxSizer(wxVERTICAL, this, _("Proportion"));
-    Proportion = new wxSpinCtrl(this, ID_SPINCTRL2, _T("0"), wxDefaultPosition, wxDLG_UNIT(this,wxSize(38,-1)), 0, 0, 100, 0, _T("ID_SPINCTRL2"));
+    Proportion = new wxSpinCtrl(this, ID_SPINCTRL2, _T("0"), wxDefaultPosition, wxDLG_UNIT(this, wxSize(38, -1)), 0, 0, 100, 0, _T("ID_SPINCTRL2"));
     Proportion->SetValue(_T("0"));
     StaticBoxSizer3->Add(Proportion, 0, wxEXPAND, 5);
     BoxSizer1->Add(StaticBoxSizer3, 0, wxEXPAND, 5);
     SetSizer(BoxSizer1);
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
-
-    Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnBrdChange));
-    Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnBrdChange));
-    Connect(ID_CHECKBOX8,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnBrdAll));
-    Connect(ID_CHECKBOX3,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnBrdChange));
-    Connect(ID_CHECKBOX4,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnBrdChange));
-    Connect(ID_SPINCTRL1,wxEVT_COMMAND_SPINCTRL_UPDATED,wxSpinEventHandler(wxsSizerParentQP::OnBrdSizeChange));
-    Connect(ID_CHECKBOX7,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnBrdDlgChange));
-    Connect(ID_RADIOBUTTON4,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
-    Connect(ID_RADIOBUTTON5,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
-    Connect(ID_RADIOBUTTON6,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
-    Connect(ID_RADIOBUTTON7,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
-    Connect(ID_RADIOBUTTON8,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
-    Connect(ID_RADIOBUTTON9,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
-    Connect(ID_RADIOBUTTON10,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
-    Connect(ID_RADIOBUTTON11,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
-    Connect(ID_RADIOBUTTON12,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
-    Connect(ID_CHECKBOX6,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
-    Connect(ID_CHECKBOX5,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
-    Connect(ID_SPINCTRL2,wxEVT_COMMAND_SPINCTRL_UPDATED,wxSpinEventHandler(wxsSizerParentQP::OnProportionChange));
+    Connect(ID_CHECKBOX1, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(wxsSizerParentQP::OnBrdChange));
+    Connect(ID_CHECKBOX2, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(wxsSizerParentQP::OnBrdChange));
+    Connect(ID_CHECKBOX8, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(wxsSizerParentQP::OnBrdAll));
+    Connect(ID_CHECKBOX3, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(wxsSizerParentQP::OnBrdChange));
+    Connect(ID_CHECKBOX4, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(wxsSizerParentQP::OnBrdChange));
+    Connect(ID_SPINCTRL1, wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(wxsSizerParentQP::OnBrdSizeChange));
+    Connect(ID_CHECKBOX7, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(wxsSizerParentQP::OnBrdDlgChange));
+    Connect(ID_RADIOBUTTON4, wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON5, wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON6, wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON7, wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON8, wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON9, wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON10, wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON11, wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON12, wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_CHECKBOX6, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_CHECKBOX5, wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_SPINCTRL2, wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler(wxsSizerParentQP::OnProportionChange));
     //*)
-
     ReadData();
 }
 
-void wxsSizerParentQP::OnBrdChange(cb_unused wxCommandEvent& event)
+void wxsSizerParentQP::OnBrdChange(cb_unused wxCommandEvent & event)
 {
     SaveData();
 }
 
-void wxsSizerParentQP::OnBrdSizeChange(cb_unused wxSpinEvent& event)
+void wxsSizerParentQP::OnBrdSizeChange(cb_unused wxSpinEvent & event)
 {
     SaveData();
 }
 
-void wxsSizerParentQP::OnPlaceChange(cb_unused wxCommandEvent& event)
+void wxsSizerParentQP::OnPlaceChange(cb_unused wxCommandEvent & event)
 {
     SaveData();
 }
 
-void wxsSizerParentQP::OnProportionChange(cb_unused wxSpinEvent& event)
+void wxsSizerParentQP::OnProportionChange(cb_unused wxSpinEvent & event)
 {
     SaveData();
 }
 
 void wxsSizerParentQP::ReadData()
 {
-    if ( !GetPropertyContainer() || !m_Extra ) return;
+    if (!GetPropertyContainer() || !m_Extra)
+    {
+        return;
+    }
 
-    m_ParentOrientation = m_Extra->Flags & (wxsSizerFlagsProperty::ParentAlignHorizontal|wxsSizerFlagsProperty::ParentAlignVertical);
-
-    BrdLeft   ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::BorderLeft)   != 0 );
-    BrdRight  ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::BorderRight)  != 0 );
-    BrdTop    ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::BorderTop)    != 0 );
-    BrdBottom ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::BorderBottom) != 0 );
-    BrdAll    ->SetValue(   (m_Extra->Flags & wxsSizerFlagsProperty::BorderAll) != 0
-                            || (   BrdLeft->IsChecked() && BrdRight->IsChecked()
-                                   && BrdTop->IsChecked()  && BrdBottom->IsChecked()) );
+    m_ParentOrientation = m_Extra->Flags & (wxsSizerFlagsProperty::ParentAlignHorizontal | wxsSizerFlagsProperty::ParentAlignVertical);
+    BrdLeft   ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::BorderLeft)   != 0);
+    BrdRight  ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::BorderRight)  != 0);
+    BrdTop    ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::BorderTop)    != 0);
+    BrdBottom ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::BorderBottom) != 0);
+    BrdAll    ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::BorderAll) != 0
+                         || (BrdLeft->IsChecked() && BrdRight->IsChecked()
+                             && BrdTop->IsChecked()  && BrdBottom->IsChecked()));
     BrdSize   ->SetValue(m_Extra->Border.Value);
     BrdDlg    ->SetValue(m_Extra->Border.DialogUnits);
-
     PlaceExp  ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::Expand) != 0);
     PlaceShp  ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::Shaped) != 0);
-
     Proportion->SetValue(m_Extra->Proportion);
 
     if (PlaceExp->GetValue())
@@ -214,43 +211,93 @@ void wxsSizerParentQP::ReadData()
         PlaceRB->Disable();
     }
 
-    if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignBottom )
+    if (m_Extra->Flags & wxsSizerFlagsProperty::AlignBottom)
     {
-        if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignRight )            PlaceRB->SetValue(true);
-        else if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignCenterHorizontal ) PlaceCB->SetValue(true);
+        if (m_Extra->Flags & wxsSizerFlagsProperty::AlignRight)
+        {
+            PlaceRB->SetValue(true);
+        }
         else
-            PlaceLB->SetValue(true);
-    }
-    else if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignCenterVertical )
-    {
-        if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignRight )            PlaceRC->SetValue(true);
-        else if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignCenterHorizontal ) PlaceCC->SetValue(true);
-        else
-            PlaceLC->SetValue(true);
+            if (m_Extra->Flags & wxsSizerFlagsProperty::AlignCenterHorizontal)
+            {
+                PlaceCB->SetValue(true);
+            }
+            else
+            {
+                PlaceLB->SetValue(true);
+            }
     }
     else
-    {
-        if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignRight )            PlaceRT->SetValue(true);
-        else if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignCenterHorizontal ) PlaceCT->SetValue(true);
+        if (m_Extra->Flags & wxsSizerFlagsProperty::AlignCenterVertical)
+        {
+            if (m_Extra->Flags & wxsSizerFlagsProperty::AlignRight)
+            {
+                PlaceRC->SetValue(true);
+            }
+            else
+                if (m_Extra->Flags & wxsSizerFlagsProperty::AlignCenterHorizontal)
+                {
+                    PlaceCC->SetValue(true);
+                }
+                else
+                {
+                    PlaceLC->SetValue(true);
+                }
+        }
         else
-            PlaceLT->SetValue(true);
-    }
+        {
+            if (m_Extra->Flags & wxsSizerFlagsProperty::AlignRight)
+            {
+                PlaceRT->SetValue(true);
+            }
+            else
+                if (m_Extra->Flags & wxsSizerFlagsProperty::AlignCenterHorizontal)
+                {
+                    PlaceCT->SetValue(true);
+                }
+                else
+                {
+                    PlaceLT->SetValue(true);
+                }
+        }
 }
 
 void wxsSizerParentQP::SaveData()
 {
-    if ( !GetPropertyContainer() || !m_Extra ) return;
+    if (!GetPropertyContainer() || !m_Extra)
+    {
+        return;
+    }
 
     m_Extra->Flags = m_ParentOrientation;
-    if ( BrdLeft  ->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::BorderLeft;
-    if ( BrdRight ->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::BorderRight;
-    if ( BrdTop   ->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::BorderTop;
-    if ( BrdBottom->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::BorderBottom;
+
+    if (BrdLeft  ->GetValue())
+    {
+        m_Extra->Flags |= wxsSizerFlagsProperty::BorderLeft;
+    }
+
+    if (BrdRight ->GetValue())
+    {
+        m_Extra->Flags |= wxsSizerFlagsProperty::BorderRight;
+    }
+
+    if (BrdTop   ->GetValue())
+    {
+        m_Extra->Flags |= wxsSizerFlagsProperty::BorderTop;
+    }
+
+    if (BrdBottom->GetValue())
+    {
+        m_Extra->Flags |= wxsSizerFlagsProperty::BorderBottom;
+    }
+
     m_Extra->Border.Value       = BrdSize->GetValue();
     m_Extra->Border.DialogUnits = BrdDlg->GetValue();
 
-    if ( PlaceExp ->GetValue() )
+    if (PlaceExp ->GetValue())
+    {
         m_Extra->Flags |= wxsSizerFlagsProperty::Expand;
+    }
     else
     {
         PlaceLT->Enable();
@@ -264,18 +311,42 @@ void wxsSizerParentQP::SaveData()
         PlaceRB->Enable();
     }
 
-    if ( PlaceShp ->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::Shaped;
+    if (PlaceShp ->GetValue())
+    {
+        m_Extra->Flags |= wxsSizerFlagsProperty::Shaped;
+    }
 
+    if (PlaceLT->GetValue() || PlaceCT->GetValue() || PlaceRT->GetValue())
+    {
+        m_Extra->Flags |= wxsSizerFlagsProperty::AlignTop;
+    }
 
-    if ( PlaceLT->GetValue() || PlaceCT->GetValue() || PlaceRT->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::AlignTop;
-    if ( PlaceLC->GetValue() || PlaceCC->GetValue() || PlaceRC->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::AlignCenterVertical;
-    if ( PlaceLB->GetValue() || PlaceCB->GetValue() || PlaceRB->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::AlignBottom;
-    if ( PlaceLT->GetValue() || PlaceLC->GetValue() || PlaceLB->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::AlignLeft;
-    if ( PlaceCT->GetValue() || PlaceCC->GetValue() || PlaceCB->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::AlignCenterHorizontal;
-    if ( PlaceRT->GetValue() || PlaceRC->GetValue() || PlaceRB->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::AlignRight;
+    if (PlaceLC->GetValue() || PlaceCC->GetValue() || PlaceRC->GetValue())
+    {
+        m_Extra->Flags |= wxsSizerFlagsProperty::AlignCenterVertical;
+    }
+
+    if (PlaceLB->GetValue() || PlaceCB->GetValue() || PlaceRB->GetValue())
+    {
+        m_Extra->Flags |= wxsSizerFlagsProperty::AlignBottom;
+    }
+
+    if (PlaceLT->GetValue() || PlaceLC->GetValue() || PlaceLB->GetValue())
+    {
+        m_Extra->Flags |= wxsSizerFlagsProperty::AlignLeft;
+    }
+
+    if (PlaceCT->GetValue() || PlaceCC->GetValue() || PlaceCB->GetValue())
+    {
+        m_Extra->Flags |= wxsSizerFlagsProperty::AlignCenterHorizontal;
+    }
+
+    if (PlaceRT->GetValue() || PlaceRC->GetValue() || PlaceRB->GetValue())
+    {
+        m_Extra->Flags |= wxsSizerFlagsProperty::AlignRight;
+    }
 
     m_Extra->Proportion         = Proportion->GetValue();
-
     NotifyChange();
 }
 
@@ -285,7 +356,7 @@ wxsSizerParentQP::~wxsSizerParentQP()
     //*)
 }
 
-void wxsSizerParentQP::OnBrdDlgChange(cb_unused wxCommandEvent& event)
+void wxsSizerParentQP::OnBrdDlgChange(cb_unused wxCommandEvent & event)
 {
     SaveData();
 }
@@ -295,7 +366,7 @@ void wxsSizerParentQP::Update()
     ReadData();
 }
 
-void wxsSizerParentQP::OnBrdAll(wxCommandEvent& event)
+void wxsSizerParentQP::OnBrdAll(wxCommandEvent & event)
 {
     const bool ALLCHECKED(event.IsChecked());
     BrdLeft->SetValue(ALLCHECKED);

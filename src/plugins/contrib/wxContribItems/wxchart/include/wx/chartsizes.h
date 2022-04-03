@@ -13,7 +13,7 @@
 #define __CHARTSIZES_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "chartsizes.h"
+    #pragma interface "chartsizes.h"
 #endif
 
 //----------------------------------------------------------------------------
@@ -44,66 +44,66 @@ const int MIN_GAP_WIDTH				= 3;		// pixels
 class WXDLLIMPEXP_CHART wxChartSizes
 /* C::B end */
 {
-private:
-    int m_numBar;
-    int m_numBar3d;
-    int m_widthBar;
-    int m_widthBar3d;
-    int m_gap;
-    int m_scroll;
-    int m_sizeHeight;
-    ChartValue m_maxY;
-    ChartValue m_minY;
-    ChartValue m_maxX;
-    ChartValue m_minX;
-    ChartValue m_xZoom;
+    private:
+        int m_numBar;
+        int m_numBar3d;
+        int m_widthBar;
+        int m_widthBar3d;
+        int m_gap;
+        int m_scroll;
+        int m_sizeHeight;
+        ChartValue m_maxY;
+        ChartValue m_minY;
+        ChartValue m_maxX;
+        ChartValue m_minX;
+        ChartValue m_xZoom;
 
-public:
+    public:
 
-    // Inline Ctor
-    //------------
-    wxChartSizes() :
-        m_numBar(0),
-        m_numBar3d(0),
-        m_widthBar(DEFAULT_BAR_WIDTH),
-        m_widthBar3d(DEFAULT_BAR3D_WIDTH),
-        m_gap(DEFAULT_GAP_WIDTH),
-        m_scroll(DEFAULT_SCROLL_STEP),
-        m_sizeHeight(DEFAULT_SIZE_HEIGHT),
-        m_maxY(0),
-        m_minY(0),
-        m_maxX(0),
-        m_minX(0),
-        m_xZoom(1)
-    {}; // for singleton
+        // Inline Ctor
+        //------------
+        wxChartSizes() :
+            m_numBar(0),
+            m_numBar3d(0),
+            m_widthBar(DEFAULT_BAR_WIDTH),
+            m_widthBar3d(DEFAULT_BAR3D_WIDTH),
+            m_gap(DEFAULT_GAP_WIDTH),
+            m_scroll(DEFAULT_SCROLL_STEP),
+            m_sizeHeight(DEFAULT_SIZE_HEIGHT),
+            m_maxY(0),
+            m_minY(0),
+            m_maxX(0),
+            m_minX(0),
+            m_xZoom(1)
+        {}; // for singleton
 
-    //------------------------------------------------------------------------
-    // inlines: access properties
-    //------------------------------------------------------------------------
-    inline int GetNumBar();
-    inline void SetNumBar(int n);
-    inline int GetNumBar3d();
-    inline void SetNumBar3d(int n);
-    inline int GetWidthBar();
-    inline void SetWidthBar(int n);
-    inline int GetWidthBar3d();
-    inline void SetWidthBar3d(int n);
-    inline int GetGap();
-    inline void SetGap(int n);
-    inline int GetScroll();
-    inline void SetScroll(int n);
-    inline int GetSizeHeight();
-    inline void SetSizeHeight(int n);
-    inline ChartValue GetMaxY();
-    inline void SetMaxY(ChartValue n);
-    inline ChartValue GetMinY();
-    inline void SetMinY(ChartValue n);
-    inline ChartValue GetMaxX();
-    inline void SetMaxX(ChartValue n);
-    inline ChartValue GetMinX();
-    inline void SetMinX(ChartValue n);
-    inline ChartValue GetXZoom();
-    inline void SetXZoom(ChartValue n);
+        //------------------------------------------------------------------------
+        // inlines: access properties
+        //------------------------------------------------------------------------
+        inline int GetNumBar();
+        inline void SetNumBar(int n);
+        inline int GetNumBar3d();
+        inline void SetNumBar3d(int n);
+        inline int GetWidthBar();
+        inline void SetWidthBar(int n);
+        inline int GetWidthBar3d();
+        inline void SetWidthBar3d(int n);
+        inline int GetGap();
+        inline void SetGap(int n);
+        inline int GetScroll();
+        inline void SetScroll(int n);
+        inline int GetSizeHeight();
+        inline void SetSizeHeight(int n);
+        inline ChartValue GetMaxY();
+        inline void SetMaxY(ChartValue n);
+        inline ChartValue GetMinY();
+        inline void SetMinY(ChartValue n);
+        inline ChartValue GetMaxX();
+        inline void SetMaxX(ChartValue n);
+        inline ChartValue GetMinX();
+        inline void SetMinX(ChartValue n);
+        inline ChartValue GetXZoom();
+        inline void SetXZoom(ChartValue n);
 
 };
 

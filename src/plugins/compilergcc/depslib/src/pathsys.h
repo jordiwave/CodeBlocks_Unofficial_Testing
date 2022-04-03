@@ -44,7 +44,7 @@ typedef struct _pathpart PATHPART;
 
 struct _pathpart
 {
-    const char *ptr;
+    const char * ptr;
     int	len;
 };
 
@@ -64,7 +64,7 @@ struct _pathname
 
 } ;
 
-void path_build( PATHNAME *f, char *file, int binding );
-void path_parse( const char *file, PATHNAME *f );
-void path_parent( PATHNAME *f );
+void path_build(PATHNAME * f, char * file, int binding);
+void path_parse(const char * file, PATHNAME * f);
+void path_parent(PATHNAME * f);
 

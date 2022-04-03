@@ -16,19 +16,19 @@
  **************************************************************/
 
 #if defined(CB_PRECOMP)
-#include "sdk.h"
+    #include "sdk.h"
 #endif
 
 #ifndef CB_PRECOMP
-#include <wx/checkbox.h>
-#include <wx/sizer.h>
+    #include <wx/checkbox.h>
+    #include <wx/sizer.h>
 #endif
 
 #include "SearchInPanel.h"
 #include "ThreadSearchControlIds.h"
 
 
-SearchInPanel::SearchInPanel(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long WXUNUSED(style)):
+SearchInPanel::SearchInPanel(wxWindow * parent, int id, const wxPoint & pos, const wxSize & size, long WXUNUSED(style)):
     wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL)
 {
     // begin wxGlade: SearchInPanel::SearchInPanel
@@ -37,7 +37,6 @@ SearchInPanel::SearchInPanel(wxWindow* parent, int id, const wxPoint& pos, const
     m_pChkSearchSnippetFiles = new wxCheckBox(this, idChkSearchSnippetFiles, wxT("Snippets"));
     //-m_pChkSearchWorkspaceFiles = new wxCheckBox(this, idChkSearchWorkspaceFiles, wxT("Workspace files"));
     m_pChkSearchDir = new wxCheckBox(this, idChkSearchDirectoryFiles, wxT("Directory"));
-
     set_properties();
     do_layout();
     // end wxGlade
@@ -54,13 +53,13 @@ BEGIN_EVENT_TABLE(SearchInPanel, wxPanel)
 END_EVENT_TABLE();
 
 
-void SearchInPanel::OnChkClickEvent(wxCommandEvent &event)
+void SearchInPanel::OnChkClickEvent(wxCommandEvent & event)
 {
     event.Skip();
 }
 
 
-void SearchInPanel::OnChkSearchSnippetFilesClick(wxCommandEvent &event)
+void SearchInPanel::OnChkSearchSnippetFilesClick(wxCommandEvent & event)
 {
     // If project scope checkbox becomes checked, we uncheck if necessary workspace
     // checkbox because project is included in workspace.
@@ -75,17 +74,18 @@ void SearchInPanel::OnChkSearchSnippetFilesClick(wxCommandEvent &event)
 }
 
 
-void SearchInPanel::OnChkSearchWorkspaceFilesClick(wxCommandEvent &event)
+void SearchInPanel::OnChkSearchWorkspaceFilesClick(wxCommandEvent & event)
 {
     // If worspace scope checkbox becomes checked, we uncheck if necessary project
     // checkbox because project is included in workspace.
-    if ( (event.IsChecked()) == true && (m_pChkSearchSnippetFiles->IsChecked() == true) )
+    if ((event.IsChecked()) == true && (m_pChkSearchSnippetFiles->IsChecked() == true))
     {
         m_pChkSearchSnippetFiles->SetValue(false);
         wxCommandEvent ChkEvent(wxEVT_COMMAND_CHECKBOX_CLICKED, idChkSearchSnippetFiles);
         ChkEvent.SetInt(0);
         ProcessEvent(ChkEvent);
     }
+
     event.Skip();
 }
 
@@ -110,11 +110,11 @@ void SearchInPanel::set_properties()
 void SearchInPanel::do_layout()
 {
     // begin wxGlade: SearchInPanel::do_layout
-    wxBoxSizer* SizerTop = new wxBoxSizer(wxHORIZONTAL);
-    SizerTop->Add(m_pChkSearchOpenFiles, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
-    SizerTop->Add(m_pChkSearchSnippetFiles, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
+    wxBoxSizer * SizerTop = new wxBoxSizer(wxHORIZONTAL);
+    SizerTop->Add(m_pChkSearchOpenFiles, 0, wxALL | wxALIGN_CENTER_VERTICAL, 4);
+    SizerTop->Add(m_pChkSearchSnippetFiles, 0, wxALL | wxALIGN_CENTER_VERTICAL, 4);
     //-SizerTop->Add(m_pChkSearchWorkspaceFiles, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
-    SizerTop->Add(m_pChkSearchDir, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
+    SizerTop->Add(m_pChkSearchDir, 0, wxALL | wxALIGN_CENTER_VERTICAL, 4);
     SetAutoLayout(true);
     SetSizer(SizerTop);
     SizerTop->Fit(this);
@@ -139,16 +139,16 @@ bool SearchInPanel::GetSearchInDirectory()      const
 }
 
 // Setters
-void SearchInPanel::SetSearchInOpenFiles     (bool bSearchInOpenFiles)
+void SearchInPanel::SetSearchInOpenFiles(bool bSearchInOpenFiles)
 {
     m_pChkSearchOpenFiles->SetValue(bSearchInOpenFiles);
 }
-void SearchInPanel::SetSearchInSnippetFiles  (bool bSearchInSnippetFiles)
+void SearchInPanel::SetSearchInSnippetFiles(bool bSearchInSnippetFiles)
 {
     m_pChkSearchSnippetFiles->SetValue(bSearchInSnippetFiles);
 }
 //-void SearchInPanel::SetSearchInWorkspaceFiles(bool bSearchInWorkspaceFiles) {m_pChkSearchWorkspaceFiles->SetValue(bSearchInWorkspaceFiles);}
-void SearchInPanel::SetSearchInDirectory     (bool bSearchInDirectory)
+void SearchInPanel::SetSearchInDirectory(bool bSearchInDirectory)
 {
     m_pChkSearchDir->SetValue(bSearchInDirectory);
 }

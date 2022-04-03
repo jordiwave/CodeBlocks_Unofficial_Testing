@@ -33,25 +33,25 @@
 /** \brief Configuration of one project */
 class ProjectConfiguration
 {
-public:
+    public:
 
-    /** \brief Ctor */
-    ProjectConfiguration();
+        /** \brief Ctor */
+        ProjectConfiguration();
 
-    /** \brief Dctor */
-    ~ProjectConfiguration();
+        /** \brief Dctor */
+        ~ProjectConfiguration();
 
-    /** \brief Loading configuration from xml node */
-    void XmlLoad(TiXmlElement* Node,cbProject* Project);
+        /** \brief Loading configuration from xml node */
+        void XmlLoad(TiXmlElement * Node, cbProject * Project);
 
-    /** \brief Writing configuration to xml node */
-    void XmlWrite(TiXmlElement* Node,cbProject* Project);
+        /** \brief Writing configuration to xml node */
+        void XmlWrite(TiXmlElement * Node, cbProject * Project);
 
-    WX_DECLARE_STRING_HASH_MAP(wxArrayString,wxMultiStringMap);
+        WX_DECLARE_STRING_HASH_MAP(wxArrayString, wxMultiStringMap);
 
-    wxArrayString    m_GlobalUsedLibs;  ///< \brief List of used libraries for the whole project
-    wxMultiStringMap m_TargetsUsedLibs; ///< \brief List of libs used in targets
-    bool             m_DisableAuto;     ///< \brief Disable automatic library adding - usefull when libs are added from script
+        wxArrayString    m_GlobalUsedLibs;  ///< \brief List of used libraries for the whole project
+        wxMultiStringMap m_TargetsUsedLibs; ///< \brief List of libs used in targets
+        bool             m_DisableAuto;     ///< \brief Disable automatic library adding - usefull when libs are added from script
 };
 
 #endif

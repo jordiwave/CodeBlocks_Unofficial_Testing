@@ -19,46 +19,45 @@ class wxString;
 
 class GenericSingleChoiceList: public wxPanel
 {
-public:
+    public:
 
-    GenericSingleChoiceList(wxWindow* parent,wxWindowID id = -1);
-    virtual ~GenericSingleChoiceList();
+        GenericSingleChoiceList(wxWindow * parent, wxWindowID id = -1);
+        virtual ~GenericSingleChoiceList();
 
-    void SetChoices(const wxArrayString& choices, int defChoice);
-    int GetChoice() const
-    {
-        return GenericChoiceList->GetSelection();
-    }
-    void SetChoice(int choice)
-    {
-        GenericChoiceList->SetSelection(choice);
-    }
-    void SetDescription(const wxString& descr)
-    {
-        lblDescr->SetLabel(descr);
+        void SetChoices(const wxArrayString & choices, int defChoice);
+        int GetChoice() const
+        {
+            return GenericChoiceList->GetSelection();
+        }
+        void SetChoice(int choice)
+        {
+            GenericChoiceList->SetSelection(choice);
+        }
+        void SetDescription(const wxString & descr)
+        {
+            lblDescr->SetLabel(descr);
+            GetSizer()->Fit(this);
+            GetSizer()->SetSizeHints(this);
+        }
 
-        GetSizer()->Fit(this);
-        GetSizer()->SetSizeHints(this);
-    }
+        //(*Identifiers(GenericSingleChoiceList)
+        static const long ID_STATICTEXT1;
+        static const long ID_LISTBOX1;
+        //*)
 
-    //(*Identifiers(GenericSingleChoiceList)
-    static const long ID_STATICTEXT1;
-    static const long ID_LISTBOX1;
-    //*)
+    protected:
 
-protected:
+        //(*Handlers(GenericSingleChoiceList)
+        //*)
 
-    //(*Handlers(GenericSingleChoiceList)
-    //*)
+        //(*Declarations(GenericSingleChoiceList)
+        wxListBox * GenericChoiceList;
+        wxStaticText * lblDescr;
+        //*)
 
-    //(*Declarations(GenericSingleChoiceList)
-    wxListBox* GenericChoiceList;
-    wxStaticText* lblDescr;
-    //*)
+    private:
 
-private:
-
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

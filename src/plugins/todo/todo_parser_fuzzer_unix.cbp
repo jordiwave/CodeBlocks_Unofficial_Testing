@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="todo_parser_fuzzer Unix" />
+		<Option compiler="afl_gnu_gcc_compiler" />
+		<Build>
+			<Target title="Debug">
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/todo_parser_fuzzer" prefix_auto="1" extension_auto="1" />
+				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/todo/fuzzer" />
+				<Option type="1" />
+				<Option compiler="afl_gnu_gcc_compiler" />
+				<Linker>
+					<Add option="-O1" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --cflags`" />
+			<Add directory="fuzzer" />
+		</Compiler>
+		<Linker>
+			<Add option="`$(#WXWIDGETS.WX_CONFIG_UNIX) --libs`" />
+		</Linker>
+		<Unit filename="fuzzer/main.cpp" />
+		<Unit filename="fuzzer/sdk.h" />
+		<Unit filename="todo_parser.cpp" />
+		<Unit filename="todo_parser.h" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

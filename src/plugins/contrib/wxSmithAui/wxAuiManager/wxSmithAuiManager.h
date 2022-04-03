@@ -9,21 +9,21 @@
 
 class wxSmithAuiManager : public wxAuiManager
 {
-public:
-    wxSmithAuiManager(wxWindow* managed_wnd = NULL, unsigned int flags = wxAUI_MGR_DEFAULT)
-        : wxAuiManager(managed_wnd, flags)
-    {
-        Connect(wxEVT_DESTROY,(wxObjectEventFunction)&wxSmithAuiManager::OnDestroy);
-    }
+    public:
+        wxSmithAuiManager(wxWindow * managed_wnd = NULL, unsigned int flags = wxAUI_MGR_DEFAULT)
+            : wxAuiManager(managed_wnd, flags)
+        {
+            Connect(wxEVT_DESTROY, (wxObjectEventFunction)&wxSmithAuiManager::OnDestroy);
+        }
 
-    virtual ~wxSmithAuiManager() {}
+        virtual ~wxSmithAuiManager() {}
 
-    void OnDestroy(cb_unused wxWindowDestroyEvent& event)
-    {
-        UnInit();
-    }
-protected:
-private:
+        void OnDestroy(cb_unused wxWindowDestroyEvent & event)
+        {
+            UnInit();
+        }
+    protected:
+    private:
 };
 
 #endif // WXSMITHAUIMANAGER_H

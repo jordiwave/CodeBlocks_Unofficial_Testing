@@ -30,36 +30,36 @@
 /** \brief Base float property */
 class PLUGIN_EXPORT wxsFloatProperty: public wxsProperty
 {
-public:
+    public:
 
-    /** \brief Ctor
-     *  \param PGName   name of property in Property Grid
-     *  \param DataName name of property in data stuctures
-     *  \param Offset   offset of value (returned from wxsOFFSET macro)
-     *  \param Default  default value applied on read errors
-     *  \param Priority priority of this property
-     */
-    wxsFloatProperty(const wxString& PGName,const wxString& DataName,long Offset,double Default=0.0f,int Priority=100);
+        /** \brief Ctor
+         *  \param PGName   name of property in Property Grid
+         *  \param DataName name of property in data stuctures
+         *  \param Offset   offset of value (returned from wxsOFFSET macro)
+         *  \param Default  default value applied on read errors
+         *  \param Priority priority of this property
+         */
+        wxsFloatProperty(const wxString & PGName, const wxString & DataName, long Offset, double Default = 0.0f, int Priority = 100);
 
-    /** \brief Returning type name */
-    virtual const wxString GetTypeName()
-    {
-        return _T("float");
-    }
+        /** \brief Returning type name */
+        virtual const wxString GetTypeName()
+        {
+            return _T("float");
+        }
 
-protected:
+    protected:
 
-    virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
-    virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-    virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+        virtual void PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent);
+        virtual bool PGRead(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index);
+        virtual bool PGWrite(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index);
+        virtual bool XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
+        virtual bool PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
 
-private:
-    long Offset;
-    double Default;
+    private:
+        long Offset;
+        double Default;
 };
 
 /** \addtogroup properties_macros
@@ -74,7 +74,7 @@ private:
  */
 #define WXS_FLOAT(ClassName,VarName,PGName,DataName,Default) \
     { static wxsFloatProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Default); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \brief Macro automatically declaring float property with custom priority
  *  \param ClassName name of class holding this property
@@ -85,7 +85,7 @@ private:
  */
 #define WXS_FLOAT_P(ClassName,VarName,PGName,DataName,Default,Priority) \
     { static wxsFloatProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Default,Priority); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \} */
 

@@ -28,13 +28,13 @@
 /** \brief Class responsible for managing dialog resource */
 class wxsScrollingDialogRes: public wxsItemRes
 {
-public:
-    wxsScrollingDialogRes(wxsProject* Owner): wxsItemRes(Owner,ResType,true) {}
-    wxsScrollingDialogRes(const wxString& FileName,TiXmlElement* Object): wxsItemRes(FileName,Object,ResType) {}
-private:
-    virtual wxString OnGetAppBuildingCode();
-    virtual wxWindow* OnBuildExactPreview(wxWindow* Parent,wxsItemResData* Data);
-    static const wxString ResType;
+    public:
+        wxsScrollingDialogRes(wxsProject * Owner): wxsItemRes(Owner, ResType, true) {}
+        wxsScrollingDialogRes(const wxString & FileName, TiXmlElement * Object): wxsItemRes(FileName, Object, ResType) {}
+    private:
+        virtual wxString OnGetAppBuildingCode();
+        virtual wxWindow * OnBuildExactPreview(wxWindow * Parent, wxsItemResData * Data);
+        static const wxString ResType;
 };
 
 #endif

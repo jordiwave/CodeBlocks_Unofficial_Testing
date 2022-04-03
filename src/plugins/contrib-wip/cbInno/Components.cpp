@@ -16,7 +16,7 @@ const wxString CComponents::Flags[] =
     wxT("disablenouninstallwarning")
 };
 
-CComponents::CComponents( void)
+CComponents::CComponents(void)
 {
     //ctor
 }
@@ -26,7 +26,7 @@ CComponents::~CComponents()
     //dtor
 }
 
-void CComponents::Set( wxString Name, wxString Description)
+void CComponents::Set(wxString Name, wxString Description)
 {
     m_Name         = Name;
     m_Description  = Description;
@@ -42,52 +42,61 @@ void CComponents::SetDescription(wxString description)
     m_Description = description;
 }
 
-void CComponents::SetTypes( wxString types)
+void CComponents::SetTypes(wxString types)
 {
     m_Types = types;
 }
 
-void CComponents::SetExtraDiskSpace( wxString extraDiskSpace)
+void CComponents::SetExtraDiskSpace(wxString extraDiskSpace)
 {
     m_ExtraDiskSpaceRequired = extraDiskSpace;
 }
 
-void CComponents::SetFlags( wxString flag)
+void CComponents::SetFlags(wxString flag)
 {
     m_Flags = flag;
 }
 
-wxString CComponents::GetName( void)
+wxString CComponents::GetName(void)
 {
     return m_Name;
 }
 
-void CComponents::WriteInFile( wxTextFile* File)
+void CComponents::WriteInFile(wxTextFile * File)
 {
-    if( !m_Name.IsEmpty() && !m_Description.IsEmpty())
+    if (!m_Name.IsEmpty() && !m_Description.IsEmpty())
     {
         wxString Text;
-
         Text = _T("Name: \"") + m_Name + _T("\"; Description: \"") + m_Description + _T("\"");
 
-        if( !m_Types.IsEmpty())
+        if (!m_Types.IsEmpty())
+        {
             Text += _T("; Types: ") + m_Types;
-        if( !m_ExtraDiskSpaceRequired.IsEmpty())
+        }
+
+        if (!m_ExtraDiskSpaceRequired.IsEmpty())
+        {
             Text += _T("; ExtraDiskSpaceRequired: ") + m_ExtraDiskSpaceRequired;
-        if( !m_Flags.IsEmpty())
+        }
+
+        if (!m_Flags.IsEmpty())
+        {
             Text += _T("; Flags: ") + m_Flags;
+        }
+
         CCommon::AddText(Text);
-        File->AddLine( Text);
+        File->AddLine(Text);
     }
 }
 
-void CComponents::Analize(const wxString& content, const wxString& line)
+void CComponents::Analize(const wxString & content, const wxString & line)
 {
     wxString cont = content;
     wxString part;
     wxString settings;
     SetLinenumber(line);
-    while( !cont.empty())
+
+    while (!cont.empty())
     {
         part = cont.BeforeFirst(':');
         settings = cont.AfterFirst(':').BeforeFirst(';');
@@ -96,32 +105,37 @@ void CComponents::Analize(const wxString& content, const wxString& line)
         settings = settings.Trim(false);
         cont = cont.Trim(false);
 
-        if( part.CmpNoCase(_T("Name")) == 0)
+        if (part.CmpNoCase(_T("Name")) == 0)
         {
             SetName(settings);
         }
-        else if( part.CmpNoCase(_T("Description")) == 0)
-        {
-            SetDescription(settings);
-        }
-        else if( part.CmpNoCase(_T("Types")) == 0)
-        {
-            SetTypes(settings);
-        }
-        else if( part.CmpNoCase(_T("ExtraDiskSpaceRequired")) == 0)
-        {
-            SetExtraDiskSpace(settings);
-        }
-        else if( part.CmpNoCase(_T("flags")) == 0)
-        {
-            SetFlags(settings);
-        }
-        else if( CCommon::Analize(part, settings))
-            ;
+        else
+            if (part.CmpNoCase(_T("Description")) == 0)
+            {
+                SetDescription(settings);
+            }
+            else
+                if (part.CmpNoCase(_T("Types")) == 0)
+                {
+                    SetTypes(settings);
+                }
+                else
+                    if (part.CmpNoCase(_T("ExtraDiskSpaceRequired")) == 0)
+                    {
+                        SetExtraDiskSpace(settings);
+                    }
+                    else
+                        if (part.CmpNoCase(_T("flags")) == 0)
+                        {
+                            SetFlags(settings);
+                        }
+                        else
+                            if (CCommon::Analize(part, settings))
+                                ;
     }
 }
 
-void CComponents::FillContent(wxListCtrl* liste)
+void CComponents::FillContent(wxListCtrl * liste)
 {
     liste->SetItem(GetIndex(), m_index_name, m_Name);
     liste->SetItem(GetIndex(), m_index_desc, m_Description);
@@ -131,7 +145,7 @@ void CComponents::FillContent(wxListCtrl* liste)
     CCommon::FillContent(liste, GetIndex());
 }
 
-void CComponents::AddHeader(wxListCtrl* liste)
+void CComponents::AddHeader(wxListCtrl * liste)
 {
     InsertHeader(liste);
     m_index_name  = liste->InsertColumn(liste->GetColumnCount(), _T("Name"));

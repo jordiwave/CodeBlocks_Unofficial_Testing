@@ -4,7 +4,6 @@
 	<Project>
 		<Option title="HexEditor wx3.0.x (Unix)" />
 		<Option platforms="Unix;Mac;" />
-		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">

@@ -26,7 +26,7 @@ namespace
 {
 struct IdEntry
 {
-    const wxChar* Name;
+    const wxChar * Name;
     wxWindowID Value;
 };
 
@@ -137,31 +137,45 @@ IdEntry IDs[] =
 static const int IDsCount = sizeof(IDs) / sizeof(IDs[0]);
 }
 
-bool wxsPredefinedIDs::Check(const wxString& Name)
+bool wxsPredefinedIDs::Check(const wxString & Name)
 {
     // First checking if this is value
     long Tmp;
-    if ( Name.ToLong(&Tmp) ) return true;
+
+    if (Name.ToLong(&Tmp))
+    {
+        return true;
+    }
 
     // Second - checking array of ids
-    for ( int i=0; i<IDsCount; i++ )
+    for (int i = 0; i < IDsCount; i++)
     {
-        if ( Name == IDs[i].Name ) return true;
+        if (Name == IDs[i].Name)
+        {
+            return true;
+        }
     }
 
     return false;
 }
 
-wxWindowID wxsPredefinedIDs::Value(const wxString& Name)
+wxWindowID wxsPredefinedIDs::Value(const wxString & Name)
 {
     // First trying to convert to number
     long Tmp;
-    if ( Name.ToLong(&Tmp) ) return Tmp;
+
+    if (Name.ToLong(&Tmp))
+    {
+        return Tmp;
+    }
 
     // Second searching in array of ids
-    for ( int i=0; i<IDsCount; i++ )
+    for (int i = 0; i < IDsCount; i++)
     {
-        if ( Name == IDs[i].Name ) return IDs[i].Value;
+        if (Name == IDs[i].Name)
+        {
+            return IDs[i].Value;
+        }
     }
 
     return wxID_ANY;

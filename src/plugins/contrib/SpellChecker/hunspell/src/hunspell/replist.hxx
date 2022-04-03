@@ -77,24 +77,25 @@
 #include <string>
 #include <vector>
 
-class RepList {
- private:
-  RepList(const RepList&);
-  RepList& operator=(const RepList&);
+class RepList
+{
+    private:
+        RepList(const RepList &);
+        RepList & operator=(const RepList &);
 
- protected:
-  replentry** dat;
-  int size;
-  int pos;
+    protected:
+        replentry ** dat;
+        int size;
+        int pos;
 
- public:
-  explicit RepList(int n);
-  ~RepList();
+    public:
+        explicit RepList(int n);
+        ~RepList();
 
-  int add(const std::string& pat1, const std::string& pat2);
-  replentry* item(int n);
-  int find(const char* word);
-  std::string replace(const char* word, int n, bool atstart);
-  bool conv(const std::string& word, std::string& dest);
+        int add(const std::string & pat1, const std::string & pat2);
+        replentry * item(int n);
+        int find(const char * word);
+        std::string replace(const char * word, int n, bool atstart);
+        bool conv(const std::string & word, std::string & dest);
 };
 #endif

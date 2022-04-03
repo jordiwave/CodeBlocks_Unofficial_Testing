@@ -18,8 +18,8 @@
 
 #include "wxSmithAuiNotebook.h"
 
-wxSmithAuiNotebook::wxSmithAuiNotebook(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size,long style)
-    : wxAuiNotebook(parent,id,pos,size,style)
+wxSmithAuiNotebook::wxSmithAuiNotebook(wxWindow * parent, wxWindowID id, const wxPoint & pos, const wxSize & size, long style)
+    : wxAuiNotebook(parent, id, pos, size, style)
 {
     //ctor
 }
@@ -29,13 +29,15 @@ wxSmithAuiNotebook::~wxSmithAuiNotebook()
     //dtor
 }
 
-int wxSmithAuiNotebook::HitTest(const wxPoint& pt)
+int wxSmithAuiNotebook::HitTest(const wxPoint & pt)
 {
-    wxAuiTabCtrl* TabCtrl = GetTabCtrlFromPoint(pt);
-    wxWindow* HitTab;
+    wxAuiTabCtrl * TabCtrl = GetTabCtrlFromPoint(pt);
+    wxWindow * HitTab;
 
-    if (TabCtrl && HitTab && TabCtrl->TabHitTest(pt.x,pt.y,&HitTab))
+    if (TabCtrl && HitTab && TabCtrl->TabHitTest(pt.x, pt.y, &HitTab))
+    {
         return TabCtrl->GetIdxFromWindow(HitTab);
+    }
 
     return wxNOT_FOUND;
 }

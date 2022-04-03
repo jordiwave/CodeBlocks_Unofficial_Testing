@@ -1,9 +1,9 @@
 #include "namespaces.h"
 
-int main (void)
+int main(void)
 {
-//  my_namespace::
-//  my_namespace::NameSpaces.
+    //  my_namespace::
+    //  my_namespace::NameSpaces.
     using namespace my_namespace::nested_namespace;
-//    var // suggest -> variable
+    //    var // suggest -> variable
 }

@@ -26,9 +26,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsCalendarCtrl> Reg(_T("CalendarCtrl"),wxsTWidget,_T("Advanced"),150);
+wxsRegisterItem<wxsCalendarCtrl> Reg(_T("CalendarCtrl"), wxsTWidget, _T("Advanced"), 150);
 
-WXS_ST_BEGIN(wxsCalendarCtrlStyles,_T(""))
+WXS_ST_BEGIN(wxsCalendarCtrlStyles, _T(""))
 WXS_ST_CATEGORY("wxCalendarCtrl")
 WXS_ST(wxCAL_SUNDAY_FIRST)
 WXS_ST(wxCAL_MONDAY_FIRST)
@@ -42,17 +42,17 @@ WXS_ST_END()
 
 
 WXS_EV_BEGIN(wxsCalendarCtrlEvents)
-WXS_EVI(EVT_CALENDAR_SEL_CHANGED,wxEVT_CALENDAR_SEL_CHANGED,wxCalendarEvent,Changed)
-WXS_EVI(EVT_CALENDAR_DAY,wxEVT_CALENDAR_DAY_CHANGED,wxCalendarEvent,DayChanged)
-WXS_EVI(EVT_CALENDAR_MONTH,wxEVT_CALENDAR_MONTH_CHANGED,wxCalendarEvent,MonthChanged)
-WXS_EVI(EVT_CALENDAR_YEAR,wxEVT_CALENDAR_YEAR_CHANGED,wxCalendarEvent,YearChanged)
-WXS_EVI(EVT_CALENDAR,wxEVT_CALENDAR_DOUBLECLICKED,wxCalendarEvent,DblClicked)
-WXS_EVI(EVT_CALENDAR_WEEKDAY_CLICKED,wxEVT_CALENDAR_WEEKDAY_CLICKED,wxCalendarEvent,WeekdayClicked)
+WXS_EVI(EVT_CALENDAR_SEL_CHANGED, wxEVT_CALENDAR_SEL_CHANGED, wxCalendarEvent, Changed)
+WXS_EVI(EVT_CALENDAR_DAY, wxEVT_CALENDAR_DAY_CHANGED, wxCalendarEvent, DayChanged)
+WXS_EVI(EVT_CALENDAR_MONTH, wxEVT_CALENDAR_MONTH_CHANGED, wxCalendarEvent, MonthChanged)
+WXS_EVI(EVT_CALENDAR_YEAR, wxEVT_CALENDAR_YEAR_CHANGED, wxCalendarEvent, YearChanged)
+WXS_EVI(EVT_CALENDAR, wxEVT_CALENDAR_DOUBLECLICKED, wxCalendarEvent, DblClicked)
+WXS_EVI(EVT_CALENDAR_WEEKDAY_CLICKED, wxEVT_CALENDAR_WEEKDAY_CLICKED, wxCalendarEvent, WeekdayClicked)
 WXS_EV_END()
 }
 
 
-wxsCalendarCtrl::wxsCalendarCtrl(wxsItemResData* Data):
+wxsCalendarCtrl::wxsCalendarCtrl(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -62,29 +62,29 @@ wxsCalendarCtrl::wxsCalendarCtrl(wxsItemResData* Data):
 
 void wxsCalendarCtrl::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/calctrl.h>"),GetInfo().ClassName,0);
-        AddHeader(_T("<wx/calctrl.h>"),_T("wxCalendarEvent"),0);
-        Codef(_T("%C(%W, %I, wxDefaultDateTime, %P, %S, %T, %N);\n"));
-        BuildSetupWindowCode();
-        return;
-    }
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/calctrl.h>"), GetInfo().ClassName, 0);
+            AddHeader(_T("<wx/calctrl.h>"), _T("wxCalendarEvent"), 0);
+            Codef(_T("%C(%W, %I, wxDefaultDateTime, %P, %S, %T, %N);\n"));
+            BuildSetupWindowCode();
+            return;
+        }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsCalendarCtrl::OnBuildCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsCalendarCtrl::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
-wxObject* wxsCalendarCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsCalendarCtrl::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxCalendarCtrl* Preview = new wxCalendarCtrl(Parent,GetId(),wxDefaultDateTime,Pos(Parent),Size(Parent),Style());
-    return SetupWindow(Preview,Flags);
+    wxCalendarCtrl * Preview = new wxCalendarCtrl(Parent, GetId(), wxDefaultDateTime, Pos(Parent), Size(Parent), Style());
+    return SetupWindow(Preview, Flags);
 }
 
 void wxsCalendarCtrl::OnEnumWidgetProperties(cb_unused long Flags)

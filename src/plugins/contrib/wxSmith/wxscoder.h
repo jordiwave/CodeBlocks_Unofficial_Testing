@@ -34,133 +34,133 @@
  */
 class wxsCoder: public wxEvtHandler
 {
-public:
+    public:
 
-    wxsCoder();
-    virtual ~wxsCoder();
+        wxsCoder();
+        virtual ~wxsCoder();
 
-    /** \brief Function notifying about change of block of code in file
-     *
-     * Code should use tabs for indentation and will be automatically
-     * indented relatively to code header.
-     *
-     * \param FileName Full path for processed file
-     * \param Header Header beginning code block
-     * \param End Sequence ending code block
-     * \param Code new code
-     * \param Immediately flag forcing immediate apply (currently not used
-     *        but may be added in future when updates will be scheduled)
-     * \param CodeHasHeader if true, header will also be recreated
-     *        (new header should be placed at the beginning of Code)
-     * \param CodeHasEnd if true, ending sequence will also be recreated
-     *        (new ending sequence should be placed at the end of Code)
-     */
-    void AddCode(
-        const wxString& FileName,
-        const wxString& Header,
-        const wxString& End,
-        const wxString& Code,
-        bool Immediately=true,
-        bool CodeHasHeader=false,
-        bool CodeHasEnd=false);
+        /** \brief Function notifying about change of block of code in file
+         *
+         * Code should use tabs for indentation and will be automatically
+         * indented relatively to code header.
+         *
+         * \param FileName Full path for processed file
+         * \param Header Header beginning code block
+         * \param End Sequence ending code block
+         * \param Code new code
+         * \param Immediately flag forcing immediate apply (currently not used
+         *        but may be added in future when updates will be scheduled)
+         * \param CodeHasHeader if true, header will also be recreated
+         *        (new header should be placed at the beginning of Code)
+         * \param CodeHasEnd if true, ending sequence will also be recreated
+         *        (new ending sequence should be placed at the end of Code)
+         */
+        void AddCode(
+            const wxString & FileName,
+            const wxString & Header,
+            const wxString & End,
+            const wxString & Code,
+            bool Immediately = true,
+            bool CodeHasHeader = false,
+            bool CodeHasEnd = false);
 
-    /** \brief Function reading block of code from given source file
-     *
-     * \param FileName Full path for processed file
-     * \param Header Header beginning code block
-     * \param End Sequence ending code block
-     * \param IncludeHeader if true, returned code will also contain header
-     * \param IncludeEnd if true, returned code will also contain ending sequence
-     */
-    wxString GetCode(
-        const wxString& FileName,
-        const wxString& Header,
-        const wxString& End,
-        bool IncludeHeader=false,
-        bool IncludeEnd=false);
+        /** \brief Function reading block of code from given source file
+         *
+         * \param FileName Full path for processed file
+         * \param Header Header beginning code block
+         * \param End Sequence ending code block
+         * \param IncludeHeader if true, returned code will also contain header
+         * \param IncludeEnd if true, returned code will also contain ending sequence
+         */
+        wxString GetCode(
+            const wxString & FileName,
+            const wxString & Header,
+            const wxString & End,
+            bool IncludeHeader = false,
+            bool IncludeEnd = false);
 
-    /** \brief Getting full file code */
-    wxString GetFullCode(const wxString& FileName,wxFontEncoding& Encoding,bool &UseBOM);
+        /** \brief Getting full file code */
+        wxString GetFullCode(const wxString & FileName, wxFontEncoding & Encoding, bool & UseBOM);
 
-    /** \brief Writing code for whole file */
-    void PutFullCode(const wxString& FileName,const wxString& Code,wxFontEncoding Encoding,bool UseBOM);
+        /** \brief Writing code for whole file */
+        void PutFullCode(const wxString & FileName, const wxString & Code, wxFontEncoding Encoding, bool UseBOM);
 
-    /** \brief Applying all pending code changes */
-    void Flush(int Delay);
+        /** \brief Applying all pending code changes */
+        void Flush(int Delay);
 
-    /** \brief Function getting singleton object from system */
-    static wxsCoder* Get()
-    {
-        return Singleton;
-    }
+        /** \brief Function getting singleton object from system */
+        static wxsCoder * Get()
+        {
+            return Singleton;
+        }
 
-    /** \brief Rebuilding code to support current editor settings */
-    static wxString RebuildCode(wxString& BaseIndentation,const wxChar* Code,int CodeLen,wxString& EOL);
+        /** \brief Rebuilding code to support current editor settings */
+        static wxString RebuildCode(wxString & BaseIndentation, const wxChar * Code, int CodeLen, wxString & EOL);
 
-private:
+    private:
 
-    /** \brief Structure which contains one data change */
-    struct CodeChange
-    {
-        wxString Header;
-        wxString End;
-        wxString Code;
-        bool CodeHasHeader;
-        bool CodeHasEnd;
-        CodeChange* Next;
-    };
-    WX_DEFINE_ARRAY(CodeChange*,CodeChangeArray);
+        /** \brief Structure which contains one data change */
+        struct CodeChange
+        {
+            wxString Header;
+            wxString End;
+            wxString Code;
+            bool CodeHasHeader;
+            bool CodeHasEnd;
+            CodeChange * Next;
+        };
+        WX_DEFINE_ARRAY(CodeChange *, CodeChangeArray);
 
-    /** \brief Mutex for this object - added in case of multi-threading schedules */
-    wxMutex DataMutex;
+        /** \brief Mutex for this object - added in case of multi-threading schedules */
+        wxMutex DataMutex;
 
-    /** \brief Timer used for delayed flushes */
-    wxTimer FlushTimer;
+        /** \brief Timer used for delayed flushes */
+        wxTimer FlushTimer;
 
-    /** \brief Temporary storage place where changes are stored */
-    CodeChangeArray CodeChanges;
+        /** \brief Temporary storage place where changes are stored */
+        CodeChangeArray CodeChanges;
 
-    /** \brief File names which are changed */
-    wxArrayString CodeChangesFiles;
+        /** \brief File names which are changed */
+        wxArrayString CodeChangesFiles;
 
-    /** \brief Function applying changes to currently opened editor */
-    bool ApplyChangesEditor(
-        cbEditor* Editor,
-        const wxString& Header,
-        const wxString& End,
-        wxString& Code,
-        bool CodeHasHeader,
-        bool CodeHasEnd,
-        wxString& EOL);
+        /** \brief Function applying changes to currently opened editor */
+        bool ApplyChangesEditor(
+            cbEditor * Editor,
+            const wxString & Header,
+            const wxString & End,
+            wxString & Code,
+            bool CodeHasHeader,
+            bool CodeHasEnd,
+            wxString & EOL);
 
-    /** \brief Applying changes to string (file's content) */
-    bool ApplyChangesString(
-        wxString& Content,
-        const wxString& Header,
-        const wxString& Env,
-        wxString& Code,
-        bool CodeHasHeader,
-        bool CodeHasEnd,
-        bool& HasChanged,
-        wxString& EOL);
+        /** \brief Applying changes to string (file's content) */
+        bool ApplyChangesString(
+            wxString & Content,
+            const wxString & Header,
+            const wxString & Env,
+            wxString & Code,
+            bool CodeHasHeader,
+            bool CodeHasEnd,
+            bool & HasChanged,
+            wxString & EOL);
 
-    /** \brief Flushing all changes for given file */
-    void FlushFile(const wxString& FileName);
+        /** \brief Flushing all changes for given file */
+        void FlushFile(const wxString & FileName);
 
-    /** \brief Flushing all files */
-    void FlushAll();
+        /** \brief Flushing all files */
+        void FlushAll();
 
-    /** \brief Flush timer procedure */
-    void FlushTimerEvent(wxTimerEvent& event);
+        /** \brief Flush timer procedure */
+        void FlushTimerEvent(wxTimerEvent & event);
 
-    /** \brief Cutting off given number of spaces at every new line */
-    wxString CutSpaces(wxString Code,int Count);
+        /** \brief Cutting off given number of spaces at every new line */
+        wxString CutSpaces(wxString Code, int Count);
 
-    /** \brief Normalizing given file name */
-    static wxString NormalizeFileName(const wxString& FileName);
+        /** \brief Normalizing given file name */
+        static wxString NormalizeFileName(const wxString & FileName);
 
-    /** \brief Singleton object */
-    static wxsCoder* Singleton;
+        /** \brief Singleton object */
+        static wxsCoder * Singleton;
 };
 
 /** \page Auto-Code Code automatically generated by wxSmith

@@ -7,12 +7,12 @@
 #define EMBEDDEDHTMLPANEL_H
 
 #ifndef CB_PRECOMP
-//(*HeadersPCH(EmbeddedHtmlPanel)
-#include <wx/panel.h>
-class wxBitmapButton;
-class wxBoxSizer;
-class wxStaticText;
-//*)
+    //(*HeadersPCH(EmbeddedHtmlPanel)
+    #include <wx/panel.h>
+    class wxBitmapButton;
+    class wxBoxSizer;
+    class wxStaticText;
+    //*)
 #endif
 //(*Headers(EmbeddedHtmlPanel)
 class wxHtmlWindow;
@@ -22,41 +22,41 @@ class wxHtmlLinkEvent;
 
 class EmbeddedHtmlPanel: public wxPanel
 {
-public:
+    public:
 
-    EmbeddedHtmlPanel(wxWindow* parent);
-    virtual ~EmbeddedHtmlPanel();
+        EmbeddedHtmlPanel(wxWindow * parent);
+        virtual ~EmbeddedHtmlPanel();
 
-    void Open(const wxString& url);
+        void Open(const wxString & url);
 
-    //(*Declarations(EmbeddedHtmlPanel)
-    wxPanel* Panel1;
-    wxBitmapButton* btnForward;
-    wxBitmapButton* btnBack;
-    wxStaticText* lblStatus;
-    wxHtmlWindow* winHtml;
-    //*)
+        //(*Declarations(EmbeddedHtmlPanel)
+        wxPanel * Panel1;
+        wxBitmapButton * btnForward;
+        wxBitmapButton * btnBack;
+        wxStaticText * lblStatus;
+        wxHtmlWindow * winHtml;
+        //*)
 
-protected:
+    protected:
 
-    //(*Identifiers(EmbeddedHtmlPanel)
-    static const long ID_BITMAPBUTTON2;
-    static const long ID_BITMAPBUTTON3;
-    static const long ID_STATICTEXT1;
-    static const long ID_PANEL1;
-    static const long ID_HTMLWINDOW1;
-    //*)
+        //(*Identifiers(EmbeddedHtmlPanel)
+        static const long ID_BITMAPBUTTON2;
+        static const long ID_BITMAPBUTTON3;
+        static const long ID_STATICTEXT1;
+        static const long ID_PANEL1;
+        static const long ID_HTMLWINDOW1;
+        //*)
 
-private:
-    void OnUpdateUI(wxUpdateUIEvent& event);
-    void OnLinkClicked(wxHtmlLinkEvent &event);
+    private:
+        void OnUpdateUI(wxUpdateUIEvent & event);
+        void OnLinkClicked(wxHtmlLinkEvent & event);
 
-    //(*Handlers(EmbeddedHtmlPanel)
-    void OnbtnBackClick(wxCommandEvent& event);
-    void OnbtnForwardClick(wxCommandEvent& event);
-    //*)
+        //(*Handlers(EmbeddedHtmlPanel)
+        void OnbtnBackClick(wxCommandEvent & event);
+        void OnbtnForwardClick(wxCommandEvent & event);
+        //*)
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

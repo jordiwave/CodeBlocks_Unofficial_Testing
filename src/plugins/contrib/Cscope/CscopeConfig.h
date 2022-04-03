@@ -3,14 +3,14 @@
 
 class CscopeConfig
 {
-public:
-    CscopeConfig();
-    virtual ~CscopeConfig();
+    public:
+        CscopeConfig();
+        virtual ~CscopeConfig();
 
-protected:
+    protected:
 
 
-private:
+    private:
 };
 
 #endif // CSCOPECONFIG_H

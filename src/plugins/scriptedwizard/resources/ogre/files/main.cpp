@@ -21,26 +21,25 @@
 // ----------------------------------------------------------------------------
 class SampleApp : public ExampleApplication
 {
-public:
-    // Basic constructor
-    SampleApp()
-    {}
+    public:
+        // Basic constructor
+        SampleApp()
+        {}
 
-protected:
+    protected:
 
-    // Just override the mandatory create scene method
-    void createScene(void)
-    {
-        // Create the SkyBox
-        mSceneMgr->setSkyBox(true, "Examples/CloudyNoonSkyBox");
-
-        // Create a light
-        Light* myLight = mSceneMgr->createLight("Light0");
-        myLight->setType(Light::LT_POINT);
-        myLight->setPosition(0, 40, 0);
-        myLight->setDiffuseColour(1, 1, 1);
-        myLight->setSpecularColour(1, 1, 1);
-    }
+        // Just override the mandatory create scene method
+        void createScene(void)
+        {
+            // Create the SkyBox
+            mSceneMgr->setSkyBox(true, "Examples/CloudyNoonSkyBox");
+            // Create a light
+            Light * myLight = mSceneMgr->createLight("Light0");
+            myLight->setType(Light::LT_POINT);
+            myLight->setPosition(0, 40, 0);
+            myLight->setDiffuseColour(1, 1, 1);
+            myLight->setSpecularColour(1, 1, 1);
+        }
 };
 
 
@@ -48,11 +47,11 @@ protected:
 // Main function, just boots the application object
 // ----------------------------------------------------------------------------
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-#define WIN32_LEAN_AND_MEAN
-#include "windows.h"
-INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
+    #define WIN32_LEAN_AND_MEAN
+    #include "windows.h"
+    INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
 #else
-int main(int argc, char **argv)
+    int main(int argc, char ** argv)
 #endif
 {
     // Create application object
@@ -62,12 +61,11 @@ int main(int argc, char **argv)
     {
         app.go();
     }
-    catch( Exception& e )
+    catch (Exception & e)
     {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-        MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+        MessageBox(NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 #else
-
         std::cerr << "An exception has occured: " << e.getFullDescription();
 #endif
     }

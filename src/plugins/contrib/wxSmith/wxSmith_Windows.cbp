@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="wxSmith wx3.1.x (64 bit)" />
+		<Option title="wxSmith Windows" />
 		<Option pch_mode="0" />
 		<Option default_target="wxSmith" />
 		<Option compiler="gcc" />
@@ -35,12 +35,11 @@
 
 					<Add before="cmd /c if not exist $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\wxsmith mkdir $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\wxsmith" />
 					<Add after="xcopy /Y /S /Q wxwidgets\icons\*.png    $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\wxsmith\" />
-
-					<Add before="cmd /c if not exist $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\wxsmith mkdir $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\wxsmith" />
-					<Add after="xcopy /Y /S /Q wxwidgets\icons\*.png    $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\wxsmith\" />
-
-					<Mode after="always" />
 				</ExtraCommands>
+				<InstallExtraCommands>
+					<Add step="cmd /c if not exist $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\wxsmith mkdir $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\wxsmith" />
+					<Add step="xcopy /Y /S /Q wxwidgets\icons\*.png    $(#CB_BUILD)\output$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\images\wxsmith\" />
+				</InstallExtraCommands>
 			</Target>
 		</Build>
 		<VirtualTargets>
@@ -65,10 +64,10 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
 			<Add directory="$(#WXWIDGETS.include)" />
-			<Add directory="$(#CB_BUILD)/include" />
-			<Add directory="$(#CB_BUILD)/include/tinyxml" />
+			<Add directory="$(#CB_BUILD.INCLUDE)" />
+			<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
 			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
-			<Add directory="$(#CB_BUILD)/include/scripting/include" />
+			<Add directory="$(#CB_BUILD.INCLUDE)/scripting/include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WXWIDGETS.include)" />

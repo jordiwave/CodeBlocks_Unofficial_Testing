@@ -101,7 +101,7 @@
  */
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 //(*AppHeaders
@@ -123,8 +123,8 @@ wxArrayString s_filesParsed;
 
 class CCTestApp : public wxApp
 {
-public:
-    virtual bool OnInit();
+    public:
+        virtual bool OnInit();
 };
 
 IMPLEMENT_APP(CCTestApp)
@@ -136,14 +136,12 @@ bool CCTestApp::OnInit()
     bool wxsOK = true;
     wxInitAllImageHandlers();
     //*)
-
     // the empty parameter _T("") means we don't specify the main test file, so the test files
     // could searched by some patterns like cc_*.cpp
-    CCTestFrame* frame = new CCTestFrame(_T(""));
+    CCTestFrame * frame = new CCTestFrame(_T(""));
     frame->Center();
     frame->Show();
     // run testing here
     frame->Start();
-
     return wxsOK;
 }

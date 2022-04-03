@@ -55,7 +55,7 @@ wxsRegisterItem<wxsAngularMeter> Reg(
  * \param Data wxsItemResData*    Pointer to a resource data object.
  *
  */
-wxsAngularMeter::wxsAngularMeter(wxsItemResData *Data) :
+wxsAngularMeter::wxsAngularMeter(wxsItemResData * Data) :
     wxsWidget(
         Data,
         &Reg.Info,
@@ -72,7 +72,7 @@ wxsAngularMeter::wxsAngularMeter(wxsItemResData *Data) :
     m_iNumSectors(1)
 {
     // There must be 1 sector to start with.
-    SectorDesc *Desc = new SectorDesc;
+    SectorDesc * Desc = new SectorDesc;
     Desc->colour = *wxWHITE;
     m_arrSectors.Add(Desc);
 }
@@ -81,10 +81,11 @@ wxsAngularMeter::wxsAngularMeter(wxsItemResData *Data) :
  */
 wxsAngularMeter::~wxsAngularMeter()
 {
-    for(size_t i = 0; i < m_arrSectors.Count(); i++)
+    for (size_t i = 0; i < m_arrSectors.Count(); i++)
     {
         delete m_arrSectors[i];
     }
+
     m_arrSectors.Clear();
 }
 
@@ -95,68 +96,93 @@ wxsAngularMeter::~wxsAngularMeter()
  */
 void wxsAngularMeter::OnBuildCreatingCode()
 {
-    switch(GetLanguage())
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("\"wx/KWIC/AngularMeter.h\""), GetInfo().ClassName);
-        Codef(_T("%C(%W,%I,%P,%S);\n"));
+        case wxsCPP:
+        {
+            AddHeader(_T("\"wx/KWIC/AngularMeter.h\""), GetInfo().ClassName);
+            Codef(_T("%C(%W,%I,%P,%S);\n"));
 
-        if(m_iNumTicks > 0)
-        {
-            Codef(_T("%ASetNumTick(%d);\n"), static_cast<int>(m_iNumTicks));
-        }
-        // Default range is 0-220.
-        if(m_iRangeMin != 0 || m_iRangeMax != 220)
-        {
-            Codef(_T("%ASetRange(%d, %d);\n"), static_cast<int>(m_iRangeMin), static_cast<int>(m_iRangeMax));
-        }
-        // Default angles are -20, 200.
-        if(m_iAngleMin != -20 || m_iAngleMax != 200)
-        {
-            Codef(_T("%ASetAngle(%d, %d);\n"), static_cast<int>(m_iAngleMin), static_cast<int>(m_iAngleMax));
-        }
-        m_iNumSectors = m_arrSectors.Count();
-        // Default number of sectors is 1.
-        if(m_iNumSectors > 1)
-        {
-            Codef(_T("%ASetNumSectors(%d);\n"), static_cast<int>(m_iNumSectors));
-        }
-        for(size_t i = 0; i < m_arrSectors.Count(); i++)
-        {
-            SectorDesc *Desc = m_arrSectors[i];
-            wxString sClr = wxString::Format(wxT("wxColour(%d, %d, %d)"), Desc->colour.Red(),  Desc->colour.Green(), Desc->colour.Blue());
-            Codef(_T("\t%ASetSectorColor(%d, %s);\n"), static_cast<int>(i), sClr.wx_str());
-        }
-        if(!m_bShowVal)
-        {
-            Codef(_T("%ADrawCurrent(false);\n"));
-        }
-        wxString ss = m_cdNeedleColour.BuildCode(GetCoderContext());
-        if(!ss.IsEmpty()) Codef(_T("%ASetNeedleColour(%s);\n"), ss.wx_str());
-        ss = m_cdBackgroundColour.BuildCode(GetCoderContext());
-        if(!ss.IsEmpty()) Codef(_T("%ASetBackColour(%s);\n"), ss.wx_str());
-        ss = m_cdBorderColour.BuildCode(GetCoderContext());
-        if(!ss.IsEmpty()) Codef(_T("%ASetBorderColour(%s);\n"), ss.wx_str());
-        ss = GetCoderContext()->GetUniqueName(_T("AngularMeterFont"));
-        wxString sFnt = m_fnt.BuildFontCode(ss, GetCoderContext());
-        if(sFnt.Len() > 0)
-        {
-            Codef(_T("%s"), sFnt.wx_str());
-            Codef(_T("%ASetTxtFont(%s);\n"), ss.wx_str());
-        }
-        // Value needs to be set after other params for correct display.
-        if(m_iValue)
-        {
-            Codef(_T("%ASetValue(%d);\n"), static_cast<int>(m_iValue));
+            if (m_iNumTicks > 0)
+            {
+                Codef(_T("%ASetNumTick(%d);\n"), static_cast<int>(m_iNumTicks));
+            }
+
+            // Default range is 0-220.
+            if (m_iRangeMin != 0 || m_iRangeMax != 220)
+            {
+                Codef(_T("%ASetRange(%d, %d);\n"), static_cast<int>(m_iRangeMin), static_cast<int>(m_iRangeMax));
+            }
+
+            // Default angles are -20, 200.
+            if (m_iAngleMin != -20 || m_iAngleMax != 200)
+            {
+                Codef(_T("%ASetAngle(%d, %d);\n"), static_cast<int>(m_iAngleMin), static_cast<int>(m_iAngleMax));
+            }
+
+            m_iNumSectors = m_arrSectors.Count();
+
+            // Default number of sectors is 1.
+            if (m_iNumSectors > 1)
+            {
+                Codef(_T("%ASetNumSectors(%d);\n"), static_cast<int>(m_iNumSectors));
+            }
+
+            for (size_t i = 0; i < m_arrSectors.Count(); i++)
+            {
+                SectorDesc * Desc = m_arrSectors[i];
+                wxString sClr = wxString::Format(wxT("wxColour(%d, %d, %d)"), Desc->colour.Red(),  Desc->colour.Green(), Desc->colour.Blue());
+                Codef(_T("\t%ASetSectorColor(%d, %s);\n"), static_cast<int>(i), sClr.wx_str());
+            }
+
+            if (!m_bShowVal)
+            {
+                Codef(_T("%ADrawCurrent(false);\n"));
+            }
+
+            wxString ss = m_cdNeedleColour.BuildCode(GetCoderContext());
+
+            if (!ss.IsEmpty())
+            {
+                Codef(_T("%ASetNeedleColour(%s);\n"), ss.wx_str());
+            }
+
+            ss = m_cdBackgroundColour.BuildCode(GetCoderContext());
+
+            if (!ss.IsEmpty())
+            {
+                Codef(_T("%ASetBackColour(%s);\n"), ss.wx_str());
+            }
+
+            ss = m_cdBorderColour.BuildCode(GetCoderContext());
+
+            if (!ss.IsEmpty())
+            {
+                Codef(_T("%ASetBorderColour(%s);\n"), ss.wx_str());
+            }
+
+            ss = GetCoderContext()->GetUniqueName(_T("AngularMeterFont"));
+            wxString sFnt = m_fnt.BuildFontCode(ss, GetCoderContext());
+
+            if (sFnt.Len() > 0)
+            {
+                Codef(_T("%s"), sFnt.wx_str());
+                Codef(_T("%ASetTxtFont(%s);\n"), ss.wx_str());
+            }
+
+            // Value needs to be set after other params for correct display.
+            if (m_iValue)
+            {
+                Codef(_T("%ASetValue(%d);\n"), static_cast<int>(m_iValue));
+            }
+
+            BuildSetupWindowCode();
+            break;
         }
 
-        BuildSetupWindowCode();
-        break;
-    }
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsAngularMeter::OnBuildCreatingCode"), GetLanguage());
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsAngularMeter::OnBuildCreatingCode"), GetLanguage());
     }
 }
 
@@ -167,61 +193,76 @@ void wxsAngularMeter::OnBuildCreatingCode()
  * \return wxObject                        The control preview object.
  *
  */
-wxObject *wxsAngularMeter::OnBuildPreview(wxWindow *parent, long flags)
+wxObject * wxsAngularMeter::OnBuildPreview(wxWindow * parent, long flags)
 {
-    kwxAngularMeter *preview = new kwxAngularMeter(parent, GetId(), Pos(parent), Size(parent));
+    kwxAngularMeter * preview = new kwxAngularMeter(parent, GetId(), Pos(parent), Size(parent));
 
-    if(m_iNumTicks > 0)
+    if (m_iNumTicks > 0)
     {
         preview->SetNumTick(m_iNumTicks);
     }
+
     // Default range is 0-220.
-    if(m_iRangeMin != 0 || m_iRangeMax != 220)
+    if (m_iRangeMin != 0 || m_iRangeMax != 220)
     {
         preview->SetRange(m_iRangeMin, m_iRangeMax);
     }
+
     // Default angles are -20, 200.
-    if(m_iAngleMin != -20 || m_iAngleMax != 200)
+    if (m_iAngleMin != -20 || m_iAngleMax != 200)
     {
         preview->SetAngle(m_iAngleMin, m_iAngleMax);
     }
+
     m_iNumSectors = m_arrSectors.Count();
+
     // Default number of sectors is 1.
-    if(m_iNumSectors > 1)
+    if (m_iNumSectors > 1)
     {
         preview->SetNumSectors(m_iNumSectors);
     }
-    for(size_t i = 0; i < m_arrSectors.Count(); i++)
+
+    for (size_t i = 0; i < m_arrSectors.Count(); i++)
     {
-        SectorDesc *Desc = m_arrSectors[i];
+        SectorDesc * Desc = m_arrSectors[i];
         preview->SetSectorColor(i, Desc->colour);
     }
-    if(!m_bShowVal)
+
+    if (!m_bShowVal)
     {
         preview->DrawCurrent(false);
     }
+
     wxColour cc = m_cdNeedleColour.GetColour();
-    if(cc.IsOk())
+
+    if (cc.IsOk())
     {
         preview->SetNeedleColour(cc);
     }
+
     cc = m_cdBackgroundColour.GetColour();
-    if(cc.IsOk())
+
+    if (cc.IsOk())
     {
         preview->SetBackColour(cc);
     }
+
     cc = m_cdBorderColour.GetColour();
-    if(cc.IsOk())
+
+    if (cc.IsOk())
     {
         preview->SetBorderColour(cc);
     }
+
     wxFont fnt = m_fnt.BuildFont();
-    if(fnt.IsOk())
+
+    if (fnt.IsOk())
     {
         preview->SetTxtFont(fnt);
     }
+
     // Value needs to be set after other params for correct display.
-    if(m_iValue)
+    if (m_iValue)
     {
         preview->SetValue(m_iValue);
     }
@@ -258,14 +299,16 @@ void wxsAngularMeter::OnEnumWidgetProperties(cb_unused long Flags)
  * \return void
  *
  */
-void wxsAngularMeter::OnAddExtraProperties(wxsPropertyGridManager *Grid)
+void wxsAngularMeter::OnAddExtraProperties(wxsPropertyGridManager * Grid)
 {
     Grid->SelectPage(0);
     m_SectorCountId =  Grid->GetGrid()->Insert(_("Needle Colour"), new wxIntProperty(_("Number Of Sectors"), wxPG_LABEL, (int)m_arrSectors.Count()));
-    for(int i = 0; i < (int)m_arrSectors.Count(); i++)
+
+    for (int i = 0; i < (int)m_arrSectors.Count(); i++)
     {
         InsertPropertyForSector(Grid, i);
     }
+
     wxsWidget::OnAddExtraProperties(Grid);
 }
 
@@ -276,25 +319,26 @@ void wxsAngularMeter::OnAddExtraProperties(wxsPropertyGridManager *Grid)
  * \return void
  *
  */
-void wxsAngularMeter::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId id)
+void wxsAngularMeter::OnExtraPropertyChanged(wxsPropertyGridManager * Grid, wxPGId id)
 {
     Grid->SelectPage(0);
-    if(id == m_SectorCountId)
+
+    if (id == m_SectorCountId)
     {
         int OldValue = (int)m_arrSectors.Count();
         int NewValue = Grid->GetPropertyValueAsInt(id);
 
         // There must be at least one sector.
-        if(NewValue < 1)
+        if (NewValue < 1)
         {
             NewValue = 1;
             Grid->SetPropertyValue(id, NewValue);
         }
 
-        if(NewValue > OldValue)
+        if (NewValue > OldValue)
         {
             // We have to generate new entries
-            for(int i = OldValue; i < NewValue; i++)
+            for (int i = OldValue; i < NewValue; i++)
             {
                 m_arrSectors.Add(new SectorDesc());
                 // Default to white.
@@ -302,26 +346,31 @@ void wxsAngularMeter::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGI
                 InsertPropertyForSector(Grid, i);
             }
         }
-        else if(NewValue < OldValue)
-        {
-            // We have to remove some entries
-            for(int i = NewValue; i < OldValue; i++)
+        else
+            if (NewValue < OldValue)
             {
-                Grid->DeleteProperty(m_arrSectors[i]->id);
-                delete m_arrSectors[i];
-            }
+                // We have to remove some entries
+                for (int i = NewValue; i < OldValue; i++)
+                {
+                    Grid->DeleteProperty(m_arrSectors[i]->id);
+                    delete m_arrSectors[i];
+                }
 
-            m_arrSectors.RemoveAt(NewValue, OldValue - NewValue);
-        }
+                m_arrSectors.RemoveAt(NewValue, OldValue - NewValue);
+            }
 
         NotifyPropertyChange(true);
         return;
     }
 
-    for(int i = 0; i < (int)m_arrSectors.Count(); i++)
+    for (int i = 0; i < (int)m_arrSectors.Count(); i++)
     {
-        if(HandleChangeInSector(Grid, id, i)) return;
+        if (HandleChangeInSector(Grid, id, i))
+        {
+            return;
+        }
     }
+
     wxsWidget::OnExtraPropertyChanged(Grid, id);
 }
 
@@ -333,34 +382,35 @@ void wxsAngularMeter::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGI
  * \return bool                                Success or failure.
  *
  */
-bool wxsAngularMeter::OnXmlRead(TiXmlElement *Element, bool IsXRC, bool IsExtra)
+bool wxsAngularMeter::OnXmlRead(TiXmlElement * Element, bool IsXRC, bool IsExtra)
 {
-    for(size_t i = 0; i < m_arrSectors.Count(); i++)
+    for (size_t i = 0; i < m_arrSectors.Count(); i++)
     {
         delete m_arrSectors[i];
     }
-    m_arrSectors.Clear();
 
+    m_arrSectors.Clear();
     int i = 1;
-    while(1)
+
+    while (1)
     {
         wxString s = wxString::Format(wxT("sector_%d_colour"), i);
-        TiXmlElement *SectorElem = Element->FirstChildElement(s.mb_str());
-        if(!SectorElem)
+        TiXmlElement * SectorElem = Element->FirstChildElement(s.mb_str());
+
+        if (!SectorElem)
         {
             break;
         }
 
-        SectorDesc *Desc = new SectorDesc;
+        SectorDesc * Desc = new SectorDesc;
         wxString sClr = wxString(SectorElem->GetText(), wxConvUTF8);
         sClr.Remove(0, 1);
         long iClr;
         sClr.ToLong(&iClr, 16);
-        Desc->colour = wxColour((unsigned char) ((iClr & 0xFF0000) >> 16),
-                                (unsigned char) ((iClr & 0x00FF00) >> 8),
-                                (unsigned char) ((iClr & 0x0000FF)));
+        Desc->colour = wxColour((unsigned char)((iClr & 0xFF0000) >> 16),
+                                (unsigned char)((iClr & 0x00FF00) >> 8),
+                                (unsigned char)((iClr & 0x0000FF)));
         m_arrSectors.Add(Desc);
-
         i++;
     }
 
@@ -375,13 +425,13 @@ bool wxsAngularMeter::OnXmlRead(TiXmlElement *Element, bool IsXRC, bool IsExtra)
  * \return bool                                Success or failure.
  *
  */
-bool wxsAngularMeter::OnXmlWrite(TiXmlElement *Element, bool IsXRC, bool IsExtra)
+bool wxsAngularMeter::OnXmlWrite(TiXmlElement * Element, bool IsXRC, bool IsExtra)
 {
-    for(size_t i = 0; i < m_arrSectors.Count(); i++)
+    for (size_t i = 0; i < m_arrSectors.Count(); i++)
     {
-        SectorDesc *Desc = m_arrSectors[i];
+        SectorDesc * Desc = m_arrSectors[i];
         wxString s = wxString::Format(wxT("sector_%lu_colour"), static_cast<unsigned long>(i + 1));
-        TiXmlElement *msg = new TiXmlElement(s.mb_str());
+        TiXmlElement * msg = new TiXmlElement(s.mb_str());
         wxString sClrHex = wxString::Format(_T("#%02X%02X%02X"),
                                             (unsigned int)Desc->colour.Red(),
                                             (unsigned int)Desc->colour.Green(),
@@ -400,22 +450,19 @@ bool wxsAngularMeter::OnXmlWrite(TiXmlElement *Element, bool IsXRC, bool IsExtra
  * \return void
  *
  */
-void wxsAngularMeter::InsertPropertyForSector(wxsPropertyGridManager *Grid, int Position)
+void wxsAngularMeter::InsertPropertyForSector(wxsPropertyGridManager * Grid, int Position)
 {
-    SectorDesc *Desc = m_arrSectors[Position];
+    SectorDesc * Desc = m_arrSectors[Position];
     wxString SectorName = wxString::Format(_("Sector %d Colour"), Position + 1);
     wxString SectorDataName = wxString::Format(_("sector_%d_colour"), Position + 1);
-
     Desc->id = Grid->GetGrid()->Insert(_("Needle Colour"), new wxSystemColourProperty(SectorName, wxPG_LABEL, Desc->colour));
-
-//    WXS_COLOUR(wxsAngularMeter, m_arrSectors[Position], SectorName, SectorDataName)
-
-//    Desc->id = Grid->Append(wxsColourProperty(SectorName, SectorDataName, wxsOFFSET(wxsAngularMeter, m_arrSectors[Position])));
-//        wxsColourProperty(
-//            const wxString& PGName,
-//            const wxString& DataName,
-//            long ValueOffset,
-//            int Priority=100);
+    //    WXS_COLOUR(wxsAngularMeter, m_arrSectors[Position], SectorName, SectorDataName)
+    //    Desc->id = Grid->Append(wxsColourProperty(SectorName, SectorDataName, wxsOFFSET(wxsAngularMeter, m_arrSectors[Position])));
+    //        wxsColourProperty(
+    //            const wxString& PGName,
+    //            const wxString& DataName,
+    //            long ValueOffset,
+    //            int Priority=100);
 }
 
 /*! \brief Check whether a sector colour property changed.
@@ -426,28 +473,29 @@ void wxsAngularMeter::InsertPropertyForSector(wxsPropertyGridManager *Grid, int 
  * \return bool            True if a change was recorded, false otherwise.
  *
  */
-bool wxsAngularMeter::HandleChangeInSector(wxsPropertyGridManager *Grid, wxPGId id, int Position)
+bool wxsAngularMeter::HandleChangeInSector(wxsPropertyGridManager * Grid, wxPGId id, int Position)
 {
-    SectorDesc *Desc = m_arrSectors[Position];
+    SectorDesc * Desc = m_arrSectors[Position];
     bool Changed = false;
-//    bool Global = id == Desc->id;
+    //    bool Global = id == Desc->id;
 
-//    if(Global)
-    if(Desc->id == id)
+    //    if(Global)
+    if (Desc->id == id)
     {
-
         wxVariant var = Grid->GetPropertyValue(id);
         wxString sPropType = var.GetType();
-        if(sPropType.IsSameAs(wxT("wxColourPropertyValue")))
+
+        if (sPropType.IsSameAs(wxT("wxColourPropertyValue")))
         {
             wxColourPropertyValue pcolval;
             pcolval << var;
             Desc->colour = pcolval.m_colour;
         }
+
         Changed = true;
     }
 
-    if(Changed)
+    if (Changed)
     {
         NotifyPropertyChange(true);
         return true;

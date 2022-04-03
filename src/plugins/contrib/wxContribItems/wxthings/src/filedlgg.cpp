@@ -34,15 +34,15 @@
 //#include "wx/generic/filedlgg.h"
 // and if we didn't include the generic filedlgg.h then include the source here
 
-#ifndef _WX_FILEDLGG_H_ // header guard of "wx/generic/filedlgg.h" 
+#ifndef _WX_FILEDLGG_H_ // header guard of "wx/generic/filedlgg.h"
 
-// Typically we have $(WXWIN)/include in the search path so this should
-// find the path to filedlgg correctly.
-#include "../src/generic/filedlgg.cpp"
+    // Typically we have $(WXWIN)/include in the search path so this should
+    // find the path to filedlgg correctly.
+    #include "../src/generic/filedlgg.cpp"
 
-// --------------------------------------------------------------------------
-// DO NOT DELETE : Cmake will configure this file and replace the marker below.
-// @CMAKE_CONFIGURE_WXTHINGS_FILEDLGG@
+    // --------------------------------------------------------------------------
+    // DO NOT DELETE : Cmake will configure this file and replace the marker below.
+    // @CMAKE_CONFIGURE_WXTHINGS_FILEDLGG@
 
 
 #endif //_WX_FILEDLGG_H_

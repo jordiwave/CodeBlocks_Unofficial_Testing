@@ -8,9 +8,9 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/thread.h>
-#include <wx/treectrl.h>
-#include <wx/imaglist.h>
+    #include <wx/thread.h>
+    #include <wx/treectrl.h>
+    #include <wx/imaglist.h>
 #endif
 
 #include "tokenf.h"
@@ -44,75 +44,75 @@ struct BrowserOptions
 
 class TreeDataF : public wxTreeItemData
 {
-public:
-    TreeDataF(SpecialFolder sf = sfToken, TokenF* token = 0)
-        : m_pToken(token),
-          m_SpecialFolder(sf)
-    {
-    }
-    TokenF* m_pToken;
-    SpecialFolder m_SpecialFolder;
+    public:
+        TreeDataF(SpecialFolder sf = sfToken, TokenF * token = 0)
+            : m_pToken(token),
+              m_SpecialFolder(sf)
+        {
+        }
+        TokenF * m_pToken;
+        SpecialFolder m_SpecialFolder;
 };
 
 class WorkspaceBrowserBuilder
 {
-public:
-    WorkspaceBrowserBuilder(ParserF* parser, wxTreeCtrl* treeTop, wxTreeCtrl* treeBottom);
-    virtual ~WorkspaceBrowserBuilder();
+    public:
+        WorkspaceBrowserBuilder(ParserF * parser, wxTreeCtrl * treeTop, wxTreeCtrl * treeBottom);
+        virtual ~WorkspaceBrowserBuilder();
 
-    void Init(const wxString& active_filename,
-              cbProject* active_project,
-              const BrowserOptions& options);
-    void ExpandTop();
-    void ExpandTopNode(wxTreeItemId node);
-    void CollapsTopNode(wxTreeItemId node);
-    void SelectItem(TokenF* item);
-    bool SelectNode(wxTreeItemId node);
-    void DeleteTopRootChildren();
-    void MakeExpandedNodesArray(wxArrayString &expandedBottomNodes);
-    void ExpandBottomNodes(wxArrayString &expandedBottomNodes);
-    int GetTokenKindImageIdx(TokenF* token);
-    void SelectSymbol(const wxString& filename, int line);
-    void MarkSymbol(const wxString& filename, int line);
-    void MakeVisibleCurrent();
-    void SetActiveProject(cbProject* prj);
+        void Init(const wxString & active_filename,
+                  cbProject * active_project,
+                  const BrowserOptions & options);
+        void ExpandTop();
+        void ExpandTopNode(wxTreeItemId node);
+        void CollapsTopNode(wxTreeItemId node);
+        void SelectItem(TokenF * item);
+        bool SelectNode(wxTreeItemId node);
+        void DeleteTopRootChildren();
+        void MakeExpandedNodesArray(wxArrayString & expandedBottomNodes);
+        void ExpandBottomNodes(wxArrayString & expandedBottomNodes);
+        int GetTokenKindImageIdx(TokenF * token);
+        void SelectSymbol(const wxString & filename, int line);
+        void MarkSymbol(const wxString & filename, int line);
+        void MakeVisibleCurrent();
+        void SetActiveProject(cbProject * prj);
 
-    bool m_AtWork;
+        bool m_AtWork;
 
-protected:
-    void BuildTree();
-    wxTreeItemId AddNodeIfNotThere(wxTreeCtrl* tree, wxTreeItemId parent, const wxString& name, int imgIndex = -1, TreeDataF* data = 0, bool sorted = true);
-    void AddTreeChildren(wxTreeCtrl* tree, wxTreeItemId parent, int tokenKindMask);
-    bool AddFileNodes(wxTreeCtrl* tree, wxTreeItemId parent, wxString file, int tokenKindMask);
-    bool AddChildrenNodes(wxTreeCtrl* tree, wxTreeItemId parent, TokenF* token, int tokenKindMask);
-    int AddInterfaceNode(wxTreeCtrl* tree, wxTreeItemId parent, TokenF* parToken);
-    int AddTypeChildren(wxTreeCtrl* tree, wxTreeItemId parent, TokensArrayF* pTokens);
-    wxTreeItemId FindItemByName(wxTreeCtrl* tree, wxString name, wxString name2=wxString());
-    void CreateSpecialFolders();
-    bool FileHasTokens(const wxString& fileName, int tokenKindMask);
-    bool HasGlobalFunctionsOthers(int tokenKindMask);
-    bool HasChildren(TokenF* tokenParent, int tokenKindMask);
-    void MarkItem(wxTreeCtrl* tree, wxTreeItemId& item, bool mark=true);
-    bool SelectBottomSymbol(const wxString& filename, int line);
-    bool MarkBottomSymbol(const wxString& filename, int line);
-    void UnmarkBottomSymbol();
-    void MarkChildSymbol(wxTreeCtrl* tree, wxTreeItemId& root, int line, bool mark=true);
-    bool MarkGlobalSymbol(wxTreeCtrl* tree, wxTreeItemId& root, const wxString& filename, int line);
-    bool IsLineInGlobals(const wxString& file, int line);
-    void AddIncludeFiles(wxTreeCtrl* tree, wxTreeItemId parent);
+    protected:
+        void BuildTree();
+        wxTreeItemId AddNodeIfNotThere(wxTreeCtrl * tree, wxTreeItemId parent, const wxString & name, int imgIndex = -1, TreeDataF * data = 0, bool sorted = true);
+        void AddTreeChildren(wxTreeCtrl * tree, wxTreeItemId parent, int tokenKindMask);
+        bool AddFileNodes(wxTreeCtrl * tree, wxTreeItemId parent, wxString file, int tokenKindMask);
+        bool AddChildrenNodes(wxTreeCtrl * tree, wxTreeItemId parent, TokenF * token, int tokenKindMask);
+        int AddInterfaceNode(wxTreeCtrl * tree, wxTreeItemId parent, TokenF * parToken);
+        int AddTypeChildren(wxTreeCtrl * tree, wxTreeItemId parent, TokensArrayF * pTokens);
+        wxTreeItemId FindItemByName(wxTreeCtrl * tree, wxString name, wxString name2 = wxString());
+        void CreateSpecialFolders();
+        bool FileHasTokens(const wxString & fileName, int tokenKindMask);
+        bool HasGlobalFunctionsOthers(int tokenKindMask);
+        bool HasChildren(TokenF * tokenParent, int tokenKindMask);
+        void MarkItem(wxTreeCtrl * tree, wxTreeItemId & item, bool mark = true);
+        bool SelectBottomSymbol(const wxString & filename, int line);
+        bool MarkBottomSymbol(const wxString & filename, int line);
+        void UnmarkBottomSymbol();
+        void MarkChildSymbol(wxTreeCtrl * tree, wxTreeItemId & root, int line, bool mark = true);
+        bool MarkGlobalSymbol(wxTreeCtrl * tree, wxTreeItemId & root, const wxString & filename, int line);
+        bool IsLineInGlobals(const wxString & file, int line);
+        void AddIncludeFiles(wxTreeCtrl * tree, wxTreeItemId parent);
 
-    ParserF* m_pParser;
-    wxTreeCtrl* m_pTreeTop;
-    wxTreeCtrl* m_pTreeBottom;
-    FPImageList* m_pImlist;
+        ParserF * m_pParser;
+        wxTreeCtrl * m_pTreeTop;
+        wxTreeCtrl * m_pTreeBottom;
+        FPImageList * m_pImlist;
 
-    wxString m_ActiveFilename;
-    cbProject* m_pActiveProject;
-    BrowserOptions m_Options;
-    wxArrayString m_ExpandedNodes;
+        wxString m_ActiveFilename;
+        cbProject * m_pActiveProject;
+        BrowserOptions m_Options;
+        wxArrayString m_ExpandedNodes;
 
-private:
-    bool m_DeletingTopRootChildren;
+    private:
+        bool m_DeletingTopRootChildren;
 };
 
 #endif // WORKSPACEBROWSERBUILDER_H

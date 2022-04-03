@@ -31,7 +31,7 @@ using std::make_pair;
 using std::swap;
 
 BEGIN_EVENT_TABLE(HelpConfigDialog, wxPanel)
-    EVT_UPDATE_UI( -1, HelpConfigDialog::UpdateUI)
+    EVT_UPDATE_UI(-1, HelpConfigDialog::UpdateUI)
     EVT_BUTTON(XRCID("btnAdd"), HelpConfigDialog::Add)
     EVT_BUTTON(XRCID("btnRename"), HelpConfigDialog::Rename)
     EVT_BUTTON(XRCID("btnDelete"), HelpConfigDialog::Delete)
@@ -48,14 +48,13 @@ BEGIN_EVENT_TABLE(HelpConfigDialog, wxPanel)
 END_EVENT_TABLE()
 
 
-HelpConfigDialog::HelpConfigDialog(wxWindow* parent, HelpPlugin* plugin)
+HelpConfigDialog::HelpConfigDialog(wxWindow * parent, HelpPlugin * plugin)
     : m_LastSel(0),
       m_pPlugin(plugin)
 {
     wxXmlResource::Get()->LoadPanel(this, parent, _T("HelpConfigDialog"));
     HelpCommon::LoadHelpFilesVector(m_Vector);
-
-    wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
+    wxListBox * lst = XRCCTRL(*this, "lstHelp", wxListBox);
     lst->Clear();
     HelpCommon::HelpFilesVector::iterator it;
 
@@ -90,7 +89,7 @@ void HelpConfigDialog::UpdateEntry(int index)
         return;
     }
 
-    wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
+    wxListBox * lst = XRCCTRL(*this, "lstHelp", wxListBox);
 
     if (index < static_cast<int>(m_Vector.size()) - HelpCommon::getNumReadFromIni())
     {
@@ -138,9 +137,9 @@ void HelpConfigDialog::ChooseFile()
     }
 }
 
-void HelpConfigDialog::ListChange(wxCommandEvent& /*event*/)
+void HelpConfigDialog::ListChange(wxCommandEvent & /*event*/)
 {
-    wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
+    wxListBox * lst = XRCCTRL(*this, "lstHelp", wxListBox);
 
     if (lst->GetSelection() != -1 && lst->GetSelection() != m_LastSel)
     {
@@ -168,14 +167,14 @@ void HelpConfigDialog::ListChange(wxCommandEvent& /*event*/)
     }
 }
 
-void HelpConfigDialog::Browse(wxCommandEvent &/*event*/)
+void HelpConfigDialog::Browse(wxCommandEvent & /*event*/)
 {
     ChooseFile();
 }
 
-void HelpConfigDialog::Add(wxCommandEvent &/*event*/)
+void HelpConfigDialog::Add(wxCommandEvent & /*event*/)
 {
-    wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
+    wxListBox * lst = XRCCTRL(*this, "lstHelp", wxListBox);
     UpdateEntry(lst->GetSelection());
     wxString text = cbGetTextFromUser(_("Please enter new help file title:"), _("Add title"),
                                       wxString(), this);
@@ -217,9 +216,9 @@ void HelpConfigDialog::Add(wxCommandEvent &/*event*/)
     }
 }
 
-void HelpConfigDialog::Rename(wxCommandEvent &/*event*/)
+void HelpConfigDialog::Rename(wxCommandEvent & /*event*/)
 {
-    wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
+    wxListBox * lst = XRCCTRL(*this, "lstHelp", wxListBox);
     wxString orig = lst->GetString(lst->GetSelection());
     wxString text = cbGetTextFromUser(_("Rename this help file title:"), _("Rename title"), orig,
                                       this);
@@ -246,14 +245,14 @@ void HelpConfigDialog::Rename(wxCommandEvent &/*event*/)
     }
 }
 
-void HelpConfigDialog::Delete(wxCommandEvent &/*event*/)
+void HelpConfigDialog::Delete(wxCommandEvent & /*event*/)
 {
     if (cbMessageBox(_("Are you sure you want to remove this help file?"), _("Remove"), wxICON_QUESTION | wxYES_NO) == wxID_NO)
     {
         return;
     }
 
-    wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
+    wxListBox * lst = XRCCTRL(*this, "lstHelp", wxListBox);
 
     if (HelpCommon::getDefaultHelpIndex() >= lst->GetSelection())
     {
@@ -286,9 +285,9 @@ void HelpConfigDialog::Delete(wxCommandEvent &/*event*/)
     m_LastSel = lst->GetSelection();
 }
 
-void HelpConfigDialog::OnUp(wxCommandEvent &/*event*/)
+void HelpConfigDialog::OnUp(wxCommandEvent & /*event*/)
 {
-    wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
+    wxListBox * lst = XRCCTRL(*this, "lstHelp", wxListBox);
     int helpIndex = HelpCommon::getDefaultHelpIndex();
     int current = lst->GetSelection();
 
@@ -301,10 +300,11 @@ void HelpConfigDialog::OnUp(wxCommandEvent &/*event*/)
     {
         helpIndex = current - 1;
     }
-    else if (helpIndex == current - 1)
-    {
-        helpIndex = current;
-    }
+    else
+        if (helpIndex == current - 1)
+        {
+            helpIndex = current;
+        }
 
     wxString temp(lst->GetString(current));
     lst->SetString(current, lst->GetString(current - 1));
@@ -315,9 +315,9 @@ void HelpConfigDialog::OnUp(wxCommandEvent &/*event*/)
     m_LastSel = current;
 }
 
-void HelpConfigDialog::OnDown(wxCommandEvent &/*event*/)
+void HelpConfigDialog::OnDown(wxCommandEvent & /*event*/)
 {
-    wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
+    wxListBox * lst = XRCCTRL(*this, "lstHelp", wxListBox);
     int helpIndex = HelpCommon::getDefaultHelpIndex();
     int current = lst->GetSelection();
 
@@ -330,10 +330,11 @@ void HelpConfigDialog::OnDown(wxCommandEvent &/*event*/)
     {
         helpIndex = current + 1;
     }
-    else if (helpIndex == current + 1)
-    {
-        helpIndex = current;
-    }
+    else
+        if (helpIndex == current + 1)
+        {
+            helpIndex = current;
+        }
 
     wxString temp(lst->GetString(current));
     lst->SetString(current, lst->GetString(current + 1));
@@ -344,7 +345,7 @@ void HelpConfigDialog::OnDown(wxCommandEvent &/*event*/)
     m_LastSel = current;
 }
 
-void HelpConfigDialog::OnCheckbox(wxCommandEvent &event)
+void HelpConfigDialog::OnCheckbox(wxCommandEvent & event)
 {
     if (event.IsChecked())
     {
@@ -356,10 +357,14 @@ void HelpConfigDialog::OnCheckbox(wxCommandEvent &event)
     }
 }
 
-void HelpConfigDialog::OnCheckboxExecute(wxCommandEvent &event)
+void HelpConfigDialog::OnCheckboxExecute(wxCommandEvent & event)
 {
     int current = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
-    if ((current<0) || (current>=static_cast<int>(m_Vector.size()))) return;
+
+    if ((current < 0) || (current >= static_cast<int>(m_Vector.size())))
+    {
+        return;
+    }
 
     if (event.IsChecked())
     {
@@ -371,10 +376,14 @@ void HelpConfigDialog::OnCheckboxExecute(wxCommandEvent &event)
     }
 }
 
-void HelpConfigDialog::OnCheckboxEmbeddedViewer(wxCommandEvent& event)
+void HelpConfigDialog::OnCheckboxEmbeddedViewer(wxCommandEvent & event)
 {
     int current = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
-    if ((current<0) || (current>=static_cast<int>(m_Vector.size()))) return;
+
+    if ((current < 0) || (current >= static_cast<int>(m_Vector.size())))
+    {
+        return;
+    }
 
     if (event.IsChecked())
     {
@@ -387,25 +396,33 @@ void HelpConfigDialog::OnCheckboxEmbeddedViewer(wxCommandEvent& event)
 }
 
 // Patch by Yorgos Pagles: Handle the events of the new gui elements
-void HelpConfigDialog::OnCaseChoice(wxCommandEvent &/*event*/)
+void HelpConfigDialog::OnCaseChoice(wxCommandEvent & /*event*/)
 {
     int current = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
-    if ((current<0) || (current>=static_cast<int>(m_Vector.size()))) return;
 
-    wxChoice *keywordCaseCtrl = XRCCTRL(*this, "chkCase", wxChoice);
+    if ((current < 0) || (current >= static_cast<int>(m_Vector.size())))
+    {
+        return;
+    }
+
+    wxChoice * keywordCaseCtrl = XRCCTRL(*this, "chkCase", wxChoice);
     m_Vector[current].second.keywordCase = static_cast<HelpCommon::StringCase>(keywordCaseCtrl->GetSelection());
 }
 
-void HelpConfigDialog::OnDefaultKeywordEntry(wxCommandEvent &/*event*/)
+void HelpConfigDialog::OnDefaultKeywordEntry(wxCommandEvent & /*event*/)
 {
     int current = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
-    if ((current<0) || (current>=static_cast<int>(m_Vector.size()))) return;
 
-    wxTextCtrl *defaultKeywordCtrl = XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl);
+    if ((current < 0) || (current >= static_cast<int>(m_Vector.size())))
+    {
+        return;
+    }
+
+    wxTextCtrl * defaultKeywordCtrl = XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl);
     m_Vector[current].second.defaultKeyword = defaultKeywordCtrl->GetValue();
 }
 
-void HelpConfigDialog::UpdateUI(wxUpdateUIEvent &/*event*/)
+void HelpConfigDialog::UpdateUI(wxUpdateUIEvent & /*event*/)
 {
     int sel = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
     int count = XRCCTRL(*this, "lstHelp", wxListBox)->GetCount();
@@ -425,26 +442,28 @@ void HelpConfigDialog::UpdateUI(wxUpdateUIEvent &/*event*/)
         XRCCTRL(*this, "btnUp", wxButton)->Disable();
         XRCCTRL(*this, "btnDown", wxButton)->Disable();
     }
-    else if (sel == 0)
-    {
-        XRCCTRL(*this, "btnUp", wxButton)->Disable();
-        XRCCTRL(*this, "btnDown", wxButton)->Enable();
-    }
-    else if (sel == count - 1)
-    {
-        XRCCTRL(*this, "btnUp", wxButton)->Enable();
-        XRCCTRL(*this, "btnDown", wxButton)->Disable();
-    }
     else
-    {
-        XRCCTRL(*this, "btnUp", wxButton)->Enable();
-        XRCCTRL(*this, "btnDown", wxButton)->Enable();
-    }
+        if (sel == 0)
+        {
+            XRCCTRL(*this, "btnUp", wxButton)->Disable();
+            XRCCTRL(*this, "btnDown", wxButton)->Enable();
+        }
+        else
+            if (sel == count - 1)
+            {
+                XRCCTRL(*this, "btnUp", wxButton)->Enable();
+                XRCCTRL(*this, "btnDown", wxButton)->Disable();
+            }
+            else
+            {
+                XRCCTRL(*this, "btnUp", wxButton)->Enable();
+                XRCCTRL(*this, "btnDown", wxButton)->Enable();
+            }
 }
 
 void HelpConfigDialog::OnApply()
 {
-    wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
+    wxListBox * lst = XRCCTRL(*this, "lstHelp", wxListBox);
     UpdateEntry(lst->GetSelection());
     HelpCommon::SaveHelpFilesVector(m_Vector);
     m_pPlugin->Reload();

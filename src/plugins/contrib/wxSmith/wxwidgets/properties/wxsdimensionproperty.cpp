@@ -23,22 +23,27 @@
 #include "wxsdimensionproperty.h"
 #include <globals.h>
 
-wxString wxsDimensionData::GetPixelsCode(wxsCoderContext* Context)
+wxString wxsDimensionData::GetPixelsCode(wxsCoderContext * Context)
 {
-    switch ( Context->m_Language )
+    switch (Context->m_Language)
     {
-    case wxsCPP:
-    {
-        if ( !DialogUnits ) return wxString::Format(_T("%ld"),Value);
-        return wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%ld,0)).GetWidth()"),Context->m_WindowParent.c_str(),Value);
+        case wxsCPP:
+        {
+            if (!DialogUnits)
+            {
+                return wxString::Format(_T("%ld"), Value);
+            }
+
+            return wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%ld,0)).GetWidth()"), Context->m_WindowParent.c_str(), Value);
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsDimensionData::GetPixelsCode"), Context->m_Language);
+        }
     }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsDimensionData::GetPixelsCode"),Context->m_Language);
-    }
-    }
     return wxEmptyString;
 }
 
@@ -60,14 +65,14 @@ enum
 
 
 wxsDimensionProperty::wxsDimensionProperty(
-    const wxString&  PGName,
-    const wxString& _PGDUName,
-    const wxString&  DataName,
+    const wxString & PGName,
+    const wxString & _PGDUName,
+    const wxString & DataName,
     long _Offset,
     long _DefaultValue,
     bool _DefaultDialogUnits,
     int Priority):
-    wxsProperty(PGName,DataName,Priority),
+    wxsProperty(PGName, DataName, Priority),
     Offset(_Offset),
     DefaultValue(_DefaultValue),
     DefaultDialogUnits(_DefaultDialogUnits),
@@ -75,60 +80,64 @@ wxsDimensionProperty::wxsDimensionProperty(
 {}
 
 
-void wxsDimensionProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
+void wxsDimensionProperty::PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent)
 {
     wxPGId DUId;
-    PGRegister(Object,Grid,Grid->AppendIn(Parent,new wxIntProperty(GetPGName(),wxPG_LABEL,VALUE)),DIM_VALUE);
-    PGRegister(Object,Grid,DUId = Grid->AppendIn(Parent,new wxBoolProperty(PGDUName,wxPG_LABEL,UNITS)),DIM_UNITS);
-    Grid->SetPropertyAttribute(DUId,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
+    PGRegister(Object, Grid, Grid->AppendIn(Parent, new wxIntProperty(GetPGName(), wxPG_LABEL, VALUE)), DIM_VALUE);
+    PGRegister(Object, Grid, DUId = Grid->AppendIn(Parent, new wxBoolProperty(PGDUName, wxPG_LABEL, UNITS)), DIM_UNITS);
+    Grid->SetPropertyAttribute(DUId, wxPG_BOOL_USE_CHECKBOX, 1L, wxPG_RECURSE);
 }
 
-bool wxsDimensionProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsDimensionProperty::PGRead(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index)
 {
-    switch ( Index )
+    switch (Index)
     {
-    case DIM_VALUE:
-        VALUE = Grid->GetPropertyValue(Id).GetLong();
-        return true;
+        case DIM_VALUE:
+            VALUE = Grid->GetPropertyValue(Id).GetLong();
+            return true;
 
-    case DIM_UNITS:
-        UNITS = Grid->GetPropertyValue(Id).GetBool();
-        return true;
+        case DIM_UNITS:
+            UNITS = Grid->GetPropertyValue(Id).GetBool();
+            return true;
 
-    default:
-        break;
+        default:
+            break;
     }
+
     return false;
 }
 
-bool wxsDimensionProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsDimensionProperty::PGWrite(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index)
 {
-    switch ( Index )
+    switch (Index)
     {
-    case DIM_VALUE:
-        Grid->SetPropertyValue(Id,VALUE);
-        return true;
+        case DIM_VALUE:
+            Grid->SetPropertyValue(Id, VALUE);
+            return true;
 
-    case DIM_UNITS:
-        Grid->SetPropertyValue(Id,UNITS);
-        return true;
+        case DIM_UNITS:
+            Grid->SetPropertyValue(Id, UNITS);
+            return true;
 
-    default:
-        break;
+        default:
+            break;
     }
+
     return false;
 }
 
-bool wxsDimensionProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsDimensionProperty::XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
-    if ( !Element )
+    if (!Element)
     {
         VALUE = DefaultValue;
         UNITS = DefaultDialogUnits;
         return false;
     }
-    const char* Text = Element->GetText();
-    if ( !Text )
+
+    const char * Text = Element->GetText();
+
+    if (!Text)
     {
         VALUE = DefaultValue;
         UNITS = DefaultDialogUnits;
@@ -136,7 +145,7 @@ bool wxsDimensionProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* El
     }
 
     // 'd' character at the end of string means this value is in dialog units
-    if ( Text[0] && Text[strlen(Text)-1]=='d' )
+    if (Text[0] && Text[strlen(Text) - 1] == 'd')
     {
         UNITS = true;
     }
@@ -150,12 +159,13 @@ bool wxsDimensionProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* El
     return true;
 }
 
-bool wxsDimensionProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsDimensionProperty::XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
-    if ( VALUE != DefaultValue || UNITS != DefaultDialogUnits )
+    if (VALUE != DefaultValue || UNITS != DefaultDialogUnits)
     {
-        wxString Buffer = wxString::Format(_T("%ld"),VALUE);
-        if ( UNITS )
+        wxString Buffer = wxString::Format(_T("%ld"), VALUE);
+
+        if (UNITS)
         {
             Buffer.Append(_T("d"));
         }
@@ -163,25 +173,44 @@ bool wxsDimensionProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* E
         Element->InsertEndChild(TiXmlText(cbU2C(Buffer)));
         return true;
     }
+
     return false;
 }
 
-bool wxsDimensionProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsDimensionProperty::PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
     bool Ret = true;
     Stream->SubCategory(GetDataName());
-    if ( !Stream->GetLong(_T("value"),VALUE,DefaultValue) ) Ret = false;
-    if ( !Stream->GetBool(_T("dialogunits"),UNITS,DefaultDialogUnits) ) Ret = false;
+
+    if (!Stream->GetLong(_T("value"), VALUE, DefaultValue))
+    {
+        Ret = false;
+    }
+
+    if (!Stream->GetBool(_T("dialogunits"), UNITS, DefaultDialogUnits))
+    {
+        Ret = false;
+    }
+
     Stream->PopCategory();
     return Ret;
 }
 
-bool wxsDimensionProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsDimensionProperty::PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
     bool Ret = true;
     Stream->SubCategory(GetDataName());
-    if ( !Stream->PutLong(_T("value"),VALUE,DefaultValue) ) Ret = false;
-    if ( !Stream->PutBool(_T("dialogunits"),UNITS,DefaultDialogUnits) ) Ret = false;
+
+    if (!Stream->PutLong(_T("value"), VALUE, DefaultValue))
+    {
+        Ret = false;
+    }
+
+    if (!Stream->PutBool(_T("dialogunits"), UNITS, DefaultDialogUnits))
+    {
+        Ret = false;
+    }
+
     Stream->PopCategory();
     return Ret;
 }

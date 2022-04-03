@@ -40,95 +40,95 @@
 
 class wxsSettings: public cbConfigurationPanel
 {
-public:
-    wxsSettings(wxWindow* parent, wxWindowID id = -1);
-    virtual ~wxsSettings();
+    public:
+        wxsSettings(wxWindow * parent, wxWindowID id = -1);
+        virtual ~wxsSettings();
 
-protected:
-    wxString GetTitle() const
-    {
-        return _("wxSmith settings");
-    }
-    wxString GetBitmapBaseName() const
-    {
-        return _T("wxsmith");
-    }
+    protected:
+        wxString GetTitle() const
+        {
+            return _("wxSmith settings");
+        }
+        wxString GetBitmapBaseName() const
+        {
+            return _T("wxsmith");
+        }
 
-    //(*Handlers(wxsSettings)
-    void OnUseGridClick(wxCommandEvent& event);
-    //*)
+        //(*Handlers(wxsSettings)
+        void OnUseGridClick(wxCommandEvent & event);
+        //*)
 
-    void OnApply();
-    void OnCancel() {}
+        void OnApply();
+        void OnCancel() {}
 
-private:
-    //(*Identifiers(wxsSettings)
-    static const long ID_CHECKBOX11;
-    static const long ID_CHOICE2;
-    static const long ID_COMBOBOX1;
-    static const long ID_COLOURPICKERCTRL1;
-    static const long ID_COLOURPICKERCTRL2;
-    static const long ID_CHECKBOX7;
-    static const long ID_SPINCTRL1;
-    static const long ID_CHECKBOX9;
-    static const long ID_RADIOBUTTON1;
-    static const long ID_RADIOBUTTON2;
-    static const long ID_RADIOBUTTON3;
-    static const long ID_RADIOBUTTON4;
-    static const long ID_SPINCTRL2;
-    static const long ID_CHECKBOX1;
-    static const long ID_CHECKBOX2;
-    static const long ID_CHECKBOX3;
-    static const long ID_CHECKBOX4;
-    static const long ID_CHECKBOX5;
-    static const long ID_CHECKBOX6;
-    static const long ID_CHOICE1;
-    static const long ID_SPINCTRL3;
-    static const long ID_CHECKBOX8;
-    static const long ID_CHECKBOX10;
-    static const long ID_CHECKBOX12;
-    static const long ID_RADIOBUTTON5;
-    static const long ID_RADIOBUTTON6;
-    static const long ID_RADIOBUTTON7;
-    static const long ID_RADIOBUTTON8;
-    //*)
+    private:
+        //(*Identifiers(wxsSettings)
+        static const long ID_CHECKBOX11;
+        static const long ID_CHOICE2;
+        static const long ID_COMBOBOX1;
+        static const long ID_COLOURPICKERCTRL1;
+        static const long ID_COLOURPICKERCTRL2;
+        static const long ID_CHECKBOX7;
+        static const long ID_SPINCTRL1;
+        static const long ID_CHECKBOX9;
+        static const long ID_RADIOBUTTON1;
+        static const long ID_RADIOBUTTON2;
+        static const long ID_RADIOBUTTON3;
+        static const long ID_RADIOBUTTON4;
+        static const long ID_SPINCTRL2;
+        static const long ID_CHECKBOX1;
+        static const long ID_CHECKBOX2;
+        static const long ID_CHECKBOX3;
+        static const long ID_CHECKBOX4;
+        static const long ID_CHECKBOX5;
+        static const long ID_CHECKBOX6;
+        static const long ID_CHOICE1;
+        static const long ID_SPINCTRL3;
+        static const long ID_CHECKBOX8;
+        static const long ID_CHECKBOX10;
+        static const long ID_CHECKBOX12;
+        static const long ID_RADIOBUTTON5;
+        static const long ID_RADIOBUTTON6;
+        static const long ID_RADIOBUTTON7;
+        static const long ID_RADIOBUTTON8;
+        //*)
 
-    //(*Declarations(wxsSettings)
-    wxBoxSizer* BoxSizer2;
-    wxCheckBox* m_BorderBottom;
-    wxCheckBox* m_BorderDU;
-    wxCheckBox* m_BorderLeft;
-    wxCheckBox* m_BorderRight;
-    wxCheckBox* m_BorderTop;
-    wxCheckBox* m_Continous;
-    wxCheckBox* m_RemovePrefix;
-    wxCheckBox* m_SizeExpand;
-    wxCheckBox* m_SizeShaped;
-    wxCheckBox* m_UniqueIDsOnly;
-    wxCheckBox* m_UseGrid;
-    wxCheckBox* m_UseI18N;
-    wxChoice* m_BrowserPlacements;
-    wxChoice* m_Placement;
-    wxColourPickerCtrl* m_DragParentCol;
-    wxColourPickerCtrl* m_DragTargetCol;
-    wxComboBox* m_DragAssistType;
-    wxFlexGridSizer* FlexGridSizer6;
-    wxRadioButton* m_Icons16;
-    wxRadioButton* m_Icons32;
-    wxRadioButton* m_NoneI18N;
-    wxRadioButton* m_NoneI18N_T;
-    wxRadioButton* m_NoneI18NwxS;
-    wxRadioButton* m_NoneI18NwxT;
-    wxRadioButton* m_TIcons16;
-    wxRadioButton* m_TIcons32;
-    wxSpinCtrl* m_Border;
-    wxSpinCtrl* m_GridSize;
-    wxSpinCtrl* m_Proportion;
-    //*)
+        //(*Declarations(wxsSettings)
+        wxBoxSizer * BoxSizer2;
+        wxCheckBox * m_BorderBottom;
+        wxCheckBox * m_BorderDU;
+        wxCheckBox * m_BorderLeft;
+        wxCheckBox * m_BorderRight;
+        wxCheckBox * m_BorderTop;
+        wxCheckBox * m_Continous;
+        wxCheckBox * m_RemovePrefix;
+        wxCheckBox * m_SizeExpand;
+        wxCheckBox * m_SizeShaped;
+        wxCheckBox * m_UniqueIDsOnly;
+        wxCheckBox * m_UseGrid;
+        wxCheckBox * m_UseI18N;
+        wxChoice * m_BrowserPlacements;
+        wxChoice * m_Placement;
+        wxColourPickerCtrl * m_DragParentCol;
+        wxColourPickerCtrl * m_DragTargetCol;
+        wxComboBox * m_DragAssistType;
+        wxFlexGridSizer * FlexGridSizer6;
+        wxRadioButton * m_Icons16;
+        wxRadioButton * m_Icons32;
+        wxRadioButton * m_NoneI18N;
+        wxRadioButton * m_NoneI18N_T;
+        wxRadioButton * m_NoneI18NwxS;
+        wxRadioButton * m_NoneI18NwxT;
+        wxRadioButton * m_TIcons16;
+        wxRadioButton * m_TIcons32;
+        wxSpinCtrl * m_Border;
+        wxSpinCtrl * m_GridSize;
+        wxSpinCtrl * m_Proportion;
+        //*)
 
-    int m_InitialPlacement;
+        int m_InitialPlacement;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

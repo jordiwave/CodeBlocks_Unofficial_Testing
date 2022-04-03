@@ -9,15 +9,15 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-#include <wx/filedlg.h>
-#include <wx/listctrl.h>
-#include <wx/menu.h>
-#include <wx/sizer.h>
-#include <wx/txtstrm.h>
-#include <wx/wfstream.h>
-#include <wx/dataobj.h>
-#include "cbplugin.h"
-#include "configmanager.h"
+    #include <wx/filedlg.h>
+    #include <wx/listctrl.h>
+    #include <wx/menu.h>
+    #include <wx/sizer.h>
+    #include <wx/txtstrm.h>
+    #include <wx/wfstream.h>
+    #include <wx/dataobj.h>
+    #include "cbplugin.h"
+    #include "configmanager.h"
 #endif
 
 #include <wx/clipbrd.h>
@@ -52,43 +52,43 @@ BEGIN_EVENT_TABLE(BacktraceDlg, wxPanel)
     EVT_UPDATE_UI(idSwitch, BacktraceDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
-BacktraceDlg::BacktraceDlg(wxWindow* parent) :
+BacktraceDlg::BacktraceDlg(wxWindow * parent) :
     wxPanel(parent)
 {
     m_list = new wxListCtrl(this, idList, wxDefaultPosition, wxDefaultSize,
                             wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_HRULES | wxLC_VRULES);
-    wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer * bs = new wxBoxSizer(wxVERTICAL);
     bs->Add(m_list, 1, wxEXPAND | wxALL);
     SetAutoLayout(true);
     SetSizer(bs);
-
     m_list->InsertColumn(0, _("Nr"), wxLIST_FORMAT_RIGHT);
     m_list->InsertColumn(1, _("Address"), wxLIST_FORMAT_LEFT);
     m_list->InsertColumn(2, _("Function"), wxLIST_FORMAT_LEFT);
     m_list->InsertColumn(3, _("File"), wxLIST_FORMAT_LEFT, 128);
     m_list->InsertColumn(4, _("Line"), wxLIST_FORMAT_RIGHT, 64);
-
     Manager::Get()->GetColourManager()->RegisterColour(_("Debugger"), _("Backtrace active frame background"),
-            wxT("dbg_backtrace_active_background"), *wxRED);
+                                                       wxT("dbg_backtrace_active_background"), *wxRED);
     Manager::Get()->GetColourManager()->RegisterColour(_("Debugger"), _("Backtrace active frame foreground"),
-            wxT("dbg_backtrace_active_foreground"), *wxWHITE);
+                                                       wxT("dbg_backtrace_active_foreground"), *wxWHITE);
 }
 
 void BacktraceDlg::Reload()
 {
-    cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+    cbDebuggerPlugin * plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+
     if (!plugin)
+    {
         return;
+    }
 
-    ColourManager &colours = *Manager::Get()->GetColourManager();
-    const wxColour &activeBackground = colours.GetColour(wxT("dbg_backtrace_active_background"));
-    const wxColour &activeForeground = colours.GetColour(wxT("dbg_backtrace_active_foreground"));
-
+    ColourManager & colours = *Manager::Get()->GetColourManager();
+    const wxColour & activeBackground = colours.GetColour(wxT("dbg_backtrace_active_background"));
+    const wxColour & activeForeground = colours.GetColour(wxT("dbg_backtrace_active_foreground"));
     m_list->Freeze();
     m_list->DeleteAllItems();
-
     int active_frame = plugin->GetActiveStackFrame();
     int active_frame_index = 0;
+
     for (int ii = 0; ii < plugin->GetStackFrameCount(); ++ii)
     {
         cb::shared_ptr<const cbStackFrame> frame = plugin->GetStackFrame(ii);
@@ -110,12 +110,17 @@ void BacktraceDlg::Reload()
     }
 
     if (active_frame_index < m_list->GetItemCount())
+    {
         m_list->EnsureVisible(active_frame_index);
+    }
+
     m_list->Thaw();
     m_list->SetColumnWidth(0, 32);
 
     for (int i = 1; i < 4; ++i)
+    {
         m_list->SetColumnWidth(i, wxLIST_AUTOSIZE);
+    }
 }
 
 void BacktraceDlg::EnableWindow(bool enable)
@@ -125,7 +130,7 @@ void BacktraceDlg::EnableWindow(bool enable)
 }
 
 
-void BacktraceDlg::OnListRightClick(cb_unused wxListEvent& event)
+void BacktraceDlg::OnListRightClick(cb_unused wxListEvent & event)
 {
     wxMenu m;
     m.Append(idJump, _("Jump to this file/line"));
@@ -136,23 +141,21 @@ void BacktraceDlg::OnListRightClick(cb_unused wxListEvent& event)
     m.AppendSeparator();
     m.AppendRadioItem(idSettingJumpDefault, _("Jump on double-click"));
     m.AppendRadioItem(idSettingSwitchDefault, _("Switch on double-click"));
-
     bool jump_on_double_click = cbDebuggerCommonConfig::GetFlag(cbDebuggerCommonConfig::JumpOnDoubleClick);
-
     m.Check(idSettingJumpDefault, jump_on_double_click);
     m.Check(idSettingSwitchDefault, !jump_on_double_click);
-
     m_list->PopupMenu(&m);
 }
 
-void BacktraceDlg::OnJump(cb_unused wxCommandEvent& event)
+void BacktraceDlg::OnJump(cb_unused wxCommandEvent & event)
 {
     if (m_list->GetSelectedItemCount() == 0)
+    {
         return;
+    }
 
     // find selected item index
     const int index = m_list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-
     wxListItem info;
     info.SetId(index);
     info.SetMask(wxLIST_MASK_TEXT);
@@ -160,57 +163,78 @@ void BacktraceDlg::OnJump(cb_unused wxCommandEvent& event)
     const wxString file(m_list->GetItem(info) ? info.GetText() : wxString());
     info.SetColumn(4);
     const wxString line(m_list->GetItem(info) ? info.GetText() : wxString());
+
     if (!file.empty() && !line.empty())
     {
         long line_number;
         line.ToLong(&line_number, 10);
+        cbDebuggerPlugin * plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
 
-        cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
-        if(plugin)
+        if (plugin)
+        {
             plugin->SyncEditor(file, line_number, false);
+        }
     }
 }
 
-void BacktraceDlg::OnSwitchFrame(cb_unused wxCommandEvent& event)
+void BacktraceDlg::OnSwitchFrame(cb_unused wxCommandEvent & event)
 {
     if (!IsSwitchFrameEnabled())
+    {
         return;
+    }
 
     if (m_list->GetSelectedItemCount() == 0)
+    {
         return;
+    }
 
     // find selected item index
     int index = m_list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     // read the frame number from the first column
     long realFrameNr;
+
     if (m_list->GetItemText(index).ToLong(&realFrameNr))
     {
         // switch to this frame
-        cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+        cbDebuggerPlugin * plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+
         if (plugin)
+        {
             plugin->SwitchToFrame(realFrameNr);
+        }
     }
     else
+    {
         cbMessageBox(_("Couldn't find out the frame number!"), _("Error"), wxICON_ERROR);
+    }
 }
 
-void BacktraceDlg::OnDoubleClick(cb_unused wxListEvent& event)
+void BacktraceDlg::OnDoubleClick(cb_unused wxListEvent & event)
 {
     bool jump = cbDebuggerCommonConfig::GetFlag(cbDebuggerCommonConfig::JumpOnDoubleClick);
     wxCommandEvent evt;
+
     if (jump || !IsSwitchFrameEnabled())
+    {
         OnJump(evt);
+    }
     else
+    {
         OnSwitchFrame(evt);
+    }
 }
 
-void BacktraceDlg::OnSave(cb_unused wxCommandEvent& event)
+void BacktraceDlg::OnSave(cb_unused wxCommandEvent & event)
 {
     wxFileDialog dlg(this, _("Save as text file"), wxEmptyString, wxEmptyString,
                      FileFilters::GetFilterAll(), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     PlaceWindow(&dlg);
+
     if (dlg.ShowModal() != wxID_OK)
+    {
         return;
+    }
 
     wxFFileOutputStream output(dlg.GetPath());
     wxTextOutputStream text(output);
@@ -228,19 +252,20 @@ void BacktraceDlg::OnSave(cb_unused wxCommandEvent& event)
         const wxString file(m_list->GetItem(info) && !info.GetText().empty() ? info.GetText() : _T("??"));
         info.SetColumn(4);
         const wxString line(m_list->GetItem(info) && !info.GetText().empty() ? info.GetText() : _T("??"));
-
         text << '#' << m_list->GetItemText(ii) << ' '
              << addr << '\t'
              << func << ' '
              << '(' << file << ':' << line << ')'
              << '\n';
     }
+
     cbMessageBox(_("File saved"), _("Result"), wxICON_INFORMATION);
 }
 
-void BacktraceDlg::OnCopyToClipboard(cb_unused wxCommandEvent& event)
+void BacktraceDlg::OnCopyToClipboard(cb_unused wxCommandEvent & event)
 {
     wxString text;
+
     for (int ii = 0; ii < m_list->GetItemCount(); ++ii)
     {
         wxListItem info;
@@ -254,7 +279,6 @@ void BacktraceDlg::OnCopyToClipboard(cb_unused wxCommandEvent& event)
         const wxString file(m_list->GetItem(info) && !info.GetText().empty() ? info.GetText() : _T("??"));
         info.SetColumn(4);
         const wxString line(m_list->GetItem(info) && !info.GetText().empty() ? info.GetText() : _T("??"));
-
         text << '#' << m_list->GetItemText(ii) << ' '
              << addr << '\t'
              << func << ' '
@@ -262,33 +286,34 @@ void BacktraceDlg::OnCopyToClipboard(cb_unused wxCommandEvent& event)
              << '\n';
     }
 
-    wxTextDataObject *object = new wxTextDataObject(text);
-    if(wxTheClipboard->Open())
+    wxTextDataObject * object = new wxTextDataObject(text);
+
+    if (wxTheClipboard->Open())
     {
         wxTheClipboard->SetData(object);
         wxTheClipboard->Close();
     }
 }
 
-void BacktraceDlg::OnSettingJumpDefault(wxCommandEvent& event)
+void BacktraceDlg::OnSettingJumpDefault(wxCommandEvent & event)
 {
     bool checked = event.IsChecked();
     cbDebuggerCommonConfig::SetFlag(cbDebuggerCommonConfig::JumpOnDoubleClick, checked);
 }
 
-void BacktraceDlg::OnSettingSwitchDefault(wxCommandEvent& event)
+void BacktraceDlg::OnSettingSwitchDefault(wxCommandEvent & event)
 {
     bool checked = event.IsChecked();
     cbDebuggerCommonConfig::SetFlag(cbDebuggerCommonConfig::JumpOnDoubleClick, !checked);
 }
 
-void BacktraceDlg::OnUpdateUI(wxUpdateUIEvent &event)
+void BacktraceDlg::OnUpdateUI(wxUpdateUIEvent & event)
 {
     event.Enable(IsSwitchFrameEnabled());
 }
 
 bool BacktraceDlg::IsSwitchFrameEnabled() const
 {
-    cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+    cbDebuggerPlugin * plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
     return plugin && plugin->IsRunning() && plugin->IsStopped();
 }

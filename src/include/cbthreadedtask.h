@@ -12,29 +12,29 @@
 /// for TestDestroy.
 class cbThreadedTask
 {
-public:
-    /// cbThreadedTask ctor
-    cbThreadedTask();
+    public:
+        /// cbThreadedTask ctor
+        cbThreadedTask();
 
-    /// cbThreadedTask dtor
-    virtual ~cbThreadedTask() = 0;
+        /// cbThreadedTask dtor
+        virtual ~cbThreadedTask() = 0;
 
-    /// This function is called to tell the task to abort (check cbThreadPool::AbortAllTasks)
-    void Abort();
+        /// This function is called to tell the task to abort (check cbThreadPool::AbortAllTasks)
+        void Abort();
 
-    /// Override this function with the task's job
-    /// Return value doesn't matter
-    virtual int Execute() = 0;
+        /// Override this function with the task's job
+        /// Return value doesn't matter
+        virtual int Execute() = 0;
 
-protected:
-    /// Be sure to call this function often. If it returns true, quit your task quickly
-    bool TestDestroy() const;
+    protected:
+        /// Be sure to call this function often. If it returns true, quit your task quickly
+        bool TestDestroy() const;
 
-    /// Same as TestDestroy()
-    bool Aborted() const;
+        /// Same as TestDestroy()
+        bool Aborted() const;
 
-private:
-    bool m_abort;
+    private:
+        bool m_abort;
 };
 
 /* ************************************************ */

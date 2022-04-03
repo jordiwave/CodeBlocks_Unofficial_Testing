@@ -26,20 +26,20 @@
 
 namespace
 {
-wxsRegisterItem<wxsStatusBar> Reg(_T("StatusBar"),wxsTTool,_T("Tools"),40);
+wxsRegisterItem<wxsStatusBar> Reg(_T("StatusBar"), wxsTTool, _T("Tools"), 40);
 
-WXS_ST_BEGIN(wxsStatusBarStyles,_T(""))
+WXS_ST_BEGIN(wxsStatusBarStyles, _T(""))
 WXS_ST_CATEGORY("wxStatusBar")
 WXS_ST(wxST_SIZEGRIP)
 WXS_ST_DEFAULTS()
 WXS_ST_END()
 
-const wxChar* FieldStyles[] = { _T("wxSB_NORMAL"), _T("wxSB_FLAT"), _T("wxSB_RAISED"), 0 };
+const wxChar * FieldStyles[] = { _T("wxSB_NORMAL"), _T("wxSB_FLAT"), _T("wxSB_RAISED"), 0 };
 const long FieldStylesVal[] = { wxSB_NORMAL, wxSB_FLAT, wxSB_RAISED };
 }
 
-wxsStatusBar::wxsStatusBar(wxsItemResData* Data):
-    wxsTool(Data,&Reg.Info,0,wxsStatusBarStyles,flVariable|flId|flSubclass|flExtraCode),
+wxsStatusBar::wxsStatusBar(wxsItemResData * Data):
+    wxsTool(Data, &Reg.Info, 0, wxsStatusBarStyles, flVariable | flId | flSubclass | flExtraCode),
     m_Fields(1)
 {
     UpdateArraysSize(m_Fields);
@@ -47,44 +47,49 @@ wxsStatusBar::wxsStatusBar(wxsItemResData* Data):
 
 void wxsStatusBar::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/statusbr.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%W, %I, %T, %N);\n"));
-        if ( m_Fields>0 )
+        case wxsCPP:
         {
-            wxString WidthsVarName = GetCoderContext()->GetUniqueName(_T("__wxStatusBarWidths"));
-            wxString StylesVarName = GetCoderContext()->GetUniqueName(_T("__wxStatusBarStyles"));
+            AddHeader(_T("<wx/statusbr.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %T, %N);\n"));
 
-            Codef(_T("int %v[%d] = { "),WidthsVarName.wx_str(),m_Fields);
-            for ( int i=0; i<m_Fields; i++ )
+            if (m_Fields > 0)
             {
-                Codef( _T("%d%s"),
-                       m_VarWidth[i]?-m_Widths[i]:m_Widths[i],
-                       i==(m_Fields-1) ? _T(" };\n") : _T(", "));
+                wxString WidthsVarName = GetCoderContext()->GetUniqueName(_T("__wxStatusBarWidths"));
+                wxString StylesVarName = GetCoderContext()->GetUniqueName(_T("__wxStatusBarStyles"));
+                Codef(_T("int %v[%d] = { "), WidthsVarName.wx_str(), m_Fields);
+
+                for (int i = 0; i < m_Fields; i++)
+                {
+                    Codef(_T("%d%s"),
+                          m_VarWidth[i] ? -m_Widths[i] : m_Widths[i],
+                          i == (m_Fields - 1) ? _T(" };\n") : _T(", "));
+                }
+
+                Codef(_T("int %v[%d] = { "), StylesVarName.wx_str(), m_Fields);
+
+                for (int i = 0; i < m_Fields; i++)
+                {
+                    Codef(_T("%s%s"),
+                          m_Styles[i] == wxSB_FLAT ?   _T("wxSB_FLAT") :
+                          m_Styles[i] == wxSB_RAISED ? _T("wxSB_RAISED") :
+                          _T("wxSB_NORMAL"),
+                          i == (m_Fields - 1) ? _T(" };\n") : _T(", "));
+                }
+
+                Codef(_T("%ASetFieldsCount(%d,%v);\n"), m_Fields, WidthsVarName.wx_str());
+                Codef(_T("%ASetStatusStyles(%d,%v);\n"), m_Fields, StylesVarName.wx_str());
+                Codef(_T("SetStatusBar(%O);\n"));
             }
-            Codef(_T("int %v[%d] = { "),StylesVarName.wx_str(),m_Fields);
-            for ( int i=0; i<m_Fields; i++ )
-            {
-                Codef(_T("%s%s"),
-                      m_Styles[i] == wxSB_FLAT ?   _T("wxSB_FLAT") :
-                      m_Styles[i] == wxSB_RAISED ? _T("wxSB_RAISED") :
-                      _T("wxSB_NORMAL"),
-                      i==(m_Fields-1) ? _T(" };\n") : _T(", "));
-            }
-            Codef(_T("%ASetFieldsCount(%d,%v);\n"),m_Fields,WidthsVarName.wx_str());
-            Codef(_T("%ASetStatusStyles(%d,%v);\n"),m_Fields,StylesVarName.wx_str());
-            Codef(_T("SetStatusBar(%O);\n"));
+
+            BuildSetupWindowCode();
+            break;
         }
-        BuildSetupWindowCode();
-        break;
-    }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsStatusBar::OnBuildCreatingCode"),GetLanguage());
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsStatusBar::OnBuildCreatingCode"), GetLanguage());
     }
 }
 
@@ -92,25 +97,27 @@ void wxsStatusBar::OnEnumToolProperties(cb_unused long Flags)
 {
 }
 
-bool wxsStatusBar::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
+bool wxsStatusBar::OnCanAddToResource(wxsItemResData * Data, bool ShowMessage)
 {
-    if ( Data->GetClassType() != _T("wxFrame") )
+    if (Data->GetClassType() != _T("wxFrame"))
     {
-        if ( ShowMessage )
+        if (ShowMessage)
         {
             cbMessageBox(_("wxStatusBar can be added to wxFrame only"));
         }
+
         return false;
     }
 
-    for ( int i=0; i<Data->GetToolsCount(); i++ )
+    for (int i = 0; i < Data->GetToolsCount(); i++)
     {
-        if ( Data->GetTool(i)->GetClassName() == _T("wxStatusBar") )
+        if (Data->GetTool(i)->GetClassName() == _T("wxStatusBar"))
         {
-            if ( ShowMessage )
+            if (ShowMessage)
             {
                 cbMessageBox(_("Can not add two or more wxStatusBar classes\ninto one wxFrame"));
             }
+
             return false;
         }
     }
@@ -118,120 +125,127 @@ bool wxsStatusBar::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
     return true;
 }
 
-bool wxsStatusBar::OnCanAddChild(cb_unused wxsItem* Item,bool ShowMessage)
+bool wxsStatusBar::OnCanAddChild(cb_unused wxsItem * Item, bool ShowMessage)
 {
-    if ( ShowMessage )
+    if (ShowMessage)
     {
         cbMessageBox(_("wxsStatusBar can have no children"));
     }
+
     return false;
 }
 
-bool wxsStatusBar::OnCanAddToParent(cb_unused wxsParent* Item,bool ShowMessage)
+bool wxsStatusBar::OnCanAddToParent(cb_unused wxsParent * Item, bool ShowMessage)
 {
-    if ( ShowMessage )
+    if (ShowMessage)
     {
         cbMessageBox(_("wxsStatusBar must be added as tool"));
     }
+
     return false;
 }
 
 
-void wxsStatusBar::OnAddExtraProperties(wxsPropertyGridManager* Grid)
+void wxsStatusBar::OnAddExtraProperties(wxsPropertyGridManager * Grid)
 {
     Grid->SelectPage(0);
-    m_FieldsId = Grid->Append(new wxIntProperty(_("Fields"),wxPG_LABEL,m_Fields));
-
+    m_FieldsId = Grid->Append(new wxIntProperty(_("Fields"), wxPG_LABEL, m_Fields));
     m_FieldsId->SetAttribute(wxPG_ATTR_MIN, 1);
     m_FieldsId->SetAttribute(wxPG_ATTR_MAX, 30);
 
-    for ( int i=0; i<m_Fields; i++ )
+    for (int i = 0; i < m_Fields; i++)
     {
-        wxPGId ParentProp = Grid->Append(new wxParentProperty(wxString::Format(_("Field %d"),i+1),wxPG_LABEL));
+        wxPGId ParentProp = Grid->Append(new wxParentProperty(wxString::Format(_("Field %d"), i + 1), wxPG_LABEL));
         ParentProp->ChangeFlag(wxPG_PROP_READONLY, true);
-        m_WidthsIds[i] = Grid->AppendIn(ParentProp,new wxIntProperty(_("Width"),wxPG_LABEL,m_Widths[i]));
-        m_VarWidthIds[i] = Grid->AppendIn(ParentProp,new wxBoolProperty(_T("Variable width"),wxPG_LABEL,m_VarWidth[i]));
-        Grid->SetPropertyAttribute(m_VarWidthIds[i],wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
-        m_StylesIds[i] = Grid->AppendIn(ParentProp,new wxEnumProperty(_("Style"),wxPG_LABEL,FieldStyles,FieldStylesVal,m_Styles[i]));
+        m_WidthsIds[i] = Grid->AppendIn(ParentProp, new wxIntProperty(_("Width"), wxPG_LABEL, m_Widths[i]));
+        m_VarWidthIds[i] = Grid->AppendIn(ParentProp, new wxBoolProperty(_T("Variable width"), wxPG_LABEL, m_VarWidth[i]));
+        Grid->SetPropertyAttribute(m_VarWidthIds[i], wxPG_BOOL_USE_CHECKBOX, 1L, wxPG_RECURSE);
+        m_StylesIds[i] = Grid->AppendIn(ParentProp, new wxEnumProperty(_("Style"), wxPG_LABEL, FieldStyles, FieldStylesVal, m_Styles[i]));
         m_ParentIds[i] = ParentProp;
     }
 
     wxsItem::OnAddExtraProperties(Grid);
 }
 
-void wxsStatusBar::OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id)
+void wxsStatusBar::OnExtraPropertyChanged(wxsPropertyGridManager * Grid, wxPGId Id)
 {
-    if ( Id == m_FieldsId )
+    if (Id == m_FieldsId)
     {
         // Number of fields is going to change...
         int NewFields = Grid->GetPropertyValueAsInt(Id);
-        if ( NewFields < 1 )
+
+        if (NewFields < 1)
         {
             NewFields = 1;
-            Grid->SetPropertyValue(Id,NewFields);
+            Grid->SetPropertyValue(Id, NewFields);
         }
 
         // Now it's time to delete / add properties for fields
-        if ( NewFields < m_Fields )
+        if (NewFields < m_Fields)
         {
-            for ( int i=NewFields; i<m_Fields; i++ )
+            for (int i = NewFields; i < m_Fields; i++)
             {
                 Grid->DeleteProperty(m_ParentIds[i]);
             }
         }
-        else if ( NewFields > m_Fields )
-        {
-            // Adding new properties
-            Grid->SelectPage(0);
-            UpdateArraysSize(NewFields);
-            for ( int i = m_Fields; i<NewFields; i++ )
+        else
+            if (NewFields > m_Fields)
             {
-                wxPGId ParentProp = Grid->Append(new wxParentProperty(wxString::Format(_("Field %d"),i+1),wxPG_LABEL));
-                ParentProp->ChangeFlag(wxPG_PROP_READONLY, true);
-                m_WidthsIds[i] = Grid->AppendIn(ParentProp,new wxIntProperty(_("Width"),wxPG_LABEL,m_Widths[i]));
-                m_VarWidthIds[i] = Grid->AppendIn(ParentProp,new wxBoolProperty(_T("Variable width"),wxPG_LABEL,m_VarWidth[i]));
-                Grid->SetPropertyAttribute(m_VarWidthIds[i],wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
-                m_StylesIds[i] = Grid->AppendIn(ParentProp,new wxEnumProperty(_("Style"),wxPG_LABEL,FieldStyles,FieldStylesVal,m_Styles[i]));
-                m_ParentIds[i] = ParentProp;
+                // Adding new properties
+                Grid->SelectPage(0);
+                UpdateArraysSize(NewFields);
+
+                for (int i = m_Fields; i < NewFields; i++)
+                {
+                    wxPGId ParentProp = Grid->Append(new wxParentProperty(wxString::Format(_("Field %d"), i + 1), wxPG_LABEL));
+                    ParentProp->ChangeFlag(wxPG_PROP_READONLY, true);
+                    m_WidthsIds[i] = Grid->AppendIn(ParentProp, new wxIntProperty(_("Width"), wxPG_LABEL, m_Widths[i]));
+                    m_VarWidthIds[i] = Grid->AppendIn(ParentProp, new wxBoolProperty(_T("Variable width"), wxPG_LABEL, m_VarWidth[i]));
+                    Grid->SetPropertyAttribute(m_VarWidthIds[i], wxPG_BOOL_USE_CHECKBOX, 1L, wxPG_RECURSE);
+                    m_StylesIds[i] = Grid->AppendIn(ParentProp, new wxEnumProperty(_("Style"), wxPG_LABEL, FieldStyles, FieldStylesVal, m_Styles[i]));
+                    m_ParentIds[i] = ParentProp;
+                }
             }
-        }
 
         m_Fields = NewFields;
         NotifyPropertyChange(true);
         return;
     }
 
-    for ( int i=0; i<m_Fields; i++ )
+    for (int i = 0; i < m_Fields; i++)
     {
-        if ( m_ParentIds[i]   == Id ||
+        if (m_ParentIds[i]   == Id ||
                 m_WidthsIds[i]   == Id ||
                 m_StylesIds[i]   == Id ||
-                m_VarWidthIds[i] == Id )
+                m_VarWidthIds[i] == Id)
         {
             m_Widths[i] = Grid->GetPropertyValueAsLong(m_WidthsIds[i]);
             m_Styles[i] = Grid->GetPropertyValueAsLong(m_StylesIds[i]);
             m_VarWidth[i] = Grid->GetPropertyValueAsBool(m_VarWidthIds[i]);
-            if ( m_Widths[i] < 0 )
+
+            if (m_Widths[i] < 0)
             {
                 m_Widths[i] = -m_Widths[i];
                 m_VarWidth[i] = !m_VarWidth[i];
-                Grid->SetPropertyValue(m_WidthsIds[i],m_Widths[i]);
-                Grid->SetPropertyValue(m_VarWidthIds[i],m_VarWidth[i]);
+                Grid->SetPropertyValue(m_WidthsIds[i], m_Widths[i]);
+                Grid->SetPropertyValue(m_VarWidthIds[i], m_VarWidth[i]);
             }
+
             NotifyPropertyChange(true);
             return;
         }
     }
 
-    wxsItem::OnExtraPropertyChanged(Grid,Id);
+    wxsItem::OnExtraPropertyChanged(Grid, Id);
 }
 
-bool wxsStatusBar::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
+bool wxsStatusBar::OnXmlRead(TiXmlElement * Element, bool IsXRC, bool IsExtra)
 {
-    if ( IsXRC )
+    if (IsXRC)
     {
-        TiXmlElement* FieldsCnt = Element->FirstChildElement("fields");
-        if ( !FieldsCnt )
+        TiXmlElement * FieldsCnt = Element->FirstChildElement("fields");
+
+        if (!FieldsCnt)
         {
             m_Fields = 1;
         }
@@ -240,28 +254,35 @@ bool wxsStatusBar::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
             m_Fields = wxAtoi(cbC2U(FieldsCnt->GetText()));
         }
 
-        if ( m_Fields < 1 ) m_Fields = 1;
-        UpdateArraysSize(m_Fields);
+        if (m_Fields < 1)
+        {
+            m_Fields = 1;
+        }
 
+        UpdateArraysSize(m_Fields);
         wxString WidthsStr;
         wxString StylesStr;
-        if ( TiXmlElement* WidthsElem = Element->FirstChildElement("widths") )
+
+        if (TiXmlElement * WidthsElem = Element->FirstChildElement("widths"))
         {
             WidthsStr = cbC2U(WidthsElem->GetText());
         }
-        if ( TiXmlElement* StylesElem = Element->FirstChildElement("styles") )
+
+        if (TiXmlElement * StylesElem = Element->FirstChildElement("styles"))
         {
             StylesStr = cbC2U(StylesElem->GetText());
         }
 
-        for ( int i=0; i<m_Fields; i++ )
+        for (int i = 0; i < m_Fields; i++)
         {
             m_Widths[i] = wxAtoi(WidthsStr.BeforeFirst(_T(',')));
-            if ( WidthsStr.Find(_T(',')) != -1 )
+
+            if (WidthsStr.Find(_T(',')) != -1)
             {
-                WidthsStr.Remove(0,WidthsStr.Find(_T(','))+1);
+                WidthsStr.Remove(0, WidthsStr.Find(_T(',')) + 1);
             }
-            if ( m_Widths[i] < 0 )
+
+            if (m_Widths[i] < 0)
             {
                 m_VarWidth[i] = true;
                 m_Widths[i] = -m_Widths[i];
@@ -272,59 +293,63 @@ bool wxsStatusBar::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
             }
 
             wxString Style = StylesStr.BeforeFirst(_T(','));
-            if ( Style==_T("wxSB_FLAT") )
+
+            if (Style == _T("wxSB_FLAT"))
             {
                 m_Styles[i] = wxSB_FLAT;
             }
-            else if ( Style==_T("wxSB_RAISED") )
-            {
-                m_Styles[i] = wxSB_RAISED;
-            }
             else
-            {
-                m_Styles[i] = wxSB_NORMAL;
-            }
+                if (Style == _T("wxSB_RAISED"))
+                {
+                    m_Styles[i] = wxSB_RAISED;
+                }
+                else
+                {
+                    m_Styles[i] = wxSB_NORMAL;
+                }
 
-            if ( StylesStr.Find(_T(',')) != -1 )
+            if (StylesStr.Find(_T(',')) != -1)
             {
-                StylesStr.Remove(0,StylesStr.Find(_T(','))+1);
+                StylesStr.Remove(0, StylesStr.Find(_T(',')) + 1);
             }
         }
     }
 
-    return wxsParent::OnXmlRead(Element,IsXRC,IsExtra);
+    return wxsParent::OnXmlRead(Element, IsXRC, IsExtra);
 }
 
-bool wxsStatusBar::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
+bool wxsStatusBar::OnXmlWrite(TiXmlElement * Element, bool IsXRC, bool IsExtra)
 {
-    if ( IsXRC )
+    if (IsXRC)
     {
         Element->InsertEndChild(TiXmlElement("fields"))->
-        InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%d"),m_Fields))));
-
+        InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%d"), m_Fields))));
         wxString Widths;
         wxString Styles;
-        for ( int i=0; i<m_Fields; i++ )
+
+        for (int i = 0; i < m_Fields; i++)
         {
-            if ( i>0 )
+            if (i > 0)
             {
                 Widths << _T(',');
                 Styles << _T(',');
             }
 
-            Widths << wxString::Format(_T("%d"),m_VarWidth[i]?-m_Widths[i]:m_Widths[i]);
-            if ( m_Styles[i] == wxSB_FLAT )
+            Widths << wxString::Format(_T("%d"), m_VarWidth[i] ? -m_Widths[i] : m_Widths[i]);
+
+            if (m_Styles[i] == wxSB_FLAT)
             {
                 Styles << _T("wxSB_FLAT");
             }
-            else if ( m_Styles[i] == wxSB_RAISED )
-            {
-                Styles << _T("wxSB_RAISED");
-            }
             else
-            {
-                Styles << _T("wxSB_NORMAL");
-            }
+                if (m_Styles[i] == wxSB_RAISED)
+                {
+                    Styles << _T("wxSB_RAISED");
+                }
+                else
+                {
+                    Styles << _T("wxSB_NORMAL");
+                }
         }
 
         Element->InsertEndChild(TiXmlElement("widths"))->
@@ -333,18 +358,20 @@ bool wxsStatusBar::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
         InsertEndChild(TiXmlText(cbU2C(Styles)));
     }
 
-    return wxsParent::OnXmlWrite(Element,IsXRC,IsExtra);
+    return wxsParent::OnXmlWrite(Element, IsXRC, IsExtra);
 }
 
 void wxsStatusBar::UpdateArraysSize(int Size)
 {
-    m_Widths.SetCount(Size,10);
-    m_Styles.SetCount(Size,wxSB_NORMAL);
-    while ( (int)m_VarWidth.GetCount() < Size )
+    m_Widths.SetCount(Size, 10);
+    m_Styles.SetCount(Size, wxSB_NORMAL);
+
+    while ((int)m_VarWidth.GetCount() < Size)
     {
         // SetCount didn't work for wxArrayBool
         m_VarWidth.Add(true);
     }
+
     m_ParentIds.SetCount(Size);
     m_WidthsIds.SetCount(Size);
     m_StylesIds.SetCount(Size);

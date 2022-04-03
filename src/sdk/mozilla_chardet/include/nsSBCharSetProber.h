@@ -18,69 +18,69 @@
 
 typedef struct
 {
-    const unsigned char* const charToOrderMap;    // [256] table use to find a char's order
-    const uint8_t* const precedenceMatrix;  // [SAMPLE_SIZE][SAMPLE_SIZE]; table to find a 2-char sequence's frequency
+    const unsigned char * const charToOrderMap;   // [256] table use to find a char's order
+    const uint8_t * const precedenceMatrix; // [SAMPLE_SIZE][SAMPLE_SIZE]; table to find a 2-char sequence's frequency
     float  mTypicalPositiveRatio;     // = freqSeqs / totalSeqs
     bool keepEnglishLetter;         // says if this script contains English characters (not implemented)
-    const char* const charsetName;
+    const char * const charsetName;
 } SequenceModel;
 
 
 class nsSingleByteCharSetProber : public nsCharSetProber
 {
-public:
-    nsSingleByteCharSetProber(const SequenceModel *model)
-        :mModel(model), mReversed(false), mNameProber(0)
-    {
-        Reset();
-    }
-    nsSingleByteCharSetProber(const SequenceModel *model, bool reversed, nsCharSetProber* nameProber)
-        :mModel(model), mReversed(reversed), mNameProber(nameProber)
-    {
-        Reset();
-    }
+    public:
+        nsSingleByteCharSetProber(const SequenceModel * model)
+            : mModel(model), mReversed(false), mNameProber(0)
+        {
+            Reset();
+        }
+        nsSingleByteCharSetProber(const SequenceModel * model, bool reversed, nsCharSetProber * nameProber)
+            : mModel(model), mReversed(reversed), mNameProber(nameProber)
+        {
+            Reset();
+        }
 
-    virtual const char* GetCharSetName();
-    virtual nsProbingState HandleData(const char* aBuf, uint32_t aLen);
-    virtual nsProbingState GetState(void)
-    {
-        return mState;
-    }
-    virtual void      Reset(void);
-    virtual float     GetConfidence(void);
+        virtual const char * GetCharSetName();
+        virtual nsProbingState HandleData(const char * aBuf, uint32_t aLen);
+        virtual nsProbingState GetState(void)
+        {
+            return mState;
+        }
+        virtual void      Reset(void);
+        virtual float     GetConfidence(void);
 
-    // This feature is not implemented yet. any current language model
-    // contain this parameter as false. No one is looking at this
-    // parameter or calling this method.
-    // Moreover, the nsSBCSGroupProber which calls the HandleData of this
-    // prober has a hard-coded call to FilterWithoutEnglishLetters which gets rid
-    // of the English letters.
-    bool KeepEnglishLetters()
-    {
-        return mModel->keepEnglishLetter;   // (not implemented)
-    }
+        // This feature is not implemented yet. any current language model
+        // contain this parameter as false. No one is looking at this
+        // parameter or calling this method.
+        // Moreover, the nsSBCSGroupProber which calls the HandleData of this
+        // prober has a hard-coded call to FilterWithoutEnglishLetters which gets rid
+        // of the English letters.
+        bool KeepEnglishLetters()
+        {
+            return mModel->keepEnglishLetter;   // (not implemented)
+        }
 
 #ifdef DEBUG_chardet
-    virtual void  DumpStatus();
+        virtual void  DumpStatus();
 #endif
 
-protected:
-    nsProbingState mState;
-    const SequenceModel* const mModel;
-    const bool mReversed; // true if we need to reverse every pair in the model lookup
+    protected:
+        nsProbingState mState;
+        const SequenceModel * const mModel;
+        const bool mReversed; // true if we need to reverse every pair in the model lookup
 
-    //char order of last character
-    unsigned char mLastOrder;
+        //char order of last character
+        unsigned char mLastOrder;
 
-    uint32_t mTotalSeqs;
-    uint32_t mSeqCounters[NUMBER_OF_SEQ_CAT];
+        uint32_t mTotalSeqs;
+        uint32_t mSeqCounters[NUMBER_OF_SEQ_CAT];
 
-    uint32_t mTotalChar;
-    //characters that fall in our sampling range
-    uint32_t mFreqChar;
+        uint32_t mTotalChar;
+        //characters that fall in our sampling range
+        uint32_t mFreqChar;
 
-    // Optional auxiliary prober for name decision. created and destroyed by the GroupProber
-    nsCharSetProber* mNameProber;
+        // Optional auxiliary prober for name decision. created and destroyed by the GroupProber
+        nsCharSetProber * mNameProber;
 
 };
 

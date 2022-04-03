@@ -31,59 +31,59 @@ enum wxLEDValueAlign
 
 class WXDLLIMPEXP_GIZMOS wxLEDNumberCtrl : public wxControl
 {
-public:
-    // Constructors.
-    wxLEDNumberCtrl();
-    wxLEDNumberCtrl(wxWindow *parent, wxWindowID id = wxID_ANY,
-                    const wxPoint& pos = wxDefaultPosition,
-                    const wxSize& size = wxDefaultSize,
-                    long style = wxLED_ALIGN_LEFT | wxLED_DRAW_FADED);
+    public:
+        // Constructors.
+        wxLEDNumberCtrl();
+        wxLEDNumberCtrl(wxWindow * parent, wxWindowID id = wxID_ANY,
+                        const wxPoint & pos = wxDefaultPosition,
+                        const wxSize & size = wxDefaultSize,
+                        long style = wxLED_ALIGN_LEFT | wxLED_DRAW_FADED);
 
-    // Create functions.
-    bool Create(wxWindow *parent, wxWindowID id = wxID_ANY,
-                const wxPoint& pos = wxDefaultPosition,
-                const wxSize& size = wxDefaultSize,
-                long style = 0);
+        // Create functions.
+        bool Create(wxWindow * parent, wxWindowID id = wxID_ANY,
+                    const wxPoint & pos = wxDefaultPosition,
+                    const wxSize & size = wxDefaultSize,
+                    long style = 0);
 
-    wxLEDValueAlign GetAlignment() const
-    {
-        return m_Alignment;
-    }
-    bool GetDrawFaded() const
-    {
-        return m_DrawFaded;
-    }
-    const wxString &GetValue() const
-    {
-        return m_Value;
-    }
+        wxLEDValueAlign GetAlignment() const
+        {
+            return m_Alignment;
+        }
+        bool GetDrawFaded() const
+        {
+            return m_DrawFaded;
+        }
+        const wxString & GetValue() const
+        {
+            return m_Value;
+        }
 
-    void SetAlignment(wxLEDValueAlign Alignment, bool Redraw = true);
-    void SetDrawFaded(bool DrawFaded, bool Redraw = true);
-    void SetValue(const wxString &Value, bool Redraw = true);
+        void SetAlignment(wxLEDValueAlign Alignment, bool Redraw = true);
+        void SetDrawFaded(bool DrawFaded, bool Redraw = true);
+        void SetValue(const wxString & Value, bool Redraw = true);
 
-private:
-    // Members.
-    wxString m_Value;
-    wxLEDValueAlign m_Alignment;
+    private:
+        // Members.
+        wxString m_Value;
+        wxLEDValueAlign m_Alignment;
 
-    int m_LineMargin;
-    int m_DigitMargin;
-    int m_LineLength;
-    int m_LineWidth;
-    bool m_DrawFaded;
-    int m_LeftStartPos;
+        int m_LineMargin;
+        int m_DigitMargin;
+        int m_LineLength;
+        int m_LineWidth;
+        bool m_DrawFaded;
+        int m_LeftStartPos;
 
-    // Functions.
-    void DrawDigit(wxDC &Dc, int Digit, int Column);
-    void RecalcInternals(const wxSize &CurrentSize);
+        // Functions.
+        void DrawDigit(wxDC & Dc, int Digit, int Column);
+        void RecalcInternals(const wxSize & CurrentSize);
 
-    // Events.
-    DECLARE_EVENT_TABLE()
+        // Events.
+        DECLARE_EVENT_TABLE()
 
-    void OnEraseBackground(wxEraseEvent &Event);
-    void OnPaint(wxPaintEvent &Event);
-    void OnSize(wxSizeEvent &Event);
+        void OnEraseBackground(wxEraseEvent & Event);
+        void OnPaint(wxPaintEvent & Event);
+        void OnSize(wxSizeEvent & Event);
 };
 
 #endif

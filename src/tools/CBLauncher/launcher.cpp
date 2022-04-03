@@ -27,11 +27,11 @@
 #include <wchar.h>
 
 // Define application directories and application call string at file scope
-static const wchar_t *dataDir     = L"AppData";
-static const wchar_t *CBdataDir   = L"AppData\\codeblocks";
-static const wchar_t *fontsDir    = L"share\\CodeBlocks\\fonts";
-static const wchar_t *toolDir     = L"tool";
-static const wchar_t *cmd         = L"codeblocks.exe";
+static const wchar_t * dataDir     = L"AppData";
+static const wchar_t * CBdataDir   = L"AppData\\codeblocks";
+static const wchar_t * fontsDir    = L"share\\CodeBlocks\\fonts";
+static const wchar_t * toolDir     = L"tool";
+static const wchar_t * cmd         = L"codeblocks.exe";
 static wchar_t appDir[MAX_PATH];
 
 /** @brief tests if Code::Blocks is already running
@@ -40,20 +40,19 @@ static wchar_t appDir[MAX_PATH];
 bool isCodeblocksRunning()
 {
     PROCESSENTRY32 pe32;
-    pe32.dwSize = sizeof( PROCESSENTRY32 );
+    pe32.dwSize = sizeof(PROCESSENTRY32);
     HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
-    if(Process32First(hSnapshot, &pe32)) // enumerate through the processes
+    if (Process32First(hSnapshot, &pe32)) // enumerate through the processes
     {
         do
         {
-            if(! _wcsicmp(pe32.szExeFile, cmd)) // Codeblocks is running
+            if (! _wcsicmp(pe32.szExeFile, cmd)) // Codeblocks is running
             {
                 CloseHandle(hSnapshot);
                 return true;
             }
-        }
-        while(Process32Next(hSnapshot, &pe32));
+        } while (Process32Next(hSnapshot, &pe32));
     }
 
     CloseHandle(hSnapshot);
@@ -71,35 +70,47 @@ bool setAppData()
     WIN32_FIND_DATAW findData;
     HANDLE hFind;
     bool success = true;
-
     wcscpy(currDir, appDir);
     wcscat(currDir, dataDir);
-
     hFind = FindFirstFileW(currDir, &findData);
+
     if (hFind == INVALID_HANDLE_VALUE)
     {
         fwprintf(stdout, L"Creating AppData directory %ls\n", currDir);
+
         if (CreateDirectory(currDir, NULL) == 0)
+        {
             success = false;
+        }
     }
 
     FindClose(hFind);
+
     if (!success)
+    {
         return false;
+    }
 
     wcscpy(currDir, appDir);
     wcscat(currDir, CBdataDir);
-
     hFind = FindFirstFileW(currDir, &findData);
+
     if (hFind == INVALID_HANDLE_VALUE)
     {
         fwprintf(stdout, L"Creating directory %ls\n", currDir);
+
         if (CreateDirectory(currDir, NULL) == 0)
+        {
             success = false;
+        }
     }
+
     FindClose(hFind);
+
     if (!success)
+    {
         return false;
+    }
 
     wcscpy(currDir, appDir);
     wcscat(currDir, dataDir);
@@ -118,38 +129,40 @@ bool setToolPath()
     WIN32_FIND_DATAW findData;
     HANDLE hFind;
     bool success = true;
-
     wcscpy(toolPath, appDir);
     wcscat(toolPath, toolDir);
     hFind = FindFirstFileW(toolPath, &findData);
+
     if (hFind == INVALID_HANDLE_VALUE)
     {
         fwprintf(stdout, L"No tool subdirectory.\n");
         success = false;
     }
+
     FindClose(hFind);
+
     if (!success)
-        return false; // Give up if tool subdir does not exist
+    {
+        return false;    // Give up if tool subdir does not exist
+    }
 
     // tool subdirectory exists. Add it and all its subdirectories to system path
     wcscpy(toFind, toolPath);
     wcscat(toFind, L"\\*.*");
-
     wchar_t newPath[MAX_ENV];
     wcscpy(newPath, toolPath); // Add tools directory
-
     // Add tool subdirectories to path
     hFind = FindFirstFile(toFind, &findData);
+
     if (hFind != INVALID_HANDLE_VALUE)
     {
         do // Add all tool directories or their bin subdirectory if it exists to path
         {
-            if((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+            if ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
                     && (wcscmp(findData.cFileName, L"."))
                     && (wcscmp(findData.cFileName, L"..")))
             {
                 wcscat(newPath, L";"); // Add a new directory to path
-
                 wcscpy(toFind, toolPath);
                 wcscat(toFind, L"\\");
                 wcscat(toFind, findData.cFileName);
@@ -161,27 +174,28 @@ bool setToolPath()
                                             NULL,
                                             OPEN_EXISTING,
                                             FILE_FLAG_BACKUP_SEMANTICS,
-                                            NULL );
-                if(fHandle != INVALID_HANDLE_VALUE)
+                                            NULL);
+
+                if (fHandle != INVALID_HANDLE_VALUE)
                 {
                     CloseHandle(fHandle);
                     wcscat(newPath, L"\\bin");
                 }
             }
-        }
-        while (FindNextFile(hFind, &findData));
+        } while (FindNextFile(hFind, &findData));
     }
-    FindClose(hFind);
 
+    FindClose(hFind);
     // Concatenate with existing system path
     wchar_t oldPath[MAX_ENV];
-    if (GetEnvironmentVariable( L"PATH", oldPath, MAX_ENV))
+
+    if (GetEnvironmentVariable(L"PATH", oldPath, MAX_ENV))
     {
         wcscat(newPath, L";");
         wcscat(newPath, oldPath);
     }
-    fwprintf(stdout, L"\nSetting path: %ls\n\n", newPath);
 
+    fwprintf(stdout, L"\nSetting path: %ls\n\n", newPath);
     return SetEnvironmentVariable(L"PATH", newPath);
 }
 
@@ -198,17 +212,16 @@ int addFontsFrom(wchar_t fontsPath[])
     wchar_t fontFile[MAX_PATH], toFind[MAX_PATH];
     wchar_t newPath[MAX_PATH];
     int numFonts = 0;
-
     // First call addFontsFrom(<subdirectory>) recursively for any subdirectory
     wcscpy(toFind, fontsPath);
     wcscat(toFind, L"\\*.*");
-
     hFind = FindFirstFile(toFind, &findData);
+
     if (hFind != INVALID_HANDLE_VALUE)
     {
         do // Add all fonts in subdirectories if they exist to system fonts
         {
-            if((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+            if ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
                     && (wcscmp(findData.cFileName, L"."))
                     && (wcscmp(findData.cFileName, L"..")))
             {
@@ -218,15 +231,15 @@ int addFontsFrom(wchar_t fontsPath[])
                 wcscat(newPath, findData.cFileName);
                 numFonts += addFontsFrom(newPath);
             }
-        }
-        while (FindNextFile(hFind, &findData));
+        } while (FindNextFile(hFind, &findData));
     }
-    FindClose(hFind);
 
+    FindClose(hFind);
     // Then add CB fonts (ttf or otf) in directory fontsPath to system fonts
     wcscpy(fontFile, fontsPath);
     wcscat(fontFile, L"\\*.?tf");
     hFind = FindFirstFile(fontFile, &findData);
+
     if (hFind != INVALID_HANDLE_VALUE)
     {
         do
@@ -245,11 +258,10 @@ int addFontsFrom(wchar_t fontsPath[])
                 fwprintf(stdout, L"\nInstallation of %ls failed\n", fontFile);
                 break; // Give up at the 1st font that fails to load
             }
-        }
-        while (FindNextFile(hFind, &findData));
+        } while (FindNextFile(hFind, &findData));
     }
-    FindClose(hFind);
 
+    FindClose(hFind);
     return numFonts;
 }
 
@@ -263,23 +275,26 @@ bool addFonts()
     WIN32_FIND_DATA findData;
     HANDLE hFind;
     wchar_t fontsPath[MAX_PATH];
-
     wcscpy(fontsPath, appDir);
     wcscat(fontsPath, fontsDir);
-
     // Give up if no fonts directory exists
     hFind = FindFirstFile(fontsPath, &findData);
+
     if (hFind == INVALID_HANDLE_VALUE)
+    {
         return false;
+    }
+
     FindClose(hFind);
 
     // Add CB fonts (ttf or otf) in fonts directory or subdirectories to system fonts.
     // Broadcast the font change.
-    if(addFontsFrom(fontsPath) > 0)
+    if (addFontsFrom(fontsPath) > 0)
     {
         SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
         return true;
     }
+
     return false;
 }
 
@@ -296,17 +311,16 @@ int removeFontsFrom(wchar_t fontsPath[])
     wchar_t fontFile[MAX_PATH], toFind[MAX_PATH];
     wchar_t newPath[MAX_PATH];
     int numFonts = 0;
-
     // First call removeFontsFrom(<subdirectory>) recursively for any subdirectory
     wcscpy(toFind, fontsPath);
     wcscat(toFind, L"\\*.*");
-
     hFind = FindFirstFile(toFind, &findData);
+
     if (hFind != INVALID_HANDLE_VALUE)
     {
         do // remove all fonts in subdirectories if they exist from system fonts
         {
-            if((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+            if ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
                     && (wcscmp(findData.cFileName, L"."))
                     && (wcscmp(findData.cFileName, L"..")))
             {
@@ -316,15 +330,15 @@ int removeFontsFrom(wchar_t fontsPath[])
                 wcscat(newPath, findData.cFileName);
                 numFonts += removeFontsFrom(newPath);
             }
-        }
-        while (FindNextFile(hFind, &findData));
+        } while (FindNextFile(hFind, &findData));
     }
-    FindClose(hFind);
 
+    FindClose(hFind);
     // Then remove CB fonts (ttf or otf) from system fonts if they exist in fontsPath directory
     wcscpy(fontFile, fontsPath);
     wcscat(fontFile, L"\\*.?tf");
     hFind = FindFirstFile(fontFile, &findData);
+
     if (hFind != INVALID_HANDLE_VALUE)
     {
         do
@@ -334,12 +348,13 @@ int removeFontsFrom(wchar_t fontsPath[])
             wcscat(fontFile, findData.cFileName);
 
             if (RemoveFontResource(fontFile))
+            {
                 numFonts++;
-        }
-        while (FindNextFile(hFind, &findData));
+            }
+        } while (FindNextFile(hFind, &findData));
     }
-    FindClose(hFind);
 
+    FindClose(hFind);
     return numFonts;
 }
 
@@ -356,14 +371,17 @@ int removeFonts()
     HANDLE hFind;
     wchar_t fontsPath[MAX_PATH];
     int numRemoved = 0;
-    if(isCodeblocksRunning()) // give up if another instance of CB is still running
+
+    if (isCodeblocksRunning()) // give up if another instance of CB is still running
+    {
         return  numRemoved;
+    }
 
     wcscpy(fontsPath, appDir);
     wcscat(fontsPath, fontsDir);
-
     // Give up if no fonts directory exists
     hFind = FindFirstFile(fontsPath, &findData);
+
     if (hFind == INVALID_HANDLE_VALUE)
     {
         FindClose(hFind);
@@ -372,8 +390,11 @@ int removeFonts()
 
     // Remove CB fonts (ttf or otf) previously loaded from the fonts directory or
     // subdirectories. Broadcast the font change.
-    if((numRemoved = removeFontsFrom(fontsPath)) > 0)
+    if ((numRemoved = removeFontsFrom(fontsPath)) > 0)
+    {
         SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
+    }
+
     return numRemoved;
 }
 
@@ -384,9 +405,8 @@ int main()
 {
     wchar_t cmdline[MAX_PATH];
     wchar_t arguments[MAX_PATH];
-    wchar_t *args; // pointer to the second argument on the command line
+    wchar_t * args; // pointer to the second argument on the command line
     bool notRunning = !isCodeblocksRunning(); // true if codeblocks is not running on entry
-
     // Console output will show only in debug build target
     wprintf(L"*******************************************************************\n");
     wprintf(L"*              Portable Code::Blocks Launcher v1.0.1              *\n");
@@ -396,7 +416,7 @@ int main()
     wprintf(L"*                        License: GPL v3                          *\n");
     wprintf(L"*******************************************************************\n");
 
-    if (! GetModuleFileNameW( NULL, appDir, MAX_PATH ))
+    if (! GetModuleFileNameW(NULL, appDir, MAX_PATH))
     {
         fwprintf(stdout,
                  L"Couldn't retrieve CBLauncher directory. Giving up!.. [Enter] to exit..");
@@ -404,9 +424,8 @@ int main()
         return 1;
     }
 
-    wchar_t *lastSlashPtr = wcsrchr( appDir, '\\' );
+    wchar_t * lastSlashPtr = wcsrchr(appDir, '\\');
     *(lastSlashPtr + 1) = '\0'; // Keep the '\'
-
     fwprintf(stdout, L"Launcher started in directory %ls\n", appDir);
 
     // Set APPDATA environment variable
@@ -420,37 +439,40 @@ int main()
 
     // Add tools subdirectories to %path%
     if (!setToolPath())
+    {
         fwprintf(stdout, L"Not modifying the PATH environment variable\n");
+    }
 
     // Add programmer fonts to system if CB is not already running
-    if(notRunning)
+    if (notRunning)
+    {
         addFonts();
+    }
 
     // Launch Code::Blocks. Pass on the commandline arguments of this process
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
-
     ZeroMemory(&si, sizeof(si));
     ZeroMemory(&pi, sizeof(pi));
     si.cb = sizeof(si);
-
     // Build the commandline
     wcscpy(cmdline, appDir);
     wcscat(cmdline, cmd);
-
     // Add the commandline arguments if they exist
     wcscpy(arguments, GetCommandLineW());
     args = wcschr(arguments, L' ');
-    if(args)
+
+    if (args)
     {
         wcscat(cmdline, L" ");
         wcscat(cmdline, args);
     }
+
     if (! CreateProcessW(NULL,
                          cmdline,
                          NULL, NULL,
                          FALSE, DETACHED_PROCESS, NULL, NULL,
-                         &si, &pi ))
+                         &si, &pi))
     {
         fwprintf(stdout, L"\nUnable to launch %ls\n[Enter] to exit..\n", cmdline);
         fwprintf(stdout, L"\n\tRemoved %d CB programmer fonts", removeFonts());
@@ -460,7 +482,8 @@ int main()
 
     // Wait until CB terminates
     wprintf(L"\nLaunched %ls. Waiting for process to exit\n", cmdline);
-    if(WaitForSingleObject(pi.hProcess, INFINITE) == WAIT_FAILED)
+
+    if (WaitForSingleObject(pi.hProcess, INFINITE) == WAIT_FAILED)
     {
         // (a failed launch may in fact never get here). Remove fonts if installed.
         fwprintf(stdout, L"\n\tRemoved %d CB programmer fonts", removeFonts());
@@ -473,6 +496,5 @@ int main()
     fwprintf(stdout, L"\n\tRemoved %d CB programmer fonts\n\tPress [Enter] to exit. ",
              removeFonts());
     getchar();
-
     return 0;
 }

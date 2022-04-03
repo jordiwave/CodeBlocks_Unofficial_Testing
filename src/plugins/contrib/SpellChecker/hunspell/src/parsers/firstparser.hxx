@@ -45,12 +45,13 @@
  *
  */
 
-class FirstParser : public TextParser {
- public:
-  explicit FirstParser(const char* wc);
-  virtual ~FirstParser();
+class FirstParser : public TextParser
+{
+    public:
+        explicit FirstParser(const char * wc);
+        virtual ~FirstParser();
 
-  virtual bool next_token(std::string&);
+        virtual bool next_token(std::string &);
 };
 
 #endif

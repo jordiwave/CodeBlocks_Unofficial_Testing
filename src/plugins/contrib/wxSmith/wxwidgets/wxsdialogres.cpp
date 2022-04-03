@@ -31,51 +31,52 @@ namespace
 {
 class wxsDialogResPreview: public wxDialog
 {
-public:
+    public:
 
-    wxsDialogResPreview(cb_unused wxWindow* Parent,wxsItemResData* Data): m_Data(Data)
-    {
-        m_Data->GetRootItem()->BuildPreview(this,pfExact);
-        wxAcceleratorEntry Acc[1];
-        Acc[0].Set(wxACCEL_NORMAL,WXK_ESCAPE,wxID_EXIT);
-        wxAcceleratorTable Table(1,Acc);
-        SetAcceleratorTable(Table);
-    }
+        wxsDialogResPreview(cb_unused wxWindow * Parent, wxsItemResData * Data): m_Data(Data)
+        {
+            m_Data->GetRootItem()->BuildPreview(this, pfExact);
+            wxAcceleratorEntry Acc[1];
+            Acc[0].Set(wxACCEL_NORMAL, WXK_ESCAPE, wxID_EXIT);
+            wxAcceleratorTable Table(1, Acc);
+            SetAcceleratorTable(Table);
+        }
 
-    ~wxsDialogResPreview()
-    {
-        m_Data->NotifyPreviewClosed();
-    }
+        ~wxsDialogResPreview()
+        {
+            m_Data->NotifyPreviewClosed();
+        }
 
-    void OnEscape(cb_unused wxCommandEvent& event)
-    {
-        Close();
-    }
-
-    void OnClose(cb_unused wxCloseEvent& event)
-    {
-        Destroy();
-    }
-
-    void OnButton(wxCommandEvent& event)
-    {
-        wxWindowID Id = event.GetId();
-        if ( Id == wxID_OK  ||
-                Id == wxID_APPLY ||
-                Id == wxID_CANCEL )
+        void OnEscape(cb_unused wxCommandEvent & event)
         {
             Close();
         }
-    }
 
-    wxsItemResData* m_Data;
+        void OnClose(cb_unused wxCloseEvent & event)
+        {
+            Destroy();
+        }
 
-    DECLARE_EVENT_TABLE()
+        void OnButton(wxCommandEvent & event)
+        {
+            wxWindowID Id = event.GetId();
+
+            if (Id == wxID_OK  ||
+                    Id == wxID_APPLY ||
+                    Id == wxID_CANCEL)
+            {
+                Close();
+            }
+        }
+
+        wxsItemResData * m_Data;
+
+        DECLARE_EVENT_TABLE()
 };
 
-BEGIN_EVENT_TABLE(wxsDialogResPreview,wxDialog)
-    EVT_BUTTON(wxID_ANY,wxsDialogResPreview::OnButton)
-    EVT_MENU(wxID_EXIT,wxsDialogResPreview::OnEscape)
+BEGIN_EVENT_TABLE(wxsDialogResPreview, wxDialog)
+    EVT_BUTTON(wxID_ANY, wxsDialogResPreview::OnButton)
+    EVT_MENU(wxID_EXIT, wxsDialogResPreview::OnEscape)
     EVT_CLOSE(wxsDialogResPreview::OnClose)
 END_EVENT_TABLE()
 }
@@ -92,9 +93,9 @@ wxString wxsDialogRes::OnGetAppBuildingCode()
                GetResourceName().c_str());
 }
 
-wxWindow* wxsDialogRes::OnBuildExactPreview(wxWindow* Parent,wxsItemResData* Data)
+wxWindow * wxsDialogRes::OnBuildExactPreview(wxWindow * Parent, wxsItemResData * Data)
 {
-    wxDialog* Dlg = new wxsDialogResPreview(Parent,Data);
+    wxDialog * Dlg = new wxsDialogResPreview(Parent, Data);
     Dlg->Show();
     return Dlg;
 }

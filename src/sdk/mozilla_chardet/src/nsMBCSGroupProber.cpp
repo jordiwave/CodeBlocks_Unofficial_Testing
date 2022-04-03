@@ -10,7 +10,7 @@
 #include "nsUniversalDetector.h"
 
 #if defined(DEBUG_chardet) || defined(DEBUG_jgmyers)
-const char *ProberName[] =
+const char * ProberName[] =
 {
     "UTF8",
     "SJIS",
@@ -26,23 +26,34 @@ const char *ProberName[] =
 nsMBCSGroupProber::nsMBCSGroupProber(uint32_t aLanguageFilter)
 {
     for (uint32_t i = 0; i < NUM_OF_PROBERS; i++)
+    {
         mProbers[i] = nullptr;
+    }
 
     mProbers[0] = new nsUTF8Prober();
+
     if (aLanguageFilter & NS_FILTER_JAPANESE)
     {
         mProbers[1] = new nsSJISProber(aLanguageFilter == NS_FILTER_JAPANESE);
         mProbers[2] = new nsEUCJPProber(aLanguageFilter == NS_FILTER_JAPANESE);
     }
+
     if (aLanguageFilter & NS_FILTER_CHINESE_SIMPLIFIED)
+    {
         mProbers[3] = new nsGB18030Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
+    }
+
     if (aLanguageFilter & NS_FILTER_KOREAN)
+    {
         mProbers[4] = new nsEUCKRProber(aLanguageFilter == NS_FILTER_KOREAN);
+    }
+
     if (aLanguageFilter & NS_FILTER_CHINESE_TRADITIONAL)
     {
         mProbers[5] = new nsBig5Prober(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
         mProbers[6] = new nsEUCTWProber(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
     }
+
     Reset();
 }
 
@@ -54,20 +65,25 @@ nsMBCSGroupProber::~nsMBCSGroupProber()
     }
 }
 
-const char* nsMBCSGroupProber::GetCharSetName()
+const char * nsMBCSGroupProber::GetCharSetName()
 {
     if (mBestGuess == -1)
     {
         GetConfidence();
+
         if (mBestGuess == -1)
+        {
             mBestGuess = 0;
+        }
     }
+
     return mProbers[mBestGuess]->GetCharSetName();
 }
 
 void  nsMBCSGroupProber::Reset(void)
 {
     mActiveNum = 0;
+
     for (uint32_t i = 0; i < NUM_OF_PROBERS; i++)
     {
         if (mProbers[i])
@@ -77,14 +93,17 @@ void  nsMBCSGroupProber::Reset(void)
             ++mActiveNum;
         }
         else
+        {
             mIsActive[i] = false;
+        }
     }
+
     mBestGuess = -1;
     mState = eDetecting;
     mKeepNext = 0;
 }
 
-nsProbingState nsMBCSGroupProber::HandleData(const char* aBuf, uint32_t aLen)
+nsProbingState nsMBCSGroupProber::HandleData(const char * aBuf, uint32_t aLen)
 {
     nsProbingState st;
     uint32_t start = 0;
@@ -96,27 +115,35 @@ nsProbingState nsMBCSGroupProber::HandleData(const char* aBuf, uint32_t aLen)
         if (aBuf[pos] & 0x80)
         {
             if (!keepNext)
+            {
                 start = pos;
+            }
+
             keepNext = 2;
         }
-        else if (keepNext)
-        {
-            if (--keepNext == 0)
+        else
+            if (keepNext)
             {
-                for (uint32_t i = 0; i < NUM_OF_PROBERS; i++)
+                if (--keepNext == 0)
                 {
-                    if (!mIsActive[i])
-                        continue;
-                    st = mProbers[i]->HandleData(aBuf + start, pos + 1 - start);
-                    if (st == eFoundIt)
+                    for (uint32_t i = 0; i < NUM_OF_PROBERS; i++)
                     {
-                        mBestGuess = i;
-                        mState = eFoundIt;
-                        return mState;
+                        if (!mIsActive[i])
+                        {
+                            continue;
+                        }
+
+                        st = mProbers[i]->HandleData(aBuf + start, pos + 1 - start);
+
+                        if (st == eFoundIt)
+                        {
+                            mBestGuess = i;
+                            mState = eFoundIt;
+                            return mState;
+                        }
                     }
                 }
             }
-        }
     }
 
     if (keepNext)
@@ -124,8 +151,12 @@ nsProbingState nsMBCSGroupProber::HandleData(const char* aBuf, uint32_t aLen)
         for (uint32_t i = 0; i < NUM_OF_PROBERS; i++)
         {
             if (!mIsActive[i])
+            {
                 continue;
+            }
+
             st = mProbers[i]->HandleData(aBuf + start, aLen - start);
+
             if (st == eFoundIt)
             {
                 mBestGuess = i;
@@ -134,8 +165,8 @@ nsProbingState nsMBCSGroupProber::HandleData(const char* aBuf, uint32_t aLen)
             }
         }
     }
-    mKeepNext = keepNext;
 
+    mKeepNext = keepNext;
     return mState;
 }
 
@@ -146,23 +177,30 @@ float nsMBCSGroupProber::GetConfidence(void)
 
     switch (mState)
     {
-    case eFoundIt:
-        return (float)0.99;
-    case eNotMe:
-        return (float)0.01;
-    default:
-        for (i = 0; i < NUM_OF_PROBERS; i++)
-        {
-            if (!mIsActive[i])
-                continue;
-            cf = mProbers[i]->GetConfidence();
-            if (bestConf < cf)
+        case eFoundIt:
+            return (float)0.99;
+
+        case eNotMe:
+            return (float)0.01;
+
+        default:
+            for (i = 0; i < NUM_OF_PROBERS; i++)
             {
-                bestConf = cf;
-                mBestGuess = i;
+                if (!mIsActive[i])
+                {
+                    continue;
+                }
+
+                cf = mProbers[i]->GetConfidence();
+
+                if (bestConf < cf)
+                {
+                    bestConf = cf;
+                    mBestGuess = i;
+                }
             }
-        }
     }
+
     return bestConf;
 }
 
@@ -171,12 +209,14 @@ void nsMBCSGroupProber::DumpStatus()
 {
     uint32_t i;
     float cf;
-
     GetConfidence();
+
     for (i = 0; i < NUM_OF_PROBERS; i++)
     {
         if (!mIsActive[i])
+        {
             printf("  MBCS inactive: [%s] (confidence is too low).\r\n", ProberName[i]);
+        }
         else
         {
             cf = mProbers[i]->GetConfidence();
@@ -187,7 +227,7 @@ void nsMBCSGroupProber::DumpStatus()
 #endif
 
 #ifdef DEBUG_jgmyers
-void nsMBCSGroupProber::GetDetectorState(nsUniversalDetector::DetectorState (&states)[nsUniversalDetector::NumDetectors], uint32_t &offset)
+void nsMBCSGroupProber::GetDetectorState(nsUniversalDetector::DetectorState(&states)[nsUniversalDetector::NumDetectors], uint32_t & offset)
 {
     for (uint32_t i = 0; i < NUM_OF_PROBERS; ++i)
     {

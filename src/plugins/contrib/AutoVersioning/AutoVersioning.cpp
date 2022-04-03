@@ -3,21 +3,21 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-#include <wx/dynarray.h>
-#include <wx/file.h>
-#include <wx/filefn.h>
-#include <wx/ffile.h>
-#include <wx/filename.h>
-#include <wx/intl.h>
-#include <wx/menu.h>
-#include <wx/msgdlg.h>
-#include <wx/timer.h>
-#include <cbproject.h>
-#include "globals.h"
-#include <manager.h>
-#include <projectbuildtarget.h>
-#include <projectmanager.h>
-#include <tinyxml.h>
+    #include <wx/dynarray.h>
+    #include <wx/file.h>
+    #include <wx/filefn.h>
+    #include <wx/ffile.h>
+    #include <wx/filename.h>
+    #include <wx/intl.h>
+    #include <wx/menu.h>
+    #include <wx/msgdlg.h>
+    #include <wx/timer.h>
+    #include <cbproject.h>
+    #include "globals.h"
+    #include <manager.h>
+    #include <projectbuildtarget.h>
+    #include <projectmanager.h>
+    #include <tinyxml.h>
 #endif
 #include <tinywxuni.h>
 #include <wx/textfile.h>
@@ -44,7 +44,7 @@ const int idMenuChangesLog = wxNewId();
 
 
 //{Event Table
-BEGIN_EVENT_TABLE(AutoVersioning,wxEvtHandler)
+BEGIN_EVENT_TABLE(AutoVersioning, wxEvtHandler)
     EVT_TIMER(-1, AutoVersioning::OnTimerVerify)
 
     EVT_UPDATE_UI(idMenuCommitChanges, AutoVersioning::OnUpdateUI)
@@ -65,7 +65,7 @@ PluginRegistrant<AutoVersioning> reg(_T("AutoVersioning"));
 AutoVersioning::AutoVersioning()
 {
     // hook to project loading procedure
-    ProjectLoaderHooks::HookFunctorBase* AutoVerHook =
+    ProjectLoaderHooks::HookFunctorBase * AutoVerHook =
         new ProjectLoaderHooks::HookFunctor<AutoVersioning>(this, &AutoVersioning::OnProjectLoadingHook);
     m_AutoVerHookId = ProjectLoaderHooks::RegisterHook(AutoVerHook);
     m_Modified = false;
@@ -83,12 +83,11 @@ void AutoVersioning::OnAttach()
 {
     if (!IsAttached())
     {
-        wxMessageBox(_("Error loading AutoVersioning Plugin!"),_("Error"),wxICON_ERROR );
+        wxMessageBox(_("Error loading AutoVersioning Plugin!"), _("Error"), wxICON_ERROR);
     }
 
-    m_timerStatus = new wxTimer(this,30000);
+    m_timerStatus = new wxTimer(this, 30000);
     m_timerStatus->Start(1000);
-
     //Register functions to events
     // register event sink
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<AutoVersioning, CodeBlocksEvent>(this, &AutoVersioning::OnProjectActivated));
@@ -104,16 +103,18 @@ void AutoVersioning::OnRelease(bool /*appShutDown*/)
     {
         m_timerStatus->Stop();
     }
+
     delete m_timerStatus;
     m_timerStatus = nullptr;
 }
 
-void AutoVersioning::BuildMenu(wxMenuBar* menuBar)
+void AutoVersioning::BuildMenu(wxMenuBar * menuBar)
 {
     int idProject = menuBar->FindMenu(_("&Project"));
+
     if (idProject != wxNOT_FOUND)
     {
-        wxMenu* project = menuBar->GetMenu(idProject);
+        wxMenu * project = menuBar->GetMenu(idProject);
         project->AppendSeparator();
         project->Append(idMenuAutoVersioning, _("Autoversioning"), _("Manage your project version"));
         project->Append(idMenuCommitChanges, _("Increment version"), _("Increments and update the version info"));
@@ -123,104 +124,121 @@ void AutoVersioning::BuildMenu(wxMenuBar* menuBar)
 //}
 
 //{Envent Functions
-void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading)
+void AutoVersioning::OnProjectLoadingHook(cbProject * project, TiXmlElement * elem, bool loading)
 {
-    if(loading)
+    if (loading)
     {
         // TODO (KILLERBOT) : should we have default values, in case something would be missing ?
         // OPTI : we could choose not to write out default values in the xml --> smaller cbp
         avConfig Config;
         m_IsVersioned[project] = false; // default not active unless we find xml for it
-        const TiXmlElement* Node = elem->FirstChildElement("AutoVersioning");
+        const TiXmlElement * Node = elem->FirstChildElement("AutoVersioning");
+
         if (Node)
         {
             m_IsVersioned[project] = true;
-            TiXmlHandle Handle(const_cast<TiXmlElement*>(Node));
-            if(const TiXmlElement* pElem = Handle.FirstChildElement("Scheme").ToElement())
+            TiXmlHandle Handle(const_cast<TiXmlElement *>(Node));
+
+            if (const TiXmlElement * pElem = Handle.FirstChildElement("Scheme").ToElement())
             {
                 int Help = 0;
-                if(pElem->QueryIntAttribute("minor_max", &Help) == TIXML_SUCCESS)
+
+                if (pElem->QueryIntAttribute("minor_max", &Help) == TIXML_SUCCESS)
                 {
                     Config.Scheme.MinorMax = static_cast<long>(Help);
                 }
-                if(pElem->QueryIntAttribute("build_max", &Help) == TIXML_SUCCESS)
+
+                if (pElem->QueryIntAttribute("build_max", &Help) == TIXML_SUCCESS)
                 {
                     Config.Scheme.BuildMax = static_cast<long>(Help);
                 }
-                if(pElem->QueryIntAttribute("rev_max", &Help) == TIXML_SUCCESS)
+
+                if (pElem->QueryIntAttribute("rev_max", &Help) == TIXML_SUCCESS)
                 {
                     Config.Scheme.RevisionMax = static_cast<long>(Help);
                 }
-                if(pElem->QueryIntAttribute("rev_rand_max", &Help) == TIXML_SUCCESS)
+
+                if (pElem->QueryIntAttribute("rev_rand_max", &Help) == TIXML_SUCCESS)
                 {
                     Config.Scheme.RevisionRandMax = static_cast<long>(Help);
                 }
-                if(pElem->QueryIntAttribute("build_times_to_increment_minor", &Help) == TIXML_SUCCESS)
+
+                if (pElem->QueryIntAttribute("build_times_to_increment_minor", &Help) == TIXML_SUCCESS)
                 {
                     Config.Scheme.BuildTimesToIncrementMinor = static_cast<long>(Help);
                 }
             }
-            if(const TiXmlElement* pElem = Handle.FirstChildElement("Settings").ToElement())
+
+            if (const TiXmlElement * pElem = Handle.FirstChildElement("Settings").ToElement())
             {
                 Config.Settings.Language = pElem->Attribute("language");
                 Config.Settings.SvnDirectory = pElem->Attribute("svn_directory");
                 Config.Settings.HeaderPath = pElem->Attribute("header_path");
-
                 int Help = 0;
-                if(pElem->QueryIntAttribute("autoincrement", &Help) == TIXML_SUCCESS)
+
+                if (pElem->QueryIntAttribute("autoincrement", &Help) == TIXML_SUCCESS)
                 {
-                    Config.Settings.Autoincrement = Help?true:false;
+                    Config.Settings.Autoincrement = Help ? true : false;
                 }
-                if(pElem->QueryIntAttribute("date_declarations", &Help) == TIXML_SUCCESS)
+
+                if (pElem->QueryIntAttribute("date_declarations", &Help) == TIXML_SUCCESS)
                 {
-                    Config.Settings.DateDeclarations = Help?true:false;
+                    Config.Settings.DateDeclarations = Help ? true : false;
                 }
-                if(pElem->QueryIntAttribute("use_define", &Help) == TIXML_SUCCESS)
+
+                if (pElem->QueryIntAttribute("use_define", &Help) == TIXML_SUCCESS)
                 {
-                    Config.Settings.UseDefine = Help?true:false;
+                    Config.Settings.UseDefine = Help ? true : false;
                 }
+
                 // GJH 03/03/10 Added manifest updating.
-                if(pElem->QueryIntAttribute("update_manifest", &Help) == TIXML_SUCCESS)
+                if (pElem->QueryIntAttribute("update_manifest", &Help) == TIXML_SUCCESS)
                 {
-                    Config.Settings.UpdateManifest = Help?true:false;
+                    Config.Settings.UpdateManifest = Help ? true : false;
                 }
-                if(pElem->QueryIntAttribute("do_auto_increment", &Help) == TIXML_SUCCESS)
+
+                if (pElem->QueryIntAttribute("do_auto_increment", &Help) == TIXML_SUCCESS)
                 {
-                    Config.Settings.DoAutoIncrement = Help?true:false;
+                    Config.Settings.DoAutoIncrement = Help ? true : false;
                 }
-                if(pElem->QueryIntAttribute("ask_to_increment", &Help) == TIXML_SUCCESS)
+
+                if (pElem->QueryIntAttribute("ask_to_increment", &Help) == TIXML_SUCCESS)
                 {
-                    Config.Settings.AskToIncrement = Help?true:false;
+                    Config.Settings.AskToIncrement = Help ? true : false;
                 }
-                if(pElem->QueryIntAttribute("svn", &Help) == TIXML_SUCCESS)
+
+                if (pElem->QueryIntAttribute("svn", &Help) == TIXML_SUCCESS)
                 {
-                    Config.Settings.Svn = Help?true:false;
+                    Config.Settings.Svn = Help ? true : false;
                 }
             }
-            if(const TiXmlElement* pElem = Handle.FirstChildElement("Code").ToElement())
+
+            if (const TiXmlElement * pElem = Handle.FirstChildElement("Code").ToElement())
             {
                 Config.Code.HeaderGuard = pElem->Attribute("header_guard");
                 Config.Code.NameSpace = pElem->Attribute("namespace");
                 Config.Code.Prefix = pElem->Attribute("prefix");
             }
-            if(const TiXmlElement* pElem = Handle.FirstChildElement("Changes_Log").ToElement())
+
+            if (const TiXmlElement * pElem = Handle.FirstChildElement("Changes_Log").ToElement())
             {
                 Config.ChangesLog.AppTitle = pElem->Attribute("app_title");
                 Config.ChangesLog.ChangesLogPath = pElem->Attribute("changeslog_path");
-
                 int Help = 0;
-                if(pElem->QueryIntAttribute("show_changes_editor", &Help) == TIXML_SUCCESS)
+
+                if (pElem->QueryIntAttribute("show_changes_editor", &Help) == TIXML_SUCCESS)
                 {
-                    Config.ChangesLog.ShowChangesEditor = Help?true:false;
+                    Config.ChangesLog.ShowChangesEditor = Help ? true : false;
                 }
             }
+
             // do not try to read from version.h, if autoversioning is not enabled for the project,
             // to avoid error messages if verbose debuglog is on
             avVersionState VersionState;
-            m_versionHeaderPath = FileNormalize(cbC2U(Config.Settings.HeaderPath.c_str()),project->GetBasePath());
-
+            m_versionHeaderPath = FileNormalize(cbC2U(Config.Settings.HeaderPath.c_str()), project->GetBasePath());
             avHeader VersionHeader;
-            if(VersionHeader.LoadFile(m_versionHeaderPath))
+
+            if (VersionHeader.LoadFile(m_versionHeaderPath))
             {
                 VersionState.Values.Major = VersionHeader.GetValue(_("MAJOR"));
                 VersionState.Values.Minor = VersionHeader.GetValue(_("MINOR"));
@@ -231,6 +249,7 @@ void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem
                 VersionState.Status.Abbreviation = cbU2C(VersionHeader.GetString(_("STATUS_SHORT")));
                 VersionState.BuildHistory = VersionHeader.GetValue(_("BUILD_HISTORY"));
             }
+
             m_ProjectMap[project] = Config;
             m_ProjectMapVersionState[project] = VersionState;
         }
@@ -244,20 +263,20 @@ void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem
         // if plugins that use that element are not loaded atm).
         // so, instead of blindly inserting the element, we must first check it's
         // not already there (and if it is, clear its contents)
-        if(m_IsVersioned[project])
+        if (m_IsVersioned[project])
         {
-            TiXmlElement* node = elem->FirstChildElement("AutoVersioning");
+            TiXmlElement * node = elem->FirstChildElement("AutoVersioning");
+
             if (!node)
             {
                 node = elem->InsertEndChild(TiXmlElement("AutoVersioning"))->ToElement();
             }
-            node->Clear();
 
+            node->Clear();
             //Used this instead of GetConfig() since if the project is not activated
             //before saving, then the m_Project is not updated.
             //This will happen when having multiple projects opened.
             avConfig NewConfig = m_ProjectMap[project];
-
             TiXmlElement Scheme("Scheme");
             Scheme.SetAttribute("minor_max", NewConfig.Scheme.MinorMax);
             Scheme.SetAttribute("build_max", NewConfig.Scheme.BuildMax);
@@ -289,11 +308,12 @@ void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem
             Code.SetAttribute("prefix", NewConfig.Code.Prefix.c_str());
             node->InsertEndChild(Code);
         }
+
         // TODO (KILLERBOT) : what if we decide to not version anymore : how to remove ??
     }
 }// OnProjectLoadingHook
 
-void AutoVersioning::OnProjectActivated(CodeBlocksEvent& event)
+void AutoVersioning::OnProjectActivated(CodeBlocksEvent & event)
 {
     if (IsAttached())
     {
@@ -302,14 +322,15 @@ void AutoVersioning::OnProjectActivated(CodeBlocksEvent& event)
     }
 }// OnProjectActivated
 
-void AutoVersioning::OnProjectClosed(CodeBlocksEvent& event)
+void AutoVersioning::OnProjectClosed(CodeBlocksEvent & event)
 {
     if (IsAttached())
     {
         m_ProjectMap.erase(event.GetProject());
         m_ProjectMapVersionState.erase(event.GetProject());
         m_IsVersioned.erase(event.GetProject());
-        if(m_Project == event.GetProject())
+
+        if (m_Project == event.GetProject())
         {
             // should always be the case (??? we hope ??)
             m_Project = nullptr;
@@ -320,7 +341,7 @@ void AutoVersioning::OnProjectClosed(CodeBlocksEvent& event)
 // KILLERBOT : TODO : only do this when active (!!!!!!!!!!!), ie when autoversioning this project
 // BIG QUESTION : what will happen on rebuild workspace, will every project being build
 // be activated and each has the compilerstarted/Finished ?????
-void AutoVersioning::OnCompilerStarted(CodeBlocksEvent& event)
+void AutoVersioning::OnCompilerStarted(CodeBlocksEvent & event)
 {
     if (m_Project && IsAttached() && m_IsVersioned[event.GetProject()])
     {
@@ -328,22 +349,24 @@ void AutoVersioning::OnCompilerStarted(CodeBlocksEvent& event)
         {
             const bool doAutoIncrement = GetConfig().Settings.DoAutoIncrement;
             const bool askToIncrement = GetConfig().Settings.AskToIncrement;
+
             if (doAutoIncrement && askToIncrement)
             {
-                if (wxMessageBox(_("Do you want to increment the version?"),_T(""),wxYES_NO) == wxYES)
+                if (wxMessageBox(_("Do you want to increment the version?"), _T(""), wxYES_NO) == wxYES)
                 {
                     CommitChanges();
                 }
             }
-            else if(doAutoIncrement)
-            {
-                CommitChanges();
-            }
+            else
+                if (doAutoIncrement)
+                {
+                    CommitChanges();
+                }
         }
     }
 } // end of OnCompilerStarted
 
-void AutoVersioning::OnCompilerFinished(CodeBlocksEvent& event)
+void AutoVersioning::OnCompilerFinished(CodeBlocksEvent & event)
 {
     if (m_Project && IsAttached() && m_IsVersioned[event.GetProject()])
     {
@@ -351,7 +374,7 @@ void AutoVersioning::OnCompilerFinished(CodeBlocksEvent& event)
     }
 } // end of OnCompilerFinished
 
-void AutoVersioning::OnTimerVerify(wxTimerEvent& WXUNUSED(event))
+void AutoVersioning::OnTimerVerify(wxTimerEvent & WXUNUSED(event))
 {
     if (m_Project && IsAttached() && m_IsVersioned[m_Project])
     {
@@ -359,7 +382,8 @@ void AutoVersioning::OnTimerVerify(wxTimerEvent& WXUNUSED(event))
         {
             for (FilesList::iterator it = m_Project->GetFilesList().begin(); it != m_Project->GetFilesList().end(); ++it)
             {
-                const ProjectFile* file = *it;
+                const ProjectFile * file = *it;
+
                 if (file->GetFileState() == fvsModified)
                 {
                     m_Modified = true;
@@ -370,7 +394,7 @@ void AutoVersioning::OnTimerVerify(wxTimerEvent& WXUNUSED(event))
     }
 } // end of OnTimerVerify
 
-void AutoVersioning::OnMenuAutoVersioning(wxCommandEvent&)
+void AutoVersioning::OnMenuAutoVersioning(wxCommandEvent &)
 {
     if (IsAttached())
     {
@@ -383,9 +407,9 @@ void AutoVersioning::OnMenuAutoVersioning(wxCommandEvent&)
             }
             else
             {
-                if (wxMessageBox(_("Configure the project \"") + m_Project->GetTitle() + _("\" for Autoversioning?"),_("Autoversioning"),wxYES_NO) == wxYES)
+                if (wxMessageBox(_("Configure the project \"") + m_Project->GetTitle() + _("\" for Autoversioning?"), _("Autoversioning"), wxYES_NO) == wxYES)
                 {
-                    if(wxFileExists(m_Project->GetBasePath() + _T("version.h")))
+                    if (wxFileExists(m_Project->GetBasePath() + _T("version.h")))
                     {
                         wxMessageBox(
                             _T("The header version.h already exist on your projects path. "
@@ -401,15 +425,15 @@ void AutoVersioning::OnMenuAutoVersioning(wxCommandEvent&)
                     m_IsVersioned[m_Project] = true;
                     // just becasue we activated the project becomes modified
                     m_Project->SetModified();
-
                     SetVersionAndSettings(*m_Project);
                     UpdateVersionHeader();
-
                     wxArrayInt target_array;
+
                     for (int i = 0; i < m_Project->GetBuildTargetsCount(); ++i)
                     {
                         target_array.Add(i);
                     }
+
                     Manager::Get()->GetProjectManager()->AddFileToProject(m_versionHeaderPath, m_Project, target_array);
                     Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
                     wxMessageBox(_("Project configured!"));
@@ -423,51 +447,53 @@ void AutoVersioning::OnMenuAutoVersioning(wxCommandEvent&)
     }
 }
 
-void AutoVersioning::OnMenuCommitChanges(wxCommandEvent&)
+void AutoVersioning::OnMenuCommitChanges(wxCommandEvent &)
 {
     if (m_Project && IsAttached() && m_IsVersioned[m_Project])
     {
-        if(m_Modified)
+        if (m_Modified)
         {
             CommitChanges();
         }
     }
 }
 
-void AutoVersioning::OnMenuChangesLog(wxCommandEvent&)
+void AutoVersioning::OnMenuChangesLog(wxCommandEvent &)
 {
     GenerateChanges();
 }
 
-void AutoVersioning::OnUpdateUI(wxUpdateUIEvent& event)
+void AutoVersioning::OnUpdateUI(wxUpdateUIEvent & event)
 {
     if (IsAttached())
     {
         if (m_Project)
         {
-            if(event.GetId() == idMenuAutoVersioning)
+            if (event.GetId() == idMenuAutoVersioning)
             {
                 event.Enable(true);
             }
-            else if (m_IsVersioned[m_Project])
-            {
-                if (m_Modified)
+            else
+                if (m_IsVersioned[m_Project])
                 {
-                    event.Enable(true);
-                }
-                else if(event.GetId() == idMenuChangesLog)
-                {
-                    event.Enable(true);
+                    if (m_Modified)
+                    {
+                        event.Enable(true);
+                    }
+                    else
+                        if (event.GetId() == idMenuChangesLog)
+                        {
+                            event.Enable(true);
+                        }
+                        else
+                        {
+                            event.Enable(false);
+                        }
                 }
                 else
                 {
                     event.Enable(false);
                 }
-            }
-            else
-            {
-                event.Enable(false);
-            }
         }
         else
         {
@@ -478,51 +504,42 @@ void AutoVersioning::OnUpdateUI(wxUpdateUIEvent& event)
 //}
 
 //{Functions
-void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
+void AutoVersioning::SetVersionAndSettings(cbProject & Project, bool update)
 {
     // KILLERBOT : in case our struct would have a constructor, then no need to have an if/else here
     // --> init in correct place then !!!!!!! TODO
     m_timerStatus->Stop();
-    avVersionEditorDlg VersionEditorDialog((wxWindow*) Manager::Get()->GetAppWindow(), 0L);
-
+    avVersionEditorDlg VersionEditorDialog((wxWindow *) Manager::Get()->GetAppWindow(), 0L);
     VersionEditorDialog.SetCurrentProject(Project.GetTitle());
-
     VersionEditorDialog.SetMajor(GetVersionState().Values.Major);
     VersionEditorDialog.SetMinor(GetVersionState().Values.Minor);
     VersionEditorDialog.SetBuild(GetVersionState().Values.Build);
     VersionEditorDialog.SetRevision(GetVersionState().Values.Revision);
     VersionEditorDialog.SetCount(GetVersionState().Values.BuildCount);
-
     VersionEditorDialog.SetAuto(GetConfig().Settings.Autoincrement);
     VersionEditorDialog.SetDates(GetConfig().Settings.DateDeclarations);
     VersionEditorDialog.SetDefine(GetConfig().Settings.UseDefine);
     // GJH 03/03/10 Added manifest updating.
     VersionEditorDialog.SetManifest(GetConfig().Settings.UpdateManifest);
-
     VersionEditorDialog.SetSvn(GetConfig().Settings.Svn);
     VersionEditorDialog.SetSvnDirectory(cbC2U(GetConfig().Settings.SvnDirectory.c_str()));
     VersionEditorDialog.SetCommit(GetConfig().Settings.DoAutoIncrement);
     VersionEditorDialog.SetCommitAsk(GetConfig().Settings.AskToIncrement);
     VersionEditorDialog.SetLanguage(cbC2U(GetConfig().Settings.Language.c_str()));
     VersionEditorDialog.SetHeaderPath(cbC2U(GetConfig().Settings.HeaderPath.c_str()));
-
     VersionEditorDialog.SetStatus(cbC2U(GetVersionState().Status.SoftwareStatus.c_str()));
     VersionEditorDialog.SetStatusAbbreviation(cbC2U(GetVersionState().Status.Abbreviation.c_str()));
-
     VersionEditorDialog.SetMinorMaximum(GetConfig().Scheme.MinorMax);
     VersionEditorDialog.SetBuildMaximum(GetConfig().Scheme.BuildMax);
     VersionEditorDialog.SetRevisionMaximum(GetConfig().Scheme.RevisionMax);
     VersionEditorDialog.SetRevisionRandomMaximum(GetConfig().Scheme.RevisionRandMax);
     VersionEditorDialog.SetBuildTimesToMinorIncrement(GetConfig().Scheme.BuildTimesToIncrementMinor);
-
     VersionEditorDialog.SetChanges(GetConfig().ChangesLog.ShowChangesEditor);
     VersionEditorDialog.SetChangesTitle(cbC2U(GetConfig().ChangesLog.AppTitle.c_str()));
     VersionEditorDialog.SetChangesLogPath(cbC2U(GetConfig().ChangesLog.ChangesLogPath.c_str()));
-
     VersionEditorDialog.SetHeaderGuard(cbC2U(GetConfig().Code.HeaderGuard.c_str()));
     VersionEditorDialog.SetNamespace(cbC2U(GetConfig().Code.NameSpace.c_str()));
     VersionEditorDialog.SetPrefix(cbC2U(GetConfig().Code.Prefix.c_str()));
-
     PlaceWindow(&VersionEditorDialog);
     VersionEditorDialog.ShowModal();
     // allright let's call all the getters
@@ -549,15 +566,15 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     GetConfig().Code.HeaderGuard = cbU2C(VersionEditorDialog.GetHeaderGuard());
     GetConfig().Code.NameSpace = cbU2C(VersionEditorDialog.GetNamespace());
     GetConfig().Code.Prefix = cbU2C(VersionEditorDialog.GetPrefix());
-
     //Save Header path
     m_versionHeaderPath = cbC2U(GetConfig().Settings.HeaderPath.c_str());
 
-    if(OldConfig != GetConfig())
+    if (OldConfig != GetConfig())
     {
         // settings have changed => Project is to be considered changed
         Project.SetModified(true);
     }
+
     // let's update the current version state values in case they were adjusted in the gui
     // and when the time is right they are put in the version.h (when is that time ???)
     avVersionState OldState = GetVersionState();
@@ -566,7 +583,6 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     GetVersionState().Values.Build = VersionEditorDialog.GetBuild();
     GetVersionState().Values.Revision = VersionEditorDialog.GetRevision();
     GetVersionState().Values.BuildCount = VersionEditorDialog.GetCount();
-
     GetVersionState().Status.SoftwareStatus = cbU2C(VersionEditorDialog.GetStatus());
     GetVersionState().Status.Abbreviation = cbU2C(VersionEditorDialog.GetStatusAbbreviation());
 
@@ -576,6 +592,7 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
         GetVersionState().BuildHistory = 0;
         m_Modified = false;
     }
+
     m_timerStatus->Start(1000);
 }
 
@@ -586,7 +603,6 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
 void AutoVersioning::UpdateVersionHeader()
 {
     m_timerStatus->Stop();
-
     //Declares the header guard to be used based on the filename
     wxFileName filename(cbC2U(GetConfig().Settings.HeaderPath.c_str()));
     wxString headerGuard;
@@ -661,7 +677,6 @@ void AutoVersioning::UpdateVersionHeader()
     headerOutput << '\t' << def_define_char << prefix << "STATUS"       << def_array << def_equal << " \"" << cbC2U(GetVersionState().Status.SoftwareStatus.c_str()) << '"' << def_end << '\n';
     headerOutput << '\t' << def_define_char << prefix << "STATUS_SHORT" << def_array << def_equal << " \"" << cbC2U(GetVersionState().Status.Abbreviation.c_str())   << '"' << def_end << '\n';
     headerOutput << '\n';
-
     wxString myPrintf;
     headerOutput << '\t' << "//Standard Version Type" << '\n';
     myPrintf.Printf("%ld", GetVersionState().Values.Major);
@@ -673,28 +688,27 @@ void AutoVersioning::UpdateVersionHeader()
     myPrintf.Printf("%ld", GetVersionState().Values.Revision);
     headerOutput << '\t' << def_define_long << prefix << "REVISION " << def_equal << myPrintf << def_end << '\n';
     headerOutput << '\n';
-
     headerOutput << '\t' << "//Miscellaneous Version Types" << '\n';
     myPrintf.Printf("%ld", GetVersionState().Values.BuildCount);
-    headerOutput << '\t' << def_define_long << prefix << "BUILDS_COUNT " << def_equal << myPrintf << def_end <<'\n';
-
+    headerOutput << '\t' << def_define_long << prefix << "BUILDS_COUNT " << def_equal << myPrintf << def_end << '\n';
     myPrintf.Printf("%ld,%ld,%ld,%ld", GetVersionState().Values.Major, GetVersionState().Values.Minor,
                     GetVersionState().Values.Build, GetVersionState().Values.Revision);
     headerOutput << '\t' << "#define " << prefix << "RC_FILEVERSION " << myPrintf << '\n';
-
     myPrintf.Printf("\"%ld, %ld, %ld, %ld\\0\"", GetVersionState().Values.Major, GetVersionState().Values.Minor,
                     GetVersionState().Values.Build, GetVersionState().Values.Revision);
     headerOutput << '\t' << "#define " << prefix << "RC_FILEVERSION_STRING " << myPrintf << '\n';
-
     myPrintf.Printf("\"%ld.%ld.%ld.%ld\"", GetVersionState().Values.Major, GetVersionState().Values.Minor,
                     GetVersionState().Values.Build, GetVersionState().Values.Revision);
     headerOutput << '\t' << def_define_char << prefix << "FULLVERSION_STRING " << def_array << def_equal << myPrintf << def_end << '\n';
 
     if (GetConfig().Settings.Svn)
     {
-        wxString revision,date;
+        wxString revision, date;
+
         if (!QuerySvn(cbC2U(GetConfig().Settings.SvnDirectory.c_str()), revision, date))
-            wxMessageBox(_("Possible Causes:\n-You don't have SVN installed.\n-Incompatible version of SVN.\n-SVN configuration files not found.\n\nVerify the Autoversioning SVN directory."),_("SVN Error"),wxICON_ERROR);
+        {
+            wxMessageBox(_("Possible Causes:\n-You don't have SVN installed.\n-Incompatible version of SVN.\n-SVN configuration files not found.\n\nVerify the Autoversioning SVN directory."), _("SVN Error"), wxICON_ERROR);
+        }
 
         headerOutput << '\n';
         headerOutput << '\t' << "//SVN Version" << '\n';
@@ -706,7 +720,6 @@ void AutoVersioning::UpdateVersionHeader()
     headerOutput << '\t' << "//These values are to keep track of your versioning state, don't modify them." << '\n';
     myPrintf.Printf("%ld", GetVersionState().BuildHistory);
     headerOutput << '\t' << def_define_long << prefix << "BUILD_HISTORY " << def_equal << myPrintf << def_end << '\n';
-
     headerOutput << '\n';
 
     if (cbC2U(GetConfig().Settings.Language.c_str()) == "C++")
@@ -715,12 +728,10 @@ void AutoVersioning::UpdateVersionHeader()
     }
 
     headerOutput << "#endif //" << headerGuard << '\n';
-
     m_versionHeaderPath = FileNormalize(cbC2U(GetConfig().Settings.HeaderPath.c_str()), m_Project->GetBasePath());
     wxFile versionHeaderFile(m_versionHeaderPath, wxFile::write);
     versionHeaderFile.Write(headerOutput);
     versionHeaderFile.Close();
-
     m_timerStatus->Start(1000);
 }
 
@@ -743,18 +754,21 @@ void AutoVersioning::UpdateManifest()
 {
     wxFileName fnManifest(Manager::Get()->GetProjectManager()->GetActiveProject()->GetCommonTopLevelPath() + wxT("manifest.xml"));
     wxString sPathManifest(fnManifest.GetFullPath());
+
     if (wxFile::Exists(sPathManifest))
     {
         wxTextFile fileManifest(sPathManifest);
         fileManifest.Open();
-        if(fileManifest.IsOpened())
+
+        if (fileManifest.IsOpened())
         {
             fileManifest.GetFirstLine();
             wxString sLine;
             size_t i;
-            while(!(sLine = fileManifest.GetNextLine()).IsEmpty())
+
+            while (!(sLine = fileManifest.GetNextLine()).IsEmpty())
             {
-                if(sLine.Find(wxT("<Value version=")) != wxNOT_FOUND)
+                if (sLine.Find(wxT("<Value version=")) != wxNOT_FOUND)
                 {
                     i = fileManifest.GetCurrentLine();
                     int iFirst, iLast;
@@ -785,7 +799,7 @@ void AutoVersioning::CommitChanges()
         if (m_Modified)
         {
             srand((unsigned)time(0));
-            GetVersionState().Values.Revision += 1 + rand( ) % GetConfig().Scheme.RevisionRandMax;
+            GetVersionState().Values.Revision += 1 + rand() % GetConfig().Scheme.RevisionRandMax;
 
             if ((GetConfig().Scheme.RevisionMax != 0) && (GetVersionState().Values.Revision > GetConfig().Scheme.RevisionMax))
             {
@@ -796,118 +810,111 @@ void AutoVersioning::CommitChanges()
             {
                 ++GetVersionState().Values.Build;
             }
-            else if(GetVersionState().Values.Build >= GetConfig().Scheme.BuildMax)
-            {
-                GetVersionState().Values.Build = 0;
-            }
             else
-            {
-                ++GetVersionState().Values.Build;
-            }
-            if(GetConfig().Settings.Autoincrement)
+                if (GetVersionState().Values.Build >= GetConfig().Scheme.BuildMax)
+                {
+                    GetVersionState().Values.Build = 0;
+                }
+                else
+                {
+                    ++GetVersionState().Values.Build;
+                }
+
+            if (GetConfig().Settings.Autoincrement)
             {
                 ++GetVersionState().BuildHistory;
-                if(GetVersionState().BuildHistory >= GetConfig().Scheme.BuildTimesToIncrementMinor)
+
+                if (GetVersionState().BuildHistory >= GetConfig().Scheme.BuildTimesToIncrementMinor)
                 {
                     GetVersionState().BuildHistory = 0;
                     ++GetVersionState().Values.Minor;
                 }
+
                 if (GetVersionState().Values.Minor > GetConfig().Scheme.MinorMax)
                 {
                     GetVersionState().Values.Minor = 0;
                     ++GetVersionState().Values.Major;
                 }
             }
-            if(GetConfig().ChangesLog.ShowChangesEditor)
+
+            if (GetConfig().ChangesLog.ShowChangesEditor)
             {
                 GenerateChanges();
             }
-            m_Project->SaveAllFiles();
 
+            m_Project->SaveAllFiles();
             m_Modified = false;
             UpdateVersionHeader();
+
             // GJH 03/03/10 Added manifest updating.
-            if(GetConfig().Settings.UpdateManifest)
+            if (GetConfig().Settings.UpdateManifest)
             {
                 UpdateManifest();
             }
-
         }
     }
 }
 
 void AutoVersioning::GenerateChanges()
 {
-    avChangesDlg changesDlg((wxWindow*) Manager::Get()->GetAppWindow(),0L);
+    avChangesDlg changesDlg((wxWindow *) Manager::Get()->GetAppWindow(), 0L);
     changesDlg.SetTemporaryChangesFile(m_Project->GetBasePath() + _T("changes.tmp"));
     PlaceWindow(&changesDlg);
     changesDlg.ShowModal();
-
     wxString changes = changesDlg.Changes();
 
     if (!changes.IsEmpty())
     {
         changes.Prepend(_T("        -"));
         changes.Replace(_T("\n"), _T("\n        -"));
-
         wxDateTime actualDate = wxDateTime::Now();
         wxString changesTitle = cbC2U(GetConfig().ChangesLog.AppTitle.c_str());
-
         changesTitle.Replace(_T("%d"), actualDate.Format(_T("%d")));
         changesTitle.Replace(_T("%o"), actualDate.Format(_T("%m")));
         changesTitle.Replace(_T("%y"), actualDate.Format(_T("%Y")));
-
         wxString value;
         value.Printf(_T("%ld"), GetVersionState().Values.Major);
         changesTitle.Replace(_T("%M"), value);
-
         value.Printf(_T("%ld"), GetVersionState().Values.Minor);
         changesTitle.Replace(_T("%m"), value);
-
         value.Printf(_T("%ld"), GetVersionState().Values.Build);
         changesTitle.Replace(_T("%b"), value);
-
         value.Printf(_T("%ld"), GetVersionState().Values.Revision);
         changesTitle.Replace(_T("%r"), value);
-
-        value.Printf(_T("%d"), GetConfig().Settings.Svn?1:0);
-        changesTitle.Replace(_T("%s"),value);
-
+        value.Printf(_T("%d"), GetConfig().Settings.Svn ? 1 : 0);
+        changesTitle.Replace(_T("%s"), value);
         changesTitle.Replace(_T("%T"), cbC2U(GetVersionState().Status.SoftwareStatus.c_str()));
         changesTitle.Replace(_T("%t"), cbC2U(GetVersionState().Status.Abbreviation.c_str()));
         changesTitle.Replace(_T("%p"), m_Project->GetTitle());
-
         wxString changesFile = FileNormalize(cbC2U(GetConfig().ChangesLog.ChangesLogPath.c_str()), m_Project->GetBasePath());
         wxString changesCurrentContent;
+
         if (wxFile::Exists(changesFile))
         {
             wxFFile file;
-
             file.Open(changesFile);
             file.ReadAll(&changesCurrentContent);
             file.Close();
         }
 
         wxString changesOutput = _T("");
-
         changesOutput << actualDate.Format(_T("%d %B %Y\n"));
         changesOutput << _T("   ") << changesTitle << _T("\n");
         changesOutput << _T("\n     Change log:\n");
         changesOutput << changes << _T("\n\n");
         changesOutput << changesCurrentContent;
-
         wxFile file;
-        file.Open(changesFile,wxFile::write);
+        file.Open(changesFile, wxFile::write);
         file.Write(changesOutput);
         file.Close();
-
     }//If not changes.IsEmpty()
 }
 
-wxString AutoVersioning::FileNormalize(const wxString& relativeFile, const wxString& workingDirectory)
+wxString AutoVersioning::FileNormalize(const wxString & relativeFile, const wxString & workingDirectory)
 {
     wxFileName fileNormalize(relativeFile);
-    if(fileNormalize.Normalize(wxPATH_NORM_ABSOLUTE,workingDirectory))
+
+    if (fileNormalize.Normalize(wxPATH_NORM_ABSOLUTE, workingDirectory))
     {
         //If everything is ok returns absolute path
         return fileNormalize.GetFullPath();
@@ -919,12 +926,12 @@ wxString AutoVersioning::FileNormalize(const wxString& relativeFile, const wxStr
     }
 }
 
-avConfig& AutoVersioning::GetConfig()
+avConfig & AutoVersioning::GetConfig()
 {
     return m_ProjectMap[m_Project];
 } // end of GetConfig
 
-avVersionState& AutoVersioning::GetVersionState()
+avVersionState & AutoVersioning::GetVersionState()
 {
     return m_ProjectMapVersionState[m_Project];
 } // end of GetVersionState

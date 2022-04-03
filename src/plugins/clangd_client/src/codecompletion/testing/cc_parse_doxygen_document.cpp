@@ -17,7 +17,7 @@ enum ENUM
 /// Def4
 #define DEF4 1
 
-int main(int argc, char* argv[])
+int main(int argc, char * argv[])
 {
     puts("Hello World!");
     return 0;

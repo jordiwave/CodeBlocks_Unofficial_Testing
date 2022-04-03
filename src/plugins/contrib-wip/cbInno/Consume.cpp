@@ -3,7 +3,7 @@
 #include <manager.h>
 #include <logmanager.h>
 
-Consume::Consume(wxInputStream* out,int log) : wxThread(wxTHREAD_DETACHED)
+Consume::Consume(wxInputStream * out, int log) : wxThread(wxTHREAD_DETACHED)
 {
     m_out = out;
     m_log = log;
@@ -12,21 +12,26 @@ Consume::Consume(wxInputStream* out,int log) : wxThread(wxTHREAD_DETACHED)
 
 wxThread::ExitCode Consume::Entry()
 {
-    while(!TestDestroy())
+    while (!TestDestroy())
     {
         wxString text;
-        while( m_out->CanRead())
+
+        while (m_out->CanRead())
         {
             int c = m_out->GetC();
-            if( c == '\n')
+
+            if (c == '\n')
             {
                 Manager::Get()->GetLogManager()->Log(text, m_log);
                 text.clear();
             }
             else
+            {
                 text += c;
+            }
         }
-        if( !text.empty())
+
+        if (!text.empty())
         {
             Manager::Get()->GetLogManager()->Log(text, m_log);
         }

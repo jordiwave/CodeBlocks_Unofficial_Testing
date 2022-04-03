@@ -13,11 +13,11 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 // includes
@@ -27,7 +27,7 @@
 #include <wx/arrimpl.cpp> // this is a magic incantation which must be done!
 WX_DEFINE_OBJARRAY(wxPdfCffIndexArray);
 
-wxPdfCffIndexElement::wxPdfCffIndexElement(wxInputStream* buf, int offset, int length)
+wxPdfCffIndexElement::wxPdfCffIndexElement(wxInputStream * buf, int offset, int length)
 {
     m_offset = offset;
     m_length = length;
@@ -35,7 +35,7 @@ wxPdfCffIndexElement::wxPdfCffIndexElement(wxInputStream* buf, int offset, int l
     m_delete = false;
 }
 
-wxPdfCffIndexElement::wxPdfCffIndexElement(wxMemoryOutputStream& buf)
+wxPdfCffIndexElement::wxPdfCffIndexElement(wxMemoryOutputStream & buf)
 {
     buf.Close();
     m_buf    = new wxMemoryInputStream(buf);
@@ -44,7 +44,7 @@ wxPdfCffIndexElement::wxPdfCffIndexElement(wxMemoryOutputStream& buf)
     m_delete = true;
 }
 
-wxPdfCffIndexElement::wxPdfCffIndexElement(const char* str)
+wxPdfCffIndexElement::wxPdfCffIndexElement(const char * str)
 {
     wxMemoryOutputStream buf;
     buf.Write(str, strlen(str));
@@ -63,10 +63,11 @@ wxPdfCffIndexElement::~wxPdfCffIndexElement()
     }
 }
 
-wxPdfCffIndexElement::wxPdfCffIndexElement(const wxPdfCffIndexElement& copy)
+wxPdfCffIndexElement::wxPdfCffIndexElement(const wxPdfCffIndexElement & copy)
 {
     m_offset = copy.m_offset;
     m_length = copy.m_length;
+
     if (copy.m_delete)
     {
         wxMemoryOutputStream buffer;
@@ -81,11 +82,11 @@ wxPdfCffIndexElement::wxPdfCffIndexElement(const wxPdfCffIndexElement& copy)
     }
 }
 
-wxPdfCffIndexElement&
-wxPdfCffIndexElement::operator=(const wxPdfCffIndexElement& copy)
+wxPdfCffIndexElement & wxPdfCffIndexElement::operator=(const wxPdfCffIndexElement & copy)
 {
     m_offset = copy.m_offset;
     m_length = copy.m_length;
+
     if (copy.m_delete)
     {
         wxMemoryOutputStream buffer;
@@ -98,16 +99,17 @@ wxPdfCffIndexElement::operator=(const wxPdfCffIndexElement& copy)
         m_buf    = copy.m_buf;
         m_delete = copy.m_delete;
     }
+
     return *this;
 }
 
-void
-wxPdfCffIndexElement::SetBuffer(wxMemoryOutputStream& buf)
+void wxPdfCffIndexElement::SetBuffer(wxMemoryOutputStream & buf)
 {
     if (m_delete)
     {
         delete m_buf;
     }
+
     buf.Close();
     m_buf    = new wxMemoryInputStream(buf);
     m_offset = 0;
@@ -115,8 +117,7 @@ wxPdfCffIndexElement::SetBuffer(wxMemoryOutputStream& buf)
     m_delete = true;
 }
 
-void
-wxPdfCffIndexElement::Emit(wxMemoryOutputStream& buffer)
+void wxPdfCffIndexElement::Emit(wxMemoryOutputStream & buffer)
 {
 #if 0
     wxLogDebug(wxS("Emit: offset=%d length=%d"), m_offset, m_length);
@@ -125,6 +126,7 @@ wxPdfCffIndexElement::Emit(wxMemoryOutputStream& buffer)
     m_buf->SeekI(m_offset);
     int copyLength = m_length;
     int bufferLength;
+
     while (copyLength > 0)
     {
         bufferLength = (copyLength > 1024) ? 1024 : copyLength;
@@ -134,19 +136,23 @@ wxPdfCffIndexElement::Emit(wxMemoryOutputStream& buffer)
 #if 0
         wxString str;
         int kk;
+
         for (kk = 0; kk < bufferLength; kk++)
         {
             str += wxString::Format(wxS(" %d"), locBuffer[kk]);
+
             if (kk % 10 == 9)
             {
                 wxLogDebug(str);
                 str = wxEmptyString;
             }
         }
-        if ((bufferLength-1) % 10 != 9)
+
+        if ((bufferLength - 1) % 10 != 9)
         {
             wxLogDebug(str);
         }
+
 #endif
     }
 }

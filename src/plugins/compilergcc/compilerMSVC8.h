@@ -10,13 +10,13 @@
 
 class CompilerMSVC8 : public Compiler
 {
-public:
-    CompilerMSVC8();
-    ~CompilerMSVC8() override;
-    AutoDetectResult AutoDetectInstallationDir() override;
-protected:
-    Compiler * CreateCopy() override;
-private:
+    public:
+        CompilerMSVC8();
+        ~CompilerMSVC8() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
+    protected:
+        Compiler * CreateCopy() override;
+    private:
 };
 
 #endif // COMPILERMSVC8_H

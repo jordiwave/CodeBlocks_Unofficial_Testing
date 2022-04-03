@@ -11,7 +11,7 @@
 #include <wx/event.h>
 
 #ifndef CB_PRECOMP
-#include "globals.h"
+    #include "globals.h"
 #endif
 
 //forward decls
@@ -22,24 +22,24 @@ class NewFromTemplateDlg;
 
 class DLLIMPORT TemplateManager : public Mgr<TemplateManager>, public wxEvtHandler
 {
-    friend class Mgr<TemplateManager>;
-public:
-    void CreateMenu(wxMenuBar* menuBar);
-    void ReleaseMenu(wxMenuBar* menuBar);
-    void BuildToolsMenu(wxMenu* menu);
+        friend class Mgr<TemplateManager>;
+    public:
+        void CreateMenu(wxMenuBar * menuBar);
+        void ReleaseMenu(wxMenuBar * menuBar);
+        void BuildToolsMenu(wxMenu * menu);
 
-    cbProject* New(TemplateOutputType initial = totProject, wxString* pFilename = nullptr);
-    wxString GetLastCreatedFilename() const;
-    void SaveUserTemplate(cbProject* prj);
-protected:
-    void LoadTemplates();
-    void LoadUserTemplates();
-    cbProject* NewFromTemplate(NewFromTemplateDlg& dlg, wxString* pFilename = nullptr);
-    cbProject* NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, wxString* pFilename = nullptr);
-    wxArrayString m_UserTemplates;
-private:
-    TemplateManager();
-    ~TemplateManager() override;
+        cbProject * New(TemplateOutputType initial = totProject, wxString * pFilename = nullptr);
+        wxString GetLastCreatedFilename() const;
+        void SaveUserTemplate(cbProject * prj);
+    protected:
+        void LoadTemplates();
+        void LoadUserTemplates();
+        cbProject * NewFromTemplate(NewFromTemplateDlg & dlg, wxString * pFilename = nullptr);
+        cbProject * NewProjectFromUserTemplate(NewFromTemplateDlg & dlg, wxString * pFilename = nullptr);
+        wxArrayString m_UserTemplates;
+    private:
+        TemplateManager();
+        ~TemplateManager() override;
 };
 
 #endif // TEMPLATEMANAGER_H

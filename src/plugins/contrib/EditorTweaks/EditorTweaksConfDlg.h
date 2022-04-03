@@ -9,40 +9,40 @@
 
 class EditorTweaksConfDlg: public cbConfigurationPanel
 {
-public:
+    public:
 
-    EditorTweaksConfDlg(wxWindow* parent);
-    virtual ~EditorTweaksConfDlg();
+        EditorTweaksConfDlg(wxWindow * parent);
+        virtual ~EditorTweaksConfDlg();
 
-    //(*Declarations(EditorTweaksConfDlg)
-    wxSpinCtrl* SpinCtrl1;
-    //*)
+        //(*Declarations(EditorTweaksConfDlg)
+        wxSpinCtrl * SpinCtrl1;
+        //*)
 
-protected:
+    protected:
 
-    //(*Identifiers(EditorTweaksConfDlg)
-    //*)
+        //(*Identifiers(EditorTweaksConfDlg)
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(EditorTweaksConfDlg)
-    //*)
-    wxString GetTitle() const
-    {
-        return _("EditorTweaks settings");
-    }
-    wxString GetBitmapBaseName() const
-    {
-        return _T("EditorTweaks");
-    }
-    void OnApply()
-    {
-        SaveSettings();
-    }
-    void OnCancel() {}
-    void SaveSettings();
+        //(*Handlers(EditorTweaksConfDlg)
+        //*)
+        wxString GetTitle() const
+        {
+            return _("EditorTweaks settings");
+        }
+        wxString GetBitmapBaseName() const
+        {
+            return _T("EditorTweaks");
+        }
+        void OnApply()
+        {
+            SaveSettings();
+        }
+        void OnCancel() {}
+        void SaveSettings();
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

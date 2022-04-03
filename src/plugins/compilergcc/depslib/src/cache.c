@@ -10,6 +10,9 @@
  * ALL WARRANTIES ARE HEREBY DISCLAIMED.
  */
 #include <stdio.h>
+#include <stdint.h>
+#include <inttypes.h>
+
 #include "jam.h"
 #include "hash.h"
 #include "lists.h"
@@ -136,10 +139,14 @@ void cache_read(const char *path)
 		}
 
 		/* C::B patch: Compatibility with 64 bit compiler / OS */
-		#if defined(_WIN64)
-		sscanf(buf, "%I64d %n", &timeval, &n);
+		#if  (_USE_LONG_TIME_T)
+			sscanf(buf, "%ld %n", &timeval, &n);
 		#else
-		sscanf(buf, "%ld %n", &timeval, &n);
+			#if defined(PRId64)
+				sscanf(buf, "%" PRId64 " %n", &timeval, &n);
+			#else
+				sscanf(buf, "%lld %n", &timeval, &n);
+			#endif
 		#endif
 		h = hdr_enter (buf + n);
 		h->time = timeval;
@@ -167,10 +174,14 @@ void cache_write(const char *path)
 	{
 		LIST *l;
 		/* C::B patch: Compatibility with 64 bit compiler / OS */
-		#if defined(_WIN64)
-		fprintf(f, "%I64d %s\n", h->time, h->file);
+		#if  (_USE_LONG_TIME_T)
+			fprintf(f, "%ld %s\n", h->time, h->file);
 		#else
-		fprintf(f, "%ld %s\n", h->time, h->file);
+			#if defined(PRId64)
+				fprintf(f, "%" PRId64 " %s\n", h->time, h->file);
+			#else
+				fprintf(f, "%lld %s\n", h->time, h->file);
+			#endif
 		#endif
 		for (l = h->includes; l; l = list_next (l))
 		{

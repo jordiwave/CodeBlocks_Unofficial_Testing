@@ -28,20 +28,20 @@
 /** \brief Class for wxsScrollBar widget */
 class wxsScrollBar: public wxsWidget
 {
-public:
+    public:
 
-    wxsScrollBar(wxsItemResData* Data);
+        wxsScrollBar(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
-    long Value;
-    long ThumbSize;
-    long Range;
-    long PageSize;
+        long Value;
+        long ThumbSize;
+        long Range;
+        long PageSize;
 
 };
 

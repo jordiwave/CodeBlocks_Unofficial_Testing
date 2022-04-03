@@ -25,15 +25,15 @@
 /** \brief Class for wxContextHelpButton widget */
 class wxsContextHelpButton: public wxsWidget
 {
-public:
+    public:
 
-    wxsContextHelpButton(wxsItemResData* Data);
+        wxsContextHelpButton(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 };
 
 #endif

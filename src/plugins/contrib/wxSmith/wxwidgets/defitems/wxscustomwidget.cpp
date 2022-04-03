@@ -28,12 +28,12 @@ namespace
 wxsRegisterItem<wxsCustomWidget> Reg(
     _T("Custom"),
     wxsTWidget,
-    _T(""),_T(""),_T(""),_T(""),
+    _T(""), _T(""), _T(""), _T(""),
     _T("Standard"),
     380,
     _T("Custom"),
     wxsCPP,
-    0,0,
+    0, 0,
     _T("images/wxsmith/Custom32.png"),
     _T("images/wxsmith/Custom16.png"));
 
@@ -43,8 +43,8 @@ WXS_EV_END()
 }
 
 
-wxsCustomWidget::wxsCustomWidget(wxsItemResData* Data):
-    wxsWidget(Data,&Reg.Info,wxsCustomWidgetEvents),
+wxsCustomWidget::wxsCustomWidget(wxsItemResData * Data):
+    wxsWidget(Data, &Reg.Info, wxsCustomWidgetEvents),
     m_CreatingCode("$(THIS) = new $(CLASS)($(PARENT),$(ID),$(POS),$(SIZE),$(STYLE),$(VALIDATOR),$(NAME));"),
     m_Style("0"),
     m_IncludeIsLocal(false)
@@ -59,16 +59,23 @@ void wxsCustomWidget::OnBuildCreatingCode()
         if (!m_IncludeFile.empty())
         {
             if (m_IncludeIsLocal)
+            {
                 AddHeader("\"" + m_IncludeFile + "\"", GetUserClass(), 0);
+            }
             else
+            {
                 AddHeader("<"  + m_IncludeFile + ">",  GetUserClass(), 0);
+            }
         }
     }
 
     wxString Result = m_CreatingCode;
     wxString Style = m_Style;
+
     if (Style.empty())
+    {
         Style = "0";
+    }
 
     Result.Replace("$(POS)",       Codef(GetCoderContext(), _T("%P")));
     Result.Replace("$(SIZE)",      Codef(GetCoderContext(), _T("%S")));
@@ -79,17 +86,17 @@ void wxsCustomWidget::OnBuildCreatingCode()
     Result.Replace("$(NAME)",      Codef(GetCoderContext(), _T("%N")));
     Result.Replace("$(CLASS)",     GetUserClass());
     Result.Replace("$(VALIDATOR)", Codef(GetCoderContext(), _T("%V")));
-    AddBuildingCode(Result+"\n");
+    AddBuildingCode(Result + "\n");
     BuildSetupWindowCode();
 }
 
-wxObject* wxsCustomWidget::OnBuildPreview(wxWindow* Parent, cb_unused long Flags)
+wxObject * wxsCustomWidget::OnBuildPreview(wxWindow * Parent, cb_unused long Flags)
 {
-    wxPanel* Background = new wxPanel(Parent, wxID_ANY, Pos(Parent), wxDefaultSize);
+    wxPanel * Background = new wxPanel(Parent, wxID_ANY, Pos(Parent), wxDefaultSize);
     const wxString Label(GetUserClass().empty() ? wxString("???") : GetUserClass());
-    wxStaticText* Wnd = new wxStaticText(Background, wxID_ANY, Label, wxDefaultPosition,
-                                         Size(Parent), wxST_NO_AUTORESIZE|wxALIGN_CENTRE);
-    wxSizer* Sizer = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticText * Wnd = new wxStaticText(Background, wxID_ANY, Label, wxDefaultPosition,
+                                          Size(Parent), wxST_NO_AUTORESIZE | wxALIGN_CENTRE);
+    wxSizer * Sizer = new wxBoxSizer(wxHORIZONTAL);
     Sizer->Add(Wnd, 1, wxEXPAND, 0);
     Background->SetSizer(Sizer);
     Sizer->SetSizeHints(Background);
@@ -103,7 +110,8 @@ wxObject* wxsCustomWidget::OnBuildPreview(wxWindow* Parent, cb_unused long Flags
 void wxsCustomWidget::OnEnumWidgetProperties(long Flags)
 {
     wxString XmlDataInit = m_XmlData;
-    if ( GetPropertiesFlags() & flSource )
+
+    if (GetPropertiesFlags() & flSource)
     {
         WXS_STRING(wxsCustomWidget, m_CreatingCode, _("Creating code"), "creating_code", "", true);
         WXS_SHORT_STRING(wxsCustomWidget, m_IncludeFile, _("Include file"), "include_file", "", false);
@@ -111,7 +119,7 @@ void wxsCustomWidget::OnEnumWidgetProperties(long Flags)
     }
     else
     {
-        if ( !(Flags&flXml) )
+        if (!(Flags & flXml))
         {
             WXS_STRING(wxsCustomWidget, m_XmlData, _("Xml Data"), "", "", false);
         }
@@ -119,9 +127,9 @@ void wxsCustomWidget::OnEnumWidgetProperties(long Flags)
 
     WXS_SHORT_STRING(wxsCustomWidget, m_Style, _("Style"), "style", "0", false);
 
-    if ( Flags&flPropGrid )
+    if (Flags & flPropGrid)
     {
-        if ( XmlDataInit != m_XmlData )
+        if (XmlDataInit != m_XmlData)
         {
             // We know it's propgrid operation and xml data has changed,
             // need to reparse this data
@@ -130,21 +138,23 @@ void wxsCustomWidget::OnEnumWidgetProperties(long Flags)
     }
 }
 
-bool wxsCustomWidget::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
+bool wxsCustomWidget::OnXmlRead(TiXmlElement * Element, bool IsXRC, bool IsExtra)
 {
-    bool Ret = wxsItem::OnXmlRead(Element,IsXRC,IsExtra);
+    bool Ret = wxsItem::OnXmlRead(Element, IsXRC, IsExtra);
 
-    if ( IsXRC )
+    if (IsXRC)
     {
-        if ( !(GetPropertiesFlags() & flSource) )
+        if (!(GetPropertiesFlags() & flSource))
         {
             SetUserClass(cbC2U(Element->Attribute("class")));
             m_XmlDataDoc.Clear();
-            for ( TiXmlElement* Child = Element->FirstChildElement(); Child; Child = Child->NextSiblingElement() )
+
+            for (TiXmlElement * Child = Element->FirstChildElement(); Child; Child = Child->NextSiblingElement())
             {
                 // Skipping all standard elements
                 wxString Name = cbC2U(Child->Value());
-                if ( Name != "pos" &&
+
+                if (Name != "pos" &&
                         Name != "size" &&
                         Name != "style" &&
                         Name != "enabled" &&
@@ -153,11 +163,12 @@ bool wxsCustomWidget::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
                         Name != "fg" &&
                         Name != "bg" &&
                         Name != "font" &&
-                        Name != "handler" )
+                        Name != "handler")
                 {
                     m_XmlDataDoc.InsertEndChild(*Child);
                 }
             }
+
             RebuildXmlData();
         }
     }
@@ -165,23 +176,24 @@ bool wxsCustomWidget::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
     return Ret;
 }
 
-bool wxsCustomWidget::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
+bool wxsCustomWidget::OnXmlWrite(TiXmlElement * Element, bool IsXRC, bool IsExtra)
 {
-    bool Ret = wxsItem::OnXmlWrite(Element,IsXRC,IsExtra);
+    bool Ret = wxsItem::OnXmlWrite(Element, IsXRC, IsExtra);
 
-    if ( IsXRC )
+    if (IsXRC)
     {
-        if ( !(GetPropertiesFlags() & flSource) )
+        if (!(GetPropertiesFlags() & flSource))
         {
-            Element->SetAttribute("class",cbU2C(GetUserClass()));
+            Element->SetAttribute("class", cbU2C(GetUserClass()));
             Element->RemoveAttribute("subclass");
             Element->InsertEndChild(TiXmlElement("style"))->InsertEndChild(TiXmlText(cbU2C(m_Style)));
 
-            for ( TiXmlElement* Child = m_XmlDataDoc.FirstChildElement(); Child; Child = Child->NextSiblingElement() )
+            for (TiXmlElement * Child = m_XmlDataDoc.FirstChildElement(); Child; Child = Child->NextSiblingElement())
             {
                 // Skipping all standard elements
                 wxString Name = cbC2U(Child->Value());
-                if ( Name != "pos" &&
+
+                if (Name != "pos" &&
                         Name != "size" &&
                         Name != "style" &&
                         Name != "enabled" &&
@@ -190,7 +202,7 @@ bool wxsCustomWidget::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
                         Name != "fg" &&
                         Name != "bg" &&
                         Name != "font" &&
-                        Name != "handler" )
+                        Name != "handler")
                 {
                     Element->InsertEndChild(*Child);
                 }
@@ -213,14 +225,14 @@ bool wxsCustomWidget::RebuildXmlDataDoc()
 {
     m_XmlDataDoc.Clear();
     m_XmlDataDoc.Parse(cbU2C(m_XmlData));
-    if ( m_XmlDataDoc.Error() )
+
+    if (m_XmlDataDoc.Error())
     {
         wxMessageBox(
             wxString::Format(
                 _("Invalid Xml structure.\nError at line %d, column %d:\n\t\"%s\""),
-                m_XmlDataDoc.ErrorRow(),m_XmlDataDoc.ErrorCol(),
+                m_XmlDataDoc.ErrorRow(), m_XmlDataDoc.ErrorCol(),
                 wxGetTranslation(cbC2U(m_XmlDataDoc.ErrorDesc()).wx_str())));
-
         return false;
     }
 

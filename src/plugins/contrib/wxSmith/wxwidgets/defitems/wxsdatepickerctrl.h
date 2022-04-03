@@ -29,15 +29,15 @@
 /** \brief Class for wxsDatePickerCtrl widget */
 class wxsDatePickerCtrl: public wxsWidget
 {
-public:
+    public:
 
-    wxsDatePickerCtrl(wxsItemResData* Data);
+        wxsDatePickerCtrl(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
 };
 

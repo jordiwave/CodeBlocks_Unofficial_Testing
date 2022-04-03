@@ -7,10 +7,10 @@
 #include <cbstyledtextctrl.h>
 #include <cbeditor.h>
 
-cbUnifiedCtrl::cbUnifiedCtrl(cbDiffEditor* parent):
+cbUnifiedCtrl::cbUnifiedCtrl(cbDiffEditor * parent):
     cbDiffCtrl(parent)
 {
-    wxBoxSizer* BoxSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer * BoxSizer = new wxBoxSizer(wxHORIZONTAL);
     txtctrl_ = new cbStyledTextCtrl(this, wxID_ANY);
     BoxSizer->Add(txtctrl_, 1, wxEXPAND, 0);
     SetSizer(BoxSizer);
@@ -20,17 +20,16 @@ void cbUnifiedCtrl::Init(cbDiffColors colset)
 {
     leftReadOnly_ = true;
     rightReadOnly_ = true;
-
     cbEditor::ApplyStyles(txtctrl_);
-    txtctrl_->SetMargins(0,0);
-    txtctrl_->SetMarginWidth(0,0);    // don't show linenumber
-    txtctrl_->SetMarginWidth(1,0);    // don't show +-= symbol margin
-    txtctrl_->SetMarginWidth(2,0);    // to hide the change and fold
-    txtctrl_->SetMarginWidth(3,0);    // margin made by cbEditor::ApplyStyles
+    txtctrl_->SetMargins(0, 0);
+    txtctrl_->SetMarginWidth(0, 0);   // don't show linenumber
+    txtctrl_->SetMarginWidth(1, 0);   // don't show +-= symbol margin
+    txtctrl_->SetMarginWidth(2, 0);   // to hide the change and fold
+    txtctrl_->SetMarginWidth(3, 0);   // margin made by cbEditor::ApplyStyles
     theme_->Apply(_T("DiffPatch"), txtctrl_, false, true);
 }
 
-void cbUnifiedCtrl::ShowDiff(const wxDiff &diff)
+void cbUnifiedCtrl::ShowDiff(const wxDiff & diff)
 {
     txtctrl_->SetReadOnly(false);
     txtctrl_->ClearAll();
@@ -38,7 +37,7 @@ void cbUnifiedCtrl::ShowDiff(const wxDiff &diff)
     txtctrl_->SetReadOnly(true);
 }
 
-void cbUnifiedCtrl::UpdateDiff(const wxDiff &diff)
+void cbUnifiedCtrl::UpdateDiff(const wxDiff & diff)
 {
     ShowDiff(diff);
 }

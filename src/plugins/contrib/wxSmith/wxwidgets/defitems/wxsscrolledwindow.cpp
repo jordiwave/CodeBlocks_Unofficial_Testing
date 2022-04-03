@@ -24,9 +24,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsScrolledWindow> Reg(_T("ScrolledWindow"),wxsTContainer, _T("Standard"), 140);
+wxsRegisterItem<wxsScrolledWindow> Reg(_T("ScrolledWindow"), wxsTContainer, _T("Standard"), 140);
 
-WXS_ST_BEGIN(wxsScrolledWindowStyles,_T("wxHSCROLL|wxVSCROLL"))
+WXS_ST_BEGIN(wxsScrolledWindowStyles, _T("wxHSCROLL|wxVSCROLL"))
 WXS_ST_CATEGORY("wxScrolledWindow")
 WXS_ST_DEFAULTS()
 WXS_ST_END()
@@ -36,7 +36,7 @@ WXS_EV_DEFAULTS()
 WXS_EV_END()
 }
 
-wxsScrolledWindow::wxsScrolledWindow(wxsItemResData* Data):
+wxsScrolledWindow::wxsScrolledWindow(wxsItemResData * Data):
     wxsContainer(
         Data,
         &Reg.Info,
@@ -46,43 +46,45 @@ wxsScrolledWindow::wxsScrolledWindow(wxsItemResData* Data):
 
 void wxsScrolledWindow::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/scrolwin.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-        BuildSetupWindowCode();
-        AddChildrenCode();
-        if(!m_scrollRate.DefValue)
+        case wxsCPP:
         {
-            Codef(_T("%ASetScrollRate(%d,%d);\n"), m_scrollRate.GetValue1(), m_scrollRate.GetValue2() );
-        }
-        return;
-    }
+            AddHeader(_T("<wx/scrolwin.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+            BuildSetupWindowCode();
+            AddChildrenCode();
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsScrolledWindow::OnBuildCreatingCode"),GetLanguage());
-    }
+            if (!m_scrollRate.DefValue)
+            {
+                Codef(_T("%ASetScrollRate(%d,%d);\n"), m_scrollRate.GetValue1(), m_scrollRate.GetValue2());
+            }
+
+            return;
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsScrolledWindow::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
-wxObject* wxsScrolledWindow::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsScrolledWindow::OnBuildPreview(wxWindow * Parent, long Flags)
 {
     // TODO: Use grid-viewing panel when not in exact mode
-    wxWindow* NewItem = new wxScrolledWindow( Parent,GetId(),wxDefaultPosition,wxDefaultSize,Style());
-    SetupWindow(NewItem,Flags);
-    AddChildrenPreview(NewItem,Flags);
+    wxWindow * NewItem = new wxScrolledWindow(Parent, GetId(), wxDefaultPosition, wxDefaultSize, Style());
+    SetupWindow(NewItem, Flags);
+    AddChildrenPreview(NewItem, Flags);
     return NewItem;
 }
 
 void wxsScrolledWindow::OnEnumContainerProperties(long Flags)
 {
-    if ( Flags & flSource )
+    if (Flags & flSource)
     {
-        WXS_TWOLONG( wxsScrolledWindow, m_scrollRate,  _("Default scroll rate"), _("Rate x"), _("Rate y"), _("scrollrate"), -1, -1);
+        WXS_TWOLONG(wxsScrolledWindow, m_scrollRate,  _("Default scroll rate"), _("Rate x"), _("Rate y"), _("scrollrate"), -1, -1);
     }
 }
 

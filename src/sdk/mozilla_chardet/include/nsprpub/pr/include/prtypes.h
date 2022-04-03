@@ -21,9 +21,9 @@
 #define prtypes_h___
 
 #ifdef MDCPUCFG
-#include MDCPUCFG
+    #include MDCPUCFG
 #else
-#include "prcpucfg.h"
+    #include "prcpucfg.h"
 #endif
 
 #include <stddef.h>
@@ -50,104 +50,104 @@
 ***********************************************************************/
 #if defined(WIN32)
 
-#define PR_EXPORT(__type) extern __declspec(dllexport) __type
-#define PR_EXPORT_DATA(__type) extern __declspec(dllexport) __type
-#define PR_IMPORT(__type) __declspec(dllimport) __type
-#define PR_IMPORT_DATA(__type) __declspec(dllimport) __type
+    #define PR_EXPORT(__type) extern __declspec(dllexport) __type
+    #define PR_EXPORT_DATA(__type) extern __declspec(dllexport) __type
+    #define PR_IMPORT(__type) __declspec(dllimport) __type
+    #define PR_IMPORT_DATA(__type) __declspec(dllimport) __type
 
-#define PR_EXTERN(__type) extern __declspec(dllexport) __type
-#define PR_IMPLEMENT(__type) __declspec(dllexport) __type
-#define PR_EXTERN_DATA(__type) extern __declspec(dllexport) __type
-#define PR_IMPLEMENT_DATA(__type) __declspec(dllexport) __type
+    #define PR_EXTERN(__type) extern __declspec(dllexport) __type
+    #define PR_IMPLEMENT(__type) __declspec(dllexport) __type
+    #define PR_EXTERN_DATA(__type) extern __declspec(dllexport) __type
+    #define PR_IMPLEMENT_DATA(__type) __declspec(dllexport) __type
 
-#define PR_CALLBACK
-#define PR_CALLBACK_DECL
-#define PR_STATIC_CALLBACK(__x) static __x
+    #define PR_CALLBACK
+    #define PR_CALLBACK_DECL
+    #define PR_STATIC_CALLBACK(__x) static __x
 
 #elif defined(XP_BEOS)
 
-#define PR_EXPORT(__type) extern __declspec(dllexport) __type
-#define PR_EXPORT_DATA(__type) extern __declspec(dllexport) __type
-#define PR_IMPORT(__type) extern __declspec(dllexport) __type
-#define PR_IMPORT_DATA(__type) extern __declspec(dllexport) __type
+    #define PR_EXPORT(__type) extern __declspec(dllexport) __type
+    #define PR_EXPORT_DATA(__type) extern __declspec(dllexport) __type
+    #define PR_IMPORT(__type) extern __declspec(dllexport) __type
+    #define PR_IMPORT_DATA(__type) extern __declspec(dllexport) __type
 
-#define PR_EXTERN(__type) extern __declspec(dllexport) __type
-#define PR_IMPLEMENT(__type) __declspec(dllexport) __type
-#define PR_EXTERN_DATA(__type) extern __declspec(dllexport) __type
-#define PR_IMPLEMENT_DATA(__type) __declspec(dllexport) __type
+    #define PR_EXTERN(__type) extern __declspec(dllexport) __type
+    #define PR_IMPLEMENT(__type) __declspec(dllexport) __type
+    #define PR_EXTERN_DATA(__type) extern __declspec(dllexport) __type
+    #define PR_IMPLEMENT_DATA(__type) __declspec(dllexport) __type
 
-#define PR_CALLBACK
-#define PR_CALLBACK_DECL
-#define PR_STATIC_CALLBACK(__x) static __x
+    #define PR_CALLBACK
+    #define PR_CALLBACK_DECL
+    #define PR_STATIC_CALLBACK(__x) static __x
 
 #elif defined(XP_OS2) && defined(__declspec)
 
-#define PR_EXPORT(__type) extern __declspec(dllexport) __type
-#define PR_EXPORT_DATA(__type) extern __declspec(dllexport) __type
-#define PR_IMPORT(__type) extern  __declspec(dllimport) __type
-#define PR_IMPORT_DATA(__type) extern __declspec(dllimport) __type
+    #define PR_EXPORT(__type) extern __declspec(dllexport) __type
+    #define PR_EXPORT_DATA(__type) extern __declspec(dllexport) __type
+    #define PR_IMPORT(__type) extern  __declspec(dllimport) __type
+    #define PR_IMPORT_DATA(__type) extern __declspec(dllimport) __type
 
-#define PR_EXTERN(__type) extern __declspec(dllexport) __type
-#define PR_IMPLEMENT(__type) __declspec(dllexport) __type
-#define PR_EXTERN_DATA(__type) extern __declspec(dllexport) __type
-#define PR_IMPLEMENT_DATA(__type) __declspec(dllexport) __type
+    #define PR_EXTERN(__type) extern __declspec(dllexport) __type
+    #define PR_IMPLEMENT(__type) __declspec(dllexport) __type
+    #define PR_EXTERN_DATA(__type) extern __declspec(dllexport) __type
+    #define PR_IMPLEMENT_DATA(__type) __declspec(dllexport) __type
 
-#define PR_CALLBACK
-#define PR_CALLBACK_DECL
-#define PR_STATIC_CALLBACK(__x) static __x
+    #define PR_CALLBACK
+    #define PR_CALLBACK_DECL
+    #define PR_STATIC_CALLBACK(__x) static __x
 
 #elif defined(SYMBIAN)
 
-#define PR_EXPORT(__type) extern __declspec(dllexport) __type
-#define PR_EXPORT_DATA(__type) extern __declspec(dllexport) __type
-#ifdef __WINS__
-#define PR_IMPORT(__type) extern __declspec(dllexport) __type
-#define PR_IMPORT_DATA(__type) extern __declspec(dllexport) __type
-#else
-#define PR_IMPORT(__type) extern __declspec(dllimport) __type
-#define PR_IMPORT_DATA(__type) extern __declspec(dllimport) __type
-#endif
+    #define PR_EXPORT(__type) extern __declspec(dllexport) __type
+    #define PR_EXPORT_DATA(__type) extern __declspec(dllexport) __type
+    #ifdef __WINS__
+        #define PR_IMPORT(__type) extern __declspec(dllexport) __type
+        #define PR_IMPORT_DATA(__type) extern __declspec(dllexport) __type
+    #else
+        #define PR_IMPORT(__type) extern __declspec(dllimport) __type
+        #define PR_IMPORT_DATA(__type) extern __declspec(dllimport) __type
+    #endif
 
-#define PR_EXTERN(__type) extern __type
-#define PR_IMPLEMENT(__type) __type
-#define PR_EXTERN_DATA(__type) extern __type
-#define PR_IMPLEMENT_DATA(__type) __type
+    #define PR_EXTERN(__type) extern __type
+    #define PR_IMPLEMENT(__type) __type
+    #define PR_EXTERN_DATA(__type) extern __type
+    #define PR_IMPLEMENT_DATA(__type) __type
 
-#define PR_CALLBACK
-#define PR_CALLBACK_DECL
-#define PR_STATIC_CALLBACK(__x) static __x
+    #define PR_CALLBACK
+    #define PR_CALLBACK_DECL
+    #define PR_STATIC_CALLBACK(__x) static __x
 
 #else /* Unix */
 
-/* GCC 3.3 and later support the visibility attribute. */
-#if (__GNUC__ >= 4) || \
-    (__GNUC__ == 3 && __GNUC_MINOR__ >= 3)
-#define PR_VISIBILITY_DEFAULT __attribute__((visibility("default")))
-#else
-#define PR_VISIBILITY_DEFAULT
-#endif
+    /* GCC 3.3 and later support the visibility attribute. */
+    #if (__GNUC__ >= 4) || \
+        (__GNUC__ == 3 && __GNUC_MINOR__ >= 3)
+        #define PR_VISIBILITY_DEFAULT __attribute__((visibility("default")))
+    #else
+        #define PR_VISIBILITY_DEFAULT
+    #endif
 
-#define PR_EXPORT(__type) extern PR_VISIBILITY_DEFAULT __type
-#define PR_EXPORT_DATA(__type) extern PR_VISIBILITY_DEFAULT __type
-#define PR_IMPORT(__type) extern PR_VISIBILITY_DEFAULT __type
-#define PR_IMPORT_DATA(__type) extern PR_VISIBILITY_DEFAULT __type
+    #define PR_EXPORT(__type) extern PR_VISIBILITY_DEFAULT __type
+    #define PR_EXPORT_DATA(__type) extern PR_VISIBILITY_DEFAULT __type
+    #define PR_IMPORT(__type) extern PR_VISIBILITY_DEFAULT __type
+    #define PR_IMPORT_DATA(__type) extern PR_VISIBILITY_DEFAULT __type
 
-#define PR_EXTERN(__type) extern PR_VISIBILITY_DEFAULT __type
-#define PR_IMPLEMENT(__type) PR_VISIBILITY_DEFAULT __type
-#define PR_EXTERN_DATA(__type) extern PR_VISIBILITY_DEFAULT __type
-#define PR_IMPLEMENT_DATA(__type) PR_VISIBILITY_DEFAULT __type
-#define PR_CALLBACK
-#define PR_CALLBACK_DECL
-#define PR_STATIC_CALLBACK(__x) static __x
+    #define PR_EXTERN(__type) extern PR_VISIBILITY_DEFAULT __type
+    #define PR_IMPLEMENT(__type) PR_VISIBILITY_DEFAULT __type
+    #define PR_EXTERN_DATA(__type) extern PR_VISIBILITY_DEFAULT __type
+    #define PR_IMPLEMENT_DATA(__type) PR_VISIBILITY_DEFAULT __type
+    #define PR_CALLBACK
+    #define PR_CALLBACK_DECL
+    #define PR_STATIC_CALLBACK(__x) static __x
 
 #endif
 
 #if defined(_NSPR_BUILD_)
-#define NSPR_API(__type) PR_EXPORT(__type)
-#define NSPR_DATA_API(__type) PR_EXPORT_DATA(__type)
+    #define NSPR_API(__type) PR_EXPORT(__type)
+    #define NSPR_DATA_API(__type) PR_EXPORT_DATA(__type)
 #else
-#define NSPR_API(__type) PR_IMPORT(__type)
-#define NSPR_DATA_API(__type) PR_IMPORT_DATA(__type)
+    #define NSPR_API(__type) PR_IMPORT(__type)
+    #define NSPR_DATA_API(__type) PR_IMPORT_DATA(__type)
 #endif
 
 /***********************************************************************
@@ -167,11 +167,11 @@
 **      Macro shorthands for conditional C++ extern block delimiters.
 ***********************************************************************/
 #ifdef __cplusplus
-#define PR_BEGIN_EXTERN_C       extern "C" {
-#define PR_END_EXTERN_C         }
+    #define PR_BEGIN_EXTERN_C       extern "C" {
+    #define PR_END_EXTERN_C         }
 #else
-#define PR_BEGIN_EXTERN_C
-#define PR_END_EXTERN_C
+    #define PR_BEGIN_EXTERN_C
+    #define PR_END_EXTERN_C
 #endif
 
 /***********************************************************************
@@ -232,7 +232,7 @@ PR_BEGIN_EXTERN_C
 */
 
 #if defined(__APPLE__) || defined(__ANDROID__) || defined(__OpenBSD__)
-#define PR_ALTERNATE_INT64_TYPEDEF
+    #define PR_ALTERNATE_INT64_TYPEDEF
 #endif
 
 /************************************************************************
@@ -282,10 +282,10 @@ typedef signed char PRInt8;
 **  The int16 types are known to be 16 bits each.
 ************************************************************************/
 #if PR_BYTES_PER_SHORT == 2
-typedef unsigned short PRUint16;
-typedef short PRInt16;
+    typedef unsigned short PRUint16;
+    typedef short PRInt16;
 #else
-#error No suitable type for PRInt16/PRUint16
+    #error No suitable type for PRInt16/PRUint16
 #endif
 
 /************************************************************************
@@ -307,17 +307,17 @@ typedef short PRInt16;
 **  The int32 types are known to be 32 bits each.
 ************************************************************************/
 #if PR_BYTES_PER_INT == 4
-typedef unsigned int PRUint32;
-typedef int PRInt32;
-#define PR_INT32(x)  x
-#define PR_UINT32(x) x ## U
+    typedef unsigned int PRUint32;
+    typedef int PRInt32;
+    #define PR_INT32(x)  x
+    #define PR_UINT32(x) x ## U
 #elif PR_BYTES_PER_LONG == 4
-typedef unsigned long PRUint32;
-typedef long PRInt32;
-#define PR_INT32(x)  x ## L
-#define PR_UINT32(x) x ## UL
+    typedef unsigned long PRUint32;
+    typedef long PRInt32;
+    #define PR_INT32(x)  x ## L
+    #define PR_UINT32(x) x ## UL
 #else
-#error No suitable type for PRInt32/PRUint32
+    #error No suitable type for PRInt32/PRUint32
 #endif
 
 /************************************************************************
@@ -362,20 +362,20 @@ typedef long PRInt32;
 #ifdef HAVE_LONG_LONG
 /* Keep this in sync with prlong.h. */
 #if PR_BYTES_PER_LONG == 8 && !defined(PR_ALTERNATE_INT64_TYPEDEF)
-typedef long PRInt64;
-typedef unsigned long PRUint64;
-#define PR_INT64(x)  x ## L
-#define PR_UINT64(x) x ## UL
+    typedef long PRInt64;
+    typedef unsigned long PRUint64;
+    #define PR_INT64(x)  x ## L
+    #define PR_UINT64(x) x ## UL
 #elif defined(WIN32) && !defined(__GNUC__)
-typedef __int64  PRInt64;
-typedef unsigned __int64 PRUint64;
-#define PR_INT64(x)  x ## i64
-#define PR_UINT64(x) x ## ui64
+    typedef __int64  PRInt64;
+    typedef unsigned __int64 PRUint64;
+    #define PR_INT64(x)  x ## i64
+    #define PR_UINT64(x) x ## ui64
 #else
-typedef long long PRInt64;
-typedef unsigned long long PRUint64;
-#define PR_INT64(x)  x ## LL
-#define PR_UINT64(x) x ## ULL
+    typedef long long PRInt64;
+    typedef unsigned long long PRUint64;
+    #define PR_INT64(x)  x ## LL
+    #define PR_UINT64(x) x ## ULL
 #endif /* PR_BYTES_PER_LONG == 8 */
 
 #define PR_INT64_MAX PR_INT64(0x7fffffffffffffff)
@@ -408,10 +408,10 @@ typedef PRInt64 PRUint64;
 **      never valid for fields of a structure.
 ************************************************************************/
 #if PR_BYTES_PER_INT >= 2
-typedef int PRIntn;
-typedef unsigned int PRUintn;
+    typedef int PRIntn;
+    typedef unsigned int PRUintn;
 #else
-#error 'sizeof(int)' not sufficient for platform use
+    #error 'sizeof(int)' not sufficient for platform use
 #endif
 
 /************************************************************************
@@ -452,9 +452,9 @@ typedef ptrdiff_t PRPtrdiff;
 **      for storing a pointer or pointer sutraction.
 ************************************************************************/
 #ifdef _WIN64
-typedef PRUint64 PRUptrdiff;
+    typedef PRUint64 PRUptrdiff;
 #else
-typedef unsigned long PRUptrdiff;
+    typedef unsigned long PRUptrdiff;
 #endif
 
 /************************************************************************
@@ -484,12 +484,12 @@ typedef PRUint8 PRPackedBool;
 typedef enum { PR_FAILURE = -1, PR_SUCCESS = 0 } PRStatus;
 
 #ifndef __PRUNICHAR__
-#define __PRUNICHAR__
-#ifdef WIN32
-typedef wchar_t PRUnichar;
-#else
-typedef PRUint16 PRUnichar;
-#endif
+    #define __PRUNICHAR__
+    #ifdef WIN32
+        typedef wchar_t PRUnichar;
+    #else
+        typedef PRUint16 PRUnichar;
+    #endif
 #endif
 
 /*
@@ -504,52 +504,52 @@ typedef PRUint16 PRUnichar;
 ** http://java.sun.com/docs/books/vmspec/index.html.)
 */
 #ifdef _WIN64
-typedef PRInt64 PRWord;
-typedef PRUint64 PRUword;
+    typedef PRInt64 PRWord;
+    typedef PRUint64 PRUword;
 #else
-typedef long PRWord;
-typedef unsigned long PRUword;
+    typedef long PRWord;
+    typedef unsigned long PRUword;
 #endif
 
 #if defined(NO_NSPR_10_SUPPORT)
 #else
-/********* ???????????????? FIX ME       ??????????????????????????? *****/
-/********************** Some old definitions until pr=>ds transition is done ***/
-/********************** Also, we are still using NSPR 1.0. GC ******************/
-/*
-** Fundamental NSPR macros, used nearly everywhere.
-*/
+    /********* ???????????????? FIX ME       ??????????????????????????? *****/
+    /********************** Some old definitions until pr=>ds transition is done ***/
+    /********************** Also, we are still using NSPR 1.0. GC ******************/
+    /*
+    ** Fundamental NSPR macros, used nearly everywhere.
+    */
 
-#define PR_PUBLIC_API		PR_IMPLEMENT
+    #define PR_PUBLIC_API		PR_IMPLEMENT
 
-/*
-** Macro body brackets so that macros with compound statement definitions
-** behave syntactically more like functions when called.
-*/
-#define NSPR_BEGIN_MACRO        do {
-#define NSPR_END_MACRO          } while (0)
+    /*
+    ** Macro body brackets so that macros with compound statement definitions
+    ** behave syntactically more like functions when called.
+    */
+    #define NSPR_BEGIN_MACRO        do {
+    #define NSPR_END_MACRO          } while (0)
 
-/*
-** Macro shorthands for conditional C++ extern block delimiters.
-*/
-#ifdef NSPR_BEGIN_EXTERN_C
-#undef NSPR_BEGIN_EXTERN_C
-#endif
-#ifdef NSPR_END_EXTERN_C
-#undef NSPR_END_EXTERN_C
-#endif
+    /*
+    ** Macro shorthands for conditional C++ extern block delimiters.
+    */
+    #ifdef NSPR_BEGIN_EXTERN_C
+        #undef NSPR_BEGIN_EXTERN_C
+    #endif
+    #ifdef NSPR_END_EXTERN_C
+        #undef NSPR_END_EXTERN_C
+    #endif
 
-#ifdef __cplusplus
-#define NSPR_BEGIN_EXTERN_C     extern "C" {
-#define NSPR_END_EXTERN_C       }
-#else
-#define NSPR_BEGIN_EXTERN_C
-#define NSPR_END_EXTERN_C
-#endif
+    #ifdef __cplusplus
+        #define NSPR_BEGIN_EXTERN_C     extern "C" {
+        #define NSPR_END_EXTERN_C       }
+    #else
+        #define NSPR_BEGIN_EXTERN_C
+        #define NSPR_END_EXTERN_C
+    #endif
 
-//#include "obsolete/protypes.h"
+    //#include "obsolete/protypes.h"
 
-/********* ????????????? End Fix me ?????????????????????????????? *****/
+    /********* ????????????? End Fix me ?????????????????????????????? *****/
 #endif /* NO_NSPR_10_SUPPORT */
 
 /*

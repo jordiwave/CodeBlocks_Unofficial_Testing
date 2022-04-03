@@ -10,17 +10,17 @@
 
 class CompilerOW : public Compiler
 {
-public:
-    CompilerOW();
-    ~CompilerOW() override;
-    AutoDetectResult AutoDetectInstallationDir() override;
+    public:
+        CompilerOW();
+        ~CompilerOW() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
 
-    void LoadSettings(const wxString& baseKey) override;
-    void SetMasterPath(const wxString& path) override;
-    CompilerCommandGenerator* GetCommandGenerator(cbProject *project) override;
-protected:
-    Compiler * CreateCopy() override;
-private:
+        void LoadSettings(const wxString & baseKey) override;
+        void SetMasterPath(const wxString & path) override;
+        CompilerCommandGenerator * GetCommandGenerator(cbProject * project) override;
+    protected:
+        Compiler * CreateCopy() override;
+    private:
 };
 
 #endif // COMPILEROW_H

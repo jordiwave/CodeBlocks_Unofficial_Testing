@@ -31,70 +31,70 @@ class wxsTool;
 /** \brief This class represents extra tools space in editor allowing to edit tools */
 class wxsToolSpace: public wxScrolledWindow
 {
-public:
+    public:
 
-    /** \brief Ctor */
-    wxsToolSpace(wxWindow* Parent,wxsItemResData* Data);
+        /** \brief Ctor */
+        wxsToolSpace(wxWindow * Parent, wxsItemResData * Data);
 
-    /** \brief Dctor */
-    virtual ~wxsToolSpace();
+        /** \brief Dctor */
+        virtual ~wxsToolSpace();
 
-    /** \brief Function which must be called before changing preview */
-    void BeforePreviewChanged();
+        /** \brief Function which must be called before changing preview */
+        void BeforePreviewChanged();
 
-    /** \brief Function which must be called after changing preview */
-    void AfterPreviewChanged();
+        /** \brief Function which must be called after changing preview */
+        void AfterPreviewChanged();
 
-    /** \brief Function refreshing current selection (calculating new positions) */
-    void RefreshSelection();
+        /** \brief Function refreshing current selection (calculating new positions) */
+        void RefreshSelection();
 
-    /** \brief Checking whether there are any tools inside this resource */
-    inline bool AreAnyTools()
-    {
-        return m_First!=0;
-    }
+        /** \brief Checking whether there are any tools inside this resource */
+        inline bool AreAnyTools()
+        {
+            return m_First != 0;
+        }
 
-private:
+    private:
 
-    struct Entry;
+        struct Entry;
 
-    /** \brief Custom paint handler */
-    void OnPaint(wxPaintEvent& event);
+        /** \brief Custom paint handler */
+        void OnPaint(wxPaintEvent & event);
 
-    /** \brief Custom mouse click event */
-    void OnMouseClick(wxMouseEvent& event);
+        /** \brief Custom mouse click event */
+        void OnMouseClick(wxMouseEvent & event);
 
-    /** \brief Custom mouse double-click event */
-    void OnMouseDClick(wxMouseEvent& event);
+        /** \brief Custom mouse double-click event */
+        void OnMouseDClick(wxMouseEvent & event);
 
-    /** \brief Custom right click event */
-    void OnMouseRight(wxMouseEvent& event);
+        /** \brief Custom right click event */
+        void OnMouseRight(wxMouseEvent & event);
 
-    /** \brief Any mouse event */
-    void OnMouse(wxMouseEvent& event);
+        /** \brief Any mouse event */
+        void OnMouse(wxMouseEvent & event);
 
-    /** \brief Custom key down event */
-    void OnKeyDown(wxKeyEvent& event);
+        /** \brief Custom key down event */
+        void OnKeyDown(wxKeyEvent & event);
 
-    /** \brief Recalculating virtual space required by this window */
-    void RecalculateVirtualSize();
+        /** \brief Recalculating virtual space required by this window */
+        void RecalculateVirtualSize();
 
-    /** \brief Searching for tool entry at given position */
-    Entry* FindEntry(int& PosX,int& PosY);
+        /** \brief Searching for tool entry at given position */
+        Entry * FindEntry(int & PosX, int & PosY);
 
-    /** \brief Entry for each tool in resource */
-    struct Entry
-    {
-        wxsTool* m_Tool;
-        Entry*   m_Next;
-    };
+        /** \brief Entry for each tool in resource */
+        struct Entry
+        {
+            wxsTool * m_Tool;
+            Entry  * m_Next;
+        };
 
-    Entry*          m_First;        ///< \brief First tool in resource
-    int             m_Count;        ///< \brief Number of entries
-    wxsItemResData* m_Data;         ///< \brief Resource's data
-    bool            m_Unstable;     ///< \brief True between BeforePreviewChanged and AfterPreviewChanged to prevent some rare segfaults
+        Entry     *     m_First;        ///< \brief First tool in resource
+        int             m_Count;        ///< \brief Number of entries
+        wxsItemResData * m_Data;        ///< \brief Resource's data
+        bool            m_Unstable;     ///< \brief True between BeforePreviewChanged and AfterPreviewChanged to prevent some rare segfaults
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 

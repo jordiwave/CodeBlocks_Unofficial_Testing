@@ -10,13 +10,13 @@
 
 class CompilerGDC : public Compiler
 {
-public:
-    CompilerGDC();
-    ~CompilerGDC() override;
-    AutoDetectResult AutoDetectInstallationDir() override;
-protected:
-    Compiler* CreateCopy() override;
-private:
+    public:
+        CompilerGDC();
+        ~CompilerGDC() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
+    protected:
+        Compiler * CreateCopy() override;
+    private:
 };
 
 #endif // COMPILER_MINGW_H

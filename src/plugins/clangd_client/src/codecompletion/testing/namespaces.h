@@ -4,13 +4,13 @@ namespace my_namespace
 {
 class NameSpaces
 {
-public:
-    bool MethodA() const;
-    void MethodB();
+    public:
+        bool MethodA() const;
+        void MethodB();
 
-private:
-    int* m_Int1;
-    int* m_Int2;
+    private:
+        int * m_Int1;
+        int * m_Int2;
 };
 
 namespace nested_namespace
@@ -29,6 +29,6 @@ static wxString newline_string(_T("\n"));
 
 class DLLIMPORT Logger
 {
-public:
-    enum level { caption, info, warning, success, error };
+    public:
+        enum level { caption, info, warning, success, error };
 };

@@ -9,24 +9,24 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/button.h>
-#include <wx/checkbox.h>
-#include <wx/choice.h>
-#include <wx/event.h>
-#include <wx/intl.h>
-#include <wx/string.h>
-#include <wx/textctrl.h>
-#include <wx/xrc/xmlres.h>
-#include "globals.h" // cbMessageBox
-#include "manager.h"
-#include "configmanager.h"
+    #include <wx/button.h>
+    #include <wx/checkbox.h>
+    #include <wx/choice.h>
+    #include <wx/event.h>
+    #include <wx/intl.h>
+    #include <wx/string.h>
+    #include <wx/textctrl.h>
+    #include <wx/xrc/xmlres.h>
+    #include "globals.h" // cbMessageBox
+    #include "manager.h"
+    #include "configmanager.h"
 #endif
 
 //#define TRACE_SYMTAB_CFG
 #ifdef TRACE_SYMTAB_CFG
-#ifndef CB_PRECOMP
-#include "logmanager.h"
-#endif
+    #ifndef CB_PRECOMP
+        #include "logmanager.h"
+    #endif
 #endif
 
 #include <wx/dirdlg.h>
@@ -65,7 +65,7 @@ int SymTabConfigDlg::Execute()
     {
         // Instantiate and initialise dialog
         SymTabConfigDlgLoaded =
-            wxXmlResource::Get()->LoadObject(this, parent, _T("dlgSymTabConfig"),_T("wxScrollingDialog"));
+            wxXmlResource::Get()->LoadObject(this, parent, _T("dlgSymTabConfig"), _T("wxScrollingDialog"));
     }
 
     LoadSettings();
@@ -81,107 +81,109 @@ void SymTabConfigDlg::EndModal(int retCode)
 #ifdef TRACE_SYMTAB_CFG
     Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::EndModal")));
 #endif
-
     wxScrollingDialog::EndModal(retCode);
 }// EndModal
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTabConfigDlg::OnWhatToDo(wxCommandEvent& event)
+void SymTabConfigDlg::OnWhatToDo(wxCommandEvent & event)
 {
 #ifdef TRACE_SYMTAB_CFG
     Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::OnWhatToDo")));
 #endif
-
     int choice = event.GetInt();
     ToggleWidgets(choice);
 }// OnWhatToDo
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTabConfigDlg::OnSearch(wxCommandEvent& WXUNUSED(event))
+void SymTabConfigDlg::OnSearch(wxCommandEvent & WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_CFG
     Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::OnSearch")));
 #endif
-
     // user pressed Search; save settings
     SaveSettings();
-
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("symtab"));
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("symtab"));
     int choice = cfg->ReadInt(_T("/what_to_do"), 0);
 
     // Search for a symbol given a library path
-    if      (choice==0)
+    if (choice == 0)
     {
         wxString library_path = (cfg->Read(_T("/library_path"))).Trim();
+
         if (library_path.IsEmpty())
         {
             cbMessageBox(_("No library path provided."), _("Error"), wxICON_ERROR | wxOK,
-                         (wxWindow*)Manager::Get()->GetAppWindow());
+                         (wxWindow *)Manager::Get()->GetAppWindow());
             return;
         }
 
-        if ( !(   cfg->ReadBool(_T("/include_a"),   true)
-                  || cfg->ReadBool(_T("/include_lib"), true)
-                  || cfg->ReadBool(_T("/include_o"),   false)
-                  || cfg->ReadBool(_T("/include_obj"), false)
-                  || cfg->ReadBool(_T("/include_so"),  false)
-                  || cfg->ReadBool(_T("/include_dll"), false)) )
+        if (!(cfg->ReadBool(_T("/include_a"),   true)
+                || cfg->ReadBool(_T("/include_lib"), true)
+                || cfg->ReadBool(_T("/include_o"),   false)
+                || cfg->ReadBool(_T("/include_obj"), false)
+                || cfg->ReadBool(_T("/include_so"),  false)
+                || cfg->ReadBool(_T("/include_dll"), false)))
         {
             cbMessageBox(_("No file type (include) provided."), _("Error"), wxICON_ERROR | wxOK,
-                         (wxWindow*)Manager::Get()->GetAppWindow());
+                         (wxWindow *)Manager::Get()->GetAppWindow());
             return;
         }
 
         wxString symbol = (cfg->Read(_T("/symbol"))).Trim();
+
         if (symbol.IsEmpty())
         {
             wxString msg;
             msg << _("Warning: You did not select a symbol to search for in a path.\n")
                 << _("You may operate on many files - this can be a lengthy operation.\n")
                 << _("Are you really sure that you want to do this?");
+
             if (cbMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO,
-                             (wxWindow*)Manager::Get()->GetAppWindow()) == wxID_NO)
+                             (wxWindow *)Manager::Get()->GetAppWindow()) == wxID_NO)
+            {
                 return;
+            }
         }
     }
     // Search for all symbols in a given library
-    else if (choice==1)
-    {
-        wxString library = (cfg->Read(_T("/library"))).Trim();
-        if (library.IsEmpty())
+    else
+        if (choice == 1)
         {
-            cbMessageBox(_("No library provided."), _("Error"), wxICON_ERROR | wxOK,
-                         (wxWindow*)Manager::Get()->GetAppWindow());
-            return;
+            wxString library = (cfg->Read(_T("/library"))).Trim();
+
+            if (library.IsEmpty())
+            {
+                cbMessageBox(_("No library provided."), _("Error"), wxICON_ERROR | wxOK,
+                             (wxWindow *)Manager::Get()->GetAppWindow());
+                return;
+            }
         }
-    }
 
     wxScrollingDialog::EndModal(wxID_OK);
 }// OnSearch
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTabConfigDlg::OnClose(wxCommandEvent& WXUNUSED(event))
+void SymTabConfigDlg::OnClose(wxCommandEvent & WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_CFG
     Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::OnClose")));
 #endif
-
     wxScrollingDialog::EndModal(wxID_CANCEL);
 }// OnClose
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTabConfigDlg::OnLibraryPath(wxCommandEvent& WXUNUSED(event))
+void SymTabConfigDlg::OnLibraryPath(wxCommandEvent & WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_CFG
     Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::OnLibraryPath")));
 #endif
-
     wxDirDialog dd(parent, _("Select directory for search"));
     PlaceWindow(&dd);
+
     if (dd.ShowModal() == wxID_OK)
     {
         wxString path = dd.GetPath();
@@ -191,12 +193,11 @@ void SymTabConfigDlg::OnLibraryPath(wxCommandEvent& WXUNUSED(event))
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTabConfigDlg::OnLibrary(wxCommandEvent& WXUNUSED(event))
+void SymTabConfigDlg::OnLibrary(wxCommandEvent & WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_CFG
     Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::OnLibrary")));
 #endif
-
     wxString caption  = _T("Choose a (library) file");
     wxString wildcard;
     wildcard << _T("Library files (*.a)|*.a|")
@@ -211,9 +212,9 @@ void SymTabConfigDlg::OnLibrary(wxCommandEvent& WXUNUSED(event))
              << _T("All files (*)|*");
 #endif
     wxString es       = wxEmptyString;
-
-    wxFileDialog fd(parent, caption, es, es, wildcard, wxFD_OPEN|compatibility::wxHideReadonly);
+    wxFileDialog fd(parent, caption, es, es, wildcard, wxFD_OPEN | compatibility::wxHideReadonly);
     PlaceWindow(&fd);
+
     if (fd.ShowModal() == wxID_OK)
     {
         wxString path = fd.GetPath();
@@ -224,23 +225,27 @@ void SymTabConfigDlg::OnLibrary(wxCommandEvent& WXUNUSED(event))
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTabConfigDlg::OnNM(wxCommandEvent& WXUNUSED(event))
+void SymTabConfigDlg::OnNM(wxCommandEvent & WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_CFG
     Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::OnNM")));
 #endif
-
     wxString caption  = _T("Choose NM application");
     wxString wildcard;
+
     if (platform::windows)
+    {
         wildcard = _T("All files (*.*)|*.*");
+    }
     else
+    {
         wildcard = _T("All files (*)|*");
+    }
 
     wxString es = wxEmptyString;
-
-    wxFileDialog fd(parent, caption, es, es, wildcard, wxFD_OPEN|compatibility::wxHideReadonly);
+    wxFileDialog fd(parent, caption, es, es, wildcard, wxFD_OPEN | compatibility::wxHideReadonly);
     PlaceWindow(&fd);
+
     if (fd.ShowModal() == wxID_OK)
     {
         wxString path = fd.GetPath();
@@ -256,7 +261,6 @@ void SymTabConfigDlg::ToggleWidgets(int choice)
 #ifdef TRACE_SYMTAB_CFG
     Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::ToggleWidgets")));
 #endif
-
     // Strategy: Disable all widgets, enable required.
     XRCCTRL(*this, "txtLibraryPath", wxTextCtrl)->Enable(false);
     XRCCTRL(*this, "btnLibraryPath", wxButton)->Enable(false);
@@ -266,12 +270,11 @@ void SymTabConfigDlg::ToggleWidgets(int choice)
     XRCCTRL(*this, "chkIncludeObj",  wxCheckBox)->Enable(false);
     XRCCTRL(*this, "chkIncludeSo",   wxCheckBox)->Enable(false);
     XRCCTRL(*this, "chkIncludeDll",  wxCheckBox)->Enable(false);
-
     XRCCTRL(*this, "txtLibrary",     wxTextCtrl)->Enable(false);
     XRCCTRL(*this, "btnLibrary",     wxButton)->Enable(false);
 
     // Search for a symbol given a library path
-    if      (choice==0)
+    if (choice == 0)
     {
         XRCCTRL(*this, "txtLibraryPath", wxTextCtrl)->Enable(true);
         XRCCTRL(*this, "btnLibraryPath", wxButton)->Enable(true);
@@ -283,11 +286,12 @@ void SymTabConfigDlg::ToggleWidgets(int choice)
         XRCCTRL(*this, "chkIncludeDll",  wxCheckBox)->Enable(true);
     }
     // Search for all symbols in a given library
-    else if (choice==1)
-    {
-        XRCCTRL(*this, "txtLibrary",     wxTextCtrl)->Enable(true);
-        XRCCTRL(*this, "btnLibrary",     wxButton)->Enable(true);
-    }
+    else
+        if (choice == 1)
+        {
+            XRCCTRL(*this, "txtLibrary",     wxTextCtrl)->Enable(true);
+            XRCCTRL(*this, "btnLibrary",     wxButton)->Enable(true);
+        }
 }// ToggleWidgets
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
@@ -297,9 +301,7 @@ void SymTabConfigDlg::LoadSettings()
 #ifdef TRACE_SYMTAB_CFG
     Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::LoadSettings")));
 #endif
-
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("symtab"));
-
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("symtab"));
     // What to do options
     int choice = cfg->ReadInt(_T("/what_to_do"), 0);
     XRCCTRL(*this, "choWhatToDo",     wxChoice)->SetSelection(choice);
@@ -319,17 +321,13 @@ void SymTabConfigDlg::LoadSettings()
         cfg->ReadBool(_T("/include_so"),  false));
     XRCCTRL(*this, "chkIncludeDll",     wxCheckBox)->SetValue(
         cfg->ReadBool(_T("/include_dll"), false));
-
     XRCCTRL(*this, "txtLibrary",        wxTextCtrl)->SetValue(
         cfg->Read(_T("/library"),         _T("")));
-
     XRCCTRL(*this, "txtSymbol",         wxTextCtrl)->SetValue(
         cfg->Read(_T("/symbol"),          _T("")));
-
     // Options
     XRCCTRL(*this, "txtNM",             wxTextCtrl)->SetValue(
         cfg->Read(_T("/nm"),              _T("")));
-
     XRCCTRL(*this, "chkDebug",          wxCheckBox)->SetValue(
         cfg->ReadBool(_T("/debug"),       false));
     XRCCTRL(*this, "chkDefined",        wxCheckBox)->SetValue(
@@ -353,13 +351,10 @@ void SymTabConfigDlg::SaveSettings()
 #ifdef TRACE_SYMTAB_CFG
     Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::SaveSettings")));
 #endif
-
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("symtab"));
-
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("symtab"));
     // What to do options
     cfg->Write(_T("/what_to_do"),
-               XRCCTRL(*this, "choWhatToDo",    wxChoice  )->GetSelection());
-
+               XRCCTRL(*this, "choWhatToDo",    wxChoice)->GetSelection());
     cfg->Write(_T("/library_path"),
                XRCCTRL(*this, "txtLibraryPath", wxTextCtrl)->GetValue().Trim());
     cfg->Write(_T("/include_a"),
@@ -374,17 +369,13 @@ void SymTabConfigDlg::SaveSettings()
                XRCCTRL(*this, "chkIncludeSo",   wxCheckBox)->GetValue());
     cfg->Write(_T("/include_dll"),
                XRCCTRL(*this, "chkIncludeDll",  wxCheckBox)->GetValue());
-
     cfg->Write(_T("/library"),
                XRCCTRL(*this, "txtLibrary",     wxTextCtrl)->GetValue().Trim());
-
     cfg->Write(_T("/symbol"),
                XRCCTRL(*this, "txtSymbol",      wxTextCtrl)->GetValue().Trim());
-
     // Options
     cfg->Write(_T("/nm"),
                XRCCTRL(*this, "txtNM",          wxTextCtrl)->GetValue().Trim());
-
     cfg->Write(_T("/debug"),
                XRCCTRL(*this, "chkDebug",       wxCheckBox)->GetValue());
     cfg->Write(_T("/defined"),

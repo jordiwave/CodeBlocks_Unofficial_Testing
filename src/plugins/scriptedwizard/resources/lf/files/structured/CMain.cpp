@@ -2,7 +2,7 @@
 
 using namespace lf;
 
-CMain::CMain(render::IRenderWindow* win)
+CMain::CMain(render::IRenderWindow * win)
     : rwin(win),
       rl3d(win->getRenderLayer3D()),
       smgr(rl3d->getSceneManager()),
@@ -20,9 +20,7 @@ CMain::~CMain()
     smgr->remove(camController);
     cam->drop();
     camController->drop();
-
     smgr->getRootSceneNode()->removeAllChildren(true);
-
     rwin->removeKeyListener(this);
 }
 
@@ -47,21 +45,19 @@ void CMain::setupScene()
     cam->replace(new render::CRenderStateLighting(false));
     cam->setPosition(core::vector3df(0.0f, 0.0f, -30.0f));
     cam->setTarget(core::vector3df(0.0f, 0.0f, 0.0f));
-
     rl3d->add(cam);
     smgr->addSceneNode(cam);
-
     // handle camera control
     camController = new scene::CFPSController(rwin, cam);
-    smgr->add( camController );
+    smgr->add(camController);
 }
 
-void CMain::keyPressed(input::CKeyEvent& event)
+void CMain::keyPressed(input::CKeyEvent & event)
 {
     switch (event.getKey())
     {
-    case input::KEY_ESCAPE:
-        quitNow = true;
-        break;
+        case input::KEY_ESCAPE:
+            quitNow = true;
+            break;
     }
 }

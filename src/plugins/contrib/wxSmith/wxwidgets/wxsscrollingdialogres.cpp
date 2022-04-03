@@ -32,51 +32,52 @@ namespace
 {
 class wxsScrollingDialogResPreview: public wxScrollingDialog
 {
-public:
+    public:
 
-    wxsScrollingDialogResPreview(cb_unused wxWindow* Parent,wxsItemResData* Data): m_Data(Data)
-    {
-        m_Data->GetRootItem()->BuildPreview(this,pfExact);
-        wxAcceleratorEntry Acc[1];
-        Acc[0].Set(wxACCEL_NORMAL,WXK_ESCAPE,wxID_EXIT);
-        wxAcceleratorTable Table(1,Acc);
-        SetAcceleratorTable(Table);
-    }
+        wxsScrollingDialogResPreview(cb_unused wxWindow * Parent, wxsItemResData * Data): m_Data(Data)
+        {
+            m_Data->GetRootItem()->BuildPreview(this, pfExact);
+            wxAcceleratorEntry Acc[1];
+            Acc[0].Set(wxACCEL_NORMAL, WXK_ESCAPE, wxID_EXIT);
+            wxAcceleratorTable Table(1, Acc);
+            SetAcceleratorTable(Table);
+        }
 
-    ~wxsScrollingDialogResPreview()
-    {
-        m_Data->NotifyPreviewClosed();
-    }
+        ~wxsScrollingDialogResPreview()
+        {
+            m_Data->NotifyPreviewClosed();
+        }
 
-    void OnEscape(cb_unused wxCommandEvent& event)
-    {
-        Close();
-    }
-
-    void OnClose(cb_unused wxCloseEvent& event)
-    {
-        Destroy();
-    }
-
-    void OnButton(wxCommandEvent& event)
-    {
-        wxWindowID Id = event.GetId();
-        if ( Id == wxID_OK  ||
-                Id == wxID_APPLY ||
-                Id == wxID_CANCEL )
+        void OnEscape(cb_unused wxCommandEvent & event)
         {
             Close();
         }
-    }
 
-    wxsItemResData* m_Data;
+        void OnClose(cb_unused wxCloseEvent & event)
+        {
+            Destroy();
+        }
 
-    DECLARE_EVENT_TABLE()
+        void OnButton(wxCommandEvent & event)
+        {
+            wxWindowID Id = event.GetId();
+
+            if (Id == wxID_OK  ||
+                    Id == wxID_APPLY ||
+                    Id == wxID_CANCEL)
+            {
+                Close();
+            }
+        }
+
+        wxsItemResData * m_Data;
+
+        DECLARE_EVENT_TABLE()
 };
 
-BEGIN_EVENT_TABLE(wxsScrollingDialogResPreview,wxScrollingDialog)
-    EVT_BUTTON(wxID_ANY,wxsScrollingDialogResPreview::OnButton)
-    EVT_MENU(wxID_EXIT,wxsScrollingDialogResPreview::OnEscape)
+BEGIN_EVENT_TABLE(wxsScrollingDialogResPreview, wxScrollingDialog)
+    EVT_BUTTON(wxID_ANY, wxsScrollingDialogResPreview::OnButton)
+    EVT_MENU(wxID_EXIT, wxsScrollingDialogResPreview::OnEscape)
     EVT_CLOSE(wxsScrollingDialogResPreview::OnClose)
 END_EVENT_TABLE()
 }
@@ -93,9 +94,9 @@ wxString wxsScrollingDialogRes::OnGetAppBuildingCode()
                GetResourceName().c_str());
 }
 
-wxWindow* wxsScrollingDialogRes::OnBuildExactPreview(wxWindow* Parent,wxsItemResData* Data)
+wxWindow * wxsScrollingDialogRes::OnBuildExactPreview(wxWindow * Parent, wxsItemResData * Data)
 {
-    wxScrollingDialog* Dlg = new wxsScrollingDialogResPreview(Parent,Data);
+    wxScrollingDialog * Dlg = new wxsScrollingDialogResPreview(Parent, Data);
     Dlg->Show();
     return Dlg;
 }

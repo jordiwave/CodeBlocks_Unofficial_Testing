@@ -30,7 +30,7 @@ const wxString CRun::Flags[] =
     wxT("waituntilterminated")
 };
 
-CRun::CRun( void)
+CRun::CRun(void)
 {
     //ctor
 }
@@ -40,32 +40,51 @@ CRun::~CRun()
     //dtor
 }
 
-void CRun::WriteInFile( wxTextFile* File)
+void CRun::WriteInFile(wxTextFile * File)
 {
-    if( !m_Filename.IsEmpty())
+    if (!m_Filename.IsEmpty())
     {
         wxString Text;
-
         Text = _T("Filename: \"") + m_Filename + _T("\"");
-        if( !m_Description.IsEmpty())
+
+        if (!m_Description.IsEmpty())
+        {
             Text += _T("; Description: \"") + m_Description + _T("\"");
-        if( !m_Parameters.IsEmpty())
+        }
+
+        if (!m_Parameters.IsEmpty())
+        {
             Text += _T("; Parameters: \"") + m_Parameters + _T("\"");
-        if( !m_WorkingDir.IsEmpty())
+        }
+
+        if (!m_WorkingDir.IsEmpty())
+        {
             Text += _T("; WorkingDir: \"") + m_WorkingDir + _T("\"");
-        if( !m_StatusMsg.IsEmpty())
+        }
+
+        if (!m_StatusMsg.IsEmpty())
+        {
             Text += _T("; StatusMsg: \"") + m_StatusMsg + _T("\"");
-        if( !m_RunOnceId.IsEmpty())
+        }
+
+        if (!m_RunOnceId.IsEmpty())
+        {
             Text += _T("; RunOnceId: \"") + m_RunOnceId + _T("\"");
-        if( !m_Verb.IsEmpty())
+        }
+
+        if (!m_Verb.IsEmpty())
+        {
             Text += _T("; Verb: \"") + m_Verb + _T("\"");
-        if( !m_Flags.IsEmpty())
+        }
+
+        if (!m_Flags.IsEmpty())
+        {
             Text += _T("; Flags: ") + m_Flags;
+        }
 
         CCommon::AddText(Text);
         CCompTask::AddText(Text);
-
-        File->AddLine( Text);
+        File->AddLine(Text);
     }
 }
 
@@ -109,13 +128,14 @@ void CRun::SetFlags(wxString val)
     m_Flags = val;
 }
 
-void CRun::Analize( const wxString& content, const wxString& line)
+void CRun::Analize(const wxString & content, const wxString & line)
 {
     wxString cont = content;
     wxString part;
     wxString settings;
     SetLinenumber(line);
-    while( !cont.empty())
+
+    while (!cont.empty())
     {
         part = cont.BeforeFirst(':');
         settings = cont.AfterFirst(':').BeforeFirst(';');
@@ -124,44 +144,54 @@ void CRun::Analize( const wxString& content, const wxString& line)
         settings = settings.Trim(false);
         cont = cont.Trim(false);
 
-        if( part.CmpNoCase(_T("Filename")) == 0)
+        if (part.CmpNoCase(_T("Filename")) == 0)
         {
             SetFilename(settings);
         }
-        else if( part.CmpNoCase(_T("Description")) == 0)
-        {
-            SetDescription(settings);
-        }
-        else if( part.CmpNoCase(_T("Parameters")) == 0)
-        {
-            SetParameters(settings);
-        }
-        else if( part.CmpNoCase(_T("WorkingDir")) == 0)
-        {
-            SetWorkingDir(settings);
-        }
-        else if( part.CmpNoCase(_T("StatusMsg")) == 0)
-        {
-            SetStatusMsg(settings);
-        }
-        else if( part.CmpNoCase(_T("RunOnceId")) == 0)
-        {
-            SetRunOnceId(settings);
-        }
-        else if( part.CmpNoCase(_T("Verb")) == 0)
-        {
-            SetVerb(settings);
-        }
-        else if( part.CmpNoCase(_T("Flags")) == 0)
-        {
-            SetFlags(settings);
-        }
-        else if( !CCompTask::Analize(part, settings))
-            CCommon::Analize(part, settings);
+        else
+            if (part.CmpNoCase(_T("Description")) == 0)
+            {
+                SetDescription(settings);
+            }
+            else
+                if (part.CmpNoCase(_T("Parameters")) == 0)
+                {
+                    SetParameters(settings);
+                }
+                else
+                    if (part.CmpNoCase(_T("WorkingDir")) == 0)
+                    {
+                        SetWorkingDir(settings);
+                    }
+                    else
+                        if (part.CmpNoCase(_T("StatusMsg")) == 0)
+                        {
+                            SetStatusMsg(settings);
+                        }
+                        else
+                            if (part.CmpNoCase(_T("RunOnceId")) == 0)
+                            {
+                                SetRunOnceId(settings);
+                            }
+                            else
+                                if (part.CmpNoCase(_T("Verb")) == 0)
+                                {
+                                    SetVerb(settings);
+                                }
+                                else
+                                    if (part.CmpNoCase(_T("Flags")) == 0)
+                                    {
+                                        SetFlags(settings);
+                                    }
+                                    else
+                                        if (!CCompTask::Analize(part, settings))
+                                        {
+                                            CCommon::Analize(part, settings);
+                                        }
     }
 }
 
-void CRun::FillContent(wxListCtrl* liste)
+void CRun::FillContent(wxListCtrl * liste)
 {
     liste->SetItem(GetIndex(), m_index_name, m_Filename);
     liste->SetItem(GetIndex(), m_index_desc, m_Description);
@@ -175,7 +205,7 @@ void CRun::FillContent(wxListCtrl* liste)
     CCommon::FillContent(liste, GetIndex());
 }
 
-void CRun::AddHeader(wxListCtrl* liste)
+void CRun::AddHeader(wxListCtrl * liste)
 {
     InsertHeader(liste);
     m_index_name  = liste->InsertColumn(liste->GetColumnCount(), _T("Filename"));

@@ -39,30 +39,30 @@ WX_DECLARE_OBJARRAY(TemplateOption, TemplateOptionArray);
 
 class DLLIMPORT ProjectTemplateLoader
 {
-public:
-    ProjectTemplateLoader();
-    virtual ~ProjectTemplateLoader();
+    public:
+        ProjectTemplateLoader();
+        virtual ~ProjectTemplateLoader();
 
-    bool Open(const wxString& filename);
+        bool Open(const wxString & filename);
 
-    wxString m_Name;
-    wxString m_Notice;
-    int m_NoticeMsgType;
-    wxString m_Title;
-    wxString m_Category;
-    wxString m_Bitmap;
-    FileSetArray m_FileSets;
-    TemplateOptionArray m_TemplateOptions;
-protected:
-    void DoTemplate(TiXmlElement* parentNode);
-    void DoTemplateNotice(TiXmlElement* parentNode);
-    void DoFileSet(TiXmlElement* parentNode);
-    void DoFileSetFile(TiXmlElement* parentNode, FileSet& fs);
-    void DoOption(TiXmlElement* parentNode);
-    void DoOptionProject(TiXmlElement* parentNode, TemplateOption& to);
-    void DoOptionCompiler(TiXmlElement* parentNode, TemplateOption& to);
-    void DoOptionLinker(TiXmlElement* parentNode, TemplateOption& to);
-private:
+        wxString m_Name;
+        wxString m_Notice;
+        int m_NoticeMsgType;
+        wxString m_Title;
+        wxString m_Category;
+        wxString m_Bitmap;
+        FileSetArray m_FileSets;
+        TemplateOptionArray m_TemplateOptions;
+    protected:
+        void DoTemplate(TiXmlElement * parentNode);
+        void DoTemplateNotice(TiXmlElement * parentNode);
+        void DoFileSet(TiXmlElement * parentNode);
+        void DoFileSetFile(TiXmlElement * parentNode, FileSet & fs);
+        void DoOption(TiXmlElement * parentNode);
+        void DoOptionProject(TiXmlElement * parentNode, TemplateOption & to);
+        void DoOptionCompiler(TiXmlElement * parentNode, TemplateOption & to);
+        void DoOptionLinker(TiXmlElement * parentNode, TemplateOption & to);
+    private:
 };
 
 #endif // PROJECTTEMPLATELOADER_H

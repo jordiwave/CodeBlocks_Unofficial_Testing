@@ -22,7 +22,7 @@ const wxString CRegistry::Flags[] =
     wxT("uninsdeletevalue")
 };
 
-CRegistry::CRegistry( void)
+CRegistry::CRegistry(void)
 {
     //ctor
 }
@@ -32,10 +32,10 @@ CRegistry::~CRegistry()
     //dtor
 }
 
-void CRegistry::Set( wxString root, wxString subKey)
+void CRegistry::Set(wxString root, wxString subKey)
 {
-    SetRoot( root);
-    SetSubkey( subKey);
+    SetRoot(root);
+    SetSubkey(subKey);
 }
 
 void CRegistry::SetRoot(wxString val)
@@ -73,34 +73,46 @@ void CRegistry::SetFlags(wxString val)
     m_Flags = val;
 }
 
-void CRegistry::WriteInFile( wxTextFile* File)
+void CRegistry::WriteInFile(wxTextFile * File)
 {
-    if( !m_Root.IsEmpty() && !m_Subkey.IsEmpty())
+    if (!m_Root.IsEmpty() && !m_Subkey.IsEmpty())
     {
         wxString Text;
-
         Text = _T("Root: ") + m_Root + _T("; Subkey: \"") + m_Subkey + _T("\"");
-        if( !m_ValueType.IsEmpty())
+
+        if (!m_ValueType.IsEmpty())
+        {
             Text += _T("; ValueType: ") + m_ValueType;
-        if( !m_ValueData)
+        }
+
+        if (!m_ValueData)
+        {
             Text += _T("; ValueData: \"") + m_ValueData + _T("\"");
-        if( !m_Permissions.IsEmpty())
+        }
+
+        if (!m_Permissions.IsEmpty())
+        {
             Text += _T("; Permissions: ") + m_Permissions;
-        if( !m_Flags.IsEmpty())
+        }
+
+        if (!m_Flags.IsEmpty())
+        {
             Text += _T("; Flags: ") + m_Flags;
+        }
 
         CCompTask::AddText(Text);
         CCommon::AddText(Text);
-        File->AddLine( Text);
+        File->AddLine(Text);
     }
 }
-void CRegistry::Analize(const wxString& content, const wxString& line)
+void CRegistry::Analize(const wxString & content, const wxString & line)
 {
     wxString cont = content;
     wxString part;
     wxString settings;
     SetLinenumber(line);
-    while( !cont.empty())
+
+    while (!cont.empty())
     {
         part = cont.BeforeFirst(':');
         settings = cont.AfterFirst(':').BeforeFirst(';');
@@ -109,40 +121,49 @@ void CRegistry::Analize(const wxString& content, const wxString& line)
         settings = settings.Trim(false);
         cont = cont.Trim(false);
 
-        if( part.CmpNoCase(_T("Root")) == 0)
+        if (part.CmpNoCase(_T("Root")) == 0)
         {
             SetRoot(settings);
         }
-        else if( part.CmpNoCase(_T("Subkey")) == 0)
-        {
-            SetSubkey(settings);
-        }
-        else if( part.CmpNoCase(_T("ValueType")) == 0)
-        {
-            SetValueType(settings);
-        }
-        else if( part.CmpNoCase(_T("ValueName")) == 0)
-        {
-            SetValueName(settings);
-        }
-        else if( part.CmpNoCase(_T("ValueData")) == 0)
-        {
-            SetValueData(settings);
-        }
-        else if( part.CmpNoCase(_T("permissions")) == 0)
-        {
-            SetPermissions(settings);
-        }
-        else if( part.CmpNoCase(_T("flags")) == 0)
-        {
-            SetFlags(settings);
-        }
-        else if( !CCompTask::Analize(part, settings))
-            CCommon::Analize(part, settings);
+        else
+            if (part.CmpNoCase(_T("Subkey")) == 0)
+            {
+                SetSubkey(settings);
+            }
+            else
+                if (part.CmpNoCase(_T("ValueType")) == 0)
+                {
+                    SetValueType(settings);
+                }
+                else
+                    if (part.CmpNoCase(_T("ValueName")) == 0)
+                    {
+                        SetValueName(settings);
+                    }
+                    else
+                        if (part.CmpNoCase(_T("ValueData")) == 0)
+                        {
+                            SetValueData(settings);
+                        }
+                        else
+                            if (part.CmpNoCase(_T("permissions")) == 0)
+                            {
+                                SetPermissions(settings);
+                            }
+                            else
+                                if (part.CmpNoCase(_T("flags")) == 0)
+                                {
+                                    SetFlags(settings);
+                                }
+                                else
+                                    if (!CCompTask::Analize(part, settings))
+                                    {
+                                        CCommon::Analize(part, settings);
+                                    }
     }
 }
 
-void CRegistry::FillContent(wxListCtrl* liste)
+void CRegistry::FillContent(wxListCtrl * liste)
 {
     liste->SetItem(GetIndex(), m_index_root, m_Root);
     liste->SetItem(GetIndex(), m_index_sub, m_Subkey);
@@ -155,7 +176,7 @@ void CRegistry::FillContent(wxListCtrl* liste)
     CCommon::FillContent(liste, GetIndex());
 }
 
-void CRegistry::AddHeader(wxListCtrl* liste)
+void CRegistry::AddHeader(wxListCtrl * liste)
 {
     InsertHeader(liste);
     m_index_root = liste->InsertColumn(liste->GetColumnCount(), _T("Root"));

@@ -19,14 +19,14 @@
 // RCS-ID: $Id: ProjectData.cpp 12195 2020-07-29 22:24:29Z fuscated $
 
 #if defined(CB_PRECOMP)
-#include "sdk.h"
+    #include "sdk.h"
 #else
-#include "sdk_events.h"
-#include "manager.h"
-#include "editormanager.h"
-#include "editorbase.h"
-#include "cbeditor.h"
-#include "cbproject.h"
+    #include "sdk_events.h"
+    #include "manager.h"
+    #include "editormanager.h"
+    #include "editorbase.h"
+    #include "cbeditor.h"
+    #include "cbproject.h"
 #endif
 
 #include <wx/dynarray.h> //for wxArray and wxSortedArray
@@ -50,18 +50,27 @@ ProjectData::ProjectData()
     //private ctor
 }
 // ----------------------------------------------------------------------------
-ProjectData::ProjectData(cbProject* pcbProject)
+ProjectData::ProjectData(cbProject * pcbProject)
 // ----------------------------------------------------------------------------
 {
     //ctor
 #if defined(LOGGING)
-    if (not pcbProject) asm("int3"); /*trap*/;
+    if (not pcbProject)
+    {
+        asm("int3");
+    } /*trap*/;
+
 #endif
-    if (not pcbProject) return;
+
+    if (not pcbProject)
+    {
+        return;
+    }
+
     m_pCBProject = pcbProject;
     m_ProjectFilename = pcbProject->GetFilename();
     m_CurrIndexEntry = 0;
-    m_LastIndexEntry = MaxEntries-1;
+    m_LastIndexEntry = MaxEntries - 1;
     m_pEdMgr = Manager::Get()->GetEditorManager();
     m_ActivationCount = 0;
     m_bLayoutLoaded = false;
@@ -78,9 +87,8 @@ ProjectData::~ProjectData()
     {
         delete it->second;
     }
+
     m_FileBrowse_MarksArchive.clear();
-
-
 }
 // ----------------------------------------------------------------------------
 void ProjectData::IncrementActivationCount()
@@ -101,55 +109,54 @@ wxString ProjectData::GetProjectFilename()
     return m_ProjectFilename;
 }
 // ----------------------------------------------------------------------------
-void ProjectData::AddEditor( wxString /*filePath */)
+void ProjectData::AddEditor(wxString /*filePath */)
 // ----------------------------------------------------------------------------
 {
-////    // Don't stow duplicates
-////    if ( m_EditorBaseArray.Index( eb ) != wxNOT_FOUND ) return;
-////
-////    // not found, stow new data into arrays
-////    int index = m_LastIndexEntry;
-////    if (++index >= MaxEntries) index = 0;
-////    m_LastIndexEntry = index;
-////    m_EditorBaseArray[index] = eb;
-////    m_cbEditorArray[index] = cbed;
-////    m_cbSTCArray[index] = control;
-
+    ////    // Don't stow duplicates
+    ////    if ( m_EditorBaseArray.Index( eb ) != wxNOT_FOUND ) return;
+    ////
+    ////    // not found, stow new data into arrays
+    ////    int index = m_LastIndexEntry;
+    ////    if (++index >= MaxEntries) index = 0;
+    ////    m_LastIndexEntry = index;
+    ////    m_EditorBaseArray[index] = eb;
+    ////    m_cbEditorArray[index] = cbed;
+    ////    m_cbSTCArray[index] = control;
 }
 // ----------------------------------------------------------------------------
-bool ProjectData::FindFilename( const wxString filePath)
+bool ProjectData::FindFilename(const wxString filePath)
 // ----------------------------------------------------------------------------
 {
     //Return true if we own a BrowseMarks array by this filepath;
-
-    FileBrowse_MarksHash& hash = m_FileBrowse_MarksArchive;
+    FileBrowse_MarksHash & hash = m_FileBrowse_MarksArchive;
     FileBrowse_MarksHash::iterator it = hash.find(filePath);
-    if ( it == hash.end() )
+
+    if (it == hash.end())
     {
         //DumpHash(wxT("BrowseMarks"));
         return false;
     }
+
     return true;
 }
 // ----------------------------------------------------------------------------
-BrowseMarks* ProjectData::GetBrowse_MarksFromHash( wxString filePath)
+BrowseMarks * ProjectData::GetBrowse_MarksFromHash(wxString filePath)
 // ----------------------------------------------------------------------------
 {
     // Return a pointer to a BrowseMarks array with this filePath
-
-    FileBrowse_MarksHash& hash = m_FileBrowse_MarksArchive;
+    FileBrowse_MarksHash & hash = m_FileBrowse_MarksArchive;
     return GetPointerToBrowse_MarksArray(hash, filePath);
 }
 // ----------------------------------------------------------------------------
-BrowseMarks* ProjectData::GetPointerToBrowse_MarksArray(FileBrowse_MarksHash& hash, wxString filePath)
+BrowseMarks * ProjectData::GetPointerToBrowse_MarksArray(FileBrowse_MarksHash & hash, wxString filePath)
 // ----------------------------------------------------------------------------
 {
     // Return a pointer to a BrowseMarks array with this filePath
-
     for (FileBrowse_MarksHash::iterator it = hash.begin(); it != hash.end(); it++)
     {
-        BrowseMarks* p = it->second;
-        if ( p->GetFilePath() == filePath )
+        BrowseMarks * p = it->second;
+
+        if (p->GetFilePath() == filePath)
         {
             return p;
         }
@@ -158,24 +165,47 @@ BrowseMarks* ProjectData::GetPointerToBrowse_MarksArray(FileBrowse_MarksHash& ha
     return 0;
 }
 // ----------------------------------------------------------------------------
-BrowseMarks* ProjectData::HashAddBrowse_Marks( const wxString fullPath )
+BrowseMarks * ProjectData::HashAddBrowse_Marks(const wxString fullPath)
 // ----------------------------------------------------------------------------
 {
     // EditorManager calls fail during the OnEditorClose event
     //EditorBase* eb = Manager::Get()->GetEditorManager()->GetEditor(filename);
-
-    EditorBase* eb = m_pEdMgr->GetEditor(fullPath);
+    EditorBase * eb = m_pEdMgr->GetEditor(fullPath);
 #if defined(LOGGING)
-    if(not eb) asm("int3"); /*trap*/
+
+    if (not eb)
+    {
+        asm("int3");    /*trap*/
+    }
+
 #endif
-    if(not eb) return 0;
+
+    if (not eb)
+    {
+        return 0;
+    }
+
     wxString filePath = eb->GetFilename();
-    if (filePath.IsEmpty()) return 0;
+
+    if (filePath.IsEmpty())
+    {
+        return 0;
+    }
+
     // don't add duplicates
-    BrowseMarks* pBrowse_Marks = GetBrowse_MarksFromHash( filePath );
-    if (pBrowse_Marks) return pBrowse_Marks ;
-    pBrowse_Marks = new BrowseMarks( fullPath );
-    if (pBrowse_Marks) m_FileBrowse_MarksArchive[filePath] = pBrowse_Marks;
+    BrowseMarks * pBrowse_Marks = GetBrowse_MarksFromHash(filePath);
+
+    if (pBrowse_Marks)
+    {
+        return pBrowse_Marks ;
+    }
+
+    pBrowse_Marks = new BrowseMarks(fullPath);
+
+    if (pBrowse_Marks)
+    {
+        m_FileBrowse_MarksArchive[filePath] = pBrowse_Marks;
+    }
 
     return pBrowse_Marks;
 }
@@ -185,16 +215,18 @@ void ProjectData::LoadLayout()
 {
     // Load a layout file for this project
 #if defined(LOGGING)
-    LOGIT( _T("ProjectData::LoadLayout()for[%s]"),m_ProjectFilename.c_str() );
+    LOGIT(_T("ProjectData::LoadLayout()for[%s]"), m_ProjectFilename.c_str());
 #endif
 
     if (m_ProjectFilename.IsEmpty())
+    {
         return ;
+    }
 
     wxFileName fname(m_ProjectFilename);
     fname.SetExt(_T("bmarks"));
-    BrowseTrackerLayout layout( m_pCBProject );
-    layout.Open(fname.GetFullPath(), m_FileBrowse_MarksArchive );
+    BrowseTrackerLayout layout(m_pCBProject);
+    layout.Open(fname.GetFullPath(), m_FileBrowse_MarksArchive);
     m_bLayoutLoaded = true;
 }
 // ----------------------------------------------------------------------------
@@ -203,19 +235,19 @@ void ProjectData::SaveLayout()
 {
     // Write a layout file for this project
 #if defined(LOGGING)
-    LOGIT( _T("ProjectData::SAVELayout()") );
+    LOGIT(_T("ProjectData::SAVELayout()"));
 #endif
 
     if (m_ProjectFilename.IsEmpty())
+    {
         return ;
+    }
 
     wxFileName fname(m_ProjectFilename);
     fname.SetExt(_T("bmarks"));
-    BrowseTrackerLayout layout( m_pCBProject );
+    BrowseTrackerLayout layout(m_pCBProject);
     //DumpBrowse_Marks(wxT("BrowseMarks"));
-    layout.Save(fname.GetFullPath(), m_FileBrowse_MarksArchive );
-
-
+    layout.Save(fname.GetFullPath(), m_FileBrowse_MarksArchive);
     // *Testing* See if cbEditor is actually there
     //EditorBase* eb = m_EditorBaseArray[1];
     //cbEditor* cbed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(eb);
@@ -223,7 +255,6 @@ void ProjectData::SaveLayout()
     //#if defined(LOGGING)
     //LOGIT( _T("eb[%p]cbed[%p]control[%p]"), eb, cbed, control );
     //#endif
-
     // *Testing* Check against our array
     //eb = m_EditorBaseArray[1];
     //cbed = m_cbEditorArray[1];
@@ -231,57 +262,52 @@ void ProjectData::SaveLayout()
     //#if defined(LOGGING)
     //LOGIT( _T("eb[%p]cbed[%p]control[%p]"), eb, cbed, control );
     //#endif
-
-
 }
 // ----------------------------------------------------------------------------
-void ProjectData::DumpHash( const wxString
+void ProjectData::DumpHash(const wxString
 #if defined(LOGGING)
-                            hashType
+    hashType
 #endif
                           )
 // ----------------------------------------------------------------------------
 {
-
 #if defined(LOGGING)
+    FileBrowse_MarksHash * phash = &m_FileBrowse_MarksArchive;
+    FileBrowse_MarksHash & hash = *phash;
+    LOGIT(_T("--- DumpProjectHash ---[%s]Count[%lu]Name[%s]"), hashType.wx_str(),
+          static_cast<unsigned long>(hash.size()), m_ProjectFilename.wx_str());
 
-    FileBrowse_MarksHash* phash = &m_FileBrowse_MarksArchive;
-    FileBrowse_MarksHash& hash = *phash;
-
-    LOGIT( _T("--- DumpProjectHash ---[%s]Count[%lu]Name[%s]"), hashType.wx_str(),
-           static_cast<unsigned long>(hash.size()), m_ProjectFilename.wx_str() );
     for (FileBrowse_MarksHash::iterator it = hash.begin(); it != hash.end(); it++)
     {
         wxString filename = it->first; //an Editor filename withing this project
-        BrowseMarks* p = it->second;    // ptr to array of Editor Browse/Book mark cursor positions
-        LOGIT( _T("filename[%s]BrowseMark*[%p]name[%s]"), filename.c_str(), p, p->GetFilePath().c_str() );
+        BrowseMarks * p = it->second;   // ptr to array of Editor Browse/Book mark cursor positions
+        LOGIT(_T("filename[%s]BrowseMark*[%p]name[%s]"), filename.c_str(), p, p->GetFilePath().c_str());
     }
 
 #endif
 }
 
 // ----------------------------------------------------------------------------
-void ProjectData::DumpBrowse_Marks( const wxString
+void ProjectData::DumpBrowse_Marks(const wxString
 #if defined(LOGGING)
-                                    hashType
+    hashType
 #endif
                                   )
 // ----------------------------------------------------------------------------
 {
 #if defined(LOGGING)
-    LOGIT( _T("--- DumpBrowseData ---[%s]"), hashType.c_str()  );
-
-    FileBrowse_MarksHash* phash = &m_FileBrowse_MarksArchive;
-    FileBrowse_MarksHash& hash = *phash;
-
-    LOGIT( _T("Dump_%s Size[%lu]"), hashType.wx_str(), static_cast<unsigned long>(hash.size()) );
+    LOGIT(_T("--- DumpBrowseData ---[%s]"), hashType.c_str());
+    FileBrowse_MarksHash * phash = &m_FileBrowse_MarksArchive;
+    FileBrowse_MarksHash & hash = *phash;
+    LOGIT(_T("Dump_%s Size[%lu]"), hashType.wx_str(), static_cast<unsigned long>(hash.size()));
 
     for (FileBrowse_MarksHash::iterator it = hash.begin(); it != hash.end(); ++it)
     {
         wxString filename = it->first;
-        BrowseMarks* p = it->second;
-        LOGIT( _T("Filename[%s]%s*[%p]name[%s]"), filename.c_str(), hashType.c_str(), p,
-               (p ? p->GetFilePath().c_str() : ""));
+        BrowseMarks * p = it->second;
+        LOGIT(_T("Filename[%s]%s*[%p]name[%s]"), filename.c_str(), hashType.c_str(), p,
+              (p ? p->GetFilePath().c_str() : ""));
+
         if (p)
         {
             //dump the browse marks

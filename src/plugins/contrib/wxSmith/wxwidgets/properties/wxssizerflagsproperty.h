@@ -36,69 +36,69 @@
  */
 class PLUGIN_EXPORT wxsSizerFlagsProperty: public wxsProperty
 {
-public:
+    public:
 
-    static const long BorderTop             = 0x00001;
-    static const long BorderBottom          = 0x00002;
-    static const long BorderLeft            = 0x00004;
-    static const long BorderRight           = 0x00008;
-    static const long BorderAll             = 0x00010;
-    static const long BorderPrevAll         = 0x00020;
-    static const long Expand                = 0x00040;
-    static const long Shaped                = 0x00080;
-    static const long FixedMinSize          = 0x00100;
-    static const long AlignLeft             = 0x00200;
-    static const long AlignRight            = 0x00400;
-    static const long AlignTop              = 0x00800;
-    static const long AlignBottom           = 0x01000;
-    static const long AlignCenterVertical   = 0x02000;
-    static const long AlignCenterHorizontal = 0x04000;
-    static const long AlignNot              = 0x08000;
-    static const long ParentAlignVertical   = 0x10000;
-    static const long ParentAlignHorizontal = 0x20000;
+        static const long BorderTop             = 0x00001;
+        static const long BorderBottom          = 0x00002;
+        static const long BorderLeft            = 0x00004;
+        static const long BorderRight           = 0x00008;
+        static const long BorderAll             = 0x00010;
+        static const long BorderPrevAll         = 0x00020;
+        static const long Expand                = 0x00040;
+        static const long Shaped                = 0x00080;
+        static const long FixedMinSize          = 0x00100;
+        static const long AlignLeft             = 0x00200;
+        static const long AlignRight            = 0x00400;
+        static const long AlignTop              = 0x00800;
+        static const long AlignBottom           = 0x01000;
+        static const long AlignCenterVertical   = 0x02000;
+        static const long AlignCenterHorizontal = 0x04000;
+        static const long AlignNot              = 0x08000;
+        static const long ParentAlignVertical   = 0x10000;
+        static const long ParentAlignHorizontal = 0x20000;
 
-    /** \brief Ctor
-     *  \param Offset   offset to long handling border flags
-     *  \param Priority         priority of this property
-     */
-    wxsSizerFlagsProperty(long Offset,int Priority);
+        /** \brief Ctor
+         *  \param Offset   offset to long handling border flags
+         *  \param Priority         priority of this property
+         */
+        wxsSizerFlagsProperty(long Offset, int Priority);
 
-    /** \brief Returning type of this property */
-    virtual const wxString GetTypeName()
-    {
-        return _T("SizerFlags");
-    }
+        /** \brief Returning type of this property */
+        virtual const wxString GetTypeName()
+        {
+            return _T("SizerFlags");
+        }
 
-    /** \brief Getting string representation of flags */
-    static wxString GetString(long Flags);
+        /** \brief Getting string representation of flags */
+        static wxString GetString(long Flags);
 
-    /** \brief Getting wxWidgets-ready flags */
-    static long GetWxFlags(long Flags);
+        /** \brief Getting wxWidgets-ready flags */
+        static long GetWxFlags(long Flags);
 
-protected:
+    protected:
 
-    virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
-    virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-    virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+        virtual void PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent);
+        virtual bool PGRead(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index);
+        virtual bool PGWrite(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index);
+        virtual bool XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
+        virtual bool PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
 
-private:
+    private:
 
-    static long ParseString(const wxString& String);
-    static void FixFlags(long& Flags);
+        static long ParseString(const wxString & String);
+        static void FixFlags(long & Flags);
 
-    long GetParentOrientation(TiXmlElement* Element);
+        long GetParentOrientation(TiXmlElement * Element);
 
-    long Offset;
+        long Offset;
 
-    static const long BorderMask      = BorderTop|BorderBottom|BorderLeft|BorderRight;
-    static const long AlignHMask      = AlignLeft|AlignRight|AlignCenterHorizontal;
-    static const long AlignVMask      = AlignTop|AlignBottom|AlignCenterVertical;
-    static const long AlignCMask      = AlignCenterHorizontal|AlignCenterVertical;
-    static const long ParentAlignMask = ParentAlignVertical|ParentAlignHorizontal;
+        static const long BorderMask      = BorderTop | BorderBottom | BorderLeft | BorderRight;
+        static const long AlignHMask      = AlignLeft | AlignRight | AlignCenterHorizontal;
+        static const long AlignVMask      = AlignTop | AlignBottom | AlignCenterVertical;
+        static const long AlignCMask      = AlignCenterHorizontal | AlignCenterVertical;
+        static const long ParentAlignMask = ParentAlignVertical | ParentAlignHorizontal;
 };
 
 /** \addtogroup ext_properties_macros
@@ -111,7 +111,7 @@ private:
  */
 #define WXS_SIZERFLAGS_P(ClassName,VarName,Priority) \
     { static wxsSizerFlagsProperty _Property(wxsOFFSET(ClassName,VarName),Priority); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \} */
 

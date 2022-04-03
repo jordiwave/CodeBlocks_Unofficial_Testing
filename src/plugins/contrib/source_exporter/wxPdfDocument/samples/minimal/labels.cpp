@@ -11,11 +11,11 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+    #include "wx/wx.h"
 #endif
 
 #include "wx/pdfdoc.h"
@@ -61,9 +61,9 @@
 
 typedef struct tPdfLabelFormat
 {
-    const wxChar* name;
+    const wxChar * name;
     wxPaperSize   paperSize;
-    const wxChar* metric;
+    const wxChar * metric;
     double        marginLeft;
     double        marginTop;
     int           nx;
@@ -90,175 +90,178 @@ static PdfLabelFormat s_averyLabels[] =
 
 class PdfLabel : public wxPdfDocument
 {
-public:
-    /// Constructor
-    PdfLabel (const PdfLabelFormat& format, const wxString& unit = wxS("mm"), int posX = 1, int  posY = 1)
-        : wxPdfDocument(wxPORTRAIT, format.metric, format.paperSize)
-    {
-        m_charSize   = 10;
-        m_lineHeight = 10;
-        m_xCount     = 1;
-        m_yCount     = 1;
-
-        SetFontName(wxS("Helvetica"));
-        SetFormat(format);
-        SetMargins(0,0);
-        SetAutoPageBreak(false);
-
-        m_metricDoc = unit;
-        // Start at the given label position
-        m_xCount = (posX >= m_xNumber) ? m_xNumber-1 : ((posX > 1) ? posX-1 : 0);
-        m_yCount = (posY >= m_yNumber) ? m_yNumber-1 : ((posY > 1) ? posY-1 : 0);
-    }
-
-    /// Print a label
-    void AddLabel(const wxString& texte)
-    {
-        // We are in a new page, then we must add a page
-        if ((m_xCount == 0) && (m_yCount == 0))
+    public:
+        /// Constructor
+        PdfLabel(const PdfLabelFormat & format, const wxString & unit = wxS("mm"), int posX = 1, int  posY = 1)
+            : wxPdfDocument(wxPORTRAIT, format.metric, format.paperSize)
         {
-            AddPage();
+            m_charSize   = 10;
+            m_lineHeight = 10;
+            m_xCount     = 1;
+            m_yCount     = 1;
+            SetFontName(wxS("Helvetica"));
+            SetFormat(format);
+            SetMargins(0, 0);
+            SetAutoPageBreak(false);
+            m_metricDoc = unit;
+            // Start at the given label position
+            m_xCount = (posX >= m_xNumber) ? m_xNumber - 1 : ((posX > 1) ? posX - 1 : 0);
+            m_yCount = (posY >= m_yNumber) ? m_yNumber - 1 : ((posY > 1) ? posY - 1 : 0);
         }
 
-        double posX = m_marginLeft+(m_xCount*(m_width+m_xSpace));
-        double posY = m_marginTop+(m_yCount*(m_height+m_ySpace));
-        SetXY(posX+3, posY+3);
-        MultiCell(m_width, m_lineHeight, texte);
-
-        m_yCount++;
-
-        if (m_yCount == m_yNumber)
+        /// Print a label
+        void AddLabel(const wxString & texte)
         {
-            // End of column reached, we start a new one
-            m_xCount++;
-            m_yCount = 0;
-        }
-
-        if (m_xCount == m_xNumber)
-        {
-            // Page full, we start a new one
-            m_xCount = 0;
-            m_yCount = 0;
-        }
-    }
-
-    /// Changes the font
-    void SetFontName(const wxString& fontname)
-    {
-        if (fontname != wxS(""))
-        {
-            m_fontName = fontname;
-            SetFont(m_fontName);
-        }
-    }
-
-    /// Sets the font size
-    /**
-    * This changes the line height too
-    */
-    void SetFontSize(double pt)
-    {
-        if (pt > 3)
-        {
-            m_charSize = pt;
-            m_lineHeight = GetHeightChars(pt);
-            wxPdfDocument::SetFontSize(m_charSize);
-        }
-    }
-
-    /// Finds a predefined label format by name
-    static const PdfLabelFormat& FindFormat(const wxString& format)
-    {
-        PdfLabelFormat* tFormat = &s_averyLabels[0];
-        int j = 0;
-        for (j = 0; wxString(wxS("")).Cmp(s_averyLabels[j].name) != 0; j++)
-        {
-            if (format == s_averyLabels[j].name)
+            // We are in a new page, then we must add a page
+            if ((m_xCount == 0) && (m_yCount == 0))
             {
-                tFormat = &s_averyLabels[j];
-                break;
+                AddPage();
+            }
+
+            double posX = m_marginLeft + (m_xCount * (m_width + m_xSpace));
+            double posY = m_marginTop + (m_yCount * (m_height + m_ySpace));
+            SetXY(posX + 3, posY + 3);
+            MultiCell(m_width, m_lineHeight, texte);
+            m_yCount++;
+
+            if (m_yCount == m_yNumber)
+            {
+                // End of column reached, we start a new one
+                m_xCount++;
+                m_yCount = 0;
+            }
+
+            if (m_xCount == m_xNumber)
+            {
+                // Page full, we start a new one
+                m_xCount = 0;
+                m_yCount = 0;
             }
         }
-        return *tFormat;
-    }
 
-protected:
-    /// Convert units (in to mm, mm to in)
-    /**
-    * src and dest must be 'in' or 'mm'
-    */
-    double ConvertMetric (double value, const wxString& src, const wxString& dest)
-    {
-        double retValue = value;
-        if (src == wxS("in") && dest == wxS("mm"))
+        /// Changes the font
+        void SetFontName(const wxString & fontname)
         {
-            retValue *= (1000./ 39.37008);
-        }
-        else if (src == wxS("mm") && dest == wxS("in"))
-        {
-            retValue *= (39.37008 / 1000.);
-        }
-        return retValue;
-    }
-
-    /// Gives the height for a char size given.
-    double GetHeightChars(double pt)
-    {
-        double height = 100;
-        // Array matching character sizes and line heights
-        static const int nTable = 10;
-        static const double cTable[nTable] = { 6, 7,   8, 9, 10, 11, 12, 13, 14, 15 };
-        static const double hTable[nTable] = { 2, 2.5, 3, 4,  5,  6,  7,  8,  9, 10 };
-        int i;
-        for (i = 0; i < nTable; i++)
-        {
-            if (pt == cTable[i])
+            if (fontname != wxS(""))
             {
-                height = hTable[i];
-                break;
+                m_fontName = fontname;
+                SetFont(m_fontName);
             }
         }
-        return height;
-    }
 
-    /// Sets the label format
-    void SetFormat(const PdfLabelFormat& format)
-    {
-        m_metric     = format.metric;
-        m_averyName  = format.name;
-        m_marginLeft = ConvertMetric(format.marginLeft, m_metric, m_metricDoc);
-        m_marginTop  = ConvertMetric(format.marginTop,  m_metric, m_metricDoc);
-        m_xSpace     = ConvertMetric(format.xSpace,     m_metric, m_metricDoc);
-        m_ySpace     = ConvertMetric(format.ySpace,     m_metric, m_metricDoc);
-        m_xNumber    = format.nx;
-        m_yNumber    = format.ny;
-        m_width      = ConvertMetric(format.width,      m_metric, m_metricDoc);
-        m_height     = ConvertMetric(format.height,     m_metric, m_metricDoc);
-        SetFontSize(format.fontSize);
-    }
+        /// Sets the font size
+        /**
+        * This changes the line height too
+        */
+        void SetFontSize(double pt)
+        {
+            if (pt > 3)
+            {
+                m_charSize = pt;
+                m_lineHeight = GetHeightChars(pt);
+                wxPdfDocument::SetFontSize(m_charSize);
+            }
+        }
 
-private:
-    wxString m_averyName;   //< Name of format
-    double   m_marginLeft;  //< Left margin of labels
-    double   m_marginTop;   //< Top margin of labels
-    double   m_xSpace;      //< Horizontal space between 2 labels
-    double   m_ySpace;      //< Vertical space between 2 labels
-    int      m_xNumber;     //< Number of labels horizontally
-    int      m_yNumber;     //< Number of labels vertically
-    double   m_width;       //< Width of label
-    double   m_height;      //< Height of label
-    double   m_charSize;    //< Character size
-    double   m_lineHeight;  //< Default line height
-    wxString m_metric;      //< Type of metric for labels.. Will help to calculate good values
-    wxString m_metricDoc;   //< Type of metric for the document
-    wxString m_fontName;    //< Name of the font
+        /// Finds a predefined label format by name
+        static const PdfLabelFormat & FindFormat(const wxString & format)
+        {
+            PdfLabelFormat * tFormat = &s_averyLabels[0];
+            int j = 0;
 
-    int      m_xCount;
-    int      m_yCount;
+            for (j = 0; wxString(wxS("")).Cmp(s_averyLabels[j].name) != 0; j++)
+            {
+                if (format == s_averyLabels[j].name)
+                {
+                    tFormat = &s_averyLabels[j];
+                    break;
+                }
+            }
+
+            return *tFormat;
+        }
+
+    protected:
+        /// Convert units (in to mm, mm to in)
+        /**
+        * src and dest must be 'in' or 'mm'
+        */
+        double ConvertMetric(double value, const wxString & src, const wxString & dest)
+        {
+            double retValue = value;
+
+            if (src == wxS("in") && dest == wxS("mm"))
+            {
+                retValue *= (1000. / 39.37008);
+            }
+            else
+                if (src == wxS("mm") && dest == wxS("in"))
+                {
+                    retValue *= (39.37008 / 1000.);
+                }
+
+            return retValue;
+        }
+
+        /// Gives the height for a char size given.
+        double GetHeightChars(double pt)
+        {
+            double height = 100;
+            // Array matching character sizes and line heights
+            static const int nTable = 10;
+            static const double cTable[nTable] = { 6, 7,   8, 9, 10, 11, 12, 13, 14, 15 };
+            static const double hTable[nTable] = { 2, 2.5, 3, 4,  5,  6,  7,  8,  9, 10 };
+            int i;
+
+            for (i = 0; i < nTable; i++)
+            {
+                if (pt == cTable[i])
+                {
+                    height = hTable[i];
+                    break;
+                }
+            }
+
+            return height;
+        }
+
+        /// Sets the label format
+        void SetFormat(const PdfLabelFormat & format)
+        {
+            m_metric     = format.metric;
+            m_averyName  = format.name;
+            m_marginLeft = ConvertMetric(format.marginLeft, m_metric, m_metricDoc);
+            m_marginTop  = ConvertMetric(format.marginTop,  m_metric, m_metricDoc);
+            m_xSpace     = ConvertMetric(format.xSpace,     m_metric, m_metricDoc);
+            m_ySpace     = ConvertMetric(format.ySpace,     m_metric, m_metricDoc);
+            m_xNumber    = format.nx;
+            m_yNumber    = format.ny;
+            m_width      = ConvertMetric(format.width,      m_metric, m_metricDoc);
+            m_height     = ConvertMetric(format.height,     m_metric, m_metricDoc);
+            SetFontSize(format.fontSize);
+        }
+
+    private:
+        wxString m_averyName;   //< Name of format
+        double   m_marginLeft;  //< Left margin of labels
+        double   m_marginTop;   //< Top margin of labels
+        double   m_xSpace;      //< Horizontal space between 2 labels
+        double   m_ySpace;      //< Vertical space between 2 labels
+        int      m_xNumber;     //< Number of labels horizontally
+        int      m_yNumber;     //< Number of labels vertically
+        double   m_width;       //< Width of label
+        double   m_height;      //< Height of label
+        double   m_charSize;    //< Character size
+        double   m_lineHeight;  //< Default line height
+        wxString m_metric;      //< Type of metric for labels.. Will help to calculate good values
+        wxString m_metricDoc;   //< Type of metric for the document
+        wxString m_fontName;    //< Name of the font
+
+        int      m_xCount;
+        int      m_yCount;
 };
 
-int
-labels(bool testMode)
+int labels(bool testMode)
 {
     // To create the object, 2 possibilities:
     // either pass a custom format via an array
@@ -270,22 +273,24 @@ labels(bool testMode)
     //
     // Standard format
     PdfLabel pdf(PdfLabel::FindFormat(wxS("L7163")), wxS("mm"), 1, 2);
+
     if (testMode)
     {
         pdf.SetCreationDate(wxDateTime(1, wxDateTime::Jan, 2017));
         pdf.SetCompression(false);
     }
+
     pdf.AddPage();
     pdf.SetFont(wxS("Helvetica"), wxS(""), 10.0);
-
     // Print labels
     int i;
+
     for (i = 1; i <= 40; i++)
     {
         pdf.AddLabel(wxString::Format(wxS("Laurent %d\nImmeuble Titi\nav. fragonard\n06000, NICE, FRANCE"), i));
     }
-    pdf.SaveAsFile(wxS("labels.pdf"));
 
+    pdf.SaveAsFile(wxS("labels.pdf"));
     return 0;
 }
 

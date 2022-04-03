@@ -47,60 +47,60 @@ class wxsPropertyContainer;
  */
 class PLUGIN_EXPORT wxsQuickPropsPanel: public wxPanel
 {
-public:
+    public:
 
-    /** \brief ctor
-     *
-     * This ctor requires pointer to property container only. When using
-     * it, wxPanel class must be initialized using Create() method.
-     */
-    wxsQuickPropsPanel(wxsPropertyContainer* PC);
+        /** \brief ctor
+         *
+         * This ctor requires pointer to property container only. When using
+         * it, wxPanel class must be initialized using Create() method.
+         */
+        wxsQuickPropsPanel(wxsPropertyContainer * PC);
 
-    /** \brief ctor
-     *
-     * Set of parameters is almost identical to wxPanel ones. Added
-     * wxsPropertyContainer param.
-     */
-    wxsQuickPropsPanel(
-        wxWindow* parent,
-        wxsPropertyContainer* PC,
-        wxWindowID id = -1,
-        const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxDefaultSize,
-        long style = wxTAB_TRAVERSAL,
-        const wxString& name = _T("wxsQuickPropsPanel"));
+        /** \brief ctor
+         *
+         * Set of parameters is almost identical to wxPanel ones. Added
+         * wxsPropertyContainer param.
+         */
+        wxsQuickPropsPanel(
+            wxWindow * parent,
+            wxsPropertyContainer * PC,
+            wxWindowID id = -1,
+            const wxPoint & pos = wxDefaultPosition,
+            const wxSize & size = wxDefaultSize,
+            long style = wxTAB_TRAVERSAL,
+            const wxString & name = _T("wxsQuickPropsPanel"));
 
-    /** \brief Dctor */
-    virtual ~wxsQuickPropsPanel();
+        /** \brief Dctor */
+        virtual ~wxsQuickPropsPanel();
 
-    /** \brief Getting associated property container */
-    inline wxsPropertyContainer* GetPropertyContainer()
-    {
-        return Container;
-    }
+        /** \brief Getting associated property container */
+        inline wxsPropertyContainer * GetPropertyContainer()
+        {
+            return Container;
+        }
 
-protected:
+    protected:
 
-    /** \brief Function notifying about change of properties in container
-     *
-     * This function is called whenever user changed value of any property
-     * in property grid or elsewhere. It should reread all values and
-     * update content of quick properties panel.
-     */
-    virtual void Update() {}
+        /** \brief Function notifying about change of properties in container
+         *
+         * This function is called whenever user changed value of any property
+         * in property grid or elsewhere. It should reread all values and
+         * update content of quick properties panel.
+         */
+        virtual void Update() {}
 
-    /** \brief Function notifying that value of any property has changed inside quick properties.
-     *
-     * This function causes property grid and other things using properties
-     * to recreate it's content.
-     */
-    void NotifyChange();
+        /** \brief Function notifying that value of any property has changed inside quick properties.
+         *
+         * This function causes property grid and other things using properties
+         * to recreate it's content.
+         */
+        void NotifyChange();
 
-private:
+    private:
 
-    wxsPropertyContainer* Container;        ///< Container associated with this panel or 0
+        wxsPropertyContainer * Container;       ///< Container associated with this panel or 0
 
-    friend class wxsPropertyContainer;
+        friend class wxsPropertyContainer;
 };
 
 #endif

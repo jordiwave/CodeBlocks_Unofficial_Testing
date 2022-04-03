@@ -46,69 +46,66 @@ const long wxWidgetsGUIAppAdoptingDlg::ID_STATICLINE1 = wxNewId();
 const long wxWidgetsGUIAppAdoptingDlg::ID_BUTTON6 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(wxWidgetsGUIAppAdoptingDlg,wxScrollingDialog)
+BEGIN_EVENT_TABLE(wxWidgetsGUIAppAdoptingDlg, wxScrollingDialog)
     //(*EventTable(wxWidgetsGUIAppAdoptingDlg)
     //*)
     EVT_CLOSE(wxWidgetsGUIAppAdoptingDlg::OnClose)
-    EVT_TIMER(1,wxWidgetsGUIAppAdoptingDlg::OnTimer)
+    EVT_TIMER(1, wxWidgetsGUIAppAdoptingDlg::OnTimer)
 END_EVENT_TABLE()
 
-wxWidgetsGUIAppAdoptingDlg::wxWidgetsGUIAppAdoptingDlg(wxWindow* parent,wxWidgetsGUI* GUI,wxWindowID id):
+wxWidgetsGUIAppAdoptingDlg::wxWidgetsGUIAppAdoptingDlg(wxWindow * parent, wxWidgetsGUI * GUI, wxWindowID id):
     m_Project(GUI->GetProject()->GetCBProject()),
     m_GUI(GUI),
-    m_Timer(this,1),
+    m_Timer(this, 1),
     m_Run(true)
 {
     //(*Initialize(wxWidgetsGUIAppAdoptingDlg)
-    wxBoxSizer* BoxSizer1;
-    wxStaticBoxSizer* StaticBoxSizer1;
-    wxBoxSizer* BoxSizer3;
-
-    Create(parent, id, _("Integrating application class with wxSmith"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("id"));
+    wxBoxSizer * BoxSizer1;
+    wxStaticBoxSizer * StaticBoxSizer1;
+    wxBoxSizer * BoxSizer3;
+    Create(parent, id, _("Integrating application class with wxSmith"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER, _T("id"));
     BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Files with application class:"));
-    FoundFiles = new wxListBox(this, ID_LISTBOX1, wxDefaultPosition, wxSize(198,166), 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX1"));
+    FoundFiles = new wxListBox(this, ID_LISTBOX1, wxDefaultPosition, wxSize(198, 166), 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX1"));
     StaticBoxSizer1->Add(FoundFiles, 1, wxEXPAND, 4);
-    Progress = new wxGauge(this, ID_GAUGE1, 100, wxDefaultPosition, wxSize(90,13), wxGA_SMOOTH, wxDefaultValidator, _T("ID_GAUGE1"));
-    StaticBoxSizer1->Add(Progress, 0, wxTOP|wxEXPAND, 4);
+    Progress = new wxGauge(this, ID_GAUGE1, 100, wxDefaultPosition, wxSize(90, 13), wxGA_SMOOTH, wxDefaultValidator, _T("ID_GAUGE1"));
+    StaticBoxSizer1->Add(Progress, 0, wxTOP | wxEXPAND, 4);
     BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
     ScanningTxt = new wxStaticText(this, ID_STATICTEXT1, _("Scanning:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
     BoxSizer2->Add(ScanningTxt, 0, wxEXPAND, 4);
     ScanningFile = new wxStaticText(this, ID_STATICTEXT2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
-    BoxSizer2->Add(ScanningFile, 1, wxLEFT|wxEXPAND, 5);
-    StaticBoxSizer1->Add(BoxSizer2, 0, wxTOP|wxEXPAND, 4);
+    BoxSizer2->Add(ScanningFile, 1, wxLEFT | wxEXPAND, 5);
+    StaticBoxSizer1->Add(BoxSizer2, 0, wxTOP | wxEXPAND, 4);
     BoxSizer1->Add(StaticBoxSizer1, 1, wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer3 = new wxBoxSizer(wxVERTICAL);
     UseFileBtn = new wxButton(this, ID_BUTTON5, _("Use selected file"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON5"));
     UseFileBtn->Disable();
     BoxSizer3->Add(UseFileBtn, 0, wxEXPAND, 5);
     SelectBtn = new wxButton(this, ID_BUTTON2, _("Select file manually"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
-    BoxSizer3->Add(SelectBtn, 0, wxTOP|wxEXPAND, 5);
+    BoxSizer3->Add(SelectBtn, 0, wxTOP | wxEXPAND, 5);
     CreateBtn = new wxButton(this, ID_BUTTON3, _("Create new file"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
-    BoxSizer3->Add(CreateBtn, 0, wxTOP|wxEXPAND, 5);
-    StaticLine2 = new wxStaticLine(this, ID_STATICLINE2, wxDefaultPosition, wxSize(50,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE2"));
-    BoxSizer3->Add(StaticLine2, 0, wxTOP|wxEXPAND, 5);
+    BoxSizer3->Add(CreateBtn, 0, wxTOP | wxEXPAND, 5);
+    StaticLine2 = new wxStaticLine(this, ID_STATICLINE2, wxDefaultPosition, wxSize(50, -1), wxLI_HORIZONTAL, _T("ID_STATICLINE2"));
+    BoxSizer3->Add(StaticLine2, 0, wxTOP | wxEXPAND, 5);
     Button4 = new wxButton(this, ID_BUTTON4, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON4"));
     Button4->SetDefault();
-    BoxSizer3->Add(Button4, 0, wxTOP|wxEXPAND, 5);
-    StaticLine1 = new wxStaticLine(this, ID_STATICLINE1, wxDefaultPosition, wxSize(50,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE1"));
-    BoxSizer3->Add(StaticLine1, 0, wxTOP|wxEXPAND, 5);
+    BoxSizer3->Add(Button4, 0, wxTOP | wxEXPAND, 5);
+    StaticLine1 = new wxStaticLine(this, ID_STATICLINE1, wxDefaultPosition, wxSize(50, -1), wxLI_HORIZONTAL, _T("ID_STATICLINE1"));
+    BoxSizer3->Add(StaticLine1, 0, wxTOP | wxEXPAND, 5);
     Button6 = new wxButton(this, ID_BUTTON6, _("What\'s this for \?"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON6"));
-    BoxSizer3->Add(Button6, 0, wxTOP|wxEXPAND, 5);
-    BoxSizer1->Add(BoxSizer3, 0, wxTOP|wxLEFT|wxALIGN_TOP, 5);
+    BoxSizer3->Add(Button6, 0, wxTOP | wxEXPAND, 5);
+    BoxSizer1->Add(BoxSizer3, 0, wxTOP | wxLEFT | wxALIGN_TOP, 5);
     SetSizer(BoxSizer1);
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
     Center();
-
-    Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxWidgetsGUIAppAdoptingDlg::OnUseFileBtnClick));
-    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick));
-    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxWidgetsGUIAppAdoptingDlg::OnCreateBtnClick));
-    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxWidgetsGUIAppAdoptingDlg::OnButton4Click));
-    Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxWidgetsGUIAppAdoptingDlg::OnButton6Click));
+    Connect(ID_BUTTON5, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(wxWidgetsGUIAppAdoptingDlg::OnUseFileBtnClick));
+    Connect(ID_BUTTON2, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick));
+    Connect(ID_BUTTON3, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(wxWidgetsGUIAppAdoptingDlg::OnCreateBtnClick));
+    Connect(ID_BUTTON4, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(wxWidgetsGUIAppAdoptingDlg::OnButton4Click));
+    Connect(ID_BUTTON6, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(wxWidgetsGUIAppAdoptingDlg::OnButton6Click));
     //*)
-
-    m_Timer.Start(100,true);
+    m_Timer.Start(100, true);
 }
 
 wxWidgetsGUIAppAdoptingDlg::~wxWidgetsGUIAppAdoptingDlg()
@@ -117,7 +114,7 @@ wxWidgetsGUIAppAdoptingDlg::~wxWidgetsGUIAppAdoptingDlg()
     //*)
 }
 
-void wxWidgetsGUIAppAdoptingDlg::OnButton6Click(cb_unused wxCommandEvent& event)
+void wxWidgetsGUIAppAdoptingDlg::OnButton6Click(cb_unused wxCommandEvent & event)
 {
     wxMessageBox(
         _("In order to fully integrate wxSmith with wxWidgets application\n"
@@ -129,29 +126,34 @@ void wxWidgetsGUIAppAdoptingDlg::OnButton6Click(cb_unused wxCommandEvent& event)
           "You can also specify source file with application\n"
           "class manually or request to create new one.\n"),
         _("Integrating application class with wxSmith"),
-        wxICON_ASTERISK|wxOK);
+        wxICON_ASTERISK | wxOK);
 }
 
-void wxWidgetsGUIAppAdoptingDlg::OnButton4Click(cb_unused wxCommandEvent& event)
+void wxWidgetsGUIAppAdoptingDlg::OnButton4Click(cb_unused wxCommandEvent & event)
 {
     EndModal(wxID_CANCEL);
 }
 
-void wxWidgetsGUIAppAdoptingDlg::OnClose(wxCloseEvent& event)
+void wxWidgetsGUIAppAdoptingDlg::OnClose(wxCloseEvent & event)
 {
     m_Run = false;
     event.Skip();
 }
 
-void wxWidgetsGUIAppAdoptingDlg::OnTimer(cb_unused wxTimerEvent& event)
+void wxWidgetsGUIAppAdoptingDlg::OnTimer(cb_unused wxTimerEvent & event)
 {
     Run();
 }
 
-void wxWidgetsGUIAppAdoptingDlg::OnUseFileBtnClick(cb_unused wxCommandEvent& event)
+void wxWidgetsGUIAppAdoptingDlg::OnUseFileBtnClick(cb_unused wxCommandEvent & event)
 {
     int Index = FoundFiles->GetSelection();
-    if ( Index < 0 ) return;
+
+    if (Index < 0)
+    {
+        return;
+    }
+
     AddSmith(FoundFiles->GetStringSelection());
 }
 
@@ -159,27 +161,34 @@ void wxWidgetsGUIAppAdoptingDlg::Run()
 {
     Progress->SetRange(m_Project->GetFilesCount());
     int i = 0;
+
     for (FilesList::iterator it = m_Project->GetFilesList().begin(); it != m_Project->GetFilesList().end(); ++it)
     {
         Manager::Yield();
-        ProjectFile* File = *it;
+        ProjectFile * File = *it;
         ScanningFile->SetLabel(File->relativeFilename);
         Progress->SetValue(++i);
-        if ( ScanFile(File) )
+
+        if (ScanFile(File))
         {
             FoundFiles->Append(File->relativeFilename);
             UseFileBtn->Enable();
         }
     }
+
     ScanningFile->SetLabel(_("*** Done ***"));
 }
 
 void wxWidgetsGUIAppAdoptingDlg::AddSmith(wxString RelativeFileName)
 {
     wxsCodingLang Lang = wxsCodeMarks::IdFromExt(wxFileName(RelativeFileName).GetExt());
-    if ( Lang == wxsUnknownLanguage ) return;
 
-    if ( m_GUI->AddSmithToApp(RelativeFileName,Lang) )
+    if (Lang == wxsUnknownLanguage)
+    {
+        return;
+    }
+
+    if (m_GUI->AddSmithToApp(RelativeFileName, Lang))
     {
         wxMessageBox(_("Application class has been adopted. Please check if it\n"
                        "works fine (some application initializing code could\n"
@@ -189,12 +198,12 @@ void wxWidgetsGUIAppAdoptingDlg::AddSmith(wxString RelativeFileName)
     }
 }
 
-bool wxWidgetsGUIAppAdoptingDlg::ScanFile(ProjectFile* File)
+bool wxWidgetsGUIAppAdoptingDlg::ScanFile(ProjectFile * File)
 {
     return m_GUI->ScanForApp(File);
 }
 
-void wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick(cb_unused wxCommandEvent& event)
+void wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick(cb_unused wxCommandEvent & event)
 {
     wxString FileName = ::wxFileSelector(
                             _("Select file with implementation of application class"),
@@ -203,12 +212,15 @@ void wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick(cb_unused wxCommandEvent& even
                             _T(""),
                             _("C++ sources (*.cpp)|*.cpp|All files|*.*"),
                             wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly);
-    if ( FileName.empty() )
+
+    if (FileName.empty())
     {
         return;
     }
-    ProjectFile* PF = m_Project->GetFileByFilename(FileName,false,false);
-    if ( !PF )
+
+    ProjectFile * PF = m_Project->GetFileByFilename(FileName, false, false);
+
+    if (!PF)
     {
         wxMessageBox(_("This file is not included in project.\n"
                        "Please add this file to project first."),
@@ -216,7 +228,7 @@ void wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick(cb_unused wxCommandEvent& even
         return;
     }
 
-    if ( !ScanFile(PF) )
+    if (!ScanFile(PF))
     {
         wxMessageBox(_("wxSmith is not able to adopt this file\n"
                        "(Please check if it contains implementation\n"
@@ -227,7 +239,7 @@ void wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick(cb_unused wxCommandEvent& even
     AddSmith(PF->relativeFilename);
 }
 
-void wxWidgetsGUIAppAdoptingDlg::OnCreateBtnClick(cb_unused wxCommandEvent& event)
+void wxWidgetsGUIAppAdoptingDlg::OnCreateBtnClick(cb_unused wxCommandEvent & event)
 {
     wxString FileName = ::wxFileSelector(
                             _("Please select cpp file where application class should be created"),
@@ -235,19 +247,22 @@ void wxWidgetsGUIAppAdoptingDlg::OnCreateBtnClick(cb_unused wxCommandEvent& even
                             _T("myapp.cpp"),
                             _T("cpp"),
                             _T("C++ source files|*.cpp|All files|*"),
-                            wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+                            wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
-    if ( FileName.empty() ) return;
+    if (FileName.empty())
+    {
+        return;
+    }
 
-    if ( m_Project->GetFileByFilename(FileName,false) == 0 )
+    if (m_Project->GetFileByFilename(FileName, false) == 0)
     {
         // Adding new file to project
         wxArrayInt targets;
-        Manager::Get()->GetProjectManager()->AddFileToProject(FileName,m_Project, targets);
+        Manager::Get()->GetProjectManager()->AddFileToProject(FileName, m_Project, targets);
         Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
     }
 
-    if ( m_GUI->CreateNewApp(FileName) )
+    if (m_GUI->CreateNewApp(FileName))
     {
         wxMessageBox(_("New application class created"));
         m_Run = false;

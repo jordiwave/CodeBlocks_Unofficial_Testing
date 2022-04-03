@@ -29,19 +29,19 @@
 /** \brief Class for wxsGenericDirCtrl widget */
 class wxsGenericDirCtrl: public wxsWidget
 {
-public:
+    public:
 
-    wxsGenericDirCtrl(wxsItemResData* Data);
+        wxsGenericDirCtrl(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
-    wxString DefaultFolder;
-    wxString Filter;
-    long DefaultFilter;
+        wxString DefaultFolder;
+        wxString Filter;
+        long DefaultFilter;
 };
 
 #endif

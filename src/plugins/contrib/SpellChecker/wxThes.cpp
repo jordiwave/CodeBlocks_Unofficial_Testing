@@ -30,46 +30,50 @@ wxThes::~wxThes()
 wxThes::wxThes(const wxString idxpath, const wxString datpath):
     m_pMT(NULL)
 {
-    m_pMT = new MyThes( idxpath.char_str(), datpath.char_str() );
+    m_pMT = new MyThes(idxpath.char_str(), datpath.char_str());
 }
 
-synonyms wxThes::Lookup(const wxString &Text)
+synonyms wxThes::Lookup(const wxString & Text)
 {
     synonyms syn;
     mentry * pmean;
-    int count = m_pMT->Lookup(Text.char_str(), Text.length(),&pmean);
+    int count = m_pMT->Lookup(Text.char_str(), Text.length(), &pmean);
     // don't change value of pmean
     // or count since needed for CleanUpAfterLookup routine
-    mentry* pm = pmean;
+    mentry * pm = pmean;
+
     if (count)
     {
         //fprintf(stdout,"%s has %d meanings\n",buf,count);
         std::vector< wxString > s;
-        for (int  i=0; i < count; i++)
+
+        for (int  i = 0; i < count; i++)
         {
             //fprintf(stdout,"   meaning %d: %s\n",i,pm->defn);
-            for (int j=0; j < pm->count; j++)
+            for (int j = 0; j < pm->count; j++)
             {
                 //fprintf(stdout,"       %s\n",pm->psyns[j]);
                 s.push_back(wxString(pm->psyns[j], wxConvUTF8));
             }
-            //fprintf(stdout,"\n");
-            syn[wxString( pm->defn, wxConvUTF8 )] = s;
 
+            //fprintf(stdout,"\n");
+            syn[wxString(pm->defn, wxConvUTF8)] = s;
             pm++;
         }
+
         //fprintf(stdout,"\n\n");
         // now clean up all allocated memory
-        m_pMT->CleanUpAfterLookup(&pmean,count);
+        m_pMT->CleanUpAfterLookup(&pmean, count);
     }
-//    else
-//    {
-//        fprintf(stdout,"\"%s\" is not in thesaurus!\n",buf);
-//    }
+
+    //    else
+    //    {
+    //        fprintf(stdout,"\"%s\" is not in thesaurus!\n",buf);
+    //    }
     return syn;
 }
 
 wxString wxThes::GetEncoding()
 {
-    return wxString( m_pMT->get_th_encoding(), wxConvUTF8);
+    return wxString(m_pMT->get_th_encoding(), wxConvUTF8);
 }

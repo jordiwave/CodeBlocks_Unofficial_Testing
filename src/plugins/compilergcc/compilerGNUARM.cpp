@@ -10,9 +10,9 @@
 #include <sdk.h>
 #include <prep.h>
 #ifndef CB_PRECOMP
-#include <wx/intl.h>
-#include <wx/regex.h>
-#include <wx/utils.h> // wxGetOSDirectory, wxGetEnv
+    #include <wx/intl.h>
+    #include <wx/regex.h>
+    #include <wx/utils.h> // wxGetOSDirectory, wxGetEnv
 #endif
 #include <wx/filefn.h> // wxFileExists
 #include <wx/fileconf.h> // wxFileConfig
@@ -38,6 +38,7 @@ Compiler * CompilerGNUARM::CreateCopy()
 AutoDetectResult CompilerGNUARM::AutoDetectInstallationDir()
 {
     wxString sep = wxFileName::GetPathSeparator();
+
     if (platform::windows)
     {
         // Search for GNUARM installation dir
@@ -59,13 +60,17 @@ AutoDetectResult CompilerGNUARM::AutoDetectInstallationDir()
         }
     }
     else
+    {
         m_MasterPath = _T("/usr");
+    }
 
     AutoDetectResult ret = wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
+
     if (ret == adrDetected)
     {
         AddIncludeDir(m_MasterPath + sep + _T("include"));
         AddLibDir(m_MasterPath + sep + _T("lib"));
     }
+
     return ret;
 } // end of AutoDetectInstallationDir

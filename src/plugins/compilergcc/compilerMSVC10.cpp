@@ -14,7 +14,7 @@
 #include <wx/regex.h>
 #include <wx/config.h>
 #ifdef __WXMSW__
-#include <wx/msw/registry.h>
+    #include <wx/msw/registry.h>
 #endif // __WXMSW__
 
 CompilerMSVC10::CompilerMSVC10()
@@ -38,26 +38,30 @@ AutoDetectResult CompilerMSVC10::AutoDetectInstallationDir()
 {
     wxString sep = wxFileName::GetPathSeparator();
     wxString idepath;
-
     // Read the VS2010 environment variable
     wxGetEnv(_T("VS100COMNTOOLS"), &m_MasterPath);
 
-    if ( !m_MasterPath.IsEmpty() )
+    if (!m_MasterPath.IsEmpty())
     {
         wxFileName name = wxFileName::DirName(m_MasterPath);
-
         name.RemoveLastDir();
         name.AppendDir(_T("IDE"));
         idepath = name.GetPath();
-        if ( !wxDirExists(idepath) )
+
+        if (!wxDirExists(idepath))
+        {
             idepath = _T("");
+        }
 
         name.RemoveLastDir();
         name.RemoveLastDir();
         name.AppendDir(_T("VC"));
         m_MasterPath = name.GetPath();
-        if ( !wxDirExists(m_MasterPath) )
+
+        if (!wxDirExists(m_MasterPath))
+        {
             m_MasterPath = _T("");
+        }
     }
 
     if (m_MasterPath.IsEmpty())
@@ -74,19 +78,22 @@ AutoDetectResult CompilerMSVC10::AutoDetectInstallationDir()
     {
         bool sdkfound = false;
         wxString dir;
-
         // we need to add the IDE path, as the compiler requires some DLL present there
         m_ExtraPaths.Add(idepath);
-
 #ifdef __WXMSW__
         wxRegKey key; // defaults to HKCR
         // try to detect Platform SDK (old versions)
         key.SetName(_T("HKEY_CURRENT_USER\\Software\\Microsoft\\Win32SDK\\Directories"));
+
         if (key.Exists() && key.Open(wxRegKey::Read))
         {
             key.QueryValue(_T("Install Dir"), dir);
+
             if (!dir.IsEmpty() && wxDirExists(dir))
+            {
                 sdkfound = true;
+            }
+
             key.Close();
         }
 
@@ -95,19 +102,23 @@ AutoDetectResult CompilerMSVC10::AutoDetectInstallationDir()
                                       _T("HKEY_CURRENT_USER\\Software\\Microsoft\\Microsoft SDKs\\Windows")
                                     };
         wxString msPsdkKeyValue[2] = { _T("Install Dir"), _T("InstallationFolder") };
+
         for (int i = 0; i < 2; ++i)
         {
             if (sdkfound)
+            {
                 break;
+            }
 
             key.SetName(msPsdkKeyName[i]);
+
             if (key.Exists() && key.Open(wxRegKey::Read))
             {
                 wxString name;
                 long idx;
                 bool cont = key.GetFirstKey(name, idx);
 
-                while(cont)
+                while (cont)
                 {
                     wxRegKey subkey(key.GetName(), name);
 
@@ -119,13 +130,17 @@ AutoDetectResult CompilerMSVC10::AutoDetectInstallationDir()
                         cont = false;
                     }
                     else
+                    {
                         cont = key.GetNextKey(name, idx);
+                    }
 
                     subkey.Close();
                 }
+
                 key.Close();
             }
         }
+
 #endif // __WXMSW__
 
         // take a guess
@@ -135,6 +150,7 @@ AutoDetectResult CompilerMSVC10::AutoDetectInstallationDir()
             wxGetEnv(wxT("ProgramFiles"), &dir);
             dir +=  wxT("\\Microsoft SDKs\\Windows\\v");
             wxArrayString vers = GetArrayFromString(wxT("7.1;7.0A;7.0;6.1;6.0A;6.0"));
+
             for (size_t i = 0; i < vers.GetCount(); ++i)
             {
                 if (wxDirExists(dir + vers[i]))
@@ -150,7 +166,10 @@ AutoDetectResult CompilerMSVC10::AutoDetectInstallationDir()
         if (sdkfound)
         {
             if (dir.GetChar(dir.Length() - 1) != '\\')
+            {
                 dir += sep;
+            }
+
             AddIncludeDir(dir + _T("include"));
             AddResourceIncludeDir(dir + _T("include"));
             AddLibDir(dir + _T("lib"));
@@ -161,20 +180,25 @@ AutoDetectResult CompilerMSVC10::AutoDetectInstallationDir()
         AddIncludeDir(m_MasterPath + sep + _T("include"));
         AddLibDir(m_MasterPath + sep + _T("lib"));
         AddResourceIncludeDir(m_MasterPath + sep + _T("include"));
-
 #ifdef __WXMSW__
         // add extra paths for "Debugging tools" too
         key.SetName(_T("HKEY_CURRENT_USER\\Software\\Microsoft\\DebuggingTools"));
+
         if (key.Exists() && key.Open(wxRegKey::Read))
         {
             key.QueryValue(_T("WinDbg"), dir);
+
             if (!dir.IsEmpty() && wxDirExists(dir))
             {
                 if (dir.GetChar(dir.Length() - 1) == '\\')
+                {
                     dir.Remove(dir.Length() - 1, 1);
+                }
+
                 m_ExtraPaths.Add(dir);
             }
         }
+
         key.Close();
 #endif // __WXMSW__
     }

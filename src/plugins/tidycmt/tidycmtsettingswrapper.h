@@ -14,31 +14,31 @@ class TidyCmtSettings;
 
 class TidyCmtSettingsWrapper : public cbConfigurationPanel
 {
-public:
+    public:
 
-    TidyCmtSettingsWrapper(wxWindow* parent, TidyCmt* plugin, const TidyCmtConfig& tcc);
-    virtual ~TidyCmtSettingsWrapper() { ; }
+        TidyCmtSettingsWrapper(wxWindow * parent, TidyCmt * plugin, const TidyCmtConfig & tcc);
+        virtual ~TidyCmtSettingsWrapper() { ; }
 
-    virtual wxString GetTitle() const
-    {
-        return _T("tidycmt");
-    }
-    virtual wxString GetBitmapBaseName() const
-    {
-        return _T("generic-plugin");
-    }
+        virtual wxString GetTitle() const
+        {
+            return _T("tidycmt");
+        }
+        virtual wxString GetBitmapBaseName() const
+        {
+            return _T("generic-plugin");
+        }
 
-protected:
+    protected:
 
-    TidyCmt*         m_Plugin;
-    TidyCmtSettings* m_TidyCmtSettings;
+        TidyCmt     *    m_Plugin;
+        TidyCmtSettings * m_TidyCmtSettings;
 
-private:
+    private:
 
-    virtual void OnApply();
-    virtual void OnCancel() { ; }
+        virtual void OnApply();
+        virtual void OnCancel() { ; }
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // TIDYCMTSETTINGSWRAPPER_H

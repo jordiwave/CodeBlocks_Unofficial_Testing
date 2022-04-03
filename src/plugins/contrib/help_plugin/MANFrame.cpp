@@ -9,14 +9,14 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-#include <map>
-#include <wx/arrstr.h>
-#include <wx/button.h>
-#include <wx/dir.h>
-#include <wx/filename.h>
-#include <wx/regex.h>
-#include <wx/sizer.h>
-#include <globals.h> // cbC2U
+    #include <map>
+    #include <wx/arrstr.h>
+    #include <wx/button.h>
+    #include <wx/dir.h>
+    #include <wx/filename.h>
+    #include <wx/regex.h>
+    #include <wx/sizer.h>
+    #include <globals.h> // cbC2U
 #endif
 
 #include <bzlib.h>
@@ -64,7 +64,7 @@ const wxString ManPageNotFound = _("<html>\n"
                                    "</html>");
 
 // build all HTML font sizes (1..7) from the given base size
-void wxBuildFontSizes(int *sizes, int size)
+void wxBuildFontSizes(int * sizes, int size)
 {
     // using a fixed factor (1.2, from CSS2) is a bad idea as explained at
     // http://www.w3.org/TR/CSS21/fonts.html#font-size-props but this is by far
@@ -84,8 +84,11 @@ int wxGetDefaultHTMLFontSize()
     // also ensure that we have a font of reasonable size, otherwise small HTML
     // fonts are unreadable
     int size = wxNORMAL_FONT->GetPointSize();
-    if ( size < 10 )
+
+    if (size < 10)
+    {
         size = 10;
+    }
 
     return size;
 }
@@ -101,31 +104,26 @@ BEGIN_EVENT_TABLE(MANFrame, wxPanel)
     EVT_HTML_LINK_CLICKED(htmlWindowID, MANFrame::OnLinkClicked)
 END_EVENT_TABLE()
 
-MANFrame::MANFrame(wxWindow *parent, wxWindowID id, const wxBitmap &zoomInBmp, const wxBitmap &zoomOutBmp)
+MANFrame::MANFrame(wxWindow * parent, wxWindowID id, const wxBitmap & zoomInBmp, const wxBitmap & zoomOutBmp)
     : wxPanel(parent, id), m_baseFontSize(wxGetDefaultHTMLFontSize())
 {
-    wxStaticText *m_label = new wxStaticText(this, wxID_ANY, _("Man page: "));
+    wxStaticText * m_label = new wxStaticText(this, wxID_ANY, _("Man page: "));
     m_entry = new wxTextCtrl(this, textEntryID, wxEmptyString, wxDefaultPosition, wxSize(20, -1), wxTE_PROCESS_ENTER);
     m_search = new wxButton(this, butSearchID, _("Search"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
     m_zoomIn = new wxBitmapButton(this, butZoomInID, zoomInBmp);
     m_zoomOut = new wxBitmapButton(this, butZoomOutID, zoomOutBmp);
     m_htmlWindow = new wxHtmlWindow(this, htmlWindowID);
-
-    wxBoxSizer *main = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer *bar = new wxBoxSizer(wxHORIZONTAL);
-
+    wxBoxSizer * main = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer * bar = new wxBoxSizer(wxHORIZONTAL);
     bar->Add(m_label, 0, wxALL | wxALIGN_CENTER_VERTICAL, 2);
     bar->Add(m_entry, 1, wxALL | wxALIGN_CENTER_VERTICAL, 2);
     bar->Add(m_search, 0, wxALL | wxALIGN_CENTER_VERTICAL, 2);
     bar->Add(m_zoomOut, 0, wxALIGN_CENTER_VERTICAL);
     bar->Add(m_zoomIn, 0, wxRIGHT | wxALIGN_CENTER_VERTICAL, 2);
-
     main->Add(bar, 0, wxEXPAND);
     main->Add(m_htmlWindow, 1, wxEXPAND);
-
     SetSizer(main);
     SetAutoLayout(true);
-
     wxBuildFontSizes(font_sizes, m_baseFontSize);
     m_htmlWindow->SetFonts(wxEmptyString, wxEmptyString, font_sizes);
 }
@@ -141,17 +139,17 @@ MANFrame::~MANFrame()
     }
 }
 
-void MANFrame::LoadPage(const wxString &file)
+void MANFrame::LoadPage(const wxString & file)
 {
     m_htmlWindow->LoadPage(file);
 }
 
-void MANFrame::SetPage(const wxString &contents)
+void MANFrame::SetPage(const wxString & contents)
 {
     m_htmlWindow->SetPage(contents);
 }
 
-void MANFrame::OnLinkClicked(wxHtmlLinkEvent &event)
+void MANFrame::OnLinkClicked(wxHtmlLinkEvent & event)
 {
     wxString link = event.GetLinkInfo().GetHref();
 
@@ -177,33 +175,36 @@ void MANFrame::OnLinkClicked(wxHtmlLinkEvent &event)
             SearchManPage(name);
         }
     }
-    else if (link.StartsWith(_T("fman:"), &link))
-    {
-        wxString man_page = GetManPage(link);
-
-        if (man_page.IsEmpty())
+    else
+        if (link.StartsWith(_T("fman:"), &link))
         {
-            SetPage(ManPageNotFound);
-            return;
-        }
+            wxString man_page = GetManPage(link);
 
-        SetPage(cbC2U(man2html_buffer(cbU2C(man_page))));
-    }
-    else if (wxFileName(link).GetExt().Mid(0, 3).CmpNoCase(_T("htm")) == 0)
-    {
-        m_htmlWindow->LoadPage(link);
-    }
+            if (man_page.IsEmpty())
+            {
+                SetPage(ManPageNotFound);
+                return;
+            }
+
+            SetPage(cbC2U(man2html_buffer(cbU2C(man_page))));
+        }
+        else
+            if (wxFileName(link).GetExt().Mid(0, 3).CmpNoCase(_T("htm")) == 0)
+            {
+                m_htmlWindow->LoadPage(link);
+            }
 }
 
-void MANFrame::OnSearch(wxCommandEvent &/*event*/)
+void MANFrame::OnSearch(wxCommandEvent & /*event*/)
 {
     SearchManPage(m_entry->GetValue());
 }
 
-bool MANFrame::Decompress(const wxString& filename, const wxString& tmpfile)
+bool MANFrame::Decompress(const wxString & filename, const wxString & tmpfile)
 {
     // open file
-    FILE* f = fopen(filename.mb_str(), "rb");
+    FILE * f = fopen(filename.mb_str(), "rb");
+
     if (!f)
     {
         return false;
@@ -211,7 +212,8 @@ bool MANFrame::Decompress(const wxString& filename, const wxString& tmpfile)
 
     // open BZIP2 stream
     int bzerror;
-    BZFILE* bz = BZ2_bzReadOpen(&bzerror, f, 0, 0, nullptr, 0);
+    BZFILE * bz = BZ2_bzReadOpen(&bzerror, f, 0, 0, nullptr, 0);
+
     if (!bz || bzerror != BZ_OK)
     {
         fclose(f);
@@ -219,7 +221,8 @@ bool MANFrame::Decompress(const wxString& filename, const wxString& tmpfile)
     }
 
     // open output file
-    FILE* fo = fopen(tmpfile.mb_str(), "wb");
+    FILE * fo = fopen(tmpfile.mb_str(), "wb");
+
     if (!fo)
     {
         fclose(f);
@@ -228,9 +231,11 @@ bool MANFrame::Decompress(const wxString& filename, const wxString& tmpfile)
 
     // read stream writing to uncompressed file
     char buffer[2048];
+
     while (bzerror != BZ_STREAM_END)
     {
         int read_bytes = BZ2_bzRead(&bzerror, bz, buffer, 2048);
+
         if (bzerror != BZ_OK && bzerror != BZ_STREAM_END)
         {
             BZ2_bzReadClose(&bzerror, bz);
@@ -238,18 +243,17 @@ bool MANFrame::Decompress(const wxString& filename, const wxString& tmpfile)
             fclose(f);
             return false;
         }
+
         fwrite(buffer, read_bytes, 1, fo);
     }
 
     BZ2_bzReadClose(&bzerror, bz);
-
-
     fclose(fo);
     fclose(f);
     return true;
 }
 
-void MANFrame::SetDirs(const wxString &dirs)
+void MANFrame::SetDirs(const wxString & dirs)
 {
     if (!dirs.IsEmpty())
     {
@@ -277,7 +281,7 @@ void MANFrame::SetDirs(const wxString &dirs)
     }
 }
 
-void MANFrame::GetMatches(const wxString &keyword, std::vector<wxString> *files_found)
+void MANFrame::GetMatches(const wxString & keyword, std::vector<wxString> * files_found)
 {
     if (m_dirsVect.empty() || keyword.IsEmpty())
     {
@@ -314,9 +318,11 @@ wxString MANFrame::GetManPage(wxString filename, int depth)
     }
 
     wxString ret;
+
     if (filename.EndsWith(_T(".gz")))
     {
         gzFile f = gzopen(filename.mb_str(), "rb");
+
         if (!f)
         {
             return wxString();
@@ -387,7 +393,6 @@ wxString MANFrame::GetManPage(wxString filename, int depth)
         wxString name;
         wxString ext;
         wxString newfilename;
-
         wxFileName::SplitPath(path, 0, &name, &ext, wxPATH_UNIX); // man pages "always" use /
         newfilename = name + _T(".") + ext;
         wxFileName::SplitPath(orgFilename, &path, 0, &ext);
@@ -397,13 +402,19 @@ wxString MANFrame::GetManPage(wxString filename, int depth)
         {
             newfilename += _T(".") + ext;
         }
-        else if (!wxFileName::FileExists(newfilename))
-        {
-            if (wxFileName::FileExists(newfilename + wxT(".bz2")))
-                newfilename += wxT(".bz2");
-            else if (wxFileName::FileExists(newfilename + wxT(".gz")))
-                newfilename += wxT(".gz");
-        }
+        else
+            if (!wxFileName::FileExists(newfilename))
+            {
+                if (wxFileName::FileExists(newfilename + wxT(".bz2")))
+                {
+                    newfilename += wxT(".bz2");
+                }
+                else
+                    if (wxFileName::FileExists(newfilename + wxT(".gz")))
+                    {
+                        newfilename += wxT(".gz");
+                    }
+            }
 
         return GetManPage(newfilename, depth + 1);
     }
@@ -442,27 +453,25 @@ void MANFrame::OnZoomOut(wxCommandEvent &)
     SetBaseFontSize(m_baseFontSize);
 }
 
-wxString MANFrame::CreateLinksPage(const std::vector<wxString> &files)
+wxString MANFrame::CreateLinksPage(const std::vector<wxString> & files)
 {
-    wxString ret= _("<html>\n"
-                    "<head>\n"
-                    "<meta content=\"text/html; charset=ISO-8859-1\"\n"
-                    "http-equiv=\"content-type\">\n"
-                    "<title></title>\n"
-                    "</head>\n"
-                    "<body>\n"
-                    "<h2>Multiple entries found</h2>\n"
-                    "<br>\n");
-
+    wxString ret = _("<html>\n"
+                     "<head>\n"
+                     "<meta content=\"text/html; charset=ISO-8859-1\"\n"
+                     "http-equiv=\"content-type\">\n"
+                     "<title></title>\n"
+                     "</head>\n"
+                     "<body>\n"
+                     "<h2>Multiple entries found</h2>\n"
+                     "<br>\n");
     typedef std::multimap<wxString, wxString> ResultsMap;
     ResultsMap sortedResults;
-
     wxRegEx reMatchLocale(wxT("^(.+)/(man.+)$"));
+
     for (std::vector<wxString>::const_iterator i = files.begin(); i != files.end(); ++i)
     {
         wxString filename = *i;
         wxString linkname, ext, path;
-
         wxFileName::SplitPath(filename, &path, &linkname, &ext);
 
         if (ext != _T("bz2") && ext != _T("gz"))
@@ -476,8 +485,12 @@ wxString MANFrame::CreateLinksPage(const std::vector<wxString> &files)
             if (path.StartsWith(*dir))
             {
                 path.Remove(0, dir->length());
+
                 if (!path.empty() && path[0] == wxFileName::GetPathSeparator())
+                {
                     path.Remove(0, 1);
+                }
+
                 break;
             }
         }
@@ -485,25 +498,29 @@ wxString MANFrame::CreateLinksPage(const std::vector<wxString> &files)
         // Detect the language of the man page.
         if (reMatchLocale.Matches(path))
         {
-            const wxString &locale = reMatchLocale.GetMatch(path, 1);
+            const wxString & locale = reMatchLocale.GetMatch(path, 1);
+
             if (!locale.empty())
+            {
                 linkname += wxT(" (") + locale + wxT(")");
+            }
         }
 
-        const wxString &aTag = _T("<a href=\"fman:") + filename + _T("\">") + linkname + _T("</a><br>");
+        const wxString & aTag = _T("<a href=\"fman:") + filename + _T("\">") + linkname + _T("</a><br>");
         sortedResults.insert(ResultsMap::value_type(linkname, aTag));
     }
 
     for (ResultsMap::const_iterator it = sortedResults.begin(); it != sortedResults.end(); ++it)
+    {
         ret += it->second;
+    }
 
     ret += _T("</body>\n"
               "</html>");
-
     return ret;
 }
 
-bool MANFrame::SearchManPage(const wxString &keyword)
+bool MANFrame::SearchManPage(const wxString & keyword)
 {
     if (keyword.IsEmpty())
     {
@@ -516,7 +533,6 @@ bool MANFrame::SearchManPage(const wxString &keyword)
     }
 
     std::vector<wxString> files_found;
-
     GetMatches(keyword, &files_found);
     m_entry->SetValue(keyword);
 
@@ -542,6 +558,5 @@ bool MANFrame::SearchManPage(const wxString &keyword)
     }
 
     SetPage(CreateLinksPage(files_found));
-
     return true;
 }

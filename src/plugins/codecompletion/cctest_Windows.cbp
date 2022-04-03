@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="CC Test wx3.1.x (64 bit)" />
+		<Option title="CC Test Windows" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="cctest">
@@ -38,8 +38,8 @@
 			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
 			<Add directory="$(#WXWIDGETS.include)" />
 			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
-			<Add directory="$(#CB_BUILD)/include" />
-			<Add directory="$(#CB_BUILD)/include/tinyxml" />
+			<Add directory="$(#CB_BUILD.INCLUDE)" />
+			<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
 			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
 		</Compiler>
 		<ResourceCompiler>

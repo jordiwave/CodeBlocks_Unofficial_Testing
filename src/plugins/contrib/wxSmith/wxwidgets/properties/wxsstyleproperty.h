@@ -50,45 +50,45 @@
  */
 class wxsStyleProperty: public wxsProperty
 {
-public:
+    public:
 
-    /** \brief Ctor
-     *  \param StyleName    name of style property used in Property Grid
-     *  \param DataName     name of style data
-     *  \param Offset       offset to bitfield for styles
-     *  \param StyleSetPtrOffset offset for pointer to styleset class describing all styles
-     *  \param IsExtra      if true, this is extra style, false otherwise
-     *  \param Priority     priority of this property
-     */
-    wxsStyleProperty(
-        const wxString& StyleName,
-        const wxString& DataName,
-        long  Offset,
-        long  StyleSetPtrOffset,
-        bool  IsExtra = false,
-        int Priority=100);
+        /** \brief Ctor
+         *  \param StyleName    name of style property used in Property Grid
+         *  \param DataName     name of style data
+         *  \param Offset       offset to bitfield for styles
+         *  \param StyleSetPtrOffset offset for pointer to styleset class describing all styles
+         *  \param IsExtra      if true, this is extra style, false otherwise
+         *  \param Priority     priority of this property
+         */
+        wxsStyleProperty(
+            const wxString & StyleName,
+            const wxString & DataName,
+            long  Offset,
+            long  StyleSetPtrOffset,
+            bool  IsExtra = false,
+            int Priority = 100);
 
-    /** \brief Returning type of this property */
-    virtual const wxString GetTypeName()
-    {
-        return _T("Style");
-    }
+        /** \brief Returning type of this property */
+        virtual const wxString GetTypeName()
+        {
+            return _T("Style");
+        }
 
-protected:
+    protected:
 
-    virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
-    virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-    virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+        virtual void PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent);
+        virtual bool PGRead(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index);
+        virtual bool PGWrite(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index);
+        virtual bool XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
+        virtual bool PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
 
-private:
+    private:
 
-    long Offset;
-    long StyleSetPtrOffset;
-    bool IsExtra;
+        long Offset;
+        long StyleSetPtrOffset;
+        bool IsExtra;
 
 };
 
@@ -104,7 +104,7 @@ private:
  */
 #define WXS_STYLE(ClassName,VarName,PGName,DataName,StyleSetPtr) \
     { static wxsStyleProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),wxsOFFSET(ClassName,StyleSetPtr),false); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \brief Macro automatically declaring style property with custom priority
  *  \param ClassName name of class holding this property
@@ -116,7 +116,7 @@ private:
  */
 #define WXS_STYLE_P(ClassName,VarName,PGName,DataName,StyleSetPtr,Priority) \
     { static wxsStyleProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),wxsOFFSET(ClassName,StyleSetPtr),false,Priority); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \brief Macro automatically declaring extra style property with custom priority
  *  \param ClassName name of class holding this property
@@ -128,7 +128,7 @@ private:
  */
 #define WXS_EXSTYLE_P(ClassName,VarName,PGName,DataName,StyleSetPtr,Priority) \
     { static wxsStyleProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),wxsOFFSET(ClassName,StyleSetPtr),true,Priority); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \} */
 

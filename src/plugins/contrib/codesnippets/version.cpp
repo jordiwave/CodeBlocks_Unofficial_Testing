@@ -19,14 +19,14 @@
 // RCS-ID: $Id: version.cpp 11346 2018-03-24 21:29:44Z pecanh $
 
 #ifdef WX_PRECOMP
-#include "wx_pch.h"
+    #include "wx_pch.h"
 #else
 #endif
 
 #include "version.h"
 
 #if LOGGING
-wxLogWindow*    m_pLog;
+    wxLogWindow  *  m_pLog;
 #endif
 
 // ----------------------------------------------------------------------------

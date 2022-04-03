@@ -21,13 +21,14 @@ bool IETestApp::OnInit()
     //(*AppInitialize
     bool wxsOK = true;
     wxInitAllImageHandlers();
-    if ( wxsOK )
+
+    if (wxsOK)
     {
-        IETestFrame* Frame = new IETestFrame(0);
+        IETestFrame * Frame = new IETestFrame(0);
         Frame->Show();
         SetTopWindow(Frame);
     }
+
     //*)
     return wxsOK;
-
 }

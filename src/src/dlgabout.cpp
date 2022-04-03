@@ -10,21 +10,21 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-#ifdef __WXMAC__
-#include <wx/font.h>
-#endif //__WXMAC__
-#include <wx/button.h>    // wxImage
-#include <wx/image.h>    // wxImage
-#include <wx/intl.h>
-#include <wx/stattext.h>
-#include <wx/string.h>
-#include <wx/textctrl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/versioninfo.h>
+    #ifdef __WXMAC__
+        #include <wx/font.h>
+    #endif //__WXMAC__
+    #include <wx/button.h>    // wxImage
+    #include <wx/image.h>    // wxImage
+    #include <wx/intl.h>
+    #include <wx/stattext.h>
+    #include <wx/string.h>
+    #include <wx/textctrl.h>
+    #include <wx/xrc/xmlres.h>
+    #include <wx/versioninfo.h>
 
-#include "licenses.h"
-#include "configmanager.h"
-#include "wx/wxscintilla.h"
+    #include "licenses.h"
+    #include "configmanager.h"
+    #include "wx/wxscintilla.h"
 #endif
 
 #include <wx/bitmap.h>
@@ -48,7 +48,7 @@ struct Item
 
 // class constructor
 
-dlgAbout::dlgAbout(wxWindow* parent)
+dlgAbout::dlgAbout(wxWindow * parent)
 {
     if (!wxXmlResource::Get()->LoadObject(this, parent, "dlgAbout", "wxScrollingDialog"))
     {
@@ -57,10 +57,9 @@ dlgAbout::dlgAbout(wxWindow* parent)
         return;
     }
 
-    wxButton *cancelButton = XRCCTRL(*this, "wxID_CANCEL", wxButton);
+    wxButton * cancelButton = XRCCTRL(*this, "wxID_CANCEL", wxButton);
     cancelButton->SetDefault();
     cancelButton->SetFocus();
-
     const wxString description = _("Welcome to ") + appglobals::AppName + _T(" ") +
                                  appglobals::AppVersion + _T("!\n") + appglobals::AppName +
                                  _(" is a full-featured IDE (Integrated Development Environment) "
@@ -70,29 +69,22 @@ dlgAbout::dlgAbout(wxWindow* parent)
                                    "Its pluggable architecture allows you, the developer, to add "
                                    "any kind of functionality to the core program, through the use of "
                                    "plugins...\n");
-
     wxString file = ConfigManager::ReadDataPath() + "/images/splash_1312.png";
-
     wxImage im;
     im.LoadFile(file, wxBITMAP_TYPE_PNG);
     im.ConvertAlphaToMask();
-
     wxBitmap bmp(im);
     wxMemoryDC dc;
     dc.SelectObject(bmp);
     cbSplashScreen::DrawReleaseInfo(dc);
-
-    wxStaticBitmap *bmpControl = XRCCTRL(*this, "lblTitle", wxStaticBitmap);
-    bmpControl->SetSize(im.GetWidth(),im.GetHeight());
+    wxStaticBitmap * bmpControl = XRCCTRL(*this, "lblTitle", wxStaticBitmap);
+    bmpControl->SetSize(im.GetWidth(), im.GetHeight());
     bmpControl->SetBitmap(bmp);
-
     XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel(wxString(_("Build: ")) + appglobals::AppBuildTimestamp);
-
-    wxTextCtrl *txtDescription = XRCCTRL(*this, "txtDescription", wxTextCtrl);
+    wxTextCtrl * txtDescription = XRCCTRL(*this, "txtDescription", wxTextCtrl);
     txtDescription->SetValue(description);
-
     // Thanks tab
-    wxTextCtrl *txtThanksTo = XRCCTRL(*this, "txtThanksTo", wxTextCtrl);
+    wxTextCtrl * txtThanksTo = XRCCTRL(*this, "txtThanksTo", wxTextCtrl);
     // Note: Keep this is sync with the AUTHORS file in SVN.
     txtThanksTo->SetValue(_(
                               "Developers:\n"
@@ -151,22 +143,18 @@ dlgAbout::dlgAbout(wxWindow* parent)
                               "Squirrel scripting language (http://www.squirrel-lang.org).\n"
                               "The GNU Software Foundation (https://www.gnu.org).\n"
                               "Last, but not least, the open-source community."));
-
     // License tab
-    wxTextCtrl *txtLicense = XRCCTRL(*this, "txtLicense", wxTextCtrl);
+    wxTextCtrl * txtLicense = XRCCTRL(*this, "txtLicense", wxTextCtrl);
     txtLicense->SetValue(LICENSE_GPL);
-
 #ifdef __WXMAC__
     // Courier 8 point is not readable on Mac OS X, increase font size:
     wxFont font1 = txtThanksTo->GetFont();
     font1.SetPointSize(10);
     txtThanksTo->SetFont(font1);
-
     wxFont font2 = txtLicense->GetFont();
     font2.SetPointSize(10);
     txtLicense->SetFont(font2);
 #endif
-
     Fit();
     CentreOnParent();
 }

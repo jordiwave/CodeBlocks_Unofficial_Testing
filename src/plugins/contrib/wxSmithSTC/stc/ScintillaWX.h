@@ -30,10 +30,10 @@
 #include "CharClassify.h"
 #include "XPM.h"
 #ifdef SCI_LEXER
-#include "SciLexer.h"
-#include "PropSet.h"
-#include "Accessor.h"
-#include "KeyWords.h"
+    #include "SciLexer.h"
+    #include "PropSet.h"
+    #include "Accessor.h"
+    #include "KeyWords.h"
 #endif
 #include "ContractionState.h"
 #include "SVector.h"
@@ -52,11 +52,11 @@
 //----------------------------------------------------------------------
 
 #ifdef WXMAKINGDLL_STC
-#define WXDLLIMPEXP_STC WXEXPORT
+    #define WXDLLIMPEXP_STC WXEXPORT
 #elif defined(WXUSINGDLL)
-#define WXDLLIMPEXP_STC WXIMPORT
+    #define WXDLLIMPEXP_STC WXIMPORT
 #else // not making nor using DLL
-#define WXDLLIMPEXP_STC
+    #define WXDLLIMPEXP_STC
 #endif
 
 class WXDLLIMPEXP_STC wxStyledTextCtrl;           // forward
@@ -69,19 +69,19 @@ class ScintillaWX;
 #if wxUSE_DRAG_AND_DROP
 class wxSTCDropTarget : public wxTextDropTarget
 {
-public:
-    void SetScintilla(ScintillaWX* swx)
-    {
-        this->swx = swx;
-    }
+    public:
+        void SetScintilla(ScintillaWX * swx)
+        {
+            this->swx = swx;
+        }
 
-    bool OnDropText(wxCoord x, wxCoord y, const wxString& data);
-    wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult def);
-    wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def);
-    void OnLeave();
+        bool OnDropText(wxCoord x, wxCoord y, const wxString & data);
+        wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult def);
+        wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def);
+        void OnLeave();
 
-private:
-    ScintillaWX* swx;
+    private:
+        ScintillaWX * swx;
 };
 #endif
 
@@ -89,116 +89,116 @@ private:
 
 class ScintillaWX : public ScintillaBase
 {
-public:
+    public:
 
-    ScintillaWX(wxStyledTextCtrl* win);
-    ~ScintillaWX();
+        ScintillaWX(wxStyledTextCtrl * win);
+        ~ScintillaWX();
 
-    // base class virtuals
-    virtual void Initialise();
-    virtual void Finalise();
-    virtual void StartDrag();
-    virtual bool SetIdle(bool on);
-    virtual void SetTicking(bool on);
-    virtual void SetMouseCapture(bool on);
-    virtual bool HaveMouseCapture();
-    virtual void ScrollText(int linesToMove);
-    virtual void SetVerticalScrollPos();
-    virtual void SetHorizontalScrollPos();
-    virtual bool ModifyScrollBars(int nMax, int nPage);
-    virtual void Copy();
-    virtual void Paste();
-    virtual void CopyToClipboard(const SelectionText &selectedText);
+        // base class virtuals
+        virtual void Initialise();
+        virtual void Finalise();
+        virtual void StartDrag();
+        virtual bool SetIdle(bool on);
+        virtual void SetTicking(bool on);
+        virtual void SetMouseCapture(bool on);
+        virtual bool HaveMouseCapture();
+        virtual void ScrollText(int linesToMove);
+        virtual void SetVerticalScrollPos();
+        virtual void SetHorizontalScrollPos();
+        virtual bool ModifyScrollBars(int nMax, int nPage);
+        virtual void Copy();
+        virtual void Paste();
+        virtual void CopyToClipboard(const SelectionText & selectedText);
 
-    virtual void CreateCallTipWindow(PRectangle rc);
-    virtual void AddToPopUp(const char *label, int cmd = 0, bool enabled = true);
-    virtual void ClaimSelection();
+        virtual void CreateCallTipWindow(PRectangle rc);
+        virtual void AddToPopUp(const char * label, int cmd = 0, bool enabled = true);
+        virtual void ClaimSelection();
 
-    virtual sptr_t DefWndProc(unsigned int iMessage,
-                              uptr_t wParam,
-                              sptr_t lParam);
-    virtual sptr_t WndProc(unsigned int iMessage,
-                           uptr_t wParam,
-                           sptr_t lParam);
+        virtual sptr_t DefWndProc(unsigned int iMessage,
+                                  uptr_t wParam,
+                                  sptr_t lParam);
+        virtual sptr_t WndProc(unsigned int iMessage,
+                               uptr_t wParam,
+                               sptr_t lParam);
 
-    virtual void NotifyChange();
-    virtual void NotifyParent(SCNotification scn);
+        virtual void NotifyChange();
+        virtual void NotifyParent(SCNotification scn);
 
-    virtual void CancelModes();
+        virtual void CancelModes();
 
-    virtual void UpdateSystemCaret();
+        virtual void UpdateSystemCaret();
 
-    // Event delegates
-    void DoPaint(wxDC* dc, wxRect rect);
-    void DoHScroll(int type, int pos);
-    void DoVScroll(int type, int pos);
-    void DoSize(int width, int height);
-    void DoLoseFocus();
-    void DoGainFocus();
-    void DoSysColourChange();
-    void DoLeftButtonDown(Point pt, unsigned int curTime, bool shift, bool ctrl, bool alt);
-    void DoLeftButtonUp(Point pt, unsigned int curTime, bool ctrl);
-    void DoLeftButtonMove(Point pt);
-    void DoMiddleButtonUp(Point pt);
-    void DoMouseWheel(int rotation, int delta, int linesPerAction, int ctrlDown, bool isPageScroll);
-    void DoAddChar(int key);
-    int  DoKeyDown(const wxKeyEvent& event, bool* consumed);
-    void DoTick()
-    {
-        Tick();
-    }
-    void DoOnIdle(wxIdleEvent& evt);
-    void DoStartDrag();
-
-#if wxUSE_DRAG_AND_DROP
-    bool DoDropText(long x, long y, const wxString& data);
-    wxDragResult DoDragEnter(wxCoord x, wxCoord y, wxDragResult def);
-    wxDragResult DoDragOver(wxCoord x, wxCoord y, wxDragResult def);
-    void DoDragLeave();
-#endif
-
-    void DoCommand(int ID);
-    void DoContextMenu(Point pt);
-    void DoOnListBox();
-
-
-    // helpers
-    void FullPaint();
-    bool CanPaste();
-    bool GetHideSelection()
-    {
-        return hideSelection;
-    }
-    void DoScrollToLine(int line);
-    void DoScrollToColumn(int column);
-    void ClipChildren(wxDC& dc, PRectangle rect);
-    void SetUseAntiAliasing(bool useAA);
-    bool GetUseAntiAliasing();
-
-private:
-    bool                capturedMouse;
-    bool                focusEvent;
-    wxStyledTextCtrl*   stc;
+        // Event delegates
+        void DoPaint(wxDC * dc, wxRect rect);
+        void DoHScroll(int type, int pos);
+        void DoVScroll(int type, int pos);
+        void DoSize(int width, int height);
+        void DoLoseFocus();
+        void DoGainFocus();
+        void DoSysColourChange();
+        void DoLeftButtonDown(Point pt, unsigned int curTime, bool shift, bool ctrl, bool alt);
+        void DoLeftButtonUp(Point pt, unsigned int curTime, bool ctrl);
+        void DoLeftButtonMove(Point pt);
+        void DoMiddleButtonUp(Point pt);
+        void DoMouseWheel(int rotation, int delta, int linesPerAction, int ctrlDown, bool isPageScroll);
+        void DoAddChar(int key);
+        int  DoKeyDown(const wxKeyEvent & event, bool * consumed);
+        void DoTick()
+        {
+            Tick();
+        }
+        void DoOnIdle(wxIdleEvent & evt);
+        void DoStartDrag();
 
 #if wxUSE_DRAG_AND_DROP
-    wxSTCDropTarget*    dropTarget;
-    wxDragResult        dragResult;
-    wxTimer*            startDragTimer;
+        bool DoDropText(long x, long y, const wxString & data);
+        wxDragResult DoDragEnter(wxCoord x, wxCoord y, wxDragResult def);
+        wxDragResult DoDragOver(wxCoord x, wxCoord y, wxDragResult def);
+        void DoDragLeave();
 #endif
 
-    int                 wheelRotation;
+        void DoCommand(int ID);
+        void DoContextMenu(Point pt);
+        void DoOnListBox();
 
-    // For use in creating a system caret
-    bool HasCaretSizeChanged();
-    bool CreateSystemCaret();
-    bool DestroySystemCaret();
+
+        // helpers
+        void FullPaint();
+        bool CanPaste();
+        bool GetHideSelection()
+        {
+            return hideSelection;
+        }
+        void DoScrollToLine(int line);
+        void DoScrollToColumn(int column);
+        void ClipChildren(wxDC & dc, PRectangle rect);
+        void SetUseAntiAliasing(bool useAA);
+        bool GetUseAntiAliasing();
+
+    private:
+        bool                capturedMouse;
+        bool                focusEvent;
+        wxStyledTextCtrl  * stc;
+
+#if wxUSE_DRAG_AND_DROP
+        wxSTCDropTarget  *  dropTarget;
+        wxDragResult        dragResult;
+        wxTimer      *      startDragTimer;
+#endif
+
+        int                 wheelRotation;
+
+        // For use in creating a system caret
+        bool HasCaretSizeChanged();
+        bool CreateSystemCaret();
+        bool DestroySystemCaret();
 #ifdef __WXMSW__
-    HBITMAP sysCaretBitmap;
-    int sysCaretWidth;
-    int sysCaretHeight;
+        HBITMAP sysCaretBitmap;
+        int sysCaretWidth;
+        int sysCaretHeight;
 #endif
 
-    friend class wxSTCCallTip;
+        friend class wxSTCCallTip;
 };
 
 //----------------------------------------------------------------------

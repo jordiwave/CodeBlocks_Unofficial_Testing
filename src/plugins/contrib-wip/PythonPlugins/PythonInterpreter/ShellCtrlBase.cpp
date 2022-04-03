@@ -11,70 +11,82 @@
 #include "ShellCtrlBase.h"
 
 // The global instance of the shell registry
-ShellRegistry& GlobalShellRegistry()
+ShellRegistry & GlobalShellRegistry()
 {
-    static ShellRegistry* theRegistry = new ShellRegistry();
+    static ShellRegistry * theRegistry = new ShellRegistry();
     return *theRegistry;
 }
 
 // Unique IDs for Timer and Shell Manager messages
-int ID_SHELLPOLLTIMER=wxNewId();
-int ID_SHELLMGR=wxNewId();
+int ID_SHELLPOLLTIMER = wxNewId();
+int ID_SHELLMGR = wxNewId();
 
 
-bool ShellRegistry::Register(const wxString &name, fnCreate create, fnFree free) //register/deregister are called by the plugin registrant instance
+bool ShellRegistry::Register(const wxString & name, fnCreate create, fnFree free) //register/deregister are called by the plugin registrant instance
 {
-    Manager::Get()->GetLogManager()->Log(wxString::Format(_("Python Interpreter Plugin: Registering shell type %s"),name.c_str()));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("Python Interpreter Plugin: Registering shell type %s"), name.c_str()));
     std::map<wxString, ShellRegInfo>::iterator it;
-    if(m_reginfo.find(name)!=m_reginfo.end())
+
+    if (m_reginfo.find(name) != m_reginfo.end())
+    {
         return false;
+    }
+
     ShellRegInfo sri;
-    sri.create=create;
-    sri.free=free;
-    m_reginfo[name]=sri;
+    sri.create = create;
+    sri.free = free;
+    m_reginfo[name] = sri;
     return true;
 }
 
 
-bool ShellRegistry::Deregister(const wxString &name)
+bool ShellRegistry::Deregister(const wxString & name)
 {
     std::map<wxString, ShellRegInfo>::iterator it
-        =m_reginfo.find(name);
-    if(it==m_reginfo.end())
+        = m_reginfo.find(name);
+
+    if (it == m_reginfo.end())
+    {
         return false;
+    }
+
     m_reginfo.erase(it);
     return true;
 }
 
 
-ShellCtrlBase *ShellRegistry::CreateControl(const wxString &type,wxWindow* parent, int id, const wxString &windowname, ShellManager *shellmgr)
+ShellCtrlBase * ShellRegistry::CreateControl(const wxString & type, wxWindow * parent, int id, const wxString & windowname, ShellManager * shellmgr)
 {
     std::map<wxString, ShellRegInfo>::iterator it
-        =m_reginfo.find(type);
-    if(it==m_reginfo.end())
+        = m_reginfo.find(type);
+
+    if (it == m_reginfo.end())
+    {
         return NULL;
+    }
+
     return it->second.create(parent, id, windowname, shellmgr);
 }
 
 
-void ShellRegistry::FreeControl(ShellCtrlBase */*sh*/) //TODO: Don't think this is necessary?
+void ShellRegistry::FreeControl(ShellCtrlBase * /*sh*/) //TODO: Don't think this is necessary?
 {
-//        std::map<wxString, ShellRegInfo>::iterator it
-//            =m_reginfo.find(type);
-//        if(it!=m_reginfo.end())
-//            it.second->free(); //TODO: Can't compile
+    //        std::map<wxString, ShellRegInfo>::iterator it
+    //            =m_reginfo.find(type);
+    //        if(it!=m_reginfo.end())
+    //            it.second->free(); //TODO: Can't compile
 }
 
 
 //IMPLEMENT_DYNAMIC_CLASS(ShellCtrlBase, wxPanel)
 
-ShellCtrlBase::ShellCtrlBase(wxWindow* parent, int id, const wxString &name, ShellManager *shellmgr)
+ShellCtrlBase::ShellCtrlBase(wxWindow * parent, int id, const wxString & name, ShellManager * shellmgr)
     : wxPanel(parent, id)
 {
-    m_parent=parent;
-    m_name=name;
-    m_id=id;
-    m_shellmgr=shellmgr;
+    m_parent = parent;
+    m_name = name;
+    m_id = id;
+    m_shellmgr = shellmgr;
 }
 
 
@@ -90,67 +102,84 @@ BEGIN_EVENT_TABLE(ShellManager, wxPanel)
 END_EVENT_TABLE()
 
 
-void ShellManager::OnPageClosing(wxAuiNotebookEvent& event)
+void ShellManager::OnPageClosing(wxAuiNotebookEvent & event)
 {
-    ShellCtrlBase* sh = GetPage(event.GetSelection());
+    ShellCtrlBase * sh = GetPage(event.GetSelection());
+
     //    LOGSTREAM << wxString::Format(_T("OnPageClosing(): ed=%p, title=%s\n"), eb, eb ? eb->GetTitle().c_str() : _T(""));
     if (!QueryClose(sh))
+    {
         event.Veto();
+    }
+
     m_nb->SetSelection(0);
-//    event.Skip(); // allow others to process it too
+    //    event.Skip(); // allow others to process it too
 }
 
 
-void ShellManager::OnPageChanging(wxAuiNotebookEvent& event)
+void ShellManager::OnPageChanging(wxAuiNotebookEvent & event)
 {
-    if(event.GetSelection() == int(m_nb->GetPageCount()-1))
+    if (event.GetSelection() == int(m_nb->GetPageCount() - 1))
     {
-        wxCommandEvent pe(wxEVT_SHELL_ADD_CLICKED,0);
+        wxCommandEvent pe(wxEVT_SHELL_ADD_CLICKED, 0);
         AddPendingEvent(pe);
         event.Veto();
         return;
     }
+
     event.Skip();
 }
 
 
 
-bool ShellManager::QueryClose(ShellCtrlBase* sh)
+bool ShellManager::QueryClose(ShellCtrlBase * sh)
 {
-    if(!sh)
-        return true;
-    if(!sh->IsDead())
+    if (!sh)
     {
-        wxString msg(_("Process \"")+sh->GetName()+_("\" is still running...\nDo you want to kill it?"));
+        return true;
+    }
+
+    if (!sh->IsDead())
+    {
+        wxString msg(_("Process \"") + sh->GetName() + _("\" is still running...\nDo you want to kill it?"));
+
         switch (cbMessageBox(msg, _("Kill process?"), wxICON_QUESTION | wxYES_NO))
         {
-        case wxID_YES:
-            sh->KillProcess();
-            return false;
-        case wxID_NO:
-            return false;
-        default:
-            break;
+            case wxID_YES:
+                sh->KillProcess();
+                return false;
+
+            case wxID_NO:
+                return false;
+
+            default:
+                break;
         }
     }
+
     return true;
 }
 
 
-long ShellManager::LaunchProcess(const wxString &processcmd, const wxString &name, const wxString &type, const wxArrayString &options)
+long ShellManager::LaunchProcess(const wxString & processcmd, const wxString & name, const wxString & type, const wxArrayString & options)
 {
-    int id=wxNewId();
-    ShellCtrlBase *shell=GlobalShellRegistry().CreateControl(type,this,id,name,this);
-    if(!shell)
+    int id = wxNewId();
+    ShellCtrlBase * shell = GlobalShellRegistry().CreateControl(type, this, id, name, this);
+
+    if (!shell)
     {
-        cbMessageBox(wxString::Format(_("Console type %s not found in registry."),type.c_str()));
+        cbMessageBox(wxString::Format(_("Console type %s not found in registry."), type.c_str()));
         return -1;
     }
-    long procid=shell->LaunchProcess(processcmd,options);
-    if(procid>0)
+
+    long procid = shell->LaunchProcess(processcmd, options);
+
+    if (procid > 0)
     {
-        if(!m_synctimer.IsRunning())
+        if (!m_synctimer.IsRunning())
+        {
             m_synctimer.Start(100);
+        }
     }
     else
     {
@@ -158,26 +187,30 @@ long ShellManager::LaunchProcess(const wxString &processcmd, const wxString &nam
         delete shell; //TODO: GlobalShellRegistry.FreeControl() ???
         return -1;
     }
-    m_nb->InsertPage(m_nb->GetPageCount()-1,shell,name);
-    m_nb->SetSelection(m_nb->GetPageCount()-2);
-//    shell->Show();
+
+    m_nb->InsertPage(m_nb->GetPageCount() - 1, shell, name);
+    m_nb->SetSelection(m_nb->GetPageCount() - 2);
+    //    shell->Show();
     return procid;
-
 }
 
-ShellCtrlBase *ShellManager::GetPage(size_t i)
+ShellCtrlBase * ShellManager::GetPage(size_t i)
 {
-    return (ShellCtrlBase*)m_nb->GetPage(i);
+    return (ShellCtrlBase *)m_nb->GetPage(i);
 }
 
-ShellCtrlBase *ShellManager::GetPage(const wxString &name)
+ShellCtrlBase * ShellManager::GetPage(const wxString & name)
 {
-    for(unsigned int i=0; i<m_nb->GetPageCount()-1; i++)
+    for (unsigned int i = 0; i < m_nb->GetPageCount() - 1; i++)
     {
-        ShellCtrlBase *sh=GetPage(i);
-        if(name==sh->GetName())
+        ShellCtrlBase * sh = GetPage(i);
+
+        if (name == sh->GetName())
+        {
             return sh;
+        }
     }
+
     return NULL;
 }
 
@@ -193,73 +226,93 @@ void ShellManager::KillWindow(int /*id*/)
 
 void ShellManager::RemoveDeadPages()
 {
-    unsigned int i=0;
-    while(i<m_nb->GetPageCount()-1)
+    unsigned int i = 0;
+
+    while (i < m_nb->GetPageCount() - 1)
     {
-        ShellCtrlBase *shell=GetPage(i);
-        if(shell->IsDead())
+        ShellCtrlBase * shell = GetPage(i);
+
+        if (shell->IsDead())
+        {
             m_nb->DeletePage(i);
+        }
         else
+        {
             i++;
+        }
     }
 }
 
 
-size_t ShellManager::GetTermNum(ShellCtrlBase *term)
+size_t ShellManager::GetTermNum(ShellCtrlBase * term)
 {
-    for(unsigned int i=0; i<m_nb->GetPageCount()-1; i++)
+    for (unsigned int i = 0; i < m_nb->GetPageCount() - 1; i++)
     {
-        ShellCtrlBase *shell=GetPage(i);
-        if(shell==term)
+        ShellCtrlBase * shell = GetPage(i);
+
+        if (shell == term)
+        {
             return i;
+        }
     }
+
     return m_nb->GetPageCount();
 }
 
 int ShellManager::NumAlive()
 {
-    int count=0;
-    for(unsigned int i=0; i<m_nb->GetPageCount()-1; i++)
-        count+=!GetPage(i)->IsDead();
+    int count = 0;
+
+    for (unsigned int i = 0; i < m_nb->GetPageCount() - 1; i++)
+    {
+        count += !GetPage(i)->IsDead();
+    }
+
     return count;
 }
 
 
-void ShellManager::OnShellTerminate(ShellCtrlBase *term)
+void ShellManager::OnShellTerminate(ShellCtrlBase * term)
 {
-    size_t i=GetTermNum(term);
-    if(i<m_nb->GetPageCount()-1)
-        m_nb->SetPageText(i,_("[DONE]")+m_nb->GetPageText(i));
-    if(NumAlive()==0)
+    size_t i = GetTermNum(term);
+
+    if (i < m_nb->GetPageCount() - 1)
+    {
+        m_nb->SetPageText(i, _("[DONE]") + m_nb->GetPageText(i));
+    }
+
+    if (NumAlive() == 0)
+    {
         m_synctimer.Stop();
+    }
 }
 
 
-void ShellManager::OnPollandSyncOutput(wxTimerEvent& /*te*/)
+void ShellManager::OnPollandSyncOutput(wxTimerEvent & /*te*/)
 {
-    for(unsigned int i=0; i<m_nb->GetPageCount()-1; i++)
+    for (unsigned int i = 0; i < m_nb->GetPageCount() - 1; i++)
     {
         GetPage(i)->SyncOutput();
     }
 }
 
-void ShellManager::OnUserInput(wxKeyEvent& /*ke*/)
+void ShellManager::OnUserInput(wxKeyEvent & /*ke*/)
 {
     //TODO: This shouldn't be necessary as individual pages will have the focus
-//    ShellCtrlBase *sh=(ShellCtrlBase*)m_nb->GetCurrentPage();
-//    sh->OnUserInput(ke);
+    //    ShellCtrlBase *sh=(ShellCtrlBase*)m_nb->GetCurrentPage();
+    //    sh->OnUserInput(ke);
 }
 
-ShellManager::ShellManager(wxWindow* parent)
+ShellManager::ShellManager(wxWindow * parent)
     : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL/* | wxCLIP_CHILDREN*/)
 {
     m_synctimer.SetOwner(this, ID_SHELLPOLLTIMER);
-    wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
-    m_nb = new wxAuiNotebook(this, ID_SHELLMGR, wxDefaultPosition, wxDefaultSize, wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_CLOSE_ON_ACTIVE_TAB);
+    wxBoxSizer * bs = new wxBoxSizer(wxVERTICAL);
+    m_nb = new wxAuiNotebook(this, ID_SHELLMGR, wxDefaultPosition, wxDefaultSize, wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_CLOSE_ON_ACTIVE_TAB);
     bs->Add(m_nb, 1, wxEXPAND | wxALL);
     wxBitmap bm = wxArtProvider::GetBitmap(wxART_NEW);
-    wxButton *wnd = new wxButton(this, wxID_ANY);
-    m_nb->AddPage(wnd,_(""),false,bm);
+    wxButton * wnd = new wxButton(this, wxID_ANY);
+    m_nb->AddPage(wnd, _(""), false, bm);
     SetAutoLayout(TRUE);
     SetSizer(bs);
 }

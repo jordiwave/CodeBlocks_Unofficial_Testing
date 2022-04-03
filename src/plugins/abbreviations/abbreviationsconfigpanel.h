@@ -18,48 +18,48 @@
 
 class AbbreviationsConfigPanel: public cbConfigurationPanel
 {
-public:
-    AbbreviationsConfigPanel(wxWindow* parent, Abbreviations* plugin);
-    ~AbbreviationsConfigPanel() override;
+    public:
+        AbbreviationsConfigPanel(wxWindow * parent, Abbreviations * plugin);
+        ~AbbreviationsConfigPanel() override;
 
-    /// @return the panel's title.
-    wxString GetTitle() const override;
-    /// @return the panel's bitmap base name. You must supply two bitmaps: \<basename\>.png and \<basename\>-off.png...
-    wxString GetBitmapBaseName() const override;
-    /// Called when the user chooses to apply the configuration.
-    void OnApply() override;
-    /// Called when the user chooses to cancel the configuration.
-    void OnCancel() override;
+        /// @return the panel's title.
+        wxString GetTitle() const override;
+        /// @return the panel's bitmap base name. You must supply two bitmaps: \<basename\>.png and \<basename\>-off.png...
+        wxString GetBitmapBaseName() const override;
+        /// Called when the user chooses to apply the configuration.
+        void OnApply() override;
+        /// Called when the user chooses to cancel the configuration.
+        void OnCancel() override;
 
-private:
-    void InitCompText();
-    void AutoCompUpdate(const wxString& key, const wxString& lang);
-    void ApplyColours();
+    private:
+        void InitCompText();
+        void AutoCompUpdate(const wxString & key, const wxString & lang);
+        void ApplyColours();
 
-    void OnAutoCompKeyword(wxCommandEvent& event);
-    void OnAutoCompAdd(wxCommandEvent& event);
-    void OnAutoCompDelete(wxCommandEvent& event);
-    void OnLanguageSelect(wxCommandEvent& event);
-    void OnLanguageAdd(wxCommandEvent& event);
-    void OnLanguageCopy(wxCommandEvent& event);
-    void OnLanguageDelete(wxCommandEvent& event);
+        void OnAutoCompKeyword(wxCommandEvent & event);
+        void OnAutoCompAdd(wxCommandEvent & event);
+        void OnAutoCompDelete(wxCommandEvent & event);
+        void OnLanguageSelect(wxCommandEvent & event);
+        void OnLanguageAdd(wxCommandEvent & event);
+        void OnLanguageCopy(wxCommandEvent & event);
+        void OnLanguageDelete(wxCommandEvent & event);
 
-    void FillLangugages();
-    void FillKeywords();
-    void LanguageSelected();
-    int  LanguageAdd();
+        void FillLangugages();
+        void FillKeywords();
+        void LanguageSelected();
+        int  LanguageAdd();
 
-private:
-    cbStyledTextCtrl* m_AutoCompTextControl;
-    wxListBox*        m_Keyword;
-    wxString          m_LastAutoCompKeyword;
-    wxString          m_LastAutoCompLanguage;
-    AutoCompleteMap*  m_pCurrentAutoCompMap;
-    Abbreviations*    m_Plugin;
+    private:
+        cbStyledTextCtrl * m_AutoCompTextControl;
+        wxListBox    *    m_Keyword;
+        wxString          m_LastAutoCompKeyword;
+        wxString          m_LastAutoCompLanguage;
+        AutoCompleteMap * m_pCurrentAutoCompMap;
+        Abbreviations  *  m_Plugin;
 
-    wxComboBox*       m_LanguageCmb;
+        wxComboBox    *   m_LanguageCmb;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

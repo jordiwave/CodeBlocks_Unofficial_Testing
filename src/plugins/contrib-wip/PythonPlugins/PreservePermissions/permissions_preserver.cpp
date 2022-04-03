@@ -18,7 +18,7 @@ PermissionsPreserver::PermissionsPreserver()
     // Make sure our resources are available.
     // In the generated boilerplate code we have no resources but when
     // we add some, it will be nice that this code is in place already ;)
-    if(!Manager::LoadResource(_T("PermissionsPreserver.zip")))
+    if (!Manager::LoadResource(_T("PermissionsPreserver.zip")))
     {
         NotifyMissingFile(_T("PermissionsPreserver.zip"));
     }
@@ -37,12 +37,10 @@ void PermissionsPreserver::OnAttach()
     // You should check for it in other functions, because if it
     // is FALSE, it means that the application did *not* "load"
     // (see: does not need) this plugin...
-
     // register event sinks
-    Manager* pm = Manager::Get();
+    Manager * pm = Manager::Get();
     pm->RegisterEventSink(cbEVT_EDITOR_BEFORE_SAVE, new cbEventFunctor<PermissionsPreserver, CodeBlocksEvent>(this, &PermissionsPreserver::OnEditorBeforeSave));
     pm->RegisterEventSink(cbEVT_EDITOR_SAVE, new cbEventFunctor<PermissionsPreserver, CodeBlocksEvent>(this, &PermissionsPreserver::OnEditorSave));
-
 }
 
 void PermissionsPreserver::OnRelease(bool appShutDown)
@@ -54,29 +52,37 @@ void PermissionsPreserver::OnRelease(bool appShutDown)
     // m_IsAttached will be FALSE...
 }
 
-void PermissionsPreserver::OnEditorBeforeSave(CodeBlocksEvent& event)
+void PermissionsPreserver::OnEditorBeforeSave(CodeBlocksEvent & event)
 {
-    EditorBase *ed = event.GetEditor();
+    EditorBase * ed = event.GetEditor();
     m_filename = ed->GetFilename();
     struct stat s;
-    if (stat(m_filename.mb_str(wxConvUTF8),&s) == 0)
+
+    if (stat(m_filename.mb_str(wxConvUTF8), &s) == 0)
+    {
         m_permissions = s.st_mode;
+    }
     else
     {
         m_permissions = 0;
         m_filename = wxEmptyString;
     }
+
     event.Skip();
 }
 
-void PermissionsPreserver::OnEditorSave(CodeBlocksEvent& event)
+void PermissionsPreserver::OnEditorSave(CodeBlocksEvent & event)
 {
-    EditorBase *ed = event.GetEditor();
+    EditorBase * ed = event.GetEditor();
     wxString filename = ed->GetFilename();
+
     //m_filename will be empty if original permissions could not be established
     //(e.g. because file does not exist), so no chmod will occur in this case
     if (filename == m_filename)
-        chmod(m_filename.mb_str(wxConvUTF8),m_permissions);
+    {
+        chmod(m_filename.mb_str(wxConvUTF8), m_permissions);
+    }
+
     event.Skip();
 }
 

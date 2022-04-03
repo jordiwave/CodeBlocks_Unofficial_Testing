@@ -25,7 +25,7 @@
 using namespace CBTSVN;
 //******************************************************************************
 
-CBTSVN::Logger& CBTSVN::Logger::GetInstance()
+CBTSVN::Logger & CBTSVN::Logger::GetInstance()
 {
     static CBTSVN::Logger logger;
     return logger;
@@ -33,38 +33,45 @@ CBTSVN::Logger& CBTSVN::Logger::GetInstance()
 
 //******************************************************************************
 
-void CBTSVN::Logger::log(const wxString& log)
+void CBTSVN::Logger::log(const wxString & log)
 {
     for (event_subscribers::const_iterator it =
                 m_subscribers.begin(); it != m_subscribers.end(); ++it)
+    {
         (*it)->OnLogEvent(log);
+    }
 }
 
 //******************************************************************************
 
-void CBTSVN::Logger::Subscribe(ILogSink& client)
+void CBTSVN::Logger::Subscribe(ILogSink & client)
 {
     if (std::find(m_subscribers.begin(),
                   m_subscribers.end(), &client) == m_subscribers.end())
+    {
         m_subscribers.push_back(&client);
+    }
 }
 
 //******************************************************************************
 
-void CBTSVN::Logger::Unsubscribe(ILogSink& client)
+void CBTSVN::Logger::Unsubscribe(ILogSink & client)
 {
     event_subscribers::iterator it =
         std::find(m_subscribers.begin(), m_subscribers.end(),
                   &client);
+
     if (it != m_subscribers.end())
+    {
         m_subscribers.erase(it);
+    }
 }
 
 //******************************************************************************
 //******************************************************************************
 //******************************************************************************
 
-wxString CBTSVN::GetBaseDir(const wxString& filename)
+wxString CBTSVN::GetBaseDir(const wxString & filename)
 {
     wxFileName base(filename);
     return base.GetPath(wxPATH_GET_VOLUME);
@@ -72,20 +79,17 @@ wxString CBTSVN::GetBaseDir(const wxString& filename)
 
 //******************************************************************************
 
-void CBTSVN::GetFolders(const wxString& plugin_name)
+void CBTSVN::GetFolders(const wxString & plugin_name)
 {
     wxMessageBox(ConfigManager::GetDataFolder()
                  , _("GetDataFolder..."),
                  wxOK | wxICON_INFORMATION);
-
     wxMessageBox(ConfigManager::GetConfigFolder()
                  , _("GetConfigFolder..."),
                  wxOK | wxICON_INFORMATION);
-
     wxMessageBox(ConfigManager::GetDataFolder()
                  , _("GetDataFolder..."),
                  wxOK | wxICON_INFORMATION);
-
     wxMessageBox(GetGlobalIniFile(plugin_name)
                  , _("GetGlobalIniFile..."),
                  wxOK | wxICON_INFORMATION);
@@ -93,41 +97,47 @@ void CBTSVN::GetFolders(const wxString& plugin_name)
 
 //******************************************************************************
 
-std::vector<int> CBTSVN::convert(const wxString& s)
+std::vector<int> CBTSVN::convert(const wxString & s)
 {
     std::vector<int> out;
     std::string::size_type i;
-    wxString in=s;
+    wxString in = s;
 
-    while ((i=in.find_first_of(_(",")))!=std::string::npos)
+    while ((i = in.find_first_of(_(","))) != std::string::npos)
     {
-        wxString s=in.substr(0,i);
+        wxString s = in.substr(0, i);
         long index;
         s.ToLong(&index);
         out.push_back(index);
-        in=in.substr(i+1);
+        in = in.substr(i + 1);
     }
 
-    if (in.size()>0)
+    if (in.size() > 0)
     {
         long index;
         in.ToLong(&index);
         out.push_back(index);
     }
+
     return out;
 }
 
 //******************************************************************************
 
-wxString CBTSVN::convert(const std::vector<int>& vec)
+wxString CBTSVN::convert(const std::vector<int> & vec)
 {
     wxString s;
-    for (size_t i=0; i<vec.size(); ++i)
+
+    for (size_t i = 0; i < vec.size(); ++i)
     {
-        s+=wxString::Format(_("%d"),vec.at(i));
-        if (i!=(vec.size()-1))
-            s+=_(",");
+        s += wxString::Format(_("%d"), vec.at(i));
+
+        if (i != (vec.size() - 1))
+        {
+            s += _(",");
+        }
     }
+
     return s;
 }
 
@@ -143,7 +153,7 @@ bool IsWinNT()  //check if we're running NT
 
 //******************************************************************************
 
-void ErrorMessage(const wxString& str)  //display detailed error info
+void ErrorMessage(const wxString & str) //display detailed error info
 {
     LPWSTR msg;
     FormatMessage(
@@ -155,42 +165,44 @@ void ErrorMessage(const wxString& str)  //display detailed error info
         0,
         NULL);
     wxString message(msg);
-    message.Replace(_("\r"),_(""));
-    message.Replace(_("\n"),_(""));
+    message.Replace(_("\r"), _(""));
+    message.Replace(_("\n"), _(""));
     CBTSVN::Logger::GetInstance().log(str + _(" --> ") + message);
     LocalFree(msg);
 }
 
 //******************************************************************************
 
-int CBTSVN::Run(const wxString& app, const wxString& dir, const wxString& command, wxString& output)
+int CBTSVN::Run(const wxString & app, const wxString & dir, const wxString & command, wxString & output)
 {
     char buf[1024]; //i/o buffer
-
     STARTUPINFO si;
     SECURITY_ATTRIBUTES sa;
     SECURITY_DESCRIPTOR sd; //security information for pipes
     PROCESS_INFORMATION pi;
-    HANDLE newstdin,newstdout,read_stdout,write_stdin;  //pipe handles
+    HANDLE newstdin, newstdout, read_stdout, write_stdin; //pipe handles
 
     if (IsWinNT()) //initialize security descriptor (Windows NT)
     {
-        InitializeSecurityDescriptor(&sd,SECURITY_DESCRIPTOR_REVISION);
+        InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION);
         SetSecurityDescriptorDacl(&sd, true, NULL, false);
         sa.lpSecurityDescriptor = &sd;
     }
     else
+    {
         sa.lpSecurityDescriptor = NULL;
+    }
 
     sa.nLength = sizeof(SECURITY_ATTRIBUTES);
     sa.bInheritHandle = true;         //allow inheritable handles
 
-    if (!CreatePipe(&newstdin,&write_stdin,&sa,0))   //create stdin pipe
+    if (!CreatePipe(&newstdin, &write_stdin, &sa, 0)) //create stdin pipe
     {
         ErrorMessage(_("Error: CreatePipe"));
         return -1;
     }
-    if (!CreatePipe(&read_stdout,&newstdout,&sa,0))  //create stdout pipe
+
+    if (!CreatePipe(&read_stdout, &newstdout, &sa, 0)) //create stdout pipe
     {
         ErrorMessage(_("Error: CreatePipe"));
         CloseHandle(newstdin);
@@ -204,7 +216,7 @@ int CBTSVN::Run(const wxString& app, const wxString& dir, const wxString& comman
     STARTF_USESTDHANDLES validates the hStd* members. STARTF_USESHOWWINDOW
     validates the wShowWindow member.
     */
-    si.dwFlags = STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW;
+    si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
     si.wShowWindow = SW_HIDE;
     si.hStdOutput = newstdout;
     si.hStdError = newstdout;     //set the new handles for the child process
@@ -213,7 +225,7 @@ int CBTSVN::Run(const wxString& app, const wxString& dir, const wxString& comman
     //spawn the child process
     if (!CreateProcess(
                 app.fn_str(),                   // lpApplicationName,
-                (WCHAR*)command.fn_str(),       // lpCommandLine,
+                (WCHAR *)command.fn_str(),      // lpCommandLine,
                 NULL,                           // lpProcessAttributes,
                 NULL,                           // lpThreadAttributes,
                 TRUE,                           // bInheritHandles,
@@ -223,7 +235,7 @@ int CBTSVN::Run(const wxString& app, const wxString& dir, const wxString& comman
                 &si,                            // lpStartupInfo,
                 &pi))                           // lpProcessInformation
     {
-        ErrorMessage(_("Error: CreateProcess (creating \"") + app +_("\")"));
+        ErrorMessage(_("Error: CreateProcess (creating \"") + app + _("\")"));
         CloseHandle(newstdin);
         CloseHandle(newstdout);
         CloseHandle(read_stdout);
@@ -231,40 +243,52 @@ int CBTSVN::Run(const wxString& app, const wxString& dir, const wxString& comman
         return -1;
     }
 
-    unsigned long exit=0;  //process exit code
+    unsigned long exit = 0; //process exit code
     unsigned long bread;   //bytes read
     unsigned long avail;   //bytes available
-
     bzero(buf);
+
     for (;;)     //main program loop
     {
         DWORD result = WaitForSingleObject(pi.hProcess, 1);
-        PeekNamedPipe(read_stdout,buf,1023,&bread,&avail,NULL);
+        PeekNamedPipe(read_stdout, buf, 1023, &bread, &avail, NULL);
 
         //check to see if there is any data to read from stdout
         if (bread != 0)
         {
             bzero(buf);
+
             if (avail > 1023)
             {
                 while (bread >= 1023)
                 {
-                    ReadFile(read_stdout,buf,1023,&bread,NULL);  //read the stdout pipe
-                    for (unsigned int i=0; i<bread; i++)
+                    ReadFile(read_stdout, buf, 1023, &bread, NULL); //read the stdout pipe
+
+                    for (unsigned int i = 0; i < bread; i++)
+                    {
                         output += buf[i];
+                    }
+
                     bzero(buf);
                 }
             }
             else
             {
-                ReadFile(read_stdout,buf,1023,&bread,NULL);
-                for (unsigned int i=0; i<bread; i++)
+                ReadFile(read_stdout, buf, 1023, &bread, NULL);
+
+                for (unsigned int i = 0; i < bread; i++)
+                {
                     output += buf[i];
+                }
             }
         }
-        else if (result==WAIT_OBJECT_0)
-            break;
+        else
+            if (result == WAIT_OBJECT_0)
+            {
+                break;
+            }
     }
+
     CloseHandle(pi.hThread);
     CloseHandle(pi.hProcess);
     CloseHandle(newstdin);
@@ -276,11 +300,10 @@ int CBTSVN::Run(const wxString& app, const wxString& dir, const wxString& comman
 
 //******************************************************************************
 
-bool CBTSVN::Run(bool blocked, bool hidden, const wxString& command, unsigned long& exit_code)
+bool CBTSVN::Run(bool blocked, bool hidden, const wxString & command, unsigned long & exit_code)
 {
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
-
     ZeroMemory(&si, sizeof(si));
     si.cb = sizeof(si);
     ZeroMemory(&pi, sizeof(pi));
@@ -291,11 +314,9 @@ bool CBTSVN::Run(bool blocked, bool hidden, const wxString& command, unsigned lo
         si.wShowWindow = SW_HIDE;
     }
 
-    exit_code=0;
-
+    exit_code = 0;
     wxWCharBuffer buf = command.wc_str(wxConvLocal);
-    WCHAR* COMMAND = buf.data();
-
+    WCHAR * COMMAND = buf.data();
     // Start the child process.
     bool result = CreateProcess(NULL, COMMAND, NULL, NULL, FALSE, 0,
                                 NULL, NULL, &si, &pi);
@@ -304,7 +325,6 @@ bool CBTSVN::Run(bool blocked, bool hidden, const wxString& command, unsigned lo
     {
         // Wait until child process exits.
         WaitForSingleObject(pi.hProcess, INFINITE);
-
         // Get the return value of the child process
         result = result && GetExitCodeProcess(pi.hProcess, &exit_code);
     }
@@ -317,28 +337,28 @@ bool CBTSVN::Run(bool blocked, bool hidden, const wxString& command, unsigned lo
 
 //******************************************************************************
 
-bool CBTSVN::GlobalInifileHasEntry(const wxString& plugin_name, const wxString& key)
+bool CBTSVN::GlobalInifileHasEntry(const wxString & plugin_name, const wxString & key)
 {
     return IniFileHasEntry(plugin_name, GetGlobalIniFile(plugin_name), key);
 }
 
 //******************************************************************************
 
-wxString CBTSVN::GetGlobalIniFile(const wxString& plugin_name)
+wxString CBTSVN::GetGlobalIniFile(const wxString & plugin_name)
 {
     return ConfigManager::GetConfigFolder() + _("\\") + plugin_name + _(".ini");
 }
 
 //******************************************************************************
 
-bool CBTSVN::ReadStringFromGlobalInifile(const wxString& plugin_name, const wxString& key, wxString& value)
+bool CBTSVN::ReadStringFromGlobalInifile(const wxString & plugin_name, const wxString & key, wxString & value)
 {
-    return ReadStringFromInifile(plugin_name, GetGlobalIniFile(plugin_name), key,value);
+    return ReadStringFromInifile(plugin_name, GetGlobalIniFile(plugin_name), key, value);
 }
 
 //******************************************************************************
 
-bool CBTSVN::WriteStringToGlobalInifile(const wxString& plugin_name,const wxString& key, const wxString& value)
+bool CBTSVN::WriteStringToGlobalInifile(const wxString & plugin_name, const wxString & key, const wxString & value)
 {
     return WriteStringToInifile(plugin_name, GetGlobalIniFile(plugin_name), key, value);
 }
@@ -347,9 +367,12 @@ bool CBTSVN::WriteStringToGlobalInifile(const wxString& plugin_name,const wxStri
 
 wxString CBTSVN::GetWorkspaceFilename()
 {
-    cbWorkspace* workspace = Manager::Get()->GetProjectManager()->GetWorkspace();
+    cbWorkspace * workspace = Manager::Get()->GetProjectManager()->GetWorkspace();
+
     if (!workspace)
+    {
         return _("");
+    }
 
     return workspace->GetFilename();
 }
@@ -358,18 +381,27 @@ wxString CBTSVN::GetWorkspaceFilename()
 
 wxString  CBTSVN::GetEditorFilename()
 {
-    EditorManager* man = Manager::Get()->GetEditorManager();
+    EditorManager * man = Manager::Get()->GetEditorManager();
+
     if (!man)
+    {
         return _("");
+    }
 
     // prevent invocation on "start here"
-    cbEditor* builtin_active_editor = man->GetBuiltinActiveEditor();
-    if (!builtin_active_editor)
-        return _("");
+    cbEditor * builtin_active_editor = man->GetBuiltinActiveEditor();
 
-    EditorBase* active_editor = man->GetActiveEditor();
-    if (!active_editor)
+    if (!builtin_active_editor)
+    {
         return _("");
+    }
+
+    EditorBase * active_editor = man->GetActiveEditor();
+
+    if (!active_editor)
+    {
+        return _("");
+    }
 
     return active_editor->GetFilename();
 }
@@ -378,40 +410,47 @@ wxString  CBTSVN::GetEditorFilename()
 
 wxString CBTSVN::GetProjectFilename()
 {
-    cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+    cbProject * project = Manager::Get()->GetProjectManager()->GetActiveProject();
+
     if (!project)
+    {
         return _("");
+    }
 
     return project->GetFilename();
 }
 
 //******************************************************************************
 
-wxString CBTSVN::GetProjectIniFile(const wxString& plugin_name)
+wxString CBTSVN::GetProjectIniFile(const wxString & plugin_name)
 {
     wxString filename = GetProjectFilename();
 
-    if (filename==_(""))
+    if (filename == _(""))
+    {
         return _("");
+    }
 
     return GetBaseDir(filename) + _("\\") + plugin_name + _(".ini");
 }
 
 //******************************************************************************
 
-wxString CBTSVN::GetWorkspaceIniFile(const wxString& plugin_name)
+wxString CBTSVN::GetWorkspaceIniFile(const wxString & plugin_name)
 {
     wxString filename = GetWorkspaceFilename();
 
-    if ( filename==_(""))
+    if (filename == _(""))
+    {
         return _("");
+    }
 
     return GetBaseDir(filename) + _("\\") + plugin_name + _(".ini");
 }
 
 //******************************************************************************
 
-bool CBTSVN::IniFileHasEntry(const wxString& plugin_name, const wxString& inifile, const wxString& key)
+bool CBTSVN::IniFileHasEntry(const wxString & plugin_name, const wxString & inifile, const wxString & key)
 {
     wxFileConfig configFile(plugin_name, wxT("Code::Blocks"), inifile);
     return configFile.HasEntry(key);
@@ -419,15 +458,15 @@ bool CBTSVN::IniFileHasEntry(const wxString& plugin_name, const wxString& inifil
 
 //******************************************************************************
 
-bool CBTSVN::ReadStringFromInifile(const wxString& plugin_name, const wxString& inifile, const wxString& key, wxString& value)
+bool CBTSVN::ReadStringFromInifile(const wxString & plugin_name, const wxString & inifile, const wxString & key, wxString & value)
 {
     wxFileConfig configFile(plugin_name, wxT("Code::Blocks"), inifile);
-    return configFile.Read(key,&value);
+    return configFile.Read(key, &value);
 }
 
 //******************************************************************************
 
-bool CBTSVN::WriteStringToInifile(const wxString& plugin_name, const wxString& inifile, const wxString& key, const wxString& value)
+bool CBTSVN::WriteStringToInifile(const wxString & plugin_name, const wxString & inifile, const wxString & key, const wxString & value)
 {
     wxFileConfig configFile(plugin_name, wxT("Code::Blocks"), inifile);
     return configFile.Write(key, value);
@@ -435,50 +474,50 @@ bool CBTSVN::WriteStringToInifile(const wxString& plugin_name, const wxString& i
 
 //******************************************************************************
 
-bool CBTSVN::ReadStringFromProjectInifile(const wxString& plugin_name, const wxString& key, wxString& value)
+bool CBTSVN::ReadStringFromProjectInifile(const wxString & plugin_name, const wxString & key, wxString & value)
 {
-    return ReadStringFromInifile(plugin_name, GetProjectIniFile(plugin_name), key,value);
+    return ReadStringFromInifile(plugin_name, GetProjectIniFile(plugin_name), key, value);
 }
 
 //******************************************************************************
 
-bool CBTSVN::WriteStringToProjectInifile(const wxString& plugin_name, const wxString& key, const wxString& value)
+bool CBTSVN::WriteStringToProjectInifile(const wxString & plugin_name, const wxString & key, const wxString & value)
 {
     return WriteStringToInifile(plugin_name, GetProjectIniFile(plugin_name), key, value);
 }
 
 //******************************************************************************
 
-bool CBTSVN::ReadStringFromWorkspaceInifile(const wxString& plugin_name, const wxString& key, wxString& value)
+bool CBTSVN::ReadStringFromWorkspaceInifile(const wxString & plugin_name, const wxString & key, wxString & value)
 {
-    return ReadStringFromInifile(plugin_name, GetWorkspaceIniFile(plugin_name), key,value);
+    return ReadStringFromInifile(plugin_name, GetWorkspaceIniFile(plugin_name), key, value);
 }
 
 //******************************************************************************
 
-bool CBTSVN::WriteStringToWorkspaceInifile(const wxString& plugin_name, const wxString& key, const wxString& value)
+bool CBTSVN::WriteStringToWorkspaceInifile(const wxString & plugin_name, const wxString & key, const wxString & value)
 {
     return WriteStringToInifile(plugin_name, GetWorkspaceIniFile(plugin_name), key, value);
 }
 
 //******************************************************************************
 
-wxString CBTSVN::GetCustomDir(const wxString& plugin_name, const wxString& filename, const wxString& key_custom_location, const wxString& key_custom_relative)
+wxString CBTSVN::GetCustomDir(const wxString & plugin_name, const wxString & filename, const wxString & key_custom_location, const wxString & key_custom_relative)
 {
-    wxString dir,rel;
+    wxString dir, rel;
     ReadStringFromProjectInifile(plugin_name, key_custom_location, dir);
-
     ReadStringFromProjectInifile(plugin_name, key_custom_relative, rel);
-    bool IsRelative = (rel==_("1") || rel==_(""));
+    bool IsRelative = (rel == _("1") || rel == _(""));
 
     if (!IsRelative)
+    {
         return dir;
+    }
 
-    wxString basedir=GetBaseDir(filename);
+    wxString basedir = GetBaseDir(filename);
     wxFileName directory;
     directory.AssignDir(dir);
     directory.MakeAbsolute(basedir);
-
     return directory.GetFullPath();
 }
 

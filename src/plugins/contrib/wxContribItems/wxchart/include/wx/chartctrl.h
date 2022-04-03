@@ -17,7 +17,7 @@
 //----------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "chartctrl.h"
+    #pragma interface "chartctrl.h"
 #endif
 
 #include <wx/scrolwin.h>
@@ -73,88 +73,88 @@ class wxChartSizes;
 class WXDLLIMPEXP_CHART wxChartCtrl : public wxScrolledWindow
 /* C::B end */
 {
-public:
+    public:
 
-    wxChartCtrl() {};	// for IMPLEMENT_DYNAMIC_CLASS
-    wxChartCtrl(wxWindow *parent, wxWindowID id,
-                wxChartStyle style = DEFAULT_STYLE,
-                const wxPoint &pos = wxDefaultPosition,
-                const wxSize &size = wxDefaultSize,
-                int flags = wxSIMPLE_BORDER);
+        wxChartCtrl() {};	// for IMPLEMENT_DYNAMIC_CLASS
+        wxChartCtrl(wxWindow * parent, wxWindowID id,
+                    wxChartStyle style = DEFAULT_STYLE,
+                    const wxPoint & pos = wxDefaultPosition,
+                    const wxSize & size = wxDefaultSize,
+                    int flags = wxSIMPLE_BORDER);
 
-    ~wxChartCtrl();
+        ~wxChartCtrl();
 
-    // allow use of m_ChartWin's public methods
-    // Add() - Clear()
-    //-----------------------------------------
-    void Add(wxChartPoints* cp);
-    void Clear();
+        // allow use of m_ChartWin's public methods
+        // Add() - Clear()
+        //-----------------------------------------
+        void Add(wxChartPoints * cp);
+        void Clear();
 
-    // Zoom utility
-    //-------------
-    void ZoomIn();
-    void ZoomOut();
-    void Resize();
-    void Fit();
+        // Zoom utility
+        //-------------
+        void ZoomIn();
+        void ZoomOut();
+        void Resize();
+        void Fit();
 
-    // 3D depth utility
-    //-----------------
-    void DepthIn();
-    void DepthOut();
+        // 3D depth utility
+        //-----------------
+        void DepthIn();
+        void DepthOut();
 
-    // Write chart to file
-    //--------------------
-    void WriteToFile(wxString file, wxChartImageType type);
+        // Write chart to file
+        //--------------------
+        void WriteToFile(wxString file, wxChartImageType type);
 
-private:
-    double m_xZoom;
-    wxChartStyle m_Style;
-    wxChartWindow *m_ChartWin;
-    wxLegendWindow *m_LegendWin;
-    wxXAxisWindow *m_XAxisWin;
-    wxYAxisWindow *m_YAxisWin;
-    wxChartSizes *m_Sizes;
+    private:
+        double m_xZoom;
+        wxChartStyle m_Style;
+        wxChartWindow * m_ChartWin;
+        wxLegendWindow * m_LegendWin;
+        wxXAxisWindow * m_XAxisWin;
+        wxYAxisWindow * m_YAxisWin;
+        wxChartSizes * m_Sizes;
 
-    // Calculate width
-    //----------------
-    int CalWidth(int n, int nbar, int nbar3d,
-                 int wbar, int wbar3d, int gap);
+        // Calculate width
+        //----------------
+        int CalWidth(int n, int nbar, int nbar3d,
+                     int wbar, int wbar3d, int gap);
 
-    // Zoom utility
-    //-------------
-    void SetZoom(double zoom);
+        // Zoom utility
+        //-------------
+        void SetZoom(double zoom);
 
-    // Size utilities
-    //---------------
-    void SetSizes();
+        // Size utilities
+        //---------------
+        void SetSizes();
 
-    // Set Image Type
-    void LoadImageHandler(wxChartImageType type);
+        // Set Image Type
+        void LoadImageHandler(wxChartImageType type);
 
-    // scroll bar utility
-    //-------------------
-    void ResetScrollbar();
-    void RedrawXAxis();
-    void RedrawYAxis();
-    void RedrawLegend();
-    void RedrawEverything();
+        // scroll bar utility
+        //-------------------
+        void ResetScrollbar();
+        void RedrawXAxis();
+        void RedrawYAxis();
+        void RedrawLegend();
+        void RedrawEverything();
 
-    // events
-    // ------
-    void OnZoomIn(wxCommandEvent& event);
-    void OnZoomOut(wxCommandEvent& event);
-    void OnScroll(wxScrollWinEvent& event);
-    void OnSize(wxSizeEvent& event);
+        // events
+        // ------
+        void OnZoomIn(wxCommandEvent & event);
+        void OnZoomOut(wxCommandEvent & event);
+        void OnScroll(wxScrollWinEvent & event);
+        void OnSize(wxSizeEvent & event);
 
-    // bitmap buttons utility
-    //-----------------------
-    wxBitmap GetZoomInBitmap();
-    wxBitmap GetZoomOutBitmap();
+        // bitmap buttons utility
+        //-----------------------
+        wxBitmap GetZoomInBitmap();
+        wxBitmap GetZoomOutBitmap();
 
-    /* C::B begin */
-    DECLARE_DYNAMIC_CLASS(wxChartCtrl)
-    /* C::B end */
-    DECLARE_EVENT_TABLE()
+        /* C::B begin */
+        DECLARE_DYNAMIC_CLASS(wxChartCtrl)
+        /* C::B end */
+        DECLARE_EVENT_TABLE()
 };
 
 //----------------------------------------------------------------------------

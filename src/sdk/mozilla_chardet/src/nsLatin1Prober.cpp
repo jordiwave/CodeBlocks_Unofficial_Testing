@@ -76,39 +76,47 @@ void  nsLatin1Prober::Reset(void)
 {
     mState = eDetecting;
     mLastCharClass = OTH;
+
     for (int i = 0; i < FREQ_CAT_NUM; i++)
+    {
         mFreqCounter[i] = 0;
+    }
 }
 
 
-nsProbingState nsLatin1Prober::HandleData(const char* aBuf, uint32_t aLen)
+nsProbingState nsLatin1Prober::HandleData(const char * aBuf, uint32_t aLen)
 {
-    char *newBuf1 = 0;
+    char * newBuf1 = 0;
     uint32_t newLen1 = 0;
 
     if (!FilterWithEnglishLetters(aBuf, aLen, &newBuf1, newLen1))
     {
-        newBuf1 = (char*)aBuf;
+        newBuf1 = (char *)aBuf;
         newLen1 = aLen;
     }
 
     unsigned char charClass;
     unsigned char freq;
+
     for (uint32_t i = 0; i < newLen1; i++)
     {
         charClass = Latin1_CharToClass[(unsigned char)newBuf1[i]];
-        freq = Latin1ClassModel[mLastCharClass*CLASS_NUM + charClass];
+        freq = Latin1ClassModel[mLastCharClass * CLASS_NUM + charClass];
+
         if (freq == 0)
         {
             mState = eNotMe;
             break;
         }
+
         mFreqCounter[freq]++;
         mLastCharClass = charClass;
     }
 
     if (newBuf1 != aBuf)
+    {
         PR_FREEIF(newBuf1);
+    }
 
     return mState;
 }
@@ -116,28 +124,36 @@ nsProbingState nsLatin1Prober::HandleData(const char* aBuf, uint32_t aLen)
 float nsLatin1Prober::GetConfidence(void)
 {
     if (mState == eNotMe)
+    {
         return 0.01f;
+    }
 
     float confidence;
     uint32_t total = 0;
-    for (int32_t i = 0; i < FREQ_CAT_NUM; i++)
-        total += mFreqCounter[i];
 
-    if(!total)
+    for (int32_t i = 0; i < FREQ_CAT_NUM; i++)
+    {
+        total += mFreqCounter[i];
+    }
+
+    if (!total)
+    {
         confidence = 0.0f;
+    }
     else
     {
-        confidence = mFreqCounter[3]*1.0f / total;
-        confidence -= mFreqCounter[1]*20.0f/total;
+        confidence = mFreqCounter[3] * 1.0f / total;
+        confidence -= mFreqCounter[1] * 20.0f / total;
     }
 
     if (confidence < 0.0f)
+    {
         confidence = 0.0f;
+    }
 
     // lower the confidence of latin1 so that other more accurate detector
     // can take priority.
     confidence *= 0.50f;
-
     return confidence;
 }
 

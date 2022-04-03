@@ -25,16 +25,16 @@ wxsRegisterItem<wxsStateLed> Reg(
     true);
 }
 
-wxsStateLed::wxsStateLed(wxsItemResData* Data):
+wxsStateLed::wxsStateLed(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
         NULL,
         NULL,
-        flVariable | flId|flEnabled)
+        flVariable | flId | flEnabled)
 {
     //ctor
-    m_Disable = wxColour(128,128,128);
+    m_Disable = wxColour(128, 128, 128);
     GetBaseProps()->m_Enabled = false;
     m_State = 0;
     m_numberOfState = 0;
@@ -47,56 +47,67 @@ wxsStateLed::~wxsStateLed()
 
 void wxsStateLed::OnBuildCreatingCode()
 {
-
     wxString ss  = m_Disable.BuildCode(GetCoderContext());
 
-    switch ( GetLanguage())
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/stateLed.h>"),GetInfo().ClassName);
-        Codef(_T("%C(%W,%I,wxColour(wxT(\"%s\")),%P,%S);\n"), ss.wx_str());
-
-        for( std::map<int,StateDesc>::iterator k = m_StateColor.begin(); k != m_StateColor.end(); k++)
+        case wxsCPP:
         {
-            ss  = (*k).second.colour.GetAsString(wxC2S_CSS_SYNTAX);
-            Codef(_T("%ARegisterState(%d,wxColour(wxT(\"%s\")));\n"),(*k).first, ss.wx_str());
+            AddHeader(_T("<wx/stateLed.h>"), GetInfo().ClassName);
+            Codef(_T("%C(%W,%I,wxColour(wxT(\"%s\")),%P,%S);\n"), ss.wx_str());
+
+            for (std::map<int, StateDesc>::iterator k = m_StateColor.begin(); k != m_StateColor.end(); k++)
+            {
+                ss  = (*k).second.colour.GetAsString(wxC2S_CSS_SYNTAX);
+                Codef(_T("%ARegisterState(%d,wxColour(wxT(\"%s\")));\n"), (*k).first, ss.wx_str());
+            }
+
+            if (!GetBaseProps()->m_Enabled)
+            {
+                Codef(_T("%ADisable();\n"));
+            }
+            else
+            {
+                Codef(_T("%ASetState(%d);\n"), m_State);
+            }
+
+            break;
         }
 
-        if ( !GetBaseProps()->m_Enabled)
-            Codef(_T("%ADisable();\n"));
-        else
-            Codef(_T("%ASetState(%d);\n"), m_State);
-        break;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsStateLed::OnBuildCreatingCode"),GetLanguage());
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsStateLed::OnBuildCreatingCode"), GetLanguage());
     }
 }
 
-wxObject* wxsStateLed::OnBuildPreview(wxWindow* Parent,cb_unused long Flags)
+wxObject * wxsStateLed::OnBuildPreview(wxWindow * Parent, cb_unused long Flags)
 {
-    wxStateLed *Led = new wxStateLed(Parent,GetId(),m_Disable.GetColour(),Pos(Parent),Size(Parent));
+    wxStateLed * Led = new wxStateLed(Parent, GetId(), m_Disable.GetColour(), Pos(Parent), Size(Parent));
 
-    for( std::map<int,StateDesc>::iterator k = m_StateColor.begin(); k != m_StateColor.end(); k++)
+    for (std::map<int, StateDesc>::iterator k = m_StateColor.begin(); k != m_StateColor.end(); k++)
+    {
         Led->RegisterState((*k).first, (*k).second.colour.GetAsString(wxC2S_CSS_SYNTAX));
+    }
 
-    if( !GetBaseProps()->m_Enabled)
+    if (!GetBaseProps()->m_Enabled)
+    {
         Led->Disable();
+    }
     else
     {
         Led->Enable();
-        if( m_State > 0)
-            Led->SetState(m_State-1);
+
+        if (m_State > 0)
+        {
+            Led->SetState(m_State - 1);
+        }
     }
+
     return Led;
 }
 
 void wxsStateLed::OnEnumWidgetProperties(cb_unused long Flags)
 {
-
     WXS_COLOUR(
         wxsStateLed,
         m_Disable,
@@ -112,15 +123,17 @@ void wxsStateLed::OnEnumWidgetProperties(cb_unused long Flags)
  * \return void
  *
  */
-void wxsStateLed::OnAddExtraProperties(wxsPropertyGridManager *Grid)
+void wxsStateLed::OnAddExtraProperties(wxsPropertyGridManager * Grid)
 {
     Grid->SelectPage(0);
     m_StateCurrentId =  Grid->GetGrid()->Insert(_("Disable Colour"), new wxIntProperty(_("Current State"), wxPG_LABEL, m_State));
     m_StateCountId =  Grid->GetGrid()->Insert(_("Current State"), new wxIntProperty(_("Number Of States"), wxPG_LABEL, m_numberOfState));
-    for(int i = 0; i < m_numberOfState; i++)
+
+    for (int i = 0; i < m_numberOfState; i++)
     {
         InsertPropertyForState(Grid, i);
     }
+
     wxsWidget::OnAddExtraProperties(Grid);
 }
 
@@ -131,11 +144,10 @@ void wxsStateLed::OnAddExtraProperties(wxsPropertyGridManager *Grid)
  * \return void
  *
  */
-void wxsStateLed::InsertPropertyForState(wxsPropertyGridManager *Grid, int Position)
+void wxsStateLed::InsertPropertyForState(wxsPropertyGridManager * Grid, int Position)
 {
     wxString SectorName = wxString::Format(_("State %d Colour"), Position + 1);
     wxString SectorDataName = wxString::Format(_("state_%d_colour"), Position + 1);
-
     m_StateColor[Position].id = Grid->GetGrid()->Insert(_("Current State"), new wxSystemColourProperty(SectorName, wxPG_LABEL, m_StateColor[Position].colour));
 }
 
@@ -146,24 +158,25 @@ void wxsStateLed::InsertPropertyForState(wxsPropertyGridManager *Grid, int Posit
  * \return void
  *
  */
-void wxsStateLed::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId id)
+void wxsStateLed::OnExtraPropertyChanged(wxsPropertyGridManager * Grid, wxPGId id)
 {
     Grid->SelectPage(0);
-    if(id == m_StateCountId)
+
+    if (id == m_StateCountId)
     {
         int NewValue = Grid->GetPropertyValueAsInt(id);
 
         // There must be at least one sector.
-        if(NewValue < 0)
+        if (NewValue < 0)
         {
             NewValue = 0;
             Grid->SetPropertyValue(id, NewValue);
         }
 
-        if(NewValue > m_numberOfState)
+        if (NewValue > m_numberOfState)
         {
             // We have to generate new entries
-            for(int i = m_numberOfState; i < NewValue; i++)
+            for (int i = m_numberOfState; i < NewValue; i++)
             {
                 StateDesc temp;
                 temp.colour = *wxWHITE;
@@ -171,57 +184,70 @@ void wxsStateLed::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId id
                 InsertPropertyForState(Grid, i);
             }
         }
-        else if( NewValue < m_numberOfState)
-        {
-            // We have to remove some entries
-            for(int i = NewValue; i < m_numberOfState; i++)
+        else
+            if (NewValue < m_numberOfState)
             {
-                Grid->DeleteProperty(m_StateColor[i].id);
+                // We have to remove some entries
+                for (int i = NewValue; i < m_numberOfState; i++)
+                {
+                    Grid->DeleteProperty(m_StateColor[i].id);
+                }
+
+                if (NewValue < m_numberOfState)
+                {
+                    for (int i = NewValue; i < m_numberOfState; i++)
+                    {
+                        m_StateColor.erase(i);
+                    }
+
+                    if (m_State > NewValue)
+                    {
+                        m_State = NewValue;
+                        Grid->SetPropertyValue(m_StateCurrentId, m_State);
+                    }
+                }
+                else
+                    if (NewValue > 0 && m_numberOfState == 0)
+                    {
+                        m_State = 1;
+                        Grid->SetPropertyValue(m_StateCurrentId, m_State);
+                    }
             }
 
-            if( NewValue < m_numberOfState)
-            {
-                for( int i = NewValue; i < m_numberOfState; i++)
-                    m_StateColor.erase(i);
-                if( m_State > NewValue)
-                {
-                    m_State = NewValue;
-                    Grid->SetPropertyValue(m_StateCurrentId,m_State);
-                }
-            }
-            else if( NewValue > 0 && m_numberOfState == 0)
-            {
-                m_State = 1;
-                Grid->SetPropertyValue(m_StateCurrentId,m_State);
-            }
-        }
         m_numberOfState = NewValue;
         NotifyPropertyChange(true);
         return;
     }
-    else if( id == m_StateCurrentId)
-    {
-        m_State = Grid->GetPropertyValueAsInt(id);
-        if( m_State > m_numberOfState)
-        {
-            m_State = m_numberOfState;
-            Grid->SetPropertyValue(id, m_State);
-        }
-        else if(m_State < 0)
-        {
-            m_State = 0;
-            Grid->SetPropertyValue(id, m_State);
-        }
-        NotifyPropertyChange(true);
-    }
     else
-    {
-
-        for(int i = 0; i < m_numberOfState; i++)
+        if (id == m_StateCurrentId)
         {
-            if(HandleChangeInState(Grid, id, i)) return;
+            m_State = Grid->GetPropertyValueAsInt(id);
+
+            if (m_State > m_numberOfState)
+            {
+                m_State = m_numberOfState;
+                Grid->SetPropertyValue(id, m_State);
+            }
+            else
+                if (m_State < 0)
+                {
+                    m_State = 0;
+                    Grid->SetPropertyValue(id, m_State);
+                }
+
+            NotifyPropertyChange(true);
         }
-    }
+        else
+        {
+            for (int i = 0; i < m_numberOfState; i++)
+            {
+                if (HandleChangeInState(Grid, id, i))
+                {
+                    return;
+                }
+            }
+        }
+
     wxsWidget::OnExtraPropertyChanged(Grid, id);
 }
 
@@ -233,25 +259,26 @@ void wxsStateLed::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId id
  * \return bool			True if a change was recorded, false otherwise.
  *
  */
-bool wxsStateLed::HandleChangeInState(wxsPropertyGridManager *Grid, wxPGId id, int Position)
+bool wxsStateLed::HandleChangeInState(wxsPropertyGridManager * Grid, wxPGId id, int Position)
 {
     bool Changed = false;
 
-    if(m_StateColor[Position].id == id)
+    if (m_StateColor[Position].id == id)
     {
-
         wxVariant var = Grid->GetPropertyValue(id);
         wxString sPropType = var.GetType();
-        if(sPropType.IsSameAs(wxT("wxColourPropertyValue")))
+
+        if (sPropType.IsSameAs(wxT("wxColourPropertyValue")))
         {
             wxColourPropertyValue pcolval;
             pcolval << var;
             m_StateColor[Position].colour = pcolval.m_colour;
         }
+
         Changed = true;
     }
 
-    if(Changed)
+    if (Changed)
     {
         NotifyPropertyChange(true);
         return true;
@@ -260,16 +287,16 @@ bool wxsStateLed::HandleChangeInState(wxsPropertyGridManager *Grid, wxPGId id, i
     return false;
 }
 
-bool wxsStateLed::OnXmlWrite(TiXmlElement* Element, bool IsXRC, bool IsExtra)
+bool wxsStateLed::OnXmlWrite(TiXmlElement * Element, bool IsXRC, bool IsExtra)
 {
+    TiXmlElement * ColourElem = Element->InsertEndChild(TiXmlElement("colour"))->ToElement();
+    ColourElem->SetAttribute("count", cbU2C(wxString::Format(wxT("%d"), m_numberOfState)));
+    ColourElem->SetAttribute("current", cbU2C(wxString::Format(wxT("%d"), m_State)));
 
-    TiXmlElement* ColourElem = Element->InsertEndChild(TiXmlElement("colour"))->ToElement();
-    ColourElem->SetAttribute("count",cbU2C(wxString::Format(wxT("%d"), m_numberOfState)));
-    ColourElem->SetAttribute("current",cbU2C(wxString::Format(wxT("%d"), m_State)));
-    for( int i = 0; i < m_numberOfState; i++)
+    for (int i = 0; i < m_numberOfState; i++)
     {
-        TiXmlElement* msg = new TiXmlElement(cbU2C(wxString::Format(wxT("colour_%d"), i)));
-        TiXmlText*value = new TiXmlText(cbU2C(m_StateColor[i].colour.GetAsString(wxC2S_HTML_SYNTAX)));
+        TiXmlElement * msg = new TiXmlElement(cbU2C(wxString::Format(wxT("colour_%d"), i)));
+        TiXmlText * value = new TiXmlText(cbU2C(m_StateColor[i].colour.GetAsString(wxC2S_HTML_SYNTAX)));
         msg->LinkEndChild(value);
         ColourElem->LinkEndChild(msg);
     }
@@ -277,18 +304,19 @@ bool wxsStateLed::OnXmlWrite(TiXmlElement* Element, bool IsXRC, bool IsExtra)
     return wxsWidget::OnXmlWrite(Element, IsXRC, IsExtra);
 }
 
-bool wxsStateLed::OnXmlRead(TiXmlElement* Element, bool IsXRC, bool IsExtra)
+bool wxsStateLed::OnXmlRead(TiXmlElement * Element, bool IsXRC, bool IsExtra)
 {
+    TiXmlElement * ColourElem = Element->FirstChildElement("colour");
 
-    TiXmlElement* ColourElem = Element->FirstChildElement("colour");
-    if(ColourElem != NULL)
+    if (ColourElem != NULL)
     {
-        TiXmlAttribute* att = ColourElem->FirstAttribute();
+        TiXmlAttribute * att = ColourElem->FirstAttribute();
         m_numberOfState = wxAtoi(cbC2U(att->Value()));
         att = att->Next();
         m_State = wxAtoi(cbC2U(att->Value()));
         int i = 0;
-        for( TiXmlElement* data = ColourElem->FirstChildElement(); data != NULL; data = data->NextSiblingElement())
+
+        for (TiXmlElement * data = ColourElem->FirstChildElement(); data != NULL; data = data->NextSiblingElement())
         {
             m_StateColor[i++].colour.Set(cbC2U(data->GetText()));
         }

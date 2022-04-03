@@ -24,7 +24,7 @@
 #define __WXSSTYLE_H
 
 #ifndef WX_PRECOMP
-#include <wx/arrstr.h>
+    #include <wx/arrstr.h>
 #endif
 
 #include "../wxscodinglang.h"
@@ -68,13 +68,13 @@ struct wxsStyle
     /** Checking if this is style category */
     inline bool IsCategory() const
     {
-        return Value == ((long)-1);
+        return Value == ((long) -1);
     }
 
     /** Checking if this is extended style */
     inline bool IsExtra() const
     {
-        return ( Flags & wxsSFExt ) != 0;
+        return (Flags & wxsSFExt) != 0;
     }
 };
 
@@ -86,74 +86,74 @@ struct wxsStyle
  */
 class PLUGIN_EXPORT wxsStyleSet
 {
-public:
+    public:
 
-    /** \brief Ctor, takes array of styles
-     * \param Default default style
-     */
-    wxsStyleSet(const wxChar* DefaultStyle=_T(""));
+        /** \brief Ctor, takes array of styles
+         * \param Default default style
+         */
+        wxsStyleSet(const wxChar * DefaultStyle = _T(""));
 
-    /** \brief Adding new style to array */
-    void AddStyle(const wxChar* Name,long Value,long Flags);
+        /** \brief Adding new style to array */
+        void AddStyle(const wxChar * Name, long Value, long Flags);
 
-    /** \brief Notifying the end of style declaration */
-    void EndStyle();
+        /** \brief Notifying the end of style declaration */
+        void EndStyle();
 
-    /** \brief Dctor */
-    ~wxsStyleSet();
+        /** \brief Dctor */
+        ~wxsStyleSet();
 
-    /** \brief Getting names array */
-    inline const wxArrayString& GetNames(bool IsExtra) const
-    {
-        return IsExtra?ExStyleNames:StyleNames;
-    }
+        /** \brief Getting names array */
+        inline const wxArrayString & GetNames(bool IsExtra) const
+        {
+            return IsExtra ? ExStyleNames : StyleNames;
+        }
 
-    /** \brief Getting style bits array (each style has unique bit) */
-    inline const wxArrayLong& GetBits(bool IsExtra) const
-    {
-        return IsExtra?ExStyleBits:StyleBits;
-    }
+        /** \brief Getting style bits array (each style has unique bit) */
+        inline const wxArrayLong & GetBits(bool IsExtra) const
+        {
+            return IsExtra ? ExStyleBits : StyleBits;
+        }
 
-    /** \brief Getting values array (real values used inside wxWidgets) */
-    inline const wxArrayLong& GetValues(bool IsExtra) const
-    {
-        return IsExtra?ExStyleValues:StyleValues;
-    }
+        /** \brief Getting values array (real values used inside wxWidgets) */
+        inline const wxArrayLong & GetValues(bool IsExtra) const
+        {
+            return IsExtra ? ExStyleValues : StyleValues;
+        }
 
-    /** \brief Getting style flags array */
-    inline const wxArrayLong& GetFlags(bool IsExtra) const
-    {
-        return IsExtra?ExStyleFlags:StyleFlags;
-    }
+        /** \brief Getting style flags array */
+        inline const wxArrayLong & GetFlags(bool IsExtra) const
+        {
+            return IsExtra ? ExStyleFlags : StyleFlags;
+        }
 
-    /** \brief Getting default style bits */
-    inline long GetDefaultBits(bool IsExtra) const
-    {
-        return IsExtra?0:Default;
-    }
+        /** \brief Getting default style bits */
+        inline long GetDefaultBits(bool IsExtra) const
+        {
+            return IsExtra ? 0 : Default;
+        }
 
-    /** \brief Generating Bitfield from given string (where styles are separated through '|') */
-    long GetBits(const wxString& Style,bool IsExtra) const;
+        /** \brief Generating Bitfield from given string (where styles are separated through '|') */
+        long GetBits(const wxString & Style, bool IsExtra) const;
 
-    /** \brief Converting given style set bitfield to wxString using given language (note that CPP is same format like the one used in XRC files) */
-    wxString GetString(long Bits,bool IsExtra,wxsCodingLang Language) const;
+        /** \brief Converting given style set bitfield to wxString using given language (note that CPP is same format like the one used in XRC files) */
+        wxString GetString(long Bits, bool IsExtra, wxsCodingLang Language) const;
 
-    /** \brief Converting style bits to value which can be used in wxWidgets */
-    long GetWxStyle(long StyleBits,bool IsExtra=false) const;
+        /** \brief Converting style bits to value which can be used in wxWidgets */
+        long GetWxStyle(long StyleBits, bool IsExtra = false) const;
 
-private:
+    private:
 
-    const wxChar* DefaultStr;
-    long Default;
-    wxArrayString StyleNames;
-    wxArrayLong StyleBits;
-    wxArrayLong StyleValues;
-    wxArrayLong StyleFlags;
+        const wxChar * DefaultStr;
+        long Default;
+        wxArrayString StyleNames;
+        wxArrayLong StyleBits;
+        wxArrayLong StyleValues;
+        wxArrayLong StyleFlags;
 
-    wxArrayString ExStyleNames;
-    wxArrayLong ExStyleBits;
-    wxArrayLong ExStyleValues;
-    wxArrayLong ExStyleFlags;
+        wxArrayString ExStyleNames;
+        wxArrayLong ExStyleBits;
+        wxArrayLong ExStyleValues;
+        wxArrayLong ExStyleFlags;
 };
 
 /* ************************************************************************** */
@@ -173,14 +173,14 @@ private:
  * This style will be set as available on all platforms
  */
 #define WXS_ST(name)                                                \
-        Set.AddStyle(_T(#name), name, wxsSFAll & ~wxsSFExt);
+    Set.AddStyle(_T(#name), name, wxsSFAll & ~wxsSFExt);
 
 /** Adding new extended style into list
  *
  * This style will be set as available on all platforms
  */
 #define WXS_EXST(name)                                              \
-        Set.AddStyle(_T(#name), name, wxsSFAll | wxsSFExt);
+    Set.AddStyle(_T(#name), name, wxsSFAll | wxsSFExt);
 
 /** Adding new style with platform masks
  *
@@ -190,9 +190,9 @@ private:
  * \param InXRC - true if this style can be used when resource uses XRC files
  */
 #define WXS_ST_MASK(name,Include,Exclude,InXRC)                     \
-        Set.AddStyle(_T(#name), name,                               \
-            ((Include) & (~(Exclude)) & (~(wxsSFExt|wxsSFXRC))) |   \
-            ((InXRC) ? wxsSFXRC : 0 ) );
+    Set.AddStyle(_T(#name), name,                               \
+                 ((Include) & (~(Exclude)) & (~(wxsSFExt|wxsSFXRC))) |   \
+                 ((InXRC) ? wxsSFXRC : 0 ) );
 
 /** Adding new extended style with platform masks
  *
@@ -202,18 +202,18 @@ private:
  * \param InXRC - true if this style can be used when resource uses XRC files
  */
 #define WXS_EXST_MASK(name,Include,Exclude,InXRC)                   \
-        Set.AddStyle(_T(#name), name,                               \
-            ((Include) & (~(Exclude)) & (~wxsSFXRC)) |              \
-            ((InXRC) ? wxsSFXRC : 0 ) | wxsSFExt );
+    Set.AddStyle(_T(#name), name,                               \
+                 ((Include) & (~(Exclude)) & (~wxsSFXRC)) |              \
+                 ((InXRC) ? wxsSFXRC : 0 ) | wxsSFExt );
 
 /** Beginning new  category */
 #define WXS_ST_CATEGORY(name)                                       \
-        Set.AddStyle(_T(#name),-1, 0);
+    Set.AddStyle(_T(#name),-1, 0);
 
 /** Ending creation of list */
 #define WXS_ST_END()                                                \
-        Set.EndStyle();                                             \
-        return &Set;                                                \
+    Set.EndStyle();                                             \
+    return &Set;                                                \
     }
 
 /** adding all default window's style */

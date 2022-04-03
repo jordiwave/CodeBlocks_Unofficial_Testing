@@ -67,7 +67,7 @@ void wxAxis::SetVirtualMin(
 //----------------------------------------------------------------------E-+++
 ChartValue wxAxis::GetVirtualMax() const
 {
-    return ( m_vMax );
+    return (m_vMax);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -78,7 +78,7 @@ ChartValue wxAxis::GetVirtualMax() const
 //----------------------------------------------------------------------E-+++
 ChartValue wxAxis::GetVirtualMin() const
 {
-    return ( m_vMin );
+    return (m_vMin);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -102,7 +102,7 @@ void wxAxis::SetZoom(
 //----------------------------------------------------------------------E-+++
 double wxAxis::GetZoom()
 {
-    return ( m_Sizes->GetXZoom() );
+    return (m_Sizes->GetXZoom());
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -112,7 +112,7 @@ double wxAxis::GetZoom()
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxAxis::SetSizes(
-    wxChartSizes *sizes
+    wxChartSizes * sizes
 )
 {
     m_Sizes = sizes;
@@ -124,7 +124,7 @@ void wxAxis::SetSizes(
 //	PARAMETERS:	None
 //	RETURN:		ChartSizes sizes
 //----------------------------------------------------------------------E-+++
-wxChartSizes* wxAxis::GetSizes() const
+wxChartSizes * wxAxis::GetSizes() const
 {
-    return ( m_Sizes );
+    return (m_Sizes);
 }

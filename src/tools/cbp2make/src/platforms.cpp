@@ -31,7 +31,7 @@ CPlatform::CPlatform(void)
     Clear();
 }
 
-CPlatform::CPlatform(const CPlatform& Platform)
+CPlatform::CPlatform(const CPlatform & Platform)
 {
     Assign(Platform);
 }
@@ -50,10 +50,10 @@ void CPlatform::Clear(void)
     m_Cmd_Move.Clear();
     m_Cmd_Make.Clear();
     m_Tool_Make.Clear();
-//m_Cmd_TestFile.Clear();
+    //m_Cmd_TestFile.Clear();
     m_Cmd_RemoveFile.Clear();
     m_Cmd_ForceRemoveFile.Clear();
-//m_Cmd_TestDir.Clear();
+    //m_Cmd_TestDir.Clear();
     m_Cmd_MakeDir.Clear();
     m_Cmd_TestMakeDir.Clear();
     m_Cmd_ForceMakeDir.Clear();
@@ -64,7 +64,7 @@ void CPlatform::Clear(void)
     m_PathDelimiter = '/';
 }
 
-void CPlatform::Assign(const CPlatform& Platform)
+void CPlatform::Assign(const CPlatform & Platform)
 {
     m_OS_Type  = Platform.m_OS_Type;
     m_Active   = Platform.m_Active;
@@ -73,10 +73,10 @@ void CPlatform::Assign(const CPlatform& Platform)
     m_Cmd_Move = Platform.m_Cmd_Move;
     m_Cmd_Make = Platform.m_Cmd_Make;
     m_Tool_Make = Platform.m_Tool_Make;
-//m_Cmd_TestFile        = Platform.m_Cmd_TestFile;
+    //m_Cmd_TestFile        = Platform.m_Cmd_TestFile;
     m_Cmd_RemoveFile      = Platform.m_Cmd_RemoveFile;
     m_Cmd_ForceRemoveFile = Platform.m_Cmd_ForceRemoveFile;
-//m_Cmd_TestDir    = Platform.m_Cmd_TestDir;
+    //m_Cmd_TestDir    = Platform.m_Cmd_TestDir;
     m_Cmd_MakeDir      = Platform.m_Cmd_MakeDir;
     m_Cmd_TestMakeDir  = Platform.m_Cmd_TestMakeDir;
     m_Cmd_ForceMakeDir = Platform.m_Cmd_ForceMakeDir;
@@ -91,36 +91,57 @@ CString CPlatform::Name(const OS_Type PlatformOS)
 {
     switch (PlatformOS)
     {
-    default:
-    case CPlatform::OS_Other:
-    case CPlatform::OS_Count:
-    { }
-    case CPlatform::OS_Unix:
-    {
-        return STR_UNIX;
+        default:
+        case CPlatform::OS_Other:
+        case CPlatform::OS_Count:
+        { }
+
+        case CPlatform::OS_Unix:
+        {
+            return STR_UNIX;
+        }
+
+        case CPlatform::OS_Windows:
+        {
+            return STR_WINDOWS;
+        }
+
+        case CPlatform::OS_Mac:
+        {
+            return STR_MAC;
+        }
+
+        case CPlatform::OS_MSys:
+        {
+            return STR_MSYS;
+        }
     }
-    case CPlatform::OS_Windows:
-    {
-        return STR_WINDOWS;
-    }
-    case CPlatform::OS_Mac:
-    {
-        return STR_MAC;
-    }
-    case CPlatform::OS_MSys:
-    {
-        return STR_MSYS;
-    }
-    }
+
     return "Other";
 }
 
-CPlatform::OS_Type CPlatform::OS(CString& PlatformName)
+CPlatform::OS_Type CPlatform::OS(CString & PlatformName)
 {
-    if (PlatformName==STR_UNIX) return CPlatform::OS_Unix;
-    if (PlatformName==STR_WINDOWS) return CPlatform::OS_Windows;
-    if (PlatformName==STR_MAC) return CPlatform::OS_Mac;
-    if (PlatformName==STR_MSYS) return CPlatform::OS_MSys;
+    if (PlatformName == STR_UNIX)
+    {
+        return CPlatform::OS_Unix;
+    }
+
+    if (PlatformName == STR_WINDOWS)
+    {
+        return CPlatform::OS_Windows;
+    }
+
+    if (PlatformName == STR_MAC)
+    {
+        return CPlatform::OS_Mac;
+    }
+
+    if (PlatformName == STR_MSYS)
+    {
+        return CPlatform::OS_MSys;
+    }
+
     return CPlatform::OS_Other;
 }
 
@@ -129,9 +150,9 @@ CString CPlatform::Name(void)
     return Name(m_OS_Type);
 }
 
-CString CPlatform::Pd(const CString& Path) const
+CString CPlatform::Pd(const CString & Path) const
 {
-    if (m_OS_Type==OS_Windows)
+    if (m_OS_Type == OS_Windows)
     {
         return MakeWindowsPath(Path);
     }
@@ -143,7 +164,7 @@ CString CPlatform::Pd(const CString& Path) const
 
 CString CPlatform::SpecialChars(void) const
 {
-    if (m_OS_Type==OS_Windows)
+    if (m_OS_Type == OS_Windows)
     {
         return " ";
     }
@@ -153,9 +174,10 @@ CString CPlatform::SpecialChars(void) const
     }
 }
 
-CString CPlatform::ProtectPath(const CString& Path, const int QuoteMode)
+CString CPlatform::ProtectPath(const CString & Path, const int QuoteMode)
 {
     (void)QuoteMode;
+
     if (Path.GetLength() > 0)
     {
         if (Path.GetFirstChar() == '$')
@@ -164,60 +186,61 @@ CString CPlatform::ProtectPath(const CString& Path, const int QuoteMode)
             return Path;
         }
     }
-    if (m_OS_Type==OS_Windows)
+
+    if (m_OS_Type == OS_Windows)
     {
         //return QuoteSpaces(Path,QuoteMode);
-        return ShieldChars(Path,this->SpecialChars());
+        return ShieldChars(Path, this->SpecialChars());
     }
     else
     {
-        return ShieldChars(Path,this->SpecialChars());
+        return ShieldChars(Path, this->SpecialChars());
     }
 }
 
-CString CPlatform::Copy(const CString& Source, const CString& Destination) const
+CString CPlatform::Copy(const CString & Source, const CString & Destination) const
 {
-    return FindReplaceStr(FindReplaceStr(m_Cmd_Copy,"$src",Source),"$dst",Destination);
+    return FindReplaceStr(FindReplaceStr(m_Cmd_Copy, "$src", Source), "$dst", Destination);
 }
 
-CString CPlatform::Move(const CString& Source, const CString& Destination) const
+CString CPlatform::Move(const CString & Source, const CString & Destination) const
 {
-    return FindReplaceStr(FindReplaceStr(m_Cmd_Move,"$src",Source),"$dst",Destination);
+    return FindReplaceStr(FindReplaceStr(m_Cmd_Move, "$src", Source), "$dst", Destination);
 }
 
-CString CPlatform::Make(const CString& Options, const CString& Path) const
+CString CPlatform::Make(const CString & Options, const CString & Path) const
 {
-    return FindReplaceStr(FindReplaceStr(m_Cmd_Make,"$opts",Options),"$file",Path);
+    return FindReplaceStr(FindReplaceStr(m_Cmd_Make, "$opts", Options), "$file", Path);
 }
 
-CString CPlatform::RemoveFile(const CString& Path) const
+CString CPlatform::RemoveFile(const CString & Path) const
 {
-    return FindReplaceStr(m_Cmd_RemoveFile,"$file",Path);
+    return FindReplaceStr(m_Cmd_RemoveFile, "$file", Path);
 }
 
-CString CPlatform::ForceRemoveFile(const CString& Path) const
+CString CPlatform::ForceRemoveFile(const CString & Path) const
 {
-    return FindReplaceStr(m_Cmd_ForceRemoveFile,"$file",Path);
+    return FindReplaceStr(m_Cmd_ForceRemoveFile, "$file", Path);
 }
 
-CString CPlatform::MakeDir(const CString& Path) const
+CString CPlatform::MakeDir(const CString & Path) const
 {
-    return FindReplaceStr(m_Cmd_MakeDir,"$dir",Path);
+    return FindReplaceStr(m_Cmd_MakeDir, "$dir", Path);
 }
 
-CString CPlatform::TestMakeDir(const CString& Path) const
+CString CPlatform::TestMakeDir(const CString & Path) const
 {
-    return FindReplaceStr(m_Cmd_TestMakeDir,"$dir",Path);
+    return FindReplaceStr(m_Cmd_TestMakeDir, "$dir", Path);
 }
 
-CString CPlatform::ForceMakeDir(const CString& Path) const
+CString CPlatform::ForceMakeDir(const CString & Path) const
 {
-    return FindReplaceStr(m_Cmd_ForceMakeDir,"$dir",Path);
+    return FindReplaceStr(m_Cmd_ForceMakeDir, "$dir", Path);
 }
 
-CString CPlatform::RemoveDir(const CString& Path) const
+CString CPlatform::RemoveDir(const CString & Path) const
 {
-    return FindReplaceStr(m_Cmd_RemoveDir,"$dir",Path);
+    return FindReplaceStr(m_Cmd_RemoveDir, "$dir", Path);
 }
 
 CString CPlatform::PrintWorkDir(void) const
@@ -230,23 +253,27 @@ CString CPlatform::EvalWorkDir(void) const
     return m_Cmd_EvalWorkDir;
 }
 
-CString CPlatform::ChangeDir(const CString& Path) const
+CString CPlatform::ChangeDir(const CString & Path) const
 {
-    return FindReplaceStr(m_Cmd_ChangeDir,"$dir",Path);
+    return FindReplaceStr(m_Cmd_ChangeDir, "$dir", Path);
 }
 
-CString CPlatform::MakefileCmd(const CString& Command) const
+CString CPlatform::MakefileCmd(const CString & Command) const
 {
-    if (OS_Windows == m_OS_Type) return "cmd /c "+Command;
+    if (OS_Windows == m_OS_Type)
+    {
+        return "cmd /c " + Command;
+    }
+
     return Command;
 }
 
-bool CPlatform::IsStaticLibraryExtension(const CString& Ext) const
+bool CPlatform::IsStaticLibraryExtension(const CString & Ext) const
 {
     return (m_StaticLibraryExtensions.FindString(Ext) >= 0);
 }
 
-bool CPlatform::IsDynamicLibraryExtension(const CString& Ext) const
+bool CPlatform::IsDynamicLibraryExtension(const CString & Ext) const
 {
     return (m_DynamicLibraryExtensions.FindString(Ext) >= 0);
 }
@@ -254,140 +281,152 @@ bool CPlatform::IsDynamicLibraryExtension(const CString& Ext) const
 void CPlatform::Reset(const CPlatform::OS_Type OS)
 {
     m_OS_Type = OS;
+
     switch (m_OS_Type)
     {
-    default:
-    case CPlatform::OS_Unix:
-    {
-        m_Cmd_Null = "/dev/null";
-        m_Cmd_Copy = "cp -p $src $dst";
-        m_Cmd_Move = "mv $src $dst";
-        m_Cmd_Make = "make $opts -f $file";
-        m_Tool_Make = "make";
-        //m_Cmd_TestFile = "test -f $file";
-        m_Cmd_RemoveFile = "rm $file";
-        m_Cmd_ForceRemoveFile = "rm -f $file";
-        //m_Cmd_TestDir = "test -d $dir";
-        m_Cmd_MakeDir = "mkdir $dir";
-        m_Cmd_TestMakeDir = "test -d $dir || mkdir -p $dir";
-        m_Cmd_ForceMakeDir = "mkdir -p $dir";
-        m_Cmd_RemoveDir = "rm -rf $dir";
-        m_Cmd_PrintWorkDir = "pwd";
-        m_Cmd_EvalWorkDir = "`pwd`";
-        m_Cmd_ChangeDir = "cd $dir";
-        m_PathDelimiter = '/';
-        //
-        m_StaticLibraryExtensions.Clear()<<"a"<<"lib";
-        m_DynamicLibraryExtensions.Clear()<<"so";
-        break;
-    }
-    case CPlatform::OS_MSys:
-    {
-        m_Cmd_Null = "/dev/null";
-        m_Cmd_Copy = "cp -p $src $dst";
-        m_Cmd_Move = "mv $src $dst";
-        m_Cmd_Make = "make $opts -f $file";
-        m_Tool_Make = "make";
-        //m_Cmd_TestFile = "test -f $file";
-        m_Cmd_RemoveFile = "rm $file";
-        m_Cmd_ForceRemoveFile = "rm -f $file";
-        //m_Cmd_TestDir = "test -d $dir";
-        m_Cmd_MakeDir = "mkdir $dir";
-        m_Cmd_TestMakeDir = "test -d $dir || mkdir -p $dir";
-        m_Cmd_ForceMakeDir = "mkdir -p $dir";
-        m_Cmd_RemoveDir = "rm -rf $dir";
-        m_Cmd_PrintWorkDir = "pwd";
-        m_Cmd_EvalWorkDir = "`pwd`";
-        m_Cmd_ChangeDir = "cd $dir";
-        m_PathDelimiter = '/';
-        //
-        m_StaticLibraryExtensions.Clear() << "a" << "lib";
-        m_DynamicLibraryExtensions.Clear() << "dll";
-        break;
-    }
-    case CPlatform::OS_Windows:
-    {
-        m_Cmd_Null = "NUL";
-        m_Cmd_Copy = "copy $src $dst";
-        m_Cmd_Move = "move $src $dst";
-        m_Cmd_Make = "make $opts -f $file";
-        m_Tool_Make = "make";
-        //m_Cmd_TestFile = "if exist $file";
-        m_Cmd_RemoveFile = "del $file";
-        m_Cmd_ForceRemoveFile = "del /f $file";
-        //m_Cmd_TestDir = "if exist $dir";
-        m_Cmd_MakeDir = "md $dir";
-        m_Cmd_TestMakeDir = "if not exist $dir md $dir";
-        m_Cmd_ForceMakeDir = "md $dir";
-        m_Cmd_RemoveDir = "rd $dir";
-        m_Cmd_PrintWorkDir = "echo %cd%";
-        m_Cmd_EvalWorkDir = "%cd%";
-        m_Cmd_ChangeDir = "cd $dir";
-        m_PathDelimiter = '\\';
-        //
-        m_StaticLibraryExtensions.Clear()<<"lib"<<"a";
-        m_DynamicLibraryExtensions.Clear()<<"dll";
-        break;
-    }
-    case CPlatform::OS_Mac:
-    {
-        m_Cmd_Null = "/dev/null";
-        m_Cmd_Copy = "cp -p $src $dst";
-        m_Cmd_Move = "mv $src $dst";
-        m_Cmd_Make = "make $opts -f $file";
-        m_Tool_Make = "make";
-        //m_Cmd_TestFile = "test -f $file";
-        m_Cmd_RemoveFile = "rm $file";
-        m_Cmd_ForceRemoveFile = "rm -f $file";
-        //m_Cmd_TestDir = "test -d $dir";
-        m_Cmd_MakeDir = "mkdir $dir";
-        m_Cmd_TestMakeDir = "test -d $dir || mkdir -p $dir";
-        m_Cmd_ForceMakeDir = "mkdir -p $dir";
-        m_Cmd_RemoveDir = "rm -rf $dir";
-        m_Cmd_PrintWorkDir = "pwd";
-        m_Cmd_EvalWorkDir = "`pwd`";
-        m_Cmd_ChangeDir = "cd $dir";
-        m_PathDelimiter = '/';
-        //
-        m_StaticLibraryExtensions.Clear()<<"a";
-        m_DynamicLibraryExtensions.Clear()<<"dylib";
-        break;
-    }
+        default:
+        case CPlatform::OS_Unix:
+        {
+            m_Cmd_Null = "/dev/null";
+            m_Cmd_Copy = "cp -p $src $dst";
+            m_Cmd_Move = "mv $src $dst";
+            m_Cmd_Make = "make $opts -f $file";
+            m_Tool_Make = "make";
+            //m_Cmd_TestFile = "test -f $file";
+            m_Cmd_RemoveFile = "rm $file";
+            m_Cmd_ForceRemoveFile = "rm -f $file";
+            //m_Cmd_TestDir = "test -d $dir";
+            m_Cmd_MakeDir = "mkdir $dir";
+            m_Cmd_TestMakeDir = "test -d $dir || mkdir -p $dir";
+            m_Cmd_ForceMakeDir = "mkdir -p $dir";
+            m_Cmd_RemoveDir = "rm -rf $dir";
+            m_Cmd_PrintWorkDir = "pwd";
+            m_Cmd_EvalWorkDir = "`pwd`";
+            m_Cmd_ChangeDir = "cd $dir";
+            m_PathDelimiter = '/';
+            //
+            m_StaticLibraryExtensions.Clear() << "a" << "lib";
+            m_DynamicLibraryExtensions.Clear() << "so";
+            break;
+        }
+
+        case CPlatform::OS_MSys:
+        {
+            m_Cmd_Null = "/dev/null";
+            m_Cmd_Copy = "cp -p $src $dst";
+            m_Cmd_Move = "mv $src $dst";
+            m_Cmd_Make = "make $opts -f $file";
+            m_Tool_Make = "make";
+            //m_Cmd_TestFile = "test -f $file";
+            m_Cmd_RemoveFile = "rm $file";
+            m_Cmd_ForceRemoveFile = "rm -f $file";
+            //m_Cmd_TestDir = "test -d $dir";
+            m_Cmd_MakeDir = "mkdir $dir";
+            m_Cmd_TestMakeDir = "test -d $dir || mkdir -p $dir";
+            m_Cmd_ForceMakeDir = "mkdir -p $dir";
+            m_Cmd_RemoveDir = "rm -rf $dir";
+            m_Cmd_PrintWorkDir = "pwd";
+            m_Cmd_EvalWorkDir = "`pwd`";
+            m_Cmd_ChangeDir = "cd $dir";
+            m_PathDelimiter = '/';
+            //
+            m_StaticLibraryExtensions.Clear() << "a" << "lib";
+            m_DynamicLibraryExtensions.Clear() << "dll";
+            break;
+        }
+
+        case CPlatform::OS_Windows:
+        {
+            m_Cmd_Null = "NUL";
+            m_Cmd_Copy = "copy $src $dst";
+            m_Cmd_Move = "move $src $dst";
+            m_Cmd_Make = "make $opts -f $file";
+            m_Tool_Make = "make";
+            //m_Cmd_TestFile = "if exist $file";
+            m_Cmd_RemoveFile = "del $file";
+            m_Cmd_ForceRemoveFile = "del /f $file";
+            //m_Cmd_TestDir = "if exist $dir";
+            m_Cmd_MakeDir = "md $dir";
+            m_Cmd_TestMakeDir = "if not exist $dir md $dir";
+            m_Cmd_ForceMakeDir = "md $dir";
+            m_Cmd_RemoveDir = "rd $dir";
+            m_Cmd_PrintWorkDir = "echo %cd%";
+            m_Cmd_EvalWorkDir = "%cd%";
+            m_Cmd_ChangeDir = "cd $dir";
+            m_PathDelimiter = '\\';
+            //
+            m_StaticLibraryExtensions.Clear() << "lib" << "a";
+            m_DynamicLibraryExtensions.Clear() << "dll";
+            break;
+        }
+
+        case CPlatform::OS_Mac:
+        {
+            m_Cmd_Null = "/dev/null";
+            m_Cmd_Copy = "cp -p $src $dst";
+            m_Cmd_Move = "mv $src $dst";
+            m_Cmd_Make = "make $opts -f $file";
+            m_Tool_Make = "make";
+            //m_Cmd_TestFile = "test -f $file";
+            m_Cmd_RemoveFile = "rm $file";
+            m_Cmd_ForceRemoveFile = "rm -f $file";
+            //m_Cmd_TestDir = "test -d $dir";
+            m_Cmd_MakeDir = "mkdir $dir";
+            m_Cmd_TestMakeDir = "test -d $dir || mkdir -p $dir";
+            m_Cmd_ForceMakeDir = "mkdir -p $dir";
+            m_Cmd_RemoveDir = "rm -rf $dir";
+            m_Cmd_PrintWorkDir = "pwd";
+            m_Cmd_EvalWorkDir = "`pwd`";
+            m_Cmd_ChangeDir = "cd $dir";
+            m_PathDelimiter = '/';
+            //
+            m_StaticLibraryExtensions.Clear() << "a";
+            m_DynamicLibraryExtensions.Clear() << "dylib";
+            break;
+        }
     }
 }
 
-void CPlatform::Read(const TiXmlElement *Root, const CString& Name, CString& Value)
+void CPlatform::Read(const TiXmlElement * Root, const CString & Name, CString & Value)
 {
-    TiXmlNode *_command = (TiXmlNode *)Root->FirstChild("command");
-    while (0!=_command)
+    TiXmlNode * _command = (TiXmlNode *)Root->FirstChild("command");
+
+    while (0 != _command)
     {
-        TiXmlElement* command = _command->ToElement();
+        TiXmlElement * command = _command->ToElement();
+
         //if (strcmp(command->Value(),"command")!=0) break;
-        if (0!=command)
+        if (0 != command)
         {
-            char *value = 0;
+            char * value = 0;
+
             if ((value = (char *)command->Attribute(Name.GetCString())))
             {
                 Value = value;
             }
         }
+
         _command = (TiXmlNode *)Root->IterateChildren(_command);
     } // command
 }
 
-void CPlatform::Read(const TiXmlElement *PlatformRoot)
+void CPlatform::Read(const TiXmlElement * PlatformRoot)
 {
-    char *value = 0;
+    char * value = 0;
+
     if ((value = (char *)PlatformRoot->Attribute("name")))
     {
         CString name = value;
         m_OS_Type = OS(name);
     }
+
     Reset(m_OS_Type);
+
     if ((value = (char *)PlatformRoot->Attribute("path_delimiter")))
     {
         m_PathDelimiter = value[0];
     }
+
     /*
     if ((value = (char *)PlatformRoot->Attribute("")))
     {
@@ -411,11 +450,13 @@ void CPlatform::Read(const TiXmlElement *PlatformRoot)
         CString s;
         CStringList l;
         Read(PlatformRoot, "static_lib_ext", s);
+
         if (!s.IsEmpty())
         {
             ParseStr(s, ' ', l);
             l.RemoveDuplicates();
             l.RemoveEmpty();
+
             if (!l.IsEmpty())
             {
                 m_StaticLibraryExtensions = l;
@@ -426,11 +467,13 @@ void CPlatform::Read(const TiXmlElement *PlatformRoot)
         CString s;
         CStringList l;
         Read(PlatformRoot, "dynamic_lib_ext", s);
+
         if (!s.IsEmpty())
         {
             ParseStr(s, ' ', l);
             l.RemoveDuplicates();
             l.RemoveEmpty();
+
             if (!l.IsEmpty())
             {
                 m_DynamicLibraryExtensions = l;
@@ -440,56 +483,56 @@ void CPlatform::Read(const TiXmlElement *PlatformRoot)
     //Read(PlatformRoot,"",m_);
 }
 
-void CPlatform::Write(TiXmlElement *Root, const CString& Name, const CString& Value)
+void CPlatform::Write(TiXmlElement * Root, const CString & Name, const CString & Value)
 {
-    TiXmlElement *command = new TiXmlElement("command");
+    TiXmlElement * command = new TiXmlElement("command");
     command->SetAttribute(Name.GetCString(), Value.GetCString());
     Root->LinkEndChild(command);
 }
 
-void CPlatform::Write(TiXmlElement *PlatformRoot)
+void CPlatform::Write(TiXmlElement * PlatformRoot)
 {
-    PlatformRoot->SetAttribute("name",Name().GetCString());
-    PlatformRoot->SetAttribute("path_delimiter",CString(m_PathDelimiter).GetCString());
+    PlatformRoot->SetAttribute("name", Name().GetCString());
+    PlatformRoot->SetAttribute("path_delimiter", CString(m_PathDelimiter).GetCString());
     //PlatformRoot->SetAttribute("",m_.GetCString());
-    Write(PlatformRoot,"make_file",m_Cmd_Make);
-    Write(PlatformRoot,"make_tool",m_Tool_Make);
-    Write(PlatformRoot,"copy_file",m_Cmd_Copy);
-    Write(PlatformRoot,"move_file",m_Cmd_Move);
-    Write(PlatformRoot,"remove_file",m_Cmd_RemoveFile);
-    Write(PlatformRoot,"force_remove_file",m_Cmd_ForceRemoveFile);
-    Write(PlatformRoot,"make_dir",m_Cmd_MakeDir);
-    Write(PlatformRoot,"test_make_dir",m_Cmd_TestMakeDir);
-    Write(PlatformRoot,"force_make_dir",m_Cmd_ForceMakeDir);
-    Write(PlatformRoot,"remove_dir",m_Cmd_RemoveDir);
-    Write(PlatformRoot,"print_work_dir",m_Cmd_PrintWorkDir);
-    Write(PlatformRoot,"eval_work_dir",m_Cmd_EvalWorkDir);
-    Write(PlatformRoot,"change_dir",m_Cmd_ChangeDir);
-    Write(PlatformRoot,"static_lib_ext",m_StaticLibraryExtensions.Join(" "));
-    Write(PlatformRoot,"dynamic_lib_ext",m_DynamicLibraryExtensions.Join(" "));
+    Write(PlatformRoot, "make_file", m_Cmd_Make);
+    Write(PlatformRoot, "make_tool", m_Tool_Make);
+    Write(PlatformRoot, "copy_file", m_Cmd_Copy);
+    Write(PlatformRoot, "move_file", m_Cmd_Move);
+    Write(PlatformRoot, "remove_file", m_Cmd_RemoveFile);
+    Write(PlatformRoot, "force_remove_file", m_Cmd_ForceRemoveFile);
+    Write(PlatformRoot, "make_dir", m_Cmd_MakeDir);
+    Write(PlatformRoot, "test_make_dir", m_Cmd_TestMakeDir);
+    Write(PlatformRoot, "force_make_dir", m_Cmd_ForceMakeDir);
+    Write(PlatformRoot, "remove_dir", m_Cmd_RemoveDir);
+    Write(PlatformRoot, "print_work_dir", m_Cmd_PrintWorkDir);
+    Write(PlatformRoot, "eval_work_dir", m_Cmd_EvalWorkDir);
+    Write(PlatformRoot, "change_dir", m_Cmd_ChangeDir);
+    Write(PlatformRoot, "static_lib_ext", m_StaticLibraryExtensions.Join(" "));
+    Write(PlatformRoot, "dynamic_lib_ext", m_DynamicLibraryExtensions.Join(" "));
     //Write(PlatformRoot,"",m_);
 }
 
 void CPlatform::Show(void)
 {
-    std::cout<<"Platform name: "<<Name().GetString()<<std::endl;
-    std::cout<<"Make tool: "<<m_Cmd_Make.GetString()<<std::endl;
-//std::cout<<"Test file: "<<m_Cmd_TestFile.GetString()<<std::endl;
-    std::cout<<"Remove file: "<<m_Cmd_RemoveFile.GetString()<<std::endl;
-    std::cout<<"Remove file (forced): "<<m_Cmd_ForceRemoveFile.GetString()<<std::endl;
-//std::cout<<"Test directory: "<<m_Cmd_TestDir.GetString()<<std::endl;
-    std::cout<<"Make directory: "<<m_Cmd_MakeDir.GetString()<<std::endl;
-    std::cout<<"Test and make directory: "<<m_Cmd_TestMakeDir.GetString()<<std::endl;
-    std::cout<<"Make directory (forced): "<<m_Cmd_ForceMakeDir.GetString()<<std::endl;
-    std::cout<<"Remove directory: "<<m_Cmd_RemoveDir.GetString()<<std::endl;
-    std::cout<<"Print working directory: "<<m_Cmd_PrintWorkDir.GetString()<<std::endl;
-    std::cout<<"Get working directory: "<<m_Cmd_EvalWorkDir.GetString()<<std::endl;
-    std::cout<<"Change directory: "<<m_Cmd_ChangeDir.GetString()<<std::endl;
-    std::cout<<"Path delimiter: '"<<m_PathDelimiter<<"'"<<std::endl;
-//std::cout<<": "<<m_.GetString()<<std::endl;
+    std::cout << "Platform name: " << Name().GetString() << std::endl;
+    std::cout << "Make tool: " << m_Cmd_Make.GetString() << std::endl;
+    //std::cout<<"Test file: "<<m_Cmd_TestFile.GetString()<<std::endl;
+    std::cout << "Remove file: " << m_Cmd_RemoveFile.GetString() << std::endl;
+    std::cout << "Remove file (forced): " << m_Cmd_ForceRemoveFile.GetString() << std::endl;
+    //std::cout<<"Test directory: "<<m_Cmd_TestDir.GetString()<<std::endl;
+    std::cout << "Make directory: " << m_Cmd_MakeDir.GetString() << std::endl;
+    std::cout << "Test and make directory: " << m_Cmd_TestMakeDir.GetString() << std::endl;
+    std::cout << "Make directory (forced): " << m_Cmd_ForceMakeDir.GetString() << std::endl;
+    std::cout << "Remove directory: " << m_Cmd_RemoveDir.GetString() << std::endl;
+    std::cout << "Print working directory: " << m_Cmd_PrintWorkDir.GetString() << std::endl;
+    std::cout << "Get working directory: " << m_Cmd_EvalWorkDir.GetString() << std::endl;
+    std::cout << "Change directory: " << m_Cmd_ChangeDir.GetString() << std::endl;
+    std::cout << "Path delimiter: '" << m_PathDelimiter << "'" << std::endl;
+    //std::cout<<": "<<m_.GetString()<<std::endl;
 }
 
-CPlatform& CPlatform::operator =(const CPlatform& Platform)
+CPlatform & CPlatform::operator =(const CPlatform & Platform)
 {
     Assign(Platform);
     return *this;
@@ -521,8 +564,16 @@ void CPlatformSet::Unlock(void)
 
 void CPlatformSet::Clear(void)
 {
-    if (m_Locked) return;
-    for (size_t i = 0; i < m_Platforms.size(); i++) delete m_Platforms[i];
+    if (m_Locked)
+    {
+        return;
+    }
+
+    for (size_t i = 0; i < m_Platforms.size(); i++)
+    {
+        delete m_Platforms[i];
+    }
+
     m_Platforms.clear();
 }
 
@@ -531,9 +582,9 @@ size_t CPlatformSet::GetCount(void) const
     return m_Platforms.size();
 }
 
-CPlatform *CPlatformSet::Platform(const size_t Index) const
+CPlatform * CPlatformSet::Platform(const size_t Index) const
 {
-    if (Index<m_Platforms.size())
+    if (Index < m_Platforms.size())
     {
         return m_Platforms[Index];
     }
@@ -543,41 +594,57 @@ CPlatform *CPlatformSet::Platform(const size_t Index) const
     }
 }
 
-CPlatform *CPlatformSet::Find(const CPlatform::OS_Type OS)
+CPlatform * CPlatformSet::Find(const CPlatform::OS_Type OS)
 {
     for (int i = 0, n = m_Platforms.size(); i < n; i++)
     {
-        CPlatform *p = m_Platforms[i];
-        if (p->OS() == OS) return p;
+        CPlatform * p = m_Platforms[i];
+
+        if (p->OS() == OS)
+        {
+            return p;
+        }
     }
+
     return 0;
 }
 
 void CPlatformSet::AddDefault(void)
 {
-    if (m_Locked) return;
-    CPlatform *p = Find(CPlatform::OS_Unix);
+    if (m_Locked)
+    {
+        return;
+    }
+
+    CPlatform * p = Find(CPlatform::OS_Unix);
+
     if (0 == p)
     {
         p = new CPlatform();
         p->Reset(CPlatform::OS_Unix);
         m_Platforms.push_back(p);
     }
+
     p = Find(CPlatform::OS_Windows);
+
     if (0 == p)
     {
         p = new CPlatform();
         p->Reset(CPlatform::OS_Windows);
         m_Platforms.push_back(p);
     }
+
     p = Find(CPlatform::OS_Mac);
+
     if (0 == p)
     {
         p = new CPlatform();
         p->Reset(CPlatform::OS_Mac);
         m_Platforms.push_back(p);
     }
+
     p = Find(CPlatform::OS_MSys);
+
     if (0 == p)
     {
         p = new CPlatform();
@@ -586,32 +653,36 @@ void CPlatformSet::AddDefault(void)
     }
 }
 
-void CPlatformSet::Read(const TiXmlElement *ConfigRoot)
+void CPlatformSet::Read(const TiXmlElement * ConfigRoot)
 {
-    TiXmlNode *_platform = (TiXmlNode *)ConfigRoot->FirstChild("platform");
+    TiXmlNode * _platform = (TiXmlNode *)ConfigRoot->FirstChild("platform");
+
     while (0 != _platform)
     {
+        TiXmlElement * platform = _platform->ToElement();
 
-        TiXmlElement* platform = _platform->ToElement();
-
-        if (strcmp(platform->Value(), "platform") !=0 )
-            break;
-        if (0!=platform)
+        if (strcmp(platform->Value(), "platform") != 0)
         {
-            CPlatform *p = new CPlatform();
+            break;
+        }
+
+        if (0 != platform)
+        {
+            CPlatform * p = new CPlatform();
             p->Read(platform);
             m_Platforms.push_back(p);
         }
+
         _platform = (TiXmlNode *)ConfigRoot->IterateChildren(_platform);
     } // platform
 }
 
-void CPlatformSet::Write(TiXmlElement *ConfigRoot)
+void CPlatformSet::Write(TiXmlElement * ConfigRoot)
 {
     for (int i = 0, n = m_Platforms.size(); i < n; i++)
     {
-        CPlatform *p = m_Platforms[i];
-        TiXmlElement *p_root = new TiXmlElement("platform");
+        CPlatform * p = m_Platforms[i];
+        TiXmlElement * p_root = new TiXmlElement("platform");
         p->Write(p_root);
         ConfigRoot->LinkEndChild(p_root);
     }
@@ -621,17 +692,18 @@ void CPlatformSet::Show(void)
 {
     if (m_Platforms.size())
     {
-        std::cout<<"Configued "<<m_Platforms.size()<<" platform(s):"<<std::endl;
+        std::cout << "Configued " << m_Platforms.size() << " platform(s):" << std::endl;
+
         for (int i = 0, n = m_Platforms.size(); i < n; i++)
         {
-            std::cout<<"Platform #"<<(i+1)<<": "<<std::endl;
-            CPlatform *p = m_Platforms[i];
+            std::cout << "Platform #" << (i + 1) << ": " << std::endl;
+            CPlatform * p = m_Platforms[i];
             p->Show();
         }
     }
     else
     {
-        std::cout<<"No platforms configured"<<std::endl;
+        std::cout << "No platforms configured" << std::endl;
     }
 }
 

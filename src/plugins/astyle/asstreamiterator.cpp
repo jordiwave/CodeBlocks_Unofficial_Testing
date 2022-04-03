@@ -14,7 +14,7 @@
 #include "cbstyledtextctrl.h"
 #include "globals.h"
 
-ASStreamIterator::ASStreamIterator(cbEditor* cbe, const wxChar* in) :
+ASStreamIterator::ASStreamIterator(cbEditor * cbe, const wxChar * in) :
     m_Ed(cbe),
     m_CharPtr(in),
     m_SavedCharPtr(0),
@@ -43,10 +43,14 @@ std::string ASStreamIterator::nextLine(cb_unused bool emptyLineWasDeleted)
 {
     // hack: m_CurLine = 0 is a special case we should not evaluate here
     if (m_Ed && m_CurLine && m_Ed->HasBookmark(m_CurLine))
+    {
         m_FoundBookmark = true;
+    }
 
     if (m_Ed && m_CurLine && m_Ed->HasBreakpoint(m_CurLine))
+    {
         m_FoundBreakpoint = true;
+    }
 
     return readLine();
 }
@@ -83,13 +87,15 @@ std::string ASStreamIterator::readLine()
 
     while (*m_CharPtr != 0)
     {
-        if ( !IsEOL(*m_CharPtr) )
+        if (!IsEOL(*m_CharPtr))
+        {
             buf.push_back(*m_CharPtr);
+        }
 
         ++m_CharPtr;
         ++m_CurChar;
 
-        if ( IsEOL(*m_CharPtr) )
+        if (IsEOL(*m_CharPtr))
         {
             // if CRLF (two chars) peek next char (avoid duplicating empty-lines)
             if (*m_CharPtr != *(m_CharPtr + 1) && IsEOL(*(m_CharPtr + 1)))
@@ -104,6 +110,5 @@ std::string ASStreamIterator::readLine()
 
     buf.push_back(0);
     ++m_CurLine;
-
-    return static_cast<std::string>( cbU2C(&buf[0]) );
+    return static_cast<std::string>(cbU2C(&buf[0]));
 }

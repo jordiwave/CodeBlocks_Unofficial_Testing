@@ -7,36 +7,36 @@
 
 class CDirs : public CComment, public CCommon, public CCompTask
 {
-public:
-    CDirs();
-    virtual ~CDirs();
+    public:
+        CDirs();
+        virtual ~CDirs();
 
-    void SetName(const wxString& Name);
-    void SetAttribs(const wxString& Attribs);
-    void SetPermissions(const wxString& Permissions);
-    void SetFlags(const wxString& Flags);
+        void SetName(const wxString & Name);
+        void SetAttribs(const wxString & Attribs);
+        void SetPermissions(const wxString & Permissions);
+        void SetFlags(const wxString & Flags);
 
-    void WriteInFile( wxTextFile* File);
+        void WriteInFile(wxTextFile * File);
 
-    void Analize( const wxString& content, const wxString& line);
+        void Analize(const wxString & content, const wxString & line);
 
-    void FillContent(wxListCtrl* liste);
+        void FillContent(wxListCtrl * liste);
 
-    static void AddHeader(wxListCtrl* liste);
+        static void AddHeader(wxListCtrl * liste);
 
-    static const wxString Flags[];
+        static const wxString Flags[];
 
-protected:
+    protected:
 
-    wxString m_Name;
-    wxString m_Attribs;
-    wxString m_Permissions;
-    wxString m_Flags;
+        wxString m_Name;
+        wxString m_Attribs;
+        wxString m_Permissions;
+        wxString m_Flags;
 
-    static int m_index_name;
-    static int m_index_attribs;
-    static int m_index_permissions;
-    static int m_index_flags;
+        static int m_index_name;
+        static int m_index_attribs;
+        static int m_index_permissions;
+        static int m_index_flags;
 };
 
 

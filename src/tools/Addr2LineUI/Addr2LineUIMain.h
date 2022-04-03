@@ -18,58 +18,58 @@
 
 class Addr2LineUIDialog: public wxDialog
 {
-public:
+    public:
 
-    Addr2LineUIDialog(wxWindow* parent);
-    virtual ~Addr2LineUIDialog();
+        Addr2LineUIDialog(wxWindow * parent);
+        virtual ~Addr2LineUIDialog();
 
-private:
+    private:
 
-    //(*Handlers(Addr2LineUIDialog)
-    void OnQuit(wxCommandEvent& event);
-    void OnCrashLogFile(wxFileDirPickerEvent& event);
-    void OnAddr2LineFile(wxFileDirPickerEvent& event);
-    void OnDirPrependDir(wxFileDirPickerEvent& event);
-    void OnOperateClick(wxCommandEvent& event);
-    void OnReplaceClick(wxCommandEvent& event);
-    //*)
+        //(*Handlers(Addr2LineUIDialog)
+        void OnQuit(wxCommandEvent & event);
+        void OnCrashLogFile(wxFileDirPickerEvent & event);
+        void OnAddr2LineFile(wxFileDirPickerEvent & event);
+        void OnDirPrependDir(wxFileDirPickerEvent & event);
+        void OnOperateClick(wxCommandEvent & event);
+        void OnReplaceClick(wxCommandEvent & event);
+        //*)
 
-    //(*Identifiers(Addr2LineUIDialog)
-    static const long ID_CRASH_LOG;
-    static const long ID_ADDR2LINE;
-    static const long ID_DIR_PREPEND;
-    static const long ID_CHK_REPLACE;
-    static const long ID_TXT_REPLACE_THIS;
-    static const long ID_LBL_REPLACE;
-    static const long ID_TXT_REPLACE_THAT;
-    static const long ID_CHK_SKIP_UNRESOLVABLE;
-    static const long ID_TXT_CRASH_LOG_CONTENT;
-    static const long ID_TXT_RESULT;
-    static const long ID_BTN_OPERATE;
-    static const long ID_BTN_QUIT;
-    //*)
+        //(*Identifiers(Addr2LineUIDialog)
+        static const long ID_CRASH_LOG;
+        static const long ID_ADDR2LINE;
+        static const long ID_DIR_PREPEND;
+        static const long ID_CHK_REPLACE;
+        static const long ID_TXT_REPLACE_THIS;
+        static const long ID_LBL_REPLACE;
+        static const long ID_TXT_REPLACE_THAT;
+        static const long ID_CHK_SKIP_UNRESOLVABLE;
+        static const long ID_TXT_CRASH_LOG_CONTENT;
+        static const long ID_TXT_RESULT;
+        static const long ID_BTN_OPERATE;
+        static const long ID_BTN_QUIT;
+        //*)
 
-    //(*Declarations(Addr2LineUIDialog)
-    wxButton* btnOperate;
-    wxCheckBox* chkReplace;
-    wxCheckBox* chkSkipUnresolvable;
-    wxDirPickerCtrl* m_DPDirPrepend;
-    wxFilePickerCtrl* m_FPAddr2Line;
-    wxFilePickerCtrl* m_FPCrashLog;
-    wxStaticText* lblReplace;
-    wxTextCtrl* txtCrashLogContent;
-    wxTextCtrl* txtReplaceThat;
-    wxTextCtrl* txtReplaceThis;
-    wxTextCtrl* txtResult;
-    //*)
+        //(*Declarations(Addr2LineUIDialog)
+        wxButton * btnOperate;
+        wxCheckBox * chkReplace;
+        wxCheckBox * chkSkipUnresolvable;
+        wxDirPickerCtrl * m_DPDirPrepend;
+        wxFilePickerCtrl * m_FPAddr2Line;
+        wxFilePickerCtrl * m_FPCrashLog;
+        wxStaticText * lblReplace;
+        wxTextCtrl * txtCrashLogContent;
+        wxTextCtrl * txtReplaceThat;
+        wxTextCtrl * txtReplaceThis;
+        wxTextCtrl * txtResult;
+        //*)
 
-    wxFileConfig  mFileConfig;
-    wxString      mCrashLog;
-    wxArrayString mCrashLogFileContent;
-    wxString      mAddr2Line;
-    wxString      mDirPrepend;
+        wxFileConfig  mFileConfig;
+        wxString      mCrashLog;
+        wxArrayString mCrashLogFileContent;
+        wxString      mAddr2Line;
+        wxString      mDirPrepend;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // ADDR2LINEUIMAIN_H

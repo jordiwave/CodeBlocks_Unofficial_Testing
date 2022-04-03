@@ -15,7 +15,7 @@ PluginRegistrant<[PLUGIN_NAME]> reg(_T("[PLUGIN_NAME]"));
     // Make sure our resources are available.
     // In the generated boilerplate code we have no resources but when
     // we add some, it will be nice that this code is in place already ;)
-    if(!Manager::LoadResource(_T("[PLUGIN_NAME].zip")))
+    if (!Manager::LoadResource(_T("[PLUGIN_NAME].zip")))
     {
         NotifyMissingFile(_T("[PLUGIN_NAME].zip"));
     }
@@ -45,13 +45,13 @@ void [PLUGIN_NAME]::OnRelease(bool appShutDown)
     // m_IsAttached will be FALSE...
 }
 
-bool [PLUGIN_NAME]::CanHandleFile(const wxString& filename) const
+bool [PLUGIN_NAME]::CanHandleFile(const wxString & filename) const
 {
     NotImplemented(_T("[PLUGIN_NAME]::CanHandleFile()"));
     return false;
 }
 
-int [PLUGIN_NAME]::OpenFile(const wxString& filename)
+int [PLUGIN_NAME]::OpenFile(const wxString & filename)
 {
     NotImplemented(_T("[PLUGIN_NAME]::OpenFile()"));
     return -1;

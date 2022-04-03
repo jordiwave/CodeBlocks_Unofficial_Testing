@@ -31,8 +31,8 @@
 // TODO: Fix \n handling in property editor
 
 
-wxsStringProperty::wxsStringProperty(const wxString& PGName, const wxString& DataName,long _Offset,bool _IsLongString,bool _XmlStoreEmpty,const wxString& _Default,int Priority):
-    wxsProperty(PGName,DataName,Priority),
+wxsStringProperty::wxsStringProperty(const wxString & PGName, const wxString & DataName, long _Offset, bool _IsLongString, bool _XmlStoreEmpty, const wxString & _Default, int Priority):
+    wxsProperty(PGName, DataName, Priority),
     Offset(_Offset),
     IsLongString(_IsLongString),
     XmlStoreEmpty(_XmlStoreEmpty),
@@ -40,20 +40,21 @@ wxsStringProperty::wxsStringProperty(const wxString& PGName, const wxString& Dat
 {}
 
 
-void wxsStringProperty::PGCreate(wxsPropertyContainer* Object, wxPropertyGridManager* Grid, wxPGId Parent)
+void wxsStringProperty::PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent)
 {
     wxString Fixed = VALUE;
-    Fixed.Replace(_T("\n"),_T("\\n"));
+    Fixed.Replace(_T("\n"), _T("\\n"));
     wxPGId Id;
+
     if (IsLongString)
     {
-        wxLongStringProperty* Property = new wxLongStringProperty(GetPGName(), wxPG_LABEL, Fixed);
+        wxLongStringProperty * Property = new wxLongStringProperty(GetPGName(), wxPG_LABEL, Fixed);
         Property->SetHelpString(m_HelpString);
         Id = Grid->AppendIn(Parent, Property);
     }
     else
     {
-        wxStringProperty* Property = new wxStringProperty(GetPGName(), wxPG_LABEL, Fixed);
+        wxStringProperty * Property = new wxStringProperty(GetPGName(), wxPG_LABEL, Fixed);
         Property->SetHelpString(m_HelpString);
         Id = Grid->AppendIn(Parent, Property);
     }
@@ -61,41 +62,43 @@ void wxsStringProperty::PGCreate(wxsPropertyContainer* Object, wxPropertyGridMan
     PGRegister(Object, Grid, Id);
 }
 
-bool wxsStringProperty::PGRead(cb_unused wxsPropertyContainer* Object,
-                               wxPropertyGridManager* Grid,wxPGId Id,
+bool wxsStringProperty::PGRead(cb_unused wxsPropertyContainer * Object,
+                               wxPropertyGridManager * Grid, wxPGId Id,
                                cb_unused long Index)
 {
     VALUE = Grid->GetPropertyValue(Id).GetString();
-    VALUE.Replace(_T("\\n"),_T("\n"));
+    VALUE.Replace(_T("\\n"), _T("\n"));
     return true;
 }
 
-bool wxsStringProperty::PGWrite(cb_unused wxsPropertyContainer* Object,
-                                wxPropertyGridManager* Grid,wxPGId Id,
+bool wxsStringProperty::PGWrite(cb_unused wxsPropertyContainer * Object,
+                                wxPropertyGridManager * Grid, wxPGId Id,
                                 cb_unused long Index)
 {
     wxString Fixed = VALUE;
-    Fixed.Replace(_T("\n"),_T("\\n"));
-    Grid->SetPropertyValue(Id,Fixed);
+    Fixed.Replace(_T("\n"), _T("\\n"));
+    Grid->SetPropertyValue(Id, Fixed);
     return true;
 }
 
-bool wxsStringProperty::XmlRead(cb_unused wxsPropertyContainer* Object,
-                                TiXmlElement* Element)
+bool wxsStringProperty::XmlRead(cb_unused wxsPropertyContainer * Object,
+                                TiXmlElement * Element)
 {
-    if ( !Element )
+    if (!Element)
     {
         VALUE.Clear();
         return false;
     }
+
     // TODO: Use proper encoding
     wxString Base = cbC2U(Element->GetText());
     wxString Result;
-    for ( const wxChar* Ch = Base.c_str(); *Ch; Ch++ )
+
+    for (const wxChar * Ch = Base.c_str(); *Ch; Ch++)
     {
-        if ( *Ch == _T('_') )
+        if (*Ch == _T('_'))
         {
-            if ( *++Ch == _T('_') )
+            if (*++Ch == _T('_'))
             {
                 Result << _T('_');
             }
@@ -104,75 +107,86 @@ bool wxsStringProperty::XmlRead(cb_unused wxsPropertyContainer* Object,
                 Result << _T('&') << *Ch;
             }
         }
-        else if ( *Ch == _T('\\') )
-        {
-            switch ( *++Ch )
-            {
-            case _T('n'):
-                Result << _T('\n');
-                break;
-            case _T('r'):
-                Result << _T('\r');
-                break;
-            case _T('t'):
-                Result << _T('\t');
-                break;
-            case _T('\\'):
-                Result << _T('\\');
-                break;
-            default:
-                Result << _T('\\') << *Ch;
-                break;
-            }
-        }
         else
-        {
-            Result << *Ch;
-        }
+            if (*Ch == _T('\\'))
+            {
+                switch (*++Ch)
+                {
+                    case _T('n'):
+                        Result << _T('\n');
+                        break;
+
+                    case _T('r'):
+                        Result << _T('\r');
+                        break;
+
+                    case _T('t'):
+                        Result << _T('\t');
+                        break;
+
+                    case _T('\\'):
+                        Result << _T('\\');
+                        break;
+
+                    default:
+                        Result << _T('\\') << *Ch;
+                        break;
+                }
+            }
+            else
+            {
+                Result << *Ch;
+            }
     }
+
     VALUE = Result;
     return true;
 }
 
-bool wxsStringProperty::XmlWrite(cb_unused wxsPropertyContainer* Object,
-                                 TiXmlElement* Element)
+bool wxsStringProperty::XmlWrite(cb_unused wxsPropertyContainer * Object,
+                                 TiXmlElement * Element)
 {
-    if ( XmlStoreEmpty || (VALUE != Default) )
+    if (XmlStoreEmpty || (VALUE != Default))
     {
         wxString Base = VALUE;
         wxString Result;
-        for ( const wxChar* Ch = Base.c_str(); *Ch; Ch++ )
+
+        for (const wxChar * Ch = Base.c_str(); *Ch; Ch++)
         {
-            switch ( *Ch )
+            switch (*Ch)
             {
-            case _T('_'):
-                Result << _T("__");
-                break;       // TODO: This is NOT compatible with xrc file when there's no version entry or version is less than 2.3.0.1
-            //case _T('&'):  Result << _T('_');  break;     // We could leave this to be translated into &amp; but this looks nicer ;)
-            case _T('\\'):
-                Result << _T("\\\\");
-                break;
-            // We could handle \n and \r here too but this is not necessary since XRC loading
-            // routines also handle \n and \r chars
-            default:
-                Result << *Ch;
+                case _T('_'):
+                    Result << _T("__");
+                    break;       // TODO: This is NOT compatible with xrc file when there's no version entry or version is less than 2.3.0.1
+
+                //case _T('&'):  Result << _T('_');  break;     // We could leave this to be translated into &amp; but this looks nicer ;)
+                case _T('\\'):
+                    Result << _T("\\\\");
+                    break;
+
+                // We could handle \n and \r here too but this is not necessary since XRC loading
+                // routines also handle \n and \r chars
+                default:
+                    Result << *Ch;
             }
         }
+
         // TODO: Use proper encoding
         Element->InsertEndChild(TiXmlText(cbU2C(Result)));
         return true;
     }
+
     return false;
 }
 
-bool wxsStringProperty::PropStreamRead(cb_unused wxsPropertyContainer* Object,
-                                       wxsPropertyStream* Stream)
+bool wxsStringProperty::PropStreamRead(cb_unused wxsPropertyContainer * Object,
+                                       wxsPropertyStream * Stream)
 {
-    return Stream->GetString(GetDataName(),VALUE,Default);
+    return Stream->GetString(GetDataName(), VALUE, Default);
 }
 
-bool wxsStringProperty::PropStreamWrite(cb_unused wxsPropertyContainer* Object,
-                                        wxsPropertyStream* Stream)
+bool wxsStringProperty::PropStreamWrite(cb_unused wxsPropertyContainer * Object,
+                                        wxsPropertyStream * Stream)
 {
-    return Stream->PutString(GetDataName(),VALUE,Default);
+    return Stream->PutString(GetDataName(), VALUE, Default);
 }

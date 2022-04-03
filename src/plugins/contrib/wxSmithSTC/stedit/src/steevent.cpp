@@ -45,10 +45,10 @@ DEFINE_LOCAL_EVENT_TYPE(wxEVT_STEFIND_GOTO)
 //-----------------------------------------------------------------------------
 IMPLEMENT_DYNAMIC_CLASS(wxSTEditorEvent, wxCommandEvent)
 
-wxSTEditorEvent::wxSTEditorEvent( int id, wxEventType type, wxObject* obj,
-                                  int stateChange, int stateValues,
-                                  const wxString& fileName )
-    :wxCommandEvent(type, id)
+wxSTEditorEvent::wxSTEditorEvent(int id, wxEventType type, wxObject * obj,
+                                 int stateChange, int stateValues,
+                                 const wxString & fileName)
+    : wxCommandEvent(type, id)
 {
     SetEventObject(obj);
     SetInt(stateChange);
@@ -56,7 +56,7 @@ wxSTEditorEvent::wxSTEditorEvent( int id, wxEventType type, wxObject* obj,
     SetString(fileName);
 }
 
-wxSTEditor* wxSTEditorEvent::GetEditor() const
+wxSTEditor * wxSTEditorEvent::GetEditor() const
 {
     return wxDynamicCast(GetEventObject(), wxSTEditor);
 }

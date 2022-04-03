@@ -28,18 +28,18 @@
 /** \brief Class for wxButton widget */
 class wxsButton: public wxsWidget
 {
-public:
+    public:
 
-    wxsButton(wxsItemResData* Data);
+        wxsButton(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
-    wxString Label;
-    bool IsDefault;
+        wxString Label;
+        bool IsDefault;
 };
 
 #endif

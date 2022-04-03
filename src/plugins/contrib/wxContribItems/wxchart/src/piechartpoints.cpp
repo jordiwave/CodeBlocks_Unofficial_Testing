@@ -18,18 +18,18 @@
 
 // wx
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "piechartpoints.h"
+    #pragma implementation "piechartpoints.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #include "wx/label.h"
@@ -66,7 +66,7 @@ ChartValue wxPieChartPoints::GetXVal(
     int n
 ) const
 {
-    return ( m_Points.GetXVal(n) );
+    return (m_Points.GetXVal(n));
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -79,7 +79,7 @@ ChartValue wxPieChartPoints::GetYVal(
     int n
 ) const
 {
-    return ( m_Points.GetYVal(n) );
+    return (m_Points.GetYVal(n));
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -92,7 +92,7 @@ wxString wxPieChartPoints::GetName(
     int n
 ) const
 {
-    return ( m_Points.GetName(n) );
+    return (m_Points.GetName(n));
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -103,7 +103,7 @@ wxString wxPieChartPoints::GetName(
 //----------------------------------------------------------------------E-+++
 ChartColor wxPieChartPoints::GetColor(int n) const
 {
-    return ( m_Points.GetColor(n) );
+    return (m_Points.GetColor(n));
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -114,7 +114,7 @@ ChartColor wxPieChartPoints::GetColor(int n) const
 //----------------------------------------------------------------------E-+++
 int wxPieChartPoints::GetCount() const
 {
-    return ( m_Points.GetCount() );
+    return (m_Points.GetCount());
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -126,7 +126,7 @@ int wxPieChartPoints::GetCount() const
 ChartValue wxPieChartPoints::GetMaxX() const
 {
     //return ( m_Points.GetMaxX() );
-    return ( 0 );
+    return (0);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -137,8 +137,8 @@ ChartValue wxPieChartPoints::GetMaxX() const
 //----------------------------------------------------------------------E-+++
 ChartValue wxPieChartPoints::GetMaxY() const
 {
-//	return ( m_Points.GetMaxY() );
-    return ( 0 );
+    //	return ( m_Points.GetMaxY() );
+    return (0);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -149,8 +149,8 @@ ChartValue wxPieChartPoints::GetMaxY() const
 //----------------------------------------------------------------------E-+++
 ChartValue wxPieChartPoints::GetMinX() const
 {
-//	return ( m_Points.GetMinX() );
-    return ( 0 );
+    //	return ( m_Points.GetMinX() );
+    return (0);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -161,8 +161,8 @@ ChartValue wxPieChartPoints::GetMinX() const
 //----------------------------------------------------------------------E-+++
 ChartValue wxPieChartPoints::GetMinY() const
 {
-//	return ( m_Points.GetMinY() );
-    return ( 0 );
+    //	return ( m_Points.GetMinY() );
+    return (0);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -186,7 +186,7 @@ void wxPieChartPoints::SetZoom(
 //----------------------------------------------------------------------E-+++
 double wxPieChartPoints::GetZoom()
 {
-    return ( m_Zoom );
+    return (m_Zoom);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -196,7 +196,7 @@ double wxPieChartPoints::GetZoom()
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPieChartPoints::SetSizes(
-    wxChartSizes *sizes
+    wxChartSizes * sizes
 )
 {
     m_Sizes = sizes;
@@ -208,9 +208,9 @@ void wxPieChartPoints::SetSizes(
 //	PARAMETERS:	None
 //	RETURN:		ChartSizes sizes
 //----------------------------------------------------------------------E-+++
-wxChartSizes* wxPieChartPoints::GetSizes() const
+wxChartSizes * wxPieChartPoints::GetSizes() const
 {
-    return ( m_Sizes );
+    return (m_Sizes);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -221,7 +221,7 @@ wxChartSizes* wxPieChartPoints::GetSizes() const
 //----------------------------------------------------------------------E-+++
 ChartColor wxPieChartPoints::GetColor() const
 {
-    return ( m_Color );
+    return (m_Color);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -245,7 +245,7 @@ void wxPieChartPoints::SetColor(
 //----------------------------------------------------------------------E-+++
 wxString wxPieChartPoints::GetName() const
 {
-    return ( m_Name );
+    return (m_Name);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -275,7 +275,7 @@ void wxPieChartPoints::Add(
     ChartValue y
 )
 {
-    Add( name, x, y, wxCHART_NOCOLOR );
+    Add(name, x, y, wxCHART_NOCOLOR);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -294,9 +294,12 @@ void wxPieChartPoints::Add(
     ChartColor c
 )
 {
-    if ( c == wxCHART_NOCOLOR )
+    if (c == wxCHART_NOCOLOR)
+    {
         c = wxChartColors::GetColor();
-    m_Points.Add( name, x, y, c );
+    }
+
+    m_Points.Add(name, x, y, c);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -320,7 +323,7 @@ void wxPieChartPoints::SetDisplayTag(
 //----------------------------------------------------------------------E-+++
 wxDISPLAY_LABEL wxPieChartPoints::GetDisplayTag() const
 {
-    return ( m_PieTag );
+    return (m_PieTag);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -335,50 +338,48 @@ void wxPieChartPoints::Draw(
     CHART_HRECT hr
 )
 {
-
     //-----------------------------------------------------------------------
     // Get sizes
     //-----------------------------------------------------------------------
-    wxChartSizes *sizes = GetSizes();
+    wxChartSizes * sizes = GetSizes();
+    int r = (int)wxMin((int)hr->w / 2,
+                       (int)(hr->h - 2 * sizes->GetSizeHeight()) / 2);
 
-    int r = (int)wxMin( (int)hr->w/2,
-                        (int)(hr->h - 2*sizes->GetSizeHeight())/2 );
-
-    if ( r > 0 )
+    if (r > 0)
     {
         int iNodes = GetCount();
 
-        if ( iNodes > 0 )
+        if (iNodes > 0)
         {
             int iData;
             int ValTot;
             int iDatas = GetCount();
-            for ( iData = 0, ValTot = 0; iData < iDatas; ++ iData )
-                ValTot += static_cast<int>(GetYVal( iData ));
+
+            for (iData = 0, ValTot = 0; iData < iDatas; ++ iData)
+            {
+                ValTot += static_cast<int>(GetYVal(iData));
+            }
 
             double percent;
             double grad;
             double rad;
             int x1, y1, x2, y2, xc, yc;
-            xc = hr->x + hr->w/2;
-            yc = hr->y + hr->h/2;
+            xc = hr->x + hr->w / 2;
+            yc = hr->y + hr->h / 2;
             x1 = xc + r;
             y1 = yc;
+            hp->SetPen(*wxBLACK_PEN);
 
-            hp->SetPen( *wxBLACK_PEN );
-
-            for ( iData = 0, rad = 0; iData < iDatas; ++ iData )
+            for (iData = 0, rad = 0; iData < iDatas; ++ iData)
             {
-                hp->SetBrush( wxBrush(GetColor(iData), wxBRUSHSTYLE_SOLID) );
-
+                hp->SetBrush(wxBrush(GetColor(iData), wxBRUSHSTYLE_SOLID));
                 // Calc radiants
                 percent = (double)(GetYVal(iData) * 100) / (double)ValTot;
                 grad    = (double)(percent * 360) / (double)100;
                 rad     += (double)(grad * 3.1415) / (double)180;
-
-                x2 = (int)(xc + r * cos( rad ));
-                y2 = (int)(yc - r * sin( rad ));
-                hp->DrawArc( x1, y1, x2, y2, xc, yc );
+                x2 = (int)(xc + r * cos(rad));
+                y2 = (int)(yc - r * sin(rad));
+                hp->DrawArc(x1, y1, x2, y2, xc, yc);
                 x1 = x2;
                 y1 = y2;
 
@@ -386,51 +387,66 @@ void wxPieChartPoints::Draw(
                 // Only draw Label if user wants it
                 //-----------------------------------------------------------
                 if (!m_ShowLabel)
+                {
                     continue;
+                }
 
                 wxString lbl;
                 wxLabel wxLbl;
-
                 LABEL_POSITION p;
-                if ( x2 > xc )
-                    p = RIGHT;
-                else
-                    p = LEFT;
-                if ( y2 > yc )
-                    p = (LABEL_POSITION)( p | DOWN );
-                else
-                    p = (LABEL_POSITION)( p | UP );
 
-                switch ( GetDisplayTag() )
+                if (x2 > xc)
                 {
-                case XVALUE:
-                    lbl.Printf( wxT("%d"), static_cast<int>(GetXVal(iData)) );
-                    wxLbl.Draw( hp, x2, y2, GetColor(iData), lbl, p );
-                    break;
-                case YVALUE:
-                    lbl.Printf( wxT("%d"), static_cast<int>(GetYVal(iData)) );
-                    wxLbl.Draw( hp, x2, y2, GetColor(iData), lbl, p );
-                    break;
-                case XVALUE_FLOAT:
-                    lbl.Printf( wxT("%4.1f"), GetXVal(iData) );
-                    wxLbl.Draw( hp, x2, y2, GetColor(iData), lbl, p );
-                    break;
-                case YVALUE_FLOAT:
-                    lbl.Printf( wxT("%4.1f"), GetYVal(iData) );
-                    wxLbl.Draw( hp, x2, y2, GetColor(iData), lbl, p );
-                    break;
-                case NAME:
-                    lbl = GetName(iData).c_str();
-                    wxLbl.Draw( hp, x2, y2, GetColor(iData), lbl, p );
-                    break;
-                case NONE: // fall-through
-                default:
-                    break;
+                    p = RIGHT;
+                }
+                else
+                {
+                    p = LEFT;
+                }
+
+                if (y2 > yc)
+                {
+                    p = (LABEL_POSITION)(p | DOWN);
+                }
+                else
+                {
+                    p = (LABEL_POSITION)(p | UP);
+                }
+
+                switch (GetDisplayTag())
+                {
+                    case XVALUE:
+                        lbl.Printf(wxT("%d"), static_cast<int>(GetXVal(iData)));
+                        wxLbl.Draw(hp, x2, y2, GetColor(iData), lbl, p);
+                        break;
+
+                    case YVALUE:
+                        lbl.Printf(wxT("%d"), static_cast<int>(GetYVal(iData)));
+                        wxLbl.Draw(hp, x2, y2, GetColor(iData), lbl, p);
+                        break;
+
+                    case XVALUE_FLOAT:
+                        lbl.Printf(wxT("%4.1f"), GetXVal(iData));
+                        wxLbl.Draw(hp, x2, y2, GetColor(iData), lbl, p);
+                        break;
+
+                    case YVALUE_FLOAT:
+                        lbl.Printf(wxT("%4.1f"), GetYVal(iData));
+                        wxLbl.Draw(hp, x2, y2, GetColor(iData), lbl, p);
+                        break;
+
+                    case NAME:
+                        lbl = GetName(iData).c_str();
+                        wxLbl.Draw(hp, x2, y2, GetColor(iData), lbl, p);
+                        break;
+
+                    case NONE: // fall-through
+                    default:
+                        break;
                 }
             }
         }
     }
-
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -441,14 +457,16 @@ void wxPieChartPoints::Draw(
 //              bool showlabel
 //  RETURN:     CBarChartPoints*
 //----------------------------------------------------------------------E-+++
-wxPieChartPoints* wxPieChartPoints::CreateWxPieChartPoints(
+wxPieChartPoints * wxPieChartPoints::CreateWxPieChartPoints(
     wxString name,
     ChartColor c,
     bool showlabel
 )
 {
-    if ( c == wxCHART_NOCOLOR )
+    if (c == wxCHART_NOCOLOR)
+    {
         c = wxChartColors::GetColor();
+    }
 
-    return new wxPieChartPoints( name, c, showlabel );
+    return new wxPieChartPoints(name, c, showlabel);
 }

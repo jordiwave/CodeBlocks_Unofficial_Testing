@@ -11,21 +11,21 @@
 class NassiBrick;
 class NassiFileContent : public FileContent
 {
-public:
-    NassiFileContent();
-    virtual ~NassiFileContent();
-public:
-    virtual wxOutputStream& SaveObject(wxOutputStream& stream);
-    virtual wxInputStream& LoadObject(wxInputStream& stream);
+    public:
+        NassiFileContent();
+        virtual ~NassiFileContent();
+    public:
+        virtual wxOutputStream & SaveObject(wxOutputStream & stream);
+        virtual wxInputStream & LoadObject(wxInputStream & stream);
 
-    virtual wxString GetWildcard();
+        virtual wxString GetWildcard();
 
-public:
-    NassiBrick *GetFirstBrick();
-    NassiBrick *SetFirstBrick(NassiBrick *brick);
-private:
-    NassiFileContent(const NassiFileContent &p);
-    NassiFileContent &operator=(const NassiFileContent &rhs);
-    NassiBrick *m_firstbrick;
+    public:
+        NassiBrick * GetFirstBrick();
+        NassiBrick * SetFirstBrick(NassiBrick * brick);
+    private:
+        NassiFileContent(const NassiFileContent & p);
+        NassiFileContent & operator=(const NassiFileContent & rhs);
+        NassiBrick * m_firstbrick;
 };
 #endif

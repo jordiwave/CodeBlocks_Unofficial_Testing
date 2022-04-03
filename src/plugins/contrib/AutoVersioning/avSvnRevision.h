@@ -13,5 +13,5 @@
 
 #include <wx/string.h>
 
-bool QuerySvn(const wxString& workingDir, wxString& revision, wxString& date);
+bool QuerySvn(const wxString & workingDir, wxString & revision, wxString & date);
 #endif //AVSVNREVISION_H

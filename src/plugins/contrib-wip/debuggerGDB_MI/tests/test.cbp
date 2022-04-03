@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="test" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="debug_unix">
+				<Option output="bin/debug/test" prefix_auto="1" extension_auto="1" />
+				<Option object_output=".obj/debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="`wx-config --cflags`" />
+				</Compiler>
+				<Linker>
+					<Add option="`wx-config --libs`" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="export LD_LIBRARY_PATH=$(#cb_sdk.lib) &amp;&amp; $(TARGET_OUTPUT_FILE)" />
+				</ExtraCommands>
+			</Target>
+			<Target title="debug_win32">
+				<Option output="bin\debug\test" prefix_auto="1" extension_auto="1" />
+				<Option object_output=".obj\debug\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-DWXUSINGDLL" />
+					<Add option="-DWX_PRECOMP" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add directory="$(#WX.include)" />
+					<Add directory="$(#WX)\contrib\include" />
+					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+					<Add directory="$(#unittest_pp.include)" />
+				</Compiler>
+				<Linker>
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+					<Add directory="$(#unittest_pp.lib)" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="$(TARGET_OUTPUT_FILE)" />
+				</ExtraCommands>
+				<Environment>
+					<Variable name="WX_CFG" value="" />
+					<Variable name="WX_SUFFIX" value="u" />
+					<Variable name="WX_VERSION" value="28" />
+				</Environment>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add option="-DTEST_PROJECT" />
+			<Add directory="$(#unittest_pp)/src/" />
+			<Add directory="src" />
+			<Add directory="$(#cb_sdk.include)" />
+		</Compiler>
+		<Linker>
+			<Add library="UnitTest++" />
+			<Add library="codeblocks" />
+			<Add library="wxpropgrid" />
+			<Add directory="$(#unittest_pp)" />
+			<Add directory="$(#cb_sdk.lib)" />
+		</Linker>
+		<Unit filename="src/actions.cpp" />
+		<Unit filename="src/actions.h" />
+		<Unit filename="src/cmd_queue.cpp" />
+		<Unit filename="src/cmd_queue.h" />
+		<Unit filename="src/cmd_result_parser.cpp" />
+		<Unit filename="src/cmd_result_parser.h" />
+		<Unit filename="src/cmd_result_tokens.cpp" />
+		<Unit filename="src/cmd_result_tokens.h" />
+		<Unit filename="src/definitions.cpp" />
+		<Unit filename="src/definitions.h" />
+		<Unit filename="src/escape.cpp" />
+		<Unit filename="src/escape.h" />
+		<Unit filename="src/events.cpp" />
+		<Unit filename="src/events.h" />
+		<Unit filename="src/frame.cpp" />
+		<Unit filename="src/frame.h" />
+		<Unit filename="src/helpers.cpp" />
+		<Unit filename="src/updated_variable.cpp" />
+		<Unit filename="src/updated_variable.h" />
+		<Unit filename="tests/common.h" />
+		<Unit filename="tests/main.cpp" />
+		<Unit filename="tests/mock_command_executor.h" />
+		<Unit filename="tests/mock_logger.h" />
+		<Unit filename="tests/test_action_watches.cpp" />
+		<Unit filename="tests/test_cmd_queue.cpp" />
+		<Unit filename="tests/test_escaping.cpp" />
+		<Unit filename="tests/test_find_watches.cpp" />
+		<Unit filename="tests/test_frame.cpp" />
+		<Unit filename="tests/test_helpers.cpp" />
+		<Unit filename="tests/test_result_parser.cpp" />
+		<Unit filename="tests/test_updated_variable.cpp" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

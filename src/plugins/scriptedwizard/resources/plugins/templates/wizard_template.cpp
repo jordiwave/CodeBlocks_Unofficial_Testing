@@ -15,7 +15,7 @@ PluginRegistrant<[PLUGIN_NAME]> reg(_T("[PLUGIN_NAME]"));
     // Make sure our resources are available.
     // In the generated boilerplate code we have no resources but when
     // we add some, it will be nice that this code is in place already ;)
-    if(!Manager::LoadResource(_T("[PLUGIN_NAME].zip")))
+    if (!Manager::LoadResource(_T("[PLUGIN_NAME].zip")))
     {
         NotifyMissingFile(_T("[PLUGIN_NAME].zip"));
     }
@@ -70,7 +70,7 @@ wxString [PLUGIN_NAME]::GetCategory(int index) const
     return _T("My wizard's category");
 }
 
-const wxBitmap& [PLUGIN_NAME]::GetBitmap(int index) const
+const wxBitmap & [PLUGIN_NAME]::GetBitmap(int index) const
 {
     return m_Bitmap;
 }
@@ -80,11 +80,15 @@ wxString [PLUGIN_NAME]::GetScriptFilename(int index) const
     return wxEmptyString;
 }
 
-CompileTargetBase* [PLUGIN_NAME]::Launch(int index, wxString* createdFilename)
+CompileTargetBase * [PLUGIN_NAME]::Launch(int index, wxString * createdFilename)
 {
     NotImplemented(_T("[PLUGIN_NAME]::Launch()"));
+
     if (createdFilename)
+    {
         *createdFilename = wxEmptyString;
+    }
+
     return 0;
 }
 

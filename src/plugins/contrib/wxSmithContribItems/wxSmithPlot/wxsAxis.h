@@ -31,23 +31,23 @@
 /** \brief Class for wxsStaticText widget */
 class wxsAxis: public wxsWidget
 {
-public:
+    public:
 
-    wxsAxis(wxsItemResData* Data);
+        wxsAxis(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void      OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void      OnBuildDeclarationsCode();
-    virtual void      OnEnumWidgetProperties(long Flags);
+        virtual void      OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void      OnBuildDeclarationsCode();
+        virtual void      OnEnumWidgetProperties(long Flags);
 
-    long            mType;              // 0=X-axis, 1=Y-axis
-    wxString        mLabel;             // label the axis
-    long            mAlign;             // position the axis
-    bool            mTics;              // show tic marks
-    wxsColourData   mPenColour;         // color to draw
-    wxsFontData     mPenFont;           // for drawing the text
+        long            mType;              // 0=X-axis, 1=Y-axis
+        wxString        mLabel;             // label the axis
+        long            mAlign;             // position the axis
+        bool            mTics;              // show tic marks
+        wxsColourData   mPenColour;         // color to draw
+        wxsFontData     mPenFont;           // for drawing the text
 
 };
 

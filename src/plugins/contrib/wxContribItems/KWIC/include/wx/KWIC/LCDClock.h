@@ -26,24 +26,24 @@ class CTimeAlarm;
 
 class WXEXPORT kwxLCDClock : public kwxLCDDisplay
 {
-public:
+    public:
 
-    kwxLCDClock(wxWindow *parent, const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize);
-    kwxLCDClock() {};
-    ~kwxLCDClock() ;
+        kwxLCDClock(wxWindow * parent, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize);
+        kwxLCDClock() {};
+        ~kwxLCDClock() ;
 
-    bool Create(wxWindow *parent, const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize);
-    void StartClock();
-    void StopClock();
-    CTimeAlarm *alarm;
+        bool Create(wxWindow * parent, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize);
+        void StartClock();
+        void StopClock();
+        CTimeAlarm * alarm;
 
-private:
-    DECLARE_EVENT_TABLE()
+    private:
+        DECLARE_EVENT_TABLE()
 
-    wxTimer m_timer;
+        wxTimer m_timer;
 
-    wxDateTime m_LastCheck;
-    void OnTimer(wxTimerEvent &event);
+        wxDateTime m_LastCheck;
+        void OnTimer(wxTimerEvent & event);
 };
 
 #endif

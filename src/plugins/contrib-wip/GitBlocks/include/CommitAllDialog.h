@@ -10,29 +10,29 @@
 
 class CommitAllDialog: public wxDialog
 {
-public:
+    public:
 
-    CommitAllDialog(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
-    virtual ~CommitAllDialog();
+        CommitAllDialog(wxWindow * parent, wxWindowID id = wxID_ANY, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize);
+        virtual ~CommitAllDialog();
 
-    //(*Declarations(CommitAllDialog)
-    wxStaticText* StaticText1;
-    wxTextCtrl* Comment;
-    //*)
+        //(*Declarations(CommitAllDialog)
+        wxStaticText * StaticText1;
+        wxTextCtrl * Comment;
+        //*)
 
-protected:
+    protected:
 
-    //(*Identifiers(CommitAllDialog)
-    static const long ID_STATICTEXT1;
-    static const long ID_COMMENT;
-    //*)
+        //(*Identifiers(CommitAllDialog)
+        static const long ID_STATICTEXT1;
+        static const long ID_COMMENT;
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(CommitAllDialog)
-    //*)
+        //(*Handlers(CommitAllDialog)
+        //*)
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

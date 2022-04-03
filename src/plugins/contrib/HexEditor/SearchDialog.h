@@ -36,58 +36,58 @@
 
 class SearchDialog: public wxScrollingDialog
 {
-public:
+    public:
 
-    SearchDialog( wxWindow* parent, FileContentBase* content, FileContentBase::OffsetT current );
-    virtual ~SearchDialog();
-    inline FileContentBase::OffsetT GetOffset()
-    {
-        return m_Offset;
-    }
+        SearchDialog(wxWindow * parent, FileContentBase * content, FileContentBase::OffsetT current);
+        virtual ~SearchDialog();
+        inline FileContentBase::OffsetT GetOffset()
+        {
+            return m_Offset;
+        }
 
-private:
+    private:
 
-    void BuildContent(wxWindow* parent);
+        void BuildContent(wxWindow * parent);
 
-    //(*Identifiers(SearchDialog)
-    static const long ID_COMBOBOX1;
-    static const long ID_RADIOBUTTON1;
-    static const long ID_RADIOBUTTON2;
-    static const long ID_RADIOBUTTON3;
-    static const long ID_BUTTON1;
-    static const long ID_RADIOBOX2;
-    static const long ID_RADIOBOX1;
-    //*)
+        //(*Identifiers(SearchDialog)
+        static const long ID_COMBOBOX1;
+        static const long ID_RADIOBUTTON1;
+        static const long ID_RADIOBUTTON2;
+        static const long ID_RADIOBUTTON3;
+        static const long ID_BUTTON1;
+        static const long ID_RADIOBOX2;
+        static const long ID_RADIOBOX1;
+        //*)
 
-    //(*Declarations(SearchDialog)
-    wxRadioButton* m_SearchTypeString;
-    wxComboBox* m_SearchValue;
-    wxRadioButton* m_SearchTypeExpression;
-    wxButton* Button1;
-    wxRadioBox* m_Direction;
-    wxRadioBox* m_StartFrom;
-    wxRadioButton* m_SearchTypeHex;
-    //*)
+        //(*Declarations(SearchDialog)
+        wxRadioButton * m_SearchTypeString;
+        wxComboBox * m_SearchValue;
+        wxRadioButton * m_SearchTypeExpression;
+        wxButton * Button1;
+        wxRadioBox * m_Direction;
+        wxRadioBox * m_StartFrom;
+        wxRadioButton * m_SearchTypeHex;
+        //*)
 
-    //(*Handlers(SearchDialog)
-    void OnOk( wxCommandEvent& event );
-    void OnButton1Click(wxCommandEvent& event);
-    //*)
+        //(*Handlers(SearchDialog)
+        void OnOk(wxCommandEvent & event);
+        void OnButton1Click(wxCommandEvent & event);
+        //*)
 
-    void SearchAscii( const char* text );
-    void SearchHex( const wxChar* text );
-    void SearchBuffer( const unsigned char* data, size_t length );
-    void SearchExpression( const wxString& expression );
+        void SearchAscii(const char * text);
+        void SearchHex(const wxChar * text);
+        void SearchBuffer(const unsigned char * data, size_t length);
+        void SearchExpression(const wxString & expression);
 
-    void NotFound();
-    void FoundAt( FileContentBase::OffsetT pos );
-    void ReadError();
-    void Cancel();
+        void NotFound();
+        void FoundAt(FileContentBase::OffsetT pos);
+        void ReadError();
+        void Cancel();
 
-    static int BlockCompare( const unsigned char* searchIn, size_t inLength, const unsigned char* searchFor, size_t forLength, bool backwards );
+        static int BlockCompare(const unsigned char * searchIn, size_t inLength, const unsigned char * searchFor, size_t forLength, bool backwards);
 
-    FileContentBase*         m_Content;
-    FileContentBase::OffsetT m_Offset;
+        FileContentBase     *    m_Content;
+        FileContentBase::OffsetT m_Offset;
 };
 
 #endif

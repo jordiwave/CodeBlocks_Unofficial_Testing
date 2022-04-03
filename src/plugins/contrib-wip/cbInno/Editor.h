@@ -11,15 +11,15 @@
 
 class CEditor
 {
-public:
+    public:
 
-    CEditor();
-    CEditor(const wxString& file, int log);
-    virtual ~CEditor();
+        CEditor();
+        CEditor(const wxString & file, int log);
+        virtual ~CEditor();
 
-protected:
+    protected:
 
-    InnoEditor* m_editor;
+        InnoEditor * m_editor;
 
 };
 

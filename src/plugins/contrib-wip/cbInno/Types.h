@@ -6,37 +6,37 @@
 
 class CTypes : public CComment, public CCommon
 {
-public:
-    CTypes( void);
-    virtual ~CTypes();
+    public:
+        CTypes(void);
+        virtual ~CTypes();
 
-    void Set( wxString name, wxString description);
+        void Set(wxString name, wxString description);
 
-    void SetName( wxString name);
-    void SetDescription( wxString description);
-    void SetFlags( wxString Flags);
+        void SetName(wxString name);
+        void SetDescription(wxString description);
+        void SetFlags(wxString Flags);
 
-    wxString GetName( void);
+        wxString GetName(void);
 
-    static const wxString Flags[];
+        static const wxString Flags[];
 
-    void WriteInFile( wxTextFile* File);
+        void WriteInFile(wxTextFile * File);
 
-    void Analize( const wxString& content, const wxString& line);
+        void Analize(const wxString & content, const wxString & line);
 
-    void FillContent(wxListCtrl* liste);
+        void FillContent(wxListCtrl * liste);
 
-    static void AddHeader(wxListCtrl* liste);
+        static void AddHeader(wxListCtrl * liste);
 
-protected:
+    protected:
 
-    wxString m_Name;
-    wxString m_Description;
-    wxString m_Flags;
+        wxString m_Name;
+        wxString m_Description;
+        wxString m_Flags;
 
-    static int m_index_name;
-    static int m_index_desc;
-    static int m_index_flags;
+        static int m_index_name;
+        static int m_index_desc;
+        static int m_index_flags;
 
 };
 

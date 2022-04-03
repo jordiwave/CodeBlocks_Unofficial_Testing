@@ -26,17 +26,17 @@
 /** \brief Class for wxsColourPickerCtrl widget */
 class wxsColourPickerCtrl: public wxsWidget
 {
-public:
+    public:
 
-    wxsColourPickerCtrl(wxsItemResData* Data);
+        wxsColourPickerCtrl(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 
-    wxsColourData    m_cdColour;        //!< The selected colour.
+        wxsColourData    m_cdColour;        //!< The selected colour.
 };
 
 #endif

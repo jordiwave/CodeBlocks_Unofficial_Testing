@@ -1,8 +1,8 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-#include "editorbase.h"
-#include <wx/dir.h>
+    #include "editorbase.h"
+    #include <wx/dir.h>
 #endif
 
 #include <wx/tokenzr.h>
@@ -14,20 +14,20 @@
 #define CC_PARSER_BASE_DEBUG_OUTPUT 0
 
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
-#if CC_GLOBAL_DEBUG_OUTPUT == 1
-#undef CC_PARSER_BASE_DEBUG_OUTPUT
-#define CC_PARSER_BASE_DEBUG_OUTPUT 1
-#elif CC_PARSER_BASE_DEBUG_OUTPUT == 2
-#undef CC_PARSER_BASE_DEBUG_OUTPUT
-#define CC_PARSER_BASE_DEBUG_OUTPUT 2
-#endif
+    #if CC_GLOBAL_DEBUG_OUTPUT == 1
+        #undef CC_PARSER_BASE_DEBUG_OUTPUT
+        #define CC_PARSER_BASE_DEBUG_OUTPUT 1
+    #elif CC_PARSER_BASE_DEBUG_OUTPUT == 2
+        #undef CC_PARSER_BASE_DEBUG_OUTPUT
+        #define CC_PARSER_BASE_DEBUG_OUTPUT 2
+    #endif
 #endif
 
 #ifdef CC_PARSER_TEST
 #define TRACE(format, args...) \
-            CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
+    CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
 #define TRACE2(format, args...) \
-            CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
+    CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
 #define TRACE2_SET_FLAG(traceFile)
 
 // don't use locker macros in the cctest project
@@ -38,21 +38,21 @@
 #else
 #if CC_PARSER_BASE_DEBUG_OUTPUT == 1
 #define TRACE(format, args...) \
-            CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
+    CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
 #define TRACE2(format, args...)
 #define TRACE2_SET_FLAG(traceFile)
 #elif CC_PARSER_BASE_DEBUG_OUTPUT == 2
 #define TRACE(format, args...)                                              \
-            do                                                                      \
-            {                                                                       \
-                if (g_EnableDebugTrace)                                             \
-                    CCLogger::Get()->DebugLog(wxString::Format(format, ##args));                   \
-            }                                                                       \
-            while (false)
+    do                                                                      \
+    {                                                                       \
+        if (g_EnableDebugTrace)                                             \
+            CCLogger::Get()->DebugLog(wxString::Format(format, ##args));                   \
+    }                                                                       \
+    while (false)
 #define TRACE2(format, args...) \
-            CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
+    CCLogger::Get()->DebugLog(wxString::Format(format, ##args))
 #define TRACE2_SET_FLAG(traceFile) \
-            g_EnableDebugTrace = !g_DebugTraceFile.IsEmpty() && traceFile.EndsWith(g_DebugTraceFile)
+    g_EnableDebugTrace = !g_DebugTraceFile.IsEmpty() && traceFile.EndsWith(g_DebugTraceFile)
 #else
 #define TRACE(format, args...)
 #define TRACE2(format, args...)
@@ -64,7 +64,7 @@
 // simpler, so we use a preprocess directive here
 #ifdef CC_PARSER_TEST
 // ----------------------------------------------------------------------------
-ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool /*force_refresh*/)
+ParserCommon::EFileType ParserCommon::FileType(const wxString & filename, bool /*force_refresh*/)
 // ----------------------------------------------------------------------------
 {
     static bool          empty_ext = true;
@@ -91,8 +91,11 @@ ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool /*
     const wxString file = filename.AfterLast(wxFILE_SEP_PATH).Lower();
     const int      pos  = file.Find(_T('.'), true);
     wxString       ext;
+
     if (pos != wxNOT_FOUND)
+    {
         ext = file.SubString(pos + 1, file.Len());
+    }
 
     if (empty_ext && ext.IsEmpty())
     {
@@ -102,9 +105,9 @@ ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool /*
         return ParserCommon::ftHeader;
     }
 
-    for (size_t i=0; i<header_ext.GetCount(); ++i)
+    for (size_t i = 0; i < header_ext.GetCount(); ++i)
     {
-        if (ext==header_ext[i])
+        if (ext == header_ext[i])
         {
             wxString log;
             log.Printf(wxT("ParserDummy::ParserCommon::FileType() : File '%s' is of type 'ftHeader' (w/ ext.)."), filename.wx_str());
@@ -113,9 +116,9 @@ ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool /*
         }
     }
 
-    for (size_t i=0; i<source_ext.GetCount(); ++i)
+    for (size_t i = 0; i < source_ext.GetCount(); ++i)
     {
-        if (ext==source_ext[i])
+        if (ext == source_ext[i])
         {
             wxString log;
             log.Printf(wxT("ParserDummy::ParserCommon::FileType() : File '%s' is of type 'ftSource' (w/ ext.)."), filename.wx_str());
@@ -127,12 +130,11 @@ ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool /*
     wxString log;
     log.Printf(wxT("ParserDummy::ParserCommon::FileType() : File '%s' is of type 'ftOther' (unknown ext)."), filename.wx_str());
     TRACE(log);
-
     return ParserCommon::ftOther;
 }
 #else
 // ----------------------------------------------------------------------------
-ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool force_refresh)
+ParserCommon::EFileType ParserCommon::FileType(const wxString & filename, bool force_refresh)
 // ----------------------------------------------------------------------------
 {
     static bool          cfg_read  = false;
@@ -142,46 +144,62 @@ ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool fo
 
     if (!cfg_read || force_refresh)
     {
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
+        ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("clangd_client"));
         empty_ext               = cfg->ReadBool(_T("/empty_ext"), true);
         wxString header_ext_str = cfg->Read(_T("/header_ext"), _T("h,hpp,hxx,hh,h++,tcc,tpp,xpm"));
         wxString source_ext_str = cfg->Read(_T("/source_ext"), _T("c,cpp,cxx,cc,c++"));
-
         header_ext.Clear();
         wxStringTokenizer header_ext_tknzr(header_ext_str, _T(","));
+
         while (header_ext_tknzr.HasMoreTokens())
+        {
             header_ext.Add(header_ext_tknzr.GetNextToken().Trim(false).Trim(true).Lower());
+        }
 
         source_ext.Clear();
         wxStringTokenizer source_ext_tknzr(source_ext_str, _T(","));
+
         while (source_ext_tknzr.HasMoreTokens())
+        {
             source_ext.Add(source_ext_tknzr.GetNextToken().Trim(false).Trim(true).Lower());
+        }
 
         cfg_read = true; // caching done
     }
 
     if (filename.IsEmpty())
+    {
         return ParserCommon::ftOther;
+    }
 
     const wxString file = filename.AfterLast(wxFILE_SEP_PATH).Lower();
     const int      pos  = file.Find(_T('.'), true);
     wxString       ext;
+
     if (pos != wxNOT_FOUND)
-        ext = file.SubString(pos + 1, file.Len());
-
-    if (empty_ext && ext.IsEmpty())
-        return ParserCommon::ftHeader;
-
-    for (size_t i=0; i<header_ext.GetCount(); ++i)
     {
-        if (ext==header_ext[i])
-            return ParserCommon::ftHeader;
+        ext = file.SubString(pos + 1, file.Len());
     }
 
-    for (size_t i=0; i<source_ext.GetCount(); ++i)
+    if (empty_ext && ext.IsEmpty())
     {
-        if (ext==source_ext[i])
+        return ParserCommon::ftHeader;
+    }
+
+    for (size_t i = 0; i < header_ext.GetCount(); ++i)
+    {
+        if (ext == header_ext[i])
+        {
+            return ParserCommon::ftHeader;
+        }
+    }
+
+    for (size_t i = 0; i < source_ext.GetCount(); ++i)
+    {
+        if (ext == source_ext[i])
+        {
             return ParserCommon::ftSource;
+        }
     }
 
     return ParserCommon::ftOther;
@@ -209,14 +227,12 @@ ParserBase::~ParserBase()
     // ----------------------------------------------
     // CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)       //Lock TokenTree
     // ----------------------------------------------
-
     Delete(m_TokenTree);
     Delete(m_TempTokenTree);
-
     // CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)     //UNlock TokenTree
 }
 // ----------------------------------------------------------------------------
-TokenTree* ParserBase::GetTokenTree() const
+TokenTree * ParserBase::GetTokenTree() const
 // ----------------------------------------------------------------------------
 {
     return m_TokenTree;
@@ -315,15 +331,21 @@ TokenTree* ParserBase::GetTokenTree() const
 ////}
 
 // ----------------------------------------------------------------------------
-void ParserBase::AddIncludeDir(const wxString& dir)
+void ParserBase::AddIncludeDir(const wxString & dir)
 // ----------------------------------------------------------------------------
 {
     if (dir.IsEmpty())
+    {
         return;
+    }
 
     wxString base = dir;
+
     if (base.Last() == wxFILE_SEP_PATH)
+    {
         base.RemoveLast();
+    }
+
     if (not wxDir::Exists(base))
     {
         TRACE(_T("ParserBase::AddIncludeDir(): Directory %s does not exist?!"), base.wx_str());
@@ -337,53 +359,62 @@ void ParserBase::AddIncludeDir(const wxString& dir)
     }
 }
 // ----------------------------------------------------------------------------
-wxString ParserBase::FindFirstFileInIncludeDirs(const wxString& file)
+wxString ParserBase::FindFirstFileInIncludeDirs(const wxString & file)
 // ----------------------------------------------------------------------------
 {
     wxString FirstFound = m_GlobalIncludes.GetItem(file);
+
     if (FirstFound.IsEmpty())
     {
-        wxArrayString FoundSet = FindFileInIncludeDirs(file,true);
+        wxArrayString FoundSet = FindFileInIncludeDirs(file, true);
+
         if (FoundSet.GetCount())
         {
             FirstFound = UnixFilename(FoundSet[0]);
             m_GlobalIncludes.AddItem(file, FirstFound);
         }
     }
+
     return FirstFound;
 }
 // ----------------------------------------------------------------------------
-wxArrayString ParserBase::FindFileInIncludeDirs(const wxString& file, bool firstonly)
+wxArrayString ParserBase::FindFileInIncludeDirs(const wxString & file, bool firstonly)
 // ----------------------------------------------------------------------------
 {
     wxArrayString FoundSet;
+
     for (size_t idxSearch = 0; idxSearch < m_IncludeDirs.GetCount(); ++idxSearch)
     {
         wxString base = m_IncludeDirs[idxSearch];
         wxFileName tmp = file;
-        NormalizePath(tmp,base);
+        NormalizePath(tmp, base);
         wxString fullname = tmp.GetFullPath();
+
         if (wxFileExists(fullname))
         {
             FoundSet.Add(fullname);
+
             if (firstonly)
+            {
                 break;
+            }
         }
     }
 
     TRACE(_T("ParserBase::FindFileInIncludeDirs(): Searching %s"), file.wx_str());
     TRACE(_T("ParserBase::FindFileInIncludeDirs(): Found %lu"), static_cast<unsigned long>(FoundSet.GetCount()));
-
     return FoundSet;
 }
 // ----------------------------------------------------------------------------
-wxString ParserBase::GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal)
+wxString ParserBase::GetFullFileName(const wxString & src, const wxString & tgt, bool isGlobal)
 // ----------------------------------------------------------------------------
 {
     wxString fullname;
+
     if (isGlobal)
     {
         fullname = FindFirstFileInIncludeDirs(tgt);
+
         if (fullname.IsEmpty())
         {
             // not found; check this case:
@@ -398,73 +429,74 @@ wxString ParserBase::GetFullFileName(const wxString& src, const wxString& tgt, b
             fullname = FindFirstFileInIncludeDirs(base + tgt);
         }
     }
-
     // NOTE: isGlobal is always true. The following code never executes...
-
     else // local files are more tricky, since they depend on two filenames
     {
         wxFileName fname(tgt);
         wxFileName source(src);
-        if (NormalizePath(fname,source.GetPath(wxPATH_GET_VOLUME)))
+
+        if (NormalizePath(fname, source.GetPath(wxPATH_GET_VOLUME)))
         {
             fullname = fname.GetFullPath();
+
             if (!wxFileExists(fullname))
+            {
                 fullname.Clear();
+            }
         }
     }
 
     return fullname;
 }
 // ----------------------------------------------------------------------------
-size_t ParserBase::FindTokensInFile(const wxString& filename, TokenIdxSet& result, short int kindMask, bool hasTokenTreeLock)
+size_t ParserBase::FindTokensInFile(const wxString & filename, TokenIdxSet & result, short int kindMask, bool hasTokenTreeLock)
 // ----------------------------------------------------------------------------
 {
     result.clear();
     size_t tokens_found = 0;
-
     // Caller must obtain the TokenTree lock before calling this routine.
     cbAssert(hasTokenTreeLock and "Caller must own TokenTree lock");
-
-////    TRACE(_T("Parser::FindTokensInFile() : Searching for file '%s' in tokens tree..."), filename.wx_str());
-////
-////    // -------------------------------------------------
-////    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
-////    // -------------------------------------------------
-
+    ////    TRACE(_T("Parser::FindTokensInFile() : Searching for file '%s' in tokens tree..."), filename.wx_str());
+    ////
+    ////    // -------------------------------------------------
+    ////    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
+    ////    // -------------------------------------------------
     TokenIdxSet tmpresult;
-    if ( m_TokenTree->FindTokensInFile(filename, tmpresult, kindMask) )
+
+    if (m_TokenTree->FindTokensInFile(filename, tmpresult, kindMask))
     {
         for (TokenIdxSet::const_iterator it = tmpresult.begin(); it != tmpresult.end(); ++it)
         {
-            const Token* token = m_TokenTree->at(*it);
+            const Token * token = m_TokenTree->at(*it);
+
             if (token)
+            {
                 result.insert(*it);
+            }
         }
+
         tokens_found = result.size();
     }
 
-////    // -----------------------------------------------
-////    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-////    // -----------------------------------------------
-
+    ////    // -----------------------------------------------
+    ////    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+    ////    // -----------------------------------------------
     return tokens_found;
 }
 // ----------------------------------------------------------------------------
-Token* ParserBase::GetTokenInFile(wxString filename, wxString requestedDisplayName)
+Token * ParserBase::GetTokenInFile(wxString filename, wxString requestedDisplayName)
 // ----------------------------------------------------------------------------
 {
     // Get a specific token from a specified file.
     // This is called from OnLSPCompletionResponse to get the token index
     // If the lock fails, the token will be skipped.
-
-    TokenTree* tree = nullptr;
-    Token* pFoundToken = nullptr;
-
-
+    TokenTree * tree = nullptr;
+    Token * pFoundToken = nullptr;
     // -----------------------------------------------------
     //CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
     // -----------------------------------------------------
     auto locker_result = s_TokenTreeMutex.LockTimeout(250);
+
     if (locker_result != wxMUTEX_NO_ERROR)
     {
         // lock failed, do not block the UI thread
@@ -476,10 +508,13 @@ Token* ParserBase::GetTokenInFile(wxString filename, wxString requestedDisplayNa
         return nullptr;
     }
     else /*lock succeeded*/
-        s_TokenTreeMutex_Owner = wxString::Format("%s %d",__PRETTY_FUNCTION__, __LINE__); /*record owner*/
+    {
+        s_TokenTreeMutex_Owner = wxString::Format("%s %d", __PRETTY_FUNCTION__, __LINE__);    /*record owner*/
+    }
 
     tree = GetTokenTree();
-    if ( (not tree) or tree->empty())
+
+    if ((not tree) or tree->empty())
     {
         // ---------------------------------------------
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex) //UNlock TokenTree
@@ -492,22 +527,43 @@ Token* ParserBase::GetTokenInFile(wxString filename, wxString requestedDisplayNa
         wxFileName fnFilename = filename;
         fnFilename.SetExt("");
         wxString edFilename = fnFilename.GetFullPath();
-        edFilename.Replace('\\','/');
+        edFilename.Replace('\\', '/');
+
         for (size_t i = 0; i < tree->size(); i++)
         {
-            Token* pToken = tree->at(i);
-            if (not pToken) continue;                           //(ph 2021/10/27)
+            Token * pToken = tree->at(i);
+
+            if (not pToken)
+            {
+                continue;    //(ph 2021/10/27)
+            }
+
             //-bool isImpl = FileTypeOf(edFilename) == ftSource;
             wxString tokenFilename = pToken->GetFilename();
+
             //?if ( pToken && (pToken->GetFilename() != edFilename) ) continue;      //(ph 2021/05/22)
-            if ( pToken && (not pToken->GetFilename().StartsWith(edFilename)) ) continue;      //(ph 2021/05/22)
-            if ( pToken && (pToken->m_TokenKind & tkUndefined) )
+            if (pToken && (not pToken->GetFilename().StartsWith(edFilename)))
+            {
+                continue;    //(ph 2021/05/22)
+            }
+
+            if (pToken && (pToken->m_TokenKind & tkUndefined))
             {
                 // Do we need to clone the internal data of the strings to make them thread safe?
                 wxString token_m_Name = wxString(pToken->m_Name.c_str());
-                if (not requestedDisplayName.StartsWith(token_m_Name)) continue;
+
+                if (not requestedDisplayName.StartsWith(token_m_Name))
+                {
+                    continue;
+                }
+
                 wxString displayName = wxString(pToken->DisplayName().c_str());
-                if (not displayName.Contains(requestedDisplayName)) continue;
+
+                if (not displayName.Contains(requestedDisplayName))
+                {
+                    continue;
+                }
+
                 pFoundToken = pToken;
                 break;
             }//endif
@@ -516,7 +572,6 @@ Token* ParserBase::GetTokenInFile(wxString filename, wxString requestedDisplayNa
         // -------------------------------------------------
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)     //UNlock TokenTree
         // -------------------------------------------------
-
     }//end else
 
     return pFoundToken;

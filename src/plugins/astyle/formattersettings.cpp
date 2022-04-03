@@ -22,93 +22,100 @@ FormatterSettings::~FormatterSettings()
     //dtor
 }
 
-void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
+void FormatterSettings::ApplyTo(astyle::ASFormatter & formatter)
 {
     // NOTE: Keep this in sync with DlgFormatterSettings::ApplyTo
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("astyle"));
-
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("astyle"));
     int style = cfg->ReadInt(_T("/style"), 0);
+
     switch (style)
     {
-    case aspsAllman: // Allman (ANSI)
-        formatter.setFormattingStyle(astyle::STYLE_ALLMAN);
-        break;
+        case aspsAllman: // Allman (ANSI)
+            formatter.setFormattingStyle(astyle::STYLE_ALLMAN);
+            break;
 
-    case aspsJava: // Java
-        formatter.setFormattingStyle(astyle::STYLE_JAVA);
-        break;
+        case aspsJava: // Java
+            formatter.setFormattingStyle(astyle::STYLE_JAVA);
+            break;
 
-    case aspsKr: // K&R
-        formatter.setFormattingStyle(astyle::STYLE_KR);
-        break;
+        case aspsKr: // K&R
+            formatter.setFormattingStyle(astyle::STYLE_KR);
+            break;
 
-    case aspsStroustrup: // Stroustrup
-        formatter.setFormattingStyle(astyle::STYLE_STROUSTRUP);
-        break;
+        case aspsStroustrup: // Stroustrup
+            formatter.setFormattingStyle(astyle::STYLE_STROUSTRUP);
+            break;
 
-    case aspsWhitesmith: // Whitesmith
-        formatter.setFormattingStyle(astyle::STYLE_WHITESMITH);
-        break;
+        case aspsWhitesmith: // Whitesmith
+            formatter.setFormattingStyle(astyle::STYLE_WHITESMITH);
+            break;
 
-    case aspsVTK: // VTK
-        formatter.setFormattingStyle(astyle::STYLE_VTK);
-        break;
+        case aspsVTK: // VTK
+            formatter.setFormattingStyle(astyle::STYLE_VTK);
+            break;
 
-    case aspsRatliff: // Ratliff
-        formatter.setFormattingStyle(astyle::STYLE_RATLIFF);
-        break;
+        case aspsRatliff: // Ratliff
+            formatter.setFormattingStyle(astyle::STYLE_RATLIFF);
+            break;
 
-    case aspsGnu: // GNU
-        formatter.setFormattingStyle(astyle::STYLE_GNU);
-        break;
+        case aspsGnu: // GNU
+            formatter.setFormattingStyle(astyle::STYLE_GNU);
+            break;
 
-    case aspsLinux: // Linux
-        formatter.setFormattingStyle(astyle::STYLE_LINUX);
-        break;
+        case aspsLinux: // Linux
+            formatter.setFormattingStyle(astyle::STYLE_LINUX);
+            break;
 
-    case aspsHorstmann: // Horstmann
-        formatter.setFormattingStyle(astyle::STYLE_HORSTMANN);
-        break;
+        case aspsHorstmann: // Horstmann
+            formatter.setFormattingStyle(astyle::STYLE_HORSTMANN);
+            break;
 
-    case asps1TBS: // 1TBS
-        formatter.setFormattingStyle(astyle::STYLE_1TBS);
-        break;
+        case asps1TBS: // 1TBS
+            formatter.setFormattingStyle(astyle::STYLE_1TBS);
+            break;
 
-    case aspsGoogle: // Google
-        formatter.setFormattingStyle(astyle::STYLE_GOOGLE);
-        break;
+        case aspsGoogle: // Google
+            formatter.setFormattingStyle(astyle::STYLE_GOOGLE);
+            break;
 
-    case aspsMozilla: // Mozilla
-        formatter.setFormattingStyle(astyle::STYLE_MOZILLA);
-        break;
+        case aspsMozilla: // Mozilla
+            formatter.setFormattingStyle(astyle::STYLE_MOZILLA);
+            break;
 
-    case aspsPico: // Pico
-        formatter.setFormattingStyle(astyle::STYLE_PICO);
-        break;
+        case aspsPico: // Pico
+            formatter.setFormattingStyle(astyle::STYLE_PICO);
+            break;
 
-    case aspsLisp: // Lisp
-        formatter.setFormattingStyle(astyle::STYLE_LISP);
-        break;
+        case aspsLisp: // Lisp
+            formatter.setFormattingStyle(astyle::STYLE_LISP);
+            break;
 
-    default: // Custom
-        break;
+        default: // Custom
+            break;
     }
 
     formatter.setAttachClass(cfg->ReadBool(_T("/attach_classes")));
     formatter.setAttachExternC(cfg->ReadBool(_T("/attach_extern_c")));
     formatter.setAttachNamespace(cfg->ReadBool(_T("/attach_namespaces")));
     formatter.setAttachInline(cfg->ReadBool(_T("/attach_inlines")));
-
     int spaceNum = cfg->ReadInt(_T("/indentation"), 4);
     bool value = cfg->ReadBool(_T("/force_tabs"));
+
     if (cfg->ReadBool(_T("/use_tabs")))
+    {
         formatter.setTabIndentation(spaceNum, value);
+    }
     else
+    {
         formatter.setSpaceIndentation(spaceNum);
+    }
 
     int contNum = cfg->ReadInt(_T("/continuation"), 0);
-    if (contNum>0 && contNum<=4)
+
+    if (contNum > 0 && contNum <= 4)
+    {
         formatter.setContinuationIndentation(contNum);
+    }
 
     formatter.setCaseIndent(cfg->ReadBool(_T("/indent_case")));
     formatter.setClassIndent(cfg->ReadBool(_T("/indent_classes")));
@@ -122,7 +129,6 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
     formatter.setIndentCol1CommentsMode(cfg->ReadBool(_T("/indent_col1_comments")));
     formatter.setMinConditionalIndentOption(cfg->ReadInt(_T("/min_conditional_indent"), 2));
     formatter.setMaxInStatementIndentLength(cfg->ReadInt(_T("/max_instatement_indent"), 40));
-
     formatter.setBreakClosingHeaderBracesMode(cfg->ReadBool(_T("/break_closing")));
     formatter.setBreakElseIfsMode(cfg->ReadBool(_T("/break_elseifs")));
     formatter.setAddBracketsMode(cfg->ReadBool(_T("/add_brackets")));
@@ -137,11 +143,13 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
 
     if (cfg->ReadBool(_T("/break_lines")))
     {
-        formatter.setMaxCodeLength( wxAtoi(cfg->Read(_T("/max_line_length"))) );
+        formatter.setMaxCodeLength(wxAtoi(cfg->Read(_T("/max_line_length"))));
         formatter.setBreakAfterMode(cfg->ReadBool(_T("/break_after_mode")));
     }
     else
+    {
         formatter.setMaxCodeLength(INT_MAX);
+    }
 
     formatter.setBreakBlocksMode(cfg->ReadBool(_T("/break_blocks")));
     formatter.setBreakClosingHeaderBlocksMode(cfg->ReadBool(_T("/break_blocks_all")));
@@ -154,24 +162,45 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
     formatter.setCommaPaddingMode(cfg->ReadBool(_T("/pad_comma")));
     formatter.setDeleteEmptyLinesMode(cfg->ReadBool(_T("/delete_empty_lines")));
     formatter.setEmptyLineFill(cfg->ReadBool(_T("/fill_empty_lines")));
-
     wxString pointerAlign = cfg->Read(_T("/pointer_align"));
-    if      (pointerAlign == _T("Type"))
+
+    if (pointerAlign == _T("Type"))
+    {
         formatter.setPointerAlignment(astyle::PTR_ALIGN_TYPE);
-    else if (pointerAlign == _T("Middle"))
-        formatter.setPointerAlignment(astyle::PTR_ALIGN_MIDDLE);
-    else if (pointerAlign == _T("Name"))
-        formatter.setPointerAlignment(astyle::PTR_ALIGN_NAME);
+    }
     else
-        formatter.setPointerAlignment(astyle::PTR_ALIGN_NONE);
+        if (pointerAlign == _T("Middle"))
+        {
+            formatter.setPointerAlignment(astyle::PTR_ALIGN_MIDDLE);
+        }
+        else
+            if (pointerAlign == _T("Name"))
+            {
+                formatter.setPointerAlignment(astyle::PTR_ALIGN_NAME);
+            }
+            else
+            {
+                formatter.setPointerAlignment(astyle::PTR_ALIGN_NONE);
+            }
 
     wxString referenceAlign = cfg->Read(_T("/reference_align"));
-    if      (referenceAlign == _T("Type"))
+
+    if (referenceAlign == _T("Type"))
+    {
         formatter.setReferenceAlignment(astyle::REF_ALIGN_TYPE);
-    else if (referenceAlign == _T("Middle"))
-        formatter.setReferenceAlignment(astyle::REF_ALIGN_MIDDLE);
-    else if (referenceAlign == _T("Name"))
-        formatter.setReferenceAlignment(astyle::REF_ALIGN_NAME);
+    }
     else
-        formatter.setReferenceAlignment(astyle::REF_ALIGN_NONE);
+        if (referenceAlign == _T("Middle"))
+        {
+            formatter.setReferenceAlignment(astyle::REF_ALIGN_MIDDLE);
+        }
+        else
+            if (referenceAlign == _T("Name"))
+            {
+                formatter.setReferenceAlignment(astyle::REF_ALIGN_NAME);
+            }
+            else
+            {
+                formatter.setReferenceAlignment(astyle::REF_ALIGN_NONE);
+            }
 }

@@ -21,10 +21,10 @@
 #define FROM_KEY(KEY) if (j.contains(#KEY)) j.at(#KEY).get_to(value.KEY);
 #define JSON_SERIALIZE(Type, TO, FROM) \
     namespace nlohmann { \
-        template <> struct adl_serializer<Type> { \
-            static void to_json(json& j, const Type& value) TO \
-            static void from_json(const json& j, Type& value) FROM \
-        }; \
+    template <> struct adl_serializer<Type> { \
+        static void to_json(json& j, const Type& value) TO \
+        static void from_json(const json& j, Type& value) FROM \
+    }; \
     }
 using TextType = string_ref;
 enum class ErrorCode
@@ -42,12 +42,12 @@ enum class ErrorCode
 };
 class LSPError
 {
-public:
-    std::string Message;
-    ErrorCode Code;
-    static char ID;
-    LSPError(std::string Message, ErrorCode Code)
-        : Message(std::move(Message)), Code(Code) {}
+    public:
+        std::string Message;
+        ErrorCode Code;
+        static char ID;
+        LSPError(std::string Message, ErrorCode Code)
+            : Message(std::move(Message)), Code(Code) {}
 };
 JSON_SERIALIZE(URIForFile, {j = value.file;}, {value.file = j.get<std::string>();});
 struct TextDocumentIdentifier
@@ -71,21 +71,21 @@ struct Position
     /// WARNING: this is in UTF-16 codepoints, not bytes or characters!
     /// Use the functions in SourceCode.h to construct/interpret Positions.
     int character = 0;
-    friend bool operator==(const Position &LHS, const Position &RHS)
+    friend bool operator==(const Position & LHS, const Position & RHS)
     {
         return std::tie(LHS.line, LHS.character) ==
                std::tie(RHS.line, RHS.character);
     }
-    friend bool operator!=(const Position &LHS, const Position &RHS)
+    friend bool operator!=(const Position & LHS, const Position & RHS)
     {
         return !(LHS == RHS);
     }
-    friend bool operator<(const Position &LHS, const Position &RHS)
+    friend bool operator<(const Position & LHS, const Position & RHS)
     {
         return std::tie(LHS.line, LHS.character) <
                std::tie(RHS.line, RHS.character);
     }
-    friend bool operator<=(const Position &LHS, const Position &RHS)
+    friend bool operator<=(const Position & LHS, const Position & RHS)
     {
         return std::tie(LHS.line, LHS.character) <=
                std::tie(RHS.line, RHS.character);
@@ -101,15 +101,15 @@ struct Range
     /// The range's end position.
     Position end;
 
-    friend bool operator==(const Range &LHS, const Range &RHS)
+    friend bool operator==(const Range & LHS, const Range & RHS)
     {
         return std::tie(LHS.start, LHS.end) == std::tie(RHS.start, RHS.end);
     }
-    friend bool operator!=(const Range &LHS, const Range &RHS)
+    friend bool operator!=(const Range & LHS, const Range & RHS)
     {
         return !(LHS == RHS);
     }
-    friend bool operator<(const Range &LHS, const Range &RHS)
+    friend bool operator<(const Range & LHS, const Range & RHS)
     {
         return std::tie(LHS.start, LHS.end) < std::tie(RHS.start, RHS.end);
     }
@@ -130,15 +130,15 @@ struct Location
     std::string uri;
     Range range;
 
-    friend bool operator==(const Location &LHS, const Location &RHS)
+    friend bool operator==(const Location & LHS, const Location & RHS)
     {
         return LHS.uri == RHS.uri && LHS.range == RHS.range;
     }
-    friend bool operator!=(const Location &LHS, const Location &RHS)
+    friend bool operator!=(const Location & LHS, const Location & RHS)
     {
         return !(LHS == RHS);
     }
-    friend bool operator<(const Location &LHS, const Location &RHS)
+    friend bool operator<(const Location & LHS, const Location & RHS)
     {
         return std::tie(LHS.uri, LHS.range) < std::tie(RHS.uri, RHS.range);
     }
@@ -361,13 +361,14 @@ struct ClientCapabilities
         {
             WorkspaceSymbolKinds.push_back((SymbolKind) i);
         }
+
         for (int i = 0; i <= 25; ++i)
         {
             CompletionItemKinds.push_back((CompletionItemKind) i);
         }
     }
 };
-JSON_SERIALIZE(ClientCapabilities,MAP_JSON(
+JSON_SERIALIZE(ClientCapabilities, MAP_JSON(
                    MAP_KV("textDocument",
                           MAP_KV("publishDiagnostics", // PublishDiagnosticsClientCapabilities
                                  MAP_TO("categorySupport", DiagnosticCategory),
@@ -383,7 +384,7 @@ JSON_SERIALIZE(ClientCapabilities,MAP_JSON(
                                 ),
                           MAP_KV("codeAction", MAP_TO("codeActionLiteralSupport", CodeActionStructure)),
                           MAP_KV("documentSymbol", MAP_TO("hierarchicalDocumentSymbolSupport", HierarchicalDocumentSymbol)),
-                          MAP_KV("semanticTokens", MAP_TO("dynamicRegistration",SemanticTokensSupport)),        //(ph 2021/03/16)
+                          MAP_KV("semanticTokens", MAP_TO("dynamicRegistration", SemanticTokensSupport)),       //(ph 2021/03/16)
 
                           MAP_KV("hover",  //HoverClientCapabilities
                                  MAP_TO("contentFormat", HoverContentFormat)),
@@ -410,7 +411,7 @@ struct ServerCapabilities
     std::vector<std::string> signatureHelpTrigger;
     std::vector<std::string> formattingTrigger;
     std::vector<std::string> completionTrigger;
-    bool hasProvider(std::string &name)
+    bool hasProvider(std::string & name)
     {
         if (capabilities.contains(name))
         {
@@ -419,6 +420,7 @@ struct ServerCapabilities
                 return capabilities["name"];
             }
         }
+
         return false;
     }
 };
@@ -437,7 +439,7 @@ struct ClangdCompileCommand
     TextType workingDirectory;
     std::vector<TextType> compilationCommand;
 };
-JSON_SERIALIZE(ClangdCompileCommand,MAP_JSON(
+JSON_SERIALIZE(ClangdCompileCommand, MAP_JSON(
                    MAP_KEY(workingDirectory), MAP_KEY(compilationCommand)), {});
 
 struct ConfigurationSettings
@@ -532,7 +534,7 @@ JSON_SERIALIZE(UnregistrationParams, MAP_JSON(MAP_KEY(unregisterations)), {});
 
 struct DidOpenTextDocumentParams
 {
-/// The document that was opened.
+    /// The document that was opened.
     TextDocumentItem textDocument;
 };
 JSON_SERIALIZE(DidOpenTextDocumentParams, MAP_JSON(MAP_KEY(textDocument)), {});
@@ -696,9 +698,11 @@ struct SelectionRange
 JSON_SERIALIZE(SelectionRange, {},
 {
     FROM_KEY(range);
+
     if (j.contains("parent"))
     {
-        value.parent = std::make_unique<SelectionRange>();
+        value.parent = std::make_unique<SelectionRange>
+        ();
         j.at("parent").get_to(*value.parent);
     }
 });
@@ -762,7 +766,7 @@ struct Diagnostic
     option<std::vector<CodeAction>> codeActions;
 };
 JSON_SERIALIZE(Diagnostic, {/*NOT REQUIRED*/}, {FROM_KEY(range); FROM_KEY(code); FROM_KEY(source); FROM_KEY(message);
-               FROM_KEY(relatedInformation); FROM_KEY(category); FROM_KEY(codeActions);
+                                                FROM_KEY(relatedInformation); FROM_KEY(category); FROM_KEY(codeActions);
                                                });
 
 struct PublishDiagnosticsParams
@@ -1131,15 +1135,15 @@ struct DocumentHighlight
     Range range;
     /// The highlight kind, default is DocumentHighlightKind.Text.
     DocumentHighlightKind kind = DocumentHighlightKind::Text;
-    friend bool operator<(const DocumentHighlight &LHS,
-                          const DocumentHighlight &RHS)
+    friend bool operator<(const DocumentHighlight & LHS,
+                          const DocumentHighlight & RHS)
     {
         int LHSKind = static_cast<int>(LHS.kind);
         int RHSKind = static_cast<int>(RHS.kind);
         return std::tie(LHS.range, LHSKind) < std::tie(RHS.range, RHSKind);
     }
-    friend bool operator==(const DocumentHighlight &LHS,
-                           const DocumentHighlight &RHS)
+    friend bool operator==(const DocumentHighlight & LHS,
+                           const DocumentHighlight & RHS)
     {
         return LHS.kind == RHS.kind && LHS.range == RHS.range;
     }

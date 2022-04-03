@@ -9,7 +9,7 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 //(*Headers(ScriptConsole)
@@ -23,44 +23,44 @@
 
 class ScriptConsole: public wxPanel
 {
-public:
+    public:
 
-    ScriptConsole(wxWindow* parent,wxWindowID id = -1);
-    virtual ~ScriptConsole();
+        ScriptConsole(wxWindow * parent, wxWindowID id = -1);
+        virtual ~ScriptConsole();
 
-    void Log(const wxString& msg);
-    void LogError(const wxString& msg);
+        void Log(const wxString & msg);
+        void LogError(const wxString & msg);
 
-    //(*Identifiers(ScriptConsole)
-    static const long ID_TEXTCTRL1;
-    static const long ID_STATICTEXT1;
-    static const long ID_COMBOBOX1;
-    static const long ID_BITMAPBUTTON1;
-    static const long ID_BITMAPBUTTON2;
-    static const long ID_BITMAPBUTTON3;
-    static const long ID_PANEL1;
-    //*)
+        //(*Identifiers(ScriptConsole)
+        static const long ID_TEXTCTRL1;
+        static const long ID_STATICTEXT1;
+        static const long ID_COMBOBOX1;
+        static const long ID_BITMAPBUTTON1;
+        static const long ID_BITMAPBUTTON2;
+        static const long ID_BITMAPBUTTON3;
+        static const long ID_PANEL1;
+        //*)
 
-protected:
-    //(*Handlers(ScriptConsole)
-    void OnbtnExecuteClick(wxCommandEvent& event);
-    void OnbtnLoadClick(wxCommandEvent& event);
-    void OnbtnClearClick(wxCommandEvent& event);
-    //*)
+    protected:
+        //(*Handlers(ScriptConsole)
+        void OnbtnExecuteClick(wxCommandEvent & event);
+        void OnbtnLoadClick(wxCommandEvent & event);
+        void OnbtnClearClick(wxCommandEvent & event);
+        //*)
 
-    //(*Declarations(ScriptConsole)
-    wxBitmapButton* btnClear;
-    wxBitmapButton* btnExecute;
-    wxBitmapButton* btnLoad;
-    wxComboBox* txtCommand;
-    wxPanel* Panel1;
-    wxStaticText* lblCommand;
-    wxTextCtrl* txtConsole;
-    //*)
+        //(*Declarations(ScriptConsole)
+        wxBitmapButton * btnClear;
+        wxBitmapButton * btnExecute;
+        wxBitmapButton * btnLoad;
+        wxComboBox * txtCommand;
+        wxPanel * Panel1;
+        wxStaticText * lblCommand;
+        wxTextCtrl * txtConsole;
+        //*)
 
-private:
+    private:
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

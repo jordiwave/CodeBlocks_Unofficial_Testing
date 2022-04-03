@@ -24,9 +24,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsStaticText> Reg(_T("StaticText"),wxsTWidget,_T("Standard"),50);
+wxsRegisterItem<wxsStaticText> Reg(_T("StaticText"), wxsTWidget, _T("Standard"), 50);
 
-WXS_ST_BEGIN(wxsStaticTextStyles,_T(""))
+WXS_ST_BEGIN(wxsStaticTextStyles, _T(""))
 WXS_ST_CATEGORY("wxStaticText")
 WXS_ST(wxST_NO_AUTORESIZE)
 WXS_ST(wxALIGN_LEFT)
@@ -40,7 +40,7 @@ WXS_EV_END()
 
 }
 
-wxsStaticText::wxsStaticText(wxsItemResData* Data):
+wxsStaticText::wxsStaticText(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -53,33 +53,33 @@ wxsStaticText::wxsStaticText(wxsItemResData* Data):
 
 void wxsStaticText::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/stattext.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%W, %I, %t, %P, %S, %T, %N);\n"),Label.wx_str());
-        BuildSetupWindowCode();
-        return;
-    }
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/stattext.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %N);\n"), Label.wx_str());
+            BuildSetupWindowCode();
+            return;
+        }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsStaticText::OnBuildCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsStaticText::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
 
-wxObject* wxsStaticText::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsStaticText::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxStaticText* Preview = new wxStaticText(Parent,GetId(),Label,Pos(Parent),Size(Parent),Style());
-    return SetupWindow(Preview,Flags);
+    wxStaticText * Preview = new wxStaticText(Parent, GetId(), Label, Pos(Parent), Size(Parent), Style());
+    return SetupWindow(Preview, Flags);
 }
 
 
 void wxsStaticText::OnEnumWidgetProperties(cb_unused long Flags)
 {
-    WXS_STRING(wxsStaticText,Label,_("Label"),_T("label"),_T(""),true)
+    WXS_STRING(wxsStaticText, Label, _("Label"), _T("label"), _T(""), true)
 }

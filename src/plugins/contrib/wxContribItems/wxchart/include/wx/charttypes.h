@@ -16,19 +16,19 @@
 // Headers
 //----------------------------------------------------------------------------
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "charttypes.h"
+    #pragma interface "charttypes.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/string.h>
-#include <wx/dc.h>
+    #include <wx/string.h>
+    #include <wx/dc.h>
 #endif
 
 #include "wx/chartdef.h"
@@ -49,7 +49,7 @@ typedef struct
 } CHART_RECT, *CHART_HRECT;
 
 // Device Context
-typedef wxDC* CHART_HPAINT;
+typedef wxDC * CHART_HPAINT;
 
 // Chart value and Color
 typedef double ChartValue;

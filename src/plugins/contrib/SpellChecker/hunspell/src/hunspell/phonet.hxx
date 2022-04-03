@@ -36,15 +36,16 @@
 
 #include "hunvisapi.h"
 
-struct phonetable {
-  char utf8;
-  std::vector<std::string> rules;
-  int hash[HASHSIZE];
+struct phonetable
+{
+    char utf8;
+    std::vector<std::string> rules;
+    int hash[HASHSIZE];
 };
 
-LIBHUNSPELL_DLL_EXPORTED void init_phonet_hash(phonetable& parms);
+LIBHUNSPELL_DLL_EXPORTED void init_phonet_hash(phonetable & parms);
 
-LIBHUNSPELL_DLL_EXPORTED std::string phonet(const std::string& inword,
-                                            phonetable& phone);
+LIBHUNSPELL_DLL_EXPORTED std::string phonet(const std::string & inword,
+                                            phonetable & phone);
 
 #endif

@@ -10,13 +10,13 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWindows headers)
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+    #include "wx/wx.h"
 #endif
 
 #include "wx/filename.h"
@@ -28,7 +28,7 @@
 
 // the application icon (under Windows and OS/2 it is in resources)
 #if defined(__WXGTK__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__) || defined(__WXX11__)
-#include "mondrian.xpm"
+    #include "mondrian.xpm"
 #endif
 
 #include "wxSpellCheckerDemo.h"
@@ -105,12 +105,10 @@ IMPLEMENT_APP(MyApp)
 bool MyApp::OnInit()
 {
     // create the main application window
-    MyFrame *frame = new MyFrame(_T("wxSpellChecker Demo"));
-
+    MyFrame * frame = new MyFrame(_T("wxSpellChecker Demo"));
     // and show it (the frames, unlike simple controls, are not shown when
     // created initially)
     frame->Show(true);
-
     // success: wxApp::OnRun() will be called which will enter the main message
     // loop and the application will run. If we returned false here, the
     // application would exit immediately.
@@ -122,20 +120,16 @@ bool MyApp::OnInit()
 // ----------------------------------------------------------------------------
 
 // frame constructor
-MyFrame::MyFrame(const wxString& title)
+MyFrame::MyFrame(const wxString & title)
     : wxFrame(NULL, wxID_ANY, title)
 {
     m_nSelectedSpellCheckEngine = MyFrame::USE_ASPELL;
-
     // set the frame icon
     SetIcon(wxICON(mondrian));
-
     textCtrl = new wxTextCtrl(this, -1, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
     textCtrl->SetFocus();
-
     // create a menu bar
-    wxMenu* menuFile = new wxMenu;
-
+    wxMenu * menuFile = new wxMenu;
     menuFile->Append(FileNew, _T("New\tCtrl+N"), _T("Clear out the existing text"));
     menuFile->Append(FileOpen, _T("Open\tCtrl+O"), _T("Open an existing document"));
     menuFile->Append(FileSave, _T("Save\tCtrl+S"), _T("Save the cuurent document"));
@@ -149,30 +143,23 @@ MyFrame::MyFrame(const wxString& title)
     menuFile->Append(FileSpellCheckAbiwordUI, _T("SpellCheck Abiword-style\tF8"), _T("SpellCheck the current document using the Abiword dialog interface"));
     menuFile->AppendSeparator();
     menuFile->Append(FileQuit, _T("E&xit\tCtrl+Q"), _T("Quit this program"));
-
-    wxMenu* menuEdit = new wxMenu;
+    wxMenu * menuEdit = new wxMenu;
     menuEdit->Append(EditOptions, _T("&Options"), _T("Edit the options for the currently selected spell checking engine"));
     menuEdit->Append(EditPersonalDictionary, _T("Personal Dictionary\tCtrl+P"), _T("Edit the personal dictionary for the selected spell check engine"));
-
     // now append the freshly created menu to the menu bar...
-    wxMenuBar *menuBar = new wxMenuBar();
+    wxMenuBar * menuBar = new wxMenuBar();
     menuBar->Append(menuFile, _T("&File"));
     menuBar->Append(menuEdit, _T("&Edit"));
-
     // ... and attach this menu bar to the frame
     SetMenuBar(menuBar);
-
     // create a status bar
     CreateStatusBar();
     SetStatusText(_T("Please type something in the text area or load a file to spell check"));
-
     m_bSpellCheckOnRightClick = false;
-
     m_pAspellInterface = new AspellInterface();
     SetDefaultAspellOptions();
     m_pMySpellInterface = new MySpellInterface();
     SetDefaultMySpellOptions();
-
     m_pMySpellInterface->InitializeSpellCheckEngine();
     m_pAspellInterface->InitializeSpellCheckEngine();
 }
@@ -182,69 +169,77 @@ MyFrame::MyFrame(const wxString& title)
 MyFrame::~MyFrame()
 {
     SavePersonalDictionaries();
-
     wxDELETE(m_pAspellInterface);
     wxDELETE(m_pMySpellInterface);
 }
 
 // event handlers
-void MyFrame::OnUseAspell(wxCommandEvent& event)
+void MyFrame::OnUseAspell(wxCommandEvent & event)
 {
     m_nSelectedSpellCheckEngine = MyFrame::USE_ASPELL;
 }
 
-void MyFrame::OnUpdateUseAspell(wxUpdateUIEvent& event)
+void MyFrame::OnUpdateUseAspell(wxUpdateUIEvent & event)
 {
     event.Enable(m_pAspellInterface != NULL);
     event.Check(m_nSelectedSpellCheckEngine == MyFrame::USE_ASPELL);
 }
 
-void MyFrame::OnUseMySpell(wxCommandEvent& event)
+void MyFrame::OnUseMySpell(wxCommandEvent & event)
 {
     m_nSelectedSpellCheckEngine = MyFrame::USE_MYSPELL;
 }
 
-void MyFrame::OnUpdateUseMySpell(wxUpdateUIEvent& event)
+void MyFrame::OnUpdateUseMySpell(wxUpdateUIEvent & event)
 {
     event.Enable(m_pMySpellInterface != NULL);
     event.Check(m_nSelectedSpellCheckEngine == MyFrame::USE_MYSPELL);
 }
 
-void MyFrame::OnNew(wxCommandEvent& WXUNUSED(event))
+void MyFrame::OnNew(wxCommandEvent & WXUNUSED(event))
 {
     if (textCtrl)
+    {
         textCtrl->Clear();
+    }
 }
 
-void MyFrame::OnOpen(wxCommandEvent& WXUNUSED(event))
+void MyFrame::OnOpen(wxCommandEvent & WXUNUSED(event))
 {
     wxString filename = ::wxFileSelector(_T("Please select a file"));
+
     if (!filename.empty())
     {
         if (textCtrl)
+        {
             textCtrl->LoadFile(filename);
+        }
     }
 }
 
-void MyFrame::OnSave(wxCommandEvent& WXUNUSED(event))
+void MyFrame::OnSave(wxCommandEvent & WXUNUSED(event))
 {
-    wxString filename = ::wxFileSelector(_T("Please select a filename to save as"), _T(""), _T(""), _T(""), _T("*.*"), wxSAVE|wxOVERWRITE_PROMPT);
+    wxString filename = ::wxFileSelector(_T("Please select a filename to save as"), _T(""), _T(""), _T(""), _T("*.*"), wxSAVE | wxOVERWRITE_PROMPT);
+
     if (!filename.empty())
     {
         if (textCtrl)
+        {
             textCtrl->SaveFile(filename);
+        }
     }
 }
 
-void MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
+void MyFrame::OnQuit(wxCommandEvent & WXUNUSED(event))
 {
     // true is to force the frame to close
     Close(true);
 }
 
-void MyFrame::OnSpellCheckMozillaUI(wxCommandEvent& event)
+void MyFrame::OnSpellCheckMozillaUI(wxCommandEvent & event)
 {
-    wxSpellCheckEngineInterface* pSpellChecker = ReturnSelectedSpellCheckEngine();
+    wxSpellCheckEngineInterface * pSpellChecker = ReturnSelectedSpellCheckEngine();
+
     if (pSpellChecker)
     {
         if (pSpellChecker->IsInitialized())
@@ -259,49 +254,55 @@ void MyFrame::OnSpellCheckMozillaUI(wxCommandEvent& event)
     }
 }
 
-void MyFrame::OnSpellCheckOutlookUI(wxCommandEvent& event)
+void MyFrame::OnSpellCheckOutlookUI(wxCommandEvent & event)
 {
     XmlSpellCheck(_T("OutlookLike"));
 }
 
-void MyFrame::OnSpellCheckSentryUI(wxCommandEvent& event)
+void MyFrame::OnSpellCheckSentryUI(wxCommandEvent & event)
 {
     XmlSpellCheck(_T("SentryLike"));
 }
 
-void MyFrame::OnSpellCheckAbiwordUI(wxCommandEvent& event)
+void MyFrame::OnSpellCheckAbiwordUI(wxCommandEvent & event)
 {
     XmlSpellCheck(_T("AbiwordLike"));
 }
 
-void MyFrame::OnEditOptions(wxCommandEvent& event)
+void MyFrame::OnEditOptions(wxCommandEvent & event)
 {
     // Create a really basic dialog that gets dynamically populated
     // with controls based on the m_pSpellCheckEngine->GetOptions();
     SpellCheckerOptionsDialog OptionsDialog(this, ReturnSelectedSpellCheckEngine()->GetSpellCheckEngineName() + _T(" Options"), ReturnSelectedSpellCheckEngine());
+
     if (OptionsDialog.ShowModal() == wxID_OK)
     {
         // Set the modified options
-        OptionsMap* pOptionsMap = OptionsDialog.GetModifiedOptions();
+        OptionsMap * pOptionsMap = OptionsDialog.GetModifiedOptions();
+
         if (pOptionsMap)
         {
             for (OptionsMap::iterator it = pOptionsMap->begin(); it != pOptionsMap->end(); it++)
+            {
                 ReturnSelectedSpellCheckEngine()->AddOptionToMap(it->second);
+            }
         }
+
         ReturnSelectedSpellCheckEngine()->ApplyOptions();
     }
 }
 
-void MyFrame::OnEditPersonalDictionary(wxCommandEvent& event)
+void MyFrame::OnEditPersonalDictionary(wxCommandEvent & event)
 {
     XmlPersonalDictionaryDialog PersonalDictionaryDialog(NULL, _T("resource.xrc"), _T("PersonalDictionary"), ReturnSelectedSpellCheckEngine());
     PersonalDictionaryDialog.ShowModal();
 }
 
-void MyFrame::SpellCheck(wxSpellCheckEngineInterface* pSpellChecker)
+void MyFrame::SpellCheck(wxSpellCheckEngineInterface * pSpellChecker)
 {
     long selectionFrom = -1, selectionTo = -1;
     wxString strText = textCtrl->GetStringSelection();
+
     if (!strText.empty())
     {
         // Get the range of the text controls's string value to replace
@@ -326,23 +327,31 @@ void MyFrame::SpellCheck(wxSpellCheckEngineInterface* pSpellChecker)
             textCtrl->SetValue(strNewText);
         }
     }
+
     ::wxMessageBox(_T("Spell Check Completed"));
 }
 
-wxSpellCheckEngineInterface* MyFrame::ReturnSelectedSpellCheckEngine()
+wxSpellCheckEngineInterface * MyFrame::ReturnSelectedSpellCheckEngine()
 {
-    wxSpellCheckEngineInterface* pEngine = NULL;
+    wxSpellCheckEngineInterface * pEngine = NULL;
+
     if (m_nSelectedSpellCheckEngine == MyFrame::USE_ASPELL)
+    {
         pEngine = m_pAspellInterface;
-    else if (m_nSelectedSpellCheckEngine == MyFrame::USE_MYSPELL)
-        pEngine = m_pMySpellInterface;
+    }
+    else
+        if (m_nSelectedSpellCheckEngine == MyFrame::USE_MYSPELL)
+        {
+            pEngine = m_pMySpellInterface;
+        }
 
     return pEngine;
 }
 
 void MyFrame::XmlSpellCheck(wxString strDialogResource)
 {
-    wxSpellCheckEngineInterface* pSpellChecker = ReturnSelectedSpellCheckEngine();
+    wxSpellCheckEngineInterface * pSpellChecker = ReturnSelectedSpellCheckEngine();
+
     if (pSpellChecker)
     {
         if (pSpellChecker->IsInitialized())
@@ -368,14 +377,12 @@ void MyFrame::SetDefaultAspellOptions()
         m_pAspellInterface->AddOptionToMap(DataDirOption);
         SpellCheckEngineOption DictDirOption(_T("dict-dir"), _T("Language Word List Directory"), _("dict"), SpellCheckEngineOption::DIR);
         m_pAspellInterface->AddOptionToMap(DictDirOption);
-
         SpellCheckEngineOption SuggestionModeOption(_T("sug-mode"), _T("Suggestion Mode"), _T("normal"), SpellCheckEngineOption::STRING);
         SuggestionModeOption.AddPossibleValue(wxString(_T("ultra")));
         SuggestionModeOption.AddPossibleValue(wxString(_T("fast")));
         SuggestionModeOption.AddPossibleValue(wxString(_T("normal")));
         SuggestionModeOption.AddPossibleValue(wxString(_T("bad-spellers")));
         m_pAspellInterface->AddOptionToMap(SuggestionModeOption);
-
         /* - Not compatible with Aspell 0.60 library
         SpellCheckEngineOption FilterModeOption(_T("mode"), _T("Filter Mode"), pConfig->Read(_T("mode"), _T("none")));
         FilterModeOption.AddPossibleValue(wxString(_T("none")));
@@ -385,12 +392,10 @@ void MyFrame::SetDefaultAspellOptions()
         FilterModeOption.AddPossibleValue(wxString(_T("tex")));
         m_pAspellInterface->AddOptionToMap(FilterModeOption);
         */
-
         bool bIgnoreCase = false;
         SpellCheckEngineOption IgnoreCaseOption(_T("ignore-case"), _T("Ignore Case"), bIgnoreCase);
         m_pAspellInterface->AddOptionToMap(IgnoreCaseOption);
         m_pAspellInterface->ApplyOptions();
-
         // Set the personal dictionary file
         m_pAspellInterface->OpenPersonalDictionary(_("personaldictionary.dic"));
     }
@@ -407,10 +412,8 @@ void MyFrame::SetDefaultMySpellOptions()
         SpellCheckEngineOption LanguageOption(_T("language"), _T("Language"), _("English (United States)"), SpellCheckEngineOption::STRING);
         LanguageOption.SetDependency(_T("dictionary-path"));
         m_pMySpellInterface->AddOptionToMap(LanguageOption);
-
         // Add custom dictionary entries
         m_pMySpellInterface->AddCustomMySpellDictionary(_("Michigan, USA"), _("en_US"));
-
         // An alternative to using the "dictionary-path" and "language" options is to use the dict-file and affix-file options
         //  and set the dictionary and affix file directory with these options.
         // The "dict-file" and "affix-file" options go together and are mutually exclusive from using the "dictionary-path" and "language" options
@@ -418,9 +421,7 @@ void MyFrame::SetDefaultMySpellOptions()
         //m_pMySpellInterface->AddOptionToMap(DictionaryFileOption);
         //SpellCheckEngineOption AffixFileOption(_T("affix-file"), _T("Affix File"), wxFileName::GetCwd() + wxFILE_SEP_PATH + _T("en_US.aff"), SpellCheckEngineOption::FILE);
         //m_pMySpellInterface->AddOptionToMap(AffixFileOption);
-
         m_pMySpellInterface->ApplyOptions();
-
         // Set the personal dictionary file
         m_pMySpellInterface->OpenPersonalDictionary(_("personaldictionary.dic"));
     }
@@ -443,8 +444,9 @@ void MyFrame::SaveOptions()
 {
     // This function isn't actually used in the demo, but here is some sample code as to how you might save
     //  the spell checker options
-    OptionsMap* pAspellOptions = m_pAspellInterface->GetOptions();
-    wxConfigBase* pConfig = wxConfigBase::Get();
+    OptionsMap * pAspellOptions = m_pAspellInterface->GetOptions();
+    wxConfigBase * pConfig = wxConfigBase::Get();
+
     if (pConfig)
     {
         wxString strPath = m_pAspellInterface->GetSpellCheckEngineName();
@@ -455,37 +457,42 @@ void MyFrame::SaveOptions()
         for (OptionsMap::iterator it = pAspellOptions->begin(); it != pAspellOptions->end(); it++)
         {
             strOption = _T("/") + strPath + _T("/") + it->second.GetName();
+
             switch (it->second.GetOptionType())
             {
-            case SpellCheckEngineOption::STRING:
-            case SpellCheckEngineOption::DIR:
-            case SpellCheckEngineOption::FILE:
-                // For DIR and FILE options, GetStringValue() returns the absolute path
-                pConfig->Write(strOption, it->second.GetStringValue());
-                break;
-            case SpellCheckEngineOption::LONG:
-                pConfig->Write(strOption, it->second.GetLongValue());
-                break;
-            case SpellCheckEngineOption::DOUBLE:
-                pConfig->Write(strOption, it->second.GetDoubleValue());
-                break;
-            case SpellCheckEngineOption::BOOLEAN:
-                pConfig->Write(strOption, it->second.GetBoolValue());
-                break;
-            default:
-                pConfig->Write(strOption, it->second.GetStringValue());
-                break;
+                case SpellCheckEngineOption::STRING:
+                case SpellCheckEngineOption::DIR:
+                case SpellCheckEngineOption::FILE:
+                    // For DIR and FILE options, GetStringValue() returns the absolute path
+                    pConfig->Write(strOption, it->second.GetStringValue());
+                    break;
+
+                case SpellCheckEngineOption::LONG:
+                    pConfig->Write(strOption, it->second.GetLongValue());
+                    break;
+
+                case SpellCheckEngineOption::DOUBLE:
+                    pConfig->Write(strOption, it->second.GetDoubleValue());
+                    break;
+
+                case SpellCheckEngineOption::BOOLEAN:
+                    pConfig->Write(strOption, it->second.GetBoolValue());
+                    break;
+
+                default:
+                    pConfig->Write(strOption, it->second.GetStringValue());
+                    break;
             };
         }
+
         // End of code saving ALL options
-
-
         // Save only selected options ("language" in this case)
-        OptionsMap* pMySpellOptions = m_pMySpellInterface->GetOptions();
+        OptionsMap * pMySpellOptions = m_pMySpellInterface->GetOptions();
         strPath = m_pMySpellInterface->GetSpellCheckEngineName();
         pConfig->SetPath(strPath);
         strOption = wxEmptyString;
         OptionsMap::iterator finder = pMySpellOptions->find(_T("language"));
+
         if (finder != pMySpellOptions->end())
         {
             strOption = _T("/") + strPath + _T("/") + finder->second.GetName();

@@ -32,24 +32,24 @@ class WXDLLIMPEXP_FWD_CORE wxComboBox;
 
 /// Add a string to the array at the top and remove any to keep the max_count.
 /// If max_count <= 0 then don't remove any.
-WXDLLIMPEXP_STEDIT bool wxSTEPrependArrayString(const wxString &str,
-        wxArrayString &strArray,
-        int max_count);
+WXDLLIMPEXP_STEDIT bool wxSTEPrependArrayString(const wxString & str,
+                                                wxArrayString & strArray,
+                                                int max_count);
 
 /// Prepend a string to a wxComboBox, removing any copies of it appearing after.
 /// If max_strings > 0 then ensure that there are only max_strings in the combo.
-WXDLLIMPEXP_STEDIT bool wxSTEPrependComboBoxString(const wxString &str,
-        wxComboBox *combo,
-        int max_strings);
+WXDLLIMPEXP_STEDIT bool wxSTEPrependComboBoxString(const wxString & str,
+                                                   wxComboBox * combo,
+                                                   int max_strings);
 
 /// Initialize the combo to have these strings and select first.
-WXDLLIMPEXP_STEDIT void wxSTEInitComboBoxStrings(const wxArrayString& values,
-        wxComboBox* combo);
+WXDLLIMPEXP_STEDIT void wxSTEInitComboBoxStrings(const wxArrayString & values,
+                                                 wxComboBox * combo);
 
 /// Initialize the menu to have these strings up to max_count number.
-WXDLLIMPEXP_STEDIT void wxSTEInitMenuStrings(const wxArrayString& values,
-        wxMenu* menu,
-        int start_win_id, int max_count);
+WXDLLIMPEXP_STEDIT void wxSTEInitMenuStrings(const wxArrayString & values,
+                                             wxMenu * menu,
+                                             int start_win_id, int max_count);
 
 /// @}
 
@@ -58,13 +58,13 @@ WXDLLIMPEXP_STEDIT void wxSTEInitMenuStrings(const wxArrayString& values,
 //-----------------------------------------------------------------------------
 
 /// Update a wxSearchCtrl in a wxToolBar by window id to the find replace data.
-WXDLLIMPEXP_STEDIT void wxSTEUpdateSearchCtrl(wxToolBar* toolbar,
-        wxWindowID win_id,
-        const wxSTEditorFindReplaceData* findReplaceData);
+WXDLLIMPEXP_STEDIT void wxSTEUpdateSearchCtrl(wxToolBar * toolbar,
+                                              wxWindowID win_id,
+                                              const wxSTEditorFindReplaceData * findReplaceData);
 
 /// Update a wxSearchCtrl to the find replace data.
-WXDLLIMPEXP_STEDIT void wxSTEUpdateSearchCtrl(wxSearchCtrl* searchCtrl,
-        const wxSTEditorFindReplaceData* findReplaceData);
+WXDLLIMPEXP_STEDIT void wxSTEUpdateSearchCtrl(wxSearchCtrl * searchCtrl,
+                                              const wxSTEditorFindReplaceData * findReplaceData);
 
 
 //-----------------------------------------------------------------------------
@@ -73,58 +73,58 @@ WXDLLIMPEXP_STEDIT void wxSTEUpdateSearchCtrl(wxSearchCtrl* searchCtrl,
 
 class WXDLLIMPEXP_STEDIT wxSTEditorFoundStringData : public wxStringClientData
 {
-public:
-    wxSTEditorFoundStringData();
-    wxSTEditorFoundStringData(const wxFileName& fileName,
-                              int line_number,    int line_start_pos,
-                              int file_start_pos, int string_length,
-                              const wxString& lineText);
+    public:
+        wxSTEditorFoundStringData();
+        wxSTEditorFoundStringData(const wxFileName & fileName,
+                                  int line_number,    int line_start_pos,
+                                  int file_start_pos, int string_length,
+                                  const wxString & lineText);
 
-    virtual ~wxSTEditorFoundStringData() {}
+        virtual ~wxSTEditorFoundStringData() {}
 
-    bool IsOk() const
-    {
-        return GetLineString().Length() > 0;
-    }
+        bool IsOk() const
+        {
+            return GetLineString().Length() > 0;
+        }
 
-    const wxString& GetLineString() const
-    {
-        return GetData();
-    }
-    void SetLineString(const wxString& text)
-    {
-        SetData(text);
-    }
+        const wxString & GetLineString() const
+        {
+            return GetData();
+        }
+        void SetLineString(const wxString & text)
+        {
+            SetData(text);
+        }
 
-    const wxFileName& GetFileName() const
-    {
-        return m_fileName;
-    }
-    int GetLineNumber()             const
-    {
-        return m_line_number;
-    }
-    int GetLineStartPosition()      const
-    {
-        return m_line_start_pos;
-    }
-    int GetFileStartPosition()      const
-    {
-        return m_file_start_pos;
-    }
-    int GetStringLength()           const
-    {
-        return m_string_length;
-    }
+        const wxFileName & GetFileName() const
+        {
+            return m_fileName;
+        }
+        int GetLineNumber()             const
+        {
+            return m_line_number;
+        }
+        int GetLineStartPosition()      const
+        {
+            return m_line_start_pos;
+        }
+        int GetFileStartPosition()      const
+        {
+            return m_file_start_pos;
+        }
+        int GetStringLength()           const
+        {
+            return m_string_length;
+        }
 
-    wxString ToString() const;
-    bool FromString(const wxString& data);
+        wxString ToString() const;
+        bool FromString(const wxString & data);
 
-    wxFileName m_fileName;          ///< Name of the file the string was found in.
-    int        m_line_number;       ///< Line number of the file the string is on.
-    int        m_line_start_pos;    ///< Starting position of the line of the found string in the file.
-    int        m_file_start_pos;    ///< Starting position of the found string in the file.
-    int        m_string_length;     ///< Length of the found string.
+        wxFileName m_fileName;          ///< Name of the file the string was found in.
+        int        m_line_number;       ///< Line number of the file the string is on.
+        int        m_line_start_pos;    ///< Starting position of the line of the found string in the file.
+        int        m_file_start_pos;    ///< Starting position of the found string in the file.
+        int        m_string_length;     ///< Length of the found string.
 };
 
 WX_DECLARE_OBJARRAY_WITH_DECL(wxSTEditorFoundStringData, wxArraySTEditorFoundStringData, class WXDLLIMPEXP_STEDIT);
@@ -150,7 +150,7 @@ enum STEFindReplaceFlags
     STE_FR_FROMCURSOR    = 0x2000, ///< search starting at cursor
     STE_FR_ALLDOCS       = 0x4000, ///< for notebook, starts at current page and goes forward
 
-    STE_FR_SEARCH_MASK   = (STE_FR_WHOLEDOC|STE_FR_FROMCURSOR|STE_FR_ALLDOCS) ///< Mask bits of how to search.
+    STE_FR_SEARCH_MASK   = (STE_FR_WHOLEDOC | STE_FR_FROMCURSOR | STE_FR_ALLDOCS) ///< Mask bits of how to search.
 };
 
 //-----------------------------------------------------------------------------
@@ -176,140 +176,144 @@ enum STEFindReplaceDialogStyles
 //-----------------------------------------------------------------------------
 class WXDLLIMPEXP_STEDIT wxSTEditorFindReplaceData : public wxFindReplaceData
 {
-public:
-    wxSTEditorFindReplaceData(wxUint32 flags = wxFR_DOWN|STE_FR_WRAPAROUND);
+    public:
+        wxSTEditorFindReplaceData(wxUint32 flags = wxFR_DOWN | STE_FR_WRAPAROUND);
 
-    virtual ~wxSTEditorFindReplaceData() {}
+        virtual ~wxSTEditorFindReplaceData() {}
 
-    // These are in wxFindReplaceData
-    //int   GetFlags() const
-    //void  SetFlags(wxUint32 flags)
-    //const wxString& GetFindString() { return m_FindWhat; }
-    //const wxString& GetReplaceString() { return m_ReplaceWith; }
-    //void  SetFindString(const wxString& str) { m_FindWhat = str; }
-    //void  SetReplaceString(const wxString& str) { m_ReplaceWith = str; }
+        // These are in wxFindReplaceData
+        //int   GetFlags() const
+        //void  SetFlags(wxUint32 flags)
+        //const wxString& GetFindString() { return m_FindWhat; }
+        //const wxString& GetReplaceString() { return m_ReplaceWith; }
+        //void  SetFindString(const wxString& str) { m_FindWhat = str; }
+        //void  SetReplaceString(const wxString& str) { m_ReplaceWith = str; }
 
 #if !wxCHECK_VERSION(3, 0, 0)
-    // Add the const version of these functions, added to wxWidgets late in 2.9.5
-    const wxString& GetFindString()    const
-    {
-        return ((wxFindReplaceData*)this)->GetFindString();
-    }
-    const wxString& GetReplaceString() const
-    {
-        return ((wxFindReplaceData*)this)->GetReplaceString();
-    }
+        // Add the const version of these functions, added to wxWidgets late in 2.9.5
+        const wxString & GetFindString()    const
+        {
+            return ((wxFindReplaceData *)this)->GetFindString();
+        }
+        const wxString & GetReplaceString() const
+        {
+            return ((wxFindReplaceData *)this)->GetReplaceString();
+        }
 #endif //!wxCHECK_VERSION(3, 0, 0)
 
-    bool HasFlag(int flag) const
-    {
-        return (GetFlags() & flag) != 0;
-    }
+        bool HasFlag(int flag) const
+        {
+            return (GetFlags() & flag) != 0;
+        }
 
-    void SetFlag(wxUint32 flag, bool enable)
-    {
-        SetFlags( STE_SETBIT(GetFlags(), flag, enable) );
-    }
+        void SetFlag(wxUint32 flag, bool enable)
+        {
+            SetFlags(STE_SETBIT(GetFlags(), flag, enable));
+        }
 
-    /// Convert the STE flags to Scintilla flags.
-    static int STEToScintillaFindFlags(int ste_flags);
-    /// Convert the Scintilla flags to STE flags.
-    static int ScintillaToSTEFindFlags(int sci_flags);
+        /// Convert the STE flags to Scintilla flags.
+        static int STEToScintillaFindFlags(int ste_flags);
+        /// Convert the Scintilla flags to STE flags.
+        static int ScintillaToSTEFindFlags(int sci_flags);
 
-    /// Add find strings at top of list removing old ones if > GetMaxStrings().
-    void AddFindString(const wxString& str)
-    {
-        wxSTEPrependArrayString(str, m_findStrings, m_max_strings);
-    }
-    /// Add replace strings at top of list removing old ones if > GetMaxStrings().
-    void AddReplaceString(const wxString& str)
-    {
-        wxSTEPrependArrayString(str, m_replaceStrings, m_max_strings);
-    }
+        /// Add find strings at top of list removing old ones if > GetMaxStrings().
+        void AddFindString(const wxString & str)
+        {
+            wxSTEPrependArrayString(str, m_findStrings, m_max_strings);
+        }
+        /// Add replace strings at top of list removing old ones if > GetMaxStrings().
+        void AddReplaceString(const wxString & str)
+        {
+            wxSTEPrependArrayString(str, m_replaceStrings, m_max_strings);
+        }
 
-    const wxArrayString& GetFindStrings()    const
-    {
-        return m_findStrings;
-    }
-    const wxArrayString& GetReplaceStrings() const
-    {
-        return m_replaceStrings;
-    }
+        const wxArrayString & GetFindStrings()    const
+        {
+            return m_findStrings;
+        }
+        const wxArrayString & GetReplaceStrings() const
+        {
+            return m_replaceStrings;
+        }
 
-    /// Get max number of search strings to save.
-    int GetMaxStrings() const
-    {
-        return m_max_strings;
-    }
-    /// Set max number of search strings to save.
-    void SetMaxStrings(int count)
-    {
-        m_max_strings = count;
-    }
+        /// Get max number of search strings to save.
+        int GetMaxStrings() const
+        {
+            return m_max_strings;
+        }
+        /// Set max number of search strings to save.
+        void SetMaxStrings(int count)
+        {
+            m_max_strings = count;
+        }
 
-    /// Get the find all strings, set from a previous call to find all.
-    /// Format is ("%ld|%s|%d|%s", &editor, filename, line#, line text).
-    const wxArraySTEditorFoundStringData& GetFoundStringArray() const
-    {
-        return m_foundStringArray;
-    }
-    wxArraySTEditorFoundStringData& GetFoundStringArray()
-    {
-        return m_foundStringArray;
-    }
+        /// Get the find all strings, set from a previous call to find all.
+        /// Format is ("%ld|%s|%d|%s", &editor, filename, line#, line text).
+        const wxArraySTEditorFoundStringData & GetFoundStringArray() const
+        {
+            return m_foundStringArray;
+        }
+        wxArraySTEditorFoundStringData & GetFoundStringArray()
+        {
+            return m_foundStringArray;
+        }
 
-    /// Goto and select the text in the found string data.
-    static bool GotoFindAllString(const wxSTEditorFoundStringData& foundStringData,
-                                  wxSTEditor* editor);
+        /// Goto and select the text in the found string data.
+        static bool GotoFindAllString(const wxSTEditorFoundStringData & foundStringData,
+                                      wxSTEditor * editor);
 
-    /// Compare the strings with flags = -1 for internal flags or use own flags.
-    /// Only compares the strings with or without case, returns true if the same.
-    bool StringCmp(const wxString& a, const wxString& b, int flags = -1) const
-    {
-        if (flags == -1) flags = GetFlags();
-        return ((flags & wxFR_MATCHCASE) != 0) ? (a.Cmp(b) == 0) : (a.CmpNoCase(b) == 0);
-    }
+        /// Compare the strings with flags = -1 for internal flags or use own flags.
+        /// Only compares the strings with or without case, returns true if the same.
+        bool StringCmp(const wxString & a, const wxString & b, int flags = -1) const
+        {
+            if (flags == -1)
+            {
+                flags = GetFlags();
+            }
 
-    /// Get/Set the size of the dialog.
-    /// This size is only set if the user expands it, otherwise it's equal to wxDefaultSize.
-    /// Also, it does not size the current dialog and only sets the size
-    ///   of the dialog when first created.
-    wxSize GetDialogSize() const
-    {
-        return m_dialogSize;
-    }
-    void SetDialogSize(const wxSize& size)
-    {
-        m_dialogSize = size;
-    }
+            return ((flags & wxFR_MATCHCASE) != 0) ? (a.Cmp(b) == 0) : (a.CmpNoCase(b) == 0);
+        }
 
-    /// Load/Save config for find flags.
-    /// See also wxSTEditorOptions for paths and internal saving config.
-    bool LoadConfig(wxConfigBase &config,
-                    const wxString &configPath = wxT("/wxSTEditor/FindReplace/"));
-    void SaveConfig(wxConfigBase &config,
-                    const wxString &configPath = wxT("/wxSTEditor/FindReplace/")) const;
+        /// Get/Set the size of the dialog.
+        /// This size is only set if the user expands it, otherwise it's equal to wxDefaultSize.
+        /// Also, it does not size the current dialog and only sets the size
+        ///   of the dialog when first created.
+        wxSize GetDialogSize() const
+        {
+            return m_dialogSize;
+        }
+        void SetDialogSize(const wxSize & size)
+        {
+            m_dialogSize = size;
+        }
 
-    /// Returns true after calling LoadConfig().
-    bool HasLoadedConfig() const
-    {
-        return m_loaded_config;
-    }
-    void SetLoadedConfig(bool loaded)
-    {
-        m_loaded_config = loaded;
-    }
+        /// Load/Save config for find flags.
+        /// See also wxSTEditorOptions for paths and internal saving config.
+        bool LoadConfig(wxConfigBase & config,
+                        const wxString & configPath = wxT("/wxSTEditor/FindReplace/"));
+        void SaveConfig(wxConfigBase & config,
+                        const wxString & configPath = wxT("/wxSTEditor/FindReplace/")) const;
 
-    /// all editors (can and should probably) share the same find/replace data.
-    static wxSTEditorFindReplaceData sm_findReplaceData;
+        /// Returns true after calling LoadConfig().
+        bool HasLoadedConfig() const
+        {
+            return m_loaded_config;
+        }
+        void SetLoadedConfig(bool loaded)
+        {
+            m_loaded_config = loaded;
+        }
 
-protected:
-    int           m_max_strings;
-    bool          m_loaded_config;
-    wxArrayString m_findStrings;
-    wxArrayString m_replaceStrings;
-    wxArraySTEditorFoundStringData m_foundStringArray;
-    wxSize        m_dialogSize;
+        /// all editors (can and should probably) share the same find/replace data.
+        static wxSTEditorFindReplaceData sm_findReplaceData;
+
+    protected:
+        int           m_max_strings;
+        bool          m_loaded_config;
+        wxArrayString m_findStrings;
+        wxArrayString m_replaceStrings;
+        wxArraySTEditorFoundStringData m_foundStringArray;
+        wxSize        m_dialogSize;
 };
 
 //-----------------------------------------------------------------------------
@@ -319,61 +323,61 @@ protected:
 
 class WXDLLIMPEXP_STEDIT wxSTEditorFindResultsEditor : public wxSTEditor
 {
-public:
-    wxSTEditorFindResultsEditor() : wxSTEditor()
-    {
-        Init();
-    }
+    public:
+        wxSTEditorFindResultsEditor() : wxSTEditor()
+        {
+            Init();
+        }
 
-    wxSTEditorFindResultsEditor(wxWindow *parent, wxWindowID winid,
-                                const wxPoint& pos = wxDefaultPosition,
-                                const wxSize& size = wxDefaultSize,
-                                long style = 0,
-                                const wxString& name = wxT("wxSTEditorFindResultsEditor"))
-    {
-        Init();
-        Create(parent, winid, pos, size, style, name);
-    }
+        wxSTEditorFindResultsEditor(wxWindow * parent, wxWindowID winid,
+                                    const wxPoint & pos = wxDefaultPosition,
+                                    const wxSize & size = wxDefaultSize,
+                                    long style = 0,
+                                    const wxString & name = wxT("wxSTEditorFindResultsEditor"))
+        {
+            Init();
+            Create(parent, winid, pos, size, style, name);
+        }
 
-    bool Create(wxWindow *parent, wxWindowID winid,
-                const wxPoint& pos = wxDefaultPosition,
-                const wxSize& size = wxDefaultSize,
-                long style = 0,
-                const wxString& name = wxT("wxSTEditorFindResultsEditor"));
+        bool Create(wxWindow * parent, wxWindowID winid,
+                    const wxPoint & pos = wxDefaultPosition,
+                    const wxSize & size = wxDefaultSize,
+                    long style = 0,
+                    const wxString & name = wxT("wxSTEditorFindResultsEditor"));
 
-    virtual ~wxSTEditorFindResultsEditor();
+        virtual ~wxSTEditorFindResultsEditor();
 
-    virtual void CreateOptions(const wxSTEditorOptions& options);
-    /// Given options for an editor, make a copy of them preserving the styles and langs,
-    /// but setup the prefs to make sense for displaying find results.
-    virtual void CreateOptionsFromEditorOptions(const wxSTEditorOptions& editorOptions);
+        virtual void CreateOptions(const wxSTEditorOptions & options);
+        /// Given options for an editor, make a copy of them preserving the styles and langs,
+        /// but setup the prefs to make sense for displaying find results.
+        virtual void CreateOptionsFromEditorOptions(const wxSTEditorOptions & editorOptions);
 
-    void SetResults(const wxSTEditorFindReplaceData& findReplaceData);
+        void SetResults(const wxSTEditorFindReplaceData & findReplaceData);
 
-    /// Set the window to send the events to, if NULL then send to the parent.
-    wxWindow* GetTargetWindow() const
-    {
-        return m_targetWin;
-    }
-    void SetTargetWindow( wxWindow* win )
-    {
-        m_targetWin = win;
-    }
+        /// Set the window to send the events to, if NULL then send to the parent.
+        wxWindow * GetTargetWindow() const
+        {
+            return m_targetWin;
+        }
+        void SetTargetWindow(wxWindow * win)
+        {
+            m_targetWin = win;
+        }
 
-protected:
+    protected:
 
-    void OnMarginClick(wxStyledTextEvent& event);
+        void OnMarginClick(wxStyledTextEvent & event);
 
-    wxSTEditorOptions         m_options;
-    wxSTEditorFindReplaceData m_findReplaceData;
-    wxArrayInt                m_lineArrayMap;
+        wxSTEditorOptions         m_options;
+        wxSTEditorFindReplaceData m_findReplaceData;
+        wxArrayInt                m_lineArrayMap;
 
-    wxWindow*                 m_targetWin;
+        wxWindow         *        m_targetWin;
 
-private:
-    void Init();
-    DECLARE_DYNAMIC_CLASS(wxSTEditorFindResultsEditor)
-    DECLARE_EVENT_TABLE()
+    private:
+        void Init();
+        DECLARE_DYNAMIC_CLASS(wxSTEditorFindResultsEditor)
+        DECLARE_EVENT_TABLE()
 };
 
 //-----------------------------------------------------------------------------
@@ -383,136 +387,136 @@ private:
 
 class WXDLLIMPEXP_STEDIT wxSTEditorFindReplacePanel : public wxPanel
 {
-public:
-    wxSTEditorFindReplacePanel() : wxPanel()
-    {
-        Init();
-    }
+    public:
+        wxSTEditorFindReplacePanel() : wxPanel()
+        {
+            Init();
+        }
 
-    wxSTEditorFindReplacePanel(wxWindow *parent, wxWindowID winid,
-                               wxSTEditorFindReplaceData *data,
-                               const wxPoint& pos = wxDefaultPosition,
-                               const wxSize& size = wxDefaultSize,
-                               long style = wxTAB_TRAVERSAL | wxNO_BORDER,
-                               const wxString& name = wxT("wxSTEditorFindReplacePanel"))
-    {
-        Init();
-        Create(parent, winid, data, pos, size, style, name);
-    }
+        wxSTEditorFindReplacePanel(wxWindow * parent, wxWindowID winid,
+                                   wxSTEditorFindReplaceData * data,
+                                   const wxPoint & pos = wxDefaultPosition,
+                                   const wxSize & size = wxDefaultSize,
+                                   long style = wxTAB_TRAVERSAL | wxNO_BORDER,
+                                   const wxString & name = wxT("wxSTEditorFindReplacePanel"))
+        {
+            Init();
+            Create(parent, winid, data, pos, size, style, name);
+        }
 
-    bool Create(wxWindow *parent, wxWindowID winid,
-                wxSTEditorFindReplaceData *data,
-                const wxPoint& pos = wxDefaultPosition,
-                const wxSize& size = wxDefaultSize,
-                long style = wxTAB_TRAVERSAL | wxNO_BORDER,
-                const wxString& name = wxT("wxSTEditorFindReplacePanel"));
+        bool Create(wxWindow * parent, wxWindowID winid,
+                    wxSTEditorFindReplaceData * data,
+                    const wxPoint & pos = wxDefaultPosition,
+                    const wxSize & size = wxDefaultSize,
+                    long style = wxTAB_TRAVERSAL | wxNO_BORDER,
+                    const wxString & name = wxT("wxSTEditorFindReplacePanel"));
 
-    virtual ~wxSTEditorFindReplacePanel();
+        virtual ~wxSTEditorFindReplacePanel();
 
-    /// @name Get/Set/Create an editor to show the find results in.
-    /// @{
+        /// @name Get/Set/Create an editor to show the find results in.
+        /// @{
 
-    /// Get the global editor to show "find all" string in, may be NULL.
-    static wxSTEditorFindResultsEditor* GetFindResultsEditor()
-    {
-        return sm_findResultsEditor;
-    }
-    /// Set a global editor to show "find all" strings in.
-    /// If no editor is set then this find panel will be expanded and the
-    /// results shown there.
-    static void SetFindResultsEditor(wxSTEditorFindResultsEditor* findResultsEditor)
-    {
-        sm_findResultsEditor = findResultsEditor;
-    }
+        /// Get the global editor to show "find all" string in, may be NULL.
+        static wxSTEditorFindResultsEditor * GetFindResultsEditor()
+        {
+            return sm_findResultsEditor;
+        }
+        /// Set a global editor to show "find all" strings in.
+        /// If no editor is set then this find panel will be expanded and the
+        /// results shown there.
+        static void SetFindResultsEditor(wxSTEditorFindResultsEditor * findResultsEditor)
+        {
+            sm_findResultsEditor = findResultsEditor;
+        }
 
-    /// @}
+        /// @}
 
-    /// Find dialog data access, data should never be NULL.
-    wxSTEditorFindReplaceData *GetData()
-    {
-        return m_findReplaceData;
-    }
-    void  SetData(wxSTEditorFindReplaceData *data);
+        /// Find dialog data access, data should never be NULL.
+        wxSTEditorFindReplaceData * GetData()
+        {
+            return m_findReplaceData;
+        }
+        void  SetData(wxSTEditorFindReplaceData * data);
 
-    /// Set the window to send the events to, if NULL then send to the parent.
-    wxWindow* GetTargetWindow() const;
-    void SetTargetWindow( wxWindow* win )
-    {
-        m_targetWin = win;
-    }
+        /// Set the window to send the events to, if NULL then send to the parent.
+        wxWindow * GetTargetWindow() const;
+        void SetTargetWindow(wxWindow * win)
+        {
+            m_targetWin = win;
+        }
 
-    /// Try to get an editor for this dialog.
-    /// It uses the target window and checks if it is a wxSTEditor, wxSTEditorSplitter,
-    ///   or wxSTEditorNotebook and gets their editor
-    wxSTEditor* GetEditor() const;
+        /// Try to get an editor for this dialog.
+        /// It uses the target window and checks if it is a wxSTEditor, wxSTEditorSplitter,
+        ///   or wxSTEditorNotebook and gets their editor
+        wxSTEditor * GetEditor() const;
 
-    // implementation
-    void UpdateButtons();            // enable/disable buttons as appropriate
-    void SelectFindString();         // select the find string in the combo
-    int  GetFindFlags() const
-    {
-        return m_flags;
-    }
-    void UpdateFindFlags();
+        // implementation
+        void UpdateButtons();            // enable/disable buttons as appropriate
+        void SelectFindString();         // select the find string in the combo
+        int  GetFindFlags() const
+        {
+            return m_flags;
+        }
+        void UpdateFindFlags();
 
-    // -----------------------------------------------------------------------
-    // implementation
-    void SendEvent(const wxEventType& evtType);
-    void Send(wxFindDialogEvent& event);
+        // -----------------------------------------------------------------------
+        // implementation
+        void SendEvent(const wxEventType & evtType);
+        void Send(wxFindDialogEvent & event);
 
-    void OnButton(wxCommandEvent& event);
-    void OnMenu(wxCommandEvent& event);
-    void OnFindComboText(wxCommandEvent &event);
-    void OnCheckBox(wxCommandEvent &event);
-    void OnActivate(wxActivateEvent &event);
-    void OnCloseWindow(wxCloseEvent& event);
-    void OnIdle(wxIdleEvent& event);
+        void OnButton(wxCommandEvent & event);
+        void OnMenu(wxCommandEvent & event);
+        void OnFindComboText(wxCommandEvent & event);
+        void OnCheckBox(wxCommandEvent & event);
+        void OnActivate(wxActivateEvent & event);
+        void OnCloseWindow(wxCloseEvent & event);
+        void OnIdle(wxIdleEvent & event);
 
-//protected:
-    wxSTEditorFindReplaceData *m_findReplaceData;
+        //protected:
+        wxSTEditorFindReplaceData * m_findReplaceData;
 
-    bool m_created;
-    bool m_ignore_activation;
+        bool m_created;
+        bool m_ignore_activation;
 
-    wxWindow *m_targetWin;
+        wxWindow * m_targetWin;
 
-    int m_flags;
-    wxString m_lastSearch;
+        int m_flags;
+        wxString m_lastSearch;
 
-    int m_find_insert_pos;
-    int m_replace_insert_pos;
+        int m_find_insert_pos;
+        int m_replace_insert_pos;
 
-    wxComboBox *m_findCombo;
-    wxComboBox *m_replaceCombo;
+        wxComboBox * m_findCombo;
+        wxComboBox * m_replaceCombo;
 
-    wxCheckBox *m_wholewordCheckBox;
-    wxCheckBox *m_matchcaseCheckBox;
-    wxCheckBox *m_backwardsCheckBox;
-    wxCheckBox *m_wordstartCheckBox;
-    wxCheckBox *m_regexpFindCheckBox;
-    wxCheckBox *m_wraparoundCheckBox;
-    wxCheckBox *m_findallCheckBox;
-    wxCheckBox *m_bookmarkallCheckBox;
+        wxCheckBox * m_wholewordCheckBox;
+        wxCheckBox * m_matchcaseCheckBox;
+        wxCheckBox * m_backwardsCheckBox;
+        wxCheckBox * m_wordstartCheckBox;
+        wxCheckBox * m_regexpFindCheckBox;
+        wxCheckBox * m_wraparoundCheckBox;
+        wxCheckBox * m_findallCheckBox;
+        wxCheckBox * m_bookmarkallCheckBox;
 
-    wxRadioButton *m_scopewholeRadioButton;
-    wxRadioButton *m_scopecursorRadioButton;
-    wxRadioButton *m_scopealldocsRadioButton;
+        wxRadioButton * m_scopewholeRadioButton;
+        wxRadioButton * m_scopecursorRadioButton;
+        wxRadioButton * m_scopealldocsRadioButton;
 
-    wxButton *m_findButton;
-    wxButton *m_replaceButton;
-    wxButton *m_replaceFindButton;
-    wxButton *m_replaceAllButton;
+        wxButton * m_findButton;
+        wxButton * m_replaceButton;
+        wxButton * m_replaceFindButton;
+        wxButton * m_replaceAllButton;
 
-    wxMenu   *m_insertMenu;
+        wxMenu  * m_insertMenu;
 
-    wxSTEditorFindResultsEditor *m_resultEditor;
+        wxSTEditorFindResultsEditor * m_resultEditor;
 
-    static wxSTEditorFindResultsEditor *sm_findResultsEditor;
+        static wxSTEditorFindResultsEditor * sm_findResultsEditor;
 
-private:
-    void Init();
-    DECLARE_DYNAMIC_CLASS(wxSTEditorFindReplacePanel)
-    DECLARE_EVENT_TABLE()
+    private:
+        void Init();
+        DECLARE_DYNAMIC_CLASS(wxSTEditorFindReplacePanel)
+        DECLARE_EVENT_TABLE()
 };
 
 //-----------------------------------------------------------------------------
@@ -527,50 +531,50 @@ WXDLLIMPEXP_DATA_STEDIT(extern const wxString) wxSTEditorFindReplaceDialogNameSt
 
 class WXDLLIMPEXP_STEDIT wxSTEditorFindReplaceDialog : public wxDialog
 {
-public:
-    wxSTEditorFindReplaceDialog() : wxDialog()
-    {
-        Init();
-    }
+    public:
+        wxSTEditorFindReplaceDialog() : wxDialog()
+        {
+            Init();
+        }
 
-    wxSTEditorFindReplaceDialog( wxWindow *parent,
-                                 wxSTEditorFindReplaceData *data,
-                                 const wxString& title,
-                                 int style = 0,
-                                 const wxString &name = wxSTEditorFindReplaceDialogNameStr)
-    {
-        Init();
-        Create(parent, data, title, style, name);
-    }
+        wxSTEditorFindReplaceDialog(wxWindow * parent,
+                                    wxSTEditorFindReplaceData * data,
+                                    const wxString & title,
+                                    int style = 0,
+                                    const wxString & name = wxSTEditorFindReplaceDialogNameStr)
+        {
+            Init();
+            Create(parent, data, title, style, name);
+        }
 
-    bool Create( wxWindow *parent,
-                 wxSTEditorFindReplaceData *data,
-                 const wxString& title,
-                 int style = 0,
-                 const wxString &name = wxSTEditorFindReplaceDialogNameStr );
+        bool Create(wxWindow * parent,
+                    wxSTEditorFindReplaceData * data,
+                    const wxString & title,
+                    int style = 0,
+                    const wxString & name = wxSTEditorFindReplaceDialogNameStr);
 
-    virtual ~wxSTEditorFindReplaceDialog();
+        virtual ~wxSTEditorFindReplaceDialog();
 
-    /// Get/Set values for this dialog.
-    wxSTEditorFindReplacePanel* GetFindReplacePanel() const
-    {
-        return m_findReplacePanel;
-    }
+        /// Get/Set values for this dialog.
+        wxSTEditorFindReplacePanel * GetFindReplacePanel() const
+        {
+            return m_findReplacePanel;
+        }
 
-    // -----------------------------------------------------------------------
-    // implementation
-    void OnButton(wxCommandEvent& event);
-    void OnSize(wxSizeEvent &event);
-    void OnActivate(wxActivateEvent &event);
-    void OnCloseWindow(wxCloseEvent& event);
+        // -----------------------------------------------------------------------
+        // implementation
+        void OnButton(wxCommandEvent & event);
+        void OnSize(wxSizeEvent & event);
+        void OnActivate(wxActivateEvent & event);
+        void OnCloseWindow(wxCloseEvent & event);
 
-protected:
-    wxSTEditorFindReplacePanel *m_findReplacePanel;
+    protected:
+        wxSTEditorFindReplacePanel * m_findReplacePanel;
 
-private:
-    void Init();
-    DECLARE_DYNAMIC_CLASS(wxSTEditorFindReplaceDialog)
-    DECLARE_EVENT_TABLE()
+    private:
+        void Init();
+        DECLARE_DYNAMIC_CLASS(wxSTEditorFindReplaceDialog)
+        DECLARE_EVENT_TABLE()
 };
 
 #endif  // _STEFINDR_H_

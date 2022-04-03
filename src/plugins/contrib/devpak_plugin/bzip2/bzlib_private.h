@@ -25,9 +25,9 @@
 #include <stdlib.h>
 
 #ifndef BZ_NO_STDIO
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
+    #include <stdio.h>
+    #include <ctype.h>
+    #include <string.h>
 #endif
 
 #include "bzlib.h"
@@ -50,44 +50,44 @@ typedef unsigned short  UInt16;
 #define False ((Bool)0)
 
 #ifndef __GNUC__
-#define __inline__  /* */
+    #define __inline__  /* */
 #endif
 
 #ifndef BZ_NO_STDIO
 
-extern void BZ2_bz__AssertH__fail ( int errcode );
+extern void BZ2_bz__AssertH__fail(int errcode);
 #define AssertH(cond,errcode) \
-   { if (!(cond)) BZ2_bz__AssertH__fail ( errcode ); }
+    { if (!(cond)) BZ2_bz__AssertH__fail ( errcode ); }
 
 #if BZ_DEBUG
 #define AssertD(cond,msg) \
-   { if (!(cond)) {       \
-      fprintf ( stderr,   \
-        "\n\nlibbzip2(debug build): internal error\n\t%s\n", msg );\
-      exit(1); \
-   }}
+    { if (!(cond)) {       \
+            fprintf ( stderr,   \
+                      "\n\nlibbzip2(debug build): internal error\n\t%s\n", msg );\
+            exit(1); \
+        }}
 #else
 #define AssertD(cond,msg) /* */
 #endif
 
 #define VPrintf0(zf) \
-   fprintf(stderr,zf)
+    fprintf(stderr,zf)
 #define VPrintf1(zf,za1) \
-   fprintf(stderr,zf,za1)
+    fprintf(stderr,zf,za1)
 #define VPrintf2(zf,za1,za2) \
-   fprintf(stderr,zf,za1,za2)
+    fprintf(stderr,zf,za1,za2)
 #define VPrintf3(zf,za1,za2,za3) \
-   fprintf(stderr,zf,za1,za2,za3)
+    fprintf(stderr,zf,za1,za2,za3)
 #define VPrintf4(zf,za1,za2,za3,za4) \
-   fprintf(stderr,zf,za1,za2,za3,za4)
+    fprintf(stderr,zf,za1,za2,za3,za4)
 #define VPrintf5(zf,za1,za2,za3,za4,za5) \
-   fprintf(stderr,zf,za1,za2,za3,za4,za5)
+    fprintf(stderr,zf,za1,za2,za3,za4,za5)
 
 #else
 
-extern void bz_internal_error ( int errcode );
+extern void bz_internal_error(int errcode);
 #define AssertH(cond,errcode) \
-   { if (!(cond)) bz_internal_error ( errcode ); }
+    { if (!(cond)) bz_internal_error ( errcode ); }
 #define AssertD(cond,msg)                do { } while (0)
 #define VPrintf0(zf)                     do { } while (0)
 #define VPrintf1(zf,za1)                 do { } while (0)
@@ -131,22 +131,22 @@ extern void bz_internal_error ( int errcode );
 extern Int32 BZ2_rNums[512];
 
 #define BZ_RAND_DECLS                          \
-   Int32 rNToGo;                               \
-   Int32 rTPos                                 \
+    Int32 rNToGo;                               \
+    Int32 rTPos                                 \
 
 #define BZ_RAND_INIT_MASK                      \
-   s->rNToGo = 0;                              \
-   s->rTPos  = 0                               \
+    s->rNToGo = 0;                              \
+    s->rTPos  = 0                               \
 
 #define BZ_RAND_MASK ((s->rNToGo == 1) ? 1 : 0)
 
 #define BZ_RAND_UPD_MASK                       \
-   if (s->rNToGo == 0) {                       \
-      s->rNToGo = BZ2_rNums[s->rTPos];         \
-      s->rTPos++;                              \
-      if (s->rTPos == 512) s->rTPos = 0;       \
-   }                                           \
-   s->rNToGo--;
+    if (s->rNToGo == 0) {                       \
+        s->rNToGo = BZ2_rNums[s->rTPos];         \
+        s->rTPos++;                              \
+        if (s->rTPos == 512) s->rTPos = 0;       \
+    }                                           \
+    s->rNToGo--;
 
 
 
@@ -155,21 +155,21 @@ extern Int32 BZ2_rNums[512];
 extern UInt32 BZ2_crc32Table[256];
 
 #define BZ_INITIALISE_CRC(crcVar)              \
-{                                              \
-   crcVar = 0xffffffffL;                       \
-}
+    {                                              \
+        crcVar = 0xffffffffL;                       \
+    }
 
 #define BZ_FINALISE_CRC(crcVar)                \
-{                                              \
-   crcVar = ~(crcVar);                         \
-}
+    {                                              \
+        crcVar = ~(crcVar);                         \
+    }
 
 #define BZ_UPDATE_CRC(crcVar,cha)              \
-{                                              \
-   crcVar = (crcVar << 8) ^                    \
-            BZ2_crc32Table[(crcVar >> 24) ^    \
-                           ((UChar)cha)];      \
-}
+    {                                              \
+        crcVar = (crcVar << 8) ^                    \
+                 BZ2_crc32Table[(crcVar >> 24) ^    \
+                                               ((UChar)cha)];      \
+    }
 
 
 
@@ -197,7 +197,7 @@ typedef
 struct
 {
     /* pointer back to the struct bz_stream */
-    bz_stream* strm;
+    bz_stream * strm;
 
     /* mode this stream is in, and whether inputting */
     /* or outputting data */
@@ -208,16 +208,16 @@ struct
     UInt32   avail_in_expect;
 
     /* for doing the block sorting */
-    UInt32*  arr1;
-    UInt32*  arr2;
-    UInt32*  ftab;
+    UInt32 * arr1;
+    UInt32 * arr2;
+    UInt32 * ftab;
     Int32    origPtr;
 
     /* aliases for arr1 and arr2 */
-    UInt32*  ptr;
-    UChar*   block;
-    UInt16*  mtfv;
-    UChar*   zbits;
+    UInt32 * ptr;
+    UChar  * block;
+    UInt16 * mtfv;
+    UChar  * zbits;
 
     /* for deciding when to use the fallback sorting algorithm */
     Int32    workFactor;
@@ -271,19 +271,19 @@ EState;
 /*-- externs for compression. --*/
 
 extern void
-BZ2_blockSort ( EState* );
+BZ2_blockSort(EState *);
 
 extern void
-BZ2_compressBlock ( EState*, Bool );
+BZ2_compressBlock(EState *, Bool);
 
 extern void
-BZ2_bsInitWrite ( EState* );
+BZ2_bsInitWrite(EState *);
 
 extern void
-BZ2_hbAssignCodes ( Int32*, UChar*, Int32, Int32, Int32 );
+BZ2_hbAssignCodes(Int32 *, UChar *, Int32, Int32, Int32);
 
 extern void
-BZ2_hbMakeCodeLengths ( UChar*, Int32*, Int32, Int32 );
+BZ2_hbMakeCodeLengths(UChar *, Int32 *, Int32, Int32);
 
 
 
@@ -349,7 +349,7 @@ typedef
 struct
 {
     /* pointer back to the struct bz_stream */
-    bz_stream* strm;
+    bz_stream * strm;
 
     /* state indicator for this stream */
     Int32    state;
@@ -380,11 +380,11 @@ struct
     Int32    cftabCopy[257];
 
     /* for undoing the Burrows-Wheeler transform (FAST) */
-    UInt32   *tt;
+    UInt32  * tt;
 
     /* for undoing the Burrows-Wheeler transform (SMALL) */
-    UInt16   *ll16;
-    UChar    *ll4;
+    UInt16  * ll16;
+    UChar  *  ll4;
 
     /* stored and calculated CRCs */
     UInt32   storedBlockCRC;
@@ -432,9 +432,9 @@ struct
     Int32    save_zj;
     Int32    save_gSel;
     Int32    save_gMinlen;
-    Int32*   save_gLimit;
-    Int32*   save_gBase;
-    Int32*   save_gPerm;
+    Int32  * save_gLimit;
+    Int32  * save_gBase;
+    Int32  * save_gPerm;
 
 }
 DState;
@@ -458,21 +458,21 @@ DState;
     c_tPos >>= 8;
 
 #define SET_LL4(i,n)                                          \
-   { if (((i) & 0x1) == 0)                                    \
-        s->ll4[(i) >> 1] = (s->ll4[(i) >> 1] & 0xf0) | (n); else    \
-        s->ll4[(i) >> 1] = (s->ll4[(i) >> 1] & 0x0f) | ((n) << 4);  \
-   }
+    { if (((i) & 0x1) == 0)                                    \
+            s->ll4[(i) >> 1] = (s->ll4[(i) >> 1] & 0xf0) | (n); else    \
+            s->ll4[(i) >> 1] = (s->ll4[(i) >> 1] & 0x0f) | ((n) << 4);  \
+    }
 
 #define GET_LL4(i)                             \
-   ((((UInt32)(s->ll4[(i) >> 1])) >> (((i) << 2) & 0x4)) & 0xF)
+    ((((UInt32)(s->ll4[(i) >> 1])) >> (((i) << 2) & 0x4)) & 0xF)
 
 #define SET_LL(i,n)                          \
-   { s->ll16[i] = (UInt16)(n & 0x0000ffff);  \
-     SET_LL4(i, n >> 16);                    \
-   }
+    { s->ll16[i] = (UInt16)(n & 0x0000ffff);  \
+        SET_LL4(i, n >> 16);                    \
+    }
 
 #define GET_LL(i) \
-   (((UInt32)s->ll16[i]) | (GET_LL4(i) << 16))
+    (((UInt32)s->ll16[i]) | (GET_LL4(i) << 16))
 
 #define BZ_GET_SMALL(cccc)                            \
     /* c_tPos is unsigned, hence test < 0 is pointless. */ \
@@ -484,14 +484,14 @@ DState;
 /*-- externs for decompression. --*/
 
 extern Int32
-BZ2_indexIntoF ( Int32, Int32* );
+BZ2_indexIntoF(Int32, Int32 *);
 
 extern Int32
-BZ2_decompress ( DState* );
+BZ2_decompress(DState *);
 
 extern void
-BZ2_hbCreateDecodeTables ( Int32*, Int32*, Int32*, UChar*,
-                           Int32,  Int32, Int32 );
+BZ2_hbCreateDecodeTables(Int32 *, Int32 *, Int32 *, UChar *,
+                         Int32,  Int32, Int32);
 
 
 #endif
@@ -500,9 +500,9 @@ BZ2_hbCreateDecodeTables ( Int32*, Int32*, Int32*, UChar*,
 /*-- BZ_NO_STDIO seems to make NULL disappear on some platforms. --*/
 
 #ifdef BZ_NO_STDIO
-#ifndef NULL
-#define NULL 0
-#endif
+    #ifndef NULL
+        #define NULL 0
+    #endif
 #endif
 
 

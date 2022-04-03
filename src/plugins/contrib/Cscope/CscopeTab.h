@@ -24,30 +24,30 @@ class CscopeConfig;
 
 class CscopeTab : public wxPanel
 {
-protected:
-    wxListCtrl *m_pListCtrl;
-    wxStaticText* m_statusMessage;
-    wxGauge* m_gauge;
+    protected:
+        wxListCtrl * m_pListCtrl;
+        wxStaticText * m_statusMessage;
+        wxGauge * m_gauge;
 
-    CscopeResultTable *m_table;
+        CscopeResultTable * m_table;
 
-protected:
-    void ClearResults(void);
+    protected:
+        void ClearResults(void);
 
-private:
-    void OnListItemActivated(wxListEvent &event);
+    private:
+        void OnListItemActivated(wxListEvent & event);
 
 
-public:
-    void CopyContentsToClipboard(bool selectionOnly);
-    CscopeTab( wxWindow* parent, CscopeConfig *cfg );
-    virtual ~CscopeTab();
-    void BuildTable(CscopeResultTable *table);
-    void Clear();
-    void SetMessage(const wxString &msg, int percent);
+    public:
+        void CopyContentsToClipboard(bool selectionOnly);
+        CscopeTab(wxWindow * parent, CscopeConfig * cfg);
+        virtual ~CscopeTab();
+        void BuildTable(CscopeResultTable * table);
+        void Clear();
+        void SetMessage(const wxString & msg, int percent);
 
-private:
-    CscopeConfig *m_cfg;
+    private:
+        CscopeConfig * m_cfg;
 };
 
 #endif // CSCOPE_TAB

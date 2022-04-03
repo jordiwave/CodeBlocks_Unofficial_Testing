@@ -23,7 +23,9 @@ static size_t s_LastFilterAllIndex = 0;
 void FileFilters::AddDefaultFileFilters()
 {
     if (s_Filters.size() != 0)
+    {
         return;
+    }
 
     Add(_("Code::Blocks workspace files"),         _T("*.workspace"));
     Add(_("Code::Blocks project files"),           _T("*.cbp"));
@@ -38,29 +40,36 @@ void FileFilters::AddDefaultFileFilters()
     Add(_("MS Visual Studio 10.0+ project files"), _T("*.vcxproj"));
 }
 
-bool FileFilters::Add(const wxString& name, const wxString& mask)
+bool FileFilters::Add(const wxString & name, const wxString & mask)
 {
     if (name.IsEmpty() || mask.IsEmpty())
-        return false; // both must be valid
+    {
+        return false;    // both must be valid
+    }
 
     if (mask.Index(_T(',')) != wxString::npos)
     {
         // replace commas with semicolons
         wxString tmp = mask;
+
         while (tmp.Replace(_T(","), _T(";")))
             ;
+
         s_Filters[name] = tmp;
     }
     else
+    {
         s_Filters[name] = mask;
+    }
 
     return true;
 }
 
-wxString FileFilters::GetFilterString(const wxString& ext)
+wxString FileFilters::GetFilterString(const wxString & ext)
 {
     size_t count = 0;
     wxString ret;
+
     for (FileFiltersMap::iterator it = s_Filters.begin(); it != s_Filters.end(); ++it)
     {
         if (!ext.IsEmpty())
@@ -68,6 +77,7 @@ wxString FileFilters::GetFilterString(const wxString& ext)
             // filter based on parameter
             bool match = false;
             wxArrayString array = GetArrayFromString(it->second, _T(";"), true);
+
             for (size_t i = 0; i < array.GetCount(); ++i)
             {
                 if (ext.Matches(array[i]))
@@ -76,30 +86,42 @@ wxString FileFilters::GetFilterString(const wxString& ext)
                     break;
                 }
             }
+
             if (!match)
-                continue; // filtered
+            {
+                continue;    // filtered
+            }
         }
+
         ++count;
+
         if (!ret.IsEmpty())
+        {
             ret << _T('|');
+        }
+
         ret << it->first << _T('|') << it->second;
     }
 
     // last filter is always "All"
     if (!ret.IsEmpty())
+    {
         ret << _T('|');
+    }
+
     ret << GetFilterAll();
-
     s_LastFilterAllIndex = count;
-
     return ret;
 }
 
 wxString FileFilters::GetFilterAll()
 {
     s_LastFilterAllIndex = 0;
+
     if (platform::windows)
+    {
         return _("All files (*.*)|*.*");
+    }
 
     return _("All files (*)|*");
 }
@@ -109,36 +131,40 @@ size_t FileFilters::GetIndexForFilterAll()
     return s_LastFilterAllIndex;
 }
 
-bool FileFilters::GetFilterIndexFromName(const wxString& FiltersList, const wxString& FilterName, int& Index)
+bool FileFilters::GetFilterIndexFromName(const wxString & FiltersList, const wxString & FilterName, int & Index)
 {
     bool bFound = false;
     // the List will contain 2 entries per type (description, mask)
     wxArrayString List = GetArrayFromString(FiltersList, _T("|"), true);
     int LoopEnd = static_cast<int>(List.GetCount());
-    for(int idxList = 0; idxList < LoopEnd; idxList+=2)
+
+    for (int idxList = 0; idxList < LoopEnd; idxList += 2)
     {
         if (List[idxList] == FilterName)
         {
-            Index = idxList/2;
+            Index = idxList / 2;
             bFound = true;
             break;
         }
     } // end for : idx : idxList
+
     return bFound;
 } // end of GetFilterIndexFromName
 
-bool FileFilters::GetFilterNameFromIndex(const wxString& FiltersList, int Index, wxString& FilterName)
+bool FileFilters::GetFilterNameFromIndex(const wxString & FiltersList, int Index, wxString & FilterName)
 {
     // we return the name (not the mask)
     bool bFound = false;
     // the List will contain 2 entries per type (description, mask)
     wxArrayString List = GetArrayFromString(FiltersList, _T("|"), true);
     int LoopEnd = static_cast<int>(List.GetCount());
-    if (2*Index < LoopEnd)
+
+    if (2 * Index < LoopEnd)
     {
-        FilterName = List[2*Index];
+        FilterName = List[2 * Index];
         bFound = true;
     }
+
     return bFound;
 } // end of GetFilterStringFromIndex
 
@@ -189,17 +215,17 @@ const wxString FileFilters::RESOURCEBIN_EXT         = _T("res");
 const wxString FileFilters::XML_EXT                 = _T("xml");
 const wxString FileFilters::SCRIPT_EXT              = _T("script");
 #if   defined(__WXMSW__)
-const wxString FileFilters::DYNAMICLIB_EXT      = _T("dll");
-const wxString FileFilters::EXECUTABLE_EXT      = _T("exe");
-const wxString FileFilters::NATIVE_EXT          = _T("sys");
+    const wxString FileFilters::DYNAMICLIB_EXT      = _T("dll");
+    const wxString FileFilters::EXECUTABLE_EXT      = _T("exe");
+    const wxString FileFilters::NATIVE_EXT          = _T("sys");
 #elif defined(__WXMAC__)
-const wxString FileFilters::DYNAMICLIB_EXT      = _T("dylib");
-const wxString FileFilters::EXECUTABLE_EXT      = _T("");
-const wxString FileFilters::NATIVE_EXT          = _T("");
+    const wxString FileFilters::DYNAMICLIB_EXT      = _T("dylib");
+    const wxString FileFilters::EXECUTABLE_EXT      = _T("");
+    const wxString FileFilters::NATIVE_EXT          = _T("");
 #else
-const wxString FileFilters::DYNAMICLIB_EXT      = _T("so");
-const wxString FileFilters::EXECUTABLE_EXT      = _T("");
-const wxString FileFilters::NATIVE_EXT          = _T("");
+    const wxString FileFilters::DYNAMICLIB_EXT      = _T("so");
+    const wxString FileFilters::EXECUTABLE_EXT      = _T("");
+    const wxString FileFilters::NATIVE_EXT          = _T("");
 #endif
 
 // dot.ext version
@@ -248,11 +274,11 @@ const wxString FileFilters::RESOURCEBIN_DOT_EXT     = _T('.') + FileFilters::RES
 const wxString FileFilters::XML_DOT_EXT             = _T('.') + FileFilters::XML_EXT;
 const wxString FileFilters::SCRIPT_DOT_EXT          = _T('.') + FileFilters::SCRIPT_EXT;
 #ifdef __WXMSW__
-const wxString FileFilters::DYNAMICLIB_DOT_EXT  = _T('.') + FileFilters::DYNAMICLIB_EXT;
-const wxString FileFilters::EXECUTABLE_DOT_EXT  = _T('.') + FileFilters::EXECUTABLE_EXT;
-const wxString FileFilters::NATIVE_DOT_EXT      = _T('.') + FileFilters::NATIVE_EXT;
+    const wxString FileFilters::DYNAMICLIB_DOT_EXT  = _T('.') + FileFilters::DYNAMICLIB_EXT;
+    const wxString FileFilters::EXECUTABLE_DOT_EXT  = _T('.') + FileFilters::EXECUTABLE_EXT;
+    const wxString FileFilters::NATIVE_DOT_EXT      = _T('.') + FileFilters::NATIVE_EXT;
 #else
-const wxString FileFilters::DYNAMICLIB_DOT_EXT  = _T('.') + FileFilters::DYNAMICLIB_EXT;
-const wxString FileFilters::EXECUTABLE_DOT_EXT  = EXECUTABLE_EXT; // no dot, since no extension
-const wxString FileFilters::NATIVE_DOT_EXT      = NATIVE_EXT; // no dot, since no extension
+    const wxString FileFilters::DYNAMICLIB_DOT_EXT  = _T('.') + FileFilters::DYNAMICLIB_EXT;
+    const wxString FileFilters::EXECUTABLE_DOT_EXT  = EXECUTABLE_EXT; // no dot, since no extension
+    const wxString FileFilters::NATIVE_DOT_EXT      = NATIVE_EXT; // no dot, since no extension
 #endif

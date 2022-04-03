@@ -11,39 +11,39 @@
 #include "cbexception.h"
 
 #ifndef CB_PRECOMP
-#include "globals.h"
+    #include "globals.h"
 #endif
 
 class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
 {
-    friend class Manager;
-    friend class Mgr<UserVariableManager>;
-    friend class MacrosManager;
+        friend class Manager;
+        friend class Mgr<UserVariableManager>;
+        friend class MacrosManager;
 
-    ConfigManager * m_CfgMan;
-    wxString        m_ActiveSet;
-    wxArrayString   m_Preempted;
+        ConfigManager * m_CfgMan;
+        wxString        m_ActiveSet;
+        wxArrayString   m_Preempted;
 
-public:
-    UserVariableManager();
+    public:
+        UserVariableManager();
 
-    wxString Replace(const wxString& variable);
+        wxString Replace(const wxString & variable);
 
-    wxString GetVariable(wxWindow *parent, const wxString &old);
+        wxString GetVariable(wxWindow * parent, const wxString & old);
 
-    void Preempt(const wxString& variable);
-    void Arrogate();
-    bool Exists(const wxString& variable) const;
+        void Preempt(const wxString & variable);
+        void Arrogate();
+        bool Exists(const wxString & variable) const;
 
-    bool SetActiveVariableSet(const wxString& varset);
-    wxString GetActiveVariableSet();
+        bool SetActiveVariableSet(const wxString & varset);
+        wxString GetActiveVariableSet();
 
-    void Configure();
-    void Migrate();
+        void Configure();
+        void Migrate();
 
 
-    UserVariableManager& operator=(const UserVariableManager&) = delete;
-    UserVariableManager(const UserVariableManager&) = delete;
+        UserVariableManager & operator=(const UserVariableManager &) = delete;
+        UserVariableManager(const UserVariableManager &) = delete;
 };
 
 #endif // USER_VARIABLE_MANAGER_H

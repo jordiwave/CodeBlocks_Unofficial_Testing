@@ -3,104 +3,91 @@
 #define LCD_NUMBER_SEGMENTS 8
 
 
-BEGIN_EVENT_TABLE( wxLCDWindow, wxWindow )
-    EVT_PAINT( wxLCDWindow::OnPaint )
-    EVT_SIZE( wxLCDWindow::OnSize )
+BEGIN_EVENT_TABLE(wxLCDWindow, wxWindow)
+    EVT_PAINT(wxLCDWindow::OnPaint)
+    EVT_SIZE(wxLCDWindow::OnSize)
 END_EVENT_TABLE()
 
 
-wxLCDWindow::wxLCDWindow( wxWindow *parent, wxPoint pos, wxSize size ) : wxWindow( parent, -1, pos, size, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE )
+wxLCDWindow::wxLCDWindow(wxWindow * parent, wxPoint pos, wxSize size) : wxWindow(parent, -1, pos, size, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE)
 {
     mSegmentLen = 40;
     mSegmentWidth = 10;
     mSpace = 5;
-
     mNumberDigits = 6;
-
-    mLightColour = wxColour( 0, 255, 0 );
-    mGrayColour = wxColour( 0, 64, 0 );
-
-    SetBackgroundColour( wxColour( 0, 0, 0 ) );
+    mLightColour = wxColour(0, 255, 0);
+    mGrayColour = wxColour(0, 64, 0);
+    SetBackgroundColour(wxColour(0, 0, 0));
 }
 
 
 wxLCDWindow::~wxLCDWindow()
 {
-
 }
 
 
-void wxLCDWindow::OnPaint(wxPaintEvent &event)
+void wxLCDWindow::OnPaint(wxPaintEvent & event)
 {
     (void)event;
-    wxPaintDC dc( this );
-
+    wxPaintDC dc(this);
     int dw = GetClientSize().GetWidth();
     int dh = GetClientSize().GetHeight();
-
     int bw = GetBitmapWidth();
     int bh = GetBitmapHeight();
-
-    double xs = ( double ) dw / bw;
-    double ys = ( double ) dh / bh;
-
-    double as = xs > ys? ys : xs;
-
-    dc.SetUserScale( as, as );
-    dc.SetDeviceOrigin( ( ( dw - bw * as ) / 2 ), ( ( dh - bh * as ) / 2 ) );
-//	dc.BeginDrawing();
-
-    DoDrawing( &dc );
-
-//	dc.EndDrawing();
-
+    double xs = (double) dw / bw;
+    double ys = (double) dh / bh;
+    double as = xs > ys ? ys : xs;
+    dc.SetUserScale(as, as);
+    dc.SetDeviceOrigin(((dw - bw * as) / 2), ((dh - bh * as) / 2));
+    //	dc.BeginDrawing();
+    DoDrawing(&dc);
+    //	dc.EndDrawing();
     return;
 }
 
 
-void wxLCDWindow::OnSize( wxSizeEvent &event )
+void wxLCDWindow::OnSize(wxSizeEvent & event)
 {
     event.Skip();
     return ;
 }
 
 
-void wxLCDWindow::DoDrawing( wxDC *dc )
+void wxLCDWindow::DoDrawing(wxDC * dc)
 {
     wxString buf;
-    buf.Printf( wxT("%s"), mValue.c_str() );
-    while( buf.Replace( wxT(".."), wxT(". .") ) );
+    buf.Printf(wxT("%s"), mValue.c_str());
+
+    while (buf.Replace(wxT(".."), wxT(". .")));
 
     char current;
     char next;
     int buflen = buf.Len();
     int ac = buflen - 1;
 
-    for( int c = 0; c < mNumberDigits; c++ )
+    for (int c = 0; c < mNumberDigits; c++)
     {
 ReadString:
-        ac >= 0? current = buf.GetChar( ac ): current = wxT(' ');
-        ac >= 0 && ac < buflen - 1? next = buf.GetChar( ac + 1 ): next = wxT(' ');
+        ac >= 0 ? current = buf.GetChar(ac) : current = wxT(' ');
+        ac >= 0 && ac < buflen - 1 ? next = buf.GetChar(ac + 1) : next = wxT(' ');
 
-        if( current == wxT('.') )
+        if (current == wxT('.'))
         {
             ac--;
             goto ReadString;
         }
 
-        wxDigitData *data = new wxDigitData;
-
+        wxDigitData * data = new wxDigitData;
         data->value = current;
         data->comma = false;
 
-        if( next == wxT('.') )
+        if (next == wxT('.'))
         {
             data->comma = true;
         }
 
-        DrawDigit( dc, c, data  );
+        DrawDigit(dc, c, data);
         ac--;
-
         delete data;
     }
 
@@ -108,162 +95,154 @@ ReadString:
 }
 
 
-void wxLCDWindow::DrawDigit( wxDC *dc, int digit, wxDigitData *data )
+void wxLCDWindow::DrawDigit(wxDC * dc, int digit, wxDigitData * data)
 {
-    unsigned char dec = Decode( data->value );
+    unsigned char dec = Decode(data->value);
 
-    if( data->value == wxT(':') )
+    if (data->value == wxT(':'))
     {
-        DrawTwoDots( dc, digit );
-
+        DrawTwoDots(dc, digit);
         return ;
     }
 
-    for( int c = 0; c < LCD_NUMBER_SEGMENTS - 1; c++ )
+    for (int c = 0; c < LCD_NUMBER_SEGMENTS - 1; c++)
     {
-        DrawSegment( dc, digit, c, ( dec >> c ) & 1 );
+        DrawSegment(dc, digit, c, (dec >> c) & 1);
     }
 
-    DrawSegment( dc, digit, 7, data->comma );
-
+    DrawSegment(dc, digit, 7, data->comma);
     return ;
 }
 
 
-void wxLCDWindow::DrawTwoDots( wxDC *dc, int digit )
+void wxLCDWindow::DrawTwoDots(wxDC * dc, int digit)
 {
     int sl = mSegmentLen;
     int sw = mSegmentWidth;
-//	int sp = mSpace;
-
-    int x = DigitX( digit );
-    int y = DigitY( digit );
-
+    //	int sp = mSpace;
+    int x = DigitX(digit);
+    int y = DigitY(digit);
     wxBrush brushOn(mLightColour, wxBRUSHSTYLE_SOLID);
-
-    x += ( sl / 2 ) - sw;
-    y += ( sl / 2 ) - sw;
-
-    dc->SetBrush( brushOn );
-    dc->SetPen(wxPen( GetBackgroundColour(), 1, wxPENSTYLE_SOLID));
-
-    dc->DrawEllipse( x, y, 2 * sw, 2 * sw );
-
+    x += (sl / 2) - sw;
+    y += (sl / 2) - sw;
+    dc->SetBrush(brushOn);
+    dc->SetPen(wxPen(GetBackgroundColour(), 1, wxPENSTYLE_SOLID));
+    dc->DrawEllipse(x, y, 2 * sw, 2 * sw);
     y += sl;
-
-    dc->DrawEllipse( x, y, 2 * sw, 2 * sw );
-
+    dc->DrawEllipse(x, y, 2 * sw, 2 * sw);
     return ;
 }
 
 
-void wxLCDWindow::DrawSegment( wxDC *dc, int digit, int segment, bool state )
+void wxLCDWindow::DrawSegment(wxDC * dc, int digit, int segment, bool state)
 {
     int sl = mSegmentLen;
     int sw = mSegmentWidth;
-//	int sp = mSpace;
-
-    int x = DigitX( digit );
-    int y = DigitY( digit );
-
+    //	int sp = mSpace;
+    int x = DigitX(digit);
+    int y = DigitY(digit);
     wxBrush brushOn(mLightColour, wxBRUSHSTYLE_SOLID);
     wxBrush brushOff(mGrayColour, wxBRUSHSTYLE_SOLID);
 
-    if( state )
+    if (state)
     {
-        dc->SetBrush( brushOn );
+        dc->SetBrush(brushOn);
     }
     else
     {
-        dc->SetBrush( brushOff );
+        dc->SetBrush(brushOff);
     }
 
     dc->SetPen(wxPen(GetBackgroundColour(), 1, wxPENSTYLE_SOLID));
-
     wxPoint points[4];
 
-    switch( segment )
+    switch (segment)
     {
-    case 0:
-        points[0].x = x;
-        points[0].y = y;
-        points[1].x = x + sl;
-        points[1].y = y;
-        points[2].x = x + sl - sw;
-        points[2].y = y + sw;
-        points[3].x = x + sw;
-        points[3].y = y + sw;
-        break;
-    case 5:
-        y += 2 * sl - sw;
-        points[0].x = x + sw;
-        points[0].y = y;
-        points[1].x = x + sl - sw;
-        points[1].y = y;
-        points[2].x = x + sl;
-        points[2].y = y + sw;
-        points[3].x = x;
-        points[3].y = y + sw;
-        break;
-    case 4:
-        y += sl;
-        x += sl - sw;
-        points[0].x = x;
-        points[0].y = y + sw / 2;
-        points[1].x = x + sw;
-        points[1].y = y;
-        points[2].x = x + sw;
-        points[2].y = y + sl;
-        points[3].x = x;
-        points[3].y = y + sl - sw;
-        break;
-    case 2:
-        x += sl - sw;
-        points[0].x = x;
-        points[0].y = y + sw;
-        points[1].x = x + sw;
-        points[1].y = y;
-        points[2].x = x + sw;
-        points[2].y = y + sl;
-        points[3].x = x;
-        points[3].y = y + sl - sw / 2;
-        break;
-    case 3:
-        y += sl;
-        points[0].x = x;
-        points[0].y = y;
-        points[1].x = x;
-        points[1].y = y + sl;
-        points[2].x = x + sw;
-        points[2].y = y + sl - sw;
-        points[3].x = x + sw;
-        points[3].y = y + sw - sw / 2;
-        break;
-    case 1:
-        points[0].x = x;
-        points[0].y = y;
-        points[1].x = x;
-        points[1].y = y + sl;
-        points[2].x = x + sw;
-        points[2].y = y + sl - sw / 2;
-        points[3].x = x + sw;
-        points[3].y = y + sw;
-        break;
-    case 6:
-    default:
-        break;
+        case 0:
+            points[0].x = x;
+            points[0].y = y;
+            points[1].x = x + sl;
+            points[1].y = y;
+            points[2].x = x + sl - sw;
+            points[2].y = y + sw;
+            points[3].x = x + sw;
+            points[3].y = y + sw;
+            break;
+
+        case 5:
+            y += 2 * sl - sw;
+            points[0].x = x + sw;
+            points[0].y = y;
+            points[1].x = x + sl - sw;
+            points[1].y = y;
+            points[2].x = x + sl;
+            points[2].y = y + sw;
+            points[3].x = x;
+            points[3].y = y + sw;
+            break;
+
+        case 4:
+            y += sl;
+            x += sl - sw;
+            points[0].x = x;
+            points[0].y = y + sw / 2;
+            points[1].x = x + sw;
+            points[1].y = y;
+            points[2].x = x + sw;
+            points[2].y = y + sl;
+            points[3].x = x;
+            points[3].y = y + sl - sw;
+            break;
+
+        case 2:
+            x += sl - sw;
+            points[0].x = x;
+            points[0].y = y + sw;
+            points[1].x = x + sw;
+            points[1].y = y;
+            points[2].x = x + sw;
+            points[2].y = y + sl;
+            points[3].x = x;
+            points[3].y = y + sl - sw / 2;
+            break;
+
+        case 3:
+            y += sl;
+            points[0].x = x;
+            points[0].y = y;
+            points[1].x = x;
+            points[1].y = y + sl;
+            points[2].x = x + sw;
+            points[2].y = y + sl - sw;
+            points[3].x = x + sw;
+            points[3].y = y + sw - sw / 2;
+            break;
+
+        case 1:
+            points[0].x = x;
+            points[0].y = y;
+            points[1].x = x;
+            points[1].y = y + sl;
+            points[2].x = x + sw;
+            points[2].y = y + sl - sw / 2;
+            points[3].x = x + sw;
+            points[3].y = y + sw;
+            break;
+
+        case 6:
+        default:
+            break;
     }
 
-    if( segment < 6 )
+    if (segment < 6)
     {
-        dc->DrawPolygon( 4, points );
+        dc->DrawPolygon(4, points);
     }
 
-    if( segment == 6 )
+    if (segment == 6)
     {
         y += sl - sw / 2;
         wxPoint p6[6];
-
         p6[0].x = x;
         p6[0].y = y + sw / 2;
         p6[1].x = x + sw;
@@ -276,16 +255,14 @@ void wxLCDWindow::DrawSegment( wxDC *dc, int digit, int segment, bool state )
         p6[4].y = y + sw;
         p6[5].x = x + sw;
         p6[5].y = y + sw;
-
-        dc->DrawPolygon( 6, p6 );
+        dc->DrawPolygon(6, p6);
     }
 
-    if( segment == 7 )
+    if (segment == 7)
     {
         y += 2 * sl;
         x += sl;
-
-        dc->DrawEllipse( x + 1, y - sw, sw, sw );
+        dc->DrawEllipse(x + 1, y - sw, sw, sw);
     }
 
     return ;
@@ -295,33 +272,33 @@ void wxLCDWindow::DrawSegment( wxDC *dc, int digit, int segment, bool state )
 // Protected functions that calculate sizes.
 // Needed by OnPaint
 
-int wxLCDWindow::GetDigitWidth( void )
+int wxLCDWindow::GetDigitWidth(void)
 {
     return mSegmentLen + mSegmentWidth + mSpace;
 }
 
 
-int wxLCDWindow::GetDigitHeight( void )
+int wxLCDWindow::GetDigitHeight(void)
 {
-    return ( 2 * mSegmentLen ) + ( 2 * mSpace );
+    return (2 * mSegmentLen) + (2 * mSpace);
 }
 
 
-int wxLCDWindow::GetBitmapWidth( void )
+int wxLCDWindow::GetBitmapWidth(void)
 {
-    return ( mNumberDigits * GetDigitWidth() ) + mSpace;
+    return (mNumberDigits * GetDigitWidth()) + mSpace;
 }
 
 
-int wxLCDWindow::GetBitmapHeight( void )
+int wxLCDWindow::GetBitmapHeight(void)
 {
     return GetDigitHeight();
 }
 
 
-int wxLCDWindow::DigitX( int digit )
+int wxLCDWindow::DigitX(int digit)
 {
-    return GetBitmapWidth() - ( ( digit + 1 ) * GetDigitWidth() );
+    return GetBitmapWidth() - ((digit + 1) * GetDigitWidth());
 }
 
 
@@ -334,70 +311,65 @@ int wxLCDWindow::DigitY(int digit)
 
 // Public functions accessible by the user.
 
-void wxLCDWindow::SetNumberDigits( int ndigits )
+void wxLCDWindow::SetNumberDigits(int ndigits)
 {
     mNumberDigits = ndigits;
-    Refresh( false );
-
+    Refresh(false);
     return ;
 }
 
 
-void wxLCDWindow::SetValue( wxString value )
+void wxLCDWindow::SetValue(wxString value)
 {
     mValue = value;
-
-    Refresh( false );
-
+    Refresh(false);
     return ;
 }
 
 
-wxString wxLCDWindow::GetValue( void )
+wxString wxLCDWindow::GetValue(void)
 {
     return mValue;
 }
 
 
-int wxLCDWindow::GetNumberDigits( void )
+int wxLCDWindow::GetNumberDigits(void)
 {
     return mNumberDigits;
 }
 
 
-void wxLCDWindow::SetLightColour( wxColour c )
+void wxLCDWindow::SetLightColour(wxColour c)
 {
     mLightColour = c;
-
     return ;
 }
 
 
-void wxLCDWindow::SetGrayColour( wxColour c )
+void wxLCDWindow::SetGrayColour(wxColour c)
 {
     mGrayColour = c;
-
     return ;
 }
 
 
-wxColour wxLCDWindow::GetLightColour( void )
+wxColour wxLCDWindow::GetLightColour(void)
 {
     return mLightColour;
 }
 
 
-wxColour wxLCDWindow::GetGrayColour( void )
+wxColour wxLCDWindow::GetGrayColour(void)
 {
     return mGrayColour;
 }
 
 
-int wxLCDWindow::GetDigitsNeeded( wxString value )
+int wxLCDWindow::GetDigitsNeeded(wxString value)
 {
     wxString tst = value;
 
-    while( tst.Replace( wxT("."), wxT("") ) );
+    while (tst.Replace(wxT("."), wxT("")));
 
     return tst.Len();
 }
@@ -445,16 +417,14 @@ int wxLCDWindow::GetDigitsNeeded( wxString value )
 // C : 0010.1011 = 0x2B
 
 
-unsigned char wxLCDWindow::Decode( char c )
+unsigned char wxLCDWindow::Decode(char c)
 {
     unsigned char ret = 0;
-
     struct DecodedDisplay
     {
         char ch;
         unsigned char value;
     };
-
     DecodedDisplay dec[] =
     {
         { wxT('0'), 0x3F },
@@ -477,9 +447,9 @@ unsigned char wxLCDWindow::Decode( char c )
         { 0, 0 }
     };
 
-    for( int d = 0; dec[d].ch != 0; d++ )
+    for (int d = 0; dec[d].ch != 0; d++)
     {
-        if( dec[d].ch == c )
+        if (dec[d].ch == c)
         {
             ret = dec[d].value;
             break;

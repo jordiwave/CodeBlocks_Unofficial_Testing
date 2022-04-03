@@ -7,13 +7,13 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>          // includes everything wxprec.h does
-#include <wx/menu.h>
-#include <wx/toolbar.h>
-#include <wx/combobox.h>
-#include <wx/checkbox.h>
-#include <wx/msgdlg.h>
-#include <wx/filedlg.h>
+    #include <wx/wx.h>          // includes everything wxprec.h does
+    #include <wx/menu.h>
+    #include <wx/toolbar.h>
+    #include <wx/combobox.h>
+    #include <wx/checkbox.h>
+    #include <wx/msgdlg.h>
+    #include <wx/filedlg.h>
 #endif // WX_PRECOMP
 
 #include <wx/tokenzr.h>

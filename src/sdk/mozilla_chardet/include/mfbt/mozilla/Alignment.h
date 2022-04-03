@@ -22,14 +22,14 @@ namespace mozilla
 template<typename T>
 class AlignmentFinder
 {
-    struct Aligner
-    {
-        char c;
-        T t;
-    };
+        struct Aligner
+        {
+            char c;
+            T t;
+        };
 
-public:
-    static const size_t alignment = sizeof(Aligner) - sizeof(T);
+    public:
+        static const size_t alignment = sizeof(Aligner) - sizeof(T);
 };
 
 #define MOZ_ALIGNOF(T) mozilla::AlignmentFinder<T>::alignment
@@ -46,10 +46,10 @@ public:
 
 #if defined(__GNUC__)
 #  define MOZ_ALIGNED_DECL(_type, _align) \
-     _type __attribute__((aligned(_align)))
+    _type __attribute__((aligned(_align)))
 #elif defined(_MSC_VER)
 #  define MOZ_ALIGNED_DECL(_type, _align) \
-     __declspec(align(_align)) _type
+    __declspec(align(_align)) _type
 #else
 #  warning "We don't know how to align variables on this compiler."
 #  define MOZ_ALIGNED_DECL(_type, _align) _type
@@ -118,11 +118,11 @@ struct AlignedStorage
         uint64_t _;
     } u;
 
-    const void* addr() const
+    const void * addr() const
     {
         return u.bytes;
     }
-    void* addr()
+    void * addr()
     {
         return u.bytes;
     }
@@ -137,13 +137,13 @@ struct AlignedStorage2
         uint64_t _;
     } u;
 
-    const T* addr() const
+    const T * addr() const
     {
-        return reinterpret_cast<const T*>(u.bytes);
+        return reinterpret_cast<const T *>(u.bytes);
     }
-    T* addr()
+    T * addr()
     {
-        return static_cast<T*>(static_cast<void*>(u.bytes));
+        return static_cast<T *>(static_cast<void *>(u.bytes));
     }
 };
 

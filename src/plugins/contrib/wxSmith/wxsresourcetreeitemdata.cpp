@@ -32,7 +32,7 @@ wxsResourceTreeItemData::~wxsResourceTreeItemData()
     wxsResourceTree::Get()->InvalidateItemData(this);
 }
 
-void wxsResourceTreeItemData::PopupMenu(wxMenu* Menu)
+void wxsResourceTreeItemData::PopupMenu(wxMenu * Menu)
 {
-    wxsResourceTree::Get()->PopupMenu(Menu,this);
+    wxsResourceTree::Get()->PopupMenu(Menu, this);
 }

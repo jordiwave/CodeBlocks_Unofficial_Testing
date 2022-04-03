@@ -39,78 +39,105 @@ PkgConfigManager::~PkgConfigManager()
 
 void PkgConfigManager::RefreshData()
 {
-    if ( !DetectVersion() /*|| !LoadLibraries() */)
+    if (!DetectVersion() /*|| !LoadLibraries() */)
+    {
         m_PkgConfigVersion = -1;
+    }
 }
 
 bool PkgConfigManager::DetectVersion()
 {
     wxArrayString Output;
     wxLogNull noLog;
-    if ( wxExecute(_T("pkg-config --version"),Output,wxEXEC_NODISABLE) != 0 )
-        return false; // Some error, we can not talk to pkg-config
 
-    if ( Output.Count() < 1 )
-        return false; // Did not receive version string
-
-    wxStringTokenizer VerTok(Output[0],_T("."));
-    long VersionNumbers[4] = { 0,0,0,0 };
-    int CurrentVersionToken = 0;
-
-    while ( VerTok.HasMoreTokens() && CurrentVersionToken<4 )
+    if (wxExecute(_T("pkg-config --version"), Output, wxEXEC_NODISABLE) != 0)
     {
-        if ( !VerTok.GetNextToken().ToLong(&VersionNumbers[CurrentVersionToken++],10) )
-            return false; // Incorrect version
+        return false;    // Some error, we can not talk to pkg-config
     }
 
-    if ( CurrentVersionToken==0 )
-        return false; // No suitable version number found
+    if (Output.Count() < 1)
+    {
+        return false;    // Did not receive version string
+    }
+
+    wxStringTokenizer VerTok(Output[0], _T("."));
+    long VersionNumbers[4] = { 0, 0, 0, 0 };
+    int CurrentVersionToken = 0;
+
+    while (VerTok.HasMoreTokens() && CurrentVersionToken < 4)
+    {
+        if (!VerTok.GetNextToken().ToLong(&VersionNumbers[CurrentVersionToken++], 10))
+        {
+            return false;    // Incorrect version
+        }
+    }
+
+    if (CurrentVersionToken == 0)
+    {
+        return false;    // No suitable version number found
+    }
 
     m_PkgConfigVersion =
-        ((VersionNumbers[0]&0xFFL) << 24) |
-        ((VersionNumbers[1]&0xFFL) << 16) |
-        ((VersionNumbers[2]&0xFFL) <<  8) |
-        ((VersionNumbers[3]&0xFFL) <<  0);
-
+        ((VersionNumbers[0] & 0xFFL) << 24) |
+        ((VersionNumbers[1] & 0xFFL) << 16) |
+        ((VersionNumbers[2] & 0xFFL) <<  8) |
+        ((VersionNumbers[3] & 0xFFL) <<  0);
     return true;
 }
 
-bool PkgConfigManager::DetectLibraries(ResultMap& Results)
+bool PkgConfigManager::DetectLibraries(ResultMap & Results)
 {
-    if ( !IsPkgConfig() ) return false;
+    if (!IsPkgConfig())
+    {
+        return false;
+    }
 
     wxLogNull noLog;
     wxArrayString Output;
-    if ( wxExecute(_T("pkg-config --list-all"),Output,wxEXEC_NODISABLE) != 0 )
-        return false; // Some error, we can not talk to pkg-config
+
+    if (wxExecute(_T("pkg-config --list-all"), Output, wxEXEC_NODISABLE) != 0)
+    {
+        return false;    // Some error, we can not talk to pkg-config
+    }
 
     Results.Clear();
-    for ( size_t i=0; i<Output.Count(); i++ )
+
+    for (size_t i = 0; i < Output.Count(); i++)
     {
         wxString Name;
-        wxString& Line = Output[i];
-
+        wxString & Line = Output[i];
         // Get the name
         // NOTE: This may not be accurate since library name is mapped to filename
         //       so white chars can be used as part of the name
         size_t j;
-        for ( j=0; j<Line.Length(); j++ )
+
+        for (j = 0; j < Line.Length(); j++)
         {
             wxChar ch = Line[j];
-            if ( ch==_T('\0') || ch==_T(' ') || ch==_T('\t') )
+
+            if (ch == _T('\0') || ch == _T(' ') || ch == _T('\t'))
+            {
                 break;
+            }
+
             Name += ch;
         }
-        if ( Name.IsEmpty() )
-            continue; // Woow, what was that ?
+
+        if (Name.IsEmpty())
+        {
+            continue;    // Woow, what was that ?
+        }
 
         // Eat white
-        while ( j<Line.Length() && (Line[j]==_T(' ') || Line[j]==_T('\t')) ) j++;
-        // After that, we have description
+        while (j < Line.Length() && (Line[j] == _T(' ') || Line[j] == _T('\t')))
+        {
+            j++;
+        }
 
-        LibraryResult* Result = new LibraryResult();
+        // After that, we have description
+        LibraryResult * Result = new LibraryResult();
         Result->Type = rtPkgConfig;
-//        Result->LibraryName =
+        //        Result->LibraryName =
         Result->ShortCode = Name;
         Result->PkgConfigVar = Name;
         Result->Description = Line.Mid(j);
@@ -124,9 +151,9 @@ void PkgConfigManager::Clear()
 {
 }
 
-bool PkgConfigManager::UpdateTarget(const wxString& VarName,CompileTargetBase* Target,bool /*Force*/)
+bool PkgConfigManager::UpdateTarget(const wxString & VarName, CompileTargetBase * Target, bool /*Force*/)
 {
     Target->AddCompilerOption(_T("`pkg-config ") + VarName + _T(" --cflags`"));
-    Target->AddLinkerOption  (_T("`pkg-config ") + VarName + _T(" --libs`"  ));
+    Target->AddLinkerOption(_T("`pkg-config ") + VarName + _T(" --libs`"));
     return true;
 }

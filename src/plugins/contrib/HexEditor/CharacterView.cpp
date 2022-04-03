@@ -24,11 +24,11 @@
 
 #include <algorithm>
 
-CharacterView::CharacterView( HexEditPanel* panel ): HexEditViewBase( panel )
+CharacterView::CharacterView(HexEditPanel * panel): HexEditViewBase(panel)
 {
 }
 
-void CharacterView::OnActivate( bool )
+void CharacterView::OnActivate(bool)
 {
     // We don't have to do anything
 }
@@ -37,7 +37,7 @@ void CharacterView::OnOffsetChange(
     OffsetT  /*screenStartOffset*/,
     OffsetT  /*currentOffset*/,
     OffsetT /*blockStart*/,
-    OffsetT /*blockEnd*/ )
+    OffsetT /*blockEnd*/)
 {
     // commented out the fopllowing 2 lines to avoid warning, since value set the argument that can in by value --> useless
     //blockStart = currentOffset;
@@ -47,82 +47,110 @@ void CharacterView::OnOffsetChange(
 void CharacterView::OnProcessChar(wxChar ch)
 {
     // We skip all non-printable characters
-    if ( !wxIsprint( ch ) || ch >= 0x100 ) return;
+    if (!wxIsprint(ch) || ch >= 0x100)
+    {
+        return;
+    }
 
     // Check if we didnt went out of the file
-    if ( GetCurrentOffset() >= GetContent()->GetSize() ) return;
+    if (GetCurrentOffset() >= GetContent()->GetSize())
+    {
+        return;
+    }
 
     // Calculate offset after the change
-    OffsetT nextPosition = std::min( GetContent()->GetSize(), GetCurrentOffset() + 1 );
-
+    OffsetT nextPosition = std::min(GetContent()->GetSize(), GetCurrentOffset() + 1);
     // Change affected byte
     GetContent()->WriteByte(
-        FileContentBase::ExtraUndoData( this, GetCurrentOffset(), 0, nextPosition, 0 ),
+        FileContentBase::ExtraUndoData(this, GetCurrentOffset(), 0, nextPosition, 0),
         GetCurrentOffset(),
-        (unsigned char) ch );
-
+        (unsigned char) ch);
     OnMoveRight();
 }
 
 void CharacterView::OnMoveLeft()
 {
-    if ( GetCurrentOffset() == 0 ) return;
-    OffsetChange( GetCurrentOffset() - 1 );
+    if (GetCurrentOffset() == 0)
+    {
+        return;
+    }
+
+    OffsetChange(GetCurrentOffset() - 1);
 }
 
 void CharacterView::OnMoveRight()
 {
-    if ( GetCurrentOffset() >= GetContent()->GetSize()-1 ) return;
-    OffsetChange( GetCurrentOffset() + 1 );
+    if (GetCurrentOffset() >= GetContent()->GetSize() - 1)
+    {
+        return;
+    }
+
+    OffsetChange(GetCurrentOffset() + 1);
 }
 
 void CharacterView::OnMoveUp()
 {
-    if ( GetCurrentOffset() < GetLineBytes() ) return;
-    OffsetChange( GetCurrentOffset() - GetLineBytes() );
+    if (GetCurrentOffset() < GetLineBytes())
+    {
+        return;
+    }
+
+    OffsetChange(GetCurrentOffset() - GetLineBytes());
 }
 
 void CharacterView::OnMoveDown()
 {
-    if ( GetCurrentOffset() >= GetContent()->GetSize() - GetLineBytes() ) return;
-    OffsetChange( GetCurrentOffset() + GetLineBytes() );
+    if (GetCurrentOffset() >= GetContent()->GetSize() - GetLineBytes())
+    {
+        return;
+    }
+
+    OffsetChange(GetCurrentOffset() + GetLineBytes());
 }
 
-void CharacterView::OnPutLine( OffsetT startOffset, HexEditLineBuffer& buff, char* content, int bytes )
+void CharacterView::OnPutLine(OffsetT startOffset, HexEditLineBuffer & buff, char * content, int bytes)
 {
-    for ( int i=0; i<bytes; ++i )
+    for (int i = 0; i < bytes; ++i)
     {
         buff.PutChar(
-            Strip( *content++ ),
-            ( startOffset+i != GetCurrentOffset() ) ? stNormal :
+            Strip(*content++),
+            (startOffset + i != GetCurrentOffset()) ? stNormal :
             GetActive() ? stCurCar : stCurNon
         );
     }
 
     int lineBytes = (int)GetLineBytes();
 
-    for ( int i=bytes; i<lineBytes; ++i )
+    for (int i = bytes; i < lineBytes; ++i)
     {
-        buff.PutChar( ' ' );
+        buff.PutChar(' ');
     }
 }
 
-void CharacterView::OnGetBlockSizes( int& blockLength, int& blockBytes, int& spacing )
+void CharacterView::OnGetBlockSizes(int & blockLength, int & blockBytes, int & spacing)
 {
     blockLength = 1;    // One char per byte
     blockBytes  = 1;    // One byte in block
     spacing     = 0;    // No spacing between blocks
 }
 
-int CharacterView::OnGetOffsetFromColumn( int column, int& positionFlags )
+int CharacterView::OnGetOffsetFromColumn(int column, int & positionFlags)
 {
     positionFlags = 0;
     return column;
 }
 
-inline char CharacterView::Strip( char ch )
+inline char CharacterView::Strip(char ch)
 {
-    if ( !isprint( ch ) ) return ' ';
-    if ( ch >= 0x7F ) return ' ';
+    if (!isprint(ch))
+    {
+        return ' ';
+    }
+
+    if (ch >= 0x7F)
+    {
+        return ' ';
+    }
+
     return ch;
 }

@@ -16,7 +16,7 @@ struct MarkerHandleNumber
 {
     int handle;
     int number;
-    MarkerHandleNumber *next;
+    MarkerHandleNumber * next;
 };
 
 /**
@@ -24,19 +24,19 @@ struct MarkerHandleNumber
  */
 class MarkerHandleSet
 {
-    MarkerHandleNumber *root;
+        MarkerHandleNumber * root;
 
-public:
-    MarkerHandleSet();
-    ~MarkerHandleSet();
-    int Length();
-    int NumberFromHandle(int handle);
-    int MarkValue();	///< Bit set of marker numbers.
-    bool Contains(int handle);
-    bool InsertHandle(int handle, int markerNum);
-    void RemoveHandle(int handle);
-    bool RemoveNumber(int markerNum);
-    void CombineWith(MarkerHandleSet *other);
+    public:
+        MarkerHandleSet();
+        ~MarkerHandleSet();
+        int Length();
+        int NumberFromHandle(int handle);
+        int MarkValue();	///< Bit set of marker numbers.
+        bool Contains(int handle);
+        bool InsertHandle(int handle, int markerNum);
+        void RemoveHandle(int handle);
+        bool RemoveNumber(int markerNum);
+        void CombineWith(MarkerHandleSet * other);
 };
 
 /**
@@ -46,7 +46,7 @@ public:
 struct LineData
 {
     int startPosition;
-    MarkerHandleSet *handleSet;
+    MarkerHandleSet * handleSet;
     LineData() : startPosition(0), handleSet(0)
     {
     }
@@ -57,34 +57,34 @@ struct LineData
  */
 class LineVector
 {
-public:
-    int growSize;
-    int lines;
-    LineData *linesData;
-    int size;
-    int *levels;
-    int sizeLevels;
+    public:
+        int growSize;
+        int lines;
+        LineData * linesData;
+        int size;
+        int * levels;
+        int sizeLevels;
 
-    /// Handles are allocated sequentially and should never have to be reused as 32 bit ints are very big.
-    int handleCurrent;
+        /// Handles are allocated sequentially and should never have to be reused as 32 bit ints are very big.
+        int handleCurrent;
 
-    LineVector();
-    ~LineVector();
-    void Init();
+        LineVector();
+        ~LineVector();
+        void Init();
 
-    void Expand(int sizeNew);
-    void ExpandLevels(int sizeNew=-1);
-    void ClearLevels();
-    void InsertValue(int pos, int value);
-    void SetValue(int pos, int value);
-    void Remove(int pos);
-    int LineFromPosition(int pos);
+        void Expand(int sizeNew);
+        void ExpandLevels(int sizeNew = -1);
+        void ClearLevels();
+        void InsertValue(int pos, int value);
+        void SetValue(int pos, int value);
+        void Remove(int pos);
+        int LineFromPosition(int pos);
 
-    int AddMark(int line, int marker);
-    void MergeMarkers(int pos);
-    void DeleteMark(int line, int markerNum, bool all);
-    void DeleteMarkFromHandle(int markerHandle);
-    int LineFromHandle(int markerHandle);
+        int AddMark(int line, int marker);
+        void MergeMarkers(int pos);
+        void DeleteMark(int line, int markerNum, bool all);
+        void DeleteMarkFromHandle(int markerHandle);
+        int LineFromHandle(int markerHandle);
 };
 
 enum actionType { insertAction, removeAction, startAction };
@@ -94,18 +94,18 @@ enum actionType { insertAction, removeAction, startAction };
  */
 class Action
 {
-public:
-    actionType at;
-    int position;
-    char *data;
-    int lenData;
-    bool mayCoalesce;
+    public:
+        actionType at;
+        int position;
+        char * data;
+        int lenData;
+        bool mayCoalesce;
 
-    Action();
-    ~Action();
-    void Create(actionType at_, int position_=0, char *data_=0, int lenData_=0, bool mayCoalesce_=true);
-    void Destroy();
-    void Grab(Action *source);
+        Action();
+        ~Action();
+        void Create(actionType at_, int position_ = 0, char * data_ = 0, int lenData_ = 0, bool mayCoalesce_ = true);
+        void Destroy();
+        void Grab(Action * source);
 };
 
 /**
@@ -113,41 +113,41 @@ public:
  */
 class UndoHistory
 {
-    Action *actions;
-    int lenActions;
-    int maxAction;
-    int currentAction;
-    int undoSequenceDepth;
-    int savePoint;
+        Action * actions;
+        int lenActions;
+        int maxAction;
+        int currentAction;
+        int undoSequenceDepth;
+        int savePoint;
 
-    void EnsureUndoRoom();
+        void EnsureUndoRoom();
 
-public:
-    UndoHistory();
-    ~UndoHistory();
+    public:
+        UndoHistory();
+        ~UndoHistory();
 
-    void AppendAction(actionType at, int position, char *data, int length);
+        void AppendAction(actionType at, int position, char * data, int length);
 
-    void BeginUndoAction();
-    void EndUndoAction();
-    void DropUndoSequence();
-    void DeleteUndoHistory();
+        void BeginUndoAction();
+        void EndUndoAction();
+        void DropUndoSequence();
+        void DeleteUndoHistory();
 
-    /// The save point is a marker in the undo stack where the container has stated that
-    /// the buffer was saved. Undo and redo can move over the save point.
-    void SetSavePoint();
-    bool IsSavePoint() const;
+        /// The save point is a marker in the undo stack where the container has stated that
+        /// the buffer was saved. Undo and redo can move over the save point.
+        void SetSavePoint();
+        bool IsSavePoint() const;
 
-    /// To perform an undo, StartUndo is called to retrieve the number of steps, then UndoStep is
-    /// called that many times. Similarly for redo.
-    bool CanUndo() const;
-    int StartUndo();
-    const Action &GetUndoStep() const;
-    void CompletedUndoStep();
-    bool CanRedo() const;
-    int StartRedo();
-    const Action &GetRedoStep() const;
-    void CompletedRedoStep();
+        /// To perform an undo, StartUndo is called to retrieve the number of steps, then UndoStep is
+        /// called that many times. Similarly for redo.
+        bool CanUndo() const;
+        int StartUndo();
+        const Action & GetUndoStep() const;
+        void CompletedUndoStep();
+        bool CanRedo() const;
+        int StartRedo();
+        const Action & GetRedoStep() const;
+        void CompletedRedoStep();
 };
 
 /**
@@ -157,103 +157,103 @@ public:
  */
 class CellBuffer
 {
-private:
-    char *body;		///< The cell buffer itself.
-    int size;		///< Allocated size of the buffer.
-    int length;		///< Total length of the data.
-    int part1len;	///< Length of the first part.
-    int gaplen;		///< Length of the gap between the two parts.
-    char *part2body;	///< The second part of the cell buffer.
-    ///< Doesn't point after the gap but set so that
-    ///< part2body[position] is consistent with body[position].
-    bool readOnly;
-    int growSize;
+    private:
+        char * body;		///< The cell buffer itself.
+        int size;		///< Allocated size of the buffer.
+        int length;		///< Total length of the data.
+        int part1len;	///< Length of the first part.
+        int gaplen;		///< Length of the gap between the two parts.
+        char * part2body;	///< The second part of the cell buffer.
+        ///< Doesn't point after the gap but set so that
+        ///< part2body[position] is consistent with body[position].
+        bool readOnly;
+        int growSize;
 
-    bool collectingUndo;
-    UndoHistory uh;
+        bool collectingUndo;
+        UndoHistory uh;
 
-    LineVector lv;
+        LineVector lv;
 
-    SVector lineStates;
+        SVector lineStates;
 
-    void GapTo(int position);
-    void RoomFor(int insertionLength);
+        void GapTo(int position);
+        void RoomFor(int insertionLength);
 
-    inline char ByteAt(int position);
-    void SetByteAt(int position, char ch);
+        inline char ByteAt(int position);
+        void SetByteAt(int position, char ch);
 
-public:
+    public:
 
-    CellBuffer(int initialLength = 4000);
-    ~CellBuffer();
+        CellBuffer(int initialLength = 4000);
+        ~CellBuffer();
 
-    /// Retrieving positions outside the range of the buffer works and returns 0
-    char CharAt(int position);
-    void GetCharRange(char *buffer, int position, int lengthRetrieve);
-    char StyleAt(int position);
+        /// Retrieving positions outside the range of the buffer works and returns 0
+        char CharAt(int position);
+        void GetCharRange(char * buffer, int position, int lengthRetrieve);
+        char StyleAt(int position);
 
-    int ByteLength();
-    int Length();
-    void Allocate(int newSize);
-    int Lines();
-    int LineStart(int line);
-    int LineFromPosition(int pos)
-    {
-        return lv.LineFromPosition(pos);
-    }
-    const char *InsertString(int position, char *s, int insertLength);
+        int ByteLength();
+        int Length();
+        void Allocate(int newSize);
+        int Lines();
+        int LineStart(int line);
+        int LineFromPosition(int pos)
+        {
+            return lv.LineFromPosition(pos);
+        }
+        const char * InsertString(int position, char * s, int insertLength);
 
-    /// Setting styles for positions outside the range of the buffer is safe and has no effect.
-    /// @return true if the style of a character is changed.
-    bool SetStyleAt(int position, char style, char mask='\377');
-    bool SetStyleFor(int position, int length, char style, char mask);
+        /// Setting styles for positions outside the range of the buffer is safe and has no effect.
+        /// @return true if the style of a character is changed.
+        bool SetStyleAt(int position, char style, char mask = '\377');
+        bool SetStyleFor(int position, int length, char style, char mask);
 
-    const char *DeleteChars(int position, int deleteLength);
+        const char * DeleteChars(int position, int deleteLength);
 
-    bool IsReadOnly();
-    void SetReadOnly(bool set);
+        bool IsReadOnly();
+        void SetReadOnly(bool set);
 
-    /// The save point is a marker in the undo stack where the container has stated that
-    /// the buffer was saved. Undo and redo can move over the save point.
-    void SetSavePoint();
-    bool IsSavePoint();
+        /// The save point is a marker in the undo stack where the container has stated that
+        /// the buffer was saved. Undo and redo can move over the save point.
+        void SetSavePoint();
+        bool IsSavePoint();
 
-    /// Line marker functions
-    int AddMark(int line, int markerNum);
-    void DeleteMark(int line, int markerNum);
-    void DeleteMarkFromHandle(int markerHandle);
-    int GetMark(int line);
-    void DeleteAllMarks(int markerNum);
-    int LineFromHandle(int markerHandle);
+        /// Line marker functions
+        int AddMark(int line, int markerNum);
+        void DeleteMark(int line, int markerNum);
+        void DeleteMarkFromHandle(int markerHandle);
+        int GetMark(int line);
+        void DeleteAllMarks(int markerNum);
+        int LineFromHandle(int markerHandle);
 
-    /// Actions without undo
-    void BasicInsertString(int position, char *s, int insertLength);
-    void BasicDeleteChars(int position, int deleteLength);
+        /// Actions without undo
+        void BasicInsertString(int position, char * s, int insertLength);
+        void BasicDeleteChars(int position, int deleteLength);
 
-    bool SetUndoCollection(bool collectUndo);
-    bool IsCollectingUndo();
-    void BeginUndoAction();
-    void EndUndoAction();
-    void DeleteUndoHistory();
+        bool SetUndoCollection(bool collectUndo);
+        bool IsCollectingUndo();
+        void BeginUndoAction();
+        void EndUndoAction();
+        void DeleteUndoHistory();
 
-    /// To perform an undo, StartUndo is called to retrieve the number of steps, then UndoStep is
-    /// called that many times. Similarly for redo.
-    bool CanUndo();
-    int StartUndo();
-    const Action &GetUndoStep() const;
-    void PerformUndoStep();
-    bool CanRedo();
-    int StartRedo();
-    const Action &GetRedoStep() const;
-    void PerformRedoStep();
+        /// To perform an undo, StartUndo is called to retrieve the number of steps, then UndoStep is
+        /// called that many times. Similarly for redo.
+        bool CanUndo();
+        int StartUndo();
+        const Action & GetUndoStep() const;
+        void PerformUndoStep();
+        bool CanRedo();
+        int StartRedo();
+        const Action & GetRedoStep() const;
+        void PerformRedoStep();
 
-    int SetLineState(int line, int state);
-    int GetLineState(int line);
-    int GetMaxLineState();
+        int SetLineState(int line, int state);
+        int GetLineState(int line);
+        int GetMaxLineState();
 
-    int SetLevel(int line, int level);
-    int GetLevel(int line);
-    void ClearLevels();
+        int SetLevel(int line, int level);
+        int GetLevel(int line);
+        void ClearLevels();
 };
 
 #define CELL_SIZE	2

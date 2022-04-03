@@ -23,21 +23,21 @@
 #include "wxsquickpropspanel.h"
 #include "wxspropertycontainer.h"
 
-wxsQuickPropsPanel::wxsQuickPropsPanel(wxsPropertyContainer* PC):
+wxsQuickPropsPanel::wxsQuickPropsPanel(wxsPropertyContainer * PC):
     wxPanel(),
     Container(PC)
 {
 }
 
 wxsQuickPropsPanel::wxsQuickPropsPanel(
-    wxWindow* parent,
-    wxsPropertyContainer* PC,
+    wxWindow * parent,
+    wxsPropertyContainer * PC,
     wxWindowID id,
-    const wxPoint& pos,
-    const wxSize& size,
+    const wxPoint & pos,
+    const wxSize & size,
     long style,
-    const wxString& name):
-    wxPanel(parent,id,pos,size,style,name),
+    const wxString & name):
+    wxPanel(parent, id, pos, size, style, name),
     Container(PC)
 {
 }
@@ -45,7 +45,7 @@ wxsQuickPropsPanel::wxsQuickPropsPanel(
 wxsQuickPropsPanel::~wxsQuickPropsPanel()
 {
     // Notifying container that quick properties object does no longer exist
-    if ( Container )
+    if (Container)
     {
         Container->CurrentQP = 0;
         Container = 0;
@@ -54,7 +54,7 @@ wxsQuickPropsPanel::~wxsQuickPropsPanel()
 
 void wxsQuickPropsPanel::NotifyChange()
 {
-    if ( Container )
+    if (Container)
     {
         Container->NotifyPropertyChangeFromQuickProps();
     }

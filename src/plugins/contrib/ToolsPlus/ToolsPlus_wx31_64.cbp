@@ -6,14 +6,29 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/ToolsPlus" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/ToolsPlus" />
+				<Option output="../../../devel31_64/share/codeblocks/plugins/ToolsPlus" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs31_64/plugins/contrib/ToolsPlus" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks.exe" />
+				<Option host_application="../../../devel31_64/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
+				<Compiler>
+					<Add option="$(#CB_RELEASE_TYPE)" />
+				</Compiler>
+				<Linker>
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add library="gdi32" />
+					<Add directory="../../../devel31_64" />
+					<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)" />
+				</Linker>
 			</Target>
+			<Environment>
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_VERSION" value="31" />
+			</Environment>
 		</Build>
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
@@ -27,31 +42,25 @@
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
-			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
+			<Add option="-D_WIN64" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DBUILDING_PLUGIN" />
-			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
-			<Add option="$(#CB_BUILD.CFLAGS)" />
-			<Add directory="$(#CB_BUILD)/include" />
-			<Add directory="$(#CB_BUILD)/include/tinyxml" />
-			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
-			<Add directory="$(#WXWIDGETS.include)" />
-			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add option="-std=gnu++11" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="$(#WX31_64.include)" />
+			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 		</Compiler>
 		<Linker>
-			<Add library="codeblocks" />
-			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
-			<Add library="gdi32" />
-			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
-			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
 			<Add option="-mthreads" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\ToolsPlus.zip manifest.xml" />
-			<Add after="update$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS).bat" />
+			<Add after="zip -j9 ..\..\..\devel31_64\share\codeblocks\ToolsPlus.zip manifest.xml" />
+			<Add after="update31_64.bat" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="CmdConfigDialog.cpp" />
@@ -69,7 +78,7 @@
 		<Unit filename="shellproperties.cpp" />
 		<Unit filename="shellproperties.h" />
 		<Unit filename="update31" />
-		<Unit filename="update$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS).bat" />
+		<Unit filename="update31_64.bat" />
 		<Extensions>
 			<code_completion />
 			<envvars />

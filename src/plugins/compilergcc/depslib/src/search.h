@@ -11,8 +11,8 @@
  */
 #define SEARCH_OPTIM
 
-extern const char *search(const char *source, const char *_header, time_t *time);
-extern void search_adddir(const char *path);
+extern const char * search(const char * source, const char * _header, time_t * time);
+extern void search_adddir(const char * path);
 extern void search_init(void);
 extern void donesearch(void);
 

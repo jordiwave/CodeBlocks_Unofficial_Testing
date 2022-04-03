@@ -46,177 +46,237 @@ enum executionError
 /** \brief Holder for value type */
 class Value
 {
-public:
+    public:
 
-    Value( signed char v        )
-    {
-        SetSignedInt( v );
-    }
-    Value( signed short v       )
-    {
-        SetSignedInt( v );
-    }
-    Value( signed int v         )
-    {
-        SetSignedInt( v );
-    }
-    Value( signed long v        )
-    {
-        SetSignedInt( v );
-    }
-    Value( signed long long v   )
-    {
-        SetSignedInt( v );
-    }
-    Value( unsigned char v      )
-    {
-        SetUnsignedInt( v );
-    }
-    Value( unsigned short v     )
-    {
-        SetUnsignedInt( v );
-    }
-    Value( unsigned int v       )
-    {
-        SetUnsignedInt( v );
-    }
-    Value( unsigned long v      )
-    {
-        SetUnsignedInt( v );
-    }
-    Value( unsigned long long v )
-    {
-        SetUnsignedInt( v );
-    }
-    Value( float v              )
-    {
-        SetFloat( v );
-    }
-    Value( double v             )
-    {
-        SetFloat( v );
-    }
-    Value( long double v        )
-    {
-        SetFloat( v );
-    }
+        Value(signed char v)
+        {
+            SetSignedInt(v);
+        }
+        Value(signed short v)
+        {
+            SetSignedInt(v);
+        }
+        Value(signed int v)
+        {
+            SetSignedInt(v);
+        }
+        Value(signed long v)
+        {
+            SetSignedInt(v);
+        }
+        Value(signed long long v)
+        {
+            SetSignedInt(v);
+        }
+        Value(unsigned char v)
+        {
+            SetUnsignedInt(v);
+        }
+        Value(unsigned short v)
+        {
+            SetUnsignedInt(v);
+        }
+        Value(unsigned int v)
+        {
+            SetUnsignedInt(v);
+        }
+        Value(unsigned long v)
+        {
+            SetUnsignedInt(v);
+        }
+        Value(unsigned long long v)
+        {
+            SetUnsignedInt(v);
+        }
+        Value(float v)
+        {
+            SetFloat(v);
+        }
+        Value(double v)
+        {
+            SetFloat(v);
+        }
+        Value(long double v)
+        {
+            SetFloat(v);
+        }
 
-    //Value( const Value& copyFrom );
+        //Value( const Value& copyFrom );
 
-    inline bool IsSignedInt()
-    {
-        return m_Type == tSignedInt;
-    }
-    inline bool IsUnsignedInt()
-    {
-        return m_Type == tUnsignedInt;
-    }
-    inline bool IsFloat()
-    {
-        return m_Type == tFloat;
-    }
+        inline bool IsSignedInt()
+        {
+            return m_Type == tSignedInt;
+        }
+        inline bool IsUnsignedInt()
+        {
+            return m_Type == tUnsignedInt;
+        }
+        inline bool IsFloat()
+        {
+            return m_Type == tFloat;
+        }
 
-    inline signed long long   GetSignedInt()
-    {
-        if ( !IsSignedInt()   ) throw errorType;
-        return m_SignedInt;
-    }
-    inline unsigned long long GetUnsignedInt()
-    {
-        if ( !IsUnsignedInt() ) throw errorType;
-        return m_UnsignedInt;
-    }
-    inline long double        GetFloat()
-    {
-        if ( !IsFloat()       ) throw errorType;
-        return m_Float;
-    }
+        inline signed long long   GetSignedInt()
+        {
+            if (!IsSignedInt())
+            {
+                throw errorType;
+            }
 
-    //Value& operator= ( const Value& copyFrom );
-    bool operator< ( const Value& second ) const;
+            return m_SignedInt;
+        }
+        inline unsigned long long GetUnsignedInt()
+        {
+            if (!IsUnsignedInt())
+            {
+                throw errorType;
+            }
 
-    template< typename T >
-    inline bool operator== ( T value )
-    {
-        if ( IsSignedInt()   ) return value == (T)m_SignedInt;
-        if ( IsUnsignedInt() ) return value == (T)m_UnsignedInt;
-        if ( IsFloat()       ) return value == (T)m_Float;
-        return false;
-    }
+            return m_UnsignedInt;
+        }
+        inline long double        GetFloat()
+        {
+            if (!IsFloat())
+            {
+                throw errorType;
+            }
 
-    template< typename T >
-    inline bool operator< ( T value )
-    {
-        if ( IsSignedInt()   ) return value > (T)m_SignedInt;
-        if ( IsUnsignedInt() ) return value > (T)m_UnsignedInt;
-        if ( IsFloat()       ) return value > (T)m_Float;
-        return false;
-    }
+            return m_Float;
+        }
 
-    template< typename T >
-    inline bool operator<= ( T value )
-    {
-        if ( IsSignedInt()   ) return value >= (T)m_SignedInt;
-        if ( IsUnsignedInt() ) return value >= (T)m_UnsignedInt;
-        if ( IsFloat()       ) return value >= (T)m_Float;
-        return false;
-    }
+        //Value& operator= ( const Value& copyFrom );
+        bool operator< (const Value & second) const;
 
-    template< typename T >
-    inline bool operator> ( T value )
-    {
-        return !operator<= ( value );
-    }
+        template< typename T >
+        inline bool operator== (T value)
+        {
+            if (IsSignedInt())
+            {
+                return value == (T)m_SignedInt;
+            }
 
-    template< typename T >
-    inline bool operator>= ( T value )
-    {
-        return !operator< ( value );
-    }
+            if (IsUnsignedInt())
+            {
+                return value == (T)m_UnsignedInt;
+            }
 
-    friend inline std::ostream& operator<< ( std::ostream& out, Value& v )
-    {
-        if ( v.IsSignedInt()   ) out << v.m_SignedInt << "(sint)";
-        if ( v.IsUnsignedInt() ) out << v.m_UnsignedInt << "(uint)";
-        if ( v.IsFloat()       ) out << v.m_Float << "(float)";
-        return out;
-    }
+            if (IsFloat())
+            {
+                return value == (T)m_Float;
+            }
 
-private:
+            return false;
+        }
 
-    enum TypeT
-    {
-        tSignedInt,
-        tUnsignedInt,
-        tFloat
-    };
+        template< typename T >
+        inline bool operator< (T value)
+        {
+            if (IsSignedInt())
+            {
+                return value > (T)m_SignedInt;
+            }
 
-    TypeT m_Type;
+            if (IsUnsignedInt())
+            {
+                return value > (T)m_UnsignedInt;
+            }
 
-    union
-    {
-        signed   long long m_SignedInt;
-        unsigned long long m_UnsignedInt;
-        long double        m_Float;
-    };
+            if (IsFloat())
+            {
+                return value > (T)m_Float;
+            }
 
-    template< typename T > inline void SetSignedInt( T v )
-    {
-        m_Type = tSignedInt;
-        m_SignedInt = v;
-    }
+            return false;
+        }
 
-    template< typename T > inline void SetUnsignedInt( T v )
-    {
-        m_Type = tUnsignedInt;
-        m_SignedInt = v;
-    }
+        template< typename T >
+        inline bool operator<= (T value)
+        {
+            if (IsSignedInt())
+            {
+                return value >= (T)m_SignedInt;
+            }
 
-    template< typename T > inline void SetFloat( T v )
-    {
-        m_Type = tFloat;
-        m_Float = v;
-    }
+            if (IsUnsignedInt())
+            {
+                return value >= (T)m_UnsignedInt;
+            }
+
+            if (IsFloat())
+            {
+                return value >= (T)m_Float;
+            }
+
+            return false;
+        }
+
+        template< typename T >
+        inline bool operator> (T value)
+        {
+            return !operator<= (value);
+        }
+
+        template< typename T >
+        inline bool operator>= (T value)
+        {
+            return !operator< (value);
+        }
+
+        friend inline std::ostream & operator<< (std::ostream & out, Value & v)
+        {
+            if (v.IsSignedInt())
+            {
+                out << v.m_SignedInt << "(sint)";
+            }
+
+            if (v.IsUnsignedInt())
+            {
+                out << v.m_UnsignedInt << "(uint)";
+            }
+
+            if (v.IsFloat())
+            {
+                out << v.m_Float << "(float)";
+            }
+
+            return out;
+        }
+
+    private:
+
+        enum TypeT
+        {
+            tSignedInt,
+            tUnsignedInt,
+            tFloat
+        };
+
+        TypeT m_Type;
+
+        union
+        {
+            signed   long long m_SignedInt;
+            unsigned long long m_UnsignedInt;
+            long double        m_Float;
+        };
+
+        template< typename T > inline void SetSignedInt(T v)
+        {
+            m_Type = tSignedInt;
+            m_SignedInt = v;
+        }
+
+        template< typename T > inline void SetUnsignedInt(T v)
+        {
+            m_Type = tUnsignedInt;
+            m_SignedInt = v;
+        }
+
+        template< typename T > inline void SetFloat(T v)
+        {
+            m_Type = tFloat;
+            m_Float = v;
+        }
 };
 
 /** \brief Structure of one opcode */
@@ -291,59 +351,67 @@ struct Operation
 /** \brief Preprocessed expression */
 class Preprocessed
 {
-public:
+    public:
 
-    /** \brief Ctor */
-    Preprocessed();
+        /** \brief Ctor */
+        Preprocessed();
 
-    /** \brief Dctor */
-    ~Preprocessed();
+        /** \brief Dctor */
+        ~Preprocessed();
 
-    /** \brief Clearing the code */
-    inline void Clear()
-    {
-        m_CodeArguments.clear();
-        m_Code.clear();
-    }
+        /** \brief Clearing the code */
+        inline void Clear()
+        {
+            m_CodeArguments.clear();
+            m_Code.clear();
+        }
 
-    /** \brief Push operation onto the end of code */
-    inline int PushOperation( const Operation& op )
-    {
-        m_Code.push_back( op );
-        return (int)m_Code.size()-1;
-    }
+        /** \brief Push operation onto the end of code */
+        inline int PushOperation(const Operation & op)
+        {
+            m_Code.push_back(op);
+            return (int)m_Code.size() - 1;
+        }
 
-    /** \brief Push argumet onto the end of constant arguments list */
-    inline int PushArgument( const Value& v )
-    {
-        m_CodeArguments.push_back( v );
-        return (int)m_CodeArguments.size()-1;
-    }
+        /** \brief Push argumet onto the end of constant arguments list */
+        inline int PushArgument(const Value & v)
+        {
+            m_CodeArguments.push_back(v);
+            return (int)m_CodeArguments.size() - 1;
+        }
 
-    /** \brief Get operation at given position */
-    inline const Operation& GetOperation( int pos ) const
-    {
-        if ( (size_t)pos >= m_Code.size() ) throw errorOperationIndex;
-        return m_Code[ pos ];
-    }
+        /** \brief Get operation at given position */
+        inline const Operation & GetOperation(int pos) const
+        {
+            if ((size_t)pos >= m_Code.size())
+            {
+                throw errorOperationIndex;
+            }
 
-    /** \brief Get argument at given position */
-    inline const Value& GetArgument( int pos ) const
-    {
-        if ( (size_t)pos >= m_CodeArguments.size() ) throw errorArgumentIndex;
-        return m_CodeArguments[ pos ];
-    }
+            return m_Code[ pos ];
+        }
 
-    /** \brief Dump the code as asm into human-readable form */
-    wxString DumpCode();
+        /** \brief Get argument at given position */
+        inline const Value & GetArgument(int pos) const
+        {
+            if ((size_t)pos >= m_CodeArguments.size())
+            {
+                throw errorArgumentIndex;
+            }
 
-    /** \brief Dump arguments into himan-readable form */
-    wxString DumpArgs();
+            return m_CodeArguments[ pos ];
+        }
 
-private:
+        /** \brief Dump the code as asm into human-readable form */
+        wxString DumpCode();
 
-    std::vector< Value >     m_CodeArguments;       ///< \brief list of arguments
-    std::vector< Operation > m_Code;                ///< \brief the code
+        /** \brief Dump arguments into himan-readable form */
+        wxString DumpArgs();
+
+    private:
+
+        std::vector< Value >     m_CodeArguments;       ///< \brief list of arguments
+        std::vector< Operation > m_Code;                ///< \brief the code
 };
 }
 

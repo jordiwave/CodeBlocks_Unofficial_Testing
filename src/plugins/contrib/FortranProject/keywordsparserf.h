@@ -9,11 +9,11 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/string.h>
-#include <wx/event.h>
-#include <wx/file.h>
+    #include <wx/string.h>
+    #include <wx/event.h>
+    #include <wx/file.h>
 
-#include <cbeditor.h>
+    #include <cbeditor.h>
 #endif
 #include <set>
 #include <vector>
@@ -35,31 +35,31 @@ enum CompilerDirective
 
 class KeywordsParserF
 {
-public:
-    KeywordsParserF();
-    ~KeywordsParserF();
-    bool HasTokenSuitableKind(const wxString& name, int tokKind);
-    void GetCallTips(const wxString& name, wxArrayString& callTips, TokensArrayFlat* result);
-    void FindTokens(const wxString& name, TokensArrayFlat& result);
-    ParserF* GetParser()
-    {
-        return &m_Parser;
-    };
-    const wxArrayString* GetKeywords(CompilerDirective cdir);
+    public:
+        KeywordsParserF();
+        ~KeywordsParserF();
+        bool HasTokenSuitableKind(const wxString & name, int tokKind);
+        void GetCallTips(const wxString & name, wxArrayString & callTips, TokensArrayFlat * result);
+        void FindTokens(const wxString & name, TokensArrayFlat & result);
+        ParserF * GetParser()
+        {
+            return &m_Parser;
+        };
+        const wxArrayString * GetKeywords(CompilerDirective cdir);
 
-protected:
-private:
-    void MakeOtherKeywordSet();
-    bool m_IsDone;
+    protected:
+    private:
+        void MakeOtherKeywordSet();
+        bool m_IsDone;
 
-    ParserF m_Parser;
+        ParserF m_Parser;
 
-    StringSet m_SubrSet;
-    StringSet m_FuncSet;
-    StringSet m_OtherKeywordSet;
+        StringSet m_SubrSet;
+        StringSet m_FuncSet;
+        StringSet m_OtherKeywordSet;
 
-    wxArrayString m_OpenMPKeywords;
-    wxArrayString m_OpenACCKeywords;
+        wxArrayString m_OpenMPKeywords;
+        wxArrayString m_OpenACCKeywords;
 };
 
 #endif // KEYWORDSPARSERF_H

@@ -4,5 +4,5 @@
 #define main_ui_h
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
-Fl_Double_Window* make_window();
+Fl_Double_Window * make_window();
 #endif

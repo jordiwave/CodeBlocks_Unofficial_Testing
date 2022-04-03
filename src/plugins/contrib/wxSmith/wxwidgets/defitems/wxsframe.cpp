@@ -28,9 +28,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsFrame> Reg( _T("Frame"), wxsTContainer, _T(""), 0 );
+wxsRegisterItem<wxsFrame> Reg(_T("Frame"), wxsTContainer, _T(""), 0);
 
-WXS_ST_BEGIN(wxsFrameStyles,_T("wxDEFAULT_FRAME_STYLE"))
+WXS_ST_BEGIN(wxsFrameStyles, _T("wxDEFAULT_FRAME_STYLE"))
 WXS_ST_CATEGORY("wxFrame")
 WXS_ST(wxCAPTION)
 WXS_ST(wxDEFAULT_DIALOG_STYLE)
@@ -52,18 +52,18 @@ WXS_ST_DEFAULTS()
 WXS_ST_END()
 
 WXS_EV_BEGIN(wxsFrameEvents)
-WXS_EVI(EVT_CLOSE,wxEVT_CLOSE_WINDOW,wxCloseEvent,Close)
-WXS_EVI(EVT_ACTIVATE,wxEVT_ACTIVATE,wxActivateEvent,Activate)
-WXS_EVI(EVT_ICONIZE,wxEVT_ICONIZE,wxIconizeEvent,Iconize)
-WXS_EVI(EVT_MENU_OPEN,wxEVT_MENU_OPEN,wxMenuEvent,MenuOpen)
-WXS_EVI(EVT_MENU_CLOSE,wxEVT_MENU_CLOSE,wxMenuEvent,MenuClose)
-WXS_EVI(EVT_MENU_HIGHLIGHT_ALL,wxEVT_MENU_HIGHLIGHT,wxMenuEvent,MenuHighlightAll)
+WXS_EVI(EVT_CLOSE, wxEVT_CLOSE_WINDOW, wxCloseEvent, Close)
+WXS_EVI(EVT_ACTIVATE, wxEVT_ACTIVATE, wxActivateEvent, Activate)
+WXS_EVI(EVT_ICONIZE, wxEVT_ICONIZE, wxIconizeEvent, Iconize)
+WXS_EVI(EVT_MENU_OPEN, wxEVT_MENU_OPEN, wxMenuEvent, MenuOpen)
+WXS_EVI(EVT_MENU_CLOSE, wxEVT_MENU_CLOSE, wxMenuEvent, MenuClose)
+WXS_EVI(EVT_MENU_HIGHLIGHT_ALL, wxEVT_MENU_HIGHLIGHT, wxMenuEvent, MenuHighlightAll)
 WXS_EV_DEFAULTS()
 WXS_EV_END()
 
 }
 
-wxsFrame::wxsFrame(wxsItemResData* Data):
+wxsFrame::wxsFrame(wxsItemResData * Data):
     wxsContainer(
         Data,
         &Reg.Info,
@@ -75,107 +75,119 @@ wxsFrame::wxsFrame(wxsItemResData* Data):
 
 void wxsFrame::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/frame.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%W, %I, %t, wxDefaultPosition, wxDefaultSize, %T, %N);\n"),Title.wx_str());
-        if ( !GetBaseProps()->m_Size.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_SizeFromArg) )
+        case wxsCPP:
         {
-            Codef(_T("%ASetClientSize(%S);\n"));
-        }
-        if ( !GetBaseProps()->m_Position.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_PositionFromArg) )
-        {
-            Codef(_T("%AMove(%P);\n"));
-        }
-        BuildSetupWindowCode();
-        if ( !Icon.IsEmpty() )
-        {
-            AddHeader(_T("<wx/icon.h>"), GetInfo().ClassName, hfLocal);
-            Codef(
-                _T("{\n")
-                _T("\twxIcon FrameIcon;\n")
-                _T("\tFrameIcon.CopyFromBitmap(%i);\n")
-                _T("\t%ASetIcon(FrameIcon);\n")
-                _T("}\n"),
-                &Icon,_T("wxART_FRAME_ICON"));
+            AddHeader(_T("<wx/frame.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %t, wxDefaultPosition, wxDefaultSize, %T, %N);\n"), Title.wx_str());
+
+            if (!GetBaseProps()->m_Size.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_SizeFromArg))
+            {
+                Codef(_T("%ASetClientSize(%S);\n"));
+            }
+
+            if (!GetBaseProps()->m_Position.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_PositionFromArg))
+            {
+                Codef(_T("%AMove(%P);\n"));
+            }
+
+            BuildSetupWindowCode();
+
+            if (!Icon.IsEmpty())
+            {
+                AddHeader(_T("<wx/icon.h>"), GetInfo().ClassName, hfLocal);
+                Codef(
+                    _T("{\n")
+                    _T("\twxIcon FrameIcon;\n")
+                    _T("\tFrameIcon.CopyFromBitmap(%i);\n")
+                    _T("\t%ASetIcon(FrameIcon);\n")
+                    _T("}\n"),
+                    &Icon, _T("wxART_FRAME_ICON"));
+            }
+
+            AddChildrenCode();
+
+            if (Centered)
+            {
+                Codef(_T("%ACenter();\n"));
+            }
+
+            return;
         }
 
-        AddChildrenCode();
-        if ( Centered )
+        case wxsUnknownLanguage: // fall-through
+        default:
         {
-            Codef(_T("%ACenter();\n"));
+            wxsCodeMarks::Unknown(_T("wxsFrame::OnBuildCreatingCode"), GetLanguage());
         }
-
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsFrame::OnBuildCreatingCode"),GetLanguage());
-    }
     }
 }
 
-wxObject* wxsFrame::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsFrame::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxWindow* NewItem = 0;
-    wxFrame* Frm = 0;
+    wxWindow * NewItem = 0;
+    wxFrame * Frm = 0;
 
     // In case of frame and dialog when in "Exact" mode, we do not create
     // new object, but use Parent and call Create for it.
-    if ( Flags & pfExact )
+    if (Flags & pfExact)
     {
-        Frm = wxDynamicCast(Parent,wxFrame);
-        if ( Frm )
+        Frm = wxDynamicCast(Parent, wxFrame);
+
+        if (Frm)
         {
-            Frm->Create(0,GetId(),Title,wxDefaultPosition,wxDefaultSize,Style());
+            Frm->Create(0, GetId(), Title, wxDefaultPosition, wxDefaultSize, Style());
             Frm->SetClientSize(Size(wxTheApp->GetTopWindow()));
             Frm->Move(Pos(wxTheApp->GetTopWindow()));
         }
+
         NewItem = Frm;
-        SetupWindow(NewItem,Flags);
-        if ( !Icon.IsEmpty() )
+        SetupWindow(NewItem, Flags);
+
+        if (!Icon.IsEmpty())
         {
             wxIcon FrameIcon;
-            FrameIcon.CopyFromBitmap(Icon.GetPreview(wxDefaultSize,_T("wxART_FRAME_ICON")));
+            FrameIcon.CopyFromBitmap(Icon.GetPreview(wxDefaultSize, _T("wxART_FRAME_ICON")));
             Frm->SetIcon(FrameIcon);
         }
 
-        AddChildrenPreview(NewItem,Flags);
-        if ( Centered )
+        AddChildrenPreview(NewItem, Flags);
+
+        if (Centered)
         {
             Frm->Centre();
         }
-
     }
     else
     {
-        NewItem = new wxsGridPanel(Parent,GetId(),wxDefaultPosition,Size(Parent),0);
+        NewItem = new wxsGridPanel(Parent, GetId(), wxDefaultPosition, Size(Parent), 0);
         NewItem->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
-        SetupWindow(NewItem,Flags);
-        AddChildrenPreview(NewItem,Flags);
+        SetupWindow(NewItem, Flags);
+        AddChildrenPreview(NewItem, Flags);
 
         // wxPanel tends to behave very strange when it has children and no sizer,
         // we have to manually resize it's content
-        if ( !GetChildCount() || GetChild(0)->GetType()!=wxsTSizer )
+        if (!GetChildCount() || GetChild(0)->GetType() != wxsTSizer)
         {
             wxSize NewSize = Size(Parent);
-            if ( !NewSize.IsFullySpecified() )
+
+            if (!NewSize.IsFullySpecified())
             {
-                NewSize.SetDefaults(wxSize(400,450));
+                NewSize.SetDefaults(wxSize(400, 450));
             }
+
             NewItem->SetSize(NewSize);
             NewItem->SetInitialSize(NewSize);
-            if ( GetChildCount() == 1 )
+
+            if (GetChildCount() == 1)
             {
                 // If there's only one child it's size gets dialog's size
-                wxWindow* ChildPreview = wxDynamicCast(GetChild(0)->GetLastPreview(),wxWindow);
-                if ( ChildPreview )
+                wxWindow * ChildPreview = wxDynamicCast(GetChild(0)->GetLastPreview(), wxWindow);
+
+                if (ChildPreview)
                 {
-                    ChildPreview->SetSize(0,0,NewItem->GetClientSize().GetWidth(),NewItem->GetClientSize().GetHeight());
+                    ChildPreview->SetSize(0, 0, NewItem->GetClientSize().GetWidth(), NewItem->GetClientSize().GetHeight());
                 }
             }
         }
@@ -186,7 +198,7 @@ wxObject* wxsFrame::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsFrame::OnEnumContainerProperties(cb_unused long Flags)
 {
-    WXS_SHORT_STRING(wxsFrame,Title,_("Title"),_T("title"),_T(""),false)
-    WXS_BOOL(wxsFrame,Centered,_("Centered"),_T("centered"),false);
-    WXS_ICON(wxsFrame,Icon,_T("Icon"),_T("icon"),_T("wxART_FRAME_ICON"));
+    WXS_SHORT_STRING(wxsFrame, Title, _("Title"), _T("title"), _T(""), false)
+    WXS_BOOL(wxsFrame, Centered, _("Centered"), _T("centered"), false);
+    WXS_ICON(wxsFrame, Icon, _T("Icon"), _T("icon"), _T("wxART_FRAME_ICON"));
 }

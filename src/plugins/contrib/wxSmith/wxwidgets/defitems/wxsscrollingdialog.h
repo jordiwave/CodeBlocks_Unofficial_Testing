@@ -27,22 +27,22 @@
 
 class wxsScrollingDialog : public wxsContainer
 {
-public:
+    public:
 
-    wxsScrollingDialog(wxsItemResData* Data);
+        wxsScrollingDialog(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual long OnGetPropertiesFlags()
-    {
-        return wxsContainer::OnGetPropertiesFlags() | flTopLevel;
-    }
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnBuildCreatingCode();
-    virtual void OnEnumContainerProperties(long Flags);
+        virtual long OnGetPropertiesFlags()
+        {
+            return wxsContainer::OnGetPropertiesFlags() | flTopLevel;
+        }
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual void OnEnumContainerProperties(long Flags);
 
-    wxString Title;
-    bool Centered;
+        wxString Title;
+        bool Centered;
 };
 
 #endif

@@ -13,11 +13,11 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 // includes
@@ -27,7 +27,7 @@
 
 // --- Object queue for processing the resource tree
 
-wxPdfObjectQueue::wxPdfObjectQueue(int originalObjectId, int actualObjectId, wxPdfObject* object)
+wxPdfObjectQueue::wxPdfObjectQueue(int originalObjectId, int actualObjectId, wxPdfObject * object)
 {
     m_originalObjectId = originalObjectId;
     m_actualObjectId = actualObjectId;
@@ -50,14 +50,12 @@ wxPdfObject::~wxPdfObject()
 {
 }
 
-bool
-wxPdfObject::CanBeInObjStm()
+bool wxPdfObject::CanBeInObjStm()
 {
     return (m_type >= 1 && m_type <= 7);
 }
 
-void
-wxPdfObject::SetObjNum(int objNum, int objGen)
+void wxPdfObject::SetObjNum(int objNum, int objGen)
 {
     m_objNum = objNum;
     m_objGen = objGen;
@@ -88,7 +86,7 @@ wxPdfIndirectReference::~wxPdfIndirectReference()
 
 // --- Literal
 
-wxPdfLiteral::wxPdfLiteral(int type, const wxString& value)
+wxPdfLiteral::wxPdfLiteral(int type, const wxString & value)
     : wxPdfObject(type)
 {
     m_value = value;
@@ -110,15 +108,14 @@ wxPdfBoolean::~wxPdfBoolean()
 {
 }
 
-wxString
-wxPdfBoolean::GetAsString()
+wxString wxPdfBoolean::GetAsString()
 {
     return (m_value) ? wxS("true") : wxS("false");
 }
 
 // --- String / Hex string
 
-wxPdfString::wxPdfString(const wxString& value)
+wxPdfString::wxPdfString(const wxString & value)
     : wxPdfObject(OBJTYPE_STRING)
 {
     m_value = value;
@@ -130,7 +127,7 @@ wxPdfString::~wxPdfString()
 
 // --- Number
 
-wxPdfNumber::wxPdfNumber(const wxString& value)
+wxPdfNumber::wxPdfNumber(const wxString & value)
     : wxPdfObject(OBJTYPE_NUMBER)
 {
     m_value = wxPdfUtility::String2Double(value);
@@ -165,7 +162,7 @@ wxPdfName::wxPdfName()
 {
 }
 
-wxPdfName::wxPdfName(const wxString& name)
+wxPdfName::wxPdfName(const wxString & name)
     : wxPdfObject(OBJTYPE_NAME)
 {
     m_name = name;
@@ -184,47 +181,48 @@ wxPdfArray::wxPdfArray()
 
 wxPdfArray::~wxPdfArray()
 {
-    wxPdfObject* obj;
+    wxPdfObject * obj;
     size_t j;
+
     for (j = 0; j < m_array.GetCount(); j++)
     {
-        obj = (wxPdfObject*) m_array.Item(j);
+        obj = (wxPdfObject *) m_array.Item(j);
+
         if (obj != NULL)
         {
             delete obj;
         }
     }
+
     m_array.Clear();
 }
 
-void
-wxPdfArray::Add(wxPdfObject* obj)
+void wxPdfArray::Add(wxPdfObject * obj)
 {
     m_array.Add(obj);
 }
 
-void
-wxPdfArray::Add(int value)
+void wxPdfArray::Add(int value)
 {
-    wxPdfNumber* obj = new wxPdfNumber(value);
+    wxPdfNumber * obj = new wxPdfNumber(value);
     m_array.Add(obj);
 }
 
-void
-wxPdfArray::Add(double value)
+void wxPdfArray::Add(double value)
 {
-    wxPdfNumber* obj = new wxPdfNumber(value);
+    wxPdfNumber * obj = new wxPdfNumber(value);
     m_array.Add(obj);
 }
 
-wxPdfObject*
-wxPdfArray::Get(size_t index)
+wxPdfObject * wxPdfArray::Get(size_t index)
 {
-    wxPdfObject* obj = NULL;
+    wxPdfObject * obj = NULL;
+
     if (index < m_array.GetCount())
     {
-        obj = (wxPdfObject*) m_array.Item(index);
+        obj = (wxPdfObject *) m_array.Item(index);
     }
+
     return obj;
 }
 
@@ -236,7 +234,7 @@ wxPdfDictionary::wxPdfDictionary()
     m_hashMap = new wxPdfDictionaryMap();
 }
 
-wxPdfDictionary::wxPdfDictionary(const wxString& type)
+wxPdfDictionary::wxPdfDictionary(const wxString & type)
     : wxPdfObject(OBJTYPE_DICTIONARY)
 {
     m_hashMap = new wxPdfDictionaryMap();
@@ -246,35 +244,36 @@ wxPdfDictionary::wxPdfDictionary(const wxString& type)
 wxPdfDictionary::~wxPdfDictionary()
 {
     wxPdfDictionaryMap::iterator entry = m_hashMap->begin();
+
     for (entry = m_hashMap->begin(); entry != m_hashMap->end(); entry++)
     {
-        wxPdfObject* obj = entry->second;
+        wxPdfObject * obj = entry->second;
         delete obj;
     }
+
     delete m_hashMap;
 }
 
-void
-wxPdfDictionary::Put(wxPdfName* key, wxPdfObject* value)
+void wxPdfDictionary::Put(wxPdfName * key, wxPdfObject * value)
 {
     (*m_hashMap)[key->GetName()] = value;
 }
 
-void
-wxPdfDictionary::Put(const wxString& key, wxPdfObject* value)
+void wxPdfDictionary::Put(const wxString & key, wxPdfObject * value)
 {
     (*m_hashMap)[key] = value;
 }
 
-wxPdfObject*
-wxPdfDictionary::Get(const wxString& key)
+wxPdfObject * wxPdfDictionary::Get(const wxString & key)
 {
-    wxPdfObject* value = NULL;
+    wxPdfObject * value = NULL;
     wxPdfDictionaryMap::iterator entry = m_hashMap->find(key);
+
     if (entry != m_hashMap->end())
     {
         value = entry->second;
     }
+
     return value;
 }
 
@@ -304,28 +303,30 @@ wxPdfStream::~wxPdfStream()
     {
         delete m_dictionary;
     }
+
     if (m_buffer != NULL)
     {
         delete m_buffer;
     }
+
     m_objOffsets.Clear();
 }
 
-wxPdfObject*
-wxPdfStream::Get(const wxString& key)
+wxPdfObject * wxPdfStream::Get(const wxString & key)
 {
-    wxPdfObject* obj = (m_dictionary != NULL) ? m_dictionary->Get(key) : NULL;
+    wxPdfObject * obj = (m_dictionary != NULL) ? m_dictionary->Get(key) : NULL;
     return obj;
 }
 
 
-int
-wxPdfStream::GetObjOffset(int index) const
+int wxPdfStream::GetObjOffset(int index) const
 {
     int objOffset = -1;
+
     if (index >= 0 && (size_t) index < m_objOffsets.GetCount())
     {
         objOffset = m_objOffsets[index];
     }
+
     return objOffset;
 }

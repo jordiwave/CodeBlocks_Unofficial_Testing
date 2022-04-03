@@ -17,45 +17,45 @@ class UsrConfigPanel : public cbConfigurationPanel
 // ----------------------------------------------------------------------------
 {
 
-public:
-    // ctor(s)
-    UsrConfigPanel(wxWindow* parent, const wxString& title, int);
-    virtual ~UsrConfigPanel();
+    public:
+        // ctor(s)
+        UsrConfigPanel(wxWindow * parent, const wxString & title, int);
+        virtual ~UsrConfigPanel();
 
 
-    wxString GetTitle() const
-    {
-        return _("Keyboard shortcuts");
-    }
-    wxString GetBitmapBaseName() const
-    {
-        return _T("onekeytobindthem");
-    }
-    void OnApply();
-    void OnCancel() {}
-    void OnPageChanging();
+        wxString GetTitle() const
+        {
+            return _("Keyboard shortcuts");
+        }
+        wxString GetBitmapBaseName() const
+        {
+            return _T("onekeytobindthem");
+        }
+        void OnApply();
+        void OnCancel() {}
+        void OnPageChanging();
 
-    wxKeyConfigPanel* GetKeyConfigPanel()
-    {
-        return m_pwxKeyConfigPanel;   //(2019/04/6)
-    }
-    void GetKeyConfigPanelPhaseII(wxMenuBar* pMenuBar, UsrConfigPanel* pUsrConfigPanel, int mode);
+        wxKeyConfigPanel * GetKeyConfigPanel()
+        {
+            return m_pwxKeyConfigPanel;   //(2019/04/6)
+        }
+        void GetKeyConfigPanelPhaseII(wxMenuBar * pMenuBar, UsrConfigPanel * pUsrConfigPanel, int mode);
 
-private:
-    //-cbKeyBinderPlgn* m_pBinder;
-    clKeyboardManager*  m_pkbMgr;
-    wxWindow*           m_pConfigWindow;
-    wxKeyProfileArray*  m_pKeyProfileArray;
-    wxKeyProfile*       m_pPrimaryProfile;
-    wxKeyConfigPanel*   m_pwxKeyConfigPanel;
-    MenuItemDataMap_t   m_cachedGlobalAccelMap;
-    int                 m_mode;
+    private:
+        //-cbKeyBinderPlgn* m_pBinder;
+        clKeyboardManager * m_pkbMgr;
+        wxWindow      *     m_pConfigWindow;
+        wxKeyProfileArray * m_pKeyProfileArray;
+        wxKeyProfile    *   m_pPrimaryProfile;
+        wxKeyConfigPanel  * m_pwxKeyConfigPanel;
+        MenuItemDataMap_t   m_cachedGlobalAccelMap;
+        int                 m_mode;
 
-    void CreateGlobalAccel(wxCmd* pCmd);
-    bool VerifyGlobalAccel(MenuItemData* pMenuItemData);
+        void CreateGlobalAccel(wxCmd * pCmd);
+        bool VerifyGlobalAccel(MenuItemData * pMenuItemData);
 
-    // any class wishing to process wxWindows events must use this macro
-    DECLARE_EVENT_TABLE()
+        // any class wishing to process wxWindows events must use this macro
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // CBKEYCONFIGPANEL_H

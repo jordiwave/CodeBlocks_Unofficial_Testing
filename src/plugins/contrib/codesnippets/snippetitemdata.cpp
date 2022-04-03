@@ -20,7 +20,7 @@
 // RCS-ID: $Id: snippetitemdata.cpp 10362 2015-07-26 08:13:33Z jenslody $
 
 #ifdef WX_PRECOMP
-#include "wx_pch.h"
+    #include "wx_pch.h"
 #else
 #endif
 
@@ -59,16 +59,22 @@ void SnippetTreeItemData::InitializeItem(SnippetItemID oldID)
 // ----------------------------------------------------------------------------
 {
     //m_ID already set by ctor init m_ID(oldID)
-    if ( 0 == oldID )
+    if (0 == oldID)
+    {
         m_ID = GetNewID();
+    }
 
     // if ID is less than highest, must be merging another .xml
-    if ( m_ID < m_HighestSnippetID )
-        if ( GetConfig()->GetSnippetsWindow()->IsAppendingFile() )
+    if (m_ID < m_HighestSnippetID)
+        if (GetConfig()->GetSnippetsWindow()->IsAppendingFile())
+        {
             m_ID = GetNewID();
+        }
 
-    if ( oldID not_eq m_ID )
+    if (oldID not_eq m_ID)
+    {
         m_itemsChangedCount += 1;
+    }
 
     // if ID is greater than highest, set to highest
     UpdateHighestSnippetID(m_ID);

@@ -45,7 +45,7 @@
 #else
 // empty inline function to switch off warnings (instead of the C99 standard
 // variadic macros)
-static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
+static inline void HUNSPELL_WARNING(FILE *, const char *, ...) {}
 #endif
 #endif
 
@@ -105,25 +105,28 @@ static inline void HUNSPELL_WARNING(FILE*, const char*, ...) {}
 #define MINTIMER 100
 #define MAXPLUSTIMER 100
 
-struct guessword {
-  char* word;
-  bool allow;
-  char* orig;
+struct guessword
+{
+    char * word;
+    bool allow;
+    char * orig;
 };
 
 typedef std::vector<std::string> mapentry;
 typedef std::vector<FLAG> flagentry;
 
-struct patentry {
-  std::string pattern;
-  std::string pattern2;
-  std::string pattern3;
-  FLAG cond;
-  FLAG cond2;
-  patentry()
-    : cond(FLAG_NULL)
-    , cond2(FLAG_NULL) {
-  }
+struct patentry
+{
+    std::string pattern;
+    std::string pattern2;
+    std::string pattern3;
+    FLAG cond;
+    FLAG cond2;
+    patentry()
+        : cond(FLAG_NULL)
+        , cond2(FLAG_NULL)
+    {
+    }
 };
 
 #endif

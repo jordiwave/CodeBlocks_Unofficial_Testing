@@ -23,55 +23,57 @@ typedef struct
     nsPkgInt classTable;
     uint32_t classFactor;
     nsPkgInt stateTable;
-    const uint32_t* charLenTable;
+    const uint32_t * charLenTable;
 #ifdef DEBUG
     const size_t charLenTableLength;
 #endif
-    const char* name;
+    const char * name;
 } SMModel;
 
 class nsCodingStateMachine
 {
-public:
-    nsCodingStateMachine(const SMModel* sm) : mModel(sm)
-    {
-        mCurrentState = eStart;
-    }
-    nsSMState NextState(char c)
-    {
-        //for each byte we get its class , if it is first byte, we also get byte length
-        uint32_t byteCls = GETCLASS(c);
-        if (mCurrentState == eStart)
+    public:
+        nsCodingStateMachine(const SMModel * sm) : mModel(sm)
         {
-            mCurrentBytePos = 0;
-            MOZ_ASSERT(byteCls < mModel->charLenTableLength);
-            mCurrentCharLen = mModel->charLenTable[byteCls];
+            mCurrentState = eStart;
         }
-        //from byte's class and stateTable, we get its next state
-        mCurrentState=(nsSMState)GETFROMPCK(mCurrentState*(mModel->classFactor)+byteCls,
-                                            mModel->stateTable);
-        mCurrentBytePos++;
-        return mCurrentState;
-    }
-    uint32_t  GetCurrentCharLen(void)
-    {
-        return mCurrentCharLen;
-    }
-    void      Reset(void)
-    {
-        mCurrentState = eStart;
-    }
-    const char * GetCodingStateMachine()
-    {
-        return mModel->name;
-    }
+        nsSMState NextState(char c)
+        {
+            //for each byte we get its class , if it is first byte, we also get byte length
+            uint32_t byteCls = GETCLASS(c);
 
-protected:
-    nsSMState mCurrentState;
-    uint32_t mCurrentCharLen;
-    uint32_t mCurrentBytePos;
+            if (mCurrentState == eStart)
+            {
+                mCurrentBytePos = 0;
+                MOZ_ASSERT(byteCls < mModel->charLenTableLength);
+                mCurrentCharLen = mModel->charLenTable[byteCls];
+            }
 
-    const SMModel *mModel;
+            //from byte's class and stateTable, we get its next state
+            mCurrentState = (nsSMState)GETFROMPCK(mCurrentState * (mModel->classFactor) + byteCls,
+                                                  mModel->stateTable);
+            mCurrentBytePos++;
+            return mCurrentState;
+        }
+        uint32_t  GetCurrentCharLen(void)
+        {
+            return mCurrentCharLen;
+        }
+        void      Reset(void)
+        {
+            mCurrentState = eStart;
+        }
+        const char * GetCodingStateMachine()
+        {
+            return mModel->name;
+        }
+
+    protected:
+        nsSMState mCurrentState;
+        uint32_t mCurrentCharLen;
+        uint32_t mCurrentBytePos;
+
+        const SMModel * mModel;
 };
 
 extern const SMModel UTF8SMModel;
@@ -90,9 +92,9 @@ extern const SMModel ISO2022KRSMModel;
 
 #undef CHAR_LEN_TABLE
 #ifdef DEBUG
-#define CHAR_LEN_TABLE(x) x, mozilla::ArrayLength(x)
+    #define CHAR_LEN_TABLE(x) x, mozilla::ArrayLength(x)
 #else
-#define CHAR_LEN_TABLE(x) x
+    #define CHAR_LEN_TABLE(x) x
 #endif
 
 #endif /* nsCodingStateMachine_h__ */

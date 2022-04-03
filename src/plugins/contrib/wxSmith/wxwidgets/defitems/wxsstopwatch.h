@@ -24,18 +24,18 @@
 
 class wxsStopWatch: public wxsTool
 {
-public:
+    public:
 
-    wxsStopWatch(wxsItemResData* Data);
+        wxsStopWatch(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual void OnEnumToolProperties(long Flags);
-    virtual bool OnIsPointer()
-    {
-        return false;
-    }
+        virtual void OnBuildCreatingCode();
+        virtual void OnEnumToolProperties(long Flags);
+        virtual bool OnIsPointer()
+        {
+            return false;
+        }
 };
 
 #endif      // WXSSTOPWATCH_H

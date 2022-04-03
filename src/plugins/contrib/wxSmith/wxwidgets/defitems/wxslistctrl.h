@@ -28,15 +28,15 @@
 /** \brief Class for wxsListCtrl widget */
 class wxsListCtrl: public wxsWidget
 {
-public:
+    public:
 
-    wxsListCtrl(wxsItemResData* Data);
+        wxsListCtrl(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void OnEnumWidgetProperties(long Flags);
+        virtual void OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void OnEnumWidgetProperties(long Flags);
 };
 
 #endif

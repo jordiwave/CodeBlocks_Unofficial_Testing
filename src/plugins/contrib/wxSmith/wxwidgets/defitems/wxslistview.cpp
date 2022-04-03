@@ -24,9 +24,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsListView> Reg(_T("ListView"),wxsTWidget,_T("Standard"),220);
+wxsRegisterItem<wxsListView> Reg(_T("ListView"), wxsTWidget, _T("Standard"), 220);
 
-WXS_ST_BEGIN(wxsListViewStyles,_T("wxLC_LIST"))
+WXS_ST_BEGIN(wxsListViewStyles, _T("wxLC_LIST"))
 WXS_ST_CATEGORY("wxListView")
 WXS_ST(wxLC_LIST);
 WXS_ST(wxLC_REPORT)
@@ -49,26 +49,26 @@ WXS_ST_DEFAULTS()
 WXS_ST_END()
 
 WXS_EV_BEGIN(wxsListViewEvents)
-WXS_EVI(EVT_LIST_BEGIN_DRAG,wxEVT_COMMAND_LIST_BEGIN_DRAG,wxListEvent,BeginDrag)
-WXS_EVI(EVT_LIST_BEGIN_RDRAG,wxEVT_COMMAND_LIST_BEGIN_RDRAG,wxListEvent,BeginRDrag)
-WXS_EVI(EVT_LIST_BEGIN_LABEL_EDIT,wxEVT_COMMAND_LIST_BEGIN_LABEL_EDIT,wxListEvent,BeginLabelEdit)
-WXS_EVI(EVT_LIST_END_LABEL_EDIT,wxEVT_COMMAND_LIST_END_LABEL_EDIT,wxListEvent,EndLabelEdit)
-WXS_EVI(EVT_LIST_DELETE_ITEM,wxEVT_COMMAND_LIST_DELETE_ITEM,wxListEvent,DeleteItem)
-WXS_EVI(EVT_LIST_DELETE_ALL_ITEMS,wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS,wxListEvent,DeleteAllItems)
-WXS_EVI(EVT_LIST_ITEM_SELECTED,wxEVT_COMMAND_LIST_ITEM_SELECTED,wxListEvent,ItemSelect)
-WXS_EVI(EVT_LIST_ITEM_DESELECTED,wxEVT_COMMAND_LIST_ITEM_DESELECTED,wxListEvent,ItemDeselect)
-WXS_EVI(EVT_LIST_ITEM_ACTIVATED,wxEVT_COMMAND_LIST_ITEM_ACTIVATED,wxListEvent,ItemActivated)
-WXS_EVI(EVT_LIST_ITEM_FOCUSED,wxEVT_COMMAND_LIST_ITEM_FOCUSED,wxListEvent,ItemFocused)
-WXS_EVI(EVT_LIST_ITEM_MIDDLE_CLICK,wxEVT_COMMAND_LIST_ITEM_MIDDLE_CLICK,wxListEvent,ItemMClick)
-WXS_EVI(EVT_LIST_ITEM_RIGHT_CLICK,wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK,wxListEvent,ItemRClick)
-WXS_EVI(EVT_LIST_KEY_DOWN,wxEVT_COMMAND_LIST_KEY_DOWN,wxListEvent,KeyDown)
-WXS_EVI(EVT_LIST_INSERT_ITEM,wxEVT_COMMAND_LIST_INSERT_ITEM,wxListEvent,InsertItem)
-WXS_EVI(EVT_LIST_COL_CLICK,wxEVT_COMMAND_LIST_COL_CLICK,wxListEvent,ColumnClick)
-WXS_EVI(EVT_LIST_COL_RIGHT_CLICK,wxEVT_COMMAND_LIST_COL_RIGHT_CLICK,wxListEvent,ColumnRClick)
-WXS_EVI(EVT_LIST_COL_BEGIN_DRAG,wxEVT_COMMAND_LIST_COL_BEGIN_DRAG,wxListEvent,ColumnBeginDrag)
-WXS_EVI(EVT_LIST_COL_DRAGGING,wxEVT_COMMAND_LIST_COL_DRAGGING,wxListEvent,ColumnDragging)
-WXS_EVI(EVT_LIST_COL_END_DRAG,wxEVT_COMMAND_LIST_COL_END_DRAG,wxListEvent,ColumnEndDrag)
-WXS_EVI(EVT_LIST_CACHE_HINT,wxEVT_COMMAND_LIST_CACHE_HINT,wxListEvent,CacheHint)
+WXS_EVI(EVT_LIST_BEGIN_DRAG, wxEVT_COMMAND_LIST_BEGIN_DRAG, wxListEvent, BeginDrag)
+WXS_EVI(EVT_LIST_BEGIN_RDRAG, wxEVT_COMMAND_LIST_BEGIN_RDRAG, wxListEvent, BeginRDrag)
+WXS_EVI(EVT_LIST_BEGIN_LABEL_EDIT, wxEVT_COMMAND_LIST_BEGIN_LABEL_EDIT, wxListEvent, BeginLabelEdit)
+WXS_EVI(EVT_LIST_END_LABEL_EDIT, wxEVT_COMMAND_LIST_END_LABEL_EDIT, wxListEvent, EndLabelEdit)
+WXS_EVI(EVT_LIST_DELETE_ITEM, wxEVT_COMMAND_LIST_DELETE_ITEM, wxListEvent, DeleteItem)
+WXS_EVI(EVT_LIST_DELETE_ALL_ITEMS, wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS, wxListEvent, DeleteAllItems)
+WXS_EVI(EVT_LIST_ITEM_SELECTED, wxEVT_COMMAND_LIST_ITEM_SELECTED, wxListEvent, ItemSelect)
+WXS_EVI(EVT_LIST_ITEM_DESELECTED, wxEVT_COMMAND_LIST_ITEM_DESELECTED, wxListEvent, ItemDeselect)
+WXS_EVI(EVT_LIST_ITEM_ACTIVATED, wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEvent, ItemActivated)
+WXS_EVI(EVT_LIST_ITEM_FOCUSED, wxEVT_COMMAND_LIST_ITEM_FOCUSED, wxListEvent, ItemFocused)
+WXS_EVI(EVT_LIST_ITEM_MIDDLE_CLICK, wxEVT_COMMAND_LIST_ITEM_MIDDLE_CLICK, wxListEvent, ItemMClick)
+WXS_EVI(EVT_LIST_ITEM_RIGHT_CLICK, wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK, wxListEvent, ItemRClick)
+WXS_EVI(EVT_LIST_KEY_DOWN, wxEVT_COMMAND_LIST_KEY_DOWN, wxListEvent, KeyDown)
+WXS_EVI(EVT_LIST_INSERT_ITEM, wxEVT_COMMAND_LIST_INSERT_ITEM, wxListEvent, InsertItem)
+WXS_EVI(EVT_LIST_COL_CLICK, wxEVT_COMMAND_LIST_COL_CLICK, wxListEvent, ColumnClick)
+WXS_EVI(EVT_LIST_COL_RIGHT_CLICK, wxEVT_COMMAND_LIST_COL_RIGHT_CLICK, wxListEvent, ColumnRClick)
+WXS_EVI(EVT_LIST_COL_BEGIN_DRAG, wxEVT_COMMAND_LIST_COL_BEGIN_DRAG, wxListEvent, ColumnBeginDrag)
+WXS_EVI(EVT_LIST_COL_DRAGGING, wxEVT_COMMAND_LIST_COL_DRAGGING, wxListEvent, ColumnDragging)
+WXS_EVI(EVT_LIST_COL_END_DRAG, wxEVT_COMMAND_LIST_COL_END_DRAG, wxListEvent, ColumnEndDrag)
+WXS_EVI(EVT_LIST_CACHE_HINT, wxEVT_COMMAND_LIST_CACHE_HINT, wxListEvent, CacheHint)
 WXS_EV_END()
 }
 
@@ -77,7 +77,7 @@ WXS_EV_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsListView::wxsListView(wxsItemResData* Data):
+wxsListView::wxsListView(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -92,21 +92,21 @@ wxsListView::wxsListView(wxsItemResData* Data):
  */
 void wxsListView::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/listctrl.h>"),GetInfo().ClassName,hfInPCH);
-        Codef(_T("%C(%W, %I, %P, %S, %T, %V, %N);\n"));
-        BuildSetupWindowCode();
-        return;
-    }
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/listctrl.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %V, %N);\n"));
+            BuildSetupWindowCode();
+            return;
+        }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsListView::OnBuildCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsListView::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
@@ -117,26 +117,36 @@ void wxsListView::OnBuildCreatingCode()
  * \return wxObject*                 The constructed control.
  *
  */
-wxObject* wxsListView::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsListView::OnBuildPreview(wxWindow * Parent, long Flags)
 {
     // wxListView constructor expects exactly one active mode bit, it will assert otherwise
     // While changing the mode in wxSmith this rule is violated every time
-
     // Isolate mode bits
     long Mode = Style() & wxLC_MASK_TYPE;
+
     // Take just the first active bit (looking from wxLC_LIST to wxLC_SMALL_ICON)
     // If there is none use wxLC_LIST
     if (!Mode || (Mode & wxLC_LIST))
+    {
         Mode = wxLC_LIST;
-    else if (Mode & wxLC_REPORT)
-        Mode = wxLC_REPORT;
-    else if (Mode & wxLC_ICON)
-        Mode = wxLC_ICON;
+    }
     else
-        Mode = wxLC_SMALL_ICON;
+        if (Mode & wxLC_REPORT)
+        {
+            Mode = wxLC_REPORT;
+        }
+        else
+            if (Mode & wxLC_ICON)
+            {
+                Mode = wxLC_ICON;
+            }
+            else
+            {
+                Mode = wxLC_SMALL_ICON;
+            }
 
-    wxListView* Preview = new wxListView(Parent,GetId(),Pos(Parent),Size(Parent), (Style() & ~wxLC_MASK_TYPE) | Mode);
-    return SetupWindow(Preview,Flags);
+    wxListView * Preview = new wxListView(Parent, GetId(), Pos(Parent), Size(Parent), (Style() & ~wxLC_MASK_TYPE) | Mode);
+    return SetupWindow(Preview, Flags);
 }
 
 /*! \brief Enumerate the control's properties.

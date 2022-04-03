@@ -33,19 +33,17 @@ kwxLCDClockHandler::kwxLCDClockHandler()
     // this call adds support for all wxWindows class styles
     // (e.g. wxBORDER_SIMPLE, wxBORDER_SUNKEN, wxWS_EX_* etc etc)
     AddWindowStyles();
-
     // if MyControl class supports e.g. MYCONTROL_DEFAULT_STYLE
     // you should use:
     //     XRC_ADD_STYLE(MYCONTROL_DEFAULT_STYLE);
 }
 
-wxObject *kwxLCDClockHandler::DoCreateResource()
+wxObject * kwxLCDClockHandler::DoCreateResource()
 {
     // the following macro will init a pointer named "control"
     // with a new instance of the MyControl class, but will NOT
     // Create() it!
     XRC_MAKE_INSTANCE(control, kwxLCDClock)
-
     // this is the point where you'll typically need to do the most
     // important changes: here the control is created and initialized.
     // You'll want to use the wxXmlResourceHandler's getters to
@@ -76,24 +74,21 @@ wxObject *kwxLCDClockHandler::DoCreateResource()
     //    </object>
     //
     // And the code to read your custom tags from the XRC file is just:
-//    control->Create(m_parentAsWindow, GetID(),
-//                    GetBitmap(wxT("first-bitmap")),
-//                    GetPosition(wxT("first-pos")),
-//                    GetBitmap(wxT("second-bitmap")),
-//                    GetPosition(wxT("second-pos")),
-//                    GetText(wxT("the-title")),
-//                    GetFont(wxT("title-font")),
-//                    GetPosition(), GetSize(), GetStyle(), GetName());
-
+    //    control->Create(m_parentAsWindow, GetID(),
+    //                    GetBitmap(wxT("first-bitmap")),
+    //                    GetPosition(wxT("first-pos")),
+    //                    GetBitmap(wxT("second-bitmap")),
+    //                    GetPosition(wxT("second-pos")),
+    //                    GetText(wxT("the-title")),
+    //                    GetFont(wxT("title-font")),
+    //                    GetPosition(), GetSize(), GetStyle(), GetName());
     control->Create(m_parentAsWindow, GetPosition(), GetSize());
-//    control->SetNumberDigits(GetLong(wxT("num_digits"), 6));
-
+    //    control->SetNumberDigits(GetLong(wxT("num_digits"), 6));
     SetupWindow(control);
-
     return control;
 }
 
-bool kwxLCDClockHandler::CanHandle(wxXmlNode *node)
+bool kwxLCDClockHandler::CanHandle(wxXmlNode * node)
 {
     return IsOfClass(node, wxT("kwxLCDClock"));
 }

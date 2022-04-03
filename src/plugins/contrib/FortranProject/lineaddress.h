@@ -11,7 +11,7 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/string.h>
+    #include <wx/string.h>
 #endif
 #include <list>
 
@@ -21,29 +21,29 @@ typedef std::list<LineAddress> JumpAddressList;
 
 class LineAddress
 {
-public:
-    LineAddress();
-    ~LineAddress();
+    public:
+        LineAddress();
+        ~LineAddress();
 
-    void Init(const wxString& fileName, int lineNumber, bool isFinish);
-    bool IsSameAs(LineAddress &other);
-    wxString GetFilename()const
-    {
-        return m_Filename;
-    };
-    int GetLineNumber()const
-    {
-        return m_LineNumber;
-    };
-    bool IsFinish()const
-    {
-        return m_IsFinish;
-    };
+        void Init(const wxString & fileName, int lineNumber, bool isFinish);
+        bool IsSameAs(LineAddress & other);
+        wxString GetFilename()const
+        {
+            return m_Filename;
+        };
+        int GetLineNumber()const
+        {
+            return m_LineNumber;
+        };
+        bool IsFinish()const
+        {
+            return m_IsFinish;
+        };
 
-private:
-    wxString    m_Filename;
-    int         m_LineNumber;
-    bool        m_IsFinish;
+    private:
+        wxString    m_Filename;
+        int         m_LineNumber;
+        bool        m_IsFinish;
 };
 
 #endif //LINEADDRESS_H_INCLUDED

@@ -32,8 +32,8 @@
 
 long wxsPropertyContainer::Flags = 0;
 bool wxsPropertyContainer::IsRead = false;
-TiXmlElement* wxsPropertyContainer::CurrentElement = 0;
-wxsPropertyStream* wxsPropertyContainer::CurrentStream = 0;
+TiXmlElement * wxsPropertyContainer::CurrentElement = 0;
+wxsPropertyStream * wxsPropertyContainer::CurrentStream = 0;
 wxMutex wxsPropertyContainer::Mutex;
 
 wxsPropertyContainer::wxsPropertyContainer():
@@ -45,7 +45,7 @@ wxsPropertyContainer::wxsPropertyContainer():
 wxsPropertyContainer::~wxsPropertyContainer()
 {
     // Unbinding from grid if there's one associated
-    if ( wxsPGRID() )
+    if (wxsPGRID())
     {
         // if UnbindPropertyContainer is called from here the Thaw in it leads to a crash, so we have
         // to disable Freeze-Thaw until we find another workaround or are sure, that we do not need it.
@@ -53,7 +53,7 @@ wxsPropertyContainer::~wxsPropertyContainer()
     }
 
     // Unbinding prom quick properties if there's one
-    if ( CurrentQP )
+    if (CurrentQP)
     {
         CurrentQP->Container = 0;
         CurrentQP = 0;
@@ -63,8 +63,13 @@ wxsPropertyContainer::~wxsPropertyContainer()
 void wxsPropertyContainer::ShowInPropertyGrid()
 {
     wxMutexLocker Lock(Mutex);
-    if ( !wxsPGRID() ) return;      // We're not sure that PropertyGridManager has been created
-    Flags = (GetPropertiesFlags() & ~(flXml|flPropStream)) | flPropGrid;
+
+    if (!wxsPGRID())
+    {
+        return;    // We're not sure that PropertyGridManager has been created
+    }
+
+    Flags = (GetPropertiesFlags() & ~(flXml | flPropStream)) | flPropGrid;
     wxsPGRID()->Freeze();
     wxsPGRID()->StoreSelected();
     wxsPGRID()->NewPropertyContainerStart();
@@ -77,34 +82,34 @@ void wxsPropertyContainer::ShowInPropertyGrid()
     wxsPGRID()->RestoreSelected();
 }
 
-void wxsPropertyContainer::XmlRead(TiXmlElement* Element)
+void wxsPropertyContainer::XmlRead(TiXmlElement * Element)
 {
     wxMutexLocker Lock(Mutex);
     // Just to make sure we will read exactly what we've saved
     TiXmlNode::SetCondenseWhiteSpace(false);
-    Flags = (GetPropertiesFlags() & ~(flPropGrid|flPropStream)) | flXml;
+    Flags = (GetPropertiesFlags() & ~(flPropGrid | flPropStream)) | flXml;
     IsRead = true;
     CurrentElement = Element;
     OnEnumProperties(Flags);
     Flags = 0;
 }
 
-void wxsPropertyContainer::XmlWrite(TiXmlElement* Element)
+void wxsPropertyContainer::XmlWrite(TiXmlElement * Element)
 {
     wxMutexLocker Lock(Mutex);
     // Just to make sure we will read exactly what we've saved
     TiXmlNode::SetCondenseWhiteSpace(false);
-    Flags = (GetPropertiesFlags() & ~(flPropGrid|flPropStream)) | flXml;
+    Flags = (GetPropertiesFlags() & ~(flPropGrid | flPropStream)) | flXml;
     IsRead = false;
     CurrentElement = Element;
     OnEnumProperties(Flags);
     Flags = 0;
 }
 
-void wxsPropertyContainer::PropStreamRead(wxsPropertyStream* Stream)
+void wxsPropertyContainer::PropStreamRead(wxsPropertyStream * Stream)
 {
     wxMutexLocker Lock(Mutex);
-    Flags = (GetPropertiesFlags() & ~(flPropGrid|flXml)) | flPropStream;
+    Flags = (GetPropertiesFlags() & ~(flPropGrid | flXml)) | flPropStream;
     IsRead = true;
     CurrentStream = Stream;
     OnEnumProperties(Flags);
@@ -112,14 +117,13 @@ void wxsPropertyContainer::PropStreamRead(wxsPropertyStream* Stream)
     Flags = 0;
 }
 
-void wxsPropertyContainer::PropStreamWrite(wxsPropertyStream* Stream)
+void wxsPropertyContainer::PropStreamWrite(wxsPropertyStream * Stream)
 {
     wxMutexLocker Lock(Mutex);
-    Flags = (GetPropertiesFlags() & ~(flPropGrid|flXml)) | flPropStream;
+    Flags = (GetPropertiesFlags() & ~(flPropGrid | flXml)) | flPropStream;
     IsRead = false;
     CurrentStream = Stream;
     OnEnumProperties(Flags);
-
     // Notifying about change since this method could correct some values
     NotifyPropertyChange(true);
     Flags = 0;
@@ -127,133 +131,146 @@ void wxsPropertyContainer::PropStreamWrite(wxsPropertyStream* Stream)
 
 void wxsPropertyContainer::NotifyPropertyChangeFromPropertyGrid()
 {
-    if ( BlockChangeCallback ) return;
+    if (BlockChangeCallback)
+    {
+        return;
+    }
+
     BlockChangeCallback = true;
 
-    if ( CurrentQP )
+    if (CurrentQP)
     {
         CurrentQP->Update();
     }
 
     OnPropertyChanged();
-
     BlockChangeCallback = false;
 }
 
 void wxsPropertyContainer::NotifyPropertyChangeFromQuickProps()
 {
-    if ( BlockChangeCallback ) return;
+    if (BlockChangeCallback)
+    {
+        return;
+    }
+
     BlockChangeCallback = true;
 
-    if ( wxsPGRID() )
+    if (wxsPGRID())
     {
         wxsPGRID()->Update(this);
     }
 
     OnPropertyChanged();
-
     BlockChangeCallback = false;
 }
 
 void wxsPropertyContainer::NotifyPropertyChange(bool CallPropertyChangeHandler)
 {
-    if ( BlockChangeCallback ) return;
+    if (BlockChangeCallback)
+    {
+        return;
+    }
+
     BlockChangeCallback = true;
 
-    if ( CurrentQP )
+    if (CurrentQP)
     {
         CurrentQP->Update();
     }
 
-    if ( wxsPGRID() )
+    if (wxsPGRID())
     {
         wxsPGRID()->Update(this);
     }
 
-    if ( CallPropertyChangeHandler )
+    if (CallPropertyChangeHandler)
     {
         OnPropertyChanged();
     }
+
     BlockChangeCallback = false;
 }
 
-wxsQuickPropsPanel* wxsPropertyContainer::BuildQuickPropertiesPanel(wxWindow* Parent)
+wxsQuickPropsPanel * wxsPropertyContainer::BuildQuickPropertiesPanel(wxWindow * Parent)
 {
-    if ( CurrentQP )
+    if (CurrentQP)
     {
         CurrentQP->Container = 0;
     }
 
     CurrentQP = OnCreateQuickProperties(Parent);
-
     // CurrentQP MUST be currently associated to this container
-
     return CurrentQP;
 }
 
-void wxsPropertyContainer::Property(wxsProperty& Prop)
+void wxsPropertyContainer::Property(wxsProperty & Prop)
 {
     // Property function works like kind of state machine, where current state
     // is determined by flPropGrid, flXml, flPropStream bits in Flags variable
     // and IsRead one. These are set up in one of public functions: XmlRead,
     // XmlWrite, PropStreamRead, PropStreamWrite, ShowInPropertyGrid
-    switch ( Flags & (flPropGrid|flXml|flPropStream) )
+    switch (Flags & (flPropGrid | flXml | flPropStream))
     {
-    case flPropGrid:
-        // Called from ShowInPropertyGrid
-        wxsPGRID()->NewPropertyContainerAddProperty(&Prop,this);
-        break;
+        case flPropGrid:
+            // Called from ShowInPropertyGrid
+            wxsPGRID()->NewPropertyContainerAddProperty(&Prop, this);
+            break;
 
-    case flXml:
-        if ( IsRead )
-        {
-            // Called from XmlRead
-            Prop.XmlRead(this,CurrentElement->FirstChildElement(cbU2C(Prop.GetDataName())));
-        }
-        else
-        {
-            // Called from XmlWrite
-            TiXmlElement* Element = CurrentElement->InsertEndChild(
-                                        TiXmlElement(cbU2C(Prop.GetDataName())))->ToElement();
-
-            if ( !Prop.XmlWrite(this,Element) )
+        case flXml:
+            if (IsRead)
             {
-                // Removing useless node, TiXml automatically frees memory
-                CurrentElement->RemoveChild(Element);
+                // Called from XmlRead
+                Prop.XmlRead(this, CurrentElement->FirstChildElement(cbU2C(Prop.GetDataName())));
             }
-        }
-        break;
+            else
+            {
+                // Called from XmlWrite
+                TiXmlElement * Element = CurrentElement->InsertEndChild(
+                                             TiXmlElement(cbU2C(Prop.GetDataName())))->ToElement();
 
-    case flPropStream:
-        if ( IsRead )
-        {
-            // Called from PropStreamRead
-            Prop.PropStreamRead(this,CurrentStream);
-        }
-        else
-        {
-            // Called from PropStreamWrite
-            Prop.PropStreamWrite(this,CurrentStream);
-        }
-        break;
+                if (!Prop.XmlWrite(this, Element))
+                {
+                    // Removing useless node, TiXml automatically frees memory
+                    CurrentElement->RemoveChild(Element);
+                }
+            }
 
-    default:
+            break;
 
-        // This can not be done
-        wxMessageBox(_T("wxsPropertyContainer::Property() function has been\n")
-                     _T("called manually. If you are the Developer,\n")
-                     _T("please remove this code."));
+        case flPropStream:
+            if (IsRead)
+            {
+                // Called from PropStreamRead
+                Prop.PropStreamRead(this, CurrentStream);
+            }
+            else
+            {
+                // Called from PropStreamWrite
+                Prop.PropStreamWrite(this, CurrentStream);
+            }
 
+            break;
+
+        default:
+            // This can not be done
+            wxMessageBox(_T("wxsPropertyContainer::Property() function has been\n")
+                         _T("called manually. If you are the Developer,\n")
+                         _T("please remove this code."));
     }
 }
 
-void wxsPropertyContainer::SubContainer(wxsPropertyContainer* Container,long NewFlags)
+void wxsPropertyContainer::SubContainer(wxsPropertyContainer * Container, long NewFlags)
 {
-    if ( !Container ) return;
+    if (!Container)
+    {
+        return;
+    }
+
     long FlagsStore = Flags;
     // Flags will be replaced using NewFlags but bits used internally by wxsPropertyContainer will be left untouched
-    Flags = ( Flags    &  (flPropGrid|flXml|flPropStream) ) |   // Leaving old part of data processing type (to be same as parent's one)
-            ( NewFlags & ~(flPropGrid|flXml|flPropStream) );    // Rest taken from new properties
+    Flags = (Flags    & (flPropGrid | flXml | flPropStream)) |  // Leaving old part of data processing type (to be same as parent's one)
+            (NewFlags & ~(flPropGrid | flXml | flPropStream));  // Rest taken from new properties
     Container->OnEnumProperties(NewFlags);
     Flags = FlagsStore;
 }

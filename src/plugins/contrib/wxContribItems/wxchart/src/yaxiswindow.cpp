@@ -15,18 +15,18 @@
 
 // wx
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "yaxiswindow.h"
+    #pragma implementation "yaxiswindow.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #include "wx/yaxiswindow.h"
@@ -35,9 +35,9 @@
 IMPLEMENT_DYNAMIC_CLASS(wxYAxisWindow, wxWindow)
 
 BEGIN_EVENT_TABLE(wxYAxisWindow, wxWindow)
-    EVT_PAINT(        wxYAxisWindow::OnPaint)
-    EVT_LEFT_DOWN(    wxYAxisWindow::OnMouse)
-    EVT_LEFT_DCLICK(  wxYAxisWindow::OnMouse)
+    EVT_PAINT(wxYAxisWindow::OnPaint)
+    EVT_LEFT_DOWN(wxYAxisWindow::OnMouse)
+    EVT_LEFT_DCLICK(wxYAxisWindow::OnMouse)
 END_EVENT_TABLE()
 
 
@@ -50,7 +50,7 @@ END_EVENT_TABLE()
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 wxYAxisWindow::wxYAxisWindow(
-    wxScrolledWindow *parent,
+    wxScrolledWindow * parent,
     ChartValue max,
     ChartValue min
 ):  wxWindow(parent, -1, wxDefaultPosition,
@@ -58,7 +58,7 @@ wxYAxisWindow::wxYAxisWindow(
     m_WinParent(parent),
     m_YAxis(max, min)
 {
-    SetBackgroundColour( *wxWHITE );
+    SetBackgroundColour(*wxWHITE);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -71,7 +71,7 @@ void wxYAxisWindow::SetVirtualMax(
     ChartValue v
 )
 {
-    m_YAxis.SetVirtualMax( v );
+    m_YAxis.SetVirtualMax(v);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -84,7 +84,7 @@ void wxYAxisWindow::SetVirtualMin(
     ChartValue v
 )
 {
-    m_YAxis.SetVirtualMin( v );
+    m_YAxis.SetVirtualMin(v);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -95,7 +95,7 @@ void wxYAxisWindow::SetVirtualMin(
 //----------------------------------------------------------------------E-+++
 ChartValue wxYAxisWindow::GetVirtualMax() const
 {
-    return ( m_YAxis.GetVirtualMax() );
+    return (m_YAxis.GetVirtualMax());
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -106,7 +106,7 @@ ChartValue wxYAxisWindow::GetVirtualMax() const
 //----------------------------------------------------------------------E-+++
 ChartValue wxYAxisWindow::GetVirtualMin() const
 {
-    return ( m_YAxis.GetVirtualMin() );
+    return (m_YAxis.GetVirtualMin());
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -119,7 +119,7 @@ void wxYAxisWindow::SetZoom(
     double z
 )
 {
-    m_YAxis.SetZoom( z );
+    m_YAxis.SetZoom(z);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -130,7 +130,7 @@ void wxYAxisWindow::SetZoom(
 //----------------------------------------------------------------------E-+++
 double wxYAxisWindow::GetZoom()
 {
-    return ( m_YAxis.GetZoom() );
+    return (m_YAxis.GetZoom());
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -140,10 +140,10 @@ double wxYAxisWindow::GetZoom()
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxYAxisWindow::SetSizes(
-    wxChartSizes *sizes
+    wxChartSizes * sizes
 )
 {
-    m_YAxis.SetSizes( sizes );
+    m_YAxis.SetSizes(sizes);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -152,9 +152,9 @@ void wxYAxisWindow::SetSizes(
 //	PARAMETERS:	ChartSizes sizes
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
-const wxChartSizes* wxYAxisWindow::GetSizes() const
+const wxChartSizes * wxYAxisWindow::GetSizes() const
 {
-    return ( m_YAxis.GetSizes() );
+    return (m_YAxis.GetSizes());
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -179,12 +179,11 @@ void wxYAxisWindow::Draw(
     r.y = y;
     r.xscroll = 0;
     r.yscroll = 0;
-    GetClientSize( &r.w, &r.h );
-
+    GetClientSize(&r.w, &r.h);
     //-----------------------------------------------------------------------
     // Draw y-axis
     //-----------------------------------------------------------------------
-    m_YAxis.Draw( hp, &r );
+    m_YAxis.Draw(hp, &r);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -194,15 +193,14 @@ void wxYAxisWindow::Draw(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxYAxisWindow::OnPaint(
-    wxPaintEvent &WXUNUSED(event)
+    wxPaintEvent & WXUNUSED(event)
 )
 {
-    wxPaintDC dc( this );
-
+    wxPaintDC dc(this);
     //-----------------------------------------------------------------------
     // Draw y-axis window
     //-----------------------------------------------------------------------
-    Draw( &dc );
+    Draw(&dc);
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -212,7 +210,7 @@ void wxYAxisWindow::OnPaint(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxYAxisWindow::OnMouse(
-    wxMouseEvent &WXUNUSED(event)
+    wxMouseEvent & WXUNUSED(event)
 )
 {
 }

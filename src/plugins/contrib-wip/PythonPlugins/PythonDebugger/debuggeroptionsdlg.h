@@ -12,17 +12,17 @@ class ConfigManagerWrapper;
 
 class PyDebuggerConfiguration : public cbDebuggerConfiguration
 {
-public:
-    explicit PyDebuggerConfiguration(const ConfigManagerWrapper &config);
+    public:
+        explicit PyDebuggerConfiguration(const ConfigManagerWrapper & config);
 
-    virtual cbDebuggerConfiguration* Clone() const;
-    virtual wxPanel* MakePanel(wxWindow *parent);
-    virtual bool SaveChanges(wxPanel *panel);
-public:
-    int GetState();
-    wxString GetPrefix(int state);
-    wxString GetInitCommands(int state);
-    wxString GetCommandLine(int state);
+        virtual cbDebuggerConfiguration * Clone() const;
+        virtual wxPanel * MakePanel(wxWindow * parent);
+        virtual bool SaveChanges(wxPanel * panel);
+    public:
+        int GetState();
+        wxString GetPrefix(int state);
+        wxString GetInitCommands(int state);
+        wxString GetCommandLine(int state);
 
 };
 

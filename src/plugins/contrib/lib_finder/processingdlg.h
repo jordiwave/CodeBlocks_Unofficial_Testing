@@ -28,7 +28,7 @@
 #include <wx/hashmap.h>
 #include <wx/arrstr.h>
 #ifdef __WXMSW__
-#include <wx/gauge.h>
+    #include <wx/gauge.h>
 #endif
 
 
@@ -47,62 +47,62 @@ class wxStaticText;
 #include "resultmap.h"
 #include "pkgconfigmanager.h"
 
-WX_DECLARE_STRING_HASH_MAP(wxArrayString,FileNamesMap);
-WX_DECLARE_STRING_HASH_MAP(wxString,wxStringStringMap);
+WX_DECLARE_STRING_HASH_MAP(wxArrayString, FileNamesMap);
+WX_DECLARE_STRING_HASH_MAP(wxString, wxStringStringMap);
 
 class ProcessingDlg: public wxScrollingDialog
 {
-public:
+    public:
 
-    ProcessingDlg(wxWindow* parent, LibraryDetectionManager& Manager, TypedResults& KnownResults, wxWindowID id = -1);
-    virtual ~ProcessingDlg();
+        ProcessingDlg(wxWindow * parent, LibraryDetectionManager & Manager, TypedResults & KnownResults, wxWindowID id = -1);
+        virtual ~ProcessingDlg();
 
-    //(*Identifiers(ProcessingDlg)
-    static const long ID_STATICTEXT1;
-    static const long ID_GAUGE1;
-    static const long ID_BUTTON1;
-    //*)
+        //(*Identifiers(ProcessingDlg)
+        static const long ID_STATICTEXT1;
+        static const long ID_GAUGE1;
+        static const long ID_BUTTON1;
+        //*)
 
-    bool ReadDirs(const wxArrayString& Dirs);
+        bool ReadDirs(const wxArrayString & Dirs);
 
-    bool ProcessLibs();
+        bool ProcessLibs();
 
-    bool ProcessLibs(const wxArrayString& Shortcuts);
+        bool ProcessLibs(const wxArrayString & Shortcuts);
 
-    void ApplyResults(bool addOnly);
+        void ApplyResults(bool addOnly);
 
-protected:
+    protected:
 
-    //(*Handlers(ProcessingDlg)
-    void OnButton1Click(wxCommandEvent& event);
-    //*)
+        //(*Handlers(ProcessingDlg)
+        void OnButton1Click(wxCommandEvent & event);
+        //*)
 
-    //(*Declarations(ProcessingDlg)
-    wxFlexGridSizer* FlexGridSizer1;
-    wxStaticText* Status;
-    wxButton* StopBtn;
-    wxGauge* Gauge1;
-    wxStaticBoxSizer* StaticBoxSizer1;
-    //*)
+        //(*Declarations(ProcessingDlg)
+        wxFlexGridSizer * FlexGridSizer1;
+        wxStaticText * Status;
+        wxButton * StopBtn;
+        wxGauge * Gauge1;
+        wxStaticBoxSizer * StaticBoxSizer1;
+        //*)
 
-private:
+    private:
 
-    void ReadDir(const wxString& DirName);
-    void ProcessLibrary(const LibraryDetectionConfig* Config, const LibraryDetectionConfigSet* Set);
-    void SplitPath(const wxString& FileName,wxArrayString& Split);
-    bool IsVariable(const wxString& NamePart) const;
-    void CheckFilter(const wxString& BasePath,const wxStringStringMap& Vars,const wxArrayString& CompilerList,const LibraryDetectionConfig *Config,const LibraryDetectionConfigSet* Set,int WhichFilter);
-    void FoundLibrary(const wxString& BasePath,const wxStringStringMap& Vars,const wxArrayString& CompilerList,const LibraryDetectionConfig *Config,const LibraryDetectionConfigSet* Set);
-    wxString FixVars(wxString Original,const wxStringStringMap& Vars);
-    wxString FixPath(wxString Original);
+        void ReadDir(const wxString & DirName);
+        void ProcessLibrary(const LibraryDetectionConfig * Config, const LibraryDetectionConfigSet * Set);
+        void SplitPath(const wxString & FileName, wxArrayString & Split);
+        bool IsVariable(const wxString & NamePart) const;
+        void CheckFilter(const wxString & BasePath, const wxStringStringMap & Vars, const wxArrayString & CompilerList, const LibraryDetectionConfig * Config, const LibraryDetectionConfigSet * Set, int WhichFilter);
+        void FoundLibrary(const wxString & BasePath, const wxStringStringMap & Vars, const wxArrayString & CompilerList, const LibraryDetectionConfig * Config, const LibraryDetectionConfigSet * Set);
+        wxString FixVars(wxString Original, const wxStringStringMap & Vars);
+        wxString FixPath(wxString Original);
 
-    bool StopFlag;
-    FileNamesMap Map;
-    LibraryDetectionManager& m_Manager;
-    TypedResults& m_KnownResults;
-    ResultMap m_FoundResults;
+        bool StopFlag;
+        FileNamesMap Map;
+        LibraryDetectionManager & m_Manager;
+        TypedResults & m_KnownResults;
+        ResultMap m_FoundResults;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

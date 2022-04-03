@@ -16,29 +16,29 @@ class wxBoxSizer;
 
 class ProjectOptionsManipulatorResultDlg: public wxDialog
 {
-public:
+    public:
 
-    ProjectOptionsManipulatorResultDlg(wxWindow* parent,wxWindowID id=wxID_ANY);
-    virtual ~ProjectOptionsManipulatorResultDlg();
+        ProjectOptionsManipulatorResultDlg(wxWindow * parent, wxWindowID id = wxID_ANY);
+        virtual ~ProjectOptionsManipulatorResultDlg();
 
-    //(*Declarations(ProjectOptionsManipulatorResultDlg)
-    wxTextCtrl* m_TxtResult;
-    //*)
+        //(*Declarations(ProjectOptionsManipulatorResultDlg)
+        wxTextCtrl * m_TxtResult;
+        //*)
 
-    void ApplyResult(const wxArrayString& result);
+        void ApplyResult(const wxArrayString & result);
 
-protected:
+    protected:
 
-    //(*Identifiers(ProjectOptionsManipulatorResultDlg)
-    static const long ID_TXT_RESULT;
-    //*)
+        //(*Identifiers(ProjectOptionsManipulatorResultDlg)
+        static const long ID_TXT_RESULT;
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(ProjectOptionsManipulatorResultDlg)
-    //*)
+        //(*Handlers(ProjectOptionsManipulatorResultDlg)
+        //*)
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

@@ -21,7 +21,7 @@
 //  SettingsDlg.cpp                                         //(pecan 2006/9/12)
 // ----------------------------------------------------------------------------
 #ifdef WX_PRECOMP
-#include "wx_pch.h"
+    #include "wx_pch.h"
 #else
 #endif
 
@@ -45,42 +45,43 @@ BEGIN_EVENT_TABLE(SettingsDlg, SettingsDlgForm)
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
-SettingsDlg::SettingsDlg(wxWindow* parent)
+SettingsDlg::SettingsDlg(wxWindow * parent)
 // ----------------------------------------------------------------------------
-    :SettingsDlgForm(parent,-1,wxT("User Settings"))
+    : SettingsDlgForm(parent, -1, wxT("User Settings"))
 {
     // move dialog into the parents frame space
     //wxPoint mousePosn = ::wxGetMousePosition();
     //this->Move(mousePosn.x, mousePosn.y);
     GetConfig()->CenterChildOnParent(this);
-
     // Initialize the properties fields
-    m_ExtEditorTextCtrl-> SetValue( wxT("Enter filename of external editor") );
-    m_SnippetFileTextCtrl->SetValue(wxT("Enter Snippets storage Folder") );
+    m_ExtEditorTextCtrl-> SetValue(wxT("Enter filename of external editor"));
+    m_SnippetFileTextCtrl->SetValue(wxT("Enter Snippets storage Folder"));
 
     // Put the old external editor filename into the textCtrl
-    if ( not GetConfig()->SettingsExternalEditor.IsEmpty() )
-        m_ExtEditorTextCtrl-> SetValue( GetConfig()->SettingsExternalEditor );
+    if (not GetConfig()->SettingsExternalEditor.IsEmpty())
+    {
+        m_ExtEditorTextCtrl-> SetValue(GetConfig()->SettingsExternalEditor);
+    }
 
     // Put the old Snippet XML folder into the textCtrl
-    if ( not GetConfig()->SettingsSnippetsFolder.IsEmpty() )
-        m_SnippetFileTextCtrl-> SetValue( GetConfig()->SettingsSnippetsFolder );
+    if (not GetConfig()->SettingsSnippetsFolder.IsEmpty())
+    {
+        m_SnippetFileTextCtrl-> SetValue(GetConfig()->SettingsSnippetsFolder);
+    }
 
     // Put the old ToolTip options
-    m_ToolTipsChkBox->SetValue( GetConfig()->GetToolTipsOption() );
-
+    m_ToolTipsChkBox->SetValue(GetConfig()->GetToolTipsOption());
     // Read Mouse DragScrolling settings
     wxString windowState = GetConfig()->GetSettingsWindowState();
-////    if ( windowState.Contains(wxT("Floating")) ) {m_RadioFloatBtn->SetValue(true);}
-////    if ( windowState.Contains(wxT("Docked")) ) {  m_RadioDockBtn->SetValue(true);}
-////    //-if ( windowState.Contains(wxT("External")) ) {m_RadioExternalBtn->SetValue(true);}
-
+    ////    if ( windowState.Contains(wxT("Floating")) ) {m_RadioFloatBtn->SetValue(true);}
+    ////    if ( windowState.Contains(wxT("Docked")) ) {  m_RadioDockBtn->SetValue(true);}
+    ////    //-if ( windowState.Contains(wxT("External")) ) {m_RadioExternalBtn->SetValue(true);}
     // Show info for CB CfgFolder and CodeSnippets .ini folder
     // CB Manager::GetConfigFolder() LIES. Esp. when the default.conf is in
     // the executable directory.
     //ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
-    m_CfgFolderTextCtrl->SetValue( GetConfig()->SettingsCBConfigPath );
-    m_IniFolderTextCtrl->SetValue( GetConfig()->SettingsSnippetsCfgPath );
+    m_CfgFolderTextCtrl->SetValue(GetConfig()->SettingsCBConfigPath);
+    m_IniFolderTextCtrl->SetValue(GetConfig()->SettingsSnippetsCfgPath);
 }
 // ----------------------------------------------------------------------------
 SettingsDlg::~SettingsDlg()
@@ -89,77 +90,76 @@ SettingsDlg::~SettingsDlg()
     //dtor
 }
 // ----------------------------------------------------------------------------
-void SettingsDlg::OnOk(wxCommandEvent& event)
+void SettingsDlg::OnOk(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     wxUnusedVar(event);
-
     GetConfig()->SettingsExternalEditor = m_ExtEditorTextCtrl->GetValue();
     GetConfig()->SettingsSnippetsFolder = m_SnippetFileTextCtrl->GetValue();
-
     // Get the ToolTips options
-    GetConfig()->SetToolTipsOption( m_ToolTipsChkBox->GetValue() );
-
+    GetConfig()->SetToolTipsOption(m_ToolTipsChkBox->GetValue());
     wxString windowState = wxT("Floating");
-////    if (m_RadioFloatBtn->GetValue() )   windowState = wxT("Floating");
-////    if (m_RadioDockBtn->GetValue() )    windowState = wxT("Docked");
-    GetConfig()->SetSettingsWindowState( windowState) ;
-
+    ////    if (m_RadioFloatBtn->GetValue() )   windowState = wxT("Floating");
+    ////    if (m_RadioDockBtn->GetValue() )    windowState = wxT("Docked");
+    GetConfig()->SetSettingsWindowState(windowState) ;
     this->EndModal(wxID_OK);
-    LOGIT( _T("OnOK Saving Settings"));
+    LOGIT(_T("OnOK Saving Settings"));
     GetConfig()->SettingsSave();
 }
 // ----------------------------------------------------------------------------
-void SettingsDlg::OnExtEditorButton(wxCommandEvent& event)
+void SettingsDlg::OnExtEditorButton(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     // Ask user for filename of editor program
-
     wxUnusedVar(event);
     wxString newFileName;
     GetFileName(newFileName);
 
     if (not newFileName.IsEmpty())
-        m_ExtEditorTextCtrl-> SetValue( newFileName );
+    {
+        m_ExtEditorTextCtrl-> SetValue(newFileName);
+    }
 }
 // ----------------------------------------------------------------------------
-void SettingsDlg::OnSnippetFolderButton(wxCommandEvent& event)
+void SettingsDlg::OnSnippetFolderButton(wxCommandEvent & event)
 // ----------------------------------------------------------------------------
 {
     // Ask user for folder to store external snippets
-
     wxUnusedVar(event);
     wxString newFolderName;
     newFolderName = AskForPathName();
 
     if (not newFolderName.IsEmpty())
-        m_SnippetFileTextCtrl-> SetValue( newFolderName) ;
+    {
+        m_SnippetFileTextCtrl-> SetValue(newFolderName) ;
+    }
 }
 // ----------------------------------------------------------------------------
-void SettingsDlg::GetFileName(wxString& newFileName)
+void SettingsDlg::GetFileName(wxString & newFileName)
 // ----------------------------------------------------------------------------
 {
     newFileName = wxEmptyString;
-
     // Ask user for filename
     wxFileDialog dlg(this,                           //parent  window
                      _T("Select file "),                 //message
                      wxEmptyString,                      //default directory
                      wxEmptyString,                      //default file
                      wxT("*.*"),                         //wildcards
-                     wxFD_OPEN | wxFD_FILE_MUST_EXIST ); //style
-
+                     wxFD_OPEN | wxFD_FILE_MUST_EXIST);  //style
     // move dialog into the parents frame space
     wxPoint mousePosn = ::wxGetMousePosition();
     dlg.Move(mousePosn.x, mousePosn.y);
     PlaceWindow(&dlg);
-    if (dlg.ShowModal() != wxID_OK) return;
+
+    if (dlg.ShowModal() != wxID_OK)
+    {
+        return;
+    }
+
     newFileName = dlg.GetPath();
-
 #ifdef LOGGING
-    LOGIT( _T("New filename[%s]"), newFileName.GetData() );
+    LOGIT(_T("New filename[%s]"), newFileName.GetData());
 #endif //LOGGING;
-
 }
 // ----------------------------------------------------------------------------
 wxString SettingsDlg::AskForPathName()       //(pecan 2006/10/06)
@@ -169,13 +169,17 @@ wxString SettingsDlg::AskForPathName()       //(pecan 2006/10/06)
     wxDirDialog dlg(::wxGetTopLevelParent(0),   //parent  window
                     _T("Select path "),             //message
                     ::wxGetCwd(),                  //default directory
-                    wxDD_DEFAULT_STYLE );          //style
-
+                    wxDD_DEFAULT_STYLE);           //style
     // move dialog into the parents frame space
     wxPoint mousePosn = ::wxGetMousePosition();
     dlg.Move(mousePosn.x, mousePosn.y);
     PlaceWindow(&dlg);
-    if (dlg.ShowModal() != wxID_OK) return wxEmptyString;
+
+    if (dlg.ShowModal() != wxID_OK)
+    {
+        return wxEmptyString;
+    }
+
     return dlg.GetPath();
 }
 // ----------------------------------------------------------------------------

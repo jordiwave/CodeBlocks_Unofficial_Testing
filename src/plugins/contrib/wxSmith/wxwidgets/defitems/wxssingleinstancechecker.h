@@ -24,20 +24,20 @@
 
 class wxsSingleInstanceChecker: public wxsTool
 {
-public:
+    public:
 
-    wxsSingleInstanceChecker(wxsItemResData* Data);
+        wxsSingleInstanceChecker(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void OnBuildCreatingCode();
-    virtual void OnEnumToolProperties(long Flags);
-    virtual bool OnIsPointer()
-    {
-        return false;
-    }
+        virtual void OnBuildCreatingCode();
+        virtual void OnEnumToolProperties(long Flags);
+        virtual bool OnIsPointer()
+        {
+            return false;
+        }
 
-    wxString AppName;
+        wxString AppName;
 };
 
 #endif      // WXSSINGLEINSTANCECHECKER_H

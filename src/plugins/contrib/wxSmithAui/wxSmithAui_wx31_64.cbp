@@ -6,83 +6,71 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Unix">
-				<Option platforms="Unix;Mac;" />
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/wxSmithAui" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/wxSmithAui" />
-				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libwxsmithlib.so;" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
-				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks.exe" />
-				<Option run_host_application_in_terminal="0" />
-				<Compiler>
-					<Add option="-std=c++11" />
-					<Add option="-fPIC" />
-					<Add option="-fexceptions" />
-				</Compiler>
-				<ExtraCommands>
-					<Add after="zip -j9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/wxSmithAui.zip manifest.xml" />
-					<Mode after="always" />
-				</ExtraCommands>
-			</Target>
-			<Target title="Windows">
+			<Target title="Default">
 				<Option platforms="Windows;" />
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/CodeBlocks/plugins/wxSmithAui" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/wxSmithAui" />
-				<Option external_deps="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxsmithlib.dll;" />
+				<Option output="../../../devel31_64/share/codeblocks/plugins/wxSmithAui" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs31_64/plugins/contrib/wxSmithAui" />
+				<Option external_deps="../../../devel31_64/wxsmithlib.dll;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks.exe" />
+				<Option host_application="../../../devel31_64/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
-					<Add option="$(#CB_BUILD.CFLAGS)" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-pipe" />
 					<Add option="-mthreads" />
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />
-					<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+					<Add option="-std=gnu++11" />
 					<Add option="-DHAVE_W32API_H" />
 					<Add option="-D__WXMSW__" />
-					<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
-					<Add directory="$(#WXWIDGETS.include)" />
-					<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+					<Add option="-D_WIN64" />
+					<Add directory="$(#WX31_64.include)" />
+					<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
-					<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
-					<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks\wxSmithAui.zip manifest.xml" />
+					<Add after="zip -j9 ..\..\..\devel31_64\share\CodeBlocks\wxSmithAui.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
+				<Environment>
+					<Variable name="WX_CFG" value="" />
+					<Variable name="WX_SUFFIX" value="u" />
+					<Variable name="WX_VERSION" value="31" />
+				</Environment>
 			</Target>
+			<Environment>
+				<Variable name="WX_CONFIG" value="wx-config --version=3.1" />
+			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="Unix;Windows;" />
+			<Add alias="All" targets="Default;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="$(#CB_BUILD.CFLAGS)" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-DCB_PRECOMP" />
-			<Add directory="$(#CB_BUILD)/include" />
-			<Add directory="$(#CB_BUILD)/include/tinyxml" />
-			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
+			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../wxSmith" />
 		</Compiler>
 		<Linker>
 			<Add library="codeblocks" />
 			<Add library="wxsmithlib" />
-			<Add directory="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)" />
+			<Add directory="../../../devel31_64" />
 		</Linker>
 		<Unit filename="manifest.xml" />
 		<Unit filename="wxAuiManager/wxSmithAuiManager.h" />
@@ -113,8 +101,7 @@
 		<Unit filename="wxSmithAui.cpp" />
 		<Unit filename="wxSmithAui.h" />
 		<Extensions>
-			<code_completion />
-			<envvars />
+			<lib_finder disable_auto="1" />
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>
@@ -122,8 +109,6 @@
 					<wxPanel wxs="wxsmith/wxsAuiManagerParentQP.wxs" src="wxAuiManager/wxsAuiManagerParentQP.cpp" hdr="wxAuiManager/wxsAuiManagerParentQP.h" fwddecl="0" i18n="1" name="wxsAuiManagerParentQP" language="CPP" />
 				</resources>
 			</wxsmith>
-			<debugger />
-			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

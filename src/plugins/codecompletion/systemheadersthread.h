@@ -32,18 +32,18 @@ extern long idSystemHeadersThreadMessage;
  */
 class SystemHeadersThread : public wxThread
 {
-public:
-    SystemHeadersThread(wxEvtHandler*     parent,     wxCriticalSection*   critSect,
-                        SystemHeadersMap& headersMap, const wxArrayString& incDirs);
-    ~SystemHeadersThread() override;
+    public:
+        SystemHeadersThread(wxEvtHandler   *  parent,     wxCriticalSection  * critSect,
+                            SystemHeadersMap & headersMap, const wxArrayString & incDirs);
+        ~SystemHeadersThread() override;
 
-    void* Entry() override;
+        void * Entry() override;
 
-private:
-    wxEvtHandler*      m_Parent; /// this is the target the thread will sent any event to
-    wxCriticalSection* m_SystemHeadersThreadCS; /// protect multiply access to its data
-    SystemHeadersMap&  m_SystemHeadersMap; /// this takes the result data
-    wxArrayString      m_IncludeDirs;  ///added include dirs to system headers
+    private:
+        wxEvtHandler   *   m_Parent; /// this is the target the thread will sent any event to
+        wxCriticalSection * m_SystemHeadersThreadCS; /// protect multiply access to its data
+        SystemHeadersMap & m_SystemHeadersMap; /// this takes the result data
+        wxArrayString      m_IncludeDirs;  ///added include dirs to system headers
 };
 
 #endif // SYSTEMHEADERSTHREAD_H

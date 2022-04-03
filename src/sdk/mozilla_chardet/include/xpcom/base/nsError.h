@@ -95,13 +95,13 @@
 
 /* Helpers for defining our enum, to be undef'd later */
 #define SUCCESS_OR_FAILURE(sev, module, code) \
-  ((uint32_t)(sev) << 31) | \
-  ((uint32_t)(module + NS_ERROR_MODULE_BASE_OFFSET) << 16) | \
-  (uint32_t)(code)
+    ((uint32_t)(sev) << 31) | \
+    ((uint32_t)(module + NS_ERROR_MODULE_BASE_OFFSET) << 16) | \
+    (uint32_t)(code)
 #define SUCCESS(code) \
-  SUCCESS_OR_FAILURE(NS_ERROR_SEVERITY_SUCCESS, MODULE, code)
+    SUCCESS_OR_FAILURE(NS_ERROR_SEVERITY_SUCCESS, MODULE, code)
 #define FAILURE(code) \
-  SUCCESS_OR_FAILURE(NS_ERROR_SEVERITY_ERROR, MODULE, code)
+    SUCCESS_OR_FAILURE(NS_ERROR_SEVERITY_ERROR, MODULE, code)
 
 /**
  * @name Standard return values
@@ -220,10 +220,10 @@ static_assert(sizeof(nsresult) == sizeof(uint32_t),
                ((uint32_t)(code)))
 
 #define NS_ERROR_GENERATE_SUCCESS(module, code) \
-  NS_ERROR_GENERATE(NS_ERROR_SEVERITY_SUCCESS, module, code)
+    NS_ERROR_GENERATE(NS_ERROR_SEVERITY_SUCCESS, module, code)
 
 #define NS_ERROR_GENERATE_FAILURE(module, code) \
-  NS_ERROR_GENERATE(NS_ERROR_SEVERITY_ERROR, module, code)
+    NS_ERROR_GENERATE(NS_ERROR_SEVERITY_ERROR, module, code)
 
 /*
  * This will return the nsresult corresponding to the most recent NSPR failure
@@ -264,8 +264,8 @@ inline bool NS_ERROR_GET_SEVERITY(nsresult err)
 
 
 #ifdef _MSC_VER
-#pragma warning(disable: 4251) /* 'nsCOMPtr<class nsIInputStream>' needs to have dll-interface to be used by clients of class 'nsInputStream' */
-#pragma warning(disable: 4275) /* non dll-interface class 'nsISupports' used as base for dll-interface class 'nsIRDFNode' */
+    #pragma warning(disable: 4251) /* 'nsCOMPtr<class nsIInputStream>' needs to have dll-interface to be used by clients of class 'nsInputStream' */
+    #pragma warning(disable: 4275) /* non dll-interface class 'nsISupports' used as base for dll-interface class 'nsIRDFNode' */
 #endif
 
 #endif

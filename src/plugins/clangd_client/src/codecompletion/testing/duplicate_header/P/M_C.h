@@ -7,11 +7,11 @@ namespace P
 {
 class M_C : public C
 {
-public:
-    M_C();
-    virtual ~M_C() {};
+    public:
+        M_C();
+        virtual ~M_C() {};
 
-    virtual void init() const {};
+        virtual void init() const {};
 };
 }
 

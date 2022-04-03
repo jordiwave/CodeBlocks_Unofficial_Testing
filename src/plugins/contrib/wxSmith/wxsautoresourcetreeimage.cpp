@@ -23,13 +23,13 @@
 #include "wxsautoresourcetreeimage.h"
 #include "wxsresourcetree.h"
 
-wxsAutoResourceTreeImage::wxsAutoResourceTreeImage(const wxString& FileName,bool DontFree)
+wxsAutoResourceTreeImage::wxsAutoResourceTreeImage(const wxString & FileName, bool DontFree)
 {
     m_Index = wxsResourceTree::LoadImage(FileName);
     m_DontFree = DontFree;
 }
 
-wxsAutoResourceTreeImage::wxsAutoResourceTreeImage(const wxBitmap& Image,bool DontFree)
+wxsAutoResourceTreeImage::wxsAutoResourceTreeImage(const wxBitmap & Image, bool DontFree)
 {
     m_Index = wxsResourceTree::InsertImage(Image);
     m_DontFree = DontFree;
@@ -37,7 +37,7 @@ wxsAutoResourceTreeImage::wxsAutoResourceTreeImage(const wxBitmap& Image,bool Do
 
 wxsAutoResourceTreeImage::~wxsAutoResourceTreeImage()
 {
-    if ( !m_DontFree )
+    if (!m_DontFree)
     {
         wxsResourceTree::FreeImage(m_Index);
     }

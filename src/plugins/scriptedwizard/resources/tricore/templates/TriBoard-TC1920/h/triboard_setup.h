@@ -42,11 +42,11 @@
 #define VAL_EBU_BUSAP3		0x22070000
 
 #ifdef ENABLE_ICACHE
-/* enable instruction cache */
-#define VAL_PMU_CON0		0x00000000
+    /* enable instruction cache */
+    #define VAL_PMU_CON0		0x00000000
 #else
-/* disable instruction cache */
-#define VAL_PMU_CON0		0x00000002
+    /* disable instruction cache */
+    #define VAL_PMU_CON0		0x00000002
 #endif /* ENABLE_ICACHE */
 
 

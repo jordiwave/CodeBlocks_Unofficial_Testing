@@ -21,13 +21,14 @@ bool wxSmithDemoApp::OnInit()
     //(*AppInitialize
     bool wxsOK = true;
     wxInitAllImageHandlers();
-    if ( wxsOK )
+
+    if (wxsOK)
     {
-        wxSmithDemoFrame* Frame = new wxSmithDemoFrame(0);
+        wxSmithDemoFrame * Frame = new wxSmithDemoFrame(0);
         Frame->Show();
         SetTopWindow(Frame);
     }
+
     //*)
     return wxsOK;
-
 }

@@ -5,7 +5,7 @@
 #include "Version.h"
 
 // ----------------------------------------------------------------------------
-JumpData::JumpData(const wxString& filename, const long posn)
+JumpData::JumpData(const wxString & filename, const long posn)
 // ----------------------------------------------------------------------------
 {
     //ctor
@@ -19,6 +19,6 @@ JumpData::~JumpData()
 {
     //dtor
 #if defined(LOGGING)
-    LOGIT( _T("JumpData dtor"));
+    LOGIT(_T("JumpData dtor"));
 #endif
 }

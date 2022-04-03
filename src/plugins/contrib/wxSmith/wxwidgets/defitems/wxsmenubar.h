@@ -28,22 +28,22 @@
 /** \brief Class representing menu bar in wxFrame resources */
 class wxsMenuBar: public wxsTool
 {
-public:
+    public:
 
-    wxsMenuBar(wxsItemResData* Data);
+        wxsMenuBar(wxsItemResData * Data);
 
-protected:
+    protected:
 
-    virtual void OnBuildCreatingCode();
-    virtual void OnEnumToolProperties(long Flags);
-    virtual bool OnIsPointer()
-    {
-        return true;
-    }
-    virtual bool OnCanAddToResource(wxsItemResData* Data,bool ShowMessage);
-    virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
-    virtual bool OnMouseDClick(wxWindow* Preview,int PosX,int PosY);
-    virtual bool OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra);
+        virtual void OnBuildCreatingCode();
+        virtual void OnEnumToolProperties(long Flags);
+        virtual bool OnIsPointer()
+        {
+            return true;
+        }
+        virtual bool OnCanAddToResource(wxsItemResData * Data, bool ShowMessage);
+        virtual bool OnCanAddChild(wxsItem * Item, bool ShowMessage);
+        virtual bool OnMouseDClick(wxWindow * Preview, int PosX, int PosY);
+        virtual bool OnXmlReadChild(TiXmlElement * Elem, bool IsXRC, bool IsExtra);
 };
 
 

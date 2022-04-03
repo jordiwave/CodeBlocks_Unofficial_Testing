@@ -11,11 +11,11 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #include <wx/utils.h>
@@ -68,7 +68,7 @@ wxPdfPrintData::wxPdfPrintData()
     Init();
 }
 
-wxPdfPrintData::wxPdfPrintData(wxPdfPrintData* pdfPrintData)
+wxPdfPrintData::wxPdfPrintData(wxPdfPrintData * pdfPrintData)
 {
     m_documentTitle     = pdfPrintData->m_documentTitle;
     m_documentSubject   = pdfPrintData->m_documentSubject;
@@ -81,17 +81,14 @@ wxPdfPrintData::wxPdfPrintData(wxPdfPrintData* pdfPrintData)
     m_permissions       = pdfPrintData->m_permissions;
     m_encryptionMethod  = pdfPrintData->m_encryptionMethod;
     m_keyLength         = pdfPrintData->m_keyLength;
-
     m_printOrientation  = pdfPrintData->m_printOrientation;
     m_printQuality      = pdfPrintData->m_printQuality;
     m_paperId           = pdfPrintData->m_paperId;
     m_filename          = pdfPrintData->m_filename;
-
     m_printFromPage     = pdfPrintData->m_printFromPage;
     m_printToPage       = pdfPrintData->m_printToPage;
     m_printMinPage      = pdfPrintData->m_printMinPage;
     m_printMaxPage      = pdfPrintData->m_printMaxPage;
-
     m_printDialogFlags  = pdfPrintData->m_printDialogFlags;
     m_launchViewer      = pdfPrintData->m_launchViewer;
     m_templateDocument  = pdfPrintData->m_templateDocument;
@@ -100,32 +97,35 @@ wxPdfPrintData::wxPdfPrintData(wxPdfPrintData* pdfPrintData)
     m_templateMode      = pdfPrintData->m_templateMode;
 }
 
-wxPdfPrintData::wxPdfPrintData(wxPrintData* printData)
+wxPdfPrintData::wxPdfPrintData(wxPrintData * printData)
 {
     Init();
     m_printOrientation = printData->GetOrientation();
     m_paperId          = printData->GetPaperId();
+
     if (!printData->GetFilename().IsEmpty())
     {
         m_filename       = printData->GetFilename();
     }
+
     m_printQuality     = printData->GetQuality();
 }
 
-wxPdfPrintData::wxPdfPrintData(wxPrintDialogData* printDialogData)
+wxPdfPrintData::wxPdfPrintData(wxPrintDialogData * printDialogData)
 {
     Init();
-
     wxPrintData printData = printDialogData->GetPrintData();
 
     if (printData.IsOk())
     {
         m_printOrientation = printData.GetOrientation();
         m_paperId          = printData.GetPaperId();
+
         if (!printData.GetFilename().IsEmpty())
         {
             m_filename       = printData.GetFilename();
         }
+
         m_printQuality     = printData.GetQuality();
     }
 
@@ -135,26 +135,26 @@ wxPdfPrintData::wxPdfPrintData(wxPrintDialogData* printDialogData)
     m_printMaxPage  = printDialogData->GetMaxPage();
 }
 
-wxPdfPrintData::wxPdfPrintData(wxPageSetupDialogData* pageSetupDialogData)
+wxPdfPrintData::wxPdfPrintData(wxPageSetupDialogData * pageSetupDialogData)
 {
     Init();
-
     wxPrintData printData = pageSetupDialogData->GetPrintData();
 
-    if( printData.IsOk() )
+    if (printData.IsOk())
     {
         m_printOrientation = printData.GetOrientation();
         m_paperId          = printData.GetPaperId();
+
         if (!printData.GetFilename().IsEmpty())
         {
             m_filename       = printData.GetFilename();
         }
+
         m_printQuality     = printData.GetQuality();
     }
 }
 
-void
-wxPdfPrintData::Init()
+void wxPdfPrintData::Init()
 {
     m_documentTitle     = wxS("PDF Document");
     m_documentSubject   = wxEmptyString;
@@ -167,30 +167,25 @@ wxPdfPrintData::Init()
     m_permissions       = wxPDF_PERMISSION_NONE;
     m_encryptionMethod  = wxPDF_ENCRYPTION_RC4V1;
     m_keyLength         = 40;
-
     m_printOrientation  = wxPORTRAIT;
     m_paperId           = wxPAPER_A4;
     m_filename          = wxS("default.pdf");
     m_printQuality      = wxPDF_PRINTER_DEFAULT_RESOLUTION;
-
     m_printFromPage = 1;
     m_printToPage  = 9999;
     m_printMinPage = 1;
     m_printMaxPage = 9999;
-
     m_printDialogFlags  = wxPDF_PRINTDIALOG_ALLOWALL;
     m_launchViewer      = false;
-
     m_templateDocument  = NULL;
     m_templateWidth     = 0.0;
     m_templateHeight    = 0.0;
     m_templateMode      = false;
 }
 
-void
-wxPdfPrintData::SetDocumentProtection(int permissions, const wxString& userPassword,
-                                      const wxString& ownerPassword, wxPdfEncryptionMethod encryptionMethod,
-                                      int keyLength)
+void wxPdfPrintData::SetDocumentProtection(int permissions, const wxString & userPassword,
+                                           const wxString & ownerPassword, wxPdfEncryptionMethod encryptionMethod,
+                                           int keyLength)
 {
     m_permissions       = permissions;
     m_userPassword      = userPassword;
@@ -200,34 +195,32 @@ wxPdfPrintData::SetDocumentProtection(int permissions, const wxString& userPassw
     m_protectionEnabled = true;
 }
 
-void
-wxPdfPrintData::ClearDocumentProtection()
+void wxPdfPrintData::ClearDocumentProtection()
 {
     SetDocumentProtection(0);
     m_protectionEnabled = false;
 }
 
-void
-wxPdfPrintData::UpdateDocument(wxPdfDocument* pdfDoc)
+void wxPdfPrintData::UpdateDocument(wxPdfDocument * pdfDoc)
 {
-    if(!m_templateMode)
+    if (!m_templateMode)
     {
         pdfDoc->SetTitle(m_documentTitle);
         pdfDoc->SetAuthor(m_documentAuthor);
         pdfDoc->SetSubject(m_documentSubject);
         pdfDoc->SetCreator(m_documentCreator);
         pdfDoc->SetKeywords(m_documentKeywords);
-        if(m_protectionEnabled)
+
+        if (m_protectionEnabled)
         {
             pdfDoc->SetProtection(m_permissions, m_userPassword, m_ownerPassword, m_encryptionMethod, m_keyLength);
         }
     }
 }
 
-wxPrintData*
-wxPdfPrintData::CreatePrintData() const
+wxPrintData * wxPdfPrintData::CreatePrintData() const
 {
-    wxPrintData* printData = new wxPrintData();
+    wxPrintData * printData = new wxPrintData();
     printData->SetQuality(GetQuality());
     printData->SetOrientation(GetOrientation());
     printData->SetPaperId(GetPaperId());
@@ -235,45 +228,46 @@ wxPdfPrintData::CreatePrintData() const
     return printData;
 }
 
-int
-wxPdfPrintData::GetPrintResolution() const
+int wxPdfPrintData::GetPrintResolution() const
 {
     int resolution;
+
     // Make resolutions appear to be what user would expect
-    switch ( m_printQuality )
+    switch (m_printQuality)
     {
-    case wxPRINT_QUALITY_HIGH:
-        resolution = 1200;
-        break;
+        case wxPRINT_QUALITY_HIGH:
+            resolution = 1200;
+            break;
 
-    case wxPRINT_QUALITY_MEDIUM:
-        resolution = 600;
-        break;
+        case wxPRINT_QUALITY_MEDIUM:
+            resolution = 600;
+            break;
 
-    case wxPRINT_QUALITY_LOW:
-        resolution = 300;
-        break;
+        case wxPRINT_QUALITY_LOW:
+            resolution = 300;
+            break;
 
-    case wxPRINT_QUALITY_DRAFT:
-        resolution = 150;
-        break;
+        case wxPRINT_QUALITY_DRAFT:
+            resolution = 150;
+            break;
 
-    default:
-        if ( m_printQuality >= 72 )
-        {
-            resolution = m_printQuality;
-        }
-        else
-        {
-            resolution = wxPDF_PRINTER_DEFAULT_RESOLUTION;
-        }
-        break;
+        default:
+            if (m_printQuality >= 72)
+            {
+                resolution = m_printQuality;
+            }
+            else
+            {
+                resolution = wxPDF_PRINTER_DEFAULT_RESOLUTION;
+            }
+
+            break;
     }
+
     return resolution;
 }
 
-void
-wxPdfPrintData::SetTemplate(wxPdfDocument* pdfDocument, double templateWidth, double templateHeight)
+void wxPdfPrintData::SetTemplate(wxPdfDocument * pdfDocument, double templateWidth, double templateHeight)
 {
     m_templateDocument = pdfDocument;
     m_templateWidth    = templateWidth;
@@ -294,49 +288,44 @@ wxPdfPrinter::wxPdfPrinter()
     sm_lastError = wxPRINTER_NO_ERROR;
     sm_abortWindow = NULL;
     sm_abortIt = false;
-
     m_showProgressDialog = false;
 }
 
-wxPdfPrinter::wxPdfPrinter(wxPrintDialogData* printDialogData)
+wxPdfPrinter::wxPdfPrinter(wxPrintDialogData * printDialogData)
 {
     m_printDialogData = (*printDialogData);
     m_currentPrintout = NULL;
     sm_lastError = wxPRINTER_NO_ERROR;
     sm_abortWindow = NULL;
     sm_abortIt = false;
-
     m_showProgressDialog = false;
     m_pdfPrintData = wxPdfPrintData(printDialogData);
 }
 
-wxPdfPrinter::wxPdfPrinter(wxPdfPrintData* printData)
+wxPdfPrinter::wxPdfPrinter(wxPdfPrintData * printData)
 {
     m_currentPrintout = NULL;
     sm_lastError = wxPRINTER_NO_ERROR;
     sm_abortWindow = NULL;
     sm_abortIt = false;
-
     m_showProgressDialog = false;
     m_pdfPrintData = (*printData);
 }
 
-wxPdfPrinter::wxPdfPrinter(wxPrintData* data)
+wxPdfPrinter::wxPdfPrinter(wxPrintData * data)
 {
     m_printDialogData.SetPrintData(*data);
     m_currentPrintout = NULL;
     sm_lastError = wxPRINTER_NO_ERROR;
     sm_abortWindow = NULL;
     sm_abortIt = false;
-
     m_showProgressDialog = false;
-    m_pdfPrintData = wxPdfPrintData( data );;
+    m_pdfPrintData = wxPdfPrintData(data);;
 }
 
-bool wxPdfPrinter::Print(wxWindow* parent, wxPrintout* printout, bool prompt)
+bool wxPdfPrinter::Print(wxWindow * parent, wxPrintout * printout, bool prompt)
 {
-    wxProgressDialog* progressDialog = NULL;
-
+    wxProgressDialog * progressDialog = NULL;
     sm_abortIt = false;
     sm_abortWindow = NULL;
 
@@ -346,33 +335,36 @@ bool wxPdfPrinter::Print(wxWindow* parent, wxPrintout* printout, bool prompt)
         return false;
     }
 
-    wxPdfDC* dc;
+    wxPdfDC * dc;
 
-    if( m_pdfPrintData.GetTemplateMode() )
+    if (m_pdfPrintData.GetTemplateMode())
     {
         dc = new wxPdfDC(m_pdfPrintData.GetTemplateDocument(),
                          m_pdfPrintData.GetTemplateWidth(),
                          m_pdfPrintData.GetTemplateHeight());
     }
-    else if (prompt)
-    {
-        dc = (wxPdfDC*) PrintDialog(parent);
-        if (!dc)
-        {
-            return false;
-        }
-    }
     else
-    {
-        wxPrintData* dcPrintData = m_pdfPrintData.CreatePrintData();
-        dc = new wxPdfDC(*dcPrintData);
-        delete dcPrintData;
-    }
+        if (prompt)
+        {
+            dc = (wxPdfDC *) PrintDialog(parent);
+
+            if (!dc)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            wxPrintData * dcPrintData = m_pdfPrintData.CreatePrintData();
+            dc = new wxPdfDC(*dcPrintData);
+            delete dcPrintData;
+        }
 
     if (m_pdfPrintData.GetMinPage() < 1)
     {
         m_pdfPrintData.SetMinPage(1);
     }
+
     if (m_pdfPrintData.GetMaxPage() < 1)
     {
         m_pdfPrintData.SetMaxPage(9999);
@@ -381,7 +373,11 @@ bool wxPdfPrinter::Print(wxWindow* parent, wxPrintout* printout, bool prompt)
     // May have pressed cancel.
     if (!dc || !dc->IsOk())
     {
-        if (dc) delete dc;
+        if (dc)
+        {
+            delete dc;
+        }
+
         sm_lastError = wxPRINTER_ERROR;
         return false;
     }
@@ -389,36 +385,29 @@ bool wxPdfPrinter::Print(wxWindow* parent, wxPrintout* printout, bool prompt)
     // Get the printdata used and check for extra info
     // update the document if it is present
     // we need a startdoc to get a valid dc
-
     dc->StartDoc(wxS("PDF Document"));
-    m_pdfPrintData.UpdateDocument( dc->GetPdfDocument() );
-
+    m_pdfPrintData.UpdateDocument(dc->GetPdfDocument());
     // ---------------------------------------------------------------
     // determine and set our printout params
     // ---------------------------------------------------------------
     int screenppiX, screenppiY, deviceW, deviceH, devicemmX, devicemmY;
     GetPdfScreenPPI(&screenppiX, &screenppiY);
-
     int resolution = m_pdfPrintData.GetPrintResolution();
     dc->SetResolution(resolution);
-    dc->GetSize( &deviceW, &deviceH );
+    dc->GetSize(&deviceW, &deviceH);
     dc->GetSizeMM(&devicemmX, &devicemmY);
-
     printout->SetPPIScreen(screenppiX, screenppiY);
     printout->SetPPIPrinter(resolution,  resolution);
     printout->SetPageSizePixels(deviceW, deviceH);
     printout->SetPaperRectPixels(wxRect(0, 0, deviceW, deviceH));
     printout->SetPageSizeMM(devicemmX, devicemmY);
     printout->SetDC(dc);
-
     // ---------------------------------------------------------------
     // determine which pages to print
     // ---------------------------------------------------------------
     wxBeginBusyCursor();
-
     // the printout will probably do all its sizing calcs on this call
     printout->OnPreparePrinting();
-
     int fromPage, toPage, minPage, maxPage;
     printout->GetPageInfo(&minPage, &maxPage, &fromPage, &toPage);
 
@@ -432,16 +421,18 @@ bool wxPdfPrinter::Print(wxWindow* parent, wxPrintout* printout, bool prompt)
     // merge info from printout with user / programmer choices in the dialog info
     m_printDialogData.SetMinPage(minPage);
     m_printDialogData.SetMaxPage(maxPage);
-    if ((m_printDialogData.GetFromPage() < minPage ) ||  (m_printDialogData.GetFromPage() < 1 ))
+
+    if ((m_printDialogData.GetFromPage() < minPage) || (m_printDialogData.GetFromPage() < 1))
     {
         m_printDialogData.SetFromPage(minPage);
     }
-    if ((m_printDialogData.GetToPage() > maxPage ) || ( m_printDialogData.GetToPage() < 1 ))
+
+    if ((m_printDialogData.GetToPage() > maxPage) || (m_printDialogData.GetToPage() < 1))
     {
         m_printDialogData.SetToPage(maxPage);
     }
 
-    int numberofpages = m_printDialogData.GetToPage() - m_printDialogData.GetFromPage() +1;
+    int numberofpages = m_printDialogData.GetToPage() - m_printDialogData.GetFromPage() + 1;
     int printedPages = 0;
 
     // ---------------------------------------------------------------
@@ -454,19 +445,19 @@ bool wxPdfPrinter::Print(wxWindow* parent, wxPrintout* printout, bool prompt)
                                  _("Printing..."),
                                  numberofpages,
                                  parent,
-                                 wxPD_AUTO_HIDE|wxPD_APP_MODAL);
+                                 wxPD_AUTO_HIDE | wxPD_APP_MODAL);
     }
 
     printout->OnBeginPrinting();
-
     sm_lastError = wxPRINTER_NO_ERROR;
 
     if (printout->OnBeginDocument(m_printDialogData.GetFromPage(), m_printDialogData.GetToPage()))
     {
         // print our range of chosen pages or until HasPage returns false
         int currentpage;
+
         for (currentpage  = m_printDialogData.GetFromPage();
-                (currentpage <= m_printDialogData.GetToPage()) && printout->HasPage( currentpage );
+                (currentpage <= m_printDialogData.GetToPage()) && printout->HasPage(currentpage);
                 currentpage++)
         {
             if (m_showProgressDialog)
@@ -475,6 +466,7 @@ bool wxPdfPrinter::Print(wxWindow* parent, wxPrintout* printout, bool prompt)
                 msg.Printf(_("Printing page %d..."), printedPages + 1);
                 progressDialog->Update(printedPages++, msg);
             }
+
             dc->StartPage();
             printout->OnPrintPage(currentpage);
             dc->EndPage();
@@ -510,20 +502,24 @@ bool wxPdfPrinter::Print(wxWindow* parent, wxPrintout* printout, bool prompt)
     if (m_pdfPrintData.GetLaunchDocumentViewer() && !m_pdfPrintData.GetTemplateMode())
     {
         wxFileName fileName = wxFileName(m_pdfPrintData.GetFilename());
-        wxFileType* fileType = wxTheMimeTypesManager->GetFileTypeFromExtension(wxS("pdf"));
+        wxFileType * fileType = wxTheMimeTypesManager->GetFileTypeFromExtension(wxS("pdf"));
+
         if (fileType != NULL)
         {
             wxString cmd = fileType->GetOpenCommand(fileName.GetFullPath());
+
             if (!cmd.IsEmpty())
             {
                 wxExecute(cmd);
             }
+
             delete fileType;
         }
         else
         {
             // fallback
             wxString fileURL;
+
             if (wxIsAbsolutePath(m_pdfPrintData.GetFilename()))
             {
                 fileURL = wxS("file://") + m_pdfPrintData.GetFilename();
@@ -532,6 +528,7 @@ bool wxPdfPrinter::Print(wxWindow* parent, wxPrintout* printout, bool prompt)
             {
                 fileURL = wxS("file://") + wxGetCwd() + wxFILE_SEP_PATH + m_pdfPrintData.GetFilename();
             }
+
             wxLaunchDefaultBrowser(fileURL);
         }
     }
@@ -539,17 +536,15 @@ bool wxPdfPrinter::Print(wxWindow* parent, wxPrintout* printout, bool prompt)
     return (sm_lastError == wxPRINTER_NO_ERROR);
 }
 
-wxDC*
-wxPdfPrinter::PrintDialog(wxWindow* parent)
+wxDC * wxPdfPrinter::PrintDialog(wxWindow * parent)
 {
-    wxPdfDC* dc = NULL;
+    wxPdfDC * dc = NULL;
+    wxPdfPrintDialog dialog(parent, &m_pdfPrintData);
 
-    wxPdfPrintDialog dialog( parent, &m_pdfPrintData );
     if (dialog.ShowModal() == wxID_OK)
     {
-        dc = (wxPdfDC*) dialog.GetPrintDC();
+        dc = (wxPdfDC *) dialog.GetPrintDC();
         m_pdfPrintData = dialog.GetPdfPrintData();
-
         sm_lastError = (dc == NULL) ? wxPRINTER_ERROR : wxPRINTER_NO_ERROR;
     }
     else
@@ -560,14 +555,12 @@ wxPdfPrinter::PrintDialog(wxWindow* parent)
     return dc;
 }
 
-bool
-wxPdfPrinter::Setup(wxWindow* WXUNUSED(parent))
+bool wxPdfPrinter::Setup(wxWindow * WXUNUSED(parent))
 {
     return false;
 }
 
-void
-wxPdfPrinter::GetPdfScreenPPI(int* x, int* y)
+void wxPdfPrinter::GetPdfScreenPPI(int * x, int * y)
 {
     wxScreenDC dc;
 
@@ -588,32 +581,32 @@ wxPdfPrinter::GetPdfScreenPPI(int* x, int* y)
 
 IMPLEMENT_CLASS(wxPdfPrintPreview, wxPrintPreview)
 
-wxPdfPrintPreview::wxPdfPrintPreview(wxPrintout* printout,
-                                     wxPrintout* printoutForPrinting)
+wxPdfPrintPreview::wxPdfPrintPreview(wxPrintout * printout,
+                                     wxPrintout * printoutForPrinting)
     : wxPrintPreviewBase(printout, printoutForPrinting)
 {
     m_pimpl = new wxPdfPrintPreviewImpl(printout, printoutForPrinting);
 }
 
-wxPdfPrintPreview::wxPdfPrintPreview(wxPrintout* printout,
-                                     wxPrintout* printoutForPrinting,
-                                     wxPrintData* data)
+wxPdfPrintPreview::wxPdfPrintPreview(wxPrintout * printout,
+                                     wxPrintout * printoutForPrinting,
+                                     wxPrintData * data)
     : wxPrintPreviewBase(printout, printoutForPrinting, data)
 {
     m_pimpl = new wxPdfPrintPreviewImpl(printout, printoutForPrinting, data);
 }
 
-wxPdfPrintPreview::wxPdfPrintPreview(wxPrintout* printout,
-                                     wxPrintout* printoutForPrinting,
-                                     wxPrintDialogData* data)
+wxPdfPrintPreview::wxPdfPrintPreview(wxPrintout * printout,
+                                     wxPrintout * printoutForPrinting,
+                                     wxPrintDialogData * data)
     : wxPrintPreviewBase(printout, printoutForPrinting, data)
 {
     m_pimpl = new wxPdfPrintPreviewImpl(printout, printoutForPrinting, data);
 }
 
-wxPdfPrintPreview::wxPdfPrintPreview(wxPrintout* printout,
-                                     wxPrintout* printoutForPrinting,
-                                     wxPdfPrintData* pdfPrintData)
+wxPdfPrintPreview::wxPdfPrintPreview(wxPrintout * printout,
+                                     wxPrintout * printoutForPrinting,
+                                     wxPdfPrintData * pdfPrintData)
     : wxPrintPreviewBase(printout, printoutForPrinting)
 {
     m_pimpl = new wxPdfPrintPreviewImpl(printout, printoutForPrinting, pdfPrintData);
@@ -622,147 +615,123 @@ wxPdfPrintPreview::wxPdfPrintPreview(wxPrintout* printout,
 wxPdfPrintPreview::~wxPdfPrintPreview()
 {
     delete m_pimpl;
-
     // don't delete twice
     m_printPrintout = NULL;
     m_previewPrintout = NULL;
     m_previewBitmap = NULL;
 }
 
-bool
-wxPdfPrintPreview::SetCurrentPage(int pageNum)
+bool wxPdfPrintPreview::SetCurrentPage(int pageNum)
 {
     return m_pimpl->SetCurrentPage(pageNum);
 }
 
-int
-wxPdfPrintPreview::GetCurrentPage() const
+int wxPdfPrintPreview::GetCurrentPage() const
 {
     return m_pimpl->GetCurrentPage();
 }
 
-void
-wxPdfPrintPreview::SetPrintout(wxPrintout* printout)
+void wxPdfPrintPreview::SetPrintout(wxPrintout * printout)
 {
     m_pimpl->SetPrintout(printout);
 }
 
-wxPrintout*
-wxPdfPrintPreview::GetPrintout() const
+wxPrintout * wxPdfPrintPreview::GetPrintout() const
 {
     return m_pimpl->GetPrintout();
 }
 
-wxPrintout*
-wxPdfPrintPreview::GetPrintoutForPrinting() const
+wxPrintout * wxPdfPrintPreview::GetPrintoutForPrinting() const
 {
     return m_pimpl->GetPrintoutForPrinting();
 }
 
-void
-wxPdfPrintPreview::SetFrame(wxFrame* frame)
+void wxPdfPrintPreview::SetFrame(wxFrame * frame)
 {
     m_pimpl->SetFrame(frame);
 }
 
-void
-wxPdfPrintPreview::SetCanvas(wxPreviewCanvas* canvas)
+void wxPdfPrintPreview::SetCanvas(wxPreviewCanvas * canvas)
 {
     m_pimpl->SetCanvas(canvas);
 }
 
-wxFrame*
-wxPdfPrintPreview::GetFrame() const
+wxFrame * wxPdfPrintPreview::GetFrame() const
 {
     return m_pimpl->GetFrame();
 }
 
-wxPreviewCanvas*
-wxPdfPrintPreview::GetCanvas() const
+wxPreviewCanvas * wxPdfPrintPreview::GetCanvas() const
 {
     return m_pimpl->GetCanvas();
 }
 
-bool
-wxPdfPrintPreview::PaintPage(wxPreviewCanvas* canvas, wxDC& dc)
+bool wxPdfPrintPreview::PaintPage(wxPreviewCanvas * canvas, wxDC & dc)
 {
     return m_pimpl->PaintPage(canvas, dc);
 }
 
-bool
-wxPdfPrintPreview::UpdatePageRendering()
+bool wxPdfPrintPreview::UpdatePageRendering()
 {
     return m_pimpl->UpdatePageRendering();
 }
 
-bool
-wxPdfPrintPreview::DrawBlankPage(wxPreviewCanvas* canvas, wxDC& dc)
+bool wxPdfPrintPreview::DrawBlankPage(wxPreviewCanvas * canvas, wxDC & dc)
 {
     return m_pimpl->DrawBlankPage(canvas, dc);
 }
 
-void
-wxPdfPrintPreview::AdjustScrollbars(wxPreviewCanvas* canvas)
+void wxPdfPrintPreview::AdjustScrollbars(wxPreviewCanvas * canvas)
 {
     m_pimpl->AdjustScrollbars(canvas);
 }
 
-bool
-wxPdfPrintPreview::RenderPage(int pageNum)
+bool wxPdfPrintPreview::RenderPage(int pageNum)
 {
     return m_pimpl->RenderPage(pageNum);
 }
 
-void
-wxPdfPrintPreview::SetZoom(int percent)
+void wxPdfPrintPreview::SetZoom(int percent)
 {
     m_pimpl->SetZoom(percent);
 }
 
-int
-wxPdfPrintPreview::GetZoom() const
+int wxPdfPrintPreview::GetZoom() const
 {
     return m_pimpl->GetZoom();
 }
 
-wxPrintDialogData&
-wxPdfPrintPreview::GetPrintDialogData()
+wxPrintDialogData & wxPdfPrintPreview::GetPrintDialogData()
 {
     return m_pimpl->GetPrintDialogData();
 }
 
-int
-wxPdfPrintPreview::GetMaxPage() const
+int wxPdfPrintPreview::GetMaxPage() const
 {
     return m_pimpl->GetMaxPage();
 }
 
-int
-wxPdfPrintPreview::GetMinPage() const
+int wxPdfPrintPreview::GetMinPage() const
 {
     return m_pimpl->GetMinPage();
 }
 
-bool
-wxPdfPrintPreview::IsOk() const
+bool wxPdfPrintPreview::IsOk() const
 {
     return m_pimpl->IsOk();
 }
 
-void
-wxPdfPrintPreview::SetOk(bool ok)
+void wxPdfPrintPreview::SetOk(bool ok)
 {
-    m_pimpl->SetOk( ok );
+    m_pimpl->SetOk(ok);
 }
 
-bool
-wxPdfPrintPreview::Print(bool interactive)
+bool wxPdfPrintPreview::Print(bool interactive)
 {
     return m_pimpl->Print(interactive);
 }
 
-void
-wxPdfPrintPreview::DetermineScaling()
+void wxPdfPrintPreview::DetermineScaling()
 {
     m_pimpl->DetermineScaling();
 }
@@ -775,8 +744,8 @@ wxPdfPrintPreview::DetermineScaling()
 
 IMPLEMENT_CLASS(wxPdfPrintPreviewImpl, wxPrintPreviewBase)
 
-wxPdfPrintPreviewImpl::wxPdfPrintPreviewImpl(wxPrintout* printout,
-        wxPrintout* printoutForPrinting)
+wxPdfPrintPreviewImpl::wxPdfPrintPreviewImpl(wxPrintout * printout,
+                                             wxPrintout * printoutForPrinting)
     : wxPrintPreviewBase(printout, printoutForPrinting)
 {
     m_pdfPrintData  = new wxPdfPrintData();
@@ -785,9 +754,9 @@ wxPdfPrintPreviewImpl::wxPdfPrintPreviewImpl(wxPrintout* printout,
     DetermineScaling();
 }
 
-wxPdfPrintPreviewImpl::wxPdfPrintPreviewImpl(wxPrintout* printout,
-        wxPrintout* printoutForPrinting,
-        wxPrintData* data)
+wxPdfPrintPreviewImpl::wxPdfPrintPreviewImpl(wxPrintout * printout,
+                                             wxPrintout * printoutForPrinting,
+                                             wxPrintData * data)
     : wxPrintPreviewBase(printout, printoutForPrinting, data)
 {
     m_pdfPrintData  = new wxPdfPrintData(data);
@@ -796,9 +765,9 @@ wxPdfPrintPreviewImpl::wxPdfPrintPreviewImpl(wxPrintout* printout,
     DetermineScaling();
 }
 
-wxPdfPrintPreviewImpl::wxPdfPrintPreviewImpl(wxPrintout* printout,
-        wxPrintout* printoutForPrinting,
-        wxPrintDialogData* data)
+wxPdfPrintPreviewImpl::wxPdfPrintPreviewImpl(wxPrintout * printout,
+                                             wxPrintout * printoutForPrinting,
+                                             wxPrintDialogData * data)
     : wxPrintPreviewBase(printout, printoutForPrinting, data)
 {
     m_pdfPrintData  = new wxPdfPrintData(data);
@@ -807,12 +776,12 @@ wxPdfPrintPreviewImpl::wxPdfPrintPreviewImpl(wxPrintout* printout,
     DetermineScaling();
 }
 
-wxPdfPrintPreviewImpl::wxPdfPrintPreviewImpl(wxPrintout* printout,
-        wxPrintout* printoutForPrinting,
-        wxPdfPrintData* pdfPrintData)
+wxPdfPrintPreviewImpl::wxPdfPrintPreviewImpl(wxPrintout * printout,
+                                             wxPrintout * printoutForPrinting,
+                                             wxPdfPrintData * pdfPrintData)
     : wxPrintPreviewBase(printout, printoutForPrinting)
 {
-    m_pdfPrintData = new wxPdfPrintData( pdfPrintData );
+    m_pdfPrintData = new wxPdfPrintData(pdfPrintData);
     m_pdfPreviewDC  = NULL;
     m_pdfPreviewDoc = NULL;
     DetermineScaling();
@@ -836,8 +805,7 @@ wxPdfPrintPreviewImpl::~wxPdfPrintPreviewImpl()
     }
 }
 
-bool
-wxPdfPrintPreviewImpl::Print(bool interactive)
+bool wxPdfPrintPreviewImpl::Print(bool interactive)
 {
     if (!m_printPrintout)
     {
@@ -848,8 +816,7 @@ wxPdfPrintPreviewImpl::Print(bool interactive)
     return printer.Print(m_previewFrame, m_printPrintout, interactive);
 }
 
-void
-wxPdfPrintPreviewImpl::GetPdfScreenPPI(int* x, int* y)
+void wxPdfPrintPreviewImpl::GetPdfScreenPPI(int * x, int * y)
 {
     wxScreenDC dc;
 
@@ -864,12 +831,12 @@ wxPdfPrintPreviewImpl::GetPdfScreenPPI(int* x, int* y)
     }
 }
 
-void
-wxPdfPrintPreviewImpl::DetermineScaling()
+void wxPdfPrintPreviewImpl::DetermineScaling()
 {
     int screenppiX, screenppiY, deviceW, deviceH, devicemmX, devicemmY;
     GetPdfScreenPPI(&screenppiX, &screenppiY);
     int resolution = m_pdfPrintData->GetPrintResolution();
+
     if (!m_pdfPreviewDC)
     {
         // In template mode get a document with the same metrics
@@ -877,32 +844,35 @@ wxPdfPrintPreviewImpl::DetermineScaling()
         if (m_pdfPrintData->GetTemplateMode())
         {
             wxString scaleMode;
+
             switch ((int) m_pdfPrintData->GetTemplateDocument()->GetScaleFactor())
             {
-            case 1:
-                scaleMode = wxS("pt");
-                break;
-            case 72:
-                scaleMode = wxS("in");
-                break;
-            case 28:
-                scaleMode = wxS("cm");
-                break;
-            default:
-                scaleMode = wxS("mm");
-                break;
+                case 1:
+                    scaleMode = wxS("pt");
+                    break;
+
+                case 72:
+                    scaleMode = wxS("in");
+                    break;
+
+                case 28:
+                    scaleMode = wxS("cm");
+                    break;
+
+                default:
+                    scaleMode = wxS("mm");
+                    break;
             }
 
             m_pdfPreviewDoc = new wxPdfDocument(wxPORTRAIT, m_pdfPrintData->GetTemplateWidth(),
                                                 m_pdfPrintData->GetTemplateHeight(), scaleMode);
-
             m_pdfPreviewDC = new wxPdfDC(m_pdfPreviewDoc,
                                          m_pdfPrintData->GetTemplateWidth(),
                                          m_pdfPrintData->GetTemplateHeight());
         }
         else
         {
-            wxPrintData* pdata = m_pdfPrintData->CreatePrintData();
+            wxPrintData * pdata = m_pdfPrintData->CreatePrintData();
             m_pdfPreviewDC = new wxPdfDC(*pdata);
             m_pdfPreviewDC->StartDoc(wxS("unused name"));
             delete pdata;
@@ -912,31 +882,25 @@ wxPdfPrintPreviewImpl::DetermineScaling()
     m_pdfPreviewDC->SetResolution(resolution);
     m_pdfPreviewDC->GetSize(&deviceW, &deviceH);
     m_pdfPreviewDC->GetSizeMM(&devicemmX, &devicemmY);
-
     m_previewPrintout->SetPPIScreen(screenppiX, screenppiY);
     m_previewPrintout->SetPPIPrinter(resolution, resolution);
     m_previewPrintout->SetPageSizePixels(deviceW, deviceH);
     m_previewPrintout->SetPaperRectPixels(wxRect(0, 0, deviceW, deviceH));
     m_previewPrintout->SetPageSizeMM(devicemmX, devicemmY);
-
     m_pageWidth  = deviceW;
     m_pageHeight = deviceH;
-
     m_previewScaleX = (double) screenppiX / resolution;
     m_previewScaleY = (double) screenppiY / resolution;
-
     // override some base values
     m_currentZoom = 100;
 }
 
-bool
-wxPdfPrintPreviewImpl::RenderPageIntoBitmap(wxBitmap& bmp, int pageNum)
+bool wxPdfPrintPreviewImpl::RenderPageIntoBitmap(wxBitmap & bmp, int pageNum)
 {
     wxMemoryDC memoryDC;
     memoryDC.SelectObject(bmp);
     memoryDC.Clear();
     wxPdfPreviewDC previewDC(memoryDC, m_pdfPreviewDC);
-
     return RenderPageIntoDC(previewDC, pageNum);
 }
 
@@ -952,10 +916,10 @@ BEGIN_EVENT_TABLE(wxPdfPrintDialog, wxPrintDialogBase)
     EVT_FILEPICKER_CHANGED(wxPDF_PRINTDIALOG_CTRLID_FILEPICKER, wxPdfPrintDialog::OnFilepathChanged)
 END_EVENT_TABLE()
 
-wxPdfPrintDialog::wxPdfPrintDialog(wxWindow* parent, wxPdfPrintData* data)
+wxPdfPrintDialog::wxPdfPrintDialog(wxWindow * parent, wxPdfPrintData * data)
     : wxPrintDialogBase(parent,
                         wxID_ANY, _("PDF Document Output"),
-                        wxPoint(0,0), wxSize(600, 600),
+                        wxPoint(0, 0), wxSize(600, 600),
                         wxDEFAULT_DIALOG_STYLE |
                         wxTAB_TRAVERSAL)
 {
@@ -964,21 +928,17 @@ wxPdfPrintDialog::wxPdfPrintDialog(wxWindow* parent, wxPdfPrintData* data)
 }
 
 
-void
-wxPdfPrintDialog::Init(wxWindow* WXUNUSED(parent))
+void wxPdfPrintDialog::Init(wxWindow * WXUNUSED(parent))
 {
     int dialogFlags = m_pdfPrintData.GetPrintDialogFlags();
-
-    wxBoxSizer* mainsizer = new wxBoxSizer(wxVERTICAL);
-    wxFlexGridSizer* flex = new wxFlexGridSizer(2);
+    wxBoxSizer * mainsizer = new wxBoxSizer(wxVERTICAL);
+    wxFlexGridSizer * flex = new wxFlexGridSizer(2);
     flex->AddGrowableCol(1);
-
     // File Path
-
-    flex->Add( new wxStaticText(this, wxID_ANY, _("Output File")), 0, wxALL, 5 );
-    wxBoxSizer* filesizer = new wxBoxSizer(wxHORIZONTAL);
+    flex->Add(new wxStaticText(this, wxID_ANY, _("Output File")), 0, wxALL, 5);
+    wxBoxSizer * filesizer = new wxBoxSizer(wxHORIZONTAL);
     m_filepath = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(320, -1), wxTE_READONLY);
-    filesizer->Add(m_filepath, 1, wxEXPAND|wxALL, 0);
+    filesizer->Add(m_filepath, 1, wxEXPAND | wxALL, 0);
 
     if (dialogFlags & wxPDF_PRINTDIALOG_FILEPATH)
     {
@@ -986,18 +946,17 @@ wxPdfPrintDialog::Init(wxWindow* WXUNUSED(parent))
             new wxFilePickerCtrl(this, wxPDF_PRINTDIALOG_CTRLID_FILEPICKER, m_pdfPrintData.GetFilename(),
                                  _("Choose a file name for the PDF output"),
                                  _("PDF Files (*.pdf)|*.pdf"), wxDefaultPosition, wxDefaultSize,
-                                 wxFLP_SAVE|wxFLP_OVERWRITE_PROMPT);
-
-        filesizer->Add(m_filepicker, 0, wxEXPAND|wxLEFT, 4);
+                                 wxFLP_SAVE | wxFLP_OVERWRITE_PROMPT);
+        filesizer->Add(m_filepicker, 0, wxEXPAND | wxLEFT, 4);
     }
 
-    flex->Add(filesizer,1, wxALL|wxEXPAND, 3);
+    flex->Add(filesizer, 1, wxALL | wxEXPAND, 3);
 
     if (dialogFlags & wxPDF_PRINTDIALOG_OPENDOC)
     {
         flex->AddSpacer(1);
         m_launchViewer = new wxCheckBox(this, wxID_ANY, _("Open Document in Default Viewer"));
-        flex->Add(m_launchViewer, 1, wxALL|wxEXPAND, 5);
+        flex->Add(m_launchViewer, 1, wxALL | wxEXPAND, 5);
     }
 
     // Document Properties
@@ -1006,120 +965,92 @@ wxPdfPrintDialog::Init(wxWindow* WXUNUSED(parent))
     {
         flex->Add(new wxStaticText(this, wxID_ANY, _("Title")), 0, wxALL, 5);
         m_title = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize);
-        flex->Add(m_title, 1, wxALL|wxEXPAND, 3);
-
+        flex->Add(m_title, 1, wxALL | wxEXPAND, 3);
         flex->Add(new wxStaticText(this, wxID_ANY, _("Author")), 0, wxALL, 5);
         m_author = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize);
-        flex->Add(m_author, 1, wxALL|wxEXPAND, 3);
-
+        flex->Add(m_author, 1, wxALL | wxEXPAND, 3);
         flex->Add(new wxStaticText(this, wxID_ANY, _("Subject")), 0, wxALL, 5);
         m_subject = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize);
-        flex->Add(m_subject, 1, wxALL|wxEXPAND, 3);
-
+        flex->Add(m_subject, 1, wxALL | wxEXPAND, 3);
         flex->Add(new wxStaticText(this, wxID_ANY, _("Keywords")), 0, wxALL, 5);
-        m_keywords = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(400,50), wxTE_MULTILINE);
-        flex->Add(m_keywords, 1, wxALL|wxEXPAND, 3);
+        m_keywords = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(400, 50), wxTE_MULTILINE);
+        flex->Add(m_keywords, 1, wxALL | wxEXPAND, 3);
     }
 
-    mainsizer->Add(flex, 0, wxLEFT|wxTOP|wxRIGHT|wxGROW, 10);
-
+    mainsizer->Add(flex, 0, wxLEFT | wxTOP | wxRIGHT | wxGROW, 10);
     // Document Protection
-    wxString* compatchoices = new wxString[3];
+    wxString * compatchoices = new wxString[3];
 
     if (dialogFlags & wxPDF_PRINTDIALOG_PROTECTION)
     {
-        wxFlexGridSizer* flex2 = new wxFlexGridSizer(2);
+        wxFlexGridSizer * flex2 = new wxFlexGridSizer(2);
         flex2->AddGrowableCol(0);
         flex2->AddGrowableCol(1);
-
         m_protect = new wxCheckBox(this, wxPDF_PRINTDIALOG_CTRLID_PROTECT, _("Password Protect and Encrypt Document"));
-        flex2->Add( m_protect, 0, wxEXPAND|wxALL, 5);
-
+        flex2->Add(m_protect, 0, wxEXPAND | wxALL, 5);
         compatchoices[0] = _("PDF Reader 7.0 Compatible");
         compatchoices[1] = _("PDF Reader 5.0 Compatible");
         compatchoices[2] = _("PDF Reader 3.0 Compatible");
-
         m_compat = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 3, compatchoices);
-
         m_compat->SetSelection(0);
-        flex2->Add(m_compat, 1, wxEXPAND|wxALL, 5);
-
-        mainsizer->Add(flex2, 0, wxEXPAND|wxTOP|wxLEFT|wxRIGHT, 10);
-
-        wxFlexGridSizer* flex3 = new wxFlexGridSizer(4);
+        flex2->Add(m_compat, 1, wxEXPAND | wxALL, 5);
+        mainsizer->Add(flex2, 0, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 10);
+        wxFlexGridSizer * flex3 = new wxFlexGridSizer(4);
         flex3->AddGrowableCol(1);
         flex3->AddGrowableCol(3);
-
         flex3->Add(new wxStaticText(this, wxID_ANY, _("User Password")), 0, wxALL, 5);
         m_userpwd = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
-        flex3->Add(m_userpwd, 1, wxALL|wxEXPAND, 3);
-
+        flex3->Add(m_userpwd, 1, wxALL | wxEXPAND, 3);
         flex3->Add(new wxStaticText(this, wxID_ANY, _("Confirm")), 0, wxALL, 5);
         m_userpwdconfirm = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
-        flex3->Add(m_userpwdconfirm, 1, wxALL|wxEXPAND, 3);
-
+        flex3->Add(m_userpwdconfirm, 1, wxALL | wxEXPAND, 3);
         flex3->Add(new wxStaticText(this, wxID_ANY, _("Owner Password")), 0, wxALL, 5);
         m_ownerpwd = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
-        flex3->Add(m_ownerpwd, 1, wxALL|wxEXPAND, 3);
-
-        flex3->Add( new wxStaticText(this, wxID_ANY, _("Confirm")), 0, wxALL, 5);
+        flex3->Add(m_ownerpwd, 1, wxALL | wxEXPAND, 3);
+        flex3->Add(new wxStaticText(this, wxID_ANY, _("Confirm")), 0, wxALL, 5);
         m_ownerpwdconfirm = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
-        flex3->Add(m_ownerpwdconfirm, 1, wxALL|wxEXPAND, 3);
-
-        mainsizer->Add(flex3, 0, wxEXPAND|wxTOP|wxLEFT|wxRIGHT, 10);
-
-        wxFlexGridSizer* flex4 = new wxFlexGridSizer(3);
+        flex3->Add(m_ownerpwdconfirm, 1, wxALL | wxEXPAND, 3);
+        mainsizer->Add(flex3, 0, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 10);
+        wxFlexGridSizer * flex4 = new wxFlexGridSizer(3);
         flex4->AddGrowableCol(0);
         flex4->AddGrowableCol(1);
         flex4->AddGrowableCol(2);
-
         m_canprint = new wxCheckBox(this, wxID_ANY, _("Allow Printing"));
-        flex4->Add(m_canprint, 0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 5);
-
+        flex4->Add(m_canprint, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
         m_canmodify = new wxCheckBox(this, wxID_ANY, _("Allow Modification"));
-        flex4->Add(m_canmodify, 0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 5);
-
+        flex4->Add(m_canmodify, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
         m_cancopy = new wxCheckBox(this, wxID_ANY, _("Allow Content Copying"));
-        flex4->Add(m_cancopy, 0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 5);
-
+        flex4->Add(m_cancopy, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
         m_canannot = new wxCheckBox(this, wxID_ANY, _("Allow Comments"));
-        flex4->Add(m_canannot, 0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 5);
-
+        flex4->Add(m_canannot, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
         m_canform = new wxCheckBox(this, wxID_ANY, _("Allow Fill Form Fields"));
-        flex4->Add(m_canform, 0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 5);
-
+        flex4->Add(m_canform, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
         m_canextract = new wxCheckBox(this, wxID_ANY, _("Allow Content Extract"));
-        flex4->Add(m_canextract, 0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 5);
-
+        flex4->Add(m_canextract, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
         m_canassemble = new wxCheckBox(this, wxID_ANY, _("Allow Assembly"));
-        flex4->Add(m_canassemble, 0, wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 5);
-
-        mainsizer->Add(flex4, 0, wxEXPAND|wxTOP|wxLEFT|wxRIGHT, 10);
+        flex4->Add(m_canassemble, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP, 5);
+        mainsizer->Add(flex4, 0, wxEXPAND | wxTOP | wxLEFT | wxRIGHT, 10);
     }
 
     // Standard Dialog Buttons
-
     //wxBoxSizer* bottomsizer = new wxBoxSizer(wxHORIZONTAL);
+    wxSizer * sizerBtn = CreateSeparatedButtonSizer(wxOK | wxCANCEL);
 
-    wxSizer* sizerBtn = CreateSeparatedButtonSizer(wxOK|wxCANCEL);
     if (sizerBtn)
     {
-        mainsizer->Add(sizerBtn, 0, wxEXPAND|wxALL, 10);
+        mainsizer->Add(sizerBtn, 0, wxEXPAND | wxALL, 10);
     }
 
     SetAutoLayout(true);
     SetSizer(mainsizer);
-
     mainsizer->Fit(this);
     Centre(wxBOTH);
-
     // Calls wxWindow::OnInitDialog and then wxPdfPrintDialog::TransferDataToWindow
     InitDialog();
     delete[] compatchoices;
 }
 
-int
-wxPdfPrintDialog::ShowModal()
+int wxPdfPrintDialog::ShowModal()
 {
     return wxDialog::ShowModal();
 }
@@ -1128,36 +1059,33 @@ wxPdfPrintDialog::~wxPdfPrintDialog()
 {
 }
 
-void
-wxPdfPrintDialog::OnOK(wxCommandEvent& WXUNUSED(event))
+void wxPdfPrintDialog::OnOK(wxCommandEvent & WXUNUSED(event))
 {
     if (!TransferDataFromWindow())
+    {
         return;
+    }
 
     EndModal(wxID_OK);
 }
 
-void
-wxPdfPrintDialog::OnProtectCheck(wxCommandEvent& WXUNUSED(event))
+void wxPdfPrintDialog::OnProtectCheck(wxCommandEvent & WXUNUSED(event))
 {
     UpdateProtectionControls();
 }
 
-void
-wxPdfPrintDialog::OnFilepathChanged(wxFileDirPickerEvent& event)
+void wxPdfPrintDialog::OnFilepathChanged(wxFileDirPickerEvent & event)
 {
     m_filepath->ChangeValue(event.GetPath());
 }
 
-void
-wxPdfPrintDialog::UpdateProtectionControls()
+void wxPdfPrintDialog::UpdateProtectionControls()
 {
     int dialogFlags = m_pdfPrintData.GetPrintDialogFlags();
 
     if (dialogFlags & wxPDF_PRINTDIALOG_PROTECTION)
     {
         bool protectionEnabled = m_protect->GetValue();
-
         m_canprint->Enable(protectionEnabled);
         m_canmodify->Enable(protectionEnabled);
         m_cancopy->Enable(protectionEnabled);
@@ -1165,21 +1093,17 @@ wxPdfPrintDialog::UpdateProtectionControls()
         m_canform->Enable(protectionEnabled);
         m_canextract->Enable(protectionEnabled);
         m_canassemble->Enable(protectionEnabled);
-
         m_ownerpwd->Enable(protectionEnabled);
         m_userpwd->Enable(protectionEnabled);
         m_ownerpwdconfirm->Enable(protectionEnabled);
         m_userpwdconfirm->Enable(protectionEnabled);
-
         m_compat->Enable(protectionEnabled);
     }
 }
 
-bool
-wxPdfPrintDialog::TransferDataToWindow()
+bool wxPdfPrintDialog::TransferDataToWindow()
 {
     int dialogFlags = m_pdfPrintData.GetPrintDialogFlags();
-
     m_filepath->ChangeValue(m_pdfPrintData.GetFilename());
 
     if (dialogFlags & wxPDF_PRINTDIALOG_OPENDOC)
@@ -1200,7 +1124,6 @@ wxPdfPrintDialog::TransferDataToWindow()
     if (dialogFlags & wxPDF_PRINTDIALOG_PROTECTION)
     {
         m_protect->SetValue(protectionEnabled);
-
         int permFlags = m_pdfPrintData.GetPermissions();
         m_canprint->SetValue((permFlags & wxPDF_PERMISSION_PRINT) || (permFlags & wxPDF_PERMISSION_HLPRINT));
         m_canmodify->SetValue((permFlags & wxPDF_PERMISSION_MODIFY) != 0);
@@ -1209,7 +1132,6 @@ wxPdfPrintDialog::TransferDataToWindow()
         m_canform->SetValue((permFlags & wxPDF_PERMISSION_FILLFORM) != 0);
         m_canextract->SetValue((permFlags & wxPDF_PERMISSION_EXTRACT) != 0);
         m_canassemble->SetValue((permFlags & wxPDF_PERMISSION_ASSEMBLE) != 0);
-
         m_ownerpwd->ChangeValue(m_pdfPrintData.GetOwnerPassword());
         m_userpwd->ChangeValue(m_pdfPrintData.GetUserPassword());
         m_ownerpwdconfirm->ChangeValue(m_pdfPrintData.GetOwnerPassword());
@@ -1217,15 +1139,17 @@ wxPdfPrintDialog::TransferDataToWindow()
 
         switch (m_pdfPrintData.GetEncryptionMethod())
         {
-        case wxPDF_ENCRYPTION_RC4V1:
-            m_compat->SetSelection(2);
-            break;
-        case wxPDF_ENCRYPTION_RC4V2:
-            m_compat->SetSelection(1);
-            break;
-        default:
-            m_compat->SetSelection(0);
-            break;
+            case wxPDF_ENCRYPTION_RC4V1:
+                m_compat->SetSelection(2);
+                break;
+
+            case wxPDF_ENCRYPTION_RC4V2:
+                m_compat->SetSelection(1);
+                break;
+
+            default:
+                m_compat->SetSelection(0);
+                break;
         }
 
         UpdateProtectionControls();
@@ -1234,8 +1158,7 @@ wxPdfPrintDialog::TransferDataToWindow()
     return true;
 }
 
-bool
-wxPdfPrintDialog::TransferDataFromWindow()
+bool wxPdfPrintDialog::TransferDataFromWindow()
 {
     int dialogFlags = m_pdfPrintData.GetPrintDialogFlags();
 
@@ -1301,18 +1224,20 @@ wxPdfPrintDialog::TransferDataFromWindow()
 
             switch (m_compat->GetSelection())
             {
-            case 0:
-                keylength = 128;
-                encryptMethod = wxPDF_ENCRYPTION_AESV2;
-                break;
-            case 1:
-                keylength = 128;
-                encryptMethod = wxPDF_ENCRYPTION_RC4V2;
-                break;
-            default:
-                keylength = 40;
-                encryptMethod = wxPDF_ENCRYPTION_RC4V1;
-                break;
+                case 0:
+                    keylength = 128;
+                    encryptMethod = wxPDF_ENCRYPTION_AESV2;
+                    break;
+
+                case 1:
+                    keylength = 128;
+                    encryptMethod = wxPDF_ENCRYPTION_RC4V2;
+                    break;
+
+                default:
+                    keylength = 40;
+                    encryptMethod = wxPDF_ENCRYPTION_RC4V1;
+                    break;
             }
 
             m_pdfPrintData.SetDocumentProtection(permissions,
@@ -1351,8 +1276,7 @@ wxPdfPrintDialog::TransferDataFromWindow()
     return true;
 }
 
-wxPdfDC*
-wxPdfPrintDialog::GetPrintDC()
+wxPdfDC * wxPdfPrintDialog::GetPrintDC()
 {
     return new wxPdfDC(*GetPdfPrintData().CreatePrintData());
 }
@@ -1367,8 +1291,8 @@ BEGIN_EVENT_TABLE(wxPdfPageSetupDialogCanvas, wxWindow)
     EVT_PAINT(wxPdfPageSetupDialogCanvas::OnPaint)
 END_EVENT_TABLE()
 
-wxPdfPageSetupDialogCanvas::wxPdfPageSetupDialogCanvas(wxWindow* parent)
-    : wxWindow( parent, wxID_ANY, wxDefaultPosition, wxSize(300,200), wxBORDER_THEME)
+wxPdfPageSetupDialogCanvas::wxPdfPageSetupDialogCanvas(wxWindow * parent)
+    : wxWindow(parent, wxID_ANY, wxDefaultPosition, wxSize(300, 200), wxBORDER_THEME)
 {
     m_paperWidth = 210;
     m_paperHeight = 297;
@@ -1382,101 +1306,76 @@ wxPdfPageSetupDialogCanvas::~wxPdfPageSetupDialogCanvas()
 {
 }
 
-void
-wxPdfPageSetupDialogCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
+void wxPdfPageSetupDialogCanvas::OnPaint(wxPaintEvent & WXUNUSED(event))
 {
     wxPaintDC dc(this);
-
     //------------------------------------------
     // Get the sizes and bounds
     //------------------------------------------
-
     int px = m_paperWidth;
     int py = m_paperHeight;
     int ps = (px > py) ? px : py;
-
     int w, h;
     dc.GetSize(&w, &h);
-
-    double scale = ((double)h - 10.0 ) / (double)ps;
-
-    int rw = int( px * scale );
-    int rh = int( py * scale );
-    int rx = int( (w - rw) / 2 );
-    int ry = int( (h - rh) / 2 );
-
-    int ml = int( m_marginLeft * scale );
-    int mr = int( m_marginRight * scale );
-    int mt = int( m_marginTop * scale );
-    int mb = int( m_marginBottom * scale );
-
+    double scale = ((double)h - 10.0) / (double)ps;
+    int rw = int(px * scale);
+    int rh = int(py * scale);
+    int rx = int((w - rw) / 2);
+    int ry = int((h - rh) / 2);
+    int ml = int(m_marginLeft * scale);
+    int mr = int(m_marginRight * scale);
+    int mt = int(m_marginTop * scale);
+    int mb = int(m_marginBottom * scale);
     //------------------------------------------
     // save current dc objects
     //------------------------------------------
-
     wxBrush restorebackground = dc.GetBackground();
     wxBrush restorebrush = dc.GetBrush();
     wxPen restorepen = dc.GetPen();
-
-    wxBrush* lightBrush = new wxBrush(wxColour(220,220,220));
-
+    wxBrush * lightBrush = new wxBrush(wxColour(220, 220, 220));
     dc.SetBackground(*lightBrush);
     dc.Clear();
-
     int clipx, clipy, clipw, cliph;
     dc.GetClippingBox(&clipx, &clipy, &clipw, &cliph);
-
     //------------------------------------------
     // Draw a 'shadow' paper
     //------------------------------------------
-
-    wxBrush* shadowBrush = new wxBrush(wxColour(175,175,175));
-
+    wxBrush * shadowBrush = new wxBrush(wxColour(175, 175, 175));
     dc.SetBrush(*shadowBrush);
     dc.SetPen(*wxTRANSPARENT_PEN);
-
     dc.DrawRectangle(rx + 3, ry + 3, rw, rh);
-
     //------------------------------------------
     // Draw paper
     //------------------------------------------
-
     dc.SetBrush(*wxWHITE_BRUSH);
     dc.SetPen(*wxBLACK_PEN);
-
     dc.DrawRectangle(rx, ry, rw, rh);
-
     //------------------------------------------
     // Draw margins
     //------------------------------------------
-
-    wxPen* dashpen = new wxPen(wxColour(255,0,125), 1, wxPENSTYLE_USER_DASH);
+    wxPen * dashpen = new wxPen(wxColour(255, 0, 125), 1, wxPENSTYLE_USER_DASH);
     wxDash pDash[2] = { 3, 3 };
     dashpen->SetDashes(2, pDash);
     dc.SetPen(*dashpen);
-    dc.DrawLine(rx + ml, ry + 1, rx + ml, ( ry + rh ) - 2 ); // left margin
-    dc.DrawLine(rx + 1, ry + mt, ( rx + rw ) -1, ry + mt );  // top margin
-    dc.DrawLine((rx + rw) - mr, ry + 1, (rx + rw) - mr, ( ry + rh ) - 2 );// right margin
-    dc.DrawLine(rx + 1, (ry + rh) - mb, ( rx + rw ) -1, (ry + rh) - mb );  // bottom margin
+    dc.DrawLine(rx + ml, ry + 1, rx + ml, (ry + rh) - 2);    // left margin
+    dc.DrawLine(rx + 1, ry + mt, (rx + rw) - 1, ry + mt);    // top margin
+    dc.DrawLine((rx + rw) - mr, ry + 1, (rx + rw) - mr, (ry + rh) - 2);   // right margin
+    dc.DrawLine(rx + 1, (ry + rh) - mb, (rx + rw) - 1, (ry + rh) - mb);    // bottom margin
     dc.SetPen(*wxTRANSPARENT_PEN);
-
     //------------------------------------------
     // Draw fake content
     //------------------------------------------
-
     int linewidth = 4;
-
     int sx = rx + ml + 2;
-    int sw = rw - ( ml + mr + 4 );
+    int sw = rw - (ml + mr + 4);
     int sy = ry + mt + 2;
-    int sh = rh - ( mt + mb + 4 );
+    int sh = rh - (mt + mb + 4);
     int smax = (ry + rh) - mb;
-
     dc.SetBrush(*lightBrush);
     dc.SetPen(*wxTRANSPARENT_PEN);
-    dc.SetClippingRegion( sx, sy, sw, sh );
+    dc.SetClippingRegion(sx, sy, sw, sh);
 
-    while ( sy < smax )
+    while (sy < smax)
     {
         dc.DrawRectangle(sx, sy, sw, linewidth);
         sy += (linewidth + 3);
@@ -1485,13 +1384,11 @@ wxPdfPageSetupDialogCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
     //------------------------------------------
     // Restore DC objects
     //------------------------------------------
-
     dc.DestroyClippingRegion();
     dc.SetClippingRegion(clipx, clipy, clipw, cliph);
     dc.SetBrush(restorebrush);
     dc.SetPen(restorepen);
     dc.SetBackground(restorebackground);
-
     delete lightBrush;
     delete shadowBrush;
     delete dashpen;
@@ -1514,7 +1411,7 @@ BEGIN_EVENT_TABLE(wxPdfPageSetupDialog, wxDialog)
     EVT_TEXT(wxPDF_PAGEDIALOG_CTRLID_MARGINBOTTOM, wxPdfPageSetupDialog::OnMarginText)
 END_EVENT_TABLE()
 
-wxPdfPageSetupDialog::wxPdfPageSetupDialog(wxWindow* parent, wxPageSetupDialogData* data, const wxString& title)
+wxPdfPageSetupDialog::wxPdfPageSetupDialog(wxWindow * parent, wxPageSetupDialogData * data, const wxString & title)
     : wxDialog(parent, wxID_ANY, title)
 {
     if (title.IsEmpty())
@@ -1530,8 +1427,7 @@ wxPdfPageSetupDialog::~wxPdfPageSetupDialog()
 {
 }
 
-void
-wxPdfPageSetupDialog::Init()
+void wxPdfPageSetupDialog::Init()
 {
     if (wxLocale::GetSystemLanguage() == wxLANGUAGE_ENGLISH_US)
     {
@@ -1544,115 +1440,102 @@ wxPdfPageSetupDialog::Init()
         m_defaultPaperId = wxPAPER_A4;
     }
 
-    wxBoxSizer* mainsizer = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* canvassizer = new wxBoxSizer(wxHORIZONTAL);
-
+    wxBoxSizer * mainsizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer * canvassizer = new wxBoxSizer(wxHORIZONTAL);
     m_paperCanvas = new wxPdfPageSetupDialogCanvas(this);
-    canvassizer->Add(m_paperCanvas,1, wxEXPAND|wxALL, 0);
-
-    wxString* marginchoices = NULL;
-    wxString* orientchoices = NULL;
-    wxString* paperchoices  = NULL;
+    canvassizer->Add(m_paperCanvas, 1, wxEXPAND | wxALL, 0);
+    wxString * marginchoices = NULL;
+    wxString * orientchoices = NULL;
+    wxString * paperchoices  = NULL;
 
     if (m_pageData.GetEnableMargins())
     {
-        wxBoxSizer *marginsizer = new wxBoxSizer(wxVERTICAL);
-        marginsizer->Add(new wxStaticText(this, wxID_ANY, _("Margins")), 0, wxEXPAND|wxTOP, 15);
+        wxBoxSizer * marginsizer = new wxBoxSizer(wxVERTICAL);
+        marginsizer->Add(new wxStaticText(this, wxID_ANY, _("Margins")), 0, wxEXPAND | wxTOP, 15);
         marginchoices = new wxString[3];
         marginchoices[0] = _("Millimetres");
         marginchoices[1] = _("Centimetres");
         marginchoices[2] = _("Inches");
-
         m_marginUnits = new wxChoice(this, wxPDF_PAGEDIALOG_CTRLID_MARGINUNIT,
                                      wxDefaultPosition, wxDefaultSize, 3, marginchoices);
-
-        marginsizer->Add(m_marginUnits, 0, wxEXPAND|wxALL, 0);
-
-        wxFlexGridSizer *marginflex = new wxFlexGridSizer(0, 2, 3, 3);
+        marginsizer->Add(m_marginUnits, 0, wxEXPAND | wxALL, 0);
+        wxFlexGridSizer * marginflex = new wxFlexGridSizer(0, 2, 3, 3);
         marginflex->AddGrowableCol(1);
-
-        marginflex->Add(new wxStaticText(this, wxID_ANY, _("Left")), 0, wxTOP|wxEXPAND, 3);
+        marginflex->Add(new wxStaticText(this, wxID_ANY, _("Left")), 0, wxTOP | wxEXPAND, 3);
         m_marginLeftText = new wxTextCtrl(this, wxPDF_PAGEDIALOG_CTRLID_MARGINLEFT, wxEmptyString, wxDefaultPosition, wxSize(50, -1));
         m_marginLeftText->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
-        marginflex->Add(m_marginLeftText, 0, wxALL|wxEXPAND, 0);
-
-        marginflex->Add(new wxStaticText( this, wxID_ANY, _("Top")), 0, wxTOP|wxEXPAND, 3);
+        marginflex->Add(m_marginLeftText, 0, wxALL | wxEXPAND, 0);
+        marginflex->Add(new wxStaticText(this, wxID_ANY, _("Top")), 0, wxTOP | wxEXPAND, 3);
         m_marginTopText = new wxTextCtrl(this, wxPDF_PAGEDIALOG_CTRLID_MARGINTOP, wxEmptyString, wxDefaultPosition, wxSize(50, -1));
         m_marginTopText->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
-        marginflex->Add(m_marginTopText, 0, wxALL|wxEXPAND, 0);
-
-        marginflex->Add(new wxStaticText( this, wxID_ANY, _("Right") ), 0, wxTOP|wxEXPAND, 3);
+        marginflex->Add(m_marginTopText, 0, wxALL | wxEXPAND, 0);
+        marginflex->Add(new wxStaticText(this, wxID_ANY, _("Right")), 0, wxTOP | wxEXPAND, 3);
         m_marginRightText = new wxTextCtrl(this, wxPDF_PAGEDIALOG_CTRLID_MARGINRIGHT, wxEmptyString, wxDefaultPosition, wxSize(50, -1));
         m_marginRightText->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
-        marginflex->Add(m_marginRightText, 0, wxALL|wxEXPAND, 0);
-
-        marginflex->Add(new wxStaticText( this, wxID_ANY, _("Bottom") ), 0, wxTOP|wxEXPAND, 3);
+        marginflex->Add(m_marginRightText, 0, wxALL | wxEXPAND, 0);
+        marginflex->Add(new wxStaticText(this, wxID_ANY, _("Bottom")), 0, wxTOP | wxEXPAND, 3);
         m_marginBottomText = new wxTextCtrl(this, wxPDF_PAGEDIALOG_CTRLID_MARGINBOTTOM, wxEmptyString, wxDefaultPosition, wxSize(50, -1));
         m_marginBottomText->SetValidator(wxTextValidator(wxFILTER_NUMERIC));
-        marginflex->Add(m_marginBottomText, 0, wxALL|wxEXPAND, 0);
-
-        marginsizer->Add(marginflex, 0, wxEXPAND|wxTOP, 5);
-        canvassizer->Add(marginsizer, 0, wxEXPAND|wxLEFT, 10);
+        marginflex->Add(m_marginBottomText, 0, wxALL | wxEXPAND, 0);
+        marginsizer->Add(marginflex, 0, wxEXPAND | wxTOP, 5);
+        canvassizer->Add(marginsizer, 0, wxEXPAND | wxLEFT, 10);
     }
 
-    mainsizer->Add(canvassizer, 0, wxEXPAND|wxALL, 10);
-
-    wxFlexGridSizer* papersizer = NULL;
+    mainsizer->Add(canvassizer, 0, wxEXPAND | wxALL, 10);
+    wxFlexGridSizer * papersizer = NULL;
 
     if (m_pageData.GetEnableOrientation() || m_pageData.GetEnablePaper())
     {
-        papersizer = new wxFlexGridSizer( 0,2,5,20 );
+        papersizer = new wxFlexGridSizer(0, 2, 5, 20);
         papersizer->AddGrowableCol(1);
     }
 
     if (m_pageData.GetEnablePaper())
     {
-        papersizer->Add(new wxStaticText(this, wxID_ANY, _("Paper Size")), 0, wxTOP|wxEXPAND, 3);
+        papersizer->Add(new wxStaticText(this, wxID_ANY, _("Paper Size")), 0, wxTOP | wxEXPAND, 3);
         size_t n = wxThePrintPaperDatabase->GetCount();
         paperchoices  = new wxString [n];
+
         for (size_t i = 0; i < n; ++i)
         {
-            wxPrintPaperType *paper = wxThePrintPaperDatabase->Item(i);
+            wxPrintPaperType * paper = wxThePrintPaperDatabase->Item(i);
             paperchoices[i] = paper->GetName();
         }
 
         m_paperTypeChoice = new wxChoice(this, wxPDF_PAGEDIALOG_CTRLID_PAPER,
                                          wxDefaultPosition, wxDefaultSize, n, paperchoices);
-        papersizer->Add(m_paperTypeChoice,  1, wxEXPAND|wxALL, 0);
+        papersizer->Add(m_paperTypeChoice,  1, wxEXPAND | wxALL, 0);
     }
 
     if (m_pageData.GetEnableOrientation())
     {
-        papersizer->Add(new wxStaticText(this, wxID_ANY, _("Orientation")), 0, wxTOP|wxEXPAND, 3);
+        papersizer->Add(new wxStaticText(this, wxID_ANY, _("Orientation")), 0, wxTOP | wxEXPAND, 3);
         orientchoices = new wxString [2];
         orientchoices[0] = _("Portrait");
         orientchoices[1] = _("Landscape");
-
         m_orientationChoice = new wxChoice(this, wxPDF_PAGEDIALOG_CTRLID_ORIENTATION,
                                            wxDefaultPosition, wxDefaultSize, 2, orientchoices);
-        papersizer->Add(m_orientationChoice,  1, wxEXPAND|wxALL, 0);
+        papersizer->Add(m_orientationChoice,  1, wxEXPAND | wxALL, 0);
     }
 
     if (m_pageData.GetEnableOrientation() || m_pageData.GetEnablePaper())
     {
-        mainsizer->Add(papersizer, 0, wxEXPAND|wxALL, 10);
+        mainsizer->Add(papersizer, 0, wxEXPAND | wxALL, 10);
     }
 
     // Standard Dialog Buttons
     //wxBoxSizer* bottomsizer = new wxBoxSizer(wxHORIZONTAL);
+    wxSizer * sizerBtn = CreateSeparatedButtonSizer(wxOK | wxCANCEL);
 
-    wxSizer* sizerBtn = CreateSeparatedButtonSizer(wxOK|wxCANCEL);
     if (sizerBtn)
     {
-        mainsizer->Add(sizerBtn, 0, wxEXPAND|wxALL, 10 );
+        mainsizer->Add(sizerBtn, 0, wxEXPAND | wxALL, 10);
     }
 
     SetAutoLayout(true);
     SetSizer(mainsizer);
-
     mainsizer->Fit(this);
     Centre(wxBOTH);
-
     // Calls wxWindow::OnInitDialog and then wxPdfPrintDialog::TransferDataToWindow
     InitDialog();
 
@@ -1672,57 +1555,57 @@ wxPdfPageSetupDialog::Init()
     }
 }
 
-wxPageSetupDialogData&
-wxPdfPageSetupDialog::GetPageSetupDialogData()
+wxPageSetupDialogData & wxPdfPageSetupDialog::GetPageSetupDialogData()
 {
     return m_pageData;
 }
 
 // old name
-wxPageSetupDialogData&
-wxPdfPageSetupDialog::GetPageSetupData()
+wxPageSetupDialogData & wxPdfPageSetupDialog::GetPageSetupData()
 {
     return GetPageSetupDialogData();
 }
 
-void
-wxPdfPageSetupDialog::OnOK(wxCommandEvent& WXUNUSED(event))
+void wxPdfPageSetupDialog::OnOK(wxCommandEvent & WXUNUSED(event))
 {
     if (!TransferDataFromWindow())
+    {
         return;
+    }
 
     EndModal(wxID_OK);
 }
 
-void
-wxPdfPageSetupDialog::OnMarginUnit(wxCommandEvent& WXUNUSED(event))
+void wxPdfPageSetupDialog::OnMarginUnit(wxCommandEvent & WXUNUSED(event))
 {
     TransferMarginsToControls();
 }
 
-void
-wxPdfPageSetupDialog::OnPaperType(wxCommandEvent& WXUNUSED(event))
+void wxPdfPageSetupDialog::OnPaperType(wxCommandEvent & WXUNUSED(event))
 {
-    wxPrintPaperType *paper = wxThePrintPaperDatabase->FindPaperType(m_paperTypeChoice->GetStringSelection());
+    wxPrintPaperType * paper = wxThePrintPaperDatabase->FindPaperType(m_paperTypeChoice->GetStringSelection());
+
     if (!paper)
     {
         wxLogError(_("Unknown Paper Type Selected"));
         return;
     }
+
     m_paperId = paper->GetId();
     wxSize pSize = paper->GetSizeMM();
     m_pageWidth = pSize.GetWidth();
     m_pageHeight = pSize.GetHeight();
+
     if (m_pageData.GetEnableMargins())
     {
         TransferControlsToMargins();
         TransferMarginsToControls();
     }
+
     UpdatePaperCanvas();
 }
 
-void
-wxPdfPageSetupDialog::OnOrientation(wxCommandEvent& WXUNUSED(event))
+void wxPdfPageSetupDialog::OnOrientation(wxCommandEvent & WXUNUSED(event))
 {
     if (m_orientationChoice->GetSelection() == 1)
     {
@@ -1732,23 +1615,23 @@ wxPdfPageSetupDialog::OnOrientation(wxCommandEvent& WXUNUSED(event))
     {
         m_orientation = wxPORTRAIT;
     }
+
     if (m_pageData.GetEnableMargins())
     {
         TransferControlsToMargins();
         TransferMarginsToControls();
     }
+
     UpdatePaperCanvas();
 }
 
-void
-wxPdfPageSetupDialog::OnMarginText(wxCommandEvent& WXUNUSED(event))
+void wxPdfPageSetupDialog::OnMarginText(wxCommandEvent & WXUNUSED(event))
 {
     TransferControlsToMargins();
     UpdatePaperCanvas();
 }
 
-void
-wxPdfPageSetupDialog::UpdatePaperCanvas()
+void wxPdfPageSetupDialog::UpdatePaperCanvas()
 {
     if (m_orientation == wxPORTRAIT)
     {
@@ -1764,8 +1647,7 @@ wxPdfPageSetupDialog::UpdatePaperCanvas()
     m_paperCanvas->Refresh();
 }
 
-bool
-wxPdfPageSetupDialog::TransferDataFromWindow()
+bool wxPdfPageSetupDialog::TransferDataFromWindow()
 {
     if (m_pageData.GetEnableMargins())
     {
@@ -1780,7 +1662,7 @@ wxPdfPageSetupDialog::TransferDataFromWindow()
         m_pageData.SetPaperId(m_paperId);
     }
 
-    if ( m_pageData.GetEnableOrientation() )
+    if (m_pageData.GetEnableOrientation())
     {
         m_pageData.GetPrintData().SetOrientation(m_orientation);
     }
@@ -1788,18 +1670,15 @@ wxPdfPageSetupDialog::TransferDataFromWindow()
     return true;
 }
 
-bool
-wxPdfPageSetupDialog::TransferDataToWindow()
+bool wxPdfPageSetupDialog::TransferDataToWindow()
 {
     // work out defaults
     int useUnitSelection = false;
-
     wxPrintData printData = m_pageData.GetPrintData();
-
     m_paperId = printData.GetPaperId();
     m_orientation = printData.GetOrientation();
+    wxPrintPaperType * paper = wxThePrintPaperDatabase->FindPaperType(m_paperId);
 
-    wxPrintPaperType* paper = wxThePrintPaperDatabase->FindPaperType(m_paperId);
     if (!paper)
     {
         paper = wxThePrintPaperDatabase->FindPaperType(m_defaultPaperId);
@@ -1843,8 +1722,7 @@ wxPdfPageSetupDialog::TransferDataToWindow()
     return true;
 }
 
-void
-wxPdfPageSetupDialog::TransferMarginsToControls()
+void wxPdfPageSetupDialog::TransferMarginsToControls()
 {
     int unitSelection = m_marginUnits->GetSelection();
     double marginScaleToUnit;
@@ -1852,24 +1730,27 @@ wxPdfPageSetupDialog::TransferMarginsToControls()
 
     switch (unitSelection)
     {
-    case 0:
-        // mm
-        marginScaleToUnit = 1.0;
-        formatS = wxS("%.0f");
-        break;
-    case 1:
-        // cm
-        marginScaleToUnit = 0.1;
-        formatS = wxS("%#.1f");
-        break;
-    case 2:
-        // inch
-        marginScaleToUnit = 1.0 / 25.4;
-        formatS = wxS("%#.2f");
-        break;
-    default:
-        wxLogError(_("Unknown margin unit format in margin to control transfer."));
-        return;
+        case 0:
+            // mm
+            marginScaleToUnit = 1.0;
+            formatS = wxS("%.0f");
+            break;
+
+        case 1:
+            // cm
+            marginScaleToUnit = 0.1;
+            formatS = wxS("%#.1f");
+            break;
+
+        case 2:
+            // inch
+            marginScaleToUnit = 1.0 / 25.4;
+            formatS = wxS("%#.2f");
+            break;
+
+        default:
+            wxLogError(_("Unknown margin unit format in margin to control transfer."));
+            return;
     }
 
     m_marginLeftText->ChangeValue(wxString::Format(formatS, (double) m_marginLeft * marginScaleToUnit));
@@ -1878,48 +1759,50 @@ wxPdfPageSetupDialog::TransferMarginsToControls()
     m_marginBottomText->ChangeValue(wxString::Format(formatS, (double) m_marginBottom * marginScaleToUnit));
 }
 
-void
-wxPdfPageSetupDialog::TransferControlsToMargins()
+void wxPdfPageSetupDialog::TransferControlsToMargins()
 {
     int unitSelection = m_marginUnits->GetSelection();
     double marginScaleToMM = 1.0;
     //int defaultMargin = 10;
     double strDbl;
-
     int maxX, maxY;
 
     if (m_orientation == wxPORTRAIT)
     {
-        maxX = ( m_pageWidth / 2 ) -1;
-        maxY = ( m_pageHeight / 2 ) -1;
+        maxX = (m_pageWidth / 2) - 1;
+        maxY = (m_pageHeight / 2) - 1;
     }
     else
     {
-        maxX = ( m_pageHeight / 2 ) -1;
-        maxY = ( m_pageWidth / 2 ) -1;
+        maxX = (m_pageHeight / 2) - 1;
+        maxY = (m_pageWidth / 2) - 1;
     }
 
     switch (unitSelection)
     {
-    case 0:
-        marginScaleToMM = 1.0;
-        break;
-    case 1:
-        // cm
-        marginScaleToMM = 10.0;
-        break;
-    case 2:
-        // inch
-        marginScaleToMM = 25.4;
-        break;
-    default:
-        wxLogError(_("Unknown margin unit format in control to margin transfer."));
-        break;
+        case 0:
+            marginScaleToMM = 1.0;
+            break;
+
+        case 1:
+            // cm
+            marginScaleToMM = 10.0;
+            break;
+
+        case 2:
+            // inch
+            marginScaleToMM = 25.4;
+            break;
+
+        default:
+            wxLogError(_("Unknown margin unit format in control to margin transfer."));
+            break;
     }
 
     if (m_marginLeftText->GetValue().ToDouble(&strDbl))
     {
-        m_marginLeft = abs(wxRound( strDbl * marginScaleToMM ));
+        m_marginLeft = abs(wxRound(strDbl * marginScaleToMM));
+
         if (m_marginLeft > maxX)
         {
             m_marginLeft = maxX;
@@ -1928,7 +1811,8 @@ wxPdfPageSetupDialog::TransferControlsToMargins()
 
     if (m_marginTopText->GetValue().ToDouble(&strDbl))
     {
-        m_marginTop = abs(wxRound( strDbl * marginScaleToMM ));
+        m_marginTop = abs(wxRound(strDbl * marginScaleToMM));
+
         if (m_marginTop > maxY)
         {
             m_marginTop = maxY;
@@ -1937,7 +1821,8 @@ wxPdfPageSetupDialog::TransferControlsToMargins()
 
     if (m_marginRightText->GetValue().ToDouble(&strDbl))
     {
-        m_marginRight = abs(wxRound( strDbl * marginScaleToMM ));
+        m_marginRight = abs(wxRound(strDbl * marginScaleToMM));
+
         if (m_marginRight > maxX)
         {
             m_marginRight = maxX;
@@ -1947,6 +1832,7 @@ wxPdfPageSetupDialog::TransferControlsToMargins()
     if (m_marginBottomText->GetValue().ToDouble(&strDbl))
     {
         m_marginBottom = abs(wxRound(strDbl * marginScaleToMM));
+
         if (m_marginBottom > maxY)
         {
             m_marginBottom = maxY;

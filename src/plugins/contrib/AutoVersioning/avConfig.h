@@ -36,7 +36,7 @@ struct avScheme
     long RevisionRandMax;
     long BuildTimesToIncrementMinor;
     avScheme() : MinorMax(10), BuildMax(0), RevisionMax(0), RevisionRandMax(10), BuildTimesToIncrementMinor(100) {}
-    bool operator!=(const avScheme& Other) const
+    bool operator!=(const avScheme & Other) const
     {
         return (MinorMax != Other.MinorMax || BuildMax != Other.BuildMax ||
                 RevisionMax != Other.RevisionMax || RevisionRandMax != Other.RevisionRandMax ||
@@ -52,7 +52,7 @@ struct avCode
 
     avCode() : HeaderGuard("VERSION_H"), NameSpace("AutoVersion"), Prefix("") {}
 
-    bool operator!=(const avCode& Other) const
+    bool operator!=(const avCode & Other) const
     {
         return (HeaderGuard != Other.HeaderGuard || NameSpace != Other.NameSpace ||
                 Prefix != Other.Prefix);
@@ -74,7 +74,7 @@ struct avSettings
     std::string HeaderPath;
     avSettings() : Autoincrement(true), DateDeclarations(true), DoAutoIncrement(false), AskToIncrement(false),
         UseDefine(false), Language("C++"), Svn(false), SvnDirectory(), HeaderPath("version.h") {}
-    bool operator!=(const avSettings& Other) const
+    bool operator!=(const avSettings & Other) const
     {
         return (Autoincrement != Other.Autoincrement || UpdateManifest != Other.UpdateManifest ||
                 DateDeclarations != Other.DateDeclarations || DoAutoIncrement != Other.DoAutoIncrement ||
@@ -91,7 +91,7 @@ struct avChangesLog
     std::string ChangesLogPath;
     avChangesLog() : ShowChangesEditor(false), AppTitle("released version %M.%m.%b of %p"),
         ChangesLogPath("ChangesLog.txt") {}
-    bool operator!=(const avChangesLog& Other) const
+    bool operator!=(const avChangesLog & Other) const
     {
         return (ShowChangesEditor != Other.ShowChangesEditor || AppTitle != Other.AppTitle ||
                 ChangesLogPath != Other.ChangesLogPath);
@@ -105,7 +105,7 @@ struct avConfig
     avSettings Settings;
     avChangesLog ChangesLog;
     avConfig() {}
-    bool operator!=(const avConfig& Other) const
+    bool operator!=(const avConfig & Other) const
     {
         return (Scheme != Other.Scheme || Settings != Other.Settings ||
                 ChangesLog != Other.ChangesLog || Code != Other.Code);

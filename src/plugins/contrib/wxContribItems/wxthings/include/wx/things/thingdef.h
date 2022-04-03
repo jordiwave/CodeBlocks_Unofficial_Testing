@@ -29,8 +29,8 @@
 // current version is at least major.minor.release
 #define wxCHECK_WXTHINGS_VERSION(major,minor,release) \
     (WXTHINGS_MAJOR_VERSION > (major) || \
-    (WXTHINGS_MAJOR_VERSION == (major) && WXTHINGS_MINOR_VERSION > (minor)) || \
-    (WXTHINGS_MAJOR_VERSION == (major) && WXTHINGS_MINOR_VERSION == (minor) && WXTHINGS_RELEASE_VERSION >= (release)))
+     (WXTHINGS_MAJOR_VERSION == (major) && WXTHINGS_MINOR_VERSION > (minor)) || \
+     (WXTHINGS_MAJOR_VERSION == (major) && WXTHINGS_MINOR_VERSION == (minor) && WXTHINGS_RELEASE_VERSION >= (release)))
 
 // ----------------------------------------------------------------------------
 // DLLIMPEXP macros
@@ -38,21 +38,21 @@
 
 // These are our DLL macros (see the contrib libs like wxPlot)
 #ifdef WXMAKINGDLL_THINGS
-#define WXDLLIMPEXP_THINGS WXEXPORT
-#define WXDLLIMPEXP_DATA_THINGS(type) WXEXPORT type
+    #define WXDLLIMPEXP_THINGS WXEXPORT
+    #define WXDLLIMPEXP_DATA_THINGS(type) WXEXPORT type
 #elif defined(WXUSINGDLL)
-#define WXDLLIMPEXP_THINGS WXIMPORT
-#define WXDLLIMPEXP_DATA_THINGS(type) WXIMPORT type
+    #define WXDLLIMPEXP_THINGS WXIMPORT
+    #define WXDLLIMPEXP_DATA_THINGS(type) WXIMPORT type
 #else // not making nor using DLL
-#define WXDLLIMPEXP_THINGS
-#define WXDLLIMPEXP_DATA_THINGS(type) type
+    #define WXDLLIMPEXP_THINGS
+    #define WXDLLIMPEXP_DATA_THINGS(type) type
 #endif
 
 // Forward declare all wxThings classes with this macro
 #if defined(HAVE_VISIBILITY) || (defined(__WINDOWS__) && defined(__GNUC__))
-#define WXDLLIMPEXP_FWD_THINGS
+    #define WXDLLIMPEXP_FWD_THINGS
 #else
-#define WXDLLIMPEXP_FWD_THINGS WXDLLIMPEXP_THINGS
+    #define WXDLLIMPEXP_FWD_THINGS WXDLLIMPEXP_THINGS
 #endif
 
 // ----------------------------------------------------------------------------
@@ -61,7 +61,7 @@
 
 #include <wx/dynarray.h>
 #ifndef WX_DECLARE_OBJARRAY_WITH_DECL // for wx2.4 backwards compatibility
-#define WX_DECLARE_OBJARRAY_WITH_DECL(T, name, expmode) WX_DECLARE_USER_EXPORTED_OBJARRAY(T, name, WXDLLIMPEXP_THINGS)
+    #define WX_DECLARE_OBJARRAY_WITH_DECL(T, name, expmode) WX_DECLARE_USER_EXPORTED_OBJARRAY(T, name, WXDLLIMPEXP_THINGS)
 #endif
 
 #endif  // __WX_THINGDEF_H__

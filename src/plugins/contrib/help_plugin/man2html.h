@@ -10,7 +10,7 @@
 #define MAN2HTML_H
 
 /** call this with the buffer you have */
-void scan_man_page(const char *man_page);
+void scan_man_page(const char * man_page);
 
 /**
  * Set the paths to KDE resources
@@ -25,25 +25,25 @@ void scan_man_page(const char *man_page);
 /** implement this somewhere. It will be called
    with HTML contents
 */
-extern void output_real(const char *insert);
+extern void output_real(const char * insert);
 
 /**
  * called for requested man pages. filename can be a
  * relative path! Return NULL on errors. The returned
  * char array is freed by man2html
  */
-extern char *read_man_page(const char *filename);
+extern char * read_man_page(const char * filename);
 
 /**
   * returns the man page provided in filename as an
   * HTML file
   */
-extern const char *man2html(const char *filename);
+extern const char * man2html(const char * filename);
 
 /**
   * returns the man page provided in buffer as an
   * HTML file
   */
-extern const char *man2html_buffer(const char *buffer);
+extern const char * man2html_buffer(const char * buffer);
 
 #endif // MAN2HTML_H

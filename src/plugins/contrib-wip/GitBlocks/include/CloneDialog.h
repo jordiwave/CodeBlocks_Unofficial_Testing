@@ -11,37 +11,37 @@
 
 class CloneDialog: public wxDialog
 {
-public:
+    public:
 
-    CloneDialog(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
-    virtual ~CloneDialog();
+        CloneDialog(wxWindow * parent, wxWindowID id = wxID_ANY, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize);
+        virtual ~CloneDialog();
 
-    //(*Declarations(CloneDialog)
-    wxTextCtrl* Origin;
-    wxStaticText* StaticText1;
-    wxTextCtrl* Directory;
-    wxStaticText* StaticText2;
-    wxButton* Browse;
-    //*)
+        //(*Declarations(CloneDialog)
+        wxTextCtrl * Origin;
+        wxStaticText * StaticText1;
+        wxTextCtrl * Directory;
+        wxStaticText * StaticText2;
+        wxButton * Browse;
+        //*)
 
-protected:
+    protected:
 
-    //(*Identifiers(CloneDialog)
-    static const long ID_STATICTEXT1;
-    static const long ID_TEXTCTRL1;
-    static const long ID_STATICTEXT2;
-    static const long ID_TEXTCTRL2;
-    static const long ID_BROWSE;
-    //*)
+        //(*Identifiers(CloneDialog)
+        static const long ID_STATICTEXT1;
+        static const long ID_TEXTCTRL1;
+        static const long ID_STATICTEXT2;
+        static const long ID_TEXTCTRL2;
+        static const long ID_BROWSE;
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(CloneDialog)
-    void OnButton1Click(wxCommandEvent& event);
-    void OnTextCtrl1Text(wxCommandEvent& event);
-    //*)
+        //(*Handlers(CloneDialog)
+        void OnButton1Click(wxCommandEvent & event);
+        void OnTextCtrl1Text(wxCommandEvent & event);
+        //*)
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

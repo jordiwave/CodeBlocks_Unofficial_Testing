@@ -8,8 +8,8 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/intl.h>
-#include <settings.h>
+    #include <wx/intl.h>
+    #include <settings.h>
 #endif
 
 #include <configurationpanel.h>
@@ -21,39 +21,39 @@ class cbProject;
 
 class FPOptionsProjectDlg : public cbConfigurationPanel
 {
-public:
-    FPOptionsProjectDlg(wxWindow* parent, cbProject* project, NativeParserF* np);
-    virtual ~FPOptionsProjectDlg();
+    public:
+        FPOptionsProjectDlg(wxWindow * parent, cbProject * project, NativeParserF * np);
+        virtual ~FPOptionsProjectDlg();
 
-    virtual wxString GetTitle() const
-    {
-        return _("Fortran");
-    }
-    virtual wxString GetBitmapBaseName() const
-    {
-        return _T("generic-plugin");
-    }
-    virtual void OnApply();
-    virtual void OnCancel() {}
+        virtual wxString GetTitle() const
+        {
+            return _("Fortran");
+        }
+        virtual wxString GetBitmapBaseName() const
+        {
+            return _T("generic-plugin");
+        }
+        virtual void OnApply();
+        virtual void OnCancel() {}
 
-protected:
-    void OnAddDir(wxCommandEvent& event);
-    void OnAddFile(wxCommandEvent& event);
-    void OnEdit(wxCommandEvent& event);
-    void OnDelete(wxCommandEvent& event);
-    void OnAddInclude(cb_unused wxCommandEvent& event);
-    void OnEditInclude(cb_unused wxCommandEvent& event);
-    void OnDeleteInclude(cb_unused wxCommandEvent& event);
-    void OnUpdateUI(wxUpdateUIEvent& event);
+    protected:
+        void OnAddDir(wxCommandEvent & event);
+        void OnAddFile(wxCommandEvent & event);
+        void OnEdit(wxCommandEvent & event);
+        void OnDelete(wxCommandEvent & event);
+        void OnAddInclude(cb_unused wxCommandEvent & event);
+        void OnEditInclude(cb_unused wxCommandEvent & event);
+        void OnDeleteInclude(cb_unused wxCommandEvent & event);
+        void OnUpdateUI(wxUpdateUIEvent & event);
 
-private:
-    cbProject*    m_pProject;
-    NativeParserF* m_pNativeParser;
-    wxArrayString m_OldPaths;
-    wxArrayString m_OldPathsInclude;
-    wxString      m_OldCPPMacros;
+    private:
+        cbProject  *  m_pProject;
+        NativeParserF * m_pNativeParser;
+        wxArrayString m_OldPaths;
+        wxArrayString m_OldPathsInclude;
+        wxString      m_OldCPPMacros;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // CCOPTIONSPRJDLG_H

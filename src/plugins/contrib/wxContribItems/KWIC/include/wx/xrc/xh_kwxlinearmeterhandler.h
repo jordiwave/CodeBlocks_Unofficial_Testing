@@ -30,18 +30,18 @@
 
 class WXEXPORT kwxLinearMeterHandler : public wxXmlResourceHandler
 {
-public:
-    // Constructor.
-    kwxLinearMeterHandler();
+    public:
+        // Constructor.
+        kwxLinearMeterHandler();
 
-    // Creates the control and returns a pointer to it.
-    virtual wxObject *DoCreateResource();
+        // Creates the control and returns a pointer to it.
+        virtual wxObject * DoCreateResource();
 
-    // Returns true if we know how to create a control for the given node.
-    virtual bool CanHandle(wxXmlNode *node);
+        // Returns true if we know how to create a control for the given node.
+        virtual bool CanHandle(wxXmlNode * node);
 
-    // Register with wxWidgets' dynamic class subsystem.
-    DECLARE_DYNAMIC_CLASS(kwxLinearMeterHandler)
+        // Register with wxWidgets' dynamic class subsystem.
+        DECLARE_DYNAMIC_CLASS(kwxLinearMeterHandler)
 };
 
 

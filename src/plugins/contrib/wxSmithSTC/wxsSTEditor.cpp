@@ -46,7 +46,7 @@ wxsRegisterItem<wxsSTEditor> Reg(
     false);                         // We do not allow this item inside XRC files
 
 
-WXS_ST_BEGIN(wxsSTEditorStyles,_T("wxRE_MULTILINE|wxRAISED_BORDER|wxWANTS_CHARS"))
+WXS_ST_BEGIN(wxsSTEditorStyles, _T("wxRE_MULTILINE|wxRAISED_BORDER|wxWANTS_CHARS"))
 WXS_ST_CATEGORY("wxSTEditor")
 
 WXS_ST_DEFAULTS()
@@ -64,7 +64,7 @@ WXS_EV_END()
 
 //------------------------------------------------------------------------------
 
-wxsSTEditor::wxsSTEditor(wxsItemResData* Data):
+wxsSTEditor::wxsSTEditor(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -74,7 +74,6 @@ wxsSTEditor::wxsSTEditor(wxsItemResData* Data):
     mSize.Set(32, 32);
     mText.Clear();
     mVirtualSize.IsDefault = true;
-
 }
 
 //------------------------------------------------------------------------------
@@ -86,33 +85,27 @@ void wxsSTEditor::OnBuildCreatingCode()
     wxString            ss, tt;
     wxColour            fg;
 
-// valid language?
+    // valid language?
 
-    if (GetLanguage() != wxsCPP) wxsCodeMarks::Unknown(_T("wxsSTEditor::OnBuildCreatingCode"),GetLanguage());
+    if (GetLanguage() != wxsCPP)
+    {
+        wxsCodeMarks::Unknown(_T("wxsSTEditor::OnBuildCreatingCode"), GetLanguage());
+    }
 
-// who we are
-
+    // who we are
     vname = GetVarName();
     aname = vname + _T("_Attr");
-
-// include files
-
+    // include files
     AddHeader(_("\"stedit.h\""), GetInfo().ClassName, 0);
-
-// make our own size specifier with our default values
-
+    // make our own size specifier with our default values
     mSize.SetDefaults(wxSize(32, 32));
     ss.Printf(_T("wxSize(%d, %d)"), mSize.GetWidth(), mSize.GetHeight());
-
-// create the panel
-
+    // create the panel
     Codef(_T("%C(%W, %I, %P, %s, %T, %N);\n"), ss.c_str());
-
-// other declarations
-
+    // other declarations
     BuildSetupWindowCode();
 
-// a virtual size
+    // a virtual size
 
     if (! mVirtualSize.IsDefault)
     {
@@ -120,9 +113,8 @@ void wxsSTEditor::OnBuildCreatingCode()
         Codef(_T("%ASetVirtualSize(%s);\n"), ss.c_str());
     };
 
-// initial text
-
-    for(size_t i=0; i<mText.GetCount(); i++)
+    // initial text
+    for (size_t i = 0; i < mText.GetCount(); i++)
     {
         ss  = mText.Item(i);
         ss += _T("\n");
@@ -132,28 +124,22 @@ void wxsSTEditor::OnBuildCreatingCode()
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsSTEditor::OnBuildPreview(wxWindow* Parent, long Flags)
+wxObject * wxsSTEditor::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxSTEditor          *ste;
+    wxSTEditor     *     ste;
     wxColour            fg;
     wxString            ss;
     wxSize              zz;
-
-// the default size of this widget is microscopic
-// use this to make a reasonable default size
-
+    // the default size of this widget is microscopic
+    // use this to make a reasonable default size
     mSize = Size(Parent);
     mSize.SetDefaults(wxSize(32, 32));
-
-// make the basic widget
-
+    // make the basic widget
     ste = new wxSTEditor(Parent, GetId(), Pos(Parent), mSize, Style());
-
-// the rest of the attributtes
-
+    // the rest of the attributtes
     SetupWindow(ste, Flags);
 
-// a virtual size
+    // a virtual size
 
     if (! mVirtualSize.IsDefault)
     {
@@ -161,17 +147,15 @@ wxObject* wxsSTEditor::OnBuildPreview(wxWindow* Parent, long Flags)
         ste->SetVirtualSize(zz);
     };
 
-// add in initial text
-
-    for(size_t i=0; i<mText.GetCount(); i++)
+    // add in initial text
+    for (size_t i = 0; i < mText.GetCount(); i++)
     {
         ss  = mText.Item(i);
         ss += _T("\n");
         ste->AppendText(ss);
     };
 
-// done
-
+    // done
     return ste;
 }
 
@@ -179,10 +163,7 @@ wxObject* wxsSTEditor::OnBuildPreview(wxWindow* Parent, long Flags)
 
 void wxsSTEditor::OnEnumWidgetProperties(long Flags)
 {
-
-// initial text contents
-
+    // initial text contents
     WXS_ARRAYSTRING(wxsSTEditor, mText, _("Text"), _("mText"), _("text"));
-    WXS_SIZE(       wxsSTEditor, mVirtualSize,   _T("Default Virtual Size?"),           _T("Virtual Width"),    _T("Virtual Height"), _T("Use Dialog Units?"), _T("mVirtualSize"));
-
+    WXS_SIZE(wxsSTEditor, mVirtualSize,   _T("Default Virtual Size?"),           _T("Virtual Width"),    _T("Virtual Height"), _T("Use Dialog Units?"), _T("mVirtualSize"));
 };

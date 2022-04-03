@@ -27,9 +27,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsFileDialog> Reg(_T("FileDialog"),wxsTTool,_T("Dialogs"),180,false);
+wxsRegisterItem<wxsFileDialog> Reg(_T("FileDialog"), wxsTTool, _T("Dialogs"), 180, false);
 
-WXS_ST_BEGIN(wxsFileDialogStyles,_T("wxFD_DEFAULT_STYLE"))
+WXS_ST_BEGIN(wxsFileDialogStyles, _T("wxFD_DEFAULT_STYLE"))
 WXS_ST_CATEGORY("wxFileDialog")
 WXS_ST(wxFD_DEFAULT_STYLE)
 WXS_ST(wxFD_OPEN)
@@ -40,57 +40,59 @@ WXS_ST(wxFD_MULTIPLE)
 WXS_ST(wxFD_CHANGE_DIR)
 WXS_ST(wxFD_PREVIEW)
 #if wxCHECK_VERSION(3,1,3)
-WXS_ST(wxFD_SHOW_HIDDEN)
+    WXS_ST(wxFD_SHOW_HIDDEN)
 #endif // wxCHECK_VERSION
 WXS_ST_DEFAULTS()
 WXS_ST_END()
 }
 
-wxsFileDialog::wxsFileDialog(wxsItemResData* Data):
-    wxsTool(Data,&Reg.Info,0,wxsFileDialogStyles)
+wxsFileDialog::wxsFileDialog(wxsItemResData * Data):
+    wxsTool(Data, &Reg.Info, 0, wxsFileDialogStyles)
 {
     m_Message = _("Select file");
 }
 
 void wxsFileDialog::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/filedlg.h>"),GetInfo().ClassName,hfInPCH);
-        if ( m_Wildcard.empty() )
+        case wxsCPP:
         {
-            Codef(_T("%C(%W, %t, %t, %t, wxFileSelectorDefaultWildcardStr, %T, %P, %S, %N);\n"),
-                  m_Message.wx_str(),
-                  m_DefaultDir.wx_str(),
-                  m_DefaultFile.wx_str());
-        }
-        else
-        {
-            Codef(_T("%C(%W, %t, %t, %t, %t, %T, %P, %S, %N);\n"),
-                  m_Message.wx_str(),
-                  m_DefaultDir.wx_str(),
-                  m_DefaultFile.wx_str(),
-                  m_Wildcard.wx_str());
-        }
-        BuildSetupWindowCode();
-        GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
-        return;
-    }
+            AddHeader(_T("<wx/filedlg.h>"), GetInfo().ClassName, hfInPCH);
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsFileDialog::OnBuildCreatingCode"),GetLanguage());
-    }
+            if (m_Wildcard.empty())
+            {
+                Codef(_T("%C(%W, %t, %t, %t, wxFileSelectorDefaultWildcardStr, %T, %P, %S, %N);\n"),
+                      m_Message.wx_str(),
+                      m_DefaultDir.wx_str(),
+                      m_DefaultFile.wx_str());
+            }
+            else
+            {
+                Codef(_T("%C(%W, %t, %t, %t, %t, %T, %P, %S, %N);\n"),
+                      m_Message.wx_str(),
+                      m_DefaultDir.wx_str(),
+                      m_DefaultFile.wx_str(),
+                      m_Wildcard.wx_str());
+            }
+
+            BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
+            return;
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsFileDialog::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
 void wxsFileDialog::OnEnumToolProperties(cb_unused long Flags)
 {
-    WXS_SHORT_STRING(wxsFileDialog,m_Message,_("Message"),_T("message"),_T(""),false);
-    WXS_SHORT_STRING(wxsFileDialog,m_DefaultDir,_("Default directory"),_T("default_dir"),_T(""),false);
-    WXS_SHORT_STRING(wxsFileDialog,m_DefaultFile,_("Default file"),_T("default_file"),_T(""),false);
-    WXS_SHORT_STRING(wxsFileDialog,m_Wildcard,_("Wildcard"),_T("wildcard"),_T(""),false);
+    WXS_SHORT_STRING(wxsFileDialog, m_Message, _("Message"), _T("message"), _T(""), false);
+    WXS_SHORT_STRING(wxsFileDialog, m_DefaultDir, _("Default directory"), _T("default_dir"), _T(""), false);
+    WXS_SHORT_STRING(wxsFileDialog, m_DefaultFile, _("Default file"), _T("default_file"), _T(""), false);
+    WXS_SHORT_STRING(wxsFileDialog, m_Wildcard, _("Wildcard"), _T("wildcard"), _T(""), false);
 }

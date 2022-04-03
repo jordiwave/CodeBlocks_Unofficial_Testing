@@ -9,10 +9,10 @@
 #include "incremental_select_helper.h"
 
 #ifndef CB_PRECOMP
-#include <wx/dialog.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
+    #include <wx/dialog.h>
+    #include <wx/sizer.h>
+    #include <wx/stattext.h>
+    #include <wx/textctrl.h>
 #endif
 
 IncrementalSelectIterator::~IncrementalSelectIterator()
@@ -24,7 +24,7 @@ int IncrementalSelectIterator::GetColumnWidth(int column) const
     return wxLIST_AUTOSIZE;
 }
 
-void IncrementalSelectIterator::CalcColumnWidth(cb_unused wxListCtrl &list)
+void IncrementalSelectIterator::CalcColumnWidth(cb_unused wxListCtrl & list)
 {
 }
 
@@ -46,12 +46,16 @@ void IncrementalSelectIteratorIndexed::AddIndex(int index)
 int IncrementalSelectIteratorIndexed::GetUnfilteredIndex(int index) const
 {
     if (index >= 0 && index < int(m_indices.size()))
+    {
         return m_indices[index];
+    }
     else
+    {
         return wxNOT_FOUND;
+    }
 }
 
-IncrementalSelectHandler::IncrementalSelectHandler(wxDialog* parent, IncrementalSelectIterator *iterator) :
+IncrementalSelectHandler::IncrementalSelectHandler(wxDialog * parent, IncrementalSelectIterator * iterator) :
     m_parent(parent),
     m_list(nullptr),
     m_text(nullptr),
@@ -65,23 +69,21 @@ IncrementalSelectHandler::~IncrementalSelectHandler()
 {
 }
 
-void IncrementalSelectHandler::Init(wxListCtrl *list, wxTextCtrl *text)
+void IncrementalSelectHandler::Init(wxListCtrl * list, wxTextCtrl * text)
 {
     m_list = list;
     m_text = text;
-
     m_text->Connect(wxEVT_COMMAND_TEXT_UPDATED, (wxObjectEventFunction)&IncrementalSelectHandler::OnTextChanged,
                     nullptr, this);
     m_text->Connect(wxEVT_KEY_DOWN, (wxObjectEventFunction)&IncrementalSelectHandler::OnKeyDown, nullptr, this);
     m_list->Connect(wxEVT_KEY_DOWN, (wxObjectEventFunction)&IncrementalSelectHandler::OnKeyDown, nullptr, this);
     m_list->Connect(wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler(IncrementalSelectHandler::OnItemActivated),
                     nullptr, this);
-
     m_iterator->CalcColumnWidth(*m_list);
     FilterItems();
 }
 
-void IncrementalSelectHandler::DeInit(wxWindow *window)
+void IncrementalSelectHandler::DeInit(wxWindow * window)
 {
     m_list->Disconnect(wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler(IncrementalSelectHandler::OnItemActivated),
                        nullptr, this);
@@ -89,43 +91,51 @@ void IncrementalSelectHandler::DeInit(wxWindow *window)
     m_list->Disconnect(wxEVT_KEY_DOWN, (wxObjectEventFunction)&IncrementalSelectHandler::OnKeyDown, nullptr, this);
     m_text->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, (wxObjectEventFunction)&IncrementalSelectHandler::OnTextChanged,
                        nullptr, this);
-
     SetEvtHandlerEnabled(false);
     window->RemoveEventHandler(this);
 }
 
-void IncrementalSelectHandler::OnTextChanged(wxCommandEvent& event)
+void IncrementalSelectHandler::OnTextChanged(wxCommandEvent & event)
 {
     FilterItems();
     event.Skip();
 }
 
-void FilterItemsFinalize(wxListCtrl &list, IncrementalSelectIterator &iterator)
+void FilterItemsFinalize(wxListCtrl & list, IncrementalSelectIterator & iterator)
 {
     list.SetItemCount(iterator.GetFilteredCount());
 
     for (int ii = 0; ii < list.GetColumnCount(); ++ii)
     {
         int width = iterator.GetColumnWidth(ii);
+
         if (width != -1)
+        {
             list.SetColumnWidth(ii, width);
+        }
     }
 
     if (iterator.GetFilteredCount() > 0)
+    {
         list.SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+    }
+
     list.Refresh();
 }
 
 void IncrementalSelectHandler::FilterItems()
 {
     m_iterator->Reset();
+    const wxString & inputPattern = m_text->GetValue().Lower();
 
-    const wxString &inputPattern = m_text->GetValue().Lower();
     if (inputPattern.empty())
     {
         int count = m_iterator->GetTotalCount();
+
         for (int ii = 0; ii < count; ++ii)
+        {
             m_iterator->AddIndex(ii);
+        }
 
         FilterItemsFinalize(*m_list, *m_iterator);
         return;
@@ -135,6 +145,7 @@ void IncrementalSelectHandler::FilterItems()
     // that is: if user enter "a", it will match "123a", "12a" or "a12".
     wxString search(wxT("*") + inputPattern + wxT("*"));
     bool isWord = !inputPattern.empty();
+
     for (auto ch : inputPattern)
     {
         if (!wxIsalpha(ch))
@@ -150,7 +161,8 @@ void IncrementalSelectHandler::FilterItems()
 
     for (int i = 0; i < m_iterator->GetTotalCount(); ++i)
     {
-        wxString const &item = m_iterator->GetItemFilterString(i).Lower();
+        wxString const & item = m_iterator->GetItemFilterString(i).Lower();
+
         if (item.Matches(search.c_str()))
         {
             // If the search pattern doesn't contain non alpha characters and it matches at the start of the word in
@@ -177,101 +189,134 @@ void IncrementalSelectHandler::FilterItems()
                     // Move one character forward to prevent the same string to be found again.
                     pos = newPos + 1;
                 }
+
                 if (isPromoted)
+                {
                     promoted.push_back(i);
+                }
                 else
+                {
                     indices.push_back(i);
+                }
             }
             else
+            {
                 indices.push_back(i);
+            }
         }
     }
 
     for (auto i : promoted)
+    {
         m_iterator->AddIndex(i);
+    }
+
     for (auto i : indices)
+    {
         m_iterator->AddIndex(i);
+    }
 
     FilterItemsFinalize(*m_list, *m_iterator);
 }
 
-static wxStandardID KeyDownAction(wxKeyEvent& event, int &selected, int selectedMax)
+static wxStandardID KeyDownAction(wxKeyEvent & event, int & selected, int selectedMax)
 {
     // now, adjust position from key input
     switch (event.GetKeyCode())
     {
-    case WXK_RETURN:
-    case WXK_NUMPAD_ENTER:
-        return wxID_OK;
+        case WXK_RETURN:
+        case WXK_NUMPAD_ENTER:
+            return wxID_OK;
 
-    case WXK_ESCAPE:
-        return wxID_CANCEL;
+        case WXK_ESCAPE:
+            return wxID_CANCEL;
 
-    case WXK_UP:
-    case WXK_NUMPAD_UP:
-        if (selected)
-            selected--;
-        break;
+        case WXK_UP:
+        case WXK_NUMPAD_UP:
+            if (selected)
+            {
+                selected--;
+            }
 
-    case WXK_DOWN:
-    case WXK_NUMPAD_DOWN:
-        selected++;
-        break;
+            break;
 
-    case WXK_PAGEUP:
-    case WXK_NUMPAD_PAGEUP:
-        selected -= 10;
-        break;
+        case WXK_DOWN:
+        case WXK_NUMPAD_DOWN:
+            selected++;
+            break;
 
-    case WXK_PAGEDOWN:
-    case WXK_NUMPAD_PAGEDOWN:
-        selected += 10;
-        break;
+        case WXK_PAGEUP:
+        case WXK_NUMPAD_PAGEUP:
+            selected -= 10;
+            break;
 
-    case WXK_HOME:
-        if (wxGetKeyState(WXK_CONTROL))
-            selected = 0;
-        else
+        case WXK_PAGEDOWN:
+        case WXK_NUMPAD_PAGEDOWN:
+            selected += 10;
+            break;
+
+        case WXK_HOME:
+            if (wxGetKeyState(WXK_CONTROL))
+            {
+                selected = 0;
+            }
+            else
+            {
+                event.Skip();
+            }
+
+            break;
+
+        case WXK_END:
+            if (wxGetKeyState(WXK_CONTROL))
+            {
+                selected = selectedMax;
+            }
+            else
+            {
+                event.Skip();
+            }
+
+            break;
+
+        default:
             event.Skip();
-        break;
-
-    case WXK_END:
-        if (wxGetKeyState(WXK_CONTROL))
-            selected = selectedMax;
-        else
-            event.Skip();
-        break;
-
-    default:
-        event.Skip();
-        break;
+            break;
     }
 
     // Clamp value below 0 and above Max
     if (selected < 0)
+    {
         selected = 0;
-    else if (selected > selectedMax)
-        selected = selectedMax;
+    }
+    else
+        if (selected > selectedMax)
+        {
+            selected = selectedMax;
+        }
 
     return wxID_LOWEST;
 }
 
-void IncrementalSelectHandler::OnKeyDown(wxKeyEvent& event)
+void IncrementalSelectHandler::OnKeyDown(wxKeyEvent & event)
 {
     int selected = m_list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     int selectedMax = m_list->GetItemCount() - 1;
-
     wxStandardID result = KeyDownAction(event, selected, selectedMax);
+
     if (result != wxID_LOWEST)
-        m_parent->EndModal(result);
-    else if (selectedMax >= 0)
     {
-        m_list->SetItemState(selected, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
-        m_list->EnsureVisible(selected);
+        m_parent->EndModal(result);
     }
+    else
+        if (selectedMax >= 0)
+        {
+            m_list->SetItemState(selected, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+            m_list->EnsureVisible(selected);
+        }
 }
 
-void IncrementalSelectHandler::OnItemActivated(wxListEvent &event)
+void IncrementalSelectHandler::OnItemActivated(wxListEvent & event)
 {
     m_parent->EndModal(wxID_OK);
 }
@@ -279,14 +324,19 @@ void IncrementalSelectHandler::OnItemActivated(wxListEvent &event)
 int IncrementalSelectHandler::GetSelection()
 {
     int index = m_list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+
     if (index == -1)
+    {
         return wxNOT_FOUND;
+    }
     else
+    {
         return m_iterator->GetUnfilteredIndex(index);
+    }
 }
 
-IncrementalListCtrl::IncrementalListCtrl(wxWindow *parent, wxWindowID winid, const wxPoint& pos, const wxSize& size,
-        long style, const wxValidator &validator, const wxString &name) :
+IncrementalListCtrl::IncrementalListCtrl(wxWindow * parent, wxWindowID winid, const wxPoint & pos, const wxSize & size,
+                                         long style, const wxValidator & validator, const wxString & name) :
     wxListCtrl(parent, winid, pos, size, style, validator, name)
 {
 }
@@ -296,13 +346,13 @@ wxString IncrementalListCtrl::OnGetItemText(long item, long column) const
     return m_Iterator->GetDisplayText(item, column);
 }
 
-void IncrementalListCtrl::SetIterator(IncrementalSelectIterator *iterator)
+void IncrementalListCtrl::SetIterator(IncrementalSelectIterator * iterator)
 {
     m_Iterator = iterator;
 }
 
 
-IncrementalSelectArrayIterator::IncrementalSelectArrayIterator(const wxArrayString &items) :
+IncrementalSelectArrayIterator::IncrementalSelectArrayIterator(const wxArrayString & items) :
     m_items(items), m_columnWidth(300)
 {
 }
@@ -311,7 +361,7 @@ int IncrementalSelectArrayIterator::GetTotalCount() const
 {
     return m_items.size();
 }
-const wxString& IncrementalSelectArrayIterator::GetItemFilterString(int index) const
+const wxString & IncrementalSelectArrayIterator::GetItemFilterString(int index) const
 {
     return m_items[index];
 }
@@ -323,14 +373,15 @@ int IncrementalSelectArrayIterator::GetColumnWidth(int column) const
 {
     return m_columnWidth;
 }
-void IncrementalSelectArrayIterator::CalcColumnWidth(wxListCtrl &list)
+void IncrementalSelectArrayIterator::CalcColumnWidth(wxListCtrl & list)
 {
     int length = 0;
     wxString longest;
 
-    for (const auto &item : m_items)
+    for (const auto & item : m_items)
     {
         int itemLength = item.length();
+
         if (length < itemLength)
         {
             longest = item;
@@ -346,7 +397,9 @@ void IncrementalSelectArrayIterator::CalcColumnWidth(wxListCtrl &list)
         m_columnWidth += 50;
     }
     else
+    {
         m_columnWidth = 300;
+    }
 }
 
 const long ID_TEXTCTRL1 = wxNewId();
@@ -355,12 +408,11 @@ const long ID_RESULT_LIST = wxNewId();
 BEGIN_EVENT_TABLE(IncrementalSelectDialog, wxDialog)
 END_EVENT_TABLE()
 
-IncrementalSelectDialog::IncrementalSelectDialog(wxWindow* parent, IncrementalSelectIterator *iterator,
-        const wxString &title, const wxString &message) :
+IncrementalSelectDialog::IncrementalSelectDialog(wxWindow * parent, IncrementalSelectIterator * iterator,
+                                                 const wxString & title, const wxString & message) :
     m_handler(this, iterator)
 {
     BuildContent(parent, iterator, title, message);
-
     m_handler.Init(m_resultList, m_text);
 }
 
@@ -369,32 +421,31 @@ IncrementalSelectDialog::~IncrementalSelectDialog()
     m_handler.DeInit(this);
 }
 
-void IncrementalSelectDialog::BuildContent(wxWindow* parent, IncrementalSelectIterator *iterator, const wxString &title,
-        const wxString &message)
+void IncrementalSelectDialog::BuildContent(wxWindow * parent, IncrementalSelectIterator * iterator, const wxString & title,
+                                           const wxString & message)
 {
     Create(parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize,
-           wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX|wxMAXIMIZE_BOX, _T("wxID_ANY"));
-    wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-    wxStaticText *labelCtrl = new wxStaticText(this, wxID_ANY, message, wxDefaultPosition, wxDefaultSize, 0,
-            _T("wxID_ANY"));
-    sizer->Add(labelCtrl, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
+           wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxCLOSE_BOX | wxMAXIMIZE_BOX, _T("wxID_ANY"));
+    wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
+    wxStaticText * labelCtrl = new wxStaticText(this, wxID_ANY, message, wxDefaultPosition, wxDefaultSize, 0,
+                                                _T("wxID_ANY"));
+    sizer->Add(labelCtrl, 0, wxTOP | wxLEFT | wxRIGHT | wxEXPAND, 5);
     m_text = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER, wxDefaultValidator,
                             _T("ID_TEXTCTRL1"));
     m_text->SetFocus();
-    sizer->Add(m_text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    sizer->Add(m_text, 0, wxTOP | wxLEFT | wxRIGHT | wxEXPAND, 5);
     m_resultList = new IncrementalListCtrl(this, ID_RESULT_LIST, wxDefaultPosition, wxDefaultSize,
-                                           wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL|wxLC_VIRTUAL|wxVSCROLL|wxHSCROLL,
+                                           wxLC_REPORT | wxLC_NO_HEADER | wxLC_SINGLE_SEL | wxLC_VIRTUAL | wxVSCROLL | wxHSCROLL,
                                            wxDefaultValidator, _T("ID_RESULT_LIST"));
-    m_resultList->SetMinSize(wxSize(500,300));
-    sizer->Add(m_resultList, 1, wxALL|wxEXPAND, 5);
+    m_resultList->SetMinSize(wxSize(500, 300));
+    sizer->Add(m_resultList, 1, wxALL | wxEXPAND, 5);
     SetSizer(sizer);
     sizer->Fit(this);
     sizer->SetSizeHints(this);
-
     // Add first column
     wxListItem column;
     column.SetId(0);
-    column.SetText( _("Column") );
+    column.SetText(_("Column"));
     column.SetWidth(300);
     m_resultList->InsertColumn(0, column);
     m_resultList->SetIterator(iterator);

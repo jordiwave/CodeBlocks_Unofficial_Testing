@@ -26,44 +26,48 @@ namespace Scintilla
  */
 class KeyModifiers
 {
-public:
-    int key;
-    int modifiers;
-    KeyModifiers(int key_, int modifiers_) : key(key_), modifiers(modifiers_)
-    {
-    }
-    bool operator<(const KeyModifiers &other) const
-    {
-        if (key == other.key)
-            return modifiers < other.modifiers;
-        else
-            return key < other.key;
-    }
+    public:
+        int key;
+        int modifiers;
+        KeyModifiers(int key_, int modifiers_) : key(key_), modifiers(modifiers_)
+        {
+        }
+        bool operator<(const KeyModifiers & other) const
+        {
+            if (key == other.key)
+            {
+                return modifiers < other.modifiers;
+            }
+            else
+            {
+                return key < other.key;
+            }
+        }
 };
 
 /**
  */
 class KeyToCommand
 {
-public:
-    int key;
-    int modifiers;
-    unsigned int msg;
+    public:
+        int key;
+        int modifiers;
+        unsigned int msg;
 };
 
 /**
  */
 class KeyMap
 {
-    std::map<KeyModifiers, unsigned int> kmap;
-    static const KeyToCommand MapDefault[];
+        std::map<KeyModifiers, unsigned int> kmap;
+        static const KeyToCommand MapDefault[];
 
-public:
-    KeyMap();
-    ~KeyMap();
-    void Clear();
-    void AssignCmdKey(int key, int modifiers, unsigned int msg);
-    unsigned int Find(int key, int modifiers) const;	// 0 returned on failure
+    public:
+        KeyMap();
+        ~KeyMap();
+        void Clear();
+        void AssignCmdKey(int key, int modifiers, unsigned int msg);
+        unsigned int Find(int key, int modifiers) const;	// 0 returned on failure
 };
 
 #ifdef SCI_NAMESPACE

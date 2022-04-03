@@ -12,29 +12,32 @@
 
 struct affentry
 {
-   char * strip;
-   char * appnd;
-   short  stripl;
-   short  appndl;
-   short  numconds;
-   short  xpflg;
-   char   achar;
-   char   conds[SETSIZE];
+    char * strip;
+    char * appnd;
+    short  stripl;
+    short  appndl;
+    short  numconds;
+    short  xpflg;
+    char   achar;
+    char   conds[SETSIZE];
 };
 
-struct replentry {
-  char * pattern;
-  char * replacement;
+struct replentry
+{
+    char * pattern;
+    char * replacement;
 };
 
-struct mapentry {
-  char * set;
-  int len;
+struct mapentry
+{
+    char * set;
+    int len;
 };
 
-struct guessword {
-  char * word;
-  bool allow;
+struct guessword
+{
+    char * word;
+    bool allow;
 };
 
 #endif

@@ -9,16 +9,16 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/checkbox.h>
-#include <wx/intl.h>
-#include <wx/string.h>
-#include <wx/xrc/xmlres.h>
-#include "configmanager.h"
-#include "manager.h"
+    #include <wx/checkbox.h>
+    #include <wx/intl.h>
+    #include <wx/string.h>
+    #include <wx/xrc/xmlres.h>
+    #include "configmanager.h"
+    #include "manager.h"
 #endif
 #include "todosettingsdlg.h"
 
-ToDoSettingsDlg::ToDoSettingsDlg(wxWindow* parent)
+ToDoSettingsDlg::ToDoSettingsDlg(wxWindow * parent)
 {
     //ctor
     wxXmlResource::Get()->LoadPanel(this, parent, _T("ToDoSettingsDlg"));

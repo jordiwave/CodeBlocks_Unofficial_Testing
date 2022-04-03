@@ -37,22 +37,22 @@
 /** \brief Class handling colour data for wxSmith */
 class PLUGIN_EXPORT wxsColourData: public wxColourPropertyValue
 {
-public:
+    public:
 
-    wxsColourData(wxUint32 type, const wxColour &colour): wxColourPropertyValue(type,colour) {}
-    wxsColourData(wxUint32 type = wxsCOLOUR_DEFAULT): wxColourPropertyValue(type) {}
-    wxsColourData(const wxColour &colour): wxColourPropertyValue(colour) {}
-    wxsColourData(const wxColourPropertyValue& cp): wxColourPropertyValue(cp) {}
+        wxsColourData(wxUint32 type, const wxColour & colour): wxColourPropertyValue(type, colour) {}
+        wxsColourData(wxUint32 type = wxsCOLOUR_DEFAULT): wxColourPropertyValue(type) {}
+        wxsColourData(const wxColour & colour): wxColourPropertyValue(colour) {}
+        wxsColourData(const wxColourPropertyValue & cp): wxColourPropertyValue(cp) {}
 
-    /** \brief Getting wxColour object from wxColourPropertyValue
-     *  \return wxColour class, if wxColour.Ok() will return false, default colour was used
-     */
-    wxColour GetColour();
+        /** \brief Getting wxColour object from wxColourPropertyValue
+         *  \return wxColour class, if wxColour.Ok() will return false, default colour was used
+         */
+        wxColour GetColour();
 
-    /** \brief Getting code building colour
-     *  \return code with colour or empty string if there's default colour
-     */
-    wxString BuildCode(wxsCoderContext* Context);
+        /** \brief Getting code building colour
+         *  \return code with colour or empty string if there's default colour
+         */
+        wxString BuildCode(wxsCoderContext * Context);
 };
 
 /** \brief Colour property - property used for handling wxColour property
@@ -62,48 +62,48 @@ public:
  */
 class PLUGIN_EXPORT wxsColourProperty: public wxsProperty
 {
-public:
+    public:
 
-    /** \brief Ctor
-     *  \param PGName               name of property in Property Grid
-     *  \param DataName             name of property in data stuctures
-     *  \param ValueOffset          offset of wxColourPropertyValue member (taken from wxsOFFSET macro)
-     *  \param Priority         priority of this property
-     */
-    wxsColourProperty(
-        const wxString& PGName,
-        const wxString& DataName,
-        long ValueOffset,
-        int Priority=100);
+        /** \brief Ctor
+         *  \param PGName               name of property in Property Grid
+         *  \param DataName             name of property in data stuctures
+         *  \param ValueOffset          offset of wxColourPropertyValue member (taken from wxsOFFSET macro)
+         *  \param Priority         priority of this property
+         */
+        wxsColourProperty(
+            const wxString & PGName,
+            const wxString & DataName,
+            long ValueOffset,
+            int Priority = 100);
 
-    /** \brief Returning type name */
-    virtual const wxString GetTypeName()
-    {
-        return _T("wxsColour");
-    }
+        /** \brief Returning type name */
+        virtual const wxString GetTypeName()
+        {
+            return _T("wxsColour");
+        }
 
-    /** \brief Getting wxColour object from wxColourPropertyValue
-     *  \return wxColour class, if wxColour.Ok() will return false, default colour was used
-     */
-    static wxColour GetColour(const wxColourPropertyValue& value);
+        /** \brief Getting wxColour object from wxColourPropertyValue
+         *  \return wxColour class, if wxColour.Ok() will return false, default colour was used
+         */
+        static wxColour GetColour(const wxColourPropertyValue & value);
 
-    /** \brief Getting code building colour
-     *  \return code with colour or empty string if there's default colour
-     */
-    static wxString GetColourCode(const wxColourPropertyValue& value,wxsCodingLang Language);
+        /** \brief Getting code building colour
+         *  \return code with colour or empty string if there's default colour
+         */
+        static wxString GetColourCode(const wxColourPropertyValue & value, wxsCodingLang Language);
 
-protected:
+    protected:
 
-    virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
-    virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-    virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-    virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
-    virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-    virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+        virtual void PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent);
+        virtual bool PGRead(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index);
+        virtual bool PGWrite(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index);
+        virtual bool XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element);
+        virtual bool PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
+        virtual bool PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream);
 
-private:
-    long ValueOffset;
+    private:
+        long ValueOffset;
 };
 
 /** \addtogroup ext_properties_macros
@@ -117,7 +117,7 @@ private:
  */
 #define WXS_COLOUR(ClassName,VarName,PGName,DataName) \
     { static wxsColourProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName)); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \brief Macro automatically declaring colour property with custom priority
  *  \param ClassName name of class holding this property
@@ -128,7 +128,7 @@ private:
  */
 #define WXS_COLOUR_P(ClassName,VarName,PGName,DataName,Priority) \
     { static wxsColourProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Priority); \
-      Property(_Property); }
+        Property(_Property); }
 
 /** \} */
 

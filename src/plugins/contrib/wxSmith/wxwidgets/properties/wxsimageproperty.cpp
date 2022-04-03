@@ -28,7 +28,7 @@
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,wxArrayString)
 
-wxsImageProperty::wxsImageProperty(const wxString &PGName, const wxString &_DataName, const wxString &_DataSubName, long _Offset, int Priority):
+wxsImageProperty::wxsImageProperty(const wxString & PGName, const wxString & _DataName, const wxString & _DataSubName, long _Offset, int Priority):
     wxsCustomEditorProperty(PGName, _DataName, Priority),
     Offset(_Offset),
     DataSubName(_DataSubName),
@@ -41,28 +41,27 @@ wxsImageProperty::wxsImageProperty(const wxString &PGName, const wxString &_Data
  * \return bool    True on success, otherwise false.
  *
  */
-bool wxsImageProperty::ShowEditor(wxsPropertyContainer *Object)
+bool wxsImageProperty::ShowEditor(wxsPropertyContainer * Object)
 {
     int                                             n;
     wxsBitmapIconData           data;
     wxsBitmapIconEditorDlg    dlg(0, data, _T("wxART_OTHER"));
     wxBitmap                                bmp;
     wxString                                ss;
-
     // show the dialog, exit immediately if cancelled
     PlaceWindow(&dlg);
     n = dlg.ShowModal();
-    if(n != wxID_OK)
+
+    if (n != wxID_OK)
     {
         return false;
     }
 
     // no data?
-    if(data.IsEmpty())
+    if (data.IsEmpty())
     {
         VALUE.Clear();
     }
-
     // get a preview image and store it as an array of XPM data
     else
     {
@@ -81,21 +80,22 @@ bool wxsImageProperty::ShowEditor(wxsPropertyContainer *Object)
  * \return bool    True on success, otherwise false.
  *
  */
-bool wxsImageProperty::XmlRead(wxsPropertyContainer *Object, TiXmlElement *Element)
+bool wxsImageProperty::XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
     VALUE.Clear();
 
-    if(!Element)
+    if (!Element)
     {
         return false;
     }
 
-    for(TiXmlElement *Item = Element->FirstChildElement(cbU2C(DataSubName));
+    for (TiXmlElement * Item = Element->FirstChildElement(cbU2C(DataSubName));
             Item;
             Item = Item->NextSiblingElement(cbU2C(DataSubName)))
     {
-        const char *Text = Item->GetText();
-        if(Text)
+        const char * Text = Item->GetText();
+
+        if (Text)
         {
             VALUE.Add(cbC2U(Text));
         }
@@ -104,6 +104,7 @@ bool wxsImageProperty::XmlRead(wxsPropertyContainer *Object, TiXmlElement *Eleme
             VALUE.Add(wxEmptyString);
         }
     }
+
     return true;
 }
 
@@ -114,13 +115,15 @@ bool wxsImageProperty::XmlRead(wxsPropertyContainer *Object, TiXmlElement *Eleme
  * \return bool    True if count != 0, false otherwise.
  *
  */
-bool wxsImageProperty::XmlWrite(wxsPropertyContainer *Object, TiXmlElement *Element)
+bool wxsImageProperty::XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
     size_t Count = VALUE.Count();
-    for(size_t i = 0; i < Count; i++)
+
+    for (size_t i = 0; i < Count; i++)
     {
         XmlSetString(Element, VALUE[i], DataSubName);
     }
+
     return Count != 0;
 }
 
@@ -131,19 +134,23 @@ bool wxsImageProperty::XmlWrite(wxsPropertyContainer *Object, TiXmlElement *Elem
  * \return bool    Always returns true.
  *
  */
-bool wxsImageProperty::PropStreamRead(wxsPropertyContainer *Object, wxsPropertyStream *Stream)
+bool wxsImageProperty::PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
     VALUE.Clear();
     Stream->SubCategory(GetDataName());
-    for(;;)
+
+    for (;;)
     {
         wxString Item;
-        if(!Stream->GetString(DataSubName, Item, wxEmptyString))
+
+        if (!Stream->GetString(DataSubName, Item, wxEmptyString))
         {
             break;
         }
+
         VALUE.Add(Item);
     }
+
     Stream->PopCategory();
     return true;
 }
@@ -155,14 +162,16 @@ bool wxsImageProperty::PropStreamRead(wxsPropertyContainer *Object, wxsPropertyS
  * \return bool    Always returns true.
  *
  */
-bool wxsImageProperty::PropStreamWrite(wxsPropertyContainer *Object, wxsPropertyStream *Stream)
+bool wxsImageProperty::PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
     Stream->SubCategory(GetDataName());
     size_t Count = VALUE.GetCount();
-    for(size_t i = 0; i < Count; i++)
+
+    for (size_t i = 0; i < Count; i++)
     {
         Stream->PutString(DataSubName, VALUE[i], wxEmptyString);
     }
+
     Stream->PopCategory();
     return true;
 }
@@ -173,27 +182,30 @@ bool wxsImageProperty::PropStreamWrite(wxsPropertyContainer *Object, wxsProperty
  * \return wxString    The image string.
  *
  */
-wxString wxsImageProperty::GetStr(wxsPropertyContainer *Object)
+wxString wxsImageProperty::GetStr(wxsPropertyContainer * Object)
 {
     wxString Result;
     size_t Count = VALUE.Count();
 
-    if(Count == 0)
+    if (Count == 0)
     {
         return _("Click to add items");
     }
 
-    for(size_t i = 0; i < Count; i++)
+    for (size_t i = 0; i < Count; i++)
     {
         wxString Item = VALUE[i];
         Item.Replace(_T("\""), _T("\\\""));
-        if(i > 0)
+
+        if (i > 0)
         {
             Result.Append(_T(' '));
         }
+
         Result.Append(_T('"'));
         Result.Append(Item);
         Result.Append(_T('"'));
     }
+
     return Result;
 }

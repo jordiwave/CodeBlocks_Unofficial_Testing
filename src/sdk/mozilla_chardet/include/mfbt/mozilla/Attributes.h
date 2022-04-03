@@ -18,13 +18,13 @@
  * may ignore this directive if it chooses.
  */
 #if defined(__cplusplus)
-#  define MOZ_INLINE            inline
+    #define MOZ_INLINE            inline
 #elif defined(_MSC_VER)
-#  define MOZ_INLINE            __inline
+    #define MOZ_INLINE            __inline
 #elif defined(__GNUC__)
-#  define MOZ_INLINE            __inline__
+    #define MOZ_INLINE            __inline__
 #else
-#  define MOZ_INLINE            inline
+    #define MOZ_INLINE            inline
 #endif
 
 /*
@@ -38,17 +38,17 @@
  * compiler to inline even in DEBUG builds. It should be used very rarely.
  */
 #if defined(_MSC_VER)
-#  define MOZ_ALWAYS_INLINE_EVEN_DEBUG     __forceinline
+    #define MOZ_ALWAYS_INLINE_EVEN_DEBUG     __forceinline
 #elif defined(__GNUC__)
-#  define MOZ_ALWAYS_INLINE_EVEN_DEBUG     __attribute__((always_inline)) MOZ_INLINE
+    #define MOZ_ALWAYS_INLINE_EVEN_DEBUG     __attribute__((always_inline)) MOZ_INLINE
 #else
-#  define MOZ_ALWAYS_INLINE_EVEN_DEBUG     MOZ_INLINE
+    #define MOZ_ALWAYS_INLINE_EVEN_DEBUG     MOZ_INLINE
 #endif
 
 #if defined(DEBUG)
-#  define MOZ_ALWAYS_INLINE     MOZ_INLINE
+    #define MOZ_ALWAYS_INLINE     MOZ_INLINE
 #else
-#  define MOZ_ALWAYS_INLINE     MOZ_ALWAYS_INLINE_EVEN_DEBUG
+    #define MOZ_ALWAYS_INLINE     MOZ_ALWAYS_INLINE_EVEN_DEBUG
 #endif
 
 /*
@@ -60,58 +60,58 @@
  * for forward compatibility.
  */
 #if defined(__clang__)
-/*
- * Per Clang documentation, "Note that marketing version numbers should not
- * be used to check for language features, as different vendors use different
- * numbering schemes. Instead, use the feature checking macros."
- */
-#  ifndef __has_extension
-#    define __has_extension __has_feature /* compatibility, for older versions of clang */
-#  endif
-#  if __has_extension(cxx_constexpr)
-#    define MOZ_HAVE_CXX11_CONSTEXPR
-#  endif
-#  if __has_extension(cxx_deleted_functions)
-#    define MOZ_HAVE_CXX11_DELETE
-#  endif
-#  if __has_extension(cxx_override_control)
-#    define MOZ_HAVE_CXX11_OVERRIDE
-#    define MOZ_HAVE_CXX11_FINAL         final
-#  endif
-#  if __has_attribute(noinline)
-#    define MOZ_HAVE_NEVER_INLINE        __attribute__((noinline))
-#  endif
-#  if __has_attribute(noreturn)
-#    define MOZ_HAVE_NORETURN            __attribute__((noreturn))
-#  endif
+    /*
+    * Per Clang documentation, "Note that marketing version numbers should not
+    * be used to check for language features, as different vendors use different
+    * numbering schemes. Instead, use the feature checking macros."
+    */
+    #ifndef __has_extension
+        #define __has_extension __has_feature /* compatibility, for older versions of clang */
+    #endif
+    #if __has_extension(cxx_constexpr)
+        #define MOZ_HAVE_CXX11_CONSTEXPR
+    #endif
+    #if __has_extension(cxx_deleted_functions)
+        #define MOZ_HAVE_CXX11_DELETE
+    #endif
+    #if __has_extension(cxx_override_control)
+        #define MOZ_HAVE_CXX11_OVERRIDE
+        #define MOZ_HAVE_CXX11_FINAL         final
+    #endif
+    #if __has_attribute(noinline)
+        #define MOZ_HAVE_NEVER_INLINE        __attribute__((noinline))
+    #endif
+    #if __has_attribute(noreturn)
+        #define MOZ_HAVE_NORETURN            __attribute__((noreturn))
+    #endif
 #elif defined(__GNUC__)
-#  if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus >= 201103L
-#    if MOZ_GCC_VERSION_AT_LEAST(4, 7, 0)
-#      define MOZ_HAVE_CXX11_OVERRIDE
-#      define MOZ_HAVE_CXX11_FINAL       final
-#    endif
-#    if MOZ_GCC_VERSION_AT_LEAST(4, 6, 0)
-#      define MOZ_HAVE_CXX11_CONSTEXPR
-#    endif
-#    define MOZ_HAVE_CXX11_DELETE
-#  else
-/* __final is a non-C++11 GCC synonym for 'final', per GCC r176655. */
-#    if MOZ_GCC_VERSION_AT_LEAST(4, 7, 0)
-#      define MOZ_HAVE_CXX11_FINAL       __final
-#    endif
-#  endif
-#  define MOZ_HAVE_NEVER_INLINE          __attribute__((noinline))
-#  define MOZ_HAVE_NORETURN              __attribute__((noreturn))
+    #if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus >= 201103L
+        #if MOZ_GCC_VERSION_AT_LEAST(4, 7, 0)
+            #define MOZ_HAVE_CXX11_OVERRIDE
+            #define MOZ_HAVE_CXX11_FINAL       final
+        #endif
+        #if MOZ_GCC_VERSION_AT_LEAST(4, 6, 0)
+            #define MOZ_HAVE_CXX11_CONSTEXPR
+        #endif
+        #define MOZ_HAVE_CXX11_DELETE
+    #else
+        /* __final is a non-C++11 GCC synonym for 'final', per GCC r176655. */
+        #if MOZ_GCC_VERSION_AT_LEAST(4, 7, 0)
+            #define MOZ_HAVE_CXX11_FINAL       __final
+        #endif
+    #endif
+    #define MOZ_HAVE_NEVER_INLINE          __attribute__((noinline))
+    #define MOZ_HAVE_NORETURN              __attribute__((noreturn))
 #elif defined(_MSC_VER)
-#  if _MSC_VER >= 1700
-#    define MOZ_HAVE_CXX11_FINAL         final
-#  else
-/* MSVC <= 10 used to spell "final" as "sealed". */
-#    define MOZ_HAVE_CXX11_FINAL         sealed
-#  endif
-#  define MOZ_HAVE_CXX11_OVERRIDE
-#  define MOZ_HAVE_NEVER_INLINE          __declspec(noinline)
-#  define MOZ_HAVE_NORETURN              __declspec(noreturn)
+    #if _MSC_VER >= 1700
+        #define MOZ_HAVE_CXX11_FINAL         final
+    #else
+        /* MSVC <= 10 used to spell "final" as "sealed". */
+        #define MOZ_HAVE_CXX11_FINAL         sealed
+    #endif
+    #define MOZ_HAVE_CXX11_OVERRIDE
+    #define MOZ_HAVE_NEVER_INLINE          __declspec(noinline)
+    #define MOZ_HAVE_NORETURN              __declspec(noreturn)
 #endif
 
 /*
@@ -125,11 +125,11 @@
  * do not accept variables being marked both const and constexpr.
  */
 #ifdef MOZ_HAVE_CXX11_CONSTEXPR
-#  define MOZ_CONSTEXPR         constexpr
-#  define MOZ_CONSTEXPR_VAR     constexpr
+    #define MOZ_CONSTEXPR         constexpr
+    #define MOZ_CONSTEXPR_VAR     constexpr
 #else
-#  define MOZ_CONSTEXPR         /* no support */
-#  define MOZ_CONSTEXPR_VAR     const
+    #define MOZ_CONSTEXPR         /* no support */
+    #define MOZ_CONSTEXPR_VAR     const
 #endif
 
 /*
@@ -139,9 +139,9 @@
  * guaranteed to support this, but most do.
  */
 #if defined(MOZ_HAVE_NEVER_INLINE)
-#  define MOZ_NEVER_INLINE      MOZ_HAVE_NEVER_INLINE
+    #define MOZ_NEVER_INLINE      MOZ_HAVE_NEVER_INLINE
 #else
-#  define MOZ_NEVER_INLINE      /* no support */
+    #define MOZ_NEVER_INLINE      /* no support */
 #endif
 
 /*
@@ -159,9 +159,9 @@
  * This modifier does not affect the corresponding function's linking behavior.
  */
 #if defined(MOZ_HAVE_NORETURN)
-#  define MOZ_NORETURN          MOZ_HAVE_NORETURN
+    #define MOZ_NORETURN          MOZ_HAVE_NORETURN
 #else
-#  define MOZ_NORETURN          /* no support */
+    #define MOZ_NORETURN          /* no support */
 #endif
 
 /*
@@ -171,9 +171,9 @@
  * inlining currently breaks the blacklisting mechanism of AddressSanitizer.
  */
 #if defined(MOZ_ASAN)
-#  define MOZ_ASAN_BLACKLIST MOZ_NEVER_INLINE __attribute__((no_address_safety_analysis))
-# else
-#  define MOZ_ASAN_BLACKLIST
+    #define MOZ_ASAN_BLACKLIST MOZ_NEVER_INLINE __attribute__((no_address_safety_analysis))
+#else
+    #define MOZ_ASAN_BLACKLIST
 #endif
 
 
@@ -202,9 +202,9 @@
  * backstop, method declarations using MOZ_DELETE should be private.
  */
 #if defined(MOZ_HAVE_CXX11_DELETE)
-#  define MOZ_DELETE            = delete
+    #define MOZ_DELETE            = delete
 #else
-#  define MOZ_DELETE            /* no support */
+    #define MOZ_DELETE            /* no support */
 #endif
 
 /*
@@ -243,9 +243,9 @@
  * of course must still be used correctly to not break C++11 compilers).
  */
 #if defined(MOZ_HAVE_CXX11_OVERRIDE)
-#  define MOZ_OVERRIDE          override
+    #define MOZ_OVERRIDE          override
 #else
-#  define MOZ_OVERRIDE          /* no support */
+    #define MOZ_OVERRIDE          /* no support */
 #endif
 
 /*
@@ -312,9 +312,9 @@
  * only as documentation.
  */
 #if defined(MOZ_HAVE_CXX11_FINAL)
-#  define MOZ_FINAL             MOZ_HAVE_CXX11_FINAL
+    #define MOZ_FINAL             MOZ_HAVE_CXX11_FINAL
 #else
-#  define MOZ_FINAL             /* no support */
+    #define MOZ_FINAL             /* no support */
 #endif
 
 /**
@@ -331,9 +331,9 @@
  *   MOZ_WARN_UNUSED_RESULT int foo() { return 42; }
  */
 #if defined(__GNUC__) || defined(__clang__)
-#  define MOZ_WARN_UNUSED_RESULT __attribute__ ((warn_unused_result))
+    #define MOZ_WARN_UNUSED_RESULT __attribute__ ((warn_unused_result))
 #else
-#  define MOZ_WARN_UNUSED_RESULT
+    #define MOZ_WARN_UNUSED_RESULT
 #endif
 
 /*
@@ -403,13 +403,13 @@
  *   need not be provided in such cases.
  */
 #ifdef MOZ_CLANG_PLUGIN
-# define MOZ_MUST_OVERRIDE __attribute__((annotate("moz_must_override")))
-# define MOZ_STACK_CLASS __attribute__((annotate("moz_stack_class")))
-# define MOZ_NONHEAP_CLASS __attribute__((annotate("moz_nonheap_class")))
+    #define MOZ_MUST_OVERRIDE __attribute__((annotate("moz_must_override")))
+    #define MOZ_STACK_CLASS __attribute__((annotate("moz_stack_class")))
+    #define MOZ_NONHEAP_CLASS __attribute__((annotate("moz_nonheap_class")))
 #else
-# define MOZ_MUST_OVERRIDE /* nothing */
-# define MOZ_STACK_CLASS /* nothing */
-# define MOZ_NONHEAP_CLASS /* nothing */
+    #define MOZ_MUST_OVERRIDE /* nothing */
+    #define MOZ_STACK_CLASS /* nothing */
+    #define MOZ_NONHEAP_CLASS /* nothing */
 #endif /* MOZ_CLANG_PLUGIN */
 
 /*
@@ -418,10 +418,10 @@
  */
 #ifdef _MSC_VER
 #  define MOZ_THIS_IN_INITIALIZER_LIST() \
-     __pragma(warning(push)) \
-     __pragma(warning(disable:4355)) \
-     this \
-     __pragma(warning(pop))
+    __pragma(warning(push)) \
+    __pragma(warning(disable:4355)) \
+    this \
+    __pragma(warning(pop))
 #else
 #  define MOZ_THIS_IN_INITIALIZER_LIST() this
 #endif

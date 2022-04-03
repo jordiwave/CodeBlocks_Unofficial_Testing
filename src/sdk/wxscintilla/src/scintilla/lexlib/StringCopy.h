@@ -19,15 +19,19 @@ namespace Scintilla
 // May truncate if source doesn't fit into dest with room for NUL.
 
 template <typename T, size_t count>
-void StringCopy(T (&dest)[count], const T* source)
+void StringCopy(T(&dest)[count], const T * source)
 {
-    for (size_t i=0; i<count; i++)
+    for (size_t i = 0; i < count; i++)
     {
         dest[i] = source[i];
+
         if (!source[i])
+        {
             break;
+        }
     }
-    dest[count-1] = 0;
+
+    dest[count - 1] = 0;
 }
 
 #define ELEMENTS(a) (sizeof(a) / sizeof(a[0]))

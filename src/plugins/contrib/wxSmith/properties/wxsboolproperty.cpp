@@ -27,75 +27,79 @@
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,bool)
 
-wxsBoolProperty::wxsBoolProperty(const wxString& PGName,const wxString& DataName,long _Offset,bool _Default,int Priority):
-    wxsProperty(PGName,DataName,Priority),
+wxsBoolProperty::wxsBoolProperty(const wxString & PGName, const wxString & DataName, long _Offset, bool _Default, int Priority):
+    wxsProperty(PGName, DataName, Priority),
     Offset(_Offset),
     Default(_Default)
 {}
 
 
-void wxsBoolProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
+void wxsBoolProperty::PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent)
 {
-    wxBoolProperty *Property = new wxBoolProperty(GetPGName(),wxPG_LABEL,VALUE);
+    wxBoolProperty * Property = new wxBoolProperty(GetPGName(), wxPG_LABEL, VALUE);
     Property->SetHelpString(m_HelpString);
     wxPGId ID = Grid->AppendIn(Parent, Property);
-    Grid->SetPropertyAttribute(ID,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
-    PGRegister(Object,Grid,ID);
+    Grid->SetPropertyAttribute(ID, wxPG_BOOL_USE_CHECKBOX, 1L, wxPG_RECURSE);
+    PGRegister(Object, Grid, ID);
 }
 
-bool wxsBoolProperty::PGRead(cb_unused wxsPropertyContainer* Object,
-                             wxPropertyGridManager* Grid,wxPGId Id,
+bool wxsBoolProperty::PGRead(cb_unused wxsPropertyContainer * Object,
+                             wxPropertyGridManager * Grid, wxPGId Id,
                              cb_unused long Index)
 {
     VALUE = Grid->GetPropertyValue(Id).GetBool();
     return true;
 }
 
-bool wxsBoolProperty::PGWrite(cb_unused wxsPropertyContainer* Object,
-                              wxPropertyGridManager* Grid,wxPGId Id,
+bool wxsBoolProperty::PGWrite(cb_unused wxsPropertyContainer * Object,
+                              wxPropertyGridManager * Grid, wxPGId Id,
                               cb_unused long Index)
 {
-    Grid->SetPropertyValue(Id,VALUE);
+    Grid->SetPropertyValue(Id, VALUE);
     return true;
 }
 
-bool wxsBoolProperty::XmlRead(cb_unused wxsPropertyContainer* Object,
-                              TiXmlElement* Element)
+bool wxsBoolProperty::XmlRead(cb_unused wxsPropertyContainer * Object,
+                              TiXmlElement * Element)
 {
-    if ( !Element )
+    if (!Element)
     {
         VALUE = Default;
         return false;
     }
-    const char* Text = Element->GetText();
-    if ( !Text )
+
+    const char * Text = Element->GetText();
+
+    if (!Text)
     {
         VALUE = Default;
         return false;
     }
+
     VALUE = atol(Text) != 0;
     return true;
 }
 
-bool wxsBoolProperty::XmlWrite(cb_unused wxsPropertyContainer* Object,
-                               TiXmlElement* Element)
+bool wxsBoolProperty::XmlWrite(cb_unused wxsPropertyContainer * Object,
+                               TiXmlElement * Element)
 {
-    if ( VALUE != Default )
+    if (VALUE != Default)
     {
-        Element->InsertEndChild(TiXmlText(VALUE?"1":"0"));
+        Element->InsertEndChild(TiXmlText(VALUE ? "1" : "0"));
         return true;
     }
+
     return false;
 }
 
-bool wxsBoolProperty::PropStreamRead(cb_unused wxsPropertyContainer* Object,
-                                     wxsPropertyStream* Stream)
+bool wxsBoolProperty::PropStreamRead(cb_unused wxsPropertyContainer * Object,
+                                     wxsPropertyStream * Stream)
 {
-    return Stream->GetBool(GetDataName(),VALUE,Default);
+    return Stream->GetBool(GetDataName(), VALUE, Default);
 }
 
-bool wxsBoolProperty::PropStreamWrite(cb_unused wxsPropertyContainer* Object,
-                                      wxsPropertyStream* Stream)
+bool wxsBoolProperty::PropStreamWrite(cb_unused wxsPropertyContainer * Object,
+                                      wxsPropertyStream * Stream)
 {
-    return Stream->PutBool(GetDataName(),VALUE,Default);
+    return Stream->PutBool(GetDataName(), VALUE, Default);
 }

@@ -37,59 +37,58 @@ BEGIN_EVENT_TABLE(cbDiffConfigPanel, cbConfigurationPanel)
     //*)
 END_EVENT_TABLE()
 
-cbDiffConfigPanel::cbDiffConfigPanel(wxWindow *parent)
+cbDiffConfigPanel::cbDiffConfigPanel(wxWindow * parent)
 {
     //(*Initialize(cbDiffConfigPanel)
-    wxBoxSizer* BoxSizer1;
-    wxBoxSizer* BoxSizer2;
-    wxStaticBoxSizer* StaticBoxSizer1;
-    wxStaticBoxSizer* StaticBoxSizer2;
-    wxStaticBoxSizer* StaticBoxSizer3;
-    wxStaticBoxSizer* StaticBoxSizer4;
-    wxStaticText* StaticText1;
-    wxStaticText* StaticText2;
-    wxStaticText* StaticText4;
-
+    wxBoxSizer * BoxSizer1;
+    wxBoxSizer * BoxSizer2;
+    wxStaticBoxSizer * StaticBoxSizer1;
+    wxStaticBoxSizer * StaticBoxSizer2;
+    wxStaticBoxSizer * StaticBoxSizer3;
+    wxStaticBoxSizer * StaticBoxSizer4;
+    wxStaticText * StaticText1;
+    wxStaticText * StaticText2;
+    wxStaticText * StaticText4;
     Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Added Lines:"));
     BColAdd = new wxButton(this, ID_BUTTON2, _("Colour"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
-    StaticBoxSizer2->Add(BColAdd, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer2->Add(BColAdd, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
     StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Alpha:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-    StaticBoxSizer2->Add(StaticText1, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer2->Add(StaticText1, 0, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
     SLAddAlpha = new wxSlider(this, ID_SLIDER1, 50, 0, 255, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_SLIDER1"));
-    StaticBoxSizer2->Add(SLAddAlpha, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer1->Add(StaticBoxSizer2, 0, wxALL|wxEXPAND, 5);
+    StaticBoxSizer2->Add(SLAddAlpha, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer1->Add(StaticBoxSizer2, 0, wxALL | wxEXPAND, 5);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Removed Lines:"));
     BColRem = new wxButton(this, ID_BUTTON1, _("Colour"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
-    StaticBoxSizer1->Add(BColRem, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1->Add(BColRem, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
     StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("Alpha:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
-    StaticBoxSizer1->Add(StaticText2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1->Add(StaticText2, 0, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
     SLRemAlpha = new wxSlider(this, ID_SLIDER2, 50, 0, 255, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_SLIDER2"));
-    StaticBoxSizer1->Add(SLRemAlpha, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer1->Add(StaticBoxSizer1, 0, wxALL|wxEXPAND, 5);
+    StaticBoxSizer1->Add(SLRemAlpha, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer1->Add(StaticBoxSizer1, 0, wxALL | wxEXPAND, 5);
     StaticBoxSizer4 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Removed Lines:"));
     BColSel = new wxButton(this, ID_BUTTON4, _("Colour"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON4"));
-    StaticBoxSizer4->Add(BColSel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer4->Add(BColSel, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
     StaticText4 = new wxStaticText(this, wxID_ANY, _("Alpha:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    StaticBoxSizer4->Add(StaticText4, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer4->Add(StaticText4, 0, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
     SLSelAlpha = new wxSlider(this, ID_SLIDER4, 50, 0, 255, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_SLIDER4"));
-    StaticBoxSizer4->Add(SLSelAlpha, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer1->Add(StaticBoxSizer4, 0, wxALL|wxEXPAND, 5);
+    StaticBoxSizer4->Add(SLSelAlpha, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer1->Add(StaticBoxSizer4, 0, wxALL | wxEXPAND, 5);
     StaticBoxSizer3 = new wxStaticBoxSizer(wxVERTICAL, this, _("Caret Line:"));
     CHCaret = new wxChoice(this, ID_CHOICE1, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE1"));
-    CHCaret->SetSelection( CHCaret->Append(_("Underline")) );
+    CHCaret->SetSelection(CHCaret->Append(_("Underline")));
     CHCaret->Append(_("Background"));
-    StaticBoxSizer3->Add(CHCaret, 0, wxALL|wxEXPAND, 5);
+    StaticBoxSizer3->Add(CHCaret, 0, wxALL | wxEXPAND, 5);
     BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
     BColCar = new wxButton(this, ID_BUTTON3, _("Colour"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
-    BoxSizer2->Add(BColCar, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer2->Add(BColCar, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
     StaticText3 = new wxStaticText(this, ID_STATICTEXT3, _("Alpha:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
-    BoxSizer2->Add(StaticText3, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer2->Add(StaticText3, 0, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
     SLCarAlpha = new wxSlider(this, ID_SLIDER3, 50, 0, 255, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_SLIDER3"));
-    BoxSizer2->Add(SLCarAlpha, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer3->Add(BoxSizer2, 1, wxALL|wxEXPAND, 0);
-    BoxSizer1->Add(StaticBoxSizer3, 0, wxALL|wxEXPAND, 5);
+    BoxSizer2->Add(SLCarAlpha, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer3->Add(BoxSizer2, 1, wxALL | wxEXPAND, 0);
+    BoxSizer1->Add(StaticBoxSizer3, 0, wxALL | wxEXPAND, 5);
     wxString __wxRadioBoxChoices_1[3] =
     {
         _("Tabular"),
@@ -98,33 +97,32 @@ cbDiffConfigPanel::cbDiffConfigPanel(wxWindow *parent)
     };
     RBViewing = new wxRadioBox(this, ID_RADIOBOX1, _("Default Displaytype:"), wxDefaultPosition, wxDefaultSize, 3, __wxRadioBoxChoices_1, 1, wxRA_VERTICAL, wxDefaultValidator, _T("ID_RADIOBOX1"));
     RBViewing->SetSelection(0);
-    BoxSizer1->Add(RBViewing, 0, wxALL|wxEXPAND, 5);
+    BoxSizer1->Add(RBViewing, 0, wxALL | wxEXPAND, 5);
     SetSizer(BoxSizer1);
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
-
-    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&cbDiffConfigPanel::OnColAddClick);
-    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&cbDiffConfigPanel::OnColRemClick);
-    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&cbDiffConfigPanel::OnColSelClick);
-    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&cbDiffConfigPanel::OnColCarClick);
+    Connect(ID_BUTTON2, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&cbDiffConfigPanel::OnColAddClick);
+    Connect(ID_BUTTON1, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&cbDiffConfigPanel::OnColRemClick);
+    Connect(ID_BUTTON4, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&cbDiffConfigPanel::OnColSelClick);
+    Connect(ID_BUTTON3, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&cbDiffConfigPanel::OnColCarClick);
     //*)
-    BColAdd->SetBackgroundColour(wxColour(0,255,0,50));
-    BColRem->SetBackgroundColour(wxColour(255,0,0,50));
-    BColSel->SetBackgroundColour(wxColour(0,0,255,50));
+    BColAdd->SetBackgroundColour(wxColour(0, 255, 0, 50));
+    BColRem->SetBackgroundColour(wxColour(255, 0, 0, 50));
+    BColSel->SetBackgroundColour(wxColour(0, 0, 255, 50));
     CHCaret->SetSelection(0);
-    BColCar->SetBackgroundColour(wxColour(122,122,0));
+    BColCar->SetBackgroundColour(wxColour(122, 122, 0));
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("cbdiffsettings"));
 
-    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("cbdiffsettings"));
     if (cfg)
     {
-        BColAdd->SetBackgroundColour(cfg->ReadColour(_T("addedlines"), wxColour(0,255,0,50)));
+        BColAdd->SetBackgroundColour(cfg->ReadColour(_T("addedlines"), wxColour(0, 255, 0, 50)));
         SLAddAlpha->SetValue(cfg->ReadInt(_T("addedlinesalpha"), 50));
-        BColRem->SetBackgroundColour(cfg->ReadColour(_T("removedlines"), wxColour(255,0,0,50)));
+        BColRem->SetBackgroundColour(cfg->ReadColour(_T("removedlines"), wxColour(255, 0, 0, 50)));
         SLRemAlpha->SetValue(cfg->ReadInt(_T("removedlinesalpha"), 50));
-        BColSel->SetBackgroundColour(cfg->ReadColour(_T("selectedlines"), wxColour(0,0,255,50)));
+        BColSel->SetBackgroundColour(cfg->ReadColour(_T("selectedlines"), wxColour(0, 0, 255, 50)));
         SLSelAlpha->SetValue(cfg->ReadInt(_T("selectedlinesalpha"), 50));
         CHCaret->SetSelection(cfg->ReadInt(_T("caretlinetype")));
-        BColCar->SetBackgroundColour(cfg->ReadColour(_T("caretline"), wxColor(122,122,0)));
+        BColCar->SetBackgroundColour(cfg->ReadColour(_T("caretline"), wxColor(122, 122, 0)));
         SLCarAlpha->SetValue(cfg->ReadInt(_T("caretlinealpha"), 50));
         RBViewing->SetSelection(cfg->ReadInt(_T("viewmode"), 0));
     }
@@ -156,7 +154,8 @@ wxString cbDiffConfigPanel::GetBitmapBaseName() const
 /// Called when the user chooses to apply the configuration.
 void cbDiffConfigPanel::OnApply()
 {
-    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("cbdiffsettings"));
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("cbdiffsettings"));
+
     if (cfg)
     {
         cfg->Write(_T("addedlines"), BColAdd->GetBackgroundColour());
@@ -175,14 +174,14 @@ void cbDiffConfigPanel::OnApply()
 /// Called when the user chooses to cancel the configuration.
 void cbDiffConfigPanel::OnCancel()
 {
-
 }
 
-void cbDiffConfigPanel::OnColAddClick(wxCommandEvent& event)
+void cbDiffConfigPanel::OnColAddClick(wxCommandEvent & event)
 {
     wxColourData data;
     data.SetColour(BColAdd->GetBackgroundColour());
     wxColourDialog dialog(this, &data);
+
     if (dialog.ShowModal() == wxID_OK)
     {
         BColAdd->SetBackgroundColour(dialog.GetColourData().GetColour());
@@ -190,11 +189,12 @@ void cbDiffConfigPanel::OnColAddClick(wxCommandEvent& event)
     }
 }
 
-void cbDiffConfigPanel::OnColRemClick(wxCommandEvent& event)
+void cbDiffConfigPanel::OnColRemClick(wxCommandEvent & event)
 {
     wxColourData data;
     data.SetColour(BColRem->GetBackgroundColour());
     wxColourDialog dialog(this, &data);
+
     if (dialog.ShowModal() == wxID_OK)
     {
         BColRem->SetBackgroundColour(dialog.GetColourData().GetColour());
@@ -202,11 +202,12 @@ void cbDiffConfigPanel::OnColRemClick(wxCommandEvent& event)
     }
 }
 
-void cbDiffConfigPanel::OnColSelClick(wxCommandEvent& event)
+void cbDiffConfigPanel::OnColSelClick(wxCommandEvent & event)
 {
     wxColourData data;
     data.SetColour(BColSel->GetBackgroundColour());
     wxColourDialog dialog(this, &data);
+
     if (dialog.ShowModal() == wxID_OK)
     {
         BColSel->SetBackgroundColour(dialog.GetColourData().GetColour());
@@ -214,11 +215,12 @@ void cbDiffConfigPanel::OnColSelClick(wxCommandEvent& event)
     }
 }
 
-void cbDiffConfigPanel::OnColCarClick(wxCommandEvent& event)
+void cbDiffConfigPanel::OnColCarClick(wxCommandEvent & event)
 {
     wxColourData data;
     data.SetColour(BColCar->GetBackgroundColour());
     wxColourDialog dialog(this, &data);
+
     if (dialog.ShowModal() == wxID_OK)
     {
         BColCar->SetBackgroundColour(dialog.GetColourData().GetColour());

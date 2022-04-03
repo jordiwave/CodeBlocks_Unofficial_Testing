@@ -3,8 +3,8 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/thread.h>
-#include <wx/event.h>
+    #include <wx/thread.h>
+    #include <wx/event.h>
 #endif
 
 #include <cbthreadpool.h>
@@ -17,15 +17,15 @@ class NativeParserF;
 
 class WorkspaceParserThread : public cbThreadedTask
 {
-public:
-    WorkspaceParserThread(NativeParserF* parent, int idWSPThreadEvent);
-    virtual ~WorkspaceParserThread();
-    int Execute();
-    void ParseFiles();
+    public:
+        WorkspaceParserThread(NativeParserF * parent, int idWSPThreadEvent);
+        virtual ~WorkspaceParserThread();
+        int Execute();
+        void ParseFiles();
 
-private:
-    NativeParserF* m_pNativeParser;
-    int m_idWSPThreadEvent;
+    private:
+        NativeParserF * m_pNativeParser;
+        int m_idWSPThreadEvent;
 };
 
 #endif // WORKSPACEPARSERTHREAD_H

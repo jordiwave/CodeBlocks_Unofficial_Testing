@@ -37,84 +37,84 @@ class cbKeyBinder;
 // ----------------------------------------------------------------------------
 class cbKeyBinder : public cbPlugin
 {
-public:
-    cbKeyBinder();
-    ~cbKeyBinder();
+    public:
+        cbKeyBinder();
+        ~cbKeyBinder();
 
-    int GetConfigurationGroup() const
-    {
-        return cgEditor;
-    }
-    cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+        int GetConfigurationGroup() const
+        {
+            return cgEditor;
+        }
+        cbConfigurationPanel * GetConfigurationPanel(wxWindow * parent);
 
-    void BuildMenu(wxMenuBar* menuBar);
-    void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
-    bool BuildToolBar(wxToolBar* toolBar);
-    void OnAttach();                    // fires when the plugin is attached to the application
-    void OnRelease(bool appShutDown);   // fires when the plugin is released from the application
-    void OnKeyBinderRefreshRequested(wxCommandEvent& event);
+        void BuildMenu(wxMenuBar * menuBar);
+        void BuildModuleMenu(const ModuleType type, wxMenu * menu, const FileTreeData * data = 0);
+        bool BuildToolBar(wxToolBar * toolBar);
+        void OnAttach();                    // fires when the plugin is attached to the application
+        void OnRelease(bool appShutDown);   // fires when the plugin is released from the application
+        void OnKeyBinderRefreshRequested(wxCommandEvent & event);
 
 #ifdef LOGGING
-    // allocate wxLogWindow when debugging
-    wxLogWindow* m_pMyLog;
+        // allocate wxLogWindow when debugging
+        wxLogWindow * m_pMyLog;
 #endif
 
-    //memorized menubar from BuildMenu(...)
-    wxMenuBar* m_pMenuBar;
+        //memorized menubar from BuildMenu(...)
+        wxMenuBar * m_pMenuBar;
 
-    // Users Key file name eg. %HOME%\cbKeybinder.ini
-    wxString m_OldKeyBinderFullFilePath;
-    wxString m_UserPersonality;
+        // Users Key file name eg. %HOME%\cbKeybinder.ini
+        wxString m_OldKeyBinderFullFilePath;
+        wxString m_UserPersonality;
 
-    //-bool VerifyKeyBind(const wxString& strKeyCode, const int numShortcuts);
-    int RemoveKeyBindingsFor(const wxString& strKeyCode, wxKeyProfile* pkp);
+        //-bool VerifyKeyBind(const wxString& strKeyCode, const int numShortcuts);
+        int RemoveKeyBindingsFor(const wxString & strKeyCode, wxKeyProfile * pkp);
 
-protected:
-    //-wxADD_KEYBINDER_SUPPORT(); no longer needed in KeyBinder 2.0
+    protected:
+        //-wxADD_KEYBINDER_SUPPORT(); no longer needed in KeyBinder 2.0
 
-private:
-    void OnAppStartupDone(CodeBlocksEvent& event);
-    void OnAppStartShutdown(CodeBlocksEvent& event);
+    private:
+        void OnAppStartupDone(CodeBlocksEvent & event);
+        void OnAppStartShutdown(CodeBlocksEvent & event);
 
-    wxString GetUserPersonality()
-    {
-        return m_UserPersonality;
-    }
-    bool     CreateKeyBindDefaultFile(bool refresh);
-    bool     OnSaveKbOldFormatCfgFile(wxKeyProfileArray* pKeyProfileArray, wxString oldFmtMnuScanFilePath, bool backitup);
-    int      ConvertMenuScanToKeyMnuAcceratorsConf(wxString keybinderFile, wxString acceratorFile);
-    int      ConvertOldKeybinderIniToAcceratorsConf(wxString keybinderFile, wxString acceleratorFile);
-    bool     MergeAcceleratorTable(wxTextFile& textOutFile);
-    int      RemoveCopyPasteBindings(wxKeyProfile* pkp);
-    wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
-    wxString GetPluginVersion();
+        wxString GetUserPersonality()
+        {
+            return m_UserPersonality;
+        }
+        bool     CreateKeyBindDefaultFile(bool refresh);
+        bool     OnSaveKbOldFormatCfgFile(wxKeyProfileArray * pKeyProfileArray, wxString oldFmtMnuScanFilePath, bool backitup);
+        int      ConvertMenuScanToKeyMnuAcceratorsConf(wxString keybinderFile, wxString acceratorFile);
+        int      ConvertOldKeybinderIniToAcceratorsConf(wxString keybinderFile, wxString acceleratorFile);
+        bool     MergeAcceleratorTable(wxTextFile & textOutFile);
+        int      RemoveCopyPasteBindings(wxKeyProfile * pkp);
+        wxString FindAppPath(const wxString & argv0, const wxString & cwd, const wxString & appVariableName);
+        wxString GetPluginVersion();
 
-    wxString      GetStringsFromArray(const wxArrayString& array, const wxString& separator, bool SeparatorAtEnd);
-    wxArrayString GetArrayFromStrings(const wxString& text, const wxString& separator, bool trimSpaces);
-    int           FindLineInFileContaining(wxTextFile& txtFile, wxString& pattern);
+        wxString      GetStringsFromArray(const wxArrayString & array, const wxString & separator, bool SeparatorAtEnd);
+        wxArrayString GetArrayFromStrings(const wxString & text, const wxString & separator, bool trimSpaces);
+        int           FindLineInFileContaining(wxTextFile & txtFile, wxString & pattern);
 
-    wxString GetTempOldFmtMnuScanFilename()
-    {
-        wxFileName fnTempOldFmtMnuScan(wxStandardPaths::Get().GetTempDir(), _T("keyOldFmtMnuScan.ini"));
-        wxString pid_string = wxString::Format(_T("_%lu"), wxGetProcessId());
-        fnTempOldFmtMnuScan.SetName(fnTempOldFmtMnuScan.GetName() + pid_string);
-        return fnTempOldFmtMnuScan.GetFullPath();
-    }
+        wxString GetTempOldFmtMnuScanFilename()
+        {
+            wxFileName fnTempOldFmtMnuScan(wxStandardPaths::Get().GetTempDir(), _T("keyOldFmtMnuScan.ini"));
+            wxString pid_string = wxString::Format(_T("_%lu"), wxGetProcessId());
+            fnTempOldFmtMnuScan.SetName(fnTempOldFmtMnuScan.GetName() + pid_string);
+            return fnTempOldFmtMnuScan.GetFullPath();
+        }
 
-    wxWindow*       pcbWindow;              //main app window
+        wxWindow    *   pcbWindow;              //main app window
 
-private:
-    bool            m_bAppShutDown;
-    bool            m_menuPreviouslyBuilt;
-    int             m_mode;
-    bool            m_AppStartupDone;
-    UsrConfigPanel* m_pUsrConfigPanel;
-    bool            m_KeyBinderRefreshRequested;
-    wxString        m_cbExeTimeStampstr;
+    private:
+        bool            m_bAppShutDown;
+        bool            m_menuPreviouslyBuilt;
+        int             m_mode;
+        bool            m_AppStartupDone;
+        UsrConfigPanel * m_pUsrConfigPanel;
+        bool            m_KeyBinderRefreshRequested;
+        wxString        m_cbExeTimeStampstr;
 
-    clKeyboardManager* m_pKBMgr;
+        clKeyboardManager * m_pKBMgr;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 
 };//class cbKeyBinder
 

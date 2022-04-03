@@ -30,25 +30,22 @@ namespace
 wxsRegisterItem<wxsImage> Reg(_T("Image"), wxsTTool, _T("Tools"), 73);
 }
 
-wxsImage::wxsImage(wxsItemResData *Data) :
+wxsImage::wxsImage(wxsItemResData * Data) :
     wxsTool(Data, &Reg.Info, 0, 0)
 {
     int         n;
     wxString    ss, tt;
     wxFileName  fn;
-
     // nothing selected yet
     m_IsBuilt = false;
     m_ImageData.Clear();
     m_Include = false;
-
     // make the absolute directory path where we store XPM image files
     // this directory is always a sub-dir where the source code file is stored
     fn = Data->GetSrcFileName();
     ss = fn.GetPath((wxPATH_GET_VOLUME + wxPATH_GET_SEPARATOR));
     n  = ss.Len();
-    ss = ss + "wximages" + ss[n-1];
-
+    ss = ss + "wximages" + ss[n - 1];
     m_IDir = ss;
     m_RDir = "./wximages/";
     m_Base = fn.GetName();
@@ -68,47 +65,47 @@ void wxsImage::OnBuildCreatingCode()
     wxString    ss, tt;                 // general use
 
     // have we already been here?
-    if(m_IsBuilt)
+    if (m_IsBuilt)
     {
         return;
     }
+
     m_IsBuilt = true;
 
-    switch(GetLanguage())
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        vname = GetVarName();
-        bname = vname + "_BMP";
-        xname = vname + "_XPM";
-        AddHeader("<wx/image.h>", GetInfo().ClassName, 0);
-        AddHeader("<wx/bitmap.h>", GetInfo().ClassName, 0);
-
-        // store the XPM data someplace
-        StoreXpmData();
-
-        // if there is no data, then just make empty image and bitmap
-        if(m_ImageData.Count() == 0)
+        case wxsCPP:
         {
-            Codef(_T("%s = new wxImage();\n"), vname.wx_str());
-            Codef(_T("%s = new wxBitmap();\n"), bname.wx_str());
+            vname = GetVarName();
+            bname = vname + "_BMP";
+            xname = vname + "_XPM";
+            AddHeader("<wx/image.h>", GetInfo().ClassName, 0);
+            AddHeader("<wx/bitmap.h>", GetInfo().ClassName, 0);
+            // store the XPM data someplace
+            StoreXpmData();
+
+            // if there is no data, then just make empty image and bitmap
+            if (m_ImageData.Count() == 0)
+            {
+                Codef(_T("%s = new wxImage();\n"), vname.wx_str());
+                Codef(_T("%s = new wxBitmap();\n"), bname.wx_str());
+            }
+            // else fill it with XPM data
+            else
+            {
+                Codef(_T("%s = new wxImage(%s);\n"),  vname.wx_str(), xname.wx_str());
+                Codef(_T("%s = new wxBitmap(%s);\n"), bname.wx_str(), xname.wx_str());
+            }
+
+            BuildSetupWindowCode();
+            return;
         }
-        // else fill it with XPM data
-        else
+
+        case wxsUnknownLanguage: // fall through
+        default:
         {
-            Codef(_T("%s = new wxImage(%s);\n"),  vname.wx_str(), xname.wx_str());
-            Codef(_T("%s = new wxBitmap(%s);\n"), bname.wx_str(), xname.wx_str());
+            wxsCodeMarks::Unknown(_T("wxsImage::OnBuildCreatingCode"), GetLanguage());
         }
-
-        BuildSetupWindowCode();
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsImage::OnBuildCreatingCode"), GetLanguage());
-    }
     }
 }
 
@@ -123,7 +120,6 @@ void wxsImage::OnEnumToolProperties(cb_unused long Flags)
     // starting a new build cycle
     m_IsBuilt = false;
     m_Context = GetCoderContext();
-
     // details
     WXS_IMAGE(wxsImage, m_ImageData, _("Image"), _T("image"));
     WXS_ARRAYSTRING(wxsImage, m_ImageData, _("Image as Text"), _T("image_text"), _("item2"));
@@ -139,10 +135,8 @@ void wxsImage::OnBuildDeclarationsCode()
 {
     wxString    vname;
     wxString    bname;
-
     vname = GetVarName();
     bname = vname + _T("_BMP");
-
     // put in all the vars, although some might be ignored later
     AddDeclaration(_T("wxImage               *") + vname + _T(";"));
     AddDeclaration(_T("wxBitmap              *") + bname + _T(";"));
@@ -163,25 +157,29 @@ void wxsImage::StoreXpmData(void)
     wxFile          ff;
 
     // nothing to store?
-    if(m_ImageData.Count() == 0) return;
+    if (m_ImageData.Count() == 0)
+    {
+        return;
+    }
 
     // important names
     vname = GetVarName();
     xname = vname + _T("_XPM");
-
     // make a single string with the proper name
     tt = _T("");
     n = m_ImageData.GetCount();
-    if(n > 5)
+
+    if (n > 5)
     {
         n = (n * m_ImageData.Item(n - 2).Length()) + 100;
         tt.Alloc(n);
     }
 
-    for(i = 0; i < (int)m_ImageData.GetCount(); i++)
+    for (i = 0; i < (int)m_ImageData.GetCount(); i++)
     {
         ss = m_ImageData.Item(i);
-        if(ss.Find(_T("xpm_data")) >= 0)
+
+        if (ss.Find(_T("xpm_data")) >= 0)
         {
             ss.Replace(_T("xpm_data"), xname);
         }
@@ -191,12 +189,13 @@ void wxsImage::StoreXpmData(void)
     }
 
     // store as an include file
-    if(m_Include)
+    if (m_Include)
     {
-        if(! wxFileName::DirExists(m_IDir))
+        if (! wxFileName::DirExists(m_IDir))
         {
             wxFileName::Mkdir(m_IDir);
         }
+
         ss  = m_IDir;
         ss += m_Base;
         ss += _T("_");
@@ -205,7 +204,6 @@ void wxsImage::StoreXpmData(void)
         ff.Open(ss, wxFile::write);
         ff.Write(tt);
         ff.Close();
-
         ss = _T("\"");
         ss += m_RDir;
         ss += m_Base;
@@ -213,7 +211,6 @@ void wxsImage::StoreXpmData(void)
         ss += xname;
         ss += _T(".xpm");
         ss += _T("\"");
-
         AddHeader(ss, GetInfo().ClassName, 0);
     }
     // store in-line in the main header file
@@ -233,7 +230,7 @@ wxBitmap wxsImage::GetPreview(void)
 {
     wxBitmap    bmp;
 
-    if(m_ImageData.GetCount() == 0)
+    if (m_ImageData.GetCount() == 0)
     {
         return wxNullBitmap;
     }

@@ -28,17 +28,17 @@
 /** \brief Class for wxsStaticText widget */
 class wxsStaticText: public wxsWidget
 {
-public:
+    public:
 
-    wxsStaticText(wxsItemResData* Data);
+        wxsStaticText(wxsItemResData * Data);
 
-private:
+    private:
 
-    virtual void      OnBuildCreatingCode();
-    virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
-    virtual void      OnEnumWidgetProperties(long Flags);
+        virtual void      OnBuildCreatingCode();
+        virtual wxObject * OnBuildPreview(wxWindow * Parent, long Flags);
+        virtual void      OnEnumWidgetProperties(long Flags);
 
-    wxString Label;
+        wxString Label;
 };
 
 #endif

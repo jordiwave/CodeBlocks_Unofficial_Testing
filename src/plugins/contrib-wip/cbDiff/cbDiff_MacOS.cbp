@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="cbDiff MacOS" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/plugins/libcbDiff" imp_lib="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/libcbDiff.a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)" prefix_auto="0" extension_auto="1" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance" />
+				<Option host_application="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-fPIC" />
+					<Add option="`wx-config --cflags`" />
+					<Add option="-DEXPORT_FUNC" />
+				</Compiler>
+				<Linker>
+					<Add option="`wx-config --libs`" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/cbDiff.zip manifest.xml" />
+					<Add after="zip -Rq9 $(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/share/codeblocks/cbDiff.zip images\64x64\*.png images\56x56\*.png images\48x48\*.png images\40x40\*.png images\32x32\*.png images\28x28\*.png images\24x24\*.png images\20x20\*.png images\16x16\*.png cb_diff_toolbar.xrc" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-D__WXMAC__" />
+			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
+			<Add directory="$(#CB_BUILD)/sdk/wxscintilla/include" />
+			<Add directory="$(#CB_BUILD.INCLUDE)" />
+			<Add directory="$(#CB_BUILD.INCLUDE)/tinyxml" />
+			<Add directory="./dtl" />
+		</Compiler>
+		<Unit filename="cb_diff_toolbar.xrc" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="open.txt" />
+		<Unit filename="src/cbDiff.cpp" />
+		<Unit filename="src/cbDiff.h" />
+		<Unit filename="src/cbDiffConfigPanel.cpp" />
+		<Unit filename="src/cbDiffConfigPanel.h" />
+		<Unit filename="src/cbDiffCtrl.cpp" />
+		<Unit filename="src/cbDiffCtrl.h" />
+		<Unit filename="src/cbDiffEditor.cpp" />
+		<Unit filename="src/cbDiffEditor.h" />
+		<Unit filename="src/cbDiffMenu.cpp" />
+		<Unit filename="src/cbDiffMenu.h" />
+		<Unit filename="src/cbDiffSelectFiles.cpp" />
+		<Unit filename="src/cbDiffSelectFiles.h" />
+		<Unit filename="src/cbDiffUtils.cpp" />
+		<Unit filename="src/cbDiffUtils.h" />
+		<Unit filename="src/cbSideBySideCtrl.cpp" />
+		<Unit filename="src/cbSideBySideCtrl.h" />
+		<Unit filename="src/cbTableCtrl.cpp" />
+		<Unit filename="src/cbTableCtrl.h" />
+		<Unit filename="src/cbUnifiedCtrl.cpp" />
+		<Unit filename="src/cbUnifiedCtrl.h" />
+		<Unit filename="src/wxDiff.cpp" />
+		<Unit filename="src/wxDiff.h" />
+		<Unit filename="wxsmith/cbDiffConfigPanel.wxs" />
+		<Unit filename="wxsmith/cbDiffSelectFiles.wxs" />
+		<Extensions>
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+			<lib_finder disable_auto="1" />
+			<wxsmith version="1">
+				<resources>
+					<wxPanel wxs="wxsmith/cbDiffConfigPanel.wxs" src="src/cbDiffConfigPanel.cpp" hdr="src/cbDiffConfigPanel.h" fwddecl="1" i18n="1" name="cbDiffConfigPanel" language="CPP" />
+					<wxDialog wxs="wxsmith/cbDiffSelectFiles.wxs" src="src/cbDiffSelectFiles.cpp" hdr="src/cbDiffSelectFiles.h" fwddecl="1" i18n="1" name="cbDiffSelectFiles" language="CPP" />
+				</resources>
+			</wxsmith>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

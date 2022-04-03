@@ -52,7 +52,7 @@ WXS_ST_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsProgressDialog::wxsProgressDialog(wxsItemResData *Data):
+wxsProgressDialog::wxsProgressDialog(wxsItemResData * Data):
     wxsTool(Data,
             &Reg.Info,
             NULL,
@@ -75,23 +75,23 @@ wxsProgressDialog::wxsProgressDialog(wxsItemResData *Data):
  */
 void wxsProgressDialog::OnBuildCreatingCode()
 {
-    switch(GetLanguage())
+    switch (GetLanguage())
     {
-    case wxsCPP:
-        AddHeader(_T("<wx/progdlg.h>"), GetInfo().ClassName, 0);
+        case wxsCPP:
+            AddHeader(_T("<wx/progdlg.h>"), GetInfo().ClassName, 0);
 
-        if(m_bRunAtStartup)
-        {
-            // Initialize and display the dialogue at application start-up.
-            Codef(_T("%C(%t, %t, %d, %W, %T);\n"), m_sTitle.wx_str(), m_sMessage.wx_str(), m_iMaxValue);
-        }
+            if (m_bRunAtStartup)
+            {
+                // Initialize and display the dialogue at application start-up.
+                Codef(_T("%C(%t, %t, %d, %W, %T);\n"), m_sTitle.wx_str(), m_sMessage.wx_str(), m_iMaxValue);
+            }
 
-        BuildSetupWindowCode();
-        break;
+            BuildSetupWindowCode();
+            break;
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-        wxsCodeMarks::Unknown(_T("wxsProgressDialog::OnBuildCreatingCode"), GetLanguage());
+        case wxsUnknownLanguage: // fall-through
+        default:
+            wxsCodeMarks::Unknown(_T("wxsProgressDialog::OnBuildCreatingCode"), GetLanguage());
     }
 }
 

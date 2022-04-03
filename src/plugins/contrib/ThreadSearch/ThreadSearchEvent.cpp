@@ -21,12 +21,12 @@ DEFINE_EVENT_TYPE(wxEVT_THREAD_SEARCH_ERROR)
 IMPLEMENT_DYNAMIC_CLASS(ThreadSearchEvent, wxCommandEvent)
 
 ThreadSearchEvent::ThreadSearchEvent(wxEventType commandType, int id)
-    :wxCommandEvent(commandType, id)
+    : wxCommandEvent(commandType, id)
 {
 }
 
 
-ThreadSearchEvent::ThreadSearchEvent(const ThreadSearchEvent& Event) :
+ThreadSearchEvent::ThreadSearchEvent(const ThreadSearchEvent & Event) :
     wxCommandEvent(Event),
     m_MatchedPositions(Event.m_MatchedPositions)
 {
@@ -34,12 +34,14 @@ ThreadSearchEvent::ThreadSearchEvent(const ThreadSearchEvent& Event) :
     // make sure our string member (which uses COW, aka refcounting) is not
     // shared by other wxString instances:
     SetString(GetString().c_str());
-
     // clone the wxArrayString, since wxArrayString internally use wxString,
     // and wxString does not do a deep copy in copy constructor
     int count = Event.m_LineTextArray.GetCount();
+
     for (int i = 0; i < count; ++i)
+    {
         m_LineTextArray.Add(Event.m_LineTextArray[i].c_str());
+    }
 }
 
 

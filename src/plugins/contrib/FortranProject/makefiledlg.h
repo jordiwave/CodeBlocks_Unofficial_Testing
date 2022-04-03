@@ -11,36 +11,36 @@
 
 class MakefileDlg: public wxDialog
 {
-public:
+    public:
 
-    MakefileDlg(wxWindow* parent,wxWindowID id=wxID_ANY);
-    virtual ~MakefileDlg();
+        MakefileDlg(wxWindow * parent, wxWindowID id = wxID_ANY);
+        virtual ~MakefileDlg();
 
-    void SetFilename(const wxString& fname);
-    wxString GetFilename();
+        void SetFilename(const wxString & fname);
+        wxString GetFilename();
 
-    //(*Declarations(MakefileDlg)
-    wxButton* btChooseFileName;
-    wxStaticText* StaticText2;
-    wxTextCtrl* tcMakefileName;
-    //*)
+        //(*Declarations(MakefileDlg)
+        wxButton * btChooseFileName;
+        wxStaticText * StaticText2;
+        wxTextCtrl * tcMakefileName;
+        //*)
 
-protected:
+    protected:
 
-    //(*Identifiers(MakefileDlg)
-    static const long ID_STATICTEXT2;
-    static const long ID_TEXTCTRL1;
-    static const long ID_BUTTON1;
-    //*)
+        //(*Identifiers(MakefileDlg)
+        static const long ID_STATICTEXT2;
+        static const long ID_TEXTCTRL1;
+        static const long ID_BUTTON1;
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(MakefileDlg)
-    void OnInit(wxInitDialogEvent& event);
-    void OnbtChooseFileNameClick(wxCommandEvent& event);
-    //*)
+        //(*Handlers(MakefileDlg)
+        void OnInit(wxInitDialogEvent & event);
+        void OnbtChooseFileNameClick(wxCommandEvent & event);
+        //*)
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

@@ -13,7 +13,7 @@ void  nsBig5Prober::Reset(void)
     mDistributionAnalyser.Reset(mIsPreferredLanguage);
 }
 
-nsProbingState nsBig5Prober::HandleData(const char* aBuf, uint32_t aLen)
+nsProbingState nsBig5Prober::HandleData(const char * aBuf, uint32_t aLen)
 {
     NS_ASSERTION(aLen, "HandleData called with empty buffer");
     nsSMState codingState;
@@ -21,11 +21,13 @@ nsProbingState nsBig5Prober::HandleData(const char* aBuf, uint32_t aLen)
     for (uint32_t i = 0; i < aLen; i++)
     {
         codingState = mCodingSM->NextState(aBuf[i]);
+
         if (codingState == eItsMe)
         {
             mState = eFoundIt;
             break;
         }
+
         if (codingState == eStart)
         {
             uint32_t charLen = mCodingSM->GetCurrentCharLen();
@@ -36,15 +38,19 @@ nsProbingState nsBig5Prober::HandleData(const char* aBuf, uint32_t aLen)
                 mDistributionAnalyser.HandleOneChar(mLastChar, charLen);
             }
             else
-                mDistributionAnalyser.HandleOneChar(aBuf+i-1, charLen);
+            {
+                mDistributionAnalyser.HandleOneChar(aBuf + i - 1, charLen);
+            }
         }
     }
 
-    mLastChar[0] = aBuf[aLen-1];
+    mLastChar[0] = aBuf[aLen - 1];
 
     if (mState == eDetecting)
         if (mDistributionAnalyser.GotEnoughData() && GetConfidence() > SHORTCUT_THRESHOLD)
+        {
             mState = eFoundIt;
+        }
 
     return mState;
 }
@@ -52,7 +58,6 @@ nsProbingState nsBig5Prober::HandleData(const char* aBuf, uint32_t aLen)
 float nsBig5Prober::GetConfidence(void)
 {
     float distribCf = mDistributionAnalyser.GetConfidence();
-
     return (float)distribCf;
 }
 

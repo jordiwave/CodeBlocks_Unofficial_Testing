@@ -56,7 +56,7 @@ wxsRegisterItem<wxsScintilla> Reg(
     false);                         // We do not allow this item inside XRC files
 
 
-WXS_ST_BEGIN(wxsScintillaStyles,_T("wxRE_MULTILINE|wxRAISED_BORDER|wxWANTS_CHARS"))
+WXS_ST_BEGIN(wxsScintillaStyles, _T("wxRE_MULTILINE|wxRAISED_BORDER|wxWANTS_CHARS"))
 WXS_ST_CATEGORY("wxScintilla")
 WXS_ST_DEFAULTS()
 WXS_ST_END()
@@ -99,7 +99,7 @@ WXS_EV_END()
 
 //------------------------------------------------------------------------------
 
-wxsScintilla::wxsScintilla(wxsItemResData* Data):
+wxsScintilla::wxsScintilla(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -142,41 +142,35 @@ void wxsScintilla::OnBuildCreatingCode()
 {
     wxString            vname;
     wxString            aname;
-    wxsBaseProperties   *bp;
+    wxsBaseProperties  * bp;
     wxColour            fg, bg;
     wxColour            kfg, kbg;
     wxColour            sfg, sbg;
     wxColour            ffg, fbg;
     wxColour            ebg;
     wxFont              ff;
-    wxString            ss,tt;
+    wxString            ss, tt;
 
-// valid language?
+    // valid language?
 
-    if (GetLanguage() != wxsCPP) wxsCodeMarks::Unknown(_T("wxsScintilla::OnBuildCreatingCode"),GetLanguage());
+    if (GetLanguage() != wxsCPP)
+    {
+        wxsCodeMarks::Unknown(_T("wxsScintilla::OnBuildCreatingCode"), GetLanguage());
+    }
 
-// who we are
-
+    // who we are
     vname = GetVarName();
-
-// include files
-
+    // include files
     AddHeader(_("\"wxscintilla.h\""), GetInfo().ClassName, 0);
-
-// make our own size specifier with our default values
-
+    // make our own size specifier with our default values
     mSize.SetDefaults(wxSize(128, 128));
     ss.Printf(_T("wxSize(%d, %d)"), mSize.GetWidth(), mSize.GetHeight());
-
-// create the panel
-
+    // create the panel
     Codef(_T("%C(%W, %I, %P, %s, %T, %N);\n"), ss.c_str());
-
-// other declarations
-
+    // other declarations
     BuildSetupWindowCode();
 
-// a virtual size
+    // a virtual size
 
     if (! mVirtualSize.IsDefault)
     {
@@ -184,22 +178,30 @@ void wxsScintilla::OnBuildCreatingCode()
         Codef(_T("%ASetVirtualSize(%s);\n"), ss.c_str());
     };
 
-// see the pretty colors
-
+    // see the pretty colors
     bp  = GetBaseProps();
+
     fg  = bp->m_Fg.GetColour();
+
     bg  = bp->m_Bg.GetColour();
+
     ff  = bp->m_Font.BuildFont();
+
     kfg = mCaretFG.GetColour();
+
     kbg = mCaretBG.GetColour();
+
     sfg = mSelFG.GetColour();
+
     sbg = mSelBG.GetColour();
+
     ffg = mFoldFG.GetColour();
+
     fbg = mFoldBG.GetColour();
+
     ebg = mEdgeBG.GetColour();
 
-// basic font and colors
-
+    // basic font and colors
     if (ff.IsOk())
     {
         ss = vname + _T("Font");
@@ -220,10 +222,11 @@ void wxsScintilla::OnBuildCreatingCode()
         Codef(_T("%ASetWhitespaceBackground(true, wxColour(%d, %d, %d));\n"), bg.Red(), bg.Green(), bg.Blue());
     };
 
-// then user-selected options
-
+    // then user-selected options
     Codef(_T("%ASetCaretStyle(%d);\n"), mCaretStyle);
+
     Codef(_T("%ASetCaretPeriod(%d);\n"), mBlinkRate);
+
     Codef(_T("%ASetCaretWidth(%d);\n"), mCaretWidth);
 
     if (kfg.Ok())
@@ -249,29 +252,40 @@ void wxsScintilla::OnBuildCreatingCode()
         Codef(_T("%ASetSelBackground(true, wxColour(%d, %d, %d));\n"), sbg.Red(), sbg.Green(), sbg.Blue());
     };
 
-
     Codef(_T("%ASetMargins(%d, %d);\n"), mMarginLeft, mMarginRight);
 
     Codef(_T("%ASetMarginWidth(1, %d);\n"), mGutterWidth1);
+
     Codef(_T("%ASetMarginType(1, %d);\n"), mGutterType1);
+
     Codef(_T("%ASetMarginWidth(2, %d);\n"), mGutterWidth2);
+
     Codef(_T("%ASetMarginType(2, %d);\n"), mGutterType2);
+
     Codef(_T("%ASetMarginWidth(3, %d);\n"), mGutterWidth3);
+
     Codef(_T("%ASetMarginType(3, %d);\n"), mGutterType3);
 
     Codef(_T("%ASetViewWhiteSpace(%d);\n"), mViewWS);
+
     Codef(_T("%ASetEOLMode(%d);\n"), mEOL);
+
     Codef(_T("%ASetTabWidth(%d);\n"), mTabWidth);
 
     Codef(_T("%AStyleSetCase(wxSCI_STYLE_DEFAULT, %d);\n"), mCase);
+
     Codef(_T("%AStyleSetCase(0, %d);\n"), mCase);
 
     Codef(_T("%ASetIndent(%d);\n"), mIndent);
+
     Codef(_T("%ASetBackSpaceUnIndents(%b);\n"), mBSUndent);
+
     Codef(_T("%ASetWrapMode(%d);\n"), mWrapMode);
+
     Codef(_T("%ASetWrapIndentMode(%d);\n"), mWrapIndent);
 
     Codef(_T("%ASetBufferedDraw(%b);\n"), mBuffered);
+
     Codef(_T("%ASetZoom(%d);\n"), mZoom);
 
     /**
@@ -291,27 +305,26 @@ void wxsScintilla::OnBuildCreatingCode()
         };
     **/
 
-// initial text
-
-    for(size_t i=0; i<mText.GetCount(); i++)
+    // initial text
+    for (size_t i = 0; i < mText.GetCount(); i++)
     {
         ss  = mText.Item(i);
         ss += _T("\n");
         Codef(_T("%AAppendText(%t);\n"), ss.c_str());
     };
 
-// finish with insert mode and read-only flag
-
+    // finish with insert mode and read-only flag
     Codef(_T("%ASetOvertype(%b);\n"), !mInsert);
+
     Codef(_T("%ASetReadOnly(%b);\n"), mReadOnly);
 }
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsScintilla::OnBuildPreview(wxWindow* Parent, long Flags)
+wxObject * wxsScintilla::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxScintilla         *stc;
-    wxsBaseProperties   *bp;
+    wxScintilla     *    stc;
+    wxsBaseProperties  * bp;
     wxColour            fg, bg;
     wxColour            kfg, kbg;
     wxColour            sfg, sbg;
@@ -320,22 +333,16 @@ wxObject* wxsScintilla::OnBuildPreview(wxWindow* Parent, long Flags)
     wxFont              ff;
     wxString            ss;
     wxSize              zz;
-
-// the default size of this widget is microscopic
-// use this to make a reasonable default size
-
+    // the default size of this widget is microscopic
+    // use this to make a reasonable default size
     mSize = Size(Parent);
     mSize.SetDefaults(wxSize(128, 128));
-
-// make the basic widget
-
+    // make the basic widget
     stc = new wxScintilla(Parent, GetId(), Pos(Parent), mSize, Style());
-
-// the rest of the attributtes
-
+    // the rest of the attributtes
     SetupWindow(stc, Flags);
 
-// a virtual size
+    // a virtual size
 
     if (! mVirtualSize.IsDefault)
     {
@@ -343,22 +350,30 @@ wxObject* wxsScintilla::OnBuildPreview(wxWindow* Parent, long Flags)
         stc->SetVirtualSize(zz);
     };
 
-// get all the pretty colors
-
+    // get all the pretty colors
     bp  = GetBaseProps();
+
     fg  = bp->m_Fg.GetColour();
+
     bg  = bp->m_Bg.GetColour();
+
     ff  = bp->m_Font.BuildFont();
+
     kfg = mCaretFG.GetColour();
+
     kbg = mCaretBG.GetColour();
+
     sfg = mSelFG.GetColour();
+
     sbg = mSelBG.GetColour();
+
     ffg = mFoldFG.GetColour();
+
     fbg = mFoldBG.GetColour();
+
     ebg = mEdgeBG.GetColour();
 
-// basic font, foreground, and background
-
+    // basic font, foreground, and background
     if (ff.IsOk())
     {
         stc->StyleSetFont(wxSCI_STYLE_DEFAULT, ff);
@@ -378,11 +393,13 @@ wxObject* wxsScintilla::OnBuildPreview(wxWindow* Parent, long Flags)
         stc->SetWhitespaceBackground(true, bg);
     };
 
-// fill in the other user-defined attributes
-
+    // fill in the other user-defined attributes
     stc->SetCaretStyle(mCaretStyle);
+
     stc->SetCaretPeriod(mBlinkRate);
+
     stc->SetCaretWidth(mCaretWidth);
+
     if (kfg.Ok())
     {
         stc->SetCaretForeground(kfg);
@@ -395,7 +412,6 @@ wxObject* wxsScintilla::OnBuildPreview(wxWindow* Parent, long Flags)
     };
 
     stc->SetSelectionMode(mSelMode);
-
 
     if (sfg.Ok())
     {
@@ -410,25 +426,37 @@ wxObject* wxsScintilla::OnBuildPreview(wxWindow* Parent, long Flags)
     stc->SetMargins(mMarginLeft, mMarginRight);
 
     stc->SetMarginWidth(1, mGutterWidth1);
+
     stc->SetMarginType(1, mGutterType1);
+
     stc->SetMarginWidth(2, mGutterWidth2);
+
     stc->SetMarginType(2, mGutterType2);
+
     stc->SetMarginWidth(3, mGutterWidth3);
+
     stc->SetMarginType(3, mGutterType3);
 
     stc->SetViewWhiteSpace(mViewWS);
+
     stc->SetEOLMode(mEOL);
+
     stc->SetTabWidth(mTabWidth);
 
     stc->StyleSetCase(wxSCI_STYLE_DEFAULT, mCase);
+
     stc->StyleSetCase(0, mCase);
 
     stc->SetIndent(mIndent);
+
     stc->SetBackSpaceUnIndents(mBSUndent);
+
     stc->SetWrapMode(mWrapMode);
+
     stc->SetWrapIndentMode(mWrapIndent);
 
     stc->SetBufferedDraw(mBuffered);
+
     stc->SetZoom(mZoom);
 
     /**
@@ -448,22 +476,20 @@ wxObject* wxsScintilla::OnBuildPreview(wxWindow* Parent, long Flags)
         };
     **/
 
-// add in initial text
-
-    for(size_t i=0; i<mText.GetCount(); i++)
+    // add in initial text
+    for (size_t i = 0; i < mText.GetCount(); i++)
     {
         ss  = mText.Item(i);
         ss += _T("\n");
         stc->AppendText(ss);
     };
 
-// and finally insert or read-only
-
+    // and finally insert or read-only
     stc->SetOvertype(!mInsert);
+
     stc->SetReadOnly(mReadOnly);
 
-// done
-
+    // done
     return stc;
 }
 
@@ -472,32 +498,23 @@ wxObject* wxsScintilla::OnBuildPreview(wxWindow* Parent, long Flags)
 void wxsScintilla::OnEnumWidgetProperties(long Flags)
 {
     static const long    ViewWS_Values[] = {    0,               1,                    2,                        0};
-    static const wxChar* ViewWS_Names[]  = {_T("Invisible"), _T("Always Visible"), _T("Visible After Indent"),   0};
-
+    static const wxChar * ViewWS_Names[]  = {_T("Invisible"), _T("Always Visible"), _T("Visible After Indent"),   0};
     static const long    EOL_Values[] = {    0,          1,        2,      0};
-    static const wxChar* EOL_Names[]  = {_T("CRLF"), _T("CR"), _T("LF"),   0};
-
+    static const wxChar * EOL_Names[]  = {_T("CRLF"), _T("CR"), _T("LF"),   0};
     static const long    Case_Values[] = {    0,                1,                    2,                  0};
-    static const wxChar* Case_Names[]  = {_T("Mixed Case"), _T("All Upper Case"), _T("All Lower Case"),   0};
-
+    static const wxChar * Case_Names[]  = {_T("Mixed Case"), _T("All Upper Case"), _T("All Lower Case"),   0};
     static const long    Wrap_Values[] = {    0,             1,               2,                  0};
-    static const wxChar* Wrap_Names[]  = {_T("No Wrap"), _T("Word Wrap"), _T("Character Wrap"),   0};
-
+    static const wxChar * Wrap_Names[]  = {_T("No Wrap"), _T("Word Wrap"), _T("Character Wrap"),   0};
     static const long    WrapInd_Values[] = {    0,           1,          2,          0};
-    static const wxChar* WrapInd_Names[]  = {_T("Fixed"), _T("Same"), _T("Indent"),   0};
-
+    static const wxChar * WrapInd_Names[]  = {_T("Fixed"), _T("Same"), _T("Indent"),   0};
     static const long    Gutter_Values[] = {    0,           1,          2,    3, 4, 5, 6,      0};
-    static const wxChar* Gutter_Names[]  = {_T("Symbol"), _T("Number"), _T("Back"), _T("Fore"), _T("Text"), _T("RText"), _T("Changed"),   0};
-
+    static const wxChar * Gutter_Names[]  = {_T("Symbol"), _T("Number"), _T("Back"), _T("Fore"), _T("Text"), _T("RText"), _T("Changed"),   0};
     static const long    Edge_Values[] = {    0,           1,          2,          0};
-    static const wxChar* Edge_Names[]  = {_T("None"), _T("Line"), _T("Background Colour"),   0};
-
+    static const wxChar * Edge_Names[]  = {_T("None"), _T("Line"), _T("Background Colour"),   0};
     static const long    Select_Values[] = {    0,            1,               2,             3,    0};
-    static const wxChar* Select_Names[]  = {_T("Stream"), _T("Rectangle"), _T("Lines"),   _T("Thin"), 0};
-
+    static const wxChar * Select_Names[]  = {_T("Stream"), _T("Rectangle"), _T("Lines"),   _T("Thin"), 0};
     static const long    Caret_Values[] = {    0,            1,               2,                0};
-    static const wxChar* Caret_Names[]  = {_T("Invisible"), _T("Line"), _T("Block"),   0};
-
+    static const wxChar * Caret_Names[]  = {_T("Invisible"), _T("Line"), _T("Block"),   0};
     static const long    Lex_Values[] =
     {
         wxSCI_LEX_CONTAINER, wxSCI_LEX_NULL, wxSCI_LEX_PYTHON, wxSCI_LEX_CPP, wxSCI_LEX_HTML,
@@ -522,8 +539,7 @@ void wxsScintilla::OnEnumWidgetProperties(long Flags)
         wxSCI_LEX_SML, wxSCI_LEX_MARKDOWN,
         0
     };
-
-    static const wxChar* Lex_Names[]  =
+    static const wxChar * Lex_Names[]  =
     {
         _T("CONTAINER"), _T("NULL"), _T("PYTHON"), _T("CPP"), _T("HTML"),
         _T("XML"), _T("PERL"), _T("SQL"), _T("VB"), _T("PROPERTIES"),
@@ -547,45 +563,37 @@ void wxsScintilla::OnEnumWidgetProperties(long Flags)
         _T("SML"), _T("MARKDOWN"),
         0
     };
-
-// initial text contents
-
+    // initial text contents
     WXS_ARRAYSTRING(wxsScintilla, mText,          _T("Text"),                   _T("mText"),            _("text"));
-    WXS_BOOL(       wxsScintilla, mInsert,        _T("Insert Mode"),            _T("mInsert"),          true);
-    WXS_BOOL(       wxsScintilla, mReadOnly,      _T("Read Only?"),             _T("mReadOnly"),        false);
-
-    WXS_ENUM(       wxsScintilla, mCaretStyle,    _T("Caret Style"),            _T("mCaretStyle"),      Caret_Values,    Caret_Names,     1);
-    WXS_LONG(       wxsScintilla, mBlinkRate,     _T("Caret Blink Rate"),       _T("mBlinkRate"),       500);
-    WXS_LONG(       wxsScintilla, mCaretWidth,    _T("Width of Insert Caret"),  _T("mCaretWidth"),      2);
-    WXS_COLOUR(     wxsScintilla, mCaretFG,       _T("Caret Colour"),           _T("mCaretFG"));
-    WXS_COLOUR(     wxsScintilla, mCaretBG,       _T("Caret Line Colour"),      _T("mCaretBG"));
-    WXS_ENUM(       wxsScintilla, mSelMode,       _T("Selection Mode"),         _T("mSelMode"),         Select_Values,    Select_Names,     0);
-    WXS_COLOUR(     wxsScintilla, mSelFG,         _T("Selection Foreground"),   _T("mSelFG"));
-    WXS_COLOUR(     wxsScintilla, mSelBG,         _T("Selection Background"),   _T("mSelBG"));
-
-    WXS_LONG(       wxsScintilla, mMarginLeft,    _T("Left Margin Edge"),       _T("mMarginLeft"),     0);
-    WXS_LONG(       wxsScintilla, mMarginRight,   _T("Right Margin Edge"),      _T("mMarginRight"),    0);
-
-    WXS_ENUM(       wxsScintilla, mGutterType1,   _T("Gutter Type (1)"),        _T("mGutterType1"),     Gutter_Values,    Gutter_Names,     0);
-    WXS_LONG(       wxsScintilla, mGutterWidth1,  _T("Gutter Width (1)"),       _T("mGutterWidth1"),    0);
-    WXS_ENUM(       wxsScintilla, mGutterType2,   _T("Gutter Type (2)"),        _T("mGutterType2"),     Gutter_Values,    Gutter_Names,     0);
-    WXS_LONG(       wxsScintilla, mGutterWidth2,  _T("Gutter Width (2)"),       _T("mGutterWidth2"),    0);
-    WXS_ENUM(       wxsScintilla, mGutterType3,   _T("Gutter Type (3)"),        _T("mGutterType3"),     Gutter_Values,    Gutter_Names,     0);
-    WXS_LONG(       wxsScintilla, mGutterWidth3,  _T("Gutter Width (3)"),       _T("mGutterWidth3"),    0);
-
-    WXS_ENUM(       wxsScintilla, mViewWS,        _T("View WhiteS-Space"),      _T("mViewWS"),          ViewWS_Values,  ViewWS_Names,   0);
-    WXS_ENUM(       wxsScintilla, mEOL,           _T("End-Of-Line Mode"),       _T("mEOL"),             EOL_Values,     EOL_Names,      2);
-    WXS_LONG(       wxsScintilla, mTabWidth,      _T("Tab Width"),              _T("mTabWidth"),        8);
-    WXS_ENUM(       wxsScintilla, mCase,          _T("Letter Case"),            _T("mCase"),            Case_Values,    Case_Names,     0);
-    WXS_LONG(       wxsScintilla, mIndent,        _T("Indent Size"),            _T("mIndent"),          0);
-    WXS_BOOL(       wxsScintilla, mBSUndent,      _T("Backspace Un-Indents?"),  _T("mBSUndent"),        true);
-    WXS_ENUM(       wxsScintilla, mWrapMode,      _T("Wrap Mode"),              _T("mWrapMode"),        Wrap_Values,    Wrap_Names,     0);
-    WXS_ENUM(       wxsScintilla, mWrapIndent,    _T("Wrap Indent Mode"),       _T("mWrapIndent"),      WrapInd_Values,    WrapInd_Names,     0);
-
-    WXS_BOOL(       wxsScintilla, mBuffered,      _T("Buffered Drawing?"),      _T("mBuffered"),        true);
-    WXS_LONG(       wxsScintilla, mZoom,          _T("Zoom Factor"),            _T("mZoom"),            0);
-
-    WXS_SIZE(       wxsScintilla, mVirtualSize,   _T("Default Virtual Size?"),  _T("Virtual Width"),    _T("Virtual Height"), _T("Use Dialog Units?"), _T("mVirtualSize"));
+    WXS_BOOL(wxsScintilla, mInsert,        _T("Insert Mode"),            _T("mInsert"),          true);
+    WXS_BOOL(wxsScintilla, mReadOnly,      _T("Read Only?"),             _T("mReadOnly"),        false);
+    WXS_ENUM(wxsScintilla, mCaretStyle,    _T("Caret Style"),            _T("mCaretStyle"),      Caret_Values,    Caret_Names,     1);
+    WXS_LONG(wxsScintilla, mBlinkRate,     _T("Caret Blink Rate"),       _T("mBlinkRate"),       500);
+    WXS_LONG(wxsScintilla, mCaretWidth,    _T("Width of Insert Caret"),  _T("mCaretWidth"),      2);
+    WXS_COLOUR(wxsScintilla, mCaretFG,       _T("Caret Colour"),           _T("mCaretFG"));
+    WXS_COLOUR(wxsScintilla, mCaretBG,       _T("Caret Line Colour"),      _T("mCaretBG"));
+    WXS_ENUM(wxsScintilla, mSelMode,       _T("Selection Mode"),         _T("mSelMode"),         Select_Values,    Select_Names,     0);
+    WXS_COLOUR(wxsScintilla, mSelFG,         _T("Selection Foreground"),   _T("mSelFG"));
+    WXS_COLOUR(wxsScintilla, mSelBG,         _T("Selection Background"),   _T("mSelBG"));
+    WXS_LONG(wxsScintilla, mMarginLeft,    _T("Left Margin Edge"),       _T("mMarginLeft"),     0);
+    WXS_LONG(wxsScintilla, mMarginRight,   _T("Right Margin Edge"),      _T("mMarginRight"),    0);
+    WXS_ENUM(wxsScintilla, mGutterType1,   _T("Gutter Type (1)"),        _T("mGutterType1"),     Gutter_Values,    Gutter_Names,     0);
+    WXS_LONG(wxsScintilla, mGutterWidth1,  _T("Gutter Width (1)"),       _T("mGutterWidth1"),    0);
+    WXS_ENUM(wxsScintilla, mGutterType2,   _T("Gutter Type (2)"),        _T("mGutterType2"),     Gutter_Values,    Gutter_Names,     0);
+    WXS_LONG(wxsScintilla, mGutterWidth2,  _T("Gutter Width (2)"),       _T("mGutterWidth2"),    0);
+    WXS_ENUM(wxsScintilla, mGutterType3,   _T("Gutter Type (3)"),        _T("mGutterType3"),     Gutter_Values,    Gutter_Names,     0);
+    WXS_LONG(wxsScintilla, mGutterWidth3,  _T("Gutter Width (3)"),       _T("mGutterWidth3"),    0);
+    WXS_ENUM(wxsScintilla, mViewWS,        _T("View WhiteS-Space"),      _T("mViewWS"),          ViewWS_Values,  ViewWS_Names,   0);
+    WXS_ENUM(wxsScintilla, mEOL,           _T("End-Of-Line Mode"),       _T("mEOL"),             EOL_Values,     EOL_Names,      2);
+    WXS_LONG(wxsScintilla, mTabWidth,      _T("Tab Width"),              _T("mTabWidth"),        8);
+    WXS_ENUM(wxsScintilla, mCase,          _T("Letter Case"),            _T("mCase"),            Case_Values,    Case_Names,     0);
+    WXS_LONG(wxsScintilla, mIndent,        _T("Indent Size"),            _T("mIndent"),          0);
+    WXS_BOOL(wxsScintilla, mBSUndent,      _T("Backspace Un-Indents?"),  _T("mBSUndent"),        true);
+    WXS_ENUM(wxsScintilla, mWrapMode,      _T("Wrap Mode"),              _T("mWrapMode"),        Wrap_Values,    Wrap_Names,     0);
+    WXS_ENUM(wxsScintilla, mWrapIndent,    _T("Wrap Indent Mode"),       _T("mWrapIndent"),      WrapInd_Values,    WrapInd_Names,     0);
+    WXS_BOOL(wxsScintilla, mBuffered,      _T("Buffered Drawing?"),      _T("mBuffered"),        true);
+    WXS_LONG(wxsScintilla, mZoom,          _T("Zoom Factor"),            _T("mZoom"),            0);
+    WXS_SIZE(wxsScintilla, mVirtualSize,   _T("Default Virtual Size?"),  _T("Virtual Width"),    _T("Virtual Height"), _T("Use Dialog Units?"), _T("mVirtualSize"));
     /**
         WXS_ENUM(       wxsScintilla, mEdgeMode,            _T("Edge Display Mode"),              _T("mEdgeMode"),        Edge_Values,    Edge_Names,     0);
         WXS_COLOUR(     wxsScintilla, mEdgeBG,           _T("Edge Display Background"),     _T("mEdgeBG"));

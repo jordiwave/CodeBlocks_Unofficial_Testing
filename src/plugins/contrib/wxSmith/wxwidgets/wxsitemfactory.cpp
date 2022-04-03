@@ -24,103 +24,142 @@
 #include "wxsitem.h"
 #include "../wxsresourcetree.h"
 
-wxsItem* wxsItemFactory::Build(const wxString& Name,wxsItemResData* Data)
+wxsItem * wxsItemFactory::Build(const wxString & Name, wxsItemResData * Data)
 {
     ItemMapT::iterator it = ItemMap().find(Name);
-    if ( it == ItemMap().end() ) return 0;
-    wxsItem* Item = it->second->OnBuild(Data);
+
+    if (it == ItemMap().end())
+    {
+        return 0;
+    }
+
+    wxsItem * Item = it->second->OnBuild(Data);
 
     // Checking few things in item's info
-    switch ( Item->GetInfo().Type )
+    switch (Item->GetInfo().Type)
     {
-    case wxsTTool:
-        if ( !Item->ConvertToTool() )
-        {
-            // Fake item
+        case wxsTTool:
+            if (!Item->ConvertToTool())
+            {
+                // Fake item
+                delete Item;
+                return 0;
+            }
+
+            break;
+
+        case wxsTContainer:
+            if (!Item->ConvertToParent())
+            {
+                // Fake item
+                delete Item;
+                return 0;
+            }
+
+            break;
+
+        case wxsTSizer:
+        case wxsTSpacer:
+        case wxsTWidget:
+            break;
+
+        case wxsTInvalid:
+        default:
             delete Item;
             return 0;
-        }
-        break;
-
-    case wxsTContainer:
-        if ( !Item->ConvertToParent() )
-        {
-            // Fake item
-            delete Item;
-            return 0;
-        }
-        break;
-
-    case wxsTSizer:
-    case wxsTSpacer:
-    case wxsTWidget:
-        break;
-
-    case wxsTInvalid:
-    default:
-        delete Item;
-        return 0;
     }
 
     return Item;
 }
 
-const wxsItemInfo* wxsItemFactory::GetInfo(const wxString& Name)
+const wxsItemInfo * wxsItemFactory::GetInfo(const wxString & Name)
 {
     ItemMapT::iterator it = ItemMap().find(Name);
-    if ( it == ItemMap().end() ) return 0;
+
+    if (it == ItemMap().end())
+    {
+        return 0;
+    }
+
     return it->second->m_Info;
 }
 
-const wxsItemInfo* wxsItemFactory::GetFirstInfo()
+const wxsItemInfo * wxsItemFactory::GetFirstInfo()
 {
     m_Iter = ItemMap().begin();
-    return (m_Iter==ItemMap().end()) ? 0 : m_Iter->second->m_Info;
+    return (m_Iter == ItemMap().end()) ? 0 : m_Iter->second->m_Info;
 }
 
-const wxsItemInfo* wxsItemFactory::GetNextInfo()
+const wxsItemInfo * wxsItemFactory::GetNextInfo()
 {
-    if ( m_Iter==ItemMap().end() ) return 0;
+    if (m_Iter == ItemMap().end())
+    {
+        return 0;
+    }
+
     ++m_Iter;
-    return (m_Iter==ItemMap().end()) ? 0 : m_Iter->second->m_Info;
+    return (m_Iter == ItemMap().end()) ? 0 : m_Iter->second->m_Info;
 }
 
-wxImageList& wxsItemFactory::GetImageList()
+wxImageList & wxsItemFactory::GetImageList()
 {
     return wxsResourceTree::GetGlobalImageList();
 }
 
-int wxsItemFactory::LoadImage(const wxString& FileName)
+int wxsItemFactory::LoadImage(const wxString & FileName)
 {
     return wxsResourceTree::LoadImage(FileName);
 }
 
-wxsItemFactory::wxsItemFactory(const wxsItemInfo* Info):
+wxsItemFactory::wxsItemFactory(const wxsItemInfo * Info):
     m_Info(Info)
 {
     m_Name = Info->ClassName;
-    if ( Info==0 ) return;
+
+    if (Info == 0)
+    {
+        return;
+    }
+
     ItemMap()[m_Name] = this;
 }
 
-wxsItemFactory::wxsItemFactory(const wxsItemInfo* Info,wxString ClassName):
+wxsItemFactory::wxsItemFactory(const wxsItemInfo * Info, wxString ClassName):
     m_Info(Info)
 {
     m_Name = ClassName;
-    if ( Info==0 ) return;
+
+    if (Info == 0)
+    {
+        return;
+    }
+
     ItemMap()[m_Name] = this;
 }
 
 wxsItemFactory::~wxsItemFactory()
 {
-    if ( !m_Info ) return;
+    if (!m_Info)
+    {
+        return;
+    }
+
     ItemMapT::iterator it = ItemMap().find(m_Name);
-    if ( it == ItemMap().end() ) return;
-    if ( it->second!=this ) return;
+
+    if (it == ItemMap().end())
+    {
+        return;
+    }
+
+    if (it->second != this)
+    {
+        return;
+    }
+
     ItemMap().erase(it);
 }
 
-wxsItemFactory::ItemMapT& wxsItemFactory::ItemMap()
+wxsItemFactory::ItemMapT & wxsItemFactory::ItemMap()
 {
     static ItemMapT Map;
     return Map;

@@ -12,17 +12,17 @@ class cbProject;
 
 class ProjectDepsDlg : public wxScrollingDialog
 {
-public:
-    ProjectDepsDlg(wxWindow* parent, cbProject* sel = nullptr);
-    ~ProjectDepsDlg() override;
-    void EndModal(int retCode) override;
-protected:
-    void FillList();
-    bool SaveList();
-    void OnProjectChange(wxCommandEvent& event);
-    int m_LastSel;
-private:
-    DECLARE_EVENT_TABLE()
+    public:
+        ProjectDepsDlg(wxWindow * parent, cbProject * sel = nullptr);
+        ~ProjectDepsDlg() override;
+        void EndModal(int retCode) override;
+    protected:
+        void FillList();
+        bool SaveList();
+        void OnProjectChange(wxCommandEvent & event);
+        int m_LastSel;
+    private:
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // PROJECTDEPSDLG_H

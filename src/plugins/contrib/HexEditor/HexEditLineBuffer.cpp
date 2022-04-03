@@ -24,9 +24,9 @@
 
 #include <logmanager.h>
 
-HexEditLineBuffer::HexEditLineBuffer( unsigned length )
+HexEditLineBuffer::HexEditLineBuffer(unsigned length)
 {
-    if ( length )
+    if (length)
     {
         m_Buffer = new char[ 2 * length ];
         m_Position = m_Buffer;
@@ -38,6 +38,7 @@ HexEditLineBuffer::HexEditLineBuffer( unsigned length )
         m_Position = nullptr;
         m_End = nullptr;
     }
+
     Reset();
 }
 
@@ -46,51 +47,47 @@ HexEditLineBuffer::~HexEditLineBuffer()
     delete[] m_Buffer;
 }
 
-void HexEditLineBuffer::Reset( char defaultChar, char defaultStyle )
+void HexEditLineBuffer::Reset(char defaultChar, char defaultStyle)
 {
-    for ( char* ptr = m_Buffer; ptr < m_End; ptr += 2 )
+    for (char * ptr = m_Buffer; ptr < m_End; ptr += 2)
     {
         ptr[ 0 ] = defaultChar;
         ptr[ 1 ] = defaultStyle;
     }
+
     m_Position = m_Buffer;
 }
 
-void HexEditLineBuffer::PutChar( char ch, char style )
+void HexEditLineBuffer::PutChar(char ch, char style)
 {
-    if ( m_Position < m_End )
+    if (m_Position < m_End)
     {
         *m_Position++ = ch;
         *m_Position++ = style;
     }
 }
 
-void HexEditLineBuffer::Draw( wxDC& dc, int x, int y, int fontX, int fontY, wxColour* foregrounds, wxColour* backgrounds )
+void HexEditLineBuffer::Draw(wxDC & dc, int x, int y, int fontX, int fontY, wxColour * foregrounds, wxColour * backgrounds)
 {
-    for ( char* ptr = m_Buffer; ptr < m_End; )
+    for (char * ptr = m_Buffer; ptr < m_End;)
     {
         // Searching for continous block with same style
         wxString str;
 
         do
         {
-            str += wxChar( ptr[ 0 ] );
+            str += wxChar(ptr[ 0 ]);
             ptr += 2;
-        }
-        while ( ( ptr < m_End ) && ( ptr[1] == ptr[-1] ) );
+        } while ((ptr < m_End) && (ptr[1] == ptr[-1]));
 
         char style = ptr[-1];
-
-        dc.SetBrush( backgrounds[ (int)style ] );
-        dc.SetPen( backgrounds[ (int)style ] );
-
-        dc.DrawRectangle( x, y, fontX * str.length(), fontY );
-
-        dc.SetPen( foregrounds[ (int)style ] );
-        dc.SetTextForeground( foregrounds[ (int)style ] );
-        dc.SetTextBackground( backgrounds[ (int)style ] );
-
-        dc.DrawText( str, x, y );
+        dc.SetBrush(backgrounds[(int)style ]);
+        dc.SetPen(backgrounds[(int)style ]);
+        dc.DrawRectangle(x, y, fontX * str.length(), fontY);
+        dc.SetPen(foregrounds[(int)style ]);
+        dc.SetTextForeground(foregrounds[(int)style ]);
+        dc.SetTextBackground(backgrounds[(int)style ]);
+        dc.DrawText(str, x, y);
         x += fontX * str.length();
     }
 }

@@ -36,13 +36,13 @@ WXS_EV_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsDialUpManager::wxsDialUpManager(wxsItemResData* Data):
+wxsDialUpManager::wxsDialUpManager(wxsItemResData * Data):
     wxsTool(
         Data,
         &Reg.Info,
         wxsDialUpManagerEvents,
         NULL,
-        flVariable|flId|flSubclass|flExtraCode),
+        flVariable | flId | flSubclass | flExtraCode),
     m_iAutoCheckInterval(60)
 #ifndef __WXMSW__
     ,
@@ -67,51 +67,55 @@ wxsDialUpManager::wxsDialUpManager(wxsItemResData* Data):
  */
 void wxsDialUpManager::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/dialup.h>"),GetInfo().ClassName,hfInPCH);
-
-        Codef(wxT("%O = wxDialUpManager::Create();\n"));
-
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/dialup.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(wxT("%O = wxDialUpManager::Create();\n"));
 #ifdef __WXMSW__
-        // AutoCheckOnlineStatus defaults to ON on Windows and OFF on Linux.
-        if(!m_bAutoCheckOnlineStatus)
-        {
-            Codef(_T("%ADisableAutoCheckOnlineStatus();\n"));
-        }
+
+            // AutoCheckOnlineStatus defaults to ON on Windows and OFF on Linux.
+            if (!m_bAutoCheckOnlineStatus)
+            {
+                Codef(_T("%ADisableAutoCheckOnlineStatus();\n"));
+            }
+
 #else
-        if(m_bAutoCheckOnlineStatus)
-        {
-            if(m_iAutoCheckInterval != 60)
-            {
-                Codef(_T("%AEnableAutoCheckOnlineStatus(%d);\n"), m_iAutoCheckInterval);
-            }
-            else
-            {
-                Codef(_T("%AEnableAutoCheckOnlineStatus();\n"));
-            }
-        }
-        // These functions are only used on Unix.
-        if(!m_sWellKnownHost.IsSameAs(wxT("www.yahoo.com")) || m_iPortNo != 80)
-        {
-            Codef(_T("%ASetWellKnownHost(%n, %d);\n"), m_sWellKnownHost.wx_str(), m_iPortNo);
-        }
 
-        if(!m_sDialCommand.IsSameAs(wxT("/usr/bin/pon")) || !m_sHangUpCommand.IsSameAs(wxT("/usr/bin/poff")))
-            Codef(_T("%ASetConnectCommand(%n);\n"), m_sDialCommand.wx_str(), m_sHangUpCommand.wx_str());
+            if (m_bAutoCheckOnlineStatus)
+            {
+                if (m_iAutoCheckInterval != 60)
+                {
+                    Codef(_T("%AEnableAutoCheckOnlineStatus(%d);\n"), m_iAutoCheckInterval);
+                }
+                else
+                {
+                    Codef(_T("%AEnableAutoCheckOnlineStatus();\n"));
+                }
+            }
+
+            // These functions are only used on Unix.
+            if (!m_sWellKnownHost.IsSameAs(wxT("www.yahoo.com")) || m_iPortNo != 80)
+            {
+                Codef(_T("%ASetWellKnownHost(%n, %d);\n"), m_sWellKnownHost.wx_str(), m_iPortNo);
+            }
+
+            if (!m_sDialCommand.IsSameAs(wxT("/usr/bin/pon")) || !m_sHangUpCommand.IsSameAs(wxT("/usr/bin/poff")))
+            {
+                Codef(_T("%ASetConnectCommand(%n);\n"), m_sDialCommand.wx_str(), m_sHangUpCommand.wx_str());
+            }
+
 #endif
+            BuildSetupWindowCode();
+            return;
+        }
 
-        BuildSetupWindowCode();
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsDialUpManager::OnBuildCreatingCode"), GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsDialUpManager::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
@@ -124,6 +128,7 @@ void wxsDialUpManager::OnBuildCreatingCode()
 void wxsDialUpManager::OnEnumToolProperties(cb_unused long Flags)
 {
     bool bAutoCheck;
+
     if ((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
     {
         bAutoCheck = true;
@@ -132,6 +137,7 @@ void wxsDialUpManager::OnEnumToolProperties(cb_unused long Flags)
     {
         bAutoCheck = false;
     }
+
     WXS_BOOL(wxsDialUpManager, m_bAutoCheckOnlineStatus, _("Auto-check online status"), _T("auto_check_online_status"), bAutoCheck)
 #ifndef __WXMSW__
     // These properties are only used on Unix.

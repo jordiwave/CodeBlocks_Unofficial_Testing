@@ -25,23 +25,23 @@
 ///////////////////////////////////////////////////////////////////////////////
 class MainPanel : public wxPanel
 {
-private:
+    private:
 
-public:
-    MainPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxTAB_TRAVERSAL );
-    ~MainPanel();
-    void SplitterWindowOnIdle( wxIdleEvent& )
-    {
-        m_pSplitterWindow->SetSashPosition( 0 );
-        m_pSplitterWindow->Disconnect( wxEVT_IDLE, wxIdleEventHandler( MainPanel::SplitterWindowOnIdle ), NULL, this );
-    }
+    public:
+        MainPanel(wxWindow * parent, wxWindowID id = wxID_ANY, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxSize(500, 300), long style = wxTAB_TRAVERSAL);
+        ~MainPanel();
+        void SplitterWindowOnIdle(wxIdleEvent &)
+        {
+            m_pSplitterWindow->SetSashPosition(0);
+            m_pSplitterWindow->Disconnect(wxEVT_IDLE, wxIdleEventHandler(MainPanel::SplitterWindowOnIdle), NULL, this);
+        }
 
-    wxSplitterWindow*   m_pSplitterWindow;
-    wxPanel*            m_pSearchPanel;
-    wxPanel*            m_pNotebkPanel;
-    wxBoxSizer*         m_pMainSizer;
-    wxBoxSizer*         m_pSearchSizer;
-    wxBoxSizer*         m_pNotebkSizer;
+        wxSplitterWindow  * m_pSplitterWindow;
+        wxPanel      *      m_pSearchPanel;
+        wxPanel      *      m_pNotebkPanel;
+        wxBoxSizer     *    m_pMainSizer;
+        wxBoxSizer     *    m_pSearchSizer;
+        wxBoxSizer     *    m_pNotebkSizer;
 
 };
 

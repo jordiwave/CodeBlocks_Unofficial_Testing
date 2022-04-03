@@ -36,56 +36,56 @@ class wxScintilla;
 class SnippetProperty : public SnippetPropertyForm
 // ----------------------------------------------------------------------------
 {
-    friend class SnippetDropTarget;
+        friend class SnippetDropTarget;
 
-public:
-    SnippetProperty(wxTreeCtrl* pTree, wxTreeItemId itemId, wxSemaphore* pWaitSem);
-    virtual ~SnippetProperty();
+    public:
+        SnippetProperty(wxTreeCtrl * pTree, wxTreeItemId itemId, wxSemaphore * pWaitSem);
+        virtual ~SnippetProperty();
 
-    int     GetReturnCode()
-    {
-        return m_retCode;
-    }
+        int     GetReturnCode()
+        {
+            return m_retCode;
+        }
 
-protected:
-    wxPoint pos;
-    void OnOk(wxCommandEvent& event);
-    void OnCancel(wxCommandEvent& event);
-    void OnSnippetButton(wxCommandEvent& event);
-    void OnFileSelectButton(wxCommandEvent& event);
-    //-void OnLeaveWindow(wxMouseEvent& event);
+    protected:
+        wxPoint pos;
+        void OnOk(wxCommandEvent & event);
+        void OnCancel(wxCommandEvent & event);
+        void OnSnippetButton(wxCommandEvent & event);
+        void OnFileSelectButton(wxCommandEvent & event);
+        //-void OnLeaveWindow(wxMouseEvent& event);
 
-    void InvokeEditOnSnippetText();
-    void InvokeEditOnSnippetFile();
+        void InvokeEditOnSnippetText();
+        void InvokeEditOnSnippetFile();
 
-    wxScintilla* GetSnippetEditCtrl()
-    {
-        return m_SnippetEditCtrl;
-    }
-    wxTreeCtrl*  GetSnippetsTreeCtrl()
-    {
-        return m_pTreeCtrl;
-    }
-    wxString     GetSnippetString()
-    {
-        return m_pSnippetDataItem->GetSnippetString();
-    }
-    bool         IsSnippetFile()
-    {
-        return m_pSnippetDataItem->IsSnippetFile();
-    }
+        wxScintilla * GetSnippetEditCtrl()
+        {
+            return m_SnippetEditCtrl;
+        }
+        wxTreeCtrl * GetSnippetsTreeCtrl()
+        {
+            return m_pTreeCtrl;
+        }
+        wxString     GetSnippetString()
+        {
+            return m_pSnippetDataItem->GetSnippetString();
+        }
+        bool         IsSnippetFile()
+        {
+            return m_pSnippetDataItem->IsSnippetFile();
+        }
 
-private:
-    void InitSnippetProperty(wxTreeCtrl* pTree, wxTreeItemId itemId, wxSemaphore* pWaitSem);
+    private:
+        void InitSnippetProperty(wxTreeCtrl * pTree, wxTreeItemId itemId, wxSemaphore * pWaitSem);
 
-    wxTreeItemId        m_TreeItemId;
-    SnippetTreeItemData*    m_pSnippetDataItem;
-    wxTreeCtrl*         m_pTreeCtrl;
-    int                 m_nScrollWidthMax;
-    wxSemaphore*        m_pWaitingSemaphore;
-    int                 m_retCode; //(pecan 2018/03/22)
+        wxTreeItemId        m_TreeItemId;
+        SnippetTreeItemData  *  m_pSnippetDataItem;
+        wxTreeCtrl     *    m_pTreeCtrl;
+        int                 m_nScrollWidthMax;
+        wxSemaphore    *    m_pWaitingSemaphore;
+        int                 m_retCode; //(pecan 2018/03/22)
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // SNIPPETPROPERTY_H

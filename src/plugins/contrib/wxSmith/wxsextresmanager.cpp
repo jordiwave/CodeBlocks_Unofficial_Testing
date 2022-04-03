@@ -32,27 +32,41 @@ wxsExtResManager::wxsExtResManager():
 wxsExtResManager::~wxsExtResManager()
 {
     int TestCnt = m_Files.size();
-    while ( !m_Files.empty() )
+
+    while (!m_Files.empty())
     {
         // Each delete should remove one entry
         delete m_Files.begin()->second;
+
         // Just in case of invalid resources to avoid infinite loops
-        if ( --TestCnt < 0 ) break;
+        if (--TestCnt < 0)
+        {
+            break;
+        }
     }
 }
 
-bool wxsExtResManager::CanOpen(const wxString& FileName)
+bool wxsExtResManager::CanOpen(const wxString & FileName)
 {
-    if ( m_Files.find(FileName) != m_Files.end() ) return true;
+    if (m_Files.find(FileName) != m_Files.end())
+    {
+        return true;
+    }
+
     return wxsResourceFactory::CanHandleExternal(FileName);
 }
 
-bool wxsExtResManager::Open(const wxString& FileName)
+bool wxsExtResManager::Open(const wxString & FileName)
 {
-    if ( m_Files.find(FileName) == m_Files.end() )
+    if (m_Files.find(FileName) == m_Files.end())
     {
-        wxsResource* NewResource = wxsResourceFactory::BuildExternal(FileName);
-        if ( !NewResource ) return false;
+        wxsResource * NewResource = wxsResourceFactory::BuildExternal(FileName);
+
+        if (!NewResource)
+        {
+            return false;
+        }
+
         NewResource->BuildTreeEntry(wxsTree()->ExternalResourcesId());
         m_Files[FileName] = NewResource;
         NewResource->EditOpen();
@@ -63,13 +77,16 @@ bool wxsExtResManager::Open(const wxString& FileName)
     return true;
 }
 
-void wxsExtResManager::EditorClosed(wxsResource* Res)
+void wxsExtResManager::EditorClosed(wxsResource * Res)
 {
-    if ( m_ClosingAll ) return;
-
-    for ( FilesMapI i = m_Files.begin(); i!=m_Files.end(); ++i )
+    if (m_ClosingAll)
     {
-        if ( i->second == Res )
+        return;
+    }
+
+    for (FilesMapI i = m_Files.begin(); i != m_Files.end(); ++i)
+    {
+        if (i->second == Res)
         {
             m_Files.erase(i);
             // wxsResource dtor calls "wxsTree()->Delete(m_TreeItemId);" itself
@@ -77,10 +94,12 @@ void wxsExtResManager::EditorClosed(wxsResource* Res)
             // (which will crash if following line is uncommented)
             //wxsTree()->Delete(Res->GetTreeItemId());
             delete Res;
-            if ( m_Files.empty() )
+
+            if (m_Files.empty())
             {
                 wxsTree()->DeleteExternalResourcesId();
             }
+
             return;
         }
     }
@@ -90,13 +109,13 @@ void wxsExtResManager::DeleteAll()
 {
     m_ClosingAll = true;
 
-    for ( FilesMapI i = m_Files.begin(); i!=m_Files.end(); ++i )
+    for (FilesMapI i = m_Files.begin(); i != m_Files.end(); ++i)
     {
         delete i->second;
     }
+
     m_Files.clear();
     wxsTree()->DeleteExternalResourcesId();
-
     m_ClosingAll = false;
 }
 

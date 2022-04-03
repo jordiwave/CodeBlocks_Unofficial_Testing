@@ -19,5 +19,4 @@ bool [CLASS_PREFIX]App::OnInit()
     //(*AppInitialize
     //*)
     return wxsOK;
-
 }

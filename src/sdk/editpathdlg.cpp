@@ -10,16 +10,16 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/textctrl.h>
-#include <wx/button.h>
-#include <wx/filename.h>
-#include <wx/stattext.h>
-#include "globals.h"
-#include "manager.h"
-#include "macrosmanager.h"
-#include "uservarmanager.h"
+    #include <wx/intl.h>
+    #include <wx/xrc/xmlres.h>
+    #include <wx/textctrl.h>
+    #include <wx/button.h>
+    #include <wx/filename.h>
+    #include <wx/stattext.h>
+    #include "globals.h"
+    #include "manager.h"
+    #include "macrosmanager.h"
+    #include "uservarmanager.h"
 #endif
 
 #include "editpathdlg.h"
@@ -36,21 +36,19 @@ BEGIN_EVENT_TABLE(EditPathDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnOther"), EditPathDlg::OnOther)
 END_EVENT_TABLE()
 
-EditPathDlg::EditPathDlg(wxWindow* parent,
-                         const wxString& path,
-                         const wxString& basepath,
-                         const wxString& title,
-                         const wxString& message,
+EditPathDlg::EditPathDlg(wxWindow * parent,
+                         const wxString & path,
+                         const wxString & basepath,
+                         const wxString & title,
+                         const wxString & message,
                          const bool wantDir,
                          const bool allowMultiSel,
-                         const wxString& filter)
+                         const wxString & filter)
 {
     //ctor
-    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditPath"),_T("wxScrollingDialog"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditPath"), _T("wxScrollingDialog"));
     XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
-
-    wxTextCtrl *txtPath = XRCCTRL(*this, "txtPath", wxTextCtrl);
-
+    wxTextCtrl * txtPath = XRCCTRL(*this, "txtPath", wxTextCtrl);
     XRCCTRL(*this, "dlgEditPath", wxScrollingDialog)->SetTitle(title);
 
     if (!wantDir)
@@ -66,7 +64,6 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
     m_Filter = filter;
     m_AskMakeRelative = true;
     m_ShowCreateDirButton = false;
-
     // Limit vertical resizing, because we don't want to have empty space at the bottom of the
     // dialog. We also want to limit the min width, so the text control could accommodate common
     // paths.
@@ -75,7 +72,6 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
     SetMinSize(wxSize(expectedTextWidth, GetMinHeight()));
     SetMaxSize(wxSize(-1, GetMinHeight()));
     Fit();
-
     txtPath->SetValue(path);
     txtPath->SetFocus();
 }
@@ -85,22 +81,28 @@ EditPathDlg::~EditPathDlg()
     //dtor
 }
 
-void EditPathDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
+void EditPathDlg::OnUpdateUI(cb_unused wxUpdateUIEvent & event)
 {
-    wxButton* btn = (wxButton*)FindWindow(wxID_OK);
+    wxButton * btn = (wxButton *)FindWindow(wxID_OK);
+
     if (btn)
+    {
         btn->Enable(!XRCCTRL(*this, "txtPath", wxTextCtrl)->GetValue().IsEmpty());
+    }
 }
 
-void EditPathDlg::OnBrowse(cb_unused wxCommandEvent& event)
+void EditPathDlg::OnBrowse(cb_unused wxCommandEvent & event)
 {
     wxFileName path;
     wxArrayString multi;
-
     wxString val = XRCCTRL(*this, "txtPath", wxTextCtrl)->GetValue();
     int idx = val.Find(DEFAULT_ARRAY_SEP);
+
     if (idx != -1)
+    {
         val.Remove(idx);
+    }
+
     wxFileName fname(val);
 
     if (m_WantDir)
@@ -111,17 +113,19 @@ void EditPathDlg::OnBrowse(cb_unused wxCommandEvent& event)
         fname = val;
         fname.MakeAbsolute(m_Basepath);
         m_Path = fname.GetFullPath();
-
         path = ChooseDirectory(this, m_Message, (m_Path.IsEmpty() ? s_LastPath : m_Path),
                                m_Basepath, false, m_ShowCreateDirButton);
 
         if (path.GetFullPath().IsEmpty())
+        {
             return;
+        }
 
         // if it was a custom var, see if we can re-insert it
         if (initial_val != val)
         {
             wxString tmp = path.GetFullPath();
+
             if (tmp.Replace(val, initial_val) != 0)
             {
                 // done here
@@ -133,26 +137,38 @@ void EditPathDlg::OnBrowse(cb_unused wxCommandEvent& event)
     else
     {
         wxFileDialog dlg(this, m_Message, (fname.GetPath().IsEmpty() ? s_LastPath : fname.GetPath()),
-                         fname.GetFullName(), m_Filter, wxFD_CHANGE_DIR | (m_AllowMultiSel ? wxFD_MULTIPLE : 0) );
-
+                         fname.GetFullName(), m_Filter, wxFD_CHANGE_DIR | (m_AllowMultiSel ? wxFD_MULTIPLE : 0));
         PlaceWindow(&dlg);
+
         if (dlg.ShowModal() == wxID_OK)
         {
             if (m_AllowMultiSel)
+            {
                 dlg.GetPaths(multi);
+            }
             else
+            {
                 path = dlg.GetPath();
+            }
         }
         else
+        {
             return;
+        }
     }
 
     if (m_AllowMultiSel && multi.GetCount() != 0 && !multi[0].IsEmpty())
+    {
         s_LastPath = multi[0];
-    else if (!path.GetFullPath().IsEmpty())
-        s_LastPath = path.GetFullPath();
+    }
+    else
+        if (!path.GetFullPath().IsEmpty())
+        {
+            s_LastPath = path.GetFullPath();
+        }
 
     wxString result;
+
     if (m_AskMakeRelative && !m_Basepath.IsEmpty())
     {
         // ask the user if he wants it to be kept as relative
@@ -168,6 +184,7 @@ void EditPathDlg::OnBrowse(cb_unused wxCommandEvent& event)
                     path.MakeRelativeTo(m_Basepath);
                     multi[i] = path.GetFullPath();
                 }
+
                 result = GetStringFromArray(multi);
             }
             else
@@ -179,30 +196,38 @@ void EditPathDlg::OnBrowse(cb_unused wxCommandEvent& event)
         else
         {
             if (m_AllowMultiSel)
+            {
                 result = GetStringFromArray(multi);
+            }
             else
+            {
                 result = path.GetFullPath();
+            }
         }
     }
     else // always absolute path
     {
         if (m_AllowMultiSel)
+        {
             result = GetStringFromArray(multi);
+        }
         else
+        {
             result = path.GetFullPath();
+        }
     }
 
     // finally set the path
     XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(result);
 }
 
-void EditPathDlg::OnOther(cb_unused wxCommandEvent& event)
+void EditPathDlg::OnOther(cb_unused wxCommandEvent & event)
 {
-    UserVariableManager *userMgr = Manager::Get()->GetUserVariableManager();
-    wxTextCtrl *txtPath = XRCCTRL(*this, "txtPath", wxTextCtrl);
+    UserVariableManager * userMgr = Manager::Get()->GetUserVariableManager();
+    wxTextCtrl * txtPath = XRCCTRL(*this, "txtPath", wxTextCtrl);
+    const wxString & user_var = userMgr->GetVariable(this, txtPath->GetValue());
 
-    const wxString &user_var = userMgr->GetVariable(this, txtPath->GetValue());
-    if ( !user_var.IsEmpty() )
+    if (!user_var.IsEmpty())
     {
         txtPath->SetValue(user_var);
         m_WantDir = true;

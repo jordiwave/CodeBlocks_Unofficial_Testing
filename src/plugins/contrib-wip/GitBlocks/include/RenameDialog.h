@@ -7,25 +7,25 @@
 
 class RenameDialog: public wxDialog
 {
-public:
+    public:
 
-    RenameDialog(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
-    virtual ~RenameDialog();
+        RenameDialog(wxWindow * parent, wxWindowID id = wxID_ANY, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize);
+        virtual ~RenameDialog();
 
-    //(*Declarations(RenameDialog)
-    //*)
+        //(*Declarations(RenameDialog)
+        //*)
 
-protected:
+    protected:
 
-    //(*Identifiers(RenameDialog)
-    //*)
+        //(*Identifiers(RenameDialog)
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(RenameDialog)
-    //*)
+        //(*Handlers(RenameDialog)
+        //*)
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

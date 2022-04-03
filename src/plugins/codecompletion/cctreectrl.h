@@ -36,62 +36,62 @@ enum SpecialFolder
 /** Actual data stored with each node in the symbol tree */
 class CCTreeCtrlData : public wxTreeItemData
 {
-public:
-    CCTreeCtrlData(SpecialFolder sf = sfToken, Token* token = 0,
-                   short int kindMask = 0xffff, int parentIdx = -1);
+    public:
+        CCTreeCtrlData(SpecialFolder sf = sfToken, Token * token = 0,
+                       short int kindMask = 0xffff, int parentIdx = -1);
 
-    /** a pointer to the associated Token instance in the TokenTree */
-    Token*        m_Token;
+        /** a pointer to the associated Token instance in the TokenTree */
+        Token    *    m_Token;
 
-    /** a copy of Token::m_KindMask
-     * @todo this variable is not used?
-     */
-    short int     m_KindMask;
+        /** a copy of Token::m_KindMask
+         * @todo this variable is not used?
+         */
+        short int     m_KindMask;
 
-    /** the node's kind, it could be "root", "normal token", @sa SpecialFolder */
-    SpecialFolder m_SpecialFolder;
+        /** the node's kind, it could be "root", "normal token", @sa SpecialFolder */
+        SpecialFolder m_SpecialFolder;
 
-    /** a copy of Token::m_TokenIndex */
-    int           m_TokenIndex;
+        /** a copy of Token::m_TokenIndex */
+        int           m_TokenIndex;
 
-    /** a copy of Token::m_TokenKind */
-    TokenKind     m_TokenKind;
+        /** a copy of Token::m_TokenKind */
+        TokenKind     m_TokenKind;
 
-    /** short name of the Token,
-     * it is a copy of Token::m_Name
-     */
-    wxString      m_TokenName;
+        /** short name of the Token,
+         * it is a copy of Token::m_Name
+         */
+        wxString      m_TokenName;
 
-    /** the parent Token index
-     * it is a copy of Token::m_ParentIndex, @sa Token::m_ParentIndex
-     * @todo this variable is not used?
-     */
-    int           m_ParentIndex;
+        /** the parent Token index
+         * it is a copy of Token::m_ParentIndex, @sa Token::m_ParentIndex
+         * @todo this variable is not used?
+         */
+        int           m_ParentIndex;
 
-    /** the Token's ticket in a TokenTree
-     * This is actually a copy of Token::m_Ticket, @sa Token::m_Ticket  */
-    unsigned long m_Ticket;
+        /** the Token's ticket in a TokenTree
+         * This is actually a copy of Token::m_Ticket, @sa Token::m_Ticket  */
+        unsigned long m_Ticket;
 
-    /** pointer to the mirror node in the non-GUI tree */
-    void*         m_MirrorNode;
+        /** pointer to the mirror node in the non-GUI tree */
+        void     *    m_MirrorNode;
 };
 
 class CCTreeCtrlExpandedItemData
 {
-public:
-    CCTreeCtrlExpandedItemData(const CCTreeCtrlData* data, const int level);
+    public:
+        CCTreeCtrlExpandedItemData(const CCTreeCtrlData * data, const int level);
 
-    int   GetLevel() const
-    {
-        return m_Level;
-    }
-    const CCTreeCtrlData& GetData()
-    {
-        return m_Data;
-    }
-private:
-    CCTreeCtrlData m_Data;  // copy of tree item data
-    int            m_Level; // nesting level in the tree
+        int   GetLevel() const
+        {
+            return m_Level;
+        }
+        const CCTreeCtrlData & GetData()
+        {
+            return m_Data;
+        }
+    private:
+        CCTreeCtrlData m_Data;  // copy of tree item data
+        int            m_Level; // nesting level in the tree
 };
 
 typedef std::deque<CCTreeCtrlExpandedItemData> ExpandedItemVect;
@@ -99,25 +99,25 @@ typedef std::deque<CCTreeCtrlData>             SelectedItemPath;
 
 class CCTreeCtrl : public wxTreeCtrl
 {
-public:
-    CCTreeCtrl();
-    CCTreeCtrl(wxWindow* parent, const wxWindowID id, const wxPoint& pos,
-               const wxSize& size, long style);
+    public:
+        CCTreeCtrl();
+        CCTreeCtrl(wxWindow * parent, const wxWindowID id, const wxPoint & pos,
+                   const wxSize & size, long style);
 
-    void SetCompareFunction(const BrowserSortType type);
-    void RemoveDoubles(const wxTreeItemId& parent);
+        void SetCompareFunction(const BrowserSortType type);
+        void RemoveDoubles(const wxTreeItemId & parent);
 
-protected:
-    static int CBAlphabetCompare(CCTreeCtrlData* lhs, CCTreeCtrlData* rhs);
-    static int CBKindCompare    (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs);
-    static int CBScopeCompare   (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs);
-    static int CBLineCompare    (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs);
-    static int CBNoCompare      (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs);
+    protected:
+        static int CBAlphabetCompare(CCTreeCtrlData * lhs, CCTreeCtrlData * rhs);
+        static int CBKindCompare(CCTreeCtrlData * lhs, CCTreeCtrlData * rhs);
+        static int CBScopeCompare(CCTreeCtrlData * lhs, CCTreeCtrlData * rhs);
+        static int CBLineCompare(CCTreeCtrlData * lhs, CCTreeCtrlData * rhs);
+        static int CBNoCompare(CCTreeCtrlData * lhs, CCTreeCtrlData * rhs);
 
-    int OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2) override;
-    int (*Compare)(CCTreeCtrlData* lhs, CCTreeCtrlData* rhs);
+        int OnCompareItems(const wxTreeItemId & item1, const wxTreeItemId & item2) override;
+        int (*Compare)(CCTreeCtrlData * lhs, CCTreeCtrlData * rhs);
 
-    DECLARE_DYNAMIC_CLASS(CCTreeCtrl)
+        DECLARE_DYNAMIC_CLASS(CCTreeCtrl)
 };
 
 #endif // CCTREECTRL

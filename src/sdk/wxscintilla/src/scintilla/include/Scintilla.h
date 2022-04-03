@@ -17,7 +17,7 @@ extern "C" {
 
 #if defined(_WIN32)
 /* Return false on failure: */
-int Scintilla_RegisterClasses(void *hInstance);
+int Scintilla_RegisterClasses(void * hInstance);
 int Scintilla_ReleaseResources(void);
 #endif
 int Scintilla_LinkLexers(void);
@@ -28,10 +28,10 @@ int Scintilla_LinkLexers(void);
 
 // Include header that defines basic numeric types.
 #if defined(_MSC_VER)
-// Older releases of MSVC did not have stdint.h.
-#include <stddef.h>
+    // Older releases of MSVC did not have stdint.h.
+    #include <stddef.h>
 #else
-#include <stdint.h>
+    #include <stdint.h>
 #endif
 
 // Define uptr_t, an unsigned integer type large enough to hold a pointer.
@@ -1133,17 +1133,17 @@ struct Sci_CharacterRange
 struct Sci_TextRange
 {
     struct Sci_CharacterRange chrg;
-    char *lpstrText;
+    char * lpstrText;
 };
 
 struct Sci_TextToFind
 {
     struct Sci_CharacterRange chrg;
-    const char *lpstrText;
+    const char * lpstrText;
     struct Sci_CharacterRange chrgText;
 };
 
-typedef void *Sci_SurfaceID;
+typedef void * Sci_SurfaceID;
 
 struct Sci_Rectangle
 {
@@ -1166,10 +1166,10 @@ struct Sci_RangeToFormat
 };
 
 #ifndef __cplusplus
-/* For the GTK+ platform, g-ir-scanner needs to have these typedefs. This
- * is not required in C++ code and actually seems to break ScintillaEditPy */
-typedef struct Sci_NotifyHeader Sci_NotifyHeader;
-typedef struct SCNotification SCNotification;
+    /* For the GTK+ platform, g-ir-scanner needs to have these typedefs. This
+    * is not required in C++ code and actually seems to break ScintillaEditPy */
+    typedef struct Sci_NotifyHeader Sci_NotifyHeader;
+    typedef struct SCNotification SCNotification;
 #endif
 
 struct Sci_NotifyHeader
@@ -1177,7 +1177,7 @@ struct Sci_NotifyHeader
     /* Compatible with Windows NMHDR.
      * hwndFrom is really an environment specific window handle or pointer
      * but most clients of Scintilla.h do not have this type visible. */
-    void *hwndFrom;
+    void * hwndFrom;
     uptr_t idFrom;
     unsigned int code;
 };
@@ -1200,7 +1200,7 @@ struct SCNotification
     /* SCN_HOTSPOTRELEASECLICK, SCN_INDICATORCLICK, SCN_INDICATORRELEASE, */
 
     int modificationType;	/* SCN_MODIFIED */
-    const char *text;
+    const char * text;
     /* SCN_MODIFIED, SCN_USERLISTSELECTION, SCN_AUTOCSELECTION, SCN_URIDROPPED */
 
     Sci_Position length;		/* SCN_MODIFIED */
@@ -1224,14 +1224,14 @@ struct SCNotification
 
 #ifdef INCLUDE_DEPRECATED_FEATURES
 
-#define SCI_SETKEYSUNICODE 2521
-#define SCI_GETKEYSUNICODE 2522
+    #define SCI_SETKEYSUNICODE 2521
+    #define SCI_GETKEYSUNICODE 2522
 
-#define CharacterRange Sci_CharacterRange
-#define TextRange Sci_TextRange
-#define TextToFind Sci_TextToFind
-#define RangeToFormat Sci_RangeToFormat
-#define NotifyHeader Sci_NotifyHeader
+    #define CharacterRange Sci_CharacterRange
+    #define TextRange Sci_TextRange
+    #define TextToFind Sci_TextToFind
+    #define RangeToFormat Sci_RangeToFormat
+    #define NotifyHeader Sci_NotifyHeader
 
 #endif
 

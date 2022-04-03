@@ -25,11 +25,11 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/filename.h>
+    #include <wx/filename.h>
 
-#include <configmanager.h>
-#include <manager.h>
-#include <personalitymanager.h>
+    #include <configmanager.h>
+    #include <manager.h>
+    #include <personalitymanager.h>
 #endif //CB_PRECOMP
 #include <wx/fileconf.h>
 
@@ -130,12 +130,9 @@ bool DoxyBlocksConfig::WritePrefsTemplate()
     wxString sClassDiagrams(wxT("ClassDiagrams"));
     wxString sHaveDot(wxT("HaveDot"));
     wxString sUseAtInTags(wxT("UseAtInTags"));
-
     wxString sCfgIni(wxT("DoxyBlocks.ini"));
     wxString sCfgPath(Manager::Get()->GetConfigManager(_T("app"))->GetConfigFolder() + wxFILE_SEP_PATH + sCfgIni);
-
-    wxFileConfig *cfgFile = new wxFileConfig(wxEmptyString, wxEmptyString, sCfgPath, wxEmptyString, wxCONFIG_USE_GLOBAL_FILE);
-
+    wxFileConfig * cfgFile = new wxFileConfig(wxEmptyString, wxEmptyString, sCfgPath, wxEmptyString, wxCONFIG_USE_GLOBAL_FILE);
     // Comment style.
     cfgFile->Write(sSectionCommentStyle + sCommentBlock, static_cast<int>(m_iBlockComment));
     cfgFile->Write(sSectionCommentStyle + sCommentLine, static_cast<int>(m_iLineComment));
@@ -171,9 +168,7 @@ bool DoxyBlocksConfig::WritePrefsTemplate()
     cfgFile->Write(sSectionDot + sHaveDot, static_cast<int>(m_bHaveDot));
     // General.
     cfgFile->Write(sSectionGeneral + sUseAtInTags, static_cast<int>(m_bUseAtInTags));
-
     bool bOK = cfgFile->Flush();
-
     wxDELETE(cfgFile);
     wxASSERT(!cfgFile);
     return bOK;
@@ -226,16 +221,15 @@ bool DoxyBlocksConfig::ReadPrefsTemplate()
     wxString sClassDiagrams(wxT("ClassDiagrams"));
     wxString sHaveDot(wxT("HaveDot"));
     wxString sUseAtInTags(wxT("UseAtInTags"));
-
     wxString sCfgIni(wxT("DoxyBlocks.ini"));
     wxString sCfgPath(Manager::Get()->GetConfigManager(_T("app"))->GetConfigFolder() + wxFILE_SEP_PATH + sCfgIni);
-    if(!wxFile::Exists(sCfgPath))
+
+    if (!wxFile::Exists(sCfgPath))
     {
         return false;
     }
 
-    wxFileConfig *cfgFile = new wxFileConfig(wxEmptyString, wxEmptyString, sCfgPath, wxEmptyString, wxCONFIG_USE_GLOBAL_FILE);
-
+    wxFileConfig * cfgFile = new wxFileConfig(wxEmptyString, wxEmptyString, sCfgPath, wxEmptyString, wxCONFIG_USE_GLOBAL_FILE);
     // Comment style.
     m_iBlockComment = cfgFile->Read(sSectionCommentStyle + sCommentBlock, GetDefaultBlockComment());
     m_iLineComment = cfgFile->Read(sSectionCommentStyle + sCommentLine, GetDefaultLineComment());
@@ -271,7 +265,6 @@ bool DoxyBlocksConfig::ReadPrefsTemplate()
     m_bHaveDot = cfgFile->Read(sSectionDot + sHaveDot, GetDefaultHaveDot());
     // General.
     m_bUseAtInTags = cfgFile->Read(sSectionGeneral + sUseAtInTags, GetDefaultUseAtInTags());
-
     wxDELETE(cfgFile);
     wxASSERT(!cfgFile);
     return true;

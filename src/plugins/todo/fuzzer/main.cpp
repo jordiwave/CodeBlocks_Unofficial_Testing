@@ -5,26 +5,27 @@
 #include <wx/arrstr.h>
 #include <wx/file.h>
 
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
     wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");
-
     wxInitializer initializer;
-    if ( !initializer )
+
+    if (!initializer)
     {
         fprintf(stderr, "Failed to initialize the wxWidgets library, aborting.");
         return -1;
     }
 
     wxFile file(argv[1]);
-
     wxString buffer;
+
     if (!file.ReadAll(&buffer))
+    {
         return 1;
+    }
 
     TodoItemsMap outItemsMap;
     ToDoItems outItems;
-
     wxArrayString allowedTypes;
     allowedTypes.push_back(L"TODO");
     allowedTypes.push_back(L"@todo");
@@ -35,7 +36,6 @@ int main(int argc, char *argv[])
     allowedTypes.push_back(L"NOTE");
     allowedTypes.push_back(L"@note");
     allowedTypes.push_back(L"\\note");
-
     wxArrayString startStrings;
     startStrings.push_back(L"#warning");
     startStrings.push_back(L"#error");
@@ -43,12 +43,11 @@ int main(int argc, char *argv[])
     startStrings.push_back(L"/**");
     startStrings.push_back(L"//");
     startStrings.push_back(L"/*");
-
     ParseBufferForTODOs(outItemsMap, outItems, startStrings, allowedTypes, buffer, "test.cpp");
 
     for (TodoItemsMap::const_iterator it = outItemsMap.begin(); it != outItemsMap.end(); ++it)
     {
-        for (const ToDoItem &item : it->second)
+        for (const ToDoItem & item : it->second)
             printf("%s -> %s %s %s %s %s %s %s %d %d\n",
                    it->first.utf8_str().data(),
                    item.type.utf8_str().data(),
@@ -64,7 +63,7 @@ int main(int argc, char *argv[])
 
     for (size_t ii = 0; ii < outItems.GetCount(); ii++)
     {
-        const ToDoItem &item = outItems[ii];
+        const ToDoItem & item = outItems[ii];
         printf("%d -> %s %s %s %s %s %s %s %d %d\n",
                int(ii),
                item.type.utf8_str().data(),

@@ -9,21 +9,21 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #if !defined(WX_PRECOMP)
-#include <wx/wx.h>
-#include <wx/intl.h>
-#include <wx/laywin.h>
-#include <wx/image.h>
-#include <wx/filename.h>
-#include <wx/hashmap.h>
-#include <wx/docview.h> // recent files history
+    #include <wx/wx.h>
+    #include <wx/intl.h>
+    #include <wx/laywin.h>
+    #include <wx/image.h>
+    #include <wx/filename.h>
+    #include <wx/hashmap.h>
+    #include <wx/docview.h> // recent files history
 #endif
 
 #if defined(__WXGTK__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__) || defined(__WXX11__)
-#include "resources/icons/app.xpm"
+    #include "resources/icons/app.xpm"
 #endif
 
 #include <wx/taskbar.h>
@@ -106,84 +106,87 @@ class cbSplashScreen;
 
 class CodeBlocksApp : public wxApp
 {
-public:
-    bool OnInit() override;
-    int OnExit() override;
-    int OnRun() override;
-    int ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine = wxString(),
-                     const wxString &CWD = wxString());
+    public:
+        bool OnInit() override;
+        int OnExit() override;
+        int OnRun() override;
+        int ParseCmdLine(MainFrame * handlerFrame, const wxString & CmdLine = wxString(),
+                         const wxString & CWD = wxString());
 
-    void OnCloseBatchBuildWindow(wxCloseEvent& evt);
-    void OnAppActivate(wxActivateEvent& event);
-    bool OnCmdLineParsed(wxCmdLineParser& parser) override;
-    void OnFatalException() override;
-    void LoadDelayedFiles(MainFrame* frame); // command line or DDE (if available) files
-    void SetAutoFile(wxString& file); // method to set m_AutoFile
-    void AttachDebugger();
+        void OnCloseBatchBuildWindow(wxCloseEvent & evt);
+        void OnAppActivate(wxActivateEvent & event);
+        bool OnCmdLineParsed(wxCmdLineParser & parser) override;
+        void OnFatalException() override;
+        void LoadDelayedFiles(MainFrame * frame); // command line or DDE (if available) files
+        void SetAutoFile(wxString & file); // method to set m_AutoFile
+        void AttachDebugger();
 #ifdef __WXMAC__
-    // in response of an open-document apple event
-    virtual void         MacOpenFile(const wxString &fileName) ;
-    // in response of a print-document apple event
-    virtual void         MacPrintFile(const wxString &fileName) ;
+        // in response of an open-document apple event
+        virtual void         MacOpenFile(const wxString & fileName) ;
+        // in response of a print-document apple event
+        virtual void         MacPrintFile(const wxString & fileName) ;
 #endif
-    void AddFileToOpenDelayed(const wxString& filename);
-protected:
-    void OnBatchBuildDone(CodeBlocksEvent& event);
-    void OnTBIconLeftDown(wxTaskBarIconEvent& event);
-    bool LoadConfig();
-    void InitDebugConsole();
-    void InitExceptionHandler();
-    bool InitXRCStuff();
-    MainFrame* InitFrame();
-    void CheckVersion();
-    void InitLocale();
-    int BatchJob();
-    wxLocale m_locale; // locale we'll be using
-    wxArrayString m_DelayedFilesToOpen;
-private:
-    wxString GetAppPath() const;
-    void SetupPersonality(const wxString& personality);
-    bool SetActiveVariableSet(wxString& varset);
-    wxString GetActiveVariableSet();
-    void SetupImageSizes(wxToolBarAddOnXmlHandler *toolbarAddonHandler);
+        void AddFileToOpenDelayed(const wxString & filename);
+    protected:
+        void OnBatchBuildDone(CodeBlocksEvent & event);
+        void OnTBIconLeftDown(wxTaskBarIconEvent & event);
+        bool LoadConfig();
+        void InitDebugConsole();
+        void InitExceptionHandler();
+        bool InitXRCStuff();
+        MainFrame * InitFrame();
+        void CheckVersion();
+        void InitLocale();
+        int BatchJob();
+        wxLocale m_locale; // locale we'll be using
+        wxArrayString m_DelayedFilesToOpen;
+    private:
+        wxString GetAppPath() const;
+        void SetupPersonality(const wxString & personality);
+        bool SetActiveVariableSet(wxString & varset);
+        wxString GetActiveVariableSet();
+        void SetupImageSizes(wxToolBarAddOnXmlHandler * toolbarAddonHandler);
 
-    wxString m_Prefix; // directory specified in --prefix switch
-    wxString m_UserDataDir; // directory specified in --user-data-dir switch
-    wxString m_BatchTarget;
-    wxString m_Script;
-    wxString m_AutoFile; // --file foo.cpp[:line]
-    wxString m_DebuggerAttach;
-    wxString m_DebuggerConfig;
-    wxString m_GlobalVariableSetParameterOrBackup;
-    wxString m_MasterPathParameterOrBackup;
+        wxString m_Prefix; // directory specified in --prefix switch
+        wxString m_UserDataDir; // directory specified in --user-data-dir switch
+        wxString m_BatchTarget;
+        wxString m_Script;
+        wxString m_AutoFile; // --file foo.cpp[:line]
+        wxString m_DebuggerAttach;
+        wxString m_DebuggerConfig;
+        wxString m_GlobalVariableSetParameterOrBackup;
+        wxString m_MasterPathParameterOrBackup;
 
-    wxScrollingDialog* m_pBatchBuildDialog;
-    MainFrame* m_Frame;
-    wxSingleInstanceChecker* m_pSingleInstance;
+        wxScrollingDialog * m_pBatchBuildDialog;
+        MainFrame * m_Frame;
+        wxSingleInstanceChecker * m_pSingleInstance;
 
-    bool m_Batch;
-    bool m_BatchHeadlessBuild;
-    bool m_BatchNotify;
-    bool m_BatchWindowAutoClose; // default: true
-    bool m_Build;
-    bool m_ReBuild;
-    bool m_Clean;
-    bool m_HasProject;
-    bool m_HasWorkSpace;
-    bool m_Splash; // splash screen enabled
-    bool m_HasDebugLog; // display debug log
-    bool m_CrashHandler; // crash handler enabled
-    bool m_SafeMode; // all plugins disabled
+        bool m_Batch;
+        bool m_BatchHeadlessBuild;
+        bool m_BatchNotify;
+        bool m_BatchWindowAutoClose; // default: true
+        bool m_Build;
+        bool m_ReBuild;
+        bool m_Clean;
+        bool m_HasProject;
+        bool m_HasWorkSpace;
+        bool m_Splash; // splash screen enabled
+        bool m_HasDebugLog; // display debug log
+        bool m_CrashHandler; // crash handler enabled
+        bool m_SafeMode; // all plugins disabled
 
-    void InitAssociations();
+        void InitAssociations();
 
-    bool m_DDE; // DDE enabled?
+        bool m_DDE; // DDE enabled?
 #ifdef __WXMSW__
-    bool m_Assocs; // associations check enabled
+        bool m_Assocs; // associations check enabled
 #endif
-    int m_BatchExitCode;
+        int m_BatchExitCode;
 
-    DECLARE_EVENT_TABLE()
+        wxString m_CrashReportFileName;
+
+
+        DECLARE_EVENT_TABLE()
 };
 
 DECLARE_APP(CodeBlocksApp);

@@ -10,22 +10,22 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-#include <wx/filename.h>
-#include <wx/intl.h>
-#include <wx/utils.h>
-#include <wx/filename.h>
-#include <wx/fs_zip.h>
-#include <wx/menu.h>
-#include <wx/xrc/xmlres.h>
+    #include <wx/filename.h>
+    #include <wx/intl.h>
+    #include <wx/utils.h>
+    #include <wx/filename.h>
+    #include <wx/fs_zip.h>
+    #include <wx/menu.h>
+    #include <wx/xrc/xmlres.h>
 
-#include "globals.h"
-#include "manager.h"
-#include "logmanager.h"
-#include "projectmanager.h"
-#include "logmanager.h"
-#include "compilerfactory.h"
-#include "cbproject.h"
-#include "cbworkspace.h"
+    #include "globals.h"
+    #include "manager.h"
+    #include "logmanager.h"
+    #include "projectmanager.h"
+    #include "logmanager.h"
+    #include "compilerfactory.h"
+    #include "cbproject.h"
+    #include "cbworkspace.h"
 #endif
 
 #include "projectsimporter.h"
@@ -48,7 +48,9 @@ ProjectsImporter::ProjectsImporter()
 {
     //ctor
     if (!Manager::LoadResource(_T("projectsimporter.zip")))
+    {
         NotifyMissingFile(_T("projectsimporter.zip"));
+    }
 }
 
 ProjectsImporter::~ProjectsImporter()
@@ -56,31 +58,45 @@ ProjectsImporter::~ProjectsImporter()
     //dtor
 }
 
-void ProjectsImporter::BuildMenu(wxMenuBar* menuBar)
+void ProjectsImporter::BuildMenu(wxMenuBar * menuBar)
 {
     if (!IsAttached() || !menuBar)
+    {
         return;
+    }
 
     std::unique_ptr <wxMenu> menu(Manager::Get()->LoadMenu("project_import_menu", false));
+
     if (!menu)
+    {
         return;
+    }
 
-    wxMenu* fileMenu = menuBar->GetMenu(0);
+    wxMenu * fileMenu = menuBar->GetMenu(0);
+
     if (!fileMenu)
+    {
         return;
+    }
 
-    wxMenuItem* importMenuItem;
+    wxMenuItem * importMenuItem;
     const int importMenuId = fileMenu->FindItem(_("&Import project"));
+
     if (importMenuId == wxNOT_FOUND)
     {
         wxMenuItemList menuItems = fileMenu->GetMenuItems();
         const int menuId = fileMenu->FindItem(_("R&ecent files"));
-        wxMenuItem* recentFileItem = fileMenu->FindItem(menuId);
+        wxMenuItem * recentFileItem = fileMenu->FindItem(menuId);
         int id = menuItems.IndexOf(recentFileItem);
+
         if (id == wxNOT_FOUND)
+        {
             id = 7;
+        }
         else
+        {
             ++id;
+        }
 
         // The position is hard-coded to "Recent Files" menu. Please adjust it if necessary
         importMenuItem = fileMenu->Insert(++id, wxNewId(), _("&Import project"), new wxMenu());
@@ -92,110 +108,140 @@ void ProjectsImporter::BuildMenu(wxMenuBar* menuBar)
     }
 
     if (!importMenuItem)
+    {
         return;
+    }
 
     if (!importMenuItem->IsSubMenu())
+    {
         importMenuItem->SetSubMenu(new wxMenu());
+    }
 
-    wxMenu* importSubMenu = importMenuItem->GetSubMenu();
+    wxMenu * importSubMenu = importMenuItem->GetSubMenu();
+
     if (importSubMenu->GetMenuItemCount())
+    {
         importSubMenu->AppendSeparator();
+    }
 
     wxMenuItemList m_List = menu->GetMenuItems();
+
     for (wxMenuItemList::iterator it = m_List.begin(); it != m_List.end(); ++it)
+    {
         importSubMenu->Append(menu->Remove(*it));
+    }
 }
 
-bool ProjectsImporter::CanHandleFile(const wxString& filename) const
+bool ProjectsImporter::CanHandleFile(const wxString & filename) const
 {
     const FileType ft = FileTypeOf(filename);
-    return (   ft == ftDevCppProject
-               || ft == ftMSVC6Project
-               || ft == ftMSVC6Workspace
-               || ft == ftMSVC7Project
-               || ft == ftMSVC7Workspace
-               || ft == ftMSVC10Project );
+    return (ft == ftDevCppProject
+            || ft == ftMSVC6Project
+            || ft == ftMSVC6Workspace
+            || ft == ftMSVC7Project
+            || ft == ftMSVC7Workspace
+            || ft == ftMSVC10Project);
 }
 
-int ProjectsImporter::OpenFile(const wxString& filename)
+int ProjectsImporter::OpenFile(const wxString & filename)
 {
     const FileType ft = FileTypeOf(filename);
+
     switch (ft)
     {
-    case ftDevCppProject: // fallthrough
-    case ftMSVC6Project:  // fallthrough
-    case ftMSVC7Project:  // fallthrough
-    case ftMSVC10Project: // fallthrough
-    case ftXcode1Project: // fallthrough
-    case ftXcode2Project: // fallthrough
-        return LoadProject(filename);
-        break;
+        case ftDevCppProject: // fallthrough
+        case ftMSVC6Project:  // fallthrough
+        case ftMSVC7Project:  // fallthrough
+        case ftMSVC10Project: // fallthrough
+        case ftXcode1Project: // fallthrough
+        case ftXcode2Project: // fallthrough
+            return LoadProject(filename);
+            break;
 
-    case ftMSVC6Workspace: // fallthrough
-    case ftMSVC7Workspace: // fallthrough
-        return LoadWorkspace(filename);
-        break;
+        case ftMSVC6Workspace: // fallthrough
+        case ftMSVC7Workspace: // fallthrough
+            return LoadWorkspace(filename);
+            break;
 
-    default:
-        cbMessageBox(_("Failed to import file: unsupported"), _("Error"), wxICON_ERROR);
-        return -1;
+        default:
+            cbMessageBox(_("Failed to import file: unsupported"), _("Error"), wxICON_ERROR);
+            return -1;
     }
+
     return -1;
 }
 
-int ProjectsImporter::LoadProject(const wxString& filename)
+int ProjectsImporter::LoadProject(const wxString & filename)
 {
     wxFileName the_file(filename);
-    if (!the_file.FileExists())
-        return -1;
-    the_file.SetExt(FileFilters::CODEBLOCKS_EXT);
 
-    cbProject* prj = Manager::Get()->GetProjectManager()->NewProject(the_file.GetFullPath());
-    if (!prj)
+    if (!the_file.FileExists())
+    {
         return -1;
+    }
+
+    the_file.SetExt(FileFilters::CODEBLOCKS_EXT);
+    cbProject * prj = Manager::Get()->GetProjectManager()->NewProject(the_file.GetFullPath());
+
+    if (!prj)
+    {
+        return -1;
+    }
 
     // Make a check whether the project exists in current workspace
     if (Manager::Get()->GetProjectManager()->BeginLoadingProject())
     {
         wxBusyCursor wait;
-
         Manager::Get()->GetLogManager()->Log(F(_("Importing %s: "), filename.wx_str()));
-        IBaseLoader* loader = nullptr;
+        IBaseLoader * loader = nullptr;
         FileType ft = FileTypeOf(filename);
+
         switch (ft)
         {
-        case ftDevCppProject:
-            loader = new DevCppLoader(prj);
-            break;
-        case ftMSVC6Project:
-            loader = new MSVCLoader(prj);
-            break;
-        case ftMSVC7Project:
-            loader = new MSVC7Loader(prj);
-            break;
-        case ftMSVC10Project:
-            loader = new MSVC10Loader(prj);
-            break;
-        case ftXcode1Project: /* placeholder, fallthrough (for now) */
-        case ftXcode2Project: /* placeholder, fallthrough (for now) */
-        default:
-            Manager::Get()->GetProjectManager()->EndLoadingProject(0);
-            cbMessageBox(_("Failed to import file: File type not supported."), _("Error"), wxICON_ERROR);
-            return -1;
+            case ftDevCppProject:
+                loader = new DevCppLoader(prj);
+                break;
+
+            case ftMSVC6Project:
+                loader = new MSVCLoader(prj);
+                break;
+
+            case ftMSVC7Project:
+                loader = new MSVC7Loader(prj);
+                break;
+
+            case ftMSVC10Project:
+                loader = new MSVC10Loader(prj);
+                break;
+
+            case ftXcode1Project: /* placeholder, fallthrough (for now) */
+            case ftXcode2Project: /* placeholder, fallthrough (for now) */
+            default:
+                Manager::Get()->GetProjectManager()->EndLoadingProject(0);
+                cbMessageBox(_("Failed to import file: File type not supported."), _("Error"), wxICON_ERROR);
+                return -1;
         }
 
         wxString compilerID;
+
         if (ImportersGlobals::UseDefaultCompiler)
+        {
             compilerID = CompilerFactory::GetDefaultCompilerID();
+        }
         else
         {
             // select compiler for the imported project
             // need to do it before actual import, because the importer might need
             // project's compiler information (like the object files extension etc).
-            Compiler* compiler = CompilerFactory::SelectCompilerUI(_("Select compiler for ") + wxFileName(filename).GetFullName());
+            Compiler * compiler = CompilerFactory::SelectCompilerUI(_("Select compiler for ") + wxFileName(filename).GetFullName());
+
             if (!compiler) // User hit Cancel.
             {
-                if (loader) delete loader;
+                if (loader)
+                {
+                    delete loader;
+                }
+
                 Manager::Get()->GetProjectManager()->EndLoadingProject(0);
                 Manager::Get()->GetProjectManager()->CloseProject(prj, true, false);
                 Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
@@ -204,8 +250,11 @@ int ProjectsImporter::LoadProject(const wxString& filename)
             }
 
             compilerID = compiler->GetID();
+
             if (compilerID.IsEmpty())
+            {
                 compilerID = CompilerFactory::GetDefaultCompilerID();
+            }
         }
 
         prj->SetCompilerID(compilerID);
@@ -215,14 +264,20 @@ int ProjectsImporter::LoadProject(const wxString& filename)
         {
             prj->CalculateCommonTopLevelPath();
             prj->Save(); // Save it now to avoid project file opening error
-
             Manager::Get()->GetProjectManager()->EndLoadingProject(prj);
+
             if (!Manager::Get()->GetProjectManager()->IsLoadingWorkspace())
+            {
                 Manager::Get()->GetProjectManager()->SetProject(prj);
+            }
         }
         else
         {
-            if (loader) delete loader;
+            if (loader)
+            {
+                delete loader;
+            }
+
             Manager::Get()->GetProjectManager()->EndLoadingProject(0);
             Manager::Get()->GetProjectManager()->CloseProject(prj, true, false);
             Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
@@ -230,7 +285,11 @@ int ProjectsImporter::LoadProject(const wxString& filename)
             return -1;
         }
 
-        if (loader) delete loader;
+        if (loader)
+        {
+            delete loader;
+        }
+
         Manager::Get()->GetProjectManager()->EndLoadingProject(prj);
         return prj ? 0 : -1;
     }
@@ -242,18 +301,24 @@ int ProjectsImporter::LoadProject(const wxString& filename)
     return -1;
 }
 
-int ProjectsImporter::LoadWorkspace(const wxString& filename)
+int ProjectsImporter::LoadWorkspace(const wxString & filename)
 {
     wxFileName the_file(filename);
+
     if (!the_file.FileExists())
+    {
         return -1;
+    }
 
     wxBusyCursor wait;
 
     if (!Manager::Get()->GetProjectManager()->BeginLoadingWorkspace())
+    {
         return -1;
+    }
 
-    cbWorkspace* wksp = Manager::Get()->GetProjectManager()->GetWorkspace();
+    cbWorkspace * wksp = Manager::Get()->GetProjectManager()->GetWorkspace();
+
     if (!wksp)
     {
         Manager::Get()->GetProjectManager()->EndLoadingWorkspace();
@@ -262,17 +327,20 @@ int ProjectsImporter::LoadWorkspace(const wxString& filename)
 
     Manager::Get()->GetLogManager()->Log(F(_("Importing %s: "), filename.wx_str()));
     FileType ft = FileTypeOf(filename);
-    IBaseWorkspaceLoader* pWsp = 0;
+    IBaseWorkspaceLoader * pWsp = 0;
+
     switch (ft)
     {
-    case ftMSVC6Workspace:
-        pWsp = new MSVCWorkspaceLoader;
-        break;
-    case ftMSVC7Workspace:
-        pWsp = new MSVC7WorkspaceLoader;
-        break;
-    default:
-        break;
+        case ftMSVC6Workspace:
+            pWsp = new MSVCWorkspaceLoader;
+            break;
+
+        case ftMSVC7Workspace:
+            pWsp = new MSVC7WorkspaceLoader;
+            break;
+
+        default:
+            break;
     }
 
     if (!pWsp)
@@ -283,18 +351,22 @@ int ProjectsImporter::LoadWorkspace(const wxString& filename)
     }
 
     wxString Title;
+
     if (pWsp->Open(filename, Title))
     {
         if (!Title.IsEmpty())
+        {
             wksp->SetTitle(Title);
+        }
 
         wksp->SetModified(true);
     }
     else
+    {
         cbMessageBox(_("Failed to import *any* projects from workspace file."), _("Error"), wxICON_ERROR);
+    }
 
     delete pWsp;
     Manager::Get()->GetProjectManager()->EndLoadingWorkspace();
-
     return 0;
 }

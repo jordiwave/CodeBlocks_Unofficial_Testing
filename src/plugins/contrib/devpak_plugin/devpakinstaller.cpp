@@ -38,11 +38,14 @@ void DevPakInstaller::CreateProgressDialog(int max)
 void DevPakInstaller::EndProgressDialog()
 {
     if (m_pDlg)
+    {
         m_pDlg->Destroy();
+    }
+
     m_pDlg = nullptr;
 }
 
-void DevPakInstaller::UpdateProgress(int val, const wxString& newtext)
+void DevPakInstaller::UpdateProgress(int val, const wxString & newtext)
 {
     if (m_pDlg)
     {
@@ -51,16 +54,16 @@ void DevPakInstaller::UpdateProgress(int val, const wxString& newtext)
     }
 }
 
-bool DevPakInstaller::Install(const wxString& name, const wxString& filename, const wxString& dir, wxArrayString* files)
+bool DevPakInstaller::Install(const wxString & name, const wxString & filename, const wxString & dir, wxArrayString * files)
 {
     CreateProgressDialog(4);
     m_Status.Clear();
-
     // Step 1: decompress
     UpdateProgress(0, _("Decompressing ") + filename);
     wxYield();
     wxString m_Status;
     wxString tmpfile = wxFileName::CreateTempFileName(_T("cb"));
+
     if (!Decompress(filename, tmpfile))
     {
         m_Status += _(" [Decompression failed]");
@@ -72,10 +75,11 @@ bool DevPakInstaller::Install(const wxString& name, const wxString& filename, co
     // Step 2: un-tar .DevPackage file
     UpdateProgress(1, _("Unpacking control-file"));
     wxYield();
-    TAR* t = new TAR(tmpfile.c_str());
-    TAR::Record* r = t->FindFile(_T("*.DevPackage"));
+    TAR * t = new TAR(tmpfile.c_str());
+    TAR::Record * r = t->FindFile(_T("*.DevPackage"));
     wxString controlFile = r->name;
     wxString status2;
+
     if (!r || !t->ExtractFile(r, dir, status2))
     {
         m_Status << _(" [Control file unpacking failed] - ");
@@ -89,6 +93,7 @@ bool DevPakInstaller::Install(const wxString& name, const wxString& filename, co
     // Step 3: un-tar
     UpdateProgress(2, _("Unpacking all files"));
     wxYield();
+
     if (!Untar(controlFile, tmpfile, dir, files))
     {
         m_Status += _(" [Unpacking failed]");
@@ -107,42 +112,56 @@ bool DevPakInstaller::Install(const wxString& name, const wxString& filename, co
     return true;
 }
 
-bool DevPakInstaller::Uninstall(const wxString& entry)
+bool DevPakInstaller::Uninstall(const wxString & entry)
 {
     m_Status.Clear();
-    IniParser* p = new IniParser;
+    IniParser * p = new IniParser;
     p->ParseFile(entry);
-
     int idx = p->FindGroupByName(_T("Files"), false);
+
     if (idx == -1)
     {
         m_Status << _("No [Files] section in ") << entry << _T('\n');
         return false;
     }
+
     wxArrayString pathlist;
     CreateProgressDialog(p->GetKeysCount(idx));
+
     for (int i = 0; i < p->GetKeysCount(idx); ++i)
     {
         wxString file = p->GetKeyName(idx, i);
         UpdateProgress(i, _("Removing: ") + file);
+
         if (!wxRemoveFile(file))
+        {
             m_Status << _("Can't remove ") << file << _T('\n');
+        }
         else
         {
             wxString path = wxPathOnly(file);
+
             while (path.Last() == _T('/') || path.Last() == _T('\\'))
+            {
                 path.RemoveLast();
+            }
+
             if (pathlist.Index(path) == wxNOT_FOUND)
+            {
                 pathlist.Add(path);
+            }
         }
     }
+
     EndProgressDialog();
     // remove dirs
     CreateProgressDialog(pathlist.GetCount());
+
     for (unsigned int i = 0; i < pathlist.GetCount(); ++i)
     {
         wxString path = pathlist[i];
         int pos = path.Find(_T('/'), true);
+
         while (pos != wxNOT_FOUND)
         {
             wxRmdir(path);
@@ -151,26 +170,34 @@ bool DevPakInstaller::Uninstall(const wxString& entry)
             pos = path.Find(_T('/'), true);
         }
     }
+
     EndProgressDialog();
     delete p;
+
     if (!wxRemoveFile(entry))
+    {
         m_Status << _("Can't remove ") << entry << _T('\n');
+    }
 
     return true; //m_Status.IsEmpty();
 }
 
-void DevPakInstaller::RemoveControlFile(const wxString& filename)
+void DevPakInstaller::RemoveControlFile(const wxString & filename)
 {
     if (filename.IsEmpty())
+    {
         return;
+    }
+
     wxRemoveFile(filename);
     wxRmdir(wxFileName(filename).GetPath()); // deletes it if non-empty
 }
 
-bool DevPakInstaller::Decompress(const wxString& filename, const wxString& tmpfile)
+bool DevPakInstaller::Decompress(const wxString & filename, const wxString & tmpfile)
 {
     // open file
-    FILE* f = fopen(filename.mb_str(), "rb");
+    FILE * f = fopen(filename.mb_str(), "rb");
+
     if (!f)
     {
         m_Status = _("Error opening input file!");
@@ -179,7 +206,8 @@ bool DevPakInstaller::Decompress(const wxString& filename, const wxString& tmpfi
 
     // open BZIP2 stream
     int bzerror;
-    BZFILE* bz = BZ2_bzReadOpen(&bzerror, f, 0, 0, nullptr, 0);
+    BZFILE * bz = BZ2_bzReadOpen(&bzerror, f, 0, 0, nullptr, 0);
+
     if (!bz || bzerror != BZ_OK)
     {
         m_Status = _("Can't read compressed stream!");
@@ -188,7 +216,8 @@ bool DevPakInstaller::Decompress(const wxString& filename, const wxString& tmpfi
     }
 
     // open output file
-    FILE* fo = fopen(tmpfile.mb_str(), "wb");
+    FILE * fo = fopen(tmpfile.mb_str(), "wb");
+
     if (!fo)
     {
         m_Status = _("Error opening output file!");
@@ -198,9 +227,11 @@ bool DevPakInstaller::Decompress(const wxString& filename, const wxString& tmpfi
 
     // read stream writing to uncompressed file
     char buffer[2048];
+
     while (bzerror != BZ_STREAM_END)
     {
         int read_bytes = BZ2_bzRead(&bzerror, bz, buffer, 2048);
+
         if (bzerror != BZ_OK && bzerror != BZ_STREAM_END)
         {
             m_Status = _("Error reading from stream!");
@@ -209,18 +240,17 @@ bool DevPakInstaller::Decompress(const wxString& filename, const wxString& tmpfi
             fclose(f);
             return false;
         }
+
         fwrite(buffer, read_bytes, 1, fo);
     }
 
     BZ2_bzReadClose(&bzerror, bz);
-
-
     fclose(fo);
     fclose(f);
     return true;
 }
 
-bool DevPakInstaller::Untar(const wxString& controlFile, const wxString& filename, const wxString& dirname, wxArrayString* files)
+bool DevPakInstaller::Untar(const wxString & controlFile, const wxString & filename, const wxString & dirname, wxArrayString * files)
 {
     TAR t(filename.c_str());
     wxString tmpControlFile;
@@ -230,6 +260,7 @@ bool DevPakInstaller::Untar(const wxString& controlFile, const wxString& filenam
         IniParser ini;
         ini.ParseFile(dirname + _T("/") + controlFile);
         int grp = ini.FindGroupByName(_T("Files"));
+
         for (int i = 0; grp != -1 && i < ini.GetKeysCount(grp); ++i)
         {
             t.AddReplacer(ini.GetKeyName(grp, i), ini.GetKeyValue(grp, i));
@@ -240,6 +271,7 @@ bool DevPakInstaller::Untar(const wxString& controlFile, const wxString& filenam
         // Test/Allegro.DevPackage (everything is below Test/),
         // add replacer for Test/
         int pos = controlFile.Last('/');
+
         if (pos != wxNOT_FOUND)
         {
             wxString replacer = controlFile.SubString(0, pos);
@@ -250,9 +282,13 @@ bool DevPakInstaller::Untar(const wxString& controlFile, const wxString& filenam
 
         // add replacers (with user's permission) for DLLs
 #ifdef __WXMSW__
-        TAR::Record* r = t.FindFile(_T("*.dll"));
+        TAR::Record * r = t.FindFile(_T("*.dll"));
+
         if (!r)
+        {
             r = t.FindFile(_T("*.DLL"));
+        }
+
         if (r)
         {
             if (wxMessageBox(_("This package contains some DLLs.\nDo you want to install them system-wide (YES recommended)?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxYES)
@@ -261,13 +297,19 @@ bool DevPakInstaller::Untar(const wxString& controlFile, const wxString& filenam
                 fname.MakeRelativeTo(dirname);
                 t.AddReplacer(_T("dll/"), fname.GetFullPath());
             }
+
             wxYield();
         }
+
 #endif
     }
 
     bool ret = t.ExtractAll(dirname.c_str(), m_Status, files);
+
     if (!tmpControlFile.IsEmpty())
+    {
         RemoveControlFile(dirname + _T("/") + tmpControlFile);
+    }
+
     return ret;
 }

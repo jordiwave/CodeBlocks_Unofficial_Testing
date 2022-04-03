@@ -15,14 +15,14 @@
 /// Structure describing core fonts (For internal use only)
 typedef struct _wxPdfCjkFontDesc
 {
-    const wxStringCharType* family;             ///< font family
-    const wxStringCharType* name;               ///< font name
-    const wxStringCharType* encoding;           ///< font encoding
-    const wxStringCharType* ordering;           ///< registry ordering
-    const wxStringCharType* supplement;         ///< registry supplement
-    const wxStringCharType* cmap;               ///< font cmap
-    short*                  cwArray;            ///< array of character widths
-    const wxStringCharType* bbox;               ///< bounding box
+    const wxStringCharType * family;            ///< font family
+    const wxStringCharType * name;              ///< font name
+    const wxStringCharType * encoding;          ///< font encoding
+    const wxStringCharType * ordering;          ///< registry ordering
+    const wxStringCharType * supplement;        ///< registry supplement
+    const wxStringCharType * cmap;              ///< font cmap
+    short         *         cwArray;            ///< array of character widths
+    const wxStringCharType * bbox;              ///< bounding box
     int                     ascent;             ///< ascender
     int                     descent;            ///< descender
     int                     capHeight;          ///< height of capital characters

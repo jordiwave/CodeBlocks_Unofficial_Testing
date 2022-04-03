@@ -30,12 +30,12 @@ CString CVariable::GetTypeName(void) const
     return "";
 }
 
-CString& CVariable::GetName(void)
+CString & CVariable::GetName(void)
 {
     return m_Name;
 }
 
-void CVariable::SetName(const CString& Name)
+void CVariable::SetName(const CString & Name)
 {
     m_Name = Name;
 }
@@ -48,7 +48,7 @@ double CVariable::GetFloat(void) const
 void CVariable::SetFloat(const double Value)
 {
     (void)Value;
-// do nothing //
+    // do nothing //
 }
 
 int CVariable::GetInteger(void) const
@@ -59,7 +59,7 @@ int CVariable::GetInteger(void) const
 void CVariable::SetInteger(const int Value)
 {
     (void)Value;
-// do nothing //
+    // do nothing //
 }
 
 bool CVariable::GetBoolean(void) const
@@ -70,7 +70,7 @@ bool CVariable::GetBoolean(void) const
 void CVariable::SetBoolean(const bool Value)
 {
     (void)Value;
-// do nothing //
+    // do nothing //
 }
 
 CString CVariable::GetString(void) const
@@ -78,10 +78,10 @@ CString CVariable::GetString(void) const
     return CString();
 }
 
-void CVariable::SetString(const CString& Value)
+void CVariable::SetString(const CString & Value)
 {
     (void)Value;
-// do nothing //
+    // do nothing //
 }
 
 char CVariable::GetChar(void) const
@@ -92,12 +92,12 @@ char CVariable::GetChar(void) const
 void CVariable::SetChar(const char Value)
 {
     (void)Value;
-// do nothing //
+    // do nothing //
 }
 
-void CVariable::Print(std::ostream& out)
+void CVariable::Print(std::ostream & out)
 {
-    out<<m_Name.GetCString()<<"="<<GetString().GetCString();
+    out << m_Name.GetCString() << "=" << GetString().GetCString();
 }
 
 CVariable::CVariable(void)
@@ -105,14 +105,14 @@ CVariable::CVariable(void)
     m_Name = "CVariable";
 }
 
-CVariable::CVariable(const CString& Name)
+CVariable::CVariable(const CString & Name)
 {
     m_Name = Name;
 }
 
 CVariable::~CVariable(void)
 {
-// do nothing //
+    // do nothing //
 }
 
 //------------------------------------------------------------------------------
@@ -162,7 +162,7 @@ CString CIntegerVariable::GetString(void) const
     return IntToStr(m_Value);
 }
 
-void CIntegerVariable::SetString(const CString& Value)
+void CIntegerVariable::SetString(const CString & Value)
 {
     m_Value = StringToInteger(Value);
 }
@@ -177,45 +177,45 @@ void CIntegerVariable::SetChar(const char Value)
     m_Value = CharToInt(Value);
 }
 
-int CIntegerVariable::operator=(const CIntegerVariable& Variable)
+int CIntegerVariable::operator=(const CIntegerVariable & Variable)
 {
     return Variable.GetInteger();
 }
 
-CIntegerVariable& CIntegerVariable::operator =(const double Value)
+CIntegerVariable & CIntegerVariable::operator =(const double Value)
 {
     SetFloat(Value);
     return *this;
 }
 
-CIntegerVariable& CIntegerVariable::operator =(const int Value)
+CIntegerVariable & CIntegerVariable::operator =(const int Value)
 {
     SetInteger(Value);
     return *this;
 }
 
-CIntegerVariable& CIntegerVariable::operator =(const bool Value)
+CIntegerVariable & CIntegerVariable::operator =(const bool Value)
 {
     SetBoolean(Value);
     return *this;
 }
 
-CIntegerVariable& CIntegerVariable::operator =(const CString& Value)
+CIntegerVariable & CIntegerVariable::operator =(const CString & Value)
 {
     SetString(Value);
     return *this;
 }
 
-CIntegerVariable& CIntegerVariable::operator =(const char Value)
+CIntegerVariable & CIntegerVariable::operator =(const char Value)
 {
     SetChar(Value);
     return *this;
 }
 
-CIntegerVariable::CIntegerVariable(const CString& Name,const int Value)
-    :CVariable(Name)
+CIntegerVariable::CIntegerVariable(const CString & Name, const int Value)
+    : CVariable(Name)
 {
-    m_Value=Value;
+    m_Value = Value;
 }
 
 //------------------------------------------------------------------------------
@@ -237,7 +237,7 @@ double CFloatVariable::GetFloat(void) const
 
 void CFloatVariable::SetFloat(const double Value)
 {
-    m_Value=Value;
+    m_Value = Value;
 }
 
 int CFloatVariable::GetInteger(void) const
@@ -265,9 +265,9 @@ CString CFloatVariable::GetString(void) const
     return FloatToStr(m_Value);
 }
 
-void CFloatVariable::SetString(const CString& Value)
+void CFloatVariable::SetString(const CString & Value)
 {
-    m_Value=StringToFloat(Value);
+    m_Value = StringToFloat(Value);
 }
 
 char CFloatVariable::GetChar(void) const
@@ -280,43 +280,43 @@ void CFloatVariable::SetChar(const char Value)
     m_Value = CharToFloat(Value);
 }
 
-double CFloatVariable::operator=(const CFloatVariable& Variable)
+double CFloatVariable::operator=(const CFloatVariable & Variable)
 {
     return Variable.GetFloat();
 }
 
-CFloatVariable& CFloatVariable::operator =(const double Value)
+CFloatVariable & CFloatVariable::operator =(const double Value)
 {
     SetFloat(Value);
     return *this;
 }
 
-CFloatVariable& CFloatVariable::operator =(const int Value)
+CFloatVariable & CFloatVariable::operator =(const int Value)
 {
     SetInteger(Value);
     return *this;
 }
 
-CFloatVariable& CFloatVariable::operator =(const bool Value)
+CFloatVariable & CFloatVariable::operator =(const bool Value)
 {
     SetBoolean(Value);
     return *this;
 }
 
-CFloatVariable& CFloatVariable::operator =(const CString& Value)
+CFloatVariable & CFloatVariable::operator =(const CString & Value)
 {
     SetString(Value);
     return *this;
 }
 
-CFloatVariable& CFloatVariable::operator =(const char Value)
+CFloatVariable & CFloatVariable::operator =(const char Value)
 {
     SetChar(Value);
     return *this;
 }
 
-CFloatVariable::CFloatVariable(const CString& Name,const double Value)
-    :CVariable(Name)
+CFloatVariable::CFloatVariable(const CString & Name, const double Value)
+    : CVariable(Name)
 {
     m_Value = Value;
 }
@@ -368,7 +368,7 @@ CString CBooleanVariable::GetString(void) const
     return BoolToStr(m_Value);
 }
 
-void CBooleanVariable::SetString(const CString& Value)
+void CBooleanVariable::SetString(const CString & Value)
 {
     m_Value = StringToBoolean(Value);
 }
@@ -383,43 +383,43 @@ void CBooleanVariable::SetChar(const char Value)
     m_Value = CharToBool(Value);
 }
 
-bool CBooleanVariable::operator=(const CBooleanVariable& Variable)
+bool CBooleanVariable::operator=(const CBooleanVariable & Variable)
 {
     return Variable.GetBoolean();
 }
 
-CBooleanVariable& CBooleanVariable::operator =(const double Value)
+CBooleanVariable & CBooleanVariable::operator =(const double Value)
 {
     SetFloat(Value);
     return *this;
 }
 
-CBooleanVariable& CBooleanVariable::operator =(const int Value)
+CBooleanVariable & CBooleanVariable::operator =(const int Value)
 {
     SetInteger(Value);
     return *this;
 }
 
-CBooleanVariable& CBooleanVariable::operator =(const bool Value)
+CBooleanVariable & CBooleanVariable::operator =(const bool Value)
 {
     SetBoolean(Value);
     return *this;
 }
 
-CBooleanVariable& CBooleanVariable::operator =(const CString& Value)
+CBooleanVariable & CBooleanVariable::operator =(const CString & Value)
 {
     SetString(Value);
     return *this;
 }
 
-CBooleanVariable& CBooleanVariable::operator =(const char Value)
+CBooleanVariable & CBooleanVariable::operator =(const char Value)
 {
     SetChar(Value);
     return *this;
 }
 
-CBooleanVariable::CBooleanVariable(const CString& Name,const bool Value)
-    :CVariable(Name)
+CBooleanVariable::CBooleanVariable(const CString & Name, const bool Value)
+    : CVariable(Name)
 {
     m_Value = Value;
 }
@@ -483,7 +483,7 @@ CString CStringVariable::GetString(void) const
     return m_Value;
 }
 
-void CStringVariable::SetString(const CString& Value)
+void CStringVariable::SetString(const CString & Value)
 {
     m_Value = Value;
 }
@@ -498,43 +498,43 @@ void CStringVariable::SetChar(const char Value)
     m_Value = CharToString(Value);
 }
 
-CString CStringVariable::operator=(const CStringVariable& Variable)
+CString CStringVariable::operator=(const CStringVariable & Variable)
 {
     return Variable.GetString();
 }
 
-CStringVariable& CStringVariable::operator =(const double Value)
+CStringVariable & CStringVariable::operator =(const double Value)
 {
     SetFloat(Value);
     return *this;
 }
 
-CStringVariable& CStringVariable::operator =(const int Value)
+CStringVariable & CStringVariable::operator =(const int Value)
 {
     SetInteger(Value);
     return *this;
 }
 
-CStringVariable& CStringVariable::operator =(const bool Value)
+CStringVariable & CStringVariable::operator =(const bool Value)
 {
     SetBoolean(Value);
     return *this;
 }
 
-CStringVariable& CStringVariable::operator =(const CString& Value)
+CStringVariable & CStringVariable::operator =(const CString & Value)
 {
     SetString(Value);
     return *this;
 }
 
-CStringVariable& CStringVariable::operator =(const char Value)
+CStringVariable & CStringVariable::operator =(const char Value)
 {
     SetChar(Value);
     return *this;
 }
 
-CStringVariable::CStringVariable(const CString& Name,const CString Value)
-    :CVariable(Name)
+CStringVariable::CStringVariable(const CString & Name, const CString Value)
+    : CVariable(Name)
 {
     m_Value = Value;
 }
@@ -586,7 +586,7 @@ CString CCharVariable::GetString(void) const
     return CharToStr(m_Value);
 }
 
-void CCharVariable::SetString(const CString& Value)
+void CCharVariable::SetString(const CString & Value)
 {
     m_Value = StringToChar(Value);
 }
@@ -598,46 +598,46 @@ char CCharVariable::GetChar(void) const
 
 void CCharVariable::SetChar(const char Value)
 {
-    m_Value=Value;
+    m_Value = Value;
 }
 
-char CCharVariable::operator=(const CCharVariable& Variable)
+char CCharVariable::operator=(const CCharVariable & Variable)
 {
     return Variable.GetChar();
 }
 
-CCharVariable& CCharVariable::operator =(const double Value)
+CCharVariable & CCharVariable::operator =(const double Value)
 {
     SetFloat(Value);
     return *this;
 }
 
-CCharVariable& CCharVariable::operator =(const int Value)
+CCharVariable & CCharVariable::operator =(const int Value)
 {
     SetInteger(Value);
     return *this;
 }
 
-CCharVariable& CCharVariable::operator =(const bool Value)
+CCharVariable & CCharVariable::operator =(const bool Value)
 {
     SetBoolean(Value);
     return *this;
 }
 
-CCharVariable& CCharVariable::operator =(const CString& Value)
+CCharVariable & CCharVariable::operator =(const CString & Value)
 {
     SetString(Value);
     return *this;
 }
 
-CCharVariable& CCharVariable::operator =(const char Value)
+CCharVariable & CCharVariable::operator =(const char Value)
 {
     SetChar(Value);
     return *this;
 }
 
-CCharVariable::CCharVariable(const CString& Name,const char Value)
-    :CVariable(Name)
+CCharVariable::CCharVariable(const CString & Name, const char Value)
+    : CVariable(Name)
 {
     m_Value = Value;
 }

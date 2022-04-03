@@ -36,101 +36,101 @@
  */
 class FileContentDisk: public FileContentBase
 {
-public:
+    public:
 
-    /** \brief Ctor */
-    FileContentDisk();
+        /** \brief Ctor */
+        FileContentDisk();
 
-    /** \brief Dctor */
-    virtual ~FileContentDisk();
+        /** \brief Dctor */
+        virtual ~FileContentDisk();
 
-    /** \brief Reading the data from the file */
-    virtual bool ReadFile( const wxString& fileName );
+        /** \brief Reading the data from the file */
+        virtual bool ReadFile(const wxString & fileName);
 
-    /** \brief Writing the data to the file */
-    virtual bool WriteFile( const wxString& fileName );
+        /** \brief Writing the data to the file */
+        virtual bool WriteFile(const wxString & fileName);
 
-    /** \brief Getting size of the content */
-    virtual OffsetT GetSize();
+        /** \brief Getting size of the content */
+        virtual OffsetT GetSize();
 
-    /** \brief Reading some part of data */
-    virtual OffsetT Read( void* buff, OffsetT position, OffsetT length );
+        /** \brief Reading some part of data */
+        virtual OffsetT Read(void * buff, OffsetT position, OffsetT length);
 
-    /** \brief Return collection of tests for this class */
-    static TestCasesBase& GetTests();
+        /** \brief Return collection of tests for this class */
+        static TestCasesBase & GetTests();
 
-    class TestData;
-
-
-protected:
-
-    /** \brief Create modification object for change operation */
-    virtual ModificationData* BuildChangeModification( OffsetT position, OffsetT length, const void* data = 0 );
-
-    /** \brief Create modification object for data add operation */
-    virtual ModificationData* BuildAddModification( OffsetT position, OffsetT length, const void* data = 0 );
-
-    /** \brief Create modification object for data remove operation */
-    virtual ModificationData* BuildRemoveModification( OffsetT position, OffsetT length );
-
-    /** \brief Set given block of data */
-    void SetBlock( const char* data, OffsetT pos, OffsetT lengthBefore, OffsetT lengthAfter );
+        class TestData;
 
 
-    /** \brief Class keeping informations about one data block */
-    struct DataBlock
-    {
-        OffsetT             start;      ///< \brief Block's start
-        OffsetT             fileStart;  ///< \brief Start position of this block in file
-        OffsetT             size;       ///< \brief Block's size
-        std::vector< char > data;       ///< \brief Block's data, empty vector means that this block is from file
+    protected:
 
-        bool IsFromDisk()
+        /** \brief Create modification object for change operation */
+        virtual ModificationData * BuildChangeModification(OffsetT position, OffsetT length, const void * data = 0);
+
+        /** \brief Create modification object for data add operation */
+        virtual ModificationData * BuildAddModification(OffsetT position, OffsetT length, const void * data = 0);
+
+        /** \brief Create modification object for data remove operation */
+        virtual ModificationData * BuildRemoveModification(OffsetT position, OffsetT length);
+
+        /** \brief Set given block of data */
+        void SetBlock(const char * data, OffsetT pos, OffsetT lengthBefore, OffsetT lengthAfter);
+
+
+        /** \brief Class keeping informations about one data block */
+        struct DataBlock
         {
-            return data.empty();
-        }
-    };
+            OffsetT             start;      ///< \brief Block's start
+            OffsetT             fileStart;  ///< \brief Start position of this block in file
+            OffsetT             size;       ///< \brief Block's size
+            std::vector< char > data;       ///< \brief Block's data, empty vector means that this block is from file
+
+            bool IsFromDisk()
+            {
+                return data.empty();
+            }
+        };
 
 
-    /** \brief Util routine used to add new data blocks */
-    DataBlock* InsertNewBlock( size_t blockIndex, OffsetT position );
+        /** \brief Util routine used to add new data blocks */
+        DataBlock * InsertNewBlock(size_t blockIndex, OffsetT position);
 
-    class DiskModificationData;
+        class DiskModificationData;
 
-    wxString                  m_FileName;    ///< \brief Name of opened file
-    wxFile                    m_File;        ///< \brief File used as disk source
-    std::vector< DataBlock* > m_Contents;    ///< \brief Contents of the data in form of blocks sorted by start offsets
-    bool                      m_TestMode;    ///< \brief Flag indicating that we're running internal tests
+        wxString                  m_FileName;    ///< \brief Name of opened file
+        wxFile                    m_File;        ///< \brief File used as disk source
+        std::vector< DataBlock * > m_Contents;   ///< \brief Contents of the data in form of blocks sorted by start offsets
+        bool                      m_TestMode;    ///< \brief Flag indicating that we're running internal tests
 
-    /** \brief Delete all data blocks */
-    void ClearBlocks();
+        /** \brief Delete all data blocks */
+        void ClearBlocks();
 
-    /** \brief Find index of block containing given data offset */
-    inline size_t FindBlock( OffsetT offset );
+        /** \brief Find index of block containing given data offset */
+        inline size_t FindBlock(OffsetT offset);
 
-    /** \brief Try to merge some blocks lying next to each other */
-    inline void MergeBlocks( size_t startPosition );
+        /** \brief Try to merge some blocks lying next to each other */
+        inline void MergeBlocks(size_t startPosition);
 
-    /** \brief Test buffers for damages made by bugs */
-    inline void ConsistencyCheck();
+        /** \brief Test buffers for damages made by bugs */
+        inline void ConsistencyCheck();
 
-    /** \brief Write contents to disk using the easiest method */
-    bool WriteFileEasiest( );
+        /** \brief Write contents to disk using the easiest method */
+        bool WriteFileEasiest();
 
-    /** \brief Write contents to disk without using temporary files */
-    bool WriteFileOnDisk( );
+        /** \brief Write contents to disk without using temporary files */
+        bool WriteFileOnDisk();
 
-    /** \brief Write contents to disk using temporary file */
-    bool WriteFileTemporary( );
+        /** \brief Write contents to disk using temporary file */
+        bool WriteFileTemporary();
 
-    /** \brief Write to totally different file */
-    bool WriteToDifferentFile( const wxString& fileName );
+        /** \brief Write to totally different file */
+        bool WriteToDifferentFile(const wxString & fileName);
 
-    /** \brief Dump the content to given wxFile file */
-    bool WriteToFile( wxFile& file );
+        /** \brief Dump the content to given wxFile file */
+        bool WriteToFile(wxFile & file);
 
-    /** \brief Reset m_Content blocks to contain data from file only */
-    void ResetBlocks();
+        /** \brief Reset m_Content blocks to contain data from file only */
+        void ResetBlocks();
 
 };
 

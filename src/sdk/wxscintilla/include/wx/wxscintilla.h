@@ -41,15 +41,15 @@
 /* C::B begin */
 #include <wx/scrolbar.h>
 #if wxCHECK_VERSION(3, 0, 0)
-#include <wx/versioninfo.h>
+    #include <wx/versioninfo.h>
 #endif
 
 #ifdef WXMAKINGDLL_SCI
-#define WXDLLIMPEXP_SCI WXEXPORT
+    #define WXDLLIMPEXP_SCI WXEXPORT
 #elif defined(WXUSINGDLL_SCI) || defined(WXUSINGDLL)
-#define WXDLLIMPEXP_SCI WXIMPORT
+    #define WXDLLIMPEXP_SCI WXIMPORT
 #else // not making nor using DLL
-#define WXDLLIMPEXP_SCI
+    #define WXDLLIMPEXP_SCI
 #endif
 /* C::B end */
 
@@ -57,11 +57,11 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 
 // SWIG can't handle "#if" type of conditionals, only "#ifdef"
 #ifdef SWIG
-#define SCI_USE_DND 1
+    #define SCI_USE_DND 1
 #else
-#if wxUSE_DRAG_AND_DROP
-#define SCI_USE_DND 1
-#endif
+    #if wxUSE_DRAG_AND_DROP
+        #define SCI_USE_DND 1
+    #endif
 #endif
 
 //----------------------------------------------------------------------
@@ -2511,7 +2511,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #if defined(__clang__) || wxCHECK_GCC_VERSION(4, 5)
 #define wxSCI_STRINGIFY(X) #X
 #define wxSCI_DEPRECATED_MACRO_VALUE(value,msg) \
-        _Pragma(wxSCI_STRINGIFY(GCC warning msg)) value
+    _Pragma(wxSCI_STRINGIFY(GCC warning msg)) value
 #else
 #define wxSCI_DEPRECATED_MACRO_VALUE(value,msg) value
 #endif
@@ -2841,13 +2841,13 @@ class  WordList;
 
 #ifdef SCI_NAMESPACE
 #ifndef SCI_NAMESPACE_PREFIX
-#define SCI_NAMESPACE_PREFIX( x ) Scintilla::x
+    #define SCI_NAMESPACE_PREFIX( x ) Scintilla::x
 #endif
 namespace Scintilla
 {
 #else
 #ifndef SCI_NAMESPACE_PREFIX
-#define SCI_NAMESPACE_PREFIX( x ) x
+    #define SCI_NAMESPACE_PREFIX( x ) x
 #endif
 #endif
 struct SCNotification;
@@ -2856,2594 +2856,2605 @@ struct SCNotification;
 #endif
 
 #ifndef SWIG
-extern WXDLLIMPEXP_SCI const wxChar wxSCINameStr[];
-class  WXDLLIMPEXP_SCI wxScintilla;
-class  WXDLLIMPEXP_SCI wxScintillaEvent;
+    extern WXDLLIMPEXP_SCI const wxChar wxSCINameStr[];
+    class  WXDLLIMPEXP_SCI wxScintilla;
+    class  WXDLLIMPEXP_SCI wxScintillaEvent;
 #endif
 
 //----------------------------------------------------------------------
 
 class WXDLLIMPEXP_SCI wxScintilla : public wxControl
 {
-public:
+    public:
 
 #ifdef SWIG
-    %pythonAppend wxScintilla   "self._setOORInfo(self)"
-    %pythonAppend wxScintilla() ""
+        % pythonAppend wxScintilla   "self._setOORInfo(self)"
+        % pythonAppend wxScintilla() ""
 
-    wxScintilla (wxWindow *parent, wxWindowID id=wxID_ANY,
-                 const wxPoint& pos = wxDefaultPosition,
-                 const wxSize& size = wxDefaultSize, long style = 0,
-                 const wxString& name = wxPySCINameStr);
-    %RenameCtor(PreScintilla, wxScintilla());
+        wxScintilla(wxWindow * parent, wxWindowID id = wxID_ANY,
+                    const wxPoint & pos = wxDefaultPosition,
+                    const wxSize & size = wxDefaultSize, long style = 0,
+                    const wxString & name = wxPySCINameStr);
+        % RenameCtor(PreScintilla, wxScintilla());
 
 #else
-    wxScintilla (wxWindow *parent, wxWindowID id=wxID_ANY,
-                 const wxPoint& pos = wxDefaultPosition,
-                 const wxSize& size = wxDefaultSize, long style = 0,
-                 const wxString& name = wxSCINameStr);
-    wxScintilla()
-    {
-        m_swx = NULL;
-    }
-    ~wxScintilla();
+        wxScintilla(wxWindow * parent, wxWindowID id = wxID_ANY,
+                    const wxPoint & pos = wxDefaultPosition,
+                    const wxSize & size = wxDefaultSize, long style = 0,
+                    const wxString & name = wxSCINameStr);
+        wxScintilla()
+        {
+            m_swx = NULL;
+        }
+        ~wxScintilla();
 
 #endif
 
-    bool Create(wxWindow *parent, wxWindowID id=wxID_ANY,
-                const wxPoint& pos = wxDefaultPosition,
-                const wxSize& size = wxDefaultSize, long style = 0,
-                const wxString& name = wxSCINameStr);
+        bool Create(wxWindow * parent, wxWindowID id = wxID_ANY,
+                    const wxPoint & pos = wxDefaultPosition,
+                    const wxSize & size = wxDefaultSize, long style = 0,
+                    const wxString & name = wxSCINameStr);
 
 
-    //----------------------------------------------------------------------
-    // Generated method declaration section {{{
+        //----------------------------------------------------------------------
+        // Generated method declaration section {{{
 
 
-    // Add text to the document at current position.
-    void AddText(const wxString& text);
+        // Add text to the document at current position.
+        void AddText(const wxString & text);
 
-    // Add array of cells to document.
-    void AddStyledText(const wxMemoryBuffer& data);
+        // Add array of cells to document.
+        void AddStyledText(const wxMemoryBuffer & data);
 
-    // Insert string at a position.
-    void InsertText(int pos, const wxString& text);
+        // Insert string at a position.
+        void InsertText(int pos, const wxString & text);
 
-    // Change the text that is being inserted in response to wxSCI_MOD_INSERTCHECK
-    void ChangeInsertion(int length, const wxString& text);
+        // Change the text that is being inserted in response to wxSCI_MOD_INSERTCHECK
+        void ChangeInsertion(int length, const wxString & text);
 
-    // Delete all text in the document.
-    void ClearAll();
+        // Delete all text in the document.
+        void ClearAll();
 
-    // Delete a range of text in the document.
-    void DeleteRange(int start, int lengthDelete);
+        // Delete a range of text in the document.
+        void DeleteRange(int start, int lengthDelete);
 
-    // Set all style bytes to 0, remove all folding information.
-    void ClearDocumentStyle();
+        // Set all style bytes to 0, remove all folding information.
+        void ClearDocumentStyle();
 
-    // Returns the number of bytes in the document.
-    int GetLength() const;
+        // Returns the number of bytes in the document.
+        int GetLength() const;
 
-    // Returns the character byte at the position.
-    int GetCharAt(int pos) const;
+        // Returns the character byte at the position.
+        int GetCharAt(int pos) const;
 
-    // Returns the position of the caret.
-    int GetCurrentPos() const;
+        // Returns the position of the caret.
+        int GetCurrentPos() const;
 
-    // Returns the position of the opposite end of the selection to the caret.
-    int GetAnchor() const;
+        // Returns the position of the opposite end of the selection to the caret.
+        int GetAnchor() const;
 
-    // Returns the style byte at the position.
-    int GetStyleAt(int pos) const;
+        // Returns the style byte at the position.
+        int GetStyleAt(int pos) const;
 
-    // Redoes the next action on the undo history.
-    void Redo();
+        // Redoes the next action on the undo history.
+        void Redo();
 
-    // Choose between collecting actions into the undo
-    // history and discarding them.
-    void SetUndoCollection(bool collectUndo);
+        // Choose between collecting actions into the undo
+        // history and discarding them.
+        void SetUndoCollection(bool collectUndo);
 
-    /* CHANGEBAR begin */
-    // Choose between collecting actions into the changes
-    // history and discarding them.
-    void SetChangeCollection(bool collectChange);
+        /* CHANGEBAR begin */
+        // Choose between collecting actions into the changes
+        // history and discarding them.
+        void SetChangeCollection(bool collectChange);
 
-    // Find a changed line, if fromLine > toLine search is performed backwards.
-    int FindChangedLine (const int fromLine, const int toLine) const;
-    /* CHANGEBAR end */
+        // Find a changed line, if fromLine > toLine search is performed backwards.
+        int FindChangedLine(const int fromLine, const int toLine) const;
+        /* CHANGEBAR end */
 
-    // Select all the text in the document.
-    void SelectAll();
+        // Select all the text in the document.
+        void SelectAll();
 
-    // Remember the current position in the undo history as the position
-    // at which the document was saved.
-    void SetSavePoint();
+        // Remember the current position in the undo history as the position
+        // at which the document was saved.
+        void SetSavePoint();
 
-    // Retrieve a buffer of cells.
-    wxMemoryBuffer GetStyledText(int startPos, int endPos);
+        // Retrieve a buffer of cells.
+        wxMemoryBuffer GetStyledText(int startPos, int endPos);
 
-    // Are there any redoable actions in the undo history?
-    bool CanRedo() const;
+        // Are there any redoable actions in the undo history?
+        bool CanRedo() const;
 
-    // Retrieve the line number at which a particular marker is located.
-    int MarkerLineFromHandle(int markerHandle);
+        // Retrieve the line number at which a particular marker is located.
+        int MarkerLineFromHandle(int markerHandle);
 
-    // Delete a marker.
-    void MarkerDeleteHandle(int markerHandle);
+        // Delete a marker.
+        void MarkerDeleteHandle(int markerHandle);
 
-    // Is undo history being collected?
-    bool GetUndoCollection() const;
+        // Is undo history being collected?
+        bool GetUndoCollection() const;
 
-    // Are white space characters currently visible?
-    // Returns one of wxSCI_WS_* constants.
-    int GetViewWhiteSpace() const;
+        // Are white space characters currently visible?
+        // Returns one of wxSCI_WS_* constants.
+        int GetViewWhiteSpace() const;
 
-    // Make white space characters invisible, always visible or visible outside indentation.
-    void SetViewWhiteSpace(int viewWS);
+        // Make white space characters invisible, always visible or visible outside indentation.
+        void SetViewWhiteSpace(int viewWS);
 
-    // Retrieve the current tab draw mode.
-    // Returns one of wxSCI_TD_* constants.
-    int GetTabDrawMode() const;
+        // Retrieve the current tab draw mode.
+        // Returns one of wxSCI_TD_* constants.
+        int GetTabDrawMode() const;
 
-    // Set how tabs are drawn when visible.
-    void SetTabDrawMode(int tabDrawMode);
+        // Set how tabs are drawn when visible.
+        void SetTabDrawMode(int tabDrawMode);
 
-    // Find the position from a point within the window.
-    int PositionFromPoint(wxPoint pt) const;
+        // Find the position from a point within the window.
+        int PositionFromPoint(wxPoint pt) const;
 
-    // Find the position from a point within the window but return
-    // wxSCI_INVALID_POSITION if not close to text.
-    int PositionFromPointClose(int x, int y);
+        // Find the position from a point within the window but return
+        // wxSCI_INVALID_POSITION if not close to text.
+        int PositionFromPointClose(int x, int y);
 
-    // Set caret to start of a line and ensure it is visible.
-    void GotoLine(int line);
+        // Set caret to start of a line and ensure it is visible.
+        void GotoLine(int line);
 
-    // Set caret to a position and ensure it is visible.
-    void GotoPos(int caret);
+        // Set caret to a position and ensure it is visible.
+        void GotoPos(int caret);
 
-    // Set the selection anchor to a position. The anchor is the opposite
-    // end of the selection from the caret.
-    void SetAnchor(int anchor);
+        // Set the selection anchor to a position. The anchor is the opposite
+        // end of the selection from the caret.
+        void SetAnchor(int anchor);
 
-    // Retrieve the text of the line containing the caret.
+        // Retrieve the text of the line containing the caret.
 #ifdef SWIG
-    wxString GetCurLine(int* OUTPUT);
+        wxString GetCurLine(int * OUTPUT);
 #else
-    wxString GetCurLine(int* linePos=NULL);
+        wxString GetCurLine(int * linePos = NULL);
 #endif
 
-    // Retrieve the position of the last correctly styled character.
-    int GetEndStyled() const;
+        // Retrieve the position of the last correctly styled character.
+        int GetEndStyled() const;
 
-    // Convert all line endings in the document to one mode.
-    void ConvertEOLs(int eolMode);
+        // Convert all line endings in the document to one mode.
+        void ConvertEOLs(int eolMode);
 
-    // Retrieve the current end of line mode - one of wxSCI_EOL_CRLF, wxSCI_EOL_CR, or wxSCI_EOL_LF.
-    int GetEOLMode() const;
+        // Retrieve the current end of line mode - one of wxSCI_EOL_CRLF, wxSCI_EOL_CR, or wxSCI_EOL_LF.
+        int GetEOLMode() const;
 
-    // Set the current end of line mode.
-    void SetEOLMode(int eolMode);
+        // Set the current end of line mode.
+        void SetEOLMode(int eolMode);
 
-    // Set the current styling position to start.
-    void StartStyling(int start);
+        // Set the current styling position to start.
+        void StartStyling(int start);
 
-    // Change style from current styling position for length characters to a style
-    // and move the current styling position to after this newly styled segment.
-    void SetStyling(int length, int style);
+        // Change style from current styling position for length characters to a style
+        // and move the current styling position to after this newly styled segment.
+        void SetStyling(int length, int style);
 
-    // Is drawing done first into a buffer or direct to the screen?
-    bool GetBufferedDraw() const;
+        // Is drawing done first into a buffer or direct to the screen?
+        bool GetBufferedDraw() const;
 
-    // If drawing is buffered then each line of text is drawn into a bitmap buffer
-    // before drawing it to the screen to avoid flicker.
-    void SetBufferedDraw(bool buffered);
+        // If drawing is buffered then each line of text is drawn into a bitmap buffer
+        // before drawing it to the screen to avoid flicker.
+        void SetBufferedDraw(bool buffered);
 
-    // Change the visible size of a tab to be a multiple of the width of a space character.
-    void SetTabWidth(int tabWidth);
+        // Change the visible size of a tab to be a multiple of the width of a space character.
+        void SetTabWidth(int tabWidth);
 
-    // Retrieve the visible size of a tab.
-    int GetTabWidth() const;
+        // Retrieve the visible size of a tab.
+        int GetTabWidth() const;
 
-    // Clear explicit tabstops on a line.
-    void ClearTabStops(int line);
+        // Clear explicit tabstops on a line.
+        void ClearTabStops(int line);
 
-    // Add an explicit tab stop for a line.
-    void AddTabStop(int line, int x);
+        // Add an explicit tab stop for a line.
+        void AddTabStop(int line, int x);
 
-    // Find the next explicit tab stop position on a line after a position.
-    int GetNextTabStop(int line, int x);
+        // Find the next explicit tab stop position on a line after a position.
+        int GetNextTabStop(int line, int x);
 
-    // Set the code page used to interpret the bytes of the document as characters.
-    void SetCodePage(int codePage);
+        // Set the code page used to interpret the bytes of the document as characters.
+        void SetCodePage(int codePage);
 
-    // Is the IME displayed in a window or inline?
-    int GetIMEInteraction() const;
+        // Is the IME displayed in a window or inline?
+        int GetIMEInteraction() const;
 
-    // Choose to display the the IME in a winow or inline.
-    void SetIMEInteraction(int imeInteraction);
+        // Choose to display the the IME in a winow or inline.
+        void SetIMEInteraction(int imeInteraction);
 
-    // Set the symbol used for a particular marker number,
-    // and optionally the fore and background colours.
-    void MarkerDefine(int markerNumber, int markerSymbol,
-                      const wxColour& foreground = wxNullColour,
-                      const wxColour& background = wxNullColour);
+        // Set the symbol used for a particular marker number,
+        // and optionally the fore and background colours.
+        void MarkerDefine(int markerNumber, int markerSymbol,
+                          const wxColour & foreground = wxNullColour,
+                          const wxColour & background = wxNullColour);
 
-    // Set the foreground colour used for a particular marker number.
-    void MarkerSetForeground(int markerNumber, const wxColour& fore);
+        // Set the foreground colour used for a particular marker number.
+        void MarkerSetForeground(int markerNumber, const wxColour & fore);
 
-    // Set the background colour used for a particular marker number.
-    void MarkerSetBackground(int markerNumber, const wxColour& back);
+        // Set the background colour used for a particular marker number.
+        void MarkerSetBackground(int markerNumber, const wxColour & back);
 
-    // Set the background colour used for a particular marker number when its folding block is selected.
-    void MarkerSetBackgroundSelected(int markerNumber, const wxColour& back);
+        // Set the background colour used for a particular marker number when its folding block is selected.
+        void MarkerSetBackgroundSelected(int markerNumber, const wxColour & back);
 
-    // Enable/disable highlight for current folding bloc (smallest one that contains the caret)
-    void MarkerEnableHighlight(bool enabled);
+        // Enable/disable highlight for current folding bloc (smallest one that contains the caret)
+        void MarkerEnableHighlight(bool enabled);
 
-    // Add a marker to a line, returning an ID which can be used to find or delete the marker.
-    int MarkerAdd(int line, int markerNumber);
+        // Add a marker to a line, returning an ID which can be used to find or delete the marker.
+        int MarkerAdd(int line, int markerNumber);
 
-    // Delete a marker from a line.
-    void MarkerDelete(int line, int markerNumber);
+        // Delete a marker from a line.
+        void MarkerDelete(int line, int markerNumber);
 
-    // Delete all markers with a particular number from all lines.
-    void MarkerDeleteAll(int markerNumber);
+        // Delete all markers with a particular number from all lines.
+        void MarkerDeleteAll(int markerNumber);
 
-    // Get a bit mask of all the markers set on a line.
-    int MarkerGet(int line);
+        // Get a bit mask of all the markers set on a line.
+        int MarkerGet(int line);
 
-    // Find the next line at or after lineStart that includes a marker in mask.
-    // Return -1 when no more lines.
-    int MarkerNext(int lineStart, int markerMask);
+        // Find the next line at or after lineStart that includes a marker in mask.
+        // Return -1 when no more lines.
+        int MarkerNext(int lineStart, int markerMask);
 
-    // Find the previous line before lineStart that includes a marker in mask.
-    int MarkerPrevious(int lineStart, int markerMask);
+        // Find the previous line before lineStart that includes a marker in mask.
+        int MarkerPrevious(int lineStart, int markerMask);
 
-    // Define a marker from a bitmap
-    void MarkerDefinePixmap(int markerNumber, const char* const* xpmData);
+        // Define a marker from a bitmap
+        void MarkerDefinePixmap(int markerNumber, const char * const * xpmData);
 
-    // Add a set of markers to a line.
-    void MarkerAddSet(int line, int markerSet);
+        // Add a set of markers to a line.
+        void MarkerAddSet(int line, int markerSet);
 
-    // Set the alpha used for a marker that is drawn in the text area, not the margin.
-    void MarkerSetAlpha(int markerNumber, int alpha);
+        // Set the alpha used for a marker that is drawn in the text area, not the margin.
+        void MarkerSetAlpha(int markerNumber, int alpha);
 
-    // Set a margin to be either numeric or symbolic.
-    void SetMarginType(int margin, int marginType);
+        // Set a margin to be either numeric or symbolic.
+        void SetMarginType(int margin, int marginType);
 
-    // Retrieve the type of a margin.
-    int GetMarginType(int margin) const;
+        // Retrieve the type of a margin.
+        int GetMarginType(int margin) const;
 
-    // Set the width of a margin to a width expressed in pixels.
-    void SetMarginWidth(int margin, int pixelWidth);
+        // Set the width of a margin to a width expressed in pixels.
+        void SetMarginWidth(int margin, int pixelWidth);
 
-    // Retrieve the width of a margin in pixels.
-    int GetMarginWidth(int margin) const;
+        // Retrieve the width of a margin in pixels.
+        int GetMarginWidth(int margin) const;
 
-    // Set a mask that determines which markers are displayed in a margin.
-    void SetMarginMask(int margin, int mask);
+        // Set a mask that determines which markers are displayed in a margin.
+        void SetMarginMask(int margin, int mask);
 
-    // Retrieve the marker mask of a margin.
-    int GetMarginMask(int margin) const;
+        // Retrieve the marker mask of a margin.
+        int GetMarginMask(int margin) const;
 
-    // Make a margin sensitive or insensitive to mouse clicks.
-    void SetMarginSensitive(int margin, bool sensitive);
+        // Make a margin sensitive or insensitive to mouse clicks.
+        void SetMarginSensitive(int margin, bool sensitive);
 
-    // Retrieve the mouse click sensitivity of a margin.
-    bool GetMarginSensitive(int margin) const;
+        // Retrieve the mouse click sensitivity of a margin.
+        bool GetMarginSensitive(int margin) const;
 
-    // Set the cursor shown when the mouse is inside a margin.
-    void SetMarginCursor(int margin, int cursor);
+        // Set the cursor shown when the mouse is inside a margin.
+        void SetMarginCursor(int margin, int cursor);
 
-    // Retrieve the cursor shown in a margin.
-    int GetMarginCursor(int margin) const;
+        // Retrieve the cursor shown in a margin.
+        int GetMarginCursor(int margin) const;
 
-    // Set the background colour of a margin. Only visible for wxSCI_MARGIN_COLOUR.
-    void SetMarginBackground(int margin, const wxColour& back);
+        // Set the background colour of a margin. Only visible for wxSCI_MARGIN_COLOUR.
+        void SetMarginBackground(int margin, const wxColour & back);
 
-    // Retrieve the background colour of a margin
-    wxColour GetMarginBackground(int margin) const;
+        // Retrieve the background colour of a margin
+        wxColour GetMarginBackground(int margin) const;
 
-    // Allocate a non-standard number of margins.
-    void SetMarginCount(int margins);
+        // Allocate a non-standard number of margins.
+        void SetMarginCount(int margins);
 
-    // How many margins are there?.
-    int GetMarginCount() const;
+        // How many margins are there?.
+        int GetMarginCount() const;
 
-    // Clear all the styles and make equivalent to the global default style.
-    void StyleClearAll();
+        // Clear all the styles and make equivalent to the global default style.
+        void StyleClearAll();
 
-    // Set the foreground colour of a style.
-    void StyleSetForeground(int style, const wxColour& fore);
+        // Set the foreground colour of a style.
+        void StyleSetForeground(int style, const wxColour & fore);
 
-    // Set the background colour of a style.
-    void StyleSetBackground(int style, const wxColour& back);
+        // Set the background colour of a style.
+        void StyleSetBackground(int style, const wxColour & back);
 
-    // Set a style to be bold or not.
-    void StyleSetBold(int style, bool bold);
+        // Set a style to be bold or not.
+        void StyleSetBold(int style, bool bold);
 
-    // Set a style to be italic or not.
-    void StyleSetItalic(int style, bool italic);
+        // Set a style to be italic or not.
+        void StyleSetItalic(int style, bool italic);
 
-    // Set the size of characters of a style.
-    void StyleSetSize(int style, int sizePoints);
+        // Set the size of characters of a style.
+        void StyleSetSize(int style, int sizePoints);
 
-    // Set the font of a style.
-    void StyleSetFaceName(int style, const wxString& fontName);
+        // Set the font of a style.
+        void StyleSetFaceName(int style, const wxString & fontName);
 
-    // Set a style to have its end of line filled or not.
-    void StyleSetEOLFilled(int style, bool eolFilled);
+        // Set a style to have its end of line filled or not.
+        void StyleSetEOLFilled(int style, bool eolFilled);
 
-    // Reset the default style to its state at startup
-    void StyleResetDefault();
+        // Reset the default style to its state at startup
+        void StyleResetDefault();
 
-    // Set a style to be underlined or not.
-    void StyleSetUnderline(int style, bool underline);
+        // Set a style to be underlined or not.
+        void StyleSetUnderline(int style, bool underline);
 
-    // Get the foreground colour of a style.
-    wxColour StyleGetForeground(int style) const;
+        // Get the foreground colour of a style.
+        wxColour StyleGetForeground(int style) const;
 
-    // Get the background colour of a style.
-    wxColour StyleGetBackground(int style) const;
+        // Get the background colour of a style.
+        wxColour StyleGetBackground(int style) const;
 
-    // Get is a style bold or not.
-    bool StyleGetBold(int style) const;
+        // Get is a style bold or not.
+        bool StyleGetBold(int style) const;
 
-    // Get is a style italic or not.
-    bool StyleGetItalic(int style) const;
+        // Get is a style italic or not.
+        bool StyleGetItalic(int style) const;
 
-    // Get the size of characters of a style.
-    int StyleGetSize(int style) const;
+        // Get the size of characters of a style.
+        int StyleGetSize(int style) const;
 
-    // Get the font facename of a style
-    wxString StyleGetFaceName(int style);
+        // Get the font facename of a style
+        wxString StyleGetFaceName(int style);
 
-    // Get is a style to have its end of line filled or not.
-    bool StyleGetEOLFilled(int style) const;
+        // Get is a style to have its end of line filled or not.
+        bool StyleGetEOLFilled(int style) const;
 
-    // Get is a style underlined or not.
-    bool StyleGetUnderline(int style) const;
+        // Get is a style underlined or not.
+        bool StyleGetUnderline(int style) const;
 
-    // Get is a style mixed case, or to force upper or lower case.
-    int StyleGetCase(int style) const;
+        // Get is a style mixed case, or to force upper or lower case.
+        int StyleGetCase(int style) const;
 
-    // Get the character get of the font in a style.
-    int StyleGetCharacterSet(int style) const;
+        // Get the character get of the font in a style.
+        int StyleGetCharacterSet(int style) const;
 
-    // Get is a style visible or not.
-    bool StyleGetVisible(int style) const;
+        // Get is a style visible or not.
+        bool StyleGetVisible(int style) const;
 
-    // Get is a style changeable or not (read only).
-    // Experimental feature, currently buggy.
-    bool StyleGetChangeable(int style) const;
+        // Get is a style changeable or not (read only).
+        // Experimental feature, currently buggy.
+        bool StyleGetChangeable(int style) const;
 
-    // Get is a style a hotspot or not.
-    bool StyleGetHotSpot(int style) const;
+        // Get is a style a hotspot or not.
+        bool StyleGetHotSpot(int style) const;
 
-    // Set a style to be mixed case, or to force upper or lower case.
-    void StyleSetCase(int style, int caseVisible);
+        // Set a style to be mixed case, or to force upper or lower case.
+        void StyleSetCase(int style, int caseVisible);
 
-    // Set the size of characters of a style. Size is in points multiplied by 100.
-    void StyleSetSizeFractional(int style, int sizeHundredthPoints);
+        // Set the size of characters of a style. Size is in points multiplied by 100.
+        void StyleSetSizeFractional(int style, int sizeHundredthPoints);
 
-    // Get the size of characters of a style in points multiplied by 100
-    int StyleGetSizeFractional(int style) const;
+        // Get the size of characters of a style in points multiplied by 100
+        int StyleGetSizeFractional(int style) const;
 
-    // Set the weight of characters of a style.
-    void StyleSetWeight(int style, int weight);
+        // Set the weight of characters of a style.
+        void StyleSetWeight(int style, int weight);
 
-    // Get the weight of characters of a style.
-    int StyleGetWeight(int style) const;
+        // Get the weight of characters of a style.
+        int StyleGetWeight(int style) const;
 
-    // Set the character set of the font in a style.
-    void StyleSetCharacterSet(int style, int characterSet);
+        // Set the character set of the font in a style.
+        void StyleSetCharacterSet(int style, int characterSet);
 
-    // Set a style to be a hotspot or not.
-    void StyleSetHotSpot(int style, bool hotspot);
+        // Set a style to be a hotspot or not.
+        void StyleSetHotSpot(int style, bool hotspot);
 
-    // Set the foreground colour of the main and additional selections and whether to use this setting.
-    void SetSelForeground(bool useSetting, const wxColour& fore);
+        // Set the foreground colour of the main and additional selections and whether to use this setting.
+        void SetSelForeground(bool useSetting, const wxColour & fore);
 
-    // Set the background colour of the main and additional selections and whether to use this setting.
-    void SetSelBackground(bool useSetting, const wxColour& back);
+        // Set the background colour of the main and additional selections and whether to use this setting.
+        void SetSelBackground(bool useSetting, const wxColour & back);
 
-    // Get the alpha of the selection.
-    int GetSelAlpha() const;
+        // Get the alpha of the selection.
+        int GetSelAlpha() const;
 
-    // Set the alpha of the selection.
-    void SetSelAlpha(int alpha);
+        // Set the alpha of the selection.
+        void SetSelAlpha(int alpha);
 
-    // Is the selection end of line filled?
-    bool GetSelEOLFilled() const;
+        // Is the selection end of line filled?
+        bool GetSelEOLFilled() const;
 
-    // Set the selection to have its end of line filled or not.
-    void SetSelEOLFilled(bool filled);
+        // Set the selection to have its end of line filled or not.
+        void SetSelEOLFilled(bool filled);
 
-    // Set the foreground colour of the caret.
-    void SetCaretForeground(const wxColour& fore);
+        // Set the foreground colour of the caret.
+        void SetCaretForeground(const wxColour & fore);
 
-    // When key+modifier combination keyDefinition is pressed perform sciCommand.
-    void CmdKeyAssign(int key, int modifiers, int cmd);
+        // When key+modifier combination keyDefinition is pressed perform sciCommand.
+        void CmdKeyAssign(int key, int modifiers, int cmd);
 
-    // When key+modifier combination keyDefinition is pressed do nothing.
-    void CmdKeyClear(int key, int modifiers);
+        // When key+modifier combination keyDefinition is pressed do nothing.
+        void CmdKeyClear(int key, int modifiers);
 
-    // Drop all key mappings.
-    void CmdKeyClearAll();
+        // Drop all key mappings.
+        void CmdKeyClearAll();
 
-    // Set the styles for a segment of the document.
-    void SetStyleBytes(int length, char* styleBytes);
+        // Set the styles for a segment of the document.
+        void SetStyleBytes(int length, char * styleBytes);
 
-    // Set a style to be visible or not.
-    void StyleSetVisible(int style, bool visible);
+        // Set a style to be visible or not.
+        void StyleSetVisible(int style, bool visible);
 
-    // Get the time in milliseconds that the caret is on and off.
-    int GetCaretPeriod() const;
+        // Get the time in milliseconds that the caret is on and off.
+        int GetCaretPeriod() const;
 
-    // Get the time in milliseconds that the caret is on and off. 0 = steady on.
-    void SetCaretPeriod(int periodMilliseconds);
+        // Get the time in milliseconds that the caret is on and off. 0 = steady on.
+        void SetCaretPeriod(int periodMilliseconds);
 
-    // Set the set of characters making up words for when moving or selecting by word.
-    // First sets defaults like SetCharsDefault.
-    void SetWordChars(const wxString& characters);
+        // Set the set of characters making up words for when moving or selecting by word.
+        // First sets defaults like SetCharsDefault.
+        void SetWordChars(const wxString & characters);
 
-    // Get the set of characters making up words for when moving or selecting by word.
-    wxString GetWordChars() const;
+        // Get the set of characters making up words for when moving or selecting by word.
+        wxString GetWordChars() const;
 
-    // Start a sequence of actions that is undone and redone as a unit.
-    // May be nested.
-    void BeginUndoAction();
+        // Start a sequence of actions that is undone and redone as a unit.
+        // May be nested.
+        void BeginUndoAction();
 
-    // End a sequence of actions that is undone and redone as a unit.
-    void EndUndoAction();
+        // End a sequence of actions that is undone and redone as a unit.
+        void EndUndoAction();
 
-    // Set an indicator to plain, squiggle or TT.
-    void IndicatorSetStyle(int indicator, int indicatorStyle);
+        // Set an indicator to plain, squiggle or TT.
+        void IndicatorSetStyle(int indicator, int indicatorStyle);
 
-    // Retrieve the style of an indicator.
-    int IndicatorGetStyle(int indicator) const;
+        // Retrieve the style of an indicator.
+        int IndicatorGetStyle(int indicator) const;
 
-    // Set the foreground colour of an indicator.
-    void IndicatorSetForeground(int indicator, const wxColour& fore);
+        // Set the foreground colour of an indicator.
+        void IndicatorSetForeground(int indicator, const wxColour & fore);
 
-    // Retrieve the foreground colour of an indicator.
-    wxColour IndicatorGetForeground(int indicator) const;
+        // Retrieve the foreground colour of an indicator.
+        wxColour IndicatorGetForeground(int indicator) const;
 
-    // Set an indicator to draw under text or over(default).
-    void IndicatorSetUnder(int indicator, bool under);
+        // Set an indicator to draw under text or over(default).
+        void IndicatorSetUnder(int indicator, bool under);
 
-    // Retrieve whether indicator drawn under or over text.
-    bool IndicatorGetUnder(int indicator) const;
+        // Retrieve whether indicator drawn under or over text.
+        bool IndicatorGetUnder(int indicator) const;
 
-    // Set a hover indicator to plain, squiggle or TT.
-    void IndicatorSetHoverStyle(int indicator, int indicatorStyle);
+        // Set a hover indicator to plain, squiggle or TT.
+        void IndicatorSetHoverStyle(int indicator, int indicatorStyle);
 
-    // Retrieve the hover style of an indicator.
-    int IndicatorGetHoverStyle(int indicator) const;
+        // Retrieve the hover style of an indicator.
+        int IndicatorGetHoverStyle(int indicator) const;
 
-    // Set the foreground hover colour of an indicator.
-    void IndicatorSetHoverForeground(int indicator, const wxColour& fore);
+        // Set the foreground hover colour of an indicator.
+        void IndicatorSetHoverForeground(int indicator, const wxColour & fore);
 
-    // Retrieve the foreground hover colour of an indicator.
-    wxColour IndicatorGetHoverForeground(int indicator) const;
+        // Retrieve the foreground hover colour of an indicator.
+        wxColour IndicatorGetHoverForeground(int indicator) const;
 
-    // Set the attributes of an indicator.
-    void IndicatorSetFlags(int indicator, int flags);
+        // Set the attributes of an indicator.
+        void IndicatorSetFlags(int indicator, int flags);
 
-    // Retrieve the attributes of an indicator.
-    int IndicatorGetFlags(int indicator) const;
+        // Retrieve the attributes of an indicator.
+        int IndicatorGetFlags(int indicator) const;
 
-    // Set the foreground colour of all whitespace and whether to use this setting.
-    void SetWhitespaceForeground(bool useSetting, const wxColour& fore);
+        // Set the foreground colour of all whitespace and whether to use this setting.
+        void SetWhitespaceForeground(bool useSetting, const wxColour & fore);
 
-    // Set the background colour of all whitespace and whether to use this setting.
-    void SetWhitespaceBackground(bool useSetting, const wxColour& back);
+        // Set the background colour of all whitespace and whether to use this setting.
+        void SetWhitespaceBackground(bool useSetting, const wxColour & back);
 
-    // Set the size of the dots used to mark space characters.
-    void SetWhitespaceSize(int size);
+        // Set the size of the dots used to mark space characters.
+        void SetWhitespaceSize(int size);
 
-    // Get the size of the dots used to mark space characters.
-    int GetWhitespaceSize() const;
+        // Get the size of the dots used to mark space characters.
+        int GetWhitespaceSize() const;
 
-    // Divide each styling byte into lexical class bits (default: 5) and indicator
-    // bits (default: 3). If a lexer requires more than 32 lexical states, then this
-    // is used to expand the possible states.
+        // Divide each styling byte into lexical class bits (default: 5) and indicator
+        // bits (default: 3). If a lexer requires more than 32 lexical states, then this
+        // is used to expand the possible states.
 #if wxCHECK_VERSION(3, 0, 0)
-    wxDEPRECATED_MSG( "This method uses a function deprecated in the Scintilla library." )
+        wxDEPRECATED_MSG("This method uses a function deprecated in the Scintilla library.")
 #endif // wxCHECK_VERSION
-    void SetStyleBits(int bits);
+        void SetStyleBits(int bits);
 
-    // Retrieve number of bits in style bytes used to hold the lexical state.
+        // Retrieve number of bits in style bytes used to hold the lexical state.
 #if wxCHECK_VERSION(3, 0, 0)
-    wxDEPRECATED_MSG( "This method uses a function deprecated in the Scintilla library." )
+        wxDEPRECATED_MSG("This method uses a function deprecated in the Scintilla library.")
 #endif // wxCHECK_VERSION
-    int GetStyleBits() const;
+        int GetStyleBits() const;
 
-    // Used to hold extra styling information for each line.
-    void SetLineState(int line, int state);
+        // Used to hold extra styling information for each line.
+        void SetLineState(int line, int state);
 
-    // Retrieve the extra styling information for a line.
-    int GetLineState(int line) const;
+        // Retrieve the extra styling information for a line.
+        int GetLineState(int line) const;
 
-    // Retrieve the last line number that has line state.
-    int GetMaxLineState() const;
+        // Retrieve the last line number that has line state.
+        int GetMaxLineState() const;
 
-    // Is the background of the line containing the caret in a different colour?
-    bool GetCaretLineVisible() const;
+        // Is the background of the line containing the caret in a different colour?
+        bool GetCaretLineVisible() const;
 
-    // Display the background of the line containing the caret in a different colour.
-    void SetCaretLineVisible(bool show);
+        // Display the background of the line containing the caret in a different colour.
+        void SetCaretLineVisible(bool show);
 
-    // Get the colour of the background of the line containing the caret.
-    wxColour GetCaretLineBackground() const;
+        // Get the colour of the background of the line containing the caret.
+        wxColour GetCaretLineBackground() const;
 
-    // Set the colour of the background of the line containing the caret.
-    void SetCaretLineBackground(const wxColour& back);
+        // Set the colour of the background of the line containing the caret.
+        void SetCaretLineBackground(const wxColour & back);
 
-    // Set a style to be changeable or not (read only).
-    // Experimental feature, currently buggy.
-    void StyleSetChangeable(int style, bool changeable);
+        // Set a style to be changeable or not (read only).
+        // Experimental feature, currently buggy.
+        void StyleSetChangeable(int style, bool changeable);
 
-    // Display a auto-completion list.
-    // The lengthEntered parameter indicates how many characters before
-    // the caret should be used to provide context.
-    void AutoCompShow(int lengthEntered, const wxString& itemList);
+        // Display a auto-completion list.
+        // The lengthEntered parameter indicates how many characters before
+        // the caret should be used to provide context.
+        void AutoCompShow(int lengthEntered, const wxString & itemList);
 
-    // Remove the auto-completion list from the screen.
-    void AutoCompCancel();
+        // Remove the auto-completion list from the screen.
+        void AutoCompCancel();
 
-    // Is there an auto-completion list visible?
-    bool AutoCompActive();
+        // Is there an auto-completion list visible?
+        bool AutoCompActive();
 
-    // Retrieve the position of the caret when the auto-completion list was displayed.
-    int AutoCompPosStart();
+        // Retrieve the position of the caret when the auto-completion list was displayed.
+        int AutoCompPosStart();
 
-    // User has selected an item so remove the list and insert the selection.
-    void AutoCompComplete();
+        // User has selected an item so remove the list and insert the selection.
+        void AutoCompComplete();
 
-    // Define a set of character that when typed cancel the auto-completion list.
-    void AutoCompStops(const wxString& characterSet);
+        // Define a set of character that when typed cancel the auto-completion list.
+        void AutoCompStops(const wxString & characterSet);
 
-    // Change the separator character in the string setting up an auto-completion list.
-    // Default is space but can be changed if items contain space.
-    void AutoCompSetSeparator(int separatorCharacter);
+        // Change the separator character in the string setting up an auto-completion list.
+        // Default is space but can be changed if items contain space.
+        void AutoCompSetSeparator(int separatorCharacter);
 
-    // Retrieve the auto-completion list separator character.
-    int AutoCompGetSeparator() const;
+        // Retrieve the auto-completion list separator character.
+        int AutoCompGetSeparator() const;
 
-    // Select the item in the auto-completion list that starts with a string.
-    void AutoCompSelect(const wxString& select);
+        // Select the item in the auto-completion list that starts with a string.
+        void AutoCompSelect(const wxString & select);
 
-    // Should the auto-completion list be cancelled if the user backspaces to a
-    // position before where the box was created.
-    void AutoCompSetCancelAtStart(bool cancel);
+        // Should the auto-completion list be cancelled if the user backspaces to a
+        // position before where the box was created.
+        void AutoCompSetCancelAtStart(bool cancel);
 
-    // Retrieve whether auto-completion cancelled by backspacing before start.
-    bool AutoCompGetCancelAtStart() const;
+        // Retrieve whether auto-completion cancelled by backspacing before start.
+        bool AutoCompGetCancelAtStart() const;
 
-    // Define a set of characters that when typed will cause the autocompletion to
-    // choose the selected item.
-    void AutoCompSetFillUps(const wxString& characterSet);
+        // Define a set of characters that when typed will cause the autocompletion to
+        // choose the selected item.
+        void AutoCompSetFillUps(const wxString & characterSet);
 
-    // Should a single item auto-completion list automatically choose the item.
-    void AutoCompSetChooseSingle(bool chooseSingle);
+        // Should a single item auto-completion list automatically choose the item.
+        void AutoCompSetChooseSingle(bool chooseSingle);
 
-    // Retrieve whether a single item auto-completion list automatically choose the item.
-    bool AutoCompGetChooseSingle() const;
+        // Retrieve whether a single item auto-completion list automatically choose the item.
+        bool AutoCompGetChooseSingle() const;
 
-    // Set whether case is significant when performing auto-completion searches.
-    void AutoCompSetIgnoreCase(bool ignoreCase);
+        // Set whether case is significant when performing auto-completion searches.
+        void AutoCompSetIgnoreCase(bool ignoreCase);
 
-    // Retrieve state of ignore case flag.
-    bool AutoCompGetIgnoreCase() const;
+        // Retrieve state of ignore case flag.
+        bool AutoCompGetIgnoreCase() const;
 
-    // Display a list of strings and send notification when user chooses one.
-    void UserListShow(int listType, const wxString& itemList);
+        // Display a list of strings and send notification when user chooses one.
+        void UserListShow(int listType, const wxString & itemList);
 
-    // Set whether or not autocompletion is hidden automatically when nothing matches.
-    void AutoCompSetAutoHide(bool autoHide);
+        // Set whether or not autocompletion is hidden automatically when nothing matches.
+        void AutoCompSetAutoHide(bool autoHide);
 
-    // Retrieve whether or not autocompletion is hidden automatically when nothing matches.
-    bool AutoCompGetAutoHide() const;
+        // Retrieve whether or not autocompletion is hidden automatically when nothing matches.
+        bool AutoCompGetAutoHide() const;
 
-    // Set whether or not autocompletion deletes any word characters
-    // after the inserted text upon completion.
-    void AutoCompSetDropRestOfWord(bool dropRestOfWord);
+        // Set whether or not autocompletion deletes any word characters
+        // after the inserted text upon completion.
+        void AutoCompSetDropRestOfWord(bool dropRestOfWord);
 
-    // Retrieve whether or not autocompletion deletes any word characters
-    // after the inserted text upon completion.
-    bool AutoCompGetDropRestOfWord() const;
+        // Retrieve whether or not autocompletion deletes any word characters
+        // after the inserted text upon completion.
+        bool AutoCompGetDropRestOfWord() const;
 
-    // Register an image for use in autocompletion lists.
-    void RegisterImage(int type, const char* const* xpmData);
+        // Register an image for use in autocompletion lists.
+        void RegisterImage(int type, const char * const * xpmData);
 
-    // Clear all the registered images.
-    void ClearRegisteredImages();
+        // Clear all the registered images.
+        void ClearRegisteredImages();
 
-    // Retrieve the auto-completion list type-separator character.
-    int AutoCompGetTypeSeparator() const;
+        // Retrieve the auto-completion list type-separator character.
+        int AutoCompGetTypeSeparator() const;
 
-    // Change the type-separator character in the string setting up an auto-completion list.
-    // Default is '?' but can be changed if items contain '?'.
-    void AutoCompSetTypeSeparator(int separatorCharacter);
+        // Change the type-separator character in the string setting up an auto-completion list.
+        // Default is '?' but can be changed if items contain '?'.
+        void AutoCompSetTypeSeparator(int separatorCharacter);
 
-    // Set the maximum width, in characters, of auto-completion and user lists.
-    // Set to 0 to autosize to fit longest item, which is the default.
-    void AutoCompSetMaxWidth(int characterCount);
+        // Set the maximum width, in characters, of auto-completion and user lists.
+        // Set to 0 to autosize to fit longest item, which is the default.
+        void AutoCompSetMaxWidth(int characterCount);
 
-    // Get the maximum width, in characters, of auto-completion and user lists.
-    int AutoCompGetMaxWidth() const;
+        // Get the maximum width, in characters, of auto-completion and user lists.
+        int AutoCompGetMaxWidth() const;
 
-    // Set the maximum height, in rows, of auto-completion and user lists.
-    // The default is 5 rows.
-    void AutoCompSetMaxHeight(int rowCount);
+        // Set the maximum height, in rows, of auto-completion and user lists.
+        // The default is 5 rows.
+        void AutoCompSetMaxHeight(int rowCount);
 
-    // Set the maximum height, in rows, of auto-completion and user lists.
-    int AutoCompGetMaxHeight() const;
+        // Set the maximum height, in rows, of auto-completion and user lists.
+        int AutoCompGetMaxHeight() const;
 
-    // Set the number of spaces used for one level of indentation.
-    void SetIndent(int indentSize);
+        // Set the number of spaces used for one level of indentation.
+        void SetIndent(int indentSize);
 
-    // Retrieve indentation size.
-    int GetIndent() const;
+        // Retrieve indentation size.
+        int GetIndent() const;
 
-    // Indentation will only use space characters if useTabs is false, otherwise
-    // it will use a combination of tabs and spaces.
-    void SetUseTabs(bool useTabs);
+        // Indentation will only use space characters if useTabs is false, otherwise
+        // it will use a combination of tabs and spaces.
+        void SetUseTabs(bool useTabs);
 
-    // Retrieve whether tabs will be used in indentation.
-    bool GetUseTabs() const;
+        // Retrieve whether tabs will be used in indentation.
+        bool GetUseTabs() const;
 
-    // Change the indentation of a line to a number of columns.
-    void SetLineIndentation(int line, int indentation);
+        // Change the indentation of a line to a number of columns.
+        void SetLineIndentation(int line, int indentation);
 
-    // Retrieve the number of columns that a line is indented.
-    int GetLineIndentation(int line) const;
+        // Retrieve the number of columns that a line is indented.
+        int GetLineIndentation(int line) const;
 
-    // Retrieve the position before the first non indentation character on a line.
-    int GetLineIndentPosition(int line) const;
+        // Retrieve the position before the first non indentation character on a line.
+        int GetLineIndentPosition(int line) const;
 
-    // Retrieve the column number of a position, taking tab width into account.
-    int GetColumn(int pos) const;
+        // Retrieve the column number of a position, taking tab width into account.
+        int GetColumn(int pos) const;
 
-    // Count characters between two positions.
-    int CountCharacters(int start, int end);
+        // Count characters between two positions.
+        int CountCharacters(int start, int end);
 
-    // Show or hide the horizontal scroll bar.
-    void SetUseHorizontalScrollBar(bool visible);
+        // Show or hide the horizontal scroll bar.
+        void SetUseHorizontalScrollBar(bool visible);
 
-    // Is the horizontal scroll bar visible?
-    bool GetUseHorizontalScrollBar() const;
+        // Is the horizontal scroll bar visible?
+        bool GetUseHorizontalScrollBar() const;
 
-    // Show or hide indentation guides.
-    void SetIndentationGuides(int indentView);
+        // Show or hide indentation guides.
+        void SetIndentationGuides(int indentView);
 
-    // Are the indentation guides visible?
-    int GetIndentationGuides() const;
+        // Are the indentation guides visible?
+        int GetIndentationGuides() const;
 
-    // Set the highlighted indentation guide column.
-    // 0 = no highlighted guide.
-    void SetHighlightGuide(int column);
+        // Set the highlighted indentation guide column.
+        // 0 = no highlighted guide.
+        void SetHighlightGuide(int column);
 
-    // Get the highlighted indentation guide column.
-    int GetHighlightGuide() const;
+        // Get the highlighted indentation guide column.
+        int GetHighlightGuide() const;
 
-    // Get the position after the last visible characters on a line.
-    int GetLineEndPosition(int line) const;
+        // Get the position after the last visible characters on a line.
+        int GetLineEndPosition(int line) const;
 
-    // Get the code page used to interpret the bytes of the document as characters.
-    int GetCodePage() const;
+        // Get the code page used to interpret the bytes of the document as characters.
+        int GetCodePage() const;
 
-    // Get the foreground colour of the caret.
-    wxColour GetCaretForeground() const;
+        // Get the foreground colour of the caret.
+        wxColour GetCaretForeground() const;
 
-    // In read-only mode?
-    bool GetReadOnly() const;
+        // In read-only mode?
+        bool GetReadOnly() const;
 
-    // Sets the position of the caret.
-    void SetCurrentPos(int caret);
+        // Sets the position of the caret.
+        void SetCurrentPos(int caret);
 
-    // Sets the position that starts the selection - this becomes the anchor.
-    void SetSelectionStart(int anchor);
+        // Sets the position that starts the selection - this becomes the anchor.
+        void SetSelectionStart(int anchor);
 
-    // Returns the position at the start of the selection.
-    int GetSelectionStart() const;
+        // Returns the position at the start of the selection.
+        int GetSelectionStart() const;
 
-    // Sets the position that ends the selection - this becomes the caret.
-    void SetSelectionEnd(int caret);
+        // Sets the position that ends the selection - this becomes the caret.
+        void SetSelectionEnd(int caret);
 
-    // Returns the position at the end of the selection.
-    int GetSelectionEnd() const;
+        // Returns the position at the end of the selection.
+        int GetSelectionEnd() const;
 
-    // Set caret to a position, while removing any existing selection.
-    void SetEmptySelection(int caret);
+        // Set caret to a position, while removing any existing selection.
+        void SetEmptySelection(int caret);
 
-    // Sets the print magnification added to the point size of each style for printing.
-    void SetPrintMagnification(int magnification);
+        // Sets the print magnification added to the point size of each style for printing.
+        void SetPrintMagnification(int magnification);
 
-    // Returns the print magnification.
-    int GetPrintMagnification() const;
+        // Returns the print magnification.
+        int GetPrintMagnification() const;
 
-    // Modify colours when printing for clearer printed text.
-    void SetPrintColourMode(int mode);
+        // Modify colours when printing for clearer printed text.
+        void SetPrintColourMode(int mode);
 
-    // Returns the print colour mode.
-    int GetPrintColourMode() const;
+        // Returns the print colour mode.
+        int GetPrintColourMode() const;
 
-    // Find some text in the document.
-    int FindText(int minPos, int maxPos, const wxString& text, int flags=0,
-                 int* findEnd=NULL);
+        // Find some text in the document.
+        int FindText(int minPos, int maxPos, const wxString & text, int flags = 0,
+                     int * findEnd = NULL);
 
-    // On Windows, will draw the document into a display context such as a printer.
-    int FormatRange(bool   doDraw,
-                    int    startPos,
-                    int    endPos,
-                    wxDC*  draw,
-                    wxDC*  target,
-                    wxRect renderRect,
-                    wxRect pageRect);
+        // On Windows, will draw the document into a display context such as a printer.
+        int FormatRange(bool   doDraw,
+                        int    startPos,
+                        int    endPos,
+                        wxDC * draw,
+                        wxDC * target,
+                        wxRect renderRect,
+                        wxRect pageRect);
 
-    // Retrieve the display line at the top of the display.
-    int GetFirstVisibleLine() const;
+        // Retrieve the display line at the top of the display.
+        int GetFirstVisibleLine() const;
 
-    // Retrieve the contents of a line.
-    wxString GetLine(int line) const;
+        // Retrieve the contents of a line.
+        wxString GetLine(int line) const;
 
-    // Returns the number of lines in the document. There is always at least one.
-    int GetLineCount() const;
+        // Returns the number of lines in the document. There is always at least one.
+        int GetLineCount() const;
 
-    // Sets the size in pixels of the left margin.
-    void SetMarginLeft(int pixelWidth);
+        // Sets the size in pixels of the left margin.
+        void SetMarginLeft(int pixelWidth);
 
-    // Returns the size in pixels of the left margin.
-    int GetMarginLeft() const;
+        // Returns the size in pixels of the left margin.
+        int GetMarginLeft() const;
 
-    // Sets the size in pixels of the right margin.
-    void SetMarginRight(int pixelWidth);
+        // Sets the size in pixels of the right margin.
+        void SetMarginRight(int pixelWidth);
 
-    // Returns the size in pixels of the right margin.
-    int GetMarginRight() const;
+        // Returns the size in pixels of the right margin.
+        int GetMarginRight() const;
 
-    // Is the document different from when it was last saved?
-    bool GetModify() const;
+        // Is the document different from when it was last saved?
+        bool GetModify() const;
 
-    // Retrieve the selected text.
-    wxString GetSelectedText();
+        // Retrieve the selected text.
+        wxString GetSelectedText();
 
-    // Retrieve a range of text.
-    wxString GetTextRange(int startPos, int endPos);
+        // Retrieve a range of text.
+        wxString GetTextRange(int startPos, int endPos);
 
-    // Draw the selection in normal style or with selection highlighted.
-    void HideSelection(bool hide);
+        // Draw the selection in normal style or with selection highlighted.
+        void HideSelection(bool hide);
 
-    // Retrieve the point in the window where a position is displayed.
-    wxPoint PointFromPosition(int pos);
+        // Retrieve the point in the window where a position is displayed.
+        wxPoint PointFromPosition(int pos);
 
-    // Retrieve the line containing a position.
-    int LineFromPosition(int pos) const;
+        // Retrieve the line containing a position.
+        int LineFromPosition(int pos) const;
 
-    // Retrieve the position at the start of a line.
-    int PositionFromLine(int line) const;
+        // Retrieve the position at the start of a line.
+        int PositionFromLine(int line) const;
 
-    // Scroll horizontally and vertically.
-    void LineScroll(int columns, int lines);
+        // Scroll horizontally and vertically.
+        void LineScroll(int columns, int lines);
 
-    // Ensure the caret is visible.
-    void EnsureCaretVisible();
+        // Ensure the caret is visible.
+        void EnsureCaretVisible();
 
-    // Scroll the argument positions and the range between them into view giving
-    // priority to the primary position then the secondary position.
-    // This may be used to make a search match visible.
-    void ScrollRange(int secondary, int primary);
+        // Scroll the argument positions and the range between them into view giving
+        // priority to the primary position then the secondary position.
+        // This may be used to make a search match visible.
+        void ScrollRange(int secondary, int primary);
 
-    // Replace the selected text with the argument text.
-    void ReplaceSelection(const wxString& text);
+        // Replace the selected text with the argument text.
+        void ReplaceSelection(const wxString & text);
 
-    // Set to read only or read write.
-    void SetReadOnly(bool readOnly);
+        // Set to read only or read write.
+        void SetReadOnly(bool readOnly);
 
-    // Will a paste succeed?
-    bool CanPaste() const;
+        // Will a paste succeed?
+        bool CanPaste() const;
 
-    // Are there any undoable actions in the undo history?
-    bool CanUndo() const;
+        // Are there any undoable actions in the undo history?
+        bool CanUndo() const;
 
-    // Delete the undo history.
-    /* CHANGEBAR begin */
-    void EmptyUndoBuffer(bool collectChangeHistory=false);
-    /* CHANGEBAR end */
+        // Delete the undo history.
+        /* CHANGEBAR begin */
+        void EmptyUndoBuffer(bool collectChangeHistory = false);
+        /* CHANGEBAR end */
 
-    // Undo one action in the undo history.
-    void Undo();
+        // Undo one action in the undo history.
+        void Undo();
 
-    // Cut the selection to the clipboard.
-    void Cut();
+        // Cut the selection to the clipboard.
+        void Cut();
 
-    // Copy the selection to the clipboard.
-    void Copy();
+        // Copy the selection to the clipboard.
+        void Copy();
 
-    // Paste the contents of the clipboard into the document replacing the selection.
-    void Paste();
+        // Paste the contents of the clipboard into the document replacing the selection.
+        void Paste();
 
-    // Clear the selection.
-    void Clear();
+        // Clear the selection.
+        void Clear();
 
-    // Replace the contents of the document with the argument text.
-    void SetText(const wxString& text);
+        // Replace the contents of the document with the argument text.
+        void SetText(const wxString & text);
 
-    // Retrieve all the text in the document.
-    wxString GetText() const;
+        // Retrieve all the text in the document.
+        wxString GetText() const;
 
-    // Retrieve the number of characters in the document.
-    int GetTextLength() const;
+        // Retrieve the number of characters in the document.
+        int GetTextLength() const;
 
-    // Retrieve a pointer to a function that processes messages for this Scintilla.
-    void* GetDirectFunction() const;
+        // Retrieve a pointer to a function that processes messages for this Scintilla.
+        void * GetDirectFunction() const;
 
-    // Retrieve a pointer value to use as the first argument when calling
-    // the function returned by GetDirectFunction.
-    void* GetDirectPointer() const;
+        // Retrieve a pointer value to use as the first argument when calling
+        // the function returned by GetDirectFunction.
+        void * GetDirectPointer() const;
 
-    // Set to overtype (true) or insert mode.
-    void SetOvertype(bool overType);
+        // Set to overtype (true) or insert mode.
+        void SetOvertype(bool overType);
 
-    // Returns true if overtype mode is active otherwise false is returned.
-    bool GetOvertype() const;
+        // Returns true if overtype mode is active otherwise false is returned.
+        bool GetOvertype() const;
 
-    // Set the width of the insert mode caret.
-    void SetCaretWidth(int pixelWidth);
+        // Set the width of the insert mode caret.
+        void SetCaretWidth(int pixelWidth);
 
-    // Returns the width of the insert mode caret.
-    int GetCaretWidth() const;
+        // Returns the width of the insert mode caret.
+        int GetCaretWidth() const;
 
-    // Sets the position that starts the target which is used for updating the
-    // document without affecting the scroll position.
-    void SetTargetStart(int start);
+        // Sets the position that starts the target which is used for updating the
+        // document without affecting the scroll position.
+        void SetTargetStart(int start);
 
-    // Get the position that starts the target.
-    int GetTargetStart() const;
+        // Get the position that starts the target.
+        int GetTargetStart() const;
 
-    // Sets the position that ends the target which is used for updating the
-    // document without affecting the scroll position.
-    void SetTargetEnd(int end);
+        // Sets the position that ends the target which is used for updating the
+        // document without affecting the scroll position.
+        void SetTargetEnd(int end);
 
-    // Get the position that ends the target.
-    int GetTargetEnd() const;
+        // Get the position that ends the target.
+        int GetTargetEnd() const;
 
-    // Sets both the start and end of the target in one call.
-    void SetTargetRange(int start, int end);
+        // Sets both the start and end of the target in one call.
+        void SetTargetRange(int start, int end);
 
-    // Retrieve the text in the target.
-    wxString GetTargetText() const;
+        // Retrieve the text in the target.
+        wxString GetTargetText() const;
 
-    // Make the target range start and end be the same as the selection range start and end.
-    void TargetFromSelection();
+        // Make the target range start and end be the same as the selection range start and end.
+        void TargetFromSelection();
 
-    // Sets the target to the whole document.
-    void TargetWholeDocument();
+        // Sets the target to the whole document.
+        void TargetWholeDocument();
 
-    // Replace the target text with the argument text.
-    // Text is counted so it can contain NULs.
-    // Returns the length of the replacement text.
-    int ReplaceTarget(const wxString& text);
+        // Replace the target text with the argument text.
+        // Text is counted so it can contain NULs.
+        // Returns the length of the replacement text.
+        int ReplaceTarget(const wxString & text);
 
-    // Replace the target text with the argument text after \\d processing.
-    // Text is counted so it can contain NULs.
-    // Looks for \\d where d is between 1 and 9 and replaces these with the strings
-    // matched in the last search operation which were surrounded by \\( and \\).
-    // Returns the length of the replacement text including any change
-    // caused by processing the \\d patterns.
-    int ReplaceTargetRE(const wxString& text);
+        // Replace the target text with the argument text after \\d processing.
+        // Text is counted so it can contain NULs.
+        // Looks for \\d where d is between 1 and 9 and replaces these with the strings
+        // matched in the last search operation which were surrounded by \\( and \\).
+        // Returns the length of the replacement text including any change
+        // caused by processing the \\d patterns.
+        int ReplaceTargetRE(const wxString & text);
 
-    // Search for a counted string in the target and set the target to the found
-    // range. Text is counted so it can contain NULs.
-    // Returns length of range or -1 for failure in which case target is not moved.
-    int SearchInTarget(const wxString& text);
+        // Search for a counted string in the target and set the target to the found
+        // range. Text is counted so it can contain NULs.
+        // Returns length of range or -1 for failure in which case target is not moved.
+        int SearchInTarget(const wxString & text);
 
-    // Set the search flags used by SearchInTarget.
-    void SetSearchFlags(int searchFlags);
+        // Set the search flags used by SearchInTarget.
+        void SetSearchFlags(int searchFlags);
 
-    // Get the search flags used by SearchInTarget.
-    int GetSearchFlags() const;
+        // Get the search flags used by SearchInTarget.
+        int GetSearchFlags() const;
 
-    // Show a call tip containing a definition near position pos.
-    void CallTipShow(int pos, const wxString& definition);
+        // Show a call tip containing a definition near position pos.
+        void CallTipShow(int pos, const wxString & definition);
 
-    // Remove the call tip from the screen.
-    void CallTipCancel();
+        // Remove the call tip from the screen.
+        void CallTipCancel();
 
-    // Is there an active call tip?
-    bool CallTipActive();
+        // Is there an active call tip?
+        bool CallTipActive();
 
-    // Retrieve the position where the caret was before displaying the call tip.
-    int CallTipPosAtStart();
+        // Retrieve the position where the caret was before displaying the call tip.
+        int CallTipPosAtStart();
 
-    // Set the start position in order to change when backspacing removes the calltip.
-    void CallTipSetPosAtStart(int posStart);
+        // Set the start position in order to change when backspacing removes the calltip.
+        void CallTipSetPosAtStart(int posStart);
 
-    // Highlight a segment of the definition.
-    void CallTipSetHighlight(int highlightStart, int highlightEnd);
+        // Highlight a segment of the definition.
+        void CallTipSetHighlight(int highlightStart, int highlightEnd);
 
-    // Set the background colour for the call tip.
-    void CallTipSetBackground(const wxColour& back);
+        // Set the background colour for the call tip.
+        void CallTipSetBackground(const wxColour & back);
 
-    // Set the foreground colour for the call tip.
-    void CallTipSetForeground(const wxColour& fore);
+        // Set the foreground colour for the call tip.
+        void CallTipSetForeground(const wxColour & fore);
 
-    // Set the foreground colour for the highlighted part of the call tip.
-    void CallTipSetForegroundHighlight(const wxColour& fore);
+        // Set the foreground colour for the highlighted part of the call tip.
+        void CallTipSetForegroundHighlight(const wxColour & fore);
 
-    // Enable use of wxSCI_STYLE_CALLTIP and set call tip tab size in pixels.
-    void CallTipUseStyle(int tabSize);
+        // Enable use of wxSCI_STYLE_CALLTIP and set call tip tab size in pixels.
+        void CallTipUseStyle(int tabSize);
 
-    // Set position of calltip, above or below text.
-    void CallTipSetPosition(bool above);
+        // Set position of calltip, above or below text.
+        void CallTipSetPosition(bool above);
 
-    // Find the display line of a document line taking hidden lines into account.
-    int VisibleFromDocLine(int docLine);
+        // Find the display line of a document line taking hidden lines into account.
+        int VisibleFromDocLine(int docLine);
 
-    // Find the document line of a display line taking hidden lines into account.
-    int DocLineFromVisible(int displayLine);
+        // Find the document line of a display line taking hidden lines into account.
+        int DocLineFromVisible(int displayLine);
 
-    // The number of display lines needed to wrap a document line
-    int WrapCount(int docLine);
+        // The number of display lines needed to wrap a document line
+        int WrapCount(int docLine);
 
-    // Set the fold level of a line.
-    // This encodes an integer level along with flags indicating whether the
-    // line is a header and whether it is effectively white space.
-    void SetFoldLevel(int line, int level);
+        // Set the fold level of a line.
+        // This encodes an integer level along with flags indicating whether the
+        // line is a header and whether it is effectively white space.
+        void SetFoldLevel(int line, int level);
 
-    // Retrieve the fold level of a line.
-    int GetFoldLevel(int line) const;
+        // Retrieve the fold level of a line.
+        int GetFoldLevel(int line) const;
 
-    // Find the last child line of a header line.
-    int GetLastChild(int line, int level) const;
+        // Find the last child line of a header line.
+        int GetLastChild(int line, int level) const;
 
-    // Find the parent line of a child line.
-    int GetFoldParent(int line) const;
+        // Find the parent line of a child line.
+        int GetFoldParent(int line) const;
 
-    // Make a range of lines visible.
-    void ShowLines(int lineStart, int lineEnd);
+        // Make a range of lines visible.
+        void ShowLines(int lineStart, int lineEnd);
 
-    // Make a range of lines invisible.
-    void HideLines(int lineStart, int lineEnd);
+        // Make a range of lines invisible.
+        void HideLines(int lineStart, int lineEnd);
 
-    // Is a line visible?
-    bool GetLineVisible(int line) const;
+        // Is a line visible?
+        bool GetLineVisible(int line) const;
 
-    // Are all lines visible?
-    bool GetAllLinesVisible() const;
+        // Are all lines visible?
+        bool GetAllLinesVisible() const;
 
-    // Show the children of a header line.
-    void SetFoldExpanded(int line, bool expanded);
+        // Show the children of a header line.
+        void SetFoldExpanded(int line, bool expanded);
 
-    // Is a header line expanded?
-    bool GetFoldExpanded(int line) const;
+        // Is a header line expanded?
+        bool GetFoldExpanded(int line) const;
 
-    // Switch a header line between expanded and contracted.
-    void ToggleFold(int line);
+        // Switch a header line between expanded and contracted.
+        void ToggleFold(int line);
 
-    // Switch a header line between expanded and contracted and show some text after the line.
-    void ToggleFoldShowText(int line, const wxString& text);
+        // Switch a header line between expanded and contracted and show some text after the line.
+        void ToggleFoldShowText(int line, const wxString & text);
 
-    // Set the style of fold display text
-    void FoldDisplayTextSetStyle(int style);
+        // Set the style of fold display text
+        void FoldDisplayTextSetStyle(int style);
 
-    // Expand or contract a fold header.
-    void FoldLine(int line, int action);
+        // Expand or contract a fold header.
+        void FoldLine(int line, int action);
 
-    // Expand or contract a fold header and its children.
-    void FoldChildren(int line, int action);
+        // Expand or contract a fold header and its children.
+        void FoldChildren(int line, int action);
 
-    // Expand a fold header and all children. Use the level argument instead of the line's current level.
-    void ExpandChildren(int line, int level);
+        // Expand a fold header and all children. Use the level argument instead of the line's current level.
+        void ExpandChildren(int line, int level);
 
-    // Expand or contract all fold headers.
-    void FoldAll(int action);
+        // Expand or contract all fold headers.
+        void FoldAll(int action);
 
-    // Ensure a particular line is visible by expanding any header line hiding it.
-    void EnsureVisible(int line);
+        // Ensure a particular line is visible by expanding any header line hiding it.
+        void EnsureVisible(int line);
 
-    // Set automatic folding behaviours.
-    void SetAutomaticFold(int automaticFold);
+        // Set automatic folding behaviours.
+        void SetAutomaticFold(int automaticFold);
 
-    // Get automatic folding behaviours.
-    int GetAutomaticFold() const;
+        // Get automatic folding behaviours.
+        int GetAutomaticFold() const;
 
-    // Set some style options for folding.
-    void SetFoldFlags(int flags);
+        // Set some style options for folding.
+        void SetFoldFlags(int flags);
 
-    // Ensure a particular line is visible by expanding any header line hiding it.
-    // Use the currently set visibility policy to determine which range to display.
-    void EnsureVisibleEnforcePolicy(int line);
+        // Ensure a particular line is visible by expanding any header line hiding it.
+        // Use the currently set visibility policy to determine which range to display.
+        void EnsureVisibleEnforcePolicy(int line);
 
-    // Sets whether a tab pressed when caret is within indentation indents.
-    void SetTabIndents(bool tabIndents);
+        // Sets whether a tab pressed when caret is within indentation indents.
+        void SetTabIndents(bool tabIndents);
 
-    // Does a tab pressed when caret is within indentation indent?
-    bool GetTabIndents() const;
+        // Does a tab pressed when caret is within indentation indent?
+        bool GetTabIndents() const;
 
-    // Sets whether a backspace pressed when caret is within indentation unindents.
-    void SetBackSpaceUnIndents(bool bsUnIndents);
+        // Sets whether a backspace pressed when caret is within indentation unindents.
+        void SetBackSpaceUnIndents(bool bsUnIndents);
 
-    // Does a backspace pressed when caret is within indentation unindent?
-    bool GetBackSpaceUnIndents() const;
+        // Does a backspace pressed when caret is within indentation unindent?
+        bool GetBackSpaceUnIndents() const;
 
-    // Sets the time the mouse must sit still to generate a mouse dwell event.
-    void SetMouseDwellTime(int periodMilliseconds);
+        // Sets the time the mouse must sit still to generate a mouse dwell event.
+        void SetMouseDwellTime(int periodMilliseconds);
 
-    // Retrieve the time the mouse must sit still to generate a mouse dwell event.
-    int GetMouseDwellTime() const;
+        // Retrieve the time the mouse must sit still to generate a mouse dwell event.
+        int GetMouseDwellTime() const;
 
-    // Get position of start of word.
-    int WordStartPosition(int pos, bool onlyWordCharacters);
+        // Get position of start of word.
+        int WordStartPosition(int pos, bool onlyWordCharacters);
 
-    // Get position of end of word.
-    int WordEndPosition(int pos, bool onlyWordCharacters);
+        // Get position of end of word.
+        int WordEndPosition(int pos, bool onlyWordCharacters);
 
-    // Is the range start..end considered a word?
-    bool IsRangeWord(int start, int end);
+        // Is the range start..end considered a word?
+        bool IsRangeWord(int start, int end);
 
-    // Sets limits to idle styling.
-    void SetIdleStyling(int idleStyling);
+        // Sets limits to idle styling.
+        void SetIdleStyling(int idleStyling);
 
-    // Retrieve the limits to idle styling.
-    int GetIdleStyling() const;
+        // Retrieve the limits to idle styling.
+        int GetIdleStyling() const;
 
-    // Sets whether text is word wrapped.
-    void SetWrapMode(int wrapMode);
+        // Sets whether text is word wrapped.
+        void SetWrapMode(int wrapMode);
 
-    // Retrieve whether text is word wrapped.
-    int GetWrapMode() const;
+        // Retrieve whether text is word wrapped.
+        int GetWrapMode() const;
 
-    // Set the display mode of visual flags for wrapped lines.
-    void SetWrapVisualFlags(int wrapVisualFlags);
+        // Set the display mode of visual flags for wrapped lines.
+        void SetWrapVisualFlags(int wrapVisualFlags);
 
-    // Retrieve the display mode of visual flags for wrapped lines.
-    int GetWrapVisualFlags() const;
+        // Retrieve the display mode of visual flags for wrapped lines.
+        int GetWrapVisualFlags() const;
 
-    // Set the location of visual flags for wrapped lines.
-    void SetWrapVisualFlagsLocation(int wrapVisualFlagsLocation);
+        // Set the location of visual flags for wrapped lines.
+        void SetWrapVisualFlagsLocation(int wrapVisualFlagsLocation);
 
-    // Retrieve the location of visual flags for wrapped lines.
-    int GetWrapVisualFlagsLocation() const;
+        // Retrieve the location of visual flags for wrapped lines.
+        int GetWrapVisualFlagsLocation() const;
 
-    // Set the start indent for wrapped lines.
-    void SetWrapStartIndent(int indent);
+        // Set the start indent for wrapped lines.
+        void SetWrapStartIndent(int indent);
 
-    // Retrieve the start indent for wrapped lines.
-    int GetWrapStartIndent() const;
+        // Retrieve the start indent for wrapped lines.
+        int GetWrapStartIndent() const;
 
-    // Sets how wrapped sublines are placed. Default is wxSCI_WRAPINDENT_FIXED.
-    void SetWrapIndentMode(int wrapIndentMode);
+        // Sets how wrapped sublines are placed. Default is wxSCI_WRAPINDENT_FIXED.
+        void SetWrapIndentMode(int wrapIndentMode);
 
-    // Retrieve how wrapped sublines are placed. Default is wxSCI_WRAPINDENT_FIXED.
-    int GetWrapIndentMode() const;
+        // Retrieve how wrapped sublines are placed. Default is wxSCI_WRAPINDENT_FIXED.
+        int GetWrapIndentMode() const;
 
-    // Sets the degree of caching of layout information.
-    void SetLayoutCache(int cacheMode);
+        // Sets the degree of caching of layout information.
+        void SetLayoutCache(int cacheMode);
 
-    // Retrieve the degree of caching of layout information.
-    int GetLayoutCache() const;
+        // Retrieve the degree of caching of layout information.
+        int GetLayoutCache() const;
 
-    // Sets the document width assumed for scrolling.
-    void SetScrollWidth(int pixelWidth);
+        // Sets the document width assumed for scrolling.
+        void SetScrollWidth(int pixelWidth);
 
-    // Retrieve the document width assumed for scrolling.
-    int GetScrollWidth() const;
+        // Retrieve the document width assumed for scrolling.
+        int GetScrollWidth() const;
 
-    // Sets whether the maximum width line displayed is used to set scroll width.
-    void SetScrollWidthTracking(bool tracking);
+        // Sets whether the maximum width line displayed is used to set scroll width.
+        void SetScrollWidthTracking(bool tracking);
 
-    // Retrieve whether the scroll width tracks wide lines.
-    bool GetScrollWidthTracking() const;
+        // Retrieve whether the scroll width tracks wide lines.
+        bool GetScrollWidthTracking() const;
 
-    // Measure the pixel width of some text in a particular style.
-    // Does not handle tab or control characters.
-    int TextWidth(int style, const wxString& text);
+        // Measure the pixel width of some text in a particular style.
+        // Does not handle tab or control characters.
+        int TextWidth(int style, const wxString & text);
 
-    // Sets the scroll range so that maximum scroll position has
-    // the last line at the bottom of the view (default).
-    // Setting this to false allows scrolling one page below the last line.
-    void SetEndAtLastLine(bool endAtLastLine);
+        // Sets the scroll range so that maximum scroll position has
+        // the last line at the bottom of the view (default).
+        // Setting this to false allows scrolling one page below the last line.
+        void SetEndAtLastLine(bool endAtLastLine);
 
-    // Retrieve whether the maximum scroll position has the last
-    // line at the bottom of the view.
-    bool GetEndAtLastLine() const;
+        // Retrieve whether the maximum scroll position has the last
+        // line at the bottom of the view.
+        bool GetEndAtLastLine() const;
 
-    // Retrieve the height of a particular line of text in pixels.
-    int TextHeight(int line);
+        // Retrieve the height of a particular line of text in pixels.
+        int TextHeight(int line);
 
-    // Show or hide the vertical scroll bar.
-    void SetUseVerticalScrollBar(bool visible);
+        // Show or hide the vertical scroll bar.
+        void SetUseVerticalScrollBar(bool visible);
 
-    // Is the vertical scroll bar visible?
-    bool GetUseVerticalScrollBar() const;
+        // Is the vertical scroll bar visible?
+        bool GetUseVerticalScrollBar() const;
 
-    // Append a string to the end of the document without changing the selection.
-    void AppendText(const wxString& text);
+        // Append a string to the end of the document without changing the selection.
+        void AppendText(const wxString & text);
 
-    // Is drawing done in two phases with backgrounds drawn before foregrounds?
-    bool GetTwoPhaseDraw() const;
+        // Is drawing done in two phases with backgrounds drawn before foregrounds?
+        bool GetTwoPhaseDraw() const;
 
-    // In twoPhaseDraw mode, drawing is performed in two phases, first the background
-    // and then the foreground. This avoids chopping off characters that overlap the next run.
-    void SetTwoPhaseDraw(bool twoPhase);
+        // In twoPhaseDraw mode, drawing is performed in two phases, first the background
+        // and then the foreground. This avoids chopping off characters that overlap the next run.
+        void SetTwoPhaseDraw(bool twoPhase);
 
-    // How many phases is drawing done in?
-    int GetPhasesDraw() const;
+        // How many phases is drawing done in?
+        int GetPhasesDraw() const;
 
-    // In one phase draw, text is drawn in a series of rectangular blocks with no overlap.
-    // In two phase draw, text is drawn in a series of lines allowing runs to overlap horizontally.
-    // In multiple phase draw, each element is drawn over the whole drawing area, allowing text
-    // to overlap from one line to the next.
-    void SetPhasesDraw(int phases);
+        // In one phase draw, text is drawn in a series of rectangular blocks with no overlap.
+        // In two phase draw, text is drawn in a series of lines allowing runs to overlap horizontally.
+        // In multiple phase draw, each element is drawn over the whole drawing area, allowing text
+        // to overlap from one line to the next.
+        void SetPhasesDraw(int phases);
 
-    // Choose the quality level for text.
-    void SetFontQuality(int fontQuality);
+        // Choose the quality level for text.
+        void SetFontQuality(int fontQuality);
 
-    // Retrieve the quality level for text.
-    int GetFontQuality() const;
+        // Retrieve the quality level for text.
+        int GetFontQuality() const;
 
-    // Scroll so that a display line is at the top of the display.
-    void SetFirstVisibleLine(int displayLine);
+        // Scroll so that a display line is at the top of the display.
+        void SetFirstVisibleLine(int displayLine);
 
-    // Change the effect of pasting when there are multiple selections.
-    void SetMultiPaste(int multiPaste);
+        // Change the effect of pasting when there are multiple selections.
+        void SetMultiPaste(int multiPaste);
 
-    // Retrieve the effect of pasting when there are multiple selections.
-    int GetMultiPaste() const;
+        // Retrieve the effect of pasting when there are multiple selections.
+        int GetMultiPaste() const;
 
-    // Retrieve the value of a tag from a regular expression search.
-    wxString GetTag(int tagNumber) const;
+        // Retrieve the value of a tag from a regular expression search.
+        wxString GetTag(int tagNumber) const;
 
-    // Join the lines in the target.
-    void LinesJoin();
+        // Join the lines in the target.
+        void LinesJoin();
 
-    // Split the lines in the target into lines that are less wide than pixelWidth
-    // where possible.
-    void LinesSplit(int pixelWidth);
+        // Split the lines in the target into lines that are less wide than pixelWidth
+        // where possible.
+        void LinesSplit(int pixelWidth);
 
-    // Set one of the colours used as a chequerboard pattern in the fold margin
-    void SetFoldMarginColour(bool useSetting, const wxColour& back);
+        // Set one of the colours used as a chequerboard pattern in the fold margin
+        void SetFoldMarginColour(bool useSetting, const wxColour & back);
 
-    // Set the other colour used as a chequerboard pattern in the fold margin
-    void SetFoldMarginHiColour(bool useSetting, const wxColour& fore);
+        // Set the other colour used as a chequerboard pattern in the fold margin
+        void SetFoldMarginHiColour(bool useSetting, const wxColour & fore);
 
-    // Move caret down one line.
-    void LineDown();
+        // Move caret down one line.
+        void LineDown();
 
-    // Move caret down one line extending selection to new caret position.
-    void LineDownExtend();
+        // Move caret down one line extending selection to new caret position.
+        void LineDownExtend();
 
-    // Move caret up one line.
-    void LineUp();
+        // Move caret up one line.
+        void LineUp();
 
-    // Move caret up one line extending selection to new caret position.
-    void LineUpExtend();
+        // Move caret up one line extending selection to new caret position.
+        void LineUpExtend();
 
-    // Move caret left one character.
-    void CharLeft();
+        // Move caret left one character.
+        void CharLeft();
 
-    // Move caret left one character extending selection to new caret position.
-    void CharLeftExtend();
+        // Move caret left one character extending selection to new caret position.
+        void CharLeftExtend();
 
-    // Move caret right one character.
-    void CharRight();
+        // Move caret right one character.
+        void CharRight();
 
-    // Move caret right one character extending selection to new caret position.
-    void CharRightExtend();
+        // Move caret right one character extending selection to new caret position.
+        void CharRightExtend();
 
-    // Move caret left one word.
-    void WordLeft();
+        // Move caret left one word.
+        void WordLeft();
 
-    // Move caret left one word extending selection to new caret position.
-    void WordLeftExtend();
+        // Move caret left one word extending selection to new caret position.
+        void WordLeftExtend();
 
-    // Move caret right one word.
-    void WordRight();
+        // Move caret right one word.
+        void WordRight();
 
-    // Move caret right one word extending selection to new caret position.
-    void WordRightExtend();
+        // Move caret right one word extending selection to new caret position.
+        void WordRightExtend();
 
-    // Move caret to first position on line.
-    void Home();
+        // Move caret to first position on line.
+        void Home();
 
-    // Move caret to first position on line extending selection to new caret position.
-    void HomeExtend();
+        // Move caret to first position on line extending selection to new caret position.
+        void HomeExtend();
 
-    // Move caret to last position on line.
-    void LineEnd();
+        // Move caret to last position on line.
+        void LineEnd();
 
-    // Move caret to last position on line extending selection to new caret position.
-    void LineEndExtend();
+        // Move caret to last position on line extending selection to new caret position.
+        void LineEndExtend();
 
-    // Move caret to first position in document.
-    void DocumentStart();
+        // Move caret to first position in document.
+        void DocumentStart();
 
-    // Move caret to first position in document extending selection to new caret position.
-    void DocumentStartExtend();
+        // Move caret to first position in document extending selection to new caret position.
+        void DocumentStartExtend();
 
-    // Move caret to last position in document.
-    void DocumentEnd();
+        // Move caret to last position in document.
+        void DocumentEnd();
 
-    // Move caret to last position in document extending selection to new caret position.
-    void DocumentEndExtend();
+        // Move caret to last position in document extending selection to new caret position.
+        void DocumentEndExtend();
 
-    // Move caret one page up.
-    void PageUp();
+        // Move caret one page up.
+        void PageUp();
 
-    // Move caret one page up extending selection to new caret position.
-    void PageUpExtend();
+        // Move caret one page up extending selection to new caret position.
+        void PageUpExtend();
 
-    // Move caret one page down.
-    void PageDown();
+        // Move caret one page down.
+        void PageDown();
 
-    // Move caret one page down extending selection to new caret position.
-    void PageDownExtend();
+        // Move caret one page down extending selection to new caret position.
+        void PageDownExtend();
 
-    // Switch from insert to overtype mode or the reverse.
-    void EditToggleOvertype();
+        // Switch from insert to overtype mode or the reverse.
+        void EditToggleOvertype();
 
-    // Cancel any modes such as call tip or auto-completion list display.
-    void Cancel();
+        // Cancel any modes such as call tip or auto-completion list display.
+        void Cancel();
 
-    // Delete the selection or if no selection, the character before the caret.
-    void DeleteBack();
+        // Delete the selection or if no selection, the character before the caret.
+        void DeleteBack();
 
-    // If selection is empty or all on one line replace the selection with a tab character.
-    // If more than one line selected, indent the lines.
-    void Tab();
+        // If selection is empty or all on one line replace the selection with a tab character.
+        // If more than one line selected, indent the lines.
+        void Tab();
 
-    // Dedent the selected lines.
-    void BackTab();
+        // Dedent the selected lines.
+        void BackTab();
 
-    // Insert a new line, may use a CRLF, CR or LF depending on EOL mode.
-    void NewLine();
+        // Insert a new line, may use a CRLF, CR or LF depending on EOL mode.
+        void NewLine();
 
-    // Insert a Form Feed character.
-    void FormFeed();
+        // Insert a Form Feed character.
+        void FormFeed();
 
-    // Move caret to before first visible character on line.
-    // If already there move to first character on line.
-    void VCHome();
+        // Move caret to before first visible character on line.
+        // If already there move to first character on line.
+        void VCHome();
 
-    // Like VCHome but extending selection to new caret position.
-    void VCHomeExtend();
+        // Like VCHome but extending selection to new caret position.
+        void VCHomeExtend();
 
-    // Magnify the displayed text by increasing the sizes by 1 point.
-    void ZoomIn();
+        // Magnify the displayed text by increasing the sizes by 1 point.
+        void ZoomIn();
 
-    // Make the displayed text smaller by decreasing the sizes by 1 point.
-    void ZoomOut();
+        // Make the displayed text smaller by decreasing the sizes by 1 point.
+        void ZoomOut();
 
-    // Delete the word to the left of the caret.
-    void DelWordLeft();
+        // Delete the word to the left of the caret.
+        void DelWordLeft();
 
-    // Delete the word to the right of the caret.
-    void DelWordRight();
+        // Delete the word to the right of the caret.
+        void DelWordRight();
 
-    // Delete the word to the right of the caret, but not the trailing non-word characters.
-    void DelWordRightEnd();
+        // Delete the word to the right of the caret, but not the trailing non-word characters.
+        void DelWordRightEnd();
 
-    // Cut the line containing the caret.
-    void LineCut();
+        // Cut the line containing the caret.
+        void LineCut();
 
-    // Delete the line containing the caret.
-    void LineDelete();
+        // Delete the line containing the caret.
+        void LineDelete();
 
-    // Switch the current line with the previous.
-    void LineTranspose();
+        // Switch the current line with the previous.
+        void LineTranspose();
 
-    // Duplicate the current line.
-    void LineDuplicate();
+        // Duplicate the current line.
+        void LineDuplicate();
 
-    // Transform the selection to lower case.
-    void LowerCase();
+        // Transform the selection to lower case.
+        void LowerCase();
 
-    // Transform the selection to upper case.
-    void UpperCase();
+        // Transform the selection to upper case.
+        void UpperCase();
 
-    // Scroll the document down, keeping the caret visible.
-    void LineScrollDown();
+        // Scroll the document down, keeping the caret visible.
+        void LineScrollDown();
 
-    // Scroll the document up, keeping the caret visible.
-    void LineScrollUp();
+        // Scroll the document up, keeping the caret visible.
+        void LineScrollUp();
 
-    // Delete the selection or if no selection, the character before the caret.
-    // Will not delete the character before at the start of a line.
-    void DeleteBackNotLine();
+        // Delete the selection or if no selection, the character before the caret.
+        // Will not delete the character before at the start of a line.
+        void DeleteBackNotLine();
 
-    // Move caret to first position on display line.
-    void HomeDisplay();
+        // Move caret to first position on display line.
+        void HomeDisplay();
 
-    // Move caret to first position on display line extending selection to
-    // new caret position.
-    void HomeDisplayExtend();
+        // Move caret to first position on display line extending selection to
+        // new caret position.
+        void HomeDisplayExtend();
 
-    // Move caret to last position on display line.
-    void LineEndDisplay();
+        // Move caret to last position on display line.
+        void LineEndDisplay();
 
-    // Move caret to last position on display line extending selection to new
-    // caret position.
-    void LineEndDisplayExtend();
+        // Move caret to last position on display line extending selection to new
+        // caret position.
+        void LineEndDisplayExtend();
 
-    // Like Home but when word-wrap is enabled goes first to start of display line
-    // HomeDisplay, then to start of document line Home.
-    void HomeWrap();
+        // Like Home but when word-wrap is enabled goes first to start of display line
+        // HomeDisplay, then to start of document line Home.
+        void HomeWrap();
 
-    // Like HomeExtend but when word-wrap is enabled extends first to start of display line
-    // HomeDisplayExtend, then to start of document line HomeExtend.
-    void HomeWrapExtend();
+        // Like HomeExtend but when word-wrap is enabled extends first to start of display line
+        // HomeDisplayExtend, then to start of document line HomeExtend.
+        void HomeWrapExtend();
 
-    // Like LineEnd but when word-wrap is enabled goes first to end of display line
-    // LineEndDisplay, then to start of document line LineEnd.
-    void LineEndWrap();
+        // Like LineEnd but when word-wrap is enabled goes first to end of display line
+        // LineEndDisplay, then to start of document line LineEnd.
+        void LineEndWrap();
 
-    // Like LineEndExtend but when word-wrap is enabled extends first to end of display line
-    // LineEndDisplayExtend, then to start of document line LineEndExtend.
-    void LineEndWrapExtend();
+        // Like LineEndExtend but when word-wrap is enabled extends first to end of display line
+        // LineEndDisplayExtend, then to start of document line LineEndExtend.
+        void LineEndWrapExtend();
 
-    // Like VCHome but when word-wrap is enabled goes first to start of display line
-    // VCHomeDisplay, then behaves like VCHome.
-    void VCHomeWrap();
+        // Like VCHome but when word-wrap is enabled goes first to start of display line
+        // VCHomeDisplay, then behaves like VCHome.
+        void VCHomeWrap();
 
-    // Like VCHomeExtend but when word-wrap is enabled extends first to start of display line
-    // VCHomeDisplayExtend, then behaves like VCHomeExtend.
-    void VCHomeWrapExtend();
+        // Like VCHomeExtend but when word-wrap is enabled extends first to start of display line
+        // VCHomeDisplayExtend, then behaves like VCHomeExtend.
+        void VCHomeWrapExtend();
 
-    // Copy the line containing the caret.
-    void LineCopy();
+        // Copy the line containing the caret.
+        void LineCopy();
 
-    // Move the caret inside current view if it's not there already.
-    void MoveCaretInsideView();
+        // Move the caret inside current view if it's not there already.
+        void MoveCaretInsideView();
 
-    // How many characters are on a line, including end of line characters?
-    int LineLength(int line) const;
+        // How many characters are on a line, including end of line characters?
+        int LineLength(int line) const;
 
-    // Highlight the characters at two positions.
-    void BraceHighlight(int posA, int posB);
+        // Highlight the characters at two positions.
+        void BraceHighlight(int posA, int posB);
 
-    // Use specified indicator to highlight matching braces instead of changing their style.
-    void BraceHighlightIndicator(bool useSetting, int indicator);
+        // Use specified indicator to highlight matching braces instead of changing their style.
+        void BraceHighlightIndicator(bool useSetting, int indicator);
 
-    // Highlight the character at a position indicating there is no matching brace.
-    void BraceBadLight(int pos);
+        // Highlight the character at a position indicating there is no matching brace.
+        void BraceBadLight(int pos);
 
-    // Use specified indicator to highlight non matching brace instead of changing its style.
-    void BraceBadLightIndicator(bool useSetting, int indicator);
+        // Use specified indicator to highlight non matching brace instead of changing its style.
+        void BraceBadLightIndicator(bool useSetting, int indicator);
 
-    // Find the position of a matching brace or wxSCI_INVALID_POSITION if no match.
-    // The maxReStyle must be 0 for now. It may be defined in a future release.
-    int BraceMatch(int pos, int maxReStyle=0);
+        // Find the position of a matching brace or wxSCI_INVALID_POSITION if no match.
+        // The maxReStyle must be 0 for now. It may be defined in a future release.
+        int BraceMatch(int pos, int maxReStyle = 0);
 
-    // Are the end of line characters visible?
-    bool GetViewEOL() const;
+        // Are the end of line characters visible?
+        bool GetViewEOL() const;
 
-    // Make the end of line characters visible or invisible.
-    void SetViewEOL(bool visible);
+        // Make the end of line characters visible or invisible.
+        void SetViewEOL(bool visible);
 
-    // Retrieve a pointer to the document object.
-    void* GetDocPointer();
+        // Retrieve a pointer to the document object.
+        void * GetDocPointer();
 
-    // Change the document object used.
-    void SetDocPointer(void* docPointer);
+        // Change the document object used.
+        void SetDocPointer(void * docPointer);
 
-    // Set which document modification events are sent to the container.
-    void SetModEventMask(int eventMask);
+        // Set which document modification events are sent to the container.
+        void SetModEventMask(int eventMask);
 
-    // Retrieve the column number which text should be kept within.
-    int GetEdgeColumn() const;
+        // Retrieve the column number which text should be kept within.
+        int GetEdgeColumn() const;
 
-    // Set the column number of the edge.
-    // If text goes past the edge then it is highlighted.
-    void SetEdgeColumn(int column);
+        // Set the column number of the edge.
+        // If text goes past the edge then it is highlighted.
+        void SetEdgeColumn(int column);
 
-    // Retrieve the edge highlight mode.
-    int GetEdgeMode() const;
+        // Retrieve the edge highlight mode.
+        int GetEdgeMode() const;
 
-    // The edge may be displayed by a line (wxSCI_EDGE_LINE/wxSCI_EDGE_MULTILINE) or by highlighting text that
-    // goes beyond it (wxSCI_EDGE_BACKGROUND) or not displayed at all (wxSCI_EDGE_NONE).
-    void SetEdgeMode(int edgeMode);
+        // The edge may be displayed by a line (wxSCI_EDGE_LINE/wxSCI_EDGE_MULTILINE) or by highlighting text that
+        // goes beyond it (wxSCI_EDGE_BACKGROUND) or not displayed at all (wxSCI_EDGE_NONE).
+        void SetEdgeMode(int edgeMode);
 
-    // Retrieve the colour used in edge indication.
-    wxColour GetEdgeColour() const;
+        // Retrieve the colour used in edge indication.
+        wxColour GetEdgeColour() const;
 
-    // Change the colour used in edge indication.
-    void SetEdgeColour(const wxColour& edgeColour);
+        // Change the colour used in edge indication.
+        void SetEdgeColour(const wxColour & edgeColour);
 
-    // Add a new vertical edge to the view.
-    void MultiEdgeAddLine(int column, const wxColour& edgeColour);
+        // Add a new vertical edge to the view.
+        void MultiEdgeAddLine(int column, const wxColour & edgeColour);
 
-    // Clear all vertical edges.
-    void MultiEdgeClearAll();
+        // Clear all vertical edges.
+        void MultiEdgeClearAll();
 
-    // Sets the current caret position to be the search anchor.
-    void SearchAnchor();
+        // Sets the current caret position to be the search anchor.
+        void SearchAnchor();
 
-    // Find some text starting at the search anchor.
-    // Does not ensure the selection is visible.
-    int SearchNext(int searchFlags, const wxString& text);
+        // Find some text starting at the search anchor.
+        // Does not ensure the selection is visible.
+        int SearchNext(int searchFlags, const wxString & text);
 
-    // Find some text starting at the search anchor and moving backwards.
-    // Does not ensure the selection is visible.
-    int SearchPrev(int searchFlags, const wxString& text);
+        // Find some text starting at the search anchor and moving backwards.
+        // Does not ensure the selection is visible.
+        int SearchPrev(int searchFlags, const wxString & text);
 
-    // Retrieves the number of lines completely visible.
-    int LinesOnScreen() const;
+        // Retrieves the number of lines completely visible.
+        int LinesOnScreen() const;
 
-    // Set whether a pop up menu is displayed automatically when the user presses
-    // the wrong mouse button on certain areas.
-    void UsePopUp(int popUpMode);
+        // Set whether a pop up menu is displayed automatically when the user presses
+        // the wrong mouse button on certain areas.
+        void UsePopUp(int popUpMode);
 
-    // Is the selection rectangular? The alternative is the more common stream selection.
-    bool SelectionIsRectangle() const;
+        // Is the selection rectangular? The alternative is the more common stream selection.
+        bool SelectionIsRectangle() const;
 
-    // Set the zoom level. This number of points is added to the size of all fonts.
-    // It may be positive to magnify or negative to reduce.
-    void SetZoom(int zoomInPoints);
+        // Set the zoom level. This number of points is added to the size of all fonts.
+        // It may be positive to magnify or negative to reduce.
+        void SetZoom(int zoomInPoints);
 
-    // Retrieve the zoom level.
-    int GetZoom() const;
+        // Retrieve the zoom level.
+        int GetZoom() const;
 
-    // Create a new document object.
-    // Starts with reference count of 1 and not selected into editor.
-    void* CreateDocument();
+        // Create a new document object.
+        // Starts with reference count of 1 and not selected into editor.
+        void * CreateDocument();
 
-    // Extend life of document.
-    void AddRefDocument(void* docPointer);
+        // Extend life of document.
+        void AddRefDocument(void * docPointer);
 
-    // Release a reference to the document, deleting document if it fades to black.
-    void ReleaseDocument(void* docPointer);
+        // Release a reference to the document, deleting document if it fades to black.
+        void ReleaseDocument(void * docPointer);
 
-    // Get which document modification events are sent to the container.
-    int GetModEventMask() const;
+        // Get which document modification events are sent to the container.
+        int GetModEventMask() const;
 
-    // Change internal focus flag.
-    void SetSCIFocus(bool focus);
+        // Change internal focus flag.
+        void SetSCIFocus(bool focus);
 
-    // Get internal focus flag.
-    bool GetSCIFocus() const;
+        // Get internal focus flag.
+        bool GetSCIFocus() const;
 
-    // Change error status - 0 = OK.
-    void SetStatus(int status);
+        // Change error status - 0 = OK.
+        void SetStatus(int status);
 
-    // Get error status.
-    int GetStatus() const;
+        // Get error status.
+        int GetStatus() const;
 
-    // Set whether the mouse is captured when its button is pressed.
-    void SetMouseDownCaptures(bool captures);
+        // Set whether the mouse is captured when its button is pressed.
+        void SetMouseDownCaptures(bool captures);
 
-    // Get whether mouse gets captured.
-    bool GetMouseDownCaptures() const;
+        // Get whether mouse gets captured.
+        bool GetMouseDownCaptures() const;
 
-    // Set whether the mouse wheel can be active outside the window.
-    void SetMouseWheelCaptures(bool captures);
+        // Set whether the mouse wheel can be active outside the window.
+        void SetMouseWheelCaptures(bool captures);
 
-    // Get whether mouse wheel can be active outside the window.
-    bool GetMouseWheelCaptures() const;
+        // Get whether mouse wheel can be active outside the window.
+        bool GetMouseWheelCaptures() const;
 
-    // Sets the cursor to one of the wxSCI_CURSOR* values.
-    void SetSCICursor(int cursorType);
+        // Sets the cursor to one of the wxSCI_CURSOR* values.
+        void SetSCICursor(int cursorType);
 
-    // Get cursor type.
-    int GetSCICursor() const;
+        // Get cursor type.
+        int GetSCICursor() const;
 
-    // Change the way control characters are displayed:
-    // If symbol is < 32, keep the drawn way, else, use the given character.
-    void SetControlCharSymbol(int symbol);
+        // Change the way control characters are displayed:
+        // If symbol is < 32, keep the drawn way, else, use the given character.
+        void SetControlCharSymbol(int symbol);
 
-    // Get the way control characters are displayed.
-    int GetControlCharSymbol() const;
+        // Get the way control characters are displayed.
+        int GetControlCharSymbol() const;
 
-    // Move to the previous change in capitalisation.
-    void WordPartLeft();
+        // Move to the previous change in capitalisation.
+        void WordPartLeft();
 
-    // Move to the previous change in capitalisation extending selection
-    // to new caret position.
-    void WordPartLeftExtend();
+        // Move to the previous change in capitalisation extending selection
+        // to new caret position.
+        void WordPartLeftExtend();
 
-    // Move to the change next in capitalisation.
-    void WordPartRight();
+        // Move to the change next in capitalisation.
+        void WordPartRight();
 
-    // Move to the next change in capitalisation extending selection
-    // to new caret position.
-    void WordPartRightExtend();
+        // Move to the next change in capitalisation extending selection
+        // to new caret position.
+        void WordPartRightExtend();
 
-    // Set the way the display area is determined when a particular line
-    // is to be moved to by Find, FindNext, GotoLine, etc.
-    void SetVisiblePolicy(int visiblePolicy, int visibleSlop);
+        // Set the way the display area is determined when a particular line
+        // is to be moved to by Find, FindNext, GotoLine, etc.
+        void SetVisiblePolicy(int visiblePolicy, int visibleSlop);
 
-    // Delete back from the current position to the start of the line.
-    void DelLineLeft();
+        // Delete back from the current position to the start of the line.
+        void DelLineLeft();
 
-    // Delete forwards from the current position to the end of the line.
-    void DelLineRight();
+        // Delete forwards from the current position to the end of the line.
+        void DelLineRight();
 
-    // Set the xOffset (ie, horizontal scroll position).
-    void SetXOffset(int xOffset);
+        // Set the xOffset (ie, horizontal scroll position).
+        void SetXOffset(int xOffset);
 
-    // Get the xOffset (ie, horizontal scroll position).
-    int GetXOffset() const;
+        // Get the xOffset (ie, horizontal scroll position).
+        int GetXOffset() const;
 
-    // Set the last x chosen value to be the caret x position.
-    void ChooseCaretX();
+        // Set the last x chosen value to be the caret x position.
+        void ChooseCaretX();
 
-    // Set the way the caret is kept visible when going sideways.
-    // The exclusion zone is given in pixels.
-    void SetXCaretPolicy(int caretPolicy, int caretSlop);
+        // Set the way the caret is kept visible when going sideways.
+        // The exclusion zone is given in pixels.
+        void SetXCaretPolicy(int caretPolicy, int caretSlop);
 
-    // Set the way the line the caret is on is kept visible.
-    // The exclusion zone is given in lines.
-    void SetYCaretPolicy(int caretPolicy, int caretSlop);
+        // Set the way the line the caret is on is kept visible.
+        // The exclusion zone is given in lines.
+        void SetYCaretPolicy(int caretPolicy, int caretSlop);
 
-    // Set printing to line wrapped (wxSCI_WRAP_WORD) or not line wrapped (wxSCI_WRAP_NONE).
-    void SetPrintWrapMode(int wrapMode);
+        // Set printing to line wrapped (wxSCI_WRAP_WORD) or not line wrapped (wxSCI_WRAP_NONE).
+        void SetPrintWrapMode(int wrapMode);
 
-    // Is printing line wrapped?
-    int GetPrintWrapMode() const;
+        // Is printing line wrapped?
+        int GetPrintWrapMode() const;
 
-    // Set a fore colour for active hotspots.
-    void SetHotspotActiveForeground(bool useSetting, const wxColour& fore);
+        // Set a fore colour for active hotspots.
+        void SetHotspotActiveForeground(bool useSetting, const wxColour & fore);
 
-    // Get the fore colour for active hotspots.
-    wxColour GetHotspotActiveForeground() const;
+        // Get the fore colour for active hotspots.
+        wxColour GetHotspotActiveForeground() const;
 
-    // Set a back colour for active hotspots.
-    void SetHotspotActiveBackground(bool useSetting, const wxColour& back);
+        // Set a back colour for active hotspots.
+        void SetHotspotActiveBackground(bool useSetting, const wxColour & back);
 
-    // Get the back colour for active hotspots.
-    wxColour GetHotspotActiveBackground() const;
+        // Get the back colour for active hotspots.
+        wxColour GetHotspotActiveBackground() const;
 
-    // Enable / Disable underlining active hotspots.
-    void SetHotspotActiveUnderline(bool underline);
+        // Enable / Disable underlining active hotspots.
+        void SetHotspotActiveUnderline(bool underline);
 
-    // Get whether underlining for active hotspots.
-    bool GetHotspotActiveUnderline() const;
+        // Get whether underlining for active hotspots.
+        bool GetHotspotActiveUnderline() const;
 
-    // Limit hotspots to single line so hotspots on two lines don't merge.
-    void SetHotspotSingleLine(bool singleLine);
+        // Limit hotspots to single line so hotspots on two lines don't merge.
+        void SetHotspotSingleLine(bool singleLine);
 
-    // Get the HotspotSingleLine property
-    bool GetHotspotSingleLine() const;
+        // Get the HotspotSingleLine property
+        bool GetHotspotSingleLine() const;
 
-    // Move caret down one paragraph (delimited by empty lines).
-    void ParaDown();
+        // Move caret down one paragraph (delimited by empty lines).
+        void ParaDown();
 
-    // Extend selection down one paragraph (delimited by empty lines).
-    void ParaDownExtend();
+        // Extend selection down one paragraph (delimited by empty lines).
+        void ParaDownExtend();
 
-    // Move caret up one paragraph (delimited by empty lines).
-    void ParaUp();
+        // Move caret up one paragraph (delimited by empty lines).
+        void ParaUp();
 
-    // Extend selection up one paragraph (delimited by empty lines).
-    void ParaUpExtend();
+        // Extend selection up one paragraph (delimited by empty lines).
+        void ParaUpExtend();
 
-    // Given a valid document position, return the previous position taking code
-    // page into account. Returns 0 if passed 0.
-    int PositionBefore(int pos);
+        // Given a valid document position, return the previous position taking code
+        // page into account. Returns 0 if passed 0.
+        int PositionBefore(int pos);
 
-    // Given a valid document position, return the next position taking code
-    // page into account. Maximum value returned is the last position in the document.
-    int PositionAfter(int pos);
+        // Given a valid document position, return the next position taking code
+        // page into account. Maximum value returned is the last position in the document.
+        int PositionAfter(int pos);
 
-    // Given a valid document position, return a position that differs in a number
-    // of characters. Returned value is always between 0 and last position in document.
-    int PositionRelative(int pos, int relative);
+        // Given a valid document position, return a position that differs in a number
+        // of characters. Returned value is always between 0 and last position in document.
+        int PositionRelative(int pos, int relative);
 
-    // Copy a range of text to the clipboard. Positions are clipped into the document.
-    void CopyRange(int start, int end);
+        // Copy a range of text to the clipboard. Positions are clipped into the document.
+        void CopyRange(int start, int end);
 
-    // Copy argument text to the clipboard.
-    void CopyText(int length, const wxString& text);
+        // Copy argument text to the clipboard.
+        void CopyText(int length, const wxString & text);
 
-    // Set the selection mode to stream (wxSCI_SEL_STREAM) or rectangular (wxSCI_SEL_RECTANGLE/wxSCI_SEL_THIN) or
-    // by lines (wxSCI_SEL_LINES).
-    void SetSelectionMode(int selectionMode);
+        // Set the selection mode to stream (wxSCI_SEL_STREAM) or rectangular (wxSCI_SEL_RECTANGLE/wxSCI_SEL_THIN) or
+        // by lines (wxSCI_SEL_LINES).
+        void SetSelectionMode(int selectionMode);
 
-    // Get the mode of the current selection.
-    int GetSelectionMode() const;
+        // Get the mode of the current selection.
+        int GetSelectionMode() const;
 
-    // Retrieve the position of the start of the selection at the given line (wxSCI_INVALID_POSITION if no selection on this line).
-    int GetLineSelStartPosition(int line);
+        // Retrieve the position of the start of the selection at the given line (wxSCI_INVALID_POSITION if no selection on this line).
+        int GetLineSelStartPosition(int line);
 
-    // Retrieve the position of the end of the selection at the given line (wxSCI_INVALID_POSITION if no selection on this line).
-    int GetLineSelEndPosition(int line);
+        // Retrieve the position of the end of the selection at the given line (wxSCI_INVALID_POSITION if no selection on this line).
+        int GetLineSelEndPosition(int line);
 
-    // Move caret down one line, extending rectangular selection to new caret position.
-    void LineDownRectExtend();
+        // Move caret down one line, extending rectangular selection to new caret position.
+        void LineDownRectExtend();
 
-    // Move caret up one line, extending rectangular selection to new caret position.
-    void LineUpRectExtend();
+        // Move caret up one line, extending rectangular selection to new caret position.
+        void LineUpRectExtend();
 
-    // Move caret left one character, extending rectangular selection to new caret position.
-    void CharLeftRectExtend();
+        // Move caret left one character, extending rectangular selection to new caret position.
+        void CharLeftRectExtend();
 
-    // Move caret right one character, extending rectangular selection to new caret position.
-    void CharRightRectExtend();
+        // Move caret right one character, extending rectangular selection to new caret position.
+        void CharRightRectExtend();
 
-    // Move caret to first position on line, extending rectangular selection to new caret position.
-    void HomeRectExtend();
+        // Move caret to first position on line, extending rectangular selection to new caret position.
+        void HomeRectExtend();
 
-    // Move caret to before first visible character on line.
-    // If already there move to first character on line.
-    // In either case, extend rectangular selection to new caret position.
-    void VCHomeRectExtend();
+        // Move caret to before first visible character on line.
+        // If already there move to first character on line.
+        // In either case, extend rectangular selection to new caret position.
+        void VCHomeRectExtend();
 
-    // Move caret to last position on line, extending rectangular selection to new caret position.
-    void LineEndRectExtend();
+        // Move caret to last position on line, extending rectangular selection to new caret position.
+        void LineEndRectExtend();
 
-    // Move caret one page up, extending rectangular selection to new caret position.
-    void PageUpRectExtend();
+        // Move caret one page up, extending rectangular selection to new caret position.
+        void PageUpRectExtend();
 
-    // Move caret one page down, extending rectangular selection to new caret position.
-    void PageDownRectExtend();
+        // Move caret one page down, extending rectangular selection to new caret position.
+        void PageDownRectExtend();
 
-    // Move caret to top of page, or one page up if already at top of page.
-    void StutteredPageUp();
+        // Move caret to top of page, or one page up if already at top of page.
+        void StutteredPageUp();
 
-    // Move caret to top of page, or one page up if already at top of page, extending selection to new caret position.
-    void StutteredPageUpExtend();
+        // Move caret to top of page, or one page up if already at top of page, extending selection to new caret position.
+        void StutteredPageUpExtend();
 
-    // Move caret to bottom of page, or one page down if already at bottom of page.
-    void StutteredPageDown();
+        // Move caret to bottom of page, or one page down if already at bottom of page.
+        void StutteredPageDown();
 
-    // Move caret to bottom of page, or one page down if already at bottom of page, extending selection to new caret position.
-    void StutteredPageDownExtend();
+        // Move caret to bottom of page, or one page down if already at bottom of page, extending selection to new caret position.
+        void StutteredPageDownExtend();
 
-    // Move caret left one word, position cursor at end of word.
-    void WordLeftEnd();
+        // Move caret left one word, position cursor at end of word.
+        void WordLeftEnd();
 
-    // Move caret left one word, position cursor at end of word, extending selection to new caret position.
-    void WordLeftEndExtend();
+        // Move caret left one word, position cursor at end of word, extending selection to new caret position.
+        void WordLeftEndExtend();
 
-    // Move caret right one word, position cursor at end of word.
-    void WordRightEnd();
+        // Move caret right one word, position cursor at end of word.
+        void WordRightEnd();
 
-    // Move caret right one word, position cursor at end of word, extending selection to new caret position.
-    void WordRightEndExtend();
+        // Move caret right one word, position cursor at end of word, extending selection to new caret position.
+        void WordRightEndExtend();
 
-    // Set the set of characters making up whitespace for when moving or selecting by word.
-    // Should be called after SetWordChars.
-    void SetWhitespaceChars(const wxString& characters);
+        // Set the set of characters making up whitespace for when moving or selecting by word.
+        // Should be called after SetWordChars.
+        void SetWhitespaceChars(const wxString & characters);
 
-    // Get the set of characters making up whitespace for when moving or selecting by word.
-    wxString GetWhitespaceChars() const;
+        // Get the set of characters making up whitespace for when moving or selecting by word.
+        wxString GetWhitespaceChars() const;
 
-    // Set the set of characters making up punctuation characters
-    // Should be called after SetWordChars.
-    void SetPunctuationChars(const wxString& characters);
+        // Set the set of characters making up punctuation characters
+        // Should be called after SetWordChars.
+        void SetPunctuationChars(const wxString & characters);
 
-    // Get the set of characters making up punctuation characters
-    wxString GetPunctuationChars() const;
+        // Get the set of characters making up punctuation characters
+        wxString GetPunctuationChars() const;
 
-    // Reset the set of characters for whitespace and word characters to the defaults.
-    void SetCharsDefault();
+        // Reset the set of characters for whitespace and word characters to the defaults.
+        void SetCharsDefault();
 
-    // Get currently selected item position in the auto-completion list
-    int AutoCompGetCurrent() const;
+        // Get currently selected item position in the auto-completion list
+        int AutoCompGetCurrent() const;
 
-    // Get currently selected item text in the auto-completion list
-    wxString AutoCompGetCurrentText() const;
+        // Get currently selected item text in the auto-completion list
+        wxString AutoCompGetCurrentText() const;
 
-    // Set auto-completion case insensitive behaviour to either prefer case-sensitive matches or have no preference.
-    void AutoCompSetCaseInsensitiveBehaviour(int behaviour);
+        // Set auto-completion case insensitive behaviour to either prefer case-sensitive matches or have no preference.
+        void AutoCompSetCaseInsensitiveBehaviour(int behaviour);
 
-    // Get auto-completion case insensitive behaviour.
-    int AutoCompGetCaseInsensitiveBehaviour() const;
+        // Get auto-completion case insensitive behaviour.
+        int AutoCompGetCaseInsensitiveBehaviour() const;
 
-    // Change the effect of autocompleting when there are multiple selections.
-    void AutoCompSetMulti(int multi);
+        // Change the effect of autocompleting when there are multiple selections.
+        void AutoCompSetMulti(int multi);
 
-    // Retrieve the effect of autocompleting when there are multiple selections.
-    int AutoCompGetMulti() const;
+        // Retrieve the effect of autocompleting when there are multiple selections.
+        int AutoCompGetMulti() const;
 
-    // Set the way autocompletion lists are ordered.
-    void AutoCompSetOrder(int order);
+        // Set the way autocompletion lists are ordered.
+        void AutoCompSetOrder(int order);
 
-    // Get the way autocompletion lists are ordered.
-    int AutoCompGetOrder() const;
+        // Get the way autocompletion lists are ordered.
+        int AutoCompGetOrder() const;
 
-    // Enlarge the document to a particular size of text bytes.
-    void Allocate(int bytes);
+        // Enlarge the document to a particular size of text bytes.
+        void Allocate(int bytes);
 
-    // Find the position of a column on a line taking into account tabs and
-    // multi-byte characters. If beyond end of line, return line end position.
-    int FindColumn(int line, int column);
+        // Find the position of a column on a line taking into account tabs and
+        // multi-byte characters. If beyond end of line, return line end position.
+        int FindColumn(int line, int column);
 
-    // Can the caret preferred x position only be changed by explicit movement commands?
-    int GetCaretSticky() const;
+        // Can the caret preferred x position only be changed by explicit movement commands?
+        int GetCaretSticky() const;
 
-    // Stop the caret preferred x position changing when the user types.
-    void SetCaretSticky(int useCaretStickyBehaviour);
+        // Stop the caret preferred x position changing when the user types.
+        void SetCaretSticky(int useCaretStickyBehaviour);
 
-    // Switch between sticky and non-sticky: meant to be bound to a key.
-    void ToggleCaretSticky();
+        // Switch between sticky and non-sticky: meant to be bound to a key.
+        void ToggleCaretSticky();
 
-    // Enable/Disable convert-on-paste for line endings
-    void SetPasteConvertEndings(bool convert);
+        // Enable/Disable convert-on-paste for line endings
+        void SetPasteConvertEndings(bool convert);
 
-    // Get convert-on-paste setting
-    bool GetPasteConvertEndings() const;
+        // Get convert-on-paste setting
+        bool GetPasteConvertEndings() const;
 
-    // Duplicate the selection. If selection empty duplicate the line containing the caret.
-    void SelectionDuplicate();
+        // Duplicate the selection. If selection empty duplicate the line containing the caret.
+        void SelectionDuplicate();
 
-    // Set background alpha of the caret line.
-    void SetCaretLineBackAlpha(int alpha);
+        // Set background alpha of the caret line.
+        void SetCaretLineBackAlpha(int alpha);
 
-    // Get the background alpha of the caret line.
-    int GetCaretLineBackAlpha() const;
+        // Get the background alpha of the caret line.
+        int GetCaretLineBackAlpha() const;
 
-    // Set the style of the caret to be drawn.
-    void SetCaretStyle(int caretStyle);
+        // Set the style of the caret to be drawn.
+        void SetCaretStyle(int caretStyle);
 
-    // Returns the current style of the caret.
-    int GetCaretStyle() const;
+        // Returns the current style of the caret.
+        int GetCaretStyle() const;
 
-    // Set the indicator used for IndicatorFillRange and IndicatorClearRange
-    void SetIndicatorCurrent(int indicator);
+        // Set the indicator used for IndicatorFillRange and IndicatorClearRange
+        void SetIndicatorCurrent(int indicator);
 
-    // Get the current indicator
-    int GetIndicatorCurrent() const;
+        // Get the current indicator
+        int GetIndicatorCurrent() const;
 
-    // Set the value used for IndicatorFillRange
-    void SetIndicatorValue(int value);
+        // Set the value used for IndicatorFillRange
+        void SetIndicatorValue(int value);
 
-    // Get the current indicator value
-    int GetIndicatorValue() const;
+        // Get the current indicator value
+        int GetIndicatorValue() const;
 
-    // Turn a indicator on over a range.
-    void IndicatorFillRange(int start, int lengthFill);
+        // Turn a indicator on over a range.
+        void IndicatorFillRange(int start, int lengthFill);
 
-    // Turn a indicator off over a range.
-    void IndicatorClearRange(int start, int lengthClear);
+        // Turn a indicator off over a range.
+        void IndicatorClearRange(int start, int lengthClear);
 
-    // Are any indicators present at pos?
-    int IndicatorAllOnFor(int pos);
+        // Are any indicators present at pos?
+        int IndicatorAllOnFor(int pos);
 
-    // What value does a particular indicator have at a position?
-    int IndicatorValueAt(int indicator, int pos);
+        // What value does a particular indicator have at a position?
+        int IndicatorValueAt(int indicator, int pos);
 
-    // Where does a particular indicator start?
-    int IndicatorStart(int indicator, int pos);
+        // Where does a particular indicator start?
+        int IndicatorStart(int indicator, int pos);
 
-    // Where does a particular indicator end?
-    int IndicatorEnd(int indicator, int pos);
+        // Where does a particular indicator end?
+        int IndicatorEnd(int indicator, int pos);
 
-    // Set number of entries in position cache
-    void SetPositionCacheSize(int size);
+        // Set number of entries in position cache
+        void SetPositionCacheSize(int size);
 
-    // How many entries are allocated to the position cache?
-    int GetPositionCacheSize() const;
+        // How many entries are allocated to the position cache?
+        int GetPositionCacheSize() const;
 
-    // Copy the selection, if selection empty copy the line with the caret
-    void CopyAllowLine();
+        // Copy the selection, if selection empty copy the line with the caret
+        void CopyAllowLine();
 
-    // Compact the document buffer and return a read-only pointer to the
-    // characters in the document.
-    const char* GetCharacterPointer() const;
+        // Compact the document buffer and return a read-only pointer to the
+        // characters in the document.
+        const char * GetCharacterPointer() const;
 
-    // Return a read-only pointer to a range of characters in the document.
-    // May move the gap so that the range is contiguous, but will only move up
-    // to rangeLength bytes.
-    const char* GetRangePointer(int position, int rangeLength) const;
+        // Return a read-only pointer to a range of characters in the document.
+        // May move the gap so that the range is contiguous, but will only move up
+        // to rangeLength bytes.
+        const char * GetRangePointer(int position, int rangeLength) const;
 
-    // Return a position which, to avoid performance costs, should not be within
-    // the range of a call to GetRangePointer.
-    int GetGapPosition() const;
+        // Return a position which, to avoid performance costs, should not be within
+        // the range of a call to GetRangePointer.
+        int GetGapPosition() const;
 
-    // Set the alpha fill colour of the given indicator.
-    void IndicatorSetAlpha(int indicator, int alpha);
+        // Set the alpha fill colour of the given indicator.
+        void IndicatorSetAlpha(int indicator, int alpha);
 
-    // Get the alpha fill colour of the given indicator.
-    int IndicatorGetAlpha(int indicator) const;
+        // Get the alpha fill colour of the given indicator.
+        int IndicatorGetAlpha(int indicator) const;
 
-    // Set the alpha outline colour of the given indicator.
-    void IndicatorSetOutlineAlpha(int indicator, int alpha);
+        // Set the alpha outline colour of the given indicator.
+        void IndicatorSetOutlineAlpha(int indicator, int alpha);
 
-    // Get the alpha outline colour of the given indicator.
-    int IndicatorGetOutlineAlpha(int indicator) const;
+        // Get the alpha outline colour of the given indicator.
+        int IndicatorGetOutlineAlpha(int indicator) const;
 
-    // Set extra ascent for each line
-    void SetExtraAscent(int extraAscent);
+        // Set extra ascent for each line
+        void SetExtraAscent(int extraAscent);
 
-    // Get extra ascent for each line
-    int GetExtraAscent() const;
+        // Get extra ascent for each line
+        int GetExtraAscent() const;
 
-    // Set extra descent for each line
-    void SetExtraDescent(int extraDescent);
+        // Set extra descent for each line
+        void SetExtraDescent(int extraDescent);
 
-    // Get extra descent for each line
-    int GetExtraDescent() const;
+        // Get extra descent for each line
+        int GetExtraDescent() const;
 
-    // Which symbol was defined for markerNumber with MarkerDefine
-    int GetMarkerSymbolDefined(int markerNumber);
+        // Which symbol was defined for markerNumber with MarkerDefine
+        int GetMarkerSymbolDefined(int markerNumber);
 
-    // Set the text in the text margin for a line
-    void MarginSetText(int line, const wxString& text);
+        // Set the text in the text margin for a line
+        void MarginSetText(int line, const wxString & text);
 
-    // Get the text in the text margin for a line
-    wxString MarginGetText(int line) const;
+        // Get the text in the text margin for a line
+        wxString MarginGetText(int line) const;
 
-    // Set the style number for the text margin for a line
-    void MarginSetStyle(int line, int style);
+        // Set the style number for the text margin for a line
+        void MarginSetStyle(int line, int style);
 
-    // Get the style number for the text margin for a line
-    int MarginGetStyle(int line) const;
+        // Get the style number for the text margin for a line
+        int MarginGetStyle(int line) const;
 
-    // Set the style in the text margin for a line
-    void MarginSetStyles(int line, const wxString& styles);
+        // Set the style in the text margin for a line
+        void MarginSetStyles(int line, const wxString & styles);
 
-    // Get the styles in the text margin for a line
-    wxString MarginGetStyles(int line) const;
+        // Get the styles in the text margin for a line
+        wxString MarginGetStyles(int line) const;
 
-    // Clear the margin text on all lines
-    void MarginTextClearAll();
+        // Clear the margin text on all lines
+        void MarginTextClearAll();
 
-    // Get the start of the range of style numbers used for margin text
-    void MarginSetStyleOffset(int style);
+        // Get the start of the range of style numbers used for margin text
+        void MarginSetStyleOffset(int style);
 
-    // Get the start of the range of style numbers used for margin text
-    int MarginGetStyleOffset() const;
+        // Get the start of the range of style numbers used for margin text
+        int MarginGetStyleOffset() const;
 
-    // Set the margin options.
-    void SetMarginOptions(int marginOptions);
+        // Set the margin options.
+        void SetMarginOptions(int marginOptions);
 
-    // Get the margin options.
-    int GetMarginOptions() const;
+        // Get the margin options.
+        int GetMarginOptions() const;
 
-    // Set the annotation text for a line
-    void AnnotationSetText(int line, const wxString& text);
+        // Set the annotation text for a line
+        void AnnotationSetText(int line, const wxString & text);
 
-    // Get the annotation text for a line
-    wxString AnnotationGetText(int line) const;
+        // Get the annotation text for a line
+        wxString AnnotationGetText(int line) const;
 
-    // Set the style number for the annotations for a line
-    void AnnotationSetStyle(int line, int style);
+        // Set the style number for the annotations for a line
+        void AnnotationSetStyle(int line, int style);
 
-    // Get the style number for the annotations for a line
-    int AnnotationGetStyle(int line) const;
+        // Get the style number for the annotations for a line
+        int AnnotationGetStyle(int line) const;
 
-    // Set the annotation styles for a line
-    void AnnotationSetStyles(int line, const wxString& styles);
+        // Set the annotation styles for a line
+        void AnnotationSetStyles(int line, const wxString & styles);
 
-    // Get the annotation styles for a line
-    wxString AnnotationGetStyles(int line) const;
+        // Get the annotation styles for a line
+        wxString AnnotationGetStyles(int line) const;
 
-    // Get the number of annotation lines for a line
-    int AnnotationGetLines(int line) const;
+        // Get the number of annotation lines for a line
+        int AnnotationGetLines(int line) const;
 
-    // Clear the annotations from all lines
-    void AnnotationClearAll();
+        // Clear the annotations from all lines
+        void AnnotationClearAll();
 
-    // Set the visibility for the annotations for a view
-    void AnnotationSetVisible(int visible);
+        // Set the visibility for the annotations for a view
+        void AnnotationSetVisible(int visible);
 
-    // Get the visibility for the annotations for a view
-    int AnnotationGetVisible() const;
+        // Get the visibility for the annotations for a view
+        int AnnotationGetVisible() const;
 
-    // Get the start of the range of style numbers used for annotations
-    void AnnotationSetStyleOffset(int style);
+        // Get the start of the range of style numbers used for annotations
+        void AnnotationSetStyleOffset(int style);
 
-    // Get the start of the range of style numbers used for annotations
-    int AnnotationGetStyleOffset() const;
+        // Get the start of the range of style numbers used for annotations
+        int AnnotationGetStyleOffset() const;
 
-    // Release all extended (>255) style numbers
-    void ReleaseAllExtendedStyles();
+        // Release all extended (>255) style numbers
+        void ReleaseAllExtendedStyles();
 
-    // Allocate some extended (>255) style numbers and return the start of the range
-    int AllocateExtendedStyles(int numberStyles);
+        // Allocate some extended (>255) style numbers and return the start of the range
+        int AllocateExtendedStyles(int numberStyles);
 
-    // Add a container action to the undo stack
-    void AddUndoAction(int token, int flags);
+        // Add a container action to the undo stack
+        void AddUndoAction(int token, int flags);
 
-    // Find the position of a character from a point within the window.
-    int CharPositionFromPoint(int x, int y);
+        // Find the position of a character from a point within the window.
+        int CharPositionFromPoint(int x, int y);
 
-    // Find the position of a character from a point within the window.
-    // Return wxSCI_INVALID_POSITION if not close to text.
-    int CharPositionFromPointClose(int x, int y);
+        // Find the position of a character from a point within the window.
+        // Return wxSCI_INVALID_POSITION if not close to text.
+        int CharPositionFromPointClose(int x, int y);
 
-    // Set whether switching to rectangular mode while selecting with the mouse is allowed.
-    void SetMouseSelectionRectangularSwitch(bool mouseSelectionRectangularSwitch);
+        // Set whether switching to rectangular mode while selecting with the mouse is allowed.
+        void SetMouseSelectionRectangularSwitch(bool mouseSelectionRectangularSwitch);
 
-    // Whether switching to rectangular mode while selecting with the mouse is allowed.
-    bool GetMouseSelectionRectangularSwitch() const;
+        // Whether switching to rectangular mode while selecting with the mouse is allowed.
+        bool GetMouseSelectionRectangularSwitch() const;
 
-    // Set whether multiple selections can be made
-    void SetMultipleSelection(bool multipleSelection);
+        // Set whether multiple selections can be made
+        void SetMultipleSelection(bool multipleSelection);
 
-    // Whether multiple selections can be made
-    bool GetMultipleSelection() const;
+        // Whether multiple selections can be made
+        bool GetMultipleSelection() const;
 
-    // Set whether typing can be performed into multiple selections
-    void SetAdditionalSelectionTyping(bool additionalSelectionTyping);
+        // Set whether typing can be performed into multiple selections
+        void SetAdditionalSelectionTyping(bool additionalSelectionTyping);
 
-    // Whether typing can be performed into multiple selections
-    bool GetAdditionalSelectionTyping() const;
+        // Whether typing can be performed into multiple selections
+        bool GetAdditionalSelectionTyping() const;
 
-    // Set whether additional carets will blink
-    void SetAdditionalCaretsBlink(bool additionalCaretsBlink);
+        // Set whether additional carets will blink
+        void SetAdditionalCaretsBlink(bool additionalCaretsBlink);
 
-    // Whether additional carets will blink
-    bool GetAdditionalCaretsBlink() const;
+        // Whether additional carets will blink
+        bool GetAdditionalCaretsBlink() const;
 
-    // Set whether additional carets are visible
-    void SetAdditionalCaretsVisible(bool additionalCaretsVisible);
+        // Set whether additional carets are visible
+        void SetAdditionalCaretsVisible(bool additionalCaretsVisible);
 
-    // Whether additional carets are visible
-    bool GetAdditionalCaretsVisible() const;
+        // Whether additional carets are visible
+        bool GetAdditionalCaretsVisible() const;
 
-    // How many selections are there?
-    int GetSelections() const;
+        // How many selections are there?
+        int GetSelections() const;
 
-    // Is every selected range empty?
-    bool GetSelectionEmpty() const;
+        // Is every selected range empty?
+        bool GetSelectionEmpty() const;
 
-    // Clear selections to a single empty stream selection
-    void ClearSelections();
+        // Clear selections to a single empty stream selection
+        void ClearSelections();
 
-    /* C::B begin */
-    // Select a range of text.
-    void SetSelectionVoid(int startPos, int endPos);
+        /* C::B begin */
+        // Select a range of text.
+        void SetSelectionVoid(int startPos, int endPos);
 
-    // Set a simple selection
-    int SetSelectionInt(int caret, int anchor);
-    /* C::B end */
+        // Set a simple selection
+        int SetSelectionInt(int caret, int anchor);
+        /* C::B end */
 
-    // Add a selection
-    int AddSelection(int caret, int anchor);
+        // Add a selection
+        int AddSelection(int caret, int anchor);
 
-    // Drop one selection
-    void DropSelectionN(int selection);
+        // Drop one selection
+        void DropSelectionN(int selection);
 
-    // Set the main selection
-    void SetMainSelection(int selection);
+        // Set the main selection
+        void SetMainSelection(int selection);
 
-    // Which selection is the main selection
-    int GetMainSelection() const;
+        // Which selection is the main selection
+        int GetMainSelection() const;
 
-    // Set the caret position of the nth selection.
-    void SetSelectionNCaret(int selection, int caret);
+        // Set the caret position of the nth selection.
+        void SetSelectionNCaret(int selection, int caret);
 
-    // Return the caret position of the nth selection.
-    int GetSelectionNCaret(int selection) const;
+        // Return the caret position of the nth selection.
+        int GetSelectionNCaret(int selection) const;
 
-    // Set the anchor position of the nth selection.
-    void SetSelectionNAnchor(int selection, int anchor);
+        // Set the anchor position of the nth selection.
+        void SetSelectionNAnchor(int selection, int anchor);
 
-    // Return the anchor position of the nth selection.
-    int GetSelectionNAnchor(int selection) const;
+        // Return the anchor position of the nth selection.
+        int GetSelectionNAnchor(int selection) const;
 
-    // Set the virtual space of the caret of the nth selection.
-    void SetSelectionNCaretVirtualSpace(int selection, int space);
+        // Set the virtual space of the caret of the nth selection.
+        void SetSelectionNCaretVirtualSpace(int selection, int space);
 
-    // Return the virtual space of the caret of the nth selection.
-    int GetSelectionNCaretVirtualSpace(int selection) const;
+        // Return the virtual space of the caret of the nth selection.
+        int GetSelectionNCaretVirtualSpace(int selection) const;
 
-    // Set the virtual space of the anchor of the nth selection.
-    void SetSelectionNAnchorVirtualSpace(int selection, int space);
+        // Set the virtual space of the anchor of the nth selection.
+        void SetSelectionNAnchorVirtualSpace(int selection, int space);
 
-    // Return the virtual space of the anchor of the nth selection.
-    int GetSelectionNAnchorVirtualSpace(int selection) const;
+        // Return the virtual space of the anchor of the nth selection.
+        int GetSelectionNAnchorVirtualSpace(int selection) const;
 
-    // Sets the position that starts the selection - this becomes the anchor.
-    void SetSelectionNStart(int selection, int anchor);
+        // Sets the position that starts the selection - this becomes the anchor.
+        void SetSelectionNStart(int selection, int anchor);
 
-    // Returns the position at the start of the selection.
-    int GetSelectionNStart(int selection) const;
+        // Returns the position at the start of the selection.
+        int GetSelectionNStart(int selection) const;
 
-    // Sets the position that ends the selection - this becomes the currentPosition.
-    void SetSelectionNEnd(int selection, int caret);
+        // Sets the position that ends the selection - this becomes the currentPosition.
+        void SetSelectionNEnd(int selection, int caret);
 
-    // Returns the position at the end of the selection.
-    int GetSelectionNEnd(int selection) const;
+        // Returns the position at the end of the selection.
+        int GetSelectionNEnd(int selection) const;
 
-    // Set the caret position of the rectangular selection.
-    void SetRectangularSelectionCaret(int caret);
+        // Set the caret position of the rectangular selection.
+        void SetRectangularSelectionCaret(int caret);
 
-    // Return the caret position of the rectangular selection.
-    int GetRectangularSelectionCaret() const;
+        // Return the caret position of the rectangular selection.
+        int GetRectangularSelectionCaret() const;
 
-    // Set the anchor position of the rectangular selection.
-    void SetRectangularSelectionAnchor(int anchor);
+        // Set the anchor position of the rectangular selection.
+        void SetRectangularSelectionAnchor(int anchor);
 
-    // Return the anchor position of the rectangular selection.
-    int GetRectangularSelectionAnchor() const;
+        // Return the anchor position of the rectangular selection.
+        int GetRectangularSelectionAnchor() const;
 
-    // Set the virtual space of the caret of the rectangular selection.
-    void SetRectangularSelectionCaretVirtualSpace(int space);
+        // Set the virtual space of the caret of the rectangular selection.
+        void SetRectangularSelectionCaretVirtualSpace(int space);
 
-    // Return the virtual space of the caret of the rectangular selection.
-    int GetRectangularSelectionCaretVirtualSpace() const;
+        // Return the virtual space of the caret of the rectangular selection.
+        int GetRectangularSelectionCaretVirtualSpace() const;
 
-    // Set the virtual space of the anchor of the rectangular selection.
-    void SetRectangularSelectionAnchorVirtualSpace(int space);
+        // Set the virtual space of the anchor of the rectangular selection.
+        void SetRectangularSelectionAnchorVirtualSpace(int space);
 
-    // Return the virtual space of the anchor of the rectangular selection.
-    int GetRectangularSelectionAnchorVirtualSpace() const;
+        // Return the virtual space of the anchor of the rectangular selection.
+        int GetRectangularSelectionAnchorVirtualSpace() const;
 
-    // Set options for virtual space behaviour.
-    void SetVirtualSpaceOptions(int virtualSpaceOptions);
+        // Set options for virtual space behaviour.
+        void SetVirtualSpaceOptions(int virtualSpaceOptions);
 
-    // Return options for virtual space behaviour.
-    int GetVirtualSpaceOptions() const;
+        // Return options for virtual space behaviour.
+        int GetVirtualSpaceOptions() const;
 
-    // On GTK+, allow selecting the modifier key to use for mouse-based
-    // rectangular selection. Often the window manager requires Alt+Mouse Drag
-    // for moving windows.
-    // Valid values are wxSCI_KEYMOD_CTRL (default), wxSCI_KEYMOD_ALT, or wxSCI_KEYMOD_SUPER.
-    void SetRectangularSelectionModifier(int modifier);
+        // On GTK+, allow selecting the modifier key to use for mouse-based
+        // rectangular selection. Often the window manager requires Alt+Mouse Drag
+        // for moving windows.
+        // Valid values are wxSCI_KEYMOD_CTRL (default), wxSCI_KEYMOD_ALT, or wxSCI_KEYMOD_SUPER.
+        void SetRectangularSelectionModifier(int modifier);
 
-    // Get the modifier key used for rectangular selection.
-    int GetRectangularSelectionModifier() const;
+        // Get the modifier key used for rectangular selection.
+        int GetRectangularSelectionModifier() const;
 
-    // Set the foreground colour of additional selections.
-    // Must have previously called SetSelFore with non-zero first argument for this to have an effect.
-    void SetAdditionalSelForeground(const wxColour& fore);
+        // Set the foreground colour of additional selections.
+        // Must have previously called SetSelFore with non-zero first argument for this to have an effect.
+        void SetAdditionalSelForeground(const wxColour & fore);
 
-    // Set the background colour of additional selections.
-    // Must have previously called SetSelBack with non-zero first argument for this to have an effect.
-    void SetAdditionalSelBackground(const wxColour& back);
+        // Set the background colour of additional selections.
+        // Must have previously called SetSelBack with non-zero first argument for this to have an effect.
+        void SetAdditionalSelBackground(const wxColour & back);
 
-    // Set the alpha of the selection.
-    void SetAdditionalSelAlpha(int alpha);
+        // Set the alpha of the selection.
+        void SetAdditionalSelAlpha(int alpha);
 
-    // Get the alpha of the selection.
-    int GetAdditionalSelAlpha() const;
+        // Get the alpha of the selection.
+        int GetAdditionalSelAlpha() const;
 
-    // Set the foreground colour of additional carets.
-    void SetAdditionalCaretForeground(const wxColour& fore);
+        // Set the foreground colour of additional carets.
+        void SetAdditionalCaretForeground(const wxColour & fore);
 
-    // Get the foreground colour of additional carets.
-    wxColour GetAdditionalCaretForeground() const;
+        // Get the foreground colour of additional carets.
+        wxColour GetAdditionalCaretForeground() const;
 
-    // Set the main selection to the next selection.
-    void RotateSelection();
+        // Set the main selection to the next selection.
+        void RotateSelection();
 
-    // Swap that caret and anchor of the main selection.
-    void SwapMainAnchorCaret();
+        // Swap that caret and anchor of the main selection.
+        void SwapMainAnchorCaret();
 
-    // Add the next occurrence of the main selection to the set of selections as main.
-    // If the current selection is empty then select word around caret.
-    void MultipleSelectAddNext();
+        // Add the next occurrence of the main selection to the set of selections as main.
+        // If the current selection is empty then select word around caret.
+        void MultipleSelectAddNext();
 
-    // Add each occurrence of the main selection in the target to the set of selections.
-    // If the current selection is empty then select word around caret.
-    void MultipleSelectAddEach();
+        // Add each occurrence of the main selection in the target to the set of selections.
+        // If the current selection is empty then select word around caret.
+        void MultipleSelectAddEach();
 
-    // Indicate that the internal state of a lexer has changed over a range and therefore
-    // there may be a need to redraw.
-    int ChangeLexerState(int start, int end);
+        // Indicate that the internal state of a lexer has changed over a range and therefore
+        // there may be a need to redraw.
+        int ChangeLexerState(int start, int end);
 
-    // Find the next line at or after lineStart that is a contracted fold header line.
-    // Return -1 when no more lines.
-    int ContractedFoldNext(int lineStart);
+        // Find the next line at or after lineStart that is a contracted fold header line.
+        // Return -1 when no more lines.
+        int ContractedFoldNext(int lineStart);
 
-    // Centre current line in window.
-    void VerticalCentreCaret();
+        // Centre current line in window.
+        void VerticalCentreCaret();
 
-    // Move the selected lines up one line, shifting the line above after the selection
-    void MoveSelectedLinesUp();
+        // Move the selected lines up one line, shifting the line above after the selection
+        void MoveSelectedLinesUp();
 
-    // Move the selected lines down one line, shifting the line below before the selection
-    void MoveSelectedLinesDown();
+        // Move the selected lines down one line, shifting the line below before the selection
+        void MoveSelectedLinesDown();
 
-    // Set the identifier reported as idFrom in notification messages.
-    void SetIdentifier(int identifier);
+        // Set the identifier reported as idFrom in notification messages.
+        void SetIdentifier(int identifier);
 
-    // Get the identifier.
-    int GetIdentifier() const;
+        // Get the identifier.
+        int GetIdentifier() const;
 
-    // Set the width for future RGBA image data.
-    void RGBAImageSetWidth(int width);
+        // Set the width for future RGBA image data.
+        void RGBAImageSetWidth(int width);
 
-    // Set the height for future RGBA image data.
-    void RGBAImageSetHeight(int height);
+        // Set the height for future RGBA image data.
+        void RGBAImageSetHeight(int height);
 
-    // Set the scale factor in percent for future RGBA image data.
-    void RGBAImageSetScale(int scalePercent);
+        // Set the scale factor in percent for future RGBA image data.
+        void RGBAImageSetScale(int scalePercent);
 
-    // Define a marker from RGBA data.
-    // It has the width and height from RGBAImageSetWidth/Height
-    void MarkerDefineRGBAImage(int markerNumber, const unsigned char* pixels);
+        // Define a marker from RGBA data.
+        // It has the width and height from RGBAImageSetWidth/Height
+        void MarkerDefineRGBAImage(int markerNumber, const unsigned char * pixels);
 
-    // Register an RGBA image for use in autocompletion lists.
-    // It has the width and height from RGBAImageSetWidth/Height
-    void RegisterRGBAImage(int type, const unsigned char* pixels);
+        // Register an RGBA image for use in autocompletion lists.
+        // It has the width and height from RGBAImageSetWidth/Height
+        void RegisterRGBAImage(int type, const unsigned char * pixels);
 
-    // Scroll to start of document.
-    void ScrollToStart();
+        // Scroll to start of document.
+        void ScrollToStart();
 
-    // Scroll to end of document.
-    void ScrollToEnd();
+        // Scroll to end of document.
+        void ScrollToEnd();
 
-    // Set the technology used.
-    void SetTechnology(int technology);
+        // Set the technology used.
+        void SetTechnology(int technology);
 
-    // Get the tech.
-    int GetTechnology() const;
+        // Get the tech.
+        int GetTechnology() const;
 
-    // Create an ILoader*.
-    void* CreateLoader(int bytes) const;
+        // Create an ILoader*.
+        void * CreateLoader(int bytes) const;
 
-    // Move caret to before first visible character on display line.
-    // If already there move to first character on display line.
-    void VCHomeDisplay();
+        // Move caret to before first visible character on display line.
+        // If already there move to first character on display line.
+        void VCHomeDisplay();
 
-    // Like VCHomeDisplay but extending selection to new caret position.
-    void VCHomeDisplayExtend();
+        // Like VCHomeDisplay but extending selection to new caret position.
+        void VCHomeDisplayExtend();
 
-    // Is the caret line always visible?
-    bool GetCaretLineVisibleAlways() const;
+        // Is the caret line always visible?
+        bool GetCaretLineVisibleAlways() const;
 
-    // Sets the caret line to always visible.
-    void SetCaretLineVisibleAlways(bool alwaysVisible);
+        // Sets the caret line to always visible.
+        void SetCaretLineVisibleAlways(bool alwaysVisible);
 
-    // Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.
-    void SetLineEndTypesAllowed(int lineEndBitSet);
+        // Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.
+        void SetLineEndTypesAllowed(int lineEndBitSet);
 
-    // Get the line end types currently allowed.
-    int GetLineEndTypesAllowed() const;
+        // Get the line end types currently allowed.
+        int GetLineEndTypesAllowed() const;
 
-    // Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.
-    int GetLineEndTypesActive() const;
+        // Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.
+        int GetLineEndTypesActive() const;
 
-    // Set the way a character is drawn.
-    void SetRepresentation(const wxString& encodedCharacter, const wxString& representation);
+        // Set the way a character is drawn.
+        void SetRepresentation(const wxString & encodedCharacter, const wxString & representation);
 
-    // Set the way a character is drawn.
-    wxString GetRepresentation(const wxString& encodedCharacter) const;
+        // Set the way a character is drawn.
+        wxString GetRepresentation(const wxString & encodedCharacter) const;
 
-    // Remove a character representation.
-    void ClearRepresentation(const wxString& encodedCharacter);
+        // Remove a character representation.
+        void ClearRepresentation(const wxString & encodedCharacter);
 
-    // Start notifying the container of all key presses and commands.
-    void StartRecord();
+        // Start notifying the container of all key presses and commands.
+        void StartRecord();
 
-    // Stop notifying the container of all key presses and commands.
-    void StopRecord();
+        // Stop notifying the container of all key presses and commands.
+        void StopRecord();
 
-    // Set the lexing language of the document.
-    void SetLexer(int lexer);
+        // Set the lexing language of the document.
+        void SetLexer(int lexer);
 
-    // Retrieve the lexing language of the document.
-    int GetLexer() const;
+        // Retrieve the lexing language of the document.
+        int GetLexer() const;
 
-    // Colourise a segment of the document using the current lexing language.
-    void Colourise(int start, int end);
+        // Colourise a segment of the document using the current lexing language.
+        void Colourise(int start, int end);
 
-    // Set up a value that may be used by a lexer for some optional feature.
-    void SetProperty(const wxString& key, const wxString& value);
+        // Set up a value that may be used by a lexer for some optional feature.
+        void SetProperty(const wxString & key, const wxString & value);
 
-    // Set up the key words used by the lexer.
-    void SetKeyWords(int keyWordSet, const wxString& keyWords);
+        // Set up the key words used by the lexer.
+        void SetKeyWords(int keyWordSet, const wxString & keyWords);
 
-    // Set the lexing language of the document based on string name.
-    void SetLexerLanguage(const wxString& language);
+        // Set the lexing language of the document based on string name.
+        void SetLexerLanguage(const wxString & language);
 
-    // Load a lexer library (dll / so).
-    void LoadLexerLibrary(const wxString& path);
+        // Load a lexer library (dll / so).
+        void LoadLexerLibrary(const wxString & path);
 
-    // Retrieve a "property" value previously set with SetProperty.
-    wxString GetProperty(const wxString& key);
+        // Retrieve a "property" value previously set with SetProperty.
+        wxString GetProperty(const wxString & key);
 
-    // Retrieve a "property" value previously set with SetProperty,
-    // with "$()" variable replacement on returned buffer.
-    wxString GetPropertyExpanded(const wxString& key);
+        // Retrieve a "property" value previously set with SetProperty,
+        // with "$()" variable replacement on returned buffer.
+        wxString GetPropertyExpanded(const wxString & key);
 
-    // Retrieve a "property" value previously set with SetProperty,
-    // interpreted as an int AFTER any "$()" variable replacement.
-    int GetPropertyInt(const wxString &key, int defaultValue=0) const;
+        // Retrieve a "property" value previously set with SetProperty,
+        // interpreted as an int AFTER any "$()" variable replacement.
+        int GetPropertyInt(const wxString & key, int defaultValue = 0) const;
 
-    // Retrieve the number of bits the current lexer needs for styling.
+        // Retrieve the number of bits the current lexer needs for styling.
 #if wxCHECK_VERSION(3, 0, 0)
-    wxDEPRECATED_MSG( "This method uses a function deprecated in the Scintilla library." )
+        wxDEPRECATED_MSG("This method uses a function deprecated in the Scintilla library.")
 #endif // wxCHECK_VERSION
-    int GetStyleBitsNeeded() const;
+        int GetStyleBitsNeeded() const;
 
-    // Retrieve the lexing language of the document.
-    wxString GetLexerLanguage() const;
+        // Retrieve the lexing language of the document.
+        wxString GetLexerLanguage() const;
 
-    // For private communication between an application and a known lexer.
-    void* PrivateLexerCall(int operation, void* pointer);
+        // For private communication between an application and a known lexer.
+        void * PrivateLexerCall(int operation, void * pointer);
 
-    // Retrieve a '\\n' separated list of properties understood by the current lexer.
-    wxString PropertyNames() const;
+        // Retrieve a '\\n' separated list of properties understood by the current lexer.
+        wxString PropertyNames() const;
 
-    // Retrieve the type of a property.
-    int PropertyType(const wxString& name);
+        // Retrieve the type of a property.
+        int PropertyType(const wxString & name);
 
-    // Describe a property.
-    wxString DescribeProperty(const wxString& name) const;
+        // Describe a property.
+        wxString DescribeProperty(const wxString & name) const;
 
-    // Retrieve a '\\n' separated list of descriptions of the keyword sets understood by the current lexer.
-    wxString DescribeKeyWordSets() const;
+        // Retrieve a '\\n' separated list of descriptions of the keyword sets understood by the current lexer.
+        wxString DescribeKeyWordSets() const;
 
-    // Bit set of LineEndType enumertion for which line ends beyond the standard
-    // LF, CR, and CRLF are supported by the lexer.
-    int GetLineEndTypesSupported() const;
+        // Bit set of LineEndType enumertion for which line ends beyond the standard
+        // LF, CR, and CRLF are supported by the lexer.
+        int GetLineEndTypesSupported() const;
 
-    // Allocate a set of sub styles for a particular base style, returning start of range
-    int AllocateSubStyles(int styleBase, int numberStyles);
+        // Allocate a set of sub styles for a particular base style, returning start of range
+        int AllocateSubStyles(int styleBase, int numberStyles);
 
-    // The starting style number for the sub styles associated with a base style
-    int GetSubStylesStart(int styleBase) const;
+        // The starting style number for the sub styles associated with a base style
+        int GetSubStylesStart(int styleBase) const;
 
-    // The number of sub styles associated with a base style
-    int GetSubStylesLength(int styleBase) const;
+        // The number of sub styles associated with a base style
+        int GetSubStylesLength(int styleBase) const;
 
-    // For a sub style, return the base style, else return the argument.
-    int GetStyleFromSubStyle(int subStyle) const;
+        // For a sub style, return the base style, else return the argument.
+        int GetStyleFromSubStyle(int subStyle) const;
 
-    // For a secondary style, return the primary style, else return the argument.
-    int GetPrimaryStyleFromStyle(int style) const;
+        // For a secondary style, return the primary style, else return the argument.
+        int GetPrimaryStyleFromStyle(int style) const;
 
-    // Free allocated sub styles
-    void FreeSubStyles();
+        // Free allocated sub styles
+        void FreeSubStyles();
 
-    // Set the identifiers that are shown in a particular style
-    void SetIdentifiers(int style, const wxString& identifiers);
+        // Set the identifiers that are shown in a particular style
+        void SetIdentifiers(int style, const wxString & identifiers);
 
-    // Where styles are duplicated by a feature such as active/inactive code
-    // return the distance between the two types.
-    int DistanceToSecondaryStyles() const;
+        // Where styles are duplicated by a feature such as active/inactive code
+        // return the distance between the two types.
+        int DistanceToSecondaryStyles() const;
 
-    // Get the set of base styles that can be extended with sub styles
-    wxString GetSubStyleBases() const;
+        // Get the set of base styles that can be extended with sub styles
+        wxString GetSubStyleBases() const;
 
-    //}}}
-    //----------------------------------------------------------------------
+        //}}}
+        //----------------------------------------------------------------------
 
-    // Manually declared methods
+        // Manually declared methods
 
-    // Returns the line number of the line with the caret.
-    int GetCurrentLine();
+        // Returns the line number of the line with the caret.
+        int GetCurrentLine();
 
-    // Extract style settings from a spec-string which is composed of one or
-    // more of the following comma separated elements:
-    //
-    //      bold                    turns on bold
-    //      italic                  turns on italics
-    //      fore:[name or #RRGGBB]  sets the foreground colour
-    //      back:[name or #RRGGBB]  sets the background colour
-    //      face:[facename]         sets the font face name to use
-    //      size:[num]              sets the font size in points
-    //      eol                     turns on eol filling
-    //      underline               turns on underlining
-    //
-    void StyleSetSpec(int styleNum, const wxString& spec);
-
-
-    // Get the font of a style.
-    wxFont StyleGetFont(int style);
+        // Extract style settings from a spec-string which is composed of one or
+        // more of the following comma separated elements:
+        //
+        //      bold                    turns on bold
+        //      italic                  turns on italics
+        //      fore:[name or #RRGGBB]  sets the foreground colour
+        //      back:[name or #RRGGBB]  sets the background colour
+        //      face:[facename]         sets the font face name to use
+        //      size:[num]              sets the font size in points
+        //      eol                     turns on eol filling
+        //      underline               turns on underlining
+        //
+        void StyleSetSpec(int styleNum, const wxString & spec);
 
 
-    // Set style size, face, bold, italic, and underline attributes from
-    // a wxFont's attributes.
-    void StyleSetFont(int styleNum, const wxFont& font);
+        // Get the font of a style.
+        wxFont StyleGetFont(int style);
+
+
+        // Set style size, face, bold, italic, and underline attributes from
+        // a wxFont's attributes.
+        void StyleSetFont(int styleNum, const wxFont & font);
 
 
 
-    // Set all font style attributes at once.
-    void StyleSetFontAttr(int styleNum, int size,
-                          const wxString& faceName,
-                          bool bold, bool italic,
-                          bool underline,
-                          wxFontEncoding encoding=wxFONTENCODING_DEFAULT);
+        // Set all font style attributes at once.
+        void StyleSetFontAttr(int styleNum, int size,
+                              const wxString & faceName,
+                              bool bold, bool italic,
+                              bool underline,
+                              wxFontEncoding encoding = wxFONTENCODING_DEFAULT);
 
 
-    // Set the font encoding to be used by a style.
-    void StyleSetFontEncoding(int style, wxFontEncoding encoding);
+        // Set the font encoding to be used by a style.
+        void StyleSetFontEncoding(int style, wxFontEncoding encoding);
 
 
-    // Perform one of the operations defined by the wxSCI_CMD_* constants.
-    void CmdKeyExecute(int cmd);
+        // Perform one of the operations defined by the wxSCI_CMD_* constants.
+        void CmdKeyExecute(int cmd);
 
 
-    // Set the left and right margin in the edit area, measured in pixels.
-    void SetMargins(int left, int right);
+        // Set the left and right margin in the edit area, measured in pixels.
+        void SetMargins(int left, int right);
 
 
-    // Scroll enough to make the given line visible
-    void ScrollToLine(int line);
+        // Scroll enough to make the given line visible
+        void ScrollToLine(int line);
 
 
-    // Scroll enough to make the given column visible
-    void ScrollToColumn(int column);
+        // Scroll enough to make the given column visible
+        void ScrollToColumn(int column);
 
 
-    // Send a message to Scintilla
-    //
-    // NB: this method is not really const as it can modify the control but it
-    //     has to be declared as such as it's called from both const and
-    //     non-const methods and we can't distinguish between the two
-    wxIntPtr SendMsg(int msg, wxUIntPtr wp=0, wxIntPtr lp=0) const;
+        // Send a message to Scintilla
+        //
+        // NB: this method is not really const as it can modify the control but it
+        //     has to be declared as such as it's called from both const and
+        //     non-const methods and we can't distinguish between the two
+        wxIntPtr SendMsg(int msg, wxUIntPtr wp = 0, wxIntPtr lp = 0) const;
 
 
-    // Set the vertical scrollbar to use instead of the one that's built-in.
-    void SetVScrollBar(wxScrollBar* bar);
+        // Set the vertical scrollbar to use instead of the one that's built-in.
+        void SetVScrollBar(wxScrollBar * bar);
 
 
-    // Set the horizontal scrollbar to use instead of the one that's built-in.
-    void SetHScrollBar(wxScrollBar* bar);
+        // Set the horizontal scrollbar to use instead of the one that's built-in.
+        void SetHScrollBar(wxScrollBar * bar);
 
-    // Can be used to prevent the EVT_CHAR handler from adding the char
-    bool GetLastKeydownProcessed()
-    {
-        return m_lastKeyDownConsumed;
-    }
-    void SetLastKeydownProcessed(bool val)
-    {
-        m_lastKeyDownConsumed = val;
-    }
+        // Can be used to prevent the EVT_CHAR handler from adding the char
+        bool GetLastKeydownProcessed()
+        {
+            return m_lastKeyDownConsumed;
+        }
+        void SetLastKeydownProcessed(bool val)
+        {
+            m_lastKeyDownConsumed = val;
+        }
 
-    /* C::B begin */
-    // Write the contents of the editor to filename
-    bool SaveFile(const wxString& filename);
+        /* C::B begin */
+        // Write the contents of the editor to filename
+        bool SaveFile(const wxString & filename);
 
-    // Load the contents of filename into the editor
-    bool LoadFile(const wxString& filename);
-    /* C::B end */
+        // Load the contents of filename into the editor
+        bool LoadFile(const wxString & filename);
+        /* C::B end */
 
 #ifdef SCI_USE_DND
-    // Allow for simulating a DnD DragEnter
-    wxDragResult DoDragEnter(wxCoord x, wxCoord y, wxDragResult def);
+        // Allow for simulating a DnD DragEnter
+        wxDragResult DoDragEnter(wxCoord x, wxCoord y, wxDragResult def);
 
-    // Allow for simulating a DnD DragOver
-    wxDragResult DoDragOver(wxCoord x, wxCoord y, wxDragResult def);
+        // Allow for simulating a DnD DragOver
+        wxDragResult DoDragOver(wxCoord x, wxCoord y, wxDragResult def);
 
-    // Allow for simulating a DnD DragLeave
-    void DoDragLeave();
+        // Allow for simulating a DnD DragLeave
+        void DoDragLeave();
 
-    // Allow for simulating a DnD DropText
-    bool DoDropText(long x, long y, const wxString& data);
+        // Allow for simulating a DnD DropText
+        bool DoDropText(long x, long y, const wxString & data);
 #endif
 
-    // Specify whether anti-aliased fonts should be used.  Will have no effect
-    // on some platforms, but on some (wxMac for example) can greatly improve
-    // performance.
-    void SetUseAntiAliasing(bool useAA);
+        // Specify whether anti-aliased fonts should be used.  Will have no effect
+        // on some platforms, but on some (wxMac for example) can greatly improve
+        // performance.
+        void SetUseAntiAliasing(bool useAA);
 
-    // Returns the current UseAntiAliasing setting.
-    bool GetUseAntiAliasing();
+        // Returns the current UseAntiAliasing setting.
+        bool GetUseAntiAliasing();
 
-    // Clear annotations from the given line.
-    void AnnotationClearLine(int line);
+        // Clear annotations from the given line.
+        void AnnotationClearLine(int line);
 
-    // Define a marker from a bitmap.
-    void MarkerDefineBitmap(int markerNumber, const wxBitmap& bmp);
+        // Define a marker from a bitmap.
+        void MarkerDefineBitmap(int markerNumber, const wxBitmap & bmp);
 
-    // Register an image for use in autocompletion lists.
-    void RegisterImage(int type, const wxBitmap& bmp);
+        // Register an image for use in autocompletion lists.
+        void RegisterImage(int type, const wxBitmap & bmp);
 
 
 
-    // The following methods are nearly equivalent to their similarly named
-    // cousins above.  The difference is that these methods bypass wxString
-    // and always use a char* even if used in a unicode build of wxWidgets.
-    // In that case the character data will be utf-8 encoded since that is
-    // what is used internally by Scintilla in unicode builds.
+        // The following methods are nearly equivalent to their similarly named
+        // cousins above.  The difference is that these methods bypass wxString
+        // and always use a char* even if used in a unicode build of wxWidgets.
+        // In that case the character data will be utf-8 encoded since that is
+        // what is used internally by Scintilla in unicode builds.
 
-    // Add text to the document at current position.
-    void AddTextRaw(const char* text, int length=-1);
+        // Add text to the document at current position.
+        void AddTextRaw(const char * text, int length = -1);
 
-    // Insert string at a position.
-    void InsertTextRaw(int pos, const char* text);
+        // Insert string at a position.
+        void InsertTextRaw(int pos, const char * text);
 
-    // Retrieve the text of the line containing the caret.
-    // Returns the index of the caret on the line.
+        // Retrieve the text of the line containing the caret.
+        // Returns the index of the caret on the line.
 #ifdef SWIG
-    wxCharBuffer GetCurLineRaw(int* OUTPUT);
+        wxCharBuffer GetCurLineRaw(int * OUTPUT);
 #else
-    wxCharBuffer GetCurLineRaw(int* linePos=NULL);
+        wxCharBuffer GetCurLineRaw(int * linePos = NULL);
 #endif
 
-    // Retrieve the contents of a line.
-    wxCharBuffer GetLineRaw(int line);
+        // Retrieve the contents of a line.
+        wxCharBuffer GetLineRaw(int line);
 
-    // Retrieve the selected text.
-    wxCharBuffer GetSelectedTextRaw();
+        // Retrieve the selected text.
+        wxCharBuffer GetSelectedTextRaw();
 
-    // Retrieve the target text.
-    wxCharBuffer GetTargetTextRaw();
+        // Retrieve the target text.
+        wxCharBuffer GetTargetTextRaw();
 
-    // Retrieve a range of text.
-    wxCharBuffer GetTextRangeRaw(int startPos, int endPos);
+        // Retrieve a range of text.
+        wxCharBuffer GetTextRangeRaw(int startPos, int endPos);
 
-    // Replace the contents of the document with the argument text.
-    void SetTextRaw(const char* text);
+        // Replace the contents of the document with the argument text.
+        void SetTextRaw(const char * text);
 
-    // Retrieve all the text in the document.
-    wxCharBuffer GetTextRaw();
+        // Retrieve all the text in the document.
+        wxCharBuffer GetTextRaw();
 
-    // Append a string to the end of the document without changing the selection.
-    void AppendTextRaw(const char* text, int length=-1);
+        // Append a string to the end of the document without changing the selection.
+        void AppendTextRaw(const char * text, int length = -1);
 
 #ifdef SWIG
-    %pythoncode "_SCI_utf8_methods.py"
+        % pythoncode "_SCI_utf8_methods.py"
 #endif
 
 
-    // implement wxTextEntryBase pure virtual methods
-    // ----------------------------------------------
+        // implement wxTextEntryBase pure virtual methods
+        // ----------------------------------------------
 
-    virtual void WriteText(const wxString& text)
-    {
-        ReplaceSelection(text);
-    }
-
-    virtual void Remove(long from, long to)
-    {
-        Replace(from, to, wxString());
-    }
-    virtual void Replace(long from, long to, const wxString& text)
-    {
-        SetTargetStart((int)from);
-        SetTargetEnd((int)to);
-        ReplaceTarget(text);
-    }
-
-    /*
-        These functions are already declared in the generated section.
-
-    virtual void Copy();
-    virtual void Cut();
-    virtual void Paste();
-
-    virtual void Undo();
-    virtual void Redo();
-
-    virtual bool CanUndo() const;
-    virtual bool CanRedo() const;
-
-    */
-
-    virtual void SetInsertionPoint(long pos)
-    {
-        SetCurrentPos(int(pos == -1 ? GetLastPosition() : pos));
-    }
-    virtual long GetInsertionPoint() const
-    {
-        return GetCurrentPos();
-    }
-    virtual long GetLastPosition() const
-    {
-        return GetTextLength();
-    }
-
-    virtual void SetSelection(long from, long to)
-    {
-        if ( from == -1 && to == -1 )
+        virtual void WriteText(const wxString & text)
         {
-            SelectAll();
+            ReplaceSelection(text);
         }
-        else
-        {
-            SetSelectionStart((int)from);
-            SetSelectionEnd((int)to);
-        }
-    }
 
-    virtual void SelectNone()
-    {
-        ClearSelections();
-    }
+        virtual void Remove(long from, long to)
+        {
+            Replace(from, to, wxString());
+        }
+        virtual void Replace(long from, long to, const wxString & text)
+        {
+            SetTargetStart((int)from);
+            SetTargetEnd((int)to);
+            ReplaceTarget(text);
+        }
+
+        /*
+            These functions are already declared in the generated section.
+
+        virtual void Copy();
+        virtual void Cut();
+        virtual void Paste();
+
+        virtual void Undo();
+        virtual void Redo();
+
+        virtual bool CanUndo() const;
+        virtual bool CanRedo() const;
+
+        */
+
+        virtual void SetInsertionPoint(long pos)
+        {
+            SetCurrentPos(int(pos == -1 ? GetLastPosition() : pos));
+        }
+        virtual long GetInsertionPoint() const
+        {
+            return GetCurrentPos();
+        }
+        virtual long GetLastPosition() const
+        {
+            return GetTextLength();
+        }
+
+        virtual void SetSelection(long from, long to)
+        {
+            if (from == -1 && to == -1)
+            {
+                SelectAll();
+            }
+            else
+            {
+                SetSelectionStart((int)from);
+                SetSelectionEnd((int)to);
+            }
+        }
+
+        virtual void SelectNone()
+        {
+            ClearSelections();
+        }
 
 #ifdef SWIG
-    void GetSelection(long* OUTPUT, long* OUTPUT) const;
+        void GetSelection(long * OUTPUT, long * OUTPUT) const;
 #else
-    virtual void GetSelection(long *from, long *to) const
-    {
-        if ( from )
-            *from = GetSelectionStart();
-        if ( to )
-            *to = GetSelectionEnd();
-    }
+        virtual void GetSelection(long * from, long * to) const
+        {
+            if (from)
+            {
+                *from = GetSelectionStart();
+            }
 
-    // kept for compatibility only
-    void GetSelection(int *from, int *to)
-    {
-        long f, t;
-        GetSelection(&f, &t);
-        if ( from )
-            *from = (int)f;
-        if ( to )
-            *to = (int)t;
-    }
+            if (to)
+            {
+                *to = GetSelectionEnd();
+            }
+        }
+
+        // kept for compatibility only
+        void GetSelection(int * from, int * to)
+        {
+            long f, t;
+            GetSelection(&f, &t);
+
+            if (from)
+            {
+                *from = (int)f;
+            }
+
+            if (to)
+            {
+                *to = (int)t;
+            }
+        }
 #endif
 
-    virtual bool IsEditable() const
-    {
-        return !GetReadOnly();
-    }
-    virtual void SetEditable(bool editable)
-    {
-        SetReadOnly(!editable);
-    }
+        virtual bool IsEditable() const
+        {
+            return !GetReadOnly();
+        }
+        virtual void SetEditable(bool editable)
+        {
+            SetReadOnly(!editable);
+        }
 
-    /* C::B begin capture mouse assert fix */
-    void SetMouseCapture(bool on);
-    bool HaveMouseCapture() const;
-    /* C::B end */
+        /* C::B begin capture mouse assert fix */
+        void SetMouseCapture(bool on);
+        bool HaveMouseCapture() const;
+        /* C::B end */
 
-    /* C::B begin */
+        /* C::B begin */
 #if wxCHECK_VERSION(3, 0, 0)
-    static wxVersionInfo GetLibraryVersionInfo();
+        static wxVersionInfo GetLibraryVersionInfo();
 #endif
-    /* C::B end */
+        /* C::B end */
 
-protected:
-    /* C::B begin */
-    wxString GetValue() const
-    {
-        return GetText();
-    }
-    void SetValue(const wxString& text)
-    {
-        SetText(text);
-    }
-    /* C::B end */
-    virtual void DoSetValue(const wxString& value, int flags);
-    virtual wxString DoGetValue() const
-    {
-        return GetText();
-    }
-    virtual wxWindow *GetEditableWindow()
-    {
-        return this;
-    }
+    protected:
+        /* C::B begin */
+        wxString GetValue() const
+        {
+            return GetText();
+        }
+        void SetValue(const wxString & text)
+        {
+            SetText(text);
+        }
+        /* C::B end */
+        virtual void DoSetValue(const wxString & value, int flags);
+        virtual wxString DoGetValue() const
+        {
+            return GetText();
+        }
+        virtual wxWindow * GetEditableWindow()
+        {
+            return this;
+        }
 
 #ifndef SWIG
-    virtual bool DoLoadFile(const wxString& file, int fileType);
-    virtual bool DoSaveFile(const wxString& file, int fileType);
+        virtual bool DoLoadFile(const wxString & file, int fileType);
+        virtual bool DoSaveFile(const wxString & file, int fileType);
 
-    // Event handlers
-    void OnPaint(wxPaintEvent& evt);
-    void OnScrollWin(wxScrollWinEvent& evt);
-    void OnScroll(wxScrollEvent& evt);
-    void OnSize(wxSizeEvent& evt);
-    void OnMouseLeftDown(wxMouseEvent& evt);
-    void OnMouseRightDown(wxMouseEvent& evt);
-    void OnMouseMove(wxMouseEvent& evt);
-    void OnMouseLeftUp(wxMouseEvent& evt);
-    void OnMouseRightUp(wxMouseEvent& evt);
-    void OnMouseMiddleUp(wxMouseEvent& evt);
-    void OnContextMenu(wxContextMenuEvent& evt);
-    void OnMouseWheel(wxMouseEvent& evt);
-    void OnChar(wxKeyEvent& evt);
-    void OnKeyDown(wxKeyEvent& evt);
-    void OnLoseFocus(wxFocusEvent& evt);
-    void OnGainFocus(wxFocusEvent& evt);
-    void OnSysColourChanged(wxSysColourChangedEvent& evt);
-    void OnEraseBackground(wxEraseEvent& evt);
-    void OnMenu(wxCommandEvent& evt);
-    void OnListBox(wxCommandEvent& evt);
-    void OnIdle(wxIdleEvent& evt);
-    void OnMouseCaptureLost(wxMouseCaptureLostEvent& evt);
+        // Event handlers
+        void OnPaint(wxPaintEvent & evt);
+        void OnScrollWin(wxScrollWinEvent & evt);
+        void OnScroll(wxScrollEvent & evt);
+        void OnSize(wxSizeEvent & evt);
+        void OnMouseLeftDown(wxMouseEvent & evt);
+        void OnMouseRightDown(wxMouseEvent & evt);
+        void OnMouseMove(wxMouseEvent & evt);
+        void OnMouseLeftUp(wxMouseEvent & evt);
+        void OnMouseRightUp(wxMouseEvent & evt);
+        void OnMouseMiddleUp(wxMouseEvent & evt);
+        void OnContextMenu(wxContextMenuEvent & evt);
+        void OnMouseWheel(wxMouseEvent & evt);
+        void OnChar(wxKeyEvent & evt);
+        void OnKeyDown(wxKeyEvent & evt);
+        void OnLoseFocus(wxFocusEvent & evt);
+        void OnGainFocus(wxFocusEvent & evt);
+        void OnSysColourChanged(wxSysColourChangedEvent & evt);
+        void OnEraseBackground(wxEraseEvent & evt);
+        void OnMenu(wxCommandEvent & evt);
+        void OnListBox(wxCommandEvent & evt);
+        void OnIdle(wxIdleEvent & evt);
+        void OnMouseCaptureLost(wxMouseCaptureLostEvent & evt);
 
-    virtual wxSize DoGetBestSize() const override;
+        virtual wxSize DoGetBestSize() const override;
 
-    // Turn notifications from Scintilla into events
-    void NotifyChange();
-    void NotifyParent(SCNotification* scn);
+        // Turn notifications from Scintilla into events
+        void NotifyChange();
+        void NotifyParent(SCNotification * scn);
 
-private:
-    DECLARE_EVENT_TABLE();
-    DECLARE_DYNAMIC_CLASS(wxScintilla);
+    private:
+        DECLARE_EVENT_TABLE();
+        DECLARE_DYNAMIC_CLASS(wxScintilla);
 
-protected:
+    protected:
 
-    ScintillaWX*        m_swx;
-    wxStopWatch         m_stopWatch;
-    wxScrollBar*        m_vScrollBar;
-    wxScrollBar*        m_hScrollBar;
+        ScintillaWX    *    m_swx;
+        wxStopWatch         m_stopWatch;
+        wxScrollBar    *    m_vScrollBar;
+        wxScrollBar    *    m_hScrollBar;
 
-    bool                m_lastKeyDownConsumed;
+        bool                m_lastKeyDownConsumed;
 
-    friend class ScintillaWX;
-    friend class Platform;
+        friend class ScintillaWX;
+        friend class Platform;
 #endif // !SWIG
 };
 
@@ -5451,273 +5462,277 @@ protected:
 
 class WXDLLIMPEXP_SCI wxScintillaEvent : public wxCommandEvent
 {
-public:
-    wxScintillaEvent(wxEventType commandType=0, int id=0);
+    public:
+        wxScintillaEvent(wxEventType commandType = 0, int id = 0);
 #ifndef SWIG
-    wxScintillaEvent(const wxScintillaEvent& event);
+        wxScintillaEvent(const wxScintillaEvent & event);
 #endif
-    ~wxScintillaEvent() {}
+        ~wxScintillaEvent() {}
 
-    void SetPosition(int pos)
-    {
-        m_position = pos;
-    }
-    void SetKey(int k)
-    {
-        m_key = k;
-    }
-    void SetModifiers(int m)
-    {
-        m_modifiers = m;
-    }
-    void SetModificationType(int t)
-    {
-        m_modificationType = t;
-    }
-    // Kept for backwards compatibility, use SetString().
-    void SetText(const wxString& t)
-    {
-        SetString(t);
-    }
-    void SetLength(int len)
-    {
-        m_length = len;
-    }
-    void SetLinesAdded(int num)
-    {
-        m_linesAdded = num;
-    }
-    void SetLine(int val)
-    {
-        m_line = val;
-    }
-    void SetFoldLevelNow(int val)
-    {
-        m_foldLevelNow = val;
-    }
-    void SetFoldLevelPrev(int val)
-    {
-        m_foldLevelPrev = val;
-    }
-    void SetMargin(int val)
-    {
-        m_margin = val;
-    }
-    void SetMessage(int val)
-    {
-        m_message = val;
-    }
-    void SetWParam(int val)
-    {
-        m_wParam = val;
-    }
-    void SetLParam(int val)
-    {
-        m_lParam = val;
-    }
-    void SetListType(int val)
-    {
-        m_listType = val;
-    }
-    void SetX(int val)
-    {
-        m_x = val;
-    }
-    void SetY(int val)
-    {
-        m_y = val;
-    }
-    void SetToken(int val)
-    {
-        m_token = val;
-    }
-    void SetAnnotationLinesAdded(int val)
-    {
-        m_annotationLinesAdded = val;
-    }
-    void SetUpdated(int val)
-    {
-        m_updated = val;
-    }
-    void SetListCompletionMethod(int val)
-    {
-        m_listCompletionMethod = val;
-    }
+        void SetPosition(int pos)
+        {
+            m_position = pos;
+        }
+        void SetKey(int k)
+        {
+            m_key = k;
+        }
+        void SetModifiers(int m)
+        {
+            m_modifiers = m;
+        }
+        void SetModificationType(int t)
+        {
+            m_modificationType = t;
+        }
+        // Kept for backwards compatibility, use SetString().
+        void SetText(const wxString & t)
+        {
+            SetString(t);
+        }
+        void SetLength(int len)
+        {
+            m_length = len;
+        }
+        void SetLinesAdded(int num)
+        {
+            m_linesAdded = num;
+        }
+        void SetLine(int val)
+        {
+            m_line = val;
+        }
+        void SetFoldLevelNow(int val)
+        {
+            m_foldLevelNow = val;
+        }
+        void SetFoldLevelPrev(int val)
+        {
+            m_foldLevelPrev = val;
+        }
+        void SetMargin(int val)
+        {
+            m_margin = val;
+        }
+        void SetMessage(int val)
+        {
+            m_message = val;
+        }
+        void SetWParam(int val)
+        {
+            m_wParam = val;
+        }
+        void SetLParam(int val)
+        {
+            m_lParam = val;
+        }
+        void SetListType(int val)
+        {
+            m_listType = val;
+        }
+        void SetX(int val)
+        {
+            m_x = val;
+        }
+        void SetY(int val)
+        {
+            m_y = val;
+        }
+        void SetToken(int val)
+        {
+            m_token = val;
+        }
+        void SetAnnotationLinesAdded(int val)
+        {
+            m_annotationLinesAdded = val;
+        }
+        void SetUpdated(int val)
+        {
+            m_updated = val;
+        }
+        void SetListCompletionMethod(int val)
+        {
+            m_listCompletionMethod = val;
+        }
 #ifdef  SCI_USE_DND
-    // Kept for backwards compatibility, use SetString().
-    void SetDragText(const wxString& val)
-    {
-        SetString(val);
-    }
-    void SetDragFlags(int flags)
-    {
-        m_dragFlags = flags;
-    }
-    void SetDragResult(wxDragResult val)
-    {
-        m_dragResult = val;
-    }
+        // Kept for backwards compatibility, use SetString().
+        void SetDragText(const wxString & val)
+        {
+            SetString(val);
+        }
+        void SetDragFlags(int flags)
+        {
+            m_dragFlags = flags;
+        }
+        void SetDragResult(wxDragResult val)
+        {
+            m_dragResult = val;
+        }
 
-    // This method is kept mainly for backwards compatibility, use
-    // SetDragFlags() in the new code.
-    void SetDragAllowMove(bool allow)
-    {
-        if ( allow )
-            m_dragFlags |= wxDrag_AllowMove;
-        else
-            m_dragFlags &= ~(wxDrag_AllowMove | wxDrag_DefaultMove);
-    }
+        // This method is kept mainly for backwards compatibility, use
+        // SetDragFlags() in the new code.
+        void SetDragAllowMove(bool allow)
+        {
+            if (allow)
+            {
+                m_dragFlags |= wxDrag_AllowMove;
+            }
+            else
+            {
+                m_dragFlags &= ~(wxDrag_AllowMove | wxDrag_DefaultMove);
+            }
+        }
 #endif
 
-    int  GetPosition() const
-    {
-        return m_position;
-    }
-    int  GetKey()  const
-    {
-        return m_key;
-    }
-    int  GetModifiers() const
-    {
-        return m_modifiers;
-    }
-    int  GetModificationType() const
-    {
-        return m_modificationType;
-    }
-    // Kept for backwards compatibility, use GetString().
-    wxString GetText() const
-    {
-        return GetString();
-    }
-    int  GetLength() const
-    {
-        return m_length;
-    }
-    int  GetLinesAdded() const
-    {
-        return m_linesAdded;
-    }
-    int  GetLine() const
-    {
-        return m_line;
-    }
-    int  GetFoldLevelNow() const
-    {
-        return m_foldLevelNow;
-    }
-    int  GetFoldLevelPrev() const
-    {
-        return m_foldLevelPrev;
-    }
-    int  GetMargin() const
-    {
-        return m_margin;
-    }
-    int  GetMessage() const
-    {
-        return m_message;
-    }
-    int  GetWParam() const
-    {
-        return m_wParam;
-    }
-    int  GetLParam() const
-    {
-        return m_lParam;
-    }
-    int  GetListType() const
-    {
-        return m_listType;
-    }
-    int  GetX() const
-    {
-        return m_x;
-    }
-    int  GetY() const
-    {
-        return m_y;
-    }
-    int  GetToken() const
-    {
-        return m_token;
-    }
-    int  GetAnnotationsLinesAdded() const
-    {
-        return m_annotationLinesAdded;
-    }
-    int  GetUpdated() const
-    {
-        return m_updated;
-    }
-    int  GetListCompletionMethod() const
-    {
-        return m_listCompletionMethod;
-    }
+        int  GetPosition() const
+        {
+            return m_position;
+        }
+        int  GetKey()  const
+        {
+            return m_key;
+        }
+        int  GetModifiers() const
+        {
+            return m_modifiers;
+        }
+        int  GetModificationType() const
+        {
+            return m_modificationType;
+        }
+        // Kept for backwards compatibility, use GetString().
+        wxString GetText() const
+        {
+            return GetString();
+        }
+        int  GetLength() const
+        {
+            return m_length;
+        }
+        int  GetLinesAdded() const
+        {
+            return m_linesAdded;
+        }
+        int  GetLine() const
+        {
+            return m_line;
+        }
+        int  GetFoldLevelNow() const
+        {
+            return m_foldLevelNow;
+        }
+        int  GetFoldLevelPrev() const
+        {
+            return m_foldLevelPrev;
+        }
+        int  GetMargin() const
+        {
+            return m_margin;
+        }
+        int  GetMessage() const
+        {
+            return m_message;
+        }
+        int  GetWParam() const
+        {
+            return m_wParam;
+        }
+        int  GetLParam() const
+        {
+            return m_lParam;
+        }
+        int  GetListType() const
+        {
+            return m_listType;
+        }
+        int  GetX() const
+        {
+            return m_x;
+        }
+        int  GetY() const
+        {
+            return m_y;
+        }
+        int  GetToken() const
+        {
+            return m_token;
+        }
+        int  GetAnnotationsLinesAdded() const
+        {
+            return m_annotationLinesAdded;
+        }
+        int  GetUpdated() const
+        {
+            return m_updated;
+        }
+        int  GetListCompletionMethod() const
+        {
+            return m_listCompletionMethod;
+        }
 
 #ifdef SCI_USE_DND
-    // Kept for backwards compatibility, use GetString().
-    wxString GetDragText()
-    {
-        return GetString();
-    }
-    int GetDragFlags()
-    {
-        return m_dragFlags;
-    }
-    wxDragResult GetDragResult()
-    {
-        return m_dragResult;
-    }
+        // Kept for backwards compatibility, use GetString().
+        wxString GetDragText()
+        {
+            return GetString();
+        }
+        int GetDragFlags()
+        {
+            return m_dragFlags;
+        }
+        wxDragResult GetDragResult()
+        {
+            return m_dragResult;
+        }
 
-    bool GetDragAllowMove()
-    {
-        return (GetDragFlags() & wxDrag_AllowMove) != 0;
-    }
+        bool GetDragAllowMove()
+        {
+            return (GetDragFlags() & wxDrag_AllowMove) != 0;
+        }
 #endif
 
-    bool GetShift() const;
-    bool GetControl() const;
-    bool GetAlt() const;
+        bool GetShift() const;
+        bool GetControl() const;
+        bool GetAlt() const;
 
-    virtual wxEvent* Clone() const
-    {
-        return new wxScintillaEvent(*this);
-    }
+        virtual wxEvent * Clone() const
+        {
+            return new wxScintillaEvent(*this);
+        }
 
 #ifndef SWIG
-private:
-    DECLARE_DYNAMIC_CLASS(wxScintillaEvent)
+    private:
+        DECLARE_DYNAMIC_CLASS(wxScintillaEvent)
 
-    int  m_position;
-    int  m_key;
-    int  m_modifiers;
+        int  m_position;
+        int  m_key;
+        int  m_modifiers;
 
-    int  m_modificationType;    // wxEVT_SCI_MODIFIED
-    int  m_length;
-    int  m_linesAdded;
-    int  m_line;
-    int  m_foldLevelNow;
-    int  m_foldLevelPrev;
+        int  m_modificationType;    // wxEVT_SCI_MODIFIED
+        int  m_length;
+        int  m_linesAdded;
+        int  m_line;
+        int  m_foldLevelNow;
+        int  m_foldLevelPrev;
 
-    int  m_margin;              // wxEVT_SCI_MARGINCLICK
+        int  m_margin;              // wxEVT_SCI_MARGINCLICK
 
-    int  m_message;             // wxEVT_SCI_MACRORECORD
-    int  m_wParam;
-    int  m_lParam;
+        int  m_message;             // wxEVT_SCI_MACRORECORD
+        int  m_wParam;
+        int  m_lParam;
 
-    int m_listType;
-    int m_x;
-    int m_y;
+        int m_listType;
+        int m_x;
+        int m_y;
 
-    int m_token;                // wxEVT_SCI__MODIFIED with SC_MOD_CONTAINER
-    int m_annotationLinesAdded; // wxEVT_SCI_MODIFIED with SC_MOD_CHANGEANNOTATION
-    int m_updated;              // wxEVT_SCI_UPDATEUI
-    int m_listCompletionMethod;
+        int m_token;                // wxEVT_SCI__MODIFIED with SC_MOD_CONTAINER
+        int m_annotationLinesAdded; // wxEVT_SCI_MODIFIED with SC_MOD_CHANGEANNOTATION
+        int m_updated;              // wxEVT_SCI_UPDATEUI
+        int m_listCompletionMethod;
 
 #if wxUSE_DRAG_AND_DROP
-    int      m_dragFlags;       // wxEVT_SCI_START_DRAG
-    wxDragResult m_dragResult;  // wxEVT_SCI_DRAG_OVER,wxEVT_SCI_DO_DROP
+        int      m_dragFlags;       // wxEVT_SCI_START_DRAG
+        wxDragResult m_dragResult;  // wxEVT_SCI_DRAG_OVER,wxEVT_SCI_DO_DROP
 #endif
 #endif
 };
@@ -5725,39 +5740,39 @@ private:
 
 
 #ifndef SWIG
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_CHANGE,               1650)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_STYLENEEDED,          1651)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_CHARADDED,            1652)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_SAVEPOINTREACHED,     1653)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_SAVEPOINTLEFT,        1654)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_ROMODIFYATTEMPT,      1655)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_DOUBLECLICK,          1657)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_UPDATEUI,             1658)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_MODIFIED,             1659)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_MACRORECORD,          1660)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_MARGINCLICK,          1661)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_NEEDSHOWN,            1662)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_PAINTED,              1664)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_USERLISTSELECTION,    1665)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_DWELLSTART,           1667)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_DWELLEND,             1668)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_START_DRAG,           1669)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_DRAG_OVER,            1670)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_DO_DROP,              1671)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_ZOOM,                 1672)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_HOTSPOT_CLICK,        1673)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_HOTSPOT_DCLICK,       1674)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_CALLTIP_CLICK,        1675)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_AUTOCOMP_SELECTION,   1676)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_INDICATOR_CLICK,      1677)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_INDICATOR_RELEASE,    1678)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_AUTOCOMP_CANCELLED,   1679)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_AUTOCOMP_CHAR_DELETED,1680)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_HOTSPOT_RELEASE_CLICK,1681)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_CLIPBOARD_COPY,       1681)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_CLIPBOARD_PASTE,      1682)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_AUTOCOMP_COMPLETED,   1683)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_MARGIN_RIGHT_CLICK,   1684)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_CHANGE,               1650)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_STYLENEEDED,          1651)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_CHARADDED,            1652)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_SAVEPOINTREACHED,     1653)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_SAVEPOINTLEFT,        1654)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_ROMODIFYATTEMPT,      1655)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_DOUBLECLICK,          1657)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_UPDATEUI,             1658)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_MODIFIED,             1659)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_MACRORECORD,          1660)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_MARGINCLICK,          1661)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_NEEDSHOWN,            1662)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_PAINTED,              1664)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_USERLISTSELECTION,    1665)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_DWELLSTART,           1667)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_DWELLEND,             1668)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_START_DRAG,           1669)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_DRAG_OVER,            1670)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_DO_DROP,              1671)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_ZOOM,                 1672)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_HOTSPOT_CLICK,        1673)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_HOTSPOT_DCLICK,       1674)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_CALLTIP_CLICK,        1675)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_AUTOCOMP_SELECTION,   1676)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_INDICATOR_CLICK,      1677)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_INDICATOR_RELEASE,    1678)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_AUTOCOMP_CANCELLED,   1679)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_AUTOCOMP_CHAR_DELETED, 1680)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_HOTSPOT_RELEASE_CLICK, 1681)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_CLIPBOARD_COPY,       1681)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_CLIPBOARD_PASTE,      1682)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_AUTOCOMP_COMPLETED,   1683)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_SCI, wxEVT_SCI_MARGIN_RIGHT_CLICK,   1684)
 END_DECLARE_EVENT_TYPES()
 #else
 enum
@@ -5801,12 +5816,12 @@ enum
 
 
 #ifndef SWIG
-typedef void (wxEvtHandler::*wxScintillaEventFunction)(wxScintillaEvent&);
+typedef void (wxEvtHandler::*wxScintillaEventFunction)(wxScintillaEvent &);
 
 /* C::B begin */
 #if !wxCHECK_VERSION(3, 0, 0)
 #define wxEVENT_HANDLER_CAST( functype, func ) \
-      ( wxObjectEventFunction )( wxEventFunction )wxStaticCastEvent( functype, &func )
+    ( wxObjectEventFunction )( wxEventFunction )wxStaticCastEvent( functype, &func )
 #endif
 /* C::B end */
 
@@ -5857,15 +5872,15 @@ typedef void (wxEvtHandler::*wxScintillaEventFunction)(wxScintillaEvent&);
 
 #if wxUSE_UNICODE
 
-extern wxString sci2wx(const char* str);
-extern wxString sci2wx(const char* str, size_t len);
-extern wxCharBuffer wx2sci(const wxString& str);
+extern wxString sci2wx(const char * str);
+extern wxString sci2wx(const char * str, size_t len);
+extern wxCharBuffer wx2sci(const wxString & str);
 
 // This function takes both wxString and wxCharBuffer because it uses either
 // one or the other of them depending on the build mode. In Unicode it uses the
 // length of the already converted buffer to avoid doing the conversion again
 // just to compute the length.
-inline size_t wx2scilen(const wxString& WXUNUSED(str), const wxCharBuffer& buf)
+inline size_t wx2scilen(const wxString & WXUNUSED(str), const wxCharBuffer & buf)
 {
 #if wxCHECK_VERSION(3, 0, 0)
     return buf.length();
@@ -5876,21 +5891,21 @@ inline size_t wx2scilen(const wxString& WXUNUSED(str), const wxCharBuffer& buf)
 
 #else // not UNICODE
 
-inline wxString sci2wx(const char* str)
+inline wxString sci2wx(const char * str)
 {
     return wxString(str);
 }
-inline wxString sci2wx(const char* str, size_t len)
+inline wxString sci2wx(const char * str, size_t len)
 {
     return wxString(str, len);
 }
-inline const char* wx2sci(const wxString& str)
+inline const char * wx2sci(const wxString & str)
 {
     return str.mbc_str();
 }
 
 // As explained above, the buffer argument is only used in Unicode build.
-inline size_t wx2scilen(const wxString& str, const char* WXUNUSED(buf))
+inline size_t wx2scilen(const wxString & str, const char * WXUNUSED(buf))
 {
     return str.length();
 }

@@ -13,31 +13,31 @@
 
 class CommitDialog: public wxDialog
 {
-public:
+    public:
 
-    CommitDialog(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
-    virtual ~CommitDialog();
+        CommitDialog(wxWindow * parent, wxWindowID id = wxID_ANY, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize);
+        virtual ~CommitDialog();
 
-    //(*Declarations(CommitDialog)
-    wxStaticText* StaticText1;
-    wxCheckListBox* FileChoice;
-    wxTextCtrl* Comment;
-    //*)
+        //(*Declarations(CommitDialog)
+        wxStaticText * StaticText1;
+        wxCheckListBox * FileChoice;
+        wxTextCtrl * Comment;
+        //*)
 
-protected:
+    protected:
 
-    //(*Identifiers(CommitDialog)
-    static const long ID_FILECHOICE;
-    static const long ID_STATICTEXT1;
-    static const long ID_COMMENT;
-    //*)
+        //(*Identifiers(CommitDialog)
+        static const long ID_FILECHOICE;
+        static const long ID_STATICTEXT1;
+        static const long ID_COMMENT;
+        //*)
 
-private:
+    private:
 
-    //(*Handlers(CommitDialog)
-    //*)
+        //(*Handlers(CommitDialog)
+        //*)
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

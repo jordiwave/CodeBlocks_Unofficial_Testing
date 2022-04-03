@@ -24,21 +24,22 @@
 #include "wxstwolongproperty.h"
 #include <globals.h>
 
-wxString wxsTwoLongData::GetLongCode(wxsCoderContext* Context)
+wxString wxsTwoLongData::GetLongCode(wxsCoderContext * Context)
 {
-    switch ( Context->m_Language )
+    switch (Context->m_Language)
     {
-    case wxsCPP:
-    {
-        return wxString::Format(_T("%ld, %ld"), Value1, Value2);
+        case wxsCPP:
+        {
+            return wxString::Format(_T("%ld, %ld"), Value1, Value2);
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsTwoLongData::GetLongCode"), Context->m_Language);
+        }
     }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsTwoLongData::GetLongCode"),Context->m_Language);
-    }
-    }
     return wxEmptyString;
 }
 
@@ -62,15 +63,15 @@ enum
 
 
 wxsTwoLongProperty::wxsTwoLongProperty(
-    const wxString& PGName,
-    const wxString& PGValue1Name,
-    const wxString& PGValue2Name,
-    const wxString& DataName,
+    const wxString & PGName,
+    const wxString & PGValue1Name,
+    const wxString & PGValue2Name,
+    const wxString & DataName,
     long _Offset,
     long _DefaultValue1,
     long _DefaultValue2,
     int Priority) :
-    wxsProperty(PGName,DataName,Priority),
+    wxsProperty(PGName, DataName, Priority),
     Offset(_Offset),
     DefaultValue1(_DefaultValue1),
     DefaultValue2(_DefaultValue2),
@@ -79,90 +80,90 @@ wxsTwoLongProperty::wxsTwoLongProperty(
 {}
 
 
-void wxsTwoLongProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
+void wxsTwoLongProperty::PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent)
 {
-    wxPGId DefId = Grid->AppendIn(Parent, new wxBoolProperty(GetPGName(),wxPG_LABEL,DEFVALUE));
-    wxPGId V1Id = Grid->AppendIn(Parent, new wxIntProperty(Value1Name,wxPG_LABEL,VALUE1));
-    wxPGId V2Id = Grid->AppendIn(Parent, new wxIntProperty(Value2Name,wxPG_LABEL,VALUE2));
+    wxPGId DefId = Grid->AppendIn(Parent, new wxBoolProperty(GetPGName(), wxPG_LABEL, DEFVALUE));
+    wxPGId V1Id = Grid->AppendIn(Parent, new wxIntProperty(Value1Name, wxPG_LABEL, VALUE1));
+    wxPGId V2Id = Grid->AppendIn(Parent, new wxIntProperty(Value2Name, wxPG_LABEL, VALUE2));
+    Grid->SetPropertyAttribute(DefId, wxPG_BOOL_USE_CHECKBOX, 1L, wxPG_RECURSE);
+    PGRegister(Object, Grid, DefId, DIM_DEF);
+    PGRegister(Object, Grid, V1Id, DIM_VALUE1);
+    PGRegister(Object, Grid, V2Id, DIM_VALUE2);
 
-    Grid->SetPropertyAttribute(DefId,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
-
-    PGRegister(Object,Grid,DefId,DIM_DEF);
-    PGRegister(Object,Grid,V1Id,DIM_VALUE1);
-    PGRegister(Object,Grid,V2Id,DIM_VALUE2);
-
-    if ( DEFVALUE )
+    if (DEFVALUE)
     {
         Grid->DisableProperty(V1Id);
         Grid->DisableProperty(V2Id);
     }
-
 }
 
-bool wxsTwoLongProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsTwoLongProperty::PGRead(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index)
 {
-    switch ( Index )
+    switch (Index)
     {
-    case DIM_DEF:
-        DEFVALUE = Grid->GetPropertyValue(Id).GetBool();
-        break;
+        case DIM_DEF:
+            DEFVALUE = Grid->GetPropertyValue(Id).GetBool();
+            break;
 
-    case DIM_VALUE1:
-        VALUE1 = Grid->GetPropertyValue(Id).GetLong();
-        break;
+        case DIM_VALUE1:
+            VALUE1 = Grid->GetPropertyValue(Id).GetLong();
+            break;
 
-    case DIM_VALUE2:
-        VALUE2 = Grid->GetPropertyValue(Id).GetLong();
-        break;
+        case DIM_VALUE2:
+            VALUE2 = Grid->GetPropertyValue(Id).GetLong();
+            break;
 
-    default:
-        break;
+        default:
+            break;
     }
 
     return true;
 }
 
-bool wxsTwoLongProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsTwoLongProperty::PGWrite(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, long Index)
 {
-    switch ( Index )
+    switch (Index)
     {
-    case DIM_DEF:
-        Grid->SetPropertyValue(Id,DEFVALUE);
-        break;
+        case DIM_DEF:
+            Grid->SetPropertyValue(Id, DEFVALUE);
+            break;
 
-    case DIM_VALUE1:
-        if ( DEFVALUE )
-        {
-            Grid->DisableProperty(Id);
-        }
-        else
-        {
-            Grid->EnableProperty(Id);
-        }
-        Grid->SetPropertyValue(Id,VALUE1);
-        break;
+        case DIM_VALUE1:
+            if (DEFVALUE)
+            {
+                Grid->DisableProperty(Id);
+            }
+            else
+            {
+                Grid->EnableProperty(Id);
+            }
 
-    case DIM_VALUE2:
-        if ( DEFVALUE )
-        {
-            Grid->DisableProperty(Id);
-        }
-        else
-        {
-            Grid->EnableProperty(Id);
-        }
-        Grid->SetPropertyValue(Id,VALUE2);
-        break;
+            Grid->SetPropertyValue(Id, VALUE1);
+            break;
 
-    default:
-        break;
+        case DIM_VALUE2:
+            if (DEFVALUE)
+            {
+                Grid->DisableProperty(Id);
+            }
+            else
+            {
+                Grid->EnableProperty(Id);
+            }
+
+            Grid->SetPropertyValue(Id, VALUE2);
+            break;
+
+        default:
+            break;
     }
+
     return true;
 }
 
-bool wxsTwoLongProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsTwoLongProperty::XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
-    if ( !Element )
+    if (!Element)
     {
         DEFVALUE = true;
         VALUE1 = -1;
@@ -170,67 +171,95 @@ bool wxsTwoLongProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Elem
         return false;
     }
 
-    const char* Text = Element->GetText();
+    const char * Text = Element->GetText();
 
     // If no node or empty text, using default values
-    if ( !Text || !Text[0] )
+    if (!Text || !Text[0])
     {
         DEFVALUE = true;
         VALUE1 = -1;
         VALUE2 = -1;
         return false;
     }
+
     wxString Str = cbC2U(Text);
 
-    if ( !Str.BeforeFirst(_T(',')).ToLong(&VALUE1) ||
-            !Str.AfterLast(_T(',')).ToLong(&VALUE2) )
+    if (!Str.BeforeFirst(_T(',')).ToLong(&VALUE1) ||
+            !Str.AfterLast(_T(',')).ToLong(&VALUE2))
     {
         DEFVALUE = true;
         VALUE1 = -1;
         VALUE2 = -1;
         return false;
     }
-    DEFVALUE = false;
 
+    DEFVALUE = false;
     return true;
 }
 
-bool wxsTwoLongProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsTwoLongProperty::XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
-    if ( !DEFVALUE )
+    if (!DEFVALUE)
     {
         wxString Str;
-        Str.Printf(_T("%ld,%ld"),VALUE1,VALUE2);
+        Str.Printf(_T("%ld,%ld"), VALUE1, VALUE2);
         Element->InsertEndChild(TiXmlText(cbU2C(Str)));
         return true;
     }
+
     return false;
 }
 
-bool wxsTwoLongProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsTwoLongProperty::PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
     bool Ret = true;
     Stream->SubCategory(GetDataName());
-    if ( !Stream->GetBool(_T("default"),DEFVALUE,true) ) Ret = false;
-    if ( !DEFVALUE )
+
+    if (!Stream->GetBool(_T("default"), DEFVALUE, true))
     {
-        if ( !Stream->GetLong(_T("value1"),VALUE1,-1) ) Ret = false;
-        if ( !Stream->GetLong(_T("value2"),VALUE2,-1) ) Ret = false;
+        Ret = false;
     }
+
+    if (!DEFVALUE)
+    {
+        if (!Stream->GetLong(_T("value1"), VALUE1, -1))
+        {
+            Ret = false;
+        }
+
+        if (!Stream->GetLong(_T("value2"), VALUE2, -1))
+        {
+            Ret = false;
+        }
+    }
+
     Stream->PopCategory();
     return Ret;
 }
 
-bool wxsTwoLongProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsTwoLongProperty::PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
     bool Ret = true;
     Stream->SubCategory(GetDataName());
-    if ( !Stream->PutBool(_T("default"),DEFVALUE,true) ) Ret = false;
-    if ( !DEFVALUE )
+
+    if (!Stream->PutBool(_T("default"), DEFVALUE, true))
     {
-        if ( !Stream->PutLong(_T("value1"),VALUE1,-1) ) Ret = false;
-        if ( !Stream->PutLong(_T("value2"),VALUE2,-1) ) Ret = false;
+        Ret = false;
     }
+
+    if (!DEFVALUE)
+    {
+        if (!Stream->PutLong(_T("value1"), VALUE1, -1))
+        {
+            Ret = false;
+        }
+
+        if (!Stream->PutLong(_T("value2"), VALUE2, -1))
+        {
+            Ret = false;
+        }
+    }
+
     Stream->PopCategory();
     return Ret;
 }

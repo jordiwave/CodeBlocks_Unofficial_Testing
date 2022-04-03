@@ -9,15 +9,15 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/checkbox.h>
-#include <wx/intl.h>
-#include <wx/button.h>
-#include <wx/listbox.h>
-#include <wx/spinctrl.h>
-#include <wx/textctrl.h>
-#include <wx/xrc/xmlres.h>
+    #include <wx/checkbox.h>
+    #include <wx/intl.h>
+    #include <wx/button.h>
+    #include <wx/listbox.h>
+    #include <wx/spinctrl.h>
+    #include <wx/textctrl.h>
+    #include <wx/xrc/xmlres.h>
 
-#include <debuggermanager.h>
+    #include <debuggermanager.h>
 #endif
 
 #include "editbreakpointdlg.h"
@@ -26,19 +26,17 @@ BEGIN_EVENT_TABLE(EditBreakpointDlg, wxScrollingDialog)
     EVT_UPDATE_UI(-1, EditBreakpointDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
-EditBreakpointDlg::EditBreakpointDlg(const DebuggerBreakpoint &breakpoint, wxWindow* parent)
+EditBreakpointDlg::EditBreakpointDlg(const DebuggerBreakpoint & breakpoint, wxWindow * parent)
     : m_breakpoint(breakpoint)
 {
     //ctor
-    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditBreakpoint"),_T("wxScrollingDialog"));
-
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditBreakpoint"), _T("wxScrollingDialog"));
     XRCCTRL(*this, "chkEnabled", wxCheckBox)->SetValue(m_breakpoint.enabled);
     XRCCTRL(*this, "chkIgnore", wxCheckBox)->SetValue(m_breakpoint.useIgnoreCount);
     XRCCTRL(*this, "spnIgnoreCount", wxSpinCtrl)->SetValue(m_breakpoint.ignoreCount);
     XRCCTRL(*this, "chkExpr", wxCheckBox)->SetValue(m_breakpoint.useCondition);
     XRCCTRL(*this, "txtExpr", wxTextCtrl)->SetValue(m_breakpoint.condition);
     XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
-
     // Limit vertical resizing.
     SetMaxSize(wxSize(-1, GetMinHeight()));
 }
@@ -58,10 +56,11 @@ void EditBreakpointDlg::EndModal(int retCode)
         m_breakpoint.useCondition = XRCCTRL(*this, "chkExpr", wxCheckBox)->IsChecked();
         m_breakpoint.condition = CleanStringValue(XRCCTRL(*this, "txtExpr", wxTextCtrl)->GetValue());
     }
+
     wxScrollingDialog::EndModal(retCode);
 }
 
-void EditBreakpointDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
+void EditBreakpointDlg::OnUpdateUI(cb_unused wxUpdateUIEvent & event)
 {
     bool en = XRCCTRL(*this, "chkEnabled", wxCheckBox)->IsChecked();
     XRCCTRL(*this, "chkIgnore", wxCheckBox)->Enable(en && !XRCCTRL(*this, "chkExpr", wxCheckBox)->IsChecked());

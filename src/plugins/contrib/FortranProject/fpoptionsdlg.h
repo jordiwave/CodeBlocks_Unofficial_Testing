@@ -8,9 +8,9 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/intl.h>
+    #include <wx/intl.h>
 
-#include <settings.h>
+    #include <settings.h>
 #endif
 
 #include <configurationpanel.h>
@@ -23,43 +23,43 @@ class FortranProject;
 
 class FPOptionsDlg : public cbConfigurationPanel
 {
-public:
-    FPOptionsDlg(wxWindow* parent, NativeParserF* np, FortranProject* fp);
-    virtual ~FPOptionsDlg();
+    public:
+        FPOptionsDlg(wxWindow * parent, NativeParserF * np, FortranProject * fp);
+        virtual ~FPOptionsDlg();
 
-    virtual wxString GetTitle() const
-    {
-        return _("FortranProject");
-    }
-    virtual wxString GetBitmapBaseName() const
-    {
-        return _T("generic-plugin");
-    }
-    virtual void OnApply();
-    virtual void OnCancel() {}
-protected:
-    void OnAddRepl(wxCommandEvent& event);
-    void OnEditRepl(wxCommandEvent& event);
-    void OnDelRepl(wxCommandEvent& event);
-    void OnOK(wxCommandEvent& event);
-    void OnChooseColour(wxCommandEvent& event);
-    void OnSliderScroll(wxScrollEvent& event);
-    void ShowCurrientAInsert(int idx);
-    void OnAISelectionChanged(wxCommandEvent& event);
-    void OnUpdateUI(wxUpdateUIEvent& event);
-    void FillAutoInsert();
-private:
-    void ReadAIChoice();
-    bool ValidateReplacementToken(wxString& from, wxString& to);
-    NativeParserF* m_pNativeParser;
-    FortranProject* m_pFortranProject;
-    AutoInsert m_AInsert;
+        virtual wxString GetTitle() const
+        {
+            return _("FortranProject");
+        }
+        virtual wxString GetBitmapBaseName() const
+        {
+            return _T("generic-plugin");
+        }
+        virtual void OnApply();
+        virtual void OnCancel() {}
+    protected:
+        void OnAddRepl(wxCommandEvent & event);
+        void OnEditRepl(wxCommandEvent & event);
+        void OnDelRepl(wxCommandEvent & event);
+        void OnOK(wxCommandEvent & event);
+        void OnChooseColour(wxCommandEvent & event);
+        void OnSliderScroll(wxScrollEvent & event);
+        void ShowCurrientAInsert(int idx);
+        void OnAISelectionChanged(wxCommandEvent & event);
+        void OnUpdateUI(wxUpdateUIEvent & event);
+        void FillAutoInsert();
+    private:
+        void ReadAIChoice();
+        bool ValidateReplacementToken(wxString & from, wxString & to);
+        NativeParserF * m_pNativeParser;
+        FortranProject * m_pFortranProject;
+        AutoInsert m_AInsert;
 
-    bool m_cbAIAlign_wasEnabled;
-    bool m_cbAIAddName_wasEnabled;
-    int m_AISelIdx;
+        bool m_cbAIAlign_wasEnabled;
+        bool m_cbAIAddName_wasEnabled;
+        int m_AISelIdx;
 
-    DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // FPOPTIONSDLG_H

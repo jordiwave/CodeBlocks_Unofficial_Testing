@@ -26,8 +26,8 @@ enum
     wxITEM_SPACER
 };
 
-wxSmithAuiToolBar::wxSmithAuiToolBar(wxWindow* parent,wxWindowID id,const wxPoint& position,const wxSize& size,long style)
-    : wxAuiToolBar(parent,id,position,size,style)
+wxSmithAuiToolBar::wxSmithAuiToolBar(wxWindow * parent, wxWindowID id, const wxPoint & position, const wxSize & size, long style)
+    : wxAuiToolBar(parent, id, position, size, style)
 {
     //ctor
 }
@@ -37,25 +37,28 @@ wxSmithAuiToolBar::~wxSmithAuiToolBar()
     //dtor
 }
 
-int wxSmithAuiToolBar::HitTest(const wxPoint& pt)
+int wxSmithAuiToolBar::HitTest(const wxPoint & pt)
 {
-    for (unsigned int i=0; i<m_items.Count(); i++)
+    for (unsigned int i = 0; i < m_items.Count(); i++)
     {
-        wxAuiToolBarItem& Item = m_items.Item(i);
+        wxAuiToolBarItem & Item = m_items.Item(i);
 
         if (!Item.GetSizerItem())
+        {
             continue;
+        }
 
         wxRect rect = Item.GetSizerItem()->GetRect();
-        if ( Item.GetKind() == wxITEM_SPACER )
+
+        if (Item.GetKind() == wxITEM_SPACER)
         {
-            if ( rect.Contains(pt.x,rect.y) )
+            if (rect.Contains(pt.x, rect.y))
             {
                 return GetToolIndex(Item.GetId());
             }
         }
 
-        if ( rect.Contains(pt.x,pt.y) )
+        if (rect.Contains(pt.x, pt.y))
         {
             return GetToolIndex(Item.GetId());
         }
@@ -64,7 +67,7 @@ int wxSmithAuiToolBar::HitTest(const wxPoint& pt)
     return wxNOT_FOUND;
 }
 
-void wxSmithAuiToolBar::AddSpacer(int pixels,wxWindowID SpacerId)
+void wxSmithAuiToolBar::AddSpacer(int pixels, wxWindowID SpacerId)
 {
     wxAuiToolBarItem Item;
     Item.SetHasDropDown(false);
@@ -72,17 +75,15 @@ void wxSmithAuiToolBar::AddSpacer(int pixels,wxWindowID SpacerId)
     Item.SetId(SpacerId);
     Item.SetKind(wxITEM_SPACER);
     Item.SetSticky(false);
-
     m_items.Add(Item);
 }
 
-void wxSmithAuiToolBar::AddStretchSpacer(int proportion,wxWindowID SpacerId)
+void wxSmithAuiToolBar::AddStretchSpacer(int proportion, wxWindowID SpacerId)
 {
     wxAuiToolBarItem item;
     item.SetHasDropDown(false);
     item.SetId(SpacerId);
     item.SetProportion(proportion);
     item.SetSticky(false);
-
     m_items.Add(item);
 }

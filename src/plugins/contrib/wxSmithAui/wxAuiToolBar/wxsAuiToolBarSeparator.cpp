@@ -46,6 +46,6 @@ wxsRegisterItem<wxsAuiToolBarSeparator> Reg(
     false);
 }
 
-wxsAuiToolBarSeparator::wxsAuiToolBarSeparator(wxsItemResData* Data)
-    : wxsAuiToolBarItemBase(Data,&Reg.Info,0,0,0)
+wxsAuiToolBarSeparator::wxsAuiToolBarSeparator(wxsItemResData * Data)
+    : wxsAuiToolBarItemBase(Data, &Reg.Info, 0, 0, 0)
 {}

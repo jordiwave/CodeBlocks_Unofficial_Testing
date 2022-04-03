@@ -17,8 +17,8 @@ class Accessor;
 class WordList;
 
 typedef void (*LexerFunction)(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle,
-                              WordList *keywordlists[], Accessor &styler);
-typedef ILexer *(*LexerFactoryFunction)();
+                              WordList * keywordlists[], Accessor & styler);
+typedef ILexer * (*LexerFactoryFunction)();
 
 /**
  * A LexerModule is responsible for lexing and folding a particular language.
@@ -27,44 +27,44 @@ typedef ILexer *(*LexerFactoryFunction)();
  */
 class LexerModule
 {
-protected:
-    int language;
-    LexerFunction fnLexer;
-    LexerFunction fnFolder;
-    LexerFactoryFunction fnFactory;
-    const char * const * wordListDescriptions;
+    protected:
+        int language;
+        LexerFunction fnLexer;
+        LexerFunction fnFolder;
+        LexerFactoryFunction fnFactory;
+        const char * const * wordListDescriptions;
 
-public:
-    const char *languageName;
-    LexerModule(int language_,
-                LexerFunction fnLexer_,
-                const char *languageName_=0,
-                LexerFunction fnFolder_=0,
-                const char * const wordListDescriptions_[] = NULL);
-    LexerModule(int language_,
-                LexerFactoryFunction fnFactory_,
-                const char *languageName_,
-                const char * const wordListDescriptions_[] = NULL);
-    virtual ~LexerModule()
-    {
-    }
-    int GetLanguage() const
-    {
-        return language;
-    }
+    public:
+        const char * languageName;
+        LexerModule(int language_,
+                    LexerFunction fnLexer_,
+                    const char * languageName_ = 0,
+                    LexerFunction fnFolder_ = 0,
+                    const char * const wordListDescriptions_[] = NULL);
+        LexerModule(int language_,
+                    LexerFactoryFunction fnFactory_,
+                    const char * languageName_,
+                    const char * const wordListDescriptions_[] = NULL);
+        virtual ~LexerModule()
+        {
+        }
+        int GetLanguage() const
+        {
+            return language;
+        }
 
-    // -1 is returned if no WordList information is available
-    int GetNumWordLists() const;
-    const char *GetWordListDescription(int index) const;
+        // -1 is returned if no WordList information is available
+        int GetNumWordLists() const;
+        const char * GetWordListDescription(int index) const;
 
-    ILexer *Create() const;
+        ILexer * Create() const;
 
-    virtual void Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle,
-                     WordList *keywordlists[], Accessor &styler) const;
-    virtual void Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle,
-                      WordList *keywordlists[], Accessor &styler) const;
+        virtual void Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle,
+                         WordList * keywordlists[], Accessor & styler) const;
+        virtual void Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle,
+                          WordList * keywordlists[], Accessor & styler) const;
 
-    friend class Catalogue;
+        friend class Catalogue;
 };
 
 inline int Maximum(int a, int b)
@@ -74,12 +74,12 @@ inline int Maximum(int a, int b)
 
 // Shut up annoying Visual C++ warnings:
 #ifdef _MSC_VER
-#pragma warning(disable: 4244 4456 4457)
+    #pragma warning(disable: 4244 4456 4457)
 #endif
 
 // Turn off shadow warnings for lexers as may be maintained by others
 #if defined(__GNUC__)
-#pragma GCC diagnostic ignored "-Wshadow"
+    #pragma GCC diagnostic ignored "-Wshadow"
 #endif
 
 #ifdef SCI_NAMESPACE

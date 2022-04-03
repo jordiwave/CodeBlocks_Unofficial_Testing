@@ -27,10 +27,10 @@ namespace
 wxsRegisterItem<wxsFilePickerCtrl> Reg(_T("FilePickerCtrl"), wxsTWidget, _T("Advanced"), 110);
 
 #ifdef __WXGTK__
-// GTK apps usually don't have a textctrl next to the picker
-WXS_ST_BEGIN(wxsFilePickerCtrlStyles,_T("wxFLP_OPEN|wxFLP_FILE_MUST_EXIST"))
+    // GTK apps usually don't have a textctrl next to the picker
+    WXS_ST_BEGIN(wxsFilePickerCtrlStyles, _T("wxFLP_OPEN|wxFLP_FILE_MUST_EXIST"))
 #else
-WXS_ST_BEGIN(wxsFilePickerCtrlStyles,_T("wxFLP_USE_TEXTCTRL|wxFLP_OPEN|wxFLP_FILE_MUST_EXIST"))
+    WXS_ST_BEGIN(wxsFilePickerCtrlStyles, _T("wxFLP_USE_TEXTCTRL|wxFLP_OPEN|wxFLP_FILE_MUST_EXIST"))
 #endif
 WXS_ST_CATEGORY("wxFilePickerCtrl")
 WXS_ST(wxFLP_CHANGE_DIR)
@@ -53,7 +53,7 @@ WXS_EV_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsFilePickerCtrl::wxsFilePickerCtrl(wxsItemResData* Data):
+wxsFilePickerCtrl::wxsFilePickerCtrl(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -71,21 +71,21 @@ wxsFilePickerCtrl::wxsFilePickerCtrl(wxsItemResData* Data):
  */
 void wxsFilePickerCtrl::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/filepicker.h>"),GetInfo().ClassName,0);
-        Codef(_T("%C(%W, %I, %n, %t, %n, %P, %S, %T, %V, %N);\n"), m_sPath.wx_str(), m_sMessage.wx_str(), m_sWildcard.wx_str());
-        BuildSetupWindowCode();
-        return;
-    }
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/filepicker.h>"), GetInfo().ClassName, 0);
+            Codef(_T("%C(%W, %I, %n, %t, %n, %P, %S, %T, %V, %N);\n"), m_sPath.wx_str(), m_sMessage.wx_str(), m_sWildcard.wx_str());
+            BuildSetupWindowCode();
+            return;
+        }
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsFilePickerCtrl::OnBuildCreatingCode"),GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsFilePickerCtrl::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
@@ -96,11 +96,11 @@ void wxsFilePickerCtrl::OnBuildCreatingCode()
  * \return wxObject*                     The constructed control.
  *
  */
-wxObject* wxsFilePickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsFilePickerCtrl::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxFilePickerCtrl* Preview;
+    wxFilePickerCtrl * Preview;
     Preview = new wxFilePickerCtrl(Parent, GetId(), m_sPath, m_sMessage, m_sWildcard, Pos(Parent), Size(Parent), Style());
-    return SetupWindow(Preview,Flags);
+    return SetupWindow(Preview, Flags);
 }
 
 /*! \brief Enumerate the control's properties.

@@ -46,11 +46,11 @@ wxsRegisterItem<wxsRichTextCtrl> Reg(
     false);                         // We do not allow this item inside XRC files
 
 
-WXS_ST_BEGIN(wxsRichTextCtrlStyles,_T("wxRE_MULTILINE|wxRAISED_BORDER|wxWANTS_CHARS"))
+WXS_ST_BEGIN(wxsRichTextCtrlStyles, _T("wxRE_MULTILINE|wxRAISED_BORDER|wxWANTS_CHARS"))
 WXS_ST_CATEGORY("wxRichTextCtrl")
-WXS_ST(wxRE_READONLY )
-WXS_ST(wxRE_MULTILINE )
-WXS_ST(wxRE_CENTER_CARET )
+WXS_ST(wxRE_READONLY)
+WXS_ST(wxRE_MULTILINE)
+WXS_ST(wxRE_CENTER_CARET)
 WXS_ST_DEFAULTS()
 WXS_ST_END()
 
@@ -76,7 +76,7 @@ WXS_EV_END()
 
 //------------------------------------------------------------------------------
 
-wxsRichTextCtrl::wxsRichTextCtrl(wxsItemResData* Data):
+wxsRichTextCtrl::wxsRichTextCtrl(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -86,7 +86,6 @@ wxsRichTextCtrl::wxsRichTextCtrl(wxsItemResData* Data):
     mSize.Set(32, 32);
     mText.Clear();
     mVirtualSize.IsDefault = true;
-
 }
 
 //------------------------------------------------------------------------------
@@ -96,34 +95,27 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
     wxString            vname;
     wxString            aname;
     wxString            ss, tt;
-    wxsBaseProperties   *bp;
+    wxsBaseProperties  * bp;
     wxColour            fg;
 
-// valid language?
+    // valid language?
 
-    if (GetLanguage() != wxsCPP) wxsCodeMarks::Unknown(_T("wxsRichTextCtrl::OnBuildCreatingCode"),GetLanguage());
+    if (GetLanguage() != wxsCPP)
+    {
+        wxsCodeMarks::Unknown(_T("wxsRichTextCtrl::OnBuildCreatingCode"), GetLanguage());
+    }
 
-// who we are
-
+    // who we are
     vname = GetVarName();
     aname = vname + _T("_Attr");
-
-// include files
-
+    // include files
     AddHeader(_("<wx/richtext/richtextctrl.h>"), GetInfo().ClassName, 0);
-
-// make our own size specifier with our default values
-
+    // make our own size specifier with our default values
     mSize.SetDefaults(wxSize(32, 32));
     ss.Printf(_T("wxSize(%d, %d)"), mSize.GetWidth(), mSize.GetHeight());
-
-// create the panel
-
+    // create the panel
     Codef(_T("%C(%W, %I, wxEmptyString, %P, %s, %T, wxDefaultValidator, %N);\n"), ss.c_str());
-
-
-// text color via an attribute record
-
+    // text color via an attribute record
     bp = GetBaseProps();
     fg = bp->m_Fg.GetColour();
 
@@ -135,22 +127,18 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
         Codef(_T("%s->SetBasicStyle(%s);\n"), vname.c_str(), aname.c_str());
     };
 
-// other declarations
-
+    // other declarations
     BuildSetupWindowCode();
 
-// a virtual size
-
+    // a virtual size
     if (! mVirtualSize.IsDefault)
     {
         ss = mVirtualSize.GetSizeCode(GetCoderContext());
         Codef(_T("%ASetVirtualSize(%s);\n"), ss.c_str());
     };
 
-
-// initial text
-
-    for(size_t i=0; i<mText.GetCount(); i++)
+    // initial text
+    for (size_t i = 0; i < mText.GetCount(); i++)
     {
         ss  = mText.Item(i);
         ss += _T("\n");
@@ -160,27 +148,21 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsRichTextCtrl::OnBuildPreview(wxWindow* Parent, long Flags)
+wxObject * wxsRichTextCtrl::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxRichTextCtrl      *rtf;
+    wxRichTextCtrl   *   rtf;
     wxRichTextAttr      attr;
-    wxsBaseProperties   *bp;
+    wxsBaseProperties  * bp;
     wxColour            fg;
     wxString            ss;
     wxSize              zz;
-
-// the default size of this widget is microscopic
-// use this to make a reasonable default size
-
+    // the default size of this widget is microscopic
+    // use this to make a reasonable default size
     mSize = Size(Parent);
     mSize.SetDefaults(wxSize(32, 32));
-
-// make the basic widget
-
+    // make the basic widget
     rtf = new wxRichTextCtrl(Parent, GetId(), wxEmptyString, Pos(Parent), mSize, Style(), wxDefaultValidator);
-
-// text color
-
+    // text color
     bp = GetBaseProps();
     fg = bp->m_Fg.GetColour();
 
@@ -191,29 +173,25 @@ wxObject* wxsRichTextCtrl::OnBuildPreview(wxWindow* Parent, long Flags)
         rtf->SetBasicStyle(attr);
     };
 
-// the rest of the attributtes
-
+    // the rest of the attributtes
     SetupWindow(rtf, Flags);
 
-// a virtual size
-
+    // a virtual size
     if (! mVirtualSize.IsDefault)
     {
         zz = mVirtualSize.GetSize(Parent);
         rtf->SetVirtualSize(zz);
     };
 
-// add in initial text
-
-    for(size_t i=0; i<mText.GetCount(); i++)
+    // add in initial text
+    for (size_t i = 0; i < mText.GetCount(); i++)
     {
         ss  = mText.Item(i);
         ss += _T("\n");
         rtf->AppendText(ss);
     };
 
-// done
-
+    // done
     return rtf;
 }
 
@@ -221,12 +199,9 @@ wxObject* wxsRichTextCtrl::OnBuildPreview(wxWindow* Parent, long Flags)
 
 void wxsRichTextCtrl::OnEnumWidgetProperties(long Flags)
 {
-
-// initial text contents
-
+    // initial text contents
     WXS_ARRAYSTRING(wxsRichTextCtrl, mText, _("Text"), _("mText"), _("text"));
-    WXS_SIZE(       wxsRichTextCtrl, mVirtualSize,   _T("Default Virtual Size?"),           _T("Virtual Width"),    _T("Virtual Height"), _T("Use Dialog Units?"), _T("mVirtualSize"));
-
+    WXS_SIZE(wxsRichTextCtrl, mVirtualSize,   _T("Default Virtual Size?"),           _T("Virtual Width"),    _T("Virtual Height"), _T("Use Dialog Units?"), _T("mVirtualSize"));
 };
 
 

@@ -12,27 +12,29 @@ wxLedHandler::wxLedHandler()
     AddWindowStyles();
 }
 
-wxObject *wxLedHandler::DoCreateResource()
+wxObject * wxLedHandler::DoCreateResource()
 {
     // the following macro will init a pointer named "control"
     // with a new instance of the MyControl class, but will NOT
     // Create() it!
     XRC_MAKE_INSTANCE(control, wxLed)
+    control->Create(m_parentAsWindow, GetID(), GetColour(wxT("disable_colour")), GetColour(wxT("on_colour")), GetColour(wxT("off_colour")));
 
-    control->Create(m_parentAsWindow, GetID(),GetColour(wxT("disable_colour")),GetColour(wxT("on_colour")), GetColour(wxT("off_colour")));
-    if( GetBool(wxT("enabled"),true))
+    if (GetBool(wxT("enabled"), true))
+    {
         control->Enable();
+    }
     else
+    {
         control->Disable();
+    }
 
     control->SetOnOrOff(GetBool(wxT("on_or_off")));
-
     SetupWindow(control);
-
     return control;
 }
 
-bool wxLedHandler::CanHandle(wxXmlNode *node)
+bool wxLedHandler::CanHandle(wxXmlNode * node)
 {
     // this function tells XRC system that this handler can parse
     // the <object class="MyControl"> tags

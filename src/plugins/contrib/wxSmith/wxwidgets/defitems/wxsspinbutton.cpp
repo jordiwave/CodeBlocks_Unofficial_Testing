@@ -26,9 +26,9 @@
 
 namespace
 {
-wxsRegisterItem<wxsSpinButton> Reg(_T("SpinButton"),wxsTWidget,_T("Standard"),100);
+wxsRegisterItem<wxsSpinButton> Reg(_T("SpinButton"), wxsTWidget, _T("Standard"), 100);
 
-WXS_ST_BEGIN(wxsSpinButtonStyles,_T("wxSP_VERTICAL|wxSP_ARROW_KEYS"))
+WXS_ST_BEGIN(wxsSpinButtonStyles, _T("wxSP_VERTICAL|wxSP_ARROW_KEYS"))
 WXS_ST_CATEGORY("wxsSpinButton")
 WXS_ST(wxSP_HORIZONTAL)
 WXS_ST(wxSP_VERTICAL)
@@ -40,13 +40,13 @@ WXS_ST_END()
 
 
 WXS_EV_BEGIN(wxsSpinButtonEvents)
-WXS_EVI(EVT_SPIN,wxEVT_SCROLL_THUMBTRACK,wxSpinEvent,Change)
-WXS_EVI(EVT_SPIN_UP,wxEVT_SCROLL_LINEUP,wxSpinEvent,ChangeUp)
-WXS_EVI(EVT_SPIN_DOWN,wxEVT_SCROLL_LINEDOWN,wxSpinEvent,ChangeDown)
+WXS_EVI(EVT_SPIN, wxEVT_SCROLL_THUMBTRACK, wxSpinEvent, Change)
+WXS_EVI(EVT_SPIN_UP, wxEVT_SCROLL_LINEUP, wxSpinEvent, ChangeUp)
+WXS_EVI(EVT_SPIN_DOWN, wxEVT_SCROLL_LINEDOWN, wxSpinEvent, ChangeDown)
 WXS_EV_END()
 }
 
-wxsSpinButton::wxsSpinButton(wxsItemResData* Data):
+wxsSpinButton::wxsSpinButton(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -59,39 +59,56 @@ wxsSpinButton::wxsSpinButton(wxsItemResData* Data):
 
 void wxsSpinButton::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/spinbutt.h>"),GetInfo().ClassName,0);
-        AddHeader(_T("<wx/spinbutt.h>"),_T("wxSpinEvent"),0);
-        Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-        if ( Value ) Codef(_T("%ASetValue(%d);\n"), Value);
-        if ( Max > Min ) Codef(_T("%ASetRange(%d, %d);\n"), Min, Max);
-        BuildSetupWindowCode();
-        return;
-    }
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/spinbutt.h>"), GetInfo().ClassName, 0);
+            AddHeader(_T("<wx/spinbutt.h>"), _T("wxSpinEvent"), 0);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
 
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsSpinButton::OnBuildCreatingCode"),GetLanguage());
-    }
+            if (Value)
+            {
+                Codef(_T("%ASetValue(%d);\n"), Value);
+            }
+
+            if (Max > Min)
+            {
+                Codef(_T("%ASetRange(%d, %d);\n"), Min, Max);
+            }
+
+            BuildSetupWindowCode();
+            return;
+        }
+
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsSpinButton::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
-wxObject* wxsSpinButton::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsSpinButton::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxSpinButton* Preview = new wxSpinButton(Parent,GetId(),Pos(Parent),Size(Parent),Style());
-    if ( Value ) Preview->SetValue(Value);
-    if ( Max > Min ) Preview->SetRange(Min,Max);
+    wxSpinButton * Preview = new wxSpinButton(Parent, GetId(), Pos(Parent), Size(Parent), Style());
 
-    return SetupWindow(Preview,Flags);
+    if (Value)
+    {
+        Preview->SetValue(Value);
+    }
+
+    if (Max > Min)
+    {
+        Preview->SetRange(Min, Max);
+    }
+
+    return SetupWindow(Preview, Flags);
 }
 
 void wxsSpinButton::OnEnumWidgetProperties(cb_unused long Flags)
 {
-    WXS_LONG(wxsSpinButton,Value,_("Value"),_T("value"),0)
-    WXS_LONG(wxsSpinButton,Min,_("Min Value"),_T("min"),0)
-    WXS_LONG(wxsSpinButton,Max,_("Max Value"),_T("max"),0)
+    WXS_LONG(wxsSpinButton, Value, _("Value"), _T("value"), 0)
+    WXS_LONG(wxsSpinButton, Min, _("Min Value"), _T("min"), 0)
+    WXS_LONG(wxsSpinButton, Max, _("Max Value"), _T("max"), 0)
 }

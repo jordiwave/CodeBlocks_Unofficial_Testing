@@ -10,7 +10,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #ifdef HAVE_UNISTD_H
-#include <unistd.h>
+    #include <unistd.h>
 #endif // HAVE_UNISTD_H
 
 using namespace std;
@@ -20,37 +20,40 @@ using dtl::Diff;
 typedef unsigned char  elem;
 typedef vector< elem > sequence;
 
-static int create_byte_seq(const char *fs, sequence& seq);
-static int create_byte_seq(const char *fs, sequence& seq)
+static int create_byte_seq(const char * fs, sequence & seq);
+static int create_byte_seq(const char * fs, sequence & seq)
 {
     int  fd;
     int  siz;
     elem buf[BUFSIZ];
+
     if ((fd = open(fs, O_RDONLY)) == -1)
     {
         cout << "Opening failed." << endl;
         return -1;
     }
+
     while ((siz = read(fd, buf, sizeof(buf))) > 0)
     {
-        for (int i=0; i<siz; ++i)
+        for (int i = 0; i < siz; ++i)
         {
             seq.push_back(buf[i]);
         }
     }
+
     if (siz < 0)
     {
         close(fd);
         cout << "Read error." << endl;
         return -1;
     }
+
     close(fd);
     return 0;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
-
     if (isFewArgs(argc))
     {
         cerr << "Too few arguments." << endl;
@@ -61,10 +64,8 @@ int main(int argc, char *argv[])
     string   fs2(argv[2]);
     sequence seq1;
     sequence seq2;
-
     create_byte_seq(fs1.c_str(), seq1);
     create_byte_seq(fs2.c_str(), seq2);
-
     Diff< elem, sequence > d(seq1, seq2);
     d.compose();
 

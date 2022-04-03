@@ -21,53 +21,53 @@
 class CodeSnippetsEvent : public wxCommandEvent
 // ----------------------------------------------------------------------------
 {
-public:
-    /** Constructor. */
-    CodeSnippetsEvent(wxEventType commandType = wxEVT_NULL, int id = 0);
+    public:
+        /** Constructor. */
+        CodeSnippetsEvent(wxEventType commandType = wxEVT_NULL, int id = 0);
 
-    /** Copy constructor. */
-    CodeSnippetsEvent( const CodeSnippetsEvent& event);
+        /** Copy constructor. */
+        CodeSnippetsEvent(const CodeSnippetsEvent & event);
 
-    /** Destructor. */
-    ~CodeSnippetsEvent();
+        /** Destructor. */
+        ~CodeSnippetsEvent();
 
-    virtual wxEvent* Clone() const
-    {
-        return new CodeSnippetsEvent(*this);
-    }
+        virtual wxEvent * Clone() const
+        {
+            return new CodeSnippetsEvent(*this);
+        }
 
-    DECLARE_DYNAMIC_CLASS(CodeSnippetsEvent);
+        DECLARE_DYNAMIC_CLASS(CodeSnippetsEvent);
 
-    int      GetSnippetID() const
-    {
-        return m_SnippetID;
-    }
-    void     SetSnippetID( const int itemid )
-    {
-        m_SnippetID = itemid;
-    }
-    wxString GetSnippetString() const
-    {
-        return m_SnippetString;
-    }
-    void     SetSnippetString( const wxString string )
-    {
-        m_SnippetString = string;
-    }
-    wxString GetEventTypeLabel() const
-    {
-        return m_EventTypeLabel;
-    }
-    bool     PostCodeSnippetsEvent(const CodeSnippetsEvent& event);
-    bool     ProcessCodeSnippetsEvent(const CodeSnippetsEvent& event);
+        int      GetSnippetID() const
+        {
+            return m_SnippetID;
+        }
+        void     SetSnippetID(const int itemid)
+        {
+            m_SnippetID = itemid;
+        }
+        wxString GetSnippetString() const
+        {
+            return m_SnippetString;
+        }
+        void     SetSnippetString(const wxString string)
+        {
+            m_SnippetString = string;
+        }
+        wxString GetEventTypeLabel() const
+        {
+            return m_EventTypeLabel;
+        }
+        bool     PostCodeSnippetsEvent(const CodeSnippetsEvent & event);
+        bool     ProcessCodeSnippetsEvent(const CodeSnippetsEvent & event);
 
-private:
-    int       m_SnippetID;
-    wxString  m_SnippetString;
-    wxString  m_EventTypeLabel;
+    private:
+        int       m_SnippetID;
+        wxString  m_SnippetString;
+        wxString  m_EventTypeLabel;
 };
 
-typedef void (wxEvtHandler::*CodeSnippetsEventFunction)(CodeSnippetsEvent&);
+typedef void (wxEvtHandler::*CodeSnippetsEventFunction)(CodeSnippetsEvent &);
 
 BEGIN_DECLARE_EVENT_TYPES()
 DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_CODESNIPPETS_SELECT, wxID_ANY)
@@ -77,20 +77,20 @@ DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_CODESNIPPETS_GETFILELINKS, wxID_ANY)
 END_DECLARE_EVENT_TYPES()
 
 #define EVT_CODESNIPPETS_SELECT(id, fn) \
-	DECLARE_EVENT_TABLE_ENTRY(wxEVT_CODESNIPPETS_SELECT, id, -1, \
-	(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (CodeSnippetsEventFunction) & fn,(wxObject *) NULL ),
+    DECLARE_EVENT_TABLE_ENTRY(wxEVT_CODESNIPPETS_SELECT, id, -1, \
+                              (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (CodeSnippetsEventFunction) & fn,(wxObject *) NULL ),
 
 #define EVT_CODESNIPPETS_EDIT(id, fn) \
-	DECLARE_EVENT_TABLE_ENTRY(wxEVT_CODESNIPPETS_EDIT, id, -1, \
-	(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (CodeSnippetsEventFunction) & fn,(wxObject *) NULL ),
+    DECLARE_EVENT_TABLE_ENTRY(wxEVT_CODESNIPPETS_EDIT, id, -1, \
+                              (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (CodeSnippetsEventFunction) & fn,(wxObject *) NULL ),
 
 #define EVT_CODESNIPPETS_NEW_INDEX(id, fn) \
-	DECLARE_EVENT_TABLE_ENTRY(wxEVT_CODESNIPPETS_NEW_INDEX, id, -1, \
-	(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (CodeSnippetsEventFunction) & fn,(wxObject *) NULL ),
+    DECLARE_EVENT_TABLE_ENTRY(wxEVT_CODESNIPPETS_NEW_INDEX, id, -1, \
+                              (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (CodeSnippetsEventFunction) & fn,(wxObject *) NULL ),
 
 #define EVT_CODESNIPPETS_GETFILELINKS(id, fn) \
-	DECLARE_EVENT_TABLE_ENTRY(wxEVT_CODESNIPPETS_GETFILELINKS, id, -1, \
-	(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (CodeSnippetsEventFunction) & fn,(wxObject *) NULL ),
+    DECLARE_EVENT_TABLE_ENTRY(wxEVT_CODESNIPPETS_GETFILELINKS, id, -1, \
+                              (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (CodeSnippetsEventFunction) & fn,(wxObject *) NULL ),
 
 #endif // CODESNIPPETS_EVENT_H
 

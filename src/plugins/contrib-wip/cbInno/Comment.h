@@ -8,42 +8,42 @@
 
 class CComment : public CSection
 {
-public:
-    /** Default constructor */
-    CComment();
-    /** Default destructor */
-    virtual ~CComment();
-    /** Access m_Comment
-     * \return The current value of m_Comment
-     */
-    wxString GetComment()
-    {
-        return m_Comment;
-    }
-    bool IsComment()
-    {
-        return !m_Comment.empty();
-    }
-    /** Set m_Comment
-     * \param val New value to set
-     */
-    void SetComment(wxString val)
-    {
-        m_Comment = val;
-    }
+    public:
+        /** Default constructor */
+        CComment();
+        /** Default destructor */
+        virtual ~CComment();
+        /** Access m_Comment
+         * \return The current value of m_Comment
+         */
+        wxString GetComment()
+        {
+            return m_Comment;
+        }
+        bool IsComment()
+        {
+            return !m_Comment.empty();
+        }
+        /** Set m_Comment
+         * \param val New value to set
+         */
+        void SetComment(wxString val)
+        {
+            m_Comment = val;
+        }
 
-    void AddContent(wxListCtrl* liste);
+        void AddContent(wxListCtrl * liste);
 
-    virtual void FillContent(wxListCtrl* liste)=0;
+        virtual void FillContent(wxListCtrl * liste) = 0;
 
-    void Write(wxTextFile* File);
+        void Write(wxTextFile * File);
 
-    virtual void WriteInFile( wxTextFile* File)=0;
+        virtual void WriteInFile(wxTextFile * File) = 0;
 
 
-protected:
-private:
-    wxString m_Comment; //!< Member variable "m_Comment"
+    protected:
+    private:
+        wxString m_Comment; //!< Member variable "m_Comment"
 };
 
 #endif // COMMENT_H

@@ -10,13 +10,13 @@
 
 class CompilerMSVC : public Compiler
 {
-public:
-    CompilerMSVC();
-    ~CompilerMSVC() override;
-    AutoDetectResult AutoDetectInstallationDir() override;
-protected:
-    Compiler * CreateCopy() override;
-private:
+    public:
+        CompilerMSVC();
+        ~CompilerMSVC() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
+    protected:
+        Compiler * CreateCopy() override;
+    private:
 };
 
 #endif // COMPILERMSVC_H

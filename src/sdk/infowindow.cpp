@@ -10,16 +10,16 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-#include <wx/intl.h>
-#include <wx/stattext.h>
-#include <wx/sizer.h>
-#include <wx/settings.h>
-#include <wx/statbmp.h>
-#include <wx/panel.h>
-#include <wx/frame.h>
-#include "infowindow.h"
-#include "manager.h"
-#include "logmanager.h"
+    #include <wx/intl.h>
+    #include <wx/stattext.h>
+    #include <wx/sizer.h>
+    #include <wx/settings.h>
+    #include <wx/statbmp.h>
+    #include <wx/panel.h>
+    #include <wx/frame.h>
+    #include "infowindow.h"
+    #include "manager.h"
+    #include "logmanager.h"
 #endif
 
 #include <limits>
@@ -32,12 +32,12 @@ BEGIN_EVENT_TABLE(InfoWindow, wxInfoWindowBase)
     EVT_RIGHT_DOWN(InfoWindow::OnClick)
 END_EVENT_TABLE()
 
-const wxColour titleBackground(96,96,96); // dark grey
-const wxColour textBackground(255,255,160); // yellowish
+const wxColour titleBackground(96, 96, 96); // dark grey
+const wxColour textBackground(255, 255, 160); // yellowish
 const wxColour textForeground(0, 0, 0); // black for the text color
 
 
-const char *iBitmap[] =
+const char * iBitmap[] =
 {
     "20 20 38 1",
     "  c #606060",
@@ -105,28 +105,33 @@ namespace
 
 class Stacker
 {
-    std::list<int> widths;
+        std::list<int> widths;
 
-public:
+    public:
 
-    int StackMe(int mySize)
-    {
-        mySize += 3;
-        int pos = 0;
+        int StackMe(int mySize)
+        {
+            mySize += 3;
+            int pos = 0;
 
-        if(!widths.empty())
-            pos = *(std::max_element(widths.begin(), widths.end()));
+            if (!widths.empty())
+            {
+                pos = *(std::max_element(widths.begin(), widths.end()));
+            }
 
-        widths.push_back(pos + mySize);
-        return pos + mySize;
-    };
+            widths.push_back(pos + mySize);
+            return pos + mySize;
+        };
 
-    void ReleaseMe(int myPos)
-    {
-        std::list<int>::iterator it = std::find(widths.begin(), widths.end(), myPos);
-        if(it != widths.end())
-            widths.erase(it);
-    };
+        void ReleaseMe(int myPos)
+        {
+            std::list<int>::iterator it = std::find(widths.begin(), widths.end(), myPos);
+
+            if (it != widths.end())
+            {
+                widths.erase(it);
+            }
+        };
 };
 
 static Stacker stacker;
@@ -147,14 +152,14 @@ static const int scroll_millis = platform::windows ? 1 : 5;
 
 class ForwardingTextControl : public wxStaticText
 {
-    void OnEvent(wxMouseEvent& e)
-    {
-        e.ResumePropagation(10);
-        e.Skip();
-    };
-    DECLARE_EVENT_TABLE();
-public:
-    ForwardingTextControl(wxWindow* parent, wxWindowID id, const wxString& label, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0) : wxStaticText(parent, id, label, pos, size, style) {};
+        void OnEvent(wxMouseEvent & e)
+        {
+            e.ResumePropagation(10);
+            e.Skip();
+        };
+        DECLARE_EVENT_TABLE();
+    public:
+        ForwardingTextControl(wxWindow * parent, wxWindowID id, const wxString & label, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize, long style = 0) : wxStaticText(parent, id, label, pos, size, style) {};
 };
 
 BEGIN_EVENT_TABLE(ForwardingTextControl, wxStaticText)
@@ -162,29 +167,26 @@ BEGIN_EVENT_TABLE(ForwardingTextControl, wxStaticText)
 END_EVENT_TABLE()
 
 
-InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned int delay, unsigned int hysteresis)
+InfoWindow::InfoWindow(const wxString & title, const wxString & message, unsigned int delay, unsigned int hysteresis)
     : wxInfoWindowBase(Manager::Get()->GetAppWindow(),
 #if !wxUSE_POPUPWIN
-                       wxID_ANY, wxEmptyString, wxPoint(-21,-21), wxSize(20,20),
+                       wxID_ANY, wxEmptyString, wxPoint(-21, -21), wxSize(20, 20),
 #endif
                        wxSIMPLE_BORDER | wxWS_EX_TRANSIENT | wxCLIP_CHILDREN),
       m_timer(new wxTimer(this, 0)), status(0), m_delay(delay), ks(2)
 {
     my_message_iterator = active_messages.insert(active_messages.begin(), message);
+    wxBoxSizer * bs = new wxBoxSizer(wxVERTICAL);
+    wxWindow * o = nullptr;
+    ForwardingTextControl * titleC = nullptr;
 
-    wxBoxSizer *bs = new wxBoxSizer(wxVERTICAL);
-
-    wxWindow* o = nullptr;
-
-    ForwardingTextControl *titleC = nullptr;
-
-    if(platform::gtk)
+    if (platform::gtk)
     {
-        wxBoxSizer *pbs = new wxBoxSizer(wxVERTICAL);
-        wxPanel* pnl = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
+        wxBoxSizer * pbs = new wxBoxSizer(wxVERTICAL);
+        wxPanel * pnl = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
         pnl->SetBackgroundColour(titleBackground);
         titleC = new ForwardingTextControl(pnl, -1, title, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
-        pbs->Add(titleC, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
+        pbs->Add(titleC, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
         pnl->SetSizer(pbs);
         pbs->SetSizeHints(pnl);
         o = pnl;
@@ -199,28 +201,27 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
     titleC->SetForegroundColour(*wxWHITE);
     titleC->SetFont(wxFont(11, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
     bs->Add(o, 0, wxGROW, 5);
-
-    ForwardingTextControl *text = new ForwardingTextControl(this, -1, message, wxDefaultPosition, wxDefaultSize, 0);
+    ForwardingTextControl * text = new ForwardingTextControl(this, -1, message, wxDefaultPosition, wxDefaultSize, 0);
     text->SetBackgroundColour(textBackground);
     text->SetForegroundColour(textForeground);
-    bs->Add(text, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 12);
+    bs->Add(text, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 12);
     SetBackgroundColour(textBackground);
     SetSizer(bs);
     bs->SetSizeHints(this);
     Layout();
 
-    if(!platform::gtk)
+    if (!platform::gtk)
     {
         // since we used a panel, no more bitmap :(
         new wxStaticBitmap(this, -1, wxBitmap(iBitmap), wxPoint(4, o->GetRect().GetBottom() - 9));
     }
+
     wxCoord w, h;
     GetClientSize(&w, &h);
-
     pos = stacker.StackMe(w);
-
     // setup variables first time we enter here
     unsigned displayNo = wxDisplay::GetFromWindow(Manager::Get()->GetAppWindow());
+
     if (displayNo != lastDisplay)
     {
         wxDisplay display(displayNo);
@@ -233,9 +234,7 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
     left = displayGeometry.x + displayGeometry.width - pos;
     hMin = displayGeometry.GetBottom() - h;
     top = displayGeometry.GetBottom();
-
     Move(left, top);
-
     Show();
     m_timer->Start(hysteresis, false);
 }
@@ -245,52 +244,61 @@ InfoWindow::~InfoWindow()
 {
     delete m_timer;
     stacker.ReleaseMe(pos);
-
     active_messages.erase(my_message_iterator);
 }
 
-void InfoWindow::OnTimer(cb_unused wxTimerEvent& e)
+void InfoWindow::OnTimer(cb_unused wxTimerEvent & e)
 {
-    switch(status)
+    switch (status)
     {
-    case 0:
-        status = 1;
-        m_timer->Start(scroll_millis, false);
-        break;
-    case 1:
-        top -= 2;
-        Move(left, top);
-        if(top <= hMin)
-        {
-            status = 2;
-            m_timer->Start(m_delay, true);
-        }
-        break;
-    case 2:
-        status = 3;
-        m_timer->Start(scroll_millis, false);
-        break;
-    case 3:
-        top += ks;
-        Move(left, top);
-        if(top > displayGeometry.GetBottom())
-        {
-            Hide();
-            Destroy();
-        }
-        break;
-    default:
-        break;
+        case 0:
+            status = 1;
+            m_timer->Start(scroll_millis, false);
+            break;
+
+        case 1:
+            top -= 2;
+            Move(left, top);
+
+            if (top <= hMin)
+            {
+                status = 2;
+                m_timer->Start(m_delay, true);
+            }
+
+            break;
+
+        case 2:
+            status = 3;
+            m_timer->Start(scroll_millis, false);
+            break;
+
+        case 3:
+            top += ks;
+            Move(left, top);
+
+            if (top > displayGeometry.GetBottom())
+            {
+                Hide();
+                Destroy();
+            }
+
+            break;
+
+        default:
+            break;
     };
 }
 
-void InfoWindow::OnMove(cb_unused wxMouseEvent& e)
+void InfoWindow::OnMove(cb_unused wxMouseEvent & e)
 {
-    if(status == 2)
+    if (status == 2)
+    {
         m_timer->Start(m_delay, true);
+    }
 }
 
-void InfoWindow::OnClick(cb_unused wxMouseEvent& e)
+void InfoWindow::OnClick(cb_unused wxMouseEvent & e)
 {
     ks = 6;
     status = 3;
@@ -298,16 +306,20 @@ void InfoWindow::OnClick(cb_unused wxMouseEvent& e)
 }
 
 // static
-void InfoWindow::Display(const wxString& title, const wxString& message, unsigned int delay, unsigned int hysteresis)
+void InfoWindow::Display(const wxString & title, const wxString & message, unsigned int delay, unsigned int hysteresis)
 {
     Manager::Get()->GetLogManager()->Log(wxString::Format(_("Info[%s]: %s"), title.wx_str(),
-                                         message.wx_str()));
+                                                          message.wx_str()));
 
     if (std::find(active_messages.begin(), active_messages.end(), message) != active_messages.end())
     {
         const wxString dups = _T("Multiple information windows with the same\nmessage have been suppressed.");
+
         if (std::find(active_messages.begin(), active_messages.end(), dups) == active_messages.end())
+        {
             new InfoWindow(_T("Info"), dups, delay, 1);
+        }
+
         return; // currently displaying already
     }
 

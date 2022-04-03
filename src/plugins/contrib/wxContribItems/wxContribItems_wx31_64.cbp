@@ -9,8 +9,8 @@
 		<Build>
 			<Target title="wxFlatNoteBook">
 				<Option platforms="Windows;" />
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxflatnotebook" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/wxContribItems/wxFlatNotebook" />
+				<Option output="../../../devel31_64/wxflatnotebook" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs31_64/plugins/contrib/wxContribItems/wxFlatNotebook" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -21,8 +21,8 @@
 			</Target>
 			<Target title="wxChartCtrl">
 				<Option platforms="Windows;" />
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxchartctrl" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/wxContribItems/wxChartCtrl" />
+				<Option output="../../../devel31_64/wxchartctrl" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs31_64/plugins/contrib/wxContribItems/wxChartCtrl" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -33,8 +33,8 @@
 			</Target>
 			<Target title="wxCustomButton">
 				<Option platforms="Windows;" />
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxcustombutton" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/wxContribItems/wxthings" />
+				<Option output="../../../devel31_64/wxcustombutton" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs31_64/plugins/contrib/wxContribItems/wxthings" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -45,8 +45,8 @@
 			</Target>
 			<Target title="wxImagePanel">
 				<Option platforms="Windows;" />
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wximagepanel" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/wxContribItems/wxImagePanel" />
+				<Option output="../../../devel31_64/wximagepanel" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs31_64/plugins/contrib/wxContribItems/wxImagePanel" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -56,16 +56,16 @@
 			</Target>
 			<Target title="wxSpeedButton">
 				<Option platforms="Windows;" />
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxspeedbutton" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/wxContribItems/wxSpeedButton" />
+				<Option output="../../../devel31_64/wxspeedbutton" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs31_64/plugins/contrib/wxContribItems/wxSpeedButton" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
 			</Target>
 			<Target title="wxKWIC">
 				<Option platforms="Windows;" />
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxkwic" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/wxContribItems/KWIC" />
+				<Option output="../../../devel31_64/wxkwic" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs31_64/plugins/contrib/wxContribItems/KWIC" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -75,13 +75,12 @@
 			</Target>
 			<Target title="wxLED">
 				<Option platforms="Windows;" />
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxled" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/wxContribItems/wxled" />
+				<Option output="../../../devel31_64/wxled" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs31_64/plugins/contrib/wxContribItems/wxled" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
 				<Compiler>
-					<Add option="-DWXMAKINGDLL_GIZMOS" />
 					<Add directory="wxled/ledpanel/include" />
 					<Add directory="wxled/lcdWindow/include" />
 					<Add directory="wxled/led/include" />
@@ -90,42 +89,44 @@
 			</Target>
 			<Target title="wxMathPlot">
 				<Option platforms="Windows;" />
-				<Option output="$(#CB_BUILD)/devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/wxmathplot" prefix_auto="1" extension_auto="1" />
-				<Option object_output="$(#CB_BUILD)/.objs$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)/plugins/contrib/wxContribItems/wxmathplot" />
+				<Option output="../../../devel31_64/wxmathplot" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs31_64/plugins/contrib/wxContribItems/wxmathplot" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
 				<Compiler>
-					<Add option="-Dmathplot_EXPORTS" />
 					<Add directory="wxmathplot" />
 				</Compiler>
 			</Target>
+			<Environment>
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_VERSION" value="31" />
+			</Environment>
 		</Build>
 		<VirtualTargets>
 			<Add alias="All" targets="wxFlatNoteBook;wxChartCtrl;wxCustomButton;wxImagePanel;wxSpeedButton;wxKWIC;wxLED;wxMathPlot;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="$(#CB_BUILD.CFLAGS)" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-pipe" />
 			<Add option="-mthreads" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
-			<Add option="-DDLL_EXPORT" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
-			<Add option="-D_WIN$(#CB_BUILD.OSBITS)" />
+			<Add option="-D_WIN64" />
 			<Add option="-DWXMAKINGDLL" />
 			<Add option="-DwxUSE_UNICODE" />
-			<Add option="-std=$(#CB_BUILD.CPP_STD)" />
-			<Add directory="$(#CB_BUILD)/include" />
-			<Add directory="$(#WXWIDGETS.include)" />
-			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)/msw$(#WXWIDGETS.WX_SUFFIX)" />
+			<Add option="-std=gnu++11" />
+			<Add directory="$(#WX31_64.include)" />
+			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-mthreads" />
-			<Add library="wxmsw$(#WXWIDGETS.WX_VERSION)$(#WXWIDGETS.WX_SUFFIX)" />
-			<Add directory="$(#WXWIDGETS.lib)/gcc_dll$(#WXWIDGETS.WX_CFG)" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="KWIC/include/wx/KWIC/AngularMeter.h">
 			<Option target="wxKWIC" />

@@ -45,7 +45,7 @@
 #include "../art/cross.xpm"
 
 
-const wxSize wxSTEIconSize     (wxSystemSettings::GetMetric(wxSYS_ICON_X     ), wxSystemSettings::GetMetric(wxSYS_ICON_Y     ));
+const wxSize wxSTEIconSize(wxSystemSettings::GetMetric(wxSYS_ICON_X), wxSystemSettings::GetMetric(wxSYS_ICON_Y));
 const wxSize wxSTESmallIconSize(wxSystemSettings::GetMetric(wxSYS_SMALLICON_X), wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y));
 
 //-----------------------------------------------------------------------------
@@ -66,19 +66,19 @@ wxSTEditorArtProvider::wxSTEditorArtProvider() : wxArtProvider()
 }
 
 // static
-wxBitmap wxSTEditorArtProvider::DoGetBitmap(const wxArtID& art_id,
-        const wxArtClient& client,
-        const wxSize& size_)
+wxBitmap wxSTEditorArtProvider::DoGetBitmap(const wxArtID & art_id,
+                                            const wxArtClient & client,
+                                            const wxSize & size_)
 {
     static const struct art_item
     {
         // wxArtID id; - can't have wxString in struct for MSVC6
 #if (wxVERSION_NUMBER >= 2902)
-        const char* art_id;
+        const char * art_id;
 #else
-        const wxChar* art_id;
+        const wxChar * art_id;
 #endif
-        const char* const* xpm;
+        const char * const * xpm;
     } s_xpm_array[] =
     {
         { wxART_STEDIT_NEW,            new_xpm },
@@ -103,71 +103,102 @@ wxBitmap wxSTEditorArtProvider::DoGetBitmap(const wxArtID& art_id,
         { wxART_STEDIT_REDO,           redo_xpm },
         { wxART_STEDIT_CLEAR,          cross_xpm }
     };
-
     static const size_t s_xpm_array_size = WXSIZEOF(s_xpm_array);
-
     wxBitmap bmp;
     // If wxDefaultSize is requested, use size hint from client
     wxSize size(size_);
+
     if (size == wxDefaultSize)
+    {
         size = GetSizeHint(client);
+    }
 
     if (art_id == wxART_STEDIT_PREFDLG_VIEW)
-        bmp = wxArtProvider::GetBitmap(wxART_FIND, client, size);
-    else if (art_id == wxART_STEDIT_PREFDLG_TABSEOL)
-        bmp = wxArtProvider::GetBitmap(wxART_LIST_VIEW, client, size);
-    else if (art_id == wxART_STEDIT_PREFDLG_FOLDWRAP)
-        bmp = wxArtProvider::GetBitmap(wxART_COPY, client, size);
-    else if (art_id == wxART_STEDIT_PREFDLG_PRINT)
-        bmp = wxArtProvider::GetBitmap(wxART_PRINT, client, size);
-    else if (art_id == wxART_STEDIT_PREFDLG_LOADSAVE)
-        bmp = wxArtProvider::GetBitmap(wxART_FILE_SAVE, client, size);
-    else if (art_id == wxART_STEDIT_PREFDLG_HIGHLIGHT)
-        bmp = wxArtProvider::GetBitmap(wxART_TIP, client, size);
-    else if (art_id == wxART_STEDIT_PREFDLG_STYLES)
-        bmp = wxArtProvider::GetBitmap(wxART_HELP_BOOK, client, size);
-    else if (art_id == wxART_STEDIT_PREFDLG_LANGS)
-        bmp = wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, client, size);
-    else if (art_id == wxART_STEDIT_APP)
     {
-        // try to get the bitmap that is closest in size to the requested size
-        // we will resize it later if necessary
-        if ((size.GetWidth()  > m_app_small.GetWidth()  + 5) ||
-                (size.GetHeight() > m_app_small.GetHeight() + 5))
-            bmp = m_app_large;
-        else
-            bmp = m_app_small;
+        bmp = wxArtProvider::GetBitmap(wxART_FIND, client, size);
     }
     else
-    {
-        // we don't need to be fast about this since the wxArtProvider caches them
-        for (size_t i = 0; i < s_xpm_array_size; ++i)
+        if (art_id == wxART_STEDIT_PREFDLG_TABSEOL)
         {
-            if (s_xpm_array[i].art_id == art_id)
-            {
-                bmp = wxBitmap(s_xpm_array[i].xpm);
-                break;
-            }
+            bmp = wxArtProvider::GetBitmap(wxART_LIST_VIEW, client, size);
         }
-    }
+        else
+            if (art_id == wxART_STEDIT_PREFDLG_FOLDWRAP)
+            {
+                bmp = wxArtProvider::GetBitmap(wxART_COPY, client, size);
+            }
+            else
+                if (art_id == wxART_STEDIT_PREFDLG_PRINT)
+                {
+                    bmp = wxArtProvider::GetBitmap(wxART_PRINT, client, size);
+                }
+                else
+                    if (art_id == wxART_STEDIT_PREFDLG_LOADSAVE)
+                    {
+                        bmp = wxArtProvider::GetBitmap(wxART_FILE_SAVE, client, size);
+                    }
+                    else
+                        if (art_id == wxART_STEDIT_PREFDLG_HIGHLIGHT)
+                        {
+                            bmp = wxArtProvider::GetBitmap(wxART_TIP, client, size);
+                        }
+                        else
+                            if (art_id == wxART_STEDIT_PREFDLG_STYLES)
+                            {
+                                bmp = wxArtProvider::GetBitmap(wxART_HELP_BOOK, client, size);
+                            }
+                            else
+                                if (art_id == wxART_STEDIT_PREFDLG_LANGS)
+                                {
+                                    bmp = wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, client, size);
+                                }
+                                else
+                                    if (art_id == wxART_STEDIT_APP)
+                                    {
+                                        // try to get the bitmap that is closest in size to the requested size
+                                        // we will resize it later if necessary
+                                        if ((size.GetWidth()  > m_app_small.GetWidth()  + 5) ||
+                                                (size.GetHeight() > m_app_small.GetHeight() + 5))
+                                        {
+                                            bmp = m_app_large;
+                                        }
+                                        else
+                                        {
+                                            bmp = m_app_small;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // we don't need to be fast about this since the wxArtProvider caches them
+                                        for (size_t i = 0; i < s_xpm_array_size; ++i)
+                                        {
+                                            if (s_xpm_array[i].art_id == art_id)
+                                            {
+                                                bmp = wxBitmap(s_xpm_array[i].xpm);
+                                                break;
+                                            }
+                                        }
+                                    }
 
     return Resize(bmp, size); // does nothing if already correct size
 }
 
 // static
-wxBitmap wxSTEditorArtProvider::Resize(const wxBitmap& bmp_, const wxSize& size)
+wxBitmap wxSTEditorArtProvider::Resize(const wxBitmap & bmp_, const wxSize & size)
 {
     wxBitmap bmp(bmp_);
 
     if (!bmp.IsOk() || (size.GetWidth() < 1) || (size.GetHeight() < 1))
+    {
         return bmp;
+    }
 
     int bmp_w = bmp.GetWidth();
     int bmp_h = bmp.GetHeight();
 
     if ((bmp_w != size.GetWidth()) || (bmp_h != size.GetHeight()))
     {
-        wxPoint offset((size.GetWidth() - bmp_w)/2, (size.GetHeight() - bmp_h)/2);
+        wxPoint offset((size.GetWidth() - bmp_w) / 2, (size.GetHeight() - bmp_h) / 2);
         wxImage img = bmp.ConvertToImage();
         img.Resize(size, offset);
         bmp = wxBitmap(img);
@@ -182,26 +213,26 @@ wxIconBundle wxSTEditorArtProvider::GetDialogIconBundle()
     wxIcon icon1, icon2;
     icon1.CopyFromBitmap(wxArtProvider::GetBitmap(wxART_STEDIT_APP, wxART_OTHER, wxSTESmallIconSize));
     icon2.CopyFromBitmap(wxArtProvider::GetBitmap(wxART_STEDIT_APP, wxART_OTHER, wxSTEIconSize));
-
     wxIconBundle iconBundle(icon1);
     iconBundle.AddIcon(icon2);
     return iconBundle;
 }
 
-wxBitmap wxSTEditorArtProvider::CreateBitmap(const wxArtID& id,
-        const wxArtClient& client,
-        const wxSize& size)
+wxBitmap wxSTEditorArtProvider::CreateBitmap(const wxArtID & id,
+                                             const wxArtClient & client,
+                                             const wxSize & size)
 {
     wxBitmap bmp = DoGetBitmap(id, client, size);
-
     return bmp; // ok to return invalid bitmap, the wxArtProvider will search other providers
 }
 
-wxIconBundle wxSTEditorArtProvider::CreateIconBundle(const wxArtID& id,
-        const wxArtClient& WXUNUSED(client))
+wxIconBundle wxSTEditorArtProvider::CreateIconBundle(const wxArtID & id,
+                                                     const wxArtClient & WXUNUSED(client))
 {
     if (id == wxART_STEDIT_APP)
+    {
         return GetDialogIconBundle();
+    }
 
 #if wxCHECK_VERSION(3, 0, 0)
     return wxNullIconBundle;

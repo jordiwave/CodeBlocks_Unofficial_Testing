@@ -30,8 +30,8 @@
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,long)
 
-wxsFlagsProperty::wxsFlagsProperty(const wxString& PGName, const wxString& DataName,long _Offset,const long* _Values,const wxChar** _Names,bool _UpdateEntries,long _Default,bool _UseNamesInXml,int Priority):
-    wxsProperty(PGName,DataName,Priority),
+wxsFlagsProperty::wxsFlagsProperty(const wxString & PGName, const wxString & DataName, long _Offset, const long * _Values, const wxChar ** _Names, bool _UpdateEntries, long _Default, bool _UseNamesInXml, int Priority):
+    wxsProperty(PGName, DataName, Priority),
     Offset(_Offset),
     Default(_Default),
     UpdateEntries(_UpdateEntries),
@@ -41,116 +41,128 @@ wxsFlagsProperty::wxsFlagsProperty(const wxString& PGName, const wxString& DataN
 {}
 
 
-void wxsFlagsProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
+void wxsFlagsProperty::PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent)
 {
-    wxPGChoices PGC(Names,Values);
-    wxPGId Id = Grid->AppendIn(Parent,new wxFlagsProperty(GetPGName(),wxPG_LABEL,PGC,VALUE));
-    Grid->SetPropertyAttribute(Id,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
-    PGRegister(Object,Grid,Id);
+    wxPGChoices PGC(Names, Values);
+    wxPGId Id = Grid->AppendIn(Parent, new wxFlagsProperty(GetPGName(), wxPG_LABEL, PGC, VALUE));
+    Grid->SetPropertyAttribute(Id, wxPG_BOOL_USE_CHECKBOX, 1L, wxPG_RECURSE);
+    PGRegister(Object, Grid, Id);
 }
 
-bool wxsFlagsProperty::PGRead(cb_unused wxsPropertyContainer* Object,
-                              wxPropertyGridManager* Grid, wxPGId Id,
+bool wxsFlagsProperty::PGRead(cb_unused wxsPropertyContainer * Object,
+                              wxPropertyGridManager * Grid, wxPGId Id,
                               cb_unused long Index)
 {
     VALUE = Grid->GetPropertyValue(Id).GetLong();
     return true;
 }
 
-bool wxsFlagsProperty::PGWrite(cb_unused wxsPropertyContainer* Object,
-                               wxPropertyGridManager* Grid, wxPGId Id,
+bool wxsFlagsProperty::PGWrite(cb_unused wxsPropertyContainer * Object,
+                               wxPropertyGridManager * Grid, wxPGId Id,
                                cb_unused long Index)
 {
-    if ( UpdateEntries )
+    if (UpdateEntries)
     {
-        wxPGChoices(Id->GetChoices()).Set(Names,Values);
+        wxPGChoices(Id->GetChoices()).Set(Names, Values);
     }
-    Grid->SetPropertyValue(Id,VALUE);
+
+    Grid->SetPropertyValue(Id, VALUE);
     return true;
 }
 
-bool wxsFlagsProperty::XmlRead(cb_unused wxsPropertyContainer* Object,
-                               TiXmlElement* Element)
+bool wxsFlagsProperty::XmlRead(cb_unused wxsPropertyContainer * Object,
+                               TiXmlElement * Element)
 {
-    if ( !Element )
+    if (!Element)
     {
         VALUE = Default;
         return false;
     }
-    const char* Text = Element->GetText();
-    if ( !Text )
+
+    const char * Text = Element->GetText();
+
+    if (!Text)
     {
         VALUE = Default;
         return false;
     }
-    if ( UseNamesInXml )
+
+    if (UseNamesInXml)
     {
         wxString TextS = cbC2U(Text);
-        wxStringTokenizer Tokenizer(cbC2U(Text),_T("| \t\n"), wxTOKEN_STRTOK);
+        wxStringTokenizer Tokenizer(cbC2U(Text), _T("| \t\n"), wxTOKEN_STRTOK);
         VALUE = 0;
-        while ( Tokenizer.HasMoreTokens() )
+
+        while (Tokenizer.HasMoreTokens())
         {
             wxString Token = Tokenizer.GetNextToken();
             int i = 0;
-            for ( const wxChar** Ptr = Names; *Ptr; Ptr++, i++ )
+
+            for (const wxChar ** Ptr = Names; *Ptr; Ptr++, i++)
             {
-                if ( Token == *Ptr )
+                if (Token == *Ptr)
                 {
                     VALUE |= Values[i];
                     break;
                 }
             }
         }
+
         return false;;
     }
     else
     {
         VALUE = atol(Text);
     }
+
     return true;
 }
 
-bool wxsFlagsProperty::XmlWrite(cb_unused wxsPropertyContainer* Object,
-                                TiXmlElement* Element)
+bool wxsFlagsProperty::XmlWrite(cb_unused wxsPropertyContainer * Object,
+                                TiXmlElement * Element)
 {
-    if ( VALUE != Default )
+    if (VALUE != Default)
     {
-        if ( UseNamesInXml )
+        if (UseNamesInXml)
         {
             wxString FlagsText;
             int i = 0;
-            for ( const wxChar** Ptr = Names; *Ptr; Ptr++, i++ )
+
+            for (const wxChar ** Ptr = Names; *Ptr; Ptr++, i++)
             {
-                if ( (VALUE & Values[i]) == Values[i] )
+                if ((VALUE & Values[i]) == Values[i])
                 {
                     FlagsText << *Ptr << _T("|");
                 }
             }
 
-            if ( !FlagsText.IsEmpty() )
+            if (!FlagsText.IsEmpty())
             {
                 // Removing last '|' character
                 FlagsText.RemoveLast();
             }
+
             Element->InsertEndChild(TiXmlText(cbU2C(FlagsText)));
         }
         else
         {
-            Element->InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%ld"),VALUE))));
+            Element->InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%ld"), VALUE))));
         }
+
         return true;
     }
+
     return false;
 }
 
-bool wxsFlagsProperty::PropStreamRead(cb_unused wxsPropertyContainer* Object,
-                                      wxsPropertyStream* Stream)
+bool wxsFlagsProperty::PropStreamRead(cb_unused wxsPropertyContainer * Object,
+                                      wxsPropertyStream * Stream)
 {
-    return Stream->GetLong(GetDataName(),VALUE,Default);
+    return Stream->GetLong(GetDataName(), VALUE, Default);
 }
 
-bool wxsFlagsProperty::PropStreamWrite(cb_unused wxsPropertyContainer* Object,
-                                       wxsPropertyStream* Stream)
+bool wxsFlagsProperty::PropStreamWrite(cb_unused wxsPropertyContainer * Object,
+                                       wxsPropertyStream * Stream)
 {
-    return Stream->PutLong(GetDataName(),VALUE,Default);
+    return Stream->PutLong(GetDataName(), VALUE, Default);
 }

@@ -40,9 +40,9 @@ NSPR_API(void *) PR_Malloc(size_t size);
 
 NSPR_API(void *) PR_Calloc(size_t nelem, size_t elsize);
 
-NSPR_API(void *) PR_Realloc(void *ptr, size_t size);
+NSPR_API(void *) PR_Realloc(void * ptr, size_t size);
 
-NSPR_API(void) PR_Free(void *ptr);
+NSPR_API(void) PR_Free(void * ptr);
 
 /*
 ** The following are some convenience macros defined in terms of

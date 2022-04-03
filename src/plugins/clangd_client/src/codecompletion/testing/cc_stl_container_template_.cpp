@@ -15,23 +15,23 @@ using namespace std;
 
 class info
 {
-public:
-    int m_aaa;
+    public:
+        int m_aaa;
 };
 
 
 class mycomp
 {
-public:
-    bool operator() (const info& lhs, const info&rhs) const
-    {
-        return (lhs.m_aaa<rhs.m_aaa);
-    }
+    public:
+        bool operator()(const info & lhs, const info & rhs) const
+        {
+            return (lhs.m_aaa < rhs.m_aaa);
+        }
 };
 
 
 std::vector<info> vec;
-std::vector<info*> vec_ptr;
+std::vector<info *> vec_ptr;
 std::deque<info> deq;
 std::forward_list<info> frw;
 std::list<info> lis;

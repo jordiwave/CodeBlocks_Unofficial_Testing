@@ -22,7 +22,7 @@
 
 namespace
 {
-wxsRegisterItem<wxsContextHelpButton> Reg(_T("ContextHelpButton"),wxsTWidget,_T("Standard"), 280);
+wxsRegisterItem<wxsContextHelpButton> Reg(_T("ContextHelpButton"), wxsTWidget, _T("Standard"), 280);
 
 WXS_ST_BEGIN(wxsContextHelpButtonStyles, wxT("wxBU_AUTODRAW"))
 WXS_ST_CATEGORY("wxContextHelpButton")
@@ -41,7 +41,7 @@ WXS_ST_END()
  * \param Data wxsItemResData*    The control's resource data.
  *
  */
-wxsContextHelpButton::wxsContextHelpButton(wxsItemResData* Data):
+wxsContextHelpButton::wxsContextHelpButton(wxsItemResData * Data):
     wxsWidget(
         Data,
         &Reg.Info,
@@ -59,23 +59,21 @@ wxsContextHelpButton::wxsContextHelpButton(wxsItemResData* Data):
  */
 void wxsContextHelpButton::OnBuildCreatingCode()
 {
-    switch ( GetLanguage() )
+    switch (GetLanguage())
     {
-    case wxsCPP:
-    {
-        AddHeader(_T("<wx/cshelp.h>"), GetInfo().ClassName, hfInPCH);
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/cshelp.h>"), GetInfo().ClassName, hfInPCH);
+            Codef(_T("%C(%W, wxID_CONTEXT_HELP, %P, %S, %T);\n"));
+            BuildSetupWindowCode();
+            return;
+        }
 
-        Codef(_T("%C(%W, wxID_CONTEXT_HELP, %P, %S, %T);\n"));
-
-        BuildSetupWindowCode();
-        return;
-    }
-
-    case wxsUnknownLanguage: // fall-through
-    default:
-    {
-        wxsCodeMarks::Unknown(_T("wxsContextHelpButton::OnBuildCreatingCode"), GetLanguage());
-    }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsContextHelpButton::OnBuildCreatingCode"), GetLanguage());
+        }
     }
 }
 
@@ -86,11 +84,10 @@ void wxsContextHelpButton::OnBuildCreatingCode()
  * \return wxObject*                 The constructed control.
  *
  */
-wxObject* wxsContextHelpButton::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject * wxsContextHelpButton::OnBuildPreview(wxWindow * Parent, long Flags)
 {
-    wxContextHelpButton* Preview = new wxContextHelpButton(Parent, GetId(), Pos(Parent), Size(Parent), Style());
-
-    return SetupWindow(Preview,Flags);
+    wxContextHelpButton * Preview = new wxContextHelpButton(Parent, GetId(), Pos(Parent), Size(Parent), Style());
+    return SetupWindow(Preview, Flags);
 }
 
 /*! \brief Enumerate the control's properties.

@@ -11,9 +11,9 @@
 #define __MPC555_H__
 
 #if defined HIMO_DEBUG
-#define INTERNAL_RAM_BASE	0x1000000
+    #define INTERNAL_RAM_BASE	0x1000000
 #else
-#define INTERNAL_RAM_BASE	0x1000000
+    #define INTERNAL_RAM_BASE	0x1000000
 #endif
 
 #define __SIUMCR	(INTERNAL_RAM_BASE + 0x2fc000)

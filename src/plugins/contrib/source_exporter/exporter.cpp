@@ -71,59 +71,87 @@ void Exporter::OnRelease(bool /*appShutDown*/)
     // IsAttached() will be FALSE...
 }
 
-static wxMenu* FindOrInsertExportMenu(wxMenuBar *menuBar)
+static wxMenu * FindOrInsertExportMenu(wxMenuBar * menuBar)
 {
     // find "File" menu position
     const int fileMenuPos = menuBar->FindMenu(_("&File"));
+
     if (fileMenuPos == -1)
+    {
         return nullptr;
+    }
+
     // find actual "File" menu
-    wxMenu *fileMenu = menuBar->GetMenu(fileMenuPos);
+    wxMenu * fileMenu = menuBar->GetMenu(fileMenuPos);
+
     if (!fileMenu)
+    {
         return nullptr;
+    }
 
     // decide where to insert in "File" menu
     size_t printPos = fileMenu->GetMenuItemCount() - 4; // the default location
     const int printID = fileMenu->FindItem(_("Print..."));
+
     if (printID != wxNOT_FOUND)
     {
         fileMenu->FindChildItem(printID, &printPos);
         ++printPos; // after "Print"
     }
-    wxMenu *exportMenu = nullptr;
+
+    wxMenu * exportMenu = nullptr;
     const int pos = fileMenu->FindItem(_("&Export"));
+
     if (pos != wxNOT_FOUND)
     {
-        wxMenuItem *menuItem = fileMenu->FindItem(pos);
+        wxMenuItem * menuItem = fileMenu->FindItem(pos);
         exportMenu = menuItem->GetSubMenu();
+
         if (exportMenu)
+        {
             exportMenu->AppendSeparator();
+        }
     }
     else
     {
         exportMenu = new wxMenu();
         fileMenu->Insert(printPos, wxID_ANY, _("&Export"), exportMenu);
     }
+
     return exportMenu;
 }
 
-void Exporter::BuildMenu(wxMenuBar *menuBar)
+void Exporter::BuildMenu(wxMenuBar * menuBar)
 {
-    wxMenu *exportMenu = FindOrInsertExportMenu(menuBar);
+    wxMenu * exportMenu = FindOrInsertExportMenu(menuBar);
+
     if (!exportMenu)
+    {
         return;
+    }
 
     if (!exportMenu->FindItem(idFileExportHTML))
+    {
         exportMenu->Append(idFileExportHTML, _("As &HTML..."), _("Exports the current file to HTML"));
+    }
+
     if (!exportMenu->FindItem(idFileExportRTF))
+    {
         exportMenu->Append(idFileExportRTF, _("As &RTF..."), _("Exports the current file to RTF"));
+    }
+
     if (!exportMenu->FindItem(idFileExportODT))
+    {
         exportMenu->Append(idFileExportODT, _("As &ODT..."), _("Exports the current file to ODT"));
+    }
+
     if (!exportMenu->FindItem(idFileExportPDF))
+    {
         exportMenu->Append(idFileExportPDF, _("As &PDF..."), _("Exports the current file to PDF"));
+    }
 }
 
-void Exporter::OnUpdateUI(wxUpdateUIEvent &event)
+void Exporter::OnUpdateUI(wxUpdateUIEvent & event)
 {
     if (Manager::IsAppShuttingDown())
     {
@@ -131,12 +159,11 @@ void Exporter::OnUpdateUI(wxUpdateUIEvent &event)
         return;
     }
 
-    wxMenuBar *mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
+    wxMenuBar * mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
 
     if (mbar)
     {
-        EditorManager *em = Manager::Get()->GetEditorManager();
-
+        EditorManager * em = Manager::Get()->GetEditorManager();
         // Enabled if there's a source file opened (be sure it isn't the "Start here" page)
         bool disable = !em || !em->GetActiveEditor() || !em->GetBuiltinActiveEditor();
         mbar->Enable(idFileExportHTML, !disable);
@@ -173,27 +200,31 @@ void Exporter::OnExportPDF(wxCommandEvent & /*event*/)
     ExportFile(&exp, _T("pdf"), _("PDF files|*.pdf"));
 }
 
-void Exporter::ExportFile(BaseExporter *exp, const wxString &default_extension, const wxString &wildcard)
+void Exporter::ExportFile(BaseExporter * exp, const wxString & default_extension, const wxString & wildcard)
 {
     if (!IsAttached())
     {
         return;
     }
 
-    EditorManager* em = Manager::Get()->GetEditorManager();
-    cbEditor*      cb = em->GetBuiltinActiveEditor();
-
+    EditorManager * em = Manager::Get()->GetEditorManager();
+    cbEditor   *   cb = em->GetBuiltinActiveEditor();
     wxString filename = wxFileSelector(_("Choose the filename"), _T(""), wxFileName(cb->GetFilename()).GetName() + _T(".") + default_extension, default_extension, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
     if (filename.IsEmpty())
     {
         return;
     }
 
-    cbStyledTextCtrl* stc = cb->GetControl();
+    cbStyledTextCtrl * stc = cb->GetControl();
+
     if (!stc)
+    {
         return;
+    }
 
     int lineCount = -1;
+
     if (wxMessageBox(_("Would you like to have the line numbers printed in the exported file?"), _("Export line numbers"), wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION) == wxYES)
     {
         lineCount = stc->GetLineCount();

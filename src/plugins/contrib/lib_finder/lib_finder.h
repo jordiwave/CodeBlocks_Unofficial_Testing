@@ -39,57 +39,57 @@ class LibraryResult;
 
 class lib_finder: public cbToolPlugin
 {
-public:
+    public:
 
-    lib_finder();
-    ~lib_finder();
-    int Configure()
-    {
-        return 0;
-    }
-    int Execute();
-    void OnAttach();
-    void OnRelease(bool appShutDown);
+        lib_finder();
+        ~lib_finder();
+        int Configure()
+        {
+            return 0;
+        }
+        int Execute();
+        void OnAttach();
+        void OnRelease(bool appShutDown);
 
-    static bool IsExtraEvent();
+        static bool IsExtraEvent();
 
-private:
+    private:
 
-    virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
+        virtual cbConfigurationPanel * GetProjectConfigurationPanel(wxWindow * parent, cbProject * project);
 
-    void OnProjectHook(cbProject* project,TiXmlElement* elem,bool loading);
-    void OnProjectClose(CodeBlocksEvent& event);
-    void OnCompilerStarted(CodeBlocksEvent& event);
-    void OnCompilerFinished(CodeBlocksEvent& event);
-    void OnCompilerSetBuildOptions(CodeBlocksEvent& event);
-    void SetupTarget(CompileTargetBase* Target,const wxArrayString& Libs);
-    bool TryAddLibrary(CompileTargetBase* Target,LibraryResult* Result);
-    void RegisterScripting();
-    void UnregisterScripting();
-    bool TryDownload(const wxString& ShortCode,const wxString& FileName);
+        void OnProjectHook(cbProject * project, TiXmlElement * elem, bool loading);
+        void OnProjectClose(CodeBlocksEvent & event);
+        void OnCompilerStarted(CodeBlocksEvent & event);
+        void OnCompilerFinished(CodeBlocksEvent & event);
+        void OnCompilerSetBuildOptions(CodeBlocksEvent & event);
+        void SetupTarget(CompileTargetBase * Target, const wxArrayString & Libs);
+        bool TryAddLibrary(CompileTargetBase * Target, LibraryResult * Result);
+        void RegisterScripting();
+        void UnregisterScripting();
+        bool TryDownload(const wxString & ShortCode, const wxString & FileName);
 
-public:
-    // These functions are used in scripting bindings
-    static bool AddLibraryToProject(const wxString& LibName,cbProject* Project,const wxString& TargetName);
-    static bool RemoveLibraryFromProject(const wxString& LibName,cbProject* Project,const wxString& TargetName);
-    static bool IsLibraryInProject(const wxString& LibName,cbProject* Project,const wxString& TargetName);
-    static bool SetupTargetManually(CompileTargetBase* Target);
-    static bool EnsureIsDefined(const wxString& ShortCode);
+    public:
+        // These functions are used in scripting bindings
+        static bool AddLibraryToProject(const wxString & LibName, cbProject * Project, const wxString & TargetName);
+        static bool RemoveLibraryFromProject(const wxString & LibName, cbProject * Project, const wxString & TargetName);
+        static bool IsLibraryInProject(const wxString & LibName, cbProject * Project, const wxString & TargetName);
+        static bool SetupTargetManually(CompileTargetBase * Target);
+        static bool EnsureIsDefined(const wxString & ShortCode);
 
-private:
-    ProjectConfiguration* GetProject(cbProject* Project);
+    private:
+        ProjectConfiguration * GetProject(cbProject * Project);
 
-    WX_DECLARE_HASH_MAP(cbProject*,ProjectConfiguration*,wxPointerHash,wxPointerEqual,ProjectMapT);
-    WX_DECLARE_HASH_MAP(CompileTargetBase*,wxArrayString,wxPointerHash,wxPointerEqual,TargetLibsMapT);
+        WX_DECLARE_HASH_MAP(cbProject *, ProjectConfiguration *, wxPointerHash, wxPointerEqual, ProjectMapT);
+        WX_DECLARE_HASH_MAP(CompileTargetBase *, wxArrayString, wxPointerHash, wxPointerEqual, TargetLibsMapT);
 
-    ResultMap m_KnownLibraries[rtCount];
+        ResultMap m_KnownLibraries[rtCount];
 
-    PkgConfigManager m_PkgConfig;
-    ProjectMapT m_Projects;         ///< \brief Extra data for projects
-    TargetLibsMapT m_Targets;       ///< \brief Libs for targets in project which is currently being built
-    int m_HookId;
+        PkgConfigManager m_PkgConfig;
+        ProjectMapT m_Projects;         ///< \brief Extra data for projects
+        TargetLibsMapT m_Targets;       ///< \brief Libs for targets in project which is currently being built
+        int m_HookId;
 
-    static lib_finder* m_Singleton;
+        static lib_finder * m_Singleton;
 };
 
 #endif

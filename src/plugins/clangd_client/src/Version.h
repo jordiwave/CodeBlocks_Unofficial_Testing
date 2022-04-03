@@ -30,10 +30,10 @@
 
 #define LOGIT wxLogDebug
 #if defined(LOGGING)
-#define LOGGING 1
-#undef LOGIT
-#define LOGIT wxLogMessage
-#define TRAP asm("int3")
+    #define LOGGING 1
+    #undef LOGIT
+    #define LOGIT wxLogMessage
+    #define TRAP asm("int3")
 #endif
 
 //-----Release-Feature-Fix------------------
@@ -46,22 +46,22 @@
 class AppVersion
 // ----------------------------------------------------------------------------
 {
-public:
-    AppVersion()
-    {
-        m_version = VERSION;
-    }
-    ~AppVersion() {};
+    public:
+        AppVersion()
+        {
+            m_version = VERSION;
+        }
+        ~AppVersion() {};
 
-    wxString GetVersion()
-    {
-        return m_version;
-    }
+        wxString GetVersion()
+        {
+            return m_version;
+        }
 
-    wxString m_version;
-    wxString m_AppName;
-protected:
-private:
+        wxString m_version;
+        wxString m_AppName;
+    protected:
+    private:
 };
 
 #endif // VERSION_H

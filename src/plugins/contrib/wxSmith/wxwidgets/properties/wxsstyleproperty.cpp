@@ -33,77 +33,78 @@
 using namespace wxsFlags;
 
 wxsStyleProperty::wxsStyleProperty(
-    const wxString&  StyleName,
-    const wxString&  DataName,
+    const wxString & StyleName,
+    const wxString & DataName,
     long _Offset,
     long _StyleSetPtrOffset,
     bool _IsExtra,
     int Priority):
-    wxsProperty(StyleName,DataName,Priority),
+    wxsProperty(StyleName, DataName, Priority),
     Offset(_Offset),
     StyleSetPtrOffset(_StyleSetPtrOffset),
     IsExtra(_IsExtra)
 {
 }
 
-void wxsStyleProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
+void wxsStyleProperty::PGCreate(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Parent)
 {
-    if ( STYLESETPTR && !STYLESETPTR->GetNames(IsExtra).IsEmpty() )
+    if (STYLESETPTR && !STYLESETPTR->GetNames(IsExtra).IsEmpty())
     {
-        const wxArrayString& StyleNames = STYLESETPTR->GetNames(IsExtra);
-        const wxArrayLong&   StyleFlags = STYLESETPTR->GetFlags(IsExtra);
-        const wxArrayLong&   StyleBits  = STYLESETPTR->GetBits(IsExtra);
-
-        bool IsXrc = !( GetPropertiesFlags(Object) & flSource );
+        const wxArrayString & StyleNames = STYLESETPTR->GetNames(IsExtra);
+        const wxArrayLong  & StyleFlags = STYLESETPTR->GetFlags(IsExtra);
+        const wxArrayLong  & StyleBits  = STYLESETPTR->GetBits(IsExtra);
+        bool IsXrc = !(GetPropertiesFlags(Object) & flSource);
         wxPGChoices StyleConsts;
-
         size_t Count = StyleNames.Count();
-        for ( size_t i = 0; i < Count; i++ )
+
+        for (size_t i = 0; i < Count; i++)
         {
-            if ( !IsXrc || (StyleFlags[i] & wxsSFXRC) )
+            if (!IsXrc || (StyleFlags[i] & wxsSFXRC))
             {
-                StyleConsts.Add(StyleNames[i],StyleBits[i]);
+                StyleConsts.Add(StyleNames[i], StyleBits[i]);
             }
         }
 
-        if ( StyleConsts.GetCount() )
+        if (StyleConsts.GetCount())
         {
-            wxPGId ID = Grid->AppendIn(Parent,new wxFlagsProperty(GetPGName(),wxPG_LABEL,StyleConsts,STYLEBITS));
-            Grid->SetPropertyAttribute(ID,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
-            PGRegister(Object,Grid,ID);
+            wxPGId ID = Grid->AppendIn(Parent, new wxFlagsProperty(GetPGName(), wxPG_LABEL, StyleConsts, STYLEBITS));
+            Grid->SetPropertyAttribute(ID, wxPG_BOOL_USE_CHECKBOX, 1L, wxPG_RECURSE);
+            PGRegister(Object, Grid, ID);
         }
     }
 }
 
-bool wxsStyleProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,cb_unused long Index)
+bool wxsStyleProperty::PGRead(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, cb_unused long Index)
 {
     STYLEBITS = Grid->GetPropertyValue(Id).GetLong();
     return true;
 }
 
-bool wxsStyleProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,cb_unused long Index)
+bool wxsStyleProperty::PGWrite(wxsPropertyContainer * Object, wxPropertyGridManager * Grid, wxPGId Id, cb_unused long Index)
 {
-    Grid->SetPropertyValue(Id,STYLEBITS);
+    Grid->SetPropertyValue(Id, STYLEBITS);
     return true;
 }
 
-bool wxsStyleProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsStyleProperty::XmlRead(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
-    if ( !Element )
+    if (!Element)
     {
-        STYLEBITS = STYLESETPTR?STYLESETPTR->GetDefaultBits(IsExtra):0;
+        STYLEBITS = STYLESETPTR ? STYLESETPTR->GetDefaultBits(IsExtra) : 0;
         return false;
     }
 
-    const char* Text = Element->GetText();
+    const char * Text = Element->GetText();
     wxString Str;
-    if ( Text )
+
+    if (Text)
     {
         Str = cbC2U(Text);
     }
-    if ( Str.empty() )
+
+    if (Str.empty())
     {
-        STYLEBITS = STYLESETPTR?STYLESETPTR->GetDefaultBits(IsExtra):0;
+        STYLEBITS = STYLESETPTR ? STYLESETPTR->GetDefaultBits(IsExtra) : 0;
         return false;
     }
     else
@@ -118,29 +119,31 @@ bool wxsStyleProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Elemen
         Str.Replace(wxT("wxSTATIC_BORDER"), wxT("wxBORDER_STATIC"));
         Str.Replace(wxT("wxNO_BORDER"), wxT("wxBORDER_NONE"));
     }
-    STYLEBITS = STYLESETPTR->GetBits(Str,IsExtra);
+
+    STYLEBITS = STYLESETPTR->GetBits(Str, IsExtra);
     return true;
 }
 
-bool wxsStyleProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsStyleProperty::XmlWrite(wxsPropertyContainer * Object, TiXmlElement * Element)
 {
-    if ( STYLESETPTR )
+    if (STYLESETPTR)
     {
-        if ( STYLEBITS != STYLESETPTR->GetDefaultBits(IsExtra) )
+        if (STYLEBITS != STYLESETPTR->GetDefaultBits(IsExtra))
         {
-            Element->InsertEndChild(TiXmlText(cbU2C(STYLESETPTR->GetString(STYLEBITS,IsExtra,wxsCPP))));
+            Element->InsertEndChild(TiXmlText(cbU2C(STYLESETPTR->GetString(STYLEBITS, IsExtra, wxsCPP))));
             return true;
         }
     }
+
     return false;
 }
 
-bool wxsStyleProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsStyleProperty::PropStreamRead(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
-    return Stream->GetLong(GetDataName(),STYLEBITS,STYLESETPTR?STYLESETPTR->GetDefaultBits(IsExtra):0);
+    return Stream->GetLong(GetDataName(), STYLEBITS, STYLESETPTR ? STYLESETPTR->GetDefaultBits(IsExtra) : 0);
 }
 
-bool wxsStyleProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsStyleProperty::PropStreamWrite(wxsPropertyContainer * Object, wxsPropertyStream * Stream)
 {
-    return Stream->PutLong(GetDataName(),STYLEBITS,STYLESETPTR?STYLESETPTR->GetDefaultBits(IsExtra):0);
+    return Stream->PutLong(GetDataName(), STYLEBITS, STYLESETPTR ? STYLESETPTR->GetDefaultBits(IsExtra) : 0);
 }
