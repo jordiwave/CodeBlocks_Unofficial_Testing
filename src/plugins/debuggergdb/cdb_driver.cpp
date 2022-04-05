@@ -235,7 +235,7 @@ void CDB_driver::SetVarValue(cb_unused const wxString & var, cb_unused const wxS
     NOT_IMPLEMENTED();
 }
 
-void CDB_driver::SetMemoryRangeValue(cb_unused uint64_t addr, cb_unused const wxString & value)
+void CDB_driver::SetMemoryRangeValue(cb_unused wxString addr, cb_unused const wxString & value)
 {
     NOT_IMPLEMENTED();
 }

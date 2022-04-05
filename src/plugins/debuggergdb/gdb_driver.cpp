@@ -444,11 +444,12 @@ void GDB_driver::SetVarValue(const wxString & var, const wxString & value)
     QueueCommand(new DebuggerCmd(this, wxString::Format(_T("set variable %s=%s"), var.c_str(), cleanValue.c_str())));
 }
 
-void GDB_driver::SetMemoryRangeValue(uint64_t addr, const wxString & value)
+void GDB_driver::SetMemoryRangeValue(wxString addr, const wxString & value)
 {
     const size_t size = value.size();
+    uint64_t llAddres;
 
-    if (size == 0)
+    if ((size == 0) || (!addr.ToULongLong(&llAddres, 16)))
     {
         return;
     }
@@ -470,9 +471,9 @@ void GDB_driver::SetMemoryRangeValue(uint64_t addr, const wxString & value)
     wxString commandStr;
     // Check if build is for WX MS Windows
 #ifdef __WXMSW__
-    commandStr.Printf(wxT("set {char [%ul]} 0x%" PRIx64 "="), size, addr);
+    commandStr.Printf(wxT("set {char [%ul]} 0x%" PRIx64 "="), size, llAddres);
 #else
-    commandStr.Printf(wxT("set {char [%zu]} 0x%" PRIx64 "="), size, addr);
+    commandStr.Printf(wxT("set {char [%zu]} 0x%" PRIx64 "="), size, llAddres);
 #endif // __WXMSW__
     commandStr << dataStr;
     QueueCommand(new DebuggerCmd(this, commandStr));

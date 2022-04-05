@@ -34,15 +34,26 @@ if "%2" == "" (
 
 if "%DEBUG%" == "On" echo "Creating output directory tree"
 
+
 set CB_DEVEL_DIR=devel%1
 set CB_OUTPUT_DIR=output%1
 set CB_DEVEL_RESDIR=%CB_DEVEL_DIR%\share\CodeBlocks
 set CB_OUTPUT_RESDIR=%CB_OUTPUT_DIR%\share\CodeBlocks
-set CB_HANDLER_DIR=exchndl\win32\bin
 set CB_DOC_DIR=setup
+
+@rem Use the correct files for the version of windows being used
+for /f "tokens=4-7 delims=[.] " %%i in ('ver') do (if %%i==Version (set WIN_Version=%%j.%%k) else (set WIN_Version=%%i.%%j))
+if "%WIN_Version%" == "10.0" set CB_HANDLER_WIN_DIR=Win_10
+if "%WIN_Version%" ==  "6.3" set CB_HANDLER_WIN_DIR=Win_7
+if "%WIN_Version%" ==  "6.2" set CB_HANDLER_WIN_DIR=Win_7
+if "%WIN_Version%" ==  "5.2" set CB_HANDLER_WIN_DIR=Win_XP
+if "%WIN_Version%" ==  "5.1" set CB_HANDLER_WIN_DIR=Win_XP
+if "%CB_HANDLER_WIN_DIR%" == "" set CB_HANDLER_WIN_DIR=Win_7
+
+set CB_HANDLER_DIR=exchndl\%CB_HANDLER_WIN_DIR%\win32\bin
 set TARGET=%1
 set TARGET_CUT=%TARGET:_64=%
-if NOT "%TARGET%" == "" if NOT "%TARGET%" == "%TARGET_CUT%" set CB_HANDLER_DIR=exchndl\win64\bin
+if NOT "%TARGET%" == "" if NOT "%TARGET%" == "%TARGET_CUT%" set CB_HANDLER_DIR=exchndl\%CB_HANDLER_WIN_DIR%\win64\bin
 
 call :mkdirSilent "%CB_DEVEL_RESDIR%\compilers"
 call :mkdirSilent "%CB_DEVEL_RESDIR%\lexers"

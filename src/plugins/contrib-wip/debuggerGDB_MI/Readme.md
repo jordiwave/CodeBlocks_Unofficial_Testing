@@ -1,46 +1,59 @@
 # CODE::BLOCKS  GDB/MI DEBUGGER PLUGIN
 
-**The debugger is not production quality yet, but you can check it out as it can debug itself.**
+<font size="4" style="color:red">**NOTE: As of 05-Apr-2022 there C::B source code changes needed in order to build the plugin and these have not been submitted, so you will not be able to build the debugger at the moment!!**
+</font>
 
 ## Description
 
-This GitHub repo contains the future Code::Blocks GDB/MI debugger plugin. The source is to be built with the current C::B nightly build and GCC compiler that supports C++11 or later (GCC 10 or 11 is recommended). The code is desigend for GDB 9.1 or later using the GDB/MI version 3 interface (GDB 11.2 is recommended).
+This GitHub repo contains the source code for a Code::Blocks GDB/MI debugger plugin.
+The source is being worked on in order to ensure that it has at least the same features as the current C::B 20.03 GDB plugin.
 
-This GDB/MI debugger plugin has a number of advantages over the existing GDB debugger plugin, like:
-
-1. Supports all of the existing GDB annotations debugger plugin features once finished.
-2. In theory quicker as there is less data transferred between C::B and GDB.
-3. Supports GDB Python pretty printing if GDB supports it.
-4. Should be easier easier to add new features compared to the old code.
-5. GDB/MI interface is supported. The GDB annotations interface is deprecated.
+The debugger is able to debug itself and is a viable replacement for the existing GDB plugin.
 
 ## OUTSTANDING ITEMS
 
 ### High Priority
+1. Fix "#warning" messages.
+    src\plugins\contrib-wip\debuggerGDB_MI\src\actions.cpp
+        1411  #warning need to test this code!!!       
+        1442  #warning code to be added for this case  
 
-1. Persist debug data between sessions:
-    status:
-        preliminary code is working.
-        The code will change, but hopefully the XML file structure coudl stay the same, but with the addition of memory watches
+    src\plugins\contrib-wip\debuggerGDB_MI\src\definitions.h
+        136   #warning need to call this!!!! search for "bp->index" in existing code  
 
-    Working:
-        - simple line breakpoint saved and loaded
-        - simple data watch data saved and loaded
-    Not done:
-        - non simple breakpoints not coded up, but data is saved and loaded
-        - edited watch is not coded, but data is saved and loaded
-        - memory watch - nothing has been done
-        - option to disable persistence via debugger dialog
+    \src\plugins\contrib-wip\debuggerGDB_MI\src\plugin.cpp
+        952   #warning Need to add support for source directory adding, see existing code , seach for AddSourceDir "GdbCmd_AddSourceDir" and  
+        1376  #warning Debugger_GDB_MI::AddDataBreakpoint() not implemented                                                                   
+        1430  #warning +---------------------------------------------------------------+                                                      
+        1431  #warning |        NOT COMPELTED  for dbg_mi::GDBBreakpoint::bptData      |                                                      
+        1432  #warning +---------------------------------------------------------------+                                                      
+        1473  #warning to be converted                                                                                                        
+        1476  #warning to be converted                                                                                                        
+        1798  #warning +-------------------------------------------------------+                                                              
+        1799  #warning |        ShowWatchProperties - WORK IN PROGRESS         |                                                              
+        1800  #warning +-------------------------------------------------------+                                                              
+        1810  #warning "Following line from exisitng GDB code"                                                                                
+        1822  #warning "Following line from exisitng GDB code"                                                                                
+        1895  #warning Debugger_GDB_MI::UpdateWatch() this is a blank function                                           
+
+3. Re-test all items!!!! 
+
 
 ### Medium Priority
 
-1. Debug -> Memory view dialog
-    a) Plugin calls Debugger_GDB_MI::AddMemoryRange
-    b) Need to spend time analysing existing code
-2. Fix "#warning" messages.
-3. Re-test all items!!!! 
-4. Add control to vary the amount/type of logging
-5. Publish plugin to github
+1. Persist debug data between sessions:
+    Outstanding
+        - watch data                        - save/load working
+        - watch data edited                 - not done
+        - memory dump (single memory dialog)    - not done
+        - memory view (multiple memory dialog)  - not done
+
+    Save/load working
+        - line break points                 - save/load working
+        - count line break point            - save/load working
+        - conditional line break point      - save/load working
+2. Create patch for C::B source and submit
+3. Publish plugin to github
 
 ### Low Priority
 
@@ -118,10 +131,10 @@ This GDB/MI debugger plugin has a number of advantages over the existing GDB deb
 |     * ignore count before break                             | 26MAR2022 |    Pass    |
 |     * break when expression is true                         | 26MAR2022 |    Pass    |
 |   * Break points still there after GDB exit                 | 03APR2022 |    Pass    |
-|   * Break points data saved on project close                | 02APR2022 |  * NEW *   |
+|   * Break points data saved on project close                | 05APR2022 |    Pass    |
 |   * Break points removed after closing the project          | 02APR2022 |    Pass    |
 |   * Break points removed after changing debugger            | 02APR2022 |  *Broken*  |
-|   * Break points created on project open                    | 02APR2022 |    WIP     |
+|   * Break points created on project open                    | 05APR2022 |    Pass    |
 |                                                             |           |            |
 | **Debug show Running Threads**                              |           |            |
 |   * Show running threads dialog                             | 26MAR2022 |    Pass    |
@@ -198,8 +211,7 @@ This GDB/MI debugger plugin has a number of advantages over the existing GDB deb
 |   * Do not run the debugee checkbox save/loaded/used        |  To test  |   To test  |
 |   * Use python pretty printer checkbox save/loaded/used     |  To test  |   To test  |
 |   * Disassembly flavor drop down list save/loaded/used      |  To test  |   To test  |
-|   * ADD:                                                    |           |            |
-|         * new Checkbox for save/load breakpoint/watch etc   |   NEW     |   * NEW *  |
+|   * Persists checkbox save/load breakpoint/watch etc        | 05APR2022 |    Pass    |
 |                                                             |           |            |
 | **Checkpoints on Linux**                                    |           |            |
 |   * Add checkpoint                                          |  Future   |   Future   |
@@ -241,6 +253,11 @@ NOTES:
 
 ## COMPLETED ITEMS
 
+* 05APR2022 Done - Updated amount of logging when debugger HasDebugLog() enabled or disabled
+* 05APR2022 Done - simple, count and conditional breakpoints persistencey working
+* 05APR2022 Done - Added new Checkbox for save/load breakpoint/watch in teh GDB/MI config dialog
+* 05Apr2022 Fixed - Debug -> Memory view dialog now displaying memory.... But C::B source needs changes!!!!
+* 03APR2022 Done - Disassembly dialog cleared on GDB exit
 * 03APR2022 Done - Disassembly dialog cleared on GDB exit
 * 03APR2022 Done - CPU register dialog cleared on GDB exit 
 * 03APR2022 Done - Memory dump dialog cleared on last project close

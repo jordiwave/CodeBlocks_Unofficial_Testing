@@ -4,6 +4,8 @@
 setlocal
 SET CurrentDir="%CD%"
 
+for /f "tokens=4-7 delims=[.] " %%i in ('ver') do (if %%i==Version (set WIN_Version=%%j.%%k) else (set WIN_Version=%%i.%%j))
+
 set BUILD_BITS=%1
 if "%BUILD_BITS%" == "32" goto BuildBits_Okay
 if "%BUILD_BITS%" == "64" goto BuildBits_Okay
@@ -27,9 +29,9 @@ set GCC_ROOT=C:\msys64\mingw%BUILD_BITS%
 @rem set GCC_ROOT=C:\TDM-GCC-64
 
 @rem WXWIN is the wxWidgets root directory that you have all ready built from source 
-if exist "..\Libraries\wxWidgets-3.1.5_win%BUILD_BITS%" CALL :NORMALIZEPATH "..\Libraries\wxWidgets-3.1.5_win%BUILD_BITS%"
-if exist "..\..\Libraries\wxWidgets-3.1.5_win%BUILD_BITS%" CALL :NORMALIZEPATH "..\..\Libraries\wxWidgets-3.1.5_win%BUILD_BITS%"
-if exist "..\..\..\Libraries\wxWidgets-3.1.5_win%BUILD_BITS%" CALL :NORMALIZEPATH "..\..\..\Libraries\wxWidgets-3.1.5_win%BUILD_BITS%"
+if exist "..\Libraries\wxWidgets-3.1.6_win%BUILD_BITS%" CALL :NORMALIZEPATH "..\Libraries\wxWidgets-3.1.6_win%BUILD_BITS%"
+if exist "..\..\Libraries\wxWidgets-3.1.6_win%BUILD_BITS%" CALL :NORMALIZEPATH "..\..\Libraries\wxWidgets-3.1.6_win%BUILD_BITS%"
+if exist "..\..\..\Libraries\wxWidgets-3.1.6_win%BUILD_BITS%" CALL :NORMALIZEPATH "..\..\..\Libraries\wxWidgets-3.1.6_win%BUILD_BITS%"
 SET WXWIN=%RETVAL%
 if not exist "%WXWIN%" goto ErrNowxWidget
 
@@ -54,7 +56,14 @@ if exist "%GCC_ROOT%\bin\libstdc++-6.dll"           copy /Y "%GCC_ROOT%\bin\libs
 if exist "%WXWIN%\lib\gcc_dll\wxmsw*_gcc_cb.dll"    copy /Y "%WXWIN%\lib\gcc_dll\wxmsw*_gcc_cb.dll"    devel31_%BUILD_BITS% > nul
 if exist "%WXWIN%\lib\gcc_dll\wxmsw*_gl_gcc_cb.dll" copy /Y "%WXWIN%\lib\gcc_dll\wxmsw*_gl_gcc_cb.dll" devel31_%BUILD_BITS% > nul
 
-if not exist "devel31_%BUILD_BITS%\exchndl.dll"     copy /Y "exchndl\win%BUILD_BITS%\bin\*.*" devel31_%BUILD_BITS% > nul
+if not exist "devel31_%BUILD_BITS%\exchndl.dll" (
+    if "%WIN_Version%" == "10.0" copy /Y "exchndl\win_10\bin\win%BUILD_BITS%\bin\*.*" devel31_%BUILD_BITS% > nul
+    if "%WIN_Version%" ==  "6.3" copy /Y "exchndl\win_7\bin\win%BUILD_BITS%\bin\*.*"  devel31_%BUILD_BITS% > nul
+    if "%WIN_Version%" ==  "6.2" copy /Y "exchndl\win_7\bin\win%BUILD_BITS%\bin\*.*"  devel31_%BUILD_BITS% > nul
+    if "%WIN_Version%" ==  "5.2" copy /Y "exchndl\win_xp\bin\win%BUILD_BITS%\bin\*.*" devel31_%BUILD_BITS% > nul
+    if "%WIN_Version%" ==  "5.1" copy /Y "exchndl\win_xp\bin\win%BUILD_BITS%\bin\*.*" devel31_%BUILD_BITS% > nul
+    if not exist "devel31_%BUILD_BITS%\exchndl.dll" copy /Y "exchndl\win_7\bin\win%BUILD_BITS%\bin\*.*" devel31_%BUILD_BITS% > nul
+    )
 
 @rem ------------------------------------------------------------------------------------------
 @rem Check plugin DLL files were built

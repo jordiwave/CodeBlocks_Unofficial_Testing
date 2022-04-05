@@ -224,7 +224,8 @@ GDBWatch::GDBWatch(wxString const & symbol) :
     m_array_start(0),
     m_array_count(0),
     m_is_array(false),
-    m_forTooltip(false)
+    m_forTooltip(false),
+    m_address(wxEmptyString)
 {
 }
 GDBWatch::~GDBWatch()
@@ -233,6 +234,18 @@ GDBWatch::~GDBWatch()
 void GDBWatch::GetSymbol(wxString & symbol) const
 {
     symbol = m_symbol;
+}
+void GDBWatch::SetSymbol(wxString & symbol)
+{
+    m_symbol = symbol;
+}
+wxString GDBWatch::GetAddress() const
+{
+    return  m_address;
+}
+void GDBWatch::SetAddress(wxString & address)
+{
+    m_address = address;
 }
 void GDBWatch::GetValue(wxString & value) const
 {
@@ -248,6 +261,17 @@ bool GDBWatch::SetValue(const wxString & value)
 
     return true;
 }
+
+bool GDBWatch::GetIsValueErrorMessage()
+{
+    return m_raw_value_is_message;
+}
+
+void GDBWatch::SetIsValueErrorMessage(bool value)
+{
+    m_raw_value_is_message = value;
+}
+
 void GDBWatch::GetFullWatchString(wxString & full_watch) const
 {
     cb::shared_ptr<const cbWatch> parent = GetParent();
@@ -290,11 +314,6 @@ bool GDBWatch::IsPointerType() const
 void GDBWatch::SetDebugValue(wxString const & value)
 {
     m_debug_value = value;
-}
-
-void GDBWatch::SetSymbol(const wxString & symbol)
-{
-    m_symbol = symbol;
 }
 
 void GDBWatch::DoDestroy()
@@ -348,10 +367,9 @@ bool GDBWatch::GetForTooltip() const
     return m_forTooltip;
 }
 
-GDBMemoryRangeWatch::GDBMemoryRangeWatch(uint64_t address, uint64_t size, const wxString & symbol) :
+GDBMemoryRangeWatch::GDBMemoryRangeWatch(wxString address, uint64_t size) :
     m_address(address),
-    m_size(size),
-    m_symbol(symbol)
+    m_size(size)
 {
 }
 

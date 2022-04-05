@@ -13,6 +13,9 @@
     #include <dirent.h>
     #include <stdlib.h>
 #endif
+#ifdef __MINGW64__
+    #include <debugapi.h>
+#endif // __MINGW64__
 
 // CB include files (not GDB)
 #include "sdk.h" // Code::Blocks SDK
@@ -364,7 +367,7 @@ void Debugger_GDB_MI::OnMenuInfoCommandStream(wxCommandEvent & /*event*/)
     }
     else
     {
-        m_command_stream_dialog = new dbg_mi::GDBTextInfoWindow(Manager::Get()->GetAppWindow(), wxT("Command stream"), full);
+        m_command_stream_dialog = new dbg_mi::GDBTextInfoWindow(Manager::Get()->GetAppWindow(), _T("Command stream"), full);
         m_command_stream_dialog->Show();
     }
 }
@@ -1384,7 +1387,14 @@ cb::shared_ptr<cbBreakpoint> Debugger_GDB_MI::AddBreakpoint(const wxString & fil
 
 cb::shared_ptr<cbBreakpoint> Debugger_GDB_MI::AddDataBreakpoint(const wxString & /*dataExpression*/)
 {
-#warning "not implemented"
+#warning Debugger_GDB_MI::AddDataBreakpoint() not implemented
+#ifdef __MINGW32__
+    if (IsDebuggerPresent())
+    {
+        DebugBreak();
+    }
+
+#endif // __MINGW32__
     m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, ">>>>>>> NOT IMPLEMENTED< BUT CALLED <<<<<<<", dbg_mi::LogPaneLogger::LineType::Warning);
     return cb::shared_ptr<cbBreakpoint>();
 }
@@ -1406,9 +1416,6 @@ cb::shared_ptr<const cbBreakpoint> Debugger_GDB_MI::GetBreakpoint(int index) con
 
 void Debugger_GDB_MI::UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
 {
-#warning +-------------------------------------------------------+
-#warning |        AddMemoryRange - WORK IN PROGRESS              |
-#warning +-------------------------------------------------------+
     m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, ">>>>>>> WORK IN PROGRESS <<<<<<<", dbg_mi::LogPaneLogger::LineType::Warning);
     dbg_mi::GDBBreakpointsContainer::iterator it = std::find(m_breakpoints.begin(), m_breakpoints.end(), breakpoint);
 
@@ -1438,6 +1445,16 @@ void Debugger_GDB_MI::UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
 
         case dbg_mi::GDBBreakpoint::bptData:
         {
+#warning +---------------------------------------------------------------+
+#warning |        NOT COMPELTED  for dbg_mi::GDBBreakpoint::bptData      |
+#warning +---------------------------------------------------------------+
+#ifdef __MINGW32__
+            if (IsDebuggerPresent())
+            {
+                DebugBreak();
+            }
+
+#endif // __MINGW32__
             int old_sel = 0;
 
             if (bp->GetIsBreakOnRead() && bp->GetIsBreakOnWrite())
@@ -1466,6 +1483,8 @@ void Debugger_GDB_MI::UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
         }
 
         case dbg_mi::GDBBreakpoint::bptFunction:
+            return;
+
         default:
             return;
     }
@@ -1730,22 +1749,34 @@ cb::shared_ptr<cbWatch> Debugger_GDB_MI::AddWatch(dbg_mi::GDBWatch * watch, cb_u
     return w;
 }
 
-cb::shared_ptr<cbWatch> Debugger_GDB_MI::AddMemoryRange(uint64_t address, uint64_t size, const wxString & symbol, bool update)
+cb::shared_ptr<cbWatch> Debugger_GDB_MI::AddMemoryRange(wxString address, uint64_t size, bool update)
 {
-    cb::shared_ptr<dbg_mi::GDBMemoryRangeWatch> watch(new dbg_mi::GDBMemoryRangeWatch(m_project, m_pLogger, address, size, symbol));
+    cb::shared_ptr<dbg_mi::GDBMemoryRangeWatch> watch(new dbg_mi::GDBMemoryRangeWatch(m_project, m_pLogger, address, size));
+    uint64_t llAddress;
+    wxString blank = wxEmptyString;
+
+    if (address.ToULongLong(&llAddress, 16))
+    {
+        watch->SetSymbol(blank);
+        watch->SetAddress(address);
+    }
+    else
+    {
+        watch->SetSymbol(address);
+        watch->SetAddress(blank);
+    }
+
     m_memoryRanges.push_back(watch);
     m_mapWatchesToType[watch] = dbg_mi::GDBWatchType::MemoryRange;
 
     if (IsRunning())
     {
-#warning "not implemented"
-        m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, ">>>>>>> GDBMemoryRangeWatchCreateAction NOT IMPLEMENTED <<<<<<<<", dbg_mi::LogPaneLogger::LineType::Warning);
-        //        m_actions.Add(new dbg_mi::GDBMemoryRangeWatchCreateAction(watch, m_memoryRanges, m_pLogger));
+        m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, wxString::Format("Adding watch for: address:%s  size:%lld", address, size), dbg_mi::LogPaneLogger::LineType::Warning);
+        m_actions.Add(new dbg_mi::GDBMemoryRangeWatchCreateAction(watch, m_pLogger));
     }
 
     return watch;
 }
-
 
 void Debugger_GDB_MI::AddTooltipWatch(const wxString & symbol, wxRect const & rect)
 {
@@ -1796,6 +1827,13 @@ void Debugger_GDB_MI::ShowWatchProperties(cb::shared_ptr<cbWatch> watch)
 #warning +-------------------------------------------------------+
 #warning |        ShowWatchProperties - WORK IN PROGRESS         |
 #warning +-------------------------------------------------------+
+#ifdef __MINGW32__
+    if (IsDebuggerPresent())
+    {
+        DebugBreak();
+    }
+
+#endif // __MINGW32__
     m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, ">>>>>>> WORK IN PROGRESS <<<<<<<", dbg_mi::LogPaneLogger::LineType::Warning);
     // not supported for child nodes or memory ranges!
 #warning "Following line from exisitng GDB code"
@@ -1885,8 +1923,16 @@ void Debugger_GDB_MI::CollapseWatch(cb::shared_ptr<cbWatch> watch)
 
 void Debugger_GDB_MI::UpdateWatch(cb_unused cb::shared_ptr<cbWatch> watch)
 {
-#warning this is a blank function
+#warning Debugger_GDB_MI::UpdateWatch() this is a blank function
     m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, ">>>>>>> NOT IMPLEMENTED< BUT CALLED <<<<<<<", dbg_mi::LogPaneLogger::LineType::Warning);
+#ifdef __MINGW32__
+
+    if (IsDebuggerPresent())
+    {
+        DebugBreak();
+    }
+
+#endif // __MINGW32__
 }
 
 void Debugger_GDB_MI::SendCommand(const wxString & cmd, bool debugLog)
@@ -2021,17 +2067,27 @@ void Debugger_GDB_MI::RequestUpdate(DebugWindows window)
         break;
 
         case MemoryRange:
-            // #warning +-------------------------------------------------------+
-#warning "not implemented"
-            // #warning +-------------------------------------------------------+
-            m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, ">>>>>>> Missing code for MemoryRange window <<<<<<<", dbg_mi::LogPaneLogger::LineType::Warning);
+            m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, _("DebugWindows MemoryRange called!!"), dbg_mi::LogPaneLogger::LineType::Error);
+#ifdef __MINGW32__
+
+            if (IsDebuggerPresent())
+            {
+                DebugBreak();
+            }
+
+#endif // __MINGW32__
             break;
 
         case Watches:
-            // #warning +-------------------------------------------------------+
-#warning "not implemented"
-            // #warning +-------------------------------------------------------+
-            m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, ">>>>>>> Missing code for Watches window <<<<<<<", dbg_mi::LogPaneLogger::LineType::Warning);
+            m_pLogger->LogGDBMsgType(__PRETTY_FUNCTION__, __LINE__, _("DebugWindows Watches called!!"), dbg_mi::LogPaneLogger::LineType::Warning);
+#ifdef __MINGW32__
+
+            if (IsDebuggerPresent())
+            {
+                DebugBreak();
+            }
+
+#endif // __MINGW32__
             break;
 
         default:
@@ -2075,24 +2131,23 @@ bool Debugger_GDB_MI::ShowValueTooltip(int style)
 
 wxArrayString Debugger_GDB_MI::ParseSearchDirs(const cbProject & project)
 {
+    // NOTE: This is tinyXML as it interacts wtih teh C::B SDK tinyXML code!!!!
     wxArrayString dirs;
-#warning need to convert tinyxml to tinyxml2
-#if 0
-    const tinyxml2::XMLElement * elem = project.GetExtensionsNode();
+    const TiXmlElement * elem = static_cast<const TiXmlElement *>(project.GetExtensionsNode());
 
     if (elem)
     {
-        const tinyxml2::XMLElement * conf = elem->FirstChildElement("debugger");
+        const TiXmlElement * conf = elem->FirstChildElement("debugger");
 
         if (conf)
         {
-            const tinyxml2::XMLElement * pathsElem = conf->FirstChildElement("search_path");
+            const TiXmlElement * pathsElem = conf->FirstChildElement("search_path");
 
             while (pathsElem)
             {
                 if (pathsElem->Attribute("add"))
                 {
-                    const wxString & dir = pathsElem->Attribute("add");
+                    const wxString & dir = cbC2U(pathsElem->Attribute("add"));
 
                     if (dirs.Index(dir) == wxNOT_FOUND)
                     {
@@ -2105,78 +2160,70 @@ wxArrayString Debugger_GDB_MI::ParseSearchDirs(const cbProject & project)
         }
     }
 
-#endif
     return dirs;
 }
 
-tinyxml2::XMLElement * Debugger_GDB_MI::GetElementForSaving(cbProject & project, const char * elementsToClear)
+TiXmlElement * Debugger_GDB_MI::GetElementForSaving(cbProject & project, const char * elementsToClear)
 {
-#warning need to convert tinyxml to tinyxml2
-#if 1
-    tinyxml2::XMLElement * node = nullptr;
-#else
-    tinyxml2::XMLElement * elem = project.GetExtensionsNode();
+    // NOTE: This is tinyXML as it interacts wtih teh C::B SDK tinyXML code!!!!
+    TiXmlElement * elem = static_cast<TiXmlElement *>(project.GetExtensionsNode());
     // since rev4332, the project keeps a copy of the <Extensions> element
     // and re-uses it when saving the project (so to avoid losing entries in it
     // if plugins that use that element are not loaded atm).
     // so, instead of blindly inserting the element, we must first check it's
     // not already there (and if it is, clear its contents)
-    tinyxml2::XMLElement * node = elem->FirstChildElement("debugger");
+    TiXmlElement * node = elem->FirstChildElement("debugger");
 
     if (!node)
     {
-        node = elem->InsertEndChild(tinyxml2::XMLElement("debugger"))->ToElement();
+        node = elem->InsertEndChild(TiXmlElement("debugger"))->ToElement();
     }
 
-    for (tinyxml2::XMLElement * child = node->FirstChildElement(elementsToClear);
+    for (TiXmlElement * child = node->FirstChildElement(elementsToClear);
             child;
             child = node->FirstChildElement(elementsToClear))
     {
-        node->DeleteChild(child);
+        node->RemoveChild(child);
     }
 
-#endif
     return node;
 }
 
+
 void Debugger_GDB_MI::SetSearchDirs(cbProject & project, const wxArrayString & dirs)
 {
-#warning need to convert tinyxml to tinyxml2
-#if 0
-    tinyxml2::XMLElement * node = GetElementForSaving(project, "search_path");
+    // NOTE: This is tinyXML as it interacts wtih teh C::B SDK tinyXML code!!!!
+    TiXmlElement * node = GetElementForSaving(project, "search_path");
 
-    if (node && (dirs.GetCount() > 0))
+    if (dirs.GetCount() > 0)
     {
         for (size_t i = 0; i < dirs.GetCount(); ++i)
         {
-            tinyxml2::XMLElement * path = node->InsertEndChild(tinyxml2::XMLElement("search_path"))->ToElement();
-            path->SetAttribute("add", dirs[i].mb_str());
+            TiXmlElement * path = node->InsertEndChild(TiXmlElement("search_path"))->ToElement();
+            path->SetAttribute("add", cbU2C(dirs[i]));
         }
     }
-
-#endif
 }
 
 dbg_mi::RemoteDebuggingMap Debugger_GDB_MI::ParseRemoteDebuggingMap(cbProject & project)
 {
+    // NOTE: This is tinyXML as it interacts wtih teh C::B SDK tinyXML code!!!!
     dbg_mi::RemoteDebuggingMap map;
-#warning need to convert tinyxml to tinyxml2
-#if 0
-    const tinyxml2::XMLElement * elem = project.GetExtensionsNode();
+    const TiXmlElement * elem = static_cast<const TiXmlElement *>(project.GetExtensionsNode());
 
     if (elem)
     {
-        const tinyxml2::XMLElement * conf = elem->FirstChildElement("debugger");
+        const TiXmlElement * conf = elem->FirstChildElement("debugger");
 
         if (conf)
         {
-            const tinyxml2::XMLElement * rdElem = conf->FirstChildElement("remote_debugging");
+            const TiXmlElement * rdElem = conf->FirstChildElement("remote_debugging");
 
             while (rdElem)
             {
-                wxString targetName = rdElem->Attribute("target");
+                wxString targetName = cbC2U(rdElem->Attribute("target"));
                 ProjectBuildTarget * bt = project.GetBuildTarget(targetName);
-                const tinyxml2::XMLElement * rdOpt = rdElem->FirstChildElement("options");
+                const TiXmlElement * rdOpt = rdElem->FirstChildElement("options");
 
                 if (rdOpt)
                 {
@@ -2189,59 +2236,57 @@ dbg_mi::RemoteDebuggingMap Debugger_GDB_MI::ParseRemoteDebuggingMap(cbProject & 
 
                     if (rdOpt->Attribute("serial_port"))
                     {
-                        rd.serialPort = rdOpt->Attribute("serial_port");
+                        rd.serialPort = cbC2U(rdOpt->Attribute("serial_port"));
                     }
 
                     if (rdOpt->Attribute("serial_baud"))
                     {
-                        rd.serialBaud = rdOpt->Attribute("serial_baud");
+                        rd.serialBaud = cbC2U(rdOpt->Attribute("serial_baud"));
                     }
 
                     if (rd.serialBaud.empty())
                     {
-                        rd.serialBaud = wxT("115200");
+                        rd.serialBaud = "115200";
                     }
 
                     if (rdOpt->Attribute("ip_address"))
                     {
-                        rd.ip = rdOpt->Attribute("ip_address");
+                        rd.ip = cbC2U(rdOpt->Attribute("ip_address"));
                     }
 
                     if (rdOpt->Attribute("ip_port"))
                     {
-                        rd.ipPort = rdOpt->Attribute("ip_port");
+                        rd.ipPort = cbC2U(rdOpt->Attribute("ip_port"));
                     }
 
                     if (rdOpt->Attribute("additional_cmds"))
                     {
-                        rd.additionalCmds = rdOpt->Attribute("additional_cmds");
+                        rd.additionalCmds = cbC2U(rdOpt->Attribute("additional_cmds"));
                     }
 
                     if (rdOpt->Attribute("additional_cmds_before"))
                     {
-                        rd.additionalCmdsBefore = rdOpt->Attribute("additional_cmds_before");
+                        rd.additionalCmdsBefore = cbC2U(rdOpt->Attribute("additional_cmds_before"));
                     }
 
                     if (rdOpt->Attribute("skip_ld_path"))
                     {
-                        wxString attrib = rdOpt->Attribute("skip_ld_path");
-                        rd.skipLDpath = !attrib.IsSameAs("0");
+                        rd.skipLDpath = cbC2U(rdOpt->Attribute("skip_ld_path")) != "0";
                     }
 
                     if (rdOpt->Attribute("extended_remote"))
                     {
-                        wxString attrib = rdOpt->Attribute("extended_remote");
-                        rd.extendedRemote = !attrib.IsSameAs("0");
+                        rd.extendedRemote = cbC2U(rdOpt->Attribute("extended_remote")) != "0";
                     }
 
                     if (rdOpt->Attribute("additional_shell_cmds_after"))
                     {
-                        rd.additionalShellCmdsAfter = rdOpt->Attribute("additional_shell_cmds_after");
+                        rd.additionalShellCmdsAfter = cbC2U(rdOpt->Attribute("additional_shell_cmds_after"));
                     }
 
                     if (rdOpt->Attribute("additional_shell_cmds_before"))
                     {
-                        rd.additionalShellCmdsBefore = rdOpt->Attribute("additional_shell_cmds_before");
+                        rd.additionalShellCmdsBefore = cbC2U(rdOpt->Attribute("additional_shell_cmds_before"));
                     }
 
                     map.insert(map.end(), std::make_pair(bt, rd));
@@ -2252,15 +2297,13 @@ dbg_mi::RemoteDebuggingMap Debugger_GDB_MI::ParseRemoteDebuggingMap(cbProject & 
         }
     }
 
-#endif
     return map;
 }
 
 void Debugger_GDB_MI::SetRemoteDebuggingMap(cbProject & project, const dbg_mi::RemoteDebuggingMap & rdMap)
 {
-#warning need to convert tinyxml to tinyxml2
-#if 0
-    tinyxml2::XMLElement * node = GetElementForSaving(project, "remote_debugging");
+    // NOTE: This is tinyXML as it interacts wtih teh C::B SDK tinyXML code!!!!
+    TiXmlElement * node = GetElementForSaving(project, "remote_debugging");
 
     if (!rdMap.empty())
     {
@@ -2281,58 +2324,58 @@ void Debugger_GDB_MI::SetRemoteDebuggingMap(cbProject & project, const dbg_mi::R
             const dbg_mi::RemoteDebugging & rd = *it->second;
 
             // if no different than defaults, skip it
-            if (rd.serialPort.IsEmpty()
-                    && rd.serialBaud == wxT("115200")
-                    && rd.ip.IsEmpty()
-                    && rd.ipPort.IsEmpty()
-                    && !rd.skipLDpath
-                    && !rd.extendedRemote
-                    && rd.additionalCmds.IsEmpty()
-                    && rd.additionalCmdsBefore.IsEmpty()
-                    && rd.additionalShellCmdsAfter.IsEmpty()
-                    && rd.additionalShellCmdsBefore.IsEmpty())
+            if (rd.serialPort.IsEmpty() &&
+                    rd.serialBaud == "115200" &&
+                    rd.ip.IsEmpty() &&
+                    rd.ipPort.IsEmpty() &&
+                    !rd.skipLDpath &&
+                    !rd.extendedRemote &&
+                    rd.additionalCmds.IsEmpty() &&
+                    rd.additionalCmdsBefore.IsEmpty() &&
+                    rd.additionalShellCmdsAfter.IsEmpty() &&
+                    rd.additionalShellCmdsBefore.IsEmpty())
             {
                 continue;
             }
 
-            tinyxml2::XMLElement * rdnode = node->InsertEndChild(tinyxml2::XMLElement("remote_debugging"))->ToElement();
+            TiXmlElement * rdnode = node->InsertEndChild(TiXmlElement("remote_debugging"))->ToElement();
 
             if (!it->first.empty())
             {
-                rdnode->SetAttribute("target", it->first.mb_str());
+                rdnode->SetAttribute("target", cbU2C(it->first));
             }
 
-            tinyxml2::XMLElement * tgtnode = rdnode->InsertEndChild(tinyxml2::XMLElement("options"))->ToElement();
+            TiXmlElement * tgtnode = rdnode->InsertEndChild(TiXmlElement("options"))->ToElement();
             tgtnode->SetAttribute("conn_type", (int)rd.connType);
 
             if (!rd.serialPort.IsEmpty())
             {
-                tgtnode->SetAttribute("serial_port", rd.serialPort.mb_str());
+                tgtnode->SetAttribute("serial_port", cbU2C(rd.serialPort));
             }
 
-            if (rd.serialBaud != wxT("115200"))
+            if (rd.serialBaud != "115200")
             {
-                tgtnode->SetAttribute("serial_baud", rd.serialBaud.mb_str());
+                tgtnode->SetAttribute("serial_baud", cbU2C(rd.serialBaud));
             }
 
             if (!rd.ip.IsEmpty())
             {
-                tgtnode->SetAttribute("ip_address", rd.ip.mb_str());
+                tgtnode->SetAttribute("ip_address", cbU2C(rd.ip));
             }
 
             if (!rd.ipPort.IsEmpty())
             {
-                tgtnode->SetAttribute("ip_port", rd.ipPort.mb_str());
+                tgtnode->SetAttribute("ip_port", cbU2C(rd.ipPort));
             }
 
             if (!rd.additionalCmds.IsEmpty())
             {
-                tgtnode->SetAttribute("additional_cmds", rd.additionalCmds.mb_str());
+                tgtnode->SetAttribute("additional_cmds", cbU2C(rd.additionalCmds));
             }
 
             if (!rd.additionalCmdsBefore.IsEmpty())
             {
-                tgtnode->SetAttribute("additional_cmds_before", rd.additionalCmdsBefore.mb_str());
+                tgtnode->SetAttribute("additional_cmds_before", cbU2C(rd.additionalCmdsBefore));
             }
 
             if (rd.skipLDpath)
@@ -2347,31 +2390,38 @@ void Debugger_GDB_MI::SetRemoteDebuggingMap(cbProject & project, const dbg_mi::R
 
             if (!rd.additionalShellCmdsAfter.IsEmpty())
             {
-                tgtnode->SetAttribute("additional_shell_cmds_after", rd.additionalShellCmdsAfter.mb_str());
+                tgtnode->SetAttribute("additional_shell_cmds_after", cbU2C(rd.additionalShellCmdsAfter));
             }
 
             if (!rd.additionalShellCmdsBefore.IsEmpty())
             {
-                tgtnode->SetAttribute("additional_shell_cmds_before", rd.additionalShellCmdsBefore.mb_str());
+                tgtnode->SetAttribute("additional_shell_cmds_before", cbU2C(rd.additionalShellCmdsBefore));
             }
         }
     }
-
-#endif
 }
 
 void Debugger_GDB_MI::OnProjectOpened(CodeBlocksEvent & event)
 {
     // allow others to catch this
     event.Skip();
-    LoadStateFromFile(event.GetProject());
+
+    if (GetActiveConfigEx().GetFlag(dbg_mi::DebuggerConfiguration::PersistDebugElements))
+    {
+        LoadStateFromFile(event.GetProject());
+    }
 }
 
 void Debugger_GDB_MI::OnProjectClosed(CodeBlocksEvent & event)
 {
     // allow others to catch this
     event.Skip();
-    SaveStateToFile(event.GetProject());
+
+    if (GetActiveConfigEx().GetFlag(dbg_mi::DebuggerConfiguration::PersistDebugElements))
+    {
+        SaveStateToFile(event.GetProject());
+    }
+
     // the same for remote debugging
     // GetRemoteDebuggingMap(event.GetProject()).clear();
 }
@@ -2500,8 +2550,28 @@ bool Debugger_GDB_MI::LoadStateFromFile(cbProject * pProject)
                 pBreakpointElement;
                 pBreakpointElement = pBreakpointElement->NextSiblingElement())
         {
-            dbg_mi::GDBBreakpoint * bp = new dbg_mi::GDBBreakpoint(pProject, m_pLogger);
-            bp->LoadBreakpointFromXML(pBreakpointElement, this);
+            dbg_mi::GDBBreakpoint * bpNew = new dbg_mi::GDBBreakpoint(pProject, m_pLogger);
+            bpNew->LoadBreakpointFromXML(pBreakpointElement, this);
+
+            // Find new breakpoint in the m_breakpoints
+            for (dbg_mi::GDBBreakpointsContainer::iterator it = m_breakpoints.begin(); it != m_breakpoints.end(); ++it)
+            {
+                dbg_mi::GDBBreakpoint & bpSearch = **it;
+
+                if (
+                    (bpSearch.GetProject() == bpNew->GetProject())   &&
+                    (bpSearch.GetFilename() == bpNew->GetFilename()) &&
+                    (bpSearch.GetLine() == bpNew->GetLine())
+                )
+                {
+                    // Found breakpoint, so update it!!!
+                    bpSearch.SetEnabled(bpNew->GetIsEnabled());
+                    bpSearch.SetIsUseIgnoreCount(bpNew->GetIsUseIgnoreCount());
+                    bpSearch.SetIgnoreCount(bpNew->GetIgnoreCount());
+                    bpSearch.SetIsUseCondition(bpNew->GetIsUseCondition());
+                    bpSearch.SetCondition(bpNew->GetCondition());
+                }
+            }
         }
 
         cbBreakpointsDlg * dlg = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
@@ -2540,7 +2610,7 @@ bool Debugger_GDB_MI::LoadStateFromFile(cbProject * pProject)
 
             if (GDBMemoryRangeWatchName.IsSameAs("GDBMemoryRangeWatch"))
             {
-                dbg_mi::GDBMemoryRangeWatch * memoryRangeWatch = new dbg_mi::GDBMemoryRangeWatch(pProject, m_pLogger, 0, 0, "");
+                dbg_mi::GDBMemoryRangeWatch * memoryRangeWatch = new dbg_mi::GDBMemoryRangeWatch(pProject, m_pLogger, "", 0);
                 memoryRangeWatch->LoadWatchFromXML(pWatchElement, this);
             }
         }

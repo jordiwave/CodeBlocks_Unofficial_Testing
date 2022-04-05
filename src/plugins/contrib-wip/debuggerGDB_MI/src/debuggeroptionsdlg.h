@@ -31,6 +31,7 @@ class DebuggerConfiguration : public cbDebuggerConfiguration
             EvalExpression,
             AddOtherProjectDirs,
             CheckPrettyPrinters,
+            PersistDebugElements,
             DoNotRun
         };
 

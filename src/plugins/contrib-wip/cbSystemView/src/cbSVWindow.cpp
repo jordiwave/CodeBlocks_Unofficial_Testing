@@ -370,7 +370,7 @@ void cbSVWindow::GenerateWatchesRecursive(wxPGProperty * prop, cbDebuggerPlugin 
             if (base != nullptr)
             {
                 watch.m_property = prop;
-                watch.m_watch    = dbg->AddMemoryRange(base->GetAddress(), base->GetSize(), wxEmptyString, false);
+                watch.m_watch    = dbg->AddMemoryRange(base->GetAddress(), base->GetSize(), false);
                 watchesToUpdate.push_back(watch.m_watch);
                 m_RegisterWatches.push_back(watch);
             }

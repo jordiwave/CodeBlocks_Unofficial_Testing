@@ -151,7 +151,7 @@
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="$(#CB_BUILD.INCLUDE)" />
 					<Add directory="$(#CB_BUILD.INCLUDE)/scripting/include" />
-					<Add directory="$(#CB_BUILD)/exchndl/win$(#CB_BUILD.OSBITS)/include" />
+					<Add directory="$(#CB_BUILD)/exchndl/win_10/win$(#CB_BUILD.OSBITS)/include" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add option="-DcbDPI_AWARE_ON" />
@@ -176,7 +176,7 @@
 					<Add library="rpcrt4" />
 					<Add library="advapi32" />
 					<Add library="wsock32" />
-					<Add directory="$(#CB_BUILD)/exchndl/win$(#CB_BUILD.OSBITS)/lib" />
+					<Add directory="$(#CB_BUILD)/exchndl/win_10/win$(#CB_BUILD.OSBITS)/lib" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks mkdir devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\share\CodeBlocks" />
@@ -188,7 +188,7 @@
 				<InstallExtraCommands>
 					<Add step="cmd /c if exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\exchndl.dll del devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\exchndl.dll" />
 					<Add step="cmd /c if exist devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\symsrv.yes  del devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\symsrv.yes" />
-					<Add step="cmd /c &quot;(for /F &quot;usebackq delims=^=^ &quot; %%a in (`&quot;dir /b/s &quot;$(#CB_BUILD)\exchndl\win$(#CB_BUILD.OSBITS)\bin\*.*&quot; &quot;`) do @xcopy /Y $(#CB_BUILD)\exchndl\win$(#CB_BUILD.OSBITS)\bin\%%~nxa  $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\ )&quot;" />
+					<Add step="cmd /c &quot;(for /F &quot;usebackq delims=^=^ &quot; %%a in (`&quot;dir /b/s &quot;$(#CB_BUILD)\exchndl\win_10\win$(#CB_BUILD.OSBITS)\bin\*.*&quot; &quot;`) do @xcopy /Y $(#CB_BUILD)\exchndl\win_10\win$(#CB_BUILD.OSBITS)\bin\%%~nxa  $(#CB_BUILD)\devel$(#WXWIDGETS.WX_VERSION)_$(#CB_BUILD.OSBITS)\ )&quot;" />
 				</InstallExtraCommands>
 			</Target>
 			<Target title="Abbreviations">

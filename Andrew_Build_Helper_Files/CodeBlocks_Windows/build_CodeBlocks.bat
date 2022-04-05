@@ -28,7 +28,7 @@ goto BuildBitError
 @rem WXWIN is the wxWidgets root directory that you have all ready built from source 
 @rem if exist %CD%\..\wxWidgets_github set WXWIN=%CD%\..\wxWidgets_github
 @rem if exist %WXWIN% goto wxWidgetCompleted
-CALL :NORMALIZEPATH "..\..\..\Libraries\wxWidgets-3.1.5_win%BUILD_BITS%"
+CALL :NORMALIZEPATH "..\..\..\Libraries\wxWidgets-3.1.6_win%BUILD_BITS%"
 SET WXWIN=%RETVAL%
 if not exist %WXWIN% goto ErrNowxWidget
 
@@ -226,7 +226,7 @@ goto Finish
 @echo.
 @echo.
 @echo ^+------------------------------------------------------^+
-@echo ^|     Error: NO "wxWidgets-3.1.5" sub directory found  ^|
+@echo ^|     Error: NO "wxWidgets-3.1.6" sub directory found  ^|
 @echo ^+------------------------------------------------------^+
 @echo. 
 @echo.
